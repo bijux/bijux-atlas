@@ -793,6 +793,7 @@ pub fn build_router(state: AppState) -> Router {
 pub use fake_store::FakeStore;
 
 mod http_handlers;
+mod metrics_endpoint;
 
 #[cfg(test)]
 mod cache_manager_tests;
