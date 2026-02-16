@@ -1,6 +1,7 @@
 # Bijux Plugin Specification v1
 
 This document defines the v1 contract between the Bijux umbrella runner and subsystem plugins.
+Umbrella/runtime SSOT: `docs/ecosystem/umbrella-plugin-contract-v1.md`.
 
 ## Binary Naming Convention
 
