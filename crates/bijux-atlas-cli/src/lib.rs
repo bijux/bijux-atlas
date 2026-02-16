@@ -4,7 +4,8 @@ mod artifact_validation;
 mod helpers;
 
 use bijux_atlas_core::{
-    resolve_bijux_cache_dir, resolve_bijux_config_path, sha256_hex, ConfigPathScope, MachineError,
+    canonical, resolve_bijux_cache_dir, resolve_bijux_config_path, sha256_hex, ConfigPathScope,
+    MachineError,
 };
 use bijux_atlas_ingest::{ingest_dataset, IngestOptions};
 use bijux_atlas_model::{
@@ -34,6 +35,8 @@ Options:
 Commands:
 {subcommands}
 {after-help}";
+const UMBRELLA_MIN_VERSION: &str = "0.1.0";
+const UMBRELLA_MAX_EXCLUSIVE_VERSION: &str = "0.2.0";
 
 #[derive(Parser)]
 #[command(name = "bijux-atlas")]
@@ -55,6 +58,8 @@ struct Cli {
     bijux_plugin_metadata: bool,
     #[arg(long = "print-config-paths", default_value_t = false)]
     print_config_paths: bool,
+    #[arg(long = "umbrella-version")]
+    umbrella_version: Option<String>,
     #[command(subcommand)]
     command: Option<Commands>,
 }
@@ -69,6 +74,7 @@ enum Commands {
         #[command(subcommand)]
         command: Box<AtlasCommand>,
     },
+    Version,
     #[command(hide = true)]
     Serve,
 }
@@ -76,6 +82,16 @@ enum Commands {
 #[derive(Subcommand)]
 enum AtlasCommand {
     Serve,
+    Doctor,
+    Version,
+    Completion {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
+    PrintConfig {
+        #[arg(long, default_value_t = false)]
+        canonical: bool,
+    },
     Catalog {
         #[command(subcommand)]
         command: CatalogCommand,
@@ -255,6 +271,9 @@ fn run() -> Result<(), CliError> {
         emit_plugin_metadata(output_mode.json).map_err(CliError::internal)?;
         return Ok(());
     }
+    if let Some(umbrella_version) = cli.umbrella_version.as_deref() {
+        enforce_umbrella_compatibility(umbrella_version)?;
+    }
     if cli.print_config_paths {
         emit_config_paths(output_mode.json).map_err(CliError::internal)?;
         return Ok(());
@@ -275,6 +294,7 @@ fn run() -> Result<(), CliError> {
             print_completion(shell);
             Ok(())
         }
+        Commands::Version => print_version(log_flags.verbose > 0, output_mode).map_err(CliError::internal),
         Commands::Atlas { command } => run_atlas_command(*command, log_flags, output_mode),
         Commands::Serve => run_serve(log_flags, output_mode).map_err(CliError::dependency),
     }
@@ -299,6 +319,17 @@ fn run_atlas_command(
 ) -> Result<(), CliError> {
     match command {
         AtlasCommand::Serve => run_serve(log_flags, output_mode).map_err(CliError::dependency),
+        AtlasCommand::Doctor => doctor(output_mode).map_err(CliError::internal),
+        AtlasCommand::Version => {
+            print_version(log_flags.verbose > 0, output_mode).map_err(CliError::internal)
+        }
+        AtlasCommand::Completion { shell } => {
+            print_completion(shell);
+            Ok(())
+        }
+        AtlasCommand::PrintConfig { canonical } => {
+            print_config(canonical, output_mode).map_err(CliError::internal)
+        }
         AtlasCommand::Catalog { command } => match command {
             CatalogCommand::Validate { path } => {
                 artifact_validation::validate_catalog(path, output_mode).map_err(CliError::internal)
@@ -447,6 +478,27 @@ fn emit_plugin_metadata(machine_json: bool) -> Result<(), String> {
     Ok(())
 }
 
+fn print_version(verbose: bool, output_mode: OutputMode) -> Result<(), String> {
+    let payload = if verbose {
+        json!({
+            "plugin": {
+                "name": "bijux-atlas",
+                "version": env!("CARGO_PKG_VERSION"),
+                "build_hash": option_env!("BIJUX_BUILD_HASH").unwrap_or("dev"),
+                "rustc": option_env!("RUSTC_VERSION").unwrap_or("unknown")
+            },
+            "schemas": {
+                "plugin_metadata_schema_version": "v1",
+                "openapi_version": "v1"
+            }
+        })
+    } else {
+        json!({"name":"bijux-atlas","version": env!("CARGO_PKG_VERSION")})
+    };
+    helpers::emit_ok(output_mode, payload)?;
+    Ok(())
+}
+
 fn run_serve(log_flags: LogFlags, output_mode: OutputMode) -> Result<(), String> {
     if log_flags.trace {
         std::env::set_var("BIJUX_LOG_LEVEL", "trace");
@@ -482,11 +534,118 @@ fn run_serve(log_flags: LogFlags, output_mode: OutputMode) -> Result<(), String>
 
 fn plugin_metadata_payload() -> Value {
     json!({
+        "schema_version": "v1",
         "name": "bijux-atlas",
         "version": env!("CARGO_PKG_VERSION"),
+        "compatible_umbrella_min": UMBRELLA_MIN_VERSION,
+        "compatible_umbrella_max_exclusive": UMBRELLA_MAX_EXCLUSIVE_VERSION,
         "compatible_umbrella": ">=0.1.0,<0.2.0",
         "build_hash": option_env!("BIJUX_BUILD_HASH").unwrap_or("dev"),
     })
+}
+
+fn enforce_umbrella_compatibility(version: &str) -> Result<(), CliError> {
+    if !version_in_supported_range(version) {
+        return Err(CliError {
+            exit_code: bijux_atlas_core::ExitCode::Usage,
+            machine: MachineError::new(
+                "umbrella_incompatible",
+                "umbrella version is outside plugin compatibility range",
+            )
+            .with_detail("version", version)
+            .with_detail("min", UMBRELLA_MIN_VERSION)
+            .with_detail("max_exclusive", UMBRELLA_MAX_EXCLUSIVE_VERSION),
+        });
+    }
+    Ok(())
+}
+
+fn version_in_supported_range(version: &str) -> bool {
+    let parts: Vec<_> = version.split('.').collect();
+    if parts.len() < 2 {
+        return false;
+    }
+    matches!((parts[0], parts[1]), ("0", "1"))
+}
+
+fn print_config(canonical_out: bool, output_mode: OutputMode) -> Result<(), String> {
+    let payload = json!({
+        "workspace_config": resolve_bijux_config_path(ConfigPathScope::Workspace),
+        "user_config": resolve_bijux_config_path(ConfigPathScope::User),
+        "cache_dir": resolve_bijux_cache_dir(),
+        "env": {
+            "BIJUX_LOG_LEVEL": std::env::var("BIJUX_LOG_LEVEL").ok(),
+            "BIJUX_CACHE_DIR": std::env::var("BIJUX_CACHE_DIR").ok(),
+            "ATLAS_STORE_ROOT": std::env::var("ATLAS_STORE_ROOT").ok(),
+        }
+    });
+    if output_mode.json {
+        let text = if canonical_out {
+            String::from_utf8(canonical::stable_json_bytes(&payload).map_err(|e| e.to_string())?)
+                .map_err(|e| e.to_string())?
+        } else {
+            serde_json::to_string(&payload).map_err(|e| e.to_string())?
+        };
+        println!("{text}");
+        return Ok(());
+    }
+    let text = if canonical_out {
+        String::from_utf8(canonical::stable_json_bytes(&payload).map_err(|e| e.to_string())?)
+            .map_err(|e| e.to_string())?
+    } else {
+        serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
+    };
+    println!("{text}");
+    Ok(())
+}
+
+fn doctor(output_mode: OutputMode) -> Result<(), String> {
+    let mut checks = Vec::<Value>::new();
+
+    let cache_dir = resolve_bijux_cache_dir();
+    let cache_path = std::path::PathBuf::from(&cache_dir);
+    let cache_exists = cache_path.exists();
+    let cache_writable = if cache_exists {
+        fs::metadata(&cache_path)
+            .map(|m| !m.permissions().readonly())
+            .unwrap_or(false)
+    } else {
+        false
+    };
+    checks.push(json!({
+        "check":"cache_dir",
+        "path": cache_dir,
+        "ok": cache_exists && cache_writable
+    }));
+
+    let workspace_config = resolve_bijux_config_path(ConfigPathScope::Workspace);
+    let user_config = resolve_bijux_config_path(ConfigPathScope::User);
+    checks.push(json!({
+        "check":"config_paths",
+        "workspace_config": workspace_config,
+        "user_config": user_config,
+        "ok": true
+    }));
+
+    let store_root = std::env::var("ATLAS_STORE_ROOT").ok();
+    let store_ok = store_root
+        .as_ref()
+        .map(|p| std::path::Path::new(p).exists())
+        .unwrap_or(true);
+    checks.push(json!({
+        "check":"store_access",
+        "atlas_store_root": store_root,
+        "ok": store_ok
+    }));
+
+    let all_ok = checks
+        .iter()
+        .all(|c| c.get("ok").and_then(Value::as_bool).unwrap_or(false));
+    helpers::emit_ok(
+        output_mode,
+        json!({"command":"atlas doctor","status": if all_ok {"ok"} else {"degraded"}, "checks": checks}),
+    )?;
+    Ok(())
 }
 
 #[derive(Debug)]
