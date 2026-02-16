@@ -2,9 +2,11 @@
 
 ## Scope
 This checklist is the final go/no-go gate before a `bijux-atlas` production rollout.
+Use `docs/product/REFERENCE_GRADE_ACCEPTANCE_CHECKLIST.md` during PR review before this final gate.
 
 ## SLO and Incident Readiness
 - [ ] SLO targets are documented in `docs/observability/SLO.md`.
+- [ ] Canonical SLO target file is current (`docs/product/SLO_TARGETS.md`).
 - [ ] Error budget policy is approved and active (`docs/observability/error-budget-policy.md`).
 - [ ] Alert rules are deployed (`docs/observability/alert-rules.yaml`).
 - [ ] Runbooks are current:

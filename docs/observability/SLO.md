@@ -1,5 +1,8 @@
 # Bijux Atlas SLO
 
+Canonical targets are defined in `docs/product/SLO_TARGETS.md`.
+This file describes service-level interpretation and error-budget operations.
+
 ## Service Objectives
 - `v1/genes` p95 latency: <= 800 ms (steady read load)
 - `v1/genes/count` p95 latency: <= 300 ms
