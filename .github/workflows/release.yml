@@ -1,0 +1,88 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+env:
+  CARGO_TERM_COLOR: always
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/bijux-atlas
+
+jobs:
+  build-artifacts:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/release-artifacts
+      CARGO_TARGET_DIR: artifacts/isolates/release-artifacts/target
+      CARGO_HOME: artifacts/isolates/release-artifacts/cargo-home
+      TMPDIR: artifacts/isolates/release-artifacts/tmp
+      TMP: artifacts/isolates/release-artifacts/tmp
+      TEMP: artifacts/isolates/release-artifacts/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
+      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
+      - run: cargo build --locked --release --workspace --bins
+      - run: mkdir -p artifacts/release
+      - run: cp "$CARGO_TARGET_DIR/release/atlas-server" artifacts/release/
+      - run: cp "$CARGO_TARGET_DIR/release/atlas-cli" artifacts/release/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-binaries
+          path: artifacts/release
+
+  container:
+    runs-on: ubuntu-latest
+    needs: build-artifacts
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=tag
+            type=sha
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      - uses: anchore/sbom-action@v0
+        with:
+          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+          format: spdx-json
+          output-file: artifacts/sbom.spdx.json
+      - uses: sigstore/cosign-installer@v3
+      - run: cosign sign --yes ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: artifacts/sbom.spdx.json
+
+  chart-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+      - run: helm package charts/bijux-atlas --destination .cr-release-packages
+      - uses: helm/chart-releaser-action@v1.7.0
+        env:
+          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
