@@ -4,7 +4,7 @@ use rusqlite::{params, Connection};
 use std::fs;
 use std::path::Path;
 
-pub const SQLITE_SCHEMA_VERSION: i64 = 1;
+pub const SQLITE_SCHEMA_VERSION: i64 = 2;
 
 pub fn write_sqlite(path: &Path, genes: &[GeneRecord]) -> Result<(), IngestError> {
     if path.exists() {
@@ -13,22 +13,35 @@ pub fn write_sqlite(path: &Path, genes: &[GeneRecord]) -> Result<(), IngestError
     let mut conn = Connection::open(path).map_err(|e| IngestError(e.to_string()))?;
     conn.execute_batch(
         "
-        PRAGMA journal_mode=DELETE;
-        PRAGMA synchronous=FULL;
+        PRAGMA journal_mode=WAL;
+        PRAGMA synchronous=OFF;
+        PRAGMA locking_mode=EXCLUSIVE;
         PRAGMA temp_store=MEMORY;
         PRAGMA cache_size=-32000;
         PRAGMA page_size=4096;
+        PRAGMA mmap_size=268435456;
         CREATE TABLE gene_summary (
           id INTEGER PRIMARY KEY,
           gene_id TEXT NOT NULL,
           name TEXT NOT NULL,
+          name_normalized TEXT NOT NULL,
           biotype TEXT NOT NULL,
           seqid TEXT NOT NULL,
           start INTEGER NOT NULL,
           end INTEGER NOT NULL,
           transcript_count INTEGER NOT NULL,
           sequence_length INTEGER NOT NULL
-        );
+        ) WITHOUT ROWID;
+        CREATE TABLE atlas_meta (
+          k TEXT PRIMARY KEY,
+          v TEXT NOT NULL
+        ) WITHOUT ROWID;
+        CREATE TABLE dataset_stats (
+          dimension TEXT NOT NULL,
+          value TEXT NOT NULL,
+          gene_count INTEGER NOT NULL,
+          PRIMARY KEY (dimension, value)
+        ) WITHOUT ROWID;
         CREATE VIRTUAL TABLE gene_summary_rtree USING rtree(
           gene_rowid,
           start,
@@ -45,8 +58,8 @@ pub fn write_sqlite(path: &Path, genes: &[GeneRecord]) -> Result<(), IngestError
         let mut stmt = tx
             .prepare(
                 "INSERT INTO gene_summary (
-                  id, gene_id, name, biotype, seqid, start, end, transcript_count, sequence_length
-                 ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
+                  id, gene_id, name, name_normalized, biotype, seqid, start, end, transcript_count, sequence_length
+                 ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
             )
             .map_err(|e| IngestError(e.to_string()))?;
         let mut rtree_stmt = tx
@@ -59,6 +72,7 @@ pub fn write_sqlite(path: &Path, genes: &[GeneRecord]) -> Result<(), IngestError
                 rowid,
                 g.gene_id,
                 g.gene_name,
+                g.gene_name.to_ascii_lowercase(),
                 g.biotype,
                 g.seqid,
                 g.start as i64,
@@ -71,14 +85,53 @@ pub fn write_sqlite(path: &Path, genes: &[GeneRecord]) -> Result<(), IngestError
                 .execute(params![rowid, g.start as f64, g.end as f64])
                 .map_err(|e| IngestError(e.to_string()))?;
         }
+
+        tx.execute(
+            "INSERT INTO atlas_meta (k, v) VALUES ('schema_version', ?1)",
+            params![SQLITE_SCHEMA_VERSION.to_string()],
+        )
+        .map_err(|e| IngestError(e.to_string()))?;
+        tx.execute(
+            "INSERT INTO atlas_meta (k, v) VALUES ('ingest_journal_mode', 'WAL')",
+            [],
+        )
+        .map_err(|e| IngestError(e.to_string()))?;
+        tx.execute(
+            "INSERT INTO atlas_meta (k, v) VALUES ('ingest_locking_mode', 'EXCLUSIVE')",
+            [],
+        )
+        .map_err(|e| IngestError(e.to_string()))?;
+        tx.execute(
+            "INSERT INTO atlas_meta (k, v) VALUES ('ingest_page_size', '4096')",
+            [],
+        )
+        .map_err(|e| IngestError(e.to_string()))?;
+        tx.execute(
+            "INSERT INTO atlas_meta (k, v) VALUES ('ingest_mmap_size', '268435456')",
+            [],
+        )
+        .map_err(|e| IngestError(e.to_string()))?;
+
+        tx.execute_batch(
+            "
+            INSERT INTO dataset_stats (dimension, value, gene_count)
+            SELECT 'biotype', biotype, COUNT(*) FROM gene_summary GROUP BY biotype;
+            INSERT INTO dataset_stats (dimension, value, gene_count)
+            SELECT 'seqid', seqid, COUNT(*) FROM gene_summary GROUP BY seqid;
+            ",
+        )
+        .map_err(|e| IngestError(e.to_string()))?;
     }
 
     tx.execute_batch(
         "
         CREATE INDEX idx_gene_summary_gene_id ON gene_summary(gene_id);
         CREATE INDEX idx_gene_summary_name ON gene_summary(name);
+        CREATE INDEX idx_gene_summary_name_normalized ON gene_summary(name_normalized);
         CREATE INDEX idx_gene_summary_biotype ON gene_summary(biotype);
         CREATE INDEX idx_gene_summary_region ON gene_summary(seqid, start, end);
+        CREATE INDEX idx_gene_summary_cover_lookup ON gene_summary(gene_id, name, seqid, start, end, biotype, transcript_count, sequence_length);
+        CREATE INDEX idx_gene_summary_cover_region ON gene_summary(seqid, start, gene_id, end, name, biotype, transcript_count, sequence_length);
         ",
     )
     .map_err(|e| IngestError(e.to_string()))?;
@@ -92,7 +145,7 @@ pub fn write_sqlite(path: &Path, genes: &[GeneRecord]) -> Result<(), IngestError
 pub fn explain_plan_for_region_query(path: &Path) -> Result<Vec<String>, IngestError> {
     let conn = Connection::open(path).map_err(|e| IngestError(e.to_string()))?;
     let mut stmt = conn
-        .prepare("EXPLAIN QUERY PLAN SELECT gene_id FROM gene_summary WHERE seqid=?1 AND start<=?2 AND end>=?3 ORDER BY seqid,start,gene_id LIMIT 10")
+        .prepare("EXPLAIN QUERY PLAN SELECT g.gene_id FROM gene_summary g JOIN gene_summary_rtree r ON r.gene_rowid = g.id WHERE g.seqid=?1 AND r.start<=?2 AND r.end>=?3 ORDER BY g.seqid,g.start,g.gene_id LIMIT 10")
         .map_err(|e| IngestError(e.to_string()))?;
     let rows = stmt
         .query_map(params!["chr1", 1000_i64, 900_i64], |row| {

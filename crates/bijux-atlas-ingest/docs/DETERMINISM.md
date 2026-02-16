@@ -5,6 +5,8 @@ Rules:
 - Stable JSON serialization for manifests/reports.
 - Stable hashing based only on file bytes.
 - No wall-clock timestamps in ingest outputs.
+- Build-time sqlite profile is pinned: `journal_mode=WAL`, `synchronous=OFF`, `locking_mode=EXCLUSIVE`, `temp_store=MEMORY`, fixed `page_size`, fixed `mmap_size`.
+- Build parameters are written to `atlas_meta` for deterministic introspection.
 
 Concurrency:
 - If parallelism is used, final aggregation and output ordering must remain deterministic.

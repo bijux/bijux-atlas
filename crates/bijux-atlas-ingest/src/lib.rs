@@ -210,6 +210,29 @@ mod tests {
     }
 
     #[test]
+    fn ingest_sqlite_meta_includes_build_pragmas() {
+        let root = tempdir().expect("tempdir");
+        let run = ingest_dataset(&opts(root.path(), StrictnessMode::Strict)).expect("ingest");
+        let conn = rusqlite::Connection::open(run.sqlite_path).expect("open sqlite");
+        let schema_version: String = conn
+            .query_row(
+                "SELECT v FROM atlas_meta WHERE k='schema_version'",
+                [],
+                |r| r.get(0),
+            )
+            .expect("schema_version");
+        let journal_mode: String = conn
+            .query_row(
+                "SELECT v FROM atlas_meta WHERE k='ingest_journal_mode'",
+                [],
+                |r| r.get(0),
+            )
+            .expect("journal mode");
+        assert_eq!(schema_version, "2");
+        assert_eq!(journal_mode, "WAL");
+    }
+
+    #[test]
     fn fixture_matrix_edgecases_runs_leniently() {
         let dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/edgecases");
         let mut count = 0usize;
