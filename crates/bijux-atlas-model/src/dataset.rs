@@ -144,17 +144,14 @@ pub enum DatasetSelector {
     Explicit(DatasetId),
 }
 
-#[must_use]
 pub fn normalize_species(input: &str) -> Result<String, ValidationError> {
     Species::parse(input).map(Species::into_inner)
 }
 
-#[must_use]
 pub fn normalize_assembly(input: &str) -> Result<String, ValidationError> {
     Assembly::parse(input).map(Assembly::into_inner)
 }
 
-#[must_use]
 pub fn normalize_release(input: &str) -> Result<String, ValidationError> {
     Release::parse(input).map(Release::into_inner)
 }

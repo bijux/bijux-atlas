@@ -82,13 +82,7 @@ pub fn build_sql(
 
     match order_mode {
         OrderMode::Region => sql.push_str(" ORDER BY g.seqid ASC, g.start ASC, g.gene_id ASC"),
-        OrderMode::GeneId => {
-            if req.filter.name.is_some() || req.filter.biotype.is_some() {
-                sql.push_str(" ORDER BY g.gene_id ASC");
-            } else {
-                sql.push_str(" ORDER BY g.gene_id ASC");
-            }
-        }
+        OrderMode::GeneId => sql.push_str(" ORDER BY g.gene_id ASC"),
     }
     sql.push_str(" LIMIT ?");
 
@@ -161,7 +155,6 @@ pub fn order_mode_for(req: &GeneQueryRequest) -> OrderMode {
     }
 }
 
-#[must_use]
 pub fn parse_row_from_sql(
     row: &rusqlite::Row<'_>,
     fields: &GeneFields,

@@ -13,7 +13,7 @@ use bijux_atlas_model::{
 };
 use extract::extract_gene_rows;
 use gff3::parse_gff3_records;
-use manifest::build_and_write_manifest_and_reports;
+use manifest::{build_and_write_manifest_and_reports, BuildManifestArgs};
 use sqlite::{explain_plan_for_region_query, write_sqlite};
 use std::fmt::{Display, Formatter};
 use std::fs;
@@ -93,17 +93,17 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
     fs::copy(&opts.fai_path, &paths.fai).map_err(|e| IngestError(e.to_string()))?;
 
     write_sqlite(&paths.sqlite, &extracted.gene_rows)?;
-    let built = build_and_write_manifest_and_reports(
-        &opts.output_root,
-        &opts.dataset,
-        &paths.gff3,
-        &paths.fasta,
-        &paths.fai,
-        &paths.sqlite,
-        &paths.manifest,
-        &paths.anomaly_report,
-        &extracted,
-    )?;
+    let built = build_and_write_manifest_and_reports(BuildManifestArgs {
+        output_root: &opts.output_root,
+        dataset: &opts.dataset,
+        gff3_path: &paths.gff3,
+        fasta_path: &paths.fasta,
+        fai_path: &paths.fai,
+        sqlite_path: &paths.sqlite,
+        manifest_path: &paths.manifest,
+        anomaly_path: &paths.anomaly_report,
+        extract: &extracted,
+    })?;
 
     Ok(IngestResult {
         manifest_path: paths.manifest,
@@ -237,7 +237,10 @@ mod tests {
             count += 1;
         }
         assert!(count >= 10, "expected edgecase fixture matrix coverage");
-        assert!(succeeded >= 6, "expected most edgecases to ingest successfully");
+        assert!(
+            succeeded >= 6,
+            "expected most edgecases to ingest successfully"
+        );
     }
 
     #[test]

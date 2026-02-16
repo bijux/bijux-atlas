@@ -16,17 +16,32 @@ pub struct BuiltManifest {
     pub qc_report_path: PathBuf,
 }
 
+pub struct BuildManifestArgs<'a> {
+    pub output_root: &'a Path,
+    pub dataset: &'a DatasetId,
+    pub gff3_path: &'a Path,
+    pub fasta_path: &'a Path,
+    pub fai_path: &'a Path,
+    pub sqlite_path: &'a Path,
+    pub manifest_path: &'a Path,
+    pub anomaly_path: &'a Path,
+    pub extract: &'a ExtractResult,
+}
+
 pub fn build_and_write_manifest_and_reports(
-    output_root: &Path,
-    dataset: &DatasetId,
-    gff3_path: &Path,
-    fasta_path: &Path,
-    fai_path: &Path,
-    sqlite_path: &Path,
-    manifest_path: &Path,
-    anomaly_path: &Path,
-    extract: &ExtractResult,
+    args: BuildManifestArgs<'_>,
 ) -> Result<BuiltManifest, IngestError> {
+    let BuildManifestArgs {
+        output_root,
+        dataset,
+        gff3_path,
+        fasta_path,
+        fai_path,
+        sqlite_path,
+        manifest_path,
+        anomaly_path,
+        extract,
+    } = args;
     let mut total_transcripts = 0_u64;
     let mut contigs = BTreeSet::new();
     for g in &extract.gene_rows {
