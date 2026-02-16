@@ -79,6 +79,21 @@ pub fn validate_policy_config(cfg: &PolicyConfig) -> Result<(), PolicyValidation
             "query_budget.max_region_estimated_rows must be > 0".to_string(),
         ));
     }
+    if cfg.query_budget.max_prefix_cost_units == 0 {
+        return Err(PolicyValidationError(
+            "query_budget.max_prefix_cost_units must be > 0".to_string(),
+        ));
+    }
+    if cfg.query_budget.heavy_projection_limit == 0 {
+        return Err(PolicyValidationError(
+            "query_budget.heavy_projection_limit must be > 0".to_string(),
+        ));
+    }
+    if cfg.query_budget.max_serialization_bytes == 0 {
+        return Err(PolicyValidationError(
+            "query_budget.max_serialization_bytes must be > 0".to_string(),
+        ));
+    }
     if cfg.query_budget.max_prefix_length == 0 {
         return Err(PolicyValidationError(
             "query_budget.max_prefix_length must be > 0".to_string(),

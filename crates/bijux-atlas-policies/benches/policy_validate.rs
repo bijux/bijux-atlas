@@ -13,6 +13,9 @@ fn bench_policy_validate(c: &mut Criterion) {
             max_limit: 100,
             max_region_span: 10_000_000,
             max_region_estimated_rows: 50_000,
+            max_prefix_cost_units: 80_000,
+            heavy_projection_limit: 200,
+            max_serialization_bytes: 524_288,
             max_prefix_length: 128,
         },
         cache_budget: CacheBudget {

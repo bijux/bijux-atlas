@@ -62,6 +62,9 @@ fn valid_policy() -> PolicyConfig {
             max_limit: 100,
             max_region_span: 10_000_000,
             max_region_estimated_rows: 50_000,
+            max_prefix_cost_units: 80_000,
+            heavy_projection_limit: 200,
+            max_serialization_bytes: 524_288,
             max_prefix_length: 128,
         },
         cache_budget: CacheBudget {
@@ -221,6 +224,18 @@ fn policy_fields_are_table_validated() {
     let mut bad = valid_policy();
     bad.query_budget.max_region_estimated_rows = 0;
     cases.push(("query_budget.max_region_estimated_rows", bad));
+
+    let mut bad = valid_policy();
+    bad.query_budget.max_prefix_cost_units = 0;
+    cases.push(("query_budget.max_prefix_cost_units", bad));
+
+    let mut bad = valid_policy();
+    bad.query_budget.heavy_projection_limit = 0;
+    cases.push(("query_budget.heavy_projection_limit", bad));
+
+    let mut bad = valid_policy();
+    bad.query_budget.max_serialization_bytes = 0;
+    cases.push(("query_budget.max_serialization_bytes", bad));
 
     let mut bad = valid_policy();
     bad.cache_budget.max_disk_bytes = 0;

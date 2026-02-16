@@ -19,11 +19,14 @@
     "network_in_unit_tests": { "type": "boolean" },
     "query_budget": {
       "type": "object",
-      "required": ["max_limit", "max_region_span", "max_region_estimated_rows", "max_prefix_length"],
+      "required": ["max_limit", "max_region_span", "max_region_estimated_rows", "max_prefix_cost_units", "heavy_projection_limit", "max_serialization_bytes", "max_prefix_length"],
       "properties": {
         "max_limit": { "type": "integer", "minimum": 1 },
         "max_region_span": { "type": "integer", "minimum": 1 },
         "max_region_estimated_rows": { "type": "integer", "minimum": 1 },
+        "max_prefix_cost_units": { "type": "integer", "minimum": 1 },
+        "heavy_projection_limit": { "type": "integer", "minimum": 1 },
+        "max_serialization_bytes": { "type": "integer", "minimum": 1 },
         "max_prefix_length": { "type": "integer", "minimum": 1 }
       },
       "additionalProperties": false

@@ -20,6 +20,9 @@ pub struct QueryBudget {
     pub max_limit: u32,
     pub max_region_span: u64,
     pub max_region_estimated_rows: u64,
+    pub max_prefix_cost_units: u64,
+    pub heavy_projection_limit: u32,
+    pub max_serialization_bytes: u64,
     pub max_prefix_length: u32,
 }
 
