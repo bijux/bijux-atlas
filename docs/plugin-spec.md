@@ -56,6 +56,11 @@ All Bijux plugins SHOULD support these global flags:
 - `--verbose`: increase human-readable detail.
 - `--trace`: maximum diagnostic detail (intended for debugging).
 
+Shared environment variables:
+
+- `BIJUX_LOG_LEVEL`: logging verbosity override (`error|warn|info|debug|trace`).
+- `BIJUX_CACHE_DIR`: shared cache directory for plugin-managed caches.
+
 ### `--json` Convention
 
 When `--json` is enabled:
@@ -63,6 +68,75 @@ When `--json` is enabled:
 - success output should be structured JSON.
 - error output should be structured JSON on stderr where possible.
 - field names should remain stable across patch/minor versions.
+
+## Shared Config Path Resolution
+
+All plugins MUST resolve config locations in this order:
+
+1. Workspace config: `./.bijux/config.toml`.
+2. User config:
+   - `$XDG_CONFIG_HOME/bijux/config.toml` when `XDG_CONFIG_HOME` is set.
+   - Otherwise `$HOME/.config/bijux/config.toml` when `HOME` is set.
+   - Fallback `./.bijux/config.toml`.
+3. Cache directory:
+   - `BIJUX_CACHE_DIR` when set and non-empty.
+   - `$XDG_CACHE_HOME/bijux` when `XDG_CACHE_HOME` is set.
+   - Otherwise `$HOME/.cache/bijux`.
+   - Fallback `./.bijux/cache`.
+
+## Completion Contract
+
+- Plugins SHOULD expose shell completion generation via a `completion` subcommand.
+- Canonical form:
+
+```bash
+bijux-<subsystem> completion <shell>
+```
+
+- Supported shells SHOULD include at least `bash`, `zsh`, and `fish`.
+- Completion output is always script content on stdout and MUST be side-effect free.
+
+## Help Formatting Standard
+
+- Help output MUST use a consistent clap help template across plugins.
+- Sections order MUST be:
+  1. Name/version
+  2. About
+  3. Usage
+  4. Options
+  5. Commands
+  6. After-help notes (including environment variable references)
+
+## Subcommand Namespace Rule
+
+- Plugin subcommands MUST be namespaced under the plugin command and MUST NOT rely on umbrella-owned top-level verbs.
+- Reserved umbrella verbs include: `plugin`, `plugins`, `doctor`, `config`.
+- Example: `bijux-atlas dataset validate` is valid; exposing umbrella verbs in plugin command space is invalid.
+
+## Error Output Schema (Machine Contract)
+
+When `--json` is enabled and a command fails, stderr MUST emit stable JSON with this schema:
+
+```json
+{
+  "code": "machine_stable_error_code",
+  "message": "human readable summary",
+  "details": {
+    "key": "stable string value"
+  }
+}
+```
+
+Rules:
+
+- `code` MUST be stable across patch/minor versions.
+- Unknown fields MUST NOT be emitted.
+- `details` values MUST be scalar strings for compatibility.
+- Exit code MUST still follow the shared process exit code contract.
+
+## Plugin Conformance Checklist
+
+Conformance checklist lives at `docs/plugin-conformance-checklist.md` and MUST pass before a plugin is considered Bijux-compatible.
 
 ## Compatibility Notes
 
