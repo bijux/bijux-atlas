@@ -1,0 +1,54 @@
+use bijux_atlas_model::{
+    ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
+    OptionalFieldPolicy,
+};
+
+#[test]
+fn manifest_rejects_unknown_fields() {
+    let raw = r#"{
+      \"manifest_version\":\"1\",
+      \"db_schema_version\":\"1\",
+      \"dataset\":{\"release\":\"110\",\"species\":\"homo_sapiens\",\"assembly\":\"GRCh38\"},
+      \"checksums\":{\"gff3_sha256\":\"a\",\"fasta_sha256\":\"b\",\"fai_sha256\":\"c\",\"sqlite_sha256\":\"d\"},
+      \"stats\":{\"gene_count\":1,\"transcript_count\":1,\"contig_count\":1},
+      \"extra\":\"nope\"
+    }"#;
+    assert!(serde_json::from_str::<ArtifactManifest>(raw).is_err());
+}
+
+#[test]
+fn catalog_rejects_unknown_fields() {
+    let raw = r#"{\"datasets\":[],\"extra\":1}"#;
+    assert!(serde_json::from_str::<Catalog>(raw).is_err());
+}
+
+#[test]
+fn round_trip_public_manifest_and_catalog_types() {
+    let manifest = ArtifactManifest::new(
+        "1".to_string(),
+        "1".to_string(),
+        DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset"),
+        ArtifactChecksums::new("a".repeat(64), "b".repeat(64), "c".repeat(64), "d".repeat(64)),
+        ManifestStats::new(1, 2, 3),
+    );
+
+    let manifest_json = serde_json::to_string(&manifest).expect("manifest encode");
+    let decoded_manifest: ArtifactManifest =
+        serde_json::from_str(&manifest_json).expect("manifest decode");
+    assert_eq!(manifest, decoded_manifest);
+
+    let catalog = Catalog::new(vec![CatalogEntry::new(
+        DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset"),
+        "x/manifest.json".to_string(),
+        "x/gene_summary.sqlite".to_string(),
+    )]);
+    let catalog_json = serde_json::to_string(&catalog).expect("catalog encode");
+    let decoded_catalog: Catalog = serde_json::from_str(&catalog_json).expect("catalog decode");
+    assert_eq!(catalog, decoded_catalog);
+
+    let policy = OptionalFieldPolicy::NullWhenMissing;
+    let policy_json = serde_json::to_string(&policy).expect("policy encode");
+    let decoded_policy: OptionalFieldPolicy =
+        serde_json::from_str(&policy_json).expect("policy decode");
+    assert_eq!(policy, decoded_policy);
+}
