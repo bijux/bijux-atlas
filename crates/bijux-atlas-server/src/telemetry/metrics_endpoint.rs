@@ -283,6 +283,61 @@ bijux_store_breaker_open{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n"
         METRIC_DATASET_ALL,
         store_breaker_open
     ));
+    if let Some(redis) = &state.redis_backend {
+        let redis_metrics = redis.metrics_snapshot().await;
+        body.push_str(&format!(
+            "bijux_redis_cache_hits_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_redis_cache_misses_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_redis_read_fallback_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_redis_write_fallback_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_redis_rate_limit_fallback_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_redis_breaker_open_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_redis_breaker_reject_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_redis_cache_key_reject_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_redis_cache_cardinality_reject_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_redis_cache_tracked_keys{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
+            METRIC_SUBSYSTEM,
+            METRIC_VERSION,
+            METRIC_DATASET_ALL,
+            redis_metrics.hits,
+            METRIC_SUBSYSTEM,
+            METRIC_VERSION,
+            METRIC_DATASET_ALL,
+            redis_metrics.misses,
+            METRIC_SUBSYSTEM,
+            METRIC_VERSION,
+            METRIC_DATASET_ALL,
+            redis_metrics.read_fallbacks,
+            METRIC_SUBSYSTEM,
+            METRIC_VERSION,
+            METRIC_DATASET_ALL,
+            redis_metrics.write_fallbacks,
+            METRIC_SUBSYSTEM,
+            METRIC_VERSION,
+            METRIC_DATASET_ALL,
+            redis_metrics.rate_limit_fallbacks,
+            METRIC_SUBSYSTEM,
+            METRIC_VERSION,
+            METRIC_DATASET_ALL,
+            redis_metrics.breaker_open_total,
+            METRIC_SUBSYSTEM,
+            METRIC_VERSION,
+            METRIC_DATASET_ALL,
+            redis_metrics.breaker_reject_total,
+            METRIC_SUBSYSTEM,
+            METRIC_VERSION,
+            METRIC_DATASET_ALL,
+            redis_metrics.key_reject_total,
+            METRIC_SUBSYSTEM,
+            METRIC_VERSION,
+            METRIC_DATASET_ALL,
+            redis_metrics.cardinality_reject_total,
+            METRIC_SUBSYSTEM,
+            METRIC_VERSION,
+            METRIC_DATASET_ALL,
+            redis_metrics.tracked_keys
+        ));
+    }
 
     let req_counts = state.metrics.counts.lock().await.clone();
     let req_exemplars = state.metrics.exemplars.lock().await.clone();

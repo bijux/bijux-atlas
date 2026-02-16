@@ -379,6 +379,7 @@ pub(crate) async fn genes_handler(
     };
 
     let normalized = super::handlers::normalize_query(&params);
+    let mut redis_fill_guard = None;
     if state.api.enable_redis_response_cache {
         if let (Some(redis), Some(cache_key)) = (&state.redis_backend, &redis_cache_key) {
             match redis.get_gene_cache(cache_key).await {
@@ -427,7 +428,72 @@ pub(crate) async fn genes_handler(
                         .await;
                     return super::handlers::with_request_id(resp, &request_id);
                 }
-                Ok(None) => {}
+                Ok(None) => {
+                    let guard = redis.acquire_fill_lock(cache_key).await;
+                    match redis.get_gene_cache(cache_key).await {
+                        Ok(Some(cached_bytes)) => {
+                            let etag = format!(
+                                "\"{}\"",
+                                sha256_hex(
+                                    format!(
+                                        "{normalized}|{}",
+                                        String::from_utf8_lossy(&cached_bytes)
+                                    )
+                                    .as_bytes(),
+                                )
+                            );
+                            if super::handlers::if_none_match(&headers).as_deref()
+                                == Some(etag.as_str())
+                            {
+                                let mut resp = StatusCode::NOT_MODIFIED.into_response();
+                                super::handlers::put_cache_headers(
+                                    resp.headers_mut(),
+                                    state.api.immutable_gene_ttl,
+                                    &etag,
+                                );
+                                state
+                                    .metrics
+                                    .observe_request(
+                                        "/v1/genes",
+                                        StatusCode::NOT_MODIFIED,
+                                        started.elapsed(),
+                                    )
+                                    .await;
+                                return super::handlers::with_request_id(resp, &request_id);
+                            }
+                            let mut resp = Response::builder()
+                                .status(StatusCode::OK)
+                                .body(Body::from(cached_bytes))
+                                .unwrap_or_else(|_| {
+                                    StatusCode::INTERNAL_SERVER_ERROR.into_response()
+                                });
+                            resp.headers_mut().insert(
+                                "content-type",
+                                HeaderValue::from_static("application/json"),
+                            );
+                            super::handlers::put_cache_headers(
+                                resp.headers_mut(),
+                                state.api.immutable_gene_ttl,
+                                &etag,
+                            );
+                            if let Ok(v) = HeaderValue::from_str("redis-hit") {
+                                resp.headers_mut().insert("x-atlas-cache", v);
+                            }
+                            state
+                                .metrics
+                                .observe_request("/v1/genes", StatusCode::OK, started.elapsed())
+                                .await;
+                            return super::handlers::with_request_id(resp, &request_id);
+                        }
+                        Ok(None) => {
+                            redis_fill_guard = Some(guard);
+                        }
+                        Err(e) => {
+                            warn!("redis cache read fallback after fill-lock: {e}");
+                            redis_fill_guard = Some(guard);
+                        }
+                    }
+                }
                 Err(e) => warn!("redis cache read fallback: {e}"),
             }
         }
@@ -768,6 +834,7 @@ pub(crate) async fn genes_handler(
             }
         }
     }
+    drop(redis_fill_guard);
 
     let (response_bytes, content_encoding) =
         match super::handlers::maybe_compress_response(&headers, &state, bytes) {
