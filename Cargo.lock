@@ -240,6 +240,7 @@ name = "bijux-atlas-core"
 version = "0.1.0"
 dependencies = [
  "base64",
+ "criterion",
  "serde",
  "serde_json",
  "sha2",
