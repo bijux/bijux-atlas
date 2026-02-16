@@ -3,6 +3,7 @@ use bijux_atlas_query::{
 };
 use criterion::{criterion_group, criterion_main, Criterion};
 use rusqlite::Connection;
+use std::time::{Duration, Instant};
 
 fn setup_db() -> Connection {
     let conn = Connection::open_in_memory().expect("open memory db");
@@ -28,9 +29,20 @@ fn setup_db() -> Connection {
     )
     .expect("schema");
 
-    for i in 1..=5000_i64 {
-        let seqid = if i % 2 == 0 { "chr1" } else { "chr2" };
-        let name = if i % 3 == 0 { "BRCA" } else { "GENE" };
+    for i in 1..=20_000_i64 {
+        let seqid = match i % 4 {
+            0 => "chr1",
+            1 => "chr2",
+            2 => "1",
+            _ => "X",
+        };
+        let name_prefix = if i % 3 == 0 {
+            "BRCA"
+        } else if i % 7 == 0 {
+            "GENE_"
+        } else {
+            "GENE"
+        };
         let biotype = if i % 5 == 0 {
             "lncRNA"
         } else {
@@ -44,12 +56,12 @@ fn setup_db() -> Connection {
             rusqlite::params![
                 i,
                 format!("gene{i}"),
-                format!("{name}{i}"),
+                format!("{name_prefix}{i}"),
                 biotype,
                 seqid,
                 start,
                 end,
-                1,
+                (i % 4) + 1,
                 end - start + 1
             ],
         )
@@ -63,45 +75,222 @@ fn setup_db() -> Connection {
     conn
 }
 
-fn bench_query_patterns(c: &mut Criterion) {
-    let conn = setup_db();
-    let limits = QueryLimits::default();
-    let secret = b"bench-secret";
+fn run_pattern(conn: &Connection, req: &GeneQueryRequest) {
+    let _ = query_genes(conn, req, &QueryLimits::default(), b"bench-secret").expect("query");
+}
 
-    c.bench_function("query_biotype_page", |b| {
-        b.iter(|| {
-            let req = GeneQueryRequest {
-                fields: GeneFields::default(),
-                filter: GeneFilter {
-                    biotype: Some("protein_coding".to_string()),
+fn req(filter: GeneFilter, limit: usize, fields: GeneFields) -> GeneQueryRequest {
+    GeneQueryRequest {
+        fields,
+        filter,
+        limit,
+        cursor: None,
+        allow_full_scan: false,
+    }
+}
+
+fn maybe_enforce_baseline(conn: &Connection) {
+    if std::env::var("ATLAS_QUERY_BENCH_ENFORCE").as_deref() != Ok("1") {
+        return;
+    }
+
+    let baseline_cases: [(&str, GeneQueryRequest, Duration); 3] = [
+        (
+            "gene_id_exact",
+            req(
+                GeneFilter {
+                    gene_id: Some("gene1234".to_string()),
                     ..Default::default()
                 },
-                limit: 100,
-                cursor: None,
-                allow_full_scan: false,
-            };
-            let _ = query_genes(&conn, &req, &limits, secret).expect("query");
-        })
-    });
-
-    c.bench_function("query_region_page", |b| {
-        b.iter(|| {
-            let req = GeneQueryRequest {
-                fields: GeneFields::default(),
-                filter: GeneFilter {
+                1,
+                GeneFields::default(),
+            ),
+            Duration::from_millis(20),
+        ),
+        (
+            "name_prefix",
+            req(
+                GeneFilter {
+                    name_prefix: Some("BR".to_string()),
+                    ..Default::default()
+                },
+                100,
+                GeneFields::default(),
+            ),
+            Duration::from_millis(40),
+        ),
+        (
+            "region_window",
+            req(
+                GeneFilter {
                     region: Some(RegionFilter {
                         seqid: "chr1".to_string(),
-                        start: 100,
-                        end: 20000,
+                        start: 10_000,
+                        end: 200_000,
                     }),
                     ..Default::default()
                 },
-                limit: 100,
-                cursor: None,
-                allow_full_scan: false,
-            };
-            let _ = query_genes(&conn, &req, &limits, secret).expect("query");
-        })
+                100,
+                GeneFields::default(),
+            ),
+            Duration::from_millis(50),
+        ),
+    ];
+
+    for (name, request, max) in baseline_cases {
+        let started = Instant::now();
+        run_pattern(conn, &request);
+        let elapsed = started.elapsed();
+        assert!(
+            elapsed <= max,
+            "baseline regression for {name}: elapsed={elapsed:?}, max={max:?}"
+        );
+    }
+}
+
+fn bench_query_patterns(c: &mut Criterion) {
+    let conn = setup_db();
+    maybe_enforce_baseline(&conn);
+
+    c.bench_function("query_gene_id_exact", |b| {
+        let request = req(
+            GeneFilter {
+                gene_id: Some("gene1234".to_string()),
+                ..Default::default()
+            },
+            1,
+            GeneFields::default(),
+        );
+        b.iter(|| run_pattern(&conn, &request));
+    });
+
+    c.bench_function("query_name_exact", |b| {
+        let request = req(
+            GeneFilter {
+                name: Some("BRCA3000".to_string()),
+                ..Default::default()
+            },
+            20,
+            GeneFields::default(),
+        );
+        b.iter(|| run_pattern(&conn, &request));
+    });
+
+    c.bench_function("query_name_prefix_short", |b| {
+        let request = req(
+            GeneFilter {
+                name_prefix: Some("BR".to_string()),
+                ..Default::default()
+            },
+            50,
+            GeneFields::default(),
+        );
+        b.iter(|| run_pattern(&conn, &request));
+    });
+
+    c.bench_function("query_name_prefix_underscore", |b| {
+        let request = req(
+            GeneFilter {
+                name_prefix: Some("GENE_".to_string()),
+                ..Default::default()
+            },
+            50,
+            GeneFields::default(),
+        );
+        b.iter(|| run_pattern(&conn, &request));
+    });
+
+    c.bench_function("query_biotype", |b| {
+        let request = req(
+            GeneFilter {
+                biotype: Some("protein_coding".to_string()),
+                ..Default::default()
+            },
+            100,
+            GeneFields::default(),
+        );
+        b.iter(|| run_pattern(&conn, &request));
+    });
+
+    c.bench_function("query_region_small", |b| {
+        let request = req(
+            GeneFilter {
+                region: Some(RegionFilter {
+                    seqid: "chr1".to_string(),
+                    start: 10_000,
+                    end: 40_000,
+                }),
+                ..Default::default()
+            },
+            100,
+            GeneFields::default(),
+        );
+        b.iter(|| run_pattern(&conn, &request));
+    });
+
+    c.bench_function("query_region_large", |b| {
+        let request = req(
+            GeneFilter {
+                region: Some(RegionFilter {
+                    seqid: "chr1".to_string(),
+                    start: 10_000,
+                    end: 200_000,
+                }),
+                ..Default::default()
+            },
+            100,
+            GeneFields::default(),
+        );
+        b.iter(|| run_pattern(&conn, &request));
+    });
+
+    c.bench_function("query_projection_minimal", |b| {
+        let request = req(
+            GeneFilter {
+                biotype: Some("lncRNA".to_string()),
+                ..Default::default()
+            },
+            100,
+            GeneFields {
+                gene_id: true,
+                name: false,
+                coords: false,
+                biotype: false,
+                transcript_count: false,
+                sequence_length: false,
+            },
+        );
+        b.iter(|| run_pattern(&conn, &request));
+    });
+
+    c.bench_function("query_projection_full", |b| {
+        let request = req(
+            GeneFilter {
+                biotype: Some("lncRNA".to_string()),
+                ..Default::default()
+            },
+            100,
+            GeneFields::default(),
+        );
+        b.iter(|| run_pattern(&conn, &request));
+    });
+
+    c.bench_function("query_pagination_second_page", |b| {
+        let first = req(
+            GeneFilter {
+                biotype: Some("protein_coding".to_string()),
+                ..Default::default()
+            },
+            25,
+            GeneFields::default(),
+        );
+        let first_resp = query_genes(&conn, &first, &QueryLimits::default(), b"bench-secret")
+            .expect("first page");
+        let second = GeneQueryRequest {
+            cursor: first_resp.next_cursor,
+            ..first
+        };
+        b.iter(|| run_pattern(&conn, &second));
     });
 }
 
