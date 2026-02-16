@@ -1,10 +1,19 @@
 # bijux-atlas-policies
 
-Policy enforcement crate for workspace structural constraints.
+## Docs index
+- [docs/INDEX.md](docs/INDEX.md)
 
-Current enforced constraints:
+## Public API
+- [docs/PUBLIC_API.md](docs/PUBLIC_API.md)
 
-- max LOC per Rust file
-- max path depth for Rust files under `crates/`
-- max Rust files per directory
-- max module files per directory
+## Effects & boundaries
+- [docs/effects-and-boundaries.md](../../docs/effects-and-boundaries.md)
+
+## Telemetry
+- [docs/ecosystem/metrics-conventions.md](../../docs/ecosystem/metrics-conventions.md)
+
+## Tests
+- [tests/](tests/)
+
+## Benches
+- N/A (no benches in this crate)

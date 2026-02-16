@@ -1,3 +1,19 @@
 # bijux-atlas-query
 
-Purpose and scope for this crate are defined here.
+## Docs index
+- [docs/INDEX.md](docs/INDEX.md)
+
+## Public API
+- [docs/PUBLIC_API.md](docs/PUBLIC_API.md)
+
+## Effects & boundaries
+- [docs/effects-and-boundaries.md](../../docs/effects-and-boundaries.md)
+
+## Telemetry
+- [docs/ecosystem/metrics-conventions.md](../../docs/ecosystem/metrics-conventions.md)
+
+## Tests
+- [tests/](tests/)
+
+## Benches
+- [benches/](benches/)

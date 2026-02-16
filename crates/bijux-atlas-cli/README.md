@@ -1,20 +1,19 @@
 # bijux-atlas-cli
 
-Plugin-facing CLI for atlas operations.
+## Docs index
+- [docs/INDEX.md](docs/INDEX.md)
 
-## Canonical Binary
+## Public API
+- [docs/PUBLIC_API.md](docs/PUBLIC_API.md)
 
-- `bijux-atlas`
+## Effects & boundaries
+- [docs/effects-and-boundaries.md](../../docs/effects-and-boundaries.md)
 
-## Command Model
+## Telemetry
+- [docs/ecosystem/metrics-conventions.md](../../docs/ecosystem/metrics-conventions.md)
 
-- `bijux-atlas atlas <subcommand>`: canonical atlas namespace command path.
-- `bijux-atlas --bijux-plugin-metadata`: plugin handshake.
-- `bijux-atlas serve`: container compatibility entrypoint that starts `atlas-server`.
+## Tests
+- [tests/](tests/)
 
-## Standard Flags
-
-- `--json`
-- `--quiet`
-- `--verbose`
-- `--trace`
+## Benches
+- N/A (no benches in this crate)
