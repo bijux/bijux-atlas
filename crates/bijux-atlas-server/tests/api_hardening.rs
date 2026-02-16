@@ -100,6 +100,16 @@ async fn error_contract_and_etag_behaviors() {
     let addr = listener.local_addr().expect("local addr");
     tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
 
+    let (status, _, body) = send_raw(addr, "/v1/version", &[]).await;
+    assert_eq!(status, 200);
+    let json: Value = serde_json::from_str(&body).expect("version json");
+    assert_eq!(
+        json.get("plugin")
+            .and_then(|p| p.get("name"))
+            .and_then(Value::as_str),
+        Some("bijux-atlas")
+    );
+
     let (status, _, body) = send_raw(
         addr,
         "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&fields=nope",

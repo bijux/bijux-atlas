@@ -834,6 +834,7 @@ pub fn build_router(state: AppState) -> Router {
         .route("/healthz", get(healthz_handler))
         .route("/readyz", get(readyz_handler))
         .route("/metrics", get(metrics_handler))
+        .route("/v1/version", get(version_handler))
         .route("/v1/datasets", get(datasets_handler))
         .route("/v1/genes", get(genes_handler))
         .route("/v1/genes/count", get(genes_count_handler))
@@ -919,6 +920,31 @@ async fn healthz_handler(State(state): State<AppState>) -> impl IntoResponse {
         )
         .await;
     with_request_id(resp, &request_id)
+}
+
+async fn version_handler(State(state): State<AppState>) -> impl IntoResponse {
+    let request_id = make_request_id(&state);
+    let started = Instant::now();
+    let payload = json!({
+        "plugin": {
+            "name": "bijux-atlas",
+            "version": env!("CARGO_PKG_VERSION"),
+            "compatible_umbrella": ">=0.1.0,<0.2.0",
+            "build_hash": option_env!("BIJUX_BUILD_HASH").unwrap_or("dev"),
+        },
+        "server": {
+            "crate": CRATE_NAME,
+        }
+    });
+    let mut response = Json(payload).into_response();
+    if let Ok(value) = HeaderValue::from_str("public, max-age=30") {
+        response.headers_mut().insert("cache-control", value);
+    }
+    state
+        .metrics
+        .observe_request("/v1/version", StatusCode::OK, started.elapsed())
+        .await;
+    with_request_id(response, &request_id)
 }
 
 async fn readyz_handler(State(state): State<AppState>) -> impl IntoResponse {
