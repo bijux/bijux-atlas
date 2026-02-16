@@ -12,13 +12,14 @@ use bijux_atlas_model::{
 use bijux_atlas_query::{
     explain_query_plan, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits, RegionFilter,
 };
-use clap::{ArgAction, CommandFactory, Parser, Subcommand, ValueEnum};
+use clap::{error::ErrorKind, ArgAction, CommandFactory, Parser, Subcommand, ValueEnum};
 use clap_complete::{generate, Generator, Shell};
 use rusqlite::Connection;
 use serde_json::{json, Value};
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::PathBuf;
+use std::process::Command;
 use std::process::ExitCode as ProcessExitCode;
 
 const BIJUX_HELP_TEMPLATE: &str = "\
@@ -63,6 +64,17 @@ enum Commands {
         #[arg(value_enum)]
         shell: Shell,
     },
+    Atlas {
+        #[command(subcommand)]
+        command: AtlasCommand,
+    },
+    #[command(hide = true)]
+    Serve,
+}
+
+#[derive(Subcommand)]
+enum AtlasCommand {
+    Serve,
     Catalog {
         #[command(subcommand)]
         command: CatalogCommand,
@@ -200,11 +212,22 @@ pub fn main_entry() -> ProcessExitCode {
 }
 
 fn run() -> Result<(), CliError> {
-    let cli = Cli::try_parse().map_err(|err| CliError {
-        exit_code: bijux_atlas_core::ExitCode::Usage,
-        machine: MachineError::new("usage_error", "invalid command line arguments")
-            .with_detail("error", &err.to_string()),
-    })?;
+    let cli = match Cli::try_parse() {
+        Ok(cli) => cli,
+        Err(err) => match err.kind() {
+            ErrorKind::DisplayHelp | ErrorKind::DisplayVersion => {
+                print!("{err}");
+                return Ok(());
+            }
+            _ => {
+                return Err(CliError {
+                    exit_code: bijux_atlas_core::ExitCode::Usage,
+                    machine: MachineError::new("usage_error", "invalid command line arguments")
+                        .with_detail("error", &err.to_string()),
+                });
+            }
+        },
+    };
     let _output_mode = (cli.json, cli.quiet, cli.verbose, cli.trace);
     if cli.bijux_plugin_metadata {
         emit_plugin_metadata(cli.json).map_err(CliError::internal)?;
@@ -219,16 +242,36 @@ fn run() -> Result<(), CliError> {
         exit_code: bijux_atlas_core::ExitCode::Usage,
         machine: MachineError::new("usage_error", "missing command; see --help"),
     })?;
+    let log_flags = LogFlags {
+        quiet: cli.quiet,
+        verbose: cli.verbose,
+        trace: cli.trace,
+    };
 
     match command {
         Commands::Completion { shell } => {
             print_completion(shell);
             Ok(())
         }
-        Commands::Catalog { command } => match command {
+        Commands::Atlas { command } => run_atlas_command(command, log_flags),
+        Commands::Serve => run_serve(log_flags).map_err(CliError::dependency),
+    }
+}
+
+#[derive(Clone, Copy)]
+struct LogFlags {
+    quiet: bool,
+    verbose: u8,
+    trace: bool,
+}
+
+fn run_atlas_command(command: AtlasCommand, log_flags: LogFlags) -> Result<(), CliError> {
+    match command {
+        AtlasCommand::Serve => run_serve(log_flags).map_err(CliError::dependency),
+        AtlasCommand::Catalog { command } => match command {
             CatalogCommand::Validate { path } => validate_catalog(path).map_err(CliError::internal),
         },
-        Commands::Dataset { command } => match command {
+        AtlasCommand::Dataset { command } => match command {
             DatasetCommand::Validate {
                 root,
                 release,
@@ -236,7 +279,7 @@ fn run() -> Result<(), CliError> {
                 assembly,
             } => validate_dataset(root, &release, &species, &assembly).map_err(CliError::internal),
         },
-        Commands::Ingest {
+        AtlasCommand::Ingest {
             gff3,
             fasta,
             fai,
@@ -264,10 +307,10 @@ fn run() -> Result<(), CliError> {
             seqid_aliases,
         })
         .map_err(CliError::internal),
-        Commands::InspectDb { db, sample_rows } => {
+        AtlasCommand::InspectDb { db, sample_rows } => {
             inspect_db(db, sample_rows).map_err(CliError::internal)
         }
-        Commands::ExplainQuery {
+        AtlasCommand::ExplainQuery {
             db,
             gene_id,
             name,
@@ -287,7 +330,7 @@ fn run() -> Result<(), CliError> {
             allow_full_scan,
         })
         .map_err(CliError::internal),
-        Commands::Smoke {
+        AtlasCommand::Smoke {
             root,
             dataset,
             golden_queries,
@@ -341,6 +384,38 @@ fn emit_plugin_metadata(machine_json: bool) -> Result<(), String> {
     Ok(())
 }
 
+fn run_serve(log_flags: LogFlags) -> Result<(), String> {
+    if log_flags.trace {
+        std::env::set_var("BIJUX_LOG_LEVEL", "trace");
+        std::env::set_var("RUST_LOG", "trace");
+    } else if log_flags.verbose > 0 {
+        std::env::set_var("BIJUX_LOG_LEVEL", "debug");
+        std::env::set_var("RUST_LOG", "debug");
+    } else if log_flags.quiet {
+        std::env::set_var("BIJUX_LOG_LEVEL", "error");
+        std::env::set_var("RUST_LOG", "error");
+    }
+
+    let current_exe =
+        std::env::current_exe().map_err(|e| format!("failed to determine executable path: {e}"))?;
+    let bin_dir = current_exe
+        .parent()
+        .ok_or_else(|| "failed to resolve executable directory".to_string())?;
+    let server_bin = bin_dir.join("atlas-server");
+
+    let status = Command::new(&server_bin).status().map_err(|e| {
+        format!(
+            "failed to start atlas-server at {}: {e}",
+            server_bin.display()
+        )
+    })?;
+    if status.success() {
+        Ok(())
+    } else {
+        Err(format!("atlas-server exited with status {status}"))
+    }
+}
+
 fn plugin_metadata_payload() -> Value {
     json!({
         "name": "bijux-atlas",
@@ -361,6 +436,13 @@ impl CliError {
         Self {
             exit_code: bijux_atlas_core::ExitCode::Internal,
             machine: MachineError::new("internal_error", &message),
+        }
+    }
+
+    fn dependency(message: String) -> Self {
+        Self {
+            exit_code: bijux_atlas_core::ExitCode::DependencyFailure,
+            machine: MachineError::new("dependency_failure", &message),
         }
     }
 }
