@@ -1,6 +1,8 @@
 #![forbid(unsafe_code)]
 
-use bijux_atlas_core::sha256_hex;
+use bijux_atlas_core::{
+    resolve_bijux_cache_dir, resolve_bijux_config_path, sha256_hex, ConfigPathScope, MachineError,
+};
 use bijux_atlas_ingest::{ingest_dataset, IngestOptions};
 use bijux_atlas_model::{
     ArtifactManifest, BiotypePolicy, Catalog, DatasetId, DuplicateGeneIdPolicy,
@@ -10,7 +12,8 @@ use bijux_atlas_model::{
 use bijux_atlas_query::{
     explain_query_plan, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits, RegionFilter,
 };
-use clap::{ArgAction, Parser, Subcommand, ValueEnum};
+use clap::{ArgAction, CommandFactory, Parser, Subcommand, ValueEnum};
+use clap_complete::{generate, Generator, Shell};
 use rusqlite::Connection;
 use serde_json::{json, Value};
 use std::collections::BTreeMap;
@@ -18,9 +21,25 @@ use std::fs;
 use std::path::PathBuf;
 use std::process::ExitCode as ProcessExitCode;
 
+const BIJUX_HELP_TEMPLATE: &str = "\
+{before-help}{name} {version}
+{about-with-newline}
+Usage: {usage}
+
+Options:
+{options}
+
+Commands:
+{subcommands}
+{after-help}";
+
 #[derive(Parser)]
 #[command(name = "bijux-atlas")]
 #[command(about = "Bijux Atlas operations CLI")]
+#[command(help_template = BIJUX_HELP_TEMPLATE)]
+#[command(
+    after_help = "Environment:\n  BIJUX_LOG_LEVEL   Log verbosity override\n  BIJUX_CACHE_DIR   Shared cache directory"
+)]
 struct Cli {
     #[arg(long, global = true, default_value_t = false)]
     json: bool,
@@ -32,12 +51,18 @@ struct Cli {
     trace: bool,
     #[arg(long = "bijux-plugin-metadata", default_value_t = false)]
     bijux_plugin_metadata: bool,
+    #[arg(long = "print-config-paths", default_value_t = false)]
+    print_config_paths: bool,
     #[command(subcommand)]
     command: Option<Commands>,
 }
 
 #[derive(Subcommand)]
 enum Commands {
+    Completion {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
     Catalog {
         #[command(subcommand)]
         command: CatalogCommand,
@@ -164,30 +189,44 @@ struct IngestCliArgs {
 }
 
 pub fn main_entry() -> ProcessExitCode {
+    let wants_json = std::env::args().any(|arg| arg == "--json");
     match run() {
         Ok(()) => ProcessExitCode::from(bijux_atlas_core::ExitCode::Success as u8),
         Err(err) => {
-            eprintln!("{err}");
-            ProcessExitCode::from(bijux_atlas_core::ExitCode::Internal as u8)
+            emit_error(&err, wants_json);
+            ProcessExitCode::from(err.exit_code as u8)
         }
     }
 }
 
-fn run() -> Result<(), String> {
-    let cli = Cli::parse();
+fn run() -> Result<(), CliError> {
+    let cli = Cli::try_parse().map_err(|err| CliError {
+        exit_code: bijux_atlas_core::ExitCode::Usage,
+        machine: MachineError::new("usage_error", "invalid command line arguments")
+            .with_detail("error", &err.to_string()),
+    })?;
     let _output_mode = (cli.json, cli.quiet, cli.verbose, cli.trace);
     if cli.bijux_plugin_metadata {
-        emit_plugin_metadata(cli.json)?;
+        emit_plugin_metadata(cli.json).map_err(CliError::internal)?;
+        return Ok(());
+    }
+    if cli.print_config_paths {
+        emit_config_paths(cli.json).map_err(CliError::internal)?;
         return Ok(());
     }
 
-    let command = cli
-        .command
-        .ok_or_else(|| "missing command; see --help".to_string())?;
+    let command = cli.command.ok_or_else(|| CliError {
+        exit_code: bijux_atlas_core::ExitCode::Usage,
+        machine: MachineError::new("usage_error", "missing command; see --help"),
+    })?;
 
     match command {
+        Commands::Completion { shell } => {
+            print_completion(shell);
+            Ok(())
+        }
         Commands::Catalog { command } => match command {
-            CatalogCommand::Validate { path } => validate_catalog(path),
+            CatalogCommand::Validate { path } => validate_catalog(path).map_err(CliError::internal),
         },
         Commands::Dataset { command } => match command {
             DatasetCommand::Validate {
@@ -195,7 +234,7 @@ fn run() -> Result<(), String> {
                 release,
                 species,
                 assembly,
-            } => validate_dataset(root, &release, &species, &assembly),
+            } => validate_dataset(root, &release, &species, &assembly).map_err(CliError::internal),
         },
         Commands::Ingest {
             gff3,
@@ -223,8 +262,11 @@ fn run() -> Result<(), String> {
             gene_identifier_policy,
             ensembl_keys,
             seqid_aliases,
-        }),
-        Commands::InspectDb { db, sample_rows } => inspect_db(db, sample_rows),
+        })
+        .map_err(CliError::internal),
+        Commands::InspectDb { db, sample_rows } => {
+            inspect_db(db, sample_rows).map_err(CliError::internal)
+        }
         Commands::ExplainQuery {
             db,
             gene_id,
@@ -243,24 +285,47 @@ fn run() -> Result<(), String> {
             region,
             limit,
             allow_full_scan,
-        }),
+        })
+        .map_err(CliError::internal),
         Commands::Smoke {
             root,
             dataset,
             golden_queries,
             write_snapshot,
             snapshot_out,
-        } => smoke_dataset(root, &dataset, golden_queries, write_snapshot, snapshot_out),
+        } => smoke_dataset(root, &dataset, golden_queries, write_snapshot, snapshot_out)
+            .map_err(CliError::internal),
     }
 }
 
-fn emit_plugin_metadata(machine_json: bool) -> Result<(), String> {
+fn print_completion<G: Generator>(generator: G) {
+    let mut command = Cli::command();
+    let name = command.get_name().to_string();
+    generate(generator, &mut command, name, &mut std::io::stdout());
+}
+
+fn emit_config_paths(machine_json: bool) -> Result<(), String> {
     let payload = json!({
-        "name": "bijux-atlas",
-        "version": env!("CARGO_PKG_VERSION"),
-        "compatible_umbrella": ">=0.1.0,<0.2.0",
-        "build_hash": option_env!("BIJUX_BUILD_HASH").unwrap_or("dev"),
+        "workspace_config": resolve_bijux_config_path(ConfigPathScope::Workspace),
+        "user_config": resolve_bijux_config_path(ConfigPathScope::User),
+        "cache_dir": resolve_bijux_cache_dir(),
     });
+    if machine_json {
+        println!(
+            "{}",
+            serde_json::to_string(&payload).map_err(|e| e.to_string())?
+        );
+    } else {
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
+        );
+    }
+    Ok(())
+}
+
+fn emit_plugin_metadata(machine_json: bool) -> Result<(), String> {
+    let payload = plugin_metadata_payload();
 
     if machine_json {
         println!(
@@ -274,6 +339,80 @@ fn emit_plugin_metadata(machine_json: bool) -> Result<(), String> {
         );
     }
     Ok(())
+}
+
+fn plugin_metadata_payload() -> Value {
+    json!({
+        "name": "bijux-atlas",
+        "version": env!("CARGO_PKG_VERSION"),
+        "compatible_umbrella": ">=0.1.0,<0.2.0",
+        "build_hash": option_env!("BIJUX_BUILD_HASH").unwrap_or("dev"),
+    })
+}
+
+#[derive(Debug)]
+struct CliError {
+    exit_code: bijux_atlas_core::ExitCode,
+    machine: MachineError,
+}
+
+impl CliError {
+    fn internal(message: String) -> Self {
+        Self {
+            exit_code: bijux_atlas_core::ExitCode::Internal,
+            machine: MachineError::new("internal_error", &message),
+        }
+    }
+}
+
+fn emit_error(error: &CliError, machine_json: bool) {
+    if machine_json {
+        match serde_json::to_string(&error.machine) {
+            Ok(payload) => eprintln!("{payload}"),
+            Err(_) => eprintln!(
+                "{{\"code\":\"internal_error\",\"message\":\"failed to encode structured error\",\"details\":{{}}}}"
+            ),
+        }
+    } else {
+        eprintln!("{}", error.machine.message);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn plugin_metadata_contains_required_fields() {
+        let payload = plugin_metadata_payload();
+        for field in ["name", "version", "compatible_umbrella", "build_hash"] {
+            assert!(payload.get(field).is_some(), "missing field `{field}`");
+        }
+    }
+
+    #[test]
+    fn top_level_subcommands_avoid_reserved_umbrella_verbs() {
+        let reserved = ["plugin", "plugins", "doctor", "config"];
+        let command = Cli::command();
+        for sub in command.get_subcommands() {
+            let name = sub.get_name();
+            assert!(
+                !reserved.contains(&name),
+                "subcommand `{name}` collides with umbrella reserved verb"
+            );
+        }
+    }
+
+    #[test]
+    fn help_template_includes_required_sections() {
+        let rendered = Cli::command().render_help().to_string();
+        for section in ["Usage:", "Options:", "Commands:", "Environment:"] {
+            assert!(
+                rendered.contains(section),
+                "help output missing section `{section}`"
+            );
+        }
+    }
 }
 
 fn run_ingest(args: IngestCliArgs) -> Result<(), String> {
