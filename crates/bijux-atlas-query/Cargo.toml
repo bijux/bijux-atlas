@@ -8,6 +8,7 @@ rust-version.workspace = true
 [dependencies]
 bijux-atlas-core.workspace = true
 bijux-atlas-model.workspace = true
+bijux-atlas-policies.workspace = true
 bijux-atlas-store.workspace = true
 rusqlite = { version = "0.31", features = ["bundled", "vtab"] }
 serde.workspace = true
