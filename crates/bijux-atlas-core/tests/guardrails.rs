@@ -279,6 +279,26 @@ fn unit_tests_must_not_use_network_calls() {
 }
 
 #[test]
+fn atlas_repo_must_not_define_umbrella_bijux_binary() {
+    let root = workspace_root();
+    let cargo_tomls = [
+        root.join("Cargo.toml"),
+        root.join("crates/bijux-atlas-cli/Cargo.toml"),
+        root.join("crates/bijux-atlas-server/Cargo.toml"),
+        root.join("crates/bijux-atlas-api/Cargo.toml"),
+    ];
+
+    for file in cargo_tomls {
+        let content = fs::read_to_string(&file).expect("failed to read Cargo.toml");
+        assert!(
+            !content.contains("name = \"bijux\""),
+            "atlas repo must not define umbrella binary `bijux` in {}",
+            file.display()
+        );
+    }
+}
+
+#[test]
 fn ingestion_must_be_pure_transform_only() {
     let root = workspace_root();
     let ingest_src = root.join("crates/bijux-atlas-ingest/src");
