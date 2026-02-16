@@ -1,7 +1,20 @@
 # PUBLIC API: bijux-atlas-api
 
-Phase 1 stability contract:
+Stable public items for v1:
 
-- No symbols are stable yet.
-- Crate module layout is provisional.
-- Stability guarantees begin when version reaches 0.2.0 with explicit API freeze notes.
+- `ApiErrorCode`
+- `ApiError`
+- `openapi_v1_spec()`
+- `dataset_route_key()`
+- `parse_list_genes_params()`
+- `parse_list_genes_params_with_limit()`
+- `parse_region_filter()`
+- `ListGenesParams`
+- `ContentNegotiation`
+- `ApiResponseEnvelope<T>`
+- `ApiContentType`
+
+Stability rule:
+
+- Additive changes only in v1.
+- Existing enums may gain variants (`#[non_exhaustive]`).
