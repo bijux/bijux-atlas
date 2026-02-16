@@ -674,6 +674,15 @@ pub(crate) async fn genes_handler(
             return super::handlers::with_request_id(resp, &request_id);
         }
         Err(_) => {
+            if state.api.continue_download_on_request_timeout_for_warmup
+                && state.cache.is_pinned_dataset(&dataset)
+            {
+                let cache = state.cache.clone();
+                let ds = dataset.clone();
+                tokio::spawn(async move {
+                    let _ = cache.prefetch_dataset(ds).await;
+                });
+            }
             let resp = super::handlers::api_error_response(
                 StatusCode::GATEWAY_TIMEOUT,
                 super::handlers::error_json(ApiErrorCode::Timeout, "request timed out", json!({})),

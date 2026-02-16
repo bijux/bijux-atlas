@@ -49,6 +49,7 @@ pub struct ApiConfig {
     pub enable_redis_rate_limit: bool,
     pub enable_cheap_only_survival: bool,
     pub allow_min_viable_response: bool,
+    pub continue_download_on_request_timeout_for_warmup: bool,
 }
 
 impl Default for ApiConfig {
@@ -87,6 +88,7 @@ impl Default for ApiConfig {
             enable_redis_rate_limit: false,
             enable_cheap_only_survival: false,
             allow_min_viable_response: true,
+            continue_download_on_request_timeout_for_warmup: true,
         }
     }
 }

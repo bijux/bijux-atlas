@@ -15,6 +15,8 @@
 - Startup cache warmup is deterministic (sorted dataset ids) and bounded by `startup_warmup_limit`.
 - Store download concurrency is globally capped (`max_concurrent_downloads`).
 - Store retry budget and store circuit-breaker thresholds are configurable for herd protection.
+- Retry budget is enforced globally and per dataset to avoid infinite retries on a single bad artifact.
+- On request timeout, optional policy can continue background download for pinned warmup datasets.
 - Optional shard caches are selected by seqid for region queries and evicted with dataset cleanup.
 - Open shard concurrency is capped (`max_open_shards_per_pod`) to protect FD/memory limits.
 

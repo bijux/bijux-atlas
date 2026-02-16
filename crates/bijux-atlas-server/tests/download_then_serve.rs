@@ -147,3 +147,52 @@ async fn integration_cached_only_mode_serves_when_store_unavailable() {
     assert!(response.starts_with("HTTP/1.1 200 OK\r\n"));
     assert!(response.contains("\"gene_count\":1"));
 }
+
+#[tokio::test]
+async fn integration_partial_store_payload_fails_checksum_and_never_serves() {
+    let (ds, manifest, sqlite_full) = mk_dataset();
+    let sqlite_partial = sqlite_full[..(sqlite_full.len() / 2)].to_vec();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds.clone(), sqlite_partial);
+    *store.etag.lock().await = "v1".to_string();
+
+    let tmp = tempdir().expect("tempdir");
+    let mgr = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..Default::default()
+        },
+        store,
+    );
+    let app = build_router(AppState::new(mgr));
+
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move {
+        axum::serve(listener, app).await.expect("serve app");
+    });
+
+    let mut stream = tokio::net::TcpStream::connect(addr)
+        .await
+        .expect("connect server");
+    let request = format!(
+        "GET /v1/genes/count?release=110&species=homo_sapiens&assembly=GRCh38 HTTP/1.1\r\nHost: {}\r\nConnection: close\r\n\r\n",
+        addr
+    );
+    stream
+        .write_all(request.as_bytes())
+        .await
+        .expect("write request");
+    let mut response = String::new();
+    stream
+        .read_to_string(&mut response)
+        .await
+        .expect("read response");
+    assert!(
+        response.starts_with("HTTP/1.1 503 Service Unavailable\r\n")
+            || response.starts_with("HTTP/1.1 500 Internal Server Error\r\n")
+    );
+}

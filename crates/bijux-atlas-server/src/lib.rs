@@ -31,6 +31,7 @@ mod dataset_shards;
 mod http;
 mod middleware;
 mod store;
+mod store_resilience;
 mod telemetry;
 
 pub const CRATE_NAME: &str = "bijux-atlas-server";
@@ -119,6 +120,13 @@ pub struct CacheMetrics {
     pub store_open_failures: AtomicU64,
     pub store_breaker_open_total: AtomicU64,
     pub store_retry_budget_exhausted_total: AtomicU64,
+    pub store_download_ttfb_ns: Mutex<Vec<u64>>,
+    pub store_download_bytes_total: AtomicU64,
+    pub store_download_retry_total: AtomicU64,
+    pub store_error_checksum_total: AtomicU64,
+    pub store_error_timeout_total: AtomicU64,
+    pub store_error_network_total: AtomicU64,
+    pub store_error_other_total: AtomicU64,
     pub verify_marker_fast_path_hits: AtomicU64,
     pub verify_full_hash_checks: AtomicU64,
 }
@@ -272,6 +280,7 @@ pub struct DatasetCacheManager {
     download_semaphore: Arc<Semaphore>,
     shard_open_semaphore: Arc<Semaphore>,
     retry_budget_remaining: AtomicU64,
+    dataset_retry_budget: Mutex<HashMap<DatasetId, u32>>,
     pub metrics: Arc<CacheMetrics>,
 }
 
@@ -291,6 +300,7 @@ impl DatasetCacheManager {
             catalog_cache: Mutex::new(CatalogCache::default()),
             download_semaphore: Arc::new(Semaphore::new(max_concurrent_downloads)),
             retry_budget_remaining: AtomicU64::new(retry_budget),
+            dataset_retry_budget: Mutex::new(HashMap::new()),
             metrics: Arc::new(CacheMetrics::default()),
         })
     }
@@ -528,6 +538,25 @@ impl DatasetCacheManager {
                 "store retry budget exhausted; refusing download".to_string(),
             ));
         }
+        let mut dataset_budget = self.dataset_retry_budget.lock().await;
+        let per_dataset_remaining = dataset_budget
+            .entry(dataset.clone())
+            .or_insert(self.cfg.store_retry_budget);
+        if *per_dataset_remaining == 0 {
+            self.metrics
+                .store_retry_budget_exhausted_total
+                .fetch_add(1, Ordering::Relaxed);
+            return Err(CacheError(
+                "dataset retry budget exhausted; refusing download".to_string(),
+            ));
+        }
+        if *per_dataset_remaining < self.cfg.store_retry_budget {
+            self.metrics
+                .store_download_retry_total
+                .fetch_add(1, Ordering::Relaxed);
+        }
+        *per_dataset_remaining = per_dataset_remaining.saturating_sub(1);
+        drop(dataset_budget);
 
         info!(dataset = ?dataset, "dataset download path");
         let started = Instant::now();
@@ -541,14 +570,19 @@ impl DatasetCacheManager {
         let manifest = match self.store.fetch_manifest(dataset).await {
             Ok(v) => v,
             Err(e) => {
-                self.record_store_download_failure().await;
+                self.record_store_download_failure(&e.to_string()).await;
                 return Err(e);
             }
         };
+        self.metrics
+            .store_download_ttfb_ns
+            .lock()
+            .await
+            .push(started.elapsed().as_nanos() as u64);
         let sqlite = match self.store.fetch_sqlite_bytes(dataset).await {
             Ok(v) => v,
             Err(e) => {
-                self.record_store_download_failure().await;
+                self.record_store_download_failure(&e.to_string()).await;
                 return Err(e);
             }
         };
@@ -558,7 +592,8 @@ impl DatasetCacheManager {
             self.metrics
                 .store_download_failures
                 .fetch_add(1, Ordering::Relaxed);
-            self.record_store_download_failure().await;
+            self.record_store_download_failure("checksum verification failed")
+                .await;
             return Err(CacheError(
                 "sqlite checksum verification failed".to_string(),
             ));
@@ -623,8 +658,13 @@ impl DatasetCacheManager {
             .lock()
             .await
             .push(download_latency_ns);
+        self.metrics
+            .store_download_bytes_total
+            .fetch_add(size_bytes, Ordering::Relaxed);
         self.retry_budget_remaining
             .store(self.cfg.store_retry_budget as u64, Ordering::Relaxed);
+        let mut dataset_budget = self.dataset_retry_budget.lock().await;
+        dataset_budget.insert(dataset.clone(), self.cfg.store_retry_budget);
         self.reset_store_breaker().await;
         info!("dataset download complete {:?}", dataset);
         Ok(())
@@ -854,41 +894,6 @@ impl DatasetCacheManager {
         let state = lock.entry(dataset.clone()).or_default();
         state.failure_count = 0;
         state.open_until = None;
-    }
-
-    async fn check_store_breaker(&self) -> Result<(), CacheError> {
-        let lock = self.store_breaker.lock().await;
-        if let Some(until) = lock.open_until {
-            if Instant::now() < until {
-                return Err(CacheError("store circuit breaker open".to_string()));
-            }
-        }
-        Ok(())
-    }
-
-    async fn record_store_download_failure(&self) {
-        self.metrics
-            .store_download_failures
-            .fetch_add(1, Ordering::Relaxed);
-        let remaining = self.retry_budget_remaining.load(Ordering::Relaxed);
-        if remaining > 0 {
-            self.retry_budget_remaining
-                .store(remaining.saturating_sub(1), Ordering::Relaxed);
-        }
-        let mut lock = self.store_breaker.lock().await;
-        lock.failure_count += 1;
-        if lock.failure_count >= self.cfg.store_breaker_failure_threshold {
-            lock.open_until = Some(Instant::now() + self.cfg.store_breaker_open_duration);
-            self.metrics
-                .store_breaker_open_total
-                .fetch_add(1, Ordering::Relaxed);
-        }
-    }
-
-    async fn reset_store_breaker(&self) {
-        let mut lock = self.store_breaker.lock().await;
-        lock.failure_count = 0;
-        lock.open_until = None;
     }
 }
 

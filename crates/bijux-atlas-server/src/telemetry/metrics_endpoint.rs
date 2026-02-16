@@ -88,6 +88,24 @@ bijux_dataset_disk_usage_bytes{subsystem=\"%SUB%\",version=\"%VER%\",dataset=\"%
         .lock()
         .await
         .clone();
+    let download_ttfb = state
+        .cache
+        .metrics
+        .store_download_ttfb_ns
+        .lock()
+        .await
+        .clone();
+    let download_bytes_total = state
+        .cache
+        .metrics
+        .store_download_bytes_total
+        .load(Ordering::Relaxed);
+    let total_download_ns: u128 = download_lat.iter().map(|x| *x as u128).sum();
+    let throughput_bps = if total_download_ns == 0 {
+        0.0
+    } else {
+        (download_bytes_total as f64) / (total_download_ns as f64 / 1_000_000_000.0)
+    };
     body.push_str(&format!(
         "bijux_store_open_failure_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_store_download_failure_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
@@ -146,7 +164,14 @@ bijux_verify_full_hash_checks_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{
     ));
     body.push_str(&format!(
         "bijux_store_open_p95_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {:.6}\n\
-bijux_store_download_p95_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {:.6}\n",
+bijux_store_download_p95_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {:.6}\n\
+bijux_store_download_ttfb_p95_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {:.6}\n\
+bijux_store_download_throughput_bytes_per_second{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {:.3}\n\
+bijux_store_download_retry_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_store_error_checksum_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_store_error_timeout_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_store_error_network_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_store_error_other_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
         METRIC_SUBSYSTEM,
         METRIC_VERSION,
         METRIC_DATASET_ALL,
@@ -154,7 +179,55 @@ bijux_store_download_p95_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"
         METRIC_SUBSYSTEM,
         METRIC_VERSION,
         METRIC_DATASET_ALL,
-        percentile_ns(&download_lat, 0.95) as f64 / 1_000_000_000.0
+        percentile_ns(&download_lat, 0.95) as f64 / 1_000_000_000.0,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        percentile_ns(&download_ttfb, 0.95) as f64 / 1_000_000_000.0,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        throughput_bps,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state
+            .cache
+            .metrics
+            .store_download_retry_total
+            .load(Ordering::Relaxed),
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state
+            .cache
+            .metrics
+            .store_error_checksum_total
+            .load(Ordering::Relaxed),
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state
+            .cache
+            .metrics
+            .store_error_timeout_total
+            .load(Ordering::Relaxed),
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state
+            .cache
+            .metrics
+            .store_error_network_total
+            .load(Ordering::Relaxed),
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state
+            .cache
+            .metrics
+            .store_error_other_total
+            .load(Ordering::Relaxed)
     ));
     let heavy_cap = state.api.concurrency_heavy as u64;
     let heavy_avail = state.class_heavy.available_permits() as u64;
@@ -178,11 +251,17 @@ bijux_store_download_p95_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"
     } else {
         0
     };
+    let store_breaker_open = if state.cache.store_breaker_is_open().await {
+        1
+    } else {
+        0
+    };
     body.push_str(&format!(
         "bijux_inflight_heavy_queries{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_overload_shedding_active{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_cached_only_mode{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
-bijux_draining_mode{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
+bijux_draining_mode{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_store_breaker_open{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
         METRIC_SUBSYSTEM,
         METRIC_VERSION,
         METRIC_DATASET_ALL,
@@ -198,7 +277,11 @@ bijux_draining_mode{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
         METRIC_SUBSYSTEM,
         METRIC_VERSION,
         METRIC_DATASET_ALL,
-        draining_mode
+        draining_mode,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        store_breaker_open
     ));
 
     let req_counts = state.metrics.counts.lock().await.clone();
