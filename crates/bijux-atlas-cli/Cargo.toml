@@ -1,0 +1,20 @@
+[package]
+name = "bijux-atlas-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+bijux-atlas-core.workspace = true
+bijux-atlas-model.workspace = true
+bijux-atlas-ingest.workspace = true
+bijux-atlas-store.workspace = true
+bijux-atlas-query.workspace = true
+clap = { version = "4", features = ["derive"] }
+rusqlite = { version = "0.31", features = ["bundled"] }
+serde_json.workspace = true
+
+[[bin]]
+name = "atlas-cli"
+path = "src/main.rs"
