@@ -52,12 +52,17 @@ pub struct DatasetCacheConfig {
     pub read_only_fs: bool,
     pub cached_only_mode: bool,
     pub startup_warmup: Vec<DatasetId>,
+    pub startup_warmup_limit: usize,
     pub fail_readiness_on_missing_warmup: bool,
     pub max_connections_per_dataset: usize,
     pub max_total_connections: usize,
     pub dataset_open_timeout: Duration,
     pub breaker_failure_threshold: u32,
     pub breaker_open_duration: Duration,
+    pub store_breaker_failure_threshold: u32,
+    pub store_breaker_open_duration: Duration,
+    pub store_retry_budget: u32,
+    pub max_concurrent_downloads: usize,
     pub eviction_check_interval: Duration,
     pub integrity_reverify_interval: Duration,
     pub sqlite_pragma_cache_kib: i64,
@@ -75,12 +80,17 @@ impl Default for DatasetCacheConfig {
             read_only_fs: false,
             cached_only_mode: false,
             startup_warmup: Vec::new(),
+            startup_warmup_limit: 8,
             fail_readiness_on_missing_warmup: false,
             max_connections_per_dataset: 8,
             max_total_connections: 64,
             dataset_open_timeout: Duration::from_secs(3),
             breaker_failure_threshold: 3,
             breaker_open_duration: Duration::from_secs(30),
+            store_breaker_failure_threshold: 5,
+            store_breaker_open_duration: Duration::from_secs(20),
+            store_retry_budget: 20,
+            max_concurrent_downloads: 3,
             eviction_check_interval: Duration::from_secs(30),
             integrity_reverify_interval: Duration::from_secs(300),
             sqlite_pragma_cache_kib: 32 * 1024,
@@ -100,6 +110,10 @@ pub struct CacheMetrics {
     pub store_open_latency_ns: Mutex<Vec<u64>>,
     pub store_download_failures: AtomicU64,
     pub store_open_failures: AtomicU64,
+    pub store_breaker_open_total: AtomicU64,
+    pub store_retry_budget_exhausted_total: AtomicU64,
+    pub verify_marker_fast_path_hits: AtomicU64,
+    pub verify_full_hash_checks: AtomicU64,
 }
 
 #[derive(Default)]
@@ -204,6 +218,7 @@ struct DatasetEntry {
     sqlite_path: PathBuf,
     last_access: Instant,
     size_bytes: u64,
+    last_download_latency_ns: u64,
     dataset_semaphore: Arc<Semaphore>,
     query_semaphore: Arc<Semaphore>,
 }
@@ -216,6 +231,12 @@ struct CatalogCache {
 
 #[derive(Default)]
 struct BreakerState {
+    failure_count: u32,
+    open_until: Option<Instant>,
+}
+
+#[derive(Default)]
+struct StoreBreakerState {
     failure_count: u32,
     open_until: Option<Instant>,
 }
@@ -235,13 +256,18 @@ pub struct DatasetCacheManager {
     entries: Mutex<HashMap<DatasetId, DatasetEntry>>,
     inflight: Mutex<HashMap<DatasetId, Arc<Mutex<()>>>>,
     breakers: Mutex<HashMap<DatasetId, BreakerState>>,
+    store_breaker: Mutex<StoreBreakerState>,
     catalog_cache: Mutex<CatalogCache>,
     global_semaphore: Arc<Semaphore>,
+    download_semaphore: Arc<Semaphore>,
+    retry_budget_remaining: AtomicU64,
     pub metrics: Arc<CacheMetrics>,
 }
 
 impl DatasetCacheManager {
     pub fn new(cfg: DatasetCacheConfig, store: Arc<dyn DatasetStoreBackend>) -> Arc<Self> {
+        let max_concurrent_downloads = cfg.max_concurrent_downloads;
+        let retry_budget = cfg.store_retry_budget as u64;
         Arc::new(Self {
             global_semaphore: Arc::new(Semaphore::new(cfg.max_total_connections)),
             cfg,
@@ -249,14 +275,28 @@ impl DatasetCacheManager {
             entries: Mutex::new(HashMap::new()),
             inflight: Mutex::new(HashMap::new()),
             breakers: Mutex::new(HashMap::new()),
+            store_breaker: Mutex::new(StoreBreakerState::default()),
             catalog_cache: Mutex::new(CatalogCache::default()),
+            download_semaphore: Arc::new(Semaphore::new(max_concurrent_downloads)),
+            retry_budget_remaining: AtomicU64::new(retry_budget),
             metrics: Arc::new(CacheMetrics::default()),
         })
     }
 
     pub async fn startup_warmup(self: &Arc<Self>) -> Result<(), CacheError> {
         std::fs::create_dir_all(&self.cfg.disk_root).map_err(|e| CacheError(e.to_string()))?;
-        for ds in &self.cfg.startup_warmup {
+        let mut warm = self.cfg.startup_warmup.clone();
+        warm.sort_by_key(DatasetId::canonical_string);
+        warm.dedup();
+        let bounded = warm
+            .into_iter()
+            .take(
+                self.cfg
+                    .startup_warmup_limit
+                    .min(self.cfg.max_dataset_count),
+            )
+            .collect::<Vec<_>>();
+        for ds in &bounded {
             let result = self.ensure_dataset_cached(ds).await;
             if let Err(e) = result {
                 if self.cfg.fail_readiness_on_missing_warmup {
@@ -461,29 +501,47 @@ impl DatasetCacheManager {
             return Ok(());
         }
 
+        self.check_store_breaker().await?;
+        let remaining = self.retry_budget_remaining.load(Ordering::Relaxed);
+        if remaining == 0 {
+            self.metrics
+                .store_retry_budget_exhausted_total
+                .fetch_add(1, Ordering::Relaxed);
+            return Err(CacheError(
+                "store retry budget exhausted; refusing download".to_string(),
+            ));
+        }
+
         info!(dataset = ?dataset, "dataset download path");
         let started = Instant::now();
         info!("dataset download start {:?}", dataset);
-        let manifest = self.store.fetch_manifest(dataset).await.inspect_err(|_| {
-            self.metrics
-                .store_download_failures
-                .fetch_add(1, Ordering::Relaxed);
-        })?;
-        let sqlite = self
-            .store
-            .fetch_sqlite_bytes(dataset)
+        let _download_permit = self
+            .download_semaphore
+            .clone()
+            .acquire_owned()
             .await
-            .inspect_err(|_| {
-                self.metrics
-                    .store_download_failures
-                    .fetch_add(1, Ordering::Relaxed);
-            })?;
+            .map_err(|e| CacheError(e.to_string()))?;
+        let manifest = match self.store.fetch_manifest(dataset).await {
+            Ok(v) => v,
+            Err(e) => {
+                self.record_store_download_failure().await;
+                return Err(e);
+            }
+        };
+        let sqlite = match self.store.fetch_sqlite_bytes(dataset).await {
+            Ok(v) => v,
+            Err(e) => {
+                self.record_store_download_failure().await;
+                return Err(e);
+            }
+        };
         let sqlite_hash = sha256_hex(&sqlite);
         if sqlite_hash != manifest.checksums.sqlite_sha256 {
             error!("dataset verify failed {:?}", dataset);
             self.metrics
                 .store_download_failures
                 .fetch_add(1, Ordering::Relaxed);
+            self.record_store_download_failure().await;
             return Err(CacheError(
                 "sqlite checksum verification failed".to_string(),
             ));
@@ -513,6 +571,7 @@ impl DatasetCacheManager {
         let size_bytes = std::fs::metadata(&paths.sqlite)
             .map_err(|e| CacheError(e.to_string()))?
             .len();
+        let download_latency_ns = started.elapsed().as_nanos() as u64;
 
         {
             let mut entries = self.entries.lock().await;
@@ -522,6 +581,7 @@ impl DatasetCacheManager {
                     sqlite_path: paths.sqlite,
                     last_access: Instant::now(),
                     size_bytes,
+                    last_download_latency_ns: download_latency_ns,
                     dataset_semaphore: Arc::new(Semaphore::new(
                         self.cfg.max_connections_per_dataset,
                     )),
@@ -541,7 +601,10 @@ impl DatasetCacheManager {
             .store_download_latency_ns
             .lock()
             .await
-            .push(started.elapsed().as_nanos() as u64);
+            .push(download_latency_ns);
+        self.retry_budget_remaining
+            .store(self.cfg.store_retry_budget as u64, Ordering::Relaxed);
+        self.reset_store_breaker().await;
         info!("dataset download complete {:?}", dataset);
         Ok(())
     }
@@ -567,6 +630,9 @@ impl DatasetCacheManager {
                 .unwrap_or(false);
 
         if marker_ok {
+            self.metrics
+                .verify_marker_fast_path_hits
+                .fetch_add(1, Ordering::Relaxed);
             let mut entries = self.entries.lock().await;
             entries
                 .entry(dataset.clone())
@@ -576,6 +642,7 @@ impl DatasetCacheManager {
                     size_bytes: std::fs::metadata(&paths.sqlite)
                         .map(|m| m.len())
                         .unwrap_or(0),
+                    last_download_latency_ns: 1_000_000,
                     dataset_semaphore: Arc::new(Semaphore::new(
                         self.cfg.max_connections_per_dataset,
                     )),
@@ -584,6 +651,9 @@ impl DatasetCacheManager {
             return Ok(true);
         }
 
+        self.metrics
+            .verify_full_hash_checks
+            .fetch_add(1, Ordering::Relaxed);
         let sqlite_hash =
             sha256_hex(&std::fs::read(&paths.sqlite).map_err(|e| CacheError(e.to_string()))?);
         if sqlite_hash == manifest.checksums.sqlite_sha256 {
@@ -598,6 +668,7 @@ impl DatasetCacheManager {
                     size_bytes: std::fs::metadata(paths.derived_dir.join("gene_summary.sqlite"))
                         .map(|m| m.len())
                         .unwrap_or(0),
+                    last_download_latency_ns: 1_000_000,
                     dataset_semaphore: Arc::new(Semaphore::new(
                         self.cfg.max_connections_per_dataset,
                     )),
@@ -629,13 +700,18 @@ impl DatasetCacheManager {
 
         let mut total_size: u64 = entries.values().map(|e| e.size_bytes).sum();
         if entries.len() > self.cfg.max_dataset_count || total_size > self.cfg.max_disk_bytes {
-            let mut by_lru: Vec<(DatasetId, Instant)> = entries
+            let mut ranked: Vec<(DatasetId, f64)> = entries
                 .iter()
                 .filter(|(id, _)| !self.cfg.pinned_datasets.contains(*id))
-                .map(|(id, e)| (id.clone(), e.last_access))
+                .map(|(id, e)| {
+                    let age = now.duration_since(e.last_access).as_secs_f64().max(1.0);
+                    let redownload_cost = (e.last_download_latency_ns as f64).max(1.0);
+                    let score = age * (e.size_bytes as f64) / redownload_cost;
+                    (id.clone(), score)
+                })
                 .collect();
-            by_lru.sort_by_key(|x| x.1);
-            for (id, _) in by_lru {
+            ranked.sort_by(|a, b| b.1.total_cmp(&a.1));
+            for (id, _) in ranked {
                 if entries.len() <= self.cfg.max_dataset_count
                     && total_size <= self.cfg.max_disk_bytes
                 {
@@ -710,6 +786,9 @@ impl DatasetCacheManager {
         let manifest_raw = std::fs::read(&paths.manifest).map_err(|e| CacheError(e.to_string()))?;
         let manifest: ArtifactManifest =
             serde_json::from_slice(&manifest_raw).map_err(|e| CacheError(e.to_string()))?;
+        self.metrics
+            .verify_full_hash_checks
+            .fetch_add(1, Ordering::Relaxed);
         let sqlite_hash =
             sha256_hex(&std::fs::read(&paths.sqlite).map_err(|e| CacheError(e.to_string()))?);
         Ok(sqlite_hash == manifest.checksums.sqlite_sha256)
@@ -740,6 +819,41 @@ impl DatasetCacheManager {
         let state = lock.entry(dataset.clone()).or_default();
         state.failure_count = 0;
         state.open_until = None;
+    }
+
+    async fn check_store_breaker(&self) -> Result<(), CacheError> {
+        let lock = self.store_breaker.lock().await;
+        if let Some(until) = lock.open_until {
+            if Instant::now() < until {
+                return Err(CacheError("store circuit breaker open".to_string()));
+            }
+        }
+        Ok(())
+    }
+
+    async fn record_store_download_failure(&self) {
+        self.metrics
+            .store_download_failures
+            .fetch_add(1, Ordering::Relaxed);
+        let remaining = self.retry_budget_remaining.load(Ordering::Relaxed);
+        if remaining > 0 {
+            self.retry_budget_remaining
+                .store(remaining.saturating_sub(1), Ordering::Relaxed);
+        }
+        let mut lock = self.store_breaker.lock().await;
+        lock.failure_count += 1;
+        if lock.failure_count >= self.cfg.store_breaker_failure_threshold {
+            lock.open_until = Some(Instant::now() + self.cfg.store_breaker_open_duration);
+            self.metrics
+                .store_breaker_open_total
+                .fetch_add(1, Ordering::Relaxed);
+        }
+    }
+
+    async fn reset_store_breaker(&self) {
+        let mut lock = self.store_breaker.lock().await;
+        lock.failure_count = 0;
+        lock.open_until = None;
     }
 }
 

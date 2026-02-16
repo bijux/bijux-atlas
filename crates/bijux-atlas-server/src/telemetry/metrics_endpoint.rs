@@ -90,7 +90,11 @@ bijux_dataset_disk_usage_bytes{subsystem=\"%SUB%\",version=\"%VER%\",dataset=\"%
         .clone();
     body.push_str(&format!(
         "bijux_store_open_failure_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
-bijux_store_download_failure_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
+bijux_store_download_failure_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_store_breaker_open_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_store_retry_budget_exhausted_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_verify_marker_fast_path_hits_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_verify_full_hash_checks_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
         METRIC_SUBSYSTEM,
         METRIC_VERSION,
         METRIC_DATASET_ALL,
@@ -106,6 +110,38 @@ bijux_store_download_failure_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}
             .cache
             .metrics
             .store_download_failures
+            .load(Ordering::Relaxed),
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state
+            .cache
+            .metrics
+            .store_breaker_open_total
+            .load(Ordering::Relaxed),
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state
+            .cache
+            .metrics
+            .store_retry_budget_exhausted_total
+            .load(Ordering::Relaxed),
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state
+            .cache
+            .metrics
+            .verify_marker_fast_path_hits
+            .load(Ordering::Relaxed),
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state
+            .cache
+            .metrics
+            .verify_full_hash_checks
             .load(Ordering::Relaxed),
     ));
     body.push_str(&format!(

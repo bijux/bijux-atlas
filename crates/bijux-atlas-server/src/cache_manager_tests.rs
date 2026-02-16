@@ -337,6 +337,53 @@ async fn corruption_is_detected_by_reverification() {
 }
 
 #[tokio::test]
+#[ignore]
+async fn chaos_mode_random_byte_corruption_never_serves_results() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds.clone(), sqlite);
+    *store.etag.lock().await = "v1".to_string();
+
+    let tmp = tempdir().expect("tempdir");
+    let mgr = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..Default::default()
+        },
+        store.clone(),
+    );
+    mgr.open_dataset_connection(&ds)
+        .await
+        .expect("download and cache dataset");
+    let paths = artifact_paths(tmp.path(), &ds);
+    let mut bytes = std::fs::read(&paths.sqlite).expect("read sqlite");
+    for i in (0..bytes.len()).step_by(257).take(32) {
+        bytes[i] ^= 0xAA;
+    }
+    std::fs::write(&paths.sqlite, bytes).expect("write corrupted sqlite");
+    mgr.reverify_cached_datasets().await.expect("reverify");
+
+    let cached_only_mgr = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            cached_only_mode: true,
+            ..Default::default()
+        },
+        Arc::new(FakeStore::default()),
+    );
+    let err = match cached_only_mgr.open_dataset_connection(&ds).await {
+        Ok(_) => panic!("corrupted dataset must not be served"),
+        Err(err) => err,
+    };
+    assert!(
+        err.to_string().contains("cached-only mode")
+            || err.to_string().contains("missing from cache"),
+        "unexpected error: {err}"
+    );
+}
+
+#[tokio::test]
 async fn cache_eviction_stress_respects_caps() {
     let store = Arc::new(FakeStore::default());
     for idx in 100..112 {
