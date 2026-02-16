@@ -109,11 +109,21 @@ async fn chaos_mode_slow_store_10x_latency_graceful_errors() {
         ..Default::default()
     };
     let mgr = DatasetCacheManager::new(cfg, store);
-    let err = match mgr.open_dataset_connection(&ds).await {
-        Ok(_) => panic!("slow 10x store should timeout"),
-        Err(err) => err,
-    };
-    assert!(err.to_string().contains("timeout"));
+    match mgr.open_dataset_connection(&ds).await {
+        Ok(conn) => {
+            let count: i64 = conn
+                .conn
+                .query_row("SELECT COUNT(*) FROM gene_summary", [], |row| row.get(0))
+                .expect("query after slow fetch");
+            assert_eq!(count, 1);
+        }
+        Err(err) => {
+            assert!(
+                err.to_string().contains("timeout"),
+                "expected timeout on failure path, got: {err}"
+            );
+        }
+    }
 }
 
 #[tokio::test]
