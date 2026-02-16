@@ -66,6 +66,7 @@ pub(crate) fn validate_dataset(
     if manifest.stats.gene_count == 0 {
         return Err("manifest gene_count must be > 0".to_string());
     }
+    validate_sqlite_contract(&paths.sqlite)?;
 
     let payload = json!({"command":"atlas dataset validate","status":"ok"});
     if output_mode.json {
@@ -78,6 +79,52 @@ pub(crate) fn validate_dataset(
             "{}",
             serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
         );
+    }
+    Ok(())
+}
+
+fn validate_sqlite_contract(sqlite_path: &PathBuf) -> Result<(), String> {
+    let conn = rusqlite::Connection::open(sqlite_path).map_err(|e| e.to_string())?;
+    let required_indexes = [
+        "idx_gene_summary_gene_id",
+        "idx_gene_summary_name",
+        "idx_gene_summary_name_normalized",
+        "idx_gene_summary_biotype",
+        "idx_gene_summary_region",
+        "idx_gene_summary_cover_lookup",
+        "idx_gene_summary_cover_region",
+    ];
+    for index in required_indexes {
+        let exists: i64 = conn
+            .query_row(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name=?1",
+                [index],
+                |r| r.get(0),
+            )
+            .map_err(|e| e.to_string())?;
+        if exists == 0 {
+            return Err(format!("required index missing: {index}"));
+        }
+    }
+    let has_rtree: i64 = conn
+        .query_row(
+            "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='gene_summary_rtree'",
+            [],
+            |r| r.get(0),
+        )
+        .map_err(|e| e.to_string())?;
+    if has_rtree == 0 {
+        return Err("required rtree table missing: gene_summary_rtree".to_string());
+    }
+    let schema_version: String = conn
+        .query_row(
+            "SELECT v FROM atlas_meta WHERE k='schema_version'",
+            [],
+            |r| r.get(0),
+        )
+        .map_err(|_| "atlas_meta.schema_version missing".to_string())?;
+    if schema_version.trim().is_empty() {
+        return Err("atlas_meta.schema_version is empty".to_string());
     }
     Ok(())
 }
