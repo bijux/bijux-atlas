@@ -3,7 +3,7 @@
 ### Summary
 - Release date: {{date}}
 - Commit: {{commit}}
-- Container image: `ghcr.io/{{repo}}/bijux-atlas:{{tag}}`
+- Container image: `ghcr.io/bijux/bijux-atlas:{{tag}}`
 
 ### Highlights
 - 
@@ -19,5 +19,5 @@
 ```bash
 cosign verify \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com \
-  ghcr.io/{{repo}}/bijux-atlas:{{tag}}
+  ghcr.io/bijux/bijux-atlas:{{tag}}
 ```

@@ -31,4 +31,5 @@ ENV RUST_LOG=info \
 USER nonroot:nonroot
 EXPOSE 8080
 LABEL org.bijux.plugin="atlas"
+LABEL org.opencontainers.image.source="https://github.com/bijux/bijux-atlas"
 ENTRYPOINT ["/app/bijux-atlas", "serve"]
