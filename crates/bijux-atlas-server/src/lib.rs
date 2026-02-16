@@ -268,6 +268,14 @@ pub struct DatasetConnection {
     _query_permit: OwnedSemaphorePermit,
 }
 
+#[derive(Debug, Clone)]
+pub struct DatasetHealthSnapshot {
+    pub cached: bool,
+    pub checksum_verified: bool,
+    pub last_open_seconds_ago: Option<u64>,
+    pub size_bytes: Option<u64>,
+}
+
 pub struct DatasetCacheManager {
     cfg: DatasetCacheConfig,
     store: Arc<dyn DatasetStoreBackend>,
@@ -401,6 +409,42 @@ impl DatasetCacheManager {
             .collect();
         out.sort();
         out
+    }
+
+    pub async fn fetch_manifest_summary(
+        &self,
+        dataset: &DatasetId,
+    ) -> Result<ArtifactManifest, CacheError> {
+        self.store.fetch_manifest(dataset).await
+    }
+
+    pub async fn dataset_health_snapshot(
+        &self,
+        dataset: &DatasetId,
+    ) -> Result<DatasetHealthSnapshot, CacheError> {
+        let (cached, last_open_seconds_ago, size_bytes) = {
+            let entries = self.entries.lock().await;
+            if let Some(entry) = entries.get(dataset) {
+                (
+                    true,
+                    Some(entry.last_access.elapsed().as_secs()),
+                    Some(entry.size_bytes),
+                )
+            } else {
+                (false, None, None)
+            }
+        };
+        let checksum_verified = if cached {
+            self.verify_dataset_integrity_strict(dataset).await?
+        } else {
+            false
+        };
+        Ok(DatasetHealthSnapshot {
+            cached,
+            checksum_verified,
+            last_open_seconds_ago,
+            size_bytes,
+        })
     }
 
     pub async fn open_dataset_connection(
@@ -991,11 +1035,19 @@ pub fn build_router(state: AppState) -> Router {
         .route("/metrics", get(http::handlers::metrics_handler))
         .route("/v1/version", get(http::handlers::version_handler))
         .route("/v1/datasets", get(http::handlers::datasets_handler))
+        .route(
+            "/v1/releases/:release/species/:species/assemblies/:assembly",
+            get(http::handlers::release_dataset_handler),
+        )
         .route("/v1/genes", get(http::handlers::genes_handler))
         .route("/v1/genes/count", get(http::handlers::genes_count_handler))
         .route(
             "/debug/datasets",
             get(http::handlers::debug_datasets_handler),
+        )
+        .route(
+            "/debug/dataset-health",
+            get(http::handlers::dataset_health_handler),
         )
         .layer(DefaultBodyLimit::max(state.api.max_body_bytes))
         .with_state(state)

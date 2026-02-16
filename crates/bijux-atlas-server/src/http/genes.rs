@@ -379,6 +379,7 @@ pub(crate) async fn genes_handler(
     };
 
     let normalized = super::handlers::normalize_query(&params);
+    let explain_mode = super::handlers::bool_query_flag(&params, "explain");
     let mut redis_fill_guard = None;
     if state.api.enable_redis_response_cache {
         if let (Some(redis), Some(cache_key)) = (&state.redis_backend, &redis_cache_key) {
@@ -683,7 +684,22 @@ pub(crate) async fn genes_handler(
                 .observe_sqlite_query(&format!("{class:?}").to_lowercase(), query_elapsed)
                 .await;
             state.metrics.observe_stage("query", query_elapsed).await;
-            json!({"dataset": dataset, "class": format!("{class:?}").to_lowercase(), "response": resp})
+            let mut payload = json!({
+                "dataset": dataset,
+                "class": format!("{class:?}").to_lowercase(),
+                "response": resp
+            });
+            if explain_mode {
+                let name_policy = bijux_atlas_model::GeneNamePolicy::default();
+                let biotype_policy = bijux_atlas_model::BiotypePolicy::default();
+                payload["explain"] = json!({
+                    "gene_identifier_policy": "gff3_id_first",
+                    "gene_name_attribute_priority": name_policy.attribute_keys,
+                    "biotype_attribute_priority": biotype_policy.attribute_keys,
+                    "biotype_unknown_value": biotype_policy.unknown_value
+                });
+            }
+            payload
         }
         Ok(Err(err)) => {
             let msg = err.to_string();
