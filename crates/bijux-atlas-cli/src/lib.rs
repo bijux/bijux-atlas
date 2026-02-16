@@ -1,13 +1,14 @@
 #![forbid(unsafe_code)]
 
+mod artifact_validation;
+
 use bijux_atlas_core::{
     resolve_bijux_cache_dir, resolve_bijux_config_path, sha256_hex, ConfigPathScope, MachineError,
 };
 use bijux_atlas_ingest::{ingest_dataset, IngestOptions};
 use bijux_atlas_model::{
-    ArtifactManifest, BiotypePolicy, Catalog, DatasetId, DuplicateGeneIdPolicy,
-    GeneIdentifierPolicy, GeneNamePolicy, SeqidNormalizationPolicy, StrictnessMode,
-    TranscriptTypePolicy,
+    BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, GeneIdentifierPolicy, GeneNamePolicy,
+    SeqidNormalizationPolicy, StrictnessMode, TranscriptTypePolicy,
 };
 use bijux_atlas_query::{
     explain_query_plan, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits, RegionFilter,
@@ -16,7 +17,6 @@ use clap::{error::ErrorKind, ArgAction, CommandFactory, Parser, Subcommand, Valu
 use clap_complete::{generate, Generator, Shell};
 use rusqlite::Connection;
 use serde_json::{json, Value};
-use std::collections::BTreeMap;
 use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
@@ -269,7 +269,9 @@ fn run_atlas_command(command: AtlasCommand, log_flags: LogFlags) -> Result<(), C
     match command {
         AtlasCommand::Serve => run_serve(log_flags).map_err(CliError::dependency),
         AtlasCommand::Catalog { command } => match command {
-            CatalogCommand::Validate { path } => validate_catalog(path).map_err(CliError::internal),
+            CatalogCommand::Validate { path } => {
+                artifact_validation::validate_catalog(path).map_err(CliError::internal)
+            }
         },
         AtlasCommand::Dataset { command } => match command {
             DatasetCommand::Validate {
@@ -277,7 +279,8 @@ fn run_atlas_command(command: AtlasCommand, log_flags: LogFlags) -> Result<(), C
                 release,
                 species,
                 assembly,
-            } => validate_dataset(root, &release, &species, &assembly).map_err(CliError::internal),
+            } => artifact_validation::validate_dataset(root, &release, &species, &assembly)
+                .map_err(CliError::internal),
         },
         AtlasCommand::Ingest {
             gff3,
@@ -540,7 +543,9 @@ fn run_ingest(args: IngestCliArgs) -> Result<(), String> {
         gene_name_policy: GeneNamePolicy::default(),
         biotype_policy: BiotypePolicy::default(),
         transcript_type_policy: TranscriptTypePolicy::default(),
-        seqid_policy: SeqidNormalizationPolicy::from_aliases(parse_alias_map(&args.seqid_aliases)),
+        seqid_policy: SeqidNormalizationPolicy::from_aliases(artifact_validation::parse_alias_map(
+            &args.seqid_aliases,
+        )),
     })
     .map_err(|e| e.to_string())?;
 
@@ -773,72 +778,4 @@ fn query_request_from_json(v: &Value) -> Result<GeneQueryRequest, String> {
         cursor: None,
         allow_full_scan,
     })
-}
-
-fn parse_alias_map(input: &str) -> BTreeMap<String, String> {
-    let mut out = BTreeMap::new();
-    for pair in input.split(',') {
-        let p = pair.trim();
-        if p.is_empty() {
-            continue;
-        }
-        if let Some((k, v)) = p.split_once('=') {
-            out.insert(k.trim().to_string(), v.trim().to_string());
-        }
-    }
-    out
-}
-
-fn validate_catalog(path: PathBuf) -> Result<(), String> {
-    let raw = fs::read_to_string(path).map_err(|e| e.to_string())?;
-    let catalog: Catalog = serde_json::from_str(&raw).map_err(|e| e.to_string())?;
-    catalog.validate_sorted().map_err(|e| e.to_string())?;
-    println!("catalog validation: OK");
-    Ok(())
-}
-
-fn validate_dataset(
-    root: PathBuf,
-    release: &str,
-    species: &str,
-    assembly: &str,
-) -> Result<(), String> {
-    let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
-    let paths = bijux_atlas_model::artifact_paths(&root, &dataset);
-
-    let manifest_raw = fs::read_to_string(&paths.manifest).map_err(|e| e.to_string())?;
-    let manifest: ArtifactManifest =
-        serde_json::from_str(&manifest_raw).map_err(|e| e.to_string())?;
-    manifest.validate_strict().map_err(|e| e.to_string())?;
-
-    check_sha(&paths.gff3, &manifest.checksums.gff3_sha256)?;
-    check_sha(&paths.fasta, &manifest.checksums.fasta_sha256)?;
-    check_sha(&paths.fai, &manifest.checksums.fai_sha256)?;
-    check_sha(&paths.sqlite, &manifest.checksums.sqlite_sha256)?;
-
-    let sqlite_bytes = fs::read(&paths.sqlite).map_err(|e| e.to_string())?;
-    if !sqlite_bytes.starts_with(b"SQLite format 3\0") {
-        return Err("sqlite artifact does not start with SQLite header".to_string());
-    }
-
-    if manifest.stats.gene_count == 0 {
-        return Err("manifest gene_count must be > 0".to_string());
-    }
-
-    println!("dataset validation: OK");
-    Ok(())
-}
-
-fn check_sha(path: &PathBuf, expected: &str) -> Result<(), String> {
-    let bytes = fs::read(path).map_err(|e| e.to_string())?;
-    let actual = sha256_hex(&bytes);
-    if actual != expected {
-        return Err(format!(
-            "checksum mismatch for {}: expected {}, got {}",
-            path.display(),
-            expected,
-            actual
-        ));
-    }
-    Ok(())
 }
