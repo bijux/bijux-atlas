@@ -1,0 +1,31 @@
+groups:
+  - name: atlas-core
+    rules:
+      - alert: AtlasElevated5xx
+        expr: sum(rate(atlas_http_requests_total{status=~"5.."}[5m])) > 1
+        for: 10m
+        labels:
+          severity: page
+        annotations:
+          summary: "Bijux Atlas elevated 5xx rate"
+      - alert: AtlasP99LatencySustained
+        expr: atlas_http_request_latency_p95_seconds{route="/v1/genes"} > 0.8
+        for: 15m
+        labels:
+          severity: page
+        annotations:
+          summary: "Bijux Atlas high request latency"
+      - alert: AtlasStoreFailures
+        expr: increase(atlas_store_download_failure_total[10m]) > 0 or increase(atlas_store_open_failure_total[10m]) > 0
+        for: 10m
+        labels:
+          severity: page
+        annotations:
+          summary: "Bijux Atlas store failures detected"
+      - alert: AtlasCacheThrash
+        expr: rate(atlas_dataset_misses[10m]) > rate(atlas_dataset_hits[10m])
+        for: 20m
+        labels:
+          severity: ticket
+        annotations:
+          summary: "Bijux Atlas cache miss pressure high"
