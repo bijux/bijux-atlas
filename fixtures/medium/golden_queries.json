@@ -1,0 +1,5 @@
+[
+  {"name":"by_gene_id","query":{"gene_id":"gA1","limit":1,"allow_full_scan":false}},
+  {"name":"by_name_prefix","query":{"name_prefix":"GENE","limit":5,"allow_full_scan":false}},
+  {"name":"by_region","query":{"region":"chrA:1-1000","limit":10,"allow_full_scan":false}}
+]
