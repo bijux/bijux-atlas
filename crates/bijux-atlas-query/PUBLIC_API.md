@@ -1,7 +1,4 @@
-# PUBLIC API: bijux-atlas-query
+# Public API
 
-Phase 1 stability contract:
-
-- No symbols are stable yet.
-- Crate module layout is provisional.
-- Stability guarantees begin when version reaches 0.2.0 with explicit API freeze notes.
+Canonical public API documentation moved to:
+- [docs/PUBLIC_API.md](docs/PUBLIC_API.md)

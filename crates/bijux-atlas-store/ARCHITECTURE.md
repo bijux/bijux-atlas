@@ -1,6 +1,4 @@
 # Architecture
 
-## Architecture
-
-- This crate is part of the Atlas boundary-controlled workspace.
-- Internal design is intentionally minimal in Phase 2.
+Canonical architecture documentation moved to:
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)

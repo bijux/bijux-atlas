@@ -1,8 +1,4 @@
-# PUBLIC API: bijux-atlas-policies
+# Public API
 
-Stable policy threshold constants exposed by this crate:
-
-- `MAX_LOC_HARD`
-- `MAX_DEPTH_HARD`
-- `MAX_RS_FILES_PER_DIR_HARD`
-- `MAX_MODULES_PER_DIR_HARD`
+Canonical public API documentation moved to:
+- [docs/PUBLIC_API.md](docs/PUBLIC_API.md)
