@@ -162,6 +162,11 @@ async fn main() -> Result<(), String> {
         enable_response_compression: env_bool("ATLAS_ENABLE_RESPONSE_COMPRESSION", true),
         compression_min_bytes: env_usize("ATLAS_COMPRESSION_MIN_BYTES", 4096),
         query_coalesce_ttl: env_duration_ms("ATLAS_QUERY_COALESCE_TTL_MS", 500),
+        redis_url: env::var("ATLAS_REDIS_URL").ok(),
+        redis_prefix: env::var("ATLAS_REDIS_PREFIX").unwrap_or_else(|_| "atlas".to_string()),
+        enable_redis_response_cache: env_bool("ATLAS_ENABLE_REDIS_RESPONSE_CACHE", false),
+        redis_response_cache_ttl_secs: env_usize("ATLAS_REDIS_RESPONSE_CACHE_TTL_SECS", 30),
+        enable_redis_rate_limit: env_bool("ATLAS_ENABLE_REDIS_RATE_LIMIT", false),
         ..ApiConfig::default()
     };
 

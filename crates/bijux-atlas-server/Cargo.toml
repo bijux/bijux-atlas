@@ -26,6 +26,7 @@ opentelemetry-otlp = { version = "0.27", features = ["http-proto", "reqwest-clie
 reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "http2", "charset", "json", "blocking"] }
 flate2 = "1.0"
 brotli = "6"
+redis = { version = "0.27", features = ["tokio-comp"] }
 
 [features]
 default = []

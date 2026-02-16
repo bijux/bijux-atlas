@@ -242,6 +242,7 @@ struct StoreBreakerState {
 }
 
 use telemetry::rate_limiter::RateLimiter;
+use telemetry::redis_backend::RedisBackend;
 
 pub struct DatasetConnection {
     pub conn: Connection,
@@ -873,6 +874,7 @@ pub struct AppState {
     request_id_seed: Arc<AtomicU64>,
     coalesced_inflight: Arc<Mutex<HashMap<String, Arc<Mutex<()>>>>>,
     coalesced_cache: Arc<Mutex<HashMap<String, CachedResponse>>>,
+    redis_backend: Option<Arc<RedisBackend>>,
 }
 
 #[derive(Clone)]
@@ -901,12 +903,35 @@ impl AppState {
             class_medium: Arc::new(Semaphore::new(api.concurrency_medium)),
             class_heavy: Arc::new(Semaphore::new(api.concurrency_heavy)),
             heavy_workers: Arc::new(Semaphore::new(api.heavy_worker_pool_size)),
-            ip_limiter: Arc::new(RateLimiter::default()),
-            api_key_limiter: Arc::new(RateLimiter::default()),
+            ip_limiter: Arc::new(RateLimiter::new(
+                if api.enable_redis_rate_limit {
+                    api.redis_url
+                        .as_deref()
+                        .and_then(|u| RedisBackend::new(u, &api.redis_prefix).ok())
+                } else {
+                    None
+                },
+                "ip",
+            )),
+            api_key_limiter: Arc::new(RateLimiter::new(
+                if api.enable_redis_rate_limit {
+                    api.redis_url
+                        .as_deref()
+                        .and_then(|u| RedisBackend::new(u, &api.redis_prefix).ok())
+                } else {
+                    None
+                },
+                "api_key",
+            )),
             metrics: Arc::new(RequestMetrics::default()),
             request_id_seed: Arc::new(AtomicU64::new(1)),
             coalesced_inflight: Arc::new(Mutex::new(HashMap::new())),
             coalesced_cache: Arc::new(Mutex::new(HashMap::new())),
+            redis_backend: api
+                .redis_url
+                .as_deref()
+                .and_then(|u| RedisBackend::new(u, &api.redis_prefix).ok())
+                .map(Arc::new),
             api,
             limits,
         }

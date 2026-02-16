@@ -42,6 +42,11 @@ pub struct ApiConfig {
     pub enable_response_compression: bool,
     pub compression_min_bytes: usize,
     pub query_coalesce_ttl: Duration,
+    pub redis_url: Option<String>,
+    pub redis_prefix: String,
+    pub enable_redis_response_cache: bool,
+    pub redis_response_cache_ttl_secs: usize,
+    pub enable_redis_rate_limit: bool,
 }
 
 impl Default for ApiConfig {
@@ -73,6 +78,11 @@ impl Default for ApiConfig {
             enable_response_compression: true,
             compression_min_bytes: 4096,
             query_coalesce_ttl: Duration::from_millis(500),
+            redis_url: None,
+            redis_prefix: "atlas".to_string(),
+            enable_redis_response_cache: false,
+            redis_response_cache_ttl_secs: 30,
+            enable_redis_rate_limit: false,
         }
     }
 }
