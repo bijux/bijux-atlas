@@ -27,7 +27,7 @@ spec:
         - name: prewarm-pinned-datasets
           image: {{ .Values.cache.initPrewarm.image }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/app/atlas-cli", "smoke", "--dataset", "{{ (first .Values.cache.pinnedDatasets) | default "" }}"]
+          command: ["/app/bijux-atlas", "atlas", "smoke", "--dataset", "{{ (first .Values.cache.pinnedDatasets) | default "" }}"]
           envFrom:
             - configMapRef:
                 name: {{ include "bijux-atlas.fullname" . }}-config
@@ -41,6 +41,8 @@ spec:
         - name: atlas-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            {{- toYaml .Values.server.command | nindent 12 }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           ports:

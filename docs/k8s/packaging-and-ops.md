@@ -8,6 +8,7 @@ This document defines production deployment defaults for `bijux-atlas`.
 - Build stage runs `cargo build --locked --release -p bijux-atlas-server`.
 - Runtime stage is distroless (`gcr.io/distroless/cc-debian12:nonroot`).
 - Runtime user is non-root and immutable by default.
+- Runtime command follows plugin-mode contract (`/app/bijux-atlas atlas serve`), see `docs/k8s/plugin-mode-entrypoint.md`.
 
 ## Helm Chart Surface
 

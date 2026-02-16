@@ -60,6 +60,10 @@ concurrency:
   heavy: 16
 
 server:
+  command:
+    - /app/bijux-atlas
+    - atlas
+    - serve
   requestTimeoutMs: 5000
   sqlTimeoutMs: 800
   responseMaxBytes: 524288

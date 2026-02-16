@@ -334,10 +334,9 @@ async fn release_metadata_endpoint_and_explain_mode_are_available() {
     .await;
     assert_eq!(status, 200);
     let json: Value = serde_json::from_str(&body).expect("dataset health json");
-    assert!(
-        json.get("health")
-            .and_then(|h| h.get("cached"))
-            .and_then(Value::as_bool)
-            .is_some()
-    );
+    assert!(json
+        .get("health")
+        .and_then(|h| h.get("cached"))
+        .and_then(Value::as_bool)
+        .is_some());
 }
