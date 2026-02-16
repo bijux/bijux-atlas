@@ -1,0 +1,8 @@
+{
+  "mixed_80_20": {"p95_ms": 900, "fail_rate": 0.02},
+  "warm_steady": {"p95_ms": 800, "fail_rate": 0.02},
+  "spike_burst": {"p95_ms": 1400, "fail_rate": 0.05},
+  "store_outage_mid_spike": {"p95_ms": 1500, "fail_rate": 0.20},
+  "cache_stampede": {"p95_ms": 1500, "fail_rate": 0.20},
+  "soak_30m": {"p95_ms": 1000, "fail_rate": 0.03}
+}
