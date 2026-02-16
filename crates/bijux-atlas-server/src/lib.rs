@@ -25,8 +25,10 @@ use tokio::sync::{Mutex, OwnedSemaphorePermit, RwLock, Semaphore};
 use tokio::time::timeout;
 use tracing::{error, info, warn};
 
+mod cache;
 mod config;
 mod http;
+mod middleware;
 mod store;
 mod telemetry;
 
@@ -127,12 +129,12 @@ struct RequestMetrics {
 }
 
 impl RequestMetrics {
-    async fn observe_request(&self, route: &str, status: StatusCode, latency: Duration) {
+    pub(crate) async fn observe_request(&self, route: &str, status: StatusCode, latency: Duration) {
         self.observe_request_with_trace(route, status, latency, None)
             .await;
     }
 
-    async fn observe_request_with_trace(
+    pub(crate) async fn observe_request_with_trace(
         &self,
         route: &str,
         status: StatusCode,
@@ -158,7 +160,7 @@ impl RequestMetrics {
         }
     }
 
-    async fn observe_sqlite_query(&self, query_type: &str, latency: Duration) {
+    pub(crate) async fn observe_sqlite_query(&self, query_type: &str, latency: Duration) {
         let mut q = self.sqlite_latency_ns.lock().await;
         q.entry(query_type.to_string())
             .or_insert_with(Vec::new)
@@ -172,14 +174,14 @@ impl RequestMetrics {
         }
     }
 
-    async fn observe_stage(&self, stage: &str, latency: Duration) {
+    pub(crate) async fn observe_stage(&self, stage: &str, latency: Duration) {
         let mut m = self.stage_latency_ns.lock().await;
         m.entry(stage.to_string())
             .or_insert_with(Vec::new)
             .push(latency.as_nanos() as u64);
     }
 
-    async fn should_shed_heavy(&self, min_samples: usize, threshold_ms: u64) -> bool {
+    pub(crate) async fn should_shed_heavy(&self, min_samples: usize, threshold_ms: u64) -> bool {
         let recent = self.heavy_latency_recent_ns.lock().await;
         if recent.len() < min_samples {
             return false;
@@ -435,6 +437,7 @@ impl DatasetCacheManager {
                     "PRAGMA query_only=ON; PRAGMA journal_mode=OFF; PRAGMA synchronous=OFF; PRAGMA temp_store=MEMORY; PRAGMA cache_size=-{}; PRAGMA mmap_size={};",
                     self.cfg.sqlite_pragma_cache_kib, self.cfg.sqlite_pragma_mmap_bytes
                 );
+                let _ = conn.set_prepared_statement_cache_capacity(128);
                 let _ = conn.execute_batch(&pragma_sql);
                 self.reset_breaker(dataset).await;
                 self.metrics
@@ -864,24 +867,17 @@ pub struct AppState {
     pub api: ApiConfig,
     pub limits: QueryLimits,
     pub ready: Arc<AtomicBool>,
-    ip_limiter: Arc<RateLimiter>,
-    api_key_limiter: Arc<RateLimiter>,
-    class_cheap: Arc<Semaphore>,
-    class_medium: Arc<Semaphore>,
-    class_heavy: Arc<Semaphore>,
-    heavy_workers: Arc<Semaphore>,
-    metrics: Arc<RequestMetrics>,
-    request_id_seed: Arc<AtomicU64>,
-    coalesced_inflight: Arc<Mutex<HashMap<String, Arc<Mutex<()>>>>>,
-    coalesced_cache: Arc<Mutex<HashMap<String, CachedResponse>>>,
-    redis_backend: Option<Arc<RedisBackend>>,
-}
-
-#[derive(Clone)]
-pub struct CachedResponse {
-    pub body: Vec<u8>,
-    pub etag: String,
-    pub created_at: Instant,
+    pub(crate) ip_limiter: Arc<RateLimiter>,
+    pub(crate) api_key_limiter: Arc<RateLimiter>,
+    pub(crate) class_cheap: Arc<Semaphore>,
+    pub(crate) class_medium: Arc<Semaphore>,
+    pub(crate) class_heavy: Arc<Semaphore>,
+    pub(crate) heavy_workers: Arc<Semaphore>,
+    pub(crate) metrics: Arc<RequestMetrics>,
+    pub(crate) request_id_seed: Arc<AtomicU64>,
+    pub(crate) coalescer: Arc<cache::coalesce::QueryCoalescer>,
+    pub(crate) hot_query_cache: Arc<Mutex<cache::hot::HotQueryCache>>,
+    pub(crate) redis_backend: Option<Arc<RedisBackend>>,
 }
 
 impl AppState {
@@ -925,8 +921,11 @@ impl AppState {
             )),
             metrics: Arc::new(RequestMetrics::default()),
             request_id_seed: Arc::new(AtomicU64::new(1)),
-            coalesced_inflight: Arc::new(Mutex::new(HashMap::new())),
-            coalesced_cache: Arc::new(Mutex::new(HashMap::new())),
+            coalescer: Arc::new(cache::coalesce::QueryCoalescer::new()),
+            hot_query_cache: Arc::new(Mutex::new(cache::hot::HotQueryCache::new(
+                Duration::from_secs(2),
+                512,
+            ))),
             redis_backend: api
                 .redis_url
                 .as_deref()

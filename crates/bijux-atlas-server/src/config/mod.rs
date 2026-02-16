@@ -47,6 +47,8 @@ pub struct ApiConfig {
     pub enable_redis_response_cache: bool,
     pub redis_response_cache_ttl_secs: usize,
     pub enable_redis_rate_limit: bool,
+    pub enable_cheap_only_survival: bool,
+    pub allow_min_viable_response: bool,
 }
 
 impl Default for ApiConfig {
@@ -83,6 +85,8 @@ impl Default for ApiConfig {
             enable_redis_response_cache: false,
             redis_response_cache_ttl_secs: 30,
             enable_redis_rate_limit: false,
+            enable_cheap_only_survival: false,
+            allow_min_viable_response: true,
         }
     }
 }
