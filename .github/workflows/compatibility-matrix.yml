@@ -1,0 +1,33 @@
+name: compatibility-matrix
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-matrix:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/compatibility-matrix
+      TMPDIR: artifacts/isolates/compatibility-matrix/tmp
+      TMP: artifacts/isolates/compatibility-matrix/tmp
+      TEMP: artifacts/isolates/compatibility-matrix/tmp
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - run: mkdir -p "$TMPDIR"
+      - run: ./scripts/release/update-compat-matrix.sh "${GITHUB_REF_NAME}"
+      - name: Create compatibility matrix PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "docs(compatibility): refresh umbrella-atlas matrix for ${GITHUB_REF_NAME}"
+          title: "docs: refresh compatibility matrix for ${GITHUB_REF_NAME}"
+          body: "Automated compatibility matrix update for release ${GITHUB_REF_NAME}."
+          branch: "automation/compat-matrix-${{ github.ref_name }}"
+          delete-branch: true
