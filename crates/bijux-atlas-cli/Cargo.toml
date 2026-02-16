@@ -18,3 +18,7 @@ serde_json.workspace = true
 [[bin]]
 name = "atlas-cli"
 path = "src/main.rs"
+
+[[bin]]
+name = "bijux-atlas"
+path = "src/main.rs"
