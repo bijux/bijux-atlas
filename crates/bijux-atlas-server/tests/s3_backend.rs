@@ -143,6 +143,7 @@ async fn s3_like_backend_supports_retry_and_resume_download() {
     let backend = S3LikeBackend::new(
         format!("http://{addr}"),
         None,
+        None,
         RetryPolicy {
             max_attempts: 4,
             base_backoff_ms: 10,

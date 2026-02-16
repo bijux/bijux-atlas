@@ -202,6 +202,10 @@ async fn main() -> Result<(), String> {
         enable_redis_rate_limit: env_bool("ATLAS_ENABLE_REDIS_RATE_LIMIT", false),
         enable_cheap_only_survival: env_bool("ATLAS_ENABLE_CHEAP_ONLY_SURVIVAL", false),
         allow_min_viable_response: env_bool("ATLAS_ALLOW_MIN_VIABLE_RESPONSE", true),
+        continue_download_on_request_timeout_for_warmup: env_bool(
+            "ATLAS_CONTINUE_DOWNLOAD_ON_TIMEOUT_FOR_WARMUP",
+            true,
+        ),
         ..ApiConfig::default()
     };
 
@@ -212,6 +216,7 @@ async fn main() -> Result<(), String> {
                 .map_err(|_| "ATLAS_STORE_S3_BASE_URL is required when S3 enabled".to_string())?;
             Arc::new(S3LikeBackend::new(
                 base_url,
+                env::var("ATLAS_STORE_S3_PRESIGNED_BASE_URL").ok(),
                 env::var("ATLAS_STORE_S3_BEARER").ok(),
                 RetryPolicy {
                     max_attempts: env_usize("ATLAS_STORE_RETRY_ATTEMPTS", 4),

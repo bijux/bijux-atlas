@@ -66,24 +66,34 @@ impl DatasetStoreBackend for LocalFsBackend {
 
 pub struct S3LikeBackend {
     base_url: String,
+    presigned_base_url: Option<String>,
     auth_bearer: Option<String>,
     retry: RetryPolicy,
 }
 
 impl S3LikeBackend {
     #[must_use]
-    pub fn new(base_url: String, auth_bearer: Option<String>, retry: RetryPolicy) -> Self {
+    pub fn new(
+        base_url: String,
+        presigned_base_url: Option<String>,
+        auth_bearer: Option<String>,
+        retry: RetryPolicy,
+    ) -> Self {
         Self {
             base_url: base_url.trim_end_matches('/').to_string(),
+            presigned_base_url: presigned_base_url
+                .map(|x| x.trim_end_matches('/').to_string())
+                .filter(|x| !x.is_empty()),
             auth_bearer,
             retry,
         }
     }
 
     fn object_url(&self, dataset: &DatasetId, file: &str) -> String {
+        let base = self.presigned_base_url.as_deref().unwrap_or(&self.base_url);
         format!(
             "{}/{}/{}/{}/derived/{}",
-            self.base_url, dataset.release, dataset.species, dataset.assembly, file
+            base, dataset.release, dataset.species, dataset.assembly, file
         )
     }
 
