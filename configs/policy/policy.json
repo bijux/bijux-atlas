@@ -14,7 +14,9 @@
   "cache_budget": {
     "max_disk_bytes": 8589934592,
     "max_dataset_count": 8,
-    "pinned_datasets_max": 32
+    "pinned_datasets_max": 32,
+    "shard_count_policy_max": 512,
+    "max_open_shards_per_pod": 16
   },
   "rate_limit": {
     "per_ip_rps": 100,

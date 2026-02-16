@@ -33,11 +33,13 @@
     },
     "cache_budget": {
       "type": "object",
-      "required": ["max_disk_bytes", "max_dataset_count", "pinned_datasets_max"],
+      "required": ["max_disk_bytes", "max_dataset_count", "pinned_datasets_max", "shard_count_policy_max", "max_open_shards_per_pod"],
       "properties": {
         "max_disk_bytes": { "type": "integer", "minimum": 1 },
         "max_dataset_count": { "type": "integer", "minimum": 1 },
-        "pinned_datasets_max": { "type": "integer", "minimum": 0 }
+        "pinned_datasets_max": { "type": "integer", "minimum": 0 },
+        "shard_count_policy_max": { "type": "integer", "minimum": 1 },
+        "max_open_shards_per_pod": { "type": "integer", "minimum": 1 }
       },
       "additionalProperties": false
     },

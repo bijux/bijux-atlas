@@ -22,6 +22,8 @@ fn bench_policy_validate(c: &mut Criterion) {
             max_disk_bytes: 8 * 1024 * 1024 * 1024,
             max_dataset_count: 8,
             pinned_datasets_max: 32,
+            shard_count_policy_max: 512,
+            max_open_shards_per_pod: 16,
         },
         rate_limit: RateLimitPolicy {
             per_ip_rps: 100,

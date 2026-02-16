@@ -32,6 +32,8 @@ pub struct CacheBudget {
     pub max_disk_bytes: u64,
     pub max_dataset_count: u32,
     pub pinned_datasets_max: u32,
+    pub shard_count_policy_max: u32,
+    pub max_open_shards_per_pod: u32,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

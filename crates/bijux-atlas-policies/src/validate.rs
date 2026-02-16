@@ -110,6 +110,16 @@ pub fn validate_policy_config(cfg: &PolicyConfig) -> Result<(), PolicyValidation
             "cache_budget.max_dataset_count must be > 0".to_string(),
         ));
     }
+    if cfg.cache_budget.shard_count_policy_max == 0 {
+        return Err(PolicyValidationError(
+            "cache_budget.shard_count_policy_max must be > 0".to_string(),
+        ));
+    }
+    if cfg.cache_budget.max_open_shards_per_pod == 0 {
+        return Err(PolicyValidationError(
+            "cache_budget.max_open_shards_per_pod must be > 0".to_string(),
+        ));
+    }
 
     if cfg.rate_limit.per_ip_rps == 0 || cfg.rate_limit.per_api_key_rps == 0 {
         return Err(PolicyValidationError(

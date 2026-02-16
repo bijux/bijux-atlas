@@ -71,6 +71,8 @@ fn valid_policy() -> PolicyConfig {
             max_disk_bytes: 8 * 1024 * 1024 * 1024,
             max_dataset_count: 8,
             pinned_datasets_max: 32,
+            shard_count_policy_max: 512,
+            max_open_shards_per_pod: 16,
         },
         rate_limit: RateLimitPolicy {
             per_ip_rps: 100,
@@ -244,6 +246,14 @@ fn policy_fields_are_table_validated() {
     let mut bad = valid_policy();
     bad.cache_budget.max_dataset_count = 0;
     cases.push(("cache_budget.max_dataset_count", bad));
+
+    let mut bad = valid_policy();
+    bad.cache_budget.shard_count_policy_max = 0;
+    cases.push(("cache_budget.shard_count_policy_max", bad));
+
+    let mut bad = valid_policy();
+    bad.cache_budget.max_open_shards_per_pod = 0;
+    cases.push(("cache_budget.max_open_shards_per_pod", bad));
 
     let mut bad = valid_policy();
     bad.rate_limit.per_ip_rps = 0;
