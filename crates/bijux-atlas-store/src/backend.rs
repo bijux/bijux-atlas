@@ -290,7 +290,15 @@ pub struct HttpReadonlyStore {
     pub cache_root: Option<PathBuf>,
     client: Client,
     etags: Arc<Mutex<HashMap<String, String>>>,
+    catalog_state: Arc<Mutex<CatalogCacheState>>,
     instrumentation: Arc<dyn StoreInstrumentation>,
+}
+
+#[derive(Debug, Default, Clone)]
+struct CatalogCacheState {
+    last_fetch: Option<Instant>,
+    backoff_until: Option<Instant>,
+    consecutive_errors: u32,
 }
 
 impl HttpReadonlyStore {
@@ -302,6 +310,7 @@ impl HttpReadonlyStore {
             cache_root: None,
             client: Client::new(),
             etags: Arc::new(Mutex::new(HashMap::new())),
+            catalog_state: Arc::new(Mutex::new(CatalogCacheState::default())),
             instrumentation: Arc::new(NoopInstrumentation),
         }
     }
@@ -365,15 +374,53 @@ impl HttpReadonlyStore {
 
 impl ArtifactStore for HttpReadonlyStore {
     fn list_datasets(&self) -> Result<Vec<DatasetId>, StoreError> {
+        if let Ok(state) = self.catalog_state.lock() {
+            if let Some(until) = state.backoff_until {
+                if Instant::now() < until {
+                    return Err(StoreError::new(
+                        StoreErrorCode::Network,
+                        "catalog backoff active after recent errors",
+                    ));
+                }
+            }
+            if let Some(last) = state.last_fetch {
+                if Instant::now().saturating_duration_since(last) < Duration::from_millis(250) {
+                    return Err(StoreError::new(
+                        StoreErrorCode::Network,
+                        "catalog fetch throttled to avoid hot loop",
+                    ));
+                }
+            }
+        }
         let bytes = self.fetch_bytes(
             "catalog.json",
             &format!("{}/catalog.json", self.base_url.trim_end_matches('/')),
-        )?;
-        let catalog: Catalog = serde_json::from_slice(&bytes)
-            .map_err(|e| StoreError::new(StoreErrorCode::Validation, e.to_string()))?;
-        validate_catalog_strict(&catalog)
-            .map_err(|e| StoreError::new(StoreErrorCode::Validation, e))?;
-        Ok(catalog.datasets.into_iter().map(|x| x.dataset).collect())
+        );
+        match bytes {
+            Ok(bytes) => {
+                if let Ok(mut state) = self.catalog_state.lock() {
+                    state.last_fetch = Some(Instant::now());
+                    state.consecutive_errors = 0;
+                    state.backoff_until = None;
+                }
+                let catalog: Catalog = serde_json::from_slice(&bytes)
+                    .map_err(|e| StoreError::new(StoreErrorCode::Validation, e.to_string()))?;
+                validate_catalog_strict(&catalog)
+                    .map_err(|e| StoreError::new(StoreErrorCode::Validation, e))?;
+                Ok(catalog.datasets.into_iter().map(|x| x.dataset).collect())
+            }
+            Err(err) => {
+                if let Ok(mut state) = self.catalog_state.lock() {
+                    state.last_fetch = Some(Instant::now());
+                    state.consecutive_errors = state.consecutive_errors.saturating_add(1);
+                    let backoff_ms = 250_u64
+                        .saturating_mul(state.consecutive_errors as u64)
+                        .min(5_000);
+                    state.backoff_until = Some(Instant::now() + Duration::from_millis(backoff_ms));
+                }
+                Err(err)
+            }
+        }
     }
 
     fn get_manifest(&self, dataset: &DatasetId) -> Result<ArtifactManifest, StoreError> {
@@ -439,6 +486,7 @@ impl Default for RetryPolicy {
 
 pub struct S3LikeStore {
     pub endpoint: String,
+    pub presigned_endpoint: Option<String>,
     pub bucket: String,
     pub bearer_token: Option<String>,
     pub retry: RetryPolicy,
@@ -453,6 +501,7 @@ impl S3LikeStore {
     pub fn new(endpoint: String, bucket: String) -> Self {
         Self {
             endpoint,
+            presigned_endpoint: None,
             bucket,
             bearer_token: None,
             retry: RetryPolicy::default(),
@@ -466,6 +515,14 @@ impl S3LikeStore {
     #[must_use]
     pub fn with_bearer_token(mut self, token: Option<String>) -> Self {
         self.bearer_token = token;
+        self
+    }
+
+    #[must_use]
+    pub fn with_presigned_endpoint(mut self, endpoint: Option<String>) -> Self {
+        self.presigned_endpoint = endpoint
+            .map(|x| x.trim_end_matches('/').to_string())
+            .filter(|x| !x.is_empty());
         self
     }
 
@@ -489,9 +546,10 @@ impl S3LikeStore {
     }
 
     fn object_url(&self, key: &str) -> String {
+        let base = self.presigned_endpoint.as_deref().unwrap_or(&self.endpoint);
         format!(
             "{}/{}/{}",
-            self.endpoint.trim_end_matches('/'),
+            base.trim_end_matches('/'),
             self.bucket,
             key.trim_start_matches('/')
         )
@@ -518,19 +576,49 @@ impl S3LikeStore {
         }
 
         let mut attempt = 0usize;
+        let mut buf: Vec<u8> = Vec::new();
         loop {
             let started = Instant::now();
             let mut req = self.client.get(self.object_url(key));
+            if !buf.is_empty() {
+                req = req.header(reqwest::header::RANGE, format!("bytes={}-", buf.len()));
+            }
             if let Some(token) = &self.bearer_token {
                 req = req.bearer_auth(token);
             }
             match req.send() {
                 Ok(resp) => {
-                    if resp.status().is_success() {
-                        let bytes = resp
+                    if resp.status().is_success() || resp.status().as_u16() == 206 {
+                        let total = resp
+                            .headers()
+                            .get("content-range")
+                            .and_then(|v| v.to_str().ok())
+                            .and_then(|v| v.split('/').nth(1))
+                            .and_then(|v| v.parse::<usize>().ok());
+                        let mut part = resp
                             .bytes()
                             .map_err(|e| StoreError::new(StoreErrorCode::Network, e.to_string()))?
                             .to_vec();
+                        if part.is_empty() {
+                            return Ok(buf);
+                        }
+                        buf.append(&mut part);
+                        if let Some(total) = total {
+                            if buf.len() < total {
+                                attempt += 1;
+                                if attempt >= self.retry.max_attempts {
+                                    return Err(StoreError::new(
+                                        StoreErrorCode::Network,
+                                        "partial content did not complete within retry budget",
+                                    ));
+                                }
+                                thread::sleep(Duration::from_millis(
+                                    self.retry.base_backoff_ms.saturating_mul(attempt as u64),
+                                ));
+                                continue;
+                            }
+                        }
+                        let bytes = buf.clone();
                         if let Some(root) = &self.cache_root {
                             fs::create_dir_all(root)
                                 .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
