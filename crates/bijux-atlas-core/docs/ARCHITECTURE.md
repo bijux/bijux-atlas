@@ -2,5 +2,14 @@
 
 ## Architecture
 
-- This crate is part of the Atlas boundary-controlled workspace.
-- Internal design is intentionally minimal in Phase 2.
+`bijux-atlas-core` is the deterministic utility base layer.
+
+Responsibilities:
+- Canonical bytes/hash/cursor primitives.
+- Shared machine error model and error codes.
+- Environment-based config-path resolution helpers.
+
+Non-responsibilities:
+- Domain models.
+- Ingestion/query logic.
+- Runtime I/O integrations.

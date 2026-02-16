@@ -16,4 +16,4 @@
 - [tests/](tests/)
 
 ## Benches
-- N/A (no benches in this crate)
+- [benches/](benches/)

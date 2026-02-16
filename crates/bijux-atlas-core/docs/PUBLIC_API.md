@@ -1,7 +1,19 @@
 # PUBLIC API: bijux-atlas-core
 
-Phase 1 stability contract:
+Stable exported items (0.1.x contract):
 
-- No symbols are stable yet.
-- Crate module layout is provisional.
-- Stability guarantees begin when version reaches 0.2.0 with explicit API freeze notes.
+- `CRATE_NAME`
+- `ENV_BIJUX_LOG_LEVEL`
+- `ENV_BIJUX_CACHE_DIR`
+- `ExitCode`
+- `ConfigPathScope`
+- `MachineError`
+- `ErrorCode`
+- `canonical` module
+- `time` module
+- `sha256_hex`
+- `resolve_bijux_cache_dir`
+- `resolve_bijux_config_path`
+
+Export policy:
+- `lib.rs` must not expose additional public API without updating this file.
