@@ -10,19 +10,30 @@ use bijux_atlas_model::{
 use bijux_atlas_query::{
     explain_query_plan, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits, RegionFilter,
 };
-use clap::{Parser, Subcommand, ValueEnum};
+use clap::{ArgAction, Parser, Subcommand, ValueEnum};
 use rusqlite::Connection;
-use serde_json::Value;
+use serde_json::{json, Value};
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::PathBuf;
+use std::process::ExitCode as ProcessExitCode;
 
 #[derive(Parser)]
-#[command(name = "atlas-cli")]
+#[command(name = "bijux-atlas")]
 #[command(about = "Bijux Atlas operations CLI")]
 struct Cli {
+    #[arg(long, global = true, default_value_t = false)]
+    json: bool,
+    #[arg(long, global = true, default_value_t = false)]
+    quiet: bool,
+    #[arg(long, global = true, action = ArgAction::Count)]
+    verbose: u8,
+    #[arg(long, global = true, default_value_t = false)]
+    trace: bool,
+    #[arg(long = "bijux-plugin-metadata", default_value_t = false)]
+    bijux_plugin_metadata: bool,
     #[command(subcommand)]
-    command: Commands,
+    command: Option<Commands>,
 }
 
 #[derive(Subcommand)]
@@ -152,9 +163,29 @@ struct IngestCliArgs {
     seqid_aliases: String,
 }
 
-fn main() -> Result<(), String> {
+fn main() -> ProcessExitCode {
+    match run() {
+        Ok(()) => ProcessExitCode::from(bijux_atlas_core::ExitCode::Success as u8),
+        Err(err) => {
+            eprintln!("{err}");
+            ProcessExitCode::from(bijux_atlas_core::ExitCode::Internal as u8)
+        }
+    }
+}
+
+fn run() -> Result<(), String> {
     let cli = Cli::parse();
-    match cli.command {
+    let _output_mode = (cli.json, cli.quiet, cli.verbose, cli.trace);
+    if cli.bijux_plugin_metadata {
+        emit_plugin_metadata(cli.json)?;
+        return Ok(());
+    }
+
+    let command = cli
+        .command
+        .ok_or_else(|| "missing command; see --help".to_string())?;
+
+    match command {
         Commands::Catalog { command } => match command {
             CatalogCommand::Validate { path } => validate_catalog(path),
         },
@@ -221,6 +252,28 @@ fn main() -> Result<(), String> {
             snapshot_out,
         } => smoke_dataset(root, &dataset, golden_queries, write_snapshot, snapshot_out),
     }
+}
+
+fn emit_plugin_metadata(machine_json: bool) -> Result<(), String> {
+    let payload = json!({
+        "name": "bijux-atlas",
+        "version": env!("CARGO_PKG_VERSION"),
+        "compatible_umbrella": ">=0.1.0,<0.2.0",
+        "build_hash": option_env!("BIJUX_BUILD_HASH").unwrap_or("dev"),
+    });
+
+    if machine_json {
+        println!(
+            "{}",
+            serde_json::to_string(&payload).map_err(|e| e.to_string())?
+        );
+    } else {
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
+        );
+    }
+    Ok(())
 }
 
 fn run_ingest(args: IngestCliArgs) -> Result<(), String> {
