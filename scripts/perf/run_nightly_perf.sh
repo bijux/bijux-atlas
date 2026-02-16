@@ -27,6 +27,7 @@ OUT_DIR="$ART/cold-start" "$ROOT/scripts/perf/cold_start_benchmark.sh"
 "$ROOT/scripts/perf/run_suite.sh" mixed_80_20.js "$RES"
 "$ROOT/scripts/perf/run_suite.sh" warm_steady.js "$RES"
 "$ROOT/scripts/perf/run_suite.sh" spike_burst.js "$RES"
+"$ROOT/scripts/perf/run_suite.sh" regional_spike_10x_60s.js "$RES"
 "$ROOT/scripts/perf/run_suite.sh" cache_stampede.js "$RES"
 
 # emulate store outage by forcing cached-only mode
