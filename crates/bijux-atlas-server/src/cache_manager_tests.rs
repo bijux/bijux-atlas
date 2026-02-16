@@ -6,8 +6,11 @@ fn fixture_sqlite() -> Vec<u8> {
     let db = dir.path().join("x.sqlite");
     let conn = Connection::open(&db).expect("open sqlite");
     conn.execute_batch(
-        "CREATE TABLE gene_summary(id INTEGER PRIMARY KEY, gene_id TEXT, name TEXT, biotype TEXT, seqid TEXT, start INT, end INT, transcript_count INT, sequence_length INT);
-         INSERT INTO gene_summary(id,gene_id,name,biotype,seqid,start,end,transcript_count,sequence_length) VALUES (1,'g1','G1','pc','chr1',1,10,1,10);",
+        "CREATE TABLE gene_summary(id INTEGER PRIMARY KEY, gene_id TEXT, name TEXT, name_normalized TEXT, biotype TEXT, seqid TEXT, start INT, end INT, transcript_count INT, sequence_length INT);
+         CREATE TABLE dataset_stats(dimension TEXT NOT NULL, value TEXT NOT NULL, gene_count INTEGER NOT NULL, PRIMARY KEY (dimension, value));
+         INSERT INTO gene_summary(id,gene_id,name,name_normalized,biotype,seqid,start,end,transcript_count,sequence_length) VALUES (1,'g1','G1','g1','pc','chr1',1,10,1,10);
+         INSERT INTO dataset_stats(dimension,value,gene_count) VALUES ('biotype','pc',1);
+         INSERT INTO dataset_stats(dimension,value,gene_count) VALUES ('seqid','chr1',1);",
     )
     .expect("seed sqlite");
     std::fs::read(db).expect("read sqlite bytes")
@@ -144,6 +147,42 @@ async fn startup_warmup_honors_fail_readiness_flag() {
 
     let err = mgr.startup_warmup().await.expect_err("warmup must fail");
     assert!(err.to_string().contains("warmup failed"));
+}
+
+#[tokio::test]
+async fn read_only_sqlite_pragma_profile_is_applied() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds.clone(), sqlite);
+    *store.etag.lock().await = "v1".to_string();
+    let tmp = tempdir().expect("tempdir");
+    let mgr = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..Default::default()
+        },
+        store,
+    );
+    let conn = mgr
+        .open_dataset_connection(&ds)
+        .await
+        .expect("open dataset connection");
+    let query_only: i64 = conn
+        .conn
+        .query_row("PRAGMA query_only", [], |r| r.get(0))
+        .expect("query_only");
+    let sync: i64 = conn
+        .conn
+        .query_row("PRAGMA synchronous", [], |r| r.get(0))
+        .expect("synchronous");
+    let temp_store: i64 = conn
+        .conn
+        .query_row("PRAGMA temp_store", [], |r| r.get(0))
+        .expect("temp_store");
+    assert_eq!(query_only, 1);
+    assert_eq!(sync, 0);
+    assert_eq!(temp_store, 2);
 }
 
 #[tokio::test]

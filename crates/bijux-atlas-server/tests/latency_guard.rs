@@ -15,8 +15,11 @@ fn fixture_sqlite() -> Vec<u8> {
     let db = dir.path().join("x.sqlite");
     let conn = Connection::open(&db).expect("open sqlite");
     conn.execute_batch(
-        "CREATE TABLE gene_summary(id INTEGER PRIMARY KEY, gene_id TEXT, name TEXT, biotype TEXT, seqid TEXT, start INT, end INT, transcript_count INT, sequence_length INT);
-         INSERT INTO gene_summary(id,gene_id,name,biotype,seqid,start,end,transcript_count,sequence_length) VALUES (1,'g1','G1','pc','chr1',1,10,1,10);",
+        "CREATE TABLE gene_summary(id INTEGER PRIMARY KEY, gene_id TEXT, name TEXT, name_normalized TEXT, biotype TEXT, seqid TEXT, start INT, end INT, transcript_count INT, sequence_length INT);
+         CREATE TABLE dataset_stats(dimension TEXT NOT NULL, value TEXT NOT NULL, gene_count INTEGER NOT NULL, PRIMARY KEY (dimension, value));
+         INSERT INTO gene_summary(id,gene_id,name,name_normalized,biotype,seqid,start,end,transcript_count,sequence_length) VALUES (1,'g1','G1','g1','pc','chr1',1,10,1,10);
+         INSERT INTO dataset_stats(dimension,value,gene_count) VALUES ('biotype','pc',1);
+         INSERT INTO dataset_stats(dimension,value,gene_count) VALUES ('seqid','chr1',1);",
     )
     .expect("seed sqlite");
     std::fs::read(db).expect("read sqlite bytes")
@@ -90,6 +93,36 @@ async fn latency_regression_guard_p95_under_threshold() {
     assert!(
         p95 <= Duration::from_millis(120),
         "p95 latency regression: {:?}",
+        p95
+    );
+}
+
+#[tokio::test]
+async fn db_open_is_cheap_regression_guard() {
+    let (_, _, sqlite) = mk_dataset();
+    let tmp = tempdir().expect("tempdir");
+    let db_path = tmp.path().join("bench.sqlite");
+    std::fs::write(&db_path, sqlite).expect("write sqlite");
+
+    let mut samples = Vec::new();
+    for _ in 0..200 {
+        let started = Instant::now();
+        let conn = rusqlite::Connection::open_with_flags(
+            &db_path,
+            rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY | rusqlite::OpenFlags::SQLITE_OPEN_NO_MUTEX,
+        )
+        .expect("open");
+        let _: i64 = conn
+            .query_row("SELECT COUNT(*) FROM gene_summary", [], |r| r.get(0))
+            .expect("count");
+        samples.push(started.elapsed());
+    }
+    samples.sort_unstable();
+    let p95_idx = ((samples.len() as f64) * 0.95).ceil() as usize - 1;
+    let p95 = samples[p95_idx.min(samples.len() - 1)];
+    assert!(
+        p95 <= Duration::from_millis(10),
+        "db-open p95 regression: {:?}",
         p95
     );
 }

@@ -14,8 +14,11 @@ fn fixture_sqlite() -> Vec<u8> {
     let db = dir.path().join("x.sqlite");
     let conn = Connection::open(&db).expect("open sqlite");
     conn.execute_batch(
-        "CREATE TABLE gene_summary(id INTEGER PRIMARY KEY, gene_id TEXT, name TEXT, biotype TEXT, seqid TEXT, start INT, end INT, transcript_count INT, sequence_length INT);
-         INSERT INTO gene_summary(id,gene_id,name,biotype,seqid,start,end,transcript_count,sequence_length) VALUES (1,'g1','G1','pc','chr1',1,10,1,10);",
+        "CREATE TABLE gene_summary(id INTEGER PRIMARY KEY, gene_id TEXT, name TEXT, name_normalized TEXT, biotype TEXT, seqid TEXT, start INT, end INT, transcript_count INT, sequence_length INT);
+         CREATE TABLE dataset_stats(dimension TEXT NOT NULL, value TEXT NOT NULL, gene_count INTEGER NOT NULL, PRIMARY KEY (dimension, value));
+         INSERT INTO gene_summary(id,gene_id,name,name_normalized,biotype,seqid,start,end,transcript_count,sequence_length) VALUES (1,'g1','G1','g1','pc','chr1',1,10,1,10);
+         INSERT INTO dataset_stats(dimension,value,gene_count) VALUES ('biotype','pc',1);
+         INSERT INTO dataset_stats(dimension,value,gene_count) VALUES ('seqid','chr1',1);",
     )
     .expect("seed sqlite");
     std::fs::read(db).expect("read sqlite bytes")
