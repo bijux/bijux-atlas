@@ -1,0 +1,42 @@
+#!/usr/bin/env sh
+set -eu
+
+required_vars="ISO_TAG ISO_RUN_ID ISO_ROOT CARGO_TARGET_DIR CARGO_HOME TMPDIR TMP TEMP"
+
+print_explain() {
+  cat <<'TXT'
+isolate-required:
+- Commands that build/test/lint Rust must run inside an isolate.
+- Required env vars: ISO_TAG ISO_RUN_ID ISO_ROOT CARGO_TARGET_DIR CARGO_HOME TMPDIR TMP TEMP.
+- Writable paths must be inside ISO_ROOT.
+TXT
+}
+
+if [ "${1:-}" = "--explain" ]; then
+  print_explain
+  exit 0
+fi
+
+fail() {
+  echo "isolate-required: $1" >&2
+  exit 1
+}
+
+for var in $required_vars; do
+  eval "value=\${$var:-}"
+  [ -n "$value" ] || fail "missing env var: $var"
+done
+
+case "$ISO_ROOT" in
+  */artifacts/isolates/*) ;;
+  *) fail "ISO_ROOT must be under artifacts/isolates: $ISO_ROOT" ;;
+esac
+
+for path in "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR" "$TMP" "$TEMP"; do
+  case "$path" in
+    "$ISO_ROOT"/*) ;;
+    *) fail "path not inside ISO_ROOT: $path" ;;
+  esac
+done
+
+echo "isolate-required: OK"
