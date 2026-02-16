@@ -8,6 +8,7 @@ members = [
   "crates/bijux-atlas-api",
   "crates/bijux-atlas-cli",
   "crates/bijux-atlas-server",
+  "crates/bijux-atlas-policies",
 ]
 resolver = "2"
 
@@ -38,3 +39,4 @@ bijux-atlas-query = { version = "=0.1.0", path = "crates/bijux-atlas-query" }
 bijux-atlas-api = { version = "=0.1.0", path = "crates/bijux-atlas-api" }
 bijux-atlas-cli = { version = "=0.1.0", path = "crates/bijux-atlas-cli" }
 bijux-atlas-server = { version = "=0.1.0", path = "crates/bijux-atlas-server" }
+bijux-atlas-policies = { version = "=0.1.0", path = "crates/bijux-atlas-policies" }
