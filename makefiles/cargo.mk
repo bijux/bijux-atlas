@@ -161,6 +161,9 @@ load-test:
 load-test-1000qps:
 	@k6 run load/k6/atlas_1000qps.js
 
+perf-nightly:
+	@./scripts/perf/run_nightly_perf.sh
+
 cold-start-bench:
 	@./scripts/perf/cold_start_benchmark.sh
 
@@ -174,4 +177,4 @@ run-medium-ingest:
 run-medium-serve:
 	@./scripts/fixtures/run-medium-serve.sh
 
-.PHONY: fmt _fmt lint _lint _lint-rustfmt _lint-configs _lint-docs _lint-clippy check _check test test-all _test _test-all coverage _coverage audit _audit ci openapi-drift fetch-fixtures load-test load-test-1000qps cold-start-bench memory-profile-load run-medium-ingest run-medium-serve
+.PHONY: fmt _fmt lint _lint _lint-rustfmt _lint-configs _lint-docs _lint-clippy check _check test test-all _test _test-all coverage _coverage audit _audit ci openapi-drift fetch-fixtures load-test load-test-1000qps perf-nightly cold-start-bench memory-profile-load run-medium-ingest run-medium-serve
