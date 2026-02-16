@@ -1,0 +1,5 @@
+{
+  "schema_version": "1",
+  "allow_override": false,
+  "network_in_unit_tests": false
+}

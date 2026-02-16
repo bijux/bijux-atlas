@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Atlas Policy Config",
+  "type": "object",
+  "required": ["schema_version", "allow_override", "network_in_unit_tests"],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "allow_override": { "type": "boolean" },
+    "network_in_unit_tests": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}
