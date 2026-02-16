@@ -15,8 +15,8 @@ pub use gene::{
 };
 pub use manifest::{
     artifact_paths, ArtifactChecksums, ArtifactManifest, ArtifactPaths, Catalog, CatalogEntry,
-    IngestAnomalyReport, ManifestStats, OptionalFieldPolicy, LATEST_ALIAS_POLICY,
-    NO_IMPLICIT_DEFAULT_DATASET_POLICY,
+    IngestAnomalyReport, ManifestStats, OptionalFieldPolicy, ShardCatalog, ShardEntry,
+    LATEST_ALIAS_POLICY, NO_IMPLICIT_DEFAULT_DATASET_POLICY,
 };
 pub use policy::{GeneIdentifierPolicy, StrictnessMode};
 

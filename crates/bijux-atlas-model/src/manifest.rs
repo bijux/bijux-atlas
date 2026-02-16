@@ -153,6 +153,86 @@ pub struct CatalogEntry {
     pub sqlite_path: String,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+#[non_exhaustive]
+pub struct ShardCatalog {
+    pub dataset: DatasetId,
+    pub mode: String,
+    pub shards: Vec<ShardEntry>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord)]
+#[serde(deny_unknown_fields)]
+#[non_exhaustive]
+pub struct ShardEntry {
+    pub shard_id: String,
+    pub seqids: Vec<String>,
+    pub sqlite_path: String,
+    pub sqlite_sha256: String,
+}
+
+impl ShardEntry {
+    #[must_use]
+    pub fn new(
+        shard_id: String,
+        seqids: Vec<String>,
+        sqlite_path: String,
+        sqlite_sha256: String,
+    ) -> Self {
+        Self {
+            shard_id,
+            seqids,
+            sqlite_path,
+            sqlite_sha256,
+        }
+    }
+}
+
+impl ShardCatalog {
+    #[must_use]
+    pub fn new(dataset: DatasetId, mode: String, shards: Vec<ShardEntry>) -> Self {
+        Self {
+            dataset,
+            mode,
+            shards,
+        }
+    }
+}
+
+impl ShardCatalog {
+    pub fn validate_sorted(&self) -> Result<(), ValidationError> {
+        if self.mode.trim().is_empty() {
+            return Err(ValidationError("shard mode must not be empty".to_string()));
+        }
+        let mut previous: Option<&ShardEntry> = None;
+        for item in &self.shards {
+            if item.shard_id.trim().is_empty()
+                || item.sqlite_path.trim().is_empty()
+                || item.sqlite_sha256.trim().is_empty()
+            {
+                return Err(ValidationError(
+                    "shard catalog entries must have non-empty id/path/checksum".to_string(),
+                ));
+            }
+            if item.seqids.is_empty() {
+                return Err(ValidationError(
+                    "shard catalog entries must include at least one seqid".to_string(),
+                ));
+            }
+            if let Some(prev) = previous {
+                if prev >= item {
+                    return Err(ValidationError(
+                        "shard catalog entries must be strictly sorted and unique".to_string(),
+                    ));
+                }
+            }
+            previous = Some(item);
+        }
+        Ok(())
+    }
+}
+
 impl CatalogEntry {
     #[must_use]
     pub fn new(dataset: DatasetId, manifest_path: String, sqlite_path: String) -> Self {
