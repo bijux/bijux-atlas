@@ -37,6 +37,11 @@ optional = true
 
 [dev-dependencies]
 tempfile = "=3.13.0"
+criterion = { version = "0.5", default-features = false, features = ["cargo_bench_support"] }
+
+[[bench]]
+name = "cache_manager"
+harness = false
 
 [lib]
 path = "src/lib.rs"

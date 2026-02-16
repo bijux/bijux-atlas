@@ -328,6 +328,7 @@ dependencies = [
  "bijux-atlas-query",
  "bijux-atlas-store",
  "brotli",
+ "criterion",
  "flate2",
  "opentelemetry",
  "opentelemetry-otlp",
