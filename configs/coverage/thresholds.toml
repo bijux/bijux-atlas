@@ -1,0 +1,25 @@
+# schema_version = 1
+# owner = bijux-atlas-infra
+# purpose = Contract config for configs/coverage/thresholds.toml
+# authority = bijux-atlas-infra
+# stability = stable
+# last_updated = 2026-02-16
+
+default = 0.0
+
+[classes]
+high = 40.0
+low = 5.0
+critical = 20.0
+
+[crate_class]
+bijux-atlas-core = "high"
+bijux-atlas-model = "high"
+bijux-atlas-ingest = "critical"
+bijux-atlas-store = "critical"
+bijux-atlas-query = "critical"
+bijux-atlas-api = "critical"
+bijux-atlas-server = "critical"
+bijux-atlas-cli = "low"
+
+[overrides]
