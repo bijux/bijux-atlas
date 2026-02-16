@@ -17,22 +17,18 @@ fn mk_dataset() -> (DatasetId, ArtifactManifest, Vec<u8>) {
     let ds = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset id");
     let sqlite = fixture_sqlite();
     let sqlite_sha = sha256_hex(&sqlite);
-    let manifest = ArtifactManifest {
-        manifest_version: "1".to_string(),
-        db_schema_version: "1".to_string(),
-        dataset: ds.clone(),
-        checksums: bijux_atlas_model::ArtifactChecksums {
-            gff3_sha256: "a".repeat(64),
-            fasta_sha256: "b".repeat(64),
-            fai_sha256: "c".repeat(64),
-            sqlite_sha256: sqlite_sha,
-        },
-        stats: bijux_atlas_model::ManifestStats {
-            gene_count: 1,
-            transcript_count: 1,
-            contig_count: 1,
-        },
-    };
+    let manifest = ArtifactManifest::new(
+        "1".to_string(),
+        "1".to_string(),
+        ds.clone(),
+        bijux_atlas_model::ArtifactChecksums::new(
+            "a".repeat(64),
+            "b".repeat(64),
+            "c".repeat(64),
+            sqlite_sha,
+        ),
+        bijux_atlas_model::ManifestStats::new(1, 1, 1),
+    );
     (ds, manifest, sqlite)
 }
 
@@ -40,27 +36,23 @@ fn mk_dataset_for(release: &str) -> (DatasetId, ArtifactManifest, Vec<u8>) {
     let ds = DatasetId::new(release, "homo_sapiens", "GRCh38").expect("dataset id");
     let sqlite = fixture_sqlite();
     let sqlite_sha = sha256_hex(&sqlite);
-    let manifest = ArtifactManifest {
-        manifest_version: "1".to_string(),
-        db_schema_version: "1".to_string(),
-        dataset: ds.clone(),
-        checksums: bijux_atlas_model::ArtifactChecksums {
-            gff3_sha256: "a".repeat(64),
-            fasta_sha256: "b".repeat(64),
-            fai_sha256: "c".repeat(64),
-            sqlite_sha256: sqlite_sha,
-        },
-        stats: bijux_atlas_model::ManifestStats {
-            gene_count: 1,
-            transcript_count: 1,
-            contig_count: 1,
-        },
-    };
+    let manifest = ArtifactManifest::new(
+        "1".to_string(),
+        "1".to_string(),
+        ds.clone(),
+        bijux_atlas_model::ArtifactChecksums::new(
+            "a".repeat(64),
+            "b".repeat(64),
+            "c".repeat(64),
+            sqlite_sha,
+        ),
+        bijux_atlas_model::ManifestStats::new(1, 1, 1),
+    );
     (ds, manifest, sqlite)
 }
 
 #[tokio::test]
-async fn single_flight_download_shared_by_concurrent_calls() {
+async fn single_flight_download_shared_by_high_concurrency_calls() {
     let (ds, manifest, sqlite) = mk_dataset();
     let store = Arc::new(FakeStore::default());
     store.manifest.lock().await.insert(ds.clone(), manifest);
@@ -75,7 +67,7 @@ async fn single_flight_download_shared_by_concurrent_calls() {
     let mgr = DatasetCacheManager::new(cfg, store.clone());
 
     let mut joins = Vec::new();
-    for _ in 0..8 {
+    for _ in 0..64 {
         let m = Arc::clone(&mgr);
         let d = ds.clone();
         joins.push(tokio::spawn(
@@ -88,6 +80,70 @@ async fn single_flight_download_shared_by_concurrent_calls() {
 
     let calls = store.fetch_calls.load(std::sync::atomic::Ordering::Relaxed);
     assert_eq!(calls, 1, "single-flight should perform one manifest fetch");
+}
+
+#[tokio::test]
+async fn cached_only_mode_serves_existing_and_rejects_missing() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds.clone(), sqlite);
+    *store.etag.lock().await = "v1".to_string();
+
+    let tmp = tempdir().expect("tempdir");
+    let mgr_download = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..Default::default()
+        },
+        store.clone(),
+    );
+    let _ = mgr_download
+        .open_dataset_connection(&ds)
+        .await
+        .expect("download into cache");
+
+    let mgr_cached_only = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            cached_only_mode: true,
+            ..Default::default()
+        },
+        store,
+    );
+    let _ = mgr_cached_only
+        .open_dataset_connection(&ds)
+        .await
+        .expect("serve cached dataset in cached-only mode");
+
+    let missing = DatasetId::new("999", "homo_sapiens", "GRCh38").expect("dataset id");
+    let err = match mgr_cached_only.open_dataset_connection(&missing).await {
+        Ok(_) => panic!("expected cached-only mode miss"),
+        Err(err) => err,
+    };
+    assert!(
+        err.to_string().contains("cached-only mode"),
+        "unexpected error: {err}"
+    );
+}
+
+#[tokio::test]
+async fn startup_warmup_honors_fail_readiness_flag() {
+    let store = Arc::new(FakeStore::default());
+    let tmp = tempdir().expect("tempdir");
+    let missing = DatasetId::new("999", "homo_sapiens", "GRCh38").expect("dataset id");
+    let mgr = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            startup_warmup: vec![missing],
+            fail_readiness_on_missing_warmup: true,
+            ..Default::default()
+        },
+        store,
+    );
+
+    let err = mgr.startup_warmup().await.expect_err("warmup must fail");
+    assert!(err.to_string().contains("warmup failed"));
 }
 
 #[tokio::test]

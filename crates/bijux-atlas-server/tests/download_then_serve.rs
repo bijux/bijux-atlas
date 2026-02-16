@@ -25,22 +25,18 @@ fn mk_dataset() -> (DatasetId, ArtifactManifest, Vec<u8>) {
     let ds = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset id");
     let sqlite = fixture_sqlite();
     let sqlite_sha = sha256_hex(&sqlite);
-    let manifest = ArtifactManifest {
-        manifest_version: "1".to_string(),
-        db_schema_version: "1".to_string(),
-        dataset: ds.clone(),
-        checksums: ArtifactChecksums {
-            gff3_sha256: "a".repeat(64),
-            fasta_sha256: "b".repeat(64),
-            fai_sha256: "c".repeat(64),
-            sqlite_sha256: sqlite_sha,
-        },
-        stats: ManifestStats {
-            gene_count: 1,
-            transcript_count: 1,
-            contig_count: 1,
-        },
-    };
+    let manifest = ArtifactManifest::new(
+        "1".to_string(),
+        "1".to_string(),
+        ds.clone(),
+        ArtifactChecksums::new(
+            "a".repeat(64),
+            "b".repeat(64),
+            "c".repeat(64),
+            sqlite_sha,
+        ),
+        ManifestStats::new(1, 1, 1),
+    );
     (ds, manifest, sqlite)
 }
 
@@ -59,6 +55,71 @@ async fn integration_server_download_then_serve() {
     };
     let mgr = DatasetCacheManager::new(cfg, store);
     let app = build_router(AppState::new(mgr));
+
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move {
+        axum::serve(listener, app).await.expect("serve app");
+    });
+
+    let mut stream = tokio::net::TcpStream::connect(addr)
+        .await
+        .expect("connect server");
+    let request = format!(
+        "GET /v1/genes/count?release=110&species=homo_sapiens&assembly=GRCh38 HTTP/1.1\r\nHost: {}\r\nConnection: close\r\n\r\n",
+        addr
+    );
+    stream
+        .write_all(request.as_bytes())
+        .await
+        .expect("write request");
+
+    let mut response = String::new();
+    stream
+        .read_to_string(&mut response)
+        .await
+        .expect("read response");
+    assert!(response.starts_with("HTTP/1.1 200 OK\r\n"));
+    assert!(response.contains("\"gene_count\":1"));
+}
+
+#[tokio::test]
+async fn integration_cached_only_mode_serves_when_store_unavailable() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let warm_store = Arc::new(FakeStore::default());
+    warm_store
+        .manifest
+        .lock()
+        .await
+        .insert(ds.clone(), manifest);
+    warm_store.sqlite.lock().await.insert(ds.clone(), sqlite);
+    *warm_store.etag.lock().await = "v1".to_string();
+
+    let tmp = tempdir().expect("tempdir");
+    let warm_mgr = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..Default::default()
+        },
+        warm_store,
+    );
+    let _ = warm_mgr
+        .open_dataset_connection(&ds)
+        .await
+        .expect("warm cache with dataset");
+
+    let outage_store = Arc::new(FakeStore::default());
+    let cached_only_mgr = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            cached_only_mode: true,
+            ..Default::default()
+        },
+        outage_store,
+    );
+    let app = build_router(AppState::new(cached_only_mgr));
 
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await

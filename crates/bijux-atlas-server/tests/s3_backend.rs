@@ -26,29 +26,23 @@ impl Default for ServerState {
 async fn s3_like_backend_supports_retry_and_resume_download() {
     let ds = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
     let sqlite_bytes = b"0123456789abcdef".to_vec();
-    let manifest = ArtifactManifest {
-        manifest_version: "1".to_string(),
-        db_schema_version: "1".to_string(),
-        dataset: ds.clone(),
-        checksums: ArtifactChecksums {
-            gff3_sha256: "a".repeat(64),
-            fasta_sha256: "b".repeat(64),
-            fai_sha256: "c".repeat(64),
-            sqlite_sha256: sha256_hex(&sqlite_bytes),
-        },
-        stats: ManifestStats {
-            gene_count: 1,
-            transcript_count: 1,
-            contig_count: 1,
-        },
-    };
-    let catalog = Catalog {
-        datasets: vec![CatalogEntry {
-            dataset: ds.clone(),
-            manifest_path: "x".to_string(),
-            sqlite_path: "y".to_string(),
-        }],
-    };
+    let manifest = ArtifactManifest::new(
+        "1".to_string(),
+        "1".to_string(),
+        ds.clone(),
+        ArtifactChecksums::new(
+            "a".repeat(64),
+            "b".repeat(64),
+            "c".repeat(64),
+            sha256_hex(&sqlite_bytes),
+        ),
+        ManifestStats::new(1, 1, 1),
+    );
+    let catalog = Catalog::new(vec![CatalogEntry::new(
+        ds.clone(),
+        "x".to_string(),
+        "y".to_string(),
+    )]);
 
     let state = Arc::new(ServerState::default());
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")

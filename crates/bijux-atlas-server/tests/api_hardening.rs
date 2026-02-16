@@ -26,22 +26,18 @@ fn mk_dataset() -> (DatasetId, ArtifactManifest, Vec<u8>) {
     let ds = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset id");
     let sqlite = fixture_sqlite();
     let sqlite_sha = sha256_hex(&sqlite);
-    let manifest = ArtifactManifest {
-        manifest_version: "1".to_string(),
-        db_schema_version: "1".to_string(),
-        dataset: ds.clone(),
-        checksums: ArtifactChecksums {
-            gff3_sha256: "a".repeat(64),
-            fasta_sha256: "b".repeat(64),
-            fai_sha256: "c".repeat(64),
-            sqlite_sha256: sqlite_sha,
-        },
-        stats: ManifestStats {
-            gene_count: 1,
-            transcript_count: 1,
-            contig_count: 1,
-        },
-    };
+    let manifest = ArtifactManifest::new(
+        "1".to_string(),
+        "1".to_string(),
+        ds.clone(),
+        ArtifactChecksums::new(
+            "a".repeat(64),
+            "b".repeat(64),
+            "c".repeat(64),
+            sqlite_sha,
+        ),
+        ManifestStats::new(1, 1, 1),
+    );
     (ds, manifest, sqlite)
 }
 
