@@ -24,6 +24,16 @@ opentelemetry = "0.27"
 opentelemetry_sdk = { version = "0.27", features = ["rt-tokio"] }
 opentelemetry-otlp = { version = "0.27", features = ["http-proto", "reqwest-client"] }
 reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "http2", "charset", "json", "blocking"] }
+flate2 = "1.0"
+brotli = "6"
+
+[features]
+default = []
+jemalloc = ["dep:tikv-jemallocator"]
+
+[dependencies.tikv-jemallocator]
+version = "0.6"
+optional = true
 
 [dev-dependencies]
 tempfile = "=3.13.0"

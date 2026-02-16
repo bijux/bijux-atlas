@@ -15,6 +15,10 @@ use tokio::net::TcpListener;
 use tracing::{error, info};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
+#[cfg(feature = "jemalloc")]
+#[global_allocator]
+static GLOBAL: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
+
 fn env_bool(name: &str, default: bool) -> bool {
     env::var(name)
         .ok()
@@ -146,6 +150,13 @@ async fn main() -> Result<(), String> {
         enable_debug_datasets: env_bool("ATLAS_ENABLE_DEBUG_DATASETS", false),
         enable_exemplars: env_bool("ATLAS_ENABLE_EXEMPLARS", false),
         readiness_requires_catalog: env_bool("ATLAS_READINESS_REQUIRES_CATALOG", true),
+        heavy_worker_pool_size: env_usize("ATLAS_HEAVY_WORKER_POOL_SIZE", 8),
+        shed_load_enabled: env_bool("ATLAS_SHED_LOAD_ENABLED", false),
+        shed_latency_p95_threshold_ms: env_u64("ATLAS_SHED_LATENCY_P95_MS", 900),
+        shed_latency_min_samples: env_usize("ATLAS_SHED_MIN_SAMPLES", 50),
+        enable_response_compression: env_bool("ATLAS_ENABLE_RESPONSE_COMPRESSION", true),
+        compression_min_bytes: env_usize("ATLAS_COMPRESSION_MIN_BYTES", 4096),
+        query_coalesce_ttl: env_duration_ms("ATLAS_QUERY_COALESCE_TTL_MS", 500),
         ..ApiConfig::default()
     };
 
@@ -201,9 +212,24 @@ async fn main() -> Result<(), String> {
         }
     });
 
-    let listener = TcpListener::bind(&bind_addr)
-        .await
-        .map_err(|e| format!("bind failed: {e}"))?;
+    let addr: std::net::SocketAddr = bind_addr
+        .parse()
+        .map_err(|e| format!("invalid bind addr {bind_addr}: {e}"))?;
+    let socket = if addr.is_ipv4() {
+        tokio::net::TcpSocket::new_v4().map_err(|e| format!("socket v4 failed: {e}"))?
+    } else {
+        tokio::net::TcpSocket::new_v6().map_err(|e| format!("socket v6 failed: {e}"))?
+    };
+    socket
+        .set_reuseaddr(true)
+        .map_err(|e| format!("set_reuseaddr failed: {e}"))?;
+    socket
+        .set_keepalive(env_bool("ATLAS_TCP_KEEPALIVE_ENABLED", true))
+        .map_err(|e| format!("set_keepalive failed: {e}"))?;
+    socket.bind(addr).map_err(|e| format!("bind failed: {e}"))?;
+    let listener: TcpListener = socket
+        .listen(1024)
+        .map_err(|e| format!("listen failed: {e}"))?;
     info!("atlas-server listening on {bind_addr}");
     axum::serve(listener, app)
         .await
