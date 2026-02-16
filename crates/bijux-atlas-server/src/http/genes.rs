@@ -1,8 +1,10 @@
 #![deny(clippy::redundant_clone)]
 
 use crate::*;
+use bijux_atlas_model::ShardCatalog;
 use bijux_atlas_query::{
     prepared_sql_for_class_export, query_gene_by_id_fast, query_gene_id_name_json_minimal_fast,
+    query_genes_fanout, select_shards_for_request,
 };
 use serde_json::json;
 use tracing::{info, info_span, warn};
@@ -459,6 +461,19 @@ pub(crate) async fn genes_handler(
         let deadline = Instant::now() + state.api.sql_timeout;
         c.conn
             .progress_handler(1_000, Some(move || Instant::now() > deadline));
+        let shard_candidates = if req.filter.region.is_some() {
+            Some(
+                state
+                    .cache
+                    .selected_shards_for_region(
+                        &dataset,
+                        req.filter.region.as_ref().map(|r| r.seqid.as_str()),
+                    )
+                    .await?,
+            )
+        } else {
+            None
+        };
         let query_started = Instant::now();
         let query_span = info_span!("sqlite_query", class = %format!("{class:?}").to_lowercase());
         let result = query_span.in_scope(|| {
@@ -503,6 +518,60 @@ pub(crate) async fn genes_handler(
                     rows: row.into_iter().collect(),
                     next_cursor: None,
                 });
+            }
+            if req.filter.region.is_some() {
+                let catalog_path = bijux_atlas_model::artifact_paths(
+                    state.cache.disk_root(),
+                    &dataset,
+                )
+                .derived_dir
+                .join("catalog_shards.json");
+                if catalog_path.exists() {
+                    let raw = std::fs::read(&catalog_path).map_err(|e| CacheError(e.to_string()))?;
+                    if let Ok(catalog) = serde_json::from_slice::<ShardCatalog>(&raw) {
+                        let selected_rel = select_shards_for_request(&req, &catalog);
+                        let selected_all = shard_candidates.clone().unwrap_or_default();
+                        let selected: Vec<std::path::PathBuf> = selected_all
+                            .into_iter()
+                            .filter(|p| {
+                                selected_rel.iter().any(|r| p.ends_with(r))
+                            })
+                            .collect();
+                        if !selected.is_empty() {
+                            let mut shard_conns = Vec::new();
+                            let mut permits = Vec::new();
+                            for shard in selected
+                                .into_iter()
+                                .take(state.cache.max_open_shards_per_pod())
+                            {
+                                permits.push(state.cache.try_acquire_shard_permit()?);
+                                let conn = Connection::open_with_flags(
+                                    &shard,
+                                    OpenFlags::SQLITE_OPEN_READ_ONLY | OpenFlags::SQLITE_OPEN_NO_MUTEX,
+                                )
+                                .map_err(|e| CacheError(e.to_string()))?;
+                                let (cache_kib, shard_mmap) =
+                                    state.cache.sqlite_pragmas_for_shard_open();
+                                let pragma_sql = format!(
+                                    "PRAGMA query_only=ON; PRAGMA journal_mode=OFF; PRAGMA synchronous=OFF; PRAGMA temp_store=MEMORY; PRAGMA cache_size=-{}; PRAGMA mmap_size={};",
+                                    cache_kib, shard_mmap
+                                );
+                                let _ = conn.execute_batch(&pragma_sql);
+                                shard_conns.push(conn);
+                            }
+                            let refs: Vec<&Connection> = shard_conns.iter().collect();
+                            let response = query_genes_fanout(
+                                &refs,
+                                &req,
+                                &state.limits,
+                                b"atlas-server-cursor-secret",
+                            )
+                            .map_err(|e| CacheError(e.to_string()))?;
+                            drop(permits);
+                            return Ok(response);
+                        }
+                    }
+                }
             }
             query_genes(&c.conn, &req, &state.limits, b"atlas-server-cursor-secret")
                 .map_err(|e| CacheError(e.to_string()))

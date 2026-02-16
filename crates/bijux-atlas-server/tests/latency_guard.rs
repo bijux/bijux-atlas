@@ -162,3 +162,22 @@ async fn mmap_read_only_experiment_baseline() {
     assert!(p95_no_mmap > Duration::from_nanos(0));
     assert!(p95_mmap > Duration::from_nanos(0));
 }
+
+#[tokio::test]
+async fn shard_open_fd_cap_enforces_safety_under_many_shards() {
+    let store = Arc::new(FakeStore::default());
+    let cfg = DatasetCacheConfig {
+        max_open_shards_per_pod: 2,
+        ..Default::default()
+    };
+    let mgr = DatasetCacheManager::new(cfg, store);
+
+    let p1 = mgr.acquire_shard_permit().await.expect("permit1");
+    let p2 = mgr.acquire_shard_permit().await.expect("permit2");
+    let third = tokio::time::timeout(Duration::from_millis(30), mgr.acquire_shard_permit()).await;
+    assert!(
+        third.is_err(),
+        "third shard permit should be blocked by cap"
+    );
+    drop((p1, p2));
+}

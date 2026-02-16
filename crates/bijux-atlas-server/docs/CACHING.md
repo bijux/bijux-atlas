@@ -15,6 +15,8 @@
 - Startup cache warmup is deterministic (sorted dataset ids) and bounded by `startup_warmup_limit`.
 - Store download concurrency is globally capped (`max_concurrent_downloads`).
 - Store retry budget and store circuit-breaker thresholds are configurable for herd protection.
+- Optional shard caches are selected by seqid for region queries and evicted with dataset cleanup.
+- Open shard concurrency is capped (`max_open_shards_per_pod`) to protect FD/memory limits.
 
 Read-only sqlite pragma profile:
 - `PRAGMA query_only=ON`
@@ -23,3 +25,4 @@ Read-only sqlite pragma profile:
 - `PRAGMA temp_store=MEMORY`
 - `PRAGMA cache_size=-<configured KiB>`
 - `PRAGMA mmap_size=<configured bytes>`
+- For shard DB opens, mmap uses a per-shard tuned budget derived from global setting.

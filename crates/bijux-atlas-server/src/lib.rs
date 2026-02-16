@@ -27,6 +27,7 @@ use tracing::{error, info, warn};
 
 mod cache;
 mod config;
+mod dataset_shards;
 mod http;
 mod middleware;
 mod store;
@@ -69,6 +70,7 @@ pub struct DatasetCacheConfig {
     pub integrity_reverify_interval: Duration,
     pub sqlite_pragma_cache_kib: i64,
     pub sqlite_pragma_mmap_bytes: i64,
+    pub max_open_shards_per_pod: usize,
 }
 
 impl Default for DatasetCacheConfig {
@@ -97,6 +99,7 @@ impl Default for DatasetCacheConfig {
             integrity_reverify_interval: Duration::from_secs(300),
             sqlite_pragma_cache_kib: 32 * 1024,
             sqlite_pragma_mmap_bytes: 256 * 1024 * 1024,
+            max_open_shards_per_pod: 16,
         }
     }
 }
@@ -218,6 +221,8 @@ pub enum CatalogFetch {
 
 struct DatasetEntry {
     sqlite_path: PathBuf,
+    shard_sqlite_paths: Vec<PathBuf>,
+    shard_by_seqid: HashMap<String, Vec<PathBuf>>,
     last_access: Instant,
     size_bytes: u64,
     last_download_latency_ns: u64,
@@ -263,6 +268,7 @@ pub struct DatasetCacheManager {
     catalog_cache: Mutex<CatalogCache>,
     global_semaphore: Arc<Semaphore>,
     download_semaphore: Arc<Semaphore>,
+    shard_open_semaphore: Arc<Semaphore>,
     retry_budget_remaining: AtomicU64,
     pub metrics: Arc<CacheMetrics>,
 }
@@ -273,6 +279,7 @@ impl DatasetCacheManager {
         let retry_budget = cfg.store_retry_budget as u64;
         Arc::new(Self {
             global_semaphore: Arc::new(Semaphore::new(cfg.max_total_connections)),
+            shard_open_semaphore: Arc::new(Semaphore::new(cfg.max_open_shards_per_pod)),
             cfg,
             store,
             entries: Mutex::new(HashMap::new()),
@@ -575,6 +582,7 @@ impl DatasetCacheManager {
         let size_bytes = std::fs::metadata(&paths.sqlite)
             .map_err(|e| CacheError(e.to_string()))?
             .len();
+        let (shard_sqlite_paths, shard_by_seqid) = dataset_shards::load_shard_catalog(&paths.derived_dir)?;
         let download_latency_ns = started.elapsed().as_nanos() as u64;
 
         {
@@ -583,6 +591,8 @@ impl DatasetCacheManager {
                 dataset.clone(),
                 DatasetEntry {
                     sqlite_path: paths.sqlite,
+                    shard_sqlite_paths,
+                    shard_by_seqid,
                     last_access: Instant::now(),
                     size_bytes,
                     last_download_latency_ns: download_latency_ns,
@@ -637,11 +647,14 @@ impl DatasetCacheManager {
             self.metrics
                 .verify_marker_fast_path_hits
                 .fetch_add(1, Ordering::Relaxed);
+            let (shard_sqlite_paths, shard_by_seqid) = dataset_shards::load_shard_catalog(&paths.derived_dir)?;
             let mut entries = self.entries.lock().await;
             entries
                 .entry(dataset.clone())
                 .or_insert_with(|| DatasetEntry {
                     sqlite_path: paths.sqlite.clone(),
+                    shard_sqlite_paths,
+                    shard_by_seqid,
                     last_access: Instant::now(),
                     size_bytes: std::fs::metadata(&paths.sqlite)
                         .map(|m| m.len())
@@ -663,11 +676,14 @@ impl DatasetCacheManager {
         if sqlite_hash == manifest.checksums.sqlite_sha256 {
             std::fs::write(marker_path, marker_expected.as_bytes())
                 .map_err(|e| CacheError(e.to_string()))?;
+            let (shard_sqlite_paths, shard_by_seqid) = dataset_shards::load_shard_catalog(&paths.derived_dir)?;
             let mut entries = self.entries.lock().await;
             entries.insert(
                 dataset.clone(),
                 DatasetEntry {
                     sqlite_path: paths.sqlite,
+                    shard_sqlite_paths,
+                    shard_by_seqid,
                     last_access: Instant::now(),
                     size_bytes: std::fs::metadata(paths.derived_dir.join("gene_summary.sqlite"))
                         .map(|m| m.len())
@@ -733,6 +749,9 @@ impl DatasetCacheManager {
         for id in victims {
             if let Some(entry) = entries.remove(&id) {
                 let _ = std::fs::remove_file(&entry.sqlite_path);
+                for shard in &entry.shard_sqlite_paths {
+                    let _ = std::fs::remove_file(shard);
+                }
                 let _ = std::fs::remove_file(
                     entry
                         .sqlite_path
@@ -773,6 +792,9 @@ impl DatasetCacheManager {
                 let mut entries = self.entries.lock().await;
                 if let Some(entry) = entries.remove(&dataset) {
                     let _ = std::fs::remove_file(&entry.sqlite_path);
+                    for shard in &entry.shard_sqlite_paths {
+                        let _ = std::fs::remove_file(shard);
+                    }
                 }
             }
         }
