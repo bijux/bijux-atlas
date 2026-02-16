@@ -1,6 +1,8 @@
 use crate::cost::estimate_prefix_match_cost;
 use crate::filters::GeneQueryRequest;
 use crate::limits::QueryLimits;
+use bijux_atlas_model::ShardCatalog;
+use std::collections::BTreeSet;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum QueryClass {
@@ -91,4 +93,20 @@ pub fn validate_request(req: &GeneQueryRequest, limits: &QueryLimits) -> Result<
         ));
     }
     Ok(())
+}
+
+#[must_use]
+pub fn select_shards_for_request(req: &GeneQueryRequest, catalog: &ShardCatalog) -> Vec<String> {
+    if let Some(region) = &req.filter.region {
+        let mut selected = BTreeSet::new();
+        for shard in &catalog.shards {
+            if shard.seqids.iter().any(|x| x == &region.seqid) {
+                selected.insert(shard.sqlite_path.clone());
+            }
+        }
+        if !selected.is_empty() {
+            return selected.into_iter().collect();
+        }
+    }
+    vec!["gene_summary.sqlite".to_string()]
 }

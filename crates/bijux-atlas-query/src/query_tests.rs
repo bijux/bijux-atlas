@@ -523,3 +523,84 @@ fn benchmark_threshold_sanity_non_regression() {
         "in-memory query exceeded baseline threshold"
     );
 }
+
+#[test]
+fn shard_selection_targets_region_seqid_and_defaults_global() {
+    let dataset =
+        bijux_atlas_model::DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
+    let catalog = bijux_atlas_model::ShardCatalog::new(
+        dataset,
+        "per-seqid".to_string(),
+        vec![
+            bijux_atlas_model::ShardEntry::new(
+                "chr1".to_string(),
+                vec!["chr1".to_string()],
+                "gene_summary.chr1.sqlite".to_string(),
+                "abc".to_string(),
+            ),
+            bijux_atlas_model::ShardEntry::new(
+                "chr2".to_string(),
+                vec!["chr2".to_string()],
+                "gene_summary.chr2.sqlite".to_string(),
+                "def".to_string(),
+            ),
+        ],
+    );
+    let region = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            region: Some(RegionFilter {
+                seqid: "chr2".to_string(),
+                start: 1,
+                end: 10,
+            }),
+            ..Default::default()
+        },
+        limit: 5,
+        cursor: None,
+        allow_full_scan: false,
+    };
+    assert_eq!(
+        select_shards_for_request(&region, &catalog),
+        vec!["gene_summary.chr2.sqlite".to_string()]
+    );
+
+    let non_region = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            gene_id: Some("gene1".to_string()),
+            ..Default::default()
+        },
+        limit: 1,
+        cursor: None,
+        allow_full_scan: false,
+    };
+    assert_eq!(
+        select_shards_for_request(&non_region, &catalog),
+        vec!["gene_summary.sqlite".to_string()]
+    );
+}
+
+#[test]
+fn sharded_and_monolithic_responses_are_identical_for_region() {
+    let monolith = setup_db();
+    let shard = setup_db();
+    let req = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            region: Some(RegionFilter {
+                seqid: "chr1".to_string(),
+                start: 1,
+                end: 200,
+            }),
+            ..Default::default()
+        },
+        limit: 50,
+        cursor: None,
+        allow_full_scan: false,
+    };
+    let mono = query_genes(&monolith, &req, &limits(), b"s").expect("monolith");
+    let fanout = query_genes_fanout(&[&shard], &req, &limits(), b"s").expect("fanout");
+    assert_eq!(mono.rows, fanout.rows);
+    assert_eq!(mono.next_cursor, fanout.next_cursor);
+}

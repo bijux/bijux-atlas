@@ -29,7 +29,7 @@ pub use filters::{
     compile_field_projection, escape_like_prefix, GeneFields, GeneFilter, GeneRow, RegionFilter,
 };
 pub use limits::QueryLimits as QueryLimitsExport;
-pub use planner::{classify_query, estimate_work_units, QueryClass};
+pub use planner::{classify_query, estimate_work_units, select_shards_for_request, QueryClass};
 pub use row_decode::RawGeneRow;
 pub use sql::explain_query_plan as explain_query_plan_internal;
 pub use sql::prepared_sql_for_class as prepared_sql_for_class_export;
@@ -269,6 +269,62 @@ pub fn explain_query_plan(
 
 pub fn query_normalization_hash(req: &GeneQueryRequest) -> Result<String, QueryError> {
     normalized_query_hash(req).map_err(|e| QueryError::new(QueryErrorCode::Validation, e))
+}
+
+pub fn query_genes_fanout(
+    conns: &[&Connection],
+    req: &GeneQueryRequest,
+    limits: &QueryLimits,
+    cursor_secret: &[u8],
+) -> Result<GeneQueryResponse, QueryError> {
+    if conns.is_empty() {
+        return Err(QueryError::new(
+            QueryErrorCode::Validation,
+            "fanout requires at least one connection",
+        ));
+    }
+    let mut merged = Vec::new();
+    for conn in conns {
+        let mut req_per_shard = req.clone();
+        req_per_shard.cursor = None;
+        req_per_shard.limit = req.limit.saturating_add(1);
+        let partial = query_genes(conn, &req_per_shard, limits, cursor_secret)?;
+        merged.extend(partial.rows);
+    }
+    merged.sort_by(|a, b| {
+        a.seqid
+            .cmp(&b.seqid)
+            .then(a.start.cmp(&b.start))
+            .then(a.gene_id.cmp(&b.gene_id))
+    });
+    merged.dedup_by(|a, b| a.gene_id == b.gene_id);
+    let has_more = merged.len() > req.limit;
+    if has_more {
+        merged.truncate(req.limit);
+    }
+    let next_cursor = if has_more {
+        let last = merged
+            .last()
+            .ok_or_else(|| QueryError::new(QueryErrorCode::Sql, "pagination invariant violated"))?;
+        let payload = CursorPayloadInner {
+            order: "region".to_string(),
+            last_seqid: last.seqid.clone(),
+            last_start: last.start,
+            last_gene_id: last.gene_id.clone(),
+            query_hash: normalized_query_hash(req)
+                .map_err(|e| QueryError::new(QueryErrorCode::Validation, e))?,
+        };
+        Some(
+            encode_cursor_inner(&payload, cursor_secret)
+                .map_err(|e| QueryError::new(QueryErrorCode::Cursor, e.to_string()))?,
+        )
+    } else {
+        None
+    };
+    Ok(GeneQueryResponse {
+        rows: merged,
+        next_cursor,
+    })
 }
 
 pub use filters::{GeneQueryRequest, GeneQueryResponse};

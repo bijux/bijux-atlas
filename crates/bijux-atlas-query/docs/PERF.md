@@ -12,11 +12,13 @@ Required indexes:
 
 Hard gate:
 - Dataset validation rejects artifacts if any required index above is missing.
+- `atlas_meta.analyze_completed` must be `true` (ANALYZE required gate).
 
 Query classes:
 - `Cheap`: exact id lookups.
 - `Medium`: exact name/biotype filters.
 - `Heavy`: region and prefix queries.
+- Region queries may fan out to shard DBs; shard selection is seqid-aware.
 
 Max-work guard:
 - Query cost estimator must remain bounded by `max_work_units`.

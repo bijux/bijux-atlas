@@ -1,5 +1,6 @@
 use bijux_atlas_query::{
-    query_genes, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits, RegionFilter,
+    query_genes, query_genes_fanout, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits,
+    RegionFilter,
 };
 use criterion::{criterion_group, criterion_main, Criterion};
 use rusqlite::Connection;
@@ -260,6 +261,31 @@ fn bench_query_patterns(c: &mut Criterion) {
             GeneFields::default(),
         );
         b.iter(|| run_pattern(&conn, &request));
+    });
+
+    c.bench_function("query_region_large_sharded_fanout", |b| {
+        let conn2 = setup_db();
+        let request = req(
+            GeneFilter {
+                region: Some(RegionFilter {
+                    seqid: "chr1".to_string(),
+                    start: 10_000,
+                    end: 200_000,
+                }),
+                ..Default::default()
+            },
+            100,
+            GeneFields::default(),
+        );
+        b.iter(|| {
+            let _ = query_genes_fanout(
+                &[&conn, &conn2],
+                &request,
+                &QueryLimits::default(),
+                b"bench-secret",
+            )
+            .expect("fanout query");
+        });
     });
 
     c.bench_function("query_projection_minimal", |b| {
