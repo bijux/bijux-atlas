@@ -1,0 +1,2 @@
+##gff-version 3
+chr1	s	gene	1	11	.	+	.	ID=g1;Name=A
