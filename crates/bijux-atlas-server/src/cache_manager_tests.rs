@@ -92,10 +92,11 @@ async fn single_flight_download_shared_by_concurrent_calls() {
 
 #[tokio::test]
 #[ignore]
-async fn chaos_mode_slow_store_reads_graceful_errors() {
+async fn chaos_mode_slow_store_10x_latency_graceful_errors() {
     let (ds, manifest, sqlite) = mk_dataset();
     let store = Arc::new(FakeStore {
         slow_read: true,
+        slow_read_delay: Duration::from_millis(500),
         ..Default::default()
     });
     store.manifest.lock().await.insert(ds.clone(), manifest);
@@ -108,13 +109,98 @@ async fn chaos_mode_slow_store_reads_graceful_errors() {
         ..Default::default()
     };
     let mgr = DatasetCacheManager::new(cfg, store);
-    let result = mgr.open_dataset_connection(&ds).await;
-    match result {
-        Ok(_) => {}
-        Err(err) => {
-            assert!(err.to_string().contains("timeout") || err.to_string().contains("missing"))
-        }
-    }
+    let err = match mgr.open_dataset_connection(&ds).await {
+        Ok(_) => panic!("slow 10x store should timeout"),
+        Err(err) => err,
+    };
+    assert!(err.to_string().contains("timeout"));
+}
+
+#[tokio::test]
+#[ignore]
+async fn chaos_mode_delete_dataset_mid_request_redownloads_cleanly() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds.clone(), sqlite);
+    *store.etag.lock().await = "v1".to_string();
+
+    let tmp = tempdir().expect("tempdir");
+    let cfg = DatasetCacheConfig {
+        disk_root: tmp.path().to_path_buf(),
+        ..Default::default()
+    };
+    let mgr = DatasetCacheManager::new(cfg, store.clone());
+    let conn = mgr
+        .open_dataset_connection(&ds)
+        .await
+        .expect("open first connection");
+    let count: i64 = conn
+        .conn
+        .query_row("SELECT COUNT(*) FROM gene_summary", [], |row| row.get(0))
+        .expect("query existing connection");
+    assert_eq!(count, 1);
+    drop(conn);
+
+    let paths = artifact_paths(tmp.path(), &ds);
+    std::fs::remove_file(&paths.sqlite).expect("delete sqlite mid-flight simulation");
+    let second = mgr
+        .open_dataset_connection(&ds)
+        .await
+        .expect("re-download and reopen after deletion");
+    let second_count: i64 = second
+        .conn
+        .query_row("SELECT COUNT(*) FROM gene_summary", [], |row| row.get(0))
+        .expect("query after re-download");
+    assert_eq!(second_count, 1);
+
+    let calls = store.fetch_calls.load(std::sync::atomic::Ordering::Relaxed);
+    assert!(calls >= 2, "expected re-fetch after deletion, got {calls}");
+}
+
+#[tokio::test]
+async fn failover_across_replicas_one_fails_other_serves() {
+    let (ds, manifest, sqlite) = mk_dataset();
+
+    let failing_store = Arc::new(FakeStore::default());
+    let tmp_a = tempdir().expect("tempdir");
+    let mgr_a = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp_a.path().to_path_buf(),
+            ..Default::default()
+        },
+        failing_store,
+    );
+    let err = match mgr_a.open_dataset_connection(&ds).await {
+        Ok(_) => panic!("replica A should fail"),
+        Err(err) => err,
+    };
+    assert!(err.to_string().contains("manifest missing"));
+
+    let healthy_store = Arc::new(FakeStore::default());
+    healthy_store
+        .manifest
+        .lock()
+        .await
+        .insert(ds.clone(), manifest);
+    healthy_store.sqlite.lock().await.insert(ds.clone(), sqlite);
+    let tmp_b = tempdir().expect("tempdir");
+    let mgr_b = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp_b.path().to_path_buf(),
+            ..Default::default()
+        },
+        healthy_store,
+    );
+    let conn = mgr_b
+        .open_dataset_connection(&ds)
+        .await
+        .expect("replica B should serve dataset");
+    let count: i64 = conn
+        .conn
+        .query_row("SELECT COUNT(*) FROM gene_summary", [], |row| row.get(0))
+        .expect("query healthy replica");
+    assert_eq!(count, 1);
 }
 
 #[tokio::test]
