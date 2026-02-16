@@ -1,7 +1,12 @@
 # PUBLIC API: bijux-atlas-query
 
-Phase 1 stability contract:
-
-- No symbols are stable yet.
-- Crate module layout is provisional.
-- Stability guarantees begin when version reaches 0.2.0 with explicit API freeze notes.
+Stable exports:
+- `CRATE_NAME`
+- Query models: `GeneFields`, `GeneFilter`, `RegionFilter`, `GeneQueryRequest`, `GeneRow`, `GeneQueryResponse`
+- Limits: `QueryLimits`
+- Planner: `QueryClass`, `classify_query`, `estimate_work_units`
+- Execution: `query_genes`, `explain_query_plan`
+- Projection helpers: `compile_field_projection`, `escape_like_prefix`
+- Normalization: `query_normalization_hash`
+- Cursor errors: `CursorError`, `CursorErrorCode`
+- Query errors: `QueryError`, `QueryErrorCode`
