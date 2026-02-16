@@ -16,7 +16,7 @@ use bijux_atlas_query::{
     RegionFilter,
 };
 use rusqlite::{Connection, OpenFlags};
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap, HashSet, VecDeque};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
@@ -107,6 +107,8 @@ struct RequestMetrics {
     counts: Mutex<HashMap<(String, u16), u64>>,
     latency_ns: Mutex<HashMap<String, Vec<u64>>>,
     sqlite_latency_ns: Mutex<HashMap<String, Vec<u64>>>,
+    stage_latency_ns: Mutex<HashMap<String, Vec<u64>>>,
+    heavy_latency_recent_ns: Mutex<VecDeque<u64>>,
     exemplars: Mutex<HashMap<(String, u16), (String, u128)>>,
 }
 
@@ -147,6 +149,32 @@ impl RequestMetrics {
         q.entry(query_type.to_string())
             .or_insert_with(Vec::new)
             .push(latency.as_nanos() as u64);
+        if query_type == "heavy" {
+            let mut recent = self.heavy_latency_recent_ns.lock().await;
+            recent.push_back(latency.as_nanos() as u64);
+            while recent.len() > 512 {
+                recent.pop_front();
+            }
+        }
+    }
+
+    async fn observe_stage(&self, stage: &str, latency: Duration) {
+        let mut m = self.stage_latency_ns.lock().await;
+        m.entry(stage.to_string())
+            .or_insert_with(Vec::new)
+            .push(latency.as_nanos() as u64);
+    }
+
+    async fn should_shed_heavy(&self, min_samples: usize, threshold_ms: u64) -> bool {
+        let recent = self.heavy_latency_recent_ns.lock().await;
+        if recent.len() < min_samples {
+            return false;
+        }
+        let mut v: Vec<u64> = recent.iter().copied().collect();
+        v.sort_unstable();
+        let idx = ((v.len() as f64) * 0.95).ceil() as usize - 1;
+        let p95_ns = v[idx.min(v.len() - 1)];
+        p95_ns > (threshold_ms * 1_000_000)
     }
 }
 
@@ -177,6 +205,7 @@ struct DatasetEntry {
     last_access: Instant,
     size_bytes: u64,
     dataset_semaphore: Arc<Semaphore>,
+    query_semaphore: Arc<Semaphore>,
 }
 
 #[derive(Default)]
@@ -197,6 +226,7 @@ pub struct DatasetConnection {
     pub conn: Connection,
     _global_permit: OwnedSemaphorePermit,
     _dataset_permit: OwnedSemaphorePermit,
+    _query_permit: OwnedSemaphorePermit,
 }
 
 pub struct DatasetCacheManager {
@@ -317,7 +347,7 @@ impl DatasetCacheManager {
 
         self.check_breaker(dataset).await?;
 
-        let (sqlite_path, dataset_sem) = {
+        let (sqlite_path, dataset_sem, query_sem) = {
             let mut entries = self.entries.lock().await;
             let entry = entries
                 .get_mut(dataset)
@@ -326,6 +356,7 @@ impl DatasetCacheManager {
             (
                 entry.sqlite_path.clone(),
                 Arc::clone(&entry.dataset_semaphore),
+                Arc::clone(&entry.query_semaphore),
             )
         };
 
@@ -336,6 +367,10 @@ impl DatasetCacheManager {
             .await
             .map_err(|e| CacheError(e.to_string()))?;
         let dataset_permit = dataset_sem
+            .acquire_owned()
+            .await
+            .map_err(|e| CacheError(e.to_string()))?;
+        let query_permit = query_sem
             .acquire_owned()
             .await
             .map_err(|e| CacheError(e.to_string()))?;
@@ -370,6 +405,7 @@ impl DatasetCacheManager {
                     conn,
                     _global_permit: global_permit,
                     _dataset_permit: dataset_permit,
+                    _query_permit: query_permit,
                 })
             }
             Ok(Err(e)) => {
@@ -489,6 +525,7 @@ impl DatasetCacheManager {
                     dataset_semaphore: Arc::new(Semaphore::new(
                         self.cfg.max_connections_per_dataset,
                     )),
+                    query_semaphore: Arc::new(Semaphore::new(self.cfg.max_connections_per_dataset)),
                 },
             );
             self.metrics
@@ -542,6 +579,7 @@ impl DatasetCacheManager {
                     dataset_semaphore: Arc::new(Semaphore::new(
                         self.cfg.max_connections_per_dataset,
                     )),
+                    query_semaphore: Arc::new(Semaphore::new(self.cfg.max_connections_per_dataset)),
                 });
             return Ok(true);
         }
@@ -563,6 +601,7 @@ impl DatasetCacheManager {
                     dataset_semaphore: Arc::new(Semaphore::new(
                         self.cfg.max_connections_per_dataset,
                     )),
+                    query_semaphore: Arc::new(Semaphore::new(self.cfg.max_connections_per_dataset)),
                 },
             );
             return Ok(true);
@@ -715,8 +754,18 @@ pub struct AppState {
     class_cheap: Arc<Semaphore>,
     class_medium: Arc<Semaphore>,
     class_heavy: Arc<Semaphore>,
+    heavy_workers: Arc<Semaphore>,
     metrics: Arc<RequestMetrics>,
     request_id_seed: Arc<AtomicU64>,
+    coalesced_inflight: Arc<Mutex<HashMap<String, Arc<Mutex<()>>>>>,
+    coalesced_cache: Arc<Mutex<HashMap<String, CachedResponse>>>,
+}
+
+#[derive(Clone)]
+pub struct CachedResponse {
+    pub body: Vec<u8>,
+    pub etag: String,
+    pub created_at: Instant,
 }
 
 impl AppState {
@@ -737,10 +786,13 @@ impl AppState {
             class_cheap: Arc::new(Semaphore::new(api.concurrency_cheap)),
             class_medium: Arc::new(Semaphore::new(api.concurrency_medium)),
             class_heavy: Arc::new(Semaphore::new(api.concurrency_heavy)),
+            heavy_workers: Arc::new(Semaphore::new(api.heavy_worker_pool_size)),
             ip_limiter: Arc::new(RateLimiter::default()),
             api_key_limiter: Arc::new(RateLimiter::default()),
             metrics: Arc::new(RequestMetrics::default()),
             request_id_seed: Arc::new(AtomicU64::new(1)),
+            coalesced_inflight: Arc::new(Mutex::new(HashMap::new())),
+            coalesced_cache: Arc::new(Mutex::new(HashMap::new())),
             api,
             limits,
         }

@@ -35,6 +35,13 @@ pub struct ApiConfig {
     pub slow_query_threshold: Duration,
     pub enable_exemplars: bool,
     pub readiness_requires_catalog: bool,
+    pub heavy_worker_pool_size: usize,
+    pub shed_load_enabled: bool,
+    pub shed_latency_p95_threshold_ms: u64,
+    pub shed_latency_min_samples: usize,
+    pub enable_response_compression: bool,
+    pub compression_min_bytes: usize,
+    pub query_coalesce_ttl: Duration,
 }
 
 impl Default for ApiConfig {
@@ -59,6 +66,13 @@ impl Default for ApiConfig {
             slow_query_threshold: Duration::from_millis(200),
             enable_exemplars: false,
             readiness_requires_catalog: true,
+            heavy_worker_pool_size: 8,
+            shed_load_enabled: false,
+            shed_latency_p95_threshold_ms: 900,
+            shed_latency_min_samples: 50,
+            enable_response_compression: true,
+            compression_min_bytes: 4096,
+            query_coalesce_ttl: Duration::from_millis(500),
         }
     }
 }

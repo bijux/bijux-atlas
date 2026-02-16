@@ -144,6 +144,18 @@ async fn error_contract_and_etag_behaviors() {
         .to_string();
     let (status, _, _) = send_raw(addr, "/v1/datasets", &[("If-None-Match", &etag)]).await;
     assert_eq!(status, 304);
+
+    let (status, _, _) = send_raw(
+        addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&limit=1",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+
+    let (status, _, body) = send_raw(addr, "/metrics", &[]).await;
+    assert_eq!(status, 200);
+    assert!(body.contains("bijux_request_stage_latency_p95_seconds"));
 }
 
 #[tokio::test]

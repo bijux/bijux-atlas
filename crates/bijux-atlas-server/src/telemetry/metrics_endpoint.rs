@@ -165,6 +165,17 @@ bijux_store_download_p95_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"
             percentile_ns(&vals, 0.95) as f64 / 1_000_000_000.0
         ));
     }
+    let stage_lat = state.metrics.stage_latency_ns.lock().await.clone();
+    for (stage, vals) in stage_lat {
+        body.push_str(&format!(
+            "bijux_request_stage_latency_p95_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",stage=\"{}\"}} {:.6}\n",
+            METRIC_SUBSYSTEM,
+            METRIC_VERSION,
+            METRIC_DATASET_ALL,
+            stage,
+            percentile_ns(&vals, 0.95) as f64 / 1_000_000_000.0
+        ));
+    }
     let resp = (StatusCode::OK, body).into_response();
     state
         .metrics

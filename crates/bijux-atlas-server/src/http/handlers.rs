@@ -1,6 +1,12 @@
+#![deny(clippy::redundant_clone)]
+
 use crate::*;
+use bijux_atlas_query::query_gene_by_id_fast;
+use brotli::CompressorWriter;
+use flate2::{write::GzEncoder, Compression};
 use serde_json::json;
 use serde_json::Value;
+use std::io::Write;
 use tracing::{info, info_span, warn};
 
 fn api_error_response(status: StatusCode, err: ApiError) -> Response {
@@ -52,6 +58,93 @@ fn wants_text(headers: &HeaderMap) -> bool {
         .get("accept")
         .and_then(|v| v.to_str().ok())
         .is_some_and(|v| v.contains("text/plain"))
+}
+
+fn accepted_encoding(headers: &HeaderMap) -> Option<&'static str> {
+    let accept = headers
+        .get("accept-encoding")
+        .and_then(|v| v.to_str().ok())?;
+    if accept.contains("br") {
+        Some("br")
+    } else if accept.contains("gzip") {
+        Some("gzip")
+    } else {
+        None
+    }
+}
+
+fn serialize_payload_with_capacity(
+    payload: &Value,
+    pretty: bool,
+    capacity_hint: usize,
+) -> Result<Vec<u8>, ApiError> {
+    let mut out = Vec::with_capacity(capacity_hint);
+    if pretty {
+        serde_json::to_writer_pretty(&mut out, payload).map_err(|e| {
+            error_json(
+                ApiErrorCode::Internal,
+                "json serialization failed",
+                json!({"message": e.to_string()}),
+            )
+        })?;
+    } else {
+        serde_json::to_writer(&mut out, payload).map_err(|e| {
+            error_json(
+                ApiErrorCode::Internal,
+                "json serialization failed",
+                json!({"message": e.to_string()}),
+            )
+        })?;
+    }
+    Ok(out)
+}
+
+fn maybe_compress_response(
+    headers: &HeaderMap,
+    state: &AppState,
+    bytes: Vec<u8>,
+) -> Result<(Vec<u8>, Option<&'static str>), ApiError> {
+    if !state.api.enable_response_compression || bytes.len() < state.api.compression_min_bytes {
+        return Ok((bytes, None));
+    }
+    match accepted_encoding(headers) {
+        Some("gzip") => {
+            let mut encoder = GzEncoder::new(
+                Vec::with_capacity((bytes.len() / 2).max(256)),
+                Compression::fast(),
+            );
+            encoder.write_all(&bytes).map_err(|e| {
+                error_json(
+                    ApiErrorCode::Internal,
+                    "gzip encoding failed",
+                    json!({"message": e.to_string()}),
+                )
+            })?;
+            let compressed = encoder.finish().map_err(|e| {
+                error_json(
+                    ApiErrorCode::Internal,
+                    "gzip finalize failed",
+                    json!({"message": e.to_string()}),
+                )
+            })?;
+            Ok((compressed, Some("gzip")))
+        }
+        Some("br") => {
+            let mut compressed = Vec::with_capacity((bytes.len() / 2).max(256));
+            {
+                let mut writer = CompressorWriter::new(&mut compressed, 4096, 4, 22);
+                writer.write_all(&bytes).map_err(|e| {
+                    error_json(
+                        ApiErrorCode::Internal,
+                        "brotli encoding failed",
+                        json!({"message": e.to_string()}),
+                    )
+                })?;
+            }
+            Ok((compressed, Some("br")))
+        }
+        _ => Ok((bytes, None)),
+    }
 }
 
 fn make_request_id(state: &AppState) -> String {
@@ -407,6 +500,34 @@ pub(crate) async fn genes_handler(
         }
     };
     let class = classify_query(&req);
+    if class == QueryClass::Heavy
+        && state.api.shed_load_enabled
+        && state
+            .metrics
+            .should_shed_heavy(
+                state.api.shed_latency_min_samples,
+                state.api.shed_latency_p95_threshold_ms,
+            )
+            .await
+    {
+        let resp = api_error_response(
+            StatusCode::SERVICE_UNAVAILABLE,
+            error_json(
+                ApiErrorCode::QueryRejectedByPolicy,
+                "server is shedding heavy query load",
+                json!({"class":"heavy"}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request(
+                "/v1/genes",
+                StatusCode::SERVICE_UNAVAILABLE,
+                started.elapsed(),
+            )
+            .await;
+        return with_request_id(resp, &request_id);
+    }
     let _class_permit = match acquire_class_permit(&state, class).await {
         Ok(v) => v,
         Err(e) => {
@@ -422,17 +543,109 @@ pub(crate) async fn genes_handler(
             return with_request_id(resp, &request_id);
         }
     };
+    let _heavy_worker_permit = if class == QueryClass::Heavy {
+        match state.heavy_workers.clone().try_acquire_owned() {
+            Ok(permit) => Some(permit),
+            Err(_) => {
+                let resp = api_error_response(
+                    StatusCode::TOO_MANY_REQUESTS,
+                    error_json(
+                        ApiErrorCode::QueryRejectedByPolicy,
+                        "heavy worker pool is saturated",
+                        json!({"class":"heavy"}),
+                    ),
+                );
+                state
+                    .metrics
+                    .observe_request(
+                        "/v1/genes",
+                        StatusCode::TOO_MANY_REQUESTS,
+                        started.elapsed(),
+                    )
+                    .await;
+                return with_request_id(resp, &request_id);
+            }
+        }
+    } else {
+        None
+    };
 
     let normalized = normalize_query(&params);
+    let coalesce_key = format!(
+        "{}|{}|{}|{}",
+        dataset.canonical_string(),
+        format!("{class:?}").to_lowercase(),
+        normalized,
+        wants_pretty(&params)
+    );
+    if class == QueryClass::Heavy {
+        let cache = state.coalesced_cache.lock().await;
+        if let Some(entry) = cache.get(&coalesce_key) {
+            if entry.created_at.elapsed() <= state.api.query_coalesce_ttl {
+                let mut resp = Response::builder()
+                    .status(StatusCode::OK)
+                    .body(Body::from(entry.body.clone()))
+                    .unwrap_or_else(|_| StatusCode::INTERNAL_SERVER_ERROR.into_response());
+                resp.headers_mut()
+                    .insert("content-type", HeaderValue::from_static("application/json"));
+                put_cache_headers(
+                    resp.headers_mut(),
+                    state.api.immutable_gene_ttl,
+                    &entry.etag,
+                );
+                state
+                    .metrics
+                    .observe_request("/v1/genes", StatusCode::OK, started.elapsed())
+                    .await;
+                return with_request_id(resp, &request_id);
+            }
+        }
+        drop(cache);
+    }
+    let _coalesce_guard = if class == QueryClass::Heavy {
+        let lock = {
+            let mut inflight = state.coalesced_inflight.lock().await;
+            Arc::clone(
+                inflight
+                    .entry(coalesce_key.clone())
+                    .or_insert_with(|| Arc::new(Mutex::new(()))),
+            )
+        };
+        Some(lock.lock_owned().await)
+    } else {
+        None
+    };
+
+    let stage_dataset_resolve_started = Instant::now();
     let work = async {
         info!(request_id = %request_id, dataset = ?dataset, "dataset resolve");
         let c = state.cache.open_dataset_connection(&dataset).await?;
+        state
+            .metrics
+            .observe_stage("dataset_open", stage_dataset_resolve_started.elapsed())
+            .await;
         let deadline = Instant::now() + state.api.sql_timeout;
         c.conn
             .progress_handler(1_000, Some(move || Instant::now() > deadline));
         let query_started = Instant::now();
         let query_span = info_span!("sqlite_query", class = %format!("{class:?}").to_lowercase());
         let result = query_span.in_scope(|| {
+            if let Some(gene_id) = req.filter.gene_id.as_ref() {
+                if req.filter.name.is_none()
+                    && req.filter.name_prefix.is_none()
+                    && req.filter.biotype.is_none()
+                    && req.filter.region.is_none()
+                    && req.cursor.is_none()
+                    && req.limit <= 1
+                {
+                    let row = query_gene_by_id_fast(&c.conn, gene_id, &req.fields)
+                        .map_err(|e| CacheError(e.to_string()))?;
+                    return Ok(bijux_atlas_query::GeneQueryResponse {
+                        rows: row.into_iter().collect(),
+                        next_cursor: None,
+                    });
+                }
+            }
             query_genes(&c.conn, &req, &state.limits, b"atlas-server-cursor-secret")
                 .map_err(|e| CacheError(e.to_string()))
         })?;
@@ -457,6 +670,7 @@ pub(crate) async fn genes_handler(
                 .metrics
                 .observe_sqlite_query(&format!("{class:?}").to_lowercase(), query_elapsed)
                 .await;
+            state.metrics.observe_stage("query", query_elapsed).await;
             json!({"dataset": dataset, "class": format!("{class:?}").to_lowercase(), "response": resp})
         }
         Ok(Err(err)) => {
@@ -526,13 +740,32 @@ pub(crate) async fn genes_handler(
         }
     };
 
-    let bytes = info_span!("serialize_response").in_scope(|| {
-        if wants_pretty(&params) {
-            serde_json::to_vec_pretty(&payload).unwrap_or_default()
-        } else {
-            serde_json::to_vec(&payload).unwrap_or_default()
+    let serialize_started = Instant::now();
+    let bytes = match info_span!("serialize_response").in_scope(|| {
+        serialize_payload_with_capacity(
+            &payload,
+            wants_pretty(&params),
+            state.api.response_max_bytes / 4,
+        )
+    }) {
+        Ok(v) => v,
+        Err(err) => {
+            let resp = api_error_response(StatusCode::INTERNAL_SERVER_ERROR, err);
+            state
+                .metrics
+                .observe_request(
+                    "/v1/genes",
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    started.elapsed(),
+                )
+                .await;
+            return with_request_id(resp, &request_id);
         }
-    });
+    };
+    state
+        .metrics
+        .observe_stage("serialize", serialize_started.elapsed())
+        .await;
     if bytes.len() > state.api.response_max_bytes {
         let resp = api_error_response(
             StatusCode::PAYLOAD_TOO_LARGE,
@@ -567,8 +800,24 @@ pub(crate) async fn genes_handler(
         return with_request_id(resp, &request_id);
     }
 
+    let (response_bytes, content_encoding) = match maybe_compress_response(&headers, &state, bytes)
+    {
+        Ok(v) => v,
+        Err(err) => {
+            let resp = api_error_response(StatusCode::INTERNAL_SERVER_ERROR, err);
+            state
+                .metrics
+                .observe_request(
+                    "/v1/genes",
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    started.elapsed(),
+                )
+                .await;
+            return with_request_id(resp, &request_id);
+        }
+    };
     if wants_text(&headers) {
-        let text = String::from_utf8_lossy(&bytes).to_string();
+        let text = String::from_utf8_lossy(&response_bytes).to_string();
         let mut resp = (StatusCode::OK, text).into_response();
         put_cache_headers(resp.headers_mut(), state.api.immutable_gene_ttl, &etag);
         state
@@ -579,11 +828,27 @@ pub(crate) async fn genes_handler(
     }
     let mut resp = Response::builder()
         .status(StatusCode::OK)
-        .body(Body::from(bytes))
+        .body(Body::from(response_bytes.clone()))
         .unwrap_or_else(|_| StatusCode::INTERNAL_SERVER_ERROR.into_response());
     resp.headers_mut()
         .insert("content-type", HeaderValue::from_static("application/json"));
+    if let Some(encoding) = content_encoding {
+        resp.headers_mut()
+            .insert("content-encoding", HeaderValue::from_static(encoding));
+    }
     put_cache_headers(resp.headers_mut(), state.api.immutable_gene_ttl, &etag);
+    if class == QueryClass::Heavy {
+        let mut cache = state.coalesced_cache.lock().await;
+        cache.retain(|_, v| v.created_at.elapsed() <= state.api.query_coalesce_ttl);
+        cache.insert(
+            coalesce_key,
+            CachedResponse {
+                body: response_bytes,
+                etag: etag.clone(),
+                created_at: Instant::now(),
+            },
+        );
+    }
     state
         .metrics
         .observe_request("/v1/genes", StatusCode::OK, started.elapsed())
