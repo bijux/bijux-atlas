@@ -30,11 +30,21 @@ redis = { version = "0.27", features = ["tokio-comp"] }
 
 [features]
 default = []
-jemalloc = ["dep:tikv-jemallocator"]
+jemalloc = ["dep:tikv-jemallocator", "dep:tikv-jemalloc-ctl"]
+profiling = ["dep:pprof"]
 
 [dependencies.tikv-jemallocator]
 version = "0.6"
 optional = true
+
+[dependencies.tikv-jemalloc-ctl]
+version = "0.6"
+optional = true
+
+[dependencies.pprof]
+version = "0.14"
+optional = true
+features = ["flamegraph", "prost-codec"]
 
 [dev-dependencies]
 tempfile = "=3.13.0"

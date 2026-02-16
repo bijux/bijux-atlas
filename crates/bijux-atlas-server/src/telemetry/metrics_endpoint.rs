@@ -212,6 +212,23 @@ bijux_store_download_p95_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"
             percentile_ns(&vals, 0.95) as f64 / 1_000_000_000.0
         ));
     }
+    #[cfg(feature = "jemalloc")]
+    {
+        if let Ok(epoch_mib) = tikv_jemalloc_ctl::epoch::mib() {
+            let _ = epoch_mib.advance();
+            if let Ok(allocated_mib) = tikv_jemalloc_ctl::stats::allocated::mib() {
+                if let Ok(allocated) = allocated_mib.read() {
+                    body.push_str(&format!(
+                        "bijux_allocator_allocated_bytes{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",allocator=\"jemalloc\"}} {}\n",
+                        METRIC_SUBSYSTEM,
+                        METRIC_VERSION,
+                        METRIC_DATASET_ALL,
+                        allocated
+                    ));
+                }
+            }
+        }
+    }
     let resp = (StatusCode::OK, body).into_response();
     state
         .metrics
