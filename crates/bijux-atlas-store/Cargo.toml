@@ -8,7 +8,18 @@ rust-version.workspace = true
 [dependencies]
 bijux-atlas-core.workspace = true
 bijux-atlas-model.workspace = true
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "http2"] }
+serde = { version = "1", features = ["derive"] }
+serde_json.workspace = true
+
+[dev-dependencies]
+criterion = "0.5"
+tempfile = "3.13.0"
 serde_json.workspace = true
 
 [lib]
 path = "src/lib.rs"
+
+[[bench]]
+name = "checksum_pipeline"
+harness = false

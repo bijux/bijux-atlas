@@ -324,7 +324,11 @@ version = "0.1.0"
 dependencies = [
  "bijux-atlas-core",
  "bijux-atlas-model",
+ "criterion",
+ "reqwest",
+ "serde",
  "serde_json",
+ "tempfile",
 ]
 
 [[package]]
