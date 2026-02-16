@@ -460,7 +460,7 @@ impl DatasetCacheManager {
                     "PRAGMA query_only=ON; PRAGMA journal_mode=OFF; PRAGMA synchronous=OFF; PRAGMA temp_store=MEMORY; PRAGMA cache_size=-{}; PRAGMA mmap_size={};",
                     self.cfg.sqlite_pragma_cache_kib, self.cfg.sqlite_pragma_mmap_bytes
                 );
-                let _ = conn.set_prepared_statement_cache_capacity(128);
+                conn.set_prepared_statement_cache_capacity(128);
                 let _ = conn.execute_batch(&pragma_sql);
                 self.reset_breaker(dataset).await;
                 self.metrics

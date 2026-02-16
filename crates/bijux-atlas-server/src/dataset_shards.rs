@@ -4,9 +4,11 @@ use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use tokio::sync::OwnedSemaphorePermit;
 
-pub(crate) fn load_shard_catalog(
-    derived_dir: &Path,
-) -> Result<(Vec<PathBuf>, HashMap<String, Vec<PathBuf>>), CacheError> {
+pub(crate) type ShardPaths = Vec<PathBuf>;
+pub(crate) type ShardBySeqid = HashMap<String, Vec<PathBuf>>;
+pub(crate) type ShardCatalogIndex = (ShardPaths, ShardBySeqid);
+
+pub(crate) fn load_shard_catalog(derived_dir: &Path) -> Result<ShardCatalogIndex, CacheError> {
     let path = derived_dir.join("catalog_shards.json");
     if !path.exists() {
         return Ok((Vec::new(), HashMap::new()));
@@ -14,8 +16,8 @@ pub(crate) fn load_shard_catalog(
     let raw = std::fs::read(path).map_err(|e| CacheError(e.to_string()))?;
     let catalog: ShardCatalog =
         serde_json::from_slice(&raw).map_err(|e| CacheError(e.to_string()))?;
-    let mut all = Vec::new();
-    let mut by_seqid: HashMap<String, Vec<PathBuf>> = HashMap::new();
+    let mut all: ShardPaths = Vec::new();
+    let mut by_seqid: ShardBySeqid = HashMap::new();
     for shard in catalog.shards {
         let shard_path = derived_dir.join(shard.sqlite_path);
         all.push(shard_path.clone());
