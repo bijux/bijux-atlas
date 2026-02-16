@@ -21,4 +21,4 @@ path = "src/main.rs"
 
 [[bin]]
 name = "bijux-atlas"
-path = "src/main.rs"
+path = "src/bin/bijux-atlas.rs"
