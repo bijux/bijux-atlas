@@ -1,0 +1,159 @@
+#![forbid(unsafe_code)]
+
+use bijux_atlas_server::{
+    build_router, ApiConfig, AppState, DatasetCacheConfig, DatasetCacheManager, LocalFsBackend,
+};
+use opentelemetry::trace::TracerProvider as _;
+use std::collections::HashSet;
+use std::env;
+use std::path::PathBuf;
+use std::sync::atomic::Ordering;
+use std::sync::Arc;
+use std::time::Duration;
+use tokio::net::TcpListener;
+use tracing::{error, info};
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
+
+fn env_bool(name: &str, default: bool) -> bool {
+    env::var(name)
+        .ok()
+        .and_then(|v| match v.as_str() {
+            "1" | "true" | "TRUE" | "yes" | "YES" => Some(true),
+            "0" | "false" | "FALSE" | "no" | "NO" => Some(false),
+            _ => None,
+        })
+        .unwrap_or(default)
+}
+
+fn env_u64(name: &str, default: u64) -> u64 {
+    env::var(name)
+        .ok()
+        .and_then(|v| v.parse::<u64>().ok())
+        .unwrap_or(default)
+}
+
+fn env_usize(name: &str, default: usize) -> usize {
+    env::var(name)
+        .ok()
+        .and_then(|v| v.parse::<usize>().ok())
+        .unwrap_or(default)
+}
+
+fn env_duration_ms(name: &str, default_ms: u64) -> Duration {
+    Duration::from_millis(env_u64(name, default_ms))
+}
+
+fn init_tracing() {
+    let filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
+    if env_bool("ATLAS_OTEL_ENABLED", false) {
+        let exporter = opentelemetry_otlp::SpanExporter::builder()
+            .with_http()
+            .build()
+            .expect("otlp exporter");
+        let tracer = opentelemetry_sdk::trace::TracerProvider::builder()
+            .with_batch_exporter(exporter, opentelemetry_sdk::runtime::Tokio)
+            .build()
+            .tracer("bijux-atlas-server");
+        tracing_subscriber::registry()
+            .with(filter)
+            .with(tracing_subscriber::fmt::layer())
+            .with(tracing_opentelemetry::layer().with_tracer(tracer))
+            .init();
+    } else {
+        tracing_subscriber::registry()
+            .with(filter)
+            .with(tracing_subscriber::fmt::layer())
+            .init();
+    }
+}
+
+#[tokio::main]
+async fn main() -> Result<(), String> {
+    init_tracing();
+
+    let bind_addr = env::var("ATLAS_BIND").unwrap_or_else(|_| "0.0.0.0:8080".to_string());
+    let store_root = PathBuf::from(
+        env::var("ATLAS_STORE_ROOT").unwrap_or_else(|_| "artifacts/server-store".to_string()),
+    );
+    let cache_root = PathBuf::from(
+        env::var("ATLAS_CACHE_ROOT").unwrap_or_else(|_| "artifacts/server-cache".to_string()),
+    );
+
+    let pinned: HashSet<_> = env::var("ATLAS_PINNED_DATASETS")
+        .unwrap_or_default()
+        .split(',')
+        .filter_map(|s| {
+            let p: Vec<_> = s.split('/').collect();
+            if p.len() == 3 {
+                bijux_atlas_model::DatasetId::new(p[0], p[1], p[2]).ok()
+            } else {
+                None
+            }
+        })
+        .collect();
+
+    let cache_cfg = DatasetCacheConfig {
+        disk_root: cache_root,
+        max_disk_bytes: env_u64("ATLAS_MAX_DISK_BYTES", 8 * 1024 * 1024 * 1024),
+        max_dataset_count: env_usize("ATLAS_MAX_DATASET_COUNT", 8),
+        pinned_datasets: pinned,
+        read_only_fs: env_bool("ATLAS_READ_ONLY_FS_MODE", false),
+        cached_only_mode: env_bool("ATLAS_CACHED_ONLY_MODE", false),
+        dataset_open_timeout: env_duration_ms("ATLAS_DATASET_OPEN_TIMEOUT_MS", 3000),
+        ..DatasetCacheConfig::default()
+    };
+    let api_cfg = ApiConfig {
+        max_body_bytes: env_usize("ATLAS_MAX_BODY_BYTES", 16 * 1024),
+        request_timeout: env_duration_ms("ATLAS_REQUEST_TIMEOUT_MS", 5000),
+        sql_timeout: env_duration_ms("ATLAS_SQL_TIMEOUT_MS", 800),
+        response_max_bytes: env_usize("ATLAS_RESPONSE_MAX_BYTES", 512 * 1024),
+        slow_query_threshold: env_duration_ms("ATLAS_SLOW_QUERY_THRESHOLD_MS", 200),
+        enable_debug_datasets: env_bool("ATLAS_ENABLE_DEBUG_DATASETS", false),
+        enable_exemplars: env_bool("ATLAS_ENABLE_EXEMPLARS", false),
+        readiness_requires_catalog: env_bool("ATLAS_READINESS_REQUIRES_CATALOG", true),
+        ..ApiConfig::default()
+    };
+
+    let backend = Arc::new(LocalFsBackend::new(store_root));
+    let cache = DatasetCacheManager::new(cache_cfg, backend);
+    cache.spawn_background_tasks();
+
+    let state = AppState::with_config(
+        cache.clone(),
+        api_cfg,
+        bijux_atlas_query::QueryLimits::default(),
+    );
+    let app = build_router(state.clone());
+
+    // Ready only after first successful catalog refresh when required.
+    state.ready.store(false, Ordering::Relaxed);
+    if let Err(e) = cache.refresh_catalog().await {
+        error!("initial catalog refresh failed: {e}");
+    } else {
+        state.ready.store(true, Ordering::Relaxed);
+    }
+
+    let cache_bg = cache.clone();
+    let ready_bg = state.ready.clone();
+    tokio::spawn(async move {
+        let mut interval = tokio::time::interval(Duration::from_secs(15));
+        loop {
+            interval.tick().await;
+            match cache_bg.refresh_catalog().await {
+                Ok(_) => ready_bg.store(true, Ordering::Relaxed),
+                Err(e) => {
+                    error!("catalog refresh failed: {e}");
+                    ready_bg.store(false, Ordering::Relaxed);
+                }
+            }
+        }
+    });
+
+    let listener = TcpListener::bind(&bind_addr)
+        .await
+        .map_err(|e| format!("bind failed: {e}"))?;
+    info!("atlas-server listening on {bind_addr}");
+    axum::serve(listener, app)
+        .await
+        .map_err(|e| format!("server failed: {e}"))
+}
