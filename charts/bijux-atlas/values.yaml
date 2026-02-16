@@ -1,0 +1,121 @@
+image:
+  repository: ghcr.io/bijux/bijux-atlas
+  tag: latest
+  pullPolicy: IfNotPresent
+
+replicaCount: 2
+
+service:
+  type: ClusterIP
+  port: 8080
+
+resources:
+  requests:
+    cpu: "500m"
+    memory: "512Mi"
+  limits:
+    cpu: "2000m"
+    memory: "2Gi"
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+  fsGroup: 65532
+
+securityContext:
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]
+
+cache:
+  diskSize: 8Gi
+  maxDatasetCount: 8
+  maxDiskBytes: 8589934592
+  pinnedDatasets: []
+  warmupEnabled: false
+  warmupFailReadinessOnMissing: false
+  initPrewarm:
+    enabled: false
+    image: ghcr.io/bijux/bijux-atlas:latest
+
+rateLimits:
+  perIp:
+    capacity: 30
+    refillPerSec: 10
+  perApiKey:
+    enabled: false
+    capacity: 100
+    refillPerSec: 30
+
+concurrency:
+  cheap: 128
+  medium: 64
+  heavy: 16
+
+server:
+  requestTimeoutMs: 5000
+  sqlTimeoutMs: 800
+  responseMaxBytes: 524288
+  maxBodyBytes: 16384
+  slowQueryThresholdMs: 200
+  enableDebugDatasets: false
+  enableExemplars: false
+  cachedOnlyMode: false
+  readOnlyFsMode: false
+
+catalog:
+  endpoint: ""
+  etagEnabled: true
+
+store:
+  endpoint: ""
+  credentialsSecretName: ""
+
+networkPolicy:
+  enabled: true
+  allowDns: true
+  allowedEgressCIDRs: []
+
+serviceMonitor:
+  enabled: true
+  interval: 15s
+  scrapeTimeout: 5s
+  labels: {}
+
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 20
+  cpuUtilization: 70
+  requestRateTarget: 200
+  p95LatencyTargetMs: 300
+
+pdb:
+  enabled: true
+  minAvailable: 1
+
+rollout:
+  enabled: false
+  steps:
+    - setWeight: 10
+    - pause:
+        duration: 60s
+    - setWeight: 50
+    - pause:
+        duration: 120s
+
+catalogPublishJob:
+  enabled: false
+  backoffLimit: 1
+  image: ghcr.io/bijux/bijux-atlas:latest
+  command:
+    - /app/atlas-cli
+    - ingest
+
+extraEnv: []
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

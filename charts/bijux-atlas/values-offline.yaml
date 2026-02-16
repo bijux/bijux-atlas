@@ -1,0 +1,17 @@
+replicaCount: 2
+
+server:
+  cachedOnlyMode: true
+
+networkPolicy:
+  enabled: true
+  allowDns: false
+  allowedEgressCIDRs: []
+
+store:
+  endpoint: ""
+
+cache:
+  warmupEnabled: true
+  initPrewarm:
+    enabled: true
