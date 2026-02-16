@@ -40,10 +40,36 @@ fn help_contains_standard_plugin_flags() {
 }
 
 #[test]
+fn atlas_namespace_help_is_stable() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+        .args(["atlas", "--help"])
+        .output()
+        .expect("run atlas help");
+    assert!(output.status.success());
+
+    let text = String::from_utf8(output.stdout).expect("utf8 help");
+    for needle in ["ingest", "serve", "catalog", "dataset", "openapi"] {
+        assert!(text.contains(needle), "atlas help missing {needle}");
+    }
+}
+
+#[test]
 fn unknown_arguments_exit_with_usage_code() {
     let status = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
         .arg("--not-a-real-flag")
         .status()
         .expect("run with bad flag");
     assert_eq!(status.code(), Some(2));
+}
+
+#[test]
+fn json_error_contract_is_stable() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+        .args(["--json", "--not-a-real-flag"])
+        .output()
+        .expect("run with bad flag");
+    assert_eq!(output.status.code(), Some(2));
+    let stderr = String::from_utf8(output.stderr).expect("stderr utf8");
+    assert!(stderr.contains("\"code\":\"usage_error\""));
+    assert!(stderr.contains("\"message\":\"invalid command line arguments\""));
 }

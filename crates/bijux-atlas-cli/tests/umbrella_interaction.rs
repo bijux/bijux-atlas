@@ -41,4 +41,10 @@ exec "$(dirname "$0")/bijux-$subsystem" "$@"
         .assert()
         .success()
         .stdout(predicate::str::contains("\"name\": \"bijux-atlas\""));
+
+    Command::new(&umbrella)
+        .args(["atlas", "atlas", "--help"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("ingest"));
 }
