@@ -1,0 +1,18 @@
+[package]
+name = "bijux-atlas-ingest"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+bijux-atlas-core.workspace = true
+bijux-atlas-model.workspace = true
+rusqlite = { version = "0.31", features = ["bundled", "vtab"] }
+serde_json.workspace = true
+
+[dev-dependencies]
+tempfile = "=3.13.0"
+
+[lib]
+path = "src/lib.rs"
