@@ -299,6 +299,40 @@ fn atlas_repo_must_not_define_umbrella_bijux_binary() {
 }
 
 #[test]
+fn atlas_must_not_depend_on_bijux_dna_crates() {
+    let root = workspace_root();
+    let cargo_tomls = collect_files_by_name(&root, "Cargo.toml");
+    for file in cargo_tomls {
+        let content = fs::read_to_string(&file).expect("failed to read Cargo.toml");
+        assert!(
+            !content.contains("bijux-dna"),
+            "atlas must not reference bijux-dna in {}",
+            file.display()
+        );
+    }
+}
+
+fn collect_files_by_name(dir: &Path, name: &str) -> Vec<PathBuf> {
+    let mut out = Vec::new();
+    if !dir.exists() {
+        return out;
+    }
+    for entry in fs::read_dir(dir).expect("read_dir failed") {
+        let entry = entry.expect("dir entry failed");
+        let path = entry.path();
+        if path.is_dir() {
+            if path.file_name().is_some_and(|v| v == "target") {
+                continue;
+            }
+            out.extend(collect_files_by_name(&path, name));
+        } else if path.file_name().is_some_and(|v| v == name) {
+            out.push(path);
+        }
+    }
+    out
+}
+
+#[test]
 fn ingestion_must_be_pure_transform_only() {
     let root = workspace_root();
     let ingest_src = root.join("crates/bijux-atlas-ingest/src");

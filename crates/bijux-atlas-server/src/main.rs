@@ -45,6 +45,7 @@ fn env_duration_ms(name: &str, default_ms: u64) -> Duration {
 
 fn init_tracing() {
     let filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
+    let log_json = env_bool("ATLAS_LOG_JSON", true);
     if env_bool("ATLAS_OTEL_ENABLED", false) {
         let exporter = opentelemetry_otlp::SpanExporter::builder()
             .with_http()
@@ -54,16 +55,31 @@ fn init_tracing() {
             .with_batch_exporter(exporter, opentelemetry_sdk::runtime::Tokio)
             .build()
             .tracer("bijux-atlas-server");
-        tracing_subscriber::registry()
-            .with(filter)
-            .with(tracing_subscriber::fmt::layer())
-            .with(tracing_opentelemetry::layer().with_tracer(tracer))
-            .init();
+        if log_json {
+            tracing_subscriber::registry()
+                .with(filter)
+                .with(tracing_subscriber::fmt::layer().json())
+                .with(tracing_opentelemetry::layer().with_tracer(tracer))
+                .init();
+        } else {
+            tracing_subscriber::registry()
+                .with(filter)
+                .with(tracing_subscriber::fmt::layer())
+                .with(tracing_opentelemetry::layer().with_tracer(tracer))
+                .init();
+        }
     } else {
-        tracing_subscriber::registry()
-            .with(filter)
-            .with(tracing_subscriber::fmt::layer())
-            .init();
+        if log_json {
+            tracing_subscriber::registry()
+                .with(filter)
+                .with(tracing_subscriber::fmt::layer().json())
+                .init();
+        } else {
+            tracing_subscriber::registry()
+                .with(filter)
+                .with(tracing_subscriber::fmt::layer())
+                .init();
+        }
     }
 }
 

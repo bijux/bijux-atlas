@@ -1,5 +1,9 @@
 use super::*;
 
+const METRIC_SUBSYSTEM: &str = "atlas";
+const METRIC_VERSION: &str = env!("CARGO_PKG_VERSION");
+const METRIC_DATASET_ALL: &str = "all";
+
 fn api_error_response(status: StatusCode, err: ApiError) -> Response {
     let body = Json(json!({"error": err}));
     (status, body).into_response()
@@ -56,6 +60,22 @@ fn make_request_id(state: &AppState) -> String {
     format!("req-{id:016x}")
 }
 
+fn propagated_request_id(headers: &HeaderMap, state: &AppState) -> String {
+    if let Some(raw) = headers.get("x-request-id").and_then(|v| v.to_str().ok()) {
+        let trimmed = raw.trim();
+        if !trimmed.is_empty() {
+            return trimmed.to_string();
+        }
+    }
+    if let Some(raw) = headers.get("traceparent").and_then(|v| v.to_str().ok()) {
+        let trimmed = raw.trim();
+        if !trimmed.is_empty() {
+            return format!("trace-{trimmed}");
+        }
+    }
+    make_request_id(state)
+}
+
 fn with_request_id(mut response: Response, request_id: &str) -> Response {
     if let Ok(v) = HeaderValue::from_str(request_id) {
         response.headers_mut().insert("x-request-id", v);
@@ -91,6 +111,7 @@ pub(crate) async fn version_handler(State(state): State<AppState>) -> impl IntoR
         },
         "server": {
             "crate": CRATE_NAME,
+            "config_schema_version": crate::api_config::CONFIG_SCHEMA_VERSION,
         }
     });
     let mut response = Json(payload).into_response();
@@ -142,12 +163,50 @@ pub(crate) async fn readyz_handler(State(state): State<AppState>) -> impl IntoRe
 pub(crate) async fn metrics_handler(State(state): State<AppState>) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
-    let mut body = format!(
-        "atlas_dataset_hits {}\natlas_dataset_misses {}\natlas_dataset_count {}\natlas_dataset_disk_usage_bytes {}\n",
-        state.cache.metrics.dataset_hits.load(Ordering::Relaxed),
-        state.cache.metrics.dataset_misses.load(Ordering::Relaxed),
-        state.cache.metrics.dataset_count.load(Ordering::Relaxed),
-        state.cache.metrics.disk_usage_bytes.load(Ordering::Relaxed),
+    let mut body = String::from(
+        "bijux_dataset_hits{subsystem=\"%SUB%\",version=\"%VER%\",dataset=\"%DS%\"} %HITS%\n\
+bijux_dataset_misses{subsystem=\"%SUB%\",version=\"%VER%\",dataset=\"%DS%\"} %MISSES%\n\
+bijux_dataset_count{subsystem=\"%SUB%\",version=\"%VER%\",dataset=\"%DS%\"} %COUNT%\n\
+bijux_dataset_disk_usage_bytes{subsystem=\"%SUB%\",version=\"%VER%\",dataset=\"%DS%\"} %BYTES%\n",
+    )
+    .replace("%SUB%", METRIC_SUBSYSTEM)
+    .replace("%VER%", METRIC_VERSION)
+    .replace("%DS%", METRIC_DATASET_ALL)
+    .replace(
+        "%HITS%",
+        &state
+            .cache
+            .metrics
+            .dataset_hits
+            .load(Ordering::Relaxed)
+            .to_string(),
+    )
+    .replace(
+        "%MISSES%",
+        &state
+            .cache
+            .metrics
+            .dataset_misses
+            .load(Ordering::Relaxed)
+            .to_string(),
+    )
+    .replace(
+        "%COUNT%",
+        &state
+            .cache
+            .metrics
+            .dataset_count
+            .load(Ordering::Relaxed)
+            .to_string(),
+    )
+    .replace(
+        "%BYTES%",
+        &state
+            .cache
+            .metrics
+            .disk_usage_bytes
+            .load(Ordering::Relaxed)
+            .to_string(),
     );
     let open_lat = state
         .cache
@@ -164,12 +223,19 @@ pub(crate) async fn metrics_handler(State(state): State<AppState>) -> impl IntoR
         .await
         .clone();
     body.push_str(&format!(
-        "atlas_store_open_failure_total {}\natlas_store_download_failure_total {}\n",
+        "bijux_store_open_failure_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_store_download_failure_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
         state
             .cache
             .metrics
             .store_open_failures
             .load(Ordering::Relaxed),
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
         state
             .cache
             .metrics
@@ -177,8 +243,15 @@ pub(crate) async fn metrics_handler(State(state): State<AppState>) -> impl IntoR
             .load(Ordering::Relaxed),
     ));
     body.push_str(&format!(
-        "atlas_store_open_p95_seconds {:.6}\natlas_store_download_p95_seconds {:.6}\n",
+        "bijux_store_open_p95_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {:.6}\n\
+bijux_store_download_p95_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {:.6}\n",
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
         percentile_ns(&open_lat, 0.95) as f64 / 1_000_000_000.0,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
         percentile_ns(&download_lat, 0.95) as f64 / 1_000_000_000.0
     ));
 
@@ -188,26 +261,29 @@ pub(crate) async fn metrics_handler(State(state): State<AppState>) -> impl IntoR
         if state.api.enable_exemplars {
             if let Some((trace_id, ts_ms)) = req_exemplars.get(&(route.clone(), status)) {
                 body.push_str(&format!(
-                    "atlas_http_requests_total{{route=\"{}\",status=\"{}\"}} {} # {{trace_id=\"{}\"}} {}\n",
-                    route, status, count, trace_id, ts_ms
+                    "bijux_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",status=\"{}\"}} {} # {{trace_id=\"{}\"}} {}\n",
+                    METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, status, count, trace_id, ts_ms
                 ));
             } else {
                 body.push_str(&format!(
-                    "atlas_http_requests_total{{route=\"{}\",status=\"{}\"}} {}\n",
-                    route, status, count
+                    "bijux_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",status=\"{}\"}} {}\n",
+                    METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, status, count
                 ));
             }
         } else {
             body.push_str(&format!(
-                "atlas_http_requests_total{{route=\"{}\",status=\"{}\"}} {}\n",
-                route, status, count
+                "bijux_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",status=\"{}\"}} {}\n",
+                METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, status, count
             ));
         }
     }
     let req_lat = state.metrics.latency_ns.lock().await.clone();
     for (route, vals) in req_lat {
         body.push_str(&format!(
-            "atlas_http_request_latency_p95_seconds{{route=\"{}\"}} {:.6}\n",
+            "bijux_http_request_latency_p95_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\"}} {:.6}\n",
+            METRIC_SUBSYSTEM,
+            METRIC_VERSION,
+            METRIC_DATASET_ALL,
             route,
             percentile_ns(&vals, 0.95) as f64 / 1_000_000_000.0
         ));
@@ -215,7 +291,10 @@ pub(crate) async fn metrics_handler(State(state): State<AppState>) -> impl IntoR
     let sql_lat = state.metrics.sqlite_latency_ns.lock().await.clone();
     for (query_type, vals) in sql_lat {
         body.push_str(&format!(
-            "atlas_sqlite_query_latency_p95_seconds{{query_type=\"{}\"}} {:.6}\n",
+            "bijux_sqlite_query_latency_p95_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",query_type=\"{}\"}} {:.6}\n",
+            METRIC_SUBSYSTEM,
+            METRIC_VERSION,
+            METRIC_DATASET_ALL,
             query_type,
             percentile_ns(&vals, 0.95) as f64 / 1_000_000_000.0
         ));
@@ -238,7 +317,7 @@ pub(crate) async fn datasets_handler(
     headers: HeaderMap,
 ) -> impl IntoResponse {
     let started = Instant::now();
-    let request_id = make_request_id(&state);
+    let request_id = propagated_request_id(&headers, &state);
     info!(request_id = %request_id, route = "/v1/datasets", "request start");
     let _ = state.cache.refresh_catalog().await;
     let catalog = state
@@ -371,7 +450,7 @@ pub(crate) async fn genes_handler(
     axum::extract::Query(params): axum::extract::Query<HashMap<String, String>>,
 ) -> Response {
     let started = Instant::now();
-    let request_id = make_request_id(&state);
+    let request_id = propagated_request_id(&headers, &state);
     info!(request_id = %request_id, "request start");
     if let Some(ip) = headers.get("x-forwarded-for").and_then(|v| v.to_str().ok()) {
         if !state

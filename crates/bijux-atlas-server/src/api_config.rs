@@ -1,5 +1,7 @@
 use std::time::Duration;
 
+pub const CONFIG_SCHEMA_VERSION: &str = "1";
+
 #[derive(Debug, Clone)]
 pub struct RateLimitConfig {
     pub capacity: f64,

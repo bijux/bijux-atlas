@@ -179,8 +179,8 @@ async fn readiness_metrics_and_debug_gate() {
 
     let (status, _, body) = send_raw(addr, "/metrics", &[]).await;
     assert_eq!(status, 200);
-    assert!(body.contains("atlas_dataset_hits"));
-    assert!(body.contains("atlas_http_requests_total"));
+    assert!(body.contains("bijux_dataset_hits"));
+    assert!(body.contains("bijux_http_requests_total"));
 
     let (status, _, _) = send_raw(addr, "/debug/datasets", &[]).await;
     assert_eq!(status, 404);
