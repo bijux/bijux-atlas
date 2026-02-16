@@ -1,0 +1,38 @@
+name: dependency-lock
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-lockfile:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/dependency-lock
+      CARGO_TARGET_DIR: artifacts/isolates/dependency-lock/target
+      CARGO_HOME: artifacts/isolates/dependency-lock/cargo-home
+      TMPDIR: artifacts/isolates/dependency-lock/tmp
+      TMP: artifacts/isolates/dependency-lock/tmp
+      TEMP: artifacts/isolates/dependency-lock/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
+      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
+      - run: cargo update --workspace
+      - run: cargo generate-lockfile
+      - run: cargo check --workspace --locked
+      - name: Open lockfile PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore(deps): refresh Cargo.lock via locked workflow"
+          title: "chore(deps): refresh Cargo.lock"
+          body: "Automated dependency lock refresh. This is the only allowed automated lockfile update path."
+          branch: automation/dependency-lock-refresh
+          delete-branch: true
