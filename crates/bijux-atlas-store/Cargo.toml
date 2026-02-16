@@ -1,0 +1,14 @@
+[package]
+name = "bijux-atlas-store"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+bijux-atlas-core.workspace = true
+bijux-atlas-model.workspace = true
+serde_json.workspace = true
+
+[lib]
+path = "src/lib.rs"
