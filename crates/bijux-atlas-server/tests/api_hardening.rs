@@ -192,6 +192,13 @@ async fn readiness_metrics_and_debug_gate() {
 
     let (status, _, _) = send_raw(addr, "/debug/datasets", &[]).await;
     assert_eq!(status, 404);
+    let (status, _, _) = send_raw(
+        addr,
+        "/debug/dataset-health?release=110&species=homo_sapiens&assembly=GRCh38",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 404);
 }
 
 #[tokio::test]
@@ -261,4 +268,76 @@ async fn memory_pressure_guards_reject_large_response_without_cascading_failure(
     .await;
     assert_eq!(status, 200);
     assert!(body.contains("gene_count"));
+}
+
+#[tokio::test]
+async fn release_metadata_endpoint_and_explain_mode_are_available() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds.clone(), sqlite);
+    *store.etag.lock().await = "v1".to_string();
+    store.catalog.lock().await.datasets = vec![bijux_atlas_model::CatalogEntry::new(
+        ds.clone(),
+        "manifest.json".to_string(),
+        "gene_summary.sqlite".to_string(),
+    )];
+
+    let tmp = tempdir().expect("tempdir");
+    let cfg = DatasetCacheConfig {
+        disk_root: tmp.path().to_path_buf(),
+        ..Default::default()
+    };
+    let mgr = DatasetCacheManager::new(cfg, store);
+    let state = AppState::with_config(
+        mgr,
+        ApiConfig {
+            enable_debug_datasets: true,
+            ..ApiConfig::default()
+        },
+        Default::default(),
+    );
+    let app = build_router(state);
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/releases/110/species/homo_sapiens/assemblies/GRCh38?include_bom=1",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+    let json: Value = serde_json::from_str(&body).expect("release metadata json");
+    assert!(json.get("manifest_summary").is_some());
+    assert!(json.get("qc_summary").is_some());
+    assert!(json.get("bill_of_materials").is_some());
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&limit=1&explain=1",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+    let json: Value = serde_json::from_str(&body).expect("genes explain json");
+    assert!(json.get("explain").is_some());
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/debug/dataset-health?release=110&species=homo_sapiens&assembly=GRCh38",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+    let json: Value = serde_json::from_str(&body).expect("dataset health json");
+    assert!(
+        json.get("health")
+            .and_then(|h| h.get("cached"))
+            .and_then(Value::as_bool)
+            .is_some()
+    );
 }
