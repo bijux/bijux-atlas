@@ -1,0 +1,43 @@
+name: Security Advisory Intake
+description: Intake template for coordinating a security advisory publication
+title: "security: advisory <id>"
+labels: [security]
+body:
+  - type: input
+    id: advisory_id
+    attributes:
+      label: Advisory ID
+      placeholder: GHSA-xxxx-xxxx-xxxx
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - critical
+        - high
+        - medium
+        - low
+    validations:
+      required: true
+  - type: input
+    id: affected_versions
+    attributes:
+      label: Affected versions
+      placeholder: ">=0.1.0, <0.1.5"
+    validations:
+      required: true
+  - type: input
+    id: fixed_version
+    attributes:
+      label: Fixed version
+      placeholder: 0.1.5
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+    validations:
+      required: true
