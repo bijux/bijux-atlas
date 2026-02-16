@@ -1,0 +1,2 @@
+##gff-version 3
+chr1	s	gene	1	10	.	+	.	ID=g1;biotype=protein_coding
