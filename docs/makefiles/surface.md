@@ -32,3 +32,7 @@ Developer-loop targets:
 - `dev-clean`
 
 Internal targets are prefixed with `_` and are not stable API.
+
+Related policy docs:
+
+- [Crate layout contract](../crate-layout-contract.md)
