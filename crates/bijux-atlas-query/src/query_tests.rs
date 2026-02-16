@@ -310,6 +310,25 @@ fn cursor_generation_is_concurrency_stable() {
 }
 
 #[test]
+fn fast_path_gene_lookup_returns_single_row_without_cursor() {
+    let conn = setup_db();
+    let fields = GeneFields {
+        gene_id: true,
+        name: true,
+        coords: false,
+        biotype: false,
+        transcript_count: false,
+        sequence_length: false,
+    };
+    let row = query_gene_by_id_fast(&conn, "gene1", &fields)
+        .expect("fast query")
+        .expect("row");
+    assert_eq!(row.gene_id, "gene1");
+    assert_eq!(row.name.as_deref(), Some("BRCA1"));
+    assert!(row.seqid.is_none());
+}
+
+#[test]
 fn cost_estimator_and_limits_enforced() {
     let conn = setup_db();
     let req = GeneQueryRequest {

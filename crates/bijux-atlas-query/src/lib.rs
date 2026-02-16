@@ -132,6 +132,50 @@ pub fn query_genes(
     Ok(GeneQueryResponse { rows, next_cursor })
 }
 
+pub fn query_gene_by_id_fast(
+    conn: &Connection,
+    gene_id: &str,
+    fields: &GeneFields,
+) -> Result<Option<filters::GeneRow>, QueryError> {
+    let mut stmt = conn
+        .prepare(
+            "SELECT g.gene_id, g.name, g.seqid, g.start, g.end, g.biotype, g.transcript_count, g.sequence_length
+             FROM gene_summary g
+             WHERE g.gene_id = ?1
+             LIMIT 1",
+        )
+        .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;
+    let mut rows = stmt
+        .query([gene_id])
+        .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;
+    let Some(row) = rows
+        .next()
+        .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?
+    else {
+        return Ok(None);
+    };
+    let mut parsed = parse_row_from_sql(row, fields)
+        .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;
+    if !fields.name {
+        parsed.name = None;
+    }
+    if !fields.coords {
+        parsed.seqid = None;
+        parsed.start = None;
+        parsed.end = None;
+    }
+    if !fields.biotype {
+        parsed.biotype = None;
+    }
+    if !fields.transcript_count {
+        parsed.transcript_count = None;
+    }
+    if !fields.sequence_length {
+        parsed.sequence_length = None;
+    }
+    Ok(Some(parsed))
+}
+
 fn reject_impossible_filter_fast(
     req: &GeneQueryRequest,
     limits: &QueryLimits,
