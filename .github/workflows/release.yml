@@ -40,9 +40,42 @@ jobs:
           name: release-binaries
           path: artifacts/release
 
-  container:
+  release-notes:
     runs-on: ubuntu-latest
     needs: build-artifacts
+    env:
+      ISO_ROOT: artifacts/isolates/release-notes
+      TMPDIR: artifacts/isolates/release-notes/tmp
+      TMP: artifacts/isolates/release-notes/tmp
+      TEMP: artifacts/isolates/release-notes/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - run: mkdir -p "$TMPDIR" artifacts/isolates/release-notes
+      - name: Render notes
+        run: |
+          sed \
+            -e "s/{{tag}}/${GITHUB_REF_NAME}/g" \
+            -e "s/{{date}}/$(date -u +%Y-%m-%d)/g" \
+            -e "s/{{commit}}/${GITHUB_SHA}/g" \
+            -e "s#{{repo}}#${GITHUB_REPOSITORY}#g" \
+            .github/release-notes-template.md > artifacts/isolates/release-notes/RELEASE_NOTES.md
+      - name: Publish GitHub Release
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            --title "bijux-atlas ${GITHUB_REF_NAME}" \
+            --notes-file artifacts/isolates/release-notes/RELEASE_NOTES.md \
+            --verify-tag || \
+          gh release edit "${GITHUB_REF_NAME}" \
+            --title "bijux-atlas ${GITHUB_REF_NAME}" \
+            --notes-file artifacts/isolates/release-notes/RELEASE_NOTES.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  container:
+    runs-on: ubuntu-latest
+    needs: [build-artifacts, release-notes]
+    outputs:
+      image-digest: ${{ steps.build.outputs.digest }}
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-qemu-action@v3
@@ -59,7 +92,8 @@ jobs:
           tags: |
             type=ref,event=tag
             type=sha
-      - uses: docker/build-push-action@v6
+      - id: build
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
@@ -71,14 +105,28 @@ jobs:
           format: spdx-json
           output-file: artifacts/sbom.spdx.json
       - uses: sigstore/cosign-installer@v3
-      - run: cosign sign --yes ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+      - run: |
+          cosign sign --yes \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}
       - uses: actions/upload-artifact@v4
         with:
           name: sbom
           path: artifacts/sbom.spdx.json
 
+  verify-signature:
+    runs-on: ubuntu-latest
+    needs: container
+    steps:
+      - uses: sigstore/cosign-installer@v3
+      - run: |
+          cosign verify \
+            --certificate-identity-regexp "https://github.com/${{ github.repository }}/.github/workflows/release.yml@refs/tags/${{ github.ref_name }}" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ needs.container.outputs.image-digest }}
+
   chart-release:
     runs-on: ubuntu-latest
+    needs: verify-signature
     steps:
       - uses: actions/checkout@v4
       - uses: azure/setup-helm@v4
