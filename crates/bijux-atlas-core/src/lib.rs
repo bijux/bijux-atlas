@@ -4,6 +4,16 @@ use sha2::{Digest, Sha256};
 
 pub const CRATE_NAME: &str = "bijux-atlas-core";
 
+#[repr(u8)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ExitCode {
+    Success = 0,
+    Usage = 2,
+    Validation = 3,
+    DependencyFailure = 4,
+    Internal = 10,
+}
+
 #[must_use]
 pub fn sha256_hex(bytes: &[u8]) -> String {
     let mut hasher = Sha256::new();
