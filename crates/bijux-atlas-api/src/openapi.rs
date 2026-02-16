@@ -25,10 +25,29 @@ pub fn openapi_v1_spec() -> Value {
         "/metrics": {"get": {"responses": {"200": {"description": "prometheus metrics"}}}},
         "/v1/datasets": {
           "get": {
+            "parameters": [
+              {"name": "include_bom", "in": "query", "schema": {"type": "boolean"}}
+            ],
             "responses": {
               "200": {"description": "dataset list"},
               "304": {"description": "not modified"},
               "429": {"description": "rate limited", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApiError"}}}}
+            }
+          }
+        },
+        "/v1/releases/{release}/species/{species}/assemblies/{assembly}": {
+          "get": {
+            "parameters": [
+              {"name": "release", "in": "path", "required": true, "schema": {"type": "string"}},
+              {"name": "species", "in": "path", "required": true, "schema": {"type": "string"}},
+              {"name": "assembly", "in": "path", "required": true, "schema": {"type": "string"}},
+              {"name": "include_bom", "in": "query", "schema": {"type": "boolean"}}
+            ],
+            "responses": {
+              "200": {"description": "dataset metadata and qc summary"},
+              "400": {"description": "invalid dataset dimensions", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApiError"}}}},
+              "404": {"description": "dataset missing in catalog", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApiError"}}}},
+              "503": {"description": "manifest unavailable", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApiError"}}}}
             }
           }
         },
@@ -46,7 +65,8 @@ pub fn openapi_v1_spec() -> Value {
               {"name": "limit", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 500}},
               {"name": "cursor", "in": "query", "schema": {"type": "string", "maxLength": 4096}},
               {"name": "fields", "in": "query", "schema": {"type": "string", "description": "comma-separated projection fields"}},
-              {"name": "pretty", "in": "query", "schema": {"type": "boolean"}}
+              {"name": "pretty", "in": "query", "schema": {"type": "boolean"}},
+              {"name": "explain", "in": "query", "schema": {"type": "boolean", "description": "embed extraction policy details"}}
             ],
             "responses": {
               "200": {
@@ -86,6 +106,21 @@ pub fn openapi_v1_spec() -> Value {
             "responses": {
               "200": {"description": "debug cache inventory"},
               "404": {"description": "disabled"}
+            }
+          }
+        },
+        "/debug/dataset-health": {
+          "get": {
+            "parameters": [
+              {"name": "release", "in": "query", "required": true, "schema": {"type": "string"}},
+              {"name": "species", "in": "query", "required": true, "schema": {"type": "string"}},
+              {"name": "assembly", "in": "query", "required": true, "schema": {"type": "string"}}
+            ],
+            "responses": {
+              "200": {"description": "dataset cache/verification health"},
+              "400": {"description": "invalid dataset dimensions", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApiError"}}}},
+              "404": {"description": "disabled"},
+              "503": {"description": "health evaluation failed", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApiError"}}}}
             }
           }
         }

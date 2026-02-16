@@ -112,9 +112,11 @@ mod tests {
             "/readyz",
             "/metrics",
             "/v1/datasets",
+            "/v1/releases/{release}/species/{species}/assemblies/{assembly}",
             "/v1/genes",
             "/v1/genes/count",
             "/debug/datasets",
+            "/debug/dataset-health",
         ] {
             assert!(spec["paths"].get(route).is_some(), "missing route: {route}");
         }
