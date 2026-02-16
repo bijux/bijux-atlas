@@ -1,0 +1,229 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  fmt:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/fmt
+      CARGO_TARGET_DIR: artifacts/isolates/fmt/target
+      CARGO_HOME: artifacts/isolates/fmt/cargo-home
+      TMPDIR: artifacts/isolates/fmt/tmp
+      TMP: artifacts/isolates/fmt/tmp
+      TEMP: artifacts/isolates/fmt/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
+          components: rustfmt
+      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
+      - run: cargo fmt --all --check
+
+  clippy:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/clippy
+      CARGO_TARGET_DIR: artifacts/isolates/clippy/target
+      CARGO_HOME: artifacts/isolates/clippy/cargo-home
+      TMPDIR: artifacts/isolates/clippy/tmp
+      TMP: artifacts/isolates/clippy/tmp
+      TEMP: artifacts/isolates/clippy/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
+          components: clippy
+      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
+      - run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+
+  test-nextest:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/test-nextest
+      CARGO_TARGET_DIR: artifacts/isolates/test-nextest/target
+      CARGO_HOME: artifacts/isolates/test-nextest/cargo-home
+      TMPDIR: artifacts/isolates/test-nextest/tmp
+      TMP: artifacts/isolates/test-nextest/tmp
+      TEMP: artifacts/isolates/test-nextest/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
+      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
+      - run: cargo install cargo-nextest --locked
+      - run: cargo nextest run --workspace --all-targets --config-file .config/nextest.toml
+
+  deny:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/deny
+      CARGO_TARGET_DIR: artifacts/isolates/deny/target
+      CARGO_HOME: artifacts/isolates/deny/cargo-home
+      TMPDIR: artifacts/isolates/deny/tmp
+      TMP: artifacts/isolates/deny/tmp
+      TEMP: artifacts/isolates/deny/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
+      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
+      - run: cargo install cargo-deny --locked
+      - run: cargo deny check
+
+  audit:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/audit
+      CARGO_TARGET_DIR: artifacts/isolates/audit/target
+      CARGO_HOME: artifacts/isolates/audit/cargo-home
+      TMPDIR: artifacts/isolates/audit/tmp
+      TMP: artifacts/isolates/audit/tmp
+      TEMP: artifacts/isolates/audit/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
+      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
+      - run: cargo install cargo-audit --locked
+      - run: cargo audit
+
+  license-check:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/license-check
+      CARGO_TARGET_DIR: artifacts/isolates/license-check/target
+      CARGO_HOME: artifacts/isolates/license-check/cargo-home
+      TMPDIR: artifacts/isolates/license-check/tmp
+      TMP: artifacts/isolates/license-check/tmp
+      TEMP: artifacts/isolates/license-check/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
+      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
+      - run: cargo install cargo-deny --locked
+      - run: cargo deny check licenses
+
+  policy-lint:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/policy-lint
+      CARGO_TARGET_DIR: artifacts/isolates/policy-lint/target
+      CARGO_HOME: artifacts/isolates/policy-lint/cargo-home
+      TMPDIR: artifacts/isolates/policy-lint/tmp
+      TMP: artifacts/isolates/policy-lint/tmp
+      TEMP: artifacts/isolates/policy-lint/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
+      - run: ./scripts/policy-lint.sh
+
+  release-binaries:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/release-binaries
+      CARGO_TARGET_DIR: artifacts/isolates/release-binaries/target
+      CARGO_HOME: artifacts/isolates/release-binaries/cargo-home
+      TMPDIR: artifacts/isolates/release-binaries/tmp
+      TMP: artifacts/isolates/release-binaries/tmp
+      TEMP: artifacts/isolates/release-binaries/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
+      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
+      - run: cargo build --workspace --release --bins --locked
+      - run: "$CARGO_TARGET_DIR/release/atlas-cli" --help
+      - run: "$CARGO_TARGET_DIR/release/atlas-server" --help
+
+  docs-build:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/docs-build
+      CARGO_TARGET_DIR: artifacts/isolates/docs-build/target
+      CARGO_HOME: artifacts/isolates/docs-build/cargo-home
+      TMPDIR: artifacts/isolates/docs-build/tmp
+      TMP: artifacts/isolates/docs-build/tmp
+      TEMP: artifacts/isolates/docs-build/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
+      - run: ./scripts/check-markdown-links.sh
+
+  openapi-drift:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/openapi-drift
+      CARGO_TARGET_DIR: artifacts/isolates/openapi-drift/target
+      CARGO_HOME: artifacts/isolates/openapi-drift/cargo-home
+      TMPDIR: artifacts/isolates/openapi-drift/tmp
+      TMP: artifacts/isolates/openapi-drift/tmp
+      TEMP: artifacts/isolates/openapi-drift/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
+      - run: ./scripts/openapi-generate.sh
+      - run: diff -u openapi/v1/openapi.snapshot.json openapi/v1/openapi.generated.json
+
+  runtime-security-scan:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/runtime-security-scan
+      TMPDIR: artifacts/isolates/runtime-security-scan/tmp
+      TMP: artifacts/isolates/runtime-security-scan/tmp
+      TEMP: artifacts/isolates/runtime-security-scan/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - run: mkdir -p "$TMPDIR"
+      - uses: aquasecurity/trivy-action@0.24.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: table
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
+          exit-code: "1"
+      - uses: docker/setup-buildx-action@v3
+      - run: docker build -t bijux-atlas:ci -f Dockerfile .
+      - uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: bijux-atlas:ci
+          format: table
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
+          exit-code: "1"
+
+  coverage:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/coverage
+      CARGO_TARGET_DIR: artifacts/isolates/coverage/target
+      CARGO_HOME: artifacts/isolates/coverage/cargo-home
+      TMPDIR: artifacts/isolates/coverage/tmp
+      TMP: artifacts/isolates/coverage/tmp
+      TEMP: artifacts/isolates/coverage/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
+      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
+      - run: cargo install cargo-llvm-cov --locked
+      - run: cargo llvm-cov --workspace --all-features --lcov --output-path artifacts/isolates/coverage/lcov.info
