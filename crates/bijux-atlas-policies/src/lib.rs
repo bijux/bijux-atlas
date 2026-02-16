@@ -1,8 +1,20 @@
 #![forbid(unsafe_code)]
 
-pub const CRATE_NAME: &str = "bijux-atlas-policies";
+mod limits;
+mod schema;
+mod validate;
 
-pub const MAX_LOC_HARD: usize = 1000;
-pub const MAX_DEPTH_HARD: usize = 7;
-pub const MAX_RS_FILES_PER_DIR_HARD: usize = 10;
-pub const MAX_MODULES_PER_DIR_HARD: usize = 16;
+pub use limits::{
+    MAX_DEPTH_HARD, MAX_LOC_HARD, MAX_MODULES_PER_DIR_HARD, MAX_RS_FILES_PER_DIR_HARD,
+    MAX_SCHEMA_BUMP_STEP, MIN_POLICY_SCHEMA_VERSION,
+};
+pub use schema::{
+    CacheBudget, ConcurrencyBulkheads, PolicyConfig, PolicySchema, QueryBudget, RateLimitPolicy,
+    TelemetryPolicy,
+};
+pub use validate::{
+    canonical_config_json, load_policy_from_workspace, policy_config_path, policy_schema_path,
+    validate_policy_config, validate_schema_version_transition, PolicyValidationError,
+};
+
+pub const CRATE_NAME: &str = "bijux-atlas-policies";
