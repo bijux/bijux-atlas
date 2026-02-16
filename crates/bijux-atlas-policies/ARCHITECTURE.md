@@ -1,4 +1,4 @@
-# Architecture
+## Architecture
 
 This crate hosts deterministic policy tests that validate repository structure constraints.
 
