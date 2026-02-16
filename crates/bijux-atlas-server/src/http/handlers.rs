@@ -1,4 +1,7 @@
-use super::*;
+use crate::*;
+use serde_json::json;
+use serde_json::Value;
+use tracing::{info, info_span, warn};
 
 fn api_error_response(status: StatusCode, err: ApiError) -> Response {
     let body = Json(json!({"error": err}));
@@ -107,7 +110,7 @@ pub(crate) async fn version_handler(State(state): State<AppState>) -> impl IntoR
         },
         "server": {
             "crate": CRATE_NAME,
-            "config_schema_version": crate::api_config::CONFIG_SCHEMA_VERSION,
+            "config_schema_version": crate::config::CONFIG_SCHEMA_VERSION,
         }
     });
     let mut response = Json(payload).into_response();
@@ -157,7 +160,7 @@ pub(crate) async fn readyz_handler(State(state): State<AppState>) -> impl IntoRe
 }
 
 pub(crate) async fn metrics_handler(State(state): State<AppState>) -> impl IntoResponse {
-    crate::metrics_endpoint::metrics_handler(State(state)).await
+    crate::telemetry::metrics_endpoint::metrics_handler(State(state)).await
 }
 
 pub(crate) async fn datasets_handler(
@@ -172,7 +175,7 @@ pub(crate) async fn datasets_handler(
         .cache
         .current_catalog()
         .await
-        .unwrap_or(Catalog { datasets: vec![] });
+        .unwrap_or_else(|| Catalog::new(vec![]));
     let payload = json!({"datasets": catalog.datasets});
     let etag = format!(
         "\"{}\"",

@@ -1,4 +1,4 @@
-use super::*;
+use crate::*;
 
 const METRIC_SUBSYSTEM: &str = "atlas";
 const METRIC_VERSION: &str = env!("CARGO_PKG_VERSION");

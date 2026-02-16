@@ -1,4 +1,4 @@
-use super::{CacheError, CatalogFetch, DatasetStoreBackend};
+use crate::{CacheError, CatalogFetch, DatasetStoreBackend};
 use async_trait::async_trait;
 use bijux_atlas_model::{ArtifactManifest, Catalog, DatasetId};
 use std::collections::HashMap;
@@ -18,9 +18,7 @@ pub struct FakeStore {
 impl Default for FakeStore {
     fn default() -> Self {
         Self {
-            catalog: Mutex::new(Catalog {
-                datasets: Vec::new(),
-            }),
+            catalog: Mutex::new(Catalog::new(Vec::new())),
             manifest: Mutex::new(HashMap::new()),
             sqlite: Mutex::new(HashMap::new()),
             fetch_calls: std::sync::atomic::AtomicU64::new(0),

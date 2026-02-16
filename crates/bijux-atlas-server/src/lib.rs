@@ -16,21 +16,19 @@ use bijux_atlas_query::{
     RegionFilter,
 };
 use rusqlite::{Connection, OpenFlags};
-use serde_json::{json, Value};
 use std::collections::{HashMap, HashSet};
-use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 use tokio::sync::{Mutex, OwnedSemaphorePermit, RwLock, Semaphore};
 use tokio::time::timeout;
-use tracing::{error, info, info_span, warn};
+use tracing::{error, info, warn};
 
-mod api_config;
-mod fake_store;
-mod rate_limiter;
-mod store_backends;
+mod config;
+mod http;
+mod store;
+mod telemetry;
 
 pub const CRATE_NAME: &str = "bijux-atlas-server";
 
@@ -159,8 +157,8 @@ fn chrono_like_unix_millis() -> u128 {
         .map_or(0, |d| d.as_millis())
 }
 
-pub use api_config::{ApiConfig, RateLimitConfig};
-pub use store_backends::{LocalFsBackend, RetryPolicy, S3LikeBackend};
+pub use config::{ApiConfig, RateLimitConfig};
+pub use store::backends::{LocalFsBackend, RetryPolicy, S3LikeBackend};
 
 #[async_trait]
 pub trait DatasetStoreBackend: Send + Sync + 'static {
@@ -193,7 +191,7 @@ struct BreakerState {
     open_until: Option<Instant>,
 }
 
-use rate_limiter::RateLimiter;
+use telemetry::rate_limiter::RateLimiter;
 
 pub struct DatasetConnection {
     pub conn: Connection,
@@ -751,25 +749,22 @@ impl AppState {
 
 pub fn build_router(state: AppState) -> Router {
     Router::new()
-        .route("/healthz", get(http_handlers::healthz_handler))
-        .route("/readyz", get(http_handlers::readyz_handler))
-        .route("/metrics", get(http_handlers::metrics_handler))
-        .route("/v1/version", get(http_handlers::version_handler))
-        .route("/v1/datasets", get(http_handlers::datasets_handler))
-        .route("/v1/genes", get(http_handlers::genes_handler))
-        .route("/v1/genes/count", get(http_handlers::genes_count_handler))
+        .route("/healthz", get(http::handlers::healthz_handler))
+        .route("/readyz", get(http::handlers::readyz_handler))
+        .route("/metrics", get(http::handlers::metrics_handler))
+        .route("/v1/version", get(http::handlers::version_handler))
+        .route("/v1/datasets", get(http::handlers::datasets_handler))
+        .route("/v1/genes", get(http::handlers::genes_handler))
+        .route("/v1/genes/count", get(http::handlers::genes_count_handler))
         .route(
             "/debug/datasets",
-            get(http_handlers::debug_datasets_handler),
+            get(http::handlers::debug_datasets_handler),
         )
         .layer(DefaultBodyLimit::max(state.api.max_body_bytes))
         .with_state(state)
 }
 
-pub use fake_store::FakeStore;
-
-mod http_handlers;
-mod metrics_endpoint;
+pub use store::fake::FakeStore;
 
 #[cfg(test)]
 mod cache_manager_tests;
