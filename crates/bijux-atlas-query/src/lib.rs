@@ -1,27 +1,38 @@
 #![forbid(unsafe_code)]
 
+mod cost;
 mod cursor;
 mod filters;
 mod limits;
 mod planner;
+mod row_decode;
 mod sql;
 
-use cursor::{decode_cursor, encode_cursor, CursorPayload, OrderMode};
+use cursor::{
+    decode_cursor as decode_cursor_inner, encode_cursor as encode_cursor_inner,
+    CursorPayload as CursorPayloadInner, OrderMode as OrderModeInner,
+};
 use planner::validate_request;
 use rusqlite::{params_from_iter, types::Value, Connection};
 use sql::{
     assert_index_usage, build_sql, normalized_query_hash, order_mode_for, parse_row_from_sql,
+    query_gene_id_name_json_minimal,
 };
 
 pub const CRATE_NAME: &str = "bijux-atlas-query";
 
-pub use cursor::{CursorError, CursorErrorCode};
+pub use cost::estimate_prefix_match_cost;
+pub use cursor::{
+    decode_cursor, encode_cursor, CursorError, CursorErrorCode, CursorPayload, OrderMode,
+};
 pub use filters::{
     compile_field_projection, escape_like_prefix, GeneFields, GeneFilter, GeneRow, RegionFilter,
 };
 pub use limits::QueryLimits as QueryLimitsExport;
 pub use planner::{classify_query, estimate_work_units, QueryClass};
+pub use row_decode::RawGeneRow;
 pub use sql::explain_query_plan as explain_query_plan_internal;
+pub use sql::prepared_sql_for_class as prepared_sql_for_class_export;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[non_exhaustive]
@@ -70,7 +81,7 @@ pub fn query_genes(
 
     let decoded_cursor = if let Some(token) = &req.cursor {
         Some(
-            decode_cursor(token, cursor_secret, &query_hash, order_mode)
+            decode_cursor_inner(token, cursor_secret, &query_hash, order_mode)
                 .map_err(|e| QueryError::new(QueryErrorCode::Cursor, e.to_string()))?,
         )
     } else {
@@ -84,7 +95,7 @@ pub fn query_genes(
         .map_err(|e| QueryError::new(QueryErrorCode::Policy, e))?;
 
     let mut stmt = conn
-        .prepare(&sql)
+        .prepare_cached(&sql)
         .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;
     let mapped = stmt
         .query_map(params_from_iter(params.iter()), |row| {
@@ -106,14 +117,14 @@ pub fn query_genes(
             .last()
             .ok_or_else(|| QueryError::new(QueryErrorCode::Sql, "pagination invariant violated"))?;
         let payload = match order_mode {
-            OrderMode::Region => CursorPayload {
+            OrderModeInner::Region => CursorPayloadInner {
                 order: "region".to_string(),
                 last_seqid: last.seqid.clone(),
                 last_start: last.start,
                 last_gene_id: last.gene_id.clone(),
                 query_hash,
             },
-            OrderMode::GeneId => CursorPayload {
+            OrderModeInner::GeneId => CursorPayloadInner {
                 order: "gene_id".to_string(),
                 last_seqid: None,
                 last_start: None,
@@ -122,7 +133,7 @@ pub fn query_genes(
             },
         };
         Some(
-            encode_cursor(&payload, cursor_secret)
+            encode_cursor_inner(&payload, cursor_secret)
                 .map_err(|e| QueryError::new(QueryErrorCode::Cursor, e.to_string()))?,
         )
     } else {
@@ -138,7 +149,7 @@ pub fn query_gene_by_id_fast(
     fields: &GeneFields,
 ) -> Result<Option<filters::GeneRow>, QueryError> {
     let mut stmt = conn
-        .prepare(
+        .prepare_cached(
             "SELECT g.gene_id, g.name, g.seqid, g.start, g.end, g.biotype, g.transcript_count, g.sequence_length
              FROM gene_summary g
              WHERE g.gene_id = ?1
@@ -174,6 +185,14 @@ pub fn query_gene_by_id_fast(
         parsed.sequence_length = None;
     }
     Ok(Some(parsed))
+}
+
+pub fn query_gene_id_name_json_minimal_fast(
+    conn: &Connection,
+    gene_id: &str,
+) -> Result<Option<Vec<u8>>, QueryError> {
+    query_gene_id_name_json_minimal(conn, gene_id)
+        .map_err(|e| QueryError::new(QueryErrorCode::Sql, e))
 }
 
 fn reject_impossible_filter_fast(
@@ -238,7 +257,7 @@ pub fn explain_query_plan(
         normalized_query_hash(req).map_err(|e| QueryError::new(QueryErrorCode::Validation, e))?;
     let decoded_cursor = if let Some(token) = &req.cursor {
         Some(
-            decode_cursor(token, cursor_secret, &query_hash, order_mode)
+            decode_cursor_inner(token, cursor_secret, &query_hash, order_mode)
                 .map_err(|e| QueryError::new(QueryErrorCode::Cursor, e.to_string()))?,
         )
     } else {

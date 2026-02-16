@@ -104,9 +104,12 @@ fn limits() -> QueryLimits {
         max_limit: 500,
         max_region_span: 5_000_000,
         max_region_estimated_rows: 1_000,
+        max_prefix_cost_units: 80_000,
+        heavy_projection_limit: 200,
         min_prefix_len: 1,
         max_prefix_len: 64,
         max_work_units: 2_000,
+        max_serialization_bytes: 512 * 1024,
     }
 }
 
@@ -326,6 +329,38 @@ fn fast_path_gene_lookup_returns_single_row_without_cursor() {
     assert_eq!(row.gene_id, "gene1");
     assert_eq!(row.name.as_deref(), Some("BRCA1"));
     assert!(row.seqid.is_none());
+}
+
+#[test]
+fn minimal_gene_id_name_json_fast_path_returns_compact_payload() {
+    let conn = setup_db();
+    let payload = query_gene_id_name_json_minimal_fast(&conn, "gene1")
+        .expect("query")
+        .expect("row");
+    let txt = String::from_utf8(payload).expect("utf8");
+    assert!(txt.contains("\"gene_id\":\"gene1\""));
+    assert!(txt.contains("\"name\":\"BRCA1\""));
+    assert!(!txt.contains("seqid"));
+}
+
+#[test]
+fn pathological_prefix_is_rejected_by_cost_estimator() {
+    let conn = setup_db();
+    let req = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            name_prefix: Some("A".to_string()),
+            ..Default::default()
+        },
+        limit: 500,
+        cursor: None,
+        allow_full_scan: false,
+    };
+    let mut lim = limits();
+    lim.max_prefix_cost_units = 100;
+    let err = query_genes(&conn, &req, &lim, b"s").expect_err("prefix rejection");
+    assert_eq!(err.code, QueryErrorCode::Validation);
+    assert!(err.message.contains("name_prefix estimated cost"));
 }
 
 #[test]

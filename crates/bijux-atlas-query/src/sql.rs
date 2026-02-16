@@ -1,5 +1,7 @@
 use crate::cursor::{CursorPayload, OrderMode};
 use crate::filters::{compile_field_projection, escape_like_prefix, GeneFields, GeneQueryRequest};
+use crate::planner::QueryClass;
+use crate::row_decode::RawGeneRow;
 use bijux_atlas_core::canonical;
 use rusqlite::{params_from_iter, types::Value, Connection};
 
@@ -99,7 +101,9 @@ pub fn assert_index_usage(
     allow_full_scan: bool,
 ) -> Result<(), String> {
     let explain_sql = format!("EXPLAIN QUERY PLAN {sql}");
-    let mut stmt = conn.prepare(&explain_sql).map_err(|e| e.to_string())?;
+    let mut stmt = conn
+        .prepare_cached(&explain_sql)
+        .map_err(|e| e.to_string())?;
     let lines = stmt
         .query_map(params_from_iter(params.iter()), |row| {
             row.get::<_, String>(3)
@@ -137,7 +141,9 @@ pub fn explain_query_plan(
     let (sql, mut params) = build_sql(req, order_mode, cursor)?;
     params.push(Value::Integer((req.limit as i64) + 1));
     let explain_sql = format!("EXPLAIN QUERY PLAN {sql}");
-    let mut stmt = conn.prepare(&explain_sql).map_err(|e| e.to_string())?;
+    let mut stmt = conn
+        .prepare_cached(&explain_sql)
+        .map_err(|e| e.to_string())?;
     let mut lines = stmt
         .query_map(params_from_iter(params.iter()), |row| {
             row.get::<_, String>(3)
@@ -163,14 +169,49 @@ pub fn parse_row_from_sql(
     fields: &GeneFields,
 ) -> rusqlite::Result<crate::filters::GeneRow> {
     let _ = fields;
+    let raw = RawGeneRow::from_sql_row(row)?;
     Ok(crate::filters::GeneRow {
-        gene_id: row.get::<_, String>(0)?,
-        name: row.get::<_, Option<String>>(1)?,
-        seqid: row.get::<_, Option<String>>(2)?,
-        start: row.get::<_, Option<i64>>(3)?.map(|v| v as u64),
-        end: row.get::<_, Option<i64>>(4)?.map(|v| v as u64),
-        biotype: row.get::<_, Option<String>>(5)?,
-        transcript_count: row.get::<_, Option<i64>>(6)?.map(|v| v as u64),
-        sequence_length: row.get::<_, Option<i64>>(7)?.map(|v| v as u64),
+        gene_id: raw.gene_id,
+        name: raw.name,
+        seqid: raw.seqid,
+        start: raw.start.map(|v| v as u64),
+        end: raw.end.map(|v| v as u64),
+        biotype: raw.biotype,
+        transcript_count: raw.transcript_count.map(|v| v as u64),
+        sequence_length: raw.sequence_length.map(|v| v as u64),
     })
+}
+
+pub fn query_gene_id_name_json_minimal(
+    conn: &Connection,
+    gene_id: &str,
+) -> Result<Option<Vec<u8>>, String> {
+    let mut stmt = conn
+        .prepare_cached("SELECT gene_id, name FROM gene_summary WHERE gene_id = ?1 LIMIT 1")
+        .map_err(|e| e.to_string())?;
+    let mut rows = stmt.query([gene_id]).map_err(|e| e.to_string())?;
+    let Some(row) = rows.next().map_err(|e| e.to_string())? else {
+        return Ok(None);
+    };
+    let gid: String = row.get(0).map_err(|e| e.to_string())?;
+    let name: Option<String> = row.get(1).map_err(|e| e.to_string())?;
+    let gid_json = serde_json::to_string(&gid).map_err(|e| e.to_string())?;
+    let name_json = serde_json::to_string(&name).map_err(|e| e.to_string())?;
+    let body = format!("{{\"gene_id\":{gid_json},\"name\":{name_json}}}");
+    Ok(Some(body.into_bytes()))
+}
+
+#[must_use]
+pub fn prepared_sql_for_class(class: QueryClass) -> &'static str {
+    match class {
+        QueryClass::Cheap => {
+            "SELECT gene_id, name FROM gene_summary WHERE gene_id = ?1 LIMIT ?2"
+        }
+        QueryClass::Medium => {
+            "SELECT gene_id, name, seqid, start, end, biotype, transcript_count, sequence_length FROM gene_summary WHERE biotype = ?1 ORDER BY gene_id LIMIT ?2"
+        }
+        QueryClass::Heavy => {
+            "SELECT g.gene_id, g.name, g.seqid, g.start, g.end, g.biotype, g.transcript_count, g.sequence_length FROM gene_summary g JOIN gene_summary_rtree r ON r.gene_rowid = g.id WHERE g.seqid = ?1 AND r.start <= ?2 AND r.end >= ?3 ORDER BY g.seqid, g.start, g.gene_id LIMIT ?4"
+        }
+    }
 }

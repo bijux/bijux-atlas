@@ -5,6 +5,9 @@ use serde::{Deserialize, Serialize};
 use sha2::Sha256;
 
 type HmacSha256 = Hmac<Sha256>;
+const MAX_CURSOR_TOKEN_LEN: usize = 1024;
+const MAX_CURSOR_PAYLOAD_PART_LEN: usize = 768;
+const MAX_CURSOR_SIG_PART_LEN: usize = 128;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[non_exhaustive]
@@ -73,9 +76,22 @@ pub fn decode_cursor(
     expected_hash: &str,
     mode: OrderMode,
 ) -> Result<CursorPayload, CursorError> {
+    if token.len() > MAX_CURSOR_TOKEN_LEN {
+        return Err(CursorError::new(
+            CursorErrorCode::InvalidFormat,
+            "cursor exceeds max length",
+        ));
+    }
     let (payload_part, sig_part) = token
         .split_once('.')
         .ok_or_else(|| CursorError::new(CursorErrorCode::InvalidFormat, "invalid cursor format"))?;
+    if payload_part.len() > MAX_CURSOR_PAYLOAD_PART_LEN || sig_part.len() > MAX_CURSOR_SIG_PART_LEN
+    {
+        return Err(CursorError::new(
+            CursorErrorCode::InvalidFormat,
+            "cursor part exceeds max length",
+        ));
+    }
 
     let mut mac = HmacSha256::new_from_slice(secret)
         .map_err(|e| CursorError::new(CursorErrorCode::InvalidPayload, e.to_string()))?;

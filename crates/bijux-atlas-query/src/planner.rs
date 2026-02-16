@@ -1,3 +1,4 @@
+use crate::cost::estimate_prefix_match_cost;
 use crate::filters::GeneQueryRequest;
 use crate::limits::QueryLimits;
 
@@ -50,6 +51,13 @@ pub fn validate_request(req: &GeneQueryRequest, limits: &QueryLimits) -> Result<
             return Err(format!(
                 "name_prefix length exceeds {}",
                 limits.max_prefix_len
+            ));
+        }
+        let prefix_cost = estimate_prefix_match_cost(req);
+        if prefix_cost > limits.max_prefix_cost_units {
+            return Err(format!(
+                "name_prefix estimated cost {} exceeds {}",
+                prefix_cost, limits.max_prefix_cost_units
             ));
         }
     }
