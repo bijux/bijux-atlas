@@ -1,0 +1,40 @@
+[workspace]
+members = [
+  "crates/bijux-atlas-core",
+  "crates/bijux-atlas-model",
+  "crates/bijux-atlas-ingest",
+  "crates/bijux-atlas-store",
+  "crates/bijux-atlas-query",
+  "crates/bijux-atlas-api",
+  "crates/bijux-atlas-cli",
+  "crates/bijux-atlas-server",
+]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+version = "0.1.0"
+license = "Apache-2.0"
+rust-version = "1.84.1"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = "deny"
+pedantic = "deny"
+unwrap_used = "deny"
+expect_used = "deny"
+todo = "deny"
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+bijux-atlas-core = { version = "=0.1.0", path = "crates/bijux-atlas-core" }
+bijux-atlas-model = { version = "=0.1.0", path = "crates/bijux-atlas-model" }
+bijux-atlas-ingest = { version = "=0.1.0", path = "crates/bijux-atlas-ingest" }
+bijux-atlas-store = { version = "=0.1.0", path = "crates/bijux-atlas-store" }
+bijux-atlas-query = { version = "=0.1.0", path = "crates/bijux-atlas-query" }
+bijux-atlas-api = { version = "=0.1.0", path = "crates/bijux-atlas-api" }
+bijux-atlas-cli = { version = "=0.1.0", path = "crates/bijux-atlas-cli" }
+bijux-atlas-server = { version = "=0.1.0", path = "crates/bijux-atlas-server" }
