@@ -1,5 +1,6 @@
-use crate::sha256_hex;
+use crate::{sha256_hex, OutputMode};
 use bijux_atlas_model::{ArtifactManifest, Catalog, DatasetId};
+use serde_json::json;
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::PathBuf;
@@ -18,11 +19,22 @@ pub(crate) fn parse_alias_map(input: &str) -> BTreeMap<String, String> {
     out
 }
 
-pub(crate) fn validate_catalog(path: PathBuf) -> Result<(), String> {
+pub(crate) fn validate_catalog(path: PathBuf, output_mode: OutputMode) -> Result<(), String> {
     let raw = fs::read_to_string(path).map_err(|e| e.to_string())?;
     let catalog: Catalog = serde_json::from_str(&raw).map_err(|e| e.to_string())?;
     catalog.validate_sorted().map_err(|e| e.to_string())?;
-    println!("catalog validation: OK");
+    let payload = json!({"command":"atlas catalog validate","status":"ok"});
+    if output_mode.json {
+        println!(
+            "{}",
+            serde_json::to_string(&payload).map_err(|e| e.to_string())?
+        );
+    } else {
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
+        );
+    }
     Ok(())
 }
 
@@ -31,6 +43,7 @@ pub(crate) fn validate_dataset(
     release: &str,
     species: &str,
     assembly: &str,
+    output_mode: OutputMode,
 ) -> Result<(), String> {
     let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
     let paths = bijux_atlas_model::artifact_paths(&root, &dataset);
@@ -54,7 +67,18 @@ pub(crate) fn validate_dataset(
         return Err("manifest gene_count must be > 0".to_string());
     }
 
-    println!("dataset validation: OK");
+    let payload = json!({"command":"atlas dataset validate","status":"ok"});
+    if output_mode.json {
+        println!(
+            "{}",
+            serde_json::to_string(&payload).map_err(|e| e.to_string())?
+        );
+    } else {
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
+        );
+    }
     Ok(())
 }
 

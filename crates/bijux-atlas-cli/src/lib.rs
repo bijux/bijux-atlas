@@ -108,6 +108,8 @@ enum AtlasCommand {
         ensembl_keys: String,
         #[arg(long, default_value = "")]
         seqid_aliases: String,
+        #[arg(long, default_value_t = 1)]
+        max_threads: usize,
     },
     InspectDb {
         #[arg(long)]
@@ -144,6 +146,18 @@ enum AtlasCommand {
         write_snapshot: bool,
         #[arg(long, default_value = "fixtures/medium/golden_snapshot.json")]
         snapshot_out: PathBuf,
+    },
+    Openapi {
+        #[command(subcommand)]
+        command: OpenapiCommand,
+    },
+}
+
+#[derive(Subcommand)]
+enum OpenapiCommand {
+    Generate {
+        #[arg(long, default_value = "openapi/v1/openapi.generated.json")]
+        out: PathBuf,
     },
 }
 
@@ -198,6 +212,7 @@ struct IngestCliArgs {
     gene_identifier_policy: GeneIdentifierPolicyCli,
     ensembl_keys: String,
     seqid_aliases: String,
+    max_threads: usize,
 }
 
 pub fn main_entry() -> ProcessExitCode {
@@ -228,13 +243,13 @@ fn run() -> Result<(), CliError> {
             }
         },
     };
-    let _output_mode = (cli.json, cli.quiet, cli.verbose, cli.trace);
+    let output_mode = OutputMode { json: cli.json };
     if cli.bijux_plugin_metadata {
-        emit_plugin_metadata(cli.json).map_err(CliError::internal)?;
+        emit_plugin_metadata(output_mode.json).map_err(CliError::internal)?;
         return Ok(());
     }
     if cli.print_config_paths {
-        emit_config_paths(cli.json).map_err(CliError::internal)?;
+        emit_config_paths(output_mode.json).map_err(CliError::internal)?;
         return Ok(());
     }
 
@@ -253,8 +268,8 @@ fn run() -> Result<(), CliError> {
             print_completion(shell);
             Ok(())
         }
-        Commands::Atlas { command } => run_atlas_command(*command, log_flags),
-        Commands::Serve => run_serve(log_flags).map_err(CliError::dependency),
+        Commands::Atlas { command } => run_atlas_command(*command, log_flags, output_mode),
+        Commands::Serve => run_serve(log_flags, output_mode).map_err(CliError::dependency),
     }
 }
 
@@ -265,12 +280,21 @@ struct LogFlags {
     trace: bool,
 }
 
-fn run_atlas_command(command: AtlasCommand, log_flags: LogFlags) -> Result<(), CliError> {
+#[derive(Clone, Copy)]
+struct OutputMode {
+    json: bool,
+}
+
+fn run_atlas_command(
+    command: AtlasCommand,
+    log_flags: LogFlags,
+    output_mode: OutputMode,
+) -> Result<(), CliError> {
     match command {
-        AtlasCommand::Serve => run_serve(log_flags).map_err(CliError::dependency),
+        AtlasCommand::Serve => run_serve(log_flags, output_mode).map_err(CliError::dependency),
         AtlasCommand::Catalog { command } => match command {
             CatalogCommand::Validate { path } => {
-                artifact_validation::validate_catalog(path).map_err(CliError::internal)
+                artifact_validation::validate_catalog(path, output_mode).map_err(CliError::internal)
             }
         },
         AtlasCommand::Dataset { command } => match command {
@@ -279,8 +303,14 @@ fn run_atlas_command(command: AtlasCommand, log_flags: LogFlags) -> Result<(), C
                 release,
                 species,
                 assembly,
-            } => artifact_validation::validate_dataset(root, &release, &species, &assembly)
-                .map_err(CliError::internal),
+            } => artifact_validation::validate_dataset(
+                root,
+                &release,
+                &species,
+                &assembly,
+                output_mode,
+            )
+            .map_err(CliError::internal),
         },
         AtlasCommand::Ingest {
             gff3,
@@ -295,23 +325,28 @@ fn run_atlas_command(command: AtlasCommand, log_flags: LogFlags) -> Result<(), C
             gene_identifier_policy,
             ensembl_keys,
             seqid_aliases,
-        } => run_ingest(IngestCliArgs {
-            gff3,
-            fasta,
-            fai,
-            output_root,
-            release,
-            species,
-            assembly,
-            strictness,
-            duplicate_gene_id_policy,
-            gene_identifier_policy,
-            ensembl_keys,
-            seqid_aliases,
-        })
+            max_threads,
+        } => run_ingest(
+            IngestCliArgs {
+                gff3,
+                fasta,
+                fai,
+                output_root,
+                release,
+                species,
+                assembly,
+                strictness,
+                duplicate_gene_id_policy,
+                gene_identifier_policy,
+                ensembl_keys,
+                seqid_aliases,
+                max_threads,
+            },
+            output_mode,
+        )
         .map_err(CliError::internal),
         AtlasCommand::InspectDb { db, sample_rows } => {
-            inspect_db(db, sample_rows).map_err(CliError::internal)
+            inspect_db(db, sample_rows, output_mode).map_err(CliError::internal)
         }
         AtlasCommand::ExplainQuery {
             db,
@@ -322,16 +357,19 @@ fn run_atlas_command(command: AtlasCommand, log_flags: LogFlags) -> Result<(), C
             region,
             limit,
             allow_full_scan,
-        } => explain_query(ExplainQueryArgs {
-            db,
-            gene_id,
-            name,
-            name_prefix,
-            biotype,
-            region,
-            limit,
-            allow_full_scan,
-        })
+        } => explain_query(
+            ExplainQueryArgs {
+                db,
+                gene_id,
+                name,
+                name_prefix,
+                biotype,
+                region,
+                limit,
+                allow_full_scan,
+            },
+            output_mode,
+        )
         .map_err(CliError::internal),
         AtlasCommand::Smoke {
             root,
@@ -339,8 +377,19 @@ fn run_atlas_command(command: AtlasCommand, log_flags: LogFlags) -> Result<(), C
             golden_queries,
             write_snapshot,
             snapshot_out,
-        } => smoke_dataset(root, &dataset, golden_queries, write_snapshot, snapshot_out)
-            .map_err(CliError::internal),
+        } => smoke_dataset(
+            root,
+            &dataset,
+            golden_queries,
+            write_snapshot,
+            snapshot_out,
+            output_mode,
+        )
+        .map_err(CliError::internal),
+        AtlasCommand::Openapi { command } => match command {
+            OpenapiCommand::Generate { out } => run_openapi_generate(out, output_mode),
+        }
+        .map_err(CliError::dependency),
     }
 }
 
@@ -387,7 +436,7 @@ fn emit_plugin_metadata(machine_json: bool) -> Result<(), String> {
     Ok(())
 }
 
-fn run_serve(log_flags: LogFlags) -> Result<(), String> {
+fn run_serve(log_flags: LogFlags, output_mode: OutputMode) -> Result<(), String> {
     if log_flags.trace {
         std::env::set_var("BIJUX_LOG_LEVEL", "trace");
         std::env::set_var("RUST_LOG", "trace");
@@ -413,6 +462,7 @@ fn run_serve(log_flags: LogFlags) -> Result<(), String> {
         )
     })?;
     if status.success() {
+        emit_ok(output_mode, json!({"command":"atlas serve","status":"ok"}))?;
         Ok(())
     } else {
         Err(format!("atlas-server exited with status {status}"))
@@ -463,7 +513,7 @@ fn emit_error(error: &CliError, machine_json: bool) {
     }
 }
 
-fn run_ingest(args: IngestCliArgs) -> Result<(), String> {
+fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String> {
     let dataset =
         DatasetId::new(&args.release, &args.species, &args.assembly).map_err(|e| e.to_string())?;
 
@@ -509,24 +559,28 @@ fn run_ingest(args: IngestCliArgs) -> Result<(), String> {
         seqid_policy: SeqidNormalizationPolicy::from_aliases(artifact_validation::parse_alias_map(
             &args.seqid_aliases,
         )),
+        max_threads: args.max_threads,
     })
     .map_err(|e| e.to_string())?;
 
-    println!("ingest manifest: {}", result.manifest_path.display());
-    println!("ingest sqlite: {}", result.sqlite_path.display());
-    println!(
-        "ingest anomaly report: {}",
-        result.anomaly_report_path.display()
-    );
+    emit_ok(
+        output_mode,
+        json!({
+            "command":"atlas ingest",
+            "status":"ok",
+            "manifest": result.manifest_path,
+            "sqlite": result.sqlite_path,
+            "anomaly_report": result.anomaly_report_path
+        }),
+    )?;
     Ok(())
 }
 
-fn inspect_db(db: PathBuf, sample_rows: usize) -> Result<(), String> {
+fn inspect_db(db: PathBuf, sample_rows: usize, output_mode: OutputMode) -> Result<(), String> {
     let conn = Connection::open(db).map_err(|e| e.to_string())?;
     let schema_version: i64 = conn
         .query_row("PRAGMA user_version", [], |row| row.get(0))
         .map_err(|e| e.to_string())?;
-    println!("schema_version={schema_version}");
 
     let mut idx_stmt = conn
         .prepare("SELECT name FROM sqlite_master WHERE type='index' AND name NOT LIKE 'sqlite_%' ORDER BY name")
@@ -536,15 +590,10 @@ fn inspect_db(db: PathBuf, sample_rows: usize) -> Result<(), String> {
         .map_err(|e| e.to_string())?
         .collect::<Result<Vec<_>, _>>()
         .map_err(|e| e.to_string())?;
-    println!(
-        "indexes={}",
-        serde_json::to_string(&indexes).map_err(|e| e.to_string())?
-    );
 
     let count: i64 = conn
         .query_row("SELECT COUNT(*) FROM gene_summary", [], |row| row.get(0))
         .map_err(|e| e.to_string())?;
-    println!("gene_count={count}");
 
     let sql = format!(
         "SELECT gene_id, name, seqid, start, end FROM gene_summary ORDER BY seqid, start, gene_id LIMIT {}",
@@ -564,10 +613,16 @@ fn inspect_db(db: PathBuf, sample_rows: usize) -> Result<(), String> {
         .map_err(|e| e.to_string())?
         .collect::<Result<Vec<_>, _>>()
         .map_err(|e| e.to_string())?;
-    println!(
-        "sample_rows={}",
-        serde_json::to_string(&rows).map_err(|e| e.to_string())?
-    );
+    emit_ok(
+        output_mode,
+        json!({
+            "command":"atlas inspect-db",
+            "schema_version": schema_version,
+            "indexes": indexes,
+            "gene_count": count,
+            "sample_rows": rows
+        }),
+    )?;
     Ok(())
 }
 
@@ -582,7 +637,7 @@ struct ExplainQueryArgs {
     allow_full_scan: bool,
 }
 
-fn explain_query(args: ExplainQueryArgs) -> Result<(), String> {
+fn explain_query(args: ExplainQueryArgs, output_mode: OutputMode) -> Result<(), String> {
     let conn = Connection::open(args.db).map_err(|e| e.to_string())?;
     let region_filter = if let Some(raw) = args.region {
         let (seqid, span) = raw
@@ -615,9 +670,13 @@ fn explain_query(args: ExplainQueryArgs) -> Result<(), String> {
     };
     let lines = explain_query_plan(&conn, &req, &QueryLimits::default(), b"atlas-cli")
         .map_err(|e| e.to_string())?;
-    for l in lines {
-        println!("{l}");
-    }
+    emit_ok(
+        output_mode,
+        json!({
+            "command":"atlas explain-query",
+            "plan": lines
+        }),
+    )?;
     Ok(())
 }
 
@@ -627,6 +686,7 @@ fn smoke_dataset(
     golden_queries: PathBuf,
     write_snapshot: bool,
     snapshot_out: PathBuf,
+    output_mode: OutputMode,
 ) -> Result<(), String> {
     let (release, species, assembly) = parse_dataset_id(dataset)?;
     let id = DatasetId::new(&release, &species, &assembly).map_err(|e| e.to_string())?;
@@ -674,8 +734,77 @@ fn smoke_dataset(
         .map_err(|e| e.to_string())?;
     }
 
-    println!("smoke: OK dataset={dataset} queries={}", out.len());
+    emit_ok(
+        output_mode,
+        json!({
+            "command":"atlas smoke",
+            "status":"ok",
+            "dataset": dataset,
+            "queries": out.len()
+        }),
+    )?;
     Ok(())
+}
+
+fn run_openapi_generate(out: PathBuf, output_mode: OutputMode) -> Result<(), String> {
+    let current_exe =
+        std::env::current_exe().map_err(|e| format!("failed to determine executable path: {e}"))?;
+    let bin_dir = current_exe
+        .parent()
+        .ok_or_else(|| "failed to resolve executable directory".to_string())?;
+    let generator = bin_dir.join("atlas-openapi");
+    let status = Command::new(&generator)
+        .arg("--out")
+        .arg(&out)
+        .status()
+        .map_err(|e| {
+            format!(
+                "failed to start atlas-openapi at {}: {e}",
+                generator.display()
+            )
+        })?;
+    if !status.success() {
+        return Err(format!("atlas-openapi exited with status {status}"));
+    }
+    emit_ok(
+        output_mode,
+        json!({
+            "command":"atlas openapi generate",
+            "status":"ok",
+            "out": out
+        }),
+    )?;
+    Ok(())
+}
+
+fn emit_ok(output_mode: OutputMode, payload: Value) -> Result<(), String> {
+    if output_mode.json {
+        println!(
+            "{}",
+            serde_json::to_string(&payload).map_err(|e| e.to_string())?
+        );
+    } else {
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
+        );
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+fn command_surface_lines() -> Vec<String> {
+    vec![
+        "atlas catalog validate".to_string(),
+        "atlas dataset validate".to_string(),
+        "atlas explain-query".to_string(),
+        "atlas ingest".to_string(),
+        "atlas inspect-db".to_string(),
+        "atlas openapi generate".to_string(),
+        "atlas serve".to_string(),
+        "atlas smoke".to_string(),
+        "completion".to_string(),
+    ]
 }
 
 fn parse_dataset_id(dataset: &str) -> Result<(String, String, String), String> {
@@ -775,6 +904,43 @@ mod tests {
             assert!(
                 rendered.contains(section),
                 "help output missing section `{section}`"
+            );
+        }
+    }
+
+    #[test]
+    fn command_surface_ssot_matches_doc() {
+        let expected = command_surface_lines().join("\n");
+        let path =
+            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("docs/CLI_COMMAND_LIST.md");
+        let current = std::fs::read_to_string(path).expect("read CLI command list");
+        assert_eq!(current.trim(), expected.trim());
+    }
+
+    #[test]
+    fn completion_generation_contains_atlas_namespace() {
+        let mut cmd = Cli::command();
+        let mut out: Vec<u8> = Vec::new();
+        clap_complete::generate(
+            clap_complete::Shell::Bash,
+            &mut cmd,
+            "bijux-atlas",
+            &mut out,
+        );
+        let text = String::from_utf8(out).expect("utf8 completion");
+        assert!(text.contains("atlas"));
+    }
+
+    #[test]
+    fn unit_tests_do_not_include_network_clients() {
+        let src = std::fs::read_to_string(
+            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/plugin_conformance.rs"),
+        )
+        .expect("read plugin conformance test");
+        for forbidden in ["TcpStream::connect", "UdpSocket::bind", "hyper::", "surf::"] {
+            assert!(
+                !src.contains(forbidden),
+                "forbidden unit-test network token found: {forbidden}"
             );
         }
     }
