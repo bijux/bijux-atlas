@@ -18,15 +18,17 @@ ENV CARGO_NET_GIT_FETCH_WITH_CLI=true \
 RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
     --mount=type=cache,target=/usr/local/cargo/git,sharing=locked \
     --mount=type=cache,target=/workspace/target,sharing=locked \
-    cargo build --locked --release -p bijux-atlas-server
+    cargo build --locked --release -p bijux-atlas-server -p bijux-atlas-cli
 
 FROM gcr.io/distroless/cc-debian12:nonroot AS runtime
 WORKDIR /app
 COPY --from=builder /workspace/target/release/atlas-server /app/atlas-server
+COPY --from=builder /workspace/target/release/bijux-atlas /app/bijux-atlas
 
 ENV RUST_LOG=info \
     TZ=UTC
 
 USER nonroot:nonroot
 EXPOSE 8080
-ENTRYPOINT ["/app/atlas-server"]
+LABEL org.bijux.plugin="atlas"
+ENTRYPOINT ["/app/bijux-atlas", "serve"]

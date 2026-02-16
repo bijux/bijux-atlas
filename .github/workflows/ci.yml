@@ -150,7 +150,7 @@ jobs:
           toolchain: 1.84.1
       - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
       - run: cargo build --workspace --release --bins --locked
-      - run: "$CARGO_TARGET_DIR/release/atlas-cli" --help
+      - run: "$CARGO_TARGET_DIR/release/bijux-atlas" --help
       - run: "$CARGO_TARGET_DIR/release/atlas-server" --help
 
   docs-build:
