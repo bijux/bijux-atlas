@@ -60,6 +60,33 @@ fn wants_text(headers: &HeaderMap) -> bool {
         .is_some_and(|v| v.contains("text/plain"))
 }
 
+fn is_gene_id_exact_query(req: &GeneQueryRequest) -> Option<&str> {
+    let gene_id = req.filter.gene_id.as_deref()?;
+    if req.filter.name.is_none()
+        && req.filter.name_prefix.is_none()
+        && req.filter.biotype.is_none()
+        && req.filter.region.is_none()
+        && req.cursor.is_none()
+        && req.limit <= 1
+    {
+        Some(gene_id)
+    } else {
+        None
+    }
+}
+
+fn gene_fields_key(fields: &GeneFields) -> String {
+    format!(
+        "{}{}{}{}{}{}",
+        fields.gene_id as u8,
+        fields.name as u8,
+        fields.coords as u8,
+        fields.biotype as u8,
+        fields.transcript_count as u8,
+        fields.sequence_length as u8
+    )
+}
+
 fn accepted_encoding(headers: &HeaderMap) -> Option<&'static str> {
     let accept = headers
         .get("accept-encoding")
@@ -499,6 +526,11 @@ pub(crate) async fn genes_handler(
             return with_request_id(resp, &request_id);
         }
     };
+    let exact_gene_id = is_gene_id_exact_query(&req).map(ToString::to_string);
+    let redis_cache_key = exact_gene_id.as_ref().map(|gene_id| {
+        let dataset_hash = sha256_hex(dataset.canonical_string().as_bytes());
+        format!("{dataset_hash}:{gene_id}:{}", gene_fields_key(&req.fields))
+    });
     let class = classify_query(&req);
     if class == QueryClass::Heavy
         && state.api.shed_load_enabled
@@ -571,6 +603,51 @@ pub(crate) async fn genes_handler(
     };
 
     let normalized = normalize_query(&params);
+    if state.api.enable_redis_response_cache {
+        if let (Some(redis), Some(cache_key)) = (&state.redis_backend, &redis_cache_key) {
+            match redis.get_gene_cache(cache_key).await {
+                Ok(Some(cached_bytes)) => {
+                    let etag = format!(
+                        "\"{}\"",
+                        sha256_hex(
+                            format!("{normalized}|{}", String::from_utf8_lossy(&cached_bytes))
+                                .as_bytes(),
+                        )
+                    );
+                    if if_none_match(&headers).as_deref() == Some(etag.as_str()) {
+                        let mut resp = StatusCode::NOT_MODIFIED.into_response();
+                        put_cache_headers(resp.headers_mut(), state.api.immutable_gene_ttl, &etag);
+                        state
+                            .metrics
+                            .observe_request(
+                                "/v1/genes",
+                                StatusCode::NOT_MODIFIED,
+                                started.elapsed(),
+                            )
+                            .await;
+                        return with_request_id(resp, &request_id);
+                    }
+                    let mut resp = Response::builder()
+                        .status(StatusCode::OK)
+                        .body(Body::from(cached_bytes))
+                        .unwrap_or_else(|_| StatusCode::INTERNAL_SERVER_ERROR.into_response());
+                    resp.headers_mut()
+                        .insert("content-type", HeaderValue::from_static("application/json"));
+                    put_cache_headers(resp.headers_mut(), state.api.immutable_gene_ttl, &etag);
+                    if let Ok(v) = HeaderValue::from_str("redis-hit") {
+                        resp.headers_mut().insert("x-atlas-cache", v);
+                    }
+                    state
+                        .metrics
+                        .observe_request("/v1/genes", StatusCode::OK, started.elapsed())
+                        .await;
+                    return with_request_id(resp, &request_id);
+                }
+                Ok(None) => {}
+                Err(e) => warn!("redis cache read fallback: {e}"),
+            }
+        }
+    }
     let coalesce_key = format!(
         "{}|{}|{}|{}",
         dataset.canonical_string(),
@@ -630,21 +707,13 @@ pub(crate) async fn genes_handler(
         let query_started = Instant::now();
         let query_span = info_span!("sqlite_query", class = %format!("{class:?}").to_lowercase());
         let result = query_span.in_scope(|| {
-            if let Some(gene_id) = req.filter.gene_id.as_ref() {
-                if req.filter.name.is_none()
-                    && req.filter.name_prefix.is_none()
-                    && req.filter.biotype.is_none()
-                    && req.filter.region.is_none()
-                    && req.cursor.is_none()
-                    && req.limit <= 1
-                {
-                    let row = query_gene_by_id_fast(&c.conn, gene_id, &req.fields)
-                        .map_err(|e| CacheError(e.to_string()))?;
-                    return Ok(bijux_atlas_query::GeneQueryResponse {
-                        rows: row.into_iter().collect(),
-                        next_cursor: None,
-                    });
-                }
+            if let Some(gene_id) = exact_gene_id.as_ref() {
+                let row = query_gene_by_id_fast(&c.conn, gene_id, &req.fields)
+                    .map_err(|e| CacheError(e.to_string()))?;
+                return Ok(bijux_atlas_query::GeneQueryResponse {
+                    rows: row.into_iter().collect(),
+                    next_cursor: None,
+                });
             }
             query_genes(&c.conn, &req, &state.limits, b"atlas-server-cursor-secret")
                 .map_err(|e| CacheError(e.to_string()))
@@ -798,6 +867,18 @@ pub(crate) async fn genes_handler(
             .observe_request("/v1/genes", StatusCode::NOT_MODIFIED, started.elapsed())
             .await;
         return with_request_id(resp, &request_id);
+    }
+    if state.api.enable_redis_response_cache {
+        if let (Some(redis), Some(cache_key), Some(_)) =
+            (&state.redis_backend, &redis_cache_key, &exact_gene_id)
+        {
+            if let Err(e) = redis
+                .set_gene_cache(cache_key, &bytes, state.api.redis_response_cache_ttl_secs)
+                .await
+            {
+                warn!("redis cache write fallback: {e}");
+            }
+        }
     }
 
     let (response_bytes, content_encoding) = match maybe_compress_response(&headers, &state, bytes)
