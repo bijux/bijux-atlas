@@ -6,6 +6,7 @@ Rules:
 - Stable hashing based only on file bytes.
 - No wall-clock timestamps in ingest outputs.
 - Build-time sqlite profile is pinned: `journal_mode=WAL`, `synchronous=OFF`, `locking_mode=EXCLUSIVE`, `temp_store=MEMORY`, fixed `page_size`, fixed `mmap_size`.
+- Dataset-pack compaction is deterministic: `ANALYZE` then `VACUUM`, both recorded in `atlas_meta`.
 - Build parameters are written to `atlas_meta` for deterministic introspection.
 
 Concurrency:

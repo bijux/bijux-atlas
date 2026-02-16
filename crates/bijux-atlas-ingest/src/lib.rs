@@ -8,13 +8,13 @@ mod sqlite;
 
 use bijux_atlas_model::{
     artifact_paths, BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, GeneIdentifierPolicy,
-    GeneNamePolicy, IngestAnomalyReport, SeqidNormalizationPolicy, StrictnessMode,
+    GeneNamePolicy, IngestAnomalyReport, SeqidNormalizationPolicy, ShardCatalog, StrictnessMode,
     TranscriptTypePolicy,
 };
 use extract::extract_gene_rows;
 use gff3::parse_gff3_records;
 use manifest::{build_and_write_manifest_and_reports, BuildManifestArgs};
-use sqlite::{explain_plan_for_region_query, write_sqlite};
+use sqlite::{explain_plan_for_region_query, write_sharded_sqlite_catalog, write_sqlite};
 use std::fmt::{Display, Formatter};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -45,6 +45,8 @@ pub struct IngestOptions {
     pub transcript_type_policy: TranscriptTypePolicy,
     pub seqid_policy: SeqidNormalizationPolicy,
     pub max_threads: usize,
+    pub emit_shards: bool,
+    pub shard_partitions: usize,
 }
 
 impl Default for IngestOptions {
@@ -63,6 +65,8 @@ impl Default for IngestOptions {
             transcript_type_policy: TranscriptTypePolicy::default(),
             seqid_policy: SeqidNormalizationPolicy::default(),
             max_threads: 1,
+            emit_shards: false,
+            shard_partitions: 0,
         }
     }
 }
@@ -73,6 +77,8 @@ pub struct IngestResult {
     pub sqlite_path: PathBuf,
     pub anomaly_report_path: PathBuf,
     pub qc_report_path: PathBuf,
+    pub shard_catalog_path: Option<PathBuf>,
+    pub shard_catalog: Option<ShardCatalog>,
     pub manifest: bijux_atlas_model::ArtifactManifest,
     pub anomaly_report: IngestAnomalyReport,
 }
@@ -93,6 +99,17 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
     fs::copy(&opts.fai_path, &paths.fai).map_err(|e| IngestError(e.to_string()))?;
 
     write_sqlite(&paths.sqlite, &extracted.gene_rows)?;
+    let (shard_catalog_path, shard_catalog) = if opts.emit_shards {
+        let (catalog_path, catalog) = write_sharded_sqlite_catalog(
+            &paths.derived_dir,
+            &opts.dataset,
+            &extracted.gene_rows,
+            opts.shard_partitions,
+        )?;
+        (Some(catalog_path), Some(catalog))
+    } else {
+        (None, None)
+    };
     let built = build_and_write_manifest_and_reports(BuildManifestArgs {
         output_root: &opts.output_root,
         dataset: &opts.dataset,
@@ -110,6 +127,8 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
         sqlite_path: paths.sqlite,
         anomaly_report_path: paths.anomaly_report,
         qc_report_path: built.qc_report_path,
+        shard_catalog_path,
+        shard_catalog,
         manifest: built.manifest,
         anomaly_report: extracted.anomaly,
     })
@@ -149,6 +168,8 @@ mod tests {
             transcript_type_policy: TranscriptTypePolicy::default(),
             seqid_policy: SeqidNormalizationPolicy::default(),
             max_threads: 1,
+            emit_shards: false,
+            shard_partitions: 0,
         }
     }
 
@@ -284,5 +305,30 @@ mod tests {
             r1.manifest.checksums.sqlite_sha256,
             r2.manifest.checksums.sqlite_sha256
         );
+    }
+
+    #[test]
+    fn sharded_ingest_emits_catalog_and_shards() {
+        let root = tempdir().expect("tempdir");
+        let mut o = opts(root.path(), StrictnessMode::Strict);
+        o.emit_shards = true;
+        o.shard_partitions = 0;
+        let run = ingest_dataset(&o).expect("sharded ingest");
+        let catalog_path = run.shard_catalog_path.expect("catalog path");
+        assert!(catalog_path.exists());
+        let catalog = run.shard_catalog.expect("catalog");
+        assert!(!catalog.shards.is_empty());
+        for shard in &catalog.shards {
+            let shard_file = run
+                .sqlite_path
+                .parent()
+                .expect("derived dir")
+                .join(&shard.sqlite_path);
+            assert!(
+                shard_file.exists(),
+                "missing shard file {}",
+                shard_file.display()
+            );
+        }
     }
 }

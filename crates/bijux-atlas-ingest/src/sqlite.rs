@@ -1,10 +1,17 @@
 use crate::extract::GeneRecord;
 use crate::IngestError;
+use bijux_atlas_core::{canonical, sha256_hex};
+use bijux_atlas_model::{DatasetId, ShardCatalog, ShardEntry};
 use rusqlite::{params, Connection};
+use std::collections::BTreeMap;
 use std::fs;
 use std::path::Path;
 
 pub const SQLITE_SCHEMA_VERSION: i64 = 2;
+const INGEST_JOURNAL_MODE: &str = "WAL";
+const INGEST_LOCKING_MODE: &str = "EXCLUSIVE";
+const INGEST_PAGE_SIZE: i64 = 4096;
+const INGEST_MMAP_SIZE: i64 = 268_435_456;
 
 pub fn write_sqlite(path: &Path, genes: &[GeneRecord]) -> Result<(), IngestError> {
     if path.exists() {
@@ -92,22 +99,32 @@ pub fn write_sqlite(path: &Path, genes: &[GeneRecord]) -> Result<(), IngestError
         )
         .map_err(|e| IngestError(e.to_string()))?;
         tx.execute(
-            "INSERT INTO atlas_meta (k, v) VALUES ('ingest_journal_mode', 'WAL')",
+            "INSERT INTO atlas_meta (k, v) VALUES ('ingest_journal_mode', ?1)",
+            params![INGEST_JOURNAL_MODE],
+        )
+        .map_err(|e| IngestError(e.to_string()))?;
+        tx.execute(
+            "INSERT INTO atlas_meta (k, v) VALUES ('ingest_locking_mode', ?1)",
+            params![INGEST_LOCKING_MODE],
+        )
+        .map_err(|e| IngestError(e.to_string()))?;
+        tx.execute(
+            "INSERT INTO atlas_meta (k, v) VALUES ('ingest_page_size', ?1)",
+            params![INGEST_PAGE_SIZE.to_string()],
+        )
+        .map_err(|e| IngestError(e.to_string()))?;
+        tx.execute(
+            "INSERT INTO atlas_meta (k, v) VALUES ('ingest_mmap_size', ?1)",
+            params![INGEST_MMAP_SIZE.to_string()],
+        )
+        .map_err(|e| IngestError(e.to_string()))?;
+        tx.execute(
+            "INSERT INTO atlas_meta (k, v) VALUES ('analyze_completed', 'false')",
             [],
         )
         .map_err(|e| IngestError(e.to_string()))?;
         tx.execute(
-            "INSERT INTO atlas_meta (k, v) VALUES ('ingest_locking_mode', 'EXCLUSIVE')",
-            [],
-        )
-        .map_err(|e| IngestError(e.to_string()))?;
-        tx.execute(
-            "INSERT INTO atlas_meta (k, v) VALUES ('ingest_page_size', '4096')",
-            [],
-        )
-        .map_err(|e| IngestError(e.to_string()))?;
-        tx.execute(
-            "INSERT INTO atlas_meta (k, v) VALUES ('ingest_mmap_size', '268435456')",
+            "INSERT INTO atlas_meta (k, v) VALUES ('vacuum_completed', 'false')",
             [],
         )
         .map_err(|e| IngestError(e.to_string()))?;
@@ -137,9 +154,86 @@ pub fn write_sqlite(path: &Path, genes: &[GeneRecord]) -> Result<(), IngestError
     .map_err(|e| IngestError(e.to_string()))?;
 
     tx.commit().map_err(|e| IngestError(e.to_string()))?;
+    conn.execute_batch("ANALYZE;")
+        .map_err(|e| IngestError(e.to_string()))?;
+    conn.execute(
+        "UPDATE atlas_meta SET v='true' WHERE k='analyze_completed'",
+        [],
+    )
+    .map_err(|e| IngestError(e.to_string()))?;
     conn.execute_batch("VACUUM;")
         .map_err(|e| IngestError(e.to_string()))?;
+    conn.execute(
+        "UPDATE atlas_meta SET v='true' WHERE k='vacuum_completed'",
+        [],
+    )
+    .map_err(|e| IngestError(e.to_string()))?;
     Ok(())
+}
+
+pub fn write_sharded_sqlite_catalog(
+    derived_dir: &Path,
+    dataset: &DatasetId,
+    genes: &[GeneRecord],
+    shard_partitions: usize,
+) -> Result<(std::path::PathBuf, ShardCatalog), IngestError> {
+    let mut buckets: BTreeMap<String, Vec<GeneRecord>> = BTreeMap::new();
+    if shard_partitions == 0 {
+        for g in genes {
+            buckets.entry(g.seqid.clone()).or_default().push(g.clone());
+        }
+    } else {
+        for g in genes {
+            let shard = (canonical::stable_hash_hex(g.seqid.as_bytes())
+                .bytes()
+                .fold(0_u64, |acc, b| acc.wrapping_add(b as u64))
+                % shard_partitions as u64) as usize;
+            buckets
+                .entry(format!("p{:03}", shard))
+                .or_default()
+                .push(g.clone());
+        }
+    }
+
+    let mut shards = Vec::new();
+    for (bucket, mut rows) in buckets {
+        rows.sort_by(|a, b| {
+            a.seqid
+                .cmp(&b.seqid)
+                .then(a.start.cmp(&b.start))
+                .then(a.end.cmp(&b.end))
+                .then(a.gene_id.cmp(&b.gene_id))
+        });
+        let file_name = format!("gene_summary.{bucket}.sqlite");
+        let sqlite_path = derived_dir.join(&file_name);
+        write_sqlite(&sqlite_path, &rows)?;
+        let seqids = {
+            let mut s: Vec<String> = rows.iter().map(|g| g.seqid.clone()).collect();
+            s.sort();
+            s.dedup();
+            s
+        };
+        shards.push(ShardEntry::new(
+            bucket,
+            seqids,
+            file_name,
+            sha256_hex(&fs::read(&sqlite_path).map_err(|e| IngestError(e.to_string()))?),
+        ));
+    }
+    shards.sort();
+    let mode = if shard_partitions == 0 {
+        "per-seqid".to_string()
+    } else {
+        format!("partitioned-{shard_partitions}")
+    };
+    let catalog = ShardCatalog::new(dataset.clone(), mode, shards);
+    catalog
+        .validate_sorted()
+        .map_err(|e| IngestError(e.to_string()))?;
+    let catalog_path = derived_dir.join("catalog_shards.json");
+    let bytes = canonical::stable_json_bytes(&catalog).map_err(|e| IngestError(e.to_string()))?;
+    fs::write(&catalog_path, bytes).map_err(|e| IngestError(e.to_string()))?;
+    Ok((catalog_path, catalog))
 }
 
 pub fn explain_plan_for_region_query(path: &Path) -> Result<Vec<String>, IngestError> {
