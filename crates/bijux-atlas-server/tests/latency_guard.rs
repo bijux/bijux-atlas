@@ -126,3 +126,39 @@ async fn db_open_is_cheap_regression_guard() {
         p95
     );
 }
+
+#[tokio::test]
+#[ignore]
+async fn mmap_read_only_experiment_baseline() {
+    let (_, _, sqlite) = mk_dataset();
+    let tmp = tempdir().expect("tempdir");
+    let db_path = tmp.path().join("mmap.sqlite");
+    std::fs::write(&db_path, sqlite).expect("write sqlite");
+
+    let run = |mmap_size: i64| -> Duration {
+        let mut samples = Vec::new();
+        for _ in 0..150 {
+            let started = Instant::now();
+            let conn = rusqlite::Connection::open_with_flags(
+                &db_path,
+                rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY
+                    | rusqlite::OpenFlags::SQLITE_OPEN_NO_MUTEX,
+            )
+            .expect("open");
+            let _ = conn.execute_batch(&format!(
+                "PRAGMA query_only=ON; PRAGMA mmap_size={mmap_size}; PRAGMA temp_store=MEMORY;"
+            ));
+            let _: i64 = conn
+                .query_row("SELECT COUNT(*) FROM gene_summary", [], |r| r.get(0))
+                .expect("count");
+            samples.push(started.elapsed());
+        }
+        samples.sort_unstable();
+        samples[((samples.len() as f64) * 0.95).ceil() as usize - 1]
+    };
+
+    let p95_no_mmap = run(0);
+    let p95_mmap = run(256 * 1024 * 1024);
+    assert!(p95_no_mmap > Duration::from_nanos(0));
+    assert!(p95_mmap > Duration::from_nanos(0));
+}
