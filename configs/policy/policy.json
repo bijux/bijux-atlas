@@ -5,6 +5,7 @@
   "query_budget": {
     "max_limit": 100,
     "max_region_span": 10000000,
+    "max_region_estimated_rows": 50000,
     "max_prefix_length": 128
   },
   "cache_budget": {

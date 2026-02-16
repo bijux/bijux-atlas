@@ -39,8 +39,11 @@ pub fn build_sql(
         params.push(Value::Text(name.clone()));
     }
     if let Some(prefix) = &req.filter.name_prefix {
-        where_parts.push("g.name LIKE ? ESCAPE '!'".to_string());
-        params.push(Value::Text(format!("{}%", escape_like_prefix(prefix))));
+        where_parts.push("g.name_normalized LIKE ? ESCAPE '!'".to_string());
+        params.push(Value::Text(format!(
+            "{}%",
+            escape_like_prefix(&prefix.to_ascii_lowercase())
+        )));
     }
     if let Some(biotype) = &req.filter.biotype {
         where_parts.push("g.biotype = ?".to_string());

@@ -12,6 +12,7 @@ fn bench_policy_validate(c: &mut Criterion) {
         query_budget: QueryBudget {
             max_limit: 100,
             max_region_span: 10_000_000,
+            max_region_estimated_rows: 50_000,
             max_prefix_length: 128,
         },
         cache_budget: CacheBudget {

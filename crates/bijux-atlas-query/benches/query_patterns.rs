@@ -13,6 +13,7 @@ fn setup_db() -> Connection {
           id INTEGER PRIMARY KEY,
           gene_id TEXT NOT NULL,
           name TEXT NOT NULL,
+          name_normalized TEXT NOT NULL,
           biotype TEXT NOT NULL,
           seqid TEXT NOT NULL,
           start INTEGER NOT NULL,
@@ -20,9 +21,16 @@ fn setup_db() -> Connection {
           transcript_count INTEGER NOT NULL,
           sequence_length INTEGER NOT NULL
         );
+        CREATE TABLE dataset_stats (
+          dimension TEXT NOT NULL,
+          value TEXT NOT NULL,
+          gene_count INTEGER NOT NULL,
+          PRIMARY KEY (dimension, value)
+        );
         CREATE VIRTUAL TABLE gene_summary_rtree USING rtree(gene_rowid, start, end);
         CREATE INDEX idx_gene_summary_gene_id ON gene_summary(gene_id);
         CREATE INDEX idx_gene_summary_name ON gene_summary(name);
+        CREATE INDEX idx_gene_summary_name_normalized ON gene_summary(name_normalized);
         CREATE INDEX idx_gene_summary_biotype ON gene_summary(biotype);
         CREATE INDEX idx_gene_summary_region ON gene_summary(seqid, start, end);
         ",
@@ -51,12 +59,13 @@ fn setup_db() -> Connection {
         let start = i * 10;
         let end = start + 50;
         conn.execute(
-            "INSERT INTO gene_summary (id, gene_id, name, biotype, seqid, start, end, transcript_count, sequence_length)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
+            "INSERT INTO gene_summary (id, gene_id, name, name_normalized, biotype, seqid, start, end, transcript_count, sequence_length)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
             rusqlite::params![
                 i,
                 format!("gene{i}"),
                 format!("{name_prefix}{i}"),
+                format!("{name_prefix}{i}").to_ascii_lowercase(),
                 biotype,
                 seqid,
                 start,
@@ -72,6 +81,15 @@ fn setup_db() -> Connection {
         )
         .expect("insert rtree");
     }
+    conn.execute_batch(
+        "
+        INSERT INTO dataset_stats (dimension, value, gene_count)
+        SELECT 'biotype', biotype, COUNT(*) FROM gene_summary GROUP BY biotype;
+        INSERT INTO dataset_stats (dimension, value, gene_count)
+        SELECT 'seqid', seqid, COUNT(*) FROM gene_summary GROUP BY seqid;
+        ",
+    )
+    .expect("dataset stats");
     conn
 }
 

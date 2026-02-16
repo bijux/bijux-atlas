@@ -10,6 +10,7 @@ fn setup_db() -> Connection {
               id INTEGER PRIMARY KEY,
               gene_id TEXT NOT NULL,
               name TEXT NOT NULL,
+              name_normalized TEXT NOT NULL,
               biotype TEXT NOT NULL,
               seqid TEXT NOT NULL,
               start INTEGER NOT NULL,
@@ -17,9 +18,16 @@ fn setup_db() -> Connection {
               transcript_count INTEGER NOT NULL,
               sequence_length INTEGER NOT NULL
             );
+            CREATE TABLE dataset_stats (
+              dimension TEXT NOT NULL,
+              value TEXT NOT NULL,
+              gene_count INTEGER NOT NULL,
+              PRIMARY KEY (dimension, value)
+            );
             CREATE VIRTUAL TABLE gene_summary_rtree USING rtree(gene_rowid, start, end);
             CREATE INDEX idx_gene_summary_gene_id ON gene_summary(gene_id);
             CREATE INDEX idx_gene_summary_name ON gene_summary(name);
+            CREATE INDEX idx_gene_summary_name_normalized ON gene_summary(name_normalized);
             CREATE INDEX idx_gene_summary_biotype ON gene_summary(biotype);
             CREATE INDEX idx_gene_summary_region ON gene_summary(seqid, start, end);
             ",
@@ -57,9 +65,20 @@ fn setup_db() -> Connection {
     ];
     for r in rows {
         conn.execute(
-            "INSERT INTO gene_summary (id, gene_id, name, biotype, seqid, start, end, transcript_count, sequence_length)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
-            rusqlite::params![r.0, r.1, r.2, r.3, r.4, r.5, r.6, r.7, r.8],
+            "INSERT INTO gene_summary (id, gene_id, name, name_normalized, biotype, seqid, start, end, transcript_count, sequence_length)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
+            rusqlite::params![
+                r.0,
+                r.1,
+                r.2,
+                r.2.to_ascii_lowercase(),
+                r.3,
+                r.4,
+                r.5,
+                r.6,
+                r.7,
+                r.8
+            ],
         )
         .expect("insert row");
         conn.execute(
@@ -68,6 +87,15 @@ fn setup_db() -> Connection {
         )
         .expect("insert rtree");
     }
+    conn.execute_batch(
+        "
+        INSERT INTO dataset_stats (dimension, value, gene_count)
+        SELECT 'biotype', biotype, COUNT(*) FROM gene_summary GROUP BY biotype;
+        INSERT INTO dataset_stats (dimension, value, gene_count)
+        SELECT 'seqid', seqid, COUNT(*) FROM gene_summary GROUP BY seqid;
+        ",
+    )
+    .expect("stats");
     conn
 }
 
@@ -75,6 +103,7 @@ fn limits() -> QueryLimits {
     QueryLimits {
         max_limit: 500,
         max_region_span: 5_000_000,
+        max_region_estimated_rows: 1_000,
         min_prefix_len: 1,
         max_prefix_len: 64,
         max_work_units: 2_000,
@@ -121,14 +150,32 @@ fn explain_plan_snapshots_by_query_class() {
         allow_full_scan: false,
     };
 
-    for req in [cheap, medium, heavy] {
-        let lines = explain_query_plan(&conn, &req, &limits(), secret).expect("plan");
-        let plan = lines.join("\n").to_ascii_lowercase();
-        assert!(
-            plan.contains("index") || plan.contains("rtree"),
-            "plan must contain indexed access: {plan}"
-        );
-    }
+    let cheap_plan = explain_query_plan(&conn, &cheap, &limits(), secret)
+        .expect("plan")
+        .join("\n")
+        .to_ascii_lowercase();
+    assert!(
+        cheap_plan.contains("idx_gene_summary_gene_id"),
+        "cheap plan must use gene_id index: {cheap_plan}"
+    );
+
+    let medium_plan = explain_query_plan(&conn, &medium, &limits(), secret)
+        .expect("plan")
+        .join("\n")
+        .to_ascii_lowercase();
+    assert!(
+        medium_plan.contains("idx_gene_summary_biotype"),
+        "medium plan must use biotype index: {medium_plan}"
+    );
+
+    let heavy_plan = explain_query_plan(&conn, &heavy, &limits(), secret)
+        .expect("plan")
+        .join("\n")
+        .to_ascii_lowercase();
+    assert!(
+        heavy_plan.contains("virtual table index") || heavy_plan.contains("rtree"),
+        "heavy plan must use rtree: {heavy_plan}"
+    );
 }
 
 #[test]
@@ -140,6 +187,7 @@ fn missing_index_produces_diagnostic_error() {
           id INTEGER PRIMARY KEY,
           gene_id TEXT NOT NULL,
           name TEXT NOT NULL,
+          name_normalized TEXT NOT NULL,
           biotype TEXT NOT NULL,
           seqid TEXT NOT NULL,
           start INTEGER NOT NULL,
@@ -147,7 +195,15 @@ fn missing_index_produces_diagnostic_error() {
           transcript_count INTEGER NOT NULL,
           sequence_length INTEGER NOT NULL
         );
-        INSERT INTO gene_summary VALUES (1,'gene1','X','pc','chr1',1,2,1,2);
+        CREATE TABLE dataset_stats (
+          dimension TEXT NOT NULL,
+          value TEXT NOT NULL,
+          gene_count INTEGER NOT NULL,
+          PRIMARY KEY (dimension, value)
+        );
+        INSERT INTO gene_summary VALUES (1,'gene1','X','x','pc','chr1',1,2,1,2);
+        INSERT INTO dataset_stats VALUES ('biotype','pc',1);
+        INSERT INTO dataset_stats VALUES ('seqid','chr1',1);
         ",
     )
     .expect("schema");
@@ -279,6 +335,42 @@ fn cost_estimator_and_limits_enforced() {
     };
     let err = query_genes(&conn, &req, &strict, b"s").expect_err("cost rejection");
     assert_eq!(err.code, QueryErrorCode::Validation);
+}
+
+#[test]
+fn fast_fail_rejects_impossible_filters_from_dataset_stats() {
+    let conn = setup_db();
+    let impossible_biotype = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            biotype: Some("not_a_real_biotype".to_string()),
+            ..Default::default()
+        },
+        limit: 10,
+        cursor: None,
+        allow_full_scan: false,
+    };
+    let err = query_genes(&conn, &impossible_biotype, &limits(), b"s").expect_err("must fast fail");
+    assert_eq!(err.code, QueryErrorCode::Validation);
+    assert!(err.message.contains("biotype does not exist"));
+
+    let impossible_seqid = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            region: Some(RegionFilter {
+                seqid: "chrMissing".to_string(),
+                start: 1,
+                end: 100,
+            }),
+            ..Default::default()
+        },
+        limit: 10,
+        cursor: None,
+        allow_full_scan: false,
+    };
+    let err = query_genes(&conn, &impossible_seqid, &limits(), b"s").expect_err("fast fail");
+    assert_eq!(err.code, QueryErrorCode::Validation);
+    assert!(err.message.contains("region seqid does not exist"));
 }
 
 #[test]

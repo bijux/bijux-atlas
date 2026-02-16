@@ -61,6 +61,7 @@ fn valid_policy() -> PolicyConfig {
         query_budget: QueryBudget {
             max_limit: 100,
             max_region_span: 10_000_000,
+            max_region_estimated_rows: 50_000,
             max_prefix_length: 128,
         },
         cache_budget: CacheBudget {
@@ -216,6 +217,10 @@ fn policy_fields_are_table_validated() {
     let mut bad = valid_policy();
     bad.query_budget.max_prefix_length = 0;
     cases.push(("query_budget.max_prefix_length", bad));
+
+    let mut bad = valid_policy();
+    bad.query_budget.max_region_estimated_rows = 0;
+    cases.push(("query_budget.max_region_estimated_rows", bad));
 
     let mut bad = valid_policy();
     bad.cache_budget.max_disk_bytes = 0;

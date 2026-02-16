@@ -62,6 +62,7 @@ pub fn query_genes(
     cursor_secret: &[u8],
 ) -> Result<GeneQueryResponse, QueryError> {
     validate_request(req, limits).map_err(|e| QueryError::new(QueryErrorCode::Validation, e))?;
+    reject_impossible_filter_fast(req, limits, conn)?;
 
     let order_mode = order_mode_for(req);
     let query_hash =
@@ -129,6 +130,56 @@ pub fn query_genes(
     };
 
     Ok(GeneQueryResponse { rows, next_cursor })
+}
+
+fn reject_impossible_filter_fast(
+    req: &GeneQueryRequest,
+    limits: &QueryLimits,
+    conn: &Connection,
+) -> Result<(), QueryError> {
+    if let Some(biotype) = &req.filter.biotype {
+        let count: i64 = conn
+            .query_row(
+                "SELECT COALESCE((SELECT gene_count FROM dataset_stats WHERE dimension='biotype' AND value=?1), 0)",
+                [biotype],
+                |r| r.get(0),
+            )
+            .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;
+        if count == 0 {
+            return Err(QueryError::new(
+                QueryErrorCode::Validation,
+                "biotype does not exist in dataset",
+            ));
+        }
+    }
+    if let Some(region) = &req.filter.region {
+        let seqid_count: i64 = conn
+            .query_row(
+                "SELECT COALESCE((SELECT gene_count FROM dataset_stats WHERE dimension='seqid' AND value=?1), 0)",
+                [&region.seqid],
+                |r| r.get(0),
+            )
+            .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;
+        if seqid_count == 0 {
+            return Err(QueryError::new(
+                QueryErrorCode::Validation,
+                "region seqid does not exist in dataset",
+            ));
+        }
+        let span = region.end.saturating_sub(region.start) + 1;
+        let span_ratio = span as f64 / limits.max_region_span as f64;
+        let estimated_rows = ((seqid_count as f64) * span_ratio).ceil() as u64;
+        if estimated_rows > limits.max_region_estimated_rows {
+            return Err(QueryError::new(
+                QueryErrorCode::Validation,
+                format!(
+                    "estimated region rows {} exceeds {}",
+                    estimated_rows, limits.max_region_estimated_rows
+                ),
+            ));
+        }
+    }
+    Ok(())
 }
 
 pub fn explain_query_plan(
