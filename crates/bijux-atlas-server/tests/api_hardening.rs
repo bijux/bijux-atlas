@@ -30,12 +30,7 @@ fn mk_dataset() -> (DatasetId, ArtifactManifest, Vec<u8>) {
         "1".to_string(),
         "1".to_string(),
         ds.clone(),
-        ArtifactChecksums::new(
-            "a".repeat(64),
-            "b".repeat(64),
-            "c".repeat(64),
-            sqlite_sha,
-        ),
+        ArtifactChecksums::new("a".repeat(64), "b".repeat(64), "c".repeat(64), sqlite_sha),
         ManifestStats::new(1, 1, 1),
     );
     (ds, manifest, sqlite)
