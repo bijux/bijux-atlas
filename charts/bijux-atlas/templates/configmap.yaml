@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "bijux-atlas.fullname" . }}-config
+  labels:
+    {{- include "bijux-atlas.labels" . | nindent 4 }}
+data:
+  ATLAS_CATALOG_ENDPOINT: {{ .Values.catalog.endpoint | quote }}
+  ATLAS_STORE_ENDPOINT: {{ .Values.store.endpoint | quote }}
+  ATLAS_MAX_DATASET_COUNT: {{ .Values.cache.maxDatasetCount | quote }}
+  ATLAS_MAX_DISK_BYTES: {{ .Values.cache.maxDiskBytes | quote }}
+  ATLAS_PINNED_DATASETS: {{ join "," .Values.cache.pinnedDatasets | quote }}
+  ATLAS_RATE_LIMIT_IP_CAPACITY: {{ .Values.rateLimits.perIp.capacity | quote }}
+  ATLAS_RATE_LIMIT_IP_REFILL_PER_SEC: {{ .Values.rateLimits.perIp.refillPerSec | quote }}
+  ATLAS_RATE_LIMIT_API_KEY_ENABLED: {{ .Values.rateLimits.perApiKey.enabled | quote }}
+  ATLAS_RATE_LIMIT_API_KEY_CAPACITY: {{ .Values.rateLimits.perApiKey.capacity | quote }}
+  ATLAS_RATE_LIMIT_API_KEY_REFILL_PER_SEC: {{ .Values.rateLimits.perApiKey.refillPerSec | quote }}
+  ATLAS_CONCURRENCY_CHEAP: {{ .Values.concurrency.cheap | quote }}
+  ATLAS_CONCURRENCY_MEDIUM: {{ .Values.concurrency.medium | quote }}
+  ATLAS_CONCURRENCY_HEAVY: {{ .Values.concurrency.heavy | quote }}
+  ATLAS_REQUEST_TIMEOUT_MS: {{ .Values.server.requestTimeoutMs | quote }}
+  ATLAS_SQL_TIMEOUT_MS: {{ .Values.server.sqlTimeoutMs | quote }}
+  ATLAS_RESPONSE_MAX_BYTES: {{ .Values.server.responseMaxBytes | quote }}
+  ATLAS_MAX_BODY_BYTES: {{ .Values.server.maxBodyBytes | quote }}
+  ATLAS_SLOW_QUERY_THRESHOLD_MS: {{ .Values.server.slowQueryThresholdMs | quote }}
+  ATLAS_ENABLE_DEBUG_DATASETS: {{ .Values.server.enableDebugDatasets | quote }}
+  ATLAS_ENABLE_EXEMPLARS: {{ .Values.server.enableExemplars | quote }}
+  ATLAS_CACHED_ONLY_MODE: {{ .Values.server.cachedOnlyMode | quote }}
+  ATLAS_READ_ONLY_FS_MODE: {{ .Values.server.readOnlyFsMode | quote }}
