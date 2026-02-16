@@ -42,3 +42,8 @@ Run:
 
 Output:
 - `artifacts/perf/redis-compare/comparison.md`
+
+Rate-limit fairness comparison:
+- Run one pass with `ATLAS_ENABLE_REDIS_RATE_LIMIT=false` (per-pod buckets).
+- Run one pass with `ATLAS_ENABLE_REDIS_RATE_LIMIT=true` (shared Redis buckets).
+- Compare 429 distribution across pods/keys to evaluate fairness improvement.

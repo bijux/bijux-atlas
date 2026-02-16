@@ -19,6 +19,9 @@
 - On request timeout, optional policy can continue background download for pinned warmup datasets.
 - Optional shard caches are selected by seqid for region queries and evicted with dataset cleanup.
 - Open shard concurrency is capped (`max_open_shards_per_pod`) to protect FD/memory limits.
+- Redis is tier-2 optional only. If Redis is slow/down, request handling falls back to local paths.
+- Redis response cache is limited to exact `gene_id` lookups with strict key-size/cardinality/TTL caps.
+- Redis operations are guarded by timeout, retry budget, and local circuit breaker.
 
 Read-only sqlite pragma profile:
 - `PRAGMA query_only=ON`
