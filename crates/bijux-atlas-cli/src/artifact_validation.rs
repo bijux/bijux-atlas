@@ -1,5 +1,5 @@
 use crate::{sha256_hex, OutputMode};
-use bijux_atlas_model::{ArtifactManifest, Catalog, DatasetId};
+use bijux_atlas_model::{ArtifactManifest, Catalog, DatasetId, ShardCatalog};
 use serde_json::json;
 use std::collections::BTreeMap;
 use std::fs;
@@ -67,6 +67,7 @@ pub(crate) fn validate_dataset(
         return Err("manifest gene_count must be > 0".to_string());
     }
     validate_sqlite_contract(&paths.sqlite)?;
+    validate_shard_catalog_and_indexes(&paths.derived_dir)?;
 
     let payload = json!({"command":"atlas dataset validate","status":"ok"});
     if output_mode.json {
@@ -125,6 +126,39 @@ fn validate_sqlite_contract(sqlite_path: &PathBuf) -> Result<(), String> {
         .map_err(|_| "atlas_meta.schema_version missing".to_string())?;
     if schema_version.trim().is_empty() {
         return Err("atlas_meta.schema_version is empty".to_string());
+    }
+    let analyzed: String = conn
+        .query_row(
+            "SELECT v FROM atlas_meta WHERE k='analyze_completed'",
+            [],
+            |r| r.get(0),
+        )
+        .map_err(|_| "atlas_meta.analyze_completed missing".to_string())?;
+    if analyzed != "true" {
+        return Err("ANALYZE required gate failed: analyze_completed != true".to_string());
+    }
+    Ok(())
+}
+
+fn validate_shard_catalog_and_indexes(derived_dir: &std::path::Path) -> Result<(), String> {
+    let path = derived_dir.join("catalog_shards.json");
+    if !path.exists() {
+        return Ok(());
+    }
+    let raw = fs::read_to_string(&path).map_err(|e| e.to_string())?;
+    let catalog: ShardCatalog = serde_json::from_str(&raw).map_err(|e| e.to_string())?;
+    catalog.validate_sorted().map_err(|e| e.to_string())?;
+    for shard in &catalog.shards {
+        let shard_path = derived_dir.join(&shard.sqlite_path);
+        validate_sqlite_contract(&shard_path)?;
+        let bytes = fs::read(&shard_path).map_err(|e| e.to_string())?;
+        let actual = sha256_hex(&bytes);
+        if actual != shard.sqlite_sha256 {
+            return Err(format!(
+                "shard checksum mismatch for {}",
+                shard_path.display()
+            ));
+        }
     }
     Ok(())
 }

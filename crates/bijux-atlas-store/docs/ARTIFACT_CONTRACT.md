@@ -4,6 +4,9 @@ Store crate enforces and consumes:
 - `manifest.json`
 - `gene_summary.sqlite`
 - `manifest.lock`
+- Optional sharded outputs (backward compatible with monolithic mode):
+- `catalog_shards.json`
+- `gene_summary.<shard>.sqlite`
 
 Contract references:
 - `docs/artifact-manifest-contract.md`
@@ -14,3 +17,5 @@ Rules:
 - Publish requires checksum verification before finalization.
 - Manifest lock must match manifest/sqlite content on read.
 - Catalog must be strictly sorted and valid.
+- Sharding modes are internal implementation details: `per-seqid` or bounded `N` partitions.
+- API/query contract remains stable regardless of physical shard layout.

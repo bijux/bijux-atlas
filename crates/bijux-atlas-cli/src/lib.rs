@@ -111,6 +111,10 @@ enum AtlasCommand {
         seqid_aliases: String,
         #[arg(long, default_value_t = 1)]
         max_threads: usize,
+        #[arg(long, default_value_t = false)]
+        emit_shards: bool,
+        #[arg(long, default_value_t = 0)]
+        shard_partitions: usize,
     },
     InspectDb {
         #[arg(long)]
@@ -214,6 +218,8 @@ struct IngestCliArgs {
     ensembl_keys: String,
     seqid_aliases: String,
     max_threads: usize,
+    emit_shards: bool,
+    shard_partitions: usize,
 }
 
 pub fn main_entry() -> ProcessExitCode {
@@ -327,6 +333,8 @@ fn run_atlas_command(
             ensembl_keys,
             seqid_aliases,
             max_threads,
+            emit_shards,
+            shard_partitions,
         } => run_ingest(
             IngestCliArgs {
                 gff3,
@@ -342,6 +350,8 @@ fn run_atlas_command(
                 ensembl_keys,
                 seqid_aliases,
                 max_threads,
+                emit_shards,
+                shard_partitions,
             },
             output_mode,
         )
@@ -561,6 +571,8 @@ fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String
             &args.seqid_aliases,
         )),
         max_threads: args.max_threads,
+        emit_shards: args.emit_shards,
+        shard_partitions: args.shard_partitions,
     })
     .map_err(|e| e.to_string())?;
 
