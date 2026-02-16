@@ -200,6 +200,13 @@ async fn main() -> Result<(), String> {
         enable_redis_response_cache: env_bool("ATLAS_ENABLE_REDIS_RESPONSE_CACHE", false),
         redis_response_cache_ttl_secs: env_usize("ATLAS_REDIS_RESPONSE_CACHE_TTL_SECS", 30),
         enable_redis_rate_limit: env_bool("ATLAS_ENABLE_REDIS_RATE_LIMIT", false),
+        redis_timeout_ms: env_u64("ATLAS_REDIS_TIMEOUT_MS", 50),
+        redis_retry_attempts: env_usize("ATLAS_REDIS_RETRY_ATTEMPTS", 2),
+        redis_breaker_failure_threshold: env_u64("ATLAS_REDIS_BREAKER_FAILURE_THRESHOLD", 8) as u32,
+        redis_breaker_open_ms: env_u64("ATLAS_REDIS_BREAKER_OPEN_MS", 3000),
+        redis_cache_max_key_bytes: env_usize("ATLAS_REDIS_CACHE_MAX_KEY_BYTES", 256),
+        redis_cache_max_cardinality: env_usize("ATLAS_REDIS_CACHE_MAX_CARDINALITY", 100_000),
+        redis_cache_ttl_max_secs: env_usize("ATLAS_REDIS_CACHE_TTL_MAX_SECS", 60),
         enable_cheap_only_survival: env_bool("ATLAS_ENABLE_CHEAP_ONLY_SURVIVAL", false),
         allow_min_viable_response: env_bool("ATLAS_ALLOW_MIN_VIABLE_RESPONSE", true),
         continue_download_on_request_timeout_for_warmup: env_bool(

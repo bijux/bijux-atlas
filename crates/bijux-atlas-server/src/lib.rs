@@ -929,6 +929,15 @@ impl AppState {
         api: ApiConfig,
         limits: QueryLimits,
     ) -> Self {
+        let redis_policy = telemetry::redis_backend::RedisPolicy {
+            timeout: Duration::from_millis(api.redis_timeout_ms),
+            retry_attempts: api.redis_retry_attempts.max(1),
+            breaker_failure_threshold: api.redis_breaker_failure_threshold,
+            breaker_open_duration: Duration::from_millis(api.redis_breaker_open_ms),
+            max_key_bytes: api.redis_cache_max_key_bytes,
+            max_cardinality: api.redis_cache_max_cardinality,
+            max_ttl_secs: api.redis_cache_ttl_max_secs,
+        };
         Self {
             cache,
             ready: Arc::new(AtomicBool::new(true)),
@@ -938,9 +947,9 @@ impl AppState {
             heavy_workers: Arc::new(Semaphore::new(api.heavy_worker_pool_size)),
             ip_limiter: Arc::new(RateLimiter::new(
                 if api.enable_redis_rate_limit {
-                    api.redis_url
-                        .as_deref()
-                        .and_then(|u| RedisBackend::new(u, &api.redis_prefix).ok())
+                    api.redis_url.as_deref().and_then(|u| {
+                        RedisBackend::new(u, &api.redis_prefix, redis_policy.clone()).ok()
+                    })
                 } else {
                     None
                 },
@@ -948,9 +957,9 @@ impl AppState {
             )),
             api_key_limiter: Arc::new(RateLimiter::new(
                 if api.enable_redis_rate_limit {
-                    api.redis_url
-                        .as_deref()
-                        .and_then(|u| RedisBackend::new(u, &api.redis_prefix).ok())
+                    api.redis_url.as_deref().and_then(|u| {
+                        RedisBackend::new(u, &api.redis_prefix, redis_policy.clone()).ok()
+                    })
                 } else {
                     None
                 },
@@ -967,7 +976,7 @@ impl AppState {
             redis_backend: api
                 .redis_url
                 .as_deref()
-                .and_then(|u| RedisBackend::new(u, &api.redis_prefix).ok())
+                .and_then(|u| RedisBackend::new(u, &api.redis_prefix, redis_policy).ok())
                 .map(Arc::new),
             api,
             limits,
