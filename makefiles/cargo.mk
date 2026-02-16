@@ -140,11 +140,11 @@ audit:
 
 _audit:
 	@./bin/require-isolate >/dev/null
-	@if ! cargo deny --version >/dev/null 2>&1; then \
-		echo "cargo-deny is required. Install: cargo install cargo-deny --locked" >&2; \
-		exit 1; \
+	@if ! cargo +stable deny --version >/dev/null 2>&1; then \
+		echo "cargo-deny is required for stable toolchain. Installing..." >&2; \
+		cargo +stable install cargo-deny --locked; \
 	fi
-	@cargo deny check
+	@cargo +stable deny check
 
 ci: fmt lint audit test coverage
 
