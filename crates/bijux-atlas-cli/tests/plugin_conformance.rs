@@ -10,13 +10,32 @@ fn plugin_metadata_handshake_has_required_fields() {
     assert!(output.status.success());
 
     let payload: Value = serde_json::from_slice(&output.stdout).expect("valid JSON metadata");
-    for key in ["name", "version", "compatible_umbrella", "build_hash"] {
+    for key in [
+        "schema_version",
+        "name",
+        "version",
+        "compatible_umbrella",
+        "compatible_umbrella_min",
+        "compatible_umbrella_max_exclusive",
+        "build_hash",
+    ] {
         assert!(payload.get(key).is_some(), "missing required field {key}");
     }
     assert_eq!(
         payload.get("name").and_then(Value::as_str),
         Some("bijux-atlas")
     );
+}
+
+#[test]
+fn umbrella_version_compatibility_is_enforced() {
+    let bad = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+        .args(["--json", "--umbrella-version", "0.2.1", "version"])
+        .output()
+        .expect("run with incompatible umbrella version");
+    assert_eq!(bad.status.code(), Some(2));
+    let stderr = String::from_utf8(bad.stderr).expect("stderr utf8");
+    assert!(stderr.contains("\"code\":\"umbrella_incompatible\""));
 }
 
 #[test]

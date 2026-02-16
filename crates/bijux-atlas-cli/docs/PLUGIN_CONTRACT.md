@@ -12,9 +12,12 @@ Required flags and behavior:
 
 Metadata JSON required fields:
 
+- `schema_version`
 - `name`
 - `version`
 - `compatible_umbrella`
+- `compatible_umbrella_min`
+- `compatible_umbrella_max_exclusive`
 - `build_hash`
 
 Exit code policy follows shared Bijux exit code registry in `bijux-atlas-core`.

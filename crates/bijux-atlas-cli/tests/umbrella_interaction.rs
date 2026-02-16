@@ -47,4 +47,28 @@ exec "$(dirname "$0")/bijux-$subsystem" "$@"
         .assert()
         .success()
         .stdout(predicate::str::contains("ingest"));
+
+    Command::new(&umbrella)
+        .args(["atlas", "version"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("bijux-atlas"));
+
+    Command::new(&umbrella)
+        .args(["atlas", "atlas", "print-config", "--canonical"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("\"cache_dir\""));
+
+    Command::new(&umbrella)
+        .args(["atlas", "completion", "bash"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("atlas"));
+
+    Command::new(&umbrella)
+        .args(["atlas", "atlas", "doctor"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("\"command\": \"atlas doctor\""));
 }
