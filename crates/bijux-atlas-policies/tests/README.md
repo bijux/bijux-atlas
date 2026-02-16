@@ -1,9 +1,10 @@
 # Tests for bijux-atlas-policies
 
 What belongs here:
-
-- Structural policy tests for workspace file layout and size constraints.
+- Structure limit guardrails.
+- Policy schema/config strict validation tests.
+- Schema version bump compatibility tests.
 
 What does not belong here:
-
-- Business logic tests from domain crates.
+- Server/query runtime behavior tests.
+- External network or filesystem integration workflows.

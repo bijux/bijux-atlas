@@ -1,7 +1,10 @@
+# Architecture
+
 ## Architecture
 
-This crate hosts deterministic policy tests that validate repository structure constraints.
+`bijux-atlas-policies` provides policy schema types, validation, and structural limits.
 
-- no runtime behavior
-- no external I/O beyond repository reads
-- intended for CI and local policy gates
+Modules:
+- `schema`: typed policy config model.
+- `validate`: loading, strict checks, schema transition rules.
+- `limits`: structural constants and schema bump limits.
