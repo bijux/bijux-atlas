@@ -4,6 +4,16 @@ const METRIC_SUBSYSTEM: &str = "atlas";
 const METRIC_VERSION: &str = env!("CARGO_PKG_VERSION");
 const METRIC_DATASET_ALL: &str = "all";
 
+fn percentile_ns(values: &[u64], pct: f64) -> u64 {
+    if values.is_empty() {
+        return 0;
+    }
+    let mut v = values.to_vec();
+    v.sort_unstable();
+    let idx = ((v.len() as f64 - 1.0) * pct).round() as usize;
+    v[idx]
+}
+
 fn make_request_id(state: &AppState) -> String {
     let id = state.request_id_seed.fetch_add(1, Ordering::Relaxed);
     format!("req-{id:016x}")

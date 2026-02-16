@@ -29,6 +29,8 @@ use tracing::{error, info, info_span, warn};
 
 mod api_config;
 mod fake_store;
+mod rate_limiter;
+mod store_backends;
 
 pub const CRATE_NAME: &str = "bijux-atlas-server";
 
@@ -41,16 +43,6 @@ impl std::fmt::Display for CacheError {
     }
 }
 impl std::error::Error for CacheError {}
-
-fn percentile_ns(values: &[u64], pct: f64) -> u64 {
-    if values.is_empty() {
-        return 0;
-    }
-    let mut v = values.to_vec();
-    v.sort_unstable();
-    let idx = ((v.len() as f64 - 1.0) * pct).round() as usize;
-    v[idx]
-}
 
 #[derive(Debug, Clone)]
 pub struct DatasetCacheConfig {
@@ -69,6 +61,9 @@ pub struct DatasetCacheConfig {
     pub breaker_failure_threshold: u32,
     pub breaker_open_duration: Duration,
     pub eviction_check_interval: Duration,
+    pub integrity_reverify_interval: Duration,
+    pub sqlite_pragma_cache_kib: i64,
+    pub sqlite_pragma_mmap_bytes: i64,
 }
 
 impl Default for DatasetCacheConfig {
@@ -89,6 +84,9 @@ impl Default for DatasetCacheConfig {
             breaker_failure_threshold: 3,
             breaker_open_duration: Duration::from_secs(30),
             eviction_check_interval: Duration::from_secs(30),
+            integrity_reverify_interval: Duration::from_secs(300),
+            sqlite_pragma_cache_kib: 32 * 1024,
+            sqlite_pragma_mmap_bytes: 256 * 1024 * 1024,
         }
     }
 }
@@ -162,48 +160,7 @@ fn chrono_like_unix_millis() -> u128 {
 }
 
 pub use api_config::{ApiConfig, RateLimitConfig};
-
-pub struct LocalFsBackend {
-    root: PathBuf,
-}
-
-impl LocalFsBackend {
-    #[must_use]
-    pub fn new(root: PathBuf) -> Self {
-        Self { root }
-    }
-}
-
-#[async_trait]
-impl DatasetStoreBackend for LocalFsBackend {
-    async fn fetch_catalog(&self, if_none_match: Option<&str>) -> Result<CatalogFetch, CacheError> {
-        let path = self.root.join("catalog.json");
-        let bytes = fs::read(&path).map_err(|e| CacheError(format!("catalog read failed: {e}")))?;
-        let etag = sha256_hex(&bytes);
-        if if_none_match == Some(etag.as_str()) {
-            return Ok(CatalogFetch::NotModified);
-        }
-        let catalog: Catalog = serde_json::from_slice(&bytes)
-            .map_err(|e| CacheError(format!("catalog parse failed: {e}")))?;
-        Ok(CatalogFetch::Updated { etag, catalog })
-    }
-
-    async fn fetch_manifest(&self, dataset: &DatasetId) -> Result<ArtifactManifest, CacheError> {
-        let path = artifact_paths(Path::new(&self.root), dataset).manifest;
-        let bytes = fs::read(path).map_err(|e| CacheError(format!("manifest read failed: {e}")))?;
-        let manifest: ArtifactManifest = serde_json::from_slice(&bytes)
-            .map_err(|e| CacheError(format!("manifest parse failed: {e}")))?;
-        manifest
-            .validate_strict()
-            .map_err(|e| CacheError(format!("manifest validation failed: {e}")))?;
-        Ok(manifest)
-    }
-
-    async fn fetch_sqlite_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError> {
-        let path = artifact_paths(Path::new(&self.root), dataset).sqlite;
-        fs::read(path).map_err(|e| CacheError(format!("sqlite read failed: {e}")))
-    }
-}
+pub use store_backends::{LocalFsBackend, RetryPolicy, S3LikeBackend};
 
 #[async_trait]
 pub trait DatasetStoreBackend: Send + Sync + 'static {
@@ -236,36 +193,7 @@ struct BreakerState {
     open_until: Option<Instant>,
 }
 
-#[derive(Debug, Clone)]
-struct Bucket {
-    tokens: f64,
-    last_refill: Instant,
-}
-
-#[derive(Default)]
-struct RateLimiter {
-    buckets: Mutex<HashMap<String, Bucket>>,
-}
-
-impl RateLimiter {
-    async fn allow(&self, key: &str, cfg: &RateLimitConfig) -> bool {
-        let now = Instant::now();
-        let mut lock = self.buckets.lock().await;
-        let bucket = lock.entry(key.to_string()).or_insert_with(|| Bucket {
-            tokens: cfg.capacity,
-            last_refill: now,
-        });
-        let elapsed = now.duration_since(bucket.last_refill).as_secs_f64();
-        bucket.last_refill = now;
-        bucket.tokens = (bucket.tokens + (elapsed * cfg.refill_per_sec)).min(cfg.capacity);
-        if bucket.tokens >= 1.0 {
-            bucket.tokens -= 1.0;
-            true
-        } else {
-            false
-        }
-    }
-}
+use rate_limiter::RateLimiter;
 
 pub struct DatasetConnection {
     pub conn: Connection,
@@ -320,6 +248,16 @@ impl DatasetCacheManager {
                 interval.tick().await;
                 if let Err(e) = me.evict_background().await {
                     error!("eviction error: {e}");
+                }
+            }
+        });
+        let me = Arc::clone(self);
+        tokio::spawn(async move {
+            let mut interval = tokio::time::interval(me.cfg.integrity_reverify_interval);
+            loop {
+                interval.tick().await;
+                if let Err(e) = me.reverify_cached_datasets().await {
+                    error!("reverify error: {e}");
                 }
             }
         });
@@ -419,6 +357,11 @@ impl DatasetCacheManager {
 
         match open {
             Ok(Ok(conn)) => {
+                let pragma_sql = format!(
+                    "PRAGMA query_only=ON; PRAGMA temp_store=MEMORY; PRAGMA cache_size=-{}; PRAGMA mmap_size={};",
+                    self.cfg.sqlite_pragma_cache_kib, self.cfg.sqlite_pragma_mmap_bytes
+                );
+                let _ = conn.execute_batch(&pragma_sql);
                 self.reset_breaker(dataset).await;
                 self.metrics
                     .store_open_latency_ns
@@ -700,6 +643,39 @@ impl DatasetCacheManager {
         );
 
         Ok(())
+    }
+
+    async fn reverify_cached_datasets(&self) -> Result<(), CacheError> {
+        let datasets: Vec<DatasetId> = {
+            let entries = self.entries.lock().await;
+            entries.keys().cloned().collect()
+        };
+        for dataset in datasets {
+            if !self.verify_dataset_integrity_strict(&dataset).await? {
+                warn!(dataset = ?dataset, "cached dataset failed re-verification");
+                let mut entries = self.entries.lock().await;
+                if let Some(entry) = entries.remove(&dataset) {
+                    let _ = std::fs::remove_file(&entry.sqlite_path);
+                }
+            }
+        }
+        Ok(())
+    }
+
+    async fn verify_dataset_integrity_strict(
+        &self,
+        dataset: &DatasetId,
+    ) -> Result<bool, CacheError> {
+        let paths = artifact_paths(Path::new(&self.cfg.disk_root), dataset);
+        if !paths.sqlite.exists() || !paths.manifest.exists() {
+            return Ok(false);
+        }
+        let manifest_raw = std::fs::read(&paths.manifest).map_err(|e| CacheError(e.to_string()))?;
+        let manifest: ArtifactManifest =
+            serde_json::from_slice(&manifest_raw).map_err(|e| CacheError(e.to_string()))?;
+        let sqlite_hash =
+            sha256_hex(&std::fs::read(&paths.sqlite).map_err(|e| CacheError(e.to_string()))?);
+        Ok(sqlite_hash == manifest.checksums.sqlite_sha256)
     }
 
     async fn check_breaker(&self, dataset: &DatasetId) -> Result<(), CacheError> {

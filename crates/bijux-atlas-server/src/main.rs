@@ -2,6 +2,7 @@
 
 use bijux_atlas_server::{
     build_router, ApiConfig, AppState, DatasetCacheConfig, DatasetCacheManager, LocalFsBackend,
+    RetryPolicy, S3LikeBackend,
 };
 use opentelemetry::trace::TracerProvider as _;
 use std::collections::HashSet;
@@ -41,6 +42,21 @@ fn env_usize(name: &str, default: usize) -> usize {
 
 fn env_duration_ms(name: &str, default_ms: u64) -> Duration {
     Duration::from_millis(env_u64(name, default_ms))
+}
+
+fn env_dataset_list(name: &str) -> Vec<bijux_atlas_model::DatasetId> {
+    env::var(name)
+        .unwrap_or_default()
+        .split(',')
+        .filter_map(|s| {
+            let p: Vec<_> = s.trim().split('/').collect();
+            if p.len() == 3 {
+                bijux_atlas_model::DatasetId::new(p[0], p[1], p[2]).ok()
+            } else {
+                None
+            }
+        })
+        .collect()
 }
 
 fn init_tracing() {
@@ -113,9 +129,14 @@ async fn main() -> Result<(), String> {
         max_disk_bytes: env_u64("ATLAS_MAX_DISK_BYTES", 8 * 1024 * 1024 * 1024),
         max_dataset_count: env_usize("ATLAS_MAX_DATASET_COUNT", 8),
         pinned_datasets: pinned,
+        startup_warmup: env_dataset_list("ATLAS_STARTUP_WARMUP"),
+        fail_readiness_on_missing_warmup: env_bool("ATLAS_FAIL_ON_WARMUP_ERROR", false),
         read_only_fs: env_bool("ATLAS_READ_ONLY_FS_MODE", false),
         cached_only_mode: env_bool("ATLAS_CACHED_ONLY_MODE", false),
         dataset_open_timeout: env_duration_ms("ATLAS_DATASET_OPEN_TIMEOUT_MS", 3000),
+        integrity_reverify_interval: env_duration_ms("ATLAS_INTEGRITY_REVERIFY_MS", 300_000),
+        sqlite_pragma_cache_kib: env_u64("ATLAS_SQLITE_CACHE_KIB", 32 * 1024) as i64,
+        sqlite_pragma_mmap_bytes: env_u64("ATLAS_SQLITE_MMAP_BYTES", 256 * 1024 * 1024) as i64,
         ..DatasetCacheConfig::default()
     };
     let api_cfg = ApiConfig {
@@ -130,9 +151,26 @@ async fn main() -> Result<(), String> {
         ..ApiConfig::default()
     };
 
-    let backend = Arc::new(LocalFsBackend::new(store_root));
+    let backend: Arc<dyn bijux_atlas_server::DatasetStoreBackend> =
+        if env_bool("ATLAS_STORE_S3_ENABLED", false) {
+            let base_url = env::var("ATLAS_STORE_S3_BASE_URL")
+                .map_err(|_| "ATLAS_STORE_S3_BASE_URL is required when S3 enabled".to_string())?;
+            Arc::new(S3LikeBackend::new(
+                base_url,
+                env::var("ATLAS_STORE_S3_BEARER").ok(),
+                RetryPolicy {
+                    max_attempts: env_usize("ATLAS_STORE_RETRY_ATTEMPTS", 4),
+                    base_backoff_ms: env_u64("ATLAS_STORE_RETRY_BASE_MS", 120),
+                },
+            ))
+        } else {
+            Arc::new(LocalFsBackend::new(store_root))
+        };
     let cache = DatasetCacheManager::new(cache_cfg, backend);
     cache.spawn_background_tasks();
+    if let Err(e) = cache.startup_warmup().await {
+        error!("startup warmup failed: {e}");
+    }
 
     let state = AppState::with_config(
         cache.clone(),

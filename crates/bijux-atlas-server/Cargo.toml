@@ -23,6 +23,7 @@ tracing-opentelemetry = "0.28"
 opentelemetry = "0.27"
 opentelemetry_sdk = { version = "0.27", features = ["rt-tokio"] }
 opentelemetry-otlp = { version = "0.27", features = ["http-proto", "reqwest-client"] }
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "http2", "charset", "json", "blocking"] }
 
 [dev-dependencies]
 tempfile = "=3.13.0"
