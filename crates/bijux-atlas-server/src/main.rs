@@ -84,18 +84,16 @@ fn init_tracing() {
                 .with(tracing_opentelemetry::layer().with_tracer(tracer))
                 .init();
         }
+    } else if log_json {
+        tracing_subscriber::registry()
+            .with(filter)
+            .with(tracing_subscriber::fmt::layer().json())
+            .init();
     } else {
-        if log_json {
-            tracing_subscriber::registry()
-                .with(filter)
-                .with(tracing_subscriber::fmt::layer().json())
-                .init();
-        } else {
-            tracing_subscriber::registry()
-                .with(filter)
-                .with(tracing_subscriber::fmt::layer())
-                .init();
-        }
+        tracing_subscriber::registry()
+            .with(filter)
+            .with(tracing_subscriber::fmt::layer())
+            .init();
     }
 }
 

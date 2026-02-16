@@ -66,7 +66,7 @@ enum Commands {
     },
     Atlas {
         #[command(subcommand)]
-        command: AtlasCommand,
+        command: Box<AtlasCommand>,
     },
     #[command(hide = true)]
     Serve,
@@ -253,7 +253,7 @@ fn run() -> Result<(), CliError> {
             print_completion(shell);
             Ok(())
         }
-        Commands::Atlas { command } => run_atlas_command(command, log_flags),
+        Commands::Atlas { command } => run_atlas_command(*command, log_flags),
         Commands::Serve => run_serve(log_flags).map_err(CliError::dependency),
     }
 }
@@ -460,43 +460,6 @@ fn emit_error(error: &CliError, machine_json: bool) {
         }
     } else {
         eprintln!("{}", error.machine.message);
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn plugin_metadata_contains_required_fields() {
-        let payload = plugin_metadata_payload();
-        for field in ["name", "version", "compatible_umbrella", "build_hash"] {
-            assert!(payload.get(field).is_some(), "missing field `{field}`");
-        }
-    }
-
-    #[test]
-    fn top_level_subcommands_avoid_reserved_umbrella_verbs() {
-        let reserved = ["plugin", "plugins", "doctor", "config"];
-        let command = Cli::command();
-        for sub in command.get_subcommands() {
-            let name = sub.get_name();
-            assert!(
-                !reserved.contains(&name),
-                "subcommand `{name}` collides with umbrella reserved verb"
-            );
-        }
-    }
-
-    #[test]
-    fn help_template_includes_required_sections() {
-        let rendered = Cli::command().render_help().to_string();
-        for section in ["Usage:", "Options:", "Commands:", "Environment:"] {
-            assert!(
-                rendered.contains(section),
-                "help output missing section `{section}`"
-            );
-        }
     }
 }
 
@@ -778,4 +741,41 @@ fn query_request_from_json(v: &Value) -> Result<GeneQueryRequest, String> {
         cursor: None,
         allow_full_scan,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn plugin_metadata_contains_required_fields() {
+        let payload = plugin_metadata_payload();
+        for field in ["name", "version", "compatible_umbrella", "build_hash"] {
+            assert!(payload.get(field).is_some(), "missing field `{field}`");
+        }
+    }
+
+    #[test]
+    fn top_level_subcommands_avoid_reserved_umbrella_verbs() {
+        let reserved = ["plugin", "plugins", "doctor", "config"];
+        let command = Cli::command();
+        for sub in command.get_subcommands() {
+            let name = sub.get_name();
+            assert!(
+                !reserved.contains(&name),
+                "subcommand `{name}` collides with umbrella reserved verb"
+            );
+        }
+    }
+
+    #[test]
+    fn help_template_includes_required_sections() {
+        let rendered = Cli::command().render_help().to_string();
+        for section in ["Usage:", "Options:", "Commands:", "Environment:"] {
+            assert!(
+                rendered.contains(section),
+                "help output missing section `{section}`"
+            );
+        }
+    }
 }
