@@ -148,6 +148,23 @@ jobs:
       - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
       - run: ./scripts/require-crate-docs.sh
 
+  cli-command-surface:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/cli-command-surface
+      CARGO_TARGET_DIR: artifacts/isolates/cli-command-surface/target
+      CARGO_HOME: artifacts/isolates/cli-command-surface/cargo-home
+      TMPDIR: artifacts/isolates/cli-command-surface/tmp
+      TMP: artifacts/isolates/cli-command-surface/tmp
+      TEMP: artifacts/isolates/cli-command-surface/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
+      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
+      - run: ./scripts/check-cli-commands.sh
+
   release-binaries:
     runs-on: ubuntu-latest
     env:

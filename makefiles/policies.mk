@@ -74,4 +74,8 @@ crate-structure:
 	@./bin/require-isolate >/dev/null
 	@./scripts/require-crate-docs.sh
 
-.PHONY: culprits-all culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir crate-structure
+cli-command-surface:
+	@./bin/require-isolate >/dev/null
+	@./scripts/check-cli-commands.sh
+
+.PHONY: culprits-all culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir crate-structure cli-command-surface
