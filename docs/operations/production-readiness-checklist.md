@@ -34,4 +34,5 @@ This checklist is the final go/no-go gate before a `bijux-atlas` production roll
 - [ ] `make dev-test-all` passes.
 - [ ] `make dev-audit` passes with no warnings/errors.
 - [ ] Load scenario passes baseline (`docs/load/k6.md`).
+- [ ] K8s chaos/perf scenarios executed (`docs/runbooks/K8S_PERF_CHAOS.md`).
 - [ ] Cold-start and warm-cache latency are within target.

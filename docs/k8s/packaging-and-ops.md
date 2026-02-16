@@ -38,6 +38,8 @@ Filesystem strategy:
 
 - Read-only root filesystem.
 - Explicit writable mounts only for `/cache` and `/tmp` via `emptyDir`.
+- `emptyDir` limits are explicit for both cache and tmp volumes.
+- Pod requests/limits include `ephemeral-storage` to align kubelet eviction behavior with atlas cache policy.
 
 ## Network Policy
 
@@ -71,7 +73,22 @@ Tuning guidance:
 Readiness contract for production:
 
 - Ready only when process loop is healthy.
-- Ready only when catalog refresh policy allows serving current requests.
+- Ready only when catalog is reachable, unless `cached-only` mode is explicitly enabled.
+
+## Node-Local SSD Profile
+
+Recommended for high-throughput clusters:
+
+- Mount `/cache` on node-local SSD (`local PV` or host-backed fast storage).
+- Keep `/tmp` on bounded `emptyDir`.
+- Use startup warmup jitter to avoid synchronized store fetches.
+
+Measurement workflow:
+
+1. Deploy baseline on generic storage.
+2. Run `load/k6/suites/warm_steady.js` and `load/k6/suites/regional_spike_10x_60s.js`.
+3. Deploy node-local SSD profile and rerun same suites.
+4. Compare p95/p99 and store download latency from `/metrics`.
 
 ## Init Prewarm
 
@@ -95,8 +112,8 @@ Purpose:
 HPA includes:
 
 - CPU utilization target.
-- Request-rate custom metric.
-- p95 latency custom metric.
+- p95 latency custom metric (`bijux_http_request_latency_p95_seconds`).
+- in-flight heavy query custom metric (`bijux_inflight_heavy_queries`).
 
 This requires a custom metrics adapter wired from Prometheus.
 

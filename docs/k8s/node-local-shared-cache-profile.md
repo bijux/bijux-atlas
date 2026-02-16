@@ -16,4 +16,15 @@ This is an advanced deployment profile, not the default.
 - `ATLAS_CACHE_ROOT=/var/lib/bijux-atlas/cache`
 - `ATLAS_MAX_CONCURRENT_DOWNLOADS=2`
 - `ATLAS_STARTUP_WARMUP_LIMIT=4`
+- `ATLAS_STARTUP_WARMUP_JITTER_MAX_MS=30000`
 - `ATLAS_SQLITE_MMAP_BYTES=268435456`
+
+## SSD Comparison Checklist
+- Capture baseline from `/metrics`:
+  - `bijux_http_request_latency_p95_seconds`
+  - `bijux_store_download_p95_seconds`
+  - `bijux_dataset_disk_usage_bytes`
+- Repeat after node-local SSD rollout using same k6 suites:
+  - `load/k6/suites/warm_steady.js`
+  - `load/k6/suites/regional_spike_10x_60s.js`
+- Keep query mix and dataset set identical between runs.
