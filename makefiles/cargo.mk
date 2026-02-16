@@ -158,10 +158,20 @@ fetch-fixtures:
 load-test:
 	@k6 run load/k6/atlas_phase11.js
 
+load-test-1000qps:
+	@k6 run load/k6/atlas_1000qps.js
+
+cold-start-bench:
+	@./scripts/perf/cold_start_benchmark.sh
+
+memory-profile-load:
+	@echo "runbook: docs/runbooks/MEMORY_PROFILE_UNDER_LOAD.md"
+	@echo "outputs: artifacts/benchmarks/memory/"
+
 run-medium-ingest:
 	@./scripts/fixtures/run-medium-ingest.sh
 
 run-medium-serve:
 	@./scripts/fixtures/run-medium-serve.sh
 
-.PHONY: fmt _fmt lint _lint _lint-rustfmt _lint-configs _lint-docs _lint-clippy check _check test test-all _test _test-all coverage _coverage audit _audit ci openapi-drift fetch-fixtures load-test run-medium-ingest run-medium-serve
+.PHONY: fmt _fmt lint _lint _lint-rustfmt _lint-configs _lint-docs _lint-clippy check _check test test-all _test _test-all coverage _coverage audit _audit ci openapi-drift fetch-fixtures load-test load-test-1000qps cold-start-bench memory-profile-load run-medium-ingest run-medium-serve
