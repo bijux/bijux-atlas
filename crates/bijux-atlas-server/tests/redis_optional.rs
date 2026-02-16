@@ -110,10 +110,7 @@ async fn redis_exact_lookup_cache_hit_sets_cache_header() {
         }
     };
     let can_connect = match redis::Client::open(redis_url.clone()) {
-        Ok(client) => match client.get_connection() {
-            Ok(_) => true,
-            Err(_) => false,
-        },
+        Ok(client) => client.get_connection().is_ok(),
         Err(_) => false,
     };
     if !can_connect {
