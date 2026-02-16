@@ -1,0 +1,3 @@
+##gff-version 3
+chr1	s	gene	8	18	.	+	.	ID=e8;Name=E8A
+chr1	s	gene	19	29	.	+	.	ID=e8;Name=E8B

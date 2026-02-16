@@ -1,0 +1,2 @@
+##gff-version 3
+chr1	s	gene	10	20	.	+	.	ID=e10;gene_id=ENSG0000010;Name=E10

@@ -1,0 +1,2 @@
+##gff-version 3
+chr1	s	gene	11	21	.	+	.	ID=e11;Name=ABC_DEF
