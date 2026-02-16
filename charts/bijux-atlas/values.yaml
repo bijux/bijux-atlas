@@ -13,9 +13,11 @@ resources:
   requests:
     cpu: "500m"
     memory: "512Mi"
+    ephemeral-storage: "2Gi"
   limits:
     cpu: "2000m"
     memory: "2Gi"
+    ephemeral-storage: "10Gi"
 
 podSecurityContext:
   runAsNonRoot: true
@@ -31,11 +33,14 @@ securityContext:
 
 cache:
   diskSize: 8Gi
+  tmpSize: 512Mi
   maxDatasetCount: 8
   maxDiskBytes: 8589934592
   pinnedDatasets: []
   warmupEnabled: false
   warmupFailReadinessOnMissing: false
+  startupWarmupJitterMaxMs: 30000
+  maxConcurrentDownloads: 3
   initPrewarm:
     enabled: false
     image: ghcr.io/bijux/bijux-atlas:latest
@@ -64,6 +69,8 @@ server:
   enableExemplars: false
   cachedOnlyMode: false
   readOnlyFsMode: false
+  shutdownDrainMs: 5000
+  readinessRequiresCatalog: true
 
 catalog:
   endpoint: ""
@@ -89,12 +96,34 @@ hpa:
   minReplicas: 2
   maxReplicas: 20
   cpuUtilization: 70
-  requestRateTarget: 200
-  p95LatencyTargetMs: 300
+  p95LatencySeconds: "0.300"
+  heavyInflightAverageValue: "8"
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 30
+    scaleDown:
+      stabilizationWindowSeconds: 120
+      policies:
+        - type: Percent
+          value: 20
+          periodSeconds: 60
 
 pdb:
   enabled: true
   minAvailable: 1
+  maxUnavailable: null
+
+priorityClassName: ""
+
+terminationGracePeriodSeconds: 30
+
+nodeLocalSsdProfile:
+  enabled: false
+  note: "Prefer node-local SSD for /cache and benchmark p95 gains before rollout."
 
 rollout:
   enabled: false

@@ -22,15 +22,17 @@ spec:
     - type: Pods
       pods:
         metric:
-          name: atlas_http_requests_per_second
+          name: bijux_http_request_latency_p95_seconds
         target:
           type: AverageValue
-          averageValue: {{ .Values.hpa.requestRateTarget | quote }}
+          averageValue: {{ .Values.hpa.p95LatencySeconds | quote }}
     - type: Pods
       pods:
         metric:
-          name: atlas_http_request_latency_p95_milliseconds
+          name: bijux_inflight_heavy_queries
         target:
           type: AverageValue
-          averageValue: {{ .Values.hpa.p95LatencyTargetMs | quote }}
+          averageValue: {{ .Values.hpa.heavyInflightAverageValue | quote }}
+  behavior:
+    {{- toYaml .Values.hpa.behavior | nindent 4 }}
 {{- end }}

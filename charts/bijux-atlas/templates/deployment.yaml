@@ -16,6 +16,10 @@ spec:
         app.kubernetes.io/name: {{ include "bijux-atlas.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       {{- if .Values.cache.initPrewarm.enabled }}
@@ -52,8 +56,6 @@ spec:
           env:
             - name: ATLAS_CACHE_ROOT
               value: /cache
-            - name: ATLAS_READINESS_REQUIRES_CATALOG
-              value: "true"
             {{- range .Values.extraEnv }}
             - name: {{ .name }}
               value: {{ .value | quote }}
@@ -90,7 +92,8 @@ spec:
           emptyDir:
             sizeLimit: {{ .Values.cache.diskSize }}
         - name: tmp
-          emptyDir: {}
+          emptyDir:
+            sizeLimit: {{ .Values.cache.tmpSize }}
       nodeSelector:
         {{- toYaml .Values.nodeSelector | nindent 8 }}
       tolerations:
