@@ -1,11 +1,11 @@
 # Tests for bijux-atlas-model
 
 What belongs here:
-
-- Integration tests for public behavior of this crate.
-- Policy/guardrail tests relevant to this crate boundary.
+- Type invariants and parsing/validation rules.
+- Serde strictness and round-trip contract tests.
+- Deterministic formatting/ordering properties.
 
 What does not belong here:
-
-- End-to-end cross-service tests (keep at workspace/system level later).
-- Golden/snapshot tests that depend on non-deterministic environment data.
+- Real genome datasets or integration fixtures.
+- Store/network/database runtime behavior.
+- End-to-end API/server execution paths.

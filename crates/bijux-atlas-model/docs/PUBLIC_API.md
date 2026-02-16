@@ -1,15 +1,15 @@
 # PUBLIC API: bijux-atlas-model
 
-Stability contract for public types:
+Stable exports:
 
-- `DatasetId`: stable shape; normalization behavior is stable and tested.
-- `ArtifactManifest`, `ArtifactChecksums`, `ManifestStats`: stable v1 artifact contract.
-- `Catalog`, `CatalogEntry`: stable deterministic catalog contract.
-- Policy types (`GeneIdentifierPolicy`, `GeneNamePolicy`, `BiotypePolicy`, `TranscriptTypePolicy`, `SeqidNormalizationPolicy`, `DuplicateGeneIdPolicy`, `StrictnessMode`): semantically stable but marked `#[non_exhaustive]` where extension is expected.
-- `IngestAnomalyReport`: stable top-level report keys; values are deterministic and sorted.
+- `CRATE_NAME`
+- Dataset identity: `Release`, `Species`, `Assembly`, `DatasetId`, `DatasetSelector`
+- Normalizers: `normalize_release`, `normalize_species`, `normalize_assembly`
+- Gene domain: `GeneId`, `SeqId`, `GeneSummary`
+- Policies: `StrictnessMode`, `GeneIdentifierPolicy`, `GeneNamePolicy`, `BiotypePolicy`, `TranscriptTypePolicy`, `SeqidNormalizationPolicy`, `DuplicateGeneIdPolicy`
+- Artifact contract: `ArtifactChecksums`, `ManifestStats`, `ArtifactManifest`, `Catalog`, `CatalogEntry`, `IngestAnomalyReport`, `OptionalFieldPolicy`
+- Artifact paths: `ArtifactPaths`, `artifact_paths`
+- Policy constants: `LATEST_ALIAS_POLICY`, `NO_IMPLICIT_DEFAULT_DATASET_POLICY`
+- Error: `ValidationError`
 
-Rules:
-
-- New policy variants may be added without breaking change where `#[non_exhaustive]` is used.
-- New required fields in manifest/catalog are breaking and require schema version bump.
-- Unknown fields in strict serde types are rejected by contract.
+`src/lib.rs` must only export documented items unless this file is updated in the same change.
