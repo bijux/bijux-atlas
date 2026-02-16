@@ -78,6 +78,7 @@ catalog:
 
 store:
   endpoint: ""
+  s3PresignedBaseUrl: ""
   credentialsSecretName: ""
 
 networkPolicy:

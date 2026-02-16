@@ -7,6 +7,7 @@ metadata:
 data:
   ATLAS_CATALOG_ENDPOINT: {{ .Values.catalog.endpoint | quote }}
   ATLAS_STORE_ENDPOINT: {{ .Values.store.endpoint | quote }}
+  ATLAS_STORE_S3_PRESIGNED_BASE_URL: {{ .Values.store.s3PresignedBaseUrl | quote }}
   ATLAS_MAX_DATASET_COUNT: {{ .Values.cache.maxDatasetCount | quote }}
   ATLAS_MAX_DISK_BYTES: {{ .Values.cache.maxDiskBytes | quote }}
   ATLAS_PINNED_DATASETS: {{ join "," .Values.cache.pinnedDatasets | quote }}
