@@ -9,3 +9,8 @@ Baseline capture:
 - Run `cargo test -p bijux-atlas-server --test latency_guard -- --nocapture`.
 - Track `latency_regression_guard_p95_under_threshold`.
 - Track `db_open_is_cheap_regression_guard` separately from query benches.
+
+Allocator policy:
+- Default allocator: system.
+- Optional allocator: `jemalloc` feature (`cargo run -p bijux-atlas-server --features jemalloc`).
+- Compare both with identical load profile before production changes.
