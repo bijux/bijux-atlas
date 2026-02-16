@@ -2,11 +2,75 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Atlas Policy Config",
   "type": "object",
-  "required": ["schema_version", "allow_override", "network_in_unit_tests"],
+  "required": [
+    "schema_version",
+    "allow_override",
+    "network_in_unit_tests",
+    "query_budget",
+    "cache_budget",
+    "rate_limit",
+    "concurrency_bulkheads",
+    "telemetry",
+    "documented_defaults"
+  ],
   "properties": {
-    "schema_version": { "type": "string" },
+    "schema_version": { "type": "string", "const": "1" },
     "allow_override": { "type": "boolean" },
-    "network_in_unit_tests": { "type": "boolean" }
+    "network_in_unit_tests": { "type": "boolean" },
+    "query_budget": {
+      "type": "object",
+      "required": ["max_limit", "max_region_span", "max_prefix_length"],
+      "properties": {
+        "max_limit": { "type": "integer", "minimum": 1 },
+        "max_region_span": { "type": "integer", "minimum": 1 },
+        "max_prefix_length": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "cache_budget": {
+      "type": "object",
+      "required": ["max_disk_bytes", "max_dataset_count", "pinned_datasets_max"],
+      "properties": {
+        "max_disk_bytes": { "type": "integer", "minimum": 1 },
+        "max_dataset_count": { "type": "integer", "minimum": 1 },
+        "pinned_datasets_max": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "rate_limit": {
+      "type": "object",
+      "required": ["per_ip_rps", "per_api_key_rps"],
+      "properties": {
+        "per_ip_rps": { "type": "integer", "minimum": 1 },
+        "per_api_key_rps": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "concurrency_bulkheads": {
+      "type": "object",
+      "required": ["cheap", "medium", "heavy"],
+      "properties": {
+        "cheap": { "type": "integer", "minimum": 1 },
+        "medium": { "type": "integer", "minimum": 1 },
+        "heavy": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "telemetry": {
+      "type": "object",
+      "required": ["metrics_enabled", "tracing_enabled", "slow_query_log_enabled", "request_id_required"],
+      "properties": {
+        "metrics_enabled": { "type": "boolean" },
+        "tracing_enabled": { "type": "boolean" },
+        "slow_query_log_enabled": { "type": "boolean" },
+        "request_id_required": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "documented_defaults": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    }
   },
   "additionalProperties": false
 }

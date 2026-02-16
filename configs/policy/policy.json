@@ -1,5 +1,31 @@
 {
   "schema_version": "1",
   "allow_override": false,
-  "network_in_unit_tests": false
+  "network_in_unit_tests": false,
+  "query_budget": {
+    "max_limit": 100,
+    "max_region_span": 10000000,
+    "max_prefix_length": 128
+  },
+  "cache_budget": {
+    "max_disk_bytes": 8589934592,
+    "max_dataset_count": 8,
+    "pinned_datasets_max": 32
+  },
+  "rate_limit": {
+    "per_ip_rps": 100,
+    "per_api_key_rps": 500
+  },
+  "concurrency_bulkheads": {
+    "cheap": 128,
+    "medium": 64,
+    "heavy": 16
+  },
+  "telemetry": {
+    "metrics_enabled": true,
+    "tracing_enabled": true,
+    "slow_query_log_enabled": true,
+    "request_id_required": true
+  },
+  "documented_defaults": []
 }
