@@ -8,6 +8,7 @@
 
 ## Effects & boundaries
 - [docs/effects-and-boundaries.md](../../docs/effects-and-boundaries.md)
+- [docs/EFFECTS.md](docs/EFFECTS.md)
 
 ## Telemetry
 - [docs/ecosystem/metrics-conventions.md](../../docs/ecosystem/metrics-conventions.md)
@@ -16,4 +17,4 @@
 - [tests/](tests/)
 
 ## Benches
-- N/A (no benches in this crate)
+- [benches/](benches/)
