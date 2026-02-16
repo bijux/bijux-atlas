@@ -1,11 +1,10 @@
 # Tests for bijux-atlas-store
 
 What belongs here:
-
-- Integration tests for public behavior of this crate.
-- Policy/guardrail tests relevant to this crate boundary.
+- Artifact contract validation at store boundary.
+- Atomic publish semantics and manifest lock behavior.
+- Cached-only behavior and stable error-code mapping.
 
 What does not belong here:
-
-- End-to-end cross-service tests (keep at workspace/system level later).
-- Golden/snapshot tests that depend on non-deterministic environment data.
+- API/server handler tests.
+- Full cluster/network integration tests.
