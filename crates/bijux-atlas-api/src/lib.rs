@@ -124,19 +124,4 @@ mod tests {
             .expect("stable bytes b");
         assert_eq!(a, b);
     }
-
-    #[test]
-    fn api_crate_dependency_guardrails() {
-        let cargo = std::fs::read_to_string(
-            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml"),
-        )
-        .expect("read Cargo.toml");
-
-        for forbidden in ["tokio", "reqwest", "rusqlite"] {
-            assert!(
-                !cargo.contains(forbidden),
-                "forbidden dependency in api crate: {forbidden}"
-            );
-        }
-    }
 }

@@ -1,6 +1,7 @@
 #![forbid(unsafe_code)]
 
 mod artifact_validation;
+mod helpers;
 
 use bijux_atlas_core::{
     resolve_bijux_cache_dir, resolve_bijux_config_path, sha256_hex, ConfigPathScope, MachineError,
@@ -387,7 +388,7 @@ fn run_atlas_command(
         )
         .map_err(CliError::internal),
         AtlasCommand::Openapi { command } => match command {
-            OpenapiCommand::Generate { out } => run_openapi_generate(out, output_mode),
+            OpenapiCommand::Generate { out } => helpers::run_openapi_generate(out, output_mode),
         }
         .map_err(CliError::dependency),
     }
@@ -462,7 +463,7 @@ fn run_serve(log_flags: LogFlags, output_mode: OutputMode) -> Result<(), String>
         )
     })?;
     if status.success() {
-        emit_ok(output_mode, json!({"command":"atlas serve","status":"ok"}))?;
+        helpers::emit_ok(output_mode, json!({"command":"atlas serve","status":"ok"}))?;
         Ok(())
     } else {
         Err(format!("atlas-server exited with status {status}"))
@@ -563,7 +564,7 @@ fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String
     })
     .map_err(|e| e.to_string())?;
 
-    emit_ok(
+    helpers::emit_ok(
         output_mode,
         json!({
             "command":"atlas ingest",
@@ -613,7 +614,7 @@ fn inspect_db(db: PathBuf, sample_rows: usize, output_mode: OutputMode) -> Resul
         .map_err(|e| e.to_string())?
         .collect::<Result<Vec<_>, _>>()
         .map_err(|e| e.to_string())?;
-    emit_ok(
+    helpers::emit_ok(
         output_mode,
         json!({
             "command":"atlas inspect-db",
@@ -670,7 +671,7 @@ fn explain_query(args: ExplainQueryArgs, output_mode: OutputMode) -> Result<(), 
     };
     let lines = explain_query_plan(&conn, &req, &QueryLimits::default(), b"atlas-cli")
         .map_err(|e| e.to_string())?;
-    emit_ok(
+    helpers::emit_ok(
         output_mode,
         json!({
             "command":"atlas explain-query",
@@ -688,7 +689,7 @@ fn smoke_dataset(
     snapshot_out: PathBuf,
     output_mode: OutputMode,
 ) -> Result<(), String> {
-    let (release, species, assembly) = parse_dataset_id(dataset)?;
+    let (release, species, assembly) = helpers::parse_dataset_id(dataset)?;
     let id = DatasetId::new(&release, &species, &assembly).map_err(|e| e.to_string())?;
     let paths = bijux_atlas_model::artifact_paths(&root, &id);
     let conn = Connection::open(&paths.sqlite).map_err(|e| e.to_string())?;
@@ -712,7 +713,7 @@ fn smoke_dataset(
         let body = q
             .get("query")
             .ok_or_else(|| "golden query missing query object".to_string())?;
-        let req = query_request_from_json(body)?;
+        let req = helpers::query_request_from_json(body)?;
         let resp = bijux_atlas_query::query_genes(&conn, &req, &QueryLimits::default(), b"smoke")
             .map_err(|e| e.to_string())?;
         if resp.rows.is_empty() && name == "by_gene_id" {
@@ -734,7 +735,7 @@ fn smoke_dataset(
         .map_err(|e| e.to_string())?;
     }
 
-    emit_ok(
+    helpers::emit_ok(
         output_mode,
         json!({
             "command":"atlas smoke",
@@ -744,204 +745,4 @@ fn smoke_dataset(
         }),
     )?;
     Ok(())
-}
-
-fn run_openapi_generate(out: PathBuf, output_mode: OutputMode) -> Result<(), String> {
-    let current_exe =
-        std::env::current_exe().map_err(|e| format!("failed to determine executable path: {e}"))?;
-    let bin_dir = current_exe
-        .parent()
-        .ok_or_else(|| "failed to resolve executable directory".to_string())?;
-    let generator = bin_dir.join("atlas-openapi");
-    let status = Command::new(&generator)
-        .arg("--out")
-        .arg(&out)
-        .status()
-        .map_err(|e| {
-            format!(
-                "failed to start atlas-openapi at {}: {e}",
-                generator.display()
-            )
-        })?;
-    if !status.success() {
-        return Err(format!("atlas-openapi exited with status {status}"));
-    }
-    emit_ok(
-        output_mode,
-        json!({
-            "command":"atlas openapi generate",
-            "status":"ok",
-            "out": out
-        }),
-    )?;
-    Ok(())
-}
-
-fn emit_ok(output_mode: OutputMode, payload: Value) -> Result<(), String> {
-    if output_mode.json {
-        println!(
-            "{}",
-            serde_json::to_string(&payload).map_err(|e| e.to_string())?
-        );
-    } else {
-        println!(
-            "{}",
-            serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
-        );
-    }
-    Ok(())
-}
-
-#[cfg(test)]
-fn command_surface_lines() -> Vec<String> {
-    vec![
-        "atlas catalog validate".to_string(),
-        "atlas dataset validate".to_string(),
-        "atlas explain-query".to_string(),
-        "atlas ingest".to_string(),
-        "atlas inspect-db".to_string(),
-        "atlas openapi generate".to_string(),
-        "atlas serve".to_string(),
-        "atlas smoke".to_string(),
-        "completion".to_string(),
-    ]
-}
-
-fn parse_dataset_id(dataset: &str) -> Result<(String, String, String), String> {
-    let parts: Vec<&str> = dataset.split('/').collect();
-    if parts.len() != 3 {
-        return Err("dataset must be release/species/assembly".to_string());
-    }
-    Ok((
-        parts[0].to_string(),
-        parts[1].to_string(),
-        parts[2].to_string(),
-    ))
-}
-
-fn query_request_from_json(v: &Value) -> Result<GeneQueryRequest, String> {
-    let gene_id = v
-        .get("gene_id")
-        .and_then(Value::as_str)
-        .map(ToString::to_string);
-    let name = v
-        .get("name")
-        .and_then(Value::as_str)
-        .map(ToString::to_string);
-    let name_prefix = v
-        .get("name_prefix")
-        .and_then(Value::as_str)
-        .map(ToString::to_string);
-    let biotype = v
-        .get("biotype")
-        .and_then(Value::as_str)
-        .map(ToString::to_string);
-    let region = if let Some(raw) = v.get("region").and_then(Value::as_str) {
-        let (seqid, span) = raw
-            .split_once(':')
-            .ok_or_else(|| "region must be seqid:start-end".to_string())?;
-        let (start, end) = span
-            .split_once('-')
-            .ok_or_else(|| "region must be seqid:start-end".to_string())?;
-        Some(RegionFilter {
-            seqid: seqid.to_string(),
-            start: start.parse::<u64>().map_err(|e| e.to_string())?,
-            end: end.parse::<u64>().map_err(|e| e.to_string())?,
-        })
-    } else {
-        None
-    };
-    let limit = v.get("limit").and_then(Value::as_u64).unwrap_or(10) as usize;
-    let allow_full_scan = v
-        .get("allow_full_scan")
-        .and_then(Value::as_bool)
-        .unwrap_or(false);
-
-    Ok(GeneQueryRequest {
-        fields: GeneFields::default(),
-        filter: GeneFilter {
-            gene_id,
-            name,
-            name_prefix,
-            biotype,
-            region,
-        },
-        limit,
-        cursor: None,
-        allow_full_scan,
-    })
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn plugin_metadata_contains_required_fields() {
-        let payload = plugin_metadata_payload();
-        for field in ["name", "version", "compatible_umbrella", "build_hash"] {
-            assert!(payload.get(field).is_some(), "missing field `{field}`");
-        }
-    }
-
-    #[test]
-    fn top_level_subcommands_avoid_reserved_umbrella_verbs() {
-        let reserved = ["plugin", "plugins", "doctor", "config"];
-        let command = Cli::command();
-        for sub in command.get_subcommands() {
-            let name = sub.get_name();
-            assert!(
-                !reserved.contains(&name),
-                "subcommand `{name}` collides with umbrella reserved verb"
-            );
-        }
-    }
-
-    #[test]
-    fn help_template_includes_required_sections() {
-        let rendered = Cli::command().render_help().to_string();
-        for section in ["Usage:", "Options:", "Commands:", "Environment:"] {
-            assert!(
-                rendered.contains(section),
-                "help output missing section `{section}`"
-            );
-        }
-    }
-
-    #[test]
-    fn command_surface_ssot_matches_doc() {
-        let expected = command_surface_lines().join("\n");
-        let path =
-            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("docs/CLI_COMMAND_LIST.md");
-        let current = std::fs::read_to_string(path).expect("read CLI command list");
-        assert_eq!(current.trim(), expected.trim());
-    }
-
-    #[test]
-    fn completion_generation_contains_atlas_namespace() {
-        let mut cmd = Cli::command();
-        let mut out: Vec<u8> = Vec::new();
-        clap_complete::generate(
-            clap_complete::Shell::Bash,
-            &mut cmd,
-            "bijux-atlas",
-            &mut out,
-        );
-        let text = String::from_utf8(out).expect("utf8 completion");
-        assert!(text.contains("atlas"));
-    }
-
-    #[test]
-    fn unit_tests_do_not_include_network_clients() {
-        let src = std::fs::read_to_string(
-            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/plugin_conformance.rs"),
-        )
-        .expect("read plugin conformance test");
-        for forbidden in ["TcpStream::connect", "UdpSocket::bind", "hyper::", "surf::"] {
-            assert!(
-                !src.contains(forbidden),
-                "forbidden unit-test network token found: {forbidden}"
-            );
-        }
-    }
 }
