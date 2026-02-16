@@ -6,9 +6,16 @@ license.workspace = true
 rust-version.workspace = true
 
 [dependencies]
-bijux-atlas-core.workspace = true
-serde.workspace = true
+serde = { version = "1", features = ["derive"] }
+
+[dev-dependencies]
+criterion = "0.5"
+proptest = "1"
 serde_json.workspace = true
 
 [lib]
 path = "src/lib.rs"
+
+[[bench]]
+name = "dataset_parse"
+harness = false
