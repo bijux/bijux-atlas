@@ -28,7 +28,12 @@ fn round_trip_public_manifest_and_catalog_types() {
         "1".to_string(),
         "1".to_string(),
         DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset"),
-        ArtifactChecksums::new("a".repeat(64), "b".repeat(64), "c".repeat(64), "d".repeat(64)),
+        ArtifactChecksums::new(
+            "a".repeat(64),
+            "b".repeat(64),
+            "c".repeat(64),
+            "d".repeat(64),
+        ),
         ManifestStats::new(1, 2, 3),
     );
 

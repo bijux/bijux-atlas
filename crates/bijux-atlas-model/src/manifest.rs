@@ -14,7 +14,12 @@ pub struct ArtifactChecksums {
 
 impl ArtifactChecksums {
     #[must_use]
-    pub fn new(gff3_sha256: String, fasta_sha256: String, fai_sha256: String, sqlite_sha256: String) -> Self {
+    pub fn new(
+        gff3_sha256: String,
+        fasta_sha256: String,
+        fai_sha256: String,
+        sqlite_sha256: String,
+    ) -> Self {
         Self {
             gff3_sha256,
             fasta_sha256,
