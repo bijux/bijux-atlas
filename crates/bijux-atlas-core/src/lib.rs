@@ -1,6 +1,8 @@
 #![forbid(unsafe_code)]
 
 use sha2::{Digest, Sha256};
+use std::collections::BTreeMap;
+use std::path::PathBuf;
 
 pub const CRATE_NAME: &str = "bijux-atlas-core";
 
@@ -14,11 +16,97 @@ pub enum ExitCode {
     Internal = 10,
 }
 
+pub const ENV_BIJUX_LOG_LEVEL: &str = "BIJUX_LOG_LEVEL";
+pub const ENV_BIJUX_CACHE_DIR: &str = "BIJUX_CACHE_DIR";
+
 #[must_use]
 pub fn sha256_hex(bytes: &[u8]) -> String {
     let mut hasher = Sha256::new();
     hasher.update(bytes);
     format!("{:x}", hasher.finalize())
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ConfigPathScope {
+    User,
+    Workspace,
+}
+
+#[must_use]
+pub fn resolve_bijux_cache_dir() -> PathBuf {
+    if let Ok(explicit) = std::env::var(ENV_BIJUX_CACHE_DIR) {
+        let trimmed = explicit.trim();
+        if !trimmed.is_empty() {
+            return PathBuf::from(trimmed);
+        }
+    }
+
+    if let Ok(xdg_cache_home) = std::env::var("XDG_CACHE_HOME") {
+        let trimmed = xdg_cache_home.trim();
+        if !trimmed.is_empty() {
+            return PathBuf::from(trimmed).join("bijux");
+        }
+    }
+
+    if let Ok(home) = std::env::var("HOME") {
+        let trimmed = home.trim();
+        if !trimmed.is_empty() {
+            return PathBuf::from(trimmed).join(".cache").join("bijux");
+        }
+    }
+
+    PathBuf::from(".bijux").join("cache")
+}
+
+#[must_use]
+pub fn resolve_bijux_config_path(scope: ConfigPathScope) -> PathBuf {
+    match scope {
+        ConfigPathScope::User => {
+            if let Ok(xdg_config_home) = std::env::var("XDG_CONFIG_HOME") {
+                let trimmed = xdg_config_home.trim();
+                if !trimmed.is_empty() {
+                    return PathBuf::from(trimmed).join("bijux").join("config.toml");
+                }
+            }
+            if let Ok(home) = std::env::var("HOME") {
+                let trimmed = home.trim();
+                if !trimmed.is_empty() {
+                    return PathBuf::from(trimmed)
+                        .join(".config")
+                        .join("bijux")
+                        .join("config.toml");
+                }
+            }
+            PathBuf::from(".bijux").join("config.toml")
+        }
+        ConfigPathScope::Workspace => PathBuf::from(".bijux").join("config.toml"),
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct MachineError {
+    pub code: String,
+    pub message: String,
+    #[serde(default)]
+    pub details: BTreeMap<String, String>,
+}
+
+impl MachineError {
+    #[must_use]
+    pub fn new(code: &str, message: &str) -> Self {
+        Self {
+            code: code.to_string(),
+            message: message.to_string(),
+            details: BTreeMap::new(),
+        }
+    }
+
+    #[must_use]
+    pub fn with_detail(mut self, key: &str, value: &str) -> Self {
+        self.details.insert(key.to_string(), value.to_string());
+        self
+    }
 }
 
 pub mod canonical {
