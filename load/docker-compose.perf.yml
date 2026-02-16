@@ -1,0 +1,21 @@
+services:
+  atlas-server:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: bijux-atlas:perf-local
+    environment:
+      ATLAS_BIND: 0.0.0.0:8080
+      ATLAS_STORE_ROOT: /srv/store
+      ATLAS_CACHE_ROOT: /srv/cache
+      ATLAS_READINESS_REQUIRES_CATALOG: "false"
+      ATLAS_STARTUP_WARMUP: 110/homo_sapiens/GRCh38
+      ATLAS_STARTUP_WARMUP_LIMIT: "1"
+      ATLAS_MAX_CONCURRENT_DOWNLOADS: "3"
+      ATLAS_SHED_LOAD_ENABLED: "true"
+      ATLAS_CACHED_ONLY_MODE: "${ATLAS_CACHED_ONLY_MODE:-false}"
+    volumes:
+      - ../artifacts/perf/store:/srv/store:ro
+      - ../artifacts/perf/cache:/srv/cache
+    ports:
+      - "18080:8080"
