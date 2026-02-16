@@ -3,6 +3,7 @@
 ## Symptoms
 
 - Spike in `bijux_store_download_failure_total`
+- Growth in `bijux_store_breaker_open_total` or `bijux_store_retry_budget_exhausted_total`
 - Increased `503` on dataset-open paths
 - cache misses cannot recover
 
@@ -17,6 +18,7 @@
 1. Validate store endpoint/network health.
 2. Verify auth credentials and token expiry.
 3. Check retry/backoff config (`ATLAS_STORE_RETRY_ATTEMPTS`, `ATLAS_STORE_RETRY_BASE_MS`).
+4. Check cache-manager guards (`ATLAS_STORE_RETRY_BUDGET`, `ATLAS_STORE_BREAKER_FAILURE_THRESHOLD`, `ATLAS_STORE_BREAKER_OPEN_MS`).
 
 ## Recovery
 

@@ -12,6 +12,9 @@
 - Per-dataset query semaphore caps concurrent sqlite work per dataset.
 - Short-TTL coalesced query cache is enabled for heavy identical requests.
 - Optional heavy-query shed mode returns 503 for heavy class when p95 exceeds threshold.
+- Startup cache warmup is deterministic (sorted dataset ids) and bounded by `startup_warmup_limit`.
+- Store download concurrency is globally capped (`max_concurrent_downloads`).
+- Store retry budget and store circuit-breaker thresholds are configurable for herd protection.
 
 Read-only sqlite pragma profile:
 - `PRAGMA query_only=ON`

@@ -124,6 +124,8 @@ Characteristics:
 - Tightened network policy.
 - Optional warmup for pinned datasets.
 
+For advanced node-local acceleration profile, see `docs/k8s/node-local-shared-cache-profile.md`.
+
 ## Compatibility Note
 
 See `docs/compatibility/bijux-dna-atlas.md` for producer/consumer artifact contract alignment.
