@@ -63,6 +63,37 @@ fn env_dataset_list(name: &str) -> Vec<bijux_atlas_model::DatasetId> {
         .collect()
 }
 
+fn pod_jitter_ms(max_ms: u64) -> u64 {
+    if max_ms == 0 {
+        return 0;
+    }
+    let seed = env::var("HOSTNAME")
+        .ok()
+        .map(|s| {
+            s.bytes()
+                .fold(0_u64, |acc, b| acc.wrapping_mul(131).wrapping_add(b as u64))
+        })
+        .unwrap_or(1);
+    seed % max_ms
+}
+
+async fn wait_for_shutdown_signal() {
+    #[cfg(unix)]
+    {
+        use tokio::signal::unix::{signal, SignalKind};
+        let mut sigterm = signal(SignalKind::terminate()).expect("register SIGTERM");
+        let mut sigint = signal(SignalKind::interrupt()).expect("register SIGINT");
+        tokio::select! {
+            _ = sigterm.recv() => {}
+            _ = sigint.recv() => {}
+        }
+    }
+    #[cfg(not(unix))]
+    {
+        let _ = tokio::signal::ctrl_c().await;
+    }
+}
+
 fn init_tracing() {
     let filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
     let log_json = env_bool("ATLAS_LOG_JSON", true);
@@ -145,6 +176,7 @@ async fn main() -> Result<(), String> {
         sqlite_pragma_cache_kib: env_u64("ATLAS_SQLITE_CACHE_KIB", 32 * 1024) as i64,
         sqlite_pragma_mmap_bytes: env_u64("ATLAS_SQLITE_MMAP_BYTES", 256 * 1024 * 1024) as i64,
         max_open_shards_per_pod: env_usize("ATLAS_MAX_OPEN_SHARDS_PER_POD", 16),
+        startup_warmup_jitter_max_ms: env_u64("ATLAS_STARTUP_WARMUP_JITTER_MAX_MS", 0),
         ..DatasetCacheConfig::default()
     };
     let api_cfg = ApiConfig {
@@ -173,6 +205,7 @@ async fn main() -> Result<(), String> {
         ..ApiConfig::default()
     };
 
+    let startup_warmup_jitter_max_ms = cache_cfg.startup_warmup_jitter_max_ms;
     let backend: Arc<dyn bijux_atlas_server::DatasetStoreBackend> =
         if env_bool("ATLAS_STORE_S3_ENABLED", false) {
             let base_url = env::var("ATLAS_STORE_S3_BASE_URL")
@@ -190,6 +223,12 @@ async fn main() -> Result<(), String> {
         };
     let cache = DatasetCacheManager::new(cache_cfg, backend);
     cache.spawn_background_tasks();
+    if startup_warmup_jitter_max_ms > 0 {
+        let delay = pod_jitter_ms(startup_warmup_jitter_max_ms);
+        if delay > 0 {
+            tokio::time::sleep(Duration::from_millis(delay)).await;
+        }
+    }
     if let Err(e) = cache.startup_warmup().await {
         error!("startup warmup failed: {e}");
     }
@@ -204,7 +243,11 @@ async fn main() -> Result<(), String> {
     // Ready only after first successful catalog refresh when required.
     state.ready.store(false, Ordering::Relaxed);
     if let Err(e) = cache.refresh_catalog().await {
-        error!("initial catalog refresh failed: {e}");
+        if cache.cached_only_mode() {
+            state.ready.store(true, Ordering::Relaxed);
+        } else {
+            error!("initial catalog refresh failed: {e}");
+        }
     } else {
         state.ready.store(true, Ordering::Relaxed);
     }
@@ -218,8 +261,12 @@ async fn main() -> Result<(), String> {
             match cache_bg.refresh_catalog().await {
                 Ok(_) => ready_bg.store(true, Ordering::Relaxed),
                 Err(e) => {
-                    error!("catalog refresh failed: {e}");
-                    ready_bg.store(false, Ordering::Relaxed);
+                    if cache_bg.cached_only_mode() {
+                        ready_bg.store(true, Ordering::Relaxed);
+                    } else {
+                        error!("catalog refresh failed: {e}");
+                        ready_bg.store(false, Ordering::Relaxed);
+                    }
                 }
             }
         }
@@ -244,7 +291,14 @@ async fn main() -> Result<(), String> {
         .listen(1024)
         .map_err(|e| format!("listen failed: {e}"))?;
     info!("atlas-server listening on {bind_addr}");
+    let accepting = state.accepting_requests.clone();
     axum::serve(listener, app)
+        .with_graceful_shutdown(async move {
+            wait_for_shutdown_signal().await;
+            accepting.store(false, Ordering::Relaxed);
+            let drain_ms = env_u64("ATLAS_SHUTDOWN_DRAIN_MS", 5000);
+            tokio::time::sleep(Duration::from_millis(drain_ms)).await;
+        })
         .await
         .map_err(|e| format!("server failed: {e}"))
 }

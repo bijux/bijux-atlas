@@ -156,6 +156,50 @@ bijux_store_download_p95_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"
         METRIC_DATASET_ALL,
         percentile_ns(&download_lat, 0.95) as f64 / 1_000_000_000.0
     ));
+    let heavy_cap = state.api.concurrency_heavy as u64;
+    let heavy_avail = state.class_heavy.available_permits() as u64;
+    let heavy_inflight = heavy_cap.saturating_sub(heavy_avail);
+    let shedding_active = if state.api.shed_load_enabled
+        && state
+            .metrics
+            .should_shed_heavy(
+                state.api.shed_latency_min_samples,
+                state.api.shed_latency_p95_threshold_ms,
+            )
+            .await
+    {
+        1
+    } else {
+        0
+    };
+    let cached_only_mode = if state.cache.cached_only_mode() { 1 } else { 0 };
+    let draining_mode = if !state.accepting_requests.load(Ordering::Relaxed) {
+        1
+    } else {
+        0
+    };
+    body.push_str(&format!(
+        "bijux_inflight_heavy_queries{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_overload_shedding_active{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_cached_only_mode{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_draining_mode{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        heavy_inflight,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        shedding_active,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        cached_only_mode,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        draining_mode
+    ));
 
     let req_counts = state.metrics.counts.lock().await.clone();
     let req_exemplars = state.metrics.exemplars.lock().await.clone();

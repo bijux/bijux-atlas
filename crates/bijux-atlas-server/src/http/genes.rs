@@ -100,6 +100,25 @@ pub(crate) async fn genes_handler(
 ) -> Response {
     let started = Instant::now();
     let request_id = super::handlers::propagated_request_id(&headers, &state);
+    if !state.accepting_requests.load(Ordering::Relaxed) {
+        let resp = super::handlers::api_error_response(
+            StatusCode::SERVICE_UNAVAILABLE,
+            super::handlers::error_json(
+                ApiErrorCode::QueryRejectedByPolicy,
+                "server draining; refusing new requests",
+                json!({}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request(
+                "/v1/genes",
+                StatusCode::SERVICE_UNAVAILABLE,
+                started.elapsed(),
+            )
+            .await;
+        return super::handlers::with_request_id(resp, &request_id);
+    }
     info!(request_id = %request_id, "request start");
 
     if let Some(ip) = headers.get("x-forwarded-for").and_then(|v| v.to_str().ok()) {

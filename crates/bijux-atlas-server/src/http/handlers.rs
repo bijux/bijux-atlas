@@ -206,6 +206,10 @@ pub(crate) fn with_request_id(mut response: Response, request_id: &str) -> Respo
     response
 }
 
+fn is_draining(state: &AppState) -> bool {
+    !state.accepting_requests.load(Ordering::Relaxed)
+}
+
 pub(crate) async fn healthz_handler(State(state): State<AppState>) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
@@ -251,7 +255,7 @@ pub(crate) async fn version_handler(State(state): State<AppState>) -> impl IntoR
 pub(crate) async fn readyz_handler(State(state): State<AppState>) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
-    let catalog_ready = if state.api.readiness_requires_catalog {
+    let catalog_ready = if state.api.readiness_requires_catalog && !state.cache.cached_only_mode() {
         state.cache.current_catalog().await.is_some()
     } else {
         true
@@ -293,6 +297,25 @@ pub(crate) async fn datasets_handler(
 ) -> impl IntoResponse {
     let started = Instant::now();
     let request_id = propagated_request_id(&headers, &state);
+    if is_draining(&state) {
+        let resp = api_error_response(
+            StatusCode::SERVICE_UNAVAILABLE,
+            error_json(
+                ApiErrorCode::QueryRejectedByPolicy,
+                "server draining; refusing new requests",
+                json!({}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request(
+                "/v1/datasets",
+                StatusCode::SERVICE_UNAVAILABLE,
+                started.elapsed(),
+            )
+            .await;
+        return with_request_id(resp, &request_id);
+    }
     info!(request_id = %request_id, route = "/v1/datasets", "request start");
     let _ = state.cache.refresh_catalog().await;
     let catalog = state
@@ -365,6 +388,25 @@ pub(crate) async fn genes_count_handler(
 ) -> Response {
     let started = Instant::now();
     let request_id = make_request_id(&state);
+    if is_draining(&state) {
+        let resp = api_error_response(
+            StatusCode::SERVICE_UNAVAILABLE,
+            error_json(
+                ApiErrorCode::QueryRejectedByPolicy,
+                "server draining; refusing new requests",
+                json!({}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request(
+                "/v1/genes/count",
+                StatusCode::SERVICE_UNAVAILABLE,
+                started.elapsed(),
+            )
+            .await;
+        return with_request_id(resp, &request_id);
+    }
     let release = params.get("release").cloned().unwrap_or_default();
     let species = params.get("species").cloned().unwrap_or_default();
     let assembly = params.get("assembly").cloned().unwrap_or_default();

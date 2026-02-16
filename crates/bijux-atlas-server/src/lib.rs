@@ -71,6 +71,7 @@ pub struct DatasetCacheConfig {
     pub sqlite_pragma_cache_kib: i64,
     pub sqlite_pragma_mmap_bytes: i64,
     pub max_open_shards_per_pod: usize,
+    pub startup_warmup_jitter_max_ms: u64,
 }
 
 impl Default for DatasetCacheConfig {
@@ -100,6 +101,7 @@ impl Default for DatasetCacheConfig {
             sqlite_pragma_cache_kib: 32 * 1024,
             sqlite_pragma_mmap_bytes: 256 * 1024 * 1024,
             max_open_shards_per_pod: 16,
+            startup_warmup_jitter_max_ms: 0,
         }
     }
 }
@@ -368,6 +370,10 @@ impl DatasetCacheManager {
         self.metrics.catalog_epoch_hash.read().await.clone()
     }
 
+    pub fn cached_only_mode(&self) -> bool {
+        self.cfg.cached_only_mode
+    }
+
     pub async fn current_catalog(&self) -> Option<Catalog> {
         self.catalog_cache.lock().await.catalog.clone()
     }
@@ -582,7 +588,8 @@ impl DatasetCacheManager {
         let size_bytes = std::fs::metadata(&paths.sqlite)
             .map_err(|e| CacheError(e.to_string()))?
             .len();
-        let (shard_sqlite_paths, shard_by_seqid) = dataset_shards::load_shard_catalog(&paths.derived_dir)?;
+        let (shard_sqlite_paths, shard_by_seqid) =
+            dataset_shards::load_shard_catalog(&paths.derived_dir)?;
         let download_latency_ns = started.elapsed().as_nanos() as u64;
 
         {
@@ -647,7 +654,8 @@ impl DatasetCacheManager {
             self.metrics
                 .verify_marker_fast_path_hits
                 .fetch_add(1, Ordering::Relaxed);
-            let (shard_sqlite_paths, shard_by_seqid) = dataset_shards::load_shard_catalog(&paths.derived_dir)?;
+            let (shard_sqlite_paths, shard_by_seqid) =
+                dataset_shards::load_shard_catalog(&paths.derived_dir)?;
             let mut entries = self.entries.lock().await;
             entries
                 .entry(dataset.clone())
@@ -676,7 +684,8 @@ impl DatasetCacheManager {
         if sqlite_hash == manifest.checksums.sqlite_sha256 {
             std::fs::write(marker_path, marker_expected.as_bytes())
                 .map_err(|e| CacheError(e.to_string()))?;
-            let (shard_sqlite_paths, shard_by_seqid) = dataset_shards::load_shard_catalog(&paths.derived_dir)?;
+            let (shard_sqlite_paths, shard_by_seqid) =
+                dataset_shards::load_shard_catalog(&paths.derived_dir)?;
             let mut entries = self.entries.lock().await;
             entries.insert(
                 dataset.clone(),
@@ -889,6 +898,7 @@ pub struct AppState {
     pub api: ApiConfig,
     pub limits: QueryLimits,
     pub ready: Arc<AtomicBool>,
+    pub accepting_requests: Arc<AtomicBool>,
     pub(crate) ip_limiter: Arc<RateLimiter>,
     pub(crate) api_key_limiter: Arc<RateLimiter>,
     pub(crate) class_cheap: Arc<Semaphore>,
@@ -943,6 +953,7 @@ impl AppState {
             )),
             metrics: Arc::new(RequestMetrics::default()),
             request_id_seed: Arc::new(AtomicU64::new(1)),
+            accepting_requests: Arc::new(AtomicBool::new(true)),
             coalescer: Arc::new(cache::coalesce::QueryCoalescer::new()),
             hot_query_cache: Arc::new(Mutex::new(cache::hot::HotQueryCache::new(
                 Duration::from_secs(2),

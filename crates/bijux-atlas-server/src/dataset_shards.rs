@@ -12,7 +12,8 @@ pub(crate) fn load_shard_catalog(
         return Ok((Vec::new(), HashMap::new()));
     }
     let raw = std::fs::read(path).map_err(|e| CacheError(e.to_string()))?;
-    let catalog: ShardCatalog = serde_json::from_slice(&raw).map_err(|e| CacheError(e.to_string()))?;
+    let catalog: ShardCatalog =
+        serde_json::from_slice(&raw).map_err(|e| CacheError(e.to_string()))?;
     let mut all = Vec::new();
     let mut by_seqid: HashMap<String, Vec<PathBuf>> = HashMap::new();
     for shard in catalog.shards {

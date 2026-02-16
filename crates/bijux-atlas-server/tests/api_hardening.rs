@@ -187,7 +187,78 @@ async fn readiness_metrics_and_debug_gate() {
     assert_eq!(status, 200);
     assert!(body.contains("bijux_dataset_hits"));
     assert!(body.contains("bijux_http_requests_total"));
+    assert!(body.contains("bijux_overload_shedding_active"));
+    assert!(body.contains("bijux_cached_only_mode"));
 
     let (status, _, _) = send_raw(addr, "/debug/datasets", &[]).await;
     assert_eq!(status, 404);
+}
+
+#[tokio::test]
+async fn readiness_allows_cached_only_without_catalog() {
+    let store = Arc::new(FakeStore::default());
+    let tmp = tempdir().expect("tempdir");
+    let cfg = DatasetCacheConfig {
+        disk_root: tmp.path().to_path_buf(),
+        cached_only_mode: true,
+        ..Default::default()
+    };
+    let mgr = DatasetCacheManager::new(cfg, store);
+    let api = ApiConfig {
+        readiness_requires_catalog: true,
+        ..ApiConfig::default()
+    };
+    let state = AppState::with_config(mgr, api, Default::default());
+    let app = build_router(state);
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, _, body) = send_raw(addr, "/readyz", &[]).await;
+    assert_eq!(status, 200);
+    assert!(body.contains("ready"));
+}
+
+#[tokio::test]
+async fn memory_pressure_guards_reject_large_response_without_cascading_failure() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds.clone(), sqlite);
+    let tmp = tempdir().expect("tempdir");
+    let cfg = DatasetCacheConfig {
+        disk_root: tmp.path().to_path_buf(),
+        ..Default::default()
+    };
+    let mgr = DatasetCacheManager::new(cfg, store);
+    let api = ApiConfig {
+        response_max_bytes: 64,
+        ..ApiConfig::default()
+    };
+    let state = AppState::with_config(mgr, api, Default::default());
+    let app = build_router(state);
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, _, _) = send_raw(
+        addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&limit=1",
+        &[],
+    )
+    .await;
+    assert!(status == 413 || status == 422);
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/genes/count?release=110&species=homo_sapiens&assembly=GRCh38",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+    assert!(body.contains("gene_count"));
 }
