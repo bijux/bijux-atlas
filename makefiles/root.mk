@@ -57,9 +57,9 @@ doctor:
 	@printf 'python3: '; python3 --version
 	@printf 'k6: '; (command -v k6 >/dev/null 2>&1 && k6 version 2>/dev/null | head -n1) || echo 'missing'
 	@printf 'kind: '; (command -v kind >/dev/null 2>&1 && kind version 2>/dev/null | head -n1) || echo 'missing'
-	@printf 'kubectl: '; (command -v kubectl >/dev/null 2>&1 && kubectl version --client --short 2>/dev/null) || echo 'missing'
+	@printf 'kubectl: '; (command -v kubectl >/dev/null 2>&1 && kubectl version --client 2>/dev/null | head -n1) || echo 'missing'
 	@printf 'helm: '; (command -v helm >/dev/null 2>&1 && helm version --short 2>/dev/null) || echo 'missing'
-	@$(MAKE) ops-tools-check >/dev/null || true
+	@$(MAKE) -s ops-tools-check
 
 fetch-real-datasets:
 	@./scripts/fixtures/fetch-real-datasets.sh
