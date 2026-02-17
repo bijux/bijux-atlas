@@ -45,19 +45,19 @@ nav:
   - Product:
       - Home: index.md
       - Index: product/INDEX.md
-      - What Is Atlas: product/what-is-atlas.md
+      - What Is Atlas: product/what-is-bijux-atlas.md
       - User Stories: product/user-stories.md
       - Non Goals: product/non-goals.md
       - Compatibility Promise: product/compatibility-promise.md
       - Immutability and Aliases: product/immutability-and-aliases.md
-      - Reference Grade Checklist: product/reference-grade-acceptance-checklist.md
+      - Reference Grade Checklist: product/reference-grade-checklist.md
       - SLO Targets: product/slo-targets.md
       - Diffs v1: product/diffs-v1.md
       - Sequences v1: product/sequence-v1.md
       - Transcript v1: product/transcripts-v1.md
   - Quickstart:
       - Index: quickstart/INDEX.md
-      - EMBL Setup: quickstart/embl-style-setup.md
+      - Local Cluster Setup: quickstart/local-cluster-setup.md
       - Client SDK Examples: quickstart/client-sdk-examples.md
   - Reference:
       - Datasets: reference/datasets/INDEX.md
@@ -66,6 +66,7 @@ nav:
       - Security: reference/security/INDEX.md
       - Registry: reference/registry/INDEX.md
       - Store: reference/store/INDEX.md
+      - Compatibility: reference/compatibility/INDEX.md
       - Ingestion: reference/ingestion/INDEX.md
       - Evolution: reference/evolution/INDEX.md
       - Fixtures: reference/fixtures/medium-fixture.md

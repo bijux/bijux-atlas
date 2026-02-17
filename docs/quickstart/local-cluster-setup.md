@@ -1,6 +1,6 @@
-# EMBL-Style Atlas Setup
+# Local Cluster Setup
 
-This setup mirrors a typical institute deployment pattern:
+This setup defines the canonical local deployment workflow:
 
 1. Build datasets in a controlled ingest environment.
 2. Publish immutable artifacts to a mirrored store.

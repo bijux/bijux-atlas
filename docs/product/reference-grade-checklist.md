@@ -1,4 +1,4 @@
-# Reference Grade Acceptance Checklist
+# Reference Grade Checklist
 
 - Owner: `bijux-atlas-product`
 

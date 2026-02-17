@@ -8,10 +8,10 @@ Use this page as the only docs entrypoint.
 
 ## Start Here
 
-- Product framing: [docs/product/what-is-atlas.md](product/what-is-atlas.md)
+- Product framing: [docs/product/what-is-bijux-atlas.md](product/what-is-bijux-atlas.md)
 - Compatibility promise: [docs/product/compatibility-promise.md](product/compatibility-promise.md)
 - Contract system (SSOT): [docs/contracts/INDEX.md](contracts/INDEX.md)
-- Ops setup: [docs/quickstart/embl-style-setup.md](quickstart/embl-style-setup.md)
+- Ops setup: [docs/quickstart/local-cluster-setup.md](quickstart/local-cluster-setup.md)
 
 ## Authoring Rules
 

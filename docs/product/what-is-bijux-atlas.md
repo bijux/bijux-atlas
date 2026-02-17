@@ -1,4 +1,4 @@
-# What Is Atlas
+# What Is Bijux Atlas
 
 - Owner: `bijux-atlas-product`
 
