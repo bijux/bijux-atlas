@@ -24,6 +24,9 @@ ops-publish-medium: ## Ingest + publish medium fixture dataset
 	  --fai ops/fixtures/medium/data/genome.fa.fai \
 	  --release 110 --species homo_sapiens --assembly GRCh38
 
+ops-publish: ## Compatibility alias for ops-publish-medium
+	@$(MAKE) ops-publish-medium
+
 ops-deploy: ## Deploy atlas chart into local cluster
 	@./ops/e2e/scripts/deploy_atlas.sh
 
