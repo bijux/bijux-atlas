@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "datasets": [
+    {
+      "id": "110/homo_sapiens/GRCh38",
+      "kind": "download",
+      "archive": "bijux-atlas-medium-fixture-v1.tar.gz",
+      "url": "fixtures/medium/assets/bijux-atlas-medium-fixture-v1.tar.gz",
+      "public_url": "https://github.com/bijux/bijux-atlas-fixtures/releases/download/v1/bijux-atlas-medium-fixture-v1.tar.gz",
+      "sha256": "fc883999cf6d4bbe7be36a45ee4f31af06dd1235f5dc6fd1f6f1bdb360bc3ffd",
+      "extract_subdir": "",
+      "files": {
+        "gff3": "genes.gff3",
+        "fasta": "genome.fa",
+        "fai": "genome.fa.fai"
+      }
+    },
+    {
+      "id": "111/homo_sapiens/GRCh38",
+      "kind": "derived",
+      "derived_from": "110/homo_sapiens/GRCh38",
+      "transform": "scripts/fixtures/derive-release-111.sh",
+      "files": {
+        "gff3": "genes.gff3",
+        "fasta": "genome.fa",
+        "fai": "genome.fa.fai"
+      }
+    }
+  ]
+}
