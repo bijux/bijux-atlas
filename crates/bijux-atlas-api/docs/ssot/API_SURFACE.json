@@ -1,0 +1,24 @@
+{
+  "endpoints": [
+    "/debug/dataset-health",
+    "/debug/datasets",
+    "/debug/registry-health",
+    "/healthz",
+    "/healthz/overload",
+    "/metrics",
+    "/readyz",
+    "/v1/datasets",
+    "/v1/diff/genes",
+    "/v1/diff/region",
+    "/v1/genes",
+    "/v1/genes/count",
+    "/v1/genes/{gene_id}/sequence",
+    "/v1/genes/{gene_id}/transcripts",
+    "/v1/releases/{release}/species/{species}/assemblies/{assembly}",
+    "/v1/sequence/region",
+    "/v1/transcripts/{tx_id}",
+    "/v1/version"
+  ],
+  "schema_version": 1,
+  "type": "api_surface_registry"
+}
