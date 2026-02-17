@@ -7,7 +7,7 @@
 - [docs/PUBLIC_API.md](docs/PUBLIC_API.md)
 
 ## Effects & boundaries
-- [docs/effects-and-boundaries.md](../../docs/architecture/boundaries/effects-and-boundaries.md)
+- [docs/effects-and-boundaries.md](../../docs/architecture/effects.md)
 - [docs/EFFECTS.md](docs/EFFECTS.md)
 
 ## Telemetry

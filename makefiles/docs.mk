@@ -18,6 +18,7 @@ docs: ## Build docs + link-check + spell-check + lint
 	@"$(DOCS_VENV)/bin/python" scripts/docs/check_mkdocs_site_links.py "$(DOCS_SITE)"
 	@"$(DOCS_VENV)/bin/python" scripts/docs/spellcheck_docs.py docs
 	@./scripts/check-markdown-links.sh
+	@./scripts/docs/check_duplicate_topics.sh
 
 docs-serve: ## Serve docs locally
 	@if [ ! -x "$(DOCS_VENV)/bin/mkdocs" ]; then $(MAKE) _docs-venv; fi

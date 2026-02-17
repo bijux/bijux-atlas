@@ -160,4 +160,4 @@ For advanced node-local acceleration profile, see `docs/k8s/node-local-shared-ca
 
 ## Compatibility Note
 
-See `docs/compatibility/bijux-dna-atlas.md` for producer/consumer artifact contract alignment.
+See `docs/contracts/compatibility.md` for producer/consumer artifact contract alignment.

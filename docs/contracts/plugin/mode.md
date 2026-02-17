@@ -1,5 +1,7 @@
 # Bijux-Atlas Plugin Mode
 
+- Owner: `bijux-atlas-cli`
+
 `bijux-atlas` is a plugin executable intended to be launched by the `bijux` umbrella.
 
 ## Invocation Model

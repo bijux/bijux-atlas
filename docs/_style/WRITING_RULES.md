@@ -12,3 +12,4 @@
 - Define inputs, outputs, invariants, and failure modes.
 - Use explicit limits and exact field names.
 - Include versioning and compatibility behavior.
+- Last-reviewed metadata is automated by git history; do not add manual timestamp fields.

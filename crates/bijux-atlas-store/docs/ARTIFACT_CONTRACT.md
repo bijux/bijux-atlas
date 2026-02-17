@@ -12,7 +12,7 @@ Store crate enforces and consumes:
 Contract references:
 - `docs/artifact-manifest-contract.md`
 - `docs/artifact-directory-contract.md`
-- `docs/immutability-guarantee.md`
+- `docs/product/immutability-and-aliases.md`
 
 Rules:
 - Publish requires checksum verification before finalization.

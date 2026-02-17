@@ -8,7 +8,7 @@
 
 ## Effects & boundaries
 - [docs/EFFECTS.md](docs/EFFECTS.md)
-- [docs/effects-and-boundaries.md](../../docs/architecture/boundaries/effects-and-boundaries.md)
+- [docs/effects-and-boundaries.md](../../docs/architecture/effects.md)
 
 ## Telemetry
 - [docs/TELEMETRY.md](docs/TELEMETRY.md)
