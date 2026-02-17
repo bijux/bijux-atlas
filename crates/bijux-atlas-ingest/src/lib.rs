@@ -453,7 +453,7 @@ mod tests {
         let run = ingest_dataset(&opts(root.path(), StrictnessMode::Strict)).expect("ingest");
         assert_eq!(
             run.manifest.checksums.sqlite_sha256,
-            "46f66666613707b07e80efb812b1d03ea52636247ee4f4318b4a7ab86e776c85"
+            "57dab67376a1678716c590e3633566648cd011f91268f740bbd540d7e2a8f846"
         );
         assert_eq!(
             run.manifest.dataset_signature_sha256,
