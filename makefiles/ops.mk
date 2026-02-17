@@ -133,6 +133,10 @@ ops-soak: ## Run soak workflow (10-30 minutes)
 ops-smoke: ## Run canonical API smoke queries
 	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/scripts/smoke_queries.sh
+	@$(MAKE) ops-metrics-check
+	@./ops/observability/scripts/snapshot_metrics.sh
+	@./ops/observability/scripts/snapshot_traces.sh
+	@mkdir -p artifacts/ops/observability && cp ops/observability/grafana/atlas-observability-dashboard.json artifacts/ops/observability/dashboard.snapshot.json
 
 ops-metrics-check: ## Validate runtime metrics and observability contracts
 	@./ops/e2e/scripts/verify_metrics.sh
@@ -147,7 +151,7 @@ ops-metrics-check: ## Validate runtime metrics and observability contracts
 
 ops-traces-check: ## Validate trace signal (when OTEL enabled)
 	@./ops/e2e/scripts/verify_traces.sh
-	@./scripts/observability/check_tracing_contract.py
+	@if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/observability/check_tracing_contract.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi
 
 ops-k8s-tests: ## Run k8s e2e suite
 	@$(MAKE) -s ops-env-validate
@@ -370,10 +374,19 @@ ops-observability-validate: ## Validate observability assets/contracts end-to-en
 	@$(MAKE) ops-dashboards-validate
 	@$(MAKE) ops-alerts-validate
 	@./scripts/observability/check_metrics_contract.py
-	@./scripts/observability/check_tracing_contract.py
+	@if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/observability/check_tracing_contract.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi
 	@./ops/observability/scripts/snapshot_metrics.sh
 	@./ops/observability/scripts/check_metric_cardinality.py
 	@python3 ./ops/observability/scripts/validate_logs_schema.py
+
+ops-obs-validate: ## Compatibility alias for ops-observability-validate
+	@$(MAKE) ops-observability-validate
+
+ops-obs-install: ## Install observability pack
+	@$(MAKE) ops-obs-up
+
+ops-obs-uninstall: ## Uninstall observability pack
+	@$(MAKE) ops-obs-down
 
 ops-observability-smoke: ## Install observability pack and run smoke checks
 	@$(MAKE) ops-obs-up

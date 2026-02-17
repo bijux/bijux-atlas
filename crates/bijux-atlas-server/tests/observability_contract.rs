@@ -111,7 +111,11 @@ async fn metrics_endpoint_matches_metrics_contract() {
         .and_then(|p| p.parent())
         .expect("workspace root")
         .to_path_buf();
-    let contract_path = root.join("observability").join("metrics_contract.json");
+    let contract_path = root
+        .join("ops")
+        .join("observability")
+        .join("contract")
+        .join("metrics-contract.json");
     let contract: MetricsContract =
         serde_json::from_slice(&std::fs::read(contract_path).expect("read contract"))
             .expect("parse contract");
