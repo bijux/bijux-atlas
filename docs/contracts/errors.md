@@ -1,7 +1,5 @@
 # Error Codes Contract
 
-Concept IDs: concept.error-codes
-
 - Owner: `docs-governance`
 
 ## What

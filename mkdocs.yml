@@ -59,6 +59,7 @@ nav:
       - Index: quickstart/INDEX.md
       - Local Cluster Setup: quickstart/local-cluster-setup.md
       - Client SDK Examples: quickstart/client-sdk-examples.md
+      - Docs Examples: examples/INDEX.md
   - Reference:
       - Datasets: reference/datasets/INDEX.md
       - Querying: reference/querying/INDEX.md
