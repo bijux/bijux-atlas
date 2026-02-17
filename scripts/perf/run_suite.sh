@@ -13,6 +13,7 @@ DATASET_HASH="${ATLAS_DATASET_HASH:-unknown}"
 DATASET_RELEASE="${ATLAS_DATASET_RELEASE:-unknown}"
 IMAGE_DIGEST="${ATLAS_IMAGE_DIGEST:-unknown}"
 GIT_SHA="${GITHUB_SHA:-$(git -C "$ROOT" rev-parse --short=12 HEAD 2>/dev/null || echo unknown)}"
+POLICY_HASH="${ATLAS_POLICY_HASH:-$(shasum -a 256 "$ROOT/configs/policy/policy.json" 2>/dev/null | awk '{print $1}' || echo unknown)}"
 
 mkdir -p "$OUT_DIR"
 if printf '%s' "$INPUT" | grep -q '\.json$'; then
@@ -49,7 +50,7 @@ else
 fi
 
 cat > "${OUT_DIR}/${NAME}.meta.json" <<JSON
-{"suite":"$INPUT","resolved_suite":"$SUITE","git_sha":"$GIT_SHA","image_digest":"$IMAGE_DIGEST","dataset_hash":"$DATASET_HASH","dataset_release":"$DATASET_RELEASE","base_url":"$BASE_URL"}
+{"suite":"$INPUT","resolved_suite":"$SUITE","git_sha":"$GIT_SHA","image_digest":"$IMAGE_DIGEST","dataset_hash":"$DATASET_HASH","dataset_release":"$DATASET_RELEASE","policy_hash":"$POLICY_HASH","base_url":"$BASE_URL"}
 JSON
 
 echo "suite complete: $INPUT ($SUITE) -> $SUMMARY_JSON"

@@ -15,7 +15,9 @@ ART.mkdir(parents=True, exist_ok=True)
 violations = []
 rows = []
 manifest_by_scenario = {
-    Path(s.get("scenario", "")).stem: s for s in SUITE_MANIFEST.get("suites", [])
+    Path(s.get("scenario", "")).stem: s
+    for s in SUITE_MANIFEST.get("suites", [])
+    if s.get("kind") == "k6" and s.get("scenario")
 }
 
 for summary in sorted(ART.glob("*.summary.json")):
@@ -29,14 +31,17 @@ for summary in sorted(ART.glob("*.summary.json")):
     err = float(failed.get("rate", 0.0))
     rows.append({"scenario": name, "p95_ms": p95, "p99_ms": p99, "error_rate": err})
 
-    target = SLO.get("scenarios", {}).get(name) or manifest_by_scenario.get(name)
+    target = SLO.get("scenarios", {}).get(name)
+    if not target:
+        suite = manifest_by_scenario.get(name)
+        target = (suite or {}).get("thresholds", {})
     if not target:
         continue
-    if p95 > target["p95_ms_max"]:
+    if "p95_ms_max" in target and p95 > target["p95_ms_max"]:
         violations.append(f"{name}: p95 {p95:.2f} > {target['p95_ms_max']}")
-    if p99 > target["p99_ms_max"]:
+    if "p99_ms_max" in target and p99 > target["p99_ms_max"]:
         violations.append(f"{name}: p99 {p99:.2f} > {target['p99_ms_max']}")
-    if err > target["error_rate_max"]:
+    if "error_rate_max" in target and err > target["error_rate_max"]:
         violations.append(f"{name}: error_rate {err:.4f} > {target['error_rate_max']}")
 
 cold = ART / "cold_start.result.json"
@@ -58,14 +63,15 @@ else:
 
 # Soak-specific memory growth check from manifest budget when available.
 soak_meta = manifest_by_scenario.get("soak-30m")
-if soak_meta and "memory_growth_bytes_max" in soak_meta:
+soak_thresholds = (soak_meta or {}).get("thresholds", {})
+if soak_thresholds and "memory_growth_bytes_max" in soak_thresholds:
     baseline_file = ROOT / "artifacts/perf/baseline.json"
     if baseline_file.exists():
         b = json.loads(baseline_file.read_text())
         growth = float(b.get("soak_memory", {}).get("growth_bytes", 0.0))
-        if growth > float(soak_meta["memory_growth_bytes_max"]):
+        if growth > float(soak_thresholds["memory_growth_bytes_max"]):
             violations.append(
-                f"soak-30m: memory growth {growth:.0f} > {float(soak_meta['memory_growth_bytes_max']):.0f}"
+                f"soak-30m: memory growth {growth:.0f} > {float(soak_thresholds['memory_growth_bytes_max']):.0f}"
             )
 
 report = [
