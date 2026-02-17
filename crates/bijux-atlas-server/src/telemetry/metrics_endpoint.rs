@@ -259,6 +259,7 @@ bijux_store_error_other_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} 
     body.push_str(&format!(
         "bijux_inflight_heavy_queries{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_overload_shedding_active{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_cheap_queries_served_while_overloaded_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_cached_only_mode{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_draining_mode{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_store_breaker_open{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
@@ -270,6 +271,14 @@ bijux_store_breaker_open{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n"
         METRIC_VERSION,
         METRIC_DATASET_ALL,
         shedding_active,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state
+            .cache
+            .metrics
+            .cheap_queries_served_while_overloaded_total
+            .load(Ordering::Relaxed),
         METRIC_SUBSYSTEM,
         METRIC_VERSION,
         METRIC_DATASET_ALL,

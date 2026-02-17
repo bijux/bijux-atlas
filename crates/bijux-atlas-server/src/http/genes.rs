@@ -245,6 +245,13 @@ pub(crate) async fn genes_handler(
             state.api.shed_latency_p95_threshold_ms,
         )
         .await;
+    if overloaded && class == QueryClass::Cheap {
+        state
+            .cache
+            .metrics
+            .cheap_queries_served_while_overloaded_total
+            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+    }
     if overloaded
         && state.api.allow_min_viable_response
         && super::handlers::wants_min_viable_response(&params)

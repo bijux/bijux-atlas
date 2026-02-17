@@ -136,6 +136,7 @@ pub struct CacheMetrics {
     pub store_error_other_total: AtomicU64,
     pub verify_marker_fast_path_hits: AtomicU64,
     pub verify_full_hash_checks: AtomicU64,
+    pub cheap_queries_served_while_overloaded_total: AtomicU64,
 }
 
 #[derive(Default)]
@@ -625,6 +626,7 @@ impl DatasetCacheManager {
                     self.cfg.sqlite_pragma_cache_kib, self.cfg.sqlite_pragma_mmap_bytes
                 );
                 conn.set_prepared_statement_cache_capacity(128);
+                prime_prepared_statements(&conn);
                 let _ = conn.execute_batch(&pragma_sql);
                 self.reset_breaker(dataset).await;
                 self.metrics
@@ -1067,6 +1069,20 @@ impl DatasetCacheManager {
         let state = lock.entry(dataset.clone()).or_default();
         state.failure_count = 0;
         state.open_until = None;
+    }
+}
+
+fn prime_prepared_statements(conn: &Connection) {
+    let hot_sql = [
+        "SELECT gene_id, name, seqid, start, end, biotype, transcript_count, sequence_length FROM gene_summary WHERE gene_id = ?1 ORDER BY gene_id LIMIT ?2",
+        "SELECT gene_id, name, seqid, start, end, biotype, transcript_count, sequence_length FROM gene_summary WHERE biotype = ?1 ORDER BY gene_id LIMIT ?2",
+        "SELECT g.gene_id, g.name, g.seqid, g.start, g.end, g.biotype, g.transcript_count, g.sequence_length FROM gene_summary g JOIN gene_summary_rtree r ON r.gene_rowid = g.id WHERE g.seqid = ?1 AND r.start <= ?2 AND r.end >= ?3 ORDER BY g.seqid, g.start, g.gene_id LIMIT ?4",
+        "SELECT transcript_id, parent_gene_id, transcript_type, biotype, seqid, start, end, exon_count, total_exon_span, cds_present FROM transcript_summary WHERE transcript_id=?1 LIMIT 1",
+        "SELECT transcript_id, parent_gene_id, transcript_type, biotype, seqid, start, end, exon_count, total_exon_span, cds_present FROM transcript_summary WHERE parent_gene_id = ? ORDER BY seqid ASC, start ASC, transcript_id ASC LIMIT ?",
+        "SELECT seqid,start,end FROM gene_summary WHERE gene_id = ?1 LIMIT 1",
+    ];
+    for sql in hot_sql {
+        let _ = conn.prepare_cached(sql);
     }
 }
 
