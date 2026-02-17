@@ -48,6 +48,10 @@ harness = false
 name = "sequence_fetch"
 harness = false
 
+[[bench]]
+name = "diff_merge"
+harness = false
+
 [lib]
 path = "src/lib.rs"
 
