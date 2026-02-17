@@ -224,7 +224,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
-      - run: ./scripts/check-markdown-links.sh
+      - run: make docs
+      - run: make docs-freeze
 
   latency-regression:
     runs-on: ubuntu-latest

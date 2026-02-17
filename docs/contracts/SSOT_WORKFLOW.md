@@ -20,4 +20,4 @@ Atlas uses `docs/contracts/` as single-source-of-truth for machine contracts.
 - Compatibility guard: `scripts/contracts/check_breaking_contract_change.py` compares against latest `v*` tag.
 
 ## No Manual Drift
-Generated files under `docs/contracts/generated/`, `crates/bijux-atlas-api/src/generated/`, `crates/bijux-atlas-server/src/telemetry/generated/`, and `observability/metrics_contract.json` must not be hand-edited.
+Generated files under `docs/_generated/contracts/`, `crates/bijux-atlas-api/src/generated/`, `crates/bijux-atlas-server/src/telemetry/generated/`, and `observability/metrics_contract.json` must not be hand-edited.

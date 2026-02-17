@@ -18,7 +18,7 @@
 2. `scripts/contracts/generate_contract_artifacts.py` generates:
    - `crates/bijux-atlas-api/src/generated/error_codes.rs`
    - `crates/bijux-atlas-server/src/telemetry/generated/*.rs`
-   - `docs/contracts/generated/*.md`
+   - `docs/_generated/contracts/*.md`
    - `observability/metrics_contract.json` (derived compatibility artifact)
 3. `scripts/openapi-generate.sh` builds OpenAPI and validates path set against `ENDPOINTS.json`.
 4. `scripts/contracts/check_all.sh` enforces drift checks, config-key contract, and breaking-change detection against previous `v*` tag.

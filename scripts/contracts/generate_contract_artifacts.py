@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 contracts = ROOT / "docs" / "contracts"
-out_gen = ROOT / "docs" / "contracts" / "generated"
+out_gen = ROOT / "docs" / "_generated" / "contracts"
 out_gen.mkdir(parents=True, exist_ok=True)
 
 error_codes = json.loads((contracts / "ERROR_CODES.json").read_text())["codes"]

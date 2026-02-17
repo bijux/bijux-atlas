@@ -2,7 +2,7 @@
 
 SSOT source: `docs/contracts/CHART_VALUES.json`.
 
-Generated reference list: `docs/contracts/generated/CHART_VALUES.md`.
+Generated reference list: `docs/_generated/contracts/CHART_VALUES.md`.
 
 Policy:
 - New top-level keys require updating `docs/contracts/CHART_VALUES.json`.
