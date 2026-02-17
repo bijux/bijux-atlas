@@ -7,6 +7,12 @@ pub const CONTRACT_TRACE_SPAN_NAMES: &[&str] = &[
 
 #[allow(dead_code)]
 pub const CONTRACT_TRACE_SPAN_ATTRIBUTES: &[(&str, &[&str])] = &[
-    ("serialize_response", &["route", "status"]),
-    ("sqlite_query", &["class"]),
+    (
+        "serialize_response",
+        &["route", "status"],
+    ),
+    (
+        "sqlite_query",
+        &["class"],
+    ),
 ];

@@ -18,17 +18,56 @@ pub const CONTRACT_METRIC_NAMES: &[&str] = &[
 
 #[allow(dead_code)]
 pub const CONTRACT_METRIC_LABELS: &[(&str, &[&str])] = &[
-    ("bijux_dataset_count", &["dataset", "subsystem", "version"]),
-    ("bijux_dataset_disk_usage_bytes", &["dataset", "subsystem", "version"]),
-    ("bijux_dataset_hits", &["dataset", "subsystem", "version"]),
-    ("bijux_dataset_misses", &["dataset", "subsystem", "version"]),
-    ("bijux_errors_total", &["code", "dataset", "subsystem", "version"]),
-    ("bijux_http_request_latency_p95_seconds", &["dataset", "route", "subsystem", "version"]),
-    ("bijux_http_requests_total", &["dataset", "route", "status", "subsystem", "version"]),
-    ("bijux_overload_shedding_active", &["dataset", "subsystem", "version"]),
-    ("bijux_request_stage_latency_p95_seconds", &["dataset", "stage", "subsystem", "version"]),
-    ("bijux_sqlite_query_latency_p95_seconds", &["dataset", "query_type", "subsystem", "version"]),
-    ("bijux_store_breaker_open", &["dataset", "subsystem", "version"]),
-    ("bijux_store_download_p95_seconds", &["dataset", "subsystem", "version"]),
-    ("bijux_store_open_p95_seconds", &["dataset", "subsystem", "version"]),
+    (
+        "bijux_dataset_count",
+        &["dataset", "subsystem", "version"],
+    ),
+    (
+        "bijux_dataset_disk_usage_bytes",
+        &["dataset", "subsystem", "version"],
+    ),
+    (
+        "bijux_dataset_hits",
+        &["dataset", "subsystem", "version"],
+    ),
+    (
+        "bijux_dataset_misses",
+        &["dataset", "subsystem", "version"],
+    ),
+    (
+        "bijux_errors_total",
+        &["code", "dataset", "subsystem", "version"],
+    ),
+    (
+        "bijux_http_request_latency_p95_seconds",
+        &["dataset", "route", "subsystem", "version"],
+    ),
+    (
+        "bijux_http_requests_total",
+        &["dataset", "route", "status", "subsystem", "version"],
+    ),
+    (
+        "bijux_overload_shedding_active",
+        &["dataset", "subsystem", "version"],
+    ),
+    (
+        "bijux_request_stage_latency_p95_seconds",
+        &["dataset", "stage", "subsystem", "version"],
+    ),
+    (
+        "bijux_sqlite_query_latency_p95_seconds",
+        &["dataset", "query_type", "subsystem", "version"],
+    ),
+    (
+        "bijux_store_breaker_open",
+        &["dataset", "subsystem", "version"],
+    ),
+    (
+        "bijux_store_download_p95_seconds",
+        &["dataset", "subsystem", "version"],
+    ),
+    (
+        "bijux_store_open_p95_seconds",
+        &["dataset", "subsystem", "version"],
+    ),
 ];
