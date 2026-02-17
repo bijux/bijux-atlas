@@ -17,6 +17,7 @@ Stable exported items (0.1.x contract):
 - `time` module
 - `sha256_hex`
 - `sha256`
+- `no_randomness_policy`
 - `resolve_bijux_cache_dir`
 - `resolve_bijux_config_path`
 

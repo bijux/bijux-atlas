@@ -24,6 +24,7 @@ fn public_api_doc_lists_only_exported_symbols() {
         "time` module",
         "sha256_hex",
         "sha256",
+        "no_randomness_policy",
         "resolve_bijux_cache_dir",
         "resolve_bijux_config_path",
     ];
@@ -41,6 +42,7 @@ fn public_api_doc_lists_only_exported_symbols() {
         "pub const NO_RANDOMNESS_POLICY",
         "pub fn sha256_hex",
         "pub fn sha256",
+        "pub const fn no_randomness_policy",
         "pub fn resolve_bijux_cache_dir",
         "pub fn resolve_bijux_config_path",
         "pub use crate::canonical::Hash256",
@@ -67,6 +69,7 @@ fn public_api_doc_lists_only_exported_symbols() {
         "ResultExt",
         "sha256_hex",
         "sha256",
+        "no_randomness_policy",
         "resolve_bijux_cache_dir",
         "resolve_bijux_config_path",
         "canonical",
