@@ -17,7 +17,7 @@ help:
 	  'docs:' \
 	  '  docs docs-serve docs-freeze docs-hardening' \
 	  'ops:' \
-	  '  ops-up ops-down ops-reset ops-publish-medium ops-deploy ops-warm ops-smoke ops-metrics-check ops-traces-check ops-k8s-tests ops-load-smoke ops-load-full ops-drill-store-outage ops-drill-corruption e2e-local e2e-k8s-install-gate e2e-k8s-suite e2e-perf e2e-realdata observability-check layout-check layout-migrate' \
+	  '  ops-up ops-down ops-reset ops-publish-medium ops-deploy ops-warm ops-soak ops-smoke ops-metrics-check ops-traces-check ops-k8s-tests ops-load-smoke ops-load-full ops-drill-store-outage ops-drill-corruption ops-drill-upgrade ops-drill-rollback ops-report ops-script-coverage ops-values-validate ops-openapi-validate ops-dashboards-validate ops-alerts-validate ops-ci ops-perf-prepare-store ops-perf-e2e ops-perf-nightly ops-perf-cold-start ops-perf-cold-start-prefetch-5pods ops-perf-compare-redis ops-perf-suite e2e-local e2e-k8s-install-gate e2e-k8s-suite e2e-perf e2e-realdata observability-check layout-check layout-migrate' \
 	  'release/surface:' \
 	  '  fmt lint check test test-all coverage audit openapi-drift ci ssot-check crate-structure crate-docs-contract cli-command-surface' \
 	  'tooling:' \

@@ -27,6 +27,9 @@ ops-deploy: ## Deploy atlas chart into local cluster
 ops-warm: ## Run warmup workflow
 	@./ops/e2e/scripts/warmup.sh
 
+ops-soak: ## Run soak workflow (10-30 minutes)
+	@./ops/e2e/scripts/soak.sh
+
 ops-smoke: ## Run canonical API smoke queries
 	@./ops/e2e/scripts/smoke_queries.sh
 
@@ -56,6 +59,73 @@ ops-drill-store-outage: ## Run store outage drill under load
 
 ops-drill-corruption: ## Run corruption handling drill
 	@cargo test -p bijux-atlas-server cache_manager_tests::chaos_mode_random_byte_corruption_never_serves_results -- --exact
+
+ops-drill-upgrade: ## Run upgrade drill and verify semantic stability
+	@./ops/e2e/realdata/upgrade_drill.sh
+
+ops-drill-rollback: ## Run rollback drill and verify semantic stability
+	@./ops/e2e/realdata/rollback_drill.sh
+
+ops-report: ## Gather ops evidence into artifacts/ops/<timestamp>/
+	@ts=$$(date +%Y%m%d-%H%M%S); \
+	out="artifacts/ops/$$ts"; \
+	mkdir -p "$$out"/{logs,perf,metrics}; \
+	kubectl get pods -A -o wide > "$$out/logs/pods.txt" 2>/dev/null || true; \
+	kubectl get events -A --sort-by=.lastTimestamp > "$$out/logs/events.txt" 2>/dev/null || true; \
+	kubectl logs -n "$${ATLAS_E2E_NAMESPACE:-atlas-e2e}" -l app.kubernetes.io/name=bijux-atlas --tail=2000 > "$$out/logs/atlas.log" 2>/dev/null || true; \
+	cp -R artifacts/perf/results "$$out/perf/" 2>/dev/null || true; \
+	curl -fsS "$${ATLAS_BASE_URL:-http://127.0.0.1:8080}/metrics" > "$$out/metrics/metrics.txt" 2>/dev/null || true; \
+	echo "ops report written to $$out"
+
+ops-script-coverage: ## Validate every ops/**/scripts entrypoint is exposed via make
+	@./scripts/layout/check_ops_script_targets.sh
+
+ops-perf-prepare-store: ## Perf helper: prepare local perf store fixture
+	@./scripts/perf/prepare_perf_store.sh
+
+ops-perf-e2e: ## Perf helper: run e2e perf suite
+	@./scripts/perf/run_e2e_perf.sh
+
+ops-perf-nightly: ## Perf helper: run nightly perf suite
+	@./scripts/perf/run_nightly_perf.sh
+
+ops-perf-cold-start: ## Perf helper: run cold-start benchmark
+	@./scripts/perf/cold_start_benchmark.sh
+
+ops-perf-cold-start-prefetch-5pods: ## Perf helper: run 5-pod prefetch cold-start benchmark
+	@./scripts/perf/cold_start_prefetch_5pods.sh
+
+ops-perf-compare-redis: ## Perf helper: compare Redis-on vs Redis-off perf runs
+	@./scripts/perf/compare_redis.sh
+
+ops-perf-suite: ## Perf helper: run an arbitrary perf suite (SCENARIO=<file.js> OUT=<dir>)
+	@[ -n "$$SCENARIO" ] || { echo "usage: make ops-perf-suite SCENARIO=<file.js> [OUT=artifacts/perf/results]" >&2; exit 2; }
+	@./scripts/perf/run_suite.sh "$$SCENARIO" "$${OUT:-artifacts/perf/results}"
+
+ops-values-validate: ## Validate chart values against SSOT contract
+	@./scripts/contracts/check_chart_values_contract.py
+
+ops-openapi-validate: ## Validate OpenAPI drift and schema/examples consistency
+	@./scripts/openapi-diff-check.sh
+	@python3 ./scripts/docs/check_openapi_examples.py
+
+ops-dashboards-validate: ## Validate dashboard references against metrics contract
+	@./scripts/observability/check_dashboard_contract.py
+
+ops-alerts-validate: ## Validate alert rules and contract coverage
+	@./scripts/observability/check_alerts_contract.py
+
+ops-ci: ## Nightly ops pipeline: up/deploy/warm/tests/load/drills/report
+	@$(MAKE) ops-up
+	@$(MAKE) ops-reset
+	@$(MAKE) ops-publish-medium
+	@$(MAKE) ops-deploy
+	@$(MAKE) ops-warm
+	@$(MAKE) ops-k8s-tests
+	@$(MAKE) ops-load-smoke
+	@$(MAKE) ops-drill-store-outage
+	@$(MAKE) ops-drill-corruption
+	@$(MAKE) ops-report
 
 # Compatibility aliases (pre-ops.mk surface)
 e2e-local:
