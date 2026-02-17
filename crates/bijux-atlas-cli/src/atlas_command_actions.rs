@@ -361,6 +361,7 @@ fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String
         },
     };
 
+    let report_only = args.report_only || matches!(strictness, StrictnessMode::ReportOnly);
     let result = ingest_dataset(&IngestOptions {
         gff3_path: args.gff3,
         fasta_path: args.fasta,
@@ -377,6 +378,7 @@ fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String
             &args.seqid_aliases,
         )),
         max_threads: args.max_threads,
+        report_only,
         fail_on_warn: args.strict,
         allow_overlap_gene_ids_across_contigs: args.allow_overlap_gene_ids_across_contigs,
         emit_shards: args.emit_shards,
@@ -390,6 +392,7 @@ fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String
         json!({
             "command":"atlas ingest",
             "status":"ok",
+            "report_only": report_only,
             "manifest": result.manifest_path,
             "sqlite": result.sqlite_path,
             "anomaly_report": result.anomaly_report_path

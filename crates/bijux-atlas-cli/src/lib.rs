@@ -136,6 +136,8 @@ enum AtlasCommand {
         #[arg(long, default_value_t = 1)]
         max_threads: usize,
         #[arg(long, default_value_t = false)]
+        report_only: bool,
+        #[arg(long, default_value_t = false)]
         strict: bool,
         #[arg(long, default_value_t = false)]
         allow_overlap_gene_ids_across_contigs: bool,
@@ -248,6 +250,7 @@ struct IngestCliArgs {
     ensembl_keys: String,
     seqid_aliases: String,
     max_threads: usize,
+    report_only: bool,
     strict: bool,
     allow_overlap_gene_ids_across_contigs: bool,
     emit_shards: bool,
@@ -454,6 +457,7 @@ fn run_atlas_command(
             ensembl_keys,
             seqid_aliases,
             max_threads,
+            report_only,
             strict,
             allow_overlap_gene_ids_across_contigs,
             emit_shards,
@@ -473,6 +477,7 @@ fn run_atlas_command(
                 ensembl_keys,
                 seqid_aliases,
                 max_threads,
+                report_only,
                 strict,
                 allow_overlap_gene_ids_across_contigs,
                 emit_shards,
