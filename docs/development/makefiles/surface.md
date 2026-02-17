@@ -55,8 +55,11 @@ Stable targets:
 - `ops-up`
 - `ops-down`
 - `ops-reset`
+- `ops-env-print`
 - `ops-publish-medium`
+- `ops-publish`
 - `ops-deploy`
+- `ops-offline`
 - `ops-warm`
 - `ops-soak`
 - `ops-smoke`
@@ -68,10 +71,15 @@ Stable targets:
 - `ops-load-smoke`
 - `ops-load-full`
 - `ops-drill-store-outage`
+- `ops-drill-overload`
+- `ops-drill-memory-growth`
 - `ops-drill-corruption`
 - `ops-drill-pod-churn`
 - `ops-drill-upgrade`
 - `ops-drill-rollback`
+- `ops-upgrade-drill`
+- `ops-rollback-drill`
+- `ops-realdata`
 - `ops-report`
 - `ops-script-coverage`
 - `ops-shellcheck`
