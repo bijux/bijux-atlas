@@ -247,6 +247,23 @@ jobs:
       - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
       - run: ./scripts/openapi-diff-check.sh
 
+  query-plan-gate:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/query-plan-gate
+      CARGO_TARGET_DIR: artifacts/isolates/query-plan-gate/target
+      CARGO_HOME: artifacts/isolates/query-plan-gate/cargo-home
+      TMPDIR: artifacts/isolates/query-plan-gate/tmp
+      TMP: artifacts/isolates/query-plan-gate/tmp
+      TEMP: artifacts/isolates/query-plan-gate/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
+      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
+      - run: ./scripts/query-plan-gate.sh
+
   compatibility-matrix-validate:
     runs-on: ubuntu-latest
     env:
