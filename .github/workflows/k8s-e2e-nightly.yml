@@ -45,6 +45,27 @@ jobs:
       - name: Run full kind+helm suite
         run: make ops-k8s-tests
 
+      - name: Upload K8s suite artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k8s-nightly-artifacts
+          path: |
+            artifacts/ops/k8s/**
+            artifacts/ops/k8s-failures/**
+            artifacts/ops/k8s-failure-bundle-*.tar.gz
+            artifacts/ops/k8s/flake-issue.md
+
+      - name: Open flake issue
+        if: always() && hashFiles('artifacts/ops/k8s/flake-issue.md') != ''
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: "k8s-e2e flake detected: ${{ github.run_id }}"
+          content-filepath: artifacts/ops/k8s/flake-issue.md
+          labels: |
+            flaky-test
+            nightly
+
       - name: Fetch pinned real datasets
         run: make fetch-real-datasets
 
