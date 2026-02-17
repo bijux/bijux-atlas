@@ -51,13 +51,21 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "bijux-atlas.fullname" . }}-config
-          {{- if .Values.store.credentialsSecretName }}
-            - secretRef:
-                name: {{ .Values.store.credentialsSecretName }}
-          {{- end }}
           env:
             - name: ATLAS_CACHE_ROOT
               value: /cache
+            {{- if .Values.store.credentialsSecretName }}
+            - name: ATLAS_STORE_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.store.credentialsSecretName }}
+                  key: ATLAS_STORE_ACCESS_KEY_ID
+            - name: ATLAS_STORE_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.store.credentialsSecretName }}
+                  key: ATLAS_STORE_SECRET_ACCESS_KEY
+            {{- end }}
             {{- range .Values.extraEnv }}
             - name: {{ .name }}
               value: {{ .value | quote }}

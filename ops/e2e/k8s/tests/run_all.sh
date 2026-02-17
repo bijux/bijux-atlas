@@ -6,9 +6,11 @@ DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 for t in \
   test_values_contract.sh \
   test_defaults_safe.sh \
+  test_helm_templates.sh \
   test_install.sh \
   test_networkpolicy.sh \
   test_secrets.sh \
+  test_configmap.sh \
   test_cached_only_mode.sh \
   test_pdb.sh \
   test_hpa.sh \

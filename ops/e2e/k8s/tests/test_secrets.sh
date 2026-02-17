@@ -17,4 +17,17 @@ POD="$(pod_name || true)"
 REASON="$(kubectl -n "$NS" get pod "$POD" -o jsonpath='{.status.containerStatuses[0].state.waiting.reason}' || true)"
 [ "$REASON" = "CreateContainerConfigError" ] || { echo "expected CreateContainerConfigError, got: $REASON" >&2; exit 1; }
 
+kubectl -n "$NS" create secret generic atlas-wrong-secret --from-literal=ATLAS_STORE_ACCESS_KEY_ID=bad >/dev/null 2>&1 || true
+helm upgrade --install "$RELEASE" "$CHART" -n "$NS" --create-namespace -f "$VALUES" \
+  --set store.credentialsSecretName=atlas-wrong-secret \
+  --set store.manageCredentialsSecret=false >/dev/null
+sleep 10
+POD2="$(pod_name || true)"
+[ -n "$POD2" ] || { echo "no pod created with wrong secret case" >&2; exit 1; }
+STATE2="$(kubectl -n "$NS" get pod "$POD2" -o jsonpath='{.status.containerStatuses[0].state.waiting.reason}' || true)"
+[ "$STATE2" = "CreateContainerConfigError" ] || [ "$STATE2" = "CrashLoopBackOff" ] || [ "$STATE2" = "Error" ] || {
+  echo "expected startup failure with wrong secret, got: $STATE2" >&2
+  exit 1
+}
+
 echo "secrets gate passed"

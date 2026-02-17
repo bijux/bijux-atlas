@@ -10,5 +10,11 @@ rollout:
 YAML
 
 helm template "$RELEASE" "$CHART" -n "$NS" -f "$VALUES" -f "$TMP_VALUES" | grep -q "kind: Rollout"
+RENDERED="$(helm template "$RELEASE" "$CHART" -n "$NS" -f "$VALUES" -f "$TMP_VALUES")"
+printf '%s' "$RENDERED" | grep -q "setWeight: 10"
+printf '%s' "$RENDERED" | grep -q "setWeight: 50"
+if printf '%s' "$RENDERED" | grep -q "analysis:"; then
+  printf '%s' "$RENDERED" | grep -q "templates:"
+fi
 
 echo "rollout gate passed"

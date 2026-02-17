@@ -4,7 +4,7 @@ set -eu
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
 RELEASE="${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
 NS="${ATLAS_E2E_NAMESPACE:-atlas-e2e}"
-VALUES="${ATLAS_E2E_VALUES_FILE:-$ROOT/ops/e2e/stack/values/local.yaml}"
+VALUES="${ATLAS_E2E_VALUES_FILE:-$ROOT/ops/k8s/values/local.yaml}"
 
 if ! command -v helm >/dev/null 2>&1; then
   echo "helm is required" >&2
