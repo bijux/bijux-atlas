@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefailo pipefail
+set -euo pipefail
 . "$(dirname "$0")/common.sh"
 setup_test_traps
 need kubectl python3

@@ -68,6 +68,9 @@ ops-drill-store-outage: ## Run store outage drill under load
 ops-drill-corruption: ## Run corruption handling drill
 	@cargo test -p bijux-atlas-server cache_manager_tests::chaos_mode_random_byte_corruption_never_serves_results -- --exact
 
+ops-drill-pod-churn: ## Run pod churn drill while service handles load
+	@./ops/e2e/k8s/tests/drill_pod_churn.sh
+
 ops-drill-upgrade: ## Run upgrade drill and verify semantic stability
 	@./ops/e2e/realdata/upgrade_drill.sh
 
@@ -125,6 +128,10 @@ ops-perf-suite: ## Perf helper: run an arbitrary perf suite (SCENARIO=<file.js> 
 ops-values-validate: ## Validate chart values against SSOT contract
 	@./scripts/contracts/generate_chart_values_schema.py
 	@./scripts/contracts/check_chart_values_contract.py
+	@./ops/e2e/k8s/tests/test_chart_drift.sh
+
+ops-release-matrix: ## Generate k8s release install matrix document from CI summary
+	@./ops/k8s/ci/install-matrix.sh
 
 ops-openapi-validate: ## Validate OpenAPI drift and schema/examples consistency
 	@./scripts/openapi-diff-check.sh

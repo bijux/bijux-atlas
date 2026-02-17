@@ -10,7 +10,9 @@ run() { "$DIR/$1"; }
 for t in \
   test_values_contract.sh \
   test_defaults_safe.sh \
+  test_chart_drift.sh \
   test_helm_templates.sh \
+  test_rbac_minimalism.sh \
   test_install.sh \
   test_networkpolicy.sh \
   test_secrets.sh \
@@ -28,7 +30,10 @@ for t in \
   test_logs_json.sh \
   test_liveness_under_load.sh \
   test_node_local_cache_profile.sh \
+  test_storage_modes.sh \
   test_multi_registry_profile.sh \
+  test_image_digest_pinning.sh \
+  test_ingress_profile.sh \
   test_offline_profile.sh
  do
   run "$t"

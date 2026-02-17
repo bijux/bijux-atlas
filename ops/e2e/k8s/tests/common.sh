@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefailo pipefail
+set -euo pipefail
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 NS="${ATLAS_E2E_NAMESPACE:-atlas-e2e-${USER:-local}}"

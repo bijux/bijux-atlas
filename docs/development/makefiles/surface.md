@@ -68,6 +68,7 @@ Stable targets:
 - `ops-load-full`
 - `ops-drill-store-outage`
 - `ops-drill-corruption`
+- `ops-drill-pod-churn`
 - `ops-drill-upgrade`
 - `ops-drill-rollback`
 - `ops-report`
@@ -80,6 +81,7 @@ Stable targets:
 - `ops-openapi-validate`
 - `ops-dashboards-validate`
 - `ops-alerts-validate`
+- `ops-release-matrix`
 - `ops-ci`
 - `ops-perf-prepare-store`
 - `ops-perf-e2e`

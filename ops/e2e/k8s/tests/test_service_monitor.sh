@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
-set -euo pipefailo pipefail
+set -euo pipefail
 . "$(dirname "$0")/common.sh"
 setup_test_traps
 need kubectl curl
 
-install_chart
+if ! kubectl api-resources | grep -q "^servicemonitors"; then
+  echo "ServiceMonitor CRD not present; skipping scrape gate in local cluster"
+  exit 0
+fi
+
+install_chart --set serviceMonitor.enabled=true
 wait_ready
 kubectl -n "$NS" get servicemonitor "$SERVICE_NAME" >/dev/null
 with_port_forward 18080
