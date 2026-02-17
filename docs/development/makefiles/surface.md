@@ -52,11 +52,31 @@ Stable targets:
 - `e2e-k8s-suite`
 - `e2e-perf`
 - `e2e-realdata`
+- `ops-up`
+- `ops-down`
+- `ops-reset`
+- `ops-publish-medium`
+- `ops-deploy`
+- `ops-warm`
+- `ops-smoke`
+- `ops-metrics-check`
+- `ops-traces-check`
+- `ops-k8s-tests`
+- `ops-load-smoke`
+- `ops-load-full`
+- `ops-drill-store-outage`
+- `ops-drill-corruption`
 - `ssot-check`
 - `observability-check`
 - `docs`
 - `docs-serve`
 - `docs-freeze`
+- `docs-hardening`
+- `layout-check`
+- `layout-migrate`
+- `bootstrap`
+- `doctor`
+- `help`
 
 Perf targets:
 
