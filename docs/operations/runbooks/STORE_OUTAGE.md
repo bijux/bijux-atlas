@@ -1,34 +1,42 @@
-# Runbook: Store Outage
+# Runbook: STORE OUTAGE
+
+- Owner: `bijux-atlas-server`
 
 ## Symptoms
 
-- Spike in `bijux_store_download_failure_total`
-- Growth in `bijux_store_breaker_open_total` or `bijux_store_retry_budget_exhausted_total`
-- `bijux_store_breaker_open=1`
-- drop in `bijux_store_download_throughput_bytes_per_second`
-- rise in `bijux_store_download_ttfb_p95_seconds`
-- Increased `503` on dataset-open paths
-- cache misses cannot recover
+- Rising 5xx on uncached dataset opens.
+- Dataset download failures.
 
-## Immediate Actions
+## Metrics
 
-1. Enable cached-only mode (`ATLAS_CACHED_ONLY_MODE=true`) if cache has critical datasets.
-2. Increase pinned datasets to protect known hot datasets.
-3. Reduce heavy query concurrency and tighten rate limits.
-4. Keep cheap endpoints serving; verify `bijux_overload_shedding_active`.
+- `bijux_store_download_p95_seconds`
+- `bijux_store_breaker_open`
+- `bijux_http_requests_total`
 
-## Investigation
+## Commands
 
-1. Validate store endpoint/network health.
-2. Verify auth credentials and token expiry.
-3. Check retry/backoff config (`ATLAS_STORE_RETRY_ATTEMPTS`, `ATLAS_STORE_RETRY_BASE_MS`).
-4. Check cache-manager guards (`ATLAS_STORE_RETRY_BUDGET`, `ATLAS_STORE_BREAKER_FAILURE_THRESHOLD`, `ATLAS_STORE_BREAKER_OPEN_MS`).
-5. Check per-dataset budget exhaustion (same dataset repeatedly missing or failing checksum).
-6. If using pre-signed URLs, validate `ATLAS_STORE_S3_PRESIGNED_BASE_URL` validity and expiry window.
+```bash
+$ make e2e-perf
+$ curl -s http://127.0.0.1:8080/readyz
+```
 
-## Recovery
+## Expected outputs
 
-1. Restore store access.
-2. Disable cached-only mode.
-3. Watch `bijux_store_download_failure_total` and `bijux_dataset_hits/misses` normalize.
-4. Confirm breaker closes (`bijux_store_breaker_open=0`) and throughput recovers.
+- `readyz` indicates degraded/not-ready when store is unavailable.
+- Perf run shows cached-only behavior preserving cheap query availability.
+
+## Mitigations
+
+- Enable cached-only mode.
+- Reduce heavy-query concurrency and strict limits.
+
+## Rollback
+
+- Restore store connectivity.
+- Disable cached-only mode after stable metrics window.
+
+## Postmortem checklist
+
+- Incident timeline complete.
+- Store dependency failure class identified.
+- Retry/circuit-breaker thresholds adjusted if required.

@@ -1,45 +1,41 @@
-# Registry Federation Runbook
+# Runbook: REGISTRY FEDERATION
 
-## Purpose
+- Owner: `bijux-atlas-store`
 
-Operate Atlas with multiple artifact registries (primary + mirrors) while keeping dataset selection deterministic and safe.
+## Symptoms
 
-## Configuration
+- Inconsistent dataset visibility across pods.
+- Catalog churn or conflict-shadow anomalies.
 
-- `ATLAS_REGISTRY_SOURCES`: comma-separated `name=scheme:value` entries.
-- Supported schemes:
-  - `local:/absolute/path`
-  - `s3:https://bucket-or-gateway/path`
-  - `http:https://readonly-registry/path`
-- `ATLAS_REGISTRY_PRIORITY`: optional comma-separated ordered source names.
-- `ATLAS_REGISTRY_TTL_MS`: source catalog refresh TTL.
-- `ATLAS_REGISTRY_SIGNATURES`: optional `name=sha256(catalog.json)` pins.
-- `ATLAS_REGISTRY_FREEZE_MODE`: when `true`, registry refresh is paused.
+## Metrics
 
-## Deterministic Merge Rules
+- `bijux_errors_total`
+- `bijux_dataset_hits`
+- `bijux_dataset_misses`
 
-- Catalogs are merged by configured priority order.
-- First source wins for duplicate dataset IDs.
-- Lower-priority duplicates are recorded as shadowed datasets.
-- Final merged catalog is sorted by dataset canonical key.
+## Commands
 
-## Fallback Rules
+```bash
+$ curl -s http://127.0.0.1:8080/debug/registry-health
+$ make ssot-check
+```
 
-- Manifest/SQLite/FASTA fetch uses primary source for dataset when known.
-- On failure, Atlas falls back to lower-priority sources.
-- If all sources fail, request fails with stable store error.
+## Expected outputs
 
-## Health and Metrics
+- Registry health endpoint reports deterministic source order.
+- SSOT checks confirm registry contract consistency.
 
-- Endpoint: `/debug/registry-health` (requires debug endpoints enabled).
-- Metrics:
-  - `bijux_registry_invalidation_events_total`
-  - `bijux_registry_freeze_mode`
+## Mitigations
 
-## Incident Procedure
+- Freeze registry refresh during incident.
+- Reorder source priority to trusted registry.
 
-1. Check `/debug/registry-health` for unhealthy source and shadowing patterns.
-2. If primary is unstable, reorder with `ATLAS_REGISTRY_PRIORITY` and redeploy.
-3. Pin trusted catalog digests with `ATLAS_REGISTRY_SIGNATURES`.
-4. Enable `ATLAS_REGISTRY_FREEZE_MODE=true` to stop refresh churn during incident.
-5. Keep serving cached datasets (`ATLAS_CACHED_ONLY_MODE=true`) if remote stores degrade.
+## Rollback
+
+- Restore previous registry source ordering and TTL settings.
+
+## Postmortem checklist
+
+- Conflict root cause identified.
+- Merge semantics tests updated.
+- Runbook and policy docs updated.

@@ -2,15 +2,15 @@
 
 - Owner: `bijux-atlas-server`
 
-Runbooks must follow the canonical runbook template from `docs/_style/STRUCTURE_TEMPLATES.md`.
+All runbooks must follow this strict template:
 
-## Required Sections
-
-- Trigger
-- Diagnosis
-- Mitigation
-- Recovery
-- Verification
+- Symptoms
+- Metrics
+- Commands
+- Expected outputs
+- Mitigations
+- Rollback
+- Postmortem checklist
 
 ## Runbooks
 

@@ -1,25 +1,42 @@
-# Runbook: Dataset Corruption
+# Runbook: DATASET CORRUPTION
+
+- Owner: `bijux-atlas-store`
 
 ## Symptoms
 
-- integrity re-verification evicts datasets repeatedly
-- checksum mismatch errors on dataset open
-- elevated `503` for specific dataset ids
+- Repeated checksum verification failures.
+- Dataset open rejection for specific dataset id.
 
-## Immediate Actions
+## Metrics
 
-1. Pin known-good datasets if available.
-2. Block affected dataset from routing if corruption isolated.
-3. Trigger dataset re-fetch from source store.
+- `bijux_errors_total`
+- `bijux_dataset_misses`
+- `bijux_store_open_p95_seconds`
 
-## Investigation
+## Commands
 
-1. Compare manifest sqlite checksum vs local file checksum.
-2. Inspect `.verified` marker and manifest version consistency.
-3. Verify upstream artifact integrity in store.
+```bash
+$ cargo run -p bijux-atlas-cli -- atlas dataset validate --deep --dataset release=112,species=homo_sapiens,assembly=GRCh38
+$ curl -s http://127.0.0.1:8080/debug/datasets
+```
 
-## Recovery
+## Expected outputs
 
-1. Purge corrupted cached copy.
-2. Re-download and verify checksum.
-3. Run smoke query checks for affected dataset.
+- Deep validate reports checksum mismatch for corrupted artifact.
+- Debug dataset view marks dataset as unavailable/quarantined.
+
+## Mitigations
+
+- Evict corrupted cache copy.
+- Re-fetch artifact and verify manifest lock.
+
+## Rollback
+
+- Serve previous known-good dataset release.
+- Freeze publish path until integrity checks pass.
+
+## Postmortem checklist
+
+- Corruption source identified.
+- Integrity controls reviewed.
+- Additional corruption tests added.

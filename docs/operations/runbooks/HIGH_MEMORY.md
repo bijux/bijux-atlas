@@ -1,24 +1,42 @@
-# Runbook: High Memory
+# Runbook: HIGH MEMORY
+
+- Owner: `bijux-atlas-server`
 
 ## Symptoms
 
-- RSS growth without stabilization
-- pod OOM kills or memory throttling
-- latency degradation during sustained load
+- RSS growth crossing memory budget.
+- OOM restarts under sustained load.
 
-## Immediate Actions
+## Metrics
 
-1. Reduce cache size and dataset count limits.
-2. Tighten per-class concurrency limits.
-3. Scale replicas horizontally if request load persists.
+- `bijux_dataset_disk_usage_bytes`
+- `bijux_overload_shedding_active`
+- `bijux_http_request_latency_p95_seconds`
 
-## Investigation
+## Commands
 
-1. Run memory profile workflow (`docs/runbooks/MEMORY_PROFILE_UNDER_LOAD.md`).
-2. Check largest allocation paths and retained buffers.
-3. Validate sqlite mmap/cache pragma settings.
+```bash
+$ make e2e-perf
+$ cargo test -p bijux-atlas-server --test latency_guard
+```
 
-## Recovery
+## Expected outputs
 
-1. Apply tuned cache + concurrency config.
-2. Redeploy and observe RSS + p95 latency for at least one SLO window.
+- Perf summary shows sustained memory pressure signature.
+- Latency guard remains within target when mitigations applied.
+
+## Mitigations
+
+- Reduce cache budgets and open-shard caps.
+- Lower heavy concurrency and tighten response-size limits.
+
+## Rollback
+
+- Revert recent performance-related config change.
+- Scale replicas while investigating memory profile.
+
+## Postmortem checklist
+
+- Memory hotspots documented.
+- Capacity model updated.
+- Guardrails tuned and tested.

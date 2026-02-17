@@ -1,21 +1,41 @@
-# Incident Playbook
+# Runbook: INCIDENT PLAYBOOK
 
-## 1. Store Outage
-- Switch to cached-only mode if possible.
-- Confirm `atlas_store_download_failure_total` trend.
-- Verify `/readyz` and serving behavior for already-cached datasets.
+- Owner: `bijux-atlas-operations`
 
-## 2. Hot Dataset Missing
-- Pin dataset in server config.
-- Trigger warm-up and verify checksum/open success.
-- Watch `atlas_store_download_p95_seconds` and request 5xx.
+## Symptoms
 
-## 3. Cache Stampede
-- Confirm concurrent misses and download contention.
-- Verify single-flight behavior and rate limits are active.
-- Temporarily lower heavy query concurrency and increase pinned set.
+- Any sustained SLO breach or elevated 5xx/timeout class errors.
 
-## 4. Rate-Limit Tuning
-- Inspect `atlas_http_requests_total` by status=429 and route.
-- Adjust token bucket refill/capacity in controlled increments.
-- Re-run load harness and compare p95 + 429/5xx rates.
+## Metrics
+
+- `bijux_http_requests_total`
+- `bijux_http_request_latency_p95_seconds`
+- `bijux_errors_total`
+
+## Commands
+
+```bash
+$ curl -s http://127.0.0.1:8080/healthz
+$ curl -s http://127.0.0.1:8080/readyz
+$ curl -s http://127.0.0.1:8080/metrics
+```
+
+## Expected outputs
+
+- Health/ready reflect actual availability.
+- Metrics expose route/status/error trends needed for triage.
+
+## Mitigations
+
+- Apply class-based shedding and rate controls.
+- Shift to cached-only mode when store outage is primary cause.
+
+## Rollback
+
+- Roll back last deployment/config release if issue is rollout-induced.
+
+## Postmortem checklist
+
+- Customer impact quantified.
+- Root cause and trigger captured.
+- Follow-up tasks linked to owners.

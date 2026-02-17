@@ -1,35 +1,40 @@
-# Rollback Playbook
+# Runbook: ROLLBACK PLAYBOOK
 
-This runbook covers API rollback and catalog rollback.
+- Owner: `bijux-atlas-operations`
 
-## API Rollback
+## Symptoms
 
-1. Freeze rollout progression.
-2. Roll back image tag to last known good release.
-3. Verify `/healthz`, `/readyz`, and `/metrics` recover.
-4. Confirm request error rate and p95 latency return to baseline.
+- New deployment causes sustained error or latency regression.
 
-If using Argo Rollouts:
+## Metrics
 
-1. Abort current rollout.
-2. Promote stable ReplicaSet as active.
-3. Keep canary disabled until postmortem completes.
+- `bijux_http_requests_total`
+- `bijux_http_request_latency_p95_seconds`
+- `bijux_errors_total`
 
-## Catalog Rollback
+## Commands
 
-1. Re-point catalog to prior immutable catalog revision.
-2. Invalidate catalog cache by restarting pods or forcing refresh.
-3. Verify dataset manifest checksums and schema versions.
-4. Run smoke queries for pinned datasets.
+```bash
+$ kubectl rollout undo deploy/bijux-atlas -n default
+$ curl -s http://127.0.0.1:8080/readyz
+```
 
-## Joint Rollback (API + Catalog)
+## Expected outputs
 
-1. Roll back API first to stabilize query behavior.
-2. Roll back catalog second to restore expected dataset view.
-3. Validate against golden queries for critical datasets.
+- Rollout undo returns success.
+- Readiness and request metrics return to baseline window.
 
-## Post-Rollback Validation
+## Mitigations
 
-- `/readyz` healthy across all pods.
-- Dataset open/download failure counters stabilize.
-- No increase in circuit-breaker open events.
+- Halt rollout progression.
+- Keep degraded mode controls enabled until stable.
+
+## Rollback
+
+- Revert API image and catalog pointer to last known good state.
+
+## Postmortem checklist
+
+- Trigger commit/config identified.
+- Compatibility impact documented.
+- Rollback drill evidence attached.

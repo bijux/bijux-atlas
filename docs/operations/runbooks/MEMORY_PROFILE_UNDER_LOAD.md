@@ -1,20 +1,40 @@
-# Memory Profiling Under Load
+# Runbook: MEMORY PROFILE UNDER LOAD
 
-## Goal
+- Owner: `bijux-atlas-server`
 
-Capture heap/memory growth under realistic query load.
+## Symptoms
 
-## Procedure
+- Memory growth uncorrelated with request volume.
 
-1. Start server with representative dataset cache settings.
-2. Run load:
-   - `k6 run load/k6/atlas_1000qps.js`
-3. Profile memory:
-   - Linux: `heaptrack ./target/release/atlas-server`
-   - macOS: `xcrun xctrace record --template 'Allocations' --launch ./target/release/atlas-server`
-4. Export artifacts to `artifacts/benchmarks/memory/` and compare peak RSS + allocation hotspots.
+## Metrics
 
-## Acceptance
+- `bijux_dataset_disk_usage_bytes`
+- `bijux_http_request_latency_p95_seconds`
+- `bijux_sqlite_query_latency_p95_seconds`
 
-- No unbounded RSS growth during 10+ minute steady load.
-- Top allocations are explainable and stable between releases.
+## Commands
+
+```bash
+$ k6 run load/k6/atlas_1000qps.js
+$ make e2e-perf
+```
+
+## Expected outputs
+
+- Profiling captures stable allocation hot paths.
+- No unbounded growth during steady-state window.
+
+## Mitigations
+
+- Reduce cache retention and response payload size.
+- Apply allocation hot-path fixes.
+
+## Rollback
+
+- Disable recent memory-optimization experiment if regressions appear.
+
+## Postmortem checklist
+
+- Profile artifacts stored in artifacts path.
+- Allocation diff documented.
+- Next benchmark baseline updated.
