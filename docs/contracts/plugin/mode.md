@@ -1,8 +1,12 @@
 # Bijux-Atlas Plugin Mode
 
+Concept IDs: concept.plugin-contract
+
 - Owner: `bijux-atlas-cli`
 
 `bijux-atlas` is a plugin executable intended to be launched by the `bijux` umbrella.
+
+Canonical page: [`docs/contracts/plugin/spec.md`](spec.md)
 
 ## Invocation Model
 

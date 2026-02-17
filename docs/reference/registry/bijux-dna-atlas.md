@@ -1,5 +1,7 @@
 # bijux-dna Atlas Compatibility
 
+Concept IDs: concept.compatibility-matrix
+
 - Owner: `bijux-atlas-store`
 
 Canonical page: [`docs/contracts/compatibility.md`](../../contracts/compatibility.md)

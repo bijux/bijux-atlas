@@ -1,5 +1,7 @@
 # Bijux Plugin Specification v1
 
+Concept IDs: concept.plugin-contract
+
 - Owner: `bijux-atlas-cli`
 
 This document defines the v1 contract between the Bijux umbrella runner and subsystem plugins.

@@ -1,36 +1,34 @@
-# Bijux Security Response Coordination Policy
+# Security Response Coordination
 
-- Security reports must use private disclosure channels.
-- Cross-project incidents require a named incident coordinator.
-- Coordinated release process:
-  1. validate impact across umbrella/plugins
-  2. prepare patched releases per affected project
-  3. publish advisory with fixed versions and mitigations
-- Backports are required for still-supported release lines.
+Concept IDs: concept.security-coordination
+
+- Owner: `bijux-atlas-security`
+
+Canonical page: [`docs/operations/security/advisory-process.md`](../../operations/security/advisory-process.md)
 
 ## What
 
-Reference definition for this topic.
+Pointer page for cross-project security response coordination semantics.
 
 ## Why
 
-Defines stable semantics and operational expectations.
+Maintains one canonical process definition for security advisories.
 
 ## Scope
 
-Applies to the documented subsystem behavior only.
+Security disclosure and advisory publication coordination.
 
 ## Non-goals
 
-Does not define unrelated implementation details.
+Does not duplicate response workflow steps.
 
 ## Contracts
 
-Normative behavior and limits are listed here.
+Normative process rules are defined in the canonical page.
 
 ## Failure modes
 
-Known failure classes and rejection behavior.
+Divergent guidance causes delayed or incorrect incident handling.
 
 ## How to verify
 
@@ -42,6 +40,6 @@ Expected output: docs checks pass.
 
 ## See also
 
-- [Reference Index](INDEX.md)
-- [Contracts Index](../../contracts/contracts-index.md)
-- [Terms Glossary](../../_style/terms-glossary.md)
+- [Advisory Process](../../operations/security/advisory-process.md)
+- [Security Posture](../../operations/security/security-posture.md)
+- [Registry Index](INDEX.md)

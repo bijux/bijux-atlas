@@ -1,5 +1,7 @@
 # Umbrella Atlas Matrix
 
+Concept IDs: concept.compatibility-matrix
+
 - Owner: `bijux-atlas-cli`
 
 Canonical page: [`docs/contracts/compatibility.md`](../../contracts/compatibility.md)

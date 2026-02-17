@@ -1,36 +1,34 @@
 # Cross-Project Compatibility Policy
 
-- Cross-project compatibility is contract-driven, not branch-coupled.
-- Contracts include:
-  - plugin metadata handshake
-  - artifact schema version
-  - API error schema and cursor format
-- Compatibility matrix docs must be maintained per producer/consumer pair.
-- No project may import internal crates from another project without explicit contract adoption.
+Concept IDs: concept.compatibility-matrix
+
+- Owner: `bijux-atlas-api`
+
+Canonical page: [`docs/contracts/compatibility.md`](../../contracts/compatibility.md)
 
 ## What
 
-Reference definition for this topic.
+Pointer page for cross-project compatibility policy semantics.
 
 ## Why
 
-Defines stable semantics and operational expectations.
+Avoids duplicate policy text across registry and contracts sections.
 
 ## Scope
 
-Applies to the documented subsystem behavior only.
+References compatibility guarantees across umbrella and plugins.
 
 ## Non-goals
 
-Does not define unrelated implementation details.
+Does not restate the canonical compatibility contract.
 
 ## Contracts
 
-Normative behavior and limits are listed here.
+All normative statements are defined in the canonical page.
 
 ## Failure modes
 
-Known failure classes and rejection behavior.
+Duplicated policy text can drift and cause contradictory guarantees.
 
 ## How to verify
 
@@ -42,6 +40,6 @@ Expected output: docs checks pass.
 
 ## See also
 
-- [Reference Index](INDEX.md)
-- [Contracts Index](../../contracts/contracts-index.md)
+- [Compatibility Contract](../../contracts/compatibility.md)
+- [Registry Index](INDEX.md)
 - [Terms Glossary](../../_style/terms-glossary.md)

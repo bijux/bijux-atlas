@@ -1,5 +1,7 @@
 # Security Advisory Publication Workflow
 
+Concept IDs: concept.security-coordination
+
 Use `.github/workflows/security-advisory-publication.yml` to publish advisory records.
 
 ## Flow

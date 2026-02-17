@@ -1,5 +1,7 @@
 # Compatibility Contract
 
+Concept IDs: concept.compatibility-matrix
+
 - Owner: `bijux-atlas-api`
 
 This page is the single compatibility entrypoint.

@@ -1,6 +1,6 @@
 # Immutability And Aliases
 
-Concept ID: `concept.immutability`
+Concept IDs: concept.dataset-immutability, concept.latest-release-alias
 
 - Owner: `bijux-atlas-store` + `bijux-atlas-api`
 

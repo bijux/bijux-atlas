@@ -1,5 +1,7 @@
 # Shared Core Extraction
 
+Concept IDs: concept.shared-core-extraction
+
 Reusable canonical utilities are extracted to dedicated repository:
 
 - repo: `/Users/bijan/bijux/bijux-core`

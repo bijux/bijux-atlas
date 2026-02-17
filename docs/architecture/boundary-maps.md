@@ -1,8 +1,12 @@
 # Effects Boundary Maps
 
+Concept IDs: concept.effects-boundary
+
 - Owner: `bijux-atlas-server`
 
 This document defines directory-level effect boundaries beyond crate-level boundaries.
+
+Canonical page: [`docs/architecture/effects.md`](effects.md)
 
 ## bijux-atlas-server
 - `src/http/`: request/response mapping only; raw filesystem access is forbidden.

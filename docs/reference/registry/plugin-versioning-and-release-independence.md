@@ -1,40 +1,34 @@
 # Plugin Versioning And Release Independence
 
-## Independent Versioning
+Concept IDs: concept.compatibility-matrix
 
-- Umbrella (`bijux`) and plugins (`bijux-*`) version independently.
-- Compatibility is enforced via plugin metadata field `compatible_umbrella`.
-- Umbrella must refuse incompatible plugins at dispatch time.
+- Owner: `bijux-atlas-cli`
 
-## Release Cadence Independence
-
-- Plugins may ship patch/minor releases without umbrella release.
-- Umbrella may release without forcing plugin rebuilds.
-- Only compatibility-range changes require coordinated announcement.
+Canonical page: [`docs/contracts/compatibility.md`](../../contracts/compatibility.md)
 
 ## What
 
-Reference definition for this topic.
+Pointer page for plugin versioning and release cadence compatibility policy.
 
 ## Why
 
-Defines stable semantics and operational expectations.
+Maintains one canonical definition of compatibility semantics.
 
 ## Scope
 
-Applies to the documented subsystem behavior only.
+Covers umbrella and plugin version-range expectations.
 
 ## Non-goals
 
-Does not define unrelated implementation details.
+Does not duplicate canonical compatibility contract prose.
 
 ## Contracts
 
-Normative behavior and limits are listed here.
+Normative versioning guarantees are defined in the canonical page.
 
 ## Failure modes
 
-Known failure classes and rejection behavior.
+Conflicting policy wording across pages causes operator confusion.
 
 ## How to verify
 
@@ -46,6 +40,6 @@ Expected output: docs checks pass.
 
 ## See also
 
-- [Reference Index](INDEX.md)
-- [Contracts Index](../../contracts/contracts-index.md)
-- [Terms Glossary](../../_style/terms-glossary.md)
+- [Compatibility Contract](../../contracts/compatibility.md)
+- [Plugin Contract](../../contracts/plugin/spec.md)
+- [Registry Index](INDEX.md)

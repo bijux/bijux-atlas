@@ -1,32 +1,34 @@
 # Deterministic Merge
 
+Concept IDs: concept.registry-federation
+
 - Owner: `bijux-atlas-store`
 
-Merge output is stable for identical inputs; stable key sorting is mandatory.
+Canonical page: [`docs/reference/registry/federation-semantics.md`](federation-semantics.md)
 
 ## What
 
-Reference definition for this topic.
+Pointer page for deterministic merge behavior in federated registries.
 
 ## Why
 
-Defines stable semantics and operational expectations.
+Avoids duplicate merge semantics definitions.
 
 ## Scope
 
-Applies to the documented subsystem behavior only.
+Merge ordering, stability, and priority semantics.
 
 ## Non-goals
 
-Does not define unrelated implementation details.
+Does not define backend transport implementation.
 
 ## Contracts
 
-Normative behavior and limits are listed here.
+Normative merge semantics are defined in the canonical page.
 
 ## Failure modes
 
-Known failure classes and rejection behavior.
+Inconsistent merge definitions create non-deterministic catalog views.
 
 ## How to verify
 
@@ -38,6 +40,6 @@ Expected output: docs checks pass.
 
 ## See also
 
-- [Reference Index](INDEX.md)
-- [Contracts Index](../../contracts/contracts-index.md)
-- [Terms Glossary](../../_style/terms-glossary.md)
+- [Federation Semantics](federation-semantics.md)
+- [Conflict Resolution](conflict-resolution.md)
+- [Registry Index](INDEX.md)

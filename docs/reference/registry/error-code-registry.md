@@ -1,47 +1,34 @@
-# Bijux Error Code Registry
+# Error Code Registry
 
-Stable machine error codes:
+Concept IDs: concept.error-codes
 
-- `usage_error`
-- `validation_error`
-- `dependency_failure`
-- `plugin_missing`
-- `plugin_incompatible`
-- `plugin_metadata_error`
-- `plugin_exec_failed`
-- `plugin_failed`
-- `internal_error`
-- `rate_limited`
-- `timeout`
+- Owner: `docs-governance`
 
-Rules:
-
-- Codes are append-only; do not repurpose existing meanings.
-- Any new code requires docs update and contract tests.
+Canonical page: [`docs/contracts/errors.md`](../../contracts/errors.md)
 
 ## What
 
-Reference definition for this topic.
+Pointer page for error code registry semantics.
 
 ## Why
 
-Defines stable semantics and operational expectations.
+Prevents error-code contract duplication outside contracts section.
 
 ## Scope
 
-Applies to the documented subsystem behavior only.
+Machine error codes used by API and CLI surfaces.
 
 ## Non-goals
 
-Does not define unrelated implementation details.
+Does not define new codes or schemas.
 
 ## Contracts
 
-Normative behavior and limits are listed here.
+Error code definitions are sourced from the canonical page.
 
 ## Failure modes
 
-Known failure classes and rejection behavior.
+Divergent code lists can break clients and automation.
 
 ## How to verify
 
@@ -53,6 +40,6 @@ Expected output: docs checks pass.
 
 ## See also
 
-- [Reference Index](INDEX.md)
-- [Contracts Index](../../contracts/contracts-index.md)
-- [Terms Glossary](../../_style/terms-glossary.md)
+- [Error Codes Contract](../../contracts/errors.md)
+- [Contracts Index](../../contracts/INDEX.md)
+- [Registry Index](INDEX.md)

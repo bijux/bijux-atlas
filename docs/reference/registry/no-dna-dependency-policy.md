@@ -1,5 +1,7 @@
 # No DNA Dependency Policy For Atlas
 
+Concept IDs: concept.no-dna-dependency
+
 `bijux-atlas` must not depend on `bijux-dna` crates.
 
 Enforcement:
