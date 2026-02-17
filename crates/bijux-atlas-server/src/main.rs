@@ -86,6 +86,16 @@ fn env_map(name: &str) -> std::collections::HashMap<String, String> {
         .collect()
 }
 
+fn env_list(name: &str) -> Vec<String> {
+    env::var(name)
+        .unwrap_or_default()
+        .split(',')
+        .map(str::trim)
+        .filter(|x| !x.is_empty())
+        .map(ToString::to_string)
+        .collect()
+}
+
 fn parse_registry_sources(retry: RetryPolicy) -> Result<Option<Vec<RegistrySource>>, String> {
     let raw = env::var("ATLAS_REGISTRY_SOURCES").unwrap_or_default();
     if raw.trim().is_empty() {
@@ -114,6 +124,7 @@ fn parse_registry_sources(retry: RetryPolicy) -> Result<Option<Vec<RegistrySourc
                 env::var("ATLAS_STORE_S3_PRESIGNED_BASE_URL").ok(),
                 env::var("ATLAS_STORE_S3_BEARER").ok(),
                 retry.clone(),
+                env_bool("ATLAS_ALLOW_PRIVATE_STORE_HOSTS", false),
             ))
         } else if let Some(url) = spec.strip_prefix("http:") {
             Arc::new(S3LikeBackend::new(
@@ -121,6 +132,7 @@ fn parse_registry_sources(retry: RetryPolicy) -> Result<Option<Vec<RegistrySourc
                 None,
                 env::var("ATLAS_STORE_HTTP_BEARER").ok(),
                 retry.clone(),
+                env_bool("ATLAS_ALLOW_PRIVATE_STORE_HOSTS", false),
             ))
         } else {
             return Err(format!(
@@ -280,6 +292,8 @@ async fn main() -> Result<(), String> {
     };
     let api_cfg = ApiConfig {
         max_body_bytes: env_usize("ATLAS_MAX_BODY_BYTES", 16 * 1024),
+        max_uri_bytes: env_usize("ATLAS_MAX_URI_BYTES", 2048),
+        max_header_bytes: env_usize("ATLAS_MAX_HEADER_BYTES", 16 * 1024),
         request_timeout: env_duration_ms("ATLAS_REQUEST_TIMEOUT_MS", 5000),
         sql_timeout: env_duration_ms("ATLAS_SQL_TIMEOUT_MS", 800),
         response_max_bytes: env_usize("ATLAS_RESPONSE_MAX_BYTES", 512 * 1024),
@@ -328,6 +342,13 @@ async fn main() -> Result<(), String> {
             3 * 1024 * 1024 * 1024,
         ),
         max_request_queue_depth: env_usize("ATLAS_MAX_REQUEST_QUEUE_DEPTH", 256),
+        cors_allowed_origins: env_list("ATLAS_CORS_ALLOWED_ORIGINS"),
+        enable_audit_log: env_bool("ATLAS_ENABLE_AUDIT_LOG", false),
+        require_api_key: env_bool("ATLAS_REQUIRE_API_KEY", false),
+        allowed_api_keys: env_list("ATLAS_ALLOWED_API_KEYS"),
+        hmac_secret: env::var("ATLAS_HMAC_SECRET").ok().filter(|x| !x.is_empty()),
+        hmac_required: env_bool("ATLAS_HMAC_REQUIRED", false),
+        hmac_max_skew_secs: env_u64("ATLAS_HMAC_MAX_SKEW_SECS", 300),
         ..ApiConfig::default()
     };
 
@@ -347,6 +368,7 @@ async fn main() -> Result<(), String> {
                 env::var("ATLAS_STORE_S3_PRESIGNED_BASE_URL").ok(),
                 env::var("ATLAS_STORE_S3_BEARER").ok(),
                 retry,
+                env_bool("ATLAS_ALLOW_PRIVATE_STORE_HOSTS", false),
             ))
         } else {
             Arc::new(LocalFsBackend::new(store_root))

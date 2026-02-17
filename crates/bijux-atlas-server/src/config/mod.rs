@@ -20,6 +20,8 @@ impl Default for RateLimitConfig {
 #[derive(Debug, Clone)]
 pub struct ApiConfig {
     pub max_body_bytes: usize,
+    pub max_uri_bytes: usize,
+    pub max_header_bytes: usize,
     pub request_timeout: Duration,
     pub sql_timeout: Duration,
     pub response_max_bytes: usize,
@@ -67,12 +69,21 @@ pub struct ApiConfig {
     pub memory_pressure_shed_enabled: bool,
     pub memory_pressure_rss_bytes: u64,
     pub max_request_queue_depth: usize,
+    pub cors_allowed_origins: Vec<String>,
+    pub enable_audit_log: bool,
+    pub require_api_key: bool,
+    pub allowed_api_keys: Vec<String>,
+    pub hmac_secret: Option<String>,
+    pub hmac_required: bool,
+    pub hmac_max_skew_secs: u64,
 }
 
 impl Default for ApiConfig {
     fn default() -> Self {
         Self {
             max_body_bytes: 16 * 1024,
+            max_uri_bytes: 2048,
+            max_header_bytes: 16 * 1024,
             request_timeout: Duration::from_secs(5),
             sql_timeout: Duration::from_millis(800),
             response_max_bytes: 512 * 1024,
@@ -126,6 +137,13 @@ impl Default for ApiConfig {
             memory_pressure_shed_enabled: false,
             memory_pressure_rss_bytes: 3 * 1024 * 1024 * 1024,
             max_request_queue_depth: 256,
+            cors_allowed_origins: Vec::new(),
+            enable_audit_log: false,
+            require_api_key: false,
+            allowed_api_keys: Vec::new(),
+            hmac_secret: None,
+            hmac_required: false,
+            hmac_max_skew_secs: 300,
         }
     }
 }

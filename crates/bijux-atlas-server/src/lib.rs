@@ -17,7 +17,9 @@ use bijux_atlas_query::{
     GeneFilter, GeneQueryRequest, OrderMode, QueryClass, QueryLimits, RegionFilter,
     TranscriptFilter, TranscriptQueryRequest,
 };
+use hmac::{Hmac, Mac};
 use rusqlite::{Connection, OpenFlags};
+use sha2::Sha256;
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
@@ -328,6 +330,207 @@ async fn resilience_middleware(
     if crate::middleware::shedding::overloaded(&state).await {
         resp.headers_mut()
             .insert("x-atlas-system-stress", HeaderValue::from_static("true"));
+    }
+    resp
+}
+
+fn normalized_header_value(headers: &HeaderMap, key: &str, max_len: usize) -> Option<String> {
+    let raw = headers.get(key)?.to_str().ok()?.trim();
+    if raw.is_empty() || raw.len() > max_len {
+        return None;
+    }
+    Some(raw.to_string())
+}
+
+fn normalized_forwarded_for(headers: &HeaderMap) -> Option<String> {
+    let raw = headers.get("x-forwarded-for")?.to_str().ok()?;
+    let first = raw.split(',').next()?.trim();
+    if first.is_empty() || first.len() > 64 {
+        return None;
+    }
+    if first
+        .bytes()
+        .all(|b| b.is_ascii_alphanumeric() || b == b'.' || b == b':' || b == b'-')
+    {
+        Some(first.to_string())
+    } else {
+        None
+    }
+}
+
+fn build_hmac_signature(secret: &str, method: &str, uri: &str, ts: &str) -> Option<String> {
+    let mut mac = Hmac::<Sha256>::new_from_slice(secret.as_bytes()).ok()?;
+    let payload = format!("{method}\n{uri}\n{ts}\n");
+    mac.update(payload.as_bytes());
+    Some(hex::encode(mac.finalize().into_bytes()))
+}
+
+async fn security_middleware(
+    State(state): State<AppState>,
+    req: Request<Body>,
+    next: Next,
+) -> Response {
+    let uri_text = req.uri().to_string();
+    if uri_text.len() > state.api.max_uri_bytes {
+        let err = Json(ApiError::new(
+            ApiErrorCode::QueryRejectedByPolicy,
+            "request URI too large",
+            serde_json::json!({"max_uri_bytes": state.api.max_uri_bytes, "actual": uri_text.len()}),
+        ));
+        return (StatusCode::URI_TOO_LONG, err).into_response();
+    }
+    let header_bytes: usize = req
+        .headers()
+        .iter()
+        .map(|(k, v)| k.as_str().len() + v.as_bytes().len())
+        .sum();
+    if header_bytes > state.api.max_header_bytes {
+        let err = Json(ApiError::new(
+            ApiErrorCode::QueryRejectedByPolicy,
+            "request headers too large",
+            serde_json::json!({"max_header_bytes": state.api.max_header_bytes, "actual": header_bytes}),
+        ));
+        return (StatusCode::REQUEST_HEADER_FIELDS_TOO_LARGE, err).into_response();
+    }
+
+    let api_key = normalized_header_value(req.headers(), "x-api-key", 256);
+    if state.api.require_api_key && api_key.is_none() {
+        let err = Json(ApiError::new(
+            ApiErrorCode::QueryRejectedByPolicy,
+            "api key required",
+            serde_json::json!({}),
+        ));
+        return (StatusCode::UNAUTHORIZED, err).into_response();
+    }
+    if let Some(key) = &api_key {
+        if !state.api.allowed_api_keys.is_empty()
+            && !state.api.allowed_api_keys.iter().any(|k| k == key)
+        {
+            let err = Json(ApiError::new(
+                ApiErrorCode::QueryRejectedByPolicy,
+                "invalid api key",
+                serde_json::json!({}),
+            ));
+            return (StatusCode::UNAUTHORIZED, err).into_response();
+        }
+    }
+
+    if let Some(secret) = &state.api.hmac_secret {
+        let ts = normalized_header_value(req.headers(), "x-bijux-timestamp", 64);
+        let sig = normalized_header_value(req.headers(), "x-bijux-signature", 128);
+        if state.api.hmac_required && (ts.is_none() || sig.is_none()) {
+            let err = Json(ApiError::new(
+                ApiErrorCode::QueryRejectedByPolicy,
+                "missing required HMAC headers",
+                serde_json::json!({}),
+            ));
+            return (StatusCode::UNAUTHORIZED, err).into_response();
+        }
+        if let (Some(ts_value), Some(sig_value)) = (ts, sig) {
+            let now = chrono_like_unix_millis() / 1000;
+            let Some(parsed_ts) = ts_value.parse::<u128>().ok() else {
+                let err = Json(ApiError::new(
+                    ApiErrorCode::QueryRejectedByPolicy,
+                    "invalid hmac timestamp",
+                    serde_json::json!({}),
+                ));
+                return (StatusCode::UNAUTHORIZED, err).into_response();
+            };
+            let skew = now.abs_diff(parsed_ts);
+            if skew > state.api.hmac_max_skew_secs as u128 {
+                let err = Json(ApiError::new(
+                    ApiErrorCode::QueryRejectedByPolicy,
+                    "hmac timestamp outside allowed skew",
+                    serde_json::json!({"max_skew_secs": state.api.hmac_max_skew_secs}),
+                ));
+                return (StatusCode::UNAUTHORIZED, err).into_response();
+            }
+            let method = req.method().as_str();
+            let uri = req.uri().path_and_query().map_or("", |pq| pq.as_str());
+            if build_hmac_signature(secret, method, uri, &ts_value).as_deref()
+                != Some(sig_value.as_str())
+            {
+                let err = Json(ApiError::new(
+                    ApiErrorCode::QueryRejectedByPolicy,
+                    "invalid hmac signature",
+                    serde_json::json!({}),
+                ));
+                return (StatusCode::UNAUTHORIZED, err).into_response();
+            }
+        }
+    }
+
+    let started = Instant::now();
+    let method = req.method().clone();
+    let path = req.uri().path().to_string();
+    let request_id =
+        normalized_header_value(req.headers(), "x-request-id", 128).unwrap_or_default();
+    let client_ip =
+        normalized_forwarded_for(req.headers()).unwrap_or_else(|| "unknown".to_string());
+    let resp = next.run(req).await;
+    if state.api.enable_audit_log {
+        info!(
+            target: "atlas_audit",
+            method = %method,
+            path = %path,
+            status = resp.status().as_u16(),
+            request_id = %request_id,
+            client_ip = %client_ip,
+            latency_ms = started.elapsed().as_millis() as u64,
+            "audit"
+        );
+    }
+    resp
+}
+
+async fn cors_middleware(
+    State(state): State<AppState>,
+    req: Request<Body>,
+    next: Next,
+) -> Response {
+    let origin = normalized_header_value(req.headers(), "origin", 256);
+    let method = req.method().clone();
+    if method == axum::http::Method::OPTIONS {
+        let mut resp = StatusCode::NO_CONTENT.into_response();
+        if let Some(origin_value) = origin {
+            if state
+                .api
+                .cors_allowed_origins
+                .iter()
+                .any(|x| x == &origin_value)
+            {
+                if let Ok(v) = HeaderValue::from_str(&origin_value) {
+                    resp.headers_mut().insert("access-control-allow-origin", v);
+                }
+                resp.headers_mut().insert(
+                    "access-control-allow-methods",
+                    HeaderValue::from_static("GET,OPTIONS"),
+                );
+                resp.headers_mut().insert(
+                    "access-control-allow-headers",
+                    HeaderValue::from_static(
+                        "x-api-key,x-bijux-signature,x-bijux-timestamp,content-type",
+                    ),
+                );
+            }
+        }
+        return resp;
+    }
+
+    let mut resp = next.run(req).await;
+    if let Some(origin_value) = origin {
+        if state
+            .api
+            .cors_allowed_origins
+            .iter()
+            .any(|x| x == &origin_value)
+        {
+            if let Ok(v) = HeaderValue::from_str(&origin_value) {
+                resp.headers_mut().insert("access-control-allow-origin", v);
+            }
+            resp.headers_mut()
+                .insert("vary", HeaderValue::from_static("Origin"));
+        }
     }
     resp
 }
@@ -1451,6 +1654,8 @@ pub fn build_router(state: AppState) -> Router {
             "/debug/registry-health",
             get(http::handlers::registry_health_handler),
         )
+        .layer(from_fn_with_state(state.clone(), cors_middleware))
+        .layer(from_fn_with_state(state.clone(), security_middleware))
         .layer(from_fn_with_state(state.clone(), resilience_middleware))
         .layer(from_fn(provenance_headers_middleware))
         .layer(DefaultBodyLimit::max(state.api.max_body_bytes))
