@@ -136,29 +136,18 @@ mod tests {
 
     #[test]
     fn error_contract_matches_frozen_registry() {
-        let freeze = include_str!("../../../docs/contracts/error-contract.v1.json");
+        let freeze = include_str!("../../../docs/contracts/ERROR_CODES.json");
         let val: serde_json::Value = serde_json::from_str(freeze).expect("freeze json");
-        let codes = val["error_codes"]
+        let codes = val["codes"]
             .as_array()
             .expect("error_codes array")
             .iter()
             .map(|v| v.as_str().expect("code").to_string())
             .collect::<Vec<_>>();
-        let runtime = vec![
-            "InvalidQueryParameter",
-            "MissingDatasetDimension",
-            "InvalidCursor",
-            "QueryRejectedByPolicy",
-            "RateLimited",
-            "Timeout",
-            "PayloadTooLarge",
-            "ResponseTooLarge",
-            "NotReady",
-            "Internal",
-        ]
-        .into_iter()
-        .map(str::to_string)
-        .collect::<Vec<_>>();
+        let runtime = crate::generated::error_codes::API_ERROR_CODES
+            .iter()
+            .map(|s| (*s).to_string())
+            .collect::<Vec<_>>();
         assert_eq!(runtime, codes);
     }
 
