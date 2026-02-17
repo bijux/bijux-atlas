@@ -1,38 +1,41 @@
 #!/usr/bin/env sh
-# Purpose: migrate stale top-level operation paths to ops/* canonical paths.
+# Purpose: migrate legacy root-level operation paths to canonical ops/* paths.
 # Inputs: tracked repository files.
-# Outputs: updated file contents when --apply is passed.
+# Outputs: rewritten file contents when --apply is passed.
 set -eu
 
-MODE="dry-run"
-if [ "${1:-}" = "--apply" ]; then
-  MODE="apply"
+MODE="${1:-}"
+if [ -z "$MODE" ]; then
+  MODE="--dry-run"
 fi
 
-PATTERNS='(?<!ops/)e2e/=>ops/e2e/ (?<!ops/)load/=>ops/load/ (?<!ops/)observability/=>ops/observability/ (?<!ops/)openapi/=>ops/openapi/ datasets/real-datasets.json=>ops/datasets/real-datasets.json fixtures/=>ops/fixtures/ bin/isolate=>scripts/bin/isolate bin/require-isolate=>scripts/bin/require-isolate'
+if [ "$MODE" != "--dry-run" ] && [ "$MODE" != "--apply" ]; then
+  echo "usage: $0 [--dry-run|--apply]" >&2
+  exit 2
+fi
 
-FILES=$(git ls-files)
+PATTERN='(^|[^A-Za-z0-9_])(e2e/|load/|observability/|openapi/|charts/bijux-atlas|bin/isolate|bin/require-isolate|datasets/real-datasets\.json|fixtures/medium/)'
 
-if [ "$MODE" = "dry-run" ]; then
-  echo "stale path references:"
-  printf '%s\n' "$FILES" | xargs rg -n "(^|[^a-zA-Z0-9_])(e2e/|load/|observability/|openapi/|datasets/real-datasets\\.json|fixtures/|bin/isolate|bin/require-isolate)" || true
+if [ "$MODE" = "--dry-run" ]; then
+  rg -n "$PATTERN" $(git ls-files) || true
   exit 0
 fi
 
-printf '%s\n' "$FILES" | while IFS= read -r f; do
-  [ -f "$f" ] || continue
-  case "$f" in
-    artifacts/*|target/*) continue ;;
-  esac
-  perl -0777 -i -pe '\
-    s{(?<!ops/)e2e/}{ops/e2e/}g; \
-    s{(?<!ops/)load/}{ops/load/}g; \
-    s{(?<!ops/)observability/}{ops/observability/}g; \
-    s{(?<!ops/)openapi/}{ops/openapi/}g; \
-    s{datasets/real-datasets\\.json}{ops/datasets/real-datasets.json}g; \
-    s{fixtures/}{ops/fixtures/}g; \
-    s{bin/isolate}{scripts/bin/isolate}g; \
-    s{bin/require-isolate}{scripts/bin/require-isolate}g;' "$f"
-done
+while IFS= read -r file; do
+  [ -f "$file" ] || continue
+  perl -0777 -i -pe '
+    s{(^|[^A-Za-z0-9_])e2e/}{$1ops/e2e/}g;
+    s{(^|[^A-Za-z0-9_])load/}{$1ops/load/}g;
+    s{(^|[^A-Za-z0-9_])observability/}{$1ops/observability/}g;
+    s{(^|[^A-Za-z0-9_])openapi/}{$1ops/openapi/}g;
+    s{(^|[^A-Za-z0-9_])charts/bijux-atlas}{$1ops/k8s/charts/bijux-atlas}g;
+    s{(^|[^A-Za-z0-9_])bin/isolate}{$1scripts/bin/isolate}g;
+    s{(^|[^A-Za-z0-9_])bin/require-isolate}{$1scripts/bin/require-isolate}g;
+    s{(^|[^A-Za-z0-9_])datasets/real-datasets\.json}{$1ops/datasets/real-datasets.json}g;
+    s{(^|[^A-Za-z0-9_])fixtures/medium/}{$1ops/fixtures/medium/}g;
+  ' "$file"
+done <<EOF
+$(git ls-files)
+EOF
 
 echo "path migration applied"

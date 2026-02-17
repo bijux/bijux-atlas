@@ -8,6 +8,6 @@ artifacts/release/*
 artifacts/benchmarks/*
 artifacts/real-datasets/*
 artifacts/docs-snippets/*
-artifacts/fixtures/*
+artifacts/ops/fixtures/*
 artifacts/ingest-smoke-*
 artifacts/isolate/*

@@ -10,7 +10,7 @@
 - `makefiles/`: target implementations included by root `Makefile`.
 
 Compatibility shims retained at root:
-- `e2e/`, `load/`, `observability/` as transition pointers/symlinks to `ops/*`.
+- `ops/e2e/`, `ops/load/`, `ops/observability/` as transition pointers/symlinks to `ops/*`.
 - Root config symlinks (`deny.toml`, `audit-allowlist.toml`, `clippy.toml`, `rustfmt.toml`, `.vale.ini`, `.vale/`, `nextest.toml`).
 - `bin/` keeps minimal bootstrap wrappers that delegate to `scripts/bin/*`.
 - `ops/tool-versions.json`, `datasets`, and `fixtures` remain compatibility symlinks.

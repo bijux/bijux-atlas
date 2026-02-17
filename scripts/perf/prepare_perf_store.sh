@@ -15,9 +15,9 @@ rm -rf "$OUT" "$TMP"
 mkdir -p "$OUT" "$TMP"
 
 cargo run --quiet -p bijux-atlas-cli --bin bijux-atlas -- atlas ingest \
-  --gff3 "$ROOT/crates/bijux-atlas-ingest/tests/fixtures/tiny/genes.gff3" \
-  --fasta "$ROOT/crates/bijux-atlas-ingest/tests/fixtures/tiny/genome.fa" \
-  --fai "$ROOT/crates/bijux-atlas-ingest/tests/fixtures/tiny/genome.fa.fai" \
+  --gff3 "$ROOT/crates/bijux-atlas-ingest/tests/ops/fixtures/tiny/genes.gff3" \
+  --fasta "$ROOT/crates/bijux-atlas-ingest/tests/ops/fixtures/tiny/genome.fa" \
+  --fai "$ROOT/crates/bijux-atlas-ingest/tests/ops/fixtures/tiny/genome.fa.fai" \
   --output-root "$OUT" \
   --release "$DATASET_RELEASE" \
   --species "$DATASET_SPECIES" \

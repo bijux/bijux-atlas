@@ -234,7 +234,7 @@ mod tests {
     use tempfile::tempdir;
 
     fn fixture_dir() -> PathBuf {
-        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/tiny")
+        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/ops/fixtures/tiny")
     }
 
     fn opts(root: &Path, strictness: StrictnessMode) -> IngestOptions {
@@ -371,11 +371,11 @@ mod tests {
         let root = tempdir().expect("tempdir");
         let mut o = opts(root.path(), StrictnessMode::Strict);
         o.gff3_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .join("tests/fixtures/contigs/genes_invalid_coord.gff3");
+            .join("tests/ops/fixtures/contigs/genes_invalid_coord.gff3");
         o.fasta_path =
-            PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/contigs/genome.fa");
-        o.fai_path =
-            PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/contigs/genome.fa.fai");
+            PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/ops/fixtures/contigs/genome.fa");
+        o.fai_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("tests/ops/fixtures/contigs/genome.fa.fai");
         assert!(ingest_dataset(&o).is_err());
     }
 
@@ -424,7 +424,7 @@ mod tests {
 
     #[test]
     fn fixture_matrix_edgecases_runs_leniently() {
-        let dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/edgecases");
+        let dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/ops/fixtures/edgecases");
         let mut count = 0usize;
         let mut succeeded = 0usize;
         for entry in std::fs::read_dir(dir).expect("read edgecases") {
@@ -458,7 +458,8 @@ mod tests {
 
     #[test]
     fn realistic_fixture_smoke_is_deterministic() {
-        let realistic = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/realistic");
+        let realistic =
+            PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/ops/fixtures/realistic");
         let root = tempdir().expect("tempdir");
         let mut o = opts(root.path(), StrictnessMode::Lenient);
         o.gff3_path = realistic.join("genes.gff3");

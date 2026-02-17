@@ -45,4 +45,4 @@ Expected output: script header contract passes.
 
 - [Repo Surface](../repo-surface.md)
 - [Makefile Surface](../makefiles/surface.md)
-- [E2E Scripts](../../operations/e2e/scripts.md)
+- [E2E Scripts](../../operations/ops/e2e/scripts.md)

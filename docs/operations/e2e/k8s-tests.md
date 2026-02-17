@@ -40,5 +40,5 @@ Expected output: all K8s e2e tests pass.
 
 - [E2E Index](INDEX.md)
 - [K8s Operations](../k8s/INDEX.md)
-- [Load CI Policy](../load/ci-policy.md)
+- [Load CI Policy](../ops/load/ci-policy.md)
 - `ops-ci`

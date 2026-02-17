@@ -6,11 +6,12 @@ set -eu
 
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 ROOT_DIR=$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)
+ROOT_DIR=$(CDPATH= cd -- "$ROOT_DIR/.." && pwd)
 GIT_SHORT_SHA=$(git -C "$ROOT_DIR" rev-parse --short HEAD 2>/dev/null || echo nogit)
 
 print_usage() {
   cat >&2 <<'USAGE'
-usage: scripts/scripts/scripts/scripts/scripts/bin/isolate [options] <command> [args...]
+usage: scripts/bin/isolate [options] <command> [args...]
 
 options:
   --print-root

@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 openapi_path = ROOT / "ops" / "openapi" / "v1" / "openapi.snapshot.json"
 if not openapi_path.exists():
-    openapi_path = ROOT / "openapi" / "v1" / "openapi.snapshot.json"
+    openapi_path = ROOT / "ops" / "openapi" / "v1" / "openapi.snapshot.json"
 OPENAPI = json.loads(openapi_path.read_text())
 SCHEMAS = OPENAPI.get("components", {}).get("schemas", {})
 

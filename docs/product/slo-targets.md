@@ -45,6 +45,6 @@ Expected output: SLO file is parsed and perf scoring passes.
 
 ## See also
 
-- [Perf Regression Policy](../operations/observability/perf-regression-policy.md)
-- [k6 Load Scenarios](../operations/load/k6.md)
+- [Perf Regression Policy](../operations/ops/observability/perf-regression-policy.md)
+- [k6 Load Scenarios](../operations/ops/load/k6.md)
 - [Cached-only SLO](../operations/cached-only-slo.md)

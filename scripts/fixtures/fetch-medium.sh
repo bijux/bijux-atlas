@@ -4,7 +4,7 @@
 # Outputs: exit status and deterministic stdout/stderr or generated artifacts.
 set -eu
 
-LOCK=fixtures/medium/manifest.lock
+LOCK=ops/fixtures/medium/manifest.lock
 [ -f "$LOCK" ] || { echo "missing $LOCK" >&2; exit 1; }
 
 url=$(awk -F= '/^url=/{print $2}' "$LOCK")

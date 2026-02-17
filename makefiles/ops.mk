@@ -202,7 +202,7 @@ ops-obs-up: ## Install observability pack (prometheus/otel, CRD-aware)
 ops-obs-down: ## Uninstall observability pack
 	@./ops/observability/scripts/uninstall_obs_pack.sh
 
-ops-ci: ## Nightly ops pipeline: up/deploy/warm/tests/load/drills/report
+ops-ci: ## Nightly ops pipeline: up/deploy/warm/tests/ops/load/drills/report
 	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck
 	@$(MAKE) ops-up
 	@$(MAKE) ops-reset

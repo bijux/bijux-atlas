@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 error_codes = json.loads((ROOT / "docs" / "contracts" / "ERROR_CODES.json").read_text())["codes"]
 
-openapi = json.loads((ROOT / "openapi" / "v1" / "openapi.snapshot.json").read_text())
+openapi = json.loads((ROOT / "ops" / "openapi" / "v1" / "openapi.snapshot.json").read_text())
 openapi_codes = openapi["components"]["schemas"]["ApiErrorCode"]["enum"]
 if sorted(error_codes) != sorted(openapi_codes):
     print("OpenAPI error code enum drift", file=sys.stderr)

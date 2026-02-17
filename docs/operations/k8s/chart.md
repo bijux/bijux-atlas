@@ -4,7 +4,7 @@
 
 ## What
 
-Canonical documentation for `charts/bijux-atlas` packaging and deployment semantics.
+Canonical documentation for `ops/k8s/charts/bijux-atlas` packaging and deployment semantics.
 
 ## Why
 
@@ -20,9 +20,9 @@ Does not duplicate every template file content.
 
 ## Contracts
 
-- Chart source remains under `charts/bijux-atlas/`; operations workflows and tests are under `ops/`.
+- Chart source remains under `ops/k8s/charts/bijux-atlas/`; operations workflows and tests are under `ops/`.
 - Values contract: [values.md](values.md)
-- Generated values schema: `charts/bijux-atlas/values.schema.json` from `docs/contracts/CHART_VALUES.json`
+- Generated values schema: `ops/k8s/charts/bijux-atlas/values.schema.json` from `docs/contracts/CHART_VALUES.json`
 - Install verification: `ops-k8s-tests`
 - Required values keys include `values.server`, `values.store`, `values.cache`, and `values.resources`.
 
@@ -44,5 +44,5 @@ Expected output: chart schema generation/checks pass and k8s install gates pass.
 
 - [K8s Index](INDEX.md)
 - [Values](values.md)
-- [K8s E2E Tests](../e2e/k8s-tests.md)
+- [K8s E2E Tests](../ops/e2e/k8s-tests.md)
 - `ops-ci`

@@ -48,6 +48,6 @@ Expected output: failing scenario names and violating thresholds.
 
 ## See also
 
-- [Load Reproducibility](../load/reproducibility.md)
-- [Performance Regression Policy](../observability/perf-regression-policy.md)
+- [Load Reproducibility](../ops/load/reproducibility.md)
+- [Performance Regression Policy](../ops/observability/perf-regression-policy.md)
 - `ops-load-full`

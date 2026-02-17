@@ -67,7 +67,7 @@ doctor:
 	@$(MAKE) -s ops-tools-check
 
 fetch-real-datasets:
-	@./scripts/ops/ops/fixtures/fetch-real-datasets.sh
+	@./scripts/fixtures/fetch-real-datasets.sh
 
 ssot-check:
 	@./scripts/contracts/check_all.sh

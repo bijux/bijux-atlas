@@ -30,6 +30,6 @@ Expected output: suites run and emit result artifacts.
 
 ## See also
 
-- [Load Suites](../../../docs/operations/load/suites.md)
-- [Load CI Policy](../../../docs/operations/load/ci-policy.md)
+- [Load Suites](../../../docs/operations/ops/load/suites.md)
+- [Load CI Policy](../../../docs/operations/ops/load/ci-policy.md)
 - `ops-load-full`

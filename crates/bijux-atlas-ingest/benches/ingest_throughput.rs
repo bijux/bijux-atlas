@@ -8,7 +8,7 @@ use std::path::PathBuf;
 use tempfile::tempdir;
 
 fn bench_ingest_throughput(c: &mut Criterion) {
-    let realistic = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/realistic");
+    let realistic = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/ops/fixtures/realistic");
     c.bench_function("ingest_realistic_fixture", |b| {
         b.iter(|| {
             let out = tempdir().expect("tempdir");

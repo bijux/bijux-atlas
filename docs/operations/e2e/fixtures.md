@@ -12,7 +12,7 @@ Keeps fixture provenance and checksums deterministic.
 
 ## Scope
 
-`ops/e2e/fixtures/README.md` and fixture lock usage.
+`ops/e2e/ops/fixtures/README.md` and fixture lock usage.
 
 ## Non-goals
 
@@ -38,6 +38,6 @@ Expected output: fixture downloads pass checksum validation.
 ## See also
 
 - [E2E Index](INDEX.md)
-- [Fixtures Reference](../../reference/fixtures/INDEX.md)
+- [Fixtures Reference](../../reference/ops/fixtures/INDEX.md)
 - [Artifact Contracts](../../contracts/artifacts/INDEX.md)
 - `ops-ci`

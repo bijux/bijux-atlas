@@ -12,7 +12,7 @@ This document defines production deployment defaults for `bijux-atlas`.
 
 ## Helm Chart Surface
 
-Chart path: `charts/bijux-atlas/`
+Chart path: `ops/k8s/charts/bijux-atlas/`
 
 Included resources:
 

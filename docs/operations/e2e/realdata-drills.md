@@ -39,6 +39,6 @@ Expected output: realdata suite completes and snapshots verify.
 ## See also
 
 - [E2E Index](INDEX.md)
-- [Load Suites](../load/suites.md)
+- [Load Suites](../ops/load/suites.md)
 - [Dataset Promotion Pipeline](../dataset-promotion-pipeline.md)
 - `ops-ci`

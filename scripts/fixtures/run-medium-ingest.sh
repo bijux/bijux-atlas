@@ -4,7 +4,7 @@
 # Outputs: exit status and deterministic stdout/stderr or generated artifacts.
 set -eu
 
-root="fixtures/medium/data"
+root="ops/fixtures/medium/data"
 [ -d "$root" ] || { echo "missing medium fixture data; run make fetch-fixtures" >&2; exit 1; }
 
 cargo run -p bijux-atlas-cli --bin bijux-atlas -- atlas ingest \

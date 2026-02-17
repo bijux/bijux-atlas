@@ -4,8 +4,8 @@ All build/test/lint/audit commands must run inside an isolate runner.
 
 ## Required Runner
 
-- `bin/isolate`: creates isolated runtime rooted at `artifacts/isolates/<tag>`.
-- `bin/require-isolate`: validates the isolation contract.
+- `scripts/bin/isolate`: creates isolated runtime rooted at `artifacts/isolates/<tag>`.
+- `scripts/bin/require-isolate`: validates the isolation contract.
 
 ## Environment Contract
 

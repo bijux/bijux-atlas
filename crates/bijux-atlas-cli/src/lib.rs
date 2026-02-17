@@ -203,11 +203,11 @@ enum AtlasCommand {
         root: PathBuf,
         #[arg(long)]
         dataset: String,
-        #[arg(long, default_value = "fixtures/medium/golden_queries.json")]
+        #[arg(long, default_value = "ops/fixtures/medium/golden_queries.json")]
         golden_queries: PathBuf,
         #[arg(long, default_value_t = false)]
         write_snapshot: bool,
-        #[arg(long, default_value = "fixtures/medium/golden_snapshot.json")]
+        #[arg(long, default_value = "ops/fixtures/medium/golden_snapshot.json")]
         snapshot_out: PathBuf,
     },
     Openapi {

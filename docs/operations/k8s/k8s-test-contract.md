@@ -43,5 +43,5 @@ Expected output: all contract tests pass; on failure a report appears in `artifa
 
 - [K8s Index](INDEX.md)
 - [Helm Chart Contract](chart.md)
-- [E2E Kubernetes Tests](../e2e/k8s-tests.md)
+- [E2E Kubernetes Tests](../ops/e2e/k8s-tests.md)
 - `ops-k8s-tests`

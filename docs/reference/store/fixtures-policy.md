@@ -2,18 +2,18 @@
 
 CI fixtures:
 
-- `crates/bijux-atlas-ingest/tests/fixtures/minimal`
-- `crates/bijux-atlas-ingest/tests/fixtures/edgecases`
-- `crates/bijux-atlas-ingest/tests/fixtures/contigs`
+- `crates/bijux-atlas-ingest/tests/ops/fixtures/minimal`
+- `crates/bijux-atlas-ingest/tests/ops/fixtures/edgecases`
+- `crates/bijux-atlas-ingest/tests/ops/fixtures/contigs`
 
 Non-CI fixture:
 
-- medium dataset is fetched via `make fetch-fixtures` using pinned URL + sha256 in `fixtures/medium/manifest.lock`.
+- medium dataset is fetched via `make fetch-fixtures` using pinned URL + sha256 in `ops/fixtures/medium/manifest.lock`.
 
 Golden query snapshots:
 
-- Query definitions: `fixtures/medium/golden_queries.json`.
-- Snapshot output (manual): `fixtures/medium/golden_snapshot.json`.
+- Query definitions: `ops/fixtures/medium/golden_queries.json`.
+- Snapshot output (manual): `ops/fixtures/medium/golden_snapshot.json`.
 
 ## What
 

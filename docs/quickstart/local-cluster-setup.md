@@ -24,7 +24,7 @@ cargo run -p bijux-atlas-cli --bin bijux-atlas -- atlas catalog publish \
 
 ## 2) Run in Kubernetes
 
-- Use `charts/bijux-atlas/`.
+- Use `ops/k8s/charts/bijux-atlas/`.
 - Set cache root to an `emptyDir` volume.
 - Set store backend credentials via Secret.
 - Configure pinned datasets for warm startup.

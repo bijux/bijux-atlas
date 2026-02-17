@@ -44,5 +44,5 @@ Expected output: smoke and nightly suites complete with scored reports.
 
 - [Load Suites](suites.md)
 - [k6 Harness](k6.md)
-- [Perf Regression Policy](../observability/perf-regression-policy.md)
+- [Perf Regression Policy](../ops/observability/perf-regression-policy.md)
 - `ops-ci`
