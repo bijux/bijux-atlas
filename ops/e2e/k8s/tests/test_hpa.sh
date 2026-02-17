@@ -25,4 +25,12 @@ if [ "${END_REPLICAS:-0}" -le "${START_REPLICAS:-1}" ]; then
   fi
 fi
 
+kubectl -n "$NS" delete pod hpa-load --ignore-not-found >/dev/null 2>&1 || true
+sleep 30
+DOWNSCALED_REPLICAS="$(kubectl -n "$NS" get deploy "$SERVICE_NAME" -o jsonpath='{.status.replicas}' || echo "$END_REPLICAS")"
+if [ "${DOWNSCALED_REPLICAS:-0}" -gt "${END_REPLICAS:-0}" ]; then
+  echo "hpa downscale check failed: end=$END_REPLICAS downscaled=$DOWNSCALED_REPLICAS" >&2
+  exit 1
+fi
+
 echo "hpa gate passed"
