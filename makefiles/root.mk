@@ -4,6 +4,7 @@ include makefiles/cargo.mk
 include makefiles/cargo-dev.mk
 include makefiles/ci.mk
 include makefiles/docs.mk
+include makefiles/registry.mk
 include makefiles/help.mk
 include makefiles/layout.mk
 include makefiles/ops.mk
@@ -56,6 +57,48 @@ doctor:
 	@echo 'policy: local-noise is allowed locally; CI stays clean'
 	@$(MAKE) -s ops-tools-check
 
+ci: ## Run CI-equivalent meta pipeline mapped to workflow jobs
+	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-root-layout
+	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-script-entrypoints
+	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-fmt
+	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-clippy
+	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-test-nextest
+	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-policy-lint
+	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-policy-schema-drift
+	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-ssot-drift
+	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-docs-build
+	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-openapi-drift
+	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-query-plan-gate
+	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-workflows-make-only
+	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-make-help-drift
+
+local: ## Fast local loop (fmt + lint + test)
+	@ISO_ROOT=artifacts/isolates/local $(MAKE) fmt
+	@ISO_ROOT=artifacts/isolates/local $(MAKE) lint
+	@ISO_ROOT=artifacts/isolates/local $(MAKE) test
+
+local-full: ## Full local loop (fmt + lint + audit + test + coverage + docs)
+	@ISO_ROOT=artifacts/isolates/local-full $(MAKE) fmt
+	@ISO_ROOT=artifacts/isolates/local-full $(MAKE) lint
+	@ISO_ROOT=artifacts/isolates/local-full $(MAKE) audit
+	@ISO_ROOT=artifacts/isolates/local-full $(MAKE) test
+	@ISO_ROOT=artifacts/isolates/local-full $(MAKE) coverage
+	@ISO_ROOT=artifacts/isolates/local-full $(MAKE) docs
+	@ISO_ROOT=artifacts/isolates/local-full $(MAKE) docs-freeze
+
+contracts: ## Contracts meta pipeline (generate + format + drift checks)
+	@ISO_ROOT=artifacts/isolates/contracts $(MAKE) ssot-check
+	@ISO_ROOT=artifacts/isolates/contracts $(MAKE) policy-lint
+	@ISO_ROOT=artifacts/isolates/contracts $(MAKE) policy-schema-drift
+	@ISO_ROOT=artifacts/isolates/contracts $(MAKE) openapi-drift
+	@ISO_ROOT=artifacts/isolates/contracts $(MAKE) docs-freeze
+
+hygiene: ## Repo hygiene checks (layout + symlink + tracked-noise gates)
+	@ISO_ROOT=artifacts/isolates/hygiene $(MAKE) layout-check
+	@ISO_ROOT=artifacts/isolates/hygiene $(MAKE) scripts-audit
+	@ISO_ROOT=artifacts/isolates/hygiene $(MAKE) ci-workflows-make-only
+	@ISO_ROOT=artifacts/isolates/hygiene $(MAKE) ci-make-help-drift
+
 fetch-real-datasets:
 	@./scripts/fixtures/fetch-real-datasets.sh
 
@@ -72,7 +115,7 @@ release-update-compat-matrix:
 	@[ -n "$$TAG" ] || { echo "usage: make release-update-compat-matrix TAG=<tag>"; exit 2; }
 	@./scripts/release/update-compat-matrix.sh "$$TAG"
 
-.PHONY: help layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-graph scripts-lint scripts-format scripts-test scripts-audit scripts-clean artifacts-index artifacts-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts doctor fetch-real-datasets ssot-check policy-lint policy-schema-drift release-update-compat-matrix
+.PHONY: help layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-graph scripts-lint scripts-format scripts-test scripts-audit scripts-clean artifacts-index artifacts-clean isolate-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts doctor fetch-real-datasets ssot-check policy-lint policy-schema-drift release-update-compat-matrix ci local local-full contracts hygiene
 
 
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)
@@ -111,3 +154,6 @@ artifacts-index: ## Generate artifacts index for inspection UIs
 
 artifacts-clean: ## Clean old artifacts with safe retention
 	@python3 ./scripts/layout/clean_artifacts.py
+
+isolate-clean: ## Remove isolate output directories safely
+	@find artifacts/isolates -mindepth 1 -maxdepth 1 -type d -exec rm -r {} + 2>/dev/null || true
