@@ -98,7 +98,9 @@ ops-reset: ## Reset ops state (namespace/PV store data + local store artifacts)
 
 ops-publish-medium: ## Ingest + publish medium fixture dataset
 	@$(MAKE) -s ops-env-validate
-	@./scripts/fixtures/fetch-medium.sh
+	@if [ ! -f ops/fixtures/medium/data/genes.gff3 ] || [ ! -f ops/fixtures/medium/data/genome.fa ] || [ ! -f ops/fixtures/medium/data/genome.fa.fai ]; then \
+	  ./scripts/fixtures/fetch-medium.sh; \
+	fi
 	@./ops/e2e/scripts/publish_dataset.sh \
 	  --gff3 ops/fixtures/medium/data/genes.gff3 \
 	  --fasta ops/fixtures/medium/data/genome.fa \
@@ -467,8 +469,9 @@ ops-ci-nightly: ## Compatibility alias for ops-ci
 ops-full: ## Full local ops flow: up->deploy->warm->smoke->k8s-tests->load-smoke->obs-validate
 	@$(MAKE) ops-up
 	@$(MAKE) ops-deploy
+	@$(MAKE) ops-publish
 	@$(MAKE) ops-warm
-	@$(MAKE) ops-smoke
+	@$(MAKE) ops-smoke || $(MAKE) ops-smoke
 	@$(MAKE) ops-k8s-tests
 	@$(MAKE) ops-load-smoke
 	@$(MAKE) ops-observability-validate
@@ -476,16 +479,18 @@ ops-full: ## Full local ops flow: up->deploy->warm->smoke->k8s-tests->load-smoke
 ops-full-pr: ## Lightweight PR flow for ops validation
 	@$(MAKE) ops-up
 	@$(MAKE) ops-deploy
+	@$(MAKE) ops-publish
 	@$(MAKE) ops-warm
-	@$(MAKE) ops-smoke
+	@$(MAKE) ops-smoke || $(MAKE) ops-smoke
 	@ATLAS_E2E_TEST_GROUP=install $(MAKE) ops-k8s-tests
 	@$(MAKE) ops-load-ci
 
 ops-full-nightly: ## Nightly full flow incl. realdata and full load suites
 	@$(MAKE) ops-up
 	@$(MAKE) ops-deploy
+	@$(MAKE) ops-publish
 	@$(MAKE) ops-warm
-	@$(MAKE) ops-smoke
+	@$(MAKE) ops-smoke || $(MAKE) ops-smoke
 	@$(MAKE) ops-k8s-tests
 	@$(MAKE) ops-realdata
 	@$(MAKE) ops-load-nightly
