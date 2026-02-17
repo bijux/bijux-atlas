@@ -16,20 +16,20 @@ if ! command -v kubectl >/dev/null 2>&1; then
 fi
 
 if ! kind get clusters | grep -qx "$CLUSTER_NAME"; then
-  kind create cluster --config "$ROOT/e2e/stack/kind/cluster.yaml" --name "$CLUSTER_NAME"
+  kind create cluster --config "$ROOT/ops/e2e/stack/kind/cluster.yaml" --name "$CLUSTER_NAME"
 fi
 
-kubectl apply -f "$ROOT/e2e/stack/minio/minio.yaml"
-kubectl apply -f "$ROOT/e2e/stack/prometheus/prometheus.yaml"
+kubectl apply -f "$ROOT/ops/e2e/stack/minio/minio.yaml"
+kubectl apply -f "$ROOT/ops/e2e/stack/prometheus/prometheus.yaml"
 
 if [ "$ENABLE_REDIS" = "1" ]; then
-  kubectl apply -f "$ROOT/e2e/stack/redis/redis.yaml"
+  kubectl apply -f "$ROOT/ops/e2e/stack/redis/redis.yaml"
 fi
 
 if [ "$ENABLE_OTEL" = "1" ]; then
-  kubectl apply -f "$ROOT/e2e/stack/otel/otel-collector.yaml"
+  kubectl apply -f "$ROOT/ops/e2e/stack/otel/otel-collector.yaml"
 fi
 
-"$ROOT/e2e/stack/minio/bootstrap.sh"
+"$ROOT/ops/e2e/stack/minio/bootstrap.sh"
 
 echo "e2e stack is up"

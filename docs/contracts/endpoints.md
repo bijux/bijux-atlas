@@ -40,7 +40,7 @@ Does not define implementation internals outside this contract surface.
 - `GET /v1/version` telemetry class: `control`
 
 OpenAPI reference:
-- `openapi/v1/openapi.yaml`
+- `ops/openapi/v1/openapi.yaml`
 
 ## Failure modes
 

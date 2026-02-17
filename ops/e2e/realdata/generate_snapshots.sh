@@ -3,8 +3,8 @@ set -eu
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
 BASE_URL="${ATLAS_E2E_BASE_URL:-http://127.0.0.1:18080}"
-QUERIES_JSON="$ROOT/e2e/realdata/canonical_queries.json"
-OUT_JSON="${1:-$ROOT/artifacts/e2e/realdata/release110_snapshot.generated.json}"
+QUERIES_JSON="$ROOT/ops/e2e/realdata/canonical_queries.json"
+OUT_JSON="${1:-$ROOT/artifacts/ops/e2e/realdata/release110_snapshot.generated.json}"
 mkdir -p "$(dirname "$OUT_JSON")"
 
 python3 - "$BASE_URL" "$QUERIES_JSON" "$OUT_JSON" <<'PY'
@@ -38,7 +38,7 @@ for q in queries:
 
 payload = {
     "schema_version": 1,
-    "generated_from": "e2e/realdata/canonical_queries.json",
+    "generated_from": "ops/e2e/realdata/canonical_queries.json",
     "entries": entries,
 }
 out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")

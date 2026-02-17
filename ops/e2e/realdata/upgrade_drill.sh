@@ -2,10 +2,10 @@
 set -eu
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
-. "$ROOT/e2e/k8s/tests/common.sh"
+. "$ROOT/ops/e2e/k8s/tests/common.sh"
 need helm; need kubectl; need curl
 
-"$ROOT/e2e/realdata/run_two_release_diff.sh"
+"$ROOT/ops/e2e/realdata/run_two_release_diff.sh"
 
 BASE_URL="${ATLAS_E2E_BASE_URL:-http://127.0.0.1:18080}"
 Q="/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&limit=1"

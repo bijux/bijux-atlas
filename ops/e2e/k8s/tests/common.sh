@@ -4,7 +4,7 @@ set -eu
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 NS="${ATLAS_E2E_NAMESPACE:-atlas-e2e}"
 RELEASE="${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
-VALUES="${ATLAS_E2E_VALUES_FILE:-$ROOT/e2e/stack/values/local.yaml}"
+VALUES="${ATLAS_E2E_VALUES_FILE:-$ROOT/ops/e2e/stack/values/local.yaml}"
 CHART="$ROOT/charts/bijux-atlas"
 SERVICE_NAME="${ATLAS_E2E_SERVICE_NAME:-$RELEASE-bijux-atlas}"
 BASE_URL="${ATLAS_E2E_BASE_URL:-http://127.0.0.1:18080}"

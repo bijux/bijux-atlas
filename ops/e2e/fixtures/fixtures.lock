@@ -4,7 +4,7 @@
     {
       "id": "110/homo_sapiens/GRCh38",
       "pack": "medium-hsapiens-grch38-v110.tar.zst",
-      "url": "https://github.com/bijux/bijux-atlas/releases/download/fixtures-v1/medium-hsapiens-grch38-v110.tar.zst",
+      "url": "https://github.com/bijux/bijux-atlas/releases/downops/load/fixtures-v1/medium-hsapiens-grch38-v110.tar.zst",
       "sha256": "REPLACE_WITH_PINNED_SHA256"
     }
   ]

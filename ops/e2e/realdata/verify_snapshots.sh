@@ -2,10 +2,10 @@
 set -eu
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
-BASELINE="$ROOT/e2e/realdata/snapshots/release110_snapshot.json"
-OUT="${ATLAS_REALDATA_SNAPSHOT_OUT:-$ROOT/artifacts/e2e/realdata/release110_snapshot.generated.json}"
+BASELINE="$ROOT/ops/e2e/realdata/snapshots/release110_snapshot.json"
+OUT="${ATLAS_REALDATA_SNAPSHOT_OUT:-$ROOT/artifacts/ops/e2e/realdata/release110_snapshot.generated.json}"
 
-"$ROOT/e2e/realdata/generate_snapshots.sh" "$OUT"
+"$ROOT/ops/e2e/realdata/generate_snapshots.sh" "$OUT"
 
 if [ "${ATLAS_REALDATA_UPDATE_SNAPSHOT:-0}" = "1" ]; then
   cp "$OUT" "$BASELINE"
