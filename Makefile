@@ -10,7 +10,7 @@ include makefiles/policies.mk
 
 help:
 	@printf '%s\n' \
-	  'targets: fmt lint check test test-all coverage audit openapi-drift ci fetch-fixtures load-test load-test-1000qps cold-start-bench memory-profile-load run-medium-ingest run-medium-serve crate-structure cli-command-surface culprits-all culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir e2e-local' \
+	  'targets: fmt lint check test test-all coverage audit openapi-drift ci fetch-fixtures load-test load-test-1000qps cold-start-bench memory-profile-load run-medium-ingest run-medium-serve crate-structure cli-command-surface culprits-all culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir e2e-local e2e-k8s-install-gate e2e-k8s-suite' \
 	  'perf targets: perf-nightly' \
 	  'dev targets: dev-fmt dev-lint dev-check dev-test dev-test-all dev-coverage dev-audit dev-ci dev-clean'
 
@@ -26,3 +26,11 @@ e2e-local:
 	@./e2e/scripts/warmup.sh
 	@./e2e/scripts/smoke_queries.sh
 	@./e2e/scripts/verify_metrics.sh
+
+e2e-k8s-install-gate:
+	@./e2e/scripts/up.sh
+	@./e2e/k8s/tests/test_install.sh
+
+e2e-k8s-suite:
+	@./e2e/scripts/up.sh
+	@./e2e/k8s/tests/run_all.sh

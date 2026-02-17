@@ -1,0 +1,50 @@
+name: k8s-e2e-nightly
+
+on:
+  schedule:
+    - cron: "30 2 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  kind-helm-suite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      ATLAS_E2E_CLUSTER_NAME: bijux-atlas-e2e
+      ATLAS_E2E_NAMESPACE: atlas-e2e
+      ATLAS_E2E_RELEASE_NAME: atlas-e2e
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Set up Kind
+        uses: helm/kind-action@v1.10.0
+        with:
+          cluster_name: bijux-atlas-e2e
+          config: e2e/stack/kind/cluster.yaml
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Install helper tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl netcat-openbsd
+
+      - name: Bring up e2e dependencies
+        run: ./e2e/scripts/up.sh
+
+      - name: Helm install gate
+        run: ./e2e/k8s/tests/test_install.sh
+
+      - name: Run full kind+helm suite
+        run: ./e2e/k8s/tests/run_all.sh
+
+      - name: Tear down cluster
+        if: always()
+        run: ./e2e/scripts/down.sh
