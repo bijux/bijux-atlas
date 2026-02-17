@@ -33,7 +33,7 @@ for md in DOCS.rglob('*.md'):
                 if not p.exists() or not p.is_file() or not (p.stat().st_mode & 0o111):
                     errors.append(f"{md}: non-executable script path `{tok}`")
                 continue
-            if tok in {'curl','kubectl','k6','cargo','rg','python3','helm'}:
+            if tok in {'curl','kubectl','k6','cargo','rg','python3','helm','jq'}:
                 continue
             errors.append(f"{md}: command not backed by script path or allowed tool `{cmd}`")
 

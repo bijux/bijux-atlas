@@ -35,9 +35,14 @@ docs: ## Build docs + link-check + spell-check + lint
 	@python3 scripts/docs/check_k8s_docs_contract.py
 	@python3 scripts/docs/check_load_docs_contract.py
 	@python3 scripts/docs/check_broken_examples.py
+	@python3 scripts/docs/check_example_configs.py
+	@python3 scripts/docs/check_openapi_examples.py
+	@python3 scripts/docs/check_generated_contract_docs.py
 	@python3 scripts/docs/check_terminology_units_ssot.py
 	@python3 scripts/docs/lint_glossary_links.py
 	@python3 scripts/docs/lint_depth.py
+	@python3 scripts/docs/extract_code_blocks.py
+	@python3 scripts/docs/run_blessed_snippets.py
 	@./scripts/check-markdown-links.sh
 	@./scripts/docs/check_duplicate_topics.sh
 	@./scripts/docs/check_crate_docs_contract.sh
@@ -62,4 +67,8 @@ docs-freeze: ## Generated docs must be up-to-date with SSOT contracts
 		exit 1; \
 	fi
 
-.PHONY: docs docs-serve docs-freeze _docs-venv
+docs-hardening: ## Run full docs hardening pipeline
+	@$(MAKE) docs
+	@$(MAKE) docs-freeze
+
+.PHONY: docs docs-serve docs-freeze docs-hardening _docs-venv
