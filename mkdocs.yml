@@ -58,18 +58,15 @@ nav:
       - EMBL Setup: quickstart/EMBL_STYLE_SETUP.md
       - Client SDK Examples: quickstart/CLIENT_SDK_EXAMPLES.md
   - Reference:
-      - Performance:
-          - Query Benchmarks: reference/performance/query-benchmarks.md
-          - Redis Evaluation: reference/performance/redis.md
-      - Registry:
-          - Config Schema Versioning: reference/registry/config-schema-versioning.md
-      - Store:
-          - Dataset Lifecycle: reference/store/dataset-lifecycle.md
-          - No Implicit Default Dataset: reference/store/no-implicit-default-dataset.md
-      - Evolution:
-          - API Versioning: reference/evolution/API_VERSIONING.md
-          - JSON Compatibility: reference/evolution/JSON_COMPATIBILITY.md
-          - Sharding: reference/evolution/sharding.md
+      - Datasets: reference/datasets/INDEX.md
+      - Querying: reference/querying/INDEX.md
+      - Performance: reference/performance/INDEX.md
+      - Security: reference/security/INDEX.md
+      - Registry: reference/registry/INDEX.md
+      - Store: reference/store/INDEX.md
+      - Ingestion: reference/ingestion/INDEX.md
+      - Evolution: reference/evolution/API_VERSIONING.md
+      - Fixtures: reference/fixtures/medium-fixture.md
   - Contracts:
       - Contracts Overview: contracts/README.md
       - Contracts Index: contracts/_index.md
