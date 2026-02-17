@@ -52,6 +52,7 @@ ops-traces-check: ## Validate trace signal (when OTEL enabled)
 	@./scripts/observability/check_tracing_contract.py
 
 ops-k8s-tests: ## Run k8s e2e suite
+	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck
 	@./ops/e2e/k8s/tests/run_all.sh
 
 ops-k8s-template-tests: ## Run helm template/lint edge-case checks
@@ -113,6 +114,10 @@ ops-slo-burn: ## Compute SLO burn artifact from k6 score + metrics snapshot
 
 ops-script-coverage: ## Validate every ops/**/scripts entrypoint is exposed via make
 	@./scripts/layout/check_ops_script_targets.sh
+	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck
+
+ops-shellcheck: ## Lint all ops shell scripts via shared wrapper
+	@./ops/_lib/shellcheck.sh
 
 ops-kind-version-check: ## Validate pinned kind version from configs/ops/tool-versions.json
 	@python3 ./scripts/layout/check_tool_versions.py kind
@@ -198,6 +203,7 @@ ops-obs-down: ## Uninstall observability pack
 	@./ops/observability/scripts/uninstall_obs_pack.sh
 
 ops-ci: ## Nightly ops pipeline: up/deploy/warm/tests/load/drills/report
+	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck
 	@$(MAKE) ops-up
 	@$(MAKE) ops-reset
 	@$(MAKE) ops-publish-medium
