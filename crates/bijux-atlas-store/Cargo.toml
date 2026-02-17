@@ -16,10 +16,15 @@ serde_json.workspace = true
 criterion = "0.5"
 tempfile = "3.13.0"
 serde_json.workspace = true
+tiny_http = "0.12"
 
 [lib]
 path = "src/lib.rs"
 
 [[bench]]
 name = "checksum_pipeline"
+harness = false
+
+[[bench]]
+name = "catalog_merge"
 harness = false
