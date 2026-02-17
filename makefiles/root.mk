@@ -28,6 +28,7 @@ help:
 layout-check:
 	@./scripts/layout/check_root_shape.sh
 	@./scripts/layout/check_forbidden_root_names.sh
+	@./scripts/layout/check_no_forbidden_paths.sh
 	@./scripts/layout/check_ops_canonical_shims.sh
 	@./scripts/layout/check_repo_hygiene.sh
 	@./scripts/layout/check_artifacts_allowlist.sh
@@ -35,6 +36,7 @@ layout-check:
 	@./scripts/layout/check_chart_canonical_path.sh
 
 layout-migrate:
+	@./scripts/layout/replace_paths.sh --apply
 	@./scripts/layout/migrate.sh
 
 bootstrap:

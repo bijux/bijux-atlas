@@ -26,6 +26,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
       - run: make layout-check
+      - run: ./scripts/layout/check_no_forbidden_paths.sh
 
   script-entrypoints:
     runs-on: ubuntu-latest
