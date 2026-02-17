@@ -50,6 +50,8 @@ pub struct IngestOptions {
     pub emit_shards: bool,
     pub shard_partitions: usize,
     pub compute_gene_signatures: bool,
+    pub fail_on_warn: bool,
+    pub allow_overlap_gene_ids_across_contigs: bool,
 }
 
 impl Default for IngestOptions {
@@ -68,6 +70,8 @@ impl Default for IngestOptions {
             transcript_type_policy: TranscriptTypePolicy::default(),
             seqid_policy: SeqidNormalizationPolicy::default(),
             max_threads: 1,
+            fail_on_warn: false,
+            allow_overlap_gene_ids_across_contigs: false,
             emit_shards: false,
             shard_partitions: 0,
             compute_gene_signatures: true,
@@ -94,6 +98,11 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
     let contig_lengths = fai::read_fai_contig_lengths(&opts.fai_path)?;
     let records = parse_gff3_records(&opts.gff3_path)?;
     let extracted = extract_gene_rows(records, &contig_lengths, opts)?;
+    if opts.fail_on_warn && has_qc_warn(&extracted.anomaly) {
+        return Err(IngestError(
+            "strict warning policy rejected ingest: QC WARN present".to_string(),
+        ));
+    }
 
     let paths = artifact_paths(&opts.output_root, &opts.dataset);
     fs::create_dir_all(&paths.inputs_dir).map_err(|e| IngestError(e.to_string()))?;
@@ -152,6 +161,19 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
     })
 }
 
+fn has_qc_warn(anomaly: &IngestAnomalyReport) -> bool {
+    !anomaly.missing_parents.is_empty()
+        || !anomaly.missing_transcript_parents.is_empty()
+        || !anomaly.multiple_parent_transcripts.is_empty()
+        || !anomaly.unknown_contigs.is_empty()
+        || !anomaly.overlapping_ids.is_empty()
+        || !anomaly.duplicate_gene_ids.is_empty()
+        || !anomaly.overlapping_gene_ids_across_contigs.is_empty()
+        || !anomaly.orphan_transcripts.is_empty()
+        || !anomaly.parent_cycles.is_empty()
+        || !anomaly.attribute_fallbacks.is_empty()
+}
+
 pub fn read_fai_contig_lengths(
     path: &Path,
 ) -> Result<std::collections::BTreeMap<String, u64>, IngestError> {
@@ -186,6 +208,8 @@ mod tests {
             transcript_type_policy: TranscriptTypePolicy::default(),
             seqid_policy: SeqidNormalizationPolicy::default(),
             max_threads: 1,
+            fail_on_warn: false,
+            allow_overlap_gene_ids_across_contigs: false,
             emit_shards: false,
             shard_partitions: 0,
             compute_gene_signatures: true,
@@ -209,6 +233,28 @@ mod tests {
     }
 
     #[test]
+    fn deterministic_across_parallelism_settings() {
+        let root = tempdir().expect("tempdir");
+        let mut o1 = opts(root.path(), StrictnessMode::Strict);
+        o1.max_threads = 1;
+        let run1 = ingest_dataset(&o1).expect("run1");
+
+        let alt = tempdir().expect("tempdir2");
+        let mut o2 = opts(alt.path(), StrictnessMode::Strict);
+        o2.max_threads = 8;
+        let run2 = ingest_dataset(&o2).expect("run2");
+
+        assert_eq!(
+            run1.manifest.dataset_signature_sha256,
+            run2.manifest.dataset_signature_sha256
+        );
+        assert_eq!(
+            run1.manifest.checksums.sqlite_sha256,
+            run2.manifest.checksums.sqlite_sha256
+        );
+    }
+
+    #[test]
     fn strict_mode_rejects_missing_parent() {
         let root = tempdir().expect("tempdir");
         let mut o = opts(root.path(), StrictnessMode::Strict);
@@ -223,6 +269,44 @@ mod tests {
         o.gff3_path = fixture_dir().join("genes_missing_parent.gff3");
         let result = ingest_dataset(&o).expect("report only should succeed");
         assert!(!result.anomaly_report.missing_parents.is_empty());
+    }
+
+    #[test]
+    fn strict_warn_mode_fails_on_qc_warn() {
+        let root = tempdir().expect("tempdir");
+        let mut o = opts(root.path(), StrictnessMode::ReportOnly);
+        o.gff3_path = fixture_dir().join("genes_missing_parent.gff3");
+        o.fail_on_warn = true;
+        let err = ingest_dataset(&o).expect_err("strict warn must fail");
+        assert!(err.to_string().contains("QC WARN"));
+    }
+
+    #[test]
+    fn cyclic_parent_graph_is_detected() {
+        let root = tempdir().expect("tempdir");
+        let mut o = opts(root.path(), StrictnessMode::Strict);
+        o.gff3_path = fixture_dir().join("genes_parent_cycle.gff3");
+        let err = ingest_dataset(&o).expect_err("cycle must fail in strict mode");
+        assert!(err.to_string().contains("cyclic Parent graph"));
+    }
+
+    #[test]
+    fn overlapping_gene_ids_across_contigs_requires_explicit_allow() {
+        let root = tempdir().expect("tempdir");
+        let mut strict = opts(root.path(), StrictnessMode::Strict);
+        strict.gff3_path = fixture_dir().join("genes_overlap_contig_ids.gff3");
+        let err = ingest_dataset(&strict).expect_err("strict overlap must fail");
+        assert!(err.to_string().contains("appears across multiple contigs"));
+
+        let ok_root = tempdir().expect("tempdir2");
+        let mut allowed = opts(ok_root.path(), StrictnessMode::Lenient);
+        allowed.gff3_path = fixture_dir().join("genes_overlap_contig_ids.gff3");
+        allowed.allow_overlap_gene_ids_across_contigs = true;
+        let run = ingest_dataset(&allowed).expect("allowed overlap should ingest");
+        assert!(!run
+            .anomaly_report
+            .overlapping_gene_ids_across_contigs
+            .is_empty());
     }
 
     #[test]
@@ -353,5 +437,19 @@ mod tests {
                 shard_file.display()
             );
         }
+    }
+
+    #[test]
+    fn tiny_fixture_matches_cross_machine_golden_hashes() {
+        let root = tempdir().expect("tempdir");
+        let run = ingest_dataset(&opts(root.path(), StrictnessMode::Strict)).expect("ingest");
+        assert_eq!(
+            run.manifest.checksums.sqlite_sha256,
+            "46f66666613707b07e80efb812b1d03ea52636247ee4f4318b4a7ab86e776c85"
+        );
+        assert_eq!(
+            run.manifest.dataset_signature_sha256,
+            "ac9d84787df58ceb9fd9d263bc5c9af06c7976a9183b1a123979398468a9586f"
+        );
     }
 }

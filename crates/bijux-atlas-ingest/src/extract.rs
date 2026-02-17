@@ -1,10 +1,13 @@
 use crate::gff3::Gff3Record;
 use crate::{IngestError, IngestOptions};
 use bijux_atlas_core::canonical;
-use bijux_atlas_model::{DuplicateGeneIdPolicy, IngestAnomalyReport, StrictnessMode};
+use bijux_atlas_model::{
+    DuplicateGeneIdPolicy, GeneIdentifierPolicy, IngestAnomalyReport, StrictnessMode,
+};
+use serde::Serialize;
 use std::collections::{BTreeMap, HashMap};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct GeneRecord {
     pub gene_id: String,
     pub gene_name: String,
@@ -19,7 +22,7 @@ pub struct GeneRecord {
     pub sequence_length: u64,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct TranscriptRecord {
     pub transcript_id: String,
     pub parent_gene_id: String,
@@ -63,12 +66,21 @@ pub fn extract_gene_rows(
     let mut anomaly = IngestAnomalyReport::default();
 
     let mut seen_feature_ids: HashMap<String, String> = HashMap::new();
+    let parent_cycles = detect_parent_cycles(&records);
+    if !parent_cycles.is_empty() {
+        anomaly.parent_cycles = parent_cycles;
+        if matches!(opts.strictness, StrictnessMode::Strict) {
+            return Err(IngestError(
+                "cyclic Parent graph detected in GFF3 features".to_string(),
+            ));
+        }
+    }
 
     for rec in records {
         let seqid = opts.seqid_policy.normalize(&rec.seqid);
 
-        for dup in rec.duplicate_attr_keys {
-            anomaly.overlapping_ids.push(dup);
+        for dup in &rec.duplicate_attr_keys {
+            anomaly.overlapping_ids.push(dup.clone());
         }
 
         if let Some(fid) = rec.attrs.get("ID") {
@@ -95,6 +107,11 @@ pub fn extract_gene_rows(
                     matches!(opts.strictness, StrictnessMode::Strict),
                 )
                 .map_err(|e| IngestError(e.to_string()))?;
+            if used_gene_id_fallback(&rec.attrs, opts) {
+                anomaly
+                    .attribute_fallbacks
+                    .push(format!("gene_id_fallback:{gff3_id}"));
+            }
 
             let Some(contig_len) = contig_lengths.get(&seqid) else {
                 anomaly.unknown_contigs.push(seqid.clone());
@@ -128,6 +145,16 @@ pub fn extract_gene_rows(
                 cds_present: false,
                 sequence_length: rec.end - rec.start + 1,
             };
+            if record.gene_name == gene_id {
+                anomaly
+                    .attribute_fallbacks
+                    .push(format!("gene_name_fallback:{gene_id}"));
+            }
+            if record.biotype == opts.biotype_policy.unknown_value {
+                anomaly
+                    .attribute_fallbacks
+                    .push(format!("biotype_fallback:{gene_id}"));
+            }
             genes.entry(gene_id).or_default().push(record);
         } else if opts.transcript_type_policy.accepts(&rec.feature_type) {
             let tx_id = rec
@@ -212,6 +239,21 @@ pub fn extract_gene_rows(
         };
         if candidates.len() > 1 {
             anomaly.duplicate_gene_ids.push(key.clone());
+            let seqids: std::collections::BTreeSet<String> =
+                candidates.iter().map(|x| x.seqid.clone()).collect();
+            if seqids.len() > 1 {
+                anomaly
+                    .overlapping_gene_ids_across_contigs
+                    .push(key.clone());
+                if !opts.allow_overlap_gene_ids_across_contigs
+                    && matches!(opts.strictness, StrictnessMode::Strict)
+                {
+                    return Err(IngestError(format!(
+                        "gene_id {key} appears across multiple contigs: {:?}",
+                        seqids
+                    )));
+                }
+            }
             match opts.duplicate_gene_id_policy {
                 DuplicateGeneIdPolicy::Fail => {
                     if matches!(opts.strictness, StrictnessMode::Strict) {
@@ -276,7 +318,15 @@ pub fn extract_gene_rows(
             .copied()
             .unwrap_or(false);
     }
-    transcript_rows_pending.retain(|tx| deduped.contains_key(&tx.parent_gene_id));
+    let mut retained = Vec::with_capacity(transcript_rows_pending.len());
+    for tx in transcript_rows_pending {
+        if deduped.contains_key(&tx.parent_gene_id) {
+            retained.push(tx);
+        } else {
+            anomaly.orphan_transcripts.push(tx.transcript_id);
+        }
+    }
+    let mut transcript_rows_pending = retained;
     transcript_rows_pending.sort_by(|a, b| {
         a.seqid
             .cmp(&b.seqid)
@@ -301,12 +351,23 @@ pub fn extract_gene_rows(
     anomaly.overlapping_ids = canonical::stable_sort_by_key(anomaly.overlapping_ids, |x| x.clone());
     anomaly.duplicate_gene_ids =
         canonical::stable_sort_by_key(anomaly.duplicate_gene_ids, |x| x.clone());
+    anomaly.overlapping_gene_ids_across_contigs =
+        canonical::stable_sort_by_key(anomaly.overlapping_gene_ids_across_contigs, |x| x.clone());
+    anomaly.orphan_transcripts =
+        canonical::stable_sort_by_key(anomaly.orphan_transcripts, |x| x.clone());
+    anomaly.parent_cycles = canonical::stable_sort_by_key(anomaly.parent_cycles, |x| x.clone());
+    anomaly.attribute_fallbacks =
+        canonical::stable_sort_by_key(anomaly.attribute_fallbacks, |x| x.clone());
     anomaly.missing_parents.dedup();
     anomaly.missing_transcript_parents.dedup();
     anomaly.multiple_parent_transcripts.dedup();
     anomaly.unknown_contigs.dedup();
     anomaly.overlapping_ids.dedup();
     anomaly.duplicate_gene_ids.dedup();
+    anomaly.overlapping_gene_ids_across_contigs.dedup();
+    anomaly.orphan_transcripts.dedup();
+    anomaly.parent_cycles.dedup();
+    anomaly.attribute_fallbacks.dedup();
 
     let mut gene_rows: Vec<GeneRecord> = deduped.into_values().collect();
     gene_rows.sort_by(|a, b| {
@@ -331,6 +392,89 @@ pub fn extract_gene_rows(
         biotype_distribution,
         contig_distribution,
     })
+}
+
+fn used_gene_id_fallback(
+    attrs: &std::collections::BTreeMap<String, String>,
+    opts: &IngestOptions,
+) -> bool {
+    match &opts.gene_identifier_policy {
+        GeneIdentifierPolicy::Gff3Id => false,
+        GeneIdentifierPolicy::PreferEnsemblStableId {
+            attribute_keys,
+            fallback_to_gff3_id,
+        } => {
+            if !fallback_to_gff3_id {
+                return false;
+            }
+            !attribute_keys
+                .iter()
+                .any(|k| attrs.get(k).map(|v| !v.trim().is_empty()).unwrap_or(false))
+        }
+        _ => false,
+    }
+}
+
+fn detect_parent_cycles(records: &[Gff3Record]) -> Vec<String> {
+    let mut edges: HashMap<String, Vec<String>> = HashMap::new();
+    for rec in records {
+        let Some(id) = rec.attrs.get("ID").cloned() else {
+            continue;
+        };
+        let parents = rec
+            .attrs
+            .get("Parent")
+            .map(|x| {
+                x.split(',')
+                    .map(str::trim)
+                    .filter(|p| !p.is_empty())
+                    .map(ToString::to_string)
+                    .collect::<Vec<_>>()
+            })
+            .unwrap_or_default();
+        edges.insert(id, parents);
+    }
+
+    #[derive(Clone, Copy, PartialEq, Eq)]
+    enum Color {
+        White,
+        Gray,
+        Black,
+    }
+    let mut color: HashMap<String, Color> =
+        edges.keys().map(|k| (k.clone(), Color::White)).collect();
+    let mut cycles = Vec::new();
+
+    fn dfs(
+        node: &str,
+        edges: &HashMap<String, Vec<String>>,
+        color: &mut HashMap<String, Color>,
+        stack: &mut Vec<String>,
+        out: &mut Vec<String>,
+    ) {
+        color.insert(node.to_string(), Color::Gray);
+        stack.push(node.to_string());
+        if let Some(nexts) = edges.get(node) {
+            for nxt in nexts {
+                let c = *color.get(nxt).unwrap_or(&Color::White);
+                if c == Color::Gray {
+                    out.push(format!("cycle:{}->{}", node, nxt));
+                } else if c == Color::White {
+                    dfs(nxt, edges, color, stack, out);
+                }
+            }
+        }
+        stack.pop();
+        color.insert(node.to_string(), Color::Black);
+    }
+
+    let keys: Vec<String> = edges.keys().cloned().collect();
+    for k in keys {
+        if color.get(&k) == Some(&Color::White) {
+            dfs(&k, &edges, &mut color, &mut Vec::new(), &mut cycles);
+        }
+    }
+    cycles
 }
 
 pub fn parallelism_policy(max_threads: usize) -> Result<usize, IngestError> {

@@ -3,7 +3,7 @@ use crate::IngestError;
 use bijux_atlas_core::canonical;
 use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::{
-    ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats, ValidationError,
+    ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats, QcSeverity, ValidationError,
 };
 use serde_json::json;
 use std::collections::BTreeSet;
@@ -49,7 +49,7 @@ pub fn build_and_write_manifest_and_reports(
         contigs.insert(g.seqid.clone());
     }
 
-    let manifest = ArtifactManifest::new(
+    let mut manifest = ArtifactManifest::new(
         "1".to_string(),
         "1".to_string(),
         dataset.clone(),
@@ -65,6 +65,7 @@ pub fn build_and_write_manifest_and_reports(
             contigs.len() as u64,
         ),
     );
+    manifest.dataset_signature_sha256 = dataset_signature_merkle(extract)?;
 
     manifest
         .validate_strict()
@@ -78,8 +79,51 @@ pub fn build_and_write_manifest_and_reports(
         canonical::stable_json_bytes(&extract.anomaly).map_err(|e| IngestError(e.to_string()))?;
     fs::write(anomaly_path, anomaly_bytes).map_err(|e| IngestError(e.to_string()))?;
 
+    let warn_items = vec![
+        ("missing_parents", extract.anomaly.missing_parents.len()),
+        (
+            "missing_transcript_parents",
+            extract.anomaly.missing_transcript_parents.len(),
+        ),
+        (
+            "multiple_parent_transcripts",
+            extract.anomaly.multiple_parent_transcripts.len(),
+        ),
+        ("unknown_contigs", extract.anomaly.unknown_contigs.len()),
+        ("overlapping_ids", extract.anomaly.overlapping_ids.len()),
+        (
+            "duplicate_gene_ids",
+            extract.anomaly.duplicate_gene_ids.len(),
+        ),
+        (
+            "overlapping_gene_ids_across_contigs",
+            extract.anomaly.overlapping_gene_ids_across_contigs.len(),
+        ),
+        (
+            "orphan_transcripts",
+            extract.anomaly.orphan_transcripts.len(),
+        ),
+        ("parent_cycles", extract.anomaly.parent_cycles.len()),
+        (
+            "attribute_fallbacks",
+            extract.anomaly.attribute_fallbacks.len(),
+        ),
+    ];
+    let warn_codes: Vec<serde_json::Value> = warn_items
+        .into_iter()
+        .filter(|(_, count)| *count > 0)
+        .map(|(code, count)| {
+            json!({
+                "severity": QcSeverity::Warn,
+                "code": code,
+                "count": count,
+            })
+        })
+        .collect();
+
     let qc_report = json!({
         "dataset": dataset,
+        "manifest_signature_sha256": manifest.dataset_signature_sha256,
         "gene_count": extract.gene_rows.len(),
         "transcript_count": total_transcripts,
         "transcript_summary_count": extract.transcript_rows.len(),
@@ -92,7 +136,18 @@ pub fn build_and_write_manifest_and_reports(
             "unknown_contigs": extract.anomaly.unknown_contigs,
             "overlapping_ids": extract.anomaly.overlapping_ids,
             "duplicate_gene_ids": extract.anomaly.duplicate_gene_ids,
+            "overlapping_gene_ids_across_contigs": extract.anomaly.overlapping_gene_ids_across_contigs,
+            "orphan_transcripts": extract.anomaly.orphan_transcripts,
+            "parent_cycles": extract.anomaly.parent_cycles,
+            "attribute_fallbacks": extract.anomaly.attribute_fallbacks,
+        },
+        "severity_summary": {
+            "INFO": 0,
+            "WARN": warn_codes.len(),
+            "ERROR": 0
         }
+        ,
+        "severity_items": warn_codes,
     });
     let qc_bytes =
         canonical::stable_json_bytes(&qc_report).map_err(|e| IngestError(e.to_string()))?;
@@ -108,4 +163,54 @@ pub fn build_and_write_manifest_and_reports(
         manifest,
         qc_report_path,
     })
+}
+
+fn dataset_signature_merkle(extract: &ExtractResult) -> Result<String, IngestError> {
+    let gene_hashes: Vec<String> = extract
+        .gene_rows
+        .iter()
+        .map(|row| canonical::stable_json_bytes(row).map(|b| sha256_hex(&b)))
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|e| IngestError(e.to_string()))?;
+    let tx_hashes: Vec<String> = extract
+        .transcript_rows
+        .iter()
+        .map(|row| canonical::stable_json_bytes(row).map(|b| sha256_hex(&b)))
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|e| IngestError(e.to_string()))?;
+    let root_payload = json!({
+        "gene_table_hash": merkle_root(&gene_hashes),
+        "transcript_table_hash": merkle_root(&tx_hashes),
+        "gene_count": extract.gene_rows.len(),
+        "transcript_count": extract.transcript_rows.len(),
+    });
+    let bytes =
+        canonical::stable_json_bytes(&root_payload).map_err(|e| IngestError(e.to_string()))?;
+    Ok(sha256_hex(&bytes))
+}
+
+fn merkle_root(leaves: &[String]) -> String {
+    if leaves.is_empty() {
+        return sha256_hex(b"");
+    }
+    let mut level = leaves.to_vec();
+    while level.len() > 1 {
+        let mut next = Vec::with_capacity(level.len().div_ceil(2));
+        let mut i = 0usize;
+        while i < level.len() {
+            let left = &level[i];
+            let right = if i + 1 < level.len() {
+                &level[i + 1]
+            } else {
+                left
+            };
+            let mut joined = String::with_capacity(left.len() + right.len());
+            joined.push_str(left);
+            joined.push_str(right);
+            next.push(sha256_hex(joined.as_bytes()));
+            i += 2;
+        }
+        level = next;
+    }
+    level[0].clone()
 }

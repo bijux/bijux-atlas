@@ -11,6 +11,7 @@ Pipeline stages:
 - Resolve parent-child transcript relationships.
 - Materialize deterministic SQLite and metadata artifacts.
 - Optional shard materialization: `per-seqid` or bounded partition count for large datasets.
+- Strict warning mode (`--strict`) can fail ingest when QC WARN items are present.
 
 Docs:
 - [Architecture](ARCHITECTURE.md)

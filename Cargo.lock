@@ -286,6 +286,7 @@ dependencies = [
  "bijux-atlas-model",
  "criterion",
  "rusqlite",
+ "serde",
  "serde_json",
  "tempfile",
 ]
