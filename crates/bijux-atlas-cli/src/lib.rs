@@ -1,8 +1,8 @@
 #![forbid(unsafe_code)]
 
 mod artifact_validation;
+mod command_output_adapters;
 mod commands;
-mod helpers;
 
 use bijux_atlas_core::{
     canonical, resolve_bijux_cache_dir, resolve_bijux_config_path, sha256_hex, ConfigPathScope,
@@ -520,7 +520,9 @@ fn run_atlas_command(
         )
         .map_err(CliError::internal),
         AtlasCommand::Openapi { command } => match command {
-            OpenapiCommand::Generate { out } => helpers::run_openapi_generate(out, output_mode),
+            OpenapiCommand::Generate { out } => {
+                command_output_adapters::run_openapi_generate(out, output_mode)
+            }
         }
         .map_err(CliError::dependency),
     }

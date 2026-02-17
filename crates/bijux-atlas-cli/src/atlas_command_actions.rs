@@ -70,7 +70,7 @@ fn run_bench_command(
     if !status.success() {
         return Err(format!("benchmark command failed with status {status}"));
     }
-    helpers::emit_ok(
+    command_output_adapters::emit_ok(
         output_mode,
         json!({
             "command":"atlas bench",
@@ -142,7 +142,7 @@ fn print_version(verbose: bool, output_mode: OutputMode) -> Result<(), String> {
     } else {
         json!({"name":"bijux-atlas","version": env!("CARGO_PKG_VERSION")})
     };
-    helpers::emit_ok(output_mode, payload)?;
+    command_output_adapters::emit_ok(output_mode, payload)?;
     Ok(())
 }
 
@@ -172,7 +172,7 @@ fn run_serve(log_flags: LogFlags, output_mode: OutputMode) -> Result<(), String>
         )
     })?;
     if status.success() {
-        helpers::emit_ok(output_mode, json!({"command":"atlas serve","status":"ok"}))?;
+        command_output_adapters::emit_ok(output_mode, json!({"command":"atlas serve","status":"ok"}))?;
         Ok(())
     } else {
         Err(format!("atlas-server exited with status {status}"))
@@ -288,7 +288,7 @@ fn doctor(output_mode: OutputMode) -> Result<(), String> {
     let all_ok = checks
         .iter()
         .all(|c| c.get("ok").and_then(Value::as_bool).unwrap_or(false));
-    helpers::emit_ok(
+    command_output_adapters::emit_ok(
         output_mode,
         json!({"command":"atlas doctor","status": if all_ok {"ok"} else {"degraded"}, "checks": checks}),
     )?;
@@ -385,7 +385,7 @@ fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String
     })
     .map_err(|e| e.to_string())?;
 
-    helpers::emit_ok(
+    command_output_adapters::emit_ok(
         output_mode,
         json!({
             "command":"atlas ingest",
@@ -435,7 +435,7 @@ fn inspect_db(db: PathBuf, sample_rows: usize, output_mode: OutputMode) -> Resul
         .map_err(|e| e.to_string())?
         .collect::<Result<Vec<_>, _>>()
         .map_err(|e| e.to_string())?;
-    helpers::emit_ok(
+    command_output_adapters::emit_ok(
         output_mode,
         json!({
             "command":"atlas inspect-db",
@@ -494,7 +494,7 @@ fn explain_query(args: ExplainQueryArgs, output_mode: OutputMode) -> Result<(), 
     let cost_units = bijux_atlas_query::estimate_work_units(&req);
     let lines = explain_query_plan(&conn, &req, &QueryLimits::default(), b"atlas-cli")
         .map_err(|e| e.to_string())?;
-    helpers::emit_ok(
+    command_output_adapters::emit_ok(
         output_mode,
         json!({
             "command":"atlas explain",
@@ -514,7 +514,7 @@ fn smoke_dataset(
     snapshot_out: PathBuf,
     output_mode: OutputMode,
 ) -> Result<(), String> {
-    let (release, species, assembly) = helpers::parse_dataset_id(dataset)?;
+    let (release, species, assembly) = command_output_adapters::parse_dataset_id(dataset)?;
     let id = DatasetId::new(&release, &species, &assembly).map_err(|e| e.to_string())?;
     let paths = bijux_atlas_model::artifact_paths(&root, &id);
     let conn = Connection::open(&paths.sqlite).map_err(|e| e.to_string())?;
@@ -538,7 +538,7 @@ fn smoke_dataset(
         let body = q
             .get("query")
             .ok_or_else(|| "golden query missing query object".to_string())?;
-        let req = helpers::query_request_from_json(body)?;
+        let req = command_output_adapters::query_request_from_json(body)?;
         let resp = bijux_atlas_query::query_genes(&conn, &req, &QueryLimits::default(), b"smoke")
             .map_err(|e| e.to_string())?;
         if resp.rows.is_empty() && name == "by_gene_id" {
@@ -560,7 +560,7 @@ fn smoke_dataset(
         .map_err(|e| e.to_string())?;
     }
 
-    helpers::emit_ok(
+    command_output_adapters::emit_ok(
         output_mode,
         json!({
             "command":"atlas smoke",
