@@ -209,6 +209,30 @@ pub(crate) fn propagated_request_id(headers: &HeaderMap, state: &AppState) -> St
     make_request_id(state)
 }
 
+pub(crate) fn normalized_forwarded_for(headers: &HeaderMap) -> Option<String> {
+    let raw = headers.get("x-forwarded-for")?.to_str().ok()?;
+    let first = raw.split(',').next()?.trim();
+    if first.is_empty() || first.len() > 64 {
+        return None;
+    }
+    if first
+        .bytes()
+        .all(|b| b.is_ascii_alphanumeric() || b == b'.' || b == b':' || b == b'-')
+    {
+        Some(first.to_string())
+    } else {
+        None
+    }
+}
+
+pub(crate) fn normalized_api_key(headers: &HeaderMap) -> Option<String> {
+    let key = headers.get("x-api-key")?.to_str().ok()?.trim();
+    if key.is_empty() || key.len() > 256 {
+        return None;
+    }
+    Some(key.to_string())
+}
+
 pub(crate) fn with_request_id(mut response: Response, request_id: &str) -> Response {
     if let Ok(v) = HeaderValue::from_str(request_id) {
         response.headers_mut().insert("x-request-id", v);

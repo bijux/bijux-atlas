@@ -231,10 +231,10 @@ async fn sequence_common(
         1.0
     };
 
-    if let Some(ip) = headers.get("x-forwarded-for").and_then(|v| v.to_str().ok()) {
+    if let Some(ip) = super::handlers::normalized_forwarded_for(&headers) {
         if !state
             .sequence_ip_limiter
-            .allow_with_factor(ip, &state.api.sequence_rate_limit_per_ip, adaptive_rl)
+            .allow_with_factor(&ip, &state.api.sequence_rate_limit_per_ip, adaptive_rl)
             .await
         {
             let resp = api_error_response(
@@ -332,7 +332,7 @@ async fn sequence_common(
         return with_request_id(resp, &request_id);
     }
     if requested_bases as usize >= state.api.sequence_api_key_required_bases
-        && headers.get("x-api-key").is_none()
+        && super::handlers::normalized_api_key(&headers).is_none()
     {
         let resp = api_error_response(
             StatusCode::UNAUTHORIZED,

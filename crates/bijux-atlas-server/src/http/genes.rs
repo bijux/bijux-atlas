@@ -155,10 +155,10 @@ pub(crate) async fn genes_handler(
         1.0
     };
 
-    if let Some(ip) = headers.get("x-forwarded-for").and_then(|v| v.to_str().ok()) {
+    if let Some(ip) = super::handlers::normalized_forwarded_for(&headers) {
         if !state
             .ip_limiter
-            .allow_with_factor(ip, &state.api.rate_limit_per_ip, adaptive_rl)
+            .allow_with_factor(&ip, &state.api.rate_limit_per_ip, adaptive_rl)
             .await
         {
             let resp = super::handlers::api_error_response(
@@ -182,10 +182,10 @@ pub(crate) async fn genes_handler(
     }
 
     if state.api.enable_api_key_rate_limit {
-        if let Some(key) = headers.get("x-api-key").and_then(|v| v.to_str().ok()) {
+        if let Some(key) = super::handlers::normalized_api_key(&headers) {
             if !state
                 .api_key_limiter
-                .allow_with_factor(key, &state.api.rate_limit_per_api_key, adaptive_rl)
+                .allow_with_factor(&key, &state.api.rate_limit_per_api_key, adaptive_rl)
                 .await
             {
                 let resp = super::handlers::api_error_response(

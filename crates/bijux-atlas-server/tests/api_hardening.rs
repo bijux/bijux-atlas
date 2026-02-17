@@ -8,8 +8,10 @@ use bijux_atlas_model::{
 use bijux_atlas_server::{
     build_router, ApiConfig, AppState, DatasetCacheConfig, DatasetCacheManager, FakeStore,
 };
+use hmac::{Hmac, Mac};
 use rusqlite::Connection;
 use serde_json::Value;
+use sha2::Sha256;
 use tempfile::tempdir;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
@@ -534,6 +536,144 @@ async fn diff_endpoints_return_added_removed_changed_and_support_latest_alias() 
     assert_eq!(status, 200);
     assert!(body.contains("\"gC\""));
     assert!(!body.contains("\"gA\""));
+}
+
+fn sign_hmac(secret: &str, method: &str, uri: &str, ts: &str) -> String {
+    let mut mac = Hmac::<Sha256>::new_from_slice(secret.as_bytes()).expect("hmac init");
+    let payload = format!("{method}\n{uri}\n{ts}\n");
+    mac.update(payload.as_bytes());
+    hex::encode(mac.finalize().into_bytes())
+}
+
+#[tokio::test]
+async fn security_limits_api_key_hmac_and_cors_are_enforced() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds, sqlite);
+    let tmp = tempdir().expect("tempdir");
+    let cache = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..DatasetCacheConfig::default()
+        },
+        store,
+    );
+    let api = ApiConfig {
+        max_uri_bytes: 128,
+        max_header_bytes: 1024,
+        require_api_key: true,
+        allowed_api_keys: vec!["k1".to_string()],
+        hmac_secret: Some("s3cr3t".to_string()),
+        hmac_required: true,
+        cors_allowed_origins: vec!["https://atlas.example.org".to_string()],
+        ..ApiConfig::default()
+    };
+    let app = build_router(AppState::with_config(cache, api, Default::default()));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind");
+    let addr = listener.local_addr().expect("addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, _, body) = send_raw(addr, "/v1/datasets", &[]).await;
+    assert_eq!(status, 401);
+    assert!(body.contains("api key required"));
+
+    let (status, _, body) = send_raw(addr, "/v1/datasets", &[("x-api-key", "bad")]).await;
+    assert_eq!(status, 401);
+    assert!(body.contains("invalid api key"));
+
+    let ts = (std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .expect("unix")
+        .as_secs())
+    .to_string();
+    let uri = "/v1/datasets";
+    let sig = sign_hmac("s3cr3t", "GET", uri, &ts);
+    let (status, _, _) = send_raw(
+        addr,
+        uri,
+        &[
+            ("x-api-key", "k1"),
+            ("x-bijux-timestamp", &ts),
+            ("x-bijux-signature", &sig),
+            ("Origin", "https://atlas.example.org"),
+        ],
+    )
+    .await;
+    assert_eq!(status, 200);
+
+    let (status, headers, _) = send_raw(
+        addr,
+        uri,
+        &[
+            ("x-api-key", "k1"),
+            ("x-bijux-timestamp", &ts),
+            ("x-bijux-signature", &sig),
+            ("Origin", "https://atlas.example.org"),
+        ],
+    )
+    .await;
+    assert_eq!(status, 200);
+    assert!(headers.contains("access-control-allow-origin: https://atlas.example.org"));
+    let (status, headers, _) = send_raw(
+        addr,
+        uri,
+        &[
+            ("x-api-key", "k1"),
+            ("x-bijux-timestamp", &ts),
+            ("x-bijux-signature", &sig),
+            ("Origin", "https://evil.example.org"),
+        ],
+    )
+    .await;
+    assert_eq!(status, 200);
+    assert!(!headers.contains("access-control-allow-origin"));
+
+    let (status, _, body) = send_raw(
+        addr,
+        uri,
+        &[("x-api-key", "k1"), ("x-bijux-timestamp", &ts)],
+    )
+    .await;
+    assert_eq!(status, 401);
+    assert!(body.contains("missing required HMAC headers"));
+}
+
+#[tokio::test]
+async fn rate_limit_bypass_prevention_uses_normalized_forwarded_ip() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds.clone(), sqlite);
+    let tmp = tempdir().expect("tempdir");
+    let cache = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..DatasetCacheConfig::default()
+        },
+        store,
+    );
+    let api = ApiConfig {
+        rate_limit_per_ip: bijux_atlas_server::RateLimitConfig {
+            capacity: 1.0,
+            refill_per_sec: 0.0,
+        },
+        ..ApiConfig::default()
+    };
+    let app = build_router(AppState::with_config(cache, api, Default::default()));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind");
+    let addr = listener.local_addr().expect("addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let path = "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1";
+    let (status, _, _) = send_raw(addr, path, &[("x-forwarded-for", "1.2.3.4, 9.9.9.9")]).await;
+    assert_ne!(status, 429);
+    let (status, _, _) = send_raw(addr, path, &[("x-forwarded-for", "1.2.3.4, 8.8.8.8")]).await;
+    assert_eq!(status, 429);
 }
 
 #[tokio::test]
