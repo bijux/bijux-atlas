@@ -11,6 +11,7 @@ Defines local-only files/directories that are tolerated in developer workspaces.
 - `.idea/`: editor metadata, ignored locally, never tracked.
 - `.DS_Store`: OS metadata, ignored locally, never tracked.
 - `target/`: local build cache may exist, but must never be tracked and must not appear in CI workspaces.
+- `.ruff_cache/`: local Python linter cache, ignored locally, never tracked.
 
 ## Enforcement
 

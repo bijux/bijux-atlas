@@ -36,6 +36,7 @@
   "local_noise": [
     ".idea",
     ".DS_Store",
-    "target"
+    "target",
+    ".ruff_cache"
   ]
 }
