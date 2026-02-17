@@ -174,6 +174,7 @@ ops-observability-validate: ## Validate observability assets/contracts end-to-en
 	@$(MAKE) ops-alerts-validate
 	@./scripts/observability/check_metrics_contract.py
 	@./scripts/observability/check_tracing_contract.py
+	@./ops/observability/scripts/snapshot_metrics.sh
 	@./ops/observability/scripts/check_metric_cardinality.py
 	@python3 ./ops/observability/scripts/validate_logs_schema.py
 
