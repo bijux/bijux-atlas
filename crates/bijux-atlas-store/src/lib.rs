@@ -8,7 +8,7 @@ mod paths;
 pub use backend::{
     enforce_dataset_immutability, ArtifactStore, HttpReadonlyStore, LocalFsStore,
     NoopInstrumentation, PublishLockGuard, RetryPolicy, S3LikeStore, StoreError, StoreErrorCode,
-    StoreInstrumentation, StoreMetrics,
+    StoreInstrumentation, StoreMetrics, StoreMetricsCollector,
 };
 pub use catalog::{
     canonical_catalog_json, merge_catalogs, sorted_catalog_entries, validate_catalog_strict,
