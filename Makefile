@@ -10,6 +10,19 @@ include makefiles/policies.mk
 
 help:
 	@printf '%s\n' \
-	  'targets: fmt lint check test test-all coverage audit openapi-drift ci fetch-fixtures load-test load-test-1000qps cold-start-bench memory-profile-load run-medium-ingest run-medium-serve crate-structure cli-command-surface culprits-all culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir' \
+	  'targets: fmt lint check test test-all coverage audit openapi-drift ci fetch-fixtures load-test load-test-1000qps cold-start-bench memory-profile-load run-medium-ingest run-medium-serve crate-structure cli-command-surface culprits-all culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir e2e-local' \
 	  'perf targets: perf-nightly' \
 	  'dev targets: dev-fmt dev-lint dev-check dev-test dev-test-all dev-coverage dev-audit dev-ci dev-clean'
+
+e2e-local:
+	@./e2e/scripts/up.sh
+	@./e2e/scripts/cleanup_store.sh
+	@./e2e/scripts/publish_dataset.sh \
+	  --gff3 fixtures/minimal/minimal.gff3 \
+	  --fasta fixtures/minimal/minimal.fa \
+	  --fai fixtures/minimal/minimal.fa.fai \
+	  --release 110 --species homo_sapiens --assembly GRCh38
+	@./e2e/scripts/deploy_atlas.sh
+	@./e2e/scripts/warmup.sh
+	@./e2e/scripts/smoke_queries.sh
+	@./e2e/scripts/verify_metrics.sh

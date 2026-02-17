@@ -15,7 +15,7 @@ if ! command -v kubectl >/dev/null 2>&1; then
   exit 1
 fi
 
-if ! kind get clusters | rg -qx "$CLUSTER_NAME"; then
+if ! kind get clusters | grep -qx "$CLUSTER_NAME"; then
   kind create cluster --config "$ROOT/e2e/stack/kind/cluster.yaml" --name "$CLUSTER_NAME"
 fi
 

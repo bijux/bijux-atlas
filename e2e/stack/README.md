@@ -38,3 +38,13 @@ Canonical local end-to-end environment for `bijux-atlas`.
 
 - Redis and OTEL are optional. Enable them with env flags consumed by `up.sh`.
 - All manifests in this directory are deterministic and intended for local repeatable testing.
+
+## Additional Scripts
+
+- `e2e/scripts/deploy_atlas.sh`: installs chart into `atlas-e2e` namespace.
+- `e2e/scripts/warmup.sh`: runs warmup verification and checks cache-hit progression.
+- `e2e/scripts/smoke_queries.sh`: executes canonical API smoke queries.
+- `e2e/scripts/verify_metrics.sh`: validates critical metrics presence and activity.
+- `e2e/scripts/verify_traces.sh`: optional OTEL trace verification.
+- `e2e/scripts/soak.sh`: bounded soak run with memory growth guard.
+- `e2e/scripts/cleanup_store.sh`: deterministic local store reset.
