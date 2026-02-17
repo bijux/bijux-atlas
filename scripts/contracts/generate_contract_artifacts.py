@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -114,6 +115,14 @@ for span in trace_spans:
     spans_rs.append("    ),")
 spans_rs.append("];\n")
 (server_gen_dir / "trace_spans_contract.rs").write_text("\n".join(spans_rs))
+
+for rust_file in (
+    rust_path,
+    server_gen_dir / "mod.rs",
+    server_gen_dir / "metrics_contract.rs",
+    server_gen_dir / "trace_spans_contract.rs",
+):
+    subprocess.run(["rustfmt", str(rust_file)], check=True)
 
 # markdown artifacts
 (out_gen / "ERROR_CODES.md").write_text(

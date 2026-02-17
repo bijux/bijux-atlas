@@ -18,22 +18,13 @@ pub const CONTRACT_METRIC_NAMES: &[&str] = &[
 
 #[allow(dead_code)]
 pub const CONTRACT_METRIC_LABELS: &[(&str, &[&str])] = &[
-    (
-        "bijux_dataset_count",
-        &["dataset", "subsystem", "version"],
-    ),
+    ("bijux_dataset_count", &["dataset", "subsystem", "version"]),
     (
         "bijux_dataset_disk_usage_bytes",
         &["dataset", "subsystem", "version"],
     ),
-    (
-        "bijux_dataset_hits",
-        &["dataset", "subsystem", "version"],
-    ),
-    (
-        "bijux_dataset_misses",
-        &["dataset", "subsystem", "version"],
-    ),
+    ("bijux_dataset_hits", &["dataset", "subsystem", "version"]),
+    ("bijux_dataset_misses", &["dataset", "subsystem", "version"]),
     (
         "bijux_errors_total",
         &["code", "dataset", "subsystem", "version"],
