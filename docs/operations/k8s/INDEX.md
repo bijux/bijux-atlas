@@ -8,6 +8,12 @@ This is the canonical index for Kubernetes operations docs.
 
 - Chart contract: `chart.md`
 - K8s test contract: `k8s-test-contract.md`
+- Network policy correctness: `network-policy-correctness.md`
+- Cluster resource profile: `cluster-resource-profile.md`
+- RBAC minimalism: `rbac-minimalism.md`
+- CRD dependency policy: `crd-dependency-policy.md`
+- Kustomize policy: `kustomize-policy.md`
+- Release install matrix: `release-install-matrix.md`
 - Packaging and operational profile: `packaging-and-ops.md`
 - Values schema and deployment constraints: `values-schema.md`
 - Plugin-mode entrypoint: `plugin-mode-entrypoint.md`
