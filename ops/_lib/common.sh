@@ -4,8 +4,8 @@
 # Outputs: utility functions and canonical repo paths.
 set -euo pipefail
 
-OPS_LIB_ROOT="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
-REPO_ROOT="$(CDPATH= cd -- "${OPS_LIB_ROOT}/.." && pwd)"
+OPS_LIB_ROOT="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+REPO_ROOT="$(CDPATH='' cd -- "${OPS_LIB_ROOT}/.." && pwd)"
 ARTIFACTS_ROOT="${REPO_ROOT}/artifacts/ops"
 
 ops_need_cmd() {
