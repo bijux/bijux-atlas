@@ -1,22 +1,47 @@
 SHELL := /bin/sh
 
 # Ops SSOT targets
+OPS_ENV_SCHEMA ?= configs/ops/env.schema.json
+
+ATLAS_BASE_URL ?= http://127.0.0.1:18080
+ATLAS_NS ?= atlas-e2e
+ATLAS_VALUES_FILE ?= ops/k8s/values/local.yaml
+ATLAS_OFFLINE_VALUES_FILE ?= ops/k8s/values/offline.yaml
+ATLAS_RUN_ID ?= local
+
+export ATLAS_BASE_URL
+export ATLAS_NS
+export ATLAS_VALUES_FILE
+export ATLAS_OFFLINE_VALUES_FILE
+export ATLAS_RUN_ID
+export ATLAS_E2E_NAMESPACE ?= $(ATLAS_NS)
+export ATLAS_E2E_VALUES_FILE ?= $(ATLAS_VALUES_FILE)
+
+ops-env-validate: ## Validate canonical ops environment contract against schema
+	@python3 ./scripts/layout/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)"
+
+ops-env-print: ## Print canonical ops environment settings
+	@python3 ./scripts/layout/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)" --print
 
 ops-up: ## Bring up local ops stack (kind + minio + prometheus + optional otel/redis)
+	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-kind-version-check
 	@$(MAKE) ops-kubectl-version-check
 	@$(MAKE) ops-helm-version-check
 	@./ops/e2e/scripts/up.sh
 
 ops-down: ## Tear down local ops stack
+	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/scripts/down.sh
 
 ops-reset: ## Reset ops state (namespace/PV store data + local store artifacts)
-	@kubectl delete ns "$${ATLAS_E2E_NAMESPACE:-atlas-e2e}" --ignore-not-found >/dev/null 2>&1 || true
+	@$(MAKE) -s ops-env-validate
+	@kubectl delete ns "$${ATLAS_NS}" --ignore-not-found >/dev/null 2>&1 || true
 	@kubectl delete pvc --all -n default >/dev/null 2>&1 || true
 	@./ops/e2e/scripts/cleanup_store.sh
 
 ops-publish-medium: ## Ingest + publish medium fixture dataset
+	@$(MAKE) -s ops-env-validate
 	@./scripts/fixtures/fetch-medium.sh
 	@./ops/e2e/scripts/publish_dataset.sh \
 	  --gff3 ops/fixtures/medium/data/genes.gff3 \
@@ -28,15 +53,23 @@ ops-publish: ## Compatibility alias for ops-publish-medium
 	@$(MAKE) ops-publish-medium
 
 ops-deploy: ## Deploy atlas chart into local cluster
+	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/scripts/deploy_atlas.sh
 
+ops-offline: ## Deploy atlas in cached-only offline profile
+	@$(MAKE) -s ops-env-validate
+	@ATLAS_VALUES_FILE="$(ATLAS_OFFLINE_VALUES_FILE)" $(MAKE) ops-deploy
+
 ops-warm: ## Run warmup workflow
+	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/scripts/warmup.sh
 
 ops-soak: ## Run soak workflow (10-30 minutes)
+	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/scripts/soak.sh
 
 ops-smoke: ## Run canonical API smoke queries
+	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/scripts/smoke_queries.sh
 
 ops-metrics-check: ## Validate runtime metrics and observability contracts
@@ -55,6 +88,7 @@ ops-traces-check: ## Validate trace signal (when OTEL enabled)
 	@./scripts/observability/check_tracing_contract.py
 
 ops-k8s-tests: ## Run k8s e2e suite
+	@$(MAKE) -s ops-env-validate
 	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck
 	@./ops/e2e/k8s/tests/run_all.sh
 
@@ -65,6 +99,7 @@ ops-load-prereqs: ## Validate load harness prerequisites (k6 + endpoint)
 	@./ops/load/scripts/check_prereqs.sh
 
 ops-load-smoke: ## Run short load suite
+	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
 	@./scripts/perf/check_pinned_queries_lock.py
 	@$(MAKE) ops-load-prereqs
@@ -72,11 +107,13 @@ ops-load-smoke: ## Run short load suite
 	@./scripts/perf/validate_results.py artifacts/perf/results
 
 ops-load-full: ## Run nightly/full load suites
+	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
 	@./scripts/perf/check_pinned_queries_lock.py
 	@./scripts/perf/run_nightly_perf.sh
 
 ops-drill-store-outage: ## Run store outage drill under load
+	@$(MAKE) -s ops-env-validate
 	@./ops/load/scripts/run_suite.sh store-outage-mid-spike.json artifacts/perf/results
 	@./ops/observability/scripts/drill_store_outage.sh
 
@@ -84,24 +121,40 @@ ops-drill-alerts: ## Run alert drill checks against configured rules
 	@./ops/observability/scripts/drill_alerts.sh
 
 ops-drill-overload: ## Verify overload signal drill assertions
+	@$(MAKE) -s ops-env-validate
 	@./ops/observability/scripts/drill_overload.sh
 
 ops-drill-memory-growth: ## Verify memory-growth drill assertions
+	@$(MAKE) -s ops-env-validate
 	@./ops/observability/scripts/drill_memory_growth.sh
 
 ops-drill-corruption: ## Run corruption handling drill
 	@cargo test -p bijux-atlas-server cache_manager_tests::chaos_mode_random_byte_corruption_never_serves_results -- --exact
 
 ops-drill-pod-churn: ## Run pod churn drill while service handles load
+	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/k8s/tests/drill_pod_churn.sh
 
 ops-drill-upgrade: ## Run upgrade drill and verify semantic stability
+	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/realdata/upgrade_drill.sh
 
 ops-drill-rollback: ## Run rollback drill and verify semantic stability
+	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/realdata/rollback_drill.sh
 
+ops-upgrade-drill: ## Compatibility alias for ops-drill-upgrade
+	@$(MAKE) ops-drill-upgrade
+
+ops-rollback-drill: ## Compatibility alias for ops-drill-rollback
+	@$(MAKE) ops-drill-rollback
+
+ops-realdata: ## Run real-data e2e scenarios
+	@$(MAKE) -s ops-env-validate
+	@./ops/e2e/realdata/run_all.sh
+
 ops-report: ## Gather ops evidence into artifacts/ops/<timestamp>/
+	@$(MAKE) -s ops-env-validate
 	@ts=$$(date +%Y%m%d-%H%M%S); \
 	out="artifacts/ops/$$ts"; \
 	mkdir -p "$$out"/{logs,perf,metrics}; \
