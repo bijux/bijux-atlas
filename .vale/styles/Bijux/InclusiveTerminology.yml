@@ -1,0 +1,9 @@
+extends: substitution
+message: "Use inclusive terminology: '%s'"
+level: error
+ignorecase: true
+swap:
+  whitelist: allowlist
+  blacklist: denylist
+  master: primary
+  slave: replica
