@@ -35,3 +35,10 @@ Read-only sqlite pragma profile:
 - `PRAGMA cache_size=-<configured KiB>`
 - `PRAGMA mmap_size=<configured bytes>`
 - For shard DB opens, mmap uses a per-shard tuned budget derived from global setting.
+
+## Registry Federation
+
+- Multiple registries are configured with `ATLAS_REGISTRY_SOURCES` and optional `ATLAS_REGISTRY_PRIORITY`.
+- Catalog refresh is TTL-governed by `ATLAS_REGISTRY_TTL_MS`.
+- `ATLAS_REGISTRY_FREEZE_MODE=true` pauses refresh and serves last known merged catalog.
+- Registry health is exposed at `/debug/registry-health` when debug endpoints are enabled.

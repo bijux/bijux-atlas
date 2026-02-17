@@ -743,6 +743,43 @@ pub(crate) async fn dataset_health_handler(
     with_request_id(resp, &request_id)
 }
 
+pub(crate) async fn registry_health_handler(State(state): State<AppState>) -> impl IntoResponse {
+    let started = Instant::now();
+    let request_id = make_request_id(&state);
+    if !state.api.enable_debug_datasets {
+        let resp = api_error_response(
+            StatusCode::NOT_FOUND,
+            error_json(
+                ApiErrorCode::InvalidQueryParameter,
+                "debug endpoint disabled",
+                json!({}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request(
+                "/debug/registry-health",
+                StatusCode::NOT_FOUND,
+                started.elapsed(),
+            )
+            .await;
+        return with_request_id(resp, &request_id);
+    }
+    let health = state.cache.registry_health().await;
+    let resp = Json(json!({
+        "registry_freeze_mode": state.cache.registry_freeze_mode(),
+        "registry_ttl_seconds": state.cache.registry_ttl_seconds(),
+        "sources": health,
+        "catalog_epoch": state.cache.catalog_epoch().await
+    }))
+    .into_response();
+    state
+        .metrics
+        .observe_request("/debug/registry-health", StatusCode::OK, started.elapsed())
+        .await;
+    with_request_id(resp, &request_id)
+}
+
 pub(crate) async fn genes_handler(
     State(state): State<AppState>,
     headers: HeaderMap,

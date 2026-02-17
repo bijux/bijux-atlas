@@ -322,6 +322,22 @@ bijux_fs_space_pressure_events_total{{subsystem=\"{}\",version=\"{}\",dataset=\"
             .fs_space_pressure_events_total
             .load(Ordering::Relaxed)
     ));
+    body.push_str(&format!(
+        "bijux_registry_invalidation_events_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_registry_freeze_mode{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state
+            .cache
+            .metrics
+            .registry_invalidation_events_total
+            .load(Ordering::Relaxed),
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        if state.cache.registry_freeze_mode() { 1 } else { 0 }
+    ));
     if let Some(redis) = &state.redis_backend {
         let redis_metrics = redis.metrics_snapshot().await;
         body.push_str(&format!(
