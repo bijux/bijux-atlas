@@ -1,4 +1,5 @@
 use crate::{sha256_hex, OutputMode};
+use bijux_atlas_core::canonical;
 use bijux_atlas_model::{ArtifactManifest, Catalog, DatasetId, ShardCatalog};
 use bijux_atlas_policies::load_policy_from_workspace;
 use bijux_atlas_store::{
@@ -95,6 +96,7 @@ pub(crate) fn validate_dataset(
     release: &str,
     species: &str,
     assembly: &str,
+    deep: bool,
     output_mode: OutputMode,
 ) -> Result<(), String> {
     let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
@@ -120,8 +122,30 @@ pub(crate) fn validate_dataset(
     }
     validate_sqlite_contract(&paths.sqlite)?;
     validate_shard_catalog_and_indexes(&paths.derived_dir)?;
+    if deep {
+        let actual_signature = compute_dataset_signature_from_sqlite(&paths.sqlite)?;
+        if manifest.dataset_signature_sha256.is_empty() {
+            return Err(
+                "manifest dataset_signature_sha256 is empty; cannot deep-verify".to_string(),
+            );
+        }
+        if actual_signature != manifest.dataset_signature_sha256 {
+            return Err(format!(
+                "dataset signature mismatch: manifest={} actual={}",
+                manifest.dataset_signature_sha256, actual_signature
+            ));
+        }
+        if manifest.derived_column_origins.is_empty() {
+            return Err("manifest derived_column_origins must not be empty".to_string());
+        }
+    }
 
-    let payload = json!({"command":"atlas dataset validate","status":"ok"});
+    let command_name = if deep {
+        "atlas dataset verify"
+    } else {
+        "atlas dataset validate"
+    };
+    let payload = json!({"command":command_name,"status":"ok","deep":deep});
     if output_mode.json {
         println!(
             "{}",
@@ -134,6 +158,105 @@ pub(crate) fn validate_dataset(
         );
     }
     Ok(())
+}
+
+fn compute_dataset_signature_from_sqlite(sqlite_path: &PathBuf) -> Result<String, String> {
+    let conn = rusqlite::Connection::open(sqlite_path).map_err(|e| e.to_string())?;
+    let mut gene_stmt = conn
+        .prepare(
+            "SELECT gene_id, name, biotype, seqid, start, end, transcript_count, exon_count, total_exon_span, cds_present, sequence_length
+             FROM gene_summary ORDER BY seqid, start, end, gene_id",
+        )
+        .map_err(|e| e.to_string())?;
+    let genes = gene_stmt
+        .query_map([], |r| {
+            Ok(serde_json::json!({
+                "gene_id": r.get::<_, String>(0)?,
+                "gene_name": r.get::<_, String>(1)?,
+                "biotype": r.get::<_, String>(2)?,
+                "seqid": r.get::<_, String>(3)?,
+                "start": r.get::<_, i64>(4)?,
+                "end": r.get::<_, i64>(5)?,
+                "transcript_count": r.get::<_, i64>(6)?,
+                "exon_count": r.get::<_, i64>(7)?,
+                "total_exon_span": r.get::<_, i64>(8)?,
+                "cds_present": r.get::<_, i64>(9)? != 0,
+                "sequence_length": r.get::<_, i64>(10)?,
+            }))
+        })
+        .map_err(|e| e.to_string())?
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|e| e.to_string())?;
+
+    let mut tx_stmt = conn
+        .prepare(
+            "SELECT transcript_id, parent_gene_id, transcript_type, COALESCE(biotype,''), seqid, start, end, exon_count, total_exon_span, cds_present
+             FROM transcript_summary ORDER BY seqid, start, end, transcript_id",
+        )
+        .map_err(|e| e.to_string())?;
+    let txs = tx_stmt
+        .query_map([], |r| {
+            let raw_biotype: String = r.get(3)?;
+            let biotype = if raw_biotype.is_empty() {
+                serde_json::Value::Null
+            } else {
+                serde_json::Value::String(raw_biotype)
+            };
+            Ok(serde_json::json!({
+                "transcript_id": r.get::<_, String>(0)?,
+                "parent_gene_id": r.get::<_, String>(1)?,
+                "transcript_type": r.get::<_, String>(2)?,
+                "biotype": biotype,
+                "seqid": r.get::<_, String>(4)?,
+                "start": r.get::<_, i64>(5)?,
+                "end": r.get::<_, i64>(6)?,
+                "exon_count": r.get::<_, i64>(7)?,
+                "total_exon_span": r.get::<_, i64>(8)?,
+                "cds_present": r.get::<_, i64>(9)? != 0,
+            }))
+        })
+        .map_err(|e| e.to_string())?
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|e| e.to_string())?;
+
+    let root = serde_json::json!({
+        "gene_table_hash": merkle_from_json_rows(&genes)?,
+        "transcript_table_hash": merkle_from_json_rows(&txs)?,
+        "gene_count": genes.len(),
+        "transcript_count": txs.len(),
+    });
+    let bytes = canonical::stable_json_bytes(&root).map_err(|e| e.to_string())?;
+    Ok(sha256_hex(&bytes))
+}
+
+fn merkle_from_json_rows(rows: &[serde_json::Value]) -> Result<String, String> {
+    if rows.is_empty() {
+        return Ok(sha256_hex(b""));
+    }
+    let mut level: Vec<String> = rows
+        .iter()
+        .map(|r| canonical::stable_json_bytes(r).map(|b| sha256_hex(&b)))
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|e| e.to_string())?;
+    while level.len() > 1 {
+        let mut next = Vec::with_capacity(level.len().div_ceil(2));
+        let mut i = 0usize;
+        while i < level.len() {
+            let left = &level[i];
+            let right = if i + 1 < level.len() {
+                &level[i + 1]
+            } else {
+                left
+            };
+            let mut joined = String::with_capacity(left.len() + right.len());
+            joined.push_str(left);
+            joined.push_str(right);
+            next.push(sha256_hex(joined.as_bytes()));
+            i += 2;
+        }
+        level = next;
+    }
+    Ok(level[0].clone())
 }
 
 pub(crate) fn publish_dataset(

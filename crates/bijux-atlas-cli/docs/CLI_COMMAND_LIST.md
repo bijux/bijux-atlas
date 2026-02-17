@@ -5,6 +5,7 @@ atlas completion
 atlas dataset pack
 atlas dataset publish
 atlas dataset validate
+atlas dataset verify
 atlas dataset verify-pack
 atlas doctor
 atlas explain-query

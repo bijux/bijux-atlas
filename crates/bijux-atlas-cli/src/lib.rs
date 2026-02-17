@@ -130,6 +130,10 @@ enum AtlasCommand {
         #[arg(long, default_value_t = 1)]
         max_threads: usize,
         #[arg(long, default_value_t = false)]
+        strict: bool,
+        #[arg(long, default_value_t = false)]
+        allow_overlap_gene_ids_across_contigs: bool,
+        #[arg(long, default_value_t = false)]
         emit_shards: bool,
         #[arg(long, default_value_t = 0)]
         shard_partitions: usize,
@@ -217,6 +221,8 @@ struct IngestCliArgs {
     ensembl_keys: String,
     seqid_aliases: String,
     max_threads: usize,
+    strict: bool,
+    allow_overlap_gene_ids_across_contigs: bool,
     emit_shards: bool,
     shard_partitions: usize,
 }
@@ -339,6 +345,21 @@ fn run_atlas_command(
             .map_err(CliError::internal),
         },
         AtlasCommand::Dataset { command } => match command {
+            DatasetCommand::Verify {
+                root,
+                release,
+                species,
+                assembly,
+                deep,
+            } => artifact_validation::validate_dataset(
+                root,
+                &release,
+                &species,
+                &assembly,
+                deep,
+                output_mode,
+            )
+            .map_err(CliError::internal),
             DatasetCommand::Validate {
                 root,
                 release,
@@ -349,6 +370,7 @@ fn run_atlas_command(
                 &release,
                 &species,
                 &assembly,
+                false,
                 output_mode,
             )
             .map_err(CliError::internal),
@@ -400,6 +422,8 @@ fn run_atlas_command(
             ensembl_keys,
             seqid_aliases,
             max_threads,
+            strict,
+            allow_overlap_gene_ids_across_contigs,
             emit_shards,
             shard_partitions,
         } => run_ingest(
@@ -417,6 +441,8 @@ fn run_atlas_command(
                 ensembl_keys,
                 seqid_aliases,
                 max_threads,
+                strict,
+                allow_overlap_gene_ids_across_contigs,
                 emit_shards,
                 shard_partitions,
             },
@@ -766,6 +792,8 @@ fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String
             &args.seqid_aliases,
         )),
         max_threads: args.max_threads,
+        fail_on_warn: args.strict,
+        allow_overlap_gene_ids_across_contigs: args.allow_overlap_gene_ids_across_contigs,
         emit_shards: args.emit_shards,
         shard_partitions: args.shard_partitions,
         compute_gene_signatures: true,

@@ -26,6 +26,18 @@ pub(crate) enum CatalogCommand {
 
 #[derive(Subcommand)]
 pub(crate) enum DatasetCommand {
+    Verify {
+        #[arg(long)]
+        root: PathBuf,
+        #[arg(long)]
+        release: String,
+        #[arg(long)]
+        species: String,
+        #[arg(long)]
+        assembly: String,
+        #[arg(long, default_value_t = false)]
+        deep: bool,
+    },
     Validate {
         #[arg(long)]
         root: PathBuf,
