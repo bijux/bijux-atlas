@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "required_metrics": {
+    "bijux_http_requests_total": ["subsystem", "version", "dataset", "route", "status"],
+    "bijux_http_request_latency_p95_seconds": ["subsystem", "version", "dataset", "route"],
+    "bijux_sqlite_query_latency_p95_seconds": ["subsystem", "version", "dataset", "query_type"],
+    "bijux_request_stage_latency_p95_seconds": ["subsystem", "version", "dataset", "stage"],
+    "bijux_dataset_hits": ["subsystem", "version", "dataset"],
+    "bijux_dataset_misses": ["subsystem", "version", "dataset"],
+    "bijux_dataset_count": ["subsystem", "version", "dataset"],
+    "bijux_dataset_disk_usage_bytes": ["subsystem", "version", "dataset"],
+    "bijux_overload_shedding_active": ["subsystem", "version", "dataset"],
+    "bijux_store_open_p95_seconds": ["subsystem", "version", "dataset"],
+    "bijux_store_download_p95_seconds": ["subsystem", "version", "dataset"],
+    "bijux_store_breaker_open": ["subsystem", "version", "dataset"],
+    "bijux_errors_total": ["subsystem", "version", "dataset", "code"]
+  },
+  "required_spans": [
+    "dataset resolve",
+    "dataset download start",
+    "sqlite_query",
+    "serialize_response"
+  ],
+  "required_log_fields": ["request_id", "dataset"],
+  "allowed_dynamic_labels": ["route", "status", "query_type", "stage", "code"]
+}

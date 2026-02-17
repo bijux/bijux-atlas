@@ -1,31 +1,47 @@
 groups:
-  - name: atlas-core
+  - name: bijux-atlas-slo
     rules:
-      - alert: AtlasElevated5xx
-        expr: sum(rate(atlas_http_requests_total{status=~"5.."}[5m])) > 1
+      - alert: BijuxAtlasHigh5xxRate
+        expr: |
+          (
+            sum(rate(bijux_http_requests_total{subsystem="atlas",status=~"5.."}[5m]))
+            /
+            sum(rate(bijux_http_requests_total{subsystem="atlas"}[5m]))
+          ) > 0.005
         for: 10m
         labels:
           severity: page
+          subsystem: atlas
         annotations:
-          summary: "Bijux Atlas elevated 5xx rate"
-      - alert: AtlasP99LatencySustained
-        expr: atlas_http_request_latency_p95_seconds{route="/v1/genes"} > 0.8
+          summary: "High 5xx error rate"
+          description: "5xx ratio exceeded 0.5% over 10m."
+      - alert: BijuxAtlasP95LatencyRegression
+        expr: bijux_http_request_latency_p95_seconds{subsystem="atlas",route="/v1/genes"} > 0.8
         for: 15m
         labels:
           severity: page
+          subsystem: atlas
         annotations:
-          summary: "Bijux Atlas high request latency"
-      - alert: AtlasStoreFailures
-        expr: increase(atlas_store_download_failure_total[10m]) > 0 or increase(atlas_store_open_failure_total[10m]) > 0
+          summary: "v1/genes p95 latency above SLO"
+          description: "p95 latency above 800ms for 15m."
+      - alert: BijuxAtlasStoreDownloadFailures
+        expr: increase(bijux_store_download_failure_total{subsystem="atlas"}[10m]) > 5
         for: 10m
         labels:
-          severity: page
+          severity: warn
+          subsystem: atlas
         annotations:
-          summary: "Bijux Atlas store failures detected"
-      - alert: AtlasCacheThrash
-        expr: rate(atlas_dataset_misses[10m]) > rate(atlas_dataset_hits[10m])
-        for: 20m
+          summary: "Store download failures elevated"
+          description: "More than 5 store download failures in 10m."
+      - alert: BijuxAtlasCacheThrash
+        expr: |
+          rate(bijux_dataset_misses{subsystem="atlas"}[10m])
+          >
+          3 * rate(bijux_dataset_hits{subsystem="atlas"}[10m])
+        for: 15m
         labels:
-          severity: ticket
+          severity: warn
+          subsystem: atlas
         annotations:
-          summary: "Bijux Atlas cache miss pressure high"
+          summary: "Cache thrash detected"
+          description: "Dataset miss rate is significantly higher than hit rate."
