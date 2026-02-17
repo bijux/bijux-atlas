@@ -37,8 +37,13 @@ spec:
               mountPath: /tmp
       volumes:
         - name: cache
+          {{- if or .Values.cache.pvc.enabled (eq .Values.cache.storageMode "pvc") }}
+          persistentVolumeClaim:
+            claimName: {{ include "bijux-atlas.fullname" . }}-cache
+          {{- else }}
           emptyDir:
             sizeLimit: {{ .Values.cache.diskSize }}
+          {{- end }}
         - name: tmp
           emptyDir:
             sizeLimit: {{ .Values.cache.tmpSize }}

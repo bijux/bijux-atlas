@@ -29,6 +29,9 @@
     "image": {
       "description": "Chart values key `image` from SSOT contract."
     },
+    "ingress": {
+      "description": "Chart values key `ingress` from SSOT contract."
+    },
     "networkPolicy": {
       "description": "Chart values key `networkPolicy` from SSOT contract."
     },

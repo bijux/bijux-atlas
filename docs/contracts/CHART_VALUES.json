@@ -10,6 +10,7 @@
     "extraEnv",
     "hpa",
     "image",
+    "ingress",
     "networkPolicy",
     "nodeLocalSsdProfile",
     "nodeSelector",

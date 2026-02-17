@@ -1,0 +1,17 @@
+{{- if or .Values.cache.pvc.enabled (eq .Values.cache.storageMode "pvc") }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "bijux-atlas.fullname" . }}-cache
+  labels:
+    {{- include "bijux-atlas.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.cache.pvc.size }}
+  {{- if .Values.cache.pvc.storageClassName }}
+  storageClassName: {{ .Values.cache.pvc.storageClassName | quote }}
+  {{- end }}
+{{- end }}
