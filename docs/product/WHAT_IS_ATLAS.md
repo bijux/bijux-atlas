@@ -1,17 +1,50 @@
-# What Is Bijux Atlas
+# What Is Atlas
 
-Bijux Atlas is a release-indexed genomic data product.
+- Owner: `bijux-atlas-product`
 
-It has three product surfaces:
+## What
 
-1. Builder: deterministic ingest from GFF3+FASTA(+FAI) to validated dataset artifacts.
-2. Registry: immutable dataset catalog and manifest contract for discoverability and compatibility.
-3. Server: low-latency read API over published datasets with strict policy and observability.
+Atlas is a release-indexed genomic dataset product composed of three parts: ingest, registry/store, and read-only query serving.
 
-A dataset in Atlas is a product unit, not an ad-hoc file set.
-Each dataset is addressed by explicit dimensions:
-- `release`
-- `species`
-- `assembly`
+## Why
 
-Atlas is optimized for repeatable publication and stable read semantics across versions.
+Institutes need deterministic, versioned query behavior over immutable datasets without hidden transforms.
+
+## Scope
+
+- Dataset build from GFF3/FASTA inputs.
+- Immutable artifact publication with checksums.
+- Query API for genes, transcripts, sequence, and release diffs.
+
+## Non-goals
+
+- Variant calling, alignment, or annotation editing.
+- Mutable in-place datasets.
+- Implicit default dataset selection.
+
+## Contracts
+
+- Dataset identity is explicit: `release/species/assembly`.
+- Artifacts are immutable after publish.
+- All public surfaces are contract-driven from `docs/contracts/`.
+
+## Failure modes
+
+- Missing dataset dimensions => reject request.
+- Artifact checksum mismatch => reject dataset open.
+- Contract drift => CI fails.
+
+## How to verify
+
+```bash
+$ make ssot-check
+$ make dev-test-all
+```
+
+Expected output: contract checks and full test suite pass.
+
+## See also
+
+- [Compatibility Promise](COMPATIBILITY_PROMISE.md)
+- [Non Goals](NON_GOALS.md)
+- [Terms Glossary](../_style/TERMS_GLOSSARY.md)

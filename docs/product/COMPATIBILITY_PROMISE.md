@@ -1,17 +1,45 @@
 # Compatibility Promise
 
-Atlas compatibility promises apply to two contracts:
+- Owner: `bijux-atlas-product`
 
-1. API contract (`/v1/*`):
-- Additive evolution only inside v1 unless explicitly documented.
-- Existing fields and machine error codes remain stable.
-- Pagination cursor validation remains strict and deterministic.
+## What
 
-2. Artifact contract (`manifest.json`, SQLite schema, catalog linkage):
-- Published dataset artifacts are immutable.
-- Schema version is explicit and validated.
-- Unknown fields in strict contracts are rejected where documented.
+Upgrade guarantees for API, artifact, and cursor contracts.
 
-Compatibility boundaries:
-- Breaking changes require new versioned surface (`/v2` or new artifact schema version).
-- Bijux umbrella/plugin compatibility is declared by metadata handshake.
+## Why
+
+Consumers need predictable upgrades without query rewrites.
+
+## Scope
+
+Applies to v1 surfaces.
+
+## Non-goals
+
+Does not promise behavior for undocumented fields or experimental registries.
+
+## Contracts
+
+- API: existing paths and documented fields remain stable within v1.
+- Artifacts: manifest and dataset layout remain backward-readable within v1.
+- Cursor: decoder remains backward-compatible for previous v1 cursor versions.
+- Error codes: existing codes remain valid identifiers.
+
+## Failure modes
+
+Breaking changes without version bump are contract violations and must fail CI.
+
+## How to verify
+
+```bash
+$ ./scripts/contracts/check_breaking_contract_change.py
+$ make openapi-drift
+```
+
+Expected output: no breaking change detected and OpenAPI drift check passes.
+
+## See also
+
+- [Contracts Compatibility](../contracts/compatibility.md)
+- [API Versioning](../reference/evolution/API_VERSIONING.md)
+- [JSON Compatibility](../reference/evolution/JSON_COMPATIBILITY.md)

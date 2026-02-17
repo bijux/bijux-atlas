@@ -1,37 +1,63 @@
-# Cross-Release Diffs v1
+# Diffs v1
 
-## Diff model
-For the same `species + assembly`, Atlas computes per-gene release diffs:
+- Owner: `bijux-atlas-query`
 
-- `added`: present in `to_release`, absent in `from_release`
-- `removed`: present in `from_release`, absent in `to_release`
-- `changed`: present in both, but gene signature differs
+## What
 
-## What counts as changed
-`changed` is defined by signature differences over:
+Release-to-release gene diffs (`added`, `removed`, `changed`).
 
-- `name`
-- `biotype`
-- `seqid`
-- `start`
-- `end`
-- `transcript_count`
+## Why
 
-## Endpoints
-- `/v1/diff/genes`
-- `/v1/diff/region`
+Cross-release comparison is a core adoption driver.
 
-Both endpoints are paginated with signed opaque cursors and deterministic ordering by `gene_id`.
+## Scope
 
-## Latest alias policy
-`latest` is allowed only when explicitly provided in `from_release` or `to_release`.
-There is no implicit release default.
+Endpoints: `/v1/diff/genes`, `/v1/diff/region`.
 
-## Performance strategy
-- Ingest writes `release_gene_index.json` (sorted `gene_id -> signature`).
-- API performs merge-join over sorted index lists.
-- Region diff filters are applied after merge-key reconciliation using stable coordinates.
+## Non-goals
 
-## Caveats
-- v1 diff is gene-level only.
-- Transcript/exon-level diff semantics are out of scope.
+No transcript-level semantic diffing in v1.
+
+## Contracts
+
+- Changed means one of: coords, name, biotype, transcript_count.
+- Diffs are computed from deterministic signature indexes.
+- Explicit release/species/assembly required.
+
+## Budgets
+
+- Heavy class with strict limits and pagination.
+- Cacheable responses when dataset pair hash is stable.
+
+## Abuse controls
+
+- Region span and limit caps are enforced by policy.
+- Heavy-class bulkheads and overload shedding apply.
+
+## Examples
+
+```bash
+$ curl -s "http://localhost:8080/v1/diff/genes?from_release=111&to_release=112&species=homo_sapiens&assembly=GRCh38&limit=25"
+```
+
+Expected output: JSON diff page with stable ordering and cursor.
+
+## Failure modes
+
+- Missing release pair => 400.
+- Unsupported dataset pair => 404/422 policy rejection.
+- Excessive span/limit => 400 rejection.
+
+## How to verify
+
+```bash
+$ cargo nextest run -p bijux-atlas-server diff
+```
+
+Expected output: diff endpoint tests and golden snapshots pass.
+
+## See also
+
+- [Querying Reference](../reference/querying/INDEX.md)
+- [Datasets Reference](../reference/datasets/INDEX.md)
+- [SLO Targets](SLO_TARGETS.md)

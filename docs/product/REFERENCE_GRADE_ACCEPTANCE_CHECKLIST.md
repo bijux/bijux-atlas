@@ -1,16 +1,49 @@
-# Reference-Grade Acceptance Checklist
+# Reference Grade Acceptance Checklist
 
-Use this checklist in PR review for production-grade changes.
+- Owner: `bijux-atlas-product`
 
-1. Contract stability: API/artifact changes are additive or versioned.
-2. Determinism: no nondeterministic ordering/time-dependent outputs introduced.
-3. Boundaries: effects remain in allowed crates/modules only.
-4. Policy compliance: limits/strictness enforced and tested.
-5. Guardrails: lint/tests/docs gates remain green.
-6. Error quality: stable machine codes and actionable details maintained.
-7. Performance: query plan/index behavior verified where relevant.
-8. Observability: metrics/logs/traces updated for new paths.
-9. Operations: runbooks/docs updated for new failure modes.
-10. Security/supply chain: audit posture unchanged or improved.
-11. Upgrade path: compatibility and rollback implications documented.
-12. Test quality: positive, negative, and regression tests included.
+## What
+
+Executable release checklist mapped to CI jobs.
+
+## Why
+
+Release quality must be enforced by gates, not narrative claims.
+
+## Scope
+
+Applies before tagging release artifacts.
+
+## Non-goals
+
+No manual-only checklist items without corresponding gate.
+
+## Contracts
+
+- [ ] `dev-fmt`: formatting clean.
+- [ ] `dev-lint`: lint clean.
+- [ ] `dev-audit`: dependency and security checks clean.
+- [ ] `dev-test-all`: all tests pass with no skips in required suites.
+- [ ] `dev-coverage`: coverage gate passes.
+- [ ] `openapi-drift`: OpenAPI snapshots match.
+- [ ] `docs`: docs build + lint + link checks pass.
+- [ ] `docs-freeze`: generated docs are up-to-date.
+- [ ] `ssot-check`: contracts checks pass.
+
+## Failure modes
+
+Any unchecked item blocks release.
+
+## How to verify
+
+```bash
+$ make -j8 dev-fmt dev-lint dev-audit dev-test-all dev-coverage openapi-drift docs docs-freeze ssot-check
+```
+
+Expected output: all targets finish successfully.
+
+## See also
+
+- [Contracts SSOT](../contracts/README.md)
+- [SLO Targets](SLO_TARGETS.md)
+- [Production Readiness](../operations/production-readiness-checklist.md)

@@ -1,38 +1,63 @@
 # Transcripts v1
 
-This document defines transcript behavior in Atlas v1.
+- Owner: `bijux-atlas-query`
+
+## What
+
+Transcript summary retrieval and per-gene transcript listing.
+
+## Why
+
+Gene-level summaries need drill-down into transcript structures.
 
 ## Scope
 
-Atlas v1 includes transcript summaries derived from GFF3 transcript/mRNA features.
+Endpoints: `/v1/genes/{gene_id}/transcripts`, `/v1/transcripts/{tx_id}`.
 
-Fields include:
+## Non-goals
 
-- `transcript_id`
-- `parent_gene_id`
-- `transcript_type`
-- `biotype` (when available)
-- `seqid`, `start`, `end`
-- `exon_count`
-- `total_exon_span`
-- `cds_present`
+No canonical transcript selection policy in v1.
 
-## Meaning of `transcript_count`
+## Contracts
 
-`gene_summary.transcript_count` is the number of transcript features whose `Parent` resolves to that gene under current strictness policy.
+- Stable ordering with explicit tie-breakers.
+- Pagination and limits enforced by policy.
+- Parent gene validation follows ingest strictness policy.
 
-It is not a canonical biology claim across all annotation sources; it is a deterministic count under the configured ingest policies.
+## Budgets
 
-## Ordering Rules
+- Classified as heavy query class for large transcript lists.
+- Concurrency bulkheads apply.
 
-Transcript list endpoints return stable ordering:
+## Abuse controls
 
-1. `seqid` ascending
-2. `start` ascending
-3. `transcript_id` ascending (tie-breaker)
+- Limit bounds and cursor validation are mandatory.
+- Query cost estimator can reject expensive combinations.
 
-## Canonical Transcript Policy
+## Examples
 
-Atlas v1 does **not** define canonical transcript selection.
+```bash
+$ curl -s "http://localhost:8080/v1/genes/ENSG00000139618/transcripts?release=112&species=homo_sapiens&assembly=GRCh38&limit=10"
+```
 
-Canonical transcript ranking/selection is a v2 policy placeholder and explicit non-goal for v1.
+Expected output: paginated transcript summaries with stable ordering and cursor.
+
+## Failure modes
+
+- Unknown gene => empty result or not-found endpoint semantics.
+- Invalid cursor => 400 `InvalidCursor`.
+- Policy limit exceeded => 400 rejection.
+
+## How to verify
+
+```bash
+$ cargo nextest run -p bijux-atlas-query transcript
+```
+
+Expected output: transcript query plan and ordering tests pass.
+
+## See also
+
+- [Canonical Transcript Policy Placeholder](canonical-transcript-policy-v2-placeholder.md)
+- [Querying Reference](../reference/querying/INDEX.md)
+- [Ingestion Reference](../reference/ingestion/INDEX.md)
