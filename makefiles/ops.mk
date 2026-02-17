@@ -7,12 +7,18 @@ ATLAS_BASE_URL ?= http://127.0.0.1:18080
 ATLAS_NS ?= atlas-e2e
 ATLAS_VALUES_FILE ?= ops/k8s/values/local.yaml
 ATLAS_OFFLINE_VALUES_FILE ?= ops/k8s/values/offline.yaml
+ATLAS_PERF_VALUES_FILE ?= ops/k8s/values/perf.yaml
+ATLAS_MULTI_REGISTRY_VALUES_FILE ?= ops/k8s/values/multi-registry.yaml
+ATLAS_INGRESS_VALUES_FILE ?= ops/k8s/values/ingress.yaml
 ATLAS_RUN_ID ?= local
 
 export ATLAS_BASE_URL
 export ATLAS_NS
 export ATLAS_VALUES_FILE
 export ATLAS_OFFLINE_VALUES_FILE
+export ATLAS_PERF_VALUES_FILE
+export ATLAS_MULTI_REGISTRY_VALUES_FILE
+export ATLAS_INGRESS_VALUES_FILE
 export ATLAS_RUN_ID
 export ATLAS_E2E_NAMESPACE ?= $(ATLAS_NS)
 export ATLAS_E2E_VALUES_FILE ?= $(ATLAS_VALUES_FILE)
@@ -59,6 +65,19 @@ ops-deploy: ## Deploy atlas chart into local cluster
 ops-offline: ## Deploy atlas in cached-only offline profile
 	@$(MAKE) -s ops-env-validate
 	@ATLAS_VALUES_FILE="$(ATLAS_OFFLINE_VALUES_FILE)" $(MAKE) ops-deploy
+
+ops-perf: ## Deploy atlas in perf profile and run load smoke
+	@$(MAKE) -s ops-env-validate
+	@ATLAS_VALUES_FILE="$(ATLAS_PERF_VALUES_FILE)" $(MAKE) ops-deploy
+	@$(MAKE) ops-load-smoke
+
+ops-multi-registry: ## Deploy atlas with multi-registry values profile
+	@$(MAKE) -s ops-env-validate
+	@ATLAS_VALUES_FILE="$(ATLAS_MULTI_REGISTRY_VALUES_FILE)" $(MAKE) ops-deploy
+
+ops-ingress: ## Deploy atlas with ingress values profile
+	@$(MAKE) -s ops-env-validate
+	@ATLAS_VALUES_FILE="$(ATLAS_INGRESS_VALUES_FILE)" $(MAKE) ops-deploy
 
 ops-warm: ## Run warmup workflow
 	@$(MAKE) -s ops-env-validate
@@ -193,6 +212,9 @@ ops-tools-check: ## Validate all pinned ops tools versions
 	@$(MAKE) ops-helm-version-check
 	@$(MAKE) ops-kubectl-version-check
 
+ops-tool-check: ## Compatibility alias for ops-tools-check
+	@$(MAKE) ops-tools-check
+
 ops-perf-prepare-store: ## Perf helper: prepare local perf store fixture
 	@./scripts/perf/prepare_perf_store.sh
 
@@ -270,6 +292,13 @@ ops-ci: ## Nightly ops pipeline: up/deploy/warm/tests/ops/load/drills/report
 	@$(MAKE) ops-drill-store-outage
 	@$(MAKE) ops-drill-corruption
 	@$(MAKE) ops-report
+
+ops-ci-nightly: ## Compatibility alias for ops-ci
+	@$(MAKE) ops-ci
+
+ops-clean: ## Local cleanup of ops outputs and test namespaces
+	@kubectl delete ns "$${ATLAS_NS}" --ignore-not-found >/dev/null 2>&1 || true
+	@rm -rf artifacts/perf/results artifacts/ops artifacts/e2e-datasets artifacts/e2e-store
 
 # Compatibility aliases (pre-ops.mk surface)
 e2e-local:
