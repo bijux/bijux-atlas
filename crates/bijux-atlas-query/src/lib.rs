@@ -4,6 +4,7 @@ mod cost;
 mod cursor;
 mod filters;
 mod limits;
+mod normalize;
 mod planner;
 mod row_decode;
 mod sql;
@@ -12,10 +13,11 @@ use cursor::{
     decode_cursor as decode_cursor_inner, encode_cursor as encode_cursor_inner,
     CursorPayload as CursorPayloadInner, OrderMode as OrderModeInner,
 };
+use normalize::normalized_query_hash;
 use planner::validate_request;
 use rusqlite::{params_from_iter, types::Value, Connection};
 use sql::{
-    assert_index_usage, build_sql, normalized_query_hash, order_mode_for, parse_row_from_sql,
+    assert_index_usage, build_sql, order_mode_for, parse_row_from_sql,
     query_gene_id_name_json_minimal,
 };
 
@@ -30,7 +32,11 @@ pub use filters::{
     TranscriptFilter, TranscriptQueryRequest, TranscriptQueryResponse, TranscriptRow,
 };
 pub use limits::QueryLimits as QueryLimitsExport;
-pub use planner::{classify_query, estimate_work_units, select_shards_for_request, QueryClass};
+pub use normalize::normalized_query_hash as normalized_query_hash_ssot;
+pub use planner::{
+    classify_query, estimate_query_cost, estimate_work_units, select_shards_for_request,
+    QueryClass, QueryCost,
+};
 pub use row_decode::RawGeneRow;
 pub use sql::explain_query_plan as explain_query_plan_internal;
 pub use sql::prepared_sql_for_class as prepared_sql_for_class_export;

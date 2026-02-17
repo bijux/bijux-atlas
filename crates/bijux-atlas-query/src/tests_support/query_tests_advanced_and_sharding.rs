@@ -210,6 +210,7 @@ fn cost_estimator_and_limits_enforced() {
     };
     assert_eq!(classify_query(&req), QueryClass::Heavy);
     assert!(estimate_work_units(&req) > 1_000);
+    assert!(estimate_query_cost(&req).work_units > 1_000);
 
     let strict = QueryLimits {
         max_work_units: 100,

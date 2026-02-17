@@ -5,15 +5,7 @@ use crate::filters::{
 };
 use crate::planner::QueryClass;
 use crate::row_decode::RawGeneRow;
-use bijux_atlas_core::canonical;
 use rusqlite::{params_from_iter, types::Value, Connection};
-
-pub fn normalized_query_hash(req: &GeneQueryRequest) -> Result<String, String> {
-    let mut no_cursor = req.clone();
-    no_cursor.cursor = None;
-    let bytes = canonical::stable_json_bytes(&no_cursor).map_err(|e| e.to_string())?;
-    Ok(canonical::stable_hash_hex(&bytes))
-}
 
 pub fn build_sql(
     req: &GeneQueryRequest,

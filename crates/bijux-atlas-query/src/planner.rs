@@ -12,6 +12,21 @@ pub enum QueryClass {
     Heavy,
 }
 
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, serde::Serialize, serde::Deserialize,
+)]
+#[non_exhaustive]
+pub struct QueryCost {
+    pub work_units: u64,
+}
+
+impl QueryCost {
+    #[must_use]
+    pub const fn new(work_units: u64) -> Self {
+        Self { work_units }
+    }
+}
+
 #[must_use]
 pub fn classify_query(req: &GeneQueryRequest) -> QueryClass {
     if req.filter.gene_id.is_some() {
@@ -25,6 +40,11 @@ pub fn classify_query(req: &GeneQueryRequest) -> QueryClass {
 
 #[must_use]
 pub fn estimate_work_units(req: &GeneQueryRequest) -> u64 {
+    estimate_query_cost(req).work_units
+}
+
+#[must_use]
+pub fn estimate_query_cost(req: &GeneQueryRequest) -> QueryCost {
     let base = match classify_query(req) {
         QueryClass::Cheap => 20_u64,
         QueryClass::Medium => 200_u64,
@@ -35,7 +55,7 @@ pub fn estimate_work_units(req: &GeneQueryRequest) -> u64 {
         .region
         .as_ref()
         .map_or(0_u64, |r| (r.end.saturating_sub(r.start) + 1) / 10_000);
-    base + (req.limit as u64) + region_cost
+    QueryCost::new(base + (req.limit as u64) + region_cost)
 }
 
 pub fn validate_request(req: &GeneQueryRequest, limits: &QueryLimits) -> Result<(), String> {
@@ -86,11 +106,11 @@ pub fn validate_request(req: &GeneQueryRequest, limits: &QueryLimits) -> Result<
         );
     }
 
-    let work = estimate_work_units(req);
-    if work > limits.max_work_units {
+    let cost = estimate_query_cost(req);
+    if cost.work_units > limits.max_work_units {
         return Err(format!(
             "estimated query cost {} exceeds max_work_units {}",
-            work, limits.max_work_units
+            cost.work_units, limits.max_work_units
         ));
     }
     Ok(())
