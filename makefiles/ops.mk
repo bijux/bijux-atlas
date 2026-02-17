@@ -50,6 +50,7 @@ ops-stack-wait-ready: ## Wait for stack namespace readiness gates
 
 ops-stack-version: ## Print pinned stack component versions
 	@cat ops/stack/version-manifest.json
+	@cat ops/stack/versions.json
 
 ops-stack-uninstall: ## Uninstall stack resources and cluster
 	@./ops/stack/scripts/uninstall.sh
@@ -80,6 +81,8 @@ ops-publish: ## Compatibility alias for ops-publish-medium
 
 ops-deploy: ## Deploy atlas chart into local cluster
 	@$(MAKE) -s ops-env-validate
+	@$(MAKE) ops-values-validate
+	@$(MAKE) ops-chart-render-diff
 	@$(MAKE) docker-build
 	@./ops/e2e/scripts/deploy_atlas.sh
 
@@ -111,6 +114,7 @@ ops-soak: ## Run soak workflow (10-30 minutes)
 ops-smoke: ## Run canonical API smoke queries
 	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/scripts/smoke_queries.sh
+	@python3 ./ops/smoke/generate_report.py
 	@python3 ./scripts/docs/check_openapi_examples.py
 	@$(MAKE) ops-metrics-check
 	@./ops/observability/scripts/snapshot_metrics.sh
@@ -237,6 +241,10 @@ ops-drill-memory-growth: ## Verify memory-growth drill assertions
 	@$(MAKE) -s ops-env-validate
 	@./ops/observability/scripts/drill_memory_growth.sh
 
+ops-drill-rate-limit: ## Run abuse pattern and assert stable 429 behavior
+	@$(MAKE) -s ops-env-validate
+	@./ops/observability/scripts/drill_overload.sh
+
 ops-drill-corruption: ## Run corruption handling drill
 	@cargo test -p bijux-atlas-server cache_manager_tests::chaos_mode_random_byte_corruption_never_serves_results -- --exact
 
@@ -270,7 +278,17 @@ ops-report: ## Gather ops evidence into artifacts/ops/<run-id>/
 	kubectl get events -A --sort-by=.lastTimestamp > "$$out/logs/events.txt" 2>/dev/null || true; \
 	kubectl logs -n "$${ATLAS_E2E_NAMESPACE:-atlas-e2e}" -l app.kubernetes.io/name=bijux-atlas --tail=2000 > "$$out/logs/atlas.log" 2>/dev/null || true; \
 	cp -R artifacts/perf/results "$$out/perf/" 2>/dev/null || true; \
+	cp -R artifacts/ops/e2e/k6 "$$out/perf/k6/" 2>/dev/null || true; \
+	cp -R "$$out/smoke/report.md" "$$out/perf/smoke-report.md" 2>/dev/null || true; \
 	curl -fsS "$${ATLAS_BASE_URL:-http://127.0.0.1:8080}/metrics" > "$$out/metrics/metrics.txt" 2>/dev/null || true; \
+	{ \
+	  echo '{'; \
+	  echo "  \"run_id\": \"$${OPS_RUN_ID}\","; \
+	  echo "  \"git_sha\": \"$$(git rev-parse --short HEAD 2>/dev/null || echo unknown)\","; \
+	  echo "  \"image\": \"bijux-atlas:local\","; \
+	  echo "  \"dataset_hash\": \"$$(sha256sum ops/fixtures/medium/data/genes.gff3 2>/dev/null | awk '{print $$1}' || echo unknown)\""; \
+	  echo '}'; \
+	} > "$$out/metadata.json"; \
 	echo "ops report written to $$out"; \
 	RUN_ID="$${OPS_RUN_ID}" OUT_DIR="$$out/bundle" ./scripts/public/report_bundle.sh >/dev/null; \
 	ln -sfn "$${OPS_RUN_ID}" artifacts/ops/latest; \
@@ -369,6 +387,13 @@ ops-openapi-validate: ## Validate OpenAPI drift and schema/examples consistency
 	@./scripts/public/openapi-diff-check.sh
 	@python3 ./scripts/docs/check_openapi_examples.py
 
+ops-chart-render-diff: ## Ensure chart render is deterministic for local profile
+	@tmp_a="$$(mktemp)"; tmp_b="$$(mktemp)"; \
+	helm template atlas ops/k8s/charts/bijux-atlas -f ops/k8s/values/local.yaml > "$$tmp_a"; \
+	helm template atlas ops/k8s/charts/bijux-atlas -f ops/k8s/values/local.yaml > "$$tmp_b"; \
+	diff -u "$$tmp_a" "$$tmp_b" >/dev/null; \
+	rm -f "$$tmp_a" "$$tmp_b"
+
 ops-dashboards-validate: ## Validate dashboard references against metrics contract
 	@./scripts/public/observability/check_dashboard_contract.py
 
@@ -424,6 +449,9 @@ ops-observability-pack-tests: ## Run observability pack conformance tests
 
 ops-observability-pack-lint: ## Run observability pack lint-only contract checks
 	@./ops/observability/tests/test_pack_contracts.sh
+
+ops-open-grafana: ## Print local ops service URLs
+	@./ops/ui/print_urls.sh
 
 ops-ci: ## Nightly ops pipeline: up/deploy/warm/tests/ops/load/drills/report
 	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck

@@ -31,21 +31,10 @@ if [ "$USE_LOCAL_IMAGE" = "1" ]; then
   fi
 fi
 
-if ops_kubectl get ns "$NS" >/dev/null 2>&1; then
-  if [ -n "$(ops_kubectl get ns "$NS" -o jsonpath='{.metadata.deletionTimestamp}' 2>/dev/null)" ]; then
-    echo "namespace $NS is terminating; waiting for deletion to complete..."
-    for _ in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24; do
-      if ! ops_kubectl get ns "$NS" >/dev/null 2>&1; then
-        break
-      fi
-      sleep 5
-    done
-    if ops_kubectl get ns "$NS" >/dev/null 2>&1 && [ -n "$(ops_kubectl get ns "$NS" -o jsonpath='{.metadata.deletionTimestamp}' 2>/dev/null)" ]; then
-      echo "namespace $NS is still terminating after timeout" >&2
-      ops_kubectl_dump_bundle "$NS" "$(ops_artifact_dir failure-bundle)"
-      exit 1
-    fi
-  fi
+if ! ops_wait_namespace_termination "$NS" 120; then
+  echo "namespace $NS is still terminating after timeout" >&2
+  ops_kubectl_dump_bundle "$NS" "$(ops_artifact_dir failure-bundle)"
+  exit 1
 fi
 ops_kubectl get ns "$NS" >/dev/null 2>&1 || ops_kubectl create ns "$NS"
 

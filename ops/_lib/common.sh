@@ -73,3 +73,24 @@ ops_capture_artifacts() {
   kubectl -n "$namespace" logs -l app.kubernetes.io/instance="$release" --all-containers --tail=2000 > "$out_dir/logs.txt" 2>/dev/null || true
   helm -n "$namespace" get manifest "$release" > "$out_dir/helm-manifest.yaml" 2>/dev/null || true
 }
+
+ops_wait_namespace_termination() {
+  local namespace="$1"
+  local timeout_secs="${2:-120}"
+  local waited=0
+  if ! ops_kubectl get ns "$namespace" >/dev/null 2>&1; then
+    return 0
+  fi
+  if [ -z "$(ops_kubectl get ns "$namespace" -o jsonpath='{.metadata.deletionTimestamp}' 2>/dev/null)" ]; then
+    return 0
+  fi
+  echo "namespace $namespace is terminating; waiting up to ${timeout_secs}s..."
+  while [ "$waited" -lt "$timeout_secs" ]; do
+    if ! ops_kubectl get ns "$namespace" >/dev/null 2>&1; then
+      return 0
+    fi
+    sleep 5
+    waited=$((waited + 5))
+  done
+  return 1
+}
