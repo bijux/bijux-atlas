@@ -84,10 +84,8 @@
     ]
   },
   "required_spans": [
-    "dataset resolve",
-    "dataset download start",
-    "sqlite_query",
-    "serialize_response"
+    "serialize_response",
+    "sqlite_query"
   ],
   "schema_version": 1
 }
