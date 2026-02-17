@@ -8,6 +8,7 @@ Rules:
 - Build-time sqlite profile is pinned: `journal_mode=WAL`, `synchronous=OFF`, `locking_mode=EXCLUSIVE`, `temp_store=MEMORY`, fixed `page_size`, fixed `mmap_size`.
 - Dataset-pack compaction is deterministic: `ANALYZE` then `VACUUM`, both recorded in `atlas_meta`.
 - Build parameters are written to `atlas_meta` for deterministic introspection.
+- Manifest includes reproducibility proof fields: `ingest_toolchain` and `ingest_build_hash`.
 - Schema evolution is forward-only; v1 does not remove existing columns.
 
 Concurrency:
