@@ -36,14 +36,26 @@ fn mk_dataset() -> (DatasetId, ArtifactManifest, Vec<u8>) {
     let ds = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset id");
     let sqlite = fixture_sqlite();
     let sqlite_sha = sha256_hex(&sqlite);
+    let (fasta, fai) = fixture_fasta_and_fai();
     let manifest = ArtifactManifest::new(
         "1".to_string(),
         "1".to_string(),
         ds.clone(),
-        ArtifactChecksums::new("a".repeat(64), "b".repeat(64), "c".repeat(64), sqlite_sha),
+        ArtifactChecksums::new(
+            "a".repeat(64),
+            sha256_hex(&fasta),
+            sha256_hex(&fai),
+            sqlite_sha,
+        ),
         ManifestStats::new(1, 1, 1),
     );
     (ds, manifest, sqlite)
+}
+
+fn fixture_fasta_and_fai() -> (Vec<u8>, Vec<u8>) {
+    let fasta = b">chr1\nACGTACGTAC\nGGGGnnnnTT\n".to_vec();
+    let fai = b"chr1\t20\t6\t10\t11\n".to_vec();
+    (fasta, fai)
 }
 
 async fn send_raw(
@@ -275,6 +287,89 @@ async fn memory_pressure_guards_reject_large_response_without_cascading_failure(
     .await;
     assert_eq!(status, 200);
     assert!(body.contains("gene_count"));
+}
+
+#[tokio::test]
+async fn sequence_endpoint_boundary_conditions_are_enforced() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let (fasta, fai) = fixture_fasta_and_fai();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds.clone(), sqlite);
+    store.fasta.lock().await.insert(ds.clone(), fasta);
+    store.fai.lock().await.insert(ds.clone(), fai);
+
+    let tmp = tempdir().expect("tempdir");
+    let cfg = DatasetCacheConfig {
+        disk_root: tmp.path().to_path_buf(),
+        ..Default::default()
+    };
+    let mgr = DatasetCacheManager::new(cfg, store);
+    let api = ApiConfig {
+        max_sequence_bases: 8,
+        sequence_api_key_required_bases: 6,
+        ..ApiConfig::default()
+    };
+    let app = build_router(AppState::with_config(mgr, api, Default::default()));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/sequence/region?release=110&species=homo_sapiens&assembly=GRCh38&region=chrX:1-2",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 422);
+    assert!(body.contains("contig not found"));
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/sequence/region?release=110&species=homo_sapiens&assembly=GRCh38&region=chr1:10-2",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 400);
+    assert!(body.contains("invalid region"));
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/sequence/region?release=110&species=homo_sapiens&assembly=GRCh38&region=chr1:1-30",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 422);
+    assert!(body.contains("requested region exceeds max bases"));
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/sequence/region?release=110&species=homo_sapiens&assembly=GRCh38&region=chr1:1-7",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 401);
+    assert!(body.contains("api key required"));
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/genes/g1/sequence?release=110&species=homo_sapiens&assembly=GRCh38",
+        &[("x-api-key", "k1")],
+    )
+    .await;
+    assert_eq!(status, 422);
+    assert!(body.contains("requested region exceeds max bases"));
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/sequence/region?release=110&species=homo_sapiens&assembly=GRCh38&region=chr1:1-5&include_stats=1",
+        &[("x-api-key", "k1")],
+    )
+    .await;
+    assert_eq!(status, 200);
+    assert!(body.contains("\"gc_fraction\""));
 }
 
 #[tokio::test]
