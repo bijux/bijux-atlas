@@ -294,7 +294,9 @@ fn run() -> Result<(), CliError> {
             print_completion(shell);
             Ok(())
         }
-        Commands::Version => print_version(log_flags.verbose > 0, output_mode).map_err(CliError::internal),
+        Commands::Version => {
+            print_version(log_flags.verbose > 0, output_mode).map_err(CliError::internal)
+        }
         Commands::Atlas { command } => run_atlas_command(*command, log_flags, output_mode),
         Commands::Serve => run_serve(log_flags, output_mode).map_err(CliError::dependency),
     }
