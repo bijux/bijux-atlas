@@ -1,0 +1,20 @@
+# Endpoints (Generated)
+
+- `GET /debug/dataset-health` telemetry: `debug`
+- `GET /debug/datasets` telemetry: `debug`
+- `GET /debug/registry-health` telemetry: `debug`
+- `GET /healthz` telemetry: `health`
+- `GET /healthz/overload` telemetry: `health`
+- `GET /metrics` telemetry: `metrics`
+- `GET /readyz` telemetry: `health`
+- `GET /v1/datasets` telemetry: `catalog`
+- `GET /v1/diff/genes` telemetry: `diff`
+- `GET /v1/diff/region` telemetry: `diff`
+- `GET /v1/genes` telemetry: `query`
+- `GET /v1/genes/count` telemetry: `query`
+- `GET /v1/genes/{gene_id}/sequence` telemetry: `sequence`
+- `GET /v1/genes/{gene_id}/transcripts` telemetry: `transcript`
+- `GET /v1/releases/{release}/species/{species}/assemblies/{assembly}` telemetry: `catalog`
+- `GET /v1/sequence/region` telemetry: `sequence`
+- `GET /v1/transcripts/{tx_id}` telemetry: `transcript`
+- `GET /v1/version` telemetry: `control`
