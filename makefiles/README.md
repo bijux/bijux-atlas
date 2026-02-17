@@ -16,6 +16,9 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 - Public interfaces are make targets, not direct script paths.
 - Domain logic lives in:
   - `makefiles/root.mk`
+  - `makefiles/help.mk`
+  - `makefiles/layout.mk`
+  - `makefiles/ci.mk`
   - `makefiles/cargo.mk`
   - `makefiles/cargo-dev.mk`
   - `makefiles/docs.mk`
