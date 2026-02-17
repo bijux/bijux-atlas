@@ -10,7 +10,9 @@ pub use backend::{
     NoopInstrumentation, PublishLockGuard, RetryPolicy, S3LikeStore, StoreError, StoreErrorCode,
     StoreInstrumentation, StoreMetrics,
 };
-pub use catalog::{canonical_catalog_json, sorted_catalog_entries, validate_catalog_strict};
+pub use catalog::{
+    canonical_catalog_json, merge_catalogs, sorted_catalog_entries, validate_catalog_strict,
+};
 pub use manifest::{verify_expected_sha256, ManifestLock};
 pub use paths::{dataset_artifact_paths, manifest_lock_path, publish_lock_path};
 

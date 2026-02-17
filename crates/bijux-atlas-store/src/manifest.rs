@@ -28,6 +28,14 @@ impl ManifestLock {
         }
         Ok(())
     }
+
+    pub fn validate_manifest_only(&self, manifest_bytes: &[u8]) -> Result<(), String> {
+        let manifest_actual = sha256_hex(manifest_bytes);
+        if manifest_actual != self.manifest_sha256 {
+            return Err("manifest.lock mismatch for manifest_sha256".to_string());
+        }
+        Ok(())
+    }
 }
 
 pub fn verify_expected_sha256(bytes: &[u8], expected: &str) -> Result<(), String> {

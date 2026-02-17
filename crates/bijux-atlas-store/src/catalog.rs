@@ -1,5 +1,6 @@
 use bijux_atlas_core::canonical;
 use bijux_atlas_model::{Catalog, CatalogEntry};
+use std::collections::BTreeMap;
 
 pub fn validate_catalog_strict(catalog: &Catalog) -> Result<(), String> {
     catalog.validate_sorted().map_err(|e| e.to_string())
@@ -15,4 +16,19 @@ pub fn canonical_catalog_json(catalog: &Catalog) -> Result<String, String> {
 pub fn sorted_catalog_entries(mut entries: Vec<CatalogEntry>) -> Vec<CatalogEntry> {
     entries.sort();
     entries
+}
+
+#[must_use]
+pub fn merge_catalogs(catalogs: &[Catalog]) -> Catalog {
+    let mut merged = BTreeMap::new();
+    for catalog in catalogs {
+        for entry in &catalog.datasets {
+            merged
+                .entry(entry.dataset.canonical_string())
+                .or_insert_with(|| entry.clone());
+        }
+    }
+    let mut datasets: Vec<CatalogEntry> = merged.into_values().collect();
+    datasets.sort();
+    Catalog::new(datasets)
 }

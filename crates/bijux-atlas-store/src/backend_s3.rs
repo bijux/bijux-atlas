@@ -210,7 +210,13 @@ impl ArtifactStore for S3LikeStore {
 
     fn get_manifest(&self, dataset: &DatasetId) -> Result<ArtifactManifest, StoreError> {
         let key = format!("{}/manifest.json", dataset.canonical_string());
+        let lock_key = format!("{}/manifest.lock", dataset.canonical_string());
         let bytes = self.get_with_retry(&key)?;
+        let lock_bytes = self.get_with_retry(&lock_key)?;
+        let lock: ManifestLock = serde_json::from_slice(&lock_bytes)
+            .map_err(|e| StoreError::new(StoreErrorCode::Validation, e.to_string()))?;
+        lock.validate_manifest_only(&bytes)
+            .map_err(|e| StoreError::new(StoreErrorCode::Validation, e))?;
         let manifest: ArtifactManifest = serde_json::from_slice(&bytes)
             .map_err(|e| StoreError::new(StoreErrorCode::Validation, e.to_string()))?;
         manifest
@@ -234,6 +240,13 @@ impl ArtifactStore for S3LikeStore {
         expected_manifest_sha256: &str,
         expected_sqlite_sha256: &str,
     ) -> Result<(), StoreError> {
+        if self.exists(dataset)? {
+            return Err(StoreError::new(
+                StoreErrorCode::Conflict,
+                "dataset already exists and cannot be overwritten",
+            ));
+        }
+
         verify_expected_sha256(manifest_bytes, expected_manifest_sha256)
             .map_err(|e| StoreError::new(StoreErrorCode::Validation, e))?;
         verify_expected_sha256(sqlite_bytes, expected_sqlite_sha256)

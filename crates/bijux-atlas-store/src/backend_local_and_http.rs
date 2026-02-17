@@ -1,9 +1,11 @@
 use crate::catalog::validate_catalog_strict;
 use crate::manifest::{verify_expected_sha256, ManifestLock};
 use crate::paths::{dataset_artifact_paths, manifest_lock_path, publish_lock_path};
+use bijux_atlas_core::ErrorCode;
 use bijux_atlas_model::{ArtifactManifest, Catalog, DatasetId};
 use reqwest::blocking::{Client, Response};
 use reqwest::header::{ETAG, IF_NONE_MATCH};
+use std::collections::BTreeMap;
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
 use std::fs::{self, File, OpenOptions};
@@ -41,6 +43,20 @@ impl StoreErrorCode {
             Self::Internal => "internal_error",
         }
     }
+
+    #[must_use]
+    pub const fn as_error_code(self) -> ErrorCode {
+        match self {
+            Self::NotFound => ErrorCode::QueryRejectedByPolicy,
+            Self::Validation => ErrorCode::InvalidQueryParameter,
+            Self::Conflict => ErrorCode::QueryRejectedByPolicy,
+            Self::Network => ErrorCode::NotReady,
+            Self::Io => ErrorCode::Internal,
+            Self::CachedOnly => ErrorCode::NotReady,
+            Self::Unsupported => ErrorCode::QueryRejectedByPolicy,
+            Self::Internal => ErrorCode::Internal,
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -73,6 +89,7 @@ pub struct StoreMetrics {
     pub bytes_uploaded: u64,
     pub request_count: u64,
     pub latency_ms_total: u128,
+    pub failures_by_class: BTreeMap<String, u64>,
 }
 
 pub trait StoreInstrumentation: Send + Sync + 'static {
@@ -102,6 +119,14 @@ pub trait ArtifactStore {
 
     fn read_manifest(&self, dataset: &DatasetId) -> Result<ArtifactManifest, StoreError> {
         self.get_manifest(dataset)
+    }
+
+    fn get_sqlite_bytes_verified(&self, dataset: &DatasetId) -> Result<Vec<u8>, StoreError> {
+        let manifest = self.get_manifest(dataset)?;
+        let sqlite_bytes = self.get_sqlite_bytes(dataset)?;
+        verify_expected_sha256(&sqlite_bytes, &manifest.checksums.sqlite_sha256)
+            .map_err(|e| StoreError::new(StoreErrorCode::Validation, e))?;
+        Ok(sqlite_bytes)
     }
 
     fn publish_atomic(
@@ -460,7 +485,13 @@ impl ArtifactStore for HttpReadonlyStore {
 
     fn get_manifest(&self, dataset: &DatasetId) -> Result<ArtifactManifest, StoreError> {
         let key = format!("{}/manifest.json", dataset.canonical_string());
+        let lock_key = format!("{}/manifest.lock", dataset.canonical_string());
         let bytes = self.fetch_bytes(&key, &self.url_for(dataset, "manifest.json"))?;
+        let lock_bytes = self.fetch_bytes(&lock_key, &self.url_for(dataset, "manifest.lock"))?;
+        let lock: ManifestLock = serde_json::from_slice(&lock_bytes)
+            .map_err(|e| StoreError::new(StoreErrorCode::Validation, e.to_string()))?;
+        lock.validate_manifest_only(&bytes)
+            .map_err(|e| StoreError::new(StoreErrorCode::Validation, e))?;
         let manifest: ArtifactManifest = serde_json::from_slice(&bytes)
             .map_err(|e| StoreError::new(StoreErrorCode::Validation, e.to_string()))?;
         manifest
@@ -509,4 +540,3 @@ pub struct RetryPolicy {
     pub max_attempts: usize,
     pub base_backoff_ms: u64,
 }
-
