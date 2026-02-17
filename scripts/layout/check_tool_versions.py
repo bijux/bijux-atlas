@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Purpose: enforce pinned ops tool versions from canonical ops/tool-versions.json.
-# Inputs: ops/tool-versions.json (or configs/ops/tool-versions.json fallback) and local tool CLI outputs.
+# Inputs: ops/tool-versions.json and local tool CLI outputs.
 # Outputs: non-zero exit if installed version does not match pinned lockfile version.
 from __future__ import annotations
 
@@ -11,10 +11,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-LOCK_CANDIDATES = [
-    ROOT / "ops" / "tool-versions.json",
-    ROOT / "configs" / "ops" / "tool-versions.json",
-]
+LOCK_PATH = ROOT / "ops" / "tool-versions.json"
 
 CMDS = {
     "kind": ["kind", "version"],
@@ -40,12 +37,10 @@ def detect_version(tool: str) -> str:
 
 
 def main() -> int:
-    lock_path = next((path for path in LOCK_CANDIDATES if path.exists()), None)
-    if lock_path is None:
-        joined = ", ".join(str(path) for path in LOCK_CANDIDATES)
-        print(f"missing lockfile (checked: {joined})", file=sys.stderr)
+    if not LOCK_PATH.exists():
+        print(f"missing lockfile: {LOCK_PATH}", file=sys.stderr)
         return 1
-    lock = json.loads(lock_path.read_text())
+    lock = json.loads(LOCK_PATH.read_text())
     tools = sys.argv[1:] or sorted(CMDS.keys())
     failed = False
     for tool in tools:
@@ -55,7 +50,7 @@ def main() -> int:
             continue
         expected = lock.get(tool)
         if not expected:
-            print(f"missing pinned version for {tool} in {lock_path}", file=sys.stderr)
+            print(f"missing pinned version for {tool} in {LOCK_PATH}", file=sys.stderr)
             failed = True
             continue
         try:

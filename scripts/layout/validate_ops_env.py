@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Purpose: validate canonical ops environment against schema and print resolved values.
 # Inputs: configs/ops/env.schema.json and current process environment.
-# Outputs: non-zero exit on invalid env; optional export-style print.
+# Outputs: non-zero exit on invalid env; optional export/json print.
 from __future__ import annotations
 
 import argparse
@@ -44,6 +44,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--schema", required=True)
     parser.add_argument("--print", action="store_true", dest="print_env")
+    parser.add_argument("--format", choices=("env", "json"), default="env")
     args = parser.parse_args()
 
     schema_path = (ROOT / args.schema).resolve()
@@ -78,8 +79,11 @@ def main() -> int:
         return 1
 
     if args.print_env:
-        for name in sorted(resolved):
-            print(f"{name}={resolved[name]}")
+        if args.format == "json":
+            print(json.dumps({name: resolved[name] for name in sorted(resolved)}, indent=2, sort_keys=True))
+        else:
+            for name in sorted(resolved):
+                print(f"{name}={resolved[name]}")
     else:
         print("ops env contract check passed")
     return 0

@@ -3,47 +3,15 @@ SHELL := /bin/sh
 # Ops SSOT targets
 OPS_ENV_SCHEMA ?= configs/ops/env.schema.json
 
-ATLAS_BASE_URL ?= http://127.0.0.1:18080
-ATLAS_NS ?= atlas-e2e
-ATLAS_VALUES_FILE ?= ops/k8s/values/local.yaml
-ATLAS_OFFLINE_VALUES_FILE ?= ops/k8s/values/offline.yaml
-ATLAS_PERF_VALUES_FILE ?= ops/k8s/values/perf.yaml
-ATLAS_MULTI_REGISTRY_VALUES_FILE ?= ops/k8s/values/multi-registry.yaml
-ATLAS_INGRESS_VALUES_FILE ?= ops/k8s/values/ingress.yaml
-ATLAS_RUN_ID ?= local
-ATLAS_E2E_TIMEOUT ?= 180s
-ATLAS_E2E_ENABLE_REDIS ?= 0
-ATLAS_E2E_ENABLE_OTEL ?= 0
-ATLAS_E2E_ENABLE_TOXIPROXY ?= 0
-ATLAS_E2E_TEST_GROUP ?=
-ATLAS_E2E_TEST ?=
-OPS_RUN_ID ?= $(ATLAS_RUN_ID)
-OPS_RUN_DIR ?= artifacts/ops/$(OPS_RUN_ID)
-
-export ATLAS_BASE_URL
-export ATLAS_NS
-export ATLAS_VALUES_FILE
-export ATLAS_OFFLINE_VALUES_FILE
-export ATLAS_PERF_VALUES_FILE
-export ATLAS_MULTI_REGISTRY_VALUES_FILE
-export ATLAS_INGRESS_VALUES_FILE
-export ATLAS_RUN_ID
-export ATLAS_E2E_TIMEOUT
-export ATLAS_E2E_ENABLE_REDIS
-export ATLAS_E2E_ENABLE_OTEL
-export ATLAS_E2E_ENABLE_TOXIPROXY
-export ATLAS_E2E_TEST_GROUP
-export ATLAS_E2E_TEST
-export ATLAS_E2E_NAMESPACE ?= $(ATLAS_NS)
-export ATLAS_E2E_VALUES_FILE ?= $(ATLAS_VALUES_FILE)
-export OPS_RUN_ID
-export OPS_RUN_DIR
-
 ops-env-validate: ## Validate canonical ops environment contract against schema
 	@python3 ./scripts/layout/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)"
 
 ops-env-print: ## Print canonical ops environment settings
-	@python3 ./scripts/layout/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)" --print
+	@python3 ./scripts/layout/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)" --print --format json
+
+ops-doctor: ## Validate and print pinned ops tool versions and canonical env
+	@$(MAKE) -s ops-tools-check
+	@$(MAKE) -s ops-env-print
 
 ops-stack-up: ## Bring up stack components only (kind + stack manifests)
 	@$(MAKE) -s ops-env-validate
