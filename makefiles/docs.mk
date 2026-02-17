@@ -28,6 +28,8 @@ docs: ## Build docs + link-check + spell-check + lint
 	@./scripts/docs/check_title_case.sh
 	@python3 scripts/docs/check_no_orphan_docs.py
 	@python3 scripts/docs/lint_doc_contracts.py
+	@python3 scripts/docs/check_nav_order.py
+	@python3 scripts/docs/check_adr_headers.py
 	@if command -v vale >/dev/null 2>&1; then vale docs; else echo "vale not found; using contract style linter + codespell"; fi
 	@python3 scripts/docs/check_runbooks_contract.py
 	@python3 scripts/docs/check_k8s_docs_contract.py
