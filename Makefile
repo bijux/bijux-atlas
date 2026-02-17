@@ -40,10 +40,10 @@ doctor:
 	@printf 'rustc: '; rustc --version
 	@printf 'cargo: '; cargo --version
 	@printf 'python3: '; python3 --version
-	@printf 'k6: '; (k6 version 2>/dev/null | head -n1 || echo 'missing')
-	@printf 'kind: '; (kind version 2>/dev/null | head -n1 || echo 'missing')
-	@printf 'kubectl: '; (kubectl version --client --short 2>/dev/null || echo 'missing')
-	@printf 'helm: '; (helm version --short 2>/dev/null || echo 'missing')
+	@printf 'k6: '; (command -v k6 >/dev/null 2>&1 && k6 version 2>/dev/null | head -n1) || echo 'missing'
+	@printf 'kind: '; (command -v kind >/dev/null 2>&1 && kind version 2>/dev/null | head -n1) || echo 'missing'
+	@printf 'kubectl: '; (command -v kubectl >/dev/null 2>&1 && kubectl version --client --short 2>/dev/null) || echo 'missing'
+	@printf 'helm: '; (command -v helm >/dev/null 2>&1 && helm version --short 2>/dev/null) || echo 'missing'
 
 e2e-local:
 	@./ops/e2e/scripts/up.sh
