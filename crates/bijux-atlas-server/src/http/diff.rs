@@ -231,7 +231,7 @@ async fn diff_common(
         .get("limit")
         .and_then(|x| x.parse::<usize>().ok())
         .unwrap_or(100)
-        .min(state.limits.max_limit as usize);
+        .min(state.limits.max_limit);
     let class = QueryClass::Heavy;
     let overloaded = crate::middleware::shedding::overloaded(&state).await;
     if crate::middleware::shedding::should_shed_noncheap(&state, class).await
@@ -365,14 +365,16 @@ async fn diff_common(
     let mut rows: Vec<DiffRecord> = Vec::new();
     while i < from_entries.len() || j < to_entries.len() {
         let next = match (from_entries.get(i), to_entries.get(j)) {
-            (Some(a), Some(b)) => {
-                if a.gene_id < b.gene_id {
+            (Some(a), Some(b)) => match a.gene_id.cmp(&b.gene_id) {
+                std::cmp::Ordering::Less => {
                     i += 1;
                     Some((a.gene_id.clone(), DiffStatus::Removed, Some(a)))
-                } else if a.gene_id > b.gene_id {
+                }
+                std::cmp::Ordering::Greater => {
                     j += 1;
                     Some((b.gene_id.clone(), DiffStatus::Added, Some(b)))
-                } else {
+                }
+                std::cmp::Ordering::Equal => {
                     i += 1;
                     j += 1;
                     if a.signature_sha256 != b.signature_sha256 {
@@ -381,7 +383,7 @@ async fn diff_common(
                         None
                     }
                 }
-            }
+            },
             (Some(a), None) => {
                 i += 1;
                 Some((a.gene_id.clone(), DiffStatus::Removed, Some(a)))
