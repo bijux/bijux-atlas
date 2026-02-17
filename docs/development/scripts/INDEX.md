@@ -20,6 +20,12 @@ Does not duplicate script implementation details.
 
 ## Contracts
 
+- `scripts/INDEX.md` is generated (`python3 scripts/generate_scripts_readme.py`) and must not be hand-edited.
+- Script taxonomy:
+  - `scripts/public/`: make-callable entrypoints.
+  - `scripts/internal/`: script-only helpers.
+  - `scripts/dev/`: local helpers (not docs/CI contracts).
+  - `scripts/tools/`: shared Python helper modules.
 - Contracts: `scripts/contracts/`
 - Docs linters/generators: `scripts/docs/`
 - Perf tooling wrappers: `scripts/perf/` (canonical: `ops/load/scripts/`)

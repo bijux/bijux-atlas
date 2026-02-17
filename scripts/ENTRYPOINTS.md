@@ -8,6 +8,7 @@ This registry defines script stability levels.
 
 ## Public
 
+- `scripts/public/*`
 - `scripts/bin/isolate`
 - `scripts/bin/require-isolate`
 - `scripts/bootstrap/install_tools.sh`
@@ -39,6 +40,7 @@ This registry defines script stability levels.
 
 ## Internal
 
+- `scripts/internal/*`
 - `ops/load/scripts/*`
 - `ops/observability/scripts/*`
 - `ops/stack/scripts/*`
@@ -46,4 +48,5 @@ This registry defines script stability levels.
 
 ## Private
 
+- `scripts/dev/*`
 - `scripts/demo/demo.sh`

@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-# Purpose: generate scripts/README.md index of scripts and owners.
-# Inputs: scripts tree.
-# Outputs: scripts/README.md.
+# Purpose: generate script indexes for scripts governance.
+# Inputs: scripts tree, scripts/ENTRYPOINTS.md, Makefile + makefiles/*.mk.
+# Outputs: scripts/README.md and scripts/INDEX.md.
 from pathlib import Path
 import fnmatch
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = ROOT / "scripts"
-OUT = SCRIPTS / "README.md"
+OUT_README = SCRIPTS / "README.md"
+OUT_INDEX = SCRIPTS / "INDEX.md"
 
 owner_map = {
     "contracts": "contracts",
@@ -23,16 +24,31 @@ owner_map = {
 }
 
 files = sorted(
-    p for p in SCRIPTS.rglob("*") if p.is_file() and p.name != "README.md"
+    p
+    for p in SCRIPTS.rglob("*")
+    if p.is_file() and p.name not in {"README.md", "INDEX.md"}
 )
+
+mk_files = [ROOT / "Makefile"] + sorted((ROOT / "makefiles").glob("*.mk"))
+mk_text = "\n".join(p.read_text(encoding="utf-8") for p in mk_files)
+called_by: dict[str, list[str]] = {}
+for mk in mk_files:
+    txt = mk.read_text(encoding="utf-8")
+    for m in re.finditer(r"^\s*([a-zA-Z0-9_.-]+):", txt, re.MULTILINE):
+        target = m.group(1)
+        segment = txt[m.start() : txt.find("\n\n", m.start()) if txt.find("\n\n", m.start()) != -1 else len(txt)]
+        refs = set(re.findall(r"\./(scripts/[^\s\"\\;]+)", segment))
+        refs.update(re.findall(r"(?:python3|python)\s+(scripts/[^\s\"\\;]+)", segment))
+        for ref in refs:
+            called_by.setdefault(ref, []).append(target)
 
 lines = [
     "# Scripts Index",
     "",
     "Generated file. Do not edit manually.",
     "",
-    "| Script | Owner | Stability |",
-    "|---|---|---|",
+    "| Script | Owner | Stability | Called By |",
+    "|---|---|---|---|",
 ]
 
 entrypoints = (SCRIPTS / "ENTRYPOINTS.md").read_text() if (SCRIPTS / "ENTRYPOINTS.md").exists() else ""
@@ -55,7 +71,12 @@ for p in files:
         if any(fnmatch.fnmatch(rel, pat) for pat in patterns):
             stability = level
             break
-    lines.append(f"| `{rel}` | `{owner}` | `{stability}` |")
+    called = sorted(called_by.get(rel, []))
+    called_txt = ", ".join(f"`{t}`" for t in called) if called else "-"
+    lines.append(f"| `{rel}` | `{owner}` | `{stability}` | {called_txt} |")
 
-OUT.write_text("\n".join(lines) + "\n")
-print(OUT)
+content = "\n".join(lines) + "\n"
+OUT_README.write_text(content, encoding="utf-8")
+OUT_INDEX.write_text(content, encoding="utf-8")
+print(OUT_README)
+print(OUT_INDEX)

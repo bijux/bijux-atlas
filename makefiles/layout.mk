@@ -7,6 +7,7 @@ layout-check: ## Validate repository layout contract and root shape
 	@./scripts/layout/check_no_forbidden_paths.sh
 	@./scripts/layout/check_ops_workspace.sh
 	@./scripts/layout/check_ops_canonical_shims.sh
+	@./scripts/layout/check_ops_lib_canonical.sh
 	@./scripts/layout/check_repo_hygiene.sh
 	@./scripts/layout/check_artifacts_allowlist.sh
 	@./scripts/layout/check_artifacts_policy.sh

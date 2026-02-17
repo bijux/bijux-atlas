@@ -302,6 +302,7 @@ ops-report: ## Gather ops evidence into artifacts/ops/<run-id>/
 	cp -R artifacts/perf/results "$$out/perf/" 2>/dev/null || true; \
 	curl -fsS "$${ATLAS_BASE_URL:-http://127.0.0.1:8080}/metrics" > "$$out/metrics/metrics.txt" 2>/dev/null || true; \
 	echo "ops report written to $$out"; \
+	RUN_ID="$${OPS_RUN_ID}" OUT_DIR="$$out/bundle" ./scripts/public/report_bundle.sh >/dev/null; \
 	ln -sfn "$${OPS_RUN_ID}" artifacts/ops/latest; \
 	$(MAKE) artifacts-index
 

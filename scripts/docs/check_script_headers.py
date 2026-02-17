@@ -27,6 +27,12 @@ for p in script_paths:
         errors.append(f'{p}: missing shebang')
     if 'Purpose:' not in head or 'Inputs:' not in head or 'Outputs:' not in head:
         errors.append(f'{p}: missing script header contract (Purpose/Inputs/Outputs)')
+    rel = p.relative_to(ROOT).as_posix()
+    if rel.startswith("scripts/public/"):
+        required = ("owner:", "purpose:", "stability:", "called-by:")
+        missing = [k for k in required if k not in head.lower()]
+        if missing:
+            errors.append(f"{p}: missing public header fields ({', '.join(missing)})")
     if p.as_posix().startswith(str((ROOT/'scripts'/'perf').as_posix())) and ('Owner:' not in head or 'Stability:' not in head):
         errors.append(f'{p}: missing extended header contract (Owner/Stability)')
 
