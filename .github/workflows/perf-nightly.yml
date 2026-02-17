@@ -40,6 +40,7 @@ jobs:
           path: |
             artifacts/perf/**
             artifacts/ops/e2e/k6/**
+            artifacts/ops/load/reports/**
 
       - name: Prepare regression issue content
         if: failure() && hashFiles('artifacts/perf/regression.txt') != ''

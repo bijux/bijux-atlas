@@ -23,6 +23,10 @@ Does not duplicate k6 script implementation.
 - SSOT query set: `ops/load/queries/pinned-v1.json`
 - Query freeze lock: `ops/load/queries/pinned-v1.lock`
 - Suite manifest and budgets: `ops/load/suites/suites.json`
+- Suite schema: `ops/load/contracts/suite-schema.json`
+- Suite manifest validator: `scripts/perf/validate_suite_manifest.py`
+- Suite naming convention: `kebab-case`, unique, deterministic.
+- Required suite fields: `purpose`, `kind`, `scenario|script`, `thresholds`, `expected_metrics`, `must_pass`.
 - Result contract: `ops/load/contracts/result-schema.json`
 - `mixed.json`: baseline mixed traffic distribution.
 - `spike.json`: burst overload behavior.

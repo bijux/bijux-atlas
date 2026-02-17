@@ -24,6 +24,9 @@ Does not define endpoint correctness tests.
 - Nightly tier: full suites including spike, churn, outage, and soak-linked scenarios.
 - SLO scoring must use `scripts/perf/score_k6.py` with `configs/slo/slo.json`.
 - Suite manifest SSOT: `ops/load/suites/suites.json`.
+- Suite manifest must validate against `ops/load/contracts/suite-schema.json`.
+- Redis experiment suite runs only when `ATLAS_ENABLE_REDIS_EXPERIMENT=1`.
+- Baseline updates must use `make ops-perf-baseline-update` and satisfy baseline policy gate.
 - PR smoke scenarios include `mixed.json`.
 - Nightly scenarios include `spike.json`, `stampede.json`, `store-outage-mid-spike.json`, `pod-churn.json`, `diff-heavy.json`, and `soak-30m.json`.
 
