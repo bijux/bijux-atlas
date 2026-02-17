@@ -11,3 +11,6 @@
 - Sequence v1 routes are included:
   - `/v1/sequence/region`
   - `/v1/genes/{gene_id}/sequence`
+- Diff v1 routes are included:
+  - `/v1/diff/genes`
+  - `/v1/diff/region`

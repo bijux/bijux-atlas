@@ -101,6 +101,44 @@ pub fn openapi_v1_spec() -> Value {
             }
           }
         },
+        "/v1/diff/genes": {
+          "get": {
+            "parameters": [
+              {"name":"from_release","in":"query","required":true,"schema":{"type":"string","description":"explicit release number or literal latest alias"}},
+              {"name":"to_release","in":"query","required":true,"schema":{"type":"string","description":"explicit release number or literal latest alias"}},
+              {"name":"species","in":"query","required":true,"schema":{"type":"string"}},
+              {"name":"assembly","in":"query","required":true,"schema":{"type":"string"}},
+              {"name":"limit","in":"query","schema":{"type":"integer","minimum":1,"maximum":500}},
+              {"name":"cursor","in":"query","schema":{"type":"string"}}
+            ],
+            "responses": {
+              "200": {
+                "description":"gene-level cross-release diff page",
+                "content":{"application/json":{"examples":{"ok":{"value":{"diff":{"from_release":"110","to_release":"111","species":"homo_sapiens","assembly":"GRCh38","scope":"genes","rows":[{"gene_id":"gA","status":"removed"},{"gene_id":"gB","status":"changed"},{"gene_id":"gC","status":"added"}]}}}}}}
+              },
+              "304": {"description":"not modified"},
+              "400": {"description":"invalid query/cursor", "content":{"application/json":{"schema":{"$ref":"#/components/schemas/ApiError"}}}}
+            }
+          }
+        },
+        "/v1/diff/region": {
+          "get": {
+            "parameters": [
+              {"name":"from_release","in":"query","required":true,"schema":{"type":"string"}},
+              {"name":"to_release","in":"query","required":true,"schema":{"type":"string"}},
+              {"name":"species","in":"query","required":true,"schema":{"type":"string"}},
+              {"name":"assembly","in":"query","required":true,"schema":{"type":"string"}},
+              {"name":"region","in":"query","required":true,"schema":{"type":"string","pattern":"^[^:]+:[0-9]+-[0-9]+$"}},
+              {"name":"limit","in":"query","schema":{"type":"integer","minimum":1,"maximum":500}},
+              {"name":"cursor","in":"query","schema":{"type":"string"}}
+            ],
+            "responses": {
+              "200": {"description":"region-scoped cross-release diff page"},
+              "304": {"description":"not modified"},
+              "400": {"description":"invalid query/cursor", "content":{"application/json":{"schema":{"$ref":"#/components/schemas/ApiError"}}}}
+            }
+          }
+        },
         "/v1/sequence/region": {
           "get": {
             "parameters": [

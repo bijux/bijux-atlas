@@ -115,6 +115,8 @@ mod tests {
             "/v1/releases/{release}/species/{species}/assemblies/{assembly}",
             "/v1/genes",
             "/v1/genes/count",
+            "/v1/diff/genes",
+            "/v1/diff/region",
             "/v1/sequence/region",
             "/v1/genes/{gene_id}/sequence",
             "/v1/genes/{gene_id}/transcripts",
