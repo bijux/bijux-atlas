@@ -13,6 +13,16 @@ use std::fs::File;
 use std::io::{Read, Seek, SeekFrom};
 use tracing::info;
 
+struct QueueGuard {
+    counter: Arc<AtomicU64>,
+}
+
+impl Drop for QueueGuard {
+    fn drop(&mut self) {
+        self.counter.fetch_sub(1, Ordering::Relaxed);
+    }
+}
+
 #[derive(Debug, Clone)]
 struct FaiRecord {
     len: u64,
@@ -195,11 +205,36 @@ async fn sequence_common(
     let started = Instant::now();
     let request_id = crate::http::handlers::propagated_request_id(&headers, &state);
     info!(request_id = %request_id, route = route, "request start");
+    let queue_depth = state
+        .queued_requests
+        .fetch_add(1, Ordering::Relaxed)
+        .saturating_add(1);
+    if queue_depth as usize > state.api.max_request_queue_depth {
+        state.queued_requests.fetch_sub(1, Ordering::Relaxed);
+        let resp = api_error_response(
+            StatusCode::TOO_MANY_REQUESTS,
+            error_json(
+                ApiErrorCode::QueryRejectedByPolicy,
+                "request queue depth exceeded",
+                json!({"depth": queue_depth, "max": state.api.max_request_queue_depth}),
+            ),
+        );
+        return with_request_id(resp, &request_id);
+    }
+    let _queue_guard = QueueGuard {
+        counter: Arc::clone(&state.queued_requests),
+    };
+    let overloaded_early = crate::middleware::shedding::overloaded(&state).await;
+    let adaptive_rl = if overloaded_early {
+        state.api.adaptive_rate_limit_factor
+    } else {
+        1.0
+    };
 
     if let Some(ip) = headers.get("x-forwarded-for").and_then(|v| v.to_str().ok()) {
         if !state
             .sequence_ip_limiter
-            .allow(ip, &state.api.sequence_rate_limit_per_ip)
+            .allow_with_factor(ip, &state.api.sequence_rate_limit_per_ip, adaptive_rl)
             .await
         {
             let resp = api_error_response(
@@ -250,14 +285,19 @@ async fn sequence_common(
     if crate::middleware::shedding::should_shed_noncheap(&state, class).await
         || (state.api.shed_load_enabled && class == QueryClass::Heavy && overloaded)
     {
-        let resp = api_error_response(
+        let backoff = crate::middleware::shedding::heavy_backoff_ms(&state);
+        tokio::time::sleep(Duration::from_millis(backoff)).await;
+        let mut resp = api_error_response(
             StatusCode::SERVICE_UNAVAILABLE,
             error_json(
                 ApiErrorCode::QueryRejectedByPolicy,
                 "server is shedding non-cheap query load",
-                json!({"class": format!("{class:?}")}),
+                json!({"class": format!("{class:?}"), "retry_after_ms": backoff}),
             ),
         );
+        if let Ok(v) = HeaderValue::from_str(&(backoff / 1000).max(1).to_string()) {
+            resp.headers_mut().insert("retry-after", v);
+        }
         state
             .metrics
             .observe_request(route, StatusCode::SERVICE_UNAVAILABLE, started.elapsed())

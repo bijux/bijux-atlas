@@ -10,6 +10,16 @@ use serde_json::json;
 use std::collections::HashMap;
 use tracing::info;
 
+struct QueueGuard {
+    counter: Arc<AtomicU64>,
+}
+
+impl Drop for QueueGuard {
+    fn drop(&mut self) {
+        self.counter.fetch_sub(1, Ordering::Relaxed);
+    }
+}
+
 fn parse_dataset_dims(params: &HashMap<String, String>) -> Result<(String, String), ApiError> {
     let species = params
         .get("species")
@@ -126,6 +136,25 @@ async fn diff_common(
         _ => "/v1/diff/genes",
     };
     info!(request_id = %request_id, route = route, "request start");
+    let queue_depth = state
+        .queued_requests
+        .fetch_add(1, Ordering::Relaxed)
+        .saturating_add(1);
+    if queue_depth as usize > state.api.max_request_queue_depth {
+        state.queued_requests.fetch_sub(1, Ordering::Relaxed);
+        let resp = api_error_response(
+            StatusCode::TOO_MANY_REQUESTS,
+            error_json(
+                ApiErrorCode::QueryRejectedByPolicy,
+                "request queue depth exceeded",
+                json!({"depth": queue_depth, "max": state.api.max_request_queue_depth}),
+            ),
+        );
+        return with_request_id(resp, &request_id);
+    }
+    let _queue_guard = QueueGuard {
+        counter: Arc::clone(&state.queued_requests),
+    };
 
     let (species, assembly) = match parse_dataset_dims(&params) {
         Ok(v) => v,
@@ -198,7 +227,7 @@ async fn diff_common(
         }
     };
 
-    let limit = params
+    let mut limit = params
         .get("limit")
         .and_then(|x| x.parse::<usize>().ok())
         .unwrap_or(100)
@@ -208,15 +237,25 @@ async fn diff_common(
     if crate::middleware::shedding::should_shed_noncheap(&state, class).await
         || (state.api.shed_load_enabled && overloaded)
     {
-        let resp = api_error_response(
+        let backoff = crate::middleware::shedding::heavy_backoff_ms(&state);
+        tokio::time::sleep(Duration::from_millis(backoff)).await;
+        let mut resp = api_error_response(
             StatusCode::SERVICE_UNAVAILABLE,
             error_json(
                 ApiErrorCode::QueryRejectedByPolicy,
                 "server is shedding non-cheap query load",
-                json!({"class":"Heavy"}),
+                json!({"class":"Heavy","retry_after_ms": backoff}),
             ),
         );
+        if let Ok(v) = HeaderValue::from_str(&(backoff / 1000).max(1).to_string()) {
+            resp.headers_mut().insert("retry-after", v);
+        }
         return with_request_id(resp, &request_id);
+    }
+    if overloaded {
+        let adaptive_max = ((state.limits.max_limit as f64) * state.api.adaptive_heavy_limit_factor)
+            .max(1.0) as usize;
+        limit = limit.min(adaptive_max);
     }
     let _class_permit = match state.class_heavy.clone().try_acquire_owned() {
         Ok(v) => v,

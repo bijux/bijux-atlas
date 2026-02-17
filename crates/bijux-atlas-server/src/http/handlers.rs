@@ -7,6 +7,16 @@ use serde_json::json;
 use serde_json::Value;
 use std::io::Write;
 
+struct RequestQueueGuard {
+    counter: Arc<AtomicU64>,
+}
+
+impl Drop for RequestQueueGuard {
+    fn drop(&mut self) {
+        self.counter.fetch_sub(1, Ordering::Relaxed);
+    }
+}
+
 pub(crate) fn api_error_response(status: StatusCode, err: ApiError) -> Response {
     let body = Json(json!({"error": err}));
     (status, body).into_response()
@@ -304,6 +314,37 @@ pub(crate) async fn healthz_handler(State(state): State<AppState>) -> impl IntoR
         .observe_request_with_trace(
             "/healthz",
             StatusCode::OK,
+            started.elapsed(),
+            Some(&request_id),
+        )
+        .await;
+    with_request_id(resp, &request_id)
+}
+
+pub(crate) async fn overload_health_handler(State(state): State<AppState>) -> impl IntoResponse {
+    let request_id = make_request_id(&state);
+    let started = Instant::now();
+    let overloaded = crate::middleware::shedding::overloaded(&state).await;
+    let status = if overloaded {
+        StatusCode::SERVICE_UNAVAILABLE
+    } else {
+        StatusCode::OK
+    };
+    let resp = (
+        status,
+        Json(json!({
+            "overloaded": overloaded,
+            "draining": !state.accepting_requests.load(Ordering::Relaxed),
+            "cached_only_mode": state.cache.cached_only_mode(),
+            "emergency_breaker": state.api.emergency_global_breaker
+        })),
+    )
+        .into_response();
+    state
+        .metrics
+        .observe_request_with_trace(
+            "/healthz/overload",
+            status,
             started.elapsed(),
             Some(&request_id),
         )
@@ -688,7 +729,9 @@ pub(crate) async fn dataset_health_handler(
             "cached": snapshot.cached,
             "checksum_verified": snapshot.checksum_verified,
             "last_open_seconds_ago": snapshot.last_open_seconds_ago,
-            "size_bytes": snapshot.size_bytes
+            "size_bytes": snapshot.size_bytes,
+            "open_failures": snapshot.open_failures,
+            "quarantined": snapshot.quarantined
         },
         "catalog_epoch": state.cache.catalog_epoch().await
     }))
@@ -827,6 +870,25 @@ pub(crate) async fn gene_transcripts_handler(
 ) -> Response {
     let started = Instant::now();
     let request_id = propagated_request_id(&headers, &state);
+    let queue_depth = state
+        .queued_requests
+        .fetch_add(1, Ordering::Relaxed)
+        .saturating_add(1);
+    if queue_depth as usize > state.api.max_request_queue_depth {
+        state.queued_requests.fetch_sub(1, Ordering::Relaxed);
+        let resp = api_error_response(
+            StatusCode::TOO_MANY_REQUESTS,
+            error_json(
+                ApiErrorCode::QueryRejectedByPolicy,
+                "request queue depth exceeded",
+                json!({"depth": queue_depth, "max": state.api.max_request_queue_depth}),
+            ),
+        );
+        return with_request_id(resp, &request_id);
+    }
+    let _queue_guard = RequestQueueGuard {
+        counter: Arc::clone(&state.queued_requests),
+    };
     let release = params.get("release").cloned().unwrap_or_default();
     let species = params.get("species").cloned().unwrap_or_default();
     let assembly = params.get("assembly").cloned().unwrap_or_default();
@@ -870,14 +932,19 @@ pub(crate) async fn gene_transcripts_handler(
     };
     let class = QueryClass::Heavy;
     if crate::middleware::shedding::should_shed_noncheap(&state, class).await {
-        let resp = api_error_response(
+        let backoff = crate::middleware::shedding::heavy_backoff_ms(&state);
+        tokio::time::sleep(Duration::from_millis(backoff)).await;
+        let mut resp = api_error_response(
             StatusCode::SERVICE_UNAVAILABLE,
             error_json(
                 ApiErrorCode::QueryRejectedByPolicy,
                 "server is shedding non-cheap query load",
-                json!({"class":"heavy"}),
+                json!({"class":"heavy","retry_after_ms": backoff}),
             ),
         );
+        if let Ok(v) = HeaderValue::from_str(&(backoff / 1000).max(1).to_string()) {
+            resp.headers_mut().insert("retry-after", v);
+        }
         state
             .metrics
             .observe_request(

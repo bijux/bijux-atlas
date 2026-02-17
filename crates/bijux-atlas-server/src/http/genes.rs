@@ -9,6 +9,34 @@ use bijux_atlas_query::{
 use serde_json::json;
 use tracing::{info, info_span, warn};
 
+struct QueueGuard {
+    counter: Arc<AtomicU64>,
+}
+
+impl Drop for QueueGuard {
+    fn drop(&mut self) {
+        self.counter.fetch_sub(1, Ordering::Relaxed);
+    }
+}
+
+fn try_enter_queue(state: &AppState) -> Result<QueueGuard, ApiError> {
+    let depth = state
+        .queued_requests
+        .fetch_add(1, Ordering::Relaxed)
+        .saturating_add(1);
+    if depth as usize > state.api.max_request_queue_depth {
+        state.queued_requests.fetch_sub(1, Ordering::Relaxed);
+        return Err(super::handlers::error_json(
+            ApiErrorCode::QueryRejectedByPolicy,
+            "request queue depth exceeded",
+            json!({"depth": depth, "max": state.api.max_request_queue_depth}),
+        ));
+    }
+    Ok(QueueGuard {
+        counter: Arc::clone(&state.queued_requests),
+    })
+}
+
 fn parse_fields(fields: Option<Vec<String>>) -> GeneFields {
     if let Some(list) = fields {
         let mut out = GeneFields {
@@ -120,11 +148,17 @@ pub(crate) async fn genes_handler(
         return super::handlers::with_request_id(resp, &request_id);
     }
     info!(request_id = %request_id, "request start");
+    let overloaded_early = crate::middleware::shedding::overloaded(&state).await;
+    let adaptive_rl = if overloaded_early {
+        state.api.adaptive_rate_limit_factor
+    } else {
+        1.0
+    };
 
     if let Some(ip) = headers.get("x-forwarded-for").and_then(|v| v.to_str().ok()) {
         if !state
             .ip_limiter
-            .allow(ip, &state.api.rate_limit_per_ip)
+            .allow_with_factor(ip, &state.api.rate_limit_per_ip, adaptive_rl)
             .await
         {
             let resp = super::handlers::api_error_response(
@@ -151,7 +185,7 @@ pub(crate) async fn genes_handler(
         if let Some(key) = headers.get("x-api-key").and_then(|v| v.to_str().ok()) {
             if !state
                 .api_key_limiter
-                .allow(key, &state.api.rate_limit_per_api_key)
+                .allow_with_factor(key, &state.api.rate_limit_per_api_key, adaptive_rl)
                 .await
             {
                 let resp = super::handlers::api_error_response(
@@ -319,18 +353,29 @@ pub(crate) async fn genes_handler(
             .await;
         return super::handlers::with_request_id(resp, &request_id);
     }
+    if overloaded && class == QueryClass::Heavy {
+        let adaptive_max = ((state.limits.heavy_projection_limit as f64)
+            * state.api.adaptive_heavy_limit_factor)
+            .max(1.0) as usize;
+        req.limit = req.limit.min(adaptive_max);
+    }
 
     if (class == QueryClass::Heavy && state.api.shed_load_enabled && overloaded)
         || crate::middleware::shedding::should_shed_noncheap(&state, class).await
     {
-        let resp = super::handlers::api_error_response(
+        let backoff = crate::middleware::shedding::heavy_backoff_ms(&state);
+        tokio::time::sleep(Duration::from_millis(backoff)).await;
+        let mut resp = super::handlers::api_error_response(
             StatusCode::SERVICE_UNAVAILABLE,
             super::handlers::error_json(
                 ApiErrorCode::QueryRejectedByPolicy,
                 "server is shedding heavy query load",
-                json!({"class":"heavy"}),
+                json!({"class":"heavy","retry_after_ms": backoff}),
             ),
         );
+        if let Ok(v) = HeaderValue::from_str(&(backoff / 1000).max(1).to_string()) {
+            resp.headers_mut().insert("retry-after", v);
+        }
         state
             .metrics
             .observe_request(
@@ -341,6 +386,22 @@ pub(crate) async fn genes_handler(
             .await;
         return super::handlers::with_request_id(resp, &request_id);
     }
+
+    let _queue_guard = match try_enter_queue(&state) {
+        Ok(g) => g,
+        Err(e) => {
+            let resp = super::handlers::api_error_response(StatusCode::TOO_MANY_REQUESTS, e);
+            state
+                .metrics
+                .observe_request(
+                    "/v1/genes",
+                    StatusCode::TOO_MANY_REQUESTS,
+                    started.elapsed(),
+                )
+                .await;
+            return super::handlers::with_request_id(resp, &request_id);
+        }
+    };
 
     let _class_permit = match acquire_class_permit(&state, class).await {
         Ok(v) => v,
