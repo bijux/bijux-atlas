@@ -47,4 +47,15 @@ if missing_panels:
         print(f"- {panel}", file=sys.stderr)
     sys.exit(1)
 
+dash_contract = json.loads(DASH_CONTRACT.read_text())
+contract_sha = dash_contract.get("contract_git_sha")
+if not isinstance(contract_sha, str) or not contract_sha:
+    print("dashboard panels contract missing contract_git_sha", file=sys.stderr)
+    sys.exit(1)
+tag_key = "contract_git_sha:"
+tags = dash.get("tags", [])
+if not any(isinstance(t, str) and t.startswith(tag_key) for t in tags):
+    print("dashboard missing contract_git_sha tag", file=sys.stderr)
+    sys.exit(1)
+
 print("dashboard contract passed")

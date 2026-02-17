@@ -8,49 +8,80 @@
     {
       "title": "HTTP Request Rate by Route/Status",
       "type": "timeseries",
-      "targets": [{"expr": "sum by (route,status) (rate(bijux_http_requests_total[5m]))"}]
+      "targets": [
+        {
+          "expr": "sum by (route,status) (rate(bijux_http_requests_total[5m]))"
+        }
+      ]
     },
     {
       "title": "HTTP p95 Latency by Route",
       "type": "timeseries",
-      "targets": [{"expr": "bijux_http_request_latency_p95_seconds"}]
+      "targets": [
+        {
+          "expr": "bijux_http_request_latency_p95_seconds"
+        }
+      ]
     },
     {
       "title": "SQLite Query p95 by Class",
       "type": "timeseries",
-      "targets": [{"expr": "bijux_sqlite_query_latency_p95_seconds"}]
+      "targets": [
+        {
+          "expr": "bijux_sqlite_query_latency_p95_seconds"
+        }
+      ]
     },
     {
       "title": "Store Open/Download p95",
       "type": "timeseries",
       "targets": [
-        {"expr": "bijux_store_open_p95_seconds"},
-        {"expr": "bijux_store_download_p95_seconds"}
+        {
+          "expr": "bijux_store_open_p95_seconds"
+        },
+        {
+          "expr": "bijux_store_download_p95_seconds"
+        }
       ]
     },
     {
       "title": "Dataset Cache Hit/Miss",
       "type": "timeseries",
       "targets": [
-        {"expr": "rate(bijux_dataset_hits[5m])"},
-        {"expr": "rate(bijux_dataset_misses[5m])"}
+        {
+          "expr": "rate(bijux_dataset_hits[5m])"
+        },
+        {
+          "expr": "rate(bijux_dataset_misses[5m])"
+        }
       ]
     },
     {
       "title": "Dataset Cache Size",
       "type": "stat",
       "targets": [
-        {"expr": "bijux_dataset_count"},
-        {"expr": "bijux_dataset_disk_usage_bytes"}
+        {
+          "expr": "bijux_dataset_count"
+        },
+        {
+          "expr": "bijux_dataset_disk_usage_bytes"
+        }
       ]
     },
     {
       "title": "SLO Burn Rate (5xx, 5m/1h)",
       "type": "timeseries",
       "targets": [
-        {"expr": "(sum(rate(bijux_http_requests_total{status=~\"5..\"}[5m])) / sum(rate(bijux_http_requests_total[5m]))) / 0.005"},
-        {"expr": "(sum(rate(bijux_http_requests_total{status=~\"5..\"}[1h])) / sum(rate(bijux_http_requests_total[1h]))) / 0.005"}
+        {
+          "expr": "(sum(rate(bijux_http_requests_total{status=~\"5..\"}[5m])) / sum(rate(bijux_http_requests_total[5m]))) / 0.005"
+        },
+        {
+          "expr": "(sum(rate(bijux_http_requests_total{status=~\"5..\"}[1h])) / sum(rate(bijux_http_requests_total[1h]))) / 0.005"
+        }
       ]
     }
+  ],
+  "tags": [
+    "contract_git_sha:REQUIRED_AT_BUILD"
   ]
 }

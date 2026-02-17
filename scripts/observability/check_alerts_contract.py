@@ -36,6 +36,12 @@ if missing_alerts:
         print(f"- {a}", file=sys.stderr)
     sys.exit(1)
 
+alerts_contract = json.loads(ALERT_CONTRACT.read_text())
+contract_sha = alerts_contract.get("contract_git_sha")
+if not isinstance(contract_sha, str) or not contract_sha:
+    print("alerts contract missing contract_git_sha", file=sys.stderr)
+    sys.exit(1)
+
 metrics = set(re.findall(r"\b(?:bijux|atlas)_[a-zA-Z0-9_]+\b", text))
 unknown = sorted(metrics - allow)
 if unknown:
@@ -46,6 +52,9 @@ if unknown:
 
 if "contract_version:" not in text:
     print("alert rules missing contract version metadata", file=sys.stderr)
+    sys.exit(1)
+if "contract_git_sha:" not in text:
+    print("alert rules missing contract_git_sha metadata", file=sys.stderr)
     sys.exit(1)
 if "contact:" not in text:
     print("alert rules missing contact annotation", file=sys.stderr)

@@ -8,5 +8,6 @@
     "Dataset Cache Hit/Miss",
     "Dataset Cache Size",
     "SLO Burn Rate (5xx, 5m/1h)"
-  ]
+  ],
+  "contract_git_sha": "REQUIRED_AT_BUILD"
 }

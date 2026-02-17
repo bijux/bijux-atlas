@@ -5,6 +5,7 @@ metadata:
   labels:
     subsystem: atlas
     contract_version: "1"
+    contract_git_sha: "REQUIRED_AT_BUILD"
   annotations:
     contact: "ops@bijux.local"
     runbook_index: "docs/operations/runbooks/INDEX.md"
