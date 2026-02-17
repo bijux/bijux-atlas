@@ -30,3 +30,7 @@ This checks `manifest.lock` against `manifest.json` and `gene_summary.sqlite`.
 - Enable cached-only profile / mode.
 - Ensure pinned datasets are preloaded.
 - Readiness remains healthy in cached-only mode even if store endpoints are unreachable.
+
+## See also
+
+- `ops-ci`

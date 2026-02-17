@@ -11,3 +11,7 @@ Use `.github/workflows/security-advisory-publication.yml` to publish advisory re
 4. Review + merge, then announce per response policy.
 
 This keeps advisory publication auditable and deterministic.
+
+## See also
+
+- `ops-ci`

@@ -38,3 +38,7 @@ Use `docs/product/reference-grade-checklist.md` during PR review before this fin
 - [ ] Load scenario passes baseline (`docs/operations/load/k6.md`).
 - [ ] K8s chaos/perf scenarios executed (`docs/runbooks/k8s-perf-chaos.md`).
 - [ ] Cold-start and warm-cache latency are within target.
+
+## See also
+
+- `ops-ci`

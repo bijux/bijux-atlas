@@ -39,3 +39,4 @@ Expected output: docs build and docs-structure checks pass.
 - [Docs Home](../../index.md)
 - [Naming Standard](../../_style/naming-standard.md)
 - [Terms Glossary](../../_style/terms-glossary.md)
+- `ops-ci`

@@ -14,3 +14,7 @@
 - For pinned/warmed datasets: maintain normal availability SLO.
 - For cold datasets: fail fast within request timeout budget.
 - Error budget accounting should treat uncached dataset requests as controlled degradation, not unexpected 5xx.
+
+## See also
+
+- `ops-ci`

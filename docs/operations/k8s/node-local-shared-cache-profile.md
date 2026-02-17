@@ -33,3 +33,7 @@ This is an advanced deployment profile, not the default.
 - `values.cache`
 - `values.resources`
 - `values.server`
+
+## See also
+
+- `ops-ci`

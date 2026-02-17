@@ -38,3 +38,7 @@ $ curl -s http://127.0.0.1:8080/readyz
 - Trigger commit/config identified.
 - Compatibility impact documented.
 - Rollback drill evidence attached.
+
+## See also
+
+- `ops-ci`

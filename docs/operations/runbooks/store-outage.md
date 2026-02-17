@@ -40,3 +40,7 @@ $ curl -s http://127.0.0.1:8080/readyz
 - Incident timeline complete.
 - Store dependency failure class identified.
 - Retry/circuit-breaker thresholds adjusted if required.
+
+## See also
+
+- `ops-ci`

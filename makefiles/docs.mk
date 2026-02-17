@@ -34,6 +34,7 @@ docs: ## Build docs + link-check + spell-check + lint
 	@python3 scripts/docs/check_runbooks_contract.py
 	@python3 scripts/docs/check_k8s_docs_contract.py
 	@python3 scripts/docs/check_load_docs_contract.py
+	@python3 scripts/docs/check_ops_docs_make_targets.py
 	@python3 scripts/docs/check_broken_examples.py
 	@python3 scripts/docs/check_example_configs.py
 	@python3 scripts/docs/check_openapi_examples.py

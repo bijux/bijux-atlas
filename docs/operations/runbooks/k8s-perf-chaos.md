@@ -38,3 +38,7 @@ $ kubectl delete pod -n default -l app.kubernetes.io/name=bijux-atlas --force --
 - Chaos scenario report archived.
 - Regression threshold updates reviewed.
 - Runbook improvements captured.
+
+## See also
+
+- `ops-ci`

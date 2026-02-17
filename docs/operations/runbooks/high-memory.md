@@ -40,3 +40,7 @@ $ cargo test -p bijux-atlas-server --test latency_guard
 - Memory hotspots documented.
 - Capacity model updated.
 - Guardrails tuned and tested.
+
+## See also
+
+- `ops-ci`

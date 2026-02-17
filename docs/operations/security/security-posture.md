@@ -37,3 +37,7 @@
 
 - Optional machine-readable audit log mode via `ATLAS_ENABLE_AUDIT_LOG=true`.
 - Audit records include method, path, status, request id, normalized client IP, and latency.
+
+## See also
+
+- `ops-ci`

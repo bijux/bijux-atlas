@@ -24,3 +24,7 @@ If `ApiConfig.enable_exemplars=true`, `/metrics` emits a last-seen request id ex
 `# atlas_exemplar_last_request_id req-...`
 
 This can be wired to trace lookup in collector-side relabeling.
+
+## See also
+
+- `ops-ci`

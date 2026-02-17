@@ -65,3 +65,4 @@ Expected output: generated values doc and chart contract check pass.
 - [Chart Values Contract](../../contracts/chart-values.md)
 - [Helm Chart Contract](chart.md)
 - [K8s Index](INDEX.md)
+- `ops-ci`

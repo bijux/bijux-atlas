@@ -39,3 +39,7 @@ $ curl -s http://127.0.0.1:8080/metrics
 - Customer impact quantified.
 - Root cause and trigger captured.
 - Follow-up tasks linked to owners.
+
+## See also
+
+- `ops-ci`

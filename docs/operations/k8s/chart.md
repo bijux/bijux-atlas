@@ -43,3 +43,4 @@ Expected output: chart lint and install gate pass.
 - [K8s Index](INDEX.md)
 - [Values](values.md)
 - [K8s E2E Tests](../e2e/k8s-tests.md)
+- `ops-ci`

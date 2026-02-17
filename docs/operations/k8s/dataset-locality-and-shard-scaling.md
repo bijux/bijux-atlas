@@ -41,3 +41,7 @@ Purpose: reduce startup stampede where many pods warm the same dataset simultane
 - `values.affinity`
 - `values.nodeSelector`
 - `values.cache`
+
+## See also
+
+- `ops-ci`

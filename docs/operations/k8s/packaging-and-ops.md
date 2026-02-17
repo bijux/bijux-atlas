@@ -170,3 +170,7 @@ See `docs/contracts/compatibility.md` for producer/consumer artifact contract al
 - `values.hpa`
 - `values.pdb`
 - `values.serviceMonitor`
+
+## See also
+
+- `ops-ci`

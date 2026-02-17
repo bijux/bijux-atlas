@@ -24,3 +24,7 @@
 
 - Burn rate below sustained threshold for 7 days.
 - No active Sev-1/Sev-2 incidents tied to request reliability.
+
+## See also
+
+- `ops-ci`

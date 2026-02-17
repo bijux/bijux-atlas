@@ -41,3 +41,4 @@ Expected output: dashboard and metrics contracts pass.
 - [Observability Index](INDEX.md)
 - [Alerts](alerts.md)
 - [Metrics Contract](../../contracts/metrics.md)
+- `ops-ci`

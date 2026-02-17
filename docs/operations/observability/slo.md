@@ -23,3 +23,7 @@ This file describes service-level interpretation and error-budget operations.
 - Alert rules: `ops/observability/alerts/atlas-alert-rules.yaml`
 - Metrics contract: `ops/observability/metrics_contract.json`
 - Metric cardinality guardrails: `docs/operations/observability/metric-cardinality-guardrails.md`
+
+## See also
+
+- `ops-ci`

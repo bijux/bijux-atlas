@@ -26,3 +26,7 @@ Abort rollout when any of these persist for more than 5 minutes:
 
 - `values.rollout`
 - `values.hpa`
+
+## See also
+
+- `ops-ci`

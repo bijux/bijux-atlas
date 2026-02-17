@@ -47,3 +47,4 @@ Expected output: alerts and runbook references pass checks.
 - [Observability Index](INDEX.md)
 - [Runbooks Index](../runbooks/INDEX.md)
 - [Dashboard Contract](dashboard.md)
+- `ops-ci`

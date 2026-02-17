@@ -43,3 +43,4 @@ Expected output: canonical smoke and metrics checks pass.
 - [E2E Index](INDEX.md)
 - [Development Scripts Index](../../development/scripts/INDEX.md)
 - [Repo Surface](../../development/repo-surface.md)
+- `ops-ci`

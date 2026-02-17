@@ -39,3 +39,4 @@ Expected output: docs checks pass.
 - [Security Operations](../INDEX.md)
 - [Advisory Process](../advisory-process.md)
 - [Terms Glossary](../../../_style/terms-glossary.md)
+- `ops-ci`

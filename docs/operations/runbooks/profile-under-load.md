@@ -38,3 +38,7 @@ $ make e2e-perf
 - Perf diff report attached.
 - Regression root cause documented.
 - Preventive test added.
+
+## See also
+
+- `ops-ci`

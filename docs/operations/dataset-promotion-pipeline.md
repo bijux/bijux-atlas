@@ -22,3 +22,7 @@ Deterministic promotion flow:
 
 7. Rollback
 - If needed, run `atlas catalog rollback` (do not mutate published dataset files).
+
+## See also
+
+- `ops-ci`

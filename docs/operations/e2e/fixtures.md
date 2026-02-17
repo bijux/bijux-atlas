@@ -40,3 +40,4 @@ Expected output: fixture downloads pass checksum validation.
 - [E2E Index](INDEX.md)
 - [Fixtures Reference](../../reference/fixtures/INDEX.md)
 - [Artifact Contracts](../../contracts/artifacts/INDEX.md)
+- `ops-ci`

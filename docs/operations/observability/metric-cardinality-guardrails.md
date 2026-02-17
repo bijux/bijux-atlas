@@ -15,3 +15,7 @@
 ## Enforcement
 - `scripts/observability/check_metrics_contract.py` validates required metrics and label policy.
 - `make observability-check` is the authoritative gate for observability contracts.
+
+## See also
+
+- `ops-ci`

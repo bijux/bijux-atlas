@@ -12,3 +12,7 @@ Recommended production profile:
 3. Enable fail-on-warmup for strict SLO environments.
 
 This reduces cold-start tail latency for first user requests.
+
+## See also
+
+- `ops-ci`

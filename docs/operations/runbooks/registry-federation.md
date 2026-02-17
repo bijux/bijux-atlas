@@ -39,3 +39,7 @@ $ make ssot-check
 - Conflict root cause identified.
 - Merge semantics tests updated.
 - Runbook and policy docs updated.
+
+## See also
+
+- `ops-ci`

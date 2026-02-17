@@ -18,3 +18,7 @@ This keeps runtime semantics consistent with umbrella/plugin contract.
 ## Referenced chart values keys
 
 - `values.server`
+
+## See also
+
+- `ops-ci`
