@@ -110,10 +110,21 @@ nav:
       - Air-Gapped Install: operations/air-gapped-install.md
       - Dataset Promotion: operations/dataset-promotion-pipeline.md
       - Cached-Only SLO: operations/cached-only-slo.md
+      - E2E:
+          - Index: operations/e2e/INDEX.md
+          - Stack: operations/e2e/stack.md
+          - K8s Tests: operations/e2e/k8s-tests.md
+          - Realdata Drills: operations/e2e/realdata-drills.md
+          - Fixtures: operations/e2e/fixtures.md
+          - Scripts: operations/e2e/scripts.md
       - Load:
           - k6: operations/load/k6.md
+          - Suites: operations/load/suites.md
+          - CI Policy: operations/load/ci-policy.md
       - Kubernetes:
           - Index: operations/k8s/INDEX.md
+          - Chart: operations/k8s/chart.md
+          - Values: operations/k8s/values.md
           - Packaging and Ops: operations/k8s/packaging-and-ops.md
           - Values Schema: operations/k8s/values-schema.md
           - Plugin Mode Entrypoint: operations/k8s/plugin-mode-entrypoint.md
@@ -134,6 +145,8 @@ nav:
           - SLO: operations/observability/slo.md
           - Tracing: operations/observability/tracing.md
           - Metric Cardinality: operations/observability/metric-cardinality-guardrails.md
+          - Dashboard: operations/observability/dashboard.md
+          - Alerts: operations/observability/alerts.md
   - Development:
       - Index: development/INDEX.md
       - Nav Policy: _nav/INDEX.md
@@ -152,6 +165,8 @@ nav:
           - Reproducible Builds: development/ci/reproducible-build-hints.md
           - Security Audit: development/ci/security-audit-policy.md
       - Makefile Surface: development/makefiles/surface.md
+      - Scripts Index: development/scripts/INDEX.md
+      - Repo Surface: development/repo-surface.md
       - Crates Map: development/crates-map.md
       - Snapshot Test Policy: development/snapshot-test-policy.md
   - Architecture:
