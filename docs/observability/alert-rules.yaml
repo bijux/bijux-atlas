@@ -49,3 +49,16 @@ groups:
         annotations:
           summary: "Cache thrash detected"
           description: "Dataset miss rate is significantly higher than hit rate."
+
+      - alert: BijuxAtlasCheapWhileOverloadedMissing
+        expr: |
+          bijux_overload_shedding_active{subsystem="atlas"} == 1
+          and
+          increase(bijux_cheap_queries_served_while_overloaded_total{subsystem="atlas"}[10m]) == 0
+        for: 10m
+        labels:
+          severity: page
+          subsystem: atlas
+        annotations:
+          summary: "Overload active but cheap queries are not being served"
+          description: "Cheap-query survival path appears unhealthy while shedding is active."
