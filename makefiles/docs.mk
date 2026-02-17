@@ -14,6 +14,7 @@ _docs-venv:
 docs: ## Build docs + link-check + spell-check + lint
 	@if [ ! -x "$(DOCS_VENV)/bin/mkdocs" ]; then $(MAKE) _docs-venv; fi
 	@"$(DOCS_VENV)/bin/pip" install -r "$(DOCS_REQ)" >/dev/null
+	@python3 scripts/docs/generate_crates_map.py
 	@python3 scripts/docs/generate_concept_graph.py
 	@python3 scripts/docs/check_concept_registry.py
 	@"$(DOCS_VENV)/bin/mkdocs" build --strict --config-file mkdocs.yml --site-dir "$(DOCS_SITE)"
@@ -32,6 +33,7 @@ docs: ## Build docs + link-check + spell-check + lint
 	@python3 scripts/docs/check_terminology_units_ssot.py
 	@./scripts/check-markdown-links.sh
 	@./scripts/docs/check_duplicate_topics.sh
+	@./scripts/docs/check_crate_docs_contract.sh
 
 docs-serve: ## Serve docs locally
 	@if [ ! -x "$(DOCS_VENV)/bin/mkdocs" ]; then $(MAKE) _docs-venv; fi
