@@ -11,6 +11,7 @@ pub struct FakeStore {
     pub sqlite: Mutex<HashMap<DatasetId, Vec<u8>>>,
     pub fasta: Mutex<HashMap<DatasetId, Vec<u8>>>,
     pub fai: Mutex<HashMap<DatasetId, Vec<u8>>>,
+    pub release_gene_index: Mutex<HashMap<DatasetId, Vec<u8>>>,
     pub fetch_calls: std::sync::atomic::AtomicU64,
     pub etag: Mutex<String>,
     pub slow_read: bool,
@@ -25,6 +26,7 @@ impl Default for FakeStore {
             sqlite: Mutex::new(HashMap::new()),
             fasta: Mutex::new(HashMap::new()),
             fai: Mutex::new(HashMap::new()),
+            release_gene_index: Mutex::new(HashMap::new()),
             fetch_calls: std::sync::atomic::AtomicU64::new(0),
             etag: Mutex::new(String::new()),
             slow_read: false,
@@ -98,5 +100,17 @@ impl DatasetStoreBackend for FakeStore {
             .get(dataset)
             .cloned()
             .ok_or_else(|| CacheError("fai missing".to_string()))
+    }
+
+    async fn fetch_release_gene_index_bytes(
+        &self,
+        dataset: &DatasetId,
+    ) -> Result<Vec<u8>, CacheError> {
+        self.release_gene_index
+            .lock()
+            .await
+            .get(dataset)
+            .cloned()
+            .ok_or_else(|| CacheError("release gene index missing".to_string()))
     }
 }

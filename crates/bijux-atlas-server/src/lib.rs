@@ -12,8 +12,9 @@ use bijux_atlas_api::{ApiError, ApiErrorCode};
 use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
 use bijux_atlas_query::{
-    classify_query, query_genes, GeneFields, GeneFilter, GeneQueryRequest, QueryClass, QueryLimits,
-    RegionFilter, TranscriptFilter, TranscriptQueryRequest,
+    classify_query, decode_cursor, encode_cursor, query_genes, CursorPayload, GeneFields,
+    GeneFilter, GeneQueryRequest, OrderMode, QueryClass, QueryLimits, RegionFilter,
+    TranscriptFilter, TranscriptQueryRequest,
 };
 use rusqlite::{Connection, OpenFlags};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -224,6 +225,10 @@ pub trait DatasetStoreBackend: Send + Sync + 'static {
     async fn fetch_sqlite_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError>;
     async fn fetch_fasta_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError>;
     async fn fetch_fai_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError>;
+    async fn fetch_release_gene_index_bytes(
+        &self,
+        dataset: &DatasetId,
+    ) -> Result<Vec<u8>, CacheError>;
 }
 
 pub enum CatalogFetch {
@@ -484,6 +489,32 @@ impl DatasetCacheManager {
         Ok((paths.fasta, paths.fai))
     }
 
+    pub async fn ensure_release_gene_index_cached(
+        &self,
+        dataset: &DatasetId,
+    ) -> Result<PathBuf, CacheError> {
+        self.ensure_dataset_cached(dataset).await?;
+        let paths = artifact_paths(Path::new(&self.cfg.disk_root), dataset);
+        if paths.release_gene_index.exists() {
+            return Ok(paths.release_gene_index);
+        }
+        if self.cfg.cached_only_mode {
+            return Err(CacheError(
+                "release gene index missing from cache and cached-only mode is enabled".to_string(),
+            ));
+        }
+        if self.cfg.read_only_fs {
+            return Err(CacheError(
+                "release gene index missing from cache and read-only filesystem mode is enabled"
+                    .to_string(),
+            ));
+        }
+        let bytes = self.store.fetch_release_gene_index_bytes(dataset).await?;
+        std::fs::create_dir_all(&paths.derived_dir).map_err(|e| CacheError(e.to_string()))?;
+        std::fs::write(&paths.release_gene_index, bytes).map_err(|e| CacheError(e.to_string()))?;
+        Ok(paths.release_gene_index)
+    }
+
     pub async fn open_dataset_connection(
         &self,
         dataset: &DatasetId,
@@ -667,6 +698,11 @@ impl DatasetCacheManager {
                 return Err(e);
             }
         };
+        let release_gene_index = self
+            .store
+            .fetch_release_gene_index_bytes(dataset)
+            .await
+            .ok();
         let sqlite_hash = sha256_hex(&sqlite);
         if sqlite_hash != manifest.checksums.sqlite_sha256 {
             error!("dataset verify failed {:?}", dataset);
@@ -689,6 +725,10 @@ impl DatasetCacheManager {
         let tmp_sqlite = tmp_dir.join("gene_summary.sqlite.tmp");
         std::fs::write(&tmp_sqlite, &sqlite).map_err(|e| CacheError(e.to_string()))?;
         std::fs::rename(&tmp_sqlite, &paths.sqlite).map_err(|e| CacheError(e.to_string()))?;
+        if let Some(index_bytes) = release_gene_index {
+            std::fs::write(&paths.release_gene_index, index_bytes)
+                .map_err(|e| CacheError(e.to_string()))?;
+        }
 
         let manifest_bytes =
             serde_json::to_vec(&manifest).map_err(|e| CacheError(e.to_string()))?;
@@ -1089,6 +1129,8 @@ pub fn build_router(state: AppState) -> Router {
         )
         .route("/v1/genes", get(http::handlers::genes_handler))
         .route("/v1/genes/count", get(http::handlers::genes_count_handler))
+        .route("/v1/diff/genes", get(http::diff::diff_genes_handler))
+        .route("/v1/diff/region", get(http::diff::diff_region_handler))
         .route(
             "/v1/sequence/region",
             get(http::sequence::sequence_region_handler),

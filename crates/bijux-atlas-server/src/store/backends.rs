@@ -72,6 +72,14 @@ impl DatasetStoreBackend for LocalFsBackend {
         let path = artifact_paths(Path::new(&self.root), dataset).fai;
         fs::read(path).map_err(|e| CacheError(format!("fai read failed: {e}")))
     }
+
+    async fn fetch_release_gene_index_bytes(
+        &self,
+        dataset: &DatasetId,
+    ) -> Result<Vec<u8>, CacheError> {
+        let path = artifact_paths(Path::new(&self.root), dataset).release_gene_index;
+        fs::read(path).map_err(|e| CacheError(format!("release gene index read failed: {e}")))
+    }
 }
 
 pub struct S3LikeBackend {
@@ -281,6 +289,14 @@ impl DatasetStoreBackend for S3LikeBackend {
 
     async fn fetch_fai_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError> {
         let url = self.object_url_input(dataset, "genome.fa.bgz.fai");
+        self.get_with_retry(&url).await
+    }
+
+    async fn fetch_release_gene_index_bytes(
+        &self,
+        dataset: &DatasetId,
+    ) -> Result<Vec<u8>, CacheError> {
+        let url = self.object_url(dataset, "release_gene_index.json");
         self.get_with_retry(&url).await
     }
 }
