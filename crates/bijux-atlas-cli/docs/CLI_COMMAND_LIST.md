@@ -18,6 +18,7 @@ atlas policy
 atlas print-config
 atlas serve
 atlas smoke
+atlas validate
 atlas version
 completion
 version

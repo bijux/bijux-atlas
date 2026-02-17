@@ -23,6 +23,7 @@ fn command_surface_ssot_matches_doc() {
         "atlas print-config",
         "atlas serve",
         "atlas smoke",
+        "atlas validate",
         "atlas version",
         "completion",
         "version",

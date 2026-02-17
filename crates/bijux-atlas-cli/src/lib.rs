@@ -87,6 +87,18 @@ enum Commands {
 enum AtlasCommand {
     Serve,
     Doctor,
+    Validate {
+        #[arg(long)]
+        root: PathBuf,
+        #[arg(long)]
+        release: String,
+        #[arg(long)]
+        species: String,
+        #[arg(long)]
+        assembly: String,
+        #[arg(long, default_value_t = false)]
+        deep: bool,
+    },
     Version,
     Completion {
         #[arg(value_enum)]
@@ -341,6 +353,21 @@ fn run_atlas_command(
     match command {
         AtlasCommand::Serve => run_serve(log_flags, output_mode).map_err(CliError::dependency),
         AtlasCommand::Doctor => doctor(output_mode).map_err(CliError::internal),
+        AtlasCommand::Validate {
+            root,
+            release,
+            species,
+            assembly,
+            deep,
+        } => artifact_validation::validate_dataset(
+            root,
+            &release,
+            &species,
+            &assembly,
+            deep,
+            output_mode,
+        )
+        .map_err(CliError::internal),
         AtlasCommand::Version => {
             print_version(log_flags.verbose > 0, output_mode).map_err(CliError::internal)
         }
