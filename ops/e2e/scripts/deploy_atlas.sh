@@ -32,24 +32,38 @@ fi
 
 kubectl get ns "$NS" >/dev/null 2>&1 || kubectl create ns "$NS"
 
-helm_args="--namespace $NS -f $VALUES"
-if [ "$HELM_WAIT" = "1" ]; then
-  helm_args="$helm_args --wait --timeout $HELM_TIMEOUT"
-fi
-
 if [ "$USE_LOCAL_IMAGE" = "1" ]; then
   if ! docker image inspect "$LOCAL_IMAGE_REF" >/dev/null 2>&1; then
     docker build -t "$LOCAL_IMAGE_REF" -f "$ROOT/docker/Dockerfile" "$ROOT"
   fi
   kind load docker-image "$LOCAL_IMAGE_REF" --name "$CLUSTER_NAME"
-  helm upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
-    $helm_args \
-    --set image.repository="${LOCAL_IMAGE_REF%:*}" \
-    --set image.tag="${LOCAL_IMAGE_REF#*:}" \
-    --set image.pullPolicy=IfNotPresent
+  if [ "$HELM_WAIT" = "1" ]; then
+    helm upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
+      --namespace "$NS" \
+      -f "$VALUES" \
+      --wait --timeout "$HELM_TIMEOUT" \
+      --set image.repository="${LOCAL_IMAGE_REF%:*}" \
+      --set image.tag="${LOCAL_IMAGE_REF#*:}" \
+      --set image.pullPolicy=IfNotPresent
+  else
+    helm upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
+      --namespace "$NS" \
+      -f "$VALUES" \
+      --set image.repository="${LOCAL_IMAGE_REF%:*}" \
+      --set image.tag="${LOCAL_IMAGE_REF#*:}" \
+      --set image.pullPolicy=IfNotPresent
+  fi
 else
-  helm upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
-    $helm_args
+  if [ "$HELM_WAIT" = "1" ]; then
+    helm upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
+      --namespace "$NS" \
+      -f "$VALUES" \
+      --wait --timeout "$HELM_TIMEOUT"
+  else
+    helm upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
+      --namespace "$NS" \
+      -f "$VALUES"
+  fi
 fi
 
 echo "atlas deployed: release=$RELEASE ns=$NS"
