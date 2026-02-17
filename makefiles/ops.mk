@@ -133,6 +133,7 @@ ops-soak: ## Run soak workflow (10-30 minutes)
 ops-smoke: ## Run canonical API smoke queries
 	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/scripts/smoke_queries.sh
+	@python3 ./scripts/docs/check_openapi_examples.py
 	@$(MAKE) ops-metrics-check
 	@./ops/observability/scripts/snapshot_metrics.sh
 	@./ops/observability/scripts/snapshot_traces.sh
@@ -277,7 +278,9 @@ ops-report: ## Gather ops evidence into artifacts/ops/<timestamp>/
 	kubectl logs -n "$${ATLAS_E2E_NAMESPACE:-atlas-e2e}" -l app.kubernetes.io/name=bijux-atlas --tail=2000 > "$$out/logs/atlas.log" 2>/dev/null || true; \
 	cp -R artifacts/perf/results "$$out/perf/" 2>/dev/null || true; \
 	curl -fsS "$${ATLAS_BASE_URL:-http://127.0.0.1:8080}/metrics" > "$$out/metrics/metrics.txt" 2>/dev/null || true; \
-	echo "ops report written to $$out"
+	echo "ops report written to $$out"; \
+	ln -sfn "$$ts" artifacts/ops/latest; \
+	$(MAKE) artifacts-index
 
 ops-slo-burn: ## Compute SLO burn artifact from k6 score + metrics snapshot
 	@python3 ./ops/observability/scripts/compute_slo_burn.py
@@ -437,6 +440,34 @@ ops-ci: ## Nightly ops pipeline: up/deploy/warm/tests/ops/load/drills/report
 
 ops-ci-nightly: ## Compatibility alias for ops-ci
 	@$(MAKE) ops-ci
+
+
+ops-full: ## Full local ops flow: up->deploy->warm->smoke->k8s-tests->load-smoke->obs-validate
+	@$(MAKE) ops-up
+	@$(MAKE) ops-deploy
+	@$(MAKE) ops-warm
+	@$(MAKE) ops-smoke
+	@$(MAKE) ops-k8s-tests
+	@$(MAKE) ops-load-smoke
+	@$(MAKE) ops-observability-validate
+
+ops-full-pr: ## Lightweight PR flow for ops validation
+	@$(MAKE) ops-up
+	@$(MAKE) ops-deploy
+	@$(MAKE) ops-warm
+	@$(MAKE) ops-smoke
+	@ATLAS_E2E_TEST_GROUP=install $(MAKE) ops-k8s-tests
+	@$(MAKE) ops-load-ci
+
+ops-full-nightly: ## Nightly full flow incl. realdata and full load suites
+	@$(MAKE) ops-up
+	@$(MAKE) ops-deploy
+	@$(MAKE) ops-warm
+	@$(MAKE) ops-smoke
+	@$(MAKE) ops-k8s-tests
+	@$(MAKE) ops-realdata
+	@$(MAKE) ops-load-nightly
+	@$(MAKE) ops-observability-validate
 
 ops-clean: ## Local cleanup of ops outputs and test namespaces
 	@kubectl delete ns "$${ATLAS_NS}" --ignore-not-found >/dev/null 2>&1 || true

@@ -13,7 +13,7 @@ Ensures downstream scoring and regression checks consume deterministic outputs.
 ## Contracts
 
 - Schema: `ops/load/contracts/result-schema.json`
-- Validator: `scripts/perf/validate_results.py`
+- Validator: `ops/load/scripts/validate_results.py`
 - Required sidecar metadata fields:
   - `git_sha`
   - `image_digest`
@@ -25,7 +25,7 @@ Ensures downstream scoring and regression checks consume deterministic outputs.
 
 ```bash
 $ make ops-load-smoke
-$ python3 scripts/perf/validate_results.py artifacts/perf/results
+$ make ops-load-smoke
 ```
 
 Expected output: load result contract validation passes.

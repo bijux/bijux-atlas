@@ -52,6 +52,7 @@ docs: ## Build docs + link-check + spell-check + lint
 	@./scripts/docs/check_crate_docs_contract.sh
 	@python3 scripts/docs/check_script_headers.py
 	@python3 scripts/docs/check_make_targets_documented.py
+	@python3 scripts/docs/check_full_stack_page.py
 
 docs-serve: ## Serve docs locally
 	@if [ ! -x "$(DOCS_VENV)/bin/mkdocs" ]; then $(MAKE) _docs-venv; fi

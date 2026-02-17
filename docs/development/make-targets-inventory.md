@@ -64,9 +64,12 @@ Generated from `make help`. Do not edit manually.
 - `ops-traces-check`
 - `ops-k8s-tests`
 - `ops-k8s-template-tests`
+- `ops-load-manifest-validate`
 - `ops-load-prereqs`
 - `ops-load-smoke`
 - `ops-load-full`
+- `ops-load-ci`
+- `ops-load-nightly`
 - `ops-drill-store-outage`
 - `ops-drill-minio-outage`
 - `ops-drill-prom-outage`
@@ -97,23 +100,26 @@ Generated from `make help`. Do not edit manually.
 - `ops-alerts-validate`
 - `ops-observability-validate`
 - `ops-observability-smoke`
-- `ops-observability-pack-tests`
-- `ops-observability-pack-lint`
+- `ops-obs-install`
+- `ops-obs-uninstall`
+- `ops-obs-validate`
 - `ops-obs-up`
 - `ops-obs-down`
-- `ops-obs-mode`
-- `ops-obs-mode-minimal`
-- `ops-obs-mode-full`
 - `ops-release-matrix`
 - `ops-baseline-policy-check`
+- `ops-perf-baseline-update`
 - `ops-ci`
 - `ops-ci-nightly`
+- `ops-full`
+- `ops-full-pr`
+- `ops-full-nightly`
 - `ops-perf-prepare-store`
 - `ops-perf-e2e`
 - `ops-perf-nightly`
 - `ops-perf-cold-start`
 - `ops-perf-cold-start-prefetch-5pods`
 - `ops-perf-compare-redis`
+- `ops-perf-report`
 - `ops-perf-suite`
 - `e2e-local`
 - `e2e-k8s-install-gate`
@@ -123,8 +129,6 @@ Generated from `make help`. Do not edit manually.
 - `observability-check`
 - `layout-check`
 - `layout-migrate`
-- `scripts-lint`
-- `scripts-test`
 
 ## Release/Surface
 
@@ -152,4 +156,9 @@ Generated from `make help`. Do not edit manually.
 - `bootstrap-tools`
 - `doctor`
 - `scripts-index`
+- `scripts-lint`
+- `scripts-test`
+- `artifacts-index`
+- `artifacts-clean`
+- `no-direct-scripts`
 - `help`

@@ -1,46 +1,37 @@
-# E2E Scripts
+# E2E Interface
 
 - Owner: `bijux-atlas-operations`
 
 ## What
 
-Documents script interfaces in `ops/e2e/scripts/`.
+Defines the supported E2E interface through `make ops-*` targets.
 
 ## Why
 
-Keeps operational entrypoints explicit and stable.
-
-## Scope
-
-Bootstrapping, deploy, publish, warmup, smoke, metrics, and cleanup scripts.
-
-## Non-goals
-
-Does not duplicate script internals.
+Prevents direct script coupling and keeps operational entrypoints stable.
 
 ## Contracts
 
-- `up.sh`, `down.sh`
-- `publish_dataset.sh`, `deploy_atlas.sh`
-- `warmup.sh`, `smoke_queries.sh`
-- `verify_metrics.sh`, `verify_traces.sh`, `soak.sh`, `cleanup_store.sh`
+- Stack lifecycle: `ops-up`, `ops-down`, `ops-reset`
+- Dataset flow: `ops-publish-medium`, `ops-deploy`, `ops-warm`
+- Runtime checks: `ops-smoke`, `ops-metrics-check`, `ops-traces-check`
+- Suites: `ops-k8s-tests`, `ops-load-smoke`, `ops-load-full`, `ops-realdata`
 
 ## Failure modes
 
-Undocumented script changes break local operator workflows.
+Direct script usage in docs or workflows causes unsupported entrypoint drift.
 
 ## How to verify
 
 ```bash
-$ ./e2e/scripts/smoke_queries.sh
-$ ./e2e/scripts/verify_metrics.sh
+$ make ops-up ops-deploy ops-warm ops-smoke
+$ make ops-k8s-tests
 ```
 
-Expected output: canonical smoke and metrics checks pass.
+Expected output: targets exit zero and produce artifacts under `artifacts/ops/`.
 
 ## See also
 
 - [E2E Index](INDEX.md)
-- [Development Scripts Index](../../development/scripts/INDEX.md)
-- [Repo Surface](../../development/repo-surface.md)
-- `ops-ci`
+- [Full Stack Locally](../full-stack-locally.md)
+- [Makefile Surface](../../development/makefiles/surface.md)

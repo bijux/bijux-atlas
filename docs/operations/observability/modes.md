@@ -17,7 +17,7 @@ Allows local clusters without CRDs while preserving a full production profile.
 - Install target: `ops-obs-up` (or `ops-obs-mode` with explicit `ATLAS_OBS_MODE`).
 - Smoke target: `ops-observability-smoke`.
 - Teardown target: `ops-obs-down`.
-- Installer entrypoint: `ops/observability/scripts/install_obs_pack.sh` with `ATLAS_OBS_MODE=minimal|full`.
+- Installer entrypoint: `ops-obs-up` with `ATLAS_OBS_MODE=minimal|full`.
 
 ## Failure Modes
 

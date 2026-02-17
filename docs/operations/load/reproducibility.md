@@ -30,7 +30,7 @@ Prevents noisy comparisons and false regression alarms.
 ```bash
 $ make ops-load-smoke
 $ make ops-load-full
-$ python3 scripts/perf/validate_results.py artifacts/perf/results
+$ make ops-load-smoke
 ```
 
 Expected output: deterministic suite selection and contract-valid result artifacts.

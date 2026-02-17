@@ -24,7 +24,7 @@ Does not duplicate k6 script implementation.
 - Query freeze lock: `ops/load/queries/pinned-v1.lock`
 - Suite manifest and budgets: `ops/load/suites/suites.json`
 - Suite schema: `ops/load/contracts/suite-schema.json`
-- Suite manifest validator: `scripts/perf/validate_suite_manifest.py`
+- Suite manifest validator: `ops-load-manifest-validate`
 - Suite naming convention: `kebab-case`, unique, deterministic.
 - Required suite fields: `purpose`, `kind`, `scenario|script`, `thresholds`, `expected_metrics`, `must_pass`.
 - Result contract: `ops/load/contracts/result-schema.json`
@@ -53,7 +53,7 @@ Does not duplicate k6 script implementation.
 
 - PR smoke suites must stay within short runtime budget.
 - Nightly suites enforce full SLO thresholds from `configs/slo/slo.json`.
-- `scripts/perf/score_k6.py` consumes both SLO policy and `suites.json` budgets.
+- `ops-load-ci` consumes both SLO policy and `suites.json` budgets.
 
 ## Failure modes
 
@@ -64,8 +64,8 @@ Scenario drift causes incomplete load coverage.
 ```bash
 $ make ops-load-smoke
 $ make ops-load-full
-$ python3 scripts/perf/score_k6.py
-$ python3 scripts/perf/validate_results.py artifacts/perf/results
+$ make ops-load-ci
+$ make ops-load-smoke
 $ python3 ops/load/reports/generate.py
 ```
 

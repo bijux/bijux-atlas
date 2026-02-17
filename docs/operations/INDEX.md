@@ -26,6 +26,8 @@ Does not define product semantics or internal crate APIs.
 - [Runbooks](runbooks/INDEX.md)
 - [Security](security/security-posture.md)
 - [Ops Filesystem Layout](../../ops/README.md)
+- [Full Stack Locally](full-stack-locally.md)
+- [Production Readiness Checklist](production-readiness-checklist.md)
 
 ## Failure modes
 

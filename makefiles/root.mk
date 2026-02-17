@@ -17,11 +17,11 @@ help:
 	  'contracts:' \
 	  '  ssot-check policy-lint policy-schema-drift openapi-drift ops-values-validate ops-openapi-validate ops-dashboards-validate ops-alerts-validate' \
 	  'ops:' \
-	  '  ops-stack-up ops-up ops-stack-down ops-down ops-stack-validate ops-stack-smoke ops-stack-health-report ops-stack-version ops-stack-uninstall ops-stack-slow-store ops-reset ops-clean ops-env-print ops-cluster-sanity ops-publish ops-publish-medium ops-deploy ops-offline ops-perf ops-multi-registry ops-ingress ops-warm ops-soak ops-smoke ops-metrics-check ops-traces-check ops-k8s-tests ops-k8s-template-tests ops-load-manifest-validate ops-load-prereqs ops-load-smoke ops-load-full ops-load-ci ops-load-nightly ops-drill-store-outage ops-drill-minio-outage ops-drill-prom-outage ops-drill-otel-outage ops-drill-toxiproxy-latency ops-drill-overload ops-drill-memory-growth ops-drill-corruption ops-drill-pod-churn ops-drill-upgrade ops-drill-rollback ops-upgrade-drill ops-rollback-drill ops-realdata ops-report ops-script-coverage ops-shellcheck ops-kind-version-check ops-k6-version-check ops-helm-version-check ops-kubectl-version-check ops-kubeconform-version-check ops-tool-check ops-tools-check ops-values-validate ops-openapi-validate ops-dashboards-validate ops-alerts-validate ops-observability-validate ops-observability-smoke ops-obs-install ops-obs-uninstall ops-obs-validate ops-obs-up ops-obs-down ops-release-matrix ops-baseline-policy-check ops-perf-baseline-update ops-ci ops-ci-nightly ops-perf-prepare-store ops-perf-e2e ops-perf-nightly ops-perf-cold-start ops-perf-cold-start-prefetch-5pods ops-perf-compare-redis ops-perf-report ops-perf-suite e2e-local e2e-k8s-install-gate e2e-k8s-suite e2e-perf e2e-realdata observability-check layout-check layout-migrate' \
+	  '  ops-stack-up ops-up ops-stack-down ops-down ops-stack-validate ops-stack-smoke ops-stack-health-report ops-stack-version ops-stack-uninstall ops-stack-slow-store ops-reset ops-clean ops-env-print ops-cluster-sanity ops-publish ops-publish-medium ops-deploy ops-offline ops-perf ops-multi-registry ops-ingress ops-warm ops-soak ops-smoke ops-metrics-check ops-traces-check ops-k8s-tests ops-k8s-template-tests ops-load-manifest-validate ops-load-prereqs ops-load-smoke ops-load-full ops-load-ci ops-load-nightly ops-drill-store-outage ops-drill-minio-outage ops-drill-prom-outage ops-drill-otel-outage ops-drill-toxiproxy-latency ops-drill-overload ops-drill-memory-growth ops-drill-corruption ops-drill-pod-churn ops-drill-upgrade ops-drill-rollback ops-upgrade-drill ops-rollback-drill ops-realdata ops-report ops-script-coverage ops-shellcheck ops-kind-version-check ops-k6-version-check ops-helm-version-check ops-kubectl-version-check ops-kubeconform-version-check ops-tool-check ops-tools-check ops-values-validate ops-openapi-validate ops-dashboards-validate ops-alerts-validate ops-observability-validate ops-observability-smoke ops-obs-install ops-obs-uninstall ops-obs-validate ops-obs-up ops-obs-down ops-release-matrix ops-baseline-policy-check ops-perf-baseline-update ops-ci ops-ci-nightly ops-full ops-full-pr ops-full-nightly ops-perf-prepare-store ops-perf-e2e ops-perf-nightly ops-perf-cold-start ops-perf-cold-start-prefetch-5pods ops-perf-compare-redis ops-perf-report ops-perf-suite e2e-local e2e-k8s-install-gate e2e-k8s-suite e2e-perf e2e-realdata observability-check layout-check layout-migrate' \
 	  'release/surface:' \
 	  '  fmt lint check test test-all coverage audit openapi-drift ci ssot-check crate-structure crate-docs-contract cli-command-surface docker-build docker-smoke chart-package chart-verify' \
 	  'tooling:' \
-	  '  bootstrap bootstrap-tools doctor scripts-index scripts-lint scripts-test no-direct-scripts help'
+	  '  bootstrap bootstrap-tools doctor scripts-index scripts-lint scripts-test artifacts-index artifacts-clean no-direct-scripts help'
 
 layout-check:
 	@./scripts/layout/check_root_shape.sh
@@ -93,7 +93,7 @@ release-update-compat-matrix:
 	@[ -n "$$TAG" ] || { echo "usage: make release-update-compat-matrix TAG=<tag>"; exit 2; }
 	@./scripts/release/update-compat-matrix.sh "$$TAG"
 
-.PHONY: help layout-check layout-migrate bootstrap bootstrap-tools scripts-index scripts-lint scripts-test docker-build docker-smoke chart-package chart-verify no-direct-scripts doctor fetch-real-datasets ssot-check policy-lint policy-schema-drift release-update-compat-matrix
+.PHONY: help layout-check layout-migrate bootstrap bootstrap-tools scripts-index scripts-lint scripts-test artifacts-index artifacts-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts doctor fetch-real-datasets ssot-check policy-lint policy-schema-drift release-update-compat-matrix
 
 
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)
@@ -108,3 +108,10 @@ scripts-test: ## Run scripts-focused tests
 	@python3 ./scripts/layout/check_make_public_scripts.py
 	@python3 ./ops/load/scripts/validate_suite_manifest.py
 	@python3 ./ops/load/scripts/check_pinned_queries_lock.py
+
+
+artifacts-index: ## Generate artifacts index for inspection UIs
+	@python3 ./scripts/layout/build_artifacts_index.py
+
+artifacts-clean: ## Clean old artifacts with safe retention
+	@python3 ./scripts/layout/clean_artifacts.py

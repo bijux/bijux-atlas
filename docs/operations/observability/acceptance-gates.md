@@ -20,14 +20,14 @@ Prevents deployments with missing telemetry coverage or invalid alerting assets.
 - Dashboard contract must pass: `scripts/observability/check_dashboard_contract.py`.
 - Alerts contract must pass: `scripts/observability/check_alerts_contract.py`.
 - Tracing contract is optional unless OTEL enabled: `scripts/observability/check_tracing_contract.py`.
-- Runtime cardinality guardrail must pass: `ops/observability/scripts/check_metric_cardinality.py`.
-- Logs schema must pass: `ops/observability/scripts/validate_logs_schema.py`.
+- Runtime cardinality guardrail must pass: `ops-metrics-check`.
+- Logs schema must pass: `ops-metrics-check`.
 - K8s log gate must validate schema: `ops/e2e/k8s/tests/test_logs_json.sh`.
 - Drill scripts must assert signal transitions:
-  - alerts: `ops/observability/scripts/drill_alerts.sh`
-  - overload: `ops/observability/scripts/drill_overload.sh`
-  - store outage: `ops/observability/scripts/drill_store_outage.sh`
-  - memory growth: `ops/observability/scripts/drill_memory_growth.sh`
+  - alerts: `ops-drill-alerts`
+  - overload: `ops-drill-overload`
+  - store outage: `ops-drill-store-outage`
+  - memory growth: `ops-drill-memory-growth`
 
 ## Failure Modes
 

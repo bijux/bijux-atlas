@@ -22,7 +22,7 @@ Does not define endpoint correctness tests.
 
 - PR tier: smoke subset only, deterministic short runtime.
 - Nightly tier: full suites including spike, churn, outage, and soak-linked scenarios.
-- SLO scoring must use `scripts/perf/score_k6.py` with `configs/slo/slo.json`.
+- SLO scoring must use `ops-load-ci` with `configs/slo/slo.json`.
 - Suite manifest SSOT: `ops/load/suites/suites.json`.
 - Suite manifest must validate against `ops/load/contracts/suite-schema.json`.
 - Redis experiment suite runs only when `ATLAS_ENABLE_REDIS_EXPERIMENT=1`.
