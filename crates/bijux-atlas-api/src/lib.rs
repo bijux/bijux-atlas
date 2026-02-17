@@ -196,16 +196,9 @@ mod tests {
             .and_then(serde_json::Value::as_object)
             .expect("openapi paths object");
 
-        let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .parent()
-            .and_then(|p| p.parent())
-            .expect("workspace root")
-            .to_path_buf();
-        let contract: serde_json::Value = serde_json::from_slice(
-            &std::fs::read(root.join("docs/contracts/ENDPOINTS.json"))
-                .expect("read endpoints contract"),
-        )
-        .expect("parse endpoints contract");
+        let contract: serde_json::Value =
+            serde_json::from_str(include_str!("../../../docs/contracts/ENDPOINTS.json"))
+                .expect("parse endpoints contract");
         let expected = contract
             .get("endpoints")
             .and_then(serde_json::Value::as_array)
