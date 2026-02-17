@@ -1,8 +1,69 @@
 use base64::engine::general_purpose::URL_SAFE_NO_PAD;
 use base64::Engine;
-use serde::Serialize;
-use serde_json::{Map, Value};
 use sha2::{Digest, Sha256};
+
+#[cfg(feature = "serde")]
+use serde::Serialize;
+#[cfg(feature = "serde")]
+use serde_json::{Map, Value};
+
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+pub struct Hash256([u8; 32]);
+
+impl Hash256 {
+    #[must_use]
+    pub const fn from_bytes(bytes: [u8; 32]) -> Self {
+        Self(bytes)
+    }
+
+    #[must_use]
+    pub const fn as_bytes(&self) -> &[u8; 32] {
+        &self.0
+    }
+
+    #[must_use]
+    pub fn to_hex(self) -> String {
+        let mut out = String::with_capacity(64);
+        for b in self.0 {
+            use std::fmt::Write as _;
+            let _ = write!(&mut out, "{b:02x}");
+        }
+        out
+    }
+}
+
+impl core::fmt::Debug for Hash256 {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "Hash256({})", self.to_hex())
+    }
+}
+
+impl core::fmt::Display for Hash256 {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "{}", self.to_hex())
+    }
+}
+
+#[cfg(feature = "serde")]
+#[derive(Debug, Clone)]
+pub struct CanonicalJson(Value);
+
+#[cfg(feature = "serde")]
+impl CanonicalJson {
+    pub fn from_serialize<T: Serialize>(value: &T) -> Result<Self, serde_json::Error> {
+        let raw = serde_json::to_value(value)?;
+        Ok(Self(normalize_json_value(raw)))
+    }
+
+    pub fn to_bytes(&self) -> Result<Vec<u8>, serde_json::Error> {
+        serde_json::to_vec(&self.0)
+    }
+
+    pub fn hash(&self) -> Result<Hash256, serde_json::Error> {
+        let bytes = self.to_bytes()?;
+        Ok(stable_hash_bytes(&bytes))
+    }
+}
 
 #[must_use]
 pub fn stable_sort_by_key<T, K: Ord, F: FnMut(&T) -> K>(mut values: Vec<T>, mut key: F) -> Vec<T> {
@@ -10,29 +71,38 @@ pub fn stable_sort_by_key<T, K: Ord, F: FnMut(&T) -> K>(mut values: Vec<T>, mut 
     values
 }
 
-pub fn stable_json_bytes<T: Serialize>(value: &T) -> Result<Vec<u8>, serde_json::Error> {
-    let raw = serde_json::to_value(value)?;
-    let normalized = normalize_json_value(raw);
-    serde_json::to_vec(&normalized)
+#[must_use]
+pub fn stable_hash_bytes(bytes: &[u8]) -> Hash256 {
+    let mut hasher = Sha256::new();
+    hasher.update(bytes);
+    let digest = hasher.finalize();
+    let mut out = [0_u8; 32];
+    out.copy_from_slice(&digest);
+    Hash256::from_bytes(out)
 }
 
 #[must_use]
 pub fn stable_hash_hex(bytes: &[u8]) -> String {
-    let mut hasher = Sha256::new();
-    hasher.update(bytes);
-    format!("{:x}", hasher.finalize())
+    stable_hash_bytes(bytes).to_hex()
 }
 
+#[cfg(feature = "serde")]
+pub fn stable_json_bytes<T: Serialize>(value: &T) -> Result<Vec<u8>, serde_json::Error> {
+    CanonicalJson::from_serialize(value)?.to_bytes()
+}
+
+#[cfg(feature = "serde")]
 pub fn stable_json_hash_hex<T: Serialize>(value: &T) -> Result<String, serde_json::Error> {
-    let bytes = stable_json_bytes(value)?;
-    Ok(stable_hash_hex(&bytes))
+    Ok(CanonicalJson::from_serialize(value)?.hash()?.to_hex())
 }
 
+#[cfg(feature = "serde")]
 pub fn encode_cursor_payload<T: Serialize>(payload: &T) -> Result<String, serde_json::Error> {
     let bytes = stable_json_bytes(payload)?;
     Ok(URL_SAFE_NO_PAD.encode(bytes))
 }
 
+#[cfg(feature = "serde")]
 pub fn decode_cursor_payload(token: &str) -> Result<Value, String> {
     let bytes = URL_SAFE_NO_PAD
         .decode(token)
@@ -40,6 +110,7 @@ pub fn decode_cursor_payload(token: &str) -> Result<Value, String> {
     serde_json::from_slice::<Value>(&bytes).map_err(|e| format!("cursor JSON decode failed: {e}"))
 }
 
+#[cfg(feature = "serde")]
 fn normalize_json_value(value: Value) -> Value {
     match value {
         Value::Object(map) => {
@@ -61,9 +132,13 @@ fn normalize_json_value(value: Value) -> Value {
 
 #[cfg(test)]
 mod tests {
-    use super::{stable_json_bytes, stable_json_hash_hex};
+    use super::stable_hash_bytes;
+    #[cfg(feature = "serde")]
+    use super::{stable_json_bytes, stable_json_hash_hex, CanonicalJson};
+    #[cfg(feature = "serde")]
     use serde_json::json;
 
+    #[cfg(feature = "serde")]
     #[test]
     fn canonical_json_orders_object_keys() {
         let value = json!({
@@ -77,11 +152,34 @@ mod tests {
         assert_eq!(text, r#"{"a":{"b":2,"d":4},"arr":[{"k1":1,"k2":2}],"z":1}"#);
     }
 
+    #[cfg(feature = "serde")]
     #[test]
     fn canonical_hash_is_deterministic_for_same_value() {
         let value = json!({"b": 2, "a": 1});
         let h1 = stable_json_hash_hex(&value).expect("hash 1");
         let h2 = stable_json_hash_hex(&value).expect("hash 2");
         assert_eq!(h1, h2);
+    }
+
+    #[cfg(feature = "serde")]
+    #[test]
+    fn canonical_json_hash_and_bytes_are_stable() {
+        let value = json!({"k": 1, "z": [2, 3]});
+        let normalized = CanonicalJson::from_serialize(&value).expect("normalized");
+        let a = normalized.to_bytes().expect("bytes a");
+        let b = normalized.to_bytes().expect("bytes b");
+        assert_eq!(a, b);
+        assert_eq!(
+            normalized.hash().expect("hash").to_hex(),
+            stable_hash_bytes(&a).to_hex()
+        );
+    }
+
+    #[test]
+    fn stable_hash_bytes_is_repeatable() {
+        let a = stable_hash_bytes(b"atlas");
+        let b = stable_hash_bytes(b"atlas");
+        assert_eq!(a, b);
+        assert_eq!(a.to_hex(), b.to_hex());
     }
 }

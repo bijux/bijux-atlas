@@ -2,6 +2,8 @@
 
 pub mod canonical;
 mod error;
+mod generated;
+pub mod result_ext;
 pub mod time;
 
 use std::path::PathBuf;
@@ -10,12 +12,20 @@ pub const CRATE_NAME: &str = "bijux-atlas-core";
 
 pub const ENV_BIJUX_LOG_LEVEL: &str = "BIJUX_LOG_LEVEL";
 pub const ENV_BIJUX_CACHE_DIR: &str = "BIJUX_CACHE_DIR";
+pub const NO_RANDOMNESS_POLICY: &str = "Randomness is forbidden in bijux-atlas-core";
 
+pub use crate::canonical::Hash256;
 pub use crate::error::{ConfigPathScope, ErrorCode, ExitCode, MachineError};
+pub use crate::result_ext::{ErrorContext, ResultExt};
 
 #[must_use]
 pub fn sha256_hex(bytes: &[u8]) -> String {
     canonical::stable_hash_hex(bytes)
+}
+
+#[must_use]
+pub fn sha256(bytes: &[u8]) -> Hash256 {
+    canonical::stable_hash_bytes(bytes)
 }
 
 #[must_use]
