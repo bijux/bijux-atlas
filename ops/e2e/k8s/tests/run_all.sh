@@ -8,6 +8,7 @@ export ATLAS_E2E_NAMESPACE
 run() { "$DIR/$1"; }
 
 for t in \
+  test_cluster_sanity.sh \
   test_values_contract.sh \
   test_defaults_safe.sh \
   test_chart_drift.sh \
@@ -28,6 +29,14 @@ for t in \
   test_resource_limits.sh \
   test_service_monitor.sh \
   test_prometheus_rule.sh \
+  test_minio_bootstrap_idempotent.sh \
+  test_minio_bucket_policy.sh \
+  test_minio_reachable.sh \
+  test_prom_scrape.sh \
+  test_otel_spans.sh \
+  test_redis_optional.sh \
+  test_redis_backend_metric.sh \
+  test_toxiproxy_latency_drill.sh \
   test_logs_json.sh \
   test_liveness_under_load.sh \
   test_node_local_cache_profile.sh \
