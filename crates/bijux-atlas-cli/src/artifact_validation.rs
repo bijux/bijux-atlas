@@ -148,6 +148,12 @@ pub(crate) fn validate_dataset(
     validate_sqlite_contract(&paths.sqlite)?;
     validate_shard_catalog_and_indexes(&paths.derived_dir)?;
     if deep {
+        let lock_path = paths.derived_dir.join("manifest.lock");
+        let lock_raw = fs::read(&lock_path)
+            .map_err(|_| format!("manifest.lock missing: {}", lock_path.display()))?;
+        let lock: ManifestLock = serde_json::from_slice(&lock_raw).map_err(|e| e.to_string())?;
+        lock.validate(manifest_raw.as_bytes(), &sqlite_bytes)?;
+
         let actual_signature = compute_dataset_signature_from_sqlite(&paths.sqlite)?;
         if manifest.dataset_signature_sha256.is_empty() {
             return Err(
@@ -163,6 +169,7 @@ pub(crate) fn validate_dataset(
         if manifest.derived_column_origins.is_empty() {
             return Err("manifest derived_column_origins must not be empty".to_string());
         }
+        enforce_publish_gates(&root, &dataset, &manifest)?;
     }
 
     let command_name = if deep {
