@@ -2,8 +2,8 @@
 
 | bijux umbrella | bijux-atlas plugin | status | notes |
 |---|---|---|---|
-| `0.1.x` | `0.1.x` | supported | plugin advertises `compatible_umbrella: >=0.1.0,<0.2.0` |
-| `0.2.x` | `0.1.x` | unsupported | plugin handshake must fail compatibility check |
+| `0.x` | `0.1.0` | supported | plugin advertises `compatible_umbrella: >=0.1.0,<0.2.0` |
+| future major | `0.1.0` | unsupported | plugin handshake must fail compatibility check |
 
 ## Validation Rule
 

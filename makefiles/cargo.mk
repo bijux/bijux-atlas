@@ -149,8 +149,10 @@ _audit:
 ci: fmt lint audit test coverage
 
 openapi-drift:
-	@./scripts/openapi-generate.sh
-	@diff -u openapi/v1/openapi.snapshot.json openapi/v1/openapi.generated.json
+	@./scripts/openapi-diff-check.sh
+
+compat-matrix-validate:
+	@./scripts/release/validate-compat-matrix.sh
 
 fetch-fixtures:
 	@./scripts/fixtures/fetch-medium.sh
@@ -177,4 +179,4 @@ run-medium-ingest:
 run-medium-serve:
 	@./scripts/fixtures/run-medium-serve.sh
 
-.PHONY: fmt _fmt lint _lint _lint-rustfmt _lint-configs _lint-docs _lint-clippy check _check test test-all _test _test-all coverage _coverage audit _audit ci openapi-drift fetch-fixtures load-test load-test-1000qps perf-nightly cold-start-bench memory-profile-load run-medium-ingest run-medium-serve
+.PHONY: fmt _fmt lint _lint _lint-rustfmt _lint-configs _lint-docs _lint-clippy check _check test test-all _test _test-all coverage _coverage audit _audit ci openapi-drift compat-matrix-validate fetch-fixtures load-test load-test-1000qps perf-nightly cold-start-bench memory-profile-load run-medium-ingest run-medium-serve

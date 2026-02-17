@@ -245,8 +245,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
-      - run: ./scripts/openapi-generate.sh
-      - run: diff -u openapi/v1/openapi.snapshot.json openapi/v1/openapi.generated.json
+      - run: ./scripts/openapi-diff-check.sh
+
+  compatibility-matrix-validate:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/compatibility-matrix-validate
+      CARGO_TARGET_DIR: artifacts/isolates/compatibility-matrix-validate/target
+      CARGO_HOME: artifacts/isolates/compatibility-matrix-validate/cargo-home
+      TMPDIR: artifacts/isolates/compatibility-matrix-validate/tmp
+      TMP: artifacts/isolates/compatibility-matrix-validate/tmp
+      TEMP: artifacts/isolates/compatibility-matrix-validate/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
+      - run: ./scripts/release/validate-compat-matrix.sh
 
   runtime-security-scan:
     runs-on: ubuntu-latest
