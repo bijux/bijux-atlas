@@ -188,6 +188,8 @@ async fn main() -> Result<(), String> {
         catalog_breaker_failure_threshold: env_u64("ATLAS_CATALOG_BREAKER_FAILURE_THRESHOLD", 5)
             as u32,
         catalog_breaker_open_ms: env_u64("ATLAS_CATALOG_BREAKER_OPEN_MS", 5000),
+        quarantine_after_corruption_failures: env_u64("ATLAS_QUARANTINE_CORRUPTION_FAILURES", 3)
+            as u32,
         ..DatasetCacheConfig::default()
     };
     let api_cfg = ApiConfig {
@@ -231,6 +233,15 @@ async fn main() -> Result<(), String> {
             refill_per_sec: env_f64("ATLAS_SEQUENCE_RATE_LIMIT_REFILL_PER_SEC", 5.0),
         },
         sequence_ttl: env_duration_ms("ATLAS_SEQUENCE_TTL_MS", 300_000),
+        adaptive_rate_limit_factor: env_f64("ATLAS_ADAPTIVE_RATE_LIMIT_FACTOR", 0.5),
+        adaptive_heavy_limit_factor: env_f64("ATLAS_ADAPTIVE_HEAVY_LIMIT_FACTOR", 0.5),
+        emergency_global_breaker: env_bool("ATLAS_EMERGENCY_GLOBAL_BREAKER", false),
+        memory_pressure_shed_enabled: env_bool("ATLAS_MEMORY_PRESSURE_SHED_ENABLED", false),
+        memory_pressure_rss_bytes: env_u64(
+            "ATLAS_MEMORY_PRESSURE_RSS_BYTES",
+            3 * 1024 * 1024 * 1024,
+        ),
+        max_request_queue_depth: env_usize("ATLAS_MAX_REQUEST_QUEUE_DEPTH", 256),
         ..ApiConfig::default()
     };
 
@@ -322,10 +333,13 @@ async fn main() -> Result<(), String> {
         .map_err(|e| format!("listen failed: {e}"))?;
     info!("atlas-server listening on {bind_addr}");
     let accepting = state.accepting_requests.clone();
+    let state_for_shutdown = state.clone();
     axum::serve(listener, app)
         .with_graceful_shutdown(async move {
             wait_for_shutdown_signal().await;
             accepting.store(false, Ordering::Relaxed);
+            // Stop admitting heavy work first, then drain remaining requests.
+            state_for_shutdown.begin_shutdown_drain_heavy();
             let drain_ms = env_u64("ATLAS_SHUTDOWN_DRAIN_MS", 5000);
             tokio::time::sleep(Duration::from_millis(drain_ms)).await;
         })

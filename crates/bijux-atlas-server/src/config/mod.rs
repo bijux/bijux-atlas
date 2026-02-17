@@ -61,6 +61,12 @@ pub struct ApiConfig {
     pub sequence_api_key_required_bases: usize,
     pub sequence_rate_limit_per_ip: RateLimitConfig,
     pub sequence_ttl: Duration,
+    pub adaptive_rate_limit_factor: f64,
+    pub adaptive_heavy_limit_factor: f64,
+    pub emergency_global_breaker: bool,
+    pub memory_pressure_shed_enabled: bool,
+    pub memory_pressure_rss_bytes: u64,
+    pub max_request_queue_depth: usize,
 }
 
 impl Default for ApiConfig {
@@ -114,6 +120,12 @@ impl Default for ApiConfig {
                 refill_per_sec: 5.0,
             },
             sequence_ttl: Duration::from_secs(300),
+            adaptive_rate_limit_factor: 0.5,
+            adaptive_heavy_limit_factor: 0.5,
+            emergency_global_breaker: false,
+            memory_pressure_shed_enabled: false,
+            memory_pressure_rss_bytes: 3 * 1024 * 1024 * 1024,
+            max_request_queue_depth: 256,
         }
     }
 }
