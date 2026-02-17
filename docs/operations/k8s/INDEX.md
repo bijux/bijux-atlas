@@ -6,6 +6,8 @@ This is the canonical index for Kubernetes operations docs.
 
 ## Topics
 
+- Chart contract: `chart.md`
+- K8s test contract: `k8s-test-contract.md`
 - Packaging and operational profile: `packaging-and-ops.md`
 - Values schema and deployment constraints: `values-schema.md`
 - Plugin-mode entrypoint: `plugin-mode-entrypoint.md`

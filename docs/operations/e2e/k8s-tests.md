@@ -20,9 +20,9 @@ Does not duplicate each test script implementation.
 
 ## Contracts
 
-- Runner: `ops/e2e/k8s/tests/run_all.sh`
-- Install gate: `ops/e2e/k8s/tests/test_install.sh`
-- Cached-only mode: `ops/e2e/k8s/tests/test_cached_only_mode.sh`
+- Runner: `ops-k8s-tests`
+- Report on failure: `ops/k8s/tests/report.sh`
+- Full contract list: `../k8s/k8s-test-contract.md`
 
 ## Failure modes
 
@@ -31,7 +31,7 @@ Chart drift can break runtime semantics while unit tests remain green.
 ## How to verify
 
 ```bash
-$ ./ops/e2e/k8s/tests/run_all.sh
+$ make ops-k8s-tests
 ```
 
 Expected output: all K8s e2e tests pass.
