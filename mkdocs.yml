@@ -155,9 +155,12 @@ nav:
       - Style Guide: _style/style-guide.md
       - Terms Glossary: _style/terms-glossary.md
       - Structure Templates: _style/structure-templates.md
+      - Depth Rubric: _style/DEPTH_RUBRIC.md
+      - Docs Review Checklist: _style/docs-review-checklist.md
       - Naming Standard: _style/naming-standard.md
       - Concept Registry: _style/CONCEPT_REGISTRY.md
       - Concept Graph: _generated/concepts.md
+      - Doc Status: _generated/doc-status.md
       - Depth Policy: _style/DEPTH_POLICY.md
       - Cargo Workflow: development/cargo.md
       - CI:

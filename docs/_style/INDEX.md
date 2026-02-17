@@ -39,3 +39,5 @@ Expected output: docs build and docs-structure checks pass.
 - [Docs Home](../index.md)
 - [Naming Standard](naming-standard.md)
 - [Terms Glossary](terms-glossary.md)
+- [Depth Rubric](DEPTH_RUBRIC.md)
+- [Docs Review Checklist](docs-review-checklist.md)
