@@ -60,6 +60,7 @@ fn valid_policy() -> PolicyConfig {
         network_in_unit_tests: false,
         query_budget: QueryBudget {
             max_limit: 100,
+            max_transcript_limit: 100,
             max_region_span: 10_000_000,
             max_region_estimated_rows: 50_000,
             max_prefix_cost_units: 80_000,

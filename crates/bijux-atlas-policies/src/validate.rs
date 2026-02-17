@@ -69,6 +69,11 @@ pub fn validate_policy_config(cfg: &PolicyConfig) -> Result<(), PolicyValidation
             "query_budget.max_limit must be > 0".to_string(),
         ));
     }
+    if cfg.query_budget.max_transcript_limit == 0 {
+        return Err(PolicyValidationError(
+            "query_budget.max_transcript_limit must be > 0".to_string(),
+        ));
+    }
     if cfg.query_budget.max_region_span == 0 {
         return Err(PolicyValidationError(
             "query_budget.max_region_span must be > 0".to_string(),

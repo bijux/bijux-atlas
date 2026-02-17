@@ -18,6 +18,7 @@ pub struct PolicyConfig {
 #[serde(deny_unknown_fields)]
 pub struct QueryBudget {
     pub max_limit: u32,
+    pub max_transcript_limit: u32,
     pub max_region_span: u64,
     pub max_region_estimated_rows: u64,
     pub max_prefix_cost_units: u64,
