@@ -4,8 +4,8 @@ use std::path::PathBuf;
 #[test]
 fn public_api_doc_lists_only_exported_symbols() {
     let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    let api_doc = fs::read_to_string(manifest_dir.join("docs/PUBLIC_API.md"))
-        .expect("read docs/PUBLIC_API.md");
+    let api_doc = fs::read_to_string(manifest_dir.join("docs/public-api.md"))
+        .expect("read docs/public-api.md");
     let lib_rs = fs::read_to_string(manifest_dir.join("src/lib.rs")).expect("read src/lib.rs");
 
     let expected_items = [
@@ -79,7 +79,7 @@ fn public_api_doc_lists_only_exported_symbols() {
     for ident in exported_identifiers {
         assert!(
             api_doc.contains(ident),
-            "docs/PUBLIC_API.md missing exported identifier: {ident}"
+            "docs/public-api.md missing exported identifier: {ident}"
         );
     }
 }

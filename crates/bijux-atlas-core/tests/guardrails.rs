@@ -140,8 +140,8 @@ fn collect_rs_files(dir: &Path) -> Vec<PathBuf> {
 #[test]
 fn crate_dependency_dag_matches_boundaries_doc() {
     let root = workspace_root();
-    let boundaries =
-        fs::read_to_string(root.join("docs/boundaries.md")).expect("missing docs/boundaries.md");
+    let boundaries = fs::read_to_string(root.join("docs/architecture/boundaries.md"))
+        .expect("missing docs/architecture/boundaries.md");
     let allowed = parse_boundaries(&boundaries);
     let actual = internal_edges_from_metadata(&root);
 
