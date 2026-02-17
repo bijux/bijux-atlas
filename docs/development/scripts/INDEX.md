@@ -28,8 +28,8 @@ Does not duplicate script implementation details.
   - `scripts/tools/`: shared Python helper modules.
 - Contracts: `scripts/contracts/`
 - Docs linters/generators: `scripts/docs/`
-- Perf tooling wrappers: `scripts/perf/` (canonical: `ops/load/scripts/`)
-- Observability checks: `scripts/observability/`
+- Perf tooling wrappers: `scripts/public/perf/` (canonical: `ops/load/scripts/`)
+- Observability checks: `scripts/public/observability/`
 - Fixtures/data helpers: `scripts/fixtures/`
 - Release automation: `scripts/release/`
 - Layout checks/migrations: `scripts/layout/`

@@ -150,18 +150,18 @@ ops-smoke: ## Run canonical API smoke queries
 
 ops-metrics-check: ## Validate runtime metrics and observability contracts
 	@./ops/e2e/scripts/verify_metrics.sh
-	@./scripts/observability/check_metrics_contract.py
-	@./scripts/observability/check_dashboard_contract.py
-	@./scripts/observability/check_alerts_contract.py
-	@./scripts/observability/lint_runbooks.py
-	@./scripts/observability/check_runtime_metrics.py
+	@./scripts/public/observability/check_metrics_contract.py
+	@./scripts/public/observability/check_dashboard_contract.py
+	@./scripts/public/observability/check_alerts_contract.py
+	@./scripts/public/observability/lint_runbooks.py
+	@./scripts/public/observability/check_runtime_metrics.py
 	@./ops/observability/scripts/snapshot_metrics.sh
 	@./ops/observability/scripts/check_metric_cardinality.py
 	@python3 ./ops/observability/scripts/validate_logs_schema.py
 
 ops-traces-check: ## Validate trace signal (when OTEL enabled)
 	@./ops/e2e/scripts/verify_traces.sh
-	@if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/observability/check_tracing_contract.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi
+	@if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/public/observability/check_tracing_contract.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi
 
 ops-k8s-tests: ## Run k8s e2e suite
 	@$(MAKE) -s ops-env-validate
@@ -400,18 +400,18 @@ ops-openapi-validate: ## Validate OpenAPI drift and schema/examples consistency
 	@python3 ./scripts/docs/check_openapi_examples.py
 
 ops-dashboards-validate: ## Validate dashboard references against metrics contract
-	@./scripts/observability/check_dashboard_contract.py
+	@./scripts/public/observability/check_dashboard_contract.py
 
 ops-alerts-validate: ## Validate alert rules and contract coverage
-	@./scripts/observability/check_alerts_contract.py
+	@./scripts/public/observability/check_alerts_contract.py
 
 ops-observability-validate: ## Validate observability assets/contracts end-to-end
 	@set -e; \
 	trap 'out="artifacts/ops/observability/validate-fail-$$(date +%Y%m%d-%H%M%S)"; mkdir -p "$$out"; kubectl get pods -A -o wide > "$$out/pods.txt" 2>/dev/null || true; kubectl get events -A --sort-by=.lastTimestamp > "$$out/events.txt" 2>/dev/null || true; cp -f ops/observability/grafana/atlas-observability-dashboard.json "$$out/dashboard.json" 2>/dev/null || true; cp -f ops/observability/alerts/atlas-alert-rules.yaml "$$out/alerts.yaml" 2>/dev/null || true; echo "observability validation failed, artifacts: $$out" >&2' ERR; \
 	$(MAKE) ops-dashboards-validate; \
 	$(MAKE) ops-alerts-validate; \
-	./scripts/observability/check_metrics_contract.py; \
-	if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/observability/check_tracing_contract.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi; \
+	./scripts/public/observability/check_metrics_contract.py; \
+	if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/public/observability/check_tracing_contract.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi; \
 	./ops/observability/scripts/snapshot_metrics.sh; \
 	./ops/observability/scripts/check_metric_cardinality.py; \
 	python3 ./ops/observability/scripts/validate_logs_schema.py

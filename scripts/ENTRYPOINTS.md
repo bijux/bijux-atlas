@@ -23,10 +23,10 @@ This registry defines script stability levels.
 - `scripts/fixtures/run-medium-serve.sh`
 - `scripts/generate_scripts_readme.py`
 - `scripts/layout/*`
-- `scripts/observability/*`
+- `scripts/public/observability/*`
 - `scripts/release/update-compat-matrix.sh`
 - `scripts/release/validate-compat-matrix.sh`
-- `scripts/perf/*` (compat wrappers only; canonical implementations live in `ops/load/scripts/`)
+- `scripts/public/perf/*` (compat wrappers only; canonical implementations live in `ops/load/scripts/`)
 - `scripts/ops/check_k8s_test_contract.py`
 - `scripts/ops/check_k8s_flakes.py`
 

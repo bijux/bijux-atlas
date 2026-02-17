@@ -20,7 +20,7 @@ Does not replace incident runbooks.
 
 ## Contracts
 
-- Alert rules are validated by `scripts/observability/check_alerts_contract.py`.
+- Alert rules are validated by `scripts/public/observability/check_alerts_contract.py`.
 - Alerts must map to runbook drill procedures.
 - Alert rules carry version labels and contact pointers in `ops/observability/alerts/atlas-alert-rules.yaml`.
 
