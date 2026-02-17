@@ -3,7 +3,4 @@
 artifacts
 **/target
 **/.DS_Store
-docs
-fixtures
-load
-charts
+*.log

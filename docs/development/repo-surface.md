@@ -26,11 +26,12 @@ Does not freeze internal implementation details.
 - Root layout SSOT:
   - `ops/` holds `e2e`, `load`, `observability`, and `openapi`.
   - `configs/` holds policy, rust, docs, and security config sources.
+  - `configs/README.md` is the configuration layout contract.
   - Root config files are compatibility symlinks to `configs/*`.
   - `.cargo/` remains at root because Cargo workspace config discovery expects it.
 - Single entrypoint policy:
   - All runnable workflows are exposed through `make`.
-  - Direct script execution is diagnostic-only unless explicitly documented.
+  - CI workflows must not run scripts directly; `make no-direct-scripts` is the enforcement gate.
 
 ## Failure modes
 

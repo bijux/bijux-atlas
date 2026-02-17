@@ -78,6 +78,7 @@ Stable targets:
 - `ops-k6-version-check`
 - `ops-helm-version-check`
 - `ops-kubectl-version-check`
+- `ops-tools-check`
 - `ops-values-validate`
 - `ops-openapi-validate`
 - `ops-dashboards-validate`
@@ -92,6 +93,14 @@ Stable targets:
 - `ops-perf-compare-redis`
 - `ops-perf-suite`
 - `ops-baseline-policy-check`
+- `ops-observability-validate`
+- `ops-observability-smoke`
+- `ops-obs-up`
+- `ops-obs-down`
+- `ops-drill-alerts`
+- `ops-drill-overload`
+- `ops-drill-memory-growth`
+- `ops-slo-burn`
 - `ssot-check`
 - `observability-check`
 - `docs`
@@ -101,6 +110,13 @@ Stable targets:
 - `layout-check`
 - `layout-migrate`
 - `bootstrap`
+- `bootstrap-tools`
+- `scripts-index`
+- `docker-build`
+- `docker-smoke`
+- `chart-package`
+- `chart-verify`
+- `no-direct-scripts`
 - `doctor`
 - `help`
 
