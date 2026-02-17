@@ -1,7 +1,10 @@
 use std::sync::Arc;
 
 use bijux_atlas_core::sha256_hex;
-use bijux_atlas_model::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
+use bijux_atlas_model::{
+    ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats, ReleaseGeneIndex,
+    ReleaseGeneIndexEntry,
+};
 use bijux_atlas_server::{
     build_router, ApiConfig, AppState, DatasetCacheConfig, DatasetCacheManager, FakeStore,
 };
@@ -56,6 +59,28 @@ fn fixture_fasta_and_fai() -> (Vec<u8>, Vec<u8>) {
     let fasta = b">chr1\nACGTACGTAC\nGGGGnnnnTT\n".to_vec();
     let fai = b"chr1\t20\t6\t10\t11\n".to_vec();
     (fasta, fai)
+}
+
+fn fixture_release_index(dataset: &DatasetId, rows: Vec<(&str, &str, u64, u64, &str)>) -> Vec<u8> {
+    let mut entries: Vec<ReleaseGeneIndexEntry> = rows
+        .into_iter()
+        .map(|(gene_id, seqid, start, end, sig)| {
+            ReleaseGeneIndexEntry::new(
+                gene_id.to_string(),
+                seqid.to_string(),
+                start,
+                end,
+                sig.to_string(),
+            )
+        })
+        .collect();
+    entries.sort();
+    serde_json::to_vec(&ReleaseGeneIndex::new(
+        "1".to_string(),
+        dataset.clone(),
+        entries,
+    ))
+    .expect("index json")
 }
 
 async fn send_raw(
@@ -370,6 +395,115 @@ async fn sequence_endpoint_boundary_conditions_are_enforced() {
     .await;
     assert_eq!(status, 200);
     assert!(body.contains("\"gc_fraction\""));
+}
+
+#[tokio::test]
+async fn diff_endpoints_return_added_removed_changed_and_support_latest_alias() {
+    let (ds_from, manifest_from, sqlite_from) = mk_dataset();
+    let ds_to = DatasetId::new("111", "homo_sapiens", "GRCh38").expect("dataset id");
+    let (fasta, fai) = fixture_fasta_and_fai();
+    let manifest_to = ArtifactManifest::new(
+        "1".to_string(),
+        "1".to_string(),
+        ds_to.clone(),
+        ArtifactChecksums::new(
+            "a".repeat(64),
+            sha256_hex(&fasta),
+            sha256_hex(&fai),
+            sha256_hex(&sqlite_from),
+        ),
+        ManifestStats::new(2, 2, 1),
+    );
+
+    let store = Arc::new(FakeStore::default());
+    store
+        .manifest
+        .lock()
+        .await
+        .insert(ds_from.clone(), manifest_from);
+    store
+        .manifest
+        .lock()
+        .await
+        .insert(ds_to.clone(), manifest_to);
+    store
+        .sqlite
+        .lock()
+        .await
+        .insert(ds_from.clone(), sqlite_from.clone());
+    store.sqlite.lock().await.insert(ds_to.clone(), sqlite_from);
+    store
+        .fasta
+        .lock()
+        .await
+        .insert(ds_from.clone(), fasta.clone());
+    store.fasta.lock().await.insert(ds_to.clone(), fasta);
+    store.fai.lock().await.insert(ds_from.clone(), fai.clone());
+    store.fai.lock().await.insert(ds_to.clone(), fai);
+    store.release_gene_index.lock().await.insert(
+        ds_from.clone(),
+        fixture_release_index(
+            &ds_from,
+            vec![
+                ("gA", "chr1", 1, 10, "sig-a1"),
+                ("gB", "chr1", 20, 30, "sig-b1"),
+            ],
+        ),
+    );
+    store.release_gene_index.lock().await.insert(
+        ds_to.clone(),
+        fixture_release_index(
+            &ds_to,
+            vec![
+                ("gB", "chr1", 20, 30, "sig-b2"),
+                ("gC", "chr1", 40, 50, "sig-c1"),
+            ],
+        ),
+    );
+    let catalog = bijux_atlas_model::Catalog::new(vec![
+        bijux_atlas_model::CatalogEntry::new(ds_from.clone(), "m1".to_string(), "s1".to_string()),
+        bijux_atlas_model::CatalogEntry::new(ds_to.clone(), "m2".to_string(), "s2".to_string()),
+    ]);
+    *store.catalog.lock().await = catalog;
+    *store.etag.lock().await = "catalog-diff".to_string();
+
+    let tmp = tempdir().expect("tempdir");
+    let cfg = DatasetCacheConfig {
+        disk_root: tmp.path().to_path_buf(),
+        ..Default::default()
+    };
+    let mgr = DatasetCacheManager::new(cfg, store);
+    let app = build_router(AppState::with_config(
+        mgr,
+        ApiConfig::default(),
+        Default::default(),
+    ));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/diff/genes?from_release=110&to_release=latest&species=homo_sapiens&assembly=GRCh38&limit=10",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+    assert!(body.contains("\"Added\"") || body.contains("\"added\""));
+    assert!(body.contains("\"Removed\"") || body.contains("\"removed\""));
+    assert!(body.contains("\"Changed\"") || body.contains("\"changed\""));
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/diff/region?from_release=110&to_release=111&species=homo_sapiens&assembly=GRCh38&region=chr1:35-60&limit=10",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+    assert!(body.contains("\"gC\""));
+    assert!(!body.contains("\"gA\""));
 }
 
 #[tokio::test]
