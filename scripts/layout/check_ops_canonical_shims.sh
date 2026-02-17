@@ -1,29 +1,20 @@
-#!/usr/bin/env sh
-# Purpose: enforce ops/ as canonical for operational assets and keep root compat shims clean.
-# Inputs: root ops/e2e/ops/load/observability paths.
-# Outputs: non-zero when compat paths contain real content.
-set -eu
+#!/usr/bin/env bash
+# Purpose: enforce ops-only canonical layout (no legacy root ops aliases).
+# Inputs: root legacy names.
+# Outputs: non-zero when deprecated root aliases exist.
+set -euo pipefail
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
 errors=0
-
-check_path() {
-  name="$1"
-  path="$ROOT/$name"
-
-  if [ ! -L "$path" ]; then
-    echo "compat path '$name' must be a symlink" >&2
+for name in e2e load observability charts datasets fixtures; do
+  if [ -e "$ROOT/$name" ] || [ -L "$ROOT/$name" ]; then
+    echo "deprecated root alias exists: $name" >&2
     errors=1
-    return 0
   fi
-}
-
-check_path e2e
-check_path load
-check_path observability
+done
 
 if [ "$errors" -ne 0 ]; then
   exit 1
 fi
 
-echo "ops canonical shim check passed"
+echo "ops canonical layout check passed"

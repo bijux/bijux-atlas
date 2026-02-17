@@ -48,3 +48,11 @@ temp/
 *.swp
 *.swo
 *.log
+
+# Forbidden root legacy aliases (ops is canonical)
+/charts
+/e2e
+/load
+/observability
+/datasets
+/fixtures

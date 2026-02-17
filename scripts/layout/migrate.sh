@@ -8,42 +8,31 @@ ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
 
 "$ROOT/scripts/migrate_paths.sh" --apply
 
-ensure_symlink() {
+remove_legacy_root_entry() {
   local path="$1"
-  local target="$2"
   local abs="$ROOT/$path"
 
-  if [ -L "$abs" ]; then
-    local current
-    current="$(readlink "$abs")"
-    if [ "$current" = "$target" ]; then
-      return 0
-    fi
-    rm "$abs"
-  elif [ -d "$abs" ]; then
-    find "$abs" -mindepth 1 -maxdepth 1 -type l -exec rm {} +
-    if [ -z "$(find "$abs" -mindepth 1 -maxdepth 1 -print -quit)" ]; then
-      rmdir "$abs"
-    else
-      echo "cannot convert $path to symlink: non-compat files present" >&2
-      return 1
-    fi
-  elif [ -f "$abs" ]; then
-    rm "$abs"
+  if [ -L "$abs" ] || [ -f "$abs" ]; then
+    rm -f "$abs"
+    return 0
   fi
 
-  ln -s "$target" "$abs"
+  if [ -d "$abs" ]; then
+    if [ -z "$(find "$abs" -mindepth 1 -maxdepth 1 -print -quit)" ]; then
+      rmdir "$abs"
+      return 0
+    fi
+    echo "cannot remove $path: directory is not empty" >&2
+    return 1
+  fi
 }
 
-ensure_symlink "e2e" "ops/e2e"
-ensure_symlink "load" "ops/load"
-ensure_symlink "observability" "ops/observability"
-ensure_symlink "bin" "scripts/bin"
-ensure_symlink "charts" "ops/k8s/charts"
-ensure_symlink "Dockerfile" "docker/Dockerfile"
+for legacy in charts e2e load observability datasets fixtures; do
+  remove_legacy_root_entry "$legacy"
+done
 
 "$ROOT/scripts/layout/check_root_shape.sh"
-"$ROOT/scripts/layout/check_ops_canonical_shims.sh"
+"$ROOT/scripts/layout/check_forbidden_root_names.sh"
 "$ROOT/scripts/layout/check_repo_hygiene.sh"
 
 echo "layout migration completed"
