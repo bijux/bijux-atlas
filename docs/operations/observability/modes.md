@@ -14,6 +14,9 @@ Allows local clusters without CRDs while preserving a full production profile.
 
 - `minimal` mode: no CRD requirement; Prometheus manifest + OTEL collector only.
 - `full` mode: requires `ServiceMonitor` and `PrometheusRule` CRDs.
+- Install target: `ops-obs-up`.
+- Smoke target: `ops-observability-smoke`.
+- Teardown target: `ops-obs-down`.
 - Installer entrypoint: `ops/observability/scripts/install_obs_pack.sh` with `ATLAS_OBS_MODE=minimal|full`.
 
 ## Failure Modes

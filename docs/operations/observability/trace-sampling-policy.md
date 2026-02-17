@@ -15,6 +15,7 @@ Bounds telemetry overhead while retaining incident-debugging signal.
 - SSOT knob: `telemetry.trace_sampling_per_10k` in `configs/policy/policy.json`.
 - Validation: `crates/bijux-atlas-policies/src/validate.rs` rejects zero sampling.
 - Runtime tracing remains opt-in via OTEL export wiring in server startup.
+- Verification target: `ops-traces-check`.
 
 ## Failure Modes
 

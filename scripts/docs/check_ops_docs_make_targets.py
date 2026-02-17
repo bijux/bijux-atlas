@@ -26,8 +26,11 @@ errors: list[str] = []
 for md in sorted(OPS_DOCS.rglob("*.md")):
     text = md.read_text(encoding="utf-8", errors="ignore")
     if pattern.search(text):
-        continue
-    errors.append(f"{md.relative_to(ROOT)}: missing ops make target reference")
+        pass
+    else:
+        errors.append(f"{md.relative_to(ROOT)}: missing ops make target reference")
+    if re.search(r"(^|\\s)\\./(ops|scripts)/", text):
+        errors.append(f"{md.relative_to(ROOT)}: direct script path reference found; use make target")
 
 if errors:
     print("ops docs make-target contract failed:", file=sys.stderr)

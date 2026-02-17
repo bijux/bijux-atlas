@@ -12,6 +12,8 @@ Prevents deployments with missing telemetry coverage or invalid alerting assets.
 
 ## Contracts
 
+- Primary gate target: `ops-observability-validate`.
+- Smoke gate target: `ops-observability-smoke`.
 - Metrics contract must pass: `scripts/observability/check_metrics_contract.py`.
 - Dashboard contract must pass: `scripts/observability/check_dashboard_contract.py`.
 - Alerts contract must pass: `scripts/observability/check_alerts_contract.py`.

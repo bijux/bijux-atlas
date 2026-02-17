@@ -30,7 +30,7 @@ Unpinned fixtures introduce nondeterministic failures.
 ## How to verify
 
 ```bash
-$ ./scripts/fixtures/fetch-real-datasets.sh
+$ make fetch-real-datasets
 ```
 
 Expected output: fixture downloads pass checksum validation.
