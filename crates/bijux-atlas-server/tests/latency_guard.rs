@@ -181,3 +181,18 @@ async fn shard_open_fd_cap_enforces_safety_under_many_shards() {
     );
     drop((p1, p2));
 }
+
+#[tokio::test]
+#[ignore]
+async fn large_dataset_simulation_sparse_file_over_5gb() {
+    let tmp = tempdir().expect("tempdir");
+    let path = tmp.path().join("large.sqlite");
+    let file = std::fs::File::create(&path).expect("create sparse file");
+    file.set_len(6_u64 * 1024 * 1024 * 1024)
+        .expect("set sparse file length");
+    let meta = std::fs::metadata(&path).expect("metadata");
+    assert!(
+        meta.len() > 5_u64 * 1024 * 1024 * 1024,
+        "sparse simulation should be larger than 5GB"
+    );
+}
