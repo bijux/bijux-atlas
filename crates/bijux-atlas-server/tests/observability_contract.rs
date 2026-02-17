@@ -155,7 +155,8 @@ async fn metrics_endpoint_matches_metrics_contract() {
         .map(|e| e["path"].as_str().expect("path"))
     {
         assert!(
-            source_concat.contains(path) || source_concat.contains(&path.replace("{", ":").replace('}', "")),
+            source_concat.contains(path)
+                || source_concat.contains(&path.replace("{", ":").replace('}', "")),
             "endpoint route not referenced in server sources: {path}"
         );
     }
