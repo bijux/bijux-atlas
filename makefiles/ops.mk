@@ -51,6 +51,9 @@ ops-traces-check: ## Validate trace signal (when OTEL enabled)
 ops-k8s-tests: ## Run k8s e2e suite
 	@./ops/e2e/k8s/tests/run_all.sh
 
+ops-k8s-template-tests: ## Run helm template/lint edge-case checks
+	@./ops/e2e/k8s/tests/test_helm_templates.sh
+
 ops-load-smoke: ## Run short load suite
 	@$(MAKE) ops-k6-version-check
 	@./scripts/perf/run_suite.sh mixed_80_20.js artifacts/perf/results
@@ -120,6 +123,7 @@ ops-perf-suite: ## Perf helper: run an arbitrary perf suite (SCENARIO=<file.js> 
 	@./scripts/perf/run_suite.sh "$$SCENARIO" "$${OUT:-artifacts/perf/results}"
 
 ops-values-validate: ## Validate chart values against SSOT contract
+	@./scripts/contracts/generate_chart_values_schema.py
 	@./scripts/contracts/check_chart_values_contract.py
 
 ops-openapi-validate: ## Validate OpenAPI drift and schema/examples consistency

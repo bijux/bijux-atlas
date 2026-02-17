@@ -63,6 +63,7 @@ Stable targets:
 - `ops-metrics-check`
 - `ops-traces-check`
 - `ops-k8s-tests`
+- `ops-k8s-template-tests`
 - `ops-load-smoke`
 - `ops-load-full`
 - `ops-drill-store-outage`
