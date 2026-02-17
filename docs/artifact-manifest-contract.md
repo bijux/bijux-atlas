@@ -7,5 +7,8 @@ Manifest is strict JSON (`serde(deny_unknown_fields)`) with:
 - Derived checksum: SQLite
 - Basic stats: gene/transcript/contig counts
 - Versions: manifest version + DB schema version
+- Dataset signature hash: `dataset_signature_sha256` (Merkle-style over table content)
+- Schema evolution note: `schema_evolution_note`
+- Derived column lineage map: `derived_column_origins`
 
 Unknown fields are rejected.

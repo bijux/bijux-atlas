@@ -1,5 +1,6 @@
 use crate::dataset::{DatasetId, ValidationError};
 use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -58,6 +59,12 @@ pub struct ArtifactManifest {
     pub dataset: DatasetId,
     pub checksums: ArtifactChecksums,
     pub stats: ManifestStats,
+    #[serde(default)]
+    pub dataset_signature_sha256: String,
+    #[serde(default)]
+    pub schema_evolution_note: String,
+    #[serde(default = "default_derived_column_origins")]
+    pub derived_column_origins: BTreeMap<String, String>,
 }
 
 impl ArtifactManifest {
@@ -75,6 +82,10 @@ impl ArtifactManifest {
             dataset,
             checksums,
             stats,
+            dataset_signature_sha256: String::new(),
+            schema_evolution_note:
+                "v1 schema: additive-only evolution; existing fields remain stable".to_string(),
+            derived_column_origins: default_derived_column_origins(),
         }
     }
 
@@ -92,8 +103,51 @@ impl ArtifactManifest {
         if self.stats.gene_count == 0 {
             return Err(ValidationError("gene_count must be > 0".to_string()));
         }
+        if self.derived_column_origins.is_empty() {
+            return Err(ValidationError(
+                "derived_column_origins must not be empty".to_string(),
+            ));
+        }
         Ok(())
     }
+}
+
+fn default_derived_column_origins() -> BTreeMap<String, String> {
+    let mut out = BTreeMap::new();
+    out.insert(
+        "gene_summary.gene_id".to_string(),
+        "GFF3 gene feature: ID attribute (or configured canonical gene ID policy)".to_string(),
+    );
+    out.insert(
+        "gene_summary.name".to_string(),
+        "GFF3 attributes using GeneNamePolicy priority keys".to_string(),
+    );
+    out.insert(
+        "gene_summary.biotype".to_string(),
+        "GFF3 attributes using BiotypePolicy priority keys (or policy-defined unknown)".to_string(),
+    );
+    out.insert(
+        "gene_summary.seqid".to_string(),
+        "GFF3 seqid normalized by dataset-local SeqidNormalizationPolicy".to_string(),
+    );
+    out.insert(
+        "gene_summary.start/end".to_string(),
+        "GFF3 feature coordinates validated against FASTA FAI contig lengths".to_string(),
+    );
+    out.insert(
+        "gene_summary.transcript_count".to_string(),
+        "Count of transcript/mRNA records whose Parent resolves to gene_id under strictness policy"
+            .to_string(),
+    );
+    out.insert(
+        "gene_summary.sequence_length".to_string(),
+        "Computed as end-start+1 after contig-bound validation".to_string(),
+    );
+    out.insert(
+        "transcript_summary.*".to_string(),
+        "Derived from transcript/mRNA + exon/CDS relationships from GFF3".to_string(),
+    );
+    out
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -280,6 +334,23 @@ pub struct IngestAnomalyReport {
     pub unknown_contigs: Vec<String>,
     pub overlapping_ids: Vec<String>,
     pub duplicate_gene_ids: Vec<String>,
+    #[serde(default)]
+    pub overlapping_gene_ids_across_contigs: Vec<String>,
+    #[serde(default)]
+    pub orphan_transcripts: Vec<String>,
+    #[serde(default)]
+    pub parent_cycles: Vec<String>,
+    #[serde(default)]
+    pub attribute_fallbacks: Vec<String>,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[serde(rename_all = "UPPERCASE")]
+#[non_exhaustive]
+pub enum QcSeverity {
+    Info,
+    Warn,
+    Error,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
