@@ -18,6 +18,7 @@ Required indexes:
 Hard gate:
 - Dataset validation rejects artifacts if any required index above is missing.
 - `atlas_meta.analyze_completed` must be `true` (ANALYZE required gate).
+- Query plan regression gate runs `scripts/query-plan-gate.sh` in CI.
 
 Query classes:
 - `Cheap`: exact id lookups.
@@ -30,3 +31,7 @@ Max-work guard:
 - Query cost estimator must remain bounded by `max_work_units`.
 - Region requests are bounded by both span and estimated row count (`max_region_estimated_rows`).
 - Full table scans are rejected unless explicitly allowed.
+
+Search normalization:
+- Name exact/prefix lookups use normalized `name_normalized` values.
+- Normalization policy is Unicode `NFKC` + lowercase for deterministic collation behavior.

@@ -5,6 +5,7 @@ Cursor properties:
 - Payload binds to normalized query hash.
 - Order mode is encoded and validated (`gene_id` or `region`).
 - Decoder is backward-compatible with legacy unversioned `<payload>.<sig>` tokens.
+- Cursor payload includes a depth counter; depth above guardrail is rejected.
 
 Stability guarantees:
 - Same dataset + same query + same secret => stable cursor sequence.

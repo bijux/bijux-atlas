@@ -237,7 +237,7 @@ fn limits() -> QueryLimits {
         max_region_estimated_rows: 1_000,
         max_prefix_cost_units: 80_000,
         heavy_projection_limit: 200,
-        min_prefix_len: 1,
+        min_prefix_len: 2,
         max_prefix_len: 64,
         max_work_units: 2_000,
         max_serialization_bytes: 512 * 1024,
@@ -399,7 +399,7 @@ fn tie_break_ordering_is_stable_for_same_coordinates() {
 }
 
 #[test]
-fn case_sensitive_collation_is_consistent() {
+fn collation_normalized_name_lookup_is_case_insensitive() {
     let conn = setup_db();
     let upper = GeneQueryRequest {
         fields: GeneFields::default(),
@@ -433,7 +433,7 @@ fn case_sensitive_collation_is_consistent() {
             .expect("lower")
             .rows
             .len(),
-        0
+        1
     );
 }
 
@@ -498,7 +498,7 @@ fn pathological_prefix_is_rejected_by_cost_estimator() {
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
         filter: GeneFilter {
-            name_prefix: Some("A".to_string()),
+            name_prefix: Some("AL".to_string()),
             ..Default::default()
         },
         limit: 500,
@@ -510,6 +510,124 @@ fn pathological_prefix_is_rejected_by_cost_estimator() {
     let err = query_genes(&conn, &req, &lim, b"s").expect_err("prefix rejection");
     assert_eq!(err.code, QueryErrorCode::Validation);
     assert!(err.message.contains("name_prefix estimated cost"));
+}
+
+#[test]
+fn unicode_normalization_policy_nfkc_is_stable() {
+    let n1 = crate::filters::normalize_name_lookup("Å");
+    let n2 = crate::filters::normalize_name_lookup("Å");
+    assert_eq!(n1, n2);
+}
+
+#[test]
+fn prefix_lower_bound_enforcement_rejects_single_char() {
+    let conn = setup_db();
+    let req = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            name_prefix: Some("A".to_string()),
+            ..Default::default()
+        },
+        limit: 10,
+        cursor: None,
+        allow_full_scan: false,
+    };
+    let err = query_genes(&conn, &req, &limits(), b"s").expect_err("reject short prefix");
+    assert_eq!(err.code, QueryErrorCode::Validation);
+    assert!(err.message.contains("name_prefix length must be >="));
+}
+
+#[test]
+fn empty_result_pagination_returns_none_cursor() {
+    let conn = setup_db();
+    let req = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            gene_id: Some("missing-gene".to_string()),
+            ..Default::default()
+        },
+        limit: 10,
+        cursor: None,
+        allow_full_scan: false,
+    };
+    let resp = query_genes(&conn, &req, &limits(), b"s").expect("query");
+    assert!(resp.rows.is_empty());
+    assert!(resp.next_cursor.is_none());
+}
+
+#[test]
+fn no_table_scan_assertion_for_indexed_query_plan() {
+    let conn = setup_db();
+    let req = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            biotype: Some("protein_coding".to_string()),
+            ..Default::default()
+        },
+        limit: 10,
+        cursor: None,
+        allow_full_scan: false,
+    };
+    let plan = explain_query_plan(&conn, &req, &limits(), b"s")
+        .expect("plan")
+        .join("\n")
+        .to_ascii_lowercase();
+    assert!(
+        !plan.contains("scan gene_summary"),
+        "unexpected table scan: {plan}"
+    );
+}
+
+#[test]
+fn region_overlap_edge_cases_are_correct() {
+    let conn = setup_db();
+    let mk = |start: u64, end: u64| GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            region: Some(RegionFilter {
+                seqid: "chr1".to_string(),
+                start,
+                end,
+            }),
+            ..Default::default()
+        },
+        limit: 50,
+        cursor: None,
+        allow_full_scan: false,
+    };
+    let point = query_genes(&conn, &mk(10, 10), &limits(), b"s").expect("point");
+    assert!(point.rows.iter().any(|r| r.gene_id == "gene1"));
+    let outside = query_genes(&conn, &mk(5000, 6000), &limits(), b"s").expect("outside");
+    assert!(outside.rows.is_empty());
+    let overlap = query_genes(&conn, &mk(35, 55), &limits(), b"s").expect("overlap");
+    let ids = overlap
+        .rows
+        .iter()
+        .map(|r| r.gene_id.as_str())
+        .collect::<Vec<_>>();
+    assert!(ids.contains(&"gene1"));
+    assert!(ids.contains(&"gene2"));
+    let exact = query_genes(&conn, &mk(50, 90), &limits(), b"s").expect("exact");
+    assert!(exact.rows.iter().any(|r| r.gene_id == "gene2"));
+}
+
+#[test]
+fn json_serialization_ordering_is_stable() {
+    let conn = setup_db();
+    let req = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            biotype: Some("lncRNA".to_string()),
+            ..Default::default()
+        },
+        limit: 10,
+        cursor: None,
+        allow_full_scan: false,
+    };
+    let resp = query_genes(&conn, &req, &limits(), b"s").expect("query");
+    let a = bijux_atlas_core::canonical::stable_json_bytes(&resp).expect("a");
+    let b = bijux_atlas_core::canonical::stable_json_bytes(&resp).expect("b");
+    assert_eq!(a, b);
 }
 
 #[test]

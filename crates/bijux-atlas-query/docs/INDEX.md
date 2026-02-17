@@ -11,5 +11,7 @@ Docs:
 - [Effects policy](EFFECTS.md)
 - [Pagination contract](PAGINATION.md)
 - [Performance contract](PERF.md)
+- [Ordering rules](ORDERING.md)
+- [Cost estimator calibration](COST_ESTIMATOR.md)
 - [Adding filters safely](ADDING_FILTERS.md)
 - [Transcript ordering](TRANSCRIPT_ORDERING.md)
