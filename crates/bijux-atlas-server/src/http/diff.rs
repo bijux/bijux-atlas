@@ -1,8 +1,8 @@
 #![deny(clippy::redundant_clone)]
 
 use crate::http::handlers::{
-    api_error_response, error_json, if_none_match, normalize_query, put_cache_headers,
-    with_request_id,
+    api_error_response, error_json, if_none_match, maybe_compress_response, normalize_query,
+    put_cache_headers, serialize_payload_with_capacity, with_request_id,
 };
 use crate::*;
 use bijux_atlas_model::{DiffPage, DiffRecord, DiffScope, DiffStatus, ReleaseGeneIndexEntry};
@@ -203,7 +203,39 @@ async fn diff_common(
         .and_then(|x| x.parse::<usize>().ok())
         .unwrap_or(100)
         .min(state.limits.max_limit as usize);
+    let class = QueryClass::Heavy;
+    let overloaded = crate::middleware::shedding::overloaded(&state).await;
+    if crate::middleware::shedding::should_shed_noncheap(&state, class).await
+        || (state.api.shed_load_enabled && overloaded)
+    {
+        let resp = api_error_response(
+            StatusCode::SERVICE_UNAVAILABLE,
+            error_json(
+                ApiErrorCode::QueryRejectedByPolicy,
+                "server is shedding non-cheap query load",
+                json!({"class":"Heavy"}),
+            ),
+        );
+        return with_request_id(resp, &request_id);
+    }
+    let _class_permit = match state.class_heavy.clone().try_acquire_owned() {
+        Ok(v) => v,
+        Err(_) => {
+            let resp = api_error_response(
+                StatusCode::TOO_MANY_REQUESTS,
+                error_json(
+                    ApiErrorCode::QueryRejectedByPolicy,
+                    "heavy query concurrency limit exceeded",
+                    json!({"class":"Heavy"}),
+                ),
+            );
+            return with_request_id(resp, &request_id);
+        }
+    };
+
     let query_hash = sha256_hex(normalize_query(&params).as_bytes());
+    let coalesce_key = format!("{route}:{scope:?}:{query_hash}");
+    let _coalesce_guard = state.coalescer.acquire(&coalesce_key).await;
     let cursor_gene = if let Some(token) = params.get("cursor") {
         match decode_cursor(token, b"atlas-diff-cursor", &query_hash, OrderMode::GeneId) {
             Ok(c) => Some(c.last_gene_id),
@@ -415,8 +447,46 @@ async fn diff_common(
             .await;
         return with_request_id(resp, &request_id);
     }
-    let mut resp = Json(payload).into_response();
-    put_cache_headers(resp.headers_mut(), state.api.immutable_gene_ttl, &etag);
+    let body =
+        match serialize_payload_with_capacity(&payload, false, payload.to_string().len() + 64) {
+            Ok(v) => v,
+            Err(e) => {
+                return with_request_id(
+                    api_error_response(StatusCode::INTERNAL_SERVER_ERROR, e),
+                    &request_id,
+                )
+            }
+        };
+    let (encoded, encoding) = match maybe_compress_response(&headers, &state, body) {
+        Ok(v) => v,
+        Err(e) => {
+            return with_request_id(
+                api_error_response(StatusCode::INTERNAL_SERVER_ERROR, e),
+                &request_id,
+            )
+        }
+    };
+    if encoded.len() > state.api.response_max_bytes {
+        let resp = api_error_response(
+            StatusCode::PAYLOAD_TOO_LARGE,
+            error_json(
+                ApiErrorCode::QueryRejectedByPolicy,
+                "response size exceeds configured limit",
+                json!({"size_bytes": encoded.len(), "max": state.api.response_max_bytes}),
+            ),
+        );
+        return with_request_id(resp, &request_id);
+    }
+    let mut out_headers = HeaderMap::new();
+    put_cache_headers(&mut out_headers, state.api.immutable_gene_ttl, &etag);
+    out_headers.insert(
+        "content-type",
+        HeaderValue::from_static("application/json; charset=utf-8"),
+    );
+    if let Some(enc) = encoding {
+        out_headers.insert("content-encoding", HeaderValue::from_static(enc));
+    }
+    let resp = (StatusCode::OK, out_headers, encoded).into_response();
     state
         .metrics
         .observe_request(route, StatusCode::OK, started.elapsed())

@@ -167,6 +167,24 @@ fn sequence_meta(sequence: &str) -> serde_json::Value {
     })
 }
 
+async fn acquire_class_permit_for_sequence(
+    state: &AppState,
+    class: QueryClass,
+) -> Result<tokio::sync::OwnedSemaphorePermit, ApiError> {
+    let sem = match class {
+        QueryClass::Cheap => state.class_cheap.clone(),
+        QueryClass::Medium => state.class_medium.clone(),
+        QueryClass::Heavy => state.class_heavy.clone(),
+    };
+    sem.try_acquire_owned().map_err(|_| {
+        error_json(
+            ApiErrorCode::QueryRejectedByPolicy,
+            "query class concurrency limit exceeded",
+            json!({"class": format!("{class:?}")}),
+        )
+    })
+}
+
 async fn sequence_common(
     state: AppState,
     headers: HeaderMap,
@@ -223,6 +241,41 @@ async fn sequence_common(
         }
     };
     let requested_bases = end - start + 1;
+    let class = if requested_bases as usize >= state.api.sequence_api_key_required_bases {
+        QueryClass::Heavy
+    } else {
+        QueryClass::Medium
+    };
+    let overloaded = crate::middleware::shedding::overloaded(&state).await;
+    if crate::middleware::shedding::should_shed_noncheap(&state, class).await
+        || (state.api.shed_load_enabled && class == QueryClass::Heavy && overloaded)
+    {
+        let resp = api_error_response(
+            StatusCode::SERVICE_UNAVAILABLE,
+            error_json(
+                ApiErrorCode::QueryRejectedByPolicy,
+                "server is shedding non-cheap query load",
+                json!({"class": format!("{class:?}")}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request(route, StatusCode::SERVICE_UNAVAILABLE, started.elapsed())
+            .await;
+        return with_request_id(resp, &request_id);
+    }
+    let _class_permit = match acquire_class_permit_for_sequence(&state, class).await {
+        Ok(v) => v,
+        Err(e) => {
+            let resp = api_error_response(StatusCode::TOO_MANY_REQUESTS, e);
+            state
+                .metrics
+                .observe_request(route, StatusCode::TOO_MANY_REQUESTS, started.elapsed())
+                .await;
+            return with_request_id(resp, &request_id);
+        }
+    };
+
     if requested_bases as usize > state.api.max_sequence_bases {
         let resp = api_error_response(
             StatusCode::UNPROCESSABLE_ENTITY,
@@ -255,6 +308,14 @@ async fn sequence_common(
             .await;
         return with_request_id(resp, &request_id);
     }
+
+    let coalesce_key = format!(
+        "sequence:{}:{}:{}",
+        dataset.canonical_string(),
+        region_raw,
+        normalize_query(&params)
+    );
+    let _coalesce_guard = state.coalescer.acquire(&coalesce_key).await;
 
     let io_stage = Instant::now();
     let (fasta_path, fai_path) = match state.cache.ensure_sequence_inputs_cached(&dataset).await {
@@ -360,6 +421,21 @@ async fn sequence_common(
     let include_stats = bool_query_flag(&params, "include_stats");
     let serialize_stage = Instant::now();
     if wants_text(&headers) {
+        if sequence.len() > state.api.response_max_bytes {
+            let resp = api_error_response(
+                StatusCode::PAYLOAD_TOO_LARGE,
+                error_json(
+                    ApiErrorCode::QueryRejectedByPolicy,
+                    "response size exceeds configured limit",
+                    json!({"size_bytes": sequence.len(), "max": state.api.response_max_bytes}),
+                ),
+            );
+            state
+                .metrics
+                .observe_request(route, StatusCode::PAYLOAD_TOO_LARGE, started.elapsed())
+                .await;
+            return with_request_id(resp, &request_id);
+        }
         let mut h = HeaderMap::new();
         put_cache_headers(&mut h, state.api.sequence_ttl, &etag);
         h.insert(
@@ -418,6 +494,21 @@ async fn sequence_common(
             return with_request_id(resp, &request_id);
         }
     };
+    if encoded.len() > state.api.response_max_bytes {
+        let resp = api_error_response(
+            StatusCode::PAYLOAD_TOO_LARGE,
+            error_json(
+                ApiErrorCode::QueryRejectedByPolicy,
+                "response size exceeds configured limit",
+                json!({"size_bytes": encoded.len(), "max": state.api.response_max_bytes}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request(route, StatusCode::PAYLOAD_TOO_LARGE, started.elapsed())
+            .await;
+        return with_request_id(resp, &request_id);
+    }
     state
         .metrics
         .observe_stage("serialization", serialize_stage.elapsed())

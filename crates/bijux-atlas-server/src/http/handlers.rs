@@ -799,6 +799,26 @@ pub(crate) async fn gene_transcripts_handler(
         limit,
         cursor: params.get("cursor").cloned(),
     };
+    let class = QueryClass::Heavy;
+    if crate::middleware::shedding::should_shed_noncheap(&state, class).await {
+        let resp = api_error_response(
+            StatusCode::SERVICE_UNAVAILABLE,
+            error_json(
+                ApiErrorCode::QueryRejectedByPolicy,
+                "server is shedding non-cheap query load",
+                json!({"class":"heavy"}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request(
+                "/v1/genes/{gene_id}/transcripts",
+                StatusCode::SERVICE_UNAVAILABLE,
+                started.elapsed(),
+            )
+            .await;
+        return with_request_id(resp, &request_id);
+    }
     let _class_permit = match state.class_heavy.clone().try_acquire_owned() {
         Ok(v) => v,
         Err(_) => {
@@ -907,6 +927,48 @@ pub(crate) async fn transcript_summary_handler(
                 .observe_request(
                     "/v1/transcripts/{tx_id}",
                     StatusCode::BAD_REQUEST,
+                    started.elapsed(),
+                )
+                .await;
+            return with_request_id(resp, &request_id);
+        }
+    };
+    let class = QueryClass::Medium;
+    if crate::middleware::shedding::should_shed_noncheap(&state, class).await {
+        let resp = api_error_response(
+            StatusCode::SERVICE_UNAVAILABLE,
+            error_json(
+                ApiErrorCode::QueryRejectedByPolicy,
+                "server is shedding non-cheap query load",
+                json!({"class":"medium"}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request(
+                "/v1/transcripts/{tx_id}",
+                StatusCode::SERVICE_UNAVAILABLE,
+                started.elapsed(),
+            )
+            .await;
+        return with_request_id(resp, &request_id);
+    }
+    let _class_permit = match state.class_medium.clone().try_acquire_owned() {
+        Ok(v) => v,
+        Err(_) => {
+            let resp = api_error_response(
+                StatusCode::TOO_MANY_REQUESTS,
+                error_json(
+                    ApiErrorCode::QueryRejectedByPolicy,
+                    "transcript summary medium bulkhead saturated",
+                    json!({}),
+                ),
+            );
+            state
+                .metrics
+                .observe_request(
+                    "/v1/transcripts/{tx_id}",
+                    StatusCode::TOO_MANY_REQUESTS,
                     started.elapsed(),
                 )
                 .await;
