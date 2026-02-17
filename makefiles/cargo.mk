@@ -103,7 +103,11 @@ _test:
 		exit 1; \
 	fi
 	@NEXTEST_PROFILE="$(NEXTEST_PROFILE)" NEXTEST_TEST_THREADS="$(NEXTEST_TEST_THREADS)" \
+	NEXTEST_TARGET_DIR="$${CARGO_TARGET_DIR}/nextest" \
 	cargo nextest run --workspace --all-targets --profile "$(NEXTEST_PROFILE)" $(NEXTEST_CONFIG)
+	@if [ -d target/nextest ]; then find target/nextest -type f -delete 2>/dev/null || true; fi
+	@if [ -d target/nextest ]; then find target/nextest -type d -empty -delete 2>/dev/null || true; fi
+	@if [ -d target ]; then find target -type d -empty -delete 2>/dev/null || true; fi
 	@./scripts/layout/check_repo_hygiene.sh
 
 _test-all:
@@ -113,7 +117,11 @@ _test-all:
 		exit 1; \
 	fi
 	@NEXTEST_PROFILE="$(NEXTEST_PROFILE)" NEXTEST_TEST_THREADS="$(NEXTEST_TEST_THREADS)" \
+	NEXTEST_TARGET_DIR="$${CARGO_TARGET_DIR}/nextest" \
 	cargo nextest run --workspace --all-targets --profile "$(NEXTEST_PROFILE)" $(NEXTEST_CONFIG) $(RUN_IGNORED)
+	@if [ -d target/nextest ]; then find target/nextest -type f -delete 2>/dev/null || true; fi
+	@if [ -d target/nextest ]; then find target/nextest -type d -empty -delete 2>/dev/null || true; fi
+	@if [ -d target ]; then find target -type d -empty -delete 2>/dev/null || true; fi
 	@./scripts/layout/check_repo_hygiene.sh
 
 coverage:
