@@ -1,0 +1,33 @@
+name: docs-only
+
+on:
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - 'scripts/docs/**'
+      - 'makefiles/docs.mk'
+      - 'docs/contracts/**/*.json'
+      - 'openapi/v1/openapi.snapshot.json'
+
+permissions:
+  contents: read
+
+jobs:
+  docs-hardening:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/docs-only
+      CARGO_TARGET_DIR: artifacts/isolates/docs-only/target
+      CARGO_HOME: artifacts/isolates/docs-only/cargo-home
+      TMPDIR: artifacts/isolates/docs-only/tmp
+      TMP: artifacts/isolates/docs-only/tmp
+      TEMP: artifacts/isolates/docs-only/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
+      - run: make docs-hardening
+      - uses: actions/upload-artifact@v4
+        with:
+          name: docs-site-pr
+          path: artifacts/docs/site
