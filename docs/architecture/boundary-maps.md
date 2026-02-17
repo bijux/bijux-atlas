@@ -1,5 +1,7 @@
 # Effects Boundary Maps
 
+- Owner: `bijux-atlas-server`
+
 This document defines directory-level effect boundaries beyond crate-level boundaries.
 
 ## bijux-atlas-server

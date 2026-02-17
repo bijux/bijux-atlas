@@ -48,6 +48,7 @@ nav:
       - User Stories: product/USER_STORIES.md
       - Non Goals: product/NON_GOALS.md
       - Compatibility Promise: product/COMPATIBILITY_PROMISE.md
+      - Immutability and Aliases: product/immutability-and-aliases.md
       - Reference Grade Checklist: product/REFERENCE_GRADE_ACCEPTANCE_CHECKLIST.md
       - SLO Targets: product/SLO_TARGETS.md
       - Diffs v1: product/diffs-v1.md
@@ -61,13 +62,9 @@ nav:
           - Query Benchmarks: reference/performance/query-benchmarks.md
           - Redis Evaluation: reference/performance/redis.md
       - Registry:
-          - Umbrella/Atlas Matrix: reference/registry/umbrella-atlas-matrix.md
-          - bijux-dna Compatibility: reference/registry/bijux-dna-atlas.md
           - Config Schema Versioning: reference/registry/config-schema-versioning.md
       - Store:
           - Dataset Lifecycle: reference/store/dataset-lifecycle.md
-          - Immutability Guarantee: reference/store/immutability-guarantee.md
-          - Latest Alias Policy: reference/store/latest-release-alias-policy.md
           - No Implicit Default Dataset: reference/store/no-implicit-default-dataset.md
       - Evolution:
           - API Versioning: reference/evolution/API_VERSIONING.md
@@ -84,6 +81,7 @@ nav:
           - Conformance Checklist: contracts/plugin/conformance-checklist.md
           - Mode: contracts/plugin/mode.md
           - Umbrella Contract: contracts/plugin/umbrella-plugin-contract-v1.md
+      - Compatibility: contracts/compatibility.md
       - Generated:
           - Error Codes: _generated/contracts/ERROR_CODES.md
           - Endpoints: _generated/contracts/ENDPOINTS.md
@@ -100,7 +98,16 @@ nav:
       - Cached-Only SLO: operations/cached-only-slo.md
       - Load:
           - k6: operations/load/k6.md
+      - Kubernetes:
+          - Index: operations/k8s/INDEX.md
+          - Packaging and Ops: operations/k8s/packaging-and-ops.md
+          - Values Schema: operations/k8s/values-schema.md
+          - Plugin Mode Entrypoint: operations/k8s/plugin-mode-entrypoint.md
+          - Canary Progressive Delivery: operations/k8s/canary-progressive-delivery.md
+          - Dataset Locality and Shard Scaling: operations/k8s/dataset-locality-and-shard-scaling.md
+          - Node Local Shared Cache Profile: operations/k8s/node-local-shared-cache-profile.md
       - Runbooks:
+          - Index: operations/runbooks/INDEX.md
           - Incident: operations/runbooks/INCIDENT_PLAYBOOK.md
           - Store Outage: operations/runbooks/STORE_OUTAGE.md
           - Dataset Corruption: operations/runbooks/DATASET_CORRUPTION.md
@@ -124,9 +131,9 @@ nav:
   - Architecture:
       - Crate Boundary Graph: architecture/crate-boundary-dependency-graph.md
       - Crate Layout Contract: architecture/crate-layout-contract.md
-      - Boundaries: architecture/boundaries/boundaries.md
-      - Effects and Boundaries: architecture/boundaries/effects-and-boundaries.md
-      - Effect Boundary Maps: architecture/boundaries/effects-boundary-maps.md
+      - Boundaries: architecture/boundaries.md
+      - Effects: architecture/effects.md
+      - Boundary Maps: architecture/boundary-maps.md
   - ADRs:
       - ADR Index: adrs/INDEX.md
       - ADR 0001: adrs/ADR-0001-workspace-boundaries-and-effects.md

@@ -1,5 +1,7 @@
 # Effects And Boundaries
 
+- Owner: `bijux-atlas-server`
+
 Effect policy for Phase 1:
 
 - Pure domain and transformation crates: `core`, `model`, `ingest`, `query`.

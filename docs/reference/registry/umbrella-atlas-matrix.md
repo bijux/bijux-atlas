@@ -1,11 +1,5 @@
-# Compatibility Matrix: bijux Umbrella <-> bijux-atlas
+# Umbrella Atlas Matrix
 
-| bijux umbrella | bijux-atlas plugin | status | notes |
-|---|---|---|---|
-| `0.x` | `0.1.0` | supported | plugin advertises `compatible_umbrella: >=0.1.0,<0.2.0` |
-| future major | `0.1.0` | unsupported | plugin handshake must fail compatibility check |
+- Owner: `bijux-atlas-cli`
 
-## Validation Rule
-
-The umbrella validates plugin metadata range against umbrella semver before dispatch.
-If incompatible, the umbrella returns a structured machine error and does not execute plugin commands.
+Canonical page: [`docs/contracts/compatibility.md`](../../contracts/compatibility.md)

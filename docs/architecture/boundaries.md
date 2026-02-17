@@ -1,5 +1,7 @@
 # Bijux Atlas Crate Boundaries
 
+- Owner: `bijux-atlas-core`
+
 Allowed crate dependency directions:
 
 - `bijux-atlas-core`: no internal dependencies.
