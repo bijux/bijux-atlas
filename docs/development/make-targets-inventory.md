@@ -36,8 +36,16 @@ Generated from `make help`. Do not edit manually.
 
 ## Ops
 
+- `ops-stack-up`
 - `ops-up`
+- `ops-stack-down`
 - `ops-down`
+- `ops-stack-validate`
+- `ops-stack-smoke`
+- `ops-stack-health-report`
+- `ops-stack-version`
+- `ops-stack-uninstall`
+- `ops-stack-slow-store`
 - `ops-reset`
 - `ops-clean`
 - `ops-env-print`
@@ -60,6 +68,9 @@ Generated from `make help`. Do not edit manually.
 - `ops-load-smoke`
 - `ops-load-full`
 - `ops-drill-store-outage`
+- `ops-drill-minio-outage`
+- `ops-drill-prom-outage`
+- `ops-drill-otel-outage`
 - `ops-drill-toxiproxy-latency`
 - `ops-drill-overload`
 - `ops-drill-memory-growth`
@@ -77,6 +88,7 @@ Generated from `make help`. Do not edit manually.
 - `ops-k6-version-check`
 - `ops-helm-version-check`
 - `ops-kubectl-version-check`
+- `ops-kubeconform-version-check`
 - `ops-tool-check`
 - `ops-tools-check`
 - `ops-values-validate`

@@ -53,7 +53,15 @@ Stable targets:
 - `e2e-perf`
 - `e2e-realdata`
 - `ops-up`
+- `ops-stack-up`
 - `ops-down`
+- `ops-stack-down`
+- `ops-stack-validate`
+- `ops-stack-smoke`
+- `ops-stack-health-report`
+- `ops-stack-version`
+- `ops-stack-uninstall`
+- `ops-stack-slow-store`
 - `ops-reset`
 - `ops-env-print`
 - `ops-cluster-sanity`
@@ -75,6 +83,9 @@ Stable targets:
 - `ops-load-smoke`
 - `ops-load-full`
 - `ops-drill-store-outage`
+- `ops-drill-minio-outage`
+- `ops-drill-prom-outage`
+- `ops-drill-otel-outage`
 - `ops-drill-toxiproxy-latency`
 - `ops-drill-overload`
 - `ops-drill-memory-growth`
@@ -92,6 +103,7 @@ Stable targets:
 - `ops-k6-version-check`
 - `ops-helm-version-check`
 - `ops-kubectl-version-check`
+- `ops-kubeconform-version-check`
 - `ops-tool-check`
 - `ops-tools-check`
 - `ops-values-validate`

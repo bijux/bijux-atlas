@@ -23,9 +23,15 @@ Does not replace per-component manifests.
 - Cluster definition: `ops/stack/kind/cluster.yaml`
 - Store bootstrap: `ops/stack/minio/bootstrap.sh`
 - Stack components: `ops/stack/{prometheus,otel,redis,toxiproxy}`
+- Stack versions are pinned in `ops/stack/version-manifest.json`.
+- Stack dependencies are documented in `ops/stack/dependencies.md`.
 - Canonical values profiles: `ops/k8s/values/local.yaml`, `ops/k8s/values/offline.yaml`, `ops/k8s/values/perf.yaml`
 - Bring up: `ops-up`
+- Stack-only bring-up: `ops-stack-up`
 - Tear down: `ops-down`
+- Stack-only tear-down: `ops-stack-down`
+- Stack-only smoke: `ops-stack-smoke`
+- Stack validation: `ops-stack-validate`
 - Reset/wipe state: `ops-reset`
 - Deploy/warm/smoke: `ops-deploy`, `ops-warm`, `ops-smoke`
 - Full nightly-style pipeline: `ops-ci`
