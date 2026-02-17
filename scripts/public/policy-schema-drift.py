@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# owner: platform
+# purpose: detect drift between policy config keys and schema.
+# stability: public
+# called-by: make policy-schema-drift
 # Purpose: script interface entrypoint.
 # Inputs: command-line args and repository files/env as documented by caller.
 # Outputs: exit status and deterministic stdout/stderr or generated artifacts.

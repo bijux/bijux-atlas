@@ -1,4 +1,8 @@
 #!/usr/bin/env sh
+# owner: platform
+# purpose: validate CLI command surface against docs snapshots.
+# stability: public
+# called-by: make cli-command-surface
 # Purpose: script interface entrypoint.
 # Inputs: command-line args and repository files/env as documented by caller.
 # Outputs: exit status and deterministic stdout/stderr or generated artifacts.

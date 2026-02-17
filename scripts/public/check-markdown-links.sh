@@ -1,4 +1,8 @@
 #!/usr/bin/env sh
+# owner: docs-governance
+# purpose: lint markdown link integrity across docs and crates docs.
+# stability: public
+# called-by: make docs, make _lint-docs
 # Purpose: script interface entrypoint.
 # Inputs: command-line args and repository files/env as documented by caller.
 # Outputs: exit status and deterministic stdout/stderr or generated artifacts.

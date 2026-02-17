@@ -10,8 +10,6 @@ Generated file. Do not edit manually.
 | `scripts/bin/isolate` | `platform` | `public` | `audit`, `check`, `coverage`, `fmt`, `lint`, `test`, `test-all` |
 | `scripts/bin/require-isolate` | `platform` | `public` | `_audit`, `_check`, `_coverage`, `_fmt`, `_lint-clippy`, `_lint-configs`, `_lint-docs`, `_lint-rustfmt`, `_test`, `_test-all`, `audit`, `check`, `cli-command-surface`, `coverage`, `crate-docs-contract`, `crate-structure`, `fmt`, `lint`, `test`, `test-all` |
 | `scripts/bootstrap/install_tools.sh` | `developer-experience` | `public` | `bootstrap-tools` |
-| `scripts/check-cli-commands.sh` | `platform` | `public` | `cli-command-surface` |
-| `scripts/check-markdown-links.sh` | `platform` | `public` | `_lint-docs`, `docs` |
 | `scripts/contracts/check_all.sh` | `contracts` | `public` | `ssot-check` |
 | `scripts/contracts/check_breaking_contract_change.py` | `contracts` | `internal` | - |
 | `scripts/contracts/check_chart_values_contract.py` | `contracts` | `public` | `ops-values-validate` |
@@ -65,13 +63,16 @@ Generated file. Do not edit manually.
 | `scripts/docs/render_diagrams.sh` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/run_blessed_snippets.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/spellcheck_docs.py` | `docs-governance` | `public` | - |
-| `scripts/effects-lint.sh` | `platform` | `internal` | - |
 | `scripts/fixtures/derive-release-111.sh` | `dataset-ops` | `internal` | - |
 | `scripts/fixtures/fetch-medium.sh` | `dataset-ops` | `public` | `fetch-fixtures`, `ops-publish-medium` |
 | `scripts/fixtures/fetch-real-datasets.sh` | `dataset-ops` | `public` | `fetch-real-datasets` |
 | `scripts/fixtures/run-medium-ingest.sh` | `dataset-ops` | `public` | `run-medium-ingest` |
 | `scripts/fixtures/run-medium-serve.sh` | `dataset-ops` | `public` | `run-medium-serve` |
 | `scripts/generate_scripts_readme.py` | `platform` | `public` | `scripts-index` |
+| `scripts/internal/effects-lint.sh` | `platform` | `internal` | - |
+| `scripts/internal/migrate_paths.sh` | `platform` | `internal` | - |
+| `scripts/internal/naming-intent-lint.sh` | `platform` | `internal` | - |
+| `scripts/internal/openapi-generate.sh` | `platform` | `internal` | - |
 | `scripts/internal/paths.py` | `platform` | `internal` | - |
 | `scripts/internal/repo_root.sh` | `platform` | `internal` | - |
 | `scripts/layout/allowed_root.json` | `repo-surface` | `public` | - |
@@ -101,17 +102,12 @@ Generated file. Do not edit manually.
 | `scripts/layout/replace_paths.sh` | `repo-surface` | `public` | `layout-migrate` |
 | `scripts/layout/root_whitelist.json` | `repo-surface` | `public` | - |
 | `scripts/layout/validate_ops_env.py` | `repo-surface` | `public` | `ops-env-print`, `ops-env-validate` |
-| `scripts/migrate_paths.sh` | `platform` | `internal` | - |
-| `scripts/naming-intent-lint.sh` | `platform` | `internal` | - |
-| `scripts/no-network-unit-tests.sh` | `platform` | `public` | - |
 | `scripts/observability/check_alerts_contract.py` | `operations` | `public` | `ops-alerts-validate`, `ops-metrics-check` |
 | `scripts/observability/check_dashboard_contract.py` | `operations` | `public` | `ops-dashboards-validate`, `ops-metrics-check` |
 | `scripts/observability/check_metrics_contract.py` | `operations` | `public` | `ops-metrics-check`, `ops-observability-validate` |
 | `scripts/observability/check_runtime_metrics.py` | `operations` | `public` | `ops-metrics-check` |
 | `scripts/observability/check_tracing_contract.py` | `operations` | `public` | `ops-observability-validate`, `ops-traces-check` |
 | `scripts/observability/lint_runbooks.py` | `operations` | `public` | `ops-metrics-check` |
-| `scripts/openapi-diff-check.sh` | `platform` | `public` | `openapi-drift`, `ops-openapi-validate` |
-| `scripts/openapi-generate.sh` | `platform` | `internal` | - |
 | `scripts/ops/check_k8s_flakes.py` | `platform` | `public` | `ops-k8s-tests` |
 | `scripts/ops/check_k8s_test_contract.py` | `platform` | `public` | `ops-k8s-tests` |
 | `scripts/perf/check_baseline_update_policy.sh` | `performance-compat` | `internal` | - |
@@ -133,11 +129,15 @@ Generated file. Do not edit manually.
 | `scripts/perf/update_baseline.sh` | `performance-compat` | `internal` | - |
 | `scripts/perf/validate_results.py` | `performance-compat` | `internal` | - |
 | `scripts/perf/validate_suite_manifest.py` | `performance-compat` | `internal` | - |
-| `scripts/policy-lint.sh` | `platform` | `public` | `_lint-configs`, `policy-lint` |
-| `scripts/policy-schema-drift.py` | `platform` | `public` | `policy-schema-drift` |
+| `scripts/public/check-cli-commands.sh` | `platform` | `public` | `cli-command-surface` |
+| `scripts/public/check-markdown-links.sh` | `platform` | `public` | `_lint-docs`, `docs` |
+| `scripts/public/no-network-unit-tests.sh` | `platform` | `public` | - |
+| `scripts/public/openapi-diff-check.sh` | `platform` | `public` | `openapi-drift`, `ops-openapi-validate` |
+| `scripts/public/policy-lint.sh` | `platform` | `public` | `_lint-configs`, `policy-lint` |
+| `scripts/public/policy-schema-drift.py` | `platform` | `public` | `policy-schema-drift` |
+| `scripts/public/query-plan-gate.sh` | `platform` | `public` | `query-plan-gate` |
 | `scripts/public/report_bundle.sh` | `platform` | `public` | `ops-report` |
-| `scripts/query-plan-gate.sh` | `platform` | `public` | `query-plan-gate` |
+| `scripts/public/require-crate-docs.sh` | `platform` | `public` | `crate-structure` |
 | `scripts/release/update-compat-matrix.sh` | `release-engineering` | `public` | `release-update-compat-matrix` |
 | `scripts/release/validate-compat-matrix.sh` | `release-engineering` | `public` | `compat-matrix-validate` |
-| `scripts/require-crate-docs.sh` | `platform` | `public` | `crate-structure` |
 | `scripts/tools/json_helpers.py` | `platform` | `internal` | - |

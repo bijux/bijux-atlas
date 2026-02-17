@@ -1,4 +1,8 @@
 #!/usr/bin/env sh
+# owner: platform
+# purpose: enforce query planner index usage snapshot expectations.
+# stability: public
+# called-by: make query-plan-gate
 # Purpose: script interface entrypoint.
 # Inputs: command-line args and repository files/env as documented by caller.
 # Outputs: exit status and deterministic stdout/stderr or generated artifacts.

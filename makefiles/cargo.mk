@@ -51,14 +51,14 @@ _lint-rustfmt:
 
 _lint-configs:
 	@./scripts/bin/require-isolate >/dev/null
-	@./scripts/policy-lint.sh
+	@./scripts/public/policy-lint.sh
 	@./scripts/layout/check_no_direct_script_runs.sh
 	@./scripts/layout/check_scripts_readme_drift.sh
 	@./scripts/layout/check_repo_hygiene.sh
 
 _lint-docs:
 	@./scripts/bin/require-isolate >/dev/null
-	@./scripts/check-markdown-links.sh
+	@./scripts/public/check-markdown-links.sh
 
 _lint-clippy:
 	@./scripts/bin/require-isolate >/dev/null
@@ -165,7 +165,7 @@ _audit:
 ci: fmt lint audit test coverage
 
 openapi-drift:
-	@./scripts/openapi-diff-check.sh
+	@./scripts/public/openapi-diff-check.sh
 
 compat-matrix-validate:
 	@./scripts/release/validate-compat-matrix.sh
@@ -183,7 +183,7 @@ perf-nightly:
 	@./ops/load/scripts/run_nightly_perf.sh
 
 query-plan-gate:
-	@./scripts/query-plan-gate.sh
+	@./scripts/public/query-plan-gate.sh
 
 cold-start-bench:
 	@./ops/load/scripts/cold_start_benchmark.sh

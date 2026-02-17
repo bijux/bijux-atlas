@@ -1,4 +1,8 @@
 #!/usr/bin/env sh
+# owner: platform
+# purpose: enforce unit tests avoid live network dependencies.
+# stability: public
+# called-by: make policy-lint
 # Purpose: script interface entrypoint.
 # Inputs: command-line args and repository files/env as documented by caller.
 # Outputs: exit status and deterministic stdout/stderr or generated artifacts.

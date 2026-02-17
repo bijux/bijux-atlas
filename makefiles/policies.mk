@@ -72,7 +72,7 @@ culprits-all: culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per
 
 crate-structure:
 	@./scripts/bin/require-isolate >/dev/null
-	@./scripts/require-crate-docs.sh
+	@./scripts/public/require-crate-docs.sh
 	@./scripts/docs/check_crate_docs_contract.sh
 
 crate-docs-contract:
@@ -81,6 +81,6 @@ crate-docs-contract:
 
 cli-command-surface:
 	@./scripts/bin/require-isolate >/dev/null
-	@./scripts/check-cli-commands.sh
+	@./scripts/public/check-cli-commands.sh
 
 .PHONY: culprits-all culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir crate-structure crate-docs-contract cli-command-surface

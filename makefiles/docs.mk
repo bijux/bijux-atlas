@@ -49,7 +49,7 @@ docs: ## Build docs + link-check + spell-check + lint
 	@python3 scripts/docs/lint_depth.py
 	@python3 scripts/docs/extract_code_blocks.py
 	@python3 scripts/docs/run_blessed_snippets.py
-	@./scripts/check-markdown-links.sh
+	@./scripts/public/check-markdown-links.sh
 	@./scripts/docs/check_duplicate_topics.sh
 	@./scripts/docs/check_crate_docs_contract.sh
 	@python3 scripts/docs/check_script_headers.py

@@ -345,7 +345,7 @@ write_reference_contract_doc(
     "Endpoints Contract",
     "\n".join(endpoint_lines)
     + "\n\nOpenAPI reference:\n- `configs/openapi/v1/openapi.yaml`",
-    "```bash\n$ ./scripts/openapi-generate.sh\n```\n\nExpected output: generator succeeds and endpoint drift checks pass.",
+    "```bash\n$ ./scripts/internal/openapi-generate.sh\n```\n\nExpected output: generator succeeds and endpoint drift checks pass.",
 )
 
 config_key_lines = [f"- `{k}`" for k in config_keys]

@@ -60,10 +60,10 @@ ssot-check:
 	@./scripts/contracts/check_all.sh
 
 policy-lint:
-	@./scripts/policy-lint.sh
+	@./scripts/public/policy-lint.sh
 
 policy-schema-drift:
-	@./scripts/policy-schema-drift.py
+	@./scripts/public/policy-schema-drift.py
 
 release-update-compat-matrix:
 	@[ -n "$$TAG" ] || { echo "usage: make release-update-compat-matrix TAG=<tag>"; exit 2; }

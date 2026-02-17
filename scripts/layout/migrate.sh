@@ -6,7 +6,7 @@ set -euo pipefail
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
 
-"$ROOT/scripts/migrate_paths.sh" --apply
+"$ROOT/scripts/internal/migrate_paths.sh" --apply
 
 remove_legacy_root_entry() {
   local path="$1"

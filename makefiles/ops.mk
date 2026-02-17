@@ -396,7 +396,7 @@ ops-release-matrix: ## Generate k8s release install matrix document from CI summ
 	@./ops/k8s/ci/install-matrix.sh
 
 ops-openapi-validate: ## Validate OpenAPI drift and schema/examples consistency
-	@./scripts/openapi-diff-check.sh
+	@./scripts/public/openapi-diff-check.sh
 	@python3 ./scripts/docs/check_openapi_examples.py
 
 ops-dashboards-validate: ## Validate dashboard references against metrics contract

@@ -1,4 +1,8 @@
 #!/usr/bin/env sh
+# owner: platform
+# purpose: run policy lint suite and policy-adjacent script checks.
+# stability: public
+# called-by: make policy-lint, make _lint-configs
 # Purpose: script interface entrypoint.
 # Inputs: command-line args and repository files/env as documented by caller.
 # Outputs: exit status and deterministic stdout/stderr or generated artifacts.
@@ -67,10 +71,10 @@ for section, keys in {
 print("policy config validated")
 PY
 
-./scripts/require-crate-docs.sh
-./scripts/no-network-unit-tests.sh
-./scripts/check-cli-commands.sh
-./scripts/policy-schema-drift.py
+./scripts/public/require-crate-docs.sh
+./scripts/public/no-network-unit-tests.sh
+./scripts/public/check-cli-commands.sh
+./scripts/public/policy-schema-drift.py
 ./scripts/contracts/check_all.sh
-./scripts/effects-lint.sh
-./scripts/naming-intent-lint.sh
+./scripts/internal/effects-lint.sh
+./scripts/internal/naming-intent-lint.sh
