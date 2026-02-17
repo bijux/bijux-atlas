@@ -12,6 +12,12 @@ fn dataset_id_canonical_string_is_stable() {
 }
 
 #[test]
+fn dataset_new_does_not_apply_implicit_normalization() {
+    assert!(DatasetId::new("110", "Homo-sapiens", "GRCh38").is_err());
+    assert!(DatasetId::new("110", "homo_sapiens", "GRCh38").is_ok());
+}
+
+#[test]
 fn release_species_assembly_parsing_is_strict() {
     assert_eq!(normalize_release("110").expect("release"), "110");
     assert!(normalize_species("Homo-sapiens").is_ok());
