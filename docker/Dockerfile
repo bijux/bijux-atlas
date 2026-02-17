@@ -13,17 +13,17 @@ COPY Cargo.toml Cargo.lock rust-toolchain.toml rustfmt.toml clippy.toml deny.tom
 COPY crates ./crates
 
 ENV CARGO_NET_GIT_FETCH_WITH_CLI=true \
-    CARGO_TERM_COLOR=always
+    CARGO_TERM_COLOR=always \
+    CARGO_TARGET_DIR=/workspace/artifacts/target
 
 RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
     --mount=type=cache,target=/usr/local/cargo/git,sharing=locked \
-    --mount=type=cache,target=/workspace/target,sharing=locked \
     cargo build --locked --release -p bijux-atlas-server -p bijux-atlas-cli
 
 FROM gcr.io/distroless/cc-debian12:nonroot AS runtime
 WORKDIR /app
-COPY --from=builder /workspace/target/release/atlas-server /app/atlas-server
-COPY --from=builder /workspace/target/release/bijux-atlas /app/bijux-atlas
+COPY --from=builder /workspace/artifacts/target/release/atlas-server /app/atlas-server
+COPY --from=builder /workspace/artifacts/target/release/bijux-atlas /app/bijux-atlas
 
 ENV RUST_LOG=info \
     TZ=UTC
