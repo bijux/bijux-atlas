@@ -33,6 +33,7 @@ Generated from `make help`. Do not edit manually.
 - `policy-schema-drift`
 - `openapi-drift`
 - `ops-values-validate`
+- `ops-chart-render-diff`
 - `ops-openapi-validate`
 - `ops-dashboards-validate`
 - `ops-alerts-validate`
@@ -87,6 +88,7 @@ Generated from `make help`. Do not edit manually.
 - `ops-drill-toxiproxy-latency`
 - `ops-drill-overload`
 - `ops-drill-memory-growth`
+- `ops-drill-rate-limit`
 - `ops-drill-corruption`
 - `ops-drill-pod-churn`
 - `ops-drill-upgrade`
@@ -110,6 +112,7 @@ Generated from `make help`. Do not edit manually.
 - `ops-alerts-validate`
 - `ops-observability-validate`
 - `ops-observability-smoke`
+- `ops-open-grafana`
 - `ops-obs-install`
 - `ops-obs-uninstall`
 - `ops-obs-validate`

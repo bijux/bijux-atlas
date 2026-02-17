@@ -110,6 +110,8 @@ nav:
       - Index: operations/INDEX.md
       - Ops Layout: operations/ops-layout.md
       - Full Stack Local: operations/full-stack-local.md
+      - Local Stack: operations/local-stack.md
+      - Health Endpoint Semantics: operations/health-endpoint-semantics.md
       - Migration Note: operations/migration-note.md
       - Production Readiness: operations/production-readiness-checklist.md
       - No Direct Path Usage: operations/no-direct-path-usage.md
