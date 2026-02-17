@@ -4,6 +4,9 @@ use std::fs;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 
+const MAX_GFF3_LINE_BYTES: usize = 1_000_000;
+const MAX_ATTR_TOKENS: usize = 4_096;
+
 #[derive(Debug, Clone)]
 pub struct Gff3Record {
     pub seqid: String,
@@ -23,6 +26,11 @@ pub fn parse_gff3_records(path: &Path) -> Result<Vec<Gff3Record>, IngestError> {
         let line = line.map_err(|e| IngestError(e.to_string()))?;
         if line.is_empty() || line.starts_with('#') {
             continue;
+        }
+        if line.len() > MAX_GFF3_LINE_BYTES {
+            return Err(IngestError(format!(
+                "gff3 line exceeds max byte length {MAX_GFF3_LINE_BYTES}"
+            )));
         }
 
         let cols: Vec<&str> = line.split('\t').collect();
@@ -44,7 +52,7 @@ pub fn parse_gff3_records(path: &Path) -> Result<Vec<Gff3Record>, IngestError> {
             )));
         }
 
-        let (attrs, duplicate_attr_keys) = parse_attributes(cols[8]);
+        let (attrs, duplicate_attr_keys) = parse_attributes(cols[8])?;
         out.push(Gff3Record {
             seqid: cols[0].trim().to_string(),
             feature_type: cols[2].trim().to_string(),
@@ -83,13 +91,22 @@ fn percent_decode(input: &str) -> String {
     String::from_utf8_lossy(&out).to_string()
 }
 
-fn parse_attributes(raw: &str) -> (BTreeMap<String, String>, BTreeSet<String>) {
+fn parse_attributes(
+    raw: &str,
+) -> Result<(BTreeMap<String, String>, BTreeSet<String>), IngestError> {
     let mut out = BTreeMap::new();
     let mut dups = BTreeSet::new();
+    let mut token_count = 0usize;
     for token in raw.split(';') {
         let t = token.trim();
         if t.is_empty() {
             continue;
+        }
+        token_count += 1;
+        if token_count > MAX_ATTR_TOKENS {
+            return Err(IngestError(format!(
+                "gff3 attribute token count exceeds max {MAX_ATTR_TOKENS}"
+            )));
         }
         if let Some((k, v)) = t.split_once('=') {
             let key = k.trim().to_string();
@@ -100,7 +117,7 @@ fn parse_attributes(raw: &str) -> (BTreeMap<String, String>, BTreeSet<String>) {
             out.insert(key, value);
         }
     }
-    (out, dups)
+    Ok((out, dups))
 }
 
 #[cfg(test)]
@@ -166,5 +183,19 @@ mod tests {
         fs::write(&gff, buf).expect("write large gff3");
         let rows = parse_gff3_records(&gff).expect("parse large gff3");
         assert_eq!(rows.len(), 25_000);
+    }
+
+    #[test]
+    fn parser_rejects_attribute_token_explosion() {
+        let tmp = tempdir().expect("tempdir");
+        let gff = tmp.path().join("x.gff3");
+        let attrs = (0..(super::MAX_ATTR_TOKENS + 1))
+            .map(|i| format!("k{i}=v{i}"))
+            .collect::<Vec<_>>()
+            .join(";");
+        let row = format!("chr1\tsrc\tgene\t1\t10\t.\t+\t.\t{attrs}\n");
+        fs::write(&gff, row).expect("write gff3");
+        let err = parse_gff3_records(&gff).expect_err("token explosion must fail");
+        assert!(err.0.contains("attribute token count exceeds"));
     }
 }
