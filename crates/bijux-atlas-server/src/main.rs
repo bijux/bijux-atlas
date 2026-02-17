@@ -1,8 +1,8 @@
 #![forbid(unsafe_code)]
 
 use bijux_atlas_server::{
-    build_router, ApiConfig, AppState, DatasetCacheConfig, DatasetCacheManager, LocalFsBackend,
-    RetryPolicy, S3LikeBackend,
+    build_router, ApiConfig, AppState, DatasetCacheConfig, DatasetCacheManager, FederatedBackend,
+    LocalFsBackend, RegistrySource, RetryPolicy, S3LikeBackend,
 };
 use opentelemetry::trace::TracerProvider as _;
 use std::collections::HashSet;
@@ -68,6 +68,90 @@ fn env_dataset_list(name: &str) -> Vec<bijux_atlas_model::DatasetId> {
             }
         })
         .collect()
+}
+
+fn env_map(name: &str) -> std::collections::HashMap<String, String> {
+    env::var(name)
+        .unwrap_or_default()
+        .split(',')
+        .filter_map(|item| {
+            let (k, v) = item.split_once('=')?;
+            let key = k.trim();
+            let value = v.trim();
+            if key.is_empty() || value.is_empty() {
+                return None;
+            }
+            Some((key.to_string(), value.to_string()))
+        })
+        .collect()
+}
+
+fn parse_registry_sources(retry: RetryPolicy) -> Result<Option<Vec<RegistrySource>>, String> {
+    let raw = env::var("ATLAS_REGISTRY_SOURCES").unwrap_or_default();
+    if raw.trim().is_empty() {
+        return Ok(None);
+    }
+    let signatures = env_map("ATLAS_REGISTRY_SIGNATURES");
+    let ttl = env_duration_ms("ATLAS_REGISTRY_TTL_MS", 15_000);
+    let mut sources = Vec::new();
+    for part in raw.split(',') {
+        let piece = part.trim();
+        if piece.is_empty() {
+            continue;
+        }
+        let (name, spec) = piece
+            .split_once('=')
+            .ok_or_else(|| format!("invalid ATLAS_REGISTRY_SOURCES entry: {piece}"))?;
+        let name = name.trim();
+        let spec = spec.trim();
+        let backend: Arc<dyn bijux_atlas_server::DatasetStoreBackend> = if let Some(path) =
+            spec.strip_prefix("local:")
+        {
+            Arc::new(LocalFsBackend::new(PathBuf::from(path)))
+        } else if let Some(url) = spec.strip_prefix("s3:") {
+            Arc::new(S3LikeBackend::new(
+                url.to_string(),
+                env::var("ATLAS_STORE_S3_PRESIGNED_BASE_URL").ok(),
+                env::var("ATLAS_STORE_S3_BEARER").ok(),
+                retry.clone(),
+            ))
+        } else if let Some(url) = spec.strip_prefix("http:") {
+            Arc::new(S3LikeBackend::new(
+                url.to_string(),
+                None,
+                env::var("ATLAS_STORE_HTTP_BEARER").ok(),
+                retry.clone(),
+            ))
+        } else {
+            return Err(format!(
+                    "unsupported registry source scheme in {piece}; use local:/path, s3:https://..., or http:https://..."
+                ));
+        };
+        sources.push(RegistrySource::new(
+            name,
+            backend,
+            ttl,
+            signatures.get(name).cloned(),
+        ));
+    }
+
+    let priority = env::var("ATLAS_REGISTRY_PRIORITY").unwrap_or_default();
+    if !priority.trim().is_empty() {
+        let mut by_name: std::collections::HashMap<String, RegistrySource> =
+            sources.into_iter().map(|s| (s.name.clone(), s)).collect();
+        let mut ordered = Vec::new();
+        for name in priority.split(',').map(str::trim).filter(|x| !x.is_empty()) {
+            if let Some(src) = by_name.remove(name) {
+                ordered.push(src);
+            }
+        }
+        let mut rest: Vec<RegistrySource> = by_name.into_values().collect();
+        rest.sort_by(|a, b| a.name.cmp(&b.name));
+        ordered.extend(rest);
+        sources = ordered;
+    }
+
+    Ok(Some(sources))
 }
 
 fn pod_jitter_ms(max_ms: u64) -> u64 {
@@ -190,6 +274,8 @@ async fn main() -> Result<(), String> {
         catalog_breaker_open_ms: env_u64("ATLAS_CATALOG_BREAKER_OPEN_MS", 5000),
         quarantine_after_corruption_failures: env_u64("ATLAS_QUARANTINE_CORRUPTION_FAILURES", 3)
             as u32,
+        registry_ttl: env_duration_ms("ATLAS_REGISTRY_TTL_MS", 15_000),
+        registry_freeze_mode: env_bool("ATLAS_REGISTRY_FREEZE_MODE", false),
         ..DatasetCacheConfig::default()
     };
     let api_cfg = ApiConfig {
@@ -246,18 +332,21 @@ async fn main() -> Result<(), String> {
     };
 
     let startup_warmup_jitter_max_ms = cache_cfg.startup_warmup_jitter_max_ms;
+    let retry = RetryPolicy {
+        max_attempts: env_usize("ATLAS_STORE_RETRY_ATTEMPTS", 4),
+        base_backoff_ms: env_u64("ATLAS_STORE_RETRY_BASE_MS", 120),
+    };
     let backend: Arc<dyn bijux_atlas_server::DatasetStoreBackend> =
-        if env_bool("ATLAS_STORE_S3_ENABLED", false) {
+        if let Some(registries) = parse_registry_sources(retry.clone())? {
+            Arc::new(FederatedBackend::new(registries))
+        } else if env_bool("ATLAS_STORE_S3_ENABLED", false) {
             let base_url = env::var("ATLAS_STORE_S3_BASE_URL")
                 .map_err(|_| "ATLAS_STORE_S3_BASE_URL is required when S3 enabled".to_string())?;
             Arc::new(S3LikeBackend::new(
                 base_url,
                 env::var("ATLAS_STORE_S3_PRESIGNED_BASE_URL").ok(),
                 env::var("ATLAS_STORE_S3_BEARER").ok(),
-                RetryPolicy {
-                    max_attempts: env_usize("ATLAS_STORE_RETRY_ATTEMPTS", 4),
-                    base_backoff_ms: env_u64("ATLAS_STORE_RETRY_BASE_MS", 120),
-                },
+                retry,
             ))
         } else {
             Arc::new(LocalFsBackend::new(store_root))

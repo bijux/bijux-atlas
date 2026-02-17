@@ -48,6 +48,16 @@ impl std::fmt::Display for CacheError {
 }
 impl std::error::Error for CacheError {}
 
+#[derive(Debug, Clone, serde::Serialize)]
+pub struct RegistrySourceHealth {
+    pub name: String,
+    pub priority: u32,
+    pub healthy: bool,
+    pub last_error: Option<String>,
+    pub shadowed_datasets: u64,
+    pub ttl_seconds: u64,
+}
+
 #[derive(Debug, Clone)]
 pub struct DatasetCacheConfig {
     pub disk_root: PathBuf,
@@ -79,6 +89,8 @@ pub struct DatasetCacheConfig {
     pub catalog_breaker_failure_threshold: u32,
     pub catalog_breaker_open_ms: u64,
     pub quarantine_after_corruption_failures: u32,
+    pub registry_ttl: Duration,
+    pub registry_freeze_mode: bool,
 }
 
 impl Default for DatasetCacheConfig {
@@ -113,6 +125,8 @@ impl Default for DatasetCacheConfig {
             catalog_breaker_failure_threshold: 5,
             catalog_breaker_open_ms: 5000,
             quarantine_after_corruption_failures: 3,
+            registry_ttl: Duration::from_secs(15),
+            registry_freeze_mode: false,
         }
     }
 }
@@ -142,6 +156,7 @@ pub struct CacheMetrics {
     pub cheap_queries_served_while_overloaded_total: AtomicU64,
     pub disk_io_latency_ns: Mutex<Vec<u64>>,
     pub fs_space_pressure_events_total: AtomicU64,
+    pub registry_invalidation_events_total: AtomicU64,
 }
 
 #[derive(Default)]
@@ -319,6 +334,7 @@ async fn resilience_middleware(
 
 pub use config::{ApiConfig, RateLimitConfig};
 pub use store::backends::{LocalFsBackend, RetryPolicy, S3LikeBackend};
+pub use store::federated::{FederatedBackend, RegistrySource};
 
 #[async_trait]
 pub trait DatasetStoreBackend: Send + Sync + 'static {
@@ -331,6 +347,17 @@ pub trait DatasetStoreBackend: Send + Sync + 'static {
         &self,
         dataset: &DatasetId,
     ) -> Result<Vec<u8>, CacheError>;
+
+    async fn registry_health(&self) -> Vec<RegistrySourceHealth> {
+        vec![RegistrySourceHealth {
+            name: "primary".to_string(),
+            priority: 0,
+            healthy: true,
+            last_error: None,
+            shadowed_datasets: 0,
+            ttl_seconds: 0,
+        }]
+    }
 }
 
 pub enum CatalogFetch {
@@ -356,6 +383,7 @@ struct CatalogCache {
     consecutive_errors: u32,
     backoff_until: Option<Instant>,
     breaker_open_until: Option<Instant>,
+    refreshed_at: Option<Instant>,
 }
 
 #[derive(Default)]
@@ -400,6 +428,7 @@ pub struct DatasetCacheManager {
     quarantined: Mutex<HashSet<DatasetId>>,
     store_breaker: Mutex<StoreBreakerState>,
     catalog_cache: Mutex<CatalogCache>,
+    registry_health_cache: RwLock<Vec<RegistrySourceHealth>>,
     global_semaphore: Arc<Semaphore>,
     download_semaphore: Arc<Semaphore>,
     shard_open_semaphore: Arc<Semaphore>,
@@ -424,6 +453,7 @@ impl DatasetCacheManager {
             quarantined: Mutex::new(HashSet::new()),
             store_breaker: Mutex::new(StoreBreakerState::default()),
             catalog_cache: Mutex::new(CatalogCache::default()),
+            registry_health_cache: RwLock::new(Vec::new()),
             download_semaphore: Arc::new(Semaphore::new(max_concurrent_downloads)),
             retry_budget_remaining: AtomicU64::new(retry_budget),
             dataset_retry_budget: Mutex::new(HashMap::new()),
@@ -480,9 +510,17 @@ impl DatasetCacheManager {
     }
 
     pub async fn refresh_catalog(&self) -> Result<(), CacheError> {
+        if self.cfg.registry_freeze_mode {
+            return Ok(());
+        }
         let etag = {
             let cache = self.catalog_cache.lock().await;
             let now = Instant::now();
+            if let Some(last) = cache.refreshed_at {
+                if now.duration_since(last) < self.cfg.registry_ttl {
+                    return Ok(());
+                }
+            }
             if let Some(until) = cache.breaker_open_until {
                 if now < until {
                     return Err(CacheError("catalog circuit breaker open".to_string()));
@@ -503,12 +541,18 @@ impl DatasetCacheManager {
                 lock.consecutive_errors = 0;
                 lock.backoff_until = None;
                 lock.breaker_open_until = None;
+                lock.refreshed_at = Some(Instant::now());
+                drop(lock);
+                let health = self.store.registry_health().await;
+                let mut h = self.registry_health_cache.write().await;
+                *h = health;
                 Ok(())
             }
             Ok(CatalogFetch::Updated { etag, catalog }) => {
                 let epoch_hash = sha256_hex(
                     &serde_json::to_vec(&catalog).map_err(|e| CacheError(e.to_string()))?,
                 );
+                let old_epoch = self.metrics.catalog_epoch_hash.read().await.clone();
                 {
                     let mut lock = self.catalog_cache.lock().await;
                     lock.etag = Some(etag);
@@ -516,11 +560,20 @@ impl DatasetCacheManager {
                     lock.consecutive_errors = 0;
                     lock.backoff_until = None;
                     lock.breaker_open_until = None;
+                    lock.refreshed_at = Some(Instant::now());
                 }
                 {
                     let mut e = self.metrics.catalog_epoch_hash.write().await;
                     *e = epoch_hash.clone();
                 }
+                if !old_epoch.is_empty() && old_epoch != epoch_hash {
+                    self.metrics
+                        .registry_invalidation_events_total
+                        .fetch_add(1, Ordering::Relaxed);
+                }
+                let health = self.store.registry_health().await;
+                let mut h = self.registry_health_cache.write().await;
+                *h = health;
                 info!("catalog epoch updated: {epoch_hash}");
                 Ok(())
             }
@@ -553,8 +606,20 @@ impl DatasetCacheManager {
         self.cfg.cached_only_mode
     }
 
+    pub fn registry_freeze_mode(&self) -> bool {
+        self.cfg.registry_freeze_mode
+    }
+
+    pub fn registry_ttl_seconds(&self) -> u64 {
+        self.cfg.registry_ttl.as_secs()
+    }
+
     pub async fn current_catalog(&self) -> Option<Catalog> {
         self.catalog_cache.lock().await.catalog.clone()
+    }
+
+    pub async fn registry_health(&self) -> Vec<RegistrySourceHealth> {
+        self.registry_health_cache.read().await.clone()
     }
 
     pub async fn cached_datasets_debug(&self) -> Vec<(String, u64)> {
@@ -1382,6 +1447,10 @@ pub fn build_router(state: AppState) -> Router {
             "/debug/dataset-health",
             get(http::handlers::dataset_health_handler),
         )
+        .route(
+            "/debug/registry-health",
+            get(http::handlers::registry_health_handler),
+        )
         .layer(from_fn_with_state(state.clone(), resilience_middleware))
         .layer(from_fn(provenance_headers_middleware))
         .layer(DefaultBodyLimit::max(state.api.max_body_bytes))
@@ -1392,6 +1461,8 @@ pub use store::fake::FakeStore;
 
 #[cfg(test)]
 mod cache_manager_tests;
+#[cfg(test)]
+mod registry_tests;
 
 #[cfg(test)]
 mod bulkhead_tests {
