@@ -29,7 +29,7 @@ Required invariants:
 
 - `nextest` is the default test runner (`make test`).
 - `make test-all` runs all tests including ignored tests (no skips).
-- Deterministic scheduling is configured in `.config/nextest.toml`.
+- Deterministic scheduling is configured in `configs/nextest/nextest.toml`.
 
 ## Make Targets
 

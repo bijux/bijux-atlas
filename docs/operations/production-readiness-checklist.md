@@ -5,10 +5,10 @@ This checklist is the final go/no-go gate before a `bijux-atlas` production roll
 Use `docs/product/reference-grade-checklist.md` during PR review before this final gate.
 
 ## SLO and Incident Readiness
-- [ ] SLO targets are documented in `docs/ops/observability/slo.md`.
+- [ ] SLO targets are documented in `docs/operations/observability/slo.md`.
 - [ ] Canonical SLO target file is current (`docs/product/slo-targets.md`).
-- [ ] Error budget policy is approved and active (`docs/ops/observability/error-budget-policy.md`).
-- [ ] Alert rules are deployed (`docs/ops/observability/alert-rules.yaml`).
+- [ ] Error budget policy is approved and active (`docs/operations/observability/error-budget-policy.md`).
+- [ ] Alert rules are deployed (`docs/operations/observability/alert-rules.yaml`).
 - [ ] Runbooks are current:
   - [ ] `docs/runbooks/store-outage.md`
   - [ ] `docs/runbooks/dataset-corruption.md`
@@ -35,6 +35,6 @@ Use `docs/product/reference-grade-checklist.md` during PR review before this fin
 ## Validation Before Promotion
 - [ ] `make dev-test-all` passes.
 - [ ] `make dev-audit` passes with no warnings/errors.
-- [ ] Load scenario passes baseline (`docs/ops/load/k6.md`).
+- [ ] Load scenario passes baseline (`docs/operations/load/k6.md`).
 - [ ] K8s chaos/perf scenarios executed (`docs/runbooks/k8s-perf-chaos.md`).
 - [ ] Cold-start and warm-cache latency are within target.

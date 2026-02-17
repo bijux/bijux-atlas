@@ -49,10 +49,10 @@ ssot-check:
 	@./scripts/contracts/check_all.sh
 
 observability-check:
-	@./scripts/ops/observability/check_metrics_contract.py
-	@./scripts/ops/observability/check_dashboard_contract.py
-	@./scripts/ops/observability/check_alerts_contract.py
-	@./scripts/ops/observability/check_tracing_contract.py
-	@./scripts/ops/observability/lint_runbooks.py
-	@./scripts/ops/observability/check_runtime_metrics.py
+	@./scripts/observability/check_metrics_contract.py
+	@./scripts/observability/check_dashboard_contract.py
+	@./scripts/observability/check_alerts_contract.py
+	@./scripts/observability/check_tracing_contract.py
+	@./scripts/observability/lint_runbooks.py
+	@./scripts/observability/check_runtime_metrics.py
 	@cargo test -p bijux-atlas-server --test observability_contract --test logging_format

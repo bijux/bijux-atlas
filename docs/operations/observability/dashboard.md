@@ -30,8 +30,8 @@ Dashboard drift hides production regressions.
 ## How to verify
 
 ```bash
-$ python3 scripts/ops/observability/check_dashboard_contract.py
-$ python3 scripts/ops/observability/check_metrics_contract.py
+$ python3 scripts/observability/check_dashboard_contract.py
+$ python3 scripts/observability/check_metrics_contract.py
 ```
 
 Expected output: dashboard and metrics contracts pass.
