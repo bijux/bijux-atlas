@@ -23,7 +23,14 @@ Does not freeze internal implementation details.
 - Stable make targets: [`makefiles/surface.md`](makefiles/surface.md)
 - Script interfaces: [`scripts/INDEX.md`](scripts/INDEX.md)
 - SSOT contracts: [`../contracts/INDEX.md`](../contracts/INDEX.md)
-- Policy/config roots: `configs/`, `docs/contracts/*.json`
+- Root layout SSOT:
+  - `ops/` holds `e2e`, `load`, `observability`, and `openapi`.
+  - `configs/` holds policy, rust, docs, and security config sources.
+  - Root config files are compatibility symlinks to `configs/*`.
+  - `.cargo/` remains at root because Cargo workspace config discovery expects it.
+- Single entrypoint policy:
+  - All runnable workflows are exposed through `make`.
+  - Direct script execution is diagnostic-only unless explicitly documented.
 
 ## Failure modes
 
@@ -34,9 +41,10 @@ Surface drift breaks automation and team workflows.
 ```bash
 $ python3 scripts/docs/check_make_targets_documented.py
 $ python3 scripts/docs/check_script_headers.py
+$ ./scripts/layout/check_root_shape.sh
 ```
 
-Expected output: both checks pass.
+Expected output: all checks pass.
 
 ## See also
 

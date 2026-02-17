@@ -26,6 +26,8 @@ Does not duplicate script implementation details.
 - Observability checks: `scripts/observability/`
 - Fixtures/data helpers: `scripts/fixtures/`
 - Release automation: `scripts/release/`
+- Layout checks/migrations: `scripts/layout/`
+- Bootstrap wrappers and runtime helpers: `scripts/bin/`
 
 ## Failure modes
 
