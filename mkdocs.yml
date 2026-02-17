@@ -136,6 +136,7 @@ nav:
           - Reproducible Builds: development/ci/reproducible-build-hints.md
           - Security Audit: development/ci/security-audit-policy.md
       - Makefile Surface: development/makefiles/surface.md
+      - Crates Map: development/crates-map.md
       - Snapshot Test Policy: development/snapshot-test-policy.md
   - Architecture:
       - Crate Boundary Graph: architecture/crate-boundary-dependency-graph.md

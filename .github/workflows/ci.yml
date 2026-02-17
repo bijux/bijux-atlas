@@ -176,6 +176,20 @@ jobs:
       - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
       - run: ./scripts/require-crate-docs.sh
 
+  crate-docs-contract:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/crate-docs-contract
+      CARGO_TARGET_DIR: artifacts/isolates/crate-docs-contract/target
+      CARGO_HOME: artifacts/isolates/crate-docs-contract/cargo-home
+      TMPDIR: artifacts/isolates/crate-docs-contract/tmp
+      TMP: artifacts/isolates/crate-docs-contract/tmp
+      TEMP: artifacts/isolates/crate-docs-contract/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
+      - run: ./scripts/docs/check_crate_docs_contract.sh
+
   cli-command-surface:
     runs-on: ubuntu-latest
     env:
