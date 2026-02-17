@@ -15,6 +15,7 @@ docs: ## Build docs + link-check + spell-check + lint
 	@if [ ! -x "$(DOCS_VENV)/bin/mkdocs" ]; then $(MAKE) _docs-venv; fi
 	@"$(DOCS_VENV)/bin/pip" install -r "$(DOCS_REQ)" >/dev/null
 	@python3 scripts/docs/generate_crates_map.py
+	@python3 scripts/docs/generate_make_targets_inventory.py
 	@python3 scripts/docs/generate_k8s_values_doc.py
 	@python3 scripts/docs/generate_concept_graph.py
 	@python3 scripts/docs/check_concept_registry.py

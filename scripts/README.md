@@ -51,6 +51,7 @@ Generated file. Do not edit manually.
 | `scripts/docs/generate_crates_map.py` | `docs-governance` |
 | `scripts/docs/generate_k8s_install_matrix.py` | `docs-governance` |
 | `scripts/docs/generate_k8s_values_doc.py` | `docs-governance` |
+| `scripts/docs/generate_make_targets_inventory.py` | `docs-governance` |
 | `scripts/docs/lint_depth.py` | `docs-governance` |
 | `scripts/docs/lint_doc_contracts.py` | `docs-governance` |
 | `scripts/docs/lint_doc_status.py` | `docs-governance` |

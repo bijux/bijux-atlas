@@ -60,6 +60,9 @@ Stable targets:
 - `ops-publish`
 - `ops-deploy`
 - `ops-offline`
+- `ops-perf`
+- `ops-multi-registry`
+- `ops-ingress`
 - `ops-warm`
 - `ops-soak`
 - `ops-smoke`
@@ -87,6 +90,7 @@ Stable targets:
 - `ops-k6-version-check`
 - `ops-helm-version-check`
 - `ops-kubectl-version-check`
+- `ops-tool-check`
 - `ops-tools-check`
 - `ops-values-validate`
 - `ops-openapi-validate`
@@ -94,6 +98,8 @@ Stable targets:
 - `ops-alerts-validate`
 - `ops-release-matrix`
 - `ops-ci`
+- `ops-ci-nightly`
+- `ops-clean`
 - `ops-perf-prepare-store`
 - `ops-perf-e2e`
 - `ops-perf-nightly`
@@ -162,4 +168,5 @@ Expected output: make target documentation check passes.
 
 - [Repo Surface](../repo-surface.md)
 - [Scripts Index](../scripts/INDEX.md)
+- [Make Targets Inventory](../make-targets-inventory.md)
 - [Crate Layout Contract](../../architecture/crate-layout-contract.md)
