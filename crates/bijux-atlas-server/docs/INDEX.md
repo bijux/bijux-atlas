@@ -1,18 +1,21 @@
 # Docs Index
 
-- [Architecture](ARCHITECTURE.md)
-- [Effects](EFFECTS.md)
+- [Architecture](architecture.md)
+- [Effects](effects.md)
 - [Runtime](RUNTIME.md)
 - [Telemetry](TELEMETRY.md)
 - [Caching](CACHING.md)
 - [Failure Modes](FAILURE_MODES.md)
 - [Kubernetes Ops](KUBERNETES.md)
-- [Public API](PUBLIC_API.md)
+- [Public API](public-api.md)
 - [Tests](../tests/)
+
+- [How to test](testing.md)
+- [How to extend](#how-to-extend)
 
 ## API stability
 
-Public API is defined only by `docs/PUBLIC_API.md`; all other symbols are internal and may change without notice.
+Public API is defined only by `docs/public-api.md`; all other symbols are internal and may change without notice.
 
 ## Invariants
 
@@ -24,5 +27,5 @@ Failure modes are documented and mapped to stable error handling behavior.
 
 ## How to extend
 
-Additions must preserve crate boundaries, update `docs/PUBLIC_API.md`, and add targeted tests.
+Additions must preserve crate boundaries, update `docs/public-api.md`, and add targeted tests.
 

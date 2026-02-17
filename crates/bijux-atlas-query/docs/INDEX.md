@@ -6,9 +6,9 @@ Query surface invariants:
 - Strict limits and cost guards to prevent unbounded work.
 
 Docs:
-- [Architecture](ARCHITECTURE.md)
-- [Public API](PUBLIC_API.md)
-- [Effects policy](EFFECTS.md)
+- [Architecture](architecture.md)
+- [Public API](public-api.md)
+- [Effects policy](effects.md)
 - [Pagination contract](PAGINATION.md)
 - [Performance contract](PERF.md)
 - [Ordering rules](ORDERING.md)
@@ -16,9 +16,12 @@ Docs:
 - [Adding filters safely](ADDING_FILTERS.md)
 - [Transcript ordering](TRANSCRIPT_ORDERING.md)
 
+- [How to test](testing.md)
+- [How to extend](#how-to-extend)
+
 ## API stability
 
-Public API is defined only by `docs/PUBLIC_API.md`; all other symbols are internal and may change without notice.
+Public API is defined only by `docs/public-api.md`; all other symbols are internal and may change without notice.
 
 ## Invariants
 
@@ -30,5 +33,5 @@ Failure modes are documented and mapped to stable error handling behavior.
 
 ## How to extend
 
-Additions must preserve crate boundaries, update `docs/PUBLIC_API.md`, and add targeted tests.
+Additions must preserve crate boundaries, update `docs/public-api.md`, and add targeted tests.
 

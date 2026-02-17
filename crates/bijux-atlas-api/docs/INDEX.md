@@ -1,21 +1,24 @@
 # Docs Index
 
-- [Architecture](ARCHITECTURE.md)
+- [Architecture](architecture.md)
 - [API Contract](API_CONTRACT.md)
-- [Effects](EFFECTS.md)
+- [Effects](effects.md)
 - [Errors](ERRORS.md)
 - [OpenAPI](OPENAPI.md)
 - [Patterns](PATTERNS.md)
 - [Versioning](VERSIONING.md)
-- [Human vs Machine Contracts](HUMAN_MACHINE.md)
-- [Public API](PUBLIC_API.md)
-- [Public Surface Checklist](PUBLIC_SURFACE_CHECKLIST.md)
+- [Human vs Machine Contracts](wire-compatibility.md)
+- [Public API](public-api.md)
+- [Public Surface Checklist](public-api-checklist.md)
 - [Tests](../tests/)
 - Benches: none
 
+- [How to test](testing.md)
+- [How to extend](#how-to-extend)
+
 ## API stability
 
-Public API is defined only by `docs/PUBLIC_API.md`; all other symbols are internal and may change without notice.
+Public API is defined only by `docs/public-api.md`; all other symbols are internal and may change without notice.
 
 ## Invariants
 
@@ -27,5 +30,5 @@ Failure modes are documented and mapped to stable error handling behavior.
 
 ## How to extend
 
-Additions must preserve crate boundaries, update `docs/PUBLIC_API.md`, and add targeted tests.
+Additions must preserve crate boundaries, update `docs/public-api.md`, and add targeted tests.
 

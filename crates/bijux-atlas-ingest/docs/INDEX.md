@@ -15,17 +15,20 @@ Pipeline stages:
 - Strict warning mode (`--strict`) can fail ingest when QC WARN items are present.
 
 Docs:
-- [Architecture](ARCHITECTURE.md)
-- [Public API](PUBLIC_API.md)
-- [Effects policy](EFFECTS.md)
+- [Architecture](architecture.md)
+- [Public API](public-api.md)
+- [Effects policy](effects.md)
 - [Determinism policy](DETERMINISM.md)
 - [Ingest contract](INGEST_CONTRACT.md)
 - [QC policy](QC.md)
 - [Ensembl ingest workflow](ENSEMBL_LAYOUT.md)
 
+- [How to test](testing.md)
+- [How to extend](#how-to-extend)
+
 ## API stability
 
-Public API is defined only by `docs/PUBLIC_API.md`; all other symbols are internal and may change without notice.
+Public API is defined only by `docs/public-api.md`; all other symbols are internal and may change without notice.
 
 ## Invariants
 
@@ -37,5 +40,5 @@ Failure modes are documented and mapped to stable error handling behavior.
 
 ## How to extend
 
-Additions must preserve crate boundaries, update `docs/PUBLIC_API.md`, and add targeted tests.
+Additions must preserve crate boundaries, update `docs/public-api.md`, and add targeted tests.
 

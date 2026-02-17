@@ -8,21 +8,24 @@ Primary domain objects:
 - Artifact contracts (`ArtifactManifest`, `Catalog`, anomaly report).
 
 Docs:
-- [Architecture](ARCHITECTURE.md)
-- [Public API](PUBLIC_API.md)
+- [Architecture](architecture.md)
+- [Public API](public-api.md)
 - [Schema stability rules](SCHEMA_STABILITY.md)
 - [Schema evolution notes](SCHEMA_EVOLUTION_NOTES.md)
 - [Purity policy](PURITY.md)
-- [Effects policy](EFFECTS.md)
+- [Effects policy](effects.md)
 - [Strict ordering rules](ORDERING_RULES.md)
 - [Migration notes](MIGRATION.md)
 - [Optional fields policy](OPTIONAL_FIELDS.md)
 - [What is NOT in model](NOT_IN_MODEL.md)
 - [Compatibility with bijux-dna](COMPAT_BIJUX_DNA.md)
 
+- [How to test](testing.md)
+- [How to extend](#how-to-extend)
+
 ## API stability
 
-Public API is defined only by `docs/PUBLIC_API.md`; all other symbols are internal and may change without notice.
+Public API is defined only by `docs/public-api.md`; all other symbols are internal and may change without notice.
 
 ## Invariants
 
@@ -34,5 +37,5 @@ Failure modes are documented and mapped to stable error handling behavior.
 
 ## How to extend
 
-Additions must preserve crate boundaries, update `docs/PUBLIC_API.md`, and add targeted tests.
+Additions must preserve crate boundaries, update `docs/public-api.md`, and add targeted tests.
 

@@ -4,17 +4,18 @@
 - Crate purpose and boundaries are defined in [docs/INDEX.md](docs/INDEX.md).
 
 ## Public API
-- [docs/PUBLIC_API.md](docs/PUBLIC_API.md)
+- [docs/public-api.md](docs/public-api.md)
 
 ## Boundaries
 - [Crate Boundaries](../../docs/architecture/boundaries.md)
 
 ## Effects
-- [docs/EFFECTS.md](docs/EFFECTS.md)
+- [docs/effects.md](docs/effects.md)
 - [Global Effects Contract](../../docs/architecture/effects.md)
 
 ## Telemetry
-- [docs/TELEMETRY.md](docs/TELEMETRY.md)\n- [Global Metrics Conventions](../../docs/reference/store/metrics-conventions.md)
+- [docs/TELEMETRY.md](docs/TELEMETRY.md)
+- [Global Metrics Conventions](../../docs/reference/store/metrics-conventions.md)
 
 ## Tests
 - [tests/](tests/)
@@ -24,3 +25,7 @@
 
 ## Docs index
 - [docs/INDEX.md](docs/INDEX.md)
+- [docs/public-api.md](docs/public-api.md)
+- [docs/architecture.md](docs/architecture.md)
+- [docs/effects.md](docs/effects.md)
+- [docs/testing.md](docs/testing.md)
