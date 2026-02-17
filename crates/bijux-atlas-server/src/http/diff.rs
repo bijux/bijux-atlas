@@ -433,7 +433,8 @@ async fn diff_common(
         "from_release": from_release,
         "to_release": to_release
     });
-    let payload = json!({"diff": page, "qc": qc});
+    let provenance = crate::http::handlers::dataset_provenance(&state, &to_dataset).await;
+    let payload = json!({"diff": page, "qc": qc, "provenance": provenance});
     let etag = format!(
         "\"{}\"",
         sha256_hex(&serde_json::to_vec(&payload).unwrap_or_default())

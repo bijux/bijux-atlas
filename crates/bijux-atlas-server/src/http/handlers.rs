@@ -206,6 +206,22 @@ pub(crate) fn with_request_id(mut response: Response, request_id: &str) -> Respo
     response
 }
 
+pub(crate) async fn dataset_provenance(state: &AppState, dataset: &DatasetId) -> Value {
+    let dataset_hash = sha256_hex(dataset.canonical_string().as_bytes());
+    let mut out = json!({
+        "dataset_hash": dataset_hash,
+        "release": dataset.release,
+        "species": dataset.species,
+        "assembly": dataset.assembly
+    });
+    if let Ok(manifest) = state.cache.fetch_manifest_summary(dataset).await {
+        out["manifest_version"] = json!(manifest.manifest_version);
+        out["db_schema_version"] = json!(manifest.db_schema_version);
+        out["dataset_signature_sha256"] = json!(manifest.dataset_signature_sha256);
+    }
+    out
+}
+
 fn is_draining(state: &AppState) -> bool {
     !state.accepting_requests.load(Ordering::Relaxed)
 }
@@ -534,6 +550,7 @@ pub(crate) async fn release_dataset_handler(
 
     let mut payload = json!({
         "dataset": dataset,
+        "provenance": dataset_provenance(&state, &dataset).await,
         "catalog_entry": entry,
         "manifest_summary": {
             "manifest_version": manifest.manifest_version,
@@ -917,8 +934,11 @@ pub(crate) async fn gene_transcripts_handler(
     };
     match bijux_atlas_query::query_transcripts(&conn.conn, &req) {
         Ok(resp) => {
-            let body = Json(json!({"dataset": dataset, "gene_id": gene_id, "response": resp}))
-                .into_response();
+            let provenance = dataset_provenance(&state, &dataset).await;
+            let body = Json(
+                json!({"dataset": dataset, "provenance": provenance, "gene_id": gene_id, "response": resp}),
+            )
+            .into_response();
             state
                 .metrics
                 .observe_request(
@@ -1051,7 +1071,10 @@ pub(crate) async fn transcript_summary_handler(
     };
     match bijux_atlas_query::query_transcript_by_id(&conn.conn, &tx_id) {
         Ok(Some(row)) => {
-            let body = Json(json!({"dataset": dataset, "transcript": row})).into_response();
+            let provenance = dataset_provenance(&state, &dataset).await;
+            let body =
+                Json(json!({"dataset": dataset, "provenance": provenance, "transcript": row}))
+                    .into_response();
             state
                 .metrics
                 .observe_request("/v1/transcripts/{tx_id}", StatusCode::OK, started.elapsed())

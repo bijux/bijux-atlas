@@ -419,6 +419,7 @@ async fn sequence_common(
     }
 
     let include_stats = bool_query_flag(&params, "include_stats");
+    let provenance = crate::http::handlers::dataset_provenance(&state, &dataset).await;
     let serialize_stage = Instant::now();
     if wants_text(&headers) {
         if sequence.len() > state.api.response_max_bytes {
@@ -458,6 +459,7 @@ async fn sequence_common(
     let payload = if include_stats {
         json!({
             "dataset": dataset,
+            "provenance": provenance,
             "region": {"seqid": seqid, "start": start, "end": end},
             "length": sequence.len(),
             "sequence": sequence,
@@ -466,6 +468,7 @@ async fn sequence_common(
     } else {
         json!({
             "dataset": dataset,
+            "provenance": provenance,
             "region": {"seqid": seqid, "start": start, "end": end},
             "length": sequence.len(),
             "sequence": sequence

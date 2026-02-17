@@ -691,8 +691,10 @@ pub(crate) async fn genes_handler(
                 .observe_sqlite_query(&format!("{class:?}").to_lowercase(), query_elapsed)
                 .await;
             state.metrics.observe_stage("query", query_elapsed).await;
+            let provenance = super::handlers::dataset_provenance(&state, &dataset).await;
             let mut payload = json!({
                 "dataset": dataset,
+                "provenance": provenance,
                 "class": format!("{class:?}").to_lowercase(),
                 "response": resp
             });
