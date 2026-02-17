@@ -82,10 +82,13 @@ pub fn build_and_write_manifest_and_reports(
         "dataset": dataset,
         "gene_count": extract.gene_rows.len(),
         "transcript_count": total_transcripts,
+        "transcript_summary_count": extract.transcript_rows.len(),
         "biotype_distribution": extract.biotype_distribution,
         "contig_distribution": extract.contig_distribution,
         "anomalies": {
             "missing_parents": extract.anomaly.missing_parents,
+            "missing_transcript_parents": extract.anomaly.missing_transcript_parents,
+            "multiple_parent_transcripts": extract.anomaly.multiple_parent_transcripts,
             "unknown_contigs": extract.anomaly.unknown_contigs,
             "overlapping_ids": extract.anomaly.overlapping_ids,
             "duplicate_gene_ids": extract.anomaly.duplicate_gene_ids,

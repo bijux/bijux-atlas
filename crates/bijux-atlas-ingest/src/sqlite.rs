@@ -1,4 +1,4 @@
-use crate::extract::GeneRecord;
+use crate::extract::{GeneRecord, TranscriptRecord};
 use crate::IngestError;
 use bijux_atlas_core::{canonical, sha256_hex};
 use bijux_atlas_model::{DatasetId, ShardCatalog, ShardEntry};
@@ -13,7 +13,11 @@ const INGEST_LOCKING_MODE: &str = "EXCLUSIVE";
 const INGEST_PAGE_SIZE: i64 = 4096;
 const INGEST_MMAP_SIZE: i64 = 268_435_456;
 
-pub fn write_sqlite(path: &Path, genes: &[GeneRecord]) -> Result<(), IngestError> {
+pub fn write_sqlite(
+    path: &Path,
+    genes: &[GeneRecord],
+    transcripts: &[TranscriptRecord],
+) -> Result<(), IngestError> {
     if path.exists() {
         fs::remove_file(path).map_err(|e| IngestError(e.to_string()))?;
     }
@@ -37,7 +41,23 @@ pub fn write_sqlite(path: &Path, genes: &[GeneRecord]) -> Result<(), IngestError
           start INTEGER NOT NULL,
           end INTEGER NOT NULL,
           transcript_count INTEGER NOT NULL,
+          exon_count INTEGER NOT NULL DEFAULT 0,
+          total_exon_span INTEGER NOT NULL DEFAULT 0,
+          cds_present INTEGER NOT NULL DEFAULT 0,
           sequence_length INTEGER NOT NULL
+        ) WITHOUT ROWID;
+        CREATE TABLE transcript_summary (
+          id INTEGER PRIMARY KEY,
+          transcript_id TEXT NOT NULL UNIQUE,
+          parent_gene_id TEXT NOT NULL,
+          transcript_type TEXT NOT NULL,
+          biotype TEXT,
+          seqid TEXT NOT NULL,
+          start INTEGER NOT NULL,
+          end INTEGER NOT NULL,
+          exon_count INTEGER NOT NULL DEFAULT 0,
+          total_exon_span INTEGER NOT NULL DEFAULT 0,
+          cds_present INTEGER NOT NULL DEFAULT 0
         ) WITHOUT ROWID;
         CREATE TABLE atlas_meta (
           k TEXT PRIMARY KEY,
@@ -65,8 +85,15 @@ pub fn write_sqlite(path: &Path, genes: &[GeneRecord]) -> Result<(), IngestError
         let mut stmt = tx
             .prepare(
                 "INSERT INTO gene_summary (
-                  id, gene_id, name, name_normalized, biotype, seqid, start, end, transcript_count, sequence_length
-                 ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
+                  id, gene_id, name, name_normalized, biotype, seqid, start, end, transcript_count, exon_count, total_exon_span, cds_present, sequence_length
+                 ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13)",
+            )
+            .map_err(|e| IngestError(e.to_string()))?;
+        let mut tx_stmt = tx
+            .prepare(
+                "INSERT INTO transcript_summary (
+                  id, transcript_id, parent_gene_id, transcript_type, biotype, seqid, start, end, exon_count, total_exon_span, cds_present
+                 ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)",
             )
             .map_err(|e| IngestError(e.to_string()))?;
         let mut rtree_stmt = tx
@@ -85,11 +112,33 @@ pub fn write_sqlite(path: &Path, genes: &[GeneRecord]) -> Result<(), IngestError
                 g.start as i64,
                 g.end as i64,
                 g.transcript_count as i64,
+                g.exon_count as i64,
+                g.total_exon_span as i64,
+                if g.cds_present { 1 } else { 0 },
                 g.sequence_length as i64
             ])
             .map_err(|e| IngestError(e.to_string()))?;
             rtree_stmt
                 .execute(params![rowid, g.start as f64, g.end as f64])
+                .map_err(|e| IngestError(e.to_string()))?;
+        }
+
+        for (idx, txrow) in transcripts.iter().enumerate() {
+            let rowid = (idx + 1) as i64;
+            tx_stmt
+                .execute(params![
+                    rowid,
+                    txrow.transcript_id,
+                    txrow.parent_gene_id,
+                    txrow.transcript_type,
+                    txrow.biotype,
+                    txrow.seqid,
+                    txrow.start as i64,
+                    txrow.end as i64,
+                    txrow.exon_count as i64,
+                    txrow.total_exon_span as i64,
+                    if txrow.cds_present { 1 } else { 0 },
+                ])
                 .map_err(|e| IngestError(e.to_string()))?;
         }
 
@@ -149,6 +198,11 @@ pub fn write_sqlite(path: &Path, genes: &[GeneRecord]) -> Result<(), IngestError
         CREATE INDEX idx_gene_summary_region ON gene_summary(seqid, start, end);
         CREATE INDEX idx_gene_summary_cover_lookup ON gene_summary(gene_id, name, seqid, start, end, biotype, transcript_count, sequence_length);
         CREATE INDEX idx_gene_summary_cover_region ON gene_summary(seqid, start, gene_id, end, name, biotype, transcript_count, sequence_length);
+        CREATE INDEX idx_transcript_summary_transcript_id ON transcript_summary(transcript_id);
+        CREATE INDEX idx_transcript_summary_parent_gene_id ON transcript_summary(parent_gene_id);
+        CREATE INDEX idx_transcript_summary_biotype ON transcript_summary(biotype);
+        CREATE INDEX idx_transcript_summary_type ON transcript_summary(transcript_type);
+        CREATE INDEX idx_transcript_summary_region ON transcript_summary(seqid, start, end);
         ",
     )
     .map_err(|e| IngestError(e.to_string()))?;
@@ -175,6 +229,7 @@ pub fn write_sharded_sqlite_catalog(
     derived_dir: &Path,
     dataset: &DatasetId,
     genes: &[GeneRecord],
+    transcripts: &[TranscriptRecord],
     shard_partitions: usize,
 ) -> Result<(std::path::PathBuf, ShardCatalog), IngestError> {
     let mut buckets: BTreeMap<String, Vec<GeneRecord>> = BTreeMap::new();
@@ -206,13 +261,18 @@ pub fn write_sharded_sqlite_catalog(
         });
         let file_name = format!("gene_summary.{bucket}.sqlite");
         let sqlite_path = derived_dir.join(&file_name);
-        write_sqlite(&sqlite_path, &rows)?;
         let seqids = {
             let mut s: Vec<String> = rows.iter().map(|g| g.seqid.clone()).collect();
             s.sort();
             s.dedup();
             s
         };
+        let tx_rows: Vec<TranscriptRecord> = transcripts
+            .iter()
+            .filter(|tx| seqids.contains(&tx.seqid))
+            .cloned()
+            .collect();
+        write_sqlite(&sqlite_path, &rows, &tx_rows)?;
         shards.push(ShardEntry::new(
             bucket,
             seqids,

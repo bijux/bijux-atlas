@@ -271,6 +271,10 @@ impl Catalog {
 #[non_exhaustive]
 pub struct IngestAnomalyReport {
     pub missing_parents: Vec<String>,
+    #[serde(default)]
+    pub missing_transcript_parents: Vec<String>,
+    #[serde(default)]
+    pub multiple_parent_transcripts: Vec<String>,
     pub unknown_contigs: Vec<String>,
     pub overlapping_ids: Vec<String>,
     pub duplicate_gene_ids: Vec<String>,

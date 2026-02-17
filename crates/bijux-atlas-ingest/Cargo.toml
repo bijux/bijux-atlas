@@ -26,3 +26,8 @@ path = "src/lib.rs"
 name = "ingest_throughput"
 harness = false
 required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "transcript_extraction"
+harness = false
+required-features = ["bench-ingest-throughput"]

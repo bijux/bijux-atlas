@@ -94,6 +94,11 @@ fn validate_sqlite_contract(sqlite_path: &PathBuf) -> Result<(), String> {
         "idx_gene_summary_region",
         "idx_gene_summary_cover_lookup",
         "idx_gene_summary_cover_region",
+        "idx_transcript_summary_transcript_id",
+        "idx_transcript_summary_parent_gene_id",
+        "idx_transcript_summary_biotype",
+        "idx_transcript_summary_type",
+        "idx_transcript_summary_region",
     ];
     for index in required_indexes {
         let exists: i64 = conn
@@ -116,6 +121,16 @@ fn validate_sqlite_contract(sqlite_path: &PathBuf) -> Result<(), String> {
         .map_err(|e| e.to_string())?;
     if has_rtree == 0 {
         return Err("required rtree table missing: gene_summary_rtree".to_string());
+    }
+    let has_transcript_table: i64 = conn
+        .query_row(
+            "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='transcript_summary'",
+            [],
+            |r| r.get(0),
+        )
+        .map_err(|e| e.to_string())?;
+    if has_transcript_table == 0 {
+        return Err("required table missing: transcript_summary".to_string());
     }
     let schema_version: String = conn
         .query_row(

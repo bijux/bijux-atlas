@@ -98,12 +98,17 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
     fs::copy(&opts.fasta_path, &paths.fasta).map_err(|e| IngestError(e.to_string()))?;
     fs::copy(&opts.fai_path, &paths.fai).map_err(|e| IngestError(e.to_string()))?;
 
-    write_sqlite(&paths.sqlite, &extracted.gene_rows)?;
+    write_sqlite(
+        &paths.sqlite,
+        &extracted.gene_rows,
+        &extracted.transcript_rows,
+    )?;
     let (shard_catalog_path, shard_catalog) = if opts.emit_shards {
         let (catalog_path, catalog) = write_sharded_sqlite_catalog(
             &paths.derived_dir,
             &opts.dataset,
             &extracted.gene_rows,
+            &extracted.transcript_rows,
             opts.shard_partitions,
         )?;
         (Some(catalog_path), Some(catalog))
