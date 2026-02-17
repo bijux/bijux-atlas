@@ -1,7 +1,11 @@
-#!/usr/bin/env sh
-set -eu
+#!/usr/bin/env bash
+set -euo pipefail
 
 DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+: "${ATLAS_E2E_NAMESPACE:=atlas-e2e-$(date +%s)}"
+export ATLAS_E2E_NAMESPACE
+
+run() { "$DIR/$1"; }
 
 for t in \
   test_values_contract.sh \
@@ -20,7 +24,12 @@ for t in \
   test_catalog_publish_job.sh \
   test_readiness_semantics.sh \
   test_resource_limits.sh \
+  test_service_monitor.sh \
+  test_logs_json.sh \
+  test_liveness_under_load.sh \
+  test_node_local_cache_profile.sh \
+  test_multi_registry_profile.sh \
   test_offline_profile.sh
-  do
-  "$DIR/$t"
-done
+ do
+  run "$t"
+ done
