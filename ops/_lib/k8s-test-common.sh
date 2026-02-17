@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-source "$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/common.sh"
+# shellcheck source=ops/_lib/common.sh
+source "$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/common.sh"
 
 ROOT="$REPO_ROOT"
 NS="${ATLAS_E2E_NAMESPACE:-atlas-e2e-${USER:-local}}"
@@ -9,7 +10,6 @@ RELEASE="${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
 VALUES="${ATLAS_E2E_VALUES_FILE:-$ROOT/ops/k8s/values/local.yaml}"
 CHART="$ROOT/ops/k8s/charts/bijux-atlas"
 SERVICE_NAME="${ATLAS_E2E_SERVICE_NAME:-$RELEASE-bijux-atlas}"
-BASE_URL="${ATLAS_E2E_BASE_URL:-http://127.0.0.1:18080}"
 
 need() { ops_need_cmd "$1"; }
 
