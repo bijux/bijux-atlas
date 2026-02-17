@@ -25,6 +25,8 @@ List and maintain links to section pages in this directory.
 - [Makefiles Surface](makefiles/surface.md)
 - [Make Targets](make-targets.md)
 - [Scripts Index](scripts/INDEX.md)
+- [Scripts Governance](scripts.md)
+- [Script Naming](script-naming.md)
 - [Repository Layout](repo-layout.md)
 - [Repository Surface](repo-surface.md)
 - [Symlink Index](symlinks.md)

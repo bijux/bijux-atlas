@@ -180,6 +180,8 @@ nav:
       - Repository Layout: development/repo-layout.md
       - Contributing: development/contributing.md
       - Scripts Index: development/scripts/INDEX.md
+      - Scripts Governance: development/scripts.md
+      - Script Naming: development/script-naming.md
       - Repo Surface: development/repo-surface.md
       - Symlink Index: development/symlinks.md
       - Ops Canonical Layout: development/ops-canonical-layout.md

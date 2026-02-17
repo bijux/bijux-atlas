@@ -10,9 +10,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from scripts.tools.path_utils import repo_root as _repo_root
+
 
 def repo_root() -> Path:
-    return Path(__file__).resolve().parents[2]
+    return _repo_root()
 
 
 def artifacts_scripts_dir(script_name: str, run_id: str) -> Path:

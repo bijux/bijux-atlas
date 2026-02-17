@@ -23,6 +23,9 @@ bootstrap-tools:
 scripts-index:
 	@python3 ./scripts/generate_scripts_readme.py
 
+scripts-graph: ## Generate make-target to scripts call graph
+	@python3 ./scripts/docs/generate_scripts_graph.py
+
 docker-build:
 	@docker build -t bijux-atlas:local -f docker/Dockerfile .
 
@@ -69,14 +72,17 @@ release-update-compat-matrix:
 	@[ -n "$$TAG" ] || { echo "usage: make release-update-compat-matrix TAG=<tag>"; exit 2; }
 	@./scripts/release/update-compat-matrix.sh "$$TAG"
 
-.PHONY: help layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-lint scripts-format scripts-test artifacts-index artifacts-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts doctor fetch-real-datasets ssot-check policy-lint policy-schema-drift release-update-compat-matrix
+.PHONY: help layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-graph scripts-lint scripts-format scripts-test scripts-audit scripts-clean artifacts-index artifacts-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts doctor fetch-real-datasets ssot-check policy-lint policy-schema-drift release-update-compat-matrix
 
 
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)
+	@$(MAKE) scripts-audit
 	@python3 ./scripts/docs/check_script_headers.py
 	@python3 ./scripts/layout/check_make_public_scripts.py
+	@python3 ./scripts/layout/check_scripts_buckets.py
 	@python3 ./scripts/layout/check_script_relative_calls.py
 	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
+	@if command -v shellcheck >/dev/null 2>&1; then find scripts/public scripts/internal scripts/dev -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional for local scripts lint)"; fi
 	@if command -v shfmt >/dev/null 2>&1; then shfmt -d scripts ops/load/scripts; else echo "shfmt not installed (optional)"; fi
 	@if command -v ruff >/dev/null 2>&1; then ruff check scripts ops/load/scripts; else echo "ruff not installed (optional)"; fi
 
@@ -88,6 +94,16 @@ scripts-test: ## Run scripts-focused tests
 	@python3 ./scripts/layout/check_make_public_scripts.py
 	@python3 ./ops/load/scripts/validate_suite_manifest.py
 	@python3 ./ops/load/scripts/check_pinned_queries_lock.py
+	@python3 -m unittest scripts.tests.test_paths
+
+scripts-audit: ## Audit script headers, taxonomy buckets, and no-implicit-cwd contract
+	@python3 ./scripts/docs/check_script_headers.py
+	@python3 ./scripts/layout/check_scripts_buckets.py
+	@python3 ./scripts/layout/check_make_public_scripts.py
+	@python3 ./scripts/layout/check_script_relative_calls.py
+
+scripts-clean: ## Remove generated script artifacts
+	@rm -rf artifacts/scripts
 
 
 artifacts-index: ## Generate artifacts index for inspection UIs
