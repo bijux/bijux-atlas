@@ -16,3 +16,41 @@ This page is the single compatibility entrypoint.
 - bijux-dna -> bijux-atlas compatibility: [`docs/reference/registry/bijux-dna-atlas.md`](../reference/registry/bijux-dna-atlas.md)
 
 Compatibility source-of-truth inputs are contract files under `docs/contracts/*.json` and generated outputs under `docs/_generated/contracts/`.
+
+## What
+
+Defines a stable contract surface for this topic.
+
+## Why
+
+Prevents ambiguity and drift across CLI, API, and operations.
+
+## Non-goals
+
+Does not define internal implementation details beyond the contract surface.
+
+## Contracts
+
+Use the rules in this page as the normative contract.
+
+## Failure modes
+
+Invalid contract input is rejected with stable machine-readable errors.
+
+## Examples
+
+```bash
+$ make ssot-check
+```
+
+Expected output: a zero exit code and "contract artifacts generated" for successful checks.
+
+## How to verify
+
+Run `make docs docs-freeze ssot-check` and confirm all commands exit with status 0.
+
+## See also
+
+- [Contracts Overview](README.md)
+- [SSOT Workflow](SSOT_WORKFLOW.md)
+- [Terms Glossary](../_style/TERMS_GLOSSARY.md)

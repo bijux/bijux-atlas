@@ -34,3 +34,45 @@ For server mode, canonical startup is `bijux-atlas atlas serve`, which forwards 
 
 - Docker entrypoint: `/app/bijux-atlas atlas serve`
 - Helm default command (`values.yaml`): `server.command = ["/app/bijux-atlas","atlas","serve"]`
+
+## What
+
+Defines a stable contract surface for this topic.
+
+## Why
+
+Prevents ambiguity and drift across CLI, API, and operations.
+
+## Scope
+
+Applies to atlas contract consumers and producers.
+
+## Non-goals
+
+Does not define internal implementation details beyond the contract surface.
+
+## Contracts
+
+Use the rules in this page as the normative contract.
+
+## Failure modes
+
+Invalid contract input is rejected with stable machine-readable errors.
+
+## Examples
+
+```bash
+$ make ssot-check
+```
+
+Expected output: a zero exit code and "contract artifacts generated" for successful checks.
+
+## How to verify
+
+Run `make docs docs-freeze ssot-check` and confirm all commands exit with status 0.
+
+## See also
+
+- [Contracts Overview](../README.md)
+- [SSOT Workflow](../SSOT_WORKFLOW.md)
+- [Terms Glossary](../../_style/TERMS_GLOSSARY.md)

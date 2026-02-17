@@ -1,5 +1,7 @@
 # Umbrella Plugin Contract v1
 
+- Owner: `docs-governance`
+
 Single source of truth for how `bijux` umbrella interacts with plugins.
 
 This document refines and references `docs/plugin-spec.md`.
@@ -30,7 +32,7 @@ If a conflict exists, this file is authoritative for umbrella/plugin runtime beh
 
 ## Compatibility Enforcement
 
-- Umbrella should validate plugin compatibility before dispatch when possible.
+- Umbrella must validate plugin compatibility before dispatch when possible.
 - Plugin also accepts `--umbrella-version <v>` and rejects incompatible versions.
 
 ## Shared Flags
@@ -51,3 +53,45 @@ Plugins support shared top-level flags:
 
 - Completion output must be deterministic.
 - Command-surface drift is gated by CI using `docs/CLI_COMMAND_LIST.md`.
+
+## What
+
+Defines a stable contract surface for this topic.
+
+## Why
+
+Prevents ambiguity and drift across CLI, API, and operations.
+
+## Scope
+
+Applies to atlas contract consumers and producers.
+
+## Non-goals
+
+Does not define internal implementation details beyond the contract surface.
+
+## Contracts
+
+Use the rules in this page as the normative contract.
+
+## Failure modes
+
+Invalid contract input is rejected with stable machine-readable errors.
+
+## Examples
+
+```bash
+$ make ssot-check
+```
+
+Expected output: a zero exit code and "contract artifacts generated" for successful checks.
+
+## How to verify
+
+Run `make docs docs-freeze ssot-check` and confirm all commands exit with status 0.
+
+## See also
+
+- [Contracts Overview](../README.md)
+- [SSOT Workflow](../SSOT_WORKFLOW.md)
+- [Terms Glossary](../../_style/TERMS_GLOSSARY.md)

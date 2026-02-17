@@ -52,7 +52,7 @@ All Bijux tools share these process exit codes:
 
 ## Standard CLI Flags
 
-All Bijux plugins SHOULD support these global flags:
+All Bijux plugins must support these global flags:
 
 - `--json`: machine-readable output mode.
 - `--quiet`: suppress non-essential output.
@@ -68,9 +68,9 @@ Shared environment variables:
 
 When `--json` is enabled:
 
-- success output should be structured JSON.
-- error output should be structured JSON on stderr where possible.
-- field names should remain stable across patch/minor versions.
+- success output must be structured JSON.
+- error output must be structured JSON on stderr where possible.
+- field names must remain stable across patch/minor versions.
 
 ## Shared Config Path Resolution
 
@@ -89,14 +89,14 @@ All plugins MUST resolve config locations in this order:
 
 ## Completion Contract
 
-- Plugins SHOULD expose shell completion generation via a `completion` subcommand.
+- Plugins must expose shell completion generation via a `completion` subcommand.
 - Canonical form:
 
 ```bash
 bijux-<subsystem> completion <shell>
 ```
 
-- Supported shells SHOULD include at least `bash`, `zsh`, and `fish`.
+- Supported shells must include at least `bash`, `zsh`, and `fish`.
 - Completion output is always script content on stdout and MUST be side-effect free.
 
 ## Help Formatting Standard
@@ -144,4 +144,46 @@ Conformance checklist lives at `docs/plugin-conformance-checklist.md` and MUST p
 ## Compatibility Notes
 
 - Existing alias binaries (legacy names) MAY exist, but canonical plugin identity is the `bijux-*` name.
-- Umbrella integrations should prefer canonical names during discovery and execution.
+- Umbrella integrations must prefer canonical names during discovery and execution.
+
+## What
+
+Defines a stable contract surface for this topic.
+
+## Why
+
+Prevents ambiguity and drift across CLI, API, and operations.
+
+## Scope
+
+Applies to atlas contract consumers and producers.
+
+## Non-goals
+
+Does not define internal implementation details beyond the contract surface.
+
+## Contracts
+
+Use the rules in this page as the normative contract.
+
+## Failure modes
+
+Invalid contract input is rejected with stable machine-readable errors.
+
+## Examples
+
+```bash
+$ make ssot-check
+```
+
+Expected output: a zero exit code and "contract artifacts generated" for successful checks.
+
+## How to verify
+
+Run `make docs docs-freeze ssot-check` and confirm all commands exit with status 0.
+
+## See also
+
+- [Contracts Overview](../README.md)
+- [SSOT Workflow](../SSOT_WORKFLOW.md)
+- [Terms Glossary](../../_style/TERMS_GLOSSARY.md)
