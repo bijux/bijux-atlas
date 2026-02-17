@@ -158,10 +158,10 @@ fetch-fixtures:
 	@./scripts/fixtures/fetch-medium.sh
 
 load-test:
-	@k6 run load/k6/atlas_phase11.js
+	@k6 run ops/load/k6/atlas_phase11.js
 
 load-test-1000qps:
-	@k6 run load/k6/atlas_1000qps.js
+	@k6 run ops/load/k6/atlas_1000qps.js
 
 perf-nightly:
 	@./scripts/perf/run_nightly_perf.sh
@@ -173,7 +173,7 @@ cold-start-bench:
 	@./scripts/perf/cold_start_benchmark.sh
 
 memory-profile-load:
-	@echo "runbook: docs/runbooks/MEMORY_PROFILE_UNDER_LOAD.md"
+	@echo "runbook: docs/runbooks/memory-profile-under-load.md"
 	@echo "outputs: artifacts/benchmarks/memory/"
 
 run-medium-ingest:
