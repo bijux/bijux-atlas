@@ -20,14 +20,14 @@ if ! kind get clusters | grep -qx "$CLUSTER_NAME"; then
 fi
 
 kubectl apply -f "$ROOT/ops/e2e/stack/minio/minio.yaml"
-kubectl apply -f "$ROOT/ops/e2e/stack/prometheus/prometheus.yaml"
+kubectl apply -f "$ROOT/ops/observability/prometheus/prometheus.yaml"
 
 if [ "$ENABLE_REDIS" = "1" ]; then
   kubectl apply -f "$ROOT/ops/e2e/stack/redis/redis.yaml"
 fi
 
 if [ "$ENABLE_OTEL" = "1" ]; then
-  kubectl apply -f "$ROOT/ops/e2e/stack/otel/otel-collector.yaml"
+  kubectl apply -f "$ROOT/ops/observability/otel/otel-collector.yaml"
 fi
 
 "$ROOT/ops/e2e/stack/minio/bootstrap.sh"
