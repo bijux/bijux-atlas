@@ -31,7 +31,7 @@ Undetected regressions across releases or deployments.
 ## How to verify
 
 ```bash
-$ ./ops/e2e/realdata/run_all.sh
+$ ./e2e/realdata/run_all.sh
 ```
 
 Expected output: realdata suite completes and snapshots verify.
@@ -39,6 +39,6 @@ Expected output: realdata suite completes and snapshots verify.
 ## See also
 
 - [E2E Index](INDEX.md)
-- [Load Suites](../ops/load/suites.md)
+- [Load Suites](../load/suites.md)
 - [Dataset Promotion Pipeline](../dataset-promotion-pipeline.md)
 - `ops-ci`

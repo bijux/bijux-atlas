@@ -21,8 +21,8 @@ Does not define product semantics or internal crate APIs.
 ## Contracts
 
 - [Kubernetes](k8s/INDEX.md)
-- [Observability](ops/observability/slo.md)
-- [Load](ops/load/k6.md)
+- [Observability](observability/slo.md)
+- [Load](load/k6.md)
 - [Runbooks](runbooks/INDEX.md)
 - [Security](security/security-posture.md)
 - [Ops Filesystem Layout](../../ops/README.md)

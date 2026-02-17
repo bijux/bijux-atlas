@@ -44,5 +44,5 @@ Expected output: chart schema generation/checks pass and k8s install gates pass.
 
 - [K8s Index](INDEX.md)
 - [Values](values.md)
-- [K8s E2E Tests](../ops/e2e/k8s-tests.md)
+- [K8s E2E Tests](../e2e/k8s-tests.md)
 - `ops-ci`

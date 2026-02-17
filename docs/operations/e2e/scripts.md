@@ -32,8 +32,8 @@ Undocumented script changes break local operator workflows.
 ## How to verify
 
 ```bash
-$ ./ops/e2e/scripts/smoke_queries.sh
-$ ./ops/e2e/scripts/verify_metrics.sh
+$ ./e2e/scripts/smoke_queries.sh
+$ ./e2e/scripts/verify_metrics.sh
 ```
 
 Expected output: canonical smoke and metrics checks pass.

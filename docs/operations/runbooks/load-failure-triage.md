@@ -24,7 +24,7 @@ Runbook for diagnosing load suite failures and regressions.
 $ make ops-load-full
 $ python3 scripts/perf/score_k6.py
 $ python3 scripts/perf/validate_results.py artifacts/perf/results
-$ cat artifacts/ops/e2e/k6/score.md
+$ cat artifacts/e2e/k6/score.md
 ```
 
 Expected output: failing scenario names and violating thresholds.
@@ -44,10 +44,10 @@ Expected output: failing scenario names and violating thresholds.
 
 - Record failing scenario and threshold.
 - Record commit SHA/image digest from `.meta.json` sidecars.
-- Attach report from `artifacts/ops/load/reports/summary.md`.
+- Attach report from `artifacts/load/reports/summary.md`.
 
 ## See also
 
-- [Load Reproducibility](../ops/load/reproducibility.md)
-- [Performance Regression Policy](../ops/observability/perf-regression-policy.md)
+- [Load Reproducibility](../load/reproducibility.md)
+- [Performance Regression Policy](../observability/perf-regression-policy.md)
 - `ops-load-full`

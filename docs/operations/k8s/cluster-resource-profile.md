@@ -32,6 +32,6 @@ Expected output: cluster boots and tests complete without resource-related failu
 
 ## See also
 
-- [E2E Stack](../ops/e2e/stack.md)
+- [E2E Stack](../e2e/stack.md)
 - [K8s Test Contract](k8s-test-contract.md)
 - `ops-k8s-tests`

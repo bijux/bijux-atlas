@@ -42,6 +42,6 @@ Expected output: end-to-end scripts complete successfully.
 ## See also
 
 - [Operations Index](../INDEX.md)
-- [Load Index](../ops/load/INDEX.md)
+- [Load Index](../load/INDEX.md)
 - [Terms Glossary](../../_style/terms-glossary.md)
 - `ops-ci`
