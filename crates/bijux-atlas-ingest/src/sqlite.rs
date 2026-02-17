@@ -266,6 +266,7 @@ pub fn write_sqlite(
     .map_err(|e| IngestError(e.to_string()))?;
 
     tx.commit().map_err(|e| IngestError(e.to_string()))?;
+    assert_region_query_plan_uses_rtree(&conn)?;
     conn.execute_batch("ANALYZE;")
         .map_err(|e| IngestError(e.to_string()))?;
     conn.execute(
@@ -281,6 +282,26 @@ pub fn write_sqlite(
     )
     .map_err(|e| IngestError(e.to_string()))?;
     Ok(())
+}
+
+fn assert_region_query_plan_uses_rtree(conn: &Connection) -> Result<(), IngestError> {
+    let mut stmt = conn
+        .prepare("EXPLAIN QUERY PLAN SELECT g.gene_id FROM gene_summary g JOIN gene_summary_rtree r ON r.gene_rowid = g.id WHERE g.seqid=?1 AND r.start<=?2 AND r.end>=?3 ORDER BY g.seqid,g.start,g.gene_id LIMIT 10")
+        .map_err(|e| IngestError(e.to_string()))?;
+    let rows = stmt
+        .query_map(params!["chr1", 1000_i64, 900_i64], |row| {
+            row.get::<_, String>(3)
+        })
+        .map_err(|e| IngestError(e.to_string()))?
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|e| IngestError(e.to_string()))?;
+    let joined = rows.join("\n").to_ascii_lowercase();
+    if joined.contains("index") || joined.contains("rtree") {
+        return Ok(());
+    }
+    Err(IngestError(format!(
+        "ingest-time EXPLAIN check failed: expected index/rtree usage in plan: {joined}"
+    )))
 }
 
 pub fn write_sharded_sqlite_catalog(
