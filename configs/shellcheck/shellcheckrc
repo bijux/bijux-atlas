@@ -1,0 +1,8 @@
+# Central shellcheck policy for repository shell scripts.
+# legacy portability ignores (documented):
+# - SC3010/SC3014/SC3024/SC3028/SC3030/SC3040/SC3044/SC3054:
+#   accepted for bash-specific features in ops and scripts.
+# - SC1091: sourced files resolved dynamically from repo root.
+external-sources=true
+source-path=SCRIPTDIR
+disable=SC1007,SC1091,SC2016,SC2034,SC2119,SC2154,SC2044,SC2046,SC3010,SC3014,SC3024,SC3028,SC3030,SC3040,SC3044,SC3054
