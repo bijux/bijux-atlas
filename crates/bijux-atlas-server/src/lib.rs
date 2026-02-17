@@ -3,6 +3,7 @@
 mod cache;
 mod config;
 mod dataset_shards;
+mod effect_adapters;
 mod http;
 mod middleware;
 mod routing_hash;

@@ -9,8 +9,6 @@ use crate::*;
 use axum::extract::Path as AxumPath;
 use serde_json::json;
 use std::collections::HashMap;
-use std::fs::File;
-use std::io::{Read, Seek, SeekFrom};
 use tracing::info;
 
 struct QueueGuard {
@@ -85,11 +83,11 @@ fn parse_region(raw: &str) -> Result<(String, u64, u64), ApiError> {
 }
 
 fn parse_fai(path: &std::path::Path) -> Result<HashMap<String, FaiRecord>, ApiError> {
-    let content = std::fs::read_to_string(path).map_err(|e| {
+    let content = crate::http::effects_adapters::read_to_string(path).map_err(|e| {
         error_json(
             ApiErrorCode::Internal,
             "fai read failed",
-            json!({"message": e.to_string()}),
+            json!({"message": e.0}),
         )
     })?;
     let mut out = HashMap::new();
@@ -118,13 +116,6 @@ fn extract_sequence(
     start: u64,
     end: u64,
 ) -> Result<String, ApiError> {
-    let mut file = File::open(fasta_path).map_err(|e| {
-        error_json(
-            ApiErrorCode::Internal,
-            "fasta open failed",
-            json!({"message": e.to_string()}),
-        )
-    })?;
     let mut out = String::with_capacity((end - start + 1) as usize);
     let mut pos = start;
     while pos <= end {
@@ -134,19 +125,16 @@ fn extract_sequence(
         let line_remaining = rec.line_bases - col;
         let want = (end - pos + 1).min(line_remaining);
         let byte_offset = rec.offset + line * rec.line_bytes + col;
-        file.seek(SeekFrom::Start(byte_offset)).map_err(|e| {
-            error_json(
-                ApiErrorCode::Internal,
-                "fasta seek failed",
-                json!({"message": e.to_string()}),
-            )
-        })?;
-        let mut buf = vec![0_u8; want as usize];
-        file.read_exact(&mut buf).map_err(|e| {
+        let buf = crate::http::effects_adapters::read_fasta_window(
+            fasta_path,
+            byte_offset,
+            want as usize,
+        )
+        .map_err(|e| {
             error_json(
                 ApiErrorCode::Internal,
                 "fasta read failed",
-                json!({"message": e.to_string()}),
+                json!({"message": e.0}),
             )
         })?;
         out.push_str(&String::from_utf8_lossy(&buf));
@@ -185,6 +173,7 @@ async fn acquire_class_permit_for_sequence(
         QueryClass::Cheap => state.class_cheap.clone(),
         QueryClass::Medium => state.class_medium.clone(),
         QueryClass::Heavy => state.class_heavy.clone(),
+        _ => state.class_heavy.clone(),
     };
     sem.try_acquire_owned().map_err(|_| {
         error_json(

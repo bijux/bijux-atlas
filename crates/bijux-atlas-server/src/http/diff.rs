@@ -83,11 +83,11 @@ fn overlaps(entry: &ReleaseGeneIndexEntry, region: &RegionFilter) -> bool {
 }
 
 fn load_index(path: &std::path::Path) -> Result<Vec<ReleaseGeneIndexEntry>, ApiError> {
-    let bytes = std::fs::read(path).map_err(|e| {
+    let bytes = crate::http::effects_adapters::read_bytes(path).map_err(|e| {
         error_json(
             ApiErrorCode::Internal,
             "release index read failed",
-            json!({"message": e.to_string()}),
+            json!({"message": e.0}),
         )
     })?;
     let idx: bijux_atlas_model::ReleaseGeneIndex = serde_json::from_slice(&bytes).map_err(|e| {

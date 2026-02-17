@@ -501,7 +501,7 @@ pub(crate) async fn genes_handler(
                 .derived_dir
                 .join("catalog_shards.json");
                 if catalog_path.exists() {
-                    let raw = std::fs::read(&catalog_path).map_err(|e| CacheError(e.to_string()))?;
+                    let raw = crate::http::effects_adapters::read_bytes(&catalog_path)?;
                     if let Ok(catalog) = serde_json::from_slice::<ShardCatalog>(&raw) {
                         let selected_rel = select_shards_for_request(&req, &catalog);
                         let selected_all = shard_candidates.clone().unwrap_or_default();
