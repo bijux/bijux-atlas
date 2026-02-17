@@ -12,3 +12,5 @@ Canonical stack manifests and bootstrap scripts for local and CI operations.
 - `values/`: canonical values profiles used by ops targets
 
 Use `make ops-up` / `make ops-down` and related `ops-*` targets as the interface.
+
+See top-level ops guide: `ops/README.md`.

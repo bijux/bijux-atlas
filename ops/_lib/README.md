@@ -3,7 +3,10 @@
 Canonical shared shell library for ops workflows.
 
 Stable contracts:
-- `common.sh`: retry helpers, timeout wrappers, kubectl wrappers, artifact capture.
+- `common.sh`: retry helpers, timeout wrappers, wrapper imports, artifact capture.
+- `artifacts.sh`: canonical artifact paths under `artifacts/ops/<run-id>/...`.
+- `kubectl.sh`: kubectl wrapper with retry/timeout and failure bundle dumps.
+- `helm.sh`: helm wrapper with retry and failure-debug bundle capture.
 - `k8s-test-common.sh`: helpers for k8s e2e test assertions.
 - `shellcheck.sh`: shell lint wrapper using `configs/shellcheck/shellcheckrc`.
 

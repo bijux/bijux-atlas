@@ -1,11 +1,17 @@
 #!/usr/bin/env bash
-# Purpose: shared ops shell helpers for retries, timeouts, kubectl wrappers, and artifact capture.
+# Purpose: shared ops shell helpers for retries, timeouts, wrappers, and artifact capture.
 # Inputs: sourced by ops scripts.
 # Outputs: utility functions and canonical repo paths.
 set -euo pipefail
 
-OPS_LIB_ROOT="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+OPS_LIB_ROOT="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(CDPATH='' cd -- "${OPS_LIB_ROOT}/.." && pwd)"
+# shellcheck source=ops/_lib/artifacts.sh
+source "${OPS_LIB_ROOT}/artifacts.sh"
+# shellcheck source=ops/_lib/kubectl.sh
+source "${OPS_LIB_ROOT}/kubectl.sh"
+# shellcheck source=ops/_lib/helm.sh
+source "${OPS_LIB_ROOT}/helm.sh"
 ARTIFACTS_ROOT="${REPO_ROOT}/artifacts/ops"
 
 ops_need_cmd() {
@@ -53,7 +59,7 @@ ops_kubectl_wait_condition() {
   local name="$3"
   local condition="$4"
   local timeout_value="${5:-120s}"
-  kubectl -n "$namespace" wait --for="condition=${condition}" --timeout="$timeout_value" "${kind}/${name}" >/dev/null
+  ops_kubectl_retry -n "$namespace" wait --for="condition=${condition}" --timeout="$timeout_value" "${kind}/${name}" >/dev/null
 }
 
 ops_capture_artifacts() {

@@ -1,10 +1,10 @@
-# Ops Layout
+# Ops
 
 - Owner: `bijux-atlas-operations`
 
 ## What
 
-Canonical operational filesystem surface for atlas.
+Canonical operational filesystem surface and only entrypoint for ops workflows.
 
 ## Directory map
 
@@ -16,12 +16,15 @@ Canonical operational filesystem surface for atlas.
 - `ops/_lib/`: shared shell helpers for ops scripts/tests.
 - `ops/tool-versions.json`: pinned ops tool versions consumed by `make ops-tools-check`.
 - `ops/fixtures/`, `ops/datasets/`: pinned ops datasets and fixture metadata.
+- `ops/e2e/`: harness + runners only (tests and orchestration).
 
 ## Run full stack
 
 ```bash
 make ops-full
 ```
+
+All sub-area docs under `ops/**/README.md` should point here as the primary entrypoint.
 
 ## Why
 
