@@ -27,6 +27,7 @@ for t in \
   test_readiness_semantics.sh \
   test_resource_limits.sh \
   test_service_monitor.sh \
+  test_prometheus_rule.sh \
   test_logs_json.sh \
   test_liveness_under_load.sh \
   test_node_local_cache_profile.sh \

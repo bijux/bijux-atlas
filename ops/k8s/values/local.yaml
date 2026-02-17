@@ -29,6 +29,9 @@ server:
 serviceMonitor:
   enabled: false
 
+alertRules:
+  enabled: false
+
 hpa:
   enabled: false
 

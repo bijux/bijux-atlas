@@ -21,6 +21,7 @@ Does not define implementation internals outside this contract surface.
 ## Contracts
 
 - `affinity`
+- `alertRules`
 - `cache`
 - `catalog`
 - `catalogPublishJob`
@@ -29,6 +30,7 @@ Does not define implementation internals outside this contract surface.
 - `extraEnv`
 - `hpa`
 - `image`
+- `ingress`
 - `networkPolicy`
 - `nodeLocalSsdProfile`
 - `nodeSelector`

@@ -120,6 +120,9 @@ serviceMonitor:
   scrapeTimeout: 5s
   labels: {}
 
+alertRules:
+  enabled: true
+
 hpa:
   enabled: true
   minReplicas: 2

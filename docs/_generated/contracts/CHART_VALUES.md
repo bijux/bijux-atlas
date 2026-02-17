@@ -1,6 +1,7 @@
 # Chart Values Keys (Generated)
 
 - `affinity`
+- `alertRules`
 - `cache`
 - `catalog`
 - `catalogPublishJob`
@@ -9,6 +10,7 @@
 - `extraEnv`
 - `hpa`
 - `image`
+- `ingress`
 - `networkPolicy`
 - `nodeLocalSsdProfile`
 - `nodeSelector`

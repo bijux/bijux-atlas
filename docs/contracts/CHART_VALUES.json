@@ -2,6 +2,7 @@
   "schema_version": 1,
   "top_level_keys": [
     "affinity",
+    "alertRules",
     "cache",
     "catalog",
     "catalogPublishJob",
