@@ -1,35 +1,10 @@
 # Chart Values Schema Contract
 
-Allowed top-level keys in `charts/bijux-atlas/values.yaml`:
+SSOT source: `docs/contracts/CHART_VALUES.json`.
 
-- `image`
-- `replicaCount`
-- `service`
-- `resources`
-- `podSecurityContext`
-- `securityContext`
-- `cache`
-- `rateLimits`
-- `concurrency`
-- `server`
-- `sequenceRateLimits`
-- `catalog`
-- `store`
-- `networkPolicy`
-- `serviceMonitor`
-- `hpa`
-- `pdb`
-- `priorityClassName`
-- `terminationGracePeriodSeconds`
-- `nodeLocalSsdProfile`
-- `rollout`
-- `catalogPublishJob`
-- `datasetWarmupJob`
-- `extraEnv`
-- `nodeSelector`
-- `tolerations`
-- `affinity`
+Generated reference list: `docs/contracts/generated/CHART_VALUES.md`.
 
 Policy:
-- New top-level keys require updating this file and `test_values_contract.sh`.
+- New top-level keys require updating `docs/contracts/CHART_VALUES.json`.
+- Contract drift is enforced by `scripts/contracts/check_chart_values_contract.py`.
 - Default values must stay conservative and production-safe.

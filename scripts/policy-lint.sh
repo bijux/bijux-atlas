@@ -54,3 +54,4 @@ PY
 ./scripts/require-crate-docs.sh
 ./scripts/no-network-unit-tests.sh
 ./scripts/check-cli-commands.sh
+./scripts/contracts/check_all.sh

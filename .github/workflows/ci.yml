@@ -134,6 +134,20 @@ jobs:
       - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
       - run: ./scripts/policy-lint.sh
 
+  ssot-drift:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/ssot-drift
+      CARGO_TARGET_DIR: artifacts/isolates/ssot-drift/target
+      CARGO_HOME: artifacts/isolates/ssot-drift/cargo-home
+      TMPDIR: artifacts/isolates/ssot-drift/tmp
+      TMP: artifacts/isolates/ssot-drift/tmp
+      TEMP: artifacts/isolates/ssot-drift/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
+      - run: ./scripts/contracts/check_all.sh
+
   crate-structure:
     runs-on: ubuntu-latest
     env:
