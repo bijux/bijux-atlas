@@ -56,14 +56,16 @@ ops-k8s-template-tests: ## Run helm template/lint edge-case checks
 
 ops-load-smoke: ## Run short load suite
 	@$(MAKE) ops-k6-version-check
-	@./scripts/perf/run_suite.sh mixed_80_20.js artifacts/perf/results
+	@./scripts/perf/check_pinned_queries_lock.py
+	@./scripts/perf/run_suite.sh mixed.json artifacts/perf/results
 
 ops-load-full: ## Run nightly/full load suites
 	@$(MAKE) ops-k6-version-check
+	@./scripts/perf/check_pinned_queries_lock.py
 	@./scripts/perf/run_nightly_perf.sh
 
 ops-drill-store-outage: ## Run store outage drill under load
-	@./scripts/perf/run_suite.sh store_outage_mid_spike.js artifacts/perf/results
+	@./scripts/perf/run_suite.sh store-outage.json artifacts/perf/results
 
 ops-drill-corruption: ## Run corruption handling drill
 	@cargo test -p bijux-atlas-server cache_manager_tests::chaos_mode_random_byte_corruption_never_serves_results -- --exact

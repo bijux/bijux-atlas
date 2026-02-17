@@ -6,7 +6,7 @@ set -eu
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 ART="$ROOT/artifacts/ops/e2e/k6"
-SCENARIOS="$ROOT/ops/e2e/k6/scenarios"
+SCENARIOS="$ROOT/ops/load/scenarios"
 BASE_URL="${BASE_URL:-http://127.0.0.1:18080}"
 PR_MODE="${PR_MODE:-0}"
 
@@ -14,25 +14,16 @@ mkdir -p "$ART"
 
 run_suite() {
   name="$1"
-  suite="$2"
-  if [ "$PR_MODE" = "1" ] && [ "$name" != "mixed" ] && [ "$name" != "cheap_only_survival" ]; then
+  scenario="$2"
+  if [ "$PR_MODE" = "1" ] && [ "$name" != "mixed" ] && [ "$name" != "cheap-only-survival" ]; then
     return 0
   fi
-  OUT_DIR="$ART" "$ROOT/scripts/perf/run_suite.sh" "$suite" "$ART" >/dev/null
-  src="$ART/${suite%.js}.summary.json"
-  dst="$ART/$name.summary.json"
-  [ -f "$src" ] && cp "$src" "$dst"
+  OUT_DIR="$ART" "$ROOT/scripts/perf/run_suite.sh" "$scenario" "$ART" >/dev/null
 }
 
 for spec in "$SCENARIOS"/*.json; do
   name="$(basename "$spec" .json)"
-  suite="$(python3 - <<PY
-import json
-print(json.load(open('$spec')).get('suite',''))
-PY
-)"
-  [ -n "$suite" ] || continue
-  BASE_URL="$BASE_URL" run_suite "$name" "$suite"
+  BASE_URL="$BASE_URL" run_suite "$name" "$spec"
 done
 
 # cold start result

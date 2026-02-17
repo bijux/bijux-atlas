@@ -22,7 +22,7 @@ run_stack() {
     fi
     sleep 1
   done
-  BASE_URL="http://127.0.0.1:${port}" RATE=2000 DURATION=90s "$ROOT/scripts/perf/run_suite.sh" mixed_80_20.js "$out_dir"
+  BASE_URL="http://127.0.0.1:${port}" RATE=2000 DURATION=90s "$ROOT/scripts/perf/run_suite.sh" mixed-80-20.js "$out_dir"
   docker compose -f "$compose_file" down --remove-orphans || true
 }
 
@@ -45,8 +45,8 @@ def read(path):
         "fail": float(f.get("rate", 0.0)),
     }
 
-n = read(root / "no-redis/mixed_80_20.summary.json")
-r = read(root / "with-redis/mixed_80_20.summary.json")
+n = read(root / "no-redis/mixed-80-20.summary.json")
+r = read(root / "with-redis/mixed-80-20.summary.json")
 
 lines = [
     "# Redis Perf Comparison (10x mixed load)",

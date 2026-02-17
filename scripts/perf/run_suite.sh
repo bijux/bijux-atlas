@@ -5,12 +5,33 @@
 set -eu
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-SUITE="${1:?suite file required, e.g. mixed_80_20.js}"
+INPUT="${1:?suite or scenario required, e.g. mixed-80-20.js or mixed.json}"
 OUT_DIR="${2:-$ROOT/artifacts/perf/results}"
 BASE_URL="${BASE_URL:-http://127.0.0.1:18080}"
 
 mkdir -p "$OUT_DIR"
-SUMMARY_JSON="$OUT_DIR/${SUITE%.js}.summary.json"
+if printf '%s' "$INPUT" | grep -q '\.json$'; then
+  SCENARIO_PATH="$INPUT"
+  case "$SCENARIO_PATH" in
+    /*) ;;
+    *) SCENARIO_PATH="$ROOT/ops/load/scenarios/$SCENARIO_PATH" ;;
+  esac
+  SUITE="$(python3 - <<PY
+import json
+from pathlib import Path
+p=Path("$SCENARIO_PATH")
+d=json.loads(p.read_text())
+print(d.get("suite",""))
+PY
+)"
+  [ -n "$SUITE" ] || { echo "scenario has no suite: $SCENARIO_PATH" >&2; exit 2; }
+  NAME="$(basename "$SCENARIO_PATH" .json)"
+else
+  SUITE="$INPUT"
+  NAME="${SUITE%.js}"
+fi
+
+SUMMARY_JSON="$OUT_DIR/${NAME}.summary.json"
 
 if command -v k6 >/dev/null 2>&1; then
   BASE_URL="$BASE_URL" k6 run --summary-export "$SUMMARY_JSON" "$ROOT/ops/load/k6/suites/$SUITE"
@@ -21,4 +42,4 @@ else
     grafana/k6:0.49.0 run --summary-export "$SUMMARY_JSON" "ops/load/k6/suites/$SUITE"
 fi
 
-echo "suite complete: $SUITE -> $SUMMARY_JSON"
+echo "suite complete: $INPUT ($SUITE) -> $SUMMARY_JSON"

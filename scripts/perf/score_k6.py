@@ -8,6 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SLO = json.loads((ROOT / "configs/slo/slo.json").read_text())
+SUITE_MANIFEST = json.loads((ROOT / "ops/load/suites/suites.json").read_text())
 ART = ROOT / "artifacts/ops/e2e/k6"
 ART.mkdir(parents=True, exist_ok=True)
 
@@ -26,6 +27,12 @@ for summary in sorted(ART.glob("*.summary.json")):
     rows.append({"scenario": name, "p95_ms": p95, "p99_ms": p99, "error_rate": err})
 
     target = SLO.get("scenarios", {}).get(name)
+    if not target:
+        for suite in SUITE_MANIFEST.get("suites", []):
+            scenario_name = Path(suite.get("scenario", "")).stem
+            if scenario_name == name:
+                target = suite
+                break
     if not target:
         continue
     if p95 > target["p95_ms_max"]:
