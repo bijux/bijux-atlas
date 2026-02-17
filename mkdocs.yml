@@ -72,7 +72,19 @@ nav:
           - Sharding: reference/evolution/sharding.md
   - Contracts:
       - Contracts Overview: contracts/README.md
+      - Contracts Index: contracts/_index.md
       - SSOT Workflow: contracts/SSOT_WORKFLOW.md
+      - Contract Diff Review: contracts/contract-diff.md
+      - Contract Change Checklist: contracts/contract-change-checklist.md
+      - Breaking Change Examples: contracts/breaking-change-examples.md
+      - Error Codes: contracts/errors.md
+      - Metrics: contracts/metrics.md
+      - Tracing: contracts/tracing.md
+      - Endpoints: contracts/endpoints.md
+      - Config Keys: contracts/config-keys.md
+      - Chart Values: contracts/chart-values.md
+      - Examples:
+          - Index: contracts/examples/README.md
       - Artifacts:
           - Manifest Contract: contracts/artifacts/manifest-contract.md
           - Directory Contract: contracts/artifacts/directory-contract.md

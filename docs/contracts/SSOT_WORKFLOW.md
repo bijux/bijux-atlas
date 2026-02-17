@@ -1,63 +1,57 @@
-# How SSOT Works In Atlas
+# SSOT Workflow
 
 - Owner: `docs-governance`
 
-Atlas uses `docs/contracts/` as single-source-of-truth for machine contracts.
-
-## Contracts
-- `ERROR_CODES.json` -> generated Rust constants + OpenAPI enum validation.
-- `METRICS.json` -> generated observability collector contract.
-- `TRACE_SPANS.json` -> generated trace span name/attributes contract.
-- `ENDPOINTS.json` -> route registry cross-check against server and OpenAPI.
-- `CHART_VALUES.json` -> chart values key contract.
-- `CLI_COMMANDS.json` -> CLI command list + docs consistency.
-- `CONFIG_KEYS.json` -> config/env key allowlist contract.
-- `ARTIFACT_SCHEMA.json` -> artifact manifest/QC/db-meta schema contract.
-- `POLICY_SCHEMA.json` -> policy schema contract mirrored from `configs/policy/policy.schema.json`.
-
-## Enforcement
-- Local: `make ssot-check`
-- CI: `ssot-drift` job in `.github/workflows/ci.yml`
-- Policy lint includes SSOT gate.
-- Compatibility guard: `scripts/contracts/check_breaking_contract_change.py` compares against latest `v*` tag.
-
-## No Manual Drift
-Generated files under `docs/_generated/contracts/`, `crates/bijux-atlas-api/src/generated/`, `crates/bijux-atlas-server/src/telemetry/generated/`, and `observability/metrics_contract.json` must not be hand-edited.
-
 ## What
 
-Defines a stable contract surface for this topic.
+This is the only workflow document for contract evolution.
 
 ## Why
 
-Prevents ambiguity and drift across CLI, API, and operations.
+A single workflow definition removes ambiguity in contract update process.
 
 ## Scope
 
-Applies to atlas contract consumers and producers.
+Applies to all JSON registries under `docs/contracts/`.
 
 ## Non-goals
 
-Does not define internal implementation details beyond the contract surface.
+Does not define product release choreography outside contract updates.
+
+## Contracts
+
+1. Update SSOT registry JSON.
+2. Run generator.
+3. Run drift checks.
+4. Review breaking-change detection output.
+5. Commit SSOT and generated outputs together.
 
 ## Failure modes
 
-Invalid contract input is rejected with stable machine-readable errors.
+- Drifted generated output: `check_contract_drift.py` fails.
+- Breaking change: `check_breaking_contract_change.py` fails.
+- Unformatted contracts: `format_contracts.py` check fails.
 
 ## Examples
+
+```bash
+$ ./scripts/contracts/format_contracts.py
+$ ./scripts/contracts/generate_contract_artifacts.py
+$ ./scripts/contracts/check_all.sh
+```
+
+Expected output: all checks pass with no drift.
+
+## How to verify
 
 ```bash
 $ make ssot-check
 ```
 
-Expected output: a zero exit code and "contract artifacts generated" for successful checks.
-
-## How to verify
-
-Run `make docs docs-freeze ssot-check` and confirm all commands exit with status 0.
+Expected output: contract pipeline exits 0.
 
 ## See also
 
-- [Contracts Overview](README.md)
-- [SSOT Workflow](SSOT_WORKFLOW.md)
+- [Contracts Index](_index.md)
+- [Contract Change Checklist](contract-change-checklist.md)
 - [Terms Glossary](../_style/TERMS_GLOSSARY.md)

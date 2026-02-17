@@ -1,61 +1,32 @@
-# Atlas Contracts SSOT
+# Contracts SSOT
 
 - Owner: `docs-governance`
 
-`docs/contracts/` is the only source of truth for externally visible machine contracts.
-
-## SSOT Files
-- `ERROR_CODES.json`: stable machine error code registry.
-- `METRICS.json`: required metrics and label schema.
-- `TRACE_SPANS.json`: required trace span names + required attributes.
-- `ENDPOINTS.json`: API endpoint registry (`method`, `path`, telemetry class).
-- `CHART_VALUES.json`: allowed Helm `values.yaml` top-level keys.
-- `CLI_COMMANDS.json`: CLI command surface SSOT.
-- `CONFIG_KEYS.json`: allowed environment/config keys read by runtime and tools.
-- `ARTIFACT_SCHEMA.json`: manifest/QC/db-meta contract for dataset artifacts.
-- `POLICY_SCHEMA.json`: SSOT mirror of `configs/policy/policy.schema.json`.
-
-## Build Chain
-1. `scripts/contracts/format_contracts.py` canonicalizes/sorts SSOT JSON.
-2. `scripts/contracts/generate_contract_artifacts.py` generates:
-   - `crates/bijux-atlas-api/src/generated/error_codes.rs`
-   - `crates/bijux-atlas-server/src/telemetry/generated/*.rs`
-   - `docs/_generated/contracts/*.md`
-   - `observability/metrics_contract.json` (derived compatibility artifact)
-3. `scripts/openapi-generate.sh` builds OpenAPI and validates path set against `ENDPOINTS.json`.
-4. `scripts/contracts/check_all.sh` enforces drift checks, config-key contract, and breaking-change detection against previous `v*` tag.
-
-## Convenience Runner
-- `cargo run --manifest-path xtask/Cargo.toml -- format-contracts`
-- `cargo run --manifest-path xtask/Cargo.toml -- generate-contracts`
-- `cargo run --manifest-path xtask/Cargo.toml -- check-contracts`
-
-## Rule
-- Surface changes must update SSOT first, then generated outputs, then code/tests.
-
 ## What
 
-Defines a stable contract surface for this topic.
+`docs/contracts/` is the single source of truth for machine-facing registries.
 
 ## Why
 
-Prevents ambiguity and drift across CLI, API, and operations.
+A single source prevents drift across API, CLI, server telemetry, and chart surfaces.
 
 ## Scope
 
-Applies to atlas contract consumers and producers.
+Covers contract registry JSON and generated contract references.
 
 ## Non-goals
 
-Does not define internal implementation details beyond the contract surface.
+Does not define runtime implementation details outside contract surfaces.
 
 ## Contracts
 
-Use the rules in this page as the normative contract.
+- Registry files live in this directory as JSON SSOT.
+- Generated documentation and code must be derived from these registries.
+- Workflow details live only in `SSOT_WORKFLOW.md`.
 
 ## Failure modes
 
-Invalid contract input is rejected with stable machine-readable errors.
+Drift between SSOT and generated artifacts fails contract checks and CI gates.
 
 ## Examples
 
@@ -63,14 +34,19 @@ Invalid contract input is rejected with stable machine-readable errors.
 $ make ssot-check
 ```
 
-Expected output: a zero exit code and "contract artifacts generated" for successful checks.
+Expected output: contract checks and drift checks pass with exit status 0.
 
 ## How to verify
 
-Run `make docs docs-freeze ssot-check` and confirm all commands exit with status 0.
+```bash
+$ make ssot-check
+$ make docs-freeze
+```
+
+Expected output: both commands exit 0.
 
 ## See also
 
-- [Contracts Overview](README.md)
+- [Contracts Index](_index.md)
 - [SSOT Workflow](SSOT_WORKFLOW.md)
 - [Terms Glossary](../_style/TERMS_GLOSSARY.md)

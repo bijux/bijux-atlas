@@ -1,0 +1,16 @@
+{
+  "codes": [
+    "Internal",
+    "InvalidCursor",
+    "InvalidQueryParameter",
+    "MissingDatasetDimension",
+    "NotReady",
+    "PayloadTooLarge",
+    "QueryRejectedByPolicy",
+    "RateLimited",
+    "ResponseTooLarge",
+    "Timeout"
+  ],
+  "schema_version": 1,
+  "type": "api_error_codes"
+}
