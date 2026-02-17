@@ -14,6 +14,6 @@ YAML
 install_chart -f "$TMP_VALUES"
 wait_ready
 with_port_forward 18080
-wait_for_http "$BASE_URL/readyz" 200 60
+wait_for_http "$BASE_URL/healthz" 200 60
 
 echo "cached-only mode gate passed"
