@@ -1,13 +1,23 @@
 SHELL := /bin/sh
 
+include makefiles/cargo.mk
+include makefiles/cargo-dev.mk
+include makefiles/docs.mk
+include makefiles/ops.mk
+include makefiles/policies.mk
+
+.DEFAULT_GOAL := help
+
 help:
 	@printf '%s\n' \
 	  'dev:' \
 	  '  dev-fmt dev-lint dev-check dev-test dev-test-all dev-coverage dev-audit dev-ci dev-clean' \
 	  'docs:' \
 	  '  docs docs-serve docs-freeze docs-hardening' \
+	  'contracts:' \
+	  '  ssot-check policy-lint policy-schema-drift openapi-drift ops-values-validate ops-openapi-validate ops-dashboards-validate ops-alerts-validate' \
 	  'ops:' \
-	  '  ops-up ops-down ops-reset ops-publish-medium ops-deploy ops-warm ops-soak ops-smoke ops-metrics-check ops-traces-check ops-k8s-tests ops-k8s-template-tests ops-load-prereqs ops-load-smoke ops-load-full ops-drill-store-outage ops-drill-corruption ops-drill-pod-churn ops-drill-upgrade ops-drill-rollback ops-report ops-script-coverage ops-shellcheck ops-kind-version-check ops-k6-version-check ops-helm-version-check ops-kubectl-version-check ops-tools-check ops-values-validate ops-openapi-validate ops-dashboards-validate ops-alerts-validate ops-release-matrix ops-baseline-policy-check ops-ci ops-perf-prepare-store ops-perf-e2e ops-perf-nightly ops-perf-cold-start ops-perf-cold-start-prefetch-5pods ops-perf-compare-redis ops-perf-suite e2e-local e2e-k8s-install-gate e2e-k8s-suite e2e-perf e2e-realdata observability-check layout-check layout-migrate' \
+	  '  ops-up ops-down ops-reset ops-publish ops-publish-medium ops-deploy ops-warm ops-soak ops-smoke ops-metrics-check ops-traces-check ops-k8s-tests ops-k8s-template-tests ops-load-prereqs ops-load-smoke ops-load-full ops-drill-store-outage ops-drill-corruption ops-drill-pod-churn ops-drill-upgrade ops-drill-rollback ops-report ops-script-coverage ops-shellcheck ops-kind-version-check ops-k6-version-check ops-helm-version-check ops-kubectl-version-check ops-tools-check ops-values-validate ops-openapi-validate ops-dashboards-validate ops-alerts-validate ops-release-matrix ops-baseline-policy-check ops-ci ops-perf-prepare-store ops-perf-e2e ops-perf-nightly ops-perf-cold-start ops-perf-cold-start-prefetch-5pods ops-perf-compare-redis ops-perf-suite e2e-local e2e-k8s-install-gate e2e-k8s-suite e2e-perf e2e-realdata observability-check layout-check layout-migrate' \
 	  'release/surface:' \
 	  '  fmt lint check test test-all coverage audit openapi-drift ci ssot-check crate-structure crate-docs-contract cli-command-surface docker-build docker-smoke chart-package chart-verify' \
 	  'tooling:' \
