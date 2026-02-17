@@ -101,6 +101,7 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@python3 ./scripts/layout/check_make_public_scripts.py
 	@python3 ./scripts/layout/check_script_relative_calls.py
 	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
+	@if command -v shfmt >/dev/null 2>&1; then shfmt -d scripts ops/load/scripts; else echo "shfmt not installed (optional)"; fi
 	@if command -v ruff >/dev/null 2>&1; then ruff check scripts ops/load/scripts; else echo "ruff not installed (optional)"; fi
 
 scripts-test: ## Run scripts-focused tests
