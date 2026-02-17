@@ -259,8 +259,10 @@ async fn overload_health_endpoint_reports_state() {
         },
         store,
     );
-    let mut api = ApiConfig::default();
-    api.shed_load_enabled = true;
+    let api = ApiConfig {
+        shed_load_enabled: true,
+        ..ApiConfig::default()
+    };
     let app = build_router(AppState::with_config(
         cache,
         api,

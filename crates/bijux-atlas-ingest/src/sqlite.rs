@@ -13,6 +13,7 @@ const INGEST_LOCKING_MODE: &str = "EXCLUSIVE";
 const INGEST_PAGE_SIZE: i64 = 4096;
 const INGEST_MMAP_SIZE: i64 = 268_435_456;
 
+#[allow(dead_code)]
 pub fn migrate_forward_schema(conn: &Connection, target_version: i64) -> Result<i64, IngestError> {
     let current = detect_schema_version(conn)?;
     if current > target_version {
@@ -37,6 +38,7 @@ pub fn migrate_forward_schema(conn: &Connection, target_version: i64) -> Result<
     Ok(target_version.max(current))
 }
 
+#[allow(dead_code)]
 fn detect_schema_version(conn: &Connection) -> Result<i64, IngestError> {
     let has_schema_table: i64 = conn
         .query_row(

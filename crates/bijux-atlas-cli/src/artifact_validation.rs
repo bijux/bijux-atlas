@@ -9,7 +9,7 @@ use bijux_atlas_store::{
 use serde_json::json;
 use std::collections::BTreeMap;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use tar::{Archive, Builder, Header};
 
 pub(crate) fn parse_alias_map(input: &str) -> BTreeMap<String, String> {
@@ -299,7 +299,7 @@ pub(crate) fn publish_dataset(
 }
 
 fn enforce_publish_gates(
-    source_root: &PathBuf,
+    source_root: &Path,
     dataset: &DatasetId,
     manifest: &ArtifactManifest,
 ) -> Result<(), String> {

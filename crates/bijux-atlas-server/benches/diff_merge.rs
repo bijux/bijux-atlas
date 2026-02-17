@@ -21,21 +21,23 @@ fn diff_merge_count(a: &[ReleaseGeneIndexEntry], b: &[ReleaseGeneIndexEntry]) ->
     let mut count = 0usize;
     while i < a.len() || j < b.len() {
         match (a.get(i), b.get(j)) {
-            (Some(x), Some(y)) => {
-                if x.gene_id < y.gene_id {
+            (Some(x), Some(y)) => match x.gene_id.cmp(&y.gene_id) {
+                std::cmp::Ordering::Less => {
                     i += 1;
                     count += 1;
-                } else if x.gene_id > y.gene_id {
+                }
+                std::cmp::Ordering::Greater => {
                     j += 1;
                     count += 1;
-                } else {
+                }
+                std::cmp::Ordering::Equal => {
                     i += 1;
                     j += 1;
                     if x.signature_sha256 != y.signature_sha256 {
                         count += 1;
                     }
                 }
-            }
+            },
             (Some(_), None) => {
                 i += 1;
                 count += 1;
