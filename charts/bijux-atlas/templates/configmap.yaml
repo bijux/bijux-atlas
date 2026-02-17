@@ -32,3 +32,8 @@ data:
   ATLAS_READ_ONLY_FS_MODE: {{ .Values.server.readOnlyFsMode | quote }}
   ATLAS_SHUTDOWN_DRAIN_MS: {{ .Values.server.shutdownDrainMs | quote }}
   ATLAS_READINESS_REQUIRES_CATALOG: {{ .Values.server.readinessRequiresCatalog | quote }}
+  ATLAS_MAX_SEQUENCE_BASES: {{ .Values.server.maxSequenceBases | quote }}
+  ATLAS_SEQUENCE_API_KEY_REQUIRED_BASES: {{ .Values.server.sequenceApiKeyRequiredBases | quote }}
+  ATLAS_SEQUENCE_TTL_MS: {{ .Values.server.sequenceTtlMs | quote }}
+  ATLAS_SEQUENCE_RATE_LIMIT_CAPACITY: {{ .Values.sequenceRateLimits.perIp.capacity | quote }}
+  ATLAS_SEQUENCE_RATE_LIMIT_REFILL_PER_SEC: {{ .Values.sequenceRateLimits.perIp.refillPerSec | quote }}

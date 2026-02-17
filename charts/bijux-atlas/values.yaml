@@ -75,6 +75,14 @@ server:
   readOnlyFsMode: false
   shutdownDrainMs: 5000
   readinessRequiresCatalog: true
+  maxSequenceBases: 20000
+  sequenceApiKeyRequiredBases: 5000
+  sequenceTtlMs: 300000
+
+sequenceRateLimits:
+  perIp:
+    capacity: 15
+    refillPerSec: 5
 
 catalog:
   endpoint: ""

@@ -108,6 +108,14 @@ Purpose:
 - `ConfigMap` stores non-secret runtime config.
 - `Secret` stores store credentials (`ATLAS_STORE_ACCESS_KEY`, `ATLAS_STORE_SECRET_KEY`).
 
+Sequence-specific knobs in chart values/config map:
+
+- `ATLAS_MAX_SEQUENCE_BASES`
+- `ATLAS_SEQUENCE_API_KEY_REQUIRED_BASES`
+- `ATLAS_SEQUENCE_TTL_MS`
+- `ATLAS_SEQUENCE_RATE_LIMIT_CAPACITY`
+- `ATLAS_SEQUENCE_RATE_LIMIT_REFILL_PER_SEC`
+
 ## HPA Strategy
 
 HPA includes:
