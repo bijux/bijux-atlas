@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "owners": {
+    "chart": [
+      "test_values_contract.sh",
+      "test_defaults_safe.sh",
+      "test_chart_drift.sh",
+      "test_helm_templates.sh",
+      "test_helm_repo_pinning.sh",
+      "test_install.sh",
+      "test_install_twice.sh",
+      "test_uninstall_reinstall.sh",
+      "test_networkpolicy.sh",
+      "test_networkpolicy_metadata_egress.sh",
+      "test_pdb.sh",
+      "test_hpa.sh",
+      "test_image_digest_pinning.sh",
+      "test_ingress_profile.sh"
+    ],
+    "server": [
+      "test_secrets.sh",
+      "test_secrets_rotation.sh",
+      "test_configmap.sh",
+      "test_configmap_update_reload.sh",
+      "test_cached_only_mode.sh",
+      "test_readiness_semantics.sh",
+      "test_readiness_catalog_refresh.sh",
+      "test_rolling_restart_no_downtime.sh",
+      "test_liveness_under_load.sh",
+      "test_offline_profile.sh",
+      "test_resource_limits.sh",
+      "test_storage_modes.sh"
+    ],
+    "store": [
+      "test_multi_registry_profile.sh"
+    ],
+    "observability": [
+      "test_service_monitor.sh",
+      "test_prometheus_rule.sh"
+    ],
+    "stack": [
+      "test_cluster_sanity.sh"
+    ]
+  }
+}
