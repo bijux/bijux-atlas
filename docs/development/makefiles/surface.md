@@ -71,6 +71,10 @@ Stable targets:
 - `ops-drill-rollback`
 - `ops-report`
 - `ops-script-coverage`
+- `ops-kind-version-check`
+- `ops-k6-version-check`
+- `ops-helm-version-check`
+- `ops-kubectl-version-check`
 - `ops-values-validate`
 - `ops-openapi-validate`
 - `ops-dashboards-validate`

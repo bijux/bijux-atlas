@@ -3,6 +3,9 @@ SHELL := /bin/sh
 # Ops SSOT targets
 
 ops-up: ## Bring up local ops stack (kind + minio + prometheus + optional otel/redis)
+	@$(MAKE) ops-kind-version-check
+	@$(MAKE) ops-kubectl-version-check
+	@$(MAKE) ops-helm-version-check
 	@./ops/e2e/scripts/up.sh
 
 ops-down: ## Tear down local ops stack
@@ -49,9 +52,11 @@ ops-k8s-tests: ## Run k8s e2e suite
 	@./ops/e2e/k8s/tests/run_all.sh
 
 ops-load-smoke: ## Run short load suite
+	@$(MAKE) ops-k6-version-check
 	@./scripts/perf/run_suite.sh mixed_80_20.js artifacts/perf/results
 
 ops-load-full: ## Run nightly/full load suites
+	@$(MAKE) ops-k6-version-check
 	@./scripts/perf/run_nightly_perf.sh
 
 ops-drill-store-outage: ## Run store outage drill under load
@@ -79,6 +84,18 @@ ops-report: ## Gather ops evidence into artifacts/ops/<timestamp>/
 
 ops-script-coverage: ## Validate every ops/**/scripts entrypoint is exposed via make
 	@./scripts/layout/check_ops_script_targets.sh
+
+ops-kind-version-check: ## Validate pinned kind version from ops/tool-versions.json
+	@python3 ./scripts/layout/check_tool_versions.py kind
+
+ops-k6-version-check: ## Validate pinned k6 version from ops/tool-versions.json
+	@python3 ./scripts/layout/check_tool_versions.py k6
+
+ops-helm-version-check: ## Validate pinned helm version from ops/tool-versions.json
+	@python3 ./scripts/layout/check_tool_versions.py helm
+
+ops-kubectl-version-check: ## Validate pinned kubectl version from ops/tool-versions.json
+	@python3 ./scripts/layout/check_tool_versions.py kubectl
 
 ops-perf-prepare-store: ## Perf helper: prepare local perf store fixture
 	@./scripts/perf/prepare_perf_store.sh
