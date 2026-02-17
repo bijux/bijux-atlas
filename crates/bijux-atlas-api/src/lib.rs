@@ -16,6 +16,7 @@ mod generated;
 pub mod openapi;
 pub mod params;
 pub mod responses;
+pub mod wire;
 
 pub use errors::{ApiError, ApiErrorCode};
 pub use openapi::openapi_v1_spec;
@@ -24,6 +25,7 @@ pub use params::{
     ListGenesParams, MAX_CURSOR_BYTES,
 };
 pub use responses::{ApiContentType, ApiResponseEnvelope, ContentNegotiation};
+pub use wire::{list_genes_v1, QueryAdapter};
 
 #[must_use]
 pub fn dataset_route_key(dataset: &DatasetId) -> String {
@@ -216,5 +218,29 @@ mod tests {
             .cloned()
             .collect::<std::collections::BTreeSet<_>>();
         assert_eq!(observed, expected);
+    }
+
+    #[test]
+    fn openapi_paths_match_api_surface_registry() {
+        let spec = openapi_v1_spec();
+        let spec_paths = spec
+            .get("paths")
+            .and_then(serde_json::Value::as_object)
+            .expect("openapi paths object")
+            .keys()
+            .cloned()
+            .collect::<std::collections::BTreeSet<_>>();
+
+        let contract: serde_json::Value =
+            serde_json::from_str(include_str!("../docs/ssot/API_SURFACE.json"))
+                .expect("parse api surface");
+        let expected = contract
+            .get("endpoints")
+            .and_then(serde_json::Value::as_array)
+            .expect("endpoints array")
+            .iter()
+            .map(|v| v.as_str().expect("path").to_string())
+            .collect::<std::collections::BTreeSet<_>>();
+        assert_eq!(spec_paths, expected);
     }
 }
