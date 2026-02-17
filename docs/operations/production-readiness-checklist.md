@@ -38,6 +38,6 @@ Expected output: all checks pass with no errors.
 
 ## See also
 
-- [Full Stack Locally](./full-stack-locally.md)
+- [Full Stack Locally](./full-stack-local.md)
 - [K8s Test Contract](./k8s/k8s-test-contract.md)
 - [Observability Acceptance Gates](./observability/acceptance-gates.md)

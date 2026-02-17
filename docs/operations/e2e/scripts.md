@@ -33,5 +33,5 @@ Expected output: targets exit zero and produce artifacts under `artifacts/ops/`.
 ## See also
 
 - [E2E Index](INDEX.md)
-- [Full Stack Locally](../full-stack-locally.md)
+- [Full Stack Locally](../full-stack-local.md)
 - [Makefile Surface](../../development/makefiles/surface.md)

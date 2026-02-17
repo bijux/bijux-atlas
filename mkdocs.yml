@@ -108,6 +108,9 @@ nav:
           - Policy Schema: _generated/contracts/POLICY_SCHEMA.md
   - Operations:
       - Index: operations/INDEX.md
+      - Ops Layout: operations/ops-layout.md
+      - Full Stack Local: operations/full-stack-local.md
+      - Migration Note: operations/migration-note.md
       - Production Readiness: operations/production-readiness-checklist.md
       - No Direct Path Usage: operations/no-direct-path-usage.md
       - Air-Gapped Install: operations/air-gapped-install.md
@@ -174,6 +177,8 @@ nav:
           - Reproducible Builds: development/ci/reproducible-build-hints.md
           - Security Audit: development/ci/security-audit-policy.md
       - Makefile Surface: development/makefiles/surface.md
+      - Repository Layout: development/repo-layout.md
+      - Contributing: development/contributing.md
       - Scripts Index: development/scripts/INDEX.md
       - Repo Surface: development/repo-surface.md
       - Symlink Index: development/symlinks.md

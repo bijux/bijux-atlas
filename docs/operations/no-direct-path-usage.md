@@ -32,5 +32,5 @@ Expected output: both targets pass.
 ## See also
 
 - [Operations Index](INDEX.md)
-- [Full Stack Locally](full-stack-locally.md)
+- [Full Stack Locally](full-stack-local.md)
 - [Makefile Surface](../development/makefiles/surface.md)

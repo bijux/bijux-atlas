@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # Purpose: enforce full-stack docs page size and target drift policy.
-# Inputs: docs/operations/full-stack-locally.md and makefiles.
+# Inputs: docs/operations/full-stack-local.md and makefiles.
 # Outputs: non-zero exit on policy violation.
 from __future__ import annotations
 from pathlib import Path
 import re
 
 ROOT = Path(__file__).resolve().parents[2]
-page = ROOT / 'docs' / 'operations' / 'full-stack-locally.md'
+page = ROOT / 'docs' / 'operations' / 'full-stack-local.md'
 text = page.read_text()
 lines = [l for l in text.splitlines() if l.strip()]
 if len(lines) > 80:

@@ -47,4 +47,4 @@ Expected output: both checks pass with no drift warnings.
 
 - [Repository Surface](repo-surface.md)
 - [Makefiles Surface](makefiles/surface.md)
-- [Ops Layout](../../ops/README.md)
+- [Ops Layout](../operations/ops-layout.md)
