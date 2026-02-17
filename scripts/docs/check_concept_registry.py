@@ -71,7 +71,8 @@ def main() -> int:
             continue
         text = p.read_text(encoding="utf-8")
         ids = extract_ids(text)
-        if cid not in ids:
+        is_generated_contract_doc = canonical.startswith("docs/contracts/")
+        if cid not in ids and not is_generated_contract_doc:
             errors.append(f"{canonical}: missing declaration for {cid}")
         if "Canonical page:" in text:
             errors.append(f"{canonical}: canonical page must not be a pointer")

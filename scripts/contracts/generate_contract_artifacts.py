@@ -68,7 +68,7 @@ def write_reference_contract_doc(path: Path, title: str, contracts_body: str, ex
                 "",
                 "## See also",
                 "",
-                "- [Contracts Index](_index.md)",
+                "- [Contracts Index](contracts-index.md)",
                 "- [SSOT Workflow](ssot-workflow.md)",
                 "- [Terms Glossary](../_style/terms-glossary.md)",
                 "",
