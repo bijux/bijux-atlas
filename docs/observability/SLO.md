@@ -18,3 +18,8 @@ This file describes service-level interpretation and error-budget operations.
 - Cached-only serving when store backend is degraded.
 - Temporary request shedding via rate/concurrency limits.
 - Strict response-size rejection instead of partial/truncated payloads.
+
+## Related Contracts
+- Alert rules: `observability/alerts/atlas-alert-rules.yaml`
+- Metrics contract: `observability/metrics_contract.json`
+- Metric cardinality guardrails: `docs/observability/METRIC_CARDINALITY_GUARDRAILS.md`

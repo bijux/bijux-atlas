@@ -10,7 +10,7 @@ include makefiles/policies.mk
 
 help:
 	@printf '%s\n' \
-	  'targets: fmt lint check test test-all coverage audit openapi-drift ci fetch-fixtures load-test load-test-1000qps cold-start-bench memory-profile-load run-medium-ingest run-medium-serve crate-structure cli-command-surface culprits-all culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir e2e-local e2e-k8s-install-gate e2e-k8s-suite e2e-perf' \
+	  'targets: fmt lint check test test-all coverage audit openapi-drift ci fetch-fixtures load-test load-test-1000qps cold-start-bench memory-profile-load run-medium-ingest run-medium-serve crate-structure cli-command-surface culprits-all culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir e2e-local e2e-k8s-install-gate e2e-k8s-suite e2e-perf observability-check' \
 	  'perf targets: perf-nightly' \
 	  'dev targets: dev-fmt dev-lint dev-check dev-test dev-test-all dev-coverage dev-audit dev-ci dev-clean'
 
@@ -37,3 +37,12 @@ e2e-k8s-suite:
 
 e2e-perf:
 	@./scripts/perf/run_e2e_perf.sh
+
+observability-check:
+	@./scripts/observability/check_metrics_contract.py
+	@./scripts/observability/check_dashboard_contract.py
+	@./scripts/observability/check_alerts_contract.py
+	@./scripts/observability/check_tracing_contract.py
+	@./scripts/observability/lint_runbooks.py
+	@./scripts/observability/check_runtime_metrics.py
+	@cargo test -p bijux-atlas-server --test observability_contract --test logging_format
