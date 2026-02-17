@@ -22,7 +22,7 @@ jobs:
         with:
           ref: main
       - run: mkdir -p "$TMPDIR"
-      - run: ./scripts/release/update-compat-matrix.sh "${GITHUB_REF_NAME}"
+      - run: make release-update-compat-matrix TAG=""
       - name: Create compatibility matrix PR
         uses: peter-evans/create-pull-request@v6
         with:

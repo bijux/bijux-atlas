@@ -37,20 +37,20 @@ jobs:
           sudo apt-get install -y curl netcat-openbsd
 
       - name: Bring up e2e dependencies
-        run: ./ops/e2e/scripts/up.sh
+        run: make ops-up
 
       - name: Helm install gate
-        run: ./ops/e2e/k8s/tests/test_install.sh
+        run: make e2e-k8s-install-gate
 
       - name: Run full kind+helm suite
-        run: ./ops/e2e/k8s/tests/run_all.sh
+        run: make ops-k8s-tests
 
       - name: Fetch pinned real datasets
-        run: ./scripts/fixtures/fetch-real-datasets.sh
+        run: make fetch-real-datasets
 
       - name: Run real-data regression suite
-        run: ./ops/e2e/realdata/run_all.sh
+        run: make e2e-realdata
 
       - name: Tear down cluster
         if: always()
-        run: ./ops/e2e/scripts/down.sh
+        run: make ops-down

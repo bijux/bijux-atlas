@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: mkdir -p "$TMPDIR" "$ISO_ROOT"
-      - run: ./scripts/release/update-compat-matrix.sh "${GITHUB_REF_NAME}"
+      - run: make release-update-compat-matrix TAG=""
       - run: git diff --exit-code docs/reference/compatibility/umbrella-atlas-matrix.md
 
   build-artifacts:

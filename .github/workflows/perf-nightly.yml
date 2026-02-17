@@ -27,10 +27,10 @@ jobs:
         run: mkdir -p "$ISO_ROOT" "$TMPDIR" artifacts/perf
 
       - name: Run nightly perf harness
-        run: ./scripts/perf/run_nightly_perf.sh
+        run: make ops-perf-nightly
 
       - name: Run e2e perf scoring suite
-        run: ./scripts/perf/run_e2e_perf.sh
+        run: make ops-perf-e2e
 
       - name: Upload perf artifacts
         if: always()

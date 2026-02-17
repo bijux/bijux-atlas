@@ -32,7 +32,7 @@ jobs:
           exit 1
 
       - name: Run smoke perf scoring
-        run: ./scripts/perf/run_e2e_perf.sh
+        run: make ops-perf-e2e
 
       - name: Upload perf smoke artifacts
         if: always()
