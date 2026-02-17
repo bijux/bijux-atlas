@@ -779,3 +779,37 @@ async fn release_metadata_endpoint_and_explain_mode_are_available() {
         Some("tx1")
     );
 }
+
+#[tokio::test]
+async fn sqlite_progress_handler_timeout_aborts_query() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds.clone(), sqlite);
+    *store.etag.lock().await = "v1".to_string();
+
+    let tmp = tempdir().expect("tempdir");
+    let cfg = DatasetCacheConfig {
+        disk_root: tmp.path().to_path_buf(),
+        ..Default::default()
+    };
+    let mgr = DatasetCacheManager::new(cfg, store);
+    let conn = mgr
+        .open_dataset_connection(&ds)
+        .await
+        .expect("open dataset connection");
+    conn.conn.progress_handler(1, Some(|| true));
+    let err = conn
+        .conn
+        .query_row(
+            "SELECT count(*) FROM gene_summary a, gene_summary b, gene_summary c",
+            [],
+            |row| row.get::<_, i64>(0),
+        )
+        .expect_err("progress handler must interrupt query");
+    assert!(
+        err.to_string().to_lowercase().contains("interrupt"),
+        "unexpected sqlite error: {err}"
+    );
+    conn.conn.progress_handler(1, None::<fn() -> bool>);
+}
