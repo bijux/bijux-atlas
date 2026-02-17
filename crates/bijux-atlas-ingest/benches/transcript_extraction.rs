@@ -23,6 +23,7 @@ fn make_options(root: &std::path::Path) -> IngestOptions {
         transcript_type_policy: TranscriptTypePolicy::default(),
         seqid_policy: SeqidNormalizationPolicy::default(),
         max_threads: 1,
+        report_only: false,
         fail_on_warn: false,
         allow_overlap_gene_ids_across_contigs: false,
         emit_shards: false,

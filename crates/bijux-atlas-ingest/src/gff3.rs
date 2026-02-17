@@ -129,4 +129,42 @@ mod tests {
         );
         assert!(rec.duplicate_attr_keys.contains("Name"));
     }
+
+    #[test]
+    fn attribute_weirdness_corpus_parses_deterministically() {
+        let corpus = [
+            "ID=g1;Name=\"A%20B\";gene_id=ENSG000001",
+            "ID=g2;Name=G%5F2;description=alpha%3Bbeta",
+            "ID=g3;Name= spaced ;biotype=protein_coding;;",
+            "ID=g4;Name=\"quoted=value\";Parent=g1,g2",
+            "ID=g5;Name=x;Name=y;Name=z",
+        ];
+        for (i, attrs) in corpus.iter().enumerate() {
+            let tmp = tempdir().expect("tempdir");
+            let gff = tmp.path().join("x.gff3");
+            let row = format!("chr1\tsrc\tgene\t1\t10\t.\t+\t.\t{attrs}\n");
+            fs::write(&gff, row).expect("write gff3");
+            let rows = parse_gff3_records(&gff).expect("parse corpus entry");
+            assert_eq!(rows.len(), 1, "entry {i} should parse");
+            assert!(rows[0].attrs.contains_key("ID"));
+        }
+    }
+
+    #[test]
+    fn streaming_parser_handles_large_input_rows() {
+        let tmp = tempdir().expect("tempdir");
+        let gff = tmp.path().join("large.gff3");
+        let mut buf = String::new();
+        for i in 0..25_000_u64 {
+            let line = format!(
+                "chr1\tsrc\tgene\t{}\t{}\t.\t+\t.\tID=g{i};Name=Gene_{i};biotype=protein_coding\n",
+                1 + i * 10,
+                10 + i * 10
+            );
+            buf.push_str(&line);
+        }
+        fs::write(&gff, buf).expect("write large gff3");
+        let rows = parse_gff3_records(&gff).expect("parse large gff3");
+        assert_eq!(rows.len(), 25_000);
+    }
 }
