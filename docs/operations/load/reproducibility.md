@@ -16,6 +16,7 @@ Prevents noisy comparisons and false regression alarms.
 - Query SSOT + lock: `ops/load/queries/pinned-v1.json`, `ops/load/queries/pinned-v1.lock`
 - Suite manifest: `ops/load/suites/suites.json`
 - Result metadata must include git SHA, image digest, dataset hash, dataset release.
+- Tool versions are pinned in `configs/ops/tool-versions.json` and validated by `make ops-tools-check`.
 
 ## Sources of variance
 

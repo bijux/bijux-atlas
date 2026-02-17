@@ -39,11 +39,14 @@ Does not duplicate k6 script implementation.
 - `multi-release.json`: cross-release query semantics.
 - `diff-heavy.json`: diff endpoint heavy workload profile.
 - `mixed-gene-sequence.json`: combined gene summary and sequence request mix.
+- `load-under-rollout.json`: load while deployment rollout executes.
+- `load-under-rollback.json`: load while deployment rollback executes.
 - `multi-dataset-hotset.json`: hotset cache behavior.
 - `large-dataset-simulation.json`: large dataset load profile.
 - `sharded-fanout.json`: shard fanout caps.
 - `soak-30m.json`: long soak with memory growth checks.
 - `redis-optional.json`: redis disabled fallback.
+- `ops/load/experiments/`: non-gating experiment space with strict promotion policy.
 - `catalog-federated.json`: federated registry behavior.
 
 ## Budgets

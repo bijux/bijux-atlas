@@ -9,6 +9,7 @@ Runbook for diagnosing load suite failures and regressions.
 ## Symptoms
 
 - `ops-load-full` exits non-zero.
+- `ops-load-ci` or `ops-load-nightly` exits non-zero.
 - `score_k6.py` reports SLO violations.
 - `validate_results.py` reports missing metrics/metadata.
 
@@ -21,10 +22,11 @@ Runbook for diagnosing load suite failures and regressions.
 ## Commands
 
 ```bash
-$ make ops-load-full
+$ make ops-load-ci
+$ make ops-load-nightly
 $ python3 scripts/perf/score_k6.py
 $ python3 scripts/perf/validate_results.py artifacts/perf/results
-$ cat artifacts/e2e/k6/score.md
+$ cat artifacts/ops/e2e/k6/score.md
 ```
 
 Expected output: failing scenario names and violating thresholds.
@@ -34,6 +36,27 @@ Expected output: failing scenario names and violating thresholds.
 - Re-run with stable host resources.
 - Confirm dataset hash/release inputs.
 - Compare against approved baseline in `ops/load/baselines/`.
+- Validate suite contracts with `python3 scripts/perf/validate_suite_manifest.py`.
+
+Canonical suite names:
+- `mixed`
+- `cheap-only-survival`
+- `warm-steady-state-p99`
+- `cold-start-p99`
+- `cold-start-prefetch-5pods`
+- `stampede`
+- `store-outage-mid-spike`
+- `noisy-neighbor-cpu-throttle`
+- `pod-churn`
+- `response-size-abuse`
+- `multi-release`
+- `sharded-fanout`
+- `diff-heavy`
+- `mixed-gene-sequence`
+- `load-under-rollout`
+- `load-under-rollback`
+- `soak-30m`
+- `redis-optional` (experiment, opt-in only)
 
 ## Rollback
 
@@ -44,7 +67,7 @@ Expected output: failing scenario names and violating thresholds.
 
 - Record failing scenario and threshold.
 - Record commit SHA/image digest from `.meta.json` sidecars.
-- Attach report from `artifacts/load/reports/summary.md`.
+- Attach report from `artifacts/ops/load/reports/summary.md`.
 
 ## See also
 
