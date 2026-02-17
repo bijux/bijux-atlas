@@ -177,36 +177,36 @@ ops-load-smoke: ## Run short load suite
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
 	@$(MAKE) ops-load-manifest-validate
-	@./scripts/perf/check_pinned_queries_lock.py
+	@./ops/load/scripts/check_pinned_queries_lock.py
 	@$(MAKE) ops-load-prereqs
-	@./scripts/perf/run_suites_from_manifest.py --profile smoke --out artifacts/perf/results
-	@./scripts/perf/validate_results.py artifacts/perf/results
+	@./ops/load/scripts/run_suites_from_manifest.py --profile smoke --out artifacts/perf/results
+	@./ops/load/scripts/validate_results.py artifacts/perf/results
 
 ops-load-full: ## Run nightly/full load suites
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
 	@$(MAKE) ops-load-manifest-validate
-	@./scripts/perf/check_pinned_queries_lock.py
-	@./scripts/perf/run_suites_from_manifest.py --profile full --out artifacts/perf/results
-	@./scripts/perf/validate_results.py artifacts/perf/results
+	@./ops/load/scripts/check_pinned_queries_lock.py
+	@./ops/load/scripts/run_suites_from_manifest.py --profile full --out artifacts/perf/results
+	@./ops/load/scripts/validate_results.py artifacts/perf/results
 	@./ops/load/reports/generate.py
 
 ops-load-ci: ## Load CI profile (smoke suites + score/report)
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
 	@$(MAKE) ops-load-manifest-validate
-	@./scripts/perf/run_suites_from_manifest.py --profile load-ci --out artifacts/perf/results
-	@./scripts/perf/validate_results.py artifacts/perf/results
-	@./scripts/perf/score_k6.py || true
+	@./ops/load/scripts/run_suites_from_manifest.py --profile load-ci --out artifacts/perf/results
+	@./ops/load/scripts/validate_results.py artifacts/perf/results
+	@./ops/load/scripts/score_k6.py || true
 	@./ops/load/reports/generate.py
 
 ops-load-nightly: ## Load nightly profile (nightly suites + score/report)
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
 	@$(MAKE) ops-load-manifest-validate
-	@./scripts/perf/run_suites_from_manifest.py --profile load-nightly --out artifacts/perf/results
-	@./scripts/perf/validate_results.py artifacts/perf/results
-	@./scripts/perf/score_k6.py || true
+	@./ops/load/scripts/run_suites_from_manifest.py --profile load-nightly --out artifacts/perf/results
+	@./ops/load/scripts/validate_results.py artifacts/perf/results
+	@./ops/load/scripts/score_k6.py || true
 	@./ops/load/reports/generate.py
 
 ops-drill-store-outage: ## Run store outage drill under load
@@ -314,39 +314,39 @@ ops-kubeconform-version-check: ## Optional kubeconform version check (if install
 	@if command -v kubeconform >/dev/null 2>&1; then kubeconform -v; else echo "kubeconform not installed (optional)"; fi
 
 ops-perf-prepare-store: ## Perf helper: prepare local perf store fixture
-	@./scripts/perf/prepare_perf_store.sh
+	@./ops/load/scripts/prepare_perf_store.sh
 
 ops-perf-e2e: ## Perf helper: run e2e perf suite
 	@$(MAKE) ops-load-manifest-validate
-	@./scripts/perf/run_e2e_perf.sh
+	@./ops/load/scripts/run_e2e_perf.sh
 
 ops-perf-nightly: ## Perf helper: run nightly perf suite
 	@$(MAKE) ops-load-manifest-validate
-	@./scripts/perf/run_nightly_perf.sh
+	@./ops/load/scripts/run_nightly_perf.sh
 
 ops-perf-report: ## Generate perf markdown + baseline report from artifacts
-	@./scripts/perf/generate_report.py
+	@./ops/load/scripts/generate_report.py
 	@./ops/load/reports/generate.py
 
 ops-perf-cold-start: ## Perf helper: run cold-start benchmark
-	@./scripts/perf/cold_start_benchmark.sh
+	@./ops/load/scripts/cold_start_benchmark.sh
 
 ops-perf-cold-start-prefetch-5pods: ## Perf helper: run 5-pod prefetch cold-start benchmark
-	@./scripts/perf/cold_start_prefetch_5pods.sh
+	@./ops/load/scripts/cold_start_prefetch_5pods.sh
 
 ops-perf-compare-redis: ## Perf helper: compare Redis-on vs Redis-off perf runs
-	@ATLAS_ENABLE_REDIS_EXPERIMENT=1 ./scripts/perf/validate_suite_manifest.py
-	@./scripts/perf/compare_redis.sh
+	@ATLAS_ENABLE_REDIS_EXPERIMENT=1 ./ops/load/scripts/validate_suite_manifest.py
+	@./ops/load/scripts/compare_redis.sh
 
 ops-baseline-policy-check: ## Enforce explicit approval policy for baseline updates
-	@./scripts/perf/check_baseline_update_policy.sh
+	@./ops/load/scripts/check_baseline_update_policy.sh
 
 ops-perf-baseline-update: ## Update named baseline from artifacts/perf/baseline.json (requires approval for commit)
-	@./scripts/perf/update_baseline.sh "$${ATLAS_PERF_BASELINE_PROFILE:-local}"
+	@./ops/load/scripts/update_baseline.sh "$${ATLAS_PERF_BASELINE_PROFILE:-local}"
 
 ops-load-manifest-validate: ## Validate load suite SSOT, naming conventions, and pinned query lock
-	@./scripts/perf/validate_suite_manifest.py
-	@./scripts/perf/check_runbook_suite_names.py
+	@./ops/load/scripts/validate_suite_manifest.py
+	@./ops/load/scripts/check_runbook_suite_names.py
 
 ops-perf-suite: ## Perf helper: run an arbitrary perf suite (SCENARIO=<file.js> OUT=<dir>)
 	@[ -n "$$SCENARIO" ] || { echo "usage: make ops-perf-suite SCENARIO=<file.js> [OUT=artifacts/perf/results]" >&2; exit 2; }
@@ -461,7 +461,7 @@ e2e-k8s-suite:
 	@$(MAKE) ops-k8s-tests
 
 e2e-perf:
-	@./scripts/perf/run_e2e_perf.sh
+	@./ops/load/scripts/run_e2e_perf.sh
 
 e2e-realdata:
 	@./ops/e2e/realdata/run_all.sh

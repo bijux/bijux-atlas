@@ -172,13 +172,13 @@ load-test-1000qps:
 	@k6 run ops/load/k6/atlas_1000qps.js
 
 perf-nightly:
-	@./scripts/perf/run_nightly_perf.sh
+	@./ops/load/scripts/run_nightly_perf.sh
 
 query-plan-gate:
 	@./scripts/query-plan-gate.sh
 
 cold-start-bench:
-	@./scripts/perf/cold_start_benchmark.sh
+	@./ops/load/scripts/cold_start_benchmark.sh
 
 memory-profile-load:
 	@echo "runbook: docs/runbooks/memory-profile-under-load.md"

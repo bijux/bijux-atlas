@@ -1,21 +1,14 @@
 #!/usr/bin/env python3
-import json
-import sys
+# Purpose: public compatibility wrapper for perf tooling script.
+# Inputs: command-line args and env vars.
+# Outputs: delegates execution to canonical ops/load/scripts implementation.
+# Owner: performance
+# Stability: public
 from pathlib import Path
+import runpy
+import sys
 
-root = Path(__file__).resolve().parents[2]
-manifest = json.loads((root / "ops/load/suites/suites.json").read_text())
-runbook = (root / "docs/operations/runbooks/load-failure-triage.md").read_text()
-missing = []
-for suite in manifest.get("suites", []):
-    name = suite.get("name")
-    if name and name not in runbook:
-        missing.append(name)
-
-if missing:
-    print("runbook missing suite names:", file=sys.stderr)
-    for name in missing:
-        print(f"- {name}", file=sys.stderr)
-    raise SystemExit(1)
-
-print("runbook suite-name coverage passed")
+ROOT = Path(__file__).resolve().parents[2]
+TARGET = ROOT / "ops" / "load" / "scripts" / Path(__file__).name
+sys.path.insert(0, str(TARGET.parent))
+runpy.run_path(str(TARGET), run_name="__main__")
