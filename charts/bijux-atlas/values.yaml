@@ -95,6 +95,7 @@ store:
   endpoint: ""
   s3PresignedBaseUrl: ""
   credentialsSecretName: ""
+  manageCredentialsSecret: true
 
 networkPolicy:
   enabled: true
