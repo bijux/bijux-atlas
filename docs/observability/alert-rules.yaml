@@ -27,6 +27,17 @@ groups:
           summary: "v1/genes p95 latency above SLO"
           description: "p95 latency above 800ms for 15m."
 
+      - alert: BijuxAtlasP99LatencyRegression
+        expr: |
+          bijux_http_request_latency_p99_seconds{subsystem="atlas",route="/v1/genes"} > 1.2
+        for: 15m
+        labels:
+          severity: page
+          subsystem: atlas
+        annotations:
+          summary: "v1/genes p99 latency above SLO"
+          description: "p99 latency above 1.2s for 15m."
+
       - alert: BijuxAtlasStoreDownloadFailures
         expr: increase(bijux_store_download_failure_total{subsystem="atlas"}[10m]) > 5
         for: 10m

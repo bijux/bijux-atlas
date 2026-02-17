@@ -47,3 +47,12 @@ Rate-limit fairness comparison:
 - Run one pass with `ATLAS_ENABLE_REDIS_RATE_LIMIT=false` (per-pod buckets).
 - Run one pass with `ATLAS_ENABLE_REDIS_RATE_LIMIT=true` (shared Redis buckets).
 - Compare 429 distribution across pods/keys to evaluate fairness improvement.
+
+## Shared rate-limit backend (optional)
+
+Atlas supports optional Redis-backed shared rate limits across pods:
+- `ATLAS_ENABLE_REDIS_RATE_LIMIT=true`
+- `ATLAS_REDIS_URL=redis://...`
+
+If Redis is unavailable, Atlas falls back to in-process limiting and continues serving.
+This backend is optional and not required for correctness.
