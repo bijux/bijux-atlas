@@ -1392,3 +1392,33 @@ pub use store::fake::FakeStore;
 
 #[cfg(test)]
 mod cache_manager_tests;
+
+#[cfg(test)]
+mod bulkhead_tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn heavy_bulkhead_saturation_does_not_block_cheap_permits() {
+        let store = Arc::new(FakeStore::default());
+        let cache = DatasetCacheManager::new(DatasetCacheConfig::default(), store);
+        let api = ApiConfig {
+            concurrency_cheap: 2,
+            concurrency_heavy: 1,
+            ..ApiConfig::default()
+        };
+        let state = AppState::with_config(cache, api, QueryLimits::default());
+
+        let heavy = state
+            .class_heavy
+            .clone()
+            .try_acquire_owned()
+            .expect("heavy permit");
+        let cheap = state
+            .class_cheap
+            .clone()
+            .try_acquire_owned()
+            .expect("cheap should remain available");
+
+        drop((heavy, cheap));
+    }
+}

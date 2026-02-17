@@ -52,6 +52,10 @@ harness = false
 name = "diff_merge"
 harness = false
 
+[[bench]]
+name = "bulkhead_tuning"
+harness = false
+
 [lib]
 path = "src/lib.rs"
 
