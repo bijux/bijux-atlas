@@ -17,6 +17,8 @@ Canonical operational filesystem surface and only entrypoint for ops workflows.
 - `ops/tool-versions.json`: pinned ops tool versions consumed by `make ops-tools-check`.
 - `ops/fixtures/`, `ops/datasets/`: pinned ops datasets and fixture metadata.
 - `ops/e2e/`: harness + runners only (tests and orchestration).
+- `ops/smoke/`: locked smoke query set + goldens + smoke report generator.
+- `ops/ui/`: helper scripts that print local service URLs.
 
 ## Run full stack
 

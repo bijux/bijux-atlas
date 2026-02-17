@@ -16,6 +16,8 @@ required_dirs=(
   "$OPS/fixtures"
   "$OPS/_lib"
   "$OPS/e2e"
+  "$OPS/smoke"
+  "$OPS/ui"
 )
 
 allowed_entries=(
@@ -27,7 +29,9 @@ allowed_entries=(
   "load"
   "observability"
   "stack"
+  "smoke"
   "tool-versions.json"
+  "ui"
   "README.md"
 )
 
