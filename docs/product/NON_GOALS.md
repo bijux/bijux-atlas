@@ -13,3 +13,4 @@ Atlas v1/v2 explicitly does not do the following:
 9. No guarantee of unrestricted heavy query execution under overload.
 10. No requirement for Redis as a hard dependency.
 11. No canonical transcript selection policy in v1 (reserved for v2).
+12. No sequence translation/alignment/variant projection in sequence v1 endpoints.
