@@ -8,3 +8,6 @@
 - Transcript v1 routes are included:
   - `/v1/genes/{gene_id}/transcripts`
   - `/v1/transcripts/{tx_id}`
+- Sequence v1 routes are included:
+  - `/v1/sequence/region`
+  - `/v1/genes/{gene_id}/sequence`

@@ -101,6 +101,42 @@ pub fn openapi_v1_spec() -> Value {
             }
           }
         },
+        "/v1/sequence/region": {
+          "get": {
+            "parameters": [
+              {"name":"release","in":"query","required":true,"schema":{"type":"string"}},
+              {"name":"species","in":"query","required":true,"schema":{"type":"string"}},
+              {"name":"assembly","in":"query","required":true,"schema":{"type":"string"}},
+              {"name":"region","in":"query","required":true,"schema":{"type":"string","pattern":"^[^:]+:[0-9]+-[0-9]+$"}},
+              {"name":"include_stats","in":"query","schema":{"type":"boolean"}}
+            ],
+            "responses": {
+              "200": {"description":"sequence payload"},
+              "304": {"description":"not modified"},
+              "400": {"description":"invalid query", "content":{"application/json":{"schema":{"$ref":"#/components/schemas/ApiError"}}}},
+              "401": {"description":"api key required for large sequence request", "content":{"application/json":{"schema":{"$ref":"#/components/schemas/ApiError"}}}},
+              "422": {"description":"region policy rejection", "content":{"application/json":{"schema":{"$ref":"#/components/schemas/ApiError"}}}},
+              "429": {"description":"rate limited", "content":{"application/json":{"schema":{"$ref":"#/components/schemas/ApiError"}}}}
+            }
+          }
+        },
+        "/v1/genes/{gene_id}/sequence": {
+          "get": {
+            "parameters": [
+              {"name":"gene_id","in":"path","required":true,"schema":{"type":"string"}},
+              {"name":"release","in":"query","required":true,"schema":{"type":"string"}},
+              {"name":"species","in":"query","required":true,"schema":{"type":"string"}},
+              {"name":"assembly","in":"query","required":true,"schema":{"type":"string"}},
+              {"name":"flank","in":"query","schema":{"type":"integer","minimum":0}},
+              {"name":"include_stats","in":"query","schema":{"type":"boolean"}}
+            ],
+            "responses": {
+              "200": {"description":"gene sequence payload"},
+              "404": {"description":"gene not found", "content":{"application/json":{"schema":{"$ref":"#/components/schemas/ApiError"}}}},
+              "422": {"description":"region policy rejection", "content":{"application/json":{"schema":{"$ref":"#/components/schemas/ApiError"}}}}
+            }
+          }
+        },
         "/v1/genes/{gene_id}/transcripts": {
           "get": {
             "parameters": [
