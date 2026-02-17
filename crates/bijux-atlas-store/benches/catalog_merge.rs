@@ -14,10 +14,11 @@ fn benchmark_catalog_merge(c: &mut Criterion) {
             };
             let assembly = if i % 3 == 0 { "GRCh38" } else { "GRCm39" };
             let dataset = DatasetId::new(&release, species, assembly).expect("dataset");
-            entries.push(CatalogEntry {
-                dataset,
-                manifest_sha256: format!("{:064x}", i),
-            });
+            entries.push(CatalogEntry::new(
+                dataset.clone(),
+                format!("{}/manifest.json", dataset.canonical_string()),
+                format!("{}/gene_summary.sqlite", dataset.canonical_string()),
+            ));
         }
         Catalog::new(entries)
     };
