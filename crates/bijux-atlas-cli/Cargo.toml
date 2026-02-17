@@ -11,10 +11,12 @@ bijux-atlas-model.workspace = true
 bijux-atlas-ingest.workspace = true
 bijux-atlas-store.workspace = true
 bijux-atlas-query.workspace = true
+bijux-atlas-policies.workspace = true
 clap = { version = "4", features = ["derive"] }
 clap_complete = "4"
 rusqlite = { version = "0.31", features = ["bundled"] }
 serde_json.workspace = true
+tar = "0.4"
 
 [dev-dependencies]
 assert_cmd = "2"

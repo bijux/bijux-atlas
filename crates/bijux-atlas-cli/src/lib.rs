@@ -1,6 +1,7 @@
 #![forbid(unsafe_code)]
 
 mod artifact_validation;
+mod commands;
 mod helpers;
 
 use bijux_atlas_core::{
@@ -17,6 +18,7 @@ use bijux_atlas_query::{
 };
 use clap::{error::ErrorKind, ArgAction, CommandFactory, Parser, Subcommand, ValueEnum};
 use clap_complete::{generate, Generator, Shell};
+use commands::{CatalogCommand, DatasetCommand};
 use rusqlite::Connection;
 use serde_json::{json, Value};
 use std::fs;
@@ -201,25 +203,6 @@ enum GeneIdentifierPolicyCli {
     Ensembl,
 }
 
-#[derive(Subcommand)]
-enum CatalogCommand {
-    Validate { path: PathBuf },
-}
-
-#[derive(Subcommand)]
-enum DatasetCommand {
-    Validate {
-        #[arg(long)]
-        root: PathBuf,
-        #[arg(long)]
-        release: String,
-        #[arg(long)]
-        species: String,
-        #[arg(long)]
-        assembly: String,
-    },
-}
-
 struct IngestCliArgs {
     gff3: PathBuf,
     fasta: PathBuf,
@@ -336,6 +319,24 @@ fn run_atlas_command(
             CatalogCommand::Validate { path } => {
                 artifact_validation::validate_catalog(path, output_mode).map_err(CliError::internal)
             }
+            CatalogCommand::Publish {
+                store_root,
+                catalog,
+            } => artifact_validation::publish_catalog(store_root, catalog, output_mode)
+                .map_err(CliError::internal),
+            CatalogCommand::Rollback {
+                store_root,
+                release,
+                species,
+                assembly,
+            } => artifact_validation::rollback_catalog(
+                store_root,
+                &release,
+                &species,
+                &assembly,
+                output_mode,
+            )
+            .map_err(CliError::internal),
         },
         AtlasCommand::Dataset { command } => match command {
             DatasetCommand::Validate {
@@ -351,6 +352,39 @@ fn run_atlas_command(
                 output_mode,
             )
             .map_err(CliError::internal),
+            DatasetCommand::Publish {
+                source_root,
+                store_root,
+                release,
+                species,
+                assembly,
+            } => artifact_validation::publish_dataset(
+                source_root,
+                store_root,
+                &release,
+                &species,
+                &assembly,
+                output_mode,
+            )
+            .map_err(CliError::internal),
+            DatasetCommand::Pack {
+                root,
+                release,
+                species,
+                assembly,
+                out,
+            } => artifact_validation::pack_dataset(
+                root,
+                &release,
+                &species,
+                &assembly,
+                out,
+                output_mode,
+            )
+            .map_err(CliError::internal),
+            DatasetCommand::VerifyPack { pack } => {
+                artifact_validation::verify_pack(pack, output_mode).map_err(CliError::internal)
+            }
         },
         AtlasCommand::Ingest {
             gff3,
