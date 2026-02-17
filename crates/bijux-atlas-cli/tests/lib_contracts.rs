@@ -35,6 +35,34 @@ fn command_surface_ssot_matches_doc() {
 }
 
 #[test]
+fn command_surface_contract_json_matches_doc() {
+    let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|p| p.parent())
+        .expect("workspace root")
+        .to_path_buf();
+    let contract_path = root.join("docs/contracts/CLI_COMMANDS.json");
+    let contract: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(contract_path).expect("read cli contract"))
+            .expect("parse cli contract");
+    let commands = contract
+        .get("commands")
+        .and_then(|v| v.as_array())
+        .expect("commands array")
+        .iter()
+        .map(|v| v.as_str().expect("string command").to_string())
+        .collect::<Vec<_>>();
+    let doc = std::fs::read_to_string(
+        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("docs/CLI_COMMAND_LIST.md"),
+    )
+    .expect("read command list")
+    .lines()
+    .map(ToString::to_string)
+    .collect::<Vec<_>>();
+    assert_eq!(commands, doc);
+}
+
+#[test]
 fn help_output_command_surface_matches_doc_exactly() {
     fn parse_commands_from_help(text: &str) -> Vec<String> {
         let mut out = Vec::new();
