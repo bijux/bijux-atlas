@@ -167,7 +167,14 @@ ops-k8s-tests: ## Run k8s e2e suite
 	@$(MAKE) -s ops-env-validate
 	@python3 ./scripts/ops/check_k8s_test_contract.py
 	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck
-	@group_args=""; \
+	@lock_dir="artifacts/ops/locks/ops-k8s-tests.lock"; \
+	mkdir -p "artifacts/ops/locks"; \
+	if ! mkdir "$$lock_dir" 2>/dev/null; then \
+	  echo "ops-k8s-tests is already running (lock: $$lock_dir)" >&2; \
+	  exit 1; \
+	fi; \
+	trap 'rmdir "$$lock_dir" >/dev/null 2>&1 || true' EXIT INT TERM; \
+	group_args=""; \
 	if [ -n "$${ATLAS_E2E_TEST_GROUP}" ]; then \
 	  group_args="$$group_args --group $${ATLAS_E2E_TEST_GROUP}"; \
 	fi; \
