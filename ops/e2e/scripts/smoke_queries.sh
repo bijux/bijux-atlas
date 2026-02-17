@@ -1,17 +1,24 @@
-#!/usr/bin/env sh
-set -eu
+#!/usr/bin/env bash
+set -euo pipefail
 
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
+source "$ROOT/ops/_lib/common.sh"
 BASE_URL="${ATLAS_E2E_BASE_URL:-http://127.0.0.1:18080}"
 NS="${ATLAS_E2E_NAMESPACE:-atlas-e2e}"
 RELEASE="${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
 LOCAL_PORT="${ATLAS_E2E_LOCAL_PORT:-18080}"
 CURL="curl --connect-timeout 2 --max-time 5 -fsS"
+SMOKE_DIR="$(ops_artifact_dir smoke)"
+PF_LOG="$SMOKE_DIR/port-forward.log"
+OUT="$SMOKE_DIR/requests.log"
+: > "$OUT"
 
 if ! $CURL "$BASE_URL/healthz" >/dev/null 2>&1; then
-  POD="$(kubectl -n "$NS" get pods -l app.kubernetes.io/instance="$RELEASE" --field-selector=status.phase=Running -o name | tail -n1 | cut -d/ -f2)"
-  kubectl -n "$NS" port-forward "pod/$POD" "$LOCAL_PORT:8080" >/tmp/atlas-smoke-port-forward.log 2>&1 &
+  POD="$(ops_kubectl -n "$NS" get pods -l app.kubernetes.io/instance="$RELEASE" --field-selector=status.phase=Running -o name | tail -n1 | cut -d/ -f2)"
+  ops_kubectl -n "$NS" port-forward "pod/$POD" "$LOCAL_PORT:8080" >"$PF_LOG" 2>&1 &
   PF_PID=$!
   trap 'kill "$PF_PID" >/dev/null 2>&1 || true' EXIT INT TERM
+  trap 'ops_kubectl_dump_bundle "$NS" "$(ops_artifact_dir failure-bundle)"' ERR
   BASE_URL="http://127.0.0.1:$LOCAL_PORT"
   for _ in 1 2 3 4 5 6 7 8 9 10; do
     if $CURL "$BASE_URL/healthz" >/dev/null 2>&1; then
@@ -60,5 +67,5 @@ for q in $queries; do
     /healthz|/readyz) [ -n "$body" ] ;;
     *) [ -n "$body" ] ;;
   esac
-  echo "ok $q"
+  echo "ok $q" | tee -a "$OUT"
 done

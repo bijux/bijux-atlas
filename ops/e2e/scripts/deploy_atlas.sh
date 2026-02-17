@@ -1,7 +1,8 @@
-#!/usr/bin/env sh
-set -eu
+#!/usr/bin/env bash
+set -euo pipefail
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
+source "$ROOT/ops/_lib/common.sh"
 RELEASE="${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
 NS="${ATLAS_E2E_NAMESPACE:-atlas-e2e}"
 VALUES="${ATLAS_E2E_VALUES_FILE:-$ROOT/ops/k8s/values/local.yaml}"
@@ -30,22 +31,23 @@ if [ "$USE_LOCAL_IMAGE" = "1" ]; then
   fi
 fi
 
-if kubectl get ns "$NS" >/dev/null 2>&1; then
-  if [ -n "$(kubectl get ns "$NS" -o jsonpath='{.metadata.deletionTimestamp}' 2>/dev/null)" ]; then
+if ops_kubectl get ns "$NS" >/dev/null 2>&1; then
+  if [ -n "$(ops_kubectl get ns "$NS" -o jsonpath='{.metadata.deletionTimestamp}' 2>/dev/null)" ]; then
     echo "namespace $NS is terminating; waiting for deletion to complete..."
     for _ in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24; do
-      if ! kubectl get ns "$NS" >/dev/null 2>&1; then
+      if ! ops_kubectl get ns "$NS" >/dev/null 2>&1; then
         break
       fi
       sleep 5
     done
-    if kubectl get ns "$NS" >/dev/null 2>&1 && [ -n "$(kubectl get ns "$NS" -o jsonpath='{.metadata.deletionTimestamp}' 2>/dev/null)" ]; then
+    if ops_kubectl get ns "$NS" >/dev/null 2>&1 && [ -n "$(ops_kubectl get ns "$NS" -o jsonpath='{.metadata.deletionTimestamp}' 2>/dev/null)" ]; then
       echo "namespace $NS is still terminating after timeout" >&2
+      ops_kubectl_dump_bundle "$NS" "$(ops_artifact_dir failure-bundle)"
       exit 1
     fi
   fi
 fi
-kubectl get ns "$NS" >/dev/null 2>&1 || kubectl create ns "$NS"
+ops_kubectl get ns "$NS" >/dev/null 2>&1 || ops_kubectl create ns "$NS"
 
 if [ "$USE_LOCAL_IMAGE" = "1" ]; then
   if ! docker image inspect "$LOCAL_IMAGE_REF" >/dev/null 2>&1; then
@@ -53,7 +55,7 @@ if [ "$USE_LOCAL_IMAGE" = "1" ]; then
   fi
   kind load docker-image "$LOCAL_IMAGE_REF" --name "$CLUSTER_NAME"
   if [ "$HELM_WAIT" = "1" ]; then
-    helm upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
+    ops_helm_retry "$NS" "$RELEASE" upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
       --namespace "$NS" \
       -f "$VALUES" \
       --wait --timeout "$HELM_TIMEOUT" \
@@ -61,7 +63,7 @@ if [ "$USE_LOCAL_IMAGE" = "1" ]; then
       --set image.tag="${LOCAL_IMAGE_REF#*:}" \
       --set image.pullPolicy=IfNotPresent
   else
-    helm upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
+    ops_helm_retry "$NS" "$RELEASE" upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
       --namespace "$NS" \
       -f "$VALUES" \
       --set image.repository="${LOCAL_IMAGE_REF%:*}" \
@@ -70,12 +72,12 @@ if [ "$USE_LOCAL_IMAGE" = "1" ]; then
   fi
 else
   if [ "$HELM_WAIT" = "1" ]; then
-    helm upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
+    ops_helm_retry "$NS" "$RELEASE" upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
       --namespace "$NS" \
       -f "$VALUES" \
       --wait --timeout "$HELM_TIMEOUT"
   else
-    helm upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
+    ops_helm_retry "$NS" "$RELEASE" upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
       --namespace "$NS" \
       -f "$VALUES"
   fi

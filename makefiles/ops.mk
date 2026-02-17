@@ -80,6 +80,7 @@ ops-publish: ## Compatibility alias for ops-publish-medium
 
 ops-deploy: ## Deploy atlas chart into local cluster
 	@$(MAKE) -s ops-env-validate
+	@$(MAKE) docker-build
 	@./ops/e2e/scripts/deploy_atlas.sh
 
 ops-offline: ## Deploy atlas in cached-only offline profile
@@ -165,6 +166,7 @@ ops-load-smoke: ## Run short load suite
 	@./ops/load/scripts/check_pinned_queries_lock.py
 	@$(MAKE) ops-load-prereqs
 	@./ops/load/scripts/run_suites_from_manifest.py --profile smoke --out artifacts/perf/results
+	@./ops/load/scripts/score_k6.py || true
 	@./ops/load/scripts/validate_results.py artifacts/perf/results
 
 ops-load-full: ## Run nightly/full load suites
@@ -443,34 +445,40 @@ ops-ci-nightly: ## Compatibility alias for ops-ci
 
 
 ops-full: ## Full local ops flow: up->deploy->warm->smoke->k8s-tests->load-smoke->obs-validate
-	@$(MAKE) ops-up
-	@$(MAKE) ops-deploy
-	@$(MAKE) ops-publish
-	@$(MAKE) ops-warm
-	@$(MAKE) ops-smoke || $(MAKE) ops-smoke
-	@$(MAKE) ops-k8s-tests
-	@$(MAKE) ops-load-smoke
-	@$(MAKE) ops-observability-validate
+	@set -e; \
+	trap 'echo "ops-full failed; collecting failure bundle"; $(MAKE) ops-stack-health-report; $(MAKE) ops-report' ERR; \
+	$(MAKE) ops-up; \
+	$(MAKE) ops-deploy; \
+	$(MAKE) ops-publish; \
+	$(MAKE) ops-warm; \
+	$(MAKE) ops-smoke || $(MAKE) ops-smoke; \
+	$(MAKE) ops-k8s-tests; \
+	$(MAKE) ops-load-smoke; \
+	$(MAKE) ops-observability-validate
 
 ops-full-pr: ## Lightweight PR flow for ops validation
-	@$(MAKE) ops-up
-	@$(MAKE) ops-deploy
-	@$(MAKE) ops-publish
-	@$(MAKE) ops-warm
-	@$(MAKE) ops-smoke || $(MAKE) ops-smoke
-	@ATLAS_E2E_TEST_GROUP=install $(MAKE) ops-k8s-tests
-	@$(MAKE) ops-load-ci
+	@set -e; \
+	trap 'echo "ops-full-pr failed; collecting failure bundle"; $(MAKE) ops-stack-health-report; $(MAKE) ops-report' ERR; \
+	$(MAKE) ops-up; \
+	$(MAKE) ops-deploy; \
+	$(MAKE) ops-publish; \
+	$(MAKE) ops-warm; \
+	$(MAKE) ops-smoke || $(MAKE) ops-smoke; \
+	ATLAS_E2E_TEST_GROUP=install $(MAKE) ops-k8s-tests; \
+	$(MAKE) ops-load-ci
 
 ops-full-nightly: ## Nightly full flow incl. realdata and full load suites
-	@$(MAKE) ops-up
-	@$(MAKE) ops-deploy
-	@$(MAKE) ops-publish
-	@$(MAKE) ops-warm
-	@$(MAKE) ops-smoke || $(MAKE) ops-smoke
-	@$(MAKE) ops-k8s-tests
-	@$(MAKE) ops-realdata
-	@$(MAKE) ops-load-nightly
-	@$(MAKE) ops-observability-validate
+	@set -e; \
+	trap 'echo "ops-full-nightly failed; collecting failure bundle"; $(MAKE) ops-stack-health-report; $(MAKE) ops-report' ERR; \
+	$(MAKE) ops-up; \
+	$(MAKE) ops-deploy; \
+	$(MAKE) ops-publish; \
+	$(MAKE) ops-warm; \
+	$(MAKE) ops-smoke || $(MAKE) ops-smoke; \
+	$(MAKE) ops-k8s-tests; \
+	$(MAKE) ops-realdata; \
+	$(MAKE) ops-load-nightly; \
+	$(MAKE) ops-observability-validate
 
 ops-clean: ## Local cleanup of ops outputs and test namespaces
 	@kubectl delete ns "$${ATLAS_NS}" --ignore-not-found >/dev/null 2>&1 || true
