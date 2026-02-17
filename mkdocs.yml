@@ -143,6 +143,8 @@ nav:
       - Terms Glossary: _style/terms-glossary.md
       - Structure Templates: _style/structure-templates.md
       - Naming Standard: _style/naming-standard.md
+      - Concept Registry: _style/CONCEPT_REGISTRY.md
+      - Concept Graph: _generated/concepts.md
       - Depth Policy: _style/DEPTH_POLICY.md
       - Cargo Workflow: development/cargo.md
       - CI:

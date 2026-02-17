@@ -23,6 +23,11 @@ Use this page as the only docs entrypoint.
 
 Generated artifacts are published under [docs/_generated/](_generated/INDEX.md).
 
+## Find a Concept
+
+- Concept registry: [docs/_style/CONCEPT_REGISTRY.md](_style/CONCEPT_REGISTRY.md)
+- Concept graph: [docs/_generated/concepts.md](_generated/concepts.md)
+
 ## What
 
 Section overview.

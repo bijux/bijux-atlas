@@ -14,6 +14,8 @@ _docs-venv:
 docs: ## Build docs + link-check + spell-check + lint
 	@if [ ! -x "$(DOCS_VENV)/bin/mkdocs" ]; then $(MAKE) _docs-venv; fi
 	@"$(DOCS_VENV)/bin/pip" install -r "$(DOCS_REQ)" >/dev/null
+	@python3 scripts/docs/generate_concept_graph.py
+	@python3 scripts/docs/check_concept_registry.py
 	@"$(DOCS_VENV)/bin/mkdocs" build --strict --config-file mkdocs.yml --site-dir "$(DOCS_SITE)"
 	@"$(DOCS_VENV)/bin/python" scripts/docs/check_mkdocs_site_links.py "$(DOCS_SITE)"
 	@"$(DOCS_VENV)/bin/python" scripts/docs/spellcheck_docs.py docs

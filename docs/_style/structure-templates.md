@@ -43,3 +43,16 @@
 5. `## Mitigations`
 6. `## Rollback`
 7. `## Postmortem checklist`
+
+## Pointer Page Template
+
+1. `Concept IDs: <id list>`
+2. `Canonical page: <path-to-canonical-page>`
+3. `## What`
+4. `## Why`
+5. `## Scope`
+6. `## Non-goals`
+7. `## Contracts`
+8. `## Failure modes`
+9. `## How to verify`
+10. `## See also`
