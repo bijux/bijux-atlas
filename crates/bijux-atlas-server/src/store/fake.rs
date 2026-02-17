@@ -9,6 +9,8 @@ pub struct FakeStore {
     pub catalog: Mutex<Catalog>,
     pub manifest: Mutex<HashMap<DatasetId, ArtifactManifest>>,
     pub sqlite: Mutex<HashMap<DatasetId, Vec<u8>>>,
+    pub fasta: Mutex<HashMap<DatasetId, Vec<u8>>>,
+    pub fai: Mutex<HashMap<DatasetId, Vec<u8>>>,
     pub fetch_calls: std::sync::atomic::AtomicU64,
     pub etag: Mutex<String>,
     pub slow_read: bool,
@@ -21,6 +23,8 @@ impl Default for FakeStore {
             catalog: Mutex::new(Catalog::new(Vec::new())),
             manifest: Mutex::new(HashMap::new()),
             sqlite: Mutex::new(HashMap::new()),
+            fasta: Mutex::new(HashMap::new()),
+            fai: Mutex::new(HashMap::new()),
             fetch_calls: std::sync::atomic::AtomicU64::new(0),
             etag: Mutex::new(String::new()),
             slow_read: false,
@@ -76,5 +80,23 @@ impl DatasetStoreBackend for FakeStore {
             .get(dataset)
             .cloned()
             .ok_or_else(|| CacheError("sqlite missing".to_string()))
+    }
+
+    async fn fetch_fasta_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError> {
+        self.fasta
+            .lock()
+            .await
+            .get(dataset)
+            .cloned()
+            .ok_or_else(|| CacheError("fasta missing".to_string()))
+    }
+
+    async fn fetch_fai_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError> {
+        self.fai
+            .lock()
+            .await
+            .get(dataset)
+            .cloned()
+            .ok_or_else(|| CacheError("fai missing".to_string()))
     }
 }

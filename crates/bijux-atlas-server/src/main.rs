@@ -44,6 +44,13 @@ fn env_usize(name: &str, default: usize) -> usize {
         .unwrap_or(default)
 }
 
+fn env_f64(name: &str, default: f64) -> f64 {
+    env::var(name)
+        .ok()
+        .and_then(|v| v.parse::<f64>().ok())
+        .unwrap_or(default)
+}
+
 fn env_duration_ms(name: &str, default_ms: u64) -> Duration {
     Duration::from_millis(env_u64(name, default_ms))
 }
@@ -213,6 +220,13 @@ async fn main() -> Result<(), String> {
             "ATLAS_CONTINUE_DOWNLOAD_ON_TIMEOUT_FOR_WARMUP",
             true,
         ),
+        max_sequence_bases: env_usize("ATLAS_MAX_SEQUENCE_BASES", 20_000),
+        sequence_api_key_required_bases: env_usize("ATLAS_SEQUENCE_API_KEY_REQUIRED_BASES", 5_000),
+        sequence_rate_limit_per_ip: bijux_atlas_server::RateLimitConfig {
+            capacity: env_f64("ATLAS_SEQUENCE_RATE_LIMIT_CAPACITY", 15.0),
+            refill_per_sec: env_f64("ATLAS_SEQUENCE_RATE_LIMIT_REFILL_PER_SEC", 5.0),
+        },
+        sequence_ttl: env_duration_ms("ATLAS_SEQUENCE_TTL_MS", 300_000),
         ..ApiConfig::default()
     };
 

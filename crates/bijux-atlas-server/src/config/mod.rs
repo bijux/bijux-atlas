@@ -57,6 +57,10 @@ pub struct ApiConfig {
     pub enable_cheap_only_survival: bool,
     pub allow_min_viable_response: bool,
     pub continue_download_on_request_timeout_for_warmup: bool,
+    pub max_sequence_bases: usize,
+    pub sequence_api_key_required_bases: usize,
+    pub sequence_rate_limit_per_ip: RateLimitConfig,
+    pub sequence_ttl: Duration,
 }
 
 impl Default for ApiConfig {
@@ -103,6 +107,13 @@ impl Default for ApiConfig {
             enable_cheap_only_survival: false,
             allow_min_viable_response: true,
             continue_download_on_request_timeout_for_warmup: true,
+            max_sequence_bases: 20_000,
+            sequence_api_key_required_bases: 5_000,
+            sequence_rate_limit_per_ip: RateLimitConfig {
+                capacity: 15.0,
+                refill_per_sec: 5.0,
+            },
+            sequence_ttl: Duration::from_secs(300),
         }
     }
 }

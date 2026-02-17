@@ -222,6 +222,8 @@ pub trait DatasetStoreBackend: Send + Sync + 'static {
     async fn fetch_catalog(&self, if_none_match: Option<&str>) -> Result<CatalogFetch, CacheError>;
     async fn fetch_manifest(&self, dataset: &DatasetId) -> Result<ArtifactManifest, CacheError>;
     async fn fetch_sqlite_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError>;
+    async fn fetch_fasta_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError>;
+    async fn fetch_fai_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError>;
 }
 
 pub enum CatalogFetch {
@@ -445,6 +447,41 @@ impl DatasetCacheManager {
             last_open_seconds_ago,
             size_bytes,
         })
+    }
+
+    pub async fn ensure_sequence_inputs_cached(
+        &self,
+        dataset: &DatasetId,
+    ) -> Result<(PathBuf, PathBuf), CacheError> {
+        self.ensure_dataset_cached(dataset).await?;
+        let paths = artifact_paths(Path::new(&self.cfg.disk_root), dataset);
+        if paths.fasta.exists() && paths.fai.exists() {
+            return Ok((paths.fasta, paths.fai));
+        }
+        if self.cfg.cached_only_mode {
+            return Err(CacheError(
+                "sequence inputs missing from cache and cached-only mode is enabled".to_string(),
+            ));
+        }
+        if self.cfg.read_only_fs {
+            return Err(CacheError(
+                "sequence inputs missing from cache and read-only filesystem mode is enabled"
+                    .to_string(),
+            ));
+        }
+        let manifest = self.store.fetch_manifest(dataset).await?;
+        let fasta = self.store.fetch_fasta_bytes(dataset).await?;
+        let fai = self.store.fetch_fai_bytes(dataset).await?;
+        if sha256_hex(&fasta) != manifest.checksums.fasta_sha256 {
+            return Err(CacheError("fasta checksum verification failed".to_string()));
+        }
+        if sha256_hex(&fai) != manifest.checksums.fai_sha256 {
+            return Err(CacheError("fai checksum verification failed".to_string()));
+        }
+        std::fs::create_dir_all(&paths.inputs_dir).map_err(|e| CacheError(e.to_string()))?;
+        std::fs::write(&paths.fasta, fasta).map_err(|e| CacheError(e.to_string()))?;
+        std::fs::write(&paths.fai, fai).map_err(|e| CacheError(e.to_string()))?;
+        Ok((paths.fasta, paths.fai))
     }
 
     pub async fn open_dataset_connection(
@@ -949,6 +986,7 @@ pub struct AppState {
     pub ready: Arc<AtomicBool>,
     pub accepting_requests: Arc<AtomicBool>,
     pub(crate) ip_limiter: Arc<RateLimiter>,
+    pub(crate) sequence_ip_limiter: Arc<RateLimiter>,
     pub(crate) api_key_limiter: Arc<RateLimiter>,
     pub(crate) class_cheap: Arc<Semaphore>,
     pub(crate) class_medium: Arc<Semaphore>,
@@ -999,6 +1037,16 @@ impl AppState {
                 },
                 "ip",
             )),
+            sequence_ip_limiter: Arc::new(RateLimiter::new(
+                if api.enable_redis_rate_limit {
+                    api.redis_url.as_deref().and_then(|u| {
+                        RedisBackend::new(u, &api.redis_prefix, redis_policy.clone()).ok()
+                    })
+                } else {
+                    None
+                },
+                "sequence_ip",
+            )),
             api_key_limiter: Arc::new(RateLimiter::new(
                 if api.enable_redis_rate_limit {
                     api.redis_url.as_deref().and_then(|u| {
@@ -1041,6 +1089,14 @@ pub fn build_router(state: AppState) -> Router {
         )
         .route("/v1/genes", get(http::handlers::genes_handler))
         .route("/v1/genes/count", get(http::handlers::genes_count_handler))
+        .route(
+            "/v1/sequence/region",
+            get(http::sequence::sequence_region_handler),
+        )
+        .route(
+            "/v1/genes/:gene_id/sequence",
+            get(http::sequence::gene_sequence_handler),
+        )
         .route(
             "/v1/genes/:gene_id/transcripts",
             get(http::handlers::gene_transcripts_handler),

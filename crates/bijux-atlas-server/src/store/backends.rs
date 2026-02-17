@@ -62,6 +62,16 @@ impl DatasetStoreBackend for LocalFsBackend {
         let path = artifact_paths(Path::new(&self.root), dataset).sqlite;
         fs::read(path).map_err(|e| CacheError(format!("sqlite read failed: {e}")))
     }
+
+    async fn fetch_fasta_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError> {
+        let path = artifact_paths(Path::new(&self.root), dataset).fasta;
+        fs::read(path).map_err(|e| CacheError(format!("fasta read failed: {e}")))
+    }
+
+    async fn fetch_fai_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError> {
+        let path = artifact_paths(Path::new(&self.root), dataset).fai;
+        fs::read(path).map_err(|e| CacheError(format!("fai read failed: {e}")))
+    }
 }
 
 pub struct S3LikeBackend {
@@ -93,6 +103,14 @@ impl S3LikeBackend {
         let base = self.presigned_base_url.as_deref().unwrap_or(&self.base_url);
         format!(
             "{}/{}/{}/{}/derived/{}",
+            base, dataset.release, dataset.species, dataset.assembly, file
+        )
+    }
+
+    fn object_url_input(&self, dataset: &DatasetId, file: &str) -> String {
+        let base = self.presigned_base_url.as_deref().unwrap_or(&self.base_url);
+        format!(
+            "{}/{}/{}/{}/inputs/{}",
             base, dataset.release, dataset.species, dataset.assembly, file
         )
     }
@@ -254,5 +272,15 @@ impl DatasetStoreBackend for S3LikeBackend {
     async fn fetch_sqlite_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError> {
         let url = self.object_url(dataset, "gene_summary.sqlite");
         self.get_resume_with_retry(&url).await
+    }
+
+    async fn fetch_fasta_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError> {
+        let url = self.object_url_input(dataset, "genome.fa.bgz");
+        self.get_resume_with_retry(&url).await
+    }
+
+    async fn fetch_fai_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError> {
+        let url = self.object_url_input(dataset, "genome.fa.bgz.fai");
+        self.get_with_retry(&url).await
     }
 }
