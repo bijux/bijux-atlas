@@ -2,6 +2,7 @@ use serde_json::{json, Value};
 
 #[must_use]
 pub fn openapi_v1_spec() -> Value {
+    let error_codes = crate::generated::error_codes::API_ERROR_CODES;
     json!({
       "openapi": "3.0.3",
       "info": {
@@ -14,6 +15,11 @@ pub fn openapi_v1_spec() -> Value {
             "responses": {"200": {"description": "ok"}}
           }
         },
+        "/healthz/overload": {
+          "get": {
+            "responses": {"200": {"description": "overload status"}}
+          }
+        },
         "/readyz": {
           "get": {
             "responses": {
@@ -23,6 +29,11 @@ pub fn openapi_v1_spec() -> Value {
           }
         },
         "/metrics": {"get": {"responses": {"200": {"description": "prometheus metrics"}}}},
+        "/v1/version": {
+          "get": {
+            "responses": {"200": {"description": "plugin and service version metadata"}}
+          }
+        },
         "/v1/datasets": {
           "get": {
             "parameters": [
@@ -235,24 +246,21 @@ pub fn openapi_v1_spec() -> Value {
               "503": {"description": "health evaluation failed", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApiError"}}}}
             }
           }
+        },
+        "/debug/registry-health": {
+          "get": {
+            "responses": {
+              "200": {"description": "registry health and merge status"},
+              "404": {"description": "disabled"}
+            }
+          }
         }
       },
       "components": {
         "schemas": {
           "ApiErrorCode": {
             "type": "string",
-            "enum": [
-              "InvalidQueryParameter",
-              "MissingDatasetDimension",
-              "InvalidCursor",
-              "QueryRejectedByPolicy",
-              "RateLimited",
-              "Timeout",
-              "PayloadTooLarge",
-              "ResponseTooLarge",
-              "NotReady",
-              "Internal"
-            ]
+            "enum": error_codes
           },
           "ApiError": {
             "type": "object",

@@ -61,3 +61,21 @@ impl ApiError {
         )
     }
 }
+
+impl ApiErrorCode {
+    #[must_use]
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::InvalidQueryParameter => "InvalidQueryParameter",
+            Self::MissingDatasetDimension => "MissingDatasetDimension",
+            Self::InvalidCursor => "InvalidCursor",
+            Self::QueryRejectedByPolicy => "QueryRejectedByPolicy",
+            Self::RateLimited => "RateLimited",
+            Self::Timeout => "Timeout",
+            Self::PayloadTooLarge => "PayloadTooLarge",
+            Self::ResponseTooLarge => "ResponseTooLarge",
+            Self::NotReady => "NotReady",
+            Self::Internal => "Internal",
+        }
+    }
+}

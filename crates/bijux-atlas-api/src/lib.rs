@@ -12,6 +12,7 @@ pub const API_POLICY_LATEST_ALIAS: &str = LATEST_ALIAS_POLICY;
 pub const API_POLICY_NO_IMPLICIT_DEFAULT_DATASET: &str = NO_IMPLICIT_DEFAULT_DATASET_POLICY;
 
 pub mod errors;
+mod generated;
 pub mod openapi;
 pub mod params;
 pub mod responses;
@@ -169,5 +170,58 @@ mod tests {
             encoded,
             "{\"code\":\"InvalidQueryParameter\",\"message\":\"invalid query parameter: limit\",\"details\":{\"parameter\":\"limit\",\"value\":\"bad\"}}"
         );
+    }
+
+    #[test]
+    fn error_codes_match_generated_contract() {
+        let generated = crate::generated::error_codes::API_ERROR_CODES;
+        let from_enum = [
+            ApiErrorCode::Internal,
+            ApiErrorCode::InvalidCursor,
+            ApiErrorCode::InvalidQueryParameter,
+            ApiErrorCode::MissingDatasetDimension,
+            ApiErrorCode::NotReady,
+            ApiErrorCode::PayloadTooLarge,
+            ApiErrorCode::QueryRejectedByPolicy,
+            ApiErrorCode::RateLimited,
+            ApiErrorCode::ResponseTooLarge,
+            ApiErrorCode::Timeout,
+        ]
+        .map(ApiErrorCode::as_str);
+        assert_eq!(generated, from_enum);
+    }
+
+    #[test]
+    fn openapi_paths_match_endpoint_contract() {
+        let spec = openapi_v1_spec();
+        let spec_paths = spec
+            .get("paths")
+            .and_then(serde_json::Value::as_object)
+            .expect("openapi paths object");
+
+        let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .and_then(|p| p.parent())
+            .expect("workspace root")
+            .to_path_buf();
+        let contract: serde_json::Value = serde_json::from_slice(
+            &std::fs::read(root.join("docs/contracts/ENDPOINTS.json"))
+                .expect("read endpoints contract"),
+        )
+        .expect("parse endpoints contract");
+        let expected = contract
+            .get("endpoints")
+            .and_then(serde_json::Value::as_array)
+            .expect("endpoints array")
+            .iter()
+            .map(|e| {
+                e.get("path")
+                    .and_then(serde_json::Value::as_str)
+                    .expect("path")
+                    .to_string()
+            })
+            .collect::<std::collections::BTreeSet<_>>();
+        let observed = spec_paths.keys().cloned().collect::<std::collections::BTreeSet<_>>();
+        assert_eq!(observed, expected);
     }
 }
