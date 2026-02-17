@@ -227,6 +227,58 @@ fn parse_region_opt(raw: Option<String>) -> Option<RegionFilter> {
     })
 }
 
+pub(crate) async fn landing_handler(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+) -> impl IntoResponse {
+    let started = Instant::now();
+    let request_id = propagated_request_id(&headers, &state);
+    let _ = state.cache.refresh_catalog().await;
+    let catalog = state
+        .cache
+        .current_catalog()
+        .await
+        .unwrap_or_else(|| Catalog::new(vec![]));
+    let mut list = String::new();
+    for entry in &catalog.datasets {
+        let ds = &entry.dataset;
+        let canon = ds.canonical_string();
+        list.push_str(&format!(
+            "<li><code>{canon}</code> - <a href=\"/v1/genes/count?release={}&species={}&assembly={}\">genes/count</a></li>",
+            ds.release, ds.species, ds.assembly
+        ));
+    }
+    if list.is_empty() {
+        list.push_str("<li>No datasets published yet.</li>");
+    }
+    let html = format!(
+        "<!doctype html><html><head><meta charset=\"utf-8\"><title>Bijux Atlas</title></head><body>\
+<h1>Bijux Atlas Dataset Browser</h1>\
+<p>Version: <code>{}</code></p>\
+<h2>Datasets</h2><ul>{}</ul>\
+<h2>Example Queries</h2>\
+<ul>\
+<li><a href=\"/v1/datasets\">/v1/datasets</a></li>\
+<li><a href=\"/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&limit=5\">/v1/genes?...&limit=5</a></li>\
+<li><a href=\"/v1/diff/genes?from_release=109&to_release=110&species=homo_sapiens&assembly=GRCh38&limit=10\">/v1/diff/genes?...&limit=10</a></li>\
+</ul>\
+</body></html>",
+        env!("CARGO_PKG_VERSION"),
+        list
+    );
+    let mut resp = Response::new(Body::from(html));
+    *resp.status_mut() = StatusCode::OK;
+    resp.headers_mut().insert(
+        "content-type",
+        HeaderValue::from_static("text/html; charset=utf-8"),
+    );
+    state
+        .metrics
+        .observe_request("/", StatusCode::OK, started.elapsed())
+        .await;
+    with_request_id(resp, &request_id)
+}
+
 pub(crate) async fn healthz_handler(State(state): State<AppState>) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();

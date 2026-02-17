@@ -3,7 +3,8 @@
 use async_trait::async_trait;
 use axum::body::Body;
 use axum::extract::{DefaultBodyLimit, State};
-use axum::http::{HeaderMap, HeaderValue, StatusCode};
+use axum::http::{HeaderMap, HeaderValue, Request, StatusCode, Uri};
+use axum::middleware::{from_fn, Next};
 use axum::response::{IntoResponse, Response};
 use axum::routing::get;
 use axum::{Json, Router};
@@ -220,6 +221,69 @@ fn chrono_like_unix_millis() -> u128 {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .map_or(0, |d| d.as_millis())
+}
+
+fn parse_dataset_from_uri(uri: &Uri) -> Option<DatasetId> {
+    let path = uri.path();
+    let mut release: Option<String> = None;
+    let mut species: Option<String> = None;
+    let mut assembly: Option<String> = None;
+
+    if let Some(q) = uri.query() {
+        for part in q.split('&') {
+            let mut kv = part.splitn(2, '=');
+            let k = kv.next().unwrap_or_default();
+            let v = kv.next().unwrap_or_default();
+            match k {
+                "release" => release = Some(v.to_string()),
+                "species" => species = Some(v.to_string()),
+                "assembly" => assembly = Some(v.to_string()),
+                _ => {}
+            }
+        }
+    }
+
+    if release.is_none() || species.is_none() || assembly.is_none() {
+        let seg: Vec<&str> = path.split('/').collect();
+        if seg.len() >= 8 && seg.get(1) == Some(&"v1") && seg.get(2) == Some(&"releases") {
+            release = seg.get(3).map(|x| (*x).to_string());
+            if seg.get(4) == Some(&"species") {
+                species = seg.get(5).map(|x| (*x).to_string());
+            }
+            if seg.get(6) == Some(&"assemblies") {
+                assembly = seg.get(7).map(|x| (*x).to_string());
+            }
+        }
+    }
+
+    DatasetId::new(
+        release.as_deref().unwrap_or_default(),
+        species.as_deref().unwrap_or_default(),
+        assembly.as_deref().unwrap_or_default(),
+    )
+    .ok()
+}
+
+async fn provenance_headers_middleware(req: Request<Body>, next: Next) -> Response {
+    let dataset = parse_dataset_from_uri(req.uri());
+    let mut resp = next.run(req).await;
+
+    let (dataset_hash, release) = if let Some(ds) = dataset {
+        (
+            sha256_hex(ds.canonical_string().as_bytes()),
+            ds.release.to_string(),
+        )
+    } else {
+        ("unknown".to_string(), "unknown".to_string())
+    };
+
+    if let Ok(v) = HeaderValue::from_str(&dataset_hash) {
+        resp.headers_mut().insert("x-atlas-dataset-hash", v);
+    }
+    if let Ok(v) = HeaderValue::from_str(&release) {
+        resp.headers_mut().insert("x-atlas-release", v);
+    }
+    resp
 }
 
 pub use config::{ApiConfig, RateLimitConfig};
@@ -1186,6 +1250,7 @@ impl AppState {
 
 pub fn build_router(state: AppState) -> Router {
     Router::new()
+        .route("/", get(http::handlers::landing_handler))
         .route("/healthz", get(http::handlers::healthz_handler))
         .route("/readyz", get(http::handlers::readyz_handler))
         .route("/metrics", get(http::handlers::metrics_handler))
@@ -1223,6 +1288,7 @@ pub fn build_router(state: AppState) -> Router {
             "/debug/dataset-health",
             get(http::handlers::dataset_health_handler),
         )
+        .layer(from_fn(provenance_headers_middleware))
         .layer(DefaultBodyLimit::max(state.api.max_body_bytes))
         .with_state(state)
 }
