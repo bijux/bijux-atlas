@@ -37,5 +37,6 @@ if [ "$ENABLE_TOXIPROXY" = "1" ]; then
 fi
 
 "$ROOT/ops/stack/minio/bootstrap.sh"
+"$ROOT/ops/stack/scripts/wait_ready.sh" "${ATLAS_E2E_NAMESPACE:-atlas-e2e}" "${ATLAS_E2E_TIMEOUT:-180s}"
 
 echo "e2e stack is up"
