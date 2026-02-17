@@ -4,6 +4,7 @@ use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, ETAG, IF_NONE_MATCH, RANGE};
 use std::fs;
+use std::net::IpAddr;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
@@ -31,6 +32,31 @@ impl LocalFsBackend {
     pub fn new(root: PathBuf) -> Self {
         Self { root }
     }
+
+    fn safe_dataset_paths(
+        &self,
+        dataset: &DatasetId,
+    ) -> Result<bijux_atlas_model::ArtifactPaths, CacheError> {
+        let paths = artifact_paths(Path::new(&self.root), dataset);
+        Ok(paths)
+    }
+
+    fn read_safe(&self, path: &Path) -> Result<Vec<u8>, CacheError> {
+        let root = self
+            .root
+            .canonicalize()
+            .unwrap_or_else(|_| self.root.clone());
+        let parent = path
+            .parent()
+            .ok_or_else(|| CacheError("path traversal blocked: missing parent".to_string()))?;
+        let canonical_parent = parent
+            .canonicalize()
+            .map_err(|e| CacheError(format!("path traversal check failed: {e}")))?;
+        if !canonical_parent.starts_with(&root) {
+            return Err(CacheError("path traversal blocked".to_string()));
+        }
+        fs::read(path).map_err(|e| CacheError(format!("read failed: {e}")))
+    }
 }
 
 #[async_trait]
@@ -48,8 +74,10 @@ impl DatasetStoreBackend for LocalFsBackend {
     }
 
     async fn fetch_manifest(&self, dataset: &DatasetId) -> Result<ArtifactManifest, CacheError> {
-        let path = artifact_paths(Path::new(&self.root), dataset).manifest;
-        let bytes = fs::read(path).map_err(|e| CacheError(format!("manifest read failed: {e}")))?;
+        let path = self.safe_dataset_paths(dataset)?.manifest;
+        let bytes = self
+            .read_safe(&path)
+            .map_err(|e| CacheError(format!("manifest read failed: {e}")))?;
         let manifest: ArtifactManifest = serde_json::from_slice(&bytes)
             .map_err(|e| CacheError(format!("manifest parse failed: {e}")))?;
         manifest
@@ -59,26 +87,30 @@ impl DatasetStoreBackend for LocalFsBackend {
     }
 
     async fn fetch_sqlite_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError> {
-        let path = artifact_paths(Path::new(&self.root), dataset).sqlite;
-        fs::read(path).map_err(|e| CacheError(format!("sqlite read failed: {e}")))
+        let path = self.safe_dataset_paths(dataset)?.sqlite;
+        self.read_safe(&path)
+            .map_err(|e| CacheError(format!("sqlite read failed: {e}")))
     }
 
     async fn fetch_fasta_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError> {
-        let path = artifact_paths(Path::new(&self.root), dataset).fasta;
-        fs::read(path).map_err(|e| CacheError(format!("fasta read failed: {e}")))
+        let path = self.safe_dataset_paths(dataset)?.fasta;
+        self.read_safe(&path)
+            .map_err(|e| CacheError(format!("fasta read failed: {e}")))
     }
 
     async fn fetch_fai_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError> {
-        let path = artifact_paths(Path::new(&self.root), dataset).fai;
-        fs::read(path).map_err(|e| CacheError(format!("fai read failed: {e}")))
+        let path = self.safe_dataset_paths(dataset)?.fai;
+        self.read_safe(&path)
+            .map_err(|e| CacheError(format!("fai read failed: {e}")))
     }
 
     async fn fetch_release_gene_index_bytes(
         &self,
         dataset: &DatasetId,
     ) -> Result<Vec<u8>, CacheError> {
-        let path = artifact_paths(Path::new(&self.root), dataset).release_gene_index;
-        fs::read(path).map_err(|e| CacheError(format!("release gene index read failed: {e}")))
+        let path = self.safe_dataset_paths(dataset)?.release_gene_index;
+        self.read_safe(&path)
+            .map_err(|e| CacheError(format!("release gene index read failed: {e}")))
     }
 }
 
@@ -87,6 +119,7 @@ pub struct S3LikeBackend {
     presigned_base_url: Option<String>,
     auth_bearer: Option<String>,
     retry: RetryPolicy,
+    allow_private_hosts: bool,
 }
 
 impl S3LikeBackend {
@@ -96,6 +129,7 @@ impl S3LikeBackend {
         presigned_base_url: Option<String>,
         auth_bearer: Option<String>,
         retry: RetryPolicy,
+        allow_private_hosts: bool,
     ) -> Self {
         Self {
             base_url: base_url.trim_end_matches('/').to_string(),
@@ -104,6 +138,7 @@ impl S3LikeBackend {
                 .filter(|x| !x.is_empty()),
             auth_bearer,
             retry,
+            allow_private_hosts,
         }
     }
 
@@ -126,8 +161,33 @@ impl S3LikeBackend {
     fn client(&self) -> reqwest::Client {
         reqwest::Client::builder()
             .timeout(Duration::from_secs(15))
+            .redirect(reqwest::redirect::Policy::none())
             .build()
             .expect("reqwest client build")
+    }
+
+    fn validate_url(&self, url: &str) -> Result<(), CacheError> {
+        let parsed =
+            reqwest::Url::parse(url).map_err(|e| CacheError(format!("invalid store url: {e}")))?;
+        let host = parsed
+            .host_str()
+            .ok_or_else(|| CacheError("store url missing host".to_string()))?
+            .to_ascii_lowercase();
+        if !self.allow_private_hosts && (host == "localhost" || host.ends_with(".localhost")) {
+            return Err(CacheError("blocked store host: localhost".to_string()));
+        }
+        if let Ok(ip) = host.parse::<IpAddr>() {
+            let private = match ip {
+                IpAddr::V4(v4) => {
+                    v4.is_private() || v4.is_loopback() || v4.is_link_local() || v4.is_broadcast()
+                }
+                IpAddr::V6(v6) => v6.is_loopback() || v6.is_unspecified() || v6.is_unique_local(),
+            };
+            if private && !self.allow_private_hosts {
+                return Err(CacheError("blocked private store host".to_string()));
+            }
+        }
+        Ok(())
     }
 
     fn auth_headers(&self) -> Result<HeaderMap, CacheError> {
@@ -141,6 +201,7 @@ impl S3LikeBackend {
     }
 
     async fn get_with_retry(&self, url: &str) -> Result<Vec<u8>, CacheError> {
+        self.validate_url(url)?;
         let client = self.client();
         let headers = self.auth_headers()?;
         let mut attempt = 0;
@@ -181,6 +242,7 @@ impl S3LikeBackend {
         url: &str,
         if_none_match: Option<&str>,
     ) -> Result<CatalogFetch, CacheError> {
+        self.validate_url(url)?;
         let client = self.client();
         let base_headers = self.auth_headers()?;
         let mut attempt = 0;
@@ -235,6 +297,7 @@ impl S3LikeBackend {
     }
 
     async fn get_resume_with_retry(&self, url: &str) -> Result<Vec<u8>, CacheError> {
+        self.validate_url(url)?;
         let client = self.client();
         let base_headers = self.auth_headers()?;
         let mut attempt = 0;

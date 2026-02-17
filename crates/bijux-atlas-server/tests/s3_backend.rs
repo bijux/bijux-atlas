@@ -5,7 +5,9 @@ use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::{
     ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
 };
-use bijux_atlas_server::{CatalogFetch, DatasetStoreBackend, RetryPolicy, S3LikeBackend};
+use bijux_atlas_server::{
+    CatalogFetch, DatasetStoreBackend, LocalFsBackend, RetryPolicy, S3LikeBackend,
+};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
 struct ServerState {
@@ -170,6 +172,7 @@ async fn s3_like_backend_supports_retry_and_resume_download() {
             max_attempts: 4,
             base_backoff_ms: 10,
         },
+        true,
     );
 
     let fetch = backend
@@ -205,4 +208,47 @@ async fn s3_like_backend_supports_retry_and_resume_download() {
         .await
         .expect("sqlite bytes via resume");
     assert_eq!(sqlite, sqlite_bytes);
+}
+
+#[tokio::test]
+async fn s3_like_backend_blocks_private_hosts_by_default() {
+    let ds = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
+    let backend = S3LikeBackend::new(
+        "http://127.0.0.1:1".to_string(),
+        None,
+        None,
+        RetryPolicy {
+            max_attempts: 1,
+            base_backoff_ms: 1,
+        },
+        false,
+    );
+    let err = backend
+        .fetch_manifest(&ds)
+        .await
+        .expect_err("private host should be blocked");
+    assert!(err.to_string().contains("blocked private store host"));
+}
+
+#[cfg(unix)]
+#[tokio::test]
+async fn local_fs_backend_blocks_symlink_path_traversal() {
+    use std::os::unix::fs::symlink;
+
+    let ds = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
+    let tmp = tempfile::tempdir().expect("tmp");
+    let outside = tempfile::tempdir().expect("outside");
+    let paths = bijux_atlas_model::artifact_paths(tmp.path(), &ds);
+    std::fs::create_dir_all(paths.dataset_root.parent().expect("dataset parent"))
+        .expect("create parent");
+    symlink(outside.path(), &paths.dataset_root).expect("symlink dataset root");
+    std::fs::create_dir_all(paths.derived_dir.clone()).expect("create derived under symlink");
+    std::fs::write(&paths.manifest, b"{}").expect("write manifest");
+
+    let backend = LocalFsBackend::new(tmp.path().to_path_buf());
+    let err = backend
+        .fetch_manifest(&ds)
+        .await
+        .expect_err("must block traversal via symlink");
+    assert!(err.to_string().contains("path traversal blocked"));
 }

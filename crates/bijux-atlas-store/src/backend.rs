@@ -8,6 +8,7 @@ use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
 use std::fs::{self, File, OpenOptions};
 use std::io::Write;
+use std::net::IpAddr;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -308,7 +309,10 @@ impl HttpReadonlyStore {
             base_url,
             cached_only_mode: false,
             cache_root: None,
-            client: Client::new(),
+            client: Client::builder()
+                .redirect(reqwest::redirect::Policy::none())
+                .build()
+                .unwrap_or_else(|_| Client::new()),
             etags: Arc::new(Mutex::new(HashMap::new())),
             catalog_state: Arc::new(Mutex::new(CatalogCacheState::default())),
             instrumentation: Arc::new(NoopInstrumentation),
@@ -352,6 +356,7 @@ impl HttpReadonlyStore {
                 "cached-only mode enabled without cache root",
             ));
         }
+        Self::validate_url(url)?;
 
         let started = Instant::now();
         let mut req = self.client.get(url);
@@ -369,6 +374,36 @@ impl HttpReadonlyStore {
         self.instrumentation
             .observe_download("http", bytes.len(), started.elapsed());
         Ok(bytes)
+    }
+
+    fn validate_url(url: &str) -> Result<(), StoreError> {
+        let parsed = reqwest::Url::parse(url)
+            .map_err(|e| StoreError::new(StoreErrorCode::Validation, e.to_string()))?;
+        let host = parsed
+            .host_str()
+            .ok_or_else(|| StoreError::new(StoreErrorCode::Validation, "missing host"))?
+            .to_ascii_lowercase();
+        if host == "localhost" || host.ends_with(".localhost") {
+            return Err(StoreError::new(
+                StoreErrorCode::Validation,
+                "blocked localhost host",
+            ));
+        }
+        if let Ok(ip) = host.parse::<IpAddr>() {
+            let blocked = match ip {
+                IpAddr::V4(v4) => {
+                    v4.is_private() || v4.is_loopback() || v4.is_link_local() || v4.is_broadcast()
+                }
+                IpAddr::V6(v6) => v6.is_loopback() || v6.is_unspecified() || v6.is_unique_local(),
+            };
+            if blocked {
+                return Err(StoreError::new(
+                    StoreErrorCode::Validation,
+                    "blocked private host",
+                ));
+            }
+        }
+        Ok(())
     }
 }
 
