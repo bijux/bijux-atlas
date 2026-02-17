@@ -15,7 +15,9 @@ use bijux_atlas_model::{
 use diff_index::build_and_write_release_gene_index;
 use extract::extract_gene_rows;
 use gff3::parse_gff3_records;
-use manifest::{build_and_write_manifest_and_reports, BuildManifestArgs};
+use manifest::{
+    build_and_write_manifest_and_reports, write_qc_and_anomaly_reports_only, BuildManifestArgs,
+};
 use sqlite::{explain_plan_for_region_query, write_sharded_sqlite_catalog, write_sqlite};
 use std::fmt::{Display, Formatter};
 use std::fs;
@@ -50,6 +52,7 @@ pub struct IngestOptions {
     pub emit_shards: bool,
     pub shard_partitions: usize,
     pub compute_gene_signatures: bool,
+    pub report_only: bool,
     pub fail_on_warn: bool,
     pub allow_overlap_gene_ids_across_contigs: bool,
 }
@@ -75,6 +78,7 @@ impl Default for IngestOptions {
             emit_shards: false,
             shard_partitions: 0,
             compute_gene_signatures: true,
+            report_only: false,
         }
     }
 }
@@ -107,6 +111,46 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
     let paths = artifact_paths(&opts.output_root, &opts.dataset);
     fs::create_dir_all(&paths.inputs_dir).map_err(|e| IngestError(e.to_string()))?;
     fs::create_dir_all(&paths.derived_dir).map_err(|e| IngestError(e.to_string()))?;
+
+    if opts.report_only {
+        let qc_report_path = write_qc_and_anomaly_reports_only(
+            &opts.output_root,
+            &opts.dataset,
+            &paths.anomaly_report,
+            &extracted,
+        )?;
+        let manifest = bijux_atlas_model::ArtifactManifest::new(
+            "1".to_string(),
+            "report-only".to_string(),
+            opts.dataset.clone(),
+            bijux_atlas_model::ArtifactChecksums::new(
+                String::new(),
+                String::new(),
+                String::new(),
+                String::new(),
+            ),
+            bijux_atlas_model::ManifestStats::new(
+                extracted.gene_rows.len() as u64,
+                extracted
+                    .gene_rows
+                    .iter()
+                    .map(|x| x.transcript_count)
+                    .sum::<u64>(),
+                extracted.contig_distribution.len() as u64,
+            ),
+        );
+        return Ok(IngestResult {
+            manifest_path: paths.manifest,
+            sqlite_path: paths.sqlite,
+            anomaly_report_path: paths.anomaly_report,
+            qc_report_path,
+            release_gene_index_path: paths.release_gene_index,
+            shard_catalog_path: None,
+            shard_catalog: None,
+            manifest,
+            anomaly_report: extracted.anomaly,
+        });
+    }
 
     fs::copy(&opts.gff3_path, &paths.gff3).map_err(|e| IngestError(e.to_string()))?;
     fs::copy(&opts.fasta_path, &paths.fasta).map_err(|e| IngestError(e.to_string()))?;
@@ -213,6 +257,7 @@ mod tests {
             emit_shards: false,
             shard_partitions: 0,
             compute_gene_signatures: true,
+            report_only: false,
         }
     }
 
@@ -279,6 +324,18 @@ mod tests {
         o.fail_on_warn = true;
         let err = ingest_dataset(&o).expect_err("strict warn must fail");
         assert!(err.to_string().contains("QC WARN"));
+    }
+
+    #[test]
+    fn report_only_writes_qc_and_anomaly_without_sqlite_manifest() {
+        let root = tempdir().expect("tempdir");
+        let mut o = opts(root.path(), StrictnessMode::ReportOnly);
+        o.report_only = true;
+        let out = ingest_dataset(&o).expect("report-only ingest");
+        assert!(out.qc_report_path.exists());
+        assert!(out.anomaly_report_path.exists());
+        assert!(!out.sqlite_path.exists());
+        assert!(!out.manifest_path.exists());
     }
 
     #[test]

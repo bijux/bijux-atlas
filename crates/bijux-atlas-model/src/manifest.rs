@@ -63,6 +63,10 @@ pub struct ArtifactManifest {
     pub dataset_signature_sha256: String,
     #[serde(default)]
     pub schema_evolution_note: String,
+    #[serde(default)]
+    pub ingest_toolchain: String,
+    #[serde(default)]
+    pub ingest_build_hash: String,
     #[serde(default = "default_derived_column_origins")]
     pub derived_column_origins: BTreeMap<String, String>,
 }
@@ -85,6 +89,8 @@ impl ArtifactManifest {
             dataset_signature_sha256: String::new(),
             schema_evolution_note:
                 "v1 schema: additive-only evolution; existing fields remain stable".to_string(),
+            ingest_toolchain: String::new(),
+            ingest_build_hash: String::new(),
             derived_column_origins: default_derived_column_origins(),
         }
     }

@@ -66,6 +66,10 @@ pub fn build_and_write_manifest_and_reports(
         ),
     );
     manifest.dataset_signature_sha256 = dataset_signature_merkle(extract)?;
+    manifest.ingest_toolchain = option_env!("RUSTUP_TOOLCHAIN")
+        .unwrap_or("unknown")
+        .to_string();
+    manifest.ingest_build_hash = option_env!("BIJUX_BUILD_HASH").unwrap_or("dev").to_string();
 
     manifest
         .validate_strict()
@@ -163,6 +167,106 @@ pub fn build_and_write_manifest_and_reports(
         manifest,
         qc_report_path,
     })
+}
+
+pub fn write_qc_and_anomaly_reports_only(
+    output_root: &Path,
+    dataset: &DatasetId,
+    anomaly_path: &Path,
+    extract: &ExtractResult,
+) -> Result<PathBuf, IngestError> {
+    let mut total_transcripts = 0_u64;
+    let mut contigs = BTreeSet::new();
+    for g in &extract.gene_rows {
+        total_transcripts += g.transcript_count;
+        contigs.insert(g.seqid.clone());
+    }
+
+    let anomaly_bytes =
+        canonical::stable_json_bytes(&extract.anomaly).map_err(|e| IngestError(e.to_string()))?;
+    fs::write(anomaly_path, anomaly_bytes).map_err(|e| IngestError(e.to_string()))?;
+
+    let warn_items = vec![
+        ("missing_parents", extract.anomaly.missing_parents.len()),
+        (
+            "missing_transcript_parents",
+            extract.anomaly.missing_transcript_parents.len(),
+        ),
+        (
+            "multiple_parent_transcripts",
+            extract.anomaly.multiple_parent_transcripts.len(),
+        ),
+        ("unknown_contigs", extract.anomaly.unknown_contigs.len()),
+        ("overlapping_ids", extract.anomaly.overlapping_ids.len()),
+        (
+            "duplicate_gene_ids",
+            extract.anomaly.duplicate_gene_ids.len(),
+        ),
+        (
+            "overlapping_gene_ids_across_contigs",
+            extract.anomaly.overlapping_gene_ids_across_contigs.len(),
+        ),
+        (
+            "orphan_transcripts",
+            extract.anomaly.orphan_transcripts.len(),
+        ),
+        ("parent_cycles", extract.anomaly.parent_cycles.len()),
+        (
+            "attribute_fallbacks",
+            extract.anomaly.attribute_fallbacks.len(),
+        ),
+    ];
+    let warn_codes: Vec<serde_json::Value> = warn_items
+        .into_iter()
+        .filter(|(_, count)| *count > 0)
+        .map(|(code, count)| {
+            json!({
+                "severity": QcSeverity::Warn,
+                "code": code,
+                "count": count,
+            })
+        })
+        .collect();
+
+    let qc_report = json!({
+        "dataset": dataset,
+        "report_only": true,
+        "manifest_signature_sha256": dataset_signature_merkle(extract)?,
+        "gene_count": extract.gene_rows.len(),
+        "transcript_count": total_transcripts,
+        "transcript_summary_count": extract.transcript_rows.len(),
+        "contig_count": contigs.len(),
+        "biotype_distribution": extract.biotype_distribution,
+        "contig_distribution": extract.contig_distribution,
+        "anomalies": {
+            "missing_parents": extract.anomaly.missing_parents,
+            "missing_transcript_parents": extract.anomaly.missing_transcript_parents,
+            "multiple_parent_transcripts": extract.anomaly.multiple_parent_transcripts,
+            "unknown_contigs": extract.anomaly.unknown_contigs,
+            "overlapping_ids": extract.anomaly.overlapping_ids,
+            "duplicate_gene_ids": extract.anomaly.duplicate_gene_ids,
+            "overlapping_gene_ids_across_contigs": extract.anomaly.overlapping_gene_ids_across_contigs,
+            "orphan_transcripts": extract.anomaly.orphan_transcripts,
+            "parent_cycles": extract.anomaly.parent_cycles,
+            "attribute_fallbacks": extract.anomaly.attribute_fallbacks,
+        },
+        "severity_summary": {
+            "INFO": 0,
+            "WARN": warn_codes.len(),
+            "ERROR": 0
+        },
+        "severity_items": warn_codes,
+    });
+    let qc_bytes =
+        canonical::stable_json_bytes(&qc_report).map_err(|e| IngestError(e.to_string()))?;
+    let qc_report_path = output_root
+        .join(format!("release={}", dataset.release))
+        .join(format!("species={}", dataset.species))
+        .join(format!("assembly={}", dataset.assembly))
+        .join("derived")
+        .join("qc_report.json");
+    fs::write(&qc_report_path, qc_bytes).map_err(|e| IngestError(e.to_string()))?;
+    Ok(qc_report_path)
 }
 
 fn dataset_signature_merkle(extract: &ExtractResult) -> Result<String, IngestError> {
