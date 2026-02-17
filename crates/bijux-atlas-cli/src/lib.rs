@@ -14,13 +14,15 @@ use bijux_atlas_model::{
     SeqidNormalizationPolicy, StrictnessMode, TranscriptTypePolicy,
 };
 use bijux_atlas_query::{
-    explain_query_plan, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits, RegionFilter,
+    classify_query, explain_query_plan, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits,
+    RegionFilter,
 };
 use clap::{error::ErrorKind, ArgAction, CommandFactory, Parser, Subcommand, ValueEnum};
 use clap_complete::{generate, Generator, Shell};
 use commands::{CatalogCommand, DatasetCommand};
 use rusqlite::Connection;
 use serde_json::{json, Value};
+use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
@@ -161,6 +163,22 @@ enum AtlasCommand {
         limit: usize,
         #[arg(long, default_value_t = false)]
         allow_full_scan: bool,
+    },
+    Explain {
+        #[arg(long)]
+        db: PathBuf,
+        #[arg(value_name = "QUERY")]
+        query: String,
+        #[arg(long, default_value_t = 50)]
+        limit: usize,
+        #[arg(long, default_value_t = false)]
+        allow_full_scan: bool,
+    },
+    Bench {
+        #[arg(long, default_value = "query-patterns")]
+        suite: String,
+        #[arg(long, default_value_t = false)]
+        enforce_baseline: bool,
     },
     Smoke {
         #[arg(long)]
@@ -475,6 +493,17 @@ fn run_atlas_command(
             output_mode,
         )
         .map_err(CliError::internal),
+        AtlasCommand::Explain {
+            db,
+            query,
+            limit,
+            allow_full_scan,
+        } => explain_query_from_query_text(db, &query, limit, allow_full_scan, output_mode)
+            .map_err(CliError::internal),
+        AtlasCommand::Bench {
+            suite,
+            enforce_baseline,
+        } => run_bench_command(&suite, enforce_baseline, output_mode).map_err(CliError::dependency),
         AtlasCommand::Smoke {
             root,
             dataset,
@@ -495,6 +524,90 @@ fn run_atlas_command(
         }
         .map_err(CliError::dependency),
     }
+}
+
+fn parse_query_text(query_text: &str) -> HashMap<String, String> {
+    query_text
+        .split('&')
+        .filter_map(|pair| {
+            let (k, v) = pair.split_once('=')?;
+            if k.is_empty() {
+                return None;
+            }
+            Some((k.to_string(), v.to_string()))
+        })
+        .collect()
+}
+
+fn explain_query_from_query_text(
+    db: PathBuf,
+    query_text: &str,
+    limit: usize,
+    allow_full_scan: bool,
+    output_mode: OutputMode,
+) -> Result<(), String> {
+    let parsed = parse_query_text(query_text);
+    explain_query(
+        ExplainQueryArgs {
+            db,
+            gene_id: parsed.get("gene_id").cloned(),
+            name: parsed.get("name").cloned(),
+            name_prefix: parsed.get("name_prefix").cloned(),
+            biotype: parsed.get("biotype").cloned(),
+            region: parsed.get("region").cloned(),
+            limit,
+            allow_full_scan,
+        },
+        output_mode,
+    )
+}
+
+fn run_bench_command(
+    suite: &str,
+    enforce_baseline: bool,
+    output_mode: OutputMode,
+) -> Result<(), String> {
+    let mut cmd = Command::new("cargo");
+    if enforce_baseline {
+        cmd.env("ATLAS_QUERY_BENCH_ENFORCE", "1");
+    }
+    match suite {
+        "query-patterns" => {
+            cmd.args(["bench", "-p", "bijux-atlas-query", "--bench", "query_patterns"]);
+        }
+        "server-cache" => {
+            cmd.args(["bench", "-p", "bijux-atlas-server", "--bench", "cache_manager"]);
+        }
+        "server-sequence" => {
+            cmd.args(["bench", "-p", "bijux-atlas-server", "--bench", "sequence_fetch"]);
+        }
+        "server-diff" => {
+            cmd.args(["bench", "-p", "bijux-atlas-server", "--bench", "diff_merge"]);
+        }
+        "server-bulkhead" => {
+            cmd.args(["bench", "-p", "bijux-atlas-server", "--bench", "bulkhead_tuning"]);
+        }
+        other => {
+            return Err(format!(
+                "unknown bench suite `{other}`; supported: query-patterns, server-cache, server-sequence, server-diff, server-bulkhead"
+            ));
+        }
+    }
+
+    let status = cmd.status().map_err(|e| format!("failed to run cargo bench: {e}"))?;
+    if !status.success() {
+        return Err(format!("benchmark command failed with status {status}"));
+    }
+    helpers::emit_ok(
+        output_mode,
+        json!({
+            "command":"atlas bench",
+            "suite": suite,
+            "status":"ok",
+            "enforce_baseline": enforce_baseline
+        }),
+    )?;
+    Ok(())
 }
 
 fn print_completion<G: Generator>(generator: G) {
@@ -905,12 +1018,16 @@ fn explain_query(args: ExplainQueryArgs, output_mode: OutputMode) -> Result<(), 
         cursor: None,
         allow_full_scan: args.allow_full_scan,
     };
+    let query_class = classify_query(&req);
+    let cost_units = bijux_atlas_query::estimate_work_units(&req);
     let lines = explain_query_plan(&conn, &req, &QueryLimits::default(), b"atlas-cli")
         .map_err(|e| e.to_string())?;
     helpers::emit_ok(
         output_mode,
         json!({
-            "command":"atlas explain-query",
+            "command":"atlas explain",
+            "query_class": format!("{query_class:?}"),
+            "estimated_cost_units": cost_units,
             "plan": lines
         }),
     )?;

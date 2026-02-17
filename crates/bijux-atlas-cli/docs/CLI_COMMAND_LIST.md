@@ -8,7 +8,9 @@ atlas dataset validate
 atlas dataset verify
 atlas dataset verify-pack
 atlas doctor
+atlas explain
 atlas explain-query
+atlas bench
 atlas ingest
 atlas inspect-db
 atlas openapi generate
