@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -eu
 
-ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 CLUSTER_NAME="${ATLAS_E2E_CLUSTER_NAME:-bijux-atlas-e2e}"
 ENABLE_REDIS="${ATLAS_E2E_ENABLE_REDIS:-0}"
 ENABLE_OTEL="${ATLAS_E2E_ENABLE_OTEL:-0}"

@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -eu
 
-ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 OUT_ROOT="${ATLAS_E2E_OUTPUT_ROOT:-$ROOT/artifacts/e2e-datasets}"
 STORE_ROOT="${ATLAS_E2E_STORE_ROOT:-$ROOT/artifacts/e2e-store}"
 
@@ -42,22 +42,33 @@ cargo run -q -p bijux-atlas-cli --bin bijux-atlas -- atlas ingest \
   --strictness strict \
   --max-threads 1
 
-CATALOG_PATH="${ATLAS_E2E_CATALOG_PATH:-$OUT_ROOT/catalog.json}"
-if [ ! -f "$CATALOG_PATH" ]; then
-  echo "catalog file not found: $CATALOG_PATH" >&2
-  echo "expected a generated catalog.json (or set ATLAS_E2E_CATALOG_PATH)" >&2
-  exit 1
+if ! publish_out="$(
+  cargo run -q -p bijux-atlas-cli --bin bijux-atlas -- atlas dataset publish \
+    --source-root "$OUT_ROOT" \
+    --store-root "$STORE_ROOT" \
+    --release "$RELEASE" \
+    --species "$SPECIES" \
+    --assembly "$ASSEMBLY" 2>&1
+)"; then
+  case "$publish_out" in
+    *"already published"*) : ;;
+    *)
+      echo "$publish_out" >&2
+      exit 1
+      ;;
+  esac
+else
+  echo "$publish_out"
 fi
 
-cargo run -q -p bijux-atlas-cli --bin bijux-atlas -- atlas catalog publish \
-  --store_root "$STORE_ROOT" \
-  --catalog "$CATALOG_PATH"
+CATALOG_PATH="${ATLAS_E2E_CATALOG_PATH:-$OUT_ROOT/catalog.json}"
+DATASET_PREFIX="release=$RELEASE/species=$SPECIES/assembly=$ASSEMBLY"
+cat >"$CATALOG_PATH" <<EOF
+{"datasets":[{"dataset":{"release":"$RELEASE","species":"$SPECIES","assembly":"$ASSEMBLY"},"manifest_path":"$DATASET_PREFIX/derived/manifest.json","sqlite_path":"$DATASET_PREFIX/derived/gene_summary.sqlite"}]}
+EOF
 
-cargo run -q -p bijux-atlas-cli --bin bijux-atlas -- atlas dataset publish \
-  --source-root "$OUT_ROOT" \
+cargo run -q -p bijux-atlas-cli --bin bijux-atlas -- atlas catalog publish \
   --store-root "$STORE_ROOT" \
-  --release "$RELEASE" \
-  --species "$SPECIES" \
-  --assembly "$ASSEMBLY"
+  --catalog "$CATALOG_PATH"
 
 echo "dataset published: $RELEASE/$SPECIES/$ASSEMBLY"
