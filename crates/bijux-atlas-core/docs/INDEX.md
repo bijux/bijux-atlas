@@ -23,3 +23,4 @@ Documentation map:
 - [Serialization policy](SERDE_POLICY.md)
 - [Design patterns](PATTERNS.md)
 - [Cargo deny notes](CARGO_DENY_NOTES.md)
+- [Purity contract](PURITY.md)
