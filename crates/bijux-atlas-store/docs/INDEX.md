@@ -15,5 +15,6 @@ Docs:
 - [Artifact contract](ARTIFACT_CONTRACT.md)
 - [Effects policy](EFFECTS.md)
 - [Caching semantics](CACHING.md)
+- [Failure modes](FAILURE_MODES.md)
 - [Rollback workflow](ROLLBACK.md)
 - [Store outage runbook snippet](RUNBOOK_SNIPPET.md)
