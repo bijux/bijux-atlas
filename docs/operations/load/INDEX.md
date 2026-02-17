@@ -26,7 +26,7 @@ Required k6 scenarios:
 
 - `mixed.json`
 - `spike.json`
-- `cold_start.json`
+- `cold-start.json`
 - `stampede.json`
 
 ## Failure modes

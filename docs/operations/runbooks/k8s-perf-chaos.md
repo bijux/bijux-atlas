@@ -15,7 +15,7 @@
 ## Commands
 
 ```bash
-$ k6 run ops/load/k6/suites/warm_steady.js
+$ k6 run ops/load/k6/suites/warm-steady.js
 $ kubectl delete pod -n default -l app.kubernetes.io/name=bijux-atlas --force --grace-period=0
 ```
 

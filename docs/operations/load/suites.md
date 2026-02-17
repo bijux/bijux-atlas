@@ -12,7 +12,7 @@ Makes performance scenarios explicit for PR and nightly gates.
 
 ## Scope
 
-Scenario files under `ops/e2e/k6/scenarios/*.json`.
+Scenario files under `ops/load/scenarios/*.json`.
 
 ## Non-goals
 
@@ -20,25 +20,29 @@ Does not duplicate k6 script implementation.
 
 ## Contracts
 
+- SSOT query set: `ops/load/queries/pinned-v1.json`
+- Query freeze lock: `ops/load/queries/pinned-v1.lock`
+- Suite manifest and budgets: `ops/load/suites/suites.json`
 - `mixed.json`: baseline mixed traffic distribution.
 - `spike.json`: burst overload behavior.
-- `cold_start.json`: startup latency budget.
+- `cold-start.json`: startup latency budget.
 - `stampede.json`: thundering herd dataset requests.
-- `store_outage.json`: store degradation behavior.
-- `pod_churn.json`: restart churn behavior.
-- `cheap_only_survival.json`: overload cheap-query survival.
-- `response_size_guardrails.json`: payload guard enforcement.
-- `multi_release.json`: cross-release query semantics.
-- `multi_dataset_hotset.json`: hotset cache behavior.
-- `large_dataset_simulation.json`: large dataset load profile.
-- `sharded_fanout.json`: shard fanout caps.
-- `redis_optional.json`: redis disabled fallback.
-- `catalog_federated.json`: federated registry behavior.
+- `store-outage.json`: store degradation behavior.
+- `pod-churn.json`: restart churn behavior.
+- `cheap-only-survival.json`: overload cheap-query survival.
+- `response-size-guardrails.json`: payload guard enforcement.
+- `multi-release.json`: cross-release query semantics.
+- `multi-dataset-hotset.json`: hotset cache behavior.
+- `large-dataset-simulation.json`: large dataset load profile.
+- `sharded-fanout.json`: shard fanout caps.
+- `redis-optional.json`: redis disabled fallback.
+- `catalog-federated.json`: federated registry behavior.
 
 ## Budgets
 
 - PR smoke suites must stay within short runtime budget.
 - Nightly suites enforce full SLO thresholds from `configs/slo/slo.json`.
+- `scripts/perf/score_k6.py` consumes both SLO policy and `suites.json` budgets.
 
 ## Failure modes
 
