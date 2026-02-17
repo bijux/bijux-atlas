@@ -13,6 +13,12 @@
 - `bijux_store_breaker_open`
 - `bijux_http_requests_total`
 
+## Dashboard Panels
+
+- `Store Open/Download p95`
+- `Dataset Cache Hit/Miss`
+- `HTTP Request Rate by Route/Status`
+
 ## Commands
 
 ```bash

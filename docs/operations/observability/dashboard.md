@@ -22,6 +22,7 @@ Does not define collector deployment topology.
 
 - Dashboard panels must reference metrics declared in [`docs/contracts/metrics.md`](../../contracts/metrics.md).
 - Panel labels must avoid user-controlled cardinality.
+- Dashboard JSON includes explicit `schemaVersion` and `version` fields.
 
 ## Failure modes
 

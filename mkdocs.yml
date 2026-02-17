@@ -149,6 +149,9 @@ nav:
           - Metric Cardinality: operations/observability/metric-cardinality-guardrails.md
           - Dashboard: operations/observability/dashboard.md
           - Alerts: operations/observability/alerts.md
+          - Acceptance Gates: operations/observability/acceptance-gates.md
+          - Modes: operations/observability/modes.md
+          - Trace Sampling Policy: operations/observability/trace-sampling-policy.md
   - Development:
       - Index: development/INDEX.md
       - Nav Policy: _nav/INDEX.md

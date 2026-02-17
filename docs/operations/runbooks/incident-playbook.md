@@ -12,6 +12,13 @@
 - `bijux_http_request_latency_p95_seconds`
 - `bijux_errors_total`
 
+## Dashboard Panels
+
+- `HTTP Request Rate by Route/Status`
+- `HTTP p95 Latency by Route`
+- `SLO Burn Rate (5xx, 5m/1h)`
+- `Dataset Cache Hit/Miss`
+
 ## Commands
 
 ```bash

@@ -1,5 +1,8 @@
 {
   "title": "Bijux Atlas Observability",
+  "uid": "bijux-atlas-observability-v1",
+  "schemaVersion": 39,
+  "version": 1,
   "timezone": "utc",
   "panels": [
     {

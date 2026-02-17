@@ -20,7 +20,14 @@ Does not duplicate page-level details.
 
 ## Contracts
 
-List and maintain links to section pages in this directory.
+- [SLO](slo.md)
+- [Tracing](tracing.md)
+- [Metric Cardinality Guardrails](metric-cardinality-guardrails.md)
+- [Dashboard](dashboard.md)
+- [Alerts](alerts.md)
+- [Acceptance Gates](acceptance-gates.md)
+- [Observability Modes](modes.md)
+- [Trace Sampling Policy](trace-sampling-policy.md)
 
 ## Failure modes
 
