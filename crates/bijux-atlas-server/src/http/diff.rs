@@ -112,8 +112,10 @@ fn resolve_explicit_release_alias(
     let mut candidates: Vec<String> = catalog
         .datasets
         .iter()
-        .filter(|x| x.dataset.species == species && x.dataset.assembly == assembly)
-        .map(|x| x.dataset.release.clone())
+        .filter(|x| {
+            x.dataset.species.as_str() == species && x.dataset.assembly.as_str() == assembly
+        })
+        .map(|x| x.dataset.release.as_str().to_string())
         .collect();
     if candidates.is_empty() {
         return None;
