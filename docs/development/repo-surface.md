@@ -28,7 +28,7 @@ Does not freeze internal implementation details.
   - `configs/` holds policy, rust, docs, and security config sources.
   - `configs/README.md` is the configuration layout contract.
   - Root config files are compatibility symlinks to `configs/*`.
-  - Root compatibility paths `ops/e2e/`, `ops/load/`, and `ops/observability/` must be symlink-only.
+  - Legacy root aliases (`charts`, `e2e`, `load`, `observability`, `datasets`, `fixtures`) are forbidden.
   - Root `charts/` is packaging-only; ops execution and tests run from `ops/`.
   - `.cargo/` remains at root because Cargo workspace config discovery expects it.
   - Operational results belong under `artifacts/ops/<run-id>/`.
@@ -55,5 +55,6 @@ Expected output: all checks pass.
 ## See also
 
 - [Development Index](INDEX.md)
+- [Repository Layout](repo-layout.md)
 - [Scripts Index](scripts/INDEX.md)
 - [Contracts Index](../contracts/INDEX.md)
