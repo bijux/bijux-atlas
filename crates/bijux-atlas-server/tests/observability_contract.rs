@@ -14,6 +14,7 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt};
 #[derive(Debug, Deserialize)]
 struct MetricsContract {
     required_metrics: HashMap<String, Vec<String>>,
+    required_spans: Vec<String>,
 }
 
 async fn send_raw(addr: std::net::SocketAddr, path: &str) -> (u16, String, String) {
@@ -76,12 +77,31 @@ async fn metrics_endpoint_matches_metrics_contract() {
     let addr = listener.local_addr().expect("local addr");
     tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
 
-    let (status, _, _) = send_raw(
-        addr,
+    for path in [
+        "/healthz",
+        "/healthz/overload",
+        "/readyz",
+        "/v1/version",
+        "/v1/datasets",
+        "/v1/releases/110/species/homo_sapiens/assemblies/GRCh38",
         "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&limit=1",
-    )
-    .await;
-    assert_eq!(status, 200);
+        "/v1/genes/count?release=110&species=homo_sapiens&assembly=GRCh38&biotype=pc",
+        "/v1/diff/genes?release=110&species=homo_sapiens&assembly=GRCh38&from_release=109&to_release=110&limit=1",
+        "/v1/diff/region?release=110&species=homo_sapiens&assembly=GRCh38&from_release=109&to_release=110&region=chr1:1-10&limit=1",
+        "/v1/sequence/region?release=110&species=homo_sapiens&assembly=GRCh38&region=chr1:1-10",
+        "/v1/genes/g1/sequence?release=110&species=homo_sapiens&assembly=GRCh38",
+        "/v1/genes/g1/transcripts?release=110&species=homo_sapiens&assembly=GRCh38&limit=1",
+        "/v1/transcripts/tx1?release=110&species=homo_sapiens&assembly=GRCh38",
+        "/debug/datasets",
+        "/debug/dataset-health?release=110&species=homo_sapiens&assembly=GRCh38",
+        "/debug/registry-health",
+    ] {
+        let (status, _, _) = send_raw(addr, path).await;
+        assert!(
+            matches!(status, 200 | 304 | 400 | 401 | 404 | 422 | 503),
+            "unexpected status {status} for {path}"
+        );
+    }
 
     let (status, _, body) = send_raw(addr, "/metrics").await;
     assert_eq!(status, 200);
@@ -107,6 +127,52 @@ async fn metrics_endpoint_matches_metrics_contract() {
                 "metric {metric} missing label {label}"
             );
         }
+    }
+
+    let endpoint_contract: serde_json::Value = serde_json::from_slice(
+        &std::fs::read(root.join("docs/contracts/ENDPOINTS.json")).expect("read endpoints"),
+    )
+    .expect("parse endpoints");
+    let server_sources = [
+        root.join("crates/bijux-atlas-server/src/runtime/server_runtime_app.rs"),
+        root.join("crates/bijux-atlas-server/src/http/genes.rs"),
+        root.join("crates/bijux-atlas-server/src/http/handlers.rs"),
+        root.join("crates/bijux-atlas-server/src/http/diff.rs"),
+        root.join("crates/bijux-atlas-server/src/http/sequence.rs"),
+        root.join("crates/bijux-atlas-server/src/http/transcript_endpoints.rs"),
+        root.join("crates/bijux-atlas-server/src/http/handlers_endpoints.rs"),
+        root.join("crates/bijux-atlas-server/src/http/handlers_utilities.rs"),
+    ];
+    let source_concat = server_sources
+        .iter()
+        .map(|p| std::fs::read_to_string(p).expect("read server source"))
+        .collect::<Vec<_>>()
+        .join("\n");
+    for path in endpoint_contract["endpoints"]
+        .as_array()
+        .expect("endpoints array")
+        .iter()
+        .map(|e| e["path"].as_str().expect("path"))
+    {
+        assert!(
+            source_concat.contains(path) || source_concat.contains(&path.replace("{", ":").replace('}', "")),
+            "endpoint route not referenced in server sources: {path}"
+        );
+    }
+    assert!(
+        source_concat.contains("observe_request("),
+        "server sources must emit request metrics"
+    );
+
+    let trace_generated = std::fs::read_to_string(
+        root.join("crates/bijux-atlas-server/src/telemetry/generated/trace_spans_contract.rs"),
+    )
+    .expect("read generated spans");
+    for span in contract.required_spans {
+        assert!(
+            trace_generated.contains(&format!("\"{span}\"")),
+            "required span missing from generated span constants: {span}"
+        );
     }
 }
 
