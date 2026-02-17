@@ -194,6 +194,14 @@ pub(super) fn record_overload_cheap(state: &AppState, class: QueryClass, overloa
     }
 }
 
+pub(super) fn adaptive_rl_factor(state: &AppState, overloaded_early: bool) -> f64 {
+    if overloaded_early {
+        state.api.adaptive_rate_limit_factor
+    } else {
+        1.0
+    }
+}
+
 pub(super) fn cap_heavy_limit(
     req: &mut GeneQueryRequest,
     state: &AppState,

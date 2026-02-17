@@ -37,11 +37,7 @@ pub(crate) async fn genes_handler(
     }
     info!(request_id = %request_id, "request start");
     let overloaded_early = crate::middleware::shedding::overloaded(&state).await;
-    let adaptive_rl = if overloaded_early {
-        state.api.adaptive_rate_limit_factor
-    } else {
-        1.0
-    };
+    let adaptive_rl = super::genes_support::adaptive_rl_factor(&state, overloaded_early);
 
     if let Some(ip) = super::handlers::normalized_forwarded_for(&headers) {
         if !state
@@ -113,7 +109,6 @@ pub(crate) async fn genes_handler(
     let class = classify_query(&req);
     let estimated_cost = estimate_work_units(&req);
     if estimated_cost >= 50 {
-        // Structured sample log for high-cost query profiling.
         info!(
             request_id = %request_id,
             route = "/v1/genes",
@@ -123,6 +118,7 @@ pub(crate) async fn genes_handler(
             "query_cost_sample"
         );
     }
+
     let overloaded = state
         .metrics
         .should_shed_heavy(
