@@ -34,5 +34,10 @@ docs-freeze: ## Generated docs must be up-to-date with SSOT contracts
 		git --no-pager diff -- docs/_generated/contracts >&2 || true; \
 		exit 1; \
 	fi
+	@if ! git diff --quiet -- docs/contracts/errors.md docs/contracts/metrics.md docs/contracts/tracing.md docs/contracts/endpoints.md docs/contracts/config-keys.md docs/contracts/chart-values.md; then \
+		echo "docs freeze failed: generated docs/contracts/*.md drift detected" >&2; \
+		git --no-pager diff -- docs/contracts/errors.md docs/contracts/metrics.md docs/contracts/tracing.md docs/contracts/endpoints.md docs/contracts/config-keys.md docs/contracts/chart-values.md >&2 || true; \
+		exit 1; \
+	fi
 
 .PHONY: docs docs-serve docs-freeze _docs-venv

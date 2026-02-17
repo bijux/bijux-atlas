@@ -17,6 +17,62 @@ config_keys = json.loads((contracts / "CONFIG_KEYS.json").read_text())["env_keys
 artifact_schema = json.loads((contracts / "artifacts" / "ARTIFACT_SCHEMA.json").read_text())
 policy_schema = json.loads((contracts / "POLICY_SCHEMA.json").read_text())
 
+
+def write_reference_contract_doc(path: Path, title: str, contracts_body: str, examples_body: str) -> None:
+    path.write_text(
+        "\n".join(
+            [
+                f"# {title}",
+                "",
+                "- Owner: `docs-governance`",
+                "",
+                "## What",
+                "",
+                f"Defines the `{title}` registry contract.",
+                "",
+                "## Why",
+                "",
+                "Prevents drift between SSOT JSON, generated code, and operational consumers.",
+                "",
+                "## Scope",
+                "",
+                "Applies to producers and consumers of this registry.",
+                "",
+                "## Non-goals",
+                "",
+                "Does not define implementation internals outside this contract surface.",
+                "",
+                "## Contracts",
+                "",
+                contracts_body,
+                "",
+                "## Failure modes",
+                "",
+                "Invalid or drifted registry content is rejected by contract checks and CI gates.",
+                "",
+                "## Examples",
+                "",
+                examples_body,
+                "",
+                "## How to verify",
+                "",
+                "```bash",
+                "$ make ssot-check",
+                "$ make docs-freeze",
+                "```",
+                "",
+                "Expected output: both commands exit status 0 and print contract generation/check success.",
+                "",
+                "## See also",
+                "",
+                "- [Contracts Index](_index.md)",
+                "- [SSOT Workflow](SSOT_WORKFLOW.md)",
+                "- [Terms Glossary](../_style/TERMS_GLOSSARY.md)",
+                "",
+            ]
+        )
+    )
+
 # rust generated core error-code enum + constants
 core_generated_dir = ROOT / "crates" / "bijux-atlas-core" / "src" / "generated"
 core_generated_dir.mkdir(parents=True, exist_ok=True)
@@ -201,6 +257,108 @@ for rust_file in (
     "# Policy Schema (Generated)\n\n```json\n"
     + json.dumps(policy_schema, indent=2, sort_keys=True)
     + "\n```\n"
+)
+
+# canonical generated contract docs under docs/contracts/
+error_contract_lines = [
+    f"- `{c}`: stable machine error code for API and CLI contract surfaces." for c in error_codes
+]
+error_examples = []
+for code in error_codes:
+    error_examples.extend(
+        [
+            f"### `{code}`",
+            "```json",
+            json.dumps(
+                {
+                    "error": {
+                        "code": code,
+                        "message": f"{code} error",
+                        "details": {"field": "example"},
+                    }
+                },
+                indent=2,
+                sort_keys=True,
+            ),
+            "```",
+            "",
+        ]
+    )
+write_reference_contract_doc(
+    contracts / "errors.md",
+    "Error Codes Contract",
+    "\n".join(error_contract_lines),
+    "\n".join(error_examples).rstrip(),
+)
+
+metrics_contract_lines = [
+    f"- `{m['name']}` labels: {', '.join(m['labels'])}" for m in metrics
+]
+write_reference_contract_doc(
+    contracts / "metrics.md",
+    "Metrics Contract",
+    "\n".join(metrics_contract_lines)
+    + "\n\nLabel cardinality rules:\n"
+    + "- User-controlled values must not be used as metric labels.\n"
+    + "- Allowed dynamic labels are constrained by `observability/metrics_contract.json`.",
+    "```json\n"
+    + json.dumps(
+        {
+            "metric": metrics[0]["name"] if metrics else "atlas_requests_total",
+            "labels": metrics[0]["labels"] if metrics else ["route", "status"],
+        },
+        indent=2,
+        sort_keys=True,
+    )
+    + "\n```",
+)
+
+span_lines = [
+    f"- `{s['name']}` required attributes: {', '.join(s['required_attributes'])}" for s in trace_spans
+]
+write_reference_contract_doc(
+    contracts / "tracing.md",
+    "Trace Spans Contract",
+    "\n".join(span_lines),
+    "```json\n"
+    + json.dumps(
+        {
+            "span": trace_spans[0]["name"] if trace_spans else "request",
+            "required_attributes": (
+                trace_spans[0]["required_attributes"] if trace_spans else ["request_id"]
+            ),
+        },
+        indent=2,
+        sort_keys=True,
+    )
+    + "\n```",
+)
+
+endpoint_lines = [
+    f"- `{e['method']} {e['path']}` telemetry class: `{e['telemetry_class']}`" for e in endpoints
+]
+write_reference_contract_doc(
+    contracts / "endpoints.md",
+    "Endpoints Contract",
+    "\n".join(endpoint_lines)
+    + "\n\nOpenAPI reference:\n- `openapi/v1/openapi.yaml`",
+    "```bash\n$ ./scripts/openapi-generate.sh\n```\n\nExpected output: generator succeeds and endpoint drift checks pass.",
+)
+
+config_key_lines = [f"- `{k}`" for k in config_keys]
+write_reference_contract_doc(
+    contracts / "config-keys.md",
+    "Config Keys Contract",
+    "\n".join(config_key_lines) + "\n\nPolicy schema reference: `docs/contracts/POLICY_SCHEMA.json`",
+    "```bash\n$ ./scripts/contracts/check_config_keys_contract.py\n```\n\nExpected output: \"config key contract check passed\".",
+)
+
+chart_value_lines = [f"- `{k}`" for k in chart_keys]
+write_reference_contract_doc(
+    contracts / "chart-values.md",
+    "Chart Values Contract",
+    "\n".join(chart_value_lines),
+    "```yaml\n# default profile\nserver:\n  cachedOnlyMode: false\n  logJson: true\n\n# offline profile\noffline:\n  enabled: true\nserver:\n  cachedOnlyMode: true\n```\n\nExpected output: values keys validate against `CHART_VALUES.json`.",
 )
 
 # generated compatibility artifact for observability gate

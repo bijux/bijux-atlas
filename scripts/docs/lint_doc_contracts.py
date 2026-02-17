@@ -79,7 +79,7 @@ def lint_file(path: pathlib.Path) -> list[str]:
         if not all(ln.startswith("$") for ln in lines):
             errors.append(f"{rel}: shell code blocks must include full commands prefixed with '$'")
             break
-    if CODEBLOCK_RE.search(text) and not has_expected:
+    if CODEBLOCK_RE.search(examples) and not has_expected:
         errors.append(f"{rel}: command snippets require an 'Expected output' description")
 
     see_also = section_body(text, "See also")
