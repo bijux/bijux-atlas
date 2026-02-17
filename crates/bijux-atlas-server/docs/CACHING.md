@@ -13,6 +13,10 @@
 - Short-TTL coalesced query cache is enabled for heavy identical requests.
 - Optional heavy-query shed mode returns 503 for heavy class when p95 exceeds threshold.
 - Startup cache warmup is deterministic (sorted dataset ids) and bounded by `startup_warmup_limit`.
+- Startup warmup jitter (`startup_warmup_jitter_max_ms`) reduces pod stampede risk.
+- Datasets are quarantined after repeated integrity failures (`quarantine_after_corruption_failures`).
+- Emergency global breaker can reject non-health traffic (`emergency_global_breaker`).
+- Request queue depth is capped (`max_request_queue_depth`) to prevent unbounded backlog.
 - Store download concurrency is globally capped (`max_concurrent_downloads`).
 - Store retry budget and store circuit-breaker thresholds are configurable for herd protection.
 - Retry budget is enforced globally and per dataset to avoid infinite retries on a single bad artifact.

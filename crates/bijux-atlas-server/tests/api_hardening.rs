@@ -246,6 +246,36 @@ async fn readiness_metrics_and_debug_gate() {
 }
 
 #[tokio::test]
+async fn overload_health_endpoint_reports_state() {
+    let tmp = tempfile::tempdir().expect("tmp");
+    let store = Arc::new(FakeStore::default());
+    let cache = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            cached_only_mode: true,
+            ..DatasetCacheConfig::default()
+        },
+        store,
+    );
+    let mut api = ApiConfig::default();
+    api.shed_load_enabled = true;
+    let app = build_router(AppState::with_config(
+        cache,
+        api,
+        bijux_atlas_query::QueryLimits::default(),
+    ));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+    let (status, _, body) = send_raw(addr, "/healthz/overload", &[]).await;
+    assert!(status == 200 || status == 503);
+    let json: serde_json::Value = serde_json::from_str(&body).expect("json");
+    assert!(json.get("overloaded").is_some());
+}
+
+#[tokio::test]
 async fn readiness_allows_cached_only_without_catalog() {
     let store = Arc::new(FakeStore::default());
     let tmp = tempdir().expect("tempdir");
