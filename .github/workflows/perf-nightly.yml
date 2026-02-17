@@ -29,6 +29,9 @@ jobs:
       - name: Run nightly perf harness
         run: ./scripts/perf/run_nightly_perf.sh
 
+      - name: Run e2e perf scoring suite
+        run: ./scripts/perf/run_e2e_perf.sh
+
       - name: Upload perf artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -36,6 +39,7 @@ jobs:
           name: perf-nightly-artifacts
           path: |
             artifacts/perf/**
+            artifacts/e2e/k6/**
 
       - name: Prepare regression issue content
         if: failure() && hashFiles('artifacts/perf/regression.txt') != ''

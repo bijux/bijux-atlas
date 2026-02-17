@@ -1,0 +1,46 @@
+name: perf-smoke-pr
+
+on:
+  pull_request:
+  workflow_dispatch: {}
+
+jobs:
+  smoke-perf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      PR_MODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build perf image and start stack
+        run: |
+          docker compose -f load/docker-compose.perf.yml up -d --build
+
+      - name: Wait for readiness
+        run: |
+          for i in $(seq 1 90); do
+            if curl -fsS http://127.0.0.1:18080/readyz >/dev/null 2>&1; then
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "server not ready" >&2
+          exit 1
+
+      - name: Run smoke perf scoring
+        run: ./scripts/perf/run_e2e_perf.sh
+
+      - name: Upload perf smoke artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: perf-smoke-artifacts
+          path: artifacts/e2e/k6/**
+
+      - name: Cleanup
+        if: always()
+        run: docker compose -f load/docker-compose.perf.yml down --remove-orphans
