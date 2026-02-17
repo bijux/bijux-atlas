@@ -16,7 +16,23 @@ fn setup_db() -> Connection {
               start INTEGER NOT NULL,
               end INTEGER NOT NULL,
               transcript_count INTEGER NOT NULL,
+              exon_count INTEGER NOT NULL DEFAULT 0,
+              total_exon_span INTEGER NOT NULL DEFAULT 0,
+              cds_present INTEGER NOT NULL DEFAULT 0,
               sequence_length INTEGER NOT NULL
+            );
+            CREATE TABLE transcript_summary (
+              id INTEGER PRIMARY KEY,
+              transcript_id TEXT NOT NULL UNIQUE,
+              parent_gene_id TEXT NOT NULL,
+              transcript_type TEXT NOT NULL,
+              biotype TEXT,
+              seqid TEXT NOT NULL,
+              start INTEGER NOT NULL,
+              end INTEGER NOT NULL,
+              exon_count INTEGER NOT NULL DEFAULT 0,
+              total_exon_span INTEGER NOT NULL DEFAULT 0,
+              cds_present INTEGER NOT NULL DEFAULT 0
             );
             CREATE TABLE dataset_stats (
               dimension TEXT NOT NULL,
@@ -30,6 +46,11 @@ fn setup_db() -> Connection {
             CREATE INDEX idx_gene_summary_name_normalized ON gene_summary(name_normalized);
             CREATE INDEX idx_gene_summary_biotype ON gene_summary(biotype);
             CREATE INDEX idx_gene_summary_region ON gene_summary(seqid, start, end);
+            CREATE INDEX idx_transcript_summary_transcript_id ON transcript_summary(transcript_id);
+            CREATE INDEX idx_transcript_summary_parent_gene_id ON transcript_summary(parent_gene_id);
+            CREATE INDEX idx_transcript_summary_biotype ON transcript_summary(biotype);
+            CREATE INDEX idx_transcript_summary_type ON transcript_summary(transcript_type);
+            CREATE INDEX idx_transcript_summary_region ON transcript_summary(seqid, start, end);
             ",
     )
     .expect("schema");
@@ -65,8 +86,8 @@ fn setup_db() -> Connection {
     ];
     for r in rows {
         conn.execute(
-            "INSERT INTO gene_summary (id, gene_id, name, name_normalized, biotype, seqid, start, end, transcript_count, sequence_length)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
+            "INSERT INTO gene_summary (id, gene_id, name, name_normalized, biotype, seqid, start, end, transcript_count, exon_count, total_exon_span, cds_present, sequence_length)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, 0, 0, 0, ?10)",
             rusqlite::params![
                 r.0,
                 r.1,
@@ -87,6 +108,43 @@ fn setup_db() -> Connection {
         )
         .expect("insert rtree");
     }
+    let tx_rows = vec![
+        (
+            "tx1",
+            "gene1",
+            "transcript",
+            Some("protein_coding"),
+            "chr1",
+            10,
+            20,
+        ),
+        (
+            "tx2",
+            "gene1",
+            "mRNA",
+            Some("protein_coding"),
+            "chr1",
+            21,
+            40,
+        ),
+        (
+            "tx3",
+            "gene2",
+            "transcript",
+            Some("protein_coding"),
+            "chr1",
+            50,
+            90,
+        ),
+    ];
+    for (id, parent, kind, biotype, seqid, start, end) in tx_rows {
+        conn.execute(
+            "INSERT INTO transcript_summary (transcript_id,parent_gene_id,transcript_type,biotype,seqid,start,end,exon_count,total_exon_span,cds_present)
+             VALUES (?1,?2,?3,?4,?5,?6,?7,1,?8,1)",
+            rusqlite::params![id, parent, kind, biotype, seqid, start, end, end - start + 1],
+        )
+        .expect("insert transcript row");
+    }
     conn.execute_batch(
         "
         INSERT INTO dataset_stats (dimension, value, gene_count)
@@ -99,9 +157,39 @@ fn setup_db() -> Connection {
     conn
 }
 
+#[test]
+fn transcript_query_uses_indexes_and_paginates() {
+    let conn = setup_db();
+    let req = TranscriptQueryRequest {
+        filter: TranscriptFilter {
+            parent_gene_id: Some("gene1".to_string()),
+            biotype: None,
+            transcript_type: None,
+            region: None,
+        },
+        limit: 1,
+        cursor: None,
+    };
+    let plan = explain_transcript_query_plan(&conn, &req).expect("tx explain");
+    let joined = plan.join(" | ").to_ascii_lowercase();
+    assert!(joined.contains("idx_transcript_summary_parent_gene_id"));
+    let page1 = query_transcripts(&conn, &req).expect("page1");
+    assert_eq!(page1.rows.len(), 1);
+    let page2 = query_transcripts(
+        &conn,
+        &TranscriptQueryRequest {
+            cursor: page1.next_cursor,
+            ..req
+        },
+    )
+    .expect("page2");
+    assert_eq!(page2.rows.len(), 1);
+}
+
 fn limits() -> QueryLimits {
     QueryLimits {
         max_limit: 500,
+        max_transcript_limit: 500,
         max_region_span: 5_000_000,
         max_region_estimated_rows: 1_000,
         max_prefix_cost_units: 80_000,

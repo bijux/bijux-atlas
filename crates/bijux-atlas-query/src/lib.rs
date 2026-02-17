@@ -27,6 +27,7 @@ pub use cursor::{
 };
 pub use filters::{
     compile_field_projection, escape_like_prefix, GeneFields, GeneFilter, GeneRow, RegionFilter,
+    TranscriptFilter, TranscriptQueryRequest, TranscriptQueryResponse, TranscriptRow,
 };
 pub use limits::QueryLimits as QueryLimitsExport;
 pub use planner::{classify_query, estimate_work_units, select_shards_for_request, QueryClass};
@@ -327,7 +328,194 @@ pub fn query_genes_fanout(
     })
 }
 
+pub fn query_transcripts(
+    conn: &Connection,
+    req: &TranscriptQueryRequest,
+) -> Result<TranscriptQueryResponse, QueryError> {
+    if req.limit == 0 || req.limit > 500 {
+        return Err(QueryError::new(
+            QueryErrorCode::Validation,
+            "limit must be between 1 and 500",
+        ));
+    }
+    let mut sql = String::from(
+        "SELECT transcript_id, parent_gene_id, transcript_type, biotype, seqid, start, end, exon_count, total_exon_span, cds_present FROM transcript_summary",
+    );
+    let mut where_parts = Vec::<String>::new();
+    let mut params = Vec::<Value>::new();
+    if let Some(gene_id) = &req.filter.parent_gene_id {
+        where_parts.push("parent_gene_id = ?".to_string());
+        params.push(Value::Text(gene_id.clone()));
+    }
+    if let Some(biotype) = &req.filter.biotype {
+        where_parts.push("biotype = ?".to_string());
+        params.push(Value::Text(biotype.clone()));
+    }
+    if let Some(kind) = &req.filter.transcript_type {
+        where_parts.push("transcript_type = ?".to_string());
+        params.push(Value::Text(kind.clone()));
+    }
+    if let Some(region) = &req.filter.region {
+        where_parts.push("seqid = ?".to_string());
+        params.push(Value::Text(region.seqid.clone()));
+        where_parts.push("start <= ?".to_string());
+        params.push(Value::Integer(region.end as i64));
+        where_parts.push("end >= ?".to_string());
+        params.push(Value::Integer(region.start as i64));
+    }
+    if let Some(cursor) = &req.cursor {
+        where_parts.push("transcript_id > ?".to_string());
+        params.push(Value::Text(cursor.clone()));
+    }
+    if !where_parts.is_empty() {
+        sql.push_str(" WHERE ");
+        sql.push_str(&where_parts.join(" AND "));
+    }
+    sql.push_str(" ORDER BY seqid ASC, start ASC, transcript_id ASC LIMIT ?");
+    params.push(Value::Integer(req.limit as i64 + 1));
+    assert_index_usage(conn, &sql, &params, false)
+        .map_err(|e| QueryError::new(QueryErrorCode::Policy, e))?;
+
+    let mut stmt = conn
+        .prepare_cached(&sql)
+        .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;
+    let mapped = stmt
+        .query_map(params_from_iter(params.iter()), |row| {
+            Ok(TranscriptRow {
+                transcript_id: row.get::<_, String>(0)?,
+                parent_gene_id: row.get::<_, String>(1)?,
+                transcript_type: row.get::<_, String>(2)?,
+                biotype: row.get::<_, Option<String>>(3)?,
+                seqid: row.get::<_, String>(4)?,
+                start: row.get::<_, i64>(5)? as u64,
+                end: row.get::<_, i64>(6)? as u64,
+                exon_count: row.get::<_, i64>(7)? as u64,
+                total_exon_span: row.get::<_, i64>(8)? as u64,
+                cds_present: row.get::<_, i64>(9)? != 0,
+            })
+        })
+        .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;
+    let mut rows = mapped
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;
+    let has_more = rows.len() > req.limit;
+    if has_more {
+        rows.truncate(req.limit);
+    }
+    let next_cursor = if has_more {
+        rows.last().map(|r| r.transcript_id.clone())
+    } else {
+        None
+    };
+    Ok(TranscriptQueryResponse { rows, next_cursor })
+}
+
+pub fn query_transcript_by_id(
+    conn: &Connection,
+    tx_id: &str,
+) -> Result<Option<TranscriptRow>, QueryError> {
+    let mut stmt = conn
+        .prepare_cached("SELECT transcript_id, parent_gene_id, transcript_type, biotype, seqid, start, end, exon_count, total_exon_span, cds_present FROM transcript_summary WHERE transcript_id=?1 LIMIT 1")
+        .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;
+    let mut rows = stmt
+        .query([tx_id])
+        .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;
+    let Some(row) = rows
+        .next()
+        .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?
+    else {
+        return Ok(None);
+    };
+    Ok(Some(TranscriptRow {
+        transcript_id: row
+            .get::<_, String>(0)
+            .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?,
+        parent_gene_id: row
+            .get::<_, String>(1)
+            .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?,
+        transcript_type: row
+            .get::<_, String>(2)
+            .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?,
+        biotype: row
+            .get::<_, Option<String>>(3)
+            .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?,
+        seqid: row
+            .get::<_, String>(4)
+            .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?,
+        start: row
+            .get::<_, i64>(5)
+            .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?
+            as u64,
+        end: row
+            .get::<_, i64>(6)
+            .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))? as u64,
+        exon_count: row
+            .get::<_, i64>(7)
+            .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?
+            as u64,
+        total_exon_span: row
+            .get::<_, i64>(8)
+            .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?
+            as u64,
+        cds_present: row
+            .get::<_, i64>(9)
+            .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?
+            != 0,
+    }))
+}
+
+pub fn explain_transcript_query_plan(
+    conn: &Connection,
+    req: &TranscriptQueryRequest,
+) -> Result<Vec<String>, QueryError> {
+    let mut sql = String::from("SELECT transcript_id FROM transcript_summary");
+    let mut where_parts = Vec::<String>::new();
+    let mut params = Vec::<Value>::new();
+    if let Some(gene_id) = &req.filter.parent_gene_id {
+        where_parts.push("parent_gene_id = ?".to_string());
+        params.push(Value::Text(gene_id.clone()));
+    }
+    if let Some(biotype) = &req.filter.biotype {
+        where_parts.push("biotype = ?".to_string());
+        params.push(Value::Text(biotype.clone()));
+    }
+    if let Some(kind) = &req.filter.transcript_type {
+        where_parts.push("transcript_type = ?".to_string());
+        params.push(Value::Text(kind.clone()));
+    }
+    if let Some(region) = &req.filter.region {
+        where_parts.push("seqid = ?".to_string());
+        params.push(Value::Text(region.seqid.clone()));
+        where_parts.push("start <= ?".to_string());
+        params.push(Value::Integer(region.end as i64));
+        where_parts.push("end >= ?".to_string());
+        params.push(Value::Integer(region.start as i64));
+    }
+    if !where_parts.is_empty() {
+        sql.push_str(" WHERE ");
+        sql.push_str(&where_parts.join(" AND "));
+    }
+    sql.push_str(" ORDER BY seqid ASC, start ASC, transcript_id ASC LIMIT ?");
+    params.push(Value::Integer(req.limit as i64 + 1));
+    let explain_sql = format!("EXPLAIN QUERY PLAN {sql}");
+    let mut stmt = conn
+        .prepare_cached(&explain_sql)
+        .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;
+    let mut lines = stmt
+        .query_map(params_from_iter(params.iter()), |row| {
+            row.get::<_, String>(3)
+        })
+        .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;
+    lines.sort();
+    Ok(lines)
+}
+
 pub use filters::{GeneQueryRequest, GeneQueryResponse};
+pub use filters::{
+    TranscriptQueryRequest as TxQueryRequest, TranscriptQueryResponse as TxQueryResponse,
+};
 pub use limits::QueryLimits;
 
 #[cfg(test)]

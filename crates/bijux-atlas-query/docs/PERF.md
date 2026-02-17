@@ -9,6 +9,11 @@ Required indexes:
 - `idx_gene_summary_cover_lookup`
 - `idx_gene_summary_cover_region`
 - `gene_summary_rtree`
+- `idx_transcript_summary_transcript_id`
+- `idx_transcript_summary_parent_gene_id`
+- `idx_transcript_summary_biotype`
+- `idx_transcript_summary_type`
+- `idx_transcript_summary_region`
 
 Hard gate:
 - Dataset validation rejects artifacts if any required index above is missing.
@@ -18,6 +23,7 @@ Query classes:
 - `Cheap`: exact id lookups.
 - `Medium`: exact name/biotype filters.
 - `Heavy`: region and prefix queries.
+- Transcript list endpoints are treated as heavy-class in server bulkheads.
 - Region queries may fan out to shard DBs; shard selection is seqid-aware.
 
 Max-work guard:

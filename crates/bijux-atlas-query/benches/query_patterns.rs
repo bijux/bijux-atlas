@@ -1,6 +1,6 @@
 use bijux_atlas_query::{
-    query_genes, query_genes_fanout, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits,
-    RegionFilter,
+    query_genes, query_genes_fanout, query_transcripts, GeneFields, GeneFilter, GeneQueryRequest,
+    QueryLimits, RegionFilter, TranscriptFilter, TranscriptQueryRequest,
 };
 use criterion::{criterion_group, criterion_main, Criterion};
 use rusqlite::Connection;
@@ -20,7 +20,23 @@ fn setup_db() -> Connection {
           start INTEGER NOT NULL,
           end INTEGER NOT NULL,
           transcript_count INTEGER NOT NULL,
+          exon_count INTEGER NOT NULL DEFAULT 0,
+          total_exon_span INTEGER NOT NULL DEFAULT 0,
+          cds_present INTEGER NOT NULL DEFAULT 0,
           sequence_length INTEGER NOT NULL
+        );
+        CREATE TABLE transcript_summary (
+          id INTEGER PRIMARY KEY,
+          transcript_id TEXT NOT NULL UNIQUE,
+          parent_gene_id TEXT NOT NULL,
+          transcript_type TEXT NOT NULL,
+          biotype TEXT,
+          seqid TEXT NOT NULL,
+          start INTEGER NOT NULL,
+          end INTEGER NOT NULL,
+          exon_count INTEGER NOT NULL DEFAULT 0,
+          total_exon_span INTEGER NOT NULL DEFAULT 0,
+          cds_present INTEGER NOT NULL DEFAULT 0
         );
         CREATE TABLE dataset_stats (
           dimension TEXT NOT NULL,
@@ -34,6 +50,11 @@ fn setup_db() -> Connection {
         CREATE INDEX idx_gene_summary_name_normalized ON gene_summary(name_normalized);
         CREATE INDEX idx_gene_summary_biotype ON gene_summary(biotype);
         CREATE INDEX idx_gene_summary_region ON gene_summary(seqid, start, end);
+        CREATE INDEX idx_transcript_summary_transcript_id ON transcript_summary(transcript_id);
+        CREATE INDEX idx_transcript_summary_parent_gene_id ON transcript_summary(parent_gene_id);
+        CREATE INDEX idx_transcript_summary_biotype ON transcript_summary(biotype);
+        CREATE INDEX idx_transcript_summary_type ON transcript_summary(transcript_type);
+        CREATE INDEX idx_transcript_summary_region ON transcript_summary(seqid, start, end);
         ",
     )
     .expect("schema");
@@ -60,8 +81,8 @@ fn setup_db() -> Connection {
         let start = i * 10;
         let end = start + 50;
         conn.execute(
-            "INSERT INTO gene_summary (id, gene_id, name, name_normalized, biotype, seqid, start, end, transcript_count, sequence_length)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
+            "INSERT INTO gene_summary (id, gene_id, name, name_normalized, biotype, seqid, start, end, transcript_count, exon_count, total_exon_span, cds_present, sequence_length)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, 0, 0, 0, ?10)",
             rusqlite::params![
                 i,
                 format!("gene{i}"),
@@ -81,6 +102,22 @@ fn setup_db() -> Connection {
             rusqlite::params![i, start as f64, end as f64],
         )
         .expect("insert rtree");
+        conn.execute(
+            "INSERT INTO transcript_summary (id, transcript_id, parent_gene_id, transcript_type, biotype, seqid, start, end, exon_count, total_exon_span, cds_present)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, 1, ?9, 1)",
+            rusqlite::params![
+                i,
+                format!("tx{i}"),
+                format!("gene{i}"),
+                if i % 2 == 0 { "transcript" } else { "mRNA" },
+                biotype,
+                seqid,
+                start,
+                end,
+                end - start + 1
+            ],
+        )
+        .expect("insert transcript");
     }
     conn.execute_batch(
         "
@@ -261,6 +298,21 @@ fn bench_query_patterns(c: &mut Criterion) {
             GeneFields::default(),
         );
         b.iter(|| run_pattern(&conn, &request));
+    });
+    c.bench_function("query_transcript_by_gene", |b| {
+        let req = TranscriptQueryRequest {
+            filter: TranscriptFilter {
+                parent_gene_id: Some("gene1234".to_string()),
+                biotype: None,
+                transcript_type: None,
+                region: None,
+            },
+            limit: 50,
+            cursor: None,
+        };
+        b.iter(|| {
+            let _ = query_transcripts(&conn, &req).expect("transcript query");
+        });
     });
 
     c.bench_function("query_region_large_sharded_fanout", |b| {

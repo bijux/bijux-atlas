@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct QueryLimits {
     pub max_limit: usize,
+    pub max_transcript_limit: usize,
     pub max_region_span: u64,
     pub max_region_estimated_rows: u64,
     pub max_prefix_cost_units: u64,
@@ -18,6 +19,7 @@ impl Default for QueryLimits {
     fn default() -> Self {
         Self {
             max_limit: 500,
+            max_transcript_limit: 500,
             max_region_span: 5_000_000,
             max_region_estimated_rows: 250_000,
             max_prefix_cost_units: 80_000,
@@ -35,6 +37,7 @@ impl QueryLimits {
     pub fn from_policy(policy: &PolicyConfig) -> Self {
         Self {
             max_limit: policy.query_budget.max_limit as usize,
+            max_transcript_limit: policy.query_budget.max_transcript_limit as usize,
             max_region_span: policy.query_budget.max_region_span,
             max_region_estimated_rows: policy.query_budget.max_region_estimated_rows,
             max_prefix_cost_units: policy.query_budget.max_prefix_cost_units,

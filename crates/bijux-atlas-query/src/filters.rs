@@ -66,6 +66,41 @@ pub struct GeneQueryResponse {
     pub next_cursor: Option<String>,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Default)]
+pub struct TranscriptFilter {
+    pub parent_gene_id: Option<String>,
+    pub biotype: Option<String>,
+    pub transcript_type: Option<String>,
+    pub region: Option<RegionFilter>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct TranscriptQueryRequest {
+    pub filter: TranscriptFilter,
+    pub limit: usize,
+    pub cursor: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct TranscriptRow {
+    pub transcript_id: String,
+    pub parent_gene_id: String,
+    pub transcript_type: String,
+    pub biotype: Option<String>,
+    pub seqid: String,
+    pub start: u64,
+    pub end: u64,
+    pub exon_count: u64,
+    pub total_exon_span: u64,
+    pub cds_present: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct TranscriptQueryResponse {
+    pub rows: Vec<TranscriptRow>,
+    pub next_cursor: Option<String>,
+}
+
 #[must_use]
 pub fn compile_field_projection(fields: &GeneFields) -> Vec<String> {
     let mut select = vec!["g.gene_id".to_string()];
