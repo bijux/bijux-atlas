@@ -35,6 +35,7 @@ ops-metrics-check: ## Validate runtime metrics and observability contracts
 	@./scripts/observability/check_metrics_contract.py
 	@./scripts/observability/check_dashboard_contract.py
 	@./scripts/observability/check_alerts_contract.py
+	@./scripts/observability/lint_runbooks.py
 	@./scripts/observability/check_runtime_metrics.py
 
 ops-traces-check: ## Validate trace signal (when OTEL enabled)
@@ -84,4 +85,3 @@ observability-check:
 	@$(MAKE) ops-metrics-check
 	@$(MAKE) ops-traces-check
 	@cargo test -p bijux-atlas-server --test observability_contract --test logging_format
-
