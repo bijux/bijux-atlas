@@ -35,3 +35,7 @@ Max-work guard:
 Search normalization:
 - Name exact/prefix lookups use normalized `name_normalized` values.
 - Normalization policy is Unicode `NFKC` + lowercase for deterministic collation behavior.
+
+Bench policy:
+- `benches/query_patterns.rs` supports baseline enforcement via `ATLAS_QUERY_BENCH_ENFORCE=1`.
+- PR CI keeps benches non-blocking; nightly gates enforce regression thresholds.
