@@ -21,7 +21,7 @@ help:
 	  'release/surface:' \
 	  '  fmt lint check test test-all coverage audit openapi-drift ci ssot-check crate-structure crate-docs-contract cli-command-surface docker-build docker-smoke chart-package chart-verify' \
 	  'tooling:' \
-	  '  bootstrap bootstrap-tools doctor scripts-index help'
+	  '  bootstrap bootstrap-tools doctor scripts-index scripts-lint scripts-test no-direct-scripts help'
 
 layout-check:
 	@./scripts/layout/check_root_shape.sh
@@ -65,6 +65,7 @@ chart-verify:
 
 no-direct-scripts:
 	@./scripts/layout/check_no_direct_script_runs.sh
+	@python3 ./scripts/layout/check_make_public_scripts.py
 
 doctor:
 	@printf 'rustc: '; rustc --version
@@ -92,4 +93,17 @@ release-update-compat-matrix:
 	@[ -n "$$TAG" ] || { echo "usage: make release-update-compat-matrix TAG=<tag>"; exit 2; }
 	@./scripts/release/update-compat-matrix.sh "$$TAG"
 
-.PHONY: help layout-check layout-migrate bootstrap bootstrap-tools scripts-index docker-build docker-smoke chart-package chart-verify no-direct-scripts doctor fetch-real-datasets ssot-check policy-lint policy-schema-drift release-update-compat-matrix
+.PHONY: help layout-check layout-migrate bootstrap bootstrap-tools scripts-index scripts-lint scripts-test docker-build docker-smoke chart-package chart-verify no-direct-scripts doctor fetch-real-datasets ssot-check policy-lint policy-schema-drift release-update-compat-matrix
+
+
+scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)
+	@python3 ./scripts/docs/check_script_headers.py
+	@python3 ./scripts/layout/check_make_public_scripts.py
+	@python3 ./scripts/layout/check_script_relative_calls.py
+	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
+	@if command -v ruff >/dev/null 2>&1; then ruff check scripts ops/load/scripts; else echo "ruff not installed (optional)"; fi
+
+scripts-test: ## Run scripts-focused tests
+	@python3 ./scripts/layout/check_make_public_scripts.py
+	@python3 ./ops/load/scripts/validate_suite_manifest.py
+	@python3 ./ops/load/scripts/check_pinned_queries_lock.py

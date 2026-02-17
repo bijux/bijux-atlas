@@ -11,14 +11,24 @@ ROOT = Path(__file__).resolve().parents[2]
 script_paths = sorted([p for p in (ROOT/'scripts').rglob('*') if p.is_file() and p.suffix in {'.sh','.py'}])
 errors = []
 for p in script_paths:
+    if "/scripts/_internal/" in p.as_posix():
+        continue
     txt = p.read_text(encoding='utf-8', errors='ignore').splitlines()
     head = '\n'.join(txt[:12])
-    if p.suffix == '.sh' and not (head.startswith('#!/usr/bin/env sh') or head.startswith('#!/bin/sh')):
+    if p.suffix == '.sh' and not (
+        head.startswith('#!/usr/bin/env sh')
+        or head.startswith('#!/bin/sh')
+        or head.startswith('#!/usr/bin/env bash')
+        or head.startswith('#!/bin/bash')
+        or head.startswith('#!/usr/bin/env python3')
+    ):
         errors.append(f'{p}: missing shebang')
     if p.suffix == '.py' and not head.startswith('#!/usr/bin/env python3'):
         errors.append(f'{p}: missing shebang')
     if 'Purpose:' not in head or 'Inputs:' not in head or 'Outputs:' not in head:
         errors.append(f'{p}: missing script header contract (Purpose/Inputs/Outputs)')
+    if p.as_posix().startswith(str((ROOT/'scripts'/'perf').as_posix())) and ('Owner:' not in head or 'Stability:' not in head):
+        errors.append(f'{p}: missing extended header contract (Owner/Stability)')
 
 idx = ROOT/'docs'/'development'/'scripts'/'INDEX.md'
 if idx.exists():

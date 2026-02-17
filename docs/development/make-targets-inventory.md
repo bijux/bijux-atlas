@@ -123,6 +123,8 @@ Generated from `make help`. Do not edit manually.
 - `observability-check`
 - `layout-check`
 - `layout-migrate`
+- `scripts-lint`
+- `scripts-test`
 
 ## Release/Surface
 

@@ -143,6 +143,8 @@ Stable targets:
 - `docs-hardening`
 - `layout-check`
 - `layout-migrate`
+- `scripts-lint`
+- `scripts-test`
 - `bootstrap`
 - `bootstrap-tools`
 - `scripts-index`
