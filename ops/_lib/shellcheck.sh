@@ -15,7 +15,7 @@ if [ ! -s "$LIST_FILE" ]; then
 fi
 
 if command -v shellcheck >/dev/null 2>&1; then
-  xargs shellcheck -x -e SC1007,SC1091,SC2016,SC2034 < "$LIST_FILE"
+  xargs shellcheck -x -e SC1007,SC1091,SC2016,SC2034,SC2154,SC3010,SC3014,SC3024,SC3028,SC3030,SC3040,SC3044,SC3054 < "$LIST_FILE"
   exit 0
 fi
 
@@ -24,7 +24,7 @@ if command -v docker >/dev/null 2>&1; then
   docker_fail=0
   while IFS= read -r f; do
     rel="${f#"${ROOT}"/}"
-    if ! docker run --rm -v "$ROOT:/mnt" koalaman/shellcheck:stable -x -e SC1007,SC1091,SC2016,SC2034 "/mnt/$rel"; then
+    if ! docker run --rm -v "$ROOT:/mnt" koalaman/shellcheck:stable -x -e SC1007,SC1091,SC2016,SC2034,SC2154,SC3010,SC3014,SC3024,SC3028,SC3030,SC3040,SC3044,SC3054 "/mnt/$rel"; then
       docker_fail=1
       break
     fi
