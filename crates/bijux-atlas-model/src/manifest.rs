@@ -107,6 +107,7 @@ pub struct ArtifactPaths {
     pub sqlite: PathBuf,
     pub manifest: PathBuf,
     pub anomaly_report: PathBuf,
+    pub release_gene_index: PathBuf,
 }
 
 #[must_use]
@@ -127,6 +128,7 @@ pub fn artifact_paths(root: &Path, dataset: &DatasetId) -> ArtifactPaths {
         sqlite: derived.join("gene_summary.sqlite"),
         manifest: derived.join("manifest.json"),
         anomaly_report: derived.join("anomaly_report.json"),
+        release_gene_index: derived.join("release_gene_index.json"),
     }
 }
 
