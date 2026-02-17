@@ -8,6 +8,7 @@ image:
 service:
   type: NodePort
   port: 8080
+  nodePort: 30080
 
 cache:
   warmupEnabled: true
@@ -25,6 +26,8 @@ server:
   enableDebugDatasets: true
   cachedOnlyMode: false
   readinessRequiresCatalog: false
+  startupProbePath: /healthz
+  readinessProbePath: /healthz
 
 serviceMonitor:
   enabled: false

@@ -9,6 +9,7 @@ replicaCount: 2
 service:
   type: ClusterIP
   port: 8080
+  nodePort: null
 
 ingress:
   enabled: false
@@ -76,6 +77,8 @@ server:
     - /app/bijux-atlas
     - atlas
     - serve
+  startupProbePath: /readyz
+  readinessProbePath: /readyz
   requestTimeoutMs: 5000
   sqlTimeoutMs: 800
   responseMaxBytes: 524288
