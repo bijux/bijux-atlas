@@ -187,6 +187,24 @@ ops-load-full: ## Run nightly/full load suites
 	@./scripts/perf/validate_results.py artifacts/perf/results
 	@./ops/load/reports/generate.py
 
+ops-load-ci: ## Load CI profile (smoke suites + score/report)
+	@$(MAKE) -s ops-env-validate
+	@$(MAKE) ops-k6-version-check
+	@$(MAKE) ops-load-manifest-validate
+	@./scripts/perf/run_suites_from_manifest.py --profile load-ci --out artifacts/perf/results
+	@./scripts/perf/validate_results.py artifacts/perf/results
+	@./scripts/perf/score_k6.py || true
+	@./ops/load/reports/generate.py
+
+ops-load-nightly: ## Load nightly profile (nightly suites + score/report)
+	@$(MAKE) -s ops-env-validate
+	@$(MAKE) ops-k6-version-check
+	@$(MAKE) ops-load-manifest-validate
+	@./scripts/perf/run_suites_from_manifest.py --profile load-nightly --out artifacts/perf/results
+	@./scripts/perf/validate_results.py artifacts/perf/results
+	@./scripts/perf/score_k6.py || true
+	@./ops/load/reports/generate.py
+
 ops-drill-store-outage: ## Run store outage drill under load
 	@$(MAKE) -s ops-env-validate
 	@./ops/load/scripts/run_suite.sh store-outage-mid-spike.json artifacts/perf/results
@@ -302,6 +320,10 @@ ops-perf-nightly: ## Perf helper: run nightly perf suite
 	@$(MAKE) ops-load-manifest-validate
 	@./scripts/perf/run_nightly_perf.sh
 
+ops-perf-report: ## Generate perf markdown + baseline report from artifacts
+	@./scripts/perf/generate_report.py
+	@./ops/load/reports/generate.py
+
 ops-perf-cold-start: ## Perf helper: run cold-start benchmark
 	@./scripts/perf/cold_start_benchmark.sh
 
@@ -320,6 +342,7 @@ ops-perf-baseline-update: ## Update named baseline from artifacts/perf/baseline.
 
 ops-load-manifest-validate: ## Validate load suite SSOT, naming conventions, and pinned query lock
 	@./scripts/perf/validate_suite_manifest.py
+	@./scripts/perf/check_runbook_suite_names.py
 
 ops-perf-suite: ## Perf helper: run an arbitrary perf suite (SCENARIO=<file.js> OUT=<dir>)
 	@[ -n "$$SCENARIO" ] || { echo "usage: make ops-perf-suite SCENARIO=<file.js> [OUT=artifacts/perf/results]" >&2; exit 2; }

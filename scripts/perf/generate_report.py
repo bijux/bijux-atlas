@@ -32,6 +32,8 @@ baseline = {
     "runtime": {},
     "cold_start": {},
     "soak_memory": {},
+    "cache": {},
+    "k8s_runtime": {},
 }
 
 cold_start_file = out_dir / "cold-start" / "result.json"
@@ -88,6 +90,66 @@ if stats_file.exists():
             "cpu_percent": first.get("CPUPerc", ""),
             "memory_usage": first.get("MemUsage", ""),
         }
+
+metrics_file = out_dir / "metrics.prom"
+if metrics_file.exists():
+    text = metrics_file.read_text()
+    def metric_value(name: str) -> float:
+        for line in text.splitlines():
+            if line.startswith(name + " "):
+                try:
+                    return float(line.split()[-1])
+                except ValueError:
+                    return 0.0
+        return 0.0
+    hits = metric_value("bijux_dataset_cache_hits_total")
+    misses = metric_value("bijux_dataset_cache_misses_total")
+    total = hits + misses
+    hit_rate = (hits / total) if total > 0 else 0.0
+    baseline["cache"] = {"hits_total": hits, "misses_total": misses, "hit_rate": hit_rate}
+
+def parse_k8s_top(path: Path) -> tuple[float, float]:
+    if not path.exists():
+        return (0.0, 0.0)
+    total_cpu_m = 0.0
+    total_mem_mi = 0.0
+    for line in path.read_text().splitlines():
+        if not line or line.startswith("NAME"):
+            continue
+        parts = line.split()
+        if len(parts) < 3:
+            continue
+        cpu = parts[1].strip()
+        mem = parts[2].strip()
+        if cpu.endswith("m"):
+            try:
+                total_cpu_m += float(cpu[:-1])
+            except ValueError:
+                pass
+        if mem.lower().endswith("mi"):
+            try:
+                total_mem_mi += float(mem[:-2])
+            except ValueError:
+                pass
+        elif mem.lower().endswith("gi"):
+            try:
+                total_mem_mi += float(mem[:-2]) * 1024.0
+            except ValueError:
+                pass
+    return (total_cpu_m, total_mem_mi)
+
+top_start = out_dir / "kubectl_top_pods_start.txt"
+top_end = out_dir / "kubectl_top_pods_end.txt"
+if top_start.exists() and top_end.exists():
+    cpu_start, mem_start = parse_k8s_top(top_start)
+    cpu_end, mem_end = parse_k8s_top(top_end)
+    baseline["k8s_runtime"] = {
+        "cpu_m_start": cpu_start,
+        "cpu_m_end": cpu_end,
+        "memory_mi_start": mem_start,
+        "memory_mi_end": mem_end,
+        "memory_mi_growth": max(0.0, mem_end - mem_start),
+    }
 (out_dir / "baseline.json").write_text(json.dumps(baseline, indent=2) + "\n")
 
 lines = [
@@ -131,6 +193,30 @@ if baseline["soak_memory"]:
             f"- start bytes: `{baseline['soak_memory'].get('start_bytes', 0)}`",
             f"- end bytes: `{baseline['soak_memory'].get('end_bytes', 0)}`",
             f"- growth bytes: `{baseline['soak_memory'].get('growth_bytes', 0)}`",
+        ]
+    )
+if baseline["cache"]:
+    lines.extend(
+        [
+            "",
+            "## Cache",
+            "",
+            f"- cache hits total: `{baseline['cache'].get('hits_total', 0)}`",
+            f"- cache misses total: `{baseline['cache'].get('misses_total', 0)}`",
+            f"- cache hit rate: `{baseline['cache'].get('hit_rate', 0):.4f}`",
+        ]
+    )
+if baseline["k8s_runtime"]:
+    lines.extend(
+        [
+            "",
+            "## K8s Runtime Snapshot",
+            "",
+            f"- cpu millicores start: `{baseline['k8s_runtime'].get('cpu_m_start', 0):.2f}`",
+            f"- cpu millicores end: `{baseline['k8s_runtime'].get('cpu_m_end', 0):.2f}`",
+            f"- memory Mi start: `{baseline['k8s_runtime'].get('memory_mi_start', 0):.2f}`",
+            f"- memory Mi end: `{baseline['k8s_runtime'].get('memory_mi_end', 0):.2f}`",
+            f"- memory Mi growth: `{baseline['k8s_runtime'].get('memory_mi_growth', 0):.2f}`",
         ]
     )
 

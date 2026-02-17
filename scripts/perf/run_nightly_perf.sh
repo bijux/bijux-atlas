@@ -26,6 +26,9 @@ for i in $(seq 1 60); do
   sleep 1
 done
 
+if command -v kubectl >/dev/null 2>&1; then
+  kubectl -n "${ATLAS_E2E_NAMESPACE:-atlas-e2e}" top pods > "$ART/kubectl_top_pods_start.txt" 2>/dev/null || true
+fi
 OUT_DIR="$ART/cold-start" "$ROOT/scripts/perf/cold_start_benchmark.sh"
 
 "$ROOT/ops/load/scripts/check_prereqs.sh"
@@ -35,6 +38,10 @@ docker stats --no-stream --format '{{json .}}' > "$ART/docker_stats_soak_start.j
 docker stats --no-stream --format '{{json .}}' > "$ART/docker_stats_soak_end.json" || true
 
 docker stats --no-stream --format '{{json .}}' > "$ART/docker_stats.json" || true
+curl -fsS "$ATLAS_BASE_URL/metrics" > "$ART/metrics.prom" 2>/dev/null || true
+if command -v kubectl >/dev/null 2>&1; then
+  kubectl -n "${ATLAS_E2E_NAMESPACE:-atlas-e2e}" top pods > "$ART/kubectl_top_pods_end.txt" 2>/dev/null || true
+fi
 
 "$ROOT/scripts/perf/generate_report.py"
 "$ROOT/scripts/perf/check_regression.py"

@@ -41,10 +41,10 @@ def main():
         elif suite.get("kind") == "script":
             script = ROOT / suite["script"]
             env = os.environ.copy()
-            env["OUT_DIR"] = str(ROOT / "artifacts/perf" / suite["name"])
+            env["OUT_DIR"] = str(out)
             run([str(script)], env=env)
             # Normalize script output into a summary-like file for downstream reports.
-            result = ROOT / "artifacts/perf" / suite["name"] / "result.json"
+            result = out / "result.json"
             if result.exists():
                 payload = json.loads(result.read_text())
                 if isinstance(payload, list) and payload:
@@ -70,6 +70,7 @@ def main():
                         "policy_hash": os.environ.get("ATLAS_POLICY_HASH", "unknown"),
                     }
                     (out / f"{suite['name']}.meta.json").write_text(json.dumps(meta, indent=2) + "\n")
+                result.unlink(missing_ok=True)
 
 
 if __name__ == "__main__":
