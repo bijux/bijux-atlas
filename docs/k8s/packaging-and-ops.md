@@ -103,6 +103,12 @@ Purpose:
 - Pull pinned/hot datasets before the main container starts.
 - Reduce first-request tail latency.
 
+Optional warm-up job template:
+
+- `datasetWarmupJob.enabled`
+- Runs `atlas smoke` for configured pinned datasets.
+- Useful for controlled cache priming before traffic cutover.
+
 ## Config and Secret Wiring
 
 - `ConfigMap` stores non-secret runtime config.

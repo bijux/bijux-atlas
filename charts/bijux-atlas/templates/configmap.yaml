@@ -37,3 +37,6 @@ data:
   ATLAS_SEQUENCE_TTL_MS: {{ .Values.server.sequenceTtlMs | quote }}
   ATLAS_SEQUENCE_RATE_LIMIT_CAPACITY: {{ .Values.sequenceRateLimits.perIp.capacity | quote }}
   ATLAS_SEQUENCE_RATE_LIMIT_REFILL_PER_SEC: {{ .Values.sequenceRateLimits.perIp.refillPerSec | quote }}
+  ATLAS_CATALOG_BACKOFF_BASE_MS: {{ .Values.catalog.backoffBaseMs | quote }}
+  ATLAS_CATALOG_BREAKER_FAILURE_THRESHOLD: {{ .Values.catalog.breakerFailureThreshold | quote }}
+  ATLAS_CATALOG_BREAKER_OPEN_MS: {{ .Values.catalog.breakerOpenMs | quote }}

@@ -87,6 +87,9 @@ sequenceRateLimits:
 catalog:
   endpoint: ""
   etagEnabled: true
+  backoffBaseMs: 250
+  breakerFailureThreshold: 5
+  breakerOpenMs: 5000
 
 store:
   endpoint: ""
@@ -155,6 +158,11 @@ catalogPublishJob:
   command:
     - /app/atlas-cli
     - ingest
+
+datasetWarmupJob:
+  enabled: false
+  backoffLimit: 1
+  image: ghcr.io/bijux/bijux-atlas:latest
 
 extraEnv: []
 
