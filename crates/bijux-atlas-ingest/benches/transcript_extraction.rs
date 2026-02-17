@@ -9,7 +9,7 @@ use tempfile::tempdir;
 
 fn make_options(root: &std::path::Path) -> IngestOptions {
     let fixture =
-        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/ops/fixtures/tiny");
+        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/tiny");
     IngestOptions {
         gff3_path: fixture.join("genes.gff3"),
         fasta_path: fixture.join("genome.fa"),
