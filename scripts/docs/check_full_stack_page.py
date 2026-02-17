@@ -9,7 +9,7 @@ import re
 ROOT = Path(__file__).resolve().parents[2]
 page = ROOT / 'docs' / 'operations' / 'full-stack-local.md'
 text = page.read_text()
-lines = [l for l in text.splitlines() if l.strip()]
+lines = [line for line in text.splitlines() if line.strip()]
 if len(lines) > 80:
     raise SystemExit('full-stack page exceeds one-page policy (>80 non-empty lines)')
 required = 'make ops-up ops-deploy ops-warm ops-smoke'

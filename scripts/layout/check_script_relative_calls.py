@@ -14,6 +14,7 @@ allowed = (
     "scripts/contracts/",
     "scripts/observability/",
     "scripts/tooling/",
+    "scripts/tools/",
     "scripts/perf/",
     "scripts/release/",
     "scripts/fixtures/",
@@ -42,6 +43,9 @@ for path in sorted((ROOT / "scripts").rglob("*")):
             continue
         for m in re.finditer(r"(?:\$ROOT/|\./)(scripts/[^\s\"']+|ops/[^\s\"']+)", line):
             target = m.group(1).rstrip(";")
+            if "}" in target:
+                # Ignore template/substitution fragments from sed/perl replacement strings.
+                continue
             if any(target.startswith(prefix) for prefix in allowed):
                 continue
             violations.append(f"{path.relative_to(ROOT)}:{idx}: {target}")

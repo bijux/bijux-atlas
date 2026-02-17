@@ -4,7 +4,6 @@
 # Outputs: non-zero exit on missing headers or missing docs script-group references.
 from __future__ import annotations
 from pathlib import Path
-import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]

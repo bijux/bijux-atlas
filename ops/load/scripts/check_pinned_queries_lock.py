@@ -3,7 +3,9 @@
 # Inputs: ops/load/queries/pinned-v1.json and ops/load/queries/pinned-v1.lock
 # Outputs: exit non-zero if lock drift is detected.
 from __future__ import annotations
-import hashlib, json, sys
+import hashlib
+import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]

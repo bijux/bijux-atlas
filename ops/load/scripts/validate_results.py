@@ -3,7 +3,8 @@
 # Inputs: result summary files under an output directory and contract schema.
 # Outputs: non-zero exit on contract violations.
 from __future__ import annotations
-import json, sys
+import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]

@@ -3,7 +3,6 @@
 # Inputs: command-line args and repository files/env as documented by caller.
 # Outputs: exit status and deterministic stdout/stderr or generated artifacts.
 import json
-import subprocess
 import sys
 from pathlib import Path
 
