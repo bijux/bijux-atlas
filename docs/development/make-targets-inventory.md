@@ -58,6 +58,7 @@ Generated from `make help`. Do not edit manually.
 - `ops-reset`
 - `ops-clean`
 - `ops-env-print`
+- `ops-doctor`
 - `ops-cluster-sanity`
 - `ops-publish`
 - `ops-publish-medium`
@@ -159,6 +160,12 @@ Generated from `make help`. Do not edit manually.
 - `docker-smoke`
 - `chart-package`
 - `chart-verify`
+- `release-dry-run`
+- `release`
+- `bump`
+- `clean`
+- `deep-clean`
+- `debug`
 
 ## Ci-Mapping
 
@@ -212,3 +219,4 @@ Generated from `make help`. Do not edit manually.
 - `local-full`
 - `contracts`
 - `hygiene`
+- `path-contract-check`

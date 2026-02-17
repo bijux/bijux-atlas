@@ -80,6 +80,12 @@ ci-coverage:
 ci-workflows-make-only:
 	@python3 ./scripts/layout/check_workflows_make_only.py
 
+ci-forbid-raw-paths:
+	@./scripts/layout/check_no_forbidden_paths.sh
+
+ci-make-safety:
+	@python3 ./scripts/layout/check_make_safety.py
+
 ci-make-help-drift:
 	@python3 ./scripts/docs/check_make_help_drift.py
 
@@ -179,6 +185,8 @@ governance-check: ## Run governance gates: layout + docs + contracts + scripts +
 	@$(MAKE) ssot-check
 	@$(MAKE) scripts-lint
 	@$(MAKE) ci-workflows-make-only
+	@$(MAKE) ci-forbid-raw-paths
+	@$(MAKE) ci-make-safety
 	@$(MAKE) ci-make-help-drift
 
 .PHONY: \
@@ -186,7 +194,7 @@ governance-check: ## Run governance gates: layout + docs + contracts + scripts +
 	ci-policy-lint ci-policy-schema-drift ci-ssot-drift ci-crate-structure ci-crate-docs-contract ci-cli-command-surface \
 	ci-release-binaries ci-docs-build ci-latency-regression ci-store-conformance ci-openapi-drift ci-query-plan-gate \
 	ci-compatibility-matrix-validate ci-runtime-security-scan-image ci-coverage ci-workflows-make-only governance-check \
-	ci-make-help-drift \
+	ci-make-help-drift ci-forbid-raw-paths ci-make-safety \
 	ci-init-iso-dirs ci-init-tmp ci-dependency-lock-refresh ci-release-compat-matrix-verify ci-release-build-artifacts \
 	ci-release-notes-render ci-release-publish-gh ci-cosign-sign ci-cosign-verify ci-chart-package-release ci-reproducible-verify \
 	ci-security-advisory-render ci-ops-install-prereqs ci-ops-install-load-prereqs

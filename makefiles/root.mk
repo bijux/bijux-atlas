@@ -1,10 +1,12 @@
 SHELL := /bin/sh
 JOBS ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 8)
 
+include makefiles/env.mk
 include makefiles/cargo.mk
 include makefiles/cargo-dev.mk
 include makefiles/ci.mk
 include makefiles/docs.mk
+include makefiles/path_contract.mk
 include makefiles/registry.mk
 include makefiles/help.mk
 include makefiles/layout.mk
@@ -71,6 +73,8 @@ ci: ## Run CI-equivalent meta pipeline mapped to workflow jobs
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-openapi-drift
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-query-plan-gate
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-workflows-make-only
+	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-forbid-raw-paths
+	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-make-safety
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-make-help-drift
 
 local: ## Fast local loop (fmt + lint + test)
@@ -99,6 +103,7 @@ hygiene: ## Repo hygiene checks (layout + symlink + tracked-noise gates)
 	@ISO_ROOT=artifacts/isolates/hygiene $(MAKE) scripts-audit
 	@ISO_ROOT=artifacts/isolates/hygiene $(MAKE) ci-workflows-make-only
 	@ISO_ROOT=artifacts/isolates/hygiene $(MAKE) ci-make-help-drift
+	@ISO_ROOT=artifacts/isolates/hygiene $(MAKE) path-contract-check
 
 fetch-real-datasets:
 	@./scripts/fixtures/fetch-real-datasets.sh
@@ -116,7 +121,7 @@ release-update-compat-matrix:
 	@[ -n "$$TAG" ] || { echo "usage: make release-update-compat-matrix TAG=<tag>"; exit 2; }
 	@./scripts/release/update-compat-matrix.sh "$$TAG"
 
-.PHONY: help layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-graph scripts-lint scripts-format scripts-test scripts-audit scripts-clean artifacts-index artifacts-clean isolate-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts doctor fetch-real-datasets ssot-check policy-lint policy-schema-drift release-update-compat-matrix ci local local-full contracts hygiene
+.PHONY: help layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-graph scripts-lint scripts-format scripts-test scripts-audit scripts-clean artifacts-index artifacts-clean isolate-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts doctor fetch-real-datasets ssot-check policy-lint policy-schema-drift release-update-compat-matrix ci local local-full contracts hygiene clean deep-clean debug bump release-dry-run release
 
 
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)
@@ -158,3 +163,36 @@ artifacts-clean: ## Clean old artifacts with safe retention
 
 isolate-clean: ## Remove isolate output directories safely
 	@find artifacts/isolates -mindepth 1 -maxdepth 1 -type d -exec rm -r {} + 2>/dev/null || true
+
+clean: ## Safe clean for generated local outputs
+	@$(MAKE) scripts-clean
+	@$(MAKE) isolate-clean
+	@rm -rf artifacts/perf/results artifacts/ops/latest
+
+deep-clean: ## Extended clean (prints and then removes generated outputs)
+	@printf '%s\n' 'Deleting: artifacts/isolates artifacts/scripts artifacts/perf/results artifacts/ops'
+	@$(MAKE) clean
+	@rm -rf artifacts/ops
+
+debug: ## Print internal make/env variables for maintainers
+	@printf 'MAKE_PRIMARY_GOAL=%s\n' "$(MAKE_PRIMARY_GOAL)"
+	@printf 'MAKE_RUN_ID=%s\n' "$(MAKE_RUN_ID)"
+	@printf 'ISO_ROOT=%s\n' "$(ISO_ROOT)"
+	@printf 'CARGO_TARGET_DIR=%s\n' "$(CARGO_TARGET_DIR)"
+	@printf 'ATLAS_NS=%s\n' "$(ATLAS_NS)"
+	@printf 'ATLAS_BASE_URL=%s\n' "$(ATLAS_BASE_URL)"
+	@printf 'OPS_RUN_ID=%s\n' "$(OPS_RUN_ID)"
+
+bump: ## Bump workspace version (usage: make bump VERSION=x.y.z)
+	@[ -n "$$VERSION" ] || { echo "usage: make bump VERSION=x.y.z"; exit 2; }
+	@cargo set-version --workspace "$$VERSION"
+
+release-dry-run: ## Build + docs + ops smoke release rehearsal
+	@ISO_ROOT=artifacts/isolates/release-dry-run $(MAKE) fmt
+	@ISO_ROOT=artifacts/isolates/release-dry-run $(MAKE) lint
+	@ISO_ROOT=artifacts/isolates/release-dry-run $(MAKE) test
+	@ISO_ROOT=artifacts/isolates/release-dry-run $(MAKE) docs
+	@ISO_ROOT=artifacts/isolates/release-dry-run $(MAKE) ops-full-pr
+
+release: ## Release entrypoint (currently dry-run only)
+	@$(MAKE) release-dry-run
