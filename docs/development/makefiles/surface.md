@@ -74,6 +74,7 @@ Stable targets:
 - `ops-drill-rollback`
 - `ops-report`
 - `ops-script-coverage`
+- `ops-shellcheck`
 - `ops-kind-version-check`
 - `ops-k6-version-check`
 - `ops-helm-version-check`
