@@ -6,6 +6,7 @@ fn planner_modules_do_not_pull_io_or_db_deps() {
         "src/filters.rs",
         "src/cost.rs",
         "src/limits.rs",
+        "src/normalize.rs",
     ];
     let forbidden = [
         "rusqlite",

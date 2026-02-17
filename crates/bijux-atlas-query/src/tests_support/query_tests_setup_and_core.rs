@@ -437,3 +437,37 @@ fn collation_normalized_name_lookup_is_case_insensitive() {
     );
 }
 
+#[test]
+fn projection_specific_query_uses_covering_name_index() {
+    let conn = setup_db();
+    let req = GeneQueryRequest {
+        fields: GeneFields {
+            gene_id: true,
+            name: true,
+            coords: false,
+            biotype: false,
+            transcript_count: false,
+            sequence_length: false,
+        },
+        filter: GeneFilter {
+            name_prefix: Some("BR".to_string()),
+            ..Default::default()
+        },
+        limit: 10,
+        cursor: None,
+        allow_full_scan: false,
+    };
+    let plan = explain_query_plan(&conn, &req, &limits(), b"s")
+        .expect("plan")
+        .join("\n")
+        .to_ascii_lowercase();
+    assert!(
+        plan.contains("idx_gene_summary_name_normalized")
+            || plan.contains("idx_gene_summary_gene_id"),
+        "projection query must use an indexed path for projection query: {plan}"
+    );
+    assert!(
+        !plan.contains("scan gene_summary"),
+        "projection query must not table-scan: {plan}"
+    );
+}
