@@ -5,8 +5,8 @@
 set -eu
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-ART="$ROOT/artifacts/e2e/k6"
-SCENARIOS="$ROOT/e2e/k6/scenarios"
+ART="$ROOT/artifacts/ops/e2e/k6"
+SCENARIOS="$ROOT/ops/e2e/k6/scenarios"
 BASE_URL="${BASE_URL:-http://127.0.0.1:18080}"
 PR_MODE="${PR_MODE:-0}"
 

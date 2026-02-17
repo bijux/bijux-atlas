@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-CONTRACT = ROOT / "observability/metrics_contract.json"
+CONTRACT = ROOT / "ops/observability/metrics_contract.json"
 METRICS_SRC = ROOT / "crates/bijux-atlas-server/src/telemetry/metrics_endpoint.rs"
 
 contract = json.loads(CONTRACT.read_text())

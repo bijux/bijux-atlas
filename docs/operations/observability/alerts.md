@@ -20,7 +20,7 @@ Does not replace incident runbooks.
 
 ## Contracts
 
-- Alert rules are validated by `scripts/observability/check_alerts_contract.py`.
+- Alert rules are validated by `scripts/ops/observability/check_alerts_contract.py`.
 - Alerts must map to runbook drill procedures.
 
 ## Drill steps
@@ -36,8 +36,8 @@ Invalid or stale alerts delay incident response.
 ## How to verify
 
 ```bash
-$ python3 scripts/observability/check_alerts_contract.py
-$ python3 scripts/observability/lint_runbooks.py
+$ python3 scripts/ops/observability/check_alerts_contract.py
+$ python3 scripts/ops/observability/lint_runbooks.py
 ```
 
 Expected output: alerts and runbook references pass checks.

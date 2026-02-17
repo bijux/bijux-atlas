@@ -39,7 +39,7 @@ jobs:
           name: perf-nightly-artifacts
           path: |
             artifacts/perf/**
-            artifacts/e2e/k6/**
+            artifacts/ops/e2e/k6/**
 
       - name: Prepare regression issue content
         if: failure() && hashFiles('artifacts/perf/regression.txt') != ''

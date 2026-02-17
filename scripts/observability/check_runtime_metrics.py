@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-metrics_file = ROOT / "artifacts/e2e/k6/metrics.prom"
+metrics_file = ROOT / "artifacts/ops/e2e/k6/metrics.prom"
 
 if not metrics_file.exists():
     print("runtime metrics file missing; run make e2e-perf first (skipping runtime checks)")

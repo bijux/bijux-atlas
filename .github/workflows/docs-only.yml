@@ -8,7 +8,7 @@ on:
       - 'scripts/docs/**'
       - 'makefiles/docs.mk'
       - 'docs/contracts/**/*.json'
-      - 'openapi/v1/openapi.snapshot.json'
+      - 'ops/openapi/v1/openapi.snapshot.json'
 
 permissions:
   contents: read

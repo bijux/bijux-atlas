@@ -22,7 +22,7 @@ Does not duplicate every template file content.
 
 - Chart source: `charts/bijux-atlas/`
 - Values contract: [values.md](values.md)
-- Install verification: `e2e/k8s/tests/test_install.sh`
+- Install verification: `ops/e2e/k8s/tests/test_install.sh`
 - Required values keys include `values.server`, `values.store`, `values.cache`, and `values.resources`.
 
 ## Failure modes
@@ -33,7 +33,7 @@ Undocumented chart changes create deployment regressions.
 
 ```bash
 $ helm lint charts/bijux-atlas
-$ ./e2e/k8s/tests/test_install.sh
+$ ./ops/e2e/k8s/tests/test_install.sh
 ```
 
 Expected output: chart lint and install gate pass.

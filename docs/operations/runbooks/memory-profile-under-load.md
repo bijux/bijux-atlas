@@ -15,7 +15,7 @@
 ## Commands
 
 ```bash
-$ k6 run load/k6/atlas_1000qps.js
+$ k6 run ops/load/k6/atlas_1000qps.js
 $ make e2e-perf
 ```
 

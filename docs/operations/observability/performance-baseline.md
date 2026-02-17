@@ -8,7 +8,7 @@
 
 ## Benchmark Artifacts
 
-- 1000 QPS load scenario: `load/k6/atlas_1000qps.js`
+- 1000 QPS load scenario: `ops/load/k6/atlas_1000qps.js`
 - cold-start benchmark script: `scripts/perf/cold_start_benchmark.sh`
 - cache manager bench: `cargo bench -p bijux-atlas-server --bench cache_manager`
 - mmap experiment (non-CI): `cargo test -p bijux-atlas-server mmap_read_only_experiment_baseline -- --ignored`

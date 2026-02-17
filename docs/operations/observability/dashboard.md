@@ -12,7 +12,7 @@ Keeps Grafana panels aligned with metric contracts.
 
 ## Scope
 
-`observability/grafana/atlas-observability-dashboard.json` and required metrics.
+`ops/observability/grafana/atlas-observability-dashboard.json` and required metrics.
 
 ## Non-goals
 
@@ -30,8 +30,8 @@ Dashboard drift hides production regressions.
 ## How to verify
 
 ```bash
-$ python3 scripts/observability/check_dashboard_contract.py
-$ python3 scripts/observability/check_metrics_contract.py
+$ python3 scripts/ops/observability/check_dashboard_contract.py
+$ python3 scripts/ops/observability/check_metrics_contract.py
 ```
 
 Expected output: dashboard and metrics contracts pass.

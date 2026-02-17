@@ -18,7 +18,7 @@ jobs:
 
       - name: Build perf image and start stack
         run: |
-          docker compose -f load/docker-compose.perf.yml up -d --build
+          docker compose -f ops/load/docker-compose.perf.yml up -d --build
 
       - name: Wait for readiness
         run: |
@@ -39,8 +39,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: perf-smoke-artifacts
-          path: artifacts/e2e/k6/**
+          path: artifacts/ops/e2e/k6/**
 
       - name: Cleanup
         if: always()
-        run: docker compose -f load/docker-compose.perf.yml down --remove-orphans
+        run: docker compose -f ops/load/docker-compose.perf.yml down --remove-orphans

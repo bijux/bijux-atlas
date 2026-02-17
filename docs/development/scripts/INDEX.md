@@ -23,7 +23,7 @@ Does not duplicate script implementation details.
 - Contracts: `scripts/contracts/`
 - Docs linters/generators: `scripts/docs/`
 - Perf tooling: `scripts/perf/`
-- Observability checks: `scripts/observability/`
+- Observability checks: `scripts/ops/observability/`
 - Fixtures/data helpers: `scripts/fixtures/`
 - Release automation: `scripts/release/`
 

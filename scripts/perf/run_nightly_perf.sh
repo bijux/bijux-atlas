@@ -10,13 +10,13 @@ RES="$ART/results"
 mkdir -p "$RES" "$ART/cache"
 
 cleanup() {
-  docker compose -f "$ROOT/load/docker-compose.perf.yml" down --remove-orphans || true
+  docker compose -f "$ROOT/ops/load/docker-compose.perf.yml" down --remove-orphans || true
 }
 trap cleanup EXIT
 
 "$ROOT/scripts/perf/prepare_perf_store.sh" "$ART/store"
 
-docker compose -f "$ROOT/load/docker-compose.perf.yml" up -d --build
+docker compose -f "$ROOT/ops/load/docker-compose.perf.yml" up -d --build
 
 for i in $(seq 1 60); do
   if curl -fsS "http://127.0.0.1:18080/readyz" >/dev/null 2>&1; then
@@ -35,7 +35,7 @@ OUT_DIR="$ART/cold-start" "$ROOT/scripts/perf/cold_start_benchmark.sh"
 "$ROOT/scripts/perf/run_suite.sh" noisy_neighbor_cpu_throttle.js "$RES"
 
 # emulate store outage by forcing cached-only mode
-ATLAS_CACHED_ONLY_MODE=true docker compose -f "$ROOT/load/docker-compose.perf.yml" up -d --force-recreate atlas-server
+ATLAS_CACHED_ONLY_MODE=true docker compose -f "$ROOT/ops/load/docker-compose.perf.yml" up -d --force-recreate atlas-server
 for i in $(seq 1 30); do
   if curl -fsS "http://127.0.0.1:18080/readyz" >/dev/null 2>&1; then
     break

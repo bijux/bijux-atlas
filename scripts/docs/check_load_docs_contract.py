@@ -10,7 +10,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 LOAD_DOC_DIR = ROOT / "docs" / "operations" / "load"
-scenario_dir = ROOT / "e2e" / "k6" / "scenarios"
+scenario_dir = ROOT / "ops" / "e2e" / "k6" / "scenarios"
+if not scenario_dir.exists():
+    scenario_dir = ROOT / "e2e" / "k6" / "scenarios"
 scenarios = {p.name for p in scenario_dir.glob("*.json")}
 
 errors: list[str] = []

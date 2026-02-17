@@ -8,8 +8,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-CONTRACT = ROOT / "observability/metrics_contract.json"
-DASH = ROOT / "observability/grafana/atlas-observability-dashboard.json"
+CONTRACT = ROOT / "ops/observability/metrics_contract.json"
+DASH = ROOT / "ops/observability/grafana/atlas-observability-dashboard.json"
 
 contract = json.loads(CONTRACT.read_text())
 required = set(contract.get("required_metrics", {}).keys())

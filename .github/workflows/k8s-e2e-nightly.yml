@@ -23,7 +23,7 @@ jobs:
         uses: helm/kind-action@v1.10.0
         with:
           cluster_name: bijux-atlas-e2e
-          config: e2e/stack/kind/cluster.yaml
+          config: ops/e2e/stack/kind/cluster.yaml
 
       - name: Set up Helm
         uses: azure/setup-helm@v4
@@ -37,20 +37,20 @@ jobs:
           sudo apt-get install -y curl netcat-openbsd
 
       - name: Bring up e2e dependencies
-        run: ./e2e/scripts/up.sh
+        run: ./ops/e2e/scripts/up.sh
 
       - name: Helm install gate
-        run: ./e2e/k8s/tests/test_install.sh
+        run: ./ops/e2e/k8s/tests/test_install.sh
 
       - name: Run full kind+helm suite
-        run: ./e2e/k8s/tests/run_all.sh
+        run: ./ops/e2e/k8s/tests/run_all.sh
 
       - name: Fetch pinned real datasets
         run: ./scripts/fixtures/fetch-real-datasets.sh
 
       - name: Run real-data regression suite
-        run: ./e2e/realdata/run_all.sh
+        run: ./ops/e2e/realdata/run_all.sh
 
       - name: Tear down cluster
         if: always()
-        run: ./e2e/scripts/down.sh
+        run: ./ops/e2e/scripts/down.sh

@@ -4,7 +4,7 @@
 
 ## What
 
-Canonical description of chart validation tests under `e2e/k8s/tests`.
+Canonical description of chart validation tests under `ops/e2e/k8s/tests`.
 
 ## Why
 
@@ -20,9 +20,9 @@ Does not duplicate each test script implementation.
 
 ## Contracts
 
-- Runner: `e2e/k8s/tests/run_all.sh`
-- Install gate: `e2e/k8s/tests/test_install.sh`
-- Cached-only mode: `e2e/k8s/tests/test_cached_only_mode.sh`
+- Runner: `ops/e2e/k8s/tests/run_all.sh`
+- Install gate: `ops/e2e/k8s/tests/test_install.sh`
+- Cached-only mode: `ops/e2e/k8s/tests/test_cached_only_mode.sh`
 
 ## Failure modes
 
@@ -31,7 +31,7 @@ Chart drift can break runtime semantics while unit tests remain green.
 ## How to verify
 
 ```bash
-$ ./e2e/k8s/tests/run_all.sh
+$ ./ops/e2e/k8s/tests/run_all.sh
 ```
 
 Expected output: all K8s e2e tests pass.

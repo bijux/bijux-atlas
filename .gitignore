@@ -22,7 +22,7 @@ Thumbs.db
 # Atlas isolated runner outputs (kept out of git by policy)
 # -----------------------------------------------------------------------------
 /artifacts/
-openapi/v1/openapi.generated.json
+ops/openapi/v1/openapi.generated.json
 
 # -----------------------------------------------------------------------------
 # Test / benchmark / profiling outputs

@@ -4,7 +4,7 @@
 
 ## What
 
-Documents script interfaces in `e2e/scripts/`.
+Documents script interfaces in `ops/e2e/scripts/`.
 
 ## Why
 
@@ -32,8 +32,8 @@ Undocumented script changes break local operator workflows.
 ## How to verify
 
 ```bash
-$ ./e2e/scripts/smoke_queries.sh
-$ ./e2e/scripts/verify_metrics.sh
+$ ./ops/e2e/scripts/smoke_queries.sh
+$ ./ops/e2e/scripts/verify_metrics.sh
 ```
 
 Expected output: canonical smoke and metrics checks pass.

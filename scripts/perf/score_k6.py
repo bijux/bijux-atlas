@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SLO = json.loads((ROOT / "configs/slo/slo.json").read_text())
-ART = ROOT / "artifacts/e2e/k6"
+ART = ROOT / "artifacts/ops/e2e/k6"
 ART.mkdir(parents=True, exist_ok=True)
 
 violations = []
@@ -50,7 +50,7 @@ if metrics_file.exists():
         if f"{metric}" not in text:
             violations.append(f"missing metric: {metric}")
 else:
-    violations.append("missing metrics scrape file: artifacts/e2e/k6/metrics.prom")
+    violations.append("missing metrics scrape file: artifacts/ops/e2e/k6/metrics.prom")
 
 report = [
     "# E2E k6 Score Report",

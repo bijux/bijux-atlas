@@ -8,8 +8,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-CONTRACT = ROOT / "observability/metrics_contract.json"
-ALERTS = ROOT / "observability/alerts/atlas-alert-rules.yaml"
+CONTRACT = ROOT / "ops/observability/metrics_contract.json"
+ALERTS = ROOT / "ops/observability/alerts/atlas-alert-rules.yaml"
 
 contract = json.loads(CONTRACT.read_text())
 required = set(contract.get("required_metrics", {}).keys())

@@ -34,5 +34,5 @@ This document defines expected failure behavior for `bijux-atlas-store` operatio
 
 ## Metrics
 
-- Store instrumentation records download/upload bytes and latency.
+- Store instrumentation records downops/load/upload bytes and latency.
 - `StoreMetricsCollector` exposes aggregated counters and `failures_by_class`.

@@ -12,7 +12,7 @@ Keeps fixture provenance and checksums deterministic.
 
 ## Scope
 
-`e2e/fixtures/README.md` and fixture lock usage.
+`ops/e2e/fixtures/README.md` and fixture lock usage.
 
 ## Non-goals
 

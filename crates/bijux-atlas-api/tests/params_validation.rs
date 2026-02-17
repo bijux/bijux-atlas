@@ -105,7 +105,7 @@ fn error_schema_rejects_unknown_fields() {
 fn openapi_snapshot_is_deterministic_and_matches_committed_contract() {
     let generated = canonical::stable_json_bytes(&openapi_v1_spec()).expect("serialize generated");
     let snapshot_path = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../openapi/v1/openapi.snapshot.json");
+        .join("../../ops/openapi/v1/openapi.snapshot.json");
     let snapshot = std::fs::read(snapshot_path).expect("read snapshot");
     assert_eq!(generated, snapshot);
 }

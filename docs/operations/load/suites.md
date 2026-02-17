@@ -12,7 +12,7 @@ Makes performance scenarios explicit for PR and nightly gates.
 
 ## Scope
 
-Scenario files under `e2e/k6/scenarios/*.json`.
+Scenario files under `ops/e2e/k6/scenarios/*.json`.
 
 ## Non-goals
 

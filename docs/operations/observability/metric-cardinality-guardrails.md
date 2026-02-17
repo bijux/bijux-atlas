@@ -1,7 +1,7 @@
 # Metric Cardinality Guardrails
 
 ## Policy
-- Metric names are versioned by contract in `observability/metrics_contract.json`.
+- Metric names are versioned by contract in `ops/observability/metrics_contract.json`.
 - Labels must be bounded and non-user-controlled.
 - Forbidden labels include request-derived high-cardinality values such as `gene_id`, `name`, `cursor`, `region`, and raw `ip`.
 
@@ -13,5 +13,5 @@
 - `code`
 
 ## Enforcement
-- `scripts/observability/check_metrics_contract.py` validates required metrics and label policy.
+- `scripts/ops/observability/check_metrics_contract.py` validates required metrics and label policy.
 - `make observability-check` is the authoritative gate for observability contracts.

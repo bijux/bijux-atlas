@@ -13,12 +13,12 @@ mkdir -p "$OUT_DIR"
 SUMMARY_JSON="$OUT_DIR/${SUITE%.js}.summary.json"
 
 if command -v k6 >/dev/null 2>&1; then
-  BASE_URL="$BASE_URL" k6 run --summary-export "$SUMMARY_JSON" "$ROOT/load/k6/suites/$SUITE"
+  BASE_URL="$BASE_URL" k6 run --summary-export "$SUMMARY_JSON" "$ROOT/ops/load/k6/suites/$SUITE"
 else
   docker run --rm --network host \
     -e BASE_URL="$BASE_URL" \
     -v "$ROOT:/work" -w /work \
-    grafana/k6:0.49.0 run --summary-export "$SUMMARY_JSON" "load/k6/suites/$SUITE"
+    grafana/k6:0.49.0 run --summary-export "$SUMMARY_JSON" "ops/load/k6/suites/$SUITE"
 fi
 
 echo "suite complete: $SUITE -> $SUMMARY_JSON"

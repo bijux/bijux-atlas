@@ -55,13 +55,13 @@ obs_metrics = json.loads((ROOT / "observability" / "metrics_contract.json").read
 obs_set = set(obs_metrics["required_metrics"].keys())
 contract_set = {m["name"] for m in metrics["metrics"]}
 if contract_set != obs_set:
-    print("METRICS.json drift from observability/metrics_contract.json", file=sys.stderr)
+    print("METRICS.json drift from ops/observability/metrics_contract.json", file=sys.stderr)
     print("missing in METRICS:", sorted(obs_set - contract_set), file=sys.stderr)
     print("extra in METRICS:", sorted(contract_set - obs_set), file=sys.stderr)
     sys.exit(1)
 obs_spans = obs_metrics.get("required_spans", [])
 if sorted(obs_spans) != sorted(span_names):
-    print("TRACE_SPANS.json drift from observability/metrics_contract.json", file=sys.stderr)
+    print("TRACE_SPANS.json drift from ops/observability/metrics_contract.json", file=sys.stderr)
     sys.exit(1)
 
 # endpoint registry matches server routes and openapi paths

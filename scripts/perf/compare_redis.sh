@@ -26,8 +26,8 @@ run_stack() {
   docker compose -f "$compose_file" down --remove-orphans || true
 }
 
-run_stack "$ROOT/load/docker-compose.perf.yml" 18080 "$OUT/no-redis"
-run_stack "$ROOT/load/docker-compose.perf.redis.yml" 18081 "$OUT/with-redis"
+run_stack "$ROOT/ops/load/docker-compose.perf.yml" 18080 "$OUT/no-redis"
+run_stack "$ROOT/ops/load/docker-compose.perf.redis.yml" 18081 "$OUT/with-redis"
 
 python3 - <<PY
 import json

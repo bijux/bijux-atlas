@@ -303,7 +303,7 @@ write_reference_contract_doc(
     "\n".join(metrics_contract_lines)
     + "\n\nLabel cardinality rules:\n"
     + "- User-controlled values must not be used as metric labels.\n"
-    + "- Allowed dynamic labels are constrained by `observability/metrics_contract.json`.",
+    + "- Allowed dynamic labels are constrained by `ops/observability/metrics_contract.json`.",
     "```json\n"
     + json.dumps(
         {
@@ -344,7 +344,7 @@ write_reference_contract_doc(
     contracts / "endpoints.md",
     "Endpoints Contract",
     "\n".join(endpoint_lines)
-    + "\n\nOpenAPI reference:\n- `openapi/v1/openapi.yaml`",
+    + "\n\nOpenAPI reference:\n- `ops/openapi/v1/openapi.yaml`",
     "```bash\n$ ./scripts/openapi-generate.sh\n```\n\nExpected output: generator succeeds and endpoint drift checks pass.",
 )
 

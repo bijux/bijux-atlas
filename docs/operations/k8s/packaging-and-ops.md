@@ -87,7 +87,7 @@ Recommended for high-throughput clusters:
 Measurement workflow:
 
 1. Deploy baseline on generic storage.
-2. Run `load/k6/suites/warm_steady.js` and `load/k6/suites/regional_spike_10x_60s.js`.
+2. Run `ops/load/k6/suites/warm_steady.js` and `ops/load/k6/suites/regional_spike_10x_60s.js`.
 3. Deploy node-local SSD profile and rerun same suites.
 4. Compare p95/p99 and store download latency from `/metrics`.
 

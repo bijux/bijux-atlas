@@ -25,8 +25,8 @@ This is an advanced deployment profile, not the default.
   - `bijux_store_download_p95_seconds`
   - `bijux_dataset_disk_usage_bytes`
 - Repeat after node-local SSD rollout using same k6 suites:
-  - `load/k6/suites/warm_steady.js`
-  - `load/k6/suites/regional_spike_10x_60s.js`
+  - `ops/load/k6/suites/warm_steady.js`
+  - `ops/load/k6/suites/regional_spike_10x_60s.js`
 - Keep query mix and dataset set identical between runs.
 ## Referenced chart values keys
 
