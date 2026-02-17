@@ -167,4 +167,35 @@ mod bulkhead_tests {
 
         drop((heavy, cheap));
     }
+
+    #[tokio::test]
+    async fn shutdown_drain_closes_heavy_bulkheads_and_keeps_cheap_open() {
+        let store = Arc::new(FakeStore::default());
+        let cache = DatasetCacheManager::new(DatasetCacheConfig::default(), store);
+        let api = ApiConfig {
+            concurrency_cheap: 1,
+            concurrency_heavy: 1,
+            heavy_worker_pool_size: 1,
+            ..ApiConfig::default()
+        };
+        let state = AppState::with_config(cache, api, QueryLimits::default());
+
+        state.begin_shutdown_drain_heavy();
+
+        let heavy = state.class_heavy.clone().try_acquire_owned();
+        assert!(heavy.is_err(), "heavy permits must be closed during drain");
+
+        let worker = state.heavy_workers.clone().try_acquire_owned();
+        assert!(
+            worker.is_err(),
+            "heavy worker permits must be closed during drain"
+        );
+
+        let cheap = state
+            .class_cheap
+            .clone()
+            .try_acquire_owned()
+            .expect("cheap should remain available while draining heavy");
+        drop(cheap);
+    }
 }
