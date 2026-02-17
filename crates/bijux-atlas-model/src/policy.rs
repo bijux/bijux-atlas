@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(deny_unknown_fields)]
 #[non_exhaustive]
 pub enum StrictnessMode {
     Strict,
@@ -11,6 +12,7 @@ pub enum StrictnessMode {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(deny_unknown_fields)]
 #[non_exhaustive]
 pub enum GeneIdentifierPolicy {
     Gff3Id,

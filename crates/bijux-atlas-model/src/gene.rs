@@ -1,8 +1,12 @@
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 
+pub const ID_MAX_LEN: usize = 128;
+pub const SEQID_MAX_LEN: usize = 128;
+pub const NAME_MAX_LEN: usize = 256;
+
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, PartialOrd, Ord)]
-#[serde(deny_unknown_fields)]
+#[serde(transparent)]
 #[non_exhaustive]
 pub struct GeneId(String);
 
@@ -14,6 +18,9 @@ impl GeneId {
         if input.trim() != input {
             return Err("gene_id must not contain leading/trailing whitespace".to_string());
         }
+        if input.len() > ID_MAX_LEN {
+            return Err(format!("gene_id exceeds max length {ID_MAX_LEN}"));
+        }
         Ok(Self(input.to_string()))
     }
 
@@ -24,7 +31,32 @@ impl GeneId {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, PartialOrd, Ord)]
-#[serde(deny_unknown_fields)]
+#[serde(transparent)]
+#[non_exhaustive]
+pub struct TranscriptId(String);
+
+impl TranscriptId {
+    pub fn parse(input: &str) -> Result<Self, String> {
+        if input.is_empty() {
+            return Err("transcript_id must not be empty".to_string());
+        }
+        if input.trim() != input {
+            return Err("transcript_id must not contain leading/trailing whitespace".to_string());
+        }
+        if input.len() > ID_MAX_LEN {
+            return Err(format!("transcript_id exceeds max length {ID_MAX_LEN}"));
+        }
+        Ok(Self(input.to_string()))
+    }
+
+    #[must_use]
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, PartialOrd, Ord)]
+#[serde(transparent)]
 #[non_exhaustive]
 pub struct SeqId(String);
 
@@ -35,6 +67,9 @@ impl SeqId {
         }
         if input.trim() != input {
             return Err("seqid must not contain leading/trailing whitespace".to_string());
+        }
+        if input.len() > SEQID_MAX_LEN {
+            return Err(format!("seqid exceeds max length {SEQID_MAX_LEN}"));
         }
         Ok(Self(input.to_string()))
     }
@@ -59,7 +94,98 @@ pub struct GeneSummary {
     pub sequence_length: u64,
 }
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[serde(rename_all = "snake_case")]
+#[non_exhaustive]
+pub enum Strand {
+    Plus,
+    Minus,
+    Unknown,
+}
+
+impl Strand {
+    pub fn parse(raw: &str) -> Result<Self, String> {
+        match raw {
+            "+" => Ok(Self::Plus),
+            "-" => Ok(Self::Minus),
+            "." => Ok(Self::Unknown),
+            _ => Err("strand must be one of '+', '-', '.'".to_string()),
+        }
+    }
+
+    #[must_use]
+    pub const fn as_symbol(self) -> &'static str {
+        match self {
+            Self::Plus => "+",
+            Self::Minus => "-",
+            Self::Unknown => ".",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[serde(deny_unknown_fields)]
+#[non_exhaustive]
+pub struct Region {
+    pub seqid: SeqId,
+    pub start: u64,
+    pub end: u64,
+}
+
+impl Region {
+    pub fn new(seqid: SeqId, start: u64, end: u64) -> Result<Self, String> {
+        if start == 0 || end == 0 {
+            return Err("region start/end must be >= 1".to_string());
+        }
+        if start > end {
+            return Err("region start must be <= end".to_string());
+        }
+        Ok(Self { seqid, start, end })
+    }
+
+    pub fn parse(input: &str) -> Result<Self, String> {
+        let (seqid_raw, rest) = input
+            .split_once(':')
+            .ok_or_else(|| "region must be in seqid:start-end format".to_string())?;
+        let (start_raw, end_raw) = rest
+            .split_once('-')
+            .ok_or_else(|| "region must be in seqid:start-end format".to_string())?;
+        let seqid = SeqId::parse(seqid_raw)?;
+        let start = start_raw
+            .parse::<u64>()
+            .map_err(|_| "region start must be integer".to_string())?;
+        let end = end_raw
+            .parse::<u64>()
+            .map_err(|_| "region end must be integer".to_string())?;
+        Self::new(seqid, start, end)
+    }
+
+    #[must_use]
+    pub fn canonical_string(&self) -> String {
+        format!("{}:{}-{}", self.seqid.as_str(), self.start, self.end)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+#[non_exhaustive]
+pub struct GeneOrderKey {
+    pub seqid: SeqId,
+    pub start: u64,
+    pub gene_id: GeneId,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+#[non_exhaustive]
+pub struct TranscriptOrderKey {
+    pub seqid: SeqId,
+    pub start: u64,
+    pub transcript_id: TranscriptId,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(deny_unknown_fields)]
 #[non_exhaustive]
 pub struct GeneNamePolicy {
     pub attribute_keys: Vec<String>,
@@ -99,6 +225,7 @@ impl GeneNamePolicy {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(deny_unknown_fields)]
 #[non_exhaustive]
 pub struct BiotypePolicy {
     pub attribute_keys: Vec<String>,
@@ -142,6 +269,7 @@ impl BiotypePolicy {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(deny_unknown_fields)]
 #[non_exhaustive]
 pub struct TranscriptTypePolicy {
     pub accepted_types: BTreeSet<String>,
@@ -172,6 +300,7 @@ impl TranscriptTypePolicy {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Default)]
+#[serde(deny_unknown_fields)]
 #[non_exhaustive]
 pub struct SeqidNormalizationPolicy {
     pub aliases: BTreeMap<String, String>,

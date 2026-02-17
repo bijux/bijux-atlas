@@ -7,6 +7,7 @@ rust-version.workspace = true
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }
+serde_json.workspace = true
 
 [dev-dependencies]
 criterion = "0.5"
@@ -18,4 +19,8 @@ path = "src/lib.rs"
 
 [[bench]]
 name = "dataset_parse"
+harness = false
+
+[[bench]]
+name = "parse_validation"
 harness = false

@@ -12,8 +12,29 @@ impl Display for ValidationError {
 
 impl std::error::Error for ValidationError {}
 
+pub const RELEASE_MAX_LEN: usize = 16;
+pub const SPECIES_MAX_LEN: usize = 64;
+pub const ASSEMBLY_MAX_LEN: usize = 64;
+
+pub fn parse_release(input: &str) -> Result<Release, ValidationError> {
+    Release::parse(input)
+}
+
+pub fn parse_species(input: &str) -> Result<Species, ValidationError> {
+    Species::parse(input)
+}
+
+pub fn parse_assembly(input: &str) -> Result<Assembly, ValidationError> {
+    Assembly::parse(input)
+}
+
+pub fn parse_species_normalized(input: &str) -> Result<Species, ValidationError> {
+    let normalized = input.trim().to_ascii_lowercase().replace('-', "_");
+    Species::parse(&normalized)
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, PartialOrd, Ord)]
-#[serde(deny_unknown_fields)]
+#[serde(transparent)]
 #[non_exhaustive]
 pub struct Release(String);
 
@@ -26,6 +47,60 @@ impl Release {
         if !s.chars().all(|c| c.is_ascii_digit()) {
             return Err(ValidationError(
                 "release must be numeric string (e.g. 110)".to_string(),
+            ));
+        }
+        if s.len() > RELEASE_MAX_LEN {
+            return Err(ValidationError(format!(
+                "release exceeds max length {RELEASE_MAX_LEN}"
+            )));
+        }
+        Ok(Self(s.to_string()))
+    }
+
+    #[must_use]
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+
+    #[must_use]
+    pub fn into_inner(self) -> String {
+        self.0
+    }
+}
+
+impl Display for Release {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, PartialOrd, Ord)]
+#[serde(transparent)]
+#[non_exhaustive]
+pub struct Species(String);
+
+impl Species {
+    pub fn parse(input: &str) -> Result<Self, ValidationError> {
+        let s = input.trim();
+        if s.is_empty() {
+            return Err(ValidationError("species must not be empty".to_string()));
+        }
+        if s.len() > SPECIES_MAX_LEN {
+            return Err(ValidationError(format!(
+                "species exceeds max length {SPECIES_MAX_LEN}"
+            )));
+        }
+        if !s
+            .chars()
+            .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '_')
+        {
+            return Err(ValidationError(
+                "species must match [a-z0-9_]+ in snake_case".to_string(),
+            ));
+        }
+        if s.starts_with('_') || s.ends_with('_') || s.contains("__") {
+            return Err(ValidationError(
+                "species must not start/end with '_' or contain '__'".to_string(),
             ));
         }
         Ok(Self(s.to_string()))
@@ -42,46 +117,14 @@ impl Release {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, PartialOrd, Ord)]
-#[serde(deny_unknown_fields)]
-#[non_exhaustive]
-pub struct Species(String);
-
-impl Species {
-    pub fn parse(input: &str) -> Result<Self, ValidationError> {
-        let s = input.trim().to_ascii_lowercase().replace('-', "_");
-        if s.is_empty() {
-            return Err(ValidationError("species must not be empty".to_string()));
-        }
-        if !s
-            .chars()
-            .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '_')
-        {
-            return Err(ValidationError(
-                "species must match [a-z0-9_]+ in snake_case".to_string(),
-            ));
-        }
-        if s.starts_with('_') || s.ends_with('_') || s.contains("__") {
-            return Err(ValidationError(
-                "species must not start/end with '_' or contain '__'".to_string(),
-            ));
-        }
-        Ok(Self(s))
-    }
-
-    #[must_use]
-    pub fn as_str(&self) -> &str {
-        &self.0
-    }
-
-    #[must_use]
-    pub fn into_inner(self) -> String {
-        self.0
+impl Display for Species {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, PartialOrd, Ord)]
-#[serde(deny_unknown_fields)]
+#[serde(transparent)]
 #[non_exhaustive]
 pub struct Assembly(String);
 
@@ -90,6 +133,11 @@ impl Assembly {
         let trimmed = input.trim();
         if trimmed.is_empty() {
             return Err(ValidationError("assembly must not be empty".to_string()));
+        }
+        if trimmed.len() > ASSEMBLY_MAX_LEN {
+            return Err(ValidationError(format!(
+                "assembly exceeds max length {ASSEMBLY_MAX_LEN}"
+            )));
         }
         if !trimmed
             .chars()
@@ -113,27 +161,50 @@ impl Assembly {
     }
 }
 
+impl Display for Assembly {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, PartialOrd, Ord)]
 #[serde(deny_unknown_fields)]
 #[non_exhaustive]
 pub struct DatasetId {
-    pub release: String,
-    pub species: String,
-    pub assembly: String,
+    pub release: Release,
+    pub species: Species,
+    pub assembly: Assembly,
 }
 
 impl DatasetId {
     pub fn new(release: &str, species: &str, assembly: &str) -> Result<Self, ValidationError> {
         Ok(Self {
-            release: Release::parse(release)?.into_inner(),
-            species: Species::parse(species)?.into_inner(),
-            assembly: Assembly::parse(assembly)?.into_inner(),
+            release: parse_release(release)?,
+            species: parse_species(species)?,
+            assembly: parse_assembly(assembly)?,
+        })
+    }
+
+    pub fn from_normalized(
+        release: &str,
+        species: &str,
+        assembly: &str,
+    ) -> Result<Self, ValidationError> {
+        Ok(Self {
+            release: parse_release(release)?,
+            species: parse_species_normalized(species)?,
+            assembly: parse_assembly(assembly)?,
         })
     }
 
     #[must_use]
     pub fn canonical_string(&self) -> String {
-        format!("{}/{}/{}", self.release, self.species, self.assembly)
+        format!(
+            "{}/{}/{}",
+            self.release.as_str(),
+            self.species.as_str(),
+            self.assembly.as_str()
+        )
     }
 }
 
@@ -145,13 +216,13 @@ pub enum DatasetSelector {
 }
 
 pub fn normalize_species(input: &str) -> Result<String, ValidationError> {
-    Species::parse(input).map(Species::into_inner)
+    parse_species_normalized(input).map(Species::into_inner)
 }
 
 pub fn normalize_assembly(input: &str) -> Result<String, ValidationError> {
-    Assembly::parse(input).map(Assembly::into_inner)
+    parse_assembly(input).map(Assembly::into_inner)
 }
 
 pub fn normalize_release(input: &str) -> Result<String, ValidationError> {
-    Release::parse(input).map(Release::into_inner)
+    parse_release(input).map(Release::into_inner)
 }
