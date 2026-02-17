@@ -104,6 +104,10 @@ enum AtlasCommand {
         #[command(subcommand)]
         command: DatasetCommand,
     },
+    Policy {
+        #[command(subcommand)]
+        command: PolicyCommand,
+    },
     Ingest {
         #[arg(long)]
         gff3: PathBuf,
@@ -204,6 +208,11 @@ enum OpenapiCommand {
         #[arg(long, default_value = "openapi/v1/openapi.generated.json")]
         out: PathBuf,
     },
+}
+
+#[derive(Subcommand)]
+enum PolicyCommand {
+    Validate,
 }
 
 #[derive(Clone, Copy, Debug, ValueEnum)]
@@ -424,6 +433,11 @@ fn run_atlas_command(
             .map_err(CliError::internal),
             DatasetCommand::VerifyPack { pack } => {
                 artifact_validation::verify_pack(pack, output_mode).map_err(CliError::internal)
+            }
+        },
+        AtlasCommand::Policy { command } => match command {
+            PolicyCommand::Validate => {
+                artifact_validation::validate_policy(output_mode).map_err(CliError::internal)
             }
         },
         AtlasCommand::Ingest {

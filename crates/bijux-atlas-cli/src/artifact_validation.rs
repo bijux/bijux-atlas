@@ -1,7 +1,7 @@
 use crate::{sha256_hex, OutputMode};
 use bijux_atlas_core::canonical;
 use bijux_atlas_model::{ArtifactManifest, Catalog, DatasetId, ShardCatalog};
-use bijux_atlas_policies::load_policy_from_workspace;
+use bijux_atlas_policies::{canonical_config_json, load_policy_from_workspace};
 use bijux_atlas_store::{
     canonical_catalog_json, sorted_catalog_entries, verify_expected_sha256, ArtifactStore,
     LocalFsStore, ManifestLock, StoreErrorCode,
@@ -41,6 +41,31 @@ pub(crate) fn validate_catalog(path: PathBuf, output_mode: OutputMode) -> Result
             "{}",
             serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
         );
+    }
+    Ok(())
+}
+
+pub(crate) fn validate_policy(output_mode: OutputMode) -> Result<(), String> {
+    let workspace = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|p| p.parent())
+        .expect("workspace root")
+        .to_path_buf();
+    let policy = load_policy_from_workspace(&workspace).map_err(|e| e.to_string())?;
+    let canonical = canonical_config_json(&policy).map_err(|e| e.to_string())?;
+    if output_mode.json {
+        println!(
+            "{}",
+            serde_json::to_string(&json!({
+                "command":"atlas policy validate",
+                "status":"ok",
+                "schema_version": policy.schema_version.as_str(),
+                "canonical": serde_json::from_str::<serde_json::Value>(&canonical).map_err(|e| e.to_string())?
+            }))
+            .map_err(|e| e.to_string())?
+        );
+    } else {
+        println!("{canonical}");
     }
     Ok(())
 }

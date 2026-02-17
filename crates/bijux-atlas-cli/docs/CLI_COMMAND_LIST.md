@@ -14,6 +14,7 @@ atlas bench
 atlas ingest
 atlas inspect-db
 atlas openapi generate
+atlas policy
 atlas print-config
 atlas serve
 atlas smoke
