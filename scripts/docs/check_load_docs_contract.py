@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+LOAD_DOC_DIR = ROOT / "docs" / "operations" / "load"
+scenario_dir = ROOT / "e2e" / "k6" / "scenarios"
+scenarios = {p.name for p in scenario_dir.glob("*.json")}
+
+errors: list[str] = []
+for path in sorted(LOAD_DOC_DIR.glob("*.md")):
+    text = path.read_text(encoding="utf-8")
+    refs = re.findall(r"`([a-zA-Z0-9_\-]+\.json)`", text)
+    if not refs:
+        errors.append(f"{path}: no k6 scenario references found")
+        continue
+    for ref in refs:
+        if ref not in scenarios:
+            errors.append(f"{path}: unknown k6 scenario `{ref}`")
+
+if errors:
+    print("load docs contract check failed:", file=sys.stderr)
+    for e in errors:
+        print(f"- {e}", file=sys.stderr)
+    sys.exit(1)
+
+print("load docs contract check passed")

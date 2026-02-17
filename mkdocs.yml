@@ -101,6 +101,7 @@ nav:
           - Artifact Schema: _generated/contracts/ARTIFACT_SCHEMA.md
           - Policy Schema: _generated/contracts/POLICY_SCHEMA.md
   - Operations:
+      - Index: operations/INDEX.md
       - Production Readiness: operations/production-readiness-checklist.md
       - Air-Gapped Install: operations/air-gapped-install.md
       - Dataset Promotion: operations/dataset-promotion-pipeline.md
