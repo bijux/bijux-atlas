@@ -9,7 +9,7 @@ for file in \
   docs/contracts/compatibility.md \
   docs/contracts/plugin/spec.md \
   docs/contracts/plugin/mode.md \
-  docs/_lint/DUPLICATE_TOPICS.md
+  docs/_lint/duplicate-topics.md
 do
   if [ ! -f "$file" ]; then
     echo "duplicate-topics check failed: missing canonical file $file" >&2

@@ -17,11 +17,16 @@ docs: ## Build docs + link-check + spell-check + lint
 	@"$(DOCS_VENV)/bin/mkdocs" build --strict --config-file mkdocs.yml --site-dir "$(DOCS_SITE)"
 	@"$(DOCS_VENV)/bin/python" scripts/docs/check_mkdocs_site_links.py "$(DOCS_SITE)"
 	@"$(DOCS_VENV)/bin/python" scripts/docs/spellcheck_docs.py docs
+	@./scripts/docs/check_doc_naming.sh
+	@./scripts/docs/check_index_pages.sh
+	@python3 scripts/docs/check_no_orphan_docs.py
 	@python3 scripts/docs/lint_doc_contracts.py
 	@if command -v vale >/dev/null 2>&1; then vale docs; else echo "vale not found; using contract style linter + codespell"; fi
 	@python3 scripts/docs/check_runbooks_contract.py
 	@python3 scripts/docs/check_k8s_docs_contract.py
 	@python3 scripts/docs/check_load_docs_contract.py
+	@python3 scripts/docs/check_broken_examples.py
+	@python3 scripts/docs/check_terminology_units_ssot.py
 	@./scripts/check-markdown-links.sh
 	@./scripts/docs/check_duplicate_topics.sh
 
