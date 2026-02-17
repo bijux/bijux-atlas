@@ -431,6 +431,7 @@ async fn diff_common(
                     last_start: None,
                     last_gene_id: x.gene_id.clone(),
                     query_hash: query_hash.clone(),
+                    depth: 0,
                 },
                 b"atlas-diff-cursor",
             )

@@ -114,6 +114,9 @@ pub fn query_genes(
     }
 
     let next_cursor = if has_more {
+        let next_depth = decoded_cursor
+            .as_ref()
+            .map_or(1_u32, |c| c.depth.saturating_add(1));
         let last = rows
             .last()
             .ok_or_else(|| QueryError::new(QueryErrorCode::Sql, "pagination invariant violated"))?;
@@ -124,6 +127,7 @@ pub fn query_genes(
                 last_start: last.start,
                 last_gene_id: last.gene_id.clone(),
                 query_hash,
+                depth: next_depth,
             },
             OrderModeInner::GeneId => CursorPayloadInner {
                 order: "gene_id".to_string(),
@@ -131,6 +135,7 @@ pub fn query_genes(
                 last_start: None,
                 last_gene_id: last.gene_id.clone(),
                 query_hash,
+                depth: next_depth,
             },
         };
         Some(
@@ -284,6 +289,9 @@ pub fn query_genes_fanout(
             "fanout requires at least one connection",
         ));
     }
+    let order_mode = order_mode_for(req);
+    let query_hash =
+        normalized_query_hash(req).map_err(|e| QueryError::new(QueryErrorCode::Validation, e))?;
     let mut merged = Vec::new();
     for conn in conns {
         let mut req_per_shard = req.clone();
@@ -307,13 +315,20 @@ pub fn query_genes_fanout(
         let last = merged
             .last()
             .ok_or_else(|| QueryError::new(QueryErrorCode::Sql, "pagination invariant violated"))?;
+        let next_depth = req
+            .cursor
+            .as_ref()
+            .and_then(|token| {
+                decode_cursor_inner(token, cursor_secret, &query_hash, order_mode).ok()
+            })
+            .map_or(1_u32, |c| c.depth.saturating_add(1));
         let payload = CursorPayloadInner {
             order: "region".to_string(),
             last_seqid: last.seqid.clone(),
             last_start: last.start,
             last_gene_id: last.gene_id.clone(),
-            query_hash: normalized_query_hash(req)
-                .map_err(|e| QueryError::new(QueryErrorCode::Validation, e))?,
+            query_hash,
+            depth: next_depth,
         };
         Some(
             encode_cursor_inner(&payload, cursor_secret)

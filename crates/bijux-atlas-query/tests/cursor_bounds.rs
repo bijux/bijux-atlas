@@ -15,6 +15,7 @@ fn cursor_bounds_accept_normal_and_reject_tamper_same_length() {
         last_start: None,
         last_gene_id: "g1".to_string(),
         query_hash: "h".to_string(),
+        depth: 0,
     };
     let token = encode_cursor(&payload, b"secret").expect("encode");
     assert!(token.starts_with("v1."));
@@ -55,4 +56,19 @@ fn cursor_decode_accepts_legacy_unversioned_format() {
     let decoded =
         decode_cursor(&legacy_token, b"secret", "h", OrderMode::GeneId).expect("legacy decode");
     assert_eq!(decoded.last_gene_id, "g1");
+}
+
+#[test]
+fn cursor_rejects_excessive_depth() {
+    let payload = CursorPayload {
+        order: "gene_id".to_string(),
+        last_seqid: None,
+        last_start: None,
+        last_gene_id: "g1".to_string(),
+        query_hash: "h".to_string(),
+        depth: 100_001,
+    };
+    let token = encode_cursor(&payload, b"secret").expect("encode");
+    let err = decode_cursor(&token, b"secret", "h", OrderMode::GeneId).expect_err("reject");
+    assert_eq!(err.code, CursorErrorCode::InvalidPayload);
 }

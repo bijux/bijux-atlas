@@ -6,6 +6,7 @@ use sha2::Sha256;
 
 type HmacSha256 = Hmac<Sha256>;
 const CURSOR_VERSION_V1: &str = "v1";
+const MAX_CURSOR_DEPTH: u32 = 10_000;
 const MAX_CURSOR_TOKEN_LEN: usize = 1024;
 const MAX_CURSOR_PAYLOAD_PART_LEN: usize = 768;
 const MAX_CURSOR_SIG_PART_LEN: usize = 128;
@@ -51,6 +52,8 @@ pub struct CursorPayload {
     pub last_start: Option<u64>,
     pub last_gene_id: String,
     pub query_hash: String,
+    #[serde(default)]
+    pub depth: u32,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -130,6 +133,10 @@ pub fn decode_cursor(
         OrderMode::GeneId if payload.order != "gene_id" => Err(CursorError::new(
             CursorErrorCode::OrderMismatch,
             "cursor order mismatch for gene_id query",
+        )),
+        _ if payload.depth > MAX_CURSOR_DEPTH => Err(CursorError::new(
+            CursorErrorCode::InvalidPayload,
+            "cursor depth exceeds max",
         )),
         _ => Ok(payload),
     }
