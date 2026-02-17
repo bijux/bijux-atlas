@@ -17,6 +17,8 @@ fn bench_policy_validate(c: &mut Criterion) {
             heavy_projection_limit: 200,
             max_serialization_bytes: 524_288,
             max_prefix_length: 128,
+            max_sequence_bases: 20_000,
+            sequence_api_key_required_bases: 5_000,
         },
         cache_budget: CacheBudget {
             max_disk_bytes: 8 * 1024 * 1024 * 1024,
@@ -28,6 +30,7 @@ fn bench_policy_validate(c: &mut Criterion) {
         rate_limit: RateLimitPolicy {
             per_ip_rps: 100,
             per_api_key_rps: 500,
+            sequence_per_ip_rps: 15,
         },
         concurrency_bulkheads: ConcurrencyBulkheads {
             cheap: 128,

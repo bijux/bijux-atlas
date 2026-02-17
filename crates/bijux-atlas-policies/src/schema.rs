@@ -25,6 +25,8 @@ pub struct QueryBudget {
     pub heavy_projection_limit: u32,
     pub max_serialization_bytes: u64,
     pub max_prefix_length: u32,
+    pub max_sequence_bases: u32,
+    pub sequence_api_key_required_bases: u32,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -42,6 +44,7 @@ pub struct CacheBudget {
 pub struct RateLimitPolicy {
     pub per_ip_rps: u32,
     pub per_api_key_rps: u32,
+    pub sequence_per_ip_rps: u32,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

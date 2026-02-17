@@ -67,6 +67,8 @@ fn valid_policy() -> PolicyConfig {
             heavy_projection_limit: 200,
             max_serialization_bytes: 524_288,
             max_prefix_length: 128,
+            max_sequence_bases: 20_000,
+            sequence_api_key_required_bases: 5_000,
         },
         cache_budget: CacheBudget {
             max_disk_bytes: 8 * 1024 * 1024 * 1024,
@@ -78,6 +80,7 @@ fn valid_policy() -> PolicyConfig {
         rate_limit: RateLimitPolicy {
             per_ip_rps: 100,
             per_api_key_rps: 500,
+            sequence_per_ip_rps: 15,
         },
         concurrency_bulkheads: ConcurrencyBulkheads {
             cheap: 128,
@@ -239,6 +242,12 @@ fn policy_fields_are_table_validated() {
     let mut bad = valid_policy();
     bad.query_budget.max_serialization_bytes = 0;
     cases.push(("query_budget.max_serialization_bytes", bad));
+    let mut bad = valid_policy();
+    bad.query_budget.max_sequence_bases = 0;
+    cases.push(("query_budget.max_sequence_bases", bad));
+    let mut bad = valid_policy();
+    bad.query_budget.sequence_api_key_required_bases = 0;
+    cases.push(("query_budget.sequence_api_key_required_bases", bad));
 
     let mut bad = valid_policy();
     bad.cache_budget.max_disk_bytes = 0;
@@ -263,6 +272,9 @@ fn policy_fields_are_table_validated() {
     let mut bad = valid_policy();
     bad.rate_limit.per_api_key_rps = 0;
     cases.push(("rate_limit.per_api_key_rps", bad));
+    let mut bad = valid_policy();
+    bad.rate_limit.sequence_per_ip_rps = 0;
+    cases.push(("rate_limit.sequence_per_ip_rps", bad));
 
     let mut bad = valid_policy();
     bad.concurrency_bulkheads.cheap = 0;

@@ -104,6 +104,16 @@ pub fn validate_policy_config(cfg: &PolicyConfig) -> Result<(), PolicyValidation
             "query_budget.max_prefix_length must be > 0".to_string(),
         ));
     }
+    if cfg.query_budget.max_sequence_bases == 0 {
+        return Err(PolicyValidationError(
+            "query_budget.max_sequence_bases must be > 0".to_string(),
+        ));
+    }
+    if cfg.query_budget.sequence_api_key_required_bases == 0 {
+        return Err(PolicyValidationError(
+            "query_budget.sequence_api_key_required_bases must be > 0".to_string(),
+        ));
+    }
 
     if cfg.cache_budget.max_disk_bytes == 0 {
         return Err(PolicyValidationError(
@@ -126,7 +136,10 @@ pub fn validate_policy_config(cfg: &PolicyConfig) -> Result<(), PolicyValidation
         ));
     }
 
-    if cfg.rate_limit.per_ip_rps == 0 || cfg.rate_limit.per_api_key_rps == 0 {
+    if cfg.rate_limit.per_ip_rps == 0
+        || cfg.rate_limit.per_api_key_rps == 0
+        || cfg.rate_limit.sequence_per_ip_rps == 0
+    {
         return Err(PolicyValidationError(
             "rate_limit values must be > 0".to_string(),
         ));

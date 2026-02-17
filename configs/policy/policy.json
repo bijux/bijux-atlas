@@ -10,7 +10,9 @@
     "max_prefix_cost_units": 80000,
     "heavy_projection_limit": 200,
     "max_serialization_bytes": 524288,
-    "max_prefix_length": 128
+    "max_prefix_length": 128,
+    "max_sequence_bases": 20000,
+    "sequence_api_key_required_bases": 5000
   },
   "cache_budget": {
     "max_disk_bytes": 8589934592,
@@ -21,7 +23,8 @@
   },
   "rate_limit": {
     "per_ip_rps": 100,
-    "per_api_key_rps": 500
+    "per_api_key_rps": 500,
+    "sequence_per_ip_rps": 15
   },
   "concurrency_bulkheads": {
     "cheap": 128,
