@@ -22,3 +22,7 @@ Abort rollout when any of these persist for more than 5 minutes:
 - Argo Rollouts controller installed.
 - Prometheus scraping `/metrics`.
 - Alert rules active for 5xx and latency.
+## Referenced chart values keys
+
+- `values.rollout`
+- `values.hpa`

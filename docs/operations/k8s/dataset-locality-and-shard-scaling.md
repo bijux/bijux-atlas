@@ -36,3 +36,8 @@ Optional Redis lock-based warmup coordination is available:
 - requires `ATLAS_REDIS_URL`
 
 Purpose: reduce startup stampede where many pods warm the same dataset simultaneously.
+## Referenced chart values keys
+
+- `values.affinity`
+- `values.nodeSelector`
+- `values.cache`

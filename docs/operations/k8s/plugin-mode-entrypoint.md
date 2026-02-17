@@ -15,3 +15,6 @@ Helm alignment:
 - Init prewarm path also uses plugin command style.
 
 This keeps runtime semantics consistent with umbrella/plugin contract.
+## Referenced chart values keys
+
+- `values.server`

@@ -28,3 +28,8 @@ This is an advanced deployment profile, not the default.
   - `load/k6/suites/warm_steady.js`
   - `load/k6/suites/regional_spike_10x_60s.js`
 - Keep query mix and dataset set identical between runs.
+## Referenced chart values keys
+
+- `values.cache`
+- `values.resources`
+- `values.server`

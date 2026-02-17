@@ -161,3 +161,12 @@ For advanced node-local acceleration profile, see `docs/k8s/node-local-shared-ca
 ## Compatibility Note
 
 See `docs/contracts/compatibility.md` for producer/consumer artifact contract alignment.
+## Referenced chart values keys
+
+- `values.server`
+- `values.store`
+- `values.networkPolicy`
+- `values.resources`
+- `values.hpa`
+- `values.pdb`
+- `values.serviceMonitor`
