@@ -8,11 +8,11 @@
 
 ## Effects & boundaries
 - [docs/EFFECTS.md](docs/EFFECTS.md)
-- [docs/effects-and-boundaries.md](../../docs/effects-and-boundaries.md)
+- [docs/effects-and-boundaries.md](../../docs/architecture/boundaries/effects-and-boundaries.md)
 
 ## Telemetry
 - [docs/TELEMETRY.md](docs/TELEMETRY.md)
-- [docs/ecosystem/metrics-conventions.md](../../docs/ecosystem/metrics-conventions.md)
+- [docs/ecosystem/metrics-conventions.md](../../docs/reference/store/metrics-conventions.md)
 
 ## Tests
 - [tests/](tests/)

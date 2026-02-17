@@ -14,7 +14,7 @@ trace_spans = json.loads((contracts / "TRACE_SPANS.json").read_text())["spans"]
 endpoints = json.loads((contracts / "ENDPOINTS.json").read_text())["endpoints"]
 chart_keys = json.loads((contracts / "CHART_VALUES.json").read_text())["top_level_keys"]
 config_keys = json.loads((contracts / "CONFIG_KEYS.json").read_text())["env_keys"]
-artifact_schema = json.loads((contracts / "ARTIFACT_SCHEMA.json").read_text())
+artifact_schema = json.loads((contracts / "artifacts" / "ARTIFACT_SCHEMA.json").read_text())
 policy_schema = json.loads((contracts / "POLICY_SCHEMA.json").read_text())
 
 # rust generated core error-code enum + constants
