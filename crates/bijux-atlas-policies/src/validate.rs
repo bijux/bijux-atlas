@@ -228,6 +228,40 @@ pub fn validate_policy_config(cfg: &PolicyConfig) -> Result<(), PolicyValidation
         ));
     }
 
+    validate_documented_defaults_on_config(cfg)?;
+
+    Ok(())
+}
+
+fn validate_documented_defaults_on_config(cfg: &PolicyConfig) -> Result<(), PolicyValidationError> {
+    let root = serde_json::to_value(cfg)
+        .map_err(|e| PolicyValidationError(format!("encode config failed: {e}")))?;
+    let mut seen = std::collections::BTreeSet::<String>::new();
+    for item in &cfg.documented_defaults {
+        let field = item.field.trim();
+        let reason = item.reason.trim();
+        if field.is_empty() || reason.is_empty() {
+            return Err(PolicyValidationError(
+                "documented_defaults.field/reason must be non-empty".to_string(),
+            ));
+        }
+        if !seen.insert(field.to_string()) {
+            return Err(PolicyValidationError(format!(
+                "documented_defaults.field duplicated: {field}"
+            )));
+        }
+        if field == "documented_defaults" || field.starts_with("documented_defaults.") {
+            return Err(PolicyValidationError(
+                "documented_defaults entries cannot describe documented_defaults itself"
+                    .to_string(),
+            ));
+        }
+        if !field_path_exists(&root, field) {
+            return Err(PolicyValidationError(format!(
+                "documented_defaults.field does not exist in policy: {field}"
+            )));
+        }
+    }
     Ok(())
 }
 
@@ -326,6 +360,7 @@ fn validate_defaults_policy(value: &Value) -> Result<(), PolicyValidationError> 
         .as_array()
         .ok_or_else(|| PolicyValidationError("documented_defaults must be an array".to_string()))?;
 
+    let mut seen = std::collections::BTreeSet::<String>::new();
     for item in arr {
         let obj = item.as_object().ok_or_else(|| {
             PolicyValidationError("documented_defaults entries must be objects".to_string())
@@ -341,9 +376,42 @@ fn validate_defaults_policy(value: &Value) -> Result<(), PolicyValidationError> 
                 "documented_defaults.field/reason must be non-empty".to_string(),
             ));
         }
+        if !seen.insert(field.to_string()) {
+            return Err(PolicyValidationError(format!(
+                "documented_defaults.field duplicated: {field}"
+            )));
+        }
+        if field == "documented_defaults" || field.starts_with("documented_defaults.") {
+            return Err(PolicyValidationError(
+                "documented_defaults entries cannot describe documented_defaults itself"
+                    .to_string(),
+            ));
+        }
+        if !field_path_exists(value, field) {
+            return Err(PolicyValidationError(format!(
+                "documented_defaults.field does not exist in policy: {field}"
+            )));
+        }
     }
 
     Ok(())
+}
+
+fn field_path_exists(root: &Value, path: &str) -> bool {
+    let mut cur = root;
+    for seg in path.split('.') {
+        if seg.is_empty() {
+            return false;
+        }
+        cur = match cur {
+            Value::Object(map) => match map.get(seg) {
+                Some(v) => v,
+                None => return false,
+            },
+            _ => return false,
+        };
+    }
+    true
 }
 
 fn decode_schema_version(schema: &Value) -> Result<PolicySchema, PolicyValidationError> {
