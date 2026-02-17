@@ -23,7 +23,7 @@ if command -v docker >/dev/null 2>&1; then
   echo "shellcheck not found locally; using docker image"
   docker_fail=0
   while IFS= read -r f; do
-    rel="${f#${ROOT}/}"
+    rel="${f#"${ROOT}"/}"
     if ! docker run --rm -v "$ROOT:/mnt" koalaman/shellcheck:stable -x "/mnt/$rel"; then
       docker_fail=1
       break
