@@ -2,7 +2,7 @@
 
 OpenAPI source of truth (pinned):
 
-- `ops/openapi/v1/openapi.generated.json`
+- `configs/openapi/v1/openapi.generated.json`
 
 ## curl
 
@@ -39,7 +39,7 @@ print(resp.json())
 Example with `openapi-python-client`:
 
 ```sh
-openapi-python-client generate --path ops/openapi/v1/openapi.generated.json --meta none
+openapi-python-client generate --path configs/openapi/v1/openapi.generated.json --meta none
 ```
 
 Keep generated clients tied to the checked-in v1 snapshot to avoid drift.

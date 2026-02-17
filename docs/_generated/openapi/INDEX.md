@@ -1,9 +1,9 @@
 # OpenAPI Artifacts
 
-Generated from `ops/openapi/v1/`.
+Generated from `configs/openapi/v1/`.
 
-- Canonical source: `ops/openapi/v1/openapi.generated.json`
-- Snapshot: `ops/openapi/v1/openapi.snapshot.json`
+- Canonical source: `configs/openapi/v1/openapi.generated.json`
+- Snapshot: `configs/openapi/v1/openapi.snapshot.json`
 
 ## Paths
 

@@ -2,7 +2,7 @@ SHELL := /bin/sh
 
 DOCS_ARTIFACTS ?= $(if $(ISO_ROOT),$(ISO_ROOT)/docs,artifacts/docs)
 DOCS_VENV ?= $(DOCS_ARTIFACTS)/.venv
-DOCS_REQ ?= ops/docs/requirements.txt
+DOCS_REQ ?= configs/docs/requirements.txt
 DOCS_SITE ?= $(DOCS_ARTIFACTS)/site
 
 _docs-venv:

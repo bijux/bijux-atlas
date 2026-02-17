@@ -46,4 +46,4 @@ This registry defines script stability levels.
 
 ## Private
 
-- `ops/demo/demo.sh`
+- `scripts/demo/demo.sh`

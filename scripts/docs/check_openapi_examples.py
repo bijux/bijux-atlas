@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Purpose: verify OpenAPI response examples conform to declared schemas.
-# Inputs: ops/openapi/v1/openapi.generated.json
+# Inputs: configs/openapi/v1/openapi.generated.json
 # Outputs: non-zero exit on schema/example mismatch
 from __future__ import annotations
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Purpose: generate docs/_generated/openapi artifacts from ops/openapi SSOT.
-# Inputs: ops/openapi/v1/openapi.generated.json and openapi.snapshot.json.
+# Inputs: configs/openapi/v1/openapi.generated.json and openapi.snapshot.json.
 # Outputs: docs/_generated/openapi/* generated files.
 from __future__ import annotations
 
@@ -28,10 +28,10 @@ paths = sorted(spec.get("paths", {}).keys())
 index = [
     "# OpenAPI Artifacts",
     "",
-    "Generated from `ops/openapi/v1/`.",
+    "Generated from `configs/openapi/v1/`.",
     "",
-    "- Canonical source: `ops/openapi/v1/openapi.generated.json`",
-    "- Snapshot: `ops/openapi/v1/openapi.snapshot.json`",
+    "- Canonical source: `configs/openapi/v1/openapi.generated.json`",
+    "- Snapshot: `configs/openapi/v1/openapi.snapshot.json`",
     "",
     "## Paths",
     "",

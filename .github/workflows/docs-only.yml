@@ -9,7 +9,7 @@ on:
       - 'makefiles/docs.mk'
       - 'docs/contracts/**/*.json'
       - 'docs/_generated/openapi/**'
-      - 'ops/openapi/v1/openapi.generated.json'
+      - 'configs/openapi/v1/openapi.generated.json'
 
 permissions:
   contents: read

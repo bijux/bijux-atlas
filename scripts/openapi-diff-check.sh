@@ -5,7 +5,7 @@
 set -euo pipefail
 
 ./scripts/openapi-generate.sh
-if ! diff -u ops/openapi/v1/openapi.snapshot.json ops/openapi/v1/openapi.generated.json; then
+if ! diff -u configs/openapi/v1/openapi.snapshot.json configs/openapi/v1/openapi.generated.json; then
   echo "OpenAPI drift detected. Regenerate snapshot intentionally when API contract changes." >&2
   exit 1
 fi

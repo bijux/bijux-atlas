@@ -344,7 +344,7 @@ write_reference_contract_doc(
     contracts / "endpoints.md",
     "Endpoints Contract",
     "\n".join(endpoint_lines)
-    + "\n\nOpenAPI reference:\n- `ops/openapi/v1/openapi.yaml`",
+    + "\n\nOpenAPI reference:\n- `configs/openapi/v1/openapi.yaml`",
     "```bash\n$ ./scripts/openapi-generate.sh\n```\n\nExpected output: generator succeeds and endpoint drift checks pass.",
 )
 
