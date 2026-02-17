@@ -23,18 +23,22 @@ Does not duplicate k6 script implementation.
 - SSOT query set: `ops/load/queries/pinned-v1.json`
 - Query freeze lock: `ops/load/queries/pinned-v1.lock`
 - Suite manifest and budgets: `ops/load/suites/suites.json`
+- Result contract: `ops/load/contracts/result-schema.json`
 - `mixed.json`: baseline mixed traffic distribution.
 - `spike.json`: burst overload behavior.
 - `cold-start.json`: startup latency budget.
 - `stampede.json`: thundering herd dataset requests.
-- `store-outage.json`: store degradation behavior.
+- `store-outage-mid-spike.json`: store degradation behavior during spike.
 - `pod-churn.json`: restart churn behavior.
 - `cheap-only-survival.json`: overload cheap-query survival.
-- `response-size-guardrails.json`: payload guard enforcement.
+- `response-size-abuse.json`: payload guard enforcement.
 - `multi-release.json`: cross-release query semantics.
+- `diff-heavy.json`: diff endpoint heavy workload profile.
+- `mixed-gene-sequence.json`: combined gene summary and sequence request mix.
 - `multi-dataset-hotset.json`: hotset cache behavior.
 - `large-dataset-simulation.json`: large dataset load profile.
 - `sharded-fanout.json`: shard fanout caps.
+- `soak-30m.json`: long soak with memory growth checks.
 - `redis-optional.json`: redis disabled fallback.
 - `catalog-federated.json`: federated registry behavior.
 
@@ -51,8 +55,11 @@ Scenario drift causes incomplete load coverage.
 ## How to verify
 
 ```bash
-$ make e2e-perf
+$ make ops-load-smoke
+$ make ops-load-full
 $ python3 scripts/perf/score_k6.py
+$ python3 scripts/perf/validate_results.py artifacts/perf/results
+$ python3 ops/load/reports/generate.py
 ```
 
 Expected output: all configured suites produce results and pass policy thresholds.

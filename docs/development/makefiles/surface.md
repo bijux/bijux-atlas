@@ -64,6 +64,7 @@ Stable targets:
 - `ops-traces-check`
 - `ops-k8s-tests`
 - `ops-k8s-template-tests`
+- `ops-load-prereqs`
 - `ops-load-smoke`
 - `ops-load-full`
 - `ops-drill-store-outage`
@@ -90,6 +91,7 @@ Stable targets:
 - `ops-perf-cold-start-prefetch-5pods`
 - `ops-perf-compare-redis`
 - `ops-perf-suite`
+- `ops-baseline-policy-check`
 - `ssot-check`
 - `observability-check`
 - `docs`

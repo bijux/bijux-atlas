@@ -54,10 +54,15 @@ ops-k8s-tests: ## Run k8s e2e suite
 ops-k8s-template-tests: ## Run helm template/lint edge-case checks
 	@./ops/e2e/k8s/tests/test_helm_templates.sh
 
+ops-load-prereqs: ## Validate load harness prerequisites (k6 + endpoint)
+	@./ops/load/scripts/check_prereqs.sh
+
 ops-load-smoke: ## Run short load suite
 	@$(MAKE) ops-k6-version-check
 	@./scripts/perf/check_pinned_queries_lock.py
-	@./scripts/perf/run_suite.sh mixed.json artifacts/perf/results
+	@$(MAKE) ops-load-prereqs
+	@./ops/load/scripts/run_suite.sh mixed.json artifacts/perf/results
+	@./scripts/perf/validate_results.py artifacts/perf/results
 
 ops-load-full: ## Run nightly/full load suites
 	@$(MAKE) ops-k6-version-check
@@ -65,7 +70,7 @@ ops-load-full: ## Run nightly/full load suites
 	@./scripts/perf/run_nightly_perf.sh
 
 ops-drill-store-outage: ## Run store outage drill under load
-	@./scripts/perf/run_suite.sh store-outage.json artifacts/perf/results
+	@./ops/load/scripts/run_suite.sh store-outage-mid-spike.json artifacts/perf/results
 
 ops-drill-corruption: ## Run corruption handling drill
 	@cargo test -p bijux-atlas-server cache_manager_tests::chaos_mode_random_byte_corruption_never_serves_results -- --exact
@@ -123,9 +128,12 @@ ops-perf-cold-start-prefetch-5pods: ## Perf helper: run 5-pod prefetch cold-star
 ops-perf-compare-redis: ## Perf helper: compare Redis-on vs Redis-off perf runs
 	@./scripts/perf/compare_redis.sh
 
+ops-baseline-policy-check: ## Enforce explicit approval policy for baseline updates
+	@./scripts/perf/check_baseline_update_policy.sh
+
 ops-perf-suite: ## Perf helper: run an arbitrary perf suite (SCENARIO=<file.js> OUT=<dir>)
 	@[ -n "$$SCENARIO" ] || { echo "usage: make ops-perf-suite SCENARIO=<file.js> [OUT=artifacts/perf/results]" >&2; exit 2; }
-	@./scripts/perf/run_suite.sh "$$SCENARIO" "$${OUT:-artifacts/perf/results}"
+	@./ops/load/scripts/run_suite.sh "$$SCENARIO" "$${OUT:-artifacts/perf/results}"
 
 ops-values-validate: ## Validate chart values against SSOT contract
 	@./scripts/contracts/generate_chart_values_schema.py

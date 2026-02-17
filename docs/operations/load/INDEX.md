@@ -22,12 +22,30 @@ Does not duplicate page-level details.
 
 List and maintain links to section pages in this directory.
 
+Section pages:
+- `suites.md`
+- `k6.md`
+- `ci-policy.md`
+- `result-contract.md`
+- `reproducibility.md`
+- `baseline-update-policy.md`
+- `runtime-policy.md`
+
 Required k6 scenarios:
 
 - `mixed.json`
 - `spike.json`
 - `cold-start.json`
 - `stampede.json`
+- `store-outage-mid-spike.json`
+- `noisy-neighbor-cpu-throttle.json`
+- `pod-churn.json`
+- `response-size-abuse.json`
+- `multi-release.json`
+- `sharded-fanout.json`
+- `diff-heavy.json`
+- `mixed-gene-sequence.json`
+- `soak-30m.json`
 
 ## Failure modes
 

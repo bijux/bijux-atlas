@@ -1,0 +1,41 @@
+# Load Reproducibility
+
+- Owner: `bijux-atlas-operations`
+
+## What
+
+Defines variance controls for reproducible load measurements.
+
+## Why
+
+Prevents noisy comparisons and false regression alarms.
+
+## Contracts
+
+- Scenario SSOT: `ops/load/scenarios/*.json`
+- Query SSOT + lock: `ops/load/queries/pinned-v1.json`, `ops/load/queries/pinned-v1.lock`
+- Suite manifest: `ops/load/suites/suites.json`
+- Result metadata must include git SHA, image digest, dataset hash, dataset release.
+
+## Sources of variance
+
+- Host CPU throttling and thermal state.
+- Background process interference.
+- Network stack differences between compose and kind.
+- Dataset/cache warmness.
+
+## How to verify
+
+```bash
+$ make ops-load-smoke
+$ make ops-load-full
+$ python3 scripts/perf/validate_results.py artifacts/perf/results
+```
+
+Expected output: deterministic suite selection and contract-valid result artifacts.
+
+## See also
+
+- [Load Suites](suites.md)
+- [Load CI Policy](ci-policy.md)
+- `ops-load-full`

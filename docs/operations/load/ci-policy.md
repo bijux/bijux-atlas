@@ -23,8 +23,9 @@ Does not define endpoint correctness tests.
 - PR tier: smoke subset only, deterministic short runtime.
 - Nightly tier: full suites including spike, churn, outage, and soak-linked scenarios.
 - SLO scoring must use `scripts/perf/score_k6.py` with `configs/slo/slo.json`.
-- PR smoke scenarios include `mixed.json` and `response-size-guardrails.json`.
-- Nightly scenarios include `spike.json`, `stampede.json`, `store-outage.json`, and `pod-churn.json`.
+- Suite manifest SSOT: `ops/load/suites/suites.json`.
+- PR smoke scenarios include `mixed.json`.
+- Nightly scenarios include `spike.json`, `stampede.json`, `store-outage-mid-spike.json`, `pod-churn.json`, `diff-heavy.json`, and `soak-30m.json`.
 
 ## Failure modes
 
@@ -33,8 +34,8 @@ Too-light PR coverage misses severe regressions; too-heavy PR coverage blocks it
 ## How to verify
 
 ```bash
-$ ./scripts/perf/run_suite.sh smoke
-$ ./scripts/perf/run_nightly_perf.sh
+$ make ops-load-smoke
+$ make ops-load-full
 ```
 
 Expected output: smoke and nightly suites complete with scored reports.
