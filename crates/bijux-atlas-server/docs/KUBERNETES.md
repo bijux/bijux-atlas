@@ -7,4 +7,4 @@
 - Use startup warmup jitter (`ATLAS_STARTUP_WARMUP_JITTER_MAX_MS`) to reduce startup stampede.
 - Configure graceful drain (`ATLAS_SHUTDOWN_DRAIN_MS`) so pods stop taking new traffic before exit.
 - Prefer cached-only mode for degraded operation during store outages.
-- See root `charts/bijux-atlas/` and runbooks under root docs for rollout/rollback.
+- See canonical chart `ops/k8s/charts/bijux-atlas/` and runbooks under root docs for rollout/rollback.

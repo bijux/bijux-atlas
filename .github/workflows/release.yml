@@ -143,7 +143,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: azure/setup-helm@v4
-      - run: helm package charts/bijux-atlas --destination .cr-release-packages
+      - run: helm package ops/k8s/charts/bijux-atlas --destination .cr-release-packages
       - uses: helm/chart-releaser-action@v1.7.0
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}

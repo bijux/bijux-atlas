@@ -2,7 +2,7 @@ SHELL := /bin/sh
 
 DEV_ISO_TAG ?= dev-ci-local
 ROOT_MAKE ?= Makefile
-ISO_DEV = ./bin/isolate --tag "$(DEV_ISO_TAG)" --reuse
+ISO_DEV = ./scripts/scripts/scripts/bin/isolate --tag "$(DEV_ISO_TAG)" --reuse
 
 dev-fmt:
 	@$(ISO_DEV) $(MAKE) -f $(ROOT_MAKE) _fmt

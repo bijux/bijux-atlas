@@ -1,7 +1,0 @@
-apiVersion: v2
-name: bijux-atlas
-description: bijux-atlas query server
-version: 0.1.0
-appVersion: "0.1.0"
-type: application
-kubeVersion: ">=1.26.0-0"

@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-# bootstrap wrapper: root entrypoint kept for CI/dev compatibility
-set -eu
-exec "$(dirname "$0")/../scripts/bin/isolate" "$@"

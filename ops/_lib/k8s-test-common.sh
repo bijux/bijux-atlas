@@ -5,7 +5,7 @@ ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 NS="${ATLAS_E2E_NAMESPACE:-atlas-e2e-${USER:-local}}"
 RELEASE="${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
 VALUES="${ATLAS_E2E_VALUES_FILE:-$ROOT/ops/k8s/values/local.yaml}"
-CHART="$ROOT/charts/bijux-atlas"
+CHART="$ROOT/ops/k8s/charts/bijux-atlas"
 SERVICE_NAME="${ATLAS_E2E_SERVICE_NAME:-$RELEASE-bijux-atlas}"
 BASE_URL="${ATLAS_E2E_BASE_URL:-http://127.0.0.1:18080}"
 

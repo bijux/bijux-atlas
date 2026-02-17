@@ -10,7 +10,7 @@ GIT_SHORT_SHA=$(git -C "$ROOT_DIR" rev-parse --short HEAD 2>/dev/null || echo no
 
 print_usage() {
   cat >&2 <<'USAGE'
-usage: bin/isolate [options] <command> [args...]
+usage: scripts/scripts/scripts/scripts/scripts/bin/isolate [options] <command> [args...]
 
 options:
   --print-root

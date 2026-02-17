@@ -97,7 +97,7 @@ value_keys = sorted(
     }
 )
 if value_keys != sorted(chart["top_level_keys"]):
-    print("CHART_VALUES.json drift from charts/bijux-atlas/values.yaml", file=sys.stderr)
+    print("CHART_VALUES.json drift from ops/k8s/charts/bijux-atlas/values.yaml", file=sys.stderr)
     print("missing in contract:", sorted(set(value_keys) - set(chart["top_level_keys"])), file=sys.stderr)
     print("extra in contract:", sorted(set(chart["top_level_keys"]) - set(value_keys)), file=sys.stderr)
     sys.exit(1)

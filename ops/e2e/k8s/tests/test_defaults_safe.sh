@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
-VALUES="$ROOT/charts/bijux-atlas/values.yaml"
+VALUES="$ROOT/ops/k8s/charts/bijux-atlas/values.yaml"
 
 grep -q '^\s*enableDebugDatasets: false' "$VALUES"
 grep -q '^\s*cachedOnlyMode: false' "$VALUES"

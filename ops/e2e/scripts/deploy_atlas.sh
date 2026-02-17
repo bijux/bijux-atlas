@@ -17,7 +17,7 @@ fi
 
 kubectl get ns "$NS" >/dev/null 2>&1 || kubectl create ns "$NS"
 
-helm upgrade --install "$RELEASE" "$ROOT/charts/bijux-atlas" \
+helm upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
   --namespace "$NS" \
   --wait --timeout 5m \
   -f "$VALUES"

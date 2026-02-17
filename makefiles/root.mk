@@ -18,6 +18,8 @@ layout-check:
 	@./scripts/layout/check_ops_canonical_shims.sh
 	@./scripts/layout/check_repo_hygiene.sh
 	@./scripts/layout/check_artifacts_allowlist.sh
+	@./scripts/layout/check_symlink_index.sh
+	@./scripts/layout/check_chart_canonical_path.sh
 
 layout-migrate:
 	@./scripts/layout/migrate.sh
@@ -37,7 +39,7 @@ scripts-index:
 	@python3 ./scripts/generate_scripts_readme.py
 
 docker-build:
-	@docker build -t bijux-atlas:local -f Dockerfile .
+	@docker build -t bijux-atlas:local -f docker/Dockerfile .
 
 docker-smoke:
 	@docker run --rm bijux-atlas:local --version >/dev/null
@@ -45,11 +47,11 @@ docker-smoke:
 
 chart-package:
 	@mkdir -p artifacts/chart
-	@helm package charts/bijux-atlas --destination artifacts/chart
+	@helm package ops/k8s/charts/bijux-atlas --destination artifacts/chart
 
 chart-verify:
-	@helm lint charts/bijux-atlas
-	@helm template atlas charts/bijux-atlas >/dev/null
+	@helm lint ops/k8s/charts/bijux-atlas
+	@helm template atlas ops/k8s/charts/bijux-atlas >/dev/null
 
 no-direct-scripts:
 	@./scripts/layout/check_no_direct_script_runs.sh
@@ -65,7 +67,7 @@ doctor:
 	@$(MAKE) -s ops-tools-check
 
 fetch-real-datasets:
-	@./scripts/fixtures/fetch-real-datasets.sh
+	@./scripts/ops/ops/fixtures/fetch-real-datasets.sh
 
 ssot-check:
 	@./scripts/contracts/check_all.sh
