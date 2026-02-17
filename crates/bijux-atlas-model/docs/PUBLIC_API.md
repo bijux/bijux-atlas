@@ -4,8 +4,9 @@ Stable exports:
 
 - `CRATE_NAME`
 - Dataset identity: `Release`, `Species`, `Assembly`, `DatasetId`, `DatasetSelector`
-- Normalizers: `normalize_release`, `normalize_species`, `normalize_assembly`
-- Gene domain: `GeneId`, `SeqId`, `GeneSummary`
+- Parsers/normalizers: `parse_release`, `parse_species`, `parse_species_normalized`, `parse_assembly`, `normalize_release`, `normalize_species`, `normalize_assembly`
+- Limits: `RELEASE_MAX_LEN`, `SPECIES_MAX_LEN`, `ASSEMBLY_MAX_LEN`, `ID_MAX_LEN`, `SEQID_MAX_LEN`, `NAME_MAX_LEN`
+- Gene domain: `GeneId`, `TranscriptId`, `SeqId`, `Strand`, `Region`, `GeneOrderKey`, `TranscriptOrderKey`, `GeneSummary`
 - Policies: `StrictnessMode`, `GeneIdentifierPolicy`, `GeneNamePolicy`, `BiotypePolicy`, `TranscriptTypePolicy`, `SeqidNormalizationPolicy`, `DuplicateGeneIdPolicy`
 - Artifact contract: `ArtifactChecksums`, `ManifestStats`, `ArtifactManifest`, `Catalog`, `CatalogEntry`, `IngestAnomalyReport`, `OptionalFieldPolicy`
 - Artifact paths: `ArtifactPaths`, `artifact_paths`

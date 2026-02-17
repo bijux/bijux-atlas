@@ -7,3 +7,4 @@ API representation policy:
 
 Model type support:
 - `OptionalFieldPolicy` documents explicit encoding choice.
+- `OptionalFieldPolicy::apply_to_json_map` enforces deterministic behavior for serializers.

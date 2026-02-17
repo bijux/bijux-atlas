@@ -361,6 +361,25 @@ pub enum OptionalFieldPolicy {
     OmitWhenMissing,
 }
 
+impl OptionalFieldPolicy {
+    pub fn apply_to_json_map(
+        self,
+        map: &mut serde_json::Map<String, serde_json::Value>,
+        key: &str,
+        value: Option<serde_json::Value>,
+    ) {
+        match (self, value) {
+            (_, Some(v)) => {
+                map.insert(key.to_string(), v);
+            }
+            (Self::NullWhenMissing, None) => {
+                map.insert(key.to_string(), serde_json::Value::Null);
+            }
+            (Self::OmitWhenMissing, None) => {}
+        }
+    }
+}
+
 pub const LATEST_ALIAS_POLICY: &str =
     "latest alias is allowed only as an explicit endpoint and must resolve deterministically";
 pub const NO_IMPLICIT_DEFAULT_DATASET_POLICY: &str =

@@ -16,8 +16,8 @@ proptest! {
         let canonical = id.canonical_string();
         let parts: Vec<&str> = canonical.split('/').collect();
         prop_assert_eq!(parts.len(), 3);
-        prop_assert_eq!(parts[0], id.release);
-        prop_assert_eq!(parts[1], id.species);
-        prop_assert_eq!(parts[2], id.assembly);
+        prop_assert_eq!(parts[0], id.release.as_str());
+        prop_assert_eq!(parts[1], id.species.as_str());
+        prop_assert_eq!(parts[2], id.assembly.as_str());
     }
 }

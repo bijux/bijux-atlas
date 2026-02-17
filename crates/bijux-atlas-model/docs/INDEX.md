@@ -11,6 +11,7 @@ Docs:
 - [Architecture](ARCHITECTURE.md)
 - [Public API](PUBLIC_API.md)
 - [Schema stability rules](SCHEMA_STABILITY.md)
+- [Schema evolution notes](SCHEMA_EVOLUTION_NOTES.md)
 - [Effects policy](EFFECTS.md)
 - [Strict ordering rules](ORDERING_RULES.md)
 - [Migration notes](MIGRATION.md)

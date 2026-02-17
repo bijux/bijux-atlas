@@ -1,6 +1,7 @@
 use bijux_atlas_model::{
-    ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
-    OptionalFieldPolicy,
+    ArtifactChecksums, ArtifactManifest, BiotypePolicy, Catalog, CatalogEntry, DatasetId,
+    GeneNamePolicy, ManifestStats, OptionalFieldPolicy, SeqidNormalizationPolicy,
+    TranscriptTypePolicy,
 };
 
 #[test]
@@ -70,4 +71,30 @@ fn legacy_manifest_v1_without_new_fields_is_still_compatible() {
     let manifest: ArtifactManifest = serde_json::from_str(raw).expect("legacy parse");
     assert!(manifest.dataset_signature_sha256.is_empty());
     assert!(!manifest.derived_column_origins.is_empty());
+}
+
+#[test]
+fn policy_structs_reject_unknown_fields_and_optional_policy_is_enforced() {
+    assert!(
+        serde_json::from_str::<GeneNamePolicy>(r#"{"attribute_keys":["Name"],"x":1}"#).is_err()
+    );
+    assert!(serde_json::from_str::<BiotypePolicy>(
+        r#"{"attribute_keys":["gene_biotype"],"unknown_value":"unknown","x":1}"#
+    )
+    .is_err());
+    assert!(serde_json::from_str::<TranscriptTypePolicy>(
+        r#"{"accepted_types":["transcript"],"x":1}"#
+    )
+    .is_err());
+    assert!(
+        serde_json::from_str::<SeqidNormalizationPolicy>(r#"{"aliases":{"chr1":"1"},"x":1}"#)
+            .is_err()
+    );
+
+    let mut map = serde_json::Map::new();
+    OptionalFieldPolicy::NullWhenMissing.apply_to_json_map(&mut map, "name", None);
+    assert!(matches!(map.get("name"), Some(serde_json::Value::Null)));
+    let mut map = serde_json::Map::new();
+    OptionalFieldPolicy::OmitWhenMissing.apply_to_json_map(&mut map, "name", None);
+    assert!(!map.contains_key("name"));
 }

@@ -1,27 +1,31 @@
 use bijux_atlas_model::{
-    normalize_assembly, normalize_release, normalize_species, BiotypePolicy, DatasetId,
-    DatasetSelector, GeneId, GeneNamePolicy, SeqId, TranscriptTypePolicy,
+    normalize_assembly, normalize_release, normalize_species, parse_species_normalized,
+    BiotypePolicy, DatasetId, DatasetSelector, GeneId, GeneNamePolicy, Region, SeqId, Strand,
+    TranscriptId, TranscriptTypePolicy, ID_MAX_LEN, SEQID_MAX_LEN,
 };
 use std::collections::{BTreeMap, BTreeSet};
 
 #[test]
 fn dataset_id_canonical_string_is_stable() {
-    let id = DatasetId::new("110", "Homo-Sapiens", "GRCh38").expect("dataset id");
+    let id = DatasetId::from_normalized("110", "Homo-Sapiens", "GRCh38").expect("dataset id");
     assert_eq!(id.canonical_string(), "110/homo_sapiens/GRCh38");
 }
 
 #[test]
 fn release_species_assembly_parsing_is_strict() {
     assert_eq!(normalize_release("110").expect("release"), "110");
-    assert_eq!(
-        normalize_species("Homo-sapiens").expect("species"),
-        "homo_sapiens"
-    );
+    assert!(normalize_species("Homo-sapiens").is_ok());
     assert_eq!(normalize_assembly("GRCh38").expect("assembly"), "GRCh38");
 
     assert!(normalize_release("11a").is_err());
     assert!(normalize_species("homo sapiens").is_err());
     assert!(normalize_assembly("GRCh38!").is_err());
+    assert_eq!(
+        parse_species_normalized("Homo-sapiens")
+            .expect("normalized parse")
+            .as_str(),
+        "homo_sapiens"
+    );
 }
 
 #[test]
@@ -36,6 +40,32 @@ fn seqid_rejects_hidden_trimming() {
     assert!(SeqId::parse("chr1").is_ok());
     assert!(SeqId::parse(" chr1").is_err());
     assert!(SeqId::parse("chr1 ").is_err());
+}
+
+#[test]
+fn transcript_id_rejects_hidden_trimming() {
+    assert!(TranscriptId::parse("ENST000001").is_ok());
+    assert!(TranscriptId::parse(" ENST000001").is_err());
+    assert!(TranscriptId::parse("ENST000001 ").is_err());
+}
+
+#[test]
+fn region_and_strand_invariants_hold() {
+    let region = Region::parse("chr1:10-20").expect("region parse");
+    assert_eq!(region.canonical_string(), "chr1:10-20");
+    assert!(Region::parse("chr1:20-10").is_err());
+    assert!(Strand::parse("+").is_ok());
+    assert!(Strand::parse("-").is_ok());
+    assert!(Strand::parse(".").is_ok());
+    assert!(Strand::parse("x").is_err());
+}
+
+#[test]
+fn max_size_limits_are_enforced() {
+    let too_long_gene_id = "g".repeat(ID_MAX_LEN + 1);
+    assert!(GeneId::parse(&too_long_gene_id).is_err());
+    let too_long_seqid = "c".repeat(SEQID_MAX_LEN + 1);
+    assert!(SeqId::parse(&too_long_seqid).is_err());
 }
 
 #[test]
