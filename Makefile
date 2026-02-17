@@ -4,13 +4,14 @@ JOBS ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 8)
 
 include makefiles/cargo.mk
 include makefiles/cargo-dev.mk
+include makefiles/docs.mk
 include makefiles/policies.mk
 
 .DEFAULT_GOAL := help
 
 help:
 	@printf '%s\n' \
-	  'targets: fmt lint check test test-all coverage audit openapi-drift ci fetch-fixtures fetch-real-datasets load-test load-test-1000qps cold-start-bench memory-profile-load run-medium-ingest run-medium-serve crate-structure cli-command-surface culprits-all culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir e2e-local e2e-k8s-install-gate e2e-k8s-suite e2e-perf e2e-realdata ssot-check observability-check' \
+	  'targets: fmt lint check test test-all coverage audit openapi-drift ci fetch-fixtures fetch-real-datasets load-test load-test-1000qps cold-start-bench memory-profile-load run-medium-ingest run-medium-serve crate-structure cli-command-surface culprits-all culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir e2e-local e2e-k8s-install-gate e2e-k8s-suite e2e-perf e2e-realdata ssot-check observability-check docs docs-serve docs-freeze' \
 	  'perf targets: perf-nightly' \
 	  'dev targets: dev-fmt dev-lint dev-check dev-test dev-test-all dev-coverage dev-audit dev-ci dev-clean'
 
