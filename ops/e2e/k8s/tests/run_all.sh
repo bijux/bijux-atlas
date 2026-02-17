@@ -37,6 +37,12 @@ for t in \
   test_redis_optional.sh \
   test_redis_backend_metric.sh \
   test_toxiproxy_latency_drill.sh \
+  test_minio_outage_mid_load.sh \
+  test_prom_outage.sh \
+  test_otel_outage.sh \
+  test_disk_pressure.sh \
+  test_memory_pressure.sh \
+  test_cpu_throttle_noisy_neighbor.sh \
   test_logs_json.sh \
   test_liveness_under_load.sh \
   test_node_local_cache_profile.sh \
