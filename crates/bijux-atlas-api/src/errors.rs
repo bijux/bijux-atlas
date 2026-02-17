@@ -1,20 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[non_exhaustive]
-pub enum ApiErrorCode {
-    InvalidQueryParameter,
-    MissingDatasetDimension,
-    InvalidCursor,
-    QueryRejectedByPolicy,
-    RateLimited,
-    Timeout,
-    PayloadTooLarge,
-    ResponseTooLarge,
-    NotReady,
-    Internal,
-}
+pub use crate::generated::error_codes::ApiErrorCode;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -62,20 +49,7 @@ impl ApiError {
     }
 }
 
-impl ApiErrorCode {
-    #[must_use]
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::InvalidQueryParameter => "InvalidQueryParameter",
-            Self::MissingDatasetDimension => "MissingDatasetDimension",
-            Self::InvalidCursor => "InvalidCursor",
-            Self::QueryRejectedByPolicy => "QueryRejectedByPolicy",
-            Self::RateLimited => "RateLimited",
-            Self::Timeout => "Timeout",
-            Self::PayloadTooLarge => "PayloadTooLarge",
-            Self::ResponseTooLarge => "ResponseTooLarge",
-            Self::NotReady => "NotReady",
-            Self::Internal => "Internal",
-        }
-    }
-}
+const _: fn() = || {
+    fn assert_traits<T: Serialize + for<'de> Deserialize<'de>>() {}
+    assert_traits::<ApiErrorCode>();
+};

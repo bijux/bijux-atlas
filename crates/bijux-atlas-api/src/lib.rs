@@ -181,6 +181,14 @@ mod tests {
     }
 
     #[test]
+    fn every_generated_error_code_is_parseable_and_stable() {
+        for code in crate::generated::error_codes::API_ERROR_CODES {
+            let parsed = ApiErrorCode::parse(code).expect("generated error code parse");
+            assert_eq!(parsed.as_str(), *code);
+        }
+    }
+
+    #[test]
     fn openapi_paths_match_endpoint_contract() {
         let spec = openapi_v1_spec();
         let spec_paths = spec
