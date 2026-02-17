@@ -1,0 +1,7 @@
+{
+  "/healthz": 200,
+  "/v1/version": 200,
+  "/v1/datasets": 200,
+  "/metrics": 200,
+  "/debug/datasets": 200
+}
