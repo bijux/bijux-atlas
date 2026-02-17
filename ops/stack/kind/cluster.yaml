@@ -6,6 +6,7 @@ networking:
   apiServerPort: 16443
 nodes:
   - role: control-plane
+    image: kindest/node:v1.31.2@sha256:f226345927d7e348497136874b6d207e0b32cc52154ad8323129352923a3142f
     extraPortMappings:
       - containerPort: 30080
         hostPort: 18080

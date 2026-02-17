@@ -12,7 +12,7 @@ Under-provisioned clusters produce false failures in rollout, HPA, and liveness 
 
 ## Contracts
 
-- Kind node resources configured in `ops/e2e/stack/kind/cluster.yaml`.
+- Kind node resources configured in `ops/stack/kind/cluster.yaml`.
 - Suggested minimum for local runs: 4 vCPU, 8 GiB memory.
 - Perf profile should use `ops/k8s/values/perf.yaml`.
 

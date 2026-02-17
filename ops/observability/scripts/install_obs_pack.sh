@@ -3,8 +3,8 @@ set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 MODE="${ATLAS_OBS_MODE:-minimal}"
 
-kubectl apply -f "$ROOT/ops/observability/prometheus/prometheus.yaml"
-kubectl apply -f "$ROOT/ops/observability/otel/otel-collector.yaml"
+kubectl apply -f "$ROOT/ops/stack/prometheus/prometheus.yaml"
+kubectl apply -f "$ROOT/ops/stack/otel/otel-collector.yaml"
 
 if kubectl api-resources | grep -q "^prometheusrules"; then
   kubectl apply -f "$ROOT/ops/observability/alerts/atlas-alert-rules.yaml"

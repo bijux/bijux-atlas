@@ -12,7 +12,7 @@ Provides deterministic environment setup for reproducible e2e runs.
 
 ## Scope
 
-`ops/e2e/stack/*` manifests and `ops-*` make target behavior.
+`ops/stack/*` manifests and `ops-*` make target behavior.
 
 ## Non-goals
 
@@ -20,8 +20,9 @@ Does not replace per-component manifests.
 
 ## Contracts
 
-- Cluster definition: `ops/e2e/stack/kind/cluster.yaml`
-- Store bootstrap: `ops/e2e/stack/minio/bootstrap.sh`
+- Cluster definition: `ops/stack/kind/cluster.yaml`
+- Store bootstrap: `ops/stack/minio/bootstrap.sh`
+- Stack components: `ops/stack/{prometheus,otel,redis,toxiproxy}`
 - Canonical values profiles: `ops/k8s/values/local.yaml`, `ops/k8s/values/offline.yaml`, `ops/k8s/values/perf.yaml`
 - Bring up: `ops-up`
 - Tear down: `ops-down`

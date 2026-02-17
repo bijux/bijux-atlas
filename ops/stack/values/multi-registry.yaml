@@ -1,0 +1,5 @@
+extraEnv:
+  - name: ATLAS_REGISTRY_ENDPOINTS
+    value: "https://registry-a.example/catalog.json,https://registry-b.example/catalog.json"
+  - name: ATLAS_REGISTRY_MERGE_STRATEGY
+    value: "deterministic-priority"

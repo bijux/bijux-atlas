@@ -1,0 +1,33 @@
+image:
+  digest: "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+
+replicaCount: 3
+
+resources:
+  requests:
+    cpu: "1000m"
+    memory: "1Gi"
+  limits:
+    cpu: "3000m"
+    memory: "3Gi"
+
+cache:
+  maxDatasetCount: 12
+  maxDiskBytes: 17179869184
+  maxConcurrentDownloads: 4
+
+concurrency:
+  cheap: 192
+  medium: 96
+  heavy: 24
+
+server:
+  responseMaxBytes: 786432
+  sqlTimeoutMs: 1200
+  slowQueryThresholdMs: 300
+
+hpa:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 30
+  cpuUtilization: 65
