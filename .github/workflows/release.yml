@@ -16,8 +16,22 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  compat-matrix-required:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/release-compat-matrix
+      TMPDIR: artifacts/isolates/release-compat-matrix/tmp
+      TMP: artifacts/isolates/release-compat-matrix/tmp
+      TEMP: artifacts/isolates/release-compat-matrix/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - run: mkdir -p "$TMPDIR" "$ISO_ROOT"
+      - run: ./scripts/release/update-compat-matrix.sh "${GITHUB_REF_NAME}"
+      - run: git diff --exit-code docs/compatibility/umbrella-atlas-matrix.md
+
   build-artifacts:
     runs-on: ubuntu-latest
+    needs: compat-matrix-required
     env:
       ISO_ROOT: artifacts/isolates/release-artifacts
       CARGO_TARGET_DIR: artifacts/isolates/release-artifacts/target
