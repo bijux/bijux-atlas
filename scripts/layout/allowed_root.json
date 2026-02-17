@@ -1,0 +1,32 @@
+{
+  "allowed": [
+    ".cargo",
+    ".github",
+    ".gitignore",
+    ".dockerignore",
+    "Cargo.toml",
+    "Cargo.lock",
+    "rust-toolchain.toml",
+    "Makefile",
+    "makefiles",
+    "README.md",
+    "mkdocs.yml",
+    "docs",
+    "crates",
+    "xtask",
+    "scripts",
+    "configs",
+    "ops",
+    "docker",
+    "artifacts",
+    "Dockerfile",
+    "nextest.toml",
+    "deny.toml",
+    "audit-allowlist.toml",
+    "clippy.toml",
+    "rustfmt.toml",
+    ".vale",
+    ".vale.ini",
+    "bin"
+  ]
+}
