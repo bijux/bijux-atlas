@@ -17,11 +17,10 @@ Keeps operational artifacts in one stable location and prevents root-level spraw
   - `load`
   - `observability`
   - `openapi`
-- Root `e2e/`, `load/`, `observability/` are compatibility paths only.
-  - Allowed form: symlink to `ops/*`.
-  - Allowed fallback: pointer-only directory containing `README.md` and no other files.
+- Root `ops/e2e/`, `ops/load/`, `ops/observability/` are compatibility paths only.
+  - Required form: symlink to `ops/*`.
 - Root `charts/` is packaging-only.
-  - Helm packaging uses `charts/bijux-atlas/`.
+  - Helm packaging uses `ops/k8s/charts/bijux-atlas/`.
   - Operational validation and tests run from `ops/` workflows.
 - `make` is the supported runnable interface.
   - Scripts are internal implementation details.

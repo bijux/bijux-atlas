@@ -39,6 +39,7 @@ docs: ## Build docs + link-check + spell-check + lint
 	@python3 scripts/docs/check_example_configs.py
 	@python3 scripts/docs/check_openapi_examples.py
 	@python3 scripts/docs/check_generated_contract_docs.py
+	@python3 scripts/docs/check_docker_entrypoints.py
 	@python3 scripts/docs/check_terminology_units_ssot.py
 	@python3 scripts/docs/lint_glossary_links.py
 	@python3 scripts/docs/lint_depth.py

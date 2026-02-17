@@ -28,6 +28,7 @@ Generated file. Do not edit manually.
 | `scripts/docs/check_concept_registry.py` | `docs-governance` |
 | `scripts/docs/check_crate_docs_contract.sh` | `docs-governance` |
 | `scripts/docs/check_doc_naming.sh` | `docs-governance` |
+| `scripts/docs/check_docker_entrypoints.py` | `docs-governance` |
 | `scripts/docs/check_duplicate_topics.sh` | `docs-governance` |
 | `scripts/docs/check_example_configs.py` | `docs-governance` |
 | `scripts/docs/check_generated_contract_docs.py` | `docs-governance` |
@@ -64,10 +65,15 @@ Generated file. Do not edit manually.
 | `scripts/fixtures/run-medium-ingest.sh` | `dataset-ops` |
 | `scripts/fixtures/run-medium-serve.sh` | `dataset-ops` |
 | `scripts/generate_scripts_readme.py` | `platform` |
+| `scripts/layout/check_artifacts_allowlist.sh` | `repo-surface` |
+| `scripts/layout/check_chart_canonical_path.sh` | `repo-surface` |
 | `scripts/layout/check_no_direct_script_runs.sh` | `repo-surface` |
+| `scripts/layout/check_ops_canonical_shims.sh` | `repo-surface` |
 | `scripts/layout/check_ops_script_targets.sh` | `repo-surface` |
+| `scripts/layout/check_repo_hygiene.sh` | `repo-surface` |
 | `scripts/layout/check_root_shape.sh` | `repo-surface` |
 | `scripts/layout/check_scripts_readme_drift.sh` | `repo-surface` |
+| `scripts/layout/check_symlink_index.sh` | `repo-surface` |
 | `scripts/layout/check_tool_versions.py` | `repo-surface` |
 | `scripts/layout/migrate.sh` | `repo-surface` |
 | `scripts/migrate_paths.sh` | `platform` |
