@@ -151,6 +151,7 @@ ops-traces-check: ## Validate trace signal (when OTEL enabled)
 
 ops-k8s-tests: ## Run k8s e2e suite
 	@$(MAKE) -s ops-env-validate
+	@python3 ./scripts/ops/check_k8s_test_contract.py
 	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck
 	@group_args=""; \
 	if [ -n "$${ATLAS_E2E_TEST_GROUP}" ]; then \
@@ -160,6 +161,7 @@ ops-k8s-tests: ## Run k8s e2e suite
 	  group_args="$$group_args --test $${ATLAS_E2E_TEST}"; \
 	fi; \
 	./ops/e2e/k8s/tests/run_all.sh $$group_args
+	@python3 ./scripts/ops/check_k8s_flakes.py
 
 ops-k8s-template-tests: ## Run helm template/lint edge-case checks
 	@./ops/e2e/k8s/tests/test_helm_templates.sh
