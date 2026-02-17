@@ -5,6 +5,7 @@ use bijux_atlas_server::{
     LocalFsBackend, RegistrySource, RetryPolicy, S3LikeBackend,
 };
 use opentelemetry::trace::TracerProvider as _;
+use redis::AsyncCommands;
 use std::collections::HashSet;
 use std::env;
 use std::path::PathBuf;
@@ -180,6 +181,52 @@ fn pod_jitter_ms(max_ms: u64) -> u64 {
     seed % max_ms
 }
 
+async fn coordinated_startup_warmup_datasets(
+    datasets: Vec<bijux_atlas_model::DatasetId>,
+    redis_url: Option<&str>,
+    enabled: bool,
+    lock_ttl_secs: u64,
+    pod_id: &str,
+) -> Vec<bijux_atlas_model::DatasetId> {
+    if !enabled {
+        return datasets;
+    }
+    let Some(url) = redis_url else {
+        return datasets;
+    };
+    let Ok(client) = redis::Client::open(url) else {
+        return datasets;
+    };
+    let Ok(mut conn) = client.get_multiplexed_async_connection().await else {
+        return datasets;
+    };
+    let mut claimed = Vec::new();
+    for ds in datasets {
+        let key = format!("atlas:warmup:{}", ds.canonical_string());
+        let lock_val = format!("{pod_id}:{}", chrono_like_millis());
+        let set_res: Result<bool, redis::RedisError> = conn.set_nx(&key, lock_val).await;
+        match set_res {
+            Ok(true) => {
+                let _: Result<(), redis::RedisError> =
+                    conn.expire(&key, lock_ttl_secs as i64).await;
+                claimed.push(ds);
+            }
+            Ok(false) => {}
+            Err(_) => {
+                claimed.push(ds);
+            }
+        }
+    }
+    claimed
+}
+
+fn chrono_like_millis() -> u128 {
+    use std::time::{SystemTime, UNIX_EPOCH};
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map_or(0, |d| d.as_millis())
+}
+
 async fn wait_for_shutdown_signal() {
     #[cfg(unix)]
     {
@@ -259,13 +306,14 @@ async fn main() -> Result<(), String> {
             }
         })
         .collect();
+    let startup_warmup = env_dataset_list("ATLAS_STARTUP_WARMUP");
 
     let cache_cfg = DatasetCacheConfig {
         disk_root: cache_root,
         max_disk_bytes: env_u64("ATLAS_MAX_DISK_BYTES", 8 * 1024 * 1024 * 1024),
         max_dataset_count: env_usize("ATLAS_MAX_DATASET_COUNT", 8),
         pinned_datasets: pinned,
-        startup_warmup: env_dataset_list("ATLAS_STARTUP_WARMUP"),
+        startup_warmup,
         startup_warmup_limit: env_usize("ATLAS_STARTUP_WARMUP_LIMIT", 8),
         fail_readiness_on_missing_warmup: env_bool("ATLAS_FAIL_ON_WARMUP_ERROR", false),
         read_only_fs: env_bool("ATLAS_READ_ONLY_FS_MODE", false),
@@ -353,6 +401,18 @@ async fn main() -> Result<(), String> {
     };
 
     let startup_warmup_jitter_max_ms = cache_cfg.startup_warmup_jitter_max_ms;
+    let startup_warmup = coordinated_startup_warmup_datasets(
+        cache_cfg.startup_warmup.clone(),
+        api_cfg.redis_url.as_deref(),
+        env_bool("ATLAS_WARM_COORDINATION_ENABLED", false),
+        env_u64("ATLAS_WARM_COORDINATION_LOCK_TTL_SECS", 300),
+        &env::var("HOSTNAME").unwrap_or_else(|_| "atlas-pod".to_string()),
+    )
+    .await;
+    let cache_cfg = DatasetCacheConfig {
+        startup_warmup,
+        ..cache_cfg
+    };
     let retry = RetryPolicy {
         max_attempts: env_usize("ATLAS_STORE_RETRY_ATTEMPTS", 4),
         base_backoff_ms: env_u64("ATLAS_STORE_RETRY_BASE_MS", 120),

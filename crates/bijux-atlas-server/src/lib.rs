@@ -34,6 +34,7 @@ mod config;
 mod dataset_shards;
 mod http;
 mod middleware;
+mod routing_hash;
 mod store;
 mod store_resilience;
 mod telemetry;
@@ -536,6 +537,7 @@ async fn cors_middleware(
 }
 
 pub use config::{ApiConfig, RateLimitConfig};
+pub use routing_hash::consistent_route_dataset;
 pub use store::backends::{LocalFsBackend, RetryPolicy, S3LikeBackend};
 pub use store::federated::{FederatedBackend, RegistrySource};
 
