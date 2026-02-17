@@ -4,7 +4,7 @@
 # Outputs: shellcheck diagnostics and exit code.
 set -euo pipefail
 
-ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
+ROOT="$(CDPATH='' cd -- "$(dirname -- "$0")/../.." && pwd)"
 LIST_FILE="$(mktemp)"
 trap 'rm -f "$LIST_FILE"' EXIT
 

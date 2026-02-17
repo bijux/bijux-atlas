@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-source "$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/common.sh"
+# shellcheck source=ops/_lib/common.sh
+source "$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/common.sh"
 
 NS="${1:-${ATLAS_E2E_NAMESPACE:-atlas-e2e-${USER:-local}}}"
 RELEASE="${2:-${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}}"
