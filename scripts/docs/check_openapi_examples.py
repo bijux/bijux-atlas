@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-openapi_path = ROOT / "ops" / "openapi" / "v1" / "openapi.generated.json"
+openapi_path = ROOT / "configs" / "openapi" / "v1" / "openapi.generated.json"
 OPENAPI = json.loads(openapi_path.read_text())
 SCHEMAS = OPENAPI.get("components", {}).get("schemas", {})
 

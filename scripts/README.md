@@ -23,6 +23,7 @@ Generated file. Do not edit manually.
 | `scripts/contracts/format_contracts.py` | `contracts` | `internal` |
 | `scripts/contracts/generate_chart_values_schema.py` | `contracts` | `public` |
 | `scripts/contracts/generate_contract_artifacts.py` | `contracts` | `public` |
+| `scripts/demo/demo.sh` | `platform` | `private` |
 | `scripts/docs/check_adr_headers.py` | `docs-governance` | `public` |
 | `scripts/docs/check_broken_examples.py` | `docs-governance` | `public` |
 | `scripts/docs/check_concept_ids.sh` | `docs-governance` | `public` |
@@ -74,7 +75,9 @@ Generated file. Do not edit manually.
 | `scripts/layout/allowed_root.json` | `repo-surface` | `public` |
 | `scripts/layout/build_artifacts_index.py` | `repo-surface` | `public` |
 | `scripts/layout/check_artifacts_allowlist.sh` | `repo-surface` | `public` |
+| `scripts/layout/check_artifacts_policy.sh` | `repo-surface` | `public` |
 | `scripts/layout/check_chart_canonical_path.sh` | `repo-surface` | `public` |
+| `scripts/layout/check_forbidden_root_files.sh` | `repo-surface` | `public` |
 | `scripts/layout/check_forbidden_root_names.sh` | `repo-surface` | `public` |
 | `scripts/layout/check_make_public_scripts.py` | `repo-surface` | `public` |
 | `scripts/layout/check_no_direct_script_runs.sh` | `repo-surface` | `public` |
@@ -87,6 +90,7 @@ Generated file. Do not edit manually.
 | `scripts/layout/check_script_relative_calls.py` | `repo-surface` | `public` |
 | `scripts/layout/check_scripts_readme_drift.sh` | `repo-surface` | `public` |
 | `scripts/layout/check_symlink_index.sh` | `repo-surface` | `public` |
+| `scripts/layout/check_symlink_policy.py` | `repo-surface` | `public` |
 | `scripts/layout/check_tool_versions.py` | `repo-surface` | `public` |
 | `scripts/layout/check_workflows_make_only.py` | `repo-surface` | `public` |
 | `scripts/layout/clean_artifacts.py` | `repo-surface` | `public` |

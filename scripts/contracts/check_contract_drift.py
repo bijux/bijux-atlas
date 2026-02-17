@@ -39,7 +39,7 @@ for code in errors["codes"]:
         print(f"missing generated rust error code: {code}", file=sys.stderr)
         sys.exit(1)
 
-openapi_snapshot = json.loads((ROOT / "ops" / "openapi" / "v1" / "openapi.snapshot.json").read_text())
+openapi_snapshot = json.loads((ROOT / "configs" / "openapi" / "v1" / "openapi.snapshot.json").read_text())
 openapi_codes = (
     openapi_snapshot.get("components", {})
     .get("schemas", {})
@@ -91,7 +91,7 @@ value_keys = sorted(
         m.group(1)
         for m in re.finditer(
             r"^([A-Za-z][A-Za-z0-9_]*)\s*:",
-            (ROOT / "charts" / "bijux-atlas" / "values.yaml").read_text(),
+            (ROOT / "ops" / "k8s" / "charts" / "bijux-atlas" / "values.yaml").read_text(),
             flags=re.MULTILINE,
         )
     }

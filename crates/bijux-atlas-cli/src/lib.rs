@@ -219,7 +219,7 @@ enum AtlasCommand {
 #[derive(Subcommand)]
 enum OpenapiCommand {
     Generate {
-        #[arg(long, default_value = "ops/openapi/v1/openapi.generated.json")]
+        #[arg(long, default_value = "configs/openapi/v1/openapi.generated.json")]
         out: PathBuf,
     },
 }

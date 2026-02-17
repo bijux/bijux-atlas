@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 contract = json.loads((ROOT / "docs" / "contracts" / "CHART_VALUES.json").read_text())
 expected = set(contract["top_level_keys"])
 
-values_text = (ROOT / "charts" / "bijux-atlas" / "values.yaml").read_text()
+values_text = (ROOT / "ops" / "k8s" / "charts" / "bijux-atlas" / "values.yaml").read_text()
 actual = {
     m.group(1)
     for m in re.finditer(r"^([A-Za-z][A-Za-z0-9_]*)\s*:", values_text, flags=re.MULTILINE)

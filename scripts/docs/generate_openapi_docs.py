@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-src_dir = ROOT / "ops" / "openapi" / "v1"
+src_dir = ROOT / "configs" / "openapi" / "v1"
 out_dir = ROOT / "docs" / "_generated" / "openapi"
 out_dir.mkdir(parents=True, exist_ok=True)
 

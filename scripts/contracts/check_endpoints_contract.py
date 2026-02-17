@@ -18,7 +18,7 @@ for p in re.findall(r'\.route\(\s*"([^"]+)"', server_src, flags=re.MULTILINE):
     if p != "/":
         route_paths.add(p)
 
-openapi = json.loads((ROOT / "ops" / "openapi" / "v1" / "openapi.snapshot.json").read_text())
+openapi = json.loads((ROOT / "configs" / "openapi" / "v1" / "openapi.snapshot.json").read_text())
 openapi_paths = set(openapi.get("paths", {}).keys())
 
 if route_paths != contract_paths:

@@ -27,7 +27,7 @@ while IFS= read -r file; do
     s{(^|[^A-Za-z0-9_])e2e/}{$1ops/e2e/}g;
     s{(^|[^A-Za-z0-9_])load/}{$1ops/load/}g;
     s{(^|[^A-Za-z0-9_])observability/}{$1ops/observability/}g;
-    s{(^|[^A-Za-z0-9_])openapi/}{$1ops/openapi/}g;
+    s{(^|[^A-Za-z0-9_])openapi/}{$1configs/openapi/}g;
     s{(^|[^A-Za-z0-9_])charts/bijux-atlas}{$1ops/k8s/charts/bijux-atlas}g;
     s{(^|[^A-Za-z0-9_])bin/isolate}{$1scripts/bin/isolate}g;
     s{(^|[^A-Za-z0-9_])bin/require-isolate}{$1scripts/bin/require-isolate}g;
