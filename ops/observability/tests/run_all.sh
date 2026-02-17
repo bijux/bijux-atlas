@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
+. "$ROOT/ops/observability/tests/common.sh"
+
+on_fail() {
+  out=$(capture_failure_artifacts)
+  echo "observability tests failed, artifacts at: $out" >&2
+}
+trap on_fail ERR
+
+"$ROOT/ops/observability/tests/test_pack_contracts.sh"
+"$ROOT/ops/observability/tests/test_install_modes.sh"
+
+echo "observability pack tests passed"
