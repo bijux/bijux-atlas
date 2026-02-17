@@ -15,6 +15,7 @@ endpoints = json.loads((contracts / "ENDPOINTS.json").read_text())["endpoints"]
 chart_keys = json.loads((contracts / "CHART_VALUES.json").read_text())["top_level_keys"]
 config_keys = json.loads((contracts / "CONFIG_KEYS.json").read_text())["env_keys"]
 artifact_schema = json.loads((contracts / "ARTIFACT_SCHEMA.json").read_text())
+policy_schema = json.loads((contracts / "POLICY_SCHEMA.json").read_text())
 
 # rust generated core error-code enum + constants
 core_generated_dir = ROOT / "crates" / "bijux-atlas-core" / "src" / "generated"
@@ -194,6 +195,11 @@ for rust_file in (
 (out_gen / "ARTIFACT_SCHEMA.md").write_text(
     "# Artifact Schema (Generated)\n\n```json\n"
     + json.dumps(artifact_schema, indent=2, sort_keys=True)
+    + "\n```\n"
+)
+(out_gen / "POLICY_SCHEMA.md").write_text(
+    "# Policy Schema (Generated)\n\n```json\n"
+    + json.dumps(policy_schema, indent=2, sort_keys=True)
     + "\n```\n"
 )
 

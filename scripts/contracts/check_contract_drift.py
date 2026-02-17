@@ -13,6 +13,7 @@ trace_spans = json.loads((contracts / "TRACE_SPANS.json").read_text())
 endpoints = json.loads((contracts / "ENDPOINTS.json").read_text())
 chart = json.loads((contracts / "CHART_VALUES.json").read_text())
 config_keys = json.loads((contracts / "CONFIG_KEYS.json").read_text())
+policy_schema = json.loads((contracts / "POLICY_SCHEMA.json").read_text())
 
 # check sorted canonical
 if errors["codes"] != sorted(errors["codes"]):
@@ -96,6 +97,13 @@ if value_keys != sorted(chart["top_level_keys"]):
     print("CHART_VALUES.json drift from charts/bijux-atlas/values.yaml", file=sys.stderr)
     print("missing in contract:", sorted(set(value_keys) - set(chart["top_level_keys"])), file=sys.stderr)
     print("extra in contract:", sorted(set(chart["top_level_keys"]) - set(value_keys)), file=sys.stderr)
+    sys.exit(1)
+
+workspace_policy_schema = json.loads(
+    (ROOT / "configs" / "policy" / "policy.schema.json").read_text()
+)
+if policy_schema != workspace_policy_schema:
+    print("POLICY_SCHEMA.json drift from configs/policy/policy.schema.json", file=sys.stderr)
     sys.exit(1)
 
 print("contracts drift check passed")

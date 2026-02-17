@@ -11,6 +11,7 @@ CONTRACT_FILES = [
     "docs/contracts/TRACE_SPANS.json",
     "docs/contracts/ENDPOINTS.json",
     "docs/contracts/CHART_VALUES.json",
+    "docs/contracts/POLICY_SCHEMA.json",
 ]
 
 
@@ -98,6 +99,16 @@ def main() -> int:
             if removed:
                 print(
                     f"{rel}: removed chart keys since {base_ref}: {removed}",
+                    file=sys.stderr,
+                )
+                breaking = True
+        elif rel.endswith("POLICY_SCHEMA.json"):
+            prev_required = set(previous.get("required", []))
+            cur_required = set(current.get("required", []))
+            removed = sorted(prev_required - cur_required)
+            if removed:
+                print(
+                    f"{rel}: removed required policy keys since {base_ref}: {removed}",
                     file=sys.stderr,
                 )
                 breaking = True
