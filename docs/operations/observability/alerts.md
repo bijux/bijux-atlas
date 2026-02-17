@@ -37,8 +37,8 @@ Invalid or stale alerts delay incident response.
 ## How to verify
 
 ```bash
-$ python3 scripts/observability/check_alerts_contract.py
-$ python3 scripts/observability/lint_runbooks.py
+$ make ops-alerts-validate
+$ make observability-check
 ```
 
 Expected output: alerts and runbook references pass checks.

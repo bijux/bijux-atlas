@@ -14,12 +14,12 @@ Prevents accidental acceptance of regressions as new normal.
 
 - Baselines live in `ops/load/baselines/`.
 - Baseline changes require explicit approval via `ATLAS_BASELINE_APPROVED=1`.
-- Enforcement script: `scripts/perf/check_baseline_update_policy.sh`.
+- Enforcement target: `ops-baseline-policy-check`.
 
 ## How to verify
 
 ```bash
-$ ATLAS_BASELINE_APPROVED=1 scripts/perf/check_baseline_update_policy.sh
+$ ATLAS_BASELINE_APPROVED=1 make ops-baseline-policy-check
 ```
 
 Expected output: baseline policy check passes when approved.

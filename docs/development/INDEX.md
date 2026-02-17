@@ -23,7 +23,7 @@ Does not duplicate page-level details.
 List and maintain links to section pages in this directory.
 
 - [Makefiles Surface](makefiles/surface.md)
-- [Make Targets Inventory](make-targets-inventory.md)
+- [Make Targets](make-targets.md)
 - [Scripts Index](scripts/INDEX.md)
 
 ## Failure modes

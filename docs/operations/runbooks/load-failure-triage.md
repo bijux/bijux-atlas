@@ -24,8 +24,8 @@ Runbook for diagnosing load suite failures and regressions.
 ```bash
 $ make ops-load-ci
 $ make ops-load-nightly
-$ python3 scripts/perf/score_k6.py
-$ python3 scripts/perf/validate_results.py artifacts/perf/results
+$ make ops-perf-report
+$ make ops-load-manifest-validate
 $ cat artifacts/ops/e2e/k6/score.md
 ```
 
@@ -33,8 +33,8 @@ Expected output: failing scenario names and violating thresholds.
 
 ## Expected outputs
 
-- `scripts/perf/score_k6.py` reports either `k6 SLO score passed` or explicit suite violations.
-- `scripts/perf/validate_results.py` reports `load result contract validation passed`.
+- `make ops-perf-report` reports either `k6 SLO score passed` or explicit suite violations.
+- `make ops-load-manifest-validate` reports `load suite manifest validation passed`.
 - `artifacts/ops/load/reports/summary.md` includes suite latency/error rows with metadata fields.
 
 ## Mitigations
@@ -42,7 +42,7 @@ Expected output: failing scenario names and violating thresholds.
 - Re-run with stable host resources.
 - Confirm dataset hash/release inputs.
 - Compare against approved baseline in `ops/load/baselines/`.
-- Validate suite contracts with `python3 scripts/perf/validate_suite_manifest.py`.
+- Validate suite contracts with `make ops-load-manifest-validate`.
 
 Canonical suite names:
 - `mixed`

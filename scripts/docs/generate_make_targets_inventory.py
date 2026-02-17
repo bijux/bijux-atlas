@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 # Purpose: generate markdown inventory of public make targets from `make help`.
 # Inputs: output of `make help`.
-# Outputs: docs/development/make-targets-inventory.md.
+# Outputs: docs/development/make-targets.md and docs/development/make-targets-inventory.md.
 from __future__ import annotations
 
 import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "docs" / "development" / "make-targets-inventory.md"
+OUT_MAIN = ROOT / "docs" / "development" / "make-targets.md"
+OUT_COMPAT = ROOT / "docs" / "development" / "make-targets-inventory.md"
 
 help_out = subprocess.check_output(["make", "help"], cwd=ROOT, text=True)
 
@@ -38,5 +39,7 @@ for section, targets in sections.items():
         lines.append(f"- `{target}`")
     lines.append("")
 
-OUT.write_text("\n".join(lines), encoding="utf-8")
-print(OUT)
+rendered = "\n".join(lines)
+OUT_MAIN.write_text(rendered, encoding="utf-8")
+OUT_COMPAT.write_text(rendered, encoding="utf-8")
+print(OUT_MAIN)

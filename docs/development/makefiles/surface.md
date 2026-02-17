@@ -189,5 +189,5 @@ Expected output: make target documentation check passes.
 
 - [Repo Surface](../repo-surface.md)
 - [Scripts Index](../scripts/INDEX.md)
-- [Make Targets Inventory](../make-targets-inventory.md)
+- [Make Targets](../make-targets.md)
 - [Crate Layout Contract](../../architecture/crate-layout-contract.md)

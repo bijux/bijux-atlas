@@ -31,9 +31,9 @@ Missing mapping causes slow triage and inconsistent alert handling.
 ## How to verify
 
 ```bash
-python3 scripts/observability/check_dashboard_contract.py
-python3 scripts/observability/check_alerts_contract.py
-python3 scripts/observability/lint_runbooks.py
+make ops-dashboards-validate
+make ops-alerts-validate
+make observability-check
 make ops-observability-validate
 ```
 

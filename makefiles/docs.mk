@@ -16,6 +16,7 @@ docs: ## Build docs + link-check + spell-check + lint
 	@"$(DOCS_VENV)/bin/pip" install -r "$(DOCS_REQ)" >/dev/null
 	@python3 scripts/docs/generate_crates_map.py
 	@python3 scripts/docs/generate_make_targets_inventory.py
+	@python3 scripts/docs/check_make_targets_drift.py
 	@python3 scripts/docs/generate_k8s_values_doc.py
 	@python3 scripts/docs/generate_concept_graph.py
 	@python3 scripts/docs/generate_openapi_docs.py
@@ -37,6 +38,7 @@ docs: ## Build docs + link-check + spell-check + lint
 	@python3 scripts/docs/check_k8s_docs_contract.py
 	@python3 scripts/docs/check_load_docs_contract.py
 	@python3 scripts/docs/check_ops_docs_make_targets.py
+	@python3 scripts/docs/check_docs_make_only.py
 	@python3 scripts/docs/check_broken_examples.py
 	@python3 scripts/docs/check_example_configs.py
 	@python3 scripts/docs/check_openapi_examples.py
