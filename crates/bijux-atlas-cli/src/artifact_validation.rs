@@ -478,15 +478,9 @@ fn validate_sqlite_contract(sqlite_path: &PathBuf) -> Result<(), String> {
     if has_transcript_table == 0 {
         return Err("required table missing: transcript_summary".to_string());
     }
-    let schema_version: String = conn
-        .query_row(
-            "SELECT v FROM atlas_meta WHERE k='schema_version'",
-            [],
-            |r| r.get(0),
-        )
-        .map_err(|_| "atlas_meta.schema_version missing".to_string())?;
-    if schema_version.trim().is_empty() {
-        return Err("atlas_meta.schema_version is empty".to_string());
+    let schema_version = read_schema_version(&conn)?;
+    if schema_version <= 0 {
+        return Err("schema_version must be positive".to_string());
     }
     let analyzed: String = conn
         .query_row(
@@ -499,6 +493,35 @@ fn validate_sqlite_contract(sqlite_path: &PathBuf) -> Result<(), String> {
         return Err("ANALYZE required gate failed: analyze_completed != true".to_string());
     }
     Ok(())
+}
+
+fn read_schema_version(conn: &rusqlite::Connection) -> Result<i64, String> {
+    let has_schema_table: i64 = conn
+        .query_row(
+            "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='schema_version'",
+            [],
+            |r| r.get(0),
+        )
+        .map_err(|e| e.to_string())?;
+    if has_schema_table > 0 {
+        return conn
+            .query_row(
+                "SELECT version FROM schema_version ORDER BY version DESC LIMIT 1",
+                [],
+                |r| r.get(0),
+            )
+            .map_err(|e| e.to_string());
+    }
+    let legacy_schema_version: String = conn
+        .query_row(
+            "SELECT v FROM atlas_meta WHERE k='schema_version'",
+            [],
+            |r| r.get(0),
+        )
+        .map_err(|_| "atlas_meta.schema_version missing".to_string())?;
+    legacy_schema_version
+        .parse::<i64>()
+        .map_err(|_| format!("invalid atlas_meta.schema_version: {legacy_schema_version}"))
 }
 
 fn validate_shard_catalog_and_indexes(derived_dir: &std::path::Path) -> Result<(), String> {

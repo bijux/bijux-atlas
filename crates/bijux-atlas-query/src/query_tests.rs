@@ -157,6 +157,49 @@ fn setup_db() -> Connection {
     conn
 }
 
+fn setup_legacy_v2_db() -> Connection {
+    let conn = Connection::open_in_memory().expect("open memory db");
+    conn.execute_batch(
+        "
+            CREATE TABLE gene_summary (
+              id INTEGER PRIMARY KEY,
+              gene_id TEXT NOT NULL,
+              name TEXT NOT NULL,
+              name_normalized TEXT NOT NULL,
+              biotype TEXT NOT NULL,
+              seqid TEXT NOT NULL,
+              start INTEGER NOT NULL,
+              end INTEGER NOT NULL,
+              transcript_count INTEGER NOT NULL,
+              exon_count INTEGER NOT NULL DEFAULT 0,
+              total_exon_span INTEGER NOT NULL DEFAULT 0,
+              cds_present INTEGER NOT NULL DEFAULT 0,
+              sequence_length INTEGER NOT NULL
+            );
+            CREATE TABLE dataset_stats (
+              dimension TEXT NOT NULL,
+              value TEXT NOT NULL,
+              gene_count INTEGER NOT NULL,
+              PRIMARY KEY (dimension, value)
+            );
+            CREATE VIRTUAL TABLE gene_summary_rtree USING rtree(gene_rowid, start, end);
+            CREATE INDEX idx_gene_summary_gene_id ON gene_summary(gene_id);
+            CREATE INDEX idx_gene_summary_name ON gene_summary(name);
+            CREATE INDEX idx_gene_summary_name_normalized ON gene_summary(name_normalized);
+            CREATE INDEX idx_gene_summary_biotype ON gene_summary(biotype);
+            CREATE INDEX idx_gene_summary_region ON gene_summary(seqid, start, end);
+            INSERT INTO gene_summary (id,gene_id,name,name_normalized,biotype,seqid,start,end,transcript_count,sequence_length)
+            VALUES (1,'gene1','BRCA1','brca1','protein_coding','chr1',10,40,2,31);
+            INSERT INTO gene_summary_rtree (gene_rowid,start,end) VALUES (1,10,40);
+            INSERT INTO dataset_stats (dimension,value,gene_count) VALUES ('biotype','protein_coding',1);
+            INSERT INTO dataset_stats (dimension,value,gene_count) VALUES ('seqid','chr1',1);
+            PRAGMA user_version=2;
+            ",
+    )
+    .expect("legacy schema");
+    conn
+}
+
 #[test]
 fn transcript_query_uses_indexes_and_paginates() {
     let conn = setup_db();
@@ -267,6 +310,24 @@ fn explain_plan_snapshots_by_query_class() {
         heavy_plan.contains("virtual table index") || heavy_plan.contains("rtree"),
         "heavy plan must use rtree: {heavy_plan}"
     );
+}
+
+#[test]
+fn legacy_v2_schema_remains_queryable() {
+    let conn = setup_legacy_v2_db();
+    let req = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            gene_id: Some("gene1".to_string()),
+            ..Default::default()
+        },
+        limit: 10,
+        cursor: None,
+        allow_full_scan: false,
+    };
+    let resp = query_genes(&conn, &req, &limits(), b"legacy-secret").expect("legacy query");
+    assert_eq!(resp.rows.len(), 1);
+    assert_eq!(resp.rows[0].gene_id, "gene1");
 }
 
 #[test]

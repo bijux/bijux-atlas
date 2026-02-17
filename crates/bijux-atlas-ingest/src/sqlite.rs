@@ -7,11 +7,59 @@ use std::collections::BTreeMap;
 use std::fs;
 use std::path::Path;
 
-pub const SQLITE_SCHEMA_VERSION: i64 = 2;
+pub const SQLITE_SCHEMA_VERSION: i64 = 3;
 const INGEST_JOURNAL_MODE: &str = "WAL";
 const INGEST_LOCKING_MODE: &str = "EXCLUSIVE";
 const INGEST_PAGE_SIZE: i64 = 4096;
 const INGEST_MMAP_SIZE: i64 = 268_435_456;
+
+pub fn migrate_forward_schema(conn: &Connection, target_version: i64) -> Result<i64, IngestError> {
+    let current = detect_schema_version(conn)?;
+    if current > target_version {
+        return Err(IngestError(format!(
+            "forward-only schema migration violation: current={current}, target={target_version}"
+        )));
+    }
+    if current < 3 && target_version >= 3 {
+        conn.execute_batch(
+            "
+            CREATE TABLE IF NOT EXISTS schema_version (
+              version INTEGER PRIMARY KEY
+            ) WITHOUT ROWID;
+            DELETE FROM schema_version;
+            INSERT INTO schema_version (version) VALUES (3);
+            PRAGMA user_version=3;
+            ",
+        )
+        .map_err(|e| IngestError(e.to_string()))?;
+        let _ = conn.execute("UPDATE atlas_meta SET v='3' WHERE k='schema_version'", []);
+    }
+    Ok(target_version.max(current))
+}
+
+fn detect_schema_version(conn: &Connection) -> Result<i64, IngestError> {
+    let has_schema_table: i64 = conn
+        .query_row(
+            "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='schema_version'",
+            [],
+            |r| r.get(0),
+        )
+        .map_err(|e| IngestError(e.to_string()))?;
+    if has_schema_table > 0 {
+        let v: i64 = conn
+            .query_row(
+                "SELECT version FROM schema_version ORDER BY version DESC LIMIT 1",
+                [],
+                |r| r.get(0),
+            )
+            .map_err(|e| IngestError(e.to_string()))?;
+        return Ok(v);
+    }
+    let pragma_v: i64 = conn
+        .query_row("PRAGMA user_version", [], |r| r.get(0))
+        .map_err(|e| IngestError(e.to_string()))?;
+    Ok(pragma_v)
+}
 
 pub fn write_sqlite(
     path: &Path,
@@ -62,6 +110,9 @@ pub fn write_sqlite(
         CREATE TABLE atlas_meta (
           k TEXT PRIMARY KEY,
           v TEXT NOT NULL
+        ) WITHOUT ROWID;
+        CREATE TABLE schema_version (
+          version INTEGER PRIMARY KEY
         ) WITHOUT ROWID;
         CREATE TABLE dataset_stats (
           dimension TEXT NOT NULL,
@@ -145,6 +196,11 @@ pub fn write_sqlite(
         tx.execute(
             "INSERT INTO atlas_meta (k, v) VALUES ('schema_version', ?1)",
             params![SQLITE_SCHEMA_VERSION.to_string()],
+        )
+        .map_err(|e| IngestError(e.to_string()))?;
+        tx.execute(
+            "INSERT INTO schema_version (version) VALUES (?1)",
+            params![SQLITE_SCHEMA_VERSION],
         )
         .map_err(|e| IngestError(e.to_string()))?;
         tx.execute(
@@ -310,4 +366,42 @@ pub fn explain_plan_for_region_query(path: &Path) -> Result<Vec<String>, IngestE
         .collect::<Result<Vec<_>, _>>()
         .map_err(|e| IngestError(e.to_string()))?;
     Ok(rows)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn forward_only_migration_rejects_downgrade() {
+        let conn = Connection::open_in_memory().expect("conn");
+        conn.execute_batch("PRAGMA user_version=4;")
+            .expect("set user_version");
+        let err = migrate_forward_schema(&conn, 3).expect_err("downgrade must fail");
+        assert!(err
+            .to_string()
+            .contains("forward-only schema migration violation"));
+    }
+
+    #[test]
+    fn forward_migration_from_legacy_v2_adds_schema_version_table() {
+        let conn = Connection::open_in_memory().expect("conn");
+        conn.execute_batch(
+            "
+            PRAGMA user_version=2;
+            CREATE TABLE atlas_meta (k TEXT PRIMARY KEY, v TEXT NOT NULL) WITHOUT ROWID;
+            INSERT INTO atlas_meta (k, v) VALUES ('schema_version', '2');
+            ",
+        )
+        .expect("legacy schema");
+        migrate_forward_schema(&conn, 3).expect("migrate");
+        let v: i64 = conn
+            .query_row(
+                "SELECT version FROM schema_version ORDER BY version DESC LIMIT 1",
+                [],
+                |r| r.get(0),
+            )
+            .expect("schema_version row");
+        assert_eq!(v, 3);
+    }
 }

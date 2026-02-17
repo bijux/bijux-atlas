@@ -353,8 +353,16 @@ mod tests {
                 |r| r.get(0),
             )
             .expect("journal mode");
-        assert_eq!(schema_version, "2");
+        assert_eq!(schema_version, "3");
         assert_eq!(journal_mode, "WAL");
+        let schema_table_version: i64 = conn
+            .query_row(
+                "SELECT version FROM schema_version ORDER BY version DESC LIMIT 1",
+                [],
+                |r| r.get(0),
+            )
+            .expect("schema_version table");
+        assert_eq!(schema_table_version, 3);
     }
 
     #[test]

@@ -57,3 +57,17 @@ fn round_trip_public_manifest_and_catalog_types() {
         serde_json::from_str(&policy_json).expect("policy decode");
     assert_eq!(policy, decoded_policy);
 }
+
+#[test]
+fn legacy_manifest_v1_without_new_fields_is_still_compatible() {
+    let raw = r#"{
+      "manifest_version":"1",
+      "db_schema_version":"1",
+      "dataset":{"release":"110","species":"homo_sapiens","assembly":"GRCh38"},
+      "checksums":{"gff3_sha256":"a","fasta_sha256":"b","fai_sha256":"c","sqlite_sha256":"d"},
+      "stats":{"gene_count":1,"transcript_count":1,"contig_count":1}
+    }"#;
+    let manifest: ArtifactManifest = serde_json::from_str(raw).expect("legacy parse");
+    assert!(manifest.dataset_signature_sha256.is_empty());
+    assert!(!manifest.derived_column_origins.is_empty());
+}
