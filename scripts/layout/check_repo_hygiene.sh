@@ -27,6 +27,11 @@ if git ls-files | grep -Eq '^target/'; then
   fail=1
 fi
 
+if [ -n "${CI:-}" ] && [ -d "$ROOT/target" ]; then
+  echo "root target/ directory must not exist in CI workspaces" >&2
+  fail=1
+fi
+
 if find . -path './.git' -prune -o -name '.DS_Store' -print | grep -q .; then
   echo "workspace contains .DS_Store; remove it" >&2
   find . -path './.git' -prune -o -name '.DS_Store' -print >&2

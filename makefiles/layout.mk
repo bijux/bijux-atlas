@@ -19,4 +19,7 @@ layout-migrate: ## Apply deterministic layout/path migration helpers
 	@./scripts/layout/replace_paths.sh --apply
 	@./scripts/layout/migrate.sh
 
-.PHONY: layout-check layout-migrate
+layout-fix: ## Repair known layout/symlink drift deterministically
+	@$(MAKE) layout-migrate
+
+.PHONY: layout-check layout-migrate layout-fix

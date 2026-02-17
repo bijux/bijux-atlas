@@ -29,13 +29,19 @@ if (ROOT / "ops/e2e/stack").is_symlink():
 violations: list[str] = []
 for rel in sorted(symlinks):
     p = ROOT / rel
+    raw_target = Path(str(p.readlink()))
+    if raw_target.is_absolute():
+        violations.append(f"symlink `{rel}` must use relative target, found absolute `{raw_target}`")
     if not p.exists():
+        violations.append(f"symlink `{rel}` is broken (target does not exist)")
         target = "<broken>"
+        resolved = None
     else:
         resolved = p.resolve()
         try:
             target = resolved.relative_to(ROOT).as_posix()
         except ValueError:
+            violations.append(f"symlink `{rel}` points outside repo: `{resolved}`")
             target = str(resolved)
     if "/" not in rel:
         if rel not in entries:
@@ -52,6 +58,10 @@ for rel in sorted(symlinks):
             violations.append(f"non-root symlink forbidden by policy: `{rel}`")
         elif target != expected:
             violations.append(f"non-root symlink `{rel}` target drift: expected `{expected}`, got `{target}`")
+
+dockerfile = ROOT / "Dockerfile"
+if not dockerfile.is_symlink():
+    violations.append("root `Dockerfile` must be a symlink to `docker/Dockerfile`")
 
 if violations:
     print("symlink policy check failed:", file=sys.stderr)

@@ -1,0 +1,41 @@
+{
+  "required": [
+    ".cargo",
+    ".github",
+    ".gitignore",
+    "Cargo.toml",
+    "Cargo.lock",
+    "Makefile",
+    "README.md",
+    "makefiles",
+    "docs",
+    "scripts",
+    "ops",
+    "configs"
+  ],
+  "allowed": [
+    ".dockerignore",
+    "rust-toolchain.toml",
+    "mkdocs.yml",
+    "crates",
+    "xtask",
+    "docker",
+    "artifacts"
+  ],
+  "compat_shims": [
+    "Dockerfile",
+    "bin",
+    ".vale",
+    ".vale.ini",
+    "nextest.toml",
+    "deny.toml",
+    "audit-allowlist.toml",
+    "clippy.toml",
+    "rustfmt.toml"
+  ],
+  "local_noise": [
+    ".idea",
+    ".DS_Store",
+    "target"
+  ]
+}
