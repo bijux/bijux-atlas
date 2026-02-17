@@ -17,6 +17,8 @@ ATLAS_E2E_ENABLE_OTEL ?= 0
 ATLAS_E2E_ENABLE_TOXIPROXY ?= 0
 ATLAS_E2E_TEST_GROUP ?=
 ATLAS_E2E_TEST ?=
+OPS_RUN_ID ?= $(ATLAS_RUN_ID)
+OPS_RUN_DIR ?= artifacts/ops/$(OPS_RUN_ID)
 
 export ATLAS_BASE_URL
 export ATLAS_NS
@@ -34,6 +36,8 @@ export ATLAS_E2E_TEST_GROUP
 export ATLAS_E2E_TEST
 export ATLAS_E2E_NAMESPACE ?= $(ATLAS_NS)
 export ATLAS_E2E_VALUES_FILE ?= $(ATLAS_VALUES_FILE)
+export OPS_RUN_ID
+export OPS_RUN_DIR
 
 ops-env-validate: ## Validate canonical ops environment contract against schema
 	@python3 ./scripts/layout/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)"
@@ -279,10 +283,9 @@ ops-realdata: ## Run real-data e2e scenarios
 	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/realdata/run_all.sh
 
-ops-report: ## Gather ops evidence into artifacts/ops/<timestamp>/
+ops-report: ## Gather ops evidence into artifacts/ops/<run-id>/
 	@$(MAKE) -s ops-env-validate
-	@ts=$$(date +%Y%m%d-%H%M%S); \
-	out="artifacts/ops/$$ts"; \
+	@out="$${OPS_RUN_DIR}"; \
 	mkdir -p "$$out"/{logs,perf,metrics}; \
 	kubectl get pods -A -o wide > "$$out/logs/pods.txt" 2>/dev/null || true; \
 	kubectl get events -A --sort-by=.lastTimestamp > "$$out/logs/events.txt" 2>/dev/null || true; \
@@ -290,7 +293,7 @@ ops-report: ## Gather ops evidence into artifacts/ops/<timestamp>/
 	cp -R artifacts/perf/results "$$out/perf/" 2>/dev/null || true; \
 	curl -fsS "$${ATLAS_BASE_URL:-http://127.0.0.1:8080}/metrics" > "$$out/metrics/metrics.txt" 2>/dev/null || true; \
 	echo "ops report written to $$out"; \
-	ln -sfn "$$ts" artifacts/ops/latest; \
+	ln -sfn "$${OPS_RUN_ID}" artifacts/ops/latest; \
 	$(MAKE) artifacts-index
 
 ops-slo-burn: ## Compute SLO burn artifact from k6 score + metrics snapshot
