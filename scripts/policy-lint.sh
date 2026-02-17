@@ -55,3 +55,5 @@ PY
 ./scripts/no-network-unit-tests.sh
 ./scripts/check-cli-commands.sh
 ./scripts/contracts/check_all.sh
+./scripts/effects-lint.sh
+./scripts/naming-intent-lint.sh
