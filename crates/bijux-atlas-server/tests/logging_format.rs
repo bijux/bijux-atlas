@@ -54,12 +54,24 @@ fn structured_logging_format_is_valid_json() {
 
     let bytes = sink.0.lock().expect("lock output").clone();
     let text = String::from_utf8(bytes).expect("utf8 log output");
-    let line = text.lines().find(|l| !l.trim().is_empty()).expect("log line");
+    let line = text
+        .lines()
+        .find(|l| !l.trim().is_empty())
+        .expect("log line");
     let parsed: serde_json::Value = serde_json::from_str(line).expect("json log line");
 
     assert_eq!(parsed.get("level").and_then(|v| v.as_str()), Some("INFO"));
-    assert_eq!(parsed.get("target").and_then(|v| v.as_str()), Some("atlas_audit"));
+    assert_eq!(
+        parsed.get("target").and_then(|v| v.as_str()),
+        Some("atlas_audit")
+    );
     let fields = parsed.get("fields").expect("fields object");
-    assert_eq!(fields.get("request_id").and_then(|v| v.as_str()), Some("req-123"));
-    assert_eq!(fields.get("path").and_then(|v| v.as_str()), Some("/v1/genes"));
+    assert_eq!(
+        fields.get("request_id").and_then(|v| v.as_str()),
+        Some("req-123")
+    );
+    assert_eq!(
+        fields.get("path").and_then(|v| v.as_str()),
+        Some("/v1/genes")
+    );
 }
