@@ -14,6 +14,9 @@ ART.mkdir(parents=True, exist_ok=True)
 
 violations = []
 rows = []
+manifest_by_scenario = {
+    Path(s.get("scenario", "")).stem: s for s in SUITE_MANIFEST.get("suites", [])
+}
 
 for summary in sorted(ART.glob("*.summary.json")):
     name = summary.name.replace(".summary.json", "")
@@ -26,13 +29,7 @@ for summary in sorted(ART.glob("*.summary.json")):
     err = float(failed.get("rate", 0.0))
     rows.append({"scenario": name, "p95_ms": p95, "p99_ms": p99, "error_rate": err})
 
-    target = SLO.get("scenarios", {}).get(name)
-    if not target:
-        for suite in SUITE_MANIFEST.get("suites", []):
-            scenario_name = Path(suite.get("scenario", "")).stem
-            if scenario_name == name:
-                target = suite
-                break
+    target = SLO.get("scenarios", {}).get(name) or manifest_by_scenario.get(name)
     if not target:
         continue
     if p95 > target["p95_ms_max"]:
@@ -58,6 +55,18 @@ if metrics_file.exists():
             violations.append(f"missing metric: {metric}")
 else:
     violations.append("missing metrics scrape file: artifacts/ops/e2e/k6/metrics.prom")
+
+# Soak-specific memory growth check from manifest budget when available.
+soak_meta = manifest_by_scenario.get("soak-30m")
+if soak_meta and "memory_growth_bytes_max" in soak_meta:
+    baseline_file = ROOT / "artifacts/perf/baseline.json"
+    if baseline_file.exists():
+        b = json.loads(baseline_file.read_text())
+        growth = float(b.get("soak_memory", {}).get("growth_bytes", 0.0))
+        if growth > float(soak_meta["memory_growth_bytes_max"]):
+            violations.append(
+                f"soak-30m: memory growth {growth:.0f} > {float(soak_meta['memory_growth_bytes_max']):.0f}"
+            )
 
 report = [
     "# E2E k6 Score Report",

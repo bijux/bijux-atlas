@@ -7,7 +7,12 @@ set -eu
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 INPUT="${1:?suite or scenario required, e.g. mixed-80-20.js or mixed.json}"
 OUT_DIR="${2:-$ROOT/artifacts/perf/results}"
-BASE_URL="${BASE_URL:-http://127.0.0.1:18080}"
+BASE_URL="${ATLAS_BASE_URL:-${BASE_URL:-http://127.0.0.1:18080}}"
+API_KEY="${ATLAS_API_KEY:-}"
+DATASET_HASH="${ATLAS_DATASET_HASH:-unknown}"
+DATASET_RELEASE="${ATLAS_DATASET_RELEASE:-unknown}"
+IMAGE_DIGEST="${ATLAS_IMAGE_DIGEST:-unknown}"
+GIT_SHA="${GITHUB_SHA:-$(git -C "$ROOT" rev-parse --short=12 HEAD 2>/dev/null || echo unknown)}"
 
 mkdir -p "$OUT_DIR"
 if printf '%s' "$INPUT" | grep -q '\.json$'; then
@@ -34,12 +39,17 @@ fi
 SUMMARY_JSON="$OUT_DIR/${NAME}.summary.json"
 
 if command -v k6 >/dev/null 2>&1; then
-  BASE_URL="$BASE_URL" k6 run --summary-export "$SUMMARY_JSON" "$ROOT/ops/load/k6/suites/$SUITE"
+  BASE_URL="$BASE_URL" ATLAS_API_KEY="$API_KEY" k6 run --summary-export "$SUMMARY_JSON" "$ROOT/ops/load/k6/suites/$SUITE"
 else
   docker run --rm --network host \
     -e BASE_URL="$BASE_URL" \
+    -e ATLAS_API_KEY="$API_KEY" \
     -v "$ROOT:/work" -w /work \
     grafana/k6:0.49.0 run --summary-export "$SUMMARY_JSON" "ops/load/k6/suites/$SUITE"
 fi
+
+cat > "${OUT_DIR}/${NAME}.meta.json" <<JSON
+{"suite":"$INPUT","resolved_suite":"$SUITE","git_sha":"$GIT_SHA","image_digest":"$IMAGE_DIGEST","dataset_hash":"$DATASET_HASH","dataset_release":"$DATASET_RELEASE","base_url":"$BASE_URL"}
+JSON
 
 echo "suite complete: $INPUT ($SUITE) -> $SUMMARY_JSON"

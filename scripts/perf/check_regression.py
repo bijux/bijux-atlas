@@ -3,12 +3,21 @@
 # Inputs: command-line args and repository files/env as documented by caller.
 # Outputs: exit status and deterministic stdout/stderr or generated artifacts.
 import json
+import os
 import sys
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[2]
 thresholds = json.loads((root / "configs/perf/thresholds.json").read_text())
 baseline = json.loads((root / "artifacts/perf/baseline.json").read_text())
+profile = os.environ.get("ATLAS_PERF_BASELINE_PROFILE", "").strip()
+if profile:
+    baseline_file = root / "ops/load/baselines" / f"{profile}.json"
+    if baseline_file.exists():
+        baseline = json.loads(baseline_file.read_text())
+    else:
+        print(f"baseline profile not found: {baseline_file}", file=sys.stderr)
+        sys.exit(1)
 
 violations = []
 for row in baseline.get("rows", []):

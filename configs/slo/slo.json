@@ -5,18 +5,66 @@
     "cold_start_p99_ms_max": 1200
   },
   "scenarios": {
-    "mixed": {"p95_ms_max": 250, "p99_ms_max": 500, "error_rate_max": 0.01},
-    "spike": {"p95_ms_max": 450, "p99_ms_max": 900, "error_rate_max": 0.02},
-    "stampede": {"p95_ms_max": 700, "p99_ms_max": 1400, "error_rate_max": 0.03},
-    "store_outage": {"p95_ms_max": 500, "p99_ms_max": 1000, "error_rate_max": 0.05},
-    "cheap_only_survival": {"p95_ms_max": 200, "p99_ms_max": 400, "error_rate_max": 0.01},
-    "response_size_guardrails": {"p95_ms_max": 250, "p99_ms_max": 500, "error_rate_max": 0.01},
-    "multi_release": {"p95_ms_max": 350, "p99_ms_max": 700, "error_rate_max": 0.02},
-    "multi_dataset_hotset": {"p95_ms_max": 300, "p99_ms_max": 600, "error_rate_max": 0.02},
-    "large_dataset_simulation": {"p95_ms_max": 600, "p99_ms_max": 1200, "error_rate_max": 0.03},
-    "sharded_fanout": {"p95_ms_max": 500, "p99_ms_max": 1000, "error_rate_max": 0.03},
-    "redis_optional": {"p95_ms_max": 300, "p99_ms_max": 600, "error_rate_max": 0.02},
-    "catalog_federated": {"p95_ms_max": 350, "p99_ms_max": 700, "error_rate_max": 0.02}
+    "mixed": {
+      "p95_ms_max": 250,
+      "p99_ms_max": 500,
+      "error_rate_max": 0.01
+    },
+    "spike": {
+      "p95_ms_max": 450,
+      "p99_ms_max": 900,
+      "error_rate_max": 0.02
+    },
+    "stampede": {
+      "p95_ms_max": 700,
+      "p99_ms_max": 1400,
+      "error_rate_max": 0.03
+    },
+    "store_outage": {
+      "p95_ms_max": 500,
+      "p99_ms_max": 1000,
+      "error_rate_max": 0.05
+    },
+    "cheap-only-survival": {
+      "p95_ms_max": 200,
+      "p99_ms_max": 400,
+      "error_rate_max": 0.01
+    },
+    "response-size-abuse": {
+      "p95_ms_max": 250,
+      "p99_ms_max": 500,
+      "error_rate_max": 0.01
+    },
+    "multi-release": {
+      "p95_ms_max": 350,
+      "p99_ms_max": 700,
+      "error_rate_max": 0.02
+    },
+    "multi-dataset-hotset": {
+      "p95_ms_max": 300,
+      "p99_ms_max": 600,
+      "error_rate_max": 0.02
+    },
+    "large-dataset-simulation": {
+      "p95_ms_max": 600,
+      "p99_ms_max": 1200,
+      "error_rate_max": 0.03
+    },
+    "sharded-fanout": {
+      "p95_ms_max": 500,
+      "p99_ms_max": 1000,
+      "error_rate_max": 0.03
+    },
+    "redis-optional": {
+      "p95_ms_max": 300,
+      "p99_ms_max": 600,
+      "error_rate_max": 0.02
+    },
+    "catalog-federated": {
+      "p95_ms_max": 350,
+      "p99_ms_max": 700,
+      "error_rate_max": 0.02
+    }
   },
   "required_metrics": [
     "bijux_http_requests_total",

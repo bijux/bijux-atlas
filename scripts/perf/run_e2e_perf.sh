@@ -8,6 +8,7 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 ART="$ROOT/artifacts/ops/e2e/k6"
 SCENARIOS="$ROOT/ops/load/scenarios"
 BASE_URL="${BASE_URL:-http://127.0.0.1:18080}"
+BASE_URL="${ATLAS_BASE_URL:-$BASE_URL}"
 PR_MODE="${PR_MODE:-0}"
 
 mkdir -p "$ART"
@@ -18,7 +19,7 @@ run_suite() {
   if [ "$PR_MODE" = "1" ] && [ "$name" != "mixed" ] && [ "$name" != "cheap-only-survival" ]; then
     return 0
   fi
-  OUT_DIR="$ART" "$ROOT/scripts/perf/run_suite.sh" "$scenario" "$ART" >/dev/null
+  OUT_DIR="$ART" "$ROOT/ops/load/scripts/run_suite.sh" "$scenario" "$ART" >/dev/null
 }
 
 for spec in "$SCENARIOS"/*.json; do
@@ -39,5 +40,7 @@ authless_metrics="$(curl -fsS "$BASE_URL/metrics" || true)"
 printf "%s\n" "$authless_metrics" > "$ART/metrics.prom"
 
 "$ROOT/scripts/perf/score_k6.py"
+"$ROOT/scripts/perf/validate_results.py" "$ART"
+"$ROOT/ops/load/reports/generate.py"
 
 echo "e2e perf complete: $ART"
