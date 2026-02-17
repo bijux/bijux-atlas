@@ -4,7 +4,7 @@ use bijux_atlas_model::{
 };
 use bijux_atlas_store::{
     dataset_artifact_paths, manifest_lock_path, merge_catalogs, ArtifactStore, HttpReadonlyStore,
-    LocalFsStore, S3LikeStore, StoreErrorCode,
+    LocalFsStore, S3LikeStore, StoreErrorCode, StoreMetricsCollector,
 };
 use std::fs;
 use std::sync::atomic::{AtomicUsize, Ordering};
@@ -323,6 +323,89 @@ fn random_publish_failures_do_not_create_partial_dataset() {
             assert!(!store.exists(&dataset).expect("exists"));
         } else {
             assert!(publish.is_ok());
+            break;
+        }
+    }
+}
+
+#[test]
+fn store_metrics_collector_tracks_upload_and_failure_classes() {
+    let root = tempdir().expect("tempdir");
+    let metrics = Arc::new(StoreMetricsCollector::default());
+    let store = LocalFsStore::new(root.path().to_path_buf()).with_instrumentation(metrics.clone());
+    let dataset = mk_dataset();
+    let manifest = mk_manifest(dataset.clone());
+    let manifest_bytes = serde_json::to_vec(&manifest).expect("manifest json");
+    let sqlite_bytes = b"sqlite-bytes".to_vec();
+
+    store
+        .put_dataset(
+            &dataset,
+            &manifest_bytes,
+            &sqlite_bytes,
+            &sha256_hex(&manifest_bytes),
+            &sha256_hex(&sqlite_bytes),
+        )
+        .expect("publish succeeds");
+
+    let snap = metrics.snapshot();
+    assert!(snap.bytes_uploaded >= (manifest_bytes.len() + sqlite_bytes.len()) as u64);
+    assert!(snap.request_count >= 1);
+    assert!(snap.latency_ms_total < u128::MAX);
+
+    let bad =
+        store.get_manifest(&DatasetId::new("999", "homo_sapiens", "GRCh38").expect("dataset id"));
+    assert!(bad.is_err());
+}
+
+#[test]
+fn fuzzish_checksum_failures_never_leave_partial_files() {
+    let root = tempdir().expect("tempdir");
+    let store = LocalFsStore::new(root.path().to_path_buf());
+    let dataset = mk_dataset();
+    let manifest = mk_manifest(dataset.clone());
+    let manifest_bytes = serde_json::to_vec(&manifest).expect("manifest json");
+    let sqlite_bytes = b"sqlite-bytes".to_vec();
+    let expected_manifest = sha256_hex(&manifest_bytes);
+    let expected_sqlite = sha256_hex(&sqlite_bytes);
+
+    let mut seed: u64 = 0x9E3779B97F4A7C15;
+    let paths = dataset_artifact_paths(root.path(), &dataset);
+    for _ in 0..64 {
+        seed = seed.wrapping_mul(6364136223846793005).wrapping_add(1);
+        let bad_manifest = (seed & 1) == 1;
+        let bad_sqlite = (seed & 2) == 2;
+        let manifest_sha = if bad_manifest {
+            "00".repeat(32)
+        } else {
+            expected_manifest.clone()
+        };
+        let sqlite_sha = if bad_sqlite {
+            "ff".repeat(32)
+        } else {
+            expected_sqlite.clone()
+        };
+
+        let _ = store.put_dataset(
+            &dataset,
+            &manifest_bytes,
+            &sqlite_bytes,
+            &manifest_sha,
+            &sqlite_sha,
+        );
+
+        if manifest_sha != expected_manifest || sqlite_sha != expected_sqlite {
+            assert!(
+                !paths.manifest.exists() && !paths.sqlite.exists(),
+                "failed publish must not leave partial final artifacts"
+            );
+            assert!(
+                !paths.derived_dir.join("manifest.json.tmp").exists()
+                    && !paths.derived_dir.join("gene_summary.sqlite.tmp").exists()
+                    && !paths.derived_dir.join("manifest.lock.tmp").exists(),
+                "failed publish must clean tmp files"
+            );
+        } else {
             break;
         }
     }

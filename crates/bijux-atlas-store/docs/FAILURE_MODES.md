@@ -31,3 +31,8 @@ This document defines expected failure behavior for `bijux-atlas-store` operatio
 
 - Network backends use bounded retries and bounded backoff.
 - Retry exhaustion must fail fast with stable error class mapping.
+
+## Metrics
+
+- Store instrumentation records download/upload bytes and latency.
+- `StoreMetricsCollector` exposes aggregated counters and `failures_by_class`.
