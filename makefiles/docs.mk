@@ -18,6 +18,7 @@ docs: ## Build docs + link-check + spell-check + lint
 	@python3 scripts/docs/generate_make_targets_inventory.py
 	@python3 scripts/docs/generate_k8s_values_doc.py
 	@python3 scripts/docs/generate_concept_graph.py
+	@python3 scripts/docs/generate_openapi_docs.py
 	@python3 scripts/docs/check_concept_registry.py
 	@./scripts/docs/render_diagrams.sh
 	@python3 scripts/docs/lint_doc_status.py
@@ -62,6 +63,11 @@ docs-freeze: ## Generated docs must be up-to-date with SSOT contracts
 	@if ! git diff --quiet -- docs/_generated/contracts; then \
 		echo "docs freeze failed: docs/_generated/contracts drift detected" >&2; \
 		git --no-pager diff -- docs/_generated/contracts >&2 || true; \
+		exit 1; \
+	fi
+	@if ! git diff --quiet -- docs/_generated/openapi; then \
+		echo "docs freeze failed: docs/_generated/openapi drift detected" >&2; \
+		git --no-pager diff -- docs/_generated/openapi >&2 || true; \
 		exit 1; \
 	fi
 	@if ! git diff --quiet -- docs/contracts/errors.md docs/contracts/metrics.md docs/contracts/tracing.md docs/contracts/endpoints.md docs/contracts/config-keys.md docs/contracts/chart-values.md; then \

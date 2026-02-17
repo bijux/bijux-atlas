@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Purpose: verify OpenAPI response examples conform to declared schemas.
-# Inputs: ops/openapi/v1/openapi.snapshot.json
+# Inputs: ops/openapi/v1/openapi.generated.json
 # Outputs: non-zero exit on schema/example mismatch
 from __future__ import annotations
 
@@ -8,9 +8,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-openapi_path = ROOT / "ops" / "openapi" / "v1" / "openapi.snapshot.json"
-if not openapi_path.exists():
-    openapi_path = ROOT / "ops" / "openapi" / "v1" / "openapi.snapshot.json"
+openapi_path = ROOT / "ops" / "openapi" / "v1" / "openapi.generated.json"
 OPENAPI = json.loads(openapi_path.read_text())
 SCHEMAS = OPENAPI.get("components", {}).get("schemas", {})
 
