@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schema_version": 1,
+  "type": "object",
+  "required": ["level", "msg", "request_id"],
+  "properties": {
+    "level": {"type": "string"},
+    "msg": {"type": "string"},
+    "request_id": {"type": "string"},
+    "dataset": {"type": ["string", "null"]},
+    "trace_id": {"type": ["string", "null"]}
+  },
+  "additionalProperties": true
+}

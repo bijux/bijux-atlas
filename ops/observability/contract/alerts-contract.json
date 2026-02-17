@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "required_alerts": [
+    "BijuxAtlasHigh5xxRate",
+    "BijuxAtlasP95LatencyRegression",
+    "BijuxAtlasStoreDownloadFailures",
+    "BijuxAtlasCacheThrash"
+  ]
+}

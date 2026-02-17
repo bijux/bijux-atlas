@@ -303,7 +303,7 @@ write_reference_contract_doc(
     "\n".join(metrics_contract_lines)
     + "\n\nLabel cardinality rules:\n"
     + "- User-controlled values must not be used as metric labels.\n"
-    + "- Allowed dynamic labels are constrained by `ops/observability/metrics_contract.json`.",
+    + "- Allowed dynamic labels are constrained by `ops/observability/contract/metrics-contract.json`.",
     "```json\n"
     + json.dumps(
         {
@@ -365,7 +365,7 @@ write_reference_contract_doc(
 )
 
 # generated compatibility artifact for observability gate
-obs_metrics_path = ROOT / "observability" / "metrics_contract.json"
+obs_metrics_path = ROOT / "ops" / "observability" / "contract" / "metrics-contract.json"
 obs_payload = {
     "schema_version": 1,
     "required_metrics": {m["name"]: m["labels"] for m in metrics},

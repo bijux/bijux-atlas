@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "required_panels": [
+    "HTTP Request Rate by Route/Status",
+    "HTTP p95 Latency by Route",
+    "SQLite Query p95 by Class",
+    "Store Open/Download p95",
+    "Dataset Cache Hit/Miss",
+    "Dataset Cache Size",
+    "SLO Burn Rate (5xx, 5m/1h)"
+  ]
+}

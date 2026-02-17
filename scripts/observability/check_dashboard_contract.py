@@ -8,7 +8,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-CONTRACT = ROOT / "ops/observability/metrics_contract.json"
+CONTRACT = ROOT / "ops/observability/contract/metrics-contract.json"
+DASH_CONTRACT = ROOT / "ops/observability/contract/dashboard-panels-contract.json"
 DASH = ROOT / "ops/observability/grafana/atlas-observability-dashboard.json"
 
 contract = json.loads(CONTRACT.read_text())
@@ -16,6 +17,12 @@ required = set(contract.get("required_metrics", {}).keys())
 allow = required | {"bijux_cheap_queries_served_while_overloaded_total"}
 
 dash = json.loads(DASH.read_text())
+if not isinstance(dash.get("schemaVersion"), int) or dash.get("schemaVersion", 0) <= 0:
+    print("dashboard missing positive schemaVersion", file=sys.stderr)
+    sys.exit(1)
+if not isinstance(dash.get("version"), int) or dash.get("version", 0) <= 0:
+    print("dashboard missing positive version", file=sys.stderr)
+    sys.exit(1)
 text = json.dumps(dash)
 metrics = set(re.findall(r'\b(?:bijux|atlas)_[a-z0-9_]+\b', text))
 unknown = sorted(metrics - allow)
@@ -32,8 +39,12 @@ for panel in dash.get("panels", []):
     if isinstance(title, str):
         panel_titles.add(title)
 
-if "SLO Burn Rate (5xx, 5m/1h)" not in panel_titles:
-    print("missing required SLO burn-rate panel", file=sys.stderr)
+required_panels = set(json.loads(DASH_CONTRACT.read_text()).get("required_panels", []))
+missing_panels = sorted(required_panels - panel_titles)
+if missing_panels:
+    print("missing required dashboard panels:", file=sys.stderr)
+    for panel in missing_panels:
+        print(f"- {panel}", file=sys.stderr)
     sys.exit(1)
 
 print("dashboard contract passed")

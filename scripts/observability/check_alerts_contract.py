@@ -8,7 +8,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-CONTRACT = ROOT / "ops/observability/metrics_contract.json"
+CONTRACT = ROOT / "ops/observability/contract/metrics-contract.json"
+ALERT_CONTRACT = ROOT / "ops/observability/contract/alerts-contract.json"
 ALERTS = ROOT / "ops/observability/alerts/atlas-alert-rules.yaml"
 
 contract = json.loads(CONTRACT.read_text())
@@ -24,12 +25,10 @@ if not alerts:
     print("no alerts found", file=sys.stderr)
     sys.exit(1)
 
-required_alerts = {
-    "BijuxAtlasHigh5xxRate",
-    "BijuxAtlasP95LatencyRegression",
-    "BijuxAtlasStoreDownloadFailures",
-    "BijuxAtlasCacheThrash",
-}
+required_alerts = set(json.loads(ALERT_CONTRACT.read_text()).get("required_alerts", []))
+if not required_alerts:
+    print("alerts contract missing required_alerts", file=sys.stderr)
+    sys.exit(1)
 missing_alerts = sorted(required_alerts - set(alerts))
 if missing_alerts:
     print("missing required alerts:", file=sys.stderr)
@@ -44,6 +43,29 @@ if unknown:
     for m in unknown:
         print(f"- {m}", file=sys.stderr)
     sys.exit(1)
+
+if "contract_version:" not in text:
+    print("alert rules missing contract version metadata", file=sys.stderr)
+    sys.exit(1)
+if "contact:" not in text:
+    print("alert rules missing contact annotation", file=sys.stderr)
+    sys.exit(1)
+
+for alert in required_alerts:
+    block = re.search(
+        rf"alert:\s*{re.escape(alert)}[\s\S]*?(?=\n\s*-\s*alert:|\Z)",
+        text,
+    )
+    if not block:
+        print(f"missing alert block: {alert}", file=sys.stderr)
+        sys.exit(1)
+    value = block.group(0)
+    if "alert_contract_version:" not in value:
+        print(f"missing alert_contract_version label for {alert}", file=sys.stderr)
+        sys.exit(1)
+    if "runbook:" not in value:
+        print(f"missing runbook annotation for {alert}", file=sys.stderr)
+        sys.exit(1)
 
 # Unit-like check: ensure high-5xx alert expression has a threshold comparator.
 high_5xx_block = re.search(

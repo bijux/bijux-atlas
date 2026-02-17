@@ -39,7 +39,7 @@ for code in errors["codes"]:
         print(f"missing generated rust error code: {code}", file=sys.stderr)
         sys.exit(1)
 
-openapi_snapshot = json.loads((ROOT / "openapi" / "v1" / "openapi.snapshot.json").read_text())
+openapi_snapshot = json.loads((ROOT / "ops" / "openapi" / "v1" / "openapi.snapshot.json").read_text())
 openapi_codes = (
     openapi_snapshot.get("components", {})
     .get("schemas", {})
@@ -51,17 +51,17 @@ if sorted(openapi_codes) != sorted(errors["codes"]):
     sys.exit(1)
 
 # metrics contract aligns with observability metrics contract
-obs_metrics = json.loads((ROOT / "observability" / "metrics_contract.json").read_text())
+obs_metrics = json.loads((ROOT / "ops" / "observability" / "contract" / "metrics-contract.json").read_text())
 obs_set = set(obs_metrics["required_metrics"].keys())
 contract_set = {m["name"] for m in metrics["metrics"]}
 if contract_set != obs_set:
-    print("METRICS.json drift from ops/observability/metrics_contract.json", file=sys.stderr)
+    print("METRICS.json drift from ops/observability/contract/metrics-contract.json", file=sys.stderr)
     print("missing in METRICS:", sorted(obs_set - contract_set), file=sys.stderr)
     print("extra in METRICS:", sorted(contract_set - obs_set), file=sys.stderr)
     sys.exit(1)
 obs_spans = obs_metrics.get("required_spans", [])
 if sorted(obs_spans) != sorted(span_names):
-    print("TRACE_SPANS.json drift from ops/observability/metrics_contract.json", file=sys.stderr)
+    print("TRACE_SPANS.json drift from ops/observability/contract/metrics-contract.json", file=sys.stderr)
     sys.exit(1)
 
 # endpoint registry matches server routes and openapi paths
