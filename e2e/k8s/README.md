@@ -1,11 +1,5 @@
-# K8s E2E Tests
+# Pointer
 
-Executable Helm+Kind suite for chart behavior.
+Canonical page: -   - `docs/operations/e2e/k8s-tests.md`
 
-Run all:
-
-```bash
-./e2e/k8s/tests/run_all.sh
-```
-
-Prerequisites: `kind`, `kubectl`, `helm`, `curl`.
+See documentation in `docs/operations/e2e/k8s-tests.md`.

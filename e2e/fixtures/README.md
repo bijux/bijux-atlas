@@ -1,5 +1,5 @@
-# E2E Fixtures
+# Pointer
 
-Pinned dataset packs for local end-to-end runs.
+Canonical page: -   - `docs/operations/e2e/fixtures.md`
 
-Use `fixtures.lock` as the single source of truth for artifact path, URL, and SHA256.
+See documentation in `docs/operations/e2e/fixtures.md`.
