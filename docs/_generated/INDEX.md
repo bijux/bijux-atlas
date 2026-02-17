@@ -41,3 +41,4 @@ Expected output: no generated docs drift.
 - [Generated Contracts Index](contracts/INDEX.md)
 - [Contracts Index](../contracts/contracts-index.md)
 - [Terms Glossary](../_style/terms-glossary.md)
+- [OpenAPI](openapi/INDEX.md)
