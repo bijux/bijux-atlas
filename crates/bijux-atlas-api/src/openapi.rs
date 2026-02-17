@@ -95,6 +95,7 @@ pub fn openapi_v1_spec() -> Value {
         },
         "/v1/genes/count": {
           "get": {
+            "deprecated": true,
             "responses": {
               "200": {"description": "count response"},
               "400": {"description": "invalid query", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApiError"}}}}

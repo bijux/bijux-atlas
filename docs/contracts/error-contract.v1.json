@@ -1,0 +1,17 @@
+{
+  "schema_version": "v1",
+  "type": "api_error_contract",
+  "required_fields": ["code", "message", "details"],
+  "error_codes": [
+    "InvalidQueryParameter",
+    "MissingDatasetDimension",
+    "InvalidCursor",
+    "QueryRejectedByPolicy",
+    "RateLimited",
+    "Timeout",
+    "PayloadTooLarge",
+    "ResponseTooLarge",
+    "NotReady",
+    "Internal"
+  ]
+}

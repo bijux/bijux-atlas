@@ -132,4 +132,42 @@ mod tests {
             .expect("stable bytes b");
         assert_eq!(a, b);
     }
+
+    #[test]
+    fn error_contract_matches_frozen_registry() {
+        let freeze = include_str!("../../../docs/contracts/error-contract.v1.json");
+        let val: serde_json::Value = serde_json::from_str(freeze).expect("freeze json");
+        let codes = val["error_codes"]
+            .as_array()
+            .expect("error_codes array")
+            .iter()
+            .map(|v| v.as_str().expect("code").to_string())
+            .collect::<Vec<_>>();
+        let runtime = vec![
+            "InvalidQueryParameter",
+            "MissingDatasetDimension",
+            "InvalidCursor",
+            "QueryRejectedByPolicy",
+            "RateLimited",
+            "Timeout",
+            "PayloadTooLarge",
+            "ResponseTooLarge",
+            "NotReady",
+            "Internal",
+        ]
+        .into_iter()
+        .map(str::to_string)
+        .collect::<Vec<_>>();
+        assert_eq!(runtime, codes);
+    }
+
+    #[test]
+    fn api_error_json_field_order_is_stable() {
+        let err = ApiError::invalid_param("limit", "bad");
+        let encoded = serde_json::to_string(&err).expect("encode");
+        assert_eq!(
+            encoded,
+            "{\"code\":\"InvalidQueryParameter\",\"message\":\"invalid query parameter: limit\",\"details\":{\"parameter\":\"limit\",\"value\":\"bad\"}}"
+        );
+    }
 }
