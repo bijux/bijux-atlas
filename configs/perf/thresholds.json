@@ -1,9 +1,14 @@
 {
-  "mixed_80_20": {"p95_ms": 900, "fail_rate": 0.02},
-  "warm_steady": {"p95_ms": 800, "fail_rate": 0.02},
-  "spike_burst": {"p95_ms": 1400, "fail_rate": 0.05},
-  "store_outage_mid_spike": {"p95_ms": 1500, "fail_rate": 0.20},
-  "cache_stampede": {"p95_ms": 1500, "fail_rate": 0.20},
-  "soak_30m": {"p95_ms": 1000, "fail_rate": 0.03},
-  "diff_heavy": {"p95_ms": 1400, "fail_rate": 0.05}
+  "mixed_80_20": {"p95_ms": 900, "p99_ms": 1300, "fail_rate": 0.02},
+  "warm_steady": {"p95_ms": 800, "p99_ms": 1200, "fail_rate": 0.02},
+  "spike_burst": {"p95_ms": 1400, "p99_ms": 1900, "fail_rate": 0.05},
+  "store_outage_mid_spike": {"p95_ms": 1500, "p99_ms": 2200, "fail_rate": 0.20},
+  "cache_stampede": {"p95_ms": 1500, "p99_ms": 2200, "fail_rate": 0.20},
+  "noisy_neighbor_cpu_throttle": {"p95_ms": 1500, "p99_ms": 2400, "fail_rate": 0.10},
+  "soak_30m": {"p95_ms": 1000, "p99_ms": 1700, "fail_rate": 0.03},
+  "diff_heavy": {"p95_ms": 1400, "p99_ms": 2200, "fail_rate": 0.05},
+  "__global__": {
+    "cold_start_ms": 1500,
+    "soak_memory_growth_bytes": 268435456
+  }
 }
