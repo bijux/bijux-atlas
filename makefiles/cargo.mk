@@ -28,6 +28,7 @@ fmt:
 _fmt:
 	@./bin/require-isolate >/dev/null
 	@cargo fmt --all --check
+	@./scripts/layout/check_repo_hygiene.sh
 
 lint:
 	@if [ -n "$$ISO_ROOT" ]; then ./bin/require-isolate >/dev/null; fi
@@ -53,6 +54,7 @@ _lint-configs:
 	@./scripts/policy-lint.sh
 	@./scripts/layout/check_no_direct_script_runs.sh
 	@./scripts/layout/check_scripts_readme_drift.sh
+	@./scripts/layout/check_repo_hygiene.sh
 
 _lint-docs:
 	@./bin/require-isolate >/dev/null
@@ -74,6 +76,7 @@ check:
 _check:
 	@./bin/require-isolate >/dev/null
 	@CARGO_BUILD_JOBS="$(CARGO_BUILD_JOBS)" cargo check --workspace --all-targets
+	@./scripts/layout/check_repo_hygiene.sh
 
 test:
 	@if [ -n "$$ISO_ROOT" ]; then ./bin/require-isolate >/dev/null; fi
@@ -101,6 +104,7 @@ _test:
 	fi
 	@NEXTEST_PROFILE="$(NEXTEST_PROFILE)" NEXTEST_TEST_THREADS="$(NEXTEST_TEST_THREADS)" \
 	cargo nextest run --workspace --all-targets --profile "$(NEXTEST_PROFILE)" $(NEXTEST_CONFIG)
+	@./scripts/layout/check_repo_hygiene.sh
 
 _test-all:
 	@./bin/require-isolate >/dev/null
@@ -110,6 +114,7 @@ _test-all:
 	fi
 	@NEXTEST_PROFILE="$(NEXTEST_PROFILE)" NEXTEST_TEST_THREADS="$(NEXTEST_TEST_THREADS)" \
 	cargo nextest run --workspace --all-targets --profile "$(NEXTEST_PROFILE)" $(NEXTEST_CONFIG) $(RUN_IGNORED)
+	@./scripts/layout/check_repo_hygiene.sh
 
 coverage:
 	@if [ -n "$$ISO_ROOT" ]; then ./bin/require-isolate >/dev/null; fi
@@ -130,6 +135,7 @@ _coverage:
 	@cargo llvm-cov nextest --workspace --profile "$(NEXTEST_PROFILE)" $(NEXTEST_CONFIG) --lcov --output-path "$(COVERAGE_OUT)"
 	@echo "coverage output: $(COVERAGE_OUT)"
 	@echo "coverage thresholds config: $(COVERAGE_THRESHOLDS)"
+	@./scripts/layout/check_repo_hygiene.sh
 
 audit:
 	@if [ -n "$$ISO_ROOT" ]; then ./bin/require-isolate >/dev/null; fi

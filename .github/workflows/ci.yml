@@ -21,6 +21,7 @@ jobs:
       TMPDIR: artifacts/isolates/root-layout/tmp
       TMP: artifacts/isolates/root-layout/tmp
       TEMP: artifacts/isolates/root-layout/tmp
+      ARTIFACTS_ALLOWLIST_STRICT: "1"
     steps:
       - uses: actions/checkout@v4
       - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"

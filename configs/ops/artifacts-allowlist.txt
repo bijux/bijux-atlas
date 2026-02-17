@@ -1,0 +1,13 @@
+# Allowed artifact file path patterns.
+artifacts/isolates/*
+artifacts/docs/*
+artifacts/ops/*
+artifacts/perf/*
+artifacts/chart/*
+artifacts/release/*
+artifacts/benchmarks/*
+artifacts/real-datasets/*
+artifacts/docs-snippets/*
+artifacts/fixtures/*
+artifacts/ingest-smoke-*
+artifacts/isolate/*
