@@ -3,16 +3,36 @@
   "allow_override": false,
   "network_in_unit_tests": false,
   "query_budget": {
+    "cheap": {
+      "max_limit": 100,
+      "max_region_span": 1000000,
+      "max_region_estimated_rows": 10000,
+      "max_prefix_cost_units": 25000
+    },
+    "medium": {
+      "max_limit": 100,
+      "max_region_span": 5000000,
+      "max_region_estimated_rows": 50000,
+      "max_prefix_cost_units": 80000
+    },
+    "heavy": {
+      "max_limit": 200,
+      "max_region_span": 10000000,
+      "max_region_estimated_rows": 100000,
+      "max_prefix_cost_units": 120000
+    },
     "max_limit": 100,
     "max_transcript_limit": 100,
-    "max_region_span": 10000000,
-    "max_region_estimated_rows": 50000,
-    "max_prefix_cost_units": 80000,
     "heavy_projection_limit": 200,
-    "max_serialization_bytes": 524288,
     "max_prefix_length": 128,
     "max_sequence_bases": 20000,
     "sequence_api_key_required_bases": 5000
+  },
+  "response_budget": {
+    "cheap_max_bytes": 262144,
+    "medium_max_bytes": 524288,
+    "heavy_max_bytes": 1048576,
+    "max_serialization_bytes": 524288
   },
   "cache_budget": {
     "max_disk_bytes": 8589934592,
@@ -20,6 +40,13 @@
     "pinned_datasets_max": 32,
     "shard_count_policy_max": 512,
     "max_open_shards_per_pod": 16
+  },
+  "store_resilience": {
+    "retry_budget": 20,
+    "retry_attempts": 4,
+    "retry_base_backoff_ms": 120,
+    "breaker_failure_threshold": 5,
+    "breaker_open_ms": 20000
   },
   "rate_limit": {
     "per_ip_rps": 100,
@@ -35,7 +62,9 @@
     "metrics_enabled": true,
     "tracing_enabled": true,
     "slow_query_log_enabled": true,
-    "request_id_required": true
+    "request_id_required": true,
+    "required_metric_labels": ["subsystem", "version", "dataset"],
+    "trace_sampling_per_10k": 100
   },
   "publish_gates": {
     "required_indexes": [
@@ -47,5 +76,14 @@
     "min_gene_count": 1,
     "max_missing_parents": 1000
   },
-  "documented_defaults": []
+  "documented_defaults": [
+    {
+      "field": "query_budget.max_limit",
+      "reason": "Default page size guard for generic list endpoints"
+    },
+    {
+      "field": "response_budget.max_serialization_bytes",
+      "reason": "Protects memory and wire-size for machine clients"
+    }
+  ]
 }

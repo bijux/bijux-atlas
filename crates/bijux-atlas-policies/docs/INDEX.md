@@ -13,6 +13,8 @@ Docs:
 - [Architecture](ARCHITECTURE.md)
 - [Public API](PUBLIC_API.md)
 - [Config schema](CONFIG_SCHEMA.md)
+- [Schema](SCHEMA.md)
 - [Effects policy](EFFECTS.md)
 - [Schema evolution guide](SCHEMA_EVOLUTION.md)
+- [Evolution](EVOLUTION.md)
 - [Policy change checklist](CHANGE_CHECKLIST.md)

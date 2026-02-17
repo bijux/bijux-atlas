@@ -4,10 +4,12 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use bijux_atlas_policies::{
-    canonical_config_json, load_policy_from_workspace, validate_policy_config,
-    validate_schema_version_transition, CacheBudget, ConcurrencyBulkheads, PolicyConfig,
-    PublishGates, QueryBudget, RateLimitPolicy, TelemetryPolicy, MAX_DEPTH_HARD, MAX_LOC_HARD,
-    MAX_MODULES_PER_DIR_HARD, MAX_RS_FILES_PER_DIR_HARD,
+    canonical_config_json, load_policy_from_workspace,
+    validate_policy_change_requires_version_bump, validate_policy_config,
+    validate_schema_version_transition, CacheBudget, ConcurrencyBulkheads, DocumentedDefault,
+    EndpointClassBudget, PolicyConfig, PolicySchemaVersion, PublishGates, QueryBudgetPolicy,
+    RateLimitPolicy, ResponseBudgetPolicy, StoreResiliencePolicy, TelemetryPolicy, MAX_DEPTH_HARD,
+    MAX_LOC_HARD, MAX_MODULES_PER_DIR_HARD, MAX_RS_FILES_PER_DIR_HARD,
 };
 
 fn workspace_root() -> PathBuf {
@@ -55,20 +57,40 @@ fn collect_rs_files(dir: &Path) -> Vec<PathBuf> {
 
 fn valid_policy() -> PolicyConfig {
     PolicyConfig {
-        schema_version: "1".to_string(),
+        schema_version: PolicySchemaVersion::V1,
         allow_override: false,
         network_in_unit_tests: false,
-        query_budget: QueryBudget {
+        query_budget: QueryBudgetPolicy {
+            cheap: EndpointClassBudget {
+                max_limit: 100,
+                max_region_span: 1_000_000,
+                max_region_estimated_rows: 10_000,
+                max_prefix_cost_units: 25_000,
+            },
+            medium: EndpointClassBudget {
+                max_limit: 100,
+                max_region_span: 5_000_000,
+                max_region_estimated_rows: 50_000,
+                max_prefix_cost_units: 80_000,
+            },
+            heavy: EndpointClassBudget {
+                max_limit: 200,
+                max_region_span: 10_000_000,
+                max_region_estimated_rows: 100_000,
+                max_prefix_cost_units: 120_000,
+            },
             max_limit: 100,
             max_transcript_limit: 100,
-            max_region_span: 10_000_000,
-            max_region_estimated_rows: 50_000,
-            max_prefix_cost_units: 80_000,
             heavy_projection_limit: 200,
-            max_serialization_bytes: 524_288,
             max_prefix_length: 128,
             max_sequence_bases: 20_000,
             sequence_api_key_required_bases: 5_000,
+        },
+        response_budget: ResponseBudgetPolicy {
+            cheap_max_bytes: 262_144,
+            medium_max_bytes: 524_288,
+            heavy_max_bytes: 1_048_576,
+            max_serialization_bytes: 524_288,
         },
         cache_budget: CacheBudget {
             max_disk_bytes: 8 * 1024 * 1024 * 1024,
@@ -76,6 +98,13 @@ fn valid_policy() -> PolicyConfig {
             pinned_datasets_max: 32,
             shard_count_policy_max: 512,
             max_open_shards_per_pod: 16,
+        },
+        store_resilience: StoreResiliencePolicy {
+            retry_budget: 20,
+            retry_attempts: 4,
+            retry_base_backoff_ms: 120,
+            breaker_failure_threshold: 5,
+            breaker_open_ms: 20_000,
         },
         rate_limit: RateLimitPolicy {
             per_ip_rps: 100,
@@ -92,13 +121,22 @@ fn valid_policy() -> PolicyConfig {
             tracing_enabled: true,
             slow_query_log_enabled: true,
             request_id_required: true,
+            required_metric_labels: vec![
+                "subsystem".to_string(),
+                "version".to_string(),
+                "dataset".to_string(),
+            ],
+            trace_sampling_per_10k: 100,
         },
         publish_gates: PublishGates {
             required_indexes: vec!["idx_gene_summary_gene_id".to_string()],
             min_gene_count: 1,
             max_missing_parents: 1000,
         },
-        documented_defaults: Vec::new(),
+        documented_defaults: vec![DocumentedDefault {
+            field: "query_budget.max_limit".to_string(),
+            reason: "default page-size guard".to_string(),
+        }],
     }
 }
 
@@ -225,28 +263,31 @@ fn policy_fields_are_table_validated() {
     cases.push(("query_budget.max_limit", bad));
 
     let mut bad = valid_policy();
-    bad.query_budget.max_region_span = 0;
-    cases.push(("query_budget.max_region_span", bad));
+    bad.query_budget.cheap.max_region_span = 0;
+    cases.push(("query_budget.cheap.max_region_span", bad));
 
     let mut bad = valid_policy();
     bad.query_budget.max_prefix_length = 0;
     cases.push(("query_budget.max_prefix_length", bad));
 
     let mut bad = valid_policy();
-    bad.query_budget.max_region_estimated_rows = 0;
-    cases.push(("query_budget.max_region_estimated_rows", bad));
+    bad.query_budget.medium.max_region_estimated_rows = 0;
+    cases.push(("query_budget.medium.max_region_estimated_rows", bad));
 
     let mut bad = valid_policy();
-    bad.query_budget.max_prefix_cost_units = 0;
-    cases.push(("query_budget.max_prefix_cost_units", bad));
+    bad.query_budget.heavy.max_prefix_cost_units = 0;
+    cases.push(("query_budget.heavy.max_prefix_cost_units", bad));
 
     let mut bad = valid_policy();
     bad.query_budget.heavy_projection_limit = 0;
     cases.push(("query_budget.heavy_projection_limit", bad));
 
     let mut bad = valid_policy();
-    bad.query_budget.max_serialization_bytes = 0;
-    cases.push(("query_budget.max_serialization_bytes", bad));
+    bad.response_budget.max_serialization_bytes = 0;
+    cases.push(("response_budget.max_serialization_bytes", bad));
+    let mut bad = valid_policy();
+    bad.response_budget.heavy_max_bytes = 0;
+    cases.push(("response_budget.heavy_max_bytes", bad));
     let mut bad = valid_policy();
     bad.query_budget.max_sequence_bases = 0;
     cases.push(("query_budget.max_sequence_bases", bad));
@@ -269,6 +310,13 @@ fn policy_fields_are_table_validated() {
     let mut bad = valid_policy();
     bad.cache_budget.max_open_shards_per_pod = 0;
     cases.push(("cache_budget.max_open_shards_per_pod", bad));
+
+    let mut bad = valid_policy();
+    bad.store_resilience.retry_budget = 0;
+    cases.push(("store_resilience.retry_budget", bad));
+    let mut bad = valid_policy();
+    bad.store_resilience.breaker_failure_threshold = 0;
+    cases.push(("store_resilience.breaker_failure_threshold", bad));
 
     let mut bad = valid_policy();
     bad.rate_limit.per_ip_rps = 0;
@@ -304,6 +352,12 @@ fn policy_fields_are_table_validated() {
     let mut bad = valid_policy();
     bad.telemetry.request_id_required = false;
     cases.push(("telemetry.request_id_required", bad));
+    let mut bad = valid_policy();
+    bad.telemetry.required_metric_labels.clear();
+    cases.push(("telemetry.required_metric_labels", bad));
+    let mut bad = valid_policy();
+    bad.telemetry.trace_sampling_per_10k = 0;
+    cases.push(("telemetry.trace_sampling_per_10k", bad));
     let mut bad = valid_policy();
     bad.publish_gates.required_indexes.clear();
     cases.push(("publish_gates.required_indexes", bad));
@@ -348,7 +402,7 @@ fn canonical_config_print_is_stable() {
 fn workspace_policy_loads_from_ssot_paths() {
     let root = workspace_root();
     let cfg = load_policy_from_workspace(&root).expect("load policy config");
-    assert_eq!(cfg.schema_version, "1");
+    assert_eq!(cfg.schema_version, PolicySchemaVersion::V1);
 }
 
 #[test]
@@ -357,6 +411,37 @@ fn policies_crate_must_not_depend_on_server_api_or_query() {
         .expect("read Cargo.toml");
 
     for forbidden in ["bijux-atlas-server", "bijux-atlas-api", "bijux-atlas-query"] {
+        assert!(
+            !cargo.contains(forbidden),
+            "forbidden dependency in policies crate: {forbidden}"
+        );
+    }
+}
+
+#[test]
+fn policy_change_requires_version_bump() {
+    let old = valid_policy();
+    let mut changed = valid_policy();
+    changed.query_budget.max_limit += 1;
+    assert!(validate_policy_change_requires_version_bump(&old, &changed).is_err());
+    let mut bumped = changed.clone();
+    bumped.schema_version = PolicySchemaVersion::V1;
+    assert!(validate_policy_change_requires_version_bump(&changed, &bumped).is_ok());
+}
+
+#[test]
+fn policy_compatibility_matrix_is_valid() {
+    let matrix = [("1", "1", true), ("1", "2", true), ("2", "1", false)];
+    for (from, to, ok) in matrix {
+        assert_eq!(validate_schema_version_transition(from, to).is_ok(), ok);
+    }
+}
+
+#[test]
+fn policies_crate_dependency_minimalism_no_tokio_axum() {
+    let cargo = fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml"))
+        .expect("read Cargo.toml");
+    for forbidden in ["tokio", "axum"] {
         assert!(
             !cargo.contains(forbidden),
             "forbidden dependency in policies crate: {forbidden}"

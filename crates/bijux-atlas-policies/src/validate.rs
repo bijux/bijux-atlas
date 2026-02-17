@@ -1,5 +1,5 @@
 use crate::limits::{MAX_SCHEMA_BUMP_STEP, MIN_POLICY_SCHEMA_VERSION};
-use crate::schema::{PolicyConfig, PolicySchema};
+use crate::schema::{PolicyConfig, PolicySchema, PolicySchemaVersion};
 use serde_json::{Map, Value};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -47,7 +47,10 @@ pub fn load_policy_from_workspace(root: &Path) -> Result<PolicyConfig, PolicyVal
     let schema: PolicySchema = decode_schema_version(&schema_val)?;
 
     validate_policy_config(&cfg)?;
-    validate_schema_version_transition(&schema.schema_version, &cfg.schema_version)?;
+    validate_schema_version_transition(
+        schema.schema_version.as_str(),
+        cfg.schema_version.as_str(),
+    )?;
 
     Ok(cfg)
 }
@@ -64,6 +67,38 @@ pub fn validate_policy_config(cfg: &PolicyConfig) -> Result<(), PolicyValidation
         ));
     }
 
+    if cfg.query_budget.cheap.max_limit == 0
+        || cfg.query_budget.medium.max_limit == 0
+        || cfg.query_budget.heavy.max_limit == 0
+    {
+        return Err(PolicyValidationError(
+            "query_budget.{cheap,medium,heavy}.max_limit must be > 0".to_string(),
+        ));
+    }
+    if cfg.query_budget.cheap.max_region_span == 0
+        || cfg.query_budget.medium.max_region_span == 0
+        || cfg.query_budget.heavy.max_region_span == 0
+    {
+        return Err(PolicyValidationError(
+            "query_budget.{cheap,medium,heavy}.max_region_span must be > 0".to_string(),
+        ));
+    }
+    if cfg.query_budget.cheap.max_region_estimated_rows == 0
+        || cfg.query_budget.medium.max_region_estimated_rows == 0
+        || cfg.query_budget.heavy.max_region_estimated_rows == 0
+    {
+        return Err(PolicyValidationError(
+            "query_budget.{cheap,medium,heavy}.max_region_estimated_rows must be > 0".to_string(),
+        ));
+    }
+    if cfg.query_budget.cheap.max_prefix_cost_units == 0
+        || cfg.query_budget.medium.max_prefix_cost_units == 0
+        || cfg.query_budget.heavy.max_prefix_cost_units == 0
+    {
+        return Err(PolicyValidationError(
+            "query_budget.{cheap,medium,heavy}.max_prefix_cost_units must be > 0".to_string(),
+        ));
+    }
     if cfg.query_budget.max_limit == 0 {
         return Err(PolicyValidationError(
             "query_budget.max_limit must be > 0".to_string(),
@@ -74,29 +109,22 @@ pub fn validate_policy_config(cfg: &PolicyConfig) -> Result<(), PolicyValidation
             "query_budget.max_transcript_limit must be > 0".to_string(),
         ));
     }
-    if cfg.query_budget.max_region_span == 0 {
-        return Err(PolicyValidationError(
-            "query_budget.max_region_span must be > 0".to_string(),
-        ));
-    }
-    if cfg.query_budget.max_region_estimated_rows == 0 {
-        return Err(PolicyValidationError(
-            "query_budget.max_region_estimated_rows must be > 0".to_string(),
-        ));
-    }
-    if cfg.query_budget.max_prefix_cost_units == 0 {
-        return Err(PolicyValidationError(
-            "query_budget.max_prefix_cost_units must be > 0".to_string(),
-        ));
-    }
     if cfg.query_budget.heavy_projection_limit == 0 {
         return Err(PolicyValidationError(
             "query_budget.heavy_projection_limit must be > 0".to_string(),
         ));
     }
-    if cfg.query_budget.max_serialization_bytes == 0 {
+    if cfg.response_budget.max_serialization_bytes == 0 {
         return Err(PolicyValidationError(
-            "query_budget.max_serialization_bytes must be > 0".to_string(),
+            "response_budget.max_serialization_bytes must be > 0".to_string(),
+        ));
+    }
+    if cfg.response_budget.cheap_max_bytes == 0
+        || cfg.response_budget.medium_max_bytes == 0
+        || cfg.response_budget.heavy_max_bytes == 0
+    {
+        return Err(PolicyValidationError(
+            "response_budget class max bytes must be > 0".to_string(),
         ));
     }
     if cfg.query_budget.max_prefix_length == 0 {
@@ -135,6 +163,16 @@ pub fn validate_policy_config(cfg: &PolicyConfig) -> Result<(), PolicyValidation
             "cache_budget.max_open_shards_per_pod must be > 0".to_string(),
         ));
     }
+    if cfg.store_resilience.retry_budget == 0
+        || cfg.store_resilience.retry_attempts == 0
+        || cfg.store_resilience.retry_base_backoff_ms == 0
+        || cfg.store_resilience.breaker_failure_threshold == 0
+        || cfg.store_resilience.breaker_open_ms == 0
+    {
+        return Err(PolicyValidationError(
+            "store_resilience values must be > 0".to_string(),
+        ));
+    }
 
     if cfg.rate_limit.per_ip_rps == 0
         || cfg.rate_limit.per_api_key_rps == 0
@@ -167,6 +205,16 @@ pub fn validate_policy_config(cfg: &PolicyConfig) -> Result<(), PolicyValidation
     if !cfg.telemetry.request_id_required {
         return Err(PolicyValidationError(
             "telemetry.request_id_required must be true".to_string(),
+        ));
+    }
+    if cfg.telemetry.required_metric_labels.is_empty() {
+        return Err(PolicyValidationError(
+            "telemetry.required_metric_labels must not be empty".to_string(),
+        ));
+    }
+    if cfg.telemetry.trace_sampling_per_10k == 0 {
+        return Err(PolicyValidationError(
+            "telemetry.trace_sampling_per_10k must be > 0".to_string(),
         ));
     }
     if cfg.publish_gates.required_indexes.is_empty() {
@@ -215,6 +263,20 @@ pub fn validate_schema_version_transition(
     Ok(())
 }
 
+pub fn validate_policy_change_requires_version_bump(
+    old_cfg: &PolicyConfig,
+    new_cfg: &PolicyConfig,
+) -> Result<(), PolicyValidationError> {
+    let old_json = canonical_config_json(old_cfg)?;
+    let new_json = canonical_config_json(new_cfg)?;
+    if old_json != new_json && old_cfg.schema_version == new_cfg.schema_version {
+        return Err(PolicyValidationError(
+            "policy content changed without schema_version bump".to_string(),
+        ));
+    }
+    Ok(())
+}
+
 pub fn canonical_config_json(cfg: &PolicyConfig) -> Result<String, PolicyValidationError> {
     let value = serde_json::to_value(cfg)
         .map_err(|e| PolicyValidationError(format!("encode config failed: {e}")))?;
@@ -228,12 +290,14 @@ fn validate_strict_unknown_keys(value: &Value) -> Result<(), PolicyValidationErr
         .as_object()
         .ok_or_else(|| PolicyValidationError("policy config must be object".to_string()))?;
 
-    let allowed: [&str; 10] = [
+    let allowed: [&str; 12] = [
         "schema_version",
         "allow_override",
         "network_in_unit_tests",
         "query_budget",
+        "response_budget",
         "cache_budget",
+        "store_resilience",
         "rate_limit",
         "concurrency_bulkheads",
         "telemetry",
@@ -263,12 +327,18 @@ fn validate_defaults_policy(value: &Value) -> Result<(), PolicyValidationError> 
         .ok_or_else(|| PolicyValidationError("documented_defaults must be an array".to_string()))?;
 
     for item in arr {
-        let field = item.as_str().ok_or_else(|| {
-            PolicyValidationError("documented_defaults entries must be strings".to_string())
+        let obj = item.as_object().ok_or_else(|| {
+            PolicyValidationError("documented_defaults entries must be objects".to_string())
         })?;
-        if field.trim().is_empty() {
+        let field = obj.get("field").and_then(Value::as_str).ok_or_else(|| {
+            PolicyValidationError("documented_defaults.field must be a string".to_string())
+        })?;
+        let reason = obj.get("reason").and_then(Value::as_str).ok_or_else(|| {
+            PolicyValidationError("documented_defaults.reason must be a string".to_string())
+        })?;
+        if field.trim().is_empty() || reason.trim().is_empty() {
             return Err(PolicyValidationError(
-                "documented_defaults entries must be non-empty".to_string(),
+                "documented_defaults.field/reason must be non-empty".to_string(),
             ));
         }
     }
@@ -293,8 +363,16 @@ fn decode_schema_version(schema: &Value) -> Result<PolicySchema, PolicyValidatio
             PolicyValidationError("schema properties.schema_version.const missing".to_string())
         })?;
 
+    let parsed = match schema_ver {
+        "1" => PolicySchemaVersion::V1,
+        _ => {
+            return Err(PolicyValidationError(format!(
+                "unsupported policy schema version const: {schema_ver}"
+            )));
+        }
+    };
     Ok(PolicySchema {
-        schema_version: schema_ver.to_string(),
+        schema_version: parsed,
     })
 }
 

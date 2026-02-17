@@ -10,12 +10,14 @@ pub use limits::{
     MIN_POLICY_SCHEMA_VERSION,
 };
 pub use schema::{
-    CacheBudget, ConcurrencyBulkheads, PolicyConfig, PolicySchema, PublishGates, QueryBudget,
-    RateLimitPolicy, TelemetryPolicy,
+    CacheBudget, ConcurrencyBulkheads, DocumentedDefault, EndpointClassBudget, PolicyConfig,
+    PolicySchema, PolicySchemaVersion, PublishGates, QueryBudgetPolicy, RateLimitPolicy,
+    ResponseBudgetPolicy, StoreResiliencePolicy, TelemetryPolicy,
 };
 pub use validate::{
     canonical_config_json, load_policy_from_workspace, policy_config_path, policy_schema_path,
-    validate_policy_config, validate_schema_version_transition, PolicyValidationError,
+    validate_policy_change_requires_version_bump, validate_policy_config,
+    validate_schema_version_transition, PolicyValidationError,
 };
 
 pub const CRATE_NAME: &str = "bijux-atlas-policies";
