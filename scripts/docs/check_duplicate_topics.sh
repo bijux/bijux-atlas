@@ -21,7 +21,7 @@ do
 done
 
 # Legacy topic files should now be pointer stubs (single-truth policy)
-for file in docs/reference/store/immutability-guarantee.md docs/reference/store/latest-release-alias-policy.md docs/reference/registry/umbrella-atlas-matrix.md docs/reference/registry/bijux-dna-atlas.md; do
+for file in docs/reference/store/immutability-guarantee.md docs/reference/registry/latest-release-alias-policy.md docs/reference/compatibility/umbrella-atlas-matrix.md docs/reference/compatibility/bijux-dna-atlas.md; do
   if ! rg -q "Canonical page:" "$file"; then
     echo "duplicate-topics check failed: $file must be a canonical pointer" >&2
     exit 1

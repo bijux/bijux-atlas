@@ -19,7 +19,7 @@ concepts:
   - id: concept.latest-release-alias
     canonical: docs/product/immutability-and-aliases.md
     pointers:
-      - docs/reference/store/latest-release-alias-policy.md
+      - docs/reference/registry/latest-release-alias-policy.md
   - id: concept.registry-federation
     canonical: docs/reference/registry/federation-semantics.md
     pointers:
@@ -28,9 +28,9 @@ concepts:
   - id: concept.compatibility-matrix
     canonical: docs/contracts/compatibility.md
     pointers:
-      - docs/reference/registry/bijux-dna-atlas.md
-      - docs/reference/registry/umbrella-atlas-matrix.md
-      - docs/reference/registry/cross-project-compatibility-policy.md
+      - docs/reference/compatibility/bijux-dna-atlas.md
+      - docs/reference/compatibility/umbrella-atlas-matrix.md
+      - docs/reference/compatibility/cross-project-compatibility-policy.md
       - docs/reference/registry/plugin-versioning-and-release-independence.md
   - id: concept.error-codes
     canonical: docs/contracts/errors.md

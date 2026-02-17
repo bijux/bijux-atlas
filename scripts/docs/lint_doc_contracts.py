@@ -46,7 +46,7 @@ def lint_file(path: pathlib.Path) -> list[str]:
     text = path.read_text(encoding="utf-8")
     errors: list[str] = []
 
-    if rel.as_posix() == "docs/product/reference-grade-acceptance-checklist.md":
+    if rel.as_posix() == "docs/product/reference-grade-checklist.md":
         allow_marketing = True
     else:
         allow_marketing = False

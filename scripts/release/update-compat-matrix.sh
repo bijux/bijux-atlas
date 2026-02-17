@@ -13,7 +13,7 @@ fi
 ATLAS_VERSION="${TAG#v}"
 UMB_RANGE=">=${ATLAS_VERSION},<$(echo "$ATLAS_VERSION" | awk -F. '{printf "%d.%d.0", $1, $2+1}')"
 
-OUT="docs/compatibility/umbrella-atlas-matrix.md"
+OUT="docs/reference/compatibility/umbrella-atlas-matrix.md"
 cat > "$OUT" <<DOC
 # Compatibility Matrix: bijux Umbrella <-> bijux-atlas
 

@@ -2,7 +2,7 @@
 
 ## Scope
 This checklist is the final go/no-go gate before a `bijux-atlas` production rollout.
-Use `docs/product/reference-grade-acceptance-checklist.md` during PR review before this final gate.
+Use `docs/product/reference-grade-checklist.md` during PR review before this final gate.
 
 ## SLO and Incident Readiness
 - [ ] SLO targets are documented in `docs/observability/slo.md`.

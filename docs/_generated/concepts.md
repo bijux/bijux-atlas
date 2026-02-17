@@ -66,7 +66,7 @@ Expected output: concept checks pass.
 ### `concept.latest-release-alias`
 
 - Canonical: [product/immutability-and-aliases.md](../product/immutability-and-aliases.md)
-- Pointer: [reference/store/latest-release-alias-policy.md](../reference/store/latest-release-alias-policy.md)
+- Pointer: [reference/registry/latest-release-alias-policy.md](../reference/registry/latest-release-alias-policy.md)
 
 ### `concept.registry-federation`
 
@@ -77,9 +77,9 @@ Expected output: concept checks pass.
 ### `concept.compatibility-matrix`
 
 - Canonical: [contracts/compatibility.md](../contracts/compatibility.md)
-- Pointer: [reference/registry/bijux-dna-atlas.md](../reference/registry/bijux-dna-atlas.md)
-- Pointer: [reference/registry/umbrella-atlas-matrix.md](../reference/registry/umbrella-atlas-matrix.md)
-- Pointer: [reference/registry/cross-project-compatibility-policy.md](../reference/registry/cross-project-compatibility-policy.md)
+- Pointer: [reference/compatibility/bijux-dna-atlas.md](../reference/compatibility/bijux-dna-atlas.md)
+- Pointer: [reference/compatibility/umbrella-atlas-matrix.md](../reference/compatibility/umbrella-atlas-matrix.md)
+- Pointer: [reference/compatibility/cross-project-compatibility-policy.md](../reference/compatibility/cross-project-compatibility-policy.md)
 - Pointer: [reference/registry/plugin-versioning-and-release-independence.md](../reference/registry/plugin-versioning-and-release-independence.md)
 
 ### `concept.error-codes`
