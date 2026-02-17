@@ -21,7 +21,6 @@ Prevents hidden compatibility behavior and enforces explicit symlink governance.
 - `rustfmt.toml` -> `configs/rust/rustfmt.toml`: tool root-discovery compatibility.
 - `.vale` -> `configs/docs/.vale`: tool root-discovery compatibility.
 - `.vale.ini` -> `configs/docs/.vale.ini`: tool root-discovery compatibility.
-- `ops/tool-versions.json` -> `../configs/ops/tool-versions.json`: compatibility alias for prior path.
 
 ## Failure modes
 

@@ -10,14 +10,12 @@
 - `makefiles/`: target implementations included by root `Makefile`.
 
 Compatibility shims retained at root:
-- `ops/e2e/`, `ops/load/`, `ops/observability/` as transition pointers/symlinks to `ops/*`.
 - Root config symlinks (`deny.toml`, `audit-allowlist.toml`, `clippy.toml`, `rustfmt.toml`, `.vale.ini`, `.vale/`, `nextest.toml`).
 - `bin/` keeps minimal bootstrap wrappers that delegate to `scripts/bin/*`.
-- `ops/tool-versions.json`, `datasets`, and `fixtures` remain compatibility symlinks.
 
 Operational policy:
 - `ops/` is the canonical operations surface.
-- `charts/` is packaging-only.
+- Legacy root aliases (`charts`, `e2e`, `load`, `observability`, `datasets`, `fixtures`) are forbidden.
 - Operational outputs are written under `artifacts/ops/<run-id>/`.
 - `.idea/` is ignored and never committed.
 - `target/` and `.DS_Store` must not be committed.
@@ -36,4 +34,16 @@ make bootstrap
 make doctor
 make dev-ci
 make docs-hardening
+```
+
+
+## Quickstart (Make Targets)
+
+```bash
+make bootstrap
+make doctor
+make ops-up
+make ops-deploy
+make ops-warm
+make ops-smoke
 ```
