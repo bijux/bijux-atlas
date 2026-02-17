@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 
+mod diff_index;
 mod extract;
 mod fai;
 mod gff3;
@@ -11,6 +12,7 @@ use bijux_atlas_model::{
     GeneNamePolicy, IngestAnomalyReport, SeqidNormalizationPolicy, ShardCatalog, StrictnessMode,
     TranscriptTypePolicy,
 };
+use diff_index::build_and_write_release_gene_index;
 use extract::extract_gene_rows;
 use gff3::parse_gff3_records;
 use manifest::{build_and_write_manifest_and_reports, BuildManifestArgs};
@@ -47,6 +49,7 @@ pub struct IngestOptions {
     pub max_threads: usize,
     pub emit_shards: bool,
     pub shard_partitions: usize,
+    pub compute_gene_signatures: bool,
 }
 
 impl Default for IngestOptions {
@@ -67,6 +70,7 @@ impl Default for IngestOptions {
             max_threads: 1,
             emit_shards: false,
             shard_partitions: 0,
+            compute_gene_signatures: true,
         }
     }
 }
@@ -77,6 +81,7 @@ pub struct IngestResult {
     pub sqlite_path: PathBuf,
     pub anomaly_report_path: PathBuf,
     pub qc_report_path: PathBuf,
+    pub release_gene_index_path: PathBuf,
     pub shard_catalog_path: Option<PathBuf>,
     pub shard_catalog: Option<ShardCatalog>,
     pub manifest: bijux_atlas_model::ArtifactManifest,
@@ -126,12 +131,20 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
         anomaly_path: &paths.anomaly_report,
         extract: &extracted,
     })?;
+    if opts.compute_gene_signatures {
+        build_and_write_release_gene_index(
+            &opts.dataset,
+            &paths.release_gene_index,
+            &extracted.gene_rows,
+        )?;
+    }
 
     Ok(IngestResult {
         manifest_path: paths.manifest,
         sqlite_path: paths.sqlite,
         anomaly_report_path: paths.anomaly_report,
         qc_report_path: built.qc_report_path,
+        release_gene_index_path: paths.release_gene_index,
         shard_catalog_path,
         shard_catalog,
         manifest: built.manifest,
@@ -175,6 +188,7 @@ mod tests {
             max_threads: 1,
             emit_shards: false,
             shard_partitions: 0,
+            compute_gene_signatures: true,
         }
     }
 
@@ -191,6 +205,7 @@ mod tests {
         );
         assert_eq!(run1.manifest.stats.gene_count, 2);
         assert_eq!(run1.manifest.stats.transcript_count, 3);
+        assert!(run1.release_gene_index_path.exists());
     }
 
     #[test]
@@ -310,6 +325,9 @@ mod tests {
             r1.manifest.checksums.sqlite_sha256,
             r2.manifest.checksums.sqlite_sha256
         );
+        let i1 = std::fs::read_to_string(r1.release_gene_index_path).expect("index1");
+        let i2 = std::fs::read_to_string(r2.release_gene_index_path).expect("index2");
+        assert_eq!(i1, i2);
     }
 
     #[test]

@@ -26,6 +26,9 @@ fn bench_ingest_throughput(c: &mut Criterion) {
                 transcript_type_policy: TranscriptTypePolicy::default(),
                 seqid_policy: SeqidNormalizationPolicy::default(),
                 max_threads: 1,
+                emit_shards: false,
+                shard_partitions: 0,
+                compute_gene_signatures: true,
             };
             ingest_dataset(&opts).expect("ingest benchmark");
         })

@@ -25,6 +25,7 @@ fn make_options(root: &std::path::Path) -> IngestOptions {
         max_threads: 1,
         emit_shards: false,
         shard_partitions: 0,
+        compute_gene_signatures: true,
     }
 }
 

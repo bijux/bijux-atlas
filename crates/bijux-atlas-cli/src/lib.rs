@@ -734,6 +734,7 @@ fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String
         max_threads: args.max_threads,
         emit_shards: args.emit_shards,
         shard_partitions: args.shard_partitions,
+        compute_gene_signatures: true,
     })
     .map_err(|e| e.to_string())?;
 
