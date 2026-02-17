@@ -101,6 +101,43 @@ pub fn openapi_v1_spec() -> Value {
             }
           }
         },
+        "/v1/genes/{gene_id}/transcripts": {
+          "get": {
+            "parameters": [
+              {"name":"gene_id","in":"path","required":true,"schema":{"type":"string"}},
+              {"name":"release","in":"query","required":true,"schema":{"type":"string"}},
+              {"name":"species","in":"query","required":true,"schema":{"type":"string"}},
+              {"name":"assembly","in":"query","required":true,"schema":{"type":"string"}},
+              {"name":"limit","in":"query","schema":{"type":"integer","minimum":1,"maximum":500}},
+              {"name":"cursor","in":"query","schema":{"type":"string"}},
+              {"name":"biotype","in":"query","schema":{"type":"string"}},
+              {"name":"type","in":"query","schema":{"type":"string"}},
+              {"name":"region","in":"query","schema":{"type":"string","pattern":"^[^:]+:[0-9]+-[0-9]+$"}}
+            ],
+            "responses": {
+              "200": {"description":"transcript page"},
+              "400": {"description":"invalid query", "content":{"application/json":{"schema":{"$ref":"#/components/schemas/ApiError"}}}},
+              "429": {"description":"bulkhead saturated", "content":{"application/json":{"schema":{"$ref":"#/components/schemas/ApiError"}}}},
+              "503": {"description":"dataset unavailable", "content":{"application/json":{"schema":{"$ref":"#/components/schemas/ApiError"}}}}
+            }
+          }
+        },
+        "/v1/transcripts/{tx_id}": {
+          "get": {
+            "parameters": [
+              {"name":"tx_id","in":"path","required":true,"schema":{"type":"string"}},
+              {"name":"release","in":"query","required":true,"schema":{"type":"string"}},
+              {"name":"species","in":"query","required":true,"schema":{"type":"string"}},
+              {"name":"assembly","in":"query","required":true,"schema":{"type":"string"}}
+            ],
+            "responses": {
+              "200": {"description":"transcript summary"},
+              "400": {"description":"invalid query", "content":{"application/json":{"schema":{"$ref":"#/components/schemas/ApiError"}}}},
+              "404": {"description":"transcript not found", "content":{"application/json":{"schema":{"$ref":"#/components/schemas/ApiError"}}}},
+              "503": {"description":"dataset unavailable", "content":{"application/json":{"schema":{"$ref":"#/components/schemas/ApiError"}}}}
+            }
+          }
+        },
         "/debug/datasets": {
           "get": {
             "responses": {

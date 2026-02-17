@@ -115,6 +115,8 @@ mod tests {
             "/v1/releases/{release}/species/{species}/assemblies/{assembly}",
             "/v1/genes",
             "/v1/genes/count",
+            "/v1/genes/{gene_id}/transcripts",
+            "/v1/transcripts/{tx_id}",
             "/debug/datasets",
             "/debug/dataset-health",
         ] {
