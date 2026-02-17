@@ -1,6 +1,8 @@
 use std::collections::BTreeMap;
 use std::fmt;
 
+pub use crate::generated::error_codes::ErrorCode;
+
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[non_exhaustive]
@@ -21,27 +23,6 @@ impl ExitCode {
             Self::Validation => "validation",
             Self::DependencyFailure => "dependency_failure",
             Self::Internal => "internal",
-        }
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[non_exhaustive]
-pub enum ErrorCode {
-    UsageError,
-    ValidationError,
-    DependencyFailure,
-    InternalError,
-}
-
-impl ErrorCode {
-    #[must_use]
-    pub const fn as_str(self) -> &'static str {
-        match self {
-            Self::UsageError => "usage_error",
-            Self::ValidationError => "validation_error",
-            Self::DependencyFailure => "dependency_failure",
-            Self::InternalError => "internal_error",
         }
     }
 }

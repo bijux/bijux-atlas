@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
-pub use crate::generated::error_codes::ApiErrorCode;
+pub type ApiErrorCode = bijux_atlas_core::ErrorCode;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
