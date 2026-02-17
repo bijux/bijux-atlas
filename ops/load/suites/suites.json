@@ -11,6 +11,9 @@
     {"name": "pod-churn", "scenario": "pod-churn.json", "p95_ms_max": 1200, "p99_ms_max": 2500, "error_rate_max": 0.03},
     {"name": "response-size-abuse", "scenario": "response-size-abuse.json", "p95_ms_max": 900, "p99_ms_max": 1800, "error_rate_max": 0.02},
     {"name": "multi-release", "scenario": "multi-release.json", "p95_ms_max": 1200, "p99_ms_max": 2500, "error_rate_max": 0.03},
-    {"name": "sharded-fanout", "scenario": "sharded-fanout.json", "p95_ms_max": 1400, "p99_ms_max": 2800, "error_rate_max": 0.04}
+    {"name": "sharded-fanout", "scenario": "sharded-fanout.json", "p95_ms_max": 1400, "p99_ms_max": 2800, "error_rate_max": 0.04},
+    {"name": "diff-heavy", "scenario": "diff-heavy.json", "p95_ms_max": 1400, "p99_ms_max": 2600, "error_rate_max": 0.05},
+    {"name": "mixed-gene-sequence", "scenario": "mixed-gene-sequence.json", "p95_ms_max": 1100, "p99_ms_max": 2200, "error_rate_max": 0.04},
+    {"name": "soak-30m", "scenario": "soak-30m.json", "p95_ms_max": 1200, "p99_ms_max": 2400, "error_rate_max": 0.03, "memory_growth_bytes_max": 268435456}
   ]
 }
