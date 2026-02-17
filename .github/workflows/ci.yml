@@ -12,6 +12,20 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  root-layout:
+    runs-on: ubuntu-latest
+    env:
+      ISO_ROOT: artifacts/isolates/root-layout
+      CARGO_TARGET_DIR: artifacts/isolates/root-layout/target
+      CARGO_HOME: artifacts/isolates/root-layout/cargo-home
+      TMPDIR: artifacts/isolates/root-layout/tmp
+      TMP: artifacts/isolates/root-layout/tmp
+      TEMP: artifacts/isolates/root-layout/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
+      - run: ./scripts/check-root-layout.sh
+
   fmt:
     runs-on: ubuntu-latest
     env:
@@ -64,7 +78,7 @@ jobs:
           toolchain: 1.84.1
       - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
       - run: cargo install cargo-nextest --locked
-      - run: cargo nextest run --workspace --all-targets --config-file .config/nextest.toml
+      - run: cargo nextest run --workspace --all-targets --config-file configs/nextest/nextest.toml
 
   deny:
     runs-on: ubuntu-latest
