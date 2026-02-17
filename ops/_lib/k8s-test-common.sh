@@ -10,6 +10,10 @@ RELEASE="${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
 VALUES="${ATLAS_E2E_VALUES_FILE:-$ROOT/ops/k8s/values/local.yaml}"
 CHART="$ROOT/ops/k8s/charts/bijux-atlas"
 SERVICE_NAME="${ATLAS_E2E_SERVICE_NAME:-$RELEASE-bijux-atlas}"
+CLUSTER_NAME="${ATLAS_E2E_CLUSTER_NAME:-bijux-atlas-e2e}"
+USE_LOCAL_IMAGE="${ATLAS_E2E_USE_LOCAL_IMAGE:-1}"
+LOCAL_IMAGE_REF="${ATLAS_E2E_LOCAL_IMAGE:-bijux-atlas:local}"
+BASE_URL="${ATLAS_E2E_BASE_URL:-http://127.0.0.1:18080}"
 
 need() { ops_need_cmd "$1"; }
 
@@ -77,7 +81,19 @@ stop_port_forward() {
 
 install_chart() {
   kubectl get ns "$NS" >/dev/null 2>&1 || kubectl create ns "$NS" >/dev/null
-  helm upgrade --install "$RELEASE" "$CHART" -n "$NS" --create-namespace -f "$VALUES" --wait --timeout 5m "$@"
+  if [ "$USE_LOCAL_IMAGE" = "1" ]; then
+    if ! docker image inspect "$LOCAL_IMAGE_REF" >/dev/null 2>&1; then
+      docker build -t "$LOCAL_IMAGE_REF" -f "$ROOT/docker/Dockerfile" "$ROOT"
+    fi
+    kind load docker-image "$LOCAL_IMAGE_REF" --name "$CLUSTER_NAME"
+    helm upgrade --install "$RELEASE" "$CHART" -n "$NS" --create-namespace -f "$VALUES" --wait --timeout 5m \
+      --set image.repository="${LOCAL_IMAGE_REF%:*}" \
+      --set image.tag="${LOCAL_IMAGE_REF#*:}" \
+      --set image.pullPolicy=IfNotPresent \
+      "$@"
+  else
+    helm upgrade --install "$RELEASE" "$CHART" -n "$NS" --create-namespace -f "$VALUES" --wait --timeout 5m "$@"
+  fi
 }
 
 pod_name() {

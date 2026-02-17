@@ -10,7 +10,7 @@ wait_ready
 pod_before="$(pod_name)"
 rv_before="$(kubectl -n "$NS" get secret atlas-rot-secret -o jsonpath='{.metadata.resourceVersion}')"
 
-kubectl -n "$NS" patch secret atlas-rot-secret --type merge -p '{"stringData":{"ATLAS_STORE_ACCESS_KEY":"rotated-access","ATLAS_STORE_SECRET_KEY":"rotated-secret"}}' >/dev/null
+kubectl -n "$NS" patch secret atlas-rot-secret --type merge -p '{"stringData":{"ATLAS_STORE_ACCESS_KEY_ID":"rotated-access","ATLAS_STORE_SECRET_ACCESS_KEY":"rotated-secret"}}' >/dev/null
 rv_after="$(kubectl -n "$NS" get secret atlas-rot-secret -o jsonpath='{.metadata.resourceVersion}')"
 [ "$rv_after" != "$rv_before" ] || { echo "secret rotation did not update resourceVersion" >&2; exit 1; }
 
