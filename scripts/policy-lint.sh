@@ -17,10 +17,13 @@ required = {
     "allow_override",
     "network_in_unit_tests",
     "query_budget",
+    "response_budget",
     "cache_budget",
+    "store_resilience",
     "rate_limit",
     "concurrency_bulkheads",
     "telemetry",
+    "publish_gates",
     "documented_defaults",
 }
 missing = sorted(required - set(cfg_data.keys()))
@@ -33,13 +36,23 @@ if cfg_data["network_in_unit_tests"] is not False:
     raise SystemExit("network_in_unit_tests must be false")
 if not isinstance(cfg_data["documented_defaults"], list):
     raise SystemExit("documented_defaults must be list")
+for item in cfg_data["documented_defaults"]:
+    if not isinstance(item, dict):
+        raise SystemExit("documented_defaults entries must be objects")
+    if not isinstance(item.get("field"), str) or not item["field"].strip():
+        raise SystemExit("documented_defaults.field must be non-empty string")
+    if not isinstance(item.get("reason"), str) or not item["reason"].strip():
+        raise SystemExit("documented_defaults.reason must be non-empty string")
 
 for section, keys in {
-    "query_budget": {"max_limit", "max_region_span", "max_prefix_length"},
+    "query_budget": {"cheap", "medium", "heavy", "max_limit", "max_prefix_length"},
+    "response_budget": {"cheap_max_bytes", "medium_max_bytes", "heavy_max_bytes", "max_serialization_bytes"},
     "cache_budget": {"max_disk_bytes", "max_dataset_count", "pinned_datasets_max"},
+    "store_resilience": {"retry_budget", "retry_attempts", "breaker_failure_threshold"},
     "rate_limit": {"per_ip_rps", "per_api_key_rps"},
     "concurrency_bulkheads": {"cheap", "medium", "heavy"},
-    "telemetry": {"metrics_enabled", "tracing_enabled", "slow_query_log_enabled", "request_id_required"},
+    "telemetry": {"metrics_enabled", "tracing_enabled", "slow_query_log_enabled", "request_id_required", "required_metric_labels", "trace_sampling_per_10k"},
+    "publish_gates": {"required_indexes", "min_gene_count", "max_missing_parents"},
 }.items():
     block = cfg_data.get(section)
     if not isinstance(block, dict):
@@ -54,6 +67,7 @@ PY
 ./scripts/require-crate-docs.sh
 ./scripts/no-network-unit-tests.sh
 ./scripts/check-cli-commands.sh
+./scripts/policy-schema-drift.py
 ./scripts/contracts/check_all.sh
 ./scripts/effects-lint.sh
 ./scripts/naming-intent-lint.sh
