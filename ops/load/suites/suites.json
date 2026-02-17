@@ -9,7 +9,7 @@
       "kind": "k6",
       "scenario": "mixed.json",
       "must_pass": true,
-      "run_in": ["smoke", "full", "nightly", "pr"],
+      "run_in": ["smoke", "full", "nightly", "pr", "load-ci", "load-nightly"],
       "expected_metrics": ["http_req_duration", "http_req_failed", "http_reqs"],
       "thresholds": {"p95_ms_max": 900, "p99_ms_max": 1300, "error_rate_max": 0.02}
     },
@@ -19,7 +19,7 @@
       "kind": "k6",
       "scenario": "cheap-only-survival.json",
       "must_pass": true,
-      "run_in": ["smoke", "full", "nightly", "pr"],
+      "run_in": ["smoke", "full", "nightly", "pr", "load-ci", "load-nightly"],
       "expected_metrics": ["http_req_duration", "http_req_failed", "http_reqs"],
       "thresholds": {"p95_ms_max": 900, "p99_ms_max": 1500, "error_rate_max": 0.03}
     },
@@ -29,7 +29,7 @@
       "kind": "k6",
       "scenario": "warm-steady-state-p99.json",
       "must_pass": true,
-      "run_in": ["full", "nightly"],
+      "run_in": ["full", "nightly", "load-nightly"],
       "expected_metrics": ["http_req_duration", "http_req_failed"],
       "thresholds": {"p95_ms_max": 800, "p99_ms_max": 1500, "error_rate_max": 0.01}
     },
@@ -39,7 +39,7 @@
       "kind": "k6",
       "scenario": "cold-start.json",
       "must_pass": true,
-      "run_in": ["full", "nightly"],
+      "run_in": ["full", "nightly", "load-nightly"],
       "expected_metrics": ["http_req_duration"],
       "thresholds": {"cold_start_p99_ms_max": 2500}
     },
@@ -49,7 +49,7 @@
       "kind": "script",
       "script": "scripts/perf/cold_start_prefetch_5pods.sh",
       "must_pass": true,
-      "run_in": ["full", "nightly"],
+      "run_in": ["full", "nightly", "load-nightly"],
       "expected_metrics": ["pod_cold_start_ms"],
       "thresholds": {"max_pod_cold_start_ms_max": 4000}
     },
@@ -59,7 +59,7 @@
       "kind": "k6",
       "scenario": "stampede.json",
       "must_pass": true,
-      "run_in": ["full", "nightly"],
+      "run_in": ["full", "nightly", "load-nightly"],
       "expected_metrics": ["http_req_duration", "http_req_failed"],
       "thresholds": {"p95_ms_max": 1200, "p99_ms_max": 2500, "error_rate_max": 0.02}
     },
@@ -69,7 +69,7 @@
       "kind": "k6",
       "scenario": "store-outage-mid-spike.json",
       "must_pass": true,
-      "run_in": ["full", "nightly"],
+      "run_in": ["full", "nightly", "load-nightly"],
       "expected_metrics": ["http_req_duration", "http_req_failed"],
       "thresholds": {"p95_ms_max": 1500, "p99_ms_max": 3000, "error_rate_max": 0.1}
     },
@@ -79,7 +79,7 @@
       "kind": "k6",
       "scenario": "noisy-neighbor-cpu-throttle.json",
       "must_pass": true,
-      "run_in": ["full", "nightly"],
+      "run_in": ["full", "nightly", "load-nightly"],
       "expected_metrics": ["http_req_duration", "http_req_failed"],
       "thresholds": {"p95_ms_max": 1600, "p99_ms_max": 3200, "error_rate_max": 0.05}
     },
@@ -89,7 +89,7 @@
       "kind": "k6",
       "scenario": "pod-churn.json",
       "must_pass": true,
-      "run_in": ["full", "nightly"],
+      "run_in": ["full", "nightly", "load-nightly"],
       "expected_metrics": ["http_req_duration", "http_req_failed"],
       "thresholds": {"p95_ms_max": 1200, "p99_ms_max": 2500, "error_rate_max": 0.03}
     },
@@ -99,7 +99,7 @@
       "kind": "k6",
       "scenario": "response-size-abuse.json",
       "must_pass": true,
-      "run_in": ["full", "nightly"],
+      "run_in": ["full", "nightly", "load-nightly"],
       "expected_metrics": ["http_req_duration", "http_req_failed"],
       "thresholds": {"p95_ms_max": 900, "p99_ms_max": 1800, "error_rate_max": 0.02}
     },
@@ -109,7 +109,7 @@
       "kind": "k6",
       "scenario": "multi-release.json",
       "must_pass": true,
-      "run_in": ["full", "nightly"],
+      "run_in": ["full", "nightly", "load-nightly"],
       "expected_metrics": ["http_req_duration", "http_req_failed"],
       "thresholds": {"p95_ms_max": 1200, "p99_ms_max": 2500, "error_rate_max": 0.03}
     },
@@ -119,7 +119,7 @@
       "kind": "k6",
       "scenario": "sharded-fanout.json",
       "must_pass": true,
-      "run_in": ["full", "nightly"],
+      "run_in": ["full", "nightly", "load-nightly"],
       "expected_metrics": ["http_req_duration", "http_req_failed"],
       "thresholds": {"p95_ms_max": 1400, "p99_ms_max": 2800, "error_rate_max": 0.04}
     },
@@ -129,7 +129,7 @@
       "kind": "k6",
       "scenario": "diff-heavy.json",
       "must_pass": true,
-      "run_in": ["full", "nightly"],
+      "run_in": ["full", "nightly", "load-nightly"],
       "expected_metrics": ["http_req_duration", "http_req_failed"],
       "thresholds": {"p95_ms_max": 1400, "p99_ms_max": 2600, "error_rate_max": 0.05}
     },
@@ -139,7 +139,7 @@
       "kind": "k6",
       "scenario": "mixed-gene-sequence.json",
       "must_pass": true,
-      "run_in": ["full", "nightly"],
+      "run_in": ["full", "nightly", "load-nightly"],
       "expected_metrics": ["http_req_duration", "http_req_failed"],
       "thresholds": {"p95_ms_max": 1100, "p99_ms_max": 2200, "error_rate_max": 0.04}
     },
@@ -149,7 +149,7 @@
       "kind": "k6",
       "scenario": "soak-30m.json",
       "must_pass": true,
-      "run_in": ["full", "nightly"],
+      "run_in": ["nightly", "load-nightly"],
       "expected_metrics": ["http_req_duration", "http_req_failed", "vus"],
       "thresholds": {"p95_ms_max": 1200, "p99_ms_max": 2400, "error_rate_max": 0.03, "memory_growth_bytes_max": 268435456}
     },
@@ -159,10 +159,30 @@
       "kind": "k6",
       "scenario": "redis-optional.json",
       "must_pass": false,
-      "run_in": ["full", "nightly"],
+      "run_in": ["full", "nightly", "load-nightly"],
       "requires": {"redis_experiment": true},
       "expected_metrics": ["http_req_duration", "http_req_failed"],
       "thresholds": {"p95_ms_max": 1200, "p99_ms_max": 2200, "error_rate_max": 0.05}
+    },
+    {
+      "name": "load-under-rollout",
+      "purpose": "measure request latency and error budgets while deployment rollout occurs",
+      "kind": "script",
+      "script": "scripts/perf/load_under_rollout.sh",
+      "must_pass": true,
+      "run_in": ["nightly", "load-nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed"],
+      "thresholds": {"p95_ms_max": 1400, "p99_ms_max": 2600, "error_rate_max": 0.05}
+    },
+    {
+      "name": "load-under-rollback",
+      "purpose": "measure request latency and error budgets while rollback/undo executes",
+      "kind": "script",
+      "script": "scripts/perf/load_under_rollback.sh",
+      "must_pass": true,
+      "run_in": ["nightly", "load-nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed"],
+      "thresholds": {"p95_ms_max": 1400, "p99_ms_max": 2600, "error_rate_max": 0.05}
     }
   ]
 }

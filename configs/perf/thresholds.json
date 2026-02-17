@@ -11,6 +11,8 @@
   "sharded-fanout": {"p95_ms": 1400, "p99_ms": 2800, "fail_rate": 0.04},
   "diff-heavy": {"p95_ms": 1400, "p99_ms": 2600, "fail_rate": 0.05},
   "mixed-gene-sequence": {"p95_ms": 1100, "p99_ms": 2200, "fail_rate": 0.04},
+  "load-under-rollout": {"p95_ms": 1400, "p99_ms": 2600, "fail_rate": 0.05},
+  "load-under-rollback": {"p95_ms": 1400, "p99_ms": 2600, "fail_rate": 0.05},
   "soak-30m": {"p95_ms": 1200, "p99_ms": 2400, "fail_rate": 0.03},
   "redis-optional": {"p95_ms": 1200, "p99_ms": 2200, "fail_rate": 0.05},
   "__global__": {

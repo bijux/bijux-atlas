@@ -19,6 +19,7 @@ for key in schema.get("required", []):
 suites = manifest.get("suites", [])
 seen = set()
 name_re = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+by_name = {}
 for s in suites:
     name = s.get("name", "")
     if not name_re.match(name):
@@ -26,6 +27,7 @@ for s in suites:
     if name in seen:
         errors.append(f"duplicate suite name: {name}")
     seen.add(name)
+    by_name[name] = s
 
     for req in ("purpose", "kind", "expected_metrics", "thresholds", "must_pass"):
         if req not in s:
@@ -55,6 +57,30 @@ for s in suites:
     em = s.get("expected_metrics", [])
     if not isinstance(em, list) or not em:
         errors.append(f"{name}: expected_metrics must be non-empty")
+
+# Hard policy checks for required suites.
+for required in ("cheap-only-survival", "store-outage-mid-spike", "pod-churn"):
+    suite = by_name.get(required)
+    if not suite:
+        errors.append(f"missing required suite: {required}")
+        continue
+    if not suite.get("must_pass", False):
+        errors.append(f"{required}: must_pass must be true")
+
+soak = by_name.get("soak-30m")
+if not soak:
+    errors.append("missing required suite: soak-30m")
+else:
+    run_in = set(soak.get("run_in", []))
+    if "nightly" not in run_in and "load-nightly" not in run_in:
+        errors.append("soak-30m: must be in nightly profile")
+    if "smoke" in run_in or "pr" in run_in or "load-ci" in run_in:
+        errors.append("soak-30m: must not run in smoke/pr/load-ci profiles")
+
+redis_suite = by_name.get("redis-optional")
+if redis_suite:
+    if not redis_suite.get("requires", {}).get("redis_experiment", False):
+        errors.append("redis-optional: requires.redis_experiment must be true")
 
 # Verify query lock every time manifest is validated.
 lock_script = ROOT / "scripts/perf/check_pinned_queries_lock.py"
