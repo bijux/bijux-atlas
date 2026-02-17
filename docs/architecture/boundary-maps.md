@@ -24,3 +24,17 @@ Canonical page: [`docs/architecture/effects.md`](effects.md)
 - `scripts/effects-lint.sh`
 - `crates/bijux-atlas-query/tests/purity_boundaries.rs`
 - `crates/bijux-atlas-server/tests/support_module_guardrails.rs`
+
+```mermaid
+flowchart TD
+  http[server/http]
+  runtime[server/runtime]
+  adapters[server/effect_adapters]
+  planner[query/planner]
+  db[query/sql]
+
+  http --> runtime
+  runtime --> adapters
+  runtime --> planner
+  planner --> db
+```

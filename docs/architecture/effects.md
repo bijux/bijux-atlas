@@ -15,4 +15,24 @@ Effect policy for Phase 1:
   - No raw GFF3/FASTA reading.
   - No process spawning.
 
+```mermaid
+flowchart LR
+  subgraph Pure
+    core[core]
+    model[model]
+    query[query]
+  end
+  subgraph Effectful
+    store[store io]
+    server[server runtime io]
+  end
+  api[api mapping]
+
+  core --> model
+  model --> query
+  query --> api
+  api --> server
+  server --> store
+```
+
 Override/escape hatches are forbidden unless explicitly documented and approved in policy docs.

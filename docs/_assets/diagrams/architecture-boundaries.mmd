@@ -1,0 +1,9 @@
+flowchart LR
+  api[API Mapping]
+  query[Query Planner]
+  runtime[Server Runtime]
+  store[Store Adapter]
+
+  api --> query
+  query --> runtime
+  runtime --> store
