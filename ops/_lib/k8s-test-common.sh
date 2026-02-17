@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
+ROOT="$(git rev-parse --show-toplevel)"
 NS="${ATLAS_E2E_NAMESPACE:-atlas-e2e-${USER:-local}}"
 RELEASE="${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
 VALUES="${ATLAS_E2E_VALUES_FILE:-$ROOT/ops/k8s/values/local.yaml}"
