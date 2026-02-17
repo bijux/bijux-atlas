@@ -18,6 +18,8 @@ docs: ## Build docs + link-check + spell-check + lint
 	@python3 scripts/docs/generate_k8s_values_doc.py
 	@python3 scripts/docs/generate_concept_graph.py
 	@python3 scripts/docs/check_concept_registry.py
+	@./scripts/docs/render_diagrams.sh
+	@python3 scripts/docs/lint_doc_status.py
 	@"$(DOCS_VENV)/bin/mkdocs" build --strict --config-file mkdocs.yml --site-dir "$(DOCS_SITE)"
 	@"$(DOCS_VENV)/bin/python" scripts/docs/check_mkdocs_site_links.py "$(DOCS_SITE)"
 	@"$(DOCS_VENV)/bin/python" scripts/docs/spellcheck_docs.py docs
@@ -32,6 +34,8 @@ docs: ## Build docs + link-check + spell-check + lint
 	@python3 scripts/docs/check_load_docs_contract.py
 	@python3 scripts/docs/check_broken_examples.py
 	@python3 scripts/docs/check_terminology_units_ssot.py
+	@python3 scripts/docs/lint_glossary_links.py
+	@python3 scripts/docs/lint_depth.py
 	@./scripts/check-markdown-links.sh
 	@./scripts/docs/check_duplicate_topics.sh
 	@./scripts/docs/check_crate_docs_contract.sh

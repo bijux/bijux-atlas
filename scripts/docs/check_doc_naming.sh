@@ -24,6 +24,8 @@ for p in sorted(Path('docs').rglob('*.md')):
         continue
     if name=='CONCEPT_REGISTRY.md':
         continue
+    if name=='DEPTH_RUBRIC.md':
+        continue
     if re.match(r'ADR-\d{4}-[a-z0-9-]+\.md$', name):
         continue
     if not re.match(r'^[a-z0-9]+(?:-[a-z0-9]+)*\.md$', name):
