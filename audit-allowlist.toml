@@ -1,2 +1,1 @@
-# Baseline allowlist for temporary, explicitly-reviewed exceptions.
-# Keep empty by default.
+configs/security/audit-allowlist.toml
