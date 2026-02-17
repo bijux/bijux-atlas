@@ -14,6 +14,7 @@ Reduces incident response latency by making first-hop telemetry explicit.
 
 - Dashboard source: `ops/observability/grafana/atlas-observability-dashboard.json`
 - Alert source: `ops/observability/alerts/atlas-alert-rules.yaml`
+- Validation target: `ops-observability-validate`.
 - Runbook sources: `docs/operations/runbooks/*.md`
 
 | Runbook | Dashboard Panels | Alerts |
@@ -33,6 +34,7 @@ Missing mapping causes slow triage and inconsistent alert handling.
 python3 scripts/observability/check_dashboard_contract.py
 python3 scripts/observability/check_alerts_contract.py
 python3 scripts/observability/lint_runbooks.py
+make ops-observability-validate
 ```
 
 Expected output: contracts and runbook links pass checks.

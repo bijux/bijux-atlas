@@ -38,11 +38,6 @@ $ cargo nextest run -p bijux-atlas-query
 
 Expected output: planner, ordering, and cursor tests pass.
 
-## See also
-
-- [Performance Reference](../performance/INDEX.md)
-- [Datasets Reference](../datasets/INDEX.md)
-- [Security Reference](../security/INDEX.md)
 
 ## See also
 

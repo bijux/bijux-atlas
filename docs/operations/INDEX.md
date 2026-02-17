@@ -28,6 +28,7 @@ Does not define product semantics or internal crate APIs.
 - [Ops Filesystem Layout](../../ops/README.md)
 - [Full Stack Locally](full-stack-locally.md)
 - [Production Readiness Checklist](production-readiness-checklist.md)
+- [No Direct Path Usage](no-direct-path-usage.md)
 
 ## Failure modes
 

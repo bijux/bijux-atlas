@@ -31,7 +31,7 @@ Undetected regressions across releases or deployments.
 ## How to verify
 
 ```bash
-$ ./e2e/realdata/run_all.sh
+$ make ops-realdata
 ```
 
 Expected output: realdata suite completes and snapshots verify.

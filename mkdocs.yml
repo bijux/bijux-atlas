@@ -70,7 +70,7 @@ nav:
       - Compatibility: reference/compatibility/INDEX.md
       - Ingestion: reference/ingestion/INDEX.md
       - Evolution: reference/evolution/INDEX.md
-      - Fixtures: reference/ops/fixtures/medium-fixture.md
+      - Fixtures: reference/fixtures/medium-fixture.md
   - Contracts:
       - Contracts Overview: contracts/INDEX.md
       - Contracts Index: contracts/contracts-index.md
@@ -109,20 +109,21 @@ nav:
   - Operations:
       - Index: operations/INDEX.md
       - Production Readiness: operations/production-readiness-checklist.md
+      - No Direct Path Usage: operations/no-direct-path-usage.md
       - Air-Gapped Install: operations/air-gapped-install.md
       - Dataset Promotion: operations/dataset-promotion-pipeline.md
       - Cached-Only SLO: operations/cached-only-slo.md
       - E2E:
-          - Index: operations/ops/e2e/INDEX.md
-          - Stack: operations/ops/e2e/stack.md
-          - K8s Tests: operations/ops/e2e/k8s-tests.md
-          - Realdata Drills: operations/ops/e2e/realdata-drills.md
-          - Fixtures: operations/ops/e2e/fixtures.md
-          - Scripts: operations/ops/e2e/scripts.md
+          - Index: operations/e2e/INDEX.md
+          - Stack: operations/e2e/stack.md
+          - K8s Tests: operations/e2e/k8s-tests.md
+          - Realdata Drills: operations/e2e/realdata-drills.md
+          - Fixtures: operations/e2e/fixtures.md
+          - Scripts: operations/e2e/scripts.md
       - Load:
-          - k6: operations/ops/load/k6.md
-          - Suites: operations/ops/load/suites.md
-          - CI Policy: operations/ops/load/ci-policy.md
+          - k6: operations/load/k6.md
+          - Suites: operations/load/suites.md
+          - CI Policy: operations/load/ci-policy.md
       - Kubernetes:
           - Index: operations/k8s/INDEX.md
           - Chart: operations/k8s/chart.md
@@ -143,15 +144,15 @@ nav:
           - Index: operations/security/INDEX.md
           - Security Posture: operations/security/security-posture.md
       - Observability:
-          - Index: operations/ops/observability/INDEX.md
-          - SLO: operations/ops/observability/slo.md
-          - Tracing: operations/ops/observability/tracing.md
-          - Metric Cardinality: operations/ops/observability/metric-cardinality-guardrails.md
-          - Dashboard: operations/ops/observability/dashboard.md
-          - Alerts: operations/ops/observability/alerts.md
-          - Acceptance Gates: operations/ops/observability/acceptance-gates.md
-          - Modes: operations/ops/observability/modes.md
-          - Trace Sampling Policy: operations/ops/observability/trace-sampling-policy.md
+          - Index: operations/observability/INDEX.md
+          - SLO: operations/observability/slo.md
+          - Tracing: operations/observability/tracing.md
+          - Metric Cardinality: operations/observability/metric-cardinality-guardrails.md
+          - Dashboard: operations/observability/dashboard.md
+          - Alerts: operations/observability/alerts.md
+          - Acceptance Gates: operations/observability/acceptance-gates.md
+          - Modes: operations/observability/modes.md
+          - Trace Sampling Policy: operations/observability/trace-sampling-policy.md
   - Development:
       - Index: development/INDEX.md
       - Nav Policy: _nav/INDEX.md

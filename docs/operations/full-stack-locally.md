@@ -14,6 +14,7 @@ Avoids drift across runbooks and keeps local verification reproducible.
 
 - Interface uses make targets only.
 - Canonical sequence is fixed and validated by docs lint.
+- Extended meta target: `ops-full`.
 
 ## Failure modes
 
@@ -23,9 +24,12 @@ If one target fails, stop and inspect `artifacts/ops/latest/`.
 
 ```bash
 $ make ops-up ops-deploy ops-warm ops-smoke
+$ make ops-full
 ```
 
 Expected output: all targets exit zero and smoke queries return valid responses.
+
+Meta target: `make ops-full`.
 
 ## See also
 
