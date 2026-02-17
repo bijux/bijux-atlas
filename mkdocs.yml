@@ -1,0 +1,117 @@
+site_name: bijux-atlas
+site_description: bijux-atlas reference documentation
+repo_name: bijux/bijux-atlas
+repo_url: https://github.com/bijux/bijux-atlas
+edit_uri: edit/main/
+strict: true
+docs_dir: docs
+site_dir: artifacts/docs/site
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+  font:
+    text: Inter
+    code: JetBrains Mono
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+
+plugins:
+  - search
+  - git-revision-date-localized:
+      type: date
+      enable_creation_date: true
+      fallback_to_build_date: true
+      strict: false
+
+not_in_nav: |
+  adr/**
+  ci/**
+  compatibility/**
+  ecosystem/**
+  evolution/**
+  fixtures/**
+  k8s/**
+  load/**
+  makefiles/**
+  observability/**
+  operations/**
+  perf/**
+  runbooks/**
+  science/**
+  security/**
+  SNAPSHOT_TEST_POLICY.md
+  artifact-directory-contract.md
+  artifact-manifest-contract.md
+  boundaries.md
+  cargo.md
+  dataset-lifecycle.md
+  effects-boundary-maps.md
+  fixtures-policy.md
+  immutability-guarantee.md
+  ingestion-purity-rule.md
+  latest-release-alias-policy.md
+  no-implicit-default-dataset.md
+  plugin-conformance-checklist.md
+  plugin-mode.md
+  product/SLO_TARGETS.md
+  product/canonical-transcript-policy-v2-placeholder.md
+  product/diffs-v1.md
+  product/sequence-threat-model.md
+  product/sequence-v1.md
+  product/transcripts-v1.md
+  query-benchmarks.md
+  _generated/README.md
+
+nav:
+  - Home: index.md
+  - Product:
+      - What Is Atlas: product/WHAT_IS_ATLAS.md
+      - User Stories: product/USER_STORIES.md
+      - Non Goals: product/NON_GOALS.md
+      - Compatibility Promise: product/COMPATIBILITY_PROMISE.md
+      - Reference Grade Checklist: product/REFERENCE_GRADE_ACCEPTANCE_CHECKLIST.md
+  - Contracts:
+      - Overview: contracts/README.md
+      - SSOT Workflow: contracts/SSOT_WORKFLOW.md
+      - Error Codes: _generated/contracts/ERROR_CODES.md
+      - Endpoints: _generated/contracts/ENDPOINTS.md
+      - Metrics: _generated/contracts/METRICS.md
+      - Trace Spans: _generated/contracts/TRACE_SPANS.md
+      - Config Keys: _generated/contracts/CONFIG_KEYS.md
+      - Chart Values: _generated/contracts/CHART_VALUES.md
+      - Artifact Schema: _generated/contracts/ARTIFACT_SCHEMA.md
+      - Policy Schema: _generated/contracts/POLICY_SCHEMA.md
+  - Operations:
+      - Incident Playbook: runbooks/INCIDENT_PLAYBOOK.md
+      - Store Outage: runbooks/STORE_OUTAGE.md
+      - Dataset Corruption: runbooks/DATASET_CORRUPTION.md
+      - Rollback: runbooks/ROLLBACK_PLAYBOOK.md
+  - Architecture:
+      - Effects and Boundaries: effects-and-boundaries.md
+      - Crate Layout Contract: crate-layout-contract.md
+      - Boundary Graph: architecture/crate-boundary-dependency-graph.md
+  - Ecosystem:
+      - Plugin Spec: plugin-spec.md
+      - Umbrella Plugin Contract: ecosystem/umbrella-plugin-contract-v1.md
+  - Style:
+      - Style Guide: _style/STYLE_GUIDE.md
+      - Terms Glossary: _style/TERMS_GLOSSARY.md
+      - Writing Rules: _style/WRITING_RULES.md
+      - Structure Templates: _style/STRUCTURE_TEMPLATES.md
+  - Quickstart:
+      - EMBL Setup: quickstart/EMBL_STYLE_SETUP.md
+      - Client SDK Examples: quickstart/CLIENT_SDK_EXAMPLES.md
