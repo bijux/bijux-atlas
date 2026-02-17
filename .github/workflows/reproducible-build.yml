@@ -28,13 +28,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.84.1
-      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR" artifacts/isolates/reproducible-build
-      - run: cargo build --release --locked --bin bijux-atlas --bin atlas-server
-      - run: sha256sum "$CARGO_TARGET_DIR/release/bijux-atlas" "$CARGO_TARGET_DIR/release/atlas-server" > artifacts/isolates/reproducible-build/build1.sha256
-      - run: cargo clean
-      - run: cargo build --release --locked --bin bijux-atlas --bin atlas-server
-      - run: sha256sum "$CARGO_TARGET_DIR/release/bijux-atlas" "$CARGO_TARGET_DIR/release/atlas-server" > artifacts/isolates/reproducible-build/build2.sha256
-      - run: diff -u artifacts/isolates/reproducible-build/build1.sha256 artifacts/isolates/reproducible-build/build2.sha256
+      - run: make ci-reproducible-verify
       - uses: actions/upload-artifact@v4
         with:
           name: reproducible-build-sha256

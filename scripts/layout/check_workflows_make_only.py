@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-WORKFLOWS = [ROOT / ".github" / "workflows" / "ci.yml"]
+WORKFLOWS = sorted((ROOT / ".github" / "workflows").glob("*.yml"))
 
 run_line = re.compile(r"^\s*-\s*run:\s*(.+)\s*$")
 allowed_prefixes = (

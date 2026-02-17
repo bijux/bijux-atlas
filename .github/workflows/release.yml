@@ -25,9 +25,7 @@ jobs:
       TEMP: artifacts/isolates/release-compat-matrix/tmp
     steps:
       - uses: actions/checkout@v4
-      - run: mkdir -p "$TMPDIR" "$ISO_ROOT"
-      - run: make release-update-compat-matrix TAG=""
-      - run: git diff --exit-code docs/reference/compatibility/umbrella-atlas-matrix.md
+      - run: make ci-release-compat-matrix-verify
 
   build-artifacts:
     runs-on: ubuntu-latest
@@ -44,11 +42,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.84.1
-      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
-      - run: cargo build --locked --release --workspace --bins
-      - run: mkdir -p artifacts/release
-      - run: cp "$CARGO_TARGET_DIR/release/atlas-server" artifacts/release/
-      - run: cp "$CARGO_TARGET_DIR/release/bijux-atlas" artifacts/release/
+      - run: make ci-release-build-artifacts
       - uses: actions/upload-artifact@v4
         with:
           name: release-binaries
@@ -64,23 +58,11 @@ jobs:
       TEMP: artifacts/isolates/release-notes/tmp
     steps:
       - uses: actions/checkout@v4
-      - run: mkdir -p "$TMPDIR" artifacts/isolates/release-notes
+      - run: make ci-init-tmp
       - name: Render notes
-        run: |
-          sed \
-            -e "s/{{tag}}/${GITHUB_REF_NAME}/g" \
-            -e "s/{{date}}/$(date -u +%Y-%m-%d)/g" \
-            -e "s/{{commit}}/${GITHUB_SHA}/g" \
-            .github/release-notes-template.md > artifacts/isolates/release-notes/RELEASE_NOTES.md
+        run: make ci-release-notes-render
       - name: Publish GitHub Release
-        run: |
-          gh release create "${GITHUB_REF_NAME}" \
-            --title "bijux-atlas ${GITHUB_REF_NAME}" \
-            --notes-file artifacts/isolates/release-notes/RELEASE_NOTES.md \
-            --verify-tag || \
-          gh release edit "${GITHUB_REF_NAME}" \
-            --title "bijux-atlas ${GITHUB_REF_NAME}" \
-            --notes-file artifacts/isolates/release-notes/RELEASE_NOTES.md
+        run: make ci-release-publish-gh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -118,9 +100,9 @@ jobs:
           format: spdx-json
           output-file: artifacts/sbom.spdx.json
       - uses: sigstore/cosign-installer@v3
-      - run: |
-          cosign sign --yes \
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}
+      - run: make ci-cosign-sign
+        env:
+          COSIGN_IMAGE_REF: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}
       - uses: actions/upload-artifact@v4
         with:
           name: sbom
@@ -131,11 +113,10 @@ jobs:
     needs: container
     steps:
       - uses: sigstore/cosign-installer@v3
-      - run: |
-          cosign verify \
-            --certificate-identity-regexp "https://github.com/${{ github.repository }}/.github/workflows/release.yml@refs/tags/${{ github.ref_name }}" \
-            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ needs.container.outputs.image-digest }}
+      - run: make ci-cosign-verify
+        env:
+          COSIGN_CERT_IDENTITY: https://github.com/${{ github.repository }}/.github/workflows/release.yml@refs/tags/${{ github.ref_name }}
+          COSIGN_IMAGE_REF: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ needs.container.outputs.image-digest }}
 
   chart-release:
     runs-on: ubuntu-latest
@@ -143,7 +124,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: azure/setup-helm@v4
-      - run: helm package ops/k8s/charts/bijux-atlas --destination .cr-release-packages
+      - run: make ci-chart-package-release
       - uses: helm/chart-releaser-action@v1.7.0
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -46,7 +46,7 @@ jobs:
       - uses: azure/setup-helm@v4
       - uses: azure/setup-kubectl@v4
       - uses: grafana/setup-k6-action@v1
-      - run: sudo apt-get update && sudo apt-get install -y curl netcat-openbsd shellcheck
+      - run: make ci-ops-install-prereqs
       - run: make ops-tools-check
       - run: make ops-full
       - if: always()
@@ -67,7 +67,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: grafana/setup-k6-action@v1
-      - run: sudo apt-get update && sudo apt-get install -y curl
+      - run: make ci-ops-install-load-prereqs
       - run: make ops-k6-version-check
       - run: make ops-load-full
       - if: always()
@@ -98,7 +98,7 @@ jobs:
       - uses: azure/setup-helm@v4
       - uses: azure/setup-kubectl@v4
       - uses: grafana/setup-k6-action@v1
-      - run: sudo apt-get update && sudo apt-get install -y curl netcat-openbsd shellcheck
+      - run: make ci-ops-install-prereqs
       - run: make ops-tools-check
       - run: make ops-up
       - run: make ops-k8s-tests

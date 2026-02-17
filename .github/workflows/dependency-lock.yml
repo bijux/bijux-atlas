@@ -24,10 +24,8 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.84.1
-      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
-      - run: cargo update --workspace
-      - run: cargo generate-lockfile
-      - run: cargo check --workspace --locked
+      - run: make ci-init-iso-dirs
+      - run: make ci-dependency-lock-refresh
       - name: Open lockfile PR
         uses: peter-evans/create-pull-request@v6
         with:

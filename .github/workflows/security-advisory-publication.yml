@@ -35,25 +35,14 @@ jobs:
       TEMP: artifacts/isolates/security-advisory-publication/tmp
     steps:
       - uses: actions/checkout@v4
-      - run: mkdir -p "$TMPDIR" docs/security/advisories
       - name: Render advisory document
-        run: |
-          DATE_UTC="$(date -u +%Y-%m-%d)"
-          FILE="docs/security/advisories/${{ inputs.advisory_id }}.md"
-          cat > "$FILE" <<DOC
-          # Security Advisory ${{ inputs.advisory_id }}
-
-          - Published: ${DATE_UTC}
-          - Severity: ${{ inputs.severity }}
-          - Affected versions: ${{ inputs.affected_versions }}
-          - Fixed version: ${{ inputs.fixed_version }}
-
-          ## Summary
-          ${{ inputs.summary }}
-
-          ## Mitigation
-          Upgrade to `${{ inputs.fixed_version }}` or newer.
-          DOC
+        run: make ci-security-advisory-render
+        env:
+          ADVISORY_ID: ${{ inputs.advisory_id }}
+          ADVISORY_SEVERITY: ${{ inputs.severity }}
+          ADVISORY_AFFECTED_VERSIONS: ${{ inputs.affected_versions }}
+          ADVISORY_FIXED_VERSION: ${{ inputs.fixed_version }}
+          ADVISORY_SUMMARY: ${{ inputs.summary }}
       - name: Open advisory publication PR
         uses: peter-evans/create-pull-request@v6
         with:

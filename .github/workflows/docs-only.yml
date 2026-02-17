@@ -26,7 +26,7 @@ jobs:
       TEMP: artifacts/isolates/docs-only/tmp
     steps:
       - uses: actions/checkout@v4
-      - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
+      - run: make ci-init-iso-dirs
       - run: make docs-hardening
       - uses: actions/upload-artifact@v4
         with:
