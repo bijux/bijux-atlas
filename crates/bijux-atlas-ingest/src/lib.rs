@@ -374,8 +374,8 @@ mod tests {
             .join("tests/fixtures/contigs/genes_invalid_coord.gff3");
         o.fasta_path =
             PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/contigs/genome.fa");
-        o.fai_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .join("tests/fixtures/contigs/genome.fa.fai");
+        o.fai_path =
+            PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/contigs/genome.fa.fai");
         assert!(ingest_dataset(&o).is_err());
     }
 
@@ -458,8 +458,7 @@ mod tests {
 
     #[test]
     fn realistic_fixture_smoke_is_deterministic() {
-        let realistic =
-            PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/realistic");
+        let realistic = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/realistic");
         let root = tempdir().expect("tempdir");
         let mut o = opts(root.path(), StrictnessMode::Lenient);
         o.gff3_path = realistic.join("genes.gff3");
