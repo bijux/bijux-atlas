@@ -73,6 +73,9 @@ ops-stack-health-report: ## Collect stack health summary/events/logs
 	@./ops/stack/scripts/collect_events.sh "$${ATLAS_NS}" "artifacts/ops/stack/events.txt" >/dev/null
 	@./ops/stack/scripts/collect_pod_logs.sh "$${ATLAS_NS}" "artifacts/ops/stack/logs" >/dev/null
 
+ops-stack-wait-ready: ## Wait for stack namespace readiness gates
+	@./ops/stack/scripts/wait_ready.sh "$${ATLAS_NS}"
+
 ops-stack-version: ## Print pinned stack component versions
 	@cat ops/stack/version-manifest.json
 
@@ -192,6 +195,14 @@ ops-load-full: ## Run nightly/full load suites
 	@./ops/load/scripts/validate_results.py artifacts/perf/results
 	@./ops/load/reports/generate.py
 
+ops-load-under-rollout: ## Run load while rollout is in progress
+	@$(MAKE) -s ops-env-validate
+	@./ops/load/scripts/load_under_rollout.sh
+
+ops-load-under-rollback: ## Run load while rollback is in progress
+	@$(MAKE) -s ops-env-validate
+	@./ops/load/scripts/load_under_rollback.sh
+
 ops-load-ci: ## Load CI profile (smoke suites + score/report)
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
@@ -288,9 +299,17 @@ ops-slo-burn: ## Compute SLO burn artifact from k6 score + metrics snapshot
 ops-script-coverage: ## Validate every ops/**/scripts entrypoint is exposed via make
 	@./scripts/layout/check_ops_script_targets.sh
 	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck
+	@$(MAKE) -s ops-shfmt
 
 ops-shellcheck: ## Lint all ops shell scripts via shared wrapper
 	@./ops/_lib/shellcheck.sh
+
+ops-shfmt: ## Format-check all ops shell scripts (optional if shfmt unavailable)
+	@if command -v shfmt >/dev/null 2>&1; then \
+	  find ops -type f -name '*.sh' -print0 | xargs -0 shfmt -d; \
+	else \
+	  echo "shfmt not installed (optional)"; \
+	fi
 
 ops-kind-version-check: ## Validate pinned kind version from configs/ops/tool-versions.json
 	@python3 ./scripts/layout/check_tool_versions.py kind

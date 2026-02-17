@@ -8,12 +8,14 @@ Canonical operational filesystem surface for atlas.
 
 ## Directory map
 
-- `ops/e2e/`: cluster stack scripts, k8s test harness, realdata drills.
+- `ops/stack/`: local stack manifests and bootstrap scripts (kind/minio/prom/otel/redis/toxiproxy).
+- `ops/e2e/`: e2e harness, test runners, smoke/publish/deploy workflows.
 - `ops/load/`: k6 suites, scenarios, contracts, baselines, perf scripts.
 - `ops/observability/`: alerts, dashboards, observability contracts and drills.
 - `ops/openapi/`: generated OpenAPI artifacts and snapshots.
 - `ops/k8s/`: chart, values profiles, k8s CI scripts.
-- `ops/stack/`: local stack manifests (minio/prom/otel/redis/toxiproxy).
+- `ops/_lib/`: shared shell helpers for ops scripts/tests.
+- `ops/tool-versions.json`: pinned ops tool versions consumed by `make ops-tools-check`.
 - `ops/fixtures/`, `ops/datasets/`: pinned ops datasets and fixture metadata.
 
 ## Run full stack
