@@ -51,6 +51,8 @@ _lint-rustfmt:
 _lint-configs:
 	@./bin/require-isolate >/dev/null
 	@./scripts/policy-lint.sh
+	@./scripts/layout/check_no_direct_script_runs.sh
+	@./scripts/layout/check_scripts_readme_drift.sh
 
 _lint-docs:
 	@./bin/require-isolate >/dev/null

@@ -114,17 +114,23 @@ ops-slo-burn: ## Compute SLO burn artifact from k6 score + metrics snapshot
 ops-script-coverage: ## Validate every ops/**/scripts entrypoint is exposed via make
 	@./scripts/layout/check_ops_script_targets.sh
 
-ops-kind-version-check: ## Validate pinned kind version from ops/tool-versions.json
+ops-kind-version-check: ## Validate pinned kind version from configs/ops/tool-versions.json
 	@python3 ./scripts/layout/check_tool_versions.py kind
 
-ops-k6-version-check: ## Validate pinned k6 version from ops/tool-versions.json
+ops-k6-version-check: ## Validate pinned k6 version from configs/ops/tool-versions.json
 	@python3 ./scripts/layout/check_tool_versions.py k6
 
-ops-helm-version-check: ## Validate pinned helm version from ops/tool-versions.json
+ops-helm-version-check: ## Validate pinned helm version from configs/ops/tool-versions.json
 	@python3 ./scripts/layout/check_tool_versions.py helm
 
-ops-kubectl-version-check: ## Validate pinned kubectl version from ops/tool-versions.json
+ops-kubectl-version-check: ## Validate pinned kubectl version from configs/ops/tool-versions.json
 	@python3 ./scripts/layout/check_tool_versions.py kubectl
+
+ops-tools-check: ## Validate all pinned ops tools versions
+	@$(MAKE) ops-kind-version-check
+	@$(MAKE) ops-k6-version-check
+	@$(MAKE) ops-helm-version-check
+	@$(MAKE) ops-kubectl-version-check
 
 ops-perf-prepare-store: ## Perf helper: prepare local perf store fixture
 	@./scripts/perf/prepare_perf_store.sh
