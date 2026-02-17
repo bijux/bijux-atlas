@@ -554,6 +554,7 @@ pub trait DatasetStoreBackend: Send + Sync + 'static {
     }
 }
 
+#[non_exhaustive]
 pub enum CatalogFetch {
     NotModified,
     Updated { etag: String, catalog: Catalog },

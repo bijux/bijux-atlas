@@ -5,6 +5,7 @@ use bijux_atlas_model::ShardCatalog;
 use std::collections::BTreeSet;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[non_exhaustive]
 pub enum QueryClass {
     Cheap,
     Medium,

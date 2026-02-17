@@ -221,7 +221,10 @@ mod tests {
                     .to_string()
             })
             .collect::<std::collections::BTreeSet<_>>();
-        let observed = spec_paths.keys().cloned().collect::<std::collections::BTreeSet<_>>();
+        let observed = spec_paths
+            .keys()
+            .cloned()
+            .collect::<std::collections::BTreeSet<_>>();
         assert_eq!(observed, expected);
     }
 }

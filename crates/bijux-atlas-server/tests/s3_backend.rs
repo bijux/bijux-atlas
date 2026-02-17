@@ -182,10 +182,12 @@ async fn s3_like_backend_supports_retry_and_resume_download() {
     let etag = match &fetch {
         CatalogFetch::Updated { etag, .. } => etag.clone(),
         CatalogFetch::NotModified => String::new(),
+        _ => String::new(),
     };
     match fetch {
         CatalogFetch::Updated { catalog, .. } => assert_eq!(catalog.datasets.len(), 1),
         CatalogFetch::NotModified => panic!("expected updated catalog"),
+        _ => panic!("unexpected catalog fetch variant"),
     }
     let second = backend
         .fetch_catalog(Some(&etag))
@@ -194,6 +196,7 @@ async fn s3_like_backend_supports_retry_and_resume_download() {
     match second {
         CatalogFetch::NotModified => {}
         CatalogFetch::Updated { .. } => panic!("expected not-modified response"),
+        _ => panic!("unexpected catalog fetch variant"),
     }
     assert!(
         state.if_none_match_seen.load(Ordering::Relaxed) >= 1,
