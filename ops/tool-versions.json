@@ -1,6 +1,1 @@
-{
-  "kind": "v0.22.0",
-  "k6": "v0.49.0",
-  "helm": "v3.15.4",
-  "kubectl": "v1.30.0"
-}
+../configs/ops/tool-versions.json
