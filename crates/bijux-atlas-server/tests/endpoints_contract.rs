@@ -31,15 +31,13 @@ fn server_routes_match_endpoints_contract_and_telemetry_annotations() {
     .expect("read server routing source");
 
     let mut route_set = std::collections::BTreeSet::new();
+    let param_re = regex::Regex::new(r":([A-Za-z_][A-Za-z0-9_]*)").expect("param regex");
     for cap in regex::Regex::new(r#"\.route\(\s*"([^"]+)""#)
         .expect("regex")
         .captures_iter(&server_src)
     {
         let mut path = cap[1].to_string();
-        path = regex::Regex::new(r":([A-Za-z_][A-Za-z0-9_]*)")
-            .expect("param regex")
-            .replace_all(&path, "{$1}")
-            .to_string();
+        path = param_re.replace_all(&path, "{$1}").to_string();
         if path != "/" {
             route_set.insert(path);
         }
@@ -47,7 +45,10 @@ fn server_routes_match_endpoints_contract_and_telemetry_annotations() {
 
     let mut contract_set = std::collections::BTreeSet::new();
     for ep in &contract.endpoints {
-        assert_eq!(ep.method, "GET", "only GET v1 routes are currently supported");
+        assert_eq!(
+            ep.method, "GET",
+            "only GET v1 routes are currently supported"
+        );
         assert!(
             !ep.telemetry_class.trim().is_empty(),
             "missing telemetry_class for {} {}",
