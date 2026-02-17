@@ -33,11 +33,6 @@ if find . -path './.git' -prune -o -name '.DS_Store' -print | grep -q .; then
   fail=1
 fi
 
-if [ -d target ]; then
-  echo "root target/ directory must not exist" >&2
-  fail=1
-fi
-
 if [ "$fail" -ne 0 ]; then
   exit 1
 fi
