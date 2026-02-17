@@ -1,20 +1,26 @@
 # bijux-atlas-store
 
-## Docs index
-- [docs/INDEX.md](docs/INDEX.md)
+## Purpose
+- Crate purpose and boundaries are defined in [docs/INDEX.md](docs/INDEX.md).
 
 ## Public API
 - [docs/PUBLIC_API.md](docs/PUBLIC_API.md)
 
-## Effects & boundaries
-- [docs/effects-and-boundaries.md](../../docs/architecture/effects.md)
+## Boundaries
+- [Crate Boundaries](../../docs/architecture/boundaries.md)
+
+## Effects
 - [docs/EFFECTS.md](docs/EFFECTS.md)
+- [Global Effects Contract](../../docs/architecture/effects.md)
 
 ## Telemetry
-- [docs/ecosystem/metrics-conventions.md](../../docs/reference/store/metrics-conventions.md)
+- [Global Metrics Conventions](../../docs/reference/store/metrics-conventions.md)
 
 ## Tests
 - [tests/](tests/)
 
 ## Benches
 - [benches/](benches/)
+
+## Docs index
+- [docs/INDEX.md](docs/INDEX.md)
