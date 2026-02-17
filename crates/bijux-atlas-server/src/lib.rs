@@ -74,6 +74,9 @@ pub struct DatasetCacheConfig {
     pub sqlite_pragma_mmap_bytes: i64,
     pub max_open_shards_per_pod: usize,
     pub startup_warmup_jitter_max_ms: u64,
+    pub catalog_backoff_base_ms: u64,
+    pub catalog_breaker_failure_threshold: u32,
+    pub catalog_breaker_open_ms: u64,
 }
 
 impl Default for DatasetCacheConfig {
@@ -104,6 +107,9 @@ impl Default for DatasetCacheConfig {
             sqlite_pragma_mmap_bytes: 256 * 1024 * 1024,
             max_open_shards_per_pod: 16,
             startup_warmup_jitter_max_ms: 0,
+            catalog_backoff_base_ms: 250,
+            catalog_breaker_failure_threshold: 5,
+            catalog_breaker_open_ms: 5000,
         }
     }
 }
@@ -251,6 +257,9 @@ struct DatasetEntry {
 struct CatalogCache {
     etag: Option<String>,
     catalog: Option<Catalog>,
+    consecutive_errors: u32,
+    backoff_until: Option<Instant>,
+    breaker_open_until: Option<Instant>,
 }
 
 #[derive(Default)]
@@ -369,10 +378,32 @@ impl DatasetCacheManager {
     }
 
     pub async fn refresh_catalog(&self) -> Result<(), CacheError> {
-        let etag = { self.catalog_cache.lock().await.etag.clone() };
-        match self.store.fetch_catalog(etag.as_deref()).await? {
-            CatalogFetch::NotModified => Ok(()),
-            CatalogFetch::Updated { etag, catalog } => {
+        let etag = {
+            let cache = self.catalog_cache.lock().await;
+            let now = Instant::now();
+            if let Some(until) = cache.breaker_open_until {
+                if now < until {
+                    return Err(CacheError("catalog circuit breaker open".to_string()));
+                }
+            }
+            if let Some(until) = cache.backoff_until {
+                if now < until {
+                    return Err(CacheError("catalog backoff active".to_string()));
+                }
+            }
+            cache.etag.clone()
+        };
+        let fetch_result = self.store.fetch_catalog(etag.as_deref()).await;
+        let result = match fetch_result {
+            Err(e) => Err(e),
+            Ok(CatalogFetch::NotModified) => {
+                let mut lock = self.catalog_cache.lock().await;
+                lock.consecutive_errors = 0;
+                lock.backoff_until = None;
+                lock.breaker_open_until = None;
+                Ok(())
+            }
+            Ok(CatalogFetch::Updated { etag, catalog }) => {
                 let epoch_hash = sha256_hex(
                     &serde_json::to_vec(&catalog).map_err(|e| CacheError(e.to_string()))?,
                 );
@@ -380,6 +411,9 @@ impl DatasetCacheManager {
                     let mut lock = self.catalog_cache.lock().await;
                     lock.etag = Some(etag);
                     lock.catalog = Some(catalog);
+                    lock.consecutive_errors = 0;
+                    lock.backoff_until = None;
+                    lock.breaker_open_until = None;
                 }
                 {
                     let mut e = self.metrics.catalog_epoch_hash.write().await;
@@ -388,7 +422,25 @@ impl DatasetCacheManager {
                 info!("catalog epoch updated: {epoch_hash}");
                 Ok(())
             }
+        };
+
+        if let Err(err) = result {
+            let mut lock = self.catalog_cache.lock().await;
+            lock.consecutive_errors = lock.consecutive_errors.saturating_add(1);
+            let backoff_ms = self
+                .cfg
+                .catalog_backoff_base_ms
+                .saturating_mul(lock.consecutive_errors as u64)
+                .min(5_000);
+            lock.backoff_until = Some(Instant::now() + Duration::from_millis(backoff_ms));
+            if lock.consecutive_errors >= self.cfg.catalog_breaker_failure_threshold {
+                lock.breaker_open_until =
+                    Some(Instant::now() + Duration::from_millis(self.cfg.catalog_breaker_open_ms));
+            }
+            return Err(err);
         }
+
+        Ok(())
     }
 
     pub async fn catalog_epoch(&self) -> String {

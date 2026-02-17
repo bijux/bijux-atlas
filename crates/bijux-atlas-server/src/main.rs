@@ -184,6 +184,10 @@ async fn main() -> Result<(), String> {
         sqlite_pragma_mmap_bytes: env_u64("ATLAS_SQLITE_MMAP_BYTES", 256 * 1024 * 1024) as i64,
         max_open_shards_per_pod: env_usize("ATLAS_MAX_OPEN_SHARDS_PER_POD", 16),
         startup_warmup_jitter_max_ms: env_u64("ATLAS_STARTUP_WARMUP_JITTER_MAX_MS", 0),
+        catalog_backoff_base_ms: env_u64("ATLAS_CATALOG_BACKOFF_BASE_MS", 250),
+        catalog_breaker_failure_threshold: env_u64("ATLAS_CATALOG_BREAKER_FAILURE_THRESHOLD", 5)
+            as u32,
+        catalog_breaker_open_ms: env_u64("ATLAS_CATALOG_BREAKER_OPEN_MS", 5000),
         ..DatasetCacheConfig::default()
     };
     let api_cfg = ApiConfig {

@@ -2,7 +2,7 @@ use crate::{CacheError, CatalogFetch, DatasetStoreBackend};
 use async_trait::async_trait;
 use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
-use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, RANGE};
+use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, ETAG, IF_NONE_MATCH, RANGE};
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
@@ -176,6 +176,64 @@ impl S3LikeBackend {
         }
     }
 
+    async fn get_catalog_with_retry(
+        &self,
+        url: &str,
+        if_none_match: Option<&str>,
+    ) -> Result<CatalogFetch, CacheError> {
+        let client = self.client();
+        let base_headers = self.auth_headers()?;
+        let mut attempt = 0;
+        loop {
+            attempt += 1;
+            let mut headers = base_headers.clone();
+            if let Some(tag) = if_none_match {
+                headers.insert(
+                    IF_NONE_MATCH,
+                    HeaderValue::from_str(tag)
+                        .map_err(|e| CacheError(format!("invalid if-none-match header: {e}")))?,
+                );
+            }
+            let req = client.get(url).headers(headers);
+            match req.send().await {
+                Ok(resp) if resp.status().as_u16() == 304 => return Ok(CatalogFetch::NotModified),
+                Ok(resp) if resp.status().is_success() => {
+                    let header_etag = resp
+                        .headers()
+                        .get(ETAG)
+                        .and_then(|v| v.to_str().ok())
+                        .map(ToString::to_string);
+                    let bytes = resp
+                        .bytes()
+                        .await
+                        .map(|b| b.to_vec())
+                        .map_err(|e| CacheError(format!("read body failed: {e}")))?;
+                    let catalog: Catalog = serde_json::from_slice(&bytes)
+                        .map_err(|e| CacheError(format!("catalog parse failed: {e}")))?;
+                    let etag = header_etag.unwrap_or_else(|| sha256_hex(&bytes));
+                    return Ok(CatalogFetch::Updated { etag, catalog });
+                }
+                Ok(resp) => {
+                    if attempt >= self.retry.max_attempts {
+                        return Err(CacheError(format!(
+                            "download failed status={} url={url}",
+                            resp.status()
+                        )));
+                    }
+                }
+                Err(e) => {
+                    if attempt >= self.retry.max_attempts {
+                        return Err(CacheError(format!("download failed url={url}: {e}")));
+                    }
+                }
+            }
+            tokio::time::sleep(Duration::from_millis(
+                self.retry.base_backoff_ms.saturating_mul(attempt as u64),
+            ))
+            .await;
+        }
+    }
+
     async fn get_resume_with_retry(&self, url: &str) -> Result<Vec<u8>, CacheError> {
         let client = self.client();
         let base_headers = self.auth_headers()?;
@@ -256,14 +314,7 @@ impl S3LikeBackend {
 impl DatasetStoreBackend for S3LikeBackend {
     async fn fetch_catalog(&self, if_none_match: Option<&str>) -> Result<CatalogFetch, CacheError> {
         let url = format!("{}/catalog.json", self.base_url);
-        let bytes = self.get_with_retry(&url).await?;
-        let etag = sha256_hex(&bytes);
-        if if_none_match == Some(etag.as_str()) {
-            return Ok(CatalogFetch::NotModified);
-        }
-        let catalog: Catalog = serde_json::from_slice(&bytes)
-            .map_err(|e| CacheError(format!("catalog parse failed: {e}")))?;
-        Ok(CatalogFetch::Updated { etag, catalog })
+        self.get_catalog_with_retry(&url, if_none_match).await
     }
 
     async fn fetch_manifest(&self, dataset: &DatasetId) -> Result<ArtifactManifest, CacheError> {

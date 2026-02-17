@@ -11,6 +11,7 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt};
 struct ServerState {
     catalog_calls: AtomicUsize,
     sqlite_calls: AtomicUsize,
+    if_none_match_seen: AtomicUsize,
 }
 
 impl Default for ServerState {
@@ -18,6 +19,7 @@ impl Default for ServerState {
         Self {
             catalog_calls: AtomicUsize::new(0),
             sqlite_calls: AtomicUsize::new(0),
+            if_none_match_seen: AtomicUsize::new(0),
         }
     }
 }
@@ -74,9 +76,19 @@ async fn s3_like_backend_supports_retry_and_resume_download() {
                 .lines()
                 .find(|l| l.to_ascii_lowercase().starts_with("range:"))
                 .map(|l| l.replace("Range: ", "").replace("range: ", ""));
+            let if_none_match = req_text
+                .lines()
+                .find(|l| l.to_ascii_lowercase().starts_with("if-none-match:"))
+                .map(|l| {
+                    l.replace("If-None-Match: ", "")
+                        .replace("if-none-match: ", "")
+                });
 
             if path == "/catalog.json" {
                 let calls = state_bg.catalog_calls.fetch_add(1, Ordering::Relaxed) + 1;
+                if if_none_match.is_some() {
+                    state_bg.if_none_match_seen.fetch_add(1, Ordering::Relaxed);
+                }
                 if calls == 1 {
                     let _ = stream
                         .write_all(
@@ -85,8 +97,18 @@ async fn s3_like_backend_supports_retry_and_resume_download() {
                         .await;
                     continue;
                 }
+                if let Some(etag) = if_none_match {
+                    if etag.trim() == "\"catalog-etag\"" {
+                        let _ = stream
+                            .write_all(
+                                b"HTTP/1.1 304 Not Modified\r\nETag: \"catalog-etag\"\r\nContent-Length: 0\r\n\r\n",
+                            )
+                            .await;
+                        continue;
+                    }
+                }
                 let header = format!(
-                    "HTTP/1.1 200 OK\r\nContent-Length: {}\r\n\r\n",
+                    "HTTP/1.1 200 OK\r\nETag: \"catalog-etag\"\r\nContent-Length: {}\r\n\r\n",
                     catalog_json.len()
                 );
                 let _ = stream.write_all(header.as_bytes()).await;
@@ -154,10 +176,26 @@ async fn s3_like_backend_supports_retry_and_resume_download() {
         .fetch_catalog(None)
         .await
         .expect("fetch catalog with retry");
+    let etag = match &fetch {
+        CatalogFetch::Updated { etag, .. } => etag.clone(),
+        CatalogFetch::NotModified => String::new(),
+    };
     match fetch {
         CatalogFetch::Updated { catalog, .. } => assert_eq!(catalog.datasets.len(), 1),
         CatalogFetch::NotModified => panic!("expected updated catalog"),
     }
+    let second = backend
+        .fetch_catalog(Some(&etag))
+        .await
+        .expect("fetch catalog with if-none-match");
+    match second {
+        CatalogFetch::NotModified => {}
+        CatalogFetch::Updated { .. } => panic!("expected not-modified response"),
+    }
+    assert!(
+        state.if_none_match_seen.load(Ordering::Relaxed) >= 1,
+        "server should observe if-none-match request header"
+    );
 
     let m = backend.fetch_manifest(&ds).await.expect("manifest");
     assert_eq!(m.dataset, ds);
