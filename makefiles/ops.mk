@@ -43,6 +43,9 @@ ops-metrics-check: ## Validate runtime metrics and observability contracts
 	@./scripts/observability/check_alerts_contract.py
 	@./scripts/observability/lint_runbooks.py
 	@./scripts/observability/check_runtime_metrics.py
+	@./ops/observability/scripts/snapshot_metrics.sh
+	@./ops/observability/scripts/check_metric_cardinality.py
+	@python3 ./ops/observability/scripts/validate_logs_schema.py
 
 ops-traces-check: ## Validate trace signal (when OTEL enabled)
 	@./ops/e2e/scripts/verify_traces.sh
@@ -71,6 +74,16 @@ ops-load-full: ## Run nightly/full load suites
 
 ops-drill-store-outage: ## Run store outage drill under load
 	@./ops/load/scripts/run_suite.sh store-outage-mid-spike.json artifacts/perf/results
+	@./ops/observability/scripts/drill_store_outage.sh
+
+ops-drill-alerts: ## Run alert drill checks against configured rules
+	@./ops/observability/scripts/drill_alerts.sh
+
+ops-drill-overload: ## Verify overload signal drill assertions
+	@./ops/observability/scripts/drill_overload.sh
+
+ops-drill-memory-growth: ## Verify memory-growth drill assertions
+	@./ops/observability/scripts/drill_memory_growth.sh
 
 ops-drill-corruption: ## Run corruption handling drill
 	@cargo test -p bijux-atlas-server cache_manager_tests::chaos_mode_random_byte_corruption_never_serves_results -- --exact
@@ -94,6 +107,9 @@ ops-report: ## Gather ops evidence into artifacts/ops/<timestamp>/
 	cp -R artifacts/perf/results "$$out/perf/" 2>/dev/null || true; \
 	curl -fsS "$${ATLAS_BASE_URL:-http://127.0.0.1:8080}/metrics" > "$$out/metrics/metrics.txt" 2>/dev/null || true; \
 	echo "ops report written to $$out"
+
+ops-slo-burn: ## Compute SLO burn artifact from k6 score + metrics snapshot
+	@python3 ./ops/observability/scripts/compute_slo_burn.py
 
 ops-script-coverage: ## Validate every ops/**/scripts entrypoint is exposed via make
 	@./scripts/layout/check_ops_script_targets.sh
@@ -152,6 +168,27 @@ ops-dashboards-validate: ## Validate dashboard references against metrics contra
 
 ops-alerts-validate: ## Validate alert rules and contract coverage
 	@./scripts/observability/check_alerts_contract.py
+
+ops-observability-validate: ## Validate observability assets/contracts end-to-end
+	@$(MAKE) ops-dashboards-validate
+	@$(MAKE) ops-alerts-validate
+	@./scripts/observability/check_metrics_contract.py
+	@./scripts/observability/check_tracing_contract.py
+	@./ops/observability/scripts/check_metric_cardinality.py
+	@python3 ./ops/observability/scripts/validate_logs_schema.py
+
+ops-observability-smoke: ## Install observability pack and run smoke checks
+	@$(MAKE) ops-obs-up
+	@./ops/observability/scripts/snapshot_metrics.sh
+	@./ops/observability/scripts/snapshot_traces.sh
+	@$(MAKE) ops-observability-validate
+	@./ops/observability/scripts/drill_alerts.sh
+
+ops-obs-up: ## Install observability pack (prometheus/otel, CRD-aware)
+	@./ops/observability/scripts/install_obs_pack.sh
+
+ops-obs-down: ## Uninstall observability pack
+	@./ops/observability/scripts/uninstall_obs_pack.sh
 
 ops-ci: ## Nightly ops pipeline: up/deploy/warm/tests/load/drills/report
 	@$(MAKE) ops-up
