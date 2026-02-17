@@ -22,6 +22,10 @@ for f in $(find crates/bijux-atlas-server/src/http -type f -name '*.rs' ! -name 
     echo "effects-lint: raw fs IO forbidden in $f; use http/effects_adapters.rs" >&2
     exit 1
   fi
+  if rg -n 'runtime::dataset_cache_manager_(maintenance|storage)|crate::runtime::dataset_cache_manager_(maintenance|storage)' "$f" >/dev/null; then
+    echo "effects-lint: http mapping must not import runtime effect internals in $f" >&2
+    exit 1
+  fi
 done
 
 echo "effects lint passed"
