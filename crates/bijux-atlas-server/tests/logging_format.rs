@@ -45,6 +45,7 @@ fn structured_logging_format_is_valid_json() {
         tracing::info!(
             target: "atlas_audit",
             request_id = "req-123",
+            dataset = "110/homo_sapiens/GRCh38",
             method = "GET",
             path = "/v1/genes",
             status = 200_u16,
@@ -73,5 +74,9 @@ fn structured_logging_format_is_valid_json() {
     assert_eq!(
         fields.get("path").and_then(|v| v.as_str()),
         Some("/v1/genes")
+    );
+    assert_eq!(
+        fields.get("dataset").and_then(|v| v.as_str()),
+        Some("110/homo_sapiens/GRCh38")
     );
 }

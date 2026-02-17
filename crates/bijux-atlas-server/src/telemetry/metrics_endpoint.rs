@@ -393,6 +393,23 @@ bijux_redis_cache_tracked_keys{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}}
             redis_metrics.tracked_keys
         ));
     }
+    for code in [
+        "InvalidQueryParameter",
+        "MissingDatasetDimension",
+        "InvalidCursor",
+        "QueryRejectedByPolicy",
+        "RateLimited",
+        "Timeout",
+        "PayloadTooLarge",
+        "ResponseTooLarge",
+        "NotReady",
+        "Internal",
+    ] {
+        body.push_str(&format!(
+            "bijux_errors_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",code=\"{}\"}} 0\n",
+            METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, code
+        ));
+    }
 
     let req_counts = state.metrics.counts.lock().await.clone();
     let req_exemplars = state.metrics.exemplars.lock().await.clone();
