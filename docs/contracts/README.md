@@ -11,6 +11,7 @@
 - `CLI_COMMANDS.json`: CLI command surface SSOT.
 - `CONFIG_KEYS.json`: allowed environment/config keys read by runtime and tools.
 - `ARTIFACT_SCHEMA.json`: manifest/QC/db-meta contract for dataset artifacts.
+- `POLICY_SCHEMA.json`: SSOT mirror of `configs/policy/policy.schema.json`.
 
 ## Build Chain
 1. `scripts/contracts/format_contracts.py` canonicalizes/sorts SSOT JSON.

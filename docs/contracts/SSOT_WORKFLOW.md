@@ -11,6 +11,7 @@ Atlas uses `docs/contracts/` as single-source-of-truth for machine contracts.
 - `CLI_COMMANDS.json` -> CLI command list + docs consistency.
 - `CONFIG_KEYS.json` -> config/env key allowlist contract.
 - `ARTIFACT_SCHEMA.json` -> artifact manifest/QC/db-meta schema contract.
+- `POLICY_SCHEMA.json` -> policy schema contract mirrored from `configs/policy/policy.schema.json`.
 
 ## Enforcement
 - Local: `make ssot-check`
