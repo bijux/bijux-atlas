@@ -17,6 +17,7 @@ fn cursor_bounds_accept_normal_and_reject_tamper_same_length() {
         query_hash: "h".to_string(),
     };
     let token = encode_cursor(&payload, b"secret").expect("encode");
+    assert!(token.starts_with("v1."));
     let ok = decode_cursor(&token, b"secret", "h", OrderMode::GeneId).expect("decode");
     assert_eq!(ok.last_gene_id, "g1");
 
@@ -34,4 +35,24 @@ fn cursor_bounds_accept_normal_and_reject_tamper_same_length() {
         token.len(),
         "tampered token keeps same length"
     );
+}
+
+#[test]
+fn cursor_decode_accepts_legacy_unversioned_format() {
+    use base64::engine::general_purpose::URL_SAFE_NO_PAD;
+    use base64::Engine;
+    use hmac::{Hmac, Mac};
+    use sha2::Sha256;
+
+    type HmacSha256 = Hmac<Sha256>;
+    let payload_json = r#"{"order":"gene_id","last_seqid":null,"last_start":null,"last_gene_id":"g1","query_hash":"h"}"#;
+    let payload_part = URL_SAFE_NO_PAD.encode(payload_json.as_bytes());
+    let mut mac = HmacSha256::new_from_slice(b"secret").expect("hmac key");
+    mac.update(payload_part.as_bytes());
+    let sig = URL_SAFE_NO_PAD.encode(mac.finalize().into_bytes());
+    let legacy_token = format!("{payload_part}.{sig}");
+
+    let decoded =
+        decode_cursor(&legacy_token, b"secret", "h", OrderMode::GeneId).expect("legacy decode");
+    assert_eq!(decoded.last_gene_id, "g1");
 }

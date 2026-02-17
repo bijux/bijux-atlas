@@ -1,9 +1,10 @@
 # Pagination Contract
 
 Cursor properties:
-- Opaque token = base64(payload) + HMAC signature.
+- Opaque token format (v1) = `v1.<base64(payload)>.<base64(hmac)>`.
 - Payload binds to normalized query hash.
 - Order mode is encoded and validated (`gene_id` or `region`).
+- Decoder is backward-compatible with legacy unversioned `<payload>.<sig>` tokens.
 
 Stability guarantees:
 - Same dataset + same query + same secret => stable cursor sequence.

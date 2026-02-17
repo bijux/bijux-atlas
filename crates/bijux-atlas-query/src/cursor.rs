@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 use sha2::Sha256;
 
 type HmacSha256 = Hmac<Sha256>;
+const CURSOR_VERSION_V1: &str = "v1";
 const MAX_CURSOR_TOKEN_LEN: usize = 1024;
 const MAX_CURSOR_PAYLOAD_PART_LEN: usize = 768;
 const MAX_CURSOR_SIG_PART_LEN: usize = 128;
@@ -67,7 +68,10 @@ pub fn encode_cursor(payload: &CursorPayload, secret: &[u8]) -> Result<String, C
     mac.update(payload_part.as_bytes());
     let sig = mac.finalize().into_bytes();
     let sig_part = URL_SAFE_NO_PAD.encode(sig);
-    Ok(format!("{}.{}", payload_part, sig_part))
+    Ok(format!(
+        "{}.{}.{}",
+        CURSOR_VERSION_V1, payload_part, sig_part
+    ))
 }
 
 pub fn decode_cursor(
@@ -82,8 +86,7 @@ pub fn decode_cursor(
             "cursor exceeds max length",
         ));
     }
-    let (payload_part, sig_part) = token
-        .split_once('.')
+    let (payload_part, sig_part) = parse_cursor_parts(token)
         .ok_or_else(|| CursorError::new(CursorErrorCode::InvalidFormat, "invalid cursor format"))?;
     if payload_part.len() > MAX_CURSOR_PAYLOAD_PART_LEN || sig_part.len() > MAX_CURSOR_SIG_PART_LEN
     {
@@ -129,5 +132,16 @@ pub fn decode_cursor(
             "cursor order mismatch for gene_id query",
         )),
         _ => Ok(payload),
+    }
+}
+
+fn parse_cursor_parts(token: &str) -> Option<(&str, &str)> {
+    let parts: Vec<&str> = token.split('.').collect();
+    match parts.as_slice() {
+        // Current versioned format.
+        [version, payload, sig] if *version == CURSOR_VERSION_V1 => Some((payload, sig)),
+        // Legacy unversioned format kept for backward-compatible decoding.
+        [payload, sig] => Some((payload, sig)),
+        _ => None,
     }
 }
