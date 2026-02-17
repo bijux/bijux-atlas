@@ -35,4 +35,4 @@ Internal targets are prefixed with `_` and are not stable API.
 
 Related policy docs:
 
-- [Crate layout contract](../crate-layout-contract.md)
+- [Crate layout contract](../../architecture/crate-layout-contract.md)

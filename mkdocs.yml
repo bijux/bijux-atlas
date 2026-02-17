@@ -38,80 +38,99 @@ plugins:
       strict: false
 
 not_in_nav: |
-  adr/**
-  ci/**
-  compatibility/**
-  ecosystem/**
-  evolution/**
-  fixtures/**
-  k8s/**
-  load/**
-  makefiles/**
-  observability/**
-  operations/**
-  perf/**
-  runbooks/**
-  science/**
-  security/**
-  SNAPSHOT_TEST_POLICY.md
-  artifact-directory-contract.md
-  artifact-manifest-contract.md
-  boundaries.md
-  cargo.md
-  dataset-lifecycle.md
-  effects-boundary-maps.md
-  fixtures-policy.md
-  immutability-guarantee.md
-  ingestion-purity-rule.md
-  latest-release-alias-policy.md
-  no-implicit-default-dataset.md
-  plugin-conformance-checklist.md
-  plugin-mode.md
-  product/SLO_TARGETS.md
-  product/canonical-transcript-policy-v2-placeholder.md
-  product/diffs-v1.md
-  product/sequence-threat-model.md
-  product/sequence-v1.md
-  product/transcripts-v1.md
-  query-benchmarks.md
-  _generated/README.md
+  _assets/**
+  contracts/**/*.json
 
 nav:
-  - Home: index.md
   - Product:
+      - Home: index.md
       - What Is Atlas: product/WHAT_IS_ATLAS.md
       - User Stories: product/USER_STORIES.md
       - Non Goals: product/NON_GOALS.md
       - Compatibility Promise: product/COMPATIBILITY_PROMISE.md
       - Reference Grade Checklist: product/REFERENCE_GRADE_ACCEPTANCE_CHECKLIST.md
-  - Contracts:
-      - Overview: contracts/README.md
-      - SSOT Workflow: contracts/SSOT_WORKFLOW.md
-      - Error Codes: _generated/contracts/ERROR_CODES.md
-      - Endpoints: _generated/contracts/ENDPOINTS.md
-      - Metrics: _generated/contracts/METRICS.md
-      - Trace Spans: _generated/contracts/TRACE_SPANS.md
-      - Config Keys: _generated/contracts/CONFIG_KEYS.md
-      - Chart Values: _generated/contracts/CHART_VALUES.md
-      - Artifact Schema: _generated/contracts/ARTIFACT_SCHEMA.md
-      - Policy Schema: _generated/contracts/POLICY_SCHEMA.md
-  - Operations:
-      - Incident Playbook: runbooks/INCIDENT_PLAYBOOK.md
-      - Store Outage: runbooks/STORE_OUTAGE.md
-      - Dataset Corruption: runbooks/DATASET_CORRUPTION.md
-      - Rollback: runbooks/ROLLBACK_PLAYBOOK.md
-  - Architecture:
-      - Effects and Boundaries: effects-and-boundaries.md
-      - Crate Layout Contract: crate-layout-contract.md
-      - Boundary Graph: architecture/crate-boundary-dependency-graph.md
-  - Ecosystem:
-      - Plugin Spec: plugin-spec.md
-      - Umbrella Plugin Contract: ecosystem/umbrella-plugin-contract-v1.md
-  - Style:
-      - Style Guide: _style/STYLE_GUIDE.md
-      - Terms Glossary: _style/TERMS_GLOSSARY.md
-      - Writing Rules: _style/WRITING_RULES.md
-      - Structure Templates: _style/STRUCTURE_TEMPLATES.md
+      - SLO Targets: product/SLO_TARGETS.md
+      - Diffs v1: product/diffs-v1.md
+      - Sequences v1: product/sequence-v1.md
+      - Transcript v1: product/transcripts-v1.md
   - Quickstart:
       - EMBL Setup: quickstart/EMBL_STYLE_SETUP.md
       - Client SDK Examples: quickstart/CLIENT_SDK_EXAMPLES.md
+  - Reference:
+      - Performance:
+          - Query Benchmarks: reference/performance/query-benchmarks.md
+          - Redis Evaluation: reference/performance/redis.md
+      - Registry:
+          - Umbrella/Atlas Matrix: reference/registry/umbrella-atlas-matrix.md
+          - bijux-dna Compatibility: reference/registry/bijux-dna-atlas.md
+          - Config Schema Versioning: reference/registry/config-schema-versioning.md
+      - Store:
+          - Dataset Lifecycle: reference/store/dataset-lifecycle.md
+          - Immutability Guarantee: reference/store/immutability-guarantee.md
+          - Latest Alias Policy: reference/store/latest-release-alias-policy.md
+          - No Implicit Default Dataset: reference/store/no-implicit-default-dataset.md
+      - Evolution:
+          - API Versioning: reference/evolution/API_VERSIONING.md
+          - JSON Compatibility: reference/evolution/JSON_COMPATIBILITY.md
+          - Sharding: reference/evolution/sharding.md
+  - Contracts:
+      - Contracts Overview: contracts/README.md
+      - SSOT Workflow: contracts/SSOT_WORKFLOW.md
+      - Artifacts:
+          - Manifest Contract: contracts/artifacts/manifest-contract.md
+          - Directory Contract: contracts/artifacts/directory-contract.md
+      - Plugin:
+          - Spec: contracts/plugin/spec.md
+          - Conformance Checklist: contracts/plugin/conformance-checklist.md
+          - Mode: contracts/plugin/mode.md
+          - Umbrella Contract: contracts/plugin/umbrella-plugin-contract-v1.md
+      - Generated:
+          - Error Codes: _generated/contracts/ERROR_CODES.md
+          - Endpoints: _generated/contracts/ENDPOINTS.md
+          - Metrics: _generated/contracts/METRICS.md
+          - Trace Spans: _generated/contracts/TRACE_SPANS.md
+          - Config Keys: _generated/contracts/CONFIG_KEYS.md
+          - Chart Values: _generated/contracts/CHART_VALUES.md
+          - Artifact Schema: _generated/contracts/ARTIFACT_SCHEMA.md
+          - Policy Schema: _generated/contracts/POLICY_SCHEMA.md
+  - Operations:
+      - Production Readiness: operations/production-readiness-checklist.md
+      - Air-Gapped Install: operations/air-gapped-install.md
+      - Dataset Promotion: operations/dataset-promotion-pipeline.md
+      - Cached-Only SLO: operations/cached-only-slo.md
+      - Load:
+          - k6: operations/load/k6.md
+      - Runbooks:
+          - Incident: operations/runbooks/INCIDENT_PLAYBOOK.md
+          - Store Outage: operations/runbooks/STORE_OUTAGE.md
+          - Dataset Corruption: operations/runbooks/DATASET_CORRUPTION.md
+          - Rollback: operations/runbooks/ROLLBACK_PLAYBOOK.md
+      - Security:
+          - Security Posture: operations/security/SECURITY_POSTURE.md
+  - Development:
+      - Nav Policy: _nav/README.md
+      - Placement Guide: _style/PLACEMENT.md
+      - Writing Rules: _style/WRITING_RULES.md
+      - Style Guide: _style/STYLE_GUIDE.md
+      - Terms Glossary: _style/TERMS_GLOSSARY.md
+      - Structure Templates: _style/STRUCTURE_TEMPLATES.md
+      - Cargo Workflow: development/cargo.md
+      - CI:
+          - Coverage: development/ci/coverage.md
+          - Reproducible Builds: development/ci/reproducible-build-hints.md
+          - Security Audit: development/ci/security-audit-policy.md
+      - Makefile Surface: development/makefiles/surface.md
+      - Snapshot Test Policy: development/snapshot-test-policy.md
+  - Architecture:
+      - Crate Boundary Graph: architecture/crate-boundary-dependency-graph.md
+      - Crate Layout Contract: architecture/crate-layout-contract.md
+      - Boundaries: architecture/boundaries/boundaries.md
+      - Effects and Boundaries: architecture/boundaries/effects-and-boundaries.md
+      - Effect Boundary Maps: architecture/boundaries/effects-boundary-maps.md
+  - ADRs:
+      - ADR Index: adrs/INDEX.md
+      - ADR 0001: adrs/ADR-0001-workspace-boundaries-and-effects.md
+      - ADR 0002: adrs/ADR-0002-sqlite-serving-store.md
+      - ADR 0003: adrs/ADR-0003-federated-registry-deterministic-merge.md
+      - ADR 0004: adrs/ADR-0004-plugin-contract-and-umbrella-dispatch.md
+      - ADR 0005: adrs/ADR-0005-security-defaults-and-enterprise-controls.md
