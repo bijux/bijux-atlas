@@ -8,6 +8,10 @@ on:
       - '.github/workflows/k8s-e2e-pr.yml'
       - '.github/workflows/k8s-e2e-nightly.yml'
 
+concurrency:
+  group: kind-k8s-pr-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   k8s-pr-subset:
     runs-on: ubuntu-latest
@@ -24,8 +28,9 @@ jobs:
       - name: Set up Kind
         uses: helm/kind-action@v1.10.0
         with:
+          version: v0.31.0
           cluster_name: bijux-atlas-e2e-pr
-          config: ops/e2e/stack/kind/cluster.yaml
+          config: ops/stack/kind/cluster.yaml
 
       - name: Set up Helm
         uses: azure/setup-helm@v4
@@ -37,6 +42,12 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y curl netcat-openbsd shellcheck
+
+      - name: Set up k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Pinned tool checks
+        run: make ops-tools-check
 
       - name: Bring up e2e dependencies
         run: make ops-up
@@ -53,6 +64,7 @@ jobs:
         with:
           name: k8s-pr-artifacts
           path: |
+            artifacts/ops/**
             artifacts/ops/k8s/**
             artifacts/ops/k8s-failures/**
             artifacts/ops/k8s-failure-bundle-*.tar.gz

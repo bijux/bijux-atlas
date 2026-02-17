@@ -10,8 +10,21 @@ jobs:
     timeout-minutes: 45
     env:
       PR_MODE: "1"
+      ISO_TAG: perf-smoke-pr
+      ISO_RUN_ID: perf-smoke-pr
+      ISO_ROOT: artifacts/isolates/perf-smoke-pr
+      CARGO_TARGET_DIR: artifacts/isolates/perf-smoke-pr/target
+      CARGO_HOME: artifacts/isolates/perf-smoke-pr/cargo-home
+      TMPDIR: artifacts/isolates/perf-smoke-pr/tmp
+      TMP: artifacts/isolates/perf-smoke-pr/tmp
+      TEMP: artifacts/isolates/perf-smoke-pr/tmp
     steps:
       - uses: actions/checkout@v4
+
+      - uses: grafana/setup-k6-action@v1
+
+      - name: Pinned tool checks
+        run: make ops-k6-version-check
 
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
@@ -39,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: perf-smoke-artifacts
-          path: artifacts/ops/e2e/k6/**
+          path: artifacts/ops/**
 
       - name: Cleanup
         if: always()
