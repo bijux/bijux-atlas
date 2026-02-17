@@ -45,6 +45,12 @@ jobs:
       - name: Run full kind+helm suite
         run: ./e2e/k8s/tests/run_all.sh
 
+      - name: Fetch pinned real datasets
+        run: ./scripts/fixtures/fetch-real-datasets.sh
+
+      - name: Run real-data regression suite
+        run: ./e2e/realdata/run_all.sh
+
       - name: Tear down cluster
         if: always()
         run: ./e2e/scripts/down.sh
