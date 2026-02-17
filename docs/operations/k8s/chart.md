@@ -20,9 +20,10 @@ Does not duplicate every template file content.
 
 ## Contracts
 
-- Chart source: `charts/bijux-atlas/`
+- Chart source remains under `charts/bijux-atlas/`; operations workflows and tests are under `ops/`.
 - Values contract: [values.md](values.md)
-- Install verification: `ops/e2e/k8s/tests/test_install.sh`
+- Generated values schema: `charts/bijux-atlas/values.schema.json` from `docs/contracts/CHART_VALUES.json`
+- Install verification: `ops-k8s-tests`
 - Required values keys include `values.server`, `values.store`, `values.cache`, and `values.resources`.
 
 ## Failure modes
@@ -32,11 +33,12 @@ Undocumented chart changes create deployment regressions.
 ## How to verify
 
 ```bash
-$ helm lint charts/bijux-atlas
-$ ./ops/e2e/k8s/tests/test_install.sh
+$ make ops-values-validate
+$ make ops-k8s-template-tests
+$ make ops-k8s-tests
 ```
 
-Expected output: chart lint and install gate pass.
+Expected output: chart schema generation/checks pass and k8s install gates pass.
 
 ## See also
 

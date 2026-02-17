@@ -22,6 +22,7 @@ Does not replace per-component manifests.
 
 - Cluster definition: `ops/e2e/stack/kind/cluster.yaml`
 - Store bootstrap: `ops/e2e/stack/minio/bootstrap.sh`
+- Canonical values profiles: `ops/k8s/values/local.yaml`, `ops/k8s/values/offline.yaml`, `ops/k8s/values/perf.yaml`
 - Bring up: `ops-up`
 - Tear down: `ops-down`
 - Reset/wipe state: `ops-reset`
@@ -36,10 +37,11 @@ Version drift in local dependencies causes invalid or flaky e2e runs.
 
 ```bash
 $ make ops-up
+$ make ops-k8s-template-tests
 $ make ops-down
 ```
 
-Expected output: cluster starts then fully tears down.
+Expected output: cluster starts, chart template checks pass, then stack tears down.
 
 ## See also
 
