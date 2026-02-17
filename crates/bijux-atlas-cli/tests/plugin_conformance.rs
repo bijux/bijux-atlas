@@ -28,6 +28,61 @@ fn plugin_metadata_handshake_has_required_fields() {
 }
 
 #[test]
+fn plugin_metadata_matches_snapshot_contract() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+        .arg("--bijux-plugin-metadata")
+        .output()
+        .expect("run plugin metadata command");
+    assert!(output.status.success());
+    let payload: Value = serde_json::from_slice(&output.stdout).expect("valid JSON metadata");
+
+    let snapshot_path = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("docs/PLUGIN_METADATA_SNAPSHOT.json");
+    let snapshot_text = std::fs::read_to_string(snapshot_path).expect("read metadata snapshot");
+    let snapshot_text = snapshot_text.replace("__CARGO_PKG_VERSION__", env!("CARGO_PKG_VERSION"));
+    let expected: Value = serde_json::from_str(&snapshot_text).expect("parse metadata snapshot");
+    assert_eq!(payload, expected);
+}
+
+#[test]
+fn plugin_contract_doc_includes_required_sections() {
+    let text = std::fs::read_to_string(
+        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("docs/PLUGIN_CONTRACT.md"),
+    )
+    .expect("read plugin contract doc");
+    for needle in [
+        "--bijux-plugin-metadata",
+        "--json",
+        "--quiet",
+        "--verbose",
+        "--trace",
+        "compatible_umbrella_min",
+        "compatible_umbrella_max_exclusive",
+        "build_hash",
+        "PLUGIN_METADATA_SNAPSHOT.json",
+    ] {
+        assert!(
+            text.contains(needle),
+            "plugin contract doc missing `{needle}`"
+        );
+    }
+}
+
+#[test]
+fn atlas_validate_command_supports_deep_mode() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+        .args(["atlas", "validate", "--help"])
+        .output()
+        .expect("run atlas validate help");
+    assert!(output.status.success());
+    let text = String::from_utf8(output.stdout).expect("utf8 help");
+    assert!(text.contains("--deep"));
+    assert!(text.contains("--release"));
+    assert!(text.contains("--species"));
+    assert!(text.contains("--assembly"));
+}
+
+#[test]
 fn umbrella_version_compatibility_is_enforced() {
     let bad = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
         .args(["--json", "--umbrella-version", "0.2.1", "version"])

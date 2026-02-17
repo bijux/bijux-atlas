@@ -21,3 +21,8 @@ Metadata JSON required fields:
 - `build_hash`
 
 Exit code policy follows shared Bijux exit code registry in `bijux-atlas-core`.
+
+Snapshot artifacts:
+
+- `docs/PLUGIN_METADATA_SNAPSHOT.json`
+- `tests/plugin_conformance.rs` enforces metadata and doc contract stability.
