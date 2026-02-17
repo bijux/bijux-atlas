@@ -15,9 +15,9 @@ Runbook for diagnosing load suite failures and regressions.
 
 ## Metrics
 
-- `bijux_requests_total`
-- `bijux_request_duration_seconds`
-- `bijux_dataset_cache_hits_total`
+- `bijux_http_requests_total`
+- `bijux_http_request_latency_p95_seconds`
+- `bijux_dataset_hits`
 
 ## Commands
 
@@ -30,6 +30,12 @@ $ cat artifacts/ops/e2e/k6/score.md
 ```
 
 Expected output: failing scenario names and violating thresholds.
+
+## Expected outputs
+
+- `scripts/perf/score_k6.py` reports either `k6 SLO score passed` or explicit suite violations.
+- `scripts/perf/validate_results.py` reports `load result contract validation passed`.
+- `artifacts/ops/load/reports/summary.md` includes suite latency/error rows with metadata fields.
 
 ## Mitigations
 

@@ -25,6 +25,7 @@ Does not duplicate page-level details.
 - [Metric Cardinality Guardrails](metric-cardinality-guardrails.md)
 - [Dashboard](dashboard.md)
 - [Alerts](alerts.md)
+- [Runbook Map](runbook-dashboard-alert-map.md)
 - [Acceptance Gates](acceptance-gates.md)
 - [Observability Modes](modes.md)
 - [Trace Sampling Policy](trace-sampling-policy.md)
