@@ -2,24 +2,24 @@
 
 mod cost;
 mod cursor;
+mod db;
 mod filters;
 mod limits;
 mod normalize;
 mod planner;
 mod row_decode;
-mod sql;
 
 use cursor::{
     decode_cursor as decode_cursor_inner, encode_cursor as encode_cursor_inner,
     CursorPayload as CursorPayloadInner, OrderMode as OrderModeInner,
 };
-use normalize::normalized_query_hash;
-use planner::validate_request;
-use rusqlite::{params_from_iter, types::Value, Connection};
-use sql::{
+use db::{
     assert_index_usage, build_sql, order_mode_for, parse_row_from_sql,
     query_gene_id_name_json_minimal,
 };
+use normalize::normalized_query_hash;
+use planner::validate_request;
+use rusqlite::{params_from_iter, types::Value, Connection};
 
 pub const CRATE_NAME: &str = "bijux-atlas-query";
 
@@ -27,6 +27,8 @@ pub use cost::estimate_prefix_match_cost;
 pub use cursor::{
     decode_cursor, encode_cursor, CursorError, CursorErrorCode, CursorPayload, OrderMode,
 };
+pub use db::explain_query_plan as explain_query_plan_internal;
+pub use db::prepared_sql_for_class as prepared_sql_for_class_export;
 pub use filters::{
     compile_field_projection, escape_like_prefix, GeneFields, GeneFilter, GeneRow, RegionFilter,
     TranscriptFilter, TranscriptQueryRequest, TranscriptQueryResponse, TranscriptRow,
@@ -38,8 +40,6 @@ pub use planner::{
     QueryClass, QueryCost,
 };
 pub use row_decode::RawGeneRow;
-pub use sql::explain_query_plan as explain_query_plan_internal;
-pub use sql::prepared_sql_for_class as prepared_sql_for_class_export;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[non_exhaustive]
@@ -275,7 +275,7 @@ pub fn explain_query_plan(
     } else {
         None
     };
-    sql::explain_query_plan(conn, req, order_mode, decoded_cursor.as_ref())
+    db::explain_query_plan(conn, req, order_mode, decoded_cursor.as_ref())
         .map_err(|e| QueryError::new(QueryErrorCode::Sql, e))
 }
 

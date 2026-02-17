@@ -1,7 +1,7 @@
 #[test]
 fn planner_module_is_pure_and_db_free() {
     let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    let planner = std::fs::read_to_string(root.join("src/planner.rs")).expect("read planner");
+    let planner = std::fs::read_to_string(root.join("src/planner/mod.rs")).expect("read planner");
     for forbidden in ["rusqlite", "Connection", "std::fs", "reqwest", "tokio"] {
         assert!(
             !planner.contains(forbidden),

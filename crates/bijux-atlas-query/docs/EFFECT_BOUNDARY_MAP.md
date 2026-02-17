@@ -1,7 +1,7 @@
 # Effect Boundary Map
 
 ## Pure Planner Surface
-- `planner.rs`
+- `planner/mod.rs`
 - `filters.rs`
 - `cost.rs`
 - `limits.rs`
@@ -9,7 +9,7 @@
 These modules are pure and must not pull DB/network/process APIs.
 
 ## Effectful Surface
-- `sql.rs`
+- `db/mod.rs`
 - `row_decode.rs`
 - `lib.rs` (query execution bridge)
 

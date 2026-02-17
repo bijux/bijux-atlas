@@ -2,7 +2,7 @@
 fn planner_modules_do_not_pull_io_or_db_deps() {
     let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let pure_modules = [
-        "src/planner.rs",
+        "src/planner/mod.rs",
         "src/filters.rs",
         "src/cost.rs",
         "src/limits.rs",
