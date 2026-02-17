@@ -12,3 +12,4 @@ Atlas v1/v2 explicitly does not do the following:
 8. No hidden fallback that weakens checksum verification guarantees.
 9. No guarantee of unrestricted heavy query execution under overload.
 10. No requirement for Redis as a hard dependency.
+11. No canonical transcript selection policy in v1 (reserved for v2).
