@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "spans": [
+    {
+      "name": "serialize_response",
+      "required_attributes": [
+        "route",
+        "status"
+      ]
+    },
+    {
+      "name": "sqlite_query",
+      "required_attributes": [
+        "class"
+      ]
+    }
+  ],
+  "type": "trace_spans_contract"
+}

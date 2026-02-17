@@ -9,8 +9,10 @@ contracts = ROOT / "docs" / "contracts"
 
 errors = json.loads((contracts / "ERROR_CODES.json").read_text())
 metrics = json.loads((contracts / "METRICS.json").read_text())
+trace_spans = json.loads((contracts / "TRACE_SPANS.json").read_text())
 endpoints = json.loads((contracts / "ENDPOINTS.json").read_text())
 chart = json.loads((contracts / "CHART_VALUES.json").read_text())
+config_keys = json.loads((contracts / "CONFIG_KEYS.json").read_text())
 
 # check sorted canonical
 if errors["codes"] != sorted(errors["codes"]):
@@ -18,6 +20,13 @@ if errors["codes"] != sorted(errors["codes"]):
     sys.exit(1)
 if chart["top_level_keys"] != sorted(chart["top_level_keys"]):
     print("CHART_VALUES.json top_level_keys not sorted", file=sys.stderr)
+    sys.exit(1)
+if config_keys["env_keys"] != sorted(config_keys["env_keys"]):
+    print("CONFIG_KEYS.json env_keys not sorted", file=sys.stderr)
+    sys.exit(1)
+span_names = [s["name"] for s in trace_spans["spans"]]
+if span_names != sorted(span_names):
+    print("TRACE_SPANS.json spans not sorted", file=sys.stderr)
     sys.exit(1)
 # error codes must match generated rust constants and openapi enum
 rust_generated = (ROOT / "crates" / "bijux-atlas-api" / "src" / "generated" / "error_codes.rs").read_text()
@@ -45,6 +54,10 @@ if contract_set != obs_set:
     print("METRICS.json drift from observability/metrics_contract.json", file=sys.stderr)
     print("missing in METRICS:", sorted(obs_set - contract_set), file=sys.stderr)
     print("extra in METRICS:", sorted(contract_set - obs_set), file=sys.stderr)
+    sys.exit(1)
+obs_spans = obs_metrics.get("required_spans", [])
+if sorted(obs_spans) != sorted(span_names):
+    print("TRACE_SPANS.json drift from observability/metrics_contract.json", file=sys.stderr)
     sys.exit(1)
 
 # endpoint registry matches server routes and openapi paths

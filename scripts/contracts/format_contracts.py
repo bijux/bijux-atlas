@@ -23,6 +23,19 @@ for path in sorted(CONTRACT_DIR.glob("*.json")):
                 ],
                 key=lambda x: x["name"],
             )
+        if "spans" in data and isinstance(data["spans"], list):
+            data["spans"] = sorted(
+                [
+                    {
+                        "name": s["name"],
+                        "required_attributes": sorted(s.get("required_attributes", [])),
+                    }
+                    for s in data["spans"]
+                ],
+                key=lambda x: x["name"],
+            )
+        if "env_keys" in data and isinstance(data["env_keys"], list):
+            data["env_keys"] = sorted(data["env_keys"])
         if "endpoints" in data and isinstance(data["endpoints"], list):
             data["endpoints"] = sorted(
                 data["endpoints"], key=lambda e: (e["path"], e["method"])
