@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "affinity": {
+      "description": "Chart values key `affinity` from SSOT contract."
+    },
+    "alertRules": {
+      "description": "Chart values key `alertRules` from SSOT contract."
+    },
+    "cache": {
+      "description": "Chart values key `cache` from SSOT contract."
+    },
+    "catalog": {
+      "description": "Chart values key `catalog` from SSOT contract."
+    },
+    "catalogPublishJob": {
+      "description": "Chart values key `catalogPublishJob` from SSOT contract."
+    },
+    "concurrency": {
+      "description": "Chart values key `concurrency` from SSOT contract."
+    },
+    "datasetWarmupJob": {
+      "description": "Chart values key `datasetWarmupJob` from SSOT contract."
+    },
+    "extraEnv": {
+      "description": "Chart values key `extraEnv` from SSOT contract."
+    },
+    "hpa": {
+      "description": "Chart values key `hpa` from SSOT contract."
+    },
+    "image": {
+      "description": "Chart values key `image` from SSOT contract."
+    },
+    "ingress": {
+      "description": "Chart values key `ingress` from SSOT contract."
+    },
+    "networkPolicy": {
+      "description": "Chart values key `networkPolicy` from SSOT contract."
+    },
+    "nodeLocalSsdProfile": {
+      "description": "Chart values key `nodeLocalSsdProfile` from SSOT contract."
+    },
+    "nodeSelector": {
+      "description": "Chart values key `nodeSelector` from SSOT contract."
+    },
+    "pdb": {
+      "description": "Chart values key `pdb` from SSOT contract."
+    },
+    "podSecurityContext": {
+      "description": "Chart values key `podSecurityContext` from SSOT contract."
+    },
+    "priorityClassName": {
+      "description": "Chart values key `priorityClassName` from SSOT contract."
+    },
+    "rateLimits": {
+      "description": "Chart values key `rateLimits` from SSOT contract."
+    },
+    "replicaCount": {
+      "description": "Chart values key `replicaCount` from SSOT contract."
+    },
+    "resources": {
+      "description": "Chart values key `resources` from SSOT contract."
+    },
+    "rollout": {
+      "description": "Chart values key `rollout` from SSOT contract."
+    },
+    "securityContext": {
+      "description": "Chart values key `securityContext` from SSOT contract."
+    },
+    "sequenceRateLimits": {
+      "description": "Chart values key `sequenceRateLimits` from SSOT contract."
+    },
+    "server": {
+      "description": "Chart values key `server` from SSOT contract."
+    },
+    "service": {
+      "description": "Chart values key `service` from SSOT contract."
+    },
+    "serviceMonitor": {
+      "description": "Chart values key `serviceMonitor` from SSOT contract."
+    },
+    "store": {
+      "description": "Chart values key `store` from SSOT contract."
+    },
+    "terminationGracePeriodSeconds": {
+      "description": "Chart values key `terminationGracePeriodSeconds` from SSOT contract."
+    },
+    "tolerations": {
+      "description": "Chart values key `tolerations` from SSOT contract."
+    }
+  },
+  "title": "bijux-atlas chart values",
+  "type": "object"
+}

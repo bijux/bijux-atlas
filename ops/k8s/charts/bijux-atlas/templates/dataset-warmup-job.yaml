@@ -1,0 +1,50 @@
+{{- if .Values.datasetWarmupJob.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "bijux-atlas.fullname" . }}-dataset-warmup
+  labels:
+    {{- include "bijux-atlas.labels" . | nindent 4 }}
+spec:
+  backoffLimit: {{ .Values.datasetWarmupJob.backoffLimit }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "bijux-atlas.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: dataset-warmup
+          image: {{ .Values.datasetWarmupJob.image }}
+          command: ["/bin/sh", "-ec"]
+          args:
+            - |
+              for ds in {{ join " " .Values.cache.pinnedDatasets }}; do
+                /app/bijux-atlas atlas smoke --root /cache --dataset "$ds" || exit 1
+              done
+          envFrom:
+            - configMapRef:
+                name: {{ include "bijux-atlas.fullname" . }}-config
+          {{- if .Values.store.credentialsSecretName }}
+            - secretRef:
+                name: {{ .Values.store.credentialsSecretName }}
+          {{- end }}
+          volumeMounts:
+            - name: cache
+              mountPath: /cache
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: cache
+          {{- if or .Values.cache.pvc.enabled (eq .Values.cache.storageMode "pvc") }}
+          persistentVolumeClaim:
+            claimName: {{ include "bijux-atlas.fullname" . }}-cache
+          {{- else }}
+          emptyDir:
+            sizeLimit: {{ .Values.cache.diskSize }}
+          {{- end }}
+        - name: tmp
+          emptyDir:
+            sizeLimit: {{ .Values.cache.tmpSize }}
+{{- end }}

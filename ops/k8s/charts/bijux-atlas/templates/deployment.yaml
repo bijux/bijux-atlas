@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "bijux-atlas.fullname" . }}
+  labels:
+    {{- include "bijux-atlas.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "bijux-atlas.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "bijux-atlas.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if .Values.cache.initPrewarm.enabled }}
+      initContainers:
+        - name: prewarm-pinned-datasets
+          image: {{ .Values.cache.initPrewarm.image }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/app/bijux-atlas", "atlas", "smoke", "--dataset", "{{ (first .Values.cache.pinnedDatasets) | default "" }}"]
+          envFrom:
+            - configMapRef:
+                name: {{ include "bijux-atlas.fullname" . }}-config
+          volumeMounts:
+            - name: cache
+              mountPath: /cache
+            - name: tmp
+              mountPath: /tmp
+      {{- end }}
+      containers:
+        - name: atlas-server
+          {{- if .Values.image.digest }}
+          image: "{{ .Values.image.repository }}@{{ .Values.image.digest }}"
+          {{- else }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            {{- toYaml .Values.server.command | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "bijux-atlas.fullname" . }}-config
+          env:
+            - name: ATLAS_CACHE_ROOT
+              value: /cache
+            {{- if .Values.store.credentialsSecretName }}
+            - name: ATLAS_STORE_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.store.credentialsSecretName }}
+                  key: ATLAS_STORE_ACCESS_KEY_ID
+            - name: ATLAS_STORE_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.store.credentialsSecretName }}
+                  key: ATLAS_STORE_SECRET_ACCESS_KEY
+            {{- end }}
+            {{- range .Values.extraEnv }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+            {{- end }}
+          startupProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            failureThreshold: 30
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            failureThreshold: 3
+            periodSeconds: 5
+            timeoutSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            failureThreshold: 3
+            periodSeconds: 10
+            timeoutSeconds: 2
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: cache
+              mountPath: /cache
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: cache
+          {{- if or .Values.cache.pvc.enabled (eq .Values.cache.storageMode "pvc") }}
+          persistentVolumeClaim:
+            claimName: {{ include "bijux-atlas.fullname" . }}-cache
+          {{- else }}
+          emptyDir:
+            sizeLimit: {{ .Values.cache.diskSize }}
+          {{- end }}
+        - name: tmp
+          emptyDir:
+            sizeLimit: {{ .Values.cache.tmpSize }}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}
