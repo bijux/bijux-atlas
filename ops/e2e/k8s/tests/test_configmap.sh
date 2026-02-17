@@ -1,6 +1,7 @@
-#!/usr/bin/env sh
-set -eu
+#!/usr/bin/env bash
+set -euo pipefail
 . "$(dirname "$0")/common.sh"
+setup_test_traps
 need helm; need kubectl
 
 # Define contract: invalid config values must fail startup quickly (CrashLoopBackOff/Error).

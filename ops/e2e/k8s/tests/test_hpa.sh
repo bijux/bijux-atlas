@@ -1,6 +1,7 @@
-#!/usr/bin/env sh
-set -eu
+#!/usr/bin/env bash
+set -euo pipefail
 . "$(dirname "$0")/common.sh"
+setup_test_traps
 need kubectl; need helm
 
 wait_ready
@@ -13,7 +14,7 @@ kubectl -n "$NS" run hpa-load --image=curlimages/curl --restart=Never --command 
     curl -fsS http://'"$SERVICE_NAME"':8080/healthz >/dev/null || true
   done
 '
-kubectl -n "$NS" wait --for=condition=Ready --timeout=120s pod/hpa-load || true
+wait_kubectl_condition pod hpa-load Ready 120s || true
 sleep 15
 END_REPLICAS="$(kubectl -n "$NS" get deploy "$SERVICE_NAME" -o jsonpath='{.status.replicas}')"
 if [ "${END_REPLICAS:-0}" -le "${START_REPLICAS:-1}" ]; then

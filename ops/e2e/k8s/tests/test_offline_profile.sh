@@ -1,9 +1,10 @@
-#!/usr/bin/env sh
-set -eu
+#!/usr/bin/env bash
+set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 . "$(dirname "$0")/common.sh"
+setup_test_traps
 
-OFFLINE="$ROOT/charts/bijux-atlas/values-offline.yaml"
+OFFLINE="$ROOT/ops/k8s/values/offline.yaml"
 install_chart -f "$OFFLINE"
 wait_ready
 

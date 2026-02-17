@@ -1,6 +1,7 @@
-#!/usr/bin/env sh
-set -eu
+#!/usr/bin/env bash
+set -euo pipefail
 . "$(dirname "$0")/common.sh"
+setup_test_traps
 need kubectl; need helm
 
 wait_ready

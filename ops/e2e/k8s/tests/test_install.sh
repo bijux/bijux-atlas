@@ -1,16 +1,16 @@
-#!/usr/bin/env sh
-set -eu
+#!/usr/bin/env bash
+set -euo pipefail
 . "$(dirname "$0")/common.sh"
+setup_test_traps
 need helm; need kubectl; need curl
 
 install_chart
 wait_ready
 with_port_forward 18080
-trap 'stop_port_forward' EXIT
 
 # Service endpoint reachable
-curl -fsS "$BASE_URL/healthz" >/dev/null
+wait_for_http "$BASE_URL/healthz" 200 60
 # Readiness semantics: ready endpoint must answer success after rollout
-curl -fsS "$BASE_URL/readyz" >/dev/null
+wait_for_http "$BASE_URL/readyz" 200 60
 
 echo "install gate passed"
