@@ -24,11 +24,15 @@ Does not freeze internal implementation details.
 - Script interfaces: [`scripts/INDEX.md`](scripts/INDEX.md)
 - SSOT contracts: [`../contracts/INDEX.md`](../contracts/INDEX.md)
 - Root layout SSOT:
-  - `ops/` holds `e2e`, `load`, `observability`, and `openapi`.
+  - `ops/` is the canonical home for `e2e`, `load`, `observability`, and `openapi`.
   - `configs/` holds policy, rust, docs, and security config sources.
   - `configs/README.md` is the configuration layout contract.
   - Root config files are compatibility symlinks to `configs/*`.
+  - Root compatibility paths `e2e/`, `load/`, and `observability/` must be symlink-only or pointer-only (`README.md` only).
+  - Root `charts/` is packaging-only; ops execution and tests run from `ops/`.
   - `.cargo/` remains at root because Cargo workspace config discovery expects it.
+  - Operational results belong under `artifacts/ops/<run-id>/`.
+  - `.idea/` is ignored; `target/` and `.DS_Store` are never committed.
 - Single entrypoint policy:
   - All runnable workflows are exposed through `make`.
   - CI workflows must not run scripts directly; `make no-direct-scripts` is the enforcement gate.
@@ -42,7 +46,8 @@ Surface drift breaks automation and team workflows.
 ```bash
 $ python3 scripts/docs/check_make_targets_documented.py
 $ python3 scripts/docs/check_script_headers.py
-$ ./scripts/layout/check_root_shape.sh
+$ make layout-check
+$ make no-direct-scripts
 ```
 
 Expected output: all checks pass.

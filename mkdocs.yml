@@ -175,6 +175,7 @@ nav:
       - Makefile Surface: development/makefiles/surface.md
       - Scripts Index: development/scripts/INDEX.md
       - Repo Surface: development/repo-surface.md
+      - Ops Canonical Layout: development/ops-canonical-layout.md
       - Crates Map: development/crates-map.md
       - Snapshot Test Policy: development/snapshot-test-policy.md
   - Architecture:
