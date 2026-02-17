@@ -1,0 +1,14 @@
+{
+  "diff": {
+    "from_release": "110",
+    "to_release": "111",
+    "species": "homo_sapiens",
+    "assembly": "GRCh38",
+    "scope": "genes",
+    "rows": [
+      {"gene_id": "gA", "status": "removed"},
+      {"gene_id": "gB", "status": "changed"},
+      {"gene_id": "gC", "status": "added"}
+    ]
+  }
+}

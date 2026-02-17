@@ -3,6 +3,7 @@
 Store crate enforces and consumes:
 - `manifest.json`
 - `gene_summary.sqlite`
+- `release_gene_index.json`
 - `manifest.lock`
 - Optional sharded outputs (backward compatible with monolithic mode):
 - `catalog_shards.json`

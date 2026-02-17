@@ -1,0 +1,6 @@
+{
+  "queries": [
+    "/v1/diff/genes?from_release=110&to_release=111&species=homo_sapiens&assembly=GRCh38&limit=5",
+    "/v1/diff/region?from_release=110&to_release=111&species=homo_sapiens&assembly=GRCh38&region=chr1:1-500000&limit=5"
+  ]
+}
