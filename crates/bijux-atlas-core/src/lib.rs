@@ -19,6 +19,11 @@ pub use crate::error::{ConfigPathScope, ErrorCode, ExitCode, MachineError};
 pub use crate::result_ext::{ErrorContext, ResultExt};
 
 #[must_use]
+pub const fn no_randomness_policy() -> &'static str {
+    NO_RANDOMNESS_POLICY
+}
+
+#[must_use]
 pub fn sha256_hex(bytes: &[u8]) -> String {
     canonical::stable_hash_hex(bytes)
 }

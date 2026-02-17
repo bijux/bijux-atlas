@@ -12,12 +12,12 @@ pub struct Hash256([u8; 32]);
 
 impl Hash256 {
     #[must_use]
-    pub const fn from_bytes(bytes: [u8; 32]) -> Self {
+    pub(crate) const fn from_bytes(bytes: [u8; 32]) -> Self {
         Self(bytes)
     }
 
     #[must_use]
-    pub const fn as_bytes(&self) -> &[u8; 32] {
+    pub const fn as_bytes(&self) -> &[u8] {
         &self.0
     }
 
@@ -113,6 +113,7 @@ pub fn decode_cursor_payload(token: &str) -> Result<Value, String> {
 #[cfg(feature = "serde")]
 fn normalize_json_value(value: Value) -> Value {
     match value {
+        Value::Number(n) => Value::Number(normalize_json_number(n)),
         Value::Object(map) => {
             let mut sorted = Map::new();
             let mut entries: Vec<(String, Value)> = map
@@ -128,6 +129,17 @@ fn normalize_json_value(value: Value) -> Value {
         Value::Array(items) => Value::Array(items.into_iter().map(normalize_json_value).collect()),
         other => other,
     }
+}
+
+#[cfg(feature = "serde")]
+fn normalize_json_number(number: serde_json::Number) -> serde_json::Number {
+    if let Some(value) = number.as_f64() {
+        if value == 0.0 {
+            // Canonicalize signed zero so hash and bytes stay stable across producers.
+            return serde_json::Number::from(0);
+        }
+    }
+    number
 }
 
 #[cfg(test)]
@@ -159,6 +171,15 @@ mod tests {
         let h1 = stable_json_hash_hex(&value).expect("hash 1");
         let h2 = stable_json_hash_hex(&value).expect("hash 2");
         assert_eq!(h1, h2);
+    }
+
+    #[cfg(feature = "serde")]
+    #[test]
+    fn canonical_json_normalizes_negative_zero_float() {
+        let value = json!({"x": -0.0});
+        let bytes = stable_json_bytes(&value).expect("stable json bytes");
+        let text = String::from_utf8(bytes).expect("utf8");
+        assert_eq!(text, r#"{"x":0}"#);
     }
 
     #[cfg(feature = "serde")]
