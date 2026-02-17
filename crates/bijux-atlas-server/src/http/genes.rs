@@ -3,8 +3,8 @@
 use crate::*;
 use bijux_atlas_model::ShardCatalog;
 use bijux_atlas_query::{
-    prepared_sql_for_class_export, query_gene_by_id_fast, query_gene_id_name_json_minimal_fast,
-    query_genes_fanout, select_shards_for_request,
+    estimate_work_units, prepared_sql_for_class_export, query_gene_by_id_fast,
+    query_gene_id_name_json_minimal_fast, query_genes_fanout, select_shards_for_request,
 };
 use serde_json::json;
 use tracing::{info, info_span, warn};
@@ -111,6 +111,18 @@ pub(crate) async fn genes_handler(
         };
 
     let class = classify_query(&req);
+    let estimated_cost = estimate_work_units(&req);
+    if estimated_cost >= 50 {
+        // Structured sample log for high-cost query profiling.
+        info!(
+            request_id = %request_id,
+            route = "/v1/genes",
+            dataset = %dataset.canonical_string(),
+            query_class = ?class,
+            query_cost = estimated_cost,
+            "query_cost_sample"
+        );
+    }
     let overloaded = state
         .metrics
         .should_shed_heavy(
