@@ -1,4 +1,7 @@
 #!/usr/bin/env sh
+# Purpose: script interface entrypoint.
+# Inputs: command-line args and repository files/env as documented by caller.
+# Outputs: exit status and deterministic stdout/stderr or generated artifacts.
 set -eu
 
 bad=$(find crates -type f \( -name 'helpers.rs' -o -name '*_helpers.rs' \))

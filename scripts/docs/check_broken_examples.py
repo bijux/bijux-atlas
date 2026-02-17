@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# Purpose: script interface entrypoint.
+# Inputs: command-line args and repository files/env as documented by caller.
+# Outputs: exit status and deterministic stdout/stderr or generated artifacts.
 from __future__ import annotations
 
 import re
@@ -30,7 +33,7 @@ for md in DOCS.rglob('*.md'):
                 if not p.exists() or not p.is_file() or not (p.stat().st_mode & 0o111):
                     errors.append(f"{md}: non-executable script path `{tok}`")
                 continue
-            if tok in {'curl','kubectl','k6','cargo','rg','python3'}:
+            if tok in {'curl','kubectl','k6','cargo','rg','python3','helm'}:
                 continue
             errors.append(f"{md}: command not backed by script path or allowed tool `{cmd}`")
 

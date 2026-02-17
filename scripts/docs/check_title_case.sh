@@ -1,4 +1,7 @@
 #!/usr/bin/env sh
+# Purpose: script interface entrypoint.
+# Inputs: command-line args and repository files/env as documented by caller.
+# Outputs: exit status and deterministic stdout/stderr or generated artifacts.
 set -eu
 
 allow='API|SSOT|ADR|K8s|k6|v1|CI|CLI|JSON|YAML|HMAC|SSRF|SLO|SDK|DNA|ETag|URL|GC|EMBL'
