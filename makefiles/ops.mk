@@ -11,6 +11,9 @@ ATLAS_PERF_VALUES_FILE ?= ops/k8s/values/perf.yaml
 ATLAS_MULTI_REGISTRY_VALUES_FILE ?= ops/k8s/values/multi-registry.yaml
 ATLAS_INGRESS_VALUES_FILE ?= ops/k8s/values/ingress.yaml
 ATLAS_RUN_ID ?= local
+ATLAS_E2E_ENABLE_REDIS ?= 0
+ATLAS_E2E_ENABLE_OTEL ?= 0
+ATLAS_E2E_ENABLE_TOXIPROXY ?= 0
 
 export ATLAS_BASE_URL
 export ATLAS_NS
@@ -20,6 +23,9 @@ export ATLAS_PERF_VALUES_FILE
 export ATLAS_MULTI_REGISTRY_VALUES_FILE
 export ATLAS_INGRESS_VALUES_FILE
 export ATLAS_RUN_ID
+export ATLAS_E2E_ENABLE_REDIS
+export ATLAS_E2E_ENABLE_OTEL
+export ATLAS_E2E_ENABLE_TOXIPROXY
 export ATLAS_E2E_NAMESPACE ?= $(ATLAS_NS)
 export ATLAS_E2E_VALUES_FILE ?= $(ATLAS_VALUES_FILE)
 
@@ -35,6 +41,10 @@ ops-up: ## Bring up local ops stack (kind + minio + prometheus + optional otel/r
 	@$(MAKE) ops-kubectl-version-check
 	@$(MAKE) ops-helm-version-check
 	@./ops/e2e/scripts/up.sh
+	@$(MAKE) ops-cluster-sanity
+
+ops-cluster-sanity: ## Validate cluster node/dns/storageclass sanity
+	@./ops/e2e/k8s/tests/test_cluster_sanity.sh
 
 ops-down: ## Tear down local ops stack
 	@$(MAKE) -s ops-env-validate
@@ -135,6 +145,11 @@ ops-drill-store-outage: ## Run store outage drill under load
 	@$(MAKE) -s ops-env-validate
 	@./ops/load/scripts/run_suite.sh store-outage-mid-spike.json artifacts/perf/results
 	@./ops/observability/scripts/drill_store_outage.sh
+
+ops-drill-toxiproxy-latency: ## Inject toxiproxy latency and assert store breaker signal
+	@$(MAKE) -s ops-env-validate
+	@ATLAS_E2E_ENABLE_TOXIPROXY=1 $(MAKE) ops-up
+	@./ops/observability/scripts/drill_toxiproxy_latency.sh
 
 ops-drill-alerts: ## Run alert drill checks against configured rules
 	@./ops/observability/scripts/drill_alerts.sh

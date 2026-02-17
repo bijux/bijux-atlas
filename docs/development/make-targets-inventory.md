@@ -41,6 +41,7 @@ Generated from `make help`. Do not edit manually.
 - `ops-reset`
 - `ops-clean`
 - `ops-env-print`
+- `ops-cluster-sanity`
 - `ops-publish`
 - `ops-publish-medium`
 - `ops-deploy`
@@ -59,6 +60,7 @@ Generated from `make help`. Do not edit manually.
 - `ops-load-smoke`
 - `ops-load-full`
 - `ops-drill-store-outage`
+- `ops-drill-toxiproxy-latency`
 - `ops-drill-overload`
 - `ops-drill-memory-growth`
 - `ops-drill-corruption`

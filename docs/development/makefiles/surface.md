@@ -56,6 +56,7 @@ Stable targets:
 - `ops-down`
 - `ops-reset`
 - `ops-env-print`
+- `ops-cluster-sanity`
 - `ops-publish-medium`
 - `ops-publish`
 - `ops-deploy`
@@ -74,6 +75,7 @@ Stable targets:
 - `ops-load-smoke`
 - `ops-load-full`
 - `ops-drill-store-outage`
+- `ops-drill-toxiproxy-latency`
 - `ops-drill-overload`
 - `ops-drill-memory-growth`
 - `ops-drill-corruption`
