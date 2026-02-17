@@ -12,6 +12,11 @@ Prevents hidden compatibility behavior and enforces explicit symlink governance.
 
 ## Symlinks
 
+Policy rule:
+- Only compatibility shims are allowed at root.
+- Allowed shim classes: tool-config discovery shims, `Dockerfile` shim, and `bin` UX shim.
+- New symlinks require a `docs/development/symlinks.md` entry with `APPROVAL-*` token.
+
 - `Dockerfile` -> `docker/Dockerfile`: root compatibility for tooling expecting root Dockerfile. (Approval: `APPROVAL-DOCKERFILE-SHIM`)
 - `bin` -> `scripts/bin`: root compatibility while `scripts/bin` is canonical. (Approval: `APPROVAL-SCRIPT-BIN-SHIM`)
 - `nextest.toml` -> `configs/nextest/nextest.toml`: tool root-discovery compatibility. (Approval: `APPROVAL-NEXTEST-SHIM`)

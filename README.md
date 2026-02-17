@@ -19,6 +19,7 @@ Operational policy:
 - Operational outputs are written under `artifacts/ops/<run-id>/`.
 - `.idea/` is ignored and never committed.
 - `target/` and `.DS_Store` must not be committed.
+- Local editors may create noise files; CI gates only fail when noise is tracked or CI workspace hygiene is violated.
 
 `.cargo/` remains at root intentionally because Cargo only resolves workspace config from root `.cargo/config.toml`.
 

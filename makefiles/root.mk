@@ -50,6 +50,7 @@ doctor:
 	@printf 'kind: '; (command -v kind >/dev/null 2>&1 && kind version 2>/dev/null | head -n1) || echo 'missing'
 	@printf 'kubectl: '; (command -v kubectl >/dev/null 2>&1 && kubectl version --client 2>/dev/null | head -n1) || echo 'missing'
 	@printf 'helm: '; (command -v helm >/dev/null 2>&1 && helm version --short 2>/dev/null) || echo 'missing'
+	@echo 'policy: local-noise is allowed locally; CI stays clean'
 	@$(MAKE) -s ops-tools-check
 
 fetch-real-datasets:

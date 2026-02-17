@@ -26,6 +26,9 @@ List and maintain links to section pages in this directory.
 - [Make Targets](make-targets.md)
 - [Scripts Index](scripts/INDEX.md)
 - [Repository Layout](repo-layout.md)
+- [Repository Surface](repo-surface.md)
+- [Symlink Index](symlinks.md)
+- [Local Noise Policy](local-noise.md)
 - [Contributing](contributing.md)
 
 ## Failure modes

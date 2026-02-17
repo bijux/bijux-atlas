@@ -12,7 +12,7 @@ Prevents root sprawl and keeps `ops/` as the single operational source of truth.
 
 ## Contracts
 
-- Root whitelist is defined in `scripts/layout/allowed_root.json`.
+- Root whitelist is defined in `scripts/layout/root_whitelist.json`.
 - Legacy root aliases are forbidden: `charts`, `e2e`, `load`, `observability`, `datasets`, `fixtures`.
 - Root shape gate: `scripts/layout/check_root_shape.sh`.
 - Forbidden-name gate: `scripts/layout/check_forbidden_root_names.sh`.
