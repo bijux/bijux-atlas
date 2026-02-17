@@ -1,27 +1,34 @@
 #!/usr/bin/env python3
-# Purpose: generate markdown inventory of public make targets from `make help`.
-# Inputs: output of `make help`.
+# Purpose: generate markdown inventory of public make targets from makefile registry.
+# Inputs: makefiles/registry.mk.
 # Outputs: docs/development/make-targets.md and docs/development/make-targets-inventory.md.
 from __future__ import annotations
 
-import subprocess
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT_MAIN = ROOT / "docs" / "development" / "make-targets.md"
 OUT_COMPAT = ROOT / "docs" / "development" / "make-targets-inventory.md"
-
-help_out = subprocess.check_output(["make", "help"], cwd=ROOT, text=True)
+REGISTRY = ROOT / "makefiles" / "registry.mk"
 
 sections: dict[str, list[str]] = {}
-current: str | None = None
-for line in help_out.splitlines():
-    if line.endswith(":") and not line.startswith("  "):
-        current = line[:-1]
-        sections[current] = []
+desc_re = re.compile(r"^REGISTRY_([A-Z_]+)_DESC := (.+)$")
+targets_re = re.compile(r"^REGISTRY_([A-Z_]+)_TARGETS := (.*)$")
+descs: dict[str, str] = {}
+targets: dict[str, list[str]] = {}
+
+for line in REGISTRY.read_text(encoding="utf-8").splitlines():
+    match = desc_re.match(line.strip())
+    if match:
+        descs[match.group(1)] = match.group(2).strip()
         continue
-    if current and line.startswith("  "):
-        sections[current].extend(line.strip().split())
+    match = targets_re.match(line.strip())
+    if match:
+        targets[match.group(1)] = [token for token in match.group(2).split() if token]
+
+for key, desc in descs.items():
+    sections[desc] = targets.get(key, [])
 
 lines: list[str] = [
     "# Make Targets Inventory",
@@ -32,10 +39,10 @@ lines: list[str] = [
     "",
 ]
 
-for section, targets in sections.items():
+for section, section_targets in sections.items():
     lines.append(f"## {section.title()}")
     lines.append("")
-    for target in targets:
+    for target in section_targets:
         lines.append(f"- `{target}`")
     lines.append("")
 

@@ -15,6 +15,8 @@ Generated from `make help`. Do not edit manually.
 - `dev-audit`
 - `dev-ci`
 - `dev-clean`
+- `local`
+- `local-full`
 
 ## Docs
 
@@ -25,6 +27,7 @@ Generated from `make help`. Do not edit manually.
 
 ## Contracts
 
+- `contracts`
 - `ssot-check`
 - `policy-lint`
 - `policy-schema-drift`
@@ -190,9 +193,22 @@ Generated from `make help`. Do not edit manually.
 - `bootstrap-tools`
 - `doctor`
 - `scripts-index`
+- `scripts-graph`
+- `scripts-audit`
 - `scripts-lint`
+- `scripts-format`
 - `scripts-test`
+- `scripts-clean`
 - `artifacts-index`
 - `artifacts-clean`
+- `isolate-clean`
 - `no-direct-scripts`
 - `help`
+
+## Meta
+
+- `ci`
+- `local`
+- `local-full`
+- `contracts`
+- `hygiene`

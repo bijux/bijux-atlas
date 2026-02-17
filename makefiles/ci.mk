@@ -80,6 +80,9 @@ ci-coverage:
 ci-workflows-make-only:
 	@python3 ./scripts/layout/check_workflows_make_only.py
 
+ci-make-help-drift:
+	@python3 ./scripts/docs/check_make_help_drift.py
+
 ci-init-iso-dirs:
 	@mkdir -p "$${CARGO_TARGET_DIR:-artifacts/isolates/tmp/target}" "$${CARGO_HOME:-artifacts/isolates/tmp/cargo-home}" "$${TMPDIR:-artifacts/isolates/tmp/tmp}" "$${ISO_ROOT:-artifacts/isolates/tmp}"
 
@@ -176,12 +179,14 @@ governance-check: ## Run governance gates: layout + docs + contracts + scripts +
 	@$(MAKE) ssot-check
 	@$(MAKE) scripts-lint
 	@$(MAKE) ci-workflows-make-only
+	@$(MAKE) ci-make-help-drift
 
 .PHONY: \
 	ci-root-layout ci-script-entrypoints ci-fmt ci-clippy ci-test-nextest ci-deny ci-audit ci-license-check \
 	ci-policy-lint ci-policy-schema-drift ci-ssot-drift ci-crate-structure ci-crate-docs-contract ci-cli-command-surface \
 	ci-release-binaries ci-docs-build ci-latency-regression ci-store-conformance ci-openapi-drift ci-query-plan-gate \
 	ci-compatibility-matrix-validate ci-runtime-security-scan-image ci-coverage ci-workflows-make-only governance-check \
+	ci-make-help-drift \
 	ci-init-iso-dirs ci-init-tmp ci-dependency-lock-refresh ci-release-compat-matrix-verify ci-release-build-artifacts \
 	ci-release-notes-render ci-release-publish-gh ci-cosign-sign ci-cosign-verify ci-chart-package-release ci-reproducible-verify \
 	ci-security-advisory-render ci-ops-install-prereqs ci-ops-install-load-prereqs

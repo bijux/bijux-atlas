@@ -17,6 +17,7 @@ docs: ## Build docs + link-check + spell-check + lint
 	@python3 scripts/docs/generate_crates_map.py
 	@python3 scripts/docs/generate_make_targets_inventory.py
 	@python3 scripts/docs/check_make_targets_drift.py
+	@python3 scripts/docs/check_make_help_drift.py
 	@python3 scripts/docs/generate_k8s_values_doc.py
 	@python3 scripts/docs/generate_concept_graph.py
 	@python3 scripts/docs/generate_openapi_docs.py
