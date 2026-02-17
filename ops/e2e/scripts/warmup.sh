@@ -4,6 +4,8 @@ set -eu
 RELEASE="${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
 NS="${ATLAS_E2E_NAMESPACE:-atlas-e2e}"
 SERVICE_NAME="${ATLAS_E2E_SERVICE_NAME:-$RELEASE-bijux-atlas}"
+LOCAL_PORT="${ATLAS_E2E_LOCAL_PORT:-18080}"
+CURL="curl --connect-timeout 2 --max-time 5 -fsS"
 
 if ! command -v kubectl >/dev/null 2>&1; then
   echo "kubectl is required" >&2
@@ -14,17 +16,29 @@ if kubectl -n "$NS" get job "$SERVICE_NAME-dataset-warmup" >/dev/null 2>&1; then
   kubectl -n "$NS" wait --for=condition=complete --timeout=5m job/"$SERVICE_NAME-dataset-warmup"
 fi
 
-POD="$(kubectl -n "$NS" get pod -l app.kubernetes.io/instance="$RELEASE" -o jsonpath='{.items[0].metadata.name}')"
+POD="$(kubectl -n "$NS" get pods -l app.kubernetes.io/instance="$RELEASE" --field-selector=status.phase=Running -o name | tail -n1 | cut -d/ -f2)"
+kubectl -n "$NS" port-forward "pod/$POD" "$LOCAL_PORT:8080" >/tmp/atlas-port-forward.log 2>&1 &
+PF_PID=$!
+trap 'kill "$PF_PID" >/dev/null 2>&1 || true' EXIT INT TERM
 
-# Touch one query twice; second call should hit cache in-process if available.
-kubectl -n "$NS" exec "$POD" -- sh -ceu '
-  wget -qO- http://127.0.0.1:8080/metrics >/tmp/m_before.txt || true
-  wget -qO- "http://127.0.0.1:8080/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=GENE1" >/dev/null || true
-  wget -qO- "http://127.0.0.1:8080/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=GENE1" >/dev/null || true
-  wget -qO- http://127.0.0.1:8080/metrics >/tmp/m_after.txt || true
-  BEFORE=$(grep -E "^bijux_dataset_cache_hit_total" /tmp/m_before.txt | awk "{print \$2}" | head -n1)
-  AFTER=$(grep -E "^bijux_dataset_cache_hit_total" /tmp/m_after.txt | awk "{print \$2}" | head -n1)
-  [ -n "${BEFORE:-}" ] && [ -n "${AFTER:-}" ] && [ "$AFTER" -ge "$BEFORE" ]
-'
+for _ in 1 2 3 4 5 6 7 8 9 10; do
+  if $CURL "http://127.0.0.1:$LOCAL_PORT/healthz" >/dev/null 2>&1; then
+    break
+  fi
+  sleep 1
+done
+
+METRICS_BEFORE="$(mktemp)"
+METRICS_AFTER="$(mktemp)"
+trap 'kill "$PF_PID" >/dev/null 2>&1 || true; rm -f "$METRICS_BEFORE" "$METRICS_AFTER"' EXIT INT TERM
+
+$CURL "http://127.0.0.1:$LOCAL_PORT/metrics" >"$METRICS_BEFORE" || true
+$CURL "http://127.0.0.1:$LOCAL_PORT/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=GENE1" >/dev/null || true
+$CURL "http://127.0.0.1:$LOCAL_PORT/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=GENE1" >/dev/null || true
+$CURL "http://127.0.0.1:$LOCAL_PORT/metrics" >"$METRICS_AFTER" || true
+
+BEFORE="$(grep -E '^bijux_dataset_cache_hit_total' "$METRICS_BEFORE" | awk '{print $2}' | head -n1)"
+AFTER="$(grep -E '^bijux_dataset_cache_hit_total' "$METRICS_AFTER" | awk '{print $2}' | head -n1)"
+[ -n "${BEFORE:-}" ] && [ -n "${AFTER:-}" ] && [ "$AFTER" -ge "$BEFORE" ]
 
 echo "warmup verification completed"

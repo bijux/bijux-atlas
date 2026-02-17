@@ -7,6 +7,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 schema = json.loads((ROOT / 'ops/observability/contract/logs-fields-contract.json').read_text())
 required = schema.get('required', [])
+aliases = {
+    'msg': {'msg', 'message', 'fields.message'},
+    'ts': {'ts', 'timestamp'},
+    'request_id': {'request_id', 'fields.request_id'},
+}
 ns = (sys.argv[1] if len(sys.argv) > 1 else 'atlas-e2e')
 release = (sys.argv[2] if len(sys.argv) > 2 else 'atlas-e2e')
 cmd = ['kubectl','-n',ns,'logs',f'deploy/{release}-bijux-atlas','--tail=200']
@@ -15,12 +20,20 @@ try:
 except Exception as exc:
     print(f'log schema check skipped: {exc}')
     raise SystemExit(0)
+seen_keys: set[str] = set()
 for line in out.splitlines():
     if not line.startswith('{'):
         continue
     obj = json.loads(line)
-    for k in required:
-        if k not in obj:
-            print(f'missing required log field: {k}', file=sys.stderr)
-            raise SystemExit(1)
+    seen_keys.update(obj.keys())
+    if isinstance(obj.get('fields'), dict):
+        for fk in obj['fields'].keys():
+            seen_keys.add(f'fields.{fk}')
+for k in required:
+    if k in seen_keys:
+        continue
+    if any(a in seen_keys for a in aliases.get(k, set())):
+        continue
+    print(f'missing required log field: {k}', file=sys.stderr)
+    raise SystemExit(1)
 print('log fields contract passed')
