@@ -1,0 +1,1 @@
+{"name":"sharded_fanout","suite":"regional_spike_10x_60s.js","focus":"region fanout across shards with shard caps"}

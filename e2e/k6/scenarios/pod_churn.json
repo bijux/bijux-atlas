@@ -1,0 +1,1 @@
+{"name":"pod_churn","suite":"warm_steady.js","requires":"k8s","description":"kill pods during load and observe resilience"}

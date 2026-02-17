@@ -1,0 +1,1 @@
+{"name":"redis_optional","suite":"mixed_80_20.js","variants":["redis_off","redis_on"],"focus":"no regression with redis disabled"}
