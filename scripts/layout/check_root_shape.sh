@@ -4,7 +4,7 @@
 # Outputs: non-zero exit on drift.
 set -eu
 
-ALLOWED='\n.cargo\n.github\n.idea\nartifacts\nbin\ncharts\nconfigs\ncrates\ndatasets\ndocs\ne2e\nfixtures\nload\nmakefiles\nobservability\nops\nscripts\ntarget\nxtask\n'
+ALLOWED='\n.cargo\n.github\n.idea\nartifacts\nbin\ncharts\nconfigs\ncrates\ndatasets\ndocker\ndocs\ne2e\nfixtures\nload\nmakefiles\nobservability\nops\nscripts\ntarget\nxtask\n'
 
 errors=0
 for d in */; do

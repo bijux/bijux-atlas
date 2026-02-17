@@ -15,6 +15,7 @@ help:
 
 layout-check:
 	@./scripts/layout/check_root_shape.sh
+	@./scripts/layout/check_ops_canonical_shims.sh
 
 layout-migrate:
 	@./scripts/layout/migrate.sh
