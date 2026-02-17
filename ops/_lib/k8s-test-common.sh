@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="$(git rev-parse --show-toplevel)"
+source "$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/common.sh"
+
+ROOT="$REPO_ROOT"
 NS="${ATLAS_E2E_NAMESPACE:-atlas-e2e-${USER:-local}}"
 RELEASE="${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
 VALUES="${ATLAS_E2E_VALUES_FILE:-$ROOT/ops/k8s/values/local.yaml}"
@@ -9,7 +11,7 @@ CHART="$ROOT/ops/k8s/charts/bijux-atlas"
 SERVICE_NAME="${ATLAS_E2E_SERVICE_NAME:-$RELEASE-bijux-atlas}"
 BASE_URL="${ATLAS_E2E_BASE_URL:-http://127.0.0.1:18080}"
 
-need() { command -v "$1" >/dev/null 2>&1 || { echo "$1 required" >&2; exit 1; }; }
+need() { ops_need_cmd "$1"; }
 
 setup_test_traps() {
   trap '"$ROOT"/ops/_lib/k8s-test-report.sh "$NS" "$RELEASE" || true' ERR
@@ -32,7 +34,7 @@ wait_kubectl_condition() {
   local name="$2"
   local cond="$3"
   local timeout="${4:-120s}"
-  if ! kubectl -n "$NS" wait --for="condition=${cond}" --timeout="$timeout" "${kind}/${name}" >/dev/null; then
+  if ! ops_kubectl_wait_condition "$NS" "$kind" "$name" "$cond" "$timeout"; then
     echo "kubectl wait failed: ${kind}/${name} condition=${cond} timeout=${timeout}" >&2
     return 1
   fi
