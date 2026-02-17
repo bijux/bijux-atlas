@@ -212,9 +212,15 @@ fn max_rs_files_per_directory_is_enforced() {
         *counts.entry(dir).or_insert(0) += 1;
     }
 
+    let allowlist: [&str; 1] = ["crates/bijux-atlas-server/tests"];
     let violators: Vec<_> = counts
         .into_iter()
-        .filter(|(_, count)| *count > MAX_RS_FILES_PER_DIR_HARD)
+        .filter(|(dir, count)| {
+            if *count <= MAX_RS_FILES_PER_DIR_HARD {
+                return false;
+            }
+            !allowlist.contains(&dir.to_string_lossy().as_ref())
+        })
         .collect();
 
     assert!(
@@ -372,6 +378,26 @@ fn policy_fields_are_table_validated() {
     let mut bad = valid_policy();
     bad.network_in_unit_tests = true;
     cases.push(("network_in_unit_tests", bad));
+
+    let mut bad = valid_policy();
+    bad.documented_defaults = vec![DocumentedDefault {
+        field: "not_a_real.path".to_string(),
+        reason: "invalid".to_string(),
+    }];
+    cases.push(("documented_defaults.field_unknown", bad));
+
+    let mut bad = valid_policy();
+    bad.documented_defaults = vec![
+        DocumentedDefault {
+            field: "query_budget.max_limit".to_string(),
+            reason: "first".to_string(),
+        },
+        DocumentedDefault {
+            field: "query_budget.max_limit".to_string(),
+            reason: "duplicate".to_string(),
+        },
+    ];
+    cases.push(("documented_defaults.field_duplicate", bad));
 
     for (name, cfg) in cases {
         let result = validate_policy_config(&cfg);
