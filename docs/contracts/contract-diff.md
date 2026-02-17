@@ -31,11 +31,11 @@ Missing or unordered review causes drift and compatibility regressions.
 ## Examples
 
 ```bash
-$ git diff -- docs/contracts/*.json
-$ git diff -- docs/contracts/*.md docs/_generated/contracts crates/*/src/generated
+$ rg --files docs/contracts | rg '\.json$'
+$ python3 scripts/contracts/check_breaking_contract_change.py
 ```
 
-Expected output: reviewers can map each SSOT change to generated outputs.
+Expected output: contract files are listed and breakage checker passes for additive changes.
 
 ## How to verify
 
@@ -47,6 +47,6 @@ Expected output: no breaking contract change unless intentionally approved.
 
 ## See also
 
-- [SSOT Workflow](SSOT_WORKFLOW.md)
+- [SSOT Workflow](ssot-workflow.md)
 - [Contract Change Checklist](contract-change-checklist.md)
-- [Terms Glossary](../_style/TERMS_GLOSSARY.md)
+- [Terms Glossary](../_style/terms-glossary.md)

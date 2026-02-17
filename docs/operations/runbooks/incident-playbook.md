@@ -1,4 +1,4 @@
-# Runbook: INCIDENT PLAYBOOK
+# Runbook: Incident Playbook
 
 - Owner: `bijux-atlas-operations`
 

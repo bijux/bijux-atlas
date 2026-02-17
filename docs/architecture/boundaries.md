@@ -1,5 +1,7 @@
 # Bijux Atlas Crate Boundaries
 
+Concept ID: `concept.crate-boundaries`
+
 - Owner: `bijux-atlas-core`
 
 Allowed crate dependency directions:

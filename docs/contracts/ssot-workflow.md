@@ -52,6 +52,6 @@ Expected output: contract pipeline exits 0.
 
 ## See also
 
-- [Contracts Index](_index.md)
+- [Contracts Index](contracts-index.md)
 - [Contract Change Checklist](contract-change-checklist.md)
-- [Terms Glossary](../_style/TERMS_GLOSSARY.md)
+- [Terms Glossary](../_style/terms-glossary.md)

@@ -42,4 +42,4 @@ Expected output: scenario scores satisfy SLO budgets.
 
 - [Query Benchmarks](query-benchmarks.md)
 - [k6 Ops](../../operations/load/k6.md)
-- [SLO Targets](../../product/SLO_TARGETS.md)
+- [SLO Targets](../../product/slo-targets.md)

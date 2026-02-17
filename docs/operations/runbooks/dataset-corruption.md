@@ -1,4 +1,4 @@
-# Runbook: DATASET CORRUPTION
+# Runbook: Dataset Corruption
 
 - Owner: `bijux-atlas-store`
 

@@ -2,17 +2,17 @@
 
 ## Scope
 This checklist is the final go/no-go gate before a `bijux-atlas` production rollout.
-Use `docs/product/REFERENCE_GRADE_ACCEPTANCE_CHECKLIST.md` during PR review before this final gate.
+Use `docs/product/reference-grade-acceptance-checklist.md` during PR review before this final gate.
 
 ## SLO and Incident Readiness
-- [ ] SLO targets are documented in `docs/observability/SLO.md`.
-- [ ] Canonical SLO target file is current (`docs/product/SLO_TARGETS.md`).
+- [ ] SLO targets are documented in `docs/observability/slo.md`.
+- [ ] Canonical SLO target file is current (`docs/product/slo-targets.md`).
 - [ ] Error budget policy is approved and active (`docs/observability/error-budget-policy.md`).
 - [ ] Alert rules are deployed (`docs/observability/alert-rules.yaml`).
 - [ ] Runbooks are current:
-  - [ ] `docs/runbooks/STORE_OUTAGE.md`
-  - [ ] `docs/runbooks/DATASET_CORRUPTION.md`
-  - [ ] `docs/runbooks/HIGH_MEMORY.md`
+  - [ ] `docs/runbooks/store-outage.md`
+  - [ ] `docs/runbooks/dataset-corruption.md`
+  - [ ] `docs/runbooks/high-memory.md`
 
 ## Safety Controls
 - [ ] Rate limits and concurrency caps are configured for expected traffic.
@@ -30,11 +30,11 @@ Use `docs/product/REFERENCE_GRADE_ACCEPTANCE_CHECKLIST.md` during PR review befo
 - [ ] Container image is reproducible and tagged immutably.
 - [ ] Helm values for resource requests/limits are tuned.
 - [ ] Readiness/liveness/startup probes are validated in staging.
-- [ ] Rollback playbook is validated (`docs/runbooks/ROLLBACK_PLAYBOOK.md`).
+- [ ] Rollback playbook is validated (`docs/runbooks/rollback-playbook.md`).
 
 ## Validation Before Promotion
 - [ ] `make dev-test-all` passes.
 - [ ] `make dev-audit` passes with no warnings/errors.
 - [ ] Load scenario passes baseline (`docs/load/k6.md`).
-- [ ] K8s chaos/perf scenarios executed (`docs/runbooks/K8S_PERF_CHAOS.md`).
+- [ ] K8s chaos/perf scenarios executed (`docs/runbooks/k8s-perf-chaos.md`).
 - [ ] Cold-start and warm-cache latency are within target.

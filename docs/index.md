@@ -1,22 +1,62 @@
 # bijux-atlas
 
+- Owner: `docs-governance`
+
 `bijux-atlas` is a release-indexed genomic data product with a strict artifact contract.
 
 Use this page as the only docs entrypoint.
 
 ## Start Here
 
-- Product framing: [docs/product/WHAT_IS_ATLAS.md](product/WHAT_IS_ATLAS.md)
-- Compatibility promise: [docs/product/COMPATIBILITY_PROMISE.md](product/COMPATIBILITY_PROMISE.md)
-- Contract system (SSOT): [docs/contracts/README.md](contracts/README.md)
-- Ops setup: [docs/quickstart/EMBL_STYLE_SETUP.md](quickstart/EMBL_STYLE_SETUP.md)
+- Product framing: [docs/product/what-is-atlas.md](product/what-is-atlas.md)
+- Compatibility promise: [docs/product/compatibility-promise.md](product/compatibility-promise.md)
+- Contract system (SSOT): [docs/contracts/INDEX.md](contracts/INDEX.md)
+- Ops setup: [docs/quickstart/embl-style-setup.md](quickstart/embl-style-setup.md)
 
 ## Authoring Rules
 
-- Style guide: [docs/_style/STYLE_GUIDE.md](_style/STYLE_GUIDE.md)
-- Writing rules: [docs/_style/WRITING_RULES.md](_style/WRITING_RULES.md)
-- Templates: [docs/_style/STRUCTURE_TEMPLATES.md](_style/STRUCTURE_TEMPLATES.md)
+- Style guide: [docs/_style/style-guide.md](_style/style-guide.md)
+- Writing rules: [docs/_style/writing-rules.md](_style/writing-rules.md)
+- Templates: [docs/_style/structure-templates.md](_style/structure-templates.md)
 
 ## Generated Docs
 
-Generated artifacts are published under [docs/_generated/](_generated/README.md).
+Generated artifacts are published under [docs/_generated/](_generated/INDEX.md).
+
+## What
+
+Section overview.
+
+## Why
+
+Rationale for this section.
+
+## Scope
+
+Scope of documents in this section.
+
+## Non-goals
+
+Out-of-scope topics for this section.
+
+## Contracts
+
+Normative links and rules.
+
+## Failure modes
+
+Failure modes if docs drift.
+
+## How to verify
+
+```bash
+$ make docs
+```
+
+Expected output: docs checks pass.
+
+## See also
+
+- [Product Index](product/INDEX.md)
+- [Naming Standard](_style/naming-standard.md)
+- [Terms Glossary](_style/terms-glossary.md)

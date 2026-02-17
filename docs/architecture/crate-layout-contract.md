@@ -5,7 +5,7 @@ Each crate under `crates/` must keep a consistent top-level layout:
 - `Cargo.toml`
 - `src/`
 - `tests/` (required, even if minimal)
-- `README.md`
+- `INDEX.md`
 - `docs/`
   - `docs/INDEX.md`
   - `docs/ARCHITECTURE.md`
@@ -17,7 +17,7 @@ Optional:
 
 ## README contract
 
-Each crate `README.md` must include and link:
+Each crate `INDEX.md` must include and link:
 
 - `Docs index`
 - `Public API`

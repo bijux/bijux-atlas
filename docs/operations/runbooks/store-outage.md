@@ -1,4 +1,4 @@
-# Runbook: STORE OUTAGE
+# Runbook: Store Outage
 
 - Owner: `bijux-atlas-server`
 

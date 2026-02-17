@@ -1,4 +1,4 @@
-# Runbook: MEMORY PROFILE UNDER LOAD
+# Runbook: Memory Profile Under Load
 
 - Owner: `bijux-atlas-server`
 

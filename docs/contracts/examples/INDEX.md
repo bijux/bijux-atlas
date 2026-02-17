@@ -29,7 +29,7 @@ Outdated examples can mislead tests and reviewers.
 ## Examples
 
 ```bash
-$ ls docs/contracts/examples/*.example.json
+$ rg --files docs/contracts/examples | rg '\.example\.json$'
 ```
 
 Expected output: one example JSON file per registry contract.
@@ -45,6 +45,6 @@ Expected output: format and contract checks pass.
 
 ## See also
 
-- [Contracts Index](../_index.md)
-- [SSOT Workflow](../SSOT_WORKFLOW.md)
-- [Terms Glossary](../../_style/TERMS_GLOSSARY.md)
+- [Contracts Index](../contracts-index.md)
+- [SSOT Workflow](../ssot-workflow.md)
+- [Terms Glossary](../../_style/terms-glossary.md)

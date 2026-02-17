@@ -22,7 +22,7 @@ Does not define runtime implementation details outside contract surfaces.
 
 - Registry files live in this directory as JSON SSOT.
 - Generated documentation and code must be derived from these registries.
-- Workflow details live only in `SSOT_WORKFLOW.md`.
+- Workflow details live only in `ssot-workflow.md`.
 
 ## Failure modes
 
@@ -47,6 +47,6 @@ Expected output: both commands exit 0.
 
 ## See also
 
-- [Contracts Index](_index.md)
-- [SSOT Workflow](SSOT_WORKFLOW.md)
-- [Terms Glossary](../_style/TERMS_GLOSSARY.md)
+- [Contracts Index](contracts-index.md)
+- [SSOT Workflow](ssot-workflow.md)
+- [Terms Glossary](../_style/terms-glossary.md)

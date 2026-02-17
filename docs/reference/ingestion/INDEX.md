@@ -40,5 +40,5 @@ Expected output: parser/QC/determinism tests pass.
 ## See also
 
 - [Contracts Artifacts](../../contracts/artifacts/manifest-contract.md)
-- [Product What Is Atlas](../../product/WHAT_IS_ATLAS.md)
+- [Product What Is Atlas](../../product/what-is-atlas.md)
 - [Datasets Reference](../datasets/INDEX.md)

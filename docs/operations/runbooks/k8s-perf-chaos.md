@@ -1,4 +1,4 @@
-# Runbook: K8S PERF CHAOS
+# Runbook: K8s Perf Chaos
 
 - Owner: `bijux-atlas-operations`
 

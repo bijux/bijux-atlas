@@ -1,4 +1,4 @@
-# Runbook: ROLLBACK PLAYBOOK
+# Runbook: Rollback Playbook
 
 - Owner: `bijux-atlas-operations`
 

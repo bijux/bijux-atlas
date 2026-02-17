@@ -40,6 +40,6 @@ Expected output: exclusions are explicit and no conflicting commitments exist.
 
 ## See also
 
-- [What Is Atlas](WHAT_IS_ATLAS.md)
-- [Compatibility Promise](COMPATIBILITY_PROMISE.md)
-- [Reference Grade Checklist](REFERENCE_GRADE_ACCEPTANCE_CHECKLIST.md)
+- [What Is Atlas](what-is-atlas.md)
+- [Compatibility Promise](compatibility-promise.md)
+- [Reference Grade Checklist](reference-grade-acceptance-checklist.md)

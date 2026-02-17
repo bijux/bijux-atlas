@@ -43,7 +43,7 @@ def lint_file(path: pathlib.Path) -> list[str]:
     text = path.read_text(encoding="utf-8")
     errors: list[str] = []
 
-    if rel.as_posix() == "docs/product/REFERENCE_GRADE_ACCEPTANCE_CHECKLIST.md":
+    if rel.as_posix() == "docs/product/reference-grade-acceptance-checklist.md":
         allow_marketing = True
     else:
         allow_marketing = False
@@ -86,7 +86,7 @@ def lint_file(path: pathlib.Path) -> list[str]:
     links = LINK_RE.findall(see_also)
     if not (3 <= len(links) <= 8):
         errors.append(f"{rel}: 'See also' must contain 3-8 links")
-    if "TERMS_GLOSSARY.md" not in see_also:
+    if "terms-glossary.md" not in see_also:
         errors.append(f"{rel}: 'See also' must include glossary link")
 
     if "- Owner:" not in text:

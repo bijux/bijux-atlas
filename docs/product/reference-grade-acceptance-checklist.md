@@ -37,13 +37,13 @@ Any unchecked item blocks release.
 ## How to verify
 
 ```bash
-$ make -j8 dev-fmt dev-lint dev-audit dev-test-all dev-coverage openapi-drift docs docs-freeze ssot-check
+$ make dev-ci
 ```
 
-Expected output: all targets finish successfully.
+Expected output: formatting, lint, audit, test, coverage, OpenAPI drift, docs, and SSOT checks finish successfully.
 
 ## See also
 
-- [Contracts SSOT](../contracts/README.md)
-- [SLO Targets](SLO_TARGETS.md)
+- [Contracts SSOT](../contracts/INDEX.md)
+- [SLO Targets](slo-targets.md)
 - [Production Readiness](../operations/production-readiness-checklist.md)

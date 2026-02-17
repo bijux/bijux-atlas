@@ -50,6 +50,6 @@ Expected output: checklist template contains required gate items for reviewers.
 
 ## See also
 
-- [SSOT Workflow](SSOT_WORKFLOW.md)
+- [SSOT Workflow](ssot-workflow.md)
 - [Contract Diff Review](contract-diff.md)
-- [Terms Glossary](../_style/TERMS_GLOSSARY.md)
+- [Terms Glossary](../_style/terms-glossary.md)

@@ -1,6 +1,6 @@
 # Bijux Atlas SLO
 
-Canonical targets are defined in `docs/product/SLO_TARGETS.md`.
+Canonical targets are defined in `docs/product/slo-targets.md`.
 This file describes service-level interpretation and error-budget operations.
 
 ## Service Objectives

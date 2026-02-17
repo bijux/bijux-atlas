@@ -46,4 +46,4 @@ Expected output: crate docs contract check passes.
 
 - [Crate Layout Contract](../architecture/crate-layout-contract.md)
 - [Crate Boundary Graph](../architecture/crate-boundary-dependency-graph.md)
-- [Terms Glossary](../_style/TERMS_GLOSSARY.md)
+- [Terms Glossary](../_style/terms-glossary.md)

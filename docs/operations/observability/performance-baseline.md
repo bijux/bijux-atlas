@@ -12,6 +12,6 @@
 - cold-start benchmark script: `scripts/perf/cold_start_benchmark.sh`
 - cache manager bench: `cargo bench -p bijux-atlas-server --bench cache_manager`
 - mmap experiment (non-CI): `cargo test -p bijux-atlas-server mmap_read_only_experiment_baseline -- --ignored`
-- memory profile guide: `docs/runbooks/MEMORY_PROFILE_UNDER_LOAD.md`
+- memory profile guide: `docs/runbooks/memory-profile-under-load.md`
 
 All benchmark outputs should be saved under `artifacts/benchmarks/`.

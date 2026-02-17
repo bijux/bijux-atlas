@@ -21,10 +21,10 @@ Does not define product semantics or internal crate APIs.
 ## Contracts
 
 - [Kubernetes](k8s/INDEX.md)
-- [Observability](observability/SLO.md)
+- [Observability](observability/slo.md)
 - [Load](load/k6.md)
 - [Runbooks](runbooks/INDEX.md)
-- [Security](security/SECURITY_POSTURE.md)
+- [Security](security/security-posture.md)
 
 ## Failure modes
 
@@ -40,6 +40,6 @@ Expected output: operations links resolve and docs checks pass.
 
 ## See also
 
-- [Product SLO Targets](../product/SLO_TARGETS.md)
+- [Product SLO Targets](../product/slo-targets.md)
 - [Contracts Metrics](../contracts/metrics.md)
-- [Terms Glossary](../_style/TERMS_GLOSSARY.md)
+- [Terms Glossary](../_style/terms-glossary.md)

@@ -1,4 +1,4 @@
-# Runbook: REGISTRY FEDERATION
+# Runbook: Registry Federation
 
 - Owner: `bijux-atlas-store`
 

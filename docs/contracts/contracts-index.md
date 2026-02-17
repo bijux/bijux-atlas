@@ -54,6 +54,6 @@ Expected output: all contract checks pass.
 
 ## See also
 
-- [Contracts SSOT](README.md)
-- [SSOT Workflow](SSOT_WORKFLOW.md)
-- [Terms Glossary](../_style/TERMS_GLOSSARY.md)
+- [Contracts SSOT](INDEX.md)
+- [SSOT Workflow](ssot-workflow.md)
+- [Terms Glossary](../_style/terms-glossary.md)

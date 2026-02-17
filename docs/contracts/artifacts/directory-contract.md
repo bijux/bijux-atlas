@@ -54,6 +54,6 @@ Run `make docs docs-freeze ssot-check` and confirm all commands exit with status
 
 ## See also
 
-- [Contracts Overview](../README.md)
-- [SSOT Workflow](../SSOT_WORKFLOW.md)
-- [Terms Glossary](../../_style/TERMS_GLOSSARY.md)
+- [Contracts Overview](../INDEX.md)
+- [SSOT Workflow](../ssot-workflow.md)
+- [Terms Glossary](../../_style/terms-glossary.md)

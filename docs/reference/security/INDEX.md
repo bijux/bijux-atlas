@@ -39,6 +39,6 @@ Expected output: security checks pass with no errors.
 
 ## See also
 
-- [Operations Security](../../operations/security/SECURITY_POSTURE.md)
+- [Operations Security](../../operations/security/security-posture.md)
 - [Store Reference](../store/INDEX.md)
 - [Contracts Errors](../../contracts/errors.md)

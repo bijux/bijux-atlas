@@ -40,4 +40,4 @@ Expected output: federation merge tests pass deterministically.
 
 - [Store Reference](../store/INDEX.md)
 - [Contracts Compatibility](../../contracts/compatibility.md)
-- [Runbook Federation](../../operations/runbooks/REGISTRY_FEDERATION.md)
+- [Runbook Federation](../../operations/runbooks/registry-federation.md)

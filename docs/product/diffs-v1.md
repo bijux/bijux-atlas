@@ -26,12 +26,12 @@ No transcript-level semantic diffing in v1.
 
 ## Budgets
 
-- Heavy class with strict limits and pagination.
+- Heavy class with strict limits and pagination (`limit` is row count per page).
 - Cacheable responses when dataset pair hash is stable.
 
 ## Abuse controls
 
-- Region span and limit caps are enforced by policy.
+- Region span (`bp`) and limit caps (rows per page) are enforced by policy.
 - Heavy-class bulkheads and overload shedding apply.
 
 ## Examples
@@ -46,7 +46,7 @@ Expected output: JSON diff page with stable ordering and cursor.
 
 - Missing release pair => 400.
 - Unsupported dataset pair => 404/422 policy rejection.
-- Excessive span/limit => 400 rejection.
+- Excessive query window or row limit => 400 rejection.
 
 ## How to verify
 
@@ -60,4 +60,4 @@ Expected output: diff endpoint tests and golden snapshots pass.
 
 - [Querying Reference](../reference/querying/INDEX.md)
 - [Datasets Reference](../reference/datasets/INDEX.md)
-- [SLO Targets](SLO_TARGETS.md)
+- [SLO Targets](slo-targets.md)

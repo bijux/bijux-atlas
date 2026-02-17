@@ -41,5 +41,5 @@ Expected output: no breaking change detected and OpenAPI drift check passes.
 ## See also
 
 - [Contracts Compatibility](../contracts/compatibility.md)
-- [API Versioning](../reference/evolution/API_VERSIONING.md)
-- [JSON Compatibility](../reference/evolution/JSON_COMPATIBILITY.md)
+- [API Versioning](../reference/evolution/api-versioning.md)
+- [JSON Compatibility](../reference/evolution/json-compatibility.md)

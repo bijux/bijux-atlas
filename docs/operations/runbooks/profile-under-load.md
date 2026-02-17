@@ -1,4 +1,4 @@
-# Runbook: PROFILE UNDER LOAD
+# Runbook: Profile Under Load
 
 - Owner: `bijux-atlas-server`
 

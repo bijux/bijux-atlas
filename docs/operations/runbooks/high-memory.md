@@ -1,4 +1,4 @@
-# Runbook: HIGH MEMORY
+# Runbook: High Memory
 
 - Owner: `bijux-atlas-server`
 
