@@ -6,7 +6,7 @@ use std::process::Command;
 use bijux_atlas_policies::{
     canonical_config_json, load_policy_from_workspace, validate_policy_config,
     validate_schema_version_transition, CacheBudget, ConcurrencyBulkheads, PolicyConfig,
-    QueryBudget, RateLimitPolicy, TelemetryPolicy, MAX_DEPTH_HARD, MAX_LOC_HARD,
+    PublishGates, QueryBudget, RateLimitPolicy, TelemetryPolicy, MAX_DEPTH_HARD, MAX_LOC_HARD,
     MAX_MODULES_PER_DIR_HARD, MAX_RS_FILES_PER_DIR_HARD,
 };
 
@@ -92,6 +92,11 @@ fn valid_policy() -> PolicyConfig {
             tracing_enabled: true,
             slow_query_log_enabled: true,
             request_id_required: true,
+        },
+        publish_gates: PublishGates {
+            required_indexes: vec!["idx_gene_summary_gene_id".to_string()],
+            min_gene_count: 1,
+            max_missing_parents: 1000,
         },
         documented_defaults: Vec::new(),
     }
@@ -299,6 +304,12 @@ fn policy_fields_are_table_validated() {
     let mut bad = valid_policy();
     bad.telemetry.request_id_required = false;
     cases.push(("telemetry.request_id_required", bad));
+    let mut bad = valid_policy();
+    bad.publish_gates.required_indexes.clear();
+    cases.push(("publish_gates.required_indexes", bad));
+    let mut bad = valid_policy();
+    bad.publish_gates.min_gene_count = 0;
+    cases.push(("publish_gates.min_gene_count", bad));
 
     let mut bad = valid_policy();
     bad.allow_override = true;

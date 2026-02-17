@@ -11,6 +11,7 @@
     "rate_limit",
     "concurrency_bulkheads",
     "telemetry",
+    "publish_gates",
     "documented_defaults"
   ],
   "properties": {
@@ -74,6 +75,20 @@
         "tracing_enabled": { "type": "boolean" },
         "slow_query_log_enabled": { "type": "boolean" },
         "request_id_required": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "publish_gates": {
+      "type": "object",
+      "required": ["required_indexes", "min_gene_count", "max_missing_parents"],
+      "properties": {
+        "required_indexes": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1
+        },
+        "min_gene_count": { "type": "integer", "minimum": 1 },
+        "max_missing_parents": { "type": "integer", "minimum": 0 }
       },
       "additionalProperties": false
     },

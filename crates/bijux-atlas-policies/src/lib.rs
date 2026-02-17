@@ -10,8 +10,8 @@ pub use limits::{
     MIN_POLICY_SCHEMA_VERSION,
 };
 pub use schema::{
-    CacheBudget, ConcurrencyBulkheads, PolicyConfig, PolicySchema, QueryBudget, RateLimitPolicy,
-    TelemetryPolicy,
+    CacheBudget, ConcurrencyBulkheads, PolicyConfig, PolicySchema, PublishGates, QueryBudget,
+    RateLimitPolicy, TelemetryPolicy,
 };
 pub use validate::{
     canonical_config_json, load_policy_from_workspace, policy_config_path, policy_schema_path,

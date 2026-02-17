@@ -169,6 +169,16 @@ pub fn validate_policy_config(cfg: &PolicyConfig) -> Result<(), PolicyValidation
             "telemetry.request_id_required must be true".to_string(),
         ));
     }
+    if cfg.publish_gates.required_indexes.is_empty() {
+        return Err(PolicyValidationError(
+            "publish_gates.required_indexes must not be empty".to_string(),
+        ));
+    }
+    if cfg.publish_gates.min_gene_count == 0 {
+        return Err(PolicyValidationError(
+            "publish_gates.min_gene_count must be > 0".to_string(),
+        ));
+    }
 
     Ok(())
 }
@@ -218,7 +228,7 @@ fn validate_strict_unknown_keys(value: &Value) -> Result<(), PolicyValidationErr
         .as_object()
         .ok_or_else(|| PolicyValidationError("policy config must be object".to_string()))?;
 
-    let allowed: [&str; 9] = [
+    let allowed: [&str; 10] = [
         "schema_version",
         "allow_override",
         "network_in_unit_tests",
@@ -227,6 +237,7 @@ fn validate_strict_unknown_keys(value: &Value) -> Result<(), PolicyValidationErr
         "rate_limit",
         "concurrency_bulkheads",
         "telemetry",
+        "publish_gates",
         "documented_defaults",
     ];
 

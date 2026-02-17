@@ -1,6 +1,6 @@
 use bijux_atlas_policies::{
-    validate_policy_config, CacheBudget, ConcurrencyBulkheads, PolicyConfig, QueryBudget,
-    RateLimitPolicy, TelemetryPolicy,
+    validate_policy_config, CacheBudget, ConcurrencyBulkheads, PolicyConfig, PublishGates,
+    QueryBudget, RateLimitPolicy, TelemetryPolicy,
 };
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
@@ -11,6 +11,7 @@ fn bench_policy_validate(c: &mut Criterion) {
         network_in_unit_tests: false,
         query_budget: QueryBudget {
             max_limit: 100,
+            max_transcript_limit: 100,
             max_region_span: 10_000_000,
             max_region_estimated_rows: 50_000,
             max_prefix_cost_units: 80_000,
@@ -42,6 +43,11 @@ fn bench_policy_validate(c: &mut Criterion) {
             tracing_enabled: true,
             slow_query_log_enabled: true,
             request_id_required: true,
+        },
+        publish_gates: PublishGates {
+            required_indexes: vec!["idx_gene_summary_gene_id".to_string()],
+            min_gene_count: 1,
+            max_missing_parents: 1000,
         },
         documented_defaults: vec![],
     };

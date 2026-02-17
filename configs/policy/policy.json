@@ -37,5 +37,15 @@
     "slow_query_log_enabled": true,
     "request_id_required": true
   },
+  "publish_gates": {
+    "required_indexes": [
+      "idx_gene_summary_gene_id",
+      "idx_gene_summary_region",
+      "idx_transcript_summary_transcript_id",
+      "idx_transcript_summary_region"
+    ],
+    "min_gene_count": 1,
+    "max_missing_parents": 1000
+  },
   "documented_defaults": []
 }

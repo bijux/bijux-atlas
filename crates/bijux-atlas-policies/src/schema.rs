@@ -11,6 +11,7 @@ pub struct PolicyConfig {
     pub rate_limit: RateLimitPolicy,
     pub concurrency_bulkheads: ConcurrencyBulkheads,
     pub telemetry: TelemetryPolicy,
+    pub publish_gates: PublishGates,
     pub documented_defaults: Vec<String>,
 }
 
@@ -62,6 +63,14 @@ pub struct TelemetryPolicy {
     pub tracing_enabled: bool,
     pub slow_query_log_enabled: bool,
     pub request_id_required: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PublishGates {
+    pub required_indexes: Vec<String>,
+    pub min_gene_count: u64,
+    pub max_missing_parents: u64,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
