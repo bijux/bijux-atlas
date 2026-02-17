@@ -50,3 +50,8 @@ Expected output: both targets exit 0 and produce contract checks without warning
 - [Alerts](alerts.md)
 - [Dashboard](dashboard.md)
 - [Tracing](tracing.md)
+
+- Mode-specific install target: `ops-obs-mode` (`ATLAS_OBS_MODE=minimal|full`).
+- Compatibility mode targets: `ops-obs-mode-minimal`, `ops-obs-mode-full`.
+- Logs schema contract: `ops/observability/contract/logs-fields-contract.json`.
+- Failure artifacts on validation error: `artifacts/ops/observability/validate-fail-<timestamp>/`.

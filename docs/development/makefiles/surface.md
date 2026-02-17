@@ -124,8 +124,13 @@ Stable targets:
 - `ops-baseline-policy-check`
 - `ops-observability-validate`
 - `ops-observability-smoke`
+- `ops-observability-pack-tests`
+- `ops-observability-pack-lint`
 - `ops-obs-up`
 - `ops-obs-down`
+- `ops-obs-mode`
+- `ops-obs-mode-minimal`
+- `ops-obs-mode-full`
 - `ops-drill-alerts`
 - `ops-drill-overload`
 - `ops-drill-memory-growth`

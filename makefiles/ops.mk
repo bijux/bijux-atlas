@@ -371,13 +371,15 @@ ops-alerts-validate: ## Validate alert rules and contract coverage
 	@./scripts/observability/check_alerts_contract.py
 
 ops-observability-validate: ## Validate observability assets/contracts end-to-end
-	@$(MAKE) ops-dashboards-validate
-	@$(MAKE) ops-alerts-validate
-	@./scripts/observability/check_metrics_contract.py
-	@if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/observability/check_tracing_contract.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi
-	@./ops/observability/scripts/snapshot_metrics.sh
-	@./ops/observability/scripts/check_metric_cardinality.py
-	@python3 ./ops/observability/scripts/validate_logs_schema.py
+	@set -e; \
+	trap 'out="artifacts/ops/observability/validate-fail-$$(date +%Y%m%d-%H%M%S)"; mkdir -p "$$out"; kubectl get pods -A -o wide > "$$out/pods.txt" 2>/dev/null || true; kubectl get events -A --sort-by=.lastTimestamp > "$$out/events.txt" 2>/dev/null || true; cp -f ops/observability/grafana/atlas-observability-dashboard.json "$$out/dashboard.json" 2>/dev/null || true; cp -f ops/observability/alerts/atlas-alert-rules.yaml "$$out/alerts.yaml" 2>/dev/null || true; echo "observability validation failed, artifacts: $$out" >&2' ERR; \
+	$(MAKE) ops-dashboards-validate; \
+	$(MAKE) ops-alerts-validate; \
+	./scripts/observability/check_metrics_contract.py; \
+	if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/observability/check_tracing_contract.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi; \
+	./ops/observability/scripts/snapshot_metrics.sh; \
+	./ops/observability/scripts/check_metric_cardinality.py; \
+	python3 ./ops/observability/scripts/validate_logs_schema.py
 
 ops-obs-validate: ## Compatibility alias for ops-observability-validate
 	@$(MAKE) ops-observability-validate
@@ -400,6 +402,23 @@ ops-obs-up: ## Install observability pack (prometheus/otel, CRD-aware)
 
 ops-obs-down: ## Uninstall observability pack
 	@./ops/observability/scripts/uninstall_obs_pack.sh
+
+
+ops-obs-mode: ## Install observability pack in requested mode (ATLAS_OBS_MODE=minimal|full)
+	@[ -n "$${ATLAS_OBS_MODE:-}" ] || { echo "set ATLAS_OBS_MODE=minimal|full" >&2; exit 2; }
+	@./ops/observability/scripts/install_obs_pack.sh
+
+ops-obs-mode-minimal: ## Install observability pack in minimal mode
+	@ATLAS_OBS_MODE=minimal ./ops/observability/scripts/install_obs_pack.sh
+
+ops-obs-mode-full: ## Install observability pack in full mode
+	@ATLAS_OBS_MODE=full ./ops/observability/scripts/install_obs_pack.sh
+
+ops-observability-pack-tests: ## Run observability pack conformance tests
+	@./ops/observability/tests/run_all.sh
+
+ops-observability-pack-lint: ## Run observability pack lint-only contract checks
+	@./ops/observability/tests/test_pack_contracts.sh
 
 ops-ci: ## Nightly ops pipeline: up/deploy/warm/tests/ops/load/drills/report
 	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck

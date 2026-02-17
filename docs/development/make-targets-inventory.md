@@ -97,8 +97,13 @@ Generated from `make help`. Do not edit manually.
 - `ops-alerts-validate`
 - `ops-observability-validate`
 - `ops-observability-smoke`
+- `ops-observability-pack-tests`
+- `ops-observability-pack-lint`
 - `ops-obs-up`
 - `ops-obs-down`
+- `ops-obs-mode`
+- `ops-obs-mode-minimal`
+- `ops-obs-mode-full`
 - `ops-release-matrix`
 - `ops-baseline-policy-check`
 - `ops-ci`
