@@ -4,7 +4,7 @@ use async_trait::async_trait;
 use axum::body::Body;
 use axum::extract::{DefaultBodyLimit, State};
 use axum::http::{HeaderMap, HeaderValue, Request, StatusCode, Uri};
-use axum::middleware::{from_fn, Next};
+use axum::middleware::{from_fn, from_fn_with_state, Next};
 use axum::response::{IntoResponse, Response};
 use axum::routing::get;
 use axum::{Json, Router};
@@ -78,6 +78,7 @@ pub struct DatasetCacheConfig {
     pub catalog_backoff_base_ms: u64,
     pub catalog_breaker_failure_threshold: u32,
     pub catalog_breaker_open_ms: u64,
+    pub quarantine_after_corruption_failures: u32,
 }
 
 impl Default for DatasetCacheConfig {
@@ -111,6 +112,7 @@ impl Default for DatasetCacheConfig {
             catalog_backoff_base_ms: 250,
             catalog_breaker_failure_threshold: 5,
             catalog_breaker_open_ms: 5000,
+            quarantine_after_corruption_failures: 3,
         }
     }
 }
@@ -138,6 +140,8 @@ pub struct CacheMetrics {
     pub verify_marker_fast_path_hits: AtomicU64,
     pub verify_full_hash_checks: AtomicU64,
     pub cheap_queries_served_while_overloaded_total: AtomicU64,
+    pub disk_io_latency_ns: Mutex<Vec<u64>>,
+    pub fs_space_pressure_events_total: AtomicU64,
 }
 
 #[derive(Default)]
@@ -286,6 +290,33 @@ async fn provenance_headers_middleware(req: Request<Body>, next: Next) -> Respon
     resp
 }
 
+async fn resilience_middleware(
+    State(state): State<AppState>,
+    req: Request<Body>,
+    next: Next,
+) -> Response {
+    let path = req.uri().path().to_string();
+    if state.api.emergency_global_breaker
+        && path != "/healthz"
+        && path != "/healthz/overload"
+        && path != "/readyz"
+        && path != "/metrics"
+    {
+        let err = Json(ApiError::new(
+            ApiErrorCode::NotReady,
+            "emergency global circuit breaker is enabled",
+            serde_json::json!({}),
+        ));
+        return (StatusCode::SERVICE_UNAVAILABLE, err).into_response();
+    }
+    let mut resp = next.run(req).await;
+    if crate::middleware::shedding::overloaded(&state).await {
+        resp.headers_mut()
+            .insert("x-atlas-system-stress", HeaderValue::from_static("true"));
+    }
+    resp
+}
+
 pub use config::{ApiConfig, RateLimitConfig};
 pub use store::backends::{LocalFsBackend, RetryPolicy, S3LikeBackend};
 
@@ -355,6 +386,8 @@ pub struct DatasetHealthSnapshot {
     pub checksum_verified: bool,
     pub last_open_seconds_ago: Option<u64>,
     pub size_bytes: Option<u64>,
+    pub open_failures: u32,
+    pub quarantined: bool,
 }
 
 pub struct DatasetCacheManager {
@@ -363,6 +396,8 @@ pub struct DatasetCacheManager {
     entries: Mutex<HashMap<DatasetId, DatasetEntry>>,
     inflight: Mutex<HashMap<DatasetId, Arc<Mutex<()>>>>,
     breakers: Mutex<HashMap<DatasetId, BreakerState>>,
+    quarantine_failures: Mutex<HashMap<DatasetId, u32>>,
+    quarantined: Mutex<HashSet<DatasetId>>,
     store_breaker: Mutex<StoreBreakerState>,
     catalog_cache: Mutex<CatalogCache>,
     global_semaphore: Arc<Semaphore>,
@@ -385,6 +420,8 @@ impl DatasetCacheManager {
             entries: Mutex::new(HashMap::new()),
             inflight: Mutex::new(HashMap::new()),
             breakers: Mutex::new(HashMap::new()),
+            quarantine_failures: Mutex::new(HashMap::new()),
+            quarantined: Mutex::new(HashSet::new()),
             store_breaker: Mutex::new(StoreBreakerState::default()),
             catalog_cache: Mutex::new(CatalogCache::default()),
             download_semaphore: Arc::new(Semaphore::new(max_concurrent_downloads)),
@@ -546,6 +583,14 @@ impl DatasetCacheManager {
         &self,
         dataset: &DatasetId,
     ) -> Result<DatasetHealthSnapshot, CacheError> {
+        let open_failures = {
+            let breakers = self.breakers.lock().await;
+            breakers.get(dataset).map_or(0, |b| b.failure_count)
+        };
+        let quarantined = {
+            let q = self.quarantined.lock().await;
+            q.contains(dataset)
+        };
         let (cached, last_open_seconds_ago, size_bytes) = {
             let entries = self.entries.lock().await;
             if let Some(entry) = entries.get(dataset) {
@@ -568,6 +613,8 @@ impl DatasetCacheManager {
             checksum_verified,
             last_open_seconds_ago,
             size_bytes,
+            open_failures,
+            quarantined,
         })
     }
 
@@ -638,6 +685,7 @@ impl DatasetCacheManager {
     ) -> Result<DatasetConnection, CacheError> {
         info!(dataset = ?dataset, "dataset open start");
         let open_started = Instant::now();
+        self.check_quarantine(dataset).await?;
         self.ensure_dataset_cached(dataset).await?;
 
         self.check_breaker(dataset).await?;
@@ -723,6 +771,7 @@ impl DatasetCacheManager {
     }
 
     async fn ensure_dataset_cached(&self, dataset: &DatasetId) -> Result<(), CacheError> {
+        self.check_quarantine(dataset).await?;
         if self.is_cached_and_verified(dataset).await? {
             self.metrics
                 .dataset_hits
@@ -989,6 +1038,7 @@ impl DatasetCacheManager {
     }
 
     async fn evict_background(&self) -> Result<(), CacheError> {
+        let disk_io_started = Instant::now();
         let now = Instant::now();
         let mut entries = self.entries.lock().await;
 
@@ -1065,6 +1115,18 @@ impl DatasetCacheManager {
             entries.values().map(|e| e.size_bytes).sum::<u64>(),
             std::sync::atomic::Ordering::Relaxed,
         );
+        let usage = self.metrics.disk_usage_bytes.load(Ordering::Relaxed);
+        if self.cfg.max_disk_bytes > 0 && usage.saturating_mul(100) / self.cfg.max_disk_bytes >= 90
+        {
+            self.metrics
+                .fs_space_pressure_events_total
+                .fetch_add(1, Ordering::Relaxed);
+        }
+        self.metrics
+            .disk_io_latency_ns
+            .lock()
+            .await
+            .push(disk_io_started.elapsed().as_nanos() as u64);
 
         Ok(())
     }
@@ -1077,6 +1139,7 @@ impl DatasetCacheManager {
         for dataset in datasets {
             if !self.verify_dataset_integrity_strict(&dataset).await? {
                 warn!(dataset = ?dataset, "cached dataset failed re-verification");
+                self.record_corruption_failure(&dataset).await;
                 let mut entries = self.entries.lock().await;
                 if let Some(entry) = entries.remove(&dataset) {
                     let _ = std::fs::remove_file(&entry.sqlite_path);
@@ -1087,6 +1150,26 @@ impl DatasetCacheManager {
             }
         }
         Ok(())
+    }
+
+    async fn check_quarantine(&self, dataset: &DatasetId) -> Result<(), CacheError> {
+        let quarantined = self.quarantined.lock().await;
+        if quarantined.contains(dataset) {
+            return Err(CacheError("dataset is quarantined".to_string()));
+        }
+        Ok(())
+    }
+
+    async fn record_corruption_failure(&self, dataset: &DatasetId) {
+        let mut failures = self.quarantine_failures.lock().await;
+        let count = failures.entry(dataset.clone()).or_insert(0);
+        *count += 1;
+        if self.cfg.quarantine_after_corruption_failures > 0
+            && *count >= self.cfg.quarantine_after_corruption_failures
+        {
+            drop(failures);
+            self.quarantined.lock().await.insert(dataset.clone());
+        }
     }
 
     async fn verify_dataset_integrity_strict(
@@ -1169,6 +1252,7 @@ pub struct AppState {
     pub(crate) coalescer: Arc<cache::coalesce::QueryCoalescer>,
     pub(crate) hot_query_cache: Arc<Mutex<cache::hot::HotQueryCache>>,
     pub(crate) redis_backend: Option<Arc<RedisBackend>>,
+    pub(crate) queued_requests: Arc<AtomicU64>,
 }
 
 impl AppState {
@@ -1242,9 +1326,15 @@ impl AppState {
                 .as_deref()
                 .and_then(|u| RedisBackend::new(u, &api.redis_prefix, redis_policy).ok())
                 .map(Arc::new),
+            queued_requests: Arc::new(AtomicU64::new(0)),
             api,
             limits,
         }
+    }
+
+    pub fn begin_shutdown_drain_heavy(&self) {
+        self.class_heavy.close();
+        self.heavy_workers.close();
     }
 }
 
@@ -1252,6 +1342,10 @@ pub fn build_router(state: AppState) -> Router {
     Router::new()
         .route("/", get(http::handlers::landing_handler))
         .route("/healthz", get(http::handlers::healthz_handler))
+        .route(
+            "/healthz/overload",
+            get(http::handlers::overload_health_handler),
+        )
         .route("/readyz", get(http::handlers::readyz_handler))
         .route("/metrics", get(http::handlers::metrics_handler))
         .route("/v1/version", get(http::handlers::version_handler))
@@ -1288,6 +1382,7 @@ pub fn build_router(state: AppState) -> Router {
             "/debug/dataset-health",
             get(http::handlers::dataset_health_handler),
         )
+        .layer(from_fn_with_state(state.clone(), resilience_middleware))
         .layer(from_fn(provenance_headers_middleware))
         .layer(DefaultBodyLimit::max(state.api.max_body_bytes))
         .with_state(state)

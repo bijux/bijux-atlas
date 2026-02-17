@@ -256,13 +256,27 @@ bijux_store_error_other_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} 
     } else {
         0
     };
+    let queue_depth = state.queued_requests.load(Ordering::Relaxed);
+    let disk_io_p95 = {
+        let mut v = state.cache.metrics.disk_io_latency_ns.lock().await.clone();
+        if v.is_empty() {
+            0_u64
+        } else {
+            v.sort_unstable();
+            let idx = ((v.len() as f64) * 0.95).ceil() as usize - 1;
+            v[idx.min(v.len() - 1)]
+        }
+    };
     body.push_str(&format!(
         "bijux_inflight_heavy_queries{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_overload_shedding_active{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_cheap_queries_served_while_overloaded_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_cached_only_mode{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_draining_mode{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
-bijux_store_breaker_open{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
+bijux_store_breaker_open{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_request_queue_depth{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_disk_io_latency_p95_ns{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_fs_space_pressure_events_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
         METRIC_SUBSYSTEM,
         METRIC_VERSION,
         METRIC_DATASET_ALL,
@@ -290,7 +304,23 @@ bijux_store_breaker_open{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n"
         METRIC_SUBSYSTEM,
         METRIC_VERSION,
         METRIC_DATASET_ALL,
-        store_breaker_open
+        store_breaker_open,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        queue_depth,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        disk_io_p95,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state
+            .cache
+            .metrics
+            .fs_space_pressure_events_total
+            .load(Ordering::Relaxed)
     ));
     if let Some(redis) = &state.redis_backend {
         let redis_metrics = redis.metrics_snapshot().await;
