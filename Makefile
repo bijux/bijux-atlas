@@ -11,9 +11,39 @@ include makefiles/policies.mk
 
 help:
 	@printf '%s\n' \
-	  'targets: fmt lint check test test-all coverage audit openapi-drift ci fetch-fixtures fetch-real-datasets load-test load-test-1000qps cold-start-bench memory-profile-load run-medium-ingest run-medium-serve crate-structure crate-docs-contract cli-command-surface culprits-all culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir e2e-local e2e-k8s-install-gate e2e-k8s-suite e2e-perf e2e-realdata ssot-check observability-check docs docs-serve docs-freeze' \
-	  'perf targets: perf-nightly' \
-	  'dev targets: dev-fmt dev-lint dev-check dev-test dev-test-all dev-coverage dev-audit dev-ci dev-clean'
+	  'dev:' \
+	  '  dev-fmt dev-lint dev-check dev-test dev-test-all dev-coverage dev-audit dev-ci dev-clean' \
+	  'docs:' \
+	  '  docs docs-serve docs-freeze docs-hardening' \
+	  'ops:' \
+	  '  e2e-local e2e-k8s-install-gate e2e-k8s-suite e2e-perf e2e-realdata observability-check layout-check layout-migrate' \
+	  'release/surface:' \
+	  '  fmt lint check test test-all coverage audit openapi-drift ci ssot-check crate-structure crate-docs-contract cli-command-surface' \
+	  'tooling:' \
+	  '  bootstrap doctor help'
+
+layout-check:
+	@./scripts/layout/check_root_shape.sh
+
+layout-migrate:
+	@./scripts/layout/migrate.sh
+
+bootstrap:
+	@python3 --version
+	@command -v pip >/dev/null 2>&1 || { echo "missing pip" >&2; exit 1; }
+	@python3 -m pip install -r ops/docs/requirements.txt >/dev/null
+	@command -v k6 >/dev/null 2>&1 || echo "k6 not found (optional for non-perf workflows)"
+	@command -v kind >/dev/null 2>&1 || echo "kind not found (required for k8s e2e)"
+	@command -v kubectl >/dev/null 2>&1 || echo "kubectl not found (required for k8s e2e)"
+
+doctor:
+	@printf 'rustc: '; rustc --version
+	@printf 'cargo: '; cargo --version
+	@printf 'python3: '; python3 --version
+	@printf 'k6: '; (k6 version 2>/dev/null | head -n1 || echo 'missing')
+	@printf 'kind: '; (kind version 2>/dev/null | head -n1 || echo 'missing')
+	@printf 'kubectl: '; (kubectl version --client --short 2>/dev/null || echo 'missing')
+	@printf 'helm: '; (helm version --short 2>/dev/null || echo 'missing')
 
 e2e-local:
 	@./ops/e2e/scripts/up.sh

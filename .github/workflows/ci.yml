@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: mkdir -p "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR"
-      - run: ./scripts/check-root-layout.sh
+      - run: ./scripts/layout/check_root_shape.sh
 
   fmt:
     runs-on: ubuntu-latest
