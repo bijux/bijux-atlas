@@ -76,6 +76,7 @@ Generated file. Do not edit manually.
 | `scripts/layout/check_symlink_index.sh` | `repo-surface` |
 | `scripts/layout/check_tool_versions.py` | `repo-surface` |
 | `scripts/layout/migrate.sh` | `repo-surface` |
+| `scripts/layout/validate_ops_env.py` | `repo-surface` |
 | `scripts/migrate_paths.sh` | `platform` |
 | `scripts/naming-intent-lint.sh` | `platform` |
 | `scripts/no-network-unit-tests.sh` | `platform` |

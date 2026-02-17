@@ -29,6 +29,7 @@ Rule:
   - coverage thresholds
 - `configs/ops/`
   - tool lockfiles used by ops checks (`tool-versions.json`)
+  - environment contract schema for ops targets (`env.schema.json`)
 
 ## Verification
 
