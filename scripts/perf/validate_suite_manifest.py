@@ -1,0 +1,73 @@
+#!/usr/bin/env python3
+import json
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+manifest_path = ROOT / "ops/load/suites/suites.json"
+schema_path = ROOT / "ops/load/contracts/suite-schema.json"
+manifest = json.loads(manifest_path.read_text())
+schema = json.loads(schema_path.read_text())
+
+errors = []
+
+for key in schema.get("required", []):
+    if key not in manifest:
+        errors.append(f"missing required root key: {key}")
+
+suites = manifest.get("suites", [])
+seen = set()
+name_re = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+for s in suites:
+    name = s.get("name", "")
+    if not name_re.match(name):
+        errors.append(f"invalid suite name: {name}")
+    if name in seen:
+        errors.append(f"duplicate suite name: {name}")
+    seen.add(name)
+
+    for req in ("purpose", "kind", "expected_metrics", "thresholds", "must_pass"):
+        if req not in s:
+            errors.append(f"{name}: missing required field '{req}'")
+
+    if s.get("kind") == "k6":
+        scenario = s.get("scenario")
+        if not scenario:
+            errors.append(f"{name}: kind=k6 requires scenario")
+        else:
+            p = ROOT / manifest["scenarios_dir"] / scenario
+            if not p.exists():
+                errors.append(f"{name}: scenario file missing: {p}")
+    elif s.get("kind") == "script":
+        script = s.get("script")
+        if not script:
+            errors.append(f"{name}: kind=script requires script")
+        else:
+            p = ROOT / script
+            if not p.exists():
+                errors.append(f"{name}: script missing: {p}")
+
+    t = s.get("thresholds", {})
+    if not any(k in t for k in ("p95_ms_max", "p99_ms_max", "error_rate_max", "cold_start_p99_ms_max", "max_pod_cold_start_ms_max", "memory_growth_bytes_max")):
+        errors.append(f"{name}: thresholds must define at least one limit")
+
+    em = s.get("expected_metrics", [])
+    if not isinstance(em, list) or not em:
+        errors.append(f"{name}: expected_metrics must be non-empty")
+
+# Verify query lock every time manifest is validated.
+lock_script = ROOT / "scripts/perf/check_pinned_queries_lock.py"
+if lock_script.exists():
+    import subprocess
+
+    proc = subprocess.run([str(lock_script)], capture_output=True, text=True)
+    if proc.returncode != 0:
+        errors.append(proc.stderr.strip() or proc.stdout.strip() or "pinned query lock check failed")
+
+if errors:
+    for e in errors:
+        print(e, file=sys.stderr)
+    sys.exit(1)
+
+print("suite manifest validation passed")

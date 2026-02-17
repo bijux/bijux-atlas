@@ -6,26 +6,19 @@ set -eu
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 ART="$ROOT/artifacts/ops/e2e/k6"
-SCENARIOS="$ROOT/ops/load/scenarios"
 BASE_URL="${BASE_URL:-http://127.0.0.1:18080}"
 BASE_URL="${ATLAS_BASE_URL:-$BASE_URL}"
 PR_MODE="${PR_MODE:-0}"
 
 mkdir -p "$ART"
 
-run_suite() {
-  name="$1"
-  scenario="$2"
-  if [ "$PR_MODE" = "1" ] && [ "$name" != "mixed" ] && [ "$name" != "cheap-only-survival" ]; then
-    return 0
-  fi
-  OUT_DIR="$ART" "$ROOT/ops/load/scripts/run_suite.sh" "$scenario" "$ART" >/dev/null
-}
+profile="full"
+if [ "$PR_MODE" = "1" ]; then
+  profile="pr"
+fi
 
-for spec in "$SCENARIOS"/*.json; do
-  name="$(basename "$spec" .json)"
-  BASE_URL="$BASE_URL" run_suite "$name" "$spec"
-done
+"$ROOT/scripts/perf/validate_suite_manifest.py"
+ATLAS_BASE_URL="$BASE_URL" "$ROOT/scripts/perf/run_suites_from_manifest.py" --profile "$profile" --out "$ART"
 
 # cold start result
 if [ "$PR_MODE" != "1" ]; then

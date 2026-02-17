@@ -29,29 +29,9 @@ done
 OUT_DIR="$ART/cold-start" "$ROOT/scripts/perf/cold_start_benchmark.sh"
 
 "$ROOT/ops/load/scripts/check_prereqs.sh"
-"$ROOT/ops/load/scripts/run_suite.sh" mixed.json "$RES"
-"$ROOT/ops/load/scripts/run_suite.sh" warm-steady-state-p99.json "$RES"
-"$ROOT/ops/load/scripts/run_suite.sh" spike.json "$RES"
-"$ROOT/ops/load/scripts/run_suite.sh" stampede.json "$RES"
-"$ROOT/ops/load/scripts/run_suite.sh" sharded-fanout.json "$RES"
-"$ROOT/ops/load/scripts/run_suite.sh" pod-churn.json "$RES"
-"$ROOT/ops/load/scripts/run_suite.sh" response-size-abuse.json "$RES"
-"$ROOT/ops/load/scripts/run_suite.sh" diff-heavy.json "$RES"
-"$ROOT/ops/load/scripts/run_suite.sh" mixed-gene-sequence.json "$RES"
-
-# emulate store outage by forcing cached-only mode
-ATLAS_CACHED_ONLY_MODE=true docker compose -f "$ROOT/ops/load/compose/docker-compose.perf.yml" up -d --force-recreate atlas-server
-for i in $(seq 1 30); do
-  if curl -fsS "$ATLAS_BASE_URL/readyz" >/dev/null 2>&1; then
-    break
-  fi
-  sleep 1
-done
-"$ROOT/ops/load/scripts/run_suite.sh" store-outage-mid-spike.json "$RES"
-
-# Shorter soak by default for local/nightly cost control; override DURATION=30m
+"$ROOT/scripts/perf/validate_suite_manifest.py"
 docker stats --no-stream --format '{{json .}}' > "$ART/docker_stats_soak_start.json" || true
-DURATION="${SOAK_DURATION:-30m}" "$ROOT/ops/load/scripts/run_suite.sh" soak-30m.json "$RES"
+"$ROOT/scripts/perf/run_suites_from_manifest.py" --profile nightly --out "$RES"
 docker stats --no-stream --format '{{json .}}' > "$ART/docker_stats_soak_end.json" || true
 
 docker stats --no-stream --format '{{json .}}' > "$ART/docker_stats.json" || true

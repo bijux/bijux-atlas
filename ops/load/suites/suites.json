@@ -1,19 +1,168 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "query_set": "ops/load/queries/pinned-v1.json",
   "scenarios_dir": "ops/load/scenarios",
   "suites": [
-    {"name": "warm-steady-state-p99", "scenario": "warm-steady-state-p99.json", "p95_ms_max": 800, "p99_ms_max": 1500, "error_rate_max": 0.01},
-    {"name": "cold-start-p99", "scenario": "cold-start.json", "cold_start_p99_ms_max": 2500},
-    {"name": "stampede", "scenario": "stampede.json", "p95_ms_max": 1200, "p99_ms_max": 2500, "error_rate_max": 0.02},
-    {"name": "store-outage-mid-spike", "scenario": "store-outage-mid-spike.json", "p95_ms_max": 1500, "p99_ms_max": 3000, "error_rate_max": 0.10},
-    {"name": "noisy-neighbor-cpu-throttle", "scenario": "noisy-neighbor-cpu-throttle.json", "p95_ms_max": 1600, "p99_ms_max": 3200, "error_rate_max": 0.05},
-    {"name": "pod-churn", "scenario": "pod-churn.json", "p95_ms_max": 1200, "p99_ms_max": 2500, "error_rate_max": 0.03},
-    {"name": "response-size-abuse", "scenario": "response-size-abuse.json", "p95_ms_max": 900, "p99_ms_max": 1800, "error_rate_max": 0.02},
-    {"name": "multi-release", "scenario": "multi-release.json", "p95_ms_max": 1200, "p99_ms_max": 2500, "error_rate_max": 0.03},
-    {"name": "sharded-fanout", "scenario": "sharded-fanout.json", "p95_ms_max": 1400, "p99_ms_max": 2800, "error_rate_max": 0.04},
-    {"name": "diff-heavy", "scenario": "diff-heavy.json", "p95_ms_max": 1400, "p99_ms_max": 2600, "error_rate_max": 0.05},
-    {"name": "mixed-gene-sequence", "scenario": "mixed-gene-sequence.json", "p95_ms_max": 1100, "p99_ms_max": 2200, "error_rate_max": 0.04},
-    {"name": "soak-30m", "scenario": "soak-30m.json", "p95_ms_max": 1200, "p99_ms_max": 2400, "error_rate_max": 0.03, "memory_growth_bytes_max": 268435456}
+    {
+      "name": "mixed",
+      "purpose": "baseline mixed gene query profile for fast confidence checks",
+      "kind": "k6",
+      "scenario": "mixed.json",
+      "must_pass": true,
+      "run_in": ["smoke", "full", "nightly", "pr"],
+      "expected_metrics": ["http_req_duration", "http_req_failed", "http_reqs"],
+      "thresholds": {"p95_ms_max": 900, "p99_ms_max": 1300, "error_rate_max": 0.02}
+    },
+    {
+      "name": "cheap-only-survival",
+      "purpose": "verify cheap endpoints stay within budget under overload shedding",
+      "kind": "k6",
+      "scenario": "cheap-only-survival.json",
+      "must_pass": true,
+      "run_in": ["smoke", "full", "nightly", "pr"],
+      "expected_metrics": ["http_req_duration", "http_req_failed", "http_reqs"],
+      "thresholds": {"p95_ms_max": 900, "p99_ms_max": 1500, "error_rate_max": 0.03}
+    },
+    {
+      "name": "warm-steady-state-p99",
+      "purpose": "steady-state warm-cache latency and error budget verification",
+      "kind": "k6",
+      "scenario": "warm-steady-state-p99.json",
+      "must_pass": true,
+      "run_in": ["full", "nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed"],
+      "thresholds": {"p95_ms_max": 800, "p99_ms_max": 1500, "error_rate_max": 0.01}
+    },
+    {
+      "name": "cold-start-p99",
+      "purpose": "measure first-request latency budget for cold service startup",
+      "kind": "k6",
+      "scenario": "cold-start.json",
+      "must_pass": true,
+      "run_in": ["full", "nightly"],
+      "expected_metrics": ["http_req_duration"],
+      "thresholds": {"cold_start_p99_ms_max": 2500}
+    },
+    {
+      "name": "cold-start-prefetch-5pods",
+      "purpose": "measure cold-start latency across five warmed pods with pinned dataset",
+      "kind": "script",
+      "script": "scripts/perf/cold_start_prefetch_5pods.sh",
+      "must_pass": true,
+      "run_in": ["full", "nightly"],
+      "expected_metrics": ["pod_cold_start_ms"],
+      "thresholds": {"max_pod_cold_start_ms_max": 4000}
+    },
+    {
+      "name": "stampede",
+      "purpose": "validate cache stampede protection under concurrent uncached requests",
+      "kind": "k6",
+      "scenario": "stampede.json",
+      "must_pass": true,
+      "run_in": ["full", "nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed"],
+      "thresholds": {"p95_ms_max": 1200, "p99_ms_max": 2500, "error_rate_max": 0.02}
+    },
+    {
+      "name": "store-outage-mid-spike",
+      "purpose": "ensure service degradation policy holds during store outage spike",
+      "kind": "k6",
+      "scenario": "store-outage-mid-spike.json",
+      "must_pass": true,
+      "run_in": ["full", "nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed"],
+      "thresholds": {"p95_ms_max": 1500, "p99_ms_max": 3000, "error_rate_max": 0.1}
+    },
+    {
+      "name": "noisy-neighbor-cpu-throttle",
+      "purpose": "evaluate resilience under cpu throttling noisy-neighbor pressure",
+      "kind": "k6",
+      "scenario": "noisy-neighbor-cpu-throttle.json",
+      "must_pass": true,
+      "run_in": ["full", "nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed"],
+      "thresholds": {"p95_ms_max": 1600, "p99_ms_max": 3200, "error_rate_max": 0.05}
+    },
+    {
+      "name": "pod-churn",
+      "purpose": "validate bounded latency and errors while pods churn",
+      "kind": "k6",
+      "scenario": "pod-churn.json",
+      "must_pass": true,
+      "run_in": ["full", "nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed"],
+      "thresholds": {"p95_ms_max": 1200, "p99_ms_max": 2500, "error_rate_max": 0.03}
+    },
+    {
+      "name": "response-size-abuse",
+      "purpose": "verify large-response abuse guardrails with stable rejection latency",
+      "kind": "k6",
+      "scenario": "response-size-abuse.json",
+      "must_pass": true,
+      "run_in": ["full", "nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed"],
+      "thresholds": {"p95_ms_max": 900, "p99_ms_max": 1800, "error_rate_max": 0.02}
+    },
+    {
+      "name": "multi-release",
+      "purpose": "validate query correctness and latency over multi-release access",
+      "kind": "k6",
+      "scenario": "multi-release.json",
+      "must_pass": true,
+      "run_in": ["full", "nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed"],
+      "thresholds": {"p95_ms_max": 1200, "p99_ms_max": 2500, "error_rate_max": 0.03}
+    },
+    {
+      "name": "sharded-fanout",
+      "purpose": "validate shard fanout behavior stays within bounded latency budgets",
+      "kind": "k6",
+      "scenario": "sharded-fanout.json",
+      "must_pass": true,
+      "run_in": ["full", "nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed"],
+      "thresholds": {"p95_ms_max": 1400, "p99_ms_max": 2800, "error_rate_max": 0.04}
+    },
+    {
+      "name": "diff-heavy",
+      "purpose": "stress diff-heavy workloads and verify diff endpoint budgets",
+      "kind": "k6",
+      "scenario": "diff-heavy.json",
+      "must_pass": true,
+      "run_in": ["full", "nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed"],
+      "thresholds": {"p95_ms_max": 1400, "p99_ms_max": 2600, "error_rate_max": 0.05}
+    },
+    {
+      "name": "mixed-gene-sequence",
+      "purpose": "measure mixed gene and sequence traffic under realistic budgets",
+      "kind": "k6",
+      "scenario": "mixed-gene-sequence.json",
+      "must_pass": true,
+      "run_in": ["full", "nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed"],
+      "thresholds": {"p95_ms_max": 1100, "p99_ms_max": 2200, "error_rate_max": 0.04}
+    },
+    {
+      "name": "soak-30m",
+      "purpose": "long-running stability and memory-growth verification",
+      "kind": "k6",
+      "scenario": "soak-30m.json",
+      "must_pass": true,
+      "run_in": ["full", "nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed", "vus"],
+      "thresholds": {"p95_ms_max": 1200, "p99_ms_max": 2400, "error_rate_max": 0.03, "memory_growth_bytes_max": 268435456}
+    },
+    {
+      "name": "redis-optional",
+      "purpose": "compare redis-enabled and redis-disabled behavior without regressions",
+      "kind": "k6",
+      "scenario": "redis-optional.json",
+      "must_pass": false,
+      "run_in": ["full", "nightly"],
+      "requires": {"redis_experiment": true},
+      "expected_metrics": ["http_req_duration", "http_req_failed"],
+      "thresholds": {"p95_ms_max": 1200, "p99_ms_max": 2200, "error_rate_max": 0.05}
+    }
   ]
 }

@@ -172,16 +172,20 @@ ops-load-prereqs: ## Validate load harness prerequisites (k6 + endpoint)
 ops-load-smoke: ## Run short load suite
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
+	@$(MAKE) ops-load-manifest-validate
 	@./scripts/perf/check_pinned_queries_lock.py
 	@$(MAKE) ops-load-prereqs
-	@./ops/load/scripts/run_suite.sh mixed.json artifacts/perf/results
+	@./scripts/perf/run_suites_from_manifest.py --profile smoke --out artifacts/perf/results
 	@./scripts/perf/validate_results.py artifacts/perf/results
 
 ops-load-full: ## Run nightly/full load suites
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
+	@$(MAKE) ops-load-manifest-validate
 	@./scripts/perf/check_pinned_queries_lock.py
-	@./scripts/perf/run_nightly_perf.sh
+	@./scripts/perf/run_suites_from_manifest.py --profile full --out artifacts/perf/results
+	@./scripts/perf/validate_results.py artifacts/perf/results
+	@./ops/load/reports/generate.py
 
 ops-drill-store-outage: ## Run store outage drill under load
 	@$(MAKE) -s ops-env-validate
@@ -291,9 +295,11 @@ ops-perf-prepare-store: ## Perf helper: prepare local perf store fixture
 	@./scripts/perf/prepare_perf_store.sh
 
 ops-perf-e2e: ## Perf helper: run e2e perf suite
+	@$(MAKE) ops-load-manifest-validate
 	@./scripts/perf/run_e2e_perf.sh
 
 ops-perf-nightly: ## Perf helper: run nightly perf suite
+	@$(MAKE) ops-load-manifest-validate
 	@./scripts/perf/run_nightly_perf.sh
 
 ops-perf-cold-start: ## Perf helper: run cold-start benchmark
@@ -303,10 +309,17 @@ ops-perf-cold-start-prefetch-5pods: ## Perf helper: run 5-pod prefetch cold-star
 	@./scripts/perf/cold_start_prefetch_5pods.sh
 
 ops-perf-compare-redis: ## Perf helper: compare Redis-on vs Redis-off perf runs
+	@ATLAS_ENABLE_REDIS_EXPERIMENT=1 ./scripts/perf/validate_suite_manifest.py
 	@./scripts/perf/compare_redis.sh
 
 ops-baseline-policy-check: ## Enforce explicit approval policy for baseline updates
 	@./scripts/perf/check_baseline_update_policy.sh
+
+ops-perf-baseline-update: ## Update named baseline from artifacts/perf/baseline.json (requires approval for commit)
+	@./scripts/perf/update_baseline.sh "$${ATLAS_PERF_BASELINE_PROFILE:-local}"
+
+ops-load-manifest-validate: ## Validate load suite SSOT, naming conventions, and pinned query lock
+	@./scripts/perf/validate_suite_manifest.py
 
 ops-perf-suite: ## Perf helper: run an arbitrary perf suite (SCENARIO=<file.js> OUT=<dir>)
 	@[ -n "$$SCENARIO" ] || { echo "usage: make ops-perf-suite SCENARIO=<file.js> [OUT=artifacts/perf/results]" >&2; exit 2; }
