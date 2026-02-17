@@ -16,6 +16,7 @@ serde_json.workspace = true
 base64 = "0.22"
 hmac = "0.12"
 sha2 = "0.10"
+unicode-normalization = "0.1"
 
 [dev-dependencies]
 criterion = "0.5"
@@ -23,6 +24,10 @@ tempfile = "=3.13.0"
 
 [[bench]]
 name = "query_patterns"
+harness = false
+
+[[bench]]
+name = "query_concurrency"
 harness = false
 
 [lib]

@@ -1,5 +1,8 @@
 use crate::cursor::{CursorPayload, OrderMode};
-use crate::filters::{compile_field_projection, escape_like_prefix, GeneFields, GeneQueryRequest};
+use crate::filters::{
+    compile_field_projection, escape_like_prefix, normalize_name_lookup, GeneFields,
+    GeneQueryRequest,
+};
 use crate::planner::QueryClass;
 use crate::row_decode::RawGeneRow;
 use bijux_atlas_core::canonical;
@@ -37,14 +40,14 @@ pub fn build_sql(
         params.push(Value::Text(gene_id.clone()));
     }
     if let Some(name) = &req.filter.name {
-        where_parts.push("g.name = ?".to_string());
-        params.push(Value::Text(name.clone()));
+        where_parts.push("g.name_normalized = ?".to_string());
+        params.push(Value::Text(normalize_name_lookup(name)));
     }
     if let Some(prefix) = &req.filter.name_prefix {
         where_parts.push("g.name_normalized LIKE ? ESCAPE '!'".to_string());
         params.push(Value::Text(format!(
             "{}%",
-            escape_like_prefix(&prefix.to_ascii_lowercase())
+            escape_like_prefix(&normalize_name_lookup(prefix))
         )));
     }
     if let Some(biotype) = &req.filter.biotype {

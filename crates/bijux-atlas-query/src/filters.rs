@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use unicode_normalization::UnicodeNormalization;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 pub struct GeneFields {
@@ -155,4 +156,10 @@ pub fn escape_like_prefix(prefix: &str) -> String {
         }
     }
     out
+}
+
+#[must_use]
+pub fn normalize_name_lookup(input: &str) -> String {
+    // Canonical query normalization policy: NFKC + Unicode lowercase.
+    input.nfkc().collect::<String>().to_lowercase()
 }
