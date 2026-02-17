@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "tests": [
+    {"script": "test_cluster_sanity.sh", "groups": ["sanity", "cluster"], "retries": 1, "expected_failure_modes": ["cluster_unreachable"]},
+    {"script": "test_values_contract.sh", "groups": ["chart", "contracts"], "retries": 1, "expected_failure_modes": ["schema_mismatch"]},
+    {"script": "test_defaults_safe.sh", "groups": ["chart", "safety"], "retries": 1, "expected_failure_modes": ["unsafe_defaults"]},
+    {"script": "test_chart_drift.sh", "groups": ["chart"], "retries": 1, "expected_failure_modes": ["template_drift"]},
+    {"script": "test_helm_templates.sh", "groups": ["chart"], "retries": 1, "expected_failure_modes": ["template_render_failure"]},
+    {"script": "test_helm_repo_pinning.sh", "groups": ["chart", "supply-chain"], "retries": 1, "expected_failure_modes": ["unpinned_helm_repo"]},
+    {"script": "test_install.sh", "groups": ["install"], "retries": 1, "expected_failure_modes": ["install_failure"]},
+    {"script": "test_install_twice.sh", "groups": ["install", "idempotency"], "retries": 1, "expected_failure_modes": ["non_idempotent_install"]},
+    {"script": "test_uninstall_reinstall.sh", "groups": ["install", "idempotency"], "retries": 1, "expected_failure_modes": ["leftover_resources"]},
+    {"script": "test_networkpolicy.sh", "groups": ["networkpolicy", "security"], "retries": 1, "expected_failure_modes": ["egress_too_open"]},
+    {"script": "test_networkpolicy_metadata_egress.sh", "groups": ["networkpolicy", "security"], "retries": 1, "expected_failure_modes": ["metadata_egress_allowed"]},
+    {"script": "test_secrets.sh", "groups": ["security"], "retries": 1, "expected_failure_modes": ["secret_validation_missing"]},
+    {"script": "test_configmap.sh", "groups": ["config"], "retries": 1, "expected_failure_modes": ["invalid_config_accepted"]},
+    {"script": "test_cached_only_mode.sh", "groups": ["readiness", "resilience"], "retries": 1, "expected_failure_modes": ["cached_only_unavailable"]},
+    {"script": "test_readiness_semantics.sh", "groups": ["readiness"], "retries": 1, "expected_failure_modes": ["incorrect_readiness"]},
+    {"script": "test_readiness_catalog_refresh.sh", "groups": ["readiness"], "retries": 1, "expected_failure_modes": ["readiness_not_gated_on_refresh"]},
+    {"script": "test_pdb.sh", "groups": ["pdb", "availability"], "retries": 1, "expected_failure_modes": ["pdb_not_enforced"]},
+    {"script": "test_hpa.sh", "groups": ["hpa", "autoscaling"], "retries": 1, "expected_failure_modes": ["hpa_no_scale"]},
+    {"script": "test_rolling_restart_no_downtime.sh", "groups": ["availability", "rolling-restart"], "retries": 1, "expected_failure_modes": ["downtime_during_restart"]},
+    {"script": "test_liveness_under_load.sh", "groups": ["liveness", "load"], "retries": 1, "expected_failure_modes": ["liveness_flap"]}
+  ]
+}

@@ -15,6 +15,8 @@ ATLAS_E2E_TIMEOUT ?= 180s
 ATLAS_E2E_ENABLE_REDIS ?= 0
 ATLAS_E2E_ENABLE_OTEL ?= 0
 ATLAS_E2E_ENABLE_TOXIPROXY ?= 0
+ATLAS_E2E_TEST_GROUP ?=
+ATLAS_E2E_TEST ?=
 
 export ATLAS_BASE_URL
 export ATLAS_NS
@@ -28,6 +30,8 @@ export ATLAS_E2E_TIMEOUT
 export ATLAS_E2E_ENABLE_REDIS
 export ATLAS_E2E_ENABLE_OTEL
 export ATLAS_E2E_ENABLE_TOXIPROXY
+export ATLAS_E2E_TEST_GROUP
+export ATLAS_E2E_TEST
 export ATLAS_E2E_NAMESPACE ?= $(ATLAS_NS)
 export ATLAS_E2E_VALUES_FILE ?= $(ATLAS_VALUES_FILE)
 
@@ -148,7 +152,14 @@ ops-traces-check: ## Validate trace signal (when OTEL enabled)
 ops-k8s-tests: ## Run k8s e2e suite
 	@$(MAKE) -s ops-env-validate
 	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck
-	@./ops/e2e/k8s/tests/run_all.sh
+	@group_args=""; \
+	if [ -n "$${ATLAS_E2E_TEST_GROUP}" ]; then \
+	  group_args="$$group_args --group $${ATLAS_E2E_TEST_GROUP}"; \
+	fi; \
+	if [ -n "$${ATLAS_E2E_TEST}" ]; then \
+	  group_args="$$group_args --test $${ATLAS_E2E_TEST}"; \
+	fi; \
+	./ops/e2e/k8s/tests/run_all.sh $$group_args
 
 ops-k8s-template-tests: ## Run helm template/lint edge-case checks
 	@./ops/e2e/k8s/tests/test_helm_templates.sh
