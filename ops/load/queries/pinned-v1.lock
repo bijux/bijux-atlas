@@ -1,0 +1,11 @@
+{
+  "file_sha256": "8784fa9ca54642141cb9b93fc6fd98b70646ce9362c23c82c09e34fb936c6a5a",
+  "query_hashes": {
+    "/v1/genes/count?release=110&species=homo_sapiens&assembly=GRCh38": "7977a7f5b5f37d8fdb2f64ed2991edf17994c8289342c8f466f72fe4b7362795",
+    "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&limit=1": "cb7b10fea20bb7c034690f32d7b17ebf99b351b0c8e4b9c361f0dde4febe9d59",
+    "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&name_prefix=G&limit=100": "2804c6481d5877e79e092d6811b9388ebce056385a2ee27ea52e03e2e21e5f2a",
+    "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&region=chr1:1-100000&limit=100": "5918f36ab2b1d99e9348a97bc8e5b677b9b6938a2100d9110711da8ab64a5924"
+  },
+  "schema_version": 1,
+  "source": "ops/load/queries/pinned-v1.json"
+}

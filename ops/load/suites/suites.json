@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "query_set": "ops/load/queries/pinned-v1.json",
+  "scenarios_dir": "ops/load/scenarios",
+  "suites": [
+    {"name": "warm-steady-state-p99", "scenario": "warm-steady-state-p99.json", "p95_ms_max": 800, "p99_ms_max": 1500, "error_rate_max": 0.01},
+    {"name": "cold-start-p99", "scenario": "cold-start.json", "cold_start_p99_ms_max": 2500},
+    {"name": "stampede", "scenario": "stampede.json", "p95_ms_max": 1200, "p99_ms_max": 2500, "error_rate_max": 0.02},
+    {"name": "store-outage-mid-spike", "scenario": "store-outage-mid-spike.json", "p95_ms_max": 1500, "p99_ms_max": 3000, "error_rate_max": 0.10},
+    {"name": "noisy-neighbor-cpu-throttle", "scenario": "noisy-neighbor-cpu-throttle.json", "p95_ms_max": 1600, "p99_ms_max": 3200, "error_rate_max": 0.05},
+    {"name": "pod-churn", "scenario": "pod-churn.json", "p95_ms_max": 1200, "p99_ms_max": 2500, "error_rate_max": 0.03},
+    {"name": "response-size-abuse", "scenario": "response-size-abuse.json", "p95_ms_max": 900, "p99_ms_max": 1800, "error_rate_max": 0.02},
+    {"name": "multi-release", "scenario": "multi-release.json", "p95_ms_max": 1200, "p99_ms_max": 2500, "error_rate_max": 0.03},
+    {"name": "sharded-fanout", "scenario": "sharded-fanout.json", "p95_ms_max": 1400, "p99_ms_max": 2800, "error_rate_max": 0.04}
+  ]
+}

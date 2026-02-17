@@ -1,1 +1,0 @@
-{"name":"response_size_guardrails","suite":"mixed_gene_sequence.js","focus":"oversized sequence requests should be rejected fast"}
