@@ -15,9 +15,16 @@ fn fixture_sqlite() -> Vec<u8> {
     let db = dir.path().join("x.sqlite");
     let conn = Connection::open(&db).expect("open sqlite");
     conn.execute_batch(
-        "CREATE TABLE gene_summary(id INTEGER PRIMARY KEY, gene_id TEXT, name TEXT, name_normalized TEXT, biotype TEXT, seqid TEXT, start INT, end INT, transcript_count INT, sequence_length INT);
+        "CREATE TABLE gene_summary(id INTEGER PRIMARY KEY, gene_id TEXT, name TEXT, name_normalized TEXT, biotype TEXT, seqid TEXT, start INT, end INT, transcript_count INT, exon_count INT DEFAULT 0, total_exon_span INT DEFAULT 0, cds_present INT DEFAULT 0, sequence_length INT);
+         CREATE TABLE transcript_summary(id INTEGER PRIMARY KEY, transcript_id TEXT, parent_gene_id TEXT, transcript_type TEXT, biotype TEXT, seqid TEXT, start INT, end INT, exon_count INT, total_exon_span INT, cds_present INT);
          CREATE TABLE dataset_stats(dimension TEXT NOT NULL, value TEXT NOT NULL, gene_count INTEGER NOT NULL, PRIMARY KEY (dimension, value));
          INSERT INTO gene_summary(id,gene_id,name,name_normalized,biotype,seqid,start,end,transcript_count,sequence_length) VALUES (1,'g1','G1','g1','pc','chr1',1,10,1,10);
+         CREATE INDEX idx_transcript_summary_transcript_id ON transcript_summary(transcript_id);
+         CREATE INDEX idx_transcript_summary_parent_gene_id ON transcript_summary(parent_gene_id);
+         CREATE INDEX idx_transcript_summary_biotype ON transcript_summary(biotype);
+         CREATE INDEX idx_transcript_summary_type ON transcript_summary(transcript_type);
+         CREATE INDEX idx_transcript_summary_region ON transcript_summary(seqid,start,end);
+         INSERT INTO transcript_summary(id,transcript_id,parent_gene_id,transcript_type,biotype,seqid,start,end,exon_count,total_exon_span,cds_present) VALUES (1,'tx1','g1','transcript','pc','chr1',1,10,1,10,1);
          INSERT INTO dataset_stats(dimension,value,gene_count) VALUES ('biotype','pc',1);
          INSERT INTO dataset_stats(dimension,value,gene_count) VALUES ('seqid','chr1',1);",
     )
@@ -339,4 +346,35 @@ async fn release_metadata_endpoint_and_explain_mode_are_available() {
         .and_then(|h| h.get("cached"))
         .and_then(Value::as_bool)
         .is_some());
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/genes/g1/transcripts?release=110&species=homo_sapiens&assembly=GRCh38&limit=10",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+    let json: Value = serde_json::from_str(&body).expect("gene transcripts json");
+    assert_eq!(
+        json.get("response")
+            .and_then(|r| r.get("rows"))
+            .and_then(Value::as_array)
+            .map(std::vec::Vec::len),
+        Some(1)
+    );
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/transcripts/tx1?release=110&species=homo_sapiens&assembly=GRCh38",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+    let json: Value = serde_json::from_str(&body).expect("transcript summary json");
+    assert_eq!(
+        json.get("transcript")
+            .and_then(|t| t.get("transcript_id"))
+            .and_then(Value::as_str),
+        Some("tx1")
+    );
 }

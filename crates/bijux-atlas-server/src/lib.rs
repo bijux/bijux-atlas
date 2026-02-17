@@ -13,7 +13,7 @@ use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
 use bijux_atlas_query::{
     classify_query, query_genes, GeneFields, GeneFilter, GeneQueryRequest, QueryClass, QueryLimits,
-    RegionFilter,
+    RegionFilter, TranscriptFilter, TranscriptQueryRequest,
 };
 use rusqlite::{Connection, OpenFlags};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -1041,6 +1041,14 @@ pub fn build_router(state: AppState) -> Router {
         )
         .route("/v1/genes", get(http::handlers::genes_handler))
         .route("/v1/genes/count", get(http::handlers::genes_count_handler))
+        .route(
+            "/v1/genes/:gene_id/transcripts",
+            get(http::handlers::gene_transcripts_handler),
+        )
+        .route(
+            "/v1/transcripts/:tx_id",
+            get(http::handlers::transcript_summary_handler),
+        )
         .route(
             "/debug/datasets",
             get(http::handlers::debug_datasets_handler),
