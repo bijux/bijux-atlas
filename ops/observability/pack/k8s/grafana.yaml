@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atlas-observability-grafana
+  namespace: atlas-observability
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: atlas-observability-grafana
+  template:
+    metadata:
+      labels:
+        app: atlas-observability-grafana
+    spec:
+      serviceAccountName: atlas-observability-grafana
+      containers:
+        - name: grafana
+          image: grafana/grafana:11.2.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: web
+              containerPort: 3000
+          env:
+            - name: GF_AUTH_ANONYMOUS_ENABLED
+              value: "true"
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: web
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          volumeMounts:
+            - name: datasources
+              mountPath: /etc/grafana/provisioning/datasources
+            - name: dashboards-provider
+              mountPath: /etc/grafana/provisioning/dashboards
+            - name: dashboards
+              mountPath: /var/lib/grafana/dashboards
+      volumes:
+        - name: datasources
+          configMap:
+            name: atlas-observability-grafana-datasources
+        - name: dashboards-provider
+          configMap:
+            name: atlas-observability-grafana-dashboards-provider
+        - name: dashboards
+          configMap:
+            name: atlas-observability-grafana-dashboards
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: atlas-observability-grafana
+  namespace: atlas-observability
+spec:
+  selector:
+    app: atlas-observability-grafana
+  ports:
+    - name: web
+      port: 3000
+      targetPort: web

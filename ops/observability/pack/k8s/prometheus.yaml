@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atlas-observability-prometheus
+  namespace: atlas-observability
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: atlas-observability-prometheus
+  template:
+    metadata:
+      labels:
+        app: atlas-observability-prometheus
+    spec:
+      serviceAccountName: atlas-observability-prometheus
+      containers:
+        - name: prometheus
+          image: prom/prometheus:v2.54.1
+          imagePullPolicy: IfNotPresent
+          args:
+            - --config.file=/etc/prometheus/prometheus.yml
+            - --storage.tsdb.retention.time=2h
+          ports:
+            - name: web
+              containerPort: 9090
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          volumeMounts:
+            - name: config
+              mountPath: /etc/prometheus
+            - name: data
+              mountPath: /prometheus
+      volumes:
+        - name: config
+          configMap:
+            name: atlas-observability-prometheus-config
+        - name: data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: atlas-observability-prometheus
+  namespace: atlas-observability
+spec:
+  selector:
+    app: atlas-observability-prometheus
+  ports:
+    - name: web
+      port: 9090
+      targetPort: web

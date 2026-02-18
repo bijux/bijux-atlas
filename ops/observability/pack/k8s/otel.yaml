@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atlas-observability-otel
+  namespace: atlas-observability
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: atlas-observability-otel
+  template:
+    metadata:
+      labels:
+        app: atlas-observability-otel
+    spec:
+      serviceAccountName: atlas-observability-otel
+      containers:
+        - name: otel-collector
+          image: otel/opentelemetry-collector-contrib:0.111.0
+          imagePullPolicy: IfNotPresent
+          args: ["--config=/etc/otelcol/config.yaml"]
+          ports:
+            - name: grpc
+              containerPort: 4317
+            - name: http
+              containerPort: 4318
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          volumeMounts:
+            - name: cfg
+              mountPath: /etc/otelcol
+      volumes:
+        - name: cfg
+          configMap:
+            name: atlas-observability-otel-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: atlas-observability-otel
+  namespace: atlas-observability
+spec:
+  selector:
+    app: atlas-observability-otel
+  ports:
+    - name: grpc
+      port: 4317
+      targetPort: grpc
+    - name: http
+      port: 4318
+      targetPort: http

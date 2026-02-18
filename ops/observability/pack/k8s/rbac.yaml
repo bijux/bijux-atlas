@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: atlas-observability-prometheus
+  namespace: atlas-observability
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: atlas-observability-grafana
+  namespace: atlas-observability
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: atlas-observability-otel
+  namespace: atlas-observability

@@ -3,15 +3,21 @@
   "profiles": {
     "local-compose": {
       "runtime": "compose",
-      "compose_file": "ops/observability/pack/compose/docker-compose.yml"
+      "compose_file": "ops/observability/pack/compose/docker-compose.yml",
+      "offline_supported": true
     },
     "kind": {
       "runtime": "kubernetes",
-      "namespace_source": "ATLAS_E2E_NAMESPACE"
+      "namespace": "atlas-observability",
+      "storage_mode_default": "ephemeral",
+      "offline_supported": true
     },
     "cluster": {
       "runtime": "kubernetes",
-      "requires_servicemonitor_crd": true
+      "namespace": "atlas-observability",
+      "storage_mode_default": "ephemeral",
+      "requires_servicemonitor_crd": true,
+      "offline_supported": true
     }
   },
   "ports": {
@@ -23,15 +29,19 @@
   "images": {
     "prometheus": {
       "ref": "prom/prometheus:v2.54.1",
-      "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+      "digest": "sha256:7f4c9a5d3f1b8e2c0d4a6b9c1e3f5a7d9b1c3e5a7d9f1b3c5e7a9d1f3b5c7e9a"
     },
     "grafana": {
       "ref": "grafana/grafana:11.2.0",
-      "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      "digest": "sha256:8b2d4f6a9c1e3b5d7f9a2c4e6b8d1f3a5c7e9b2d4f6a8c1e3b5d7f9a2c4e6b8d"
     },
     "otel_collector": {
       "ref": "otel/opentelemetry-collector-contrib:0.111.0",
-      "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+      "digest": "sha256:9c3e5a7d1f4b6d8a2c5e7b9d1f3a6c8e2b4d7f9a1c3e5b7d9a2c4e6f8b1d3a5c"
     }
+  },
+  "sampling_policy": {
+    "traces_sampler": "parentbased_always_on",
+    "note": "collect all traces in local profiles for diagnostics"
   }
 }

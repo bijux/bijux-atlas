@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: atlas-observability-grafana-datasources
+  namespace: atlas-observability
+data:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://atlas-observability-prometheus.atlas-observability.svc.cluster.local:9090
+        isDefault: true
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: atlas-observability-grafana-dashboards-provider
+  namespace: atlas-observability
+data:
+  dashboards.yaml: |
+    apiVersion: 1
+    providers:
+      - name: atlas
+        orgId: 1
+        folder: Atlas
+        type: file
+        options:
+          path: /var/lib/grafana/dashboards
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: atlas-observability-grafana-dashboards
+  namespace: atlas-observability
+data:
+  atlas-observability-dashboard.json: |
+    {
+      "uid": "atlas-observability",
+      "title": "Atlas Observability",
+      "schemaVersion": 38,
+      "version": 1,
+      "panels": []
+    }

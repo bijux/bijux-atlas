@@ -7,6 +7,7 @@ PROFILE="${ATLAS_OBS_PROFILE:-kind}"
 if [ "${1:-}" = "--profile" ]; then
   PROFILE="${2:-}"
 fi
+OBS_NS="${ATLAS_OBS_NAMESPACE:-atlas-observability}"
 
 compose_cmd() {
   if command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1; then
@@ -29,10 +30,17 @@ case "$PROFILE" in
     $cmd -f "${REPO_ROOT}/ops/observability/pack/compose/docker-compose.yml" down -v
     ;;
   kind | cluster)
-    ops_kubectl delete -f "${REPO_ROOT}/ops/stack/prometheus/prometheus.yaml" --ignore-not-found >/dev/null 2>&1 || true
-    ops_kubectl delete -f "${REPO_ROOT}/ops/stack/grafana/grafana.yaml" --ignore-not-found >/dev/null 2>&1 || true
-    ops_kubectl delete -f "${REPO_ROOT}/ops/stack/otel/otel-collector.yaml" --ignore-not-found >/dev/null 2>&1 || true
-    ops_kubectl delete -f "${REPO_ROOT}/ops/observability/alerts/atlas-alert-rules.yaml" --ignore-not-found >/dev/null 2>&1 || true
+    ops_kubectl -n "$OBS_NS" delete -f "${REPO_ROOT}/ops/observability/alerts/atlas-alert-rules.yaml" --ignore-not-found >/dev/null 2>&1 || true
+    ops_kubectl delete -f "${REPO_ROOT}/ops/observability/pack/k8s/otel.yaml" --ignore-not-found >/dev/null 2>&1 || true
+    ops_kubectl -n "$OBS_NS" delete configmap atlas-observability-otel-config --ignore-not-found >/dev/null 2>&1 || true
+    ops_kubectl delete -f "${REPO_ROOT}/ops/observability/pack/k8s/grafana.yaml" --ignore-not-found >/dev/null 2>&1 || true
+    ops_kubectl delete -f "${REPO_ROOT}/ops/observability/pack/k8s/grafana-config.yaml" --ignore-not-found >/dev/null 2>&1 || true
+    ops_kubectl delete -f "${REPO_ROOT}/ops/observability/pack/k8s/prometheus.yaml" --ignore-not-found >/dev/null 2>&1 || true
+    ops_kubectl delete -f "${REPO_ROOT}/ops/observability/pack/k8s/prometheus-config.yaml" --ignore-not-found >/dev/null 2>&1 || true
+    ops_kubectl delete -f "${REPO_ROOT}/ops/observability/pack/k8s/prometheus-pvc.yaml" --ignore-not-found >/dev/null 2>&1 || true
+    ops_kubectl delete -f "${REPO_ROOT}/ops/observability/pack/k8s/grafana-pvc.yaml" --ignore-not-found >/dev/null 2>&1 || true
+    ops_kubectl delete -f "${REPO_ROOT}/ops/observability/pack/k8s/rbac.yaml" --ignore-not-found >/dev/null 2>&1 || true
+    ops_kubectl delete -f "${REPO_ROOT}/ops/observability/pack/k8s/namespace.yaml" --ignore-not-found >/dev/null 2>&1 || true
     ;;
   *)
     echo "unknown profile: $PROFILE (expected: local-compose|kind|cluster)" >&2
