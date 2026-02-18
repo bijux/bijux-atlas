@@ -16,6 +16,7 @@
     "ops-stack-down",
     "ops-obs-up",
     "ops-obs-verify",
+    "ops-obs-drill",
     "ops-datasets-verify",
     "ops-e2e-smoke",
     "ops-k8s-suite",
