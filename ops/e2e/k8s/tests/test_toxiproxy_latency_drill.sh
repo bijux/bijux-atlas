@@ -12,6 +12,6 @@ fi
 
 install_chart
 wait_ready
-"$ROOT/ops/observability/scripts/drill_toxiproxy_latency.sh"
+"$ROOT/ops/observability/scripts/toxiproxy-latency.sh"
 
 echo "toxiproxy latency drill test passed"

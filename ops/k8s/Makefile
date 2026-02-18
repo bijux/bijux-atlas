@@ -12,4 +12,4 @@ report:
 	@./tests/report.sh
 
 pod-churn:
-	@../../ops/e2e/k8s/tests/drill_pod_churn.sh
+	@../../ops/e2e/k8s/tests/pod-churn.sh
