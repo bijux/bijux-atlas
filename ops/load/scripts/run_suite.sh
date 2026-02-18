@@ -5,6 +5,7 @@
 set -eu
 
 ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
+python3 "$ROOT/scripts/layout/check_tool_versions.py" k6 >/dev/null
 INPUT="${1:?suite or scenario required, e.g. mixed-80-20.js or mixed.json}"
 OUT_DIR="${2:-$ROOT/artifacts/perf/results}"
 BASE_URL="${ATLAS_BASE_URL:-${BASE_URL:-http://127.0.0.1:18080}}"

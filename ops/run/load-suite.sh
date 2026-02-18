@@ -5,6 +5,7 @@ cd "$ROOT"
 . "$ROOT/ops/_lib/common.sh"
 ops_env_load
 ops_entrypoint_start "ops-load-suite"
+ops_version_guard k6
 SUITE="${SUITE:-mixed-80-20}"
 OUT="${OUT:-artifacts/perf/results}"
 if [ "$SUITE" = "mixed-80-20" ]; then

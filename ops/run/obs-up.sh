@@ -5,6 +5,7 @@ cd "$ROOT"
 . "$ROOT/ops/_lib/common.sh"
 ops_env_load
 ops_entrypoint_start "ops-obs-up"
+ops_version_guard kind kubectl helm
 PROFILE="${PROFILE:-${ATLAS_OBS_PROFILE:-kind}}"
 if [ "$PROFILE" = "compose" ]; then
   PROFILE="local-compose"

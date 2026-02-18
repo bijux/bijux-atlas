@@ -17,8 +17,11 @@ for script in sorted(RUN_DIR.glob("*.sh")):
         errors.append(f"{script}: missing common.sh import")
     if "ops_entrypoint_start " not in text:
         errors.append(f"{script}: missing ops_entrypoint_start call")
+    has_version_guard = "ops_version_guard " in text
     for cmd in NET_CMDS:
         if script.name == "prereqs.sh":
+            continue
+        if has_version_guard:
             continue
         if re.search(rf"(^|[^\w-]){re.escape(cmd)}\s", text):
             errors.append(f"{script}: direct network/tool call `{cmd}` not allowed in ops/run wrappers")

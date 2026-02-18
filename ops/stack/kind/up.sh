@@ -5,6 +5,7 @@ ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 source "$ROOT/ops/_lib/common.sh"
 ops_init_run_id
 ops_ci_no_prompt_policy
+ops_version_guard kind kubectl
 
 cluster="${ATLAS_E2E_CLUSTER_NAME:-bijux-atlas-e2e}"
 profile="${ATLAS_KIND_PROFILE:-normal}"
