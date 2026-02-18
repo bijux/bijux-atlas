@@ -6,6 +6,7 @@
       "test_defaults_safe.sh",
       "test_chart_drift.sh",
       "test_helm_templates.sh",
+      "test_chart_contract_required_fields.sh",
       "test_helm_repo_pinning.sh",
       "test_install.sh",
       "test_install_twice.sh",
