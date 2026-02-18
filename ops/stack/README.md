@@ -5,6 +5,7 @@ Canonical stack manifests and bootstrap scripts for local and CI operations.
 - `kind/`: cluster definitions and profile scripts (`small|normal|perf`)
 - `minio/`: object store deployment and bootstrap
 - `prometheus/`: Prometheus deployment
+- `grafana/`: Grafana deployment + provisioned datasource/dashboard
 - `otel/`: OpenTelemetry collector deployment
 - `redis/`: optional Redis deployment
 - `toxiproxy/`: optional store fault/latency proxy

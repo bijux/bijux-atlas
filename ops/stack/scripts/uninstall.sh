@@ -7,6 +7,7 @@ CLUSTER_NAME="${ATLAS_E2E_CLUSTER_NAME:-bijux-atlas-e2e}"
 kubectl delete -f "$ROOT/stack/toxiproxy/toxiproxy.yaml" --ignore-not-found >/dev/null 2>&1 || true
 kubectl delete -f "$ROOT/stack/redis/redis.yaml" --ignore-not-found >/dev/null 2>&1 || true
 kubectl delete -f "$ROOT/stack/otel/otel-collector.yaml" --ignore-not-found >/dev/null 2>&1 || true
+kubectl delete -f "$ROOT/stack/grafana/grafana.yaml" --ignore-not-found >/dev/null 2>&1 || true
 kubectl delete -f "$ROOT/stack/prometheus/prometheus.yaml" --ignore-not-found >/dev/null 2>&1 || true
 kubectl delete -f "$ROOT/stack/minio/minio.yaml" --ignore-not-found >/dev/null 2>&1 || true
 kubectl -n "$NS" delete pod minio-bootstrap --ignore-not-found >/dev/null 2>&1 || true

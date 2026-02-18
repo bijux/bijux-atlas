@@ -39,6 +39,7 @@ ops_kubectl get ns "$NS" >/dev/null 2>&1 || ops_kubectl create ns "$NS" >/dev/nu
 
 ops_kubectl_retry apply -f "$ROOT/ops/stack/minio/minio.yaml"
 ops_kubectl_retry apply -f "$ROOT/ops/stack/prometheus/prometheus.yaml"
+ops_kubectl_retry apply -f "$ROOT/ops/stack/grafana/grafana.yaml"
 
 if [ "$ENABLE_REDIS" = "1" ]; then
   ops_kubectl_retry apply -f "$ROOT/ops/stack/redis/redis.yaml"
