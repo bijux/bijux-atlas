@@ -18,6 +18,9 @@ Single landing page for Bijux Atlas SLI/SLO/SLA policy and machine-checked targe
 - [Scope](SCOPE.md)
 - [Non-goals](NON_GOALS.md)
 - [Change policy](CHANGE_POLICY.md)
+- [SLIs](SLIS.md)
+- [Why These SLIs](WHY_THESE_SLIS.md)
+- [What We Do Not Measure Yet](WHAT_WE_DONT_MEASURE_YET.md)
 
 ## Source of truth
 
