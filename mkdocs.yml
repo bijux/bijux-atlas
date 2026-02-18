@@ -99,6 +99,7 @@ nav:
           - Index: contracts/artifacts/INDEX.md
           - Manifest Contract: contracts/artifacts/manifest-contract.md
           - Directory Contract: contracts/artifacts/directory-contract.md
+          - SQLite Schema Contract: contracts/artifacts/sqlite-schema-contract.md
       - Plugin:
           - Index: contracts/plugin/INDEX.md
           - Spec: contracts/plugin/spec.md

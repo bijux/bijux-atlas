@@ -10,6 +10,8 @@ Rules:
 - Build parameters are written to `atlas_meta` for deterministic introspection.
 - Manifest includes reproducibility proof fields: `ingest_toolchain` and `ingest_build_hash`.
 - Schema evolution is forward-only; v1 does not remove existing columns.
+- Artifact hash definition (v1): `sha256(sqlite_bytes)` with manifest-side checksums and signatures; `created_at` is excluded from determinism guarantees.
+- Cross-platform policy: tiny fixture golden hashes are pinned and validated in CI for Linux/macOS runners when available.
 
 Concurrency:
 - If parallelism is used, final aggregation and output ordering must remain deterministic.
