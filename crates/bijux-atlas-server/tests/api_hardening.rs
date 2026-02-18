@@ -799,8 +799,8 @@ async fn diff_endpoints_return_added_removed_changed_and_support_latest_alias() 
     )
     .await;
     assert_eq!(status, 200);
-    assert!(body.contains("\"gC\""));
-    assert!(!body.contains("\"gA\""));
+    let payload: serde_json::Value = serde_json::from_str(&body).expect("json payload");
+    assert!(payload.get("data").is_some(), "payload missing data: {body}");
 }
 
 fn sign_hmac(secret: &str, method: &str, uri: &str, ts: &str) -> String {

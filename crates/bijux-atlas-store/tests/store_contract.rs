@@ -18,7 +18,7 @@ fn mk_dataset() -> DatasetId {
 }
 
 fn mk_manifest(dataset: DatasetId) -> ArtifactManifest {
-    ArtifactManifest::new(
+    let mut manifest = ArtifactManifest::new(
         "1".to_string(),
         "1".to_string(),
         dataset,
@@ -29,7 +29,10 @@ fn mk_manifest(dataset: DatasetId) -> ArtifactManifest {
             "d".repeat(64),
         ),
         ManifestStats::new(1, 1, 1),
-    )
+    );
+    manifest.db_hash = manifest.checksums.sqlite_sha256.clone();
+    manifest.artifact_hash = manifest.checksums.sqlite_sha256.clone();
+    manifest
 }
 
 #[test]
