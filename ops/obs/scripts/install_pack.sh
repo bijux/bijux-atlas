@@ -4,6 +4,7 @@ set -euo pipefail
 source "$(CDPATH= cd -- "$(dirname -- "$0")/../../_lib" && pwd)/common.sh"
 # shellcheck source=ops/_lib/ports.sh
 source "${REPO_ROOT}/ops/_lib/ports.sh"
+ops_version_guard kind kubectl helm
 
 PROFILE="${ATLAS_OBS_PROFILE:-kind}"
 if [ "${1:-}" = "--profile" ]; then

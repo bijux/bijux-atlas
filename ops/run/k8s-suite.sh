@@ -5,4 +5,5 @@ cd "$ROOT"
 . "$ROOT/ops/_lib/common.sh"
 ops_env_load
 ops_entrypoint_start "ops-k8s-suite"
+ops_version_guard kind kubectl helm
 exec ./ops/k8s/tests/run_all.sh "$@"

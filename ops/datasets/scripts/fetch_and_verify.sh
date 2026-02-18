@@ -5,6 +5,7 @@
 # called-by: make ops-datasets-fetch
 set -euo pipefail
 ROOT="$(CDPATH='' cd -- "$(dirname -- "$0")/../../.." && pwd)"
+python3 "$ROOT/scripts/layout/check_dataset_manifest_lock.py"
 if [ -f "$ROOT/ops/datasets/manifest.lock" ]; then
   :
 else
