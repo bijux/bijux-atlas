@@ -59,7 +59,8 @@ impl DatasetCacheManager {
             "other"
         };
         let mut by = self.metrics.store_errors_by_backend_and_class.lock().await;
-        *by.entry((backend.to_string(), class.to_string())).or_insert(0) += 1;
+        *by.entry((backend.to_string(), class.to_string()))
+            .or_insert(0) += 1;
         let remaining = self.retry_budget_remaining.load(Ordering::Relaxed);
         if remaining > 0 {
             self.retry_budget_remaining

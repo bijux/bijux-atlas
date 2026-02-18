@@ -624,11 +624,7 @@ pub(crate) async fn genes_handler(
                 );
                 state
                     .metrics
-                    .observe_request(
-                        "/v1/genes",
-                        status,
-                        started.elapsed(),
-                    )
+                    .observe_request("/v1/genes", status, started.elapsed())
                     .await;
                 return super::handlers::with_request_id(resp, &request_id);
             }

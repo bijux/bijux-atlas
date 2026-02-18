@@ -115,13 +115,7 @@ fn decode_attr_value(raw: &str) -> String {
 fn is_id_key(key: &str) -> bool {
     matches!(
         key,
-        "ID"
-            | "Parent"
-            | "gene_id"
-            | "transcript_id"
-            | "transcriptId"
-            | "protein_id"
-            | "exon_id"
+        "ID" | "Parent" | "gene_id" | "transcript_id" | "transcriptId" | "protein_id" | "exon_id"
     )
 }
 
@@ -134,12 +128,7 @@ fn has_forbidden_hidden_characters(value: &str) -> bool {
         c.is_control()
             || matches!(
                 c,
-                '\u{200B}'
-                    | '\u{200C}'
-                    | '\u{200D}'
-                    | '\u{2060}'
-                    | '\u{FEFF}'
-                    | '\u{00AD}'
+                '\u{200B}' | '\u{200C}' | '\u{200D}' | '\u{2060}' | '\u{FEFF}' | '\u{00AD}'
             )
     })
 }
