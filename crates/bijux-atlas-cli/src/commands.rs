@@ -117,3 +117,25 @@ pub(crate) enum DiffCommand {
         max_inline_items: usize,
     },
 }
+
+#[derive(Subcommand)]
+pub(crate) enum GcCommand {
+    Plan {
+        #[arg(long)]
+        store_root: PathBuf,
+        #[arg(long)]
+        catalog: Vec<PathBuf>,
+        #[arg(long, default_value = "ops/registry/pins.json")]
+        pins: PathBuf,
+    },
+    Apply {
+        #[arg(long)]
+        store_root: PathBuf,
+        #[arg(long)]
+        catalog: Vec<PathBuf>,
+        #[arg(long, default_value = "ops/registry/pins.json")]
+        pins: PathBuf,
+        #[arg(long, default_value_t = false)]
+        confirm: bool,
+    },
+}
