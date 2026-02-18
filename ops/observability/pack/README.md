@@ -1,15 +1,10 @@
-# Observability Pack
+# Observability Pack (Stub)
 
-Install:
+- Owner: `bijux-atlas-operations`
 
-```bash
-make ops-obs-up
-```
+Canonical profile documentation: `docs/operations/observability/profiles.md`.
+Use make targets:
 
-Uninstall:
-
-```bash
-make ops-obs-down
-```
-
-Canonical docs: `docs/operations/observability/profiles.md`.
+- `make ops-obs-up`
+- `make ops-obs-down`
+- `make ops-obs-mode ATLAS_OBS_PROFILE=kind`
