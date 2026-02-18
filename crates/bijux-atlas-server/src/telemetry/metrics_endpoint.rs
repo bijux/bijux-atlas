@@ -244,6 +244,22 @@ bijux_store_error_other_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} 
             .store_error_other_total
             .load(Ordering::Relaxed)
     ));
+    let mut store_error_by = state
+        .cache
+        .metrics
+        .store_errors_by_backend_and_class
+        .lock()
+        .await
+        .iter()
+        .map(|((backend, class), count)| (backend.clone(), class.clone(), *count))
+        .collect::<Vec<_>>();
+    store_error_by.sort_by(|a, b| a.0.cmp(&b.0).then_with(|| a.1.cmp(&b.1)));
+    for (backend, class, count) in store_error_by {
+        body.push_str(&format!(
+            "bijux_store_errors_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",backend=\"{}\",class=\"{}\"}} {}\n",
+            METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, backend, class, count
+        ));
+    }
     let heavy_cap = state.api.concurrency_heavy as u64;
     let heavy_avail = state.class_heavy.available_permits() as u64;
     let heavy_inflight = heavy_cap.saturating_sub(heavy_avail);

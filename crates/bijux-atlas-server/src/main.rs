@@ -105,6 +105,7 @@ fn parse_registry_sources(retry: RetryPolicy) -> Result<Option<Vec<RegistrySourc
     }
     let signatures = env_map("ATLAS_REGISTRY_SIGNATURES");
     let ttl = env_duration_ms("ATLAS_REGISTRY_TTL_MS", 15_000);
+    let max_sources = env_usize("ATLAS_REGISTRY_MAX_SOURCES", 8);
     let mut sources = Vec::new();
     for part in raw.split(',') {
         let piece = part.trim();
@@ -146,6 +147,13 @@ fn parse_registry_sources(retry: RetryPolicy) -> Result<Option<Vec<RegistrySourc
             backend,
             ttl,
             signatures.get(name).cloned(),
+        ));
+    }
+    if sources.len() > max_sources {
+        return Err(format!(
+            "ATLAS_REGISTRY_SOURCES exceeds max allowed sources: {} > {}",
+            sources.len(),
+            max_sources
         ));
     }
 

@@ -253,6 +253,10 @@ impl FederatedBackend {
 
 #[async_trait]
 impl DatasetStoreBackend for FederatedBackend {
+    fn backend_tag(&self) -> &'static str {
+        "federated"
+    }
+
     async fn fetch_catalog(&self, if_none_match: Option<&str>) -> Result<CatalogFetch, CacheError> {
         let merged = self.fetch_from_sources().await?;
         let payload = serde_json::to_vec(&merged)
@@ -364,7 +368,10 @@ mod tests {
             })
         }
 
-        async fn fetch_manifest(&self, _dataset: &DatasetId) -> Result<ArtifactManifest, CacheError> {
+        async fn fetch_manifest(
+            &self,
+            _dataset: &DatasetId,
+        ) -> Result<ArtifactManifest, CacheError> {
             Err(CacheError("unused in test".to_string()))
         }
 
@@ -413,19 +420,25 @@ mod tests {
         let backends = vec![
             RegistrySource::new(
                 "a",
-                Arc::new(MockBackend { catalog: c1.clone() }),
+                Arc::new(MockBackend {
+                    catalog: c1.clone(),
+                }),
                 Duration::from_secs(0),
                 None,
             ),
             RegistrySource::new(
                 "b",
-                Arc::new(MockBackend { catalog: c2.clone() }),
+                Arc::new(MockBackend {
+                    catalog: c2.clone(),
+                }),
                 Duration::from_secs(0),
                 None,
             ),
             RegistrySource::new(
                 "c",
-                Arc::new(MockBackend { catalog: c3.clone() }),
+                Arc::new(MockBackend {
+                    catalog: c3.clone(),
+                }),
                 Duration::from_secs(0),
                 None,
             ),
@@ -452,6 +465,10 @@ mod tests {
             .collect::<Vec<_>>();
         assert_eq!(k1, k2, "merge ordering must be deterministic");
         let unique = k1.iter().cloned().collect::<BTreeSet<_>>();
-        assert_eq!(k1.len(), unique.len(), "merged catalog must dedupe datasets");
+        assert_eq!(
+            k1.len(),
+            unique.len(),
+            "merged catalog must dedupe datasets"
+        );
     }
 }

@@ -29,19 +29,21 @@ impl DatasetCacheManager {
             .unwrap_or(false)
     }
 
-    pub(super) async fn record_store_download_failure(&self, reason: &str) {
+    pub(super) async fn record_store_download_failure(&self, backend: &str, reason: &str) {
         self.metrics
             .store_download_failures
             .fetch_add(1, Ordering::Relaxed);
         let reason_lower = reason.to_ascii_lowercase();
-        if reason_lower.contains("checksum") {
+        let class = if reason_lower.contains("checksum") {
             self.metrics
                 .store_error_checksum_total
                 .fetch_add(1, Ordering::Relaxed);
+            "checksum"
         } else if reason_lower.contains("timeout") {
             self.metrics
                 .store_error_timeout_total
                 .fetch_add(1, Ordering::Relaxed);
+            "timeout"
         } else if reason_lower.contains("network")
             || reason_lower.contains("connection")
             || reason_lower.contains("download")
@@ -49,11 +51,15 @@ impl DatasetCacheManager {
             self.metrics
                 .store_error_network_total
                 .fetch_add(1, Ordering::Relaxed);
+            "network"
         } else {
             self.metrics
                 .store_error_other_total
                 .fetch_add(1, Ordering::Relaxed);
-        }
+            "other"
+        };
+        let mut by = self.metrics.store_errors_by_backend_and_class.lock().await;
+        *by.entry((backend.to_string(), class.to_string())).or_insert(0) += 1;
         let remaining = self.retry_budget_remaining.load(Ordering::Relaxed);
         if remaining > 0 {
             self.retry_budget_remaining

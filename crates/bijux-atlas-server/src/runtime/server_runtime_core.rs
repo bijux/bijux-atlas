@@ -149,6 +149,7 @@ pub struct CacheMetrics {
     pub store_error_timeout_total: AtomicU64,
     pub store_error_network_total: AtomicU64,
     pub store_error_other_total: AtomicU64,
+    pub store_errors_by_backend_and_class: Mutex<HashMap<(String, String), u64>>,
     pub verify_marker_fast_path_hits: AtomicU64,
     pub verify_full_hash_checks: AtomicU64,
     pub cheap_queries_served_while_overloaded_total: AtomicU64,
@@ -564,6 +565,10 @@ pub use store::federated::{FederatedBackend, RegistrySource};
 
 #[async_trait]
 pub trait DatasetStoreBackend: Send + Sync + 'static {
+    fn backend_tag(&self) -> &'static str {
+        "unknown"
+    }
+
     async fn fetch_catalog(&self, if_none_match: Option<&str>) -> Result<CatalogFetch, CacheError>;
     async fn fetch_manifest(&self, dataset: &DatasetId) -> Result<ArtifactManifest, CacheError>;
     async fn fetch_sqlite_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError>;

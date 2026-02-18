@@ -216,7 +216,14 @@ impl DatasetCacheManager {
             }
             cache.etag.clone()
         };
-        let fetch_result = self.store.fetch_catalog(etag.as_deref()).await;
+        let fetch_result = self
+            .store
+            .fetch_catalog(etag.as_deref())
+            .instrument(tracing::info_span!(
+                "store_catalog_fetch",
+                backend = self.store.backend_tag()
+            ))
+            .await;
         let result = match fetch_result {
             Err(e) => Err(e),
             Ok(CatalogFetch::NotModified) => {
@@ -604,7 +611,8 @@ impl DatasetCacheManager {
             let manifest = match self.store.fetch_manifest(dataset).await {
                 Ok(v) => v,
                 Err(e) => {
-                    self.record_store_download_failure(&e.to_string()).await;
+                    self.record_store_download_failure(self.store.backend_tag(), &e.to_string())
+                        .await;
                     return Err(e);
                 }
             };
@@ -616,7 +624,8 @@ impl DatasetCacheManager {
             let sqlite = match self.store.fetch_sqlite_bytes(dataset).await {
                 Ok(v) => v,
                 Err(e) => {
-                    self.record_store_download_failure(&e.to_string()).await;
+                    self.record_store_download_failure(self.store.backend_tag(), &e.to_string())
+                        .await;
                     return Err(e);
                 }
             };
@@ -629,7 +638,8 @@ impl DatasetCacheManager {
         }
         .instrument(tracing::info_span!(
             "download",
-            dataset = %dataset.canonical_string()
+            dataset = %dataset.canonical_string(),
+            backend = self.store.backend_tag()
         ))
         .await?;
         let sqlite_hash = async { sha256_hex(&sqlite) }
@@ -643,7 +653,10 @@ impl DatasetCacheManager {
             self.metrics
                 .store_download_failures
                 .fetch_add(1, Ordering::Relaxed);
-            self.record_store_download_failure("checksum verification failed")
+            self.record_store_download_failure(
+                self.store.backend_tag(),
+                "checksum verification failed",
+            )
                 .await;
             return Err(CacheError(
                 "sqlite checksum verification failed".to_string(),

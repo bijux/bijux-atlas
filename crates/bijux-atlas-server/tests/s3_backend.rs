@@ -235,6 +235,42 @@ async fn s3_like_backend_blocks_private_hosts_by_default() {
     assert!(err.to_string().contains("blocked private store host"));
 }
 
+#[tokio::test]
+async fn s3_like_backend_reports_404_for_missing_manifest() {
+    let ds = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("addr");
+    tokio::spawn(async move {
+        if let Ok((mut stream, _)) = listener.accept().await {
+            let mut req = vec![0u8; 4096];
+            let _ = stream.read(&mut req).await;
+            let _ = stream
+                .write_all(b"HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n")
+                .await;
+        }
+    });
+    let backend = S3LikeBackend::new(
+        format!("http://{addr}"),
+        None,
+        None,
+        RetryPolicy {
+            max_attempts: 1,
+            base_backoff_ms: 1,
+        },
+        true,
+    );
+    let err = backend
+        .fetch_manifest(&ds)
+        .await
+        .expect_err("missing manifest should fail");
+    assert!(
+        err.to_string().contains("404"),
+        "error must include stable http status detail: {err}"
+    );
+}
+
 #[cfg(unix)]
 #[tokio::test]
 async fn local_fs_backend_blocks_symlink_path_traversal() {
