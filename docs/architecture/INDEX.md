@@ -1,6 +1,7 @@
 # Architecture Index
 
 - Owner: `docs-governance`
+- Stability: `stable`
 
 ## What
 

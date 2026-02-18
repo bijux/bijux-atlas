@@ -1,6 +1,7 @@
 # Product Index
 
 - Owner: `docs-governance`
+- Stability: `stable`
 
 ## What
 

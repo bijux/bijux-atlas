@@ -1,6 +1,7 @@
 # Contracts SSOT
 
 - Owner: `docs-governance`
+- Stability: `stable`
 
 ## What
 

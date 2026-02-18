@@ -1,6 +1,7 @@
 # Operations Index
 
 - Owner: `bijux-atlas-operations`
+- Stability: `stable`
 
 ## What
 
@@ -34,6 +35,7 @@ Does not define product semantics or internal crate APIs.
 - [K8s Tests](e2e/k8s-tests.md)
 - [Observability](observability/INDEX.md)
 - [Production Readiness Checklist](production-readiness-checklist.md)
+- [Ops Acceptance Checklist](ops-acceptance-checklist.md)
 - [No Direct Path Usage](no-direct-path-usage.md)
 - [Migration Note](migration-note.md)
 

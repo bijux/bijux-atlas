@@ -38,9 +38,9 @@ Required invariants:
 - `make check`
 - `make test`
 - `make test-all`
-- `make deny`
+- `make ci-deny`
 - `make audit`
-- `make license-check`
+- `make ci-license-check`
 - `make policy-lint`
-- `make docs-check`
+- `make docs`
 - `make openapi-drift`

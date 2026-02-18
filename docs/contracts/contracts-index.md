@@ -49,8 +49,7 @@ Missing registry updates or missing regeneration will fail drift checks.
 ## Examples
 
 ```bash
-$ ./scripts/contracts/format_contracts.py
-$ ./scripts/contracts/generate_contract_artifacts.py
+$ make contracts
 ```
 
 Expected output: formatted registries and regenerated contract artifacts.
@@ -58,7 +57,7 @@ Expected output: formatted registries and regenerated contract artifacts.
 ## How to verify
 
 ```bash
-$ ./scripts/contracts/check_all.sh
+$ make contracts
 ```
 
 Expected output: all contract checks pass.

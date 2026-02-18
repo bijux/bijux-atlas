@@ -1,8 +1,9 @@
 # bijux-atlas
 
 - Owner: `docs-governance`
+- Stability: `stable`
 
-`bijux-atlas` is a release-indexed genomic data product with a strict artifact contract.
+`bijux-atlas` is a Release-indexed genomic data product with a strict artifact contract.
 
 Use this page as the only docs entrypoint.
 
@@ -10,6 +11,7 @@ Use this page as the only docs entrypoint.
 
 - Product framing: [docs/product/what-is-bijux-atlas.md](product/what-is-bijux-atlas.md)
 - Compatibility promise: [docs/product/compatibility-promise.md](product/compatibility-promise.md)
+- Deprecation policy: [docs/reference/registry/deprecation-policy.md](reference/registry/deprecation-policy.md)
 - Contract system (SSOT): [docs/contracts/INDEX.md](contracts/INDEX.md)
 - Ops setup: [docs/quickstart/local-cluster-setup.md](quickstart/local-cluster-setup.md)
 

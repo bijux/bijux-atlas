@@ -1,6 +1,7 @@
 # Science Index
 
 - Owner: `docs-governance`
+- Stability: `evolving`
 
 ## What
 

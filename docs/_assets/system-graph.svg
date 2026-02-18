@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="340" viewBox="0 0 980 340">
+  <rect width="980" height="340" fill="#ffffff"/>
+  <style>
+    .box { fill:#f8fafc; stroke:#0f172a; stroke-width:2; rx:8; ry:8; }
+    .txt { font: 14px sans-serif; fill:#0f172a; }
+    .arr { stroke:#334155; stroke-width:2; marker-end:url(#arrow); fill:none; }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#334155"/>
+    </marker>
+  </defs>
+
+  <rect class="box" x="30" y="40" width="220" height="70"/>
+  <text class="txt" x="46" y="70">docs/contracts/*.json</text>
+  <text class="txt" x="46" y="92">SSOT registries</text>
+
+  <rect class="box" x="300" y="40" width="260" height="70"/>
+  <text class="txt" x="316" y="70">Generation + checks</text>
+  <text class="txt" x="316" y="92">scripts/contracts + make docs</text>
+
+  <rect class="box" x="620" y="40" width="320" height="70"/>
+  <text class="txt" x="636" y="70">Generated docs/code artifacts</text>
+  <text class="txt" x="636" y="92">docs/_generated + runtime constants</text>
+
+  <rect class="box" x="160" y="190" width="260" height="70"/>
+  <text class="txt" x="176" y="220">crates/* runtime services</text>
+  <text class="txt" x="176" y="242">api/ingest/model/server</text>
+
+  <rect class="box" x="500" y="190" width="220" height="70"/>
+  <text class="txt" x="516" y="220">ops/* workflows</text>
+  <text class="txt" x="516" y="242">up/deploy/smoke/load/obs</text>
+
+  <rect class="box" x="760" y="190" width="180" height="70"/>
+  <text class="txt" x="776" y="220">artifacts/ops/*</text>
+  <text class="txt" x="776" y="242">run evidence</text>
+
+  <path class="arr" d="M250 75 L300 75"/>
+  <path class="arr" d="M560 75 L620 75"/>
+  <path class="arr" d="M430 225 L500 225"/>
+  <path class="arr" d="M720 225 L760 225"/>
+  <path class="arr" d="M560 110 L560 190"/>
+  <path class="arr" d="M290 190 L290 110"/>
+</svg>

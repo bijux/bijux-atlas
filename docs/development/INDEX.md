@@ -1,6 +1,7 @@
 # Development Index
 
 - Owner: `docs-governance`
+- Stability: `stable`
 
 ## What
 
@@ -33,6 +34,9 @@ List and maintain links to section pages in this directory.
 - [Symlink Index](symlinks.md)
 - [Local Noise Policy](local-noise.md)
 - [Contributing](contributing.md)
+- [Add Dataset Type](add-dataset-type.md)
+- [Add Endpoint](add-endpoint.md)
+- [Add Metric or Span](add-metric-span.md)
 
 ## Failure modes
 
