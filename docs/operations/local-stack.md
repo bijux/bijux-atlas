@@ -40,3 +40,7 @@ Validation targets:
 - `ops-stack-validate`
 - `ops-stack-order-check`
 - `ops-stack-security-check`
+
+Helm policy:
+- Atlas deploys always use `--atomic --wait --timeout`.
+- On failure, bundle includes rendered manifest and values used under `artifacts/ops/<run-id>/helm-render/`.

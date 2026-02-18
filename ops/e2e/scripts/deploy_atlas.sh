@@ -12,7 +12,6 @@ VALUES="${ATLAS_E2E_VALUES_FILE:-$ROOT/ops/k8s/values/local.yaml}"
 CLUSTER_NAME="${ATLAS_E2E_CLUSTER_NAME:-bijux-atlas-e2e}"
 USE_LOCAL_IMAGE="${ATLAS_E2E_USE_LOCAL_IMAGE:-1}"
 LOCAL_IMAGE_REF="${ATLAS_E2E_LOCAL_IMAGE:-bijux-atlas:local}"
-HELM_WAIT="${ATLAS_E2E_HELM_WAIT:-0}"
 HELM_TIMEOUT="${ATLAS_E2E_HELM_TIMEOUT:-5m}"
 
 if [ "${OPS_DRY_RUN:-0}" = "1" ]; then
@@ -51,42 +50,42 @@ if ! kubectl api-resources 2>/dev/null | grep -q "^servicemonitors"; then
   EXTRA_SET_ARGS+=(--set serviceMonitor.enabled=false --set alertRules.enabled=false)
 fi
 
+RENDER_DIR="$(ops_artifact_dir helm-render)"
+mkdir -p "$RENDER_DIR"
+cp -f "$VALUES" "$RENDER_DIR/values.input.yaml"
+printf '%s\n' "${EXTRA_SET_ARGS[@]}" > "$RENDER_DIR/extra-set-args.txt"
+
+render_chart() {
+  helm template "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
+    --namespace "$NS" \
+    -f "$VALUES" \
+    "${EXTRA_SET_ARGS[@]}"
+}
+
+if ! render_chart > "$RENDER_DIR/rendered-manifest.yaml"; then
+  echo "failed to render helm template for release=$RELEASE ns=$NS" >&2
+  exit 1
+fi
+
 if [ "$USE_LOCAL_IMAGE" = "1" ]; then
   if ! docker image inspect "$LOCAL_IMAGE_REF" >/dev/null 2>&1; then
     docker build -t "$LOCAL_IMAGE_REF" -f "$ROOT/docker/Dockerfile" "$ROOT"
   fi
   kind load docker-image "$LOCAL_IMAGE_REF" --name "$CLUSTER_NAME"
-  if [ "$HELM_WAIT" = "1" ]; then
-    ops_helm_retry "$NS" "$RELEASE" upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
-      --namespace "$NS" \
-      -f "$VALUES" \
-      --wait --timeout "$HELM_TIMEOUT" \
-      "${EXTRA_SET_ARGS[@]}" \
-      --set image.repository="${LOCAL_IMAGE_REF%:*}" \
-      --set image.tag="${LOCAL_IMAGE_REF#*:}" \
-      --set image.pullPolicy=IfNotPresent
-  else
-    ops_helm_retry "$NS" "$RELEASE" upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
-      --namespace "$NS" \
-      -f "$VALUES" \
-      "${EXTRA_SET_ARGS[@]}" \
-      --set image.repository="${LOCAL_IMAGE_REF%:*}" \
-      --set image.tag="${LOCAL_IMAGE_REF#*:}" \
-      --set image.pullPolicy=IfNotPresent
-  fi
+  ops_helm_retry "$NS" "$RELEASE" upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
+    --namespace "$NS" \
+    -f "$VALUES" \
+    --atomic --wait --timeout "$HELM_TIMEOUT" \
+    "${EXTRA_SET_ARGS[@]}" \
+    --set image.repository="${LOCAL_IMAGE_REF%:*}" \
+    --set image.tag="${LOCAL_IMAGE_REF#*:}" \
+    --set image.pullPolicy=IfNotPresent
 else
-  if [ "$HELM_WAIT" = "1" ]; then
-    ops_helm_retry "$NS" "$RELEASE" upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
-      --namespace "$NS" \
-      -f "$VALUES" \
-      "${EXTRA_SET_ARGS[@]}" \
-      --wait --timeout "$HELM_TIMEOUT"
-  else
-    ops_helm_retry "$NS" "$RELEASE" upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
-      --namespace "$NS" \
-      -f "$VALUES" \
-      "${EXTRA_SET_ARGS[@]}"
-  fi
+  ops_helm_retry "$NS" "$RELEASE" upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
+    --namespace "$NS" \
+    -f "$VALUES" \
+    --atomic --wait --timeout "$HELM_TIMEOUT" \
+    "${EXTRA_SET_ARGS[@]}"
 fi
 
 echo "atlas deployed: release=$RELEASE ns=$NS"
