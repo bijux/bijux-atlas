@@ -26,18 +26,30 @@ probe_http() {
 
 case "$PROFILE" in
   local-compose)
-    prom_port="$(python3 -c 'import json;print(json.load(open("configs/ops/observability-pack.json"))["ports"]["prometheus"])')"
-    grafana_port="$(python3 -c 'import json;print(json.load(open("configs/ops/observability-pack.json"))["ports"]["grafana"])')"
-    otel_http_port="$(python3 -c 'import json;print(json.load(open("configs/ops/observability-pack.json"))["ports"]["otel_http"])')"
+    eval "$("${REPO_ROOT}/ops/observability/scripts/pack_ports.sh")"
+    prom_port="${ATLAS_PROM_URL##*:}"
+    grafana_port="${ATLAS_GRAFANA_URL##*:}"
+    otel_http_port="${ATLAS_OTEL_HTTP_URL##*:}"
     probe_http "http://127.0.0.1:${prom_port}/-/ready" "prometheus"
     probe_http "http://127.0.0.1:${grafana_port}/api/health" "grafana"
     probe_http "http://127.0.0.1:${otel_http_port}/" "otel-collector"
     ;;
   kind | cluster)
-    ns="${ATLAS_E2E_NAMESPACE:-atlas-e2e}"
-    ops_kubectl_wait_condition "$ns" deploy prometheus available "${OPS_WAIT_TIMEOUT:-180s}"
-    ops_kubectl_wait_condition "$ns" deploy grafana available "${OPS_WAIT_TIMEOUT:-180s}"
-    ops_kubectl_wait_condition "$ns" deploy otel-collector available "${OPS_WAIT_TIMEOUT:-180s}"
+    ns="${ATLAS_OBS_NAMESPACE:-atlas-observability}"
+    ops_kubectl_wait_condition "$ns" deploy atlas-observability-prometheus available "${OPS_WAIT_TIMEOUT:-180s}"
+    ops_kubectl_wait_condition "$ns" deploy atlas-observability-grafana available "${OPS_WAIT_TIMEOUT:-180s}"
+    ops_kubectl_wait_condition "$ns" deploy atlas-observability-otel available "${OPS_WAIT_TIMEOUT:-180s}"
+    pid_file="$(mktemp)"
+    ( ops_kubectl -n "$ns" port-forward svc/atlas-observability-prometheus 19090:9090 >/dev/null 2>&1 & echo $! > "$pid_file" )
+    pf_pid="$(cat "$pid_file")"; rm -f "$pid_file"
+    trap 'kill "$pf_pid" >/dev/null 2>&1 || true' EXIT INT TERM
+    for _ in $(seq 1 30); do
+      if curl -fsS "http://127.0.0.1:19090/api/v1/targets" | python3 -c 'import json,sys; d=json.load(sys.stdin); a=d.get("data",{}).get("activeTargets",[]); sys.exit(0 if len(a)>0 else 1)'; then
+        echo "prometheus targets up"
+        break
+      fi
+      sleep 1
+    done
     ;;
   *)
     echo "unknown profile: $PROFILE (expected: local-compose|kind|cluster)" >&2
