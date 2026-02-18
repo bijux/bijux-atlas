@@ -37,3 +37,13 @@ required-features = ["bench-ingest-throughput"]
 name = "fai_validation_overhead"
 harness = false
 required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "sqlite_query_latency"
+harness = false
+required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "db_size_growth"
+harness = false
+required-features = ["bench-ingest-throughput"]
