@@ -1,6 +1,8 @@
-# Pointer
+# Grafana Dashboard Source (Stub)
 
-Canonical page: `docs/operations/e2e/realdata-drills.md`
+- Owner: `bijux-atlas-operations`
+
+Canonical dashboard documentation: `docs/operations/observability/dashboard.md`.
 
 ## Make Target
 

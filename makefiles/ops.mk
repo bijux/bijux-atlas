@@ -3,6 +3,17 @@ SHELL := /bin/sh
 # Ops SSOT targets
 OPS_ENV_SCHEMA ?= configs/ops/env.schema.json
 
+ops-layout-lint: ## Validate canonical ops layout contract
+	@python3 ./scripts/layout/check_ops_layout_contract.py
+	@./scripts/layout/check_ops_workspace.sh
+	@python3 ./scripts/layout/check_ops_artifacts_writes.py
+
+ops-surface: ## Print stable ops entrypoints from SSOT surface metadata
+	@python3 -c 'import json; d=json.load(open("ops/_meta/surface.json")); print("\\n".join(d.get("entrypoints",[])))'
+
+ops-help: ## Print canonical ops runbook index
+	@cat ops/INDEX.md
+
 ops-env-validate: ## Validate canonical ops environment contract against schema
 	@python3 ./scripts/layout/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)"
 
@@ -201,8 +212,8 @@ ops-otel-required-check: ## Require otel collector presence and trace exemplar s
 	@if [ "$${ATLAS_E2E_ENABLE_OTEL:-1}" = "1" ]; then \
 	  ns="$${ATLAS_E2E_NAMESPACE:-atlas-e2e}"; \
 	  kubectl -n "$$ns" get deploy/otel-collector >/dev/null; \
-	  ./ops/observability/scripts/snapshot_traces.sh; \
-	  test -s artifacts/ops/observability/traces.exemplars.log; \
+	  ./ops/obs/scripts/snapshot_traces.sh; \
+	  test -s artifacts/ops/obs/traces.exemplars.log; \
 	  echo "otel required check passed"; \
 	else \
 	  echo "otel required check skipped (ATLAS_E2E_ENABLE_OTEL=0)"; \
@@ -432,9 +443,9 @@ ops-smoke: ## Run canonical API smoke queries
 	@python3 ./ops/smoke/generate_report.py
 	@python3 ./scripts/docs/check_openapi_examples.py
 	@$(MAKE) ops-metrics-check
-	@./ops/observability/scripts/snapshot_metrics.sh
-	@./ops/observability/scripts/snapshot_traces.sh
-	@mkdir -p artifacts/ops/observability && cp ops/observability/grafana/atlas-observability-dashboard.json artifacts/ops/observability/dashboard.snapshot.json
+	@./ops/obs/scripts/snapshot_metrics.sh
+	@./ops/obs/scripts/snapshot_traces.sh
+	@mkdir -p artifacts/ops/obs && cp ops/obs/grafana/atlas-observability-dashboard.json artifacts/ops/obs/dashboard.snapshot.json
 
 ops-diff-smoke: ## Build cross-release diff artifacts from fixture store
 	@mkdir -p artifacts/ops/diff-smoke
@@ -460,23 +471,23 @@ ops-gc-smoke: ## Validate GC plan/apply against a disposable store fixture
 
 ops-metrics-check: ## Validate runtime metrics and observability contracts
 	@./ops/e2e/scripts/verify_metrics.sh
-	@./ops/observability/scripts/snapshot_metrics.sh
+	@./ops/obs/scripts/snapshot_metrics.sh
 	@./scripts/public/observability/check_metrics_contract.py
-	@python3 ./ops/observability/scripts/contracts/check_metrics_drift.py
-	@python3 ./ops/observability/scripts/contracts/check_metrics_coverage.py
-	@python3 ./ops/observability/scripts/contracts/check_metrics_golden.py
+	@python3 ./ops/obs/scripts/contracts/check_metrics_drift.py
+	@python3 ./ops/obs/scripts/contracts/check_metrics_coverage.py
+	@python3 ./ops/obs/scripts/contracts/check_metrics_golden.py
 	@./scripts/public/observability/check_dashboard_contract.py
 	@./scripts/public/observability/check_alerts_contract.py
 	@./scripts/public/observability/lint_runbooks.py
 	@./scripts/public/observability/check_runtime_metrics.py
-	@./ops/observability/scripts/check_metric_cardinality.py
-	@python3 ./ops/observability/scripts/validate_logs_schema.py
+	@./ops/obs/scripts/check_metric_cardinality.py
+	@python3 ./ops/obs/scripts/validate_logs_schema.py
 
 ops-traces-check: ## Validate trace signal (when OTEL enabled)
 	@./ops/e2e/scripts/verify_traces.sh
-	@python3 ./ops/observability/scripts/contracts/check_trace_golden.py
-	@python3 ./ops/observability/scripts/contracts/extract_trace_exemplars.py
-	@if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/public/observability/check_tracing_contract.py; python3 ./ops/observability/scripts/contracts/check_trace_coverage.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi
+	@python3 ./ops/obs/scripts/contracts/check_trace_golden.py
+	@python3 ./ops/obs/scripts/contracts/extract_trace_exemplars.py
+	@if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/public/observability/check_tracing_contract.py; python3 ./ops/obs/scripts/contracts/check_trace_coverage.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi
 
 ops-k8s-tests: ## Run k8s e2e suite
 	@$(MAKE) -s ops-env-validate
@@ -537,7 +548,7 @@ ops-load-spike-proof: ## Run 10x spike proof suite with overload/bulkhead/memory
 	@./ops/load/scripts/validate_results.py artifacts/perf/results
 	@python3 ./scripts/public/perf/check_spike_assertions.py --summary artifacts/perf/results/spike-overload-proof.summary.json --base-url "$${ATLAS_BASE_URL:-http://127.0.0.1:18080}" --wait-seconds "$${ATLAS_OVERLOAD_CLEAR_WAIT_SECONDS:-45}"
 	@$(MAKE) ops-slo-burn
-	@python3 -c 'import json; from pathlib import Path; p = Path("artifacts/ops/observability/slo-burn.json"); payload = json.loads(p.read_text()) if p.exists() else (_ for _ in ()).throw(SystemExit("missing SLO burn artifact: artifacts/ops/observability/slo-burn.json")); (_ for _ in ()).throw(SystemExit(f"SLO burn exceeded: {payload}")) if payload.get("burn_exceeded") else print("slo burn within threshold")'
+	@python3 -c 'import json; from pathlib import Path; p = Path("artifacts/ops/obs/slo-burn.json"); payload = json.loads(p.read_text()) if p.exists() else (_ for _ in ()).throw(SystemExit("missing SLO burn artifact: artifacts/ops/obs/slo-burn.json")); (_ for _ in ()).throw(SystemExit(f"SLO burn exceeded: {payload}")) if payload.get("burn_exceeded") else print("slo burn within threshold")'
 
 ops-load-spike-chaos: ## Run spike proof plus outage/slow-store/corruption drills
 	@$(MAKE) -s ops-env-validate
@@ -600,39 +611,39 @@ ops-load-nightly: ## Load nightly profile (nightly suites + score/report)
 ops-drill-store-outage: ## Run store outage drill under load
 	@$(MAKE) -s ops-env-validate
 	@./ops/load/scripts/run_suite.sh store-outage-mid-spike.json artifacts/perf/results
-	@./ops/observability/scripts/store-outage.sh
+	@./ops/obs/scripts/store-outage.sh
 
 ops-drill-minio-outage: ## Drill minio outage under load with cached endpoint checks
 	@$(MAKE) -s ops-env-validate
-	@./ops/observability/scripts/store-outage-under-load.sh
+	@./ops/obs/scripts/store-outage-under-load.sh
 
 ops-drill-prom-outage: ## Drill prometheus outage while atlas keeps serving
 	@$(MAKE) -s ops-env-validate
-	@./ops/observability/scripts/prom-outage.sh
+	@./ops/obs/scripts/prom-outage.sh
 
 ops-drill-otel-outage: ## Drill otel outage while atlas keeps serving
 	@$(MAKE) -s ops-env-validate
-	@./ops/observability/scripts/otel-outage.sh
+	@./ops/obs/scripts/otel-outage.sh
 
 ops-drill-toxiproxy-latency: ## Inject toxiproxy latency and assert store breaker signal
 	@$(MAKE) -s ops-env-validate
 	@ATLAS_E2E_ENABLE_TOXIPROXY=1 $(MAKE) ops-stack-up
-	@./ops/observability/scripts/store-latency-injection.sh
+	@./ops/obs/scripts/store-latency-injection.sh
 
 ops-drill-alerts: ## Run alert drill checks against configured rules
-	@./ops/observability/scripts/alerts-validation.sh
+	@./ops/obs/scripts/alerts-validation.sh
 
 ops-drill-overload: ## Verify overload signal drill assertions
 	@$(MAKE) -s ops-env-validate
-	@./ops/observability/scripts/overload-admission-control.sh
+	@./ops/obs/scripts/overload-admission-control.sh
 
 ops-drill-memory-growth: ## Verify memory-growth drill assertions
 	@$(MAKE) -s ops-env-validate
-	@./ops/observability/scripts/memory-growth.sh
+	@./ops/obs/scripts/memory-growth.sh
 
 ops-drill-rate-limit: ## Run abuse pattern and assert stable 429 behavior
 	@$(MAKE) -s ops-env-validate
-	@./ops/observability/scripts/overload-admission-control.sh
+	@./ops/obs/scripts/overload-admission-control.sh
 
 ops-drill-corruption: ## Run corruption handling drill
 	@cargo test -p bijux-atlas-server cache_manager_tests::chaos_mode_random_byte_corruption_never_serves_results -- --exact
@@ -671,14 +682,14 @@ ops-report: ## Gather ops evidence into artifacts/ops/<run-id>/
 	cp -R "$$out/smoke/report.md" "$$out/perf/smoke-report.md" 2>/dev/null || true; \
 	curl -fsS "$${ATLAS_BASE_URL:-http://127.0.0.1:8080}/metrics" > "$$out/metrics/metrics.txt" 2>/dev/null || true; \
 	./ops/e2e/scripts/write_metadata.sh "$$out"; \
-	python3 ./ops/report/generate.py --run-dir "$$out" --schema ops/report/schema.json; \
+	python3 ./ops/report/generate.py --run-dir "$$out" --schema ops/_schemas/report/schema.json; \
 	echo "ops report written to $$out"; \
 	RUN_ID="$${OPS_RUN_ID}" OUT_DIR="$$out/bundle" ./scripts/public/report-bundle.sh >/dev/null; \
 	ln -sfn "$${OPS_RUN_ID}" artifacts/ops/latest; \
 	$(MAKE) artifacts-index
 
 ops-slo-burn: ## Compute SLO burn artifact from k6 score + metrics snapshot
-	@python3 ./ops/observability/scripts/compute_slo_burn.py
+	@python3 ./ops/obs/scripts/compute_slo_burn.py
 
 ops-script-coverage: ## Validate every ops/**/scripts entrypoint is exposed via make
 	@./scripts/layout/check_ops_script_targets.sh
@@ -806,16 +817,16 @@ ops-alerts-validate: ## Validate alert rules and contract coverage
 
 ops-observability-validate: ## Validate observability assets/contracts end-to-end
 	@set -e; \
-	trap 'out="artifacts/ops/observability/validate-fail-$$(date +%Y%m%d-%H%M%S)"; mkdir -p "$$out"; kubectl get pods -A -o wide > "$$out/pods.txt" 2>/dev/null || true; kubectl get events -A --sort-by=.lastTimestamp > "$$out/events.txt" 2>/dev/null || true; cp -f ops/observability/grafana/atlas-observability-dashboard.json "$$out/dashboard.json" 2>/dev/null || true; cp -f ops/observability/alerts/atlas-alert-rules.yaml "$$out/alerts.yaml" 2>/dev/null || true; echo "observability validation failed, artifacts: $$out" >&2' ERR; \
+	trap 'out="artifacts/ops/obs/validate-fail-$$(date +%Y%m%d-%H%M%S)"; mkdir -p "$$out"; kubectl get pods -A -o wide > "$$out/pods.txt" 2>/dev/null || true; kubectl get events -A --sort-by=.lastTimestamp > "$$out/events.txt" 2>/dev/null || true; cp -f ops/obs/grafana/atlas-observability-dashboard.json "$$out/dashboard.json" 2>/dev/null || true; cp -f ops/obs/alerts/atlas-alert-rules.yaml "$$out/alerts.yaml" 2>/dev/null || true; echo "observability validation failed, artifacts: $$out" >&2' ERR; \
 	$(MAKE) ops-dashboards-validate; \
 	$(MAKE) ops-alerts-validate; \
 	./scripts/public/observability/check_metrics_contract.py; \
 	if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/public/observability/check_tracing_contract.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi; \
-	./ops/observability/scripts/snapshot_metrics.sh; \
-	./ops/observability/scripts/snapshot_traces.sh; \
-	./ops/observability/scripts/check_metric_cardinality.py; \
+	./ops/obs/scripts/snapshot_metrics.sh; \
+	./ops/obs/scripts/snapshot_traces.sh; \
+	./ops/obs/scripts/check_metric_cardinality.py; \
 	$(MAKE) ops-otel-required-check; \
-	python3 ./ops/observability/scripts/validate_logs_schema.py --namespace "$${ATLAS_E2E_NAMESPACE:-$${ATLAS_NS:-atlas-e2e}}" --release "$${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}" --strict-live
+	python3 ./ops/obs/scripts/validate_logs_schema.py --namespace "$${ATLAS_E2E_NAMESPACE:-$${ATLAS_NS:-atlas-e2e}}" --release "$${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}" --strict-live
 
 ops-obs-validate: ## Compatibility alias for ops-observability-validate
 	@$(MAKE) ops-observability-validate
@@ -828,79 +839,79 @@ ops-obs-uninstall: ## Uninstall observability pack
 
 ops-observability-smoke: ## Install observability pack and run smoke checks
 	@$(MAKE) ops-obs-up
-	@./ops/observability/scripts/snapshot_metrics.sh
-	@./ops/observability/scripts/snapshot_traces.sh
+	@./ops/obs/scripts/snapshot_metrics.sh
+	@./ops/obs/scripts/snapshot_traces.sh
 	@$(MAKE) ops-observability-validate
-	@./ops/observability/scripts/alerts-validation.sh
+	@./ops/obs/scripts/alerts-validation.sh
 
 ops-obs-up: ## Install observability pack (prometheus/otel, CRD-aware)
-	@./ops/observability/scripts/install_pack.sh
+	@./ops/obs/scripts/install_pack.sh
 
 ops-obs-down: ## Uninstall observability pack
-	@./ops/observability/scripts/uninstall_pack.sh
+	@./ops/obs/scripts/uninstall_pack.sh
 
 
 ops-obs-mode: ## Install observability pack in requested profile (ATLAS_OBS_PROFILE=local-compose|kind|cluster)
 	@[ -n "$${ATLAS_OBS_PROFILE:-}" ] || { echo "set ATLAS_OBS_PROFILE=local-compose|kind|cluster" >&2; exit 2; }
-	@./ops/observability/scripts/install_pack.sh --profile "$${ATLAS_OBS_PROFILE}"
+	@./ops/obs/scripts/install_pack.sh --profile "$${ATLAS_OBS_PROFILE}"
 
 ops-observability-pack-verify: ## Verify observability pack endpoints and readiness by profile
-	@./ops/observability/scripts/verify_pack.sh
+	@./ops/obs/scripts/verify_pack.sh
 
 ops-observability-pack-smoke: ## Run pack smoke requests and assert metrics/traces snapshots
-	@./ops/observability/scripts/smoke_pack.sh
+	@./ops/obs/scripts/smoke_pack.sh
 
 ops-observability-pack-export: ## Export dashboards/rules/configs into artifacts bundle
-	@./ops/observability/scripts/export_pack_bundle.sh
+	@./ops/obs/scripts/export_pack_bundle.sh
 
 ops-observability-pack-version-check: ## Check pack versions and pinned digest policy
-	@./ops/observability/scripts/check_pack_versions.sh
+	@./ops/obs/scripts/check_pack_versions.sh
 
 ops-observability-pack-upgrade-check: ## Check required vs running pack versions
-	@./ops/observability/scripts/check_pack_upgrade.sh
+	@./ops/obs/scripts/check_pack_upgrade.sh
 
 ops-observability-pack-health: ## Query pack health and service readiness
-	@./ops/observability/scripts/pack_health.sh
+	@./ops/obs/scripts/pack_health.sh
 
 ops-observability-pack-conformance-report: ## Write pack conformance report under artifacts
-	@./ops/observability/scripts/write_pack_conformance_report.py
+	@./ops/obs/scripts/write_pack_conformance_report.py
 
 ops-obs-mode-minimal: ## Compatibility alias for kind profile
-	@ATLAS_OBS_PROFILE=kind ./ops/observability/scripts/install_pack.sh
+	@ATLAS_OBS_PROFILE=kind ./ops/obs/scripts/install_pack.sh
 
 ops-obs-mode-full: ## Compatibility alias for cluster profile
-	@ATLAS_OBS_PROFILE=cluster ./ops/observability/scripts/install_pack.sh
+	@ATLAS_OBS_PROFILE=cluster ./ops/obs/scripts/install_pack.sh
 
 ops-observability-pack-tests: ## Run observability pack conformance tests
-	@./ops/observability/tests/run_all.sh
+	@./ops/obs/tests/run_all.sh
 
 ops-observability-pack-lint: ## Run observability pack lint-only contract checks
 	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck
-	@./ops/observability/tests/test_contracts.sh
+	@./ops/obs/tests/test_contracts.sh
 
 observability-pack-test: ## Fast observability pack test (contracts + coverage)
-	@./ops/observability/tests/test_contracts.sh
-	@./ops/observability/tests/test_coverage.sh
-	@./ops/observability/scripts/write_pack_conformance_report.py
+	@./ops/obs/tests/test_contracts.sh
+	@./ops/obs/tests/test_coverage.sh
+	@./ops/obs/scripts/write_pack_conformance_report.py
 
 observability-pack-drills: ## Full observability drill suite (outage matrix + contracts)
-	@./ops/observability/tests/test_coverage.sh
-	@./ops/observability/tests/test_drills.sh
-	@./ops/observability/tests/test_contracts.sh
-	@./ops/observability/scripts/write_pack_conformance_report.py
+	@./ops/obs/tests/test_coverage.sh
+	@./ops/obs/tests/test_drills.sh
+	@./ops/obs/tests/test_contracts.sh
+	@./ops/obs/scripts/write_pack_conformance_report.py
 
 ops-drill-suite: ## Run full observability drill manifest suite and emit report
-	@./ops/observability/tests/test_drills.sh
+	@./ops/obs/tests/test_drills.sh
 
 ops-observability-pack-idempotency: ## Install observability pack twice to validate idempotency
-	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/observability/scripts/install_pack.sh
-	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/observability/scripts/install_pack.sh
-	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/observability/scripts/uninstall_pack.sh
+	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/obs/scripts/install_pack.sh
+	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/obs/scripts/install_pack.sh
+	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/obs/scripts/uninstall_pack.sh
 
 ops-observability-pack-reinstall: ## Uninstall then reinstall pack to validate clean re-provision
-	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/observability/scripts/uninstall_pack.sh
-	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/observability/scripts/install_pack.sh
-	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/observability/scripts/uninstall_pack.sh
+	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/obs/scripts/uninstall_pack.sh
+	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/obs/scripts/install_pack.sh
+	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/obs/scripts/uninstall_pack.sh
 
 ops-open-grafana: ## Print local ops service URLs
 	@./ops/ui/print_urls.sh
@@ -914,7 +925,7 @@ stack-full: ## Full-stack must-pass truth flow with contract report bundle
 	run_id="$${OPS_RUN_ID:-$${ATLAS_RUN_ID:-stack-$$(date +%Y%m%d-%H%M%S)}}"; \
 	report_dir="artifacts/stack-report"; \
 	teardown="$${STACK_KEEP_UP:-0}"; \
-	trap 'python3 ./scripts/public/stack/build_stack_report.py --status "$$status" --run-id "$$run_id" --out-dir "$$report_dir" --values-file "$${ATLAS_VALUES_FILE:-ops/k8s/values/local.yaml}"; python3 ./scripts/public/stack/validate_stack_report.py --report-dir "$$report_dir" --schema ops/report/stack-contract.schema.json; if [ "$$teardown" != "1" ]; then $(MAKE) ops-down >/dev/null 2>&1 || true; $(MAKE) ops-kind-down >/dev/null 2>&1 || true; fi' EXIT; \
+	trap 'python3 ./scripts/public/stack/build_stack_report.py --status "$$status" --run-id "$$run_id" --out-dir "$$report_dir" --values-file "$${ATLAS_VALUES_FILE:-ops/k8s/values/local.yaml}"; python3 ./scripts/public/stack/validate_stack_report.py --report-dir "$$report_dir" --schema ops/_schemas/report/stack-contract.schema.json; if [ "$$teardown" != "1" ]; then $(MAKE) ops-down >/dev/null 2>&1 || true; $(MAKE) ops-kind-down >/dev/null 2>&1 || true; fi' EXIT; \
 	$(MAKE) ops-tools-check; \
 	$(MAKE) ops-kind-validate; \
 	$(MAKE) ops-kind-metrics-server-up; \
@@ -936,7 +947,7 @@ stack-full: ## Full-stack must-pass truth flow with contract report bundle
 	$(MAKE) ops-k8s-tests ATLAS_E2E_TEST=test_readiness_semantics.sh; \
 	$(MAKE) ops-k8s-tests ATLAS_E2E_TEST=test_liveness_under_load.sh; \
 	$(MAKE) ops-drill-pod-churn; \
-	test -s artifacts/ops/observability/metrics.prom; \
+	test -s artifacts/ops/obs/metrics.prom; \
 	$(MAKE) ops-otel-required-check; \
 	$(MAKE) ops-load-smoke; \
 	$(MAKE) ops-load-spike-proof; \
@@ -960,7 +971,7 @@ stack-full-chaos: ## Weekly chaos full-stack gate (stack-full + drill runner)
 	$(MAKE) ops-kind-down
 
 ops-drill-runner: ## Run core drills and verify runbook contract linkage
-	@./ops/observability/tests/test_drills.sh
+	@./ops/obs/tests/test_drills.sh
 	@$(MAKE) ops-drill-corruption-dataset
 	@$(MAKE) ops-drill-pod-churn
 	@python3 ./scripts/docs/check_runbooks_contract.py

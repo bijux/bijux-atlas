@@ -4,42 +4,34 @@
 
 ## What
 
-Canonical operational filesystem surface and only entrypoint for ops workflows.
+Canonical operational filesystem surface and SSOT entrypoint for ops workflows.
 
 Reference contract: `ops/CONTRACT.md`.
+Runbook index: `ops/INDEX.md`.
 
 ## Directory map
 
-- `ops/stack/`: local stack manifests and bootstrap scripts (kind/minio/prom/otel/redis/toxiproxy).
-- `ops/e2e/`: e2e harness, test runners, smoke/publish/deploy workflows.
-- `ops/load/`: k6 suites, scenarios, contracts, baselines, perf scripts.
-- `ops/observability/`: alerts, dashboards, observability contracts and drills.
-- `ops/k8s/`: chart, values profiles, k8s CI scripts.
-- `ops/_lib/`: shared shell helpers for ops scripts/tests.
-- `ops/tool-versions.json`: pinned ops tool versions consumed by `make ops-tools-check`.
-- `ops/fixtures/`, `ops/datasets/`: pinned ops datasets and fixture metadata.
-- `ops/e2e/`: harness + runners only (tests and orchestration).
-- `ops/smoke/`: locked smoke query set + goldens + smoke report generator.
-- `ops/ui/`: helper scripts that print local service URLs.
+- `ops/stack/`: local stack dependency bring-up.
+- `ops/k8s/`: chart, install profiles, and k8s-only gates.
+- `ops/obs/`: observability pack, contracts, and drills.
+- `ops/load/`: k6 suites, scenarios, contracts, baselines.
+- `ops/datasets/`: dataset manifest, pinning, QC, promotion.
+- `ops/e2e/`: composition-only scenarios over stack/obs/load/datasets.
+- `ops/run/`: thin executable wrappers.
+- `ops/_lib/`: shared helper libraries.
+- `ops/_meta/`: ownership/surface/contracts metadata.
+- `ops/_schemas/`: ops JSON schemas.
+- `ops/_generated/`: generated ops outputs.
+- `ops/_artifacts/`: canonical runtime artifacts root.
 
-## Run full stack
+## Run
 
-```bash
-make ops-full
-```
+- `make ops-help`
+- `make ops-surface`
+- `make ops-layout-lint`
+- `make ops-full`
 
 Modes:
 - `OPS_MODE=fast make ops-full`
 - `OPS_MODE=full make ops-full`
 - `OPS_DRY_RUN=1 make ops-full`
-
-All sub-area docs under `ops/**/README.md` should point here as the primary entrypoint.
-
-## Why
-
-Single ops SSOT avoids root-path alias drift.
-
-## See also
-
-- `docs/operations/INDEX.md`
-- `docs/operations/full-stack-local.md`

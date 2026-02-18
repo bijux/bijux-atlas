@@ -1,6 +1,8 @@
-# Pointer
+# Observability Tests (Stub)
 
-Canonical page: `docs/operations/e2e/realdata-drills.md`
+- Owner: `bijux-atlas-operations`
+
+Canonical acceptance documentation: `docs/operations/observability/acceptance-gates.md`.
 
 ## Make Target
 
