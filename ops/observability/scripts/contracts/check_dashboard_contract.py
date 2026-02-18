@@ -32,6 +32,34 @@ if unknown:
         print(f"- {m}", file=sys.stderr)
     sys.exit(1)
 
+# Validate panel query expressions are present and contract-safe.
+errors: list[str] = []
+expr_metric_re = re.compile(r'\b(?:bijux|atlas)_[a-z0-9_]+\b')
+for panel in dash.get("panels", []):
+    title = panel.get("title") if isinstance(panel.get("title"), str) else "<untitled>"
+    for target in panel.get("targets", []):
+        expr = target.get("expr")
+        if expr is None:
+            continue
+        if not isinstance(expr, str) or not expr.strip():
+            errors.append(f"panel '{title}' has empty query expr")
+            continue
+        expr_lower = expr.lower()
+        if "todo" in expr_lower or "placeholder" in expr_lower:
+            errors.append(f"panel '{title}' contains placeholder/todo query")
+            continue
+        expr_metrics = set(expr_metric_re.findall(expr))
+        unknown_expr = sorted(expr_metrics - allow)
+        for metric_name in unknown_expr:
+            errors.append(
+                f"panel '{title}' query references metric not in metrics contract: {metric_name}"
+            )
+
+if errors:
+    for err in errors:
+        print(err, file=sys.stderr)
+    sys.exit(1)
+
 # required SLO burn-rate panel presence
 panel_titles = set()
 for panel in dash.get("panels", []):

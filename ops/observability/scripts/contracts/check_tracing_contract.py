@@ -3,11 +3,13 @@
 # Inputs: command-line args and repository files/env as documented by caller.
 # Outputs: exit status and deterministic stdout/stderr or generated artifacts.
 import json
+import os
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[4]
 CONTRACT = ROOT / "ops/observability/contract/metrics-contract.json"
+TRACE_EXEMPLARS = ROOT / "artifacts/ops/observability/traces.exemplars.log"
 
 contract = json.loads(CONTRACT.read_text())
 required = contract.get("required_spans", [])
@@ -26,5 +28,26 @@ if missing:
     for s in missing:
         print(f"- {s}", file=sys.stderr)
     sys.exit(1)
+
+# Require cache/store-path span coverage in source to keep trace contracts meaningful.
+cache_span_tokens = ("cache_lookup", "download", "open_db")
+if not any(token in corpus for token in cache_span_tokens):
+    print("required cache/store tracing span tokens not found in source", file=sys.stderr)
+    sys.exit(1)
+
+# If exemplar traces were captured, ensure they include DB + cache/store spans.
+if os.getenv("ATLAS_E2E_ENABLE_OTEL", "0") == "1" and TRACE_EXEMPLARS.exists():
+    exemplars = TRACE_EXEMPLARS.read_text().strip()
+    if exemplars:
+        exemplar_missing: list[str] = []
+        if "sqlite_query" not in exemplars:
+            exemplar_missing.append("sqlite_query")
+        if not any(token in exemplars for token in cache_span_tokens):
+            exemplar_missing.append("cache/store span (cache_lookup|download|open_db)")
+        if exemplar_missing:
+            print("trace exemplars missing required spans:", file=sys.stderr)
+            for item in exemplar_missing:
+                print(f"- {item}", file=sys.stderr)
+            sys.exit(1)
 
 print("tracing contract passed")
