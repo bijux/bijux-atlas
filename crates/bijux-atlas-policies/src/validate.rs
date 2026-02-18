@@ -79,6 +79,11 @@ pub fn validate_policy_config(cfg: &PolicyConfig) -> Result<(), PolicyValidation
             "strict mode must keep allow_override=false".to_string(),
         ));
     }
+    if cfg.modes.dev.allow_override {
+        return Err(PolicyValidationError(
+            "dev mode must keep allow_override=false; override flags are compat-only".to_string(),
+        ));
+    }
 
     if cfg.query_budget.cheap.max_limit == 0
         || cfg.query_budget.medium.max_limit == 0
@@ -523,7 +528,7 @@ mod tests {
         let encoded = serde_json::to_string(&payload).expect("json");
         assert_eq!(
             encoded,
-            "{\"compat\":{\"allow_override\":true,\"max_page_size\":200,\"max_region_span\":25000000,\"max_response_bytes\":2097152},\"dev\":{\"allow_override\":true,\"max_page_size\":500,\"max_region_span\":50000000,\"max_response_bytes\":4194304},\"strict\":{\"allow_override\":false,\"max_page_size\":100,\"max_region_span\":10000000,\"max_response_bytes\":1048576}}"
+            "{\"compat\":{\"allow_override\":true,\"max_page_size\":200,\"max_region_span\":25000000,\"max_response_bytes\":2097152},\"dev\":{\"allow_override\":false,\"max_page_size\":500,\"max_region_span\":50000000,\"max_response_bytes\":4194304},\"strict\":{\"allow_override\":false,\"max_page_size\":100,\"max_region_span\":10000000,\"max_response_bytes\":1048576}}"
         );
     }
 

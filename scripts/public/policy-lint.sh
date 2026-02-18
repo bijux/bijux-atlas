@@ -85,6 +85,8 @@ for mode_name in ("strict", "compat", "dev"):
         raise SystemExit(f"modes.{mode_name} cap values must be > 0")
 if cfg_data["modes"]["strict"]["allow_override"] is not False:
     raise SystemExit("modes.strict.allow_override must be false")
+if cfg_data["modes"]["dev"]["allow_override"] is not False:
+    raise SystemExit("modes.dev.allow_override must be false; overrides are compat-only")
 
 print("policy config validated")
 PY
