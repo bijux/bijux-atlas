@@ -37,7 +37,7 @@ body = [
 ]
 for f in payload.get("flakes", []):
     body.append(f"- `{f.get('script')}` owner={f.get('owner')} attempts={f.get('attempts')}")
-body.append("\nAction: quarantine with TTL in `ops/e2e/k8s/tests/manifest.json`.")
+body.append("\nAction: quarantine with TTL in `ops/k8s/tests/manifest.json`.")
 body.append(f"Set `quarantine_until` to `{quarantine_until}` or later for each flaky test.")
 issue_path.write_text("\n".join(body) + "\n")
 

@@ -7,6 +7,7 @@ ops-layout-lint: ## Validate canonical ops layout contract
 	@python3 ./scripts/layout/check_ops_layout_contract.py
 	@./scripts/layout/check_ops_workspace.sh
 	@python3 ./scripts/layout/check_ops_artifacts_writes.py
+	@python3 ./scripts/layout/check_ops_concept_ownership.py
 
 ops-surface: ## Print stable ops entrypoints from SSOT surface metadata
 	@python3 -c 'import json; d=json.load(open("ops/_meta/surface.json")); print("\n".join(d.get("entrypoints",[])))'
@@ -43,7 +44,7 @@ ops-up: ## Bring up local ops stack (kind + minio + prometheus + optional otel/r
 	@$(MAKE) ops-stack-up
 
 ops-cluster-sanity: ## Validate cluster node/dns/storageclass sanity
-	@./ops/e2e/k8s/tests/test_cluster_sanity.sh
+	@./ops/k8s/tests/test_cluster_sanity.sh
 
 ops-stack-down: ## Tear down stack components and cluster
 	@$(MAKE) -s ops-env-validate
@@ -90,16 +91,16 @@ ops-kind-registry-up: ## Bring up local registry and connect to kind network
 	@./ops/stack/registry/up.sh
 
 ops-kind-image-resolution-test: ## Validate atlas image is resolvable inside kind runtime
-	@./ops/e2e/k8s/tests/test_kind_image_resolution.sh
+	@./ops/k8s/tests/test_kind_image_resolution.sh
 
 ops-kind-disk-pressure: ## Simulate node disk pressure (use MODE=clean to remove)
-	@./ops/stack/faults/fill-node-disk.sh "$${MODE:-fill}"
+	@./ops/stack/faults/inject.sh fill-node-disk "$${MODE:-fill}"
 
 ops-kind-cpu-throttle: ## Simulate cpu throttle pressure in cluster workloads
-	@./ops/stack/faults/cpu-throttle.sh
+	@./ops/stack/faults/inject.sh cpu-throttle
 
 ops-kind-network-latency: ## Simulate store network latency via toxiproxy
-	@./ops/stack/faults/toxiproxy-latency.sh "$${LATENCY_MS:-250}" "$${JITTER_MS:-25}"
+	@./ops/stack/faults/inject.sh toxiproxy-latency "$${LATENCY_MS:-250}" "$${JITTER_MS:-25}"
 
 ops-kind-context-guard: ## Refuse non-kind kubectl context unless ALLOW_NON_KIND=1
 	@./ops/stack/kind/context_guard.sh
@@ -111,7 +112,7 @@ ops-kind-cleanup-leftovers: ## Delete stale atlas-ops-* namespaces
 	@./ops/stack/kind/cleanup_namespaces.sh
 
 ops-kind-version-drift-test: ## Validate kind version matches pinned tool-versions
-	@./ops/e2e/k8s/tests/test_kind_version_drift.sh
+	@./ops/k8s/tests/test_kind_version_drift.sh
 
 ops-kind-cluster-drift-check: ## Require ops contract marker update when cluster profile changes
 	@./scripts/layout/check_kind_cluster_contract_drift.sh
@@ -180,7 +181,7 @@ ops-prom-ready: ## Validate prometheus readiness
 	@kubectl -n "$${ATLAS_E2E_NAMESPACE:-atlas-e2e}" wait --for=condition=available deploy/prometheus --timeout="$${OPS_WAIT_TIMEOUT:-180s}"
 
 ops-prom-scrape-atlas-check: ## Validate prometheus scrape target for atlas
-	@./ops/e2e/k8s/tests/test_prom_scrape.sh
+	@./ops/obs/tests/test_prom_scrape.sh
 
 ops-grafana-up: ## Install grafana stack component
 	@kubectl apply -f ./ops/stack/grafana/grafana.yaml
@@ -206,7 +207,7 @@ ops-otel-down: ## Uninstall otel collector stack component
 	@kubectl delete -f ./ops/stack/otel/otel-collector.yaml --ignore-not-found >/dev/null 2>&1 || true
 
 ops-otel-spans-check: ## Validate otel collector receives spans when enabled
-	@./ops/e2e/k8s/tests/test_otel_spans.sh
+	@./ops/obs/tests/test_otel_spans.sh
 
 ops-otel-required-check: ## Require otel collector presence and trace exemplar signal when enabled
 	@if [ "$${ATLAS_E2E_ENABLE_OTEL:-1}" = "1" ]; then \
@@ -226,13 +227,13 @@ ops-redis-down: ## Uninstall redis stack component
 	@kubectl delete -f ./ops/stack/redis/redis.yaml --ignore-not-found >/dev/null 2>&1 || true
 
 ops-redis-optional-check: ## Validate atlas runs when redis is absent
-	@./ops/e2e/k8s/tests/test_redis_optional.sh
+	@./ops/k8s/tests/test_redis_optional.sh
 
 ops-redis-used-check: ## Validate redis usage evidence when enabled
-	@ATLAS_E2E_ENABLE_REDIS=1 ./ops/e2e/k8s/tests/test_redis_backend_metric.sh
+	@ATLAS_E2E_ENABLE_REDIS=1 ./ops/k8s/tests/test_redis_backend_metric.sh
 
 ops-redis-rate-limit-check: ## Validate redis-backed rate limiting behavior
-	@ATLAS_E2E_ENABLE_REDIS=1 ./ops/e2e/k8s/tests/test_redis_rate_limit.sh
+	@ATLAS_E2E_ENABLE_REDIS=1 ./ops/k8s/tests/test_redis_rate_limit.sh
 
 ops-toxi-up: ## Install toxiproxy stack component (optional)
 	@kubectl apply -f ./ops/stack/toxiproxy/toxiproxy.yaml
@@ -243,10 +244,10 @@ ops-toxi-down: ## Uninstall toxiproxy stack component
 	@kubectl -n "$${ATLAS_E2E_NAMESPACE:-atlas-e2e}" delete pod toxiproxy-bootstrap --ignore-not-found >/dev/null 2>&1 || true
 
 ops-toxi-latency-inject: ## Inject store latency through toxiproxy
-	@./ops/stack/faults/toxiproxy-latency.sh "$${LATENCY_MS:-250}" "$${JITTER_MS:-25}"
+	@./ops/stack/faults/inject.sh toxiproxy-latency "$${LATENCY_MS:-250}" "$${JITTER_MS:-25}"
 
 ops-toxi-cut-store: ## Cut or restore store connection (MODE=on|off)
-	@./ops/stack/faults/block-minio.sh "$${MODE:-on}"
+	@./ops/stack/faults/inject.sh block-minio "$${MODE:-on}"
 
 ops-stack-order-check: ## Validate stack install/uninstall order contract
 	@./scripts/layout/check_ops_stack_order.sh
@@ -513,11 +514,11 @@ ops-k8s-tests: ## Run k8s e2e suite
 	if [ -n "$${ATLAS_E2E_TEST}" ]; then \
 	  group_args="$$group_args --test $${ATLAS_E2E_TEST}"; \
 	fi; \
-	./ops/e2e/k8s/tests/run_all.sh $$group_args
+	./ops/k8s/tests/run_all.sh $$group_args
 	@python3 ./scripts/ops/check_k8s_flakes.py
 
 ops-k8s-template-tests: ## Run helm template/lint edge-case checks
-	@./ops/e2e/k8s/tests/test_helm_templates.sh
+	@./ops/k8s/tests/test_helm_templates.sh
 
 ops-load-prereqs: ## Validate load harness prerequisites (k6 + endpoint)
 	@./ops/load/scripts/check_prereqs.sh
@@ -650,7 +651,7 @@ ops-drill-corruption: ## Run corruption handling drill
 
 ops-drill-pod-churn: ## Run pod churn drill while service handles load
 	@$(MAKE) -s ops-env-validate
-	@./ops/e2e/k8s/tests/pod-churn.sh
+	@./ops/k8s/tests/pod-churn.sh
 
 ops-drill-upgrade: ## Run upgrade drill and verify semantic stability
 	@$(MAKE) -s ops-env-validate
@@ -793,7 +794,7 @@ ops-perf-suite: ## Perf helper: run an arbitrary perf suite (SCENARIO=<file.js> 
 ops-values-validate: ## Validate chart values against SSOT contract
 	@./scripts/contracts/generate_chart_values_schema.py
 	@./scripts/contracts/check_chart_values_contract.py
-	@./ops/e2e/k8s/tests/test_chart_drift.sh
+	@./ops/k8s/tests/test_chart_drift.sh
 
 ops-release-matrix: ## Generate k8s release install matrix document from CI summary
 	@./ops/k8s/ci/install-matrix.sh
@@ -1101,7 +1102,7 @@ e2e-local:
 
 e2e-k8s-install-gate:
 	@$(MAKE) ops-up
-	@./ops/e2e/k8s/tests/test_install.sh
+	@./ops/k8s/tests/test_install.sh
 
 e2e-k8s-suite:
 	@$(MAKE) ops-up

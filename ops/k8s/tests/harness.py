@@ -123,7 +123,7 @@ def main():
     parser = argparse.ArgumentParser(description="Run ops/e2e/k8s tests with retries and reports")
     parser.add_argument("--group", action="append", default=[])
     parser.add_argument("--test", action="append", default=[])
-    parser.add_argument("--manifest", default="ops/e2e/k8s/tests/manifest.json")
+    parser.add_argument("--manifest", default="ops/k8s/tests/manifest.json")
     parser.add_argument("--retries", type=int, default=1)
     parser.add_argument("--json-out", default="artifacts/ops/k8s/test-results.json")
     parser.add_argument("--junit-out", default="artifacts/ops/k8s/test-results.xml")
@@ -163,7 +163,7 @@ def main():
 
         retries = max(args.retries, int(t.get("retries", 1)))
         timeout_seconds = int(t.get("timeout_seconds", 600))
-        spath = repo_root / "ops/e2e/k8s/tests" / script
+        spath = repo_root / "ops/k8s/tests" / script
         if not spath.exists():
             results.append(
                 {

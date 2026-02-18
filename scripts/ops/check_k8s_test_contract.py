@@ -5,8 +5,8 @@
 import json
 from pathlib import Path
 
-manifest = json.loads(Path("ops/e2e/k8s/tests/manifest.json").read_text())
-ownership = json.loads(Path("ops/e2e/k8s/tests/ownership.json").read_text())
+manifest = json.loads(Path("ops/k8s/tests/manifest.json").read_text())
+ownership = json.loads(Path("ops/k8s/tests/ownership.json").read_text())
 
 tests = manifest["tests"]
 owners = ownership["owners"]
