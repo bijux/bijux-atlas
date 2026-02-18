@@ -1,0 +1,36 @@
+name: stack-full-chaos-weekly
+
+on:
+  schedule:
+    - cron: '30 2 * * 1'
+  workflow_dispatch: {}
+
+concurrency:
+  group: stack-full-chaos-weekly
+  cancel-in-progress: false
+
+jobs:
+  stack-full-chaos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 210
+    env:
+      ATLAS_PERF_BASELINE_PROFILE: ci-runner
+      ATLAS_E2E_ENABLE_OTEL: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/kind
+          key: kind-cache-${{ runner.os }}-v0.31.0
+      - uses: azure/setup-helm@v4
+      - uses: azure/setup-kubectl@v4
+      - uses: grafana/setup-k6-action@v1
+      - run: make ci-ops-install-prereqs
+      - run: make stack-full-chaos
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stack-full-chaos-weekly-artifacts
+          path: |
+            artifacts/stack-report/**
+            artifacts/ops/**
