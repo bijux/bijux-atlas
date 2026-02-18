@@ -93,10 +93,6 @@ pub fn build_and_write_manifest_and_reports(
         .validate_strict()
         .map_err(|e: ValidationError| IngestError(e.to_string()))?;
 
-    let manifest_bytes =
-        canonical::stable_json_bytes(&manifest).map_err(|e| IngestError(e.to_string()))?;
-    fs::write(manifest_path, manifest_bytes).map_err(|e| IngestError(e.to_string()))?;
-
     let anomaly_bytes =
         canonical::stable_json_bytes(&extract.anomaly).map_err(|e| IngestError(e.to_string()))?;
     fs::write(anomaly_path, anomaly_bytes).map_err(|e| IngestError(e.to_string()))?;
@@ -118,6 +114,11 @@ pub fn build_and_write_manifest_and_reports(
     let qc_report_path = derived_dir.join("qc_report.json");
     fs::write(&qc_report_path, &qc_bytes).map_err(|e| IngestError(e.to_string()))?;
     fs::write(derived_dir.join("qc.json"), qc_bytes).map_err(|e| IngestError(e.to_string()))?;
+    manifest.qc_report_path = "derived/qc_report.json".to_string();
+
+    let manifest_bytes =
+        canonical::stable_json_bytes(&manifest).map_err(|e| IngestError(e.to_string()))?;
+    fs::write(manifest_path, manifest_bytes).map_err(|e| IngestError(e.to_string()))?;
 
     Ok(BuiltManifest {
         manifest,
