@@ -71,4 +71,30 @@ cargo run -q -p bijux-atlas-cli --bin bijux-atlas -- atlas catalog publish \
   --store-root "$STORE_ROOT" \
   --catalog "$CATALOG_PATH"
 
+STACK_NS="${ATLAS_STACK_NAMESPACE:-atlas-e2e}"
+if command -v kubectl >/dev/null 2>&1; then
+  minio_svc="$(kubectl -n "$STACK_NS" get svc minio -o name 2>/dev/null || true)"
+  if [ -n "$minio_svc" ]; then
+    sync_pod="atlas-store-sync"
+    kubectl -n "$STACK_NS" delete pod "$sync_pod" --ignore-not-found >/dev/null 2>&1 || true
+    kubectl -n "$STACK_NS" run "$sync_pod" \
+      --image=minio/mc:RELEASE.2025-01-17T23-25-50Z \
+      --restart=Never \
+      --command -- sh -ceu "sleep 300" >/dev/null
+    kubectl -n "$STACK_NS" wait --for=condition=Ready pod/"$sync_pod" --timeout=120s >/dev/null
+    kubectl -n "$STACK_NS" exec "$sync_pod" -- sh -ceu "
+mc alias set local 'http://minio.$STACK_NS.svc.cluster.local:9000' minioadmin minioadmin >/dev/null
+mc mb --ignore-existing local/atlas-artifacts >/dev/null
+" >/dev/null
+    find "$STORE_ROOT" -type f | while read -r file; do
+      rel="${file#"$STORE_ROOT"/}"
+      kubectl -n "$STACK_NS" exec -i "$sync_pod" -- sh -ceu "
+mc alias set local 'http://minio.$STACK_NS.svc.cluster.local:9000' minioadmin minioadmin >/dev/null
+mc pipe local/atlas-artifacts/'$rel' >/dev/null
+" <"$file"
+    done
+    kubectl -n "$STACK_NS" delete pod "$sync_pod" --ignore-not-found >/dev/null 2>&1 || true
+  fi
+fi
+
 echo "dataset published: $RELEASE/$SPECIES/$ASSEMBLY"

@@ -40,7 +40,6 @@ required="$required
 bijux_dataset_hits
 bijux_dataset_misses
 bijux_store_download_p95_seconds
-bijux_sqlite_query_latency_p95_seconds
 "
 fi
 
