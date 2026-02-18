@@ -26,7 +26,7 @@ cleanup_namespace() {
   if [ "${ATLAS_E2E_KEEP_NAMESPACE:-0}" = "1" ]; then
     return 0
   fi
-  kubectl delete ns "$NS" --ignore-not-found >/dev/null 2>&1 || true
+  kubectl delete ns "$NS" --ignore-not-found --wait=false >/dev/null 2>&1 || true
 }
 
 wait_ready() {
