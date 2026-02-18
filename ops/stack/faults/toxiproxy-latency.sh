@@ -3,6 +3,10 @@ set -eu
 NS="${ATLAS_NS:-atlas-e2e}"
 LATENCY_MS="${1:-0}"
 JITTER_MS="${2:-0}"
+if [ "${OPS_DRY_RUN:-0}" = "1" ]; then
+  echo "DRY-RUN toxiproxy latency ns=$NS latency_ms=$LATENCY_MS jitter_ms=$JITTER_MS"
+  exit 0
+fi
 kubectl -n "$NS" run toxiproxy-latency --restart=Never --rm -i \
   --image=curlimages/curl:8.10.1 --command -- sh -ceu '
 api="http://toxiproxy.'"$NS"'.svc.cluster.local:8474"

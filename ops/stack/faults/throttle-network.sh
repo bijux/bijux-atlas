@@ -2,6 +2,10 @@
 set -euo pipefail
 NS="${ATLAS_NS:-atlas-e2e}"
 RATE_KBPS="${1:-128}"
+if [ "${OPS_DRY_RUN:-0}" = "1" ]; then
+  echo "DRY-RUN toxiproxy bandwidth ns=$NS rate_kbps=$RATE_KBPS"
+  exit 0
+fi
 
 kubectl -n "$NS" run toxiproxy-throttle --restart=Never --rm -i \
   --image=curlimages/curl:8.10.1 --command -- sh -ceu '

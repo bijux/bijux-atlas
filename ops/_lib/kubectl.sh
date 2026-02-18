@@ -38,7 +38,12 @@ ops_kubectl_dump_bundle() {
   local out="${2:-$(ops_artifact_dir failure-bundle)}"
   mkdir -p "$out"
   kubectl get pods -A -o wide > "$out/pods.txt" 2>/dev/null || true
+  kubectl get all -A -o wide > "$out/all-cluster.txt" 2>/dev/null || true
   kubectl get events -A --sort-by=.lastTimestamp > "$out/events.txt" 2>/dev/null || true
   kubectl -n "$ns" get all -o wide > "$out/all-$ns.txt" 2>/dev/null || true
   kubectl -n "$ns" logs -l app.kubernetes.io/name=bijux-atlas --tail=2000 > "$out/logs-$ns.txt" 2>/dev/null || true
+  kubectl -n kube-system get pods -o wide > "$out/kube-system-pods.txt" 2>/dev/null || true
+  for p in $(kubectl -n kube-system get pods -o jsonpath='{.items[*].metadata.name}' 2>/dev/null || true); do
+    kubectl -n kube-system logs "$p" --tail=500 > "$out/kube-system-$p.log" 2>/dev/null || true
+  done
 }
