@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "min_hit_ratio": 0.60,
+  "max_disk_bytes": 8589934592
+}

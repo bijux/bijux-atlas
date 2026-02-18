@@ -9,8 +9,8 @@ import subprocess
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[3]
-cfg = json.loads((root / 'configs/ops/dataset-qc-thresholds.json').read_text())
-budget = int(cfg.get('cache_budget_bytes', 0))
+cfg = json.loads((root / 'configs/ops/cache-thresholds.json').read_text())
+budget = int(cfg.get('max_disk_bytes', 0))
 try:
     out = subprocess.check_output("du -sk artifacts/e2e-store 2>/dev/null | awk '{print $1*1024}'", shell=True, text=True).strip()
     usage = int(out or '0')
