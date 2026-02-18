@@ -34,6 +34,8 @@ fn bench_ingest_throughput(c: &mut Criterion) {
                 shard_partitions: 0,
                 compute_gene_signatures: true,
                 compute_contig_fractions: false,
+                fasta_scanning_enabled: false,
+                fasta_scan_max_bases: 2_000_000_000,
                 compute_transcript_spliced_length: false,
                 compute_transcript_cds_length: false,
                 dev_allow_auto_generate_fai: false,
