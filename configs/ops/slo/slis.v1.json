@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "version": "v1",
+  "owner": "bijux-atlas-operations",
+  "slis": [
+    {
+      "id": "availability-readyz-200",
+      "name": "Availability SLI",
+      "goal": "fraction of time /readyz returns 200",
+      "metric": "bijux_http_requests_total",
+      "labels": {"route": "/readyz", "status": "200"},
+      "kind": "availability",
+      "status": "enforced"
+    },
+    {
+      "id": "success-rate-by-class",
+      "name": "Success rate SLI",
+      "goal": "2xx / (2xx + 5xx) per endpoint class",
+      "metric": "bijux_http_requests_total",
+      "labels": {"route": "<class-pattern>", "status": "2xx|5xx"},
+      "kind": "success-rate",
+      "status": "enforced"
+    },
+    {
+      "id": "latency-p95-by-class",
+      "name": "Latency SLI (p95/p99)",
+      "goal": "p95 and p99 request duration per endpoint class",
+      "metric": "bijux_http_request_latency_p95_seconds",
+      "secondary_metric": "bijux_http_request_latency_p99_seconds",
+      "secondary_metric_status": "planned",
+      "labels": {"route": "<class-pattern>"},
+      "kind": "latency",
+      "status": "enforced"
+    },
+    {
+      "id": "overload-cheap-survival",
+      "name": "Overload survival SLI",
+      "goal": "cheap endpoints keep succeeding under load shedding",
+      "metric": "bijux_http_requests_total",
+      "labels": {"route": "^/health$|^/version$|^/metrics$", "status": "2xx|3xx"},
+      "kind": "overload",
+      "status": "enforced"
+    },
+    {
+      "id": "overload-shed-rate",
+      "name": "Shed rate SLI",
+      "goal": "fraction of requests shed due to overload",
+      "metric": "atlas_shed_total",
+      "labels": {"reason": "overload"},
+      "kind": "overload",
+      "status": "enforced"
+    },
+    {
+      "id": "cold-start-standard-query",
+      "name": "Cold start SLI",
+      "goal": "time from pod start to first successful standard query",
+      "metric": "bijux_request_stage_latency_p95_seconds",
+      "labels": {"stage": "cold_start", "route": "^/v1/genes$|^/v1/genes/[^/]+$"},
+      "kind": "latency",
+      "status": "planned"
+    },
+    {
+      "id": "dataset-cache-hit-ratio",
+      "name": "Cache hit ratio SLI",
+      "goal": "hit / (hit + miss) for dataset cache",
+      "metric": "bijux_dataset_hits",
+      "secondary_metric": "bijux_dataset_misses",
+      "labels": {"dataset": "*"},
+      "kind": "cache",
+      "status": "enforced"
+    },
+    {
+      "id": "store-dependency-health",
+      "name": "Store dependency SLI",
+      "goal": "store backend p95 latency and error rate",
+      "metric": "bijux_store_fetch_latency_p95_seconds",
+      "secondary_metric": "atlas_store_errors_total",
+      "labels": {"dataset": "*"},
+      "kind": "dependency",
+      "status": "enforced"
+    },
+    {
+      "id": "registry-refresh-freshness",
+      "name": "Registry freshness SLI",
+      "goal": "time since last successful registry refresh",
+      "metric": "bijux_registry_refresh_age_seconds",
+      "labels": {"source": "catalog"},
+      "kind": "freshness",
+      "status": "planned"
+    },
+    {
+      "id": "dataset-availability-miss-rate",
+      "name": "Dataset availability SLI",
+      "goal": "requests failing because dataset missing when expected",
+      "metric": "bijux_dataset_misses",
+      "labels": {"dataset": "*"},
+      "kind": "availability",
+      "status": "enforced"
+    },
+    {
+      "id": "correctness-cross-endpoint-mismatch",
+      "name": "Correctness guard SLI",
+      "goal": "genes/count vs genes/list mismatch count",
+      "metric": "bijux_genes_count_list_mismatch_total",
+      "labels": {"dataset": "*"},
+      "kind": "correctness",
+      "status": "planned"
+    }
+  ]
+}
