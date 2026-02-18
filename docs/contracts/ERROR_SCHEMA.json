@@ -8,21 +8,21 @@
       "required": true,
       "type": "object"
     },
+    "hint": {
+      "required": false,
+      "type": "string"
+    },
     "message": {
       "required": true,
       "type": "string"
     },
-    "hint": {
-      "required": false,
+    "request_id": {
+      "required": true,
       "type": "string"
     },
     "retryable": {
       "required": false,
       "type": "boolean"
-    },
-    "request_id": {
-      "required": true,
-      "type": "string"
     }
   },
   "problem_details_alignment": {
