@@ -11,6 +11,11 @@ ROOT = Path(__file__).resolve().parents[2]
 contract = json.loads((ROOT / "docs" / "contracts" / "ENDPOINTS.json").read_text())
 contract_paths = {e["path"] for e in contract["endpoints"]}
 
+for path in contract_paths:
+    if path.startswith("/v") and not path.startswith("/v1/"):
+        print(f"non-v1 API path is forbidden in v1 contract: {path}", file=sys.stderr)
+        sys.exit(1)
+
 server_src = (ROOT / "crates" / "bijux-atlas-server" / "src" / "runtime" / "server_runtime_app.rs").read_text()
 route_paths = set()
 for p in re.findall(r'\.route\(\s*"([^"]+)"', server_src, flags=re.MULTILINE):

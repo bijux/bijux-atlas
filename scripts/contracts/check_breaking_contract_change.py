@@ -16,6 +16,7 @@ CONTRACT_FILES = [
     "docs/contracts/CHART_VALUES.json",
     "docs/contracts/POLICY_SCHEMA.json",
 ]
+OPENAPI_SNAPSHOT = "configs/openapi/v1/openapi.snapshot.json"
 
 
 def git(*args: str) -> str:
@@ -86,8 +87,10 @@ def main() -> int:
                 print(f"{rel}: removed spans since {base_ref}: {removed}", file=sys.stderr)
                 breaking = True
         elif rel.endswith("ENDPOINTS.json"):
-            prev = {(e["method"], e["path"]) for e in previous["endpoints"]}
-            cur = {(e["method"], e["path"]) for e in current["endpoints"]}
+            prev_endpoints = {(e["method"], e["path"]): e for e in previous["endpoints"]}
+            cur_endpoints = {(e["method"], e["path"]): e for e in current["endpoints"]}
+            prev = set(prev_endpoints.keys())
+            cur = set(cur_endpoints.keys())
             removed = sorted(prev - cur)
             if removed:
                 print(
@@ -95,6 +98,31 @@ def main() -> int:
                     file=sys.stderr,
                 )
                 breaking = True
+            for key in sorted(prev & cur):
+                p_params = {
+                    (p.get("in", "query"), p["name"]): p
+                    for p in prev_endpoints[key].get("params", [])
+                }
+                c_params = {
+                    (p.get("in", "query"), p["name"]): p
+                    for p in cur_endpoints[key].get("params", [])
+                }
+                removed_params = sorted(set(p_params) - set(c_params))
+                if removed_params:
+                    print(
+                        f"{rel}: removed params for {key} since {base_ref}: {removed_params}",
+                        file=sys.stderr,
+                    )
+                    breaking = True
+                for param_key in sorted(set(p_params) & set(c_params)):
+                    was_required = bool(p_params[param_key].get("required", False))
+                    now_required = bool(c_params[param_key].get("required", False))
+                    if now_required and not was_required:
+                        print(
+                            f"{rel}: param became required for {key}: {param_key}",
+                            file=sys.stderr,
+                        )
+                        breaking = True
         elif rel.endswith("CHART_VALUES.json"):
             removed = sorted(
                 set(previous["top_level_keys"]) - set(current["top_level_keys"])
@@ -122,6 +150,29 @@ def main() -> int:
             file=sys.stderr,
         )
         return 1
+
+    previous_openapi = read_at_ref(base_ref, OPENAPI_SNAPSHOT)
+    if previous_openapi is not None:
+        current_openapi = json.loads((ROOT / OPENAPI_SNAPSHOT).read_text())
+        prev_paths = set(previous_openapi.get("paths", {}).keys())
+        cur_paths = set(current_openapi.get("paths", {}).keys())
+        removed_paths = sorted(prev_paths - cur_paths)
+        if removed_paths:
+            print(
+                f"{OPENAPI_SNAPSHOT}: removed API paths since {base_ref}: {removed_paths}",
+                file=sys.stderr,
+            )
+            return 1
+        for path in sorted(prev_paths & cur_paths):
+            prev_ops = previous_openapi["paths"][path]
+            cur_ops = current_openapi["paths"][path]
+            removed_ops = sorted(set(prev_ops.keys()) - set(cur_ops.keys()))
+            if removed_ops:
+                print(
+                    f"{OPENAPI_SNAPSHOT}: removed operations for {path} since {base_ref}: {removed_ops}",
+                    file=sys.stderr,
+                )
+                return 1
 
     print(f"contracts compatibility check passed vs {base_ref}")
     return 0
