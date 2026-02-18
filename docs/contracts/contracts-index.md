@@ -31,6 +31,17 @@ Does not replace registry-specific detail pages.
 | Artifact schema | `artifacts/ARTIFACT_SCHEMA.json` | `_generated/contracts/ARTIFACT_SCHEMA.md` | Experimental |
 | Policy schema | `POLICY_SCHEMA.json` | `_generated/contracts/POLICY_SCHEMA.md` | Experimental |
 
+## Generated docs
+
+- [_generated/contracts/ERROR_CODES.md](../_generated/contracts/ERROR_CODES.md)
+- [_generated/contracts/ENDPOINTS.md](../_generated/contracts/ENDPOINTS.md)
+- [_generated/contracts/METRICS.md](../_generated/contracts/METRICS.md)
+- [_generated/contracts/TRACE_SPANS.md](../_generated/contracts/TRACE_SPANS.md)
+- [_generated/contracts/CONFIG_KEYS.md](../_generated/contracts/CONFIG_KEYS.md)
+- [_generated/contracts/CHART_VALUES.md](../_generated/contracts/CHART_VALUES.md)
+- [_generated/contracts/ARTIFACT_SCHEMA.md](../_generated/contracts/ARTIFACT_SCHEMA.md)
+- [_generated/contracts/POLICY_SCHEMA.md](../_generated/contracts/POLICY_SCHEMA.md)
+
 ## Failure modes
 
 Missing registry updates or missing regeneration will fail drift checks.

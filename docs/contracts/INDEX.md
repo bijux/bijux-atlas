@@ -48,5 +48,6 @@ Expected output: both commands exit 0.
 ## See also
 
 - [Contracts Index](contracts-index.md)
+- [Contracts README](README.md)
 - [SSOT Workflow](ssot-workflow.md)
 - [Terms Glossary](../_style/terms-glossary.md)
