@@ -502,13 +502,8 @@ async fn sequence_common(
     if include_stats {
         data["sequence_meta"] = sequence_meta(&sequence);
     }
-    let payload = crate::http::handlers::json_envelope(
-        Some(json!(dataset)),
-        None,
-        data,
-        None,
-        warnings,
-    );
+    let payload =
+        crate::http::handlers::json_envelope(Some(json!(dataset)), None, data, None, warnings);
     let body =
         match serialize_payload_with_capacity(&payload, false, payload.to_string().len() + 64) {
             Ok(v) => v,
@@ -600,12 +595,20 @@ pub(crate) async fn gene_sequence_handler(
     let conn = match state.cache.open_dataset_connection(&dataset).await {
         Ok(v) => v,
         Err(e) => {
+            let msg = e.to_string();
+            let (status, code) = if msg.contains("quarantined") {
+                (StatusCode::CONFLICT, ApiErrorCode::ArtifactQuarantined)
+            } else if msg.contains("corrupt") {
+                (StatusCode::CONFLICT, ApiErrorCode::ArtifactCorrupted)
+            } else {
+                (StatusCode::SERVICE_UNAVAILABLE, ApiErrorCode::UpstreamStoreUnavailable)
+            };
             let resp = api_error_response(
-                StatusCode::SERVICE_UNAVAILABLE,
+                status,
                 error_json(
-                    ApiErrorCode::NotReady,
+                    code,
                     "dataset unavailable",
-                    json!({"message": e.to_string()}),
+                    json!({"message": msg}),
                 ),
             );
             return with_request_id(resp, &request_id);
@@ -640,7 +643,7 @@ pub(crate) async fn gene_sequence_handler(
                 let resp = api_error_response(
                     StatusCode::NOT_FOUND,
                     error_json(
-                        ApiErrorCode::InvalidQueryParameter,
+                        ApiErrorCode::GeneNotFound,
                         "gene not found",
                         json!({"gene_id": gene_id}),
                     ),

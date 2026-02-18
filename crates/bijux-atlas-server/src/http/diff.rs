@@ -187,7 +187,7 @@ async fn diff_common(
         let resp = api_error_response(
             StatusCode::NOT_FOUND,
             error_json(
-                ApiErrorCode::InvalidQueryParameter,
+                ApiErrorCode::DatasetNotFound,
                 "from_release alias unresolved",
                 json!({"from_release": from_release_raw}),
             ),
@@ -200,7 +200,7 @@ async fn diff_common(
         let resp = api_error_response(
             StatusCode::NOT_FOUND,
             error_json(
-                ApiErrorCode::InvalidQueryParameter,
+                ApiErrorCode::DatasetNotFound,
                 "to_release alias unresolved",
                 json!({"to_release": to_release_raw}),
             ),

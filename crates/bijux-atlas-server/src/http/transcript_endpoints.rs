@@ -116,12 +116,20 @@ pub(crate) async fn gene_transcripts_handler(
     let conn = match state.cache.open_dataset_connection(&dataset).await {
         Ok(c) => c,
         Err(e) => {
+            let msg = e.to_string();
+            let (status, code) = if msg.contains("quarantined") {
+                (StatusCode::CONFLICT, ApiErrorCode::ArtifactQuarantined)
+            } else if msg.contains("corrupt") {
+                (StatusCode::CONFLICT, ApiErrorCode::ArtifactCorrupted)
+            } else {
+                (StatusCode::SERVICE_UNAVAILABLE, ApiErrorCode::UpstreamStoreUnavailable)
+            };
             let resp = api_error_response(
-                StatusCode::SERVICE_UNAVAILABLE,
+                status,
                 error_json(
-                    ApiErrorCode::NotReady,
+                    code,
                     "dataset unavailable",
-                    json!({"message": e.to_string()}),
+                    json!({"message": msg}),
                 ),
             );
             state
@@ -261,12 +269,20 @@ pub(crate) async fn transcript_summary_handler(
     let conn = match state.cache.open_dataset_connection(&dataset).await {
         Ok(c) => c,
         Err(e) => {
+            let msg = e.to_string();
+            let (status, code) = if msg.contains("quarantined") {
+                (StatusCode::CONFLICT, ApiErrorCode::ArtifactQuarantined)
+            } else if msg.contains("corrupt") {
+                (StatusCode::CONFLICT, ApiErrorCode::ArtifactCorrupted)
+            } else {
+                (StatusCode::SERVICE_UNAVAILABLE, ApiErrorCode::UpstreamStoreUnavailable)
+            };
             let resp = api_error_response(
-                StatusCode::SERVICE_UNAVAILABLE,
+                status,
                 error_json(
-                    ApiErrorCode::NotReady,
+                    code,
                     "dataset unavailable",
-                    json!({"message": e.to_string()}),
+                    json!({"message": msg}),
                 ),
             );
             state

@@ -329,6 +329,7 @@ async fn resilience_middleware(
             ApiErrorCode::NotReady,
             "emergency global circuit breaker is enabled",
             serde_json::json!({}),
+            "req-unknown",
         ));
         return (StatusCode::SERVICE_UNAVAILABLE, err).into_response();
     }
@@ -382,6 +383,7 @@ async fn security_middleware(
             ApiErrorCode::QueryRejectedByPolicy,
             "request URI too large",
             serde_json::json!({"max_uri_bytes": state.api.max_uri_bytes, "actual": uri_text.len()}),
+            "req-unknown",
         ));
         return (StatusCode::URI_TOO_LONG, err).into_response();
     }
@@ -395,6 +397,7 @@ async fn security_middleware(
             ApiErrorCode::QueryRejectedByPolicy,
             "request headers too large",
             serde_json::json!({"max_header_bytes": state.api.max_header_bytes, "actual": header_bytes}),
+            "req-unknown",
         ));
         return (StatusCode::REQUEST_HEADER_FIELDS_TOO_LARGE, err).into_response();
     }
@@ -405,6 +408,7 @@ async fn security_middleware(
             ApiErrorCode::QueryRejectedByPolicy,
             "api key required",
             serde_json::json!({}),
+            "req-unknown",
         ));
         return (StatusCode::UNAUTHORIZED, err).into_response();
     }
@@ -416,6 +420,7 @@ async fn security_middleware(
                 ApiErrorCode::QueryRejectedByPolicy,
                 "invalid api key",
                 serde_json::json!({}),
+                "req-unknown",
             ));
             return (StatusCode::UNAUTHORIZED, err).into_response();
         }
@@ -429,6 +434,7 @@ async fn security_middleware(
                 ApiErrorCode::QueryRejectedByPolicy,
                 "missing required HMAC headers",
                 serde_json::json!({}),
+                "req-unknown",
             ));
             return (StatusCode::UNAUTHORIZED, err).into_response();
         }
@@ -439,6 +445,7 @@ async fn security_middleware(
                     ApiErrorCode::QueryRejectedByPolicy,
                     "invalid hmac timestamp",
                     serde_json::json!({}),
+                    "req-unknown",
                 ));
                 return (StatusCode::UNAUTHORIZED, err).into_response();
             };
@@ -448,6 +455,7 @@ async fn security_middleware(
                     ApiErrorCode::QueryRejectedByPolicy,
                     "hmac timestamp outside allowed skew",
                     serde_json::json!({"max_skew_secs": state.api.hmac_max_skew_secs}),
+                    "req-unknown",
                 ));
                 return (StatusCode::UNAUTHORIZED, err).into_response();
             }
@@ -460,6 +468,7 @@ async fn security_middleware(
                     ApiErrorCode::QueryRejectedByPolicy,
                     "invalid hmac signature",
                     serde_json::json!({}),
+                    "req-unknown",
                 ));
                 return (StatusCode::UNAUTHORIZED, err).into_response();
             }
