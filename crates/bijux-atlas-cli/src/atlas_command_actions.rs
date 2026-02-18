@@ -787,6 +787,22 @@ mod tests {
         let entries = fs::read_dir(quarantine).expect("read quarantine");
         assert!(entries.count() > 0);
     }
+
+    #[test]
+    fn network_inputs_are_forbidden_by_default() {
+        let td = tempfile::tempdir().expect("tmp");
+        let root = td.path().join("out");
+        let err = resolve_verify_and_lock_inputs(
+            std::path::Path::new("https://example.invalid/genes.gff3"),
+            std::path::Path::new("https://example.invalid/genome.fa"),
+            std::path::Path::new("https://example.invalid/genome.fa.fai"),
+            &root,
+            false,
+            false,
+        )
+        .expect_err("network should be blocked unless explicitly allowed");
+        assert!(err.contains("network input forbidden by policy"));
+    }
 }
 
 fn read_sharding_policy_defaults() -> (ShardingPlanCli, usize) {

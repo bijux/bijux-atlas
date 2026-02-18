@@ -828,6 +828,9 @@ pub(crate) fn validate_dataset(
     }
     validate_sqlite_contract(&paths.sqlite)?;
     validate_shard_catalog_and_indexes(&paths.derived_dir)?;
+    if !deep {
+        validate_dataset_qc_thresholds(&root, &dataset)?;
+    }
     if deep {
         let lock_path = paths.derived_dir.join("manifest.lock");
         let lock_raw = fs::read(&lock_path)
@@ -871,6 +874,27 @@ pub(crate) fn validate_dataset(
         );
     }
     Ok(())
+}
+
+fn validate_dataset_qc_thresholds(root: &Path, dataset: &DatasetId) -> Result<(), String> {
+    let workspace = std::env::current_dir().map_err(|e| e.to_string())?;
+    let thresholds_path = workspace.join("configs/ops/dataset-qc-thresholds.json");
+    let paths = bijux_atlas_model::artifact_paths(root, dataset);
+    let qc_report = paths.derived_dir.join("qc.json");
+    let qc_raw = fs::read_to_string(&qc_report)
+        .map_err(|e| format!("dataset validate failed: {}: {e}", qc_report.display()))?;
+    let thresholds_raw = fs::read_to_string(&thresholds_path).map_err(|e| {
+        format!(
+            "dataset validate failed: {}: {e}",
+            thresholds_path.display()
+        )
+    })?;
+    let qc: serde_json::Value = serde_json::from_str(&qc_raw)
+        .map_err(|e| format!("dataset validate failed: invalid qc json: {e}"))?;
+    let thresholds: serde_json::Value = serde_json::from_str(&thresholds_raw)
+        .map_err(|e| format!("dataset validate failed: invalid thresholds json: {e}"))?;
+    validate_qc_thresholds(&qc, &thresholds)
+        .map_err(|e| format!("dataset validate failed: qc gate failed: {e}"))
 }
 
 pub(crate) fn validate_ingest_qc(
