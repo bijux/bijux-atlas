@@ -14,6 +14,7 @@ fn command_surface_ssot_matches_doc() {
         "atlas dataset validate",
         "atlas dataset verify",
         "atlas dataset verify-pack",
+        "atlas diff build",
         "atlas doctor",
         "atlas explain",
         "atlas explain-query",
@@ -117,7 +118,7 @@ fn help_output_command_surface_matches_doc_exactly() {
     for c in top_cmds {
         if c == "atlas" {
             for sub in &atlas_cmds {
-                if matches!(sub.as_str(), "catalog" | "dataset" | "openapi") {
+                if matches!(sub.as_str(), "catalog" | "dataset" | "openapi" | "diff") {
                     let nested = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
                         .args(["atlas", sub, "--help"])
                         .output()

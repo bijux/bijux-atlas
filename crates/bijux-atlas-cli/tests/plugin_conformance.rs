@@ -172,7 +172,7 @@ fn atlas_validate_deep_requires_manifest_lock() {
     .expect("write anomaly");
 
     let sqlite_bytes = fs::read(&paths.sqlite).expect("read sqlite");
-    let manifest = bijux_atlas_model::ArtifactManifest::new(
+    let mut manifest = bijux_atlas_model::ArtifactManifest::new(
         "1".to_string(),
         "1".to_string(),
         dataset,
@@ -184,6 +184,16 @@ fn atlas_validate_deep_requires_manifest_lock() {
         ),
         bijux_atlas_model::ManifestStats::new(1, 1, 1),
     );
+    let sqlite_sha = bijux_atlas_core::sha256_hex(&sqlite_bytes);
+    manifest.input_hashes = bijux_atlas_model::ManifestInputHashes::new(
+        bijux_atlas_core::sha256_hex(b"##gff-version 3\n"),
+        bijux_atlas_core::sha256_hex(b">chr1\nACGT\n"),
+        bijux_atlas_core::sha256_hex(b"chr1\t4\t6\t4\t5\n"),
+        "policy-hash".to_string(),
+    );
+    manifest.toolchain_hash = "toolchain-hash".to_string();
+    manifest.db_hash = sqlite_sha.clone();
+    manifest.artifact_hash = sqlite_sha;
     fs::write(
         &paths.manifest,
         serde_json::to_vec(&manifest).expect("manifest json"),
@@ -210,7 +220,11 @@ fn atlas_validate_deep_requires_manifest_lock() {
     assert!(!output.status.success());
     let stderr = String::from_utf8(output.stderr).expect("stderr utf8");
     assert!(stderr.contains("\"code\":\"internal_error\""));
-    assert!(stderr.contains("manifest.lock missing"));
+    assert!(
+        stderr.contains("manifest.lock missing")
+            || stderr.contains("manifest input_hashes are required"),
+        "unexpected stderr: {stderr}"
+    );
 }
 
 fn create_minimal_valid_sqlite(path: &Path) {

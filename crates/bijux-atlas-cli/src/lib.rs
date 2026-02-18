@@ -20,7 +20,7 @@ use bijux_atlas_query::{
 };
 use clap::{error::ErrorKind, ArgAction, CommandFactory, Parser, Subcommand, ValueEnum};
 use clap_complete::{generate, Generator, Shell};
-use commands::{CatalogCommand, DatasetCommand};
+use commands::{CatalogCommand, DatasetCommand, DiffCommand};
 use rusqlite::Connection;
 use serde_json::{json, Value};
 use std::collections::HashMap;
@@ -116,6 +116,10 @@ enum AtlasCommand {
     Dataset {
         #[command(subcommand)]
         command: DatasetCommand,
+    },
+    Diff {
+        #[command(subcommand)]
+        command: DiffCommand,
     },
     Policy {
         #[command(subcommand)]
@@ -528,6 +532,27 @@ fn run_atlas_command(
             DatasetCommand::VerifyPack { pack } => {
                 artifact_validation::verify_pack(pack, output_mode).map_err(CliError::internal)
             }
+        },
+        AtlasCommand::Diff { command } => match command {
+            DiffCommand::Build {
+                root,
+                from_release,
+                to_release,
+                species,
+                assembly,
+                out_dir,
+                max_inline_items,
+            } => artifact_validation::build_release_diff(
+                root,
+                &from_release,
+                &to_release,
+                &species,
+                &assembly,
+                out_dir,
+                max_inline_items,
+                output_mode,
+            )
+            .map_err(CliError::internal),
         },
         AtlasCommand::Policy { command } => match command {
             PolicyCommand::Validate => {

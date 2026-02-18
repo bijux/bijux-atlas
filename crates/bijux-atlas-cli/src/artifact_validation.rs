@@ -1,13 +1,15 @@
 use crate::{sha256_hex, OutputMode};
 use bijux_atlas_core::canonical;
-use bijux_atlas_model::{ArtifactManifest, Catalog, CatalogEntry, DatasetId, ShardCatalog};
+use bijux_atlas_model::{
+    ArtifactManifest, Catalog, CatalogEntry, DatasetId, ReleaseGeneIndex, ShardCatalog,
+};
 use bijux_atlas_policies::{canonical_config_json, load_policy_from_workspace};
 use bijux_atlas_store::{
     canonical_catalog_json, sorted_catalog_entries, verify_expected_sha256, ArtifactStore,
     LocalFsStore, ManifestLock, StoreErrorCode,
 };
 use serde_json::json;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashMap, HashSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 use tar::{Archive, Builder, Header};
@@ -181,6 +183,251 @@ pub(crate) fn update_latest_alias(
         output_mode,
         json!({"command":"atlas catalog latest-alias-update","status":"ok","alias_path":alias_path}),
     )
+}
+
+pub(crate) fn build_release_diff(
+    root: PathBuf,
+    from_release: &str,
+    to_release: &str,
+    species: &str,
+    assembly: &str,
+    out_dir: PathBuf,
+    max_inline_items: usize,
+    output_mode: OutputMode,
+) -> Result<(), String> {
+    let from = DatasetId::new(from_release, species, assembly).map_err(|e| e.to_string())?;
+    let to = DatasetId::new(to_release, species, assembly).map_err(|e| e.to_string())?;
+    let from_paths = bijux_atlas_model::artifact_paths(&root, &from);
+    let to_paths = bijux_atlas_model::artifact_paths(&root, &to);
+    let from_index = read_release_index(&from_paths.release_gene_index)?;
+    let to_index = read_release_index(&to_paths.release_gene_index)?;
+    let from_biotype = read_gene_biotypes(&from_paths.sqlite)?;
+    let to_biotype = read_gene_biotypes(&to_paths.sqlite)?;
+
+    let from_map = index_by_identity(&from_index.entries);
+    let to_map = index_by_identity(&to_index.entries);
+    let from_keys: HashSet<String> = from_map.keys().cloned().collect();
+    let to_keys: HashSet<String> = to_map.keys().cloned().collect();
+
+    let genes_added = sorted_strings(to_keys.difference(&from_keys).cloned().collect());
+    let genes_removed = sorted_strings(from_keys.difference(&to_keys).cloned().collect());
+    let mut genes_changed_coords = Vec::new();
+    let mut genes_changed_biotype = Vec::new();
+    let mut genes_changed_signature = Vec::new();
+
+    let mut common = from_keys
+        .intersection(&to_keys)
+        .cloned()
+        .collect::<Vec<_>>();
+    common.sort();
+    for key in common {
+        let Some(left) = from_map.get(&key) else {
+            continue;
+        };
+        let Some(right) = to_map.get(&key) else {
+            continue;
+        };
+        if left.seqid != right.seqid || left.start != right.start || left.end != right.end {
+            genes_changed_coords.push(key.clone());
+        }
+        let left_biotype = from_biotype.get(&left.gene_id).cloned().unwrap_or_default();
+        let right_biotype = to_biotype.get(&right.gene_id).cloned().unwrap_or_default();
+        if left_biotype != right_biotype {
+            genes_changed_biotype.push(key.clone());
+        }
+        if left.signature_sha256 != right.signature_sha256 {
+            genes_changed_signature.push(key);
+        }
+    }
+    genes_changed_coords.sort();
+    genes_changed_biotype.sort();
+    genes_changed_signature.sort();
+
+    let identity = json!({
+        "from_release": from_release,
+        "to_release": to_release,
+        "species": species,
+        "assembly": assembly
+    });
+    let summary = json!({
+        "schema_version": "1",
+        "identity": identity,
+        "counts": {
+            "genes_added": genes_added.len(),
+            "genes_removed": genes_removed.len(),
+            "genes_changed_coords": genes_changed_coords.len(),
+            "genes_changed_biotype": genes_changed_biotype.len(),
+            "genes_changed_signature": genes_changed_signature.len()
+        },
+        "sanity": {
+            "stable_gene_ratio": stable_ratio(from_map.len(), genes_added.len(), genes_removed.len())
+        }
+    });
+
+    fs::create_dir_all(&out_dir).map_err(|e| e.to_string())?;
+    let mut chunk_manifest = Vec::<serde_json::Value>::new();
+    let genes_added = chunk_or_inline(
+        "genes_added",
+        genes_added,
+        max_inline_items,
+        &out_dir,
+        &mut chunk_manifest,
+    )?;
+    let genes_removed = chunk_or_inline(
+        "genes_removed",
+        genes_removed,
+        max_inline_items,
+        &out_dir,
+        &mut chunk_manifest,
+    )?;
+    let genes_changed_coords = chunk_or_inline(
+        "genes_changed_coords",
+        genes_changed_coords,
+        max_inline_items,
+        &out_dir,
+        &mut chunk_manifest,
+    )?;
+    let genes_changed_biotype = chunk_or_inline(
+        "genes_changed_biotype",
+        genes_changed_biotype,
+        max_inline_items,
+        &out_dir,
+        &mut chunk_manifest,
+    )?;
+    let genes_changed_signature = chunk_or_inline(
+        "genes_changed_signature",
+        genes_changed_signature,
+        max_inline_items,
+        &out_dir,
+        &mut chunk_manifest,
+    )?;
+
+    let diff = json!({
+        "schema_version": "1",
+        "identity": identity,
+        "genes_added": genes_added,
+        "genes_removed": genes_removed,
+        "genes_changed_coords": genes_changed_coords,
+        "genes_changed_biotype": genes_changed_biotype,
+        "genes_changed_signature": genes_changed_signature,
+        "transcripts_added": [],
+        "transcripts_removed": [],
+        "chunk_manifest": chunk_manifest,
+        "compatibility": "additive-only"
+    });
+
+    let diff_path = out_dir.join("diff.json");
+    let summary_path = out_dir.join("diff.summary.json");
+    let diff_bytes = canonical::stable_json_bytes(&diff).map_err(|e| e.to_string())?;
+    let summary_bytes = canonical::stable_json_bytes(&summary).map_err(|e| e.to_string())?;
+    fs::write(&diff_path, &diff_bytes).map_err(|e| e.to_string())?;
+    fs::write(&summary_path, &summary_bytes).map_err(|e| e.to_string())?;
+    let diff_sha = sha256_hex(&diff_bytes);
+    emit_ok_payload(
+        output_mode,
+        json!({
+            "command":"atlas diff build",
+            "status":"ok",
+            "schema_version":"1",
+            "identity": diff["identity"],
+            "diff_path": diff_path,
+            "summary_path": summary_path,
+            "diff_sha256": diff_sha
+        }),
+    )
+}
+
+fn read_release_index(path: &Path) -> Result<ReleaseGeneIndex, String> {
+    let raw = fs::read(path).map_err(|e| format!("read {} failed: {e}", path.display()))?;
+    serde_json::from_slice(&raw).map_err(|e| format!("parse {} failed: {e}", path.display()))
+}
+
+fn read_gene_biotypes(sqlite: &Path) -> Result<HashMap<String, String>, String> {
+    let conn = rusqlite::Connection::open(sqlite).map_err(|e| e.to_string())?;
+    let mut stmt = conn
+        .prepare("SELECT gene_id, biotype FROM gene_summary")
+        .map_err(|e| e.to_string())?;
+    let rows = stmt
+        .query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))
+        .map_err(|e| e.to_string())?;
+    let mut out = HashMap::new();
+    for row in rows {
+        let (gene_id, biotype) = row.map_err(|e| e.to_string())?;
+        out.insert(gene_id, biotype);
+    }
+    Ok(out)
+}
+
+fn index_by_identity(
+    entries: &[bijux_atlas_model::ReleaseGeneIndexEntry],
+) -> HashMap<String, bijux_atlas_model::ReleaseGeneIndexEntry> {
+    let mut out = HashMap::with_capacity(entries.len());
+    for e in entries {
+        out.insert(stable_gene_identity(e), e.clone());
+    }
+    out
+}
+
+fn stable_gene_identity(entry: &bijux_atlas_model::ReleaseGeneIndexEntry) -> String {
+    if !entry.gene_id.trim().is_empty() {
+        return entry.gene_id.clone();
+    }
+    format!("{}:{}-{}", entry.seqid, entry.start, entry.end)
+}
+
+fn sorted_strings(mut values: Vec<String>) -> Vec<String> {
+    values.sort();
+    values
+}
+
+fn stable_ratio(total_from: usize, added: usize, removed: usize) -> f64 {
+    if total_from == 0 {
+        return 1.0;
+    }
+    let stable = total_from
+        .saturating_sub(removed)
+        .saturating_sub(added.min(total_from));
+    (stable as f64) / (total_from as f64)
+}
+
+fn chunk_or_inline(
+    name: &str,
+    mut rows: Vec<String>,
+    max_inline_items: usize,
+    out_dir: &Path,
+    chunk_manifest: &mut Vec<serde_json::Value>,
+) -> Result<serde_json::Value, String> {
+    rows.sort();
+    if rows.len() <= max_inline_items {
+        return Ok(serde_json::Value::Array(
+            rows.into_iter().map(serde_json::Value::String).collect(),
+        ));
+    }
+    let chunks_dir = out_dir.join("chunks");
+    fs::create_dir_all(&chunks_dir).map_err(|e| e.to_string())?;
+    for (idx, chunk) in rows.chunks(max_inline_items).enumerate() {
+        let path = chunks_dir.join(format!("{name}.{:03}.json", idx));
+        let payload = serde_json::Value::Array(
+            chunk
+                .iter()
+                .cloned()
+                .map(serde_json::Value::String)
+                .collect(),
+        );
+        let bytes = canonical::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
+        fs::write(&path, bytes).map_err(|e| e.to_string())?;
+        chunk_manifest.push(json!({
+            "field": name,
+            "chunk": idx,
+            "path": format!("chunks/{}.{}.json", name, format!("{idx:03}")),
+            "count": chunk.len()
+        }));
+    }
+    Ok(json!({
+        "truncated": true,
+        "total_count": rows.len(),
+        "inline_count": 0
+    }))
 }
 
 fn read_catalog_or_empty(store_root: &Path) -> Result<Catalog, String> {
@@ -830,8 +1077,11 @@ fn check_sha(path: &PathBuf, expected: &str) -> Result<(), String> {
 
 #[cfg(test)]
 mod tests {
-    use super::validate_qc_thresholds;
+    use super::{build_release_diff, validate_qc_thresholds, OutputMode};
+    use bijux_atlas_core::sha256_hex;
     use serde_json::json;
+    use std::fs;
+    use tempfile::tempdir;
 
     #[test]
     fn qc_thresholds_pass_for_healthy_report() {
@@ -886,5 +1136,80 @@ mod tests {
         )
         .expect("parse threshold fixture");
         assert!(validate_qc_thresholds(&qc, &t).is_err());
+    }
+
+    #[test]
+    fn diff_build_is_deterministic_for_same_inputs() {
+        let tmp = tempdir().expect("tmp");
+        let root = tmp.path();
+        let from = root.join("release=110/species=homo_sapiens/assembly=GRCh38/derived");
+        let to = root.join("release=111/species=homo_sapiens/assembly=GRCh38/derived");
+        fs::create_dir_all(&from).expect("create from");
+        fs::create_dir_all(&to).expect("create to");
+
+        fs::write(
+            from.join("release_gene_index.json"),
+            r#"{"schema_version":"1","dataset":{"release":"110","species":"homo_sapiens","assembly":"GRCh38"},"entries":[{"gene_id":"ENSG1","seqid":"chr1","start":10,"end":20,"signature_sha256":"a"},{"gene_id":"ENSG2","seqid":"chr1","start":30,"end":40,"signature_sha256":"b"}]}"#,
+        )
+        .expect("write from index");
+        fs::write(
+            to.join("release_gene_index.json"),
+            r#"{"schema_version":"1","dataset":{"release":"111","species":"homo_sapiens","assembly":"GRCh38"},"entries":[{"gene_id":"ENSG1","seqid":"chr1","start":10,"end":25,"signature_sha256":"z"},{"gene_id":"ENSG3","seqid":"chr2","start":5,"end":8,"signature_sha256":"c"}]}"#,
+        )
+        .expect("write to index");
+
+        write_sqlite(
+            &from.join("gene_summary.sqlite"),
+            &[("ENSG1", "protein_coding"), ("ENSG2", "lncRNA")],
+        );
+        write_sqlite(
+            &to.join("gene_summary.sqlite"),
+            &[("ENSG1", "protein_coding"), ("ENSG3", "miRNA")],
+        );
+
+        let out1 = root.join("diff-out-1");
+        let out2 = root.join("diff-out-2");
+        build_release_diff(
+            root.to_path_buf(),
+            "110",
+            "111",
+            "homo_sapiens",
+            "GRCh38",
+            out1.clone(),
+            100,
+            OutputMode { json: true },
+        )
+        .expect("build diff #1");
+        build_release_diff(
+            root.to_path_buf(),
+            "110",
+            "111",
+            "homo_sapiens",
+            "GRCh38",
+            out2.clone(),
+            100,
+            OutputMode { json: true },
+        )
+        .expect("build diff #2");
+        let d1 = fs::read(out1.join("diff.json")).expect("read diff1");
+        let d2 = fs::read(out2.join("diff.json")).expect("read diff2");
+        assert_eq!(d1, d2, "diff output must be byte-identical");
+        assert!(!sha256_hex(&d1).is_empty());
+    }
+
+    fn write_sqlite(path: &std::path::Path, rows: &[(&str, &str)]) {
+        let conn = rusqlite::Connection::open(path).expect("open sqlite");
+        conn.execute(
+            "CREATE TABLE gene_summary (gene_id TEXT NOT NULL, biotype TEXT NOT NULL)",
+            [],
+        )
+        .expect("create table");
+        for (gene_id, biotype) in rows {
+            conn.execute(
+                "INSERT INTO gene_summary(gene_id, biotype) VALUES (?1, ?2)",
+                [gene_id, biotype],
+            )
+            .expect("insert");
+        }
     }
 }
