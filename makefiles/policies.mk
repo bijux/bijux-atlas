@@ -4,8 +4,7 @@ SHELL := /bin/sh
 # Expected empty output when constraints are satisfied.
 
 culprits-max_loc:
-	@allow_file="configs/policies/culprits_max_loc_allowlist.txt"; \
-	err=$$(find crates -name "*.rs" -print0 \
+	@err=$$(find crates -name "*.rs" -print0 \
 	| xargs -0 wc -l \
 	| sort -n \
 	| awk '$$2 ~ /^crates\// && $$1 > 1000'); \
@@ -13,9 +12,6 @@ culprits-max_loc:
 	| xargs -0 wc -l \
 	| sort -n \
 	| awk '$$2 ~ /^crates\// && $$1 > 800 && $$1 <= 1000'); \
-	if [ -f "$$allow_file" ]; then \
-		warn=$$(printf '%s\n' "$$warn" | awk 'NR==FNR{a[$$1]=1;next}{if (!a[$$2]) print}' "$$allow_file" -); \
-	fi; \
 	if [ -n "$$err" ]; then \
 		printf '%s\n' "ERROR: max_loc policy violations (LOC > 1000):"; \
 		printf '%s\n' "$$err"; \
