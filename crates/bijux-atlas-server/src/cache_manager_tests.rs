@@ -512,7 +512,10 @@ async fn failed_download_leaves_no_partial_artifact() {
     );
 
     let paths = local_cache_paths(tmp.path(), "1");
-    assert!(!paths.sqlite.exists(), "partial sqlite file must not remain");
+    assert!(
+        !paths.sqlite.exists(),
+        "partial sqlite file must not remain"
+    );
     assert!(
         !paths.manifest.exists(),
         "partial manifest file must not remain"
@@ -551,5 +554,9 @@ async fn alias_like_release_switch_uses_hash_key_without_corruption() {
 
     let key_a = std::fs::read_to_string(dataset_index_path(tmp.path(), &ds_a)).expect("index a");
     let key_b = std::fs::read_to_string(dataset_index_path(tmp.path(), &ds_b)).expect("index b");
-    assert_eq!(key_a.trim(), key_b.trim(), "hash-keyed aliases should co-locate");
+    assert_eq!(
+        key_a.trim(),
+        key_b.trim(),
+        "hash-keyed aliases should co-locate"
+    );
 }

@@ -1138,7 +1138,9 @@ async fn canonical_dataset_endpoint_and_legacy_redirect_are_available() {
     .await;
     assert_eq!(status, 308);
     assert!(headers.contains("location: /v1/datasets/110/homo_sapiens/GRCh38?include_bom=1&x=1"));
-    assert!(headers.contains("link: </v1/datasets/110/homo_sapiens/GRCh38?include_bom=1&x=1>; rel=\"canonical\""));
+    assert!(headers.contains(
+        "link: </v1/datasets/110/homo_sapiens/GRCh38?include_bom=1&x=1>; rel=\"canonical\""
+    ));
 
     let (status, _, body) = send_raw(
         addr,
@@ -1244,10 +1246,22 @@ async fn datasets_endpoint_supports_dimension_filters_and_cursor_pagination() {
     let ds2 = DatasetId::new("111", "homo_sapiens", "GRCh38").expect("dataset id");
     let ds3 = DatasetId::new("110", "mus_musculus", "GRCm39").expect("dataset id");
     let store = Arc::new(FakeStore::default());
-    store.manifest.lock().await.insert(ds.clone(), manifest.clone());
+    store
+        .manifest
+        .lock()
+        .await
+        .insert(ds.clone(), manifest.clone());
     store.sqlite.lock().await.insert(ds.clone(), sqlite.clone());
-    store.manifest.lock().await.insert(ds2.clone(), manifest.clone());
-    store.sqlite.lock().await.insert(ds2.clone(), sqlite.clone());
+    store
+        .manifest
+        .lock()
+        .await
+        .insert(ds2.clone(), manifest.clone());
+    store
+        .sqlite
+        .lock()
+        .await
+        .insert(ds2.clone(), sqlite.clone());
     store.manifest.lock().await.insert(ds3.clone(), manifest);
     store.sqlite.lock().await.insert(ds3.clone(), sqlite);
     *store.etag.lock().await = "v1".to_string();
