@@ -41,6 +41,9 @@ fn make_options(root: &std::path::Path) -> IngestOptions {
         unknown_feature_policy: UnknownFeaturePolicy::IgnoreWithWarning,
         feature_id_uniqueness_policy: FeatureIdUniquenessPolicy::Reject,
         reject_normalized_seqid_collisions: true,
+        emit_normalized_debug: false,
+        normalized_replay_mode: false,
+        prod_mode: false,
     }
 }
 
