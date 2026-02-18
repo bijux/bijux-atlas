@@ -324,7 +324,7 @@ fn enforce_publish_gates(
     Ok(())
 }
 
-fn validate_qc_thresholds(
+pub(super) fn validate_qc_thresholds(
     qc: &serde_json::Value,
     thresholds: &serde_json::Value,
 ) -> Result<(), String> {

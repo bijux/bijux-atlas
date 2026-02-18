@@ -1,5 +1,5 @@
-use crate::*;
 use crate::http::handlers;
+use crate::*;
 use serde_json::json;
 
 pub(super) fn build_success_payload(
@@ -10,6 +10,7 @@ pub(super) fn build_success_payload(
     explain_mode: bool,
     provenance: serde_json::Value,
 ) -> serde_json::Value {
+    let next_cursor = resp.next_cursor;
     let mut warnings = Vec::new();
     if req.fields.sequence_length {
         warnings.push(json!({
@@ -17,15 +18,19 @@ pub(super) fn build_success_payload(
             "message": "length include may increase response cost"
         }));
     }
+    let page = next_cursor
+        .as_ref()
+        .map(|c| json!({ "next_cursor": c }))
+        .unwrap_or_else(|| json!({ "next_cursor": null }));
     let mut payload = handlers::json_envelope(
         Some(json!(dataset)),
-        Some(json!({ "next_cursor": resp.next_cursor.clone() })),
+        Some(page),
         json!({
             "provenance": provenance,
             "class": format!("{class:?}").to_lowercase(),
             "rows": resp.rows
         }),
-        resp.next_cursor.map(|c| json!({ "next_cursor": c })),
+        next_cursor.map(|c| json!({ "next_cursor": c })),
         Some(warnings),
     );
     if explain_mode {
