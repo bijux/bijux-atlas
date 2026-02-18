@@ -41,6 +41,24 @@ contract_sha = alerts_contract.get("contract_git_sha")
 if not isinstance(contract_sha, str) or not contract_sha:
     print("alerts contract missing contract_git_sha", file=sys.stderr)
     sys.exit(1)
+alert_specs = alerts_contract.get("alert_specs", {})
+if not isinstance(alert_specs, dict):
+    print("alerts contract missing alert_specs map", file=sys.stderr)
+    sys.exit(1)
+missing_specs = sorted(required_alerts - set(alert_specs.keys()))
+if missing_specs:
+    print("alerts contract missing alert_specs entries:", file=sys.stderr)
+    for name in missing_specs:
+        print(f"- {name}", file=sys.stderr)
+    sys.exit(1)
+for name, spec in sorted(alert_specs.items()):
+    for field in ("slo_or_invariant", "runbook_id", "severity_tier", "owner"):
+        if not isinstance(spec.get(field), str) or not spec.get(field):
+            print(f"alert spec {name} missing field: {field}", file=sys.stderr)
+            sys.exit(1)
+    if spec["severity_tier"] not in {"info", "warn", "page"}:
+        print(f"alert spec {name} has invalid severity_tier: {spec['severity_tier']}", file=sys.stderr)
+        sys.exit(1)
 
 metrics = set(re.findall(r"\b(?:bijux|atlas)_[a-zA-Z0-9_]+\b", text))
 unknown = sorted(metrics - allow)
@@ -74,6 +92,40 @@ for alert in required_alerts:
         sys.exit(1)
     if "runbook:" not in value:
         print(f"missing runbook annotation for {alert}", file=sys.stderr)
+        sys.exit(1)
+    spec = alert_specs.get(alert, {})
+    sev = re.search(r"severity:\s*([a-zA-Z]+)", value)
+    if not sev:
+        print(f"missing severity label for {alert}", file=sys.stderr)
+        sys.exit(1)
+    if sev.group(1).lower() != spec.get("severity_tier", "").lower():
+        print(f"severity mismatch for {alert}: yaml={sev.group(1)} contract={spec.get('severity_tier')}", file=sys.stderr)
+        sys.exit(1)
+    runbook = re.search(r"runbook:\s*\"([^\"]+)\"", value)
+    if not runbook:
+        print(f"missing runbook path for {alert}", file=sys.stderr)
+        sys.exit(1)
+    expected_runbook = f"docs/operations/runbooks/{spec.get('runbook_id')}.md"
+    if runbook.group(1) != expected_runbook:
+        print(
+            f"runbook mismatch for {alert}: yaml={runbook.group(1)} contract={expected_runbook}",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+# no orphan alerts: every rule must be declared in contract
+orphan_alerts = sorted(set(alerts) - required_alerts)
+if orphan_alerts:
+    print("orphan alerts found (not listed in alerts contract):", file=sys.stderr)
+    for alert in orphan_alerts:
+        print(f"- {alert}", file=sys.stderr)
+    sys.exit(1)
+
+# runbook mapping contract: every alert appears in runbook map table
+runbook_map = (ROOT / "docs/operations/observability/runbook-dashboard-alert-map.md").read_text()
+for alert in sorted(required_alerts):
+    if alert not in runbook_map:
+        print(f"runbook map missing alert reference: {alert}", file=sys.stderr)
         sys.exit(1)
 
 # Unit-like check: ensure high-5xx alert expression has a threshold comparator.

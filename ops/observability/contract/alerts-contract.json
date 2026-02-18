@@ -1,5 +1,37 @@
 {
-  "schema_version": 1,
+  "alert_specs": {
+    "AtlasOverloadSustained": {
+      "owner": "bijux-atlas-operations",
+      "runbook_id": "traffic-spike",
+      "severity_tier": "warn",
+      "slo_or_invariant": "cheap-endpoint-survival"
+    },
+    "BijuxAtlasCacheThrash": {
+      "owner": "bijux-atlas-operations",
+      "runbook_id": "store-outage",
+      "severity_tier": "warn",
+      "slo_or_invariant": "cache-stability"
+    },
+    "BijuxAtlasHigh5xxRate": {
+      "owner": "bijux-atlas-operations",
+      "runbook_id": "incident-playbook",
+      "severity_tier": "page",
+      "slo_or_invariant": "api-availability-5xx"
+    },
+    "BijuxAtlasP95LatencyRegression": {
+      "owner": "bijux-atlas-operations",
+      "runbook_id": "incident-playbook",
+      "severity_tier": "page",
+      "slo_or_invariant": "v1-genes-p95"
+    },
+    "BijuxAtlasStoreDownloadFailures": {
+      "owner": "bijux-atlas-operations",
+      "runbook_id": "store-outage",
+      "severity_tier": "warn",
+      "slo_or_invariant": "store-download-reliability"
+    }
+  },
+  "contract_git_sha": "REQUIRED_AT_BUILD",
   "required_alerts": [
     "BijuxAtlasHigh5xxRate",
     "BijuxAtlasP95LatencyRegression",
@@ -7,5 +39,5 @@
     "BijuxAtlasCacheThrash",
     "AtlasOverloadSustained"
   ],
-  "contract_git_sha": "REQUIRED_AT_BUILD"
+  "schema_version": 2
 }

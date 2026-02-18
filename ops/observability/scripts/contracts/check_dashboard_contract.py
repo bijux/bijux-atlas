@@ -107,11 +107,46 @@ contract_sha = dash_contract.get("contract_git_sha")
 if not isinstance(contract_sha, str) or not contract_sha:
     print("dashboard panels contract missing contract_git_sha", file=sys.stderr)
     sys.exit(1)
+panel_specs = dash_contract.get("panel_specs", {})
+if not isinstance(panel_specs, dict):
+    print("dashboard panels contract missing panel_specs", file=sys.stderr)
+    sys.exit(1)
+missing_panel_specs = sorted(required_panels - set(panel_specs.keys()))
+if missing_panel_specs:
+    print("dashboard contract missing panel_specs entries:", file=sys.stderr)
+    for panel in missing_panel_specs:
+        print(f"- {panel}", file=sys.stderr)
+    sys.exit(1)
+for panel, spec in sorted(panel_specs.items()):
+    for field in ("diagnostic_question", "metrics", "failure_signatures"):
+        if field not in spec:
+            print(f"panel spec {panel} missing field: {field}", file=sys.stderr)
+            sys.exit(1)
+    if not isinstance(spec["diagnostic_question"], str) or not spec["diagnostic_question"].strip().endswith("?"):
+        print(f"panel spec {panel} must provide diagnostic_question ending with '?'", file=sys.stderr)
+        sys.exit(1)
+    if not isinstance(spec["metrics"], list) or not isinstance(spec["failure_signatures"], list):
+        print(f"panel spec {panel} metrics/failure_signatures must be lists", file=sys.stderr)
+        sys.exit(1)
+    if not spec["metrics"] or not spec["failure_signatures"]:
+        print(f"panel spec {panel} must include at least one metric and one failure signature", file=sys.stderr)
+        sys.exit(1)
+    for metric_name in spec["metrics"]:
+        if metric_name not in required:
+            print(f"panel spec {panel} references unknown metric: {metric_name}", file=sys.stderr)
+            sys.exit(1)
 tag_key = "contract_git_sha:"
 tags = dash.get("tags", [])
 if not any(isinstance(t, str) and t.startswith(tag_key) for t in tags):
     print("dashboard missing contract_git_sha tag", file=sys.stderr)
     sys.exit(1)
+
+# no orphan dashboards: every panel must be referenced in runbook-dashboard-alert map doc
+runbook_map = (ROOT / "docs/operations/observability/runbook-dashboard-alert-map.md").read_text()
+for panel in sorted(required_panels):
+    if panel not in runbook_map:
+        print(f"runbook map missing dashboard panel reference: {panel}", file=sys.stderr)
+        sys.exit(1)
 
 
 def normalized_dashboard(payload: dict) -> dict:
