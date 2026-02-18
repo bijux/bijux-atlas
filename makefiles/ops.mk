@@ -43,6 +43,7 @@ ops-down: ## Tear down local ops stack
 
 ops-stack-validate: ## Validate stack manifests and formatting drift
 	@./scripts/layout/check_stack_manifest_consolidation.sh
+	@./scripts/layout/check_ops_stack_order.sh
 	@./ops/stack/scripts/validate.sh
 
 ops-stack-smoke: ## Stack-only smoke test without atlas deploy
@@ -153,6 +154,9 @@ ops-minio-bucket-check: ## Validate bootstrap bucket exists in minio
 mc alias set local 'http://minio.$$ns.svc.cluster.local:9000' '$$user' '$$pass'; \
 mc ls local/$$bucket >/dev/null"
 
+ops-minio-creds-rotate-drill: ## Optional drill: rotate minio creds and verify service recovers
+	@./ops/stack/minio/rotate_creds.sh
+
 ops-prom-up: ## Install prometheus stack component
 	@kubectl apply -f ./ops/stack/prometheus/prometheus.yaml
 
@@ -187,6 +191,48 @@ ops-otel-up: ## Install otel collector stack component
 
 ops-otel-down: ## Uninstall otel collector stack component
 	@kubectl delete -f ./ops/stack/otel/otel-collector.yaml --ignore-not-found >/dev/null 2>&1 || true
+
+ops-otel-spans-check: ## Validate otel collector receives spans when enabled
+	@./ops/e2e/k8s/tests/test_otel_spans.sh
+
+ops-redis-up: ## Install redis stack component (optional)
+	@kubectl apply -f ./ops/stack/redis/redis.yaml
+
+ops-redis-down: ## Uninstall redis stack component
+	@kubectl delete -f ./ops/stack/redis/redis.yaml --ignore-not-found >/dev/null 2>&1 || true
+
+ops-redis-optional-check: ## Validate atlas runs when redis is absent
+	@./ops/e2e/k8s/tests/test_redis_optional.sh
+
+ops-redis-used-check: ## Validate redis usage evidence when enabled
+	@ATLAS_E2E_ENABLE_REDIS=1 ./ops/e2e/k8s/tests/test_redis_backend_metric.sh
+
+ops-toxi-up: ## Install toxiproxy stack component (optional)
+	@kubectl apply -f ./ops/stack/toxiproxy/toxiproxy.yaml
+	@./ops/stack/toxiproxy/bootstrap.sh
+
+ops-toxi-down: ## Uninstall toxiproxy stack component
+	@kubectl delete -f ./ops/stack/toxiproxy/toxiproxy.yaml --ignore-not-found >/dev/null 2>&1 || true
+	@kubectl -n "$${ATLAS_E2E_NAMESPACE:-atlas-e2e}" delete pod toxiproxy-bootstrap --ignore-not-found >/dev/null 2>&1 || true
+
+ops-toxi-latency-inject: ## Inject store latency through toxiproxy
+	@./ops/stack/faults/toxiproxy-latency.sh "$${LATENCY_MS:-250}" "$${JITTER_MS:-25}"
+
+ops-toxi-cut-store: ## Cut or restore store connection (MODE=on|off)
+	@./ops/stack/faults/block-minio.sh "$${MODE:-on}"
+
+ops-stack-order-check: ## Validate stack install/uninstall order contract
+	@./scripts/layout/check_ops_stack_order.sh
+
+ops-stack-security-check: ## Validate stack security defaults (no privileged containers)
+	@ns="$${ATLAS_E2E_NAMESPACE:-atlas-e2e}"; \
+	violations="$$(kubectl -n "$$ns" get pods -o jsonpath='{range .items[*]}{.metadata.name}{" "}{range .spec.containers[*]}{.securityContext.privileged}{" "}{end}{"\n"}{end}' 2>/dev/null | awk '$$0 ~ / true / {print $$1}')"; \
+	if [ -n "$$violations" ]; then \
+	  echo "privileged stack pods found in $$ns:" >&2; \
+	  echo "$$violations" >&2; \
+	  exit 1; \
+	fi; \
+	echo "stack security defaults check passed"
 
 ops-stack-uninstall: ## Uninstall stack resources and cluster
 	@./ops/stack/scripts/uninstall.sh
