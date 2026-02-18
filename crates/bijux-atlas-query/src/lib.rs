@@ -236,9 +236,15 @@ fn reject_impossible_filter_fast(
             )
             .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;
         if seqid_count == 0 {
+            let suggestion = nearest_seqid_suggestion(conn, &region.seqid);
+            let message = if let Some(candidate) = suggestion {
+                format!("region seqid does not exist in dataset (did you mean {candidate}?)")
+            } else {
+                "region seqid does not exist in dataset".to_string()
+            };
             return Err(QueryError::new(
                 QueryErrorCode::Validation,
-                "region seqid does not exist in dataset",
+                message,
             ));
         }
         let span = region.end.saturating_sub(region.start) + 1;
@@ -255,6 +261,50 @@ fn reject_impossible_filter_fast(
         }
     }
     Ok(())
+}
+
+fn nearest_seqid_suggestion(conn: &Connection, requested: &str) -> Option<String> {
+    let mut stmt = conn
+        .prepare("SELECT value FROM dataset_stats WHERE dimension='seqid'")
+        .ok()?;
+    let rows = stmt
+        .query_map([], |row| row.get::<_, String>(0))
+        .ok()?
+        .collect::<Result<Vec<_>, _>>()
+        .ok()?;
+    let req_norm = requested.to_ascii_lowercase();
+    rows.into_iter()
+        .map(|candidate| {
+            let score = edit_distance(&req_norm, &candidate.to_ascii_lowercase());
+            (candidate, score)
+        })
+        .filter(|(_, score)| *score <= 3)
+        .min_by_key(|(_, score)| *score)
+        .map(|(candidate, _)| candidate)
+}
+
+fn edit_distance(a: &str, b: &str) -> usize {
+    if a == b {
+        return 0;
+    }
+    if a.is_empty() {
+        return b.chars().count();
+    }
+    if b.is_empty() {
+        return a.chars().count();
+    }
+    let b_chars: Vec<char> = b.chars().collect();
+    let mut prev: Vec<usize> = (0..=b_chars.len()).collect();
+    let mut curr: Vec<usize> = vec![0; b_chars.len() + 1];
+    for (i, a_ch) in a.chars().enumerate() {
+        curr[0] = i + 1;
+        for (j, b_ch) in b_chars.iter().enumerate() {
+            let cost = if a_ch == *b_ch { 0 } else { 1 };
+            curr[j + 1] = (prev[j + 1] + 1).min(curr[j] + 1).min(prev[j] + cost);
+        }
+        std::mem::swap(&mut prev, &mut curr);
+    }
+    prev[b_chars.len()]
 }
 
 pub fn explain_query_plan(
