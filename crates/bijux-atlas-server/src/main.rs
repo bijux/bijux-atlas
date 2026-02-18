@@ -326,6 +326,10 @@ async fn main() -> Result<(), String> {
         store_breaker_open_duration: env_duration_ms("ATLAS_STORE_BREAKER_OPEN_MS", 20_000),
         store_retry_budget: env_u64("ATLAS_STORE_RETRY_BUDGET", 20) as u32,
         max_concurrent_downloads: env_usize("ATLAS_MAX_CONCURRENT_DOWNLOADS", 3),
+        max_concurrent_downloads_node: {
+            let v = env_usize("ATLAS_MAX_CONCURRENT_DOWNLOADS_NODE", 0);
+            (v > 0).then_some(v)
+        },
         integrity_reverify_interval: env_duration_ms("ATLAS_INTEGRITY_REVERIFY_MS", 300_000),
         sqlite_pragma_cache_kib: env_u64("ATLAS_SQLITE_CACHE_KIB", 32 * 1024) as i64,
         sqlite_pragma_mmap_bytes: env_u64("ATLAS_SQLITE_MMAP_BYTES", 256 * 1024 * 1024) as i64,

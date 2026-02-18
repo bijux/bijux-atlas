@@ -100,10 +100,30 @@ fn acquire_artifact_lease(
     }
 }
 
+fn ensure_secure_dir(path: &Path) -> Result<(), CacheError> {
+    std::fs::create_dir_all(path).map_err(|e| CacheError(e.to_string()))?;
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        let metadata = std::fs::metadata(path).map_err(|e| CacheError(e.to_string()))?;
+        let mut mode = metadata.permissions().mode();
+        if mode & 0o002 != 0 {
+            mode &= !0o002;
+            std::fs::set_permissions(path, std::fs::Permissions::from_mode(mode))
+                .map_err(|e| CacheError(e.to_string()))?;
+        }
+    }
+    Ok(())
+}
+
 impl DatasetCacheManager {
     pub fn new(cfg: DatasetCacheConfig, store: Arc<dyn DatasetStoreBackend>) -> Arc<Self> {
-        let max_concurrent_downloads = cfg.max_concurrent_downloads;
+        let max_concurrent_downloads = cfg
+            .max_concurrent_downloads_node
+            .map(|node| node.min(cfg.max_concurrent_downloads))
+            .unwrap_or(cfg.max_concurrent_downloads);
         let retry_budget = cfg.store_retry_budget as u64;
+        let _ = ensure_secure_dir(&cfg.disk_root);
         Arc::new(Self {
             global_semaphore: Arc::new(Semaphore::new(cfg.max_total_connections)),
             shard_open_semaphore: Arc::new(Semaphore::new(cfg.max_open_shards_per_pod)),
@@ -125,7 +145,7 @@ impl DatasetCacheManager {
     }
 
     pub async fn startup_warmup(self: &Arc<Self>) -> Result<(), CacheError> {
-        std::fs::create_dir_all(&self.cfg.disk_root).map_err(|e| CacheError(e.to_string()))?;
+        ensure_secure_dir(&self.cfg.disk_root)?;
         let mut warm = self.cfg.startup_warmup.clone();
         warm.sort_by_key(DatasetId::canonical_string);
         warm.dedup();
@@ -402,7 +422,7 @@ impl DatasetCacheManager {
             ));
         }
         let bytes = self.store.fetch_release_gene_index_bytes(dataset).await?;
-        std::fs::create_dir_all(&paths.derived_dir).map_err(|e| CacheError(e.to_string()))?;
+        ensure_secure_dir(&paths.derived_dir)?;
         write_atomic_file(&paths.release_gene_index, &bytes)?;
         Ok(paths.release_gene_index)
     }
@@ -414,7 +434,12 @@ impl DatasetCacheManager {
         info!(dataset = ?dataset, "dataset open start");
         let open_started = Instant::now();
         self.check_quarantine(dataset).await?;
-        self.ensure_dataset_cached(dataset).await?;
+        async { self.ensure_dataset_cached(dataset).await }
+            .instrument(tracing::info_span!(
+                "cache_lookup",
+                dataset = %dataset.canonical_string()
+            ))
+            .await?;
 
         self.check_breaker(dataset).await?;
 
@@ -454,6 +479,10 @@ impl DatasetCacheManager {
             .map_err(|e| CacheError(e.to_string()))?
             .map_err(|e| CacheError(e.to_string()))
         })
+        .instrument(tracing::info_span!(
+            "open_db",
+            dataset = %dataset.canonical_string()
+        ))
         .await;
 
         match open {
@@ -564,38 +593,51 @@ impl DatasetCacheManager {
 
         info!(dataset = ?dataset, "dataset download path");
         let started = Instant::now();
-        info!("dataset download start {:?}", dataset);
+        info!(dataset = ?dataset, "dataset download start");
         let _download_permit = self
             .download_semaphore
             .clone()
             .acquire_owned()
             .await
             .map_err(|e| CacheError(e.to_string()))?;
-        let manifest = match self.store.fetch_manifest(dataset).await {
-            Ok(v) => v,
-            Err(e) => {
-                self.record_store_download_failure(&e.to_string()).await;
-                return Err(e);
-            }
-        };
-        self.metrics
-            .store_download_ttfb_ns
-            .lock()
-            .await
-            .push(started.elapsed().as_nanos() as u64);
-        let sqlite = match self.store.fetch_sqlite_bytes(dataset).await {
-            Ok(v) => v,
-            Err(e) => {
-                self.record_store_download_failure(&e.to_string()).await;
-                return Err(e);
-            }
-        };
-        let release_gene_index = self
-            .store
-            .fetch_release_gene_index_bytes(dataset)
-            .await
-            .ok();
-        let sqlite_hash = sha256_hex(&sqlite);
+        let (manifest, sqlite, release_gene_index) = async {
+            let manifest = match self.store.fetch_manifest(dataset).await {
+                Ok(v) => v,
+                Err(e) => {
+                    self.record_store_download_failure(&e.to_string()).await;
+                    return Err(e);
+                }
+            };
+            self.metrics
+                .store_download_ttfb_ns
+                .lock()
+                .await
+                .push(started.elapsed().as_nanos() as u64);
+            let sqlite = match self.store.fetch_sqlite_bytes(dataset).await {
+                Ok(v) => v,
+                Err(e) => {
+                    self.record_store_download_failure(&e.to_string()).await;
+                    return Err(e);
+                }
+            };
+            let release_gene_index = self
+                .store
+                .fetch_release_gene_index_bytes(dataset)
+                .await
+                .ok();
+            Ok::<_, CacheError>((manifest, sqlite, release_gene_index))
+        }
+        .instrument(tracing::info_span!(
+            "download",
+            dataset = %dataset.canonical_string()
+        ))
+        .await?;
+        let sqlite_hash = async { sha256_hex(&sqlite) }
+            .instrument(tracing::info_span!(
+                "verify",
+                dataset = %dataset.canonical_string()
+            ))
+            .await;
         if sqlite_hash != manifest.checksums.sqlite_sha256 {
             error!("dataset verify failed {:?}", dataset);
             self.metrics
@@ -616,7 +658,7 @@ impl DatasetCacheManager {
         let _lease = acquire_artifact_lease(&lease_path, Duration::from_secs(10))?;
 
         let tmp_dir = self.cfg.disk_root.join(".tmp-atlas-download");
-        std::fs::create_dir_all(&tmp_dir).map_err(|e| CacheError(e.to_string()))?;
+        ensure_secure_dir(&tmp_dir)?;
 
         let tmp_sqlite = tmp_dir.join(format!("gene_summary.sqlite.{}.tmp", std::process::id()));
         write_atomic_file(&tmp_sqlite, &sqlite)?;
@@ -690,7 +732,12 @@ impl DatasetCacheManager {
         let mut dataset_budget = self.dataset_retry_budget.lock().await;
         dataset_budget.insert(dataset.clone(), self.cfg.store_retry_budget);
         self.reset_store_breaker().await;
-        info!("dataset download complete {:?}", dataset);
+        info!(
+            dataset = ?dataset,
+            cache_key = %cache_key,
+            bytes = size_bytes,
+            "dataset download complete"
+        );
         let _ = std::fs::remove_file(lease_path);
         Ok(())
     }
