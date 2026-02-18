@@ -87,6 +87,7 @@ ci: ## Run CI-equivalent meta pipeline mapped to workflow jobs
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-test-nextest
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-policy-lint
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-policy-schema-drift
+	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-policy-relaxations
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-config-check
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-ssot-drift
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-docs-build
@@ -157,11 +158,14 @@ policy-lint:
 policy-schema-drift:
 	@./scripts/public/policy-schema-drift.py
 
+policy-audit: ## Audit policy relaxations report + enforce registry/expiry/budget gates
+	@./scripts/public/policy-audit.py --enforce
+
 release-update-compat-matrix:
 	@[ -n "$$TAG" ] || { echo "usage: make release-update-compat-matrix TAG=<tag>"; exit 2; }
 	@./scripts/release/update-compat-matrix.sh "$$TAG"
 
-.PHONY: help layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-graph scripts-lint scripts-format scripts-test scripts-audit scripts-clean artifacts-index artifacts-clean isolate-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts doctor dataset-id-lint config-validate config-print config-drift fetch-real-datasets ssot-check policy-lint policy-schema-drift release-update-compat-matrix ci local local-full contracts hygiene architecture-check clean deep-clean debug bump release-dry-run release
+.PHONY: help layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-graph scripts-lint scripts-format scripts-test scripts-audit scripts-clean artifacts-index artifacts-clean isolate-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts doctor dataset-id-lint config-validate config-print config-drift fetch-real-datasets ssot-check policy-lint policy-schema-drift policy-audit release-update-compat-matrix ci local local-full contracts hygiene architecture-check clean deep-clean debug bump release-dry-run release
 
 
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)
