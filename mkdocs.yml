@@ -118,6 +118,7 @@ nav:
       - Ops Layout: operations/ops-layout.md
       - Full Stack Local: operations/full-stack-local.md
       - Local Stack: operations/local-stack.md
+      - Datasets: operations/datasets.md
       - Ops Acceptance Checklist: operations/ops-acceptance-checklist.md
       - Health Endpoint Semantics: operations/health-endpoint-semantics.md
       - Canonical Workflows: operations/canonical-workflows.md
