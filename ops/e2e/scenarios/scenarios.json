@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "scenarios": [
+    {
+      "id": "smoke",
+      "description": "Local e2e smoke composition using stack, observability, datasets, and load smoke checks.",
+      "entrypoint": "make ops-e2e-smoke",
+      "compose": {"stack": true, "obs": true, "datasets": true, "load": true}
+    },
+    {
+      "id": "k8s-suite",
+      "description": "Kubernetes invariant suite composed with stack and observability dependencies.",
+      "entrypoint": "make ops-k8s-suite",
+      "compose": {"stack": true, "obs": true, "datasets": false, "load": false}
+    },
+    {
+      "id": "realdata",
+      "description": "Realdata regression scenarios with dataset and observability checks.",
+      "entrypoint": "make ops-realdata",
+      "compose": {"stack": true, "obs": true, "datasets": true, "load": false}
+    },
+    {
+      "id": "perf-e2e",
+      "description": "Perf-oriented end-to-end scenario composing load suites with stack and datasets.",
+      "entrypoint": "make ops-perf-e2e",
+      "compose": {"stack": true, "obs": true, "datasets": true, "load": true}
+    }
+  ]
+}

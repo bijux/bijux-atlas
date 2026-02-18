@@ -28,10 +28,18 @@ ops-k8s-contracts: ## Validate k8s values/schema/install-matrix/chart drift cont
 	@$(MAKE) -s ops-values-validate
 	@python3 ./scripts/layout/validate_ops_contracts.py
 
+ops-e2e-validate: ## Validate unified e2e scenario definitions and docs references
+	@python3 ./scripts/layout/check_e2e_scenarios.py
+
 ops-contracts-check: ## Validate canonical ops manifests against ops/_schemas and contract invariants
 	@$(MAKE) -s ops-stack-versions-sync
 	@python3 ./scripts/layout/validate_ops_contracts.py
+	@python3 ./scripts/layout/check_no_hidden_defaults.py
+	@python3 ./scripts/layout/check_obs_pack_ssot.py
+	@$(MAKE) -s ops-e2e-validate
 	@python3 ./scripts/docs/generate_ops_schema_docs.py
+	@python3 ./scripts/docs/generate_ops_surface.py
+	@python3 ./scripts/docs/generate_ops_contracts_doc.py
 	@$(MAKE) -s ops-k8s-contracts
 
 ops-doctor: ## Validate and print pinned ops tool versions and canonical env

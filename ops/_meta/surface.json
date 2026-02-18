@@ -9,6 +9,7 @@
     "ops-lint",
     "ops-fmt",
     "ops-contracts-check",
+    "ops-e2e-validate",
     "ops-stack-up",
     "ops-stack-down",
     "ops-obs-up",
