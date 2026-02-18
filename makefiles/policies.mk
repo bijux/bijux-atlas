@@ -14,7 +14,6 @@ culprits-max_loc:
 	| sort -n \
 	| awk '$$2 ~ /^crates\// && $$1 > 800 && $$1 <= 1000'); \
 	if [ -f "$$allow_file" ]; then \
-		err=$$(printf '%s\n' "$$err" | awk 'NR==FNR{a[$$1]=1;next}{if (!a[$$2]) print}' "$$allow_file" -); \
 		warn=$$(printf '%s\n' "$$warn" | awk 'NR==FNR{a[$$1]=1;next}{if (!a[$$2]) print}' "$$allow_file" -); \
 	fi; \
 	if [ -n "$$err" ]; then \
