@@ -20,6 +20,10 @@ Does not define implementation internals outside this contract surface.
 
 ## Contracts
 
+- `ArtifactCorrupted`: stable machine error code for API and CLI contract surfaces.
+- `ArtifactQuarantined`: stable machine error code for API and CLI contract surfaces.
+- `DatasetNotFound`: stable machine error code for API and CLI contract surfaces.
+- `GeneNotFound`: stable machine error code for API and CLI contract surfaces.
 - `IngestDuplicateTranscriptId`: stable machine error code for API and CLI contract surfaces.
 - `IngestInvalidCdsPhase`: stable machine error code for API and CLI contract surfaces.
 - `IngestInvalidStrand`: stable machine error code for API and CLI contract surfaces.
@@ -42,12 +46,66 @@ Does not define implementation internals outside this contract surface.
 - `RateLimited`: stable machine error code for API and CLI contract surfaces.
 - `ResponseTooLarge`: stable machine error code for API and CLI contract surfaces.
 - `Timeout`: stable machine error code for API and CLI contract surfaces.
+- `UpstreamStoreUnavailable`: stable machine error code for API and CLI contract surfaces.
+- `ValidationFailed`: stable machine error code for API and CLI contract surfaces.
 
 ## Failure modes
 
 Invalid or drifted registry content is rejected by contract checks and CI gates.
 
 ## Examples
+
+### `ArtifactCorrupted`
+```json
+{
+  "error": {
+    "code": "ArtifactCorrupted",
+    "details": {
+      "field": "example"
+    },
+    "message": "ArtifactCorrupted error"
+  }
+}
+```
+
+### `ArtifactQuarantined`
+```json
+{
+  "error": {
+    "code": "ArtifactQuarantined",
+    "details": {
+      "field": "example"
+    },
+    "message": "ArtifactQuarantined error"
+  }
+}
+```
+
+### `DatasetNotFound`
+```json
+{
+  "error": {
+    "code": "DatasetNotFound",
+    "details": {
+      "field": "example"
+    },
+    "message": "DatasetNotFound error"
+  }
+}
+```
+
+### `GeneNotFound`
+```json
+{
+  "error": {
+    "code": "GeneNotFound",
+    "details": {
+      "field": "example"
+    },
+    "message": "GeneNotFound error"
+  }
+}
+```
 
 ### `IngestDuplicateTranscriptId`
 ```json
@@ -331,6 +389,32 @@ Invalid or drifted registry content is rejected by contract checks and CI gates.
       "field": "example"
     },
     "message": "Timeout error"
+  }
+}
+```
+
+### `UpstreamStoreUnavailable`
+```json
+{
+  "error": {
+    "code": "UpstreamStoreUnavailable",
+    "details": {
+      "field": "example"
+    },
+    "message": "UpstreamStoreUnavailable error"
+  }
+}
+```
+
+### `ValidationFailed`
+```json
+{
+  "error": {
+    "code": "ValidationFailed",
+    "details": {
+      "field": "example"
+    },
+    "message": "ValidationFailed error"
   }
 }
 ```

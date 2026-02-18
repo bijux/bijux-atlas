@@ -1,5 +1,9 @@
 {
   "codes": [
+    "ArtifactCorrupted",
+    "ArtifactQuarantined",
+    "DatasetNotFound",
+    "GeneNotFound",
     "IngestDuplicateTranscriptId",
     "IngestInvalidCdsPhase",
     "IngestInvalidStrand",
@@ -21,7 +25,9 @@
     "RangeTooLarge",
     "RateLimited",
     "ResponseTooLarge",
-    "Timeout"
+    "Timeout",
+    "UpstreamStoreUnavailable",
+    "ValidationFailed"
   ],
   "schema_version": 1,
   "type": "api_error_codes"

@@ -1,5 +1,9 @@
 # Error Codes (Generated)
 
+- `ArtifactCorrupted`
+- `ArtifactQuarantined`
+- `DatasetNotFound`
+- `GeneNotFound`
 - `IngestDuplicateTranscriptId`
 - `IngestInvalidCdsPhase`
 - `IngestInvalidStrand`
@@ -22,3 +26,5 @@
 - `RateLimited`
 - `ResponseTooLarge`
 - `Timeout`
+- `UpstreamStoreUnavailable`
+- `ValidationFailed`
