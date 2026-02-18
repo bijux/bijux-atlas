@@ -27,6 +27,8 @@
     "ops-load-smoke",
     "ops-dataset-qc",
     "ops-realdata",
+    "ops-local-reset",
+    "ops-local-full",
     "ops-ci-fast",
     "ops-ci-nightly",
     "ops-ref-grade-local",
