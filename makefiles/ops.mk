@@ -864,11 +864,21 @@ stack-full: ## Full-stack must-pass truth flow with contract report bundle
 	trap 'python3 ./scripts/public/stack/build_stack_report.py --status "$$status" --run-id "$$run_id" --out-dir "$$report_dir" --values-file "$${ATLAS_VALUES_FILE:-ops/k8s/values/local.yaml}"; python3 ./scripts/public/stack/validate_stack_report.py --report-dir "$$report_dir" --schema ops/report/stack-contract.schema.json; if [ "$$teardown" != "1" ]; then $(MAKE) ops-down >/dev/null 2>&1 || true; $(MAKE) ops-kind-down >/dev/null 2>&1 || true; fi' EXIT; \
 	$(MAKE) ops-tools-check; \
 	$(MAKE) ops-kind-validate; \
+	$(MAKE) ops-kind-metrics-server-up; \
 	$(MAKE) ops-stack-up; \
+	mkdir -p "$$report_dir"; \
+	helm template atlas ops/k8s/charts/bijux-atlas -f "$${ATLAS_VALUES_FILE:-ops/k8s/values/local.yaml}" > "$$report_dir/rendered-manifests.yaml"; \
+	$(MAKE) ops-chart-render-diff; \
 	$(MAKE) ops-deploy PROFILE=local; \
 	$(MAKE) ops-publish DATASET="$${DATASET:-medium}"; \
 	$(MAKE) ops-warm; \
 	$(MAKE) ops-smoke; \
+	$(MAKE) ops-k8s-tests ATLAS_E2E_TEST=test_hpa.sh; \
+	$(MAKE) ops-k8s-tests ATLAS_E2E_TEST=test_pdb.sh; \
+	$(MAKE) ops-k8s-tests ATLAS_E2E_TEST=test_networkpolicy.sh; \
+	$(MAKE) ops-k8s-tests ATLAS_E2E_TEST=test_readiness_semantics.sh; \
+	$(MAKE) ops-k8s-tests ATLAS_E2E_TEST=test_liveness_under_load.sh; \
+	$(MAKE) ops-drill-pod-churn; \
 	test -s artifacts/ops/observability/metrics.prom; \
 	$(MAKE) ops-otel-required-check; \
 	$(MAKE) ops-load-smoke; \

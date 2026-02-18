@@ -47,6 +47,7 @@ def main() -> int:
         "metrics_snapshot",
         "trace_snapshot",
         "logs_excerpt",
+        "rendered_manifests",
         "pass_fail_summary",
     ]
     artifacts = summary.get("artifacts", {})
@@ -62,6 +63,8 @@ def main() -> int:
         return fail("metrics snapshot is empty")
     if (root / artifacts["trace_snapshot"]).stat().st_size == 0:
         return fail("trace snapshot is empty")
+    if (root / artifacts["rendered_manifests"]).stat().st_size == 0:
+        return fail("rendered manifests snapshot is empty")
     if not json.loads((root / artifacts["k6_summary"]).read_text()).get("summaries"):
         return fail("k6 summary missing entries")
 

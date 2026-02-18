@@ -25,6 +25,7 @@
         "metrics_snapshot",
         "trace_snapshot",
         "logs_excerpt",
+        "rendered_manifests",
         "pass_fail_summary"
       ],
       "properties": {
@@ -33,6 +34,7 @@
         "metrics_snapshot": {"type": "string", "minLength": 1},
         "trace_snapshot": {"type": "string", "minLength": 1},
         "logs_excerpt": {"type": "string", "minLength": 1},
+        "rendered_manifests": {"type": "string", "minLength": 1},
         "pass_fail_summary": {"type": "string", "minLength": 1}
       }
     }

@@ -70,6 +70,13 @@ def main() -> int:
     else:
         logs_dst.write_text("")
 
+    rendered_src = out_dir / "rendered-manifests.yaml"
+    rendered_dst = out_dir / "rendered-manifests.yaml"
+    if rendered_src.exists():
+        rendered_dst.write_bytes(rendered_src.read_bytes())
+    else:
+        rendered_dst.write_text("# missing rendered manifests\n")
+
     stack_hash_inputs = [
         root / "ops/tool-versions.json",
         root / "ops/load/suites/suites.json",
@@ -91,6 +98,7 @@ def main() -> int:
             "metrics_snapshot": metrics_dst.relative_to(root).as_posix(),
             "trace_snapshot": trace_dst.relative_to(root).as_posix(),
             "logs_excerpt": logs_dst.relative_to(root).as_posix(),
+            "rendered_manifests": rendered_dst.relative_to(root).as_posix(),
             "pass_fail_summary": "artifacts/stack-report/pass-fail-summary.json",
         },
     }
