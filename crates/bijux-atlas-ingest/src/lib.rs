@@ -21,6 +21,8 @@ use manifest::{
     build_and_write_manifest_and_reports, write_qc_and_anomaly_reports_only, BuildManifestArgs,
 };
 use sqlite::{explain_plan_for_region_query, write_sharded_sqlite_catalog, write_sqlite};
+#[cfg(test)]
+use sqlite::{explain_plan_for_gene_id_query, explain_plan_for_name_query};
 use std::fmt::{Display, Formatter};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -223,7 +225,9 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
         &opts.dataset,
         &extracted.gene_rows,
         &extracted.transcript_rows,
+        &extracted.exon_rows,
         &contig_stats,
+        &sha256_hex(&fs::read(&paths.gff3).map_err(|e| IngestError(e.to_string()))?),
         &sha256_hex(&fs::read(&paths.fasta).map_err(|e| IngestError(e.to_string()))?),
         &sha256_hex(&fs::read(&paths.fai).map_err(|e| IngestError(e.to_string()))?),
     )?;
@@ -535,6 +539,47 @@ mod tests {
     }
 
     #[test]
+    fn explain_lookup_plans_avoid_full_table_scans() {
+        let root = tempdir().expect("tempdir");
+        let run = ingest_dataset(&opts(root.path(), StrictnessMode::Strict)).expect("ingest");
+        for plan in [
+            explain_plan_for_gene_id_query(&run.sqlite_path).expect("gene-id plan"),
+            explain_plan_for_name_query(&run.sqlite_path).expect("name plan"),
+        ] {
+            let joined = plan.join("\n").to_ascii_lowercase();
+            assert!(
+                joined.contains("index"),
+                "expected indexed lookup plan: {joined}"
+            );
+        }
+    }
+
+    #[test]
+    fn explain_plan_snapshots_cover_core_query_shapes() {
+        let root = tempdir().expect("tempdir");
+        let run = ingest_dataset(&opts(root.path(), StrictnessMode::Strict)).expect("ingest");
+        let region = explain_region_query_plan(&run.sqlite_path).expect("region");
+        let gene = explain_plan_for_gene_id_query(&run.sqlite_path).expect("gene");
+        let name = explain_plan_for_name_query(&run.sqlite_path).expect("name");
+        let region_txt = region.join("\n").to_ascii_lowercase();
+        let gene_txt = gene.join("\n").to_ascii_lowercase();
+        let name_txt = name.join("\n").to_ascii_lowercase();
+        assert!(
+            region_txt.contains("rtree")
+                || region_txt.contains("idx_gene_summary_region")
+                || region_txt.contains("idx_gene_summary_cover_region")
+        );
+        assert!(
+            gene_txt.contains("idx_gene_summary_gene_id")
+                || gene_txt.contains("idx_gene_summary_cover_region")
+        );
+        assert!(
+            name_txt.contains("idx_gene_summary_name")
+                || name_txt.contains("idx_gene_summary_cover_region")
+        );
+    }
+
+    #[test]
     fn ingest_sqlite_meta_includes_build_pragmas() {
         let root = tempdir().expect("tempdir");
         let run = ingest_dataset(&opts(root.path(), StrictnessMode::Strict)).expect("ingest");
@@ -553,7 +598,7 @@ mod tests {
                 |r| r.get(0),
             )
             .expect("journal mode");
-        assert_eq!(schema_version, "3");
+        assert_eq!(schema_version, "4");
         assert_eq!(journal_mode, "WAL");
         let schema_table_version: i64 = conn
             .query_row(
@@ -562,7 +607,7 @@ mod tests {
                 |r| r.get(0),
             )
             .expect("schema_version table");
-        assert_eq!(schema_table_version, 3);
+        assert_eq!(schema_table_version, 4);
         let contigs: i64 = conn
             .query_row("SELECT COUNT(*) FROM contigs", [], |r| r.get(0))
             .expect("contigs table count");
@@ -712,11 +757,11 @@ mod tests {
         let run = ingest_dataset(&opts(root.path(), StrictnessMode::Strict)).expect("ingest");
         assert_eq!(
             run.manifest.checksums.sqlite_sha256,
-            "9722beec3380c8eceb4ff7055ad63a34bf75c2a111298e7a644791498c0e6841"
+            "e858b195d15ed5a6e7406b58a05ead215cd0d4b6c62653e1d3000c8b320bdba2"
         );
         assert_eq!(
             run.manifest.dataset_signature_sha256,
-            "d8ec88ad2dd813f4c53bf8b5f13b6026a6f91a11d018df0bb482b02e7acc7100"
+            "d273f80509add42ab87efe008c5ad2361e0efb411b295e7a9a8371ec281bd9df"
         );
     }
 
