@@ -40,3 +40,7 @@ Expected output: docs build and docs-structure checks pass.
 - [Docs Home](../index.md)
 - [Naming Standard](../_style/naming-standard.md)
 - [Terms Glossary](../_style/terms-glossary.md)
+- [Backend Architecture](backend-architecture.md)
+- [Component Responsibilities](component-responsibilities.md)
+- [No Serving Writes](no-serving-writes.md)
+- [Build/Serve Split](build-serve-split.md)
