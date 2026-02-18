@@ -90,6 +90,17 @@ Generated from `make help`. Do not edit manually.
 - `ops-grafana-dashboards-check`
 - `ops-otel-up`
 - `ops-otel-down`
+- `ops-otel-spans-check`
+- `ops-redis-up`
+- `ops-redis-down`
+- `ops-redis-optional-check`
+- `ops-redis-used-check`
+- `ops-toxi-up`
+- `ops-toxi-down`
+- `ops-toxi-latency-inject`
+- `ops-toxi-cut-store`
+- `ops-stack-order-check`
+- `ops-stack-security-check`
 - `ops-reset`
 - `ops-clean`
 - `ops-env-print`
