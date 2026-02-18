@@ -34,6 +34,7 @@ Does not define implementation internals outside this contract surface.
 - `GET /v1/genes/count` telemetry class: `query`
 - `GET /v1/genes/{gene_id}/sequence` telemetry class: `sequence`
 - `GET /v1/genes/{gene_id}/transcripts` telemetry class: `transcript`
+- `GET /v1/openapi.json` telemetry class: `control`
 - `GET /v1/releases/{release}/species/{species}/assemblies/{assembly}` telemetry class: `catalog`
 - `GET /v1/sequence/region` telemetry class: `sequence`
 - `GET /v1/transcripts/{tx_id}` telemetry class: `transcript`
