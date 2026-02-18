@@ -99,7 +99,7 @@ def main() -> int:
         rendered_dst.write_text("# missing rendered manifests\n")
 
     stack_hash_inputs = [
-        root / "ops/tool-versions.json",
+        root / "configs/ops/tool-versions.json",
         root / "ops/load/suites/suites.json",
         root / "configs/perf/k6-thresholds.v1.json",
         values_src,

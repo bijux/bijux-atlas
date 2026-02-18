@@ -23,8 +23,8 @@ ALLOWED_OPS_PREFIXES = (
     "ops/stack/toxiproxy/",
     "ops/stack/faults/",
     "ops/report/",
-    "ops/smoke/",
-    "ops/ui/",
+    "ops/e2e/smoke/",
+    "ops/stack/scripts/",
 )
 
 

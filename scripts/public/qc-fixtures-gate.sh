@@ -49,9 +49,9 @@ run_case \
 
 run_case \
   medium \
-  "${ROOT}/ops/fixtures/medium/data/genes.gff3" \
-  "${ROOT}/ops/fixtures/medium/data/genome.fa" \
-  "${ROOT}/ops/fixtures/medium/data/genome.fa.fai" \
+  "${ROOT}/ops/fixtures/medium/v1/data/genes.gff3" \
+  "${ROOT}/ops/fixtures/medium/v1/data/genome.fa" \
+  "${ROOT}/ops/fixtures/medium/v1/data/genome.fa.fai" \
   110 homo_sapiens GRCh38
 
 echo "qc fixtures gate passed"

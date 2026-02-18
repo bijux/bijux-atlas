@@ -11,7 +11,7 @@ fi
 PROFILE="$PROFILE" python3 - <<'PY'
 import json,subprocess,sys,os
 from pathlib import Path
-cfg=json.load(open('configs/ops/obs-pack.json'))
+cfg=json.load(open('configs/ops/observability-pack.json'))
 required={
   'prometheus':cfg['images']['prometheus']['ref'],
   'grafana':cfg['images']['grafana']['ref'],

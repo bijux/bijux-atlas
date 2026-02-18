@@ -6,7 +6,7 @@
 set -euo pipefail
 python3 - <<'PY'
 import json
-cfg=json.load(open('configs/ops/obs-pack.json'))
+cfg=json.load(open('configs/ops/observability-pack.json'))
 ports=cfg['ports']
 print(f"ATLAS_PROM_URL=http://127.0.0.1:{ports['prometheus']}")
 print(f"ATLAS_GRAFANA_URL=http://127.0.0.1:{ports['grafana']}")

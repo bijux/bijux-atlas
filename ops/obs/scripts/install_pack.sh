@@ -28,7 +28,7 @@ compose_cmd() {
 ensure_offline_images() {
   python3 - <<'PY'
 import json,subprocess,sys
-cfg=json.load(open("configs/ops/obs-pack.json"))
+cfg=json.load(open("configs/ops/observability-pack.json"))
 for spec in cfg.get("images", {}).values():
     ref=spec["ref"]
     rc=subprocess.call(["docker","image","inspect",ref],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
@@ -43,7 +43,7 @@ kind_load_offline_images() {
   local cluster_name="${ATLAS_E2E_CLUSTER_NAME:-bijux-atlas-e2e}"
   python3 - <<'PY' | while IFS= read -r ref; do
 import json
-cfg=json.load(open("configs/ops/obs-pack.json"))
+cfg=json.load(open("configs/ops/observability-pack.json"))
 for spec in cfg.get("images", {}).values():
     print(spec["ref"])
 PY

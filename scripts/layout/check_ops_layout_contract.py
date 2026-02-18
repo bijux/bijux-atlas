@@ -10,10 +10,10 @@ OPS = ROOT / "ops"
 required = {
     "stack", "k8s", "obs", "load", "datasets", "e2e", "run",
     "_lib", "_meta", "_schemas", "_generated", "_artifacts",
-    "CONTRACT.md", "INDEX.md", "README.md", "tool-versions.json",
+    "CONTRACT.md", "INDEX.md", "README.md",
 }
 
-allowed_extra = {"fixtures", "smoke", "ui", "registry", "report"}
+allowed_extra = {"fixtures", "registry", "report"}
 allowed = required | allowed_extra
 
 errors: list[str] = []

@@ -32,7 +32,7 @@ while IFS= read -r file; do
     s{(^|[^A-Za-z0-9_])bin/isolate}{$1scripts/bin/isolate}g;
     s{(^|[^A-Za-z0-9_])bin/require-isolate}{$1scripts/bin/require-isolate}g;
     s{(^|[^A-Za-z0-9_])datasets/real-datasets\.json}{$1ops/datasets/real-datasets.json}g;
-    s{(^|[^A-Za-z0-9_])fixtures/medium/}{$1ops/fixtures/medium/}g;
+    s{(^|[^A-Za-z0-9_])fixtures/medium/}{$1ops/fixtures/medium/v1/}g;
   ' "$file"
 done <<EOF
 $(git ls-files)

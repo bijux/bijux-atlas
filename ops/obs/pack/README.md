@@ -5,7 +5,7 @@
 ## Contract
 
 - Inputs:
-  - `configs/ops/obs-pack.json`
+  - `configs/ops/observability-pack.json`
   - `ops/obs/pack/compose/docker-compose.yml`
   - `ops/stack/{prometheus,grafana,otel}/*.yaml`
 - Outputs:
@@ -23,7 +23,7 @@
 - `cluster`: Kubernetes pack with stricter CRD requirements.
 
 Airgapped note:
-- Mirror pinned image refs from `configs/ops/obs-pack.json` into your local registry.
+- Mirror pinned image refs from `configs/ops/observability-pack.json` into your local registry.
 - Keep digest fields updated to the mirrored immutable artifacts.
 - Pin and verify base toolchain via `configs/ops/tool-versions.json` and `make ops-tools-check`.
 
@@ -44,3 +44,5 @@ Namespace/storage conventions:
 - `make ops-observability-pack-upgrade-check`
 - `make ops-observability-pack-conformance-report`
 - `make ops-obs-down`
+
+Canonical docs: `ops/README.md`, `docs/operations/INDEX.md`.

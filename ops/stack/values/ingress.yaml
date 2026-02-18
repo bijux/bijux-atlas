@@ -1,5 +1,0 @@
-ingress:
-  enabled: true
-  className: nginx
-  host: atlas.local
-  path: /

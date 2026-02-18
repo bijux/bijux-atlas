@@ -9,9 +9,9 @@ DATASET="${1:-medium}"
 case "$DATASET" in
   medium)
     "$ROOT/ops/e2e/scripts/publish_dataset.sh" \
-      --gff3 "$ROOT/ops/fixtures/medium/data/genes.gff3" \
-      --fasta "$ROOT/ops/fixtures/medium/data/genome.fa" \
-      --fai "$ROOT/ops/fixtures/medium/data/genome.fa.fai" \
+      --gff3 "$ROOT/ops/fixtures/medium/v1/data/genes.gff3" \
+      --fasta "$ROOT/ops/fixtures/medium/v1/data/genome.fa" \
+      --fai "$ROOT/ops/fixtures/medium/v1/data/genome.fa.fai" \
       --release 110 --species homo_sapiens --assembly GRCh38
     ;;
   real1)
