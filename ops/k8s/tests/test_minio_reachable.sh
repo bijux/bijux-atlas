@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+. "$(dirname "$0")/common.sh"
+setup_test_traps
+need kubectl
+
+install_chart
+wait_ready
+
+. "$ROOT/ops/stack/tests/minio-invariants.sh"
+check_minio_reachable_from_atlas "${ATLAS_E2E_NAMESPACE:-atlas-e2e}"

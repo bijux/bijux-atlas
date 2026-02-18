@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
-REPO_ROOT="$(git rev-parse --show-toplevel)"
-"$REPO_ROOT/ops/_lib/k8s-test-report.sh" "$@"
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../../.." && pwd)"
+exec "$ROOT/ops/k8s/tests/report.sh" "$@"
