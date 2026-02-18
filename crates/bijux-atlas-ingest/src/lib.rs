@@ -58,9 +58,13 @@ pub struct IngestOptions {
     pub emit_shards: bool,
     pub shard_partitions: usize,
     pub compute_gene_signatures: bool,
+    pub compute_contig_fractions: bool,
+    pub compute_transcript_spliced_length: bool,
+    pub compute_transcript_cds_length: bool,
     pub report_only: bool,
     pub fail_on_warn: bool,
     pub allow_overlap_gene_ids_across_contigs: bool,
+    pub dev_allow_auto_generate_fai: bool,
 }
 
 impl Default for IngestOptions {
@@ -89,7 +93,11 @@ impl Default for IngestOptions {
             emit_shards: false,
             shard_partitions: 0,
             compute_gene_signatures: true,
+            compute_contig_fractions: false,
+            compute_transcript_spliced_length: false,
+            compute_transcript_cds_length: false,
             report_only: false,
+            dev_allow_auto_generate_fai: false,
         }
     }
 }
@@ -118,7 +126,17 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
     }
     let _effective_threads = extract::parallelism_policy(opts.max_threads)?;
 
+    if !opts.fai_path.exists() {
+        if opts.dev_allow_auto_generate_fai {
+            fai::write_fai_from_fasta(&opts.fasta_path, &opts.fai_path)?;
+        } else {
+            return Err(IngestError(
+                "FAI index is required for ingest (enable dev auto-generate explicitly)".to_string(),
+            ));
+        }
+    }
     let contig_lengths = fai::read_fai_contig_lengths(&opts.fai_path)?;
+    let contig_stats = fai::read_fasta_contig_stats(&opts.fasta_path, opts.compute_contig_fractions)?;
     let records = parse_gff3_records(&opts.gff3_path)?;
     let extracted = extract_gene_rows(records, &contig_lengths, opts)?;
     if opts.fail_on_warn && has_qc_warn(&extracted.anomaly) {
@@ -180,6 +198,7 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
         &opts.dataset,
         &extracted.gene_rows,
         &extracted.transcript_rows,
+        &contig_stats,
     )?;
     let (shard_catalog_path, shard_catalog) = if opts.emit_shards {
         let (catalog_path, catalog) = write_sharded_sqlite_catalog(
@@ -203,6 +222,7 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
         manifest_path: &paths.manifest,
         anomaly_path: &paths.anomaly_report,
         extract: &extracted,
+        contig_aliases: &opts.seqid_policy.aliases,
     })?;
     if opts.compute_gene_signatures {
         build_and_write_release_gene_index(
@@ -284,7 +304,11 @@ mod tests {
             emit_shards: false,
             shard_partitions: 0,
             compute_gene_signatures: true,
+            compute_contig_fractions: false,
+            compute_transcript_spliced_length: false,
+            compute_transcript_cds_length: false,
             report_only: false,
+            dev_allow_auto_generate_fai: false,
         }
     }
 
@@ -407,6 +431,33 @@ mod tests {
     }
 
     #[test]
+    fn unknown_contig_is_contractual_deterministic_failure() {
+        let root = tempdir().expect("tempdir");
+        let mut o = opts(root.path(), StrictnessMode::Strict);
+        o.gff3_path =
+            PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/edgecases/case_9_unknown_contig.gff3");
+        let e1 = ingest_dataset(&o).expect_err("unknown contig must fail");
+        let e2 = ingest_dataset(&o).expect_err("unknown contig must fail deterministically");
+        assert_eq!(e1.to_string(), e2.to_string());
+    }
+
+    #[test]
+    fn missing_fai_fails_by_default_but_can_autogenerate_in_dev_mode() {
+        let root = tempdir().expect("tempdir");
+        let mut o = opts(root.path(), StrictnessMode::Strict);
+        o.fai_path = root.path().join("autogen.fai");
+        let err = ingest_dataset(&o).expect_err("missing fai must fail by default");
+        assert!(err.to_string().contains("FAI index is required"));
+
+        let mut dev = opts(root.path(), StrictnessMode::Strict);
+        dev.fai_path = root.path().join("autogen-dev.fai");
+        dev.dev_allow_auto_generate_fai = true;
+        let run = ingest_dataset(&dev).expect("dev autogen should pass");
+        assert!(run.sqlite_path.exists());
+        assert!(dev.fai_path.exists());
+    }
+
+    #[test]
     fn explain_query_plan_uses_index_strategy() {
         let root = tempdir().expect("tempdir");
         let run = ingest_dataset(&opts(root.path(), StrictnessMode::Strict)).expect("ingest");
@@ -447,6 +498,10 @@ mod tests {
             )
             .expect("schema_version table");
         assert_eq!(schema_table_version, 3);
+        let contigs: i64 = conn
+            .query_row("SELECT COUNT(*) FROM contigs", [], |r| r.get(0))
+            .expect("contigs table count");
+        assert!(contigs > 0);
     }
 
     #[test]
@@ -584,11 +639,11 @@ mod tests {
         let run = ingest_dataset(&opts(root.path(), StrictnessMode::Strict)).expect("ingest");
         assert_eq!(
             run.manifest.checksums.sqlite_sha256,
-            "67fd1f2ff170745b4d4f61d1c369d99de8865e47af7d0c2a8d93640dae67aee1"
+            "b6161b3a91ea657e510cf0d9202fab01f18eedfd2f2a62c3ac2ec5020b3c3361"
         );
         assert_eq!(
             run.manifest.dataset_signature_sha256,
-            "ac9d84787df58ceb9fd9d263bc5c9af06c7976a9183b1a123979398468a9586f"
+            "d8ec88ad2dd813f4c53bf8b5f13b6026a6f91a11d018df0bb482b02e7acc7100"
         );
     }
 
@@ -669,5 +724,24 @@ mod tests {
         let run = ingest_dataset(&o).expect("lenient ingest");
         assert!(!run.anomaly_report.rejections.is_empty());
         assert_eq!(run.anomaly_report.rejections[0].code, "GFF3_UNKNOWN_FEATURE");
+    }
+
+    #[test]
+    fn manifest_stores_contig_normalization_aliases() {
+        let root = tempdir().expect("tempdir");
+        let mut o = opts(root.path(), StrictnessMode::Strict);
+        o.seqid_policy =
+            SeqidNormalizationPolicy::from_aliases(std::collections::BTreeMap::from([(
+                "1".to_string(),
+                "chr1".to_string(),
+            )]));
+        let run = ingest_dataset(&o).expect("ingest");
+        assert_eq!(
+            run.manifest
+                .contig_normalization_aliases
+                .get("1")
+                .map(String::as_str),
+            Some("chr1")
+        );
     }
 }

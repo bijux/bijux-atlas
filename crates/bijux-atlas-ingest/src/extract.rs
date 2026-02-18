@@ -36,6 +36,8 @@ pub struct TranscriptRecord {
     pub exon_count: u64,
     pub total_exon_span: u64,
     pub cds_present: bool,
+    pub spliced_length: Option<u64>,
+    pub cds_span_length: Option<u64>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -52,6 +54,9 @@ pub struct ExtractResult {
     pub anomaly: IngestAnomalyReport,
     pub biotype_distribution: BTreeMap<String, u64>,
     pub contig_distribution: BTreeMap<String, u64>,
+    pub total_features: u64,
+    pub unknown_contig_features: u64,
+    pub max_contig_name_length: usize,
 }
 
 pub fn extract_gene_rows(
@@ -65,7 +70,11 @@ pub fn extract_gene_rows(
     let mut transcript_exon_counts: HashMap<String, u64> = HashMap::new();
     let mut transcript_exon_span: HashMap<String, u64> = HashMap::new();
     let mut transcript_has_cds: HashMap<String, bool> = HashMap::new();
+    let mut transcript_cds_span: HashMap<String, u64> = HashMap::new();
     let mut anomaly = IngestAnomalyReport::default();
+    let mut total_features = 0_u64;
+    let mut unknown_contig_features = 0_u64;
+    let mut max_contig_name_length = 0_usize;
 
     let mut seen_feature_ids: HashMap<String, String> = HashMap::new();
     let mut child_parent_refs: Vec<String> = Vec::new();
@@ -81,7 +90,9 @@ pub fn extract_gene_rows(
     }
 
     for rec in records {
+        total_features += 1;
         let seqid = opts.seqid_policy.normalize(&rec.seqid);
+        max_contig_name_length = max_contig_name_length.max(seqid.len());
         normalized_seqid_sources
             .entry(seqid.clone())
             .or_default()
@@ -164,6 +175,7 @@ pub fn extract_gene_rows(
 
             let Some(contig_len) = contig_lengths.get(&seqid) else {
                 anomaly.unknown_contigs.push(seqid.clone());
+                unknown_contig_features += 1;
                 if matches!(opts.strictness, StrictnessMode::Strict) {
                     return Err(IngestError(format!("contig not found in FAI: {seqid}")));
                 }
@@ -178,6 +190,7 @@ pub fn extract_gene_rows(
                     return Err(IngestError(msg));
                 }
                 anomaly.unknown_contigs.push(seqid.clone());
+                unknown_contig_features += 1;
                 continue;
             }
 
@@ -278,6 +291,8 @@ pub fn extract_gene_rows(
                     exon_count: 0,
                     total_exon_span: 0,
                     cds_present: false,
+                    spliced_length: None,
+                    cds_span_length: None,
                 });
             }
         } else if rec.feature_type == "exon" || rec.feature_type == "CDS" {
@@ -325,7 +340,10 @@ pub fn extract_gene_rows(
                     *transcript_exon_span.entry(tx_id).or_insert(0) +=
                         rec.end.saturating_sub(rec.start) + 1;
                 } else if rec.feature_type == "CDS" {
-                    transcript_has_cds.insert(tx_id, true);
+                    transcript_has_cds.insert(tx_id.clone(), true);
+                    *transcript_cds_span
+                        .entry(tx_id)
+                        .or_insert(0) += rec.end.saturating_sub(rec.start) + 1;
                 }
             }
         } else {
@@ -433,6 +451,17 @@ pub fn extract_gene_rows(
             .get(&tx.transcript_id)
             .copied()
             .unwrap_or(false);
+        if opts.compute_transcript_spliced_length {
+            tx.spliced_length = Some(tx.total_exon_span);
+        }
+        if opts.compute_transcript_cds_length {
+            tx.cds_span_length = Some(
+                transcript_cds_span
+                    .get(&tx.transcript_id)
+                    .copied()
+                    .unwrap_or(0),
+            );
+        }
     }
     let mut retained = Vec::with_capacity(transcript_rows_pending.len());
     let transcript_ids: HashSet<String> = transcript_rows_pending
@@ -566,6 +595,9 @@ pub fn extract_gene_rows(
         anomaly,
         biotype_distribution,
         contig_distribution,
+        total_features,
+        unknown_contig_features,
+        max_contig_name_length,
     })
 }
 

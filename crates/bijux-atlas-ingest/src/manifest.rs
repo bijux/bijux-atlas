@@ -7,7 +7,7 @@ use bijux_atlas_model::{
     ValidationError,
 };
 use serde_json::json;
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -27,6 +27,7 @@ pub struct BuildManifestArgs<'a> {
     pub manifest_path: &'a Path,
     pub anomaly_path: &'a Path,
     pub extract: &'a ExtractResult,
+    pub contig_aliases: &'a BTreeMap<String, String>,
 }
 
 pub fn build_and_write_manifest_and_reports(
@@ -42,6 +43,7 @@ pub fn build_and_write_manifest_and_reports(
         manifest_path,
         anomaly_path,
         extract,
+        contig_aliases,
     } = args;
     let mut total_transcripts = 0_u64;
     let mut contigs = BTreeSet::new();
@@ -81,6 +83,7 @@ pub fn build_and_write_manifest_and_reports(
         .to_string();
     manifest.ingest_build_hash = option_env!("BIJUX_BUILD_HASH").unwrap_or("dev").to_string();
     manifest.toolchain_hash = compute_toolchain_hash();
+    manifest.contig_normalization_aliases = contig_aliases.clone();
 
     manifest
         .validate_strict()
@@ -153,6 +156,11 @@ pub fn build_and_write_manifest_and_reports(
         "transcript_summary_count": extract.transcript_rows.len(),
         "biotype_distribution": extract.biotype_distribution,
         "contig_distribution": extract.contig_distribution,
+        "qc_counters": {
+            "unknown_contig_feature_ratio": if extract.total_features == 0 { 0.0 } else { extract.unknown_contig_features as f64 / extract.total_features as f64 },
+            "max_contig_name_length": extract.max_contig_name_length,
+            "total_features": extract.total_features
+        },
         "anomalies": {
             "missing_parents": extract.anomaly.missing_parents,
             "missing_transcript_parents": extract.anomaly.missing_transcript_parents,
@@ -293,6 +301,11 @@ pub fn write_qc_and_anomaly_reports_only(
         "contig_count": contigs.len(),
         "biotype_distribution": extract.biotype_distribution,
         "contig_distribution": extract.contig_distribution,
+        "qc_counters": {
+            "unknown_contig_feature_ratio": if extract.total_features == 0 { 0.0 } else { extract.unknown_contig_features as f64 / extract.total_features as f64 },
+            "max_contig_name_length": extract.max_contig_name_length,
+            "total_features": extract.total_features
+        },
         "anomalies": {
             "missing_parents": extract.anomaly.missing_parents,
             "missing_transcript_parents": extract.anomaly.missing_transcript_parents,
