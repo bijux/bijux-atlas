@@ -10,7 +10,7 @@ REGISTRY_DOCS_DESC := docs
 REGISTRY_DOCS_TARGETS := docs docs-serve docs-freeze docs-hardening
 
 REGISTRY_CONTRACTS_DESC := contracts
-REGISTRY_CONTRACTS_TARGETS := contracts ssot-check policy-lint policy-schema-drift policy-audit config-validate config-print config-drift openapi-drift api-contract-check ops-values-validate ops-chart-render-diff ops-openapi-validate ops-dashboards-validate ops-alerts-validate
+REGISTRY_CONTRACTS_TARGETS := contracts ssot-check policy-lint policy-schema-drift policy-audit policy-enforcement-status policy-allow-env-lint policy-drift-diff ops-policy-audit config-validate config-print config-drift openapi-drift api-contract-check ops-values-validate ops-chart-render-diff ops-openapi-validate ops-dashboards-validate ops-alerts-validate
 
 REGISTRY_OPS_QUICK_DESC := ops quick
 REGISTRY_OPS_QUICK_TARGETS := stack-full stack-full-chaos ops-full ops-full-pr ops-full-nightly
@@ -22,7 +22,7 @@ REGISTRY_RELEASE_DESC := release/surface
 REGISTRY_RELEASE_TARGETS := fmt lint check test test-all coverage audit openapi-drift ci ssot-check crate-structure crate-docs-contract cli-command-surface query-plan-gate critical-query-check docker-build docker-smoke chart-package chart-verify chart-validate release-dry-run release bump clean deep-clean debug
 
 REGISTRY_CI_DESC := ci-mapping
-REGISTRY_CI_TARGETS := ci-root-layout ci-script-entrypoints ci-fmt ci-clippy ci-test-nextest ci-deny ci-audit ci-license-check ci-policy-lint ci-policy-schema-drift ci-policy-relaxations ci-config-check ci-ssot-drift ci-crate-structure ci-crate-docs-contract ci-cli-command-surface ci-release-binaries ci-docs-build ci-latency-regression ci-store-conformance ci-store-conformance-localfs ci-store-conformance-http ci-store-conformance-s3 ci-openapi-drift ci-chart-schema-validate ci-api-contract ci-query-plan-gate ci-critical-query-check ci-sqlite-schema-drift ci-sqlite-index-drift ci-ingest-determinism ci-qc-fixtures ci-log-fields-contract ci-compatibility-matrix-validate ci-runtime-security-scan-image ci-coverage ci-workflows-make-only
+REGISTRY_CI_TARGETS := ci-root-layout ci-script-entrypoints ci-fmt ci-clippy ci-test-nextest ci-deny ci-audit ci-license-check ci-policy-lint ci-policy-schema-drift ci-policy-relaxations ci-policy-enforcement ci-policy-allow-env ci-ops-policy-audit ci-config-check ci-ssot-drift ci-crate-structure ci-crate-docs-contract ci-cli-command-surface ci-release-binaries ci-docs-build ci-latency-regression ci-store-conformance ci-store-conformance-localfs ci-store-conformance-http ci-store-conformance-s3 ci-openapi-drift ci-chart-schema-validate ci-api-contract ci-query-plan-gate ci-critical-query-check ci-sqlite-schema-drift ci-sqlite-index-drift ci-ingest-determinism ci-qc-fixtures ci-log-fields-contract ci-compatibility-matrix-validate ci-runtime-security-scan-image ci-coverage ci-workflows-make-only
 
 REGISTRY_TOOLING_DESC := tooling
 REGISTRY_TOOLING_TARGETS := bootstrap bootstrap-tools doctor dataset-id-lint scripts-index scripts-graph scripts-audit scripts-lint scripts-format scripts-test scripts-clean artifacts-index artifacts-clean isolate-clean no-direct-scripts help
