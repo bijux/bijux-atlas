@@ -1,4 +1,4 @@
-# OTEL Outage Behavior
+# OpenTelemetry Outage Behavior
 
 - Owner: `bijux-atlas-operations`
 
@@ -14,11 +14,12 @@ Server request handling remains available when OTEL collector is unavailable.
 
 ## Drill command
 
-- `./ops/observability/scripts/otel_outage.sh`
+- `make ops-drill-otel-outage`
+- `make ops-observability-validate`
 - `make observability-pack-drills`
 
 ## Evidence
 
-- `artifacts/ops/observability/traces.snapshot.log`
-- `artifacts/ops/observability/metrics.prom`
+- `artifacts/ops/obs/traces.snapshot.log`
+- `artifacts/ops/obs/metrics.prom`
 - `artifacts/observability/pack-conformance-report.json`

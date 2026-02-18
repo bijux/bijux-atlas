@@ -12,7 +12,7 @@ Validates behavior on realistic datasets without polluting PR CI runtime.
 
 ## Scope
 
-`ops/e2e/realdata/*.sh`, canonical query snapshots, and drift verification.
+`make ops-realdata`, canonical query snapshots, and drift verification.
 
 ## Non-goals
 
@@ -20,9 +20,9 @@ Does not define fixture acquisition policy.
 
 ## Contracts
 
-- Runner: `ops/e2e/realdata/run_all.sh`
-- Upgrade drill: `ops/e2e/realdata/upgrade_drill.sh`
-- Rollback drill: `ops/e2e/realdata/rollback_drill.sh`
+- Runner: `make ops-realdata`
+- Upgrade drill: `make ops-drill-upgrade`
+- Rollback drill: `make ops-drill-rollback`
 
 ## Failure modes
 
