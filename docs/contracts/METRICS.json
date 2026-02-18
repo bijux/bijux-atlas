@@ -34,14 +34,6 @@
     },
     {
       "labels": [
-        "dataset",
-        "subsystem",
-        "version"
-      ],
-      "name": "bijux_runtime_policy_hash"
-    },
-    {
-      "labels": [
         "code",
         "dataset",
         "subsystem",
@@ -84,6 +76,14 @@
         "version"
       ],
       "name": "bijux_request_stage_latency_p95_seconds"
+    },
+    {
+      "labels": [
+        "dataset",
+        "subsystem",
+        "version"
+      ],
+      "name": "bijux_runtime_policy_hash"
     },
     {
       "labels": [

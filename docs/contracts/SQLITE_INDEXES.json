@@ -1,6 +1,11 @@
 {
-  "schema_version": "v1",
+  "no_full_scan_patterns": [
+    "SCAN gene_summary"
+  ],
   "required_indexes": {
+    "exons": [
+      "idx_exons_transcript"
+    ],
     "gene_summary": [
       "idx_gene_summary_gene_id",
       "idx_gene_summary_name",
@@ -16,15 +21,10 @@
     ],
     "transcripts": [
       "idx_transcripts_parent_gene"
-    ],
-    "exons": [
-      "idx_exons_transcript"
     ]
   },
   "required_virtual_tables": [
     "gene_summary_rtree"
   ],
-  "no_full_scan_patterns": [
-    "SCAN gene_summary"
-  ]
+  "schema_version": "v1"
 }
