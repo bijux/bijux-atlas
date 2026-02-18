@@ -65,3 +65,14 @@ spec:
           summary: "Cache thrash detected"
           description: "Dataset miss rate is significantly higher than hit rate."
           runbook: "docs/operations/runbooks/store-outage.md"
+      - alert: AtlasOverloadSustained
+        expr: avg_over_time(atlas_overload_active{subsystem="atlas"}[90s]) > 0
+        for: 90s
+        labels:
+          severity: warn
+          subsystem: atlas
+          alert_contract_version: "1"
+        annotations:
+          summary: "Sustained overload shedding active"
+          description: "Overload remained active for more than 90 seconds."
+          runbook: "docs/operations/runbooks/traffic-spike.md"

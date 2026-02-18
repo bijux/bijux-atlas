@@ -4,7 +4,8 @@
     "BijuxAtlasHigh5xxRate",
     "BijuxAtlasP95LatencyRegression",
     "BijuxAtlasStoreDownloadFailures",
-    "BijuxAtlasCacheThrash"
+    "BijuxAtlasCacheThrash",
+    "AtlasOverloadSustained"
   ],
   "contract_git_sha": "REQUIRED_AT_BUILD"
 }

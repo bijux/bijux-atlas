@@ -34,6 +34,9 @@ jobs:
       - name: Run nightly perf harness
         run: make ops-perf-nightly
 
+      - name: Run spike overload proof gate
+        run: make ops-load-spike-proof
+
       - name: Run e2e perf scoring suite
         run: make ops-perf-e2e
 
