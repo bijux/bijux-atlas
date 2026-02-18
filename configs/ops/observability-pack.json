@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "profiles": {
+    "local-compose": {
+      "runtime": "compose",
+      "compose_file": "ops/observability/pack/compose/docker-compose.yml"
+    },
+    "kind": {
+      "runtime": "kubernetes",
+      "namespace_source": "ATLAS_E2E_NAMESPACE"
+    },
+    "cluster": {
+      "runtime": "kubernetes",
+      "requires_servicemonitor_crd": true
+    }
+  },
+  "ports": {
+    "prometheus": 19090,
+    "grafana": 13000,
+    "otel_grpc": 14317,
+    "otel_http": 14318
+  },
+  "images": {
+    "prometheus": {
+      "ref": "prom/prometheus:v2.54.1",
+      "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "grafana": {
+      "ref": "grafana/grafana:11.2.0",
+      "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "otel_collector": {
+      "ref": "otel/opentelemetry-collector-contrib:0.111.0",
+      "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+    }
+  }
+}

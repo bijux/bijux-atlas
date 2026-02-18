@@ -4,6 +4,18 @@ ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 . "$ROOT/ops/observability/tests/observability-test-lib.sh"
 require_bin kubectl
 
+# local-compose profile should be accepted when compose is installed.
+if (command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1) || command -v docker-compose >/dev/null 2>&1; then
+  ATLAS_OBS_PROFILE=local-compose "$ROOT/ops/observability/scripts/install_pack.sh"
+  ATLAS_OBS_PROFILE=local-compose "$ROOT/ops/observability/scripts/install_pack.sh"
+  ATLAS_OBS_PROFILE=local-compose "$ROOT/ops/observability/scripts/verify_pack.sh"
+  ATLAS_OBS_PROFILE=local-compose "$ROOT/ops/observability/scripts/uninstall_pack.sh"
+  ATLAS_OBS_PROFILE=local-compose "$ROOT/ops/observability/scripts/install_pack.sh"
+  ATLAS_OBS_PROFILE=local-compose "$ROOT/ops/observability/scripts/uninstall_pack.sh"
+else
+  echo "local-compose profile skipped: docker compose unavailable"
+fi
+
 # Kind profile must always be accepted and never require ServiceMonitor CRD.
 ATLAS_OBS_PROFILE=kind "$ROOT/ops/observability/scripts/install_pack.sh"
 "$ROOT/ops/observability/scripts/uninstall_pack.sh"
