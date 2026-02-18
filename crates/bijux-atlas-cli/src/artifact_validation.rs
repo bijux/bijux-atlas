@@ -192,6 +192,31 @@ pub(crate) fn validate_dataset(
     Ok(())
 }
 
+pub(crate) fn validate_ingest_qc(
+    qc_report: PathBuf,
+    thresholds: PathBuf,
+    output_mode: OutputMode,
+) -> Result<(), String> {
+    let qc_raw = fs::read_to_string(&qc_report)
+        .map_err(|e| format!("failed to read {}: {e}", qc_report.display()))?;
+    let thresholds_raw = fs::read_to_string(&thresholds)
+        .map_err(|e| format!("failed to read {}: {e}", thresholds.display()))?;
+    let qc: serde_json::Value = serde_json::from_str(&qc_raw)
+        .map_err(|e| format!("invalid QC json {}: {e}", qc_report.display()))?;
+    let t: serde_json::Value = serde_json::from_str(&thresholds_raw)
+        .map_err(|e| format!("invalid thresholds json {}: {e}", thresholds.display()))?;
+    validate_qc_thresholds(&qc, &t)?;
+    emit_ok_payload(
+        output_mode,
+        json!({
+            "command":"atlas ingest-validate",
+            "status":"ok",
+            "qc_report": qc_report,
+            "thresholds": thresholds
+        }),
+    )
+}
+
 fn compute_dataset_signature_from_sqlite(sqlite_path: &PathBuf) -> Result<String, String> {
     let conn = rusqlite::Connection::open(sqlite_path).map_err(|e| e.to_string())?;
     let mut gene_stmt = conn
@@ -368,6 +393,124 @@ fn enforce_publish_gates(
                 "publish gate failed: required index missing: {idx}"
             ));
         }
+    }
+    let qc_report = paths.derived_dir.join("qc.json");
+    let thresholds_path = workspace.join("configs/ops/dataset-qc-thresholds.json");
+    let qc_raw = fs::read_to_string(&qc_report)
+        .map_err(|e| format!("publish gate failed: {}: {e}", qc_report.display()))?;
+    let thresholds_raw = fs::read_to_string(&thresholds_path)
+        .map_err(|e| format!("publish gate failed: {}: {e}", thresholds_path.display()))?;
+    let qc: serde_json::Value = serde_json::from_str(&qc_raw).map_err(|e| {
+        format!(
+            "publish gate failed: invalid qc json {}: {e}",
+            qc_report.display()
+        )
+    })?;
+    let thresholds: serde_json::Value = serde_json::from_str(&thresholds_raw).map_err(|e| {
+        format!(
+            "publish gate failed: invalid thresholds json {}: {e}",
+            thresholds_path.display()
+        )
+    })?;
+    validate_qc_thresholds(&qc, &thresholds).map_err(|e| format!("publish gate failed: {e}"))?;
+    Ok(())
+}
+
+fn validate_qc_thresholds(
+    qc: &serde_json::Value,
+    thresholds: &serde_json::Value,
+) -> Result<(), String> {
+    let min_gene_count = thresholds
+        .get("min_gene_count")
+        .and_then(serde_json::Value::as_u64)
+        .ok_or_else(|| "threshold missing min_gene_count".to_string())?;
+    let max_orphan_pct = thresholds
+        .get("max_orphan_percent")
+        .and_then(serde_json::Value::as_f64)
+        .ok_or_else(|| "threshold missing max_orphan_percent".to_string())?;
+    let max_rejected_pct = thresholds
+        .get("max_rejected_percent")
+        .and_then(serde_json::Value::as_f64)
+        .ok_or_else(|| "threshold missing max_rejected_percent".to_string())?;
+    let max_unknown_contig_pct = thresholds
+        .get("max_unknown_contig_feature_percent")
+        .and_then(serde_json::Value::as_f64)
+        .ok_or_else(|| "threshold missing max_unknown_contig_feature_percent".to_string())?;
+    let max_duplicate_gene_id_events = thresholds
+        .get("max_duplicate_gene_id_events")
+        .and_then(serde_json::Value::as_u64)
+        .ok_or_else(|| "threshold missing max_duplicate_gene_id_events".to_string())?;
+    let genes = qc
+        .pointer("/counts/genes")
+        .and_then(serde_json::Value::as_u64)
+        .ok_or_else(|| "qc missing counts.genes".to_string())?;
+    let transcripts = qc
+        .pointer("/counts/transcripts")
+        .and_then(serde_json::Value::as_u64)
+        .ok_or_else(|| "qc missing counts.transcripts".to_string())?;
+    let orphan_transcripts = qc
+        .pointer("/orphan_counts/transcripts")
+        .and_then(serde_json::Value::as_u64)
+        .ok_or_else(|| "qc missing orphan_counts.transcripts".to_string())?;
+    let duplicate_gene_ids = qc
+        .pointer("/duplicate_id_events/duplicate_gene_ids")
+        .and_then(serde_json::Value::as_u64)
+        .ok_or_else(|| "qc missing duplicate_id_events.duplicate_gene_ids".to_string())?;
+    let unknown_contig_ratio = qc
+        .pointer("/contig_stats/unknown_contig_feature_ratio")
+        .and_then(serde_json::Value::as_f64)
+        .ok_or_else(|| "qc missing contig_stats.unknown_contig_feature_ratio".to_string())?;
+    let rejected: u64 = qc
+        .get("rejected_record_count_by_reason")
+        .and_then(serde_json::Value::as_object)
+        .ok_or_else(|| "qc missing rejected_record_count_by_reason".to_string())?
+        .values()
+        .map(|v| v.as_u64().unwrap_or(0))
+        .sum();
+    if genes < min_gene_count {
+        return Err(format!(
+            "gene_count {} < min_gene_count {}",
+            genes, min_gene_count
+        ));
+    }
+    let orphan_pct = if transcripts == 0 {
+        0.0
+    } else {
+        (orphan_transcripts as f64) * 100.0 / (transcripts as f64)
+    };
+    if orphan_pct > max_orphan_pct {
+        return Err(format!(
+            "orphan_percent {:.4} > max_orphan_percent {}",
+            orphan_pct, max_orphan_pct
+        ));
+    }
+    let total_features = qc
+        .pointer("/contig_stats/total_features")
+        .and_then(serde_json::Value::as_u64)
+        .ok_or_else(|| "qc missing contig_stats.total_features".to_string())?;
+    let rejected_pct = if total_features == 0 {
+        0.0
+    } else {
+        (rejected as f64) * 100.0 / (total_features as f64)
+    };
+    if rejected_pct > max_rejected_pct {
+        return Err(format!(
+            "rejected_percent {:.4} > max_rejected_percent {}",
+            rejected_pct, max_rejected_pct
+        ));
+    }
+    if unknown_contig_ratio * 100.0 > max_unknown_contig_pct {
+        return Err(format!(
+            "unknown_contig_feature_percent {:.4} > max_unknown_contig_feature_percent {}",
+            unknown_contig_ratio * 100.0,
+            max_unknown_contig_pct
+        ));
+    }
+    if duplicate_gene_ids > max_duplicate_gene_id_events {
+        return Err(format!(
+            "duplicate_gene_id_events {} > max_duplicate_gene_id_events {}",
+            duplicate_gene_ids, max_duplicate_gene_id_events
+        ));
     }
     Ok(())
 }
@@ -591,4 +734,65 @@ fn check_sha(path: &PathBuf, expected: &str) -> Result<(), String> {
         ));
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::validate_qc_thresholds;
+    use serde_json::json;
+
+    #[test]
+    fn qc_thresholds_pass_for_healthy_report() {
+        let qc = json!({
+            "counts": {"genes": 10, "transcripts": 20, "exons": 50, "cds": 12},
+            "orphan_counts": {"transcripts": 0},
+            "duplicate_id_events": {"duplicate_gene_ids": 0},
+            "rejected_record_count_by_reason": {"GFF3_UNKNOWN_FEATURE": 0},
+            "contig_stats": {"unknown_contig_feature_ratio": 0.0, "total_features": 100}
+        });
+        let t = json!({
+            "min_gene_count": 1,
+            "max_orphan_percent": 1.0,
+            "max_rejected_percent": 1.0,
+            "max_unknown_contig_feature_percent": 0.5,
+            "max_duplicate_gene_id_events": 0
+        });
+        assert!(validate_qc_thresholds(&qc, &t).is_ok());
+    }
+
+    #[test]
+    fn qc_thresholds_fail_when_orphan_rate_exceeds_max() {
+        let qc = json!({
+            "counts": {"genes": 10, "transcripts": 10, "exons": 10, "cds": 10},
+            "orphan_counts": {"transcripts": 2},
+            "duplicate_id_events": {"duplicate_gene_ids": 0},
+            "rejected_record_count_by_reason": {},
+            "contig_stats": {"unknown_contig_feature_ratio": 0.0, "total_features": 100}
+        });
+        let t = json!({
+            "min_gene_count": 1,
+            "max_orphan_percent": 10.0,
+            "max_rejected_percent": 10.0,
+            "max_unknown_contig_feature_percent": 10.0,
+            "max_duplicate_gene_id_events": 0
+        });
+        let err = validate_qc_thresholds(&qc, &t).expect_err("orphan gate must fail");
+        assert!(err.contains("orphan_percent"));
+    }
+
+    #[test]
+    fn qc_edgecase_fixture_orphan_rate_regression_is_rejected() {
+        let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        let qc = serde_json::from_slice::<serde_json::Value>(
+            &std::fs::read(root.join("tests/fixtures/qc_edgecases/qc_orphan_high.json"))
+                .expect("read qc fixture"),
+        )
+        .expect("parse qc fixture");
+        let t = serde_json::from_slice::<serde_json::Value>(
+            &std::fs::read(root.join("tests/fixtures/qc_edgecases/thresholds_strict.json"))
+                .expect("read threshold fixture"),
+        )
+        .expect("parse threshold fixture");
+        assert!(validate_qc_thresholds(&qc, &t).is_err());
+    }
 }
