@@ -57,6 +57,12 @@ pub fn parse_list_genes_params_with_limit(
     default_limit: usize,
     max_limit: usize,
 ) -> Result<ListGenesParams, ApiError> {
+    if query.contains_key("fields") {
+        return Err(ApiError::invalid_param(
+            "fields",
+            "unsupported; use include=coords,biotype,counts,length",
+        ));
+    }
     let release = query
         .get("release")
         .cloned()

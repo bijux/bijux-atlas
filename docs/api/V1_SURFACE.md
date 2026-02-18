@@ -17,6 +17,7 @@
 | GET | `/healthz/overload` | health/readiness signal |
 | GET | `/metrics` | Prometheus metrics |
 | GET | `/readyz` | health/readiness signal |
+| GET | `/v1/_debug/echo` | debug-only diagnostics |
 | GET | `/v1/datasets` | dataset catalog/metadata |
 | GET | `/v1/diff/genes` | cross-release diff |
 | GET | `/v1/diff/region` | cross-release diff |

@@ -59,7 +59,13 @@ pub(crate) async fn datasets_handler(
     } else {
         serde_json::to_value(&catalog.datasets).unwrap_or(Value::Array(Vec::new()))
     };
-    let payload = json!({"datasets": datasets_payload});
+    let payload = json_envelope(
+        None,
+        None,
+        json!({ "datasets": datasets_payload }),
+        None,
+        None,
+    );
     let etag = format!(
         "\"{}\"",
         sha256_hex(&serde_json::to_vec(&payload).unwrap_or_default())
@@ -174,8 +180,7 @@ pub(crate) async fn release_dataset_handler(
         }
     };
 
-    let mut payload = json!({
-        "dataset": dataset,
+    let mut data = json!({
         "provenance": dataset_provenance(&state, &dataset).await,
         "catalog_entry": entry,
         "manifest_summary": {
@@ -190,12 +195,19 @@ pub(crate) async fn release_dataset_handler(
         }
     });
     if include_bom {
-        payload["bill_of_materials"] = json!({
+        data["bill_of_materials"] = json!({
             "checksums": manifest.checksums,
             "manifest_version": manifest.manifest_version,
             "db_schema_version": manifest.db_schema_version
         });
     }
+    let payload = json_envelope(
+        Some(json!(dataset)),
+        None,
+        data,
+        None,
+        None,
+    );
     let resp = Json(payload).into_response();
     state
         .metrics
@@ -326,6 +338,34 @@ pub(crate) async fn dataset_health_handler(
         .observe_request("/debug/dataset-health", StatusCode::OK, started.elapsed())
         .await;
     with_request_id(resp, &request_id)
+}
+
+pub(crate) async fn debug_echo_handler(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    axum::extract::Query(params): axum::extract::Query<HashMap<String, String>>,
+) -> impl IntoResponse {
+    let request_id = propagated_request_id(&headers, &state);
+    if !state.api.enable_debug_datasets {
+        let resp = api_error_response(
+            StatusCode::NOT_FOUND,
+            error_json(
+                ApiErrorCode::InvalidQueryParameter,
+                "debug endpoint disabled",
+                json!({}),
+            ),
+        );
+        return with_request_id(resp, &request_id);
+    }
+    let payload = json!({
+        "dataset": Value::Null,
+        "page": Value::Null,
+        "data": {
+            "query": params,
+        },
+        "links": Value::Null
+    });
+    with_request_id(Json(payload).into_response(), &request_id)
 }
 
 pub(crate) async fn registry_health_handler(State(state): State<AppState>) -> impl IntoResponse {

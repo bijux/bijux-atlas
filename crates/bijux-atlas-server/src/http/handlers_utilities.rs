@@ -28,6 +28,27 @@ pub(crate) fn error_json(code: ApiErrorCode, message: &str, details: Value) -> A
     }
 }
 
+pub(crate) fn json_envelope(
+    dataset: Option<Value>,
+    page: Option<Value>,
+    data: Value,
+    links: Option<Value>,
+    warnings: Option<Vec<Value>>,
+) -> Value {
+    let mut root = json!({
+        "dataset": dataset.unwrap_or(Value::Null),
+        "page": page.unwrap_or(Value::Null),
+        "data": data,
+        "links": links.unwrap_or(Value::Null)
+    });
+    if let Some(warnings) = warnings {
+        if !warnings.is_empty() {
+            root["meta"] = json!({ "warnings": warnings });
+        }
+    }
+    root
+}
+
 pub(crate) fn normalize_query(params: &HashMap<String, String>) -> String {
     let mut kv: Vec<(&String, &String)> = params.iter().collect();
     kv.sort_by(|a, b| a.0.cmp(b.0).then_with(|| a.1.cmp(b.1)));
@@ -234,6 +255,25 @@ pub(crate) fn normalized_api_key(headers: &HeaderMap) -> Option<String> {
 pub(crate) fn with_request_id(mut response: Response, request_id: &str) -> Response {
     if let Ok(v) = HeaderValue::from_str(request_id) {
         response.headers_mut().insert("x-request-id", v);
+    }
+    if let Ok(v) = HeaderValue::from_str(request_id) {
+        response.headers_mut().insert("x-trace-id", v);
+    }
+    let should_set_json = response
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .is_none_or(|v| v.eq_ignore_ascii_case("application/json"));
+    if should_set_json
+        && !matches!(
+            response.status(),
+            StatusCode::NO_CONTENT | StatusCode::NOT_MODIFIED
+        )
+    {
+        response.headers_mut().insert(
+            "content-type",
+            HeaderValue::from_static("application/json; charset=utf-8"),
+        );
     }
     response
 }
