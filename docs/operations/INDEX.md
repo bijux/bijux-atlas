@@ -41,6 +41,7 @@ Does not define product semantics or internal crate APIs.
 - [Retention and GC](retention-and-gc.md)
 - [Input Sources](input-sources.md)
 - [Cache Topology](cache-topology.md)
+- [Policy Violation Triage](policy-violation-triage.md)
 - [No Direct Path Usage](no-direct-path-usage.md)
 - [Migration Note](migration-note.md)
 - [Platform Handover](platform-handover.md)

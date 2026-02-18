@@ -115,6 +115,24 @@ jobs:
           toolchain: 1.84.1
       - run: make ci-policy-relaxations
 
+  policy-enforcement:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make ci-policy-enforcement
+
+  policy-allow-env:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make ci-policy-allow-env
+
+  ops-policy-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make ci-ops-policy-audit
+
   config-check:
     runs-on: ubuntu-latest
     steps:

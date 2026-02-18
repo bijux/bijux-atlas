@@ -161,11 +161,23 @@ policy-schema-drift:
 policy-audit: ## Audit policy relaxations report + enforce registry/expiry/budget gates
 	@./scripts/public/policy-audit.py --enforce
 
+policy-enforcement-status: ## Validate policy pass/fail coverage table and generate status doc
+	@./scripts/public/policy_enforcement_status.py --enforce
+
+policy-allow-env-lint: ## Forbid ALLOW_* escape hatches unless declared in env schema
+	@./scripts/public/check_allow_env_schema.py
+
+ops-policy-audit: ## Verify ops policy configs are reflected by ops make/scripts contracts
+	@./scripts/public/ops-policy-audit.py
+
+policy-drift-diff: ## Show policy contract drift between two refs (usage: make policy-drift-diff [FROM=HEAD~1 TO=HEAD])
+	@./scripts/public/policy-drift-diff.sh "$${FROM:-HEAD~1}" "$${TO:-HEAD}"
+
 release-update-compat-matrix:
 	@[ -n "$$TAG" ] || { echo "usage: make release-update-compat-matrix TAG=<tag>"; exit 2; }
 	@./scripts/release/update-compat-matrix.sh "$$TAG"
 
-.PHONY: help layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-graph scripts-lint scripts-format scripts-test scripts-audit scripts-clean artifacts-index artifacts-clean isolate-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts doctor dataset-id-lint config-validate config-print config-drift fetch-real-datasets ssot-check policy-lint policy-schema-drift policy-audit release-update-compat-matrix ci local local-full contracts hygiene architecture-check clean deep-clean debug bump release-dry-run release
+.PHONY: help layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-graph scripts-lint scripts-format scripts-test scripts-audit scripts-clean artifacts-index artifacts-clean isolate-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts doctor dataset-id-lint config-validate config-print config-drift fetch-real-datasets ssot-check policy-lint policy-schema-drift policy-audit policy-enforcement-status policy-allow-env-lint ops-policy-audit policy-drift-diff release-update-compat-matrix ci local local-full contracts hygiene architecture-check clean deep-clean debug bump release-dry-run release
 
 
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)
@@ -234,6 +246,7 @@ bump: ## Bump workspace version (usage: make bump VERSION=x.y.z)
 release-dry-run: ## Build + docs + ops smoke release rehearsal
 	@ISO_ROOT=artifacts/isolates/release-dry-run $(MAKE) fmt
 	@ISO_ROOT=artifacts/isolates/release-dry-run $(MAKE) lint
+	@ISO_ROOT=artifacts/isolates/release-dry-run $(MAKE) policy-audit
 	@ISO_ROOT=artifacts/isolates/release-dry-run $(MAKE) test
 	@ISO_ROOT=artifacts/isolates/release-dry-run $(MAKE) docs
 	@ISO_ROOT=artifacts/isolates/release-dry-run $(MAKE) ops-full-pr
