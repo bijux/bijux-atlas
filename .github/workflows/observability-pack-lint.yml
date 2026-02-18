@@ -3,7 +3,7 @@ name: observability-pack-lint
 on:
   pull_request:
     paths:
-      - 'ops/observability/**'
+      - 'ops/obs/**'
       - 'scripts/observability/**'
       - 'docs/operations/observability/**'
       - 'makefiles/ops.mk'
@@ -11,7 +11,7 @@ on:
   push:
     branches: [ master ]
     paths:
-      - 'ops/observability/**'
+      - 'ops/obs/**'
       - 'scripts/observability/**'
       - 'makefiles/ops.mk'
 

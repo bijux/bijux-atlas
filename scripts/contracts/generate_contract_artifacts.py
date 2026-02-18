@@ -345,7 +345,7 @@ write_reference_contract_doc(
     "\n".join(metrics_contract_lines)
     + "\n\nLabel cardinality rules:\n"
     + "- User-controlled values must not be used as metric labels.\n"
-    + "- Allowed dynamic labels are constrained by `ops/observability/contract/metrics-contract.json`.",
+    + "- Allowed dynamic labels are constrained by `ops/obs/contract/metrics-contract.json`.",
     "```json\n"
     + json.dumps(
         {

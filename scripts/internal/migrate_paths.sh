@@ -26,7 +26,7 @@ while IFS= read -r file; do
   perl -0777 -i -pe '
     s{(^|[^A-Za-z0-9_])e2e/}{$1ops/e2e/}g;
     s{(^|[^A-Za-z0-9_])load/}{$1ops/load/}g;
-    s{(^|[^A-Za-z0-9_])observability/}{$1ops/observability/}g;
+    s{(^|[^A-Za-z0-9_])observability/}{$1ops/obs/}g;
     s{(^|[^A-Za-z0-9_])openapi/}{$1configs/openapi/}g;
     s{(^|[^A-Za-z0-9_])charts/bijux-atlas}{$1ops/k8s/charts/bijux-atlas}g;
     s{(^|[^A-Za-z0-9_])bin/isolate}{$1scripts/bin/isolate}g;

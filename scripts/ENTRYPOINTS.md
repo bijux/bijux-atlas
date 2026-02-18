@@ -34,7 +34,7 @@ This registry defines script stability levels.
 
 - `scripts/internal/*`
 - `ops/load/scripts/*`
-- `ops/observability/scripts/*`
+- `ops/obs/scripts/*`
 - `ops/stack/scripts/*`
 - `scripts/_internal/*`
 

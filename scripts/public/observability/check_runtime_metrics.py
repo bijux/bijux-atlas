@@ -3,9 +3,9 @@
 # purpose: public wrapper for canonical ops observability contract script check_runtime_metrics.py.
 # stability: public
 # called-by: make ops-* targets
-# Purpose: preserve stable public entrypoint while delegating to ops/observability/scripts/contracts.
+# Purpose: preserve stable public entrypoint while delegating to ops/obs/scripts/contracts.
 # Inputs: argv passed through unchanged.
-# Outputs: same as ops/observability/scripts/contracts/check_runtime_metrics.py.
+# Outputs: same as ops/obs/scripts/contracts/check_runtime_metrics.py.
 from __future__ import annotations
 import runpy
 import sys

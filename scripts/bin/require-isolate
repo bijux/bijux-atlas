@@ -36,9 +36,23 @@ case "$ISO_ROOT" in
   *) fail "ISO_ROOT must be under artifacts/isolates: $ISO_ROOT" ;;
 esac
 
+abs_path() {
+  python3 - "$1" <<'PY'
+import os
+import sys
+print(os.path.abspath(sys.argv[1]))
+PY
+}
+
+iso_root_abs="$(abs_path "$ISO_ROOT")"
+
 for path in "$CARGO_TARGET_DIR" "$CARGO_HOME" "$TMPDIR" "$TMP" "$TEMP"; do
+  path_abs="$(abs_path "$path")"
   case "$path" in
-    "$ISO_ROOT"/*) ;;
+    "$ISO_ROOT"/*) continue ;;
+  esac
+  case "$path_abs" in
+    "$iso_root_abs"/*) ;;
     *) fail "path not inside ISO_ROOT: $path" ;;
   esac
 done
