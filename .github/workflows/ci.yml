@@ -106,6 +106,12 @@ jobs:
       - uses: actions/checkout@v4
       - run: make ci-rename-lint
 
+  docs-lint-names:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make ci-docs-lint-names
+
   policy-schema-drift:
     runs-on: ubuntu-latest
     steps:

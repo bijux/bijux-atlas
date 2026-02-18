@@ -30,6 +30,7 @@ Generated file. Do not edit manually.
 | `scripts/docs/check_broken_examples.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/check_concept_ids.sh` | `docs-governance` | `public` | - |
 | `scripts/docs/check_concept_registry.py` | `docs-governance` | `public` | `docs` |
+| `scripts/docs/check_contract_doc_pairs.py` | `docs-governance` | `public` | `docs-lint-names` |
 | `scripts/docs/check_crate_docs_contract.sh` | `docs-governance` | `public` | `crate-docs-contract`, `crate-structure`, `docs` |
 | `scripts/docs/check_critical_make_targets_referenced.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/check_doc_filename_style.py` | `docs-governance` | `public` | `docs` |
@@ -42,7 +43,7 @@ Generated file. Do not edit manually.
 | `scripts/docs/check_example_configs.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/check_full_stack_page.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/check_generated_contract_docs.py` | `docs-governance` | `public` | `docs` |
-| `scripts/docs/check_index_pages.sh` | `docs-governance` | `public` | `docs` |
+| `scripts/docs/check_index_pages.sh` | `docs-governance` | `public` | `docs`, `docs-lint-names` |
 | `scripts/docs/check_k8s_docs_contract.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/check_load_docs_contract.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/check_make_help_drift.py` | `docs-governance` | `public` | `ci-make-help-drift`, `docs` |
@@ -51,13 +52,15 @@ Generated file. Do not edit manually.
 | `scripts/docs/check_mkdocs_site_links.py` | `docs-governance` | `public` | - |
 | `scripts/docs/check_nav_order.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/check_no_legacy_root_paths.py` | `docs-governance` | `public` | `docs` |
-| `scripts/docs/check_no_orphan_docs.py` | `docs-governance` | `public` | `docs` |
+| `scripts/docs/check_no_orphan_docs.py` | `docs-governance` | `public` | `docs`, `docs-lint-names` |
 | `scripts/docs/check_no_placeholders.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/check_openapi_examples.py` | `docs-governance` | `public` | `docs`, `ops-openapi-validate`, `ops-smoke` |
 | `scripts/docs/check_ops_docs_make_targets.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/check_reference_templates.sh` | `docs-governance` | `public` | - |
+| `scripts/docs/check_runbook_map_registration.py` | `docs-governance` | `public` | `docs-lint-names` |
 | `scripts/docs/check_runbooks_contract.py` | `docs-governance` | `public` | `docs`, `ops-drill-runner` |
 | `scripts/docs/check_script_headers.py` | `docs-governance` | `public` | `docs`, `scripts-audit` |
+| `scripts/docs/check_script_locations.py` | `docs-governance` | `public` | `docs-lint-names` |
 | `scripts/docs/check_terminology_units_ssot.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/check_title_case.sh` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/extract_code_blocks.py` | `docs-governance` | `public` | `docs` |
@@ -73,6 +76,7 @@ Generated file. Do not edit manually.
 | `scripts/docs/lint_doc_contracts.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/lint_doc_status.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/lint_glossary_links.py` | `docs-governance` | `public` | `docs` |
+| `scripts/docs/naming_inventory.py` | `docs-governance` | `public` | `docs-lint-names` |
 | `scripts/docs/render_diagrams.sh` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/run_blessed_snippets.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/spellcheck_docs.py` | `docs-governance` | `public` | - |
