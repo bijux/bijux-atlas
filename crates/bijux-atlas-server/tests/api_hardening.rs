@@ -891,6 +891,115 @@ async fn rate_limit_bypass_prevention_uses_normalized_forwarded_ip() {
     assert_ne!(status, 429);
     let (status, _, _) = send_raw(addr, path, &[("x-forwarded-for", "1.2.3.4, 8.8.8.8")]).await;
     assert_eq!(status, 429);
+    let (status, _, body) = send_raw(addr, path, &[("x-forwarded-for", "1.2.3.4, 8.8.8.8")]).await;
+    assert_eq!(status, 429);
+    let json: Value = serde_json::from_str(&body).expect("rate limit error json");
+    assert_eq!(
+        json.get("error")
+            .and_then(|e| e.get("code"))
+            .and_then(Value::as_str),
+        Some("RateLimited")
+    );
+    assert!(json
+        .get("error")
+        .and_then(|e| e.get("request_id"))
+        .and_then(Value::as_str)
+        .is_some());
+}
+
+#[tokio::test]
+async fn request_length_limits_return_400_error_envelope() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds.clone(), sqlite);
+    let tmp = tempdir().expect("tempdir");
+    let cache = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..DatasetCacheConfig::default()
+        },
+        store,
+    );
+    let api = ApiConfig {
+        max_uri_bytes: 80,
+        max_header_bytes: 80,
+        ..ApiConfig::default()
+    };
+    let app = build_router(AppState::with_config(cache, api, Default::default()));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind");
+    let addr = listener.local_addr().expect("addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&name_prefix=abcdefghijklmnopqrstuvwxyz",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 400);
+    assert!(body.contains("request URI too large"));
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1",
+        &[("x-overflow-header", &"x".repeat(256))],
+    )
+    .await;
+    assert_eq!(status, 400);
+    assert!(body.contains("request headers too large"));
+}
+
+#[tokio::test]
+async fn query_budget_caps_return_expected_status_codes() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds.clone(), sqlite);
+    let tmp = tempdir().expect("tempdir");
+    let cache = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..DatasetCacheConfig::default()
+        },
+        store,
+    );
+    let limits = bijux_atlas_query::QueryLimits {
+        max_region_span: 10,
+        ..Default::default()
+    };
+    let app = build_router(AppState::with_config(cache, ApiConfig::default(), limits));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind");
+    let addr = listener.local_addr().expect("addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&limit=99999",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 400);
+    assert!(body.contains("invalid query parameter: limit"));
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&region=chr1:1-1000",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 413);
+    let json: Value = serde_json::from_str(&body).expect("range error json");
+    assert_eq!(
+        json.get("error")
+            .and_then(|e| e.get("code"))
+            .and_then(Value::as_str),
+        Some("RangeTooLarge")
+    );
 }
 
 #[tokio::test]
