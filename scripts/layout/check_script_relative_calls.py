@@ -32,7 +32,7 @@ allowed = (
     "scripts/internal/env_dump.sh",
     "scripts/generate_scripts_readme.py",
     "ops/load/scripts/",
-    "ops/observability/scripts/",
+    "ops/obs/scripts/",
 )
 
 violations: list[str] = []

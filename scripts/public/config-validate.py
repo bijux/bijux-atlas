@@ -72,35 +72,35 @@ def check_tool_versions(data: dict, errors: list[str]) -> None:
 
 def check_observability_pack_config(cfg: dict, schema: dict, errors: list[str]) -> None:
     if cfg.get("schema_version") != 1:
-        errors.append("configs/ops/observability-pack.json: schema_version must be 1")
+        errors.append("configs/ops/obs-pack.json: schema_version must be 1")
     profiles = cfg.get("profiles")
     if not isinstance(profiles, dict):
-        errors.append("configs/ops/observability-pack.json: profiles must be object")
+        errors.append("configs/ops/obs-pack.json: profiles must be object")
     else:
         required_profiles = {"local-compose", "kind", "cluster"}
         missing = sorted(required_profiles - set(profiles.keys()))
         if missing:
-            errors.append(f"configs/ops/observability-pack.json: missing profiles {missing}")
+            errors.append(f"configs/ops/obs-pack.json: missing profiles {missing}")
     ports = cfg.get("ports")
     if not isinstance(ports, dict):
-        errors.append("configs/ops/observability-pack.json: ports must be object")
+        errors.append("configs/ops/obs-pack.json: ports must be object")
     else:
         expected = schema.get("properties", {}).get("required_ports", {}).get("required", [])
         missing = sorted(set(expected) - set(ports.keys()))
         if missing:
-            errors.append(f"configs/ops/observability-pack.json: missing ports {missing}")
+            errors.append(f"configs/ops/obs-pack.json: missing ports {missing}")
     images = cfg.get("images")
     if not isinstance(images, dict) or not images:
-        errors.append("configs/ops/observability-pack.json: images must be non-empty object")
+        errors.append("configs/ops/obs-pack.json: images must be non-empty object")
         return
     for name, spec in images.items():
         if not isinstance(spec, dict):
-            errors.append(f"configs/ops/observability-pack.json: image `{name}` must be object")
+            errors.append(f"configs/ops/obs-pack.json: image `{name}` must be object")
             continue
         if "ref" not in spec:
-            errors.append(f"configs/ops/observability-pack.json: image `{name}` missing ref")
+            errors.append(f"configs/ops/obs-pack.json: image `{name}` missing ref")
         if "digest" not in spec:
-            errors.append(f"configs/ops/observability-pack.json: image `{name}` missing digest")
+            errors.append(f"configs/ops/obs-pack.json: image `{name}` missing digest")
 
 
 def main() -> int:
@@ -111,8 +111,8 @@ def main() -> int:
     contracts_policy_schema = load("docs/contracts/POLICY_SCHEMA.json")
     ops_env_schema = load("configs/ops/env.schema.json")
     tool_versions = load("configs/ops/tool-versions.json")
-    observability_pack = load("configs/ops/observability-pack.json")
-    observability_pack_schema = load("ops/observability/pack/compose.schema.json")
+    observability_pack = load("configs/ops/obs-pack.json")
+    observability_pack_schema = load("ops/obs/pack/compose.schema.json")
     _perf = load("configs/perf/k6-thresholds.v1.json")
     _slo = load("configs/slo/slo.json")
 

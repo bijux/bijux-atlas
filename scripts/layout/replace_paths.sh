@@ -26,7 +26,7 @@ while IFS= read -r file; do
     s{\./charts/}{./ops/k8s/charts/}g;
     s{\./e2e/}{./ops/e2e/}g;
     s{\./load/}{./ops/load/}g;
-    s{\./observability/}{./ops/observability/}g;
+    s{\./observability/}{./ops/obs/}g;
     s{\./datasets/}{./ops/datasets/}g;
     s{\./fixtures/}{./ops/fixtures/}g;
     s{docs/operations/ops/}{docs/operations/}g;

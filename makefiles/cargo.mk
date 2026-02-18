@@ -168,12 +168,12 @@ openapi-drift:
 	@./scripts/public/openapi-diff-check.sh
 
 api-contract-check:
-	@python3 ./scripts/contracts/gen_openapi.py
+	@python3 ./scripts/public/contracts/gen_openapi.py
 	@./scripts/public/openapi-diff-check.sh
-	@python3 ./scripts/contracts/check_endpoints_contract.py
-	@python3 ./scripts/contracts/check_error_codes_contract.py
-	@python3 ./scripts/contracts/check_v1_surface.py
-	@python3 ./scripts/contracts/check_breaking_contract_change.py
+	@python3 ./scripts/public/contracts/check_endpoints_contract.py
+	@python3 ./scripts/public/contracts/check_error_codes_contract.py
+	@python3 ./scripts/public/contracts/check_v1_surface.py
+	@python3 ./scripts/public/contracts/check_breaking_contract_change.py
 
 compat-matrix-validate:
 	@./scripts/release/validate-compat-matrix.sh
@@ -194,7 +194,7 @@ query-plan-gate:
 	@./scripts/public/query-plan-gate.sh
 
 critical-query-check:
-	@python3 ./scripts/contracts/check_sqlite_indexes_contract.py
+	@python3 ./scripts/public/contracts/check_sqlite_indexes_contract.py
 	@python3 ./scripts/public/perf/run_critical_queries.py
 
 cold-start-bench:

@@ -7,6 +7,6 @@ need curl
 install_chart
 wait_ready
 with_port_forward 18080
-"$ROOT/ops/observability/scripts/prom-outage.sh"
+"$ROOT/ops/obs/scripts/prom-outage.sh"
 
 echo "prom outage drill passed"

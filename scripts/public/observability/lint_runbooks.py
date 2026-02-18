@@ -3,9 +3,9 @@
 # purpose: public wrapper for canonical ops observability contract script lint_runbooks.py.
 # stability: public
 # called-by: make ops-* targets
-# Purpose: preserve stable public entrypoint while delegating to ops/observability/scripts/contracts.
+# Purpose: preserve stable public entrypoint while delegating to ops/obs/scripts/contracts.
 # Inputs: argv passed through unchanged.
-# Outputs: same as ops/observability/scripts/contracts/lint_runbooks.py.
+# Outputs: same as ops/obs/scripts/contracts/lint_runbooks.py.
 from __future__ import annotations
 import runpy
 import sys

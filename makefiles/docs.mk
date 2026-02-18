@@ -74,22 +74,7 @@ docs-serve: ## Serve docs locally
 	@SOURCE_DATE_EPOCH=946684800 "$(DOCS_VENV)/bin/mkdocs" serve --config-file mkdocs.yml
 
 docs-freeze: ## Generated docs must be up-to-date with SSOT contracts
-	@./scripts/contracts/generate_contract_artifacts.py
-	@if ! git diff --quiet -- docs/_generated/contracts; then \
-		echo "docs freeze failed: docs/_generated/contracts drift detected" >&2; \
-		git --no-pager diff -- docs/_generated/contracts >&2 || true; \
-		exit 1; \
-	fi
-	@if ! git diff --quiet -- docs/_generated/openapi; then \
-		echo "docs freeze failed: docs/_generated/openapi drift detected" >&2; \
-		git --no-pager diff -- docs/_generated/openapi >&2 || true; \
-		exit 1; \
-	fi
-	@if ! git diff --quiet -- docs/contracts/errors.md docs/contracts/metrics.md docs/contracts/tracing.md docs/contracts/endpoints.md docs/contracts/config-keys.md docs/contracts/chart-values.md; then \
-		echo "docs freeze failed: generated docs/contracts/*.md drift detected" >&2; \
-		git --no-pager diff -- docs/contracts/errors.md docs/contracts/metrics.md docs/contracts/tracing.md docs/contracts/endpoints.md docs/contracts/config-keys.md docs/contracts/chart-values.md >&2 || true; \
-		exit 1; \
-	fi
+	@python3 scripts/docs/check_docs_freeze_drift.py
 
 docs-hardening: ## Run full docs hardening pipeline
 	@$(MAKE) docs

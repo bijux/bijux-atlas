@@ -10,10 +10,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "docs/_generated/observability-surface.md"
-METRICS = ROOT / "ops/observability/contract/metrics-contract.json"
-ALERTS = ROOT / "ops/observability/contract/alerts-contract.json"
-DASH = ROOT / "ops/observability/contract/dashboard-panels-contract.json"
-LOGS = ROOT / "ops/observability/contract/logs-fields-contract.json"
+METRICS = ROOT / "ops/obs/contract/metrics-contract.json"
+ALERTS = ROOT / "ops/obs/contract/alerts-contract.json"
+DASH = ROOT / "ops/obs/contract/dashboard-panels-contract.json"
+LOGS = ROOT / "ops/obs/contract/logs-fields-contract.json"
 
 
 def read_json(path: Path) -> dict:
@@ -43,10 +43,10 @@ def main() -> int:
         "# Observability Surface",
         "",
         "Generated from observability contract SSOT files:",
-        "- `ops/observability/contract/metrics-contract.json`",
-        "- `ops/observability/contract/alerts-contract.json`",
-        "- `ops/observability/contract/dashboard-panels-contract.json`",
-        "- `ops/observability/contract/logs-fields-contract.json`",
+        "- `ops/obs/contract/metrics-contract.json`",
+        "- `ops/obs/contract/alerts-contract.json`",
+        "- `ops/obs/contract/dashboard-panels-contract.json`",
+        "- `ops/obs/contract/logs-fields-contract.json`",
         "",
         "## Metrics",
     ]
