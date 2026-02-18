@@ -60,7 +60,58 @@
       "description": "Chart values key `replicaCount` from SSOT contract."
     },
     "resources": {
-      "description": "Chart values key `resources` from SSOT contract."
+      "additionalProperties": true,
+      "properties": {
+        "limits": {
+          "additionalProperties": true,
+          "properties": {
+            "cpu": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "ephemeral-storage": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "memory": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "required": [
+            "cpu",
+            "memory"
+          ],
+          "type": "object"
+        },
+        "requests": {
+          "additionalProperties": true,
+          "properties": {
+            "cpu": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "ephemeral-storage": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "memory": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "required": [
+            "cpu",
+            "memory"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "requests",
+        "limits"
+      ],
+      "type": "object"
     },
     "rollout": {
       "description": "Chart values key `rollout` from SSOT contract."
@@ -72,7 +123,22 @@
       "description": "Chart values key `sequenceRateLimits` from SSOT contract."
     },
     "server": {
-      "description": "Chart values key `server` from SSOT contract."
+      "additionalProperties": true,
+      "properties": {
+        "readinessProbePath": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "startupProbePath": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "readinessProbePath",
+        "startupProbePath"
+      ],
+      "type": "object"
     },
     "service": {
       "description": "Chart values key `service` from SSOT contract."

@@ -81,6 +81,9 @@ ci-store-conformance:
 ci-openapi-drift:
 	@$(MAKE) openapi-drift
 
+ci-chart-schema-validate:
+	@$(MAKE) ops-values-validate
+
 ci-api-contract:
 	@$(MAKE) api-contract-check
 
@@ -231,7 +234,7 @@ governance-check: ## Run governance gates: layout + docs + contracts + scripts +
 .PHONY: \
 	ci-root-layout ci-script-entrypoints ci-fmt ci-clippy ci-test-nextest ci-deny ci-audit ci-license-check \
 	ci-policy-lint ci-policy-schema-drift ci-config-check ci-ssot-drift ci-crate-structure ci-crate-docs-contract ci-cli-command-surface \
-	ci-release-binaries ci-docs-build ci-latency-regression ci-store-conformance ci-openapi-drift ci-api-contract ci-query-plan-gate ci-critical-query-check \
+	ci-release-binaries ci-docs-build ci-latency-regression ci-store-conformance ci-openapi-drift ci-chart-schema-validate ci-api-contract ci-query-plan-gate ci-critical-query-check \
 	ci-sqlite-schema-drift ci-sqlite-index-drift ci-ingest-determinism ci-qc-fixtures ci-compatibility-matrix-validate ci-runtime-security-scan-image ci-coverage ci-workflows-make-only governance-check \
 	ci-make-help-drift ci-forbid-raw-paths ci-make-safety \
 	ci-init-iso-dirs ci-init-tmp ci-dependency-lock-refresh ci-release-compat-matrix-verify ci-release-build-artifacts \
