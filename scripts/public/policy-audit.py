@@ -34,6 +34,10 @@ def is_wildcard(value: str) -> bool:
     return any(tok in value for tok in ("*", "?", "[", "]"))
 
 
+def is_sha256(value: str) -> bool:
+    return len(value) == 64 and all(ch in "0123456789abcdef" for ch in value)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--enforce", action="store_true")
@@ -66,6 +70,28 @@ def main() -> int:
             violations.append(f"exception {entry.get('id', '<missing-id>')} has invalid expiry: {expiry_raw}")
         if is_wildcard(str(entry.get("file", ""))) or is_wildcard(str(entry.get("scope", ""))):
             violations.append(f"exception {entry['id']} uses wildcard in file/scope (deny-by-default)")
+        policy_name = str(entry.get("policy", ""))
+        if "allowlist" in policy_name:
+            artifact_hash = str(entry.get("artifact_hash", "")).strip()
+            if not is_sha256(artifact_hash):
+                violations.append(
+                    f"exception {entry['id']} allowlist scope must be content-addressed via artifact_hash (sha256)"
+                )
+            dataset_identity = entry.get("dataset_identity")
+            if not isinstance(dataset_identity, dict):
+                violations.append(
+                    f"exception {entry['id']} allowlist scope must include dataset_identity"
+                )
+            else:
+                for key in ("release", "species", "assembly"):
+                    if not str(dataset_identity.get(key, "")).strip():
+                        violations.append(
+                            f"exception {entry['id']} dataset_identity missing {key}"
+                        )
+            if str(entry.get("scope", "")).strip() == "repo":
+                violations.append(
+                    f"exception {entry['id']} allowlist scope cannot be repo-wide; scope to a dataset identity"
+                )
 
     counts: dict[str, int] = {}
     for entry in exceptions:
