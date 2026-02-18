@@ -24,6 +24,7 @@ Does not define product semantics or internal crate APIs.
 - [Kubernetes](k8s/INDEX.md)
 - [Kubernetes Operations](kubernetes.md)
 - [Observability](observability/slo.md)
+- [SLO](slo/INDEX.md)
 - [Load](load/k6.md)
 - [Runbooks](runbooks/INDEX.md)
 - [Security](security/security-posture.md)
@@ -52,6 +53,7 @@ Does not define product semantics or internal crate APIs.
 |---|---|
 | k8s chart/install/gates | `docs/operations/k8s/INDEX.md` |
 | observability contracts/drills | `docs/operations/observability/INDEX.md` |
+| SLI/SLO policy | `docs/operations/slo/INDEX.md` |
 | load suites/baselines | `docs/operations/load/INDEX.md` |
 | e2e composition | `docs/operations/e2e/INDEX.md` |
 | runbooks | `docs/operations/runbooks/INDEX.md` |
