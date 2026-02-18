@@ -399,6 +399,14 @@ ops-load-under-rollback: ## Run load while rollback is in progress
 	@$(MAKE) -s ops-env-validate
 	@./ops/load/scripts/load_under_rollback.sh
 
+ops-drill-upgrade-under-load: ## Run upgrade drill under load
+	@$(MAKE) -s ops-env-validate
+	@$(MAKE) ops-load-under-rollout
+
+ops-drill-rollback-under-load: ## Run rollback drill under load
+	@$(MAKE) -s ops-env-validate
+	@$(MAKE) ops-load-under-rollback
+
 ops-load-ci: ## Load CI profile (smoke suites + score/report)
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check

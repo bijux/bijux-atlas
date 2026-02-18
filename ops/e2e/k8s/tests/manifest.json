@@ -25,6 +25,8 @@
     {"script": "test_readiness_catalog_refresh.sh", "groups": ["readiness"], "owner": "server", "retries": 1, "timeout_seconds": 360, "expected_failure_modes": ["readiness_not_gated_on_refresh"]},
     {"script": "test_pdb.sh", "groups": ["pdb", "availability"], "owner": "chart", "retries": 1, "timeout_seconds": 300, "expected_failure_modes": ["pdb_not_enforced"]},
     {"script": "test_hpa.sh", "groups": ["hpa", "autoscaling"], "owner": "chart", "retries": 1, "timeout_seconds": 420, "expected_failure_modes": ["hpa_no_scale"]},
+    {"script": "test_rollout.sh", "groups": ["rollout", "availability"], "owner": "chart", "retries": 1, "timeout_seconds": 420, "expected_failure_modes": ["rollout_not_progressing"]},
+    {"script": "test_rollback.sh", "groups": ["rollback", "availability"], "owner": "chart", "retries": 1, "timeout_seconds": 420, "expected_failure_modes": ["rollback_not_recovering"]},
     {"script": "test_rolling_restart_no_downtime.sh", "groups": ["availability", "rolling-restart"], "owner": "server", "retries": 1, "timeout_seconds": 300, "expected_failure_modes": ["downtime_during_restart"]},
     {"script": "test_liveness_under_load.sh", "groups": ["liveness", "load"], "owner": "server", "retries": 1, "timeout_seconds": 300, "expected_failure_modes": ["liveness_flap"]},
     {"script": "test_image_digest_pinning.sh", "groups": ["supply-chain"], "owner": "chart", "retries": 1, "timeout_seconds": 120, "expected_failure_modes": ["image_not_digest_pinned"]},

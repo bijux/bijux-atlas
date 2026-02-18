@@ -14,6 +14,8 @@
       "test_networkpolicy_metadata_egress.sh",
       "test_pdb.sh",
       "test_hpa.sh",
+      "test_rollout.sh",
+      "test_rollback.sh",
       "test_image_digest_pinning.sh",
       "test_ingress_profile.sh"
     ],

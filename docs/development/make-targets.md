@@ -126,6 +126,8 @@ Generated from `make help`. Do not edit manually.
 - `ops-load-prereqs`
 - `ops-load-smoke`
 - `ops-load-full`
+- `ops-drill-upgrade-under-load`
+- `ops-drill-rollback-under-load`
 - `ops-load-ci`
 - `ops-load-nightly`
 - `ops-drill-store-outage`
