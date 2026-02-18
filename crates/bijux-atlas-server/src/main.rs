@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 
+use bijux_atlas_core::sha256_hex;
 use bijux_atlas_server::{
     build_router, ApiConfig, AppState, DatasetCacheConfig, DatasetCacheManager, FederatedBackend,
     LocalFsBackend, RegistrySource, RetryPolicy, S3LikeBackend,
@@ -433,7 +434,7 @@ async fn main() -> Result<(), String> {
         } else {
             Arc::new(LocalFsBackend::new(store_root))
         };
-    let cache = DatasetCacheManager::new(cache_cfg, backend);
+    let cache = DatasetCacheManager::new(cache_cfg.clone(), backend);
     cache.spawn_background_tasks();
     if startup_warmup_jitter_max_ms > 0 {
         let delay = pod_jitter_ms(startup_warmup_jitter_max_ms);
@@ -445,11 +446,25 @@ async fn main() -> Result<(), String> {
         error!("startup warmup failed: {e}");
     }
 
-    let state = AppState::with_config(
-        cache.clone(),
-        api_cfg,
-        bijux_atlas_query::QueryLimits::default(),
+    let query_limits = bijux_atlas_query::QueryLimits::default();
+    let runtime_policy_payload = serde_json::json!({
+        "api": &api_cfg,
+        "cache": &cache_cfg,
+        "limits": &query_limits
+    });
+    let runtime_policy_hash =
+        match bijux_atlas_core::canonical::stable_json_bytes(&runtime_policy_payload) {
+            Ok(bytes) => sha256_hex(&bytes),
+            Err(_) => sha256_hex(b"runtime-policy-hash-fallback"),
+        };
+    info!(
+        runtime_policy_hash = %runtime_policy_hash,
+        runtime_policy = %runtime_policy_payload,
+        "canonical runtime policy"
     );
+
+    let mut state = AppState::with_config(cache.clone(), api_cfg, query_limits);
+    state.runtime_policy_hash = Arc::new(runtime_policy_hash);
     let app = build_router(state.clone());
 
     // Ready only after first successful catalog refresh when required.

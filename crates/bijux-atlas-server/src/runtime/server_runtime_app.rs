@@ -1,4 +1,15 @@
 impl AppState {
+    fn derive_runtime_policy_hash(api: &ApiConfig, limits: &QueryLimits) -> String {
+        let payload = serde_json::json!({
+            "api": api,
+            "limits": limits
+        });
+        match bijux_atlas_core::canonical::stable_json_bytes(&payload) {
+            Ok(bytes) => bijux_atlas_core::sha256_hex(&bytes),
+            Err(_) => bijux_atlas_core::sha256_hex(b"runtime-policy-hash-fallback"),
+        }
+    }
+
     #[must_use]
     pub fn new(cache: Arc<DatasetCacheManager>) -> Self {
         Self::with_config(cache, ApiConfig::default(), QueryLimits::default())
@@ -10,6 +21,7 @@ impl AppState {
         api: ApiConfig,
         limits: QueryLimits,
     ) -> Self {
+        let runtime_policy_hash = Arc::new(Self::derive_runtime_policy_hash(&api, &limits));
         let redis_policy = telemetry::redis_backend::RedisPolicy {
             timeout: Duration::from_millis(api.redis_timeout_ms),
             retry_attempts: api.redis_retry_attempts.max(1),
@@ -70,6 +82,7 @@ impl AppState {
                 .and_then(|u| RedisBackend::new(u, &api.redis_prefix, redis_policy).ok())
                 .map(Arc::new),
             queued_requests: Arc::new(AtomicU64::new(0)),
+            runtime_policy_hash,
             api,
             limits,
         }

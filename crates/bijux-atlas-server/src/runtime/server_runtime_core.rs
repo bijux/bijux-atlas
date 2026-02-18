@@ -50,7 +50,7 @@ pub struct RegistrySourceHealth {
     pub ttl_seconds: u64,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize)]
 pub struct DatasetCacheConfig {
     pub disk_root: PathBuf,
     pub max_disk_bytes: u64,
@@ -677,4 +677,5 @@ pub struct AppState {
     pub(crate) hot_query_cache: Arc<Mutex<cache::hot::HotQueryCache>>,
     pub(crate) redis_backend: Option<Arc<RedisBackend>>,
     pub(crate) queued_requests: Arc<AtomicU64>,
+    pub runtime_policy_hash: Arc<String>,
 }

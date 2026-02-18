@@ -107,6 +107,21 @@ bijux_dataset_disk_usage_bytes{subsystem=\"%SUB%\",version=\"%VER%\",dataset=\"%
         (download_bytes_total as f64) / (total_download_ns as f64 / 1_000_000_000.0)
     };
     body.push_str(&format!(
+        "bijux_runtime_policy_hash{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        u64::from_str_radix(
+            &state
+                .runtime_policy_hash
+                .chars()
+                .take(16)
+                .collect::<String>(),
+            16
+        )
+        .unwrap_or(0)
+    ));
+    body.push_str(&format!(
         "bijux_store_open_failure_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_store_download_failure_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_store_breaker_open_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
