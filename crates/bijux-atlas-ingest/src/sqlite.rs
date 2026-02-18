@@ -1,4 +1,4 @@
-use crate::extract::{GeneRecord, TranscriptRecord};
+use crate::extract::{ExonRecord, GeneRecord, TranscriptRecord};
 use crate::fai::ContigStats;
 use crate::IngestError;
 use bijux_atlas_core::{canonical, sha256_hex};
@@ -8,7 +8,11 @@ use std::collections::BTreeMap;
 use std::fs;
 use std::path::Path;
 
-pub const SQLITE_SCHEMA_VERSION: i64 = 3;
+pub const SQLITE_SCHEMA_VERSION: i64 = 4;
+pub const SQLITE_SCHEMA_SSOT: &str = include_str!("../sql/schema_v4.sql");
+#[allow(dead_code)]
+pub const SQLITE_SCHEMA_SSOT_SHA256: &str =
+    "a695a4e39b45e4fd87491dd9a55817142059100480d77b59168db0f5fe0a6901";
 const INGEST_JOURNAL_MODE: &str = "WAL";
 const INGEST_LOCKING_MODE: &str = "EXCLUSIVE";
 const INGEST_PAGE_SIZE: i64 = 4096;
@@ -22,19 +26,19 @@ pub fn migrate_forward_schema(conn: &Connection, target_version: i64) -> Result<
             "forward-only schema migration violation: current={current}, target={target_version}"
         )));
     }
-    if current < 3 && target_version >= 3 {
+    if current < 4 && target_version >= 4 {
         conn.execute_batch(
             "
             CREATE TABLE IF NOT EXISTS schema_version (
               version INTEGER PRIMARY KEY
             ) WITHOUT ROWID;
             DELETE FROM schema_version;
-            INSERT INTO schema_version (version) VALUES (3);
-            PRAGMA user_version=3;
+            INSERT INTO schema_version (version) VALUES (4);
+            PRAGMA user_version=4;
             ",
         )
         .map_err(|e| IngestError(e.to_string()))?;
-        let _ = conn.execute("UPDATE atlas_meta SET v='3' WHERE k='schema_version'", []);
+        let _ = conn.execute("UPDATE atlas_meta SET v='4' WHERE k='schema_version'", []);
     }
     Ok(target_version.max(current))
 }
@@ -69,7 +73,9 @@ pub fn write_sqlite(
     dataset: &DatasetId,
     genes: &[GeneRecord],
     transcripts: &[TranscriptRecord],
+    exons: &[ExonRecord],
     contigs: &BTreeMap<String, ContigStats>,
+    gff3_sha256: &str,
     fasta_sha256: &str,
     fai_sha256: &str,
 ) -> Result<(), IngestError> {
@@ -77,70 +83,8 @@ pub fn write_sqlite(
         fs::remove_file(path).map_err(|e| IngestError(e.to_string()))?;
     }
     let mut conn = Connection::open(path).map_err(|e| IngestError(e.to_string()))?;
-    conn.execute_batch(
-        "
-        PRAGMA journal_mode=WAL;
-        PRAGMA synchronous=OFF;
-        PRAGMA locking_mode=EXCLUSIVE;
-        PRAGMA temp_store=MEMORY;
-        PRAGMA cache_size=-32000;
-        PRAGMA page_size=4096;
-        PRAGMA mmap_size=268435456;
-        CREATE TABLE gene_summary (
-          id INTEGER PRIMARY KEY,
-          gene_id TEXT NOT NULL,
-          name TEXT NOT NULL,
-          name_normalized TEXT NOT NULL,
-          biotype TEXT NOT NULL,
-          seqid TEXT NOT NULL,
-          start INTEGER NOT NULL,
-          end INTEGER NOT NULL,
-          transcript_count INTEGER NOT NULL,
-          exon_count INTEGER NOT NULL DEFAULT 0,
-          total_exon_span INTEGER NOT NULL DEFAULT 0,
-          cds_present INTEGER NOT NULL DEFAULT 0,
-          sequence_length INTEGER NOT NULL
-        ) WITHOUT ROWID;
-        CREATE TABLE transcript_summary (
-          id INTEGER PRIMARY KEY,
-          transcript_id TEXT NOT NULL UNIQUE,
-          parent_gene_id TEXT NOT NULL,
-          transcript_type TEXT NOT NULL,
-          biotype TEXT,
-          seqid TEXT NOT NULL,
-          start INTEGER NOT NULL,
-          end INTEGER NOT NULL,
-          exon_count INTEGER NOT NULL DEFAULT 0,
-          total_exon_span INTEGER NOT NULL DEFAULT 0,
-          cds_present INTEGER NOT NULL DEFAULT 0
-        ) WITHOUT ROWID;
-        CREATE TABLE atlas_meta (
-          k TEXT PRIMARY KEY,
-          v TEXT NOT NULL
-        ) WITHOUT ROWID;
-        CREATE TABLE schema_version (
-          version INTEGER PRIMARY KEY
-        ) WITHOUT ROWID;
-        CREATE TABLE dataset_stats (
-          dimension TEXT NOT NULL,
-          value TEXT NOT NULL,
-          gene_count INTEGER NOT NULL,
-          PRIMARY KEY (dimension, value)
-        ) WITHOUT ROWID;
-        CREATE TABLE contigs (
-          name TEXT PRIMARY KEY,
-          length INTEGER NOT NULL,
-          gc_fraction REAL,
-          n_fraction REAL
-        ) WITHOUT ROWID;
-        CREATE VIRTUAL TABLE gene_summary_rtree USING rtree(
-          gene_rowid,
-          start,
-          end
-        );
-        ",
-    )
-    .map_err(|e| IngestError(e.to_string()))?;
+    conn.execute_batch(SQLITE_SCHEMA_SSOT)
+        .map_err(|e| IngestError(e.to_string()))?;
     conn.execute_batch(&format!("PRAGMA user_version={};", SQLITE_SCHEMA_VERSION))
         .map_err(|e| IngestError(e.to_string()))?;
 
@@ -158,6 +102,20 @@ pub fn write_sqlite(
                 "INSERT INTO transcript_summary (
                   id, transcript_id, parent_gene_id, transcript_type, biotype, seqid, start, end, exon_count, total_exon_span, cds_present
                  ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)",
+            )
+            .map_err(|e| IngestError(e.to_string()))?;
+        let mut tx_v2_stmt = tx
+            .prepare(
+                "INSERT INTO transcripts (
+                  id, transcript_id, parent_gene_id, transcript_type, biotype, seqid, start, end, exon_count, total_exon_span, cds_present, sequence_length, spliced_length, cds_length
+                 ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14)",
+            )
+            .map_err(|e| IngestError(e.to_string()))?;
+        let mut gene_v2_stmt = tx
+            .prepare(
+                "INSERT INTO genes (
+                  id, gene_id, name, name_normalized, biotype, seqid, start, end, transcript_count, exon_count, total_exon_span, cds_present, sequence_length
+                 ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13)",
             )
             .map_err(|e| IngestError(e.to_string()))?;
         let mut rtree_stmt = tx
@@ -182,6 +140,23 @@ pub fn write_sqlite(
                 g.sequence_length as i64
             ])
             .map_err(|e| IngestError(e.to_string()))?;
+            gene_v2_stmt
+                .execute(params![
+                    rowid,
+                    g.gene_id,
+                    g.gene_name,
+                    g.gene_name.to_ascii_lowercase(),
+                    g.biotype,
+                    g.seqid,
+                    g.start as i64,
+                    g.end as i64,
+                    g.transcript_count as i64,
+                    g.exon_count as i64,
+                    g.total_exon_span as i64,
+                    if g.cds_present { 1 } else { 0 },
+                    g.sequence_length as i64
+                ])
+                .map_err(|e| IngestError(e.to_string()))?;
             rtree_stmt
                 .execute(params![rowid, g.start as f64, g.end as f64])
                 .map_err(|e| IngestError(e.to_string()))?;
@@ -211,6 +186,50 @@ pub fn write_sqlite(
                     txrow.total_exon_span as i64,
                     if txrow.cds_present { 1 } else { 0 },
                 ])
+                .map_err(|e| IngestError(e.to_string()))?;
+            tx_v2_stmt
+                .execute(params![
+                    rowid,
+                    txrow.transcript_id,
+                    txrow.parent_gene_id,
+                    txrow.transcript_type,
+                    txrow.biotype,
+                    txrow.seqid,
+                    txrow.start as i64,
+                    txrow.end as i64,
+                    txrow.exon_count as i64,
+                    txrow.total_exon_span as i64,
+                    if txrow.cds_present { 1 } else { 0 },
+                    txrow.sequence_length as i64,
+                    txrow.spliced_length.map(|v| v as i64),
+                    txrow.cds_span_length.map(|v| v as i64),
+                ])
+                .map_err(|e| IngestError(e.to_string()))?;
+        }
+
+        let mut exon_stmt = tx
+            .prepare(
+                "INSERT INTO exons (id, exon_id, transcript_id, seqid, start, end, exon_length) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
+            )
+            .map_err(|e| IngestError(e.to_string()))?;
+        let mut tx_exon_map_stmt = tx
+            .prepare("INSERT OR IGNORE INTO transcript_exon_map (transcript_id, exon_id) VALUES (?1, ?2)")
+            .map_err(|e| IngestError(e.to_string()))?;
+        for (idx, ex) in exons.iter().enumerate() {
+            let rowid = (idx + 1) as i64;
+            exon_stmt
+                .execute(params![
+                    rowid,
+                    ex.exon_id,
+                    ex.transcript_id,
+                    ex.seqid,
+                    ex.start as i64,
+                    ex.end as i64,
+                    ex.exon_length as i64
+                ])
+                .map_err(|e| IngestError(e.to_string()))?;
+            tx_exon_map_stmt
+                .execute(params![ex.transcript_id, ex.exon_id])
                 .map_err(|e| IngestError(e.to_string()))?;
         }
 
@@ -260,6 +279,27 @@ pub fn write_sqlite(
         )
         .map_err(|e| IngestError(e.to_string()))?;
         tx.execute(
+            "INSERT INTO atlas_meta (k, v) VALUES ('dataset_id', ?1)",
+            params![dataset.canonical_string()],
+        )
+        .map_err(|e| IngestError(e.to_string()))?;
+        tx.execute(
+            "INSERT INTO atlas_meta (k, v) VALUES ('created_by', ?1)",
+            params![format!(
+                "{}@{}",
+                crate::CRATE_NAME,
+                env!("CARGO_PKG_VERSION")
+            )],
+        )
+        .map_err(|e| IngestError(e.to_string()))?;
+        tx.execute(
+            "INSERT INTO atlas_meta (k, v) VALUES ('input_hashes', ?1)",
+            params![format!(
+                "gff3={gff3_sha256};fasta={fasta_sha256};fai={fai_sha256}"
+            )],
+        )
+        .map_err(|e| IngestError(e.to_string()))?;
+        tx.execute(
             "INSERT INTO atlas_meta (k, v) VALUES ('fasta_sha256', ?1)",
             params![fasta_sha256],
         )
@@ -290,24 +330,6 @@ pub fn write_sqlite(
         )
         .map_err(|e| IngestError(e.to_string()))?;
     }
-
-    tx.execute_batch(
-        "
-        CREATE INDEX idx_gene_summary_gene_id ON gene_summary(gene_id);
-        CREATE INDEX idx_gene_summary_name ON gene_summary(name);
-        CREATE INDEX idx_gene_summary_name_normalized ON gene_summary(name_normalized);
-        CREATE INDEX idx_gene_summary_biotype ON gene_summary(biotype);
-        CREATE INDEX idx_gene_summary_region ON gene_summary(seqid, start, end);
-        CREATE INDEX idx_gene_summary_cover_lookup ON gene_summary(gene_id, name, seqid, start, end, biotype, transcript_count, sequence_length);
-        CREATE INDEX idx_gene_summary_cover_region ON gene_summary(seqid, start, gene_id, end, name, biotype, transcript_count, sequence_length);
-        CREATE INDEX idx_transcript_summary_transcript_id ON transcript_summary(transcript_id);
-        CREATE INDEX idx_transcript_summary_parent_gene_id ON transcript_summary(parent_gene_id);
-        CREATE INDEX idx_transcript_summary_biotype ON transcript_summary(biotype);
-        CREATE INDEX idx_transcript_summary_type ON transcript_summary(transcript_type);
-        CREATE INDEX idx_transcript_summary_region ON transcript_summary(seqid, start, end);
-        ",
-    )
-    .map_err(|e| IngestError(e.to_string()))?;
 
     tx.commit().map_err(|e| IngestError(e.to_string()))?;
     assert_region_query_plan_uses_rtree(&conn)?;
@@ -395,6 +417,7 @@ pub fn write_sharded_sqlite_catalog(
             .filter(|tx| seqids.contains(&tx.seqid))
             .cloned()
             .collect();
+        let ex_rows: Vec<ExonRecord> = Vec::new();
         let dataset = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
         let empty_contigs = BTreeMap::new();
         write_sqlite(
@@ -402,7 +425,9 @@ pub fn write_sharded_sqlite_catalog(
             &dataset,
             &rows,
             &tx_rows,
+            &ex_rows,
             &empty_contigs,
+            "",
             "",
             "",
         )?;
@@ -445,16 +470,45 @@ pub fn explain_plan_for_region_query(path: &Path) -> Result<Vec<String>, IngestE
     Ok(rows)
 }
 
+#[allow(dead_code)]
+pub fn explain_plan_for_gene_id_query(path: &Path) -> Result<Vec<String>, IngestError> {
+    let conn = Connection::open(path).map_err(|e| IngestError(e.to_string()))?;
+    let mut stmt = conn
+        .prepare("EXPLAIN QUERY PLAN SELECT gene_id FROM gene_summary WHERE gene_id=?1 ORDER BY seqid,start,gene_id LIMIT 10")
+        .map_err(|e| IngestError(e.to_string()))?;
+    let rows = stmt
+        .query_map(params!["GENE1"], |row| row.get::<_, String>(3))
+        .map_err(|e| IngestError(e.to_string()))?
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|e| IngestError(e.to_string()))?;
+    Ok(rows)
+}
+
+#[allow(dead_code)]
+pub fn explain_plan_for_name_query(path: &Path) -> Result<Vec<String>, IngestError> {
+    let conn = Connection::open(path).map_err(|e| IngestError(e.to_string()))?;
+    let mut stmt = conn
+        .prepare("EXPLAIN QUERY PLAN SELECT gene_id FROM gene_summary WHERE name=?1 ORDER BY seqid,start,gene_id LIMIT 10")
+        .map_err(|e| IngestError(e.to_string()))?;
+    let rows = stmt
+        .query_map(params!["Gene1"], |row| row.get::<_, String>(3))
+        .map_err(|e| IngestError(e.to_string()))?
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|e| IngestError(e.to_string()))?;
+    Ok(rows)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use bijux_atlas_core::sha256_hex;
 
     #[test]
     fn forward_only_migration_rejects_downgrade() {
         let conn = Connection::open_in_memory().expect("conn");
-        conn.execute_batch("PRAGMA user_version=4;")
+        conn.execute_batch("PRAGMA user_version=5;")
             .expect("set user_version");
-        let err = migrate_forward_schema(&conn, 3).expect_err("downgrade must fail");
+        let err = migrate_forward_schema(&conn, 4).expect_err("downgrade must fail");
         assert!(err
             .to_string()
             .contains("forward-only schema migration violation"));
@@ -471,7 +525,7 @@ mod tests {
             ",
         )
         .expect("legacy schema");
-        migrate_forward_schema(&conn, 3).expect("migrate");
+        migrate_forward_schema(&conn, 4).expect("migrate");
         let v: i64 = conn
             .query_row(
                 "SELECT version FROM schema_version ORDER BY version DESC LIMIT 1",
@@ -479,6 +533,11 @@ mod tests {
                 |r| r.get(0),
             )
             .expect("schema_version row");
-        assert_eq!(v, 3);
+        assert_eq!(v, 4);
+    }
+
+    #[test]
+    fn schema_ssot_hash_is_stable() {
+        assert_eq!(sha256_hex(SQLITE_SCHEMA_SSOT.as_bytes()), SQLITE_SCHEMA_SSOT_SHA256);
     }
 }

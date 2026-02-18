@@ -36,8 +36,19 @@ pub struct TranscriptRecord {
     pub exon_count: u64,
     pub total_exon_span: u64,
     pub cds_present: bool,
+    pub sequence_length: u64,
     pub spliced_length: Option<u64>,
     pub cds_span_length: Option<u64>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct ExonRecord {
+    pub exon_id: String,
+    pub transcript_id: String,
+    pub seqid: String,
+    pub start: u64,
+    pub end: u64,
+    pub exon_length: u64,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -51,6 +62,7 @@ pub enum ParentErrorClass {
 pub struct ExtractResult {
     pub gene_rows: Vec<GeneRecord>,
     pub transcript_rows: Vec<TranscriptRecord>,
+    pub exon_rows: Vec<ExonRecord>,
     pub anomaly: IngestAnomalyReport,
     pub biotype_distribution: BTreeMap<String, u64>,
     pub contig_distribution: BTreeMap<String, u64>,
@@ -71,6 +83,7 @@ pub fn extract_gene_rows(
     let mut transcript_exon_span: HashMap<String, u64> = HashMap::new();
     let mut transcript_has_cds: HashMap<String, bool> = HashMap::new();
     let mut transcript_cds_span: HashMap<String, u64> = HashMap::new();
+    let mut exon_rows: Vec<ExonRecord> = Vec::new();
     let mut anomaly = IngestAnomalyReport::default();
     let mut total_features = 0_u64;
     let mut unknown_contig_features = 0_u64;
@@ -291,6 +304,7 @@ pub fn extract_gene_rows(
                     exon_count: 0,
                     total_exon_span: 0,
                     cds_present: false,
+                    sequence_length: rec.end.saturating_sub(rec.start) + 1,
                     spliced_length: None,
                     cds_span_length: None,
                 });
@@ -336,6 +350,19 @@ pub fn extract_gene_rows(
             for tx_id in parents {
                 child_parent_refs.push(tx_id.clone());
                 if rec.feature_type == "exon" {
+                    let exon_id = rec
+                        .attrs
+                        .get("ID")
+                        .cloned()
+                        .unwrap_or_else(|| format!("line{}_{}", rec.line, tx_id));
+                    exon_rows.push(ExonRecord {
+                        exon_id: exon_id.clone(),
+                        transcript_id: tx_id.clone(),
+                        seqid: seqid.clone(),
+                        start: rec.start,
+                        end: rec.end,
+                        exon_length: rec.end.saturating_sub(rec.start) + 1,
+                    });
                     *transcript_exon_counts.entry(tx_id.clone()).or_insert(0) += 1;
                     *transcript_exon_span.entry(tx_id).or_insert(0) +=
                         rec.end.saturating_sub(rec.start) + 1;
@@ -592,6 +619,7 @@ pub fn extract_gene_rows(
     Ok(ExtractResult {
         gene_rows,
         transcript_rows: transcript_rows_pending,
+        exon_rows,
         anomaly,
         biotype_distribution,
         contig_distribution,
