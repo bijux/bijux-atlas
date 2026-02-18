@@ -9,15 +9,22 @@ pub struct ApiError {
     pub code: ApiErrorCode,
     pub message: String,
     pub details: Value,
+    pub request_id: String,
 }
 
 impl ApiError {
     #[must_use]
-    pub fn new(code: ApiErrorCode, message: impl Into<String>, details: Value) -> Self {
+    pub fn new(
+        code: ApiErrorCode,
+        message: impl Into<String>,
+        details: Value,
+        request_id: impl Into<String>,
+    ) -> Self {
         Self {
             code,
             message: message.into(),
             details,
+            request_id: request_id.into(),
         }
     }
 
@@ -26,7 +33,18 @@ impl ApiError {
         Self::new(
             ApiErrorCode::InvalidQueryParameter,
             format!("invalid query parameter: {name}"),
-            json!({"parameter": name, "value": value}),
+            json!({"field_errors":[{"parameter": name, "reason": "invalid", "value": value}]}),
+            "req-unknown",
+        )
+    }
+
+    #[must_use]
+    pub fn validation_failed(field_errors: Value) -> Self {
+        Self::new(
+            ApiErrorCode::ValidationFailed,
+            "validation failed",
+            json!({"field_errors": field_errors}),
+            "req-unknown",
         )
     }
 
@@ -36,6 +54,7 @@ impl ApiError {
             ApiErrorCode::MissingDatasetDimension,
             format!("missing dataset dimension: {name}"),
             json!({"dimension": name}),
+            "req-unknown",
         )
     }
 
@@ -45,6 +64,7 @@ impl ApiError {
             ApiErrorCode::InvalidCursor,
             "invalid cursor",
             json!({"cursor": value}),
+            "req-unknown",
         )
     }
 }
