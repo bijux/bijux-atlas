@@ -78,10 +78,12 @@ pub struct ContigStats {
 pub fn read_fasta_contig_stats(
     path: &Path,
     compute_fractions: bool,
+    max_total_bases: u64,
 ) -> Result<BTreeMap<String, ContigStats>, IngestError> {
     let file = fs::File::open(path).map_err(|e| IngestError(e.to_string()))?;
     let reader = BufReader::new(file);
     let mut out: BTreeMap<String, (u64, u64, u64)> = BTreeMap::new(); // len, gc, n
+    let mut total_bases: u64 = 0;
     let mut current: Option<String> = None;
     for line in reader.lines() {
         let line = line.map_err(|e| IngestError(e.to_string()))?;
@@ -106,6 +108,12 @@ pub fn read_fasta_contig_stats(
         for b in line.as_bytes() {
             if b.is_ascii_whitespace() {
                 continue;
+            }
+            total_bases = total_bases.saturating_add(1);
+            if max_total_bases > 0 && total_bases > max_total_bases {
+                return Err(IngestError(format!(
+                    "FASTA scanning memory guardrail exceeded: {total_bases}>{max_total_bases}"
+                )));
             }
             e.0 += 1;
             if compute_fractions {

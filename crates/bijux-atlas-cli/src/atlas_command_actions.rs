@@ -331,6 +331,12 @@ fn emit_error(error: &CliError, machine_json: bool) {
 }
 
 fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String> {
+    if args.no_fai_check {
+        return Err(
+            "policy gate: --no-fai-check is forbidden in production; use --dev-auto-generate-fai for local development"
+                .to_string(),
+        );
+    }
     let dataset =
         DatasetId::new(&args.release, &args.species, &args.assembly).map_err(|e| e.to_string())?;
 
@@ -381,13 +387,15 @@ fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String
         report_only,
         fail_on_warn: args.strict,
         allow_overlap_gene_ids_across_contigs: args.allow_overlap_gene_ids_across_contigs,
+        dev_allow_auto_generate_fai: args.dev_auto_generate_fai,
+        fasta_scanning_enabled: args.fasta_scanning,
+        fasta_scan_max_bases: args.fasta_scan_max_bases,
         emit_shards: args.emit_shards,
         shard_partitions: args.shard_partitions,
         compute_gene_signatures: true,
         compute_contig_fractions: false,
         compute_transcript_spliced_length: false,
         compute_transcript_cds_length: false,
-        dev_allow_auto_generate_fai: false,
         duplicate_transcript_id_policy: bijux_atlas_model::DuplicateTranscriptIdPolicy::Reject,
         transcript_id_policy: bijux_atlas_model::TranscriptIdPolicy::default(),
         unknown_feature_policy: bijux_atlas_model::UnknownFeaturePolicy::IgnoreWithWarning,
