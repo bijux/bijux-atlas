@@ -166,6 +166,11 @@ impl ArtifactManifest {
                 "manifest_version and schema_version must match".to_string(),
             ));
         }
+        if self.schema_version != self.db_schema_version {
+            return Err(ValidationError(
+                "schema_version and db_schema_version must match".to_string(),
+            ));
+        }
         if self.input_hashes.gff3_sha256.trim().is_empty()
             || self.input_hashes.fasta_sha256.trim().is_empty()
             || self.input_hashes.fai_sha256.trim().is_empty()

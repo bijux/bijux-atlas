@@ -74,6 +74,24 @@ fn legacy_manifest_v1_without_new_fields_is_still_compatible() {
 }
 
 #[test]
+fn strict_manifest_validation_requires_schema_consistency() {
+    let mut manifest = ArtifactManifest::new(
+        "1".to_string(),
+        "1".to_string(),
+        DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset"),
+        ArtifactChecksums::new("a".repeat(64), "b".repeat(64), "c".repeat(64), "d".repeat(64)),
+        ManifestStats::new(1, 2, 3),
+    );
+    manifest.input_hashes.gff3_sha256 = "a".repeat(64);
+    manifest.input_hashes.fasta_sha256 = "b".repeat(64);
+    manifest.input_hashes.fai_sha256 = "c".repeat(64);
+    manifest.input_hashes.policy_sha256 = "d".repeat(64);
+    manifest.toolchain_hash = "e".repeat(64);
+    manifest.db_schema_version = "2".to_string();
+    assert!(manifest.validate_strict().is_err());
+}
+
+#[test]
 fn policy_structs_reject_unknown_fields_and_optional_policy_is_enforced() {
     assert!(
         serde_json::from_str::<GeneNamePolicy>(r#"{"attribute_keys":["Name"],"x":1}"#).is_err()

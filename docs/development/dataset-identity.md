@@ -34,9 +34,21 @@ Ingest and server flows must not rely on implicit default dataset values. Datase
 
 Canonical immutable layout:
 
-`release=<release>/species=<species>/assembly=<assembly>/`
+`ops/store/release=<release>/species=<species>/assembly=<assembly>/`
 
 with `inputs/` and `derived/` subtrees.
+
+Required manifest/db identity fields:
+
+- `artifact_version` (artifact schema stream, separate from release number)
+- `manifest.schema_version` and `manifest.db_schema_version` (required and equal)
+- dataset identity in manifest and SQLite `atlas_meta`:
+  - `dataset_release`
+  - `dataset_species`
+  - `dataset_assembly`
+- `manifest.input_hashes`: `gff3`, `fasta`, `fai`, `policy`
+- `manifest.toolchain_hash` (rust toolchain + lockfile digest)
+- `manifest.created_at` is allowed metadata and excluded from determinism hash
 
 ## Lint
 
