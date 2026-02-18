@@ -50,6 +50,7 @@ Expected output: both commands exit 0.
 
 - [Contracts Index](contracts-index.md)
 - [Contracts README](README.md)
+- [Ingest QC Contract](qc.md)
 - [GFF3 Acceptance Contract](gff3-acceptance.md)
 - [SSOT Workflow](ssot-workflow.md)
 - [Terms Glossary](../_style/terms-glossary.md)

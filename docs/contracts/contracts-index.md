@@ -30,6 +30,7 @@ Does not replace registry-specific detail pages.
 | Chart values | `CHART_VALUES.json` | `chart-values.md`, chart values checks | Additive |
 | Artifact schema | `artifacts/ARTIFACT_SCHEMA.json` | `_generated/contracts/ARTIFACT_SCHEMA.md` | Experimental |
 | Policy schema | `POLICY_SCHEMA.json` | `_generated/contracts/POLICY_SCHEMA.md` | Experimental |
+| QC schema | `QC_SCHEMA.json` | `_generated/contracts/QC_SCHEMA.md` | Stable |
 
 ## Generated docs
 
@@ -41,6 +42,7 @@ Does not replace registry-specific detail pages.
 - [_generated/contracts/CHART_VALUES.md](../_generated/contracts/CHART_VALUES.md)
 - [_generated/contracts/ARTIFACT_SCHEMA.md](../_generated/contracts/ARTIFACT_SCHEMA.md)
 - [_generated/contracts/POLICY_SCHEMA.md](../_generated/contracts/POLICY_SCHEMA.md)
+- [_generated/contracts/QC_SCHEMA.md](../_generated/contracts/QC_SCHEMA.md)
 
 ## Failure modes
 

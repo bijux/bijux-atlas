@@ -69,6 +69,7 @@ pub struct ExtractResult {
     pub total_features: u64,
     pub unknown_contig_features: u64,
     pub max_contig_name_length: usize,
+    pub cds_feature_count: u64,
 }
 
 pub fn extract_gene_rows(
@@ -88,6 +89,7 @@ pub fn extract_gene_rows(
     let mut total_features = 0_u64;
     let mut unknown_contig_features = 0_u64;
     let mut max_contig_name_length = 0_usize;
+    let mut cds_feature_count = 0_u64;
 
     let mut seen_feature_ids: HashMap<String, String> = HashMap::new();
     let mut child_parent_refs: Vec<String> = Vec::new();
@@ -104,6 +106,9 @@ pub fn extract_gene_rows(
 
     for rec in records {
         total_features += 1;
+        if rec.feature_type == "CDS" {
+            cds_feature_count += 1;
+        }
         let seqid = opts.seqid_policy.normalize(&rec.seqid);
         max_contig_name_length = max_contig_name_length.max(seqid.len());
         normalized_seqid_sources
@@ -153,9 +158,7 @@ pub fn extract_gene_rows(
                     opts.feature_id_uniqueness_policy,
                     FeatureIdUniquenessPolicy::NamespaceByFeatureType
                 ) && rec.feature_type != "gene";
-                if reject_on_duplicate
-                    && matches!(opts.strictness, StrictnessMode::Strict)
-                {
+                if reject_on_duplicate && matches!(opts.strictness, StrictnessMode::Strict) {
                     return Err(IngestError(format!(
                         "duplicate feature ID detected: {fid_raw} ({previous_kind}, {})",
                         rec.feature_type
@@ -368,9 +371,8 @@ pub fn extract_gene_rows(
                         rec.end.saturating_sub(rec.start) + 1;
                 } else if rec.feature_type == "CDS" {
                     transcript_has_cds.insert(tx_id.clone(), true);
-                    *transcript_cds_span
-                        .entry(tx_id)
-                        .or_insert(0) += rec.end.saturating_sub(rec.start) + 1;
+                    *transcript_cds_span.entry(tx_id).or_insert(0) +=
+                        rec.end.saturating_sub(rec.start) + 1;
                 }
             }
         } else {
@@ -522,8 +524,7 @@ pub fn extract_gene_rows(
                 if matches!(
                     opts.duplicate_transcript_id_policy,
                     DuplicateTranscriptIdPolicy::Reject
-                )
-                    && matches!(opts.strictness, StrictnessMode::Strict)
+                ) && matches!(opts.strictness, StrictnessMode::Strict)
                 {
                     return Err(IngestError(format!("duplicate transcript_id: {k}")));
                 }
@@ -626,6 +627,7 @@ pub fn extract_gene_rows(
         total_features,
         unknown_contig_features,
         max_contig_name_length,
+        cds_feature_count,
     })
 }
 
