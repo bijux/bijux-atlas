@@ -63,6 +63,7 @@ jobs:
           make ops-deploy
           make ops-warm
           make ops-smoke
+          make observability-pack-test
           make ops-report
 
       - name: Upload ops artifacts
@@ -70,7 +71,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ops-smoke-pr-artifacts
-          path: artifacts/ops/**
+          path: |
+            artifacts/ops/**
+            artifacts/observability/**
 
       - name: Tear down cluster
         if: always()
