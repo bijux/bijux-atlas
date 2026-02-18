@@ -299,11 +299,10 @@ ops-publish: ## Publish dataset by name (DATASET=medium|real1)
 	$(MAKE) ops-dataset-qc
 	@./ops/datasets/scripts/snapshot_metadata.sh
 
-ops-release-update: ## Run release update workflow (ingest->validate->publish->smoke->promote)
+ops-release-update: ## Run release workflow (publish->promote->latest-alias->serve smoke)
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-publish DATASET="$${DATASET:-medium}"
 	@$(MAKE) ops-catalog-validate
-	@$(MAKE) ops-smoke
 	@dataset="$${DATASET:-medium}"; \
 	case "$$dataset" in \
 	  medium) release=110; species=homo_sapiens; assembly=GRCh38 ;; \
@@ -312,7 +311,12 @@ ops-release-update: ## Run release update workflow (ingest->validate->publish->s
 	esac; \
 	cargo run -q -p bijux-atlas-cli --bin bijux-atlas -- atlas catalog promote \
 	  --store-root "$${ATLAS_E2E_STORE_ROOT:-artifacts/e2e-store}" \
+	  --release "$$release" --species "$$species" --assembly "$$assembly"; \
+	cargo run -q -p bijux-atlas-cli --bin bijux-atlas -- atlas catalog latest-alias-update \
+	  --store-root "$${ATLAS_E2E_STORE_ROOT:-artifacts/e2e-store}" \
 	  --release "$$release" --species "$$species" --assembly "$$assembly"
+	@$(MAKE) ops-warm
+	@$(MAKE) ops-smoke
 
 ops-release-rollback: ## Roll back catalog pointer for release dataset (artifacts stay immutable)
 	@$(MAKE) -s ops-env-validate
