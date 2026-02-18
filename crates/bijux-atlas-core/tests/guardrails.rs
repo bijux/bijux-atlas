@@ -220,6 +220,30 @@ fn override_and_escape_hatches_are_forbidden() {
 }
 
 #[test]
+fn server_must_not_depend_on_ingest_crate() {
+    let root = workspace_root();
+    let cargo_toml = fs::read_to_string(root.join("crates/bijux-atlas-server/Cargo.toml"))
+        .expect("missing crates/bijux-atlas-server/Cargo.toml");
+    assert!(
+        !cargo_toml.contains("bijux-atlas-ingest"),
+        "server crate must not depend on ingest internals"
+    );
+}
+
+#[test]
+fn query_layer_must_not_depend_on_runtime_network_or_async_stacks() {
+    let root = workspace_root();
+    let cargo_toml = fs::read_to_string(root.join("crates/bijux-atlas-query/Cargo.toml"))
+        .expect("missing crates/bijux-atlas-query/Cargo.toml");
+    for forbidden in ["tokio", "reqwest", "axum", "hyper"] {
+        assert!(
+            !cargo_toml.contains(forbidden),
+            "query layer must stay pure and cannot depend on runtime/net stack: {forbidden}"
+        );
+    }
+}
+
+#[test]
 fn api_layer_cannot_read_raw_gff3_or_fasta() {
     let root = workspace_root();
     let api_src = root.join("crates/bijux-atlas-api/src");

@@ -28,4 +28,4 @@ REGISTRY_TOOLING_DESC := tooling
 REGISTRY_TOOLING_TARGETS := bootstrap bootstrap-tools doctor dataset-id-lint scripts-index scripts-graph scripts-audit scripts-lint scripts-format scripts-test scripts-clean artifacts-index artifacts-clean isolate-clean no-direct-scripts help
 
 REGISTRY_META_DESC := meta
-REGISTRY_META_TARGETS := ci local local-full contracts hygiene path-contract-check
+REGISTRY_META_TARGETS := ci local local-full contracts hygiene architecture-check path-contract-check
