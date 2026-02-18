@@ -24,7 +24,7 @@ use std::sync::Arc;
 use std::time::{Duration, Instant};
 use tokio::sync::{Mutex, OwnedSemaphorePermit, RwLock, Semaphore};
 use tokio::time::timeout;
-use tracing::{error, info, warn};
+use tracing::{error, info, warn, Instrument};
 
 pub const CRATE_NAME: &str = "bijux-atlas-server";
 
@@ -71,6 +71,7 @@ pub struct DatasetCacheConfig {
     pub store_breaker_open_duration: Duration,
     pub store_retry_budget: u32,
     pub max_concurrent_downloads: usize,
+    pub max_concurrent_downloads_node: Option<usize>,
     pub eviction_check_interval: Duration,
     pub integrity_reverify_interval: Duration,
     pub sqlite_pragma_cache_kib: i64,
@@ -110,6 +111,7 @@ impl Default for DatasetCacheConfig {
             store_breaker_open_duration: Duration::from_secs(20),
             store_retry_budget: 20,
             max_concurrent_downloads: 3,
+            max_concurrent_downloads_node: None,
             eviction_check_interval: Duration::from_secs(30),
             integrity_reverify_interval: Duration::from_secs(300),
             sqlite_pragma_cache_kib: 32 * 1024,

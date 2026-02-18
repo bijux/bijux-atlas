@@ -42,3 +42,5 @@ Provide a production-safe local artifact cache for serving datasets with determi
 
 - Internal debug endpoint reports hit/miss, bytes used, and evictions.
 - Metrics export download latency/failure and cache pressure counters.
+- Cache metrics avoid high-cardinality labels (artifact hash and dataset id are logged/traced, not metric labels).
+- Tracing spans are emitted for `cache_lookup`, `download`, `verify`, and `open_db`.
