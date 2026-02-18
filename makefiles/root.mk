@@ -125,6 +125,7 @@ ci: ## Run CI-equivalent meta pipeline mapped to workflow jobs
 	@$(CI_ENV) $(MAKE) ci-log-fields-contract
 	@$(CI_ENV) $(MAKE) ci-workflows-make-only
 	@$(CI_ENV) $(MAKE) ci-ops-index-surface
+	@$(CI_ENV) $(MAKE) ci-ops-run-entrypoints
 	@$(CI_ENV) $(MAKE) ci-ops-readme-make-only
 	@$(CI_ENV) $(MAKE) ci-ops-readme-canonical-links
 	@$(CI_ENV) $(MAKE) ci-ops-doc-duplication

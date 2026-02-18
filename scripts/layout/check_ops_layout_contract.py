@@ -10,7 +10,7 @@ OPS = ROOT / "ops"
 required = {
     "stack", "k8s", "obs", "load", "datasets", "e2e", "run",
     "_lib", "_meta", "_schemas", "_generated", "_artifacts",
-    "CONTRACT.md", "INDEX.md", "README.md",
+    "CONTRACT.md", "INDEX.md", "README.md", "ERRORS.md",
 }
 
 allowed_extra = {"fixtures", "registry", "report"}

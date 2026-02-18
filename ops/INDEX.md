@@ -9,6 +9,8 @@ Use Make targets only.
 - `make ops-layout-lint`
 - `make ops-prereqs`
 - `make ops-doctor`
+- `make ops-lint`
+- `make ops-fmt`
 
 ## Topology
 
