@@ -136,9 +136,45 @@ def _validate_metric_refs(slo: dict[str, Any], metrics_contract: dict[str, Any],
             errors.append(f"configs/ops/slo/slo.v1.json: slos[{i}] references unknown SLI `{sid}`")
 
 
+def _validate_slis_file(slis_doc: dict[str, Any], metrics_contract: dict[str, Any], errors: list[str]) -> None:
+    specs = metrics_contract.get("required_metric_specs", {})
+    dyn_labels = set(metrics_contract.get("allowed_dynamic_labels", []))
+    forbidden = set(metrics_contract.get("forbidden_labels", []))
+    extra_allowed = {"route", "status", "dataset", "reason", "stage", "source"}
+
+    if slis_doc.get("schema_version") != 1:
+        errors.append("configs/ops/slo/slis.v1.json: schema_version must be 1")
+
+    for i, sli in enumerate(slis_doc.get("slis", [])):
+        sid = sli.get("id", f"index-{i}")
+        status = sli.get("status", "enforced")
+        metric = sli.get("metric")
+        if not isinstance(metric, str):
+            errors.append(f"configs/ops/slo/slis.v1.json: sli `{sid}` metric must be string")
+            continue
+        if status == "enforced" and metric not in specs:
+            errors.append(f"configs/ops/slo/slis.v1.json: enforced sli `{sid}` references unknown metric `{metric}`")
+
+        sec = sli.get("secondary_metric")
+        sec_status = sli.get("secondary_metric_status", "enforced")
+        if status == "enforced" and isinstance(sec, str) and sec not in specs and sec_status != "planned":
+            errors.append(f"configs/ops/slo/slis.v1.json: enforced sli `{sid}` secondary metric `{sec}` unknown")
+
+        labels = sli.get("labels", {})
+        if not isinstance(labels, dict):
+            errors.append(f"configs/ops/slo/slis.v1.json: sli `{sid}` labels must be object")
+            continue
+        allowed = set(specs.get(metric, {}).get("required_labels", [])) | dyn_labels | extra_allowed
+        for label in labels.keys():
+            if label in forbidden:
+                errors.append(f"configs/ops/slo/slis.v1.json: sli `{sid}` uses forbidden label `{label}`")
+            if status == "enforced" and label not in allowed:
+                errors.append(f"configs/ops/slo/slis.v1.json: sli `{sid}` label `{label}` not allowed for `{metric}`")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", choices=("all", "schema", "metrics"), default="all")
+    parser.add_argument("--mode", choices=("all", "schema", "metrics", "slis"), default="all")
     args = parser.parse_args()
 
     errors: list[str] = []
@@ -147,6 +183,7 @@ def main() -> int:
     sli_schema = json.loads((ROOT / "configs/ops/slo/sli.schema.json").read_text(encoding="utf-8"))
     slo_schema = json.loads((ROOT / "configs/ops/slo/slo.schema.json").read_text(encoding="utf-8"))
     slo = json.loads((ROOT / "configs/ops/slo/slo.v1.json").read_text(encoding="utf-8"))
+    slis_doc = json.loads((ROOT / "configs/ops/slo/slis.v1.json").read_text(encoding="utf-8"))
     metrics_contract = json.loads((ROOT / "ops/obs/contract/metrics-contract.json").read_text(encoding="utf-8"))
 
     if args.mode in {"all", "schema"}:
@@ -162,6 +199,9 @@ def main() -> int:
 
     if args.mode in {"all", "metrics"}:
         _validate_metric_refs(slo, metrics_contract, errors)
+
+    if args.mode in {"all", "slis"}:
+        _validate_slis_file(slis_doc, metrics_contract, errors)
 
     if errors:
         print("slo contracts check failed:", file=sys.stderr)
