@@ -20,7 +20,22 @@ source "${OPS_LIB_ROOT}/trap_bundle.sh"
 source "${OPS_LIB_ROOT}/kubectl.sh"
 # shellcheck source=ops/_lib/helm.sh
 source "${OPS_LIB_ROOT}/helm.sh"
+# shellcheck source=ops/_lib/context_guard.sh
+source "${OPS_LIB_ROOT}/context_guard.sh"
+# shellcheck source=ops/_lib/version_guard.sh
+source "${OPS_LIB_ROOT}/version_guard.sh"
+# shellcheck source=ops/_lib/env.sh
+source "${OPS_LIB_ROOT}/env.sh"
 ARTIFACTS_ROOT="${REPO_ROOT}/artifacts/ops"
+
+ops_require_run_context() {
+  local run_id="${RUN_ID:-${OPS_RUN_ID:-}}"
+  local artifact_dir="${ARTIFACT_DIR:-${OPS_RUN_DIR:-}}"
+  if [ -z "$run_id" ] || [ -z "$artifact_dir" ]; then
+    echo "RUN_ID/OPS_RUN_ID and ARTIFACT_DIR/OPS_RUN_DIR are required" >&2
+    return 2
+  fi
+}
 
 ops_need_cmd() {
   command -v "$1" >/dev/null 2>&1 || {
