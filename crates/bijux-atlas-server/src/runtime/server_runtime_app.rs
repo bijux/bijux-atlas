@@ -108,6 +108,10 @@ pub fn build_router(state: AppState) -> Router {
         .route("/v1/version", get(http::handlers::version_handler))
         .route("/v1/datasets", get(http::handlers::datasets_handler))
         .route(
+            "/v1/datasets/:release/:species/:assembly",
+            get(http::handlers::dataset_identity_handler),
+        )
+        .route(
             "/v1/releases/:release/species/:species/assemblies/:assembly",
             get(http::handlers::release_dataset_handler),
         )
