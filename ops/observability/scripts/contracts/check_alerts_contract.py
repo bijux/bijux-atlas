@@ -7,7 +7,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[4]
 CONTRACT = ROOT / "ops/observability/contract/metrics-contract.json"
 ALERT_CONTRACT = ROOT / "ops/observability/contract/alerts-contract.json"
 ALERTS = ROOT / "ops/observability/alerts/atlas-alert-rules.yaml"
