@@ -199,6 +199,64 @@
       "params": [
         {
           "default": null,
+          "in": "path",
+          "max": null,
+          "name": "release",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "path",
+          "max": null,
+          "name": "species",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "path",
+          "max": null,
+          "name": "assembly",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "include_bom",
+          "required": false,
+          "type": "boolean"
+        }
+      ],
+      "path": "/v1/datasets/{release}/{species}/{assembly}",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "api_error",
+          "status": "400"
+        },
+        {
+          "envelope": "api_error",
+          "status": "404"
+        },
+        {
+          "envelope": "api_error",
+          "status": "503"
+        }
+      ],
+      "telemetry_class": "catalog"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [
+        {
+          "default": null,
           "in": "query",
           "max": null,
           "name": "from_release",
@@ -533,7 +591,8 @@
       "telemetry_class": "query"
     },
     {
-      "deprecated": false,
+      "deprecated": true,
+      "deprecation_note": "Use /v1/datasets/{release}/{species}/{assembly}; this route returns 308 Permanent Redirect.",
       "method": "GET",
       "params": [
         {
@@ -771,19 +830,7 @@
       "responses": [
         {
           "envelope": "none",
-          "status": "200"
-        },
-        {
-          "envelope": "api_error",
-          "status": "400"
-        },
-        {
-          "envelope": "api_error",
-          "status": "404"
-        },
-        {
-          "envelope": "api_error",
-          "status": "503"
+          "status": "308"
         }
       ],
       "telemetry_class": "catalog"

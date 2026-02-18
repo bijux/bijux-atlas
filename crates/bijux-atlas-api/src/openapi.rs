@@ -52,8 +52,9 @@ pub fn openapi_v1_spec() -> Value {
             }
           }
         },
-        "/v1/releases/{release}/species/{species}/assemblies/{assembly}": {
+        "/v1/datasets/{release}/{species}/{assembly}": {
           "get": {
+            "tags": ["datasets"],
             "parameters": [
               {"name": "release", "in": "path", "required": true, "schema": {"type": "string"}},
               {"name": "species", "in": "path", "required": true, "schema": {"type": "string"}},
@@ -65,6 +66,21 @@ pub fn openapi_v1_spec() -> Value {
               "400": {"description": "invalid dataset dimensions", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApiError"}}}},
               "404": {"description": "dataset missing in catalog", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApiError"}}}},
               "503": {"description": "manifest unavailable", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApiError"}}}}
+            }
+          }
+        },
+        "/v1/releases/{release}/species/{species}/assemblies/{assembly}": {
+          "get": {
+            "deprecated": true,
+            "tags": ["datasets"],
+            "parameters": [
+              {"name": "release", "in": "path", "required": true, "schema": {"type": "string"}},
+              {"name": "species", "in": "path", "required": true, "schema": {"type": "string"}},
+              {"name": "assembly", "in": "path", "required": true, "schema": {"type": "string"}},
+              {"name": "include_bom", "in": "query", "schema": {"type": "boolean"}}
+            ],
+            "responses": {
+              "308": {"description": "redirects to canonical /v1/datasets/{release}/{species}/{assembly} endpoint"}
             }
           }
         },

@@ -72,6 +72,12 @@
     },
     {
       "method": "GET",
+      "path": "/v1/datasets/{release}/{species}/{assembly}",
+      "telemetry_class": "catalog"
+    },
+    {
+      "deprecated": true,
+      "method": "GET",
       "path": "/v1/releases/{release}/species/{species}/assemblies/{assembly}",
       "telemetry_class": "catalog"
     },

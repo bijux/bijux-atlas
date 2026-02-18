@@ -123,6 +123,7 @@ mod tests {
             "/readyz",
             "/metrics",
             "/v1/datasets",
+            "/v1/datasets/{release}/{species}/{assembly}",
             "/v1/releases/{release}/species/{species}/assemblies/{assembly}",
             "/v1/genes",
             "/v1/genes/count",
