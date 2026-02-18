@@ -47,7 +47,9 @@ def main() -> int:
         f"- smoke_report: `{artifacts['smoke_report']}`",
         f"- perf_results: `{artifacts['perf_results']}`",
     ]
-    (run_dir / "report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    md = "\n".join(lines) + "\n"
+    (run_dir / "report.md").write_text(md, encoding="utf-8")
+    (run_dir / "index.md").write_text(md, encoding="utf-8")
     print(run_dir / "report.json")
     return 0
 

@@ -22,6 +22,8 @@ Does not duplicate page-level details.
 
 List and maintain links to section pages in this directory.
 
+- [Ops Local Full Quickstart](ops-local-full.md)
+
 ## Failure modes
 
 Missing index links create orphan docs.
