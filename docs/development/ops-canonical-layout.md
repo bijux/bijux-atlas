@@ -1,50 +1,26 @@
-# Ops Canonical Layout Policy
+# Ops Canonical Layout
 
-- Owner: `docs-governance`
+The canonical SSOT is `ops/CONTRACT.md`.
 
-## What
+## Top-level layout
 
-Defines the final repository policy for operational assets.
+- `ops/stack/`
+- `ops/k8s/`
+- `ops/obs/`
+- `ops/load/`
+- `ops/datasets/`
+- `ops/e2e/`
+- `ops/run/`
+- `ops/_lib/`
+- `ops/_meta/`
+- `ops/_schemas/`
+- `ops/_generated/`
+- `ops/_artifacts/`
 
-## Why
+## Rules
 
-Keeps operational artifacts in one stable location and prevents root-level sprawl.
-
-## Contracts
-
-- `ops/` is the only canonical home for:
-  - `e2e`
-  - `load`
-  - `observability`
-  - `openapi`
-- Legacy root aliases are forbidden (`charts`, `e2e`, `load`, `observability`, `datasets`, `fixtures`).
-- Root `charts/` is packaging-only.
-  - Helm packaging uses `ops/k8s/charts/bijux-atlas/`.
-  - Operational validation and tests run from `ops/` workflows.
-- `make` is the supported runnable interface.
-  - Scripts are internal implementation details.
-- Operational outputs must be written under `artifacts/ops/<run-id>/`.
-- Root tool configs are allowed only as symlink shims when tools require root discovery.
-- Compatibility symlinks must be documented and minimal.
-  - Current list: `nextest.toml`, `deny.toml`, `audit-allowlist.toml`, `clippy.toml`, `rustfmt.toml`, `.vale.ini`, `.vale`, `ops/tool-versions.json`, `datasets`, `fixtures`.
-- `target/` and `.DS_Store` are never committed.
-- `.idea/` is ignored and never committed.
-
-## Failure modes
-
-Root drift creates duplicate truth and unstable ops behavior.
-
-## How to verify
-
-```bash
-$ make layout-check
-$ make no-direct-scripts
-```
-
-Expected output: both checks pass with no drift warnings.
-
-## See also
-
-- [Repository Surface](repo-surface.md)
-- [Makefiles Surface](makefiles/surface.md)
-- [Ops Layout](../operations/ops-layout.md)
+- Use Make targets from `ops/INDEX.md`.
+- `ops/e2e/` is composition-only.
+- `ops/run/` holds thin executable wrappers.
+- No symlinked domain directories under `ops/`.
+- Artifacts write to `ops/_artifacts/` unless allowlisted in `configs/ops/artifacts-allowlist.txt`.

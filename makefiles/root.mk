@@ -94,45 +94,57 @@ config-print: ## Print canonical merged config payload as JSON
 config-drift: ## Check config/schema/docs drift without regeneration
 	@python3 ./scripts/public/config-drift-check.py
 
+CI_ISO_ROOT := $(CURDIR)/artifacts/isolates/ci
+CI_ENV := ISO_ROOT=$(CI_ISO_ROOT) CARGO_TARGET_DIR=$(CI_ISO_ROOT)/target CARGO_HOME=$(CI_ISO_ROOT)/cargo-home TMPDIR=$(CI_ISO_ROOT)/tmp TMP=$(CI_ISO_ROOT)/tmp TEMP=$(CI_ISO_ROOT)/tmp
+LOCAL_ISO_ROOT := $(CURDIR)/artifacts/isolates/local
+LOCAL_ENV := ISO_ROOT=$(LOCAL_ISO_ROOT) CARGO_TARGET_DIR=$(LOCAL_ISO_ROOT)/target CARGO_HOME=$(LOCAL_ISO_ROOT)/cargo-home TMPDIR=$(LOCAL_ISO_ROOT)/tmp TMP=$(LOCAL_ISO_ROOT)/tmp TEMP=$(LOCAL_ISO_ROOT)/tmp
+LOCAL_FULL_ISO_ROOT := $(CURDIR)/artifacts/isolates/local-full
+LOCAL_FULL_ENV := ISO_ROOT=$(LOCAL_FULL_ISO_ROOT) CARGO_TARGET_DIR=$(LOCAL_FULL_ISO_ROOT)/target CARGO_HOME=$(LOCAL_FULL_ISO_ROOT)/cargo-home TMPDIR=$(LOCAL_FULL_ISO_ROOT)/tmp TMP=$(LOCAL_FULL_ISO_ROOT)/tmp TEMP=$(LOCAL_FULL_ISO_ROOT)/tmp
+
 ci: ## Run CI-equivalent meta pipeline mapped to workflow jobs
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-root-layout
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-script-entrypoints
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-fmt
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-clippy
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-test-nextest
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-policy-lint
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-policy-schema-drift
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-policy-relaxations
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-config-check
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-ssot-drift
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-docs-build
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-openapi-drift
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-api-contract
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-query-plan-gate
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-critical-query-check
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-sqlite-schema-drift
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-sqlite-index-drift
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-ingest-determinism
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-qc-fixtures
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-log-fields-contract
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-workflows-make-only
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-forbid-raw-paths
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-make-safety
-	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-make-help-drift
+	@mkdir -p "$(CI_ISO_ROOT)/target" "$(CI_ISO_ROOT)/cargo-home" "$(CI_ISO_ROOT)/tmp"
+	@$(CI_ENV) $(MAKE) ci-root-layout
+	@$(CI_ENV) $(MAKE) ci-script-entrypoints
+	@$(CI_ENV) $(MAKE) ci-fmt
+	@$(CI_ENV) $(MAKE) ci-clippy
+	@$(CI_ENV) $(MAKE) ci-test-nextest
+	@$(CI_ENV) $(MAKE) ci-policy-lint
+	@$(CI_ENV) $(MAKE) ci-policy-schema-drift
+	@$(CI_ENV) $(MAKE) ci-policy-relaxations
+	@$(CI_ENV) $(MAKE) ci-config-check
+	@$(CI_ENV) $(MAKE) ci-ssot-drift
+	@$(CI_ENV) $(MAKE) ci-docs-build
+	@$(CI_ENV) $(MAKE) ci-openapi-drift
+	@$(CI_ENV) $(MAKE) ci-api-contract
+	@$(CI_ENV) $(MAKE) ci-query-plan-gate
+	@$(CI_ENV) $(MAKE) ci-critical-query-check
+	@$(CI_ENV) $(MAKE) ci-sqlite-schema-drift
+	@$(CI_ENV) $(MAKE) ci-sqlite-index-drift
+	@$(CI_ENV) $(MAKE) ci-ingest-determinism
+	@$(CI_ENV) $(MAKE) ci-qc-fixtures
+	@$(CI_ENV) $(MAKE) ci-log-fields-contract
+	@$(CI_ENV) $(MAKE) ci-workflows-make-only
+	@$(CI_ENV) $(MAKE) ci-ops-index-surface
+	@$(CI_ENV) $(MAKE) ci-ops-readme-make-only
+	@$(CI_ENV) $(MAKE) ci-forbid-raw-paths
+	@$(CI_ENV) $(MAKE) ci-make-safety
+	@$(CI_ENV) $(MAKE) ci-make-help-drift
 
 local: ## Fast local loop (fmt + lint + test)
-	@ISO_ROOT=artifacts/isolates/local $(MAKE) fmt
-	@ISO_ROOT=artifacts/isolates/local $(MAKE) lint
-	@ISO_ROOT=artifacts/isolates/local $(MAKE) test
+	@mkdir -p "$(LOCAL_ISO_ROOT)/target" "$(LOCAL_ISO_ROOT)/cargo-home" "$(LOCAL_ISO_ROOT)/tmp"
+	@$(LOCAL_ENV) $(MAKE) fmt
+	@$(LOCAL_ENV) $(MAKE) lint
+	@$(LOCAL_ENV) $(MAKE) test
 
 local-full: ## Full local loop (fmt + lint + audit + test + coverage + docs)
-	@ISO_ROOT=artifacts/isolates/local-full $(MAKE) fmt
-	@ISO_ROOT=artifacts/isolates/local-full $(MAKE) lint
-	@ISO_ROOT=artifacts/isolates/local-full $(MAKE) audit
-	@ISO_ROOT=artifacts/isolates/local-full $(MAKE) test
-	@ISO_ROOT=artifacts/isolates/local-full $(MAKE) coverage
-	@ISO_ROOT=artifacts/isolates/local-full $(MAKE) docs
-	@ISO_ROOT=artifacts/isolates/local-full $(MAKE) docs-freeze
+	@mkdir -p "$(LOCAL_FULL_ISO_ROOT)/target" "$(LOCAL_FULL_ISO_ROOT)/cargo-home" "$(LOCAL_FULL_ISO_ROOT)/tmp"
+	@$(LOCAL_FULL_ENV) $(MAKE) fmt
+	@$(LOCAL_FULL_ENV) $(MAKE) lint
+	@$(LOCAL_FULL_ENV) $(MAKE) audit
+	@$(LOCAL_FULL_ENV) $(MAKE) test
+	@$(LOCAL_FULL_ENV) $(MAKE) coverage
+	@$(LOCAL_FULL_ENV) $(MAKE) docs
+	@$(LOCAL_FULL_ENV) $(MAKE) docs-freeze
 
 contracts: ## Contracts meta pipeline (generate + format + drift checks)
 	@ISO_ROOT=artifacts/isolates/contracts $(MAKE) ssot-check

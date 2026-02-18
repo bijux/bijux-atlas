@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "entrypoints": [
+    "ops-help",
+    "ops-surface",
+    "ops-layout-lint",
+    "ops-stack-up",
+    "ops-stack-down",
+    "ops-deploy",
+    "ops-undeploy",
+    "ops-k8s-tests",
+    "ops-observability-validate",
+    "ops-load-smoke",
+    "ops-dataset-qc",
+    "ops-realdata",
+    "ops-ref-grade-local",
+    "ops-full"
+  ]
+}

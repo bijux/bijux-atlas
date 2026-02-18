@@ -1,10 +1,4 @@
-# Pointer
-
-Canonical page: `docs/operations/e2e/realdata-drills.md`
-
-## Make Target
-
-Use \# Ops Index
+# Ops Index
 
 Use Make targets only.
 
@@ -32,4 +26,4 @@ Use Make targets only.
 ## Full Flows
 
 - `make ops-ref-grade-local`
-- `make ops-full` to find the canonical entrypoint for this area.
+- `make ops-full`

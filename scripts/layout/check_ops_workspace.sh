@@ -11,28 +11,39 @@ required_dirs=(
   "$OPS/stack"
   "$OPS/k8s"
   "$OPS/load"
-  "$OPS/observability"
+  "$OPS/obs"
   "$OPS/datasets"
-  "$OPS/fixtures"
   "$OPS/_lib"
+  "$OPS/_meta"
+  "$OPS/_schemas"
+  "$OPS/_generated"
+  "$OPS/_artifacts"
+  "$OPS/run"
   "$OPS/e2e"
-  "$OPS/smoke"
-  "$OPS/ui"
 )
 
 allowed_entries=(
   "_lib"
   "datasets"
   "e2e"
-  "fixtures"
   "k8s"
   "load"
-  "observability"
+  "obs"
+  "run"
+  "_meta"
+  "_schemas"
+  "_generated"
+  "_artifacts"
   "stack"
-  "smoke"
   "tool-versions.json"
+  "fixtures"
+  "smoke"
   "ui"
+  "registry"
+  "report"
   "README.md"
+  "CONTRACT.md"
+  "INDEX.md"
 )
 
 for dir in "${required_dirs[@]}"; do
@@ -57,8 +68,8 @@ while IFS= read -r entry; do
   fi
 done < <(find "$OPS" -mindepth 1 -maxdepth 1 -print | sort)
 
-if [ -e "$OPS/e2e/stack" ] && [ ! -L "$OPS/e2e/stack" ]; then
-  echo "forbidden: ops/e2e/stack must be a pointer (symlink) to ops/stack" >&2
+if [ -L "$OPS/e2e/stack" ]; then
+  echo "forbidden: ops/e2e/stack symlink is not allowed; use real directories only" >&2
   exit 1
 fi
 

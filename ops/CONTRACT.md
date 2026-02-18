@@ -1,58 +1,44 @@
-# Ops Reference Contract
+# Ops Contract (SSOT)
 
 - Owner: `bijux-atlas-operations`
+- Contract version: `1.0.0`
 
-## What
+## Purpose
 
-Defines what "ops reference-grade" means for local and CI operations.
+`ops/` is the single source of truth for operational topology, executable entrypoints, and contract-governed artifacts.
 
-## Reference-grade requirements
+## Invariants
 
-- Idempotent: rerunning `make ops-full` succeeds without manual cleanup.
-- Reproducible: pinned tool versions and deterministic run-id/namespace.
-- Artifacts-first: every run writes metadata + evidence under `artifacts/ops/<run-id>/`.
-- Gated: ops checks are make-target driven and CI enforceable.
-- Non-interactive in CI: no prompts during CI ops runs.
+- Stable operator entrypoints are Make targets listed in `ops/INDEX.md` and declared in `ops/_meta/surface.json`.
+- `ops/run/` is the only executable entrypoint subtree; files there are thin wrappers that call `ops/_lib/` and domain scripts.
+- Shared shell/python helpers that are not operator entrypoints live in `ops/_lib/` or domain-local `scripts/` directories.
+- Canonical domain ownership has no overlap:
+  - `ops/stack/` local dependency bring-up
+  - `ops/k8s/` chart, profiles, and k8s gates
+  - `ops/obs/` observability pack, contracts, drills
+  - `ops/load/` k6 suites and baselines
+  - `ops/datasets/` dataset manifests, pinning, QC, promotion
+  - `ops/e2e/` composition-only scenarios across domains
+- Generated outputs under `ops/_generated/` only.
+- Runtime artifacts write under `ops/_artifacts/` only, unless allowlisted in `configs/ops/artifacts-allowlist.txt`.
+- JSON schemas for ops manifests live under `ops/_schemas/`.
+- Symlinked domain directories inside `ops/` are forbidden.
 
-## Run identity
+## Stable vs Generated
 
-- Run ID format: `atlas-ops-YYYYMMDD-HHMMSS`.
-- Namespace format: one namespace per run (`$OPS_NAMESPACE`, default = run ID).
-- Safety namespace pattern: `atlas-ops-*`.
+Stable (versioned by review):
+- `ops/CONTRACT.md`, `ops/INDEX.md`
+- `ops/_meta/*.json`
+- domain definitions and tests under canonical subtrees
 
-kind-cluster-contract-hash: `b7cbaefe788fae38340ef3aa0bc1b79071b8da6f14e8379af029ac1a3e412960`
+Generated (rebuildable):
+- `ops/_generated/**`
 
-## Modes
+Runtime artifacts (ephemeral evidence):
+- `ops/_artifacts/**`
 
-- `OPS_MODE=fast`: short/PR-safe path.
-- `OPS_MODE=full`: nightly-grade path with longer checks.
-- `OPS_DRY_RUN=1`: print actions instead of mutating state.
+## Artifact Rules
 
-## Failure behavior
-
-- Failures must produce bundles (events, pod state, logs, helm manifests).
-- Metadata must include git sha, image digest, policy hash, dataset hash, and tool versions.
-
-## Verification
-
-```bash
-make ops-tools-check
-make ops-tools-print
-make ops-ref-grade-local
-make ops-report
-```
-
-### Required Ref-Grade Local Sequence
-
-`make ops-ref-grade-local` MUST execute these gates in order:
-
-1. `make ops-tools-check`
-2. `make ops-kind-validate`
-3. `make ops-stack-validate`
-4. `make ops-deploy PROFILE=local`
-5. `make ops-publish DATASET=medium`
-6. `make ops-warm`
-7. `make ops-smoke`
-8. `make ops-k8s-tests` (PR subset via `make ops-ref-grade-pr`, full via `make ops-ref-grade-nightly`)
-9. `make ops-load-smoke`
-10. `make ops-observability-validate`
+- Scripts must not write to repo-root `artifacts/` directly.
+- Legacy compatibility, if needed, is via symlink: `artifacts/ops -> ops/_artifacts`.
+- Any explicit exception must be listed in `configs/ops/artifacts-allowlist.txt`.

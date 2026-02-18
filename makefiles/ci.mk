@@ -98,7 +98,7 @@ ci-store-conformance:
 
 ci-openapi-drift:
 	@$(MAKE) openapi-drift
-	@python3 ./scripts/contracts/check_breaking_contract_change.py
+	@python3 ./scripts/public/contracts/check_breaking_contract_change.py
 
 ci-chart-schema-validate:
 	@$(MAKE) ops-values-validate
@@ -139,13 +139,19 @@ ci-workflows-make-only:
 	@python3 ./scripts/layout/check_workflows_make_only.py
 
 ci-log-fields-contract:
-	@python3 ./ops/observability/scripts/validate_logs_schema.py --file ops/observability/contract/logs.example.jsonl
+	@python3 ./ops/obs/scripts/validate_logs_schema.py --file ops/obs/contract/logs.example.jsonl
 
 ci-observability-pack-test:
 	@$(MAKE) observability-pack-test
 
 ci-observability-pack-drills:
 	@$(MAKE) observability-pack-drills
+
+ci-ops-index-surface:
+	@python3 ./scripts/layout/check_ops_index_surface.py
+
+ci-ops-readme-make-only:
+	@python3 ./scripts/docs/check_ops_readmes_make_only.py
 
 ci-forbid-raw-paths:
 	@./scripts/layout/check_no_forbidden_paths.sh
