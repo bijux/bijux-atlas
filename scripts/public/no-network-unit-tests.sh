@@ -11,7 +11,8 @@ set -eu
 violations=""
 for file in $(find crates -path '*/src/*.rs' -type f); do
   if grep -q '#\[cfg(test)\]' "$file"; then
-    if grep -Eq 'reqwest|ureq|TcpStream::connect|UdpSocket::bind|hyper::|surf::|isahc::' "$file"; then
+    if awk 'seen || /#\[cfg\(test\)\]/{seen=1; print}' "$file" \
+      | grep -Eq 'reqwest|ureq|TcpStream::connect|UdpSocket::bind|hyper::|surf::|isahc::'; then
       violations="$violations\n$file"
     fi
   fi
