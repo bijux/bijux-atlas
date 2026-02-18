@@ -9,7 +9,7 @@ on_fail() {
 }
 trap on_fail ERR
 
-"$ROOT/ops/observability/tests/test_pack_contracts.sh"
-"$ROOT/ops/observability/tests/test_install_modes.sh"
+"$ROOT/ops/observability/tests/test_contracts.sh"
+"$ROOT/ops/observability/tests/test_profiles.sh"
 
 echo "observability pack tests passed"

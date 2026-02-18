@@ -830,27 +830,27 @@ ops-observability-smoke: ## Install observability pack and run smoke checks
 	@./ops/observability/scripts/alerts-validation.sh
 
 ops-obs-up: ## Install observability pack (prometheus/otel, CRD-aware)
-	@./ops/observability/scripts/install_obs_pack.sh
+	@./ops/observability/scripts/install_pack.sh
 
 ops-obs-down: ## Uninstall observability pack
-	@./ops/observability/scripts/uninstall_obs_pack.sh
+	@./ops/observability/scripts/uninstall_pack.sh
 
 
-ops-obs-mode: ## Install observability pack in requested mode (ATLAS_OBS_MODE=minimal|full)
-	@[ -n "$${ATLAS_OBS_MODE:-}" ] || { echo "set ATLAS_OBS_MODE=minimal|full" >&2; exit 2; }
-	@./ops/observability/scripts/install_obs_pack.sh
+ops-obs-mode: ## Install observability pack in requested profile (ATLAS_OBS_PROFILE=local|kind|cluster|airgapped)
+	@[ -n "$${ATLAS_OBS_PROFILE:-}" ] || { echo "set ATLAS_OBS_PROFILE=local|kind|cluster|airgapped" >&2; exit 2; }
+	@./ops/observability/scripts/install_pack.sh
 
-ops-obs-mode-minimal: ## Install observability pack in minimal mode
-	@ATLAS_OBS_MODE=minimal ./ops/observability/scripts/install_obs_pack.sh
+ops-obs-mode-minimal: ## Compatibility alias for kind profile
+	@ATLAS_OBS_PROFILE=kind ./ops/observability/scripts/install_pack.sh
 
-ops-obs-mode-full: ## Install observability pack in full mode
-	@ATLAS_OBS_MODE=full ./ops/observability/scripts/install_obs_pack.sh
+ops-obs-mode-full: ## Compatibility alias for cluster profile
+	@ATLAS_OBS_PROFILE=cluster ./ops/observability/scripts/install_pack.sh
 
 ops-observability-pack-tests: ## Run observability pack conformance tests
 	@./ops/observability/tests/run_all.sh
 
 ops-observability-pack-lint: ## Run observability pack lint-only contract checks
-	@./ops/observability/tests/test_pack_contracts.sh
+	@./ops/observability/tests/test_contracts.sh
 
 ops-open-grafana: ## Print local ops service URLs
 	@./ops/ui/print_urls.sh
