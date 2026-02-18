@@ -15,6 +15,14 @@ use api_hardening_support::{
     fixture_fasta_and_fai, fixture_release_index, mk_dataset, send_raw, send_raw_with_method,
 };
 
+fn header_value(headers: &str, name: &str) -> Option<String> {
+    let prefix = format!("{}: ", name.to_ascii_lowercase());
+    headers
+        .lines()
+        .find_map(|line| line.strip_prefix(&prefix))
+        .map(|s| s.trim().to_string())
+}
+
 #[tokio::test]
 async fn error_contract_and_etag_behaviors() {
     let (ds, manifest, sqlite) = mk_dataset();
@@ -94,7 +102,10 @@ async fn error_contract_and_etag_behaviors() {
     assert!(json
         .get("error")
         .and_then(|e| e.get("details"))
-        .and_then(|d| d.get("value"))
+        .and_then(|d| d.get("field_errors"))
+        .and_then(Value::as_array)
+        .and_then(|arr| arr.first())
+        .and_then(|row| row.get("value"))
         .and_then(Value::as_str)
         .unwrap_or("")
         .contains("allowed"));
@@ -132,11 +143,14 @@ async fn error_contract_and_etag_behaviors() {
     let (status, headers, _) = send_raw(addr, "/v1/datasets", &[]).await;
     assert_eq!(status, 200);
     assert!(headers.contains("x-request-id: "));
-    let etag = headers
-        .lines()
-        .find_map(|line| line.strip_prefix("etag: "))
-        .expect("etag header present")
-        .to_string();
+    let etag = header_value(&headers, "etag").expect("etag header present");
+    assert!(header_value(&headers, "cache-control")
+        .unwrap_or_default()
+        .contains("stale-while-revalidate"));
+    assert_eq!(
+        header_value(&headers, "vary").as_deref(),
+        Some("accept-encoding")
+    );
     let (status, _, _) = send_raw(addr, "/v1/datasets", &[("If-None-Match", &etag)]).await;
     assert_eq!(status, 304);
 
@@ -168,6 +182,126 @@ async fn error_contract_and_etag_behaviors() {
     let (status, _, body) = send_raw(addr, "/metrics", &[]).await;
     assert_eq!(status, 200);
     assert!(body.contains("bijux_request_stage_latency_p95_seconds"));
+}
+
+#[tokio::test]
+async fn etag_stable_across_restart_for_same_artifact_and_request() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let request = "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&limit=1";
+
+    async fn etag_for_request(
+        ds: DatasetId,
+        manifest: ArtifactManifest,
+        sqlite: Vec<u8>,
+        request: &str,
+    ) -> String {
+        let store = Arc::new(FakeStore::default());
+        store.manifest.lock().await.insert(ds.clone(), manifest);
+        store.sqlite.lock().await.insert(ds, sqlite);
+        let tmp = tempdir().expect("tempdir");
+        let mgr = DatasetCacheManager::new(
+            DatasetCacheConfig {
+                disk_root: tmp.path().to_path_buf(),
+                ..Default::default()
+            },
+            store,
+        );
+        let app = build_router(AppState::new(mgr));
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+            .await
+            .expect("bind listener");
+        let addr = listener.local_addr().expect("local addr");
+        tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+        let (status, headers, _) = send_raw(addr, request, &[]).await;
+        assert_eq!(status, 200);
+        header_value(&headers, "etag").expect("etag")
+    }
+
+    let etag_a = etag_for_request(ds.clone(), manifest.clone(), sqlite.clone(), request).await;
+    let etag_b = etag_for_request(ds, manifest, sqlite, request).await;
+    assert_eq!(etag_a, etag_b);
+}
+
+#[tokio::test]
+async fn etag_changes_when_artifact_hash_changes() {
+    let (ds, mut manifest_a, sqlite) = mk_dataset();
+    let mut manifest_b = manifest_a.clone();
+    manifest_a.dataset_signature_sha256 = "artifact-hash-a".to_string();
+    manifest_b.dataset_signature_sha256 = "artifact-hash-b".to_string();
+    let request = "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&limit=1";
+
+    async fn etag_for_request(
+        ds: DatasetId,
+        manifest: ArtifactManifest,
+        sqlite: Vec<u8>,
+        request: &str,
+    ) -> String {
+        let store = Arc::new(FakeStore::default());
+        store.manifest.lock().await.insert(ds.clone(), manifest);
+        store.sqlite.lock().await.insert(ds, sqlite);
+        let tmp = tempdir().expect("tempdir");
+        let mgr = DatasetCacheManager::new(
+            DatasetCacheConfig {
+                disk_root: tmp.path().to_path_buf(),
+                ..Default::default()
+            },
+            store,
+        );
+        let app = build_router(AppState::new(mgr));
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+            .await
+            .expect("bind listener");
+        let addr = listener.local_addr().expect("local addr");
+        tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+        let (status, headers, _) = send_raw(addr, request, &[]).await;
+        assert_eq!(status, 200);
+        header_value(&headers, "etag").expect("etag")
+    }
+
+    let etag_a = etag_for_request(ds.clone(), manifest_a, sqlite.clone(), request).await;
+    let etag_b = etag_for_request(ds, manifest_b, sqlite, request).await;
+    assert_ne!(etag_a, etag_b);
+}
+
+#[tokio::test]
+async fn etag_changes_when_filters_change() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds, sqlite);
+    let tmp = tempdir().expect("tempdir");
+    let mgr = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..Default::default()
+        },
+        store,
+    );
+    let app = build_router(AppState::new(mgr));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, headers_a, _) = send_raw(
+        addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&limit=1",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+    let (status, headers_b, _) = send_raw(
+        addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g2&limit=1",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+
+    let etag_a = header_value(&headers_a, "etag").expect("etag a");
+    let etag_b = header_value(&headers_b, "etag").expect("etag b");
+    assert_ne!(etag_a, etag_b);
 }
 
 #[tokio::test]
