@@ -25,6 +25,7 @@
       "test_configmap.sh",
       "test_configmap_update_reload.sh",
       "test_cached_only_mode.sh",
+      "test_dataset_missing_behavior.sh",
       "test_readiness_semantics.sh",
       "test_readiness_catalog_refresh.sh",
       "test_rolling_restart_no_downtime.sh",

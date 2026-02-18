@@ -21,6 +21,7 @@
     {"script": "test_configmap.sh", "groups": ["config"], "owner": "server", "retries": 1, "timeout_seconds": 240, "expected_failure_modes": ["invalid_config_accepted"]},
     {"script": "test_configmap_update_reload.sh", "groups": ["config"], "owner": "server", "retries": 1, "timeout_seconds": 300, "expected_failure_modes": ["config_reload_contract_broken"]},
     {"script": "test_cached_only_mode.sh", "groups": ["readiness", "resilience"], "owner": "server", "retries": 1, "timeout_seconds": 240, "expected_failure_modes": ["cached_only_unavailable"]},
+    {"script": "test_dataset_missing_behavior.sh", "groups": ["datasets", "resilience"], "owner": "server", "retries": 1, "timeout_seconds": 240, "expected_failure_modes": ["missing_dataset_wrong_status"]},
     {"script": "test_readiness_semantics.sh", "groups": ["readiness"], "owner": "server", "retries": 1, "timeout_seconds": 300, "expected_failure_modes": ["incorrect_readiness"]},
     {"script": "test_readiness_catalog_refresh.sh", "groups": ["readiness"], "owner": "server", "retries": 1, "timeout_seconds": 360, "expected_failure_modes": ["readiness_not_gated_on_refresh"]},
     {"script": "test_pdb.sh", "groups": ["pdb", "availability"], "owner": "chart", "retries": 1, "timeout_seconds": 300, "expected_failure_modes": ["pdb_not_enforced"]},
