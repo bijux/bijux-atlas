@@ -332,6 +332,7 @@ ops-catalog-validate: ## Validate published catalog schema + deterministic merge
 ops-cache-status: ## Print cache status and enforce local cache budget policy
 	@./ops/datasets/scripts/cache_status.sh
 	@python3 ./ops/datasets/scripts/cache_budget_check.py
+	@python3 ./ops/datasets/scripts/cache_threshold_check.py
 
 ops-cache-pin-set: ## Set pinned dataset list for deploy/warm workflows (DATASETS=a/b/c[,x/y/z])
 	@./ops/datasets/scripts/pin_set.sh
@@ -742,6 +743,9 @@ ops-perf-report: ## Generate perf markdown + baseline report from artifacts
 
 ops-perf-cold-start: ## Perf helper: run cold-start benchmark
 	@./ops/load/scripts/cold_start_benchmark.sh
+
+ops-perf-warm-start: ## Perf helper: run warm-start benchmark
+	@./ops/load/scripts/warm_start_benchmark.sh
 
 ops-perf-cold-start-prefetch-5pods: ## Perf helper: run 5-pod prefetch cold-start benchmark
 	@./ops/load/scripts/cold_start_prefetch_5pods.sh
