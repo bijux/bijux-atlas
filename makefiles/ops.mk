@@ -372,6 +372,18 @@ ops-smoke: ## Run canonical API smoke queries
 	@./ops/observability/scripts/snapshot_traces.sh
 	@mkdir -p artifacts/ops/observability && cp ops/observability/grafana/atlas-observability-dashboard.json artifacts/ops/observability/dashboard.snapshot.json
 
+ops-diff-smoke: ## Build cross-release diff artifacts from fixture store
+	@mkdir -p artifacts/ops/diff-smoke
+	@cargo run -p bijux-atlas-cli -- atlas diff build \
+	  --root ops/fixtures/release-diff/store \
+	  --from-release 110 \
+	  --to-release 111 \
+	  --species homo_sapiens \
+	  --assembly GRCh38 \
+	  --out-dir artifacts/ops/diff-smoke
+	@test -f artifacts/ops/diff-smoke/diff.json
+	@test -f artifacts/ops/diff-smoke/diff.summary.json
+
 ops-metrics-check: ## Validate runtime metrics and observability contracts
 	@./ops/e2e/scripts/verify_metrics.sh
 	@./scripts/public/observability/check_metrics_contract.py
