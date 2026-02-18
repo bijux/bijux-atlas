@@ -5,6 +5,8 @@ cd "$ROOT"
 . "$ROOT/ops/_lib/common.sh"
 ops_env_load
 ops_entrypoint_start "ops-load-suite"
+PROFILE="${PROFILE:-kind}"
+ops_context_guard "$PROFILE"
 ops_version_guard k6
 SUITE="${SUITE:-mixed-80-20}"
 OUT="${OUT:-artifacts/perf/results}"
