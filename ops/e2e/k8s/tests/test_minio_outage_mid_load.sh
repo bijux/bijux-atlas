@@ -7,7 +7,7 @@ need curl
 install_chart
 wait_ready
 with_port_forward 18080
-"$ROOT/ops/observability/scripts/drill_minio_outage_mid_load.sh"
+"$ROOT/ops/observability/scripts/minio-outage-mid-load.sh"
 
 curl -fsS "$BASE_URL/healthz" >/dev/null
 

@@ -595,46 +595,46 @@ ops-load-nightly: ## Load nightly profile (nightly suites + score/report)
 ops-drill-store-outage: ## Run store outage drill under load
 	@$(MAKE) -s ops-env-validate
 	@./ops/load/scripts/run_suite.sh store-outage-mid-spike.json artifacts/perf/results
-	@./ops/observability/scripts/drill_store_outage.sh
+	@./ops/observability/scripts/store-outage.sh
 
 ops-drill-minio-outage: ## Drill minio outage under load with cached endpoint checks
 	@$(MAKE) -s ops-env-validate
-	@./ops/observability/scripts/drill_minio_outage_mid_load.sh
+	@./ops/observability/scripts/minio-outage-mid-load.sh
 
 ops-drill-prom-outage: ## Drill prometheus outage while atlas keeps serving
 	@$(MAKE) -s ops-env-validate
-	@./ops/observability/scripts/drill_prom_outage.sh
+	@./ops/observability/scripts/prom-outage.sh
 
 ops-drill-otel-outage: ## Drill otel outage while atlas keeps serving
 	@$(MAKE) -s ops-env-validate
-	@./ops/observability/scripts/drill_otel_outage.sh
+	@./ops/observability/scripts/otel-outage.sh
 
 ops-drill-toxiproxy-latency: ## Inject toxiproxy latency and assert store breaker signal
 	@$(MAKE) -s ops-env-validate
 	@ATLAS_E2E_ENABLE_TOXIPROXY=1 $(MAKE) ops-stack-up
-	@./ops/observability/scripts/drill_toxiproxy_latency.sh
+	@./ops/observability/scripts/toxiproxy-latency.sh
 
 ops-drill-alerts: ## Run alert drill checks against configured rules
-	@./ops/observability/scripts/drill_alerts.sh
+	@./ops/observability/scripts/alerts-validation.sh
 
 ops-drill-overload: ## Verify overload signal drill assertions
 	@$(MAKE) -s ops-env-validate
-	@./ops/observability/scripts/drill_overload.sh
+	@./ops/observability/scripts/overload-shedding.sh
 
 ops-drill-memory-growth: ## Verify memory-growth drill assertions
 	@$(MAKE) -s ops-env-validate
-	@./ops/observability/scripts/drill_memory_growth.sh
+	@./ops/observability/scripts/memory-growth.sh
 
 ops-drill-rate-limit: ## Run abuse pattern and assert stable 429 behavior
 	@$(MAKE) -s ops-env-validate
-	@./ops/observability/scripts/drill_overload.sh
+	@./ops/observability/scripts/overload-shedding.sh
 
 ops-drill-corruption: ## Run corruption handling drill
 	@cargo test -p bijux-atlas-server cache_manager_tests::chaos_mode_random_byte_corruption_never_serves_results -- --exact
 
 ops-drill-pod-churn: ## Run pod churn drill while service handles load
 	@$(MAKE) -s ops-env-validate
-	@./ops/e2e/k8s/tests/drill_pod_churn.sh
+	@./ops/e2e/k8s/tests/pod-churn.sh
 
 ops-drill-upgrade: ## Run upgrade drill and verify semantic stability
 	@$(MAKE) -s ops-env-validate
@@ -826,7 +826,7 @@ ops-observability-smoke: ## Install observability pack and run smoke checks
 	@./ops/observability/scripts/snapshot_metrics.sh
 	@./ops/observability/scripts/snapshot_traces.sh
 	@$(MAKE) ops-observability-validate
-	@./ops/observability/scripts/drill_alerts.sh
+	@./ops/observability/scripts/alerts-validation.sh
 
 ops-obs-up: ## Install observability pack (prometheus/otel, CRD-aware)
 	@./ops/observability/scripts/install_obs_pack.sh
