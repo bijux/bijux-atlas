@@ -27,6 +27,12 @@ Required keys:
 - `environments`
 - `promoted_count`
 
+## `ops/_schemas/e2e-scenarios.schema.json`
+
+Required keys:
+- `schema_version`
+- `scenarios`
+
 ## `ops/_schemas/k8s/install-matrix.schema.json`
 
 Required keys:
