@@ -52,7 +52,9 @@ Feature-level required attribute checks:
 ## Attribute Canonicalization
 
 - Attributes parsed from semicolon-separated `key=value` pairs.
-- Values are trimmed, surrounding quotes removed, and percent-decoded.
+- Values are trimmed, surrounding quotes removed, percent-decoded, then NFC-normalized.
+- Hidden/control characters are forbidden in ID/name fields and rejected (`GFF3_FORBIDDEN_HIDDEN_CHAR`).
+- ID-like keys (`ID`, `Parent`, `gene_id`, `transcript_id`, `transcriptId`, `protein_id`, `exon_id`) must not contain whitespace (`GFF3_INVALID_ID_WHITESPACE`).
 - Duplicate attribute keys are recorded as anomalies (last value wins).
 - Attribute token explosion is rejected by parser bound.
 

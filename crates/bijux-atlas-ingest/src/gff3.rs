@@ -3,6 +3,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
+use unicode_normalization::UnicodeNormalization;
 
 const MAX_GFF3_LINE_BYTES: usize = 1_000_000;
 const MAX_ATTR_TOKENS: usize = 4_096;
@@ -88,7 +89,7 @@ pub fn parse_gff3_records(path: &Path) -> Result<Vec<Gff3Record>, IngestError> {
             )));
         }
 
-        let (attrs, duplicate_attr_keys) = parse_attributes(cols[8])?;
+        let (attrs, duplicate_attr_keys) = parse_attributes(cols[8], line_idx + 1)?;
         out.push(Gff3Record {
             line: line_idx + 1,
             seqid,
@@ -109,6 +110,59 @@ pub fn parse_gff3_records(path: &Path) -> Result<Vec<Gff3Record>, IngestError> {
 fn decode_attr_value(raw: &str) -> String {
     let trimmed = raw.trim().trim_matches('"');
     percent_decode(trimmed)
+}
+
+fn is_id_key(key: &str) -> bool {
+    matches!(
+        key,
+        "ID"
+            | "Parent"
+            | "gene_id"
+            | "transcript_id"
+            | "transcriptId"
+            | "protein_id"
+            | "exon_id"
+    )
+}
+
+fn is_name_key(key: &str) -> bool {
+    matches!(key, "Name" | "gene_name" | "description")
+}
+
+fn has_forbidden_hidden_characters(value: &str) -> bool {
+    value.chars().any(|c| {
+        c.is_control()
+            || matches!(
+                c,
+                '\u{200B}'
+                    | '\u{200C}'
+                    | '\u{200D}'
+                    | '\u{2060}'
+                    | '\u{FEFF}'
+                    | '\u{00AD}'
+            )
+    })
+}
+
+fn normalize_attribute_value(key: &str, value: &str, line: usize) -> Result<String, IngestError> {
+    let mut normalized = value.nfc().collect::<String>();
+    normalized = normalized.trim().to_string();
+    if has_forbidden_hidden_characters(&normalized) {
+        return Err(IngestError(format!(
+            "GFF3_FORBIDDEN_HIDDEN_CHAR line={} key={}",
+            line, key
+        )));
+    }
+    if is_id_key(key) && normalized.chars().any(char::is_whitespace) {
+        return Err(IngestError(format!(
+            "GFF3_INVALID_ID_WHITESPACE line={} key={}",
+            line, key
+        )));
+    }
+    if is_name_key(key) {
+        normalized = normalized.split_whitespace().collect::<Vec<_>>().join(" ");
+    }
+    Ok(normalized)
 }
 
 fn percent_decode(input: &str) -> String {
@@ -133,6 +187,7 @@ fn percent_decode(input: &str) -> String {
 
 fn parse_attributes(
     raw: &str,
+    line: usize,
 ) -> Result<(BTreeMap<String, String>, BTreeSet<String>), IngestError> {
     let mut out = BTreeMap::new();
     let mut dups = BTreeSet::new();
@@ -150,7 +205,7 @@ fn parse_attributes(
         }
         if let Some((k, v)) = t.split_once('=') {
             let key = k.trim().to_string();
-            let value = decode_attr_value(v);
+            let value = normalize_attribute_value(&key, &decode_attr_value(v), line)?;
             if out.contains_key(&key) {
                 dups.insert(key.clone());
             }
@@ -163,6 +218,7 @@ fn parse_attributes(
 #[cfg(test)]
 mod tests {
     use super::parse_gff3_records;
+    use proptest::prelude::*;
     use std::fs;
     use tempfile::tempdir;
 
@@ -279,6 +335,35 @@ mod tests {
                 Some("protein_coding")
             );
             assert!(rec.attrs.contains_key("ID"));
+        }
+    }
+
+    #[test]
+    fn parser_rejects_hidden_characters_in_identifiers() {
+        let tmp = tempdir().expect("tempdir");
+        let gff = tmp.path().join("hidden.gff3");
+        fs::write(
+            &gff,
+            "chr1\tsrc\tgene\t1\t10\t.\t+\t.\tID=g\u{200B}1;Name=Gene 1\n",
+        )
+        .expect("write gff3");
+        let err = parse_gff3_records(&gff).expect_err("hidden char must fail");
+        assert!(err.0.contains("GFF3_FORBIDDEN_HIDDEN_CHAR"));
+    }
+
+    proptest! {
+        #[test]
+        fn id_values_reject_whitespace_and_hidden_chars(seed in "[A-Za-z0-9_\\-]{1,32}") {
+            let tmp = tempdir().expect("tempdir");
+            let gff = tmp.path().join("id.gff3");
+            let bad = format!(" {seed}\u{200B}");
+            let row = format!("chr1\tsrc\tgene\t1\t10\t.\t+\t.\tID={bad};Name=Gene\n");
+            fs::write(&gff, row).expect("write gff3");
+            let err = parse_gff3_records(&gff).expect_err("id normalization guard must fail");
+            prop_assert!(
+                err.0.contains("GFF3_FORBIDDEN_HIDDEN_CHAR")
+                    || err.0.contains("GFF3_INVALID_ID_WHITESPACE")
+            );
         }
     }
 }
