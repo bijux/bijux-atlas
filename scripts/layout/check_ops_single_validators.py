@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+ops_mk = (ROOT / "makefiles" / "ops.mk").read_text(encoding="utf-8", errors="ignore")
+
+checks = {
+    "ops-stack-validate": "./ops/stack/scripts/validate.sh",
+    "ops-observability-pack-verify": "./ops/obs/scripts/verify_pack.sh",
+    "ops-load-manifest-validate": "./ops/load/scripts/validate_suite_manifest.py",
+}
+errors: list[str] = []
+for target, cmd in checks.items():
+    if target not in ops_mk or cmd not in ops_mk:
+        errors.append(f"missing canonical validator wiring: {target} -> {cmd}")
+
+blocked = [r"validate_pack\.sh", r"validate_stack\.sh", r"validate_suite.*\.py"]
+allow = {
+    "ops/stack/scripts/validate.sh",
+    "ops/obs/scripts/verify_pack.sh",
+    "ops/load/scripts/validate_suite_manifest.py",
+}
+for path in (ROOT / "ops").rglob("*"):
+    if not path.is_file():
+        continue
+    rel = path.relative_to(ROOT).as_posix()
+    for pat in blocked:
+        if re.search(pat, rel) and rel not in allow:
+            errors.append(f"forbidden duplicate validator entrypoint: {rel}")
+
+if errors:
+    print("ops single validator contract failed:", file=sys.stderr)
+    for e in errors:
+        print(f"- {e}", file=sys.stderr)
+    raise SystemExit(1)
+
+print("ops single validator contract passed")

@@ -44,3 +44,5 @@ Use Make targets only.
 
 - `make ops-ref-grade-local`
 - `make ops-full` to find the canonical entrypoint for this area.
+
+Canonical docs: `ops/README.md`, `docs/operations/INDEX.md`.

@@ -25,6 +25,7 @@
 - Runtime artifacts write under `ops/_artifacts/` only, unless allowlisted in `configs/ops/artifacts-allowlist.txt`.
 - JSON schemas for ops manifests live under `ops/_schemas/`.
 - Symlinked domain directories inside `ops/` are forbidden.
+- Canonical pinned tool versions live in `configs/ops/tool-versions.json`.
 
 ## Stable vs Generated
 

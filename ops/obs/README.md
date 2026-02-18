@@ -14,3 +14,5 @@ Use make targets for operations:
 - `make ops-observability-pack-health`
 - `make ops-observability-pack-export`
 - `make ops-observability-pack-conformance-report`
+
+Canonical docs: `ops/README.md`, `docs/operations/INDEX.md`.

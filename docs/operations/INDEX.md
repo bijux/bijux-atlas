@@ -46,6 +46,17 @@ Does not define product semantics or internal crate APIs.
 - [Migration Note](migration-note.md)
 - [Platform Handover](platform-handover.md)
 
+## Topic Registry
+
+| Topic | Canonical Doc |
+|---|---|
+| k8s chart/install/gates | `docs/operations/k8s/INDEX.md` |
+| observability contracts/drills | `docs/operations/observability/INDEX.md` |
+| load suites/baselines | `docs/operations/load/INDEX.md` |
+| e2e composition | `docs/operations/e2e/INDEX.md` |
+| runbooks | `docs/operations/runbooks/INDEX.md` |
+| security operations | `docs/operations/security/INDEX.md` |
+
 ## Failure modes
 
 Missing operational references causes inconsistent incident response and unsafe deployments.

@@ -153,6 +153,12 @@ ci-ops-index-surface:
 ci-ops-readme-make-only:
 	@python3 ./scripts/docs/check_ops_readmes_make_only.py
 
+ci-ops-readme-canonical-links:
+	@python3 ./scripts/docs/check_ops_readme_canonical_links.py
+
+ci-ops-doc-duplication:
+	@python3 ./scripts/docs/check_ops_doc_duplication.py
+
 ci-forbid-raw-paths:
 	@./scripts/layout/check_no_forbidden_paths.sh
 
@@ -275,4 +281,4 @@ governance-check: ## Run governance gates: layout + docs + contracts + scripts +
 	ci-init-iso-dirs ci-init-tmp ci-dependency-lock-refresh ci-release-compat-matrix-verify ci-release-build-artifacts \
 	ci-release-notes-render ci-release-publish-gh ci-cosign-sign ci-cosign-verify ci-chart-package-release ci-reproducible-verify \
 	ci-security-advisory-render ci-ops-install-prereqs ci-ops-install-load-prereqs \
-	ci-log-fields-contract
+	ci-log-fields-contract ci-ops-index-surface ci-ops-readme-make-only ci-ops-readme-canonical-links ci-ops-doc-duplication
