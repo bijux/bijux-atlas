@@ -81,7 +81,16 @@ pub fn openapi_v1_spec() -> Value {
               {"name": "region", "in": "query", "schema": {"type": "string", "pattern": "^[^:]+:[0-9]+-[0-9]+$"}},
               {"name": "limit", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 500}},
               {"name": "cursor", "in": "query", "schema": {"type": "string", "maxLength": 4096}},
-              {"name": "fields", "in": "query", "schema": {"type": "string", "description": "comma-separated projection fields"}},
+              {"name": "include", "in": "query", "schema": {
+                "type": "string",
+                "description": "comma-separated include flags; base response is minimal (gene_id,name)",
+                "anyOf": [
+                  {"type": "string", "enum": ["coords"]},
+                  {"type": "string", "enum": ["biotype"]},
+                  {"type": "string", "enum": ["counts"]},
+                  {"type": "string", "enum": ["length"]}
+                ]
+              }},
               {"name": "pretty", "in": "query", "schema": {"type": "boolean"}},
               {"name": "explain", "in": "query", "schema": {"type": "boolean", "description": "embed extraction policy details"}}
             ],

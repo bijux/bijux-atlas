@@ -37,24 +37,20 @@ fn request_validation_limit_bounds_are_enforced() {
 fn request_validation_fields_are_strict_and_deduplicated() {
     let mut q = base_query();
     q.insert(
-        "fields".to_string(),
-        "name,gene_id,name,biotype".to_string(),
+        "include".to_string(),
+        "coords,biotype,coords,length".to_string(),
     );
-    let parsed = parse_list_genes_params(&q).expect("fields");
+    let parsed = parse_list_genes_params(&q).expect("include");
     assert_eq!(
-        parsed.fields.expect("fields"),
-        vec![
-            "name".to_string(),
-            "gene_id".to_string(),
-            "biotype".to_string()
-        ]
+        parsed.include.expect("include").len(),
+        3
     );
 
     let mut bad = base_query();
-    bad.insert("fields".to_string(), "gene_id,,name".to_string());
+    bad.insert("include".to_string(), "coords,,length".to_string());
     assert_eq!(
         parse_list_genes_params(&bad)
-            .expect_err("invalid fields")
+            .expect_err("invalid include")
             .code,
         ApiErrorCode::InvalidQueryParameter
     );

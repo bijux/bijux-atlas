@@ -22,7 +22,7 @@ pub use errors::{ApiError, ApiErrorCode};
 pub use openapi::openapi_v1_spec;
 pub use params::{
     parse_list_genes_params, parse_list_genes_params_with_limit, parse_region_filter,
-    ListGenesParams, MAX_CURSOR_BYTES,
+    IncludeField, ListGenesParams, MAX_CURSOR_BYTES,
 };
 pub use responses::{ApiContentType, ApiResponseEnvelope, ContentNegotiation};
 pub use wire::{list_genes_v1, QueryAdapter};
@@ -85,10 +85,10 @@ mod tests {
     }
 
     #[test]
-    fn parse_params_invalid_fields() {
+    fn parse_params_invalid_include() {
         let mut q = required_dataset_dims();
-        q.insert("fields".to_string(), "name,nope".to_string());
-        let err = parse_list_genes_params(&q).expect_err("invalid fields");
+        q.insert("include".to_string(), "coords,nope".to_string());
+        let err = parse_list_genes_params(&q).expect_err("invalid include");
         assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
     }
 

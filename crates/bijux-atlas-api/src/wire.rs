@@ -1,5 +1,5 @@
 use crate::errors::ApiError;
-use crate::params::ListGenesParams;
+use crate::params::{IncludeField, ListGenesParams};
 use bijux_atlas_query::{GeneQueryResponse, GeneRow};
 use serde_json::{json, Map, Value};
 use std::collections::BTreeSet;
@@ -14,7 +14,7 @@ pub fn list_genes_v1<A: QueryAdapter>(
 ) -> Result<Value, ApiError> {
     let page = adapter.list_genes(params)?;
     let requested = params
-        .fields
+        .include
         .as_ref()
         .map(|v| v.iter().cloned().collect::<BTreeSet<_>>());
     let rows = page
@@ -28,25 +28,21 @@ pub fn list_genes_v1<A: QueryAdapter>(
     }))
 }
 
-fn include_field(requested: Option<&BTreeSet<String>>, field: &str) -> bool {
-    requested.is_none_or(|set| set.contains(field))
+fn include_field(requested: Option<&BTreeSet<IncludeField>>, field: IncludeField) -> bool {
+    requested.is_some_and(|set| set.contains(&field))
 }
 
-fn shape_row(row: &GeneRow, requested: Option<&BTreeSet<String>>) -> Value {
+fn shape_row(row: &GeneRow, requested: Option<&BTreeSet<IncludeField>>) -> Value {
     // Policy: omitted when field is not requested; null when requested but value is absent.
     let mut map = Map::new();
-    if include_field(requested, "gene_id") {
-        map.insert("gene_id".to_string(), Value::String(row.gene_id.clone()));
-    }
-    if include_field(requested, "name") {
-        map.insert(
-            "name".to_string(),
-            row.name
-                .as_ref()
-                .map_or(Value::Null, |x| Value::String(x.clone())),
-        );
-    }
-    if include_field(requested, "coords") {
+    map.insert("gene_id".to_string(), Value::String(row.gene_id.clone()));
+    map.insert(
+        "name".to_string(),
+        row.name
+            .as_ref()
+            .map_or(Value::Null, |x| Value::String(x.clone())),
+    );
+    if include_field(requested, IncludeField::Coords) {
         map.insert(
             "seqid".to_string(),
             row.seqid
@@ -62,7 +58,7 @@ fn shape_row(row: &GeneRow, requested: Option<&BTreeSet<String>>) -> Value {
             row.end.map_or(Value::Null, |x| Value::Number(x.into())),
         );
     }
-    if include_field(requested, "biotype") {
+    if include_field(requested, IncludeField::Biotype) {
         map.insert(
             "biotype".to_string(),
             row.biotype
@@ -70,14 +66,14 @@ fn shape_row(row: &GeneRow, requested: Option<&BTreeSet<String>>) -> Value {
                 .map_or(Value::Null, |x| Value::String(x.clone())),
         );
     }
-    if include_field(requested, "transcript_count") {
+    if include_field(requested, IncludeField::Counts) {
         map.insert(
             "transcript_count".to_string(),
             row.transcript_count
                 .map_or(Value::Null, |x| Value::Number(x.into())),
         );
     }
-    if include_field(requested, "sequence_length") {
+    if include_field(requested, IncludeField::Length) {
         map.insert(
             "sequence_length".to_string(),
             row.sequence_length

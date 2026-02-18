@@ -412,7 +412,7 @@
           "default": null,
           "in": "query",
           "max": null,
-          "name": "fields",
+          "name": "include",
           "required": false,
           "type": "string"
         },

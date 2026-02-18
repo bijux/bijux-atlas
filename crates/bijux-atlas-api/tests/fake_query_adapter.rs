@@ -1,4 +1,4 @@
-use bijux_atlas_api::{list_genes_v1, ApiError, ListGenesParams, QueryAdapter};
+use bijux_atlas_api::{list_genes_v1, ApiError, IncludeField, ListGenesParams, QueryAdapter};
 use bijux_atlas_core::ErrorCode;
 use bijux_atlas_query::{GeneQueryResponse, GeneRow};
 
@@ -29,7 +29,7 @@ fn base_params() -> ListGenesParams {
         name_prefix: None,
         biotype: None,
         region: None,
-        fields: None,
+        include: None,
         pretty: false,
     }
 }
@@ -51,13 +51,13 @@ fn wire_response_uses_omit_vs_null_policy() {
     };
 
     let mut params = base_params();
-    params.fields = Some(vec!["gene_id".to_string(), "biotype".to_string()]);
+    params.include = Some(vec![IncludeField::Biotype]);
 
     let payload = list_genes_v1(&adapter, &params).expect("wire response");
     let encoded = serde_json::to_string(&payload).expect("json");
     assert_eq!(
         encoded,
-        "{\"next_cursor\":\"v1.cursor\",\"rows\":[{\"biotype\":null,\"gene_id\":\"gene1\"}]}"
+        "{\"next_cursor\":\"v1.cursor\",\"rows\":[{\"biotype\":null,\"gene_id\":\"gene1\",\"name\":\"BRCA1\"}]}"
     );
 }
 
@@ -81,7 +81,7 @@ fn wire_response_golden_for_default_projection() {
     let encoded = serde_json::to_string(&payload).expect("json");
     assert_eq!(
         encoded,
-        "{\"next_cursor\":null,\"rows\":[{\"biotype\":\"protein_coding\",\"end\":20,\"gene_id\":\"gene1\",\"name\":\"BRCA1\",\"seqid\":\"chr1\",\"sequence_length\":11,\"start\":10,\"transcript_count\":2}]}"
+        "{\"next_cursor\":null,\"rows\":[{\"gene_id\":\"gene1\",\"name\":\"BRCA1\"}]}"
     );
 }
 

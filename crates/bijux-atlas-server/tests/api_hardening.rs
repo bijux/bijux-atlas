@@ -63,7 +63,7 @@ async fn error_contract_and_etag_behaviors() {
 
     let (status, _, body) = send_raw(
         addr,
-        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&fields=nope",
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&include=nope",
         &[],
     )
     .await;
