@@ -832,6 +832,38 @@ ops-open-grafana: ## Print local ops service URLs
 ops-local-full-stack: ## Single-command local full stack (kind + deploy + publish + smoke + k6 + observability)
 	@$(MAKE) ops-full
 
+stack-full: ## Full-stack must-pass truth flow with contract report bundle
+	@set -e; \
+	status=failed; \
+	run_id="$${OPS_RUN_ID:-$${ATLAS_RUN_ID:-stack-$$(date +%Y%m%d-%H%M%S)}}"; \
+	report_dir="artifacts/stack-report"; \
+	teardown="$${STACK_KEEP_UP:-0}"; \
+	trap 'python3 ./scripts/public/stack/build_stack_report.py --status "$$status" --run-id "$$run_id" --out-dir "$$report_dir" --values-file "$${ATLAS_VALUES_FILE:-ops/k8s/values/local.yaml}"; python3 ./scripts/public/stack/validate_stack_report.py --report-dir "$$report_dir" --schema ops/report/stack-contract.schema.json; if [ "$$teardown" != "1" ]; then $(MAKE) ops-down >/dev/null 2>&1 || true; $(MAKE) ops-kind-down >/dev/null 2>&1 || true; fi' EXIT; \
+	$(MAKE) ops-tools-check; \
+	$(MAKE) ops-kind-validate; \
+	$(MAKE) ops-stack-up; \
+	$(MAKE) ops-deploy PROFILE=local; \
+	$(MAKE) ops-publish DATASET="$${DATASET:-medium}"; \
+	$(MAKE) ops-warm; \
+	$(MAKE) ops-smoke; \
+	test -s artifacts/ops/observability/metrics.prom; \
+	$(MAKE) ops-otel-required-check; \
+	$(MAKE) ops-load-smoke; \
+	python3 ./scripts/public/perf/check_percent_regression.py --baseline-profile "$${ATLAS_PERF_BASELINE_PROFILE:-local}" --max-p95-regression 0.15 --results artifacts/perf/results; \
+	$(MAKE) ops-metrics-check; \
+	$(MAKE) ops-alerts-validate; \
+	$(MAKE) ops-dashboards-validate; \
+	$(MAKE) ops-report; \
+	status=passed
+
+stack-full-chaos: ## Weekly chaos full-stack gate (stack-full + drill runner)
+	@set -e; \
+	STACK_KEEP_UP=1 $(MAKE) stack-full; \
+	$(MAKE) ops-drill-runner; \
+	$(MAKE) ops-report; \
+	$(MAKE) ops-down; \
+	$(MAKE) ops-kind-down
+
 ops-drill-runner: ## Run core drills and verify runbook contract linkage
 	@$(MAKE) ops-drill-store-outage
 	@$(MAKE) ops-drill-corruption-dataset

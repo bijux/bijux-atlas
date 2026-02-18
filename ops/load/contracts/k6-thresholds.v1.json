@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "source": "ops/load/suites/suites.json",
+  "regression_policy": {
+    "p95_regression_max_percent": 15
+  },
+  "profiles": {
+    "smoke": [
+      "mixed",
+      "cheap-only-survival"
+    ]
+  }
+}
