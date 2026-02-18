@@ -18,6 +18,9 @@ Defines what "ops reference-grade" means for local and CI operations.
 
 - Run ID format: `atlas-ops-YYYYMMDD-HHMMSS`.
 - Namespace format: one namespace per run (`$OPS_NAMESPACE`, default = run ID).
+- Safety namespace pattern: `atlas-ops-*`.
+
+kind-cluster-contract-hash: `b7cbaefe788fae38340ef3aa0bc1b79071b8da6f14e8379af029ac1a3e412960`
 
 ## Modes
 

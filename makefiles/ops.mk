@@ -16,6 +16,8 @@ ops-doctor: ## Validate and print pinned ops tool versions and canonical env
 
 ops-stack-up: ## Bring up stack components only (kind + stack manifests)
 	@$(MAKE) -s ops-env-validate
+	@./ops/stack/kind/context_guard.sh
+	@./ops/stack/kind/namespace_guard.sh
 	@$(MAKE) ops-kind-up
 	@$(MAKE) ops-kind-version-check
 	@$(MAKE) ops-kubectl-version-check
@@ -32,6 +34,8 @@ ops-cluster-sanity: ## Validate cluster node/dns/storageclass sanity
 
 ops-stack-down: ## Tear down stack components and cluster
 	@$(MAKE) -s ops-env-validate
+	@./ops/stack/kind/context_guard.sh
+	@./ops/stack/kind/namespace_guard.sh
 	@./ops/e2e/scripts/down.sh
 
 ops-down: ## Tear down local ops stack
@@ -75,6 +79,36 @@ ops-kind-image-resolution-test: ## Validate atlas image is resolvable inside kin
 
 ops-kind-disk-pressure: ## Simulate node disk pressure (use MODE=clean to remove)
 	@./ops/stack/faults/fill-node-disk.sh "$${MODE:-fill}"
+
+ops-kind-cpu-throttle: ## Simulate cpu throttle pressure in cluster workloads
+	@./ops/stack/faults/cpu-throttle.sh
+
+ops-kind-network-latency: ## Simulate store network latency via toxiproxy
+	@./ops/stack/faults/toxiproxy-latency.sh "$${LATENCY_MS:-250}" "$${JITTER_MS:-25}"
+
+ops-kind-context-guard: ## Refuse non-kind kubectl context unless ALLOW_NON_KIND=1
+	@./ops/stack/kind/context_guard.sh
+
+ops-kind-namespace-guard: ## Enforce ops namespace naming policy atlas-ops-*
+	@./ops/stack/kind/namespace_guard.sh
+
+ops-kind-cleanup-leftovers: ## Delete stale atlas-ops-* namespaces
+	@./ops/stack/kind/cleanup_namespaces.sh
+
+ops-kind-version-drift-test: ## Validate kind version matches pinned tool-versions
+	@./ops/e2e/k8s/tests/test_kind_version_drift.sh
+
+ops-kind-cluster-drift-check: ## Require ops contract marker update when cluster profile changes
+	@./scripts/layout/check_kind_cluster_contract_drift.sh
+
+ops-kind-validate: ## Validate kind substrate (context/namespace/sanity/registry/image/version)
+	@$(MAKE) ops-kind-context-guard
+	@$(MAKE) ops-kind-namespace-guard
+	@$(MAKE) ops-cluster-sanity
+	@if [ "$${ATLAS_KIND_REGISTRY_ENABLE:-0}" = "1" ]; then $(MAKE) ops-kind-registry-up; fi
+	@$(MAKE) ops-kind-image-resolution-test
+	@$(MAKE) ops-kind-version-drift-test
+	@$(MAKE) ops-kind-cluster-drift-check
 
 ops-stack-uninstall: ## Uninstall stack resources and cluster
 	@./ops/stack/scripts/uninstall.sh

@@ -66,6 +66,14 @@ Generated from `make help`. Do not edit manually.
 - `ops-kind-registry-up`
 - `ops-kind-image-resolution-test`
 - `ops-kind-disk-pressure`
+- `ops-kind-cpu-throttle`
+- `ops-kind-network-latency`
+- `ops-kind-context-guard`
+- `ops-kind-namespace-guard`
+- `ops-kind-cleanup-leftovers`
+- `ops-kind-version-drift-test`
+- `ops-kind-cluster-drift-check`
+- `ops-kind-validate`
 - `ops-reset`
 - `ops-clean`
 - `ops-env-print`
