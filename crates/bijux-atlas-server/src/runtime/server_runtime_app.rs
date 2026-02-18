@@ -99,6 +99,10 @@ pub fn build_router(state: AppState) -> Router {
             get(http::handlers::release_dataset_handler),
         )
         .route("/v1/genes", get(http::handlers::genes_handler))
+        .route(
+            "/v1/query/validate",
+            post(http::handlers::query_validate_handler),
+        )
         .route("/v1/genes/count", get(http::handlers::genes_count_handler))
         .route("/v1/diff/genes", get(http::diff::diff_genes_handler))
         .route("/v1/diff/region", get(http::diff::diff_region_handler))

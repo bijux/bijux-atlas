@@ -283,6 +283,7 @@ pub(crate) async fn genes_handler(
                             state.api.immutable_gene_ttl,
                             &etag,
                         );
+                        resp = super::handlers::with_query_class(resp, class);
                         state
                             .metrics
                             .observe_request(
@@ -307,6 +308,7 @@ pub(crate) async fn genes_handler(
                     if let Ok(v) = HeaderValue::from_str("redis-hit") {
                         resp.headers_mut().insert("x-atlas-cache", v);
                     }
+                    resp = super::handlers::with_query_class(resp, class);
                     state
                         .metrics
                         .observe_request("/v1/genes", StatusCode::OK, started.elapsed())
@@ -336,6 +338,7 @@ pub(crate) async fn genes_handler(
                                     state.api.immutable_gene_ttl,
                                     &etag,
                                 );
+                                resp = super::handlers::with_query_class(resp, class);
                                 state
                                     .metrics
                                     .observe_request(
@@ -364,6 +367,7 @@ pub(crate) async fn genes_handler(
                             if let Ok(v) = HeaderValue::from_str("redis-hit") {
                                 resp.headers_mut().insert("x-atlas-cache", v);
                             }
+                            resp = super::handlers::with_query_class(resp, class);
                             state
                                 .metrics
                                 .observe_request("/v1/genes", StatusCode::OK, started.elapsed())
@@ -405,6 +409,7 @@ pub(crate) async fn genes_handler(
                 state.api.immutable_gene_ttl,
                 &entry.etag,
             );
+            resp = super::handlers::with_query_class(resp, class);
             state
                 .metrics
                 .observe_request("/v1/genes", StatusCode::OK, started.elapsed())
@@ -602,12 +607,19 @@ pub(crate) async fn genes_handler(
                 || msg.contains("scan")
                 || msg.contains("name_prefix")
             {
+                let (code, reason_code) = if msg.contains("region span exceeds") {
+                    (ApiErrorCode::RangeTooLarge, "RANGE_TOO_LARGE")
+                } else if msg.contains("estimated query cost") {
+                    (ApiErrorCode::QueryTooExpensive, "QUERY_TOO_EXPENSIVE")
+                } else {
+                    (ApiErrorCode::QueryRejectedByPolicy, "QUERY_REJECTED")
+                };
                 let resp = super::handlers::api_error_response(
                     StatusCode::UNPROCESSABLE_ENTITY,
                     super::handlers::error_json(
-                        ApiErrorCode::QueryRejectedByPolicy,
+                        code,
                         "query rejected",
-                        json!({"message": msg}),
+                        json!({"message": msg, "reason_code": reason_code}),
                     ),
                 );
                 state
@@ -744,6 +756,7 @@ pub(crate) async fn genes_handler(
     if super::handlers::if_none_match(&headers).as_deref() == Some(etag.as_str()) {
         let mut resp = StatusCode::NOT_MODIFIED.into_response();
         super::handlers::put_cache_headers(resp.headers_mut(), state.api.immutable_gene_ttl, &etag);
+        resp = super::handlers::with_query_class(resp, class);
         state
             .metrics
             .observe_request("/v1/genes", StatusCode::NOT_MODIFIED, started.elapsed())
@@ -787,6 +800,7 @@ pub(crate) async fn genes_handler(
         let text = String::from_utf8_lossy(&response_bytes).to_string();
         let mut resp = (StatusCode::OK, text).into_response();
         super::handlers::put_cache_headers(resp.headers_mut(), state.api.immutable_gene_ttl, &etag);
+        resp = super::handlers::with_query_class(resp, class);
         state
             .metrics
             .observe_request("/v1/genes", StatusCode::OK, started.elapsed())
@@ -804,6 +818,7 @@ pub(crate) async fn genes_handler(
         resp.headers_mut()
             .insert("content-encoding", HeaderValue::from_static(encoding));
     }
+    resp = super::handlers::with_query_class(resp, class);
     super::handlers::put_cache_headers(resp.headers_mut(), state.api.immutable_gene_ttl, &etag);
     if class == QueryClass::Heavy || class == QueryClass::Cheap {
         let mut cache = state.hot_query_cache.lock().await;
