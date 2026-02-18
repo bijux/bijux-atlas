@@ -20,7 +20,7 @@ This file describes service-level interpretation and error-budget operations.
 
 ## Valid Degradation Modes
 - Cached-only serving when store backend is degraded.
-- Temporary request shedding via rate/concurrency limits.
+- Provisional request shedding via rate/concurrency limits.
 - Strict response-size rejection instead of partial/truncated payloads.
 
 ## Related Contracts

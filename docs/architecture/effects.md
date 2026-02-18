@@ -4,7 +4,7 @@ Concept ID: `concept.effects-boundary`
 
 - Owner: `bijux-atlas-server`
 
-Effect policy for Phase 1:
+Effect policy for the current stable contract:
 
 - Pure domain and transformation crates: `core`, `model`, `ingest`, `query`.
   - No external process spawning.

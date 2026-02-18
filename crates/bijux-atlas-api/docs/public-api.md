@@ -1,5 +1,7 @@
 # PUBLIC API: bijux-atlas-api
 
+Stability reference: [Stability Levels](../../../docs/_style/stability-levels.md)
+
 Stable public items for v1:
 
 - `ApiErrorCode`

@@ -3,4 +3,4 @@
 ## Architecture
 
 - This crate is part of the Atlas boundary-controlled workspace.
-- Internal design is intentionally minimal in Phase 2.
+- Surface is intentionally minimal and internal modules remain internal-only unless promoted in `public-api.md`.

@@ -1,7 +1,11 @@
 # Ops Observability
 
-Canonical home for observability assets (alerts, dashboards, contracts, manifests, scripts).
+Contract and drill pack for Atlas observability.
 
-Use `make ops-observability-*` targets.
+- Inputs: dashboard JSON, alert rules, metrics/tracing/log contracts, validation scripts.
+- Outputs: validated observability assets and snapshots under `artifacts/ops/observability/`.
+- Invariants: contract files are SSOT, dashboards/alerts are linted, traces/metrics snapshots are schema-checked.
+- Gates: run `make ops-observability-validate` and `make ops-observability-pack-tests`.
 
-See top-level ops guide: `ops/README.md`.
+Use make targets only; avoid direct script invocations in runbooks/docs.
+Canonical ops entrypoint remains `ops/README.md`.

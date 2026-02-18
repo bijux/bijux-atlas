@@ -1,5 +1,7 @@
 # PUBLIC API: bijux-atlas-store
 
+Stability reference: [Stability Levels](../../../docs/_style/stability-levels.md)
+
 Stable exports:
 - `CRATE_NAME`
 - Trait: `ArtifactStore`

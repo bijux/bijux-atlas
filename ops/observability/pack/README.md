@@ -12,4 +12,4 @@ Uninstall:
 make ops-obs-down
 ```
 
-Canonical docs: `docs/operations/observability/modes.md`.
+Canonical docs: `docs/operations/observability/profiles.md`.

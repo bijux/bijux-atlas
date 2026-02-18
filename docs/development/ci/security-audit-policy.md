@@ -5,4 +5,4 @@
 - Embargoed advisories:
   - Do not disclose details publicly before embargo lifts.
   - Track internally with owner + remediation timeline.
-  - Remove temporary exceptions immediately after fix release.
+  - Remove provisional exceptions immediately after fix release.
