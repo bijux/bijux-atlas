@@ -14,6 +14,7 @@ required = {
 }
 
 allowed_extra = {"fixtures", "registry", "report"}
+allowed_extra = allowed_extra | {"_lint"}
 allowed = required | allowed_extra
 
 errors: list[str] = []
