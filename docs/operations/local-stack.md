@@ -21,6 +21,13 @@ make ops-full
 
 Canonical targets: `ops-up`, `ops-deploy`, `ops-warm`, `ops-smoke`, `ops-k8s-tests`, `ops-load-smoke`, `ops-observability-validate`, `ops-full`.
 
+Atlas deploy profile targets:
+- `make ops-deploy PROFILE=local`
+- `make ops-deploy PROFILE=offline`
+- `make ops-deploy PROFILE=perf`
+- `make ops-undeploy`
+- `make ops-redeploy PROFILE=local`
+
 Stack service lifecycle targets:
 - `ops-minio-up`, `ops-minio-down`, `ops-minio-reset`, `ops-minio-ready`, `ops-minio-bucket-check`
 - `ops-prom-up`, `ops-prom-down`, `ops-prom-ready`, `ops-prom-scrape-atlas-check`
