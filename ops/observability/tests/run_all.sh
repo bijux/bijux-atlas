@@ -11,5 +11,7 @@ trap on_fail ERR
 
 "$ROOT/ops/observability/tests/test_contracts.sh"
 "$ROOT/ops/observability/tests/test_profiles.sh"
+"$ROOT/ops/observability/tests/test_coverage.sh"
+"$ROOT/ops/observability/tests/test_outage_matrix.sh"
 
 echo "observability pack tests passed"
