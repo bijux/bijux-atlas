@@ -18,6 +18,7 @@ Manifest is strict JSON (`serde(deny_unknown_fields)`) with:
 - Schema evolution note: `schema_evolution_note`
 - `toolchain_hash` (rust toolchain + lockfile digest)
 - `created_at` allowed for metadata; excluded from determinism signature
+- `sharding_plan` required (`none|contig|region_grid`) even when `none`
 - `contig_normalization_aliases` stores seqid alias mapping used during ingest
 - Artifact hash v1 is defined over deterministic SQLite bytes plus stable manifest checksum fields; wall-clock metadata is excluded
 - Derived column lineage map: `derived_column_origins`

@@ -33,6 +33,7 @@ Does not replace registry-specific detail pages.
 | QC schema | `QC_SCHEMA.json` | `_generated/contracts/QC_SCHEMA.md` | Stable |
 | Normalized format schema | `NORMALIZED_FORMAT_SCHEMA.json` | `_generated/contracts/NORMALIZED_FORMAT_SCHEMA.md` | Evolving |
 | Release diff schema | `DIFF_SCHEMA.json` | `_generated/contracts/DIFF_SCHEMA.md` | Additive |
+| Sharding schema | `SHARDING_SCHEMA.json` | `_generated/contracts/SHARDING_SCHEMA.md` | Additive |
 
 ## Generated docs
 
@@ -47,6 +48,7 @@ Does not replace registry-specific detail pages.
 - [_generated/contracts/QC_SCHEMA.md](../_generated/contracts/QC_SCHEMA.md)
 - [_generated/contracts/NORMALIZED_FORMAT_SCHEMA.md](../_generated/contracts/NORMALIZED_FORMAT_SCHEMA.md)
 - [_generated/contracts/DIFF_SCHEMA.md](../_generated/contracts/DIFF_SCHEMA.md)
+- [_generated/contracts/SHARDING_SCHEMA.md](../_generated/contracts/SHARDING_SCHEMA.md)
 
 ## Failure modes
 
