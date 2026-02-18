@@ -44,6 +44,7 @@ Expected output: docs build and docs-structure checks pass.
 - [Component Responsibilities](component-responsibilities.md)
 - [Data Access Patterns](data-access-patterns.md)
 - [Cache Manager Contract](cache-manager.md)
+- [Overload And Degradation Contract](overload-and-degradation.md)
 - [Store And Registry Contract](store-and-registry.md)
 - [Query Connection Strategy](query-connection-strategy.md)
 - [No Serving Writes](no-serving-writes.md)
