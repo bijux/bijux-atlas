@@ -22,6 +22,10 @@ Does not duplicate page-level details.
 
 List and maintain links to section pages in this directory.
 
+- [Manifest Contract](manifest-contract.md)
+- [SQLite Schema Contract](sqlite-schema-contract.md)
+- [SQLite Migration Strategy](sqlite-migration-strategy.md)
+
 ## Examples
 
 - `ARTIFACT_SCHEMA.json`
