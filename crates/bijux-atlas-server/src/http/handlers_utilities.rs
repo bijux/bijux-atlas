@@ -36,6 +36,8 @@ pub(crate) fn json_envelope(
     warnings: Option<Vec<Value>>,
 ) -> Value {
     let mut root = json!({
+        "api_version": "v1",
+        "contract_version": "v1",
         "dataset": dataset.unwrap_or(Value::Null),
         "page": page.unwrap_or(Value::Null),
         "data": data,
@@ -431,6 +433,8 @@ pub(crate) async fn version_handler(State(state): State<AppState>) -> impl IntoR
     let request_id = make_request_id(&state);
     let started = Instant::now();
     let payload = json!({
+        "api_version": "v1",
+        "contract_version": "v1",
         "plugin": {
             "name": "bijux-atlas",
             "version": env!("CARGO_PKG_VERSION"),
@@ -440,6 +444,7 @@ pub(crate) async fn version_handler(State(state): State<AppState>) -> impl IntoR
         "server": {
             "crate": CRATE_NAME,
             "config_schema_version": crate::config::CONFIG_SCHEMA_VERSION,
+            "api_version": "v1",
             "api_contract_version": "v1",
         }
     });

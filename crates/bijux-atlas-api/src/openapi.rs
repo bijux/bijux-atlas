@@ -106,6 +106,8 @@ pub fn openapi_v1_spec() -> Value {
                     "examples": {
                       "ok": {
                         "value": {
+                          "api_version": "v1",
+                          "contract_version": "v1",
                           "dataset": {"release":"110","species":"homo_sapiens","assembly":"GRCh38"},
                           "page": {"next_cursor":"v1.opaque.cursor"},
                           "data": {"rows": [{"gene_id": "ENSG000001", "name": "BRCA1"}]},

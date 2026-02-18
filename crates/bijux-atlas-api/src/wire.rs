@@ -27,6 +27,8 @@ pub fn list_genes_v1<A: QueryAdapter>(
         .as_ref()
         .map(|cursor| json!({ "next_cursor": cursor }));
     Ok(json!({
+        "api_version": "v1",
+        "contract_version": "v1",
         "dataset": {
             "release": params.release.clone(),
             "species": params.species.clone(),
