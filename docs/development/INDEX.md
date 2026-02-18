@@ -32,6 +32,8 @@ List and maintain links to section pages in this directory.
 - [Repository Layout](repo-layout.md)
 - [Repository Surface](repo-surface.md)
 - [Symlink Index](symlinks.md)
+- [Tool Config Shims](tool-config-shims.md)
+- [Config Versioning](config-versioning.md)
 - [Local Noise Policy](local-noise.md)
 - [Contributing](contributing.md)
 - [Add Dataset Type](add-dataset-type.md)

@@ -46,4 +46,5 @@ Expected output: symlink index check and layout checks pass.
 
 - [Repository Surface](repo-surface.md)
 - [Ops Canonical Layout](ops-canonical-layout.md)
+- [Tool Config Shims](tool-config-shims.md)
 - [Makefiles Surface](makefiles/surface.md)

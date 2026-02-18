@@ -8,4 +8,5 @@ Validation:
 
 ```bash
 make ops-tools-check
+make doctor
 ```

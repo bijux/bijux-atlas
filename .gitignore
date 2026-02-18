@@ -34,6 +34,9 @@ ops/openapi/v1/openapi.generated.json
 *.gcno
 *.lcov
 coverage/
+!configs/coverage/
+!configs/coverage/thresholds.toml
+!configs/coverage/README.md
 flamegraph.svg
 perf.data
 perf.data.old

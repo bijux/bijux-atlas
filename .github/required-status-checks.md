@@ -15,6 +15,7 @@ Required branch-protection checks for `main`:
 - `license-check`
 - `policy-lint`
 - `policy-schema-drift`
+- `config-check`
 - `ssot-drift`
 - `crate-structure`
 - `crate-docs-contract`
