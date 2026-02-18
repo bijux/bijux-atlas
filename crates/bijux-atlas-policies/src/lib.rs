@@ -17,7 +17,7 @@ pub use schema::{
 };
 pub use validate::{
     canonical_config_json, load_policy_from_workspace, policy_config_path, policy_schema_path,
-    validate_policy_change_requires_version_bump, validate_policy_config, resolve_mode_profile,
+    resolve_mode_profile, validate_policy_change_requires_version_bump, validate_policy_config,
     validate_schema_version_transition, PolicyValidationError,
 };
 

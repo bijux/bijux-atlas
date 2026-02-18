@@ -209,7 +209,9 @@ fn compatibility_delta(previous: &serde_json::Value, current: &serde_json::Value
         let prev_ops = prev_paths[path]
             .as_object()
             .expect("previous path operations");
-        let cur_ops = cur_paths[path].as_object().expect("current path operations");
+        let cur_ops = cur_paths[path]
+            .as_object()
+            .expect("current path operations");
         let prev_ops_set = prev_ops.keys().cloned().collect::<BTreeSet<_>>();
         let cur_ops_set = cur_ops.keys().cloned().collect::<BTreeSet<_>>();
         for removed_op in prev_ops_set.difference(&cur_ops_set) {
