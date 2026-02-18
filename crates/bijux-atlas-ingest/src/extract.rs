@@ -2,8 +2,9 @@ use crate::gff3::Gff3Record;
 use crate::{IngestError, IngestOptions};
 use bijux_atlas_core::canonical;
 use bijux_atlas_model::{
-    DuplicateGeneIdPolicy, FeatureIdUniquenessPolicy, GeneIdentifierPolicy, IngestAnomalyReport,
-    StrictnessMode, UnknownFeaturePolicy,
+    DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy,
+    GeneIdentifierPolicy, IngestAnomalyReport, IngestRejection, StrictnessMode,
+    UnknownFeaturePolicy,
 };
 use serde::Serialize;
 use std::collections::{BTreeMap, HashMap, HashSet};
@@ -68,6 +69,7 @@ pub fn extract_gene_rows(
 
     let mut seen_feature_ids: HashMap<String, String> = HashMap::new();
     let mut child_parent_refs: Vec<String> = Vec::new();
+    let mut normalized_seqid_sources: HashMap<String, HashSet<String>> = HashMap::new();
     let parent_cycles = detect_parent_cycles(&records);
     if !parent_cycles.is_empty() {
         anomaly.parent_cycles = parent_cycles;
@@ -80,6 +82,26 @@ pub fn extract_gene_rows(
 
     for rec in records {
         let seqid = opts.seqid_policy.normalize(&rec.seqid);
+        normalized_seqid_sources
+            .entry(seqid.clone())
+            .or_default()
+            .insert(rec.seqid.clone());
+        if opts.reject_normalized_seqid_collisions
+            && normalized_seqid_sources
+                .get(&seqid)
+                .map(|s| s.len() > 1)
+                .unwrap_or(false)
+            && matches!(opts.strictness, StrictnessMode::Strict)
+        {
+            let sources = normalized_seqid_sources
+                .get(&seqid)
+                .cloned()
+                .unwrap_or_default();
+            return Err(IngestError(format!(
+                "GFF3_SEQID_COLLISION line={} canonical={} sources={:?}",
+                rec.line, seqid, sources
+            )));
+        }
 
         for dup in &rec.duplicate_attr_keys {
             anomaly.overlapping_ids.push(dup.clone());
@@ -190,6 +212,11 @@ pub fn extract_gene_rows(
                     seqid, rec.start, rec.end
                 );
                 anomaly.missing_required_fields.push(missing_key.clone());
+                anomaly.rejections.push(IngestRejection::new(
+                    rec.line,
+                    "GFF3_MISSING_TRANSCRIPT_ID".to_string(),
+                    rec.raw_line.clone(),
+                ));
                 if matches!(opts.strictness, StrictnessMode::Strict) {
                     return Err(IngestError(missing_key));
                 }
@@ -198,6 +225,11 @@ pub fn extract_gene_rows(
             let Some(parent_attr) = rec.attrs.get("Parent") else {
                 transcript_parents.push((tx_id.clone(), ParentErrorClass::MissingParentAttribute));
                 anomaly.missing_transcript_parents.push(tx_id);
+                anomaly.rejections.push(IngestRejection::new(
+                    rec.line,
+                    "GFF3_MISSING_PARENT".to_string(),
+                    rec.raw_line.clone(),
+                ));
                 if matches!(opts.strictness, StrictnessMode::Strict) {
                     return Err(IngestError(
                         "transcript feature missing Parent attribute".to_string(),
@@ -220,6 +252,11 @@ pub fn extract_gene_rows(
                         "transcript {tx_id} has multiple Parent references"
                     )));
                 }
+                anomaly.rejections.push(IngestRejection::new(
+                    rec.line,
+                    "GFF3_MULTI_PARENT_TRANSCRIPT".to_string(),
+                    rec.raw_line.clone(),
+                ));
                 for p in parents {
                     transcript_parents.push((p, ParentErrorClass::MultipleParents));
                 }
@@ -249,6 +286,11 @@ pub fn extract_gene_rows(
                     "{} missing Parent at {}:{}-{}",
                     rec.feature_type, seqid, rec.start, rec.end
                 ));
+                anomaly.rejections.push(IngestRejection::new(
+                    rec.line,
+                    "GFF3_MISSING_PARENT".to_string(),
+                    rec.raw_line.clone(),
+                ));
                 if matches!(opts.strictness, StrictnessMode::Strict) {
                     return Err(IngestError(format!(
                         "{} feature missing Parent attribute",
@@ -269,6 +311,13 @@ pub fn extract_gene_rows(
                     rec.feature_type
                 )));
             }
+            if parents.len() > 1 {
+                anomaly.rejections.push(IngestRejection::new(
+                    rec.line,
+                    "GFF3_MULTI_PARENT_CHILD".to_string(),
+                    rec.raw_line.clone(),
+                ));
+            }
             for tx_id in parents {
                 child_parent_refs.push(tx_id.clone());
                 if rec.feature_type == "exon" {
@@ -281,6 +330,11 @@ pub fn extract_gene_rows(
             }
         } else {
             anomaly.unknown_feature_types.push(rec.feature_type.clone());
+            anomaly.rejections.push(IngestRejection::new(
+                rec.line,
+                "GFF3_UNKNOWN_FEATURE".to_string(),
+                rec.raw_line.clone(),
+            ));
             if matches!(opts.unknown_feature_policy, UnknownFeaturePolicy::Reject)
                 && matches!(opts.strictness, StrictnessMode::Strict)
             {
@@ -398,6 +452,44 @@ pub fn extract_gene_rows(
         }
     }
     let mut transcript_rows_pending = retained;
+    if !transcript_rows_pending.is_empty() {
+        let mut by_tx: HashMap<String, Vec<TranscriptRecord>> = HashMap::new();
+        for tx in transcript_rows_pending {
+            by_tx.entry(tx.transcript_id.clone()).or_default().push(tx);
+        }
+        let mut merged = Vec::new();
+        let mut keys: Vec<String> = by_tx.keys().cloned().collect();
+        keys.sort();
+        for k in keys {
+            let mut group = by_tx.remove(&k).unwrap_or_default();
+            if group.len() > 1 {
+                if matches!(
+                    opts.duplicate_transcript_id_policy,
+                    DuplicateTranscriptIdPolicy::Reject
+                )
+                    && matches!(opts.strictness, StrictnessMode::Strict)
+                {
+                    return Err(IngestError(format!("duplicate transcript_id: {k}")));
+                }
+                group.sort_by(|a, b| {
+                    a.seqid
+                        .cmp(&b.seqid)
+                        .then(a.start.cmp(&b.start))
+                        .then(a.end.cmp(&b.end))
+                        .then(a.parent_gene_id.cmp(&b.parent_gene_id))
+                });
+                anomaly.rejections.push(IngestRejection::new(
+                    0,
+                    "GFF3_DUPLICATE_TRANSCRIPT_ID".to_string(),
+                    k.clone(),
+                ));
+            }
+            if let Some(first) = group.into_iter().next() {
+                merged.push(first);
+            }
+        }
+        transcript_rows_pending = merged;
+    }
     transcript_rows_pending.sort_by(|a, b| {
         a.seqid
             .cmp(&b.seqid)
@@ -433,6 +525,9 @@ pub fn extract_gene_rows(
         canonical::stable_sort_by_key(anomaly.unknown_feature_types, |x| x.clone());
     anomaly.missing_required_fields =
         canonical::stable_sort_by_key(anomaly.missing_required_fields, |x| x.clone());
+    anomaly.rejections = canonical::stable_sort_by_key(anomaly.rejections, |x| {
+        (x.line, x.code.clone(), x.sample.clone())
+    });
     anomaly.missing_parents.dedup();
     anomaly.missing_transcript_parents.dedup();
     anomaly.multiple_parent_transcripts.dedup();
@@ -445,6 +540,9 @@ pub fn extract_gene_rows(
     anomaly.attribute_fallbacks.dedup();
     anomaly.unknown_feature_types.dedup();
     anomaly.missing_required_fields.dedup();
+    anomaly
+        .rejections
+        .dedup_by(|a, b| a.line == b.line && a.code == b.code && a.sample == b.sample);
 
     let mut gene_rows: Vec<GeneRecord> = deduped.into_values().collect();
     gene_rows.sort_by(|a, b| {

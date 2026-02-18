@@ -431,6 +431,24 @@ pub struct IngestAnomalyReport {
     pub unknown_feature_types: Vec<String>,
     #[serde(default)]
     pub missing_required_fields: Vec<String>,
+    #[serde(default)]
+    pub rejections: Vec<IngestRejection>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(deny_unknown_fields)]
+#[non_exhaustive]
+pub struct IngestRejection {
+    pub line: usize,
+    pub code: String,
+    pub sample: String,
+}
+
+impl IngestRejection {
+    #[must_use]
+    pub fn new(line: usize, code: String, sample: String) -> Self {
+        Self { line, code, sample }
+    }
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]

@@ -29,14 +29,16 @@ pub use diff::{
     ReleaseGeneIndexEntry,
 };
 pub use gene::{
-    BiotypePolicy, DuplicateGeneIdPolicy, FeatureIdUniquenessPolicy, GeneId, GeneNamePolicy,
-    GeneOrderKey, GeneSummary, Region, SeqId, SeqidNormalizationPolicy, Strand, TranscriptId,
-    TranscriptIdPolicy, TranscriptOrderKey, TranscriptTypePolicy, UnknownFeaturePolicy,
+    BiotypePolicy, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy,
+    GeneId, GeneNamePolicy, GeneOrderKey, GeneSummary, Region, SeqId, SeqidNormalizationPolicy,
+    Strand, TranscriptId, TranscriptIdPolicy, TranscriptOrderKey, TranscriptTypePolicy,
+    UnknownFeaturePolicy,
     ID_MAX_LEN, NAME_MAX_LEN, SEQID_MAX_LEN,
 };
 pub use manifest::{
     artifact_paths, ArtifactChecksums, ArtifactManifest, ArtifactPaths, Catalog, CatalogEntry,
-    IngestAnomalyReport, ManifestStats, OptionalFieldPolicy, QcSeverity, ShardCatalog, ShardEntry,
+    IngestAnomalyReport, IngestRejection, ManifestStats, OptionalFieldPolicy, QcSeverity,
+    ShardCatalog, ShardEntry,
     LATEST_ALIAS_POLICY, ManifestInputHashes, NO_IMPLICIT_DEFAULT_DATASET_POLICY,
 };
 pub use policy::{GeneIdentifierPolicy, StrictnessMode};

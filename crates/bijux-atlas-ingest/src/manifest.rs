@@ -131,6 +131,7 @@ pub fn build_and_write_manifest_and_reports(
             "missing_required_fields",
             extract.anomaly.missing_required_fields.len(),
         ),
+        ("rejections", extract.anomaly.rejections.len()),
     ];
     let warn_codes: Vec<serde_json::Value> = warn_items
         .into_iter()
@@ -165,6 +166,7 @@ pub fn build_and_write_manifest_and_reports(
             "attribute_fallbacks": extract.anomaly.attribute_fallbacks,
             "unknown_feature_types": extract.anomaly.unknown_feature_types,
             "missing_required_fields": extract.anomaly.missing_required_fields,
+            "rejections": extract.anomaly.rejections,
         },
         "severity_summary": {
             "INFO": 0,
@@ -267,6 +269,7 @@ pub fn write_qc_and_anomaly_reports_only(
             "missing_required_fields",
             extract.anomaly.missing_required_fields.len(),
         ),
+        ("rejections", extract.anomaly.rejections.len()),
     ];
     let warn_codes: Vec<serde_json::Value> = warn_items
         .into_iter()
@@ -303,6 +306,7 @@ pub fn write_qc_and_anomaly_reports_only(
             "attribute_fallbacks": extract.anomaly.attribute_fallbacks,
             "unknown_feature_types": extract.anomaly.unknown_feature_types,
             "missing_required_fields": extract.anomaly.missing_required_fields,
+            "rejections": extract.anomaly.rejections,
         },
         "severity_summary": {
             "INFO": 0,

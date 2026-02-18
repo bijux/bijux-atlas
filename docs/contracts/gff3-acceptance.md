@@ -63,4 +63,33 @@ Feature-level required attribute checks:
 - Gene biotype extraction: `BiotypePolicy` key priority with explicit `unknown_value` fallback.
 - Transcript biotype uses `transcript_biotype`, then `biotype`, then `gene_biotype`.
 - Contigs are canonicalized via `SeqidNormalizationPolicy` aliases.
+- Strand must be one of `+`, `-`, `.`.
+- CDS phase must be one of `0`, `1`, `2`, `.`.
+- Canonicalized contig collisions are rejected in strict mode by default.
 - Coordinates are validated as 1-based inclusive and bounded by FAI contig lengths.
+
+## Duplicate Entity Policies
+
+- Duplicate gene IDs: governed by `DuplicateGeneIdPolicy` (`Fail` or deterministic dedupe).
+- Duplicate transcript IDs: governed by `DuplicateTranscriptIdPolicy` (`Reject` or deterministic dedupe).
+- Extraction is order-independent: valid outputs must not depend on row grouping/order in source GFF3.
+
+## Rejections Report
+
+Anomaly report includes structured rejection entries:
+
+- `line`: source line number (or `0` for aggregate duplicate-id cases)
+- `code`: stable rejection code
+- `sample`: source line excerpt or identifier sample
+
+Current rejection codes:
+
+- `GFF3_MISSING_REQUIRED_FIELD`
+- `GFF3_INVALID_STRAND`
+- `GFF3_INVALID_PHASE`
+- `GFF3_MISSING_TRANSCRIPT_ID`
+- `GFF3_MISSING_PARENT`
+- `GFF3_MULTI_PARENT_TRANSCRIPT`
+- `GFF3_MULTI_PARENT_CHILD`
+- `GFF3_UNKNOWN_FEATURE`
+- `GFF3_DUPLICATE_TRANSCRIPT_ID`

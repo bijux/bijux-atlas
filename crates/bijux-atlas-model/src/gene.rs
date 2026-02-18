@@ -400,3 +400,16 @@ impl Default for DuplicateGeneIdPolicy {
         Self::Fail
     }
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[non_exhaustive]
+pub enum DuplicateTranscriptIdPolicy {
+    Reject,
+    DedupeKeepLexicographicallySmallest,
+}
+
+impl Default for DuplicateTranscriptIdPolicy {
+    fn default() -> Self {
+        Self::Reject
+    }
+}
