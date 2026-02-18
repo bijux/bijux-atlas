@@ -462,7 +462,9 @@ async fn main() -> Result<(), String> {
     }
 
     let query_limits = bijux_atlas_query::QueryLimits::default();
+    let policy_mode = env::var("ATLAS_POLICY_MODE").unwrap_or_else(|_| "strict".to_string());
     let runtime_policy_payload = serde_json::json!({
+        "policy_mode": policy_mode,
         "api": &api_cfg,
         "cache": &cache_cfg,
         "limits": &query_limits
@@ -472,6 +474,11 @@ async fn main() -> Result<(), String> {
             Ok(bytes) => sha256_hex(&bytes),
             Err(_) => sha256_hex(b"runtime-policy-hash-fallback"),
         };
+    info!(
+        event = "policy_mode_selected",
+        policy_mode = %policy_mode,
+        "policy mode selected"
+    );
     info!(
         runtime_policy_hash = %runtime_policy_hash,
         runtime_policy = %runtime_policy_payload,

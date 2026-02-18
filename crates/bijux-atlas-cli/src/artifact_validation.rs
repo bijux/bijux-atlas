@@ -4,7 +4,7 @@ use bijux_atlas_model::{
     parse_dataset_key, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ReleaseGeneIndex,
     ShardCatalog,
 };
-use bijux_atlas_policies::{canonical_config_json, load_policy_from_workspace};
+use bijux_atlas_policies::{canonical_config_json, load_policy_from_workspace, resolve_mode_profile, PolicyMode};
 use bijux_atlas_store::{
     canonical_catalog_json, sorted_catalog_entries, verify_expected_sha256, ArtifactStore,
     LocalFsStore, ManifestLock, StoreErrorCode,
@@ -85,6 +85,47 @@ pub(crate) fn validate_policy(output_mode: OutputMode) -> Result<(), String> {
         println!("{canonical}");
     }
     Ok(())
+}
+
+pub(crate) fn explain_policy(
+    mode_override: Option<PolicyMode>,
+    output_mode: OutputMode,
+) -> Result<(), String> {
+    let workspace = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|p| p.parent())
+        .expect("workspace root")
+        .to_path_buf();
+    let policy = load_policy_from_workspace(&workspace).map_err(|e| e.to_string())?;
+    let active_mode = mode_override.unwrap_or(policy.mode);
+    let strict = resolve_mode_profile(&policy, PolicyMode::Strict).map_err(|e| e.to_string())?;
+    let active = resolve_mode_profile(&policy, active_mode).map_err(|e| e.to_string())?;
+    let deltas = json!({
+      "allow_override": {
+        "strict": strict.allow_override,
+        "active": active.allow_override
+      },
+      "max_page_size": {
+        "strict": strict.max_page_size,
+        "active": active.max_page_size
+      },
+      "max_region_span": {
+        "strict": strict.max_region_span,
+        "active": active.max_region_span
+      },
+      "max_response_bytes": {
+        "strict": strict.max_response_bytes,
+        "active": active.max_response_bytes
+      }
+    });
+    let payload = json!({
+      "command": "atlas policy explain",
+      "status": "ok",
+      "mode": active_mode.as_str(),
+      "strict_mode": "strict",
+      "deltas_vs_strict": deltas
+    });
+    emit_ok_payload(output_mode, payload)
 }
 
 pub(crate) fn publish_catalog(
