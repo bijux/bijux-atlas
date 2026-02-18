@@ -141,6 +141,20 @@ contracts: ## Contracts meta pipeline (generate + format + drift checks)
 	@ISO_ROOT=artifacts/isolates/contracts $(MAKE) openapi-drift
 	@ISO_ROOT=artifacts/isolates/contracts $(MAKE) docs-freeze
 
+telemetry-contracts: ## Regenerate telemetry generated artifacts from observability contracts
+	@python3 ./scripts/contracts/generate_contract_artifacts.py
+	@cargo fmt --all
+
+telemetry-verify: ## Run telemetry contract verification path (pack+smoke+contract tests)
+	@$(MAKE) telemetry-contracts
+	@cargo test -p bijux-atlas-server --test observability_contract
+	@if [ "$${ATLAS_TELEMETRY_VERIFY_LIVE:-0}" = "1" ]; then \
+	  $(MAKE) observability-pack-test; \
+	else \
+	  $(MAKE) ops-observability-pack-lint; \
+	  echo "live pack smoke skipped (set ATLAS_TELEMETRY_VERIFY_LIVE=1)"; \
+	fi
+
 hygiene: ## Repo hygiene checks (layout + symlink + tracked-noise gates)
 	@ISO_ROOT=artifacts/isolates/hygiene $(MAKE) layout-check
 	@ISO_ROOT=artifacts/isolates/hygiene $(MAKE) scripts-audit
