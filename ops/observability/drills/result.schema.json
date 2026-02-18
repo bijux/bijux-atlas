@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Observability Drill Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "drill",
+    "started_at",
+    "ended_at",
+    "status",
+    "snapshot_paths",
+    "trace_ids",
+    "expected_signals"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 1},
+    "drill": {"type": "string", "minLength": 1},
+    "started_at": {"type": "string", "minLength": 1},
+    "ended_at": {"type": "string", "minLength": 1},
+    "status": {"type": "string", "enum": ["pass", "fail"]},
+    "snapshot_paths": {
+      "type": "object",
+      "required": ["metrics", "traces", "logs"],
+      "additionalProperties": false,
+      "properties": {
+        "metrics": {"type": "string"},
+        "traces": {"type": "string"},
+        "logs": {"type": "string"}
+      }
+    },
+    "trace_ids": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "expected_signals": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  }
+}

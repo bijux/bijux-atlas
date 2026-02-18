@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "drills": [
+    {
+      "name": "store-outage-under-load",
+      "script": "ops/observability/scripts/store-outage-under-load.sh",
+      "purpose": "Simulate store outage during active load and validate graceful degradation.",
+      "expected_signals": ["metric:bijux_store_breaker_open", "log:store_outage", "trace:error"],
+      "runbook": "docs/operations/runbooks/store-outage.md",
+      "timeout_seconds": 180,
+      "parallel_policy": "serial",
+      "warmup": true,
+      "cleanup": true,
+      "outage_matrix": true
+    },
+    {
+      "name": "prom-outage",
+      "script": "ops/observability/scripts/prom-outage.sh",
+      "purpose": "Ensure Prometheus outage does not impact atlas serving behavior.",
+      "expected_signals": ["metric:bijux_http_requests_total", "log:prom_outage"],
+      "runbook": "docs/operations/runbooks/traffic-spike.md",
+      "timeout_seconds": 180,
+      "parallel_policy": "serial",
+      "warmup": true,
+      "cleanup": true,
+      "outage_matrix": true
+    },
+    {
+      "name": "otel-outage",
+      "script": "ops/observability/scripts/otel-outage.sh",
+      "purpose": "Ensure OTEL outage degrades traces only and serving remains available.",
+      "expected_signals": ["metric:bijux_http_requests_total", "log:otel_outage", "trace:error"],
+      "runbook": "docs/operations/observability/otel-outage-behavior.md",
+      "timeout_seconds": 180,
+      "parallel_policy": "serial",
+      "warmup": true,
+      "cleanup": true,
+      "outage_matrix": true
+    },
+    {
+      "name": "store-latency-injection",
+      "script": "ops/observability/scripts/store-latency-injection.sh",
+      "purpose": "Inject store latency and validate breaker and resilience metrics.",
+      "expected_signals": ["metric:bijux_store_breaker_open", "log:store_latency"],
+      "runbook": "docs/operations/runbooks/store-outage.md",
+      "timeout_seconds": 180,
+      "parallel_policy": "serial",
+      "warmup": true,
+      "cleanup": true,
+      "outage_matrix": true
+    },
+    {
+      "name": "overload-admission-control",
+      "script": "ops/observability/scripts/overload-admission-control.sh",
+      "purpose": "Drive heavy request and verify admission control/shed signals.",
+      "expected_signals": ["metric:atlas_overload_active", "metric:atlas_shed_total", "log:policy_rejection"],
+      "runbook": "docs/operations/runbooks/traffic-spike.md",
+      "timeout_seconds": 180,
+      "parallel_policy": "serial",
+      "warmup": true,
+      "cleanup": true,
+      "outage_matrix": true
+    },
+    {
+      "name": "log-schema-violation-injection",
+      "script": "ops/observability/scripts/log-schema-violation-injection.sh",
+      "purpose": "Inject invalid log line and ensure schema validator catches it.",
+      "expected_signals": ["validator:log_schema_failure"],
+      "runbook": "docs/operations/observability/compatibility.md",
+      "timeout_seconds": 60,
+      "parallel_policy": "serial",
+      "warmup": false,
+      "cleanup": true,
+      "outage_matrix": false
+    },
+    {
+      "name": "metric-cardinality-blowup-attempt",
+      "script": "ops/observability/scripts/metric-cardinality-blowup-attempt.sh",
+      "purpose": "Inject high-cardinality metric labels and ensure guard check fails.",
+      "expected_signals": ["validator:metric_cardinality_failure"],
+      "runbook": "docs/operations/observability/metric-cardinality-guardrails.md",
+      "timeout_seconds": 60,
+      "parallel_policy": "serial",
+      "warmup": false,
+      "cleanup": true,
+      "outage_matrix": false
+    }
+  ]
+}

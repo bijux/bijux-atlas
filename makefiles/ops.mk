@@ -604,7 +604,7 @@ ops-drill-store-outage: ## Run store outage drill under load
 
 ops-drill-minio-outage: ## Drill minio outage under load with cached endpoint checks
 	@$(MAKE) -s ops-env-validate
-	@./ops/observability/scripts/minio-outage-mid-load.sh
+	@./ops/observability/scripts/store-outage-under-load.sh
 
 ops-drill-prom-outage: ## Drill prometheus outage while atlas keeps serving
 	@$(MAKE) -s ops-env-validate
@@ -617,14 +617,14 @@ ops-drill-otel-outage: ## Drill otel outage while atlas keeps serving
 ops-drill-toxiproxy-latency: ## Inject toxiproxy latency and assert store breaker signal
 	@$(MAKE) -s ops-env-validate
 	@ATLAS_E2E_ENABLE_TOXIPROXY=1 $(MAKE) ops-stack-up
-	@./ops/observability/scripts/toxiproxy-latency.sh
+	@./ops/observability/scripts/store-latency-injection.sh
 
 ops-drill-alerts: ## Run alert drill checks against configured rules
 	@./ops/observability/scripts/alerts-validation.sh
 
 ops-drill-overload: ## Verify overload signal drill assertions
 	@$(MAKE) -s ops-env-validate
-	@./ops/observability/scripts/overload-shedding.sh
+	@./ops/observability/scripts/overload-admission-control.sh
 
 ops-drill-memory-growth: ## Verify memory-growth drill assertions
 	@$(MAKE) -s ops-env-validate
@@ -632,7 +632,7 @@ ops-drill-memory-growth: ## Verify memory-growth drill assertions
 
 ops-drill-rate-limit: ## Run abuse pattern and assert stable 429 behavior
 	@$(MAKE) -s ops-env-validate
-	@./ops/observability/scripts/overload-shedding.sh
+	@./ops/observability/scripts/overload-admission-control.sh
 
 ops-drill-corruption: ## Run corruption handling drill
 	@cargo test -p bijux-atlas-server cache_manager_tests::chaos_mode_random_byte_corruption_never_serves_results -- --exact
@@ -885,7 +885,7 @@ observability-pack-test: ## Fast observability pack test (contracts + coverage)
 
 observability-pack-drills: ## Full observability drill suite (outage matrix + contracts)
 	@./ops/observability/tests/test_coverage.sh
-	@./ops/observability/tests/test_outage_matrix.sh
+	@./ops/observability/tests/test_drills.sh
 	@./ops/observability/tests/test_contracts.sh
 	@./ops/observability/scripts/write_pack_conformance_report.py
 
@@ -957,10 +957,9 @@ stack-full-chaos: ## Weekly chaos full-stack gate (stack-full + drill runner)
 	$(MAKE) ops-kind-down
 
 ops-drill-runner: ## Run core drills and verify runbook contract linkage
-	@$(MAKE) ops-drill-store-outage
+	@./ops/observability/tests/test_drills.sh
 	@$(MAKE) ops-drill-corruption-dataset
 	@$(MAKE) ops-drill-pod-churn
-	@$(MAKE) ops-drill-overload
 	@python3 ./scripts/docs/check_runbooks_contract.py
 
 ops-readiness-scorecard: ## Build operational readiness scorecard from latest ops run artifacts
