@@ -182,6 +182,65 @@ async fn metrics_endpoint_matches_metrics_contract() {
     }
 }
 
+#[tokio::test]
+async fn request_id_header_is_present_across_core_api_routes() {
+    let store = Arc::new(FakeStore::default());
+    let ds = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset id");
+    let sqlite = fixture_sqlite();
+    let manifest = ArtifactManifest::new(
+        "1".to_string(),
+        "1".to_string(),
+        ds.clone(),
+        ArtifactChecksums::new(
+            "a".repeat(64),
+            "b".repeat(64),
+            "c".repeat(64),
+            sha256_hex(&sqlite),
+        ),
+        ManifestStats::new(1, 1, 1),
+    );
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds, sqlite);
+
+    let tmp = tempdir().expect("tempdir");
+    let mgr = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..Default::default()
+        },
+        store,
+    );
+    let app = build_router(AppState::new(mgr));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    for path in [
+        "/v1/version",
+        "/healthz",
+        "/readyz",
+        "/v1/datasets",
+        "/v1/datasets/110/homo_sapiens/GRCh38",
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&limit=1",
+        "/v1/genes/count?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1",
+        "/v1/transcripts/tx1?release=110&species=homo_sapiens&assembly=GRCh38",
+        "/v1/sequence/region?release=110&species=homo_sapiens&assembly=GRCh38&region=chr1:1-5",
+    ] {
+        let (status, headers, _body) = send_raw(addr, path).await;
+        assert!(
+            matches!(status, 200 | 304 | 308 | 400 | 401 | 404 | 422 | 503),
+            "unexpected status {status} for {path}"
+        );
+        let lower = headers.to_ascii_lowercase();
+        assert!(
+            lower.contains("x-request-id: req-") || lower.contains("x-request-id: trace-"),
+            "missing x-request-id for {path}: {headers}"
+        );
+    }
+}
+
 fn fixture_sqlite() -> Vec<u8> {
     let dir = tempdir().expect("tempdir");
     let db = dir.path().join("x.sqlite");
