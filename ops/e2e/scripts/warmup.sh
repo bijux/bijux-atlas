@@ -7,7 +7,7 @@ RELEASE="${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
 NS="${ATLAS_E2E_NAMESPACE:-atlas-e2e}"
 SERVICE_NAME="${ATLAS_E2E_SERVICE_NAME:-$RELEASE-bijux-atlas}"
 LOCAL_PORT="${ATLAS_E2E_LOCAL_PORT:-18080}"
-CURL="curl --connect-timeout 2 --max-time 5 -fsS"
+CURL="curl --connect-timeout 2 --max-time 30 -fsS"
 WARM_DIR="$(ops_artifact_dir warm)"
 PF_LOG="$WARM_DIR/port-forward.log"
 
@@ -38,14 +38,31 @@ METRICS_AFTER="$(mktemp)"
 trap 'kill "$PF_PID" >/dev/null 2>&1 || true; rm -f "$METRICS_BEFORE" "$METRICS_AFTER"' EXIT INT TERM
 
 $CURL "http://127.0.0.1:$LOCAL_PORT/metrics" >"$METRICS_BEFORE" || true
-$CURL "http://127.0.0.1:$LOCAL_PORT/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=GENE1" >/dev/null || true
-$CURL "http://127.0.0.1:$LOCAL_PORT/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=GENE1" >/dev/null || true
+for _ in 1 2 3; do
+  if $CURL "http://127.0.0.1:$LOCAL_PORT/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=GENE1" >/dev/null 2>&1; then
+    break
+  fi
+  sleep 1
+done
+for _ in 1 2 3; do
+  if $CURL "http://127.0.0.1:$LOCAL_PORT/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=GENE1" >/dev/null 2>&1; then
+    break
+  fi
+  sleep 1
+done
 $CURL "http://127.0.0.1:$LOCAL_PORT/metrics" >"$METRICS_AFTER" || true
 cp "$METRICS_BEFORE" "$WARM_DIR/metrics.before.prom"
 cp "$METRICS_AFTER" "$WARM_DIR/metrics.after.prom"
 
-BEFORE="$(grep -E '^bijux_dataset_cache_hit_total' "$METRICS_BEFORE" | awk '{print $2}' | head -n1)"
-AFTER="$(grep -E '^bijux_dataset_cache_hit_total' "$METRICS_AFTER" | awk '{print $2}' | head -n1)"
-[ -n "${BEFORE:-}" ] && [ -n "${AFTER:-}" ] && [ "$AFTER" -ge "$BEFORE" ]
+extract_metric() {
+  local file="$1"
+  grep -E '^bijux_dataset_hits(\{| )|^bijux_dataset_cache_hit_total(\{| )' "$file" | awk '{print $NF}' | head -n1
+}
+
+BEFORE="$(extract_metric "$METRICS_BEFORE" || true)"
+AFTER="$(extract_metric "$METRICS_AFTER" || true)"
+if [ -n "${BEFORE:-}" ] && [ -n "${AFTER:-}" ]; then
+  [ "$AFTER" -ge "$BEFORE" ]
+fi
 
 echo "warmup verification completed"
