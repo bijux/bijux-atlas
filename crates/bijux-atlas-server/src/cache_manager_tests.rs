@@ -489,3 +489,67 @@ async fn pinned_dataset_is_not_evicted() {
     let entries = mgr.entries.lock().await;
     assert!(entries.contains_key(&pinned), "pinned dataset must remain");
 }
+
+#[tokio::test]
+async fn failed_download_leaves_no_partial_artifact() {
+    let (ds, manifest, _sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    let tmp = tempdir().expect("tempdir");
+    let cfg = DatasetCacheConfig {
+        disk_root: tmp.path().to_path_buf(),
+        ..Default::default()
+    };
+    let mgr = DatasetCacheManager::new(cfg, store);
+
+    let err = match mgr.open_dataset_connection(&ds).await {
+        Ok(_) => panic!("download should fail without sqlite bytes"),
+        Err(err) => err,
+    };
+    assert!(
+        err.to_string().contains("sqlite missing"),
+        "unexpected error: {err}"
+    );
+
+    let paths = local_cache_paths(tmp.path(), "1");
+    assert!(!paths.sqlite.exists(), "partial sqlite file must not remain");
+    assert!(
+        !paths.manifest.exists(),
+        "partial manifest file must not remain"
+    );
+}
+
+#[tokio::test]
+async fn alias_like_release_switch_uses_hash_key_without_corruption() {
+    let (ds_a, manifest_a, sqlite_a) = mk_dataset_for("110");
+    let (ds_b, manifest_b, sqlite_b) = mk_dataset_for("111");
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds_a.clone(), manifest_a);
+    store.sqlite.lock().await.insert(ds_a.clone(), sqlite_a);
+    store.manifest.lock().await.insert(ds_b.clone(), manifest_b);
+    store.sqlite.lock().await.insert(ds_b.clone(), sqlite_b);
+
+    let tmp = tempdir().expect("tempdir");
+    let cfg = DatasetCacheConfig {
+        disk_root: tmp.path().to_path_buf(),
+        ..Default::default()
+    };
+    let mgr = DatasetCacheManager::new(cfg, store);
+
+    let _ = mgr
+        .open_dataset_connection(&ds_a)
+        .await
+        .expect("open first release");
+    let _ = mgr
+        .open_dataset_connection(&ds_b)
+        .await
+        .expect("open second release");
+    let _ = mgr
+        .open_dataset_connection(&ds_a)
+        .await
+        .expect("re-open first release");
+
+    let key_a = std::fs::read_to_string(dataset_index_path(tmp.path(), &ds_a)).expect("index a");
+    let key_b = std::fs::read_to_string(dataset_index_path(tmp.path(), &ds_b)).expect("index b");
+    assert_eq!(key_a.trim(), key_b.trim(), "hash-keyed aliases should co-locate");
+}
