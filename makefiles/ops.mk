@@ -22,13 +22,18 @@ ops-env-print: ## Print canonical ops environment settings
 	@python3 ./scripts/layout/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)" --print --format json
 
 ops-doctor: ## Validate and print pinned ops tool versions and canonical env
-	@$(MAKE) -s ops-tools-check
-	@$(MAKE) -s ops-tools-print
-	@$(MAKE) -s ops-env-print
+	@./ops/run/doctor.sh
 
 OPS_DEPLOY_PROFILE ?= local
 
+ops-prereqs: ## Validate required local tooling for ops workflows
+	@./ops/run/prereqs.sh
+
 ops-stack-up: ## Bring up stack components only (kind + stack manifests)
+	@$(MAKE) -s ops-env-validate
+	@PROFILE="$${PROFILE:-kind}" ./ops/run/stack-up.sh
+
+ops-stack-up-legacy: ## Legacy stack up implementation
 	@$(MAKE) -s ops-env-validate
 	@./ops/stack/kind/context_guard.sh
 	@./ops/stack/kind/namespace_guard.sh
@@ -47,6 +52,9 @@ ops-cluster-sanity: ## Validate cluster node/dns/storageclass sanity
 	@./ops/k8s/tests/test_cluster_sanity.sh
 
 ops-stack-down: ## Tear down stack components and cluster
+	@./ops/run/stack-down.sh
+
+ops-stack-down-legacy: ## Legacy stack down implementation
 	@$(MAKE) -s ops-env-validate
 	@./ops/stack/kind/context_guard.sh
 	@./ops/stack/kind/namespace_guard.sh
@@ -54,6 +62,21 @@ ops-stack-down: ## Tear down stack components and cluster
 
 ops-down: ## Tear down local ops stack
 	@$(MAKE) ops-stack-down
+
+ops-obs-verify: ## Verify observability pack contracts and readiness
+	@./ops/run/obs-verify.sh
+
+ops-datasets-verify: ## Verify datasets lock/catalog/fetch contract
+	@./ops/run/datasets-verify.sh
+
+ops-e2e-smoke: ## Run end-to-end smoke composition
+	@./ops/run/e2e-smoke.sh
+
+ops-k8s-suite: ## Run k8s invariant suite
+	@./ops/run/k8s-suite.sh
+
+ops-load-suite: ## Run named load suite (SUITE=mixed-80-20)
+	@SUITE="$${SUITE:-mixed-80-20}" ./ops/run/load-suite.sh
 
 ops-stack-validate: ## Validate stack manifests and formatting drift
 	@./scripts/layout/check_stack_manifest_consolidation.sh
@@ -686,6 +709,7 @@ ops-report: ## Gather ops evidence into artifacts/ops/<run-id>/
 	python3 ./ops/report/generate.py --run-dir "$$out" --schema ops/_schemas/report/schema.json; \
 	echo "ops report written to $$out"; \
 	RUN_ID="$${OPS_RUN_ID}" OUT_DIR="$$out/bundle" ./scripts/public/report-bundle.sh >/dev/null; \
+	./ops/run/report.sh >/dev/null; \
 	ln -sfn "$${OPS_RUN_ID}" artifacts/ops/latest; \
 	$(MAKE) artifacts-index
 
@@ -846,7 +870,7 @@ ops-observability-smoke: ## Install observability pack and run smoke checks
 	@./ops/obs/scripts/alerts-validation.sh
 
 ops-obs-up: ## Install observability pack (prometheus/otel, CRD-aware)
-	@./ops/obs/scripts/install_pack.sh
+	@PROFILE="$${PROFILE:-$${ATLAS_OBS_PROFILE:-kind}}" ./ops/run/obs-up.sh
 
 ops-obs-down: ## Uninstall observability pack
 	@./ops/obs/scripts/uninstall_pack.sh
@@ -857,7 +881,7 @@ ops-obs-mode: ## Install observability pack in requested profile (ATLAS_OBS_PROF
 	@./ops/obs/scripts/install_pack.sh --profile "$${ATLAS_OBS_PROFILE}"
 
 ops-observability-pack-verify: ## Verify observability pack endpoints and readiness by profile
-	@./ops/obs/scripts/verify_pack.sh
+	@./ops/run/obs-verify.sh
 
 ops-observability-pack-smoke: ## Run pack smoke requests and assert metrics/traces snapshots
 	@./ops/obs/scripts/smoke_pack.sh
@@ -916,6 +940,9 @@ ops-observability-pack-reinstall: ## Uninstall then reinstall pack to validate c
 
 ops-open-grafana: ## Print local ops service URLs
 	@./ops/stack/scripts/print_urls.sh
+
+ops-artifacts-open: ## Open latest ops artifact bundle
+	@./ops/run/artifacts-open.sh
 
 ops-local-full-stack: ## Single-command local full stack (kind + deploy + publish + smoke + k6 + observability)
 	@$(MAKE) ops-full
@@ -1000,7 +1027,10 @@ ops-ci: ## Nightly ops pipeline: up/deploy/warm/tests/ops/load/drills/report
 	@$(MAKE) ops-report
 
 ops-ci-nightly: ## Compatibility alias for ops-ci
-	@$(MAKE) ops-ci
+	@./ops/run/ci-nightly.sh
+
+ops-ci-fast: ## Fast CI ops scope (smoke + core gates)
+	@./ops/run/ci-fast.sh
 
 ops-ref-grade-local: ## Required ref-grade local gate (k8s subset on PR via OPS_REF_K8S_SCOPE=pr)
 	@set -e; \
@@ -1085,10 +1115,7 @@ ops-idempotency-check: ## Enforce idempotent ops-full rerun contract
 	@OPS_RUN_ID= OPS_NAMESPACE= $(MAKE) OPS_MODE=fast ops-full
 
 ops-clean: ## Local cleanup of ops outputs and test namespaces
-	@days="$${OPS_RETENTION_DAYS:-7}"; \
-	kubectl delete ns "$${ATLAS_NS}" --ignore-not-found >/dev/null 2>&1 || true; \
-	find artifacts/ops -mindepth 1 -maxdepth 1 -type d -mtime +$$days -exec rm -rf {} + 2>/dev/null || true; \
-	rm -rf artifacts/perf/results artifacts/e2e-datasets artifacts/e2e-store
+	@./ops/run/clean.sh
 
 # Compatibility aliases (pre-ops.mk surface)
 e2e-local:
