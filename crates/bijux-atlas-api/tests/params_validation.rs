@@ -3,6 +3,7 @@ use bijux_atlas_api::{
 };
 use bijux_atlas_core::canonical;
 use std::collections::BTreeMap;
+use std::collections::BTreeSet;
 
 fn base_query() -> BTreeMap<String, String> {
     let mut q = BTreeMap::new();
@@ -189,4 +190,55 @@ fn openapi_snapshot_is_deterministic_and_matches_committed_contract() {
         .join("../../configs/openapi/v1/openapi.snapshot.json");
     let snapshot = std::fs::read(snapshot_path).expect("read snapshot");
     assert_eq!(generated, snapshot);
+}
+
+fn compatibility_delta(previous: &serde_json::Value, current: &serde_json::Value) -> Vec<String> {
+    let mut issues = Vec::new();
+    let prev_paths = previous["paths"]
+        .as_object()
+        .expect("previous paths object");
+    let cur_paths = current["paths"].as_object().expect("current paths object");
+
+    let prev_set = prev_paths.keys().cloned().collect::<BTreeSet<_>>();
+    let cur_set = cur_paths.keys().cloned().collect::<BTreeSet<_>>();
+    for removed in prev_set.difference(&cur_set) {
+        issues.push(format!("removed path: {removed}"));
+    }
+
+    for path in prev_set.intersection(&cur_set) {
+        let prev_ops = prev_paths[path]
+            .as_object()
+            .expect("previous path operations");
+        let cur_ops = cur_paths[path].as_object().expect("current path operations");
+        let prev_ops_set = prev_ops.keys().cloned().collect::<BTreeSet<_>>();
+        let cur_ops_set = cur_ops.keys().cloned().collect::<BTreeSet<_>>();
+        for removed_op in prev_ops_set.difference(&cur_ops_set) {
+            issues.push(format!("removed operation: {path}::{removed_op}"));
+        }
+    }
+
+    issues
+}
+
+#[test]
+fn openapi_minor_version_bump_remains_compatible() {
+    let snapshot_path = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../configs/openapi/v1/openapi.snapshot.json");
+    let previous: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(snapshot_path).expect("read snapshot"))
+            .expect("parse snapshot");
+    let current = openapi_v1_spec();
+
+    let issues = compatibility_delta(&previous, &current);
+    assert!(
+        issues.is_empty(),
+        "current openapi must be backward compatible with snapshot: {issues:?}"
+    );
+
+    let mut bumped = current.clone();
+    bumped["info"]["version"] = serde_json::Value::String("v1.1".to_string());
+    assert!(
+        compatibility_delta(&current, &bumped).is_empty(),
+        "minor info.version bump should remain compatible when surface is unchanged"
+    );
 }
