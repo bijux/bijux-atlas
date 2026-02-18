@@ -259,6 +259,10 @@ bijux_store_error_other_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} 
             "bijux_store_errors_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",backend=\"{}\",class=\"{}\"}} {}\n",
             METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, backend, class, count
         ));
+        body.push_str(&format!(
+            "atlas_store_errors_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",backend=\"{}\",class=\"{}\"}} {}\n",
+            METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, backend, class, count
+        ));
     }
     let heavy_cap = state.api.concurrency_heavy as u64;
     let heavy_avail = state.class_heavy.available_permits() as u64;

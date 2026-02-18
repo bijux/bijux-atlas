@@ -259,6 +259,48 @@
       "type": "counter",
       "unit": "count"
     },
+    "atlas_store_errors_total": {
+      "cardinality_budget": {
+        "max_new_series_per_hour": 128,
+        "max_series": 512
+      },
+      "criticality": "tier-0",
+      "example_series": "atlas_store_errors_total{backend=\"example\",dataset=\"example\",class=\"example\",subsystem=\"example\",version=\"example\"}} 1",
+      "forbidden_labels": [
+        "request_id",
+        "trace_id",
+        "dataset_id",
+        "gene_id",
+        "tx_id",
+        "path",
+        "query",
+        "raw_path"
+      ],
+      "owner": {
+        "crate": "bijux-atlas-server",
+        "module": "src/telemetry/metrics_endpoint.rs"
+      },
+      "required_labels": [
+        "backend",
+        "dataset",
+        "class",
+        "subsystem",
+        "version"
+      ],
+      "semantic": {
+        "on_break_action": "check exporter, contract, and runtime telemetry path",
+        "what_it_measures": "atlas_store_errors_total contract metric"
+      },
+      "slo_relevance": {
+        "relevant": true,
+        "slos": [
+          "availability",
+          "dependency"
+        ]
+      },
+      "type": "counter",
+      "unit": "count"
+    },
     "bijux_dataset_count": {
       "cardinality_budget": {
         "max_new_series_per_hour": 500,
@@ -1071,6 +1113,13 @@
       "subsystem",
       "version"
     ],
+    "atlas_store_errors_total": [
+      "backend",
+      "dataset",
+      "class",
+      "subsystem",
+      "version"
+    ],
     "bijux_dataset_count": [
       "dataset",
       "subsystem",
@@ -1189,5 +1238,5 @@
     "sqlite_query",
     "store_fetch"
   ],
-  "schema_version": 2
+  "schema_version": 1
 }

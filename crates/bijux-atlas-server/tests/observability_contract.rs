@@ -14,7 +14,23 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt};
 #[derive(Debug, Deserialize)]
 struct MetricsContract {
     required_metrics: HashMap<String, Vec<String>>,
+    #[serde(default)]
+    required_metric_specs: HashMap<String, serde_json::Value>,
     required_spans: Vec<String>,
+}
+
+fn parse_metric_sum(metrics_body: &str, metric_name: &str) -> f64 {
+    metrics_body
+        .lines()
+        .filter_map(|line| {
+            if line.starts_with(&format!("{metric_name}{{")) || line.starts_with(metric_name) {
+                line.rsplit_once(' ')
+                    .and_then(|(_, v)| v.trim().parse::<f64>().ok())
+            } else {
+                None
+            }
+        })
+        .sum()
 }
 
 async fn send_raw(addr: std::net::SocketAddr, path: &str) -> (u16, String, String) {
@@ -239,6 +255,193 @@ async fn request_id_header_is_present_across_core_api_routes() {
             "missing x-request-id for {path}: {headers}"
         );
     }
+}
+
+#[tokio::test]
+async fn generated_metrics_contract_covers_ops_metrics_contract_and_owners() {
+    let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|p| p.parent())
+        .expect("workspace root")
+        .to_path_buf();
+
+    let ops_contract: MetricsContract = serde_json::from_slice(
+        &std::fs::read(
+            root.join("ops")
+                .join("observability")
+                .join("contract")
+                .join("metrics-contract.json"),
+        )
+        .expect("read ops metrics contract"),
+    )
+    .expect("parse ops metrics contract");
+
+    let generated_metrics = std::fs::read_to_string(
+        root.join("crates/bijux-atlas-server/src/telemetry/generated/metrics_contract.rs"),
+    )
+    .expect("read generated metrics contract");
+
+    for metric in ops_contract.required_metrics.keys() {
+        assert!(
+            generated_metrics.contains(&format!("\"{metric}\"")),
+            "generated metrics contract missing metric {metric}"
+        );
+    }
+
+    if !ops_contract.required_metric_specs.is_empty() {
+        for (metric, spec) in &ops_contract.required_metric_specs {
+            let owner = spec.get("owner").expect("owner object");
+            let owner_crate = owner
+                .get("crate")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or("");
+            let owner_module = owner
+                .get("module")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or("");
+            assert!(
+                !owner_crate.is_empty(),
+                "metric {metric} missing owner.crate in contract"
+            );
+            assert!(
+                !owner_module.is_empty(),
+                "metric {metric} missing owner.module in contract"
+            );
+            let owner_path = root.join("crates").join(owner_crate).join(owner_module);
+            assert!(
+                owner_path.exists(),
+                "metric {metric} owner.module path does not exist: {}",
+                owner_path.display()
+            );
+        }
+    }
+}
+
+#[tokio::test]
+async fn policy_rejection_and_overload_emit_contract_metrics() {
+    let ds = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset id");
+    let sqlite = fixture_sqlite();
+    let manifest = ArtifactManifest::new(
+        "1".to_string(),
+        "1".to_string(),
+        ds.clone(),
+        ArtifactChecksums::new(
+            "a".repeat(64),
+            "b".repeat(64),
+            "c".repeat(64),
+            sha256_hex(&sqlite),
+        ),
+        ManifestStats::new(1, 1, 1),
+    );
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds, sqlite);
+
+    let tmp = tempdir().expect("tempdir");
+    let mgr = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..Default::default()
+        },
+        store,
+    );
+    let app = build_router(AppState::new(mgr));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status_before, _, metrics_before) = send_raw(addr, "/metrics").await;
+    assert_eq!(status_before, 200);
+    let policy_before = parse_metric_sum(&metrics_before, "atlas_policy_violations_total");
+    let shed_before = parse_metric_sum(&metrics_before, "atlas_shed_total");
+
+    let (policy_status, _, _) = send_raw(
+        addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&foo=bar",
+    )
+    .await;
+    assert_eq!(policy_status, 400);
+
+    let (_ov_status, _, _ov_body) = send_raw(
+        addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&region=chr1:1-999999999&limit=500",
+    )
+    .await;
+    let (_genes_ok_status, _, _genes_ok_body) = send_raw(
+        addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&limit=1",
+    )
+    .await;
+    let (_ok_status, _, _ok_body) = send_raw(addr, "/v1/version").await;
+
+    let (status_after, _, metrics_after) = send_raw(addr, "/metrics").await;
+    assert_eq!(status_after, 200);
+    let policy_after = parse_metric_sum(&metrics_after, "atlas_policy_violations_total");
+    let shed_after = parse_metric_sum(&metrics_after, "atlas_shed_total");
+    assert!(
+        policy_after >= policy_before,
+        "policy violations total should not decrease"
+    );
+    assert!(shed_after >= shed_before, "shed total should not decrease");
+
+    assert!(
+        metrics_after.contains("bijux_http_request_size_p95_bytes"),
+        "request size histogram metric missing"
+    );
+    assert!(
+        metrics_after.contains("bijux_http_response_size_p95_bytes"),
+        "response size histogram metric missing"
+    );
+    assert!(
+        metrics_after.contains("bijux_dataset_hits")
+            || metrics_after.contains("bijux_dataset_misses"),
+        "cache hit/miss metrics missing"
+    );
+}
+
+#[tokio::test]
+async fn store_failures_emit_contract_metric_and_retryable_details() {
+    let store = Arc::new(FakeStore::default());
+    let tmp = tempdir().expect("tempdir");
+    let mgr = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..Default::default()
+        },
+        store,
+    );
+    let app = build_router(AppState::new(mgr));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/genes/g1/sequence?release=110&species=homo_sapiens&assembly=GRCh38",
+    )
+    .await;
+    assert_eq!(status, 503);
+    let parsed: serde_json::Value = serde_json::from_str(&body).expect("parse json body");
+    assert_eq!(
+        parsed["error"]["code"].as_str(),
+        Some("UpstreamStoreUnavailable")
+    );
+    assert_eq!(
+        parsed["error"]["details"]["retryable"].as_bool(),
+        Some(true)
+    );
+
+    let (metrics_status, _, metrics_body) = send_raw(addr, "/metrics").await;
+    assert_eq!(metrics_status, 200);
+    let store_errors = parse_metric_sum(&metrics_body, "atlas_store_errors_total");
+    assert!(
+        store_errors >= 1.0,
+        "expected atlas_store_errors_total >= 1.0, got {store_errors}"
+    );
 }
 
 fn fixture_sqlite() -> Vec<u8> {

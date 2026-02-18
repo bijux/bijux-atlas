@@ -628,10 +628,12 @@ pub(crate) async fn gene_sequence_handler(
                     ApiErrorCode::UpstreamStoreUnavailable,
                 )
             };
-            let resp = api_error_response(
-                status,
-                error_json(code, "dataset unavailable", json!({"message": msg})),
-            );
+            let details = if code == ApiErrorCode::UpstreamStoreUnavailable {
+                json!({"message": msg, "retryable": true})
+            } else {
+                json!({"message": msg})
+            };
+            let resp = api_error_response(status, error_json(code, "dataset unavailable", details));
             return with_request_id(resp, &request_id);
         }
     };

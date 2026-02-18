@@ -124,12 +124,17 @@ pub(crate) async fn gene_transcripts_handler(
             } else {
                 (StatusCode::SERVICE_UNAVAILABLE, ApiErrorCode::UpstreamStoreUnavailable)
             };
+            let details = if code == ApiErrorCode::UpstreamStoreUnavailable {
+                json!({"message": msg, "retryable": true})
+            } else {
+                json!({"message": msg})
+            };
             let resp = api_error_response(
                 status,
                 error_json(
                     code,
                     "dataset unavailable",
-                    json!({"message": msg}),
+                    details,
                 ),
             );
             state
@@ -277,12 +282,17 @@ pub(crate) async fn transcript_summary_handler(
             } else {
                 (StatusCode::SERVICE_UNAVAILABLE, ApiErrorCode::UpstreamStoreUnavailable)
             };
+            let details = if code == ApiErrorCode::UpstreamStoreUnavailable {
+                json!({"message": msg, "retryable": true})
+            } else {
+                json!({"message": msg})
+            };
             let resp = api_error_response(
                 status,
                 error_json(
                     code,
                     "dataset unavailable",
-                    json!({"message": msg}),
+                    details,
                 ),
             );
             state

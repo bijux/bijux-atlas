@@ -408,13 +408,105 @@ write_reference_contract_doc(
 
 # generated compatibility artifact for observability gate
 obs_metrics_path = ROOT / "ops" / "observability" / "contract" / "metrics-contract.json"
+user_controlled_labels = [
+    "request_id",
+    "trace_id",
+    "dataset_id",
+    "gene_id",
+    "tx_id",
+    "path",
+    "query",
+    "raw_path",
+]
+
+
+def _metric_spec(metric: dict) -> dict:
+    name = metric["name"]
+    labels = metric["labels"]
+    metric_type = "gauge"
+    if name.endswith("_total"):
+        metric_type = "counter"
+    elif "_p95_" in name:
+        metric_type = "histogram"
+
+    unit = "count"
+    if "seconds" in name:
+        unit = "seconds"
+    elif "bytes" in name:
+        unit = "bytes"
+    elif name.endswith("_ns"):
+        unit = "nanoseconds"
+
+    relevant = any(
+        token in name
+        for token in (
+            "latency",
+            "errors_total",
+            "shed",
+            "overload",
+            "requests_total",
+            "store_breaker",
+        )
+    )
+    slos = []
+    if relevant:
+        if "latency" in name:
+            slos.append("latency")
+        if any(token in name for token in ("errors", "shed", "requests_total", "overload")):
+            slos.append("availability")
+        if "store" in name:
+            slos.append("dependency")
+
+    criticality = "tier-1" if relevant else "tier-2"
+    if name.startswith("atlas_"):
+        criticality = "tier-0"
+
+    return {
+        "type": metric_type,
+        "unit": unit,
+        "cardinality_budget": {"max_series": 512, "max_new_series_per_hour": 128},
+        "required_labels": labels,
+        "forbidden_labels": [l for l in user_controlled_labels if l not in labels],
+        "example_series": f'{name}{{' + ",".join(f'{l}="example"' for l in labels) + "}} 1",
+        "semantic": {
+            "what_it_measures": f"{name} contract metric",
+            "on_break_action": "check exporter, contract, and runtime telemetry path",
+        },
+        "owner": {
+            "crate": "bijux-atlas-server",
+            "module": "src/telemetry/metrics_endpoint.rs",
+        },
+        "slo_relevance": {"relevant": relevant, "slos": slos},
+        "criticality": criticality,
+    }
+
+
+existing_obs_payload = {}
+if obs_metrics_path.exists():
+    try:
+        existing_obs_payload = json.loads(obs_metrics_path.read_text())
+    except json.JSONDecodeError:
+        existing_obs_payload = {}
+existing_specs = existing_obs_payload.get("required_metric_specs", {})
+
 obs_payload = {
     "schema_version": 1,
     "required_metrics": {m["name"]: m["labels"] for m in metrics},
-    "required_spans": [s["name"] for s in trace_spans],
-    "required_log_fields": ["request_id", "dataset"],
-    "allowed_dynamic_labels": ["route", "status", "query_type", "stage", "code"],
+    "required_metric_specs": {
+        m["name"]: existing_specs.get(m["name"], _metric_spec(m)) for m in metrics
+    },
+    "required_spans": existing_obs_payload.get(
+        "required_spans", [s["name"] for s in trace_spans]
+    ),
+    "required_log_fields": existing_obs_payload.get(
+        "required_log_fields", ["request_id", "dataset"]
+    ),
+    "allowed_dynamic_labels": existing_obs_payload.get(
+        "allowed_dynamic_labels", ["route", "status", "query_type", "stage", "code"]
+    ),
 }
+if "forbidden_labels" in existing_obs_payload:
+    obs_payload["forbidden_labels"] = existing_obs_payload["forbidden_labels"]
 obs_metrics_path.write_text(json.dumps(obs_payload, indent=2, sort_keys=True) + "\n")
 
 print("contract artifacts generated")
