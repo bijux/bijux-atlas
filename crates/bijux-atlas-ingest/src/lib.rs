@@ -5,24 +5,26 @@ mod extract;
 mod fai;
 mod gff3;
 mod manifest;
+mod normalized;
 mod sqlite;
 
+use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::{
-    artifact_paths, BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, GeneIdentifierPolicy,
-    DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy, GeneNamePolicy, IngestAnomalyReport,
+    artifact_paths, BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy,
+    FeatureIdUniquenessPolicy, GeneIdentifierPolicy, GeneNamePolicy, IngestAnomalyReport,
     SeqidNormalizationPolicy, ShardCatalog, StrictnessMode, TranscriptIdPolicy,
     TranscriptTypePolicy, UnknownFeaturePolicy,
 };
 use diff_index::build_and_write_release_gene_index;
 use extract::extract_gene_rows;
-use bijux_atlas_core::sha256_hex;
 use gff3::parse_gff3_records;
 use manifest::{
     build_and_write_manifest_and_reports, write_qc_and_anomaly_reports_only, BuildManifestArgs,
 };
-use sqlite::{explain_plan_for_region_query, write_sharded_sqlite_catalog, write_sqlite};
+use normalized::{replay_counts_from_normalized, write_normalized_jsonl_zst};
 #[cfg(test)]
 use sqlite::{explain_plan_for_gene_id_query, explain_plan_for_name_query};
+use sqlite::{explain_plan_for_region_query, write_sharded_sqlite_catalog, write_sqlite};
 use std::fmt::{Display, Formatter};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -70,6 +72,9 @@ pub struct IngestOptions {
     pub fail_on_warn: bool,
     pub allow_overlap_gene_ids_across_contigs: bool,
     pub dev_allow_auto_generate_fai: bool,
+    pub emit_normalized_debug: bool,
+    pub normalized_replay_mode: bool,
+    pub prod_mode: bool,
 }
 
 impl Default for IngestOptions {
@@ -105,6 +110,9 @@ impl Default for IngestOptions {
             compute_transcript_cds_length: false,
             report_only: false,
             dev_allow_auto_generate_fai: false,
+            emit_normalized_debug: false,
+            normalized_replay_mode: false,
+            prod_mode: false,
         }
     }
 }
@@ -116,6 +124,7 @@ pub struct IngestResult {
     pub anomaly_report_path: PathBuf,
     pub qc_report_path: PathBuf,
     pub release_gene_index_path: PathBuf,
+    pub normalized_debug_path: Option<PathBuf>,
     pub shard_catalog_path: Option<PathBuf>,
     pub shard_catalog: Option<ShardCatalog>,
     pub manifest: bijux_atlas_model::ArtifactManifest,
@@ -138,9 +147,15 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
             fai::write_fai_from_fasta(&opts.fasta_path, &opts.fai_path)?;
         } else {
             return Err(IngestError(
-                "FAI index is required for ingest (enable dev auto-generate explicitly)".to_string(),
+                "FAI index is required for ingest (enable dev auto-generate explicitly)"
+                    .to_string(),
             ));
         }
+    }
+    if opts.prod_mode && opts.emit_normalized_debug {
+        return Err(IngestError(
+            "policy gate: normalized debug output is disabled in production mode".to_string(),
+        ));
     }
     let contig_lengths = fai::read_fai_contig_lengths(&opts.fai_path)?;
     let contig_stats = if opts.fasta_scanning_enabled {
@@ -209,6 +224,7 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
             anomaly_report_path: paths.anomaly_report,
             qc_report_path,
             release_gene_index_path: paths.release_gene_index,
+            normalized_debug_path: None,
             shard_catalog_path: None,
             shard_catalog: None,
             manifest,
@@ -243,6 +259,35 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
     } else {
         (None, None)
     };
+    let normalized_debug_path = if opts.emit_normalized_debug || opts.normalized_replay_mode {
+        let path = paths.derived_dir.join("normalized_features.jsonl.zst");
+        write_normalized_jsonl_zst(
+            &path,
+            &extracted.gene_rows,
+            &extracted.transcript_rows,
+            &extracted.exon_rows,
+        )?;
+        if opts.normalized_replay_mode {
+            let replay = replay_counts_from_normalized(&path)?;
+            if replay.genes != extracted.gene_rows.len() as u64
+                || replay.transcripts != extracted.transcript_rows.len() as u64
+                || replay.exons != extracted.exon_rows.len() as u64
+            {
+                return Err(IngestError(format!(
+                    "normalized replay mismatch: replay=({},{},{}) extracted=({},{},{})",
+                    replay.genes,
+                    replay.transcripts,
+                    replay.exons,
+                    extracted.gene_rows.len(),
+                    extracted.transcript_rows.len(),
+                    extracted.exon_rows.len()
+                )));
+            }
+        }
+        Some(path)
+    } else {
+        None
+    };
     let built = build_and_write_manifest_and_reports(BuildManifestArgs {
         output_root: &opts.output_root,
         dataset: &opts.dataset,
@@ -269,6 +314,7 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
         anomaly_report_path: paths.anomaly_report,
         qc_report_path: built.qc_report_path,
         release_gene_index_path: paths.release_gene_index,
+        normalized_debug_path,
         shard_catalog_path,
         shard_catalog,
         manifest: built.manifest,
@@ -299,6 +345,17 @@ pub fn read_fai_contig_lengths(
 
 pub fn explain_region_query_plan(sqlite_path: &Path) -> Result<Vec<String>, IngestError> {
     explain_plan_for_region_query(sqlite_path)
+}
+
+pub fn replay_normalized_counts(path: &Path) -> Result<normalized::ReplayCounts, IngestError> {
+    replay_counts_from_normalized(path)
+}
+
+pub fn diff_normalized_ids(
+    base: &Path,
+    target: &Path,
+) -> Result<(Vec<String>, Vec<String>), IngestError> {
+    normalized::diff_normalized_record_ids(base, target)
 }
 
 #[cfg(test)]
@@ -342,6 +399,9 @@ mod tests {
             compute_transcript_cds_length: false,
             report_only: false,
             dev_allow_auto_generate_fai: false,
+            emit_normalized_debug: false,
+            normalized_replay_mode: false,
+            prod_mode: false,
         }
     }
 
@@ -420,6 +480,41 @@ mod tests {
         assert!(out.anomaly_report_path.exists());
         assert!(!out.sqlite_path.exists());
         assert!(!out.manifest_path.exists());
+    }
+
+    #[test]
+    fn normalized_replay_matches_db_content_counts() {
+        let root = tempdir().expect("tempdir");
+        let mut o = opts(root.path(), StrictnessMode::Strict);
+        o.emit_normalized_debug = true;
+        o.normalized_replay_mode = true;
+        let run = ingest_dataset(&o).expect("ingest");
+        let normalized = run.normalized_debug_path.clone().expect("normalized path");
+        assert!(normalized.exists());
+        let replay = replay_normalized_counts(&normalized).expect("replay");
+        let conn = rusqlite::Connection::open(&run.sqlite_path).expect("open sqlite");
+        let gene_count: i64 = conn
+            .query_row("SELECT COUNT(*) FROM gene_summary", [], |r| r.get(0))
+            .expect("genes");
+        let tx_count: i64 = conn
+            .query_row("SELECT COUNT(*) FROM transcript_summary", [], |r| r.get(0))
+            .expect("tx");
+        let exon_count: i64 = conn
+            .query_row("SELECT COUNT(*) FROM exons", [], |r| r.get(0))
+            .expect("exons");
+        assert_eq!(replay.genes as i64, gene_count);
+        assert_eq!(replay.transcripts as i64, tx_count);
+        assert_eq!(replay.exons as i64, exon_count);
+    }
+
+    #[test]
+    fn normalized_output_is_blocked_in_prod_mode() {
+        let root = tempdir().expect("tempdir");
+        let mut o = opts(root.path(), StrictnessMode::Strict);
+        o.prod_mode = true;
+        o.emit_normalized_debug = true;
+        let err = ingest_dataset(&o).expect_err("prod mode must reject normalized");
+        assert!(err.to_string().contains("disabled in production mode"));
     }
 
     #[test]
@@ -503,8 +598,8 @@ mod tests {
     fn unknown_contig_is_contractual_deterministic_failure() {
         let root = tempdir().expect("tempdir");
         let mut o = opts(root.path(), StrictnessMode::Strict);
-        o.gff3_path =
-            PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/edgecases/case_9_unknown_contig.gff3");
+        o.gff3_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("tests/fixtures/edgecases/case_9_unknown_contig.gff3");
         let e1 = ingest_dataset(&o).expect_err("unknown contig must fail");
         let e2 = ingest_dataset(&o).expect_err("unknown contig must fail deterministically");
         assert_eq!(e1.to_string(), e2.to_string());
@@ -613,10 +708,14 @@ mod tests {
             .expect("contigs table count");
         assert!(contigs > 0);
         let fasta_hash: String = conn
-            .query_row("SELECT v FROM atlas_meta WHERE k='fasta_sha256'", [], |r| r.get(0))
+            .query_row("SELECT v FROM atlas_meta WHERE k='fasta_sha256'", [], |r| {
+                r.get(0)
+            })
             .expect("fasta hash");
         let fai_hash: String = conn
-            .query_row("SELECT v FROM atlas_meta WHERE k='fai_sha256'", [], |r| r.get(0))
+            .query_row("SELECT v FROM atlas_meta WHERE k='fai_sha256'", [], |r| {
+                r.get(0)
+            })
             .expect("fai hash");
         assert_eq!(fasta_hash.len(), 64);
         assert_eq!(fai_hash.len(), 64);
@@ -800,7 +899,8 @@ mod tests {
         let mut o = opts(root.path(), StrictnessMode::Lenient);
         o.gff3_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
             .join("tests/fixtures/policies/duplicate_transcript_ids.gff3");
-        o.duplicate_transcript_id_policy = DuplicateTranscriptIdPolicy::DedupeKeepLexicographicallySmallest;
+        o.duplicate_transcript_id_policy =
+            DuplicateTranscriptIdPolicy::DedupeKeepLexicographicallySmallest;
         let run = ingest_dataset(&o).expect("dedupe policy should pass");
         let conn = rusqlite::Connection::open(run.sqlite_path).expect("open sqlite");
         let tx_count: i64 = conn
@@ -841,18 +941,19 @@ mod tests {
         o.gff3_path = gff;
         let run = ingest_dataset(&o).expect("lenient ingest");
         assert!(!run.anomaly_report.rejections.is_empty());
-        assert_eq!(run.anomaly_report.rejections[0].code, "GFF3_UNKNOWN_FEATURE");
+        assert_eq!(
+            run.anomaly_report.rejections[0].code,
+            "GFF3_UNKNOWN_FEATURE"
+        );
     }
 
     #[test]
     fn manifest_stores_contig_normalization_aliases() {
         let root = tempdir().expect("tempdir");
         let mut o = opts(root.path(), StrictnessMode::Strict);
-        o.seqid_policy =
-            SeqidNormalizationPolicy::from_aliases(std::collections::BTreeMap::from([(
-                "1".to_string(),
-                "chr1".to_string(),
-            )]));
+        o.seqid_policy = SeqidNormalizationPolicy::from_aliases(std::collections::BTreeMap::from(
+            [("1".to_string(), "chr1".to_string())],
+        ));
         let run = ingest_dataset(&o).expect("ingest");
         assert_eq!(
             run.manifest
