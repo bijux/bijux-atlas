@@ -108,6 +108,8 @@ pub struct ArtifactManifest {
     pub toolchain_hash: String,
     #[serde(default)]
     pub created_at: String,
+    #[serde(default = "default_sharding_plan")]
+    pub sharding_plan: ShardingPlan,
     #[serde(default)]
     pub contig_normalization_aliases: BTreeMap<String, String>,
     #[serde(default = "default_derived_column_origins")]
@@ -146,6 +148,7 @@ impl ArtifactManifest {
             ingest_build_hash: String::new(),
             toolchain_hash: "unknown".to_string(),
             created_at: String::new(),
+            sharding_plan: ShardingPlan::None,
             contig_normalization_aliases: BTreeMap::new(),
             derived_column_origins: default_derived_column_origins(),
         }
@@ -259,6 +262,20 @@ fn default_derived_column_origins() -> BTreeMap<String, String> {
         "Derived from transcript/mRNA + exon/CDS relationships from GFF3".to_string(),
     );
     out
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+#[serde(rename_all = "snake_case")]
+#[non_exhaustive]
+pub enum ShardingPlan {
+    #[default]
+    None,
+    Contig,
+    RegionGrid,
+}
+
+fn default_sharding_plan() -> ShardingPlan {
+    ShardingPlan::None
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
