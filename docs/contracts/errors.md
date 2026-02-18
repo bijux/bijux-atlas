@@ -37,6 +37,8 @@ Does not define implementation internals outside this contract surface.
 - `NotReady`: stable machine error code for API and CLI contract surfaces.
 - `PayloadTooLarge`: stable machine error code for API and CLI contract surfaces.
 - `QueryRejectedByPolicy`: stable machine error code for API and CLI contract surfaces.
+- `QueryTooExpensive`: stable machine error code for API and CLI contract surfaces.
+- `RangeTooLarge`: stable machine error code for API and CLI contract surfaces.
 - `RateLimited`: stable machine error code for API and CLI contract surfaces.
 - `ResponseTooLarge`: stable machine error code for API and CLI contract surfaces.
 - `Timeout`: stable machine error code for API and CLI contract surfaces.
@@ -264,6 +266,32 @@ Invalid or drifted registry content is rejected by contract checks and CI gates.
       "field": "example"
     },
     "message": "QueryRejectedByPolicy error"
+  }
+}
+```
+
+### `QueryTooExpensive`
+```json
+{
+  "error": {
+    "code": "QueryTooExpensive",
+    "details": {
+      "field": "example"
+    },
+    "message": "QueryTooExpensive error"
+  }
+}
+```
+
+### `RangeTooLarge`
+```json
+{
+  "error": {
+    "code": "RangeTooLarge",
+    "details": {
+      "field": "example"
+    },
+    "message": "RangeTooLarge error"
   }
 }
 ```

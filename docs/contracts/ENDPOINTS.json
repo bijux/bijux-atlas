@@ -372,6 +372,14 @@
         {
           "default": null,
           "in": "query",
+          "max": 32,
+          "name": "sort",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
           "max": 500,
           "name": "limit",
           "required": false,
@@ -704,6 +712,23 @@
         }
       ],
       "telemetry_class": "control"
+    },
+    {
+      "deprecated": false,
+      "method": "POST",
+      "params": [],
+      "path": "/v1/query/validate",
+      "responses": [
+        {
+          "envelope": "json",
+          "status": "200"
+        },
+        {
+          "envelope": "api_error",
+          "status": "400"
+        }
+      ],
+      "telemetry_class": "query"
     },
     {
       "deprecated": false,

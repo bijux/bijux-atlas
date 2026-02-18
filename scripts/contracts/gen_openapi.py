@@ -57,7 +57,7 @@ def apply_filters_contract(generated: dict, filters_contract: dict) -> dict:
     if path not in paths or "get" not in paths[path]:
         return generated
     params = paths[path]["get"].get("parameters", [])
-    preserved = [p for p in params if p.get("in") != "query" or p.get("name") in {"release", "species", "assembly", "limit", "cursor", "include", "pretty", "explain"}]
+    preserved = [p for p in params if p.get("in") != "query" or p.get("name") in {"release", "species", "assembly", "limit", "cursor", "include", "sort", "pretty", "explain"}]
     filter_params = []
     for f in filters_contract.get("filters", []):
         schema = {"type": f["type"] if f["type"] != "range" else "string"}
