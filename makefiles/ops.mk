@@ -460,18 +460,19 @@ ops-gc-smoke: ## Validate GC plan/apply against a disposable store fixture
 
 ops-metrics-check: ## Validate runtime metrics and observability contracts
 	@./ops/e2e/scripts/verify_metrics.sh
+	@./ops/observability/scripts/snapshot_metrics.sh
 	@./scripts/public/observability/check_metrics_contract.py
+	@python3 ./ops/observability/scripts/contracts/check_metrics_coverage.py
 	@./scripts/public/observability/check_dashboard_contract.py
 	@./scripts/public/observability/check_alerts_contract.py
 	@./scripts/public/observability/lint_runbooks.py
 	@./scripts/public/observability/check_runtime_metrics.py
-	@./ops/observability/scripts/snapshot_metrics.sh
 	@./ops/observability/scripts/check_metric_cardinality.py
 	@python3 ./ops/observability/scripts/validate_logs_schema.py
 
 ops-traces-check: ## Validate trace signal (when OTEL enabled)
 	@./ops/e2e/scripts/verify_traces.sh
-	@if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/public/observability/check_tracing_contract.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi
+	@if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/public/observability/check_tracing_contract.py; python3 ./ops/observability/scripts/contracts/check_trace_coverage.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi
 
 ops-k8s-tests: ## Run k8s e2e suite
 	@$(MAKE) -s ops-env-validate

@@ -11,6 +11,6 @@ fi
 
 POD="$(kubectl -n "$NS" get pod -l app=otel-collector -o jsonpath='{.items[0].metadata.name}')"
 # Best-effort signal: collector logs should show request-path spans emitted.
-kubectl -n "$NS" logs "$POD" --tail=500 | grep -E "dataset resolve|download|open|query|serialize" >/dev/null
+kubectl -n "$NS" logs "$POD" --tail=800 | grep -E "admission_control|dataset_resolve|cache_lookup|store_fetch|open_db|sqlite_query|serialize_response" >/dev/null
 
 echo "trace verification passed"
