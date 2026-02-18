@@ -12,23 +12,23 @@
 ## Metrics
 
 - `bijux_overload_shedding_active`
-- `bijux_request_queue_depth`
-- `bijux_class_heavy_inflight`
-- `bijux_cheap_queries_served_while_overloaded_total`
-- HTTP status split for `/v1/genes`, `/v1/sequence/region`, `/v1/transcripts/*`
+- `bijux_http_requests_total`
+- `bijux_http_request_latency_p95_seconds`
+- `bijux_errors_total`
+- HTTP status split for `/v1/genes`, `/v1/sequence/region`, `/v1/transcripts/{tx_id}`
 
 ## Dashboards
 
-- `docs/operations/observability/INDEX.md` dashboard links
+- `docs/operations/observability/dashboard.md`
 - Grafana via `make ops-open-grafana`
 
-## Drill Steps
+## Commands
 
 1. `make ops-drill-overload`
 2. `make ops-load-shedding`
 3. `make ops-drill-rate-limit`
 
-## Expected Output
+## Expected outputs
 
 - Cheap-by-id requests remain available.
 - Non-cheap/heavy requests may return controlled shed responses.
@@ -45,7 +45,7 @@
 1. Revert recent overload-policy config changes.
 2. Re-run `make ops-load-shedding` to confirm recovery behavior.
 
-## Postmortem Checklist
+## Postmortem checklist
 
 - Capture metrics snapshot and artifacts from `make ops-report`.
 - Record trigger, blast radius, and time-to-recovery.
