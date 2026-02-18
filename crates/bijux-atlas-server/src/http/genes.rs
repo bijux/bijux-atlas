@@ -263,25 +263,23 @@ pub(crate) async fn genes_handler(
     };
 
     let normalized = super::handlers::normalize_query(&params);
+    let manifest_summary = state.cache.fetch_manifest_summary(&dataset).await.ok();
+    let artifact_hash = super::handlers::dataset_artifact_hash(manifest_summary.as_ref(), &dataset);
+    let etag = super::handlers::dataset_etag(&artifact_hash, "/v1/genes", &params);
+    let cache_key_debug = format!("/v1/genes?{normalized}");
     let explain_mode = super::handlers::bool_query_flag(&params, "explain");
     let mut redis_fill_guard = None;
     if state.api.enable_redis_response_cache {
         if let (Some(redis), Some(cache_key)) = (&state.redis_backend, &redis_cache_key) {
             match redis.get_gene_cache(cache_key).await {
                 Ok(Some(cached_bytes)) => {
-                    let etag = format!(
-                        "\"{}\"",
-                        sha256_hex(
-                            format!("{normalized}|{}", String::from_utf8_lossy(&cached_bytes))
-                                .as_bytes(),
-                        )
-                    );
                     if super::handlers::if_none_match(&headers).as_deref() == Some(etag.as_str()) {
                         let mut resp = StatusCode::NOT_MODIFIED.into_response();
                         super::handlers::put_cache_headers(
                             resp.headers_mut(),
                             state.api.immutable_gene_ttl,
                             &etag,
+                            super::handlers::CachePolicy::ImmutableDataset,
                         );
                         resp = super::handlers::with_query_class(resp, class);
                         state
@@ -304,6 +302,7 @@ pub(crate) async fn genes_handler(
                         resp.headers_mut(),
                         state.api.immutable_gene_ttl,
                         &etag,
+                        super::handlers::CachePolicy::ImmutableDataset,
                     );
                     if let Ok(v) = HeaderValue::from_str("redis-hit") {
                         resp.headers_mut().insert("x-atlas-cache", v);
@@ -319,16 +318,6 @@ pub(crate) async fn genes_handler(
                     let guard = redis.acquire_fill_lock(cache_key).await;
                     match redis.get_gene_cache(cache_key).await {
                         Ok(Some(cached_bytes)) => {
-                            let etag = format!(
-                                "\"{}\"",
-                                sha256_hex(
-                                    format!(
-                                        "{normalized}|{}",
-                                        String::from_utf8_lossy(&cached_bytes)
-                                    )
-                                    .as_bytes(),
-                                )
-                            );
                             if super::handlers::if_none_match(&headers).as_deref()
                                 == Some(etag.as_str())
                             {
@@ -337,6 +326,7 @@ pub(crate) async fn genes_handler(
                                     resp.headers_mut(),
                                     state.api.immutable_gene_ttl,
                                     &etag,
+                                    super::handlers::CachePolicy::ImmutableDataset,
                                 );
                                 resp = super::handlers::with_query_class(resp, class);
                                 state
@@ -363,6 +353,7 @@ pub(crate) async fn genes_handler(
                                 resp.headers_mut(),
                                 state.api.immutable_gene_ttl,
                                 &etag,
+                                super::handlers::CachePolicy::ImmutableDataset,
                             );
                             if let Ok(v) = HeaderValue::from_str("redis-hit") {
                                 resp.headers_mut().insert("x-atlas-cache", v);
@@ -408,6 +399,7 @@ pub(crate) async fn genes_handler(
                 resp.headers_mut(),
                 state.api.immutable_gene_ttl,
                 &entry.etag,
+                super::handlers::CachePolicy::ImmutableDataset,
             );
             resp = super::handlers::with_query_class(resp, class);
             state
@@ -756,13 +748,14 @@ pub(crate) async fn genes_handler(
         return super::handlers::with_request_id(resp, &request_id);
     }
 
-    let etag = format!(
-        "\"{}\"",
-        sha256_hex(format!("{normalized}|{}", String::from_utf8_lossy(&bytes)).as_bytes())
-    );
     if super::handlers::if_none_match(&headers).as_deref() == Some(etag.as_str()) {
         let mut resp = StatusCode::NOT_MODIFIED.into_response();
-        super::handlers::put_cache_headers(resp.headers_mut(), state.api.immutable_gene_ttl, &etag);
+        super::handlers::put_cache_headers(
+            resp.headers_mut(),
+            state.api.immutable_gene_ttl,
+            &etag,
+            super::handlers::CachePolicy::ImmutableDataset,
+        );
         resp = super::handlers::with_query_class(resp, class);
         state
             .metrics
@@ -806,7 +799,12 @@ pub(crate) async fn genes_handler(
     if super::handlers::wants_text(&headers) {
         let text = String::from_utf8_lossy(&response_bytes).to_string();
         let mut resp = (StatusCode::OK, text).into_response();
-        super::handlers::put_cache_headers(resp.headers_mut(), state.api.immutable_gene_ttl, &etag);
+        super::handlers::put_cache_headers(
+            resp.headers_mut(),
+            state.api.immutable_gene_ttl,
+            &etag,
+            super::handlers::CachePolicy::ImmutableDataset,
+        );
         resp = super::handlers::with_query_class(resp, class);
         state
             .metrics
@@ -826,7 +824,18 @@ pub(crate) async fn genes_handler(
             .insert("content-encoding", HeaderValue::from_static(encoding));
     }
     resp = super::handlers::with_query_class(resp, class);
-    super::handlers::put_cache_headers(resp.headers_mut(), state.api.immutable_gene_ttl, &etag);
+    super::handlers::put_cache_headers(
+        resp.headers_mut(),
+        state.api.immutable_gene_ttl,
+        &etag,
+        super::handlers::CachePolicy::ImmutableDataset,
+    );
+    super::handlers::cache_debug_headers(
+        resp.headers_mut(),
+        state.api.enable_debug_datasets,
+        &artifact_hash,
+        &cache_key_debug,
+    );
     if class == QueryClass::Heavy || class == QueryClass::Cheap {
         let mut cache = state.hot_query_cache.lock().await;
         cache.insert(

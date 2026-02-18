@@ -1,8 +1,9 @@
 #![deny(clippy::redundant_clone)]
 
 use crate::http::handlers::{
-    api_error_response, error_json, if_none_match, maybe_compress_response, normalize_query,
-    put_cache_headers, serialize_payload_with_capacity, with_request_id,
+    api_error_response, dataset_artifact_hash, dataset_etag, error_json, if_none_match,
+    maybe_compress_response, normalize_query, put_cache_headers, serialize_payload_with_capacity,
+    with_request_id, CachePolicy,
 };
 use crate::*;
 use bijux_atlas_model::{DiffPage, DiffRecord, DiffScope, DiffStatus, ReleaseGeneIndexEntry};
@@ -507,13 +508,17 @@ async fn diff_common(
         page.next_cursor.map(|c| json!({ "next_cursor": c })),
         None,
     );
-    let etag = format!(
-        "\"{}\"",
-        sha256_hex(&serde_json::to_vec(&payload).unwrap_or_default())
-    );
+    let manifest_summary = state.cache.fetch_manifest_summary(&to_dataset).await.ok();
+    let artifact_hash = dataset_artifact_hash(manifest_summary.as_ref(), &to_dataset);
+    let etag = dataset_etag(&artifact_hash, route, &params);
     if if_none_match(&headers).as_deref() == Some(etag.as_str()) {
         let mut resp = StatusCode::NOT_MODIFIED.into_response();
-        put_cache_headers(resp.headers_mut(), state.api.immutable_gene_ttl, &etag);
+        put_cache_headers(
+            resp.headers_mut(),
+            state.api.immutable_gene_ttl,
+            &etag,
+            CachePolicy::ImmutableDataset,
+        );
         state
             .metrics
             .observe_request(route, StatusCode::NOT_MODIFIED, started.elapsed())
@@ -551,7 +556,12 @@ async fn diff_common(
         return with_request_id(resp, &request_id);
     }
     let mut out_headers = HeaderMap::new();
-    put_cache_headers(&mut out_headers, state.api.immutable_gene_ttl, &etag);
+    put_cache_headers(
+        &mut out_headers,
+        state.api.immutable_gene_ttl,
+        &etag,
+        CachePolicy::ImmutableDataset,
+    );
     out_headers.insert(
         "content-type",
         HeaderValue::from_static("application/json; charset=utf-8"),

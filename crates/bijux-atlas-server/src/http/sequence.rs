@@ -1,9 +1,9 @@
 #![deny(clippy::redundant_clone)]
 
 use crate::http::handlers::{
-    api_error_response, bool_query_flag, error_json, if_none_match, maybe_compress_response,
-    normalize_query, put_cache_headers, serialize_payload_with_capacity, wants_text,
-    with_request_id,
+    api_error_response, bool_query_flag, dataset_artifact_hash, dataset_etag, error_json,
+    if_none_match, maybe_compress_response, normalize_query, put_cache_headers,
+    serialize_payload_with_capacity, wants_text, with_request_id, CachePolicy,
 };
 use crate::*;
 use axum::extract::Path as AxumPath;
@@ -422,23 +422,19 @@ async fn sequence_common(
         .observe_stage("fasta_io", io_stage.elapsed())
         .await;
 
-    let etag = format!(
-        "\"{}\"",
-        sha256_hex(
-            format!(
-                "{}|{}|{}",
-                dataset.canonical_string(),
-                region_raw,
-                normalize_query(&params)
-            )
-            .as_bytes()
-        )
-    );
+    let manifest_summary = state.cache.fetch_manifest_summary(&dataset).await.ok();
+    let artifact_hash = dataset_artifact_hash(manifest_summary.as_ref(), &dataset);
+    let etag = dataset_etag(&artifact_hash, route, &params);
     if if_none_match(&headers).as_deref() == Some(etag.as_str()) {
         let mut resp = Response::new(Body::empty());
         *resp.status_mut() = StatusCode::NOT_MODIFIED;
         let mut h = HeaderMap::new();
-        put_cache_headers(&mut h, state.api.sequence_ttl, &etag);
+        put_cache_headers(
+            &mut h,
+            state.api.sequence_ttl,
+            &etag,
+            CachePolicy::ImmutableDataset,
+        );
         *resp.headers_mut() = h;
         state
             .metrics
@@ -467,7 +463,12 @@ async fn sequence_common(
             return with_request_id(resp, &request_id);
         }
         let mut h = HeaderMap::new();
-        put_cache_headers(&mut h, state.api.sequence_ttl, &etag);
+        put_cache_headers(
+            &mut h,
+            state.api.sequence_ttl,
+            &etag,
+            CachePolicy::ImmutableDataset,
+        );
         h.insert(
             "content-type",
             HeaderValue::from_static("text/plain; charset=utf-8"),
@@ -547,7 +548,12 @@ async fn sequence_common(
         .observe_stage("serialization", serialize_stage.elapsed())
         .await;
     let mut out_headers = HeaderMap::new();
-    put_cache_headers(&mut out_headers, state.api.sequence_ttl, &etag);
+    put_cache_headers(
+        &mut out_headers,
+        state.api.sequence_ttl,
+        &etag,
+        CachePolicy::ImmutableDataset,
+    );
     out_headers.insert(
         "content-type",
         HeaderValue::from_static("application/json; charset=utf-8"),
@@ -601,15 +607,14 @@ pub(crate) async fn gene_sequence_handler(
             } else if msg.contains("corrupt") {
                 (StatusCode::CONFLICT, ApiErrorCode::ArtifactCorrupted)
             } else {
-                (StatusCode::SERVICE_UNAVAILABLE, ApiErrorCode::UpstreamStoreUnavailable)
+                (
+                    StatusCode::SERVICE_UNAVAILABLE,
+                    ApiErrorCode::UpstreamStoreUnavailable,
+                )
             };
             let resp = api_error_response(
                 status,
-                error_json(
-                    code,
-                    "dataset unavailable",
-                    json!({"message": msg}),
-                ),
+                error_json(code, "dataset unavailable", json!({"message": msg})),
             );
             return with_request_id(resp, &request_id);
         }
