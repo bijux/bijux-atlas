@@ -30,3 +30,5 @@ Expected output: same scenario names and result contracts across runtimes.
 - [Load Suites](suites.md)
 - [Load Index](INDEX.md)
 - `ops-load-full`
+
+- Reference scenario: `mixed.json`

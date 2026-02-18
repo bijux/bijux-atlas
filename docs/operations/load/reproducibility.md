@@ -40,3 +40,5 @@ Expected output: deterministic suite selection and contract-valid result artifac
 - [Load Suites](suites.md)
 - [Load CI Policy](ci-policy.md)
 - `ops-load-full`
+
+- Reference scenario: `mixed.json`

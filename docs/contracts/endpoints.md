@@ -40,7 +40,7 @@ Does not define implementation internals outside this contract surface.
 - `GET /v1/version` telemetry class: `control`
 
 OpenAPI reference:
-- `ops/openapi/v1/openapi.generated.json`
+- `configs/openapi/v1/openapi.yaml`
 
 ## Failure modes
 
@@ -49,7 +49,7 @@ Invalid or drifted registry content is rejected by contract checks and CI gates.
 ## Examples
 
 ```bash
-$ ./scripts/openapi-generate.sh
+$ ./scripts/internal/openapi-generate.sh
 ```
 
 Expected output: generator succeeds and endpoint drift checks pass.

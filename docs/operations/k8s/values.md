@@ -56,8 +56,7 @@ Missing or stale keys can break deployments and profile docs.
 ## How to verify
 
 ```bash
-$ python3 scripts/docs/generate_k8s_values_doc.py
-$ python3 scripts/contracts/check_chart_values_contract.py
+$ make ops-values-validate
 ```
 
 Expected output: generated values doc and chart contract check pass.
@@ -67,3 +66,4 @@ Expected output: generated values doc and chart contract check pass.
 - [Chart Values Contract](../../contracts/chart-values.md)
 - [Helm Chart Contract](chart.md)
 - [K8s Index](INDEX.md)
+- `ops-values-validate`

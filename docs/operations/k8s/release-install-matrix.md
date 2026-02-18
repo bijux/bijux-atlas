@@ -39,7 +39,7 @@ Missing profile/test entries indicate CI generation drift or skipped suites.
 ## How to verify
 
 ```bash
-$ ops/k8s/ci/install-matrix.sh
+$ make ops-release-matrix
 $ make docs
 ```
 

@@ -18,3 +18,5 @@ One-command flow:
 ```bash
 make ops-full
 ```
+
+Canonical targets: `ops-up`, `ops-deploy`, `ops-warm`, `ops-smoke`, `ops-k8s-tests`, `ops-load-smoke`, `ops-observability-validate`, `ops-full`.

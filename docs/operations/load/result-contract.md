@@ -35,3 +35,5 @@ Expected output: load result contract validation passes.
 - [Load Suites](suites.md)
 - [Load Reproducibility](reproducibility.md)
 - `ops-load-full`
+
+- Reference scenario: `mixed.json`

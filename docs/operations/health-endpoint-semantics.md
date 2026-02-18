@@ -7,7 +7,9 @@
 Operational checks are exercised via make targets:
 
 ```bash
-make ops-smoke
-make ops-drill-rate-limit
-make ops-drill-memory-growth
+$ make ops-smoke
+$ make ops-drill-rate-limit
+$ make ops-drill-memory-growth
 ```
+
+Canonical targets: `ops-smoke`, `ops-drill-rate-limit`, `ops-drill-memory-growth`.

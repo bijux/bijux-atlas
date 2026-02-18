@@ -29,3 +29,5 @@ Expected output: baseline policy check passes when approved.
 - [Load Reproducibility](reproducibility.md)
 - [Load Suites](suites.md)
 - `ops-load-full`
+
+- Reference scenario: `mixed.json`
