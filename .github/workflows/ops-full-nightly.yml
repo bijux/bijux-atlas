@@ -49,6 +49,11 @@ jobs:
       - run: make ci-ops-install-prereqs
       - run: make ops-tools-check
       - run: make ops-full
+      - name: Optional nightly realdata QC gate
+        continue-on-error: true
+        run: |
+          make ops-publish DATASET=real1
+          ATLAS_DATASET_RELEASE=111 ATLAS_DATASET_SPECIES=homo_sapiens ATLAS_DATASET_ASSEMBLY=GRCh38 make ops-dataset-qc
       - if: always()
         run: make ops-report
       - if: always()

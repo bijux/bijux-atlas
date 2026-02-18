@@ -267,6 +267,7 @@ ops-publish-medium: ## Ingest + publish medium fixture dataset
 	  --fasta ops/fixtures/medium/data/genome.fa \
 	  --fai ops/fixtures/medium/data/genome.fa.fai \
 	  --release 110 --species homo_sapiens --assembly GRCh38
+	@ATLAS_DATASET_RELEASE=110 ATLAS_DATASET_SPECIES=homo_sapiens ATLAS_DATASET_ASSEMBLY=GRCh38 $(MAKE) ops-dataset-qc
 	@./ops/datasets/scripts/snapshot_metadata.sh
 
 ops-datasets-fetch: ## Fetch dataset prerequisites and verify checksums from manifest lock
@@ -275,6 +276,13 @@ ops-datasets-fetch: ## Fetch dataset prerequisites and verify checksums from man
 ops-publish: ## Publish dataset by name (DATASET=medium|real1)
 	@$(MAKE) -s ops-env-validate
 	@./ops/datasets/scripts/publish_by_name.sh "$${DATASET:-medium}"
+	@case "$${DATASET:-medium}" in \
+	  medium) ATLAS_DATASET_RELEASE=110 ATLAS_DATASET_SPECIES=homo_sapiens ATLAS_DATASET_ASSEMBLY=GRCh38 ;; \
+	  real1) ATLAS_DATASET_RELEASE=111 ATLAS_DATASET_SPECIES=homo_sapiens ATLAS_DATASET_ASSEMBLY=GRCh38 ;; \
+	  *) echo "unsupported DATASET=$${DATASET:-medium}" >&2; exit 2 ;; \
+	esac; \
+	export ATLAS_DATASET_RELEASE ATLAS_DATASET_SPECIES ATLAS_DATASET_ASSEMBLY; \
+	$(MAKE) ops-dataset-qc
 	@./ops/datasets/scripts/snapshot_metadata.sh
 
 ops-catalog-validate: ## Validate published catalog schema + deterministic merge ordering
@@ -286,6 +294,11 @@ ops-cache-status: ## Print cache status and enforce local cache budget policy
 
 ops-dataset-qc: ## Enforce dataset QC thresholds for local ops gates
 	@./ops/datasets/scripts/dataset_qc.sh
+
+ops-dataset-qc-diff: ## Diff two QC reports (BASE_QC=... TARGET_QC=...)
+	@[ -n "$${BASE_QC:-}" ] || { echo "BASE_QC is required" >&2; exit 2; }
+	@[ -n "$${TARGET_QC:-}" ] || { echo "TARGET_QC is required" >&2; exit 2; }
+	@python3 ./ops/datasets/scripts/qc_diff.py --base "$$BASE_QC" --target "$$TARGET_QC"
 
 ops-drill-corruption-dataset: ## Drill corruption detection and quarantine behavior
 	@./ops/datasets/scripts/corruption_drill.sh
