@@ -69,9 +69,8 @@ pub fn build_and_write_manifest_and_reports(
         ),
     );
     manifest.dataset_signature_sha256 = dataset_signature_merkle(extract)?;
-    let policy_hash = sha256_hex(
-        &fs::read(workspace_file("configs/policy/policy.json")).unwrap_or_default(),
-    );
+    let policy_hash =
+        sha256_hex(&fs::read(workspace_file("configs/policy/policy.json")).unwrap_or_default());
     manifest.input_hashes = ManifestInputHashes::new(
         manifest.checksums.gff3_sha256.clone(),
         manifest.checksums.fasta_sha256.clone(),
@@ -99,102 +98,23 @@ pub fn build_and_write_manifest_and_reports(
         canonical::stable_json_bytes(&extract.anomaly).map_err(|e| IngestError(e.to_string()))?;
     fs::write(anomaly_path, anomaly_bytes).map_err(|e| IngestError(e.to_string()))?;
 
-    let warn_items = vec![
-        ("missing_parents", extract.anomaly.missing_parents.len()),
-        (
-            "missing_transcript_parents",
-            extract.anomaly.missing_transcript_parents.len(),
-        ),
-        (
-            "multiple_parent_transcripts",
-            extract.anomaly.multiple_parent_transcripts.len(),
-        ),
-        ("unknown_contigs", extract.anomaly.unknown_contigs.len()),
-        ("overlapping_ids", extract.anomaly.overlapping_ids.len()),
-        (
-            "duplicate_gene_ids",
-            extract.anomaly.duplicate_gene_ids.len(),
-        ),
-        (
-            "overlapping_gene_ids_across_contigs",
-            extract.anomaly.overlapping_gene_ids_across_contigs.len(),
-        ),
-        (
-            "orphan_transcripts",
-            extract.anomaly.orphan_transcripts.len(),
-        ),
-        ("parent_cycles", extract.anomaly.parent_cycles.len()),
-        (
-            "attribute_fallbacks",
-            extract.anomaly.attribute_fallbacks.len(),
-        ),
-        (
-            "unknown_feature_types",
-            extract.anomaly.unknown_feature_types.len(),
-        ),
-        (
-            "missing_required_fields",
-            extract.anomaly.missing_required_fields.len(),
-        ),
-        ("rejections", extract.anomaly.rejections.len()),
-    ];
-    let warn_codes: Vec<serde_json::Value> = warn_items
-        .into_iter()
-        .filter(|(_, count)| *count > 0)
-        .map(|(code, count)| {
-            json!({
-                "severity": QcSeverity::Warn,
-                "code": code,
-                "count": count,
-            })
-        })
-        .collect();
-
-    let qc_report = json!({
-        "dataset": dataset,
-        "manifest_signature_sha256": manifest.dataset_signature_sha256,
-        "gene_count": extract.gene_rows.len(),
-        "transcript_count": total_transcripts,
-        "transcript_summary_count": extract.transcript_rows.len(),
-        "biotype_distribution": extract.biotype_distribution,
-        "contig_distribution": extract.contig_distribution,
-        "qc_counters": {
-            "unknown_contig_feature_ratio": if extract.total_features == 0 { 0.0 } else { extract.unknown_contig_features as f64 / extract.total_features as f64 },
-            "max_contig_name_length": extract.max_contig_name_length,
-            "total_features": extract.total_features
-        },
-        "anomalies": {
-            "missing_parents": extract.anomaly.missing_parents,
-            "missing_transcript_parents": extract.anomaly.missing_transcript_parents,
-            "multiple_parent_transcripts": extract.anomaly.multiple_parent_transcripts,
-            "unknown_contigs": extract.anomaly.unknown_contigs,
-            "overlapping_ids": extract.anomaly.overlapping_ids,
-            "duplicate_gene_ids": extract.anomaly.duplicate_gene_ids,
-            "overlapping_gene_ids_across_contigs": extract.anomaly.overlapping_gene_ids_across_contigs,
-            "orphan_transcripts": extract.anomaly.orphan_transcripts,
-            "parent_cycles": extract.anomaly.parent_cycles,
-            "attribute_fallbacks": extract.anomaly.attribute_fallbacks,
-            "unknown_feature_types": extract.anomaly.unknown_feature_types,
-            "missing_required_fields": extract.anomaly.missing_required_fields,
-            "rejections": extract.anomaly.rejections,
-        },
-        "severity_summary": {
-            "INFO": 0,
-            "WARN": warn_codes.len(),
-            "ERROR": 0
-        }
-        ,
-        "severity_items": warn_codes,
-    });
+    let qc_report = build_qc_report_json(
+        dataset,
+        extract,
+        total_transcripts,
+        Some(manifest.dataset_signature_sha256.clone()),
+        false,
+    )?;
     let qc_bytes =
         canonical::stable_json_bytes(&qc_report).map_err(|e| IngestError(e.to_string()))?;
-    let qc_report_path = output_root
+    let derived_dir = output_root
         .join(format!("release={}", dataset.release))
         .join(format!("species={}", dataset.species))
         .join(format!("assembly={}", dataset.assembly))
-        .join("derived")
-        .join("qc_report.json");
-    fs::write(&qc_report_path, qc_bytes).map_err(|e| IngestError(e.to_string()))?;
+        .join("derived");
+    let qc_report_path = derived_dir.join("qc_report.json");
+    fs::write(&qc_report_path, &qc_bytes).map_err(|e| IngestError(e.to_string()))?;
+    fs::write(derived_dir.join("qc.json"), qc_bytes).map_err(|e| IngestError(e.to_string()))?;
 
     Ok(BuiltManifest {
         manifest,
@@ -238,7 +158,8 @@ fn compute_manifest_artifact_hash(manifest: &ArtifactManifest) -> Result<String,
         "toolchain_hash": manifest.toolchain_hash,
         "db_hash": manifest.db_hash
     });
-    let bytes = canonical::stable_json_bytes(&digest_source).map_err(|e| IngestError(e.to_string()))?;
+    let bytes =
+        canonical::stable_json_bytes(&digest_source).map_err(|e| IngestError(e.to_string()))?;
     Ok(sha256_hex(&bytes))
 }
 
@@ -259,6 +180,33 @@ pub fn write_qc_and_anomaly_reports_only(
         canonical::stable_json_bytes(&extract.anomaly).map_err(|e| IngestError(e.to_string()))?;
     fs::write(anomaly_path, anomaly_bytes).map_err(|e| IngestError(e.to_string()))?;
 
+    let qc_report = build_qc_report_json(
+        dataset,
+        extract,
+        total_transcripts,
+        Some(dataset_signature_merkle(extract)?),
+        true,
+    )?;
+    let qc_bytes =
+        canonical::stable_json_bytes(&qc_report).map_err(|e| IngestError(e.to_string()))?;
+    let derived_dir = output_root
+        .join(format!("release={}", dataset.release))
+        .join(format!("species={}", dataset.species))
+        .join(format!("assembly={}", dataset.assembly))
+        .join("derived");
+    let qc_report_path = derived_dir.join("qc_report.json");
+    fs::write(&qc_report_path, &qc_bytes).map_err(|e| IngestError(e.to_string()))?;
+    fs::write(derived_dir.join("qc.json"), qc_bytes).map_err(|e| IngestError(e.to_string()))?;
+    Ok(qc_report_path)
+}
+
+fn build_qc_report_json(
+    dataset: &DatasetId,
+    extract: &ExtractResult,
+    total_transcripts: u64,
+    manifest_signature: Option<String>,
+    report_only: bool,
+) -> Result<serde_json::Value, IngestError> {
     let warn_items = vec![
         ("missing_parents", extract.anomaly.missing_parents.len()),
         (
@@ -309,22 +257,47 @@ pub fn write_qc_and_anomaly_reports_only(
             })
         })
         .collect();
-
-    let qc_report = json!({
+    let mut rejections_by_reason = BTreeMap::<String, u64>::new();
+    for rejection in &extract.anomaly.rejections {
+        *rejections_by_reason
+            .entry(rejection.code.clone())
+            .or_insert(0) += 1;
+    }
+    let mut top_biotypes = extract
+        .biotype_distribution
+        .iter()
+        .map(|(biotype, count)| (biotype.clone(), *count))
+        .collect::<Vec<_>>();
+    top_biotypes.sort_by(|a, b| b.1.cmp(&a.1).then(a.0.cmp(&b.0)));
+    top_biotypes.truncate(10);
+    Ok(json!({
+        "schema_version": 1,
         "dataset": dataset,
-        "report_only": true,
-        "manifest_signature_sha256": dataset_signature_merkle(extract)?,
-        "gene_count": extract.gene_rows.len(),
-        "transcript_count": total_transcripts,
-        "transcript_summary_count": extract.transcript_rows.len(),
-        "contig_count": contigs.len(),
-        "biotype_distribution": extract.biotype_distribution,
-        "contig_distribution": extract.contig_distribution,
-        "qc_counters": {
+        "report_only": report_only,
+        "manifest_signature_sha256": manifest_signature.unwrap_or_default(),
+        "counts": {
+            "genes": extract.gene_rows.len(),
+            "transcripts": total_transcripts,
+            "exons": extract.exon_rows.len(),
+            "cds": extract.cds_feature_count
+        },
+        "orphan_counts": {
+            "transcripts": extract.anomaly.orphan_transcripts.len()
+        },
+        "duplicate_id_events": {
+            "overlapping_ids": extract.anomaly.overlapping_ids.len(),
+            "duplicate_gene_ids": extract.anomaly.duplicate_gene_ids.len(),
+            "overlapping_gene_ids_across_contigs": extract.anomaly.overlapping_gene_ids_across_contigs.len()
+        },
+        "rejected_record_count_by_reason": rejections_by_reason,
+        "contig_stats": {
+            "distribution": extract.contig_distribution,
             "unknown_contig_feature_ratio": if extract.total_features == 0 { 0.0 } else { extract.unknown_contig_features as f64 / extract.total_features as f64 },
             "max_contig_name_length": extract.max_contig_name_length,
             "total_features": extract.total_features
         },
+        "biotype_distribution_top_n": top_biotypes,
+        "biotype_distribution": extract.biotype_distribution,
         "anomalies": {
             "missing_parents": extract.anomaly.missing_parents,
             "missing_transcript_parents": extract.anomaly.missing_transcript_parents,
@@ -346,17 +319,7 @@ pub fn write_qc_and_anomaly_reports_only(
             "ERROR": 0
         },
         "severity_items": warn_codes,
-    });
-    let qc_bytes =
-        canonical::stable_json_bytes(&qc_report).map_err(|e| IngestError(e.to_string()))?;
-    let qc_report_path = output_root
-        .join(format!("release={}", dataset.release))
-        .join(format!("species={}", dataset.species))
-        .join(format!("assembly={}", dataset.assembly))
-        .join("derived")
-        .join("qc_report.json");
-    fs::write(&qc_report_path, qc_bytes).map_err(|e| IngestError(e.to_string()))?;
-    Ok(qc_report_path)
+    }))
 }
 
 fn dataset_signature_merkle(extract: &ExtractResult) -> Result<String, IngestError> {
