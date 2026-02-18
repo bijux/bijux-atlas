@@ -20,6 +20,7 @@ config_keys = json.loads((contracts / "CONFIG_KEYS.json").read_text())["env_keys
 artifact_schema = json.loads((contracts / "artifacts" / "ARTIFACT_SCHEMA.json").read_text())
 policy_schema = json.loads((contracts / "POLICY_SCHEMA.json").read_text())
 qc_schema = json.loads((contracts / "QC_SCHEMA.json").read_text())
+normalized_schema = json.loads((contracts / "NORMALIZED_FORMAT_SCHEMA.json").read_text())
 
 
 def write_reference_contract_doc(path: Path, title: str, contracts_body: str, examples_body: str) -> None:
@@ -265,6 +266,11 @@ for rust_file in (
 (out_gen / "QC_SCHEMA.md").write_text(
     "# QC Schema (Generated)\n\n```json\n"
     + json.dumps(qc_schema, indent=2, sort_keys=True)
+    + "\n```\n"
+)
+(out_gen / "NORMALIZED_FORMAT_SCHEMA.md").write_text(
+    "# Normalized Format Schema (Generated)\n\n```json\n"
+    + json.dumps(normalized_schema, indent=2, sort_keys=True)
     + "\n```\n"
 )
 
