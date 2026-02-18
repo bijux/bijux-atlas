@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["run_id", "namespace", "metadata", "artifacts"],
+  "properties": {
+    "run_id": {"type": "string", "minLength": 1},
+    "namespace": {"type": "string", "minLength": 1},
+    "metadata": {"type": "object"},
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["logs", "metrics", "smoke_report", "perf_results"],
+      "properties": {
+        "logs": {"type": "boolean"},
+        "metrics": {"type": "boolean"},
+        "smoke_report": {"type": "boolean"},
+        "perf_results": {"type": "boolean"}
+      }
+    }
+  }
+}

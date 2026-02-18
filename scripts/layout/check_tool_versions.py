@@ -18,6 +18,8 @@ CMDS = {
     "k6": ["k6", "version"],
     "helm": ["helm", "version", "--short"],
     "kubectl": ["kubectl", "version", "--client", "--output=yaml"],
+    "jq": ["jq", "--version"],
+    "yq": ["yq", "--version"],
 }
 
 
@@ -30,10 +32,10 @@ def detect_version(tool: str) -> str:
     except subprocess.CalledProcessError as exc:
         raise RuntimeError(f"{tool} command failed: {exc.output.strip()}")
 
-    match = re.search(r"v\d+\.\d+\.\d+", out)
+    match = re.search(r"(?:v|jq-)?(\d+\.\d+\.\d+)", out)
     if not match:
         raise RuntimeError(f"could not parse {tool} version from output: {out.strip()}")
-    return match.group(0)
+    return f"v{match.group(1)}"
 
 
 def main() -> int:

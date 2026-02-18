@@ -11,6 +11,7 @@ ops-env-print: ## Print canonical ops environment settings
 
 ops-doctor: ## Validate and print pinned ops tool versions and canonical env
 	@$(MAKE) -s ops-tools-check
+	@$(MAKE) -s ops-tools-print
 	@$(MAKE) -s ops-env-print
 
 ops-stack-up: ## Bring up stack components only (kind + stack manifests)
@@ -60,6 +61,14 @@ ops-stack-slow-store: ## Enable slow-store mode via toxiproxy latency
 	@./ops/stack/toxiproxy/enable_slow_store.sh
 
 ops-reset: ## Reset ops state (namespace/PV store data + local store artifacts)
+	@if [ "$${CONFIRM_RESET:-}" != "YES" ]; then \
+	  echo "ops-reset is destructive; rerun with CONFIRM_RESET=YES" >&2; \
+	  exit 2; \
+	fi
+	@if [ -n "$${CI:-}" ] && [ "$${OPS_ALLOW_PROMPT:-0}" = "1" ]; then \
+	  echo "interactive prompts are forbidden in CI ops runs" >&2; \
+	  exit 2; \
+	fi
 	@$(MAKE) -s ops-env-validate
 	@kubectl delete ns "$${ATLAS_NS}" --ignore-not-found >/dev/null 2>&1 || true
 	@kubectl delete pvc --all -n default >/dev/null 2>&1 || true
@@ -281,14 +290,8 @@ ops-report: ## Gather ops evidence into artifacts/ops/<run-id>/
 	cp -R artifacts/ops/e2e/k6 "$$out/perf/k6/" 2>/dev/null || true; \
 	cp -R "$$out/smoke/report.md" "$$out/perf/smoke-report.md" 2>/dev/null || true; \
 	curl -fsS "$${ATLAS_BASE_URL:-http://127.0.0.1:8080}/metrics" > "$$out/metrics/metrics.txt" 2>/dev/null || true; \
-	{ \
-	  echo '{'; \
-	  echo "  \"run_id\": \"$${OPS_RUN_ID}\","; \
-	  echo "  \"git_sha\": \"$$(git rev-parse --short HEAD 2>/dev/null || echo unknown)\","; \
-	  echo "  \"image\": \"bijux-atlas:local\","; \
-	  echo "  \"dataset_hash\": \"$$(sha256sum ops/fixtures/medium/data/genes.gff3 2>/dev/null | awk '{print $$1}' || echo unknown)\""; \
-	  echo '}'; \
-	} > "$$out/metadata.json"; \
+	./ops/e2e/scripts/write_metadata.sh "$$out"; \
+	python3 ./ops/report/generate.py --run-dir "$$out" --schema ops/report/schema.json; \
 	echo "ops report written to $$out"; \
 	RUN_ID="$${OPS_RUN_ID}" OUT_DIR="$$out/bundle" ./scripts/public/report_bundle.sh >/dev/null; \
 	ln -sfn "$${OPS_RUN_ID}" artifacts/ops/latest; \
@@ -324,11 +327,24 @@ ops-helm-version-check: ## Validate pinned helm version from configs/ops/tool-ve
 ops-kubectl-version-check: ## Validate pinned kubectl version from configs/ops/tool-versions.json
 	@python3 ./scripts/layout/check_tool_versions.py kubectl
 
+ops-jq-version-check: ## Validate pinned jq version from configs/ops/tool-versions.json
+	@python3 ./scripts/layout/check_tool_versions.py jq
+
+ops-yq-version-check: ## Validate pinned yq version from configs/ops/tool-versions.json
+	@python3 ./scripts/layout/check_tool_versions.py yq
+
 ops-tools-check: ## Validate all pinned ops tools versions
 	@$(MAKE) ops-kind-version-check
 	@$(MAKE) ops-k6-version-check
 	@$(MAKE) ops-helm-version-check
 	@$(MAKE) ops-kubectl-version-check
+	@$(MAKE) ops-jq-version-check
+	@$(MAKE) ops-yq-version-check
+
+ops-tools-print: ## Print tool paths and local versions
+	@for tool in kind kubectl helm k6 jq yq; do \
+	  printf '%s\n' "$$tool: path=$$(command -v $$tool 2>/dev/null || echo missing) version=$$($$tool --version 2>/dev/null | head -n1 || true)"; \
+	done
 
 ops-tool-check: ## Compatibility alias for ops-tools-check
 	@$(MAKE) ops-tools-check
@@ -456,7 +472,7 @@ ops-open-grafana: ## Print local ops service URLs
 ops-ci: ## Nightly ops pipeline: up/deploy/warm/tests/ops/load/drills/report
 	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck
 	@$(MAKE) ops-up
-	@$(MAKE) ops-reset
+	@CONFIRM_RESET=YES $(MAKE) ops-reset
 	@$(MAKE) ops-publish-medium
 	@$(MAKE) ops-deploy
 	@$(MAKE) ops-warm
@@ -472,16 +488,31 @@ ops-ci-nightly: ## Compatibility alias for ops-ci
 	@$(MAKE) ops-ci
 
 
-ops-full: ## Full local ops flow: up->deploy->warm->smoke->k8s-tests->load-smoke->obs-validate
+ops-full: ## Full local ops flow (OPS_MODE=fast|full, OPS_DRY_RUN=1 supported)
 	@set -e; \
 	trap 'echo "ops-full failed; collecting failure bundle"; $(MAKE) ops-stack-health-report; $(MAKE) ops-report' ERR; \
+	if [ "$${OPS_DRY_RUN:-0}" = "1" ]; then \
+	  echo "DRY-RUN ops-full mode=$${OPS_MODE:-fast} run_id=$${OPS_RUN_ID} ns=$${ATLAS_NS}"; \
+	  echo "$(MAKE) ops-up && $(MAKE) ops-deploy && $(MAKE) ops-publish && $(MAKE) ops-warm && $(MAKE) ops-smoke && $(MAKE) ops-k8s-tests"; \
+	  if [ "$${OPS_MODE:-fast}" = "full" ]; then \
+	    echo "$(MAKE) ops-load-full && $(MAKE) ops-realdata && $(MAKE) ops-observability-validate"; \
+	  else \
+	    echo "$(MAKE) ops-load-smoke && $(MAKE) ops-observability-validate"; \
+	  fi; \
+	  exit 0; \
+	fi; \
 	$(MAKE) ops-up; \
 	$(MAKE) ops-deploy; \
 	$(MAKE) ops-publish; \
 	$(MAKE) ops-warm; \
 	$(MAKE) ops-smoke || $(MAKE) ops-smoke; \
 	$(MAKE) ops-k8s-tests; \
-	$(MAKE) ops-load-smoke; \
+	if [ "$${OPS_MODE:-fast}" = "full" ]; then \
+	  $(MAKE) ops-load-full; \
+	  $(MAKE) ops-realdata; \
+	else \
+	  $(MAKE) ops-load-smoke; \
+	fi; \
 	$(MAKE) ops-observability-validate
 
 ops-full-pr: ## Lightweight PR flow for ops validation
@@ -508,14 +539,21 @@ ops-full-nightly: ## Nightly full flow incl. realdata and full load suites
 	$(MAKE) ops-load-nightly; \
 	$(MAKE) ops-observability-validate
 
+ops-idempotency-check: ## Enforce idempotent ops-full rerun contract
+	@OPS_RUN_ID= OPS_NAMESPACE= $(MAKE) OPS_MODE=fast ops-full
+	@sleep 1
+	@OPS_RUN_ID= OPS_NAMESPACE= $(MAKE) OPS_MODE=fast ops-full
+
 ops-clean: ## Local cleanup of ops outputs and test namespaces
-	@kubectl delete ns "$${ATLAS_NS}" --ignore-not-found >/dev/null 2>&1 || true
-	@rm -rf artifacts/perf/results artifacts/ops artifacts/e2e-datasets artifacts/e2e-store
+	@days="$${OPS_RETENTION_DAYS:-7}"; \
+	kubectl delete ns "$${ATLAS_NS}" --ignore-not-found >/dev/null 2>&1 || true; \
+	find artifacts/ops -mindepth 1 -maxdepth 1 -type d -mtime +$$days -exec rm -rf {} + 2>/dev/null || true; \
+	rm -rf artifacts/perf/results artifacts/e2e-datasets artifacts/e2e-store
 
 # Compatibility aliases (pre-ops.mk surface)
 e2e-local:
 	@$(MAKE) ops-up
-	@$(MAKE) ops-reset
+	@CONFIRM_RESET=YES $(MAKE) ops-reset
 	@$(MAKE) ops-publish-medium
 	@$(MAKE) ops-deploy
 	@$(MAKE) ops-warm

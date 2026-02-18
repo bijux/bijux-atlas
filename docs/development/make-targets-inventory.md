@@ -106,9 +106,12 @@ Generated from `make help`. Do not edit manually.
 - `ops-k6-version-check`
 - `ops-helm-version-check`
 - `ops-kubectl-version-check`
+- `ops-jq-version-check`
+- `ops-yq-version-check`
 - `ops-kubeconform-version-check`
 - `ops-tool-check`
 - `ops-tools-check`
+- `ops-tools-print`
 - `ops-values-validate`
 - `ops-openapi-validate`
 - `ops-dashboards-validate`
@@ -129,6 +132,7 @@ Generated from `make help`. Do not edit manually.
 - `ops-full`
 - `ops-full-pr`
 - `ops-full-nightly`
+- `ops-idempotency-check`
 - `ops-perf-prepare-store`
 - `ops-perf-e2e`
 - `ops-perf-nightly`
