@@ -30,7 +30,7 @@ impl Default for ServerState {
 async fn s3_like_backend_supports_retry_and_resume_download() {
     let ds = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
     let sqlite_bytes = b"0123456789abcdef".to_vec();
-    let manifest = ArtifactManifest::new(
+    let mut manifest = ArtifactManifest::new(
         "1".to_string(),
         "1".to_string(),
         ds.clone(),
@@ -42,6 +42,8 @@ async fn s3_like_backend_supports_retry_and_resume_download() {
         ),
         ManifestStats::new(1, 1, 1),
     );
+    manifest.db_hash = sha256_hex(&sqlite_bytes);
+    manifest.artifact_hash = manifest.db_hash.clone();
     let catalog = Catalog::new(vec![CatalogEntry::new(
         ds.clone(),
         "x".to_string(),
