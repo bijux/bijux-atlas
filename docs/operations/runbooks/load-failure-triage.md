@@ -46,7 +46,7 @@ Expected output: failing scenario names and violating thresholds.
 
 ## Suite Categories
 
-- Availability under pressure: `cheap-only-survival`, `pod-churn`, `store-outage-mid-spike`
+- Availability under pressure: `cheap-only-survival`, `pod-churn`, `store-outage-under-spike`
 - Latency-heavy workload: `diff-heavy`, `mixed-gene-sequence`, `multi-release`
 - Abuse and guardrails: `response-size-abuse`, `stampede`
 - Spike overload proof: `spike-overload-proof`
@@ -59,7 +59,7 @@ Canonical suite names:
 - `cold-start-p99`
 - `cold-start-prefetch-5pods`
 - `stampede`
-- `store-outage-mid-spike`
+- `store-outage-under-spike`
 - `noisy-neighbor-cpu-throttle`
 - `pod-churn`
 - `spike-overload-proof`

@@ -32,7 +32,7 @@ Does not duplicate k6 script implementation.
 - `spike.json`: burst overload behavior.
 - `cold-start.json`: startup latency budget.
 - `stampede.json`: thundering herd dataset requests.
-- `store-outage-mid-spike.json`: store degradation behavior during spike.
+- `store-outage-under-spike.json`: store degradation behavior during spike.
 - `pod-churn.json`: restart churn behavior.
 - `cheap-only-survival.json`: overload cheap-query survival.
 - `response-size-abuse.json`: payload guard enforcement.

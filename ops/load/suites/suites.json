@@ -64,10 +64,10 @@
       "thresholds": {"p95_ms_max": 1200, "p99_ms_max": 2500, "error_rate_max": 0.02}
     },
     {
-      "name": "store-outage-mid-spike",
+      "name": "store-outage-under-spike",
       "purpose": "ensure service degradation policy holds during store outage spike",
       "kind": "k6",
-      "scenario": "store-outage-mid-spike.json",
+      "scenario": "store-outage-under-spike.json",
       "must_pass": true,
       "run_in": ["full", "nightly", "load-nightly"],
       "expected_metrics": ["http_req_duration", "http_req_failed"],

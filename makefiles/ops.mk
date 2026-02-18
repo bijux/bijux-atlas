@@ -589,7 +589,7 @@ ops-k8s-tests: ## Run k8s e2e suite
 	if [ -n "$${ATLAS_E2E_TEST}" ]; then \
 	  group_args="$$group_args --test $${ATLAS_E2E_TEST}"; \
 	fi; \
-	./ops/k8s/tests/run_all.sh $$group_args
+	./ops/k8s/tests/suite.sh $$group_args
 	@python3 ./scripts/ops/check_k8s_flakes.py
 
 ops-k8s-template-tests: ## Run helm template/lint edge-case checks
@@ -629,7 +629,7 @@ ops-load-spike-proof: ## Run 10x spike proof suite with overload/bulkhead/memory
 ops-load-spike-chaos: ## Run spike proof plus outage/slow-store/corruption drills
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-load-spike-proof
-	@./ops/load/scripts/run_suite.sh store-outage-mid-spike.json artifacts/perf/results
+	@./ops/load/scripts/run_suite.sh store-outage-under-spike.json artifacts/perf/results
 	@$(MAKE) ops-drill-toxiproxy-latency
 	@$(MAKE) ops-drill-corruption
 
@@ -686,7 +686,7 @@ ops-load-nightly: ## Load nightly profile (nightly suites + score/report)
 
 ops-drill-store-outage: ## Run store outage drill under load
 	@$(MAKE) -s ops-env-validate
-	@./ops/load/scripts/run_suite.sh store-outage-mid-spike.json artifacts/perf/results
+	@./ops/load/scripts/run_suite.sh store-outage-under-spike.json artifacts/perf/results
 	@./ops/obs/scripts/store-outage.sh
 
 ops-drill-minio-outage: ## Drill minio outage under load with cached endpoint checks

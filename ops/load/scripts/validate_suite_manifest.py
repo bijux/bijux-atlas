@@ -61,7 +61,7 @@ for s in suites:
         errors.append(f"{name}: expected_metrics must be non-empty")
 
 # Hard policy checks for required suites.
-for required in ("cheap-only-survival", "store-outage-mid-spike", "pod-churn"):
+for required in ("cheap-only-survival", "store-outage-under-spike", "pod-churn"):
     suite = by_name.get(required)
     if not suite:
         errors.append(f"missing required suite: {required}")

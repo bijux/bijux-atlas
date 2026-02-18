@@ -28,7 +28,7 @@ Does not define endpoint correctness tests.
 - Redis experiment suite runs only when `ATLAS_ENABLE_REDIS_EXPERIMENT=1`.
 - Baseline updates must use `make ops-perf-baseline-update` and satisfy baseline policy gate.
 - PR smoke scenarios include `mixed.json`.
-- Nightly scenarios include `spike.json`, `stampede.json`, `store-outage-mid-spike.json`, `pod-churn.json`, `diff-heavy.json`, and `soak-30m.json`.
+- Nightly scenarios include `spike.json`, `stampede.json`, `store-outage-under-spike.json`, `pod-churn.json`, `diff-heavy.json`, and `soak-30m.json`.
 
 ## Failure modes
 
