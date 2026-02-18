@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "name": "medium",
+      "id": "110/homo_sapiens/GRCh38",
+      "checksums": {
+        "fai": "ad3d643c11580ad6c6ff216e8b63b7f8e57f68c97f8b491898fb18dbf6943c31",
+        "fasta": "5657d41619e4a23a25becb91145a4a5536bb207218ea588680b806658a991215",
+        "gff3": "cb6f3cf2bd22fffadf6346ea1a2b8a27e0e7cd3321aca4ed258a2f002b3a9ce6"
+      }
+    },
+    {
+      "name": "real1",
+      "id": "111/homo_sapiens/GRCh38",
+      "checksums": {}
+    }
+  ]
+}

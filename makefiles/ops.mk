@@ -267,9 +267,53 @@ ops-publish-medium: ## Ingest + publish medium fixture dataset
 	  --fasta ops/fixtures/medium/data/genome.fa \
 	  --fai ops/fixtures/medium/data/genome.fa.fai \
 	  --release 110 --species homo_sapiens --assembly GRCh38
+	@./ops/datasets/scripts/snapshot_metadata.sh
 
-ops-publish: ## Compatibility alias for ops-publish-medium
-	@$(MAKE) ops-publish-medium
+ops-datasets-fetch: ## Fetch dataset prerequisites and verify checksums from manifest lock
+	@./ops/datasets/scripts/fetch_and_verify.sh
+
+ops-publish: ## Publish dataset by name (DATASET=medium|real1)
+	@$(MAKE) -s ops-env-validate
+	@./ops/datasets/scripts/publish_by_name.sh "$${DATASET:-medium}"
+	@./ops/datasets/scripts/snapshot_metadata.sh
+
+ops-catalog-validate: ## Validate published catalog schema + deterministic merge ordering
+	@python3 ./ops/datasets/scripts/catalog_validate.py
+
+ops-cache-status: ## Print cache status and enforce local cache budget policy
+	@./ops/datasets/scripts/cache_status.sh
+	@python3 - <<'PY'
+import json
+from pathlib import Path
+root=Path.cwd()
+cfg=json.loads((root/'configs/ops/dataset-qc-thresholds.json').read_text())
+usage_line=[l for l in (root/'artifacts/ops').glob('**/cache-status.txt')]
+usage=0
+try:
+    usage=int(__import__('subprocess').check_output(\"du -sk artifacts/e2e-store 2>/dev/null | awk '{print $1*1024}'\", shell=True, text=True).strip() or '0')
+except Exception:
+    usage=0
+budget=int(cfg.get('cache_budget_bytes', 0))
+if budget and usage > budget:
+    raise SystemExit(f\"cache budget exceeded: {usage} > {budget}\")
+print(f\"cache budget check passed: {usage}/{budget}\")
+PY
+
+ops-dataset-qc: ## Enforce dataset QC thresholds for local ops gates
+	@./ops/datasets/scripts/dataset_qc.sh
+
+ops-drill-corruption-dataset: ## Drill corruption detection and quarantine behavior
+	@./ops/datasets/scripts/corruption_drill.sh
+
+ops-dataset-promotion-sim: ## Simulate dev->staging->prod dataset catalog promotion
+	@./ops/datasets/scripts/promotion_sim.sh
+
+ops-dataset-multi-release-test: ## Publish/query multi-release dataset behavior
+	@./ops/e2e/realdata/run_two_release_diff.sh
+
+ops-dataset-federated-registry-test: ## Validate deterministic federated catalog behavior
+	@ATLAS_VALUES_FILE="$(ATLAS_MULTI_REGISTRY_VALUES_FILE)" $(MAKE) ops-deploy
+	@ATLAS_E2E_TEST=test_multi_registry_profile.sh $(MAKE) ops-k8s-tests
 
 ops-deploy: ## Deploy atlas chart into local cluster (PROFILE=local|offline|perf)
 	@$(MAKE) -s ops-env-validate

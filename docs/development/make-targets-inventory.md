@@ -106,8 +106,16 @@ Generated from `make help`. Do not edit manually.
 - `ops-env-print`
 - `ops-doctor`
 - `ops-cluster-sanity`
+- `ops-datasets-fetch`
 - `ops-publish`
 - `ops-publish-medium`
+- `ops-catalog-validate`
+- `ops-cache-status`
+- `ops-dataset-qc`
+- `ops-drill-corruption-dataset`
+- `ops-dataset-promotion-sim`
+- `ops-dataset-multi-release-test`
+- `ops-dataset-federated-registry-test`
 - `ops-deploy`
 - `ops-undeploy`
 - `ops-redeploy`

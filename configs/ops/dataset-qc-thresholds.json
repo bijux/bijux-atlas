@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "max_qc_warn": 0,
+  "max_qc_error": 0,
+  "max_anomalies": 0,
+  "cache_budget_bytes": 8589934592
+}
