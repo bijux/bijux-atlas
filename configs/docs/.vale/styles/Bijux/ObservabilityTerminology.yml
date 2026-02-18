@@ -1,0 +1,12 @@
+extends: substitution
+message: "Use canonical observability term: '%s'"
+level: error
+ignorecase: false
+swap:
+  '\\botel\\b': OpenTelemetry
+  '\\bprometheus\\b': Prometheus
+  '\\bgrafana\\b': Grafana
+exceptions:
+  - ops/observability/grafana
+  - ops/stack/prometheus
+  - app=otel-collector

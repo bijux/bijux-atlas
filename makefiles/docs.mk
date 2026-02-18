@@ -22,6 +22,7 @@ docs: ## Build docs + link-check + spell-check + lint
 	@python3 scripts/docs/generate_k8s_values_doc.py
 	@python3 scripts/docs/generate_concept_graph.py
 	@python3 scripts/docs/generate_openapi_docs.py
+	@python3 scripts/docs/generate_observability_surface.py
 	@python3 scripts/docs/check_concept_registry.py
 	@./scripts/docs/render_diagrams.sh
 	@python3 scripts/docs/lint_doc_status.py
@@ -33,6 +34,7 @@ docs: ## Build docs + link-check + spell-check + lint
 	@./scripts/docs/check_index_pages.sh
 	@./scripts/docs/check_title_case.sh
 	@python3 scripts/docs/check_no_orphan_docs.py
+	@python3 scripts/docs/check_ops_observability_links.py
 	@python3 scripts/docs/lint_doc_contracts.py
 	@python3 scripts/docs/check_nav_order.py
 	@python3 scripts/docs/check_adr_headers.py
@@ -62,6 +64,7 @@ docs: ## Build docs + link-check + spell-check + lint
 	@python3 scripts/docs/check_critical_make_targets_referenced.py
 	@python3 scripts/docs/check_doc_filename_style.py
 	@python3 scripts/docs/check_docs_deterministic.py
+	@python3 scripts/docs/check_observability_docs_checklist.py
 	@python3 scripts/docs/check_no_legacy_root_paths.py
 	@python3 scripts/docs/check_full_stack_page.py
 
