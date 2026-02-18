@@ -23,6 +23,7 @@ All runbooks must follow this strict template:
 - `memory-profile-under-load.md`
 - `profile-under-load.md`
 - `registry-federation.md`
+- `traffic-spike.md`
 
 ## What
 
