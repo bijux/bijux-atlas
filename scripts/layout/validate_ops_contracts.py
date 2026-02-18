@@ -98,6 +98,7 @@ def main() -> int:
         ("ops/_schemas/meta/ownership.schema.json", "ops/_meta/ownership.json"),
         ("ops/_schemas/load/pinned-queries-lock.schema.json", "ops/load/queries/pinned-v1.lock"),
         ("ops/_schemas/datasets/manifest-lock.schema.json", "ops/datasets/manifest.lock"),
+        ("ops/_schemas/e2e-scenarios.schema.json", "ops/e2e/scenarios/scenarios.json"),
     ]
     for schema_rel, data_rel in pairs:
         validate_pair(schema_rel, data_rel, errors)
@@ -116,6 +117,10 @@ def main() -> int:
     stack_versions = json.loads((ROOT / "ops/stack/versions.json").read_text(encoding="utf-8"))
     if stack_versions != tool_versions:
         errors.append("ops/stack/versions.json must exactly match configs/ops/tool-versions.json")
+    legacy_suite_schema = json.loads((ROOT / "ops/load/contracts/suite-schema.json").read_text(encoding="utf-8"))
+    canonical_suite_schema = json.loads((ROOT / "ops/_schemas/load/suite-manifest.schema.json").read_text(encoding="utf-8"))
+    if legacy_suite_schema != canonical_suite_schema:
+        errors.append("ops/load/contracts/suite-schema.json must mirror ops/_schemas/load/suite-manifest.schema.json")
 
     if errors:
         print("ops contracts check failed:", file=sys.stderr)
