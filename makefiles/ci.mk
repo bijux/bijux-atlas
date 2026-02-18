@@ -141,6 +141,12 @@ ci-workflows-make-only:
 ci-log-fields-contract:
 	@python3 ./ops/observability/scripts/validate_logs_schema.py --file ops/observability/contract/logs.example.jsonl
 
+ci-observability-pack-test:
+	@$(MAKE) observability-pack-test
+
+ci-observability-pack-drills:
+	@$(MAKE) observability-pack-drills
+
 ci-forbid-raw-paths:
 	@./scripts/layout/check_no_forbidden_paths.sh
 
