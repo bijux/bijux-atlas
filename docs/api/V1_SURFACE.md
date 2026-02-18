@@ -26,6 +26,7 @@
 | GET | `/v1/genes/{gene_id}/sequence` | sequence retrieval |
 | GET | `/v1/genes/{gene_id}/transcripts` | transcript retrieval |
 | GET | `/v1/openapi.json` | version/control metadata |
+| POST | `/v1/query/validate` | gene query/search |
 | GET | `/v1/releases/{release}/species/{species}/assemblies/{assembly}` | dataset catalog/metadata |
 | GET | `/v1/sequence/region` | sequence retrieval |
 | GET | `/v1/transcripts/{tx_id}` | transcript retrieval |

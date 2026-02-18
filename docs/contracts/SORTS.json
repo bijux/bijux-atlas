@@ -1,0 +1,16 @@
+{
+  "allowed": [
+    {
+      "description": "Default stable key aligned with gene_id cursor mode.",
+      "value": "gene_id:asc"
+    },
+    {
+      "description": "Region-stable order (seqid,start,gene_id); requires range filter.",
+      "value": "region:asc"
+    }
+  ],
+  "default_sort": "gene_id:asc",
+  "endpoint": "/v1/genes",
+  "schema_version": 1,
+  "type": "sort_registry"
+}

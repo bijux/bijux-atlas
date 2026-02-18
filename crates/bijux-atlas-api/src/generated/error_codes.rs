@@ -17,6 +17,8 @@ pub const API_ERROR_CODES: &[&str] = &[
     "NotReady",
     "PayloadTooLarge",
     "QueryRejectedByPolicy",
+    "QueryTooExpensive",
+    "RangeTooLarge",
     "RateLimited",
     "ResponseTooLarge",
     "Timeout",

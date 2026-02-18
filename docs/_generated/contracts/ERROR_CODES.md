@@ -17,6 +17,8 @@
 - `NotReady`
 - `PayloadTooLarge`
 - `QueryRejectedByPolicy`
+- `QueryTooExpensive`
+- `RangeTooLarge`
 - `RateLimited`
 - `ResponseTooLarge`
 - `Timeout`

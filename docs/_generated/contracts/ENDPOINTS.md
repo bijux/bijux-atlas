@@ -16,6 +16,7 @@
 - `GET /v1/genes/{gene_id}/sequence` telemetry: `sequence`
 - `GET /v1/genes/{gene_id}/transcripts` telemetry: `transcript`
 - `GET /v1/openapi.json` telemetry: `control`
+- `POST /v1/query/validate` telemetry: `query`
 - `GET /v1/releases/{release}/species/{species}/assemblies/{assembly}` telemetry: `catalog`
 - `GET /v1/sequence/region` telemetry: `sequence`
 - `GET /v1/transcripts/{tx_id}` telemetry: `transcript`

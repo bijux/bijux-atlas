@@ -82,6 +82,7 @@ pub fn openapi_v1_spec() -> Value {
               {"name": "range", "in": "query", "schema": {"type": "string", "pattern": "^[^:]+:[0-9]+-[0-9]+$"}},
               {"name": "min_transcripts", "in": "query", "schema": {"type": "integer", "minimum": 0}},
               {"name": "max_transcripts", "in": "query", "schema": {"type": "integer", "minimum": 0}},
+              {"name": "sort", "in": "query", "schema": {"type": "string", "enum": ["gene_id:asc", "region:asc"]}},
               {"name": "limit", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 500}},
               {"name": "cursor", "in": "query", "schema": {"type": "string", "maxLength": 4096}},
               {"name": "include", "in": "query", "schema": {
@@ -129,6 +130,14 @@ pub fn openapi_v1_spec() -> Value {
             "deprecated": true,
             "responses": {
               "200": {"description": "count response"},
+              "400": {"description": "invalid query", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApiError"}}}}
+            }
+          }
+        },
+        "/v1/query/validate": {
+          "post": {
+            "responses": {
+              "200": {"description": "query classification and cost-only validation"},
               "400": {"description": "invalid query", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApiError"}}}}
             }
           }
