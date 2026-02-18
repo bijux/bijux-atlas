@@ -31,10 +31,13 @@ markdown_extensions:
 
 plugins:
   - search
+  - redirects:
+      redirect_maps:
+        operations/full-stack-locally.md: operations/full-stack-local.md
   - git-revision-date-localized:
       type: date
-      enable_creation_date: true
-      fallback_to_build_date: true
+      enable_creation_date: false
+      fallback_to_build_date: false
       strict: false
 
 not_in_nav: |
@@ -115,6 +118,7 @@ nav:
       - Ops Layout: operations/ops-layout.md
       - Full Stack Local: operations/full-stack-local.md
       - Local Stack: operations/local-stack.md
+      - Ops Acceptance Checklist: operations/ops-acceptance-checklist.md
       - Health Endpoint Semantics: operations/health-endpoint-semantics.md
       - Canonical Workflows: operations/canonical-workflows.md
       - Migration Note: operations/migration-note.md
@@ -131,6 +135,7 @@ nav:
           - Fixtures: operations/e2e/fixtures.md
           - Scripts: operations/e2e/scripts.md
       - Load:
+          - Index: operations/load/INDEX.md
           - k6: operations/load/k6.md
           - Suites: operations/load/suites.md
           - CI Policy: operations/load/ci-policy.md
@@ -186,6 +191,9 @@ nav:
       - Makefile Surface: development/makefiles/surface.md
       - Repository Layout: development/repo-layout.md
       - Contributing: development/contributing.md
+      - Add Dataset Type: development/add-dataset-type.md
+      - Add Endpoint: development/add-endpoint.md
+      - Add Metric/Span: development/add-metric-span.md
       - Scripts Index: development/scripts/INDEX.md
       - Scripts Governance: development/scripts.md
       - Script Naming: development/script-naming.md
@@ -198,6 +206,8 @@ nav:
       - Snapshot Test Policy: development/snapshot-test-policy.md
   - Architecture:
       - Index: architecture/INDEX.md
+      - Repo Overview: architecture/repo-overview.md
+      - Architecture Diagram: architecture/system-graph.md
       - Crate Boundary Graph: architecture/crate-boundary-dependency-graph.md
       - Crate Layout Contract: architecture/crate-layout-contract.md
       - Boundaries: architecture/boundaries.md
@@ -206,6 +216,10 @@ nav:
   - Science:
       - Index: science/INDEX.md
       - Reference Science: reference/science/INDEX.md
+  - Generated:
+      - Index: _generated/INDEX.md
+      - Contracts Index: _generated/contracts/INDEX.md
+      - OpenAPI Index: _generated/openapi/INDEX.md
   - ADRs:
       - ADR Index: adrs/INDEX.md
       - ADR 0001: adrs/ADR-0001-workspace-boundaries-and-effects.md

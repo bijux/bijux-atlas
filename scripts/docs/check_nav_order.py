@@ -18,6 +18,7 @@ expected = [
     "Development",
     "Architecture",
     "Science",
+    "Generated",
     "ADRs",
 ]
 nav_start = mkdocs.find("\nnav:\n")
