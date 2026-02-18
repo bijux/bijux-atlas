@@ -3,11 +3,10 @@
 # Inputs: optional ATLAS_BASE_URL, GRAFANA_PORT.
 # Outputs: stdout URLs only.
 set -euo pipefail
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
+# shellcheck source=ops/_lib/ports.sh
+source "$ROOT/ops/_lib/ports.sh"
 
-base_url="${ATLAS_BASE_URL:-http://127.0.0.1:18080}"
-grafana_url="${ATLAS_GRAFANA_URL:-http://127.0.0.1:3000}"
-prom_url="${ATLAS_PROM_URL:-http://127.0.0.1:9090}"
-
-printf 'atlas=%s\n' "$base_url"
-printf 'grafana=%s\n' "$grafana_url"
-printf 'prometheus=%s\n' "$prom_url"
+printf 'atlas=%s\n' "$(ops_url_atlas)"
+printf 'grafana=%s\n' "$(ops_url_grafana)"
+printf 'prometheus=%s\n' "$(ops_url_prometheus)"

@@ -12,6 +12,7 @@ Stable contracts:
 - `kubectl.sh`: kubectl wrapper with retry/timeout and failure bundle dumps.
 - `helm.sh`: helm wrapper with retry and failure-debug bundle capture.
 - `k8s-test-common.sh`: helpers for k8s e2e test assertions.
+- `ports.sh`: canonical service URL helpers.
 - `shellcheck.sh`: shell lint wrapper using `configs/shellcheck/shellcheckrc`.
 
 Policy:
