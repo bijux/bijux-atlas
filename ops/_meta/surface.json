@@ -8,6 +8,8 @@
     "ops-doctor",
     "ops-lint",
     "ops-fmt",
+    "ops-gen",
+    "ops-gen-check",
     "ops-contracts-check",
     "ops-e2e-validate",
     "ops-stack-up",
