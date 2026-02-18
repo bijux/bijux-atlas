@@ -33,6 +33,14 @@ fn scan_rust_relaxations(root: &Path, out_path: &Path) -> Result<(), String> {
             if path.extension().and_then(|e| e.to_str()) != Some("rs") {
                 continue;
             }
+            if path
+                .components()
+                .any(|c| c.as_os_str().to_string_lossy() == "generated")
+            {
+                // Generated files are rewritten by contract generators; enforce relaxations
+                // only in authored sources to keep exception tagging stable.
+                continue;
+            }
             let content =
                 fs::read_to_string(&path).map_err(|e| format!("read {}: {e}", path.display()))?;
             for (idx, line) in content.lines().enumerate() {

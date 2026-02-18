@@ -30,10 +30,10 @@ pub const API_ERROR_CODES: &[&str] = &[
     "ValidationFailed",
 ];
 
-#[allow(dead_code)] // ATLAS-EXC-0001
+#[allow(dead_code)]
 pub type ApiErrorCode = bijux_atlas_core::ErrorCode;
 
-#[allow(dead_code)] // ATLAS-EXC-0001
+#[allow(dead_code)]
 pub fn parse_error_code(value: &str) -> Option<ApiErrorCode> {
     ApiErrorCode::parse(value)
 }
