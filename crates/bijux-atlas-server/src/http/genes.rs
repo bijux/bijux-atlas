@@ -9,6 +9,11 @@ use bijux_atlas_query::{
 use serde_json::json;
 use tracing::{info, info_span, warn};
 
+#[path = "genes/admission.rs"]
+mod genes_admission;
+#[path = "genes/response.rs"]
+mod genes_response;
+
 pub(crate) async fn genes_handler(
     State(state): State<AppState>,
     headers: HeaderMap,
@@ -39,58 +44,23 @@ pub(crate) async fn genes_handler(
     let overloaded_early = crate::middleware::shedding::overloaded(&state).await;
     let adaptive_rl = super::genes_support::adaptive_rl_factor(&state, overloaded_early);
 
-    if let Some(ip) = super::handlers::normalized_forwarded_for(&headers) {
-        if !state
-            .ip_limiter
-            .allow_with_factor(&ip, &state.api.rate_limit_per_ip, adaptive_rl)
+    if let Some(resp) =
+        genes_admission::enforce_ip_rate_limit(&state, &headers, adaptive_rl, started, &request_id)
             .await
-        {
-            let resp = super::handlers::api_error_response(
-                StatusCode::TOO_MANY_REQUESTS,
-                super::handlers::error_json(
-                    ApiErrorCode::RateLimited,
-                    "rate limit exceeded",
-                    json!({"scope":"ip"}),
-                ),
-            );
-            state
-                .metrics
-                .observe_request(
-                    "/v1/genes",
-                    StatusCode::TOO_MANY_REQUESTS,
-                    started.elapsed(),
-                )
-                .await;
-            return super::handlers::with_request_id(resp, &request_id);
-        }
+    {
+        return resp;
     }
 
-    if state.api.enable_api_key_rate_limit {
-        if let Some(key) = super::handlers::normalized_api_key(&headers) {
-            if !state
-                .api_key_limiter
-                .allow_with_factor(&key, &state.api.rate_limit_per_api_key, adaptive_rl)
-                .await
-            {
-                let resp = super::handlers::api_error_response(
-                    StatusCode::TOO_MANY_REQUESTS,
-                    super::handlers::error_json(
-                        ApiErrorCode::RateLimited,
-                        "rate limit exceeded",
-                        json!({"scope":"api_key"}),
-                    ),
-                );
-                state
-                    .metrics
-                    .observe_request(
-                        "/v1/genes",
-                        StatusCode::TOO_MANY_REQUESTS,
-                        started.elapsed(),
-                    )
-                    .await;
-                return super::handlers::with_request_id(resp, &request_id);
-            }
-        }
+    if let Some(resp) = genes_admission::enforce_api_key_rate_limit(
+        &state,
+        &headers,
+        adaptive_rl,
+        started,
+        &request_id,
+    )
+    .await
+    {
+        return resp;
     }
 
     let (dataset, mut req) =
@@ -203,7 +173,7 @@ pub(crate) async fn genes_handler(
         return super::handlers::with_request_id(resp, &request_id);
     }
 
-    let _queue_guard = match super::genes_support::try_enter_queue(&state) {
+    let _queue_guard = match genes_admission::try_enter_request_queue(&state) {
         Ok(g) => g,
         Err(e) => {
             let resp = super::handlers::api_error_response(StatusCode::TOO_MANY_REQUESTS, e);
@@ -235,32 +205,13 @@ pub(crate) async fn genes_handler(
         }
     };
 
-    let _heavy_worker_permit = if class == QueryClass::Heavy {
-        match state.heavy_workers.clone().try_acquire_owned() {
-            Ok(permit) => Some(permit),
-            Err(_) => {
-                let resp = super::handlers::api_error_response(
-                    StatusCode::TOO_MANY_REQUESTS,
-                    super::handlers::error_json(
-                        ApiErrorCode::QueryRejectedByPolicy,
-                        "heavy worker pool is saturated",
-                        json!({"class":"heavy"}),
-                    ),
-                );
-                state
-                    .metrics
-                    .observe_request(
-                        "/v1/genes",
-                        StatusCode::TOO_MANY_REQUESTS,
-                        started.elapsed(),
-                    )
-                    .await;
-                return super::handlers::with_request_id(resp, &request_id);
-            }
-        }
-    } else {
-        None
-    };
+    let _heavy_worker_permit =
+        match genes_admission::acquire_heavy_worker_permit(&state, class, started, &request_id)
+            .await
+        {
+            Ok(permit) => permit,
+            Err(resp) => return resp,
+        };
 
     let normalized = super::handlers::normalize_query(&params);
     let manifest_summary = state.cache.fetch_manifest_summary(&dataset).await.ok();
@@ -562,35 +513,14 @@ pub(crate) async fn genes_handler(
                 .await;
             state.metrics.observe_stage("query", query_elapsed).await;
             let provenance = super::handlers::dataset_provenance(&state, &dataset).await;
-            let mut warnings = Vec::new();
-            if req.fields.sequence_length {
-                warnings.push(json!({
-                    "code": "expensive_include_length",
-                    "message": "length include may increase response cost"
-                }));
-            }
-            let mut payload = super::handlers::json_envelope(
-                Some(json!(dataset)),
-                Some(json!({ "next_cursor": resp.next_cursor.clone() })),
-                json!({
-                    "provenance": provenance,
-                    "class": format!("{class:?}").to_lowercase(),
-                    "rows": resp.rows
-                }),
-                resp.next_cursor.map(|c| json!({ "next_cursor": c })),
-                Some(warnings),
-            );
-            if explain_mode {
-                let name_policy = bijux_atlas_model::GeneNamePolicy::default();
-                let biotype_policy = bijux_atlas_model::BiotypePolicy::default();
-                payload["data"]["explain"] = json!({
-                    "gene_identifier_policy": "gff3_id_first",
-                    "gene_name_attribute_priority": name_policy.attribute_keys,
-                    "biotype_attribute_priority": biotype_policy.attribute_keys,
-                    "biotype_unknown_value": biotype_policy.unknown_value
-                });
-            }
-            payload
+            genes_response::build_success_payload(
+                &dataset,
+                &req,
+                class,
+                resp,
+                explain_mode,
+                provenance,
+            )
         }
         Ok(Err(err)) => {
             let msg = err.to_string();
