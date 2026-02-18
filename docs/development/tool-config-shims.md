@@ -46,4 +46,4 @@ Expected output: symlink policy checks pass.
 
 - [Symlink Index](symlinks.md)
 - [Repository Surface](repo-surface.md)
-- [Configurations SSOT](../../configs/README.md)
+- `configs/README.md`

@@ -3,6 +3,7 @@
 # purpose: generate config key registry markdown from contract SSOT.
 # stability: public
 # called-by: make config-validate
+# Purpose: generate config key registry markdown from contract SSOT.
 # Inputs: docs/contracts/CONFIG_KEYS.json
 # Outputs: configs/config-key-registry.md
 from __future__ import annotations

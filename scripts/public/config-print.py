@@ -3,6 +3,7 @@
 # purpose: print canonical merged config payload for debugging.
 # stability: public
 # called-by: make config-print
+# Purpose: print canonical merged config payload for debugging.
 # Inputs: configs/policy/policy.json, configs/ops/env.schema.json, configs/ops/tool-versions.json, configs/perf/thresholds.json, configs/slo/slo.json
 # Outputs: json to stdout
 from __future__ import annotations

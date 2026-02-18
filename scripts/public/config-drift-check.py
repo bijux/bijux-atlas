@@ -3,6 +3,7 @@
 # purpose: enforce config drift policy between SSOT schemas/docs and generated config registry.
 # stability: public
 # called-by: make config-drift, make ci-config-check
+# Purpose: enforce config drift policy between SSOT schemas/docs and generated config registry.
 # Inputs: configs/config-key-registry.md, docs/contracts/CONFIG_KEYS.json, configs/policy/policy.schema.json, docs/contracts/POLICY_SCHEMA.json
 # Outputs: non-zero on drift
 from __future__ import annotations

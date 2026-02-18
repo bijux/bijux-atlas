@@ -42,5 +42,5 @@ Expected output: version policy checks and drift checks pass.
 ## See also
 
 - [Config Schema Versioning](../reference/registry/config-schema-versioning.md)
-- [Configurations SSOT](../../configs/README.md)
+- `configs/README.md`
 - [Terms Glossary](../_style/terms-glossary.md)

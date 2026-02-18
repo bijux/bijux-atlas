@@ -3,6 +3,7 @@
 # purpose: validate canonical config files, schemas, and required-fields policy.
 # stability: public
 # called-by: make config-validate, make ci-config-check
+# Purpose: validate canonical config files, schemas, and required-fields policy.
 # Inputs: configs/**/*.json and docs/contracts/POLICY_SCHEMA.json
 # Outputs: non-zero exit on validation failure
 from __future__ import annotations
