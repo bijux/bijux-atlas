@@ -25,6 +25,7 @@ pub(crate) fn error_json(code: ApiErrorCode, message: &str, details: Value) -> A
         code,
         message: message.to_string(),
         details,
+        request_id: "req-unknown".to_string(),
     }
 }
 

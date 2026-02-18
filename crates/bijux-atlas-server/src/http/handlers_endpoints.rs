@@ -137,7 +137,7 @@ pub(crate) async fn release_dataset_handler(
         let resp = api_error_response(
             StatusCode::NOT_FOUND,
             error_json(
-                ApiErrorCode::NotReady,
+                ApiErrorCode::DatasetNotFound,
                 "dataset not found in catalog",
                 json!({
                     "release": release,
@@ -163,7 +163,7 @@ pub(crate) async fn release_dataset_handler(
             let resp = api_error_response(
                 StatusCode::SERVICE_UNAVAILABLE,
                 error_json(
-                    ApiErrorCode::NotReady,
+                    ApiErrorCode::UpstreamStoreUnavailable,
                     "dataset manifest unavailable",
                     json!({"message": e.to_string()}),
                 ),
