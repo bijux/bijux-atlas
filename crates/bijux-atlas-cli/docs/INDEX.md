@@ -5,6 +5,7 @@
 - [Effects](effects.md)
 - [Config Discovery](CONFIG_DISCOVERY.md)
 - [CLI Command List](CLI_COMMAND_LIST.md)
+- Ingest contract reference: [`../../bijux-atlas-ingest/docs/INGEST_CONTRACT.md`](../../bijux-atlas-ingest/docs/INGEST_CONTRACT.md)
 - [Public API](public-api.md)
 - [Tests](../tests/)
 - Benches: none
@@ -27,4 +28,3 @@ Failure modes are documented and mapped to stable error handling behavior.
 ## How to extend
 
 Additions must preserve crate boundaries, update `docs/public-api.md`, and add targeted tests.
-

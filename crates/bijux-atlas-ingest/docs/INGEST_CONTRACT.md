@@ -12,6 +12,7 @@
 
 - Normal mode: `gene_summary.sqlite`, `manifest.json`, `anomaly_report.json`, `qc_report.json`.
 - Report-only mode: `anomaly_report.json` and `qc_report.json` only.
+- Manifest provenance includes source input filenames (`source_gff3_filename`, `source_fasta_filename`, `source_fai_filename`) plus checksums/toolchain/build fields.
 
 ## Guarantees
 

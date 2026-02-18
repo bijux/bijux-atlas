@@ -79,6 +79,21 @@ pub fn build_and_write_manifest_and_reports(
         manifest.checksums.fai_sha256.clone(),
         policy_hash,
     );
+    manifest.source_gff3_filename = gff3_path
+        .file_name()
+        .and_then(|s| s.to_str())
+        .unwrap_or_default()
+        .to_string();
+    manifest.source_fasta_filename = fasta_path
+        .file_name()
+        .and_then(|s| s.to_str())
+        .unwrap_or_default()
+        .to_string();
+    manifest.source_fai_filename = fai_path
+        .file_name()
+        .and_then(|s| s.to_str())
+        .unwrap_or_default()
+        .to_string();
     manifest.ingest_toolchain = option_env!("RUSTUP_TOOLCHAIN")
         .unwrap_or("unknown")
         .to_string();
