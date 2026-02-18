@@ -78,7 +78,7 @@ def main() -> int:
     contracts_policy_schema = load("docs/contracts/POLICY_SCHEMA.json")
     ops_env_schema = load("configs/ops/env.schema.json")
     tool_versions = load("configs/ops/tool-versions.json")
-    _perf = load("configs/perf/thresholds.json")
+    _perf = load("configs/perf/k6-thresholds.v1.json")
     _slo = load("configs/slo/slo.json")
 
     check_policy_schema_required(policy_schema, errors, "configs/policy/policy.schema.json")

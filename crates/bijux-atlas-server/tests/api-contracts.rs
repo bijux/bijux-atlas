@@ -9,9 +9,9 @@ use hmac::{Hmac, Mac};
 use serde_json::Value;
 use sha2::Sha256;
 use tempfile::tempdir;
-mod api_hardening_support;
+mod api_contracts_support;
 
-use api_hardening_support::{
+use api_contracts_support::{
     fixture_fasta_and_fai, fixture_release_index, mk_dataset, send_raw, send_raw_with_method,
 };
 
@@ -694,7 +694,7 @@ async fn sequence_endpoint_boundary_conditions_are_enforced() {
     assert!(body.contains("\"gc_fraction\""));
 }
 
-#[path = "api_hardening/advanced_contracts.rs"]
+#[path = "api-contracts/advanced_contracts.rs"]
 mod advanced_contracts;
-#[path = "api_hardening/sqlite_query_guarantees.rs"]
+#[path = "api-contracts/sqlite_query_guarantees.rs"]
 mod sqlite_query_guarantees;

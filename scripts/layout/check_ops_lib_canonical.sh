@@ -10,7 +10,7 @@ cd "$ROOT"
 violations=""
 while IFS= read -r file; do
   case "$file" in
-    ops/_lib/*|ops/e2e/k8s/tests/common.sh|ops/k8s/tests/common.sh|ops/observability/tests/common.sh) ;;
+    ops/_lib/*|ops/e2e/k8s/tests/k8s-suite-lib.sh|ops/k8s/tests/k8s-contract-lib.sh|ops/observability/tests/observability-test-lib.sh) ;;
     *) violations="$violations$file
 " ;;
   esac

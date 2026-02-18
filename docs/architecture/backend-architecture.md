@@ -30,5 +30,5 @@
 
 ```bash
 make architecture-check
-cargo test -p bijux-atlas-server --test api_hardening
+cargo test -p bijux-atlas-server --test api-contracts
 ```

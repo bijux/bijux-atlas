@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[3]
-thresholds = json.loads((root / "configs/perf/thresholds.json").read_text())
+thresholds = json.loads((root / "configs/perf/k6-thresholds.v1.json").read_text())
 baseline = json.loads((root / "artifacts/perf/baseline.json").read_text())
 profile = os.environ.get("ATLAS_PERF_BASELINE_PROFILE", "").strip()
 if profile:

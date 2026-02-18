@@ -21,7 +21,7 @@ Describe the regression and affected suite(s).
 
 ## Contracts
 
-- Threshold source: `configs/perf/thresholds.json`
+- Threshold source: `configs/perf/k6-thresholds.v1.json`
 - Suite source: `ops/load/suites/suites.json`
 - Score output: `artifacts/ops/e2e/k6/score.md`
 

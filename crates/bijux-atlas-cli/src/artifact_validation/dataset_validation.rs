@@ -81,7 +81,7 @@ pub(crate) fn validate_dataset(
 
 fn validate_dataset_qc_thresholds(root: &Path, dataset: &DatasetId) -> Result<(), String> {
     let workspace = std::env::current_dir().map_err(|e| e.to_string())?;
-    let thresholds_path = workspace.join("configs/ops/dataset-qc-thresholds.json");
+    let thresholds_path = workspace.join("configs/ops/dataset-qc-thresholds.v1.json");
     let paths = bijux_atlas_model::artifact_paths(root, dataset);
     let qc_report = paths.derived_dir.join("qc.json");
     let qc_raw = fs::read_to_string(&qc_report)
@@ -303,7 +303,7 @@ fn enforce_publish_gates(
         }
     }
     let qc_report = paths.derived_dir.join("qc.json");
-    let thresholds_path = workspace.join("configs/ops/dataset-qc-thresholds.json");
+    let thresholds_path = workspace.join("configs/ops/dataset-qc-thresholds.v1.json");
     let qc_raw = fs::read_to_string(&qc_report)
         .map_err(|e| format!("publish gate failed: {}: {e}", qc_report.display()))?;
     let thresholds_raw = fs::read_to_string(&thresholds_path)

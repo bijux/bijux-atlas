@@ -214,7 +214,7 @@ enum AtlasCommand {
     IngestValidate {
         #[arg(long)]
         qc_report: PathBuf,
-        #[arg(long, default_value = "configs/ops/dataset-qc-thresholds.json")]
+        #[arg(long, default_value = "configs/ops/dataset-qc-thresholds.v1.json")]
         thresholds: PathBuf,
     },
     InspectDb {
@@ -262,11 +262,11 @@ enum AtlasCommand {
         root: PathBuf,
         #[arg(long)]
         dataset: String,
-        #[arg(long, default_value = "ops/fixtures/medium/golden_queries.json")]
+        #[arg(long, default_value = "ops/fixtures/medium/api-list-queries.v1.json")]
         golden_queries: PathBuf,
         #[arg(long, default_value_t = false)]
         write_snapshot: bool,
-        #[arg(long, default_value = "ops/fixtures/medium/golden_snapshot.json")]
+        #[arg(long, default_value = "ops/fixtures/medium/api-list-responses.v1.json")]
         snapshot_out: PathBuf,
     },
     Openapi {

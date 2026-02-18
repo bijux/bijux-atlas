@@ -80,7 +80,7 @@ def main() -> int:
     stack_hash_inputs = [
         root / "ops/tool-versions.json",
         root / "ops/load/suites/suites.json",
-        root / "configs/perf/thresholds.json",
+        root / "configs/perf/k6-thresholds.v1.json",
         values_src,
     ]
     stack_version_hash = sha256_files(stack_hash_inputs)

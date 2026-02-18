@@ -46,7 +46,7 @@ Does not duplicate k6 script implementation.
 - `sharded-fanout.json`: shard fanout caps.
 - `soak-30m.json`: long soak with memory growth checks.
 - `redis-optional.json`: redis disabled fallback.
-- `ops/load/experiments/`: non-gating experiment space with strict promotion policy.
+- `ops/load/evaluations/`: non-gating experiment space with strict promotion policy.
 - `catalog-federated.json`: federated registry behavior.
 
 ## Budgets

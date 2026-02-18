@@ -5,7 +5,7 @@
 # called-by: make ops-dataset-qc
 set -euo pipefail
 ROOT="$(CDPATH='' cd -- "$(dirname -- "$0")/../../.." && pwd)"
-QC_CFG="${ATLAS_QC_THRESHOLDS:-$ROOT/configs/ops/dataset-qc-thresholds.json}"
+QC_CFG="${ATLAS_QC_THRESHOLDS:-$ROOT/configs/ops/dataset-qc-thresholds.v1.json}"
 REPORT_DIR="${ATLAS_E2E_OUTPUT_ROOT:-$ROOT/artifacts/e2e-datasets}"
 release="${ATLAS_DATASET_RELEASE:-110}"
 species="${ATLAS_DATASET_SPECIES:-homo_sapiens}"

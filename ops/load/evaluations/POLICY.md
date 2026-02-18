@@ -12,7 +12,7 @@ Avoids experimental drift from blocking production gates.
 
 ## Contracts
 
-- Files under `ops/load/experiments/` are non-gating by default.
+- Files under `ops/load/evaluations/` are non-gating by default.
 - Experiments must not be included in `ops/load/suites/suites.json` `run_in` profiles used by CI/nightly gates unless promoted.
 - Promotion requires thresholds and expected metrics in suite SSOT.
 

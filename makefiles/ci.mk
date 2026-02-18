@@ -73,7 +73,7 @@ ci-docs-build:
 	@$(MAKE) docs-freeze
 
 ci-latency-regression:
-	@cargo test -p bijux-atlas-server --test latency_guard --locked
+	@cargo test -p bijux-atlas-server --test p99-regression --locked
 
 ci-store-conformance-localfs:
 	@cargo test -p bijux-atlas-store --test store_contract store_errors_have_stable_codes -- --exact
