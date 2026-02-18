@@ -6,6 +6,7 @@ Use these canonical pages for core workflows:
 - Deploying to kind: [E2E Stack](e2e/stack.md)
 - Running k6: [Load k6](load/k6.md)
 - Validating observability: [Observability Acceptance Gates](observability/acceptance-gates.md)
+- Updating or rolling back a release pointer: [Release Workflows](release-workflows.md)
 
 All workflow docs should link to these canonical pages instead of deep-linking between random files.
 

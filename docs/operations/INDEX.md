@@ -32,6 +32,7 @@ Does not define product semantics or internal crate APIs.
 - [Local Stack (Make Only)](local-stack.md)
 - [Health Endpoint Semantics](health-endpoint-semantics.md)
 - [Canonical Workflows](canonical-workflows.md)
+- [Release Workflows](release-workflows.md)
 - [k6 Workflows](load/k6.md)
 - [K8s Tests](e2e/k8s-tests.md)
 - [Observability](observability/INDEX.md)
