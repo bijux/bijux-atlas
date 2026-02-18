@@ -17,6 +17,7 @@ fn command_surface_ssot_matches_doc() {
         "atlas explain-query",
         "atlas bench",
         "atlas ingest",
+        "atlas ingest-validate",
         "atlas inspect-db",
         "atlas openapi generate",
         "atlas policy",

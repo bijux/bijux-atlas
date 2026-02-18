@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "counts": {"genes": 10, "transcripts": 10, "exons": 10, "cds": 3},
+  "orphan_counts": {"transcripts": 3},
+  "duplicate_id_events": {"overlapping_ids": 0, "duplicate_gene_ids": 0, "overlapping_gene_ids_across_contigs": 0},
+  "rejected_record_count_by_reason": {"GFF3_UNKNOWN_FEATURE": 0},
+  "contig_stats": {"distribution": {}, "unknown_contig_feature_ratio": 0.0, "max_contig_name_length": 5, "total_features": 100},
+  "biotype_distribution_top_n": [],
+  "biotype_distribution": {},
+  "anomalies": {},
+  "severity_summary": {"INFO": 0, "WARN": 0, "ERROR": 0},
+  "severity_items": []
+}

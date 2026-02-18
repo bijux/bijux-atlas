@@ -166,6 +166,12 @@ enum AtlasCommand {
         #[arg(long, default_value_t = 0)]
         shard_partitions: usize,
     },
+    IngestValidate {
+        #[arg(long)]
+        qc_report: PathBuf,
+        #[arg(long, default_value = "configs/ops/dataset-qc-thresholds.json")]
+        thresholds: PathBuf,
+    },
     InspectDb {
         #[arg(long)]
         db: PathBuf,
@@ -533,6 +539,11 @@ fn run_atlas_command(
             output_mode,
         )
         .map_err(CliError::internal),
+        AtlasCommand::IngestValidate {
+            qc_report,
+            thresholds,
+        } => artifact_validation::validate_ingest_qc(qc_report, thresholds, output_mode)
+            .map_err(CliError::internal),
         AtlasCommand::InspectDb { db, sample_rows } => {
             inspect_db(db, sample_rows, output_mode).map_err(CliError::internal)
         }
