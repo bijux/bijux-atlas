@@ -37,6 +37,10 @@ impl Default for FakeStore {
 
 #[async_trait]
 impl DatasetStoreBackend for FakeStore {
+    fn backend_tag(&self) -> &'static str {
+        "fake"
+    }
+
     async fn fetch_catalog(&self, if_none_match: Option<&str>) -> Result<CatalogFetch, CacheError> {
         let etag = self.etag.lock().await.clone();
         if if_none_match == Some(etag.as_str()) {

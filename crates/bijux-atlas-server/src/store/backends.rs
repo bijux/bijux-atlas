@@ -79,6 +79,10 @@ impl LocalFsBackend {
 
 #[async_trait]
 impl DatasetStoreBackend for LocalFsBackend {
+    fn backend_tag(&self) -> &'static str {
+        "localfs"
+    }
+
     async fn fetch_catalog(&self, if_none_match: Option<&str>) -> Result<CatalogFetch, CacheError> {
         let path = self.root.join("catalog.json");
         let bytes = fs::read(&path).map_err(|e| CacheError(format!("catalog read failed: {e}")))?;
@@ -394,7 +398,10 @@ impl S3LikeBackend {
         }
     }
 
-    async fn get_optional_checksum_with_retry(&self, url: &str) -> Result<Option<String>, CacheError> {
+    async fn get_optional_checksum_with_retry(
+        &self,
+        url: &str,
+    ) -> Result<Option<String>, CacheError> {
         self.validate_url(url)?;
         let client = self.client();
         let headers = self.auth_headers()?;
@@ -423,7 +430,9 @@ impl S3LikeBackend {
                 }
                 Err(e) => {
                     if attempt >= self.retry.max_attempts {
-                        return Err(CacheError(format!("checksum download failed url={url}: {e}")));
+                        return Err(CacheError(format!(
+                            "checksum download failed url={url}: {e}"
+                        )));
                     }
                 }
             }
@@ -437,6 +446,10 @@ impl S3LikeBackend {
 
 #[async_trait]
 impl DatasetStoreBackend for S3LikeBackend {
+    fn backend_tag(&self) -> &'static str {
+        "http_s3"
+    }
+
     async fn fetch_catalog(&self, if_none_match: Option<&str>) -> Result<CatalogFetch, CacheError> {
         let url = format!("{}/catalog.json", self.base_url);
         let fetch = self.get_catalog_with_retry(&url, if_none_match).await?;
@@ -490,7 +503,8 @@ impl DatasetStoreBackend for S3LikeBackend {
 }
 
 fn catalog_digest(catalog: &Catalog) -> Result<String, CacheError> {
-    let bytes = serde_json::to_vec(catalog).map_err(|e| CacheError(format!("catalog serialize failed: {e}")))?;
+    let bytes = serde_json::to_vec(catalog)
+        .map_err(|e| CacheError(format!("catalog serialize failed: {e}")))?;
     Ok(sha256_hex(&bytes))
 }
 
