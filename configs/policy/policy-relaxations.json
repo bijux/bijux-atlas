@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "exception_budgets": {
+    "generated_dead_code_allow": 24,
+    "test_module_layout_allow": 2
+  },
+  "exceptions": [
+    {
+      "id": "ATLAS-EXC-0001",
+      "policy": "generated_dead_code_allow",
+      "scope": "repo",
+      "file": "crates/bijux-atlas-server/src/telemetry/generated/metrics_contract.rs",
+      "justification": "Generated constants and effect-adapter scaffolding intentionally carry dead_code allowance for contract synchronization and compile hygiene.",
+      "expiry": "2027-12-31",
+      "owner": "platform",
+      "risk": "low"
+    },
+    {
+      "id": "ATLAS-EXC-0002",
+      "policy": "test_module_layout_allow",
+      "scope": "crate",
+      "file": "crates/bijux-atlas-cli/src/atlas_command_actions/ingest_inputs.rs",
+      "justification": "One clippy layout allowance keeps test module placement stable during staged file decomposition.",
+      "expiry": "2026-12-31",
+      "owner": "cli",
+      "risk": "medium"
+    }
+  ]
+}
