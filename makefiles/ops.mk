@@ -519,6 +519,21 @@ ops-load-shedding: ## Verify overload shedding policy (cheap survives, non-cheap
 	@./ops/load/scripts/validate_results.py artifacts/perf/results
 	@./ops/load/scripts/score_k6.py || true
 
+ops-load-spike-proof: ## Run 10x spike proof suite with overload/bulkhead/memory assertions
+	@$(MAKE) -s ops-env-validate
+	@$(MAKE) ops-k6-version-check
+	@$(MAKE) ops-load-manifest-validate
+	@./ops/load/scripts/run_suite.sh spike-overload-proof.json artifacts/perf/results
+	@./ops/load/scripts/validate_results.py artifacts/perf/results
+	@python3 ./scripts/public/perf/check_spike_assertions.py --summary artifacts/perf/results/spike-overload-proof.summary.json --base-url "$${ATLAS_BASE_URL:-http://127.0.0.1:18080}" --wait-seconds "$${ATLAS_OVERLOAD_CLEAR_WAIT_SECONDS:-45}"
+
+ops-load-spike-chaos: ## Run spike proof plus outage/slow-store/corruption drills
+	@$(MAKE) -s ops-env-validate
+	@$(MAKE) ops-load-spike-proof
+	@./ops/load/scripts/run_suite.sh store-outage-mid-spike.json artifacts/perf/results
+	@$(MAKE) ops-drill-toxiproxy-latency
+	@$(MAKE) ops-drill-corruption
+
 ops-load-full: ## Run nightly/full load suites
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
@@ -849,6 +864,7 @@ stack-full: ## Full-stack must-pass truth flow with contract report bundle
 	test -s artifacts/ops/observability/metrics.prom; \
 	$(MAKE) ops-otel-required-check; \
 	$(MAKE) ops-load-smoke; \
+	$(MAKE) ops-load-spike-proof; \
 	python3 ./scripts/public/perf/check_percent_regression.py --baseline-profile "$${ATLAS_PERF_BASELINE_PROFILE:-local}" --max-p95-regression 0.15 --results artifacts/perf/results; \
 	$(MAKE) ops-metrics-check; \
 	$(MAKE) ops-alerts-validate; \
@@ -859,6 +875,7 @@ stack-full: ## Full-stack must-pass truth flow with contract report bundle
 stack-full-chaos: ## Weekly chaos full-stack gate (stack-full + drill runner)
 	@set -e; \
 	STACK_KEEP_UP=1 $(MAKE) stack-full; \
+	$(MAKE) ops-load-spike-chaos; \
 	$(MAKE) ops-drill-runner; \
 	$(MAKE) ops-report; \
 	$(MAKE) ops-down; \
