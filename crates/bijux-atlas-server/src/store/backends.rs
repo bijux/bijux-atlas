@@ -57,6 +57,24 @@ impl LocalFsBackend {
         }
         fs::read(path).map_err(|e| CacheError(format!("read failed: {e}")))
     }
+
+    fn validate_catalog_integrity(&self, catalog: &Catalog) -> Result<(), CacheError> {
+        catalog
+            .validate_sorted()
+            .map_err(|e| CacheError(format!("catalog validation failed: {e}")))?;
+        let checksum_path = self.root.join("catalog.sha256");
+        if !checksum_path.exists() {
+            return Ok(());
+        }
+        let expected = read_sha256_file(&checksum_path)?;
+        let actual = catalog_digest(catalog)?;
+        if expected != actual {
+            return Err(CacheError(format!(
+                "catalog checksum mismatch: expected {expected}, got {actual}"
+            )));
+        }
+        Ok(())
+    }
 }
 
 #[async_trait]
@@ -70,6 +88,7 @@ impl DatasetStoreBackend for LocalFsBackend {
         }
         let catalog: Catalog = serde_json::from_slice(&bytes)
             .map_err(|e| CacheError(format!("catalog parse failed: {e}")))?;
+        self.validate_catalog_integrity(&catalog)?;
         Ok(CatalogFetch::Updated { etag, catalog })
     }
 
@@ -272,6 +291,9 @@ impl S3LikeBackend {
                         .map_err(|e| CacheError(format!("read body failed: {e}")))?;
                     let catalog: Catalog = serde_json::from_slice(&bytes)
                         .map_err(|e| CacheError(format!("catalog parse failed: {e}")))?;
+                    catalog
+                        .validate_sorted()
+                        .map_err(|e| CacheError(format!("catalog validation failed: {e}")))?;
                     let etag = header_etag.unwrap_or_else(|| sha256_hex(&bytes));
                     return Ok(CatalogFetch::Updated { etag, catalog });
                 }
@@ -371,13 +393,65 @@ impl S3LikeBackend {
             .await;
         }
     }
+
+    async fn get_optional_checksum_with_retry(&self, url: &str) -> Result<Option<String>, CacheError> {
+        self.validate_url(url)?;
+        let client = self.client();
+        let headers = self.auth_headers()?;
+        let mut attempt = 0;
+        loop {
+            attempt += 1;
+            let req = client.get(url).headers(headers.clone());
+            match req.send().await {
+                Ok(resp) if resp.status().as_u16() == 404 => return Ok(None),
+                Ok(resp) if resp.status().is_success() => {
+                    let bytes = resp
+                        .bytes()
+                        .await
+                        .map(|b| b.to_vec())
+                        .map_err(|e| CacheError(format!("read checksum body failed: {e}")))?;
+                    let parsed = parse_sha256_bytes(&bytes)?;
+                    return Ok(Some(parsed));
+                }
+                Ok(resp) => {
+                    if attempt >= self.retry.max_attempts {
+                        return Err(CacheError(format!(
+                            "checksum download failed status={} url={url}",
+                            resp.status()
+                        )));
+                    }
+                }
+                Err(e) => {
+                    if attempt >= self.retry.max_attempts {
+                        return Err(CacheError(format!("checksum download failed url={url}: {e}")));
+                    }
+                }
+            }
+            tokio::time::sleep(Duration::from_millis(
+                self.retry.base_backoff_ms.saturating_mul(attempt as u64),
+            ))
+            .await;
+        }
+    }
 }
 
 #[async_trait]
 impl DatasetStoreBackend for S3LikeBackend {
     async fn fetch_catalog(&self, if_none_match: Option<&str>) -> Result<CatalogFetch, CacheError> {
         let url = format!("{}/catalog.json", self.base_url);
-        self.get_catalog_with_retry(&url, if_none_match).await
+        let fetch = self.get_catalog_with_retry(&url, if_none_match).await?;
+        if let CatalogFetch::Updated { catalog, .. } = &fetch {
+            let checksum_url = format!("{}/catalog.sha256", self.base_url);
+            if let Some(expected) = self.get_optional_checksum_with_retry(&checksum_url).await? {
+                let actual = catalog_digest(catalog)?;
+                if expected != actual {
+                    return Err(CacheError(format!(
+                        "catalog checksum mismatch: expected {expected}, got {actual}"
+                    )));
+                }
+            }
+        }
+        Ok(fetch)
     }
 
     async fn fetch_manifest(&self, dataset: &DatasetId) -> Result<ArtifactManifest, CacheError> {
@@ -413,4 +487,28 @@ impl DatasetStoreBackend for S3LikeBackend {
         let url = self.object_url(dataset, "release_gene_index.json");
         self.get_with_retry(&url).await
     }
+}
+
+fn catalog_digest(catalog: &Catalog) -> Result<String, CacheError> {
+    let bytes = serde_json::to_vec(catalog).map_err(|e| CacheError(format!("catalog serialize failed: {e}")))?;
+    Ok(sha256_hex(&bytes))
+}
+
+fn read_sha256_file(path: &Path) -> Result<String, CacheError> {
+    let bytes = fs::read(path).map_err(|e| CacheError(format!("checksum read failed: {e}")))?;
+    parse_sha256_bytes(&bytes)
+}
+
+fn parse_sha256_bytes(bytes: &[u8]) -> Result<String, CacheError> {
+    let raw = String::from_utf8(bytes.to_vec())
+        .map_err(|e| CacheError(format!("checksum file is not utf8: {e}")))?;
+    let token = raw
+        .split_whitespace()
+        .next()
+        .ok_or_else(|| CacheError("checksum file is empty".to_string()))?
+        .to_ascii_lowercase();
+    if token.len() != 64 || !token.chars().all(|c| c.is_ascii_hexdigit()) {
+        return Err(CacheError(format!("invalid sha256 checksum: {token}")));
+    }
+    Ok(token)
 }
