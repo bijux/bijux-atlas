@@ -7,7 +7,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[4]
 CONTRACT = ROOT / "ops/observability/contract/metrics-contract.json"
 DASH_CONTRACT = ROOT / "ops/observability/contract/dashboard-panels-contract.json"
 DASH = ROOT / "ops/observability/grafana/atlas-observability-dashboard.json"

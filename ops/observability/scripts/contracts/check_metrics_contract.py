@@ -7,7 +7,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[4]
 CONTRACT = ROOT / "ops/observability/contract/metrics-contract.json"
 METRICS_SRC = ROOT / "crates/bijux-atlas-server/src/telemetry/metrics_endpoint.rs"
 
