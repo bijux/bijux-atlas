@@ -37,6 +37,7 @@ Does not define product semantics or internal crate APIs.
 - [Production Readiness Checklist](production-readiness-checklist.md)
 - [Ops Acceptance Checklist](ops-acceptance-checklist.md)
 - [Retention and GC](retention-and-gc.md)
+- [Input Sources](input-sources.md)
 - [No Direct Path Usage](no-direct-path-usage.md)
 - [Migration Note](migration-note.md)
 

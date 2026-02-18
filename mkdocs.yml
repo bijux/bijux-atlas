@@ -131,6 +131,7 @@ nav:
       - No Direct Path Usage: operations/no-direct-path-usage.md
       - Air-Gapped Install: operations/air-gapped-install.md
       - Dataset Promotion: operations/dataset-promotion-pipeline.md
+      - Input Sources: operations/input-sources.md
       - Cached-Only SLO: operations/cached-only-slo.md
       - E2E:
           - Index: operations/e2e/INDEX.md
