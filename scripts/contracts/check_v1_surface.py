@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-# Purpose: ensure docs/api/V1_SURFACE.md is generated from docs/contracts/ENDPOINTS.json.
+# Purpose: ensure docs/api/v1-surface.md is generated from docs/contracts/ENDPOINTS.json.
 # Inputs: docs/contracts/ENDPOINTS.json.
-# Outputs: docs/api/V1_SURFACE.md (with --write) or non-zero drift report.
+# Outputs: docs/api/v1-surface.md (with --write) or non-zero drift report.
 import json
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 ENDPOINTS = ROOT / "docs" / "contracts" / "ENDPOINTS.json"
-SURFACE = ROOT / "docs" / "api" / "V1_SURFACE.md"
+SURFACE = ROOT / "docs" / "api" / "v1-surface.md"
 
 
 def render() -> str:
@@ -46,7 +46,7 @@ def render() -> str:
         "",
         "## Source Of Truth",
         "",
-        "- `docs/contracts/ENDPOINTS.json` is authoritative for paths/params/responses.",
+        "- `docs/contracts/endpoints.md` is authoritative for paths/params/responses.",
         "- `configs/openapi/v1/openapi.generated.json` is generated from contract-constrained API spec.",
     ]
     return "\n".join(lines) + "\n"
@@ -59,7 +59,7 @@ def main() -> int:
         SURFACE.write_text(expected)
         return 0
     if not SURFACE.exists() or SURFACE.read_text() != expected:
-        print("docs/api/V1_SURFACE.md drift; run scripts/contracts/check_v1_surface.py --write", file=sys.stderr)
+        print("docs/api/v1-surface.md drift; run scripts/contracts/check_v1_surface.py --write", file=sys.stderr)
         return 1
     return 0
 
