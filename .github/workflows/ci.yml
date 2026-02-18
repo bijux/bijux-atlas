@@ -194,6 +194,37 @@ jobs:
           toolchain: 1.84.1
       - run: make ci-query-plan-gate
 
+  sqlite-schema-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
+      - run: make ci-sqlite-schema-drift
+
+  sqlite-index-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
+      - run: make ci-sqlite-index-drift
+
+  ingest-determinism:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
+      - run: make ci-ingest-determinism
+
   compatibility-matrix-validate:
     runs-on: ubuntu-latest
     steps:
