@@ -291,6 +291,7 @@ enum PolicyCommand {
 #[derive(Clone, Copy, Debug, ValueEnum)]
 enum StrictnessCli {
     Strict,
+    Compat,
     Lenient,
     ReportOnly,
 }
