@@ -826,10 +826,9 @@ ops-full: ## Full local ops flow (OPS_MODE=fast|full, OPS_DRY_RUN=1 supported)
 	if [ "$${OPS_DRY_RUN:-0}" = "1" ]; then \
 	  echo "DRY-RUN ops-full mode=$${OPS_MODE:-fast} run_id=$${OPS_RUN_ID} ns=$${ATLAS_NS}"; \
 	  echo "$(MAKE) ops-up && $(MAKE) ops-deploy && $(MAKE) ops-publish && $(MAKE) ops-warm && $(MAKE) ops-smoke && $(MAKE) ops-k8s-tests"; \
+	  echo "$(MAKE) ops-load-smoke && $(MAKE) ops-observability-validate"; \
 	  if [ "$${OPS_MODE:-fast}" = "full" ]; then \
-	    echo "$(MAKE) ops-load-full && $(MAKE) ops-realdata && $(MAKE) ops-observability-validate"; \
-	  else \
-	    echo "$(MAKE) ops-load-smoke && $(MAKE) ops-observability-validate"; \
+	    echo "$(MAKE) ops-load-full && $(MAKE) ops-realdata"; \
 	  fi; \
 	  exit 0; \
 	fi; \
@@ -839,11 +838,10 @@ ops-full: ## Full local ops flow (OPS_MODE=fast|full, OPS_DRY_RUN=1 supported)
 	$(MAKE) ops-warm; \
 	$(MAKE) ops-smoke || $(MAKE) ops-smoke; \
 	$(MAKE) ops-k8s-tests; \
+	$(MAKE) ops-load-smoke; \
 	if [ "$${OPS_MODE:-fast}" = "full" ]; then \
 	  $(MAKE) ops-load-full; \
 	  $(MAKE) ops-realdata; \
-	else \
-	  $(MAKE) ops-load-smoke; \
 	fi; \
 	$(MAKE) ops-observability-validate
 
