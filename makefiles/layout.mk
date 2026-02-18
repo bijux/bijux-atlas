@@ -10,6 +10,8 @@ layout-check: ## Validate repository layout contract and root shape
 	@python3 ./scripts/layout/check_ops_index_surface.py
 	@python3 ./scripts/layout/check_ops_artifacts_writes.py
 	@python3 ./scripts/layout/check_ops_concept_ownership.py
+	@python3 ./scripts/layout/check_ops_single_validators.py
+	@python3 ./scripts/layout/check_ops_single_owner_contracts.py
 	@./scripts/layout/check_ops_canonical_shims.sh
 	@./scripts/layout/check_ops_lib_canonical.sh
 	@./scripts/layout/check_repo_hygiene.sh

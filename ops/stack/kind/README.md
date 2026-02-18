@@ -43,3 +43,5 @@ make ops-kind-down
 make ops-kind-reset
 make ops-kind-registry-up
 ```
+
+Canonical docs: `ops/README.md`, `docs/operations/INDEX.md`.

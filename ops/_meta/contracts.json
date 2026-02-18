@@ -4,6 +4,15 @@
     {"path": "ops/CONTRACT.md", "version": "1.0.0"},
     {"path": "ops/_meta/ownership.json", "version": 1},
     {"path": "ops/_meta/surface.json", "version": 1},
-    {"path": "ops/_meta/contracts.json", "version": 1}
+    {"path": "ops/_meta/contracts.json", "version": 1},
+    {"path": "ops/stack/CONTRACT.md", "version": 1},
+    {"path": "ops/k8s/CONTRACT.md", "version": 1},
+    {"path": "ops/obs/CONTRACT.md", "version": 1},
+    {"path": "ops/load/CONTRACT.md", "version": 1},
+    {"path": "ops/datasets/CONTRACT.md", "version": 1},
+    {"path": "ops/e2e/CONTRACT.md", "version": 1},
+    {"path": "ops/report/CONTRACT.md", "version": 1},
+    {"path": "ops/fixtures/CONTRACT.md", "version": 1},
+    {"path": "ops/run/CONTRACT.md", "version": 1}
   ]
 }

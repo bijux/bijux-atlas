@@ -1,5 +1,5 @@
 SHELL := /bin/sh
-JOBS ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 8)
+JOBS  ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 8)
 
 include makefiles/env.mk
 include makefiles/cargo.mk
@@ -126,6 +126,8 @@ ci: ## Run CI-equivalent meta pipeline mapped to workflow jobs
 	@$(CI_ENV) $(MAKE) ci-workflows-make-only
 	@$(CI_ENV) $(MAKE) ci-ops-index-surface
 	@$(CI_ENV) $(MAKE) ci-ops-readme-make-only
+	@$(CI_ENV) $(MAKE) ci-ops-readme-canonical-links
+	@$(CI_ENV) $(MAKE) ci-ops-doc-duplication
 	@$(CI_ENV) $(MAKE) ci-forbid-raw-paths
 	@$(CI_ENV) $(MAKE) ci-make-safety
 	@$(CI_ENV) $(MAKE) ci-make-help-drift

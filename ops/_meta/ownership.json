@@ -6,6 +6,9 @@
     "ops/obs": "bijux-atlas-observability",
     "ops/load": "bijux-atlas-performance",
     "ops/datasets": "bijux-atlas-data",
-    "ops/e2e": "bijux-atlas-operations"
+    "ops/e2e": "bijux-atlas-operations",
+    "ops/report": "bijux-atlas-operations",
+    "ops/fixtures": "bijux-atlas-operations",
+    "ops/run": "bijux-atlas-operations"
   }
 }
