@@ -16,9 +16,11 @@ ops-doctor: ## Validate and print pinned ops tool versions and canonical env
 
 ops-stack-up: ## Bring up stack components only (kind + stack manifests)
 	@$(MAKE) -s ops-env-validate
+	@$(MAKE) ops-kind-up
 	@$(MAKE) ops-kind-version-check
 	@$(MAKE) ops-kubectl-version-check
 	@$(MAKE) ops-helm-version-check
+	@if [ "$${ATLAS_KIND_REGISTRY_ENABLE:-0}" = "1" ]; then $(MAKE) ops-kind-registry-up; fi
 	@./ops/e2e/scripts/up.sh
 	@$(MAKE) ops-cluster-sanity
 
@@ -52,6 +54,27 @@ ops-stack-wait-ready: ## Wait for stack namespace readiness gates
 ops-stack-version: ## Print pinned stack component versions
 	@cat ops/stack/version-manifest.json
 	@cat ops/stack/versions.json
+
+ops-kind-up: ## Create kind cluster with fixed name and selected profile
+	@./ops/stack/kind/up.sh
+
+ops-kind-down: ## Delete kind cluster with fixed name
+	@./ops/stack/kind/down.sh
+
+ops-kind-reset: ## Delete and recreate kind cluster
+	@./ops/stack/kind/reset.sh
+
+ops-kind-metrics-server-up: ## Install metrics-server for HPA/resource tests (optional)
+	@./ops/stack/kind/metrics-server-up.sh
+
+ops-kind-registry-up: ## Bring up local registry and connect to kind network
+	@./ops/stack/registry/up.sh
+
+ops-kind-image-resolution-test: ## Validate atlas image is resolvable inside kind runtime
+	@./ops/e2e/k8s/tests/test_kind_image_resolution.sh
+
+ops-kind-disk-pressure: ## Simulate node disk pressure (use MODE=clean to remove)
+	@./ops/stack/faults/fill-node-disk.sh "$${MODE:-fill}"
 
 ops-stack-uninstall: ## Uninstall stack resources and cluster
 	@./ops/stack/scripts/uninstall.sh

@@ -64,7 +64,7 @@ def check_ops_env_schema(schema: dict, errors: list[str]) -> None:
 
 
 def check_tool_versions(data: dict, errors: list[str]) -> None:
-    required = {"kind", "k6", "helm", "kubectl"}
+    required = {"kind", "k6", "helm", "kubectl", "jq", "yq"}
     missing = sorted(required - set(data.keys()))
     if missing:
         errors.append(f"configs/ops/tool-versions.json: missing keys {missing}")

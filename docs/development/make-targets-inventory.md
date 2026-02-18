@@ -59,6 +59,13 @@ Generated from `make help`. Do not edit manually.
 - `ops-stack-version`
 - `ops-stack-uninstall`
 - `ops-stack-slow-store`
+- `ops-kind-up`
+- `ops-kind-down`
+- `ops-kind-reset`
+- `ops-kind-metrics-server-up`
+- `ops-kind-registry-up`
+- `ops-kind-image-resolution-test`
+- `ops-kind-disk-pressure`
 - `ops-reset`
 - `ops-clean`
 - `ops-env-print`
