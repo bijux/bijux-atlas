@@ -57,7 +57,7 @@ query() {
 
 query "1) Version" "/v1/version"
 query "2) Datasets" "/v1/datasets"
-query "3) Release Metadata + QC" "/v1/releases/110/species/homo_sapiens/assemblies/GRCh38"
+query "3) Dataset Metadata + QC" "/v1/datasets/110/homo_sapiens/GRCh38"
 query "4) Gene Count" "/v1/genes/count?release=110&species=homo_sapiens&assembly=GRCh38"
 query "5) Gene List" "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&limit=3"
 query "6) Region Query" "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&region=chr1:1-100000&limit=3"
