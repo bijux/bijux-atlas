@@ -16,7 +16,7 @@ if k6.exists() and "Violations" in k6.read_text():
     violations = 1
 
 store_open = 0
-if metrics.exists() and "bijux_store_circuit_open" in metrics.read_text():
+if metrics.exists() and "bijux_store_breaker_open" in metrics.read_text():
     store_open = 1
 
 burn_exceeded = bool(violations)
