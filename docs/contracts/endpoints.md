@@ -29,6 +29,7 @@ Does not define implementation internals outside this contract surface.
 - `GET /readyz` telemetry class: `health`
 - `GET /v1/_debug/echo` telemetry class: `debug`
 - `GET /v1/datasets` telemetry class: `catalog`
+- `GET /v1/datasets/{release}/{species}/{assembly}` telemetry class: `catalog`
 - `GET /v1/diff/genes` telemetry class: `diff`
 - `GET /v1/diff/region` telemetry class: `diff`
 - `GET /v1/genes` telemetry class: `query`

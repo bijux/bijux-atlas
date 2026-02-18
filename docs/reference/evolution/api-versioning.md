@@ -15,6 +15,8 @@ Rules:
 Deprecation:
 - Deprecated endpoints/params use OpenAPI `deprecated: true`.
 - Deprecations remain available for at least one minor release cycle.
+- Compat mapping:
+  - `/v1/releases/{release}/species/{species}/assemblies/{assembly}` -> `/v1/datasets/{release}/{species}/{assembly}`.
 
 ## What
 

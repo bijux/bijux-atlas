@@ -48,7 +48,7 @@ Health and readiness:
 Dataset discovery:
 
 - `GET /v1/datasets`
-- `GET /v1/releases/{release}/species/{species}/assemblies/{assembly}`
+- `GET /v1/datasets/{release}/{species}/{assembly}`
 
 Provenance headers on responses:
 

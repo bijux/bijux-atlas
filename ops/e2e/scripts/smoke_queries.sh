@@ -41,7 +41,7 @@ fi
 while IFS= read -r q; do
   [ -n "$q" ] || continue
   case "$q" in
-    /v1/genes*|/v1/transcripts*|/v1/diff/*|/v1/sequence/*|/v1/releases/*)
+    /v1/genes*|/v1/transcripts*|/v1/diff/*|/v1/sequence/*|/v1/releases/*|/v1/datasets/*)
       [ "$HAS_DATASETS" = "1" ] || continue
       ;;
   esac

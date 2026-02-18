@@ -8,7 +8,7 @@
 /v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&biotype=protein_coding
 /v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&region=chr1:1-1000
 /v1/genes/count?release=110&species=homo_sapiens&assembly=GRCh38
-/v1/releases/110/species/homo_sapiens/assemblies/GRCh38
+/v1/datasets/110/homo_sapiens/GRCh38
 /v1/transcripts/TX1?release=110&species=homo_sapiens&assembly=GRCh38
 /v1/genes/GENE1/transcripts?release=110&species=homo_sapiens&assembly=GRCh38
 /v1/diff/genes?from_release=109&to_release=110&species=homo_sapiens&assembly=GRCh38&limit=10
