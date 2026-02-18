@@ -209,6 +209,9 @@ ops-redis-optional-check: ## Validate atlas runs when redis is absent
 ops-redis-used-check: ## Validate redis usage evidence when enabled
 	@ATLAS_E2E_ENABLE_REDIS=1 ./ops/e2e/k8s/tests/test_redis_backend_metric.sh
 
+ops-redis-rate-limit-check: ## Validate redis-backed rate limiting behavior
+	@ATLAS_E2E_ENABLE_REDIS=1 ./ops/e2e/k8s/tests/test_redis_rate_limit.sh
+
 ops-toxi-up: ## Install toxiproxy stack component (optional)
 	@kubectl apply -f ./ops/stack/toxiproxy/toxiproxy.yaml
 	@./ops/stack/toxiproxy/bootstrap.sh
@@ -387,6 +390,9 @@ ops-ingress: ## Deploy atlas with ingress values profile
 ops-warm: ## Run warmup workflow
 	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/scripts/warmup.sh
+
+ops-warmup: ## Alias for deterministic warm set workflow
+	@$(MAKE) ops-warm
 
 ops-warm-datasets: ## Warm explicit dataset ids (DATASETS=release/species/assembly[,..])
 	@$(MAKE) -s ops-env-validate
