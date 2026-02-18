@@ -26,6 +26,7 @@ Does not define implementation internals outside this contract surface.
 - `atlas_policy_relaxation_active` labels: dataset, mode, subsystem, version
 - `atlas_policy_violations_total` labels: dataset, policy, subsystem, version
 - `atlas_shed_total` labels: dataset, reason, subsystem, version
+- `atlas_store_errors_total` labels: backend, class, dataset, subsystem, version
 - `bijux_dataset_count` labels: dataset, subsystem, version
 - `bijux_dataset_disk_usage_bytes` labels: dataset, subsystem, version
 - `bijux_dataset_hits` labels: dataset, subsystem, version
@@ -44,7 +45,6 @@ Does not define implementation internals outside this contract surface.
 - `bijux_sqlite_query_latency_p95_seconds` labels: dataset, query_type, subsystem, version
 - `bijux_store_breaker_open` labels: dataset, subsystem, version
 - `bijux_store_download_p95_seconds` labels: dataset, subsystem, version
-- `atlas_store_errors_total` labels: backend, dataset, class, subsystem, version
 - `bijux_store_fetch_latency_p95_seconds` labels: backend, dataset, subsystem, version
 - `bijux_store_open_p95_seconds` labels: dataset, subsystem, version
 

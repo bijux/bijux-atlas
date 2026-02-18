@@ -55,6 +55,16 @@
     },
     {
       "labels": [
+        "backend",
+        "class",
+        "dataset",
+        "subsystem",
+        "version"
+      ],
+      "name": "atlas_store_errors_total"
+    },
+    {
+      "labels": [
         "dataset",
         "subsystem",
         "version"
@@ -204,16 +214,6 @@
         "version"
       ],
       "name": "bijux_store_download_p95_seconds"
-    },
-    {
-      "labels": [
-        "backend",
-        "dataset",
-        "class",
-        "subsystem",
-        "version"
-      ],
-      "name": "atlas_store_errors_total"
     },
     {
       "labels": [

@@ -2,19 +2,19 @@
 #[allow(dead_code)]
 pub const CONTRACT_TRACE_SPAN_NAMES: &[&str] = &[
     "admission_control",
-    "dataset_resolve",
     "cache_lookup",
-    "store_fetch",
-    "sqlite_query",
+    "dataset_resolve",
     "serialize_response",
+    "sqlite_query",
+    "store_fetch",
 ];
 
 #[allow(dead_code)]
 pub const CONTRACT_TRACE_SPAN_ATTRIBUTES: &[(&str, &[&str])] = &[
     ("admission_control", &["route"]),
-    ("dataset_resolve", &["route"]),
     ("cache_lookup", &["dataset"]),
-    ("store_fetch", &["backend", "dataset"]),
-    ("sqlite_query", &["class"]),
+    ("dataset_resolve", &["route"]),
     ("serialize_response", &["route", "status"]),
+    ("sqlite_query", &["class"]),
+    ("store_fetch", &["backend", "dataset"]),
 ];
