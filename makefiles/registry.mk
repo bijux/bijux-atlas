@@ -22,7 +22,7 @@ REGISTRY_RELEASE_DESC := release/surface
 REGISTRY_RELEASE_TARGETS := fmt lint check test test-all coverage audit openapi-drift ci ssot-check crate-structure crate-docs-contract cli-command-surface docker-build docker-smoke chart-package chart-verify chart-validate release-dry-run release bump clean deep-clean debug
 
 REGISTRY_CI_DESC := ci-mapping
-REGISTRY_CI_TARGETS := ci-root-layout ci-script-entrypoints ci-fmt ci-clippy ci-test-nextest ci-deny ci-audit ci-license-check ci-policy-lint ci-policy-schema-drift ci-config-check ci-ssot-drift ci-crate-structure ci-crate-docs-contract ci-cli-command-surface ci-release-binaries ci-docs-build ci-latency-regression ci-store-conformance ci-openapi-drift ci-query-plan-gate ci-compatibility-matrix-validate ci-runtime-security-scan-image ci-coverage ci-workflows-make-only
+REGISTRY_CI_TARGETS := ci-root-layout ci-script-entrypoints ci-fmt ci-clippy ci-test-nextest ci-deny ci-audit ci-license-check ci-policy-lint ci-policy-schema-drift ci-config-check ci-ssot-drift ci-crate-structure ci-crate-docs-contract ci-cli-command-surface ci-release-binaries ci-docs-build ci-latency-regression ci-store-conformance ci-openapi-drift ci-query-plan-gate ci-sqlite-schema-drift ci-sqlite-index-drift ci-ingest-determinism ci-compatibility-matrix-validate ci-runtime-security-scan-image ci-coverage ci-workflows-make-only
 
 REGISTRY_TOOLING_DESC := tooling
 REGISTRY_TOOLING_TARGETS := bootstrap bootstrap-tools doctor dataset-id-lint scripts-index scripts-graph scripts-audit scripts-lint scripts-format scripts-test scripts-clean artifacts-index artifacts-clean isolate-clean no-direct-scripts help

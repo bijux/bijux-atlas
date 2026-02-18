@@ -70,6 +70,16 @@ ci-openapi-drift:
 ci-query-plan-gate:
 	@$(MAKE) query-plan-gate
 
+ci-sqlite-schema-drift:
+	@cargo test -p bijux-atlas-ingest sqlite::tests::schema_drift_gate_sqlite_master_digest_is_stable --locked
+
+ci-sqlite-index-drift:
+	@cargo test -p bijux-atlas-ingest sqlite::tests::index_drift_gate_required_indexes_exist --locked
+
+ci-ingest-determinism:
+	@cargo test -p bijux-atlas-ingest tests::deterministic_across_parallelism_settings --locked
+	@cargo test -p bijux-atlas-ingest tests::tiny_fixture_matches_cross_machine_golden_hashes --locked
+
 ci-compatibility-matrix-validate:
 	@$(MAKE) compat-matrix-validate
 
@@ -196,7 +206,7 @@ governance-check: ## Run governance gates: layout + docs + contracts + scripts +
 	ci-root-layout ci-script-entrypoints ci-fmt ci-clippy ci-test-nextest ci-deny ci-audit ci-license-check \
 	ci-policy-lint ci-policy-schema-drift ci-config-check ci-ssot-drift ci-crate-structure ci-crate-docs-contract ci-cli-command-surface \
 	ci-release-binaries ci-docs-build ci-latency-regression ci-store-conformance ci-openapi-drift ci-query-plan-gate \
-	ci-compatibility-matrix-validate ci-runtime-security-scan-image ci-coverage ci-workflows-make-only governance-check \
+	ci-sqlite-schema-drift ci-sqlite-index-drift ci-ingest-determinism ci-compatibility-matrix-validate ci-runtime-security-scan-image ci-coverage ci-workflows-make-only governance-check \
 	ci-make-help-drift ci-forbid-raw-paths ci-make-safety \
 	ci-init-iso-dirs ci-init-tmp ci-dependency-lock-refresh ci-release-compat-matrix-verify ci-release-build-artifacts \
 	ci-release-notes-render ci-release-publish-gh ci-cosign-sign ci-cosign-verify ci-chart-package-release ci-reproducible-verify \
