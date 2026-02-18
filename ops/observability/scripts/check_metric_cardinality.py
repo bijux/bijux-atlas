@@ -9,7 +9,7 @@ if not metrics_path.exists():
     print('metrics snapshot not found for cardinality check', file=sys.stderr)
     raise SystemExit(1)
 text = metrics_path.read_text()
-forbidden = {'request_id','cursor','gene_id','tx_id','api_key'}
+forbidden = {'request_id', 'cursor', 'gene_id', 'tx_id', 'api_key', 'dataset_hash', 'artifact_hash'}
 for line in text.splitlines():
     m = re.search(r'\{([^}]*)\}', line)
     if not m:
