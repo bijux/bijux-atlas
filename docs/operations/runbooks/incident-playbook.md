@@ -37,6 +37,11 @@ $ curl -s http://127.0.0.1:8080/metrics
 - Apply class-based shedding and rate controls.
 - Shift to cached-only mode when store outage is primary cause.
 
+## Alerts
+
+- `BijuxAtlasHigh5xxRate`
+- `BijuxAtlasP95LatencyRegression`
+
 ## Rollback
 
 - Roll back last deployment/config release if issue is rollout-induced.

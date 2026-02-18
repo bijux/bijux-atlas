@@ -29,6 +29,11 @@ $ kubectl delete pod -n default -l app.kubernetes.io/name=bijux-atlas --force --
 - Increase min replicas and tune bulkheads.
 - Cap warmup/download concurrency.
 
+## Alerts
+
+- `BijuxAtlasP95LatencyRegression`
+- `BijuxAtlasHigh5xxRate`
+
 ## Rollback
 
 - Revert recent HPA or cache policy changes.

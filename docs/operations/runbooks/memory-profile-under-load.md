@@ -29,6 +29,10 @@ $ make e2e-perf
 - Reduce cache retention and response payload size.
 - Apply allocation hot-path fixes.
 
+## Alerts
+
+- `BijuxAtlasP95LatencyRegression`
+
 ## Rollback
 
 - Disable recent memory-optimization experiment if regressions appear.

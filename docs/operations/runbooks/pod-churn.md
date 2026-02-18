@@ -38,6 +38,11 @@
 2. Reduce rollout concurrency during high traffic.
 3. Validate node-local cache profile for faster recovery.
 
+## Alerts
+
+- `BijuxAtlasHigh5xxRate`
+- `BijuxAtlasP95LatencyRegression`
+
 ## Rollback
 
 1. Roll back rollout settings to previous stable values.

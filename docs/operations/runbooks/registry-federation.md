@@ -30,6 +30,10 @@ $ make ssot-check
 - Freeze registry refresh during incident.
 - Reorder source priority to trusted registry.
 
+## Alerts
+
+- `BijuxAtlasStoreDownloadFailures`
+
 ## Rollback
 
 - Restore previous registry source ordering and TTL settings.
