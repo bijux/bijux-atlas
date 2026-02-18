@@ -61,7 +61,7 @@ Expected output: `diff.json` and `diff.summary.json` created with deterministic 
 
 ## See Also
 
-- [Contracts Index](../contracts/contracts-index.md)
-- [Artifact Directory Contract](../contracts/artifacts/directory-contract.md)
-- [Product Diffs v1](../product/diffs-v1.md)
-- [Terms Glossary](../_style/terms-glossary.md)
+- [Contracts Index](../../contracts/contracts-index.md)
+- [Artifact Directory Contract](../../contracts/artifacts/directory-contract.md)
+- [Product Diffs v1](../../product/diffs-v1.md)
+- [Terms Glossary](../../_style/terms-glossary.md)
