@@ -532,17 +532,7 @@ ops-load-spike-proof: ## Run 10x spike proof suite with overload/bulkhead/memory
 	@./ops/load/scripts/validate_results.py artifacts/perf/results
 	@python3 ./scripts/public/perf/check_spike_assertions.py --summary artifacts/perf/results/spike-overload-proof.summary.json --base-url "$${ATLAS_BASE_URL:-http://127.0.0.1:18080}" --wait-seconds "$${ATLAS_OVERLOAD_CLEAR_WAIT_SECONDS:-45}"
 	@$(MAKE) ops-slo-burn
-	@python3 - <<'PY'
-import json
-from pathlib import Path
-path = Path("artifacts/ops/observability/slo-burn.json")
-if not path.exists():
-    raise SystemExit("missing SLO burn artifact: artifacts/ops/observability/slo-burn.json")
-payload = json.loads(path.read_text())
-if payload.get("burn_exceeded"):
-    raise SystemExit(f"SLO burn exceeded: {payload}")
-print("slo burn within threshold")
-PY
+	@python3 -c 'import json; from pathlib import Path; p = Path("artifacts/ops/observability/slo-burn.json"); payload = json.loads(p.read_text()) if p.exists() else (_ for _ in ()).throw(SystemExit("missing SLO burn artifact: artifacts/ops/observability/slo-burn.json")); (_ for _ in ()).throw(SystemExit(f"SLO burn exceeded: {payload}")) if payload.get("burn_exceeded") else print("slo burn within threshold")'
 
 ops-load-spike-chaos: ## Run spike proof plus outage/slow-store/corruption drills
 	@$(MAKE) -s ops-env-validate
