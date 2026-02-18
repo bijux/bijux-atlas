@@ -840,9 +840,21 @@ ops-obs-down: ## Uninstall observability pack
 	@./ops/observability/scripts/uninstall_pack.sh
 
 
-ops-obs-mode: ## Install observability pack in requested profile (ATLAS_OBS_PROFILE=local|kind|cluster|airgapped)
-	@[ -n "$${ATLAS_OBS_PROFILE:-}" ] || { echo "set ATLAS_OBS_PROFILE=local|kind|cluster|airgapped" >&2; exit 2; }
-	@./ops/observability/scripts/install_pack.sh
+ops-obs-mode: ## Install observability pack in requested profile (ATLAS_OBS_PROFILE=local-compose|kind|cluster)
+	@[ -n "$${ATLAS_OBS_PROFILE:-}" ] || { echo "set ATLAS_OBS_PROFILE=local-compose|kind|cluster" >&2; exit 2; }
+	@./ops/observability/scripts/install_pack.sh --profile "$${ATLAS_OBS_PROFILE}"
+
+ops-observability-pack-verify: ## Verify observability pack endpoints and readiness by profile
+	@./ops/observability/scripts/verify_pack.sh
+
+ops-observability-pack-smoke: ## Run pack smoke requests and assert metrics/traces snapshots
+	@./ops/observability/scripts/smoke_pack.sh
+
+ops-observability-pack-export: ## Export dashboards/rules/configs into artifacts bundle
+	@./ops/observability/scripts/export_pack_bundle.sh
+
+ops-observability-pack-version-check: ## Check pack versions and pinned digest policy
+	@./ops/observability/scripts/check_pack_versions.sh
 
 ops-obs-mode-minimal: ## Compatibility alias for kind profile
 	@ATLAS_OBS_PROFILE=kind ./ops/observability/scripts/install_pack.sh
@@ -854,6 +866,7 @@ ops-observability-pack-tests: ## Run observability pack conformance tests
 	@./ops/observability/tests/run_all.sh
 
 ops-observability-pack-lint: ## Run observability pack lint-only contract checks
+	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck
 	@./ops/observability/tests/test_contracts.sh
 
 observability-pack-test: ## Fast observability pack test (contracts + coverage)
@@ -864,6 +877,16 @@ observability-pack-drills: ## Full observability drill suite (outage matrix + co
 	@./ops/observability/tests/test_coverage.sh
 	@./ops/observability/tests/test_outage_matrix.sh
 	@./ops/observability/tests/test_contracts.sh
+
+ops-observability-pack-idempotency: ## Install observability pack twice to validate idempotency
+	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/observability/scripts/install_pack.sh
+	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/observability/scripts/install_pack.sh
+	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/observability/scripts/uninstall_pack.sh
+
+ops-observability-pack-reinstall: ## Uninstall then reinstall pack to validate clean re-provision
+	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/observability/scripts/uninstall_pack.sh
+	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/observability/scripts/install_pack.sh
+	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/observability/scripts/uninstall_pack.sh
 
 ops-open-grafana: ## Print local ops service URLs
 	@./ops/ui/print_urls.sh
@@ -882,6 +905,9 @@ stack-full: ## Full-stack must-pass truth flow with contract report bundle
 	$(MAKE) ops-kind-validate; \
 	$(MAKE) ops-kind-metrics-server-up; \
 	$(MAKE) ops-stack-up; \
+	$(MAKE) ops-obs-up; \
+	$(MAKE) ops-observability-pack-verify; \
+	$(MAKE) ops-observability-pack-version-check; \
 	mkdir -p "$$report_dir"; \
 	helm template atlas ops/k8s/charts/bijux-atlas -f "$${ATLAS_VALUES_FILE:-ops/k8s/values/local.yaml}" > "$$report_dir/rendered-manifests.yaml"; \
 	$(MAKE) ops-chart-render-diff; \
@@ -903,6 +929,7 @@ stack-full: ## Full-stack must-pass truth flow with contract report bundle
 	$(MAKE) ops-metrics-check; \
 	$(MAKE) ops-alerts-validate; \
 	$(MAKE) ops-dashboards-validate; \
+	$(MAKE) ops-observability-pack-export; \
 	$(MAKE) ops-report; \
 	status=passed
 

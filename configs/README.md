@@ -34,6 +34,8 @@ Rule:
   - Consumed by: `make ops-env-print`, env contract validation.
 - `configs/ops/tool-versions.json`
   - Consumed by: `make ops-tools-check`, `make doctor`.
+- `configs/ops/observability-pack.json`
+  - Consumed by: observability pack profile/install/version checks, `make config-validate`.
 - `configs/ops/artifacts-allowlist.txt`
   - Consumed by: layout/artifacts policy checks.
 - `configs/openapi/v1/openapi.generated.json`
