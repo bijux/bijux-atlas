@@ -91,6 +91,7 @@ pub fn build_router(state: AppState) -> Router {
         )
         .route("/readyz", get(http::handlers::readyz_handler))
         .route("/metrics", get(http::handlers::metrics_handler))
+        .route("/v1/openapi.json", get(http::handlers::openapi_handler))
         .route("/v1/version", get(http::handlers::version_handler))
         .route("/v1/datasets", get(http::handlers::datasets_handler))
         .route(

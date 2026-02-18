@@ -387,6 +387,7 @@ pub(crate) async fn version_handler(State(state): State<AppState>) -> impl IntoR
         "server": {
             "crate": CRATE_NAME,
             "config_schema_version": crate::config::CONFIG_SCHEMA_VERSION,
+            "api_contract_version": "v1",
         }
     });
     let mut response = Json(payload).into_response();
@@ -396,6 +397,21 @@ pub(crate) async fn version_handler(State(state): State<AppState>) -> impl IntoR
     state
         .metrics
         .observe_request("/v1/version", StatusCode::OK, started.elapsed())
+        .await;
+    with_request_id(response, &request_id)
+}
+
+pub(crate) async fn openapi_handler(State(state): State<AppState>) -> impl IntoResponse {
+    let request_id = make_request_id(&state);
+    let started = Instant::now();
+    let spec = bijux_atlas_api::openapi_v1_spec();
+    let mut response = Json(spec).into_response();
+    if let Ok(value) = HeaderValue::from_str("public, max-age=30") {
+        response.headers_mut().insert("cache-control", value);
+    }
+    state
+        .metrics
+        .observe_request("/v1/openapi.json", StatusCode::OK, started.elapsed())
         .await;
     with_request_id(response, &request_id)
 }

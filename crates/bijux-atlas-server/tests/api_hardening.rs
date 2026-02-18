@@ -43,6 +43,23 @@ async fn error_contract_and_etag_behaviors() {
             .and_then(Value::as_str),
         Some("bijux-atlas")
     );
+    assert_eq!(
+        json.get("server")
+            .and_then(|s| s.get("api_contract_version"))
+            .and_then(Value::as_str),
+        Some("v1")
+    );
+
+    let (status, _, body) = send_raw(addr, "/v1/openapi.json", &[]).await;
+    assert_eq!(status, 200);
+    let openapi: Value = serde_json::from_str(&body).expect("openapi json");
+    assert_eq!(
+        openapi
+            .get("info")
+            .and_then(|v| v.get("x-api-contract-version"))
+            .and_then(Value::as_str),
+        Some("v1")
+    );
 
     let (status, _, body) = send_raw(
         addr,
