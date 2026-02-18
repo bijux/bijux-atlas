@@ -25,6 +25,8 @@ jobs:
       TEMP: artifacts/isolates/release-compat-matrix/tmp
     steps:
       - uses: actions/checkout@v4
+      - name: Observability acceptance checklist gate
+        run: python3 ./scripts/docs/check_observability_acceptance_checklist.py
       - run: make ci-release-compat-matrix-verify
 
   build-artifacts:
