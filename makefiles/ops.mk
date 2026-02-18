@@ -462,7 +462,9 @@ ops-metrics-check: ## Validate runtime metrics and observability contracts
 	@./ops/e2e/scripts/verify_metrics.sh
 	@./ops/observability/scripts/snapshot_metrics.sh
 	@./scripts/public/observability/check_metrics_contract.py
+	@python3 ./ops/observability/scripts/contracts/check_metrics_drift.py
 	@python3 ./ops/observability/scripts/contracts/check_metrics_coverage.py
+	@python3 ./ops/observability/scripts/contracts/check_metrics_golden.py
 	@./scripts/public/observability/check_dashboard_contract.py
 	@./scripts/public/observability/check_alerts_contract.py
 	@./scripts/public/observability/lint_runbooks.py
