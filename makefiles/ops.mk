@@ -113,10 +113,19 @@ ops-e2e-smoke: ## Run end-to-end smoke composition
 	@./ops/run/e2e-smoke.sh
 
 ops-k8s-suite: ## Run k8s invariant suite
-	@./ops/run/k8s-suite.sh
+	@PROFILE="$${PROFILE:-kind}" ./ops/run/k8s-suite.sh
 
 ops-load-suite: ## Run named load suite (SUITE=mixed-80-20)
-	@SUITE="$${SUITE:-mixed-80-20}" ./ops/run/load-suite.sh
+	@PROFILE="$${PROFILE:-kind}" SUITE="$${SUITE:-mixed-80-20}" ./ops/run/load-suite.sh
+
+ops-obs-drill: ## Run one observability drill locally (DRILL=... PROFILE=kind|compose)
+	@[ -n "$${DRILL:-}" ] || { echo "DRILL is required" >&2; exit 2; }
+	@PROFILE="$${PROFILE:-kind}"; \
+	if [ "$$PROFILE" = "compose" ]; then \
+	  PROFILE=compose $(MAKE) ops-obs-up; \
+	  echo "compose profile drill support is limited; executing requested drill via canonical runner"; \
+	fi; \
+	./ops/obs/scripts/run_drill.sh "$${DRILL}"
 
 ops-stack-validate: ## Validate stack manifests and formatting drift
 	@./scripts/layout/check_stack_manifest_consolidation.sh
@@ -457,6 +466,9 @@ ops-undeploy: ## Uninstall atlas helm release from namespace
 	release="$${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"; \
 	helm -n "$$ns" uninstall "$$release" >/dev/null 2>&1 || true
 
+ops-clean-uninstall: ## Uninstall and assert no resources left
+	@./ops/k8s/scripts/clean_uninstall.sh
+
 ops-redeploy: ## Uninstall and deploy atlas chart again
 	@$(MAKE) ops-undeploy
 	@$(MAKE) ops-deploy PROFILE="$${PROFILE:-$(OPS_DEPLOY_PROFILE)}"
@@ -769,6 +781,19 @@ ops-proof-cpu-throttle: ## Prove local cpu-throttle noisy-neighbor behavior
 	@$(MAKE) ops-kind-cpu-throttle
 	@./ops/obs/scripts/cpu-throttle-noisy-neighbor.sh
 
+ops-proof-rate-limit-abuse: ## Prove local rate-limit abuse semantics
+	@$(MAKE) ops-drill-rate-limit
+	@ATLAS_E2E_TEST=test_redis_rate_limit.sh $(MAKE) ops-k8s-tests || true
+
+ops-proof-response-size-abuse: ## Prove local response-size abuse limits
+	@$(MAKE) ops-load-suite SUITE=response-size-abuse PROFILE="$${PROFILE:-kind}"
+
+ops-proof-cold-start-baseline: ## Capture local cold-start perf baseline
+	@$(MAKE) ops-load-suite SUITE=cold-start-p99 PROFILE="$${PROFILE:-kind}"
+
+ops-proof-warm-p99-baseline: ## Capture local warm steady-state p99 perf baseline
+	@$(MAKE) ops-load-suite SUITE=warm-steady-state-p99 PROFILE="$${PROFILE:-kind}"
+
 ops-report: ## Gather ops evidence into artifacts/ops/<run-id>/
 	@$(MAKE) -s ops-env-validate
 	@out="$${OPS_RUN_DIR}"; \
@@ -989,6 +1014,10 @@ ops-observability-pack-upgrade-check: ## Check required vs running pack versions
 ops-observability-pack-health: ## Query pack health and service readiness
 	@./ops/obs/scripts/pack_health.sh
 
+ops-artifacts-index-run: ## Generate per-run artifact index markdown (RUN_ID=<ops-run-id>)
+	@[ -n "$${RUN_ID:-}" ] || { echo "RUN_ID is required" >&2; exit 2; }
+	@python3 ./scripts/layout/build_run_artifact_index.py --run-id "$${RUN_ID}"
+
 ops-observability-pack-conformance-report: ## Write pack conformance report under artifacts
 	@./ops/obs/scripts/write_pack_conformance_report.py
 
@@ -1046,14 +1075,20 @@ ops-local-full: ## Canonical one-command local full-stack proof workflow
 	export ATLAS_E2E_STORE_ROOT="$${ATLAS_E2E_STORE_ROOT:-ops/_artifacts/cache/store}"; \
 	export ATLAS_E2E_OUTPUT_ROOT="$${ATLAS_E2E_OUTPUT_ROOT:-ops/_artifacts/cache/datasets}"; \
 	export ATLAS_CACHE_ROOT="$${ATLAS_CACHE_ROOT:-ops/_artifacts/cache/runtime}"; \
+	echo "ops-local-full run_id=$$run_id"; \
+	$(MAKE) ops-kind-context-guard; \
+	$(MAKE) ops-clean; \
 	$(MAKE) ops-stack-up PROFILE=kind; \
 	$(MAKE) ops-stack-smoke; \
+	$(MAKE) ops-stack-health-report; \
 	$(MAKE) ops-obs-up PROFILE=kind; \
 	$(MAKE) ops-obs-verify; \
 	$(MAKE) ops-deploy PROFILE=local; \
 	$(MAKE) ops-publish DATASET="$${DATASET:-medium}"; \
 	$(MAKE) ops-warm; \
 	$(MAKE) ops-smoke; \
+	$(MAKE) ops-metrics-check; \
+	$(MAKE) ops-traces-check; \
 	$(MAKE) ops-proof-cached-only; \
 	$(MAKE) ops-proof-store-outage; \
 	$(MAKE) ops-proof-otel-outage; \
@@ -1063,9 +1098,14 @@ ops-local-full: ## Canonical one-command local full-stack proof workflow
 	$(MAKE) ops-proof-hpa-scale; \
 	$(MAKE) ops-proof-disk-pressure; \
 	$(MAKE) ops-proof-cpu-throttle; \
+	$(MAKE) ops-proof-rate-limit-abuse; \
+	$(MAKE) ops-proof-response-size-abuse; \
+	$(MAKE) ops-proof-cold-start-baseline; \
+	$(MAKE) ops-proof-warm-p99-baseline; \
 	$(MAKE) ops-cache-status; \
 	python3 ./ops/datasets/scripts/cache_budget_check.py; \
 	$(MAKE) ops-report; \
+	$(MAKE) ops-artifacts-index-run RUN_ID="$$run_id"; \
 	test -f "$$out/report.json"; \
 	echo "$$out/report.json"
 

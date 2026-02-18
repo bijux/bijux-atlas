@@ -27,6 +27,7 @@ Use Make targets only.
 
 - `make ops-obs-up PROFILE=compose`
 - `make ops-obs-verify`
+- `make ops-obs-drill DRILL=prom-outage PROFILE=kind`
 - `make ops-datasets-verify`
 - `make ops-e2e-smoke`
 - `make ops-k8s-suite`
