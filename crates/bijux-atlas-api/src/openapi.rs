@@ -102,8 +102,10 @@ pub fn openapi_v1_spec() -> Value {
                     "examples": {
                       "ok": {
                         "value": {
-                          "rows": [{"gene_id": "ENSG000001", "name": "BRCA1"}],
-                          "next_cursor": "v1.opaque.cursor"
+                          "dataset": {"release":"110","species":"homo_sapiens","assembly":"GRCh38"},
+                          "page": {"next_cursor":"v1.opaque.cursor"},
+                          "data": {"rows": [{"gene_id": "ENSG000001", "name": "BRCA1"}]},
+                          "links": {"next_cursor":"v1.opaque.cursor"}
                         }
                       }
                     }
