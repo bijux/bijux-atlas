@@ -14,6 +14,8 @@ atlas doctor
 atlas explain
 atlas explain-query
 atlas bench
+atlas gc apply
+atlas gc plan
 atlas ingest
 atlas ingest-normalized-diff
 atlas ingest-replay

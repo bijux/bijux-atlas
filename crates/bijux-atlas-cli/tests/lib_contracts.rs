@@ -19,6 +19,8 @@ fn command_surface_ssot_matches_doc() {
         "atlas explain",
         "atlas explain-query",
         "atlas bench",
+        "atlas gc apply",
+        "atlas gc plan",
         "atlas ingest",
         "atlas ingest-normalized-diff",
         "atlas ingest-replay",
@@ -118,7 +120,10 @@ fn help_output_command_surface_matches_doc_exactly() {
     for c in top_cmds {
         if c == "atlas" {
             for sub in &atlas_cmds {
-                if matches!(sub.as_str(), "catalog" | "dataset" | "openapi" | "diff") {
+                if matches!(
+                    sub.as_str(),
+                    "catalog" | "dataset" | "openapi" | "diff" | "gc"
+                ) {
                     let nested = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
                         .args(["atlas", sub, "--help"])
                         .output()
