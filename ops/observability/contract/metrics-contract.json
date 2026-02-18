@@ -1115,8 +1115,8 @@
     ],
     "atlas_store_errors_total": [
       "backend",
-      "dataset",
       "class",
+      "dataset",
       "subsystem",
       "version"
     ],

@@ -7,6 +7,7 @@ pub const CONTRACT_METRIC_NAMES: &[&str] = &[
     "atlas_policy_relaxation_active",
     "atlas_policy_violations_total",
     "atlas_shed_total",
+    "atlas_store_errors_total",
     "bijux_dataset_count",
     "bijux_dataset_disk_usage_bytes",
     "bijux_dataset_hits",
@@ -25,7 +26,6 @@ pub const CONTRACT_METRIC_NAMES: &[&str] = &[
     "bijux_sqlite_query_latency_p95_seconds",
     "bijux_store_breaker_open",
     "bijux_store_download_p95_seconds",
-    "atlas_store_errors_total",
     "bijux_store_fetch_latency_p95_seconds",
     "bijux_store_open_p95_seconds",
 ];
@@ -55,6 +55,10 @@ pub const CONTRACT_METRIC_LABELS: &[(&str, &[&str])] = &[
     (
         "atlas_shed_total",
         &["dataset", "reason", "subsystem", "version"],
+    ),
+    (
+        "atlas_store_errors_total",
+        &["backend", "class", "dataset", "subsystem", "version"],
     ),
     ("bijux_dataset_count", &["dataset", "subsystem", "version"]),
     (
@@ -118,10 +122,6 @@ pub const CONTRACT_METRIC_LABELS: &[(&str, &[&str])] = &[
     (
         "bijux_store_download_p95_seconds",
         &["dataset", "subsystem", "version"],
-    ),
-    (
-        "atlas_store_errors_total",
-        &["backend", "dataset", "class", "subsystem", "version"],
     ),
     (
         "bijux_store_fetch_latency_p95_seconds",
