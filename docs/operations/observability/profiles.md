@@ -4,7 +4,7 @@
 
 ## What
 
-Defines durable observability deployment profiles: `local`, `kind`, `cluster`, `airgapped`.
+Defines durable observability deployment profiles: `local-compose`, `kind`, `cluster`.
 
 ## Why
 
@@ -12,24 +12,25 @@ Profiles express deployment context without temporal or install-step wording.
 
 ## Contracts
 
-- `local`: single-node local development footprint.
+- `local-compose`: single-node local development footprint via docker compose.
 - `kind`: kind-compatible profile with CRD-aware optional features.
 - `cluster`: full cluster profile with ServiceMonitor/PrometheusRule contracts enabled.
-- `airgapped`: no external pull dependency during validation workflows.
-- Install target: `make ops-obs-up` with `ATLAS_OBS_PROFILE=<profile>`.
+- Install target: `make ops-obs-mode ATLAS_OBS_PROFILE=<profile>`.
 - Teardown target: `make ops-obs-down`.
 - Validation target: `make ops-observability-validate`.
 
 ## Failure modes
 
 - `cluster` profile fails fast if required CRDs are unavailable.
-- `airgapped` profile fails when required local images/assets are missing.
+- Airgapped usage: mirror images and pin digests in `configs/ops/observability-pack.json` before install.
 
 ## How to verify
 
 ```bash
-ATLAS_OBS_PROFILE=kind make ops-obs-up
-make ops-observability-smoke
+make ops-obs-mode ATLAS_OBS_PROFILE=kind
+make ops-observability-pack-verify
+make ops-observability-pack-smoke
+make ops-observability-pack-export
 make ops-obs-down
 ```
 
