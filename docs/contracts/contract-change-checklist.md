@@ -24,6 +24,7 @@ Does not supersede required reviewer approval policy.
 - [ ] `generate_contract_artifacts.py` run and committed.
 - [ ] `check_all.sh` passes.
 - [ ] `check_breaking_contract_change.py` output reviewed.
+- [ ] Any new relaxation is explicitly registered in `configs/policy/policy-relaxations.json` with owner/justification/expiry and `ATLAS-EXC-*` reference tag in code.
 - [ ] `make docs-freeze` passes.
 - [ ] `make docs` passes.
 

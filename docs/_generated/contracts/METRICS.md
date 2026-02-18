@@ -1,5 +1,6 @@
 # Metrics (Generated)
 
+- `atlas_overload_active` labels: dataset, subsystem, version
 - `bijux_dataset_count` labels: dataset, subsystem, version
 - `bijux_dataset_disk_usage_bytes` labels: dataset, subsystem, version
 - `bijux_dataset_hits` labels: dataset, subsystem, version

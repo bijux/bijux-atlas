@@ -11,6 +11,11 @@
     "dataset"
   ],
   "required_metrics": {
+    "atlas_overload_active": [
+      "dataset",
+      "subsystem",
+      "version"
+    ],
     "bijux_dataset_count": [
       "dataset",
       "subsystem",
@@ -51,11 +56,6 @@
       "version"
     ],
     "bijux_overload_shedding_active": [
-      "dataset",
-      "subsystem",
-      "version"
-    ],
-    "atlas_overload_active": [
       "dataset",
       "subsystem",
       "version"
