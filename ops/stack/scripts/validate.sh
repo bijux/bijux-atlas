@@ -15,6 +15,13 @@ find "$ROOT/stack" -name '*.yaml' -type f | while read -r f; do
     echo "tab character found in YAML: $f" >&2
     exit 1
   fi
+  # Values profiles and kind cluster configs are not Kubernetes resources.
+  if [[ "$f" == *"/stack/values/"* ]]; then
+    continue
+  fi
+  if [[ "$f" == *"/stack/kind/cluster"* ]]; then
+    continue
+  fi
   if [ "$KUBECTL_LOCAL_VALIDATE" -eq 1 ]; then
     # Keep validation local/offline: do not require a live cluster API.
     kubectl apply --dry-run=client --validate=false -f "$f" >/dev/null
