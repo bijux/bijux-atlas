@@ -197,6 +197,17 @@ ops-otel-down: ## Uninstall otel collector stack component
 ops-otel-spans-check: ## Validate otel collector receives spans when enabled
 	@./ops/e2e/k8s/tests/test_otel_spans.sh
 
+ops-otel-required-check: ## Require otel collector presence and trace exemplar signal when enabled
+	@if [ "$${ATLAS_E2E_ENABLE_OTEL:-1}" = "1" ]; then \
+	  ns="$${ATLAS_E2E_NAMESPACE:-atlas-e2e}"; \
+	  kubectl -n "$$ns" get deploy/otel-collector >/dev/null; \
+	  ./ops/observability/scripts/snapshot_traces.sh; \
+	  test -s artifacts/ops/observability/traces.exemplars.log; \
+	  echo "otel required check passed"; \
+	else \
+	  echo "otel required check skipped (ATLAS_E2E_ENABLE_OTEL=0)"; \
+	fi
+
 ops-redis-up: ## Install redis stack component (optional)
 	@kubectl apply -f ./ops/stack/redis/redis.yaml
 
@@ -771,7 +782,9 @@ ops-observability-validate: ## Validate observability assets/contracts end-to-en
 	./scripts/public/observability/check_metrics_contract.py; \
 	if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/public/observability/check_tracing_contract.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi; \
 	./ops/observability/scripts/snapshot_metrics.sh; \
+	./ops/observability/scripts/snapshot_traces.sh; \
 	./ops/observability/scripts/check_metric_cardinality.py; \
+	$(MAKE) ops-otel-required-check; \
 	python3 ./ops/observability/scripts/validate_logs_schema.py
 
 ops-obs-validate: ## Compatibility alias for ops-observability-validate
