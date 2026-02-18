@@ -179,6 +179,44 @@ fn region_overlap_edge_cases_are_correct() {
 }
 
 #[test]
+fn region_queries_use_stable_seqid_start_gene_id_ordering() {
+    let conn = setup_db();
+    let req = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            region: Some(RegionFilter {
+                seqid: "chr1".to_string(),
+                start: 1,
+                end: 200,
+            }),
+            ..Default::default()
+        },
+        limit: 50,
+        cursor: None,
+        dataset_key: None,
+        allow_full_scan: false,
+    };
+    let resp = query_genes(&conn, &req, &limits(), b"s").expect("region query");
+    let got = resp
+        .rows
+        .iter()
+        .map(|r| {
+            (
+                r.seqid.as_deref().unwrap_or_default().to_string(),
+                r.start.unwrap_or_default(),
+                r.gene_id.clone(),
+            )
+        })
+        .collect::<Vec<_>>();
+    let mut expected = got.clone();
+    expected.sort();
+    assert_eq!(
+        got, expected,
+        "region rows must be ordered by seqid, start, gene_id"
+    );
+}
+
+#[test]
 fn json_serialization_ordering_is_stable() {
     let conn = setup_db();
     let req = GeneQueryRequest {
