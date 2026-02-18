@@ -428,6 +428,11 @@ async fn cache_eviction_stress_respects_caps() {
         entries.len() <= 4,
         "cache count must respect max_dataset_count"
     );
+    let total_bytes: u64 = entries.values().map(|entry| entry.size_bytes).sum();
+    assert!(
+        total_bytes <= 1_000_000,
+        "cache bytes must respect max_disk_bytes, got {total_bytes}"
+    );
 }
 
 #[tokio::test]
@@ -559,4 +564,121 @@ async fn alias_like_release_switch_uses_hash_key_without_corruption() {
         key_b.trim(),
         "hash-keyed aliases should co-locate"
     );
+}
+
+#[tokio::test]
+async fn failed_downloads_respect_retry_budget_and_prevent_refetch_loop() {
+    let (ds, manifest, _sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    let tmp = tempdir().expect("tempdir");
+    let mgr = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            store_retry_budget: 1,
+            ..Default::default()
+        },
+        store.clone(),
+    );
+
+    let err1 = match mgr.open_dataset_connection(&ds).await {
+        Ok(_) => panic!("first download should fail"),
+        Err(err) => err,
+    };
+    assert!(
+        err1.to_string().contains("sqlite missing"),
+        "unexpected first error: {err1}"
+    );
+    let calls_after_first = store.fetch_calls.load(std::sync::atomic::Ordering::Relaxed);
+    assert!(calls_after_first >= 1);
+
+    let err2 = match mgr.open_dataset_connection(&ds).await {
+        Ok(_) => panic!("second download should be blocked by retry budget"),
+        Err(err) => err,
+    };
+    assert!(
+        err2.to_string().contains("retry budget exhausted"),
+        "unexpected second error: {err2}"
+    );
+    let calls_after_second = store.fetch_calls.load(std::sync::atomic::Ordering::Relaxed);
+    assert_eq!(
+        calls_after_second, calls_after_first,
+        "retry budget exhaustion should prevent further refetch attempts"
+    );
+}
+
+#[tokio::test]
+async fn shard_aware_selection_uses_seqid_mapping() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds.clone(), sqlite);
+
+    let tmp = tempdir().expect("tempdir");
+    let mgr = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..Default::default()
+        },
+        store,
+    );
+    let _ = mgr
+        .open_dataset_connection(&ds)
+        .await
+        .expect("prime cache entry");
+    let paths = mgr.resolve_cache_paths(&ds).await.expect("resolve paths");
+    std::fs::write(
+        paths.derived_dir.join("catalog_shards.json"),
+        r#"{
+  "dataset": {"release":"110","species":"homo_sapiens","assembly":"GRCh38"},
+  "mode": "contig",
+  "shards": [
+    {"shard_id":"s1","sqlite_path":"shard_chr1.sqlite","sqlite_sha256":"a","seqids":["chr1"]},
+    {"shard_id":"s2","sqlite_path":"shard_chr2.sqlite","sqlite_sha256":"b","seqids":["chr2"]}
+  ]
+}"#,
+    )
+    .expect("write shard catalog");
+    std::fs::write(paths.derived_dir.join("shard_chr1.sqlite"), b"stub").expect("shard1");
+    std::fs::write(paths.derived_dir.join("shard_chr2.sqlite"), b"stub").expect("shard2");
+    mgr.reverify_cached_datasets().await.expect("reverify");
+
+    let chr1 = mgr
+        .selected_shards_for_region(&ds, Some("chr1"))
+        .await
+        .expect("select seqid shard");
+    assert_eq!(chr1.len(), 1);
+    assert!(chr1[0].to_string_lossy().ends_with("shard_chr1.sqlite"));
+
+    let all = mgr
+        .selected_shards_for_region(&ds, None)
+        .await
+        .expect("select all shards");
+    assert_eq!(all.len(), 2);
+}
+
+#[cfg(unix)]
+#[tokio::test]
+async fn cache_root_permissions_are_hardened() {
+    use std::os::unix::fs::PermissionsExt;
+
+    let tmp = tempdir().expect("tempdir");
+    let disk_root = tmp.path().join("cache-root");
+    std::fs::create_dir_all(&disk_root).expect("mkdir");
+    std::fs::set_permissions(&disk_root, std::fs::Permissions::from_mode(0o777))
+        .expect("set world writable");
+
+    let _mgr = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: disk_root.clone(),
+            ..Default::default()
+        },
+        Arc::new(FakeStore::default()),
+    );
+
+    let mode = std::fs::metadata(&disk_root)
+        .expect("metadata")
+        .permissions()
+        .mode();
+    assert_eq!(mode & 0o002, 0, "cache root must not remain world-writable");
 }

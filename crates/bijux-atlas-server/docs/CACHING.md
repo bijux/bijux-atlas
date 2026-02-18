@@ -15,6 +15,7 @@
 - Startup cache warmup is deterministic (sorted dataset ids) and bounded by `startup_warmup_limit`.
 - Startup warmup jitter (`startup_warmup_jitter_max_ms`) reduces pod stampede risk.
 - Datasets are quarantined after repeated integrity failures (`quarantine_after_corruption_failures`).
+- Quarantine and retry budgets prevent infinite re-download loops for bad artifacts.
 - Emergency global breaker can reject non-health traffic (`emergency_global_breaker`).
 - Request queue depth is capped (`max_request_queue_depth`) to prevent unbounded backlog.
 - Store download concurrency is globally capped (`max_concurrent_downloads`).
@@ -26,6 +27,7 @@
 - Redis is tier-2 optional only. If Redis is slow/down, request handling falls back to local paths.
 - Redis response cache is limited to exact `gene_id` lookups with strict key-size/cardinality/TTL caps.
 - Redis operations are guarded by timeout, retry budget, and local circuit breaker.
+- Cache hit ratio and disk budget are validated in ops via `make ops-cache-status`.
 
 Read-only sqlite pragma profile:
 - `PRAGMA query_only=ON`
@@ -35,6 +37,10 @@ Read-only sqlite pragma profile:
 - `PRAGMA cache_size=-<configured KiB>`
 - `PRAGMA mmap_size=<configured bytes>`
 - For shard DB opens, mmap uses a per-shard tuned budget derived from global setting.
+
+Benchmarks:
+- Cold start: `make ops-perf-cold-start`
+- Warm start: `make ops-perf-warm-start`
 
 ## Registry Federation
 
