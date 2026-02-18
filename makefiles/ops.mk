@@ -282,22 +282,7 @@ ops-catalog-validate: ## Validate published catalog schema + deterministic merge
 
 ops-cache-status: ## Print cache status and enforce local cache budget policy
 	@./ops/datasets/scripts/cache_status.sh
-	@python3 - <<'PY'
-import json
-from pathlib import Path
-root=Path.cwd()
-cfg=json.loads((root/'configs/ops/dataset-qc-thresholds.json').read_text())
-usage_line=[l for l in (root/'artifacts/ops').glob('**/cache-status.txt')]
-usage=0
-try:
-    usage=int(__import__('subprocess').check_output(\"du -sk artifacts/e2e-store 2>/dev/null | awk '{print $1*1024}'\", shell=True, text=True).strip() or '0')
-except Exception:
-    usage=0
-budget=int(cfg.get('cache_budget_bytes', 0))
-if budget and usage > budget:
-    raise SystemExit(f\"cache budget exceeded: {usage} > {budget}\")
-print(f\"cache budget check passed: {usage}/{budget}\")
-PY
+	@python3 ./ops/datasets/scripts/cache_budget_check.py
 
 ops-dataset-qc: ## Enforce dataset QC thresholds for local ops gates
 	@./ops/datasets/scripts/dataset_qc.sh
