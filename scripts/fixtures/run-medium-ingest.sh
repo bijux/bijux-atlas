@@ -4,7 +4,7 @@
 # Outputs: exit status and deterministic stdout/stderr or generated artifacts.
 set -eu
 
-root="ops/fixtures/medium/data"
+root="ops/fixtures/medium/v1/data"
 [ -d "$root" ] || { echo "missing medium fixture data; run make fetch-fixtures" >&2; exit 1; }
 sharded=0
 if [ "${1:-}" = "--sharded" ]; then

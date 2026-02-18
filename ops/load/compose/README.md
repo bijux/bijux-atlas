@@ -2,34 +2,18 @@
 
 - Owner: `bijux-atlas-operations`
 
-## What
+## Scope
 
-Optional docker-compose profiles for local load harness runs.
+This compose set is **load-harness specific** and intentionally different from `ops/obs/pack/compose`.
 
-## Why
+- `ops/load/compose/*`: load execution substrate for perf scenarios and runner ergonomics.
+- `ops/obs/pack/compose/*`: observability pack runtime (prom/grafana/otel) and pack conformance.
 
-Provides a fallback runtime when kind/k8s is not used.
+They are not duplicates and are owned by different concepts.
 
-## Contracts
+## Commands
 
-- Canonical load system uses `ops/load/scenarios/*.json` and `ops/load/scripts/run_suite.sh`.
-- Canonical production-like runtime is kind/k8s.
-- Compose runtime is optional local fallback only.
-- Compose files:
-  - `ops/load/compose/docker-compose.perf.yml`
-  - `ops/load/compose/docker-compose.perf.redis.yml`
+- `make ops-load-smoke`
+- `make ops-load-full`
 
-## How to verify
-
-```bash
-$ make ops-load-smoke
-$ make ops-load-full
-```
-
-Expected output: suites run and emit result artifacts.
-
-## See also
-
-- [Load Suites](../../../docs/operations/load/suites.md)
-- [Load CI Policy](../../../docs/operations/load/ci-policy.md)
-- `ops-load-full`
+Canonical docs: `ops/README.md`, `docs/operations/INDEX.md`.

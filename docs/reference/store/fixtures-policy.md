@@ -8,12 +8,12 @@ CI fixtures:
 
 Non-CI fixture:
 
-- medium dataset is fetched via `make fetch-fixtures` using pinned URL + sha256 in `ops/fixtures/medium/manifest.lock`.
+- medium dataset is fetched via `make fetch-fixtures` using pinned URL + sha256 in `ops/fixtures/medium/v1/manifest.lock`.
 
 Golden query snapshots:
 
-- Query definitions: `ops/fixtures/medium/api-list-queries.v1.json`.
-- Snapshot output (manual): `ops/fixtures/medium/api-list-responses.v1.json`.
+- Query definitions: `ops/fixtures/medium/v1/api-list-queries.v1.json`.
+- Snapshot output (manual): `ops/fixtures/medium/v1/api-list-responses.v1.json`.
 
 ## What
 

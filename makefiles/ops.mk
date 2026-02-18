@@ -285,13 +285,13 @@ ops-reset: ## Reset ops state (namespace/PV store data + local store artifacts)
 
 ops-publish-medium: ## Ingest + publish medium fixture dataset
 	@$(MAKE) -s ops-env-validate
-	@if [ ! -f ops/fixtures/medium/data/genes.gff3 ] || [ ! -f ops/fixtures/medium/data/genome.fa ] || [ ! -f ops/fixtures/medium/data/genome.fa.fai ]; then \
+	@if [ ! -f ops/fixtures/medium/v1/data/genes.gff3 ] || [ ! -f ops/fixtures/medium/v1/data/genome.fa ] || [ ! -f ops/fixtures/medium/v1/data/genome.fa.fai ]; then \
 	  ./scripts/fixtures/fetch-medium.sh; \
 	fi
 	@./ops/e2e/scripts/publish_dataset.sh \
-	  --gff3 ops/fixtures/medium/data/genes.gff3 \
-	  --fasta ops/fixtures/medium/data/genome.fa \
-	  --fai ops/fixtures/medium/data/genome.fa.fai \
+	  --gff3 ops/fixtures/medium/v1/data/genes.gff3 \
+	  --fasta ops/fixtures/medium/v1/data/genome.fa \
+	  --fai ops/fixtures/medium/v1/data/genome.fa.fai \
 	  --release 110 --species homo_sapiens --assembly GRCh38
 	@ATLAS_DATASET_RELEASE=110 ATLAS_DATASET_SPECIES=homo_sapiens ATLAS_DATASET_ASSEMBLY=GRCh38 $(MAKE) ops-dataset-qc
 	@./ops/datasets/scripts/snapshot_metadata.sh
@@ -441,7 +441,7 @@ ops-soak: ## Run soak workflow (10-30 minutes)
 ops-smoke: ## Run canonical API smoke queries
 	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/scripts/smoke_queries.sh
-	@python3 ./ops/smoke/generate_report.py
+	@python3 ./ops/e2e/smoke/generate_report.py
 	@python3 ./scripts/docs/check_openapi_examples.py
 	@$(MAKE) ops-metrics-check
 	@./ops/obs/scripts/snapshot_metrics.sh
@@ -774,7 +774,7 @@ ops-perf-cold-start-prefetch-5pods: ## Perf helper: run 5-pod prefetch cold-star
 	@./ops/load/scripts/cold_start_prefetch_5pods.sh
 
 ops-perf-compare-redis: ## Perf helper: compare Redis-on vs Redis-off perf runs
-	@ATLAS_ENABLE_REDIS_EXPERIMENT=1 ./ops/load/scripts/validate_suite_manifest.py
+	@ATLAS_ENABLE_REDIS_EXPERIMENT=1 $(MAKE) ops-load-manifest-validate
 	@./ops/load/scripts/compare_redis.sh
 
 ops-baseline-policy-check: ## Enforce explicit approval policy for baseline updates
@@ -915,7 +915,7 @@ ops-observability-pack-reinstall: ## Uninstall then reinstall pack to validate c
 	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/obs/scripts/uninstall_pack.sh
 
 ops-open-grafana: ## Print local ops service URLs
-	@./ops/ui/print_urls.sh
+	@./ops/stack/scripts/print_urls.sh
 
 ops-local-full-stack: ## Single-command local full stack (kind + deploy + publish + smoke + k6 + observability)
 	@$(MAKE) ops-full

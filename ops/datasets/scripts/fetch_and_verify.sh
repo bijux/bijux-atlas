@@ -11,7 +11,7 @@ else
   echo "missing ops/datasets/manifest.lock" >&2
   exit 1
 fi
-if [ ! -f "$ROOT/ops/fixtures/medium/data/genes.gff3" ] || [ ! -f "$ROOT/ops/fixtures/medium/data/genome.fa" ] || [ ! -f "$ROOT/ops/fixtures/medium/data/genome.fa.fai" ]; then
+if [ ! -f "$ROOT/ops/fixtures/medium/v1/data/genes.gff3" ] || [ ! -f "$ROOT/ops/fixtures/medium/v1/data/genome.fa" ] || [ ! -f "$ROOT/ops/fixtures/medium/v1/data/genome.fa.fai" ]; then
   "$ROOT/scripts/fixtures/fetch-medium.sh" >/dev/null
 fi
 python3 - <<'PY'

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# Purpose: enforce pinned ops tool versions from canonical ops/tool-versions.json.
-# Inputs: ops/tool-versions.json and local tool CLI outputs.
+# Purpose: enforce pinned ops tool versions from canonical configs/ops/tool-versions.json.
+# Inputs: configs/ops/tool-versions.json and local tool CLI outputs.
 # Outputs: non-zero exit if installed version does not match pinned lockfile version.
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-LOCK_PATH = ROOT / "ops" / "tool-versions.json"
+LOCK_PATH = ROOT / "configs" / "ops" / "tool-versions.json"
 
 CMDS = {
     "kind": ["kind", "version"],

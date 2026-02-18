@@ -15,11 +15,11 @@ DATASET="${ATLAS_DEMO_DATASET:-110/homo_sapiens/GRCh38}"
 
 echo "[demo] fetching medium fixture (deterministic + checksum pinned)"
 if ! ./scripts/fixtures/fetch-medium.sh; then
-  if [ ! -d "ops/fixtures/medium/data" ]; then
-    echo "[demo] medium fixture download failed and ops/fixtures/medium/data is missing" >&2
+  if [ ! -d "ops/fixtures/medium/v1/data" ]; then
+    echo "[demo] medium fixture download failed and ops/fixtures/medium/v1/data is missing" >&2
     exit 1
   fi
-  echo "[demo] fetch failed but local ops/fixtures/medium/data exists; continuing"
+  echo "[demo] fetch failed but local ops/fixtures/medium/v1/data exists; continuing"
 fi
 
 echo "[demo] ingesting medium fixture to ${STORE_ROOT}"

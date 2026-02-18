@@ -7,10 +7,10 @@ python3 - <<'PY'
 import json,re,sys
 from pathlib import Path
 
-cfg=json.loads(Path("configs/ops/obs-pack.json").read_text(encoding="utf-8"))
+cfg=json.loads(Path("configs/ops/observability-pack.json").read_text(encoding="utf-8"))
 images=cfg.get("images",{})
 if not images:
-    print("configs/ops/obs-pack.json: images missing",file=sys.stderr)
+    print("configs/ops/observability-pack.json: images missing",file=sys.stderr)
     raise SystemExit(1)
 
 digest_re=re.compile(r"^sha256:[a-fA-F0-9]{64}$")

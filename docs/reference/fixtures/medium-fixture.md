@@ -8,8 +8,8 @@ Fetch via:
 
 Golden query snapshots for this fixture:
 
-- `ops/fixtures/medium/api-list-queries.v1.json`
-- `ops/fixtures/medium/api-list-responses.v1.json`
+- `ops/fixtures/medium/v1/api-list-queries.v1.json`
+- `ops/fixtures/medium/v1/api-list-responses.v1.json`
 
 ## What
 

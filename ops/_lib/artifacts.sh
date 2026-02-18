@@ -53,8 +53,8 @@ ops_write_metadata() {
   git_sha="$(git -C "$REPO_ROOT" rev-parse --short HEAD 2>/dev/null || echo unknown)"
   image_digest="$(docker image inspect --format '{{index .RepoDigests 0}}' bijux-atlas:local 2>/dev/null || echo unknown)"
   policy_hash="$(_ops_sha256 "$REPO_ROOT/configs/policy/policy.json" 2>/dev/null || echo unknown)"
-  dataset_hash="$(_ops_sha256 "$REPO_ROOT/ops/fixtures/medium/manifest.lock" 2>/dev/null || echo unknown)"
-  tools_json="$(cat "$REPO_ROOT/ops/tool-versions.json" 2>/dev/null || echo '{}')"
+  dataset_hash="$(_ops_sha256 "$REPO_ROOT/ops/fixtures/medium/v1/manifest.lock" 2>/dev/null || echo unknown)"
+  tools_json="$(cat "$REPO_ROOT/configs/ops/tool-versions.json" 2>/dev/null || echo '{}')"
   {
     echo '{'
     echo "  \"run_id\": \"${OPS_RUN_ID}\","
