@@ -38,6 +38,21 @@ kind-cluster-contract-hash: `b7cbaefe788fae38340ef3aa0bc1b79071b8da6f14e8379af02
 ```bash
 make ops-tools-check
 make ops-tools-print
-make ops-full
+make ops-ref-grade-local
 make ops-report
 ```
+
+### Required Ref-Grade Local Sequence
+
+`make ops-ref-grade-local` MUST execute these gates in order:
+
+1. `make ops-tools-check`
+2. `make ops-kind-validate`
+3. `make ops-stack-validate`
+4. `make ops-deploy PROFILE=local`
+5. `make ops-publish DATASET=medium`
+6. `make ops-warm`
+7. `make ops-smoke`
+8. `make ops-k8s-tests` (PR subset via `make ops-ref-grade-pr`, full via `make ops-ref-grade-nightly`)
+9. `make ops-load-smoke`
+10. `make ops-observability-validate`

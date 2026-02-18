@@ -19,6 +19,12 @@ One-command flow:
 make ops-full
 ```
 
+Required ref-grade local gate:
+
+```bash
+make ops-ref-grade-local
+```
+
 Canonical targets: `ops-up`, `ops-deploy`, `ops-warm`, `ops-smoke`, `ops-k8s-tests`, `ops-load-smoke`, `ops-observability-validate`, `ops-full`.
 
 Atlas deploy profile targets:

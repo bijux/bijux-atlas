@@ -21,6 +21,9 @@ Does not replace deep-dive runbooks.
 
 ## Contracts
 
+- Ref-grade local required gate: `ops-ref-grade-local` via `make ops-ref-grade-local`
+- Ref-grade PR variant: `ops-ref-grade-pr` via `make ops-ref-grade-pr`
+- Ref-grade nightly variant: `ops-ref-grade-nightly` via `make ops-ref-grade-nightly`
 - Stack up: `ops-up` via `make ops-up`
 - Deploy app: `ops-deploy` via `make ops-deploy`
 - Warm cache: `ops-warm` via `make ops-warm`
@@ -38,7 +41,7 @@ Does not replace deep-dive runbooks.
 ## How to verify
 
 ```bash
-$ make ops-full
+$ make ops-ref-grade-local
 ```
 
 Expected output: every stage exits 0 and writes artifacts under `artifacts/ops/`.
