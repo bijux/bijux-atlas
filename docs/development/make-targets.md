@@ -31,6 +31,9 @@ Generated from `make help`. Do not edit manually.
 - `ssot-check`
 - `policy-lint`
 - `policy-schema-drift`
+- `config-validate`
+- `config-print`
+- `config-drift`
 - `openapi-drift`
 - `ops-values-validate`
 - `ops-chart-render-diff`
@@ -182,6 +185,7 @@ Generated from `make help`. Do not edit manually.
 - `ci-license-check`
 - `ci-policy-lint`
 - `ci-policy-schema-drift`
+- `ci-config-check`
 - `ci-ssot-drift`
 - `ci-crate-structure`
 - `ci-crate-docs-contract`

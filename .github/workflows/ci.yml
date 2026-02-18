@@ -106,6 +106,12 @@ jobs:
       - uses: actions/checkout@v4
       - run: make ci-policy-schema-drift
 
+  config-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make ci-config-check
+
   ssot-drift:
     runs-on: ubuntu-latest
     steps:

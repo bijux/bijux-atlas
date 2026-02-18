@@ -33,6 +33,9 @@ ci-policy-lint:
 ci-policy-schema-drift:
 	@$(MAKE) policy-schema-drift
 
+ci-config-check:
+	@$(MAKE) config-validate
+
 ci-ssot-drift:
 	@$(MAKE) ssot-check
 
@@ -191,7 +194,7 @@ governance-check: ## Run governance gates: layout + docs + contracts + scripts +
 
 .PHONY: \
 	ci-root-layout ci-script-entrypoints ci-fmt ci-clippy ci-test-nextest ci-deny ci-audit ci-license-check \
-	ci-policy-lint ci-policy-schema-drift ci-ssot-drift ci-crate-structure ci-crate-docs-contract ci-cli-command-surface \
+	ci-policy-lint ci-policy-schema-drift ci-config-check ci-ssot-drift ci-crate-structure ci-crate-docs-contract ci-cli-command-surface \
 	ci-release-binaries ci-docs-build ci-latency-regression ci-store-conformance ci-openapi-drift ci-query-plan-gate \
 	ci-compatibility-matrix-validate ci-runtime-security-scan-image ci-coverage ci-workflows-make-only governance-check \
 	ci-make-help-drift ci-forbid-raw-paths ci-make-safety \

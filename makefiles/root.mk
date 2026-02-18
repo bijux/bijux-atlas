@@ -60,6 +60,17 @@ doctor:
 	@echo 'policy: local-noise is allowed locally; CI stays clean'
 	@$(MAKE) -s ops-tools-check
 
+config-validate: ## Validate config schemas/contracts and regenerate config key registry
+	@python3 ./scripts/public/generate-config-key-registry.py
+	@python3 ./scripts/public/config-validate.py
+	@python3 ./scripts/public/config-drift-check.py
+
+config-print: ## Print canonical merged config payload as JSON
+	@python3 ./scripts/public/config-print.py
+
+config-drift: ## Check config/schema/docs drift without regeneration
+	@python3 ./scripts/public/config-drift-check.py
+
 ci: ## Run CI-equivalent meta pipeline mapped to workflow jobs
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-root-layout
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-script-entrypoints
@@ -68,6 +79,7 @@ ci: ## Run CI-equivalent meta pipeline mapped to workflow jobs
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-test-nextest
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-policy-lint
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-policy-schema-drift
+	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-config-check
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-ssot-drift
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-docs-build
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-openapi-drift
@@ -121,7 +133,7 @@ release-update-compat-matrix:
 	@[ -n "$$TAG" ] || { echo "usage: make release-update-compat-matrix TAG=<tag>"; exit 2; }
 	@./scripts/release/update-compat-matrix.sh "$$TAG"
 
-.PHONY: help layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-graph scripts-lint scripts-format scripts-test scripts-audit scripts-clean artifacts-index artifacts-clean isolate-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts doctor fetch-real-datasets ssot-check policy-lint policy-schema-drift release-update-compat-matrix ci local local-full contracts hygiene clean deep-clean debug bump release-dry-run release
+.PHONY: help layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-graph scripts-lint scripts-format scripts-test scripts-audit scripts-clean artifacts-index artifacts-clean isolate-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts doctor config-validate config-print config-drift fetch-real-datasets ssot-check policy-lint policy-schema-drift release-update-compat-matrix ci local local-full contracts hygiene clean deep-clean debug bump release-dry-run release
 
 
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)
