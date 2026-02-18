@@ -29,6 +29,7 @@ docs: ## Build docs + link-check + spell-check + lint
 	@"$(DOCS_VENV)/bin/python" scripts/docs/check_mkdocs_site_links.py "$(DOCS_SITE)"
 	@"$(DOCS_VENV)/bin/python" scripts/docs/spellcheck_docs.py docs
 	@./scripts/docs/check_doc_naming.sh
+	@./scripts/docs/ban_legacy_terms.sh
 	@./scripts/docs/check_index_pages.sh
 	@./scripts/docs/check_title_case.sh
 	@python3 scripts/docs/check_no_orphan_docs.py

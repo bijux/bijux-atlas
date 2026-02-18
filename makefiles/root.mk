@@ -60,6 +60,7 @@ rename-lint: ## Enforce durable naming rules for docs/scripts and concept owners
 
 docs-lint-names: ## Enforce durable naming contracts, registries, and inventory
 	@python3 ./scripts/docs/naming_inventory.py
+	@./scripts/docs/ban_legacy_terms.sh
 	@python3 ./scripts/docs/check_no_orphan_docs.py
 	@python3 ./scripts/docs/check_script_locations.py
 	@python3 ./scripts/docs/check_runbook_map_registration.py
