@@ -464,10 +464,16 @@ ops-k8s-tests: ## Run k8s e2e suite
 	@lock_dir="artifacts/ops/locks/ops-k8s-tests.lock"; \
 	mkdir -p "artifacts/ops/locks"; \
 	if ! mkdir "$$lock_dir" 2>/dev/null; then \
-	  echo "ops-k8s-tests is already running (lock: $$lock_dir)" >&2; \
-	  exit 1; \
+	  if [ -f "$$lock_dir/pid" ] && kill -0 "$$(cat "$$lock_dir/pid")" 2>/dev/null; then \
+	    echo "ops-k8s-tests is already running (lock: $$lock_dir pid=$$(cat "$$lock_dir/pid"))" >&2; \
+	    exit 1; \
+	  fi; \
+	  echo "removing stale ops-k8s-tests lock: $$lock_dir" >&2; \
+	  rm -rf "$$lock_dir"; \
+	  mkdir "$$lock_dir"; \
 	fi; \
-	trap 'rmdir "$$lock_dir" >/dev/null 2>&1 || true' EXIT INT TERM; \
+	echo "$$$$" > "$$lock_dir/pid"; \
+	trap 'rm -rf "$$lock_dir" >/dev/null 2>&1 || true' EXIT INT TERM; \
 	group_args=""; \
 	if [ -n "$${ATLAS_E2E_TEST_GROUP}" ]; then \
 	  group_args="$$group_args --group $${ATLAS_E2E_TEST_GROUP}"; \
