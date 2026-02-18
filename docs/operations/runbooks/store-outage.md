@@ -50,3 +50,12 @@ $ curl -s http://127.0.0.1:8080/readyz
 ## See also
 
 - `ops-ci`
+
+## Dashboards
+
+- [Observability Dashboard](../observability/dashboard.md)
+
+## Drills
+
+- make ops-drill-store-outage
+- make ops-drill-pod-churn

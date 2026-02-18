@@ -32,3 +32,5 @@ Expected output: Helm templates render without requiring kustomize overlays.
 - [Helm Chart Contract](chart.md)
 - [K8s Test Contract](k8s-test-contract.md)
 - `ops-k8s-template-tests`
+
+- Chart values anchor: `values.server`

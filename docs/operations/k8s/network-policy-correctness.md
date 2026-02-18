@@ -34,3 +34,5 @@ Expected output: network policy gate and chart values gate pass.
 - [K8s Test Contract](k8s-test-contract.md)
 - [Helm Chart Contract](chart.md)
 - `ops-k8s-tests`
+
+- Chart values anchor: `values.server`

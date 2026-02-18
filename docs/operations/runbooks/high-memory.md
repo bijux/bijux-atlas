@@ -44,3 +44,12 @@ $ cargo test -p bijux-atlas-server --test latency_guard
 ## See also
 
 - `ops-ci`
+
+## Dashboards
+
+- [Observability Dashboard](../observability/dashboard.md)
+
+## Drills
+
+- make ops-drill-store-outage
+- make ops-drill-pod-churn

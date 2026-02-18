@@ -50,3 +50,5 @@ Expected output: matrix doc updated and docs checks pass.
 - [K8s Test Contract](k8s-test-contract.md)
 - [Helm Chart Contract](chart.md)
 - `ops-k8s-tests`
+
+- Chart values anchor: `values.server`

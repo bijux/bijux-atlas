@@ -35,3 +35,5 @@ Expected output: cluster boots and tests complete without resource-related failu
 - [E2E Stack](../e2e/stack.md)
 - [K8s Test Contract](k8s-test-contract.md)
 - `ops-k8s-tests`
+
+- Chart values anchor: `values.server`

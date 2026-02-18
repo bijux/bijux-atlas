@@ -42,3 +42,12 @@ $ kubectl delete pod -n default -l app.kubernetes.io/name=bijux-atlas --force --
 ## See also
 
 - `ops-ci`
+
+## Dashboards
+
+- [Observability Dashboard](../observability/dashboard.md)
+
+## Drills
+
+- make ops-drill-store-outage
+- make ops-drill-pod-churn

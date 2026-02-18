@@ -28,5 +28,5 @@ Expected output: same scenario names and result contracts across runtimes.
 ## See also
 
 - [Load Suites](suites.md)
-- [Compose Perf Profiles](../../../ops/load/compose/README.md)
+- [Load Index](INDEX.md)
 - `ops-load-full`

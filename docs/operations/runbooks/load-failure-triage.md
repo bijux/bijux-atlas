@@ -80,3 +80,12 @@ Canonical suite names:
 - [Load Reproducibility](../load/reproducibility.md)
 - [Performance Regression Policy](../observability/perf-regression-policy.md)
 - `ops-load-full`
+
+## Dashboards
+
+- [Observability Dashboard](../observability/dashboard.md)
+
+## Drills
+
+- make ops-drill-store-outage
+- make ops-drill-pod-churn

@@ -44,3 +44,12 @@ $ curl -s http://127.0.0.1:8080/debug/datasets
 ## See also
 
 - `ops-ci`
+
+## Dashboards
+
+- [Observability Dashboard](../observability/dashboard.md)
+
+## Drills
+
+- make ops-drill-store-outage
+- make ops-drill-pod-churn

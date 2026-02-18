@@ -34,3 +34,5 @@ Expected output: chart renders and installs in local profile without CRD blocker
 - [Helm Chart Contract](chart.md)
 - [K8s Test Contract](k8s-test-contract.md)
 - `ops-k8s-tests`
+
+- Chart values anchor: `values.server`

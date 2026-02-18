@@ -55,6 +55,11 @@ for path in sorted(RUNBOOK_DIR.glob("*.md")):
             if target not in make_targets:
                 errors.append(f"{path}: unknown make target `{target}`")
 
+    if "operations/observability/dashboard.md" not in text and "../observability/dashboard.md" not in text:
+        errors.append(f"{path}: missing dashboard link to operations/observability/dashboard.md")
+    if not re.search(r"ops-drill-[a-z0-9-]+", text):
+        errors.append(f"{path}: missing drill make target reference (ops-drill-*)")
+
 if errors:
     print("runbook contract check failed:", file=sys.stderr)
     for e in errors:

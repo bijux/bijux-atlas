@@ -51,3 +51,5 @@ Expected output: all contract tests pass; on failure a report appears in `artifa
 - [Helm Chart Contract](chart.md)
 - [E2E Kubernetes Tests](../e2e/k8s-tests.md)
 - `ops-k8s-tests`
+
+- Chart values anchor: `values.server`
