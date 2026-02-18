@@ -1,0 +1,33 @@
+{
+  "schema_version": "v1",
+  "queries": [
+    {
+      "id": "gene_lookup_by_id",
+      "class": "cheap",
+      "sql": "SELECT gene_id, name FROM gene_summary WHERE gene_id = ?1 ORDER BY gene_id ASC LIMIT ?2",
+      "params": ["gene1", 25],
+      "required_plan_substrings": [
+        "idx_gene_summary_cover_lookup"
+      ]
+    },
+    {
+      "id": "gene_list_by_biotype",
+      "class": "medium",
+      "sql": "SELECT gene_id, name, biotype FROM gene_summary WHERE biotype = ?1 ORDER BY gene_id ASC LIMIT ?2",
+      "params": ["protein_coding", 50],
+      "required_plan_substrings": [
+        "idx_gene_summary_biotype"
+      ]
+    },
+    {
+      "id": "region_overlap",
+      "class": "heavy",
+      "sql": "SELECT g.gene_id, g.seqid, g.start, g.end FROM gene_summary g JOIN gene_summary_rtree r ON r.gene_rowid = g.id WHERE g.seqid = ?1 AND r.start <= ?2 AND r.end >= ?3 ORDER BY g.seqid ASC, g.start ASC, g.gene_id ASC LIMIT ?4",
+      "params": ["chr1", 120, 80, 100],
+      "required_plan_substrings": [
+        "virtual table index",
+        "idx_gene_summary_cover_region"
+      ]
+    }
+  ]
+}

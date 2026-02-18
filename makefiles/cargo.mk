@@ -193,6 +193,10 @@ perf-nightly:
 query-plan-gate:
 	@./scripts/public/query-plan-gate.sh
 
+critical-query-check:
+	@python3 ./scripts/contracts/check_sqlite_indexes_contract.py
+	@python3 ./scripts/public/perf/run_critical_queries.py
+
 cold-start-bench:
 	@./ops/load/scripts/cold_start_benchmark.sh
 
@@ -218,4 +222,4 @@ bench-ingest-throughput-medium:
 bench-db-size-growth:
 	@cargo bench -p bijux-atlas-ingest --features bench-ingest-throughput --bench db_size_growth
 
-.PHONY: fmt _fmt lint _lint _lint-rustfmt _lint-configs _lint-docs _lint-clippy check _check test test-all _test _test-all coverage _coverage audit _audit ci-core openapi-drift api-contract-check compat-matrix-validate fetch-fixtures load-test load-test-1000qps perf-nightly query-plan-gate cold-start-bench memory-profile-load run-medium-ingest ingest-sharded-medium run-medium-serve bench-sqlite-query-latency bench-ingest-throughput-medium bench-db-size-growth
+.PHONY: fmt _fmt lint _lint _lint-rustfmt _lint-configs _lint-docs _lint-clippy check _check test test-all _test _test-all coverage _coverage audit _audit ci-core openapi-drift api-contract-check compat-matrix-validate fetch-fixtures load-test load-test-1000qps perf-nightly query-plan-gate critical-query-check cold-start-bench memory-profile-load run-medium-ingest ingest-sharded-medium run-medium-serve bench-sqlite-query-latency bench-ingest-throughput-medium bench-db-size-growth

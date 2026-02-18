@@ -42,5 +42,6 @@ Expected output: docs build and docs-structure checks pass.
 - [Terms Glossary](../_style/terms-glossary.md)
 - [Backend Architecture](backend-architecture.md)
 - [Component Responsibilities](component-responsibilities.md)
+- [Data Access Patterns](data-access-patterns.md)
 - [No Serving Writes](no-serving-writes.md)
 - [Build/Serve Split](build-serve-split.md)
