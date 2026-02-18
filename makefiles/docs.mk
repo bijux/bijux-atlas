@@ -24,6 +24,8 @@ docs: ## Build docs + link-check + spell-check + lint
 	@python3 scripts/docs/generate_openapi_docs.py
 	@python3 scripts/docs/generate_observability_surface.py
 	@python3 scripts/docs/generate_ops_schema_docs.py
+	@python3 scripts/docs/generate_ops_surface.py
+	@python3 scripts/docs/generate_ops_contracts_doc.py
 	@python3 scripts/docs/check_concept_registry.py
 	@./scripts/docs/render_diagrams.sh
 	@python3 scripts/docs/lint_doc_status.py
