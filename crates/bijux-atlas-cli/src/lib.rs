@@ -578,13 +578,15 @@ fn run_atlas_command(
                 out_dir,
                 max_inline_items,
             } => artifact_validation::build_release_diff(
-                root,
-                &from_release,
-                &to_release,
-                &species,
-                &assembly,
-                out_dir,
-                max_inline_items,
+                artifact_validation::BuildReleaseDiffArgs {
+                    root,
+                    from_release,
+                    to_release,
+                    species,
+                    assembly,
+                    out_dir,
+                    max_inline_items,
+                },
                 output_mode,
             )
             .map_err(CliError::internal),

@@ -32,6 +32,18 @@ const INGEST_LOCKING_MODE: &str = "EXCLUSIVE";
 const INGEST_PAGE_SIZE: i64 = 4096;
 const INGEST_MMAP_SIZE: i64 = 268_435_456;
 
+pub struct WriteSqliteInput<'a> {
+    pub path: &'a Path,
+    pub dataset: &'a DatasetId,
+    pub genes: &'a [GeneRecord],
+    pub transcripts: &'a [TranscriptRecord],
+    pub exons: &'a [ExonRecord],
+    pub contigs: &'a BTreeMap<String, ContigStats>,
+    pub gff3_sha256: &'a str,
+    pub fasta_sha256: &'a str,
+    pub fai_sha256: &'a str,
+}
+
 #[allow(dead_code)]
 pub fn migrate_forward_schema(conn: &Connection, target_version: i64) -> Result<i64, IngestError> {
     let current = detect_schema_version(conn)?;
@@ -82,17 +94,18 @@ fn detect_schema_version(conn: &Connection) -> Result<i64, IngestError> {
     Ok(pragma_v)
 }
 
-pub fn write_sqlite(
-    path: &Path,
-    dataset: &DatasetId,
-    genes: &[GeneRecord],
-    transcripts: &[TranscriptRecord],
-    exons: &[ExonRecord],
-    contigs: &BTreeMap<String, ContigStats>,
-    gff3_sha256: &str,
-    fasta_sha256: &str,
-    fai_sha256: &str,
-) -> Result<(), IngestError> {
+pub fn write_sqlite(input: WriteSqliteInput<'_>) -> Result<(), IngestError> {
+    let WriteSqliteInput {
+        path,
+        dataset,
+        genes,
+        transcripts,
+        exons,
+        contigs,
+        gff3_sha256,
+        fasta_sha256,
+        fai_sha256,
+    } = input;
     if path.exists() {
         fs::remove_file(path).map_err(|e| IngestError(e.to_string()))?;
     }
@@ -458,17 +471,17 @@ pub fn write_sharded_sqlite_catalog(
             .collect();
         let ex_rows: Vec<ExonRecord> = Vec::new();
         let empty_contigs = BTreeMap::new();
-        write_sqlite(
-            &sqlite_path,
+        write_sqlite(WriteSqliteInput {
+            path: &sqlite_path,
             dataset,
-            &rows,
-            &tx_rows,
-            &ex_rows,
-            &empty_contigs,
-            "",
-            "",
-            "",
-        )?;
+            genes: &rows,
+            transcripts: &tx_rows,
+            exons: &ex_rows,
+            contigs: &empty_contigs,
+            gff3_sha256: "",
+            fasta_sha256: "",
+            fai_sha256: "",
+        })?;
         shards.push(ShardEntry::new(
             bucket,
             seqids,

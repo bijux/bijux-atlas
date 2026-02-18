@@ -24,7 +24,9 @@ use manifest::{
 use normalized::{replay_counts_from_normalized, write_normalized_jsonl_zst};
 #[cfg(test)]
 use sqlite::{explain_plan_for_gene_id_query, explain_plan_for_name_query};
-use sqlite::{explain_plan_for_region_query, write_sharded_sqlite_catalog, write_sqlite};
+use sqlite::{
+    explain_plan_for_region_query, write_sharded_sqlite_catalog, write_sqlite, WriteSqliteInput,
+};
 use std::fmt::{Display, Formatter};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -240,17 +242,17 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
     fs::copy(&opts.fasta_path, &paths.fasta).map_err(|e| IngestError(e.to_string()))?;
     fs::copy(&opts.fai_path, &paths.fai).map_err(|e| IngestError(e.to_string()))?;
 
-    write_sqlite(
-        &paths.sqlite,
-        &opts.dataset,
-        &extracted.gene_rows,
-        &extracted.transcript_rows,
-        &extracted.exon_rows,
-        &contig_stats,
-        &sha256_hex(&fs::read(&paths.gff3).map_err(|e| IngestError(e.to_string()))?),
-        &sha256_hex(&fs::read(&paths.fasta).map_err(|e| IngestError(e.to_string()))?),
-        &sha256_hex(&fs::read(&paths.fai).map_err(|e| IngestError(e.to_string()))?),
-    )?;
+    write_sqlite(WriteSqliteInput {
+        path: &paths.sqlite,
+        dataset: &opts.dataset,
+        genes: &extracted.gene_rows,
+        transcripts: &extracted.transcript_rows,
+        exons: &extracted.exon_rows,
+        contigs: &contig_stats,
+        gff3_sha256: &sha256_hex(&fs::read(&paths.gff3).map_err(|e| IngestError(e.to_string()))?),
+        fasta_sha256: &sha256_hex(&fs::read(&paths.fasta).map_err(|e| IngestError(e.to_string()))?),
+        fai_sha256: &sha256_hex(&fs::read(&paths.fai).map_err(|e| IngestError(e.to_string()))?),
+    })?;
     let effective_sharding_plan = if opts.emit_shards {
         ShardingPlan::Contig
     } else {

@@ -299,7 +299,7 @@ mod tests {
         let gff = tmp.path().join("fuzz.gff3");
         let mut lines = Vec::new();
         for i in 0..128 {
-            let mut attrs = vec![
+            let mut attrs = [
                 format!("ID=g{i}"),
                 "Name= Gene%20One ".to_string(),
                 "gene_name=GENE_ONE".to_string(),
