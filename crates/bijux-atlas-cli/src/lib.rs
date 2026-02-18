@@ -286,6 +286,10 @@ enum OpenapiCommand {
 #[derive(Subcommand)]
 enum PolicyCommand {
     Validate,
+    Explain {
+        #[arg(long, value_enum)]
+        mode: Option<PolicyModeCli>,
+    },
 }
 
 #[derive(Clone, Copy, Debug, ValueEnum)]
@@ -313,6 +317,13 @@ enum ShardingPlanCli {
     None,
     Contig,
     RegionGrid,
+}
+
+#[derive(Clone, Copy, Debug, ValueEnum)]
+enum PolicyModeCli {
+    Strict,
+    Compat,
+    Dev,
 }
 
 struct IngestCliArgs {
@@ -610,6 +621,15 @@ fn run_atlas_command(
             PolicyCommand::Validate => {
                 artifact_validation::validate_policy(output_mode).map_err(CliError::internal)
             }
+            PolicyCommand::Explain { mode } => artifact_validation::explain_policy(
+                mode.map(|m| match m {
+                    PolicyModeCli::Strict => bijux_atlas_policies::PolicyMode::Strict,
+                    PolicyModeCli::Compat => bijux_atlas_policies::PolicyMode::Compat,
+                    PolicyModeCli::Dev => bijux_atlas_policies::PolicyMode::Dev,
+                }),
+                output_mode,
+            )
+            .map_err(CliError::internal),
         },
         AtlasCommand::Ingest {
             gff3,
