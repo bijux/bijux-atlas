@@ -21,6 +21,7 @@ artifact_schema = json.loads((contracts / "artifacts" / "ARTIFACT_SCHEMA.json").
 policy_schema = json.loads((contracts / "POLICY_SCHEMA.json").read_text())
 qc_schema = json.loads((contracts / "QC_SCHEMA.json").read_text())
 normalized_schema = json.loads((contracts / "NORMALIZED_FORMAT_SCHEMA.json").read_text())
+diff_schema = json.loads((contracts / "DIFF_SCHEMA.json").read_text())
 
 
 def write_reference_contract_doc(path: Path, title: str, contracts_body: str, examples_body: str) -> None:
@@ -271,6 +272,11 @@ for rust_file in (
 (out_gen / "NORMALIZED_FORMAT_SCHEMA.md").write_text(
     "# Normalized Format Schema (Generated)\n\n```json\n"
     + json.dumps(normalized_schema, indent=2, sort_keys=True)
+    + "\n```\n"
+)
+(out_gen / "DIFF_SCHEMA.md").write_text(
+    "# Diff Schema (Generated)\n\n```json\n"
+    + json.dumps(diff_schema, indent=2, sort_keys=True)
     + "\n```\n"
 )
 

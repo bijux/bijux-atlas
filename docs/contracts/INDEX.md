@@ -53,5 +53,6 @@ Expected output: both commands exit 0.
 - [Ingest QC Contract](qc.md)
 - [Normalized Format Contract](normalized-format.md)
 - [GFF3 Acceptance Contract](gff3-acceptance.md)
+- [Release Diffs (Evolution)](../evolution/release-diffs.md)
 - [SSOT Workflow](ssot-workflow.md)
 - [Terms Glossary](../_style/terms-glossary.md)

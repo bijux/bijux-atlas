@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Release Diff Artifact",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "identity",
+    "genes_added",
+    "genes_removed",
+    "genes_changed_coords",
+    "genes_changed_biotype",
+    "transcripts_added",
+    "transcripts_removed"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1"
+    },
+    "identity": {
+      "type": "object",
+      "required": ["from_release", "to_release", "species", "assembly"],
+      "additionalProperties": false,
+      "properties": {
+        "from_release": { "type": "string" },
+        "to_release": { "type": "string" },
+        "species": { "type": "string" },
+        "assembly": { "type": "string" }
+      }
+    },
+    "genes_added": { "$ref": "#/$defs/stringListOrChunkRef" },
+    "genes_removed": { "$ref": "#/$defs/stringListOrChunkRef" },
+    "genes_changed_coords": { "$ref": "#/$defs/stringListOrChunkRef" },
+    "genes_changed_biotype": { "$ref": "#/$defs/stringListOrChunkRef" },
+    "genes_changed_signature": { "$ref": "#/$defs/stringListOrChunkRef" },
+    "transcripts_added": { "$ref": "#/$defs/stringListOrChunkRef" },
+    "transcripts_removed": { "$ref": "#/$defs/stringListOrChunkRef" },
+    "chunk_manifest": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["field", "chunk", "path", "count"],
+        "additionalProperties": false,
+        "properties": {
+          "field": { "type": "string" },
+          "chunk": { "type": "integer", "minimum": 0 },
+          "path": { "type": "string" },
+          "count": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "compatibility": {
+      "type": "string",
+      "enum": ["additive-only"]
+    }
+  },
+  "$defs": {
+    "stringListOrChunkRef": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        {
+          "type": "object",
+          "required": ["truncated", "total_count", "inline_count"],
+          "additionalProperties": false,
+          "properties": {
+            "truncated": { "type": "boolean" },
+            "total_count": { "type": "integer", "minimum": 0 },
+            "inline_count": { "type": "integer", "minimum": 0 }
+          }
+        }
+      ]
+    }
+  }
+}
