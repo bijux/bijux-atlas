@@ -70,6 +70,8 @@ pub fn write_sqlite(
     genes: &[GeneRecord],
     transcripts: &[TranscriptRecord],
     contigs: &BTreeMap<String, ContigStats>,
+    fasta_sha256: &str,
+    fai_sha256: &str,
 ) -> Result<(), IngestError> {
     if path.exists() {
         fs::remove_file(path).map_err(|e| IngestError(e.to_string()))?;
@@ -258,6 +260,16 @@ pub fn write_sqlite(
         )
         .map_err(|e| IngestError(e.to_string()))?;
         tx.execute(
+            "INSERT INTO atlas_meta (k, v) VALUES ('fasta_sha256', ?1)",
+            params![fasta_sha256],
+        )
+        .map_err(|e| IngestError(e.to_string()))?;
+        tx.execute(
+            "INSERT INTO atlas_meta (k, v) VALUES ('fai_sha256', ?1)",
+            params![fai_sha256],
+        )
+        .map_err(|e| IngestError(e.to_string()))?;
+        tx.execute(
             "INSERT INTO atlas_meta (k, v) VALUES ('analyze_completed', 'false')",
             [],
         )
@@ -385,7 +397,15 @@ pub fn write_sharded_sqlite_catalog(
             .collect();
         let dataset = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
         let empty_contigs = BTreeMap::new();
-        write_sqlite(&sqlite_path, &dataset, &rows, &tx_rows, &empty_contigs)?;
+        write_sqlite(
+            &sqlite_path,
+            &dataset,
+            &rows,
+            &tx_rows,
+            &empty_contigs,
+            "",
+            "",
+        )?;
         shards.push(ShardEntry::new(
             bucket,
             seqids,

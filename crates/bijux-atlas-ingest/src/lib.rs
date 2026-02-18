@@ -15,6 +15,7 @@ use bijux_atlas_model::{
 };
 use diff_index::build_and_write_release_gene_index;
 use extract::extract_gene_rows;
+use bijux_atlas_core::sha256_hex;
 use gff3::parse_gff3_records;
 use manifest::{
     build_and_write_manifest_and_reports, write_qc_and_anomaly_reports_only, BuildManifestArgs,
@@ -59,6 +60,8 @@ pub struct IngestOptions {
     pub shard_partitions: usize,
     pub compute_gene_signatures: bool,
     pub compute_contig_fractions: bool,
+    pub fasta_scanning_enabled: bool,
+    pub fasta_scan_max_bases: u64,
     pub compute_transcript_spliced_length: bool,
     pub compute_transcript_cds_length: bool,
     pub report_only: bool,
@@ -94,6 +97,8 @@ impl Default for IngestOptions {
             shard_partitions: 0,
             compute_gene_signatures: true,
             compute_contig_fractions: false,
+            fasta_scanning_enabled: false,
+            fasta_scan_max_bases: 2_000_000_000,
             compute_transcript_spliced_length: false,
             compute_transcript_cds_length: false,
             report_only: false,
@@ -136,7 +141,27 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
         }
     }
     let contig_lengths = fai::read_fai_contig_lengths(&opts.fai_path)?;
-    let contig_stats = fai::read_fasta_contig_stats(&opts.fasta_path, opts.compute_contig_fractions)?;
+    let contig_stats = if opts.fasta_scanning_enabled {
+        fai::read_fasta_contig_stats(
+            &opts.fasta_path,
+            opts.compute_contig_fractions,
+            opts.fasta_scan_max_bases,
+        )?
+    } else {
+        contig_lengths
+            .iter()
+            .map(|(k, v)| {
+                (
+                    k.clone(),
+                    fai::ContigStats {
+                        length: *v,
+                        gc_fraction: None,
+                        n_fraction: None,
+                    },
+                )
+            })
+            .collect()
+    };
     let records = parse_gff3_records(&opts.gff3_path)?;
     let extracted = extract_gene_rows(records, &contig_lengths, opts)?;
     if opts.fail_on_warn && has_qc_warn(&extracted.anomaly) {
@@ -199,6 +224,8 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
         &extracted.gene_rows,
         &extracted.transcript_rows,
         &contig_stats,
+        &sha256_hex(&fs::read(&paths.fasta).map_err(|e| IngestError(e.to_string()))?),
+        &sha256_hex(&fs::read(&paths.fai).map_err(|e| IngestError(e.to_string()))?),
     )?;
     let (shard_catalog_path, shard_catalog) = if opts.emit_shards {
         let (catalog_path, catalog) = write_sharded_sqlite_catalog(
@@ -305,6 +332,8 @@ mod tests {
             shard_partitions: 0,
             compute_gene_signatures: true,
             compute_contig_fractions: false,
+            fasta_scanning_enabled: false,
+            fasta_scan_max_bases: 2_000_000_000,
             compute_transcript_spliced_length: false,
             compute_transcript_cds_length: false,
             report_only: false,
@@ -431,6 +460,42 @@ mod tests {
     }
 
     #[test]
+    fn contig_length_mismatch_between_fasta_and_fai_fails() {
+        let root = tempdir().expect("tempdir");
+        let gff = root.path().join("genes.gff3");
+        let fasta = root.path().join("genome.fa");
+        let fai = root.path().join("genome.fa.fai");
+        std::fs::write(
+            &gff,
+            "chr1\tsrc\tgene\t1\t20\t.\t+\t.\tID=g1;Name=G1\nchr1\tsrc\ttranscript\t1\t20\t.\t+\t.\tID=tx1;Parent=g1\n",
+        )
+        .expect("gff");
+        std::fs::write(&fasta, ">chr1\nACGTACGTACGTACGTACGT\n").expect("fasta");
+        std::fs::write(&fai, "chr1\t10\n").expect("fai");
+
+        let mut o = opts(root.path(), StrictnessMode::Strict);
+        o.gff3_path = gff;
+        o.fasta_path = fasta;
+        o.fai_path = fai;
+        let err = ingest_dataset(&o).expect_err("fai mismatch should fail");
+        assert!(err.to_string().contains("exceeds contig"));
+    }
+
+    #[test]
+    fn gene_out_of_range_fails_contractually() {
+        let root = tempdir().expect("tempdir");
+        let mut o = opts(root.path(), StrictnessMode::Strict);
+        o.gff3_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("tests/fixtures/contigs/genes_invalid_coord.gff3");
+        o.fasta_path =
+            PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/contigs/genome.fa");
+        o.fai_path =
+            PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/contigs/genome.fa.fai");
+        let err = ingest_dataset(&o).expect_err("out of range must fail");
+        assert!(err.to_string().contains("exceeds contig"));
+    }
+
+    #[test]
     fn unknown_contig_is_contractual_deterministic_failure() {
         let root = tempdir().expect("tempdir");
         let mut o = opts(root.path(), StrictnessMode::Strict);
@@ -502,6 +567,14 @@ mod tests {
             .query_row("SELECT COUNT(*) FROM contigs", [], |r| r.get(0))
             .expect("contigs table count");
         assert!(contigs > 0);
+        let fasta_hash: String = conn
+            .query_row("SELECT v FROM atlas_meta WHERE k='fasta_sha256'", [], |r| r.get(0))
+            .expect("fasta hash");
+        let fai_hash: String = conn
+            .query_row("SELECT v FROM atlas_meta WHERE k='fai_sha256'", [], |r| r.get(0))
+            .expect("fai hash");
+        assert_eq!(fasta_hash.len(), 64);
+        assert_eq!(fai_hash.len(), 64);
     }
 
     #[test]
@@ -639,7 +712,7 @@ mod tests {
         let run = ingest_dataset(&opts(root.path(), StrictnessMode::Strict)).expect("ingest");
         assert_eq!(
             run.manifest.checksums.sqlite_sha256,
-            "b6161b3a91ea657e510cf0d9202fab01f18eedfd2f2a62c3ac2ec5020b3c3361"
+            "9722beec3380c8eceb4ff7055ad63a34bf75c2a111298e7a644791498c0e6841"
         );
         assert_eq!(
             run.manifest.dataset_signature_sha256,

@@ -154,6 +154,14 @@ enum AtlasCommand {
         #[arg(long, default_value_t = false)]
         allow_overlap_gene_ids_across_contigs: bool,
         #[arg(long, default_value_t = false)]
+        no_fai_check: bool,
+        #[arg(long, default_value_t = false)]
+        dev_auto_generate_fai: bool,
+        #[arg(long, default_value_t = false)]
+        fasta_scanning: bool,
+        #[arg(long, default_value_t = 2000000000)]
+        fasta_scan_max_bases: u64,
+        #[arg(long, default_value_t = false)]
         emit_shards: bool,
         #[arg(long, default_value_t = 0)]
         shard_partitions: usize,
@@ -265,6 +273,10 @@ struct IngestCliArgs {
     report_only: bool,
     strict: bool,
     allow_overlap_gene_ids_across_contigs: bool,
+    no_fai_check: bool,
+    dev_auto_generate_fai: bool,
+    fasta_scanning: bool,
+    fasta_scan_max_bases: u64,
     emit_shards: bool,
     shard_partitions: usize,
 }
@@ -487,6 +499,10 @@ fn run_atlas_command(
             report_only,
             strict,
             allow_overlap_gene_ids_across_contigs,
+            no_fai_check,
+            dev_auto_generate_fai,
+            fasta_scanning,
+            fasta_scan_max_bases,
             emit_shards,
             shard_partitions,
         } => run_ingest(
@@ -507,6 +523,10 @@ fn run_atlas_command(
                 report_only,
                 strict,
                 allow_overlap_gene_ids_across_contigs,
+                no_fai_check,
+                dev_auto_generate_fai,
+                fasta_scanning,
+                fasta_scan_max_bases,
                 emit_shards,
                 shard_partitions,
             },
