@@ -110,6 +110,12 @@ pub struct ArtifactManifest {
     pub created_at: String,
     #[serde(default)]
     pub qc_report_path: String,
+    #[serde(default)]
+    pub source_gff3_filename: String,
+    #[serde(default)]
+    pub source_fasta_filename: String,
+    #[serde(default)]
+    pub source_fai_filename: String,
     #[serde(default = "default_sharding_plan")]
     pub sharding_plan: ShardingPlan,
     #[serde(default)]
@@ -151,6 +157,9 @@ impl ArtifactManifest {
             toolchain_hash: "unknown".to_string(),
             created_at: String::new(),
             qc_report_path: String::new(),
+            source_gff3_filename: String::new(),
+            source_fasta_filename: String::new(),
+            source_fai_filename: String::new(),
             sharding_plan: ShardingPlan::None,
             contig_normalization_aliases: BTreeMap::new(),
             derived_column_origins: default_derived_column_origins(),
