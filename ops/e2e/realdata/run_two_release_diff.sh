@@ -16,6 +16,19 @@ for rel in 110 111; do
     --release "$rel" --species homo_sapiens --assembly GRCh38
 done
 
+DIFF_OUT="${ATLAS_E2E_DIFF_OUT:-$ROOT/artifacts/ops/release-diff/110_to_111}"
+STORE_ROOT="${ATLAS_E2E_STORE_ROOT:-$ROOT/artifacts/e2e-store}"
+mkdir -p "$DIFF_OUT"
+cargo run -q -p bijux-atlas-cli --bin bijux-atlas -- atlas diff build \
+  --root "$STORE_ROOT" \
+  --from-release 110 \
+  --to-release 111 \
+  --species homo_sapiens \
+  --assembly GRCh38 \
+  --out-dir "$DIFF_OUT"
+test -f "$DIFF_OUT/diff.json"
+test -f "$DIFF_OUT/diff.summary.json"
+
 "$ROOT/ops/e2e/scripts/deploy_atlas.sh"
 
 DIFF_GENES="$BASE_URL/v1/diff/genes?from_release=110&to_release=111&species=homo_sapiens&assembly=GRCh38&limit=50"
