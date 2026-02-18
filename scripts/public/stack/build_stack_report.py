@@ -54,15 +54,15 @@ def main() -> int:
     else:
         k6_dst.write_text(json.dumps({"summaries": []}, indent=2) + "\n")
 
-    metrics_src = root / "artifacts/ops/observability/metrics.prom"
+    metrics_src = root / "artifacts/ops/obs/metrics.prom"
     metrics_dst = out_dir / "metrics.prom"
     metrics_dst.write_bytes(metrics_src.read_bytes() if metrics_src.exists() else b"")
 
-    trace_src = root / "artifacts/ops/observability/traces.snapshot.log"
+    trace_src = root / "artifacts/ops/obs/traces.snapshot.log"
     trace_dst = out_dir / "traces.snapshot.log"
     trace_dst.write_bytes(trace_src.read_bytes() if trace_src.exists() else b"")
 
-    dashboard_src = root / "ops/observability/grafana/atlas-observability-dashboard.json"
+    dashboard_src = root / "ops/obs/grafana/atlas-observability-dashboard.json"
     dashboard_txt = out_dir / "dashboard-screenshot.txt"
     if dashboard_src.exists():
         try:
