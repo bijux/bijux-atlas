@@ -4,7 +4,7 @@ use bijux_atlas_core::canonical;
 use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::{
     ArtifactChecksums, ArtifactManifest, DatasetId, ManifestInputHashes, ManifestStats, QcSeverity,
-    ValidationError,
+    ValidationError, ShardingPlan,
 };
 use serde_json::json;
 use std::collections::{BTreeMap, BTreeSet};
@@ -28,6 +28,7 @@ pub struct BuildManifestArgs<'a> {
     pub anomaly_path: &'a Path,
     pub extract: &'a ExtractResult,
     pub contig_aliases: &'a BTreeMap<String, String>,
+    pub sharding_plan: ShardingPlan,
 }
 
 pub fn build_and_write_manifest_and_reports(
@@ -44,6 +45,7 @@ pub fn build_and_write_manifest_and_reports(
         anomaly_path,
         extract,
         contig_aliases,
+        sharding_plan,
     } = args;
     let mut total_transcripts = 0_u64;
     let mut contigs = BTreeSet::new();
@@ -83,6 +85,7 @@ pub fn build_and_write_manifest_and_reports(
     manifest.ingest_build_hash = option_env!("BIJUX_BUILD_HASH").unwrap_or("dev").to_string();
     manifest.toolchain_hash = compute_toolchain_hash();
     manifest.contig_normalization_aliases = contig_aliases.clone();
+    manifest.sharding_plan = sharding_plan;
     manifest.db_hash = manifest.checksums.sqlite_sha256.clone();
     manifest.artifact_hash = compute_manifest_artifact_hash(&manifest)?;
 

@@ -12,7 +12,7 @@ use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::{
     artifact_paths, BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy,
     FeatureIdUniquenessPolicy, GeneIdentifierPolicy, GeneNamePolicy, IngestAnomalyReport,
-    SeqidNormalizationPolicy, ShardCatalog, StrictnessMode, TranscriptIdPolicy,
+    SeqidNormalizationPolicy, ShardCatalog, ShardingPlan, StrictnessMode, TranscriptIdPolicy,
     TranscriptTypePolicy, UnknownFeaturePolicy,
 };
 use diff_index::build_and_write_release_gene_index;
@@ -62,6 +62,8 @@ pub struct IngestOptions {
     pub max_threads: usize,
     pub emit_shards: bool,
     pub shard_partitions: usize,
+    pub sharding_plan: ShardingPlan,
+    pub max_shards: usize,
     pub compute_gene_signatures: bool,
     pub compute_contig_fractions: bool,
     pub fasta_scanning_enabled: bool,
@@ -102,6 +104,8 @@ impl Default for IngestOptions {
             allow_overlap_gene_ids_across_contigs: false,
             emit_shards: false,
             shard_partitions: 0,
+            sharding_plan: ShardingPlan::None,
+            max_shards: 512,
             compute_gene_signatures: true,
             compute_contig_fractions: false,
             fasta_scanning_enabled: false,
@@ -247,15 +251,26 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
         &sha256_hex(&fs::read(&paths.fasta).map_err(|e| IngestError(e.to_string()))?),
         &sha256_hex(&fs::read(&paths.fai).map_err(|e| IngestError(e.to_string()))?),
     )?;
-    let (shard_catalog_path, shard_catalog) = if opts.emit_shards {
+    let effective_sharding_plan = if opts.emit_shards {
+        ShardingPlan::Contig
+    } else {
+        opts.sharding_plan
+    };
+    let (shard_catalog_path, shard_catalog) = if matches!(effective_sharding_plan, ShardingPlan::Contig) {
         let (catalog_path, catalog) = write_sharded_sqlite_catalog(
             &paths.derived_dir,
             &opts.dataset,
             &extracted.gene_rows,
             &extracted.transcript_rows,
+            effective_sharding_plan,
             opts.shard_partitions,
+            opts.max_shards,
         )?;
         (Some(catalog_path), Some(catalog))
+    } else if matches!(effective_sharding_plan, ShardingPlan::RegionGrid) {
+        return Err(IngestError(
+            "region_grid sharding plan is reserved for future implementation".to_string(),
+        ));
     } else {
         (None, None)
     };
@@ -299,6 +314,7 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
         anomaly_path: &paths.anomaly_report,
         extract: &extracted,
         contig_aliases: &opts.seqid_policy.aliases,
+        sharding_plan: effective_sharding_plan,
     })?;
     if opts.compute_gene_signatures {
         build_and_write_release_gene_index(
@@ -391,7 +407,9 @@ mod tests {
             allow_overlap_gene_ids_across_contigs: false,
             emit_shards: false,
             shard_partitions: 0,
-            compute_gene_signatures: true,
+            sharding_plan: ShardingPlan::None,
+            max_shards: 512,
+compute_gene_signatures: true,
             compute_contig_fractions: false,
             fasta_scanning_enabled: false,
             fasta_scan_max_bases: 2_000_000_000,
@@ -782,7 +800,7 @@ mod tests {
     fn sharded_ingest_emits_catalog_and_shards() {
         let root = tempdir().expect("tempdir");
         let mut o = opts(root.path(), StrictnessMode::Strict);
-        o.emit_shards = true;
+        o.sharding_plan = ShardingPlan::Contig;
         o.shard_partitions = 0;
         let run = ingest_dataset(&o).expect("sharded ingest");
         let catalog_path = run.shard_catalog_path.expect("catalog path");
@@ -801,6 +819,62 @@ mod tests {
                 shard_file.display()
             );
         }
+    }
+
+    #[test]
+    fn contig_sharding_yields_same_gene_ids_as_monolithic() {
+        let realistic = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/realistic");
+        let mono_root = tempdir().expect("mono");
+        let mut mono_opts = opts(mono_root.path(), StrictnessMode::Lenient);
+        mono_opts.gff3_path = realistic.join("genes.gff3");
+        mono_opts.fasta_path = realistic.join("genome.fa");
+        mono_opts.fai_path = realistic.join("genome.fa.fai");
+        let mono = ingest_dataset(&mono_opts).expect("mono");
+        let mono_ids = read_gene_ids(&mono.sqlite_path);
+
+        let shard_root = tempdir().expect("shard");
+        let mut o = opts(shard_root.path(), StrictnessMode::Lenient);
+        o.gff3_path = realistic.join("genes.gff3");
+        o.fasta_path = realistic.join("genome.fa");
+        o.fai_path = realistic.join("genome.fa.fai");
+        o.sharding_plan = ShardingPlan::Contig;
+        let sharded = ingest_dataset(&o).expect("sharded");
+        let catalog = sharded.shard_catalog.expect("catalog");
+        assert!(catalog.shards.len() > 1, "fixture should produce multi-contig shards");
+        let mut shard_ids = std::collections::BTreeSet::new();
+        for shard in &catalog.shards {
+            let p = sharded
+                .sqlite_path
+                .parent()
+                .expect("derived")
+                .join(&shard.sqlite_path);
+            for id in read_gene_ids(&p) {
+                shard_ids.insert(id);
+            }
+        }
+
+        assert_eq!(mono_ids, shard_ids);
+    }
+
+    #[test]
+    fn sharding_respects_max_shards_policy() {
+        let root = tempdir().expect("tempdir");
+        let mut o = opts(root.path(), StrictnessMode::Strict);
+        o.sharding_plan = ShardingPlan::Contig;
+        o.max_shards = 1;
+        let err = ingest_dataset(&o).expect_err("expected max_shards failure");
+        assert!(err.to_string().contains("max_shards"));
+    }
+
+    fn read_gene_ids(path: &std::path::Path) -> std::collections::BTreeSet<String> {
+        let conn = rusqlite::Connection::open(path).expect("open sqlite");
+        let mut stmt = conn
+            .prepare("SELECT gene_id FROM gene_summary ORDER BY gene_id")
+            .expect("prepare");
+        stmt.query_map([], |r| r.get::<_, String>(0))
+            .expect("query")
+            .collect::<Result<std::collections::BTreeSet<_>, _>>()
+            .expect("collect ids")
     }
 
     #[test]

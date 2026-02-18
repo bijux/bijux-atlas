@@ -2,7 +2,7 @@ use bijux_atlas_ingest::{ingest_dataset, IngestOptions};
 use bijux_atlas_model::{
     BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy,
     FeatureIdUniquenessPolicy, GeneIdentifierPolicy, GeneNamePolicy, SeqidNormalizationPolicy,
-    StrictnessMode, TranscriptIdPolicy, TranscriptTypePolicy, UnknownFeaturePolicy,
+    ShardingPlan, StrictnessMode, TranscriptIdPolicy, TranscriptTypePolicy, UnknownFeaturePolicy,
 };
 use criterion::{criterion_group, criterion_main, Criterion};
 use std::path::PathBuf;
@@ -32,6 +32,8 @@ fn bench_ingest_throughput(c: &mut Criterion) {
                 allow_overlap_gene_ids_across_contigs: false,
                 emit_shards: false,
                 shard_partitions: 0,
+                sharding_plan: ShardingPlan::None,
+                max_shards: 512,
                 compute_gene_signatures: true,
                 compute_contig_fractions: false,
                 fasta_scanning_enabled: false,
