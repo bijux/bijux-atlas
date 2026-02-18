@@ -9,7 +9,7 @@ ops-layout-lint: ## Validate canonical ops layout contract
 	@python3 ./scripts/layout/check_ops_artifacts_writes.py
 
 ops-surface: ## Print stable ops entrypoints from SSOT surface metadata
-	@python3 -c 'import json; d=json.load(open("ops/_meta/surface.json")); print("\\n".join(d.get("entrypoints",[])))'
+	@python3 -c 'import json; d=json.load(open("ops/_meta/surface.json")); print("\n".join(d.get("entrypoints",[])))'
 
 ops-help: ## Print canonical ops runbook index
 	@cat ops/INDEX.md
