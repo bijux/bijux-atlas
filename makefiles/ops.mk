@@ -42,6 +42,7 @@ ops-down: ## Tear down local ops stack
 	@$(MAKE) ops-stack-down
 
 ops-stack-validate: ## Validate stack manifests and formatting drift
+	@./scripts/layout/check_stack_manifest_consolidation.sh
 	@./ops/stack/scripts/validate.sh
 
 ops-stack-smoke: ## Stack-only smoke test without atlas deploy
@@ -109,6 +110,83 @@ ops-kind-validate: ## Validate kind substrate (context/namespace/sanity/registry
 	@$(MAKE) ops-kind-image-resolution-test
 	@$(MAKE) ops-kind-version-drift-test
 	@$(MAKE) ops-kind-cluster-drift-check
+
+ops-minio-up: ## Install minio stack component
+	@kubectl apply -f ./ops/stack/minio/minio.yaml
+	@./ops/stack/minio/bootstrap.sh
+
+ops-minio-down: ## Uninstall minio stack component
+	@kubectl delete -f ./ops/stack/minio/minio.yaml --ignore-not-found >/dev/null 2>&1 || true
+	@kubectl -n "$${ATLAS_E2E_NAMESPACE:-atlas-e2e}" delete pod minio-bootstrap --ignore-not-found >/dev/null 2>&1 || true
+
+ops-minio-reset: ## Reinstall minio stack component deterministically
+	@$(MAKE) ops-minio-down
+	@$(MAKE) ops-minio-up
+
+ops-minio-ready: ## Validate minio readiness and endpoint health
+	@ns="$${ATLAS_E2E_NAMESPACE:-atlas-e2e}"; \
+	kubectl -n "$$ns" wait --for=condition=available deploy/minio --timeout="$${OPS_WAIT_TIMEOUT:-180s}"; \
+	pid_file="$$(mktemp)"; \
+	( kubectl -n "$$ns" port-forward svc/minio 19000:9000 >/dev/null 2>&1 & echo $$! > "$$pid_file" ); \
+	pid="$$(cat "$$pid_file")"; rm -f "$$pid_file"; \
+	trap 'kill "$$pid" >/dev/null 2>&1 || true' EXIT INT TERM; \
+	for _ in $$(seq 1 30); do \
+	  if curl -fsS http://127.0.0.1:19000/minio/health/ready >/dev/null; then \
+	    echo "minio endpoint ready"; \
+	    exit 0; \
+	  fi; \
+	  sleep 1; \
+	done; \
+	echo "minio endpoint not ready" >&2; \
+	exit 1
+
+ops-minio-bucket-check: ## Validate bootstrap bucket exists in minio
+	@ns="$${ATLAS_E2E_NAMESPACE:-atlas-e2e}"; \
+	bucket="$${MINIO_BUCKET:-atlas-artifacts}"; \
+	user="$${MINIO_ROOT_USER:-minioadmin}"; \
+	pass="$${MINIO_ROOT_PASSWORD:-minioadmin}"; \
+	kubectl -n "$$ns" delete pod minio-bucket-check --ignore-not-found >/dev/null 2>&1 || true; \
+	kubectl -n "$$ns" run minio-bucket-check \
+	  --image=minio/mc:RELEASE.2025-01-17T23-25-50Z \
+	  --restart=Never \
+	  --rm -i --command -- /bin/sh -ceu " \
+mc alias set local 'http://minio.$$ns.svc.cluster.local:9000' '$$user' '$$pass'; \
+mc ls local/$$bucket >/dev/null"
+
+ops-prom-up: ## Install prometheus stack component
+	@kubectl apply -f ./ops/stack/prometheus/prometheus.yaml
+
+ops-prom-down: ## Uninstall prometheus stack component
+	@kubectl delete -f ./ops/stack/prometheus/prometheus.yaml --ignore-not-found >/dev/null 2>&1 || true
+
+ops-prom-ready: ## Validate prometheus readiness
+	@kubectl -n "$${ATLAS_E2E_NAMESPACE:-atlas-e2e}" wait --for=condition=available deploy/prometheus --timeout="$${OPS_WAIT_TIMEOUT:-180s}"
+
+ops-prom-scrape-atlas-check: ## Validate prometheus scrape target for atlas
+	@./ops/e2e/k8s/tests/test_prom_scrape.sh
+
+ops-grafana-up: ## Install grafana stack component
+	@kubectl apply -f ./ops/stack/grafana/grafana.yaml
+
+ops-grafana-down: ## Uninstall grafana stack component
+	@kubectl delete -f ./ops/stack/grafana/grafana.yaml --ignore-not-found >/dev/null 2>&1 || true
+
+ops-grafana-ready: ## Validate grafana readiness
+	@kubectl -n "$${ATLAS_E2E_NAMESPACE:-atlas-e2e}" wait --for=condition=available deploy/grafana --timeout="$${OPS_WAIT_TIMEOUT:-180s}"
+
+ops-grafana-datasource-check: ## Validate grafana datasource points to prometheus service
+	@kubectl -n "$${ATLAS_E2E_NAMESPACE:-atlas-e2e}" get configmap grafana-datasources -o yaml | grep -Eq "http://prometheus\\.atlas-e2e\\.svc\\.cluster\\.local:9090"
+
+ops-grafana-dashboards-check: ## Validate grafana dashboard configmaps are provisioned
+	@ns="$${ATLAS_E2E_NAMESPACE:-atlas-e2e}"; \
+	kubectl -n "$$ns" get configmap grafana-dashboard-provider >/dev/null; \
+	kubectl -n "$$ns" get configmap grafana-dashboard-atlas >/dev/null
+
+ops-otel-up: ## Install otel collector stack component
+	@kubectl apply -f ./ops/stack/otel/otel-collector.yaml
+
+ops-otel-down: ## Uninstall otel collector stack component
+	@kubectl delete -f ./ops/stack/otel/otel-collector.yaml --ignore-not-found >/dev/null 2>&1 || true
 
 ops-stack-uninstall: ## Uninstall stack resources and cluster
 	@./ops/stack/scripts/uninstall.sh
