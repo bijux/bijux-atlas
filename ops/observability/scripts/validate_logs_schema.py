@@ -11,6 +11,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 SCHEMA = json.loads((ROOT / "ops/observability/contract/logs-fields-contract.json").read_text())
 REQUIRED = SCHEMA.get("required", [])
+REQUIRED_FIELDS = SCHEMA.get("required_fields", REQUIRED)
+ALLOWED_ENUM_VALUES = SCHEMA.get("allowed_enum_values", {})
+PII_PROHIBITED = set(SCHEMA.get("pii_prohibited_fields", []))
+EVENT_REGISTRY = SCHEMA.get("event_registry", {})
 ALIASES = {
     "msg": {"msg", "message", "fields.message"},
     "ts": {"ts", "timestamp"},
@@ -31,8 +35,59 @@ def collect_keys(lines: list[str]) -> set[str]:
     return seen
 
 
+def find_value(obj: dict, key: str):
+    if key in obj:
+        return obj[key]
+    fields = obj.get("fields")
+    if isinstance(fields, dict):
+        return fields.get(key)
+    return None
+
+
+def validate_line_objects(lines: list[str]) -> int:
+    seen_events: set[str] = set()
+    for idx, line in enumerate(lines, start=1):
+        if not line.startswith("{"):
+            continue
+        obj = json.loads(line)
+        # PII prohibited fields must never be present top-level or nested under fields.
+        top_keys = set(obj.keys())
+        fields = obj.get("fields")
+        field_keys = set(fields.keys()) if isinstance(fields, dict) else set()
+        bad_pii = sorted((top_keys | field_keys).intersection(PII_PROHIBITED))
+        if bad_pii:
+            print(f"line {idx}: prohibited PII fields present: {', '.join(bad_pii)}", file=sys.stderr)
+            return 1
+        # Enum checks when values are present.
+        for enum_key, allowed in ALLOWED_ENUM_VALUES.items():
+            value = find_value(obj, enum_key)
+            if value is None:
+                continue
+            if value not in allowed:
+                print(
+                    f"line {idx}: invalid {enum_key}='{value}', allowed={allowed}",
+                    file=sys.stderr,
+                )
+                return 1
+        event_name = find_value(obj, "event_name")
+        if isinstance(event_name, str):
+            seen_events.add(event_name)
+            reg = EVENT_REGISTRY.get(event_name, {})
+            for req in reg.get("required_fields", []):
+                if find_value(obj, req) is None:
+                    print(f"line {idx}: event {event_name} missing required field: {req}", file=sys.stderr)
+                    return 1
+
+    # Request lifecycle events must exist in the observed corpus.
+    for required_event in ("request_start", "request_end"):
+        if required_event not in seen_events:
+            print(f"missing required request lifecycle event: {required_event}", file=sys.stderr)
+            return 1
+    return 0
+
+
 def validate_seen_keys(seen_keys: set[str]) -> int:
-    for key in REQUIRED:
+    for key in REQUIRED_FIELDS:
         if key in seen_keys:
             continue
         if any(alias in seen_keys for alias in ALIASES.get(key, set())):
@@ -53,7 +108,10 @@ def main() -> int:
 
     if args.file:
         lines = Path(args.file).read_text(encoding="utf-8").splitlines()
-        return validate_seen_keys(collect_keys(lines))
+        key_status = validate_seen_keys(collect_keys(lines))
+        if key_status != 0:
+            return key_status
+        return validate_line_objects(lines)
 
     deploy_name = f"{args.release}-bijux-atlas"
     namespace = args.namespace
@@ -87,7 +145,11 @@ def main() -> int:
                     ],
                     text=True,
                 )
-                return validate_seen_keys(collect_keys(out.splitlines()))
+                lines = out.splitlines()
+                key_status = validate_seen_keys(collect_keys(lines))
+                if key_status != 0:
+                    return key_status
+                return validate_line_objects(lines)
         except Exception:
             pass
         if args.strict_live:
@@ -96,7 +158,11 @@ def main() -> int:
         print(f"log schema check skipped: {exc}")
         return 0
 
-    return validate_seen_keys(collect_keys(out.splitlines()))
+    lines = out.splitlines()
+    key_status = validate_seen_keys(collect_keys(lines))
+    if key_status != 0:
+        return key_status
+    return validate_line_objects(lines)
 
 
 if __name__ == "__main__":

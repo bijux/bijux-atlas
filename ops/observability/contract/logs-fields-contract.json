@@ -1,14 +1,101 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "schema_version": 1,
+  "schema_version": 2,
   "type": "object",
-  "required": ["level", "msg", "request_id"],
+  "required": [
+    "level",
+    "msg",
+    "request_id"
+  ],
+  "required_fields": [
+    "level",
+    "msg",
+    "request_id",
+    "event_name"
+  ],
+  "allowed_enum_values": {
+    "level": [
+      "TRACE",
+      "DEBUG",
+      "INFO",
+      "WARN",
+      "ERROR"
+    ],
+    "event_name": [
+      "request_start",
+      "request_end",
+      "policy_rejection",
+      "cache_lookup",
+      "store_fetch",
+      "sqlite_query"
+    ]
+  },
+  "pii_prohibited_fields": [
+    "email",
+    "phone",
+    "ip",
+    "ssn",
+    "name"
+  ],
+  "event_registry": {
+    "request_start": {
+      "required_fields": [
+        "request_id",
+        "path",
+        "method"
+      ]
+    },
+    "request_end": {
+      "required_fields": [
+        "request_id",
+        "status",
+        "latency_ms"
+      ]
+    },
+    "policy_rejection": {
+      "required_fields": [
+        "request_id",
+        "policy",
+        "mode",
+        "reason",
+        "limit"
+      ]
+    }
+  },
   "properties": {
-    "level": {"type": "string"},
-    "msg": {"type": "string"},
-    "request_id": {"type": "string"},
-    "dataset": {"type": ["string", "null"]},
-    "trace_id": {"type": ["string", "null"]}
+    "level": {
+      "type": "string"
+    },
+    "msg": {
+      "type": "string"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "event_name": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "dataset": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "trace_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "fields": {
+      "type": [
+        "object",
+        "null"
+      ]
+    }
   },
   "additionalProperties": true
 }
