@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Atlas SLO v1",
+  "type": "object",
+  "required": ["schema_version", "version", "owner", "classes_file", "slis", "slos", "change_policy"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"type": "integer", "enum": [1]},
+    "version": {"type": "string", "enum": ["v1"]},
+    "owner": {"type": "string", "minLength": 3},
+    "classes_file": {"type": "string", "const": "configs/ops/slo/classes.json"},
+    "slis": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "configs/ops/slo/sli.schema.json"}
+    },
+    "slos": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "sli", "target", "window"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+          "sli": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+          "target": {"type": "number", "minimum": 0, "maximum": 1},
+          "window": {"type": "string", "pattern": "^[0-9]+(m|h|d)$"},
+          "budget": {"type": "number", "minimum": 0, "maximum": 1},
+          "notes": {"type": "string"}
+        }
+      }
+    },
+    "change_policy": {
+      "type": "object",
+      "required": ["requires", "references"],
+      "additionalProperties": false,
+      "properties": {
+        "requires": {
+          "type": "array",
+          "items": {"type": "string", "enum": ["adr", "changelog"]},
+          "minItems": 1
+        },
+        "references": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 3},
+          "minItems": 1
+        }
+      }
+    }
+  }
+}

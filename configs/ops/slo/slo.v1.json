@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "version": "v1",
+  "owner": "bijux-atlas-operations",
+  "classes_file": "configs/ops/slo/classes.json",
+  "slis": [
+    {
+      "id": "api-availability",
+      "name": "API availability",
+      "kind": "availability",
+      "metric": "bijux_http_requests_total",
+      "labels": {"status": "2xx|3xx|4xx|5xx"},
+      "window": "30d",
+      "source": "prometheus"
+    },
+    {
+      "id": "request-success-rate",
+      "name": "Request success rate",
+      "kind": "success-rate",
+      "metric": "bijux_http_requests_total",
+      "labels": {"status": "2xx|3xx"},
+      "window": "30d",
+      "source": "prometheus"
+    },
+    {
+      "id": "cheap-latency-p95",
+      "name": "Cheap endpoint class latency p95",
+      "kind": "latency",
+      "metric": "bijux_http_request_latency_p95_seconds",
+      "labels": {"route": "^/health$|^/version$|^/metrics$"},
+      "window": "1h",
+      "source": "prometheus"
+    },
+    {
+      "id": "standard-latency-p95",
+      "name": "Standard endpoint class latency p95",
+      "kind": "latency",
+      "metric": "bijux_http_request_latency_p95_seconds",
+      "labels": {"route": "^/v1/genes$|^/v1/genes/[^/]+$"},
+      "window": "1h",
+      "source": "prometheus"
+    },
+    {
+      "id": "heavy-latency-p95",
+      "name": "Heavy endpoint class latency p95",
+      "kind": "latency",
+      "metric": "bijux_http_request_latency_p95_seconds",
+      "labels": {"route": "^/v1/genes/[^/]+/(diff|region|sequence)$"},
+      "window": "1h",
+      "source": "prometheus"
+    },
+    {
+      "id": "cheap-survival-under-overload",
+      "name": "Cheap survival under overload shedding",
+      "kind": "overload",
+      "metric": "bijux_http_requests_total",
+      "labels": {
+        "route": "^/health$|^/version$|^/metrics$",
+        "status": "2xx|3xx"
+      },
+      "window": "15m",
+      "source": "prometheus"
+    },
+    {
+      "id": "dataset-refresh-success",
+      "name": "Dataset refresh success",
+      "kind": "freshness",
+      "metric": "bijux_dataset_misses",
+      "labels": {"dataset": "*"},
+      "window": "24h",
+      "source": "registry"
+    }
+  ],
+  "slos": [
+    {"id": "api-availability-30d", "sli": "api-availability", "target": 0.995, "budget": 0.005, "window": "30d"},
+    {"id": "request-success-30d", "sli": "request-success-rate", "target": 0.99, "budget": 0.01, "window": "30d"},
+    {"id": "cheap-latency-1h", "sli": "cheap-latency-p95", "target": 0.95, "window": "1h", "notes": "95th percentile <= policy threshold"},
+    {"id": "standard-latency-1h", "sli": "standard-latency-p95", "target": 0.95, "window": "1h"},
+    {"id": "heavy-latency-1h", "sli": "heavy-latency-p95", "target": 0.9, "window": "1h"},
+    {"id": "cheap-survival-15m", "sli": "cheap-survival-under-overload", "target": 0.99, "window": "15m"},
+    {"id": "dataset-refresh-24h", "sli": "dataset-refresh-success", "target": 0.99, "window": "24h"}
+  ],
+  "change_policy": {
+    "requires": ["adr", "changelog"],
+    "references": [
+      "docs/operations/slo/CHANGE_POLICY.md",
+      "docs/operations/slo/CHANGELOG.md"
+    ]
+  }
+}
