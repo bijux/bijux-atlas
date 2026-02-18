@@ -514,6 +514,11 @@ pub(crate) async fn version_handler(State(state): State<AppState>) -> impl IntoR
             "config_schema_version": crate::config::CONFIG_SCHEMA_VERSION,
             "api_version": "v1",
             "api_contract_version": "v1",
+            "runtime_policy_hash": &*state.runtime_policy_hash,
+            "artifact_schema_versions": {
+                "manifest_schema_version": "1",
+                "sqlite_schema_version": "4"
+            }
         }
     });
     let mut response = Json(payload).into_response();

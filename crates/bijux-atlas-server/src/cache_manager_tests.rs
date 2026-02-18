@@ -183,6 +183,14 @@ async fn read_only_sqlite_pragma_profile_is_applied() {
     assert_eq!(query_only, 1);
     assert_eq!(sync, 0);
     assert_eq!(temp_store, 2);
+
+    let write_attempt = conn
+        .conn
+        .execute("CREATE TABLE __should_not_write (id INTEGER)", []);
+    assert!(
+        write_attempt.is_err(),
+        "server must never write to artifact sqlite databases"
+    );
 }
 
 #[tokio::test]

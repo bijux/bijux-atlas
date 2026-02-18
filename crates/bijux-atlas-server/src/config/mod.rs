@@ -1,8 +1,9 @@
+use serde::Serialize;
 use std::time::Duration;
 
 pub const CONFIG_SCHEMA_VERSION: &str = "1";
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct RateLimitConfig {
     pub capacity: f64,
     pub refill_per_sec: f64,
@@ -17,7 +18,7 @@ impl Default for RateLimitConfig {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct ApiConfig {
     pub max_body_bytes: usize,
     pub max_uri_bytes: usize,

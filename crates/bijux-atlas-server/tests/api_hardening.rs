@@ -64,6 +64,18 @@ async fn error_contract_and_etag_behaviors() {
             .and_then(Value::as_str),
         Some("v1")
     );
+    assert!(json
+        .get("server")
+        .and_then(|s| s.get("runtime_policy_hash"))
+        .and_then(Value::as_str)
+        .is_some());
+    assert_eq!(
+        json.get("server")
+            .and_then(|s| s.get("artifact_schema_versions"))
+            .and_then(|v| v.get("manifest_schema_version"))
+            .and_then(Value::as_str),
+        Some("1")
+    );
 
     let (status, _, body) = send_raw(addr, "/v1/openapi.json", &[]).await;
     assert_eq!(status, 200);
