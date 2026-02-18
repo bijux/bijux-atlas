@@ -150,6 +150,9 @@ ci-observability-pack-drills:
 ci-ops-index-surface:
 	@python3 ./scripts/layout/check_ops_index_surface.py
 
+ci-ops-gen-check:
+	@$(MAKE) -s ops-gen-check
+
 ci-ops-run-entrypoints:
 	@python3 ./scripts/layout/check_ops_run_entrypoints.py
 

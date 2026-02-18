@@ -36,11 +36,29 @@ ops-contracts-check: ## Validate canonical ops manifests against ops/_schemas an
 	@python3 ./scripts/layout/validate_ops_contracts.py
 	@python3 ./scripts/layout/check_no_hidden_defaults.py
 	@python3 ./scripts/layout/check_obs_pack_ssot.py
+	@python3 ./scripts/layout/check_ops_script_names.py
+	@python3 ./scripts/layout/check_no_empty_dirs.py
+	@python3 ./scripts/layout/check_generated_policy.py
 	@$(MAKE) -s ops-e2e-validate
 	@python3 ./scripts/docs/generate_ops_schema_docs.py
 	@python3 ./scripts/docs/generate_ops_surface.py
 	@python3 ./scripts/docs/generate_ops_contracts_doc.py
 	@$(MAKE) -s ops-k8s-contracts
+
+ops-gen: ## Regenerate all committed ops generated outputs
+	@$(MAKE) -s ops-stack-versions-sync
+	@python3 ./scripts/layout/validate_ops_contracts.py >/dev/null
+	@python3 ./scripts/docs/generate_ops_schema_docs.py
+	@python3 ./scripts/docs/generate_ops_surface.py
+	@python3 ./scripts/docs/generate_ops_contracts_doc.py
+	@python3 ./scripts/contracts/generate_chart_values_schema.py
+
+ops-gen-clean: ## Cleanup generated ops outputs not in committed generated policy
+	@python3 ./scripts/layout/clean_ops_generated.py
+
+ops-gen-check: ## Fail when regenerated ops outputs drift from committed state
+	@$(MAKE) -s ops-gen
+	@git diff --exit-code -- ops/_generated docs/_generated/ops-*.md ops/k8s/charts/bijux-atlas/values.schema.json ops/stack/versions.json
 
 ops-doctor: ## Validate and print pinned ops tool versions and canonical env
 	@./ops/run/doctor.sh

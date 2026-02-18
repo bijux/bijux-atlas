@@ -11,6 +11,8 @@ Use Make targets only.
 - `make ops-doctor`
 - `make ops-lint`
 - `make ops-fmt`
+- `make ops-gen`
+- `make ops-gen-check`
 - `make ops-contracts-check`
 - `make ops-e2e-validate`
 
