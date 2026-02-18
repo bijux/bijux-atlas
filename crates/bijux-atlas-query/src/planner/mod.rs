@@ -107,7 +107,8 @@ pub fn validate_request(req: &GeneQueryRequest, limits: &QueryLimits) -> Result<
     }
 
     let cost = estimate_query_cost(req);
-    if cost.work_units > limits.max_work_units {
+    // Exact gene_id lookups are contractually "cheap" and always allowed.
+    if req.filter.gene_id.is_none() && cost.work_units > limits.max_work_units {
         return Err(format!(
             "estimated query cost {} exceeds max_work_units {}",
             cost.work_units, limits.max_work_units

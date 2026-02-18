@@ -480,3 +480,72 @@ fn projection_specific_query_uses_covering_name_index() {
         "projection query must not table-scan: {plan}"
     );
 }
+
+#[test]
+fn point_lookup_gene_id_is_always_cheap_and_budget_allowed() {
+    let req = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            gene_id: Some("gene1".to_string()),
+            ..Default::default()
+        },
+        limit: 1,
+        cursor: None,
+        dataset_key: None,
+        allow_full_scan: false,
+    };
+    assert_eq!(classify_query(&req), QueryClass::Cheap);
+    let tight = QueryLimits {
+        max_work_units: 1,
+        ..limits()
+    };
+    validate_request(&req, &tight).expect("exact gene_id lookup remains allowed");
+}
+
+#[test]
+fn gene_id_lookup_is_parameterized_and_resists_injection_payloads() {
+    let conn = setup_db();
+    let req = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            gene_id: Some("gene1' OR 1=1 --".to_string()),
+            ..Default::default()
+        },
+        limit: 50,
+        cursor: None,
+        dataset_key: None,
+        allow_full_scan: false,
+    };
+    let resp = query_genes(&conn, &req, &limits(), b"s").expect("query executes");
+    assert!(
+        resp.rows.is_empty(),
+        "injection payload must not alter predicate semantics"
+    );
+}
+
+#[test]
+fn region_estimated_rows_budget_rejects_large_scans() {
+    let conn = setup_db();
+    let req = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            region: Some(RegionFilter {
+                seqid: "chr1".to_string(),
+                start: 1,
+                end: 1_000_000,
+            }),
+            ..Default::default()
+        },
+        limit: 100,
+        cursor: None,
+        dataset_key: None,
+        allow_full_scan: false,
+    };
+    let strict = QueryLimits {
+        max_region_estimated_rows: 0,
+        ..limits()
+    };
+    let err = query_genes(&conn, &req, &strict, b"s").expect_err("must reject");
+    assert_eq!(err.code, QueryErrorCode::Validation);
+    assert!(err.message.contains("estimated region rows"));
+}

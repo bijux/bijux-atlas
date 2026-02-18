@@ -24,11 +24,21 @@ Define and prove the query shapes that must stay fast and index-backed.
 - Non-region lists: `ORDER BY gene_id ASC`
 - Region lists: `ORDER BY seqid ASC, start ASC, gene_id ASC`
 - Tie-break key is always `gene_id`.
+- Cursor pagination must use an indexed ordering key.
 
 ## Region Query Contract
 
 - Region queries must use `gene_summary_rtree` and must not degrade to full table scan.
 - R*Tree or interval index usage is required for release gates.
+
+## Budget and Safety Contract
+
+- Query classes are `cheap`, `medium`, `heavy`.
+- Exact `gene_id` lookup is always `cheap` and policy-allowed.
+- Large range scans must be rejected by query budget policy.
+- Max estimated rows per region request is enforced before execution.
+- List endpoints enforce response serialization size budget.
+- Queries use parameter binding; user input never string-concatenates into SQL predicates.
 
 ## How to Verify
 
