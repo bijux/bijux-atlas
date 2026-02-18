@@ -97,3 +97,23 @@ pub(crate) enum DatasetCommand {
         pack: PathBuf,
     },
 }
+
+#[derive(Subcommand)]
+pub(crate) enum DiffCommand {
+    Build {
+        #[arg(long)]
+        root: PathBuf,
+        #[arg(long)]
+        from_release: String,
+        #[arg(long)]
+        to_release: String,
+        #[arg(long)]
+        species: String,
+        #[arg(long)]
+        assembly: String,
+        #[arg(long)]
+        out_dir: PathBuf,
+        #[arg(long, default_value_t = 10000)]
+        max_inline_items: usize,
+    },
+}
