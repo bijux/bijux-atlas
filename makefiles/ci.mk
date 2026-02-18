@@ -80,6 +80,7 @@ ci-store-conformance:
 
 ci-openapi-drift:
 	@$(MAKE) openapi-drift
+	@python3 ./scripts/contracts/check_breaking_contract_change.py
 
 ci-chart-schema-validate:
 	@$(MAKE) ops-values-validate
