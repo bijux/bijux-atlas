@@ -98,3 +98,65 @@ fn fake_adapter_error_contract_is_stable() {
         "{\"code\":\"InvalidQueryParameter\",\"message\":\"bad\",\"details\":{\"parameter\":\"limit\"}}"
     );
 }
+
+#[test]
+fn include_flags_are_additive_and_keep_base_fields() {
+    let adapter = FakeAdapter {
+        rows: vec![GeneRow {
+            gene_id: "gene1".to_string(),
+            name: Some("BRCA1".to_string()),
+            seqid: Some("chr1".to_string()),
+            start: Some(10),
+            end: Some(20),
+            biotype: Some("protein_coding".to_string()),
+            transcript_count: Some(2),
+            sequence_length: Some(11),
+        }],
+        next_cursor: None,
+    };
+    let mut params = base_params();
+    params.include = Some(vec![IncludeField::Length]);
+    let payload = list_genes_v1(&adapter, &params).expect("wire response");
+    let row = &payload["rows"][0];
+    assert_eq!(row["gene_id"], "gene1");
+    assert_eq!(row["name"], "BRCA1");
+    assert_eq!(row["sequence_length"], 11);
+}
+
+#[test]
+fn include_does_not_change_row_order_or_cursor() {
+    let adapter = FakeAdapter {
+        rows: vec![
+            GeneRow {
+                gene_id: "g1".to_string(),
+                name: Some("A".to_string()),
+                seqid: Some("chr1".to_string()),
+                start: Some(1),
+                end: Some(2),
+                biotype: Some("pc".to_string()),
+                transcript_count: Some(1),
+                sequence_length: Some(2),
+            },
+            GeneRow {
+                gene_id: "g2".to_string(),
+                name: Some("B".to_string()),
+                seqid: Some("chr1".to_string()),
+                start: Some(3),
+                end: Some(4),
+                biotype: Some("pc".to_string()),
+                transcript_count: Some(1),
+                sequence_length: Some(2),
+            },
+        ],
+        next_cursor: Some("v1.cursor.stable".to_string()),
+    };
+
+    let base = list_genes_v1(&adapter, &base_params()).expect("base response");
+    let mut included = base_params();
+    included.include = Some(vec![IncludeField::Coords, IncludeField::Biotype]);
+    let projected = list_genes_v1(&adapter, &included).expect("include response");
+
+    assert_eq!(base["next_cursor"], projected["next_cursor"]);
+    assert_eq!(base["rows"][0]["gene_id"], projected["rows"][0]["gene_id"]);
+    assert_eq!(base["rows"][1]["gene_id"], projected["rows"][1]["gene_id"]);
+}
