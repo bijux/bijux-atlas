@@ -55,11 +55,12 @@ Generated file. Do not edit manually.
 | `scripts/docs/check_openapi_examples.py` | `docs-governance` | `public` | `docs`, `ops-openapi-validate`, `ops-smoke` |
 | `scripts/docs/check_ops_docs_make_targets.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/check_reference_templates.sh` | `docs-governance` | `public` | - |
-| `scripts/docs/check_runbooks_contract.py` | `docs-governance` | `public` | `docs` |
+| `scripts/docs/check_runbooks_contract.py` | `docs-governance` | `public` | `docs`, `ops-drill-runner` |
 | `scripts/docs/check_script_headers.py` | `docs-governance` | `public` | `docs`, `scripts-audit` |
 | `scripts/docs/check_terminology_units_ssot.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/check_title_case.sh` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/extract_code_blocks.py` | `docs-governance` | `public` | `docs` |
+| `scripts/docs/generate_architecture_map.py` | `docs-governance` | `public` | `architecture-check`, `docs` |
 | `scripts/docs/generate_concept_graph.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/generate_crates_map.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/generate_k8s_install_matrix.py` | `docs-governance` | `public` | - |
