@@ -57,7 +57,7 @@ SCRIPT_PATH="${REPO_ROOT}/${SCRIPT_REL}"
 
 cleanup() {
   # deterministic cleanup to baseline
-  "${REPO_ROOT}/ops/stack/faults/block-minio.sh" off >/dev/null 2>&1 || true
+  "${REPO_ROOT}/ops/stack/faults/inject.sh" block-minio off >/dev/null 2>&1 || true
   ns="${ATLAS_NS:-${ATLAS_E2E_NAMESPACE:-atlas-e2e}}"
   kubectl -n "$ns" delete pod toxiproxy-latency --ignore-not-found >/dev/null 2>&1 || true
 }

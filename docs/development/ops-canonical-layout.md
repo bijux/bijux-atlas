@@ -21,6 +21,8 @@ The canonical SSOT is `ops/CONTRACT.md`.
 
 - Use Make targets from `ops/INDEX.md`.
 - `ops/e2e/` is composition-only.
+- `ops/e2e/k8s/tests/` keeps wrapper entrypoints only; invariant tests live in `ops/k8s/tests/`.
 - `ops/run/` holds thin executable wrappers.
 - No symlinked domain directories under `ops/`.
 - Artifacts write to `ops/_artifacts/` unless allowlisted in `configs/ops/artifacts-allowlist.txt`.
+- Fault injection calls must go through `ops/stack/faults/inject.sh`.

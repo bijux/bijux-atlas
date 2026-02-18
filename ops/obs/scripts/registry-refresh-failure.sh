@@ -5,5 +5,5 @@
 # called-by: make observability-pack-drills
 set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
-"$ROOT/ops/e2e/k8s/tests/test_readiness_catalog_refresh.sh"
+"$ROOT/ops/k8s/tests/test_readiness_catalog_refresh.sh"
 echo "registry refresh failure drill passed"

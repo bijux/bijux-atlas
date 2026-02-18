@@ -7,7 +7,7 @@ set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
 ATLAS_BASE_URL="${ATLAS_BASE_URL:-http://127.0.0.1:18080}"
 
-"$ROOT/stack/faults/toxiproxy-latency.sh" 1500 200
+"$ROOT/stack/faults/inject.sh" toxiproxy-latency 1500 200
 sleep 3
 curl -fsS "$ATLAS_BASE_URL/healthz" >/dev/null || true
 if ! curl -fsS "$ATLAS_BASE_URL/metrics" | grep -E '^bijux_store_breaker_open' >/dev/null; then
