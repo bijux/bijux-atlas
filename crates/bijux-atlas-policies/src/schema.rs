@@ -20,8 +20,10 @@ impl PolicySchemaVersion {
 #[serde(deny_unknown_fields)]
 pub struct PolicyConfig {
     pub schema_version: PolicySchemaVersion,
+    pub mode: PolicyMode,
     pub allow_override: bool,
     pub network_in_unit_tests: bool,
+    pub modes: PolicyModes,
     pub query_budget: QueryBudgetPolicy,
     pub response_budget: ResponseBudgetPolicy,
     pub cache_budget: CacheBudget,
@@ -31,6 +33,42 @@ pub struct PolicyConfig {
     pub telemetry: TelemetryPolicy,
     pub publish_gates: PublishGates,
     pub documented_defaults: Vec<DocumentedDefault>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum PolicyMode {
+    Strict,
+    Compat,
+    Dev,
+}
+
+impl PolicyMode {
+    #[must_use]
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Strict => "strict",
+            Self::Compat => "compat",
+            Self::Dev => "dev",
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PolicyModeProfile {
+    pub allow_override: bool,
+    pub max_page_size: u32,
+    pub max_region_span: u64,
+    pub max_response_bytes: u64,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PolicyModes {
+    pub strict: PolicyModeProfile,
+    pub compat: PolicyModeProfile,
+    pub dev: PolicyModeProfile,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

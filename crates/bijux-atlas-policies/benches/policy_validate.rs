@@ -1,15 +1,37 @@
 use bijux_atlas_policies::{
     validate_policy_config, CacheBudget, ConcurrencyBulkheads, DocumentedDefault,
-    EndpointClassBudget, PolicyConfig, PolicySchemaVersion, PublishGates, QueryBudgetPolicy,
-    RateLimitPolicy, ResponseBudgetPolicy, StoreResiliencePolicy, TelemetryPolicy,
+    EndpointClassBudget, PolicyConfig, PolicyMode, PolicyModeProfile, PolicyModes,
+    PolicySchemaVersion, PublishGates, QueryBudgetPolicy, RateLimitPolicy, ResponseBudgetPolicy,
+    StoreResiliencePolicy, TelemetryPolicy,
 };
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 fn bench_policy_validate(c: &mut Criterion) {
     let cfg = PolicyConfig {
         schema_version: PolicySchemaVersion::V1,
+        mode: PolicyMode::Strict,
         allow_override: false,
         network_in_unit_tests: false,
+        modes: PolicyModes {
+            strict: PolicyModeProfile {
+                allow_override: false,
+                max_page_size: 100,
+                max_region_span: 10_000_000,
+                max_response_bytes: 1_048_576,
+            },
+            compat: PolicyModeProfile {
+                allow_override: true,
+                max_page_size: 200,
+                max_region_span: 25_000_000,
+                max_response_bytes: 2_097_152,
+            },
+            dev: PolicyModeProfile {
+                allow_override: true,
+                max_page_size: 500,
+                max_region_span: 50_000_000,
+                max_response_bytes: 4_194_304,
+            },
+        },
         query_budget: QueryBudgetPolicy {
             cheap: EndpointClassBudget {
                 max_limit: 100,

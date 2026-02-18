@@ -1,5 +1,7 @@
 use crate::limits::{MAX_SCHEMA_BUMP_STEP, MIN_POLICY_SCHEMA_VERSION};
-use crate::schema::{PolicyConfig, PolicySchema, PolicySchemaVersion};
+use crate::schema::{
+    PolicyConfig, PolicyMode, PolicyModeProfile, PolicySchema, PolicySchemaVersion,
+};
 use serde_json::{Map, Value};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -64,6 +66,17 @@ pub fn validate_policy_config(cfg: &PolicyConfig) -> Result<(), PolicyValidation
     if cfg.network_in_unit_tests {
         return Err(PolicyValidationError(
             "network_in_unit_tests must be false".to_string(),
+        ));
+    }
+    let active = resolve_mode_profile(cfg, cfg.mode)?;
+    if active.max_page_size == 0 || active.max_region_span == 0 || active.max_response_bytes == 0 {
+        return Err(PolicyValidationError(
+            "policy mode cap table values must be > 0".to_string(),
+        ));
+    }
+    if cfg.modes.strict.allow_override {
+        return Err(PolicyValidationError(
+            "strict mode must keep allow_override=false".to_string(),
         ));
     }
 
@@ -233,6 +246,24 @@ pub fn validate_policy_config(cfg: &PolicyConfig) -> Result<(), PolicyValidation
     Ok(())
 }
 
+pub fn resolve_mode_profile(
+    cfg: &PolicyConfig,
+    mode: PolicyMode,
+) -> Result<PolicyModeProfile, PolicyValidationError> {
+    let p = match mode {
+        PolicyMode::Strict => cfg.modes.strict.clone(),
+        PolicyMode::Compat => cfg.modes.compat.clone(),
+        PolicyMode::Dev => cfg.modes.dev.clone(),
+    };
+    if p.max_page_size == 0 || p.max_region_span == 0 || p.max_response_bytes == 0 {
+        return Err(PolicyValidationError(format!(
+            "mode {} has zero cap values",
+            mode.as_str()
+        )));
+    }
+    Ok(p)
+}
+
 fn validate_documented_defaults_on_config(cfg: &PolicyConfig) -> Result<(), PolicyValidationError> {
     let root = serde_json::to_value(cfg)
         .map_err(|e| PolicyValidationError(format!("encode config failed: {e}")))?;
@@ -324,10 +355,12 @@ fn validate_strict_unknown_keys(value: &Value) -> Result<(), PolicyValidationErr
         .as_object()
         .ok_or_else(|| PolicyValidationError("policy config must be object".to_string()))?;
 
-    let allowed: [&str; 12] = [
+    let allowed: [&str; 14] = [
         "schema_version",
+        "mode",
         "allow_override",
         "network_in_unit_tests",
+        "modes",
         "query_budget",
         "response_budget",
         "cache_budget",
@@ -460,5 +493,57 @@ fn normalize_json(value: Value) -> Value {
         }
         Value::Array(items) => Value::Array(items.into_iter().map(normalize_json).collect()),
         other => other,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::schema::PolicyMode;
+
+    fn workspace_root() -> std::path::PathBuf {
+        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .and_then(|p| p.parent())
+            .expect("workspace root")
+            .to_path_buf()
+    }
+
+    #[test]
+    fn mode_profiles_resolve_deterministically() {
+        let cfg = load_policy_from_workspace(&workspace_root()).expect("load policy");
+        let strict = resolve_mode_profile(&cfg, PolicyMode::Strict).expect("strict");
+        let compat = resolve_mode_profile(&cfg, PolicyMode::Compat).expect("compat");
+        let dev = resolve_mode_profile(&cfg, PolicyMode::Dev).expect("dev");
+        let payload = serde_json::json!({
+            "strict": strict,
+            "compat": compat,
+            "dev": dev
+        });
+        let encoded = serde_json::to_string(&payload).expect("json");
+        assert_eq!(
+            encoded,
+            "{\"compat\":{\"allow_override\":true,\"max_page_size\":200,\"max_region_span\":25000000,\"max_response_bytes\":2097152},\"dev\":{\"allow_override\":true,\"max_page_size\":500,\"max_region_span\":50000000,\"max_response_bytes\":4194304},\"strict\":{\"allow_override\":false,\"max_page_size\":100,\"max_region_span\":10000000,\"max_response_bytes\":1048576}}"
+        );
+    }
+
+    #[test]
+    fn strict_caps_are_tighter_than_compat_caps() {
+        let cfg = load_policy_from_workspace(&workspace_root()).expect("load policy");
+        let strict = resolve_mode_profile(&cfg, PolicyMode::Strict).expect("strict");
+        let compat = resolve_mode_profile(&cfg, PolicyMode::Compat).expect("compat");
+        assert!(strict.max_page_size < compat.max_page_size);
+        assert!(strict.max_region_span < compat.max_region_span);
+        assert!(strict.max_response_bytes < compat.max_response_bytes);
+        assert!(!strict.allow_override);
+    }
+
+    #[test]
+    fn compat_and_dev_modes_still_keep_hard_invariants() {
+        let cfg = load_policy_from_workspace(&workspace_root()).expect("load policy");
+        assert!(cfg.telemetry.metrics_enabled);
+        assert!(cfg.telemetry.tracing_enabled);
+        assert!(cfg.telemetry.request_id_required);
+        assert!(!cfg.network_in_unit_tests);
     }
 }

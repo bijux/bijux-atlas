@@ -27,6 +27,33 @@
         "max_prefix_cost_units"
       ],
       "type": "object"
+    },
+    "policy_mode_profile": {
+      "additionalProperties": false,
+      "properties": {
+        "allow_override": {
+          "type": "boolean"
+        },
+        "max_page_size": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "max_region_span": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "max_response_bytes": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "allow_override",
+        "max_page_size",
+        "max_region_span",
+        "max_response_bytes"
+      ],
+      "type": "object"
     }
   },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -111,6 +138,34 @@
         "type": "object"
       },
       "type": "array"
+    },
+    "mode": {
+      "enum": [
+        "strict",
+        "compat",
+        "dev"
+      ],
+      "type": "string"
+    },
+    "modes": {
+      "additionalProperties": false,
+      "properties": {
+        "compat": {
+          "$ref": "#/$defs/policy_mode_profile"
+        },
+        "dev": {
+          "$ref": "#/$defs/policy_mode_profile"
+        },
+        "strict": {
+          "$ref": "#/$defs/policy_mode_profile"
+        }
+      },
+      "required": [
+        "strict",
+        "compat",
+        "dev"
+      ],
+      "type": "object"
     },
     "network_in_unit_tests": {
       "type": "boolean"
@@ -322,8 +377,10 @@
   },
   "required": [
     "schema_version",
+    "mode",
     "allow_override",
     "network_in_unit_tests",
+    "modes",
     "query_budget",
     "response_budget",
     "cache_budget",
