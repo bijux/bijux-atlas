@@ -5,6 +5,7 @@ pub const CONTRACT_METRIC_NAMES: &[&str] = &[
     "bijux_dataset_disk_usage_bytes",
     "bijux_dataset_hits",
     "bijux_dataset_misses",
+    "bijux_runtime_policy_hash",
     "bijux_errors_total",
     "bijux_http_request_latency_p95_seconds",
     "bijux_http_requests_total",
@@ -25,6 +26,10 @@ pub const CONTRACT_METRIC_LABELS: &[(&str, &[&str])] = &[
     ),
     ("bijux_dataset_hits", &["dataset", "subsystem", "version"]),
     ("bijux_dataset_misses", &["dataset", "subsystem", "version"]),
+    (
+        "bijux_runtime_policy_hash",
+        &["dataset", "subsystem", "version"],
+    ),
     (
         "bijux_errors_total",
         &["code", "dataset", "subsystem", "version"],

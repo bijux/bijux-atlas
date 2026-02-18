@@ -34,6 +34,14 @@
     },
     {
       "labels": [
+        "dataset",
+        "subsystem",
+        "version"
+      ],
+      "name": "bijux_runtime_policy_hash"
+    },
+    {
+      "labels": [
         "code",
         "dataset",
         "subsystem",
