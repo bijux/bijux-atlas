@@ -17,7 +17,15 @@ impl Drop for RequestQueueGuard {
 
 pub(crate) fn api_error_response(status: StatusCode, err: ApiError) -> Response {
     let body = Json(json!({"error": err}));
-    (status, body).into_response()
+    let mut resp = (status, body).into_response();
+    if matches!(
+        status,
+        StatusCode::TOO_MANY_REQUESTS | StatusCode::SERVICE_UNAVAILABLE
+    ) {
+        resp.headers_mut()
+            .insert("retry-after", HeaderValue::from_static("3"));
+    }
+    resp
 }
 
 pub(crate) fn error_json(code: ApiErrorCode, message: &str, details: Value) -> ApiError {
@@ -535,7 +543,13 @@ pub(crate) async fn version_handler(State(state): State<AppState>) -> impl IntoR
 pub(crate) async fn openapi_handler(State(state): State<AppState>) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
-    let spec = bijux_atlas_api::openapi_v1_spec();
+    let mut spec = bijux_atlas_api::openapi_v1_spec();
+    if let Some(info) = spec.get_mut("info").and_then(serde_json::Value::as_object_mut) {
+        info.insert(
+            "x-build-id".to_string(),
+            serde_json::Value::String(option_env!("BIJUX_BUILD_HASH").unwrap_or("dev").to_string()),
+        );
+    }
     let mut response = Json(spec).into_response();
     if let Ok(value) = HeaderValue::from_str("public, max-age=30") {
         response.headers_mut().insert("cache-control", value);

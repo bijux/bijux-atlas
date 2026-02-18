@@ -144,6 +144,7 @@ pub(crate) async fn datasets_handler(
 
 pub(crate) async fn dataset_identity_handler(
     State(state): State<AppState>,
+    headers: HeaderMap,
     axum::extract::Path((release, species, assembly)): axum::extract::Path<(
         String,
         String,
@@ -152,7 +153,7 @@ pub(crate) async fn dataset_identity_handler(
     axum::extract::Query(params): axum::extract::Query<HashMap<String, String>>,
 ) -> impl IntoResponse {
     let started = Instant::now();
-    let request_id = make_request_id(&state);
+    let request_id = propagated_request_id(&headers, &state);
     let dataset = match DatasetId::new(&release, &species, &assembly) {
         Ok(v) => v,
         Err(e) => {
@@ -234,29 +235,90 @@ pub(crate) async fn dataset_identity_handler(
         }
     };
 
-    let mut data = json!({
-        "provenance": dataset_provenance(&state, &dataset).await,
-        "catalog_entry": entry,
-        "manifest_summary": {
-            "manifest_version": manifest.manifest_version,
-            "db_schema_version": manifest.db_schema_version,
-            "stats": manifest.stats
+    let endpoints = json!([
+        "/v1/genes",
+        "/v1/genes/count",
+        "/v1/genes/{gene_id}/transcripts",
+        "/v1/genes/{gene_id}/sequence",
+        "/v1/transcripts/{tx_id}",
+        "/v1/sequence/region"
+    ]);
+    let query = format!(
+        "release={}&species={}&assembly={}",
+        dataset.release.as_str(),
+        dataset.species.as_str(),
+        dataset.assembly.as_str()
+    );
+    let item = json!({
+        "dataset": dataset,
+        "artifact_hash": manifest.artifact_hash,
+        "artifact_db_hash": manifest.db_hash,
+        "checksums": {
+            "sqlite_sha256": manifest.checksums.sqlite_sha256
         },
-        "qc_summary": {
-            "gene_count": manifest.stats.gene_count,
-            "transcript_count": manifest.stats.transcript_count,
-            "contig_count": manifest.stats.contig_count
+        "shard_info": {
+            "plan": manifest.sharding_plan,
+            "router": manifest.sharding_plan != bijux_atlas_model::ShardingPlan::None
+        },
+        "metadata": {
+            "provenance": dataset_provenance(&state, &dataset).await,
+            "catalog_entry": entry,
+            "manifest_summary": {
+                "manifest_version": manifest.manifest_version,
+                "db_schema_version": manifest.db_schema_version,
+                "stats": manifest.stats
+            },
+            "qc_summary": {
+                "gene_count": manifest.stats.gene_count,
+                "transcript_count": manifest.stats.transcript_count,
+                "contig_count": manifest.stats.contig_count
+            }
+        },
+        "available_endpoints": endpoints,
+        "links": {
+            "genes": format!("/v1/genes?{query}"),
+            "genes_count": format!("/v1/genes/count?{query}"),
+            "sequence_region": format!("/v1/sequence/region?{query}&region=chr1:1-10")
         }
     });
+    let mut data = json!({ "item": item });
     if include_bom {
-        data["bill_of_materials"] = json!({
+        data["item"]["bill_of_materials"] = json!({
             "checksums": manifest.checksums,
             "manifest_version": manifest.manifest_version,
             "db_schema_version": manifest.db_schema_version
         });
     }
     let payload = json_envelope(Some(json!(dataset)), None, data, None, None);
-    let resp = Json(payload).into_response();
+    let etag = format!(
+        "\"{}\"",
+        sha256_hex(&serde_json::to_vec(&payload).unwrap_or_default())
+    );
+    if if_none_match(&headers).as_deref() == Some(etag.as_str()) {
+        let mut resp = StatusCode::NOT_MODIFIED.into_response();
+        put_cache_headers(
+            resp.headers_mut(),
+            state.api.immutable_gene_ttl,
+            &etag,
+            CachePolicy::ImmutableDataset,
+        );
+        state
+            .metrics
+            .observe_request(
+                "/v1/datasets/{release}/{species}/{assembly}",
+                StatusCode::NOT_MODIFIED,
+                started.elapsed(),
+            )
+            .await;
+        return with_request_id(resp, &request_id);
+    }
+    let mut resp = Json(payload).into_response();
+    put_cache_headers(
+        resp.headers_mut(),
+        state.api.immutable_gene_ttl,
+        &etag,
+        CachePolicy::ImmutableDataset,
+    );
     state
         .metrics
         .observe_request(
@@ -490,10 +552,27 @@ pub(crate) async fn query_validate_handler(
         };
     let class = classify_query(&req);
     let cost = estimate_query_cost(&req);
+    let reasons = [
+        req.filter.gene_id.as_ref().map(|_| "gene_id"),
+        req.filter.name.as_ref().map(|_| "name"),
+        req.filter.name_prefix.as_ref().map(|_| "name_like"),
+        req.filter.biotype.as_ref().map(|_| "biotype"),
+        req.filter.region.as_ref().map(|_| "range"),
+    ]
+    .into_iter()
+    .flatten()
+    .collect::<Vec<_>>();
     let data = json!({
         "dataset": dataset,
         "query_class": format!("{:?}", class).to_ascii_lowercase(),
-        "work_units": cost.work_units
+        "work_units": cost.work_units,
+        "limits": {
+            "max_limit": state.limits.max_limit,
+            "max_range_span": state.limits.max_region_span,
+            "max_name_prefix_len": state.limits.max_prefix_len,
+            "max_serialization_bytes": state.limits.max_serialization_bytes
+        },
+        "reasons": reasons
     });
     let payload = json_envelope(None, None, data, None, None);
     let resp = with_query_class(Json(payload).into_response(), class);

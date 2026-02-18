@@ -51,7 +51,14 @@ pub fn openapi_v1_spec() -> Value {
               {"name": "cursor", "in": "query", "schema": {"type": "string", "maxLength": 4096}}
             ],
             "responses": {
-              "200": {"description": "dataset list"},
+              "200": {"description": "dataset list", "content": {"application/json": {"examples": {"ok": {"value": {
+                "api_version":"v1",
+                "contract_version":"v1",
+                "dataset": null,
+                "page":{"next_cursor":"110/homo_sapiens/GRCh38"},
+                "data":{"items":[{"dataset":{"release":"110","species":"homo_sapiens","assembly":"GRCh38"},"manifest_path":"manifest.json","sqlite_path":"gene_summary.sqlite"}],"stats":{"limit":1,"returned":1}},
+                "links":{"next_cursor":"110/homo_sapiens/GRCh38"}
+              }}}}}},
               "304": {"description": "not modified"},
               "429": {"description": "rate limited", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApiError"}}}}
             }
@@ -67,7 +74,15 @@ pub fn openapi_v1_spec() -> Value {
               {"name": "include_bom", "in": "query", "schema": {"type": "boolean"}}
             ],
             "responses": {
-              "200": {"description": "dataset metadata and qc summary"},
+              "200": {"description": "dataset metadata and qc summary", "content": {"application/json": {"examples": {"ok": {"value": {
+                "api_version":"v1",
+                "contract_version":"v1",
+                "dataset":{"release":"110","species":"homo_sapiens","assembly":"GRCh38"},
+                "page":null,
+                "data":{"item":{"dataset":{"release":"110","species":"homo_sapiens","assembly":"GRCh38"},"artifact_hash":"sha256:artifact","artifact_db_hash":"sha256:db","shard_info":{"plan":"none","router":false},"available_endpoints":["/v1/genes","/v1/genes/count"]}},
+                "links":null
+              }}}}}},
+              "304": {"description": "not modified"},
               "400": {"description": "invalid dataset dimensions", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApiError"}}}},
               "404": {"description": "dataset missing in catalog", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApiError"}}}},
               "503": {"description": "manifest unavailable", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApiError"}}}}
@@ -173,7 +188,14 @@ pub fn openapi_v1_spec() -> Value {
         "/v1/query/validate": {
           "post": {
             "responses": {
-              "200": {"description": "query classification and cost-only validation"},
+              "200": {"description": "query classification and cost-only validation", "content": {"application/json": {"examples": {"ok": {"value": {
+                "api_version":"v1",
+                "contract_version":"v1",
+                "dataset":null,
+                "page":null,
+                "data":{"dataset":{"release":"110","species":"homo_sapiens","assembly":"GRCh38"},"query_class":"cheap","work_units":1,"limits":{"max_limit":500},"reasons":["gene_id"]},
+                "links":null
+              }}}}}},
               "400": {"description": "invalid query", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApiError"}}}}
             }
           }

@@ -87,6 +87,11 @@ async fn error_contract_and_etag_behaviors() {
             .and_then(Value::as_str),
         Some("v1")
     );
+    assert!(openapi
+        .get("info")
+        .and_then(|v| v.get("x-build-id"))
+        .and_then(Value::as_str)
+        .is_some());
 
     let (status, _, body) = send_raw(
         addr,
@@ -342,6 +347,8 @@ async fn query_validate_endpoint_returns_classification() {
     assert!(headers.contains("x-atlas-query-class: cheap"));
     let json: Value = serde_json::from_str(&payload).expect("json");
     assert_eq!(json["data"]["query_class"], "cheap");
+    assert!(json["data"]["limits"]["max_limit"].is_number());
+    assert_eq!(json["data"]["reasons"][0], "gene_id");
 }
 
 #[tokio::test]
@@ -1140,15 +1147,35 @@ async fn canonical_dataset_endpoint_and_legacy_redirect_are_available() {
     )
     .await;
     assert_eq!(status, 200);
+    let etag = header_value(
+        &send_raw(
+            addr,
+            "/v1/datasets/110/homo_sapiens/GRCh38?include_bom=1",
+            &[],
+        )
+        .await
+        .1,
+        "etag",
+    )
+    .expect("etag");
+    let (status, _, _) = send_raw(
+        addr,
+        "/v1/datasets/110/homo_sapiens/GRCh38?include_bom=1",
+        &[("If-None-Match", &etag)],
+    )
+    .await;
+    assert_eq!(status, 304);
     let json: Value = serde_json::from_str(&body).expect("release metadata json");
+    assert!(json.get("data").and_then(|d| d.get("item")).is_some());
     assert!(json
         .get("data")
-        .and_then(|d| d.get("manifest_summary"))
+        .and_then(|d| d.get("item"))
+        .and_then(|i| i.get("artifact_hash"))
         .is_some());
-    assert!(json.get("data").and_then(|d| d.get("qc_summary")).is_some());
     assert!(json
         .get("data")
-        .and_then(|d| d.get("bill_of_materials"))
+        .and_then(|d| d.get("item"))
+        .and_then(|i| i.get("bill_of_materials"))
         .is_some());
 
     let (status, _, _) = send_raw(addr, "/v1/datasets/110/homo%20sapiens/GRCh38", &[]).await;
