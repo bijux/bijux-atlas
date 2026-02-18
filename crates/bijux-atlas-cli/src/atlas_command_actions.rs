@@ -342,6 +342,7 @@ fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String
 
     let strictness = match args.strictness {
         StrictnessCli::Strict => StrictnessMode::Strict,
+        StrictnessCli::Compat => StrictnessMode::Lenient,
         StrictnessCli::Lenient => StrictnessMode::Lenient,
         StrictnessCli::ReportOnly => StrictnessMode::ReportOnly,
     };
