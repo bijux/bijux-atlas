@@ -461,6 +461,14 @@ ops-load-smoke: ## Run short load suite
 	@./ops/load/scripts/score_k6.py || true
 	@./ops/load/scripts/validate_results.py artifacts/perf/results
 
+ops-load-shedding: ## Verify overload shedding policy (cheap survives, non-cheap sheds)
+	@$(MAKE) -s ops-env-validate
+	@$(MAKE) ops-k6-version-check
+	@$(MAKE) ops-load-manifest-validate
+	@./ops/load/scripts/run_suite.sh cheap-only-survival.json artifacts/perf/results
+	@./ops/load/scripts/validate_results.py artifacts/perf/results
+	@./ops/load/scripts/score_k6.py || true
+
 ops-load-full: ## Run nightly/full load suites
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
