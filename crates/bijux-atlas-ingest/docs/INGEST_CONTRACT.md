@@ -6,6 +6,7 @@
 - `FASTA` reference file.
 - `FAI` index for contig bounds (required in production ingest).
 - Dev-only option can auto-generate `.fai` from FASTA.
+- CLI policy gate forbids `--no-fai-check` in production mode.
 
 ## Outputs
 
@@ -27,3 +28,4 @@
 
 - No network reads/writes.
 - No hidden mutable state.
+- v1 serving does not require FASTA content; `.fai` plus derived SQLite is sufficient unless optional FASTA-derived metrics are enabled during ingest.
