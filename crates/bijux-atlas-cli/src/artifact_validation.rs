@@ -1,6 +1,6 @@
 use crate::{sha256_hex, OutputMode};
 use bijux_atlas_core::canonical;
-use bijux_atlas_model::{ArtifactManifest, Catalog, DatasetId, ShardCatalog};
+use bijux_atlas_model::{ArtifactManifest, Catalog, CatalogEntry, DatasetId, ShardCatalog};
 use bijux_atlas_policies::{canonical_config_json, load_policy_from_workspace};
 use bijux_atlas_store::{
     canonical_catalog_json, sorted_catalog_entries, verify_expected_sha256, ArtifactStore,
@@ -114,6 +114,98 @@ pub(crate) fn rollback_catalog(
         output_mode,
         json!({"command":"atlas catalog rollback","status":"ok"}),
     )
+}
+
+pub(crate) fn promote_catalog(
+    store_root: PathBuf,
+    release: &str,
+    species: &str,
+    assembly: &str,
+    output_mode: OutputMode,
+) -> Result<(), String> {
+    let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
+    let paths = bijux_atlas_model::artifact_paths(&store_root, &dataset);
+    if !paths.manifest.exists() || !paths.sqlite.exists() {
+        return Err(format!(
+            "promote requires published artifact first: missing {} or {}",
+            paths.manifest.display(),
+            paths.sqlite.display()
+        ));
+    }
+
+    let mut catalog = read_catalog_or_empty(&store_root)?;
+    if !catalog.datasets.iter().any(|x| x.dataset == dataset) {
+        catalog.datasets.push(CatalogEntry::new(
+            dataset.clone(),
+            rel_display_path(&store_root, &paths.manifest)?,
+            rel_display_path(&store_root, &paths.sqlite)?,
+        ));
+    }
+    catalog.datasets = sorted_catalog_entries(catalog.datasets);
+    catalog.validate_sorted().map_err(|e| e.to_string())?;
+    write_catalog(&store_root, &catalog)?;
+    emit_ok_payload(
+        output_mode,
+        json!({"command":"atlas catalog promote","status":"ok","dataset":dataset}),
+    )
+}
+
+pub(crate) fn update_latest_alias(
+    store_root: PathBuf,
+    release: &str,
+    species: &str,
+    assembly: &str,
+    output_mode: OutputMode,
+) -> Result<(), String> {
+    let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
+    let catalog = read_catalog_or_empty(&store_root)?;
+    if !catalog.datasets.iter().any(|x| x.dataset == dataset) {
+        return Err(
+            "latest alias update is gated by promotion: dataset not present in catalog".to_string(),
+        );
+    }
+    fs::create_dir_all(&store_root).map_err(|e| e.to_string())?;
+    let alias_path = store_root.join("latest.alias.json");
+    let tmp = store_root.join("latest.alias.json.tmp");
+    fs::write(
+        &tmp,
+        canonical::stable_json_bytes(&json!({
+            "dataset": dataset,
+            "policy": "promotion-gated"
+        }))
+        .map_err(|e| e.to_string())?,
+    )
+    .map_err(|e| e.to_string())?;
+    fs::rename(&tmp, &alias_path).map_err(|e| e.to_string())?;
+    emit_ok_payload(
+        output_mode,
+        json!({"command":"atlas catalog latest-alias-update","status":"ok","alias_path":alias_path}),
+    )
+}
+
+fn read_catalog_or_empty(store_root: &Path) -> Result<Catalog, String> {
+    let path = store_root.join("catalog.json");
+    if !path.exists() {
+        return Ok(Catalog::new(Vec::new()));
+    }
+    let raw = fs::read_to_string(path).map_err(|e| e.to_string())?;
+    let catalog: Catalog = serde_json::from_str(&raw).map_err(|e| e.to_string())?;
+    Ok(catalog)
+}
+
+fn write_catalog(store_root: &Path, catalog: &Catalog) -> Result<(), String> {
+    let canonical = canonical_catalog_json(catalog)?;
+    fs::create_dir_all(store_root).map_err(|e| e.to_string())?;
+    let tmp = store_root.join("catalog.json.tmp");
+    fs::write(&tmp, canonical.as_bytes()).map_err(|e| e.to_string())?;
+    fs::rename(&tmp, store_root.join("catalog.json")).map_err(|e| e.to_string())
+}
+
+fn rel_display_path(root: &Path, path: &Path) -> Result<String, String> {
+    let rel = path
+        .strip_prefix(root)
+        .map_err(|_| format!("path {} is outside {}", path.display(), root.display()))?;
+    Ok(rel.to_string_lossy().replace('\\', "/"))
 }
 
 pub(crate) fn validate_dataset(

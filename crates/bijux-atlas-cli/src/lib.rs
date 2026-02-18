@@ -438,6 +438,32 @@ fn run_atlas_command(
                 output_mode,
             )
             .map_err(CliError::internal),
+            CatalogCommand::Promote {
+                store_root,
+                release,
+                species,
+                assembly,
+            } => artifact_validation::promote_catalog(
+                store_root,
+                &release,
+                &species,
+                &assembly,
+                output_mode,
+            )
+            .map_err(CliError::internal),
+            CatalogCommand::LatestAliasUpdate {
+                store_root,
+                release,
+                species,
+                assembly,
+            } => artifact_validation::update_latest_alias(
+                store_root,
+                &release,
+                &species,
+                &assembly,
+                output_mode,
+            )
+            .map_err(CliError::internal),
         },
         AtlasCommand::Dataset { command } => match command {
             DatasetCommand::Verify {
