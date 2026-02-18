@@ -10,6 +10,7 @@
     {"script": "test_defaults_safe.sh", "groups": ["chart", "safety"], "owner": "chart", "retries": 1, "timeout_seconds": 120, "expected_failure_modes": ["unsafe_defaults"]},
     {"script": "test_chart_drift.sh", "groups": ["chart"], "owner": "chart", "retries": 1, "timeout_seconds": 120, "expected_failure_modes": ["template_drift"]},
     {"script": "test_helm_templates.sh", "groups": ["chart"], "owner": "chart", "retries": 1, "timeout_seconds": 120, "expected_failure_modes": ["template_render_failure"]},
+    {"script": "test_chart_contract_required_fields.sh", "groups": ["chart", "contracts"], "owner": "chart", "retries": 1, "timeout_seconds": 120, "expected_failure_modes": ["chart_required_fields_missing"]},
     {"script": "test_helm_repo_pinning.sh", "groups": ["chart", "supply-chain"], "owner": "chart", "retries": 1, "timeout_seconds": 120, "expected_failure_modes": ["unpinned_helm_repo"]},
     {"script": "test_install.sh", "groups": ["install"], "owner": "chart", "retries": 1, "timeout_seconds": 300, "expected_failure_modes": ["install_failure"]},
     {"script": "test_install_twice.sh", "groups": ["install", "idempotency"], "owner": "chart", "retries": 1, "timeout_seconds": 420, "expected_failure_modes": ["non_idempotent_install"]},
