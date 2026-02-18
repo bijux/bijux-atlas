@@ -31,6 +31,7 @@ Does not replace registry-specific detail pages.
 | Artifact schema | `artifacts/ARTIFACT_SCHEMA.json` | `_generated/contracts/ARTIFACT_SCHEMA.md` | Experimental |
 | Policy schema | `POLICY_SCHEMA.json` | `_generated/contracts/POLICY_SCHEMA.md` | Experimental |
 | QC schema | `QC_SCHEMA.json` | `_generated/contracts/QC_SCHEMA.md` | Stable |
+| Normalized format schema | `NORMALIZED_FORMAT_SCHEMA.json` | `_generated/contracts/NORMALIZED_FORMAT_SCHEMA.md` | Evolving |
 
 ## Generated docs
 
@@ -43,6 +44,7 @@ Does not replace registry-specific detail pages.
 - [_generated/contracts/ARTIFACT_SCHEMA.md](../_generated/contracts/ARTIFACT_SCHEMA.md)
 - [_generated/contracts/POLICY_SCHEMA.md](../_generated/contracts/POLICY_SCHEMA.md)
 - [_generated/contracts/QC_SCHEMA.md](../_generated/contracts/QC_SCHEMA.md)
+- [_generated/contracts/NORMALIZED_FORMAT_SCHEMA.md](../_generated/contracts/NORMALIZED_FORMAT_SCHEMA.md)
 
 ## Failure modes
 

@@ -37,6 +37,7 @@ List and maintain links to section pages in this directory.
 - [Local Noise Policy](local-noise.md)
 - [Contributing](contributing.md)
 - [Dataset Identity Contract](dataset-identity.md)
+- [Normalized Format (Debug)](normalized-format.md)
 - [Add Dataset Type](add-dataset-type.md)
 - [Add Endpoint](add-endpoint.md)
 - [Add Metric or Span](add-metric-span.md)
