@@ -2,7 +2,7 @@ use bijux_atlas_ingest::{ingest_dataset, IngestOptions};
 use bijux_atlas_model::{
     BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy,
     FeatureIdUniquenessPolicy, GeneIdentifierPolicy, GeneNamePolicy, SeqidNormalizationPolicy,
-    StrictnessMode, TranscriptIdPolicy, TranscriptTypePolicy, UnknownFeaturePolicy,
+    ShardingPlan, StrictnessMode, TranscriptIdPolicy, TranscriptTypePolicy, UnknownFeaturePolicy,
 };
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use std::path::PathBuf;
@@ -29,6 +29,8 @@ fn opts_for_fixture(base: &std::path::Path, fixture_dir: &str) -> IngestOptions 
         allow_overlap_gene_ids_across_contigs: false,
         emit_shards: false,
         shard_partitions: 0,
+        sharding_plan: ShardingPlan::None,
+        max_shards: 512,
         compute_gene_signatures: true,
         compute_contig_fractions: false,
         fasta_scanning_enabled: false,

@@ -2,7 +2,7 @@ use crate::extract::{ExonRecord, GeneRecord, TranscriptRecord};
 use crate::fai::ContigStats;
 use crate::IngestError;
 use bijux_atlas_core::{canonical, sha256_hex};
-use bijux_atlas_model::{DatasetId, ShardCatalog, ShardEntry};
+use bijux_atlas_model::{DatasetId, ShardCatalog, ShardEntry, ShardingPlan};
 use rusqlite::{params, Connection};
 use std::collections::BTreeMap;
 use std::fs;
@@ -389,24 +389,49 @@ pub fn write_sharded_sqlite_catalog(
     dataset: &DatasetId,
     genes: &[GeneRecord],
     transcripts: &[TranscriptRecord],
+    sharding_plan: ShardingPlan,
     shard_partitions: usize,
+    max_shards: usize,
 ) -> Result<(std::path::PathBuf, ShardCatalog), IngestError> {
     let mut buckets: BTreeMap<String, Vec<GeneRecord>> = BTreeMap::new();
-    if shard_partitions == 0 {
-        for g in genes {
-            buckets.entry(g.seqid.clone()).or_default().push(g.clone());
+    match sharding_plan {
+        ShardingPlan::None => return Err(IngestError("sharding plan none cannot emit shards".to_string())),
+        ShardingPlan::Contig => {
+            if shard_partitions == 0 {
+                for g in genes {
+                    buckets.entry(g.seqid.clone()).or_default().push(g.clone());
+                }
+            } else {
+                for g in genes {
+                    let shard = (canonical::stable_hash_hex(g.seqid.as_bytes())
+                        .bytes()
+                        .fold(0_u64, |acc, b| acc.wrapping_add(b as u64))
+                        % shard_partitions as u64) as usize;
+                    buckets
+                        .entry(format!("p{:03}", shard))
+                        .or_default()
+                        .push(g.clone());
+                }
+            }
         }
-    } else {
-        for g in genes {
-            let shard = (canonical::stable_hash_hex(g.seqid.as_bytes())
-                .bytes()
-                .fold(0_u64, |acc, b| acc.wrapping_add(b as u64))
-                % shard_partitions as u64) as usize;
-            buckets
-                .entry(format!("p{:03}", shard))
-                .or_default()
-                .push(g.clone());
+        ShardingPlan::RegionGrid => {
+            return Err(IngestError(
+                "region_grid sharding plan is reserved for future implementation".to_string(),
+            ))
         }
+        _ => {
+            return Err(IngestError(
+                "unsupported sharding plan variant".to_string(),
+            ))
+        }
+    }
+
+    if buckets.len() > max_shards {
+        return Err(IngestError(format!(
+            "shard count {} exceeds configured max_shards {}",
+            buckets.len(),
+            max_shards
+        )));
     }
 
     let mut shards = Vec::new();
@@ -432,11 +457,10 @@ pub fn write_sharded_sqlite_catalog(
             .cloned()
             .collect();
         let ex_rows: Vec<ExonRecord> = Vec::new();
-        let dataset = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
         let empty_contigs = BTreeMap::new();
         write_sqlite(
             &sqlite_path,
-            &dataset,
+            dataset,
             &rows,
             &tx_rows,
             &ex_rows,
@@ -454,9 +478,9 @@ pub fn write_sharded_sqlite_catalog(
     }
     shards.sort();
     let mode = if shard_partitions == 0 {
-        "per-seqid".to_string()
+        "contig".to_string()
     } else {
-        format!("partitioned-{shard_partitions}")
+        "contig_partitioned".to_string()
     };
     let catalog = ShardCatalog::new(dataset.clone(), mode, shards);
     catalog
