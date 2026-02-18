@@ -833,6 +833,19 @@ ops-lint: ## Lint ops shell/python/json/schema contracts
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) -s ops-layout-lint
 
+ops-lint-all: ## Run full ops lint suite (naming/docs/ownership/contracts/images/versions)
+	@$(MAKE) -s ops-lint
+	@./ops/_lint/naming.sh
+	@python3 ./ops/_lint/no-duplicate-readmes.py
+	@python3 ./ops/_lint/no-shadow-configs.py
+	@./ops/_lint/no-empty-dirs.sh
+	@python3 ./ops/_lint/no-direct-script-usage.py
+	@python3 ./ops/_lint/no-unpinned-images.py
+	@python3 ./ops/_lint/no-floating-tool-versions.py
+	@python3 ./ops/_lint/no-unowned-area.py
+	@python3 ./ops/_lint/no-orphan-contract.py
+	@python3 ./ops/_lint/no-orphan-suite.py
+
 ops-fmt: ## Format ops YAML/JSON and refresh make targets inventory docs
 	@./ops/_lib/fmt.sh
 	@$(MAKE) -s ops-make-targets-doc

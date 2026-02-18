@@ -18,6 +18,7 @@ required_dirs=(
   "$OPS/_schemas"
   "$OPS/_generated"
   "$OPS/_artifacts"
+  "$OPS/_lint"
   "$OPS/run"
   "$OPS/e2e"
 )
@@ -34,6 +35,7 @@ allowed_entries=(
   "_schemas"
   "_generated"
   "_artifacts"
+  "_lint"
   "stack"
   "fixtures"
   "registry"

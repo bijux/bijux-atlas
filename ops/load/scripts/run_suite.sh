@@ -6,6 +6,13 @@ set -eu
 
 ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 python3 "$ROOT/scripts/layout/check_tool_versions.py" k6 >/dev/null
+K6_VERSION="$(python3 - <<PY
+import json
+from pathlib import Path
+data=json.loads(Path("$ROOT/configs/ops/tool-versions.json").read_text())
+print(str(data.get("k6","v1.0.0")).lstrip("v"))
+PY
+)"
 INPUT="${1:?suite or scenario required, e.g. mixed-80-20.js or mixed.json}"
 OUT_DIR="${2:-$ROOT/artifacts/perf/results}"
 BASE_URL="${ATLAS_BASE_URL:-${BASE_URL:-http://127.0.0.1:18080}}"
@@ -47,7 +54,7 @@ else
     -e BASE_URL="$BASE_URL" \
     -e ATLAS_API_KEY="$API_KEY" \
     -v "$ROOT:/work" -w /work \
-    grafana/k6:0.49.0 run --summary-export "$SUMMARY_JSON" "ops/load/k6/suites/$SUITE"
+    "grafana/k6:${K6_VERSION}" run --summary-export "$SUMMARY_JSON" "ops/load/k6/suites/$SUITE"
 fi
 
 cat > "${OUT_DIR}/${NAME}.meta.json" <<JSON

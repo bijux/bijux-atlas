@@ -145,6 +145,12 @@ jobs:
       - uses: actions/checkout@v4
       - run: make ci-ops-policy-audit
 
+  ops-lint-all:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make ops-lint-all
+
   config-check:
     runs-on: ubuntu-latest
     steps:
