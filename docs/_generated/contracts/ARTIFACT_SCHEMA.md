@@ -39,6 +39,8 @@
       "db_schema_version",
       "dataset",
       "checksums",
+      "db_hash",
+      "artifact_hash",
       "stats",
       "qc_report",
       "schema_evolution_note"

@@ -84,6 +84,8 @@ pub fn build_and_write_manifest_and_reports(
     manifest.ingest_build_hash = option_env!("BIJUX_BUILD_HASH").unwrap_or("dev").to_string();
     manifest.toolchain_hash = compute_toolchain_hash();
     manifest.contig_normalization_aliases = contig_aliases.clone();
+    manifest.db_hash = manifest.checksums.sqlite_sha256.clone();
+    manifest.artifact_hash = compute_manifest_artifact_hash(&manifest)?;
 
     manifest
         .validate_strict()
@@ -221,6 +223,23 @@ fn compute_toolchain_hash() -> String {
     } else {
         sha256_hex(&bytes)
     }
+}
+
+fn compute_manifest_artifact_hash(manifest: &ArtifactManifest) -> Result<String, IngestError> {
+    let digest_source = serde_json::json!({
+        "artifact_version": manifest.artifact_version,
+        "schema_version": manifest.schema_version,
+        "db_schema_version": manifest.db_schema_version,
+        "dataset": manifest.dataset,
+        "checksums": manifest.checksums,
+        "input_hashes": manifest.input_hashes,
+        "stats": manifest.stats,
+        "dataset_signature_sha256": manifest.dataset_signature_sha256,
+        "toolchain_hash": manifest.toolchain_hash,
+        "db_hash": manifest.db_hash
+    });
+    let bytes = canonical::stable_json_bytes(&digest_source).map_err(|e| IngestError(e.to_string()))?;
+    Ok(sha256_hex(&bytes))
 }
 
 pub fn write_qc_and_anomaly_reports_only(

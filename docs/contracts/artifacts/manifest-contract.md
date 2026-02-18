@@ -10,6 +10,8 @@ Manifest is strict JSON (`serde(deny_unknown_fields)`) with:
 - Input checksums: GFF3, FASTA, FAI
 - `input_hashes`: `gff3_sha256`, `fasta_sha256`, `fai_sha256`, `policy_sha256`
 - Derived checksum: SQLite
+- `db_hash` required and must equal `checksums.sqlite_sha256`
+- `artifact_hash` required and computed from deterministic manifest fields + `db_hash` (excludes `created_at`)
 - Basic stats: gene/transcript/contig counts
 - Versions: manifest version + DB schema version
 - Dataset signature hash: `dataset_signature_sha256` (Merkle-style over table content)

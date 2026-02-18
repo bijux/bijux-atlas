@@ -70,6 +70,8 @@ fn legacy_manifest_v1_without_new_fields_is_still_compatible() {
     }"#;
     let manifest: ArtifactManifest = serde_json::from_str(raw).expect("legacy parse");
     assert!(manifest.dataset_signature_sha256.is_empty());
+    assert!(manifest.db_hash.is_empty());
+    assert!(manifest.artifact_hash.is_empty());
     assert!(!manifest.derived_column_origins.is_empty());
 }
 
@@ -87,6 +89,8 @@ fn strict_manifest_validation_requires_schema_consistency() {
     manifest.input_hashes.fai_sha256 = "c".repeat(64);
     manifest.input_hashes.policy_sha256 = "d".repeat(64);
     manifest.toolchain_hash = "e".repeat(64);
+    manifest.db_hash = "d".repeat(64);
+    manifest.artifact_hash = "f".repeat(64);
     manifest.db_schema_version = "2".to_string();
     assert!(manifest.validate_strict().is_err());
 }
