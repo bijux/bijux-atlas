@@ -221,6 +221,18 @@ fn bench_query_patterns(c: &mut Criterion) {
         b.iter(|| run_pattern(&conn, &request));
     });
 
+    c.bench_function("critical_query_cheap_point_lookup", |b| {
+        let request = req(
+            GeneFilter {
+                gene_id: Some("gene1234".to_string()),
+                ..Default::default()
+            },
+            1,
+            GeneFields::default(),
+        );
+        b.iter(|| run_pattern(&conn, &request));
+    });
+
     c.bench_function("query_name_exact", |b| {
         let request = req(
             GeneFilter {
@@ -286,6 +298,34 @@ fn bench_query_patterns(c: &mut Criterion) {
     });
 
     c.bench_function("query_region_large", |b| {
+        let request = req(
+            GeneFilter {
+                region: Some(RegionFilter {
+                    seqid: "chr1".to_string(),
+                    start: 10_000,
+                    end: 200_000,
+                }),
+                ..Default::default()
+            },
+            100,
+            GeneFields::default(),
+        );
+        b.iter(|| run_pattern(&conn, &request));
+    });
+
+    c.bench_function("critical_query_medium_biotype_window", |b| {
+        let request = req(
+            GeneFilter {
+                biotype: Some("protein_coding".to_string()),
+                ..Default::default()
+            },
+            100,
+            GeneFields::default(),
+        );
+        b.iter(|| run_pattern(&conn, &request));
+    });
+
+    c.bench_function("critical_query_heavy_region_window", |b| {
         let request = req(
             GeneFilter {
                 region: Some(RegionFilter {
@@ -388,6 +428,24 @@ fn bench_query_patterns(c: &mut Criterion) {
             ..first
         };
         b.iter(|| run_pattern(&conn, &second));
+    });
+
+    c.bench_function("query_worst_case_filter_combo", |b| {
+        let request = req(
+            GeneFilter {
+                biotype: Some("protein_coding".to_string()),
+                name_prefix: Some("GENE".to_string()),
+                region: Some(RegionFilter {
+                    seqid: "chr1".to_string(),
+                    start: 1,
+                    end: 4_000_000,
+                }),
+                ..Default::default()
+            },
+            200,
+            GeneFields::default(),
+        );
+        b.iter(|| run_pattern(&conn, &request));
     });
 }
 

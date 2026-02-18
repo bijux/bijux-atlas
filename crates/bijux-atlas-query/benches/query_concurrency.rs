@@ -119,6 +119,74 @@ fn bench_query_concurrency(c: &mut Criterion) {
             }
         });
     });
+
+    c.bench_function("query_point_lookup_concurrency_scaling", |b| {
+        b.iter(|| {
+            let mut joins = Vec::new();
+            for _ in 0..8 {
+                let path = Arc::clone(&db_path);
+                joins.push(thread::spawn(move || {
+                    let conn = Connection::open_with_flags(
+                        path.as_path(),
+                        OpenFlags::SQLITE_OPEN_READ_ONLY | OpenFlags::SQLITE_OPEN_NO_MUTEX,
+                    )
+                    .expect("open");
+                    let req = GeneQueryRequest {
+                        fields: GeneFields::default(),
+                        filter: GeneFilter {
+                            gene_id: Some("gene42".to_string()),
+                            ..Default::default()
+                        },
+                        limit: 1,
+                        cursor: None,
+                        dataset_key: None,
+                        allow_full_scan: false,
+                    };
+                    let _ =
+                        query_genes(&conn, &req, &QueryLimits::default(), b"bench").expect("query");
+                }));
+            }
+            for j in joins {
+                j.join().expect("join");
+            }
+        });
+    });
+
+    c.bench_function("query_region_concurrency_scaling", |b| {
+        b.iter(|| {
+            let mut joins = Vec::new();
+            for _ in 0..8 {
+                let path = Arc::clone(&db_path);
+                joins.push(thread::spawn(move || {
+                    let conn = Connection::open_with_flags(
+                        path.as_path(),
+                        OpenFlags::SQLITE_OPEN_READ_ONLY | OpenFlags::SQLITE_OPEN_NO_MUTEX,
+                    )
+                    .expect("open");
+                    let req = GeneQueryRequest {
+                        fields: GeneFields::default(),
+                        filter: GeneFilter {
+                            region: Some(bijux_atlas_query::RegionFilter {
+                                seqid: "chr1".to_string(),
+                                start: 1,
+                                end: 150_000,
+                            }),
+                            ..Default::default()
+                        },
+                        limit: 100,
+                        cursor: None,
+                        dataset_key: None,
+                        allow_full_scan: false,
+                    };
+                    let _ =
+                        query_genes(&conn, &req, &QueryLimits::default(), b"bench").expect("query");
+                }));
+            }
+            for j in joins {
+                j.join().expect("join");
+            }
+        });
+    });
 }
 
 criterion_group!(benches, bench_query_concurrency);
