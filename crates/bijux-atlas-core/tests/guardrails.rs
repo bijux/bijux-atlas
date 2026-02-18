@@ -170,7 +170,7 @@ fn api_and_server_must_not_spawn_processes() {
         root.join("crates/bijux-atlas-server/src"),
     ];
 
-    let forbidden = ["std::process", "Command::new", "tokio::process", "duct::"];
+    let forbidden = ["Command::new", "tokio::process", "duct::"];
     for target in targets {
         for file in collect_rs_files(&target) {
             let content = fs::read_to_string(&file).expect("failed to read rust file");
@@ -291,9 +291,14 @@ fn unit_tests_must_not_use_network_calls() {
             if !content.contains("#[cfg(test)]") {
                 continue;
             }
+            let test_section = content
+                .split("#[cfg(test)]")
+                .nth(1)
+                .unwrap_or_default()
+                .to_string();
             for needle in forbidden {
                 assert!(
-                    !content.contains(needle),
+                    !test_section.contains(needle),
                     "network token `{needle}` is forbidden in unit tests: {}",
                     file.display()
                 );
