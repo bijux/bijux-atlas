@@ -61,6 +61,11 @@
       "subsystem",
       "version"
     ],
+    "bijux_runtime_policy_hash": [
+      "dataset",
+      "subsystem",
+      "version"
+    ],
     "bijux_sqlite_query_latency_p95_seconds": [
       "dataset",
       "query_type",
