@@ -889,6 +889,9 @@ observability-pack-drills: ## Full observability drill suite (outage matrix + co
 	@./ops/observability/tests/test_contracts.sh
 	@./ops/observability/scripts/write_pack_conformance_report.py
 
+ops-drill-suite: ## Run full observability drill manifest suite and emit report
+	@./ops/observability/tests/test_drills.sh
+
 ops-observability-pack-idempotency: ## Install observability pack twice to validate idempotency
 	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/observability/scripts/install_pack.sh
 	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/observability/scripts/install_pack.sh

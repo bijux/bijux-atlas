@@ -75,7 +75,37 @@ fi
 
 "${REPO_ROOT}/ops/observability/scripts/snapshot_metrics.sh" "$OPS_OBS_DIR"
 "${REPO_ROOT}/ops/observability/scripts/snapshot_traces.sh" "$OPS_OBS_DIR"
+log_snapshot="${OPS_OBS_DIR}/drill-${DRILL_NAME}.logs.txt"
+kubectl -n "${ATLAS_E2E_NAMESPACE:-atlas-e2e}" logs -l app.kubernetes.io/instance="${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}" --all-containers --tail=2000 > "$log_snapshot" 2>/dev/null || true
 python3 "${REPO_ROOT}/ops/observability/scripts/validate_logs_schema.py" --namespace "${ATLAS_E2E_NAMESPACE:-atlas-e2e}" --release "${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}" --strict-live || status="fail"
+
+if [ "$status" = "pass" ]; then
+  EXPECTED_SIGNALS="$EXPECTED_SIGNALS" DRILL_NAME="$DRILL_NAME" python3 - <<'PY' || status="fail"
+import json, os, pathlib, re, sys
+signals = json.loads(os.environ["EXPECTED_SIGNALS"])
+root = pathlib.Path(".")
+metrics = (root / "artifacts/ops/observability/metrics.prom").read_text(encoding="utf-8", errors="replace") if (root / "artifacts/ops/observability/metrics.prom").exists() else ""
+traces = (root / "artifacts/ops/observability/traces.snapshot.log").read_text(encoding="utf-8", errors="replace").lower() if (root / "artifacts/ops/observability/traces.snapshot.log").exists() else ""
+log_paths = sorted((root / "artifacts/ops/observability").glob("drill-*.logs.txt"))
+logs = "\n".join(p.read_text(encoding="utf-8", errors="replace").lower() for p in log_paths)
+for signal in signals:
+    kind, _, value = signal.partition(":")
+    if kind == "metric":
+      if value not in metrics:
+          print(f"missing expected metric signal: {value}", file=sys.stderr); sys.exit(1)
+    elif kind == "trace":
+      if value.lower() not in traces:
+          print(f"missing expected trace signal: {value}", file=sys.stderr); sys.exit(1)
+    elif kind == "log":
+      if value.lower() not in logs:
+          print(f"missing expected log signal: {value}", file=sys.stderr); sys.exit(1)
+    elif kind == "validator":
+      # validator signals are asserted by drill script behavior itself
+      continue
+    else:
+      print(f"unknown expected signal kind: {signal}", file=sys.stderr); sys.exit(1)
+PY
+fi
 
 if [ "$CLEANUP" = "true" ]; then
   cleanup
@@ -84,7 +114,7 @@ fi
 ended_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 result_file="${OUT_DIR}/${DRILL_NAME}.result.json"
 
-DRILL_NAME="$DRILL_NAME" STARTED_AT="$started_at" ENDED_AT="$ended_at" STATUS="$status" EXPECTED_SIGNALS="$EXPECTED_SIGNALS" RESULT_FILE="$result_file" python3 - <<'PY'
+DRILL_NAME="$DRILL_NAME" STARTED_AT="$started_at" ENDED_AT="$ended_at" STATUS="$status" EXPECTED_SIGNALS="$EXPECTED_SIGNALS" RESULT_FILE="$result_file" LOG_SNAPSHOT="$log_snapshot" python3 - <<'PY'
 import json,os,re
 from pathlib import Path
 result={
@@ -96,7 +126,7 @@ result={
   "snapshot_paths":{
     "metrics":"artifacts/ops/observability/metrics.prom",
     "traces":"artifacts/ops/observability/traces.snapshot.log",
-    "logs":"artifacts/ops/observability"
+    "logs":os.environ["LOG_SNAPSHOT"]
   },
   "trace_ids":[],
   "expected_signals":json.loads(os.environ['EXPECTED_SIGNALS'])
@@ -109,7 +139,7 @@ if trace_path.exists():
 Path(os.environ['RESULT_FILE']).write_text(json.dumps(result,indent=2,sort_keys=True)+'\n',encoding='utf-8')
 PY
 
-python3 - <<'PY'
+python3 - "$result_file" <<'PY'
 import json,sys
 from pathlib import Path
 schema=json.load(open('ops/observability/drills/result.schema.json'))
@@ -120,7 +150,7 @@ if missing:
   print('result schema validation failed: missing keys', missing, file=sys.stderr)
   raise SystemExit(1)
 print('drill result schema validation passed')
-PY "$result_file"
+PY
 
 if [ "$status" != "pass" ]; then
   echo "drill failed: $DRILL_NAME" >&2
