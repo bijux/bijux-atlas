@@ -312,6 +312,8 @@ async fn main() -> Result<(), String> {
     let cache_cfg = DatasetCacheConfig {
         disk_root: cache_root,
         max_disk_bytes: env_u64("ATLAS_MAX_DISK_BYTES", 8 * 1024 * 1024 * 1024),
+        disk_high_watermark_pct: env_u64("ATLAS_CACHE_HIGH_WATERMARK_PCT", 90) as u8,
+        disk_low_watermark_pct: env_u64("ATLAS_CACHE_LOW_WATERMARK_PCT", 75) as u8,
         max_dataset_count: env_usize("ATLAS_MAX_DATASET_COUNT", 8),
         pinned_datasets: pinned,
         startup_warmup,
@@ -335,6 +337,7 @@ async fn main() -> Result<(), String> {
         catalog_breaker_open_ms: env_u64("ATLAS_CATALOG_BREAKER_OPEN_MS", 5000),
         quarantine_after_corruption_failures: env_u64("ATLAS_QUARANTINE_CORRUPTION_FAILURES", 3)
             as u32,
+        quarantine_retry_ttl: env_duration_ms("ATLAS_QUARANTINE_RETRY_TTL_MS", 300_000),
         registry_ttl: env_duration_ms("ATLAS_REGISTRY_TTL_MS", 15_000),
         registry_freeze_mode: env_bool("ATLAS_REGISTRY_FREEZE_MODE", false),
         ..DatasetCacheConfig::default()
