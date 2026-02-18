@@ -28,6 +28,7 @@ Does not duplicate page-level details.
 - [Alerts](alerts.md)
 - [Runbook Map](runbook-dashboard-alert-map.md)
 - [Acceptance Gates](acceptance-gates.md)
+- [Drills](drills.md)
 - [Observability Profiles](profiles.md)
 - [Trace Sampling Policy](trace-sampling-policy.md)
 - [OTEL Outage Behavior](otel-outage-behavior.md)
