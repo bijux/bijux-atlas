@@ -198,4 +198,13 @@ run-medium-ingest:
 run-medium-serve:
 	@./scripts/fixtures/run-medium-serve.sh
 
-.PHONY: fmt _fmt lint _lint _lint-rustfmt _lint-configs _lint-docs _lint-clippy check _check test test-all _test _test-all coverage _coverage audit _audit ci-core openapi-drift compat-matrix-validate fetch-fixtures load-test load-test-1000qps perf-nightly query-plan-gate cold-start-bench memory-profile-load run-medium-ingest run-medium-serve
+bench-sqlite-query-latency:
+	@cargo bench -p bijux-atlas-ingest --features bench-ingest-throughput --bench sqlite_query_latency
+
+bench-ingest-throughput-medium:
+	@cargo bench -p bijux-atlas-ingest --features bench-ingest-throughput --bench ingest_throughput
+
+bench-db-size-growth:
+	@cargo bench -p bijux-atlas-ingest --features bench-ingest-throughput --bench db_size_growth
+
+.PHONY: fmt _fmt lint _lint _lint-rustfmt _lint-configs _lint-docs _lint-clippy check _check test test-all _test _test-all coverage _coverage audit _audit ci-core openapi-drift compat-matrix-validate fetch-fixtures load-test load-test-1000qps perf-nightly query-plan-gate cold-start-bench memory-profile-load run-medium-ingest run-medium-serve bench-sqlite-query-latency bench-ingest-throughput-medium bench-db-size-growth
