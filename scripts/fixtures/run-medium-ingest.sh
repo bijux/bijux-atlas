@@ -6,8 +6,26 @@ set -eu
 
 root="ops/fixtures/medium/data"
 [ -d "$root" ] || { echo "missing medium fixture data; run make fetch-fixtures" >&2; exit 1; }
+sharded=0
+if [ "${1:-}" = "--sharded" ]; then
+  sharded=1
+fi
 
-cargo run -p bijux-atlas-cli --bin bijux-atlas -- atlas ingest \
+if [ "$sharded" -eq 1 ]; then
+  cargo run -p bijux-atlas-cli --bin bijux-atlas -- atlas ingest \
+    --gff3 "$root/genes.gff3" \
+    --fasta "$root/genome.fa" \
+    --fai "$root/genome.fa.fai" \
+    --output-root artifacts/medium-output \
+    --release 110 \
+    --species homo_sapiens \
+    --assembly GRCh38 \
+    --strictness lenient \
+    --duplicate-gene-id-policy dedupe \
+    --sharding-plan contig \
+    --emit-shards
+else
+  cargo run -p bijux-atlas-cli --bin bijux-atlas -- atlas ingest \
   --gff3 "$root/genes.gff3" \
   --fasta "$root/genome.fa" \
   --fai "$root/genome.fa.fai" \
@@ -17,3 +35,4 @@ cargo run -p bijux-atlas-cli --bin bijux-atlas -- atlas ingest \
   --assembly GRCh38 \
   --strictness lenient \
   --duplicate-gene-id-policy dedupe
+fi

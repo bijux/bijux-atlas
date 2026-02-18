@@ -358,6 +358,10 @@ ops-warm: ## Run warmup workflow
 	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/scripts/warmup.sh
 
+ops-warm-shards: ## Warm cache with multi-contig queries for shard locality
+	@$(MAKE) -s ops-env-validate
+	@./ops/e2e/scripts/warm_shards.sh
+
 ops-soak: ## Run soak workflow (10-30 minutes)
 	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/scripts/soak.sh
