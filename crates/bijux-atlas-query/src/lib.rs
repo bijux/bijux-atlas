@@ -25,7 +25,8 @@ pub const CRATE_NAME: &str = "bijux-atlas-query";
 
 pub use cost::estimate_prefix_match_cost;
 pub use cursor::{
-    decode_cursor, encode_cursor, CursorError, CursorErrorCode, CursorPayload, OrderMode,
+    decode_cursor, encode_cursor, CursorError, CursorErrorCode, CursorLastSeen, CursorPayload,
+    OrderMode,
 };
 pub use db::explain_query_plan as explain_query_plan_internal;
 pub use db::prepared_sql_for_class as prepared_sql_for_class_export;
@@ -88,8 +89,14 @@ pub fn query_genes(
 
     let decoded_cursor = if let Some(token) = &req.cursor {
         Some(
-            decode_cursor_inner(token, cursor_secret, &query_hash, order_mode)
-                .map_err(|e| QueryError::new(QueryErrorCode::Cursor, e.to_string()))?,
+            decode_cursor_inner(
+                token,
+                cursor_secret,
+                &query_hash,
+                order_mode,
+                req.dataset_key.as_deref(),
+            )
+            .map_err(|e| QueryError::new(QueryErrorCode::Cursor, e.to_string()))?,
         )
     } else {
         None
@@ -128,6 +135,14 @@ pub fn query_genes(
             .ok_or_else(|| QueryError::new(QueryErrorCode::Sql, "pagination invariant violated"))?;
         let payload = match order_mode {
             OrderModeInner::Region => CursorPayloadInner {
+                cursor_version: "v1".to_string(),
+                dataset_id: req.dataset_key.clone(),
+                sort_key: Some("region".to_string()),
+                last_seen: Some(cursor::CursorLastSeen {
+                    gene_id: last.gene_id.clone(),
+                    seqid: last.seqid.clone(),
+                    start: last.start,
+                }),
                 order: "region".to_string(),
                 last_seqid: last.seqid.clone(),
                 last_start: last.start,
@@ -136,6 +151,14 @@ pub fn query_genes(
                 depth: next_depth,
             },
             OrderModeInner::GeneId => CursorPayloadInner {
+                cursor_version: "v1".to_string(),
+                dataset_id: req.dataset_key.clone(),
+                sort_key: Some("gene_id".to_string()),
+                last_seen: Some(cursor::CursorLastSeen {
+                    gene_id: last.gene_id.clone(),
+                    seqid: None,
+                    start: None,
+                }),
                 order: "gene_id".to_string(),
                 last_seqid: None,
                 last_start: None,
@@ -242,10 +265,7 @@ fn reject_impossible_filter_fast(
             } else {
                 "region seqid does not exist in dataset".to_string()
             };
-            return Err(QueryError::new(
-                QueryErrorCode::Validation,
-                message,
-            ));
+            return Err(QueryError::new(QueryErrorCode::Validation, message));
         }
         let span = region.end.saturating_sub(region.start) + 1;
         let span_ratio = span as f64 / limits.max_region_span as f64;
@@ -319,8 +339,14 @@ pub fn explain_query_plan(
         normalized_query_hash(req).map_err(|e| QueryError::new(QueryErrorCode::Validation, e))?;
     let decoded_cursor = if let Some(token) = &req.cursor {
         Some(
-            decode_cursor_inner(token, cursor_secret, &query_hash, order_mode)
-                .map_err(|e| QueryError::new(QueryErrorCode::Cursor, e.to_string()))?,
+            decode_cursor_inner(
+                token,
+                cursor_secret,
+                &query_hash,
+                order_mode,
+                req.dataset_key.as_deref(),
+            )
+            .map_err(|e| QueryError::new(QueryErrorCode::Cursor, e.to_string()))?,
         )
     } else {
         None
@@ -375,10 +401,25 @@ pub fn query_genes_fanout(
             .cursor
             .as_ref()
             .and_then(|token| {
-                decode_cursor_inner(token, cursor_secret, &query_hash, order_mode).ok()
+                decode_cursor_inner(
+                    token,
+                    cursor_secret,
+                    &query_hash,
+                    order_mode,
+                    req.dataset_key.as_deref(),
+                )
+                .ok()
             })
             .map_or(1_u32, |c| c.depth.saturating_add(1));
         let payload = CursorPayloadInner {
+            cursor_version: "v1".to_string(),
+            dataset_id: req.dataset_key.clone(),
+            sort_key: Some("region".to_string()),
+            last_seen: Some(cursor::CursorLastSeen {
+                gene_id: last.gene_id.clone(),
+                seqid: last.seqid.clone(),
+                start: last.start,
+            }),
             order: "region".to_string(),
             last_seqid: last.seqid.clone(),
             last_start: last.start,

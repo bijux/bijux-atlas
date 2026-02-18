@@ -926,6 +926,7 @@ fn explain_query(args: ExplainQueryArgs, output_mode: OutputMode) -> Result<(), 
         },
         limit: args.limit,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: args.allow_full_scan,
     };
     let query_class = classify_query(&req);

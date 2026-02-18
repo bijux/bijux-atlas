@@ -257,6 +257,7 @@ fn explain_plan_snapshots_by_query_class() {
         },
         limit: 10,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
     let medium = GeneQueryRequest {
@@ -267,6 +268,7 @@ fn explain_plan_snapshots_by_query_class() {
         },
         limit: 10,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
     let heavy = GeneQueryRequest {
@@ -281,6 +283,7 @@ fn explain_plan_snapshots_by_query_class() {
         },
         limit: 10,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
 
@@ -323,6 +326,7 @@ fn legacy_v2_schema_remains_queryable() {
         },
         limit: 10,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
     let resp = query_genes(&conn, &req, &limits(), b"legacy-secret").expect("legacy query");
@@ -368,6 +372,7 @@ fn missing_index_produces_diagnostic_error() {
         },
         limit: 10,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
 
@@ -387,6 +392,7 @@ fn tie_break_ordering_is_stable_for_same_coordinates() {
         },
         limit: 20,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
     let rows = query_genes(&conn, &req, &limits(), b"s")
@@ -409,6 +415,7 @@ fn collation_normalized_name_lookup_is_case_insensitive() {
         },
         limit: 10,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
     let lower = GeneQueryRequest {
@@ -419,6 +426,7 @@ fn collation_normalized_name_lookup_is_case_insensitive() {
         },
         limit: 10,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
     assert_eq!(
@@ -455,6 +463,7 @@ fn projection_specific_query_uses_covering_name_index() {
         },
         limit: 10,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
     let plan = explain_query_plan(&conn, &req, &limits(), b"s")

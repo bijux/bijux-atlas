@@ -11,5 +11,6 @@ pub fn normalized_query_hash(req: &GeneQueryRequest) -> Result<String, String> {
 pub fn normalize_request(req: &GeneQueryRequest) -> GeneQueryRequest {
     let mut normalized = req.clone();
     normalized.cursor = None;
+    normalized.fields = crate::filters::GeneFields::default();
     normalized
 }

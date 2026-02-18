@@ -107,6 +107,7 @@ fn bench_query_concurrency(c: &mut Criterion) {
                         },
                         limit: 50,
                         cursor: None,
+                        dataset_key: None,
                         allow_full_scan: false,
                     };
                     let _ =

@@ -15,8 +15,10 @@ const MAX_CURSOR_SIG_PART_LEN: usize = 128;
 #[non_exhaustive]
 pub enum CursorErrorCode {
     InvalidFormat,
+    UnsupportedVersion,
     InvalidSignature,
     InvalidPayload,
+    DatasetMismatch,
     QueryHashMismatch,
     OrderMismatch,
 }
@@ -46,7 +48,22 @@ impl std::fmt::Display for CursorError {
 impl std::error::Error for CursorError {}
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct CursorLastSeen {
+    pub gene_id: String,
+    pub seqid: Option<String>,
+    pub start: Option<u64>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct CursorPayload {
+    #[serde(default = "cursor_version_v1")]
+    pub cursor_version: String,
+    #[serde(default)]
+    pub dataset_id: Option<String>,
+    #[serde(default)]
+    pub sort_key: Option<String>,
+    #[serde(default)]
+    pub last_seen: Option<CursorLastSeen>,
     pub order: String,
     pub last_seqid: Option<String>,
     pub last_start: Option<u64>,
@@ -83,6 +100,7 @@ pub fn decode_cursor(
     secret: &[u8],
     expected_hash: &str,
     mode: OrderMode,
+    expected_dataset: Option<&str>,
 ) -> Result<CursorPayload, CursorError> {
     if token.len() > MAX_CURSOR_TOKEN_LEN {
         return Err(CursorError::new(
@@ -90,8 +108,7 @@ pub fn decode_cursor(
             "cursor exceeds max length",
         ));
     }
-    let (payload_part, sig_part) = parse_cursor_parts(token)
-        .ok_or_else(|| CursorError::new(CursorErrorCode::InvalidFormat, "invalid cursor format"))?;
+    let (payload_part, sig_part) = parse_cursor_parts(token)?;
     if payload_part.len() > MAX_CURSOR_PAYLOAD_PART_LEN || sig_part.len() > MAX_CURSOR_SIG_PART_LEN
     {
         return Err(CursorError::new(
@@ -119,6 +136,20 @@ pub fn decode_cursor(
     let payload: CursorPayload = serde_json::from_slice(&payload_bytes)
         .map_err(|e| CursorError::new(CursorErrorCode::InvalidPayload, e.to_string()))?;
 
+    if payload.cursor_version != CURSOR_VERSION_V1 {
+        return Err(CursorError::new(
+            CursorErrorCode::UnsupportedVersion,
+            "cursor version unsupported",
+        ));
+    }
+    if let Some(dataset) = expected_dataset {
+        if payload.dataset_id.as_deref() != Some(dataset) {
+            return Err(CursorError::new(
+                CursorErrorCode::DatasetMismatch,
+                "cursor dataset mismatch",
+            ));
+        }
+    }
     if payload.query_hash != expected_hash {
         return Err(CursorError::new(
             CursorErrorCode::QueryHashMismatch,
@@ -143,13 +174,24 @@ pub fn decode_cursor(
     }
 }
 
-fn parse_cursor_parts(token: &str) -> Option<(&str, &str)> {
+fn parse_cursor_parts(token: &str) -> Result<(&str, &str), CursorError> {
     let parts: Vec<&str> = token.split('.').collect();
     match parts.as_slice() {
         // Current versioned format.
-        [version, payload, sig] if *version == CURSOR_VERSION_V1 => Some((payload, sig)),
+        [version, payload, sig] if *version == CURSOR_VERSION_V1 => Ok((payload, sig)),
+        [version, _, _] => Err(CursorError::new(
+            CursorErrorCode::UnsupportedVersion,
+            format!("unsupported cursor version: {version}"),
+        )),
         // Legacy unversioned format kept for backward-compatible decoding.
-        [payload, sig] => Some((payload, sig)),
-        _ => None,
+        [payload, sig] => Ok((payload, sig)),
+        _ => Err(CursorError::new(
+            CursorErrorCode::InvalidFormat,
+            "invalid cursor format",
+        )),
     }
+}
+
+fn cursor_version_v1() -> String {
+    CURSOR_VERSION_V1.to_string()
 }

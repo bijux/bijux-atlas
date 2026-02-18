@@ -191,6 +191,7 @@ pub(super) fn build_dataset_query(
         },
         limit: parsed.limit,
         cursor: parsed.cursor,
+        dataset_key: Some(dataset.canonical_string()),
         allow_full_scan: false,
     };
     Ok((dataset, req))

@@ -628,8 +628,8 @@ pub(crate) async fn genes_handler(
                         "/v1/genes",
                         StatusCode::UNPROCESSABLE_ENTITY,
                         started.elapsed(),
-                )
-                .await;
+                    )
+                    .await;
                 return super::handlers::with_request_id(resp, &request_id);
             }
             if msg.contains("Validation:") || msg.contains("seqid does not exist in dataset") {
@@ -648,12 +648,19 @@ pub(crate) async fn genes_handler(
                 return super::handlers::with_request_id(resp, &request_id);
             }
             if req.cursor.is_some() {
+                let reason_code = if msg.contains("UnsupportedVersion") {
+                    "CURSOR_VERSION_UNSUPPORTED"
+                } else if msg.contains("DatasetMismatch") {
+                    "CURSOR_DATASET_MISMATCH"
+                } else {
+                    "CURSOR_INVALID"
+                };
                 let resp = super::handlers::api_error_response(
                     StatusCode::BAD_REQUEST,
                     super::handlers::error_json(
                         ApiErrorCode::InvalidCursor,
                         "invalid cursor",
-                        json!({"message": msg}),
+                        json!({"message": msg, "reason_code": reason_code}),
                     ),
                 );
                 state
