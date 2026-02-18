@@ -1,18 +1,22 @@
-# Ops Observability (Stub)
+# Ops Observability
 
-- Owner: `bijux-atlas-operations`
+## Purpose
+Own observability pack assets, contracts, drills, and verification routines.
 
-Canonical documentation lives in `docs/operations/observability/INDEX.md`.
-
-Local source-of-truth assets remain under this directory (`alerts/`, `contract/`, `grafana/`, `scripts/`, `tests/`).
-Use make targets for operations:
-
-- `make ops-observability-validate`
+## Entry points
+- `make ops-obs-up PROFILE=compose`
+- `make ops-obs-verify`
+- `make ops-obs-drill DRILL=otel-outage PROFILE=kind`
 - `make ops-observability-pack-tests`
-- `make ops-obs-mode ATLAS_OBS_PROFILE=local-compose|kind|cluster`
-- `make ops-observability-pack-verify`
-- `make ops-observability-pack-health`
-- `make ops-observability-pack-export`
-- `make ops-observability-pack-conformance-report`
 
-Canonical docs: `ops/README.md`, `docs/operations/INDEX.md`.
+## Contracts
+- `ops/obs/CONTRACT.md`
+- `configs/ops/observability-pack.json`
+
+## Artifacts
+- `ops/_artifacts/<run_id>/obs/`
+
+## Failure modes
+- Pack install mismatch with pinned versions.
+- Metrics/traces contract violations.
+- Drill execution fails to restore healthy state.

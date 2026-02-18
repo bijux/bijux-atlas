@@ -1,23 +1,22 @@
 # Ops Stack
 
-Canonical stack manifests and bootstrap scripts for local and CI operations.
+## Purpose
+Own local and CI infrastructure dependencies: kind, store backend, redis, telemetry stack, and fault primitives.
 
-- `kind/`: cluster definitions and profile scripts (`small|normal|perf`)
-- `minio/`: object store deployment and bootstrap
-- `prometheus/`: Prometheus deployment
-- `grafana/`: Grafana deployment + provisioned datasource/dashboard
-- `otel/`: OpenTelemetry collector deployment
-- `redis/`: optional Redis deployment
-- `toxiproxy/`: optional store fault/latency proxy
-- `faults/`: fault-injection scripts
-- `values/`: canonical values profiles used by ops targets
+## Entry points
+- `make ops-stack-up PROFILE=kind`
+- `make ops-stack-down`
+- `make ops-stack-smoke`
+- `make ops-stack-health-report`
 
-Use `make ops-up` / `make ops-down` and related `ops-*` targets as the interface.
+## Contracts
+- `ops/stack/CONTRACT.md`
+- `ops/stack/version-manifest.json`
 
-Kind helpers:
-- `make ops-kind-up`
-- `make ops-kind-down`
-- `make ops-kind-reset`
-- `make ops-kind-registry-up`
+## Artifacts
+- `ops/_artifacts/<run_id>/stack/`
 
-See top-level ops guide: `ops/README.md`.
+## Failure modes
+- Cluster bootstrap fails due to docker/kind toolchain drift.
+- Dependency readiness timeout (store/otel/prom/grafana/redis).
+- Context mismatch prevented by guardrails.
