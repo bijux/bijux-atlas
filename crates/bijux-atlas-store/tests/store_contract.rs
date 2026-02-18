@@ -68,6 +68,44 @@ fn local_publish_is_atomic_and_writes_manifest_lock() {
 }
 
 #[test]
+fn local_publish_rejects_overwrite_of_existing_dataset() {
+    let root = tempdir().expect("tempdir");
+    let store = LocalFsStore::new(root.path().to_path_buf());
+    let dataset = mk_dataset();
+    let manifest = mk_manifest(dataset.clone());
+    let manifest_bytes = serde_json::to_vec(&manifest).expect("manifest json");
+    let sqlite_bytes = b"sqlite-bytes".to_vec();
+    let expected_manifest = sha256_hex(&manifest_bytes);
+    let expected_sqlite = sha256_hex(&sqlite_bytes);
+
+    store
+        .put_dataset(
+            &dataset,
+            &manifest_bytes,
+            &sqlite_bytes,
+            &expected_manifest,
+            &expected_sqlite,
+        )
+        .expect("initial publish");
+
+    let err = store
+        .put_dataset(
+            &dataset,
+            &manifest_bytes,
+            b"new-sqlite-bytes",
+            &expected_manifest,
+            &sha256_hex(b"new-sqlite-bytes"),
+        )
+        .expect_err("overwrite must be rejected");
+    assert_eq!(err.code, StoreErrorCode::Conflict);
+    assert!(
+        err.message.contains("must not be overwritten"),
+        "immutability error message should be explicit: {}",
+        err.message
+    );
+}
+
+#[test]
 fn local_publish_rejects_checksum_mismatch_without_finalizing() {
     let root = tempdir().expect("tempdir");
     let store = LocalFsStore::new(root.path().to_path_buf());
