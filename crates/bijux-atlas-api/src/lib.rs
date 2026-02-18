@@ -21,8 +21,8 @@ pub mod wire;
 pub use errors::{ApiError, ApiErrorCode};
 pub use openapi::openapi_v1_spec;
 pub use params::{
-    parse_list_genes_params, parse_list_genes_params_with_limit, parse_region_filter,
-    IncludeField, ListGenesParams, MAX_CURSOR_BYTES,
+    parse_list_genes_params, parse_list_genes_params_with_limit, parse_range_filter,
+    parse_region_filter, IncludeField, ListGenesParams, MAX_CURSOR_BYTES,
 };
 pub use responses::{ApiContentType, ApiResponseEnvelope, ContentNegotiation};
 pub use wire::{list_genes_v1, QueryAdapter};
@@ -52,11 +52,11 @@ mod tests {
     fn parse_params_success_exhaustive() {
         let mut q = required_dataset_dims();
         q.insert("limit".to_string(), "42".to_string());
-        q.insert("name_prefix".to_string(), "BR".to_string());
+        q.insert("name_like".to_string(), "BR*".to_string());
 
         let parsed = parse_list_genes_params(&q).expect("params parse");
         assert_eq!(parsed.limit, 42);
-        assert_eq!(parsed.name_prefix.as_deref(), Some("BR"));
+        assert_eq!(parsed.name_like.as_deref(), Some("BR*"));
         assert!(!parsed.pretty);
     }
 
@@ -97,6 +97,14 @@ mod tests {
         let parsed = parse_region_filter(Some("chr1:10-20".to_string())).expect("region parse");
         assert_eq!(parsed.expect("region").seqid, "chr1");
         let err = parse_region_filter(Some("chr1:20-10".to_string())).expect_err("invalid");
+        assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+    }
+
+    #[test]
+    fn parse_range_strict_and_stable() {
+        let parsed = parse_range_filter(Some("chr1:10-20".to_string())).expect("range parse");
+        assert_eq!(parsed.expect("range").seqid, "chr1");
+        let err = parse_range_filter(Some("chr1:20-10".to_string())).expect_err("invalid");
         assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
     }
 

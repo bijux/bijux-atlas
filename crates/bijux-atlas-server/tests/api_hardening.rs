@@ -78,6 +78,23 @@ async fn error_contract_and_etag_behaviors() {
 
     let (status, _, body) = send_raw(
         addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&foo=bar",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 400);
+    let json: Value = serde_json::from_str(&body).expect("unknown filter json");
+    assert!(
+        json.get("error")
+            .and_then(|e| e.get("details"))
+            .and_then(|d| d.get("value"))
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .contains("allowed")
+    );
+
+    let (status, _, body) = send_raw(
+        addr,
         "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&fields=gene_id",
         &[],
     )
@@ -124,6 +141,15 @@ async fn error_contract_and_etag_behaviors() {
     )
     .await;
     assert_eq!(status, 200);
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&range=chrX:1-2",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 400);
+    assert!(body.contains("did you mean chr1"));
 
     let (status, _, body) = send_raw(addr, "/metrics", &[]).await;
     assert_eq!(status, 200);

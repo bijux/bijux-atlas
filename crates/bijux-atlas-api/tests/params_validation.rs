@@ -68,6 +68,55 @@ fn request_validation_region_parser_is_strict() {
 }
 
 #[test]
+fn request_validation_range_parser_is_strict_and_helpful() {
+    let mut q = base_query();
+    q.insert("range".to_string(), "chr1:10-20".to_string());
+    let parsed = parse_list_genes_params(&q).expect("range parse");
+    assert_eq!(parsed.range.as_deref(), Some("chr1:10-20"));
+
+    let mut bad = base_query();
+    bad.insert("range".to_string(), "chr1:20-10".to_string());
+    let err = parse_list_genes_params(&bad).expect_err("invalid range");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+    assert!(err.details["parameter"].as_str() == Some("range"));
+
+    let mut too_wide = base_query();
+    too_wide.insert("range".to_string(), "chr1:1-5000001".to_string());
+    let err = parse_list_genes_params(&too_wide).expect_err("range span capped");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+}
+
+#[test]
+fn request_validation_unknown_filter_rejected_with_allowed_list() {
+    let mut q = base_query();
+    q.insert("foo".to_string(), "bar".to_string());
+    let err = parse_list_genes_params(&q).expect_err("unknown filter");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+    assert!(err.message.contains("filter"));
+    assert!(err.details["value"].as_str().unwrap_or("").contains("allowed"));
+}
+
+#[test]
+fn request_validation_name_like_rejects_invalid_operator_forms() {
+    let mut q = base_query();
+    q.insert("name_like".to_string(), "*BRCA".to_string());
+    let err = parse_list_genes_params(&q).expect_err("invalid wildcard");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+}
+
+#[test]
+fn request_validation_contig_requires_and_matches_range() {
+    let mut q = base_query();
+    q.insert("contig".to_string(), "chr1".to_string());
+    let err = parse_list_genes_params(&q).expect_err("contig requires range");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+
+    q.insert("range".to_string(), "chr2:1-10".to_string());
+    let err = parse_list_genes_params(&q).expect_err("contig mismatch");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+}
+
+#[test]
 fn request_validation_requires_explicit_dataset_dimensions() {
     for dim in ["release", "species", "assembly"] {
         let mut q = base_query();
