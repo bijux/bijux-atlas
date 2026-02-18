@@ -30,7 +30,7 @@ if missing:
     sys.exit(1)
 
 # Require cache/store-path span coverage in source to keep trace contracts meaningful.
-cache_span_tokens = ("cache_lookup", "download", "open_db")
+cache_span_tokens = ("cache_lookup", "store_fetch", "open_db")
 if not any(token in corpus for token in cache_span_tokens):
     print("required cache/store tracing span tokens not found in source", file=sys.stderr)
     sys.exit(1)

@@ -4,7 +4,9 @@ use bijux_atlas_model::{
     parse_dataset_key, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ReleaseGeneIndex,
     ShardCatalog,
 };
-use bijux_atlas_policies::{canonical_config_json, load_policy_from_workspace, resolve_mode_profile, PolicyMode};
+use bijux_atlas_policies::{
+    canonical_config_json, load_policy_from_workspace, resolve_mode_profile, PolicyMode,
+};
 use bijux_atlas_store::{
     canonical_catalog_json, sorted_catalog_entries, verify_expected_sha256, ArtifactStore,
     LocalFsStore, ManifestLock, StoreErrorCode,

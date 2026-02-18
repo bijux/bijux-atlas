@@ -20,8 +20,12 @@ Does not define implementation internals outside this contract surface.
 
 ## Contracts
 
+- `admission_control` required attributes: route
+- `cache_lookup` required attributes: dataset
+- `dataset_resolve` required attributes: route
 - `serialize_response` required attributes: route, status
 - `sqlite_query` required attributes: class
+- `store_fetch` required attributes: backend, dataset
 
 ## Failure modes
 
@@ -32,10 +36,9 @@ Invalid or drifted registry content is rejected by contract checks and CI gates.
 ```json
 {
   "required_attributes": [
-    "route",
-    "status"
+    "route"
   ],
-  "span": "serialize_response"
+  "span": "admission_control"
 }
 ```
 

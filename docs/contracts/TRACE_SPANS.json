@@ -2,6 +2,24 @@
   "schema_version": 1,
   "spans": [
     {
+      "name": "admission_control",
+      "required_attributes": [
+        "route"
+      ]
+    },
+    {
+      "name": "cache_lookup",
+      "required_attributes": [
+        "dataset"
+      ]
+    },
+    {
+      "name": "dataset_resolve",
+      "required_attributes": [
+        "route"
+      ]
+    },
+    {
       "name": "serialize_response",
       "required_attributes": [
         "route",
@@ -12,6 +30,13 @@
       "name": "sqlite_query",
       "required_attributes": [
         "class"
+      ]
+    },
+    {
+      "name": "store_fetch",
+      "required_attributes": [
+        "backend",
+        "dataset"
       ]
     }
   ],

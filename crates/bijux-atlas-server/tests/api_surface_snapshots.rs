@@ -67,7 +67,12 @@ fn header_value(headers: &str, name: &str) -> Option<String> {
     headers
         .lines()
         .find(|line| line.to_ascii_lowercase().starts_with(&prefix))
-        .map(|line| line.split_once(':').map_or("", |(_, v)| v).trim().to_string())
+        .map(|line| {
+            line.split_once(':')
+                .map_or("", |(_, v)| v)
+                .trim()
+                .to_string()
+        })
 }
 
 fn normalize_json(value: &Value) -> Value {
@@ -151,7 +156,11 @@ async fn api_surface_response_shapes_match_golden_snapshot() {
         ),
         ManifestStats::new(1, 1, 1),
     );
-    store.manifest.lock().await.insert(dataset.clone(), manifest);
+    store
+        .manifest
+        .lock()
+        .await
+        .insert(dataset.clone(), manifest);
     store.sqlite.lock().await.insert(dataset.clone(), sqlite);
 
     let tmp = tempdir().expect("tempdir");
@@ -177,28 +186,141 @@ async fn api_surface_response_shapes_match_golden_snapshot() {
     tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
 
     let mut reqs = BTreeMap::new();
-    reqs.insert("GET /debug/dataset-health", ("/debug/dataset-health?release=110&species=homo_sapiens&assembly=GRCh38", Vec::<(&str, &str)>::new(), Vec::<u8>::new()));
-    reqs.insert("GET /debug/datasets", ("/debug/datasets", Vec::<(&str, &str)>::new(), Vec::<u8>::new()));
-    reqs.insert("GET /debug/registry-health", ("/debug/registry-health", Vec::<(&str, &str)>::new(), Vec::<u8>::new()));
-    reqs.insert("GET /healthz", ("/healthz", Vec::<(&str, &str)>::new(), Vec::<u8>::new()));
-    reqs.insert("GET /healthz/overload", ("/healthz/overload", Vec::<(&str, &str)>::new(), Vec::<u8>::new()));
-    reqs.insert("GET /metrics", ("/metrics", Vec::<(&str, &str)>::new(), Vec::<u8>::new()));
-    reqs.insert("GET /readyz", ("/readyz", Vec::<(&str, &str)>::new(), Vec::<u8>::new()));
-    reqs.insert("GET /v1/datasets", ("/v1/datasets", Vec::<(&str, &str)>::new(), Vec::<u8>::new()));
-    reqs.insert("GET /v1/datasets/{release}/{species}/{assembly}", ("/v1/datasets/110/homo_sapiens/GRCh38?include_bom=1", Vec::<(&str, &str)>::new(), Vec::<u8>::new()));
+    reqs.insert(
+        "GET /debug/dataset-health",
+        (
+            "/debug/dataset-health?release=110&species=homo_sapiens&assembly=GRCh38",
+            Vec::<(&str, &str)>::new(),
+            Vec::<u8>::new(),
+        ),
+    );
+    reqs.insert(
+        "GET /debug/datasets",
+        (
+            "/debug/datasets",
+            Vec::<(&str, &str)>::new(),
+            Vec::<u8>::new(),
+        ),
+    );
+    reqs.insert(
+        "GET /debug/registry-health",
+        (
+            "/debug/registry-health",
+            Vec::<(&str, &str)>::new(),
+            Vec::<u8>::new(),
+        ),
+    );
+    reqs.insert(
+        "GET /healthz",
+        ("/healthz", Vec::<(&str, &str)>::new(), Vec::<u8>::new()),
+    );
+    reqs.insert(
+        "GET /healthz/overload",
+        (
+            "/healthz/overload",
+            Vec::<(&str, &str)>::new(),
+            Vec::<u8>::new(),
+        ),
+    );
+    reqs.insert(
+        "GET /metrics",
+        ("/metrics", Vec::<(&str, &str)>::new(), Vec::<u8>::new()),
+    );
+    reqs.insert(
+        "GET /readyz",
+        ("/readyz", Vec::<(&str, &str)>::new(), Vec::<u8>::new()),
+    );
+    reqs.insert(
+        "GET /v1/datasets",
+        ("/v1/datasets", Vec::<(&str, &str)>::new(), Vec::<u8>::new()),
+    );
+    reqs.insert(
+        "GET /v1/datasets/{release}/{species}/{assembly}",
+        (
+            "/v1/datasets/110/homo_sapiens/GRCh38?include_bom=1",
+            Vec::<(&str, &str)>::new(),
+            Vec::<u8>::new(),
+        ),
+    );
     reqs.insert("GET /v1/diff/genes", ("/v1/diff/genes?from_release=109&to_release=110&species=homo_sapiens&assembly=GRCh38&limit=1", Vec::<(&str, &str)>::new(), Vec::<u8>::new()));
     reqs.insert("GET /v1/diff/region", ("/v1/diff/region?from_release=109&to_release=110&species=homo_sapiens&assembly=GRCh38&region=chr1:1-10&limit=1", Vec::<(&str, &str)>::new(), Vec::<u8>::new()));
-    reqs.insert("GET /v1/_debug/echo", ("/v1/_debug/echo?x=1", Vec::<(&str, &str)>::new(), Vec::<u8>::new()));
-    reqs.insert("GET /v1/genes", ("/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&limit=1", Vec::<(&str, &str)>::new(), Vec::<u8>::new()));
-    reqs.insert("GET /v1/genes/count", ("/v1/genes/count?release=110&species=homo_sapiens&assembly=GRCh38", Vec::<(&str, &str)>::new(), Vec::<u8>::new()));
-    reqs.insert("GET /v1/genes/{gene_id}/sequence", ("/v1/genes/g1/sequence?release=110&species=homo_sapiens&assembly=GRCh38", Vec::<(&str, &str)>::new(), Vec::<u8>::new()));
-    reqs.insert("GET /v1/genes/{gene_id}/transcripts", ("/v1/genes/g1/transcripts?release=110&species=homo_sapiens&assembly=GRCh38&limit=1", Vec::<(&str, &str)>::new(), Vec::<u8>::new()));
-    reqs.insert("GET /v1/openapi.json", ("/v1/openapi.json", Vec::<(&str, &str)>::new(), Vec::<u8>::new()));
+    reqs.insert(
+        "GET /v1/_debug/echo",
+        (
+            "/v1/_debug/echo?x=1",
+            Vec::<(&str, &str)>::new(),
+            Vec::<u8>::new(),
+        ),
+    );
+    reqs.insert(
+        "GET /v1/genes",
+        (
+            "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&limit=1",
+            Vec::<(&str, &str)>::new(),
+            Vec::<u8>::new(),
+        ),
+    );
+    reqs.insert(
+        "GET /v1/genes/count",
+        (
+            "/v1/genes/count?release=110&species=homo_sapiens&assembly=GRCh38",
+            Vec::<(&str, &str)>::new(),
+            Vec::<u8>::new(),
+        ),
+    );
+    reqs.insert(
+        "GET /v1/genes/{gene_id}/sequence",
+        (
+            "/v1/genes/g1/sequence?release=110&species=homo_sapiens&assembly=GRCh38",
+            Vec::<(&str, &str)>::new(),
+            Vec::<u8>::new(),
+        ),
+    );
+    reqs.insert(
+        "GET /v1/genes/{gene_id}/transcripts",
+        (
+            "/v1/genes/g1/transcripts?release=110&species=homo_sapiens&assembly=GRCh38&limit=1",
+            Vec::<(&str, &str)>::new(),
+            Vec::<u8>::new(),
+        ),
+    );
+    reqs.insert(
+        "GET /v1/openapi.json",
+        (
+            "/v1/openapi.json",
+            Vec::<(&str, &str)>::new(),
+            Vec::<u8>::new(),
+        ),
+    );
     reqs.insert("POST /v1/query/validate", ("/v1/query/validate", vec![("Content-Type", "application/json")], br#"{"endpoint":"/v1/genes","query":{"release":"110","species":"homo_sapiens","assembly":"GRCh38","limit":"1"}}"#.to_vec()));
-    reqs.insert("GET /v1/releases/{release}/species/{species}/assemblies/{assembly}", ("/v1/releases/110/species/homo_sapiens/assemblies/GRCh38?include_bom=1", Vec::<(&str, &str)>::new(), Vec::<u8>::new()));
-    reqs.insert("GET /v1/sequence/region", ("/v1/sequence/region?release=110&species=homo_sapiens&assembly=GRCh38&region=chr1:1-10", Vec::<(&str, &str)>::new(), Vec::<u8>::new()));
-    reqs.insert("GET /v1/transcripts/{tx_id}", ("/v1/transcripts/tx1?release=110&species=homo_sapiens&assembly=GRCh38", Vec::<(&str, &str)>::new(), Vec::<u8>::new()));
-    reqs.insert("GET /v1/version", ("/v1/version", Vec::<(&str, &str)>::new(), Vec::<u8>::new()));
+    reqs.insert(
+        "GET /v1/releases/{release}/species/{species}/assemblies/{assembly}",
+        (
+            "/v1/releases/110/species/homo_sapiens/assemblies/GRCh38?include_bom=1",
+            Vec::<(&str, &str)>::new(),
+            Vec::<u8>::new(),
+        ),
+    );
+    reqs.insert(
+        "GET /v1/sequence/region",
+        (
+            "/v1/sequence/region?release=110&species=homo_sapiens&assembly=GRCh38&region=chr1:1-10",
+            Vec::<(&str, &str)>::new(),
+            Vec::<u8>::new(),
+        ),
+    );
+    reqs.insert(
+        "GET /v1/transcripts/{tx_id}",
+        (
+            "/v1/transcripts/tx1?release=110&species=homo_sapiens&assembly=GRCh38",
+            Vec::<(&str, &str)>::new(),
+            Vec::<u8>::new(),
+        ),
+    );
+    reqs.insert(
+        "GET /v1/version",
+        ("/v1/version", Vec::<(&str, &str)>::new(), Vec::<u8>::new()),
+    );
 
     let mut snapshots = Vec::new();
     for (key, (path, headers, body)) in reqs {
@@ -236,7 +358,9 @@ async fn api_surface_response_shapes_match_golden_snapshot() {
         });
     }
 
-    snapshots.sort_by(|a, b| (a.method.as_str(), a.path.as_str()).cmp(&(b.method.as_str(), b.path.as_str())));
+    snapshots.sort_by(|a, b| {
+        (a.method.as_str(), a.path.as_str()).cmp(&(b.method.as_str(), b.path.as_str()))
+    });
     let current = stable_json_bytes(&snapshots).expect("snapshot bytes");
     let golden_path = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("tests/snapshots/api-surface.responses.v1.json");

@@ -84,7 +84,10 @@ fn burst_p99(url: &str, threads: usize, per_thread: usize) -> Duration {
                     let started = Instant::now();
                     let resp = client.get(&url).send().expect("request");
                     assert_eq!(resp.status().as_u16(), 200);
-                    samples.lock().expect("lock samples").push(started.elapsed());
+                    samples
+                        .lock()
+                        .expect("lock samples")
+                        .push(started.elapsed());
                 }
             });
         }

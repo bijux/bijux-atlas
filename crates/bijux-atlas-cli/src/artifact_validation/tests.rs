@@ -321,11 +321,15 @@ fn gc_apply_deletes_unreachable_and_keeps_pinned_dataset() {
     .expect("gc apply");
 
     assert!(
-        bijux_atlas_model::artifact_paths(&root, &pinned).dataset_root.exists(),
+        bijux_atlas_model::artifact_paths(&root, &pinned)
+            .dataset_root
+            .exists(),
         "pinned dataset must survive gc apply"
     );
     assert!(
-        !bijux_atlas_model::artifact_paths(&root, &stale).dataset_root.exists(),
+        !bijux_atlas_model::artifact_paths(&root, &stale)
+            .dataset_root
+            .exists(),
         "unreachable dataset must be removed by gc apply"
     );
 }
