@@ -1,4 +1,3 @@
-
 use async_trait::async_trait;
 use axum::body::Body;
 use axum::extract::{DefaultBodyLimit, State};
@@ -27,7 +26,6 @@ use tokio::sync::{Mutex, OwnedSemaphorePermit, RwLock, Semaphore};
 use tokio::time::timeout;
 use tracing::{error, info, warn};
 
-
 pub const CRATE_NAME: &str = "bijux-atlas-server";
 
 #[derive(Debug)]
@@ -54,6 +52,8 @@ pub struct RegistrySourceHealth {
 pub struct DatasetCacheConfig {
     pub disk_root: PathBuf,
     pub max_disk_bytes: u64,
+    pub disk_high_watermark_pct: u8,
+    pub disk_low_watermark_pct: u8,
     pub max_dataset_count: usize,
     pub idle_ttl: Duration,
     pub pinned_datasets: HashSet<DatasetId>,
@@ -81,6 +81,7 @@ pub struct DatasetCacheConfig {
     pub catalog_breaker_failure_threshold: u32,
     pub catalog_breaker_open_ms: u64,
     pub quarantine_after_corruption_failures: u32,
+    pub quarantine_retry_ttl: Duration,
     pub registry_ttl: Duration,
     pub registry_freeze_mode: bool,
 }
@@ -90,6 +91,8 @@ impl Default for DatasetCacheConfig {
         Self {
             disk_root: PathBuf::from("artifacts/server-cache"),
             max_disk_bytes: 4 * 1024 * 1024 * 1024,
+            disk_high_watermark_pct: 90,
+            disk_low_watermark_pct: 75,
             max_dataset_count: 8,
             idle_ttl: Duration::from_secs(1800),
             pinned_datasets: HashSet::new(),
@@ -117,6 +120,7 @@ impl Default for DatasetCacheConfig {
             catalog_breaker_failure_threshold: 5,
             catalog_breaker_open_ms: 5000,
             quarantine_after_corruption_failures: 3,
+            quarantine_retry_ttl: Duration::from_secs(300),
             registry_ttl: Duration::from_secs(15),
             registry_freeze_mode: false,
         }
@@ -148,6 +152,7 @@ pub struct CacheMetrics {
     pub cheap_queries_served_while_overloaded_total: AtomicU64,
     pub disk_io_latency_ns: Mutex<Vec<u64>>,
     pub fs_space_pressure_events_total: AtomicU64,
+    pub cache_evictions_total: AtomicU64,
     pub registry_invalidation_events_total: AtomicU64,
 }
 
@@ -591,7 +596,6 @@ struct DatasetEntry {
     shard_by_seqid: HashMap<String, Vec<PathBuf>>,
     last_access: Instant,
     size_bytes: u64,
-    last_download_latency_ns: u64,
     dataset_semaphore: Arc<Semaphore>,
     query_semaphore: Arc<Semaphore>,
 }

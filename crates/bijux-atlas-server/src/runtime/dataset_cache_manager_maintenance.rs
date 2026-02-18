@@ -21,6 +21,18 @@ impl DatasetCacheManager {
     }
 
     async fn check_quarantine(&self, dataset: &DatasetId) -> Result<(), CacheError> {
+        if self.cfg.quarantine_retry_ttl > Duration::from_secs(0) {
+            let mut breakers = self.breakers.lock().await;
+            if let Some(state) = breakers.get_mut(dataset) {
+                if let Some(until) = state.open_until {
+                    if Instant::now() >= until {
+                        state.open_until = None;
+                        state.failure_count = 0;
+                        self.quarantined.lock().await.remove(dataset);
+                    }
+                }
+            }
+        }
         let quarantined = self.quarantined.lock().await;
         if quarantined.contains(dataset) {
             return Err(CacheError("dataset is quarantined".to_string()));
@@ -37,6 +49,9 @@ impl DatasetCacheManager {
         {
             drop(failures);
             self.quarantined.lock().await.insert(dataset.clone());
+            let mut breakers = self.breakers.lock().await;
+            let state = breakers.entry(dataset.clone()).or_default();
+            state.open_until = Some(Instant::now() + self.cfg.quarantine_retry_ttl);
         }
     }
 

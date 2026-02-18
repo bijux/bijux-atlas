@@ -243,8 +243,19 @@ pub(crate) async fn debug_datasets_handler(State(state): State<AppState>) -> imp
         return with_request_id(resp, &request_id);
     }
     let items = state.cache.cached_datasets_debug().await;
-    let resp = Json(json!({"datasets": items, "catalog_epoch": state.cache.catalog_epoch().await}))
-        .into_response();
+    let metrics = &state.cache.metrics;
+    let resp = Json(json!({
+        "datasets": items,
+        "catalog_epoch": state.cache.catalog_epoch().await,
+        "cache_stats": {
+            "hit": metrics.dataset_hits.load(std::sync::atomic::Ordering::Relaxed),
+            "miss": metrics.dataset_misses.load(std::sync::atomic::Ordering::Relaxed),
+            "bytes_used": metrics.disk_usage_bytes.load(std::sync::atomic::Ordering::Relaxed),
+            "evictions": metrics.cache_evictions_total.load(std::sync::atomic::Ordering::Relaxed),
+            "download_failures": metrics.store_download_failures.load(std::sync::atomic::Ordering::Relaxed)
+        }
+    }))
+    .into_response();
     state
         .metrics
         .observe_request("/debug/datasets", StatusCode::OK, started.elapsed())

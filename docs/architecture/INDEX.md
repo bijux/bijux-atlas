@@ -43,6 +43,7 @@ Expected output: docs build and docs-structure checks pass.
 - [Backend Architecture](backend-architecture.md)
 - [Component Responsibilities](component-responsibilities.md)
 - [Data Access Patterns](data-access-patterns.md)
+- [Cache Manager Contract](cache-manager.md)
 - [Query Connection Strategy](query-connection-strategy.md)
 - [No Serving Writes](no-serving-writes.md)
 - [Build/Serve Split](build-serve-split.md)

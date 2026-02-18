@@ -1,3 +1,105 @@
+#[derive(Debug, Clone)]
+struct LocalCachePaths {
+    cache_root: PathBuf,
+    inputs_dir: PathBuf,
+    derived_dir: PathBuf,
+    fasta: PathBuf,
+    fai: PathBuf,
+    sqlite: PathBuf,
+    manifest: PathBuf,
+    release_gene_index: PathBuf,
+}
+
+fn local_cache_paths(root: &Path, cache_key: &str) -> LocalCachePaths {
+    let cache_root = root.join(cache_key);
+    let inputs_dir = cache_root.join("inputs");
+    let derived_dir = cache_root.join("derived");
+    LocalCachePaths {
+        cache_root,
+        inputs_dir: inputs_dir.clone(),
+        derived_dir: derived_dir.clone(),
+        fasta: inputs_dir.join("genome.fa.bgz"),
+        fai: inputs_dir.join("genome.fa.bgz.fai"),
+        sqlite: derived_dir.join("gene_summary.sqlite"),
+        manifest: derived_dir.join("manifest.json"),
+        release_gene_index: derived_dir.join("release_gene_index.json"),
+    }
+}
+
+fn manifest_cache_key(manifest: &ArtifactManifest) -> String {
+    let key = manifest.artifact_hash.trim();
+    if !key.is_empty() {
+        key.to_string()
+    } else if !manifest.checksums.sqlite_sha256.trim().is_empty() {
+        manifest.checksums.sqlite_sha256.clone()
+    } else {
+        sha256_hex(manifest.dataset.canonical_string().as_bytes())
+    }
+}
+
+fn dataset_index_path(root: &Path, dataset: &DatasetId) -> PathBuf {
+    root.join(".dataset-index")
+        .join(format!("{}.key", dataset.key_string()))
+}
+
+fn safe_cache_key(key: &str) -> Result<(), CacheError> {
+    if key.is_empty() || key.contains('/') || key.contains("..") {
+        return Err(CacheError("invalid cache key".to_string()));
+    }
+    Ok(())
+}
+
+fn write_atomic_file(path: &Path, bytes: &[u8]) -> Result<(), CacheError> {
+    let parent = path
+        .parent()
+        .ok_or_else(|| CacheError("atomic write missing parent".to_string()))?;
+    std::fs::create_dir_all(parent).map_err(|e| CacheError(e.to_string()))?;
+    let tmp = parent.join(format!(
+        ".{}.tmp.{}",
+        path.file_name().and_then(|s| s.to_str()).unwrap_or("file"),
+        std::process::id()
+    ));
+    {
+        let mut f = std::fs::File::create(&tmp).map_err(|e| CacheError(e.to_string()))?;
+        use std::io::Write as _;
+        f.write_all(bytes).map_err(|e| CacheError(e.to_string()))?;
+        f.sync_all().map_err(|e| CacheError(e.to_string()))?;
+    }
+    std::fs::rename(&tmp, path).map_err(|e| CacheError(e.to_string()))?;
+    if let Ok(dir) = std::fs::File::open(parent) {
+        let _ = dir.sync_all();
+    }
+    Ok(())
+}
+
+fn acquire_artifact_lease(
+    lock_path: &Path,
+    timeout: Duration,
+) -> Result<std::fs::File, CacheError> {
+    let started = Instant::now();
+    if let Some(parent) = lock_path.parent() {
+        std::fs::create_dir_all(parent).map_err(|e| CacheError(e.to_string()))?;
+    }
+    loop {
+        match std::fs::OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .open(lock_path)
+        {
+            Ok(f) => return Ok(f),
+            Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => {
+                if started.elapsed() >= timeout {
+                    return Err(CacheError(
+                        "timed out waiting for artifact lease".to_string(),
+                    ));
+                }
+                std::thread::sleep(Duration::from_millis(50));
+            }
+            Err(e) => return Err(CacheError(e.to_string())),
+        }
+    }
+}
+
 impl DatasetCacheManager {
     pub fn new(cfg: DatasetCacheConfig, store: Arc<dyn DatasetStoreBackend>) -> Arc<Self> {
         let max_concurrent_downloads = cfg.max_concurrent_downloads;
@@ -249,7 +351,7 @@ impl DatasetCacheManager {
         dataset: &DatasetId,
     ) -> Result<(PathBuf, PathBuf), CacheError> {
         self.ensure_dataset_cached(dataset).await?;
-        let paths = artifact_paths(Path::new(&self.cfg.disk_root), dataset);
+        let paths = self.resolve_cache_paths(dataset).await?;
         if paths.fasta.exists() && paths.fai.exists() {
             return Ok((paths.fasta, paths.fai));
         }
@@ -274,8 +376,8 @@ impl DatasetCacheManager {
             return Err(CacheError("fai checksum verification failed".to_string()));
         }
         std::fs::create_dir_all(&paths.inputs_dir).map_err(|e| CacheError(e.to_string()))?;
-        std::fs::write(&paths.fasta, fasta).map_err(|e| CacheError(e.to_string()))?;
-        std::fs::write(&paths.fai, fai).map_err(|e| CacheError(e.to_string()))?;
+        write_atomic_file(&paths.fasta, &fasta)?;
+        write_atomic_file(&paths.fai, &fai)?;
         Ok((paths.fasta, paths.fai))
     }
 
@@ -284,7 +386,7 @@ impl DatasetCacheManager {
         dataset: &DatasetId,
     ) -> Result<PathBuf, CacheError> {
         self.ensure_dataset_cached(dataset).await?;
-        let paths = artifact_paths(Path::new(&self.cfg.disk_root), dataset);
+        let paths = self.resolve_cache_paths(dataset).await?;
         if paths.release_gene_index.exists() {
             return Ok(paths.release_gene_index);
         }
@@ -301,7 +403,7 @@ impl DatasetCacheManager {
         }
         let bytes = self.store.fetch_release_gene_index_bytes(dataset).await?;
         std::fs::create_dir_all(&paths.derived_dir).map_err(|e| CacheError(e.to_string()))?;
-        std::fs::write(&paths.release_gene_index, bytes).map_err(|e| CacheError(e.to_string()))?;
+        write_atomic_file(&paths.release_gene_index, &bytes)?;
         Ok(paths.release_gene_index)
     }
 
@@ -506,30 +608,41 @@ impl DatasetCacheManager {
             ));
         }
 
-        let paths = artifact_paths(Path::new(&self.cfg.disk_root), dataset);
+        let cache_key = manifest_cache_key(&manifest);
+        safe_cache_key(&cache_key)?;
+        let paths = local_cache_paths(Path::new(&self.cfg.disk_root), &cache_key);
         std::fs::create_dir_all(&paths.derived_dir).map_err(|e| CacheError(e.to_string()))?;
+        let lease_path = paths.cache_root.join(".lease.lock");
+        let _lease = acquire_artifact_lease(&lease_path, Duration::from_secs(10))?;
 
         let tmp_dir = self.cfg.disk_root.join(".tmp-atlas-download");
         std::fs::create_dir_all(&tmp_dir).map_err(|e| CacheError(e.to_string()))?;
 
-        let tmp_sqlite = tmp_dir.join("gene_summary.sqlite.tmp");
-        std::fs::write(&tmp_sqlite, &sqlite).map_err(|e| CacheError(e.to_string()))?;
+        let tmp_sqlite = tmp_dir.join(format!("gene_summary.sqlite.{}.tmp", std::process::id()));
+        write_atomic_file(&tmp_sqlite, &sqlite)?;
         std::fs::rename(&tmp_sqlite, &paths.sqlite).map_err(|e| CacheError(e.to_string()))?;
+        if let Some(parent) = paths.sqlite.parent() {
+            if let Ok(dir) = std::fs::File::open(parent) {
+                let _ = dir.sync_all();
+            }
+        }
         if let Some(index_bytes) = release_gene_index {
-            std::fs::write(&paths.release_gene_index, index_bytes)
-                .map_err(|e| CacheError(e.to_string()))?;
+            write_atomic_file(&paths.release_gene_index, &index_bytes)?;
         }
 
         let manifest_bytes =
             serde_json::to_vec(&manifest).map_err(|e| CacheError(e.to_string()))?;
-        std::fs::write(&paths.manifest, manifest_bytes).map_err(|e| CacheError(e.to_string()))?;
+        write_atomic_file(&paths.manifest, &manifest_bytes)?;
 
         let marker = format!(
             "{}:{}",
             manifest.checksums.sqlite_sha256, manifest.db_schema_version
         );
-        std::fs::write(paths.derived_dir.join(".verified"), marker.as_bytes())
-            .map_err(|e| CacheError(e.to_string()))?;
+        write_atomic_file(&paths.derived_dir.join(".verified"), marker.as_bytes())?;
+        write_atomic_file(
+            &dataset_index_path(Path::new(&self.cfg.disk_root), dataset),
+            cache_key.as_bytes(),
+        )?;
 
         let size_bytes = std::fs::metadata(&paths.sqlite)
             .map_err(|e| CacheError(e.to_string()))?
@@ -540,15 +653,15 @@ impl DatasetCacheManager {
 
         {
             let mut entries = self.entries.lock().await;
+            let sqlite_path = paths.sqlite.clone();
             entries.insert(
                 dataset.clone(),
                 DatasetEntry {
-                    sqlite_path: paths.sqlite,
+                    sqlite_path: sqlite_path.clone(),
                     shard_sqlite_paths,
                     shard_by_seqid,
                     last_access: Instant::now(),
                     size_bytes,
-                    last_download_latency_ns: download_latency_ns,
                     dataset_semaphore: Arc::new(Semaphore::new(
                         self.cfg.max_connections_per_dataset,
                     )),
@@ -578,11 +691,12 @@ impl DatasetCacheManager {
         dataset_budget.insert(dataset.clone(), self.cfg.store_retry_budget);
         self.reset_store_breaker().await;
         info!("dataset download complete {:?}", dataset);
+        let _ = std::fs::remove_file(lease_path);
         Ok(())
     }
 
     async fn is_cached_and_verified(&self, dataset: &DatasetId) -> Result<bool, CacheError> {
-        let paths = artifact_paths(Path::new(&self.cfg.disk_root), dataset);
+        let paths = self.resolve_cache_paths(dataset).await?;
         if !paths.sqlite.exists() || !paths.manifest.exists() {
             return Ok(false);
         }
@@ -618,7 +732,6 @@ impl DatasetCacheManager {
                     size_bytes: std::fs::metadata(&paths.sqlite)
                         .map(|m| m.len())
                         .unwrap_or(0),
-                    last_download_latency_ns: 1_000_000,
                     dataset_semaphore: Arc::new(Semaphore::new(
                         self.cfg.max_connections_per_dataset,
                     )),
@@ -638,17 +751,17 @@ impl DatasetCacheManager {
             let (shard_sqlite_paths, shard_by_seqid) =
                 dataset_shards::load_shard_catalog(&paths.derived_dir)?;
             let mut entries = self.entries.lock().await;
+            let sqlite_path = paths.sqlite.clone();
             entries.insert(
                 dataset.clone(),
                 DatasetEntry {
-                    sqlite_path: paths.sqlite,
+                    sqlite_path: sqlite_path.clone(),
                     shard_sqlite_paths,
                     shard_by_seqid,
                     last_access: Instant::now(),
-                    size_bytes: std::fs::metadata(paths.derived_dir.join("gene_summary.sqlite"))
+                    size_bytes: std::fs::metadata(&sqlite_path)
                         .map(|m| m.len())
                         .unwrap_or(0),
-                    last_download_latency_ns: 1_000_000,
                     dataset_semaphore: Arc::new(Semaphore::new(
                         self.cfg.max_connections_per_dataset,
                     )),
@@ -680,22 +793,25 @@ impl DatasetCacheManager {
             .collect();
 
         let mut total_size: u64 = entries.values().map(|e| e.size_bytes).sum();
-        if entries.len() > self.cfg.max_dataset_count || total_size > self.cfg.max_disk_bytes {
-            let mut ranked: Vec<(DatasetId, f64)> = entries
+        let high_bytes = self
+            .cfg
+            .max_disk_bytes
+            .saturating_mul(self.cfg.disk_high_watermark_pct as u64)
+            / 100;
+        let low_bytes = self
+            .cfg
+            .max_disk_bytes
+            .saturating_mul(self.cfg.disk_low_watermark_pct as u64)
+            / 100;
+        if entries.len() > self.cfg.max_dataset_count || total_size > high_bytes {
+            let mut ranked: Vec<(DatasetId, std::time::Duration)> = entries
                 .iter()
                 .filter(|(id, _)| !self.cfg.pinned_datasets.contains(*id))
-                .map(|(id, e)| {
-                    let age = now.duration_since(e.last_access).as_secs_f64().max(1.0);
-                    let redownload_cost = (e.last_download_latency_ns as f64).max(1.0);
-                    let score = age * (e.size_bytes as f64) / redownload_cost;
-                    (id.clone(), score)
-                })
+                .map(|(id, e)| (id.clone(), now.duration_since(e.last_access)))
                 .collect();
-            ranked.sort_by(|a, b| b.1.total_cmp(&a.1));
+            ranked.sort_by(|a, b| b.1.cmp(&a.1));
             for (id, _) in ranked {
-                if entries.len() <= self.cfg.max_dataset_count
-                    && total_size <= self.cfg.max_disk_bytes
-                {
+                if entries.len() <= self.cfg.max_dataset_count && total_size <= low_bytes {
                     break;
                 }
                 victims.push(id.clone());
@@ -727,6 +843,11 @@ impl DatasetCacheManager {
                         .unwrap_or_else(|| Path::new("."))
                         .join(".verified"),
                 );
+                let _ =
+                    std::fs::remove_file(dataset_index_path(Path::new(&self.cfg.disk_root), &id));
+                self.metrics
+                    .cache_evictions_total
+                    .fetch_add(1, Ordering::Relaxed);
                 info!("dataset evicted {:?}", id);
             }
         }
@@ -752,6 +873,65 @@ impl DatasetCacheManager {
             .push(disk_io_started.elapsed().as_nanos() as u64);
 
         Ok(())
+    }
+
+    pub async fn dataset_derived_dir_for(
+        &self,
+        dataset: &DatasetId,
+    ) -> Result<PathBuf, CacheError> {
+        let paths = self.resolve_cache_paths(dataset).await?;
+        Ok(paths.derived_dir)
+    }
+
+    async fn resolve_cache_paths(
+        &self,
+        dataset: &DatasetId,
+    ) -> Result<LocalCachePaths, CacheError> {
+        {
+            let entries = self.entries.lock().await;
+            if let Some(entry) = entries.get(dataset) {
+                let derived_dir = entry
+                    .sqlite_path
+                    .parent()
+                    .ok_or_else(|| CacheError("invalid cached sqlite path".to_string()))?
+                    .to_path_buf();
+                let cache_root = derived_dir
+                    .parent()
+                    .ok_or_else(|| CacheError("invalid cached derived path".to_string()))?
+                    .to_path_buf();
+                let inputs_dir = cache_root.join("inputs");
+                return Ok(LocalCachePaths {
+                    cache_root,
+                    inputs_dir: inputs_dir.clone(),
+                    derived_dir: derived_dir.clone(),
+                    fasta: inputs_dir.join("genome.fa.bgz"),
+                    fai: inputs_dir.join("genome.fa.bgz.fai"),
+                    sqlite: derived_dir.join("gene_summary.sqlite"),
+                    manifest: derived_dir.join("manifest.json"),
+                    release_gene_index: derived_dir.join("release_gene_index.json"),
+                });
+            }
+        }
+
+        let idx = dataset_index_path(Path::new(&self.cfg.disk_root), dataset);
+        if let Ok(key) = std::fs::read_to_string(&idx) {
+            let cache_key = key.trim();
+            if !cache_key.is_empty() {
+                return Ok(local_cache_paths(Path::new(&self.cfg.disk_root), cache_key));
+            }
+        }
+
+        let legacy = artifact_paths(Path::new(&self.cfg.disk_root), dataset);
+        Ok(LocalCachePaths {
+            cache_root: legacy.dataset_root,
+            inputs_dir: legacy.inputs_dir,
+            derived_dir: legacy.derived_dir,
+            fasta: legacy.fasta,
+            fai: legacy.fai,
+            sqlite: legacy.sqlite,
+            manifest: legacy.manifest,
+            release_gene_index: legacy.release_gene_index,
+        })
     }
 }
 
