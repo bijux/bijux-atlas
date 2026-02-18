@@ -91,6 +91,7 @@ nav:
       - Endpoints: contracts/endpoints.md
       - Config Keys: contracts/config-keys.md
       - Chart Values: contracts/chart-values.md
+      - GFF3 Acceptance: contracts/gff3-acceptance.md
       - Examples:
           - Index: contracts/examples/INDEX.md
       - Artifacts:
