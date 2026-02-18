@@ -20,6 +20,16 @@ Does not define implementation internals outside this contract surface.
 
 ## Contracts
 
+- `IngestDuplicateTranscriptId`: stable machine error code for API and CLI contract surfaces.
+- `IngestInvalidCdsPhase`: stable machine error code for API and CLI contract surfaces.
+- `IngestInvalidStrand`: stable machine error code for API and CLI contract surfaces.
+- `IngestMissingParent`: stable machine error code for API and CLI contract surfaces.
+- `IngestMissingRequiredField`: stable machine error code for API and CLI contract surfaces.
+- `IngestMissingTranscriptId`: stable machine error code for API and CLI contract surfaces.
+- `IngestMultiParentChild`: stable machine error code for API and CLI contract surfaces.
+- `IngestMultiParentTranscript`: stable machine error code for API and CLI contract surfaces.
+- `IngestSeqidCollision`: stable machine error code for API and CLI contract surfaces.
+- `IngestUnknownFeature`: stable machine error code for API and CLI contract surfaces.
 - `Internal`: stable machine error code for API and CLI contract surfaces.
 - `InvalidCursor`: stable machine error code for API and CLI contract surfaces.
 - `InvalidQueryParameter`: stable machine error code for API and CLI contract surfaces.
@@ -36,6 +46,136 @@ Does not define implementation internals outside this contract surface.
 Invalid or drifted registry content is rejected by contract checks and CI gates.
 
 ## Examples
+
+### `IngestDuplicateTranscriptId`
+```json
+{
+  "error": {
+    "code": "IngestDuplicateTranscriptId",
+    "details": {
+      "field": "example"
+    },
+    "message": "IngestDuplicateTranscriptId error"
+  }
+}
+```
+
+### `IngestInvalidCdsPhase`
+```json
+{
+  "error": {
+    "code": "IngestInvalidCdsPhase",
+    "details": {
+      "field": "example"
+    },
+    "message": "IngestInvalidCdsPhase error"
+  }
+}
+```
+
+### `IngestInvalidStrand`
+```json
+{
+  "error": {
+    "code": "IngestInvalidStrand",
+    "details": {
+      "field": "example"
+    },
+    "message": "IngestInvalidStrand error"
+  }
+}
+```
+
+### `IngestMissingParent`
+```json
+{
+  "error": {
+    "code": "IngestMissingParent",
+    "details": {
+      "field": "example"
+    },
+    "message": "IngestMissingParent error"
+  }
+}
+```
+
+### `IngestMissingRequiredField`
+```json
+{
+  "error": {
+    "code": "IngestMissingRequiredField",
+    "details": {
+      "field": "example"
+    },
+    "message": "IngestMissingRequiredField error"
+  }
+}
+```
+
+### `IngestMissingTranscriptId`
+```json
+{
+  "error": {
+    "code": "IngestMissingTranscriptId",
+    "details": {
+      "field": "example"
+    },
+    "message": "IngestMissingTranscriptId error"
+  }
+}
+```
+
+### `IngestMultiParentChild`
+```json
+{
+  "error": {
+    "code": "IngestMultiParentChild",
+    "details": {
+      "field": "example"
+    },
+    "message": "IngestMultiParentChild error"
+  }
+}
+```
+
+### `IngestMultiParentTranscript`
+```json
+{
+  "error": {
+    "code": "IngestMultiParentTranscript",
+    "details": {
+      "field": "example"
+    },
+    "message": "IngestMultiParentTranscript error"
+  }
+}
+```
+
+### `IngestSeqidCollision`
+```json
+{
+  "error": {
+    "code": "IngestSeqidCollision",
+    "details": {
+      "field": "example"
+    },
+    "message": "IngestSeqidCollision error"
+  }
+}
+```
+
+### `IngestUnknownFeature`
+```json
+{
+  "error": {
+    "code": "IngestUnknownFeature",
+    "details": {
+      "field": "example"
+    },
+    "message": "IngestUnknownFeature error"
+  }
+}
+```
 
 ### `Internal`
 ```json
