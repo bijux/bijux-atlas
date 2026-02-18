@@ -9,8 +9,9 @@ mod sqlite;
 
 use bijux_atlas_model::{
     artifact_paths, BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, GeneIdentifierPolicy,
-    FeatureIdUniquenessPolicy, GeneNamePolicy, IngestAnomalyReport, SeqidNormalizationPolicy,
-    ShardCatalog, StrictnessMode, TranscriptIdPolicy, TranscriptTypePolicy, UnknownFeaturePolicy,
+    DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy, GeneNamePolicy, IngestAnomalyReport,
+    SeqidNormalizationPolicy, ShardCatalog, StrictnessMode, TranscriptIdPolicy,
+    TranscriptTypePolicy, UnknownFeaturePolicy,
 };
 use diff_index::build_and_write_release_gene_index;
 use extract::extract_gene_rows;
@@ -43,6 +44,7 @@ pub struct IngestOptions {
     pub dataset: DatasetId,
     pub strictness: StrictnessMode,
     pub duplicate_gene_id_policy: DuplicateGeneIdPolicy,
+    pub duplicate_transcript_id_policy: DuplicateTranscriptIdPolicy,
     pub gene_identifier_policy: GeneIdentifierPolicy,
     pub gene_name_policy: GeneNamePolicy,
     pub biotype_policy: BiotypePolicy,
@@ -51,6 +53,7 @@ pub struct IngestOptions {
     pub seqid_policy: SeqidNormalizationPolicy,
     pub unknown_feature_policy: UnknownFeaturePolicy,
     pub feature_id_uniqueness_policy: FeatureIdUniquenessPolicy,
+    pub reject_normalized_seqid_collisions: bool,
     pub max_threads: usize,
     pub emit_shards: bool,
     pub shard_partitions: usize,
@@ -70,6 +73,7 @@ impl Default for IngestOptions {
             dataset: DatasetId::new("0", "unknown", "unknown").expect("default dataset"),
             strictness: StrictnessMode::Strict,
             duplicate_gene_id_policy: DuplicateGeneIdPolicy::Fail,
+            duplicate_transcript_id_policy: DuplicateTranscriptIdPolicy::Reject,
             gene_identifier_policy: GeneIdentifierPolicy::Gff3Id,
             gene_name_policy: GeneNamePolicy::default(),
             biotype_policy: BiotypePolicy::default(),
@@ -78,6 +82,7 @@ impl Default for IngestOptions {
             seqid_policy: SeqidNormalizationPolicy::default(),
             unknown_feature_policy: UnknownFeaturePolicy::IgnoreWithWarning,
             feature_id_uniqueness_policy: FeatureIdUniquenessPolicy::Reject,
+            reject_normalized_seqid_collisions: true,
             max_threads: 1,
             fail_on_warn: false,
             allow_overlap_gene_ids_across_contigs: false,
@@ -263,6 +268,7 @@ mod tests {
             dataset: DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset id"),
             strictness,
             duplicate_gene_id_policy: DuplicateGeneIdPolicy::Fail,
+            duplicate_transcript_id_policy: DuplicateTranscriptIdPolicy::Reject,
             gene_identifier_policy: GeneIdentifierPolicy::Gff3Id,
             gene_name_policy: GeneNamePolicy::default(),
             biotype_policy: BiotypePolicy::default(),
@@ -271,6 +277,7 @@ mod tests {
             seqid_policy: SeqidNormalizationPolicy::default(),
             unknown_feature_policy: UnknownFeaturePolicy::IgnoreWithWarning,
             feature_id_uniqueness_policy: FeatureIdUniquenessPolicy::Reject,
+            reject_normalized_seqid_collisions: true,
             max_threads: 1,
             fail_on_warn: false,
             allow_overlap_gene_ids_across_contigs: false,
@@ -583,5 +590,84 @@ mod tests {
             run.manifest.dataset_signature_sha256,
             "ac9d84787df58ceb9fd9d263bc5c9af06c7976a9183b1a123979398468a9586f"
         );
+    }
+
+    #[test]
+    fn strict_mode_rejects_invalid_strand() {
+        let root = tempdir().expect("tempdir");
+        let mut o = opts(root.path(), StrictnessMode::Strict);
+        o.gff3_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("tests/fixtures/policies/invalid_strand.gff3");
+        let err = ingest_dataset(&o).expect_err("invalid strand must fail");
+        assert!(err.to_string().contains("GFF3_INVALID_STRAND"));
+    }
+
+    #[test]
+    fn strict_mode_rejects_invalid_cds_phase() {
+        let root = tempdir().expect("tempdir");
+        let mut o = opts(root.path(), StrictnessMode::Strict);
+        o.gff3_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("tests/fixtures/policies/invalid_cds_phase.gff3");
+        let err = ingest_dataset(&o).expect_err("invalid phase must fail");
+        assert!(err.to_string().contains("GFF3_INVALID_PHASE"));
+    }
+
+    #[test]
+    fn duplicate_transcript_policy_rejects_in_strict_mode() {
+        let root = tempdir().expect("tempdir");
+        let mut o = opts(root.path(), StrictnessMode::Strict);
+        o.gff3_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("tests/fixtures/policies/duplicate_transcript_ids.gff3");
+        assert!(ingest_dataset(&o).is_err());
+    }
+
+    #[test]
+    fn duplicate_transcript_policy_can_dedupe() {
+        let root = tempdir().expect("tempdir");
+        let mut o = opts(root.path(), StrictnessMode::Lenient);
+        o.gff3_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("tests/fixtures/policies/duplicate_transcript_ids.gff3");
+        o.duplicate_transcript_id_policy = DuplicateTranscriptIdPolicy::DedupeKeepLexicographicallySmallest;
+        let run = ingest_dataset(&o).expect("dedupe policy should pass");
+        let conn = rusqlite::Connection::open(run.sqlite_path).expect("open sqlite");
+        let tx_count: i64 = conn
+            .query_row("SELECT COUNT(*) FROM transcript_summary", [], |r| r.get(0))
+            .expect("tx count");
+        assert_eq!(tx_count, 1);
+    }
+
+    #[test]
+    fn feature_ordering_independence_holds() {
+        let root_a = tempdir().expect("tempdir");
+        let run_a = ingest_dataset(&opts(root_a.path(), StrictnessMode::Strict)).expect("baseline");
+        let root_b = tempdir().expect("tempdir2");
+        let mut o = opts(root_b.path(), StrictnessMode::Strict);
+        o.gff3_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("tests/fixtures/policies/unordered_features.gff3");
+        let run_b1 = ingest_dataset(&o).expect("unordered ingest #1");
+        let root_c = tempdir().expect("tempdir3");
+        o.output_root = root_c.path().to_path_buf();
+        let run_b2 = ingest_dataset(&o).expect("unordered ingest #2");
+        assert_eq!(
+            run_b1.manifest.checksums.sqlite_sha256,
+            run_b2.manifest.checksums.sqlite_sha256
+        );
+        assert_eq!(run_a.manifest.stats, run_b1.manifest.stats);
+    }
+
+    #[test]
+    fn report_contains_structured_rejections() {
+        let root = tempdir().expect("tempdir");
+        let gff = root.path().join("unknown_feature_lenient.gff3");
+        std::fs::write(
+            &gff,
+            "chr1\tsrc\tgene\t1\t10\t.\t+\t.\tID=g1;Name=G1\nchr1\tsrc\trepeat_region\t1\t10\t.\t+\t.\tID=r1\n",
+        )
+        .expect("write gff3");
+        let mut o = opts(root.path(), StrictnessMode::Lenient);
+        o.gff3_path = gff;
+        let run = ingest_dataset(&o).expect("lenient ingest");
+        assert!(!run.anomaly_report.rejections.is_empty());
+        assert_eq!(run.anomaly_report.rejections[0].code, "GFF3_UNKNOWN_FEATURE");
     }
 }

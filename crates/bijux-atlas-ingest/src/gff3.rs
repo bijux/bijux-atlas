@@ -8,13 +8,18 @@ const MAX_GFF3_LINE_BYTES: usize = 1_000_000;
 const MAX_ATTR_TOKENS: usize = 4_096;
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct Gff3Record {
+    pub line: usize,
     pub seqid: String,
     pub feature_type: String,
+    pub strand: String,
+    pub phase: String,
     pub start: u64,
     pub end: u64,
     pub attrs: BTreeMap<String, String>,
     pub duplicate_attr_keys: BTreeSet<String>,
+    pub raw_line: String,
 }
 
 pub fn parse_gff3_records(path: &Path) -> Result<Vec<Gff3Record>, IngestError> {
@@ -22,7 +27,7 @@ pub fn parse_gff3_records(path: &Path) -> Result<Vec<Gff3Record>, IngestError> {
     let reader = BufReader::new(file);
     let mut out = Vec::new();
 
-    for line in reader.lines() {
+    for (line_idx, line) in reader.lines().enumerate() {
         let line = line.map_err(|e| IngestError(e.to_string()))?;
         if line.is_empty() || line.starts_with('#') {
             continue;
@@ -54,21 +59,47 @@ pub fn parse_gff3_records(path: &Path) -> Result<Vec<Gff3Record>, IngestError> {
 
         let seqid = cols[0].trim().to_string();
         if seqid.is_empty() {
-            return Err(IngestError("missing required field: seqid".to_string()));
+            return Err(IngestError(format!(
+                "GFF3_MISSING_REQUIRED_FIELD line={} field=seqid sample={line}",
+                line_idx + 1
+            )));
         }
         let feature_type = cols[2].trim().to_string();
         if feature_type.is_empty() {
-            return Err(IngestError("missing required field: feature_type".to_string()));
+            return Err(IngestError(format!(
+                "GFF3_MISSING_REQUIRED_FIELD line={} field=feature_type sample={line}",
+                line_idx + 1
+            )));
+        }
+        let strand = cols[6].trim().to_string();
+        if !matches!(strand.as_str(), "+" | "-" | ".") {
+            return Err(IngestError(format!(
+                "GFF3_INVALID_STRAND line={} strand={} sample={line}",
+                line_idx + 1,
+                strand
+            )));
+        }
+        let phase = cols[7].trim().to_string();
+        if feature_type == "CDS" && !matches!(phase.as_str(), "0" | "1" | "2" | ".") {
+            return Err(IngestError(format!(
+                "GFF3_INVALID_PHASE line={} phase={} sample={line}",
+                line_idx + 1,
+                phase
+            )));
         }
 
         let (attrs, duplicate_attr_keys) = parse_attributes(cols[8])?;
         out.push(Gff3Record {
+            line: line_idx + 1,
             seqid,
             feature_type,
+            strand,
+            phase,
             start,
             end,
             attrs,
             duplicate_attr_keys,
+            raw_line: line,
         });
     }
 
@@ -214,6 +245,37 @@ mod tests {
         let gff = tmp.path().join("x.gff3");
         fs::write(&gff, "\tsrc\tgene\t1\t10\t.\t+\t.\tID=g1\n").expect("write gff3");
         let err = parse_gff3_records(&gff).expect_err("missing seqid must fail");
-        assert!(err.0.contains("missing required field: seqid"));
+        assert!(err.0.contains("GFF3_MISSING_REQUIRED_FIELD"));
+    }
+
+    #[test]
+    fn fuzzish_attribute_order_spacing_is_stable() {
+        let tmp = tempdir().expect("tempdir");
+        let gff = tmp.path().join("fuzz.gff3");
+        let mut lines = Vec::new();
+        for i in 0..128 {
+            let mut attrs = vec![
+                format!("ID=g{i}"),
+                "Name= Gene%20One ".to_string(),
+                "gene_name=GENE_ONE".to_string(),
+                "biotype=protein_coding".to_string(),
+            ];
+            let len = attrs.len();
+            attrs.rotate_left(i % len);
+            let row = format!(
+                "chr1\tsrc\tgene\t{}\t{}\t.\t+\t.\t{}\n",
+                1 + i as u64,
+                10 + i as u64,
+                attrs.join(" ; ")
+            );
+            lines.push(row);
+        }
+        fs::write(&gff, lines.concat()).expect("write fuzz");
+        let rows = parse_gff3_records(&gff).expect("parse fuzz");
+        assert_eq!(rows.len(), 128);
+        for rec in rows {
+            assert_eq!(rec.attrs.get("biotype").map(String::as_str), Some("protein_coding"));
+            assert!(rec.attrs.contains_key("ID"));
+        }
     }
 }
