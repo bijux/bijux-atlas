@@ -266,12 +266,15 @@ dependencies = [
  "bijux-atlas-store",
  "clap",
  "clap_complete",
+ "flate2",
  "predicates",
+ "reqwest",
  "rusqlite",
  "serde",
  "serde_json",
  "tar",
  "tempfile",
+ "zstd",
 ]
 
 [[package]]

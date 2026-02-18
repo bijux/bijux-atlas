@@ -136,6 +136,10 @@ enum AtlasCommand {
         fasta: PathBuf,
         #[arg(long)]
         fai: PathBuf,
+        #[arg(long, default_value_t = false)]
+        allow_network_inputs: bool,
+        #[arg(long, default_value_t = false)]
+        resume: bool,
         #[arg(long)]
         output_root: PathBuf,
         #[arg(long)]
@@ -182,6 +186,20 @@ enum AtlasCommand {
         normalized_replay: bool,
         #[arg(long, default_value_t = false)]
         prod_mode: bool,
+    },
+    IngestVerifyInputs {
+        #[arg(long)]
+        gff3: PathBuf,
+        #[arg(long)]
+        fasta: PathBuf,
+        #[arg(long)]
+        fai: PathBuf,
+        #[arg(long)]
+        output_root: PathBuf,
+        #[arg(long, default_value_t = false)]
+        allow_network_inputs: bool,
+        #[arg(long, default_value_t = false)]
+        resume: bool,
     },
     IngestReplay {
         #[arg(long)]
@@ -315,6 +333,8 @@ struct IngestCliArgs {
     allow_overlap_gene_ids_across_contigs: bool,
     no_fai_check: bool,
     dev_auto_generate_fai: bool,
+    allow_network_inputs: bool,
+    resume: bool,
     fasta_scanning: bool,
     fasta_scan_max_bases: u64,
     emit_shards: bool,
@@ -607,6 +627,8 @@ fn run_atlas_command(
             allow_overlap_gene_ids_across_contigs,
             no_fai_check,
             dev_auto_generate_fai,
+            allow_network_inputs,
+            resume,
             fasta_scanning,
             fasta_scan_max_bases,
             emit_shards,
@@ -635,6 +657,8 @@ fn run_atlas_command(
                 allow_overlap_gene_ids_across_contigs,
                 no_fai_check,
                 dev_auto_generate_fai,
+                allow_network_inputs,
+                resume,
                 fasta_scanning,
                 fasta_scan_max_bases,
                 emit_shards,
@@ -644,6 +668,23 @@ fn run_atlas_command(
                 normalized_replay,
                 prod_mode,
             },
+            output_mode,
+        )
+        .map_err(CliError::internal),
+        AtlasCommand::IngestVerifyInputs {
+            gff3,
+            fasta,
+            fai,
+            output_root,
+            allow_network_inputs,
+            resume,
+        } => verify_ingest_inputs(
+            gff3,
+            fasta,
+            fai,
+            output_root,
+            allow_network_inputs,
+            resume,
             output_mode,
         )
         .map_err(CliError::internal),

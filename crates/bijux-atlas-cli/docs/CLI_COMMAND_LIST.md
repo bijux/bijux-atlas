@@ -17,6 +17,7 @@ atlas bench
 atlas gc apply
 atlas gc plan
 atlas ingest
+atlas ingest-verify-inputs
 atlas ingest-normalized-diff
 atlas ingest-replay
 atlas ingest-validate

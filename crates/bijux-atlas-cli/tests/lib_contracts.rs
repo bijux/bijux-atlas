@@ -22,6 +22,7 @@ fn command_surface_ssot_matches_doc() {
         "atlas gc apply",
         "atlas gc plan",
         "atlas ingest",
+        "atlas ingest-verify-inputs",
         "atlas ingest-normalized-diff",
         "atlas ingest-replay",
         "atlas ingest-validate",
