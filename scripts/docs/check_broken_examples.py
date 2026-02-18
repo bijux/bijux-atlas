@@ -22,9 +22,13 @@ for md in DOCS.rglob('*.md'):
     text = md.read_text(encoding='utf-8')
     for block in codeblock.findall(text):
         for cmd in cmdline.findall(block):
-            tok = cmd.strip().split()[0]
+            parts = cmd.strip().split()
+            while parts and re.match(r'^[A-Z_][A-Z0-9_]*=.*$', parts[0]):
+                parts = parts[1:]
+            if not parts:
+                continue
+            tok = parts[0]
             if tok == 'make':
-                parts = cmd.strip().split()
                 if len(parts) < 2 or parts[1] not in make_targets:
                     errors.append(f"{md}: unknown make target in example `{cmd}`")
                 continue
@@ -33,7 +37,7 @@ for md in DOCS.rglob('*.md'):
                 if not p.exists() or not p.is_file() or not (p.stat().st_mode & 0o111):
                     errors.append(f"{md}: non-executable script path `{tok}`")
                 continue
-            if tok in {'curl','kubectl','k6','cargo','rg','python3','helm','jq'}:
+            if tok in {'curl','kubectl','k6','cargo','rg','python3','helm','jq','cat'}:
                 continue
             errors.append(f"{md}: command not backed by script path or allowed tool `{cmd}`")
 
