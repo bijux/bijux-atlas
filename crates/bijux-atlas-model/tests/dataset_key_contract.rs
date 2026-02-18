@@ -16,6 +16,8 @@ fn dataset_key_roundtrip_is_canonical() {
 fn dataset_key_rejects_missing_or_unknown_segments() {
     assert!(parse_dataset_key("release=110&species=homo_sapiens").is_err());
     assert!(parse_dataset_key("release=110&species=homo_sapiens&assembly=GRCh38&x=y").is_err());
+    assert!(parse_dataset_key("release=latest&species=homo_sapiens&assembly=GRCh38").is_err());
+    assert!(parse_dataset_key("release=110&species=Homo-sapiens&assembly=GRCh38").is_err());
 }
 
 #[test]
