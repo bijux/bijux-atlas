@@ -8,7 +8,7 @@
 - Deprecations in v1 are signaled as:
 - OpenAPI `deprecated: true`
 - Documentation note in `docs/api/V1_SURFACE.md`
-- `Sunset` response header when applicable
+- `Deprecation` + `Sunset` response headers when applicable
 
 ## Timeline
 

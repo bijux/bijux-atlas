@@ -120,6 +120,8 @@ nav:
   - API:
       - V1 Surface: api/V1_SURFACE.md
       - Pagination: api/pagination.md
+      - Versioning: api/versioning.md
+      - v2 Plan: api/v2-plan.md
       - Compatibility: api/COMPATIBILITY.md
       - Deprecation: api/DEPRECATION.md
   - Operations:
