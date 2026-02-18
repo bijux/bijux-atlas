@@ -10,10 +10,10 @@ use std::path::Path;
 
 pub const SQLITE_SCHEMA_VERSION: i64 = 4;
 pub const SQLITE_SCHEMA_SSOT: &str = include_str!("../sql/schema_v4.sql");
-#[allow(dead_code)]
+#[allow(dead_code)] // ATLAS-EXC-0001
 pub const SQLITE_SCHEMA_SSOT_SHA256: &str =
     "a695a4e39b45e4fd87491dd9a55817142059100480d77b59168db0f5fe0a6901";
-#[allow(dead_code)]
+#[allow(dead_code)] // ATLAS-EXC-0001
 pub const SQLITE_REQUIRED_INDEXES: &[&str] = &[
     "idx_gene_summary_gene_id",
     "idx_gene_summary_name",
@@ -44,7 +44,7 @@ pub struct WriteSqliteInput<'a> {
     pub fai_sha256: &'a str,
 }
 
-#[allow(dead_code)]
+#[allow(dead_code)] // ATLAS-EXC-0001
 pub fn migrate_forward_schema(conn: &Connection, target_version: i64) -> Result<i64, IngestError> {
     let current = detect_schema_version(conn)?;
     if current > target_version {
@@ -69,7 +69,7 @@ pub fn migrate_forward_schema(conn: &Connection, target_version: i64) -> Result<
     Ok(target_version.max(current))
 }
 
-#[allow(dead_code)]
+#[allow(dead_code)] // ATLAS-EXC-0001
 fn detect_schema_version(conn: &Connection) -> Result<i64, IngestError> {
     let has_schema_table: i64 = conn
         .query_row(
@@ -521,7 +521,7 @@ pub fn explain_plan_for_region_query(path: &Path) -> Result<Vec<String>, IngestE
     Ok(rows)
 }
 
-#[allow(dead_code)]
+#[allow(dead_code)] // ATLAS-EXC-0001
 pub fn explain_plan_for_gene_id_query(path: &Path) -> Result<Vec<String>, IngestError> {
     let conn = Connection::open(path).map_err(|e| IngestError(e.to_string()))?;
     let mut stmt = conn
@@ -535,7 +535,7 @@ pub fn explain_plan_for_gene_id_query(path: &Path) -> Result<Vec<String>, Ingest
     Ok(rows)
 }
 
-#[allow(dead_code)]
+#[allow(dead_code)] // ATLAS-EXC-0001
 pub fn explain_plan_for_name_query(path: &Path) -> Result<Vec<String>, IngestError> {
     let conn = Connection::open(path).map_err(|e| IngestError(e.to_string()))?;
     let mut stmt = conn

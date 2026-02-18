@@ -1,4 +1,4 @@
-#![allow(dead_code)]
+#![allow(dead_code)] // ATLAS-EXC-0001
 
 use rusqlite::{Connection, OpenFlags};
 
