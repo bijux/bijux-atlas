@@ -340,3 +340,118 @@ impl DatasetStoreBackend for FederatedBackend {
         self.source_health().await
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use async_trait::async_trait;
+    use std::collections::BTreeSet;
+
+    #[derive(Clone)]
+    struct MockBackend {
+        catalog: Catalog,
+    }
+
+    #[async_trait]
+    impl DatasetStoreBackend for MockBackend {
+        async fn fetch_catalog(
+            &self,
+            _if_none_match: Option<&str>,
+        ) -> Result<CatalogFetch, CacheError> {
+            Ok(CatalogFetch::Updated {
+                etag: "mock".to_string(),
+                catalog: self.catalog.clone(),
+            })
+        }
+
+        async fn fetch_manifest(&self, _dataset: &DatasetId) -> Result<ArtifactManifest, CacheError> {
+            Err(CacheError("unused in test".to_string()))
+        }
+
+        async fn fetch_sqlite_bytes(&self, _dataset: &DatasetId) -> Result<Vec<u8>, CacheError> {
+            Err(CacheError("unused in test".to_string()))
+        }
+
+        async fn fetch_fasta_bytes(&self, _dataset: &DatasetId) -> Result<Vec<u8>, CacheError> {
+            Err(CacheError("unused in test".to_string()))
+        }
+
+        async fn fetch_fai_bytes(&self, _dataset: &DatasetId) -> Result<Vec<u8>, CacheError> {
+            Err(CacheError("unused in test".to_string()))
+        }
+
+        async fn fetch_release_gene_index_bytes(
+            &self,
+            _dataset: &DatasetId,
+        ) -> Result<Vec<u8>, CacheError> {
+            Err(CacheError("unused in test".to_string()))
+        }
+    }
+
+    fn mk_dataset(i: usize) -> DatasetId {
+        DatasetId::new(&format!("{i:03}"), "homo_sapiens", "GRCh38").expect("dataset")
+    }
+
+    fn mk_catalog(start: usize, len: usize) -> Catalog {
+        let mut datasets = Vec::with_capacity(len);
+        for i in start..(start + len) {
+            let d = mk_dataset(i);
+            datasets.push(CatalogEntry::new(
+                d,
+                format!("release={i:03}/manifest.json"),
+                format!("release={i:03}/gene_summary.sqlite"),
+            ));
+        }
+        Catalog::new(datasets)
+    }
+
+    #[tokio::test]
+    async fn multi_catalog_merge_is_deterministic_at_scale() {
+        let c1 = mk_catalog(0, 400);
+        let c2 = mk_catalog(200, 400);
+        let c3 = mk_catalog(350, 400);
+        let backends = vec![
+            RegistrySource::new(
+                "a",
+                Arc::new(MockBackend { catalog: c1.clone() }),
+                Duration::from_secs(0),
+                None,
+            ),
+            RegistrySource::new(
+                "b",
+                Arc::new(MockBackend { catalog: c2.clone() }),
+                Duration::from_secs(0),
+                None,
+            ),
+            RegistrySource::new(
+                "c",
+                Arc::new(MockBackend { catalog: c3.clone() }),
+                Duration::from_secs(0),
+                None,
+            ),
+        ];
+        let fb = FederatedBackend::new(backends);
+        let merged1 = match fb.fetch_catalog(None).await.expect("merge 1") {
+            CatalogFetch::Updated { catalog, .. } => catalog,
+            CatalogFetch::NotModified => panic!("unexpected not modified"),
+        };
+        let merged2 = match fb.fetch_catalog(None).await.expect("merge 2") {
+            CatalogFetch::Updated { catalog, .. } => catalog,
+            CatalogFetch::NotModified => panic!("unexpected not modified"),
+        };
+
+        let k1 = merged1
+            .datasets
+            .iter()
+            .map(|x| x.dataset.canonical_string())
+            .collect::<Vec<_>>();
+        let k2 = merged2
+            .datasets
+            .iter()
+            .map(|x| x.dataset.canonical_string())
+            .collect::<Vec<_>>();
+        assert_eq!(k1, k2, "merge ordering must be deterministic");
+        let unique = k1.iter().cloned().collect::<BTreeSet<_>>();
+        assert_eq!(k1.len(), unique.len(), "merged catalog must dedupe datasets");
+    }
+}
