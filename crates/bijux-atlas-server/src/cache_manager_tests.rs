@@ -255,7 +255,10 @@ async fn chaos_mode_delete_dataset_mid_request_redownloads_cleanly() {
     assert_eq!(count, 1);
     drop(conn);
 
-    let paths = artifact_paths(tmp.path(), &ds);
+    let paths = mgr
+        .resolve_cache_paths(&ds)
+        .await
+        .expect("resolve cached paths");
     std::fs::remove_file(&paths.sqlite).expect("delete sqlite mid-flight simulation");
     let second = mgr
         .open_dataset_connection(&ds)
@@ -334,7 +337,10 @@ async fn corruption_is_detected_by_reverification() {
         .await
         .expect("open cached dataset");
 
-    let paths = artifact_paths(tmp.path(), &ds);
+    let paths = mgr
+        .resolve_cache_paths(&ds)
+        .await
+        .expect("resolve cached paths");
     std::fs::write(&paths.sqlite, b"corrupted").expect("corrupt sqlite");
     mgr.reverify_cached_datasets().await.expect("run reverify");
     let entries = mgr.entries.lock().await;
@@ -364,7 +370,10 @@ async fn chaos_mode_random_byte_corruption_never_serves_results() {
     mgr.open_dataset_connection(&ds)
         .await
         .expect("download and cache dataset");
-    let paths = artifact_paths(tmp.path(), &ds);
+    let paths = mgr
+        .resolve_cache_paths(&ds)
+        .await
+        .expect("resolve cached paths");
     let mut bytes = std::fs::read(&paths.sqlite).expect("read sqlite");
     for i in (0..bytes.len()).step_by(257).take(32) {
         bytes[i] ^= 0xAA;
