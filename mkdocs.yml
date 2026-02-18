@@ -119,6 +119,7 @@ nav:
           - Cursor Schema: _generated/contracts/CURSOR_SCHEMA.md
   - API:
       - V1 Surface: api/V1_SURFACE.md
+      - Caching: api/caching.md
       - Pagination: api/pagination.md
       - Versioning: api/versioning.md
       - Errors: api/errors.md
