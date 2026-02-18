@@ -20,8 +20,8 @@ Does not define endpoint correctness tests.
 
 ## Contracts
 
-- PR tier: smoke subset only, deterministic short runtime.
-- Nightly tier: full suites including spike, churn, outage, and soak-linked scenarios.
+- PR tier: smoke subset only, deterministic short runtime via `make ops-load-smoke`.
+- Nightly tier: full suites (including soak) via `make ops-load-nightly` and `make ops-load-full`.
 - SLO scoring must use `ops-load-ci` with `configs/slo/slo.json`.
 - Suite manifest SSOT: `ops/load/suites/suites.json`.
 - Suite manifest must validate against `ops/load/contracts/suite-schema.json`.
@@ -48,4 +48,5 @@ Expected output: smoke and nightly suites complete with scored reports.
 - [Load Suites](suites.md)
 - [k6 Harness](k6.md)
 - [Perf Regression Policy](../observability/perf-regression-policy.md)
+- `.github/workflows/perf-nightly.yml`
 - `ops-ci`

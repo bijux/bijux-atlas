@@ -25,6 +25,14 @@ Prevents noisy comparisons and false regression alarms.
 - Network stack differences between compose and kind.
 - Dataset/cache warmness.
 
+## Variance Controls
+
+- Run `make ops-tools-check` before load runs (pinned tools).
+- Use pinned dataset/query lock (`ops/load/queries/pinned-v1.lock`).
+- Keep cluster profile stable between baseline and candidate.
+- Compare against approved baseline only (`ops/load/baselines/*.json`).
+- Re-run `make ops-load-smoke` twice before concluding regression.
+
 ## How to verify
 
 ```bash

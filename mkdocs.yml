@@ -140,6 +140,7 @@ nav:
           - k6: operations/load/k6.md
           - Suites: operations/load/suites.md
           - CI Policy: operations/load/ci-policy.md
+          - Perf Acceptance Checklist: operations/load/perf-acceptance-checklist.md
       - Kubernetes:
           - Index: operations/k8s/INDEX.md
           - Chart: operations/k8s/chart.md

@@ -44,6 +44,13 @@ Expected output: failing scenario names and violating thresholds.
 - Compare against approved baseline in `ops/load/baselines/`.
 - Validate suite contracts with `make ops-load-manifest-validate`.
 
+## Suite Categories
+
+- Availability under pressure: `cheap-only-survival`, `pod-churn`, `store-outage-mid-spike`
+- Latency-heavy workload: `diff-heavy`, `mixed-gene-sequence`, `multi-release`
+- Abuse and guardrails: `response-size-abuse`, `stampede`
+- Long-run stability: `soak-30m`
+
 Canonical suite names:
 - `mixed`
 - `cheap-only-survival`

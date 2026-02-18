@@ -30,6 +30,7 @@ Section pages:
 - `reproducibility.md`
 - `baseline-update-policy.md`
 - `runtime-policy.md`
+- `perf-acceptance-checklist.md`
 
 Required k6 scenarios:
 
