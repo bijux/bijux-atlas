@@ -5,9 +5,9 @@
 
 ## Summary
 
-- Tracked files: `1341`
+- Tracked files: `1345`
 - Docs markdown files: `318`
-- Script files under `scripts/`: `175`
+- Script files under `scripts/`: `179`
 - Rust test files: `42`
 - Load suites in `ops/load/suites/suites.json`: `19`
 - Runbooks in `docs/operations/runbooks/`: `12`
@@ -17,7 +17,7 @@
 
 - Forbidden-token hits: `2`
 - Non-kebab docs outside allowed exceptions: `8`
-- Non-kebab scripts under `scripts/`: `139`
+- Non-kebab scripts under `scripts/`: `143`
 
 ## Load Suites
 
@@ -87,6 +87,7 @@
 - `scripts/docs/check_broken_examples.py`
 - `scripts/docs/check_concept_ids.sh`
 - `scripts/docs/check_concept_registry.py`
+- `scripts/docs/check_contract_doc_pairs.py`
 - `scripts/docs/check_crate_docs_contract.sh`
 - `scripts/docs/check_critical_make_targets_referenced.py`
 - `scripts/docs/check_doc_filename_style.py`
@@ -113,8 +114,10 @@
 - `scripts/docs/check_openapi_examples.py`
 - `scripts/docs/check_ops_docs_make_targets.py`
 - `scripts/docs/check_reference_templates.sh`
+- `scripts/docs/check_runbook_map_registration.py`
 - `scripts/docs/check_runbooks_contract.py`
 - `scripts/docs/check_script_headers.py`
+- `scripts/docs/check_script_locations.py`
 - `scripts/docs/check_terminology_units_ssot.py`
 - `scripts/docs/check_title_case.sh`
 - `scripts/docs/extract_code_blocks.py`
@@ -130,6 +133,7 @@
 - `scripts/docs/lint_doc_contracts.py`
 - `scripts/docs/lint_doc_status.py`
 - `scripts/docs/lint_glossary_links.py`
+- `scripts/docs/naming_inventory.py`
 - `scripts/docs/render_diagrams.sh`
 - `scripts/docs/run_blessed_snippets.py`
 - `scripts/docs/spellcheck_docs.py`
