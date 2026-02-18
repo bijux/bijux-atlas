@@ -43,7 +43,12 @@ pub fn openapi_v1_spec() -> Value {
         "/v1/datasets": {
           "get": {
             "parameters": [
-              {"name": "include_bom", "in": "query", "schema": {"type": "boolean"}}
+              {"name": "include_bom", "in": "query", "schema": {"type": "boolean"}},
+              {"name": "release", "in": "query", "schema": {"type": "string"}},
+              {"name": "species", "in": "query", "schema": {"type": "string"}},
+              {"name": "assembly", "in": "query", "schema": {"type": "string"}},
+              {"name": "limit", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 500}},
+              {"name": "cursor", "in": "query", "schema": {"type": "string", "maxLength": 4096}}
             ],
             "responses": {
               "200": {"description": "dataset list"},
@@ -146,6 +151,19 @@ pub fn openapi_v1_spec() -> Value {
         "/v1/genes/count": {
           "get": {
             "deprecated": true,
+            "parameters": [
+              {"name": "release", "in": "query", "required": true, "schema": {"type": "string"}},
+              {"name": "species", "in": "query", "required": true, "schema": {"type": "string"}},
+              {"name": "assembly", "in": "query", "required": true, "schema": {"type": "string"}},
+              {"name": "gene_id", "in": "query", "schema": {"type": "string"}},
+              {"name": "name", "in": "query", "schema": {"type": "string"}},
+              {"name": "name_like", "in": "query", "schema": {"type": "string"}},
+              {"name": "biotype", "in": "query", "schema": {"type": "string"}},
+              {"name": "contig", "in": "query", "schema": {"type": "string"}},
+              {"name": "range", "in": "query", "schema": {"type": "string", "pattern": "^[^:]+:[0-9]+-[0-9]+$"}},
+              {"name": "min_transcripts", "in": "query", "schema": {"type": "integer", "minimum": 0}},
+              {"name": "max_transcripts", "in": "query", "schema": {"type": "integer", "minimum": 0}}
+            ],
             "responses": {
               "200": {"description": "count response"},
               "400": {"description": "invalid query", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApiError"}}}}

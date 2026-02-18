@@ -174,6 +174,46 @@
           "name": "include_bom",
           "required": false,
           "type": "boolean"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "release",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "species",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "assembly",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 500,
+          "name": "limit",
+          "required": false,
+          "type": "integer"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 4096,
+          "name": "cursor",
+          "required": false,
+          "type": "string"
         }
       ],
       "path": "/v1/datasets",
@@ -576,7 +616,96 @@
     {
       "deprecated": true,
       "method": "GET",
-      "params": [],
+      "params": [
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "release",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "species",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "assembly",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 128,
+          "name": "gene_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 256,
+          "name": "name",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 256,
+          "name": "name_like",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 128,
+          "name": "biotype",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 128,
+          "name": "contig",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 128,
+          "name": "range",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 16,
+          "name": "min_transcripts",
+          "required": false,
+          "type": "integer"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 16,
+          "name": "max_transcripts",
+          "required": false,
+          "type": "integer"
+        }
+      ],
       "path": "/v1/genes/count",
       "responses": [
         {
