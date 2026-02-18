@@ -1,5 +1,15 @@
 # Error Codes (Generated)
 
+- `IngestDuplicateTranscriptId`
+- `IngestInvalidCdsPhase`
+- `IngestInvalidStrand`
+- `IngestMissingParent`
+- `IngestMissingRequiredField`
+- `IngestMissingTranscriptId`
+- `IngestMultiParentChild`
+- `IngestMultiParentTranscript`
+- `IngestSeqidCollision`
+- `IngestUnknownFeature`
 - `Internal`
 - `InvalidCursor`
 - `InvalidQueryParameter`

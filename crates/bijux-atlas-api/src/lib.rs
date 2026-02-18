@@ -167,6 +167,16 @@ mod tests {
     fn error_codes_match_generated_contract() {
         let generated = crate::generated::error_codes::API_ERROR_CODES;
         let from_enum = [
+            ApiErrorCode::IngestDuplicateTranscriptId,
+            ApiErrorCode::IngestInvalidCdsPhase,
+            ApiErrorCode::IngestInvalidStrand,
+            ApiErrorCode::IngestMissingParent,
+            ApiErrorCode::IngestMissingRequiredField,
+            ApiErrorCode::IngestMissingTranscriptId,
+            ApiErrorCode::IngestMultiParentChild,
+            ApiErrorCode::IngestMultiParentTranscript,
+            ApiErrorCode::IngestSeqidCollision,
+            ApiErrorCode::IngestUnknownFeature,
             ApiErrorCode::Internal,
             ApiErrorCode::InvalidCursor,
             ApiErrorCode::InvalidQueryParameter,

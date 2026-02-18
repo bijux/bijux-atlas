@@ -4,6 +4,16 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[non_exhaustive]
 pub enum ErrorCode {
+    IngestDuplicateTranscriptId,
+    IngestInvalidCdsPhase,
+    IngestInvalidStrand,
+    IngestMissingParent,
+    IngestMissingRequiredField,
+    IngestMissingTranscriptId,
+    IngestMultiParentChild,
+    IngestMultiParentTranscript,
+    IngestSeqidCollision,
+    IngestUnknownFeature,
     Internal,
     InvalidCursor,
     InvalidQueryParameter,
@@ -20,6 +30,16 @@ impl ErrorCode {
     #[must_use]
     pub const fn as_str(self) -> &'static str {
         match self {
+            Self::IngestDuplicateTranscriptId => "IngestDuplicateTranscriptId",
+            Self::IngestInvalidCdsPhase => "IngestInvalidCdsPhase",
+            Self::IngestInvalidStrand => "IngestInvalidStrand",
+            Self::IngestMissingParent => "IngestMissingParent",
+            Self::IngestMissingRequiredField => "IngestMissingRequiredField",
+            Self::IngestMissingTranscriptId => "IngestMissingTranscriptId",
+            Self::IngestMultiParentChild => "IngestMultiParentChild",
+            Self::IngestMultiParentTranscript => "IngestMultiParentTranscript",
+            Self::IngestSeqidCollision => "IngestSeqidCollision",
+            Self::IngestUnknownFeature => "IngestUnknownFeature",
             Self::Internal => "Internal",
             Self::InvalidCursor => "InvalidCursor",
             Self::InvalidQueryParameter => "InvalidQueryParameter",
@@ -35,6 +55,16 @@ impl ErrorCode {
 
     pub fn parse(value: &str) -> Option<Self> {
         match value {
+            "IngestDuplicateTranscriptId" => Some(Self::IngestDuplicateTranscriptId),
+            "IngestInvalidCdsPhase" => Some(Self::IngestInvalidCdsPhase),
+            "IngestInvalidStrand" => Some(Self::IngestInvalidStrand),
+            "IngestMissingParent" => Some(Self::IngestMissingParent),
+            "IngestMissingRequiredField" => Some(Self::IngestMissingRequiredField),
+            "IngestMissingTranscriptId" => Some(Self::IngestMissingTranscriptId),
+            "IngestMultiParentChild" => Some(Self::IngestMultiParentChild),
+            "IngestMultiParentTranscript" => Some(Self::IngestMultiParentTranscript),
+            "IngestSeqidCollision" => Some(Self::IngestSeqidCollision),
+            "IngestUnknownFeature" => Some(Self::IngestUnknownFeature),
             "Internal" => Some(Self::Internal),
             "InvalidCursor" => Some(Self::InvalidCursor),
             "InvalidQueryParameter" => Some(Self::InvalidQueryParameter),
@@ -52,6 +82,16 @@ impl ErrorCode {
 
 #[allow(dead_code)]
 pub const ERROR_CODES: &[&str] = &[
+    "IngestDuplicateTranscriptId",
+    "IngestInvalidCdsPhase",
+    "IngestInvalidStrand",
+    "IngestMissingParent",
+    "IngestMissingRequiredField",
+    "IngestMissingTranscriptId",
+    "IngestMultiParentChild",
+    "IngestMultiParentTranscript",
+    "IngestSeqidCollision",
+    "IngestUnknownFeature",
     "Internal",
     "InvalidCursor",
     "InvalidQueryParameter",
