@@ -46,6 +46,7 @@ pub struct GeneQueryRequest {
     pub filter: GeneFilter,
     pub limit: usize,
     pub cursor: Option<String>,
+    pub dataset_key: Option<String>,
     pub allow_full_scan: bool,
 }
 

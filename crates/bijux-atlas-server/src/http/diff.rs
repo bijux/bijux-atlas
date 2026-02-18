@@ -278,15 +278,29 @@ async fn diff_common(
     let coalesce_key = format!("{route}:{scope:?}:{query_hash}");
     let _coalesce_guard = state.coalescer.acquire(&coalesce_key).await;
     let cursor_gene = if let Some(token) = params.get("cursor") {
-        match decode_cursor(token, b"atlas-diff-cursor", &query_hash, OrderMode::GeneId) {
+        match decode_cursor(
+            token,
+            b"atlas-diff-cursor",
+            &query_hash,
+            OrderMode::GeneId,
+            None,
+        ) {
             Ok(c) => Some(c.last_gene_id),
             Err(e) => {
+                let message = e.to_string();
+                let reason_code = if message.contains("UnsupportedVersion") {
+                    "CURSOR_VERSION_UNSUPPORTED"
+                } else if message.contains("DatasetMismatch") {
+                    "CURSOR_DATASET_MISMATCH"
+                } else {
+                    "CURSOR_INVALID"
+                };
                 let resp = api_error_response(
                     StatusCode::BAD_REQUEST,
                     error_json(
                         ApiErrorCode::InvalidCursor,
                         "invalid cursor",
-                        json!({"message": e.to_string()}),
+                        json!({"message": message, "reason_code": reason_code}),
                     ),
                 );
                 return with_request_id(resp, &request_id);
@@ -430,6 +444,14 @@ async fn diff_common(
         rows.last().and_then(|x| {
             encode_cursor(
                 &CursorPayload {
+                    cursor_version: "v1".to_string(),
+                    dataset_id: None,
+                    sort_key: Some("gene_id".to_string()),
+                    last_seen: Some(bijux_atlas_query::CursorLastSeen {
+                        gene_id: x.gene_id.clone(),
+                        seqid: None,
+                        start: None,
+                    }),
                     order: "gene_id".to_string(),
                     last_seqid: None,
                     last_start: None,

@@ -111,6 +111,7 @@ pub(crate) fn query_request_from_json(v: &Value) -> Result<GeneQueryRequest, Str
         },
         limit,
         cursor: None,
+        dataset_key: None,
         allow_full_scan,
     })
 }

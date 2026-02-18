@@ -141,6 +141,7 @@ fn req(filter: GeneFilter, limit: usize, fields: GeneFields) -> GeneQueryRequest
         filter,
         limit,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     }
 }

@@ -9,6 +9,7 @@ fn cursor_generation_is_concurrency_stable() {
         },
         limit: 1,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
 
@@ -64,6 +65,7 @@ fn pathological_prefix_is_rejected_by_cost_estimator() {
         },
         limit: 500,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
     let mut lim = limits();
@@ -91,6 +93,7 @@ fn prefix_lower_bound_enforcement_rejects_single_char() {
         },
         limit: 10,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
     let err = query_genes(&conn, &req, &limits(), b"s").expect_err("reject short prefix");
@@ -109,6 +112,7 @@ fn empty_result_pagination_returns_none_cursor() {
         },
         limit: 10,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
     let resp = query_genes(&conn, &req, &limits(), b"s").expect("query");
@@ -127,6 +131,7 @@ fn no_table_scan_assertion_for_indexed_query_plan() {
         },
         limit: 10,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
     let plan = explain_query_plan(&conn, &req, &limits(), b"s")
@@ -154,6 +159,7 @@ fn region_overlap_edge_cases_are_correct() {
         },
         limit: 50,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
     let point = query_genes(&conn, &mk(10, 10), &limits(), b"s").expect("point");
@@ -183,6 +189,7 @@ fn json_serialization_ordering_is_stable() {
         },
         limit: 10,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
     let resp = query_genes(&conn, &req, &limits(), b"s").expect("query");
@@ -206,6 +213,7 @@ fn cost_estimator_and_limits_enforced() {
         },
         limit: 200,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
     assert_eq!(classify_query(&req), QueryClass::Heavy);
@@ -231,6 +239,7 @@ fn fast_fail_rejects_impossible_filters_from_dataset_stats() {
         },
         limit: 10,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
     let err = query_genes(&conn, &impossible_biotype, &limits(), b"s").expect_err("must fast fail");
@@ -249,6 +258,7 @@ fn fast_fail_rejects_impossible_filters_from_dataset_stats() {
         },
         limit: 10,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
     let err = query_genes(&conn, &impossible_seqid, &limits(), b"s").expect_err("fast fail");
@@ -267,6 +277,7 @@ fn normalization_hash_is_cursor_and_param_order_stable() {
         },
         limit: 10,
         cursor: Some("abc".to_string()),
+        dataset_key: None,
         allow_full_scan: false,
     };
     let mut req_b = req_a.clone();
@@ -292,6 +303,7 @@ fn region_ordering_is_stable() {
         },
         limit: 20,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
     let rows = query_genes(&conn, &req, &limits(), b"s")
@@ -312,6 +324,7 @@ fn cursor_error_maps_to_stable_code() {
         },
         limit: 1,
         cursor: Some("broken.cursor".to_string()),
+        dataset_key: None,
         allow_full_scan: false,
     };
     let err = query_genes(&conn, &req, &limits(), b"s").expect_err("cursor reject");
@@ -343,6 +356,7 @@ fn benchmark_threshold_sanity_non_regression() {
         },
         limit: 100,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
     let started = std::time::Instant::now();
@@ -387,6 +401,7 @@ fn shard_selection_targets_region_seqid_and_defaults_global() {
         },
         limit: 5,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
     assert_eq!(
@@ -402,6 +417,7 @@ fn shard_selection_targets_region_seqid_and_defaults_global() {
         },
         limit: 1,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
     assert_eq!(
@@ -426,6 +442,7 @@ fn sharded_and_monolithic_responses_are_identical_for_region() {
         },
         limit: 50,
         cursor: None,
+        dataset_key: None,
         allow_full_scan: false,
     };
     let mono = query_genes(&monolith, &req, &limits(), b"s").expect("monolith");
