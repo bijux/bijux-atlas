@@ -36,6 +36,7 @@ ops-contracts-check: ## Validate canonical ops manifests against ops/_schemas an
 	@python3 ./scripts/layout/validate_ops_contracts.py
 	@python3 ./scripts/layout/check_no_hidden_defaults.py
 	@python3 ./scripts/layout/check_obs_pack_ssot.py
+	@python3 ./scripts/layout/check_ops_canonical_entrypoints.py
 	@python3 ./scripts/layout/check_ops_script_names.py
 	@python3 ./scripts/layout/check_no_empty_dirs.py
 	@python3 ./scripts/layout/check_generated_policy.py
@@ -449,7 +450,7 @@ ops-deploy: ## Deploy atlas chart into local cluster (PROFILE=local|offline|perf
 	$(MAKE) -s ops-values-validate; \
 	$(MAKE) -s ops-chart-render-diff; \
 	$(MAKE) -s docker-build; \
-	./ops/e2e/scripts/deploy_atlas.sh
+	./ops/k8s/scripts/deploy_atlas.sh
 
 ops-undeploy: ## Uninstall atlas helm release from namespace
 	@ns="$${ATLAS_E2E_NAMESPACE:-$${ATLAS_NS:-atlas-e2e}}"; \
@@ -731,7 +732,42 @@ ops-rollback-drill: ## Compatibility alias for ops-drill-rollback
 
 ops-realdata: ## Run real-data e2e scenarios
 	@$(MAKE) -s ops-env-validate
-	@./ops/e2e/realdata/run_all.sh
+	@REALDATA_SOURCE="$${REALDATA_SOURCE:-ops/datasets/real-datasets.json}" ./ops/e2e/realdata/run_all.sh
+
+ops-local-reset: ## Wipe local namespaces/store and restart deterministic local cluster baseline
+	@CONFIRM_RESET=YES $(MAKE) ops-reset
+	@$(MAKE) ops-kind-reset
+	@$(MAKE) ops-stack-up PROFILE=kind
+
+ops-proof-cached-only: ## Prove cached-only mode behavior locally
+	@ATLAS_E2E_TEST=test_cached_only_mode.sh $(MAKE) ops-k8s-tests
+
+ops-proof-store-outage: ## Prove local store outage resilience drill
+	@$(MAKE) ops-drill-store-outage
+
+ops-proof-otel-outage: ## Prove local OTEL outage resilience drill
+	@$(MAKE) ops-drill-otel-outage
+
+ops-proof-prom-outage: ## Prove local Prometheus outage resilience drill
+	@$(MAKE) ops-drill-prom-outage
+
+ops-proof-pod-churn: ## Prove local pod churn resilience drill
+	@$(MAKE) ops-drill-pod-churn
+
+ops-proof-rolling-restart: ## Prove local rolling restart no-downtime gate
+	@ATLAS_E2E_TEST=test_rolling_restart_no_downtime.sh $(MAKE) ops-k8s-tests
+
+ops-proof-hpa-scale: ## Prove local HPA scale event gate
+	@ATLAS_E2E_TEST=test_hpa.sh $(MAKE) ops-k8s-tests
+
+ops-proof-disk-pressure: ## Prove local disk pressure simulation with cleanup
+	@MODE=fill $(MAKE) ops-kind-disk-pressure
+	@MODE=clean $(MAKE) ops-kind-disk-pressure
+	@./ops/obs/scripts/node-disk-pressure.sh
+
+ops-proof-cpu-throttle: ## Prove local cpu-throttle noisy-neighbor behavior
+	@$(MAKE) ops-kind-cpu-throttle
+	@./ops/obs/scripts/cpu-throttle-noisy-neighbor.sh
 
 ops-report: ## Gather ops evidence into artifacts/ops/<run-id>/
 	@$(MAKE) -s ops-env-validate
@@ -999,8 +1035,42 @@ ops-open-grafana: ## Print local ops service URLs
 ops-artifacts-open: ## Open latest ops artifact bundle
 	@./ops/run/artifacts-open.sh
 
-ops-local-full-stack: ## Single-command local full stack (kind + deploy + publish + smoke + k6 + observability)
-	@$(MAKE) ops-full
+ops-local-full: ## Canonical one-command local full-stack proof workflow
+	@set -e; \
+	run_id="$${OPS_RUN_ID:-atlas-local-$$(date -u +%Y%m%d-%H%M%S)}"; \
+	out="ops/_artifacts/$$run_id"; \
+	export OPS_RUN_ID="$$run_id"; \
+	export RUN_ID="$$run_id"; \
+	export OPS_RUN_DIR="$$out"; \
+	export ARTIFACT_DIR="$$out"; \
+	export ATLAS_E2E_STORE_ROOT="$${ATLAS_E2E_STORE_ROOT:-ops/_artifacts/cache/store}"; \
+	export ATLAS_E2E_OUTPUT_ROOT="$${ATLAS_E2E_OUTPUT_ROOT:-ops/_artifacts/cache/datasets}"; \
+	export ATLAS_CACHE_ROOT="$${ATLAS_CACHE_ROOT:-ops/_artifacts/cache/runtime}"; \
+	$(MAKE) ops-stack-up PROFILE=kind; \
+	$(MAKE) ops-stack-smoke; \
+	$(MAKE) ops-obs-up PROFILE=kind; \
+	$(MAKE) ops-obs-verify; \
+	$(MAKE) ops-deploy PROFILE=local; \
+	$(MAKE) ops-publish DATASET="$${DATASET:-medium}"; \
+	$(MAKE) ops-warm; \
+	$(MAKE) ops-smoke; \
+	$(MAKE) ops-proof-cached-only; \
+	$(MAKE) ops-proof-store-outage; \
+	$(MAKE) ops-proof-otel-outage; \
+	$(MAKE) ops-proof-prom-outage; \
+	$(MAKE) ops-proof-pod-churn; \
+	$(MAKE) ops-proof-rolling-restart; \
+	$(MAKE) ops-proof-hpa-scale; \
+	$(MAKE) ops-proof-disk-pressure; \
+	$(MAKE) ops-proof-cpu-throttle; \
+	$(MAKE) ops-cache-status; \
+	python3 ./ops/datasets/scripts/cache_budget_check.py; \
+	$(MAKE) ops-report; \
+	test -f "$$out/report.json"; \
+	echo "$$out/report.json"
+
+ops-local-full-stack: ## Compatibility alias for canonical one-command local full stack workflow
+	@$(MAKE) ops-local-full
 
 stack-full: ## Full-stack must-pass truth flow with contract report bundle
 	@set -e; \
@@ -1194,7 +1264,7 @@ e2e-perf:
 	@./ops/load/scripts/run_e2e_perf.sh
 
 e2e-realdata:
-	@./ops/e2e/realdata/run_all.sh
+	@REALDATA_SOURCE="$${REALDATA_SOURCE:-ops/datasets/real-datasets.json}" ./ops/e2e/realdata/run_all.sh
 
 observability-check:
 	@$(MAKE) ops-metrics-check

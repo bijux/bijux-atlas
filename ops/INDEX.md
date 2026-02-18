@@ -31,6 +31,7 @@ Use Make targets only.
 - `make ops-e2e-smoke`
 - `make ops-k8s-suite`
 - `make ops-load-suite SUITE=mixed-80-20`
+- `make ops-local-reset`
 - `make ops-k8s-tests`
 - `make ops-observability-validate`
 - `make ops-load-smoke`
@@ -41,5 +42,6 @@ Use Make targets only.
 
 - `make ops-ci-fast`
 - `make ops-ci-nightly`
+- `make ops-local-full`
 - `make ops-ref-grade-local`
 - `make ops-full`
