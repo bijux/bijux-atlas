@@ -4,9 +4,9 @@ ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
 cd "$ROOT"
 . "$ROOT/ops/_lib/common.sh"
 ops_env_load
-ops_require_run_context
-latest="$(ls -1dt artifacts/ops/* 2>/dev/null | head -n1 || true)"
-[ -n "$latest" ] || { echo "no artifacts" >&2; exit 2; }
+ops_entrypoint_start "ops-artifacts-open"
+latest="$(find artifacts/ops -mindepth 1 -maxdepth 1 -type d -print 2>/dev/null | sort | tail -n1 || true)"
+[ -n "$latest" ] || ops_fail "$OPS_ERR_ARTIFACT" "no artifacts found under artifacts/ops"
 echo "$latest"
 if command -v open >/dev/null 2>&1; then open "$latest" >/dev/null 2>&1 || true; fi
 if command -v xdg-open >/dev/null 2>&1; then xdg-open "$latest" >/dev/null 2>&1 || true; fi

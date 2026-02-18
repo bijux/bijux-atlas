@@ -26,6 +26,10 @@ source "${OPS_LIB_ROOT}/context_guard.sh"
 source "${OPS_LIB_ROOT}/version_guard.sh"
 # shellcheck source=ops/_lib/env.sh
 source "${OPS_LIB_ROOT}/env.sh"
+# shellcheck source=ops/_lib/errors.sh
+source "${OPS_LIB_ROOT}/errors.sh"
+# shellcheck source=ops/_lib/log.sh
+source "${OPS_LIB_ROOT}/log.sh"
 ARTIFACTS_ROOT="${REPO_ROOT}/artifacts/ops"
 
 ops_require_run_context() {
@@ -33,8 +37,15 @@ ops_require_run_context() {
   local artifact_dir="${ARTIFACT_DIR:-${OPS_RUN_DIR:-}}"
   if [ -z "$run_id" ] || [ -z "$artifact_dir" ]; then
     echo "RUN_ID/OPS_RUN_ID and ARTIFACT_DIR/OPS_RUN_DIR are required" >&2
-    return 2
+    return "$OPS_ERR_CONFIG"
   fi
+}
+
+ops_entrypoint_start() {
+  local entrypoint="$1"
+  ops_require_run_context || exit "$OPS_ERR_CONFIG"
+  ops_install_bundle_trap
+  ops_log_json "info" "entrypoint.start" "$entrypoint"
 }
 
 ops_need_cmd() {
