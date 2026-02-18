@@ -721,6 +721,22 @@ ops-script-coverage: ## Validate every ops/**/scripts entrypoint is exposed via 
 	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck
 	@$(MAKE) -s ops-shfmt
 
+ops-make-targets-doc: ## Generate docs/development/make-targets.md from registry SSOT
+	@python3 ./scripts/docs/generate_make_targets_inventory.py
+	@python3 ./scripts/docs/check_make_targets_drift.py
+
+ops-lint: ## Lint ops shell/python/json/schema contracts
+	@python3 ./scripts/layout/check_ops_run_entrypoints.py
+	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
+	@python3 ./ops/load/scripts/validate_suite_manifest.py
+	@python3 ./scripts/layout/check_tool_versions.py kind kubectl helm k6
+	@$(MAKE) -s ops-env-validate
+	@$(MAKE) -s ops-layout-lint
+
+ops-fmt: ## Format ops YAML/JSON and refresh make targets inventory docs
+	@./ops/_lib/fmt.sh
+	@$(MAKE) -s ops-make-targets-doc
+
 ops-shellcheck: ## Lint all ops shell scripts via shared wrapper
 	@./ops/_lib/shellcheck.sh
 

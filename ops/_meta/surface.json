@@ -6,6 +6,8 @@
     "ops-layout-lint",
     "ops-prereqs",
     "ops-doctor",
+    "ops-lint",
+    "ops-fmt",
     "ops-stack-up",
     "ops-stack-down",
     "ops-obs-up",

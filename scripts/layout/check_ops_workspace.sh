@@ -41,6 +41,7 @@ allowed_entries=(
   "README.md"
   "CONTRACT.md"
   "INDEX.md"
+  "ERRORS.md"
 )
 
 for dir in "${required_dirs[@]}"; do
