@@ -46,6 +46,7 @@ def main() -> int:
         "k6_summary",
         "metrics_snapshot",
         "trace_snapshot",
+        "dashboard_screenshot",
         "logs_excerpt",
         "rendered_manifests",
         "pass_fail_summary",
