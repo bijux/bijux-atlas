@@ -130,6 +130,12 @@ hygiene: ## Repo hygiene checks (layout + symlink + tracked-noise gates)
 	@ISO_ROOT=artifacts/isolates/hygiene $(MAKE) ci-make-help-drift
 	@ISO_ROOT=artifacts/isolates/hygiene $(MAKE) path-contract-check
 
+architecture-check: ## Validate runtime architecture boundaries and dependency guardrails
+	@cargo test -p bijux-atlas-core --test guardrails crate_dependency_dag_matches_boundaries_doc -- --exact
+	@cargo test -p bijux-atlas-core --test guardrails server_must_not_depend_on_ingest_crate -- --exact
+	@cargo test -p bijux-atlas-core --test guardrails query_layer_must_not_depend_on_runtime_network_or_async_stacks -- --exact
+	@cargo test -p bijux-atlas-server --test import_boundary_guardrails
+
 fetch-real-datasets:
 	@./scripts/fixtures/fetch-real-datasets.sh
 
@@ -146,7 +152,7 @@ release-update-compat-matrix:
 	@[ -n "$$TAG" ] || { echo "usage: make release-update-compat-matrix TAG=<tag>"; exit 2; }
 	@./scripts/release/update-compat-matrix.sh "$$TAG"
 
-.PHONY: help layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-graph scripts-lint scripts-format scripts-test scripts-audit scripts-clean artifacts-index artifacts-clean isolate-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts doctor dataset-id-lint config-validate config-print config-drift fetch-real-datasets ssot-check policy-lint policy-schema-drift release-update-compat-matrix ci local local-full contracts hygiene clean deep-clean debug bump release-dry-run release
+.PHONY: help layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-graph scripts-lint scripts-format scripts-test scripts-audit scripts-clean artifacts-index artifacts-clean isolate-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts doctor dataset-id-lint config-validate config-print config-drift fetch-real-datasets ssot-check policy-lint policy-schema-drift release-update-compat-matrix ci local local-full contracts hygiene architecture-check clean deep-clean debug bump release-dry-run release
 
 
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)

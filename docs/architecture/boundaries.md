@@ -53,3 +53,5 @@ Disallowed by default:
 
 - Any dependency edge not listed above.
 - Cycles among internal crates.
+- `bijux-atlas-server` importing ingest internals directly.
+- Query runtime dependencies (`tokio`, `reqwest`, `axum`, `hyper`) in `bijux-atlas-query`.
