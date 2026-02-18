@@ -34,6 +34,8 @@ Canonical Kubernetes operations flow and contract-aligned make entrypoints.
 - Scale checks: `make ops-k8s-tests` (`test_hpa.sh`).
 - Rollout under load drill: `make ops-drill-upgrade-under-load`.
 - Rollback under load drill: `make ops-drill-rollback-under-load`.
+- Pod churn drill: `make ops-drill-pod-churn`.
+- Store outage drill: `make ops-drill-store-outage`.
 
 ## Node-Local Cache Profile
 
@@ -44,10 +46,10 @@ Canonical Kubernetes operations flow and contract-aligned make entrypoints.
 
 - `ops-full`, `ops-full-pr`, and `ops-full-nightly` install failure traps.
 - On failure, bundles include logs, events, manifests, and performance outputs under `artifacts/ops/`.
+- `OPS_MODE=full make ops-full` additionally enforces churn/outage/rollback-under-load drills.
 
 ## SLO Validation
 
 - Smoke and observability flows validate latency/error metrics contracts:
   - `make ops-smoke`
   - `make ops-observability-validate`
-

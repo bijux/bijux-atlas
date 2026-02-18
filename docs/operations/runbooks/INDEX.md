@@ -24,6 +24,7 @@ All runbooks must follow this strict template:
 - `profile-under-load.md`
 - `registry-federation.md`
 - `traffic-spike.md`
+- `pod-churn.md`
 
 ## What
 
