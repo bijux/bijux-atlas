@@ -209,6 +209,16 @@
       "labels": [
         "backend",
         "dataset",
+        "class",
+        "subsystem",
+        "version"
+      ],
+      "name": "atlas_store_errors_total"
+    },
+    {
+      "labels": [
+        "backend",
+        "dataset",
         "subsystem",
         "version"
       ],

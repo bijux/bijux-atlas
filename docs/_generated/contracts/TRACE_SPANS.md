@@ -1,8 +1,8 @@
 # Trace Spans (Generated)
 
 - `admission_control` attrs: route
-- `cache_lookup` attrs: dataset
 - `dataset_resolve` attrs: route
-- `serialize_response` attrs: route, status
-- `sqlite_query` attrs: class
+- `cache_lookup` attrs: dataset
 - `store_fetch` attrs: backend, dataset
+- `sqlite_query` attrs: class
+- `serialize_response` attrs: route, status

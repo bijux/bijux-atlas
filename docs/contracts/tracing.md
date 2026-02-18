@@ -21,11 +21,11 @@ Does not define implementation internals outside this contract surface.
 ## Contracts
 
 - `admission_control` required attributes: route
-- `cache_lookup` required attributes: dataset
 - `dataset_resolve` required attributes: route
-- `serialize_response` required attributes: route, status
-- `sqlite_query` required attributes: class
+- `cache_lookup` required attributes: dataset
 - `store_fetch` required attributes: backend, dataset
+- `sqlite_query` required attributes: class
+- `serialize_response` required attributes: route, status
 
 ## Failure modes
 

@@ -24,5 +24,6 @@
 - `bijux_sqlite_query_latency_p95_seconds` labels: dataset, query_type, subsystem, version
 - `bijux_store_breaker_open` labels: dataset, subsystem, version
 - `bijux_store_download_p95_seconds` labels: dataset, subsystem, version
+- `atlas_store_errors_total` labels: backend, dataset, class, subsystem, version
 - `bijux_store_fetch_latency_p95_seconds` labels: backend, dataset, subsystem, version
 - `bijux_store_open_p95_seconds` labels: dataset, subsystem, version

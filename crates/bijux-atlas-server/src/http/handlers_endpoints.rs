@@ -220,7 +220,7 @@ pub(crate) async fn dataset_identity_handler(
                 error_json(
                     ApiErrorCode::UpstreamStoreUnavailable,
                     "dataset manifest unavailable",
-                    json!({"message": e.to_string()}),
+                    json!({"message": e.to_string(), "retryable": true}),
                 ),
             );
             state
