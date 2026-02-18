@@ -32,6 +32,7 @@
       "test_rolling_restart_no_downtime.sh",
       "test_liveness_under_load.sh",
       "test_offline_profile.sh",
+      "test_redis_rate_limit.sh",
       "test_resource_limits.sh",
       "test_storage_modes.sh"
     ],
