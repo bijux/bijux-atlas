@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -115,6 +116,7 @@ def main() -> int:
     observability_pack_schema = load("ops/obs/pack/compose.schema.json")
     _perf = load("configs/perf/k6-thresholds.v1.json")
     _slo = load("configs/slo/slo.json")
+    _ops_slo = load("configs/ops/slo/slo.v1.json")
 
     check_policy_schema_required(policy_schema, errors, "configs/policy/policy.schema.json")
     check_policy_json_against_schema(policy_cfg, policy_schema, errors)
@@ -123,6 +125,15 @@ def main() -> int:
     check_observability_pack_config(observability_pack, observability_pack_schema, errors)
     if policy_schema != contracts_policy_schema:
         errors.append("POLICY_SCHEMA drift: configs/policy/policy.schema.json != docs/contracts/POLICY_SCHEMA.json")
+    proc = subprocess.run(
+        [str(ROOT / "scripts/layout/check_slo_contracts.py")],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if proc.returncode != 0:
+        detail = (proc.stderr or proc.stdout).strip() or "unknown SLO contract validation failure"
+        errors.append(detail)
 
     if errors:
         print("config validation failed:", file=sys.stderr)

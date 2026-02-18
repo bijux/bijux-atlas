@@ -157,6 +157,18 @@ jobs:
       - uses: actions/checkout@v4
       - run: make ci-config-check
 
+  slo-config-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make ci-slo-config-validate
+
+  slo-metrics-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make ci-slo-metrics-contract
+
   ssot-drift:
     runs-on: ubuntu-latest
     steps:

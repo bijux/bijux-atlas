@@ -177,6 +177,12 @@ ci-make-safety:
 ci-make-help-drift:
 	@python3 ./scripts/docs/check_make_help_drift.py
 
+ci-slo-config-validate:
+	@python3 ./scripts/layout/check_slo_contracts.py --mode schema
+
+ci-slo-metrics-contract:
+	@python3 ./scripts/layout/check_slo_contracts.py --mode metrics
+
 ci-init-iso-dirs:
 	@mkdir -p "$${CARGO_TARGET_DIR:-artifacts/isolates/tmp/target}" "$${CARGO_HOME:-artifacts/isolates/tmp/cargo-home}" "$${TMPDIR:-artifacts/isolates/tmp/tmp}" "$${ISO_ROOT:-artifacts/isolates/tmp}"
 
