@@ -5,5 +5,5 @@
 # called-by: make observability-pack-drills
 set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
-"$ROOT/ops/e2e/k8s/tests/test_cpu_throttle_noisy_neighbor.sh"
+"$ROOT/ops/load/tests/test_cpu_throttle_noisy_neighbor.sh"
 echo "cpu throttle noisy neighbor drill passed"

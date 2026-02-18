@@ -7,8 +7,8 @@ set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
 ATLAS_BASE_URL="${ATLAS_BASE_URL:-http://127.0.0.1:18080}"
 
-"$ROOT/stack/faults/block-minio.sh" on
-trap '"$ROOT/stack/faults/block-minio.sh" off >/dev/null 2>&1 || true' EXIT
+"$ROOT/stack/faults/inject.sh" block-minio on
+trap '"$ROOT/stack/faults/inject.sh" block-minio off >/dev/null 2>&1 || true' EXIT
 
 "$ROOT/load/scripts/run_suite.sh" store-outage-mid-spike.json artifacts/perf/results || true
 curl -fsS "$ATLAS_BASE_URL/healthz" >/dev/null

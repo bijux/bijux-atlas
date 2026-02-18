@@ -14,11 +14,13 @@
 - Shared shell/python helpers that are not operator entrypoints live in `ops/_lib/` or domain-local `scripts/` directories.
 - Canonical domain ownership has no overlap:
   - `ops/stack/` local dependency bring-up
+    - owns canonical fault injection API at `ops/stack/faults/inject.sh`
   - `ops/k8s/` chart, profiles, and k8s gates
   - `ops/obs/` observability pack, contracts, drills
   - `ops/load/` k6 suites and baselines
   - `ops/datasets/` dataset manifests, pinning, QC, promotion
   - `ops/e2e/` composition-only scenarios across domains
+    - `ops/e2e/k8s/tests/` only wrapper entry scripts, not invariant test ownership
 - Generated outputs under `ops/_generated/` only.
 - Runtime artifacts write under `ops/_artifacts/` only, unless allowlisted in `configs/ops/artifacts-allowlist.txt`.
 - JSON schemas for ops manifests live under `ops/_schemas/`.
