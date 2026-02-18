@@ -23,7 +23,11 @@ pub(crate) use gc::{gc_apply, gc_plan};
 
 mod dataset_validation;
 
+#[cfg(test)]
+use dataset_validation::validate_qc_thresholds;
 pub(crate) use dataset_validation::{publish_dataset, validate_dataset, validate_ingest_qc};
+#[cfg(test)]
+use gc::compute_gc_plan;
 
 pub(crate) fn parse_alias_map(input: &str) -> BTreeMap<String, String> {
     let mut out = BTreeMap::new();

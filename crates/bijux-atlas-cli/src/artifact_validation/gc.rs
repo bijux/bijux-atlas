@@ -79,40 +79,40 @@ fn refuse_gc_in_server_container() -> Result<(), String> {
 }
 
 #[derive(Debug, Clone, serde::Serialize)]
-struct GcReport {
-    command: String,
-    status: String,
-    store_root: String,
-    catalogs: Vec<String>,
-    pins_path: String,
-    reachable: ReachableSummary,
-    candidates: CandidateSummary,
-    applied: AppliedSummary,
-    metrics: serde_json::Value,
-    report_path: Option<String>,
+pub(super) struct GcReport {
+    pub(super) command: String,
+    pub(super) status: String,
+    pub(super) store_root: String,
+    pub(super) catalogs: Vec<String>,
+    pub(super) pins_path: String,
+    pub(super) reachable: ReachableSummary,
+    pub(super) candidates: CandidateSummary,
+    pub(super) applied: AppliedSummary,
+    pub(super) metrics: serde_json::Value,
+    pub(super) report_path: Option<String>,
 }
 
 #[derive(Debug, Clone, serde::Serialize)]
-struct ReachableSummary {
-    dataset_count: usize,
-    pinned_dataset_count: usize,
-    pinned_hash_count: usize,
+pub(super) struct ReachableSummary {
+    pub(super) dataset_count: usize,
+    pub(super) pinned_dataset_count: usize,
+    pub(super) pinned_hash_count: usize,
 }
 
 #[derive(Debug, Clone, serde::Serialize)]
-struct CandidateSummary {
-    dataset_roots: Vec<String>,
-    bytes_by_root: BTreeMap<String, u64>,
+pub(super) struct CandidateSummary {
+    pub(super) dataset_roots: Vec<String>,
+    pub(super) bytes_by_root: BTreeMap<String, u64>,
 }
 
 #[derive(Debug, Clone, serde::Serialize, Default)]
-struct AppliedSummary {
-    deleted_dataset_roots: Vec<String>,
-    deleted_bytes: u64,
-    errors: Vec<String>,
+pub(super) struct AppliedSummary {
+    pub(super) deleted_dataset_roots: Vec<String>,
+    pub(super) deleted_bytes: u64,
+    pub(super) errors: Vec<String>,
 }
 
-fn compute_gc_plan(
+pub(super) fn compute_gc_plan(
     store_root: &Path,
     catalogs: &[PathBuf],
     pins_path: &Path,
