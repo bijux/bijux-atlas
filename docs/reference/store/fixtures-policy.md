@@ -12,8 +12,8 @@ Non-CI fixture:
 
 Golden query snapshots:
 
-- Query definitions: `ops/fixtures/medium/golden_queries.json`.
-- Snapshot output (manual): `ops/fixtures/medium/golden_snapshot.json`.
+- Query definitions: `ops/fixtures/medium/api-list-queries.v1.json`.
+- Snapshot output (manual): `ops/fixtures/medium/api-list-responses.v1.json`.
 
 ## What
 

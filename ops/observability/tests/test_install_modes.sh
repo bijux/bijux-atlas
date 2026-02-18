@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
-. "$ROOT/ops/observability/tests/common.sh"
+. "$ROOT/ops/observability/tests/observability-test-lib.sh"
 require_bin kubectl
 
 # Minimal mode must always be accepted and never require CRDs.

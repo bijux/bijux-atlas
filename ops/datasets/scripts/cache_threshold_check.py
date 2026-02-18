@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-THRESHOLDS = json.loads((ROOT / 'configs/ops/cache-thresholds.json').read_text())
+THRESHOLDS = json.loads((ROOT / 'configs/ops/cache-budget-thresholds.v1.json').read_text())
 STATUS_FILE = ROOT / 'artifacts/ops/cache-status.json'
 
 if not STATUS_FILE.exists():

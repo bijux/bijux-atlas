@@ -17,7 +17,7 @@
 
 ```bash
 $ make e2e-perf
-$ cargo test -p bijux-atlas-server --test latency_guard
+$ cargo test -p bijux-atlas-server --test p99-regression
 ```
 
 ## Expected outputs

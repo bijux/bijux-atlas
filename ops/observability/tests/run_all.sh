@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
-. "$ROOT/ops/observability/tests/common.sh"
+. "$ROOT/ops/observability/tests/observability-test-lib.sh"
 
 on_fail() {
   out=$(capture_failure_artifacts)

@@ -4,7 +4,7 @@ Nightly performance suite is authoritative for latency regressions.
 
 ## Inputs
 - k6 suite outputs under `artifacts/perf/results/*.summary.json`
-- Thresholds in `configs/perf/thresholds.json`
+- Thresholds in `configs/perf/k6-thresholds.v1.json`
 - Generated summary in `artifacts/perf/report.md`
 
 ## Gate
