@@ -8,6 +8,7 @@ use bijux_atlas_core::{
     canonical, resolve_bijux_cache_dir, resolve_bijux_config_path, sha256_hex, ConfigPathScope,
     MachineError,
 };
+use bijux_atlas_ingest::{diff_normalized_ids, replay_normalized_counts};
 use bijux_atlas_ingest::{ingest_dataset, IngestOptions};
 use bijux_atlas_model::{
     BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, GeneIdentifierPolicy, GeneNamePolicy,
@@ -165,6 +166,22 @@ enum AtlasCommand {
         emit_shards: bool,
         #[arg(long, default_value_t = 0)]
         shard_partitions: usize,
+        #[arg(long, default_value_t = false)]
+        emit_normalized_debug: bool,
+        #[arg(long, default_value_t = false)]
+        normalized_replay: bool,
+        #[arg(long, default_value_t = false)]
+        prod_mode: bool,
+    },
+    IngestReplay {
+        #[arg(long)]
+        normalized: PathBuf,
+    },
+    IngestNormalizedDiff {
+        #[arg(long)]
+        base: PathBuf,
+        #[arg(long)]
+        target: PathBuf,
     },
     IngestValidate {
         #[arg(long)]
@@ -285,6 +302,9 @@ struct IngestCliArgs {
     fasta_scan_max_bases: u64,
     emit_shards: bool,
     shard_partitions: usize,
+    emit_normalized_debug: bool,
+    normalized_replay: bool,
+    prod_mode: bool,
 }
 
 pub fn main_entry() -> ProcessExitCode {
@@ -511,6 +531,9 @@ fn run_atlas_command(
             fasta_scan_max_bases,
             emit_shards,
             shard_partitions,
+            emit_normalized_debug,
+            normalized_replay,
+            prod_mode,
         } => run_ingest(
             IngestCliArgs {
                 gff3,
@@ -535,10 +558,49 @@ fn run_atlas_command(
                 fasta_scan_max_bases,
                 emit_shards,
                 shard_partitions,
+                emit_normalized_debug,
+                normalized_replay,
+                prod_mode,
             },
             output_mode,
         )
         .map_err(CliError::internal),
+        AtlasCommand::IngestReplay { normalized } => {
+            let counts = replay_normalized_counts(&normalized)
+                .map_err(|e| CliError::internal(e.to_string()))?;
+            command_output_adapters::emit_ok(
+                output_mode,
+                json!({
+                    "command":"atlas ingest-replay",
+                    "status":"ok",
+                    "normalized": normalized,
+                    "counts": {
+                        "genes": counts.genes,
+                        "transcripts": counts.transcripts,
+                        "exons": counts.exons
+                    }
+                }),
+            )
+            .map_err(CliError::internal)
+        }
+        AtlasCommand::IngestNormalizedDiff { base, target } => {
+            let (removed, added) = diff_normalized_ids(&base, &target)
+                .map_err(|e| CliError::internal(e.to_string()))?;
+            command_output_adapters::emit_ok(
+                output_mode,
+                json!({
+                    "command":"atlas ingest-normalized-diff",
+                    "status":"ok",
+                    "base": base,
+                    "target": target,
+                    "removed_count": removed.len(),
+                    "added_count": added.len(),
+                    "removed": removed,
+                    "added": added
+                }),
+            )
+            .map_err(CliError::internal)
+        }
         AtlasCommand::IngestValidate {
             qc_report,
             thresholds,
