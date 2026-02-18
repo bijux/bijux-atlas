@@ -25,6 +25,12 @@
 Airgapped note:
 - Mirror pinned image refs from `configs/ops/observability-pack.json` into your local registry.
 - Keep digest fields updated to the mirrored immutable artifacts.
+- Pin and verify base toolchain via `configs/ops/tool-versions.json` and `make ops-tools-check`.
+
+Namespace/storage conventions:
+- Kubernetes namespace: `atlas-observability`.
+- Storage mode default: ephemeral (`ATLAS_OBS_STORAGE_MODE=ephemeral`).
+- Optional persistent mode: `ATLAS_OBS_STORAGE_MODE=persistent`.
 
 ## Commands
 
@@ -32,6 +38,9 @@ Airgapped note:
 - `make ops-obs-mode ATLAS_OBS_PROFILE=kind`
 - `make ops-obs-mode ATLAS_OBS_PROFILE=cluster`
 - `make ops-observability-pack-verify`
+- `make ops-observability-pack-health`
 - `make ops-observability-pack-smoke`
 - `make ops-observability-pack-export`
+- `make ops-observability-pack-upgrade-check`
+- `make ops-observability-pack-conformance-report`
 - `make ops-obs-down`

@@ -5,6 +5,7 @@ ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 
 python3 "$ROOT/scripts/public/observability/check_metrics_contract.py"
 python3 "$ROOT/scripts/public/observability/check_dashboard_contract.py"
+python3 "$ROOT/ops/observability/scripts/contracts/check_dashboard_metric_compat.py"
 python3 "$ROOT/scripts/public/observability/check_alerts_contract.py"
 python3 "$ROOT/scripts/public/observability/lint_runbooks.py"
 python3 "$ROOT/ops/observability/scripts/validate_logs_schema.py" --file "$ROOT/ops/observability/contract/logs.example.jsonl"

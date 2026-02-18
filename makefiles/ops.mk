@@ -856,6 +856,15 @@ ops-observability-pack-export: ## Export dashboards/rules/configs into artifacts
 ops-observability-pack-version-check: ## Check pack versions and pinned digest policy
 	@./ops/observability/scripts/check_pack_versions.sh
 
+ops-observability-pack-upgrade-check: ## Check required vs running pack versions
+	@./ops/observability/scripts/check_pack_upgrade.sh
+
+ops-observability-pack-health: ## Query pack health and service readiness
+	@./ops/observability/scripts/pack_health.sh
+
+ops-observability-pack-conformance-report: ## Write pack conformance report under artifacts
+	@./ops/observability/scripts/write_pack_conformance_report.py
+
 ops-obs-mode-minimal: ## Compatibility alias for kind profile
 	@ATLAS_OBS_PROFILE=kind ./ops/observability/scripts/install_pack.sh
 
@@ -872,11 +881,13 @@ ops-observability-pack-lint: ## Run observability pack lint-only contract checks
 observability-pack-test: ## Fast observability pack test (contracts + coverage)
 	@./ops/observability/tests/test_contracts.sh
 	@./ops/observability/tests/test_coverage.sh
+	@./ops/observability/scripts/write_pack_conformance_report.py
 
 observability-pack-drills: ## Full observability drill suite (outage matrix + contracts)
 	@./ops/observability/tests/test_coverage.sh
 	@./ops/observability/tests/test_outage_matrix.sh
 	@./ops/observability/tests/test_contracts.sh
+	@./ops/observability/scripts/write_pack_conformance_report.py
 
 ops-observability-pack-idempotency: ## Install observability pack twice to validate idempotency
 	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/observability/scripts/install_pack.sh
@@ -907,6 +918,7 @@ stack-full: ## Full-stack must-pass truth flow with contract report bundle
 	$(MAKE) ops-stack-up; \
 	$(MAKE) ops-obs-up; \
 	$(MAKE) ops-observability-pack-verify; \
+	$(MAKE) ops-observability-pack-health; \
 	$(MAKE) ops-observability-pack-version-check; \
 	mkdir -p "$$report_dir"; \
 	helm template atlas ops/k8s/charts/bijux-atlas -f "$${ATLAS_VALUES_FILE:-ops/k8s/values/local.yaml}" > "$$report_dir/rendered-manifests.yaml"; \
@@ -929,7 +941,9 @@ stack-full: ## Full-stack must-pass truth flow with contract report bundle
 	$(MAKE) ops-metrics-check; \
 	$(MAKE) ops-alerts-validate; \
 	$(MAKE) ops-dashboards-validate; \
+	$(MAKE) ops-observability-pack-upgrade-check; \
 	$(MAKE) ops-observability-pack-export; \
+	$(MAKE) ops-observability-pack-conformance-report; \
 	$(MAKE) ops-report; \
 	status=passed
 
