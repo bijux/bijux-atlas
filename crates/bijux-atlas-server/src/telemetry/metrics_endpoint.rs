@@ -288,6 +288,13 @@ bijux_store_error_other_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} 
         0
     };
     let queue_depth = state.queued_requests.load(Ordering::Relaxed);
+    let policy_mode = state.runtime_policy_mode.as_str();
+    let policy_relaxation_active = if policy_mode == "strict" { 0 } else { 1 };
+    let policy_violations_total = state
+        .cache
+        .metrics
+        .policy_violations_total
+        .load(Ordering::Relaxed);
     let disk_io_p95 = {
         let mut v = state.cache.metrics.disk_io_latency_ns.lock().await.clone();
         if v.is_empty() {
@@ -307,6 +314,8 @@ bijux_cached_only_mode{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_draining_mode{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_store_breaker_open{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_request_queue_depth{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_policy_relaxation_active{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",mode=\"{}\"}} {}\n\
+atlas_policy_violations_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",policy=\"all\"}} {}\n\
 bijux_disk_io_latency_p95_ns{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_fs_space_pressure_events_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
         METRIC_SUBSYSTEM,
@@ -348,6 +357,15 @@ bijux_fs_space_pressure_events_total{{subsystem=\"{}\",version=\"{}\",dataset=\"
         METRIC_SUBSYSTEM,
         METRIC_VERSION,
         METRIC_DATASET_ALL,
+        policy_mode,
+        policy_relaxation_active,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        policy_violations_total,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
         disk_io_p95,
         METRIC_SUBSYSTEM,
         METRIC_VERSION,
@@ -358,6 +376,22 @@ bijux_fs_space_pressure_events_total{{subsystem=\"{}\",version=\"{}\",dataset=\"
             .fs_space_pressure_events_total
             .load(Ordering::Relaxed)
     ));
+    let mut policy_counts = state
+        .cache
+        .metrics
+        .policy_violations_by_policy
+        .lock()
+        .await
+        .clone()
+        .into_iter()
+        .collect::<Vec<_>>();
+    policy_counts.sort_by(|a, b| a.0.cmp(&b.0));
+    for (policy, count) in policy_counts {
+        body.push_str(&format!(
+            "atlas_policy_violations_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",policy=\"{}\"}} {}\n",
+            METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, policy, count
+        ));
+    }
     body.push_str(&format!(
         "bijux_registry_invalidation_events_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_registry_freeze_mode{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",

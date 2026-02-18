@@ -2,6 +2,8 @@
 #[allow(dead_code)]
 pub const CONTRACT_METRIC_NAMES: &[&str] = &[
     "atlas_overload_active",
+    "atlas_policy_relaxation_active",
+    "atlas_policy_violations_total",
     "bijux_dataset_count",
     "bijux_dataset_disk_usage_bytes",
     "bijux_dataset_hits",
@@ -23,6 +25,14 @@ pub const CONTRACT_METRIC_LABELS: &[(&str, &[&str])] = &[
     (
         "atlas_overload_active",
         &["dataset", "subsystem", "version"],
+    ),
+    (
+        "atlas_policy_relaxation_active",
+        &["dataset", "mode", "subsystem", "version"],
+    ),
+    (
+        "atlas_policy_violations_total",
+        &["dataset", "policy", "subsystem", "version"],
     ),
     ("bijux_dataset_count", &["dataset", "subsystem", "version"]),
     (

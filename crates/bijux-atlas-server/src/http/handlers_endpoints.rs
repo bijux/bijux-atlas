@@ -552,6 +552,15 @@ pub(crate) async fn query_validate_handler(
         };
     let class = classify_query(&req);
     let cost = estimate_query_cost(&req);
+    tracing::info!(
+        request_id = %request_id,
+        route = "/v1/query/validate",
+        query_class = ?class,
+        policy_mode = %state.runtime_policy_mode.as_str(),
+        max_page_size = state.limits.max_limit,
+        max_region_span = state.limits.max_region_span,
+        "policy_applied"
+    );
     let reasons = [
         req.filter.gene_id.as_ref().map(|_| "gene_id"),
         req.filter.name.as_ref().map(|_| "name"),

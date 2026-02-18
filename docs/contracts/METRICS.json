@@ -11,6 +11,24 @@
     {
       "labels": [
         "dataset",
+        "mode",
+        "subsystem",
+        "version"
+      ],
+      "name": "atlas_policy_relaxation_active"
+    },
+    {
+      "labels": [
+        "dataset",
+        "policy",
+        "subsystem",
+        "version"
+      ],
+      "name": "atlas_policy_violations_total"
+    },
+    {
+      "labels": [
+        "dataset",
         "subsystem",
         "version"
       ],

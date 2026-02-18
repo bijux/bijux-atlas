@@ -16,6 +16,18 @@
       "subsystem",
       "version"
     ],
+    "atlas_policy_relaxation_active": [
+      "dataset",
+      "mode",
+      "subsystem",
+      "version"
+    ],
+    "atlas_policy_violations_total": [
+      "dataset",
+      "policy",
+      "subsystem",
+      "version"
+    ],
     "bijux_dataset_count": [
       "dataset",
       "subsystem",
