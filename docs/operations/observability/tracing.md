@@ -3,12 +3,13 @@
 ## Span Chain
 Request path is traced with spans in this sequence:
 
-1. `request`
+1. `admission_control`
 2. `dataset_resolve`
-3. `dataset_download` (cache miss path)
-4. `dataset_open`
-5. `sqlite_query`
-6. `serialize_response`
+3. `cache_lookup`
+4. `store_fetch` (cache miss path)
+5. `open_db`
+6. `sqlite_query`
+7. `serialize_response`
 
 ## Request Correlation
 - Every request receives `x-request-id` response header.

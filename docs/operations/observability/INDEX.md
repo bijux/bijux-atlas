@@ -29,6 +29,7 @@ Does not duplicate page-level details.
 - [Acceptance Gates](acceptance-gates.md)
 - [Observability Modes](modes.md)
 - [Trace Sampling Policy](trace-sampling-policy.md)
+- [Metric Ownership](metric-ownership.md)
 
 ## Failure modes
 
