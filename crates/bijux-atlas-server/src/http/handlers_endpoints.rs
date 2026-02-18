@@ -368,6 +368,40 @@ pub(crate) async fn debug_echo_handler(
     with_request_id(Json(payload).into_response(), &request_id)
 }
 
+pub(crate) async fn query_validate_handler(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Json(params): Json<HashMap<String, String>>,
+) -> impl IntoResponse {
+    let started = Instant::now();
+    let request_id = propagated_request_id(&headers, &state);
+    let (dataset, req) = match crate::http::genes_support::build_dataset_query(&params, state.limits.max_limit) {
+        Ok(v) => v,
+        Err(e) => {
+            let resp = api_error_response(StatusCode::BAD_REQUEST, e);
+            state
+                .metrics
+                .observe_request("/v1/query/validate", StatusCode::BAD_REQUEST, started.elapsed())
+                .await;
+            return with_request_id(resp, &request_id);
+        }
+    };
+    let class = classify_query(&req);
+    let cost = estimate_query_cost(&req);
+    let data = json!({
+        "dataset": dataset,
+        "query_class": format!("{:?}", class).to_ascii_lowercase(),
+        "work_units": cost.work_units
+    });
+    let payload = json_envelope(None, None, data, None, None);
+    let resp = with_query_class(Json(payload).into_response(), class);
+    state
+        .metrics
+        .observe_request("/v1/query/validate", StatusCode::OK, started.elapsed())
+        .await;
+    with_request_id(resp, &request_id)
+}
+
 pub(crate) async fn registry_health_handler(State(state): State<AppState>) -> impl IntoResponse {
     let started = Instant::now();
     let request_id = make_request_id(&state);

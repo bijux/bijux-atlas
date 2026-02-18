@@ -1,5 +1,5 @@
 use crate::*;
-use bijux_atlas_api::params::IncludeField;
+use bijux_atlas_api::params::{IncludeField, SortKey};
 use serde_json::json;
 
 pub(super) struct QueueGuard {
@@ -163,6 +163,20 @@ pub(super) fn build_dataset_query(
             "min_transcripts/max_transcripts are not yet supported",
             json!({}),
         ));
+    }
+    if let Some(sort) = parsed.sort {
+        match sort {
+            SortKey::GeneIdAsc => {}
+            SortKey::RegionAsc => {
+                if parsed.range.is_none() {
+                    return Err(super::handlers::error_json(
+                        ApiErrorCode::InvalidQueryParameter,
+                        "sort=region:asc requires range filter",
+                        json!({}),
+                    ));
+                }
+            }
+        }
     }
     let region = parse_region(parsed.range)?;
     let name_prefix = parsed.name_like.as_ref().map(|v| v.trim_end_matches('*'));

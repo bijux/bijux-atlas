@@ -84,14 +84,31 @@ pub async fn send_raw(
     path: &str,
     headers: &[(&str, &str)],
 ) -> (u16, String, String) {
+    send_raw_with_method(addr, "GET", path, headers, None).await
+}
+
+pub async fn send_raw_with_method(
+    addr: std::net::SocketAddr,
+    method: &str,
+    path: &str,
+    headers: &[(&str, &str)],
+    body: Option<&str>,
+) -> (u16, String, String) {
     let mut stream = tokio::net::TcpStream::connect(addr)
         .await
         .expect("connect server");
-    let mut req = format!("GET {path} HTTP/1.1\r\nHost: {addr}\r\nConnection: close\r\n");
+    let mut req = format!("{method} {path} HTTP/1.1\r\nHost: {addr}\r\nConnection: close\r\n");
+    if let Some(payload) = body {
+        req.push_str("Content-Type: application/json\r\n");
+        req.push_str(&format!("Content-Length: {}\r\n", payload.len()));
+    }
     for (k, v) in headers {
         req.push_str(&format!("{k}: {v}\r\n"));
     }
     req.push_str("\r\n");
+    if let Some(payload) = body {
+        req.push_str(payload);
+    }
     stream
         .write_all(req.as_bytes())
         .await

@@ -11,7 +11,9 @@ use sha2::Sha256;
 use tempfile::tempdir;
 mod api_hardening_support;
 
-use api_hardening_support::{fixture_fasta_and_fai, fixture_release_index, mk_dataset, send_raw};
+use api_hardening_support::{
+    fixture_fasta_and_fai, fixture_release_index, mk_dataset, send_raw, send_raw_with_method,
+};
 
 #[tokio::test]
 async fn error_contract_and_etag_behaviors() {
@@ -141,6 +143,14 @@ async fn error_contract_and_etag_behaviors() {
     )
     .await;
     assert_eq!(status, 200);
+    let (status, headers, _) = send_raw(
+        addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&limit=1",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+    assert!(headers.contains("x-atlas-query-class: cheap"));
 
     let (status, _, body) = send_raw(
         addr,
@@ -154,6 +164,34 @@ async fn error_contract_and_etag_behaviors() {
     let (status, _, body) = send_raw(addr, "/metrics", &[]).await;
     assert_eq!(status, 200);
     assert!(body.contains("bijux_request_stage_latency_p95_seconds"));
+}
+
+#[tokio::test]
+async fn query_validate_endpoint_returns_classification() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds, sqlite);
+    let tmp = tempdir().expect("tempdir");
+    let cfg = DatasetCacheConfig {
+        disk_root: tmp.path().to_path_buf(),
+        ..Default::default()
+    };
+    let mgr = DatasetCacheManager::new(cfg, store);
+    let app = build_router(AppState::new(mgr));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let body = r#"{"release":"110","species":"homo_sapiens","assembly":"GRCh38","gene_id":"g1"}"#;
+    let (status, headers, payload) =
+        send_raw_with_method(addr, "POST", "/v1/query/validate", &[], Some(body)).await;
+    assert_eq!(status, 200);
+    assert!(headers.contains("x-atlas-query-class: cheap"));
+    let json: Value = serde_json::from_str(&payload).expect("json");
+    assert_eq!(json["data"]["query_class"], "cheap");
 }
 
 #[tokio::test]

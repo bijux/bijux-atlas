@@ -278,6 +278,19 @@ pub(crate) fn with_request_id(mut response: Response, request_id: &str) -> Respo
     response
 }
 
+pub(crate) fn with_query_class(mut response: Response, class: QueryClass) -> Response {
+    let value = match class {
+        QueryClass::Cheap => "cheap",
+        QueryClass::Medium => "medium",
+        QueryClass::Heavy => "heavy",
+        _ => "heavy",
+    };
+    response
+        .headers_mut()
+        .insert("x-atlas-query-class", HeaderValue::from_static(value));
+    response
+}
+
 pub(crate) async fn dataset_provenance(state: &AppState, dataset: &DatasetId) -> Value {
     let dataset_hash = sha256_hex(dataset.canonical_string().as_bytes());
     let mut out = json!({
