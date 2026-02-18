@@ -36,9 +36,47 @@ pub(crate) async fn datasets_handler(
         .await
         .unwrap_or_else(|| Catalog::new(vec![]));
     let include_bom = bool_query_flag(&params, "include_bom");
+    let release_filter = params.get("release").map(std::string::String::as_str);
+    let species_filter = params.get("species").map(std::string::String::as_str);
+    let assembly_filter = params.get("assembly").map(std::string::String::as_str);
+    let limit = params
+        .get("limit")
+        .and_then(|v| v.parse::<usize>().ok())
+        .map_or(100, |v| v.clamp(1, 500));
+    let cursor = params.get("cursor").cloned();
+
+    let mut rows = catalog
+        .datasets
+        .iter()
+        .filter(|entry| {
+            release_filter.is_none_or(|v| entry.dataset.release.as_str() == v)
+                && species_filter.is_none_or(|v| entry.dataset.species.as_str() == v)
+                && assembly_filter.is_none_or(|v| entry.dataset.assembly.as_str() == v)
+        })
+        .cloned()
+        .collect::<Vec<_>>();
+    rows.sort_by(|a, b| a.dataset.canonical_string().cmp(&b.dataset.canonical_string()));
+
+    let start_idx = cursor
+        .as_deref()
+        .and_then(|c| rows.iter().position(|r| r.dataset.canonical_string() == c))
+        .map_or(0, |idx| idx.saturating_add(1));
+    let page = rows.into_iter().skip(start_idx).take(limit + 1).collect::<Vec<_>>();
+    let has_more = page.len() > limit;
+    let page = if has_more {
+        page[..limit].to_vec()
+    } else {
+        page
+    };
+    let next_cursor = if has_more {
+        page.last().map(|entry| entry.dataset.canonical_string())
+    } else {
+        None
+    };
+
     let datasets_payload = if include_bom {
-        let mut rows = Vec::with_capacity(catalog.datasets.len());
-        for entry in &catalog.datasets {
+        let mut with_bom = Vec::with_capacity(page.len());
+        for entry in &page {
             let bom = match state.cache.fetch_manifest_summary(&entry.dataset).await {
                 Ok(manifest) => json!({
                     "manifest_version": manifest.manifest_version,
@@ -48,22 +86,28 @@ pub(crate) async fn datasets_handler(
                 }),
                 Err(_) => Value::Null,
             };
-            rows.push(json!({
+            with_bom.push(json!({
                 "dataset": entry.dataset,
                 "manifest_path": entry.manifest_path,
                 "sqlite_path": entry.sqlite_path,
                 "bill_of_materials": bom
             }));
         }
-        Value::Array(rows)
+        Value::Array(with_bom)
     } else {
-        serde_json::to_value(&catalog.datasets).unwrap_or(Value::Array(Vec::new()))
+        serde_json::to_value(&page).unwrap_or(Value::Array(Vec::new()))
     };
     let payload = json_envelope(
         None,
-        None,
-        json!({ "datasets": datasets_payload }),
-        None,
+        Some(json!({"next_cursor": next_cursor})),
+        json!({
+            "items": datasets_payload,
+            "stats": {
+                "limit": limit,
+                "returned": page.len()
+            }
+        }),
+        next_cursor.map(|cursor| json!({"next_cursor": cursor})),
         None,
     );
     let etag = format!(
@@ -530,17 +574,10 @@ pub(crate) async fn genes_count_handler(
             .await;
         return with_request_id(resp, &request_id);
     }
-    let release = params.get("release").cloned().unwrap_or_default();
-    let species = params.get("species").cloned().unwrap_or_default();
-    let assembly = params.get("assembly").cloned().unwrap_or_default();
-    let dataset = match DatasetId::new(&release, &species, &assembly) {
+    let (dataset, req) = match crate::http::genes_support::build_dataset_query(&params, 500) {
         Ok(v) => v,
         Err(e) => {
-            let resp = (
-                axum::http::StatusCode::BAD_REQUEST,
-                Json(json!({"error": e.to_string()})),
-            )
-                .into_response();
+            let resp = api_error_response(StatusCode::BAD_REQUEST, e);
             state
                 .metrics
                 .observe_request(
@@ -555,14 +592,12 @@ pub(crate) async fn genes_count_handler(
 
     match state.cache.open_dataset_connection(&dataset).await {
         Ok(c) => {
-            let count: Result<i64, _> =
-                c.conn
-                    .query_row("SELECT COUNT(*) FROM gene_summary", [], |r| r.get(0));
+            let count = query_gene_count_with_filters(&c.conn, &req);
             match count {
                 Ok(v) => {
                     let epoch = state.cache.catalog_epoch().await;
                     let resp = Json(json!({
-                        "dataset": format!("{}/{}/{}", release, species, assembly),
+                        "dataset": dataset.canonical_string(),
                         "gene_count": v,
                         "catalog_epoch": epoch
                     }))
@@ -617,3 +652,51 @@ pub(crate) async fn genes_count_handler(
 }
 
 include!("transcript_endpoints.rs");
+
+fn query_gene_count_with_filters(
+    conn: &rusqlite::Connection,
+    req: &bijux_atlas_query::GeneQueryRequest,
+) -> Result<i64, rusqlite::Error> {
+    let mut sql = "SELECT COUNT(*) FROM gene_summary g".to_string();
+    let mut where_parts: Vec<String> = Vec::new();
+    let mut params: Vec<rusqlite::types::Value> = Vec::new();
+
+    if let Some(region) = &req.filter.region {
+        sql.push_str(" JOIN gene_summary_rtree r ON r.gene_rowid = g.id");
+        where_parts.push("g.seqid = ?".to_string());
+        params.push(rusqlite::types::Value::Text(region.seqid.clone()));
+        where_parts.push("r.start <= ?".to_string());
+        params.push(rusqlite::types::Value::Real(region.end as f64));
+        where_parts.push("r.end >= ?".to_string());
+        params.push(rusqlite::types::Value::Real(region.start as f64));
+    }
+    if let Some(gene_id) = &req.filter.gene_id {
+        where_parts.push("g.gene_id = ?".to_string());
+        params.push(rusqlite::types::Value::Text(gene_id.clone()));
+    }
+    if let Some(name) = &req.filter.name {
+        where_parts.push("g.name_normalized = ?".to_string());
+        params.push(rusqlite::types::Value::Text(
+            bijux_atlas_query::normalize_name_lookup(name),
+        ));
+    }
+    if let Some(prefix) = &req.filter.name_prefix {
+        where_parts.push("g.name_normalized LIKE ? ESCAPE '!'".to_string());
+        params.push(rusqlite::types::Value::Text(format!(
+            "{}%",
+            bijux_atlas_query::escape_like_prefix(&bijux_atlas_query::normalize_name_lookup(prefix))
+        )));
+    }
+    if let Some(biotype) = &req.filter.biotype {
+        where_parts.push("g.biotype = ?".to_string());
+        params.push(rusqlite::types::Value::Text(biotype.clone()));
+    }
+    if !where_parts.is_empty() {
+        sql.push_str(" WHERE ");
+        sql.push_str(&where_parts.join(" AND "));
+    }
+
+    conn.query_row(&sql, rusqlite::params_from_iter(params.iter()), |row| {
+        row.get::<_, i64>(0)
+    })
+}

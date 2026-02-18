@@ -31,8 +31,9 @@ pub use cursor::{
 pub use db::explain_query_plan as explain_query_plan_internal;
 pub use db::prepared_sql_for_class as prepared_sql_for_class_export;
 pub use filters::{
-    compile_field_projection, escape_like_prefix, GeneFields, GeneFilter, GeneRow, RegionFilter,
-    TranscriptFilter, TranscriptQueryRequest, TranscriptQueryResponse, TranscriptRow,
+    compile_field_projection, escape_like_prefix, normalize_name_lookup, GeneFields, GeneFilter,
+    GeneRow, RegionFilter, TranscriptFilter, TranscriptQueryRequest, TranscriptQueryResponse,
+    TranscriptRow,
 };
 pub use limits::QueryLimits as QueryLimitsExport;
 pub use normalize::normalized_query_hash as normalized_query_hash_ssot;

@@ -528,6 +528,47 @@ async fn memory_pressure_guards_reject_large_response_without_cascading_failure(
 }
 
 #[tokio::test]
+async fn genes_count_applies_filters_consistently() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds.clone(), sqlite);
+    let tmp = tempdir().expect("tempdir");
+    let cfg = DatasetCacheConfig {
+        disk_root: tmp.path().to_path_buf(),
+        ..Default::default()
+    };
+    let mgr = DatasetCacheManager::new(cfg, store);
+    let state = AppState::with_config(mgr, ApiConfig::default(), Default::default());
+    let app = build_router(state);
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/genes/count?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+    let payload: Value = serde_json::from_str(&body).expect("count json");
+    assert_eq!(payload.get("gene_count").and_then(Value::as_i64), Some(1));
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/genes/count?release=110&species=homo_sapiens&assembly=GRCh38&biotype=nope",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+    let payload: Value = serde_json::from_str(&body).expect("count json");
+    assert_eq!(payload.get("gene_count").and_then(Value::as_i64), Some(0));
+}
+
+#[tokio::test]
 async fn expensive_include_is_policy_gated_by_projection_limits() {
     let (ds, manifest, sqlite) = mk_dataset();
     let store = Arc::new(FakeStore::default());
@@ -1168,6 +1209,74 @@ async fn canonical_dataset_endpoint_and_legacy_redirect_are_available() {
             .and_then(Value::as_str),
         Some("tx1")
     );
+}
+
+#[tokio::test]
+async fn datasets_endpoint_supports_dimension_filters_and_cursor_pagination() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let ds2 = DatasetId::new("111", "homo_sapiens", "GRCh38").expect("dataset id");
+    let ds3 = DatasetId::new("110", "mus_musculus", "GRCm39").expect("dataset id");
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest.clone());
+    store.sqlite.lock().await.insert(ds.clone(), sqlite.clone());
+    store.manifest.lock().await.insert(ds2.clone(), manifest.clone());
+    store.sqlite.lock().await.insert(ds2.clone(), sqlite.clone());
+    store.manifest.lock().await.insert(ds3.clone(), manifest);
+    store.sqlite.lock().await.insert(ds3.clone(), sqlite);
+    *store.etag.lock().await = "v1".to_string();
+    store.catalog.lock().await.datasets = vec![
+        bijux_atlas_model::CatalogEntry::new(
+            ds,
+            "manifest-1.json".to_string(),
+            "gene_summary-1.sqlite".to_string(),
+        ),
+        bijux_atlas_model::CatalogEntry::new(
+            ds2,
+            "manifest-2.json".to_string(),
+            "gene_summary-2.sqlite".to_string(),
+        ),
+        bijux_atlas_model::CatalogEntry::new(
+            ds3,
+            "manifest-3.json".to_string(),
+            "gene_summary-3.sqlite".to_string(),
+        ),
+    ];
+
+    let tmp = tempdir().expect("tempdir");
+    let cfg = DatasetCacheConfig {
+        disk_root: tmp.path().to_path_buf(),
+        ..Default::default()
+    };
+    let mgr = DatasetCacheManager::new(cfg, store);
+    let state = AppState::with_config(mgr, ApiConfig::default(), Default::default());
+    let app = build_router(state);
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, _, body) = send_raw(addr, "/v1/datasets?release=110&limit=1", &[]).await;
+    assert_eq!(status, 200);
+    let page1: Value = serde_json::from_str(&body).expect("json");
+    let items = page1["data"]["items"].as_array().expect("items");
+    assert_eq!(items.len(), 1);
+    let cursor = page1["page"]["next_cursor"]
+        .as_str()
+        .expect("next cursor")
+        .to_string();
+
+    let (status, _, body) = send_raw(
+        addr,
+        &format!("/v1/datasets?release=110&limit=1&cursor={cursor}"),
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+    let page2: Value = serde_json::from_str(&body).expect("json");
+    let items = page2["data"]["items"].as_array().expect("items");
+    assert_eq!(items.len(), 1);
+    assert!(page2["page"]["next_cursor"].is_null());
 }
 
 #[tokio::test]
