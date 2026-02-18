@@ -6,7 +6,7 @@ set -eu
 
 # Query planner purity: no DB/network/process IO in pure planning modules.
 for f in \
-  crates/bijux-atlas-query/src/planner.rs \
+  crates/bijux-atlas-query/src/planner/mod.rs \
   crates/bijux-atlas-query/src/filters.rs \
   crates/bijux-atlas-query/src/cost.rs \
   crates/bijux-atlas-query/src/limits.rs
