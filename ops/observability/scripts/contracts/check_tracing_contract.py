@@ -64,7 +64,7 @@ if os.getenv("ATLAS_E2E_ENABLE_OTEL", "0") == "1" and TRACE_EXEMPLARS.exists():
         if "sqlite_query" not in exemplars:
             exemplar_missing.append("sqlite_query")
         if not any(token in exemplars for token in cache_span_tokens):
-            exemplar_missing.append("cache/store span (cache_lookup|download|open_db)")
+            exemplar_missing.append("cache/store span (cache_lookup|store_fetch|open_db)")
         if exemplar_missing:
             print("trace exemplars missing required spans:", file=sys.stderr)
             for item in exemplar_missing:
