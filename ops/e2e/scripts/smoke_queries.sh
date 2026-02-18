@@ -18,6 +18,7 @@ OUT="$SMOKE_DIR/requests.log"
 LOCKFILE="$ROOT/ops/e2e/smoke/queries.lock"
 GOLDEN_STATUS="$ROOT/ops/e2e/smoke/goldens/status_codes.json"
 RESP_JSON="$SMOKE_DIR/responses.jsonl"
+RUN_ID="${RUN_ID:-${OPS_RUN_ID:-local}}"
 : > "$RESP_JSON"
 
 if ! $CURL "$BASE_URL/healthz" >/dev/null 2>&1; then
@@ -66,6 +67,6 @@ while IFS= read -r q; do
     /healthz|/readyz) [ -n "$body" ] ;;
     *) [ -n "$body" ] ;;
   esac
-  printf '{"path":"%s","status":%s}\n' "$q" "${status:-0}" >> "$RESP_JSON"
+  printf '{"run_id":"%s","path":"%s","status":%s}\n' "$RUN_ID" "$q" "${status:-0}" >> "$RESP_JSON"
   echo "ok $q" | tee -a "$OUT"
 done < "$LOCKFILE"
