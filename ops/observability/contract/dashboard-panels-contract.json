@@ -1,14 +1,174 @@
 {
-  "schema_version": 1,
-  "required_rows": [
-    "Failure Domain: Store",
-    "Failure Domain: Cache",
-    "Failure Domain: SQLite",
-    "Failure Domain: Admission/Bulkhead",
-    "Failure Domain: K8s Resource Pressure",
-    "Traffic and SLO",
-    "Drill Views"
-  ],
+  "contract_git_sha": "REQUIRED_AT_BUILD",
+  "panel_specs": {
+    "Bulkhead Inflight by Class": {
+      "diagnostic_question": "Which class currently holds in-flight permits?",
+      "failure_signatures": [
+        "permit_saturation"
+      ],
+      "metrics": [
+        "atlas_bulkhead_inflight"
+      ]
+    },
+    "Bulkhead Saturation by Class": {
+      "diagnostic_question": "Which query class is saturating bulkheads?",
+      "failure_signatures": [
+        "heavy_class_saturation",
+        "cheap_class_starvation"
+      ],
+      "metrics": [
+        "atlas_bulkhead_saturation"
+      ]
+    },
+    "Cache Hit Ratio": {
+      "diagnostic_question": "Is cache efficiency degrading and causing downstream pressure?",
+      "failure_signatures": [
+        "cache_efficiency_drop"
+      ],
+      "metrics": [
+        "bijux_dataset_hits",
+        "bijux_dataset_misses"
+      ]
+    },
+    "Dataset Cache Hit/Miss": {
+      "diagnostic_question": "Is cache hit/miss trend indicating thrash?",
+      "failure_signatures": [
+        "cache_thrash"
+      ],
+      "metrics": [
+        "bijux_dataset_hits",
+        "bijux_dataset_misses"
+      ]
+    },
+    "Dataset Cache Size": {
+      "diagnostic_question": "Is cache footprint growing toward budget limits?",
+      "failure_signatures": [
+        "cache_disk_pressure"
+      ],
+      "metrics": [
+        "bijux_dataset_disk_usage_bytes"
+      ]
+    },
+    "Endpoint Request/Response Size p95": {
+      "diagnostic_question": "Are payload size budgets being exceeded?",
+      "failure_signatures": [
+        "payload_growth"
+      ],
+      "metrics": [
+        "bijux_http_request_size_p95_bytes",
+        "bijux_http_response_size_p95_bytes"
+      ]
+    },
+    "HTTP Request Rate by Route/Status": {
+      "diagnostic_question": "Is request volume/status mix changing unexpectedly?",
+      "failure_signatures": [
+        "traffic_spike",
+        "5xx_surge"
+      ],
+      "metrics": [
+        "bijux_http_requests_total"
+      ]
+    },
+    "HTTP p95 Latency by Route": {
+      "diagnostic_question": "Which route has p95 latency regression?",
+      "failure_signatures": [
+        "route_latency_regression"
+      ],
+      "metrics": [
+        "bijux_http_request_latency_p95_seconds"
+      ]
+    },
+    "Queue Depth and Overload": {
+      "diagnostic_question": "Is queue depth growth activating overload mode?",
+      "failure_signatures": [
+        "queue_backlog",
+        "overload_active"
+      ],
+      "metrics": [
+        "bijux_request_queue_depth",
+        "atlas_overload_active"
+      ]
+    },
+    "Rollout/Rollback View": {
+      "diagnostic_question": "Did rollout or rollback impact request quality?",
+      "failure_signatures": [
+        "rollout_regression"
+      ],
+      "metrics": [
+        "bijux_http_request_latency_p95_seconds",
+        "bijux_http_requests_total"
+      ]
+    },
+    "SLO Burn Rate (5xx, 5m/1h)": {
+      "diagnostic_question": "Is error budget burn breaching SLO policy windows?",
+      "failure_signatures": [
+        "error_budget_burn"
+      ],
+      "metrics": [
+        "bijux_http_requests_total"
+      ]
+    },
+    "SQLite Query p95 by Class": {
+      "diagnostic_question": "Is SQLite query latency driving endpoint regressions?",
+      "failure_signatures": [
+        "sqlite_hot_query",
+        "missing_index_regression"
+      ],
+      "metrics": [
+        "bijux_sqlite_query_latency_p95_seconds"
+      ]
+    },
+    "Shed Rate by Reason": {
+      "diagnostic_question": "Why are requests being shed under overload?",
+      "failure_signatures": [
+        "queue_depth_exceeded",
+        "class_permit_saturated"
+      ],
+      "metrics": [
+        "atlas_shed_total"
+      ]
+    },
+    "Store Backend Fetch p95": {
+      "diagnostic_question": "Is store backend latency causing request slowdowns?",
+      "failure_signatures": [
+        "store_slow",
+        "backend_timeout_spike"
+      ],
+      "metrics": [
+        "bijux_store_fetch_latency_p95_seconds"
+      ]
+    },
+    "Store Open/Download p95": {
+      "diagnostic_question": "Are store open/download paths degrading?",
+      "failure_signatures": [
+        "store_open_slow",
+        "download_latency_spike"
+      ],
+      "metrics": [
+        "bijux_store_open_p95_seconds",
+        "bijux_store_download_p95_seconds"
+      ]
+    },
+    "Traffic Spike Drill View": {
+      "diagnostic_question": "Did spike drill trigger expected resilience signals?",
+      "failure_signatures": [
+        "spike_admission_control"
+      ],
+      "metrics": [
+        "bijux_http_requests_total",
+        "atlas_shed_total"
+      ]
+    },
+    "p99 Breakdown via Exemplars": {
+      "diagnostic_question": "Can exemplar request ids explain p99 outliers across query phases?",
+      "failure_signatures": [
+        "p99_outlier"
+      ],
+      "metrics": [
+        "bijux_request_stage_latency_p95_seconds"
+      ]
+    }
+  },
   "required_panels": [
     "Store Backend Fetch p95",
     "HTTP Request Rate by Route/Status",
@@ -28,5 +188,14 @@
     "Dataset Cache Size",
     "SLO Burn Rate (5xx, 5m/1h)"
   ],
-  "contract_git_sha": "REQUIRED_AT_BUILD"
+  "required_rows": [
+    "Failure Domain: Store",
+    "Failure Domain: Cache",
+    "Failure Domain: SQLite",
+    "Failure Domain: Admission/Bulkhead",
+    "Failure Domain: K8s Resource Pressure",
+    "Traffic and SLO",
+    "Drill Views"
+  ],
+  "schema_version": 2
 }
