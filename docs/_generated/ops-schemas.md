@@ -1,0 +1,108 @@
+# Ops Schemas
+
+Generated from `ops/_schemas`. Do not edit manually.
+
+## `ops/_schemas/datasets/corruption-drill-report.schema.json`
+
+Required keys:
+- `schema_version`
+- `timestamp_utc`
+- `status`
+- `target_manifest`
+- `quarantine_marker`
+
+## `ops/_schemas/datasets/manifest-lock.schema.json`
+
+Required keys:
+- `schema_version`
+- `entries`
+
+## `ops/_schemas/datasets/promotion-report.schema.json`
+
+Required keys:
+- `schema_version`
+- `run_id`
+- `timestamp_utc`
+- `source_catalog`
+- `environments`
+- `promoted_count`
+
+## `ops/_schemas/k8s/install-matrix.schema.json`
+
+Required keys:
+- `schema_version`
+- `profiles`
+
+## `ops/_schemas/load/pinned-queries-lock.schema.json`
+
+Required keys:
+- `file_sha256`
+- `query_hashes`
+
+## `ops/_schemas/load/suite-manifest.schema.json`
+
+Required keys:
+- `schema_version`
+- `query_set`
+- `scenarios_dir`
+- `suites`
+
+## `ops/_schemas/meta/artifact-allowlist.schema.json`
+
+Required keys:
+- `entries`
+
+## `ops/_schemas/meta/ownership.schema.json`
+
+Required keys:
+- `schema_version`
+- `areas`
+
+## `ops/_schemas/obs/drill-manifest.schema.json`
+
+Required keys:
+- `schema_version`
+- `drills`
+
+## `ops/_schemas/report/schema.json`
+
+Required keys:
+- `run_id`
+- `namespace`
+- `metadata`
+- `artifacts`
+
+## `ops/_schemas/report/stack-contract.schema.json`
+
+Required keys:
+- `schema_version`
+- `stack_version_hash`
+- `status`
+- `run_id`
+- `generated_at_utc`
+- `artifacts`
+
+## `ops/_schemas/report/unified.schema.json`
+
+Required keys:
+- `stack`
+- `obs`
+- `load`
+
+## `ops/_schemas/stack/profile-manifest.schema.json`
+
+Required keys:
+- `schema_version`
+- `profiles`
+
+## `ops/_schemas/stack/version-manifest.schema.json`
+
+Required keys:
+- `kind_node_image`
+- `minio`
+- `minio_mc`
+- `prometheus`
+- `otel_collector`
+- `redis`
+- `toxiproxy`
+

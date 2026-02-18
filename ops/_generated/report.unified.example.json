@@ -1,0 +1,5 @@
+{
+  "stack": "ops/_artifacts/stack-report/pass-fail-summary.json",
+  "obs": "ops/_artifacts/ops/obs/slo-burn.json",
+  "load": "ops/_artifacts/perf/results"
+}

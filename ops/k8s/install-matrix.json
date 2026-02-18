@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "profiles": [
+    {"name": "local", "values_file": "ops/k8s/values/local.yaml", "suite": "install-gate"},
+    {"name": "offline", "values_file": "ops/k8s/values/offline.yaml", "suite": "k8s-suite"},
+    {"name": "perf", "values_file": "ops/k8s/values/perf.yaml", "suite": "nightly"},
+    {"name": "multi-registry", "values_file": "ops/k8s/values/multi-registry.yaml", "suite": "nightly"},
+    {"name": "ingress", "values_file": "ops/k8s/values/ingress.yaml", "suite": "nightly"}
+  ]
+}

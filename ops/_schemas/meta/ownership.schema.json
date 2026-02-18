@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "required": ["schema_version", "areas"],
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 1},
+    "areas": {
+      "type": "object",
+      "properties": {
+        "ops/stack": {"type": "string", "minLength": 1},
+        "ops/k8s": {"type": "string", "minLength": 1},
+        "ops/obs": {"type": "string", "minLength": 1},
+        "ops/load": {"type": "string", "minLength": 1},
+        "ops/datasets": {"type": "string", "minLength": 1},
+        "ops/e2e": {"type": "string", "minLength": 1},
+        "ops/report": {"type": "string", "minLength": 1},
+        "ops/fixtures": {"type": "string", "minLength": 1},
+        "ops/run": {"type": "string", "minLength": 1}
+      },
+      "required": ["ops/stack", "ops/k8s", "ops/obs", "ops/load", "ops/datasets", "ops/e2e", "ops/report", "ops/fixtures", "ops/run"],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
