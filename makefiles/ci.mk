@@ -116,6 +116,9 @@ ci-coverage:
 ci-workflows-make-only:
 	@python3 ./scripts/layout/check_workflows_make_only.py
 
+ci-log-fields-contract:
+	@python3 ./ops/observability/scripts/validate_logs_schema.py --file ops/observability/contract/logs.example.jsonl
+
 ci-forbid-raw-paths:
 	@./scripts/layout/check_no_forbidden_paths.sh
 
@@ -233,4 +236,5 @@ governance-check: ## Run governance gates: layout + docs + contracts + scripts +
 	ci-make-help-drift ci-forbid-raw-paths ci-make-safety \
 	ci-init-iso-dirs ci-init-tmp ci-dependency-lock-refresh ci-release-compat-matrix-verify ci-release-build-artifacts \
 	ci-release-notes-render ci-release-publish-gh ci-cosign-sign ci-cosign-verify ci-chart-package-release ci-reproducible-verify \
-	ci-security-advisory-render ci-ops-install-prereqs ci-ops-install-load-prereqs
+	ci-security-advisory-render ci-ops-install-prereqs ci-ops-install-load-prereqs \
+	ci-log-fields-contract

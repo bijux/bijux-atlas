@@ -98,6 +98,7 @@ ci: ## Run CI-equivalent meta pipeline mapped to workflow jobs
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-sqlite-index-drift
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-ingest-determinism
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-qc-fixtures
+	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-log-fields-contract
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-workflows-make-only
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-forbid-raw-paths
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-make-safety
