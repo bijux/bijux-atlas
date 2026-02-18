@@ -14,6 +14,8 @@ ops-doctor: ## Validate and print pinned ops tool versions and canonical env
 	@$(MAKE) -s ops-tools-print
 	@$(MAKE) -s ops-env-print
 
+OPS_DEPLOY_PROFILE ?= local
+
 ops-stack-up: ## Bring up stack components only (kind + stack manifests)
 	@$(MAKE) -s ops-env-validate
 	@./ops/stack/kind/context_guard.sh
@@ -269,20 +271,37 @@ ops-publish-medium: ## Ingest + publish medium fixture dataset
 ops-publish: ## Compatibility alias for ops-publish-medium
 	@$(MAKE) ops-publish-medium
 
-ops-deploy: ## Deploy atlas chart into local cluster
+ops-deploy: ## Deploy atlas chart into local cluster (PROFILE=local|offline|perf)
 	@$(MAKE) -s ops-env-validate
-	@$(MAKE) ops-values-validate
-	@$(MAKE) ops-chart-render-diff
-	@$(MAKE) docker-build
-	@./ops/e2e/scripts/deploy_atlas.sh
+	@profile="$${PROFILE:-$(OPS_DEPLOY_PROFILE)}"; \
+	case "$$profile" in \
+	  local) export ATLAS_VALUES_FILE="$(ATLAS_VALUES_FILE)" ;; \
+	  offline) export ATLAS_VALUES_FILE="$(ATLAS_OFFLINE_VALUES_FILE)" ;; \
+	  perf) export ATLAS_VALUES_FILE="$(ATLAS_PERF_VALUES_FILE)" ;; \
+	  *) echo "invalid PROFILE=$$profile (expected: local|offline|perf)" >&2; exit 2 ;; \
+	esac; \
+	export ATLAS_E2E_VALUES_FILE="$$ATLAS_VALUES_FILE"; \
+	$(MAKE) -s ops-values-validate; \
+	$(MAKE) -s ops-chart-render-diff; \
+	$(MAKE) -s docker-build; \
+	./ops/e2e/scripts/deploy_atlas.sh
+
+ops-undeploy: ## Uninstall atlas helm release from namespace
+	@ns="$${ATLAS_E2E_NAMESPACE:-$${ATLAS_NS:-atlas-e2e}}"; \
+	release="$${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"; \
+	helm -n "$$ns" uninstall "$$release" >/dev/null 2>&1 || true
+
+ops-redeploy: ## Uninstall and deploy atlas chart again
+	@$(MAKE) ops-undeploy
+	@$(MAKE) ops-deploy PROFILE="$${PROFILE:-$(OPS_DEPLOY_PROFILE)}"
 
 ops-offline: ## Deploy atlas in cached-only offline profile
 	@$(MAKE) -s ops-env-validate
-	@ATLAS_VALUES_FILE="$(ATLAS_OFFLINE_VALUES_FILE)" $(MAKE) ops-deploy
+	@$(MAKE) ops-deploy PROFILE=offline
 
 ops-perf: ## Deploy atlas in perf profile and run load smoke
 	@$(MAKE) -s ops-env-validate
-	@ATLAS_VALUES_FILE="$(ATLAS_PERF_VALUES_FILE)" $(MAKE) ops-deploy
+	@$(MAKE) ops-deploy PROFILE=perf
 	@$(MAKE) ops-load-smoke
 
 ops-multi-registry: ## Deploy atlas with multi-registry values profile

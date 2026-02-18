@@ -46,6 +46,11 @@ if ! ops_wait_namespace_termination "$NS" 120; then
 fi
 ops_kubectl get ns "$NS" >/dev/null 2>&1 || ops_kubectl create ns "$NS"
 
+EXTRA_SET_ARGS=()
+if ! kubectl api-resources 2>/dev/null | grep -q "^servicemonitors"; then
+  EXTRA_SET_ARGS+=(--set serviceMonitor.enabled=false --set alertRules.enabled=false)
+fi
+
 if [ "$USE_LOCAL_IMAGE" = "1" ]; then
   if ! docker image inspect "$LOCAL_IMAGE_REF" >/dev/null 2>&1; then
     docker build -t "$LOCAL_IMAGE_REF" -f "$ROOT/docker/Dockerfile" "$ROOT"
@@ -56,6 +61,7 @@ if [ "$USE_LOCAL_IMAGE" = "1" ]; then
       --namespace "$NS" \
       -f "$VALUES" \
       --wait --timeout "$HELM_TIMEOUT" \
+      "${EXTRA_SET_ARGS[@]}" \
       --set image.repository="${LOCAL_IMAGE_REF%:*}" \
       --set image.tag="${LOCAL_IMAGE_REF#*:}" \
       --set image.pullPolicy=IfNotPresent
@@ -63,6 +69,7 @@ if [ "$USE_LOCAL_IMAGE" = "1" ]; then
     ops_helm_retry "$NS" "$RELEASE" upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
       --namespace "$NS" \
       -f "$VALUES" \
+      "${EXTRA_SET_ARGS[@]}" \
       --set image.repository="${LOCAL_IMAGE_REF%:*}" \
       --set image.tag="${LOCAL_IMAGE_REF#*:}" \
       --set image.pullPolicy=IfNotPresent
@@ -72,11 +79,13 @@ else
     ops_helm_retry "$NS" "$RELEASE" upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
       --namespace "$NS" \
       -f "$VALUES" \
+      "${EXTRA_SET_ARGS[@]}" \
       --wait --timeout "$HELM_TIMEOUT"
   else
     ops_helm_retry "$NS" "$RELEASE" upgrade --install "$RELEASE" "$ROOT/ops/k8s/charts/bijux-atlas" \
       --namespace "$NS" \
-      -f "$VALUES"
+      -f "$VALUES" \
+      "${EXTRA_SET_ARGS[@]}"
   fi
 fi
 

@@ -109,6 +109,8 @@ Generated from `make help`. Do not edit manually.
 - `ops-publish`
 - `ops-publish-medium`
 - `ops-deploy`
+- `ops-undeploy`
+- `ops-redeploy`
 - `ops-offline`
 - `ops-perf`
 - `ops-multi-registry`
@@ -212,6 +214,7 @@ Generated from `make help`. Do not edit manually.
 - `docker-smoke`
 - `chart-package`
 - `chart-verify`
+- `chart-validate`
 - `release-dry-run`
 - `release`
 - `bump`

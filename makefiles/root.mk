@@ -45,6 +45,11 @@ chart-verify:
 	@helm lint ops/k8s/charts/bijux-atlas
 	@helm template atlas ops/k8s/charts/bijux-atlas >/dev/null
 
+chart-validate: ## Validate chart via lint/template and values contract schema checks
+	@$(MAKE) chart-verify
+	@./scripts/contracts/generate_chart_values_schema.py
+	@./scripts/contracts/check_chart_values_contract.py
+
 no-direct-scripts:
 	@./scripts/layout/check_no_direct_script_runs.sh
 	@python3 ./scripts/layout/check_make_public_scripts.py
