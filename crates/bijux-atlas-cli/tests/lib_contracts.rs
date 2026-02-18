@@ -4,8 +4,10 @@ use std::process::Command;
 fn command_surface_ssot_matches_doc() {
     let expected = [
         "atlas catalog publish",
+        "atlas catalog promote",
         "atlas catalog rollback",
         "atlas catalog validate",
+        "atlas catalog latest-alias-update",
         "atlas completion",
         "atlas dataset pack",
         "atlas dataset publish",

@@ -22,6 +22,26 @@ pub(crate) enum CatalogCommand {
         #[arg(long)]
         assembly: String,
     },
+    Promote {
+        #[arg(long)]
+        store_root: PathBuf,
+        #[arg(long)]
+        release: String,
+        #[arg(long)]
+        species: String,
+        #[arg(long)]
+        assembly: String,
+    },
+    LatestAliasUpdate {
+        #[arg(long)]
+        store_root: PathBuf,
+        #[arg(long)]
+        release: String,
+        #[arg(long)]
+        species: String,
+        #[arg(long)]
+        assembly: String,
+    },
 }
 
 #[derive(Subcommand)]
