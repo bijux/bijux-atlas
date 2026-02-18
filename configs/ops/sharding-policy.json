@@ -1,0 +1,5 @@
+{
+  "default_plan": "none",
+  "max_shards": 512,
+  "supported_plans": ["none", "contig", "region_grid"]
+}

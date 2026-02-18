@@ -368,6 +368,12 @@ fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String
     };
 
     let report_only = args.report_only || matches!(strictness, StrictnessMode::ReportOnly);
+    let (policy_sharding_default, policy_max_shards) = read_sharding_policy_defaults();
+    let sharding_plan = match args.sharding_plan.unwrap_or(policy_sharding_default) {
+        ShardingPlanCli::None => ShardingPlan::None,
+        ShardingPlanCli::Contig => ShardingPlan::Contig,
+        ShardingPlanCli::RegionGrid => ShardingPlan::RegionGrid,
+    };
     let result = ingest_dataset(&IngestOptions {
         gff3_path: args.gff3,
         fasta_path: args.fasta,
@@ -392,6 +398,8 @@ fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String
         fasta_scan_max_bases: args.fasta_scan_max_bases,
         emit_shards: args.emit_shards,
         shard_partitions: args.shard_partitions,
+        sharding_plan,
+        max_shards: policy_max_shards,
         emit_normalized_debug: args.emit_normalized_debug,
         normalized_replay_mode: args.normalized_replay,
         prod_mode: args.prod_mode,
@@ -419,6 +427,37 @@ fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String
         }),
     )?;
     Ok(())
+}
+
+fn read_sharding_policy_defaults() -> (ShardingPlanCli, usize) {
+    let path = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|p| p.parent())
+        .unwrap_or_else(|| std::path::Path::new("."))
+        .join("configs/ops/sharding-policy.json");
+    let raw = match std::fs::read_to_string(path) {
+        Ok(v) => v,
+        Err(_) => return (ShardingPlanCli::None, 512),
+    };
+    let v: serde_json::Value = match serde_json::from_str(&raw) {
+        Ok(v) => v,
+        Err(_) => return (ShardingPlanCli::None, 512),
+    };
+    let plan = match v
+        .get("default_plan")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("none")
+    {
+        "contig" => ShardingPlanCli::Contig,
+        "region_grid" => ShardingPlanCli::RegionGrid,
+        _ => ShardingPlanCli::None,
+    };
+    let max_shards = v
+        .get("max_shards")
+        .and_then(serde_json::Value::as_u64)
+        .map(|x| x as usize)
+        .unwrap_or(512);
+    (plan, max_shards)
 }
 
 fn inspect_db(db: PathBuf, sample_rows: usize, output_mode: OutputMode) -> Result<(), String> {
