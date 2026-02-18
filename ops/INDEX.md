@@ -11,6 +11,7 @@ Use Make targets only.
 - `make ops-doctor`
 - `make ops-lint`
 - `make ops-fmt`
+- `make ops-contracts-check`
 
 ## Topology
 

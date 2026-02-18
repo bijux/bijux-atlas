@@ -8,6 +8,7 @@
     "ops-doctor",
     "ops-lint",
     "ops-fmt",
+    "ops-contracts-check",
     "ops-stack-up",
     "ops-stack-down",
     "ops-obs-up",
