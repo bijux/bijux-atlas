@@ -515,18 +515,14 @@ pub(crate) async fn genes_handler(
                                 .take(state.cache.max_open_shards_per_pod())
                             {
                                 permits.push(state.cache.try_acquire_shard_permit()?);
-                                let conn = Connection::open_with_flags(
-                                    &shard,
-                                    OpenFlags::SQLITE_OPEN_READ_ONLY | OpenFlags::SQLITE_OPEN_NO_MUTEX,
-                                )
-                                .map_err(|e| CacheError(e.to_string()))?;
+                                let conn = crate::effect_adapters::sqlite_adapters::open_readonly_no_mutex(&shard)?;
                                 let (cache_kib, shard_mmap) =
                                     state.cache.sqlite_pragmas_for_shard_open();
-                                let pragma_sql = format!(
-                                    "PRAGMA query_only=ON; PRAGMA journal_mode=OFF; PRAGMA synchronous=OFF; PRAGMA temp_store=MEMORY; PRAGMA cache_size=-{}; PRAGMA mmap_size={};",
-                                    cache_kib, shard_mmap
+                                let _ = crate::effect_adapters::sqlite_adapters::apply_readonly_pragmas(
+                                    &conn,
+                                    cache_kib,
+                                    shard_mmap,
                                 );
-                                let _ = conn.execute_batch(&pragma_sql);
                                 shard_conns.push(conn);
                             }
                             let refs: Vec<&Connection> = shard_conns.iter().collect();

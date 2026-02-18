@@ -346,10 +346,7 @@ impl DatasetCacheManager {
 
         let open = timeout(self.cfg.dataset_open_timeout, async move {
             tokio::task::spawn_blocking(move || {
-                Connection::open_with_flags(
-                    sqlite_path,
-                    OpenFlags::SQLITE_OPEN_READ_ONLY | OpenFlags::SQLITE_OPEN_NO_MUTEX,
-                )
+                crate::effect_adapters::sqlite_adapters::open_readonly_no_mutex(&sqlite_path)
             })
             .await
             .map_err(|e| CacheError(e.to_string()))?
@@ -359,13 +356,13 @@ impl DatasetCacheManager {
 
         match open {
             Ok(Ok(conn)) => {
-                let pragma_sql = format!(
-                    "PRAGMA query_only=ON; PRAGMA journal_mode=OFF; PRAGMA synchronous=OFF; PRAGMA temp_store=MEMORY; PRAGMA cache_size=-{}; PRAGMA mmap_size={};",
-                    self.cfg.sqlite_pragma_cache_kib, self.cfg.sqlite_pragma_mmap_bytes
-                );
                 conn.set_prepared_statement_cache_capacity(128);
                 prime_prepared_statements(&conn);
-                let _ = conn.execute_batch(&pragma_sql);
+                let _ = crate::effect_adapters::sqlite_adapters::apply_readonly_pragmas(
+                    &conn,
+                    self.cfg.sqlite_pragma_cache_kib,
+                    self.cfg.sqlite_pragma_mmap_bytes,
+                );
                 self.reset_breaker(dataset).await;
                 self.metrics
                     .store_open_latency_ns

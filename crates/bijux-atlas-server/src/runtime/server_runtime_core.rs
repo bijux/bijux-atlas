@@ -16,7 +16,7 @@ use bijux_atlas_query::{
     TranscriptFilter, TranscriptQueryRequest,
 };
 use hmac::{Hmac, Mac};
-use rusqlite::{Connection, OpenFlags};
+use rusqlite::Connection;
 use sha2::Sha256;
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::path::{Path, PathBuf};
