@@ -2,6 +2,7 @@
 # Purpose: script interface entrypoint.
 # Inputs: command-line args and repository files/env as documented by caller.
 # Outputs: exit status and deterministic stdout/stderr or generated artifacts.
+import hashlib
 import json
 import re
 import sys
@@ -11,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[4]
 CONTRACT = ROOT / "ops/observability/contract/metrics-contract.json"
 DASH_CONTRACT = ROOT / "ops/observability/contract/dashboard-panels-contract.json"
 DASH = ROOT / "ops/observability/grafana/atlas-observability-dashboard.json"
+GOLDEN = ROOT / "ops/observability/grafana/atlas-observability-dashboard.golden.json"
 
 contract = json.loads(CONTRACT.read_text())
 required = set(contract.get("required_metrics", {}).keys())
@@ -35,8 +37,14 @@ if unknown:
 # Validate panel query expressions are present and contract-safe.
 errors: list[str] = []
 expr_metric_re = re.compile(r'\b(?:bijux|atlas)_[a-z0-9_]+\b')
+forbidden_high_cardinality = {"gene_id", "tx_id", "request_id", "trace_id", "dataset_id", "name", "cursor"}
 for panel in dash.get("panels", []):
     title = panel.get("title") if isinstance(panel.get("title"), str) else "<untitled>"
+    panel_type = panel.get("type")
+    if panel_type != "row":
+        desc = panel.get("description")
+        if not isinstance(desc, str) or not desc.strip().endswith("?"):
+            errors.append(f"panel '{title}' must include a diagnostic question description ending with '?'")
     for target in panel.get("targets", []):
         expr = target.get("expr")
         if expr is None:
@@ -54,6 +62,13 @@ for panel in dash.get("panels", []):
             errors.append(
                 f"panel '{title}' query references metric not in metrics contract: {metric_name}"
             )
+        if re.search(r"[{,]\s*(?:route|dataset|request_id|trace_id)\s*=~", expr):
+            errors.append(f"panel '{title}' uses regex on high-cardinality labels")
+        if re.search(r".*=~\\\"\\.\\*\\\"", expr):
+            errors.append(f"panel '{title}' uses wildcard regex selector")
+        for label in forbidden_high_cardinality:
+            if re.search(rf"[{{,]\s*{re.escape(label)}\s*=", expr):
+                errors.append(f"panel '{title}' filters on forbidden high-cardinality label `{label}`")
 
 if errors:
     for err in errors:
@@ -74,6 +89,18 @@ if missing_panels:
     for panel in missing_panels:
         print(f"- {panel}", file=sys.stderr)
     sys.exit(1)
+required_rows = set(json.loads(DASH_CONTRACT.read_text()).get("required_rows", []))
+present_rows = {
+    panel.get("title")
+    for panel in dash.get("panels", [])
+    if isinstance(panel, dict) and panel.get("type") == "row" and isinstance(panel.get("title"), str)
+}
+missing_rows = sorted(required_rows - present_rows)
+if missing_rows:
+    print("missing required dashboard rows:", file=sys.stderr)
+    for row in missing_rows:
+        print(f"- {row}", file=sys.stderr)
+    sys.exit(1)
 
 dash_contract = json.loads(DASH_CONTRACT.read_text())
 contract_sha = dash_contract.get("contract_git_sha")
@@ -84,6 +111,28 @@ tag_key = "contract_git_sha:"
 tags = dash.get("tags", [])
 if not any(isinstance(t, str) and t.startswith(tag_key) for t in tags):
     print("dashboard missing contract_git_sha tag", file=sys.stderr)
+    sys.exit(1)
+
+
+def normalized_dashboard(payload: dict) -> dict:
+    out = json.loads(json.dumps(payload))
+    out["version"] = 0
+    out["schemaVersion"] = 0
+    out["tags"] = sorted(
+        [t for t in out.get("tags", []) if isinstance(t, str) and not t.startswith("contract_git_sha:")]
+    )
+    return out
+
+
+current_norm = normalized_dashboard(dash)
+if not GOLDEN.exists():
+    GOLDEN.write_text(json.dumps(current_norm, indent=2) + "\n")
+expected_norm = json.loads(GOLDEN.read_text())
+if current_norm != expected_norm:
+    print("dashboard golden snapshot drift detected", file=sys.stderr)
+    print(f"expected: {GOLDEN}", file=sys.stderr)
+    print(f"actual_sha256={hashlib.sha256(json.dumps(current_norm, sort_keys=True).encode()).hexdigest()}", file=sys.stderr)
+    print(f"golden_sha256={hashlib.sha256(json.dumps(expected_norm, sort_keys=True).encode()).hexdigest()}", file=sys.stderr)
     sys.exit(1)
 
 print("dashboard contract passed")
