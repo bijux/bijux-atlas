@@ -260,6 +260,42 @@ async fn memory_pressure_guards_reject_large_response_without_cascading_failure(
 }
 
 #[tokio::test]
+async fn expensive_include_is_policy_gated_by_projection_limits() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds.clone(), sqlite);
+    let tmp = tempdir().expect("tempdir");
+    let cfg = DatasetCacheConfig {
+        disk_root: tmp.path().to_path_buf(),
+        ..Default::default()
+    };
+    let mgr = DatasetCacheManager::new(cfg, store);
+    let state = AppState::with_config(mgr, ApiConfig::default(), Default::default());
+    let app = build_router(state);
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&include=length&limit=500",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 422);
+    let json: Value = serde_json::from_str(&body).expect("error json");
+    assert_eq!(
+        json.get("error")
+            .and_then(|e| e.get("code"))
+            .and_then(Value::as_str),
+        Some("QueryRejectedByPolicy")
+    );
+}
+
+#[tokio::test]
 async fn sequence_endpoint_boundary_conditions_are_enforced() {
     let (ds, manifest, sqlite) = mk_dataset();
     let (fasta, fai) = fixture_fasta_and_fai();
