@@ -3,11 +3,19 @@ set -euo pipefail
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 source "$ROOT/ops/_lib/common.sh"
+ops_init_run_id
+ops_install_bundle_trap "${ATLAS_E2E_NAMESPACE:-${ATLAS_NS:-atlas-e2e}}" "${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
+ops_ci_no_prompt_policy
 CLUSTER_NAME="${ATLAS_E2E_CLUSTER_NAME:-bijux-atlas-e2e}"
 ENABLE_REDIS="${ATLAS_E2E_ENABLE_REDIS:-0}"
 ENABLE_OTEL="${ATLAS_E2E_ENABLE_OTEL:-0}"
 ENABLE_TOXIPROXY="${ATLAS_E2E_ENABLE_TOXIPROXY:-0}"
 NS="${ATLAS_E2E_NAMESPACE:-atlas-e2e}"
+
+if [ "${OPS_DRY_RUN:-0}" = "1" ]; then
+  echo "DRY-RUN up.sh cluster=$CLUSTER_NAME ns=$NS"
+  exit 0
+fi
 
 if ! command -v kind >/dev/null 2>&1; then
   echo "kind is required" >&2

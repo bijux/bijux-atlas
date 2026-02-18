@@ -3,6 +3,9 @@ set -euo pipefail
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 source "$ROOT/ops/_lib/common.sh"
+ops_init_run_id
+ops_install_bundle_trap "${ATLAS_E2E_NAMESPACE:-${ATLAS_NS:-atlas-e2e}}" "${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
+ops_ci_no_prompt_policy
 RELEASE="${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
 NS="${ATLAS_E2E_NAMESPACE:-atlas-e2e}"
 VALUES="${ATLAS_E2E_VALUES_FILE:-$ROOT/ops/k8s/values/local.yaml}"
@@ -11,6 +14,11 @@ USE_LOCAL_IMAGE="${ATLAS_E2E_USE_LOCAL_IMAGE:-1}"
 LOCAL_IMAGE_REF="${ATLAS_E2E_LOCAL_IMAGE:-bijux-atlas:local}"
 HELM_WAIT="${ATLAS_E2E_HELM_WAIT:-0}"
 HELM_TIMEOUT="${ATLAS_E2E_HELM_TIMEOUT:-5m}"
+
+if [ "${OPS_DRY_RUN:-0}" = "1" ]; then
+  echo "DRY-RUN deploy_atlas.sh ns=$NS release=$RELEASE values=$VALUES"
+  exit 0
+fi
 
 if ! command -v helm >/dev/null 2>&1; then
   echo "helm is required" >&2

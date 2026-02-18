@@ -6,8 +6,16 @@ set -euo pipefail
 
 OPS_LIB_ROOT="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(CDPATH='' cd -- "${OPS_LIB_ROOT}/.." && pwd)"
+# shellcheck source=ops/_lib/run_id.sh
+source "${OPS_LIB_ROOT}/run_id.sh"
 # shellcheck source=ops/_lib/artifacts.sh
 source "${OPS_LIB_ROOT}/artifacts.sh"
+# shellcheck source=ops/_lib/retry.sh
+source "${OPS_LIB_ROOT}/retry.sh"
+# shellcheck source=ops/_lib/timeout.sh
+source "${OPS_LIB_ROOT}/timeout.sh"
+# shellcheck source=ops/_lib/trap_bundle.sh
+source "${OPS_LIB_ROOT}/trap_bundle.sh"
 # shellcheck source=ops/_lib/kubectl.sh
 source "${OPS_LIB_ROOT}/kubectl.sh"
 # shellcheck source=ops/_lib/helm.sh
@@ -23,34 +31,6 @@ ops_need_cmd() {
 
 ops_mkdir_artifacts() {
   mkdir -p "$ARTIFACTS_ROOT"
-}
-
-ops_retry() {
-  local attempts="$1"
-  local sleep_seconds="$2"
-  shift 2
-  local n=1
-  while true; do
-    if "$@"; then
-      return 0
-    fi
-    if [ "$n" -ge "$attempts" ]; then
-      echo "command failed after $attempts attempts: $*" >&2
-      return 1
-    fi
-    n=$((n + 1))
-    sleep "$sleep_seconds"
-  done
-}
-
-ops_timeout_run() {
-  local timeout_seconds="$1"
-  shift
-  if command -v timeout >/dev/null 2>&1; then
-    timeout "$timeout_seconds" "$@"
-    return $?
-  fi
-  "$@"
 }
 
 ops_kubectl_wait_condition() {
@@ -93,4 +73,8 @@ ops_wait_namespace_termination() {
     waited=$((waited + 5))
   done
   return 1
+}
+
+ops_ci_no_prompt_policy() {
+  ops_require_ci_noninteractive
 }

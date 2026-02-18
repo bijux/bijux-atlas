@@ -6,6 +6,8 @@
 
 Canonical operational filesystem surface and only entrypoint for ops workflows.
 
+Reference contract: `ops/CONTRACT.md`.
+
 ## Directory map
 
 - `ops/stack/`: local stack manifests and bootstrap scripts (kind/minio/prom/otel/redis/toxiproxy).
@@ -25,6 +27,11 @@ Canonical operational filesystem surface and only entrypoint for ops workflows.
 ```bash
 make ops-full
 ```
+
+Modes:
+- `OPS_MODE=fast make ops-full`
+- `OPS_MODE=full make ops-full`
+- `OPS_DRY_RUN=1 make ops-full`
 
 All sub-area docs under `ops/**/README.md` should point here as the primary entrypoint.
 
