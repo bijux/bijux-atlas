@@ -179,6 +179,8 @@ nav:
           - Security Posture: operations/security/security-posture.md
       - Observability:
           - Index: operations/observability/INDEX.md
+          - Compatibility: operations/observability/compatibility.md
+          - Generated Surface: _generated/observability-surface.md
           - SLO: operations/observability/slo.md
           - Tracing: operations/observability/tracing.md
           - Metric Cardinality: operations/observability/metric-cardinality-guardrails.md
