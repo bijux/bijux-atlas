@@ -20,6 +20,7 @@ Does not redefine schema semantics beyond contract references.
 
 ## Contracts
 - `values.affinity`
+- `values.alertRules`
 - `values.cache`
 - `values.catalog`
 - `values.catalogPublishJob`
@@ -28,6 +29,7 @@ Does not redefine schema semantics beyond contract references.
 - `values.extraEnv`
 - `values.hpa`
 - `values.image`
+- `values.ingress`
 - `values.networkPolicy`
 - `values.nodeLocalSsdProfile`
 - `values.nodeSelector`
@@ -54,8 +56,8 @@ Missing or stale keys can break deployments and profile docs.
 ## How to verify
 
 ```bash
-$ make docs
-$ make ops-values-validate
+$ python3 scripts/docs/generate_k8s_values_doc.py
+$ python3 scripts/contracts/check_chart_values_contract.py
 ```
 
 Expected output: generated values doc and chart contract check pass.
@@ -65,4 +67,3 @@ Expected output: generated values doc and chart contract check pass.
 - [Chart Values Contract](../../contracts/chart-values.md)
 - [Helm Chart Contract](chart.md)
 - [K8s Index](INDEX.md)
-- `ops-ci`
