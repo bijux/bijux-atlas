@@ -1,0 +1,33 @@
+{
+  "type": "object",
+  "required": ["schema_version", "scenarios"],
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 1},
+    "scenarios": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "description", "entrypoint", "compose"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+          "description": {"type": "string", "minLength": 8},
+          "entrypoint": {"type": "string", "pattern": "^make [a-z0-9-]+$"},
+          "compose": {
+            "type": "object",
+            "required": ["stack", "obs", "datasets", "load"],
+            "properties": {
+              "stack": {"type": "boolean"},
+              "obs": {"type": "boolean"},
+              "datasets": {"type": "boolean"},
+              "load": {"type": "boolean"}
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

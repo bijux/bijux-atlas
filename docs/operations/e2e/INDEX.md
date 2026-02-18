@@ -25,6 +25,10 @@ Does not duplicate individual script source files.
 - [Realdata Drills](realdata-drills.md)
 - [Fixtures](fixtures.md)
 - [Scripts](scripts.md)
+- scenario:smoke
+- scenario:k8s-suite
+- scenario:realdata
+- scenario:perf-e2e
 
 ## Failure modes
 

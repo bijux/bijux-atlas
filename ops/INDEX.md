@@ -12,6 +12,7 @@ Use Make targets only.
 - `make ops-lint`
 - `make ops-fmt`
 - `make ops-contracts-check`
+- `make ops-e2e-validate`
 
 ## Topology
 
