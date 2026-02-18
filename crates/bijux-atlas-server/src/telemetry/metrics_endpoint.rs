@@ -301,6 +301,7 @@ bijux_store_error_other_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} 
     body.push_str(&format!(
         "bijux_inflight_heavy_queries{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_overload_shedding_active{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_overload_active{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_cheap_queries_served_while_overloaded_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_cached_only_mode{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_draining_mode{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
@@ -312,6 +313,10 @@ bijux_fs_space_pressure_events_total{{subsystem=\"{}\",version=\"{}\",dataset=\"
         METRIC_VERSION,
         METRIC_DATASET_ALL,
         heavy_inflight,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        shedding_active,
         METRIC_SUBSYSTEM,
         METRIC_VERSION,
         METRIC_DATASET_ALL,

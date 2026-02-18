@@ -9,6 +9,7 @@ pub const CONTRACT_METRIC_NAMES: &[&str] = &[
     "bijux_http_request_latency_p95_seconds",
     "bijux_http_requests_total",
     "bijux_overload_shedding_active",
+    "atlas_overload_active",
     "bijux_request_stage_latency_p95_seconds",
     "bijux_runtime_policy_hash",
     "bijux_sqlite_query_latency_p95_seconds",
@@ -42,6 +43,7 @@ pub const CONTRACT_METRIC_LABELS: &[(&str, &[&str])] = &[
         "bijux_overload_shedding_active",
         &["dataset", "subsystem", "version"],
     ),
+    ("atlas_overload_active", &["dataset", "subsystem", "version"]),
     (
         "bijux_request_stage_latency_p95_seconds",
         &["dataset", "stage", "subsystem", "version"],
