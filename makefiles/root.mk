@@ -132,9 +132,16 @@ hygiene: ## Repo hygiene checks (layout + symlink + tracked-noise gates)
 	@ISO_ROOT=artifacts/isolates/hygiene $(MAKE) path-contract-check
 
 architecture-check: ## Validate runtime architecture boundaries and dependency guardrails
+	@python3 scripts/docs/generate_architecture_map.py
+	@if ! git diff --quiet -- docs/architecture/architecture-map.md; then \
+		echo "architecture map drift detected; regenerate docs/architecture/architecture-map.md" >&2; \
+		git --no-pager diff -- docs/architecture/architecture-map.md >&2 || true; \
+		exit 1; \
+	fi
 	@cargo test -p bijux-atlas-core --test guardrails crate_dependency_dag_matches_boundaries_doc -- --exact
 	@cargo test -p bijux-atlas-core --test guardrails server_must_not_depend_on_ingest_crate -- --exact
 	@cargo test -p bijux-atlas-core --test guardrails query_layer_must_not_depend_on_runtime_network_or_async_stacks -- --exact
+	@cargo test -p bijux-atlas-core --test guardrails server_http_layers_must_not_read_raw_files_directly -- --exact
 	@cargo test -p bijux-atlas-server --test import_boundary_guardrails
 
 fetch-real-datasets:

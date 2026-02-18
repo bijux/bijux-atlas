@@ -225,6 +225,7 @@ nav:
       - Snapshot Test Policy: development/snapshot-test-policy.md
   - Architecture:
       - Index: architecture/INDEX.md
+      - Architecture Map: architecture/architecture-map.md
       - Backend Architecture: architecture/backend-architecture.md
       - Component Responsibilities: architecture/component-responsibilities.md
       - No Serving Writes: architecture/no-serving-writes.md
