@@ -342,9 +342,12 @@ ops-tools-check: ## Validate all pinned ops tools versions
 	@$(MAKE) ops-yq-version-check
 
 ops-tools-print: ## Print tool paths and local versions
-	@for tool in kind kubectl helm k6 jq yq; do \
-	  printf '%s\n' "$$tool: path=$$(command -v $$tool 2>/dev/null || echo missing) version=$$($$tool --version 2>/dev/null | head -n1 || true)"; \
-	done
+	@printf 'kind: path=%s version=%s\n' "$$(command -v kind 2>/dev/null || echo missing)" "$$(kind version 2>/dev/null || echo missing)"
+	@printf 'kubectl: path=%s version=%s\n' "$$(command -v kubectl 2>/dev/null || echo missing)" "$$(kubectl version --client 2>/dev/null | head -n1 || echo missing)"
+	@printf 'helm: path=%s version=%s\n' "$$(command -v helm 2>/dev/null || echo missing)" "$$(helm version --short 2>/dev/null || echo missing)"
+	@printf 'k6: path=%s version=%s\n' "$$(command -v k6 2>/dev/null || echo missing)" "$$(k6 version 2>/dev/null | head -n1 || echo missing)"
+	@printf 'jq: path=%s version=%s\n' "$$(command -v jq 2>/dev/null || echo missing)" "$$(jq --version 2>/dev/null || echo missing)"
+	@printf 'yq: path=%s version=%s\n' "$$(command -v yq 2>/dev/null || echo missing)" "$$(yq --version 2>/dev/null | head -n1 || echo missing)"
 
 ops-tool-check: ## Compatibility alias for ops-tools-check
 	@$(MAKE) ops-tools-check
