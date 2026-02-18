@@ -108,6 +108,8 @@ pub struct ArtifactManifest {
     pub toolchain_hash: String,
     #[serde(default)]
     pub created_at: String,
+    #[serde(default)]
+    pub qc_report_path: String,
     #[serde(default = "default_sharding_plan")]
     pub sharding_plan: ShardingPlan,
     #[serde(default)]
@@ -148,6 +150,7 @@ impl ArtifactManifest {
             ingest_build_hash: String::new(),
             toolchain_hash: "unknown".to_string(),
             created_at: String::new(),
+            qc_report_path: String::new(),
             sharding_plan: ShardingPlan::None,
             contig_normalization_aliases: BTreeMap::new(),
             derived_column_origins: default_derived_column_origins(),
@@ -289,6 +292,7 @@ pub struct ArtifactPaths {
     pub sqlite: PathBuf,
     pub manifest: PathBuf,
     pub anomaly_report: PathBuf,
+    pub qc_report: PathBuf,
     pub release_gene_index: PathBuf,
 }
 
@@ -310,6 +314,7 @@ pub fn artifact_paths(root: &Path, dataset: &DatasetId) -> ArtifactPaths {
         sqlite: derived.join("gene_summary.sqlite"),
         manifest: derived.join("manifest.json"),
         anomaly_report: derived.join("anomaly_report.json"),
+        qc_report: derived.join("qc_report.json"),
         release_gene_index: derived.join("release_gene_index.json"),
     }
 }
