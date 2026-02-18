@@ -24,12 +24,25 @@ Serving must isolate store failures, keep deterministic catalog behavior, and av
 - `federated`: deterministic multi-registry merge over source backends
 - `fake`: test fault-injection backend
 
+## Backend Conformance Gates
+
+- Local filesystem backend: `make ci-store-conformance-localfs`
+- HTTP/ETag contract path: `make ci-store-conformance-http`
+- S3/MinIO runtime integration: `make ci-store-conformance-s3`
+- Aggregated gate: `make ci-store-conformance`
+
+All gates are required to keep backend behavior aligned on atomic fetch, checksum validation, and ETag/304 semantics.
+
+## Redis Mode
+
 ## Failure Isolation
 
 - Store retries are bounded by retry policy.
 - Store circuit breaker opens after configured consecutive failures.
 - Cached-only mode serves cached artifacts and rejects uncached artifacts deterministically.
 - Corrupt store payloads fail checksum validation and are quarantined by cache policy.
+
+Redis is optional and scoped to runtime protections (rate limiting / response cache acceleration). Core serving correctness must remain valid with Redis disabled.
 
 ## Catalog Semantics
 

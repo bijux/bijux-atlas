@@ -60,9 +60,23 @@ ci-docs-build:
 ci-latency-regression:
 	@cargo test -p bijux-atlas-server --test latency_guard --locked
 
-ci-store-conformance:
-	@cargo test -p bijux-atlas-store --locked
+ci-store-conformance-localfs:
+	@cargo test -p bijux-atlas-store --test store_contract store_errors_have_stable_codes -- --exact
+	@cargo test -p bijux-atlas-store --test store_contract verified_sqlite_read_rejects_checksum_mismatch -- --exact
+
+ci-store-conformance-http:
+	@cargo test -p bijux-atlas-store --test store_contract cached_only_mode_never_touches_network -- --exact
+	@cargo test -p bijux-atlas-store --test store_contract http_store_blocks_private_ssrf_targets -- --exact
+
+ci-store-conformance-s3:
+	@cargo test -p bijux-atlas-store --test store_contract s3_store_uses_etag_cache_and_handles_304_for_catalog -- --exact
+	@cargo test -p bijux-atlas-store --test store_contract s3_cached_only_mode_is_conformance_compatible -- --exact
 	@cargo test -p bijux-atlas-server --test s3_backend --locked
+
+ci-store-conformance:
+	@$(MAKE) ci-store-conformance-localfs
+	@$(MAKE) ci-store-conformance-http
+	@$(MAKE) ci-store-conformance-s3
 
 ci-openapi-drift:
 	@$(MAKE) openapi-drift

@@ -33,6 +33,7 @@
     {"script": "test_liveness_under_load.sh", "groups": ["liveness", "load"], "owner": "server", "retries": 1, "timeout_seconds": 300, "expected_failure_modes": ["liveness_flap"]},
     {"script": "test_image_digest_pinning.sh", "groups": ["supply-chain"], "owner": "chart", "retries": 1, "timeout_seconds": 120, "expected_failure_modes": ["image_not_digest_pinned"]},
     {"script": "test_offline_profile.sh", "groups": ["profiles", "resilience"], "owner": "server", "retries": 1, "timeout_seconds": 360, "expected_failure_modes": ["offline_profile_uses_remote_store"]},
+    {"script": "test_redis_rate_limit.sh", "groups": ["redis", "rate-limit"], "owner": "server", "retries": 1, "timeout_seconds": 300, "expected_failure_modes": ["redis_rate_limit_not_enforced"]},
     {"script": "test_multi_registry_profile.sh", "groups": ["profiles", "registry"], "owner": "store", "retries": 1, "timeout_seconds": 120, "expected_failure_modes": ["nondeterministic_catalog_merge"]},
     {"script": "test_service_monitor.sh", "groups": ["observability"], "owner": "observability", "retries": 1, "timeout_seconds": 240, "expected_failure_modes": ["service_monitor_missing"]},
     {"script": "test_prometheus_rule.sh", "groups": ["observability"], "owner": "observability", "retries": 1, "timeout_seconds": 240, "expected_failure_modes": ["prometheus_rule_invalid"]},

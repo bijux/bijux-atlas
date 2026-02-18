@@ -383,3 +383,27 @@ fn ingestion_must_be_pure_transform_only() {
         }
     }
 }
+
+#[test]
+fn server_http_layers_must_not_read_raw_files_directly() {
+    let root = workspace_root();
+    let http_src = root.join("crates/bijux-atlas-server/src/http");
+    let forbidden = ["std::fs::", "fs::read(", "fs::read_to_string(", "File::open("];
+    for file in collect_rs_files(&http_src) {
+        if file
+            .file_name()
+            .and_then(|n| n.to_str())
+            .is_some_and(|n| n == "effects_adapters.rs")
+        {
+            continue;
+        }
+        let content = fs::read_to_string(&file).expect("failed to read rust file");
+        for needle in forbidden {
+            assert!(
+                !content.contains(needle),
+                "http layer must use cache/store adapters for file IO; found `{needle}` in {}",
+                file.display()
+            );
+        }
+    }
+}
