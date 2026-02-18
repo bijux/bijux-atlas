@@ -224,6 +224,10 @@ nav:
       - Snapshot Test Policy: development/snapshot-test-policy.md
   - Architecture:
       - Index: architecture/INDEX.md
+      - Backend Architecture: architecture/backend-architecture.md
+      - Component Responsibilities: architecture/component-responsibilities.md
+      - No Serving Writes: architecture/no-serving-writes.md
+      - Build/Serve Split: architecture/build-serve-split.md
       - Repo Overview: architecture/repo-overview.md
       - Architecture Diagram: architecture/system-graph.md
       - Crate Boundary Graph: architecture/crate-boundary-dependency-graph.md
