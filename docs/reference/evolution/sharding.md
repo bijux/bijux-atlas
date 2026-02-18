@@ -1,59 +1,59 @@
-# Sharding Evolution: Monolith to Shards
-
-Goal:
-- Support large datasets with optional shard layout without breaking API clients.
-
-Compatibility rules:
-- `gene_summary.sqlite` remains the stable primary artifact.
-- Sharded datasets add `catalog_shards.json` and `gene_summary.<shard>.sqlite` files.
-- Request/response contracts are unchanged.
-
-Upgrade path:
-1. Produce monolithic + shard artifacts from ingest in the same dataset release.
-2. Validate shard index/schema gates (`atlas dataset validate` checks all shards).
-3. Enable server shard fan-out for region queries only.
-4. Keep non-region queries on monolithic DB unless explicitly optimized later.
-5. Roll back by disabling shard fan-out; monolithic artifact remains valid.
-
-Operational guardrails:
-- Enforce maximum shard count via policy.
-- Enforce max open shards per pod to protect FD/memory limits.
-- Keep shard cache eviction independent so cold shards can be dropped first.
+# Sharding Evolution: Monolith To Shards
 
 ## What
 
-Reference definition for this topic.
+Sharding is an ingest-time layout choice with a router artifact:
+
+- `none`: monolithic `gene_summary.sqlite`.
+- `contig`: `catalog_shards.json` + `gene_summary.<shard>.sqlite` files.
+- `region_grid`: reserved for future implementation.
+
+Router metadata (`catalog_shards.json`) is the contract used by query/runtime:
+
+- dataset identity
+- shard mode
+- `seqid -> shard` mapping
+- per-shard sqlite checksum
 
 ## Why
 
-Defines stable semantics and operational expectations.
+Allows scaling large releases without changing API request/response semantics.
 
 ## Scope
 
-Applies to the documented subsystem behavior only.
+Applies to ingest artifact layout and runtime shard routing only.
 
 ## Non-goals
 
-Does not define unrelated implementation details.
+Does not define a separate sharding API surface.
 
 ## Contracts
 
-Normative behavior and limits are listed here.
+- Shard naming is deterministic and sorted:
+  - contig mode uses canonical seqid keys.
+  - partitioned mode uses `pNNN` fixed-width identifiers.
+- `max_shards` policy is enforced to block pathological splits.
+- `max_open_shards_per_pod` caps runtime fan-out pressure.
+- Query semantics must be identical between `none` and `contig` modes.
 
 ## Failure modes
 
-Known failure classes and rejection behavior.
+- `region_grid` plan currently fails fast as not implemented.
+- Exceeding `max_shards` fails ingest deterministically.
+- Missing/invalid router metadata disables shard fan-out for that dataset.
 
 ## How to verify
 
 ```bash
-$ make docs
+$ make ingest-sharded-medium
+$ make ops-diff-smoke
 ```
 
-Expected output: docs checks pass.
+Expected output: sharded ingest artifacts are produced and deterministic ops checks pass.
 
 ## See also
 
 - [Reference Index](INDEX.md)
 - [Contracts Index](../../contracts/contracts-index.md)
+- [Sharding Schema](../../_generated/contracts/SHARDING_SCHEMA.md)
 - [Terms Glossary](../../_style/terms-glossary.md)

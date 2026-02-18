@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Sharding Plan Contract",
+  "type": "object",
+  "required": ["schema_version", "plans", "router"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"type": "string", "const": "1"},
+    "plans": {
+      "type": "array",
+      "items": {"type": "string", "enum": ["none", "contig", "region_grid"]},
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "router": {
+      "type": "object",
+      "required": ["dataset", "mode", "shards"],
+      "additionalProperties": false,
+      "properties": {
+        "dataset": {
+          "type": "object",
+          "required": ["release", "species", "assembly"],
+          "additionalProperties": false,
+          "properties": {
+            "release": {"type": "string"},
+            "species": {"type": "string"},
+            "assembly": {"type": "string"}
+          }
+        },
+        "mode": {"type": "string", "enum": ["contig", "contig_partitioned"]},
+        "shards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["shard_id", "seqids", "sqlite_path", "sqlite_sha256"],
+            "additionalProperties": false,
+            "properties": {
+              "shard_id": {"type": "string"},
+              "seqids": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+              "sqlite_path": {"type": "string"},
+              "sqlite_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+            }
+          }
+        }
+      }
+    }
+  }
+}

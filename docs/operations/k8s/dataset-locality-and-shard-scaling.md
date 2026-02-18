@@ -18,6 +18,7 @@ For sharded datasets (`catalog_shards.json` present):
 - Increase pod count when shard fan-out dominates query latency.
 - Keep `ATLAS_MAX_OPEN_SHARDS_PER_POD` bounded to protect file descriptors.
 - Tune HPA with heavy-query in-flight metrics, not CPU alone.
+- Use `make ops-warm-shards` to prewarm common contig shards after deploy.
 
 ## Optional consistent hashing routing
 
