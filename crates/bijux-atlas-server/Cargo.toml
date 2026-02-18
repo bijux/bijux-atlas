@@ -60,6 +60,10 @@ harness = false
 name = "bulkhead_tuning"
 harness = false
 
+[[bench]]
+name = "gene_lookup_p99"
+harness = false
+
 [lib]
 path = "src/lib.rs"
 
