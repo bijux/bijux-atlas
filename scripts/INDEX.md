@@ -139,12 +139,14 @@ Generated file. Do not edit manually.
 | `scripts/public/observability/check_tracing_contract.py` | `platform` | `public` | `ops-observability-validate`, `ops-traces-check` |
 | `scripts/public/observability/lint_runbooks.py` | `platform` | `public` | `ops-metrics-check` |
 | `scripts/public/openapi-diff-check.sh` | `platform` | `public` | `api-contract-check`, `openapi-drift`, `ops-openapi-validate` |
+| `scripts/public/perf/__pycache__/check_spike_assertions.cpython-310.pyc` | `platform` | `public` | - |
 | `scripts/public/perf/check_baseline_update_policy.sh` | `platform` | `public` | - |
 | `scripts/public/perf/check_percent_regression.py` | `platform` | `public` | `stack-full` |
 | `scripts/public/perf/check_pinned_queries_lock.py` | `platform` | `public` | - |
 | `scripts/public/perf/check_prereqs.sh` | `platform` | `public` | - |
 | `scripts/public/perf/check_regression.py` | `platform` | `public` | - |
 | `scripts/public/perf/check_runbook_suite_names.py` | `platform` | `public` | - |
+| `scripts/public/perf/check_spike_assertions.py` | `platform` | `public` | `ops-load-spike-proof` |
 | `scripts/public/perf/cold_start_benchmark.sh` | `platform` | `public` | - |
 | `scripts/public/perf/cold_start_prefetch_5pods.sh` | `platform` | `public` | - |
 | `scripts/public/perf/compare_redis.sh` | `platform` | `public` | - |

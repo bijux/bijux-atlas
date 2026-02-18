@@ -94,6 +94,25 @@
       "thresholds": {"p95_ms_max": 1200, "p99_ms_max": 2500, "error_rate_max": 0.03}
     },
     {
+      "name": "spike-overload-proof",
+      "purpose": "10x spike proof: cheap endpoint survives, heavy requests shed, overload/queue signals observed",
+      "kind": "k6",
+      "scenario": "spike-overload-proof.json",
+      "must_pass": true,
+      "run_in": ["full", "nightly", "load-nightly"],
+      "expected_metrics": [
+        "http_req_duration",
+        "http_req_failed",
+        "cheap_survival_ok_total",
+        "heavy_shed_observed_total",
+        "overload_active_observed_total",
+        "queue_depth_metric_observed_total",
+        "queue_depth_positive_observed_total",
+        "rss_cap_exceeded_total"
+      ],
+      "thresholds": {"p95_ms_max": 1300, "p99_ms_max": 2600, "error_rate_max": 0.08}
+    },
+    {
       "name": "response-size-abuse",
       "purpose": "verify large-response abuse guardrails with stable rejection latency",
       "kind": "k6",

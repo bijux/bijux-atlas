@@ -1,0 +1,1 @@
+{"name":"spike-overload-proof","suite":"spike-overload-proof.js","burst_multiplier":10,"duration":"~115s","focus":"cheap survives while heavy sheds; overload/queue/memory assertions"}
