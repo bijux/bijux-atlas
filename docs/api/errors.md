@@ -22,6 +22,9 @@ All API errors use:
 }
 ```
 
+`hint` and `retryable` are stable fields carried in `error.details` when available.
+`request_id` is always present at top-level and mirrored in `X-Request-Id`.
+
 ## HTTP Mapping
 
 | HTTP | Codes |
@@ -35,3 +38,5 @@ All API errors use:
 | 503 | `NotReady`, `UpstreamStoreUnavailable` |
 | 504 | `Timeout` |
 | 500 | `Internal` |
+
+For `429` and `503`, responses include `Retry-After`.

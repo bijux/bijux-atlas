@@ -11,6 +11,10 @@
       "required": true,
       "type": "object"
     },
+    "hint": {
+      "required": false,
+      "type": "string"
+    },
     "message": {
       "required": true,
       "type": "string"
@@ -18,6 +22,10 @@
     "request_id": {
       "required": true,
       "type": "string"
+    },
+    "retryable": {
+      "required": false,
+      "type": "boolean"
     }
   },
   "problem_details_alignment": {

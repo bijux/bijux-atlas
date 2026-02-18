@@ -12,6 +12,14 @@
       "required": true,
       "type": "string"
     },
+    "hint": {
+      "required": false,
+      "type": "string"
+    },
+    "retryable": {
+      "required": false,
+      "type": "boolean"
+    },
     "request_id": {
       "required": true,
       "type": "string"
