@@ -157,13 +157,21 @@ pub(super) fn build_dataset_query(
         bijux_atlas_api::params::parse_list_genes_params_with_limit(&parse_map, 100, max_limit)?;
     let dataset = DatasetId::new(&parsed.release, &parsed.species, &parsed.assembly)
         .map_err(|e| ApiError::invalid_param("dataset", &e.to_string()))?;
-    let region = parse_region(parsed.region)?;
+    if parsed.min_transcripts.is_some() || parsed.max_transcripts.is_some() {
+        return Err(super::handlers::error_json(
+            ApiErrorCode::InvalidQueryParameter,
+            "min_transcripts/max_transcripts are not yet supported",
+            json!({}),
+        ));
+    }
+    let region = parse_region(parsed.range)?;
+    let name_prefix = parsed.name_like.as_ref().map(|v| v.trim_end_matches('*'));
     let req = GeneQueryRequest {
         fields: parse_include(parsed.include),
         filter: GeneFilter {
             gene_id: parsed.gene_id,
             name: parsed.name,
-            name_prefix: parsed.name_prefix,
+            name_prefix: name_prefix.map(ToString::to_string),
             biotype: parsed.biotype,
             region,
         },

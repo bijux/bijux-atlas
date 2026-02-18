@@ -597,7 +597,11 @@ pub(crate) async fn genes_handler(
         }
         Ok(Err(err)) => {
             let msg = err.to_string();
-            if msg.contains("limit") || msg.contains("span") || msg.contains("scan") {
+            if msg.contains("limit")
+                || msg.contains("span")
+                || msg.contains("scan")
+                || msg.contains("name_prefix")
+            {
                 let resp = super::handlers::api_error_response(
                     StatusCode::UNPROCESSABLE_ENTITY,
                     super::handlers::error_json(
@@ -612,7 +616,22 @@ pub(crate) async fn genes_handler(
                         "/v1/genes",
                         StatusCode::UNPROCESSABLE_ENTITY,
                         started.elapsed(),
-                    )
+                )
+                .await;
+                return super::handlers::with_request_id(resp, &request_id);
+            }
+            if msg.contains("Validation:") || msg.contains("seqid does not exist in dataset") {
+                let resp = super::handlers::api_error_response(
+                    StatusCode::BAD_REQUEST,
+                    super::handlers::error_json(
+                        ApiErrorCode::InvalidQueryParameter,
+                        "invalid query parameter",
+                        json!({"message": msg}),
+                    ),
+                );
+                state
+                    .metrics
+                    .observe_request("/v1/genes", StatusCode::BAD_REQUEST, started.elapsed())
                     .await;
                 return super::handlers::with_request_id(resp, &request_id);
             }
