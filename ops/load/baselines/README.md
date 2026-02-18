@@ -8,3 +8,7 @@ Contains named baseline artifacts for perf regression comparison.
 - `ci-runner.json`: baseline captured from nightly CI runner.
 
 Baseline updates require explicit approval in PR and should include rationale.
+
+Baseline metadata should include:
+- tool versions (`k6`, `kind`, `kubectl`, `helm`)
+- machine profile (`os`, `arch`, `cpu`, `memory_gb`)

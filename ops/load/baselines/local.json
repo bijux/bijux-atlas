@@ -1,1 +1,21 @@
-{"name":"local","source":"manual","notes":"initial placeholder baseline; replace with approved captured run"}
+{
+  "name": "local",
+  "source": "manual",
+  "notes": "initial placeholder baseline; replace with approved captured run",
+  "metadata": {
+    "captured_at": "1970-01-01T00:00:00Z",
+    "profile": "local",
+    "tool_versions": {
+      "k6": "unknown",
+      "kind": "unknown",
+      "kubectl": "unknown",
+      "helm": "unknown"
+    },
+    "machine": {
+      "os": "unknown",
+      "arch": "unknown",
+      "cpu": "unknown",
+      "memory_gb": "unknown"
+    }
+  }
+}
