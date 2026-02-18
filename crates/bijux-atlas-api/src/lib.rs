@@ -111,8 +111,8 @@ mod tests {
     #[test]
     fn api_error_details_schema_stable() {
         let e = ApiError::invalid_param("limit", "nope");
-        assert!(e.details.get("parameter").is_some());
-        assert!(e.details.get("value").is_some());
+        assert!(e.details.get("field_errors").is_some());
+        assert!(e.request_id.starts_with("req-"));
     }
 
     #[test]
@@ -167,7 +167,7 @@ mod tests {
         let encoded = serde_json::to_string(&err).expect("encode");
         assert_eq!(
             encoded,
-            "{\"code\":\"InvalidQueryParameter\",\"message\":\"invalid query parameter: limit\",\"details\":{\"parameter\":\"limit\",\"value\":\"bad\"}}"
+            "{\"code\":\"InvalidQueryParameter\",\"message\":\"invalid query parameter: limit\",\"details\":{\"field_errors\":[{\"parameter\":\"limit\",\"reason\":\"invalid\",\"value\":\"bad\"}]},\"request_id\":\"req-unknown\"}"
         );
     }
 
@@ -175,6 +175,10 @@ mod tests {
     fn error_codes_match_generated_contract() {
         let generated = crate::generated::error_codes::API_ERROR_CODES;
         let from_enum = [
+            ApiErrorCode::ArtifactCorrupted,
+            ApiErrorCode::ArtifactQuarantined,
+            ApiErrorCode::DatasetNotFound,
+            ApiErrorCode::GeneNotFound,
             ApiErrorCode::IngestDuplicateTranscriptId,
             ApiErrorCode::IngestInvalidCdsPhase,
             ApiErrorCode::IngestInvalidStrand,
@@ -191,12 +195,14 @@ mod tests {
             ApiErrorCode::MissingDatasetDimension,
             ApiErrorCode::NotReady,
             ApiErrorCode::PayloadTooLarge,
-            ApiErrorCode::QueryTooExpensive,
             ApiErrorCode::QueryRejectedByPolicy,
+            ApiErrorCode::QueryTooExpensive,
             ApiErrorCode::RangeTooLarge,
             ApiErrorCode::RateLimited,
             ApiErrorCode::ResponseTooLarge,
             ApiErrorCode::Timeout,
+            ApiErrorCode::UpstreamStoreUnavailable,
+            ApiErrorCode::ValidationFailed,
         ]
         .map(ApiErrorCode::as_str);
         assert_eq!(generated, from_enum);

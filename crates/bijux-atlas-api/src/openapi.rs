@@ -303,26 +303,29 @@ pub fn openapi_v1_spec() -> Value {
           },
           "ApiError": {
             "type": "object",
-            "required": ["code", "message", "details"],
+            "required": ["code", "message", "details", "request_id"],
             "additionalProperties": false,
             "properties": {
               "code": {"$ref": "#/components/schemas/ApiErrorCode"},
               "message": {"type": "string"},
-              "details": {"type": "object", "additionalProperties": true}
+              "details": {"type": "object", "additionalProperties": true},
+              "request_id": {"type": "string"}
             },
             "examples": {
               "missingDataset": {
                 "value": {
                   "code": "MissingDatasetDimension",
                   "message": "missing dataset dimension: release",
-                  "details": {"dimension": "release"}
+                  "details": {"dimension": "release"},
+                  "request_id": "req-0000000000000001"
                 }
               },
               "invalidCursor": {
                 "value": {
                   "code": "InvalidCursor",
                   "message": "invalid cursor",
-                  "details": {"cursor": "bad.cursor"}
+                  "details": {"cursor": "bad.cursor"},
+                  "request_id": "req-0000000000000002"
                 }
               }
             }

@@ -41,10 +41,7 @@ fn request_validation_fields_are_strict_and_deduplicated() {
         "coords,biotype,coords,length".to_string(),
     );
     let parsed = parse_list_genes_params(&q).expect("include");
-    assert_eq!(
-        parsed.include.expect("include").len(),
-        3
-    );
+    assert_eq!(parsed.include.expect("include").len(), 3);
 
     let mut bad = base_query();
     bad.insert("include".to_string(), "coords,,length".to_string());
@@ -78,7 +75,7 @@ fn request_validation_range_parser_is_strict_and_helpful() {
     bad.insert("range".to_string(), "chr1:20-10".to_string());
     let err = parse_list_genes_params(&bad).expect_err("invalid range");
     assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
-    assert!(err.details["parameter"].as_str() == Some("range"));
+    assert!(err.details["field_errors"][0]["parameter"].as_str() == Some("range"));
 
     let mut too_wide = base_query();
     too_wide.insert("range".to_string(), "chr1:1-5000001".to_string());
@@ -93,7 +90,10 @@ fn request_validation_unknown_filter_rejected_with_allowed_list() {
     let err = parse_list_genes_params(&q).expect_err("unknown filter");
     assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
     assert!(err.message.contains("filter"));
-    assert!(err.details["value"].as_str().unwrap_or("").contains("allowed"));
+    assert!(err.details["field_errors"][0]["value"]
+        .as_str()
+        .unwrap_or("")
+        .contains("allowed"));
 }
 
 #[test]
@@ -146,7 +146,10 @@ fn request_validation_filter_parsing_is_order_independent() {
     q2.insert("name_like".to_string(), "BRCA*".to_string());
     q2.insert("gene_id".to_string(), "ENSG1".to_string());
 
-    assert_eq!(parse_list_genes_params(&q1).ok(), parse_list_genes_params(&q2).ok());
+    assert_eq!(
+        parse_list_genes_params(&q1).ok(),
+        parse_list_genes_params(&q2).ok()
+    );
 }
 
 #[test]

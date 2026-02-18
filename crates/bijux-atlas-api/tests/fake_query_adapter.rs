@@ -95,11 +95,12 @@ fn fake_adapter_error_contract_is_stable() {
         ErrorCode::InvalidQueryParameter,
         "bad",
         serde_json::json!({"parameter":"limit"}),
+        "req-test",
     );
     let encoded = serde_json::to_string(&err).expect("json");
     assert_eq!(
         encoded,
-        "{\"code\":\"InvalidQueryParameter\",\"message\":\"bad\",\"details\":{\"parameter\":\"limit\"}}"
+        "{\"code\":\"InvalidQueryParameter\",\"message\":\"bad\",\"details\":{\"parameter\":\"limit\"},\"request_id\":\"req-test\"}"
     );
 }
 
