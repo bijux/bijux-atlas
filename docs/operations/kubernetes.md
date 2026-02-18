@@ -24,6 +24,7 @@ Canonical Kubernetes operations flow and contract-aligned make entrypoints.
 
 - Required resources/limits.
 - Required readiness/liveness probes.
+- Perf profile sets `readinessProbePath: /healthz/overload` so readiness follows real admission-control state during load.
 - Required `PodDisruptionBudget`.
 - HPA behavior validated via k8s tests.
 - NetworkPolicy behavior validated via k8s tests.

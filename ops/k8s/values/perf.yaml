@@ -22,6 +22,7 @@ concurrency:
   heavy: 24
 
 server:
+  readinessProbePath: /healthz/overload
   responseMaxBytes: 786432
   sqlTimeoutMs: 1200
   slowQueryThresholdMs: 300
