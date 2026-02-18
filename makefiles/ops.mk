@@ -856,6 +856,15 @@ ops-observability-pack-tests: ## Run observability pack conformance tests
 ops-observability-pack-lint: ## Run observability pack lint-only contract checks
 	@./ops/observability/tests/test_contracts.sh
 
+observability-pack-test: ## Fast observability pack test (contracts + coverage)
+	@./ops/observability/tests/test_contracts.sh
+	@./ops/observability/tests/test_coverage.sh
+
+observability-pack-drills: ## Full observability drill suite (outage matrix + contracts)
+	@./ops/observability/tests/test_coverage.sh
+	@./ops/observability/tests/test_outage_matrix.sh
+	@./ops/observability/tests/test_contracts.sh
+
 ops-open-grafana: ## Print local ops service URLs
 	@./ops/ui/print_urls.sh
 
