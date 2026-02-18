@@ -296,10 +296,12 @@ dependencies = [
  "bijux-atlas-core",
  "bijux-atlas-model",
  "criterion",
+ "proptest",
  "rusqlite",
  "serde",
  "serde_json",
  "tempfile",
+ "unicode-normalization",
  "zstd",
 ]
 
