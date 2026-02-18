@@ -1,4 +1,5 @@
 use crate::*;
+use bijux_atlas_api::params::IncludeField;
 use serde_json::json;
 
 pub(super) struct QueueGuard {
@@ -29,30 +30,34 @@ pub(super) fn try_enter_queue(state: &AppState) -> Result<QueueGuard, ApiError> 
     })
 }
 
-pub(super) fn parse_fields(fields: Option<Vec<String>>) -> GeneFields {
-    if let Some(list) = fields {
+pub(super) fn parse_include(include: Option<Vec<IncludeField>>) -> GeneFields {
+    if let Some(list) = include {
         let mut out = GeneFields {
-            gene_id: false,
-            name: false,
+            gene_id: true,
+            name: true,
             coords: false,
             biotype: false,
             transcript_count: false,
             sequence_length: false,
         };
         for field in list {
-            match field.as_str() {
-                "gene_id" => out.gene_id = true,
-                "name" => out.name = true,
-                "coords" => out.coords = true,
-                "biotype" => out.biotype = true,
-                "transcript_count" => out.transcript_count = true,
-                "sequence_length" => out.sequence_length = true,
-                _ => {}
+            match field {
+                IncludeField::Coords => out.coords = true,
+                IncludeField::Biotype => out.biotype = true,
+                IncludeField::Counts => out.transcript_count = true,
+                IncludeField::Length => out.sequence_length = true,
             }
         }
         out
     } else {
-        GeneFields::default()
+        GeneFields {
+            gene_id: true,
+            name: true,
+            coords: false,
+            biotype: false,
+            transcript_count: false,
+            sequence_length: false,
+        }
     }
 }
 
@@ -154,7 +159,7 @@ pub(super) fn build_dataset_query(
         .map_err(|e| ApiError::invalid_param("dataset", &e.to_string()))?;
     let region = parse_region(parsed.region)?;
     let req = GeneQueryRequest {
-        fields: parse_fields(parsed.fields),
+        fields: parse_include(parsed.include),
         filter: GeneFilter {
             gene_id: parsed.gene_id,
             name: parsed.name,

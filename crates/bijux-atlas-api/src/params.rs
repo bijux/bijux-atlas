@@ -2,15 +2,33 @@ use crate::errors::ApiError;
 use bijux_atlas_query::RegionFilter;
 use std::collections::{BTreeMap, BTreeSet};
 
-pub const ALLOWED_FIELDS: [&str; 6] = [
-    "gene_id",
-    "name",
+pub const ALLOWED_INCLUDE: [&str; 4] = [
     "coords",
     "biotype",
-    "transcript_count",
-    "sequence_length",
+    "counts",
+    "length",
 ];
 pub const MAX_CURSOR_BYTES: usize = 4096;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub enum IncludeField {
+    Coords,
+    Biotype,
+    Counts,
+    Length,
+}
+
+impl IncludeField {
+    fn parse(raw: &str) -> Option<Self> {
+        match raw {
+            "coords" => Some(Self::Coords),
+            "biotype" => Some(Self::Biotype),
+            "counts" => Some(Self::Counts),
+            "length" => Some(Self::Length),
+            _ => None,
+        }
+    }
+}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ListGenesParams {
@@ -24,7 +42,7 @@ pub struct ListGenesParams {
     pub name_prefix: Option<String>,
     pub biotype: Option<String>,
     pub region: Option<String>,
-    pub fields: Option<Vec<String>>,
+    pub include: Option<Vec<IncludeField>>,
     pub pretty: bool,
 }
 
@@ -71,8 +89,8 @@ pub fn parse_list_genes_params_with_limit(
         }
     }
 
-    let fields = if let Some(raw_fields) = query.get("fields") {
-        Some(parse_fields(raw_fields)?)
+    let include = if let Some(raw_include) = query.get("include") {
+        Some(parse_include(raw_include)?)
     } else {
         None
     };
@@ -88,7 +106,7 @@ pub fn parse_list_genes_params_with_limit(
         name_prefix: query.get("name_prefix").cloned(),
         biotype: query.get("biotype").cloned(),
         region: query.get("region").cloned(),
-        fields,
+        include,
         pretty: query
             .get("pretty")
             .is_some_and(|v| v == "1" || v.eq_ignore_ascii_case("true")),
@@ -121,16 +139,18 @@ pub fn parse_region_filter(raw: Option<String>) -> Result<Option<RegionFilter>, 
     }))
 }
 
-fn parse_fields(raw_fields: &str) -> Result<Vec<String>, ApiError> {
+fn parse_include(raw_include: &str) -> Result<Vec<IncludeField>, ApiError> {
     let mut ordered_fields = Vec::new();
     let mut seen = BTreeSet::new();
-    for raw in raw_fields.split(',') {
+    for raw in raw_include.split(',') {
         let field = raw.trim();
-        if field.is_empty() || !ALLOWED_FIELDS.contains(&field) {
-            return Err(ApiError::invalid_param("fields", raw_fields));
+        if field.is_empty() || !ALLOWED_INCLUDE.contains(&field) {
+            return Err(ApiError::invalid_param("include", raw_include));
         }
-        if seen.insert(field.to_string()) {
-            ordered_fields.push(field.to_string());
+        let parsed = IncludeField::parse(field)
+            .ok_or_else(|| ApiError::invalid_param("include", raw_include))?;
+        if seen.insert(parsed) {
+            ordered_fields.push(parsed);
         }
     }
     Ok(ordered_fields)
