@@ -144,6 +144,7 @@ async fn diff_common(
         .fetch_add(1, Ordering::Relaxed)
         .saturating_add(1);
     if queue_depth as usize > state.api.max_request_queue_depth {
+        crate::record_shed_reason(&state, "queue_depth_exceeded").await;
         state.queued_requests.fetch_sub(1, Ordering::Relaxed);
         let resp = api_error_response(
             StatusCode::TOO_MANY_REQUESTS,
@@ -240,6 +241,7 @@ async fn diff_common(
     if crate::middleware::shedding::should_shed_noncheap(&state, class).await
         || (state.api.shed_load_enabled && overloaded)
     {
+        crate::record_shed_reason(&state, "bulkhead_shed_noncheap").await;
         let backoff = crate::middleware::shedding::heavy_backoff_ms(&state);
         tokio::time::sleep(Duration::from_millis(backoff)).await;
         let mut resp = api_error_response(
@@ -275,7 +277,12 @@ async fn diff_common(
         }
     };
 
-    let query_hash = sha256_hex(normalize_query(&params).as_bytes());
+    let normalized_query = normalize_query(&params);
+    state
+        .metrics
+        .observe_request_size(route, normalized_query.len())
+        .await;
+    let query_hash = sha256_hex(normalized_query.as_bytes());
     let coalesce_key = format!("{route}:{scope:?}:{query_hash}");
     let _coalesce_guard = state.coalescer.acquire(&coalesce_key).await;
     let cursor_gene = if let Some(token) = params.get("cursor") {
@@ -544,6 +551,10 @@ async fn diff_common(
             )
         }
     };
+    state
+        .metrics
+        .observe_response_size(route, encoded.len())
+        .await;
     if encoded.len() > state.api.response_max_bytes {
         let resp = api_error_response(
             StatusCode::PAYLOAD_TOO_LARGE,

@@ -411,7 +411,7 @@ impl DatasetCacheManager {
             Ok::<_, CacheError>((manifest, sqlite, release_gene_index))
         }
         .instrument(tracing::info_span!(
-            "download",
+            "store_fetch",
             dataset = %dataset.canonical_string(),
             backend = self.store.backend_tag()
         ))

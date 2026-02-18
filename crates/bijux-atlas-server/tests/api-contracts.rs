@@ -199,6 +199,12 @@ async fn error_contract_and_etag_behaviors() {
     let (status, _, body) = send_raw(addr, "/metrics", &[]).await;
     assert_eq!(status, 200);
     assert!(body.contains("bijux_request_stage_latency_p95_seconds"));
+    assert!(body.contains("atlas_bulkhead_inflight"));
+    assert!(body.contains("atlas_bulkhead_saturation"));
+    assert!(body.contains("atlas_shed_total"));
+    assert!(body.contains("bijux_http_request_size_p95_bytes"));
+    assert!(body.contains("bijux_http_response_size_p95_bytes"));
+    assert!(body.contains("bijux_store_fetch_latency_p95_seconds"));
 }
 
 #[tokio::test]

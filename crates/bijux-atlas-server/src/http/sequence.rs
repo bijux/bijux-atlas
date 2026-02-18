@@ -199,6 +199,7 @@ async fn sequence_common(
         .fetch_add(1, Ordering::Relaxed)
         .saturating_add(1);
     if queue_depth as usize > state.api.max_request_queue_depth {
+        crate::record_shed_reason(&state, "queue_depth_exceeded").await;
         state.queued_requests.fetch_sub(1, Ordering::Relaxed);
         let resp = api_error_response(
             StatusCode::TOO_MANY_REQUESTS,
@@ -274,6 +275,7 @@ async fn sequence_common(
     if crate::middleware::shedding::should_shed_noncheap(&state, class).await
         || (state.api.shed_load_enabled && class == QueryClass::Heavy && overloaded)
     {
+        crate::record_shed_reason(&state, "bulkhead_shed_noncheap").await;
         let backoff = crate::middleware::shedding::heavy_backoff_ms(&state);
         tokio::time::sleep(Duration::from_millis(backoff)).await;
         let mut resp = api_error_response(
@@ -296,6 +298,7 @@ async fn sequence_common(
     let _class_permit = match acquire_class_permit_for_sequence(&state, class).await {
         Ok(v) => v,
         Err(e) => {
+            crate::record_shed_reason(&state, "class_permit_saturated").await;
             let resp = api_error_response(StatusCode::TOO_MANY_REQUESTS, e);
             state
                 .metrics
@@ -344,6 +347,10 @@ async fn sequence_common(
         region_raw,
         normalize_query(&params)
     );
+    state
+        .metrics
+        .observe_request_size(route, coalesce_key.len())
+        .await;
     let _coalesce_guard = state.coalescer.acquire(&coalesce_key).await;
 
     let io_stage = Instant::now();
@@ -447,6 +454,7 @@ async fn sequence_common(
     let provenance = crate::http::handlers::dataset_provenance(&state, &dataset).await;
     let serialize_stage = Instant::now();
     if wants_text(&headers) {
+        let sequence_len = sequence.len();
         if sequence.len() > state.api.response_max_bytes {
             let resp = api_error_response(
                 StatusCode::PAYLOAD_TOO_LARGE,
@@ -477,6 +485,10 @@ async fn sequence_common(
         state
             .metrics
             .observe_stage("serialization", serialize_stage.elapsed())
+            .await;
+        state
+            .metrics
+            .observe_response_size(route, sequence_len)
             .await;
         state
             .metrics
@@ -528,6 +540,10 @@ async fn sequence_common(
             return with_request_id(resp, &request_id);
         }
     };
+    state
+        .metrics
+        .observe_response_size(route, encoded.len())
+        .await;
     if encoded.len() > state.api.response_max_bytes {
         let resp = api_error_response(
             StatusCode::PAYLOAD_TOO_LARGE,
