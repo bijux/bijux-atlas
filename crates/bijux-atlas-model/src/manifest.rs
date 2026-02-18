@@ -95,6 +95,10 @@ pub struct ArtifactManifest {
     #[serde(default)]
     pub dataset_signature_sha256: String,
     #[serde(default)]
+    pub db_hash: String,
+    #[serde(default)]
+    pub artifact_hash: String,
+    #[serde(default)]
     pub schema_evolution_note: String,
     #[serde(default)]
     pub ingest_toolchain: String,
@@ -134,6 +138,8 @@ impl ArtifactManifest {
             },
             stats,
             dataset_signature_sha256: String::new(),
+            db_hash: String::new(),
+            artifact_hash: String::new(),
             schema_evolution_note:
                 "v1 schema: additive-only evolution; existing fields remain stable".to_string(),
             ingest_toolchain: String::new(),
@@ -186,6 +192,19 @@ impl ArtifactManifest {
         if self.toolchain_hash.trim().is_empty() {
             return Err(ValidationError(
                 "manifest toolchain_hash must not be empty".to_string(),
+            ));
+        }
+        if self.db_hash.trim().is_empty() {
+            return Err(ValidationError("manifest db_hash must not be empty".to_string()));
+        }
+        if self.artifact_hash.trim().is_empty() {
+            return Err(ValidationError(
+                "manifest artifact_hash must not be empty".to_string(),
+            ));
+        }
+        if self.db_hash != self.checksums.sqlite_sha256 {
+            return Err(ValidationError(
+                "manifest db_hash must equal checksums.sqlite_sha256".to_string(),
             ));
         }
         if self.stats.gene_count == 0 {
