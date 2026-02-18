@@ -130,10 +130,14 @@ pub fn build_router(state: AppState) -> Router {
             "/debug/registry-health",
             get(http::handlers::registry_health_handler),
         )
+        .route("/v1/_debug/echo", get(http::handlers::debug_echo_handler))
         .layer(from_fn_with_state(state.clone(), cors_middleware))
         .layer(from_fn_with_state(state.clone(), security_middleware))
         .layer(from_fn_with_state(state.clone(), resilience_middleware))
-        .layer(from_fn(provenance_headers_middleware))
+        .layer(from_fn_with_state(
+            state.clone(),
+            provenance_headers_middleware,
+        ))
         .layer(DefaultBodyLimit::max(state.api.max_body_bytes))
         .with_state(state)
 }

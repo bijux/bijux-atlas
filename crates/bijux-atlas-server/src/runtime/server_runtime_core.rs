@@ -3,7 +3,7 @@ use async_trait::async_trait;
 use axum::body::Body;
 use axum::extract::{DefaultBodyLimit, State};
 use axum::http::{HeaderMap, HeaderValue, Request, StatusCode, Uri};
-use axum::middleware::{from_fn, from_fn_with_state, Next};
+use axum::middleware::{from_fn_with_state, Next};
 use axum::response::{IntoResponse, Response};
 use axum::routing::get;
 use axum::{Json, Router};
@@ -275,21 +275,37 @@ fn parse_dataset_from_uri(uri: &Uri) -> Option<DatasetId> {
     .ok()
 }
 
-async fn provenance_headers_middleware(req: Request<Body>, next: Next) -> Response {
+async fn provenance_headers_middleware(
+    State(state): State<AppState>,
+    req: Request<Body>,
+    next: Next,
+) -> Response {
     let dataset = parse_dataset_from_uri(req.uri());
     let mut resp = next.run(req).await;
 
-    let (dataset_hash, release) = if let Some(ds) = dataset {
+    let (dataset_hash, release, artifact_hash) = if let Some(ds) = dataset {
+        let artifact_hash = state
+            .cache
+            .fetch_manifest_summary(&ds)
+            .await
+            .ok()
+            .map(|m| m.dataset_signature_sha256);
         (
             sha256_hex(ds.canonical_string().as_bytes()),
             ds.release.to_string(),
+            artifact_hash,
         )
     } else {
-        ("unknown".to_string(), "unknown".to_string())
+        ("unknown".to_string(), "unknown".to_string(), None)
     };
 
     if let Ok(v) = HeaderValue::from_str(&dataset_hash) {
         resp.headers_mut().insert("x-atlas-dataset-hash", v);
+    }
+    if let Some(artifact_hash) = artifact_hash {
+        if let Ok(v) = HeaderValue::from_str(&artifact_hash) {
+            resp.headers_mut().insert("x-atlas-artifact-hash", v);
+        }
     }
     if let Ok(v) = HeaderValue::from_str(&release) {
         resp.headers_mut().insert("x-atlas-release", v);

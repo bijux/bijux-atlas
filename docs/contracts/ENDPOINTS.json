@@ -149,6 +149,23 @@
     {
       "deprecated": false,
       "method": "GET",
+      "params": [],
+      "path": "/v1/_debug/echo",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "none",
+          "status": "404"
+        }
+      ],
+      "telemetry_class": "debug"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
       "params": [
         {
           "default": null,

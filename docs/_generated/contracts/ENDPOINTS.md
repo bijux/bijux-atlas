@@ -7,6 +7,7 @@
 - `GET /healthz/overload` telemetry: `health`
 - `GET /metrics` telemetry: `metrics`
 - `GET /readyz` telemetry: `health`
+- `GET /v1/_debug/echo` telemetry: `debug`
 - `GET /v1/datasets` telemetry: `catalog`
 - `GET /v1/diff/genes` telemetry: `diff`
 - `GET /v1/diff/region` telemetry: `diff`

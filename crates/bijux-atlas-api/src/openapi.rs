@@ -271,6 +271,14 @@ pub fn openapi_v1_spec() -> Value {
               "404": {"description": "disabled"}
             }
           }
+        },
+        "/v1/_debug/echo": {
+          "get": {
+            "responses": {
+              "200": {"description": "echo query params when debug is enabled"},
+              "404": {"description": "disabled"}
+            }
+          }
         }
       },
       "components": {
