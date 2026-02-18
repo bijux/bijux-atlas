@@ -112,6 +112,7 @@ Generated from `make help`. Do not edit manually.
 - `ops-catalog-validate`
 - `ops-cache-status`
 - `ops-dataset-qc`
+- `ops-dataset-qc-diff`
 - `ops-drill-corruption-dataset`
 - `ops-dataset-promotion-sim`
 - `ops-dataset-multi-release-test`
@@ -259,6 +260,10 @@ Generated from `make help`. Do not edit manually.
 - `ci-store-conformance`
 - `ci-openapi-drift`
 - `ci-query-plan-gate`
+- `ci-sqlite-schema-drift`
+- `ci-sqlite-index-drift`
+- `ci-ingest-determinism`
+- `ci-qc-fixtures`
 - `ci-compatibility-matrix-validate`
 - `ci-runtime-security-scan-image`
 - `ci-coverage`
