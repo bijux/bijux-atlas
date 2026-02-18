@@ -70,16 +70,6 @@ for section, keys in {
     if missing_block:
         raise SystemExit(f"{section} missing keys: {missing_block}")
 
-print("policy config validated")
-PY
-
-./scripts/public/require-crate-docs.sh
-./scripts/public/no-network-unit-tests.sh
-./scripts/public/check-cli-commands.sh
-./scripts/public/policy-schema-drift.py
-./scripts/contracts/check_all.sh
-./scripts/internal/effects-lint.sh
-./scripts/internal/naming-intent-lint.sh
 if cfg_data["mode"] not in {"strict", "compat", "dev"}:
     raise SystemExit("mode must be one of strict|compat|dev")
 if not isinstance(cfg_data["modes"], dict):
@@ -95,3 +85,14 @@ for mode_name in ("strict", "compat", "dev"):
         raise SystemExit(f"modes.{mode_name} cap values must be > 0")
 if cfg_data["modes"]["strict"]["allow_override"] is not False:
     raise SystemExit("modes.strict.allow_override must be false")
+
+print("policy config validated")
+PY
+
+./scripts/public/require-crate-docs.sh
+./scripts/public/no-network-unit-tests.sh
+./scripts/public/check-cli-commands.sh
+./scripts/public/policy-schema-drift.py
+./scripts/contracts/check_all.sh
+./scripts/internal/effects-lint.sh
+./scripts/internal/naming-intent-lint.sh
