@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+# owner: bijux-atlas-operations
+# purpose: diff two QC reports for release-to-release quality regression checks.
+# stability: public
+# called-by: make ops-dataset-qc-diff
+import argparse
+import json
+from pathlib import Path
+
+
+def get(v, path, default=0):
+    cur = v
+    for p in path:
+        if not isinstance(cur, dict):
+            return default
+        cur = cur.get(p)
+    return cur if cur is not None else default
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--base", required=True)
+    ap.add_argument("--target", required=True)
+    args = ap.parse_args()
+    base = json.loads(Path(args.base).read_text())
+    target = json.loads(Path(args.target).read_text())
+    keys = [
+        ("counts.genes", ["counts", "genes"]),
+        ("counts.transcripts", ["counts", "transcripts"]),
+        ("counts.exons", ["counts", "exons"]),
+        ("counts.cds", ["counts", "cds"]),
+        ("orphan_counts.transcripts", ["orphan_counts", "transcripts"]),
+        ("duplicate_id_events.duplicate_gene_ids", ["duplicate_id_events", "duplicate_gene_ids"]),
+        ("contig_stats.unknown_contig_feature_ratio", ["contig_stats", "unknown_contig_feature_ratio"]),
+    ]
+    out = {"base": args.base, "target": args.target, "changes": []}
+    for name, path in keys:
+        b = get(base, path)
+        t = get(target, path)
+        out["changes"].append({"field": name, "base": b, "target": t})
+    print(json.dumps(out, indent=2, sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -5,25 +5,19 @@
 # called-by: make ops-dataset-qc
 set -euo pipefail
 ROOT="$(CDPATH='' cd -- "$(dirname -- "$0")/../../.." && pwd)"
-QC_CFG="$ROOT/configs/ops/dataset-qc-thresholds.json"
+QC_CFG="${ATLAS_QC_THRESHOLDS:-$ROOT/configs/ops/dataset-qc-thresholds.json}"
 REPORT_DIR="${ATLAS_E2E_OUTPUT_ROOT:-$ROOT/artifacts/e2e-datasets}"
-python3 - <<'PY'
-from pathlib import Path
-import json,sys
-root=Path.cwd()
-qc=json.loads((root/'configs/ops/dataset-qc-thresholds.json').read_text())
-max_warn=qc['max_qc_warn']; max_err=qc['max_qc_error']; max_anom=qc['max_anomalies']
-qc_report=root/'artifacts/e2e-datasets/qc_report.json'
-anom_report=root/'artifacts/e2e-datasets/anomalies.json'
-warn=err=anom=0
-if qc_report.exists():
-    d=json.loads(qc_report.read_text())
-    warn=len(d.get('warnings',[])); err=len(d.get('errors',[]))
-if anom_report.exists():
-    d=json.loads(anom_report.read_text())
-    anom=len(d.get('anomalies',[]))
-if warn>max_warn or err>max_err or anom>max_anom:
-    print(f"dataset QC failed: warnings={warn}/{max_warn} errors={err}/{max_err} anomalies={anom}/{max_anom}", file=sys.stderr)
-    raise SystemExit(1)
-print(f"dataset QC passed: warnings={warn} errors={err} anomalies={anom}")
-PY
+release="${ATLAS_DATASET_RELEASE:-110}"
+species="${ATLAS_DATASET_SPECIES:-homo_sapiens}"
+assembly="${ATLAS_DATASET_ASSEMBLY:-GRCh38}"
+QC_REPORT="$REPORT_DIR/release=$release/species=$species/assembly=$assembly/derived/qc.json"
+if [ ! -f "$QC_REPORT" ]; then
+  echo "dataset QC failed: missing qc report: $QC_REPORT" >&2
+  exit 1
+fi
+cargo run -q -p bijux-atlas-cli --bin bijux-atlas -- atlas ingest-validate \
+  --qc-report "$QC_REPORT" \
+  --thresholds "$QC_CFG"
+python3 "$ROOT/ops/datasets/scripts/qc_summary.py" \
+  --qc "$QC_REPORT" \
+  --out "$REPORT_DIR/qc-summary.md"

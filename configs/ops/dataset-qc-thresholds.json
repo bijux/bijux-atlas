@@ -1,7 +1,9 @@
 {
   "schema_version": 1,
-  "max_qc_warn": 0,
-  "max_qc_error": 0,
-  "max_anomalies": 0,
+  "min_gene_count": 1,
+  "max_orphan_percent": 2.0,
+  "max_rejected_percent": 2.0,
+  "max_unknown_contig_feature_percent": 0.1,
+  "max_duplicate_gene_id_events": 0,
   "cache_budget_bytes": 8589934592
 }
