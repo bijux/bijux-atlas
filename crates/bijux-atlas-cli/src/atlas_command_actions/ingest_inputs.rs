@@ -307,7 +307,7 @@ fn decompress_if_needed(filename: String, bytes: &[u8]) -> Result<(Vec<u8>, Stri
 }
 
 #[cfg(test)]
-#[allow(clippy::items_after_test_module)]
+#[allow(clippy::items_after_test_module)] // ATLAS-EXC-0002
 mod tests {
     use super::resolve_verify_and_lock_inputs;
     use std::fs;

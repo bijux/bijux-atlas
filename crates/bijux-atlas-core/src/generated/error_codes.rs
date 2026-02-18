@@ -104,7 +104,7 @@ impl ErrorCode {
     }
 }
 
-#[allow(dead_code)]
+#[allow(dead_code)] // ATLAS-EXC-0001
 pub const ERROR_CODES: &[&str] = &[
     "ArtifactCorrupted",
     "ArtifactQuarantined",

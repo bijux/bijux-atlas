@@ -9,7 +9,7 @@ const MAX_GFF3_LINE_BYTES: usize = 1_000_000;
 const MAX_ATTR_TOKENS: usize = 4_096;
 
 #[derive(Debug, Clone)]
-#[allow(dead_code)]
+#[allow(dead_code)] // ATLAS-EXC-0001
 pub struct Gff3Record {
     pub line: usize,
     pub seqid: String,
