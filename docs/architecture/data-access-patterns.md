@@ -39,6 +39,13 @@ Define and prove the query shapes that must stay fast and index-backed.
 - Max estimated rows per region request is enforced before execution.
 - List endpoints enforce response serialization size budget.
 - Queries use parameter binding; user input never string-concatenates into SQL predicates.
+- Runtime enforces per-class bulkheads and per-class request/sql timeout budgets.
+
+## Performance Verification
+
+- Benchmarks cover critical query p50/p95 trends for cheap/medium/heavy shapes.
+- Benchmarks cover concurrency scaling for point lookup and region queries.
+- Benchmarks include worst-case filter combinations for regression tracking.
 
 ## How to Verify
 
