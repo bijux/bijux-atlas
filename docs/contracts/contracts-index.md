@@ -34,6 +34,7 @@ Does not replace registry-specific detail pages.
 | Normalized format schema | `NORMALIZED_FORMAT_SCHEMA.json` | `_generated/contracts/NORMALIZED_FORMAT_SCHEMA.md` | Evolving |
 | Release diff schema | `DIFF_SCHEMA.json` | `_generated/contracts/DIFF_SCHEMA.md` | Additive |
 | Sharding schema | `SHARDING_SCHEMA.json` | `_generated/contracts/SHARDING_SCHEMA.md` | Additive |
+| Cursor schema | `CURSOR_SCHEMA.json` | `_generated/contracts/CURSOR_SCHEMA.md` | Additive |
 | GC policy schema | `GC_POLICY.json` | `operations/retention-and-gc.md` | Additive |
 
 ## Generated docs
@@ -50,6 +51,7 @@ Does not replace registry-specific detail pages.
 - [_generated/contracts/NORMALIZED_FORMAT_SCHEMA.md](../_generated/contracts/NORMALIZED_FORMAT_SCHEMA.md)
 - [_generated/contracts/DIFF_SCHEMA.md](../_generated/contracts/DIFF_SCHEMA.md)
 - [_generated/contracts/SHARDING_SCHEMA.md](../_generated/contracts/SHARDING_SCHEMA.md)
+- [_generated/contracts/CURSOR_SCHEMA.md](../_generated/contracts/CURSOR_SCHEMA.md)
 
 ## Failure modes
 
