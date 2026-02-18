@@ -285,6 +285,33 @@ ops-publish: ## Publish dataset by name (DATASET=medium|real1)
 	$(MAKE) ops-dataset-qc
 	@./ops/datasets/scripts/snapshot_metadata.sh
 
+ops-release-update: ## Run release update workflow (ingest->validate->publish->smoke->promote)
+	@$(MAKE) -s ops-env-validate
+	@$(MAKE) ops-publish DATASET="$${DATASET:-medium}"
+	@$(MAKE) ops-catalog-validate
+	@$(MAKE) ops-smoke
+	@dataset="$${DATASET:-medium}"; \
+	case "$$dataset" in \
+	  medium) release=110; species=homo_sapiens; assembly=GRCh38 ;; \
+	  real1) release=111; species=homo_sapiens; assembly=GRCh38 ;; \
+	  *) echo "unsupported DATASET=$$dataset" >&2; exit 2 ;; \
+	esac; \
+	cargo run -q -p bijux-atlas-cli --bin bijux-atlas -- atlas catalog promote \
+	  --store-root "$${ATLAS_E2E_STORE_ROOT:-artifacts/e2e-store}" \
+	  --release "$$release" --species "$$species" --assembly "$$assembly"
+
+ops-release-rollback: ## Roll back catalog pointer for release dataset (artifacts stay immutable)
+	@$(MAKE) -s ops-env-validate
+	@dataset="$${DATASET:-medium}"; \
+	case "$$dataset" in \
+	  medium) release=110; species=homo_sapiens; assembly=GRCh38 ;; \
+	  real1) release=111; species=homo_sapiens; assembly=GRCh38 ;; \
+	  *) echo "unsupported DATASET=$$dataset" >&2; exit 2 ;; \
+	esac; \
+	cargo run -q -p bijux-atlas-cli --bin bijux-atlas -- atlas catalog rollback \
+	  --store-root "$${ATLAS_E2E_STORE_ROOT:-artifacts/e2e-store}" \
+	  --release "$$release" --species "$$species" --assembly "$$assembly"
+
 ops-catalog-validate: ## Validate published catalog schema + deterministic merge ordering
 	@python3 ./ops/datasets/scripts/catalog_validate.py
 
