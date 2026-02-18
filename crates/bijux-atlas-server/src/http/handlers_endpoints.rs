@@ -72,7 +72,12 @@ pub(crate) async fn datasets_handler(
     );
     if if_none_match(&headers).as_deref() == Some(etag.as_str()) {
         let mut resp = StatusCode::NOT_MODIFIED.into_response();
-        put_cache_headers(resp.headers_mut(), state.api.discovery_ttl, &etag);
+        put_cache_headers(
+            resp.headers_mut(),
+            state.api.discovery_ttl,
+            &etag,
+            CachePolicy::CatalogDiscovery,
+        );
         state
             .metrics
             .observe_request("/v1/datasets", StatusCode::NOT_MODIFIED, started.elapsed())
@@ -80,7 +85,12 @@ pub(crate) async fn datasets_handler(
         return with_request_id(resp, &request_id);
     }
     let mut response = Json(payload).into_response();
-    put_cache_headers(response.headers_mut(), state.api.discovery_ttl, &etag);
+    put_cache_headers(
+        response.headers_mut(),
+        state.api.discovery_ttl,
+        &etag,
+        CachePolicy::CatalogDiscovery,
+    );
     state
         .metrics
         .observe_request("/v1/datasets", StatusCode::OK, started.elapsed())
@@ -201,13 +211,7 @@ pub(crate) async fn release_dataset_handler(
             "db_schema_version": manifest.db_schema_version
         });
     }
-    let payload = json_envelope(
-        Some(json!(dataset)),
-        None,
-        data,
-        None,
-        None,
-    );
+    let payload = json_envelope(Some(json!(dataset)), None, data, None, None);
     let resp = Json(payload).into_response();
     state
         .metrics
@@ -375,17 +379,22 @@ pub(crate) async fn query_validate_handler(
 ) -> impl IntoResponse {
     let started = Instant::now();
     let request_id = propagated_request_id(&headers, &state);
-    let (dataset, req) = match crate::http::genes_support::build_dataset_query(&params, state.limits.max_limit) {
-        Ok(v) => v,
-        Err(e) => {
-            let resp = api_error_response(StatusCode::BAD_REQUEST, e);
-            state
-                .metrics
-                .observe_request("/v1/query/validate", StatusCode::BAD_REQUEST, started.elapsed())
-                .await;
-            return with_request_id(resp, &request_id);
-        }
-    };
+    let (dataset, req) =
+        match crate::http::genes_support::build_dataset_query(&params, state.limits.max_limit) {
+            Ok(v) => v,
+            Err(e) => {
+                let resp = api_error_response(StatusCode::BAD_REQUEST, e);
+                state
+                    .metrics
+                    .observe_request(
+                        "/v1/query/validate",
+                        StatusCode::BAD_REQUEST,
+                        started.elapsed(),
+                    )
+                    .await;
+                return with_request_id(resp, &request_id);
+            }
+        };
     let class = classify_query(&req);
     let cost = estimate_query_cost(&req);
     let data = json!({
