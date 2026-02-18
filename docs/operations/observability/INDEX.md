@@ -27,7 +27,7 @@ Does not duplicate page-level details.
 - [Alerts](alerts.md)
 - [Runbook Map](runbook-dashboard-alert-map.md)
 - [Acceptance Gates](acceptance-gates.md)
-- [Observability Modes](modes.md)
+- [Observability Profiles](profiles.md)
 - [Trace Sampling Policy](trace-sampling-policy.md)
 - [Metric Ownership](metric-ownership.md)
 

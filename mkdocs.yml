@@ -34,6 +34,7 @@ plugins:
   - redirects:
       redirect_maps:
         operations/full-stack-locally.md: operations/full-stack-local.md
+        operations/observability/modes.md: operations/observability/profiles.md
   - git-revision-date-localized:
       type: date
       enable_creation_date: false
@@ -184,12 +185,13 @@ nav:
           - Dashboard: operations/observability/dashboard.md
           - Alerts: operations/observability/alerts.md
           - Acceptance Gates: operations/observability/acceptance-gates.md
-          - Modes: operations/observability/modes.md
+          - Profiles: operations/observability/profiles.md
           - Trace Sampling Policy: operations/observability/trace-sampling-policy.md
   - Development:
       - Index: development/INDEX.md
       - Nav Policy: _nav/INDEX.md
       - Placement Guide: _style/placement.md
+      - Stability Levels: _style/stability-levels.md
       - Writing Rules: _style/writing-rules.md
       - Style Guide: _style/style-guide.md
       - Terms Glossary: _style/terms-glossary.md

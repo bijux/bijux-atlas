@@ -1,5 +1,7 @@
 # PUBLIC API: bijux-atlas-query
 
+Stability reference: [Stability Levels](../../../docs/_style/stability-levels.md)
+
 Stable exports:
 - `CRATE_NAME`
 - Query models: `GeneFields`, `GeneFilter`, `RegionFilter`, `GeneQueryRequest`, `GeneRow`, `GeneQueryResponse`

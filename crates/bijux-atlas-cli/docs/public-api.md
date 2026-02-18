@@ -1,7 +1,9 @@
 # PUBLIC API: bijux-atlas-cli
 
-Phase 1 stability contract:
+Stability reference: [Stability Levels](../../../docs/_style/stability-levels.md)
 
-- No symbols are stable yet.
-- Crate module layout is provisional.
-- Stability guarantees begin when version reaches 0.2.0 with explicit API freeze notes.
+Current stability:
+
+- Public symbols: `experimental`
+- Crate module layout: `provisional`
+- Compatibility guarantees become `stable` only after explicit API freeze notes.
