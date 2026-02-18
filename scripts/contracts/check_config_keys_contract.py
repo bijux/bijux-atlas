@@ -31,6 +31,7 @@ allowed_env_read_paths = {
     "crates/bijux-atlas-server/src/main.rs",
     "crates/bijux-atlas-core/src/lib.rs",
     "crates/bijux-atlas-cli/src/atlas_command_actions.rs",
+    "crates/bijux-atlas-cli/src/artifact_validation.rs",
     "crates/bijux-atlas-cli/src/lib.rs",
     "crates/bijux-atlas-query/benches/query_patterns.rs",
     "crates/bijux-atlas-server/tests/redis_optional.rs",
