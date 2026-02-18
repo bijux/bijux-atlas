@@ -13,6 +13,10 @@ This file describes service-level interpretation and error-budget operations.
 - Budget burn policy:
   - fast burn (>10% budget/day): freeze risky deploys
   - sustained burn (>2% budget/day for 3 days): prioritize reliability backlog
+- Runtime burn formula (from metrics snapshot):
+  - `error_rate = 5xx_requests / total_requests`
+  - `burn_rate = error_rate / 0.005`
+  - `burn_exceeded = burn_rate > 1.0`
 
 ## Valid Degradation Modes
 - Cached-only serving when store backend is degraded.
@@ -23,6 +27,14 @@ This file describes service-level interpretation and error-budget operations.
 - Alert rules: `ops/observability/alerts/atlas-alert-rules.yaml`
 - Metrics contract: `ops/observability/contract/metrics-contract.json`
 - Metric cardinality guardrails: `docs/operations/observability/metric-cardinality-guardrails.md`
+
+## How to verify
+
+```bash
+make ops-observability-validate
+python3 ops/observability/scripts/compute_slo_burn.py
+cat artifacts/ops/observability/slo-burn.json
+```
 
 ## See also
 

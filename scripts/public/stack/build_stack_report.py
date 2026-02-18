@@ -62,6 +62,27 @@ def main() -> int:
     trace_dst = out_dir / "traces.snapshot.log"
     trace_dst.write_bytes(trace_src.read_bytes() if trace_src.exists() else b"")
 
+    dashboard_src = root / "ops/observability/grafana/atlas-observability-dashboard.json"
+    dashboard_txt = out_dir / "dashboard-screenshot.txt"
+    if dashboard_src.exists():
+        try:
+            dash = json.loads(dashboard_src.read_text())
+            lines = [
+                "# Dashboard Screenshot (Text Export)",
+                f"title: {dash.get('title', '')}",
+                "",
+                "panels:",
+            ]
+            for panel in dash.get("panels", []):
+                title = panel.get("title", "<untitled>")
+                ptype = panel.get("type", "unknown")
+                lines.append(f"- [{ptype}] {title}")
+            dashboard_txt.write_text("\n".join(lines) + "\n")
+        except Exception:
+            dashboard_txt.write_text("# dashboard export failed\n")
+    else:
+        dashboard_txt.write_text("# missing dashboard json\n")
+
     logs_dst = out_dir / "logs-excerpt.log"
     logs_candidates = sorted((root / "artifacts/ops").glob("*/logs/*.log"))
     if logs_candidates:
@@ -97,6 +118,7 @@ def main() -> int:
             "k6_summary": k6_dst.relative_to(root).as_posix(),
             "metrics_snapshot": metrics_dst.relative_to(root).as_posix(),
             "trace_snapshot": trace_dst.relative_to(root).as_posix(),
+            "dashboard_screenshot": dashboard_txt.relative_to(root).as_posix(),
             "logs_excerpt": logs_dst.relative_to(root).as_posix(),
             "rendered_manifests": rendered_dst.relative_to(root).as_posix(),
             "pass_fail_summary": "artifacts/stack-report/pass-fail-summary.json",
