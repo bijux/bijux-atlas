@@ -231,8 +231,7 @@ fn deterministic_catalog_merge_scales_with_stable_output() {
     let mut primary = Vec::new();
     let mut secondary = Vec::new();
     for i in (100..1300).rev() {
-        let dataset =
-            DatasetId::new(&i.to_string(), "homo_sapiens", "GRCh38").expect("dataset id");
+        let dataset = DatasetId::new(&i.to_string(), "homo_sapiens", "GRCh38").expect("dataset id");
         let canonical_root = format!("release={i}/species=homo_sapiens/assembly=GRCh38/derived");
         primary.push(CatalogEntry::new(
             dataset.clone(),

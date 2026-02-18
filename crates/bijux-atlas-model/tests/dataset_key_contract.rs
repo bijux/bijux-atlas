@@ -6,7 +6,10 @@ fn dataset_key_roundtrip_is_canonical() {
     let key = ds.key_string();
     let parsed = parse_dataset_key(&key).expect("parse key");
     assert_eq!(parsed, ds);
-    assert_eq!(parsed.key_string(), "release=110&species=homo_sapiens&assembly=GRCh38");
+    assert_eq!(
+        parsed.key_string(),
+        "release=110&species=homo_sapiens&assembly=GRCh38"
+    );
 }
 
 #[test]

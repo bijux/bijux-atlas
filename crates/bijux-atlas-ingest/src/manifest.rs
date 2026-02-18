@@ -4,7 +4,7 @@ use bijux_atlas_core::canonical;
 use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::{
     ArtifactChecksums, ArtifactManifest, DatasetId, ManifestInputHashes, ManifestStats, QcSeverity,
-    ValidationError, ShardingPlan,
+    ShardingPlan, ValidationError,
 };
 use serde_json::json;
 use std::collections::{BTreeMap, BTreeSet};

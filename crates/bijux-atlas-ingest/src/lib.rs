@@ -256,24 +256,25 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
     } else {
         opts.sharding_plan
     };
-    let (shard_catalog_path, shard_catalog) = if matches!(effective_sharding_plan, ShardingPlan::Contig) {
-        let (catalog_path, catalog) = write_sharded_sqlite_catalog(
-            &paths.derived_dir,
-            &opts.dataset,
-            &extracted.gene_rows,
-            &extracted.transcript_rows,
-            effective_sharding_plan,
-            opts.shard_partitions,
-            opts.max_shards,
-        )?;
-        (Some(catalog_path), Some(catalog))
-    } else if matches!(effective_sharding_plan, ShardingPlan::RegionGrid) {
-        return Err(IngestError(
-            "region_grid sharding plan is reserved for future implementation".to_string(),
-        ));
-    } else {
-        (None, None)
-    };
+    let (shard_catalog_path, shard_catalog) =
+        if matches!(effective_sharding_plan, ShardingPlan::Contig) {
+            let (catalog_path, catalog) = write_sharded_sqlite_catalog(
+                &paths.derived_dir,
+                &opts.dataset,
+                &extracted.gene_rows,
+                &extracted.transcript_rows,
+                effective_sharding_plan,
+                opts.shard_partitions,
+                opts.max_shards,
+            )?;
+            (Some(catalog_path), Some(catalog))
+        } else if matches!(effective_sharding_plan, ShardingPlan::RegionGrid) {
+            return Err(IngestError(
+                "region_grid sharding plan is reserved for future implementation".to_string(),
+            ));
+        } else {
+            (None, None)
+        };
     let normalized_debug_path = if opts.emit_normalized_debug || opts.normalized_replay_mode {
         let path = paths.derived_dir.join("normalized_features.jsonl.zst");
         write_normalized_jsonl_zst(
@@ -409,7 +410,7 @@ mod tests {
             shard_partitions: 0,
             sharding_plan: ShardingPlan::None,
             max_shards: 512,
-compute_gene_signatures: true,
+            compute_gene_signatures: true,
             compute_contig_fractions: false,
             fasta_scanning_enabled: false,
             fasta_scan_max_bases: 2_000_000_000,
@@ -840,7 +841,10 @@ compute_gene_signatures: true,
         o.sharding_plan = ShardingPlan::Contig;
         let sharded = ingest_dataset(&o).expect("sharded");
         let catalog = sharded.shard_catalog.expect("catalog");
-        assert!(catalog.shards.len() > 1, "fixture should produce multi-contig shards");
+        assert!(
+            catalog.shards.len() > 1,
+            "fixture should produce multi-contig shards"
+        );
         let mut shard_ids = std::collections::BTreeSet::new();
         for shard in &catalog.shards {
             let p = sharded

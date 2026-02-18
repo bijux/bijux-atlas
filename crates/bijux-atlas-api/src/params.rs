@@ -2,12 +2,7 @@ use crate::errors::ApiError;
 use bijux_atlas_query::RegionFilter;
 use std::collections::{BTreeMap, BTreeSet};
 
-pub const ALLOWED_INCLUDE: [&str; 4] = [
-    "coords",
-    "biotype",
-    "counts",
-    "length",
-];
+pub const ALLOWED_INCLUDE: [&str; 4] = ["coords", "biotype", "counts", "length"];
 pub const MAX_CURSOR_BYTES: usize = 4096;
 pub const MAX_FILTER_COUNT: usize = 6;
 pub const MAX_RANGE_SPAN: u64 = 5_000_000;
