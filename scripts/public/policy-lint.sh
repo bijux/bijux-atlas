@@ -95,7 +95,7 @@ PY
 ./scripts/public/no-network-unit-tests.sh
 ./scripts/public/check-cli-commands.sh
 ./scripts/public/policy-schema-drift.py
-./scripts/public/check_allow_env_schema.py
+./scripts/public/check-allow-env-schema.py
 ./scripts/contracts/check_all.sh
 ./scripts/internal/effects-lint.sh
 ./scripts/internal/naming-intent-lint.sh

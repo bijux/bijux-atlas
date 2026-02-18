@@ -2,7 +2,7 @@
 # owner: platform
 # purpose: capture deterministic environment snapshot for script runs.
 # stability: internal
-# called-by: scripts/public/report_bundle.sh
+# called-by: scripts/public/report-bundle.sh
 # Purpose: dump stable environment diagnostics for troubleshooting.
 # Inputs: optional SCRIPT_NAME/RUN_ID env vars.
 # Outputs: env snapshot under artifacts/scripts/<name>/<run-id>/env.txt.
