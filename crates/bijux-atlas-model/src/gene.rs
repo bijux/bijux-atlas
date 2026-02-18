@@ -323,6 +323,72 @@ impl SeqidNormalizationPolicy {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(deny_unknown_fields)]
+#[non_exhaustive]
+pub struct TranscriptIdPolicy {
+    pub attribute_keys: Vec<String>,
+}
+
+impl Default for TranscriptIdPolicy {
+    fn default() -> Self {
+        Self {
+            attribute_keys: vec![
+                "ID".to_string(),
+                "transcript_id".to_string(),
+                "transcriptId".to_string(),
+            ],
+        }
+    }
+}
+
+impl TranscriptIdPolicy {
+    #[must_use]
+    pub fn from_keys(attribute_keys: Vec<String>) -> Self {
+        Self { attribute_keys }
+    }
+
+    #[must_use]
+    pub fn resolve(&self, attrs: &BTreeMap<String, String>) -> Option<String> {
+        for key in &self.attribute_keys {
+            if let Some(value) = attrs.get(key) {
+                let v = value.trim();
+                if !v.is_empty() {
+                    return Some(v.to_string());
+                }
+            }
+        }
+        None
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[non_exhaustive]
+pub enum UnknownFeaturePolicy {
+    Reject,
+    IgnoreWithWarning,
+}
+
+impl Default for UnknownFeaturePolicy {
+    fn default() -> Self {
+        Self::IgnoreWithWarning
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[non_exhaustive]
+pub enum FeatureIdUniquenessPolicy {
+    Reject,
+    NamespaceByFeatureType,
+    NormalizeAsciiLowercaseReject,
+}
+
+impl Default for FeatureIdUniquenessPolicy {
+    fn default() -> Self {
+        Self::Reject
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[non_exhaustive]
 pub enum DuplicateGeneIdPolicy {
     Fail,

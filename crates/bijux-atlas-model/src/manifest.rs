@@ -427,6 +427,10 @@ pub struct IngestAnomalyReport {
     pub parent_cycles: Vec<String>,
     #[serde(default)]
     pub attribute_fallbacks: Vec<String>,
+    #[serde(default)]
+    pub unknown_feature_types: Vec<String>,
+    #[serde(default)]
+    pub missing_required_fields: Vec<String>,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]

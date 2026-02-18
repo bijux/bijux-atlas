@@ -123,6 +123,14 @@ pub fn build_and_write_manifest_and_reports(
             "attribute_fallbacks",
             extract.anomaly.attribute_fallbacks.len(),
         ),
+        (
+            "unknown_feature_types",
+            extract.anomaly.unknown_feature_types.len(),
+        ),
+        (
+            "missing_required_fields",
+            extract.anomaly.missing_required_fields.len(),
+        ),
     ];
     let warn_codes: Vec<serde_json::Value> = warn_items
         .into_iter()
@@ -155,6 +163,8 @@ pub fn build_and_write_manifest_and_reports(
             "orphan_transcripts": extract.anomaly.orphan_transcripts,
             "parent_cycles": extract.anomaly.parent_cycles,
             "attribute_fallbacks": extract.anomaly.attribute_fallbacks,
+            "unknown_feature_types": extract.anomaly.unknown_feature_types,
+            "missing_required_fields": extract.anomaly.missing_required_fields,
         },
         "severity_summary": {
             "INFO": 0,
@@ -249,6 +259,14 @@ pub fn write_qc_and_anomaly_reports_only(
             "attribute_fallbacks",
             extract.anomaly.attribute_fallbacks.len(),
         ),
+        (
+            "unknown_feature_types",
+            extract.anomaly.unknown_feature_types.len(),
+        ),
+        (
+            "missing_required_fields",
+            extract.anomaly.missing_required_fields.len(),
+        ),
     ];
     let warn_codes: Vec<serde_json::Value> = warn_items
         .into_iter()
@@ -283,6 +301,8 @@ pub fn write_qc_and_anomaly_reports_only(
             "orphan_transcripts": extract.anomaly.orphan_transcripts,
             "parent_cycles": extract.anomaly.parent_cycles,
             "attribute_fallbacks": extract.anomaly.attribute_fallbacks,
+            "unknown_feature_types": extract.anomaly.unknown_feature_types,
+            "missing_required_fields": extract.anomaly.missing_required_fields,
         },
         "severity_summary": {
             "INFO": 0,

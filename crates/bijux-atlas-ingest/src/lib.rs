@@ -9,8 +9,8 @@ mod sqlite;
 
 use bijux_atlas_model::{
     artifact_paths, BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, GeneIdentifierPolicy,
-    GeneNamePolicy, IngestAnomalyReport, SeqidNormalizationPolicy, ShardCatalog, StrictnessMode,
-    TranscriptTypePolicy,
+    FeatureIdUniquenessPolicy, GeneNamePolicy, IngestAnomalyReport, SeqidNormalizationPolicy,
+    ShardCatalog, StrictnessMode, TranscriptIdPolicy, TranscriptTypePolicy, UnknownFeaturePolicy,
 };
 use diff_index::build_and_write_release_gene_index;
 use extract::extract_gene_rows;
@@ -47,7 +47,10 @@ pub struct IngestOptions {
     pub gene_name_policy: GeneNamePolicy,
     pub biotype_policy: BiotypePolicy,
     pub transcript_type_policy: TranscriptTypePolicy,
+    pub transcript_id_policy: TranscriptIdPolicy,
     pub seqid_policy: SeqidNormalizationPolicy,
+    pub unknown_feature_policy: UnknownFeaturePolicy,
+    pub feature_id_uniqueness_policy: FeatureIdUniquenessPolicy,
     pub max_threads: usize,
     pub emit_shards: bool,
     pub shard_partitions: usize,
@@ -71,7 +74,10 @@ impl Default for IngestOptions {
             gene_name_policy: GeneNamePolicy::default(),
             biotype_policy: BiotypePolicy::default(),
             transcript_type_policy: TranscriptTypePolicy::default(),
+            transcript_id_policy: TranscriptIdPolicy::default(),
             seqid_policy: SeqidNormalizationPolicy::default(),
+            unknown_feature_policy: UnknownFeaturePolicy::IgnoreWithWarning,
+            feature_id_uniqueness_policy: FeatureIdUniquenessPolicy::Reject,
             max_threads: 1,
             fail_on_warn: false,
             allow_overlap_gene_ids_across_contigs: false,
@@ -225,6 +231,8 @@ fn has_qc_warn(anomaly: &IngestAnomalyReport) -> bool {
         || !anomaly.orphan_transcripts.is_empty()
         || !anomaly.parent_cycles.is_empty()
         || !anomaly.attribute_fallbacks.is_empty()
+        || !anomaly.unknown_feature_types.is_empty()
+        || !anomaly.missing_required_fields.is_empty()
 }
 
 pub fn read_fai_contig_lengths(
@@ -259,7 +267,10 @@ mod tests {
             gene_name_policy: GeneNamePolicy::default(),
             biotype_policy: BiotypePolicy::default(),
             transcript_type_policy: TranscriptTypePolicy::default(),
+            transcript_id_policy: TranscriptIdPolicy::default(),
             seqid_policy: SeqidNormalizationPolicy::default(),
+            unknown_feature_policy: UnknownFeaturePolicy::IgnoreWithWarning,
+            feature_id_uniqueness_policy: FeatureIdUniquenessPolicy::Reject,
             max_threads: 1,
             fail_on_warn: false,
             allow_overlap_gene_ids_across_contigs: false,
@@ -514,12 +525,59 @@ mod tests {
     }
 
     #[test]
+    fn unknown_feature_policy_can_reject() {
+        let root = tempdir().expect("tempdir");
+        let gff = root.path().join("unknown_feature.gff3");
+        std::fs::write(
+            &gff,
+            "chr1\tsrc\tgene\t1\t10\t.\t+\t.\tID=g1;Name=G1\nchr1\tsrc\trepeat_region\t1\t10\t.\t+\t.\tID=r1\n",
+        )
+        .expect("write gff3");
+        let mut o = opts(root.path(), StrictnessMode::Strict);
+        o.gff3_path = gff;
+        o.unknown_feature_policy = UnknownFeaturePolicy::Reject;
+        let err = ingest_dataset(&o).expect_err("unknown feature should fail");
+        assert!(err.to_string().contains("unknown GFF3 feature type"));
+    }
+
+    #[test]
+    fn transcript_id_policy_supports_transcript_id_attribute() {
+        let root = tempdir().expect("tempdir");
+        let gff = root.path().join("transcript_id_variant.gff3");
+        std::fs::write(
+            &gff,
+            "chr1\tsrc\tgene\t1\t50\t.\t+\t.\tID=g1;Name=G1\nchr1\tsrc\ttranscript\t1\t50\t.\t+\t.\ttranscript_id=tx1;Parent=g1\n",
+        )
+        .expect("write gff3");
+        let mut o = opts(root.path(), StrictnessMode::Strict);
+        o.gff3_path = gff;
+        let run = ingest_dataset(&o).expect("ingest with transcript_id attr");
+        assert_eq!(run.manifest.stats.transcript_count, 1);
+    }
+
+    #[test]
+    fn feature_id_uniqueness_policy_normalized_rejects_case_collisions() {
+        let root = tempdir().expect("tempdir");
+        let gff = root.path().join("id_case_collision.gff3");
+        std::fs::write(
+            &gff,
+            "chr1\tsrc\tgene\t1\t50\t.\t+\t.\tID=g1;Name=G1\nchr1\tsrc\ttranscript\t1\t50\t.\t+\t.\tID=Tx1;Parent=g1\nchr1\tsrc\ttranscript\t2\t40\t.\t+\t.\tID=tx1;Parent=g1\n",
+        )
+        .expect("write gff3");
+        let mut o = opts(root.path(), StrictnessMode::Strict);
+        o.gff3_path = gff;
+        o.feature_id_uniqueness_policy = FeatureIdUniquenessPolicy::NormalizeAsciiLowercaseReject;
+        let err = ingest_dataset(&o).expect_err("case-colliding IDs must fail");
+        assert!(err.to_string().contains("duplicate feature ID"));
+    }
+
+    #[test]
     fn tiny_fixture_matches_cross_machine_golden_hashes() {
         let root = tempdir().expect("tempdir");
         let run = ingest_dataset(&opts(root.path(), StrictnessMode::Strict)).expect("ingest");
         assert_eq!(
             run.manifest.checksums.sqlite_sha256,
-            "57dab67376a1678716c590e3633566648cd011f91268f740bbd540d7e2a8f846"
+            "67fd1f2ff170745b4d4f61d1c369d99de8865e47af7d0c2a8d93640dae67aee1"
         );
         assert_eq!(
             run.manifest.dataset_signature_sha256,

@@ -29,9 +29,10 @@ pub use diff::{
     ReleaseGeneIndexEntry,
 };
 pub use gene::{
-    BiotypePolicy, DuplicateGeneIdPolicy, GeneId, GeneNamePolicy, GeneOrderKey, GeneSummary,
-    Region, SeqId, SeqidNormalizationPolicy, Strand, TranscriptId, TranscriptOrderKey,
-    TranscriptTypePolicy, ID_MAX_LEN, NAME_MAX_LEN, SEQID_MAX_LEN,
+    BiotypePolicy, DuplicateGeneIdPolicy, FeatureIdUniquenessPolicy, GeneId, GeneNamePolicy,
+    GeneOrderKey, GeneSummary, Region, SeqId, SeqidNormalizationPolicy, Strand, TranscriptId,
+    TranscriptIdPolicy, TranscriptOrderKey, TranscriptTypePolicy, UnknownFeaturePolicy,
+    ID_MAX_LEN, NAME_MAX_LEN, SEQID_MAX_LEN,
 };
 pub use manifest::{
     artifact_paths, ArtifactChecksums, ArtifactManifest, ArtifactPaths, Catalog, CatalogEntry,

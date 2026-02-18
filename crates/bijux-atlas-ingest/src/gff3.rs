@@ -52,10 +52,19 @@ pub fn parse_gff3_records(path: &Path) -> Result<Vec<Gff3Record>, IngestError> {
             )));
         }
 
+        let seqid = cols[0].trim().to_string();
+        if seqid.is_empty() {
+            return Err(IngestError("missing required field: seqid".to_string()));
+        }
+        let feature_type = cols[2].trim().to_string();
+        if feature_type.is_empty() {
+            return Err(IngestError("missing required field: feature_type".to_string()));
+        }
+
         let (attrs, duplicate_attr_keys) = parse_attributes(cols[8])?;
         out.push(Gff3Record {
-            seqid: cols[0].trim().to_string(),
-            feature_type: cols[2].trim().to_string(),
+            seqid,
+            feature_type,
             start,
             end,
             attrs,
@@ -197,5 +206,14 @@ mod tests {
         fs::write(&gff, row).expect("write gff3");
         let err = parse_gff3_records(&gff).expect_err("token explosion must fail");
         assert!(err.0.contains("attribute token count exceeds"));
+    }
+
+    #[test]
+    fn parser_rejects_missing_required_core_fields() {
+        let tmp = tempdir().expect("tempdir");
+        let gff = tmp.path().join("x.gff3");
+        fs::write(&gff, "\tsrc\tgene\t1\t10\t.\t+\t.\tID=g1\n").expect("write gff3");
+        let err = parse_gff3_records(&gff).expect_err("missing seqid must fail");
+        assert!(err.0.contains("missing required field: seqid"));
     }
 }

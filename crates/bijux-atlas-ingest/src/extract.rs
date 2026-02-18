@@ -2,10 +2,11 @@ use crate::gff3::Gff3Record;
 use crate::{IngestError, IngestOptions};
 use bijux_atlas_core::canonical;
 use bijux_atlas_model::{
-    DuplicateGeneIdPolicy, GeneIdentifierPolicy, IngestAnomalyReport, StrictnessMode,
+    DuplicateGeneIdPolicy, FeatureIdUniquenessPolicy, GeneIdentifierPolicy, IngestAnomalyReport,
+    StrictnessMode, UnknownFeaturePolicy,
 };
 use serde::Serialize;
-use std::collections::{BTreeMap, HashMap};
+use std::collections::{BTreeMap, HashMap, HashSet};
 
 #[derive(Debug, Clone, Serialize)]
 pub struct GeneRecord {
@@ -66,6 +67,7 @@ pub fn extract_gene_rows(
     let mut anomaly = IngestAnomalyReport::default();
 
     let mut seen_feature_ids: HashMap<String, String> = HashMap::new();
+    let mut child_parent_refs: Vec<String> = Vec::new();
     let parent_cycles = detect_parent_cycles(&records);
     if !parent_cycles.is_empty() {
         anomaly.parent_cycles = parent_cycles;
@@ -83,13 +85,38 @@ pub fn extract_gene_rows(
             anomaly.overlapping_ids.push(dup.clone());
         }
 
-        if let Some(fid) = rec.attrs.get("ID") {
-            if let Some(previous_kind) = seen_feature_ids.get(fid) {
-                if previous_kind != &rec.feature_type {
-                    anomaly.overlapping_ids.push(fid.clone());
+        if let Some(fid_raw) = rec.attrs.get("ID") {
+            let mut fid = fid_raw.clone();
+            if matches!(
+                opts.feature_id_uniqueness_policy,
+                FeatureIdUniquenessPolicy::NormalizeAsciiLowercaseReject
+            ) {
+                fid = fid.to_ascii_lowercase();
+            }
+            let key = if matches!(
+                opts.feature_id_uniqueness_policy,
+                FeatureIdUniquenessPolicy::NamespaceByFeatureType
+            ) {
+                format!("{}::{fid}", rec.feature_type)
+            } else {
+                fid.clone()
+            };
+            if let Some(previous_kind) = seen_feature_ids.get(&key) {
+                anomaly.overlapping_ids.push(fid_raw.clone());
+                let reject_on_duplicate = !matches!(
+                    opts.feature_id_uniqueness_policy,
+                    FeatureIdUniquenessPolicy::NamespaceByFeatureType
+                ) && rec.feature_type != "gene";
+                if reject_on_duplicate
+                    && matches!(opts.strictness, StrictnessMode::Strict)
+                {
+                    return Err(IngestError(format!(
+                        "duplicate feature ID detected: {fid_raw} ({previous_kind}, {})",
+                        rec.feature_type
+                    )));
                 }
             } else {
-                seen_feature_ids.insert(fid.clone(), rec.feature_type.clone());
+                seen_feature_ids.insert(key, rec.feature_type.clone());
             }
         }
 
@@ -157,11 +184,17 @@ pub fn extract_gene_rows(
             }
             genes.entry(gene_id).or_default().push(record);
         } else if opts.transcript_type_policy.accepts(&rec.feature_type) {
-            let tx_id = rec
-                .attrs
-                .get("ID")
-                .cloned()
-                .unwrap_or_else(|| "<missing transcript id>".to_string());
+            let Some(tx_id) = opts.transcript_id_policy.resolve(&rec.attrs) else {
+                let missing_key = format!(
+                    "missing transcript id for {}:{}-{}",
+                    seqid, rec.start, rec.end
+                );
+                anomaly.missing_required_fields.push(missing_key.clone());
+                if matches!(opts.strictness, StrictnessMode::Strict) {
+                    return Err(IngestError(missing_key));
+                }
+                continue;
+            };
             let Some(parent_attr) = rec.attrs.get("Parent") else {
                 transcript_parents.push((tx_id.clone(), ParentErrorClass::MissingParentAttribute));
                 anomaly.missing_transcript_parents.push(tx_id);
@@ -212,20 +245,49 @@ pub fn extract_gene_rows(
             }
         } else if rec.feature_type == "exon" || rec.feature_type == "CDS" {
             let Some(parent_attr) = rec.attrs.get("Parent") else {
+                anomaly.missing_required_fields.push(format!(
+                    "{} missing Parent at {}:{}-{}",
+                    rec.feature_type, seqid, rec.start, rec.end
+                ));
+                if matches!(opts.strictness, StrictnessMode::Strict) {
+                    return Err(IngestError(format!(
+                        "{} feature missing Parent attribute",
+                        rec.feature_type
+                    )));
+                }
                 continue;
             };
             let parents = parent_attr
                 .split(',')
                 .map(str::trim)
-                .filter(|x| !x.is_empty());
+                .filter(|x| !x.is_empty())
+                .map(ToString::to_string)
+                .collect::<Vec<_>>();
+            if parents.len() > 1 && matches!(opts.strictness, StrictnessMode::Strict) {
+                return Err(IngestError(format!(
+                    "{} has multiple Parent references",
+                    rec.feature_type
+                )));
+            }
             for tx_id in parents {
+                child_parent_refs.push(tx_id.clone());
                 if rec.feature_type == "exon" {
-                    *transcript_exon_counts.entry(tx_id.to_string()).or_insert(0) += 1;
-                    *transcript_exon_span.entry(tx_id.to_string()).or_insert(0) +=
+                    *transcript_exon_counts.entry(tx_id.clone()).or_insert(0) += 1;
+                    *transcript_exon_span.entry(tx_id).or_insert(0) +=
                         rec.end.saturating_sub(rec.start) + 1;
                 } else if rec.feature_type == "CDS" {
-                    transcript_has_cds.insert(tx_id.to_string(), true);
+                    transcript_has_cds.insert(tx_id, true);
                 }
+            }
+        } else {
+            anomaly.unknown_feature_types.push(rec.feature_type.clone());
+            if matches!(opts.unknown_feature_policy, UnknownFeaturePolicy::Reject)
+                && matches!(opts.strictness, StrictnessMode::Strict)
+            {
+                return Err(IngestError(format!(
+                    "unknown GFF3 feature type: {}",
+                    rec.feature_type
+                )));
             }
         }
     }
@@ -319,6 +381,15 @@ pub fn extract_gene_rows(
             .unwrap_or(false);
     }
     let mut retained = Vec::with_capacity(transcript_rows_pending.len());
+    let transcript_ids: HashSet<String> = transcript_rows_pending
+        .iter()
+        .map(|tx| tx.transcript_id.clone())
+        .collect();
+    for parent_tx in child_parent_refs {
+        if !transcript_ids.contains(&parent_tx) {
+            anomaly.orphan_transcripts.push(parent_tx);
+        }
+    }
     for tx in transcript_rows_pending {
         if deduped.contains_key(&tx.parent_gene_id) {
             retained.push(tx);
@@ -358,6 +429,10 @@ pub fn extract_gene_rows(
     anomaly.parent_cycles = canonical::stable_sort_by_key(anomaly.parent_cycles, |x| x.clone());
     anomaly.attribute_fallbacks =
         canonical::stable_sort_by_key(anomaly.attribute_fallbacks, |x| x.clone());
+    anomaly.unknown_feature_types =
+        canonical::stable_sort_by_key(anomaly.unknown_feature_types, |x| x.clone());
+    anomaly.missing_required_fields =
+        canonical::stable_sort_by_key(anomaly.missing_required_fields, |x| x.clone());
     anomaly.missing_parents.dedup();
     anomaly.missing_transcript_parents.dedup();
     anomaly.multiple_parent_transcripts.dedup();
@@ -368,6 +443,8 @@ pub fn extract_gene_rows(
     anomaly.orphan_transcripts.dedup();
     anomaly.parent_cycles.dedup();
     anomaly.attribute_fallbacks.dedup();
+    anomaly.unknown_feature_types.dedup();
+    anomaly.missing_required_fields.dedup();
 
     let mut gene_rows: Vec<GeneRecord> = deduped.into_values().collect();
     gene_rows.sort_by(|a, b| {
