@@ -828,7 +828,7 @@ ops-full: ## Full local ops flow (OPS_MODE=fast|full, OPS_DRY_RUN=1 supported)
 	  echo "$(MAKE) ops-up && $(MAKE) ops-deploy && $(MAKE) ops-publish && $(MAKE) ops-warm && $(MAKE) ops-smoke && $(MAKE) ops-k8s-tests"; \
 	  echo "$(MAKE) ops-load-smoke && $(MAKE) ops-observability-validate"; \
 	  if [ "$${OPS_MODE:-fast}" = "full" ]; then \
-	    echo "$(MAKE) ops-load-full && $(MAKE) ops-realdata"; \
+	    echo "$(MAKE) ops-load-full && $(MAKE) ops-realdata && $(MAKE) ops-drill-store-outage && $(MAKE) ops-drill-pod-churn && $(MAKE) ops-drill-rollback-under-load"; \
 	  fi; \
 	  exit 0; \
 	fi; \
@@ -842,6 +842,9 @@ ops-full: ## Full local ops flow (OPS_MODE=fast|full, OPS_DRY_RUN=1 supported)
 	if [ "$${OPS_MODE:-fast}" = "full" ]; then \
 	  $(MAKE) ops-load-full; \
 	  $(MAKE) ops-realdata; \
+	  $(MAKE) ops-drill-store-outage; \
+	  $(MAKE) ops-drill-pod-churn; \
+	  $(MAKE) ops-drill-rollback-under-load; \
 	fi; \
 	$(MAKE) ops-observability-validate
 

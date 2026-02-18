@@ -1003,6 +1003,52 @@ async fn query_budget_caps_return_expected_status_codes() {
 }
 
 #[tokio::test]
+async fn cheap_endpoint_remains_available_while_noncheap_is_shed() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds.clone(), sqlite);
+    let tmp = tempdir().expect("tempdir");
+    let cache = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..DatasetCacheConfig::default()
+        },
+        store,
+    );
+    let api = ApiConfig {
+        shed_load_enabled: true,
+        memory_pressure_shed_enabled: true,
+        memory_pressure_rss_bytes: 1,
+        ..ApiConfig::default()
+    };
+    let app = build_router(AppState::with_config(cache, api, Default::default()));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind");
+    let addr = listener.local_addr().expect("addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (cheap_status, cheap_headers, _) = send_raw(
+        addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&limit=1",
+        &[],
+    )
+    .await;
+    assert_eq!(cheap_status, 200);
+    assert!(cheap_headers.contains("x-atlas-query-class: cheap"));
+
+    let (heavy_status, _, heavy_body) = send_raw(
+        addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&region=chr1:1-10&limit=50",
+        &[],
+    )
+    .await;
+    assert!(matches!(heavy_status, 503 | 413 | 422));
+    assert!(heavy_body.contains("\"error\""));
+}
+
+#[tokio::test]
 async fn release_metadata_endpoint_and_explain_mode_are_available() {
     let (ds, manifest, sqlite) = mk_dataset();
     let store = Arc::new(FakeStore::default());
