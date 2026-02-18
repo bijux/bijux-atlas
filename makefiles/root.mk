@@ -54,6 +54,10 @@ no-direct-scripts:
 	@./scripts/layout/check_no_direct_script_runs.sh
 	@python3 ./scripts/layout/check_make_public_scripts.py
 
+rename-lint: ## Enforce durable naming rules for docs/scripts and concept ownership
+	@python3 ./scripts/docs/check-durable-naming.py
+	@./scripts/docs/check_duplicate_topics.sh
+
 doctor:
 	@printf 'rustc: '; rustc --version
 	@printf 'cargo: '; cargo --version
@@ -162,10 +166,10 @@ policy-audit: ## Audit policy relaxations report + enforce registry/expiry/budge
 	@./scripts/public/policy-audit.py --enforce
 
 policy-enforcement-status: ## Validate policy pass/fail coverage table and generate status doc
-	@./scripts/public/policy_enforcement_status.py --enforce
+	@./scripts/public/policy-enforcement-status.py --enforce
 
 policy-allow-env-lint: ## Forbid ALLOW_* escape hatches unless declared in env schema
-	@./scripts/public/check_allow_env_schema.py
+	@./scripts/public/check-allow-env-schema.py
 
 ops-policy-audit: ## Verify ops policy configs are reflected by ops make/scripts contracts
 	@./scripts/public/ops-policy-audit.py
@@ -177,7 +181,7 @@ release-update-compat-matrix:
 	@[ -n "$$TAG" ] || { echo "usage: make release-update-compat-matrix TAG=<tag>"; exit 2; }
 	@./scripts/release/update-compat-matrix.sh "$$TAG"
 
-.PHONY: help layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-graph scripts-lint scripts-format scripts-test scripts-audit scripts-clean artifacts-index artifacts-clean isolate-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts doctor dataset-id-lint config-validate config-print config-drift fetch-real-datasets ssot-check policy-lint policy-schema-drift policy-audit policy-enforcement-status policy-allow-env-lint ops-policy-audit policy-drift-diff release-update-compat-matrix ci local local-full contracts hygiene architecture-check clean deep-clean debug bump release-dry-run release
+.PHONY: help layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-graph scripts-lint scripts-format scripts-test scripts-audit scripts-clean artifacts-index artifacts-clean isolate-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts rename-lint doctor dataset-id-lint config-validate config-print config-drift fetch-real-datasets ssot-check policy-lint policy-schema-drift policy-audit policy-enforcement-status policy-allow-env-lint ops-policy-audit policy-drift-diff release-update-compat-matrix ci local local-full contracts hygiene architecture-check clean deep-clean debug bump release-dry-run release
 
 
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)
