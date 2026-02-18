@@ -14,6 +14,8 @@ def run(cmd, env=None):
 
 
 def in_profile(suite, profile):
+    if profile == "all":
+        return True
     return profile in suite.get("run_in", [])
 
 
@@ -21,7 +23,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument(
         "--profile",
-        choices=["smoke", "full", "nightly", "pr", "load-ci", "load-nightly"],
+        choices=["smoke", "full", "all", "nightly", "pr", "load-ci", "load-nightly"],
         required=True,
     )
     ap.add_argument("--out", default="artifacts/perf/results")

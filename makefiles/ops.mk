@@ -416,9 +416,17 @@ ops-load-full: ## Run nightly/full load suites
 	@$(MAKE) ops-k6-version-check
 	@$(MAKE) ops-load-manifest-validate
 	@./ops/load/scripts/check_pinned_queries_lock.py
-	@./ops/load/scripts/run_suites_from_manifest.py --profile full --out artifacts/perf/results
+	@./ops/load/scripts/run_suites_from_manifest.py --profile all --out artifacts/perf/results
 	@./ops/load/scripts/validate_results.py artifacts/perf/results
 	@./ops/load/reports/generate.py
+
+ops-load-soak: ## Run long soak-only suite
+	@$(MAKE) -s ops-env-validate
+	@$(MAKE) ops-k6-version-check
+	@$(MAKE) ops-load-manifest-validate
+	@./ops/load/scripts/run_suite.sh soak-30m.json artifacts/perf/results
+	@./ops/load/scripts/validate_results.py artifacts/perf/results
+	@./ops/load/scripts/score_k6.py || true
 
 ops-load-under-rollout: ## Run load while rollout is in progress
 	@$(MAKE) -s ops-env-validate
