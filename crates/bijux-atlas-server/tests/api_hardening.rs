@@ -696,3 +696,5 @@ async fn sequence_endpoint_boundary_conditions_are_enforced() {
 
 #[path = "api_hardening/advanced_contracts.rs"]
 mod advanced_contracts;
+#[path = "api_hardening/sqlite_query_guarantees.rs"]
+mod sqlite_query_guarantees;
