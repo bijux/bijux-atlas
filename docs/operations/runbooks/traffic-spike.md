@@ -40,6 +40,11 @@
 2. Reduce heavy traffic sources or enforce stricter filters/range bounds.
 3. Increase cheap/medium concurrency only if headroom exists.
 
+## Alerts
+
+- `AtlasOverloadSustained`
+- `BijuxAtlasP95LatencyRegression`
+
 ## Rollback
 
 1. Revert recent overload-policy config changes.

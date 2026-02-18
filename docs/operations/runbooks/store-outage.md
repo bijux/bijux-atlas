@@ -36,6 +36,11 @@ $ curl -s http://127.0.0.1:8080/readyz
 - Enable cached-only mode.
 - Reduce heavy-query concurrency and strict limits.
 
+## Alerts
+
+- `BijuxAtlasStoreDownloadFailures`
+- `BijuxAtlasCacheThrash`
+
 ## Rollback
 
 - Restore store connectivity.

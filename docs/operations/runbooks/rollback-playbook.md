@@ -29,6 +29,10 @@ $ curl -s http://127.0.0.1:8080/readyz
 - Halt rollout progression.
 - Keep degraded mode controls enabled until stable.
 
+## Alerts
+
+- `BijuxAtlasHigh5xxRate`
+
 ## Rollback
 
 - Revert API image and catalog pointer to last known good state.

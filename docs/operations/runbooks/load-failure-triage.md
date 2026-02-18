@@ -73,6 +73,10 @@ Canonical suite names:
 - `soak-30m`
 - `redis-optional` (experiment, opt-in only)
 
+## Alerts
+
+- `BijuxAtlasP95LatencyRegression`
+
 ## Rollback
 
 - Revert recent perf-sensitive changes.

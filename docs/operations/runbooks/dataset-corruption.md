@@ -30,6 +30,10 @@ $ curl -s http://127.0.0.1:8080/debug/datasets
 - Evict corrupted cache copy.
 - Re-fetch artifact and verify manifest lock.
 
+## Alerts
+
+- `BijuxAtlasStoreDownloadFailures`
+
 ## Rollback
 
 - Serve previous known-good dataset release.

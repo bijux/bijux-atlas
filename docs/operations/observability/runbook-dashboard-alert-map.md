@@ -32,6 +32,34 @@ Reduces incident response latency by making first-hop telemetry explicit.
 | `rollback-playbook.md` | `HTTP Request Rate by Route/Status`, `SLO Burn Rate (5xx, 5m/1h)` | `BijuxAtlasHigh5xxRate` |
 | `traffic-spike.md` | `HTTP Request Rate by Route/Status`, `Load Shedding Rate` | `BijuxAtlasOverloadSustained`, `BijuxAtlasP95LatencyRegression` |
 
+## Alert Coverage Registry
+
+- `BijuxAtlasHigh5xxRate`
+- `BijuxAtlasP95LatencyRegression`
+- `BijuxAtlasStoreDownloadFailures`
+- `BijuxAtlasCacheThrash`
+- `AtlasOverloadSustained`
+
+## Dashboard Panel Coverage Registry
+
+- `Store Backend Fetch p95`
+- `HTTP Request Rate by Route/Status`
+- `HTTP p95 Latency by Route`
+- `SQLite Query p95 by Class`
+- `Store Open/Download p95`
+- `Dataset Cache Hit/Miss`
+- `Cache Hit Ratio`
+- `Shed Rate by Reason`
+- `Bulkhead Inflight by Class`
+- `Bulkhead Saturation by Class`
+- `Queue Depth and Overload`
+- `Endpoint Request/Response Size p95`
+- `Traffic Spike Drill View`
+- `Rollout/Rollback View`
+- `p99 Breakdown via Exemplars`
+- `Dataset Cache Size`
+- `SLO Burn Rate (5xx, 5m/1h)`
+
 ## Failure modes
 
 Missing mapping causes slow triage and inconsistent alert handling.

@@ -18,9 +18,13 @@ REQUIRED_SECTIONS = [
     "Commands",
     "Expected outputs",
     "Mitigations",
+    "Alerts",
     "Rollback",
     "Postmortem checklist",
 ]
+ALERT_NAMES = set(
+    json.loads((ROOT / "ops" / "observability" / "contract" / "alerts-contract.json").read_text()).get("required_alerts", [])
+)
 
 metrics = {
     m["name"] for m in json.loads((ROOT / "docs" / "contracts" / "METRICS.json").read_text())["metrics"]
@@ -59,6 +63,21 @@ for path in sorted(RUNBOOK_DIR.glob("*.md")):
         errors.append(f"{path}: missing dashboard link to operations/observability/dashboard.md")
     if not re.search(r"ops-drill-[a-z0-9-]+", text):
         errors.append(f"{path}: missing drill make target reference (ops-drill-*)")
+    alert_refs = re.findall(r"`([A-Za-z][A-Za-z0-9]+)`", text)
+    listed_alerts = sorted(set(a for a in alert_refs if a in ALERT_NAMES))
+    if not listed_alerts:
+        errors.append(f"{path}: Alerts section must list at least one known alert id")
+
+# bidirectional map contract: every alert appears in runbook map and every runbook appears with at least one alert.
+map_doc = (ROOT / "docs/operations/observability/runbook-dashboard-alert-map.md").read_text(encoding="utf-8")
+for alert in sorted(ALERT_NAMES):
+    if alert not in map_doc:
+        errors.append(f"runbook-dashboard-alert-map: missing alert `{alert}`")
+for path in sorted(RUNBOOK_DIR.glob("*.md")):
+    if path.name == "INDEX.md":
+        continue
+    if path.name not in map_doc:
+        errors.append(f"runbook-dashboard-alert-map: missing runbook row for `{path.name}`")
 
 if errors:
     print("runbook contract check failed:", file=sys.stderr)

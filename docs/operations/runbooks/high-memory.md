@@ -30,6 +30,10 @@ $ cargo test -p bijux-atlas-server --test p99-regression
 - Reduce cache budgets and open-shard caps.
 - Lower heavy concurrency and tighten response-size limits.
 
+## Alerts
+
+- `BijuxAtlasP95LatencyRegression`
+
 ## Rollback
 
 - Revert recent performance-related config change.

@@ -29,6 +29,10 @@ $ make e2e-perf
 - Optimize query planner/projection for hot requests.
 - Tune concurrency classes and statement caching.
 
+## Alerts
+
+- `BijuxAtlasP95LatencyRegression`
+
 ## Rollback
 
 - Revert optimization change with negative p99 impact.
