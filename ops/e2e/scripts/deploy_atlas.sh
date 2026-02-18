@@ -45,6 +45,30 @@ if ! ops_wait_namespace_termination "$NS" 120; then
 fi
 ops_kubectl get ns "$NS" >/dev/null 2>&1 || ops_kubectl create ns "$NS"
 
+cleanup_stale_nodeport_conflicts() {
+  local node_port
+  node_port="$(awk '/^[[:space:]]*nodePort:/ {print $2; exit}' "$VALUES" 2>/dev/null || true)"
+  if [ -z "$node_port" ] || [ "$node_port" = "null" ]; then
+    return 0
+  fi
+  while read -r ns svc ports; do
+    [ -z "$ns" ] && continue
+    [ "$ns" = "$NS" ] && continue
+    if echo "$ports" | tr ',' '\n' | grep -qx "$node_port"; then
+      if [ "$svc" = "${RELEASE}-bijux-atlas" ] && [[ "$ns" == atlas-ops-* ]]; then
+        echo "removing stale NodePort owner: ${ns}/${svc} (port ${node_port})"
+        helm -n "$ns" uninstall "$RELEASE" >/dev/null 2>&1 || true
+        kubectl -n "$ns" delete svc "$svc" --ignore-not-found >/dev/null 2>&1 || true
+      else
+        echo "nodePort ${node_port} already allocated by ${ns}/${svc}; refusing destructive cleanup" >&2
+        return 1
+      fi
+    fi
+  done < <(kubectl get svc -A -o custom-columns=NS:.metadata.namespace,NAME:.metadata.name,NODEPORTS:.spec.ports[*].nodePort --no-headers)
+}
+
+cleanup_stale_nodeport_conflicts
+
 EXTRA_SET_ARGS=()
 if ! kubectl api-resources 2>/dev/null | grep -q "^servicemonitors"; then
   EXTRA_SET_ARGS+=(--set serviceMonitor.enabled=false --set alertRules.enabled=false)

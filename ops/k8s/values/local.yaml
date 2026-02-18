@@ -15,10 +15,10 @@ cache:
   pinnedDatasets: []
 
 catalog:
-  endpoint: ""
+  endpoint: "http://minio.atlas-e2e.svc.cluster.local:9000/atlas-artifacts/catalog.json"
 
 store:
-  endpoint: "http://minio.atlas-e2e.svc.cluster.local:9000"
+  endpoint: "http://minio.atlas-e2e.svc.cluster.local:9000/atlas-artifacts"
   s3PresignedBaseUrl: ""
   credentialsSecretName: ""
 
@@ -39,4 +39,7 @@ hpa:
   enabled: false
 
 pdb:
+  enabled: false
+
+networkPolicy:
   enabled: false
