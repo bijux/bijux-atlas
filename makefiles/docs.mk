@@ -2,7 +2,7 @@ SHELL := /bin/sh
 
 DOCS_ARTIFACTS ?= $(if $(ISO_ROOT),$(ISO_ROOT)/docs,artifacts/docs)
 DOCS_VENV ?= $(DOCS_ARTIFACTS)/.venv
-DOCS_REQ ?= configs/docs/requirements.txt
+DOCS_REQ ?= configs/docs/requirements.lock.txt
 DOCS_SITE ?= $(DOCS_ARTIFACTS)/site
 
 _docs-venv:
@@ -24,7 +24,7 @@ docs: ## Build docs + link-check + spell-check + lint
 	@python3 scripts/docs/check_concept_registry.py
 	@./scripts/docs/render_diagrams.sh
 	@python3 scripts/docs/lint_doc_status.py
-	@"$(DOCS_VENV)/bin/mkdocs" build --strict --config-file mkdocs.yml --site-dir "$(DOCS_SITE)"
+	@SOURCE_DATE_EPOCH=946684800 "$(DOCS_VENV)/bin/mkdocs" build --strict --config-file mkdocs.yml --site-dir "$(DOCS_SITE)"
 	@"$(DOCS_VENV)/bin/python" scripts/docs/check_mkdocs_site_links.py "$(DOCS_SITE)"
 	@"$(DOCS_VENV)/bin/python" scripts/docs/spellcheck_docs.py docs
 	@./scripts/docs/check_doc_naming.sh
@@ -56,12 +56,17 @@ docs: ## Build docs + link-check + spell-check + lint
 	@./scripts/docs/check_crate_docs_contract.sh
 	@python3 scripts/docs/check_script_headers.py
 	@python3 scripts/docs/check_make_targets_documented.py
+	@python3 scripts/docs/check_docs_make_targets_exist.py
+	@python3 scripts/docs/check_critical_make_targets_referenced.py
+	@python3 scripts/docs/check_doc_filename_style.py
+	@python3 scripts/docs/check_docs_deterministic.py
+	@python3 scripts/docs/check_no_legacy_root_paths.py
 	@python3 scripts/docs/check_full_stack_page.py
 
 docs-serve: ## Serve docs locally
 	@if [ ! -x "$(DOCS_VENV)/bin/mkdocs" ]; then $(MAKE) _docs-venv; fi
 	@"$(DOCS_VENV)/bin/pip" install -r "$(DOCS_REQ)" >/dev/null
-	@"$(DOCS_VENV)/bin/mkdocs" serve --config-file mkdocs.yml
+	@SOURCE_DATE_EPOCH=946684800 "$(DOCS_VENV)/bin/mkdocs" serve --config-file mkdocs.yml
 
 docs-freeze: ## Generated docs must be up-to-date with SSOT contracts
 	@./scripts/contracts/generate_contract_artifacts.py
