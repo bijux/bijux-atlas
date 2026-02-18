@@ -785,7 +785,7 @@ ops-observability-validate: ## Validate observability assets/contracts end-to-en
 	./ops/observability/scripts/snapshot_traces.sh; \
 	./ops/observability/scripts/check_metric_cardinality.py; \
 	$(MAKE) ops-otel-required-check; \
-	python3 ./ops/observability/scripts/validate_logs_schema.py
+	python3 ./ops/observability/scripts/validate_logs_schema.py --namespace "$${ATLAS_E2E_NAMESPACE:-$${ATLAS_NS:-atlas-e2e}}" --release "$${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}" --strict-live
 
 ops-obs-validate: ## Compatibility alias for ops-observability-validate
 	@$(MAKE) ops-observability-validate
@@ -828,6 +828,23 @@ ops-observability-pack-lint: ## Run observability pack lint-only contract checks
 
 ops-open-grafana: ## Print local ops service URLs
 	@./ops/ui/print_urls.sh
+
+ops-local-full-stack: ## Single-command local full stack (kind + deploy + publish + smoke + k6 + observability)
+	@$(MAKE) ops-full
+
+ops-drill-runner: ## Run core drills and verify runbook contract linkage
+	@$(MAKE) ops-drill-store-outage
+	@$(MAKE) ops-drill-corruption-dataset
+	@$(MAKE) ops-drill-pod-churn
+	@$(MAKE) ops-drill-overload
+	@python3 ./scripts/docs/check_runbooks_contract.py
+
+ops-readiness-scorecard: ## Build operational readiness scorecard from latest ops run artifacts
+	@run_dir="$${OPS_RUN_DIR:-artifacts/ops/$${OPS_RUN_ID}}"; \
+	python3 ./ops/report/scorecard.py --run-dir "$$run_dir" --out "$$run_dir/readiness-scorecard.md"
+
+ops-incident-repro-kit: ## Capture incident repro kit to artifacts/incident/<run-id>/
+	@./ops/report/incident_repro.sh
 
 ops-ci: ## Nightly ops pipeline: up/deploy/warm/tests/ops/load/drills/report
 	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck

@@ -42,6 +42,7 @@ Does not define product semantics or internal crate APIs.
 - [Input Sources](input-sources.md)
 - [No Direct Path Usage](no-direct-path-usage.md)
 - [Migration Note](migration-note.md)
+- [Platform Handover](platform-handover.md)
 
 ## Failure modes
 
