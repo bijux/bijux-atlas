@@ -365,6 +365,10 @@ ops-warm-datasets: ## Warm explicit dataset ids (DATASETS=release/species/assemb
 	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/scripts/warm_datasets.sh
 
+ops-warm-top: ## Warm top N datasets discovered from /v1/datasets (TOP_N=5)
+	@$(MAKE) -s ops-env-validate
+	@./ops/e2e/scripts/warm_top.sh
+
 ops-warm-shards: ## Warm cache with multi-contig queries for shard locality
 	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/scripts/warm_shards.sh

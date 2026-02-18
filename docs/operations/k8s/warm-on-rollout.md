@@ -28,6 +28,7 @@ Warm pinned datasets during rollout so first user requests do not pay cold-cache
 - `make ops-deploy PROFILE=local`
 - `make ops-warm`
 - `make ops-warm-datasets DATASETS=release/species/assembly[,..]`
+- `make ops-warm-top TOP_N=5`
 
 ## Failure Modes
 
