@@ -102,6 +102,10 @@ fn request_validation_name_like_rejects_invalid_operator_forms() {
     q.insert("name_like".to_string(), "*BRCA".to_string());
     let err = parse_list_genes_params(&q).expect_err("invalid wildcard");
     assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+
+    q.insert("name_like".to_string(), "BR*CA".to_string());
+    let err = parse_list_genes_params(&q).expect_err("mid wildcard");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
 }
 
 #[test]
@@ -114,6 +118,35 @@ fn request_validation_contig_requires_and_matches_range() {
     q.insert("range".to_string(), "chr2:1-10".to_string());
     let err = parse_list_genes_params(&q).expect_err("contig mismatch");
     assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+}
+
+#[test]
+fn request_validation_sort_contract_is_strict() {
+    let mut q = base_query();
+    q.insert("sort".to_string(), "gene_id:asc".to_string());
+    parse_list_genes_params(&q).expect("default sort accepted");
+
+    q.insert("sort".to_string(), "region:asc".to_string());
+    parse_list_genes_params(&q).expect("region sort parsed");
+
+    q.insert("sort".to_string(), "gene_id:desc".to_string());
+    let err = parse_list_genes_params(&q).expect_err("unsupported direction");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+}
+
+#[test]
+fn request_validation_filter_parsing_is_order_independent() {
+    let mut q1 = base_query();
+    q1.insert("gene_id".to_string(), "ENSG1".to_string());
+    q1.insert("name_like".to_string(), "BRCA*".to_string());
+    q1.insert("biotype".to_string(), "protein_coding".to_string());
+
+    let mut q2 = base_query();
+    q2.insert("biotype".to_string(), "protein_coding".to_string());
+    q2.insert("name_like".to_string(), "BRCA*".to_string());
+    q2.insert("gene_id".to_string(), "ENSG1".to_string());
+
+    assert_eq!(parse_list_genes_params(&q1).ok(), parse_list_genes_params(&q2).ok());
 }
 
 #[test]

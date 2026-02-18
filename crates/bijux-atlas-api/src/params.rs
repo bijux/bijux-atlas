@@ -32,6 +32,22 @@ impl IncludeField {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum SortKey {
+    GeneIdAsc,
+    RegionAsc,
+}
+
+impl SortKey {
+    fn parse(raw: &str) -> Option<Self> {
+        match raw {
+            "gene_id:asc" => Some(Self::GeneIdAsc),
+            "region:asc" => Some(Self::RegionAsc),
+            _ => None,
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ListGenesParams {
     pub release: String,
@@ -47,6 +63,7 @@ pub struct ListGenesParams {
     pub range: Option<String>,
     pub min_transcripts: Option<u64>,
     pub max_transcripts: Option<u64>,
+    pub sort: Option<SortKey>,
     pub include: Option<Vec<IncludeField>>,
     pub pretty: bool,
 }
@@ -103,6 +120,13 @@ pub fn parse_list_genes_params_with_limit(
 
     let include = if let Some(raw_include) = query.get("include") {
         Some(parse_include(raw_include)?)
+    } else {
+        None
+    };
+    let sort = if let Some(raw_sort) = query.get("sort") {
+        let parsed = SortKey::parse(raw_sort)
+            .ok_or_else(|| ApiError::invalid_param("sort", "allowed: gene_id:asc,region:asc"))?;
+        Some(parsed)
     } else {
         None
     };
@@ -183,6 +207,7 @@ pub fn parse_list_genes_params_with_limit(
         range,
         min_transcripts,
         max_transcripts,
+        sort,
         include,
         pretty: query
             .get("pretty")
@@ -286,7 +311,7 @@ fn parse_u64_opt(
 }
 
 fn validate_known_filters(query: &BTreeMap<String, String>) -> Result<(), ApiError> {
-    const ALLOWED_PARAMS: [&str; 18] = [
+    const ALLOWED_PARAMS: [&str; 19] = [
         "release",
         "species",
         "assembly",
@@ -302,6 +327,7 @@ fn validate_known_filters(query: &BTreeMap<String, String>) -> Result<(), ApiErr
         "min_transcripts",
         "max_transcripts",
         "include",
+        "sort",
         "pretty",
         "explain",
         "fields",
@@ -318,7 +344,7 @@ fn validate_known_filters(query: &BTreeMap<String, String>) -> Result<(), ApiErr
     Err(ApiError::invalid_param(
         "filter",
         &format!(
-            "unknown filter(s): {}; allowed: gene_id,name,name_like,biotype,contig,range,min_transcripts,max_transcripts",
+            "unknown filter(s): {}; allowed: gene_id,name,name_like,biotype,contig,range,min_transcripts,max_transcripts,sort",
             unknown.join(",")
         ),
     ))
