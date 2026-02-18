@@ -1,4 +1,4 @@
-# FASTA-Derived Metrics Contract
+# Fasta-Derived Metrics Contract
 
 - Owner: `bijux-atlas-ingest`
 - Stability: `stable`
