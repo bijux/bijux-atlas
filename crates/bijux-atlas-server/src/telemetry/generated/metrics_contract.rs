@@ -11,12 +11,15 @@ pub const CONTRACT_METRIC_NAMES: &[&str] = &[
     "bijux_dataset_disk_usage_bytes",
     "bijux_dataset_hits",
     "bijux_dataset_misses",
+    "bijux_disk_io_latency_p95_ns",
     "bijux_errors_total",
+    "bijux_fs_space_pressure_events_total",
     "bijux_http_request_latency_p95_seconds",
     "bijux_http_request_size_p95_bytes",
     "bijux_http_requests_total",
     "bijux_http_response_size_p95_bytes",
     "bijux_overload_shedding_active",
+    "bijux_request_queue_depth",
     "bijux_request_stage_latency_p95_seconds",
     "bijux_runtime_policy_hash",
     "bijux_sqlite_query_latency_p95_seconds",
@@ -60,8 +63,16 @@ pub const CONTRACT_METRIC_LABELS: &[(&str, &[&str])] = &[
     ("bijux_dataset_hits", &["dataset", "subsystem", "version"]),
     ("bijux_dataset_misses", &["dataset", "subsystem", "version"]),
     (
+        "bijux_disk_io_latency_p95_ns",
+        &["dataset", "subsystem", "version"],
+    ),
+    (
         "bijux_errors_total",
         &["code", "dataset", "subsystem", "version"],
+    ),
+    (
+        "bijux_fs_space_pressure_events_total",
+        &["dataset", "subsystem", "version"],
     ),
     (
         "bijux_http_request_latency_p95_seconds",
@@ -81,6 +92,10 @@ pub const CONTRACT_METRIC_LABELS: &[(&str, &[&str])] = &[
     ),
     (
         "bijux_overload_shedding_active",
+        &["dataset", "subsystem", "version"],
+    ),
+    (
+        "bijux_request_queue_depth",
         &["dataset", "subsystem", "version"],
     ),
     (
