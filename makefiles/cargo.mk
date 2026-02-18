@@ -167,6 +167,13 @@ ci-core: fmt lint audit test coverage
 openapi-drift:
 	@./scripts/public/openapi-diff-check.sh
 
+api-contract-check:
+	@python3 ./scripts/contracts/gen_openapi.py
+	@./scripts/public/openapi-diff-check.sh
+	@python3 ./scripts/contracts/check_endpoints_contract.py
+	@python3 ./scripts/contracts/check_v1_surface.py
+	@python3 ./scripts/contracts/check_breaking_contract_change.py
+
 compat-matrix-validate:
 	@./scripts/release/validate-compat-matrix.sh
 
@@ -210,4 +217,4 @@ bench-ingest-throughput-medium:
 bench-db-size-growth:
 	@cargo bench -p bijux-atlas-ingest --features bench-ingest-throughput --bench db_size_growth
 
-.PHONY: fmt _fmt lint _lint _lint-rustfmt _lint-configs _lint-docs _lint-clippy check _check test test-all _test _test-all coverage _coverage audit _audit ci-core openapi-drift compat-matrix-validate fetch-fixtures load-test load-test-1000qps perf-nightly query-plan-gate cold-start-bench memory-profile-load run-medium-ingest ingest-sharded-medium run-medium-serve bench-sqlite-query-latency bench-ingest-throughput-medium bench-db-size-growth
+.PHONY: fmt _fmt lint _lint _lint-rustfmt _lint-configs _lint-docs _lint-clippy check _check test test-all _test _test-all coverage _coverage audit _audit ci-core openapi-drift api-contract-check compat-matrix-validate fetch-fixtures load-test load-test-1000qps perf-nightly query-plan-gate cold-start-bench memory-profile-load run-medium-ingest ingest-sharded-medium run-medium-serve bench-sqlite-query-latency bench-ingest-throughput-medium bench-db-size-growth

@@ -32,4 +32,22 @@ if openapi_paths != contract_paths:
     print("extra in contract:", sorted(contract_paths - openapi_paths), file=sys.stderr)
     sys.exit(1)
 
+openapi_param_map = {}
+for path, spec in openapi.get("paths", {}).items():
+    get = spec.get("get", {})
+    openapi_param_map[path] = {
+        f"{p.get('in','query')}:{p['name']}" for p in get.get("parameters", [])
+    }
+
+for ep in contract["endpoints"]:
+    expected = {
+        f"{p.get('in','query')}:{p['name']}" for p in ep.get("params", [])
+    }
+    actual = openapi_param_map.get(ep["path"], set())
+    if expected != actual:
+        print(f"endpoint param drift for {ep['path']}", file=sys.stderr)
+        print("missing in contract:", sorted(actual - expected), file=sys.stderr)
+        print("extra in contract:", sorted(expected - actual), file=sys.stderr)
+        sys.exit(1)
+
 print("endpoints contract check passed")
