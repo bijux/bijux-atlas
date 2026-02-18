@@ -292,6 +292,9 @@ ops-cache-status: ## Print cache status and enforce local cache budget policy
 	@./ops/datasets/scripts/cache_status.sh
 	@python3 ./ops/datasets/scripts/cache_budget_check.py
 
+ops-cache-pin-set: ## Set pinned dataset list for deploy/warm workflows (DATASETS=a/b/c[,x/y/z])
+	@./ops/datasets/scripts/pin_set.sh
+
 ops-dataset-qc: ## Enforce dataset QC thresholds for local ops gates
 	@./ops/datasets/scripts/dataset_qc.sh
 
@@ -357,6 +360,10 @@ ops-ingress: ## Deploy atlas with ingress values profile
 ops-warm: ## Run warmup workflow
 	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/scripts/warmup.sh
+
+ops-warm-datasets: ## Warm explicit dataset ids (DATASETS=release/species/assembly[,..])
+	@$(MAKE) -s ops-env-validate
+	@./ops/e2e/scripts/warm_datasets.sh
 
 ops-warm-shards: ## Warm cache with multi-contig queries for shard locality
 	@$(MAKE) -s ops-env-validate

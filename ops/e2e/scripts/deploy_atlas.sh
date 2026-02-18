@@ -49,6 +49,16 @@ EXTRA_SET_ARGS=()
 if ! kubectl api-resources 2>/dev/null | grep -q "^servicemonitors"; then
   EXTRA_SET_ARGS+=(--set serviceMonitor.enabled=false --set alertRules.enabled=false)
 fi
+if [ -n "${ATLAS_PINNED_DATASETS:-}" ]; then
+  IFS=',' read -r -a pin_arr <<<"${ATLAS_PINNED_DATASETS}"
+  i=0
+  for ds in "${pin_arr[@]}"; do
+    ds="$(echo "$ds" | xargs)"
+    [ -z "$ds" ] && continue
+    EXTRA_SET_ARGS+=(--set-string "cache.pinnedDatasets[$i]=$ds")
+    i=$((i + 1))
+  done
+fi
 
 RENDER_DIR="$(ops_artifact_dir helm-render)"
 mkdir -p "$RENDER_DIR"
