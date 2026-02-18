@@ -58,6 +58,6 @@ Expected output: transcript query plan and ordering tests pass.
 
 ## See also
 
-- [Canonical Transcript Policy Placeholder](canonical-transcript-policy-v2-placeholder.md)
+- [Science Index](../science/INDEX.md)
 - [Querying Reference](../reference/querying/INDEX.md)
 - [Ingestion Reference](../reference/ingestion/INDEX.md)

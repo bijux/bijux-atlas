@@ -13,6 +13,8 @@ errors=[]
 for p in sorted(Path('docs').rglob('*.md')):
     name=p.name
     rel=str(p)
+    if rel=='docs/contracts/README.md':
+        continue
     if name=='README.md':
         errors.append(f'forbidden docs README: {rel}')
         continue
@@ -25,6 +27,8 @@ for p in sorted(Path('docs').rglob('*.md')):
     if name=='CONCEPT_REGISTRY.md':
         continue
     if name=='DEPTH_RUBRIC.md':
+        continue
+    if name=='STYLE.md':
         continue
     if re.match(r'ADR-\d{4}-[a-z0-9-]+\.md$', name):
         continue

@@ -39,11 +39,14 @@ plugins:
 
 not_in_nav: |
   _assets/**
+  _drafts/**
   contracts/**/*.json
 
 nav:
   - Product:
       - Home: index.md
+      - Style: STYLE.md
+      - Taxonomy Map: taxonomy-map.md
       - Index: product/INDEX.md
       - What Is Atlas: product/what-is-bijux-atlas.md
       - User Stories: product/user-stories.md
@@ -73,6 +76,7 @@ nav:
       - Fixtures: reference/fixtures/medium-fixture.md
   - Contracts:
       - Contracts Overview: contracts/INDEX.md
+      - Contracts README: contracts/README.md
       - Contracts Index: contracts/contracts-index.md
       - SSOT Workflow: contracts/ssot-workflow.md
       - Contract Diff Review: contracts/contract-diff.md
@@ -112,6 +116,7 @@ nav:
       - Full Stack Local: operations/full-stack-local.md
       - Local Stack: operations/local-stack.md
       - Health Endpoint Semantics: operations/health-endpoint-semantics.md
+      - Canonical Workflows: operations/canonical-workflows.md
       - Migration Note: operations/migration-note.md
       - Production Readiness: operations/production-readiness-checklist.md
       - No Direct Path Usage: operations/no-direct-path-usage.md
@@ -184,6 +189,7 @@ nav:
       - Scripts Index: development/scripts/INDEX.md
       - Scripts Governance: development/scripts.md
       - Script Naming: development/script-naming.md
+      - Docs Depth Contract: development/docs-depth-contract.md
       - Repo Surface: development/repo-surface.md
       - Symlink Index: development/symlinks.md
       - Ops Canonical Layout: development/ops-canonical-layout.md
@@ -191,11 +197,15 @@ nav:
       - Crates Map: development/crates-map.md
       - Snapshot Test Policy: development/snapshot-test-policy.md
   - Architecture:
+      - Index: architecture/INDEX.md
       - Crate Boundary Graph: architecture/crate-boundary-dependency-graph.md
       - Crate Layout Contract: architecture/crate-layout-contract.md
       - Boundaries: architecture/boundaries.md
       - Effects: architecture/effects.md
       - Boundary Maps: architecture/boundary-maps.md
+  - Science:
+      - Index: science/INDEX.md
+      - Reference Science: reference/science/INDEX.md
   - ADRs:
       - ADR Index: adrs/INDEX.md
       - ADR 0001: adrs/ADR-0001-workspace-boundaries-and-effects.md

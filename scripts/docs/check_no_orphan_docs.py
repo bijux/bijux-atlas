@@ -23,7 +23,7 @@ for idx in docs.rglob('INDEX.md'):
         if p.exists() and docs in p.parents:
             index_refs.add(str(p.relative_to(docs)))
 
-allow_prefixes = ('_generated/',)
+allow_prefixes = ('_generated/', '_drafts/')
 errors = []
 for md in docs.rglob('*.md'):
     rel = str(md.relative_to(docs))
