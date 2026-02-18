@@ -485,24 +485,30 @@ async fn sequence_common(
         return resp;
     }
 
-    let payload = if include_stats {
-        json!({
-            "dataset": dataset,
-            "provenance": provenance,
-            "region": {"seqid": seqid, "start": start, "end": end},
-            "length": sequence.len(),
-            "sequence": sequence,
-            "meta": sequence_meta(&sequence)
-        })
+    let warnings = if sequence.len() > (state.api.response_max_bytes * 8 / 10) {
+        Some(vec![json!({
+            "code": "response_size_near_limit",
+            "message": "response payload is near configured maximum size"
+        })])
     } else {
-        json!({
-            "dataset": dataset,
-            "provenance": provenance,
-            "region": {"seqid": seqid, "start": start, "end": end},
-            "length": sequence.len(),
-            "sequence": sequence
-        })
+        None
     };
+    let mut data = json!({
+        "provenance": provenance,
+        "region": {"seqid": seqid, "start": start, "end": end},
+        "length": sequence.len(),
+        "sequence": sequence
+    });
+    if include_stats {
+        data["sequence_meta"] = sequence_meta(&sequence);
+    }
+    let payload = crate::http::handlers::json_envelope(
+        Some(json!(dataset)),
+        None,
+        data,
+        None,
+        warnings,
+    );
     let body =
         match serialize_payload_with_capacity(&payload, false, payload.to_string().len() + 64) {
             Ok(v) => v,

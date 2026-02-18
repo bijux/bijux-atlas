@@ -138,9 +138,17 @@ pub(crate) async fn gene_transcripts_handler(
     match bijux_atlas_query::query_transcripts(&conn.conn, &req) {
         Ok(resp) => {
             let provenance = dataset_provenance(&state, &dataset).await;
-            let body = Json(
-                json!({"dataset": dataset, "provenance": provenance, "gene_id": gene_id, "response": resp}),
-            )
+            let body = Json(json_envelope(
+                Some(json!(dataset)),
+                Some(json!({ "next_cursor": resp.next_cursor.clone() })),
+                json!({
+                    "provenance": provenance,
+                    "gene_id": gene_id,
+                    "rows": resp.rows
+                }),
+                resp.next_cursor.map(|c| json!({ "next_cursor": c })),
+                None,
+            ))
             .into_response();
             state
                 .metrics
@@ -275,9 +283,14 @@ pub(crate) async fn transcript_summary_handler(
     match bijux_atlas_query::query_transcript_by_id(&conn.conn, &tx_id) {
         Ok(Some(row)) => {
             let provenance = dataset_provenance(&state, &dataset).await;
-            let body =
-                Json(json!({"dataset": dataset, "provenance": provenance, "transcript": row}))
-                    .into_response();
+            let body = Json(json_envelope(
+                Some(json!(dataset)),
+                None,
+                json!({"provenance": provenance, "transcript": row}),
+                None,
+                None,
+            ))
+            .into_response();
             state
                 .metrics
                 .observe_request("/v1/transcripts/{tx_id}", StatusCode::OK, started.elapsed())

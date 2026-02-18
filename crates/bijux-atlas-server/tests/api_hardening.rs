@@ -78,6 +78,21 @@ async fn error_contract_and_etag_behaviors() {
 
     let (status, _, body) = send_raw(
         addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&fields=gene_id",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 400);
+    let json: Value = serde_json::from_str(&body).expect("error json");
+    assert_eq!(
+        json.get("error")
+            .and_then(|e| e.get("code"))
+            .and_then(Value::as_str),
+        Some("InvalidQueryParameter")
+    );
+
+    let (status, _, body) = send_raw(
+        addr,
         "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&cursor=bad.cursor",
         &[],
     )
@@ -113,6 +128,45 @@ async fn error_contract_and_etag_behaviors() {
     let (status, _, body) = send_raw(addr, "/metrics", &[]).await;
     assert_eq!(status, 200);
     assert!(body.contains("bijux_request_stage_latency_p95_seconds"));
+}
+
+#[tokio::test]
+async fn debug_echo_is_gated_and_echoes_query_when_enabled() {
+    let store = Arc::new(FakeStore::default());
+    let tmp = tempdir().expect("tempdir");
+    let cfg = DatasetCacheConfig {
+        disk_root: tmp.path().to_path_buf(),
+        ..Default::default()
+    };
+    let mgr = DatasetCacheManager::new(cfg, store);
+    let app = build_router(AppState::new(mgr.clone()));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+    let (status, _, _) = send_raw(addr, "/v1/_debug/echo?x=1", &[]).await;
+    assert_eq!(status, 404);
+
+    let state = AppState::with_config(
+        mgr,
+        ApiConfig {
+            enable_debug_datasets: true,
+            ..ApiConfig::default()
+        },
+        Default::default(),
+    );
+    let app = build_router(state);
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+    let (status, _, body) = send_raw(addr, "/v1/_debug/echo?x=1&y=2", &[]).await;
+    assert_eq!(status, 200);
+    let json: Value = serde_json::from_str(&body).expect("echo json");
+    assert_eq!(json["data"]["query"]["x"], "1");
+    assert_eq!(json["data"]["query"]["y"], "2");
 }
 
 #[tokio::test]
@@ -667,9 +721,12 @@ async fn release_metadata_endpoint_and_explain_mode_are_available() {
     .await;
     assert_eq!(status, 200);
     let json: Value = serde_json::from_str(&body).expect("release metadata json");
-    assert!(json.get("manifest_summary").is_some());
-    assert!(json.get("qc_summary").is_some());
-    assert!(json.get("bill_of_materials").is_some());
+    assert!(json.get("data").and_then(|d| d.get("manifest_summary")).is_some());
+    assert!(json.get("data").and_then(|d| d.get("qc_summary")).is_some());
+    assert!(json
+        .get("data")
+        .and_then(|d| d.get("bill_of_materials"))
+        .is_some());
 
     let (status, _, body) = send_raw(
         addr,
@@ -679,7 +736,7 @@ async fn release_metadata_endpoint_and_explain_mode_are_available() {
     .await;
     assert_eq!(status, 200);
     let json: Value = serde_json::from_str(&body).expect("genes explain json");
-    assert!(json.get("explain").is_some());
+    assert!(json.get("data").and_then(|d| d.get("explain")).is_some());
 
     let (status, _, body) = send_raw(
         addr,
@@ -704,7 +761,7 @@ async fn release_metadata_endpoint_and_explain_mode_are_available() {
     assert_eq!(status, 200);
     let json: Value = serde_json::from_str(&body).expect("gene transcripts json");
     assert_eq!(
-        json.get("response")
+        json.get("data")
             .and_then(|r| r.get("rows"))
             .and_then(Value::as_array)
             .map(std::vec::Vec::len),
@@ -720,7 +777,8 @@ async fn release_metadata_endpoint_and_explain_mode_are_available() {
     assert_eq!(status, 200);
     let json: Value = serde_json::from_str(&body).expect("transcript summary json");
     assert_eq!(
-        json.get("transcript")
+        json.get("data")
+            .and_then(|d| d.get("transcript"))
             .and_then(|t| t.get("transcript_id"))
             .and_then(Value::as_str),
         Some("tx1")
