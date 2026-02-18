@@ -45,6 +45,11 @@ async fn error_contract_and_etag_behaviors() {
             .and_then(Value::as_str),
         Some("bijux-atlas")
     );
+    assert_eq!(json.get("api_version").and_then(Value::as_str), Some("v1"));
+    assert_eq!(
+        json.get("contract_version").and_then(Value::as_str),
+        Some("v1")
+    );
     assert_eq!(
         json.get("server")
             .and_then(|s| s.get("api_contract_version"))
@@ -86,14 +91,13 @@ async fn error_contract_and_etag_behaviors() {
     .await;
     assert_eq!(status, 400);
     let json: Value = serde_json::from_str(&body).expect("unknown filter json");
-    assert!(
-        json.get("error")
-            .and_then(|e| e.get("details"))
-            .and_then(|d| d.get("value"))
-            .and_then(Value::as_str)
-            .unwrap_or("")
-            .contains("allowed")
-    );
+    assert!(json
+        .get("error")
+        .and_then(|e| e.get("details"))
+        .and_then(|d| d.get("value"))
+        .and_then(Value::as_str)
+        .unwrap_or("")
+        .contains("allowed"));
 
     let (status, _, body) = send_raw(
         addr,
@@ -785,7 +789,10 @@ async fn release_metadata_endpoint_and_explain_mode_are_available() {
     .await;
     assert_eq!(status, 200);
     let json: Value = serde_json::from_str(&body).expect("release metadata json");
-    assert!(json.get("data").and_then(|d| d.get("manifest_summary")).is_some());
+    assert!(json
+        .get("data")
+        .and_then(|d| d.get("manifest_summary"))
+        .is_some());
     assert!(json.get("data").and_then(|d| d.get("qc_summary")).is_some());
     assert!(json
         .get("data")

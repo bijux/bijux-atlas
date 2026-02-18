@@ -61,7 +61,7 @@ fn wire_response_uses_omit_vs_null_policy() {
     let encoded = serde_json::to_string(&payload).expect("json");
     assert_eq!(
         encoded,
-        "{\"data\":{\"rows\":[{\"biotype\":null,\"gene_id\":\"gene1\",\"name\":\"BRCA1\"}]},\"dataset\":{\"assembly\":\"GRCh38\",\"release\":\"110\",\"species\":\"homo_sapiens\"},\"links\":{\"next_cursor\":\"v1.cursor\"},\"page\":{\"next_cursor\":\"v1.cursor\"}}"
+        "{\"api_version\":\"v1\",\"contract_version\":\"v1\",\"data\":{\"rows\":[{\"biotype\":null,\"gene_id\":\"gene1\",\"name\":\"BRCA1\"}]},\"dataset\":{\"assembly\":\"GRCh38\",\"release\":\"110\",\"species\":\"homo_sapiens\"},\"links\":{\"next_cursor\":\"v1.cursor\"},\"page\":{\"next_cursor\":\"v1.cursor\"}}"
     );
 }
 
@@ -85,7 +85,7 @@ fn wire_response_golden_for_default_projection() {
     let encoded = serde_json::to_string(&payload).expect("json");
     assert_eq!(
         encoded,
-        "{\"data\":{\"rows\":[{\"gene_id\":\"gene1\",\"name\":\"BRCA1\"}]},\"dataset\":{\"assembly\":\"GRCh38\",\"release\":\"110\",\"species\":\"homo_sapiens\"},\"links\":null,\"page\":{\"next_cursor\":null}}"
+        "{\"api_version\":\"v1\",\"contract_version\":\"v1\",\"data\":{\"rows\":[{\"gene_id\":\"gene1\",\"name\":\"BRCA1\"}]},\"dataset\":{\"assembly\":\"GRCh38\",\"release\":\"110\",\"species\":\"homo_sapiens\"},\"links\":null,\"page\":{\"next_cursor\":null}}"
     );
 }
 
