@@ -3,9 +3,12 @@
 State machine:
 
 1. Ingest: parse/validate raw inputs and compute derived artifacts.
-2. Publish: atomically publish manifest + SQLite + checksums.
-3. Serve: API reads only published immutable artifacts.
-4. Deprecate: mark dataset as deprecated in catalog without mutating historical artifacts.
+2. Publish artifact: atomically publish manifest + SQLite + checksums.
+3. Promote: add dataset entry to `catalog.json`.
+4. Latest alias update: update `latest.alias.json` only for promoted datasets.
+5. Serve: API reads only published immutable artifacts.
+6. Rollback: remove catalog pointer to bad release; artifacts remain immutable.
+7. Deprecate: mark dataset as deprecated in catalog without mutating historical artifacts.
 
 ## What
 
@@ -25,7 +28,10 @@ Does not define unrelated implementation details.
 
 ## Contracts
 
-Normative behavior and limits are listed here.
+- Promotion is pointer-only: no artifact mutation.
+- Latest alias update is promotion-gated.
+- Rollback reverts catalog pointer, never rewrites dataset files.
+- Immutable release rule: fixes ship as new dataset identity.
 
 ## Failure modes
 
@@ -34,10 +40,10 @@ Known failure classes and rejection behavior.
 ## How to verify
 
 ```bash
-$ make docs
+$ make ops-catalog-validate
 ```
 
-Expected output: docs checks pass.
+Expected output: catalog validates and lifecycle commands pass.
 
 ## See also
 

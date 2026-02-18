@@ -1,44 +1,50 @@
 # Bijux Config Schema Versioning
 
-- Each subsystem must expose `config_schema_version` as a stable string.
-- Version increments follow:
-  - patch: typo/comment-only docs fixes
-  - minor: backward-compatible new keys
-  - major: breaking key semantics/removal
-- Runtime version endpoint must include schema version for operator visibility.
-- Config migrations must be documented before version bump.
+- Owner: `bijux-atlas-store` + `bijux-atlas-server`
 
 ## What
 
-Reference definition for this topic.
+Catalog/config schemas are explicit, versioned contracts.
+
+- `schema_version` is required in every versioned config payload.
+- Versioning policy:
+  - patch: docs-only clarification, no wire format change.
+  - minor: additive fields only, backwards compatible.
+  - major: any removal/rename/semantic break.
+- Unknown fields are rejected by default (`deny_unknown_fields` policy).
 
 ## Why
 
-Defines stable semantics and operational expectations.
+Prevents silent drift across CLI, store, and server runtimes.
 
 ## Scope
 
-Applies to the documented subsystem behavior only.
+Applies to catalog/config schemas consumed by store and server.
 
 ## Non-goals
 
-Does not define unrelated implementation details.
+Does not define release cadence or product API versioning.
 
 ## Contracts
 
-Normative behavior and limits are listed here.
+- Any schema bump requires:
+  - updated docs and compatibility note
+  - tests covering decode behavior at previous/current version
+  - changelog entry in release notes
 
 ## Failure modes
 
-Known failure classes and rejection behavior.
+- Missing `schema_version`: reject.
+- Unsupported major version: reject.
+- Unknown field in strict schema: reject.
 
 ## How to verify
 
 ```bash
-$ make docs
+$ make contracts
 ```
 
-Expected output: docs checks pass.
+Expected output: schema/version drift checks pass.
 
 ## See also
 
