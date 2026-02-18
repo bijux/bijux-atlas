@@ -65,6 +65,9 @@ doctor:
 	@echo 'policy: local-noise is allowed locally; CI stays clean'
 	@$(MAKE) -s ops-tools-check
 
+dataset-id-lint: ## Validate DatasetId/DatasetKey contract usage across ops fixtures
+	@python3 ./scripts/layout/dataset_id_lint.py
+
 config-validate: ## Validate config schemas/contracts and regenerate config key registry
 	@python3 ./scripts/public/generate-config-key-registry.py
 	@python3 ./scripts/public/config-validate.py
@@ -138,7 +141,7 @@ release-update-compat-matrix:
 	@[ -n "$$TAG" ] || { echo "usage: make release-update-compat-matrix TAG=<tag>"; exit 2; }
 	@./scripts/release/update-compat-matrix.sh "$$TAG"
 
-.PHONY: help layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-graph scripts-lint scripts-format scripts-test scripts-audit scripts-clean artifacts-index artifacts-clean isolate-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts doctor config-validate config-print config-drift fetch-real-datasets ssot-check policy-lint policy-schema-drift release-update-compat-matrix ci local local-full contracts hygiene clean deep-clean debug bump release-dry-run release
+.PHONY: help layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-graph scripts-lint scripts-format scripts-test scripts-audit scripts-clean artifacts-index artifacts-clean isolate-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts doctor dataset-id-lint config-validate config-print config-drift fetch-real-datasets ssot-check policy-lint policy-schema-drift release-update-compat-matrix ci local local-full contracts hygiene clean deep-clean debug bump release-dry-run release
 
 
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)

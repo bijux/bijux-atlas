@@ -36,6 +36,7 @@ List and maintain links to section pages in this directory.
 - [Config Versioning](config-versioning.md)
 - [Local Noise Policy](local-noise.md)
 - [Contributing](contributing.md)
+- [Dataset Identity Contract](dataset-identity.md)
 - [Add Dataset Type](add-dataset-type.md)
 - [Add Endpoint](add-endpoint.md)
 - [Add Metric or Span](add-metric-span.md)

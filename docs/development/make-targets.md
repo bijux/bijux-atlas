@@ -269,6 +269,7 @@ Generated from `make help`. Do not edit manually.
 - `bootstrap`
 - `bootstrap-tools`
 - `doctor`
+- `dataset-id-lint`
 - `scripts-index`
 - `scripts-graph`
 - `scripts-audit`

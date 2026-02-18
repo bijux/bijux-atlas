@@ -193,6 +193,7 @@ nav:
       - Makefile Surface: development/makefiles/surface.md
       - Repository Layout: development/repo-layout.md
       - Contributing: development/contributing.md
+      - Dataset Identity Contract: development/dataset-identity.md
       - Add Dataset Type: development/add-dataset-type.md
       - Add Endpoint: development/add-endpoint.md
       - Add Metric/Span: development/add-metric-span.md

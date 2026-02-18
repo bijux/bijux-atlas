@@ -25,7 +25,7 @@ REGISTRY_CI_DESC := ci-mapping
 REGISTRY_CI_TARGETS := ci-root-layout ci-script-entrypoints ci-fmt ci-clippy ci-test-nextest ci-deny ci-audit ci-license-check ci-policy-lint ci-policy-schema-drift ci-config-check ci-ssot-drift ci-crate-structure ci-crate-docs-contract ci-cli-command-surface ci-release-binaries ci-docs-build ci-latency-regression ci-store-conformance ci-openapi-drift ci-query-plan-gate ci-compatibility-matrix-validate ci-runtime-security-scan-image ci-coverage ci-workflows-make-only
 
 REGISTRY_TOOLING_DESC := tooling
-REGISTRY_TOOLING_TARGETS := bootstrap bootstrap-tools doctor scripts-index scripts-graph scripts-audit scripts-lint scripts-format scripts-test scripts-clean artifacts-index artifacts-clean isolate-clean no-direct-scripts help
+REGISTRY_TOOLING_TARGETS := bootstrap bootstrap-tools doctor dataset-id-lint scripts-index scripts-graph scripts-audit scripts-lint scripts-format scripts-test scripts-clean artifacts-index artifacts-clean isolate-clean no-direct-scripts help
 
 REGISTRY_META_DESC := meta
 REGISTRY_META_TARGETS := ci local local-full contracts hygiene path-contract-check
