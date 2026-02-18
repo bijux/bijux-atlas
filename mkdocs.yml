@@ -116,6 +116,10 @@ nav:
           - Chart Values: _generated/contracts/CHART_VALUES.md
           - Artifact Schema: _generated/contracts/ARTIFACT_SCHEMA.md
           - Policy Schema: _generated/contracts/POLICY_SCHEMA.md
+  - API:
+      - V1 Surface: api/V1_SURFACE.md
+      - Compatibility: api/COMPATIBILITY.md
+      - Deprecation: api/DEPRECATION.md
   - Operations:
       - Index: operations/INDEX.md
       - Ops Layout: operations/ops-layout.md
