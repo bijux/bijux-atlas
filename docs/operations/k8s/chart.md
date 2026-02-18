@@ -22,7 +22,7 @@ Does not duplicate every template file content.
 
 - Chart source remains under `ops/k8s/charts/bijux-atlas/`; operations workflows and tests are under `ops/`.
 - Values contract: [values.md](values.md)
-- Generated values schema: `ops/k8s/charts/bijux-atlas/values.schema.json` from `docs/contracts/CHART_VALUES.json`
+- Generated values schema: `ops/k8s/charts/bijux-atlas/values.schema.json` from [Chart Values Contract](../../contracts/chart-values.md)
 - Install verification: `ops-k8s-tests`
 - Required values keys include `values.server`, `values.store`, `values.cache`, and `values.resources`.
 
