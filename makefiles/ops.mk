@@ -21,6 +21,19 @@ ops-env-validate: ## Validate canonical ops environment contract against schema
 ops-env-print: ## Print canonical ops environment settings
 	@python3 ./scripts/layout/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)" --print --format json
 
+ops-stack-versions-sync: ## Generate ops/stack/versions.json from configs/ops/tool-versions.json SSOT
+	@python3 ./scripts/layout/generate_ops_stack_versions.py
+
+ops-k8s-contracts: ## Validate k8s values/schema/install-matrix/chart drift contracts
+	@$(MAKE) -s ops-values-validate
+	@python3 ./scripts/layout/validate_ops_contracts.py
+
+ops-contracts-check: ## Validate canonical ops manifests against ops/_schemas and contract invariants
+	@$(MAKE) -s ops-stack-versions-sync
+	@python3 ./scripts/layout/validate_ops_contracts.py
+	@python3 ./scripts/docs/generate_ops_schema_docs.py
+	@$(MAKE) -s ops-k8s-contracts
+
 ops-doctor: ## Validate and print pinned ops tool versions and canonical env
 	@./ops/run/doctor.sh
 
