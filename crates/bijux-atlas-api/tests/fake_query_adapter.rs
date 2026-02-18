@@ -57,7 +57,7 @@ fn wire_response_uses_omit_vs_null_policy() {
     let encoded = serde_json::to_string(&payload).expect("json");
     assert_eq!(
         encoded,
-        "{\"next_cursor\":\"v1.cursor\",\"rows\":[{\"biotype\":null,\"gene_id\":\"gene1\",\"name\":\"BRCA1\"}]}"
+        "{\"data\":{\"rows\":[{\"biotype\":null,\"gene_id\":\"gene1\",\"name\":\"BRCA1\"}]},\"dataset\":{\"assembly\":\"GRCh38\",\"release\":\"110\",\"species\":\"homo_sapiens\"},\"links\":{\"next_cursor\":\"v1.cursor\"},\"page\":{\"next_cursor\":\"v1.cursor\"}}"
     );
 }
 
@@ -81,7 +81,7 @@ fn wire_response_golden_for_default_projection() {
     let encoded = serde_json::to_string(&payload).expect("json");
     assert_eq!(
         encoded,
-        "{\"next_cursor\":null,\"rows\":[{\"gene_id\":\"gene1\",\"name\":\"BRCA1\"}]}"
+        "{\"data\":{\"rows\":[{\"gene_id\":\"gene1\",\"name\":\"BRCA1\"}]},\"dataset\":{\"assembly\":\"GRCh38\",\"release\":\"110\",\"species\":\"homo_sapiens\"},\"links\":null,\"page\":{\"next_cursor\":null}}"
     );
 }
 
@@ -117,7 +117,7 @@ fn include_flags_are_additive_and_keep_base_fields() {
     let mut params = base_params();
     params.include = Some(vec![IncludeField::Length]);
     let payload = list_genes_v1(&adapter, &params).expect("wire response");
-    let row = &payload["rows"][0];
+    let row = &payload["data"]["rows"][0];
     assert_eq!(row["gene_id"], "gene1");
     assert_eq!(row["name"], "BRCA1");
     assert_eq!(row["sequence_length"], 11);
@@ -156,7 +156,16 @@ fn include_does_not_change_row_order_or_cursor() {
     included.include = Some(vec![IncludeField::Coords, IncludeField::Biotype]);
     let projected = list_genes_v1(&adapter, &included).expect("include response");
 
-    assert_eq!(base["next_cursor"], projected["next_cursor"]);
-    assert_eq!(base["rows"][0]["gene_id"], projected["rows"][0]["gene_id"]);
-    assert_eq!(base["rows"][1]["gene_id"], projected["rows"][1]["gene_id"]);
+    assert_eq!(
+        base["page"]["next_cursor"],
+        projected["page"]["next_cursor"]
+    );
+    assert_eq!(
+        base["data"]["rows"][0]["gene_id"],
+        projected["data"]["rows"][0]["gene_id"]
+    );
+    assert_eq!(
+        base["data"]["rows"][1]["gene_id"],
+        projected["data"]["rows"][1]["gene_id"]
+    );
 }

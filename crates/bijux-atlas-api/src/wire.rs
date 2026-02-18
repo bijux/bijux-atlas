@@ -22,9 +22,23 @@ pub fn list_genes_v1<A: QueryAdapter>(
         .iter()
         .map(|row| shape_row(row, requested.as_ref()))
         .collect::<Vec<_>>();
+    let links = page
+        .next_cursor
+        .as_ref()
+        .map(|cursor| json!({ "next_cursor": cursor }));
     Ok(json!({
-        "rows": rows,
-        "next_cursor": page.next_cursor
+        "dataset": {
+            "release": params.release.clone(),
+            "species": params.species.clone(),
+            "assembly": params.assembly.clone()
+        },
+        "page": {
+            "next_cursor": page.next_cursor
+        },
+        "data": {
+            "rows": rows
+        },
+        "links": links
     }))
 }
 
