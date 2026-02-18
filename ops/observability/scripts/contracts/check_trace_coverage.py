@@ -6,11 +6,13 @@ from __future__ import annotations
 
 import os
 import sys
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[4]
 TRACE_EXEMPLARS = ROOT / "artifacts" / "ops" / "observability" / "traces.exemplars.log"
 TRACE_SNAPSHOT = ROOT / "artifacts" / "ops" / "observability" / "traces.snapshot.log"
+CONTRACT = ROOT / "docs" / "contracts" / "TRACE_SPANS.json"
 
 
 def main() -> int:
@@ -21,20 +23,28 @@ def main() -> int:
         print("trace coverage failed: missing trace artifacts", file=sys.stderr)
         return 1
     corpus = (TRACE_EXEMPLARS.read_text(errors="replace") + "\n" + TRACE_SNAPSHOT.read_text(errors="replace")).lower()
-    required_spans = (
-        "admission_control",
-        "dataset_resolve",
-        "cache_lookup",
-        "store_fetch",
-        "sqlite_query",
-        "serialize_response",
-    )
+    contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
+    required_spans = tuple(s["name"] for s in contract.get("spans", []))
     missing = [s for s in required_spans if s not in corpus]
     if missing:
         print("trace coverage failed: missing required spans in captured traces", file=sys.stderr)
         for span in missing:
             print(f"- {span}", file=sys.stderr)
         return 1
+    # Root span and request id signal must be present for every request class capture.
+    root = contract.get("request_root_span", {})
+    if root.get("name", "").lower() not in corpus:
+        print("trace coverage failed: missing request_root span signal", file=sys.stderr)
+        return 1
+    if "request_id" not in corpus:
+        print("trace coverage failed: missing request_id signal in traces", file=sys.stderr)
+        return 1
+    slow_query = contract.get("slow_query_event", {})
+    if slow_query.get("name", "").lower() in corpus:
+        for field in slow_query.get("required_fields", []):
+            if field.lower() not in corpus:
+                print(f"trace coverage failed: slow_query event missing field signal {field}", file=sys.stderr)
+                return 1
     endpoint_class_signals = {
         "cheap": ("/v1/version", "/metrics"),
         "medium": ("/v1/sequence/region", "/v1/transcripts/"),

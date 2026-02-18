@@ -8,14 +8,45 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[4]
-CONTRACT = ROOT / "ops/observability/contract/metrics-contract.json"
+CONTRACT = ROOT / "docs" / "contracts" / "TRACE_SPANS.json"
 TRACE_EXEMPLARS = ROOT / "artifacts/ops/observability/traces.exemplars.log"
 
 contract = json.loads(CONTRACT.read_text())
-required = contract.get("required_spans", [])
-if not required:
-    print("no required_spans in contract", file=sys.stderr)
+spans = contract.get("spans", [])
+if not spans:
+    print("no spans in TRACE_SPANS contract", file=sys.stderr)
     sys.exit(1)
+required = [s["name"] for s in spans]
+taxonomy = set(contract.get("taxonomy", []))
+if not taxonomy:
+    print("TRACE_SPANS taxonomy missing", file=sys.stderr)
+    sys.exit(1)
+root = contract.get("request_root_span", {})
+if root.get("name") != "request_root" or "request_id" not in root.get("required_attributes", []):
+    print("TRACE_SPANS request_root_span must require request_id", file=sys.stderr)
+    sys.exit(1)
+slow_query = contract.get("slow_query_event", {})
+if slow_query.get("name") != "slow_query":
+    print("TRACE_SPANS slow_query_event missing/invalid", file=sys.stderr)
+    sys.exit(1)
+for f in ("query_name", "dataset_hash", "cost_class"):
+    if f not in slow_query.get("required_fields", []):
+        print(f"TRACE_SPANS slow_query_event missing field: {f}", file=sys.stderr)
+        sys.exit(1)
+for span in spans:
+    for field in ("name", "parent_span", "taxonomy", "required_attributes", "required_events", "error_tagging_policy"):
+        if field not in span:
+            print(f"span missing field {field}: {span}", file=sys.stderr)
+            sys.exit(1)
+    if span["parent_span"] != "request_root":
+        print(f"span parent_span must be request_root: {span['name']}", file=sys.stderr)
+        sys.exit(1)
+    if span["taxonomy"] not in taxonomy:
+        print(f"span taxonomy invalid for {span['name']}: {span['taxonomy']}", file=sys.stderr)
+        sys.exit(1)
+    if not span["error_tagging_policy"]:
+        print(f"span error_tagging_policy empty for {span['name']}", file=sys.stderr)
+        sys.exit(1)
 
 corpus = "\n".join(
     p.read_text()
