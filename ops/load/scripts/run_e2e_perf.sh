@@ -31,6 +31,10 @@ fi
 # scrape metrics once for histogram/metric contract checks
 authless_metrics="$(curl -fsS "$BASE_URL/metrics" || true)"
 printf "%s\n" "$authless_metrics" > "$ART/metrics.prom"
+if [ ! -s "$ART/metrics.prom" ]; then
+  echo "runtime metrics snapshot missing: $ART/metrics.prom" >&2
+  exit 1
+fi
 
 "$ROOT/ops/load/scripts/score_k6.py"
 "$ROOT/ops/load/scripts/validate_results.py" "$ART"
