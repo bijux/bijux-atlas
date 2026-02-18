@@ -159,6 +159,7 @@ pub struct CacheMetrics {
     pub registry_invalidation_events_total: AtomicU64,
     pub policy_violations_total: AtomicU64,
     pub policy_violations_by_policy: Mutex<HashMap<String, u64>>,
+    pub shed_total_by_reason: Mutex<HashMap<String, u64>>,
 }
 
 #[derive(Default)]
@@ -167,6 +168,8 @@ struct RequestMetrics {
     latency_ns: Mutex<HashMap<String, Vec<u64>>>,
     sqlite_latency_ns: Mutex<HashMap<String, Vec<u64>>>,
     stage_latency_ns: Mutex<HashMap<String, Vec<u64>>>,
+    request_size_bytes: Mutex<HashMap<String, Vec<u64>>>,
+    response_size_bytes: Mutex<HashMap<String, Vec<u64>>>,
     heavy_latency_recent_ns: Mutex<VecDeque<u64>>,
     exemplars: Mutex<HashMap<(String, u16), (String, u128)>>,
 }
@@ -222,6 +225,20 @@ impl RequestMetrics {
         m.entry(stage.to_string())
             .or_insert_with(Vec::new)
             .push(latency.as_nanos() as u64);
+    }
+
+    pub(crate) async fn observe_request_size(&self, route: &str, bytes: usize) {
+        let mut m = self.request_size_bytes.lock().await;
+        m.entry(route.to_string())
+            .or_insert_with(Vec::new)
+            .push(bytes as u64);
+    }
+
+    pub(crate) async fn observe_response_size(&self, route: &str, bytes: usize) {
+        let mut m = self.response_size_bytes.lock().await;
+        m.entry(route.to_string())
+            .or_insert_with(Vec::new)
+            .push(bytes as u64);
     }
 
     pub(crate) async fn should_shed_heavy(&self, min_samples: usize, threshold_ms: u64) -> bool {
@@ -392,12 +409,18 @@ async fn record_policy_violation(state: &AppState, policy: &str) {
     *by.entry(policy.to_string()).or_insert(0) += 1;
 }
 
+pub(crate) async fn record_shed_reason(state: &AppState, reason: &str) {
+    let mut by = state.cache.metrics.shed_total_by_reason.lock().await;
+    *by.entry(reason.to_string()).or_insert(0) += 1;
+}
+
 async fn security_middleware(
     State(state): State<AppState>,
     req: Request<Body>,
     next: Next,
 ) -> Response {
     let uri_text = req.uri().to_string();
+    let route = req.uri().path().to_string();
     if uri_text.len() > state.api.max_uri_bytes {
         record_policy_violation(&state, "uri_bytes").await;
         let err = Json(ApiError::new(
@@ -413,6 +436,10 @@ async fn security_middleware(
         .iter()
         .map(|(k, v)| k.as_str().len() + v.as_bytes().len())
         .sum();
+    state
+        .metrics
+        .observe_request_size(&route, uri_text.len().saturating_add(header_bytes))
+        .await;
     if header_bytes > state.api.max_header_bytes {
         record_policy_violation(&state, "header_bytes").await;
         let err = Json(ApiError::new(

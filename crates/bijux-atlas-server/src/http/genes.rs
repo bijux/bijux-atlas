@@ -22,6 +22,7 @@ pub(crate) async fn genes_handler(
     let started = Instant::now();
     let request_id = super::handlers::propagated_request_id(&headers, &state);
     if !state.accepting_requests.load(Ordering::Relaxed) {
+        crate::record_shed_reason(&state, "draining").await;
         let resp = super::handlers::api_error_response(
             StatusCode::SERVICE_UNAVAILABLE,
             super::handlers::error_json(
@@ -44,27 +45,39 @@ pub(crate) async fn genes_handler(
     let overloaded_early = crate::middleware::shedding::overloaded(&state).await;
     let adaptive_rl = super::genes_support::adaptive_rl_factor(&state, overloaded_early);
 
-    if let Some(resp) =
+    if let Some(resp) = async {
         genes_admission::enforce_ip_rate_limit(&state, &headers, adaptive_rl, started, &request_id)
             .await
+    }
+    .instrument(info_span!("admission_control", route = "/v1/genes"))
+    .await
     {
+        crate::record_shed_reason(&state, "ip_rate_limited").await;
         return resp;
     }
 
-    if let Some(resp) = genes_admission::enforce_api_key_rate_limit(
-        &state,
-        &headers,
-        adaptive_rl,
-        started,
-        &request_id,
-    )
+    if let Some(resp) = async {
+        genes_admission::enforce_api_key_rate_limit(
+            &state,
+            &headers,
+            adaptive_rl,
+            started,
+            &request_id,
+        )
+        .await
+    }
+    .instrument(info_span!("admission_control", route = "/v1/genes"))
     .await
     {
+        crate::record_shed_reason(&state, "api_key_rate_limited").await;
         return resp;
     }
 
     let (dataset, mut req) =
-        match super::genes_support::build_dataset_query(&params, state.limits.max_limit) {
+        match async { super::genes_support::build_dataset_query(&params, state.limits.max_limit) }
+            .instrument(info_span!("dataset_resolve", route = "/v1/genes"))
+            .await
+        {
             Ok(v) => v,
             Err(e) => {
                 let resp = super::handlers::api_error_response(StatusCode::BAD_REQUEST, e);
@@ -159,6 +172,7 @@ pub(crate) async fn genes_handler(
     if (class == QueryClass::Heavy && state.api.shed_load_enabled && overloaded)
         || crate::middleware::shedding::should_shed_noncheap(&state, class).await
     {
+        crate::record_shed_reason(&state, "bulkhead_shed_heavy").await;
         let backoff = crate::middleware::shedding::heavy_backoff_ms(&state);
         tokio::time::sleep(Duration::from_millis(backoff)).await;
         let mut resp = super::handlers::api_error_response(
@@ -186,6 +200,7 @@ pub(crate) async fn genes_handler(
     let _queue_guard = match genes_admission::try_enter_request_queue(&state) {
         Ok(g) => g,
         Err(e) => {
+            crate::record_shed_reason(&state, "queue_depth_exceeded").await;
             let resp = super::handlers::api_error_response(StatusCode::TOO_MANY_REQUESTS, e);
             state
                 .metrics
@@ -202,6 +217,7 @@ pub(crate) async fn genes_handler(
     let _class_permit = match super::genes_support::acquire_class_permit(&state, class).await {
         Ok(v) => v,
         Err(e) => {
+            crate::record_shed_reason(&state, "class_permit_saturated").await;
             let resp = super::handlers::api_error_response(StatusCode::TOO_MANY_REQUESTS, e);
             state
                 .metrics
@@ -220,7 +236,10 @@ pub(crate) async fn genes_handler(
             .await
         {
             Ok(permit) => permit,
-            Err(resp) => return resp,
+            Err(resp) => {
+                crate::record_shed_reason(&state, "heavy_worker_saturated").await;
+                return resp;
+            }
         };
 
     let normalized = super::handlers::normalize_query(&params);
@@ -228,6 +247,10 @@ pub(crate) async fn genes_handler(
     let artifact_hash = super::handlers::dataset_artifact_hash(manifest_summary.as_ref(), &dataset);
     let etag = super::handlers::dataset_etag(&artifact_hash, "/v1/genes", &params);
     let cache_key_debug = format!("/v1/genes?{normalized}");
+    state
+        .metrics
+        .observe_request_size("/v1/genes", cache_key_debug.len())
+        .await;
     let explain_mode = super::handlers::bool_query_flag(&params, "explain");
     let mut redis_fill_guard = None;
     if state.api.enable_redis_response_cache {
@@ -739,6 +762,10 @@ pub(crate) async fn genes_handler(
                 return super::handlers::with_request_id(resp, &request_id);
             }
         };
+    state
+        .metrics
+        .observe_response_size("/v1/genes", response_bytes.len())
+        .await;
 
     if super::handlers::wants_text(&headers) {
         let text = String::from_utf8_lossy(&response_bytes).to_string();

@@ -263,6 +263,12 @@ bijux_store_error_other_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} 
     let heavy_cap = state.api.concurrency_heavy as u64;
     let heavy_avail = state.class_heavy.available_permits() as u64;
     let heavy_inflight = heavy_cap.saturating_sub(heavy_avail);
+    let cheap_cap = state.api.concurrency_cheap as u64;
+    let cheap_avail = state.class_cheap.available_permits() as u64;
+    let cheap_inflight = cheap_cap.saturating_sub(cheap_avail);
+    let medium_cap = state.api.concurrency_medium as u64;
+    let medium_avail = state.class_medium.available_permits() as u64;
+    let medium_inflight = medium_cap.saturating_sub(medium_avail);
     let shedding_active = if state.api.shed_load_enabled
         && state
             .metrics
@@ -307,6 +313,12 @@ bijux_store_error_other_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} 
     };
     body.push_str(&format!(
         "bijux_inflight_heavy_queries{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_bulkhead_inflight{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",class=\"cheap\"}} {}\n\
+atlas_bulkhead_inflight{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",class=\"medium\"}} {}\n\
+atlas_bulkhead_inflight{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",class=\"heavy\"}} {}\n\
+atlas_bulkhead_saturation{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",class=\"cheap\"}} {:.6}\n\
+atlas_bulkhead_saturation{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",class=\"medium\"}} {:.6}\n\
+atlas_bulkhead_saturation{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",class=\"heavy\"}} {:.6}\n\
 bijux_overload_shedding_active{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 atlas_overload_active{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_cheap_queries_served_while_overloaded_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
@@ -322,6 +334,42 @@ bijux_fs_space_pressure_events_total{{subsystem=\"{}\",version=\"{}\",dataset=\"
         METRIC_VERSION,
         METRIC_DATASET_ALL,
         heavy_inflight,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        cheap_inflight,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        medium_inflight,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        heavy_inflight,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        if cheap_cap == 0 {
+            0.0
+        } else {
+            cheap_inflight as f64 / cheap_cap as f64
+        },
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        if medium_cap == 0 {
+            0.0
+        } else {
+            medium_inflight as f64 / medium_cap as f64
+        },
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        if heavy_cap == 0 {
+            0.0
+        } else {
+            heavy_inflight as f64 / heavy_cap as f64
+        },
         METRIC_SUBSYSTEM,
         METRIC_VERSION,
         METRIC_DATASET_ALL,
@@ -390,6 +438,51 @@ bijux_fs_space_pressure_events_total{{subsystem=\"{}\",version=\"{}\",dataset=\"
         body.push_str(&format!(
             "atlas_policy_violations_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",policy=\"{}\"}} {}\n",
             METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, policy, count
+        ));
+    }
+    let shed_counts_map = state
+        .cache
+        .metrics
+        .shed_total_by_reason
+        .lock()
+        .await
+        .clone();
+    for reason in [
+        "queue_depth_exceeded",
+        "class_permit_saturated",
+        "bulkhead_shed_heavy",
+        "bulkhead_shed_noncheap",
+        "draining",
+        "ip_rate_limited",
+        "api_key_rate_limited",
+        "heavy_worker_saturated",
+    ] {
+        let count = *shed_counts_map.get(reason).unwrap_or(&0);
+        body.push_str(&format!(
+            "atlas_shed_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",reason=\"{}\"}} {}\n",
+            METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, reason, count
+        ));
+    }
+    let mut shed_counts = shed_counts_map.into_iter().collect::<Vec<_>>();
+    shed_counts.sort_by(|a, b| a.0.cmp(&b.0));
+    for (reason, count) in shed_counts {
+        if [
+            "queue_depth_exceeded",
+            "class_permit_saturated",
+            "bulkhead_shed_heavy",
+            "bulkhead_shed_noncheap",
+            "draining",
+            "ip_rate_limited",
+            "api_key_rate_limited",
+            "heavy_worker_saturated",
+        ]
+        .contains(&reason.as_str())
+        {
+            continue;
+        }
+        body.push_str(&format!(
+            "atlas_shed_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",reason=\"{}\"}} {}\n",
+            METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, reason, count
         ));
     }
     body.push_str(&format!(
@@ -523,6 +616,38 @@ bijux_redis_cache_tracked_keys{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}}
             METRIC_DATASET_ALL,
             query_type,
             percentile_ns(&vals, 0.95) as f64 / 1_000_000_000.0
+        ));
+    }
+    let req_sizes = state.metrics.request_size_bytes.lock().await.clone();
+    for (route, vals) in req_sizes {
+        body.push_str(&format!(
+            "bijux_http_request_size_p95_bytes{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\"}} {:.3}\n",
+            METRIC_SUBSYSTEM,
+            METRIC_VERSION,
+            METRIC_DATASET_ALL,
+            route,
+            percentile_ns(&vals, 0.95) as f64
+        ));
+    }
+    let resp_sizes = state.metrics.response_size_bytes.lock().await.clone();
+    for (route, vals) in resp_sizes {
+        body.push_str(&format!(
+            "bijux_http_response_size_p95_bytes{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\"}} {:.3}\n",
+            METRIC_SUBSYSTEM,
+            METRIC_VERSION,
+            METRIC_DATASET_ALL,
+            route,
+            percentile_ns(&vals, 0.95) as f64
+        ));
+    }
+    for backend in ["http_s3", "local_fs", "federated", "unknown"] {
+        body.push_str(&format!(
+            "bijux_store_fetch_latency_p95_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",backend=\"{}\"}} {:.6}\n",
+            METRIC_SUBSYSTEM,
+            METRIC_VERSION,
+            METRIC_DATASET_ALL,
+            backend,
+            percentile_ns(&download_lat, 0.95) as f64 / 1_000_000_000.0
         ));
     }
     let stage_lat = state.metrics.stage_latency_ns.lock().await.clone();
