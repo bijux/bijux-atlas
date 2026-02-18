@@ -8,6 +8,7 @@ use bijux_atlas_model::{
     ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
 };
 use std::sync::Arc;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::Duration;
 
 #[derive(Clone)]
@@ -15,6 +16,56 @@ struct MiniStore {
     catalog: Catalog,
     manifest: Option<ArtifactManifest>,
     sqlite: Option<Vec<u8>>,
+}
+
+#[derive(Clone)]
+struct FlakyCatalogStore {
+    catalog: Catalog,
+    calls: Arc<AtomicUsize>,
+}
+
+#[async_trait]
+impl DatasetStoreBackend for FlakyCatalogStore {
+    async fn fetch_catalog(
+        &self,
+        _if_none_match: Option<&str>,
+    ) -> Result<CatalogFetch, CacheError> {
+        let call = self.calls.fetch_add(1, Ordering::Relaxed);
+        if call == 0 {
+            return Ok(CatalogFetch::Updated {
+                etag: sha256_hex(
+                    &serde_json::to_vec(&self.catalog).map_err(|e| CacheError(e.to_string()))?,
+                ),
+                catalog: self.catalog.clone(),
+            });
+        }
+        Err(CacheError(
+            "catalog corruption simulation: invalid catalog payload".to_string(),
+        ))
+    }
+
+    async fn fetch_manifest(&self, _dataset: &DatasetId) -> Result<ArtifactManifest, CacheError> {
+        Err(CacheError("manifest not needed".to_string()))
+    }
+
+    async fn fetch_sqlite_bytes(&self, _dataset: &DatasetId) -> Result<Vec<u8>, CacheError> {
+        Err(CacheError("sqlite not needed".to_string()))
+    }
+
+    async fn fetch_fasta_bytes(&self, _dataset: &DatasetId) -> Result<Vec<u8>, CacheError> {
+        Err(CacheError("fasta not needed".to_string()))
+    }
+
+    async fn fetch_fai_bytes(&self, _dataset: &DatasetId) -> Result<Vec<u8>, CacheError> {
+        Err(CacheError("fai not needed".to_string()))
+    }
+
+    async fn fetch_release_gene_index_bytes(
+        &self,
+        _dataset: &DatasetId,
+    ) -> Result<Vec<u8>, CacheError> {
+        Err(CacheError("index not needed".to_string()))
+    }
 }
 
 impl MiniStore {
@@ -236,4 +287,42 @@ async fn cache_manager_registry_freeze_mode_skips_refresh() {
         .await
         .expect("frozen refresh is no-op");
     assert!(cache.current_catalog().await.is_none());
+}
+
+#[tokio::test]
+async fn catalog_corruption_keeps_last_good_catalog_as_fallback() {
+    let dataset = ds("110", "homo_sapiens", "GRCh38");
+    let catalog = Catalog::new(vec![CatalogEntry::new(
+        dataset.clone(),
+        "trusted/manifest.json".to_string(),
+        "trusted/gene_summary.sqlite".to_string(),
+    )]);
+    let store = Arc::new(FlakyCatalogStore {
+        catalog: catalog.clone(),
+        calls: Arc::new(AtomicUsize::new(0)),
+    });
+    let cfg = DatasetCacheConfig {
+        registry_ttl: Duration::from_millis(0),
+        ..DatasetCacheConfig::default()
+    };
+    let cache = DatasetCacheManager::new(cfg, store);
+
+    cache.refresh_catalog().await.expect("initial catalog refresh");
+    let first = cache.current_catalog().await.expect("catalog after first refresh");
+    assert_eq!(first.datasets, catalog.datasets);
+
+    let err = cache
+        .refresh_catalog()
+        .await
+        .expect_err("second refresh should simulate corruption");
+    assert!(err.to_string().contains("catalog corruption simulation"));
+
+    let fallback = cache
+        .current_catalog()
+        .await
+        .expect("fallback catalog should remain available");
+    assert_eq!(
+        fallback.datasets, catalog.datasets,
+        "cache manager must keep last-good catalog on refresh failure"
+    );
 }
