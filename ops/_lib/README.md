@@ -9,6 +9,9 @@ Stable contracts:
 - `retry.sh`: bounded retry wrappers.
 - `timeout.sh`: bounded timeout wrappers.
 - `trap_bundle.sh`: install failure-bundle traps on ERR.
+- `errors.sh`: SSOT-mapped ops exit codes.
+- `log.sh`: structured JSONL logging helpers.
+- `fmt.sh`: deterministic JSON/YAML formatting helpers.
 - `kubectl.sh`: kubectl wrapper with retry/timeout and failure bundle dumps.
 - `helm.sh`: helm wrapper with retry and failure-debug bundle capture.
 - `k8s-test-common.sh`: helpers for k8s e2e test assertions.

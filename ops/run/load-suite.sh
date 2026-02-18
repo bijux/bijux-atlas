@@ -4,7 +4,7 @@ ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
 cd "$ROOT"
 . "$ROOT/ops/_lib/common.sh"
 ops_env_load
-ops_require_run_context
+ops_entrypoint_start "ops-load-suite"
 SUITE="${SUITE:-mixed-80-20}"
 OUT="${OUT:-artifacts/perf/results}"
 if [ "$SUITE" = "mixed-80-20" ]; then

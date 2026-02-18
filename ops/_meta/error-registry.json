@@ -1,0 +1,14 @@
+{
+  "schema_version": "v1",
+  "codes": [
+    {"code": 10, "name": "OPS_ERR_CONFIG", "description": "Missing or invalid config/env contract"},
+    {"code": 11, "name": "OPS_ERR_CONTEXT", "description": "Cluster context/profile guard failed"},
+    {"code": 12, "name": "OPS_ERR_VERSION", "description": "Tool version mismatch with pinned manifest"},
+    {"code": 13, "name": "OPS_ERR_PREREQ", "description": "Required tool is missing"},
+    {"code": 14, "name": "OPS_ERR_TIMEOUT", "description": "Timeout exceeded for bounded operation"},
+    {"code": 15, "name": "OPS_ERR_VALIDATION", "description": "Contract or manifest validation failed"},
+    {"code": 16, "name": "OPS_ERR_ARTIFACT", "description": "Artifact path or write policy violation"},
+    {"code": 17, "name": "OPS_ERR_DOCS", "description": "Docs entrypoint policy violation"},
+    {"code": 99, "name": "OPS_ERR_INTERNAL", "description": "Unexpected internal error"}
+  ]
+}
