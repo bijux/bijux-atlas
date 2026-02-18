@@ -20,7 +20,7 @@ Profiles express deployment context without temporal or install-step wording.
 - Teardown target: `make ops-obs-down`.
 - Validation target: `make ops-observability-validate`.
 
-## Failure Modes
+## Failure modes
 
 - `cluster` profile fails fast if required CRDs are unavailable.
 - `airgapped` profile fails when required local images/assets are missing.

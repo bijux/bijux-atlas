@@ -1,3 +1,5 @@
-# Pointer
+# Grafana Dashboard Source (Stub)
 
-Canonical page: `docs/operations/observability/dashboard.md`
+- Owner: `bijux-atlas-operations`
+
+Canonical dashboard documentation: `docs/operations/observability/dashboard.md`.

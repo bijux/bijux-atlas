@@ -3,6 +3,18 @@
 Canonical targets are defined in `docs/product/slo-targets.md`.
 This file describes service-level interpretation and error-budget operations.
 
+## What
+
+Defines observability SLO interpretation and burn policy for operations.
+
+## Why
+
+Provides a stable decision contract for reliability gates and incident response.
+
+## Contracts
+
+SLO targets and burn math are contractually evaluated from runtime metrics.
+
 ## Service Objectives
 - `v1/genes` p95 latency: <= 800 ms (steady read load)
 - `v1/genes/count` p95 latency: <= 300 ms
@@ -35,6 +47,10 @@ make ops-observability-validate
 python3 ops/observability/scripts/compute_slo_burn.py
 cat artifacts/ops/observability/slo-burn.json
 ```
+
+## Failure modes
+
+Missing or inconsistent metrics produce invalid burn decisions and incorrect gating.
 
 ## See also
 

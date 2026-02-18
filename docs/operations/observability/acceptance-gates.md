@@ -29,7 +29,7 @@ Prevents deployments with missing telemetry coverage or invalid alerting assets.
   - store outage: `ops-drill-store-outage`
   - memory growth: `ops-drill-memory-growth`
 
-## Failure Modes
+## Failure modes
 
 Missing metrics, stale dashboards, invalid alert expressions, or schema-drifted logs.
 

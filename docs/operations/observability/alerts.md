@@ -24,10 +24,10 @@ Does not replace incident runbooks.
 - Alerts must map to runbook drill procedures.
 - Alert rules carry version labels and contact pointers in `ops/observability/alerts/atlas-alert-rules.yaml`.
 
-## Drill steps
+## Run drills
 
-- Trigger synthetic failure path.
-- Verify alert fires and includes required labels.
+- Trigger a synthetic failure path.
+- Verify alert firing and required labels.
 - Execute linked runbook mitigation sequence.
 
 ## Failure modes

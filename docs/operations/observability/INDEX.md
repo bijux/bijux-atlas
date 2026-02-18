@@ -20,6 +20,7 @@ Does not duplicate page-level details.
 
 ## Contracts
 
+- [Compatibility Promise](compatibility.md)
 - [SLO](slo.md)
 - [Tracing](tracing.md)
 - [Metric Cardinality Guardrails](metric-cardinality-guardrails.md)
@@ -30,6 +31,7 @@ Does not duplicate page-level details.
 - [Observability Profiles](profiles.md)
 - [Trace Sampling Policy](trace-sampling-policy.md)
 - [Metric Ownership](metric-ownership.md)
+- [Generated Surface](../../_generated/observability-surface.md)
 
 ## Failure modes
 

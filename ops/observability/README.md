@@ -1,11 +1,11 @@
-# Ops Observability
+# Ops Observability (Stub)
 
-Contract and drill pack for Atlas observability.
+- Owner: `bijux-atlas-operations`
 
-- Inputs: dashboard JSON, alert rules, metrics/tracing/log contracts, validation scripts.
-- Outputs: validated observability assets and snapshots under `artifacts/ops/observability/`.
-- Invariants: contract files are SSOT, dashboards/alerts are linted, traces/metrics snapshots are schema-checked.
-- Gates: run `make ops-observability-validate` and `make ops-observability-pack-tests`.
+Canonical documentation lives in `docs/operations/observability/INDEX.md`.
 
-Use make targets only; avoid direct script invocations in runbooks/docs.
-Canonical ops entrypoint remains `ops/README.md`.
+Local source-of-truth assets remain under this directory (`alerts/`, `contract/`, `grafana/`, `scripts/`, `tests/`).
+Use make targets for operations:
+
+- `make ops-observability-validate`
+- `make ops-observability-pack-tests`
