@@ -12,7 +12,7 @@ use bijux_atlas_ingest::{diff_normalized_ids, replay_normalized_counts};
 use bijux_atlas_ingest::{ingest_dataset, IngestOptions};
 use bijux_atlas_model::{
     BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, GeneIdentifierPolicy, GeneNamePolicy,
-    SeqidNormalizationPolicy, StrictnessMode, TranscriptTypePolicy,
+    SeqidNormalizationPolicy, ShardingPlan, StrictnessMode, TranscriptTypePolicy,
 };
 use bijux_atlas_query::{
     classify_query, explain_query_plan, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits,
@@ -170,6 +170,8 @@ enum AtlasCommand {
         emit_shards: bool,
         #[arg(long, default_value_t = 0)]
         shard_partitions: usize,
+        #[arg(long, value_enum)]
+        sharding_plan: Option<ShardingPlanCli>,
         #[arg(long, default_value_t = false)]
         emit_normalized_debug: bool,
         #[arg(long, default_value_t = false)]
@@ -283,6 +285,13 @@ enum GeneIdentifierPolicyCli {
     Ensembl,
 }
 
+#[derive(Clone, Copy, Debug, ValueEnum)]
+enum ShardingPlanCli {
+    None,
+    Contig,
+    RegionGrid,
+}
+
 struct IngestCliArgs {
     gff3: PathBuf,
     fasta: PathBuf,
@@ -306,6 +315,7 @@ struct IngestCliArgs {
     fasta_scan_max_bases: u64,
     emit_shards: bool,
     shard_partitions: usize,
+    sharding_plan: Option<ShardingPlanCli>,
     emit_normalized_debug: bool,
     normalized_replay: bool,
     prod_mode: bool,
@@ -582,6 +592,7 @@ fn run_atlas_command(
             fasta_scan_max_bases,
             emit_shards,
             shard_partitions,
+            sharding_plan,
             emit_normalized_debug,
             normalized_replay,
             prod_mode,
@@ -609,6 +620,7 @@ fn run_atlas_command(
                 fasta_scan_max_bases,
                 emit_shards,
                 shard_partitions,
+                sharding_plan,
                 emit_normalized_debug,
                 normalized_replay,
                 prod_mode,
