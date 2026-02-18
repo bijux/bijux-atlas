@@ -21,7 +21,7 @@ mod policy;
 
 pub use dataset::{
     normalize_assembly, normalize_release, normalize_species, parse_assembly, parse_release,
-    parse_species, parse_species_normalized, Assembly, DatasetId, DatasetSelector, Release,
+    parse_dataset_key, parse_species, parse_species_normalized, Assembly, DatasetId, DatasetSelector, Release,
     Species, ValidationError, ASSEMBLY_MAX_LEN, RELEASE_MAX_LEN, SPECIES_MAX_LEN,
 };
 pub use diff::{
@@ -36,7 +36,7 @@ pub use gene::{
 pub use manifest::{
     artifact_paths, ArtifactChecksums, ArtifactManifest, ArtifactPaths, Catalog, CatalogEntry,
     IngestAnomalyReport, ManifestStats, OptionalFieldPolicy, QcSeverity, ShardCatalog, ShardEntry,
-    LATEST_ALIAS_POLICY, NO_IMPLICIT_DEFAULT_DATASET_POLICY,
+    LATEST_ALIAS_POLICY, ManifestInputHashes, NO_IMPLICIT_DEFAULT_DATASET_POLICY,
 };
 pub use policy::{GeneIdentifierPolicy, StrictnessMode};
 

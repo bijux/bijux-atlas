@@ -97,6 +97,14 @@ pub struct IngestResult {
 }
 
 pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError> {
+    if opts.dataset.release.as_str() == "0"
+        && opts.dataset.species.as_str() == "unknown"
+        && opts.dataset.assembly.as_str() == "unknown"
+    {
+        return Err(IngestError(
+            "dataset identity is required; implicit default dataset is forbidden".to_string(),
+        ));
+    }
     let _effective_threads = extract::parallelism_policy(opts.max_threads)?;
 
     let contig_lengths = fai::read_fai_contig_lengths(&opts.fai_path)?;
@@ -158,6 +166,7 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
 
     write_sqlite(
         &paths.sqlite,
+        &opts.dataset,
         &extracted.gene_rows,
         &extracted.transcript_rows,
     )?;

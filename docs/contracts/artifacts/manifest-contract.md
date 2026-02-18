@@ -5,12 +5,17 @@
 Manifest is strict JSON (`serde(deny_unknown_fields)`) with:
 
 - Dataset identity (`release`, `species`, `assembly`)
+- `artifact_version` (artifact schema stream, not release number)
+- `schema_version` + `db_schema_version` (both required)
 - Input checksums: GFF3, FASTA, FAI
+- `input_hashes`: `gff3_sha256`, `fasta_sha256`, `fai_sha256`, `policy_sha256`
 - Derived checksum: SQLite
 - Basic stats: gene/transcript/contig counts
 - Versions: manifest version + DB schema version
 - Dataset signature hash: `dataset_signature_sha256` (Merkle-style over table content)
 - Schema evolution note: `schema_evolution_note`
+- `toolchain_hash` (rust toolchain + lockfile digest)
+- `created_at` allowed for metadata; excluded from determinism signature
 - Derived column lineage map: `derived_column_origins`
 
 Unknown fields are rejected.

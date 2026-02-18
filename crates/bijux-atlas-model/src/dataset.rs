@@ -28,6 +28,10 @@ pub fn parse_assembly(input: &str) -> Result<Assembly, ValidationError> {
     Assembly::parse(input)
 }
 
+pub fn parse_dataset_key(input: &str) -> Result<DatasetId, ValidationError> {
+    DatasetId::parse_key(input)
+}
+
 pub fn parse_species_normalized(input: &str) -> Result<Species, ValidationError> {
     let normalized = input.trim().to_ascii_lowercase().replace('-', "_");
     Species::parse(&normalized)
@@ -205,6 +209,67 @@ impl DatasetId {
             self.species.as_str(),
             self.assembly.as_str()
         )
+    }
+
+    pub fn from_canonical_string(input: &str) -> Result<Self, ValidationError> {
+        let trimmed = input.trim();
+        let mut parts = trimmed.split('/');
+        let release = parts
+            .next()
+            .ok_or_else(|| ValidationError("dataset canonical form missing release".to_string()))?;
+        let species = parts
+            .next()
+            .ok_or_else(|| ValidationError("dataset canonical form missing species".to_string()))?;
+        let assembly = parts
+            .next()
+            .ok_or_else(|| ValidationError("dataset canonical form missing assembly".to_string()))?;
+        if parts.next().is_some() {
+            return Err(ValidationError(
+                "dataset canonical form must be release/species/assembly".to_string(),
+            ));
+        }
+        Self::new(release, species, assembly)
+    }
+
+    #[must_use]
+    pub fn key_string(&self) -> String {
+        format!(
+            "release={}&species={}&assembly={}",
+            self.release.as_str(),
+            self.species.as_str(),
+            self.assembly.as_str()
+        )
+    }
+
+    pub fn parse_key(input: &str) -> Result<Self, ValidationError> {
+        let trimmed = input.trim();
+        let mut release: Option<&str> = None;
+        let mut species: Option<&str> = None;
+        let mut assembly: Option<&str> = None;
+        for part in trimmed.split('&') {
+            let (k, v) = part.split_once('=').ok_or_else(|| {
+                ValidationError(
+                    "dataset key must use release=<r>&species=<s>&assembly=<a>".to_string(),
+                )
+            })?;
+            match k {
+                "release" => release = Some(v),
+                "species" => species = Some(v),
+                "assembly" => assembly = Some(v),
+                other => {
+                    return Err(ValidationError(format!(
+                        "unknown dataset key segment: {other}"
+                    )))
+                }
+            }
+        }
+        let release =
+            release.ok_or_else(|| ValidationError("dataset key missing release".to_string()))?;
+        let species =
+            species.ok_or_else(|| ValidationError("dataset key missing species".to_string()))?;
+        let assembly =
+            assembly.ok_or_else(|| ValidationError("dataset key missing assembly".to_string()))?;
+        Self::new(release, species, assembly)
     }
 }
 

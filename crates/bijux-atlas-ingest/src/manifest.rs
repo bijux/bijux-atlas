@@ -3,7 +3,8 @@ use crate::IngestError;
 use bijux_atlas_core::canonical;
 use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::{
-    ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats, QcSeverity, ValidationError,
+    ArtifactChecksums, ArtifactManifest, DatasetId, ManifestInputHashes, ManifestStats, QcSeverity,
+    ValidationError,
 };
 use serde_json::json;
 use std::collections::BTreeSet;
@@ -66,10 +67,20 @@ pub fn build_and_write_manifest_and_reports(
         ),
     );
     manifest.dataset_signature_sha256 = dataset_signature_merkle(extract)?;
+    let policy_hash = sha256_hex(
+        &fs::read(workspace_file("configs/policy/policy.json")).unwrap_or_default(),
+    );
+    manifest.input_hashes = ManifestInputHashes::new(
+        manifest.checksums.gff3_sha256.clone(),
+        manifest.checksums.fasta_sha256.clone(),
+        manifest.checksums.fai_sha256.clone(),
+        policy_hash,
+    );
     manifest.ingest_toolchain = option_env!("RUSTUP_TOOLCHAIN")
         .unwrap_or("unknown")
         .to_string();
     manifest.ingest_build_hash = option_env!("BIJUX_BUILD_HASH").unwrap_or("dev").to_string();
+    manifest.toolchain_hash = compute_toolchain_hash();
 
     manifest
         .validate_strict()
@@ -167,6 +178,29 @@ pub fn build_and_write_manifest_and_reports(
         manifest,
         qc_report_path,
     })
+}
+
+fn workspace_file(rel: &str) -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|p| p.parent())
+        .unwrap_or_else(|| Path::new("."))
+        .join(rel)
+}
+
+fn compute_toolchain_hash() -> String {
+    let mut bytes = Vec::new();
+    for rel in ["rust-toolchain.toml", "Cargo.lock"] {
+        let p = workspace_file(rel);
+        if let Ok(b) = fs::read(p) {
+            bytes.extend_from_slice(&b);
+        }
+    }
+    if bytes.is_empty() {
+        "unknown".to_string()
+    } else {
+        sha256_hex(&bytes)
+    }
 }
 
 pub fn write_qc_and_anomaly_reports_only(

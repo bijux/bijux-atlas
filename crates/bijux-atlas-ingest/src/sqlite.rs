@@ -65,6 +65,7 @@ fn detect_schema_version(conn: &Connection) -> Result<i64, IngestError> {
 
 pub fn write_sqlite(
     path: &Path,
+    dataset: &DatasetId,
     genes: &[GeneRecord],
     transcripts: &[TranscriptRecord],
 ) -> Result<(), IngestError> {
@@ -226,6 +227,21 @@ pub fn write_sqlite(
         )
         .map_err(|e| IngestError(e.to_string()))?;
         tx.execute(
+            "INSERT INTO atlas_meta (k, v) VALUES ('dataset_release', ?1)",
+            params![dataset.release.as_str()],
+        )
+        .map_err(|e| IngestError(e.to_string()))?;
+        tx.execute(
+            "INSERT INTO atlas_meta (k, v) VALUES ('dataset_species', ?1)",
+            params![dataset.species.as_str()],
+        )
+        .map_err(|e| IngestError(e.to_string()))?;
+        tx.execute(
+            "INSERT INTO atlas_meta (k, v) VALUES ('dataset_assembly', ?1)",
+            params![dataset.assembly.as_str()],
+        )
+        .map_err(|e| IngestError(e.to_string()))?;
+        tx.execute(
             "INSERT INTO atlas_meta (k, v) VALUES ('analyze_completed', 'false')",
             [],
         )
@@ -351,7 +367,8 @@ pub fn write_sharded_sqlite_catalog(
             .filter(|tx| seqids.contains(&tx.seqid))
             .cloned()
             .collect();
-        write_sqlite(&sqlite_path, &rows, &tx_rows)?;
+        let dataset = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
+        write_sqlite(&sqlite_path, &dataset, &rows, &tx_rows)?;
         shards.push(ShardEntry::new(
             bucket,
             seqids,

@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Default)]
 #[serde(deny_unknown_fields)]
 #[non_exhaustive]
 pub struct ArtifactChecksums {
@@ -11,6 +11,33 @@ pub struct ArtifactChecksums {
     pub fasta_sha256: String,
     pub fai_sha256: String,
     pub sqlite_sha256: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Default)]
+#[serde(deny_unknown_fields)]
+#[non_exhaustive]
+pub struct ManifestInputHashes {
+    pub gff3_sha256: String,
+    pub fasta_sha256: String,
+    pub fai_sha256: String,
+    pub policy_sha256: String,
+}
+
+impl ManifestInputHashes {
+    #[must_use]
+    pub fn new(
+        gff3_sha256: String,
+        fasta_sha256: String,
+        fai_sha256: String,
+        policy_sha256: String,
+    ) -> Self {
+        Self {
+            gff3_sha256,
+            fasta_sha256,
+            fai_sha256,
+            policy_sha256,
+        }
+    }
 }
 
 impl ArtifactChecksums {
@@ -54,10 +81,16 @@ impl ManifestStats {
 #[serde(deny_unknown_fields)]
 #[non_exhaustive]
 pub struct ArtifactManifest {
+    #[serde(default)]
+    pub artifact_version: String,
+    #[serde(default)]
+    pub schema_version: String,
     pub manifest_version: String,
     pub db_schema_version: String,
     pub dataset: DatasetId,
     pub checksums: ArtifactChecksums,
+    #[serde(default)]
+    pub input_hashes: ManifestInputHashes,
     pub stats: ManifestStats,
     #[serde(default)]
     pub dataset_signature_sha256: String,
@@ -67,6 +100,10 @@ pub struct ArtifactManifest {
     pub ingest_toolchain: String,
     #[serde(default)]
     pub ingest_build_hash: String,
+    #[serde(default)]
+    pub toolchain_hash: String,
+    #[serde(default)]
+    pub created_at: String,
     #[serde(default = "default_derived_column_origins")]
     pub derived_column_origins: BTreeMap<String, String>,
 }
@@ -85,17 +122,35 @@ impl ArtifactManifest {
             db_schema_version,
             dataset,
             checksums,
+            artifact_version: "v1".to_string(),
+            schema_version: "1".to_string(),
+            input_hashes: ManifestInputHashes {
+                gff3_sha256: "unknown".to_string(),
+                fasta_sha256: "unknown".to_string(),
+                fai_sha256: "unknown".to_string(),
+                policy_sha256: "unknown".to_string(),
+            },
             stats,
             dataset_signature_sha256: String::new(),
             schema_evolution_note:
                 "v1 schema: additive-only evolution; existing fields remain stable".to_string(),
             ingest_toolchain: String::new(),
             ingest_build_hash: String::new(),
+            toolchain_hash: "unknown".to_string(),
+            created_at: String::new(),
             derived_column_origins: default_derived_column_origins(),
         }
     }
 
     pub fn validate_strict(&self) -> Result<(), ValidationError> {
+        if self.artifact_version.trim().is_empty() {
+            return Err(ValidationError(
+                "artifact_version must not be empty".to_string(),
+            ));
+        }
+        if self.schema_version.trim().is_empty() {
+            return Err(ValidationError("schema_version must not be empty".to_string()));
+        }
         if self.manifest_version.trim().is_empty() {
             return Err(ValidationError(
                 "manifest_version must not be empty".to_string(),
@@ -104,6 +159,25 @@ impl ArtifactManifest {
         if self.db_schema_version.trim().is_empty() {
             return Err(ValidationError(
                 "db_schema_version must not be empty".to_string(),
+            ));
+        }
+        if self.manifest_version != self.schema_version {
+            return Err(ValidationError(
+                "manifest_version and schema_version must match".to_string(),
+            ));
+        }
+        if self.input_hashes.gff3_sha256.trim().is_empty()
+            || self.input_hashes.fasta_sha256.trim().is_empty()
+            || self.input_hashes.fai_sha256.trim().is_empty()
+            || self.input_hashes.policy_sha256.trim().is_empty()
+        {
+            return Err(ValidationError(
+                "manifest input_hashes are required: gff3/fasta/fai/policy".to_string(),
+            ));
+        }
+        if self.toolchain_hash.trim().is_empty() {
+            return Err(ValidationError(
+                "manifest toolchain_hash must not be empty".to_string(),
             ));
         }
         if self.stats.gene_count == 0 {
