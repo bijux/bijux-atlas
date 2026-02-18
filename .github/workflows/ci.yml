@@ -106,6 +106,15 @@ jobs:
       - uses: actions/checkout@v4
       - run: make ci-policy-schema-drift
 
+  policy-relaxations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
+      - run: make ci-policy-relaxations
+
   config-check:
     runs-on: ubuntu-latest
     steps:
