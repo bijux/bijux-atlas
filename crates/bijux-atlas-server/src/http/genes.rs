@@ -606,8 +606,16 @@ pub(crate) async fn genes_handler(
                 } else {
                     (ApiErrorCode::QueryRejectedByPolicy, "QUERY_REJECTED")
                 };
+                let status = if matches!(
+                    code,
+                    ApiErrorCode::RangeTooLarge | ApiErrorCode::QueryTooExpensive
+                ) {
+                    StatusCode::PAYLOAD_TOO_LARGE
+                } else {
+                    StatusCode::UNPROCESSABLE_ENTITY
+                };
                 let resp = super::handlers::api_error_response(
-                    StatusCode::UNPROCESSABLE_ENTITY,
+                    status,
                     super::handlers::error_json(
                         code,
                         "query rejected",
@@ -618,7 +626,7 @@ pub(crate) async fn genes_handler(
                     .metrics
                     .observe_request(
                         "/v1/genes",
-                        StatusCode::UNPROCESSABLE_ENTITY,
+                        status,
                         started.elapsed(),
                     )
                     .await;

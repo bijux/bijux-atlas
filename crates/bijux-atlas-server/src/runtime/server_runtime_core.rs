@@ -393,7 +393,7 @@ async fn security_middleware(
             serde_json::json!({"max_uri_bytes": state.api.max_uri_bytes, "actual": uri_text.len()}),
             "req-unknown",
         ));
-        return (StatusCode::URI_TOO_LONG, err).into_response();
+        return (StatusCode::BAD_REQUEST, err).into_response();
     }
     let header_bytes: usize = req
         .headers()
@@ -407,7 +407,7 @@ async fn security_middleware(
             serde_json::json!({"max_header_bytes": state.api.max_header_bytes, "actual": header_bytes}),
             "req-unknown",
         ));
-        return (StatusCode::REQUEST_HEADER_FIELDS_TOO_LARGE, err).into_response();
+        return (StatusCode::BAD_REQUEST, err).into_response();
     }
 
     let api_key = normalized_header_value(req.headers(), "x-api-key", 256);
