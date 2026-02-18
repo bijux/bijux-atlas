@@ -668,7 +668,7 @@ ops-report: ## Gather ops evidence into artifacts/ops/<run-id>/
 	./ops/e2e/scripts/write_metadata.sh "$$out"; \
 	python3 ./ops/report/generate.py --run-dir "$$out" --schema ops/report/schema.json; \
 	echo "ops report written to $$out"; \
-	RUN_ID="$${OPS_RUN_ID}" OUT_DIR="$$out/bundle" ./scripts/public/report_bundle.sh >/dev/null; \
+	RUN_ID="$${OPS_RUN_ID}" OUT_DIR="$$out/bundle" ./scripts/public/report-bundle.sh >/dev/null; \
 	ln -sfn "$${OPS_RUN_ID}" artifacts/ops/latest; \
 	$(MAKE) artifacts-index
 

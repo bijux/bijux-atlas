@@ -2,7 +2,7 @@
 # owner: platform
 # purpose: print repository root path from any script location.
 # stability: internal
-# called-by: scripts/public/report_bundle.sh
+# called-by: scripts/public/report-bundle.sh
 # Purpose: resolve repository root deterministically without implicit cwd.
 # Inputs: script location only.
 # Outputs: absolute repo root path on stdout.

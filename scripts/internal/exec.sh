@@ -2,7 +2,7 @@
 # owner: platform
 # purpose: run a command with timing and structured logs.
 # stability: internal
-# called-by: scripts/public/report_bundle.sh
+# called-by: scripts/public/report-bundle.sh
 # Purpose: execute commands and capture deterministic timing metadata.
 # Inputs: command argv and optional SCRIPT_NAME/RUN_ID env vars.
 # Outputs: command output and timing file under artifacts/scripts/<name>/<run-id>/.
