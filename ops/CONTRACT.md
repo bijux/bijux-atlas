@@ -36,6 +36,13 @@ Stable (versioned by review):
 
 Generated (rebuildable):
 - `ops/_generated/**`
+- committed generated files policy:
+  - commit: `ops/_generated/report.example.json`
+  - commit: `ops/_generated/report.unified.example.json`
+  - commit: `docs/_generated/ops-surface.md`
+  - commit: `docs/_generated/ops-contracts.md`
+  - commit: `docs/_generated/ops-schemas.md`
+  - non-listed generated outputs are ephemeral and must be cleaned.
 
 Runtime artifacts (ephemeral evidence):
 - `ops/_artifacts/**`
@@ -45,3 +52,27 @@ Runtime artifacts (ephemeral evidence):
 - Scripts must not write to repo-root `artifacts/` directly.
 - Legacy compatibility, if needed, is via symlink: `artifacts/ops -> ops/_artifacts`.
 - Any explicit exception must be listed in `configs/ops/artifacts-allowlist.txt`.
+
+## Schema Evolution
+
+- All ops schemas are versioned under `ops/_schemas/`.
+- Backward-compatible changes are additive and keep `v1` stable.
+- Breaking changes require a new schema version and migration notes in `ops/CONTRACT.md`.
+- `make ops-contracts-check` is the required gate for schema conformance.
+
+## Compatibility Guarantee
+
+- Ops manifest `v1` contracts remain stable for automation and CI consumers.
+- Existing required keys must not be removed in `v1`.
+- New keys in `v1` must be optional unless a version bump is performed.
+
+## Deprecation Policy
+
+- Script deprecations must preserve Make target behavior for at least one release window.
+- Deprecated scripts must print migration guidance and point to canonical Make targets.
+- Removal requires updating `ops/_meta/surface.json`, `ops/INDEX.md`, and generated ops docs.
+
+## Naming and Directory Policy
+
+- Script and manifest names must be durable nouns with qualifiers; temporal/task naming is forbidden.
+- Empty directories are forbidden unless they contain `INDEX.md` documenting intent.
