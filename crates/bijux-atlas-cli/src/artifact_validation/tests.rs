@@ -1,8 +1,9 @@
 use super::{
-    build_release_diff, compute_gc_plan, validate_qc_thresholds, BuildReleaseDiffArgs, OutputMode,
+    build_release_diff, compute_gc_plan, gc_apply, promote_catalog, update_latest_alias,
+    validate_qc_thresholds, validate_shard_catalog_and_indexes, BuildReleaseDiffArgs, OutputMode,
 };
 use bijux_atlas_core::sha256_hex;
-use bijux_atlas_model::{Catalog, CatalogEntry, DatasetId};
+use bijux_atlas_model::{Catalog, CatalogEntry, DatasetId, ShardCatalog, ShardEntry};
 use serde_json::json;
 use std::fs;
 use std::path::PathBuf;
@@ -254,4 +255,194 @@ fn gc_plan_multiple_catalog_paths_are_deterministic() {
     let r2 = compute_gc_plan(&root, &[c1, c2], &pins_path).expect("gc");
     assert_eq!(r1.catalogs, r2.catalogs);
     assert_eq!(r1.candidates.dataset_roots, r2.candidates.dataset_roots);
+}
+
+#[test]
+fn gc_apply_deletes_unreachable_and_keeps_pinned_dataset() {
+    let tmp = tempdir().expect("tmp");
+    let root = tmp.path().join("store");
+    fs::create_dir_all(&root).expect("mkdir");
+
+    let pinned = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
+    let stale = DatasetId::new("111", "homo_sapiens", "GRCh38").expect("dataset");
+
+    for d in [&pinned, &stale] {
+        let p = bijux_atlas_model::artifact_paths(&root, d);
+        fs::create_dir_all(p.sqlite.parent().expect("parent")).expect("mkdir");
+        let sqlite = b"sqlite".to_vec();
+        fs::write(&p.sqlite, &sqlite).expect("sqlite");
+        let manifest = bijux_atlas_model::ArtifactManifest::new(
+            "1".to_string(),
+            "1".to_string(),
+            (*d).clone(),
+            bijux_atlas_model::ArtifactChecksums::new(
+                "a".repeat(64),
+                "b".repeat(64),
+                "c".repeat(64),
+                sha256_hex(&sqlite),
+            ),
+            bijux_atlas_model::ManifestStats::new(1, 1, 1),
+        );
+        fs::write(
+            &p.manifest,
+            serde_json::to_vec(&manifest).expect("manifest json"),
+        )
+        .expect("manifest");
+    }
+
+    let pins_path = tmp.path().join("pins.json");
+    fs::write(
+        &pins_path,
+        serde_json::to_vec(&json!({
+            "dataset_ids":[format!(
+                "release={}&species={}&assembly={}",
+                pinned.release, pinned.species, pinned.assembly
+            )],
+            "artifact_hashes":[]
+        }))
+        .expect("pins json"),
+    )
+    .expect("write pins");
+
+    let catalog_path = root.join("catalog.json");
+    fs::write(
+        &catalog_path,
+        serde_json::to_vec(&Catalog::new(vec![])).expect("catalog json"),
+    )
+    .expect("catalog");
+
+    gc_apply(
+        root.clone(),
+        vec![PathBuf::from("catalog.json")],
+        pins_path,
+        true,
+        OutputMode { json: true },
+    )
+    .expect("gc apply");
+
+    assert!(
+        bijux_atlas_model::artifact_paths(&root, &pinned).dataset_root.exists(),
+        "pinned dataset must survive gc apply"
+    );
+    assert!(
+        !bijux_atlas_model::artifact_paths(&root, &stale).dataset_root.exists(),
+        "unreachable dataset must be removed by gc apply"
+    );
+}
+
+#[test]
+fn diff_build_writes_summary_and_contract_files() {
+    let tmp = tempdir().expect("tmp");
+    let root = tmp.path();
+    let from = root.join("release=110/species=homo_sapiens/assembly=GRCh38/derived");
+    let to = root.join("release=111/species=homo_sapiens/assembly=GRCh38/derived");
+    fs::create_dir_all(&from).expect("from");
+    fs::create_dir_all(&to).expect("to");
+
+    fs::write(
+        from.join("release_gene_index.json"),
+        r#"{"schema_version":"1","dataset":{"release":"110","species":"homo_sapiens","assembly":"GRCh38"},"entries":[{"gene_id":"ENSG1","seqid":"chr1","start":10,"end":20,"signature_sha256":"a"}]}"#,
+    )
+    .expect("from index");
+    fs::write(
+        to.join("release_gene_index.json"),
+        r#"{"schema_version":"1","dataset":{"release":"111","species":"homo_sapiens","assembly":"GRCh38"},"entries":[{"gene_id":"ENSG2","seqid":"chr1","start":10,"end":20,"signature_sha256":"b"}]}"#,
+    )
+    .expect("to index");
+    write_sqlite(&from.join("gene_summary.sqlite"), &[("ENSG1", "pc")]);
+    write_sqlite(&to.join("gene_summary.sqlite"), &[("ENSG2", "pc")]);
+
+    let out = root.join("diff-out");
+    build_release_diff(
+        BuildReleaseDiffArgs {
+            root: root.to_path_buf(),
+            from_release: "110".to_string(),
+            to_release: "111".to_string(),
+            species: "homo_sapiens".to_string(),
+            assembly: "GRCh38".to_string(),
+            out_dir: out.clone(),
+            max_inline_items: 100,
+        },
+        OutputMode { json: true },
+    )
+    .expect("build diff");
+
+    assert!(out.join("diff.json").exists());
+    assert!(out.join("diff.summary.json").exists());
+}
+
+#[test]
+fn shard_catalog_validation_rejects_missing_or_bad_shards() {
+    let tmp = tempdir().expect("tmp");
+    let derived = tmp.path().join("derived");
+    fs::create_dir_all(&derived).expect("mkdir");
+
+    fs::write(derived.join("catalog_shards.json"), "{not-json").expect("write");
+    assert!(validate_shard_catalog_and_indexes(&derived).is_err());
+
+    let ds = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
+    let shard_catalog = ShardCatalog::new(
+        ds,
+        "contig".to_string(),
+        vec![ShardEntry::new(
+            "shard-000".to_string(),
+            vec!["chr1".to_string()],
+            "missing.sqlite".to_string(),
+            "a".repeat(64),
+        )],
+    );
+    fs::write(
+        derived.join("catalog_shards.json"),
+        serde_json::to_vec(&shard_catalog).expect("catalog shards"),
+    )
+    .expect("write shard catalog");
+    assert!(
+        validate_shard_catalog_and_indexes(&derived).is_err(),
+        "missing shard sqlite must fail validation"
+    );
+}
+
+#[test]
+fn promote_failure_does_not_mutate_existing_catalog_and_latest_alias_is_promotion_gated() {
+    let tmp = tempdir().expect("tmp");
+    let root = tmp.path().join("store");
+    fs::create_dir_all(&root).expect("mkdir");
+
+    let existing = DatasetId::new("109", "homo_sapiens", "GRCh38").expect("dataset");
+    let existing_catalog = Catalog::new(vec![CatalogEntry::new(
+        existing.clone(),
+        "release=109/species=homo_sapiens/assembly=GRCh38/derived/manifest.json".to_string(),
+        "release=109/species=homo_sapiens/assembly=GRCh38/derived/gene_summary.sqlite".to_string(),
+    )]);
+    let initial_bytes = bijux_atlas_store::canonical_catalog_json(&existing_catalog)
+        .expect("catalog json")
+        .into_bytes();
+    fs::write(root.join("catalog.json"), &initial_bytes).expect("catalog");
+
+    let missing = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
+    let err = promote_catalog(
+        root.clone(),
+        missing.release.as_str(),
+        missing.species.as_str(),
+        missing.assembly.as_str(),
+        OutputMode { json: true },
+    )
+    .expect_err("promote should fail without published artifact");
+    assert!(err.contains("promote requires published artifact first"));
+
+    let after_failed_promote = fs::read(root.join("catalog.json")).expect("catalog read");
+    assert_eq!(
+        initial_bytes, after_failed_promote,
+        "failed promote must not mutate catalog"
+    );
+
+    let alias_err = update_latest_alias(
+        root.clone(),
+        missing.release.as_str(),
+        missing.species.as_str(),
+        missing.assembly.as_str(),
+        OutputMode { json: true },
+    )
+    .expect_err("latest alias update must be promotion-gated");
+    assert!(alias_err.contains("gated by promotion"));
 }
