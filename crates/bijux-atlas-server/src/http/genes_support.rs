@@ -19,6 +19,11 @@ pub(super) fn try_enter_queue(state: &AppState) -> Result<QueueGuard, ApiError> 
         .saturating_add(1);
     if depth as usize > state.api.max_request_queue_depth {
         state.queued_requests.fetch_sub(1, Ordering::Relaxed);
+        state
+            .cache
+            .metrics
+            .policy_violations_total
+            .fetch_add(1, Ordering::Relaxed);
         return Err(super::handlers::error_json(
             ApiErrorCode::QueryRejectedByPolicy,
             "request queue depth exceeded",
@@ -111,6 +116,11 @@ pub(super) async fn acquire_class_permit(
         _ => state.class_heavy.clone(),
     };
     sem.try_acquire_owned().map_err(|_| {
+        state
+            .cache
+            .metrics
+            .policy_violations_total
+            .fetch_add(1, Ordering::Relaxed);
         super::handlers::error_json(
             ApiErrorCode::QueryRejectedByPolicy,
             "concurrency limit reached",

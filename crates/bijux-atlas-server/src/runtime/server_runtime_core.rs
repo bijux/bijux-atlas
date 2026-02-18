@@ -157,6 +157,8 @@ pub struct CacheMetrics {
     pub fs_space_pressure_events_total: AtomicU64,
     pub cache_evictions_total: AtomicU64,
     pub registry_invalidation_events_total: AtomicU64,
+    pub policy_violations_total: AtomicU64,
+    pub policy_violations_by_policy: Mutex<HashMap<String, u64>>,
 }
 
 #[derive(Default)]
@@ -380,6 +382,16 @@ fn build_hmac_signature(secret: &str, method: &str, uri: &str, ts: &str) -> Opti
     Some(hex::encode(mac.finalize().into_bytes()))
 }
 
+async fn record_policy_violation(state: &AppState, policy: &str) {
+    state
+        .cache
+        .metrics
+        .policy_violations_total
+        .fetch_add(1, Ordering::Relaxed);
+    let mut by = state.cache.metrics.policy_violations_by_policy.lock().await;
+    *by.entry(policy.to_string()).or_insert(0) += 1;
+}
+
 async fn security_middleware(
     State(state): State<AppState>,
     req: Request<Body>,
@@ -387,6 +399,7 @@ async fn security_middleware(
 ) -> Response {
     let uri_text = req.uri().to_string();
     if uri_text.len() > state.api.max_uri_bytes {
+        record_policy_violation(&state, "uri_bytes").await;
         let err = Json(ApiError::new(
             ApiErrorCode::QueryRejectedByPolicy,
             "request URI too large",
@@ -401,6 +414,7 @@ async fn security_middleware(
         .map(|(k, v)| k.as_str().len() + v.as_bytes().len())
         .sum();
     if header_bytes > state.api.max_header_bytes {
+        record_policy_violation(&state, "header_bytes").await;
         let err = Json(ApiError::new(
             ApiErrorCode::QueryRejectedByPolicy,
             "request headers too large",
@@ -412,6 +426,7 @@ async fn security_middleware(
 
     let api_key = normalized_header_value(req.headers(), "x-api-key", 256);
     if state.api.require_api_key && api_key.is_none() {
+        record_policy_violation(&state, "api_key_required").await;
         let err = Json(ApiError::new(
             ApiErrorCode::QueryRejectedByPolicy,
             "api key required",
@@ -424,6 +439,7 @@ async fn security_middleware(
         if !state.api.allowed_api_keys.is_empty()
             && !state.api.allowed_api_keys.iter().any(|k| k == key)
         {
+            record_policy_violation(&state, "api_key_invalid").await;
             let err = Json(ApiError::new(
                 ApiErrorCode::QueryRejectedByPolicy,
                 "invalid api key",
@@ -438,6 +454,7 @@ async fn security_middleware(
         let ts = normalized_header_value(req.headers(), "x-bijux-timestamp", 64);
         let sig = normalized_header_value(req.headers(), "x-bijux-signature", 128);
         if state.api.hmac_required && (ts.is_none() || sig.is_none()) {
+            record_policy_violation(&state, "hmac_missing_headers").await;
             let err = Json(ApiError::new(
                 ApiErrorCode::QueryRejectedByPolicy,
                 "missing required HMAC headers",
@@ -449,6 +466,7 @@ async fn security_middleware(
         if let (Some(ts_value), Some(sig_value)) = (ts, sig) {
             let now = chrono_like_unix_millis() / 1000;
             let Some(parsed_ts) = ts_value.parse::<u128>().ok() else {
+                record_policy_violation(&state, "hmac_invalid_timestamp").await;
                 let err = Json(ApiError::new(
                     ApiErrorCode::QueryRejectedByPolicy,
                     "invalid hmac timestamp",
@@ -459,6 +477,7 @@ async fn security_middleware(
             };
             let skew = now.abs_diff(parsed_ts);
             if skew > state.api.hmac_max_skew_secs as u128 {
+                record_policy_violation(&state, "hmac_skew").await;
                 let err = Json(ApiError::new(
                     ApiErrorCode::QueryRejectedByPolicy,
                     "hmac timestamp outside allowed skew",
@@ -472,6 +491,7 @@ async fn security_middleware(
             if build_hmac_signature(secret, method, uri, &ts_value).as_deref()
                 != Some(sig_value.as_str())
             {
+                record_policy_violation(&state, "hmac_signature").await;
                 let err = Json(ApiError::new(
                     ApiErrorCode::QueryRejectedByPolicy,
                     "invalid hmac signature",
@@ -689,4 +709,5 @@ pub struct AppState {
     pub(crate) redis_backend: Option<Arc<RedisBackend>>,
     pub(crate) queued_requests: Arc<AtomicU64>,
     pub runtime_policy_hash: Arc<String>,
+    pub runtime_policy_mode: Arc<String>,
 }

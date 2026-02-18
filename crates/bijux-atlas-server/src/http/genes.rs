@@ -78,6 +78,16 @@ pub(crate) async fn genes_handler(
 
     let class = classify_query(&req);
     let estimated_cost = estimate_work_units(&req);
+    info!(
+        request_id = %request_id,
+        route = "/v1/genes",
+        query_class = ?class,
+        policy_mode = %state.runtime_policy_mode.as_str(),
+        max_page_size = state.limits.max_limit,
+        max_region_span = state.limits.max_region_span,
+        max_response_bytes = state.limits.max_serialization_bytes,
+        "policy_applied"
+    );
     if estimated_cost >= 50 {
         info!(
             request_id = %request_id,

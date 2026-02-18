@@ -25,6 +25,8 @@ required = [
     "bijux_overload_shedding_active",
     "bijux_dataset_hits",
     "bijux_store_breaker_open",
+    "atlas_policy_relaxation_active",
+    "atlas_policy_violations_total",
 ]
 missing = [m for m in required if metric_value(m) is None]
 if missing:

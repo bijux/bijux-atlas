@@ -83,6 +83,7 @@ impl AppState {
                 .map(Arc::new),
             queued_requests: Arc::new(AtomicU64::new(0)),
             runtime_policy_hash,
+            runtime_policy_mode: Arc::new("strict".to_string()),
             api,
             limits,
         }

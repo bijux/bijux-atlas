@@ -487,6 +487,7 @@ async fn main() -> Result<(), String> {
 
     let mut state = AppState::with_config(cache.clone(), api_cfg, query_limits);
     state.runtime_policy_hash = Arc::new(runtime_policy_hash);
+    state.runtime_policy_mode = Arc::new(policy_mode);
     let app = build_router(state.clone());
 
     // Ready only after first successful catalog refresh when required.
