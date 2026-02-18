@@ -1,44 +1,102 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
+  "type": "trace_spans_contract",
+  "request_root_span": {
+    "name": "request_root",
+    "required_attributes": [
+      "request_id",
+      "route",
+      "method"
+    ]
+  },
+  "taxonomy": [
+    "admission",
+    "resolve_dataset",
+    "cache",
+    "store",
+    "sqlite",
+    "encode"
+  ],
+  "slow_query_event": {
+    "name": "slow_query",
+    "required_fields": [
+      "query_name",
+      "dataset_hash",
+      "cost_class"
+    ]
+  },
   "spans": [
     {
       "name": "admission_control",
+      "parent_span": "request_root",
+      "taxonomy": "admission",
       "required_attributes": [
         "route"
-      ]
-    },
-    {
-      "name": "cache_lookup",
-      "required_attributes": [
-        "dataset"
-      ]
+      ],
+      "required_events": [],
+      "error_tagging_policy": "set status=error with reason when admission rejects"
     },
     {
       "name": "dataset_resolve",
+      "parent_span": "request_root",
+      "taxonomy": "resolve_dataset",
       "required_attributes": [
         "route"
-      ]
+      ],
+      "required_events": [],
+      "error_tagging_policy": "set status=error when dataset dimensions are invalid or missing"
     },
     {
-      "name": "serialize_response",
+      "name": "cache_lookup",
+      "parent_span": "request_root",
+      "taxonomy": "cache",
       "required_attributes": [
-        "route",
-        "status"
-      ]
-    },
-    {
-      "name": "sqlite_query",
-      "required_attributes": [
-        "class"
-      ]
+        "dataset"
+      ],
+      "required_events": [
+        "cache_hit",
+        "cache_miss"
+      ],
+      "error_tagging_policy": "set status=error for cache corruption or open failures"
     },
     {
       "name": "store_fetch",
+      "parent_span": "request_root",
+      "taxonomy": "store",
       "required_attributes": [
         "backend",
         "dataset"
-      ]
+      ],
+      "required_events": [
+        "retry",
+        "fetch_complete"
+      ],
+      "error_tagging_policy": "set status=error and backend code for network, timeout, and checksum failures"
+    },
+    {
+      "name": "sqlite_query",
+      "parent_span": "request_root",
+      "taxonomy": "sqlite",
+      "required_attributes": [
+        "class"
+      ],
+      "required_events": [
+        "slow_query"
+      ],
+      "error_tagging_policy": "set status=error on SQLite execution failures"
+    },
+    {
+      "name": "serialize_response",
+      "parent_span": "request_root",
+      "taxonomy": "encode",
+      "required_attributes": [
+        "route",
+        "status"
+      ],
+      "required_events": [
+        "response_encoded"
+      ],
+      "error_tagging_policy": "set status=error on serialization/size-limit failures"
     }
-  ],
-  "type": "trace_spans_contract"
+  ]
 }

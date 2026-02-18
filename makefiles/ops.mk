@@ -474,6 +474,8 @@ ops-metrics-check: ## Validate runtime metrics and observability contracts
 
 ops-traces-check: ## Validate trace signal (when OTEL enabled)
 	@./ops/e2e/scripts/verify_traces.sh
+	@python3 ./ops/observability/scripts/contracts/check_trace_golden.py
+	@python3 ./ops/observability/scripts/contracts/extract_trace_exemplars.py
 	@if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/public/observability/check_tracing_contract.py; python3 ./ops/observability/scripts/contracts/check_trace_coverage.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi
 
 ops-k8s-tests: ## Run k8s e2e suite
