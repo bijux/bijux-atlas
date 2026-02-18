@@ -614,6 +614,8 @@ ops-perf-nightly: ## Perf helper: run nightly perf suite
 ops-perf-report: ## Generate perf markdown + baseline report from artifacts
 	@./ops/load/scripts/generate_report.py
 	@./ops/load/reports/generate.py
+	@mkdir -p "$${OPS_RUN_DIR:-artifacts/ops/manual}/load/reports"
+	@cp -f artifacts/ops/load/reports/summary.md "$${OPS_RUN_DIR:-artifacts/ops/manual}/report.md" 2>/dev/null || true
 
 ops-perf-cold-start: ## Perf helper: run cold-start benchmark
 	@./ops/load/scripts/cold_start_benchmark.sh
