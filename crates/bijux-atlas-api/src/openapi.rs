@@ -7,7 +7,8 @@ pub fn openapi_v1_spec() -> Value {
       "openapi": "3.0.3",
       "info": {
         "title": "bijux-atlas API",
-        "version": "v1"
+        "version": "v1",
+        "x-api-contract-version": "v1"
       },
       "paths": {
         "/healthz": {
@@ -29,6 +30,11 @@ pub fn openapi_v1_spec() -> Value {
           }
         },
         "/metrics": {"get": {"responses": {"200": {"description": "prometheus metrics"}}}},
+        "/v1/openapi.json": {
+          "get": {
+            "responses": {"200": {"description": "generated OpenAPI v1 spec"}}
+          }
+        },
         "/v1/version": {
           "get": {
             "responses": {"200": {"description": "plugin and service version metadata"}}

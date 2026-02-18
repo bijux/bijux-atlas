@@ -10,6 +10,15 @@ struct EndpointEntry {
     method: String,
     path: String,
     telemetry_class: String,
+    #[serde(default)]
+    params: Vec<EndpointParam>,
+}
+
+#[derive(Debug, Deserialize)]
+struct EndpointParam {
+    name: String,
+    #[serde(rename = "in")]
+    in_: String,
 }
 
 #[test]
@@ -59,4 +68,42 @@ fn server_routes_match_endpoints_contract_and_telemetry_annotations() {
     }
 
     assert_eq!(route_set, contract_set, "server route registry drift");
+}
+
+#[test]
+fn endpoint_params_match_openapi_registry() {
+    let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|p| p.parent())
+        .expect("workspace root")
+        .to_path_buf();
+    let contract: EndpointsContract = serde_json::from_slice(
+        &std::fs::read(root.join("docs/contracts/ENDPOINTS.json")).expect("read endpoints"),
+    )
+    .expect("parse endpoints");
+    let openapi: serde_json::Value = serde_json::from_slice(
+        &std::fs::read(root.join("configs/openapi/v1/openapi.generated.json"))
+            .expect("read openapi"),
+    )
+    .expect("parse openapi");
+    for ep in &contract.endpoints {
+        let actual = openapi
+            .pointer(&format!("/paths/{}/get/parameters", ep.path.replace('/', "~1")))
+            .and_then(serde_json::Value::as_array)
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|v| {
+                let name = v.get("name")?.as_str()?.to_string();
+                let in_ = v.get("in")?.as_str()?.to_string();
+                Some((in_, name))
+            })
+            .collect::<std::collections::BTreeSet<_>>();
+        let expected = ep
+            .params
+            .iter()
+            .map(|p| (p.in_.clone(), p.name.clone()))
+            .collect::<std::collections::BTreeSet<_>>();
+        assert_eq!(expected, actual, "param registry drift for {}", ep.path);
+    }
 }
