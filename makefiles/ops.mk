@@ -737,6 +737,30 @@ ops-ci: ## Nightly ops pipeline: up/deploy/warm/tests/ops/load/drills/report
 ops-ci-nightly: ## Compatibility alias for ops-ci
 	@$(MAKE) ops-ci
 
+ops-ref-grade-local: ## Required ref-grade local gate (k8s subset on PR via OPS_REF_K8S_SCOPE=pr)
+	@set -e; \
+	k8s_scope="$${OPS_REF_K8S_SCOPE:-nightly}"; \
+	$(MAKE) ops-tools-check; \
+	$(MAKE) ops-kind-validate; \
+	$(MAKE) ops-stack-validate; \
+	$(MAKE) ops-deploy PROFILE=local; \
+	$(MAKE) ops-publish DATASET=medium; \
+	$(MAKE) ops-warm; \
+	$(MAKE) ops-smoke; \
+	if [ "$$k8s_scope" = "pr" ]; then \
+	  ATLAS_E2E_TEST_GROUP=install $(MAKE) ops-k8s-tests; \
+	else \
+	  $(MAKE) ops-k8s-tests; \
+	fi; \
+	$(MAKE) ops-load-smoke; \
+	$(MAKE) ops-observability-validate
+
+ops-ref-grade-pr: ## Required ref-grade local gate with PR k8s subset
+	@OPS_REF_K8S_SCOPE=pr $(MAKE) ops-ref-grade-local
+
+ops-ref-grade-nightly: ## Required ref-grade local gate with full nightly k8s suite
+	@OPS_REF_K8S_SCOPE=nightly $(MAKE) ops-ref-grade-local
+
 
 ops-full: ## Full local ops flow (OPS_MODE=fast|full, OPS_DRY_RUN=1 supported)
 	@set -e; \

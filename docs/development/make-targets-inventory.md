@@ -184,6 +184,9 @@ Generated from `make help`. Do not edit manually.
 - `ops-perf-baseline-update`
 - `ops-ci`
 - `ops-ci-nightly`
+- `ops-ref-grade-local`
+- `ops-ref-grade-pr`
+- `ops-ref-grade-nightly`
 - `ops-full`
 - `ops-full-pr`
 - `ops-full-nightly`
