@@ -2,4 +2,7 @@
 set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
 cd "$ROOT"
-exec make ops-stack-up
+. "$ROOT/ops/_lib/common.sh"
+ops_env_load
+ops_require_run_context
+exec make ops-stack-up-legacy

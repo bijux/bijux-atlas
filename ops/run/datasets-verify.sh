@@ -5,4 +5,5 @@ cd "$ROOT"
 . "$ROOT/ops/_lib/common.sh"
 ops_env_load
 ops_require_run_context
-exec make ops-load-smoke
+./ops/datasets/scripts/fetch_and_verify.sh
+./ops/datasets/scripts/catalog_validate.py
