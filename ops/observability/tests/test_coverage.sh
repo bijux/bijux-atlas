@@ -13,6 +13,8 @@ mkdir -p "$OUT_DIR" "$OPS_OBS_DIR"
 
 # 1) install pack
 "$ROOT/ops/observability/scripts/install_pack.sh"
+"$ROOT/ops/observability/scripts/verify_pack.sh"
+"$ROOT/ops/observability/scripts/pack_health.sh"
 
 # 2) short mixed workload
 ATLAS_BASE_URL="${ATLAS_BASE_URL:-http://127.0.0.1:18080}"
@@ -93,5 +95,8 @@ payload={
 (out/'pack-version-stamp.json').write_text(json.dumps(payload,indent=2,sort_keys=True)+'\n',encoding='utf-8')
 print('wrote artifacts/observability/pack-version-stamp.json')
 PY
+"$ROOT/ops/observability/scripts/export_pack_bundle.sh"
+"$ROOT/ops/observability/scripts/write_pack_conformance_report.py"
+test -s "$ROOT/artifacts/observability/pack-conformance-report.json"
 
 echo "observability coverage test passed"

@@ -30,6 +30,7 @@ Does not duplicate page-level details.
 - [Acceptance Gates](acceptance-gates.md)
 - [Observability Profiles](profiles.md)
 - [Trace Sampling Policy](trace-sampling-policy.md)
+- [OTEL Outage Behavior](otel-outage-behavior.md)
 - [Metric Ownership](metric-ownership.md)
 - [Generated Surface](../../_generated/observability-surface.md)
 

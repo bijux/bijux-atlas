@@ -18,6 +18,9 @@ Profiles express deployment context without temporal or install-step wording.
 - Install target: `make ops-obs-mode ATLAS_OBS_PROFILE=<profile>`.
 - Teardown target: `make ops-obs-down`.
 - Validation target: `make ops-observability-validate`.
+- Namespace convention: `atlas-observability`.
+- Storage mode default: `ATLAS_OBS_STORAGE_MODE=ephemeral` (optional `persistent`).
+- Offline mode: `ATLAS_OBS_OFFLINE=1` requires local mirrored images and pinned digests.
 
 ## Failure modes
 
@@ -29,8 +32,10 @@ Profiles express deployment context without temporal or install-step wording.
 ```bash
 make ops-obs-mode ATLAS_OBS_PROFILE=kind
 make ops-observability-pack-verify
+make ops-observability-pack-health
 make ops-observability-pack-smoke
 make ops-observability-pack-export
+make ops-observability-pack-conformance-report
 make ops-obs-down
 ```
 
