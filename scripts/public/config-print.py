@@ -4,7 +4,7 @@
 # stability: public
 # called-by: make config-print
 # Purpose: print canonical merged config payload for debugging.
-# Inputs: configs/policy/policy.json, configs/ops/env.schema.json, configs/ops/tool-versions.json, configs/perf/k6-thresholds.v1.json, configs/slo/slo.json
+# Inputs: configs/policy/policy.json, configs/ops/env.schema.json, configs/ops/tool-versions.json, configs/ops/observability-pack.json, configs/perf/k6-thresholds.v1.json, configs/slo/slo.json
 # Outputs: json to stdout
 from __future__ import annotations
 
@@ -23,6 +23,7 @@ def main() -> int:
         "policy": read_json("configs/policy/policy.json"),
         "ops_env_schema": read_json("configs/ops/env.schema.json"),
         "ops_tool_versions": read_json("configs/ops/tool-versions.json"),
+        "ops_observability_pack": read_json("configs/ops/observability-pack.json"),
         "perf_thresholds": read_json("configs/perf/k6-thresholds.v1.json"),
         "slo": read_json("configs/slo/slo.json"),
     }

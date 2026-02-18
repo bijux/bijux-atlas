@@ -1,0 +1,25 @@
+services:
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=2h"
+    ports:
+      - "19090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+  grafana:
+    image: grafana/grafana:11.2.0
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+    ports:
+      - "13000:3000"
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.111.0
+    command:
+      - "--config=/etc/otelcol/config.yaml"
+    ports:
+      - "14317:4317"
+      - "14318:4318"
+    volumes:
+      - ./otel-collector.yaml:/etc/otelcol/config.yaml:ro

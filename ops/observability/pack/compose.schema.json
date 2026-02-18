@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Observability Pack Compose Contract",
+  "type": "object",
+  "required": ["schema_version", "required_services", "required_ports"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "required_services": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 3
+    },
+    "required_ports": {
+      "type": "object",
+      "required": ["prometheus", "grafana", "otel_grpc", "otel_http"],
+      "additionalProperties": false,
+      "properties": {
+        "prometheus": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "grafana": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "otel_grpc": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "otel_http": { "type": "integer", "minimum": 1, "maximum": 65535 }
+      }
+    }
+  }
+}
