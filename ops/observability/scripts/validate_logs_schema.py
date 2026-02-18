@@ -55,17 +55,41 @@ def main() -> int:
         lines = Path(args.file).read_text(encoding="utf-8").splitlines()
         return validate_seen_keys(collect_keys(lines))
 
-    cmd = [
-        "kubectl",
-        "-n",
-        args.namespace,
-        "logs",
-        f"deploy/{args.release}-bijux-atlas",
-        "--tail=200",
-    ]
+    deploy_name = f"{args.release}-bijux-atlas"
+    namespace = args.namespace
+    cmd = ["kubectl", "-n", namespace, "logs", f"deploy/{deploy_name}", "--tail=200"]
     try:
         out = subprocess.check_output(cmd, text=True)
     except Exception as exc:  # pragma: no cover - integration path
+        try:
+            discovered_ns = subprocess.check_output(
+                [
+                    "kubectl",
+                    "get",
+                    "deploy",
+                    "-A",
+                    "-o",
+                    "jsonpath={.items[?(@.metadata.name==\""
+                    + deploy_name
+                    + "\")].metadata.namespace}",
+                ],
+                text=True,
+            ).strip()
+            if discovered_ns:
+                out = subprocess.check_output(
+                    [
+                        "kubectl",
+                        "-n",
+                        discovered_ns,
+                        "logs",
+                        f"deploy/{deploy_name}",
+                        "--tail=200",
+                    ],
+                    text=True,
+                )
+                return validate_seen_keys(collect_keys(out.splitlines()))
+        except Exception:
+            pass
         if args.strict_live:
             print(f"log schema check failed: {exc}", file=sys.stderr)
             return 1
