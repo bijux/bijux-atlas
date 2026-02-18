@@ -388,6 +388,16 @@ ops-diff-smoke: ## Build cross-release diff artifacts from fixture store
 	@test -f artifacts/ops/diff-smoke/diff.json
 	@test -f artifacts/ops/diff-smoke/diff.summary.json
 
+ops-gc-smoke: ## Validate GC plan/apply against a disposable store fixture
+	@tmp_root="artifacts/ops/gc-smoke/store"; \
+	rm -rf "$$tmp_root"; \
+	mkdir -p "$$tmp_root/release=999/species=homo_sapiens/assembly=GRCh38/derived"; \
+	printf '' > "$$tmp_root/release=999/species=homo_sapiens/assembly=GRCh38/derived/gene_summary.sqlite"; \
+	printf '{"datasets":[]}' > "$$tmp_root/catalog.json"; \
+	cargo run -p bijux-atlas-cli -- atlas gc plan --store-root "$$tmp_root" --catalog catalog.json --pins ops/registry/pins.json >/dev/null; \
+	cargo run -p bijux-atlas-cli -- atlas gc apply --store-root "$$tmp_root" --catalog catalog.json --pins ops/registry/pins.json --confirm >/dev/null; \
+	test -d "$$tmp_root/gc_reports"
+
 ops-metrics-check: ## Validate runtime metrics and observability contracts
 	@./ops/e2e/scripts/verify_metrics.sh
 	@./scripts/public/observability/check_metrics_contract.py
