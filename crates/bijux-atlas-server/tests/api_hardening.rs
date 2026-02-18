@@ -1049,7 +1049,7 @@ async fn cheap_endpoint_remains_available_while_noncheap_is_shed() {
 }
 
 #[tokio::test]
-async fn release_metadata_endpoint_and_explain_mode_are_available() {
+async fn canonical_dataset_endpoint_and_legacy_redirect_are_available() {
     let (ds, manifest, sqlite) = mk_dataset();
     let store = Arc::new(FakeStore::default());
     store.manifest.lock().await.insert(ds.clone(), manifest);
@@ -1082,9 +1082,19 @@ async fn release_metadata_endpoint_and_explain_mode_are_available() {
     let addr = listener.local_addr().expect("local addr");
     tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
 
+    let (status, headers, _) = send_raw(
+        addr,
+        "/v1/releases/110/species/homo_sapiens/assemblies/GRCh38?include_bom=1&x=1",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 308);
+    assert!(headers.contains("location: /v1/datasets/110/homo_sapiens/GRCh38?include_bom=1&x=1"));
+    assert!(headers.contains("link: </v1/datasets/110/homo_sapiens/GRCh38?include_bom=1&x=1>; rel=\"canonical\""));
+
     let (status, _, body) = send_raw(
         addr,
-        "/v1/releases/110/species/homo_sapiens/assemblies/GRCh38?include_bom=1",
+        "/v1/datasets/110/homo_sapiens/GRCh38?include_bom=1",
         &[],
     )
     .await;
@@ -1099,6 +1109,9 @@ async fn release_metadata_endpoint_and_explain_mode_are_available() {
         .get("data")
         .and_then(|d| d.get("bill_of_materials"))
         .is_some());
+
+    let (status, _, _) = send_raw(addr, "/v1/datasets/110/homo%20sapiens/GRCh38", &[]).await;
+    assert_eq!(status, 400);
 
     let (status, _, body) = send_raw(
         addr,

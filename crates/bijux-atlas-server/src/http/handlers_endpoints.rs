@@ -98,7 +98,7 @@ pub(crate) async fn datasets_handler(
     with_request_id(response, &request_id)
 }
 
-pub(crate) async fn release_dataset_handler(
+pub(crate) async fn dataset_identity_handler(
     State(state): State<AppState>,
     axum::extract::Path((release, species, assembly)): axum::extract::Path<(
         String,
@@ -123,7 +123,7 @@ pub(crate) async fn release_dataset_handler(
             state
                 .metrics
                 .observe_request(
-                    "/v1/releases/{release}/species/{species}/assemblies/{assembly}",
+                    "/v1/datasets/{release}/{species}/{assembly}",
                     StatusCode::BAD_REQUEST,
                     started.elapsed(),
                 )
@@ -159,7 +159,7 @@ pub(crate) async fn release_dataset_handler(
         state
             .metrics
             .observe_request(
-                "/v1/releases/{release}/species/{species}/assemblies/{assembly}",
+                "/v1/datasets/{release}/{species}/{assembly}",
                 StatusCode::NOT_FOUND,
                 started.elapsed(),
             )
@@ -181,7 +181,7 @@ pub(crate) async fn release_dataset_handler(
             state
                 .metrics
                 .observe_request(
-                    "/v1/releases/{release}/species/{species}/assemblies/{assembly}",
+                    "/v1/datasets/{release}/{species}/{assembly}",
                     StatusCode::SERVICE_UNAVAILABLE,
                     started.elapsed(),
                 )
@@ -216,8 +216,46 @@ pub(crate) async fn release_dataset_handler(
     state
         .metrics
         .observe_request(
-            "/v1/releases/{release}/species/{species}/assemblies/{assembly}",
+            "/v1/datasets/{release}/{species}/{assembly}",
             StatusCode::OK,
+            started.elapsed(),
+        )
+        .await;
+    with_request_id(resp, &request_id)
+}
+
+pub(crate) async fn release_dataset_handler(
+    State(state): State<AppState>,
+    axum::extract::Path((release, species, assembly)): axum::extract::Path<(
+        String,
+        String,
+        String,
+    )>,
+    uri: axum::extract::OriginalUri,
+) -> impl IntoResponse {
+    let started = Instant::now();
+    let request_id = make_request_id(&state);
+    let mut location = format!("/v1/datasets/{release}/{species}/{assembly}");
+    if let Some(raw_query) = uri.0.query() {
+        location.push('?');
+        location.push_str(raw_query);
+    }
+
+    let mut resp = StatusCode::PERMANENT_REDIRECT.into_response();
+    if let Ok(v) = HeaderValue::from_str(&location) {
+        resp.headers_mut().insert("location", v);
+    }
+    if let Ok(v) = HeaderValue::from_str(&format!("<{location}>; rel=\"canonical\"")) {
+        resp.headers_mut().insert("link", v);
+    }
+    resp.headers_mut()
+        .insert("deprecation", HeaderValue::from_static("true"));
+
+    state
+        .metrics
+        .observe_request(
+            "/v1/releases/{release}/species/{species}/assemblies/{assembly}",
+            StatusCode::PERMANENT_REDIRECT,
             started.elapsed(),
         )
         .await;

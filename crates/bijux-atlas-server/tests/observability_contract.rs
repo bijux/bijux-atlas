@@ -83,6 +83,7 @@ async fn metrics_endpoint_matches_metrics_contract() {
         "/readyz",
         "/v1/version",
         "/v1/datasets",
+        "/v1/datasets/110/homo_sapiens/GRCh38",
         "/v1/releases/110/species/homo_sapiens/assemblies/GRCh38",
         "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&limit=1",
         "/v1/genes/count?release=110&species=homo_sapiens&assembly=GRCh38&biotype=pc",
@@ -98,7 +99,7 @@ async fn metrics_endpoint_matches_metrics_contract() {
     ] {
         let (status, _, _) = send_raw(addr, path).await;
         assert!(
-            matches!(status, 200 | 304 | 400 | 401 | 404 | 422 | 503),
+            matches!(status, 200 | 304 | 308 | 400 | 401 | 404 | 422 | 503),
             "unexpected status {status} for {path}"
         );
     }
