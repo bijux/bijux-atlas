@@ -527,20 +527,26 @@ fn ensure_within_root(root: &Path, target: &Path) -> Result<(), String> {
     Ok(())
 }
 
+pub(crate) struct BuildReleaseDiffArgs {
+    pub root: PathBuf,
+    pub from_release: String,
+    pub to_release: String,
+    pub species: String,
+    pub assembly: String,
+    pub out_dir: PathBuf,
+    pub max_inline_items: usize,
+}
+
 pub(crate) fn build_release_diff(
-    root: PathBuf,
-    from_release: &str,
-    to_release: &str,
-    species: &str,
-    assembly: &str,
-    out_dir: PathBuf,
-    max_inline_items: usize,
+    args: BuildReleaseDiffArgs,
     output_mode: OutputMode,
 ) -> Result<(), String> {
-    let from = DatasetId::new(from_release, species, assembly).map_err(|e| e.to_string())?;
-    let to = DatasetId::new(to_release, species, assembly).map_err(|e| e.to_string())?;
-    let from_paths = bijux_atlas_model::artifact_paths(&root, &from);
-    let to_paths = bijux_atlas_model::artifact_paths(&root, &to);
+    let from = DatasetId::new(&args.from_release, &args.species, &args.assembly)
+        .map_err(|e| e.to_string())?;
+    let to = DatasetId::new(&args.to_release, &args.species, &args.assembly)
+        .map_err(|e| e.to_string())?;
+    let from_paths = bijux_atlas_model::artifact_paths(&args.root, &from);
+    let to_paths = bijux_atlas_model::artifact_paths(&args.root, &to);
     let from_index = read_release_index(&from_paths.release_gene_index)?;
     let to_index = read_release_index(&to_paths.release_gene_index)?;
     let from_biotype = read_gene_biotypes(&from_paths.sqlite)?;
@@ -586,10 +592,10 @@ pub(crate) fn build_release_diff(
     genes_changed_signature.sort();
 
     let identity = json!({
-        "from_release": from_release,
-        "to_release": to_release,
-        "species": species,
-        "assembly": assembly
+        "from_release": args.from_release,
+        "to_release": args.to_release,
+        "species": args.species,
+        "assembly": args.assembly
     });
     let summary = json!({
         "schema_version": "1",
@@ -606,41 +612,41 @@ pub(crate) fn build_release_diff(
         }
     });
 
-    fs::create_dir_all(&out_dir).map_err(|e| e.to_string())?;
+    fs::create_dir_all(&args.out_dir).map_err(|e| e.to_string())?;
     let mut chunk_manifest = Vec::<serde_json::Value>::new();
     let genes_added = chunk_or_inline(
         "genes_added",
         genes_added,
-        max_inline_items,
-        &out_dir,
+        args.max_inline_items,
+        &args.out_dir,
         &mut chunk_manifest,
     )?;
     let genes_removed = chunk_or_inline(
         "genes_removed",
         genes_removed,
-        max_inline_items,
-        &out_dir,
+        args.max_inline_items,
+        &args.out_dir,
         &mut chunk_manifest,
     )?;
     let genes_changed_coords = chunk_or_inline(
         "genes_changed_coords",
         genes_changed_coords,
-        max_inline_items,
-        &out_dir,
+        args.max_inline_items,
+        &args.out_dir,
         &mut chunk_manifest,
     )?;
     let genes_changed_biotype = chunk_or_inline(
         "genes_changed_biotype",
         genes_changed_biotype,
-        max_inline_items,
-        &out_dir,
+        args.max_inline_items,
+        &args.out_dir,
         &mut chunk_manifest,
     )?;
     let genes_changed_signature = chunk_or_inline(
         "genes_changed_signature",
         genes_changed_signature,
-        max_inline_items,
-        &out_dir,
+        args.max_inline_items,
+        &args.out_dir,
         &mut chunk_manifest,
     )?;
 
@@ -658,8 +664,8 @@ pub(crate) fn build_release_diff(
         "compatibility": "additive-only"
     });
 
-    let diff_path = out_dir.join("diff.json");
-    let summary_path = out_dir.join("diff.summary.json");
+    let diff_path = args.out_dir.join("diff.json");
+    let summary_path = args.out_dir.join("diff.summary.json");
     let diff_bytes = canonical::stable_json_bytes(&diff).map_err(|e| e.to_string())?;
     let summary_bytes = canonical::stable_json_bytes(&summary).map_err(|e| e.to_string())?;
     fs::write(&diff_path, &diff_bytes).map_err(|e| e.to_string())?;
@@ -1443,7 +1449,10 @@ fn check_sha(path: &PathBuf, expected: &str) -> Result<(), String> {
 
 #[cfg(test)]
 mod tests {
-    use super::{build_release_diff, compute_gc_plan, validate_qc_thresholds, OutputMode};
+    use super::{
+        build_release_diff, compute_gc_plan, validate_qc_thresholds, BuildReleaseDiffArgs,
+        OutputMode,
+    };
     use bijux_atlas_core::sha256_hex;
     use bijux_atlas_model::{Catalog, CatalogEntry, DatasetId};
     use serde_json::json;
@@ -1538,24 +1547,28 @@ mod tests {
         let out1 = root.join("diff-out-1");
         let out2 = root.join("diff-out-2");
         build_release_diff(
-            root.to_path_buf(),
-            "110",
-            "111",
-            "homo_sapiens",
-            "GRCh38",
-            out1.clone(),
-            100,
+            BuildReleaseDiffArgs {
+                root: root.to_path_buf(),
+                from_release: "110".to_string(),
+                to_release: "111".to_string(),
+                species: "homo_sapiens".to_string(),
+                assembly: "GRCh38".to_string(),
+                out_dir: out1.clone(),
+                max_inline_items: 100,
+            },
             OutputMode { json: true },
         )
         .expect("build diff #1");
         build_release_diff(
-            root.to_path_buf(),
-            "110",
-            "111",
-            "homo_sapiens",
-            "GRCh38",
-            out2.clone(),
-            100,
+            BuildReleaseDiffArgs {
+                root: root.to_path_buf(),
+                from_release: "110".to_string(),
+                to_release: "111".to_string(),
+                species: "homo_sapiens".to_string(),
+                assembly: "GRCh38".to_string(),
+                out_dir: out2.clone(),
+                max_inline_items: 100,
+            },
             OutputMode { json: true },
         )
         .expect("build diff #2");
