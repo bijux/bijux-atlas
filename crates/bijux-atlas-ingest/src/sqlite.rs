@@ -13,6 +13,20 @@ pub const SQLITE_SCHEMA_SSOT: &str = include_str!("../sql/schema_v4.sql");
 #[allow(dead_code)]
 pub const SQLITE_SCHEMA_SSOT_SHA256: &str =
     "a695a4e39b45e4fd87491dd9a55817142059100480d77b59168db0f5fe0a6901";
+#[allow(dead_code)]
+pub const SQLITE_REQUIRED_INDEXES: &[&str] = &[
+    "idx_gene_summary_gene_id",
+    "idx_gene_summary_name",
+    "idx_gene_summary_biotype",
+    "idx_gene_summary_cover_region",
+    "idx_gene_summary_region",
+    "idx_genes_gene_id",
+    "idx_genes_name",
+    "idx_genes_biotype",
+    "idx_genes_order_page",
+    "idx_transcripts_parent_gene",
+    "idx_exons_transcript",
+];
 const INGEST_JOURNAL_MODE: &str = "WAL";
 const INGEST_LOCKING_MODE: &str = "EXCLUSIVE";
 const INGEST_PAGE_SIZE: i64 = 4096;
@@ -539,5 +553,46 @@ mod tests {
     #[test]
     fn schema_ssot_hash_is_stable() {
         assert_eq!(sha256_hex(SQLITE_SCHEMA_SSOT.as_bytes()), SQLITE_SCHEMA_SSOT_SHA256);
+    }
+
+    #[test]
+    fn index_drift_gate_required_indexes_exist() {
+        let conn = Connection::open_in_memory().expect("conn");
+        conn.execute_batch(SQLITE_SCHEMA_SSOT).expect("apply schema");
+        for idx in SQLITE_REQUIRED_INDEXES {
+            let count: i64 = conn
+                .query_row(
+                    "SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name=?1",
+                    params![idx],
+                    |r| r.get(0),
+                )
+                .expect("index lookup");
+            assert_eq!(count, 1, "missing required index: {idx}");
+        }
+    }
+
+    #[test]
+    fn schema_drift_gate_sqlite_master_digest_is_stable() {
+        let conn = Connection::open_in_memory().expect("conn");
+        conn.execute_batch(SQLITE_SCHEMA_SSOT).expect("apply schema");
+        let mut stmt = conn
+            .prepare(
+                "SELECT type, name, COALESCE(sql, '') FROM sqlite_master WHERE type IN ('table','index','trigger','view') ORDER BY type, name",
+            )
+            .expect("prepare");
+        let rows = stmt
+            .query_map([], |row| {
+                let typ: String = row.get(0)?;
+                let name: String = row.get(1)?;
+                let sql: String = row.get(2)?;
+                Ok(format!("{typ}|{name}|{sql}"))
+            })
+            .expect("query")
+            .collect::<Result<Vec<_>, _>>()
+            .expect("collect");
+        let digest = sha256_hex(rows.join("\n").as_bytes());
+        assert_eq!(
+            digest, "996a3e9bdbb5c4e65e9ef3f659a94bfe9bf4282cbd042934e6a60193cf3af41a"
+        );
     }
 }

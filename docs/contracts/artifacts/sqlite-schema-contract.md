@@ -37,3 +37,10 @@
 - Biotype filter: `idx_gene_summary_biotype`
 - Stable pagination key: `idx_gene_summary_cover_region` and `idx_genes_order_page`
 - Region access: `gene_summary_rtree` + `idx_gene_summary_region`
+
+## Serve-Time SQLite Contract
+
+- Server opens SQLite in read-only immutable URI mode (`mode=ro&immutable=1`).
+- `PRAGMA query_only=ON` is always set.
+- `busy_timeout=200ms` is set to tolerate short read lock contention without long stalls.
+- Connection settings are tuned for read-heavy load (`cache_size`, `mmap_size`, prepared statement cache).
