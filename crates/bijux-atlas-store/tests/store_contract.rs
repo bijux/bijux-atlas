@@ -226,6 +226,50 @@ fn deterministic_catalog_merge_keeps_stable_ordering() {
     );
 }
 
+#[test]
+fn deterministic_catalog_merge_scales_with_stable_output() {
+    let mut primary = Vec::new();
+    let mut secondary = Vec::new();
+    for i in (100..1300).rev() {
+        let dataset =
+            DatasetId::new(&i.to_string(), "homo_sapiens", "GRCh38").expect("dataset id");
+        let canonical_root = format!("release={i}/species=homo_sapiens/assembly=GRCh38/derived");
+        primary.push(CatalogEntry::new(
+            dataset.clone(),
+            format!("{canonical_root}/manifest.json"),
+            format!("{canonical_root}/gene_summary.sqlite"),
+        ));
+        if i % 3 == 0 {
+            secondary.push(CatalogEntry::new(
+                dataset,
+                format!("override/{i}/manifest.json"),
+                format!("override/{i}/gene_summary.sqlite"),
+            ));
+        }
+    }
+    let c1 = Catalog::new(primary);
+    let c2 = Catalog::new(secondary);
+
+    let merged1 = merge_catalogs(&[c1.clone(), c2.clone()]);
+    let merged2 = merge_catalogs(&[c1, c2]);
+    assert_eq!(merged1, merged2);
+    assert_eq!(merged1.datasets.len(), 1200);
+    assert!(
+        merged1
+            .datasets
+            .windows(2)
+            .all(|w| w[0].dataset.canonical_string() < w[1].dataset.canonical_string()),
+        "merged catalog must be strictly sorted by canonical dataset id"
+    );
+    assert!(
+        merged1
+            .datasets
+            .iter()
+            .all(|e| e.manifest_path.starts_with("release=")),
+        "first catalog wins for duplicate dataset IDs"
+    );
+}
+
 fn spawn_store_http_server() -> (String, Arc<AtomicUsize>, thread::JoinHandle<()>) {
     let server = Server::http("127.0.0.1:0").expect("http server");
     let base = format!("http://{}", server.server_addr());
