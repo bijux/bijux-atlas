@@ -1,5 +1,6 @@
 [workspace]
 members = [
+  "xtask",
   "crates/bijux-atlas-core",
   "crates/bijux-atlas-model",
   "crates/bijux-atlas-ingest",
