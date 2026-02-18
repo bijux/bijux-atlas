@@ -23,7 +23,7 @@ def fail(msg: str) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--report-dir", default="artifacts/stack-report")
-    parser.add_argument("--schema", default="ops/report/stack-contract.schema.json")
+    parser.add_argument("--schema", default="ops/_schemas/report/stack-contract.schema.json")
     args = parser.parse_args()
 
     root = Path(__file__).resolve().parents[3]
