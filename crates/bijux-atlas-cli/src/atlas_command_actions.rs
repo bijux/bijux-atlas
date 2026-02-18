@@ -384,6 +384,15 @@ fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String
         emit_shards: args.emit_shards,
         shard_partitions: args.shard_partitions,
         compute_gene_signatures: true,
+        compute_contig_fractions: false,
+        compute_transcript_spliced_length: false,
+        compute_transcript_cds_length: false,
+        dev_allow_auto_generate_fai: false,
+        duplicate_transcript_id_policy: bijux_atlas_model::DuplicateTranscriptIdPolicy::Reject,
+        transcript_id_policy: bijux_atlas_model::TranscriptIdPolicy::default(),
+        unknown_feature_policy: bijux_atlas_model::UnknownFeaturePolicy::IgnoreWithWarning,
+        feature_id_uniqueness_policy: bijux_atlas_model::FeatureIdUniquenessPolicy::Reject,
+        reject_normalized_seqid_collisions: true,
     })
     .map_err(|e| e.to_string())?;
 

@@ -1,8 +1,9 @@
 use bijux_atlas_ingest::ingest_dataset;
 use bijux_atlas_ingest::IngestOptions;
 use bijux_atlas_model::{
-    BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, GeneIdentifierPolicy, GeneNamePolicy,
-    SeqidNormalizationPolicy, StrictnessMode, TranscriptTypePolicy,
+    BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy,
+    FeatureIdUniquenessPolicy, GeneIdentifierPolicy, GeneNamePolicy, SeqidNormalizationPolicy,
+    StrictnessMode, TranscriptIdPolicy, TranscriptTypePolicy, UnknownFeaturePolicy,
 };
 use criterion::{criterion_group, criterion_main, Criterion};
 use tempfile::tempdir;
@@ -29,6 +30,15 @@ fn make_options(root: &std::path::Path) -> IngestOptions {
         emit_shards: false,
         shard_partitions: 0,
         compute_gene_signatures: true,
+        compute_contig_fractions: false,
+        compute_transcript_spliced_length: false,
+        compute_transcript_cds_length: false,
+        dev_allow_auto_generate_fai: false,
+        duplicate_transcript_id_policy: DuplicateTranscriptIdPolicy::Reject,
+        transcript_id_policy: TranscriptIdPolicy::default(),
+        unknown_feature_policy: UnknownFeaturePolicy::IgnoreWithWarning,
+        feature_id_uniqueness_policy: FeatureIdUniquenessPolicy::Reject,
+        reject_normalized_seqid_collisions: true,
     }
 }
 

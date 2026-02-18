@@ -1,4 +1,5 @@
 use crate::extract::{GeneRecord, TranscriptRecord};
+use crate::fai::ContigStats;
 use crate::IngestError;
 use bijux_atlas_core::{canonical, sha256_hex};
 use bijux_atlas_model::{DatasetId, ShardCatalog, ShardEntry};
@@ -68,6 +69,7 @@ pub fn write_sqlite(
     dataset: &DatasetId,
     genes: &[GeneRecord],
     transcripts: &[TranscriptRecord],
+    contigs: &BTreeMap<String, ContigStats>,
 ) -> Result<(), IngestError> {
     if path.exists() {
         fs::remove_file(path).map_err(|e| IngestError(e.to_string()))?;
@@ -123,6 +125,12 @@ pub fn write_sqlite(
           gene_count INTEGER NOT NULL,
           PRIMARY KEY (dimension, value)
         ) WITHOUT ROWID;
+        CREATE TABLE contigs (
+          name TEXT PRIMARY KEY,
+          length INTEGER NOT NULL,
+          gc_fraction REAL,
+          n_fraction REAL
+        ) WITHOUT ROWID;
         CREATE VIRTUAL TABLE gene_summary_rtree USING rtree(
           gene_rowid,
           start,
@@ -174,6 +182,14 @@ pub fn write_sqlite(
             .map_err(|e| IngestError(e.to_string()))?;
             rtree_stmt
                 .execute(params![rowid, g.start as f64, g.end as f64])
+                .map_err(|e| IngestError(e.to_string()))?;
+        }
+        let mut contig_stmt = tx
+            .prepare("INSERT INTO contigs (name, length, gc_fraction, n_fraction) VALUES (?1, ?2, ?3, ?4)")
+            .map_err(|e| IngestError(e.to_string()))?;
+        for (name, s) in contigs {
+            contig_stmt
+                .execute(params![name, s.length as i64, s.gc_fraction, s.n_fraction])
                 .map_err(|e| IngestError(e.to_string()))?;
         }
 
@@ -368,7 +384,8 @@ pub fn write_sharded_sqlite_catalog(
             .cloned()
             .collect();
         let dataset = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
-        write_sqlite(&sqlite_path, &dataset, &rows, &tx_rows)?;
+        let empty_contigs = BTreeMap::new();
+        write_sqlite(&sqlite_path, &dataset, &rows, &tx_rows, &empty_contigs)?;
         shards.push(ShardEntry::new(
             bucket,
             seqids,

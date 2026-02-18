@@ -104,6 +104,8 @@ pub struct ArtifactManifest {
     pub toolchain_hash: String,
     #[serde(default)]
     pub created_at: String,
+    #[serde(default)]
+    pub contig_normalization_aliases: BTreeMap<String, String>,
     #[serde(default = "default_derived_column_origins")]
     pub derived_column_origins: BTreeMap<String, String>,
 }
@@ -138,6 +140,7 @@ impl ArtifactManifest {
             ingest_build_hash: String::new(),
             toolchain_hash: "unknown".to_string(),
             created_at: String::new(),
+            contig_normalization_aliases: BTreeMap::new(),
             derived_column_origins: default_derived_column_origins(),
         }
     }
