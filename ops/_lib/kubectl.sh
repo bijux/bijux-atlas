@@ -8,8 +8,24 @@ OPS_LIB_ROOT="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=ops/_lib/artifacts.sh
 source "$OPS_LIB_ROOT/artifacts.sh"
 
+ops_kubectl_guardrails() {
+  if [ "${I_KNOW_WHAT_I_AM_DOING:-0}" = "1" ] || [ "${ALLOW_NON_KIND:-0}" = "1" ]; then
+    return 0
+  fi
+  local ctx
+  ctx="$(kubectl config current-context 2>/dev/null || true)"
+  case "$ctx" in
+    kind-*|*kind*) ;;
+    *)
+      echo "refusing kubectl command on non-kind context '$ctx' (set I_KNOW_WHAT_I_AM_DOING=1 to override)" >&2
+      return 11
+      ;;
+  esac
+}
+
 ops_kubectl() {
   local timeout_secs="${OPS_KUBECTL_TIMEOUT_SECS:-120}"
+  ops_kubectl_guardrails
   if command -v timeout >/dev/null 2>&1; then
     timeout "$timeout_secs" kubectl "$@"
   else
