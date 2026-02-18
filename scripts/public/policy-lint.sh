@@ -21,8 +21,10 @@ if not cfg.exists() or not schema.exists():
 cfg_data = json.loads(cfg.read_text())
 required = {
     "schema_version",
+    "mode",
     "allow_override",
     "network_in_unit_tests",
+    "modes",
     "query_budget",
     "response_budget",
     "cache_budget",
@@ -78,3 +80,18 @@ PY
 ./scripts/contracts/check_all.sh
 ./scripts/internal/effects-lint.sh
 ./scripts/internal/naming-intent-lint.sh
+if cfg_data["mode"] not in {"strict", "compat", "dev"}:
+    raise SystemExit("mode must be one of strict|compat|dev")
+if not isinstance(cfg_data["modes"], dict):
+    raise SystemExit("modes must be object")
+for mode_name in ("strict", "compat", "dev"):
+    mode = cfg_data["modes"].get(mode_name)
+    if not isinstance(mode, dict):
+        raise SystemExit(f"modes.{mode_name} must be object")
+    for key in ("allow_override", "max_page_size", "max_region_span", "max_response_bytes"):
+        if key not in mode:
+            raise SystemExit(f"modes.{mode_name}.{key} is required")
+    if int(mode["max_page_size"]) <= 0 or int(mode["max_region_span"]) <= 0 or int(mode["max_response_bytes"]) <= 0:
+        raise SystemExit(f"modes.{mode_name} cap values must be > 0")
+if cfg_data["modes"]["strict"]["allow_override"] is not False:
+    raise SystemExit("modes.strict.allow_override must be false")
