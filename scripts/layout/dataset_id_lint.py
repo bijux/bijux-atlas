@@ -3,6 +3,9 @@
 # purpose: validate DatasetId and DatasetKey strings across ops fixtures/manifests.
 # stability: public
 # called-by: make dataset-id-lint
+# Purpose: enforce DatasetId and DatasetKey formatting contract over ops fixture metadata.
+# Inputs: repository fixture manifests under ops/ and scripts/layout policy constants.
+# Outputs: exit 0 when all IDs are valid, else deterministic validation errors on stderr.
 from __future__ import annotations
 import json
 import re

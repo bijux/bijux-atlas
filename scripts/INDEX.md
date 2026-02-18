@@ -140,6 +140,7 @@ Generated file. Do not edit manually.
 | `scripts/public/observability/lint_runbooks.py` | `platform` | `public` | `ops-metrics-check` |
 | `scripts/public/openapi-diff-check.sh` | `platform` | `public` | `api-contract-check`, `openapi-drift`, `ops-openapi-validate` |
 | `scripts/public/perf/check_baseline_update_policy.sh` | `platform` | `public` | - |
+| `scripts/public/perf/check_percent_regression.py` | `platform` | `public` | `stack-full` |
 | `scripts/public/perf/check_pinned_queries_lock.py` | `platform` | `public` | - |
 | `scripts/public/perf/check_prereqs.sh` | `platform` | `public` | - |
 | `scripts/public/perf/check_regression.py` | `platform` | `public` | - |
@@ -166,6 +167,8 @@ Generated file. Do not edit manually.
 | `scripts/public/query-plan-gate.sh` | `platform` | `public` | `query-plan-gate` |
 | `scripts/public/report_bundle.sh` | `platform` | `public` | `ops-report` |
 | `scripts/public/require-crate-docs.sh` | `platform` | `public` | `crate-structure` |
+| `scripts/public/stack/build_stack_report.py` | `platform` | `public` | `stack-full` |
+| `scripts/public/stack/validate_stack_report.py` | `platform` | `public` | `stack-full` |
 | `scripts/release/update-compat-matrix.sh` | `release-engineering` | `public` | `release-update-compat-matrix` |
 | `scripts/release/validate-compat-matrix.sh` | `release-engineering` | `public` | `compat-matrix-validate` |
 | `scripts/tests/test_paths.py` | `platform` | `internal` | - |

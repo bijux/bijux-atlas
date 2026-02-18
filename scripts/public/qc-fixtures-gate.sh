@@ -3,6 +3,9 @@
 # purpose: run QC validation gate on minimal and medium fixtures.
 # stability: public
 # called-by: make ci-qc-fixtures
+# Purpose: execute deterministic fixture ingest and QC threshold validation gate.
+# Inputs: fixture GFF3/FASTA/FAI files and configs/ops/dataset-qc-thresholds.json.
+# Outputs: artifacts under artifacts/isolates/qc-fixtures and non-zero exit on QC violations.
 set -euo pipefail
 
 ROOT="$(CDPATH='' cd -- "$(dirname -- "$0")/../.." && pwd)"
