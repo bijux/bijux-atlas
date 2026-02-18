@@ -1,7 +1,22 @@
 # Ops Load
 
-Canonical home for load scenarios, k6 suites, baselines, and perf reports.
+## Purpose
+Own k6 suites/manifests, perf baselines, and load reporting.
 
-Use `make ops-load-smoke` / `make ops-load-full`.
+## Entry points
+- `make ops-load-suite SUITE=mixed PROFILE=kind`
+- `make ops-load-smoke`
+- `make ops-load-full`
+- `make ops-load-manifest-validate`
 
-See top-level ops guide: `ops/README.md`.
+## Contracts
+- `ops/load/CONTRACT.md`
+- `ops/load/suites/suites.json`
+
+## Artifacts
+- `ops/_artifacts/<run_id>/load/`
+
+## Failure modes
+- Suite manifest/schema drift.
+- Pinned query lock mismatch.
+- Regression against accepted baseline thresholds.

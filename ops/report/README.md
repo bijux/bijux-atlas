@@ -6,9 +6,9 @@ Generic reporting surface for stack, observability, and load evidence.
 
 ## Scope
 
-- `ops/report/generate.py`: generic run bundle generation.
-- `ops/report/scorecard.py`: generic readiness scoring.
-- `ops/report/incident_repro.sh`: incident-focused bundle helper.
+- Report generation and normalization for stack/obs/load evidence.
+- Readiness scoring across contract outputs.
+- Incident repro-kit bundle assembly.
 
 ## Commands
 

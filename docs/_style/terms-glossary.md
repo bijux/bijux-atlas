@@ -10,3 +10,16 @@
 - `Store`: backend that serves catalog/manifests/artifacts.
 - `Shard`: optional partition of dataset SQLite for scale.
 - `Budget`: configured hard limit for work, bytes, latency, or retries.
+
+## Ops Terms
+
+- `Stack`: dependency bring-up and fault injection foundation.
+- `K8s`: chart install profiles, policies, and cluster validation.
+- `Obs`: observability pack, signal contracts, dashboards, and drills.
+- `Load`: k6 suites, scenarios, baselines, and load reports.
+- `E2E`: composition-only workflows spanning stack + k8s + obs + datasets + load.
+
+## Synonym Policy
+
+- Use `store` for durable role naming; `minio` is implementation detail.
+- Do not use `phase`, `step`, `task`, or `stage` in durable ops names.
