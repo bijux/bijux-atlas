@@ -23,8 +23,9 @@ Generated file. Do not edit manually.
 | `scripts/contracts/format_contracts.py` | `contracts` | `internal` | - |
 | `scripts/contracts/gen_openapi.py` | `contracts` | `internal` | `api-contract-check` |
 | `scripts/contracts/generate_chart_values_schema.py` | `contracts` | `public` | `chart-validate`, `ops-values-validate` |
-| `scripts/contracts/generate_contract_artifacts.py` | `contracts` | `public` | `docs-freeze` |
+| `scripts/contracts/generate_contract_artifacts.py` | `contracts` | `public` | `docs-freeze`, `telemetry-contracts` |
 | `scripts/demo/demo.sh` | `platform` | `private` | - |
+| `scripts/docs/ban_legacy_terms.sh` | `docs-governance` | `public` | `docs`, `docs-lint-names` |
 | `scripts/docs/check-durable-naming.py` | `docs-governance` | `public` | `rename-lint` |
 | `scripts/docs/check_adr_headers.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/check_broken_examples.py` | `docs-governance` | `public` | `docs` |
@@ -54,8 +55,11 @@ Generated file. Do not edit manually.
 | `scripts/docs/check_no_legacy_root_paths.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/check_no_orphan_docs.py` | `docs-governance` | `public` | `docs`, `docs-lint-names` |
 | `scripts/docs/check_no_placeholders.py` | `docs-governance` | `public` | `docs` |
+| `scripts/docs/check_observability_acceptance_checklist.py` | `docs-governance` | `public` | - |
+| `scripts/docs/check_observability_docs_checklist.py` | `docs-governance` | `public` | `docs`, `docs-lint-names` |
 | `scripts/docs/check_openapi_examples.py` | `docs-governance` | `public` | `docs`, `ops-openapi-validate`, `ops-smoke` |
 | `scripts/docs/check_ops_docs_make_targets.py` | `docs-governance` | `public` | `docs` |
+| `scripts/docs/check_ops_observability_links.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/check_reference_templates.sh` | `docs-governance` | `public` | - |
 | `scripts/docs/check_runbook_map_registration.py` | `docs-governance` | `public` | `docs-lint-names` |
 | `scripts/docs/check_runbooks_contract.py` | `docs-governance` | `public` | `docs`, `ops-drill-runner` |
@@ -70,14 +74,17 @@ Generated file. Do not edit manually.
 | `scripts/docs/generate_k8s_install_matrix.py` | `docs-governance` | `public` | - |
 | `scripts/docs/generate_k8s_values_doc.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/generate_make_targets_inventory.py` | `docs-governance` | `public` | `docs` |
+| `scripts/docs/generate_observability_surface.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/generate_openapi_docs.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/generate_scripts_graph.py` | `docs-governance` | `public` | `scripts-graph` |
+| `scripts/docs/legacy-terms-allowlist.txt` | `docs-governance` | `public` | - |
 | `scripts/docs/lint_depth.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/lint_doc_contracts.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/lint_doc_status.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/lint_glossary_links.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/naming_inventory.py` | `docs-governance` | `public` | `docs-lint-names` |
 | `scripts/docs/render_diagrams.sh` | `docs-governance` | `public` | `docs` |
+| `scripts/docs/rewrite_legacy_terms.py` | `docs-governance` | `public` | - |
 | `scripts/docs/run_blessed_snippets.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/spellcheck_docs.py` | `docs-governance` | `public` | - |
 | `scripts/fixtures/derive-release-111.sh` | `dataset-ops` | `internal` | - |
@@ -183,6 +190,7 @@ Generated file. Do not edit manually.
 | `scripts/public/stack/validate_stack_report.py` | `platform` | `public` | `stack-full` |
 | `scripts/release/update-compat-matrix.sh` | `release-engineering` | `public` | `release-update-compat-matrix` |
 | `scripts/release/validate-compat-matrix.sh` | `release-engineering` | `public` | `compat-matrix-validate` |
+| `scripts/run_drill.sh` | `platform` | `internal` | - |
 | `scripts/tests/test_paths.py` | `platform` | `internal` | - |
 | `scripts/tools/__init__.py` | `platform` | `internal` | - |
 | `scripts/tools/json_helpers.py` | `platform` | `internal` | - |
