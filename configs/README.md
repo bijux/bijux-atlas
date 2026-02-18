@@ -34,10 +34,18 @@ Rule:
   - Consumed by: `make ops-env-print`, env contract validation.
 - `configs/ops/tool-versions.json`
   - Consumed by: `make ops-tools-check`, `make doctor`.
-- `configs/ops/observability-pack.json`
+- `configs/ops/obs-pack.json`
   - Consumed by: observability pack profile/install/version checks, `make config-validate`.
 - `configs/ops/artifacts-allowlist.txt`
   - Consumed by: layout/artifacts policy checks.
+- `configs/ops/slo/classes.json`
+  - Consumed by: SLO class contract checks and docs.
+- `configs/ops/slo/sli.schema.json`
+  - Consumed by: SLO contract validators.
+- `configs/ops/slo/slo.schema.json`
+  - Consumed by: `make ci-slo-config-validate`.
+- `configs/ops/slo/slo.v1.json`
+  - Consumed by: `make ci-slo-config-validate`, `make ci-slo-metrics-contract`.
 - `configs/openapi/v1/openapi.generated.json`
   - Consumed by: OpenAPI drift checks and docs examples.
 - `configs/openapi/v1/openapi.snapshot.json`

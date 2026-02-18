@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "classes": [
+    {
+      "name": "cheap",
+      "description": "lightweight operational endpoints",
+      "endpoint_patterns": [
+        "^/health$",
+        "^/version$",
+        "^/metrics$"
+      ]
+    },
+    {
+      "name": "standard",
+      "description": "core gene retrieval endpoints",
+      "endpoint_patterns": [
+        "^/v1/genes$",
+        "^/v1/genes/[^/]+$"
+      ]
+    },
+    {
+      "name": "heavy",
+      "description": "compute-heavy and large payload endpoints",
+      "endpoint_patterns": [
+        "^/v1/genes/[^/]+/diff$",
+        "^/v1/genes/[^/]+/region$",
+        "^/v1/genes/[^/]+/sequence$"
+      ]
+    }
+  ]
+}
