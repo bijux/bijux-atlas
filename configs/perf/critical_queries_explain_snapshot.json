@@ -1,0 +1,13 @@
+{
+  "gene_list_by_biotype": [
+    "SEARCH gene_summary USING INDEX idx_gene_summary_biotype (biotype=?)",
+    "USE TEMP B-TREE FOR ORDER BY"
+  ],
+  "gene_lookup_by_id": [
+    "SEARCH gene_summary USING COVERING INDEX idx_gene_summary_cover_lookup (gene_id=?)"
+  ],
+  "region_overlap": [
+    "SCAN r VIRTUAL TABLE INDEX 1:",
+    "SEARCH g USING COVERING INDEX idx_gene_summary_cover_region (seqid=?)"
+  ]
+}

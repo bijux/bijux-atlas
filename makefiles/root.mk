@@ -93,6 +93,7 @@ ci: ## Run CI-equivalent meta pipeline mapped to workflow jobs
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-openapi-drift
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-api-contract
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-query-plan-gate
+	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-critical-query-check
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-sqlite-schema-drift
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-sqlite-index-drift
 	@ISO_ROOT=artifacts/isolates/ci $(MAKE) ci-ingest-determinism
