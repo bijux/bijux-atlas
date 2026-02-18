@@ -80,19 +80,41 @@ stop_port_forward() {
 }
 
 install_chart() {
+  if ! ops_wait_namespace_termination "$NS" 120; then
+    echo "namespace $NS is still terminating after timeout" >&2
+    return 1
+  fi
   kubectl get ns "$NS" >/dev/null 2>&1 || kubectl create ns "$NS" >/dev/null
+  local node_port
+  node_port="$(awk '/^[[:space:]]*nodePort:/ {print $2; exit}' "$VALUES" 2>/dev/null || true)"
+  if [ -n "$node_port" ] && [ "$node_port" != "null" ]; then
+    while read -r ns svc ports; do
+      [ -z "$ns" ] && continue
+      [ "$ns" = "$NS" ] && continue
+      if echo "$ports" | tr ',' '\n' | grep -qx "$node_port"; then
+        if [ "$svc" = "${RELEASE}-bijux-atlas" ] && [[ "$ns" == atlas-ops-* ]]; then
+          echo "removing stale NodePort owner: ${ns}/${svc} (port ${node_port})"
+          helm -n "$ns" uninstall "$RELEASE" >/dev/null 2>&1 || true
+          kubectl -n "$ns" delete svc "$svc" --ignore-not-found >/dev/null 2>&1 || true
+        else
+          echo "nodePort ${node_port} already allocated by ${ns}/${svc}; refusing destructive cleanup" >&2
+          return 1
+        fi
+      fi
+    done < <(kubectl get svc -A -o custom-columns=NS:.metadata.namespace,NAME:.metadata.name,NODEPORTS:.spec.ports[*].nodePort --no-headers)
+  fi
   if [ "$USE_LOCAL_IMAGE" = "1" ]; then
     if ! docker image inspect "$LOCAL_IMAGE_REF" >/dev/null 2>&1; then
       docker build -t "$LOCAL_IMAGE_REF" -f "$ROOT/docker/Dockerfile" "$ROOT"
     fi
     kind load docker-image "$LOCAL_IMAGE_REF" --name "$CLUSTER_NAME"
-    helm upgrade --install "$RELEASE" "$CHART" -n "$NS" --create-namespace -f "$VALUES" --wait --timeout 5m \
+    helm upgrade --install "$RELEASE" "$CHART" -n "$NS" --create-namespace -f "$VALUES" --atomic --wait --timeout 5m \
       --set image.repository="${LOCAL_IMAGE_REF%:*}" \
       --set image.tag="${LOCAL_IMAGE_REF#*:}" \
       --set image.pullPolicy=IfNotPresent \
       "$@"
   else
-    helm upgrade --install "$RELEASE" "$CHART" -n "$NS" --create-namespace -f "$VALUES" --wait --timeout 5m "$@"
+    helm upgrade --install "$RELEASE" "$CHART" -n "$NS" --create-namespace -f "$VALUES" --atomic --wait --timeout 5m "$@"
   fi
 }
 
