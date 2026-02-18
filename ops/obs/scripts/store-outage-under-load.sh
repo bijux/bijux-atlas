@@ -10,7 +10,7 @@ ATLAS_BASE_URL="${ATLAS_BASE_URL:-http://127.0.0.1:18080}"
 "$ROOT/stack/faults/inject.sh" block-minio on
 trap '"$ROOT/stack/faults/inject.sh" block-minio off >/dev/null 2>&1 || true' EXIT
 
-"$ROOT/load/scripts/run_suite.sh" store-outage-mid-spike.json artifacts/perf/results || true
+"$ROOT/load/scripts/run_suite.sh" store-outage-under-spike.json artifacts/perf/results || true
 curl -fsS "$ATLAS_BASE_URL/healthz" >/dev/null
 curl -fsS "$ATLAS_BASE_URL/metrics" | grep -E '^bijux_store_breaker_open' >/dev/null
 

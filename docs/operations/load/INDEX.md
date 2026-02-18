@@ -38,7 +38,7 @@ Required k6 scenarios:
 - `spike.json`
 - `cold-start.json`
 - `stampede.json`
-- `store-outage-mid-spike.json`
+- `store-outage-under-spike.json`
 - `noisy-neighbor-cpu-throttle.json`
 - `pod-churn.json`
 - `response-size-abuse.json`

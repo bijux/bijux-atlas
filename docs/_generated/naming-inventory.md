@@ -38,7 +38,7 @@
 - `soak-30m`
 - `spike-overload-proof`
 - `stampede`
-- `store-outage-mid-spike`
+- `store-outage-under-spike`
 - `warm-steady-state-p99`
 
 ## Runbooks
