@@ -274,7 +274,10 @@ mod tests {
         let rows = parse_gff3_records(&gff).expect("parse fuzz");
         assert_eq!(rows.len(), 128);
         for rec in rows {
-            assert_eq!(rec.attrs.get("biotype").map(String::as_str), Some("protein_coding"));
+            assert_eq!(
+                rec.attrs.get("biotype").map(String::as_str),
+                Some("protein_coding")
+            );
             assert!(rec.attrs.contains_key("ID"));
         }
     }

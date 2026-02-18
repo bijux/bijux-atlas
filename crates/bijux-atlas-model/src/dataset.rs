@@ -220,9 +220,9 @@ impl DatasetId {
         let species = parts
             .next()
             .ok_or_else(|| ValidationError("dataset canonical form missing species".to_string()))?;
-        let assembly = parts
-            .next()
-            .ok_or_else(|| ValidationError("dataset canonical form missing assembly".to_string()))?;
+        let assembly = parts.next().ok_or_else(|| {
+            ValidationError("dataset canonical form missing assembly".to_string())
+        })?;
         if parts.next().is_some() {
             return Err(ValidationError(
                 "dataset canonical form must be release/species/assembly".to_string(),

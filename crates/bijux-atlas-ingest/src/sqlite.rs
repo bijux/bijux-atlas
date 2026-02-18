@@ -395,7 +395,11 @@ pub fn write_sharded_sqlite_catalog(
 ) -> Result<(std::path::PathBuf, ShardCatalog), IngestError> {
     let mut buckets: BTreeMap<String, Vec<GeneRecord>> = BTreeMap::new();
     match sharding_plan {
-        ShardingPlan::None => return Err(IngestError("sharding plan none cannot emit shards".to_string())),
+        ShardingPlan::None => {
+            return Err(IngestError(
+                "sharding plan none cannot emit shards".to_string(),
+            ))
+        }
         ShardingPlan::Contig => {
             if shard_partitions == 0 {
                 for g in genes {
@@ -419,11 +423,7 @@ pub fn write_sharded_sqlite_catalog(
                 "region_grid sharding plan is reserved for future implementation".to_string(),
             ))
         }
-        _ => {
-            return Err(IngestError(
-                "unsupported sharding plan variant".to_string(),
-            ))
-        }
+        _ => return Err(IngestError("unsupported sharding plan variant".to_string())),
     }
 
     if buckets.len() > max_shards {
@@ -576,13 +576,17 @@ mod tests {
 
     #[test]
     fn schema_ssot_hash_is_stable() {
-        assert_eq!(sha256_hex(SQLITE_SCHEMA_SSOT.as_bytes()), SQLITE_SCHEMA_SSOT_SHA256);
+        assert_eq!(
+            sha256_hex(SQLITE_SCHEMA_SSOT.as_bytes()),
+            SQLITE_SCHEMA_SSOT_SHA256
+        );
     }
 
     #[test]
     fn index_drift_gate_required_indexes_exist() {
         let conn = Connection::open_in_memory().expect("conn");
-        conn.execute_batch(SQLITE_SCHEMA_SSOT).expect("apply schema");
+        conn.execute_batch(SQLITE_SCHEMA_SSOT)
+            .expect("apply schema");
         for idx in SQLITE_REQUIRED_INDEXES {
             let count: i64 = conn
                 .query_row(
@@ -598,7 +602,8 @@ mod tests {
     #[test]
     fn schema_drift_gate_sqlite_master_digest_is_stable() {
         let conn = Connection::open_in_memory().expect("conn");
-        conn.execute_batch(SQLITE_SCHEMA_SSOT).expect("apply schema");
+        conn.execute_batch(SQLITE_SCHEMA_SSOT)
+            .expect("apply schema");
         let mut stmt = conn
             .prepare(
                 "SELECT type, name, COALESCE(sql, '') FROM sqlite_master WHERE type IN ('table','index','trigger','view') ORDER BY type, name",
@@ -616,7 +621,8 @@ mod tests {
             .expect("collect");
         let digest = sha256_hex(rows.join("\n").as_bytes());
         assert_eq!(
-            digest, "996a3e9bdbb5c4e65e9ef3f659a94bfe9bf4282cbd042934e6a60193cf3af41a"
+            digest,
+            "996a3e9bdbb5c4e65e9ef3f659a94bfe9bf4282cbd042934e6a60193cf3af41a"
         );
     }
 }

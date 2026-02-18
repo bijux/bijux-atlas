@@ -81,7 +81,12 @@ fn strict_manifest_validation_requires_schema_consistency() {
         "1".to_string(),
         "1".to_string(),
         DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset"),
-        ArtifactChecksums::new("a".repeat(64), "b".repeat(64), "c".repeat(64), "d".repeat(64)),
+        ArtifactChecksums::new(
+            "a".repeat(64),
+            "b".repeat(64),
+            "c".repeat(64),
+            "d".repeat(64),
+        ),
         ManifestStats::new(1, 2, 3),
     );
     manifest.input_hashes.gff3_sha256 = "a".repeat(64);
