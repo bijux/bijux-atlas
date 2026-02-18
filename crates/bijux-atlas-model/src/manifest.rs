@@ -158,7 +158,9 @@ impl ArtifactManifest {
             ));
         }
         if self.schema_version.trim().is_empty() {
-            return Err(ValidationError("schema_version must not be empty".to_string()));
+            return Err(ValidationError(
+                "schema_version must not be empty".to_string(),
+            ));
         }
         if self.manifest_version.trim().is_empty() {
             return Err(ValidationError(
@@ -195,7 +197,9 @@ impl ArtifactManifest {
             ));
         }
         if self.db_hash.trim().is_empty() {
-            return Err(ValidationError("manifest db_hash must not be empty".to_string()));
+            return Err(ValidationError(
+                "manifest db_hash must not be empty".to_string(),
+            ));
         }
         if self.artifact_hash.trim().is_empty() {
             return Err(ValidationError(
@@ -314,6 +318,8 @@ pub struct CatalogEntry {
     pub dataset: DatasetId,
     pub manifest_path: String,
     pub sqlite_path: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub diff_artifacts: Vec<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -403,6 +409,7 @@ impl CatalogEntry {
             dataset,
             manifest_path,
             sqlite_path,
+            diff_artifacts: Vec::new(),
         }
     }
 }

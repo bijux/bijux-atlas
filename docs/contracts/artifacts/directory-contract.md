@@ -13,6 +13,11 @@ Inside dataset directory:
 - `inputs/genome.fa.bgz.fai`
 - `derived/gene_summary.sqlite`
 - `derived/manifest.json`
+- `derived/release_gene_index.json`
+- Optional diff artifacts for cross-release comparisons:
+  - `derived/diffs/from=<from_release>/to=<to_release>/diff.json`
+  - `derived/diffs/from=<from_release>/to=<to_release>/diff.summary.json`
+  - `derived/diffs/from=<from_release>/to=<to_release>/chunks/*.json`
 
 This layout is encoded in `bijux-atlas-model::artifact_paths`.
 
