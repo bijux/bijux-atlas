@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "required": ["stack", "obs", "load"],
+  "properties": {
+    "stack": {"type": "string", "minLength": 1},
+    "obs": {"type": "string", "minLength": 1},
+    "load": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}
