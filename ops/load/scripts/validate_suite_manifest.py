@@ -91,6 +91,15 @@ if lock_script.exists():
     if proc.returncode != 0:
         errors.append(proc.stderr.strip() or proc.stdout.strip() or "pinned query lock check failed")
 
+# Ensure every k6 scenario file is registered in suites.json.
+scenarios_dir = ROOT / manifest["scenarios_dir"]
+registered = {
+    s["scenario"] for s in suites if s.get("kind") == "k6" and isinstance(s.get("scenario"), str) and s["scenario"]
+}
+for file in sorted(scenarios_dir.glob("*.js")):
+    if file.name not in registered:
+        errors.append(f"unregistered k6 scenario file: {file.relative_to(ROOT)}")
+
 if errors:
     for e in errors:
         print(e, file=sys.stderr)

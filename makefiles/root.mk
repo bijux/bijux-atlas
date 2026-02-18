@@ -58,6 +58,15 @@ rename-lint: ## Enforce durable naming rules for docs/scripts and concept owners
 	@python3 ./scripts/docs/check-durable-naming.py
 	@./scripts/docs/check_duplicate_topics.sh
 
+docs-lint-names: ## Enforce durable naming contracts, registries, and inventory
+	@python3 ./scripts/docs/naming_inventory.py
+	@python3 ./scripts/docs/check_no_orphan_docs.py
+	@python3 ./scripts/docs/check_script_locations.py
+	@python3 ./scripts/docs/check_runbook_map_registration.py
+	@python3 ./scripts/docs/check_contract_doc_pairs.py
+	@python3 ./ops/load/scripts/validate_suite_manifest.py
+	@./scripts/docs/check_index_pages.sh
+
 doctor:
 	@printf 'rustc: '; rustc --version
 	@printf 'cargo: '; cargo --version
@@ -181,7 +190,7 @@ release-update-compat-matrix:
 	@[ -n "$$TAG" ] || { echo "usage: make release-update-compat-matrix TAG=<tag>"; exit 2; }
 	@./scripts/release/update-compat-matrix.sh "$$TAG"
 
-.PHONY: help layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-graph scripts-lint scripts-format scripts-test scripts-audit scripts-clean artifacts-index artifacts-clean isolate-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts rename-lint doctor dataset-id-lint config-validate config-print config-drift fetch-real-datasets ssot-check policy-lint policy-schema-drift policy-audit policy-enforcement-status policy-allow-env-lint ops-policy-audit policy-drift-diff release-update-compat-matrix ci local local-full contracts hygiene architecture-check clean deep-clean debug bump release-dry-run release
+.PHONY: help layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-graph scripts-lint scripts-format scripts-test scripts-audit scripts-clean artifacts-index artifacts-clean isolate-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts rename-lint docs-lint-names doctor dataset-id-lint config-validate config-print config-drift fetch-real-datasets ssot-check policy-lint policy-schema-drift policy-audit policy-enforcement-status policy-allow-env-lint ops-policy-audit policy-drift-diff release-update-compat-matrix ci local local-full contracts hygiene architecture-check clean deep-clean debug bump release-dry-run release
 
 
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)
