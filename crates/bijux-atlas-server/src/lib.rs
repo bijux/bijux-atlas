@@ -14,3 +14,6 @@ mod telemetry;
 include!("runtime/state/mod.rs");
 include!("runtime/effects/mod.rs");
 include!("runtime/orchestrator/mod.rs");
+
+#[cfg(test)]
+mod cache_manager_tests;
