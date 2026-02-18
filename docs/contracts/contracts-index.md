@@ -23,6 +23,8 @@ Does not replace registry-specific detail pages.
 | Registry | SSOT file | Generated docs/code | Stability |
 | --- | --- | --- | --- |
 | Error codes | `ERROR_CODES.json` | `errors.md`, API/core generated Rust | Frozen |
+| Error envelope schema | `ERROR_SCHEMA.json` | `_generated/contracts/ERROR_SCHEMA.md` | Stable |
+| Error status map | `ERROR_STATUS_MAP.json` | `_generated/contracts/ERROR_STATUS_MAP.md` | Stable |
 | Metrics | `METRICS.json` | `metrics.md`, server telemetry constants | Additive |
 | Trace spans | `TRACE_SPANS.json` | `tracing.md`, server span constants | Additive |
 | Endpoints | `ENDPOINTS.json` | `endpoints.md`, OpenAPI drift checks | Additive |
@@ -40,6 +42,8 @@ Does not replace registry-specific detail pages.
 ## Generated docs
 
 - [_generated/contracts/ERROR_CODES.md](../_generated/contracts/ERROR_CODES.md)
+- [_generated/contracts/ERROR_SCHEMA.md](../_generated/contracts/ERROR_SCHEMA.md)
+- [_generated/contracts/ERROR_STATUS_MAP.md](../_generated/contracts/ERROR_STATUS_MAP.md)
 - [_generated/contracts/ENDPOINTS.md](../_generated/contracts/ENDPOINTS.md)
 - [_generated/contracts/METRICS.md](../_generated/contracts/METRICS.md)
 - [_generated/contracts/TRACE_SPANS.md](../_generated/contracts/TRACE_SPANS.md)

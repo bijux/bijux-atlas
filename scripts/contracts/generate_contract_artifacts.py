@@ -24,6 +24,8 @@ normalized_schema = json.loads((contracts / "NORMALIZED_FORMAT_SCHEMA.json").rea
 diff_schema = json.loads((contracts / "DIFF_SCHEMA.json").read_text())
 sharding_schema = json.loads((contracts / "SHARDING_SCHEMA.json").read_text())
 cursor_schema = json.loads((contracts / "CURSOR_SCHEMA.json").read_text())
+error_schema = json.loads((contracts / "ERROR_SCHEMA.json").read_text())
+error_status_map = json.loads((contracts / "ERROR_STATUS_MAP.json").read_text())
 
 
 def write_reference_contract_doc(path: Path, title: str, contracts_body: str, examples_body: str) -> None:
@@ -289,6 +291,16 @@ for rust_file in (
 (out_gen / "CURSOR_SCHEMA.md").write_text(
     "# Cursor Schema (Generated)\n\n```json\n"
     + json.dumps(cursor_schema, indent=2, sort_keys=True)
+    + "\n```\n"
+)
+(out_gen / "ERROR_SCHEMA.md").write_text(
+    "# Error Schema (Generated)\n\n```json\n"
+    + json.dumps(error_schema, indent=2, sort_keys=True)
+    + "\n```\n"
+)
+(out_gen / "ERROR_STATUS_MAP.md").write_text(
+    "# Error Status Map (Generated)\n\n```json\n"
+    + json.dumps(error_status_map, indent=2, sort_keys=True)
     + "\n```\n"
 )
 

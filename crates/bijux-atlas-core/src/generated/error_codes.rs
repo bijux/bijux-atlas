@@ -4,6 +4,10 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[non_exhaustive]
 pub enum ErrorCode {
+    ArtifactCorrupted,
+    ArtifactQuarantined,
+    DatasetNotFound,
+    GeneNotFound,
     IngestDuplicateTranscriptId,
     IngestInvalidCdsPhase,
     IngestInvalidStrand,
@@ -26,12 +30,18 @@ pub enum ErrorCode {
     RateLimited,
     ResponseTooLarge,
     Timeout,
+    UpstreamStoreUnavailable,
+    ValidationFailed,
 }
 
 impl ErrorCode {
     #[must_use]
     pub const fn as_str(self) -> &'static str {
         match self {
+            Self::ArtifactCorrupted => "ArtifactCorrupted",
+            Self::ArtifactQuarantined => "ArtifactQuarantined",
+            Self::DatasetNotFound => "DatasetNotFound",
+            Self::GeneNotFound => "GeneNotFound",
             Self::IngestDuplicateTranscriptId => "IngestDuplicateTranscriptId",
             Self::IngestInvalidCdsPhase => "IngestInvalidCdsPhase",
             Self::IngestInvalidStrand => "IngestInvalidStrand",
@@ -54,11 +64,17 @@ impl ErrorCode {
             Self::RateLimited => "RateLimited",
             Self::ResponseTooLarge => "ResponseTooLarge",
             Self::Timeout => "Timeout",
+            Self::UpstreamStoreUnavailable => "UpstreamStoreUnavailable",
+            Self::ValidationFailed => "ValidationFailed",
         }
     }
 
     pub fn parse(value: &str) -> Option<Self> {
         match value {
+            "ArtifactCorrupted" => Some(Self::ArtifactCorrupted),
+            "ArtifactQuarantined" => Some(Self::ArtifactQuarantined),
+            "DatasetNotFound" => Some(Self::DatasetNotFound),
+            "GeneNotFound" => Some(Self::GeneNotFound),
             "IngestDuplicateTranscriptId" => Some(Self::IngestDuplicateTranscriptId),
             "IngestInvalidCdsPhase" => Some(Self::IngestInvalidCdsPhase),
             "IngestInvalidStrand" => Some(Self::IngestInvalidStrand),
@@ -81,6 +97,8 @@ impl ErrorCode {
             "RateLimited" => Some(Self::RateLimited),
             "ResponseTooLarge" => Some(Self::ResponseTooLarge),
             "Timeout" => Some(Self::Timeout),
+            "UpstreamStoreUnavailable" => Some(Self::UpstreamStoreUnavailable),
+            "ValidationFailed" => Some(Self::ValidationFailed),
             _ => None,
         }
     }
@@ -88,6 +106,10 @@ impl ErrorCode {
 
 #[allow(dead_code)]
 pub const ERROR_CODES: &[&str] = &[
+    "ArtifactCorrupted",
+    "ArtifactQuarantined",
+    "DatasetNotFound",
+    "GeneNotFound",
     "IngestDuplicateTranscriptId",
     "IngestInvalidCdsPhase",
     "IngestInvalidStrand",
@@ -110,4 +132,6 @@ pub const ERROR_CODES: &[&str] = &[
     "RateLimited",
     "ResponseTooLarge",
     "Timeout",
+    "UpstreamStoreUnavailable",
+    "ValidationFailed",
 ];

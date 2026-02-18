@@ -171,6 +171,7 @@ api-contract-check:
 	@python3 ./scripts/contracts/gen_openapi.py
 	@./scripts/public/openapi-diff-check.sh
 	@python3 ./scripts/contracts/check_endpoints_contract.py
+	@python3 ./scripts/contracts/check_error_codes_contract.py
 	@python3 ./scripts/contracts/check_v1_surface.py
 	@python3 ./scripts/contracts/check_breaking_contract_change.py
 
