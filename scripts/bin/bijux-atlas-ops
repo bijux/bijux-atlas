@@ -5,6 +5,7 @@
 set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
 cd "$ROOT"
+. "$ROOT/scripts/lib/errors.sh"
 
 if [ "${1:-}" = "" ] || [ "${1:-}" = "help" ] || [ "${1:-}" = "--help" ]; then
   exec make ops-help
@@ -24,5 +25,5 @@ case "$cmd" in
   load-suite) exec make ops-load-suite "$@" ;;
   lint) exec make ops-lint "$@" ;;
   fmt) exec make ops-fmt "$@" ;;
-  *) echo "unknown ops command: $cmd" >&2; echo "use: scripts/bin/bijux-atlas-ops help" >&2; exit 2 ;;
+  *) err "OPS_UNKNOWN_COMMAND" "unknown ops command: $cmd (use: scripts/bin/bijux-atlas-ops help)"; exit 2 ;;
 esac

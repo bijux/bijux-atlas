@@ -9,8 +9,11 @@ This registry defines script stability levels.
 ## Public
 
 - `scripts/public/*`
+- `scripts/check/*`
+- `scripts/gen/*`
 - `scripts/bin/isolate`
 - `scripts/bin/require-isolate`
+- `scripts/bin/bijux-atlas-dev`
 - `scripts/bootstrap/install_tools.sh`
 - `scripts/contracts/check_all.sh`
 - `scripts/contracts/check_chart_values_contract.py`
@@ -33,6 +36,8 @@ This registry defines script stability levels.
 ## Internal
 
 - `scripts/internal/*`
+- `scripts/lib/*`
+- `scripts/python/*`
 - `ops/load/scripts/*`
 - `ops/obs/scripts/*`
 - `ops/stack/scripts/*`

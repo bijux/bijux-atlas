@@ -265,6 +265,15 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@python3 ./scripts/layout/check_script_naming_convention.py
 	@python3 ./scripts/layout/check_no_mixed_script_name_variants.py
 	@python3 ./scripts/layout/check_duplicate_script_intent.py
+	@./scripts/check/no-duplicate-script-names.sh
+	@./scripts/check/no-direct-path-usage.sh
+	@python3 ./scripts/check/check-script-help.py
+	@python3 ./scripts/check/check-script-errors.py
+	@python3 ./scripts/check/check-script-write-roots.py
+	@python3 ./scripts/check/check-script-tool-guards.py
+	@python3 ./scripts/check/check-script-ownership.py
+	@python3 ./scripts/check/check-python-lock.py
+	@python3 ./scripts/check/check-bin-entrypoints.py
 	@./ops/_lint/naming.sh
 	@python3 ./ops/_lint/no-shadow-configs.py
 	@python3 ./scripts/layout/check_public_entrypoint_cap.py
@@ -277,6 +286,7 @@ inventory: ## Regenerate inventories (ops surface, make targets, docs status, na
 	@python3 ./scripts/docs/generate_ops_surface.py
 	@python3 ./scripts/docs/generate_make_targets_inventory.py
 	@python3 ./scripts/docs/generate_makefiles_surface.py
+	@python3 ./scripts/gen/generate_scripts_surface.py
 	@python3 ./scripts/configs/generate_configs_surface.py
 	@python3 ./scripts/configs/generate_tooling_versions_doc.py
 	@python3 ./scripts/docs/lint_doc_status.py
@@ -285,7 +295,7 @@ inventory: ## Regenerate inventories (ops surface, make targets, docs status, na
 
 verify-inventory: ## Fail if inventory outputs drift from generated state
 	@$(MAKE) -s inventory
-	@git diff --exit-code -- docs/_generated/repo-surface.md docs/_generated/doc-status.md docs/_generated/naming-inventory.md docs/_generated/ops-surface.md docs/_generated/configs-surface.md docs/_generated/tooling-versions.md docs/development/make-targets.md docs/development/make-targets-inventory.md docs/development/makefiles/surface.md
+	@git diff --exit-code -- docs/_generated/repo-surface.md docs/_generated/doc-status.md docs/_generated/naming-inventory.md docs/_generated/ops-surface.md docs/_generated/configs-surface.md docs/_generated/tooling-versions.md docs/_generated/scripts-surface.md docs/development/make-targets.md docs/development/make-targets-inventory.md docs/development/makefiles/surface.md
 
 scripts-format: ## Format scripts (python + shell where available)
 	@if command -v ruff >/dev/null 2>&1; then ruff format scripts; else echo "ruff not installed (optional)"; fi
@@ -295,6 +305,19 @@ scripts-test: ## Run scripts-focused tests
 	@python3 ./scripts/layout/check_make_public_scripts.py
 	@python3 ./ops/load/scripts/validate_suite_manifest.py
 	@python3 ./ops/load/scripts/check_pinned_queries_lock.py
+	@python3 -m unittest scripts.tests.test_paths
+
+scripts-check: ## Run scripts lint + tests as a single gate
+	@./scripts/check/no-duplicate-script-names.sh
+	@./scripts/check/no-direct-path-usage.sh
+	@python3 ./scripts/check/check-script-help.py
+	@python3 ./scripts/check/check-script-errors.py
+	@python3 ./scripts/check/check-script-write-roots.py
+	@python3 ./scripts/check/check-script-tool-guards.py
+	@python3 ./scripts/check/check-script-ownership.py
+	@python3 ./scripts/check/check-python-lock.py
+	@if command -v shellcheck >/dev/null 2>&1; then find scripts/check scripts/bin scripts/ci scripts/dev -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional)"; fi
+	@if command -v ruff >/dev/null 2>&1; then ruff check scripts/check scripts/gen scripts/python; else echo "ruff not installed (optional)"; fi
 	@python3 -m unittest scripts.tests.test_paths
 
 scripts-audit: ## Audit script headers, taxonomy buckets, and no-implicit-cwd contract

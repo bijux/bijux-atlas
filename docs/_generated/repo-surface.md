@@ -129,6 +129,7 @@
 - `make root-local`
 - `make root-local-fast`
 - `make root-local-summary`
+- `make scripts-check`
 - `make verify-inventory`
 
 ## Public Ops Run Commands
