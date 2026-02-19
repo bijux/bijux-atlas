@@ -1,168 +1,24 @@
-name: ops-full-nightly
+name: nightly-suite
 
 on:
   schedule:
-    - cron: '10 2 * * *'
+    - cron: '20 3 * * *'
   workflow_dispatch: {}
 
-concurrency:
-  group: kind-ops-full-nightly
-  cancel-in-progress: false
-
-defaults:
-  run:
-    shell: bash
-
-env:
-  ATLAS_E2E_CLUSTER_NAME: bijux-atlas-ops-full-nightly
-  ATLAS_E2E_NAMESPACE: atlas-e2e-ops-full-nightly
-  ATLAS_E2E_RELEASE_NAME: atlas-e2e-ops-full-nightly
-  ISO_TAG: ops-full-nightly
-  ISO_RUN_ID: ops-full-nightly
-  ISO_ROOT: artifacts/isolates/ops-full-nightly
-  CARGO_TARGET_DIR: artifacts/isolates/ops-full-nightly/target
-  CARGO_HOME: artifacts/isolates/ops-full-nightly/cargo-home
-  TMPDIR: artifacts/isolates/ops-full-nightly/tmp
-  TMP: artifacts/isolates/ops-full-nightly/tmp
-  TEMP: artifacts/isolates/ops-full-nightly/tmp
-
 jobs:
-  ops-full:
+  nightly:
     runs-on: ubuntu-latest
-    timeout-minutes: 150
-    env:
-      ATLAS_RUN_ID: nightly-ops-full-${{ github.run_id }}
+    timeout-minutes: 240
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/kind
-          key: kind-cache-${{ runner.os }}-v0.31.0
-      - uses: helm/kind-action@v1.10.0
-        with:
-          version: v0.31.0
-          cluster_name: bijux-atlas-ops-full-nightly
-          config: ops/stack/kind/cluster.yaml
-      - uses: azure/setup-helm@v4
-      - uses: azure/setup-kubectl@v4
-      - uses: grafana/setup-k6-action@v1
-      - run: make ci-ops-install-prereqs
-      - run: make ops-tools-check
-      - run: make ops-full
-      - name: Optional nightly realdata QC gate
-        continue-on-error: true
-        run: |
-          make ops-publish DATASET=real1
-          ATLAS_DATASET_RELEASE=111 ATLAS_DATASET_SPECIES=homo_sapiens ATLAS_DATASET_ASSEMBLY=GRCh38 make ops-dataset-qc
-      - if: always()
-        run: make ops-report
-      - if: always()
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Run canonical nightly entrypoint
+        run: make nightly
+      - name: Upload nightly artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ops-full-nightly-artifacts
-          path: artifacts/ops/**
-      - if: always()
-        run: make ops-down
-
-  ops-load-full:
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
-    env:
-      ATLAS_RUN_ID: nightly-ops-load-full-${{ github.run_id }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: grafana/setup-k6-action@v1
-      - run: make ci-ops-install-load-prereqs
-      - run: make ops-k6-version-check
-      - run: make ops-load-full
-      - if: always()
-        run: make ops-report
-      - if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: ops-load-full-nightly-artifacts
-          path: artifacts/ops/**
-
-  ops-k8s-tests:
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
-    env:
-      ATLAS_RUN_ID: nightly-ops-k8s-tests-${{ github.run_id }}
-      ATLAS_FLAKE_TTL_DAYS: '14'
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/kind
-          key: kind-cache-${{ runner.os }}-v0.31.0
-      - uses: helm/kind-action@v1.10.0
-        with:
-          version: v0.31.0
-          cluster_name: bijux-atlas-ops-full-nightly
-          config: ops/stack/kind/cluster.yaml
-      - uses: azure/setup-helm@v4
-      - uses: azure/setup-kubectl@v4
-      - uses: grafana/setup-k6-action@v1
-      - run: make ci-ops-install-prereqs
-      - run: make ops-tools-check
-      - run: make ops-up
-      - run: make ops-k8s-tests
-      - if: always()
-        run: make ops-report
-      - if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: ops-k8s-tests-nightly-artifacts
+          name: nightly-artifacts
           path: |
-            artifacts/ops/**
-            artifacts/ops/k8s-failure-bundle-*.tar.gz
-      - if: always() && hashFiles('artifacts/ops/k8s/flake-issue.md') != ''
-        uses: peter-evans/create-issue-from-file@v5
-        with:
-          title: "k8s-e2e flake detected: ${{ github.run_id }}"
-          content-filepath: artifacts/ops/k8s/flake-issue.md
-          labels: |
-            flaky-test
-            nightly
-            quarantine-ttl-14d
-      - if: always()
-        run: make ops-down
-
-  observability-pack-drills:
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
-    env:
-      ATLAS_RUN_ID: nightly-observability-pack-drills-${{ github.run_id }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/kind
-          key: kind-cache-${{ runner.os }}-v0.31.0
-      - uses: helm/kind-action@v1.10.0
-        with:
-          version: v0.31.0
-          cluster_name: bijux-atlas-ops-full-nightly
-          config: ops/stack/kind/cluster.yaml
-      - uses: azure/setup-helm@v4
-      - uses: azure/setup-kubectl@v4
-      - uses: grafana/setup-k6-action@v1
-      - run: make ci-ops-install-prereqs
-      - run: make ops-tools-check
-      - run: make ops-up
-      - run: make ops-deploy
-      - run: make ops-warm
-      - run: make ops-smoke
-      - run: make observability-pack-drills
-      - run: make ops-slo-alert-proof
-      - if: always()
-        run: make ops-report
-      - if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: observability-pack-drills-nightly-artifacts
-          path: |
-            artifacts/ops/**
-            artifacts/observability/**
-      - if: always()
-        run: make ops-down
+            artifacts/**
+            ops/_generated/**
