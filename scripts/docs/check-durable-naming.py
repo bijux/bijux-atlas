@@ -22,9 +22,9 @@ SCREAM_DOC = re.compile(r"^[A-Z0-9_]+\.md$")
 DOC_EXACT_EXCEPTIONS = {
     "docs/STYLE.md",
     "docs/contracts/README.md",
-    "docs/api/COMPATIBILITY.md",
-    "docs/api/DEPRECATION.md",
-    "docs/api/V1_SURFACE.md",
+    "docs/api/compatibility.md",
+    "docs/api/deprecation.md",
+    "docs/api/v1-surface.md",
 }
 DOC_NAME_EXCEPTIONS = {"INDEX.md", "CONCEPT_REGISTRY.md", "DEPTH_POLICY.md", "DEPTH_RUBRIC.md"}
 

@@ -24,8 +24,10 @@ for p in script_paths:
         errors.append(f'{p}: missing shebang')
     if p.suffix == '.py' and not head.startswith('#!/usr/bin/env python3'):
         errors.append(f'{p}: missing shebang')
-    if 'Purpose:' not in head or 'Inputs:' not in head or 'Outputs:' not in head:
-        errors.append(f'{p}: missing script header contract (Purpose/Inputs/Outputs)')
+    legacy_header = 'Purpose:' in head and 'Inputs:' in head and 'Outputs:' in head
+    modern_header = all(token in head.lower() for token in ('owner:', 'purpose:', 'stability:', 'called-by:'))
+    if not (legacy_header or modern_header):
+        errors.append(f'{p}: missing script header contract (Purpose/Inputs/Outputs or owner/purpose/stability/called-by)')
     rel = p.relative_to(ROOT).as_posix()
     if rel.startswith("scripts/public/"):
         required = ("owner:", "purpose:", "stability:", "called-by:")

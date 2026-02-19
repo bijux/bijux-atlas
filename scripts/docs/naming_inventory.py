@@ -46,7 +46,7 @@ def main() -> int:
     doc_non_kebab = [
         p
         for p in docs
-        if Path(p).name not in {"INDEX.md", "STYLE.md", "README.md", "COMPATIBILITY.md", "DEPRECATION.md", "V1_SURFACE.md"}
+        if Path(p).name not in {"INDEX.md", "STYLE.md", "README.md", "compatibility.md", "deprecation.md", "v1-surface.md"}
         and not p.startswith("docs/_generated/contracts/")
         and not DOC_RE.match(Path(p).name)
     ]

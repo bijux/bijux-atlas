@@ -10,5 +10,5 @@ set -euo pipefail
 
 cargo test -p bijux-atlas-query explain_plan_snapshots_by_query_class -- --nocapture
 cargo test -p bijux-atlas-query no_table_scan_assertion_for_indexed_query_plan -- --nocapture
-python3 ./scripts/contracts/check_sqlite_indexes_contract.py
+python3 ./scripts/public/contracts/check_sqlite_indexes_contract.py
 python3 ./scripts/public/perf/run_critical_queries.py

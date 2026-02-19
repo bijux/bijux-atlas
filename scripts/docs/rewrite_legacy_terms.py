@@ -17,7 +17,7 @@ REPLACEMENTS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"\\biteration\\s+([0-9]+)\\b", re.IGNORECASE), r"revision"),
     (re.compile(r"\\bround\\s+([0-9]+)\\b", re.IGNORECASE), r"review cycle"),
     (re.compile(r"\\bWIP\\b", re.IGNORECASE), "draft"),
-    (re.compile(r"\\btemporary\\b", re.IGNORECASE), "provisional"),
+    (re.compile(r"\\btemporary\\b", re.IGNORECASE), "provisional"),  # ATLAS-EXC-0102: replacement rule must match forbidden legacy token.
     (re.compile(r"vnext\\s+placeholder", re.IGNORECASE), "future extension (documented non-goal)"),
 ]
 
