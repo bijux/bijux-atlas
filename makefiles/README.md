@@ -36,20 +36,21 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 
 ## Public Targets
 
-- `make help`: Show the curated public make target surface.
+- `make help`: Show curated public targets grouped by namespace.
 - `make list`: List curated public targets with one-line descriptions.
 - `make explain TARGET=<target>`: Show description, lanes, and expansion tree for one public target.
 - `make graph TARGET=<target>`: Print a compact dependency tree for one public target.
 - `make gates`: Print top-level areas and mapped public targets.
-- `make local`: Fast local loop (fmt + lint + test).
-- `make local-full`: Full local loop (fmt + lint + audit + test + coverage + docs).
-- `make root`: Deterministic CI-fast lane.
-- `make root-local`: Local superset gate with isolated lanes.
-- `make ci`: CI release matrix lane.
-- `make nightly`: Nightly superset lane.
-- `make contracts`: Contracts meta pipeline.
-- `make hygiene`: Repository hygiene checks.
-- `make config-validate`: Validate config schemas/contracts and drift.
+- `make quick`: Minimal loop (fmt + lint + test).
+- `make cargo/all`: Local exhaustive Rust lane.
+- `make docs/all`: Docs lane.
+- `make ops/all`: Ops lint/schemas/contracts + bounded smoke lane.
+- `make scripts/all`: Scripts lint/tests/audit lane.
+- `make configs/all`: Config schema + drift lane.
+- `make policies/all`: deny/audit/policy-relaxations lane.
+- `make local/all`: Run all meaningful local lanes.
+- `make ci/all`: Deterministic CI superset.
+- `make nightly/all`: Slow nightly suites.
 
 ## Failure modes
 
@@ -62,8 +63,8 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 $ make help
 $ make gates
 $ make list
-$ make explain TARGET=root-local
-$ make graph TARGET=root-local
+$ make explain TARGET=ci/all
+$ make graph TARGET=ci/all
 $ make internal-list
 $ make makefiles-contract
 $ python3 scripts/docs/check_make_targets_documented.py
