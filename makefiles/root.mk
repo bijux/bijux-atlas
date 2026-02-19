@@ -168,10 +168,10 @@ report: ## Merge lane reports into unified report
 	@./ops/run/report.sh
 
 quick: ## Minimal tight loop (fmt + lint + test)
-	@$(MAKE) -s fmt lint test
+	@$(call with_iso,quick,$(MAKE) -s fmt lint test)
 
 cargo/all: ## Local exhaustive Rust lane
-	@$(MAKE) -s fmt lint check test test-all coverage audit
+	@$(call with_iso,cargo-all,$(MAKE) -s fmt lint check test test-all coverage audit)
 
 docs/all: ## Docs lane
 	@$(MAKE) -s docs docs-freeze docs-hardening
