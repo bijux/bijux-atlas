@@ -1,0 +1,7 @@
+{
+  "duration_seconds": 257.0,
+  "lane": "k8s-suite",
+  "log": "ops/_generated/k8s-suite/atlas-ops-20260219-180355/run.log",
+  "run_id": "atlas-ops-20260219-180355",
+  "status": "pass"
+}

@@ -1,0 +1,9 @@
+NAME                                                    READY   STATUS    RESTARTS   AGE   IP           NODE                            NOMINATED NODE   READINESS GATES
+coredns-668d6bf9bc-g2c4j                                1/1     Running   0          43m   10.244.0.6   bijux-atlas-e2e-control-plane   <none>           <none>
+coredns-668d6bf9bc-phnlt                                1/1     Running   0          43m   10.244.0.3   bijux-atlas-e2e-control-plane   <none>           <none>
+etcd-bijux-atlas-e2e-control-plane                      1/1     Running   0          44m   172.19.0.2   bijux-atlas-e2e-control-plane   <none>           <none>
+kindnet-62s5l                                           1/1     Running   0          43m   172.19.0.2   bijux-atlas-e2e-control-plane   <none>           <none>
+kube-apiserver-bijux-atlas-e2e-control-plane            1/1     Running   0          44m   172.19.0.2   bijux-atlas-e2e-control-plane   <none>           <none>
+kube-controller-manager-bijux-atlas-e2e-control-plane   1/1     Running   0          44m   172.19.0.2   bijux-atlas-e2e-control-plane   <none>           <none>
+kube-proxy-7mf97                                        1/1     Running   0          43m   172.19.0.2   bijux-atlas-e2e-control-plane   <none>           <none>
+kube-scheduler-bijux-atlas-e2e-control-plane            1/1     Running   0          44m   172.19.0.2   bijux-atlas-e2e-control-plane   <none>           <none>
