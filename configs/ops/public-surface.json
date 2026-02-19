@@ -6,7 +6,11 @@
   ],
   "make_targets": [
     "ci",
+    "clean",
+    "docs",
+    "doctor",
     "explain",
+    "format",
     "gates",
     "help",
     "inventory",
@@ -18,6 +22,7 @@
     "ops-cache-pin-set",
     "ops-cache-status",
     "ops-catalog-validate",
+    "ops-check",
     "ops-clean",
     "ops-contracts-check",
     "ops-dashboards-validate",
@@ -49,6 +54,7 @@
     "ops-gen",
     "ops-gen-check",
     "ops-incident-repro-kit",
+    "ops-k8s-smoke",
     "ops-k8s-suite",
     "ops-k8s-template-tests",
     "ops-k8s-tests",
@@ -67,6 +73,7 @@
     "ops-obs-install",
     "ops-obs-mode",
     "ops-obs-uninstall",
+    "ops-obs-verify",
     "ops-observability-pack-conformance-report",
     "ops-observability-pack-export",
     "ops-observability-pack-health",
@@ -107,6 +114,8 @@
     "ops-warm-datasets",
     "ops-warm-shards",
     "ops-warm-top",
+    "prereqs",
+    "report",
     "root",
     "root-local",
     "root-local-fast",
@@ -142,6 +151,11 @@
     "ops-load-suite",
     "ops-e2e-smoke",
     "ops-local-full",
-    "list-public"
+    "list-public",
+    "ops-check",
+    "ops-smoke",
+    "ops-k8s-smoke",
+    "ops-obs-verify",
+    "report"
   ]
 }

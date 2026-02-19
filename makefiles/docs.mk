@@ -7,11 +7,9 @@ DOCS_SITE ?= $(DOCS_ARTIFACTS)/site
 
 _docs-venv:
 	@mkdir -p "$(DOCS_ARTIFACTS)"
-	@python3 -m venv "$(DOCS_VENV)"
-	@"$(DOCS_VENV)/bin/pip" install --upgrade pip >/dev/null
-	@"$(DOCS_VENV)/bin/pip" install -r "$(DOCS_REQ)" >/dev/null
+	@$(call py_venv,$(DOCS_VENV),"$(DOCS_VENV)/bin/pip" install -r "$(DOCS_REQ)" >/dev/null)
 
-docs: ## Build docs + link-check + spell-check + lint
+docs-build: ## Build docs + link-check + spell-check + lint
 	@if [ ! -x "$(DOCS_VENV)/bin/mkdocs" ]; then $(MAKE) _docs-venv; fi
 	@"$(DOCS_VENV)/bin/pip" install -r "$(DOCS_REQ)" >/dev/null
 	@python3 scripts/docs/generate_crates_map.py
@@ -80,7 +78,13 @@ docs-freeze: ## Generated docs must be up-to-date with SSOT contracts
 	@python3 scripts/docs/check_docs_freeze_drift.py
 
 docs-hardening: ## Run full docs hardening pipeline
-	@$(MAKE) docs
+	@$(MAKE) docs-build
 	@$(MAKE) docs-freeze
 
-.PHONY: docs docs-serve docs-freeze docs-hardening _docs-venv
+docs-check: ## Docs contract check alias (same as docs-build)
+	@$(MAKE) docs-build
+
+docs: ## Public docs alias (maps to docs-check only)
+	@$(MAKE) docs-check
+
+.PHONY: docs docs-build docs-check docs-serve docs-freeze docs-hardening _docs-venv
