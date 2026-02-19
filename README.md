@@ -8,6 +8,7 @@
 - `docs/`: product/reference/contracts/operations/development docs.
 - `scripts/`: automation entrypoints grouped by domain.
 - `makefiles/`: target implementations included by root `Makefile`.
+- `docker/`: canonical container build surface and policy.
 
 Compatibility shims retained at root:
 - Root config symlinks (`deny.toml`, `audit-allowlist.toml`, `clippy.toml`, `rustfmt.toml`, `.vale.ini`, `.vale/`, `nextest.toml`).
@@ -36,6 +37,10 @@ make doctor
 make dev-ci
 make docs-hardening
 ```
+
+Container references:
+- Docker SSOT: `docker/README.md`
+- Container/Kubernetes relation: `docs/operations/container.md`
 
 
 ## Quickstart (Make Targets)

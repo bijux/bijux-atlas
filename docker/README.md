@@ -1,15 +1,36 @@
-# Docker Build Surface
+# Docker SSOT
 
-This repository currently ships one runtime image built from `docker/Dockerfile`.
+This is the single source of truth for container build/test/use in this repository.
 
-Rules:
-- Keep image build/release commands behind make targets.
-- Root `Dockerfile` is a compatibility symlink only.
-- If additional images are introduced, place Dockerfiles under `docker/` and document each image contract here.
-
-Canonical commands:
+## Canonical Commands
 
 ```bash
 make docker-build
 make docker-smoke
+make docker-scan
+make docker-push
 ```
+
+## Build
+
+- Canonical Dockerfile: `docker/Dockerfile`
+- Root `Dockerfile` is shim only and must symlink to `docker/Dockerfile`.
+- Build metadata labels are injected by `make docker-build`.
+
+## Runtime Smoke
+
+`make docker-smoke` validates container binary public surface:
+- `bijux-atlas --help`
+- `bijux-atlas --version`
+- `atlas-server --help`
+- `atlas-server --version`
+
+## Push
+
+`make docker-push` is CI-only and fails when run locally without CI marker.
+
+## Policy Links
+
+- `docker/CONTRACT.md`
+- `docs/operations/container.md`
+- `configs/security/README.md`
