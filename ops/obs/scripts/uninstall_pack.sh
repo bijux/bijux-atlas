@@ -30,6 +30,7 @@ case "$PROFILE" in
     $cmd -f "${REPO_ROOT}/ops/obs/pack/compose/docker-compose.yml" down -v
     ;;
   kind | cluster)
+    ops_kubectl -n "$OBS_NS" delete -f "${REPO_ROOT}/ops/obs/alerts/slo-burn-rules.yaml" --ignore-not-found >/dev/null 2>&1 || true
     ops_kubectl -n "$OBS_NS" delete -f "${REPO_ROOT}/ops/obs/alerts/atlas-alert-rules.yaml" --ignore-not-found >/dev/null 2>&1 || true
     ops_kubectl delete -f "${REPO_ROOT}/ops/obs/pack/k8s/otel.yaml" --ignore-not-found >/dev/null 2>&1 || true
     ops_kubectl -n "$OBS_NS" delete configmap atlas-observability-otel-config --ignore-not-found >/dev/null 2>&1 || true

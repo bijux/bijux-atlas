@@ -86,6 +86,7 @@ case "$PROFILE" in
     ops_kubectl apply -f "${REPO_ROOT}/ops/obs/pack/k8s/otel.yaml"
     if ops_kubectl api-resources | grep -q "^prometheusrules"; then
       ops_kubectl -n "$OBS_NS" apply -f "${REPO_ROOT}/ops/obs/alerts/atlas-alert-rules.yaml"
+      ops_kubectl -n "$OBS_NS" apply -f "${REPO_ROOT}/ops/obs/alerts/slo-burn-rules.yaml"
     else
       echo "PrometheusRule CRD not present; continuing without rule install"
     fi

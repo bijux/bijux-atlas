@@ -10,7 +10,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[4]
 CONTRACT = ROOT / "ops/obs/contract/metrics-contract.json"
 ALERT_CONTRACT = ROOT / "ops/obs/contract/alerts-contract.json"
-ALERTS = ROOT / "ops/obs/alerts/atlas-alert-rules.yaml"
+ALERT_RULE_FILES = [
+    ROOT / "ops/obs/alerts/atlas-alert-rules.yaml",
+    ROOT / "ops/obs/alerts/slo-burn-rules.yaml",
+]
 
 contract = json.loads(CONTRACT.read_text())
 required = set(contract.get("required_metrics", {}).keys())
@@ -19,7 +22,8 @@ allow = required | {
     "bijux_store_download_failure_total",
 }
 
-text = ALERTS.read_text()
+texts = [p.read_text() for p in ALERT_RULE_FILES]
+text = "\n".join(texts)
 alerts = re.findall(r"^\s*-\s*alert:\s*(\S+)\s*$", text, flags=re.MULTILINE)
 if not alerts:
     print("no alerts found", file=sys.stderr)
