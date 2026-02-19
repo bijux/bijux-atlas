@@ -35,7 +35,10 @@ owner_map = {
 files = sorted(
     p
     for p in SCRIPTS.rglob("*")
-    if p.is_file() and p.name not in {"README.md", "INDEX.md"}
+    if p.is_file()
+    and "__pycache__" not in p.parts
+    and p.suffix != ".pyc"
+    and p.name not in {"README.md", "INDEX.md"}
 )
 
 mk_files = [ROOT / "Makefile"] + sorted((ROOT / "makefiles").glob("*.mk"))
