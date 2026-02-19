@@ -50,6 +50,10 @@ def main() -> int:
         if not (ROOT / cmd).exists():
             print(f"public surface check failed: missing command path {cmd}")
             return 1
+    for core in s.get("core_targets", []):
+        if core not in s["make_targets"]:
+            print(f"public surface check failed: core target must be public: {core}")
+            return 1
 
     print("public surface check passed")
     return 0

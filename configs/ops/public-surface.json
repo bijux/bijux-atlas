@@ -5,10 +5,13 @@
     "ops-"
   ],
   "make_targets": [
+    "ci",
     "explain",
     "gates",
     "help",
     "inventory",
+    "list-public",
+    "nightly",
     "ops-alerts-validate",
     "ops-artifacts-open",
     "ops-baseline-policy-check",
@@ -16,6 +19,7 @@
     "ops-cache-status",
     "ops-catalog-validate",
     "ops-clean",
+    "ops-contracts-check",
     "ops-dashboards-validate",
     "ops-dataset-federated-registry-test",
     "ops-dataset-multi-release-test",
@@ -38,6 +42,7 @@
     "ops-drill-toxiproxy-latency",
     "ops-drill-upgrade",
     "ops-drill-upgrade-under-load",
+    "ops-e2e-smoke",
     "ops-full",
     "ops-full-pr",
     "ops-gc-smoke",
@@ -54,6 +59,7 @@
     "ops-load-shedding",
     "ops-load-smoke",
     "ops-load-soak",
+    "ops-load-suite",
     "ops-local-full",
     "ops-local-full-stack",
     "ops-metrics-check",
@@ -103,6 +109,8 @@
     "ops-warm-top",
     "root",
     "root-local",
+    "root-local-fast",
+    "root-local-summary",
     "verify-inventory"
   ],
   "ops_run_commands": [
@@ -121,5 +129,19 @@
     "ops/run/clean.sh",
     "ops/run/ci-fast.sh",
     "ops/run/ci-nightly.sh"
+  ],
+  "core_targets": [
+    "root",
+    "root-local",
+    "ci",
+    "nightly",
+    "ops-prereqs",
+    "ops-doctor",
+    "ops-contracts-check",
+    "ops-k8s-suite",
+    "ops-load-suite",
+    "ops-e2e-smoke",
+    "ops-local-full",
+    "list-public"
   ]
 }
