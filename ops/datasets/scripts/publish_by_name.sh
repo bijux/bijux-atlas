@@ -9,7 +9,7 @@ DATASET="${1:-medium}"
 REAL_ROOT="${ATLAS_REALDATA_ROOT:-$ROOT/artifacts/real-datasets}"
 case "$DATASET" in
   medium)
-    "$ROOT/ops/e2e/scripts/publish_dataset.sh" \
+    "$ROOT/ops/e2e/runner/publish_dataset.sh" \
       --gff3 "$ROOT/ops/fixtures/medium/v1/data/genes.gff3" \
       --fasta "$ROOT/ops/fixtures/medium/v1/data/genome.fa" \
       --fai "$ROOT/ops/fixtures/medium/v1/data/genome.fa.fai" \
@@ -17,7 +17,7 @@ case "$DATASET" in
     ;;
   real1)
     "$ROOT/scripts/fixtures/fetch-real-datasets.sh" >/dev/null
-    "$ROOT/ops/e2e/scripts/publish_dataset.sh" \
+    "$ROOT/ops/e2e/runner/publish_dataset.sh" \
       --gff3 "$REAL_ROOT/111/homo_sapiens/GRCh38/genes.gff3" \
       --fasta "$REAL_ROOT/111/homo_sapiens/GRCh38/genome.fa" \
       --fai "$REAL_ROOT/111/homo_sapiens/GRCh38/genome.fa.fai" \
@@ -25,7 +25,7 @@ case "$DATASET" in
     ;;
   real110)
     "$ROOT/scripts/fixtures/fetch-real-datasets.sh" >/dev/null
-    "$ROOT/ops/e2e/scripts/publish_dataset.sh" \
+    "$ROOT/ops/e2e/runner/publish_dataset.sh" \
       --gff3 "$REAL_ROOT/110/homo_sapiens/GRCh38/genes.gff3" \
       --fasta "$REAL_ROOT/110/homo_sapiens/GRCh38/genome.fa" \
       --fai "$REAL_ROOT/110/homo_sapiens/GRCh38/genome.fa.fai" \
@@ -33,7 +33,7 @@ case "$DATASET" in
     ;;
   real111)
     "$ROOT/scripts/fixtures/fetch-real-datasets.sh" >/dev/null
-    "$ROOT/ops/e2e/scripts/publish_dataset.sh" \
+    "$ROOT/ops/e2e/runner/publish_dataset.sh" \
       --gff3 "$REAL_ROOT/111/homo_sapiens/GRCh38/genes.gff3" \
       --fasta "$REAL_ROOT/111/homo_sapiens/GRCh38/genome.fa" \
       --fai "$REAL_ROOT/111/homo_sapiens/GRCh38/genome.fa.fai" \

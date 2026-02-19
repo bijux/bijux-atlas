@@ -90,7 +90,7 @@ ops-up: ## Bring up local ops stack (kind + minio + prometheus + optional otel/r
 	@$(MAKE) ops-stack-up
 
 ops-cluster-sanity: ## Validate cluster node/dns/storageclass sanity
-	@./ops/k8s/tests/test_cluster_sanity.sh
+	@./ops/k8s/tests/checks/rollout/test_cluster_sanity.sh
 
 ops-stack-down: ## Tear down stack components and cluster
 	@./ops/run/stack-down.sh
@@ -173,7 +173,7 @@ ops-kind-registry-up: ## Bring up local registry and connect to kind network
 	@./ops/stack/registry/up.sh
 
 ops-kind-image-resolution-test: ## Validate atlas image is resolvable inside kind runtime
-	@./ops/k8s/tests/test_kind_image_resolution.sh
+	@./ops/k8s/tests/checks/rollout/test_kind_image_resolution.sh
 
 ops-kind-disk-pressure: ## Simulate node disk pressure (use MODE=clean to remove)
 	@./ops/stack/faults/inject.sh fill-node-disk "$${MODE:-fill}"
@@ -194,7 +194,7 @@ ops-kind-cleanup-leftovers: ## Delete stale atlas-ops-* namespaces
 	@./ops/stack/kind/cleanup_namespaces.sh
 
 ops-kind-version-drift-test: ## Validate kind version matches pinned tool-versions
-	@./ops/k8s/tests/test_kind_version_drift.sh
+	@./ops/k8s/tests/checks/rollout/test_kind_version_drift.sh
 
 ops-kind-cluster-drift-check: ## Require ops contract marker update when cluster profile changes
 	@./scripts/layout/check_kind_cluster_contract_drift.sh
@@ -309,13 +309,13 @@ ops-redis-down: ## Uninstall redis stack component
 	@kubectl delete -f ./ops/stack/redis/redis.yaml --ignore-not-found >/dev/null 2>&1 || true
 
 ops-redis-optional-check: ## Validate atlas runs when redis is absent
-	@./ops/k8s/tests/test_redis_optional.sh
+	@./ops/k8s/tests/checks/perf/test_redis_optional.sh
 
 ops-redis-used-check: ## Validate redis usage evidence when enabled
-	@ATLAS_E2E_ENABLE_REDIS=1 ./ops/k8s/tests/test_redis_backend_metric.sh
+	@ATLAS_E2E_ENABLE_REDIS=1 ./ops/k8s/tests/checks/obs/test_redis_backend_metric.sh
 
 ops-redis-rate-limit-check: ## Validate redis-backed rate limiting behavior
-	@ATLAS_E2E_ENABLE_REDIS=1 ./ops/k8s/tests/test_redis_rate_limit.sh
+	@ATLAS_E2E_ENABLE_REDIS=1 ./ops/k8s/tests/checks/perf/test_redis_rate_limit.sh
 
 ops-toxi-up: ## Install toxiproxy stack component (optional)
 	@kubectl apply -f ./ops/stack/toxiproxy/toxiproxy.yaml
@@ -363,23 +363,23 @@ ops-reset: ## Reset ops state (namespace/PV store data + local store artifacts)
 	@$(MAKE) -s ops-env-validate
 	@kubectl delete ns "$${ATLAS_NS}" --ignore-not-found >/dev/null 2>&1 || true
 	@kubectl delete pvc --all -n default >/dev/null 2>&1 || true
-	@./ops/e2e/scripts/cleanup_store.sh
+	@./ops/e2e/runner/cleanup_store.sh
 
 ops-publish-medium: ## Ingest + publish medium fixture dataset
 	@$(MAKE) -s ops-env-validate
 	@if [ ! -f ops/fixtures/medium/v1/data/genes.gff3 ] || [ ! -f ops/fixtures/medium/v1/data/genome.fa ] || [ ! -f ops/fixtures/medium/v1/data/genome.fa.fai ]; then \
 	  ./scripts/fixtures/fetch-medium.sh; \
 	fi
-	@./ops/e2e/scripts/publish_dataset.sh \
+	@./ops/e2e/runner/publish_dataset.sh \
 	  --gff3 ops/fixtures/medium/v1/data/genes.gff3 \
 	  --fasta ops/fixtures/medium/v1/data/genome.fa \
 	  --fai ops/fixtures/medium/v1/data/genome.fa.fai \
 	  --release 110 --species homo_sapiens --assembly GRCh38
 	@ATLAS_DATASET_RELEASE=110 ATLAS_DATASET_SPECIES=homo_sapiens ATLAS_DATASET_ASSEMBLY=GRCh38 $(MAKE) ops-dataset-qc
-	@./ops/datasets/scripts/snapshot_metadata.sh
+	@./ops/datasets/scripts/sh/snapshot_metadata.sh
 
 ops-datasets-fetch: ## Fetch dataset prerequisites and verify checksums from manifest lock
-	@./ops/datasets/scripts/fetch_and_verify.sh
+	@./ops/datasets/scripts/sh/fetch_and_verify.sh
 
 ops-publish: ## Publish dataset by name (DATASET=medium|real1)
 	@$(MAKE) -s ops-env-validate
@@ -391,7 +391,7 @@ ops-publish: ## Publish dataset by name (DATASET=medium|real1)
 	esac; \
 	export ATLAS_DATASET_RELEASE ATLAS_DATASET_SPECIES ATLAS_DATASET_ASSEMBLY; \
 	$(MAKE) ops-dataset-qc
-	@./ops/datasets/scripts/snapshot_metadata.sh
+	@./ops/datasets/scripts/sh/snapshot_metadata.sh
 
 ops-release-update: ## Run release workflow (publish->promote->latest-alias->serve smoke)
 	@$(MAKE) -s ops-env-validate
@@ -425,29 +425,29 @@ ops-release-rollback: ## Roll back catalog pointer for release dataset (artifact
 	  --release "$$release" --species "$$species" --assembly "$$assembly"
 
 ops-catalog-validate: ## Validate published catalog schema + deterministic merge ordering
-	@python3 ./ops/datasets/scripts/catalog_validate.py
+	@python3 ./ops/datasets/scripts/py/catalog_validate.py
 
 ops-cache-status: ## Print cache status and enforce local cache budget policy
-	@./ops/datasets/scripts/cache_status.sh
-	@python3 ./ops/datasets/scripts/cache_budget_check.py
-	@python3 ./ops/datasets/scripts/cache_threshold_check.py
+	@./ops/datasets/scripts/sh/cache_status.sh
+	@python3 ./ops/datasets/scripts/py/cache_budget_check.py
+	@python3 ./ops/datasets/scripts/py/cache_threshold_check.py
 
 ops-cache-pin-set: ## Set pinned dataset list for deploy/warm workflows (DATASETS=a/b/c[,x/y/z])
-	@./ops/datasets/scripts/pin_set.sh
+	@./ops/datasets/scripts/sh/pin_set.sh
 
 ops-dataset-qc: ## Enforce dataset QC thresholds for local ops gates
-	@./ops/datasets/scripts/dataset_qc.sh
+	@./ops/datasets/scripts/sh/dataset_qc.sh
 
 ops-dataset-qc-diff: ## Diff two QC reports (BASE_QC=... TARGET_QC=...)
 	@[ -n "$${BASE_QC:-}" ] || { echo "BASE_QC is required" >&2; exit 2; }
 	@[ -n "$${TARGET_QC:-}" ] || { echo "TARGET_QC is required" >&2; exit 2; }
-	@python3 ./ops/datasets/scripts/qc_diff.py --base "$$BASE_QC" --target "$$TARGET_QC"
+	@python3 ./ops/datasets/scripts/py/qc_diff.py --base "$$BASE_QC" --target "$$TARGET_QC"
 
 ops-drill-corruption-dataset: ## Drill corruption detection and quarantine behavior
-	@./ops/datasets/scripts/corruption_drill.sh
+	@./ops/datasets/scripts/sh/corruption_drill.sh
 
 ops-dataset-promotion-sim: ## Simulate dev->staging->prod dataset catalog promotion
-	@./ops/datasets/scripts/promotion_sim.sh
+	@./ops/datasets/scripts/sh/promotion_sim.sh
 
 ops-dataset-multi-release-test: ## Publish/query multi-release dataset behavior
 	@./ops/e2e/realdata/run_two_release_diff.sh
@@ -509,19 +509,19 @@ ops-warmup: ## Alias for deterministic warm set workflow
 
 ops-warm-datasets: ## Warm explicit dataset ids (DATASETS=release/species/assembly[,..])
 	@$(MAKE) -s ops-env-validate
-	@./ops/e2e/scripts/warm_datasets.sh
+	@./ops/e2e/runner/warm_datasets.sh
 
 ops-warm-top: ## Warm top N datasets discovered from /v1/datasets (TOP_N=5)
 	@$(MAKE) -s ops-env-validate
-	@./ops/e2e/scripts/warm_top.sh
+	@./ops/e2e/runner/warm_top.sh
 
 ops-warm-shards: ## Warm cache with multi-contig queries for shard locality
 	@$(MAKE) -s ops-env-validate
-	@./ops/e2e/scripts/warm_shards.sh
+	@./ops/e2e/runner/warm_shards.sh
 
 ops-soak: ## Run soak workflow (10-30 minutes)
 	@$(MAKE) -s ops-env-validate
-	@./ops/e2e/scripts/soak.sh
+	@./ops/e2e/runner/soak.sh
 
 ops-api-smoke: ## Run canonical API smoke queries only
 	@$(MAKE) -s ops-env-validate
@@ -620,7 +620,7 @@ ops-k8s-tests: ## Run k8s e2e suite
 	@python3 ./scripts/ops/check_k8s_flakes.py
 
 ops-k8s-template-tests: ## Run helm template/lint edge-case checks
-	@./ops/k8s/tests/test_helm_templates.sh
+	@./ops/k8s/tests/checks/obs/test_helm_templates.sh
 
 ops-load-prereqs: ## Validate load harness prerequisites (k6 + endpoint)
 	@./ops/load/scripts/check_prereqs.sh
@@ -756,7 +756,7 @@ ops-drill-corruption: ## Run corruption handling drill
 
 ops-drill-pod-churn: ## Run pod churn drill while service handles load
 	@$(MAKE) -s ops-env-validate
-	@./ops/k8s/tests/pod-churn.sh
+	@./ops/k8s/tests/checks/rollout/pod-churn.sh
 
 ops-drill-upgrade: ## Run upgrade drill and verify semantic stability
 	@$(MAKE) -s ops-env-validate
@@ -836,7 +836,7 @@ ops-report: ## Gather ops evidence into artifacts/ops/<run-id>/
 	cp -R "$$out/smoke/report.md" "$$out/perf/smoke-report.md" 2>/dev/null || true; \
 	curl -fsS "$${ATLAS_BASE_URL:-http://127.0.0.1:8080}/metrics" > "$$out/metrics/metrics.txt" 2>/dev/null || true; \
 	python3 ./ops/report/slo_report.py --metrics "$$out/metrics/metrics.txt" --slo-config configs/ops/slo/slo.v1.json --out "$$out/slo-report.json"; \
-	./ops/e2e/scripts/write_metadata.sh "$$out"; \
+	./ops/e2e/runner/write_metadata.sh "$$out"; \
 	python3 ./ops/report/generate.py --run-dir "$$out" --schema ops/report/schema.json; \
 	echo "ops report written to $$out"; \
 	RUN_ID="$${OPS_RUN_ID}" OUT_DIR="$$out/bundle" ./scripts/public/report-bundle.sh >/dev/null; \
@@ -876,6 +876,7 @@ ops-lint-all: ## Run full ops lint suite (naming/docs/ownership/contracts/images
 	@./ops/_lint/no-empty-dirs.sh
 	@python3 ./ops/_lint/no-direct-script-usage.py
 	@python3 ./scripts/layout/check_ops_cross_area_script_refs.py
+	@python3 ./scripts/layout/check_scripts_submodules.py --threshold 25
 	@python3 ./ops/_lint/no-unpinned-images.py
 	@python3 ./ops/_lint/no-floating-tool-versions.py
 	@python3 ./ops/_lint/no-unowned-area.py
@@ -983,7 +984,7 @@ ops-perf-suite: ## Perf helper: run an arbitrary perf suite (SCENARIO=<file.js> 
 ops-values-validate: ## Validate chart values against SSOT contract
 	@./scripts/contracts/generate_chart_values_schema.py
 	@./scripts/contracts/check_chart_values_contract.py
-	@./ops/k8s/tests/test_chart_drift.sh
+	@./ops/k8s/tests/checks/obs/test_chart_drift.sh
 
 ops-release-matrix: ## Generate k8s release install matrix document from CI summary
 	@./ops/k8s/ci/install-matrix.sh
@@ -1152,7 +1153,7 @@ ops-local-full: ## Canonical one-command local full-stack proof workflow
 	$(MAKE) ops-proof-cold-start-baseline; \
 	$(MAKE) ops-proof-warm-p99-baseline; \
 	$(MAKE) ops-cache-status; \
-	python3 ./ops/datasets/scripts/cache_budget_check.py; \
+	python3 ./ops/datasets/scripts/py/cache_budget_check.py; \
 	$(MAKE) ops-report; \
 	$(MAKE) ops-artifacts-index-run RUN_ID="$$run_id"; \
 	test -f "$$out/report.json"; \
@@ -1343,7 +1344,7 @@ e2e-local:
 
 e2e-k8s-install-gate:
 	@$(MAKE) ops-up
-	@./ops/k8s/tests/test_install.sh
+	@./ops/k8s/tests/checks/rollout/test_install.sh
 
 e2e-k8s-suite:
 	@$(MAKE) ops-up

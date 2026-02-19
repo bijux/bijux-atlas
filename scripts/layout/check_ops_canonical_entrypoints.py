@@ -29,7 +29,7 @@ for path in [ROOT / "ops/e2e/realdata/run_single_release.sh", ROOT / "ops/e2e/re
         errors.append(f"{path.relative_to(ROOT)} must use ops/run/deploy-atlas.sh")
     if "/ops/k8s/scripts/deploy_atlas.sh" in txt:
         errors.append(f"{path.relative_to(ROOT)} must use ops/run/deploy-atlas.sh")
-    if "/ops/e2e/scripts/publish_dataset.sh" in txt:
+    if "/ops/e2e/runner/publish_dataset.sh" in txt:
         errors.append(f"{path.relative_to(ROOT)} must use ops/datasets/scripts/publish_by_name.sh")
 
 if errors:

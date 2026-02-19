@@ -12,4 +12,4 @@ report:
 	@./tests/report.sh
 
 pod-churn:
-	@../../ops/k8s/tests/pod-churn.sh
+	@../../ops/k8s/tests/checks/rollout/pod-churn.sh
