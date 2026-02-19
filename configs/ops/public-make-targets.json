@@ -1,0 +1,89 @@
+{
+  "max_public_targets": 14,
+  "public_targets": [
+    {
+      "name": "help",
+      "description": "Show the curated public make target surface",
+      "lanes": ["dev", "ci", "docs"],
+      "area": "policies"
+    },
+    {
+      "name": "list",
+      "description": "List curated public targets with one-line descriptions",
+      "lanes": ["dev", "ci"],
+      "area": "policies"
+    },
+    {
+      "name": "explain",
+      "description": "Explain one public target, lanes, and internal expansion",
+      "lanes": ["dev", "ci"],
+      "area": "policies"
+    },
+    {
+      "name": "graph",
+      "description": "Print a compact dependency graph for a public target",
+      "lanes": ["dev", "ci"],
+      "area": "policies"
+    },
+    {
+      "name": "gates",
+      "description": "Show public targets grouped by area",
+      "lanes": ["dev", "ci"],
+      "area": "policies"
+    },
+    {
+      "name": "local",
+      "description": "Fast local loop (fmt + lint + test)",
+      "lanes": ["dev"],
+      "area": "cargo"
+    },
+    {
+      "name": "local-full",
+      "description": "Full local loop (fmt + lint + audit + test + coverage + docs)",
+      "lanes": ["dev"],
+      "area": "cargo"
+    },
+    {
+      "name": "root",
+      "description": "Deterministic CI-fast lane",
+      "lanes": ["ci"],
+      "area": "policies"
+    },
+    {
+      "name": "root-local",
+      "description": "Local superset gate with isolated lanes",
+      "lanes": ["dev", "ci"],
+      "area": "policies"
+    },
+    {
+      "name": "ci",
+      "description": "CI release matrix gate",
+      "lanes": ["ci"],
+      "area": "policies"
+    },
+    {
+      "name": "nightly",
+      "description": "Nightly superset gate",
+      "lanes": ["ci"],
+      "area": "policies"
+    },
+    {
+      "name": "contracts",
+      "description": "Contracts meta pipeline",
+      "lanes": ["dev", "ci"],
+      "area": "docs"
+    },
+    {
+      "name": "hygiene",
+      "description": "Repository hygiene checks",
+      "lanes": ["dev", "ci"],
+      "area": "scripts"
+    },
+    {
+      "name": "config-validate",
+      "description": "Validate config schemas/contracts and drift",
+      "lanes": ["dev", "ci"],
+      "area": "configs"
+    }
+  ]
+}

@@ -22,7 +22,8 @@ def parse_help_sections(text: str) -> dict[str, list[str]]:
             sections[current] = []
             continue
         if current and line.startswith("  "):
-            sections[current].extend(line.strip().split())
+            target = line.strip().split()[0]
+            sections[current].append(target)
     return sections
 
 
