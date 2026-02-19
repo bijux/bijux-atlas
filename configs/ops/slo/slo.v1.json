@@ -5,47 +5,65 @@
   "classes_file": "configs/ops/slo/classes.json",
   "slis": [
     {
-      "id": "api-availability",
-      "name": "API availability",
+      "id": "readyz-availability",
+      "name": "/readyz availability",
       "kind": "availability",
-      "metric": "bijux_http_requests_total",
-      "labels": {"status": "2xx|3xx|4xx|5xx"},
+      "metric": "http_requests_total",
+      "labels": {"route": "/readyz", "status": "200", "class": "cheap"},
       "window": "30d",
       "source": "prometheus"
     },
     {
-      "id": "request-success-rate",
-      "name": "Request success rate",
+      "id": "cheap-success-rate",
+      "name": "Cheap success rate",
       "kind": "success-rate",
-      "metric": "bijux_http_requests_total",
-      "labels": {"status": "2xx|3xx"},
+      "metric": "http_requests_total",
+      "labels": {"class": "cheap", "status": "2xx|5xx"},
       "window": "30d",
       "source": "prometheus"
     },
     {
-      "id": "cheap-latency-p95",
-      "name": "Cheap endpoint class latency p95",
+      "id": "standard-success-rate",
+      "name": "Standard success rate",
+      "kind": "success-rate",
+      "metric": "http_requests_total",
+      "labels": {"class": "standard", "status": "2xx|5xx"},
+      "window": "30d",
+      "source": "prometheus"
+    },
+    {
+      "id": "heavy-success-rate",
+      "name": "Heavy success rate",
+      "kind": "success-rate",
+      "metric": "http_requests_total",
+      "labels": {"class": "heavy", "status": "2xx|5xx"},
+      "window": "30d",
+      "source": "prometheus"
+    },
+    {
+      "id": "cheap-latency-p99",
+      "name": "Cheap endpoint class latency p99",
       "kind": "latency",
-      "metric": "bijux_http_request_latency_p95_seconds",
-      "labels": {"route": "^/health$|^/version$|^/metrics$"},
+      "metric": "http_request_duration_seconds_bucket",
+      "labels": {"class": "cheap", "le": "0.05"},
       "window": "1h",
       "source": "prometheus"
     },
     {
-      "id": "standard-latency-p95",
-      "name": "Standard endpoint class latency p95",
+      "id": "standard-latency-p99",
+      "name": "Standard endpoint class latency p99",
       "kind": "latency",
-      "metric": "bijux_http_request_latency_p95_seconds",
-      "labels": {"route": "^/v1/genes$|^/v1/genes/[^/]+$"},
+      "metric": "http_request_duration_seconds_bucket",
+      "labels": {"class": "standard", "le": "0.3"},
       "window": "1h",
       "source": "prometheus"
     },
     {
-      "id": "heavy-latency-p95",
-      "name": "Heavy endpoint class latency p95",
+      "id": "heavy-latency-p99",
+      "name": "Heavy endpoint class latency p99",
       "kind": "latency",
-      "metric": "bijux_http_request_latency_p95_seconds",
-      "labels": {"route": "^/v1/genes/[^/]+/(diff|region|sequence)$"},
+      "metric": "http_request_duration_seconds_bucket",
+      "labels": {"class": "heavy", "le": "2.0"},
       "window": "1h",
       "source": "prometheus"
     },
@@ -53,32 +71,71 @@
       "id": "cheap-survival-under-overload",
       "name": "Cheap survival under overload shedding",
       "kind": "overload",
-      "metric": "bijux_http_requests_total",
-      "labels": {
-        "route": "^/health$|^/version$|^/metrics$",
-        "status": "2xx|3xx"
-      },
+      "metric": "http_requests_total",
+      "labels": {"class": "cheap", "status": "2xx|5xx"},
       "window": "15m",
       "source": "prometheus"
     },
     {
-      "id": "dataset-refresh-success",
-      "name": "Dataset refresh success",
+      "id": "heavy-shed-rate",
+      "name": "Heavy shed rate",
+      "kind": "overload",
+      "metric": "atlas_shed_total",
+      "labels": {"class": "heavy", "reason": "bulkhead_shed_heavy|bulkhead_shed_noncheap"},
+      "window": "30m",
+      "source": "prometheus"
+    },
+    {
+      "id": "standard-shed-rate",
+      "name": "Standard shed rate",
+      "kind": "overload",
+      "metric": "atlas_shed_total",
+      "labels": {"class": "standard", "reason": "queue_depth_exceeded|class_permit_saturated"},
+      "window": "30m",
+      "source": "prometheus"
+    },
+    {
+      "id": "registry-refresh-freshness",
+      "name": "Registry refresh freshness",
       "kind": "freshness",
-      "metric": "bijux_dataset_misses",
-      "labels": {"dataset": "*"},
+      "metric": "atlas_registry_refresh_age_seconds",
+      "labels": {"subsystem": "atlas"},
+      "window": "10m",
+      "source": "prometheus"
+    },
+    {
+      "id": "store-p95-latency",
+      "name": "Store p95 latency",
+      "kind": "latency",
+      "metric": "bijux_store_fetch_latency_p95_seconds",
+      "labels": {"backend": "http_s3|local_fs|federated"},
+      "window": "1h",
+      "source": "prometheus"
+    },
+    {
+      "id": "store-error-rate",
+      "name": "Store error rate",
+      "kind": "success-rate",
+      "metric": "atlas_store_errors_total",
+      "labels": {"backend": "http_s3|local_fs|federated", "class": "standard|heavy"},
       "window": "24h",
-      "source": "registry"
+      "source": "prometheus"
     }
   ],
   "slos": [
-    {"id": "api-availability-30d", "sli": "api-availability", "target": 0.995, "budget": 0.005, "window": "30d"},
-    {"id": "request-success-30d", "sli": "request-success-rate", "target": 0.99, "budget": 0.01, "window": "30d"},
-    {"id": "cheap-latency-1h", "sli": "cheap-latency-p95", "target": 0.95, "window": "1h", "notes": "95th percentile <= policy threshold"},
-    {"id": "standard-latency-1h", "sli": "standard-latency-p95", "target": 0.95, "window": "1h"},
-    {"id": "heavy-latency-1h", "sli": "heavy-latency-p95", "target": 0.9, "window": "1h"},
-    {"id": "cheap-survival-15m", "sli": "cheap-survival-under-overload", "target": 0.99, "window": "15m"},
-    {"id": "dataset-refresh-24h", "sli": "dataset-refresh-success", "target": 0.99, "window": "24h"}
+    {"id": "readyz-availability-30d", "sli": "readyz-availability", "target": 0.999, "budget": 0.001, "window": "30d"},
+    {"id": "cheap-success-30d", "sli": "cheap-success-rate", "target": 0.9999, "budget": 0.0001, "window": "30d"},
+    {"id": "standard-success-30d", "sli": "standard-success-rate", "target": 0.999, "budget": 0.001, "window": "30d"},
+    {"id": "heavy-success-30d", "sli": "heavy-success-rate", "target": 0.99, "budget": 0.01, "window": "30d"},
+    {"id": "cheap-latency-p99-1h", "sli": "cheap-latency-p99", "target": 0.99, "window": "1h", "threshold": {"operator": "lt", "value": 50, "unit": "ms"}},
+    {"id": "standard-latency-p99-1h", "sli": "standard-latency-p99", "target": 0.99, "window": "1h", "threshold": {"operator": "lt", "value": 300, "unit": "ms"}},
+    {"id": "heavy-latency-p99-1h", "sli": "heavy-latency-p99", "target": 0.99, "window": "1h", "threshold": {"operator": "lt", "value": 2000, "unit": "ms"}},
+    {"id": "cheap-overload-survival-15m", "sli": "cheap-survival-under-overload", "target": 0.9999, "window": "15m"},
+    {"id": "heavy-shed-rate-30m", "sli": "heavy-shed-rate", "target": 0.95, "window": "30m", "notes": "heavy may shed aggressively during overload"},
+    {"id": "standard-shed-rate-30m", "sli": "standard-shed-rate", "target": 0.98, "window": "30m", "threshold": {"operator": "lt", "value": 2, "unit": "percent"}},
+    {"id": "registry-refresh-freshness-10m", "sli": "registry-refresh-freshness", "target": 0.99, "window": "10m", "threshold": {"operator": "lt", "value": 600, "unit": "s"}},
+    {"id": "store-p95-latency-1h", "sli": "store-p95-latency", "target": 0.99, "window": "1h", "threshold": {"operator": "lt", "value": 500, "unit": "ms"}},
+    {"id": "store-error-rate-24h", "sli": "store-error-rate", "target": 0.995, "window": "24h", "threshold": {"operator": "lt", "value": 0.5, "unit": "percent"}}
   ],
   "change_policy": {
     "requires": ["adr", "changelog"],
