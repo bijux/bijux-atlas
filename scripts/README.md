@@ -130,6 +130,7 @@ Generated file. Do not edit manually.
 | `scripts/docs/generate_crates_map.py` | `docs-governance` | `public` | `docs-build` |
 | `scripts/docs/generate_k8s_install_matrix.py` | `docs-governance` | `public` | - |
 | `scripts/docs/generate_k8s_values_doc.py` | `docs-governance` | `public` | `docs-build` |
+| `scripts/docs/generate_layer_contract_doc.py` | `docs-governance` | `public` | `ops-contracts-check`, `ops-gen` |
 | `scripts/docs/generate_make_targets_catalog.py` | `docs-governance` | `public` | - |
 | `scripts/docs/generate_make_targets_inventory.py` | `docs-governance` | `public` | `docs-build`, `ops-make-targets-doc` |
 | `scripts/docs/generate_makefiles_surface.py` | `docs-governance` | `public` | - |
@@ -181,6 +182,7 @@ Generated file. Do not edit manually.
 | `scripts/layout/check_dataset_manifest_lock.py` | `repo-surface` | `public` | - |
 | `scripts/layout/check_duplicate_script_intent.py` | `repo-surface` | `public` | `scripts-lint` |
 | `scripts/layout/check_e2e_scenarios.py` | `repo-surface` | `public` | `ops-e2e-validate` |
+| `scripts/layout/check_e2e_suites.py` | `repo-surface` | `public` | `ops-e2e-validate` |
 | `scripts/layout/check_forbidden_root_files.sh` | `repo-surface` | `public` | `layout-check` |
 | `scripts/layout/check_forbidden_root_names.sh` | `repo-surface` | `public` | `layout-check` |
 | `scripts/layout/check_generated_dirs_policy.py` | `repo-surface` | `public` | `layout-check` |
@@ -212,6 +214,7 @@ Generated file. Do not edit manually.
 | `scripts/layout/check_ops_index_surface.py` | `repo-surface` | `public` | `ci-ops-index-surface`, `layout-check`, `ops-check-legacy` |
 | `scripts/layout/check_ops_layout_contract.py` | `repo-surface` | `public` | `layout-check`, `ops-layout-lint` |
 | `scripts/layout/check_ops_lib_canonical.sh` | `repo-surface` | `public` | `layout-check` |
+| `scripts/layout/check_ops_pins.py` | `repo-surface` | `public` | - |
 | `scripts/layout/check_ops_run_entrypoints.py` | `repo-surface` | `public` | `ci-ops-run-entrypoints`, `ops-lint` |
 | `scripts/layout/check_ops_script_names.py` | `repo-surface` | `public` | `ops-contracts-check` |
 | `scripts/layout/check_ops_script_targets.sh` | `repo-surface` | `public` | `ops-script-coverage` |
@@ -251,6 +254,7 @@ Generated file. Do not edit manually.
 | `scripts/layout/clean_ops_generated.py` | `repo-surface` | `public` | `ops-gen-clean` |
 | `scripts/layout/dataset_id_lint.py` | `repo-surface` | `public` | `dataset-id-lint` |
 | `scripts/layout/explain_public_target.py` | `repo-surface` | `public` | `explain` |
+| `scripts/layout/generate_ops_pins.py` | `repo-surface` | `public` | `ops-gen` |
 | `scripts/layout/generate_ops_stack_versions.py` | `repo-surface` | `public` | `ops-stack-versions-sync` |
 | `scripts/layout/generate_ops_surface_meta.py` | `repo-surface` | `public` | `ops-gen` |
 | `scripts/layout/graph_public_target.py` | `repo-surface` | `public` | `graph` |
@@ -266,6 +270,7 @@ Generated file. Do not edit manually.
 | `scripts/layout/replace_paths.sh` | `repo-surface` | `public` | `layout-migrate` |
 | `scripts/layout/root_whitelist.json` | `repo-surface` | `public` | - |
 | `scripts/layout/run_gate.py` | `repo-surface` | `public` | - |
+| `scripts/layout/update_ops_pins.py` | `repo-surface` | `public` | - |
 | `scripts/layout/validate_ops_contracts.py` | `repo-surface` | `public` | `ops-contracts-check`, `ops-gen`, `ops-k8s-contracts` |
 | `scripts/layout/validate_ops_env.py` | `repo-surface` | `public` | `ops-env-print`, `ops-env-validate` |
 | `scripts/layout/write_make_area_report.py` | `repo-surface` | `public` | - |
