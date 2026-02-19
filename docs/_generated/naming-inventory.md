@@ -5,9 +5,9 @@
 
 ## Summary
 
-- Tracked files: `1659`
+- Tracked files: `1681`
 - Docs markdown files: `361`
-- Script files under `scripts/`: `260`
+- Script files under `scripts/`: `267`
 - Rust test files: `42`
 - Load suites in `ops/load/suites/suites.json`: `19`
 - Runbooks in `docs/operations/runbooks/`: `17`
@@ -17,7 +17,7 @@
 
 - Forbidden-token hits: `2`
 - Non-kebab docs outside allowed exceptions: `22`
-- Non-kebab scripts under `scripts/`: `224`
+- Non-kebab scripts under `scripts/`: `231`
 
 ## Load Suites
 
@@ -151,6 +151,7 @@
 - `scripts/docs/check_no_placeholders.py`
 - `scripts/docs/check_observability_acceptance_checklist.py`
 - `scripts/docs/check_observability_docs_checklist.py`
+- `scripts/docs/check_observability_surface_drift.py`
 - `scripts/docs/check_openapi_examples.py`
 - `scripts/docs/check_ops_doc_duplication.py`
 - `scripts/docs/check_ops_docs_make_targets.py`
@@ -222,10 +223,12 @@
 - `scripts/layout/check_no_hidden_defaults.py`
 - `scripts/layout/check_no_mixed_script_name_variants.py`
 - `scripts/layout/check_obs_pack_ssot.py`
+- `scripts/layout/check_obs_script_name_collisions.py`
 - `scripts/layout/check_ops_artifacts_writes.py`
 - `scripts/layout/check_ops_canonical_entrypoints.py`
 - `scripts/layout/check_ops_canonical_shims.sh`
 - `scripts/layout/check_ops_concept_ownership.py`
+- `scripts/layout/check_ops_cross_area_script_refs.py`
 - `scripts/layout/check_ops_index_surface.py`
 - `scripts/layout/check_ops_layout_contract.py`
 - `scripts/layout/check_ops_lib_canonical.sh`
@@ -235,9 +238,11 @@
 - `scripts/layout/check_ops_single_owner_contracts.py`
 - `scripts/layout/check_ops_single_validators.py`
 - `scripts/layout/check_ops_stack_order.sh`
+- `scripts/layout/check_ops_surface_drift.py`
 - `scripts/layout/check_ops_workspace.sh`
 - `scripts/layout/check_public_entrypoint_cap.py`
 - `scripts/layout/check_public_surface.py`
+- `scripts/layout/check_realdata_scenarios.py`
 - `scripts/layout/check_repo_hygiene.sh`
 - `scripts/layout/check_root_determinism.sh`
 - `scripts/layout/check_root_makefile_hygiene.py`
@@ -246,6 +251,7 @@
 - `scripts/layout/check_script_relative_calls.py`
 - `scripts/layout/check_scripts_buckets.py`
 - `scripts/layout/check_scripts_readme_drift.sh`
+- `scripts/layout/check_scripts_submodules.py`
 - `scripts/layout/check_slo_contracts.py`
 - `scripts/layout/check_slo_no_loosen_without_approval.py`
 - `scripts/layout/check_stack_manifest_consolidation.sh`
@@ -258,6 +264,7 @@
 - `scripts/layout/dataset_id_lint.py`
 - `scripts/layout/explain_public_target.py`
 - `scripts/layout/generate_ops_stack_versions.py`
+- `scripts/layout/generate_ops_surface_meta.py`
 - `scripts/layout/list_internal_targets.py`
 - `scripts/layout/public_surface.py`
 - `scripts/layout/render_public_help.py`

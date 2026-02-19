@@ -139,6 +139,7 @@ Generated from `configs/ops/public-surface.json`. Do not edit manually.
 - `make root-local`
 - `make root-local-fast`
 - `make root-local-summary`
+- `make scripts-check`
 - `make verify-inventory`
 
 ## Public Ops Run Commands

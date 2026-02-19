@@ -121,6 +121,7 @@
     "root-local",
     "root-local-fast",
     "root-local-summary",
+    "scripts-check",
     "verify-inventory"
   ],
   "ops_run_commands": [

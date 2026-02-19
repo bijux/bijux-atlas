@@ -372,6 +372,7 @@ Generated from `make help`. Do not edit manually.
 - `scripts-graph`
 - `scripts-audit`
 - `scripts-lint`
+- `scripts-check`
 - `scripts-format`
 - `scripts-test`
 - `scripts-clean`
