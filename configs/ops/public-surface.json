@@ -8,6 +8,7 @@
     "explain",
     "gates",
     "help",
+    "inventory",
     "ops-alerts-validate",
     "ops-artifacts-open",
     "ops-baseline-policy-check",
@@ -101,7 +102,8 @@
     "ops-warm-shards",
     "ops-warm-top",
     "root",
-    "root-local"
+    "root-local",
+    "verify-inventory"
   ],
   "ops_run_commands": [
     "ops/run/prereqs.sh",

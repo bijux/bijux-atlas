@@ -2,9 +2,11 @@ SHELL := /bin/sh
 
 layout-check: ## Validate repository layout contract and root shape
 	@./scripts/layout/check_root_shape.sh
+	@./scripts/check_no_root_dumping.sh
 	@./scripts/layout/check_forbidden_root_names.sh
 	@./scripts/layout/check_forbidden_root_files.sh
 	@./scripts/layout/check_no_forbidden_paths.sh
+	@python3 ./scripts/layout/check_generated_dirs_policy.py
 	@./scripts/layout/check_ops_workspace.sh
 	@python3 ./scripts/layout/check_ops_layout_contract.py
 	@python3 ./scripts/layout/check_ops_index_surface.py
