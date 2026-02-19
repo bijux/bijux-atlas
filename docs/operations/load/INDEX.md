@@ -48,6 +48,25 @@ Required load suite IDs:
 - `mixed-gene-sequence`
 - `soak-30m`
 
+Canonical scenario files:
+
+- `mixed.json`
+- `cheap-only-survival.json`
+- `warm-steady-state-p99.json`
+- `cold-start.json`
+- `stampede.json`
+- `store-outage-under-spike.json`
+- `noisy-neighbor-cpu-throttle.json`
+- `pod-churn.json`
+- `spike-overload-proof.json`
+- `response-size-abuse.json`
+- `multi-release.json`
+- `sharded-fanout.json`
+- `diff-heavy.json`
+- `mixed-gene-sequence.json`
+- `soak-30m.json`
+- `redis-optional.json`
+
 ## Failure modes
 
 Missing index links create orphan docs.

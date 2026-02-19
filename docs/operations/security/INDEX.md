@@ -30,13 +30,15 @@ Missing index links create orphan docs.
 
 ```bash
 $ make docs
+$ make ops-check
 ```
 
-Expected output: docs build and docs-structure checks pass.
+Expected output: docs build and ops contract checks pass.
 
 ## See also
 
 - [Docs Home](../../index.md)
 - [Naming Standard](../../_style/naming-standard.md)
 - [Terms Glossary](../../_style/terms-glossary.md)
+- `ops-check`
 - `ops-ci`

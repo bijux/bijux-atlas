@@ -30,13 +30,15 @@ Missing index prevents discoverability and creates response delays.
 
 ```bash
 $ make docs
+$ make ops-check
 ```
 
-Expected output: docs checks pass.
+Expected output: docs checks and ops contract checks pass.
 
 ## See also
 
 - [Security Operations](../INDEX.md)
 - [Advisory Process](../advisory-process.md)
 - [Terms Glossary](../../../_style/terms-glossary.md)
+- `ops-check`
 - `ops-ci`
