@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import json
 import os
+import datetime as dt
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[2]
@@ -23,7 +24,33 @@ if responses.exists():
             continue
         rows.append(json.loads(line))
 
-lines = ["# Ops Smoke Report", "", f"- Run: `{run_id}`", "", "| Path | Status |", "|---|---|"]
+relaxations_path = root / "configs/policy/layer-relaxations.json"
+active_boundary_exceptions: list[str] = []
+if relaxations_path.exists():
+    payload = json.loads(relaxations_path.read_text(encoding="utf-8"))
+    today = dt.date.today()
+    for exc in payload.get("exceptions", []):
+        try:
+            expiry = dt.date.fromisoformat(str(exc.get("expiry", "")))
+        except ValueError:
+            continue
+        if expiry >= today:
+            active_boundary_exceptions.append(f"{exc.get('id')} ({exc.get('rule')}, expiry={exc.get('expiry')})")
+
+lines = ["# Ops Smoke Report", "", f"- Run: `{run_id}`", ""]
+if active_boundary_exceptions:
+    lines.extend(
+        [
+            "> [!WARNING]",
+            "> Boundary exceptions are active for e2e layering rules.",
+            "",
+            "## Active Boundary Exceptions",
+        ]
+    )
+    lines.extend([f"- `{item}`" for item in active_boundary_exceptions])
+    lines.append("")
+
+lines.extend(["| Path | Status |", "|---|---|"])
 for row in rows:
     lines.append(f"| `{row.get('path','')}` | `{row.get('status','')}` |")
 if not rows:
