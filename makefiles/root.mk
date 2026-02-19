@@ -84,11 +84,11 @@ docs-lint-names: ## Enforce durable naming contracts, registries, and inventory
 	@python3 ./ops/load/scripts/validate_suite_manifest.py
 	@./scripts/docs/check_index_pages.sh
 
-doctor: ## Public doctor target (delegates to ops/run/doctor.sh)
-	@./ops/run/doctor.sh
+doctor: ## Print tool/env/path diagnostics and store doctor report
+	@RUN_ID="$${RUN_ID:-doctor-$(MAKE_RUN_TS)}" python3 ./scripts/layout/make_doctor.py
 
-prereqs: ## Public prereqs target (delegates to ops/run/prereqs.sh)
-	@./ops/run/prereqs.sh
+prereqs: ## Check required binaries and versions and store prereqs report
+	@RUN_ID="$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}" python3 ./scripts/layout/make_prereqs.py --run-id "$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}"
 
 dataset-id-lint: ## Validate DatasetId/DatasetKey contract usage across ops fixtures
 	@python3 ./scripts/layout/dataset_id_lint.py
@@ -164,8 +164,24 @@ internal-list: ## Print internal make targets for maintainers
 format: ## UX alias for fmt
 	@$(MAKE) fmt
 
-report: ## Merge lane reports into unified report
-	@./ops/run/report.sh
+report/merge: ## Merge lane reports into unified make report JSON
+	@run_id="$${RUN_ID:-$$(cat ops/_generated/root-local/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
+	python3 ./scripts/layout/make_report.py merge --run-id "$$run_id"
+
+report/print: ## Print lane summary like CI/GitHub Actions output
+	@run_id="$${RUN_ID:-$$(cat ops/_generated/root-local/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
+	python3 ./scripts/layout/make_report.py print --run-id "$$run_id"
+
+report/md: ## Generate markdown summary for PR comments
+	@run_id="$${RUN_ID:-$$(cat ops/_generated/root-local/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
+	python3 ./scripts/layout/make_report.py md --run-id "$$run_id"
+
+report/junit: ## Optional JUnit conversion for CI systems
+	@run_id="$${RUN_ID:-$$(cat ops/_generated/root-local/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
+	python3 ./scripts/layout/make_report.py junit --run-id "$$run_id"
+
+report: ## Compatibility alias for report/merge
+	@$(MAKE) -s report/merge
 
 quick: ## Minimal tight loop (fmt + lint + test)
 	@$(call with_iso,quick,$(MAKE) -s fmt lint test)
@@ -371,7 +387,7 @@ release-update-compat-matrix:
 	@./scripts/release/update-compat-matrix.sh "$$TAG"
 
 
-.PHONY: architecture-check artifacts-clean artifacts-index bootstrap bootstrap-tools bump cargo/all chart-package chart-verify ci ci/all ci-workflow-contract clean config-drift config-print config-validate configs-check configs/all contracts dataset-id-lint debug deep-clean docker-build docker-contracts docker-push docker-scan docker-smoke docs docs/all docs-lint-names doctor explain fetch-real-datasets format gates gates-check governance-check graph help hygiene internal-list inventory isolate-clean layout-check layout-migrate legacy/ci legacy/contracts legacy/hygiene legacy/local-fast-loop legacy/local-full-loop legacy/nightly legacy/root-fast legacy/root-local-fast legacy/root-local-full list local local/all local-full makefiles-contract nightly nightly/all no-direct-scripts ops-alerts-validate ops/all ops-artifacts-open ops-baseline-policy-check ops-cache-pin-set ops-cache-status ops-catalog-validate ops-check ops-clean ops-contracts-check ops-dashboards-validate ops-dataset-federated-registry-test ops-dataset-multi-release-test ops-dataset-promotion-sim ops-dataset-qc ops-datasets-fetch ops-deploy ops-doctor ops-down ops-drill-corruption-dataset ops-drill-memory-growth ops-drill-otel-outage ops-drill-overload ops-drill-pod-churn ops-drill-rate-limit ops-drill-rollback ops-drill-rollback-under-load ops-drill-store-outage ops-drill-suite ops-drill-toxiproxy-latency ops-drill-upgrade ops-drill-upgrade-under-load ops-e2e-smoke ops-full ops-full-pr ops-gc-smoke ops-gen ops-gen-check ops-incident-repro-kit ops-k8s-smoke ops-k8s-suite ops-k8s-template-tests ops-k8s-tests ops-load-ci ops-load-full ops-load-manifest-validate ops-load-nightly ops-load-shedding ops-load-smoke ops-load-soak ops-load-suite ops-local-full ops-local-full-stack ops-metrics-check ops-obs-down ops-obs-install ops-obs-mode ops-obs-uninstall ops-obs-verify ops-observability-pack-conformance-report ops-observability-pack-export ops-observability-pack-health ops-observability-pack-smoke ops-observability-pack-verify ops-observability-smoke ops-observability-validate ops-open-grafana ops-openapi-validate ops-perf-baseline-update ops-perf-cold-start ops-perf-nightly ops-perf-report ops-perf-warm-start ops-policy-audit ops-prereqs ops-proof-cached-only ops-publish ops-readiness-scorecard ops-realdata ops-redeploy ops-ref-grade-local ops-ref-grade-nightly ops-ref-grade-pr ops-release-matrix ops-release-rollback ops-release-update ops-report ops-slo-alert-proof ops-slo-burn ops-slo-report ops-smoke ops-tools-check ops-traces-check ops-undeploy ops-up ops-values-validate ops-warm ops-warm-datasets ops-warm-shards ops-warm-top policies/all policy-allow-env-lint policy-audit policy-drift-diff policy-enforcement-status policy-lint policy-schema-drift prereqs quick release release-dry-run release-update-compat-matrix rename-lint report root root-determinism root-local root-local-fast root-local-summary scripts-all scripts/all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test ssot-check verify-inventory lane-cargo lane-docs lane-ops lane-scripts lane-configs-policies root-local-open repro internal/lane-ops-smoke legacy/config-validate-core
+.PHONY: architecture-check artifacts-clean artifacts-index bootstrap bootstrap-tools bump cargo/all chart-package chart-verify ci ci/all ci-workflow-contract clean config-drift config-print config-validate configs-check configs/all contracts dataset-id-lint debug deep-clean docker-build docker-contracts docker-push docker-scan docker-smoke docs docs/all docs-lint-names doctor explain fetch-real-datasets format gates gates-check governance-check graph help hygiene internal-list inventory isolate-clean layout-check layout-migrate legacy/ci legacy/contracts legacy/hygiene legacy/local-fast-loop legacy/local-full-loop legacy/nightly legacy/root-fast legacy/root-local-fast legacy/root-local-full list local local/all local-full makefiles-contract nightly nightly/all no-direct-scripts ops-alerts-validate ops/all ops-artifacts-open ops-baseline-policy-check ops-cache-pin-set ops-cache-status ops-catalog-validate ops-check ops-clean ops-contracts-check ops-dashboards-validate ops-dataset-federated-registry-test ops-dataset-multi-release-test ops-dataset-promotion-sim ops-dataset-qc ops-datasets-fetch ops-deploy ops-doctor ops-down ops-drill-corruption-dataset ops-drill-memory-growth ops-drill-otel-outage ops-drill-overload ops-drill-pod-churn ops-drill-rate-limit ops-drill-rollback ops-drill-rollback-under-load ops-drill-store-outage ops-drill-suite ops-drill-toxiproxy-latency ops-drill-upgrade ops-drill-upgrade-under-load ops-e2e-smoke ops-full ops-full-pr ops-gc-smoke ops-gen ops-gen-check ops-incident-repro-kit ops-k8s-smoke ops-k8s-suite ops-k8s-template-tests ops-k8s-tests ops-load-ci ops-load-full ops-load-manifest-validate ops-load-nightly ops-load-shedding ops-load-smoke ops-load-soak ops-load-suite ops-local-full ops-local-full-stack ops-metrics-check ops-obs-down ops-obs-install ops-obs-mode ops-obs-uninstall ops-obs-verify ops-observability-pack-conformance-report ops-observability-pack-export ops-observability-pack-health ops-observability-pack-smoke ops-observability-pack-verify ops-observability-smoke ops-observability-validate ops-open-grafana ops-openapi-validate ops-perf-baseline-update ops-perf-cold-start ops-perf-nightly ops-perf-report ops-perf-warm-start ops-policy-audit ops-prereqs ops-proof-cached-only ops-publish ops-readiness-scorecard ops-realdata ops-redeploy ops-ref-grade-local ops-ref-grade-nightly ops-ref-grade-pr ops-release-matrix ops-release-rollback ops-release-update ops-report ops-slo-alert-proof ops-slo-burn ops-slo-report ops-smoke ops-tools-check ops-traces-check ops-undeploy ops-up ops-values-validate ops-warm ops-warm-datasets ops-warm-shards ops-warm-top policies/all policy-allow-env-lint policy-audit policy-drift-diff policy-enforcement-status policy-lint policy-schema-drift prereqs quick release release-dry-run release-update-compat-matrix rename-lint report root root-determinism root-local root-local-fast root-local-summary scripts-all scripts/all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test ssot-check verify-inventory lane-cargo lane-docs lane-ops lane-scripts lane-configs-policies root-local-open repro internal/lane-ops-smoke legacy/config-validate-core report/merge report/print report/md report/junit clean-safe clean-all print-env
 
 
 
@@ -402,6 +418,13 @@ isolate-clean: ## Remove isolate output directories safely
 clean: ## Safe clean for generated local outputs
 	@./ops/run/clean.sh
 
+clean-safe: ## Clean only safe generated make artifact directories
+	@python3 ./scripts/layout/clean_make_artifacts.py
+
+clean-all: ## Clean all allowed generated dirs (requires CONFIRM=YES)
+	@[ "$${CONFIRM:-}" = "YES" ] || { echo "refusing clean-all without CONFIRM=YES"; exit 2; }
+	@python3 ./scripts/layout/clean_make_artifacts.py --all
+
 deep-clean: ## Extended clean (prints and then removes generated outputs)
 	@printf '%s\n' 'Deleting: artifacts/isolate artifacts/scripts artifacts/perf/results artifacts/ops'
 	@$(MAKE) clean
@@ -415,6 +438,22 @@ debug: ## Print internal make/env variables for maintainers
 	@printf 'ATLAS_NS=%s\n' "$(ATLAS_NS)"
 	@printf 'ATLAS_BASE_URL=%s\n' "$(ATLAS_BASE_URL)"
 	@printf 'OPS_RUN_ID=%s\n' "$(OPS_RUN_ID)"
+
+print-env: ## Print key env vars used by lanes and gates
+	@printf 'RUN_ID=%s\n' "$${RUN_ID:-}"
+	@printf 'ISO_ROOT=%s\n' "$${ISO_ROOT:-}"
+	@printf 'ISO_RUN_ID=%s\n' "$${ISO_RUN_ID:-}"
+	@printf 'ISO_TAG=%s\n' "$${ISO_TAG:-}"
+	@printf 'CARGO_TARGET_DIR=%s\n' "$${CARGO_TARGET_DIR:-}"
+	@printf 'CARGO_HOME=%s\n' "$${CARGO_HOME:-}"
+	@printf 'TMPDIR=%s\n' "$${TMPDIR:-}"
+	@printf 'TMP=%s\n' "$${TMP:-}"
+	@printf 'TEMP=%s\n' "$${TEMP:-}"
+	@printf 'TZ=%s\n' "$${TZ:-}"
+	@printf 'LANG=%s\n' "$${LANG:-}"
+	@printf 'LC_ALL=%s\n' "$${LC_ALL:-}"
+	@printf 'ATLAS_BASE_URL=%s\n' "$${ATLAS_BASE_URL:-}"
+	@printf 'ATLAS_NS=%s\n' "$${ATLAS_NS:-}"
 
 bump: ## Bump workspace version (usage: make bump VERSION=x.y.z)
 	@[ -n "$$VERSION" ] || { echo "usage: make bump VERSION=x.y.z"; exit 2; }
