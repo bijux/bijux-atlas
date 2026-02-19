@@ -15,6 +15,8 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 - Root `Makefile` is a thin dispatcher that only includes `makefiles/*.mk`.
 - Public interfaces are make targets, not direct script paths.
 - `makefiles/root.mk` is the publication surface for public targets.
+- `makefiles/_macros.mk` centralizes shared run-id/isolation/logging/python helpers.
+- `makefiles/CONTRACT.md` is the normative contract for make target boundaries.
 - Tier model:
   - `root`: CI-fast deterministic gate.
   - `root-local`: local superset with parallel isolated lanes.
@@ -45,6 +47,7 @@ $ make gates
 $ make list-public
 $ make explain TARGET=root-local
 $ make root-local-summary RUN_ID=<run-id>
+$ make makefiles-contract
 $ python3 scripts/docs/check_make_targets_documented.py
 $ make ops-script-coverage
 ```
