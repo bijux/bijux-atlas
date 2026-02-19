@@ -181,6 +181,12 @@ jobs:
       - uses: actions/checkout@v4
       - run: make ci-sli-docs-drift
 
+  slo-docs-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make ci-slo-docs-drift
+
   ssot-drift:
     runs-on: ubuntu-latest
     steps:

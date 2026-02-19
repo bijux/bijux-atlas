@@ -190,6 +190,10 @@ ci-sli-docs-drift:
 	@python3 ./scripts/docs/generate_sli_doc.py
 	@git diff --exit-code docs/operations/slo/SLIS.md
 
+ci-slo-docs-drift:
+	@python3 ./scripts/docs/generate_slos_doc.py
+	@git diff --exit-code docs/operations/slo/SLOS.md
+
 ci-init-iso-dirs:
 	@mkdir -p "$${CARGO_TARGET_DIR:-artifacts/isolates/tmp/target}" "$${CARGO_HOME:-artifacts/isolates/tmp/cargo-home}" "$${TMPDIR:-artifacts/isolates/tmp/tmp}" "$${ISO_ROOT:-artifacts/isolates/tmp}"
 
