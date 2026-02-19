@@ -22,6 +22,7 @@ SCHEMA_COVERED = {
     "ops/datasets/manifest.lock",
     "ops/e2e/scenarios/scenarios.json",
     "ops/e2e/realdata/scenarios.json",
+    "ops/e2e/suites/suites.json",
 }
 
 VALIDATOR_COVERED_PREFIXES = (

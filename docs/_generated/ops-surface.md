@@ -107,9 +107,16 @@ Generated from ops manifests.
 - `make ops-warm-shards`
 - `make ops-warm-top`
 
-## E2E Scenarios
+## E2E Suites
 
-- `smoke`: `make ops-e2e-smoke` (stack=True, obs=True, datasets=True, load=True)
-- `k8s-suite`: `make ops-k8s-suite` (stack=True, obs=True, datasets=False, load=False)
-- `realdata`: `make ops-realdata` (stack=True, obs=True, datasets=True, load=False)
-- `perf-e2e`: `make ops-perf-e2e` (stack=True, obs=True, datasets=True, load=True)
+- `smoke`: capabilities=`k8s,stack`
+- scenario `api-smoke`: runner=`ops/e2e/scripts/smoke_queries.sh && python3 ops/e2e/smoke/generate_report.py`, budget(time_s=180, qps=5)
+- scenario `metrics-smoke`: runner=`ops/e2e/scripts/verify_metrics.sh`, budget(time_s=120, qps=1)
+- `k8s-suite`: capabilities=`k8s,stack`
+- scenario `k8s-contract-suite`: runner=`ops/k8s/tests/suite.sh --suite ${ATLAS_E2E_K8S_SUITE:-smoke}`, budget(time_s=600, qps=1)
+- `realdata`: capabilities=`k8s,stack,datasets`
+- scenario `single-release`: runner=`ops/e2e/realdata/run_single_release.sh`, budget(time_s=300, qps=3)
+- scenario `two-release-diff`: runner=`ops/e2e/realdata/run_two_release_diff.sh`, budget(time_s=360, qps=2)
+- scenario `schema-evolution`: runner=`ops/e2e/realdata/schema_evolution.sh`, budget(time_s=180, qps=1)
+- scenario `upgrade-drill`: runner=`ops/e2e/realdata/upgrade_drill.sh`, budget(time_s=240, qps=1)
+- scenario `rollback-drill`: runner=`ops/e2e/realdata/rollback_drill.sh`, budget(time_s=240, qps=1)

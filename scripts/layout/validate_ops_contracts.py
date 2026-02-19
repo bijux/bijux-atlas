@@ -101,6 +101,7 @@ def main() -> int:
         ("ops/_schemas/datasets/manifest-lock.schema.json", "ops/datasets/manifest.lock"),
         ("ops/_schemas/e2e-scenarios.schema.json", "ops/e2e/scenarios/scenarios.json"),
         ("ops/_schemas/e2e-realdata-scenarios.schema.json", "ops/e2e/realdata/scenarios.json"),
+        ("ops/_schemas/e2e-suites.schema.json", "ops/e2e/suites/suites.json"),
     ]
     for schema_rel, data_rel in pairs:
         validate_pair(schema_rel, data_rel, errors)

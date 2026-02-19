@@ -39,6 +39,12 @@ Required keys:
 - `schema_version`
 - `scenarios`
 
+## `ops/_schemas/e2e-suites.schema.json`
+
+Required keys:
+- `schema_version`
+- `suites`
+
 ## `ops/_schemas/k8s/install-matrix.schema.json`
 
 Required keys:
