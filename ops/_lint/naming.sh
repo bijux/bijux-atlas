@@ -33,4 +33,18 @@ done < <(find ops -type f \( -name '*.sh' -o -name '*.json' -o -name '*.yaml' -o
   ! -path 'ops/_generated*' \
   -print)
 
+while IFS= read -r path; do
+  name="$(basename "$path")"
+  case "$name" in
+    *.sh)
+      if [[ ! "$name" =~ ^[a-z0-9]+(-[a-z0-9]+)*\.sh$ ]]; then
+        echo "public shell script must use kebab-case: $path" >&2
+        bad=1
+      fi
+      ;;
+  esac
+done < <(find ops/run scripts/public/contracts -type f -name '*.sh' -print 2>/dev/null)
+
+python3 ./scripts/layout/check_no_mixed_script_name_variants.py || bad=1
+
 exit "$bad"

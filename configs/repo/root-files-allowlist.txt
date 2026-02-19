@@ -1,0 +1,9 @@
+# Allowed root-level files
+.dockerignore
+.gitignore
+Cargo.lock
+Cargo.toml
+Makefile
+README.md
+mkdocs.yml
+rust-toolchain.toml

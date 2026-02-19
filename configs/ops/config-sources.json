@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "concepts": {
+    "tool_versions": {
+      "canonical": "configs/ops/tool-versions.json",
+      "forbid_globs": [
+        "ops/**/*versions*.json"
+      ],
+      "allow": [
+        "ops/stack/versions.json"
+      ]
+    },
+    "observability_pack": {
+      "canonical": "configs/ops/observability-pack.json",
+      "forbid_globs": [
+        "ops/**/*observability*pack*.json"
+      ],
+      "allow": []
+    },
+    "public_surface": {
+      "canonical": "configs/ops/public-surface.json",
+      "forbid_globs": [
+        "ops/**/*public-surface*.json"
+      ],
+      "allow": []
+    }
+  }
+}
