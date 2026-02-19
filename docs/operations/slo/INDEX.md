@@ -21,6 +21,11 @@ Single landing page for Bijux Atlas SLI/SLO/SLA policy and machine-checked targe
 - [Change policy](CHANGE_POLICY.md)
 - [SLIs](SLIS.md)
 - [SLO Targets](SLOS.md)
+- [SLO Release Gate](RELEASE_GATE.md)
+- [Baseline Update Policy](BASELINE_UPDATE_POLICY.md)
+- [SLA Policy (v1)](SLA_POLICY.md)
+- [SLA Exclusions (Planned)](SLA_EXCLUSIONS_PLANNED.md)
+- [SLA Decision ADR Template](SLA_DECISION_ADR_TEMPLATE.md)
 - [Why These SLIs](WHY_THESE_SLIS.md)
 - [What We Do Not Measure Yet](WHAT_WE_DONT_MEASURE_YET.md)
 
