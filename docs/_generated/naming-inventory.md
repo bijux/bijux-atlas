@@ -5,9 +5,9 @@
 
 ## Summary
 
-- Tracked files: `1606`
-- Docs markdown files: `355`
-- Script files under `scripts/`: `231`
+- Tracked files: `1617`
+- Docs markdown files: `358`
+- Script files under `scripts/`: `237`
 - Rust test files: `42`
 - Load suites in `ops/load/suites/suites.json`: `19`
 - Runbooks in `docs/operations/runbooks/`: `17`
@@ -17,7 +17,7 @@
 
 - Forbidden-token hits: `2`
 - Non-kebab docs outside allowed exceptions: `22`
-- Non-kebab scripts under `scripts/`: `195`
+- Non-kebab scripts under `scripts/`: `201`
 
 ## Load Suites
 
@@ -88,6 +88,7 @@
 - `docs/operations/slo/WHY_THESE_SLIS.md`
 - `scripts/_internal/run_suite_wrapper_legacy.sh`
 - `scripts/bootstrap/install_tools.sh`
+- `scripts/check_no_root_dumping.sh`
 - `scripts/contracts/check_all.sh`
 - `scripts/contracts/check_breaking_contract_change.py`
 - `scripts/contracts/check_chart_values_contract.py`
@@ -162,6 +163,7 @@
 - `scripts/docs/generate_ops_contracts_doc.py`
 - `scripts/docs/generate_ops_schema_docs.py`
 - `scripts/docs/generate_ops_surface.py`
+- `scripts/docs/generate_repo_surface.py`
 - `scripts/docs/generate_scripts_graph.py`
 - `scripts/docs/generate_sli_doc.py`
 - `scripts/docs/generate_slos_doc.py`
@@ -189,6 +191,7 @@
 - `scripts/layout/check_e2e_scenarios.py`
 - `scripts/layout/check_forbidden_root_files.sh`
 - `scripts/layout/check_forbidden_root_names.sh`
+- `scripts/layout/check_generated_dirs_policy.py`
 - `scripts/layout/check_generated_policy.py`
 - `scripts/layout/check_kind_cluster_contract_drift.sh`
 - `scripts/layout/check_make_public_scripts.py`
@@ -197,6 +200,7 @@
 - `scripts/layout/check_no_empty_dirs.py`
 - `scripts/layout/check_no_forbidden_paths.sh`
 - `scripts/layout/check_no_hidden_defaults.py`
+- `scripts/layout/check_no_mixed_script_name_variants.py`
 - `scripts/layout/check_obs_pack_ssot.py`
 - `scripts/layout/check_ops_artifacts_writes.py`
 - `scripts/layout/check_ops_canonical_entrypoints.py`
@@ -212,6 +216,7 @@
 - `scripts/layout/check_ops_single_validators.py`
 - `scripts/layout/check_ops_stack_order.sh`
 - `scripts/layout/check_ops_workspace.sh`
+- `scripts/layout/check_public_entrypoint_cap.py`
 - `scripts/layout/check_public_surface.py`
 - `scripts/layout/check_repo_hygiene.sh`
 - `scripts/layout/check_root_shape.sh`
@@ -234,6 +239,7 @@
 - `scripts/layout/public_surface.py`
 - `scripts/layout/render_public_help.py`
 - `scripts/layout/replace_paths.sh`
+- `scripts/layout/run_gate.py`
 - `scripts/layout/validate_ops_contracts.py`
 - `scripts/layout/validate_ops_env.py`
 - `scripts/ops/check_k8s_flakes.py`
