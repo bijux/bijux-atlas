@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 
 
@@ -22,6 +23,25 @@ def main() -> int:
         "observability_metrics": (run_dir / "observability" / "metrics.prom").exists(),
         "ops_report": (run_dir / "report.json").exists(),
     }
+    slo_summary = {
+        "total_slos": 0,
+        "compliant_slos": 0,
+        "violated_slos": 0,
+        "unknown_slos": 0,
+        "compliance_ratio": 0.0,
+    }
+    if checks["ops_report"]:
+        try:
+            payload = json.loads((run_dir / "report.json").read_text(encoding="utf-8"))
+            if isinstance(payload.get("slo_summary"), dict):
+                slo_summary.update(payload["slo_summary"])
+        except Exception:
+            pass
+    checks["slo_compliance"] = (
+        slo_summary["total_slos"] > 0
+        and slo_summary["violated_slos"] == 0
+        and slo_summary["compliance_ratio"] >= 0.95
+    )
     passed = sum(1 for ok in checks.values() if ok)
     total = len(checks)
     score = int((passed / total) * 100)
@@ -37,6 +57,18 @@ def main() -> int:
     ]
     for name, ok in checks.items():
         lines.append(f"- {name}: `{'PASS' if ok else 'FAIL'}`")
+    lines.extend(
+        [
+            "",
+            "## SLO Compliance",
+            "",
+            f"- total_slos: `{slo_summary['total_slos']}`",
+            f"- compliant_slos: `{slo_summary['compliant_slos']}`",
+            f"- violated_slos: `{slo_summary['violated_slos']}`",
+            f"- unknown_slos: `{slo_summary['unknown_slos']}`",
+            f"- compliance_ratio: `{slo_summary['compliance_ratio']}`",
+        ]
+    )
 
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
