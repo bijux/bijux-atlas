@@ -37,7 +37,7 @@ def parse_make_targets(makefiles_dir: Path) -> dict[str, list[str]]:
                 continue
             for token in call.group(1).split():
                 token = token.strip(");")
-                if token.startswith("-") or "=" in token or token in {"&&", ";", "\\"}:
+                if token.startswith("-") or "=" in token or token in {"&&", ";", "\\", "if", "then", "else", "fi", "for", "do", "done"}:
                     continue
                 graph.setdefault(current_target, [])
                 if token not in graph[current_target]:
