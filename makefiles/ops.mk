@@ -30,6 +30,7 @@ ops-k8s-contracts: ## Validate k8s values/schema/install-matrix/chart drift cont
 
 ops-e2e-validate: ## Validate unified e2e scenario definitions and docs references
 	@python3 ./scripts/layout/check_e2e_scenarios.py
+	@python3 ./scripts/layout/check_realdata_scenarios.py
 
 ops-contracts-check: ## Validate canonical ops manifests against ops/_schemas and contract invariants
 	@$(MAKE) -s ops-stack-versions-sync
@@ -862,6 +863,7 @@ ops-lint: ## Lint ops shell/python/json/schema contracts
 	@python3 ./scripts/layout/check_ops_run_entrypoints.py
 	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
 	@python3 ./ops/load/scripts/validate_suite_manifest.py
+	@python3 ./ops/k8s/tests/validate_suites.py
 	@python3 ./scripts/layout/check_tool_versions.py kind kubectl helm k6
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) -s ops-layout-lint

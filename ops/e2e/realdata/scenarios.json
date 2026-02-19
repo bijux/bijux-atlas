@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "scenarios": [
+    {
+      "id": "single-release",
+      "script": "run_single_release.sh",
+      "description": "Validate canonical queries and snapshot stability on a single release."
+    },
+    {
+      "id": "two-release-diff",
+      "script": "run_two_release_diff.sh",
+      "description": "Validate two-release diff and semantic behavior."
+    },
+    {
+      "id": "schema-evolution",
+      "script": "schema_evolution.sh",
+      "description": "Validate backward-compatible schema evolution behavior."
+    },
+    {
+      "id": "upgrade-drill",
+      "script": "upgrade_drill.sh",
+      "description": "Exercise release upgrade drill and invariants."
+    },
+    {
+      "id": "rollback-drill",
+      "script": "rollback_drill.sh",
+      "description": "Exercise release rollback drill and invariants."
+    }
+  ]
+}

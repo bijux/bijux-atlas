@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "required": ["schema_version", "scenarios"],
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 1},
+    "scenarios": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "script", "description"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+          "script": {"type": "string", "pattern": "^[a-z0-9_./-]+\\.sh$"},
+          "description": {"type": "string", "minLength": 8}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
