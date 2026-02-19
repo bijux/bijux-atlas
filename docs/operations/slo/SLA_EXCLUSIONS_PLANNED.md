@@ -1,0 +1,9 @@
+# SLA Exclusions (Planned)
+
+If an external SLA is introduced, planned exclusions include:
+
+- Scheduled maintenance windows.
+- Force majeure events.
+- Abuse throttling and rate-limit enforcement.
+- Upstream dependency outages outside Atlas control.
+- Customer misconfiguration and unsupported deployments.
