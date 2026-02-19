@@ -109,8 +109,14 @@ fn ensure_secure_dir(path: &Path) -> Result<(), CacheError> {
         let mut mode = metadata.permissions().mode();
         if mode & 0o002 != 0 {
             mode &= !0o002;
-            std::fs::set_permissions(path, std::fs::Permissions::from_mode(mode))
-                .map_err(|e| CacheError(e.to_string()))?;
+            match std::fs::set_permissions(path, std::fs::Permissions::from_mode(mode)) {
+                Ok(()) => {}
+                Err(e) if e.kind() == std::io::ErrorKind::PermissionDenied => {
+                    // Kubernetes volume roots can be non-owned by the container user.
+                    // Keep startup resilient when chmod cannot be applied.
+                }
+                Err(e) => return Err(CacheError(e.to_string())),
+            }
         }
     }
     Ok(())
