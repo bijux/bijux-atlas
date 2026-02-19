@@ -96,6 +96,15 @@ test-all:
 		$(MAKE) _test-all; \
 	fi
 
+test-contracts:
+	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
+	@if [ -z "$$ISO_ROOT" ]; then \
+		tag="$(AUTO_ISO_TAG_PREFIX)-test-contracts-$$(date -u +%Y%m%dT%H%M%SZ)-$$PPID"; \
+		ISO_TAG="$$tag" ./scripts/bin/isolate --tag "$$tag" $(MAKE) _test-contracts; \
+	else \
+		$(MAKE) _test-contracts; \
+	fi
+
 _test:
 	@./scripts/bin/require-isolate >/dev/null
 	@if ! cargo nextest --version >/dev/null 2>&1; then \
@@ -122,6 +131,11 @@ _test-all:
 	@if [ -d target/nextest ]; then find target/nextest -type f -delete 2>/dev/null || true; fi
 	@if [ -d target/nextest ]; then find target/nextest -type d -empty -delete 2>/dev/null || true; fi
 	@if [ -d target ]; then find target -type d -empty -delete 2>/dev/null || true; fi
+	@./scripts/layout/check_repo_hygiene.sh
+
+_test-contracts:
+	@./scripts/bin/require-isolate >/dev/null
+	@cargo test -p bijux-atlas-server --test observability_contract
 	@./scripts/layout/check_repo_hygiene.sh
 
 coverage:
@@ -214,12 +228,54 @@ run-medium-serve:
 	@./scripts/fixtures/run-medium-serve.sh
 
 bench-sqlite-query-latency:
-	@cargo bench -p bijux-atlas-ingest --features bench-ingest-throughput --bench sqlite_query_latency
+	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
+	@if [ -z "$$ISO_ROOT" ]; then \
+		tag="$(AUTO_ISO_TAG_PREFIX)-bench-sqlite-$$(date -u +%Y%m%dT%H%M%SZ)-$$PPID"; \
+		ISO_TAG="$$tag" ./scripts/bin/isolate --tag "$$tag" $(MAKE) _bench-sqlite-query-latency; \
+	else \
+		$(MAKE) _bench-sqlite-query-latency; \
+	fi
 
 bench-ingest-throughput-medium:
-	@cargo bench -p bijux-atlas-ingest --features bench-ingest-throughput --bench ingest_throughput
+	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
+	@if [ -z "$$ISO_ROOT" ]; then \
+		tag="$(AUTO_ISO_TAG_PREFIX)-bench-throughput-$$(date -u +%Y%m%dT%H%M%SZ)-$$PPID"; \
+		ISO_TAG="$$tag" ./scripts/bin/isolate --tag "$$tag" $(MAKE) _bench-ingest-throughput-medium; \
+	else \
+		$(MAKE) _bench-ingest-throughput-medium; \
+	fi
 
 bench-db-size-growth:
+	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
+	@if [ -z "$$ISO_ROOT" ]; then \
+		tag="$(AUTO_ISO_TAG_PREFIX)-bench-db-size-$$(date -u +%Y%m%dT%H%M%SZ)-$$PPID"; \
+		ISO_TAG="$$tag" ./scripts/bin/isolate --tag "$$tag" $(MAKE) _bench-db-size-growth; \
+	else \
+		$(MAKE) _bench-db-size-growth; \
+	fi
+
+bench-smoke:
+	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
+	@if [ -z "$$ISO_ROOT" ]; then \
+		tag="$(AUTO_ISO_TAG_PREFIX)-bench-smoke-$$(date -u +%Y%m%dT%H%M%SZ)-$$PPID"; \
+		ISO_TAG="$$tag" ./scripts/bin/isolate --tag "$$tag" $(MAKE) _bench-smoke; \
+	else \
+		$(MAKE) _bench-smoke; \
+	fi
+
+_bench-sqlite-query-latency:
+	@./scripts/bin/require-isolate >/dev/null
+	@cargo bench -p bijux-atlas-ingest --features bench-ingest-throughput --bench sqlite_query_latency
+
+_bench-ingest-throughput-medium:
+	@./scripts/bin/require-isolate >/dev/null
+	@cargo bench -p bijux-atlas-ingest --features bench-ingest-throughput --bench ingest_throughput
+
+_bench-db-size-growth:
+	@./scripts/bin/require-isolate >/dev/null
 	@cargo bench -p bijux-atlas-ingest --features bench-ingest-throughput --bench db_size_growth
 
-.PHONY: fmt _fmt lint _lint _lint-rustfmt _lint-configs _lint-docs _lint-clippy check _check test test-all _test _test-all coverage _coverage audit _audit ci-core openapi-drift api-contract-check compat-matrix-validate fetch-fixtures load-test load-test-1000qps perf-nightly query-plan-gate critical-query-check cold-start-bench memory-profile-load run-medium-ingest ingest-sharded-medium run-medium-serve bench-sqlite-query-latency bench-ingest-throughput-medium bench-db-size-growth
+_bench-smoke:
+	@$(MAKE) _bench-sqlite-query-latency
+
+.PHONY: fmt _fmt lint _lint _lint-rustfmt _lint-configs _lint-docs _lint-clippy check _check test test-all test-contracts _test _test-all _test-contracts coverage _coverage audit _audit ci-core openapi-drift api-contract-check compat-matrix-validate fetch-fixtures load-test load-test-1000qps perf-nightly query-plan-gate critical-query-check cold-start-bench memory-profile-load run-medium-ingest ingest-sharded-medium run-medium-serve bench-sqlite-query-latency bench-ingest-throughput-medium bench-db-size-growth bench-smoke _bench-sqlite-query-latency _bench-ingest-throughput-medium _bench-db-size-growth _bench-smoke

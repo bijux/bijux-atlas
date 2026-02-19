@@ -140,6 +140,9 @@ gates-check: ## Run public-surface/docs/makefile boundary checks
 	@$(call gate_json,public-target-aliases,python3 ./scripts/layout/check_public_target_aliases.py)
 	@$(call gate_json,internal-target-doc-refs,python3 ./scripts/layout/check_internal_targets_not_in_docs.py)
 	@$(call gate_json,makefiles-contract,python3 ./scripts/layout/check_makefiles_contract.py)
+	@$(call gate_json,cargo-dev-metadata,python3 ./scripts/layout/check_cargo_dev_metadata.py)
+	@$(call gate_json,root-no-cargo-dev-deps,python3 ./scripts/layout/check_root_no_cargo_dev_deps.py)
+	@$(call gate_json,cargo-invocation-scope,python3 ./scripts/layout/check_cargo_invocations_scoped.py)
 	@$(call gate_json,ci-entrypoints,python3 ./scripts/layout/check_ci_entrypoints.py)
 	@$(call gate_json,help-excludes-internal,python3 ./scripts/layout/check_help_excludes_internal.py)
 	@$(call gate_json,root-makefile-hygiene,python3 ./scripts/layout/check_root_makefile_hygiene.py)
@@ -184,10 +187,37 @@ report: ## Compatibility alias for report/merge
 	@$(MAKE) -s report/merge
 
 quick: ## Minimal tight loop (fmt + lint + test)
-	@$(call with_iso,quick,$(MAKE) -s fmt lint test)
+	@$(call with_iso,quick,$(MAKE) -s cargo/fmt cargo/lint cargo/test-fast)
 
 cargo/all: ## Local exhaustive Rust lane
 	@$(MAKE) -s lane-cargo
+
+cargo/fmt: ## Cargo lane fmt
+	@$(call with_iso,cargo-fmt,$(MAKE) -s fmt)
+
+cargo/lint: ## Cargo lane lint
+	@$(call with_iso,cargo-lint,$(MAKE) -s lint)
+
+cargo/test-fast: ## Cargo fast unit-focused tests (nextest fast profile)
+	@$(call with_iso,cargo-test-fast,NEXTEST_PROFILE=fast-unit $(MAKE) -s test)
+
+cargo/test: ## Cargo CI-profile tests
+	@$(call with_iso,cargo-test,NEXTEST_PROFILE=ci $(MAKE) -s test)
+
+cargo/test-all: ## Cargo full nextest (including ignored)
+	@$(call with_iso,cargo-test-all,NEXTEST_PROFILE=ci $(MAKE) -s test-all)
+
+cargo/test-contracts: ## Cargo contract-focused tests
+	@$(call with_iso,cargo-test-contracts,$(MAKE) -s test-contracts)
+
+cargo/audit: ## Cargo audit gate
+	@$(call with_iso,cargo-audit,$(MAKE) -s audit)
+
+cargo/bench-smoke: ## Cargo benchmark smoke lane
+	@$(call with_iso,cargo-bench-smoke,$(MAKE) -s bench-smoke)
+
+cargo/coverage: ## Cargo coverage lane (kept out of root gate)
+	@$(call with_iso,cargo-coverage,NEXTEST_PROFILE=ci $(MAKE) -s coverage)
 
 docs/all: ## Docs lane
 	@$(MAKE) -s lane-docs
@@ -214,7 +244,8 @@ nightly/all: ## Slow nightly suites (perf/load/drills/realdata)
 	@$(call with_iso,nightly-all,$(MAKE) -s ci/all ops-load-nightly ops-drill-suite ops-realdata)
 
 lane-cargo: ## Lane: rust checks/tests in isolated lane-cargo path
-	@$(call with_iso,lane-cargo,NEXTEST_PROFILE=ci $(MAKE) -s fmt lint check test test-all coverage audit)
+	@$(MAKE) -s cargo/fmt cargo/lint
+	@$(call with_iso,lane-cargo,NEXTEST_PROFILE=ci $(MAKE) -s check test test-all audit)
 
 lane-docs: ## Lane: docs build/freeze/hardening
 	@$(call with_iso,lane-docs,$(MAKE) -s docs docs-freeze docs-hardening)
@@ -387,7 +418,7 @@ release-update-compat-matrix:
 	@./scripts/release/update-compat-matrix.sh "$$TAG"
 
 
-.PHONY: architecture-check artifacts-clean artifacts-index bootstrap bootstrap-tools bump cargo/all chart-package chart-verify ci ci/all ci-workflow-contract clean config-drift config-print config-validate configs-check configs/all contracts dataset-id-lint debug deep-clean docker-build docker-contracts docker-push docker-scan docker-smoke docs docs/all docs-lint-names doctor explain fetch-real-datasets format gates gates-check governance-check graph help hygiene internal-list inventory isolate-clean layout-check layout-migrate legacy/ci legacy/contracts legacy/hygiene legacy/local-fast-loop legacy/local-full-loop legacy/nightly legacy/root-fast legacy/root-local-fast legacy/root-local-full list local local/all local-full makefiles-contract nightly nightly/all no-direct-scripts ops-alerts-validate ops/all ops-artifacts-open ops-baseline-policy-check ops-cache-pin-set ops-cache-status ops-catalog-validate ops-check ops-clean ops-contracts-check ops-dashboards-validate ops-dataset-federated-registry-test ops-dataset-multi-release-test ops-dataset-promotion-sim ops-dataset-qc ops-datasets-fetch ops-deploy ops-doctor ops-down ops-drill-corruption-dataset ops-drill-memory-growth ops-drill-otel-outage ops-drill-overload ops-drill-pod-churn ops-drill-rate-limit ops-drill-rollback ops-drill-rollback-under-load ops-drill-store-outage ops-drill-suite ops-drill-toxiproxy-latency ops-drill-upgrade ops-drill-upgrade-under-load ops-e2e-smoke ops-full ops-full-pr ops-gc-smoke ops-gen ops-gen-check ops-incident-repro-kit ops-k8s-smoke ops-k8s-suite ops-k8s-template-tests ops-k8s-tests ops-load-ci ops-load-full ops-load-manifest-validate ops-load-nightly ops-load-shedding ops-load-smoke ops-load-soak ops-load-suite ops-local-full ops-local-full-stack ops-metrics-check ops-obs-down ops-obs-install ops-obs-mode ops-obs-uninstall ops-obs-verify ops-observability-pack-conformance-report ops-observability-pack-export ops-observability-pack-health ops-observability-pack-smoke ops-observability-pack-verify ops-observability-smoke ops-observability-validate ops-open-grafana ops-openapi-validate ops-perf-baseline-update ops-perf-cold-start ops-perf-nightly ops-perf-report ops-perf-warm-start ops-policy-audit ops-prereqs ops-proof-cached-only ops-publish ops-readiness-scorecard ops-realdata ops-redeploy ops-ref-grade-local ops-ref-grade-nightly ops-ref-grade-pr ops-release-matrix ops-release-rollback ops-release-update ops-report ops-slo-alert-proof ops-slo-burn ops-slo-report ops-smoke ops-tools-check ops-traces-check ops-undeploy ops-up ops-values-validate ops-warm ops-warm-datasets ops-warm-shards ops-warm-top policies/all policy-allow-env-lint policy-audit policy-drift-diff policy-enforcement-status policy-lint policy-schema-drift prereqs quick release release-dry-run release-update-compat-matrix rename-lint report root root-determinism root-local root-local-fast root-local-summary scripts-all scripts/all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test ssot-check verify-inventory lane-cargo lane-docs lane-ops lane-scripts lane-configs-policies root-local-open repro internal/lane-ops-smoke legacy/config-validate-core report/merge report/print report/md report/junit clean-safe clean-all print-env
+.PHONY: architecture-check artifacts-clean artifacts-index bootstrap bootstrap-tools bump cargo/all chart-package chart-verify ci ci/all ci-workflow-contract clean config-drift config-print config-validate configs-check configs/all contracts dataset-id-lint debug deep-clean docker-build docker-contracts docker-push docker-scan docker-smoke docs docs/all docs-lint-names doctor explain fetch-real-datasets format gates gates-check governance-check graph help hygiene internal-list inventory isolate-clean layout-check layout-migrate legacy/ci legacy/contracts legacy/hygiene legacy/local-fast-loop legacy/local-full-loop legacy/nightly legacy/root-fast legacy/root-local-fast legacy/root-local-full list local local/all local-full makefiles-contract nightly nightly/all no-direct-scripts ops-alerts-validate ops/all ops-artifacts-open ops-baseline-policy-check ops-cache-pin-set ops-cache-status ops-catalog-validate ops-check ops-clean ops-contracts-check ops-dashboards-validate ops-dataset-federated-registry-test ops-dataset-multi-release-test ops-dataset-promotion-sim ops-dataset-qc ops-datasets-fetch ops-deploy ops-doctor ops-down ops-drill-corruption-dataset ops-drill-memory-growth ops-drill-otel-outage ops-drill-overload ops-drill-pod-churn ops-drill-rate-limit ops-drill-rollback ops-drill-rollback-under-load ops-drill-store-outage ops-drill-suite ops-drill-toxiproxy-latency ops-drill-upgrade ops-drill-upgrade-under-load ops-e2e-smoke ops-full ops-full-pr ops-gc-smoke ops-gen ops-gen-check ops-incident-repro-kit ops-k8s-smoke ops-k8s-suite ops-k8s-template-tests ops-k8s-tests ops-load-ci ops-load-full ops-load-manifest-validate ops-load-nightly ops-load-shedding ops-load-smoke ops-load-soak ops-load-suite ops-local-full ops-local-full-stack ops-metrics-check ops-obs-down ops-obs-install ops-obs-mode ops-obs-uninstall ops-obs-verify ops-observability-pack-conformance-report ops-observability-pack-export ops-observability-pack-health ops-observability-pack-smoke ops-observability-pack-verify ops-observability-smoke ops-observability-validate ops-open-grafana ops-openapi-validate ops-perf-baseline-update ops-perf-cold-start ops-perf-nightly ops-perf-report ops-perf-warm-start ops-policy-audit ops-prereqs ops-proof-cached-only ops-publish ops-readiness-scorecard ops-realdata ops-redeploy ops-ref-grade-local ops-ref-grade-nightly ops-ref-grade-pr ops-release-matrix ops-release-rollback ops-release-update ops-report ops-slo-alert-proof ops-slo-burn ops-slo-report ops-smoke ops-tools-check ops-traces-check ops-undeploy ops-up ops-values-validate ops-warm ops-warm-datasets ops-warm-shards ops-warm-top policies/all policy-allow-env-lint policy-audit policy-drift-diff policy-enforcement-status policy-lint policy-schema-drift prereqs quick release release-dry-run release-update-compat-matrix rename-lint report root root-determinism root-local root-local-fast root-local-summary scripts-all scripts/all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test ssot-check verify-inventory lane-cargo lane-docs lane-ops lane-scripts lane-configs-policies root-local-open repro internal/lane-ops-smoke legacy/config-validate-core report/merge report/print report/md report/junit clean-safe clean-all print-env cargo/fmt cargo/lint cargo/test-fast cargo/test cargo/test-all cargo/test-contracts cargo/audit cargo/bench-smoke cargo/coverage
 
 
 
