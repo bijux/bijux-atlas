@@ -5,19 +5,19 @@
 
 ## Summary
 
-- Tracked files: `1345`
-- Docs markdown files: `318`
-- Script files under `scripts/`: `179`
+- Tracked files: `1606`
+- Docs markdown files: `355`
+- Script files under `scripts/`: `231`
 - Rust test files: `42`
 - Load suites in `ops/load/suites/suites.json`: `19`
-- Runbooks in `docs/operations/runbooks/`: `12`
-- Runbook map rows: `12`
+- Runbooks in `docs/operations/runbooks/`: `17`
+- Runbook map rows: `17`
 
 ## Naming Health
 
 - Forbidden-token hits: `2`
-- Non-kebab docs outside allowed exceptions: `8`
-- Non-kebab scripts under `scripts/`: `143`
+- Non-kebab docs outside allowed exceptions: `22`
+- Non-kebab scripts under `scripts/`: `195`
 
 ## Load Suites
 
@@ -53,6 +53,11 @@
 - `profile-under-load.md`
 - `registry-federation.md`
 - `rollback-playbook.md`
+- `slo-cheap-burn.md`
+- `slo-overload-survival.md`
+- `slo-registry-refresh-stale.md`
+- `slo-standard-burn.md`
+- `slo-store-backend-error-spike.md`
 - `store-outage.md`
 - `traffic-spike.md`
 
@@ -67,6 +72,20 @@
 - `docs/adrs/ADR-0003-federated-registry-deterministic-merge.md`
 - `docs/adrs/ADR-0004-plugin-contract-and-umbrella-dispatch.md`
 - `docs/adrs/ADR-0005-security-defaults-and-enterprise-controls.md`
+- `docs/operations/slo/BASELINE_UPDATE_POLICY.md`
+- `docs/operations/slo/CHANGELOG.md`
+- `docs/operations/slo/CHANGE_POLICY.md`
+- `docs/operations/slo/GLOSSARY.md`
+- `docs/operations/slo/NON_GOALS.md`
+- `docs/operations/slo/RELEASE_GATE.md`
+- `docs/operations/slo/SCOPE.md`
+- `docs/operations/slo/SLA_DECISION_ADR_TEMPLATE.md`
+- `docs/operations/slo/SLA_EXCLUSIONS_PLANNED.md`
+- `docs/operations/slo/SLA_POLICY.md`
+- `docs/operations/slo/SLIS.md`
+- `docs/operations/slo/SLOS.md`
+- `docs/operations/slo/WHAT_WE_DONT_MEASURE_YET.md`
+- `docs/operations/slo/WHY_THESE_SLIS.md`
 - `scripts/_internal/run_suite_wrapper_legacy.sh`
 - `scripts/bootstrap/install_tools.sh`
 - `scripts/contracts/check_all.sh`
@@ -83,6 +102,7 @@
 - `scripts/contracts/gen_openapi.py`
 - `scripts/contracts/generate_chart_values_schema.py`
 - `scripts/contracts/generate_contract_artifacts.py`
+- `scripts/docs/ban_legacy_terms.sh`
 - `scripts/docs/check_adr_headers.py`
 - `scripts/docs/check_broken_examples.py`
 - `scripts/docs/check_concept_ids.sh`
@@ -94,7 +114,9 @@
 - `scripts/docs/check_doc_naming.sh`
 - `scripts/docs/check_docker_entrypoints.py`
 - `scripts/docs/check_docs_deterministic.py`
+- `scripts/docs/check_docs_freeze_drift.py`
 - `scripts/docs/check_docs_make_only.py`
+- `scripts/docs/check_docs_make_only_ops.py`
 - `scripts/docs/check_docs_make_targets_exist.py`
 - `scripts/docs/check_duplicate_topics.sh`
 - `scripts/docs/check_example_configs.py`
@@ -111,13 +133,21 @@
 - `scripts/docs/check_no_legacy_root_paths.py`
 - `scripts/docs/check_no_orphan_docs.py`
 - `scripts/docs/check_no_placeholders.py`
+- `scripts/docs/check_observability_acceptance_checklist.py`
+- `scripts/docs/check_observability_docs_checklist.py`
 - `scripts/docs/check_openapi_examples.py`
+- `scripts/docs/check_ops_doc_duplication.py`
 - `scripts/docs/check_ops_docs_make_targets.py`
+- `scripts/docs/check_ops_observability_links.py`
+- `scripts/docs/check_ops_readme_canonical_links.py`
+- `scripts/docs/check_ops_readmes_make_only.py`
+- `scripts/docs/check_public_surface_docs.py`
 - `scripts/docs/check_reference_templates.sh`
 - `scripts/docs/check_runbook_map_registration.py`
 - `scripts/docs/check_runbooks_contract.py`
 - `scripts/docs/check_script_headers.py`
 - `scripts/docs/check_script_locations.py`
+- `scripts/docs/check_suite_id_docs.py`
 - `scripts/docs/check_terminology_units_ssot.py`
 - `scripts/docs/check_title_case.sh`
 - `scripts/docs/extract_code_blocks.py`
@@ -127,14 +157,21 @@
 - `scripts/docs/generate_k8s_install_matrix.py`
 - `scripts/docs/generate_k8s_values_doc.py`
 - `scripts/docs/generate_make_targets_inventory.py`
+- `scripts/docs/generate_observability_surface.py`
 - `scripts/docs/generate_openapi_docs.py`
+- `scripts/docs/generate_ops_contracts_doc.py`
+- `scripts/docs/generate_ops_schema_docs.py`
+- `scripts/docs/generate_ops_surface.py`
 - `scripts/docs/generate_scripts_graph.py`
+- `scripts/docs/generate_sli_doc.py`
+- `scripts/docs/generate_slos_doc.py`
 - `scripts/docs/lint_depth.py`
 - `scripts/docs/lint_doc_contracts.py`
 - `scripts/docs/lint_doc_status.py`
 - `scripts/docs/lint_glossary_links.py`
 - `scripts/docs/naming_inventory.py`
 - `scripts/docs/render_diagrams.sh`
+- `scripts/docs/rewrite_legacy_terms.py`
 - `scripts/docs/run_blessed_snippets.py`
 - `scripts/docs/spellcheck_docs.py`
 - `scripts/generate_scripts_readme.py`
@@ -143,38 +180,71 @@
 - `scripts/internal/migrate_paths.sh`
 - `scripts/internal/repo_root.sh`
 - `scripts/layout/build_artifacts_index.py`
+- `scripts/layout/build_run_artifact_index.py`
 - `scripts/layout/check_artifacts_allowlist.sh`
 - `scripts/layout/check_artifacts_policy.sh`
 - `scripts/layout/check_chart_canonical_path.sh`
+- `scripts/layout/check_dataset_manifest_lock.py`
+- `scripts/layout/check_duplicate_script_intent.py`
+- `scripts/layout/check_e2e_scenarios.py`
 - `scripts/layout/check_forbidden_root_files.sh`
 - `scripts/layout/check_forbidden_root_names.sh`
+- `scripts/layout/check_generated_policy.py`
 - `scripts/layout/check_kind_cluster_contract_drift.sh`
 - `scripts/layout/check_make_public_scripts.py`
 - `scripts/layout/check_make_safety.py`
 - `scripts/layout/check_no_direct_script_runs.sh`
+- `scripts/layout/check_no_empty_dirs.py`
 - `scripts/layout/check_no_forbidden_paths.sh`
+- `scripts/layout/check_no_hidden_defaults.py`
+- `scripts/layout/check_obs_pack_ssot.py`
+- `scripts/layout/check_ops_artifacts_writes.py`
+- `scripts/layout/check_ops_canonical_entrypoints.py`
 - `scripts/layout/check_ops_canonical_shims.sh`
+- `scripts/layout/check_ops_concept_ownership.py`
+- `scripts/layout/check_ops_index_surface.py`
+- `scripts/layout/check_ops_layout_contract.py`
 - `scripts/layout/check_ops_lib_canonical.sh`
+- `scripts/layout/check_ops_run_entrypoints.py`
+- `scripts/layout/check_ops_script_names.py`
 - `scripts/layout/check_ops_script_targets.sh`
+- `scripts/layout/check_ops_single_owner_contracts.py`
+- `scripts/layout/check_ops_single_validators.py`
 - `scripts/layout/check_ops_stack_order.sh`
 - `scripts/layout/check_ops_workspace.sh`
+- `scripts/layout/check_public_surface.py`
 - `scripts/layout/check_repo_hygiene.sh`
 - `scripts/layout/check_root_shape.sh`
+- `scripts/layout/check_script_naming_convention.py`
 - `scripts/layout/check_script_relative_calls.py`
 - `scripts/layout/check_scripts_buckets.py`
 - `scripts/layout/check_scripts_readme_drift.sh`
+- `scripts/layout/check_slo_contracts.py`
+- `scripts/layout/check_slo_no_loosen_without_approval.py`
 - `scripts/layout/check_stack_manifest_consolidation.sh`
 - `scripts/layout/check_symlink_index.sh`
 - `scripts/layout/check_symlink_policy.py`
 - `scripts/layout/check_tool_versions.py`
 - `scripts/layout/check_workflows_make_only.py`
 - `scripts/layout/clean_artifacts.py`
+- `scripts/layout/clean_ops_generated.py`
 - `scripts/layout/dataset_id_lint.py`
+- `scripts/layout/explain_public_target.py`
+- `scripts/layout/generate_ops_stack_versions.py`
+- `scripts/layout/public_surface.py`
+- `scripts/layout/render_public_help.py`
 - `scripts/layout/replace_paths.sh`
+- `scripts/layout/validate_ops_contracts.py`
 - `scripts/layout/validate_ops_env.py`
 - `scripts/ops/check_k8s_flakes.py`
 - `scripts/ops/check_k8s_test_contract.py`
 - `scripts/policy/find_relaxations.sh`
+- `scripts/public/contracts/check_breaking_contract_change.py`
+- `scripts/public/contracts/check_endpoints_contract.py`
+- `scripts/public/contracts/check_error_codes_contract.py`
+- `scripts/public/contracts/check_sqlite_indexes_contract.py`
+- `scripts/public/contracts/check_v1_surface.py`
+- `scripts/public/contracts/gen_openapi.py`
 - `scripts/public/observability/check_alerts_contract.py`
 - `scripts/public/observability/check_dashboard_contract.py`
 - `scripts/public/observability/check_metrics_contract.py`
@@ -206,6 +276,7 @@
 - `scripts/public/perf/validate_suite_manifest.py`
 - `scripts/public/stack/build_stack_report.py`
 - `scripts/public/stack/validate_stack_report.py`
+- `scripts/run_drill.sh`
 - `scripts/tests/test_paths.py`
 - `scripts/tools/__init__.py`
 - `scripts/tools/json_helpers.py`
