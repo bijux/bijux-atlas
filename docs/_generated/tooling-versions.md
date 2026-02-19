@@ -7,5 +7,5 @@ Generated from `configs/ops/tool-versions.json`.
 - `k6`: `v1.6.1`
 - `kind`: `v0.31.0`
 - `kubectl`: `v1.35.1`
-- `python3`: `3.11.0`
-- `yq`: `v4.44.3`
+- `python3`: `3.10.11`
+- `yq`: `v4.52.4`
