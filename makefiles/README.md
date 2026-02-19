@@ -70,6 +70,7 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 - `make configs/check`: Config schema + drift checks.
 - `make policies/all`: deny/audit/policy-relaxations lane.
 - `make policies/check`: deny/audit/policy-relaxations checks.
+- `make policies/boundaries-check`: enforce e2e layer-boundary lints and exception expiry checks.
 - `make root`: CI-fast lane subset (no cluster bring-up).
 - `make root-local`: Run all lanes in parallel plus ops smoke lane (`PARALLEL=0` for serial).
 - `make root-local-summary`: Print pass/fail summary and artifact paths per lane.
