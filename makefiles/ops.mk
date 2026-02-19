@@ -31,6 +31,7 @@ ops-k8s-contracts: ## Validate k8s values/schema/install-matrix/chart drift cont
 	@python3 ./scripts/layout/validate_ops_contracts.py
 
 ops-e2e-validate: ## Validate unified e2e scenario definitions and docs references
+	@python3 ./scripts/layout/check_e2e_suites.py
 	@python3 ./scripts/layout/check_e2e_scenarios.py
 	@python3 ./scripts/layout/check_realdata_scenarios.py
 
@@ -168,11 +169,14 @@ ops-check-legacy: ## Legacy implementation for ops-check wrapper
 ops-datasets-verify: ## Verify datasets lock/catalog/fetch contract
 	@./ops/run/datasets-verify.sh
 
-ops-e2e-smoke: ## Run end-to-end smoke composition
-	@./ops/run/e2e-smoke.sh
+ops-e2e: ## Canonical e2e entrypoint (SUITE=smoke|k8s-suite|realdata)
+	@./ops/run/e2e.sh --suite "$${SUITE:-smoke}" $${E2E_ARGS:-}
+
+ops-e2e-smoke: ## Compatibility alias for canonical e2e smoke suite
+	@./ops/run/e2e.sh --suite smoke
 
 ops-k8s-suite: ## Run k8s invariant suite
-	@PROFILE="$${PROFILE:-kind}" SUITE="$${SUITE:-smoke}" ./ops/run/k8s-suite.sh
+	@PROFILE="$${PROFILE:-kind}" ./ops/run/e2e.sh --suite k8s-suite --profile "$${PROFILE:-kind}" $${E2E_ARGS:-}
 
 ops-load-suite: ## Run named load suite (SUITE=mixed-80-20)
 	@PROFILE="$${PROFILE:-kind}" SUITE="$${SUITE:-mixed-80-20}" ./ops/run/load-suite.sh
@@ -499,7 +503,7 @@ ops-dataset-promotion-sim: ## Simulate dev->staging->prod dataset catalog promot
 	@./ops/datasets/scripts/sh/promotion_sim.sh
 
 ops-dataset-multi-release-test: ## Publish/query multi-release dataset behavior
-	@./ops/e2e/realdata/run_two_release_diff.sh
+	@./ops/run/e2e.sh --suite realdata --scenario two-release-diff --no-deploy
 
 ops-dataset-federated-registry-test: ## Validate deterministic federated catalog behavior
 	@ATLAS_VALUES_FILE="$(ATLAS_MULTI_REGISTRY_VALUES_FILE)" $(MAKE) ops-deploy
@@ -818,11 +822,11 @@ ops-drill-pod-churn: ## Run pod churn drill while service handles load
 
 ops-drill-upgrade: ## Run upgrade drill and verify semantic stability
 	@$(MAKE) -s ops-env-validate
-	@./ops/e2e/realdata/upgrade_drill.sh
+	@./ops/run/e2e.sh --suite realdata --scenario upgrade-drill --no-deploy
 
 ops-drill-rollback: ## Run rollback drill and verify semantic stability
 	@$(MAKE) -s ops-env-validate
-	@./ops/e2e/realdata/rollback_drill.sh
+	@./ops/run/e2e.sh --suite realdata --scenario rollback-drill --no-deploy
 
 ops-upgrade-drill: ## Compatibility alias for ops-drill-upgrade
 	@$(MAKE) ops-drill-upgrade
@@ -832,7 +836,7 @@ ops-rollback-drill: ## Compatibility alias for ops-drill-rollback
 
 ops-realdata: ## Run real-data e2e scenarios
 	@$(MAKE) -s ops-env-validate
-	@REALDATA_SOURCE="$${REALDATA_SOURCE:-ops/datasets/real-datasets.json}" ./ops/e2e/realdata/suite.sh --suite full
+	@REALDATA_SOURCE="$${REALDATA_SOURCE:-ops/datasets/real-datasets.json}" ./ops/run/e2e.sh --suite realdata $${E2E_ARGS:-}
 
 ops-local-reset: ## Wipe local namespaces/store and restart deterministic local cluster baseline
 	@CONFIRM_RESET=YES $(MAKE) ops-reset
@@ -938,6 +942,7 @@ ops-lint-all: ## Run full ops lint suite (naming/docs/ownership/contracts/images
 	@python3 ./ops/_lint/no-shadow-configs.py
 	@./ops/_lint/no-empty-dirs.sh
 	@python3 ./ops/_lint/no-direct-script-usage.py
+	@python3 ./ops/_lint/no-direct-e2e-scenario-usage.py
 	@python3 ./scripts/layout/check_ops_cross_area_script_refs.py
 	@python3 ./scripts/layout/check_scripts_submodules.py --threshold 25
 	@python3 ./ops/_lint/no-unpinned-images.py
@@ -1427,7 +1432,7 @@ e2e-perf:
 	@./ops/load/scripts/run_e2e_perf.sh
 
 e2e-realdata:
-	@REALDATA_SOURCE="$${REALDATA_SOURCE:-ops/datasets/real-datasets.json}" ./ops/e2e/realdata/suite.sh --suite full
+	@REALDATA_SOURCE="$${REALDATA_SOURCE:-ops/datasets/real-datasets.json}" ./ops/run/e2e.sh --suite realdata
 
 observability-check:
 	@$(MAKE) ops-metrics-check
