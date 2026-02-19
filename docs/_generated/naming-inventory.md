@@ -5,9 +5,9 @@
 
 ## Summary
 
-- Tracked files: `1627`
-- Docs markdown files: `358`
-- Script files under `scripts/`: `245`
+- Tracked files: `1659`
+- Docs markdown files: `361`
+- Script files under `scripts/`: `260`
 - Rust test files: `42`
 - Load suites in `ops/load/suites/suites.json`: `19`
 - Runbooks in `docs/operations/runbooks/`: `17`
@@ -17,7 +17,7 @@
 
 - Forbidden-token hits: `2`
 - Non-kebab docs outside allowed exceptions: `22`
-- Non-kebab scripts under `scripts/`: `209`
+- Non-kebab scripts under `scripts/`: `224`
 
 ## Load Suites
 
@@ -89,6 +89,21 @@
 - `scripts/_internal/run_suite_wrapper_legacy.sh`
 - `scripts/bootstrap/install_tools.sh`
 - `scripts/check_no_root_dumping.sh`
+- `scripts/configs/check_config_ownership.py`
+- `scripts/configs/check_configs_readmes.py`
+- `scripts/configs/check_docs_links_for_configs.py`
+- `scripts/configs/check_duplicate_threshold_sources.py`
+- `scripts/configs/check_no_adhoc_versions.py`
+- `scripts/configs/check_openapi_snapshot_generated.py`
+- `scripts/configs/check_ops_env_usage_declared.py`
+- `scripts/configs/check_perf_thresholds_drift.py`
+- `scripts/configs/check_root_config_shims.py`
+- `scripts/configs/check_slo_sync.py`
+- `scripts/configs/check_tool_versions_doc_drift.py`
+- `scripts/configs/generate_configs_surface.py`
+- `scripts/configs/generate_tooling_versions_doc.py`
+- `scripts/configs/sync_slo_config.py`
+- `scripts/configs/validate_configs_schemas.py`
 - `scripts/contracts/check_all.sh`
 - `scripts/contracts/check_breaking_contract_change.py`
 - `scripts/contracts/check_chart_values_contract.py`
