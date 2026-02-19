@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../../.." && pwd)"
-exec "$ROOT/ops/k8s/tests/pod-churn.sh" "$@"
+exec "$ROOT/ops/k8s/tests/checks/rollout/pod-churn.sh" "$@"

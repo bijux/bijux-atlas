@@ -22,6 +22,7 @@ def main() -> int:
         for t in manifest_tests
         if isinstance(t, dict) and str(t.get("script", "")).strip()
     }
+    manifest_script_names = {Path(s).name for s in manifest_scripts}
     manifest_groups = {
         g
         for t in manifest_tests
@@ -32,11 +33,11 @@ def main() -> int:
 
     disk_test_scripts = {
         p.name
-        for p in TESTS_DIR.glob("test_*.sh")
+        for p in (TESTS_DIR / "checks").rglob("test_*.sh")
         if p.is_file()
     }
 
-    missing_in_manifest = sorted(disk_test_scripts - manifest_scripts)
+    missing_in_manifest = sorted(disk_test_scripts - manifest_script_names)
     for script in missing_in_manifest:
         errors.append(f"test script exists but is not declared in manifest.json: {script}")
 

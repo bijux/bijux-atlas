@@ -2,7 +2,7 @@
 set -eu
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
-. "$ROOT/ops/k8s/tests/k8s-suite-lib.sh"
+. "$ROOT/ops/k8s/tests/checks/_lib/k8s-suite-lib.sh"
 need helm; need kubectl; need curl
 
 "$ROOT/ops/e2e/realdata/run_two_release_diff.sh"

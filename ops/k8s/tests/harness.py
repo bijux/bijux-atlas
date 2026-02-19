@@ -21,23 +21,7 @@ def parse_date(s: str) -> dt.date:
 def load_manifest(path: Path):
     with path.open() as f:
         data = json.load(f)
-    tests = data.get("tests", [])
-    known = {t.get("script") for t in tests}
-    test_dir = path.parent
-    for extra in sorted(test_dir.glob("test_*.sh")):
-        if extra.name in known:
-            continue
-        tests.append(
-            {
-                "script": extra.name,
-                "groups": ["legacy"],
-                "retries": 1,
-                "timeout_seconds": 600,
-                "owner": "bijux-atlas-operations",
-                "expected_failure_modes": ["unspecified"],
-            }
-        )
-    return tests
+    return data.get("tests", [])
 
 
 def select_tests(tests, groups, names):
@@ -46,7 +30,7 @@ def select_tests(tests, groups, names):
         tg = set(t.get("groups", []))
         if groups and tg.isdisjoint(groups):
             continue
-        if names and t["script"] not in names:
+        if names and t["script"] not in names and Path(t["script"]).name not in names:
             continue
         out.append(t)
     return out

@@ -5,5 +5,5 @@
 # called-by: make observability-pack-drills
 set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
-"$ROOT/ops/k8s/tests/test_disk_pressure.sh"
+"$ROOT/ops/k8s/tests/checks/perf/test_disk_pressure.sh"
 echo "node disk pressure drill passed"
