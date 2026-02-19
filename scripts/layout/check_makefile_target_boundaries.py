@@ -38,14 +38,14 @@ def main() -> int:
     for mk in sorted(MAKEFILES.glob("*.mk")):
         by_file[mk.name] = parse_targets(mk)
 
-    root_targets = by_file.get("root.mk", set()) | by_file.get("help.mk", set())
+    root_targets = by_file.get("root.mk", set())
     for target in sorted(public):
         if target not in root_targets:
-            errs.append(f"public target must be defined in makefiles/root.mk or makefiles/help.mk: {target}")
+            errs.append(f"public target must be defined in makefiles/root.mk: {target}")
 
     current_legacy: set[str] = set()
     for mk_name, targets in by_file.items():
-        if mk_name in {"root.mk", "help.mk", "env.mk", "_macros.mk", "registry.mk"}:
+        if mk_name in {"root.mk", "env.mk", "_macros.mk", "registry.mk", "help.mk"}:
             continue
         for target in sorted(targets):
             if target in public:

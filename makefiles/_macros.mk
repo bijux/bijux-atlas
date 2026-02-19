@@ -1,3 +1,5 @@
+# Scope: shared macro helpers for isolation, reporting, and error formatting.
+# Public targets: none
 SHELL := /bin/sh
 
 # Shared Make macros for run IDs, isolation, and command wrappers.

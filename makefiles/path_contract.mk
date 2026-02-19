@@ -1,3 +1,5 @@
+# Scope: path contract checks and make safety internal targets.
+# Public targets: none
 SHELL := /bin/sh
 
 CANONICAL_PATHS := artifacts crates docs makefiles ops scripts configs docker xtask .github .cargo

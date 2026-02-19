@@ -1,3 +1,5 @@
+# Scope: policy guardrail and crate contract internal targets.
+# Public targets: none
 SHELL := /bin/sh
 
 # Guardrail culprits helpers (read-only diagnostics).
