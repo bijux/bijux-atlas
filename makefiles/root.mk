@@ -7,6 +7,7 @@ include makefiles/cargo.mk
 include makefiles/cargo-dev.mk
 include makefiles/ci.mk
 include makefiles/docs.mk
+include makefiles/scripts.mk
 include makefiles/path_contract.mk
 include makefiles/registry.mk
 include makefiles/help.mk
@@ -22,14 +23,6 @@ bootstrap:
 	@command -v kind >/dev/null 2>&1 || echo "kind not found (required for k8s e2e)"
 	@command -v kubectl >/dev/null 2>&1 || echo "kubectl not found (required for k8s e2e)"
 
-bootstrap-tools:
-	@./scripts/bootstrap/install_tools.sh
-
-scripts-index:
-	@python3 ./scripts/generate_scripts_readme.py
-
-scripts-graph: ## Generate make-target to scripts call graph
-	@python3 ./scripts/docs/generate_scripts_graph.py
 
 docker-build:
 	@IMAGE_TAG="$${DOCKER_IMAGE:-bijux-atlas:local}"; \
@@ -70,9 +63,6 @@ chart-validate: ## Validate chart via lint/template and values contract schema c
 	@./scripts/contracts/generate_chart_values_schema.py
 	@./scripts/contracts/check_chart_values_contract.py
 
-no-direct-scripts:
-	@./scripts/layout/check_no_direct_script_runs.sh
-	@python3 ./scripts/layout/check_make_public_scripts.py
 
 docker-contracts: ## Validate Docker layout/policy/no-latest contracts
 	@python3 ./scripts/check/check-docker-layout.py
@@ -278,33 +268,9 @@ release-update-compat-matrix:
 	@./scripts/release/update-compat-matrix.sh "$$TAG"
 
 
+.PHONY: architecture-check artifacts-clean artifacts-index bootstrap bootstrap-tools bump chart-package chart-verify ci ci-workflow-contract clean config-drift config-print config-validate configs-check contracts dataset-id-lint debug deep-clean docker-build docker-contracts docker-push docker-scan docker-smoke docs docs-lint-names doctor explain fetch-real-datasets format gates gates-check governance-check help hygiene inventory isolate-clean layout-check layout-migrate list-internal list-public local local-full makefiles-contract nightly no-direct-scripts ops-alerts-validate ops-artifacts-open ops-baseline-policy-check ops-cache-pin-set ops-cache-status ops-catalog-validate ops-check ops-clean ops-contracts-check ops-dashboards-validate ops-dataset-federated-registry-test ops-dataset-multi-release-test ops-dataset-promotion-sim ops-dataset-qc ops-datasets-fetch ops-deploy ops-doctor ops-down ops-drill-corruption-dataset ops-drill-memory-growth ops-drill-otel-outage ops-drill-overload ops-drill-pod-churn ops-drill-rate-limit ops-drill-rollback ops-drill-rollback-under-load ops-drill-store-outage ops-drill-suite ops-drill-toxiproxy-latency ops-drill-upgrade ops-drill-upgrade-under-load ops-e2e-smoke ops-full ops-full-pr ops-gc-smoke ops-gen ops-gen-check ops-incident-repro-kit ops-k8s-smoke ops-k8s-suite ops-k8s-template-tests ops-k8s-tests ops-load-ci ops-load-full ops-load-manifest-validate ops-load-nightly ops-load-shedding ops-load-smoke ops-load-soak ops-load-suite ops-local-full ops-local-full-stack ops-metrics-check ops-obs-down ops-obs-install ops-obs-mode ops-obs-uninstall ops-obs-verify ops-observability-pack-conformance-report ops-observability-pack-export ops-observability-pack-health ops-observability-pack-smoke ops-observability-pack-verify ops-observability-smoke ops-observability-validate ops-open-grafana ops-openapi-validate ops-perf-baseline-update ops-perf-cold-start ops-perf-nightly ops-perf-report ops-perf-warm-start ops-policy-audit ops-prereqs ops-proof-cached-only ops-publish ops-readiness-scorecard ops-realdata ops-redeploy ops-ref-grade-local ops-ref-grade-nightly ops-ref-grade-pr ops-release-matrix ops-release-rollback ops-release-update ops-report ops-slo-alert-proof ops-slo-burn ops-slo-report ops-smoke ops-tools-check ops-traces-check ops-undeploy ops-up ops-values-validate ops-warm ops-warm-datasets ops-warm-shards ops-warm-top policy-allow-env-lint policy-audit policy-drift-diff policy-enforcement-status policy-lint policy-schema-drift prereqs release release-dry-run release-update-compat-matrix rename-lint report root root-determinism root-local root-local-fast root-local-summary scripts-all scripts-audit scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-check scripts-test ssot-check verify-inventory
 
-.PHONY: architecture-check artifacts-clean artifacts-index bootstrap bootstrap-tools bump chart-package chart-verify ci ci-workflow-contract clean config-drift config-print config-validate configs-check contracts dataset-id-lint debug deep-clean docker-build docker-contracts docker-push docker-scan docker-smoke docs docs-lint-names doctor explain fetch-real-datasets format gates gates-check governance-check help hygiene inventory isolate-clean layout-check layout-migrate list-internal list-public local local-full makefiles-contract nightly no-direct-scripts ops-alerts-validate ops-artifacts-open ops-baseline-policy-check ops-cache-pin-set ops-cache-status ops-catalog-validate ops-check ops-clean ops-contracts-check ops-dashboards-validate ops-dataset-federated-registry-test ops-dataset-multi-release-test ops-dataset-promotion-sim ops-dataset-qc ops-datasets-fetch ops-deploy ops-doctor ops-down ops-drill-corruption-dataset ops-drill-memory-growth ops-drill-otel-outage ops-drill-overload ops-drill-pod-churn ops-drill-rate-limit ops-drill-rollback ops-drill-rollback-under-load ops-drill-store-outage ops-drill-suite ops-drill-toxiproxy-latency ops-drill-upgrade ops-drill-upgrade-under-load ops-e2e-smoke ops-full ops-full-pr ops-gc-smoke ops-gen ops-gen-check ops-incident-repro-kit ops-k8s-smoke ops-k8s-suite ops-k8s-template-tests ops-k8s-tests ops-load-ci ops-load-full ops-load-manifest-validate ops-load-nightly ops-load-shedding ops-load-smoke ops-load-soak ops-load-suite ops-local-full ops-local-full-stack ops-metrics-check ops-obs-down ops-obs-install ops-obs-mode ops-obs-uninstall ops-obs-verify ops-observability-pack-conformance-report ops-observability-pack-export ops-observability-pack-health ops-observability-pack-smoke ops-observability-pack-verify ops-observability-smoke ops-observability-validate ops-open-grafana ops-openapi-validate ops-perf-baseline-update ops-perf-cold-start ops-perf-nightly ops-perf-report ops-perf-warm-start ops-policy-audit ops-prereqs ops-proof-cached-only ops-publish ops-readiness-scorecard ops-realdata ops-redeploy ops-ref-grade-local ops-ref-grade-nightly ops-ref-grade-pr ops-release-matrix ops-release-rollback ops-release-update ops-report ops-slo-alert-proof ops-slo-burn ops-slo-report ops-smoke ops-tools-check ops-traces-check ops-undeploy ops-up ops-values-validate ops-warm ops-warm-datasets ops-warm-shards ops-warm-top policy-allow-env-lint policy-audit policy-drift-diff policy-enforcement-status policy-lint policy-schema-drift prereqs release release-dry-run release-update-compat-matrix rename-lint report root root-determinism root-local root-local-fast root-local-summary scripts-audit scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-check scripts-test ssot-check verify-inventory
-scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)
-	@$(MAKE) scripts-audit
-	@python3 ./scripts/docs/check_script_headers.py
-	@python3 ./scripts/layout/check_make_public_scripts.py
-	@python3 ./scripts/layout/check_scripts_buckets.py
-	@python3 ./scripts/layout/check_script_relative_calls.py
-	@python3 ./scripts/layout/check_script_naming_convention.py
-	@python3 ./scripts/layout/check_no_mixed_script_name_variants.py
-	@python3 ./scripts/layout/check_duplicate_script_intent.py
-	@./scripts/check/no-duplicate-script-names.sh
-	@./scripts/check/no-direct-path-usage.sh
-	@python3 ./scripts/check/check-script-help.py
-	@python3 ./scripts/check/check-script-errors.py
-	@python3 ./scripts/check/check-script-write-roots.py
-	@python3 ./scripts/check/check-script-tool-guards.py
-	@python3 ./scripts/check/check-script-ownership.py
-	@python3 ./scripts/check/check-python-lock.py
-	@python3 ./scripts/check/check-bin-entrypoints.py
-	@./ops/_lint/naming.sh
-	@python3 ./ops/_lint/no-shadow-configs.py
-	@python3 ./scripts/layout/check_public_entrypoint_cap.py
-	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
-	@if command -v shellcheck >/dev/null 2>&1; then find scripts/public scripts/internal scripts/dev -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional for local scripts lint)"; fi
-	@if command -v shfmt >/dev/null 2>&1; then shfmt -d scripts ops/load/scripts; else echo "shfmt not installed (optional)"; fi
-	@if command -v ruff >/dev/null 2>&1; then ruff check scripts ops/load/scripts; else echo "ruff not installed (optional)"; fi
+
 
 inventory: ## Regenerate inventories (ops surface, make targets, docs status, naming, repo surface)
 	@python3 ./scripts/docs/generate_ops_surface.py
@@ -320,39 +286,6 @@ inventory: ## Regenerate inventories (ops surface, make targets, docs status, na
 verify-inventory: ## Fail if inventory outputs drift from generated state
 	@$(MAKE) -s inventory
 	@git diff --exit-code -- docs/_generated/repo-surface.md docs/_generated/doc-status.md docs/_generated/naming-inventory.md docs/_generated/ops-surface.md docs/_generated/configs-surface.md docs/_generated/tooling-versions.md docs/_generated/scripts-surface.md docs/development/make-targets.md docs/development/make-targets-inventory.md docs/development/makefiles/surface.md
-
-scripts-format: ## Format scripts (python + shell where available)
-	@if command -v ruff >/dev/null 2>&1; then ruff format scripts; else echo "ruff not installed (optional)"; fi
-	@if command -v shfmt >/dev/null 2>&1; then find scripts ops/load/scripts -type f -name '*.sh' -print0 | xargs -0 shfmt -w; else echo "shfmt not installed (optional)"; fi
-
-scripts-test: ## Run scripts-focused tests
-	@python3 ./scripts/layout/check_make_public_scripts.py
-	@python3 ./ops/load/scripts/validate_suite_manifest.py
-	@python3 ./ops/load/scripts/check_pinned_queries_lock.py
-	@python3 -m unittest scripts.tests.test_paths
-
-scripts-check: ## Run scripts lint + tests as a single gate
-	@./scripts/check/no-duplicate-script-names.sh
-	@./scripts/check/no-direct-path-usage.sh
-	@python3 ./scripts/check/check-script-help.py
-	@python3 ./scripts/check/check-script-errors.py
-	@python3 ./scripts/check/check-script-write-roots.py
-	@python3 ./scripts/check/check-script-tool-guards.py
-	@python3 ./scripts/check/check-script-ownership.py
-	@python3 ./scripts/check/check-python-lock.py
-	@if command -v shellcheck >/dev/null 2>&1; then find scripts/check scripts/bin scripts/ci scripts/dev -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional)"; fi
-	@if command -v ruff >/dev/null 2>&1; then ruff check scripts/check scripts/gen scripts/python; else echo "ruff not installed (optional)"; fi
-	@python3 -m unittest scripts.tests.test_paths
-
-scripts-audit: ## Audit script headers, taxonomy buckets, and no-implicit-cwd contract
-	@python3 ./scripts/docs/check_script_headers.py
-	@python3 ./scripts/layout/check_scripts_buckets.py
-	@python3 ./scripts/layout/check_make_public_scripts.py
-	@python3 ./scripts/layout/check_script_relative_calls.py
-
-scripts-clean: ## Remove generated script artifacts
-	@rm -rf artifacts/scripts
-
 
 artifacts-index: ## Generate artifacts index for inspection UIs
 	@python3 ./scripts/layout/build_artifacts_index.py
