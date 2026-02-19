@@ -27,8 +27,8 @@ const CHEAP = [
   '/v1/genes/count?release=110&species=homo_sapiens&assembly=GRCh38'
 ];
 const HEAVY = [
-  '/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&name_prefix=G&limit=100',
-  '/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&region=chr1:1-100000&limit=100'
+  '/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&name_like=ge&limit=100',
+  '/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&range=chrA:1-100&limit=100'
 ];
 
 export default function () {

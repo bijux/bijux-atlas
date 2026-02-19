@@ -670,6 +670,7 @@ ops-load-full: ## Run nightly/full load suites
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
 	@$(MAKE) ops-load-manifest-validate
+	@$(MAKE) ops-load-prereqs
 	@./ops/load/scripts/check_pinned_queries_lock.py
 	@./ops/load/scripts/run_suites_from_manifest.py --profile all --out artifacts/perf/results
 	@./ops/load/scripts/validate_results.py artifacts/perf/results
