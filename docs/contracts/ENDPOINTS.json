@@ -3,7 +3,7 @@
   "compatibility": "additive-only",
   "deprecation_policy": {
     "no_removal_within_v1": true,
-    "signal": "OpenAPI deprecated=true + Sunset header + docs/api/DEPRECATION.md timeline"
+    "signal": "OpenAPI deprecated=true + Sunset header + docs/api/deprecation.md timeline"
   },
   "endpoints": [
     {

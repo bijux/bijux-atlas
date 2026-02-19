@@ -17,22 +17,22 @@ Applies to all `docs/api/*.md` pages and generated OpenAPI contract views.
 
 ## Non-goals
 
-Does not duplicate endpoint-level details already defined by `docs/contracts/ENDPOINTS.json`.
+Does not duplicate endpoint-level details already defined by `docs/contracts/endpoints.md`.
 
 ## Contracts
 
-- API contract source: `docs/contracts/ENDPOINTS.json`
+- API contract source: `docs/contracts/endpoints.md`
 - Generated OpenAPI: `docs/_generated/openapi/openapi.generated.json`
 - Contract checks: `make api-contract-check`, `make openapi-drift`
 
 ## Canonical Entry Points
 
-- Surface list: `docs/api/V1_SURFACE.md`
+- Surface list: `docs/api/v1-surface.md`
 - Versioning: `docs/api/versioning.md`
 - Pagination: `docs/api/pagination.md`
 - Caching/ETag: `docs/api/caching.md`
 - Errors: `docs/api/errors.md`
-- Compatibility/deprecation: `docs/api/COMPATIBILITY.md`, `docs/api/DEPRECATION.md`
+- Compatibility/deprecation: `docs/api/compatibility.md`, `docs/api/deprecation.md`
 
 ## Dataset Selection Rules
 
@@ -42,8 +42,8 @@ Does not duplicate endpoint-level details already defined by `docs/contracts/END
 
 ## Filter and Query Contracts
 
-- Filter grammar SSOT: `docs/contracts/FILTERS.json`.
-- Endpoint and parameter SSOT: `docs/contracts/ENDPOINTS.json`.
+- Filter grammar SSOT: `docs/contracts/filters.md`.
+- Endpoint and parameter SSOT: `docs/contracts/endpoints.md`.
 - Query preflight classifier: `POST /v1/query/validate`.
 
 ## Response Envelope Rules
@@ -66,6 +66,6 @@ Expected output: index checks and API contract gates pass.
 
 ## See also
 
-- [V1 Surface](V1_SURFACE.md)
+- [V1 Surface](v1-surface.md)
 - [Versioning](versioning.md)
 - [Errors](errors.md)
