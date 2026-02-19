@@ -464,7 +464,7 @@ pub(crate) async fn record_shed_reason(state: &AppState, reason: &str) {
     *by.entry(reason.to_string()).or_insert(0) += 1;
 }
 
-#[allow(dead_code)]
+#[allow(dead_code)] // ATLAS-EXC-0001
 pub(crate) async fn record_invariant_violation(state: &AppState, invariant: &str) {
     let mut by = state.cache.metrics.invariant_violations_by_name.lock().await;
     *by.entry(invariant.to_string()).or_insert(0) += 1;
