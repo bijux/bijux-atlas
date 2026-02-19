@@ -407,7 +407,7 @@ write_reference_contract_doc(
 )
 
 # generated compatibility artifact for observability gate
-obs_metrics_path = ROOT / "ops" / "observability" / "contract" / "metrics-contract.json"
+obs_metrics_path = ROOT / "ops" / "obs" / "contract" / "metrics-contract.json"
 user_controlled_labels = [
     "request_id",
     "trace_id",

@@ -11,8 +11,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[4]
 METRICS = ROOT / "artifacts" / "ops" / "observability" / "metrics.prom"
-GOLDEN = ROOT / "ops" / "observability" / "contract" / "metrics.golden.prom"
-CONTRACT = ROOT / "ops" / "observability" / "contract" / "metrics-contract.json"
+GOLDEN = ROOT / "ops" / "obs" / "contract" / "metrics.golden.prom"
+CONTRACT = ROOT / "ops" / "obs" / "contract" / "metrics-contract.json"
 
 
 def fail(msg: str) -> int:
@@ -45,6 +45,26 @@ def main() -> int:
     if missing_contract:
         return fail(
             "required metrics not observed in any captured run:\n" + "\n".join(f"- {m}" for m in missing_contract)
+        )
+    slo_critical = [
+        "http_requests_total",
+        "http_request_duration_seconds_bucket",
+        "atlas_overload_active",
+        "atlas_shed_total",
+        "atlas_cache_hits_total",
+        "atlas_cache_misses_total",
+        "atlas_store_request_duration_seconds_bucket",
+        "atlas_store_errors_total",
+        "atlas_registry_refresh_age_seconds",
+        "atlas_registry_refresh_failures_total",
+        "atlas_dataset_missing_total",
+        "atlas_invariant_violations_total",
+    ]
+    missing_slo = [m for m in slo_critical if not re.search(rf"^{re.escape(m)}\{{", merged, re.MULTILINE)]
+    if missing_slo:
+        return fail(
+            "slo-critical metrics not observed in any captured run:\n"
+            + "\n".join(f"- {m}" for m in missing_slo)
         )
     # Additional signal quality checks are advisory and emitted as warnings.
     required_classes = ("cheap", "medium", "heavy")

@@ -102,6 +102,178 @@
       "type": "gauge",
       "unit": "unitless"
     },
+    "atlas_cache_hits_total": {
+      "cardinality_budget": {
+        "max_new_series_per_hour": 500,
+        "max_series": 5000
+      },
+      "criticality": "tier-0",
+      "example_series": "atlas_cache_hits_total{cache=\"example\",dataset=\"example\",subsystem=\"example\",version=\"example\"} 1",
+      "forbidden_labels": [
+        "gene_id",
+        "tx_id",
+        "name",
+        "prefix",
+        "cursor",
+        "region",
+        "ip",
+        "request_id",
+        "trace_id"
+      ],
+      "owner": {
+        "crate": "bijux-atlas-server",
+        "module": "src/telemetry/metrics_endpoint.rs"
+      },
+      "required_labels": [
+        "cache",
+        "dataset",
+        "subsystem",
+        "version"
+      ],
+      "semantic": {
+        "on_break_action": "Check emitting module, metric contract, and recent runtime/config changes.",
+        "what_it_measures": "dataset cache hits counter"
+      },
+      "slo_relevance": {
+        "relevant": true,
+        "slos": [
+          "availability",
+          "latency",
+          "dependency"
+        ]
+      },
+      "type": "counter",
+      "unit": "count"
+    },
+    "atlas_cache_misses_total": {
+      "cardinality_budget": {
+        "max_new_series_per_hour": 500,
+        "max_series": 5000
+      },
+      "criticality": "tier-0",
+      "example_series": "atlas_cache_misses_total{cache=\"example\",dataset=\"example\",subsystem=\"example\",version=\"example\"} 1",
+      "forbidden_labels": [
+        "gene_id",
+        "tx_id",
+        "name",
+        "prefix",
+        "cursor",
+        "region",
+        "ip",
+        "request_id",
+        "trace_id"
+      ],
+      "owner": {
+        "crate": "bijux-atlas-server",
+        "module": "src/telemetry/metrics_endpoint.rs"
+      },
+      "required_labels": [
+        "cache",
+        "dataset",
+        "subsystem",
+        "version"
+      ],
+      "semantic": {
+        "on_break_action": "Check emitting module, metric contract, and recent runtime/config changes.",
+        "what_it_measures": "dataset cache misses counter"
+      },
+      "slo_relevance": {
+        "relevant": true,
+        "slos": [
+          "availability",
+          "latency",
+          "dependency"
+        ]
+      },
+      "type": "counter",
+      "unit": "count"
+    },
+    "atlas_dataset_missing_total": {
+      "cardinality_budget": {
+        "max_new_series_per_hour": 500,
+        "max_series": 5000
+      },
+      "criticality": "tier-0",
+      "example_series": "atlas_dataset_missing_total{dataset=\"example\",dataset_hash=\"example\",subsystem=\"example\",version=\"example\"} 1",
+      "forbidden_labels": [
+        "gene_id",
+        "tx_id",
+        "name",
+        "prefix",
+        "cursor",
+        "region",
+        "ip",
+        "request_id",
+        "trace_id"
+      ],
+      "owner": {
+        "crate": "bijux-atlas-server",
+        "module": "src/telemetry/metrics_endpoint.rs"
+      },
+      "required_labels": [
+        "dataset",
+        "dataset_hash",
+        "subsystem",
+        "version"
+      ],
+      "semantic": {
+        "on_break_action": "Check emitting module, metric contract, and recent runtime/config changes.",
+        "what_it_measures": "dataset missing requests by hashed dataset bucket"
+      },
+      "slo_relevance": {
+        "relevant": true,
+        "slos": [
+          "availability",
+          "latency",
+          "dependency"
+        ]
+      },
+      "type": "counter",
+      "unit": "count"
+    },
+    "atlas_invariant_violations_total": {
+      "cardinality_budget": {
+        "max_new_series_per_hour": 500,
+        "max_series": 5000
+      },
+      "criticality": "tier-1",
+      "example_series": "atlas_invariant_violations_total{dataset=\"example\",invariant=\"example\",subsystem=\"example\",version=\"example\"} 1",
+      "forbidden_labels": [
+        "gene_id",
+        "tx_id",
+        "name",
+        "prefix",
+        "cursor",
+        "region",
+        "ip",
+        "request_id",
+        "trace_id"
+      ],
+      "owner": {
+        "crate": "bijux-atlas-server",
+        "module": "src/telemetry/metrics_endpoint.rs"
+      },
+      "required_labels": [
+        "dataset",
+        "invariant",
+        "subsystem",
+        "version"
+      ],
+      "semantic": {
+        "on_break_action": "Check emitting module, metric contract, and recent runtime/config changes.",
+        "what_it_measures": "semantic invariant violations total"
+      },
+      "slo_relevance": {
+        "relevant": true,
+        "slos": [
+          "availability",
+          "latency",
+          "dependency"
+        ]
+      },
+      "type": "counter",
+      "unit": "count"
+    },
     "atlas_overload_active": {
       "cardinality_budget": {
         "max_new_series_per_hour": 500,
@@ -218,6 +390,90 @@
       "type": "counter",
       "unit": "count"
     },
+    "atlas_registry_refresh_age_seconds": {
+      "cardinality_budget": {
+        "max_new_series_per_hour": 500,
+        "max_series": 5000
+      },
+      "criticality": "tier-0",
+      "example_series": "atlas_registry_refresh_age_seconds{dataset=\"example\",subsystem=\"example\",version=\"example\"} 1",
+      "forbidden_labels": [
+        "gene_id",
+        "tx_id",
+        "name",
+        "prefix",
+        "cursor",
+        "region",
+        "ip",
+        "request_id",
+        "trace_id"
+      ],
+      "owner": {
+        "crate": "bijux-atlas-server",
+        "module": "src/telemetry/metrics_endpoint.rs"
+      },
+      "required_labels": [
+        "dataset",
+        "subsystem",
+        "version"
+      ],
+      "semantic": {
+        "on_break_action": "Check emitting module, metric contract, and recent runtime/config changes.",
+        "what_it_measures": "age since last successful registry refresh"
+      },
+      "slo_relevance": {
+        "relevant": true,
+        "slos": [
+          "availability",
+          "latency",
+          "dependency"
+        ]
+      },
+      "type": "gauge",
+      "unit": "seconds"
+    },
+    "atlas_registry_refresh_failures_total": {
+      "cardinality_budget": {
+        "max_new_series_per_hour": 500,
+        "max_series": 5000
+      },
+      "criticality": "tier-0",
+      "example_series": "atlas_registry_refresh_failures_total{dataset=\"example\",subsystem=\"example\",version=\"example\"} 1",
+      "forbidden_labels": [
+        "gene_id",
+        "tx_id",
+        "name",
+        "prefix",
+        "cursor",
+        "region",
+        "ip",
+        "request_id",
+        "trace_id"
+      ],
+      "owner": {
+        "crate": "bijux-atlas-server",
+        "module": "src/telemetry/metrics_endpoint.rs"
+      },
+      "required_labels": [
+        "dataset",
+        "subsystem",
+        "version"
+      ],
+      "semantic": {
+        "on_break_action": "Check emitting module, metric contract, and recent runtime/config changes.",
+        "what_it_measures": "registry refresh failures total"
+      },
+      "slo_relevance": {
+        "relevant": true,
+        "slos": [
+          "availability",
+          "latency",
+          "dependency"
+        ]
+      },
+      "type": "counter",
+      "unit": "count"
+    },
     "atlas_shed_total": {
       "cardinality_budget": {
         "max_new_series_per_hour": 500,
@@ -241,6 +497,7 @@
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
+        "class",
         "dataset",
         "reason",
         "subsystem",
@@ -282,8 +539,8 @@
       },
       "required_labels": [
         "backend",
-        "dataset",
         "class",
+        "dataset",
         "subsystem",
         "version"
       ],
@@ -300,6 +557,50 @@
       },
       "type": "counter",
       "unit": "count"
+    },
+    "atlas_store_request_duration_seconds_bucket": {
+      "cardinality_budget": {
+        "max_new_series_per_hour": 500,
+        "max_series": 5000
+      },
+      "criticality": "tier-0",
+      "example_series": "atlas_store_request_duration_seconds_bucket{backend=\"example\",dataset=\"example\",le=\"example\",subsystem=\"example\",version=\"example\"} 1",
+      "forbidden_labels": [
+        "gene_id",
+        "tx_id",
+        "name",
+        "prefix",
+        "cursor",
+        "region",
+        "ip",
+        "request_id",
+        "trace_id"
+      ],
+      "owner": {
+        "crate": "bijux-atlas-server",
+        "module": "src/telemetry/metrics_endpoint.rs"
+      },
+      "required_labels": [
+        "backend",
+        "dataset",
+        "le",
+        "subsystem",
+        "version"
+      ],
+      "semantic": {
+        "on_break_action": "Check emitting module, metric contract, and recent runtime/config changes.",
+        "what_it_measures": "store backend request duration histogram buckets"
+      },
+      "slo_relevance": {
+        "relevant": true,
+        "slos": [
+          "availability",
+          "latency",
+          "dependency"
+        ]
+      },
+      "type": "histogram",
+      "unit": "seconds"
     },
     "bijux_dataset_count": {
       "cardinality_budget": {
@@ -671,7 +972,9 @@
         "module": "src/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
+        "class",
         "dataset",
+        "method",
         "route",
         "status",
         "subsystem",
@@ -1075,6 +1378,97 @@
       },
       "type": "gauge",
       "unit": "seconds"
+    },
+    "http_request_duration_seconds_bucket": {
+      "cardinality_budget": {
+        "max_new_series_per_hour": 500,
+        "max_series": 5000
+      },
+      "criticality": "tier-0",
+      "example_series": "http_request_duration_seconds_bucket{class=\"example\",dataset=\"example\",le=\"example\",route=\"example\",subsystem=\"example\",version=\"example\"} 1",
+      "forbidden_labels": [
+        "gene_id",
+        "tx_id",
+        "name",
+        "prefix",
+        "cursor",
+        "region",
+        "ip",
+        "request_id",
+        "trace_id"
+      ],
+      "owner": {
+        "crate": "bijux-atlas-server",
+        "module": "src/telemetry/metrics_endpoint.rs"
+      },
+      "required_labels": [
+        "class",
+        "dataset",
+        "le",
+        "route",
+        "subsystem",
+        "version"
+      ],
+      "semantic": {
+        "on_break_action": "Check emitting module, metric contract, and recent runtime/config changes.",
+        "what_it_measures": "request duration histogram buckets"
+      },
+      "slo_relevance": {
+        "relevant": true,
+        "slos": [
+          "availability",
+          "latency",
+          "dependency"
+        ]
+      },
+      "type": "histogram",
+      "unit": "seconds"
+    },
+    "http_requests_total": {
+      "cardinality_budget": {
+        "max_new_series_per_hour": 500,
+        "max_series": 5000
+      },
+      "criticality": "tier-0",
+      "example_series": "http_requests_total{class=\"example\",dataset=\"example\",method=\"example\",route=\"example\",status=\"example\",subsystem=\"example\",version=\"example\"} 1",
+      "forbidden_labels": [
+        "gene_id",
+        "tx_id",
+        "name",
+        "prefix",
+        "cursor",
+        "region",
+        "ip",
+        "request_id",
+        "trace_id"
+      ],
+      "owner": {
+        "crate": "bijux-atlas-server",
+        "module": "src/telemetry/metrics_endpoint.rs"
+      },
+      "required_labels": [
+        "class",
+        "dataset",
+        "method",
+        "route",
+        "status",
+        "subsystem",
+        "version"
+      ],
+      "semantic": {
+        "on_break_action": "Check emitting module, metric contract, and recent runtime/config changes.",
+        "what_it_measures": "request totals by route/method/status/class"
+      },
+      "slo_relevance": {
+        "relevant": true,
+        "slos": [
+          "availability",
+          "latency",
+          "dependency"
+        ]
+      },
+      "type": "counter",
+      "unit": "count"
     }
   },
   "required_metrics": {
@@ -1087,6 +1481,30 @@
     "atlas_bulkhead_saturation": [
       "class",
       "dataset",
+      "subsystem",
+      "version"
+    ],
+    "atlas_cache_hits_total": [
+      "cache",
+      "dataset",
+      "subsystem",
+      "version"
+    ],
+    "atlas_cache_misses_total": [
+      "cache",
+      "dataset",
+      "subsystem",
+      "version"
+    ],
+    "atlas_dataset_missing_total": [
+      "dataset",
+      "dataset_hash",
+      "subsystem",
+      "version"
+    ],
+    "atlas_invariant_violations_total": [
+      "dataset",
+      "invariant",
       "subsystem",
       "version"
     ],
@@ -1107,7 +1525,18 @@
       "subsystem",
       "version"
     ],
+    "atlas_registry_refresh_age_seconds": [
+      "dataset",
+      "subsystem",
+      "version"
+    ],
+    "atlas_registry_refresh_failures_total": [
+      "dataset",
+      "subsystem",
+      "version"
+    ],
     "atlas_shed_total": [
+      "class",
       "dataset",
       "reason",
       "subsystem",
@@ -1117,6 +1546,13 @@
       "backend",
       "class",
       "dataset",
+      "subsystem",
+      "version"
+    ],
+    "atlas_store_request_duration_seconds_bucket": [
+      "backend",
+      "dataset",
+      "le",
       "subsystem",
       "version"
     ],
@@ -1169,7 +1605,9 @@
       "version"
     ],
     "bijux_http_requests_total": [
+      "class",
       "dataset",
+      "method",
       "route",
       "status",
       "subsystem",
@@ -1226,6 +1664,23 @@
     ],
     "bijux_store_open_p95_seconds": [
       "dataset",
+      "subsystem",
+      "version"
+    ],
+    "http_request_duration_seconds_bucket": [
+      "class",
+      "dataset",
+      "le",
+      "route",
+      "subsystem",
+      "version"
+    ],
+    "http_requests_total": [
+      "class",
+      "dataset",
+      "method",
+      "route",
+      "status",
       "subsystem",
       "version"
     ]

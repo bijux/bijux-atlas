@@ -51,7 +51,7 @@ if sorted(openapi_codes) != sorted(errors["codes"]):
     sys.exit(1)
 
 # metrics contract aligns with observability metrics contract
-obs_metrics = json.loads((ROOT / "ops" / "observability" / "contract" / "metrics-contract.json").read_text())
+obs_metrics = json.loads((ROOT / "ops" / "obs" / "contract" / "metrics-contract.json").read_text())
 obs_set = set(obs_metrics["required_metrics"].keys())
 contract_set = {m["name"] for m in metrics["metrics"]}
 if contract_set != obs_set:
