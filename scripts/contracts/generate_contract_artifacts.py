@@ -466,8 +466,10 @@ def _metric_spec(metric: dict) -> dict:
         "unit": unit,
         "cardinality_budget": {"max_series": 512, "max_new_series_per_hour": 128},
         "required_labels": labels,
-        "forbidden_labels": [l for l in user_controlled_labels if l not in labels],
-        "example_series": f'{name}{{' + ",".join(f'{l}="example"' for l in labels) + "}} 1",
+        "forbidden_labels": [label for label in user_controlled_labels if label not in labels],
+        "example_series": f'{name}{{'
+        + ",".join(f'{label}="example"' for label in labels)
+        + "}} 1",
         "semantic": {
             "what_it_measures": f"{name} contract metric",
             "on_break_action": "check exporter, contract, and runtime telemetry path",

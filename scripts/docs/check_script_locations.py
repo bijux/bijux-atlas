@@ -13,7 +13,15 @@ ALLOWED_PREFIXES = (
     "scripts/",
     "ops/",
 )
-ALLOWED_OPS_MARKERS = ("/scripts/", "/tests/", "/ci/", "/_lib/")
+ALLOWED_OPS_MARKERS = (
+    "/scripts/",
+    "/tests/",
+    "/ci/",
+    "/_lib/",
+    "/run/",
+    "/_lint/",
+    "/runner/",
+)
 ALLOWED_OPS_PREFIXES = (
     "ops/e2e/realdata/",
     "ops/load/reports/",
