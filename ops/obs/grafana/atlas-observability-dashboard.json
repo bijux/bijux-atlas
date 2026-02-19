@@ -129,6 +129,25 @@
         {"expr": "(sum(rate(bijux_http_requests_total{status=~\"5..\"}[1h])) / sum(rate(bijux_http_requests_total[1h]))) / 0.005"}
       ]
     },
+    {"title": "SLO health & burn rate", "type": "row"},
+    {
+      "title": "SLO Error Budget Burn (cheap/standard)",
+      "description": "Which endpoint class is currently burning error budget the fastest?",
+      "type": "timeseries",
+      "targets": [
+        {"expr": "(sum(rate(http_requests_total{subsystem=\"atlas\",class=\"cheap\",status=~\"5..\"}[5m])) / clamp_min(sum(rate(http_requests_total{subsystem=\"atlas\",class=\"cheap\"}[5m])), 1)) / 0.0001"},
+        {"expr": "(sum(rate(http_requests_total{subsystem=\"atlas\",class=\"standard\",status=~\"5..\"}[5m])) / clamp_min(sum(rate(http_requests_total{subsystem=\"atlas\",class=\"standard\"}[5m])), 1)) / 0.001"}
+      ]
+    },
+    {
+      "title": "SLO Health Status (cheap/standard)",
+      "description": "Are cheap and standard success ratios currently above their SLO thresholds?",
+      "type": "timeseries",
+      "targets": [
+        {"expr": "sum(rate(http_requests_total{subsystem=\"atlas\",class=\"cheap\",status=~\"2..\"}[5m])) / clamp_min(sum(rate(http_requests_total{subsystem=\"atlas\",class=\"cheap\"}[5m])), 1)"},
+        {"expr": "sum(rate(http_requests_total{subsystem=\"atlas\",class=\"standard\",status=~\"2..\"}[5m])) / clamp_min(sum(rate(http_requests_total{subsystem=\"atlas\",class=\"standard\"}[5m])), 1)"}
+      ]
+    },
 
     {"title": "Drill Views", "type": "row"},
     {
