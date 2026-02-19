@@ -17,8 +17,8 @@ if [ "${1:-}" = "--fast" ]; then
 elif [ "${1:-}" = "--summary" ]; then
   mode="summary"
   summary_run_id="${2:-}"
-  if [ -z "$summary_run_id" ] && [ -f "ops/_generated/root-local/latest-run-id.txt" ]; then
-    summary_run_id="$(cat ops/_generated/root-local/latest-run-id.txt)"
+  if [ -z "$summary_run_id" ] && [ -f "ops/_generated/make/root-local/latest-run-id.txt" ]; then
+    summary_run_id="$(cat ops/_generated/make/root-local/latest-run-id.txt)"
   fi
   [ -n "$summary_run_id" ] || { echo "usage: ops/run/root-local.sh --summary <run_id>" >&2; exit 2; }
 fi
@@ -72,8 +72,8 @@ if [ "$mode" = "summary" ]; then
 fi
 
 run_id="${RUN_ID:-root-local-$(date -u +%Y%m%dT%H%M%SZ)}"
-mkdir -p ops/_generated/root-local
-printf '%s\n' "$run_id" > ops/_generated/root-local/latest-run-id.txt
+mkdir -p ops/_generated/make/root-local
+printf '%s\n' "$run_id" > ops/_generated/make/root-local/latest-run-id.txt
 
 pids=()
 for lane in "${lanes[@]}"; do
