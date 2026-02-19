@@ -1,0 +1,15 @@
+{
+  "gate": "makefile-boundaries",
+  "run_id": "atlas-ops-20260219-101101",
+  "status": "pass",
+  "exit_code": 0,
+  "command": [
+    "python3",
+    "./scripts/layout/check_makefile_target_boundaries.py"
+  ],
+  "artifacts": {
+    "stdout": "ops/_generated/gates/atlas-ops-20260219-101101/makefile-boundaries.stdout.log",
+    "stderr": "ops/_generated/gates/atlas-ops-20260219-101101/makefile-boundaries.stderr.log"
+  },
+  "timestamp_utc": "2026-02-19T10:11:01.668701+00:00"
+}
