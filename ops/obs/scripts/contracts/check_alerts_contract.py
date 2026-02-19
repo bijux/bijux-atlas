@@ -10,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[4]
 CONTRACT = ROOT / "ops/obs/contract/metrics-contract.json"
 ALERT_CONTRACT = ROOT / "ops/obs/contract/alerts-contract.json"
+DRILLS_MANIFEST = ROOT / "ops/obs/drills/drills.json"
 ALERT_RULE_FILES = [
     ROOT / "ops/obs/alerts/atlas-alert-rules.yaml",
     ROOT / "ops/obs/alerts/slo-burn-rules.yaml",
@@ -49,6 +50,13 @@ alert_specs = alerts_contract.get("alert_specs", {})
 if not isinstance(alert_specs, dict):
     print("alerts contract missing alert_specs map", file=sys.stderr)
     sys.exit(1)
+drills = json.loads(DRILLS_MANIFEST.read_text(encoding="utf-8")).get("drills", [])
+drill_ids = {
+    d.get("name")
+    for d in drills
+    if isinstance(d, dict) and isinstance(d.get("name"), str)
+}
+
 missing_specs = sorted(required_alerts - set(alert_specs.keys()))
 if missing_specs:
     print("alerts contract missing alert_specs entries:", file=sys.stderr)
@@ -56,12 +64,15 @@ if missing_specs:
         print(f"- {name}", file=sys.stderr)
     sys.exit(1)
 for name, spec in sorted(alert_specs.items()):
-    for field in ("slo_or_invariant", "runbook_id", "severity_tier", "owner"):
+    for field in ("slo_or_invariant", "runbook_id", "drill_id", "severity_tier", "owner"):
         if not isinstance(spec.get(field), str) or not spec.get(field):
             print(f"alert spec {name} missing field: {field}", file=sys.stderr)
             sys.exit(1)
     if spec["severity_tier"] not in {"info", "warn", "page"}:
         print(f"alert spec {name} has invalid severity_tier: {spec['severity_tier']}", file=sys.stderr)
+        sys.exit(1)
+    if spec["drill_id"] not in drill_ids:
+        print(f"alert spec {name} references unknown drill_id: {spec['drill_id']}", file=sys.stderr)
         sys.exit(1)
 
 metrics = set(re.findall(r"\b(?:bijux|atlas)_[a-zA-Z0-9_]+\b", text))
@@ -130,6 +141,10 @@ runbook_map = (ROOT / "docs/operations/observability/runbook-dashboard-alert-map
 for alert in sorted(required_alerts):
     if alert not in runbook_map:
         print(f"runbook map missing alert reference: {alert}", file=sys.stderr)
+        sys.exit(1)
+for name, spec in sorted(alert_specs.items()):
+    if spec["drill_id"] not in runbook_map:
+        print(f"runbook map missing drill reference for {name}: {spec['drill_id']}", file=sys.stderr)
         sys.exit(1)
 
 # Unit-like check: ensure high-5xx alert expression has a threshold comparator.

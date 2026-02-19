@@ -54,6 +54,15 @@ Reduces incident response latency by making first-hop telemetry explicit.
 - `BijuxAtlasRegistryRefreshStale`
 - `BijuxAtlasStoreBackendErrorSpike`
 
+## Alert Drill Coverage Registry
+
+- `alert-firing-proof`
+- `cache-stampede`
+- `cheap-endpoint-survival`
+- `overload-admission-control`
+- `registry-refresh-failure`
+- `store-outage-under-load`
+
 ## Dashboard Panel Coverage Registry
 
 - `Store Backend Fetch p95`

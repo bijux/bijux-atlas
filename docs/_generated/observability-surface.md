@@ -9,11 +9,18 @@ Generated from observability contract SSOT files:
 ## Metrics
 - `atlas_bulkhead_inflight`
 - `atlas_bulkhead_saturation`
+- `atlas_cache_hits_total`
+- `atlas_cache_misses_total`
+- `atlas_dataset_missing_total`
+- `atlas_invariant_violations_total`
 - `atlas_overload_active`
 - `atlas_policy_relaxation_active`
 - `atlas_policy_violations_total`
+- `atlas_registry_refresh_age_seconds`
+- `atlas_registry_refresh_failures_total`
 - `atlas_shed_total`
 - `atlas_store_errors_total`
+- `atlas_store_request_duration_seconds_bucket`
 - `bijux_dataset_count`
 - `bijux_dataset_disk_usage_bytes`
 - `bijux_dataset_hits`
@@ -34,12 +41,23 @@ Generated from observability contract SSOT files:
 - `bijux_store_download_p95_seconds`
 - `bijux_store_fetch_latency_p95_seconds`
 - `bijux_store_open_p95_seconds`
+- `http_request_duration_seconds_bucket`
+- `http_requests_total`
 
 ## Alerts
 - `AtlasOverloadSustained`
 - `BijuxAtlasCacheThrash`
+- `BijuxAtlasCheapSloBurnFast`
+- `BijuxAtlasCheapSloBurnMedium`
+- `BijuxAtlasCheapSloBurnSlow`
 - `BijuxAtlasHigh5xxRate`
+- `BijuxAtlasOverloadSurvivalViolated`
 - `BijuxAtlasP95LatencyRegression`
+- `BijuxAtlasRegistryRefreshStale`
+- `BijuxAtlasStandardSloBurnFast`
+- `BijuxAtlasStandardSloBurnMedium`
+- `BijuxAtlasStandardSloBurnSlow`
+- `BijuxAtlasStoreBackendErrorSpike`
 - `BijuxAtlasStoreDownloadFailures`
 
 ## Dashboard Panels
@@ -54,6 +72,8 @@ Generated from observability contract SSOT files:
 - `Queue Depth and Overload`
 - `Rollout/Rollback View`
 - `SLO Burn Rate (5xx, 5m/1h)`
+- `SLO Error Budget Burn (cheap/standard)`
+- `SLO Health Status (cheap/standard)`
 - `SQLite Query p95 by Class`
 - `Shed Rate by Reason`
 - `Store Backend Fetch p95`
