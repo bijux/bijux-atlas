@@ -1,11 +1,33 @@
 {
-  "generated_at": "2026-02-19T18:14:56.570153+00:00",
-  "lanes": {},
-  "run_id": "atlas-ops-20260219-181456",
+  "generated_at": "2026-02-19T18:40:37.796626+00:00",
+  "lanes": {
+    "obs-verify": {
+      "duration_seconds": 9.0,
+      "lane": "obs-verify",
+      "log": "ops/_generated/obs-verify/atlas-ops-20260219-183817/run.log",
+      "run_id": "atlas-ops-20260219-183817",
+      "status": "pass"
+    },
+    "ops-smoke": {
+      "duration_seconds": 138.0,
+      "lane": "ops-smoke",
+      "log": "ops/_generated/ops-smoke/atlas-ops-20260219-183817/run.log",
+      "run_id": "atlas-ops-20260219-183817",
+      "status": "pass"
+    },
+    "stack": {
+      "duration_seconds": 50.0,
+      "lane": "stack",
+      "log": "ops/_generated/stack/atlas-ops-20260219-183817/stack-down.log",
+      "run_id": "atlas-ops-20260219-183817",
+      "status": "pass"
+    }
+  },
+  "run_id": "atlas-ops-20260219-183817",
   "schema_version": 1,
   "summary": {
     "failed": 0,
-    "passed": 0,
-    "total": 0
+    "passed": 3,
+    "total": 3
   }
 }

@@ -1,0 +1,31 @@
+{
+  "checks": {
+    "nodes": {
+      "code": 1,
+      "ok": false,
+      "stderr": "E0219 19:40:36.821284   93226 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"http://localhost:8080/api?timeout=32s\\\": dial tcp 127.0.0.1:8080: connect: connection refused\"\nE0219 19:40:36.821838   93226 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"http://localhost:8080/api?timeout=32s\\\": dial tcp 127.0.0.1:8080: connect: connection refused\"\nE0219 19:40:36.822909   93226 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"http://localhost:8080/api?timeout=32s\\\": dial tcp 127.0.0.1:8080: connect: connection refused\"\nE0219 19:40:36.823281   93226 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"http://localhost:8080/api?timeout=32s\\\": dial tcp 127.0.0.1:8080: connect: connection refused\"\nE0219 19:40:36.824437   93226 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"http://localhost:8080/api?timeout=32s\\\": dial tcp 127.0.0.1:8080: connect: connection refused\"\nThe connection to the server localhost:8080 was refused - did you specify the right host or port?",
+      "stdout": ""
+    },
+    "pods": {
+      "code": 1,
+      "ok": false,
+      "stderr": "E0219 19:40:36.856903   93227 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"http://localhost:8080/api?timeout=32s\\\": dial tcp 127.0.0.1:8080: connect: connection refused\"\nE0219 19:40:36.857532   93227 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"http://localhost:8080/api?timeout=32s\\\": dial tcp 127.0.0.1:8080: connect: connection refused\"\nE0219 19:40:36.858544   93227 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"http://localhost:8080/api?timeout=32s\\\": dial tcp 127.0.0.1:8080: connect: connection refused\"\nE0219 19:40:36.858959   93227 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"http://localhost:8080/api?timeout=32s\\\": dial tcp 127.0.0.1:8080: connect: connection refused\"\nE0219 19:40:36.860628   93227 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"http://localhost:8080/api?timeout=32s\\\": dial tcp 127.0.0.1:8080: connect: connection refused\"\nThe connection to the server localhost:8080 was refused - did you specify the right host or port?",
+      "stdout": ""
+    },
+    "services": {
+      "code": 1,
+      "ok": false,
+      "stderr": "E0219 19:40:36.892922   93228 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"http://localhost:8080/api?timeout=32s\\\": dial tcp 127.0.0.1:8080: connect: connection refused\"\nE0219 19:40:36.893563   93228 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"http://localhost:8080/api?timeout=32s\\\": dial tcp 127.0.0.1:8080: connect: connection refused\"\nE0219 19:40:36.894855   93228 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"http://localhost:8080/api?timeout=32s\\\": dial tcp 127.0.0.1:8080: connect: connection refused\"\nE0219 19:40:36.895340   93228 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"http://localhost:8080/api?timeout=32s\\\": dial tcp 127.0.0.1:8080: connect: connection refused\"\nE0219 19:40:36.896322   93228 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"http://localhost:8080/api?timeout=32s\\\": dial tcp 127.0.0.1:8080: connect: connection refused\"\nThe connection to the server localhost:8080 was refused - did you specify the right host or port?",
+      "stdout": ""
+    },
+    "storageclass": {
+      "code": 1,
+      "ok": false,
+      "stderr": "E0219 19:40:36.929160   93229 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"http://localhost:8080/api?timeout=32s\\\": dial tcp 127.0.0.1:8080: connect: connection refused\"\nE0219 19:40:36.929823   93229 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"http://localhost:8080/api?timeout=32s\\\": dial tcp 127.0.0.1:8080: connect: connection refused\"\nE0219 19:40:36.930710   93229 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"http://localhost:8080/api?timeout=32s\\\": dial tcp 127.0.0.1:8080: connect: connection refused\"\nE0219 19:40:36.931333   93229 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"http://localhost:8080/api?timeout=32s\\\": dial tcp 127.0.0.1:8080: connect: connection refused\"\nE0219 19:40:36.932226   93229 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: Get \\\"http://localhost:8080/api?timeout=32s\\\": dial tcp 127.0.0.1:8080: connect: connection refused\"\nThe connection to the server localhost:8080 was refused - did you specify the right host or port?",
+      "stdout": ""
+    }
+  },
+  "namespace": "atlas-ops-20260219-183817",
+  "schema_version": 1,
+  "timestamp": "2026-02-19T18:40:36.779375+00:00"
+}
