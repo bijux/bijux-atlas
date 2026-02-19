@@ -194,8 +194,8 @@ run_lanes() {
 $(collect_lanes)
 EOF
 
-  mkdir -p "ops/_generated/root-local" "$(summary_dir_for "$run_id")"
-  printf '%s\n' "$run_id" > "ops/_generated/root-local/latest-run-id.txt"
+  mkdir -p "ops/_generated/make/root-local" "$(summary_dir_for "$run_id")"
+  printf '%s\n' "$run_id" > "ops/_generated/make/root-local/latest-run-id.txt"
 
   local failed=0
   if [ "$PARALLEL" = "0" ]; then
@@ -227,7 +227,7 @@ EOF
   python3 ./scripts/layout/make_report.py merge --run-id "$run_id" >/dev/null
   write_summary "$run_id" "${lanes[@]}"
 
-  # Isolation guard: lane tmp directories must be unique and scoped under artifacts/isolate.
+  # Isolation guard: lane tmp directories must be unique and scoped under artifacts/isolate/.
   python3 ./scripts/layout/check_root_local_lane_isolation.py "$run_id" "${lanes[@]}"
 
   return "$failed"
@@ -235,15 +235,15 @@ EOF
 
 case "$MODE" in
   summary)
-    if [ -z "$SUMMARY_RUN_ID" ] && [ -f "ops/_generated/root-local/latest-run-id.txt" ]; then
-      SUMMARY_RUN_ID="$(cat ops/_generated/root-local/latest-run-id.txt)"
+    if [ -z "$SUMMARY_RUN_ID" ] && [ -f "ops/_generated/make/root-local/latest-run-id.txt" ]; then
+      SUMMARY_RUN_ID="$(cat ops/_generated/make/root-local/latest-run-id.txt)"
     fi
     [ -n "$SUMMARY_RUN_ID" ] || { echo "missing SUMMARY_RUN_ID" >&2; exit 2; }
     print_summary "$SUMMARY_RUN_ID"
     ;;
   open)
-    if [ -z "$SUMMARY_RUN_ID" ] && [ -f "ops/_generated/root-local/latest-run-id.txt" ]; then
-      SUMMARY_RUN_ID="$(cat ops/_generated/root-local/latest-run-id.txt)"
+    if [ -z "$SUMMARY_RUN_ID" ] && [ -f "ops/_generated/make/root-local/latest-run-id.txt" ]; then
+      SUMMARY_RUN_ID="$(cat ops/_generated/make/root-local/latest-run-id.txt)"
     fi
     [ -n "$SUMMARY_RUN_ID" ] || { echo "missing SUMMARY_RUN_ID" >&2; exit 2; }
     OPEN_SUMMARY=1
