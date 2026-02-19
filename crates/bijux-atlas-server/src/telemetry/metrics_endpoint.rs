@@ -14,9 +14,54 @@ fn percentile_ns(values: &[u64], pct: f64) -> u64 {
     v[idx]
 }
 
+fn push_histogram_from_samples(
+    body: &mut String,
+    metric_name: &str,
+    base_labels: &str,
+    samples_ns: &[u64],
+    bounds_seconds: &[f64],
+) {
+    let mut count_le = vec![0_u64; bounds_seconds.len()];
+    let mut sum_seconds = 0.0_f64;
+    for sample in samples_ns {
+        let seconds = *sample as f64 / 1_000_000_000.0;
+        sum_seconds += seconds;
+        for (i, bound) in bounds_seconds.iter().enumerate() {
+            if seconds <= *bound {
+                count_le[i] += 1;
+            }
+        }
+    }
+    for (i, bound) in bounds_seconds.iter().enumerate() {
+        body.push_str(&format!(
+            "{metric_name}_bucket{{{base_labels},le=\"{bound}\"}} {}\n",
+            count_le[i]
+        ));
+    }
+    body.push_str(&format!(
+        "{metric_name}_bucket{{{base_labels},le=\"+Inf\"}} {}\n",
+        samples_ns.len()
+    ));
+    body.push_str(&format!(
+        "{metric_name}_sum{{{base_labels}}} {sum_seconds:.9}\n"
+    ));
+    body.push_str(&format!(
+        "{metric_name}_count{{{base_labels}}} {}\n",
+        samples_ns.len()
+    ));
+}
+
 fn make_request_id(state: &AppState) -> String {
     let id = state.request_id_seed.fetch_add(1, Ordering::Relaxed);
     format!("req-{id:016x}")
+}
+
+fn shed_reason_class(reason: &str) -> &'static str {
+    match reason {
+        "bulkhead_shed_heavy" | "heavy_worker_saturated" => "heavy",
+        "bulkhead_shed_noncheap" | "class_permit_saturated" | "queue_depth_exceeded" => "standard",
+        _ => "cheap",
+    }
 }
 
 fn with_request_id(mut response: Response, request_id: &str) -> Response {
@@ -107,7 +152,25 @@ bijux_dataset_disk_usage_bytes{subsystem=\"%SUB%\",version=\"%VER%\",dataset=\"%
         (download_bytes_total as f64) / (total_download_ns as f64 / 1_000_000_000.0)
     };
     body.push_str(&format!(
-        "bijux_runtime_policy_hash{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
+        "atlas_cache_hits_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",cache=\"dataset\"}} {}\n\
+atlas_cache_misses_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",cache=\"dataset\"}} {}\n\
+bijux_runtime_policy_hash{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state
+            .cache
+            .metrics
+            .dataset_hits
+            .load(Ordering::Relaxed),
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state
+            .cache
+            .metrics
+            .dataset_misses
+            .load(Ordering::Relaxed),
         METRIC_SUBSYSTEM,
         METRIC_VERSION,
         METRIC_DATASET_ALL,
@@ -253,6 +316,16 @@ bijux_store_error_other_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} 
         .iter()
         .map(|((backend, class), count)| (backend.clone(), class.clone(), *count))
         .collect::<Vec<_>>();
+    for backend in ["http_s3", "local_fs", "federated", "unknown"] {
+        for class in ["cheap", "standard", "heavy"] {
+            if !store_error_by
+                .iter()
+                .any(|(b, c, _)| b == backend && c == class)
+            {
+                store_error_by.push((backend.to_string(), class.to_string(), 0));
+            }
+        }
+    }
     store_error_by.sort_by(|a, b| a.0.cmp(&b.0).then_with(|| a.1.cmp(&b.1)));
     for (backend, class, count) in store_error_by {
         body.push_str(&format!(
@@ -462,9 +535,10 @@ bijux_fs_space_pressure_events_total{{subsystem=\"{}\",version=\"{}\",dataset=\"
         "heavy_worker_saturated",
     ] {
         let count = *shed_counts_map.get(reason).unwrap_or(&0);
+        let class = shed_reason_class(reason);
         body.push_str(&format!(
-            "atlas_shed_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",reason=\"{}\"}} {}\n",
-            METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, reason, count
+            "atlas_shed_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",reason=\"{}\",class=\"{}\"}} {}\n",
+            METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, reason, class, count
         ));
     }
     let mut shed_counts = shed_counts_map.into_iter().collect::<Vec<_>>();
@@ -485,8 +559,13 @@ bijux_fs_space_pressure_events_total{{subsystem=\"{}\",version=\"{}\",dataset=\"
             continue;
         }
         body.push_str(&format!(
-            "atlas_shed_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",reason=\"{}\"}} {}\n",
-            METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, reason, count
+            "atlas_shed_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",reason=\"{}\",class=\"{}\"}} {}\n",
+            METRIC_SUBSYSTEM,
+            METRIC_VERSION,
+            METRIC_DATASET_ALL,
+            reason,
+            shed_reason_class(&reason),
+            count
         ));
     }
     body.push_str(&format!(
@@ -580,28 +659,37 @@ bijux_redis_cache_tracked_keys{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}}
 
     let req_counts = state.metrics.counts.lock().await.clone();
     let req_exemplars = state.metrics.exemplars.lock().await.clone();
-    for ((route, status), count) in req_counts {
+    for ((route, method, status, class), count) in req_counts {
         if state.api.enable_exemplars {
-            if let Some((trace_id, ts_ms)) = req_exemplars.get(&(route.clone(), status)) {
+            if let Some((trace_id, ts_ms)) =
+                req_exemplars.get(&(route.clone(), method.clone(), status, class.clone()))
+            {
                 body.push_str(&format!(
-                    "bijux_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",status=\"{}\"}} {} # {{trace_id=\"{}\"}} {}\n",
-                    METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, status, count, trace_id, ts_ms
+                    "http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",method=\"{}\",status=\"{}\",class=\"{}\"}} {} # {{trace_id=\"{}\"}} {}\n\
+bijux_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",method=\"{}\",status=\"{}\",class=\"{}\"}} {} # {{trace_id=\"{}\"}} {}\n",
+                    METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, method, status, class, count, trace_id, ts_ms,
+                    METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, method, status, class, count, trace_id, ts_ms
                 ));
             } else {
                 body.push_str(&format!(
-                    "bijux_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",status=\"{}\"}} {}\n",
-                    METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, status, count
+                    "http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",method=\"{}\",status=\"{}\",class=\"{}\"}} {}\n\
+bijux_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",method=\"{}\",status=\"{}\",class=\"{}\"}} {}\n",
+                    METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, method, status, class, count,
+                    METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, method, status, class, count
                 ));
             }
         } else {
             body.push_str(&format!(
-                "bijux_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",status=\"{}\"}} {}\n",
-                METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, status, count
+                "http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",method=\"{}\",status=\"{}\",class=\"{}\"}} {}\n\
+bijux_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",method=\"{}\",status=\"{}\",class=\"{}\"}} {}\n",
+                METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, method, status, class, count,
+                METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, method, status, class, count
             ));
         }
     }
     let req_lat = state.metrics.latency_ns.lock().await.clone();
     for (route, vals) in req_lat {
+        let class = crate::route_sli_class(&route);
         body.push_str(&format!(
             "bijux_http_request_latency_p95_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\"}} {:.6}\n",
             METRIC_SUBSYSTEM,
@@ -610,6 +698,16 @@ bijux_redis_cache_tracked_keys{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}}
             route,
             percentile_ns(&vals, 0.95) as f64 / 1_000_000_000.0
         ));
+        push_histogram_from_samples(
+            &mut body,
+            "http_request_duration_seconds",
+            &format!(
+                "subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\",class=\"{}\"",
+                METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, class
+            ),
+            &vals,
+            &[0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0],
+        );
     }
     let sql_lat = state.metrics.sqlite_latency_ns.lock().await.clone();
     for (query_type, vals) in sql_lat {
@@ -653,6 +751,16 @@ bijux_redis_cache_tracked_keys{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}}
             backend,
             percentile_ns(&download_lat, 0.95) as f64 / 1_000_000_000.0
         ));
+        push_histogram_from_samples(
+            &mut body,
+            "atlas_store_request_duration_seconds",
+            &format!(
+                "subsystem=\"{}\",version=\"{}\",dataset=\"{}\",backend=\"{}\"",
+                METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, backend
+            ),
+            &download_lat,
+            &[0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0],
+        );
     }
     let stage_lat = state.metrics.stage_latency_ns.lock().await.clone();
     for (stage, vals) in stage_lat {
@@ -663,6 +771,58 @@ bijux_redis_cache_tracked_keys{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}}
             METRIC_DATASET_ALL,
             stage,
             percentile_ns(&vals, 0.95) as f64 / 1_000_000_000.0
+        ));
+    }
+    let registry_refresh_age_seconds = state.cache.registry_refresh_age_seconds().await;
+    body.push_str(&format!(
+        "atlas_registry_refresh_age_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+atlas_registry_refresh_failures_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        registry_refresh_age_seconds,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state
+            .cache
+            .metrics
+            .registry_refresh_failures_total
+            .load(Ordering::Relaxed)
+    ));
+    let mut dataset_missing = state
+        .cache
+        .metrics
+        .dataset_missing_by_hash_bucket
+        .lock()
+        .await
+        .iter()
+        .map(|(bucket, count)| (bucket.clone(), *count))
+        .collect::<Vec<_>>();
+    dataset_missing.sort_by(|a, b| a.0.cmp(&b.0));
+    for (dataset_hash, count) in dataset_missing {
+        body.push_str(&format!(
+            "atlas_dataset_missing_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",dataset_hash=\"{}\"}} {}\n",
+            METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, dataset_hash, count
+        ));
+    }
+    let mut invariants = state
+        .cache
+        .metrics
+        .invariant_violations_by_name
+        .lock()
+        .await
+        .iter()
+        .map(|(name, count)| (name.clone(), *count))
+        .collect::<Vec<_>>();
+    if invariants.is_empty() {
+        invariants.push(("genes-count-vs-list".to_string(), 0));
+    }
+    invariants.sort_by(|a, b| a.0.cmp(&b.0));
+    for (invariant, count) in invariants {
+        body.push_str(&format!(
+            "atlas_invariant_violations_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",invariant=\"{}\"}} {}\n",
+            METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, invariant, count
         ));
     }
     let resp = (StatusCode::OK, body).into_response();

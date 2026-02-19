@@ -157,26 +157,40 @@ pub struct CacheMetrics {
     pub fs_space_pressure_events_total: AtomicU64,
     pub cache_evictions_total: AtomicU64,
     pub registry_invalidation_events_total: AtomicU64,
+    pub registry_refresh_failures_total: AtomicU64,
     pub policy_violations_total: AtomicU64,
     pub policy_violations_by_policy: Mutex<HashMap<String, u64>>,
     pub shed_total_by_reason: Mutex<HashMap<String, u64>>,
+    pub dataset_missing_by_hash_bucket: Mutex<HashMap<String, u64>>,
+    pub invariant_violations_by_name: Mutex<HashMap<String, u64>>,
 }
 
 #[derive(Default)]
 struct RequestMetrics {
-    counts: Mutex<HashMap<(String, u16), u64>>,
+    counts: Mutex<HashMap<(String, String, u16, String), u64>>,
     latency_ns: Mutex<HashMap<String, Vec<u64>>>,
     sqlite_latency_ns: Mutex<HashMap<String, Vec<u64>>>,
     stage_latency_ns: Mutex<HashMap<String, Vec<u64>>>,
     request_size_bytes: Mutex<HashMap<String, Vec<u64>>>,
     response_size_bytes: Mutex<HashMap<String, Vec<u64>>>,
     heavy_latency_recent_ns: Mutex<VecDeque<u64>>,
-    exemplars: Mutex<HashMap<(String, u16), (String, u128)>>,
+    exemplars: Mutex<HashMap<(String, String, u16, String), (String, u128)>>,
 }
 
 impl RequestMetrics {
     pub(crate) async fn observe_request(&self, route: &str, status: StatusCode, latency: Duration) {
-        self.observe_request_with_trace(route, status, latency, None)
+        self.observe_request_with_trace_and_method(route, "GET", status, latency, None)
+            .await;
+    }
+
+    pub(crate) async fn observe_request_with_method(
+        &self,
+        route: &str,
+        method: &str,
+        status: StatusCode,
+        latency: Duration,
+    ) {
+        self.observe_request_with_trace_and_method(route, method, status, latency, None)
             .await;
     }
 
@@ -187,9 +201,27 @@ impl RequestMetrics {
         latency: Duration,
         trace_id: Option<&str>,
     ) {
+        self.observe_request_with_trace_and_method(route, "GET", status, latency, trace_id)
+            .await;
+    }
+
+    pub(crate) async fn observe_request_with_trace_and_method(
+        &self,
+        route: &str,
+        method: &str,
+        status: StatusCode,
+        latency: Duration,
+        trace_id: Option<&str>,
+    ) {
+        let class = route_sli_class(route);
         let mut counts = self.counts.lock().await;
         *counts
-            .entry((route.to_string(), status.as_u16()))
+            .entry((
+                route.to_string(),
+                method.to_ascii_uppercase(),
+                status.as_u16(),
+                class.to_string(),
+            ))
             .or_insert(0) += 1;
         drop(counts);
         let mut latency_map = self.latency_ns.lock().await;
@@ -200,7 +232,12 @@ impl RequestMetrics {
         if let Some(id) = trace_id {
             let mut ex = self.exemplars.lock().await;
             ex.insert(
-                (route.to_string(), status.as_u16()),
+                (
+                    route.to_string(),
+                    method.to_ascii_uppercase(),
+                    status.as_u16(),
+                    class.to_string(),
+                ),
                 (id.to_string(), chrono_like_unix_millis()),
             );
         }
@@ -259,6 +296,16 @@ fn chrono_like_unix_millis() -> u128 {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .map_or(0, |d| d.as_millis())
+}
+
+pub(crate) fn route_sli_class(route: &str) -> &'static str {
+    if matches!(route, "/healthz" | "/readyz" | "/metrics" | "/v1/version") {
+        return "cheap";
+    }
+    if route.contains("/diff") || route.contains("/region") || route.contains("/sequence") {
+        return "heavy";
+    }
+    "standard"
 }
 
 fn parse_dataset_from_uri(uri: &Uri) -> Option<DatasetId> {
@@ -412,6 +459,12 @@ async fn record_policy_violation(state: &AppState, policy: &str) {
 pub(crate) async fn record_shed_reason(state: &AppState, reason: &str) {
     let mut by = state.cache.metrics.shed_total_by_reason.lock().await;
     *by.entry(reason.to_string()).or_insert(0) += 1;
+}
+
+#[allow(dead_code)]
+pub(crate) async fn record_invariant_violation(state: &AppState, invariant: &str) {
+    let mut by = state.cache.metrics.invariant_violations_by_name.lock().await;
+    *by.entry(invariant.to_string()).or_insert(0) += 1;
 }
 
 async fn security_middleware(

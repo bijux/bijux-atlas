@@ -316,6 +316,13 @@ impl DatasetCacheManager {
         self.metrics
             .dataset_misses
             .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        let missing_bucket = sha256_hex(dataset.canonical_string().as_bytes())
+            .chars()
+            .take(8)
+            .collect::<String>();
+        let mut by_hash = self.metrics.dataset_missing_by_hash_bucket.lock().await;
+        *by_hash.entry(missing_bucket).or_insert(0) += 1;
+        drop(by_hash);
 
         if self.cfg.cached_only_mode {
             return Err(CacheError(

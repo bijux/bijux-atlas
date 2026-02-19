@@ -541,8 +541,9 @@ pub(crate) async fn query_validate_handler(
                 let resp = api_error_response(StatusCode::BAD_REQUEST, e);
                 state
                     .metrics
-                    .observe_request(
+                    .observe_request_with_method(
                         "/v1/query/validate",
+                        "POST",
                         StatusCode::BAD_REQUEST,
                         started.elapsed(),
                     )
@@ -587,7 +588,12 @@ pub(crate) async fn query_validate_handler(
     let resp = with_query_class(Json(payload).into_response(), class);
     state
         .metrics
-        .observe_request("/v1/query/validate", StatusCode::OK, started.elapsed())
+        .observe_request_with_method(
+            "/v1/query/validate",
+            "POST",
+            StatusCode::OK,
+            started.elapsed(),
+        )
         .await;
     with_request_id(resp, &request_id)
 }
