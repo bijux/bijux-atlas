@@ -5,11 +5,11 @@
 # called-by: make ci-qc-fixtures
 # Purpose: execute deterministic fixture ingest and QC threshold validation gate.
 # Inputs: fixture GFF3/FASTA/FAI files and configs/ops/dataset-qc-thresholds.v1.json.
-# Outputs: artifacts under artifacts/isolates/qc-fixtures and non-zero exit on QC violations.
+# Outputs: artifacts under artifacts/isolate/qc-fixtures and non-zero exit on QC violations.
 set -euo pipefail
 
 ROOT="$(CDPATH='' cd -- "$(dirname -- "$0")/../.." && pwd)"
-OUT_ROOT="${ROOT}/artifacts/isolates/qc-fixtures"
+OUT_ROOT="${ROOT}/artifacts/isolate/qc-fixtures"
 THRESHOLDS="${ROOT}/configs/ops/dataset-qc-thresholds.v1.json"
 rm -rf "$OUT_ROOT"
 mkdir -p "$OUT_ROOT"

@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Purpose: run commands inside deterministic isolated runtime directories.
 # Inputs: command-line args plus optional ISO_* env vars.
-# Outputs: process execution under artifacts/isolates/<tag> with stable env.
+# Outputs: process execution under artifacts/isolate/<tag> with stable env.
 set -eu
 
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
@@ -53,7 +53,7 @@ elif [ -z "${ISO_TAG:-}" ]; then
 fi
 
 if [ -z "${ISO_ROOT:-}" ]; then
-  ISO_ROOT="$ROOT_DIR/artifacts/isolates/$ISO_TAG"
+  ISO_ROOT="$ROOT_DIR/artifacts/isolate/$ISO_TAG"
 fi
 
 ISO_RUN_ID="${ISO_RUN_ID:-$ISO_TAG}"

@@ -31,9 +31,9 @@ for var in $required_vars; do
 done
 
 case "$ISO_ROOT" in
-  artifacts/isolates/*) ;;
-  */artifacts/isolates/*) ;;
-  *) fail "ISO_ROOT must be under artifacts/isolates: $ISO_ROOT" ;;
+  artifacts/isolate/*) ;;
+  */artifacts/isolate/*) ;;
+  *) fail "ISO_ROOT must be under artifacts/isolate: $ISO_ROOT" ;;
 esac
 
 abs_path() {

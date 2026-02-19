@@ -29,7 +29,7 @@ dev-ci:
 	@$(ISO_DEV) $(MAKE) -f $(ROOT_MAKE) ci
 
 dev-clean:
-	@rm -rf "artifacts/isolates/$(DEV_ISO_TAG)"
-	@echo "removed artifacts/isolates/$(DEV_ISO_TAG)"
+	@rm -rf "artifacts/isolate/$(DEV_ISO_TAG)"
+	@echo "removed artifacts/isolate/$(DEV_ISO_TAG)"
 
 .PHONY: dev-fmt dev-lint dev-check dev-test dev-test-all dev-audit dev-coverage dev-ci dev-clean
