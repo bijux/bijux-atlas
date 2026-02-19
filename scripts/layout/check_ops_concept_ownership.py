@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import re
 import sys
+from os import walk
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -29,20 +30,45 @@ for p in OPS.rglob("faults"):
         errors.append(f"forbidden faults dir outside stack: {p.relative_to(ROOT).as_posix()}")
 
 # 4) use canonical fault API only.
-blocked = re.compile(r"ops/stack/faults/(block-minio|toxiproxy-latency|throttle-network|cpu-throttle|fill-node-disk)\.sh")
-for p in (ROOT).rglob("*"):
-    if not p.is_file():
-        continue
-    rel = p.relative_to(ROOT).as_posix()
-    if rel.startswith(".git/"):
-        continue
-    if p.suffix not in {".sh", ".mk", ".py"}:
-        continue
-    if rel.startswith("ops/stack/faults/"):
-        continue
-    text = p.read_text(encoding="utf-8", errors="ignore")
-    if blocked.search(text):
-        errors.append(f"direct fault script reference outside canonical API: {rel}")
+blocked = re.compile(
+    r"ops/stack/faults/(block-minio|toxiproxy-latency|throttle-network|cpu-throttle|fill-node-disk)\.sh"
+)
+skip_dirs = {
+    ".git",
+    "artifacts",
+    "target",
+    ".venv",
+    ".mypy_cache",
+    ".ruff_cache",
+    "__pycache__",
+}
+skip_prefixes = {
+    "ops/_generated/",
+    "ops/_artifacts/",
+}
+
+for dirpath, dirnames, filenames in walk(ROOT):
+    rel_dir = Path(dirpath).relative_to(ROOT).as_posix()
+    if rel_dir != ".":
+        rel_dir = f"{rel_dir}/"
+    # Prune expensive/generated trees early.
+    dirnames[:] = [
+        d
+        for d in dirnames
+        if d not in skip_dirs and f"{rel_dir}{d}/" not in skip_prefixes
+    ]
+    for name in filenames:
+        p = Path(dirpath) / name
+        rel = p.relative_to(ROOT).as_posix()
+        if any(rel.startswith(prefix) for prefix in skip_prefixes):
+            continue
+        if p.suffix not in {".sh", ".mk", ".py"}:
+            continue
+        if rel.startswith("ops/stack/faults/"):
+            continue
+        text = p.read_text(encoding="utf-8", errors="ignore")
+        if blocked.search(text):
+            errors.append(f"direct fault script reference outside canonical API: {rel}")
 
 if errors:
     print("ops concept ownership contract failed:", file=sys.stderr)
