@@ -508,7 +508,7 @@ ops-ingress: ## Deploy atlas with ingress values profile
 
 ops-warm: ## Run warmup workflow
 	@$(MAKE) -s ops-env-validate
-	@./ops/e2e/scripts/warmup.sh
+	@./ops/run/warm.sh
 
 ops-warmup: ## Alias for deterministic warm set workflow
 	@$(MAKE) ops-warm
