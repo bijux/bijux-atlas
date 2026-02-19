@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import re
 import os
+import json
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -15,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DOCS = ROOT / "docs"
 ARTIFACTS = ROOT / "artifacts" / "docs"
 REPORT = ARTIFACTS / "depth-report.md"
+BUDGET_CONFIG = ROOT / "configs" / "docs" / "depth-budget.json"
 
 REQUIRED_STD = ["what", "why", "contracts", "failure modes", "how to verify"]
 REQUIRED_RUNBOOK = ["symptoms", "metrics", "commands", "mitigations", "rollback"]
@@ -143,6 +145,9 @@ def write_report(report: DepthReport, threshold: int) -> None:
 
 def main() -> int:
     threshold = int(os.environ.get("DOCS_DEPTH_MAX_FINDINGS", "350"))
+    if BUDGET_CONFIG.exists():
+        cfg = json.loads(BUDGET_CONFIG.read_text(encoding="utf-8"))
+        threshold = int(cfg.get("max_findings", threshold))
     report = DepthReport()
     for path in sorted(DOCS.rglob("*.md")):
         if should_skip(path):

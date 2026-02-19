@@ -32,6 +32,8 @@ def allowed(path: Path) -> bool:
         return True
     if "docs/_generated/contracts/" in str(path.relative_to(ROOT)) and SCREAM.match(name):
         return True
+    if "docs/operations/slo/" in str(path.relative_to(ROOT)) and SCREAM.match(name):
+        return True
     return False
 
 
