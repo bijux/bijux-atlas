@@ -15,6 +15,7 @@ RUN apt-get update \
 
 COPY Cargo.toml Cargo.lock rust-toolchain.toml rustfmt.toml clippy.toml deny.toml ./
 COPY crates ./crates
+COPY xtask ./xtask
 
 ENV CARGO_NET_GIT_FETCH_WITH_CLI=true \
     CARGO_TERM_COLOR=always \
