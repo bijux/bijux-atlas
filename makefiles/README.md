@@ -42,6 +42,15 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 - `make graph TARGET=<target>`: Print a compact dependency tree for one public target.
 - `make gates`: Print top-level areas and mapped public targets.
 - `make quick`: Minimal loop (fmt + lint + test).
+- `make cargo/fmt`: Cargo fmt gate (CI-safe).
+- `make cargo/lint`: Cargo lint gate (CI-safe).
+- `make cargo/test-fast`: Cargo fast unit-focused tests.
+- `make cargo/test`: Cargo CI-profile test lane.
+- `make cargo/test-all`: Cargo full nextest lane.
+- `make cargo/test-contracts`: Cargo contract-focused tests.
+- `make cargo/audit`: Cargo audit gate.
+- `make cargo/bench-smoke`: Cargo benchmark smoke lane.
+- `make cargo/coverage`: Cargo coverage lane (kept out of root).
 - `make lane-cargo`: Rust lane (fmt/lint/check/test/coverage/audit) under isolated artifacts.
 - `make lane-docs`: Docs lane (docs, freeze, hardening) under isolated artifacts.
 - `make lane-ops`: Ops lane without cluster bring-up (lint/contracts) under isolated artifacts.
@@ -70,6 +79,12 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 - `make ci/all`: Deterministic CI superset.
 - `make nightly/all`: Slow nightly suites.
 - `make repro TARGET=<lane-target> [SEED=<n>]`: Deterministic lane replay with seed propagation.
+
+## Cargo Boundary
+
+- `makefiles/cargo.mk`: CI-safe, deterministic cargo targets only.
+- `makefiles/cargo-dev.mk`: local convenience targets only (`DEV_ONLY=1` required per target).
+- Profile SSOT: `docs/development/cargo-profiles-ssot.md`.
 
 ## Failure modes
 
