@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "suites": [
+    {
+      "id": "smoke",
+      "description": "Fast e2e API and observability smoke.",
+      "required_capabilities": ["k8s", "stack"],
+      "scenarios": [
+        {
+          "id": "api-smoke",
+          "description": "Run canonical API smoke queries and emit smoke report.",
+          "runner": "ops/e2e/scripts/smoke_queries.sh && python3 ops/e2e/smoke/generate_report.py",
+          "capabilities": ["stack"],
+          "destructive": false,
+          "budget": {
+            "expected_time_seconds": 180,
+            "expected_qps": 5,
+            "expected_artifacts": [
+              "ops/_generated/e2e-smoke",
+              "ops/_generated/report.unified.json"
+            ]
+          }
+        },
+        {
+          "id": "metrics-smoke",
+          "description": "Validate metrics contract against running stack.",
+          "runner": "ops/e2e/scripts/verify_metrics.sh",
+          "capabilities": ["obs"],
+          "destructive": false,
+          "budget": {
+            "expected_time_seconds": 120,
+            "expected_qps": 1,
+            "expected_artifacts": [
+              "artifacts/ops/obs"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "k8s-suite",
+      "description": "Run Kubernetes invariant suite through canonical runner.",
+      "required_capabilities": ["k8s", "stack"],
+      "scenarios": [
+        {
+          "id": "k8s-contract-suite",
+          "description": "Execute k8s test suite with selected suite id.",
+          "runner": "ops/k8s/tests/suite.sh --suite ${ATLAS_E2E_K8S_SUITE:-smoke}",
+          "capabilities": ["k8s", "stack"],
+          "destructive": false,
+          "budget": {
+            "expected_time_seconds": 600,
+            "expected_qps": 1,
+            "expected_artifacts": [
+              "ops/_artifacts/k8s/test-results.json",
+              "ops/_artifacts/k8s/test-results.xml"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "realdata",
+      "description": "Run realdata scenarios and drills in deterministic order.",
+      "required_capabilities": ["k8s", "stack", "datasets"],
+      "scenarios": [
+        {
+          "id": "single-release",
+          "description": "Validate canonical single release workflow.",
+          "runner": "ops/e2e/realdata/run_single_release.sh",
+          "capabilities": ["datasets", "stack"],
+          "destructive": false,
+          "budget": {
+            "expected_time_seconds": 300,
+            "expected_qps": 3,
+            "expected_artifacts": [
+              "artifacts/ops/e2e/realdata"
+            ]
+          }
+        },
+        {
+          "id": "two-release-diff",
+          "description": "Validate two-release diff behavior.",
+          "runner": "ops/e2e/realdata/run_two_release_diff.sh",
+          "capabilities": ["datasets", "stack"],
+          "destructive": false,
+          "budget": {
+            "expected_time_seconds": 360,
+            "expected_qps": 2,
+            "expected_artifacts": [
+              "artifacts/ops/release-diff"
+            ]
+          }
+        },
+        {
+          "id": "schema-evolution",
+          "description": "Run schema evolution compatibility drill.",
+          "runner": "ops/e2e/realdata/schema_evolution.sh",
+          "capabilities": ["datasets"],
+          "destructive": true,
+          "budget": {
+            "expected_time_seconds": 180,
+            "expected_qps": 1,
+            "expected_artifacts": [
+              "artifacts/ops/e2e/realdata"
+            ]
+          }
+        },
+        {
+          "id": "upgrade-drill",
+          "description": "Run upgrade drill against realdata fixtures.",
+          "runner": "ops/e2e/realdata/upgrade_drill.sh",
+          "capabilities": ["datasets", "obs"],
+          "destructive": true,
+          "budget": {
+            "expected_time_seconds": 240,
+            "expected_qps": 1,
+            "expected_artifacts": [
+              "artifacts/ops/e2e/realdata"
+            ]
+          }
+        },
+        {
+          "id": "rollback-drill",
+          "description": "Run rollback drill against realdata fixtures.",
+          "runner": "ops/e2e/realdata/rollback_drill.sh",
+          "capabilities": ["datasets", "obs"],
+          "destructive": true,
+          "budget": {
+            "expected_time_seconds": 240,
+            "expected_qps": 1,
+            "expected_artifacts": [
+              "artifacts/ops/e2e/realdata"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
