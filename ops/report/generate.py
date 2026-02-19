@@ -25,12 +25,24 @@ def main() -> int:
         "smoke_report": (run_dir / "smoke" / "report.md").exists(),
         "perf_results": (run_dir / "perf" / "results").exists() or (run_dir / "perf").exists(),
     }
+    slo_file = run_dir / "slo-report.json"
+    slo_payload = json.loads(slo_file.read_text(encoding="utf-8")) if slo_file.exists() else {}
 
     report = {
         "run_id": metadata.get("run_id", run_dir.name),
         "namespace": metadata.get("namespace", "unknown"),
         "metadata": metadata,
         "artifacts": artifacts,
+        "slo_summary": slo_payload.get(
+            "summary",
+            {
+                "total_slos": 0,
+                "compliant_slos": 0,
+                "violated_slos": 0,
+                "unknown_slos": 0,
+                "compliance_ratio": 0.0,
+            },
+        ),
     }
 
     (run_dir / "report.json").write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
