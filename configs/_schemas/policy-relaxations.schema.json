@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["schema_version", "exception_budgets", "exceptions"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "exception_budgets": {"type": "object"},
+    "exceptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "policy", "scope", "file", "justification", "expiry", "owner", "risk", "issue_id", "removal_plan"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^ATLAS-EXC-[0-9]{4}$"},
+          "policy": {"type": "string", "minLength": 1},
+          "scope": {"type": "string", "minLength": 1},
+          "file": {"type": "string", "minLength": 1},
+          "justification": {"type": "string", "minLength": 1},
+          "expiry": {"type": "string", "format": "date"},
+          "owner": {"type": "string", "minLength": 1},
+          "risk": {"type": "string", "minLength": 1},
+          "issue_id": {"type": "string", "minLength": 1},
+          "removal_plan": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": true
+      }
+    }
+  }
+}
