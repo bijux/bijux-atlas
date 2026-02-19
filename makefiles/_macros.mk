@@ -24,3 +24,8 @@ gate_json = run_id="$${RUN_ID:-gates-$(MAKE_RUN_TS)}"; \
 py_venv = if [ ! -x "$(1)/bin/python" ]; then python3 -m venv "$(1)"; fi; \
 	"$(1)/bin/python" -m pip install --upgrade pip >/dev/null; \
 	$(2)
+
+# Usage: $(call fail_banner,<message>)
+fail_banner = printf '%s\n' '========================================' >&2; \
+	printf 'MAKE FAILURE: %s\n' "$(1)" >&2; \
+	printf '%s\n' '========================================' >&2
