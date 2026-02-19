@@ -5,7 +5,11 @@ ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 require_bin kubectl
 
 # local-compose profile should be accepted when compose is installed.
-if (command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1) || command -v docker-compose >/dev/null 2>&1; then
+if [ "${OBS_SKIP_LOCAL_COMPOSE:-0}" = "1" ]; then
+  echo "local-compose profile skipped: OBS_SKIP_LOCAL_COMPOSE=1"
+elif (command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1) || command -v docker-compose >/dev/null 2>&1; then
+  # Clean up stale local-compose services from interrupted runs before asserting idempotency.
+  ATLAS_OBS_PROFILE=local-compose "$ROOT/ops/obs/scripts/uninstall_pack.sh" >/dev/null 2>&1 || true
   ATLAS_OBS_PROFILE=local-compose "$ROOT/ops/obs/scripts/install_pack.sh"
   ATLAS_OBS_PROFILE=local-compose "$ROOT/ops/obs/scripts/install_pack.sh"
   ATLAS_OBS_PROFILE=local-compose "$ROOT/ops/obs/scripts/verify_pack.sh"

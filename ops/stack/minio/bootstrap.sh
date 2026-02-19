@@ -18,7 +18,7 @@ for _ in 1 2 3 4 5 6 7 8 9 10; do
 done
 kubectl -n "$NS" get serviceaccount default >/dev/null 2>&1
 
-kubectl -n "$NS" wait --for=condition=available deploy/minio --timeout="${MINIO_WAIT_TIMEOUT:-180s}" >/dev/null
+kubectl -n "$NS" wait --for=condition=available deploy/minio --timeout="${MINIO_WAIT_TIMEOUT:-300s}" >/dev/null
 
 kubectl -n "$NS" run minio-bootstrap \
   --image=minio/mc:RELEASE.2025-01-17T23-25-50Z \
