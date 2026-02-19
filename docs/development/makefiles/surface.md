@@ -1,193 +1,157 @@
 # Makefiles Public Surface
 
-- Owner: `docs-governance`
+Generated from `configs/ops/public-surface.json`. Do not edit manually.
 
-## What
+## Core Gates
+- `make root`
+- `make root-local`
+- `make ci`
+- `make nightly`
+- `make ops-prereqs`
+- `make ops-doctor`
+- `make ops-contracts-check`
+- `make ops-k8s-suite`
+- `make ops-load-suite`
+- `make ops-e2e-smoke`
+- `make ops-local-full`
+- `make list-public`
+- `make ops-check`
+- `make ops-smoke`
+- `make ops-k8s-smoke`
+- `make ops-obs-verify`
+- `make report`
 
-Defines stable make target interfaces exported by the repository root `Makefile`.
+## Public Targets
+- `make ci`
+- `make clean`
+- `make docs`
+- `make doctor`
+- `make explain`
+- `make format`
+- `make gates`
+- `make help`
+- `make inventory`
+- `make list-public`
+- `make nightly`
+- `make ops-alerts-validate`
+- `make ops-artifacts-open`
+- `make ops-baseline-policy-check`
+- `make ops-cache-pin-set`
+- `make ops-cache-status`
+- `make ops-catalog-validate`
+- `make ops-check`
+- `make ops-clean`
+- `make ops-contracts-check`
+- `make ops-dashboards-validate`
+- `make ops-dataset-federated-registry-test`
+- `make ops-dataset-multi-release-test`
+- `make ops-dataset-promotion-sim`
+- `make ops-dataset-qc`
+- `make ops-datasets-fetch`
+- `make ops-deploy`
+- `make ops-doctor`
+- `make ops-down`
+- `make ops-drill-corruption-dataset`
+- `make ops-drill-memory-growth`
+- `make ops-drill-otel-outage`
+- `make ops-drill-overload`
+- `make ops-drill-pod-churn`
+- `make ops-drill-rate-limit`
+- `make ops-drill-rollback`
+- `make ops-drill-rollback-under-load`
+- `make ops-drill-store-outage`
+- `make ops-drill-suite`
+- `make ops-drill-toxiproxy-latency`
+- `make ops-drill-upgrade`
+- `make ops-drill-upgrade-under-load`
+- `make ops-e2e-smoke`
+- `make ops-full`
+- `make ops-full-pr`
+- `make ops-gc-smoke`
+- `make ops-gen`
+- `make ops-gen-check`
+- `make ops-incident-repro-kit`
+- `make ops-k8s-smoke`
+- `make ops-k8s-suite`
+- `make ops-k8s-template-tests`
+- `make ops-k8s-tests`
+- `make ops-load-ci`
+- `make ops-load-full`
+- `make ops-load-manifest-validate`
+- `make ops-load-nightly`
+- `make ops-load-shedding`
+- `make ops-load-smoke`
+- `make ops-load-soak`
+- `make ops-load-suite`
+- `make ops-local-full`
+- `make ops-local-full-stack`
+- `make ops-metrics-check`
+- `make ops-obs-down`
+- `make ops-obs-install`
+- `make ops-obs-mode`
+- `make ops-obs-uninstall`
+- `make ops-obs-verify`
+- `make ops-observability-pack-conformance-report`
+- `make ops-observability-pack-export`
+- `make ops-observability-pack-health`
+- `make ops-observability-pack-smoke`
+- `make ops-observability-pack-verify`
+- `make ops-observability-smoke`
+- `make ops-observability-validate`
+- `make ops-open-grafana`
+- `make ops-openapi-validate`
+- `make ops-perf-baseline-update`
+- `make ops-perf-cold-start`
+- `make ops-perf-nightly`
+- `make ops-perf-report`
+- `make ops-perf-warm-start`
+- `make ops-prereqs`
+- `make ops-proof-cached-only`
+- `make ops-publish`
+- `make ops-readiness-scorecard`
+- `make ops-realdata`
+- `make ops-redeploy`
+- `make ops-ref-grade-local`
+- `make ops-ref-grade-nightly`
+- `make ops-ref-grade-pr`
+- `make ops-release-matrix`
+- `make ops-release-rollback`
+- `make ops-release-update`
+- `make ops-report`
+- `make ops-slo-alert-proof`
+- `make ops-slo-burn`
+- `make ops-slo-report`
+- `make ops-smoke`
+- `make ops-tools-check`
+- `make ops-traces-check`
+- `make ops-undeploy`
+- `make ops-up`
+- `make ops-values-validate`
+- `make ops-warm`
+- `make ops-warm-datasets`
+- `make ops-warm-shards`
+- `make ops-warm-top`
+- `make prereqs`
+- `make report`
+- `make root`
+- `make root-local`
+- `make root-local-fast`
+- `make root-local-summary`
+- `make verify-inventory`
 
-## Why
-
-Make targets are operational interfaces used by CI and local workflows.
-
-## Scope
-
-Public targets printed by `make help`.
-
-## Non-goals
-
-Does not document internal helper targets prefixed with `_`.
-
-## Contracts
-
-Stable targets:
-
-- `fmt`
-- `lint`
-- `check`
-- `test`
-- `test-all`
-- `coverage`
-- `audit`
-- `openapi-drift`
-- `ci`
-- `fetch-fixtures`
-- `fetch-real-datasets`
-- `load-test`
-- `load-test-1000qps`
-- `cold-start-bench`
-- `memory-profile-load`
-- `run-medium-ingest`
-- `run-medium-serve`
-- `crate-structure`
-- `crate-docs-contract`
-- `cli-command-surface`
-- `culprits-all`
-- `culprits-max_loc`
-- `culprits-max_depth`
-- `culprits-file-max_rs_files_per_dir`
-- `culprits-file-max_modules_per_dir`
-- `e2e-local`
-- `e2e-k8s-install-gate`
-- `e2e-k8s-suite`
-- `e2e-perf`
-- `e2e-realdata`
-- `ops-up`
-- `ops-stack-up`
-- `ops-down`
-- `ops-stack-down`
-- `ops-stack-validate`
-- `ops-stack-smoke`
-- `ops-stack-health-report`
-- `ops-stack-version`
-- `ops-stack-uninstall`
-- `ops-stack-slow-store`
-- `ops-reset`
-- `ops-env-print`
-- `ops-cluster-sanity`
-- `ops-publish-medium`
-- `ops-publish`
-- `ops-deploy`
-- `ops-offline`
-- `ops-perf`
-- `ops-multi-registry`
-- `ops-ingress`
-- `ops-warm`
-- `ops-soak`
-- `ops-smoke`
-- `ops-metrics-check`
-- `ops-traces-check`
-- `ops-k8s-tests`
-- `ops-k8s-template-tests`
-- `ops-load-prereqs`
-- `ops-load-smoke`
-- `ops-load-full`
-- `ops-drill-store-outage`
-- `ops-drill-minio-outage`
-- `ops-drill-prom-outage`
-- `ops-drill-otel-outage`
-- `ops-drill-toxiproxy-latency`
-- `ops-drill-overload`
-- `ops-drill-memory-growth`
-- `ops-drill-corruption`
-- `ops-drill-pod-churn`
-- `ops-drill-upgrade`
-- `ops-drill-rollback`
-- `ops-upgrade-drill`
-- `ops-rollback-drill`
-- `ops-realdata`
-- `ops-report`
-- `ops-script-coverage`
-- `ops-shellcheck`
-- `ops-kind-version-check`
-- `ops-k6-version-check`
-- `ops-helm-version-check`
-- `ops-kubectl-version-check`
-- `ops-kubeconform-version-check`
-- `ops-tool-check`
-- `ops-tools-check`
-- `ops-values-validate`
-- `ops-openapi-validate`
-- `ops-dashboards-validate`
-- `ops-alerts-validate`
-- `ops-release-matrix`
-- `ops-ci`
-- `ops-ci-nightly`
-- `ops-clean`
-- `ops-perf-prepare-store`
-- `ops-perf-e2e`
-- `ops-perf-nightly`
-- `ops-perf-cold-start`
-- `ops-perf-cold-start-prefetch-5pods`
-- `ops-perf-compare-redis`
-- `ops-perf-suite`
-- `ops-baseline-policy-check`
-- `ops-observability-validate`
-- `ops-observability-smoke`
-- `ops-observability-pack-tests`
-- `ops-observability-pack-lint`
-- `ops-obs-up`
-- `ops-obs-down`
-- `ops-obs-mode`
-- `ops-obs-mode-minimal`
-- `ops-obs-mode-full`
-- `ops-drill-alerts`
-- `ops-drill-overload`
-- `ops-drill-memory-growth`
-- `ops-slo-burn`
-- `ssot-check`
-- `observability-check`
-- `docs`
-- `docs-serve`
-- `docs-freeze`
-- `docs-hardening`
-- `layout-check`
-- `layout-migrate`
-- `scripts-lint`
-- `scripts-test`
-- `bootstrap`
-- `bootstrap-tools`
-- `scripts-index`
-- `docker-build`
-- `docker-smoke`
-- `chart-package`
-- `chart-verify`
-- `no-direct-scripts`
-- `doctor`
-- `help`
-
-Perf targets:
-
-- `perf-nightly`
-
-Dev targets:
-
-- `dev-fmt`
-- `dev-lint`
-- `dev-check`
-- `dev-test`
-- `dev-test-all`
-- `dev-coverage`
-- `dev-audit`
-- `dev-ci`
-- `dev-clean`
-
-## Failure modes
-
-Undocumented target changes break CI, scripts, or developer workflows.
-
-## How to verify
-
-```bash
-$ make help
-$ python3 scripts/docs/check_make_targets_documented.py
-```
-
-Expected output: make target documentation check passes.
-
-## See also
-
-- [Repo Surface](../repo-surface.md)
-- [Scripts Index](../scripts/INDEX.md)
-- [Make Targets](../make-targets.md)
-- [Crate Layout Contract](../../architecture/crate-layout-contract.md)
+## Public Ops Run Commands
+- `./ops/run/prereqs.sh`
+- `./ops/run/doctor.sh`
+- `./ops/run/stack-up.sh`
+- `./ops/run/stack-down.sh`
+- `./ops/run/obs-up.sh`
+- `./ops/run/obs-verify.sh`
+- `./ops/run/datasets-verify.sh`
+- `./ops/run/e2e-smoke.sh`
+- `./ops/run/k8s-suite.sh`
+- `./ops/run/load-suite.sh`
+- `./ops/run/report.sh`
+- `./ops/run/artifacts-open.sh`
+- `./ops/run/clean.sh`
+- `./ops/run/ci-fast.sh`
+- `./ops/run/ci-nightly.sh`
