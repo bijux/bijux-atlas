@@ -1,0 +1,129 @@
+{
+  "contract_version": "1.0.0",
+  "datasets": {
+    "entries": [
+      {
+        "name": "medium",
+        "owner": "data-platform",
+        "pinned_at": "2026-02-19",
+        "source_url": "ops/datasets/manifest.lock"
+      },
+      {
+        "name": "real1",
+        "owner": "data-platform",
+        "pinned_at": "2026-02-19",
+        "source_url": "ops/datasets/manifest.lock"
+      }
+    ],
+    "lockfile": "ops/datasets/manifest.lock"
+  },
+  "helm": {
+    "chart_dependencies": [],
+    "owner": "chart",
+    "pinned_at": "2026-02-19",
+    "policy": {
+      "allow_latest": false,
+      "allow_remote_repos": false
+    },
+    "source_url": "ops/k8s/charts/bijux-atlas/Chart.yaml"
+  },
+  "images": {
+    "atlas_app": {
+      "owner": "atlas-server",
+      "pinned_at": "2026-02-19",
+      "ref": "ghcr.io/bijux/bijux-atlas:0.1.0",
+      "source_url": "https://github.com/bijux/bijux-atlas/pkgs/container/bijux-atlas"
+    },
+    "kind_node_image": {
+      "owner": "ops-platform",
+      "pinned_at": "2026-02-19",
+      "ref": "kindest/node:v1.31.2@sha256:f226345927d7e348497136874b6d207e0b32cc52154ad8323129352923a3142f",
+      "source_url": "https://github.com/kubernetes-sigs/kind/releases"
+    },
+    "minio": {
+      "owner": "ops-platform",
+      "pinned_at": "2026-02-19",
+      "ref": "minio/minio:RELEASE.2025-01-20T14-49-07Z",
+      "source_url": "https://hub.docker.com/r/minio/minio/tags"
+    },
+    "minio_mc": {
+      "owner": "ops-platform",
+      "pinned_at": "2026-02-19",
+      "ref": "minio/mc:RELEASE.2025-01-17T23-25-50Z",
+      "source_url": "https://hub.docker.com/r/minio/mc/tags"
+    },
+    "otel_collector": {
+      "owner": "observability",
+      "pinned_at": "2026-02-19",
+      "ref": "otel/opentelemetry-collector-contrib:0.111.0",
+      "source_url": "https://github.com/open-telemetry/opentelemetry-collector-contrib/releases"
+    },
+    "prometheus": {
+      "owner": "observability",
+      "pinned_at": "2026-02-19",
+      "ref": "prom/prometheus:v2.54.1",
+      "source_url": "https://github.com/prometheus/prometheus/releases"
+    },
+    "redis": {
+      "owner": "ops-platform",
+      "pinned_at": "2026-02-19",
+      "ref": "redis:7.4-alpine",
+      "source_url": "https://hub.docker.com/_/redis/tags"
+    },
+    "toxiproxy": {
+      "owner": "ops-platform",
+      "pinned_at": "2026-02-19",
+      "ref": "ghcr.io/shopify/toxiproxy:2.12.0",
+      "source_url": "https://github.com/Shopify/toxiproxy/pkgs/container/toxiproxy"
+    }
+  },
+  "policy": {
+    "allow_pin_bypass": false,
+    "relaxation_registry": "configs/policy/pin-relaxations.json"
+  },
+  "schema_version": 1,
+  "tools": {
+    "helm": {
+      "owner": "ops-platform",
+      "pinned_at": "2026-02-19",
+      "source_url": "https://github.com/helm/helm/releases",
+      "version": "v3.18.3"
+    },
+    "jq": {
+      "owner": "ops-platform",
+      "pinned_at": "2026-02-19",
+      "source_url": "https://github.com/jqlang/jq/releases",
+      "version": "v1.7.1"
+    },
+    "k6": {
+      "owner": "ops-platform",
+      "pinned_at": "2026-02-19",
+      "source_url": "https://github.com/grafana/k6/releases",
+      "version": "v1.6.1"
+    },
+    "kind": {
+      "owner": "ops-platform",
+      "pinned_at": "2026-02-19",
+      "source_url": "https://kind.sigs.k8s.io/",
+      "version": "v0.31.0"
+    },
+    "kubectl": {
+      "owner": "ops-platform",
+      "pinned_at": "2026-02-19",
+      "source_url": "https://kubernetes.io/releases/",
+      "version": "v1.35.1"
+    },
+    "python3": {
+      "owner": "ops-platform",
+      "pinned_at": "2026-02-19",
+      "source_url": "https://www.python.org/downloads/",
+      "version": "3.10.11"
+    },
+    "yq": {
+      "owner": "ops-platform",
+      "pinned_at": "2026-02-19",
+      "source_url": "https://github.com/mikefarah/yq/releases",
+      "version": "v4.52.4"
+    }
+  }
+}

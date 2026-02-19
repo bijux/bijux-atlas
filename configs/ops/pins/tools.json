@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "tools": {
+    "kind": {
+      "version": "v0.31.0",
+      "source_url": "https://kind.sigs.k8s.io/",
+      "pinned_at": "2026-02-19",
+      "owner": "ops-platform"
+    },
+    "k6": {
+      "version": "v1.6.1",
+      "source_url": "https://github.com/grafana/k6/releases",
+      "pinned_at": "2026-02-19",
+      "owner": "ops-platform"
+    },
+    "helm": {
+      "version": "v3.18.3",
+      "source_url": "https://github.com/helm/helm/releases",
+      "pinned_at": "2026-02-19",
+      "owner": "ops-platform"
+    },
+    "kubectl": {
+      "version": "v1.35.1",
+      "source_url": "https://kubernetes.io/releases/",
+      "pinned_at": "2026-02-19",
+      "owner": "ops-platform"
+    },
+    "python3": {
+      "version": "3.10.11",
+      "source_url": "https://www.python.org/downloads/",
+      "pinned_at": "2026-02-19",
+      "owner": "ops-platform"
+    },
+    "jq": {
+      "version": "v1.7.1",
+      "source_url": "https://github.com/jqlang/jq/releases",
+      "pinned_at": "2026-02-19",
+      "owner": "ops-platform"
+    },
+    "yq": {
+      "version": "v4.52.4",
+      "source_url": "https://github.com/mikefarah/yq/releases",
+      "pinned_at": "2026-02-19",
+      "owner": "ops-platform"
+    }
+  }
+}

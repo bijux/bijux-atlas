@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "helm": {
+    "policy": {
+      "allow_remote_repos": false,
+      "allow_latest": false
+    },
+    "chart_dependencies": [],
+    "source_url": "ops/k8s/charts/bijux-atlas/Chart.yaml",
+    "pinned_at": "2026-02-19",
+    "owner": "chart"
+  }
+}
