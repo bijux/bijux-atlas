@@ -174,8 +174,11 @@ struct RequestMetrics {
     request_size_bytes: Mutex<HashMap<String, Vec<u64>>>,
     response_size_bytes: Mutex<HashMap<String, Vec<u64>>>,
     heavy_latency_recent_ns: Mutex<VecDeque<u64>>,
-    exemplars: Mutex<HashMap<(String, String, u16, String), (String, u128)>>,
+    exemplars: Mutex<HashMap<RequestMetricKey, RequestExemplar>>,
 }
+
+type RequestMetricKey = (String, String, u16, String);
+type RequestExemplar = (String, u128);
 
 impl RequestMetrics {
     pub(crate) async fn observe_request(&self, route: &str, status: StatusCode, latency: Duration) {
