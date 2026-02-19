@@ -77,4 +77,33 @@ scripts-audit: ## Audit script headers, taxonomy buckets, and no-implicit-cwd co
 scripts-clean: ## Remove generated script artifacts
 	@rm -rf artifacts/scripts
 
-.PHONY: bootstrap-tools no-direct-scripts scripts-all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test
+internal/scripts/check: ## Deterministic scripts check lane
+	@start="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; status=pass; fail=""; \
+	if ! $(MAKE) scripts-check; then status=fail; fail="scripts-check failed"; fi; \
+	end="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; \
+	python3 ./scripts/layout/write_make_area_report.py --path "$${ISO_ROOT:-artifacts/isolate/scripts/$${RUN_ID:-scripts-check}}/report.scripts.check.json" --lane "scripts/check" --status "$$status" --start "$$start" --end "$$end" --artifact "$${ISO_ROOT:-artifacts/isolate/scripts/$${RUN_ID:-scripts-check}}" --failure "$$fail" >/dev/null; \
+	[ "$$status" = "pass" ] || { $(call fail_banner,scripts/check); exit 1; }
+
+internal/scripts/build: ## Build script inventories/graphs
+	@$(MAKE) scripts-index
+	@$(MAKE) scripts-graph
+
+internal/scripts/fmt: ## Scripts formatting
+	@$(MAKE) scripts-format
+
+internal/scripts/lint: ## Scripts lint
+	@$(MAKE) scripts-lint
+
+internal/scripts/test: ## Scripts tests
+	@$(MAKE) scripts-test
+
+internal/scripts/clean: ## Scripts generated-output cleanup
+	@$(MAKE) scripts-clean
+
+internal/scripts/all: ## Uniform scripts all target
+	@$(MAKE) internal/scripts/check
+	@$(MAKE) internal/scripts/lint
+	@$(MAKE) internal/scripts/test
+	@$(MAKE) internal/scripts/build
+
+.PHONY: bootstrap-tools no-direct-scripts scripts-all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test internal/scripts/check internal/scripts/build internal/scripts/fmt internal/scripts/lint internal/scripts/test internal/scripts/clean internal/scripts/all
