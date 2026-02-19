@@ -1,4 +1,4 @@
-name: perf-nightly
+name: nightly-suite
 
 on:
   schedule:
@@ -6,77 +6,19 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  nightly-perf:
+  nightly:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
-    env:
-      ISO_ROOT: artifacts/isolates/perf-nightly
-      CARGO_TARGET_DIR: artifacts/isolates/perf-nightly/target
-      CARGO_HOME: artifacts/isolates/perf-nightly/cargo-home
-      TMPDIR: artifacts/isolates/perf-nightly/tmp
-      TMP: artifacts/isolates/perf-nightly/tmp
-      TEMP: artifacts/isolates/perf-nightly/tmp
-      SOAK_DURATION: 30m
+    timeout-minutes: 240
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Ensure directories
-        run: mkdir -p "$ISO_ROOT" "$TMPDIR" artifacts/perf
-
-      - uses: grafana/setup-k6-action@v1
-
-      - name: Pinned tool checks
-        run: make ops-k6-version-check
-
-      - name: Run nightly perf harness
-        run: make ops-perf-nightly
-
-      - name: Run spike overload proof gate
-        run: make ops-load-spike-proof
-
-      - name: Run e2e perf scoring suite
-        run: make ops-perf-e2e
-
-      - name: Upload perf artifacts
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Run canonical nightly entrypoint
+        run: make nightly
+      - name: Upload nightly artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: perf-nightly-artifacts
+          name: nightly-artifacts
           path: |
-            artifacts/ops/**
-            artifacts/perf/**
-            artifacts/ops/e2e/k6/**
-            artifacts/ops/load/reports/**
-
-      - name: Prepare regression issue content
-        if: failure() && hashFiles('artifacts/perf/regression.txt') != ''
-        run: |
-          {
-            echo "# Nightly Perf Regression"
-            echo
-            echo "Commit: $GITHUB_SHA"
-            echo
-            echo "## Violations"
-            echo
-            cat artifacts/perf/regression.txt
-            echo
-            echo "## Report"
-            echo
-            if [ -f artifacts/perf/report.md ]; then
-              cat artifacts/perf/report.md
-            fi
-          } > artifacts/perf/perf-regression-issue.md
-
-      - name: Open regression issue
-        if: failure() && hashFiles('artifacts/perf/perf-regression-issue.md') != ''
-        uses: peter-evans/create-issue-from-file@v5
-        with:
-          title: "perf-nightly regression: ${{ github.run_id }}"
-          content-filepath: artifacts/perf/perf-regression-issue.md
-          labels: |
-            performance
-            regression
-            nightly
+            artifacts/**
+            ops/_generated/**
