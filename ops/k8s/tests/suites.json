@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "owner": "bijux-atlas-operations",
+  "suites": [
+    {
+      "id": "smoke",
+      "description": "Fast k8s invariant smoke suite",
+      "groups": ["sanity", "install", "readiness", "observability"]
+    },
+    {
+      "id": "resilience",
+      "description": "Resilience and availability suite",
+      "groups": ["resilience", "availability", "rolling-restart", "hpa", "pdb"]
+    },
+    {
+      "id": "full",
+      "description": "Full k8s suite",
+      "groups": []
+    }
+  ]
+}
