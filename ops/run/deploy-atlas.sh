@@ -9,4 +9,12 @@ export ARTIFACT_DIR="$OPS_RUN_DIR"
 ops_env_load
 ops_entrypoint_start "ops-deploy"
 ops_version_guard kind kubectl helm python3
+profile="${PROFILE:-kind}"
+if ! ops_context_guard "$profile"; then
+  if [ "$profile" = "kind" ]; then
+    echo "ops-deploy: kind context missing; bootstrapping stack" >&2
+    make -s ops-stack-up PROFILE=kind
+  fi
+fi
+ops_context_guard "$profile"
 exec ./ops/e2e/scripts/deploy_atlas.sh "$@"

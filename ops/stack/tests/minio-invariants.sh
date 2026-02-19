@@ -29,8 +29,12 @@ echo "$p" | grep -Ei "download|readonly" >/dev/null
 
 check_minio_reachable_from_atlas() {
   local ns="${1:-atlas-e2e}"
-  local pod
-  pod=$(kubectl -n "$ns" get pod -l app.kubernetes.io/name=bijux-atlas -o jsonpath='{.items[0].metadata.name}')
-  kubectl -n "$ns" exec "$pod" -- sh -c "wget -qO- http://minio.$ns.svc.cluster.local:9000/minio/health/ready >/dev/null"
-  echo "minio reachable from atlas pod"
+  kubectl -n "$ns" delete pod minio-reachability-check --ignore-not-found >/dev/null 2>&1 || true
+  kubectl -n "$ns" run minio-reachability-check \
+    --image=curlimages/curl:8.10.1 \
+    --restart=Never \
+    --rm -i --command -- sh -ceu "
+curl -fsS 'http://minio.$ns.svc.cluster.local:9000/minio/health/ready' >/dev/null
+"
+  echo "minio reachable from workload namespace"
 }
