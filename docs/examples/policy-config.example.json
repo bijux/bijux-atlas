@@ -1,6 +1,27 @@
 {
   "schema_version": 1,
+  "mode": "strict",
   "allow_override": false,
+  "modes": {
+    "strict": {
+      "allow_override": false,
+      "max_page_size": 500,
+      "max_region_span": 1000000,
+      "max_response_bytes": 1048576
+    },
+    "compat": {
+      "allow_override": false,
+      "max_page_size": 1000,
+      "max_region_span": 2000000,
+      "max_response_bytes": 2097152
+    },
+    "dev": {
+      "allow_override": false,
+      "max_page_size": 1000,
+      "max_region_span": 2000000,
+      "max_response_bytes": 2097152
+    }
+  },
   "network_in_unit_tests": false,
   "query_budget": {
     "cheap": 10,
@@ -18,7 +39,9 @@
   "cache_budget": {
     "max_disk_bytes": 2147483648,
     "max_dataset_count": 8,
-    "pinned_datasets_max": 4
+    "pinned_datasets_max": 4,
+    "shard_count_policy_max": 128,
+    "max_open_shards_per_pod": 64
   },
   "store_resilience": {
     "retry_budget": 3,

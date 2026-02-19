@@ -103,10 +103,6 @@ pub(crate) fn explain_policy(
     let strict = resolve_mode_profile(&policy, PolicyMode::Strict).map_err(|e| e.to_string())?;
     let active = resolve_mode_profile(&policy, active_mode).map_err(|e| e.to_string())?;
     let deltas = json!({
-      "allow_override": {
-        "strict": strict.allow_override,
-        "active": active.allow_override
-      },
       "max_page_size": {
         "strict": strict.max_page_size,
         "active": active.max_page_size

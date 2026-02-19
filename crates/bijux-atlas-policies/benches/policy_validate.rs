@@ -26,7 +26,7 @@ fn bench_policy_validate(c: &mut Criterion) {
                 max_response_bytes: 2_097_152,
             },
             dev: PolicyModeProfile {
-                allow_override: true,
+                allow_override: false,
                 max_page_size: 500,
                 max_region_span: 50_000_000,
                 max_response_bytes: 4_194_304,
