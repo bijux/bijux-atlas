@@ -1,34 +1,33 @@
 #!/usr/bin/env python3
-# Purpose: generate markdown inventory of public make targets from makefile registry.
-# Inputs: makefiles/registry.mk.
+# Purpose: generate markdown inventory of public make/ops commands from make help output.
+# Inputs: make help output rendered via scripts/layout/render_public_help.py.
 # Outputs: docs/development/make-targets.md and docs/development/make-targets-inventory.md.
 from __future__ import annotations
 
-import re
+import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT_MAIN = ROOT / "docs" / "development" / "make-targets.md"
 OUT_COMPAT = ROOT / "docs" / "development" / "make-targets-inventory.md"
-REGISTRY = ROOT / "makefiles" / "registry.mk"
+HELP_CMD = ["python3", "scripts/layout/render_public_help.py"]
 
-sections: dict[str, list[str]] = {}
-desc_re = re.compile(r"^REGISTRY_([A-Z_]+)_DESC := (.+)$")
-targets_re = re.compile(r"^REGISTRY_([A-Z_]+)_TARGETS := (.*)$")
-descs: dict[str, str] = {}
-targets: dict[str, list[str]] = {}
 
-for line in REGISTRY.read_text(encoding="utf-8").splitlines():
-    match = desc_re.match(line.strip())
-    if match:
-        descs[match.group(1)] = match.group(2).strip()
-        continue
-    match = targets_re.match(line.strip())
-    if match:
-        targets[match.group(1)] = [token for token in match.group(2).split() if token]
+def parse_help_sections(text: str) -> dict[str, list[str]]:
+    sections: dict[str, list[str]] = {}
+    current: str | None = None
+    for line in text.splitlines():
+        if line.endswith(":") and not line.startswith("  "):
+            current = line[:-1].strip()
+            sections[current] = []
+            continue
+        if current and line.startswith("  "):
+            sections[current].extend(line.strip().split())
+    return sections
 
-for key, desc in descs.items():
-    sections[desc] = targets.get(key, [])
+
+help_text = subprocess.check_output(HELP_CMD, cwd=ROOT, text=True)
+sections = parse_help_sections(help_text)
 
 lines: list[str] = [
     "# Make Targets Inventory",
@@ -40,7 +39,7 @@ lines: list[str] = [
 ]
 
 for section, section_targets in sections.items():
-    lines.append(f"## {section.title()}")
+    lines.append(f"## {section}")
     lines.append("")
     for target in section_targets:
         lines.append(f"- `{target}`")
