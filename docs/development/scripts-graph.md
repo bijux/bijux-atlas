@@ -6,7 +6,13 @@ Generated file. Do not edit by hand.
 |---|---|
 | `_lint-configs` | `scripts/public/policy-lint.sh` |
 | `_lint-docs` | `scripts/public/check-markdown-links.sh` |
+| `api-contract-check` | `scripts/public/contracts/check_breaking_contract_change.py` |
+| `api-contract-check` | `scripts/public/contracts/check_endpoints_contract.py` |
+| `api-contract-check` | `scripts/public/contracts/check_error_codes_contract.py` |
+| `api-contract-check` | `scripts/public/contracts/check_v1_surface.py` |
+| `api-contract-check` | `scripts/public/contracts/gen_openapi.py` |
 | `api-contract-check` | `scripts/public/openapi-diff-check.sh` |
+| `ci-openapi-drift` | `scripts/public/contracts/check_breaking_contract_change.py` |
 | `ci-qc-fixtures` | `scripts/public/qc-fixtures-gate.sh` |
 | `cli-command-surface` | `scripts/public/check-cli-commands.sh` |
 | `config-drift` | `scripts/public/config-drift-check.py` |
@@ -14,9 +20,12 @@ Generated file. Do not edit by hand.
 | `config-validate` | `scripts/public/config-drift-check.py` |
 | `config-validate` | `scripts/public/config-validate.py` |
 | `config-validate` | `scripts/public/generate-config-key-registry.py` |
+| `configs-check` | `scripts/public/config-drift-check.py` |
+| `configs-check` | `scripts/public/config-validate.py` |
 | `crate-structure` | `scripts/public/require-crate-docs.sh` |
+| `critical-query-check` | `scripts/public/contracts/check_sqlite_indexes_contract.py` |
 | `critical-query-check` | `scripts/public/perf/run_critical_queries.py` |
-| `docs` | `scripts/public/check-markdown-links.sh` |
+| `docs-build` | `scripts/public/check-markdown-links.sh` |
 | `openapi-drift` | `scripts/public/openapi-diff-check.sh` |
 | `ops-alerts-validate` | `scripts/public/observability/check_alerts_contract.py` |
 | `ops-dashboards-validate` | `scripts/public/observability/check_dashboard_contract.py` |
