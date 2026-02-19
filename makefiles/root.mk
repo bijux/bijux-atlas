@@ -353,7 +353,7 @@ root-local: ## All lanes in parallel + ops smoke lane (PARALLEL=0 for serial)
 	@PARALLEL="$${PARALLEL:-1}" RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-$(MAKE_RUN_TS)}}" MODE=root-local ./ops/run/root-lanes.sh
 
 root-local-fast: ## Debug alias for serial root-local execution
-	@PARALLEL=0 $(MAKE) -s root-local
+	@PARALLEL=0 RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-fast-$(MAKE_RUN_TS)}}" MODE=root ./ops/run/root-lanes.sh
 
 root-local-open: ## Open or print latest root-local summary report
 	@SUMMARY_RUN_ID="$${RUN_ID:-}" MODE=open ./ops/run/root-lanes.sh

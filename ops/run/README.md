@@ -7,6 +7,9 @@ Entry points:
 - `make ops-smoke`
 - `make ops-stack-up`
 - `make ops-stack-down`
+- `make ops-down`
+- `make ops-cache-status`
+- `make ops-warm`
 - `./ops/run/e2e.sh --suite smoke|k8s-suite|realdata [--fast] [--no-deploy] [--profile kind]`
 - `make ops-e2e SUITE=smoke|k8s-suite|realdata`
 - `make ops-load-suite`

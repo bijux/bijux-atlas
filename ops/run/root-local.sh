@@ -12,8 +12,11 @@ ops_version_guard python3
 
 mode="full"
 summary_run_id=""
+with_ops="${WITH_OPS:-0}"
 if [ "${1:-}" = "--fast" ]; then
   mode="fast"
+elif [ "${1:-}" = "--with-ops" ]; then
+  with_ops="1"
 elif [ "${1:-}" = "--summary" ]; then
   mode="summary"
   summary_run_id="${2:-}"
@@ -76,6 +79,10 @@ fi
 run_id="${RUN_ID:-root-local-$(date -u +%Y%m%dT%H%M%SZ)}"
 mkdir -p ops/_generated/make/root-local
 printf '%s\n' "$run_id" > ops/_generated/make/root-local/latest-run-id.txt
+
+if [ "$with_ops" = "1" ]; then
+  export WITH_OPS=1
+fi
 
 pids=()
 for lane in "${lanes[@]}"; do
