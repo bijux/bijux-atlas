@@ -24,6 +24,17 @@
   "root-local-summary": {"owner": "build-and-release", "area": "policies"},
   "root-local-open": {"owner": "build-and-release", "area": "policies"},
 
+  "report/merge": {"owner": "build-and-release", "area": "policies"},
+  "report/print": {"owner": "build-and-release", "area": "policies"},
+  "report/md": {"owner": "build-and-release", "area": "docs"},
+  "report/junit": {"owner": "build-and-release", "area": "policies"},
+
+  "doctor": {"owner": "build-and-release", "area": "policies"},
+  "prereqs": {"owner": "build-and-release", "area": "policies"},
+  "print-env": {"owner": "build-and-release", "area": "policies"},
+  "clean-safe": {"owner": "repo-hygiene", "area": "scripts"},
+  "clean-all": {"owner": "repo-hygiene", "area": "scripts"},
+
   "local/all": {"owner": "build-and-release", "area": "policies"},
   "ci/all": {"owner": "build-and-release", "area": "policies"},
   "nightly/all": {"owner": "build-and-release", "area": "policies"},
