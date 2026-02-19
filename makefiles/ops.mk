@@ -107,6 +107,9 @@ ops-obs-verify: ## Verify observability pack contracts and readiness
 	@./ops/run/obs-verify.sh
 
 ops-check: ## Ops lint + schema + metadata validation
+	@./ops/run/ops-check.sh
+
+ops-check-legacy: ## Legacy implementation for ops-check wrapper
 	@$(MAKE) -s ops-lint
 	@$(MAKE) -s ops-contracts-check
 	@$(MAKE) -s ops-surface
@@ -465,7 +468,7 @@ ops-deploy: ## Deploy atlas chart into local cluster (PROFILE=local|offline|perf
 	$(MAKE) -s ops-values-validate; \
 	$(MAKE) -s ops-chart-render-diff; \
 	$(MAKE) -s docker-build; \
-	./ops/k8s/scripts/deploy_atlas.sh
+	./ops/run/deploy-atlas.sh
 
 ops-undeploy: ## Uninstall atlas helm release from namespace
 	@ns="$${ATLAS_E2E_NAMESPACE:-$${ATLAS_NS:-atlas-e2e}}"; \
@@ -530,6 +533,9 @@ ops-api-smoke: ## Run canonical API smoke queries only
 	@mkdir -p artifacts/ops/obs && cp ops/obs/grafana/atlas-observability-dashboard.json artifacts/ops/obs/dashboard.snapshot.json
 
 ops-smoke: ## Bounded full smoke: stack up + API smoke + obs verify + stack down
+	@./ops/run/ops-smoke.sh
+
+ops-smoke-legacy: ## Legacy implementation for ops-smoke wrapper
 	@set -e; \
 	$(MAKE) -s ops-up; \
 	trap '$(MAKE) -s ops-down >/dev/null 2>&1 || true' EXIT INT TERM; \
@@ -867,6 +873,7 @@ ops-lint-all: ## Run full ops lint suite (naming/docs/ownership/contracts/images
 	@python3 ./ops/_lint/no-shadow-configs.py
 	@./ops/_lint/no-empty-dirs.sh
 	@python3 ./ops/_lint/no-direct-script-usage.py
+	@python3 ./scripts/layout/check_ops_cross_area_script_refs.py
 	@python3 ./ops/_lint/no-unpinned-images.py
 	@python3 ./ops/_lint/no-floating-tool-versions.py
 	@python3 ./ops/_lint/no-unowned-area.py

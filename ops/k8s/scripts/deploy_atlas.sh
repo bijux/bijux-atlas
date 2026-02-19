@@ -5,4 +5,4 @@
 # called-by: make ops-deploy
 set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
-exec "$ROOT/ops/e2e/scripts/deploy_atlas.sh" "$@"
+exec "$ROOT/ops/run/deploy-atlas.sh" "$@"
