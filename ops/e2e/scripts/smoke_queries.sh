@@ -3,10 +3,10 @@ set -euo pipefail
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 source "$ROOT/ops/_lib/common.sh"
-BASE_URL="${ATLAS_E2E_BASE_URL:-http://127.0.0.1:18080}"
-NS="${ATLAS_E2E_NAMESPACE:-atlas-e2e}"
-RELEASE="${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
-LOCAL_PORT="${ATLAS_E2E_LOCAL_PORT:-18080}"
+BASE_URL="${ATLAS_E2E_BASE_URL:-http://127.0.0.1:$(ops_layer_port_atlas)}"
+NS="${ATLAS_E2E_NAMESPACE:-$(ops_layer_ns_e2e)}"
+RELEASE="${ATLAS_E2E_RELEASE_NAME:-$(ops_layer_contract_get release_metadata.defaults.release_name)}"
+LOCAL_PORT="${ATLAS_E2E_LOCAL_PORT:-$(ops_layer_port_atlas)}"
 CURL_CONNECT_TIMEOUT="${ATLAS_SMOKE_CONNECT_TIMEOUT_SECS:-2}"
 CURL_MAX_TIME="${ATLAS_SMOKE_MAX_TIME_SECS:-5}"
 SMOKE_HEALTH_RETRIES="${ATLAS_SMOKE_HEALTH_RETRIES:-20}"
@@ -24,7 +24,7 @@ QUERY_RETRIES="${ATLAS_SMOKE_QUERY_RETRIES:-3}"
 
 if ! $CURL "$BASE_URL/healthz" >/dev/null 2>&1; then
   POD="$(ops_kubectl -n "$NS" get pods -l app.kubernetes.io/instance="$RELEASE" --field-selector=status.phase=Running -o name | tail -n1 | cut -d/ -f2)"
-  ops_kubectl -n "$NS" port-forward "pod/$POD" "$LOCAL_PORT:8080" >"$PF_LOG" 2>&1 &
+  ops_kubectl -n "$NS" port-forward "pod/$POD" "$LOCAL_PORT:$(ops_layer_port_atlas)" >"$PF_LOG" 2>&1 &
   PF_PID=$!
   trap 'kill "$PF_PID" >/dev/null 2>&1 || true' EXIT INT TERM
   trap 'ops_kubectl_dump_bundle "$NS" "$(ops_artifact_dir failure-bundle)"' ERR

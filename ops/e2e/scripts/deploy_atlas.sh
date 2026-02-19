@@ -4,10 +4,10 @@ set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 source "$ROOT/ops/_lib/common.sh"
 ops_init_run_id
-ops_install_bundle_trap "${ATLAS_E2E_NAMESPACE:-${ATLAS_NS:-atlas-e2e}}" "${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
+ops_install_bundle_trap "${ATLAS_E2E_NAMESPACE:-${ATLAS_NS:-$(ops_layer_ns_e2e)}}" "${ATLAS_E2E_RELEASE_NAME:-$(ops_layer_contract_get release_metadata.defaults.release_name)}"
 ops_ci_no_prompt_policy
-RELEASE="${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
-NS="${ATLAS_E2E_NAMESPACE:-atlas-e2e}"
+RELEASE="${ATLAS_E2E_RELEASE_NAME:-$(ops_layer_contract_get release_metadata.defaults.release_name)}"
+NS="${ATLAS_E2E_NAMESPACE:-$(ops_layer_ns_e2e)}"
 VALUES="${ATLAS_E2E_VALUES_FILE:-$ROOT/ops/k8s/values/local.yaml}"
 CLUSTER_NAME="${ATLAS_E2E_CLUSTER_NAME:-bijux-atlas-e2e}"
 USE_LOCAL_IMAGE="${ATLAS_E2E_USE_LOCAL_IMAGE:-1}"
@@ -55,7 +55,7 @@ cleanup_stale_nodeport_conflicts() {
     [ -z "$ns" ] && continue
     [ "$ns" = "$NS" ] && continue
     if echo "$ports" | tr ',' '\n' | grep -qx "$node_port"; then
-      if [ "$svc" = "${RELEASE}-bijux-atlas" ] && [[ "$ns" == atlas-* ]]; then
+      if [ "$svc" = "$(ops_layer_service_atlas)" ] && [[ "$ns" == atlas-* ]]; then
         echo "removing stale NodePort owner: ${ns}/${svc} (port ${node_port})"
         helm -n "$ns" uninstall "$RELEASE" >/dev/null 2>&1 || true
         kubectl -n "$ns" delete svc "$svc" --ignore-not-found >/dev/null 2>&1 || true

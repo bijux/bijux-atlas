@@ -4,8 +4,8 @@ set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 source "$ROOT/ops/_lib/common.sh"
 ops_init_run_id
-STACK_NS="${ATLAS_STACK_NAMESPACE:-atlas-e2e}"
-ops_install_bundle_trap "$STACK_NS" "${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
+STACK_NS="${ATLAS_STACK_NAMESPACE:-$(ops_layer_ns_e2e)}"
+ops_install_bundle_trap "$STACK_NS" "${ATLAS_E2E_RELEASE_NAME:-$(ops_layer_contract_get release_metadata.defaults.release_name)}"
 ops_ci_no_prompt_policy
 CLUSTER_NAME="${ATLAS_E2E_CLUSTER_NAME:-bijux-atlas-e2e}"
 ENABLE_REDIS="${ATLAS_E2E_ENABLE_REDIS:-0}"

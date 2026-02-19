@@ -5,7 +5,7 @@
 set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
 # shellcheck source=ops/_lib/ports.sh
-source "$ROOT/ops/_lib/ports.sh"
+source "$ROOT/_lib/ports.sh"
 
 ops_ports_publish_json "${OPS_RUN_DIR:-artifacts/ops/manual}/ports.json"
 

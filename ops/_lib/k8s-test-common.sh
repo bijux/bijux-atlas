@@ -5,15 +5,15 @@ set -euo pipefail
 source "$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/common.sh"
 
 ROOT="$REPO_ROOT"
-NS="${ATLAS_E2E_NAMESPACE:-atlas-e2e-${USER:-local}}"
-RELEASE="${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
+NS="${ATLAS_E2E_NAMESPACE:-$(ops_layer_ns_k8s)}"
+RELEASE="${ATLAS_E2E_RELEASE_NAME:-$(ops_layer_contract_get release_metadata.defaults.release_name)}"
 VALUES="${ATLAS_E2E_VALUES_FILE:-$ROOT/ops/k8s/values/local.yaml}"
 CHART="$ROOT/ops/k8s/charts/bijux-atlas"
-SERVICE_NAME="${ATLAS_E2E_SERVICE_NAME:-$RELEASE-bijux-atlas}"
+SERVICE_NAME="${ATLAS_E2E_SERVICE_NAME:-$(ops_layer_service_atlas)}"
 CLUSTER_NAME="${ATLAS_E2E_CLUSTER_NAME:-bijux-atlas-e2e}"
 USE_LOCAL_IMAGE="${ATLAS_E2E_USE_LOCAL_IMAGE:-1}"
 LOCAL_IMAGE_REF="${ATLAS_E2E_LOCAL_IMAGE:-bijux-atlas:local}"
-BASE_URL="${ATLAS_E2E_BASE_URL:-http://127.0.0.1:18080}"
+BASE_URL="${ATLAS_E2E_BASE_URL:-http://127.0.0.1:$(ops_layer_port_atlas)}"
 
 need() { ops_need_cmd "$1"; }
 
@@ -65,8 +65,8 @@ wait_for_http() {
 }
 
 with_port_forward() {
-  PF_LOCAL_PORT="${1:-18080}"
-  kubectl -n "$NS" port-forward "svc/$SERVICE_NAME" "${PF_LOCAL_PORT}:8080" >/tmp/bijux-atlas-port-forward.log 2>&1 &
+  PF_LOCAL_PORT="${1:-$(ops_layer_port_atlas)}"
+  kubectl -n "$NS" port-forward "svc/$SERVICE_NAME" "${PF_LOCAL_PORT}:$(ops_layer_port_atlas)" >/tmp/bijux-atlas-port-forward.log 2>&1 &
   PF_PID=$!
   sleep 2
 }

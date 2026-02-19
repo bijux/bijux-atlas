@@ -2,9 +2,39 @@
 # Purpose: canonical deterministic port and URL helpers.
 set -euo pipefail
 
-ops_port_atlas() { printf '%s\n' "${ATLAS_PORT:-18080}"; }
-ops_port_prometheus() { printf '%s\n' "${ATLAS_PROM_PORT:-19090}"; }
-ops_port_grafana() { printf '%s\n' "${ATLAS_GRAFANA_PORT:-13000}"; }
+ops_port_atlas() {
+  local fallback
+  fallback="$(python3 - <<'PY'
+import json
+from pathlib import Path
+p=Path("ops/_meta/layer-contract.json")
+print(json.loads(p.read_text(encoding="utf-8"))["ports"]["atlas"]["service"])
+PY
+)"
+  printf '%s\n' "${ATLAS_PORT:-$fallback}"
+}
+ops_port_prometheus() {
+  local fallback
+  fallback="$(python3 - <<'PY'
+import json
+from pathlib import Path
+p=Path("ops/_meta/layer-contract.json")
+print(json.loads(p.read_text(encoding="utf-8"))["ports"]["prometheus"]["service"])
+PY
+)"
+  printf '%s\n' "${ATLAS_PROM_PORT:-$fallback}"
+}
+ops_port_grafana() {
+  local fallback
+  fallback="$(python3 - <<'PY'
+import json
+from pathlib import Path
+p=Path("ops/_meta/layer-contract.json")
+print(json.loads(p.read_text(encoding="utf-8"))["ports"]["grafana"]["service"])
+PY
+)"
+  printf '%s\n' "${ATLAS_GRAFANA_PORT:-$fallback}"
+}
 
 ops_url_atlas() {
   printf '%s\n' "${ATLAS_BASE_URL:-http://127.0.0.1:$(ops_port_atlas)}"
