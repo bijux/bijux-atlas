@@ -5,9 +5,9 @@
 
 ## Summary
 
-- Tracked files: `1624`
+- Tracked files: `1627`
 - Docs markdown files: `358`
-- Script files under `scripts/`: `242`
+- Script files under `scripts/`: `245`
 - Rust test files: `42`
 - Load suites in `ops/load/suites/suites.json`: `19`
 - Runbooks in `docs/operations/runbooks/`: `17`
@@ -17,7 +17,7 @@
 
 - Forbidden-token hits: `2`
 - Non-kebab docs outside allowed exceptions: `22`
-- Non-kebab scripts under `scripts/`: `206`
+- Non-kebab scripts under `scripts/`: `209`
 
 ## Load Suites
 
@@ -158,6 +158,7 @@
 - `scripts/docs/generate_k8s_install_matrix.py`
 - `scripts/docs/generate_k8s_values_doc.py`
 - `scripts/docs/generate_make_targets_inventory.py`
+- `scripts/docs/generate_makefiles_surface.py`
 - `scripts/docs/generate_observability_surface.py`
 - `scripts/docs/generate_openapi_docs.py`
 - `scripts/docs/generate_ops_contracts_doc.py`
@@ -194,6 +195,7 @@
 - `scripts/layout/check_forbidden_root_names.sh`
 - `scripts/layout/check_generated_dirs_policy.py`
 - `scripts/layout/check_generated_policy.py`
+- `scripts/layout/check_help_excludes_internal.py`
 - `scripts/layout/check_kind_cluster_contract_drift.sh`
 - `scripts/layout/check_make_public_scripts.py`
 - `scripts/layout/check_make_safety.py`
@@ -223,6 +225,7 @@
 - `scripts/layout/check_public_surface.py`
 - `scripts/layout/check_repo_hygiene.sh`
 - `scripts/layout/check_root_determinism.sh`
+- `scripts/layout/check_root_makefile_hygiene.py`
 - `scripts/layout/check_root_shape.sh`
 - `scripts/layout/check_script_naming_convention.py`
 - `scripts/layout/check_script_relative_calls.py`
