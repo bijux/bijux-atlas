@@ -68,7 +68,12 @@ EXCLUDE_PREFIXES = (
     "ops/_generated/k8s/",
     "ops/_generated/load/",
     "ops/_generated/obs/",
+    "ops/_generated/obs-verify/",
 )
+
+EXCLUDE_FILES = {
+    "ops/_generated/report.unified.json",
+}
 
 
 def is_covered(path: str) -> bool:
@@ -84,6 +89,8 @@ def main() -> int:
     for p in sorted((ROOT / "ops").rglob("*.json")):
         rel = p.relative_to(ROOT).as_posix()
         if any(rel.startswith(prefix) for prefix in EXCLUDE_PREFIXES):
+            continue
+        if rel in EXCLUDE_FILES:
             continue
         if not is_covered(rel):
             errors.append(rel)
