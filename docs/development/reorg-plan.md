@@ -39,4 +39,4 @@ Keep repository operations discoverable and stable by capping public surface and
 ## Operational policy
 - Cap public surface, keep internals flexible.
 - Additions to public surface require updating SSOT and docs in the same change.
-- Temporary exceptions must be tracked in explicit allowlist files.
+- Exception entries must be tracked in explicit allowlist files.

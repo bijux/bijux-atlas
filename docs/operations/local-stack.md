@@ -26,6 +26,7 @@ make ops-ref-grade-local
 ```
 
 Canonical targets: `ops-up`, `ops-deploy`, `ops-warm`, `ops-smoke`, `ops-k8s-tests`, `ops-load-smoke`, `ops-observability-validate`, `ops-full`.
+Legacy dev alias retained for compatibility: `local-full` (preferred replacement: `ops-local-full`).
 
 Atlas deploy profile targets:
 - `make ops-deploy PROFILE=local`

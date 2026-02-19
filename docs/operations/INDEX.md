@@ -14,6 +14,7 @@ Provides one stable operations surface linking deployment, observability, load, 
 ## Scope
 
 Kubernetes operations, observability posture, load validation, incident runbooks, and security practices.
+`Obs` is the short operations term for the observability area.
 
 ## Non-goals
 
