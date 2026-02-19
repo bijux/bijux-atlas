@@ -13,17 +13,26 @@
 - `xtask/`
 
 ## Public Make Targets
+- `make ci`
+- `make clean`
+- `make docs`
+- `make doctor`
 - `make explain`
+- `make format`
 - `make gates`
 - `make help`
 - `make inventory`
+- `make list-public`
+- `make nightly`
 - `make ops-alerts-validate`
 - `make ops-artifacts-open`
 - `make ops-baseline-policy-check`
 - `make ops-cache-pin-set`
 - `make ops-cache-status`
 - `make ops-catalog-validate`
+- `make ops-check`
 - `make ops-clean`
+- `make ops-contracts-check`
 - `make ops-dashboards-validate`
 - `make ops-dataset-federated-registry-test`
 - `make ops-dataset-multi-release-test`
@@ -46,12 +55,14 @@
 - `make ops-drill-toxiproxy-latency`
 - `make ops-drill-upgrade`
 - `make ops-drill-upgrade-under-load`
+- `make ops-e2e-smoke`
 - `make ops-full`
 - `make ops-full-pr`
 - `make ops-gc-smoke`
 - `make ops-gen`
 - `make ops-gen-check`
 - `make ops-incident-repro-kit`
+- `make ops-k8s-smoke`
 - `make ops-k8s-suite`
 - `make ops-k8s-template-tests`
 - `make ops-k8s-tests`
@@ -62,6 +73,7 @@
 - `make ops-load-shedding`
 - `make ops-load-smoke`
 - `make ops-load-soak`
+- `make ops-load-suite`
 - `make ops-local-full`
 - `make ops-local-full-stack`
 - `make ops-metrics-check`
@@ -69,6 +81,7 @@
 - `make ops-obs-install`
 - `make ops-obs-mode`
 - `make ops-obs-uninstall`
+- `make ops-obs-verify`
 - `make ops-observability-pack-conformance-report`
 - `make ops-observability-pack-export`
 - `make ops-observability-pack-health`
@@ -109,8 +122,12 @@
 - `make ops-warm-datasets`
 - `make ops-warm-shards`
 - `make ops-warm-top`
+- `make prereqs`
+- `make report`
 - `make root`
 - `make root-local`
+- `make root-local-fast`
+- `make root-local-summary`
 - `make verify-inventory`
 
 ## Public Ops Run Commands

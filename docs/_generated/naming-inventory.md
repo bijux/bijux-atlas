@@ -5,9 +5,9 @@
 
 ## Summary
 
-- Tracked files: `1617`
+- Tracked files: `1624`
 - Docs markdown files: `358`
-- Script files under `scripts/`: `237`
+- Script files under `scripts/`: `242`
 - Rust test files: `42`
 - Load suites in `ops/load/suites/suites.json`: `19`
 - Runbooks in `docs/operations/runbooks/`: `17`
@@ -17,7 +17,7 @@
 
 - Forbidden-token hits: `2`
 - Non-kebab docs outside allowed exceptions: `22`
-- Non-kebab scripts under `scripts/`: `201`
+- Non-kebab scripts under `scripts/`: `206`
 
 ## Load Suites
 
@@ -186,6 +186,7 @@
 - `scripts/layout/check_artifacts_allowlist.sh`
 - `scripts/layout/check_artifacts_policy.sh`
 - `scripts/layout/check_chart_canonical_path.sh`
+- `scripts/layout/check_ci_entrypoints.py`
 - `scripts/layout/check_dataset_manifest_lock.py`
 - `scripts/layout/check_duplicate_script_intent.py`
 - `scripts/layout/check_e2e_scenarios.py`
@@ -196,6 +197,8 @@
 - `scripts/layout/check_kind_cluster_contract_drift.sh`
 - `scripts/layout/check_make_public_scripts.py`
 - `scripts/layout/check_make_safety.py`
+- `scripts/layout/check_makefile_target_boundaries.py`
+- `scripts/layout/check_makefiles_contract.py`
 - `scripts/layout/check_no_direct_script_runs.sh`
 - `scripts/layout/check_no_empty_dirs.py`
 - `scripts/layout/check_no_forbidden_paths.sh`
@@ -219,6 +222,7 @@
 - `scripts/layout/check_public_entrypoint_cap.py`
 - `scripts/layout/check_public_surface.py`
 - `scripts/layout/check_repo_hygiene.sh`
+- `scripts/layout/check_root_determinism.sh`
 - `scripts/layout/check_root_shape.sh`
 - `scripts/layout/check_script_naming_convention.py`
 - `scripts/layout/check_script_relative_calls.py`
@@ -236,6 +240,7 @@
 - `scripts/layout/dataset_id_lint.py`
 - `scripts/layout/explain_public_target.py`
 - `scripts/layout/generate_ops_stack_versions.py`
+- `scripts/layout/list_internal_targets.py`
 - `scripts/layout/public_surface.py`
 - `scripts/layout/render_public_help.py`
 - `scripts/layout/replace_paths.sh`
