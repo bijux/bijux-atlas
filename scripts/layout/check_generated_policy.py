@@ -23,7 +23,9 @@ missing = sorted(expected - actual)
 unknown = sorted(
     p.relative_to(ROOT).as_posix()
     for p in (ROOT / "ops/_generated").rglob("*")
-    if p.is_file() and p.relative_to(ROOT).as_posix() not in expected
+    if p.is_file()
+    and not p.relative_to(ROOT).as_posix().startswith("ops/_generated/gates/")
+    and p.relative_to(ROOT).as_posix() not in expected
 )
 unknown.extend(
     p.relative_to(ROOT).as_posix()

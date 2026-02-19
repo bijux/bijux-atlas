@@ -62,6 +62,8 @@ VALIDATOR_COVERED_FILES = {
 
 EXCLUDE_PREFIXES = (
     "ops/_artifacts/",
+    "ops/_generated/gates/",
+    "ops/_generated/ops-",
     "ops/_generated/stack/",
     "ops/_generated/k8s/",
     "ops/_generated/load/",

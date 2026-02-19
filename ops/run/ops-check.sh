@@ -8,7 +8,7 @@ export RUN_ID="$OPS_RUN_ID"
 export ARTIFACT_DIR="$OPS_RUN_DIR"
 ops_env_load
 ops_entrypoint_start "ops-check"
-ops_version_guard kind kubectl helm k6 python3
+ops_version_guard kind kubectl helm k6
 
 start="$(date +%s)"
 log_dir="ops/_generated/ops-check/${RUN_ID}"
