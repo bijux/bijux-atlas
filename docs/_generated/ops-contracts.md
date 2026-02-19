@@ -23,6 +23,7 @@ Generated from ops contracts and schemas.
 - `ops/_schemas/datasets/corruption-drill-report.schema.json`
 - `ops/_schemas/datasets/manifest-lock.schema.json`
 - `ops/_schemas/datasets/promotion-report.schema.json`
+- `ops/_schemas/e2e-realdata-scenarios.schema.json`
 - `ops/_schemas/e2e-scenarios.schema.json`
 - `ops/_schemas/k8s/install-matrix.schema.json`
 - `ops/_schemas/load/pinned-queries-lock.schema.json`
