@@ -83,6 +83,31 @@ report = [
 for r in rows:
     report.append(f"| {r['scenario']} | {r['p95_ms']:.2f} | {r['p99_ms']:.2f} | {r['error_rate']:.4f} |")
 
+impact_level = "low"
+if violations:
+    if len(violations) >= 5:
+        impact_level = "high"
+    elif len(violations) >= 2:
+        impact_level = "medium"
+impact = {
+    "level": impact_level,
+    "violation_count": len(violations),
+    "estimated_error_budget_impact_percent": round(min(100.0, len(violations) * 5.0), 2),
+}
+
+report.extend(
+    [
+        "",
+        "## SLO Impact Estimate",
+        "",
+        f"- impact_level: `{impact['level']}`",
+        f"- violation_count: `{impact['violation_count']}`",
+        f"- estimated_error_budget_impact_percent: `{impact['estimated_error_budget_impact_percent']}`",
+    ]
+)
+
+(ART / "slo-impact-estimate.json").write_text(json.dumps(impact, indent=2, sort_keys=True) + "\n")
+
 if violations:
     report.extend(["", "## Violations", ""] + [f"- {v}" for v in violations])
 
