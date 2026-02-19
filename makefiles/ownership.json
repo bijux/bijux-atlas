@@ -5,13 +5,28 @@
   "graph": {"owner": "build-and-release", "area": "policies"},
   "gates": {"owner": "build-and-release", "area": "policies"},
   "quick": {"owner": "build-and-release", "area": "cargo"},
+
+  "lane-cargo": {"owner": "rust-platform", "area": "cargo"},
+  "lane-docs": {"owner": "docs-governance", "area": "docs"},
+  "lane-ops": {"owner": "ops-platform", "area": "ops"},
+  "lane-scripts": {"owner": "repo-hygiene", "area": "scripts"},
+  "lane-configs-policies": {"owner": "config-governance", "area": "configs"},
+
   "cargo/all": {"owner": "rust-platform", "area": "cargo"},
   "docs/all": {"owner": "docs-governance", "area": "docs"},
   "ops/all": {"owner": "ops-platform", "area": "ops"},
   "scripts/all": {"owner": "repo-hygiene", "area": "scripts"},
   "configs/all": {"owner": "config-governance", "area": "configs"},
   "policies/all": {"owner": "policy-governance", "area": "policies"},
+
+  "root": {"owner": "build-and-release", "area": "policies"},
+  "root-local": {"owner": "build-and-release", "area": "policies"},
+  "root-local-summary": {"owner": "build-and-release", "area": "policies"},
+  "root-local-open": {"owner": "build-and-release", "area": "policies"},
+
   "local/all": {"owner": "build-and-release", "area": "policies"},
   "ci/all": {"owner": "build-and-release", "area": "policies"},
-  "nightly/all": {"owner": "build-and-release", "area": "policies"}
+  "nightly/all": {"owner": "build-and-release", "area": "policies"},
+
+  "repro": {"owner": "build-and-release", "area": "policies"}
 }
