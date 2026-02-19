@@ -71,6 +71,7 @@ EXCLUDE_PREFIXES = (
     "ops/_generated/load/",
     "ops/_generated/obs/",
     "ops/_generated/obs-verify/",
+    "ops/_generated/pins/",
 )
 
 EXCLUDE_FILES = {

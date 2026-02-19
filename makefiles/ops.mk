@@ -59,8 +59,19 @@ ops-contracts-check: ## Validate canonical ops manifests against ops/_schemas an
 ops-contract-check: ## Validate SSOT layer contract, render/live checks, and write report
 	@./ops/run/contract-check.sh
 
+pins/check: ## Validate unified reproducibility pins and emit drift report
+	@python3 ./scripts/layout/generate_ops_pins.py
+	@python3 ./scripts/layout/check_ops_pins.py
+	@python3 ./ops/_lint/pin-relaxations-audit.py
+	@./ops/k8s/tests/checks/obs/test_helm_repo_pinning.sh
+	@$(MAKE) -s ops-kind-version-drift-test
+
+pins/update: ## Manual pins refresh with explicit changelog output
+	@python3 ./scripts/layout/update_ops_pins.py
+
 ops-gen: ## Regenerate all committed ops generated outputs
 	@$(MAKE) -s ops-stack-versions-sync
+	@python3 ./scripts/layout/generate_ops_pins.py
 	@python3 ./scripts/layout/generate_ops_surface_meta.py
 	@python3 ./scripts/layout/validate_ops_contracts.py >/dev/null
 	@python3 ./scripts/docs/generate_ops_schema_docs.py
@@ -163,6 +174,7 @@ internal/ops/all: ## Uniform ops all target
 ops-check-legacy: ## Legacy implementation for ops-check wrapper
 	@$(MAKE) -s ops-lint
 	@$(MAKE) -s ops-contracts-check
+	@$(MAKE) -s pins/check
 	@$(MAKE) -s ops-surface
 	@python3 ./scripts/layout/check_ops_index_surface.py
 
