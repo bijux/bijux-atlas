@@ -18,13 +18,16 @@ if len(help_out) < 3:
 
 missing = []
 for line in help_out:
-    parts = line.split(':', 1)
-    if len(parts) != 2:
+    # Target lines are indented under namespace headers and include descriptions,
+    # e.g. "    docs/all      Docs lane". Keep only the first token.
+    if not line.startswith('    '):
         continue
-    targets = [t for t in parts[1].strip().split() if t]
-    for t in targets:
-        if f'`{t}`' not in surface_doc and f'`{t}`' not in targets_doc:
-            missing.append(t)
+    token = line.strip().split()[0]
+    # Skip namespace markers like "[docs]".
+    if token.startswith('[') and token.endswith(']'):
+        continue
+    if f'`{token}`' not in surface_doc and f'`{token}`' not in targets_doc:
+        missing.append(token)
 
 if missing:
     print('make target docs check failed:', file=sys.stderr)
