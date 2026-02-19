@@ -1,7 +1,0 @@
-{
-  "duration_seconds": 99.0,
-  "lane": "ops-check",
-  "log": "ops/_generated/ops-check/atlas-ops-20260219-165628/run.log",
-  "run_id": "atlas-ops-20260219-165628",
-  "status": "fail"
-}

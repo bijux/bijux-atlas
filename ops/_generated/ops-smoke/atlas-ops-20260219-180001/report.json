@@ -1,7 +1,0 @@
-{
-  "duration_seconds": 141.0,
-  "lane": "ops-smoke",
-  "log": "ops/_generated/ops-smoke/atlas-ops-20260219-180001/run.log",
-  "run_id": "atlas-ops-20260219-180001",
-  "status": "pass"
-}
