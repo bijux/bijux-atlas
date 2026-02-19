@@ -46,24 +46,8 @@ Does not duplicate k6 script implementation.
 - `ops/load/evaluations/`: non-gating experiment space with strict promotion policy.
 - `catalog-federated`: federated registry behavior.
 
-Canonical scenario files under `ops/load/scenarios/`:
-
-- `mixed.json`
-- `cheap-only-survival.json`
-- `warm-steady-state-p99.json`
-- `cold-start.json`
-- `stampede.json`
-- `store-outage-under-spike.json`
-- `noisy-neighbor-cpu-throttle.json`
-- `pod-churn.json`
-- `spike-overload-proof.json`
-- `response-size-abuse.json`
-- `multi-release.json`
-- `sharded-fanout.json`
-- `diff-heavy.json`
-- `mixed-gene-sequence.json`
-- `soak-30m.json`
-- `redis-optional.json`
+Scenario file names under `ops/load/scenarios/` are internal and not part of the docs surface.
+All external references must use suite IDs from `ops/load/suites/suites.json`.
 
 ## Budgets
 
