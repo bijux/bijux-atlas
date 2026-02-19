@@ -1,3 +1,5 @@
+# Scope: legacy registry metadata for docs and migration support.
+# Public targets: none
 SHELL := /bin/sh
 
 # Central make target registry (SSOT for help/docs rendering).

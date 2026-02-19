@@ -1,3 +1,5 @@
+# Scope: CI mapping and workflow-specific internal targets.
+# Public targets: none
 SHELL := /bin/sh
 
 ci-root-layout:

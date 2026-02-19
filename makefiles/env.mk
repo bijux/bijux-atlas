@@ -1,3 +1,5 @@
+# Scope: shared deterministic environment defaults for make.
+# Public targets: none
 SHELL := /bin/sh
 
 # Shared environment defaults for deterministic make runs.

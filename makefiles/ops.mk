@@ -1,3 +1,5 @@
+# Scope: ops area internal targets and wrappers.
+# Public targets: none
 SHELL := /bin/sh
 
 # Ops SSOT targets

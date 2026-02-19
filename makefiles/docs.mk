@@ -1,3 +1,5 @@
+# Scope: docs area internal targets and wrappers.
+# Public targets: none
 SHELL := /bin/sh
 
 DOCS_ARTIFACTS ?= $(if $(ISO_ROOT),$(ISO_ROOT)/docs,artifacts/docs)

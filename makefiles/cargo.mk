@@ -1,3 +1,5 @@
+# Scope: CI-safe deterministic cargo targets and contracts.
+# Public targets: none
 NEXTEST_PROFILE ?= ci
 NEXTEST_PROFILE_FAST ?= fast-unit
 NEXTEST_PROFILE_SLOW ?= slow-integration

@@ -1,3 +1,5 @@
+# Scope: scripts area internal targets and wrappers.
+# Public targets: none
 SHELL := /bin/sh
 
 bootstrap-tools:

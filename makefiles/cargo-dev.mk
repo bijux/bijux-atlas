@@ -1,3 +1,5 @@
+# Scope: local developer convenience cargo targets (dev-only).
+# Public targets: none
 SHELL := /bin/sh
 
 DEV_ISO_TAG ?= dev-ci-local
