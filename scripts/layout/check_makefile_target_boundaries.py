@@ -1,98 +1,64 @@
 #!/usr/bin/env python3
-# Purpose: enforce public target publication in root.mk and non-root target namespaces.
-# Inputs: makefiles/*.mk and configs/ops/public-surface.json.
-# Outputs: exits non-zero on ownership/namespace violations.
+# Purpose: enforce root-defined public targets and block new non-internal targets outside root/help.
 from __future__ import annotations
 
-import json
 import re
 import sys
 from pathlib import Path
 
+from public_make_targets import public_names
+
 ROOT = Path(__file__).resolve().parents[2]
 MAKEFILES = ROOT / "makefiles"
-SURFACE = ROOT / "configs/ops/public-surface.json"
-
-TARGET_RE = re.compile(r"^([a-zA-Z0-9_.-]+):(?:\s|$)", flags=re.M)
-ALLOWED_NON_ROOT_PREFIXES = (
-    "_",
-    "_internal.",
-    "internal/",
-    "ci-",
-    "ops-",
-    "dev-",
-    "layout-",
-    "path-",
-    "culprits-",
-    "crate-",
-    "cli-",
-    "policy-",
-    "docs",
-    "help",
-    "fmt",
-    "lint",
-    "check",
-    "test",
-    "coverage",
-    "audit",
-    "openapi-",
-    "api-",
-    "compat-",
-    "fetch-",
-    "load-",
-    "perf-",
-    "query-",
-    "critical-",
-    "cold-",
-    "memory-",
-    "run-",
-    "bench-",
-    "governance-",
-    "e2e-",
-    "observability-",
-    "stack-",
-    "ingest-",
-)
+LEGACY = ROOT / "configs" / "ops" / "nonroot-legacy-targets.txt"
+TARGET_RE = re.compile(r"^([A-Za-z0-9_./-]+):(?:\s|$)", flags=re.M)
 
 
 def parse_targets(path: Path) -> set[str]:
     text = path.read_text(encoding="utf-8")
-    out = set(TARGET_RE.findall(text))
-    return {t for t in out if not t.startswith(".")}
+    return {t for t in TARGET_RE.findall(text) if not t.startswith(".")}
+
+
+def load_legacy() -> set[str]:
+    if not LEGACY.exists():
+        return set()
+    return {
+        line.strip()
+        for line in LEGACY.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.strip().startswith("#")
+    }
 
 
 def main() -> int:
-    surface = json.loads(SURFACE.read_text(encoding="utf-8"))
-    public_targets = set(surface.get("make_targets", []))
-    public_targets.discard("help")
+    public = set(public_names())
+    legacy = load_legacy()
+    errs: list[str] = []
 
     by_file: dict[str, set[str]] = {}
     for mk in sorted(MAKEFILES.glob("*.mk")):
         by_file[mk.name] = parse_targets(mk)
 
-    errs: list[str] = []
+    root_targets = by_file.get("root.mk", set()) | by_file.get("help.mk", set())
+    for target in sorted(public):
+        if target not in root_targets:
+            errs.append(f"public target must be defined in makefiles/root.mk or makefiles/help.mk: {target}")
 
-    root_text = (MAKEFILES / "root.mk").read_text(encoding="utf-8")
-    phony = set()
-    for line in root_text.splitlines():
-        if line.startswith(".PHONY:"):
-            phony.update(line.replace(".PHONY:", "", 1).split())
-    for target in sorted(public_targets):
-        if target not in phony:
-            errs.append(f"public target missing from makefiles/root.mk publication surface: {target}")
-
+    current_legacy: set[str] = set()
     for mk_name, targets in by_file.items():
-        if mk_name == "root.mk":
+        if mk_name in {"root.mk", "help.mk", "env.mk", "_macros.mk", "registry.mk"}:
             continue
         for target in sorted(targets):
-            if target in public_targets:
+            if target in public:
+                errs.append(f"public target must not be defined outside root/help: makefiles/{mk_name}: {target}")
                 continue
-            if target.startswith(ALLOWED_NON_ROOT_PREFIXES):
+            if target.startswith("internal/") or target.startswith("_"):
                 continue
-            errs.append(
-                f"non-root target missing internal namespace in makefiles/{mk_name}: {target} "
-                f"(expected prefix like internal- / ops- / ci- / _)"
-            )
+            current_legacy.add(f"{mk_name}:{target}")
+
+    for item in sorted(current_legacy - legacy):
+        errs.append(
+            f"new non-internal target outside root/help: {item} (must be internal/... or _..., or update baseline intentionally)"
+        )
 
     if errs:
         print("makefile target boundaries check failed", file=sys.stderr)
