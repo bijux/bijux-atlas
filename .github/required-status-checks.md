@@ -28,6 +28,7 @@ Required branch-protection checks for `main`:
 Optional PR checks:
 
 - `ops-smoke` (from `ops-smoke-pr` workflow, `continue-on-error`)
+- `k8s-pr-subset` (from `k8s-e2e-pr`; includes boundary lint + stack smoke for ops/e2e changes)
 
 Nightly required checks:
 

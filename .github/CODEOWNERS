@@ -1,0 +1,15 @@
+# Default owner fallback
+* @bijan
+
+# Ops layer ownership boundaries
+/ops/stack/ @bijan
+/ops/k8s/ @bijan
+/ops/e2e/ @bijan
+/ops/obs/ @bijan
+/ops/load/ @bijan
+/ops/run/ @bijan
+
+# Policy and CI boundary governance
+/configs/policy/ @bijan
+/ops/_lint/ @bijan
+/.github/workflows/ @bijan

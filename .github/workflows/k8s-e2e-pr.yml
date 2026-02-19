@@ -49,8 +49,14 @@ jobs:
       - name: Pinned tool checks
         run: make ops-tools-check
 
+      - name: Boundary lint (ops/e2e layering)
+        run: make policies/boundaries-check
+
       - name: Bring up e2e dependencies
         run: make ops-up
+
+      - name: Stack smoke gate
+        run: make ops-stack-smoke
 
       - name: Run PR subset (install + values + smoke)
         run: |
