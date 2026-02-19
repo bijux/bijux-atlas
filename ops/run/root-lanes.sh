@@ -35,7 +35,7 @@ ROOT_LOCAL_EXTRA_LANES=(
 
 summary_dir_for() {
   local run_id="$1"
-  echo "ops/_generated/root-local/${run_id}"
+  echo "ops/_generated/make/root-local/${run_id}"
 }
 
 summary_file_for() {
@@ -46,7 +46,7 @@ summary_file_for() {
 lane_report_path() {
   local lane="$1"
   local run_id="$2"
-  echo "ops/_generated/${lane}/${run_id}/report.json"
+  echo "ops/_generated/make/${lane}/${run_id}/report.json"
 }
 
 lane_iso_dir() {
@@ -102,7 +102,7 @@ PY
       echo "| ${lane} | ${status} | ${report} | $(lane_iso_dir "$lane" "$run_id") | $(lane_log_path "$lane" "$run_id") |"
     done
     echo
-    echo "- unified: ops/_generated/report.unified.json"
+    echo "- unified: ops/_generated/make/${run_id}/unified.json"
   } > "$summary_file"
 
   cat "$summary_file"
@@ -138,12 +138,14 @@ run_lane() {
   local run_id="$2"
   local lane_start
   lane_start="$(date +%s)"
+  local started_at
+  started_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   local lane_log
   lane_log="$(lane_log_path "$lane" "$run_id")"
   local lane_status="pass"
   local lane_iso
   lane_iso="$(lane_iso_dir "$lane" "$run_id")"
-  local report_root="ops/_generated"
+  local report_root="ops/_generated/make"
 
   mkdir -p "$(dirname "$lane_log")" "$lane_iso/target" "$lane_iso/cargo-home" "$lane_iso/tmp"
 
@@ -154,9 +156,29 @@ run_lane() {
 
   local lane_end
   lane_end="$(date +%s)"
+  local ended_at
+  ended_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   local duration="$((lane_end - lane_start))"
+  local failure_summary=""
+  if [ "$lane_status" != "pass" ]; then
+    failure_summary="$(tail -n 20 "$lane_log" 2>/dev/null | tr '\n' ' ' | sed 's/\"/'\''/g')"
+  fi
+  local lane_artifacts_json
+  lane_artifacts_json="$(python3 - <<PY
+import json
+print(json.dumps([
+  "${lane_iso}",
+  "${lane_log}",
+  "ops/_generated/make/${lane}/${run_id}/report.json"
+]))
+PY
+)"
 
-  ops_write_lane_report "$lane" "$run_id" "$lane_status" "$duration" "$lane_log" "$report_root" >/dev/null
+  LANE_STARTED_AT="$started_at" \
+  LANE_ENDED_AT="$ended_at" \
+  LANE_ARTIFACT_PATHS_JSON="$lane_artifacts_json" \
+  LANE_FAILURE_SUMMARY="$failure_summary" \
+  ops_write_lane_report "$lane" "$run_id" "$lane_status" "$duration" "$lane_log" "$report_root" "$started_at" "$ended_at" >/dev/null
   [ "$lane_status" = "pass" ]
 }
 
@@ -199,6 +221,8 @@ EOF
   fi
 
   RUN_ID="$run_id" ./ops/run/report.sh >/dev/null || true
+  python3 ./scripts/layout/check_make_lane_reports.py "$run_id" "${lanes[@]}"
+  python3 ./scripts/layout/make_report.py merge --run-id "$run_id" >/dev/null
   write_summary "$run_id" "${lanes[@]}"
 
   # Isolation guard: lane tmp directories must be unique and scoped under artifacts/isolate.
