@@ -13,4 +13,14 @@ OUT="${OUT:-artifacts/perf/results}"
 if [ "$SUITE" = "mixed-80-20" ]; then
   SUITE="mixed"
 fi
-exec ./ops/load/scripts/run_suite.sh "${SUITE}.json" "$OUT"
+start="$(date +%s)"
+log_dir="ops/_generated/load-suite/${RUN_ID}"
+mkdir -p "$log_dir"
+log_file="$log_dir/run.log"
+status="pass"
+if ! ./ops/load/scripts/run_suite.sh "${SUITE}.json" "$OUT" >"$log_file" 2>&1; then
+  status="fail"
+fi
+end="$(date +%s)"
+ops_write_lane_report "load-suite" "${RUN_ID}" "${status}" "$((end - start))" "${log_file}" "ops/_generated" >/dev/null
+[ "$status" = "pass" ] || exit 1

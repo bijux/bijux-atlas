@@ -5,6 +5,7 @@ cd "$ROOT"
 . "$ROOT/ops/_lib/common.sh"
 ops_env_load
 ops_entrypoint_start "ops-artifacts-open"
+ops_version_guard python3
 latest="$(find artifacts/ops -mindepth 1 -maxdepth 1 -type d -print 2>/dev/null | sort | tail -n1 || true)"
 [ -n "$latest" ] || ops_fail "$OPS_ERR_ARTIFACT" "no artifacts found under artifacts/ops"
 echo "$latest"

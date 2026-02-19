@@ -18,6 +18,8 @@ for script in sorted(RUN_DIR.glob("*.sh")):
     if "ops_entrypoint_start " not in text:
         errors.append(f"{script}: missing ops_entrypoint_start call")
     has_version_guard = "ops_version_guard " in text
+    if not has_version_guard:
+        errors.append(f"{script}: missing ops_version_guard call")
     for cmd in NET_CMDS:
         if script.name == "prereqs.sh":
             continue

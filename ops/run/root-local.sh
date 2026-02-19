@@ -2,6 +2,13 @@
 set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
 cd "$ROOT"
+. "$ROOT/ops/_lib/common.sh"
+ops_init_run_id
+export RUN_ID="$OPS_RUN_ID"
+export ARTIFACT_DIR="$OPS_RUN_DIR"
+ops_env_load
+ops_entrypoint_start "ops-root-local"
+ops_version_guard python3
 
 mode="full"
 summary_run_id=""
@@ -45,7 +52,7 @@ print_summary() {
   local run_id="$1"
   echo "root-local summary run_id=$run_id"
   for lane in "${lanes[@]}"; do
-    local report="ops/_generated/${lane}/${run_id}.json"
+    local report="ops/_generated/${lane}/${run_id}/report.json"
     local status="missing"
     if [ -f "$report" ]; then
       status="$(python3 - <<PY
@@ -73,9 +80,9 @@ for lane in "${lanes[@]}"; do
   (
     start="$(date +%s)"
     iso="artifacts/isolate/${lane}/${run_id}"
-    log="ops/_generated/${lane}/${run_id}.log"
-    report="ops/_generated/${lane}/${run_id}.json"
-    mkdir -p "$(dirname "$log")" "$iso/target" "$iso/cargo-home" "$iso/tmp" "$(dirname "$report")"
+    report_dir="ops/_generated/${lane}/${run_id}"
+    log="${report_dir}/run.log"
+    mkdir -p "$report_dir" "$iso/target" "$iso/cargo-home" "$iso/tmp"
 
     export ISO_ROOT="$iso"
     export CARGO_TARGET_DIR="$iso/target"
@@ -93,21 +100,7 @@ for lane in "${lanes[@]}"; do
     end="$(date +%s)"
     duration="$((end - start))"
 
-    python3 - <<PY
-import json
-from pathlib import Path
-payload = {
-  "lane": "${lane}",
-  "run_id": "${run_id}",
-  "status": "${status}",
-  "duration_seconds": ${duration},
-  "log": "${log}",
-  "isolate_root": "${iso}",
-}
-out = Path("${report}")
-out.write_text(json.dumps(payload, indent=2) + "\\n", encoding="utf-8")
-print(out)
-PY
+    ops_write_lane_report "${lane}" "${run_id}" "${status}" "${duration}" "${log}" "ops/_generated" >/dev/null
 
     [ "$status" = "pass" ] || exit 1
   ) &
