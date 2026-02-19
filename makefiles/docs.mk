@@ -5,6 +5,12 @@ DOCS_VENV ?= $(DOCS_ARTIFACTS)/.venv
 DOCS_REQ ?= configs/docs/requirements.lock.txt
 DOCS_SITE ?= $(DOCS_ARTIFACTS)/site
 
+docs-req-lock-refresh: ## Refresh docs requirements lock deterministically
+	@python3 -m venv "$(DOCS_VENV)"
+	@"$(DOCS_VENV)/bin/pip" install --upgrade pip >/dev/null
+	@"$(DOCS_VENV)/bin/pip" install -r configs/docs/requirements.txt >/dev/null
+	@"$(DOCS_VENV)/bin/pip" freeze --exclude-editable | LC_ALL=C sort > "$(DOCS_REQ)"
+
 _docs-venv:
 	@mkdir -p "$(DOCS_ARTIFACTS)"
 	@$(call py_venv,$(DOCS_VENV),"$(DOCS_VENV)/bin/pip" install -r "$(DOCS_REQ)" >/dev/null)
@@ -87,4 +93,4 @@ docs-check: ## Docs contract check alias (same as docs-build)
 docs: ## Public docs alias (maps to docs-check only)
 	@$(MAKE) docs-check
 
-.PHONY: docs docs-build docs-check docs-serve docs-freeze docs-hardening _docs-venv
+.PHONY: docs docs-build docs-check docs-serve docs-freeze docs-hardening docs-req-lock-refresh _docs-venv

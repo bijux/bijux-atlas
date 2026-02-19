@@ -52,7 +52,7 @@ ci-ops-policy-audit:
 	@$(MAKE) ops-policy-audit
 
 ci-config-check:
-	@$(MAKE) config-validate
+	@$(MAKE) configs-check
 
 ci-ssot-drift:
 	@$(MAKE) ssot-check

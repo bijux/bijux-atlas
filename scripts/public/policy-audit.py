@@ -61,6 +61,10 @@ def main() -> int:
         for key in ("id", "policy", "scope", "file", "justification", "expiry", "owner", "risk"):
             if not str(entry.get(key, "")).strip():
                 violations.append(f"exception {entry.get('id', '<missing-id>')} missing required field: {key}")
+        if not str(entry.get("issue_id", "")).strip():
+            violations.append(f"exception {entry.get('id', '<missing-id>')} missing required field: issue_id")
+        if not str(entry.get("removal_plan", "")).strip():
+            violations.append(f"exception {entry.get('id', '<missing-id>')} missing required field: removal_plan")
         expiry_raw = str(entry.get("expiry", ""))
         try:
             expiry = dt.date.fromisoformat(expiry_raw)
