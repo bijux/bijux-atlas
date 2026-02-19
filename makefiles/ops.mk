@@ -106,6 +106,12 @@ ops-down: ## Tear down local ops stack
 ops-obs-verify: ## Verify observability pack contracts and readiness
 	@./ops/run/obs-verify.sh
 
+ops-check: ## Ops lint + schema + metadata validation
+	@$(MAKE) -s ops-lint
+	@$(MAKE) -s ops-contracts-check
+	@$(MAKE) -s ops-surface
+	@python3 ./scripts/layout/check_ops_index_surface.py
+
 ops-datasets-verify: ## Verify datasets lock/catalog/fetch contract
 	@./ops/run/datasets-verify.sh
 
@@ -513,7 +519,7 @@ ops-soak: ## Run soak workflow (10-30 minutes)
 	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/scripts/soak.sh
 
-ops-smoke: ## Run canonical API smoke queries
+ops-api-smoke: ## Run canonical API smoke queries only
 	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/scripts/smoke_queries.sh
 	@python3 ./ops/e2e/smoke/generate_report.py
@@ -522,6 +528,20 @@ ops-smoke: ## Run canonical API smoke queries
 	@./ops/obs/scripts/snapshot_metrics.sh
 	@./ops/obs/scripts/snapshot_traces.sh
 	@mkdir -p artifacts/ops/obs && cp ops/obs/grafana/atlas-observability-dashboard.json artifacts/ops/obs/dashboard.snapshot.json
+
+ops-smoke: ## Bounded full smoke: stack up + API smoke + obs verify + stack down
+	@set -e; \
+	$(MAKE) -s ops-up; \
+	trap '$(MAKE) -s ops-down >/dev/null 2>&1 || true' EXIT INT TERM; \
+	$(MAKE) -s ops-deploy; \
+	$(MAKE) -s ops-warm; \
+	$(MAKE) -s ops-api-smoke; \
+	$(MAKE) -s ops-obs-verify; \
+	trap - EXIT INT TERM; \
+	$(MAKE) -s ops-down
+
+ops-k8s-smoke: ## Minimal k8s smoke subset on kind
+	@ATLAS_E2E_TEST_GROUP=smoke $(MAKE) -s ops-k8s-tests
 
 ops-diff-smoke: ## Build cross-release diff artifacts from fixture store
 	@mkdir -p artifacts/ops/diff-smoke
