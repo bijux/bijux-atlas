@@ -25,6 +25,11 @@ All runbooks must follow this strict template:
 - `registry-federation.md`
 - `traffic-spike.md`
 - `pod-churn.md`
+- `slo-cheap-burn.md`
+- `slo-standard-burn.md`
+- `slo-overload-survival.md`
+- `slo-registry-refresh-stale.md`
+- `slo-store-backend-error-spike.md`
 
 ## What
 

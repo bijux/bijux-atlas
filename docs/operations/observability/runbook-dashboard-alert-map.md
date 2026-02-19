@@ -31,6 +31,11 @@ Reduces incident response latency by making first-hop telemetry explicit.
 | `registry-federation.md` | `Catalog Refresh Duration`, `Store Open/Download p95` | `BijuxAtlasStoreDownloadFailures` |
 | `rollback-playbook.md` | `HTTP Request Rate by Route/Status`, `SLO Burn Rate (5xx, 5m/1h)` | `BijuxAtlasHigh5xxRate` |
 | `traffic-spike.md` | `HTTP Request Rate by Route/Status`, `Load Shedding Rate` | `BijuxAtlasOverloadSustained`, `BijuxAtlasP95LatencyRegression` |
+| `slo-cheap-burn.md` | `SLO Burn Rate (5xx, 5m/1h)`, `SLO Error Budget Burn (cheap/standard)` | `BijuxAtlasCheapSloBurnFast`, `BijuxAtlasCheapSloBurnMedium`, `BijuxAtlasCheapSloBurnSlow` |
+| `slo-standard-burn.md` | `SLO Burn Rate (5xx, 5m/1h)`, `SLO Error Budget Burn (cheap/standard)` | `BijuxAtlasStandardSloBurnFast`, `BijuxAtlasStandardSloBurnMedium`, `BijuxAtlasStandardSloBurnSlow` |
+| `slo-overload-survival.md` | `Queue Depth and Overload`, `Load Shedding Rate` | `BijuxAtlasOverloadSurvivalViolated` |
+| `slo-registry-refresh-stale.md` | `Catalog Refresh Duration` | `BijuxAtlasRegistryRefreshStale` |
+| `slo-store-backend-error-spike.md` | `Store Open/Download p95`, `Store Error Spike Rate` | `BijuxAtlasStoreBackendErrorSpike` |
 
 ## Alert Coverage Registry
 
