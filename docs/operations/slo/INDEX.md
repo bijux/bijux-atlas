@@ -11,6 +11,7 @@ Single landing page for Bijux Atlas SLI/SLO/SLA policy and machine-checked targe
 
 - `make ci-slo-config-validate`
 - `make ci-slo-metrics-contract`
+- `make ci-slo-docs-drift`
 
 ## Documents
 
@@ -19,6 +20,7 @@ Single landing page for Bijux Atlas SLI/SLO/SLA policy and machine-checked targe
 - [Non-goals](NON_GOALS.md)
 - [Change policy](CHANGE_POLICY.md)
 - [SLIs](SLIS.md)
+- [SLO Targets](SLOS.md)
 - [Why These SLIs](WHY_THESE_SLIS.md)
 - [What We Do Not Measure Yet](WHAT_WE_DONT_MEASURE_YET.md)
 
