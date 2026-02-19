@@ -1,0 +1,15 @@
+{
+  "gate": "makefiles-contract",
+  "run_id": "atlas-ops-20260219-182401",
+  "status": "pass",
+  "exit_code": 0,
+  "command": [
+    "python3",
+    "./scripts/layout/check_makefiles_contract.py"
+  ],
+  "artifacts": {
+    "stdout": "ops/_generated/gates/atlas-ops-20260219-182401/makefiles-contract.stdout.log",
+    "stderr": "ops/_generated/gates/atlas-ops-20260219-182401/makefiles-contract.stderr.log"
+  },
+  "timestamp_utc": "2026-02-19T18:24:03.834215+00:00"
+}
