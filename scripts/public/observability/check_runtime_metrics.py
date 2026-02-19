@@ -12,6 +12,6 @@ import sys
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[3]
-target = root / "ops" / "observability" / "scripts" / "contracts" / "check_runtime_metrics.py"
+target = root / "ops" / "obs" / "scripts" / "contracts" / "check_runtime_metrics.py"
 sys.argv[0] = str(target)
 runpy.run_path(str(target), run_name="__main__")

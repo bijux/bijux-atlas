@@ -709,6 +709,9 @@ ops-drill-toxiproxy-latency: ## Inject toxiproxy latency and assert store breake
 ops-drill-alerts: ## Run alert drill checks against configured rules
 	@./ops/obs/scripts/alerts-validation.sh
 
+ops-slo-alert-proof: ## Prove SLO burn/multi-window alert definitions and mappings
+	@./ops/obs/scripts/alert-firing-proof.sh
+
 ops-drill-overload: ## Verify overload signal drill assertions
 	@$(MAKE) -s ops-env-validate
 	@./ops/obs/scripts/overload-admission-control.sh

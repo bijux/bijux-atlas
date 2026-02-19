@@ -64,6 +64,7 @@ jobs:
           make ops-warm
           make ops-smoke
           make observability-pack-test
+          make ops-slo-alert-proof
           make ops-report
 
       - name: Upload ops artifacts
