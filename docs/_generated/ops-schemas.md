@@ -27,6 +27,12 @@ Required keys:
 - `environments`
 - `promoted_count`
 
+## `ops/_schemas/e2e-realdata-scenarios.schema.json`
+
+Required keys:
+- `schema_version`
+- `scenarios`
+
 ## `ops/_schemas/e2e-scenarios.schema.json`
 
 Required keys:
@@ -91,9 +97,11 @@ Required keys:
 ## `ops/_schemas/report/unified.schema.json`
 
 Required keys:
-- `stack`
-- `obs`
-- `load`
+- `schema_version`
+- `run_id`
+- `generated_at`
+- `lanes`
+- `summary`
 
 ## `ops/_schemas/stack/profile-manifest.schema.json`
 
