@@ -154,6 +154,7 @@ jobs:
       - run: make ops-warm
       - run: make ops-smoke
       - run: make observability-pack-drills
+      - run: make ops-slo-alert-proof
       - if: always()
         run: make ops-report
       - if: always()
