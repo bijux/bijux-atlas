@@ -1,0 +1,16 @@
+{
+  "help": {"owner": "build-and-release", "area": "policies"},
+  "list": {"owner": "build-and-release", "area": "policies"},
+  "explain": {"owner": "build-and-release", "area": "policies"},
+  "graph": {"owner": "build-and-release", "area": "policies"},
+  "gates": {"owner": "build-and-release", "area": "policies"},
+  "local": {"owner": "build-and-release", "area": "cargo"},
+  "local-full": {"owner": "build-and-release", "area": "cargo"},
+  "root": {"owner": "build-and-release", "area": "policies"},
+  "root-local": {"owner": "build-and-release", "area": "policies"},
+  "ci": {"owner": "build-and-release", "area": "policies"},
+  "nightly": {"owner": "build-and-release", "area": "policies"},
+  "contracts": {"owner": "contracts", "area": "docs"},
+  "hygiene": {"owner": "repo-hygiene", "area": "scripts"},
+  "config-validate": {"owner": "config-governance", "area": "configs"}
+}
