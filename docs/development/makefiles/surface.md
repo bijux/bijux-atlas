@@ -14,7 +14,7 @@ Generated from `configs/ops/public-surface.json`. Do not edit manually.
 - `make ops-load-suite`
 - `make ops-e2e-smoke`
 - `make ops-local-full`
-- `make list-public`
+- `make list`
 - `make ops-check`
 - `make ops-smoke`
 - `make ops-k8s-smoke`
@@ -37,7 +37,7 @@ Generated from `configs/ops/public-surface.json`. Do not edit manually.
 - `make gates`
 - `make help`
 - `make inventory`
-- `make list-public`
+- `make list`
 - `make nightly`
 - `make ops-alerts-validate`
 - `make ops-artifacts-open`

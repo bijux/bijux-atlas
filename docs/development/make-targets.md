@@ -20,7 +20,7 @@ Generated from `make help`. Do not edit manually.
 - `gates`
 - `help`
 - `inventory`
-- `list-public`
+- `list`
 - `nightly`
 - `ops-alerts-validate`
 - `ops-artifacts-open`

@@ -27,7 +27,7 @@
 - `make gates`
 - `make help`
 - `make inventory`
-- `make list-public`
+- `make list`
 - `make nightly`
 - `make ops-alerts-validate`
 - `make ops-artifacts-open`
