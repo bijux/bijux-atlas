@@ -32,6 +32,8 @@ source "${OPS_LIB_ROOT}/errors.sh"
 source "${OPS_LIB_ROOT}/log.sh"
 # shellcheck source=ops/_lib/lane_report.sh
 source "${OPS_LIB_ROOT}/lane_report.sh"
+# shellcheck source=ops/_lib/layer_contract.sh
+source "${OPS_LIB_ROOT}/layer_contract.sh"
 ARTIFACTS_ROOT="${REPO_ROOT}/artifacts/ops"
 
 ops_require_run_context() {
