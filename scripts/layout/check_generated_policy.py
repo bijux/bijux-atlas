@@ -25,6 +25,7 @@ unknown = sorted(
     for p in (ROOT / "ops/_generated").rglob("*")
     if p.is_file()
     and not p.relative_to(ROOT).as_posix().startswith("ops/_generated/gates/")
+    and not p.relative_to(ROOT).as_posix().startswith("ops/_generated/pins/")
     and p.relative_to(ROOT).as_posix() != "ops/_generated/report.unified.json"
     and not (
         p.relative_to(ROOT).as_posix().startswith("ops/_generated/")
