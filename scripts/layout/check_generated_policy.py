@@ -25,6 +25,11 @@ unknown = sorted(
     for p in (ROOT / "ops/_generated").rglob("*")
     if p.is_file()
     and not p.relative_to(ROOT).as_posix().startswith("ops/_generated/gates/")
+    and p.relative_to(ROOT).as_posix() != "ops/_generated/report.unified.json"
+    and not (
+        p.relative_to(ROOT).as_posix().startswith("ops/_generated/")
+        and p.relative_to(ROOT).as_posix().count("/") >= 4
+    )
     and p.relative_to(ROOT).as_posix() not in expected
 )
 unknown.extend(

@@ -13,6 +13,9 @@ owners = ownership["owners"]
 
 errors = []
 all_scripts = {t["script"] for t in tests}
+scripts_by_name = {}
+for script in all_scripts:
+    scripts_by_name.setdefault(Path(script).name, []).append(script)
 
 for t in tests:
     if "owner" not in t:
@@ -23,8 +26,16 @@ for t in tests:
 claimed = set()
 for owner, scripts in owners.items():
     for s in scripts:
-        claimed.add(s)
-        if s not in all_scripts:
+        resolved = s
+        if s not in all_scripts and "/" not in s:
+            matches = scripts_by_name.get(s, [])
+            if len(matches) == 1:
+                resolved = matches[0]
+            elif len(matches) > 1:
+                errors.append(f"ownership map test '{s}' is ambiguous for owner '{owner}': {matches}")
+                continue
+        claimed.add(resolved)
+        if resolved not in all_scripts:
             errors.append(f"ownership map has unknown test '{s}' for owner '{owner}'")
 
 for s in sorted(all_scripts):

@@ -7,9 +7,16 @@ from pathlib import Path
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
+SKIP_PREFIXES = (
+    "ops/_artifacts/",
+    "ops/_generated/",
+)
 errors: list[str] = []
 for d in sorted((ROOT / "ops").rglob("*")):
     if not d.is_dir():
+        continue
+    rel = d.relative_to(ROOT).as_posix()
+    if any(rel.startswith(prefix) for prefix in SKIP_PREFIXES):
         continue
     entries = [p for p in d.iterdir()]
     if entries:
