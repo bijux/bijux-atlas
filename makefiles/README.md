@@ -42,15 +42,25 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 - `make graph TARGET=<target>`: Print a compact dependency tree for one public target.
 - `make gates`: Print top-level areas and mapped public targets.
 - `make quick`: Minimal loop (fmt + lint + test).
+- `make lane-cargo`: Rust lane (fmt/lint/check/test/coverage/audit) under isolated artifacts.
+- `make lane-docs`: Docs lane (docs, freeze, hardening) under isolated artifacts.
+- `make lane-ops`: Ops lane without cluster bring-up (lint/contracts) under isolated artifacts.
+- `make lane-scripts`: Scripts lane (lint/tests/audit) under isolated artifacts.
+- `make lane-configs-policies`: Config + policy lane under isolated artifacts.
 - `make cargo/all`: Local exhaustive Rust lane.
 - `make docs/all`: Docs lane.
-- `make ops/all`: Ops lint/schemas/contracts + bounded smoke lane.
+- `make ops/all`: Ops lint/schemas/contracts lane.
 - `make scripts/all`: Scripts lint/tests/audit lane.
 - `make configs/all`: Config schema + drift lane.
 - `make policies/all`: deny/audit/policy-relaxations lane.
+- `make root`: CI-fast lane subset (no cluster bring-up).
+- `make root-local`: Run all lanes in parallel plus ops smoke lane (`PARALLEL=0` for serial).
+- `make root-local-summary`: Print pass/fail summary and artifact paths per lane.
+- `make root-local-open`: Open the latest summary file (or print its path).
 - `make local/all`: Run all meaningful local lanes.
 - `make ci/all`: Deterministic CI superset.
 - `make nightly/all`: Slow nightly suites.
+- `make repro TARGET=<lane-target> [SEED=<n>]`: Deterministic lane replay with seed propagation.
 
 ## Failure modes
 
@@ -65,6 +75,8 @@ $ make gates
 $ make list
 $ make explain TARGET=ci/all
 $ make graph TARGET=ci/all
+$ make root-local
+$ make root-local-summary
 $ make internal-list
 $ make makefiles-contract
 $ python3 scripts/docs/check_make_targets_documented.py
