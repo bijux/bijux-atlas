@@ -6,8 +6,17 @@ pub const CONTRACT_METRIC_NAMES: &[&str] = &[
     "atlas_overload_active",
     "atlas_policy_relaxation_active",
     "atlas_policy_violations_total",
+    "atlas_cache_hits_total",
+    "atlas_cache_misses_total",
+    "atlas_dataset_missing_total",
+    "atlas_invariant_violations_total",
+    "atlas_registry_refresh_age_seconds",
+    "atlas_registry_refresh_failures_total",
     "atlas_shed_total",
+    "atlas_store_request_duration_seconds_bucket",
     "atlas_store_errors_total",
+    "http_request_duration_seconds_bucket",
+    "http_requests_total",
     "bijux_dataset_count",
     "bijux_dataset_disk_usage_bytes",
     "bijux_dataset_hits",
@@ -53,12 +62,56 @@ pub const CONTRACT_METRIC_LABELS: &[(&str, &[&str])] = &[
         &["dataset", "policy", "subsystem", "version"],
     ),
     (
+        "atlas_cache_hits_total",
+        &["cache", "dataset", "subsystem", "version"],
+    ),
+    (
+        "atlas_cache_misses_total",
+        &["cache", "dataset", "subsystem", "version"],
+    ),
+    (
+        "atlas_dataset_missing_total",
+        &["dataset", "dataset_hash", "subsystem", "version"],
+    ),
+    (
+        "atlas_invariant_violations_total",
+        &["dataset", "invariant", "subsystem", "version"],
+    ),
+    (
+        "atlas_registry_refresh_age_seconds",
+        &["dataset", "subsystem", "version"],
+    ),
+    (
+        "atlas_registry_refresh_failures_total",
+        &["dataset", "subsystem", "version"],
+    ),
+    (
         "atlas_shed_total",
-        &["dataset", "reason", "subsystem", "version"],
+        &["class", "dataset", "reason", "subsystem", "version"],
+    ),
+    (
+        "atlas_store_request_duration_seconds_bucket",
+        &["backend", "dataset", "le", "subsystem", "version"],
     ),
     (
         "atlas_store_errors_total",
         &["backend", "class", "dataset", "subsystem", "version"],
+    ),
+    (
+        "http_request_duration_seconds_bucket",
+        &["class", "dataset", "le", "route", "subsystem", "version"],
+    ),
+    (
+        "http_requests_total",
+        &[
+            "class",
+            "dataset",
+            "method",
+            "route",
+            "status",
+            "subsystem",
+            "version",
+        ],
     ),
     ("bijux_dataset_count", &["dataset", "subsystem", "version"]),
     (
@@ -89,7 +142,15 @@ pub const CONTRACT_METRIC_LABELS: &[(&str, &[&str])] = &[
     ),
     (
         "bijux_http_requests_total",
-        &["dataset", "route", "status", "subsystem", "version"],
+        &[
+            "class",
+            "dataset",
+            "method",
+            "route",
+            "status",
+            "subsystem",
+            "version",
+        ],
     ),
     (
         "bijux_http_response_size_p95_bytes",

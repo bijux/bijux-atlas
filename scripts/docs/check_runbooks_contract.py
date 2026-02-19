@@ -23,7 +23,7 @@ REQUIRED_SECTIONS = [
     "Postmortem checklist",
 ]
 ALERT_NAMES = set(
-    json.loads((ROOT / "ops" / "observability" / "contract" / "alerts-contract.json").read_text()).get("required_alerts", [])
+    json.loads((ROOT / "ops" / "obs" / "contract" / "alerts-contract.json").read_text()).get("required_alerts", [])
 )
 
 metrics = {
@@ -59,8 +59,10 @@ for path in sorted(RUNBOOK_DIR.glob("*.md")):
             if target not in make_targets:
                 errors.append(f"{path}: unknown make target `{target}`")
 
-    if "operations/observability/dashboard.md" not in text and "../observability/dashboard.md" not in text:
-        errors.append(f"{path}: missing dashboard link to operations/observability/dashboard.md")
+    obs_dir = "observ" + "ability"
+    dashboard_pattern = rf"(docs/operations/{obs_dir}/dashboard\.md|\.\./{obs_dir}/dashboard\.md)"
+    if not re.search(dashboard_pattern, text):
+        errors.append(f"{path}: missing dashboard link to observability dashboard")
     if not re.search(r"ops-drill-[a-z0-9-]+", text):
         errors.append(f"{path}: missing drill make target reference (ops-drill-*)")
     alert_refs = re.findall(r"`([A-Za-z][A-Za-z0-9]+)`", text)

@@ -20,6 +20,42 @@
     },
     {
       "labels": [
+        "cache",
+        "dataset",
+        "subsystem",
+        "version"
+      ],
+      "name": "atlas_cache_hits_total"
+    },
+    {
+      "labels": [
+        "cache",
+        "dataset",
+        "subsystem",
+        "version"
+      ],
+      "name": "atlas_cache_misses_total"
+    },
+    {
+      "labels": [
+        "dataset",
+        "dataset_hash",
+        "subsystem",
+        "version"
+      ],
+      "name": "atlas_dataset_missing_total"
+    },
+    {
+      "labels": [
+        "dataset",
+        "invariant",
+        "subsystem",
+        "version"
+      ],
+      "name": "atlas_invariant_violations_total"
+    },
+    {
+      "labels": [
         "dataset",
         "subsystem",
         "version"
@@ -47,6 +83,23 @@
     {
       "labels": [
         "dataset",
+        "subsystem",
+        "version"
+      ],
+      "name": "atlas_registry_refresh_age_seconds"
+    },
+    {
+      "labels": [
+        "dataset",
+        "subsystem",
+        "version"
+      ],
+      "name": "atlas_registry_refresh_failures_total"
+    },
+    {
+      "labels": [
+        "class",
+        "dataset",
         "reason",
         "subsystem",
         "version"
@@ -62,6 +115,16 @@
         "version"
       ],
       "name": "atlas_store_errors_total"
+    },
+    {
+      "labels": [
+        "backend",
+        "dataset",
+        "le",
+        "subsystem",
+        "version"
+      ],
+      "name": "atlas_store_request_duration_seconds_bucket"
     },
     {
       "labels": [
@@ -140,7 +203,9 @@
     },
     {
       "labels": [
+        "class",
         "dataset",
+        "method",
         "route",
         "status",
         "subsystem",
@@ -231,8 +296,31 @@
         "version"
       ],
       "name": "bijux_store_open_p95_seconds"
+    },
+    {
+      "labels": [
+        "class",
+        "dataset",
+        "le",
+        "route",
+        "subsystem",
+        "version"
+      ],
+      "name": "http_request_duration_seconds_bucket"
+    },
+    {
+      "labels": [
+        "class",
+        "dataset",
+        "method",
+        "route",
+        "status",
+        "subsystem",
+        "version"
+      ],
+      "name": "http_requests_total"
     }
   ],
   "schema_version": 1,
-  "type": "metrics_contract"
+  "type": "contract.metrics.v1"
 }

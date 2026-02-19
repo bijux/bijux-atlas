@@ -22,7 +22,10 @@ if not isinstance(specs, dict) or set(specs) != set(required):
     sys.exit(1)
 
 src = METRICS_SRC.read_text()
-exported = set(re.findall(r'\b(?:bijux|atlas)_[a-z0-9_]+(?=\{)', src))
+exported = set(re.findall(r'\b(?:bijux|atlas|http)_[a-z0-9_]+(?=\{)', src))
+# Histogram families may be emitted through helper calls.
+for family in re.findall(r'push_histogram_from_samples\(\s*&mut body,\s*"([a-z0-9_]+)"', src):
+    exported.add(f"{family}_bucket")
 
 missing = [m for m in sorted(required.keys()) if m not in exported]
 if missing:
