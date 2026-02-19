@@ -5,8 +5,8 @@
 
 ## Summary
 
-- Tracked files: `1787`
-- Docs markdown files: `369`
+- Tracked files: `1788`
+- Docs markdown files: `370`
 - Script files under `scripts/`: `320`
 - Rust test files: `42`
 - Load suites in `ops/load/suites/suites.json`: `19`
