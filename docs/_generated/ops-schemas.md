@@ -64,6 +64,17 @@ Required keys:
 Required keys:
 - `entries`
 
+## `ops/_schemas/meta/layer-contract.schema.json`
+
+Required keys:
+- `contract_version`
+- `compatibility`
+- `namespaces`
+- `services`
+- `ports`
+- `labels`
+- `release_metadata`
+
 ## `ops/_schemas/meta/ownership.schema.json`
 
 Required keys:

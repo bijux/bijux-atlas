@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ops layer contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "compatibility",
+    "namespaces",
+    "services",
+    "ports",
+    "labels",
+    "release_metadata"
+  ],
+  "properties": {
+    "contract_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy", "current_major", "notes"],
+      "properties": {
+        "policy": {"type": "string", "minLength": 1},
+        "current_major": {"type": "integer", "minimum": 1},
+        "notes": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "namespaces": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stack", "k8s", "e2e"],
+      "properties": {
+        "stack": {"type": "string", "minLength": 1},
+        "k8s": {"type": "string", "minLength": 1},
+        "e2e": {"type": "string", "minLength": 1}
+      }
+    },
+    "services": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["atlas", "prometheus", "otel", "grafana", "minio", "redis"],
+      "properties": {
+        "atlas": {"$ref": "#/definitions/service"},
+        "prometheus": {"$ref": "#/definitions/service"},
+        "otel": {"$ref": "#/definitions/service"},
+        "grafana": {"$ref": "#/definitions/service"},
+        "minio": {"$ref": "#/definitions/service"},
+        "redis": {"$ref": "#/definitions/service"}
+      }
+    },
+    "ports": {"type": "object"},
+    "labels": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "required_annotations"],
+      "properties": {
+        "required": {"type": "array", "items": {"type": "string"}},
+        "required_annotations": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "release_metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required_fields", "defaults"],
+      "properties": {
+        "required_fields": {"type": "array", "items": {"type": "string"}},
+        "defaults": {"type": "object", "additionalProperties": {"type": "string"}}
+      }
+    }
+  },
+  "definitions": {
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["service_name", "selector"],
+      "properties": {
+        "service_name": {"type": "string", "minLength": 1},
+        "selector": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "string"}}
+      }
+    }
+  }
+}
