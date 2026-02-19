@@ -236,10 +236,10 @@ Generated file. Do not edit manually.
 | `scripts/layout/explain_public_target.py` | `repo-surface` | `public` | `explain` |
 | `scripts/layout/generate_ops_stack_versions.py` | `repo-surface` | `public` | `ops-stack-versions-sync` |
 | `scripts/layout/generate_ops_surface_meta.py` | `repo-surface` | `public` | `ops-gen` |
-| `scripts/layout/list_internal_targets.py` | `repo-surface` | `public` | `list-internal` |
+| `scripts/layout/list_internal_targets.py` | `repo-surface` | `public` | `internal-list` |
 | `scripts/layout/migrate.sh` | `repo-surface` | `public` | `layout-migrate` |
 | `scripts/layout/public_surface.py` | `repo-surface` | `public` | - |
-| `scripts/layout/render_public_help.py` | `repo-surface` | `public` | `gates`, `help`, `list-public` |
+| `scripts/layout/render_public_help.py` | `repo-surface` | `public` | `gates`, `help`, `list` |
 | `scripts/layout/replace_paths.sh` | `repo-surface` | `public` | `layout-migrate` |
 | `scripts/layout/root_whitelist.json` | `repo-surface` | `public` | - |
 | `scripts/layout/run_gate.py` | `repo-surface` | `public` | - |
