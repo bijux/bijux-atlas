@@ -25,4 +25,7 @@ duration="$((end - start))"
 ops_write_lane_report "ops-smoke" "${RUN_ID}" "${status}" "${duration}" "${log_file}" "ops/_generated" >/dev/null
 
 ./ops/run/report.sh >/dev/null
+if [ "$status" = "pass" ]; then
+  RUN_ID="${RUN_ID}" python3 ./ops/_lint/ops-smoke-budget-check.py
+fi
 [ "$status" = "pass" ] || exit 1

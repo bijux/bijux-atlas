@@ -62,11 +62,15 @@ lane_log_path() {
 }
 
 collect_lanes() {
+  local include_ops_smoke="${WITH_OPS:-${PREREQS_OK:-0}}"
   if [ "$MODE" = "root" ]; then
     printf '%s\n' "${ROOT_FAST_LANES[@]}"
     return 0
   fi
-  printf '%s\n' "${ALL_LANES[@]}" "${ROOT_LOCAL_EXTRA_LANES[@]}"
+  printf '%s\n' "${ALL_LANES[@]}"
+  if [ "$include_ops_smoke" = "1" ]; then
+    printf '%s\n' "${ROOT_LOCAL_EXTRA_LANES[@]}"
+  fi
 }
 
 write_summary() {

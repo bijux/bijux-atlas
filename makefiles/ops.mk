@@ -97,7 +97,7 @@ ops-prereqs: ## Validate required local tooling for ops workflows
 
 ops-stack-up: ## Bring up stack components only (kind + stack manifests)
 	@$(MAKE) -s ops-env-validate
-	@PROFILE="$${PROFILE:-kind}" ./ops/run/stack-up.sh
+	@PROFILE="$${PROFILE:-kind}" ./ops/run/stack-up.sh $${REUSE:+--reuse} --profile "$${PROFILE:-kind}"
 
 ops-stack-up-legacy: ## Legacy stack up implementation
 	@$(MAKE) -s ops-env-validate
@@ -127,7 +127,7 @@ ops-stack-down-legacy: ## Legacy stack down implementation
 	@./ops/e2e/scripts/down.sh
 
 ops-down: ## Tear down local ops stack
-	@$(MAKE) ops-stack-down
+	@./ops/run/down.sh
 
 ops-stack-idempotency-check: ## Verify stack up/down is idempotent
 	@PROFILE="$${PROFILE:-kind}" ./ops/stack/scripts/idempotency_check.sh
@@ -174,6 +174,7 @@ internal/ops/all: ## Uniform ops all target
 ops-check-legacy: ## Legacy implementation for ops-check wrapper
 	@$(MAKE) -s ops-lint
 	@$(MAKE) -s ops-contracts-check
+	@CACHE_STATUS_STRICT=0 $(MAKE) -s ops-cache-status
 	@$(MAKE) -s pins/check
 	@$(MAKE) -s ops-surface
 	@python3 ./scripts/layout/check_ops_index_surface.py
@@ -493,9 +494,7 @@ ops-catalog-validate: ## Validate published catalog schema + deterministic merge
 	@python3 ./ops/datasets/scripts/py/catalog_validate.py
 
 ops-cache-status: ## Print cache status and enforce local cache budget policy
-	@./ops/datasets/scripts/sh/cache_status.sh
-	@python3 ./ops/datasets/scripts/py/cache_budget_check.py
-	@python3 ./ops/datasets/scripts/py/cache_threshold_check.py
+	@./ops/run/cache-status.sh
 
 ops-cache-pin-set: ## Set pinned dataset list for deploy/warm workflows (DATASETS=a/b/c[,x/y/z])
 	@./ops/datasets/scripts/sh/pin_set.sh
@@ -567,22 +566,22 @@ ops-ingress: ## Deploy atlas with ingress values profile
 
 ops-warm: ## Run warmup workflow
 	@$(MAKE) -s ops-env-validate
-	@./ops/run/warm.sh
+	@./ops/run/warm-entrypoint.sh --mode warmup
 
 ops-warmup: ## Alias for deterministic warm set workflow
 	@$(MAKE) ops-warm
 
 ops-warm-datasets: ## Warm explicit dataset ids (DATASETS=release/species/assembly[,..])
 	@$(MAKE) -s ops-env-validate
-	@./ops/e2e/runner/warm_datasets.sh
+	@./ops/run/warm-entrypoint.sh --mode datasets
 
 ops-warm-top: ## Warm top N datasets discovered from /v1/datasets (TOP_N=5)
 	@$(MAKE) -s ops-env-validate
-	@./ops/e2e/runner/warm_top.sh
+	@./ops/run/warm-entrypoint.sh --mode top
 
 ops-warm-shards: ## Warm cache with multi-contig queries for shard locality
 	@$(MAKE) -s ops-env-validate
-	@./ops/e2e/runner/warm_shards.sh
+	@./ops/run/warm-entrypoint.sh --mode shards
 
 ops-soak: ## Run soak workflow (10-30 minutes)
 	@$(MAKE) -s ops-env-validate
@@ -601,9 +600,13 @@ ops-api-smoke: ## Run canonical API smoke queries only
 ops-smoke: ## Bounded full smoke: stack up + API smoke + obs verify + stack down
 	@./ops/run/ops-smoke.sh
 
+ops-smoke-budget-check: ## Enforce ops smoke duration budget from committed policy
+	@[ -n "$${RUN_ID:-}" ] || { echo "RUN_ID is required (use lane run id)"; exit 2; }
+	@RUN_ID="$$RUN_ID" python3 ./ops/_lint/ops-smoke-budget-check.py
+
 ops-smoke-legacy: ## Legacy implementation for ops-smoke wrapper
 	@set -e; \
-	$(MAKE) -s ops-up; \
+	REUSE=1 $(MAKE) -s ops-up; \
 	trap '$(MAKE) -s ops-down >/dev/null 2>&1 || true' EXIT INT TERM; \
 	$(MAKE) -s ops-deploy; \
 	$(MAKE) -s ops-warm; \

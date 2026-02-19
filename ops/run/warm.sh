@@ -21,4 +21,4 @@ if ! ops_context_guard "$profile"; then
 fi
 ops_context_guard "$profile"
 
-exec ./ops/e2e/scripts/warmup.sh "$@"
+exec ./ops/run/warm-entrypoint.sh --mode warmup "$@"
