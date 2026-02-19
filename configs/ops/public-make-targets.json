@@ -1,5 +1,5 @@
 {
-  "max_public_targets": 45,
+  "max_public_targets": 54,
   "public_targets": [
     {
       "name": "cargo/all",
@@ -127,6 +127,15 @@
       "area": "configs"
     },
     {
+      "name": "configs/check",
+      "description": "Configs schema+drift checks",
+      "area": "configs",
+      "lanes": [
+        "dev",
+        "ci"
+      ]
+    },
+    {
       "name": "docs/all",
       "description": "Docs lane",
       "lanes": [
@@ -134,6 +143,24 @@
         "ci"
       ],
       "area": "docs"
+    },
+    {
+      "name": "docs/build",
+      "description": "Docs build artifacts",
+      "area": "docs",
+      "lanes": [
+        "dev",
+        "ci"
+      ]
+    },
+    {
+      "name": "docs/check",
+      "description": "Docs fast verification",
+      "area": "docs",
+      "lanes": [
+        "dev",
+        "ci"
+      ]
     },
     {
       "name": "doctor",
@@ -261,6 +288,33 @@
       "area": "ops"
     },
     {
+      "name": "ops/check",
+      "description": "Ops fast verification",
+      "area": "ops",
+      "lanes": [
+        "dev",
+        "ci"
+      ]
+    },
+    {
+      "name": "ops/smoke",
+      "description": "Ops smoke checks",
+      "area": "ops",
+      "lanes": [
+        "dev",
+        "ci"
+      ]
+    },
+    {
+      "name": "ops/suite",
+      "description": "Ops suite checks",
+      "area": "ops",
+      "lanes": [
+        "dev",
+        "ci"
+      ]
+    },
+    {
       "name": "policies/all",
       "description": "Policies lane (deny/audit/policy checks)",
       "lanes": [
@@ -268,6 +322,15 @@
         "ci"
       ],
       "area": "policies"
+    },
+    {
+      "name": "policies/check",
+      "description": "Policies deny/audit/relaxation checks",
+      "area": "policies",
+      "lanes": [
+        "dev",
+        "ci"
+      ]
     },
     {
       "name": "prereqs",
@@ -340,6 +403,15 @@
       "area": "policies"
     },
     {
+      "name": "retry",
+      "description": "Retry target with same RUN_ID",
+      "area": "policies",
+      "lanes": [
+        "dev",
+        "ci"
+      ]
+    },
+    {
       "name": "root",
       "description": "CI-fast lane subset (no cluster bring-up)",
       "lanes": [
@@ -382,6 +454,15 @@
         "ci"
       ],
       "area": "scripts"
+    },
+    {
+      "name": "scripts/check",
+      "description": "Deterministic scripts checks",
+      "area": "scripts",
+      "lanes": [
+        "dev",
+        "ci"
+      ]
     }
   ]
 }

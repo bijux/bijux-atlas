@@ -58,10 +58,18 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 - `make lane-configs-policies`: Config + policy lane under isolated artifacts.
 - `make cargo/all`: Local exhaustive Rust lane.
 - `make docs/all`: Docs lane.
+- `make docs/check`: Fast docs verification lane.
+- `make docs/build`: Build docs artifacts lane.
 - `make ops/all`: Ops lint/schemas/contracts lane.
+- `make ops/check`: Fast ops verification lane.
+- `make ops/smoke`: Explicit ops smoke lane.
+- `make ops/suite`: Explicit ops suite lane.
 - `make scripts/all`: Scripts lint/tests/audit lane.
+- `make scripts/check`: Deterministic scripts checks lane.
 - `make configs/all`: Config schema + drift lane.
+- `make configs/check`: Config schema + drift checks.
 - `make policies/all`: deny/audit/policy-relaxations lane.
+- `make policies/check`: deny/audit/policy-relaxations checks.
 - `make root`: CI-fast lane subset (no cluster bring-up).
 - `make root-local`: Run all lanes in parallel plus ops smoke lane (`PARALLEL=0` for serial).
 - `make root-local-summary`: Print pass/fail summary and artifact paths per lane.
@@ -79,6 +87,7 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 - `make ci/all`: Deterministic CI superset.
 - `make nightly/all`: Slow nightly suites.
 - `make repro TARGET=<lane-target> [SEED=<n>]`: Deterministic lane replay with seed propagation.
+- `make retry TARGET=<target>`: Re-run a target with the same `RUN_ID`.
 
 ## Cargo Boundary
 

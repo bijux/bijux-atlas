@@ -170,5 +170,41 @@
   "cargo/coverage": {
     "owner": "rust-platform",
     "area": "cargo"
+  },
+  "docs/check": {
+    "owner": "docs-governance",
+    "area": "docs"
+  },
+  "docs/build": {
+    "owner": "docs-governance",
+    "area": "docs"
+  },
+  "ops/check": {
+    "owner": "ops-platform",
+    "area": "ops"
+  },
+  "ops/smoke": {
+    "owner": "ops-platform",
+    "area": "ops"
+  },
+  "ops/suite": {
+    "owner": "ops-platform",
+    "area": "ops"
+  },
+  "scripts/check": {
+    "owner": "repo-hygiene",
+    "area": "scripts"
+  },
+  "configs/check": {
+    "owner": "config-governance",
+    "area": "configs"
+  },
+  "policies/check": {
+    "owner": "policy-governance",
+    "area": "policies"
+  },
+  "retry": {
+    "owner": "build-and-release",
+    "area": "policies"
   }
 }
