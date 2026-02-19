@@ -5,9 +5,9 @@
 
 ## Summary
 
-- Tracked files: `1750`
-- Docs markdown files: `366`
-- Script files under `scripts/`: `315`
+- Tracked files: `1787`
+- Docs markdown files: `369`
+- Script files under `scripts/`: `320`
 - Rust test files: `42`
 - Load suites in `ops/load/suites/suites.json`: `19`
 - Runbooks in `docs/operations/runbooks/`: `17`
@@ -17,7 +17,7 @@
 
 - Forbidden-token hits: `2`
 - Non-kebab docs outside allowed exceptions: `22`
-- Non-kebab scripts under `scripts/`: `260`
+- Non-kebab scripts under `scripts/`: `265`
 
 ## Load Suites
 
@@ -173,6 +173,7 @@
 - `scripts/docs/generate_crates_map.py`
 - `scripts/docs/generate_k8s_install_matrix.py`
 - `scripts/docs/generate_k8s_values_doc.py`
+- `scripts/docs/generate_layer_contract_doc.py`
 - `scripts/docs/generate_make_targets_catalog.py`
 - `scripts/docs/generate_make_targets_inventory.py`
 - `scripts/docs/generate_makefiles_surface.py`
@@ -212,6 +213,7 @@
 - `scripts/layout/check_dataset_manifest_lock.py`
 - `scripts/layout/check_duplicate_script_intent.py`
 - `scripts/layout/check_e2e_scenarios.py`
+- `scripts/layout/check_e2e_suites.py`
 - `scripts/layout/check_forbidden_root_files.sh`
 - `scripts/layout/check_forbidden_root_names.sh`
 - `scripts/layout/check_generated_dirs_policy.py`
@@ -243,6 +245,7 @@
 - `scripts/layout/check_ops_index_surface.py`
 - `scripts/layout/check_ops_layout_contract.py`
 - `scripts/layout/check_ops_lib_canonical.sh`
+- `scripts/layout/check_ops_pins.py`
 - `scripts/layout/check_ops_run_entrypoints.py`
 - `scripts/layout/check_ops_script_names.py`
 - `scripts/layout/check_ops_script_targets.sh`
@@ -282,6 +285,7 @@
 - `scripts/layout/clean_ops_generated.py`
 - `scripts/layout/dataset_id_lint.py`
 - `scripts/layout/explain_public_target.py`
+- `scripts/layout/generate_ops_pins.py`
 - `scripts/layout/generate_ops_stack_versions.py`
 - `scripts/layout/generate_ops_surface_meta.py`
 - `scripts/layout/graph_public_target.py`
@@ -295,6 +299,7 @@
 - `scripts/layout/render_public_help.py`
 - `scripts/layout/replace_paths.sh`
 - `scripts/layout/run_gate.py`
+- `scripts/layout/update_ops_pins.py`
 - `scripts/layout/validate_ops_contracts.py`
 - `scripts/layout/validate_ops_env.py`
 - `scripts/layout/write_make_area_report.py`

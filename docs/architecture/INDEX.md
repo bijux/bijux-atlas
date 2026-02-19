@@ -49,4 +49,4 @@ Expected output: docs build and docs-structure checks pass.
 - [Query Connection Strategy](query-connection-strategy.md)
 - [No Serving Writes](no-serving-writes.md)
 - [Build/Serve Split](build-serve-split.md)
-- [Layer Boundary Rules](layering/BOUNDARY_RULES.md)
+- [Layer Boundary Rules](layering/boundary-rules.md)
