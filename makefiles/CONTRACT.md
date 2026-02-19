@@ -10,7 +10,8 @@ Define stable boundaries between public make surface and internal make implement
 
 ## Internal target rules
 - Non-root makefiles must not publish public targets.
-- Non-root makefile targets must use an internal namespace prefix (`_`, `ci-`, `ops-`, `dev-`, `layout-`, `path-`, `policy-`, `crate-`, `cli-`, `e2e-`, `stack-`, `observability-`, `ingest-`).
+- Internal target naming convention: prefer `_internal.*` (or `internal/*` for transitional aliases).
+- Non-root makefile targets must use an internal namespace prefix (`_internal.`, `internal/`, `_`, `ci-`, `ops-`, `dev-`, `layout-`, `path-`, `policy-`, `crate-`, `cli-`, `e2e-`, `stack-`, `observability-`, `ingest-`).
 
 ## Artifact rules
 - Make-driven lanes write into `artifacts/isolate/<lane>/<run_id>/...`.
