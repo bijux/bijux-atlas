@@ -102,9 +102,12 @@ LOCAL_FULL_ISO_ROOT := $(CURDIR)/artifacts/isolate/local-full
 LOCAL_FULL_ENV := ISO_ROOT=$(LOCAL_FULL_ISO_ROOT) CARGO_TARGET_DIR=$(LOCAL_FULL_ISO_ROOT)/target CARGO_HOME=$(LOCAL_FULL_ISO_ROOT)/cargo-home TMPDIR=$(LOCAL_FULL_ISO_ROOT)/tmp TMP=$(LOCAL_FULL_ISO_ROOT)/tmp TEMP=$(LOCAL_FULL_ISO_ROOT)/tmp
 
 gates: ## Run public-surface and docs entrypoint gates
-	@python3 ./scripts/layout/check_public_surface.py
-	@python3 ./scripts/docs/check_public_surface_docs.py
-	@python3 ./scripts/docs/check_suite_id_docs.py
+	@run_id="$${RUN_ID:-gates-$(MAKE_RUN_TS)}"; \
+	RUN_ID="$$run_id" python3 ./scripts/layout/run_gate.py public-surface python3 ./scripts/layout/check_public_surface.py
+	@run_id="$${RUN_ID:-gates-$(MAKE_RUN_TS)}"; \
+	RUN_ID="$$run_id" python3 ./scripts/layout/run_gate.py docs-public-surface python3 ./scripts/docs/check_public_surface_docs.py
+	@run_id="$${RUN_ID:-gates-$(MAKE_RUN_TS)}"; \
+	RUN_ID="$$run_id" python3 ./scripts/layout/run_gate.py suite-id-docs python3 ./scripts/docs/check_suite_id_docs.py
 
 explain: ## Explain whether TARGET is a public make target
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make explain TARGET=<name>" >&2; exit 2; }
@@ -242,6 +245,7 @@ release-update-compat-matrix:
 	@./scripts/release/update-compat-matrix.sh "$$TAG"
 
 .PHONY: architecture-check artifacts-clean artifacts-index bootstrap bootstrap-tools bump chart-package chart-verify ci clean config-drift config-print config-validate contracts dataset-id-lint debug deep-clean docker-build docker-smoke docs-lint-names doctor explain fetch-real-datasets gates governance-check help hygiene isolate-clean layout-check layout-migrate local local-full no-direct-scripts ops-alerts-validate ops-artifacts-open ops-baseline-policy-check ops-cache-pin-set ops-cache-status ops-catalog-validate ops-clean ops-dashboards-validate ops-dataset-federated-registry-test ops-dataset-multi-release-test ops-dataset-promotion-sim ops-dataset-qc ops-datasets-fetch ops-deploy ops-doctor ops-down ops-drill-corruption-dataset ops-drill-memory-growth ops-drill-otel-outage ops-drill-overload ops-drill-pod-churn ops-drill-rate-limit ops-drill-rollback ops-drill-rollback-under-load ops-drill-store-outage ops-drill-suite ops-drill-toxiproxy-latency ops-drill-upgrade ops-drill-upgrade-under-load ops-full ops-full-pr ops-gc-smoke ops-gen ops-gen-check ops-incident-repro-kit ops-k8s-suite ops-k8s-template-tests ops-k8s-tests ops-load-ci ops-load-full ops-load-manifest-validate ops-load-nightly ops-load-shedding ops-load-smoke ops-load-soak ops-local-full ops-local-full-stack ops-metrics-check ops-obs-down ops-obs-install ops-obs-mode ops-obs-uninstall ops-observability-pack-conformance-report ops-observability-pack-export ops-observability-pack-health ops-observability-pack-smoke ops-observability-pack-verify ops-observability-smoke ops-observability-validate ops-open-grafana ops-openapi-validate ops-perf-baseline-update ops-perf-cold-start ops-perf-nightly ops-perf-report ops-perf-warm-start ops-policy-audit ops-prereqs ops-proof-cached-only ops-publish ops-readiness-scorecard ops-realdata ops-redeploy ops-ref-grade-local ops-ref-grade-nightly ops-ref-grade-pr ops-release-matrix ops-release-rollback ops-release-update ops-report ops-slo-alert-proof ops-slo-burn ops-slo-report ops-smoke ops-tools-check ops-traces-check ops-undeploy ops-up ops-values-validate ops-warm ops-warm-datasets ops-warm-shards ops-warm-top policy-allow-env-lint policy-audit policy-drift-diff policy-enforcement-status policy-lint policy-schema-drift release release-dry-run release-update-compat-matrix rename-lint root root-local scripts-audit scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test ssot-check
+.PHONY: architecture-check artifacts-clean artifacts-index bootstrap bootstrap-tools bump chart-package chart-verify ci clean config-drift config-print config-validate contracts dataset-id-lint debug deep-clean docker-build docker-smoke docs-lint-names doctor explain fetch-real-datasets gates governance-check help hygiene inventory isolate-clean layout-check layout-migrate local local-full no-direct-scripts ops-alerts-validate ops-artifacts-open ops-baseline-policy-check ops-cache-pin-set ops-cache-status ops-catalog-validate ops-clean ops-dashboards-validate ops-dataset-federated-registry-test ops-dataset-multi-release-test ops-dataset-promotion-sim ops-dataset-qc ops-datasets-fetch ops-deploy ops-doctor ops-down ops-drill-corruption-dataset ops-drill-memory-growth ops-drill-otel-outage ops-drill-overload ops-drill-pod-churn ops-drill-rate-limit ops-drill-rollback ops-drill-rollback-under-load ops-drill-store-outage ops-drill-suite ops-drill-toxiproxy-latency ops-drill-upgrade ops-drill-upgrade-under-load ops-full ops-full-pr ops-gc-smoke ops-gen ops-gen-check ops-incident-repro-kit ops-k8s-suite ops-k8s-template-tests ops-k8s-tests ops-load-ci ops-load-full ops-load-manifest-validate ops-load-nightly ops-load-shedding ops-load-smoke ops-load-soak ops-local-full ops-local-full-stack ops-metrics-check ops-obs-down ops-obs-install ops-obs-mode ops-obs-uninstall ops-observability-pack-conformance-report ops-observability-pack-export ops-observability-pack-health ops-observability-pack-smoke ops-observability-pack-verify ops-observability-smoke ops-observability-validate ops-open-grafana ops-openapi-validate ops-perf-baseline-update ops-perf-cold-start ops-perf-nightly ops-perf-report ops-perf-warm-start ops-policy-audit ops-prereqs ops-proof-cached-only ops-publish ops-readiness-scorecard ops-realdata ops-redeploy ops-ref-grade-local ops-ref-grade-nightly ops-ref-grade-pr ops-release-matrix ops-release-rollback ops-release-update ops-report ops-slo-alert-proof ops-slo-burn ops-slo-report ops-smoke ops-tools-check ops-traces-check ops-undeploy ops-up ops-values-validate ops-warm ops-warm-datasets ops-warm-shards ops-warm-top policy-allow-env-lint policy-audit policy-drift-diff policy-enforcement-status policy-lint policy-schema-drift release release-dry-run release-update-compat-matrix rename-lint root root-local scripts-audit scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test ssot-check verify-inventory
 
 
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)
@@ -251,11 +255,26 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@python3 ./scripts/layout/check_scripts_buckets.py
 	@python3 ./scripts/layout/check_script_relative_calls.py
 	@python3 ./scripts/layout/check_script_naming_convention.py
+	@python3 ./scripts/layout/check_no_mixed_script_name_variants.py
 	@python3 ./scripts/layout/check_duplicate_script_intent.py
+	@./ops/_lint/naming.sh
+	@python3 ./ops/_lint/no-shadow-configs.py
+	@python3 ./scripts/layout/check_public_entrypoint_cap.py
 	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
 	@if command -v shellcheck >/dev/null 2>&1; then find scripts/public scripts/internal scripts/dev -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional for local scripts lint)"; fi
 	@if command -v shfmt >/dev/null 2>&1; then shfmt -d scripts ops/load/scripts; else echo "shfmt not installed (optional)"; fi
 	@if command -v ruff >/dev/null 2>&1; then ruff check scripts ops/load/scripts; else echo "ruff not installed (optional)"; fi
+
+inventory: ## Regenerate inventories (ops surface, make targets, docs status, naming, repo surface)
+	@python3 ./scripts/docs/generate_ops_surface.py
+	@python3 ./scripts/docs/generate_make_targets_inventory.py
+	@python3 ./scripts/docs/lint_doc_status.py
+	@python3 ./scripts/docs/naming_inventory.py
+	@python3 ./scripts/docs/generate_repo_surface.py
+
+verify-inventory: ## Fail if inventory outputs drift from generated state
+	@$(MAKE) -s inventory
+	@git diff --exit-code -- docs/_generated/repo-surface.md docs/_generated/doc-status.md docs/_generated/naming-inventory.md docs/_generated/ops-surface.md docs/development/make-targets.md docs/development/make-targets-inventory.md
 
 scripts-format: ## Format scripts (python + shell where available)
 	@if command -v ruff >/dev/null 2>&1; then ruff format scripts; else echo "ruff not installed (optional)"; fi
