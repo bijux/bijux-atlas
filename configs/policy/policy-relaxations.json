@@ -14,7 +14,9 @@
       "justification": "Generated constants and effect-adapter scaffolding intentionally carry dead_code allowance for contract synchronization and compile hygiene.",
       "expiry": "2027-12-31",
       "owner": "platform",
-      "risk": "low"
+      "risk": "low",
+      "issue_id": "ISSUE-ATLAS-EXC-0001",
+      "removal_plan": "Remove exception after planned contract cleanups and delete tagged usage in code."
     },
     {
       "id": "ATLAS-EXC-0002",
@@ -24,7 +26,9 @@
       "justification": "One clippy layout allowance keeps test module placement stable during staged file decomposition.",
       "expiry": "2026-12-31",
       "owner": "cli",
-      "risk": "medium"
+      "risk": "medium",
+      "issue_id": "ISSUE-ATLAS-EXC-0002",
+      "removal_plan": "Remove exception after planned contract cleanups and delete tagged usage in code."
     },
     {
       "id": "ATLAS-EXC-0101",
@@ -34,7 +38,9 @@
       "justification": "The scanner must include the literal token to detect forbidden usage in target files.",
       "expiry": "2027-12-31",
       "owner": "docs-governance",
-      "risk": "low"
+      "risk": "low",
+      "issue_id": "ISSUE-ATLAS-EXC-0101",
+      "removal_plan": "Remove exception after planned contract cleanups and delete tagged usage in code."
     },
     {
       "id": "ATLAS-EXC-0102",
@@ -44,7 +50,9 @@
       "justification": "The rewrite map must include the literal token to propose deterministic replacement text.",
       "expiry": "2027-12-31",
       "owner": "docs-governance",
-      "risk": "low"
+      "risk": "low",
+      "issue_id": "ISSUE-ATLAS-EXC-0102",
+      "removal_plan": "Remove exception after planned contract cleanups and delete tagged usage in code."
     }
   ]
 }
