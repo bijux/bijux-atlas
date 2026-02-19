@@ -22,7 +22,9 @@ def parse_help(text: str) -> dict[str, list[str]]:
             sections[current] = []
             continue
         if current and line.startswith("  "):
-            sections[current].extend(line.strip().split())
+            # Keep only the first token (target name or grouping marker),
+            # matching scripts/docs/generate_make_targets_inventory.py.
+            sections[current].append(line.strip().split()[0])
     return sections
 
 
