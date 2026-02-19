@@ -1,0 +1,15 @@
+{
+  "gate": "help-excludes-internal",
+  "run_id": "atlas-ops-20260219-101101",
+  "status": "pass",
+  "exit_code": 0,
+  "command": [
+    "python3",
+    "./scripts/layout/check_help_excludes_internal.py"
+  ],
+  "artifacts": {
+    "stdout": "ops/_generated/gates/atlas-ops-20260219-101101/help-excludes-internal.stdout.log",
+    "stderr": "ops/_generated/gates/atlas-ops-20260219-101101/help-excludes-internal.stderr.log"
+  },
+  "timestamp_utc": "2026-02-19T10:11:01.856568+00:00"
+}
