@@ -808,8 +808,9 @@ ops-report: ## Gather ops evidence into artifacts/ops/<run-id>/
 	cp -R artifacts/ops/e2e/k6 "$$out/perf/k6/" 2>/dev/null || true; \
 	cp -R "$$out/smoke/report.md" "$$out/perf/smoke-report.md" 2>/dev/null || true; \
 	curl -fsS "$${ATLAS_BASE_URL:-http://127.0.0.1:8080}/metrics" > "$$out/metrics/metrics.txt" 2>/dev/null || true; \
+	python3 ./ops/report/slo_report.py --metrics "$$out/metrics/metrics.txt" --slo-config configs/ops/slo/slo.v1.json --out "$$out/slo-report.json"; \
 	./ops/e2e/scripts/write_metadata.sh "$$out"; \
-	python3 ./ops/report/generate.py --run-dir "$$out" --schema ops/_schemas/report/schema.json; \
+	python3 ./ops/report/generate.py --run-dir "$$out" --schema ops/report/schema.json; \
 	echo "ops report written to $$out"; \
 	RUN_ID="$${OPS_RUN_ID}" OUT_DIR="$$out/bundle" ./scripts/public/report-bundle.sh >/dev/null; \
 	./ops/run/report.sh >/dev/null; \
@@ -818,6 +819,9 @@ ops-report: ## Gather ops evidence into artifacts/ops/<run-id>/
 
 ops-slo-burn: ## Compute SLO burn artifact from k6 score + metrics snapshot
 	@python3 ./ops/obs/scripts/compute_slo_burn.py
+
+ops-slo-report: ## Compute SLO report (SLIs, error budget remaining, burn rates)
+	@python3 ./ops/report/slo_report.py --metrics "$${METRICS:-artifacts/ops/metrics.prom}" --slo-config configs/ops/slo/slo.v1.json --out "$${OUT:-artifacts/ops/slo/report.json}"
 
 ops-script-coverage: ## Validate every ops/**/scripts entrypoint is exposed via make
 	@./scripts/layout/check_ops_script_targets.sh

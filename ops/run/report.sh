@@ -17,6 +17,7 @@ payload={
   'stack': str((root/'ops/_artifacts/stack-report/pass-fail-summary.json')),
   'obs': str((root/'ops/_artifacts/ops/obs/slo-burn.json')),
   'load': str((root/'ops/_artifacts/perf/results').as_posix()),
+  'slo': str((root/'artifacts/ops/slo/report.json')),
 }
 schema = json.loads((root/'ops/_schemas/report/unified.schema.json').read_text(encoding='utf-8'))
 for key in schema.get('required', []):
