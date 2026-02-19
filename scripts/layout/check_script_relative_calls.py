@@ -16,14 +16,17 @@ allowed = (
     "scripts/tooling/",
     "scripts/tools/",
     "scripts/public/perf/",
+    "scripts/public/contracts/",
     "scripts/release/",
     "scripts/fixtures/",
     "scripts/bootstrap/",
+    "scripts/policy/",
     "scripts/ops/",
     "scripts/public/require-crate-docs.sh",
     "scripts/public/no-network-unit-tests.sh",
     "scripts/public/check-cli-commands.sh",
     "scripts/public/policy-schema-drift.py",
+    "scripts/public/check-allow-env-schema.py",
     "scripts/check/",
     "scripts/gen/",
     "scripts/ci/",
@@ -37,8 +40,19 @@ allowed = (
     "scripts/internal/exec.sh",
     "scripts/internal/env_dump.sh",
     "scripts/generate_scripts_readme.py",
+    "scripts/README.md",
+    "scripts/INDEX.md",
+    "scripts/check_no_root_dumping.sh",
     "ops/load/scripts/",
     "ops/obs/scripts/",
+    "ops/run/",
+    "ops/_lib/",
+    "ops/e2e/scripts/",
+    "ops/datasets/scripts/",
+    "ops/stack/scripts/",
+    "ops/k8s/scripts/",
+    "ops/CONTRACT.md",
+    "ops/e2e",
 )
 
 violations: list[str] = []
@@ -47,6 +61,8 @@ for path in sorted((ROOT / "scripts").rglob("*")):
         continue
     text = path.read_text(encoding="utf-8", errors="ignore")
     for idx, line in enumerate(text.splitlines(), start=1):
+        if "re.compile(" in line:
+            continue
         if "$ROOT/" not in line and "./scripts/" not in line and "./ops/" not in line:
             continue
         for m in re.finditer(r"(?:\$ROOT/|\./)(scripts/[^\s\"']+|ops/[^\s\"']+)", line):

@@ -19,12 +19,14 @@ This registry defines script stability levels.
 - `scripts/contracts/check_chart_values_contract.py`
 - `scripts/contracts/generate_chart_values_schema.py`
 - `scripts/contracts/generate_contract_artifacts.py`
+- `scripts/configs/*`
 - `scripts/docs/*`
 - `scripts/fixtures/fetch-medium.sh`
 - `scripts/fixtures/fetch-real-datasets.sh`
 - `scripts/fixtures/run-medium-ingest.sh`
 - `scripts/fixtures/run-medium-serve.sh`
 - `scripts/generate_scripts_readme.py`
+- `scripts/check_no_root_dumping.sh`
 - `scripts/layout/*`
 - `scripts/public/observability/*`
 - `scripts/release/update-compat-matrix.sh`

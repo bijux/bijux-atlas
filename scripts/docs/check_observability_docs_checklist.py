@@ -5,7 +5,6 @@
 # called-by: make docs, make docs-lint-names
 from __future__ import annotations
 
-import re
 import sys
 from pathlib import Path
 

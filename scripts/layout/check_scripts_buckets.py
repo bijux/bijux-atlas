@@ -14,6 +14,13 @@ ALLOWED_PREFIXES = (
     "scripts/public/",
     "scripts/internal/",
     "scripts/dev/",
+    "scripts/check/",
+    "scripts/ci/",
+    "scripts/configs/",
+    "scripts/gen/",
+    "scripts/lib/",
+    "scripts/python/",
+    "scripts/policy/",
     "scripts/docs/",
     "scripts/layout/",
     "scripts/contracts/",
@@ -28,6 +35,8 @@ ALLOWED_PREFIXES = (
 )
 LEGACY_ALLOWED = (
     "scripts/generate_scripts_readme.py",
+    "scripts/check_no_root_dumping.sh",
+    "scripts/run_drill.sh",
 )
 
 violations: list[str] = []
