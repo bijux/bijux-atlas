@@ -133,7 +133,7 @@ ci-runtime-security-scan-image:
 
 ci-coverage:
 	@if ! cargo llvm-cov --version >/dev/null 2>&1; then cargo install cargo-llvm-cov --locked; fi
-	@cargo llvm-cov --workspace --all-features --lcov --output-path artifacts/isolates/coverage/lcov.info
+	@cargo llvm-cov --workspace --all-features --lcov --output-path artifacts/isolate/coverage/lcov.info
 
 ci-workflows-make-only:
 	@python3 ./scripts/layout/check_workflows_make_only.py
@@ -198,10 +198,10 @@ ci-slo-docs-drift:
 	@git diff --exit-code docs/operations/slo/SLOS.md
 
 ci-init-iso-dirs:
-	@mkdir -p "$${CARGO_TARGET_DIR:-artifacts/isolates/tmp/target}" "$${CARGO_HOME:-artifacts/isolates/tmp/cargo-home}" "$${TMPDIR:-artifacts/isolates/tmp/tmp}" "$${ISO_ROOT:-artifacts/isolates/tmp}"
+	@mkdir -p "$${CARGO_TARGET_DIR:-artifacts/isolate/tmp/target}" "$${CARGO_HOME:-artifacts/isolate/tmp/cargo-home}" "$${TMPDIR:-artifacts/isolate/tmp/tmp}" "$${ISO_ROOT:-artifacts/isolate/tmp}"
 
 ci-init-tmp:
-	@mkdir -p "$${TMPDIR:-artifacts/isolates/tmp/tmp}" "$${ISO_ROOT:-artifacts/isolates/tmp}"
+	@mkdir -p "$${TMPDIR:-artifacts/isolate/tmp/tmp}" "$${ISO_ROOT:-artifacts/isolate/tmp}"
 
 ci-dependency-lock-refresh:
 	@cargo update --workspace
@@ -222,20 +222,20 @@ ci-release-build-artifacts:
 
 ci-release-notes-render:
 	@$(MAKE) ci-init-tmp
-	@mkdir -p artifacts/isolates/release-notes
+	@mkdir -p artifacts/isolate/release-notes
 	@sed -e "s/{{tag}}/$${GITHUB_REF_NAME}/g" \
 	  -e "s/{{date}}/$$(date -u +%Y-%m-%d)/g" \
 	  -e "s/{{commit}}/$${GITHUB_SHA}/g" \
-	  .github/release-notes-template.md > artifacts/isolates/release-notes/RELEASE_NOTES.md
+	  .github/release-notes-template.md > artifacts/isolate/release-notes/RELEASE_NOTES.md
 
 ci-release-publish-gh:
 	@gh release create "$${GITHUB_REF_NAME}" \
 	  --title "bijux-atlas $${GITHUB_REF_NAME}" \
-	  --notes-file artifacts/isolates/release-notes/RELEASE_NOTES.md \
+	  --notes-file artifacts/isolate/release-notes/RELEASE_NOTES.md \
 	  --verify-tag || \
 	gh release edit "$${GITHUB_REF_NAME}" \
 	  --title "bijux-atlas $${GITHUB_REF_NAME}" \
-	  --notes-file artifacts/isolates/release-notes/RELEASE_NOTES.md
+	  --notes-file artifacts/isolate/release-notes/RELEASE_NOTES.md
 
 ci-cosign-sign:
 	@[ -n "$${COSIGN_IMAGE_REF:-}" ] || { echo "COSIGN_IMAGE_REF is required"; exit 2; }
@@ -254,13 +254,13 @@ ci-chart-package-release:
 
 ci-reproducible-verify:
 	@$(MAKE) ci-init-iso-dirs
-	@mkdir -p artifacts/isolates/reproducible-build
+	@mkdir -p artifacts/isolate/reproducible-build
 	@cargo build --release --locked --bin bijux-atlas --bin atlas-server
-	@sha256sum "$${CARGO_TARGET_DIR}/release/bijux-atlas" "$${CARGO_TARGET_DIR}/release/atlas-server" > artifacts/isolates/reproducible-build/build1.sha256
+	@sha256sum "$${CARGO_TARGET_DIR}/release/bijux-atlas" "$${CARGO_TARGET_DIR}/release/atlas-server" > artifacts/isolate/reproducible-build/build1.sha256
 	@cargo clean
 	@cargo build --release --locked --bin bijux-atlas --bin atlas-server
-	@sha256sum "$${CARGO_TARGET_DIR}/release/bijux-atlas" "$${CARGO_TARGET_DIR}/release/atlas-server" > artifacts/isolates/reproducible-build/build2.sha256
-	@diff -u artifacts/isolates/reproducible-build/build1.sha256 artifacts/isolates/reproducible-build/build2.sha256
+	@sha256sum "$${CARGO_TARGET_DIR}/release/bijux-atlas" "$${CARGO_TARGET_DIR}/release/atlas-server" > artifacts/isolate/reproducible-build/build2.sha256
+	@diff -u artifacts/isolate/reproducible-build/build1.sha256 artifacts/isolate/reproducible-build/build2.sha256
 
 ci-security-advisory-render:
 	@$(MAKE) ci-init-tmp

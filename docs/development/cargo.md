@@ -4,7 +4,7 @@ All build/test/lint/audit commands must run inside an isolate runner.
 
 ## Required Runner
 
-- `scripts/bin/isolate`: creates isolated runtime rooted at `artifacts/isolates/<tag>`.
+- `scripts/bin/isolate`: creates isolated runtime rooted at `artifacts/isolate/<tag>`.
 - `scripts/bin/require-isolate`: validates the isolation contract.
 
 ## Environment Contract
@@ -22,7 +22,7 @@ Required vars:
 
 Required invariants:
 
-- `ISO_ROOT` must be under `artifacts/isolates/`.
+- `ISO_ROOT` must be under `artifacts/isolate/`.
 - `CARGO_TARGET_DIR`, `CARGO_HOME`, `TMPDIR`, `TMP`, `TEMP` must all be under `ISO_ROOT`.
 
 ## Test Runner Policy

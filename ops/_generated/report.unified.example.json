@@ -1,5 +1,19 @@
 {
-  "stack": "ops/_artifacts/stack-report/pass-fail-summary.json",
-  "obs": "ops/_artifacts/ops/obs/slo-burn.json",
-  "load": "ops/_artifacts/perf/results"
+  "schema_version": 1,
+  "run_id": "root-local-20260219T000000Z",
+  "generated_at": "2026-02-19T00:00:00+00:00",
+  "lanes": {
+    "rust": {
+      "lane": "rust",
+      "run_id": "root-local-20260219T000000Z",
+      "status": "pass",
+      "duration_seconds": 120,
+      "log": "ops/_generated/rust/root-local-20260219T000000Z.log"
+    }
+  },
+  "summary": {
+    "total": 1,
+    "passed": 1,
+    "failed": 0
+  }
 }

@@ -1,10 +1,36 @@
 {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
-  "required": ["stack", "obs", "load"],
+  "required": ["schema_version", "run_id", "generated_at", "lanes", "summary"],
+  "additionalProperties": false,
   "properties": {
-    "stack": {"type": "string", "minLength": 1},
-    "obs": {"type": "string", "minLength": 1},
-    "load": {"type": "string", "minLength": 1}
-  },
-  "additionalProperties": false
+    "schema_version": {"type": "integer", "const": 1},
+    "run_id": {"type": "string", "minLength": 1},
+    "generated_at": {"type": "string", "minLength": 1},
+    "lanes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["lane", "run_id", "status", "duration_seconds", "log"],
+        "additionalProperties": true,
+        "properties": {
+          "lane": {"type": "string", "minLength": 1},
+          "run_id": {"type": "string", "minLength": 1},
+          "status": {"type": "string", "enum": ["pass", "fail"]},
+          "duration_seconds": {"type": "number", "minimum": 0},
+          "log": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total", "passed", "failed"],
+      "additionalProperties": false,
+      "properties": {
+        "total": {"type": "integer", "minimum": 0},
+        "passed": {"type": "integer", "minimum": 0},
+        "failed": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
 }

@@ -94,11 +94,11 @@ config-print: ## Print canonical merged config payload as JSON
 config-drift: ## Check config/schema/docs drift without regeneration
 	@python3 ./scripts/public/config-drift-check.py
 
-CI_ISO_ROOT := $(CURDIR)/artifacts/isolates/ci
+CI_ISO_ROOT := $(CURDIR)/artifacts/isolate/ci
 CI_ENV := ISO_ROOT=$(CI_ISO_ROOT) CARGO_TARGET_DIR=$(CI_ISO_ROOT)/target CARGO_HOME=$(CI_ISO_ROOT)/cargo-home TMPDIR=$(CI_ISO_ROOT)/tmp TMP=$(CI_ISO_ROOT)/tmp TEMP=$(CI_ISO_ROOT)/tmp
-LOCAL_ISO_ROOT := $(CURDIR)/artifacts/isolates/local
+LOCAL_ISO_ROOT := $(CURDIR)/artifacts/isolate/local
 LOCAL_ENV := ISO_ROOT=$(LOCAL_ISO_ROOT) CARGO_TARGET_DIR=$(LOCAL_ISO_ROOT)/target CARGO_HOME=$(LOCAL_ISO_ROOT)/cargo-home TMPDIR=$(LOCAL_ISO_ROOT)/tmp TMP=$(LOCAL_ISO_ROOT)/tmp TEMP=$(LOCAL_ISO_ROOT)/tmp
-LOCAL_FULL_ISO_ROOT := $(CURDIR)/artifacts/isolates/local-full
+LOCAL_FULL_ISO_ROOT := $(CURDIR)/artifacts/isolate/local-full
 LOCAL_FULL_ENV := ISO_ROOT=$(LOCAL_FULL_ISO_ROOT) CARGO_TARGET_DIR=$(LOCAL_FULL_ISO_ROOT)/target CARGO_HOME=$(LOCAL_FULL_ISO_ROOT)/cargo-home TMPDIR=$(LOCAL_FULL_ISO_ROOT)/tmp TMP=$(LOCAL_FULL_ISO_ROOT)/tmp TEMP=$(LOCAL_FULL_ISO_ROOT)/tmp
 
 gates: ## Run public-surface and docs entrypoint gates
@@ -110,10 +110,13 @@ explain: ## Explain whether TARGET is a public make target
 	@python3 ./scripts/layout/explain_public_target.py "$${TARGET}"
 
 root: ## Deterministic CI-fast local gate
-	@$(MAKE) ci
+	@run_id="$${RUN_ID:-root-$(MAKE_RUN_TS)}"; \
+	iso="artifacts/isolate/root/$$run_id"; \
+	mkdir -p "$$iso"/{target,cargo-home,tmp}; \
+	ISO_ROOT="$$iso" CARGO_TARGET_DIR="$$iso/target" CARGO_HOME="$$iso/cargo-home" TMPDIR="$$iso/tmp" TMP="$$iso/tmp" TEMP="$$iso/tmp" $(MAKE) -s gates config-validate fmt lint test
 
-root-local: ## Local superset gate (parallel lanes follow in dedicated workflow)
-	@$(MAKE) local-full
+root-local: ## Local superset gate with 5 parallel isolated lanes + unified summary
+	@./ops/run/root-local.sh
 
 ci: ## Run CI-equivalent meta pipeline mapped to workflow jobs
 	@mkdir -p "$(CI_ISO_ROOT)/target" "$(CI_ISO_ROOT)/cargo-home" "$(CI_ISO_ROOT)/tmp"
@@ -166,11 +169,11 @@ local-full: ## Full local loop (fmt + lint + audit + test + coverage + docs)
 	@$(LOCAL_FULL_ENV) $(MAKE) docs-freeze
 
 contracts: ## Contracts meta pipeline (generate + format + drift checks)
-	@ISO_ROOT=artifacts/isolates/contracts $(MAKE) ssot-check
-	@ISO_ROOT=artifacts/isolates/contracts $(MAKE) policy-lint
-	@ISO_ROOT=artifacts/isolates/contracts $(MAKE) policy-schema-drift
-	@ISO_ROOT=artifacts/isolates/contracts $(MAKE) openapi-drift
-	@ISO_ROOT=artifacts/isolates/contracts $(MAKE) docs-freeze
+	@ISO_ROOT=artifacts/isolate/contracts $(MAKE) ssot-check
+	@ISO_ROOT=artifacts/isolate/contracts $(MAKE) policy-lint
+	@ISO_ROOT=artifacts/isolate/contracts $(MAKE) policy-schema-drift
+	@ISO_ROOT=artifacts/isolate/contracts $(MAKE) openapi-drift
+	@ISO_ROOT=artifacts/isolate/contracts $(MAKE) docs-freeze
 
 telemetry-contracts: ## Regenerate telemetry generated artifacts from observability contracts
 	@python3 ./scripts/contracts/generate_contract_artifacts.py
@@ -187,11 +190,11 @@ telemetry-verify: ## Run telemetry contract verification path (pack+smoke+contra
 	fi
 
 hygiene: ## Repo hygiene checks (layout + symlink + tracked-noise gates)
-	@ISO_ROOT=artifacts/isolates/hygiene $(MAKE) layout-check
-	@ISO_ROOT=artifacts/isolates/hygiene $(MAKE) scripts-audit
-	@ISO_ROOT=artifacts/isolates/hygiene $(MAKE) ci-workflows-make-only
-	@ISO_ROOT=artifacts/isolates/hygiene $(MAKE) ci-make-help-drift
-	@ISO_ROOT=artifacts/isolates/hygiene $(MAKE) path-contract-check
+	@ISO_ROOT=artifacts/isolate/hygiene $(MAKE) layout-check
+	@ISO_ROOT=artifacts/isolate/hygiene $(MAKE) scripts-audit
+	@ISO_ROOT=artifacts/isolate/hygiene $(MAKE) ci-workflows-make-only
+	@ISO_ROOT=artifacts/isolate/hygiene $(MAKE) ci-make-help-drift
+	@ISO_ROOT=artifacts/isolate/hygiene $(MAKE) path-contract-check
 
 architecture-check: ## Validate runtime architecture boundaries and dependency guardrails
 	@python3 scripts/docs/generate_architecture_map.py
@@ -278,7 +281,7 @@ artifacts-clean: ## Clean old artifacts with safe retention
 	@python3 ./scripts/layout/clean_artifacts.py
 
 isolate-clean: ## Remove isolate output directories safely
-	@find artifacts/isolates -mindepth 1 -maxdepth 1 -type d -exec rm -r {} + 2>/dev/null || true
+	@find artifacts/isolate -mindepth 1 -maxdepth 1 -type d -exec rm -r {} + 2>/dev/null || true
 
 clean: ## Safe clean for generated local outputs
 	@$(MAKE) scripts-clean
@@ -286,7 +289,7 @@ clean: ## Safe clean for generated local outputs
 	@rm -rf artifacts/perf/results artifacts/ops/latest
 
 deep-clean: ## Extended clean (prints and then removes generated outputs)
-	@printf '%s\n' 'Deleting: artifacts/isolates artifacts/scripts artifacts/perf/results artifacts/ops'
+	@printf '%s\n' 'Deleting: artifacts/isolate artifacts/scripts artifacts/perf/results artifacts/ops'
 	@$(MAKE) clean
 	@rm -rf artifacts/ops
 
@@ -304,12 +307,12 @@ bump: ## Bump workspace version (usage: make bump VERSION=x.y.z)
 	@cargo set-version --workspace "$$VERSION"
 
 release-dry-run: ## Build + docs + ops smoke release rehearsal
-	@ISO_ROOT=artifacts/isolates/release-dry-run $(MAKE) fmt
-	@ISO_ROOT=artifacts/isolates/release-dry-run $(MAKE) lint
-	@ISO_ROOT=artifacts/isolates/release-dry-run $(MAKE) policy-audit
-	@ISO_ROOT=artifacts/isolates/release-dry-run $(MAKE) test
-	@ISO_ROOT=artifacts/isolates/release-dry-run $(MAKE) docs
-	@ISO_ROOT=artifacts/isolates/release-dry-run $(MAKE) ops-full-pr
+	@ISO_ROOT=artifacts/isolate/release-dry-run $(MAKE) fmt
+	@ISO_ROOT=artifacts/isolate/release-dry-run $(MAKE) lint
+	@ISO_ROOT=artifacts/isolate/release-dry-run $(MAKE) policy-audit
+	@ISO_ROOT=artifacts/isolate/release-dry-run $(MAKE) test
+	@ISO_ROOT=artifacts/isolate/release-dry-run $(MAKE) docs
+	@ISO_ROOT=artifacts/isolate/release-dry-run $(MAKE) ops-full-pr
 
 release: ## Release entrypoint (currently dry-run only)
 	@$(MAKE) release-dry-run

@@ -2,28 +2,49 @@
 set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
 cd "$ROOT"
-. "$ROOT/ops/_lib/common.sh"
-ops_env_load
-ops_entrypoint_start "ops-report"
-out="${OPS_RUN_DIR:-ops/_artifacts/ops/manual}"
-mkdir -p "$out"
-OPS_RUN_DIR="$out" python3 - <<'PY'
+
+run_id="${RUN_ID:-${OPS_RUN_ID:-manual}}"
+out="ops/_generated/report.unified.json"
+schema="ops/_schemas/report/unified.schema.json"
+
+python3 - <<PY
 import json
-import os
+from datetime import datetime, timezone
 from pathlib import Path
-root=Path('.')
-out=Path(os.environ.get('OPS_RUN_DIR','ops/_artifacts/ops/manual'))/'merged-report.json'
-payload={
-  'stack': str((root/'ops/_artifacts/stack-report/pass-fail-summary.json')),
-  'obs': str((root/'ops/_artifacts/ops/obs/slo-burn.json')),
-  'load': str((root/'ops/_artifacts/perf/results').as_posix()),
-  'slo': str((root/'artifacts/ops/slo/report.json')),
+
+root = Path('.')
+run_id = "${run_id}"
+out = root / "${out}"
+schema_path = root / "${schema}"
+
+lanes = {}
+for lane_dir in sorted((root / "ops/_generated").glob("*/")):
+    lane = lane_dir.name
+    f = lane_dir / f"{run_id}.json"
+    if not f.exists():
+        continue
+    lanes[lane] = json.loads(f.read_text(encoding='utf-8'))
+
+summary = {
+    "total": len(lanes),
+    "passed": sum(1 for v in lanes.values() if v.get("status") == "pass"),
+    "failed": sum(1 for v in lanes.values() if v.get("status") == "fail"),
 }
-schema = json.loads((root/'ops/_schemas/report/unified.schema.json').read_text(encoding='utf-8'))
-for key in schema.get('required', []):
-  if key not in payload:
-    raise SystemExit(f"merged report missing required key: {key}")
-out.parent.mkdir(parents=True, exist_ok=True)
-out.write_text(json.dumps(payload, indent=2)+"\n", encoding='utf-8')
+
+payload = {
+    "schema_version": 1,
+    "run_id": run_id,
+    "generated_at": datetime.now(timezone.utc).isoformat(),
+    "lanes": lanes,
+    "summary": summary,
+}
+
+schema = json.loads(schema_path.read_text(encoding='utf-8'))
+required = schema.get("required", [])
+for key in required:
+    if key not in payload:
+        raise SystemExit(f"missing required unified-report field: {key}")
+
+out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding='utf-8')
 print(out)
 PY
