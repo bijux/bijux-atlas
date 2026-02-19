@@ -15,6 +15,7 @@
 ## Public Make Targets
 - `make ci`
 - `make clean`
+- `make configs-check`
 - `make docs`
 - `make doctor`
 - `make explain`

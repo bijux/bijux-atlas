@@ -20,10 +20,12 @@ Generated from `configs/ops/public-surface.json`. Do not edit manually.
 - `make ops-k8s-smoke`
 - `make ops-obs-verify`
 - `make report`
+- `make configs-check`
 
 ## Public Targets
 - `make ci`
 - `make clean`
+- `make configs-check`
 - `make docs`
 - `make doctor`
 - `make explain`
