@@ -105,7 +105,9 @@ PY
     echo "- unified: ops/_generated/make/${run_id}/unified.json"
   } > "$summary_file"
 
-  cat "$summary_file"
+  if [ "${QUIET:-0}" != "1" ]; then
+    cat "$summary_file"
+  fi
 }
 
 print_summary() {
