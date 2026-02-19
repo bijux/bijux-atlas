@@ -57,6 +57,15 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 - `make root-local`: Run all lanes in parallel plus ops smoke lane (`PARALLEL=0` for serial).
 - `make root-local-summary`: Print pass/fail summary and artifact paths per lane.
 - `make root-local-open`: Open the latest summary file (or print its path).
+- `make report/merge`: Merge lane reports into one unified JSON report.
+- `make report/print`: Print a CI-style human summary.
+- `make report/md`: Generate markdown summary for PR comments.
+- `make report/junit`: Generate optional JUnit XML from lane reports.
+- `make doctor`: Print tool versions/paths/env and store doctor report.
+- `make prereqs`: Validate required tools/versions before heavy lanes.
+- `make print-env`: Print key lane/gate environment variables.
+- `make clean-safe`: Clean only safe generated make artifact directories.
+- `make clean-all CONFIRM=YES`: Clean all allowed generated directories.
 - `make local/all`: Run all meaningful local lanes.
 - `make ci/all`: Deterministic CI superset.
 - `make nightly/all`: Slow nightly suites.
@@ -77,6 +86,7 @@ $ make explain TARGET=ci/all
 $ make graph TARGET=ci/all
 $ make root-local
 $ make root-local-summary
+$ make report/print
 $ make internal-list
 $ make makefiles-contract
 $ python3 scripts/docs/check_make_targets_documented.py

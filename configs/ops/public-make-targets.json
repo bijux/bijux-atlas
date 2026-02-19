@@ -1,5 +1,5 @@
 {
-  "max_public_targets": 26,
+  "max_public_targets": 36,
   "public_targets": [
     {"name": "help", "description": "Show curated public make targets grouped by namespace", "lanes": ["dev", "ci", "docs"], "area": "policies"},
     {"name": "list", "description": "List curated public targets with one-line descriptions", "lanes": ["dev", "ci"], "area": "policies"},
@@ -25,6 +25,17 @@
     {"name": "root-local", "description": "All lanes in parallel plus ops smoke lane", "lanes": ["dev", "ci"], "area": "policies"},
     {"name": "root-local-summary", "description": "Print pass/fail summary by lane", "lanes": ["dev", "ci"], "area": "policies"},
     {"name": "root-local-open", "description": "Open or print the root-local summary report", "lanes": ["dev", "ci"], "area": "policies"},
+
+    {"name": "report/merge", "description": "Merge lane reports into unified JSON", "lanes": ["dev", "ci"], "area": "policies"},
+    {"name": "report/print", "description": "Print human make lane summary", "lanes": ["dev", "ci"], "area": "policies"},
+    {"name": "report/md", "description": "Generate markdown summary for PR comments", "lanes": ["dev", "ci"], "area": "docs"},
+    {"name": "report/junit", "description": "Generate optional JUnit report", "lanes": ["ci"], "area": "policies"},
+
+    {"name": "doctor", "description": "Print tool/env/path diagnostics and store report", "lanes": ["dev", "ci"], "area": "policies"},
+    {"name": "prereqs", "description": "Validate required binaries and versions and store report", "lanes": ["dev", "ci"], "area": "policies"},
+    {"name": "print-env", "description": "Print key environment variables used by lanes", "lanes": ["dev", "ci"], "area": "policies"},
+    {"name": "clean-safe", "description": "Clean only safe generated make artifact dirs", "lanes": ["dev", "ci"], "area": "scripts"},
+    {"name": "clean-all", "description": "Clean all allowed generated dirs (CONFIRM=YES)", "lanes": ["dev", "ci"], "area": "scripts"},
 
     {"name": "local/all", "description": "Run everything meaningful locally", "lanes": ["dev"], "area": "policies"},
     {"name": "ci/all", "description": "Deterministic CI superset", "lanes": ["ci"], "area": "policies"},
