@@ -11,6 +11,7 @@ cargo.mk:api-contract-check
 cargo.mk:audit
 cargo.mk:bench-db-size-growth
 cargo.mk:bench-ingest-throughput-medium
+cargo.mk:bench-smoke
 cargo.mk:bench-sqlite-query-latency
 cargo.mk:check
 cargo.mk:ci-core
@@ -32,6 +33,7 @@ cargo.mk:run-medium-ingest
 cargo.mk:run-medium-serve
 cargo.mk:test
 cargo.mk:test-all
+cargo.mk:test-contracts
 ci.mk:ci-api-contract
 ci.mk:ci-audit
 ci.mk:ci-chart-package-release

@@ -1,0 +1,11 @@
+# Legacy cargo invocations outside makefiles/cargo*.mk.
+# New entries are forbidden unless explicitly approved.
+makefiles/ci.mk:25
+makefiles/ci.mk:29
+makefiles/ci.mk:33
+makefiles/ci.mk:137
+makefiles/ops.mk:412
+makefiles/ops.mk:415
+makefiles/ops.mk:429
+makefiles/ops.mk:577
+makefiles/ops.mk:578
