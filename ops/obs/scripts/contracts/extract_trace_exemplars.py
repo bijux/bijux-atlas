@@ -10,8 +10,8 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[4]
-IN_FILE = ROOT / "artifacts" / "ops" / "observability" / "traces.exemplars.log"
-OUT_FILE = ROOT / "artifacts" / "ops" / "observability" / "trace-exemplars.by-scenario.json"
+IN_FILE = ROOT / "artifacts" / "ops" / "obs" / "traces.exemplars.log"
+OUT_FILE = ROOT / "artifacts" / "ops" / "obs" / "trace-exemplars.by-scenario.json"
 
 TRACE_ID_RE = re.compile(r"(?:trace[_-]?id)\s*[:=]\s*([a-fA-F0-9-]{8,64})")
 

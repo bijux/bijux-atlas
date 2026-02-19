@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[4]
 CONTRACT = ROOT / "docs" / "contracts" / "TRACE_SPANS.json"
-GOLDEN = ROOT / "ops" / "observability" / "contract" / "trace-structure.golden.json"
+GOLDEN = ROOT / "ops" / "obs" / "contract" / "trace-structure.golden.json"
 
 
 def main() -> int:

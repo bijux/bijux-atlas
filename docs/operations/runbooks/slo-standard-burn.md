@@ -29,6 +29,12 @@ kubectl -n atlas-e2e get pods
 - Inspect recent deploy/config drift affecting standard routes.
 - Throttle heavy workloads to preserve standard request budget.
 
+## Alerts
+
+- Primary alerts: `BijuxAtlasStandardSloBurnFast`, `BijuxAtlasStandardSloBurnMedium`, `BijuxAtlasStandardSloBurnSlow`.
+- Dashboard: `docs/operations/observability/dashboard.md`.
+- Drill reference: `make ops-drill-overload`.
+
 ## Rollback
 
 - Roll back to previous release/profile proven by `ops-k8s-tests`.
