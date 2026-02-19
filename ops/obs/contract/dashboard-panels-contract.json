@@ -108,6 +108,25 @@
         "bijux_http_requests_total"
       ]
     },
+    "SLO Error Budget Burn (cheap/standard)": {
+      "diagnostic_question": "Which endpoint class is currently burning error budget the fastest?",
+      "failure_signatures": [
+        "slo_burn_fast"
+      ],
+      "metrics": [
+        "http_requests_total"
+      ]
+    },
+    "SLO Health Status (cheap/standard)": {
+      "diagnostic_question": "Are cheap and standard success ratios currently above their SLO thresholds?",
+      "failure_signatures": [
+        "slo_health_dip"
+      ],
+      "metrics": [
+        "http_requests_total",
+        "atlas_overload_active"
+      ]
+    },
     "SQLite Query p95 by Class": {
       "diagnostic_question": "Is SQLite query latency driving endpoint regressions?",
       "failure_signatures": [
@@ -186,7 +205,9 @@
     "Rollout/Rollback View",
     "p99 Breakdown via Exemplars",
     "Dataset Cache Size",
-    "SLO Burn Rate (5xx, 5m/1h)"
+    "SLO Burn Rate (5xx, 5m/1h)",
+    "SLO Error Budget Burn (cheap/standard)",
+    "SLO Health Status (cheap/standard)"
   ],
   "required_rows": [
     "Failure Domain: Store",
@@ -195,6 +216,7 @@
     "Failure Domain: Admission/Bulkhead",
     "Failure Domain: K8s Resource Pressure",
     "Traffic and SLO",
+    "SLO health & burn rate",
     "Drill Views"
   ],
   "schema_version": 2

@@ -73,6 +73,8 @@ Reduces incident response latency by making first-hop telemetry explicit.
 - `p99 Breakdown via Exemplars`
 - `Dataset Cache Size`
 - `SLO Burn Rate (5xx, 5m/1h)`
+- `SLO Error Budget Burn (cheap/standard)`
+- `SLO Health Status (cheap/standard)`
 
 ## Failure modes
 
