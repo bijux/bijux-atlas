@@ -12,7 +12,7 @@ Canonical operational filesystem layout.
 - `ops/e2e/`: harness and test runners only.
 - `ops/k8s/`: charts, values, and tests.
 - `ops/load/`: k6 suites and scoring.
-- `ops/observability/`: dashboards, alerts, and contracts.
+- `ops/obs/`: dashboards, alerts, and contracts.
 - `ops/datasets/`, `ops/fixtures/`: dataset and fixture assets.
 - `ops/_lib/`: shared shell helpers.
 

@@ -4,7 +4,7 @@
 
 ## Required Checks
 
-- [ ] `make ops-observability-pack-lint`
+- [ ] `make ops-observability-validate`
 - [ ] `make observability-pack-test`
 - [ ] `make observability-pack-drills`
 - [ ] `make telemetry-verify`

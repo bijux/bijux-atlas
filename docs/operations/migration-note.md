@@ -11,7 +11,7 @@ Maps legacy root aliases to canonical `ops/` paths.
 - `./charts/` -> `./ops/k8s/charts/`
 - `./e2e/` -> `./ops/e2e/`
 - `./load/` -> `./ops/load/`
-- `./observability/` -> `./ops/observability/`
+- `./observability/` -> `./ops/obs/`
 - `./datasets/` -> `./ops/datasets/`
 - `./fixtures/` -> `./ops/fixtures/`
 

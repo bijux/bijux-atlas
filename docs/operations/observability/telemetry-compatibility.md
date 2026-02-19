@@ -12,7 +12,7 @@ Breaking changes require:
 
 ## Required process
 
-1. Update `ops/observability/contract/metrics-contract.json` or `docs/contracts/TRACE_SPANS.json`.
+1. Update `docs/contracts/metrics.md` or `docs/contracts/tracing.md`.
 2. Run `make telemetry-contracts`.
 3. Run `make telemetry-verify`.
 4. Document migration in `docs/operations/observability/acceptance-checklist.md` release notes section.
@@ -21,3 +21,4 @@ Breaking changes require:
 
 - `make telemetry-contracts`
 - `make telemetry-verify`
+- `make ops-observability-validate`

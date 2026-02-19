@@ -13,6 +13,15 @@ Warm pinned datasets during rollout so first user requests do not pay cold-cache
 - Warm action must run before service is considered ready for traffic.
 - Warm failures may either block readiness (strict mode) or log and continue (lenient mode).
 
+## Values Contract
+
+- `values.cache`: contains pinned datasets and cache behavior defaults.
+- `values.datasetWarmupJob`: controls warmup job mode and retry policy.
+- `values.service`: readiness and serving behavior after warmup.
+- `values.cache.pinnedDatasets`: canonical list of datasets to prewarm.
+- `values.warmup.mode`: `strict` blocks readiness on failure, `lenient` logs and continues.
+- `values.readiness.waitForWarmup`: when `true`, readiness depends on warmup completion.
+
 ## Deployment Patterns
 
 1. Init container prewarm:

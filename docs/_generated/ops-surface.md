@@ -19,6 +19,7 @@ Generated from ops manifests.
 - `make ops-stack-down`
 - `make ops-obs-up`
 - `make ops-obs-verify`
+- `make ops-obs-drill`
 - `make ops-datasets-verify`
 - `make ops-e2e-smoke`
 - `make ops-k8s-suite`
@@ -30,6 +31,8 @@ Generated from ops manifests.
 - `make ops-load-smoke`
 - `make ops-dataset-qc`
 - `make ops-realdata`
+- `make ops-local-reset`
+- `make ops-local-full`
 - `make ops-ci-fast`
 - `make ops-ci-nightly`
 - `make ops-ref-grade-local`

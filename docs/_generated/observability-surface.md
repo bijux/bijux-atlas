@@ -1,10 +1,10 @@
 # Observability Surface
 
 Generated from observability contract SSOT files:
-- `ops/observability/contract/metrics-contract.json`
-- `ops/observability/contract/alerts-contract.json`
-- `ops/observability/contract/dashboard-panels-contract.json`
-- `ops/observability/contract/logs-fields-contract.json`
+- `ops/obs/contract/metrics-contract.json`
+- `ops/obs/contract/alerts-contract.json`
+- `ops/obs/contract/dashboard-panels-contract.json`
+- `ops/obs/contract/logs-fields-contract.json`
 
 ## Metrics
 - `atlas_bulkhead_inflight`
@@ -13,6 +13,7 @@ Generated from observability contract SSOT files:
 - `atlas_policy_relaxation_active`
 - `atlas_policy_violations_total`
 - `atlas_shed_total`
+- `atlas_store_errors_total`
 - `bijux_dataset_count`
 - `bijux_dataset_disk_usage_bytes`
 - `bijux_dataset_hits`
@@ -61,7 +62,10 @@ Generated from observability contract SSOT files:
 - `p99 Breakdown via Exemplars`
 
 ## Log Fields
-- _none_
+- `event_name`
+- `level`
+- `msg`
+- `request_id`
 
 ## Verification
 ```bash

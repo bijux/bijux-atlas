@@ -4,8 +4,8 @@
 
 ## Contract
 
-- Drill manifest SSOT: `ops/observability/drills/drills.json`
-- Drill result schema: `ops/observability/drills/result.schema.json`
+- Drill manifest SSOT: `ops/obs/drills/drills.json`
+- Drill result schema: `ops/obs/drills/result.schema.json`
 - Runner: `scripts/run_drill.sh <name>`
 - Suite target: `make ops-drill-suite`
 
