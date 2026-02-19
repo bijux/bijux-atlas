@@ -37,6 +37,10 @@ def _validate_value(name: str, spec: dict[str, object], value: str) -> str | Non
             if not p.exists():
                 return f"{name} points to missing path: {value}"
         return None
+    if kind == "integer":
+        if re.fullmatch(r"-?[0-9]+", value):
+            return None
+        return f"{name} must be an integer"
     return f"{name} has unsupported type in schema: {kind}"
 
 
@@ -62,10 +66,22 @@ def main() -> int:
             resolved[name] = resolved[default_from]
             continue
         default = spec.get("default")
-        if isinstance(default, str):
-            resolved[name] = default
+        if isinstance(default, (str, int)):
+            resolved[name] = str(default)
             continue
         resolved[name] = ""
+
+    # Expand ${VAR} placeholders in resolved values once all defaults are present.
+    var_ref = re.compile(r"\$\{([A-Z0-9_]+)\}")
+    for _ in range(3):
+        changed = False
+        for name, value in list(resolved.items()):
+            expanded = var_ref.sub(lambda m: resolved.get(m.group(1), ""), value)
+            if expanded != value:
+                resolved[name] = expanded
+                changed = True
+        if not changed:
+            break
 
     errors: list[str] = []
     for name, spec in variables.items():

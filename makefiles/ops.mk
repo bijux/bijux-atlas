@@ -837,10 +837,10 @@ ops-report: ## Gather ops evidence into artifacts/ops/<run-id>/
 	curl -fsS "$${ATLAS_BASE_URL:-http://127.0.0.1:8080}/metrics" > "$$out/metrics/metrics.txt" 2>/dev/null || true; \
 	python3 ./ops/report/slo_report.py --metrics "$$out/metrics/metrics.txt" --slo-config configs/ops/slo/slo.v1.json --out "$$out/slo-report.json"; \
 	./ops/e2e/runner/write_metadata.sh "$$out"; \
-	python3 ./ops/report/generate.py --run-dir "$$out" --schema ops/report/schema.json; \
+	./ops/run/report.sh >/dev/null; \
+	python3 ./ops/report/generate.py --unified ops/_generated/report.unified.json --out "$$out/report.md"; \
 	echo "ops report written to $$out"; \
 	RUN_ID="$${OPS_RUN_ID}" OUT_DIR="$$out/bundle" ./scripts/public/report-bundle.sh >/dev/null; \
-	./ops/run/report.sh >/dev/null; \
 	ln -sfn "$${OPS_RUN_ID}" artifacts/ops/latest; \
 	$(MAKE) artifacts-index
 

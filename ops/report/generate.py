@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-# Purpose: generate consolidated ops report JSON/markdown from run artifacts.
-# Inputs: --run-dir and --schema file path.
-# Outputs: <run-dir>/report.json and <run-dir>/report.md.
+# Purpose: render markdown summary from unified ops report JSON.
+# Inputs: --unified path to ops/_generated/report.unified.json.
+# Outputs: markdown summary file.
 from __future__ import annotations
 
 import argparse
@@ -11,58 +11,36 @@ from pathlib import Path
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--run-dir", required=True)
-    parser.add_argument("--schema", required=True)
+    parser.add_argument("--unified", required=True, help="path to unified ops report JSON")
+    parser.add_argument("--out", required=True, help="output markdown path")
     args = parser.parse_args()
 
-    run_dir = Path(args.run_dir)
-    metadata_file = run_dir / "metadata.json"
-    metadata = json.loads(metadata_file.read_text(encoding="utf-8")) if metadata_file.exists() else {}
+    unified_path = Path(args.unified)
+    payload = json.loads(unified_path.read_text(encoding="utf-8"))
+    summary = payload.get("summary", {})
+    lanes = payload.get("lanes", {})
 
-    artifacts = {
-        "logs": (run_dir / "logs" / "events.txt").exists() or (run_dir / "logs" / "pods.txt").exists(),
-        "metrics": (run_dir / "metrics" / "metrics.txt").exists(),
-        "smoke_report": (run_dir / "smoke" / "report.md").exists(),
-        "perf_results": (run_dir / "perf" / "results").exists() or (run_dir / "perf").exists(),
-    }
-    slo_file = run_dir / "slo-report.json"
-    slo_payload = json.loads(slo_file.read_text(encoding="utf-8")) if slo_file.exists() else {}
-
-    report = {
-        "run_id": metadata.get("run_id", run_dir.name),
-        "namespace": metadata.get("namespace", "unknown"),
-        "metadata": metadata,
-        "artifacts": artifacts,
-        "slo_summary": slo_payload.get(
-            "summary",
-            {
-                "total_slos": 0,
-                "compliant_slos": 0,
-                "violated_slos": 0,
-                "unknown_slos": 0,
-                "compliance_ratio": 0.0,
-            },
-        ),
-    }
-
-    (run_dir / "report.json").write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     lines = [
-        "# Ops Run Report",
+        "# Unified Ops Report",
         "",
-        f"- Run ID: `{report['run_id']}`",
-        f"- Namespace: `{report['namespace']}`",
+        f"- run_id: `{payload.get('run_id', 'unknown')}`",
+        f"- generated_at: `{payload.get('generated_at', 'unknown')}`",
+        f"- total lanes: `{summary.get('total', 0)}`",
+        f"- passed: `{summary.get('passed', 0)}`",
+        f"- failed: `{summary.get('failed', 0)}`",
         "",
-        "## Artifacts",
+        "## Lanes",
         "",
-        f"- logs: `{artifacts['logs']}`",
-        f"- metrics: `{artifacts['metrics']}`",
-        f"- smoke_report: `{artifacts['smoke_report']}`",
-        f"- perf_results: `{artifacts['perf_results']}`",
     ]
-    md = "\n".join(lines) + "\n"
-    (run_dir / "report.md").write_text(md, encoding="utf-8")
-    (run_dir / "index.md").write_text(md, encoding="utf-8")
-    print(run_dir / "report.json")
+    for lane, lane_report in sorted(lanes.items()):
+        lines.append(
+            f"- `{lane}`: status=`{lane_report.get('status','unknown')}` duration=`{lane_report.get('duration_seconds',0)}` log=`{lane_report.get('log','')}`"
+        )
+
+    out_path = Path(args.out)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(out_path)
     return 0
 
 

@@ -5,6 +5,7 @@ cd "$ROOT"
 . "$ROOT/ops/_lib/common.sh"
 ops_env_load
 ops_entrypoint_start "ops-clean"
+ops_version_guard python3
 days="$(python3 - <<'PY'
 import json
 from pathlib import Path

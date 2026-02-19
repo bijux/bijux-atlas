@@ -3,7 +3,9 @@ artifacts/e2e-store/
 artifacts/e2e-datasets/
 artifacts/perf/
 artifacts/observability/
+artifacts/isolate/
 artifacts/e2e-store
 artifacts/e2e-datasets
 artifacts/perf
 artifacts/observability
+artifacts/isolate

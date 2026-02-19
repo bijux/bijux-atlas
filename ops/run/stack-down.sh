@@ -5,4 +5,5 @@ cd "$ROOT"
 . "$ROOT/ops/_lib/common.sh"
 ops_env_load
 ops_entrypoint_start "ops-stack-down"
+ops_version_guard kind kubectl helm
 exec make ops-stack-down-legacy

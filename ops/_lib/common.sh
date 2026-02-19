@@ -30,6 +30,8 @@ source "${OPS_LIB_ROOT}/env.sh"
 source "${OPS_LIB_ROOT}/errors.sh"
 # shellcheck source=ops/_lib/log.sh
 source "${OPS_LIB_ROOT}/log.sh"
+# shellcheck source=ops/_lib/lane_report.sh
+source "${OPS_LIB_ROOT}/lane_report.sh"
 ARTIFACTS_ROOT="${REPO_ROOT}/artifacts/ops"
 
 ops_require_run_context() {

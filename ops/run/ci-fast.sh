@@ -5,4 +5,5 @@ cd "$ROOT"
 . "$ROOT/ops/_lib/common.sh"
 ops_env_load
 ops_entrypoint_start "ops-ci-fast"
+ops_version_guard kind kubectl helm k6 python3
 exec make ops-up ops-deploy ops-smoke ops-k8s-tests ops-load-smoke ops-observability-validate
