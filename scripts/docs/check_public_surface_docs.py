@@ -29,7 +29,6 @@ def load_exceptions() -> set[str]:
 def main() -> int:
     surface = load_surface()
     public_targets = set(surface["make_targets"])
-    public_prefixes = tuple(surface.get("make_target_prefixes", []))
     errs: list[str] = []
     exceptions = load_exceptions()
 
@@ -43,11 +42,12 @@ def main() -> int:
             text = md.read_text(encoding="utf-8", errors="ignore")
             rel = md.relative_to(ROOT).as_posix()
             for m in make_re.findall(text):
+                if m == "ops-":
+                    continue
                 if not (m.startswith("ops-") or m in {"root", "root-local", "gates", "explain", "help"}):
                     continue
                 key = f"{rel}::make {m}"
-                is_public = m in public_targets or any(m.startswith(p) for p in public_prefixes)
-                if not is_public and key not in exceptions:
+                if m not in public_targets and key not in exceptions:
                     errs.append(f"{rel}: non-public make target referenced: {m}")
             for script in ops_script_re.findall(text):
                 key = f"{rel}::./{script}"
