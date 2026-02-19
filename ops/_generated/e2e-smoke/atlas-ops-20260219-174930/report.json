@@ -1,0 +1,7 @@
+{
+  "duration_seconds": 4.0,
+  "lane": "e2e-smoke",
+  "log": "ops/_generated/e2e-smoke/atlas-ops-20260219-174930/run.log",
+  "run_id": "atlas-ops-20260219-174930",
+  "status": "fail"
+}

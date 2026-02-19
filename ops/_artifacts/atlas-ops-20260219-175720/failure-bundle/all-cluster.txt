@@ -1,0 +1,58 @@
+NAMESPACE                   NAME                                                        READY   STATUS    RESTARTS   AGE     IP            NODE                            NOMINATED NODE   READINESS GATES
+atlas-e2e                   pod/grafana-7459f79596-vr42j                                1/1     Running   0          43m     10.244.0.5    bijux-atlas-e2e-control-plane   <none>           <none>
+atlas-e2e                   pod/minio-8d4866b9-gk4nn                                    1/1     Running   0          43m     10.244.0.7    bijux-atlas-e2e-control-plane   <none>           <none>
+atlas-e2e                   pod/otel-collector-676699486c-xhdlz                         1/1     Running   0          43m     10.244.0.8    bijux-atlas-e2e-control-plane   <none>           <none>
+atlas-e2e                   pod/prometheus-77f7b9d779-2zq96                             1/1     Running   0          43m     10.244.0.4    bijux-atlas-e2e-control-plane   <none>           <none>
+atlas-observability         pod/atlas-observability-grafana-64b9766696-zmqfh            1/1     Running   0          58s     10.244.0.57   bijux-atlas-e2e-control-plane   <none>           <none>
+atlas-observability         pod/atlas-observability-otel-cbc899fc-mt82x                 1/1     Running   0          57s     10.244.0.58   bijux-atlas-e2e-control-plane   <none>           <none>
+atlas-observability         pod/atlas-observability-prometheus-7595b747b8-pgh2d         1/1     Running   0          58s     10.244.0.56   bijux-atlas-e2e-control-plane   <none>           <none>
+atlas-ops-20260219-175103   pod/atlas-e2e-bijux-atlas-5c5d64d5d5-8psr2                  1/1     Running   0          5m57s   10.244.0.46   bijux-atlas-e2e-control-plane   <none>           <none>
+kube-system                 pod/coredns-668d6bf9bc-g2c4j                                1/1     Running   0          43m     10.244.0.6    bijux-atlas-e2e-control-plane   <none>           <none>
+kube-system                 pod/coredns-668d6bf9bc-phnlt                                1/1     Running   0          43m     10.244.0.3    bijux-atlas-e2e-control-plane   <none>           <none>
+kube-system                 pod/etcd-bijux-atlas-e2e-control-plane                      1/1     Running   0          44m     172.19.0.2    bijux-atlas-e2e-control-plane   <none>           <none>
+kube-system                 pod/kindnet-62s5l                                           1/1     Running   0          43m     172.19.0.2    bijux-atlas-e2e-control-plane   <none>           <none>
+kube-system                 pod/kube-apiserver-bijux-atlas-e2e-control-plane            1/1     Running   0          44m     172.19.0.2    bijux-atlas-e2e-control-plane   <none>           <none>
+kube-system                 pod/kube-controller-manager-bijux-atlas-e2e-control-plane   1/1     Running   0          44m     172.19.0.2    bijux-atlas-e2e-control-plane   <none>           <none>
+kube-system                 pod/kube-proxy-7mf97                                        1/1     Running   0          43m     172.19.0.2    bijux-atlas-e2e-control-plane   <none>           <none>
+kube-system                 pod/kube-scheduler-bijux-atlas-e2e-control-plane            1/1     Running   0          44m     172.19.0.2    bijux-atlas-e2e-control-plane   <none>           <none>
+local-path-storage          pod/local-path-provisioner-7dc846544d-9w5nc                 1/1     Running   0          43m     10.244.0.2    bijux-atlas-e2e-control-plane   <none>           <none>
+
+NAMESPACE                   NAME                                     TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                  AGE     SELECTOR
+atlas-e2e                   service/grafana                          ClusterIP   10.96.15.100    <none>        3000/TCP                 44m     app=grafana
+atlas-e2e                   service/minio                            ClusterIP   10.96.110.147   <none>        9000/TCP,9001/TCP        44m     app=minio
+atlas-e2e                   service/otel-collector                   ClusterIP   10.96.24.70     <none>        4317/TCP,4318/TCP        44m     app=otel-collector
+atlas-e2e                   service/prometheus                       ClusterIP   10.96.142.68    <none>        9090/TCP                 44m     app=prometheus
+atlas-observability         service/atlas-observability-grafana      ClusterIP   10.96.94.73     <none>        3000/TCP                 58s     app=atlas-observability-grafana
+atlas-observability         service/atlas-observability-otel         ClusterIP   10.96.120.130   <none>        4317/TCP,4318/TCP        57s     app=atlas-observability-otel
+atlas-observability         service/atlas-observability-prometheus   ClusterIP   10.96.34.217    <none>        9090/TCP                 58s     app=atlas-observability-prometheus
+atlas-ops-20260219-175103   service/atlas-e2e-bijux-atlas            NodePort    10.96.154.31    <none>        8080:30080/TCP           5m57s   app.kubernetes.io/instance=atlas-e2e,app.kubernetes.io/name=bijux-atlas
+default                     service/kubernetes                       ClusterIP   10.96.0.1       <none>        443/TCP                  44m     <none>
+kube-system                 service/kube-dns                         ClusterIP   10.96.0.10      <none>        53/UDP,53/TCP,9153/TCP   44m     k8s-app=kube-dns
+
+NAMESPACE     NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE   CONTAINERS    IMAGES                                          SELECTOR
+kube-system   daemonset.apps/kindnet      1         1         1       1            1           kubernetes.io/os=linux   44m   kindnet-cni   docker.io/kindest/kindnetd:v20250214-acbabc1a   app=kindnet
+kube-system   daemonset.apps/kube-proxy   1         1         1       1            1           kubernetes.io/os=linux   44m   kube-proxy    registry.k8s.io/kube-proxy:v1.32.2              k8s-app=kube-proxy
+
+NAMESPACE                   NAME                                             READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS               IMAGES                                                        SELECTOR
+atlas-e2e                   deployment.apps/grafana                          1/1     1            1           44m     grafana                  grafana/grafana:11.2.0                                        app=grafana
+atlas-e2e                   deployment.apps/minio                            1/1     1            1           44m     minio                    minio/minio:RELEASE.2025-01-20T14-49-07Z                      app=minio
+atlas-e2e                   deployment.apps/otel-collector                   1/1     1            1           44m     otel-collector           otel/opentelemetry-collector-contrib:0.111.0                  app=otel-collector
+atlas-e2e                   deployment.apps/prometheus                       1/1     1            1           44m     prometheus               prom/prometheus:v2.54.1                                       app=prometheus
+atlas-observability         deployment.apps/atlas-observability-grafana      1/1     1            1           58s     grafana                  grafana/grafana:11.2.0                                        app=atlas-observability-grafana
+atlas-observability         deployment.apps/atlas-observability-otel         1/1     1            1           57s     otel-collector           otel/opentelemetry-collector-contrib:0.111.0                  app=atlas-observability-otel
+atlas-observability         deployment.apps/atlas-observability-prometheus   1/1     1            1           58s     prometheus               prom/prometheus:v2.54.1                                       app=atlas-observability-prometheus
+atlas-ops-20260219-175103   deployment.apps/atlas-e2e-bijux-atlas            1/1     1            1           5m57s   atlas-server             bijux-atlas:local                                             app.kubernetes.io/instance=atlas-e2e,app.kubernetes.io/name=bijux-atlas
+kube-system                 deployment.apps/coredns                          2/2     2            2           44m     coredns                  registry.k8s.io/coredns/coredns:v1.11.3                       k8s-app=kube-dns
+local-path-storage          deployment.apps/local-path-provisioner           1/1     1            1           44m     local-path-provisioner   docker.io/kindest/local-path-provisioner:v20250214-acbabc1a   app=local-path-provisioner
+
+NAMESPACE                   NAME                                                        DESIRED   CURRENT   READY   AGE     CONTAINERS               IMAGES                                                        SELECTOR
+atlas-e2e                   replicaset.apps/grafana-7459f79596                          1         1         1       43m     grafana                  grafana/grafana:11.2.0                                        app=grafana,pod-template-hash=7459f79596
+atlas-e2e                   replicaset.apps/minio-8d4866b9                              1         1         1       43m     minio                    minio/minio:RELEASE.2025-01-20T14-49-07Z                      app=minio,pod-template-hash=8d4866b9
+atlas-e2e                   replicaset.apps/otel-collector-676699486c                   1         1         1       43m     otel-collector           otel/opentelemetry-collector-contrib:0.111.0                  app=otel-collector,pod-template-hash=676699486c
+atlas-e2e                   replicaset.apps/prometheus-77f7b9d779                       1         1         1       43m     prometheus               prom/prometheus:v2.54.1                                       app=prometheus,pod-template-hash=77f7b9d779
+atlas-observability         replicaset.apps/atlas-observability-grafana-64b9766696      1         1         1       58s     grafana                  grafana/grafana:11.2.0                                        app=atlas-observability-grafana,pod-template-hash=64b9766696
+atlas-observability         replicaset.apps/atlas-observability-otel-cbc899fc           1         1         1       57s     otel-collector           otel/opentelemetry-collector-contrib:0.111.0                  app=atlas-observability-otel,pod-template-hash=cbc899fc
+atlas-observability         replicaset.apps/atlas-observability-prometheus-7595b747b8   1         1         1       58s     prometheus               prom/prometheus:v2.54.1                                       app=atlas-observability-prometheus,pod-template-hash=7595b747b8
+atlas-ops-20260219-175103   replicaset.apps/atlas-e2e-bijux-atlas-5c5d64d5d5            1         1         1       5m57s   atlas-server             bijux-atlas:local                                             app.kubernetes.io/instance=atlas-e2e,app.kubernetes.io/name=bijux-atlas,pod-template-hash=5c5d64d5d5
+kube-system                 replicaset.apps/coredns-668d6bf9bc                          2         2         2       43m     coredns                  registry.k8s.io/coredns/coredns:v1.11.3                       k8s-app=kube-dns,pod-template-hash=668d6bf9bc
+local-path-storage          replicaset.apps/local-path-provisioner-7dc846544d           1         1         1       43m     local-path-provisioner   docker.io/kindest/local-path-provisioner:v20250214-acbabc1a   app=local-path-provisioner,pod-template-hash=7dc846544d

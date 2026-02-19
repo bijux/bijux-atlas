@@ -1,0 +1,7 @@
+{
+  "duration_seconds": 464.0,
+  "lane": "k8s-suite",
+  "log": "ops/_generated/k8s-suite/atlas-ops-20260219-171318/run.log",
+  "run_id": "atlas-ops-20260219-171318",
+  "status": "fail"
+}

@@ -1,0 +1,31 @@
+{
+  "checks": {
+    "nodes": {
+      "code": 0,
+      "ok": true,
+      "stderr": "",
+      "stdout": "node/bijux-atlas-e2e-control-plane"
+    },
+    "pods": {
+      "code": 0,
+      "ok": true,
+      "stderr": "",
+      "stdout": ""
+    },
+    "services": {
+      "code": 0,
+      "ok": true,
+      "stderr": "",
+      "stdout": ""
+    },
+    "storageclass": {
+      "code": 0,
+      "ok": true,
+      "stderr": "",
+      "stdout": "storageclass.storage.k8s.io/standard"
+    }
+  },
+  "namespace": "atlas-ops-20260219-170046",
+  "schema_version": 1,
+  "timestamp": "2026-02-19T17:00:52.362301+00:00"
+}

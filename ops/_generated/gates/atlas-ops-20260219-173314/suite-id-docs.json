@@ -1,0 +1,15 @@
+{
+  "gate": "suite-id-docs",
+  "run_id": "atlas-ops-20260219-173314",
+  "status": "fail",
+  "exit_code": 1,
+  "command": [
+    "python3",
+    "./scripts/docs/check_suite_id_docs.py"
+  ],
+  "artifacts": {
+    "stdout": "ops/_generated/gates/atlas-ops-20260219-173314/suite-id-docs.stdout.log",
+    "stderr": "ops/_generated/gates/atlas-ops-20260219-173314/suite-id-docs.stderr.log"
+  },
+  "timestamp_utc": "2026-02-19T17:33:15.211580+00:00"
+}
