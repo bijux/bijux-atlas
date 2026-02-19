@@ -5,9 +5,9 @@
 
 ## Summary
 
-- Tracked files: `1874`
-- Docs markdown files: `364`
-- Script files under `scripts/`: `291`
+- Tracked files: `1750`
+- Docs markdown files: `366`
+- Script files under `scripts/`: `315`
 - Rust test files: `42`
 - Load suites in `ops/load/suites/suites.json`: `19`
 - Runbooks in `docs/operations/runbooks/`: `17`
@@ -17,7 +17,7 @@
 
 - Forbidden-token hits: `2`
 - Non-kebab docs outside allowed exceptions: `22`
-- Non-kebab scripts under `scripts/`: `236`
+- Non-kebab scripts under `scripts/`: `260`
 
 ## Load Suites
 
@@ -173,6 +173,7 @@
 - `scripts/docs/generate_crates_map.py`
 - `scripts/docs/generate_k8s_install_matrix.py`
 - `scripts/docs/generate_k8s_values_doc.py`
+- `scripts/docs/generate_make_targets_catalog.py`
 - `scripts/docs/generate_make_targets_inventory.py`
 - `scripts/docs/generate_makefiles_surface.py`
 - `scripts/docs/generate_observability_surface.py`
@@ -204,6 +205,8 @@
 - `scripts/layout/build_run_artifact_index.py`
 - `scripts/layout/check_artifacts_allowlist.sh`
 - `scripts/layout/check_artifacts_policy.sh`
+- `scripts/layout/check_cargo_dev_metadata.py`
+- `scripts/layout/check_cargo_invocations_scoped.py`
 - `scripts/layout/check_chart_canonical_path.sh`
 - `scripts/layout/check_ci_entrypoints.py`
 - `scripts/layout/check_dataset_manifest_lock.py`
@@ -214,11 +217,17 @@
 - `scripts/layout/check_generated_dirs_policy.py`
 - `scripts/layout/check_generated_policy.py`
 - `scripts/layout/check_help_excludes_internal.py`
+- `scripts/layout/check_internal_targets_not_in_docs.py`
 - `scripts/layout/check_kind_cluster_contract_drift.sh`
+- `scripts/layout/check_make_lane_reports.py`
 - `scripts/layout/check_make_public_scripts.py`
 - `scripts/layout/check_make_safety.py`
+- `scripts/layout/check_make_target_ownership.py`
+- `scripts/layout/check_make_targets_catalog_drift.py`
+- `scripts/layout/check_makefile_headers.py`
 - `scripts/layout/check_makefile_target_boundaries.py`
 - `scripts/layout/check_makefiles_contract.py`
+- `scripts/layout/check_makefiles_index_drift.py`
 - `scripts/layout/check_no_direct_script_runs.sh`
 - `scripts/layout/check_no_empty_dirs.py`
 - `scripts/layout/check_no_forbidden_paths.sh`
@@ -244,10 +253,17 @@
 - `scripts/layout/check_ops_workspace.sh`
 - `scripts/layout/check_public_entrypoint_cap.py`
 - `scripts/layout/check_public_surface.py`
+- `scripts/layout/check_public_target_aliases.py`
+- `scripts/layout/check_public_target_budget.py`
+- `scripts/layout/check_public_target_descriptions.py`
+- `scripts/layout/check_public_targets_documented.py`
 - `scripts/layout/check_realdata_scenarios.py`
 - `scripts/layout/check_repo_hygiene.sh`
 - `scripts/layout/check_root_determinism.sh`
+- `scripts/layout/check_root_diff_alarm.py`
+- `scripts/layout/check_root_local_lane_isolation.py`
 - `scripts/layout/check_root_makefile_hygiene.py`
+- `scripts/layout/check_root_no_cargo_dev_deps.py`
 - `scripts/layout/check_root_shape.sh`
 - `scripts/layout/check_script_naming_convention.py`
 - `scripts/layout/check_script_relative_calls.py`
@@ -262,18 +278,26 @@
 - `scripts/layout/check_tool_versions.py`
 - `scripts/layout/check_workflows_make_only.py`
 - `scripts/layout/clean_artifacts.py`
+- `scripts/layout/clean_make_artifacts.py`
 - `scripts/layout/clean_ops_generated.py`
 - `scripts/layout/dataset_id_lint.py`
 - `scripts/layout/explain_public_target.py`
 - `scripts/layout/generate_ops_stack_versions.py`
 - `scripts/layout/generate_ops_surface_meta.py`
+- `scripts/layout/graph_public_target.py`
 - `scripts/layout/list_internal_targets.py`
+- `scripts/layout/make_doctor.py`
+- `scripts/layout/make_prereqs.py`
+- `scripts/layout/make_report.py`
+- `scripts/layout/make_target_graph.py`
+- `scripts/layout/public_make_targets.py`
 - `scripts/layout/public_surface.py`
 - `scripts/layout/render_public_help.py`
 - `scripts/layout/replace_paths.sh`
 - `scripts/layout/run_gate.py`
 - `scripts/layout/validate_ops_contracts.py`
 - `scripts/layout/validate_ops_env.py`
+- `scripts/layout/write_make_area_report.py`
 - `scripts/ops/check_k8s_flakes.py`
 - `scripts/ops/check_k8s_test_contract.py`
 - `scripts/policy/find_relaxations.sh`

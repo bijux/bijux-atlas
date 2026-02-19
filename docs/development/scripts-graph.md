@@ -17,14 +17,14 @@ Generated file. Do not edit by hand.
 | `cli-command-surface` | `scripts/public/check-cli-commands.sh` |
 | `config-drift` | `scripts/public/config-drift-check.py` |
 | `config-print` | `scripts/public/config-print.py` |
-| `config-validate` | `scripts/public/config-drift-check.py` |
-| `config-validate` | `scripts/public/config-validate.py` |
-| `config-validate` | `scripts/public/generate-config-key-registry.py` |
 | `configs-check` | `scripts/public/config-drift-check.py` |
 | `configs-check` | `scripts/public/config-validate.py` |
 | `crate-structure` | `scripts/public/require-crate-docs.sh` |
 | `critical-query-check` | `scripts/public/contracts/check_sqlite_indexes_contract.py` |
 | `critical-query-check` | `scripts/public/perf/run_critical_queries.py` |
+| `dataset-id-lint` | `scripts/public/config-drift-check.py` |
+| `dataset-id-lint` | `scripts/public/config-validate.py` |
+| `dataset-id-lint` | `scripts/public/generate-config-key-registry.py` |
 | `docs-build` | `scripts/public/check-markdown-links.sh` |
 | `openapi-drift` | `scripts/public/openapi-diff-check.sh` |
 | `ops-alerts-validate` | `scripts/public/observability/check_alerts_contract.py` |
