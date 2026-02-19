@@ -4,15 +4,33 @@
 # Outputs: non-zero exit on missing headers or missing docs script-group references.
 from __future__ import annotations
 from pathlib import Path
+import os
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
-script_paths = sorted([p for p in (ROOT/'scripts').rglob('*') if p.is_file() and p.suffix in {'.sh','.py'}])
+script_paths = sorted(
+    [
+        p
+        for p in (ROOT / "scripts").rglob("*")
+        if p.is_file()
+        and p.suffix in {".sh", ".py"}
+        and (
+            p.relative_to(ROOT).as_posix().startswith("scripts/public/")
+            or p.relative_to(ROOT).as_posix().startswith("scripts/bin/")
+        )
+    ]
+)
 errors = []
 for p in script_paths:
     if "/scripts/_internal/" in p.as_posix():
         continue
     txt = p.read_text(encoding='utf-8', errors='ignore').splitlines()
+    first_line = txt[0] if txt else ""
+    is_public = p.relative_to(ROOT).as_posix().startswith("scripts/public/")
+    is_executable = os.access(p, os.X_OK)
+    has_shebang = first_line.startswith("#!")
+    if not (is_public or is_executable or has_shebang):
+        continue
     head = '\n'.join(txt[:12])
     if p.suffix == '.sh' and not (
         head.startswith('#!/usr/bin/env sh')

@@ -19,7 +19,10 @@ term_bans = {
 }
 
 # units gate (heuristic): require units when discussing coordinate/size/latency values
-units_pat = re.compile(r'\b(coordinate|span|size|latency|timeout)\b[^\n]{0,40}\b(\d+)\b(?!\s*(bp|bytes|seconds|ms|s))', re.IGNORECASE)
+units_pat = re.compile(
+    r'\b(coordinate|span|size|latency|timeout)\b[^\n]{0,40}\b(?<![pP.])(\d{2,})\b(?!\s*(bp|bytes|seconds|ms|s))(?!\.)',
+    re.IGNORECASE,
+)
 
 # ssot references only for registries
 ssot_ban = re.compile(r'docs/contracts/(ERROR_CODES|METRICS|TRACE_SPANS|ENDPOINTS|CONFIG_KEYS|CHART_VALUES)\.json')

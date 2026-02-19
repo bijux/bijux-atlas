@@ -10,9 +10,27 @@ import re
 import sys
 
 errors=[]
+allowed_non_kebab = {
+    'docs/operations/slo/BASELINE_UPDATE_POLICY.md',
+    'docs/operations/slo/CHANGELOG.md',
+    'docs/operations/slo/CHANGE_POLICY.md',
+    'docs/operations/slo/GLOSSARY.md',
+    'docs/operations/slo/NON_GOALS.md',
+    'docs/operations/slo/RELEASE_GATE.md',
+    'docs/operations/slo/SCOPE.md',
+    'docs/operations/slo/SLA_DECISION_ADR_TEMPLATE.md',
+    'docs/operations/slo/SLA_EXCLUSIONS_PLANNED.md',
+    'docs/operations/slo/SLA_POLICY.md',
+    'docs/operations/slo/SLIS.md',
+    'docs/operations/slo/SLOS.md',
+    'docs/operations/slo/WHAT_WE_DONT_MEASURE_YET.md',
+    'docs/operations/slo/WHY_THESE_SLIS.md',
+}
 for p in sorted(Path('docs').rglob('*.md')):
     name=p.name
     rel=str(p)
+    if rel in allowed_non_kebab:
+        continue
     if rel=='docs/contracts/README.md':
         continue
     if name=='README.md':

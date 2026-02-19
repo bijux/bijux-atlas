@@ -26,6 +26,9 @@ def main() -> int:
         "--skip",
         "*.json,*.png,*.jpg,*.svg",
     ]
+    ignore_words = Path("configs/docs/codespell-ignore-words.txt")
+    if ignore_words.exists():
+        cmd.extend(["--ignore-words", str(ignore_words)])
 
     for target in targets:
         if target.exists():
