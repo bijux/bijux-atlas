@@ -74,6 +74,7 @@ Generated from `make help`. Do not edit manually.
 - `ops-stack-smoke`
 - `ops-stack-health-report`
 - `ops-stack-version`
+- `ops-stack-versions-sync`
 - `ops-stack-uninstall`
 - `ops-stack-slow-store`
 - `ops-kind-up`
@@ -125,6 +126,9 @@ Generated from `make help`. Do not edit manually.
 - `ops-env-print`
 - `ops-prereqs`
 - `ops-doctor`
+- `ops-contracts-check`
+- `ops-e2e-validate`
+- `ops-k8s-contracts`
 - `ops-cluster-sanity`
 - `ops-datasets-fetch`
 - `ops-publish`
@@ -142,6 +146,7 @@ Generated from `make help`. Do not edit manually.
 - `ops-dataset-federated-registry-test`
 - `ops-deploy`
 - `ops-undeploy`
+- `ops-clean-uninstall`
 - `ops-redeploy`
 - `ops-offline`
 - `ops-perf`
@@ -189,6 +194,8 @@ Generated from `make help`. Do not edit manually.
 - `ops-upgrade-drill`
 - `ops-rollback-drill`
 - `ops-realdata`
+- `ops-local-reset`
+- `ops-local-full`
 - `ops-report`
 - `ops-readiness-scorecard`
 - `ops-incident-repro-kit`
@@ -196,6 +203,9 @@ Generated from `make help`. Do not edit manually.
 - `ops-shellcheck`
 - `ops-lint`
 - `ops-fmt`
+- `ops-gen`
+- `ops-gen-clean`
+- `ops-gen-check`
 - `ops-make-targets-doc`
 - `ops-kind-version-check`
 - `ops-k6-version-check`
@@ -220,6 +230,7 @@ Generated from `make help`. Do not edit manually.
 - `ops-obs-validate`
 - `ops-obs-up`
 - `ops-obs-down`
+- `ops-obs-drill`
 - `ops-observability-pack-verify`
 - `ops-observability-pack-smoke`
 - `ops-observability-pack-export`
@@ -310,6 +321,12 @@ Generated from `make help`. Do not edit manually.
 - `ci-policy-allow-env`
 - `ci-ops-policy-audit`
 - `ci-config-check`
+- `ci-slo-config-validate`
+- `ci-slo-no-loosen`
+- `ci-slo-metrics-contract`
+- `ci-sli-contract`
+- `ci-sli-docs-drift`
+- `ci-slo-docs-drift`
 - `ci-ssot-drift`
 - `ci-crate-structure`
 - `ci-crate-docs-contract`
@@ -334,6 +351,7 @@ Generated from `make help`. Do not edit manually.
 - `ci-observability-pack-test`
 - `ci-observability-pack-drills`
 - `ci-ops-index-surface`
+- `ci-ops-gen-check`
 - `ci-ops-run-entrypoints`
 - `ci-ops-readme-make-only`
 - `ci-ops-readme-canonical-links`
