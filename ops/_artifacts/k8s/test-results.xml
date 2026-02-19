@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="ops-e2e-k8s" tests="13" failures="0" errors="0" skipped="4" time="253.605">
-  <testcase classname="ops.e2e.k8s" name="checks/rollout/test_cluster_sanity.sh" time="0.392">
+<testsuite name="ops-e2e-k8s" tests="13" failures="0" errors="0" skipped="4" time="240.139">
+  <testcase classname="ops.e2e.k8s" name="checks/rollout/test_cluster_sanity.sh" time="0.364">
   </testcase>
-  <testcase classname="ops.e2e.k8s" name="checks/rollout/test_install.sh" time="9.737">
+  <testcase classname="ops.e2e.k8s" name="checks/rollout/test_install.sh" time="15.734">
   </testcase>
-  <testcase classname="ops.e2e.k8s" name="checks/rollout/test_install_twice.sh" time="75.103">
+  <testcase classname="ops.e2e.k8s" name="checks/rollout/test_install_twice.sh" time="75.764">
   </testcase>
-  <testcase classname="ops.e2e.k8s" name="checks/rollout/test_uninstall_reinstall.sh" time="100.319">
+  <testcase classname="ops.e2e.k8s" name="checks/rollout/test_uninstall_reinstall.sh" time="90.290">
   </testcase>
-  <testcase classname="ops.e2e.k8s" name="checks/datasets/test_cached_only_mode.sh" time="66.693">
+  <testcase classname="ops.e2e.k8s" name="checks/datasets/test_cached_only_mode.sh" time="56.594">
   </testcase>
   <testcase classname="ops.e2e.k8s" name="checks/datasets/test_readiness_semantics.sh" time="0.000">
     <skipped message="quarantined until 2026-03-31"/>
@@ -16,16 +16,16 @@
   <testcase classname="ops.e2e.k8s" name="checks/datasets/test_readiness_catalog_refresh.sh" time="0.000">
     <skipped message="quarantined until 2026-03-31"/>
   </testcase>
-  <testcase classname="ops.e2e.k8s" name="checks/obs/test_service_monitor.sh" time="0.137">
+  <testcase classname="ops.e2e.k8s" name="checks/obs/test_service_monitor.sh" time="0.133">
   </testcase>
-  <testcase classname="ops.e2e.k8s" name="checks/obs/test_prometheus_rule.sh" time="0.135">
+  <testcase classname="ops.e2e.k8s" name="checks/obs/test_prometheus_rule.sh" time="0.129">
   </testcase>
-  <testcase classname="ops.e2e.k8s" name="checks/rollout/test_kind_image_resolution.sh" time="0.998">
+  <testcase classname="ops.e2e.k8s" name="checks/rollout/test_kind_image_resolution.sh" time="1.043">
   </testcase>
   <testcase classname="ops.e2e.k8s" name="checks/obs/test_logs_json.sh" time="0.000">
     <skipped message="quarantined until 2026-03-31"/>
   </testcase>
-  <testcase classname="ops.e2e.k8s" name="checks/obs/test_redis_backend_metric.sh" time="0.091">
+  <testcase classname="ops.e2e.k8s" name="checks/obs/test_redis_backend_metric.sh" time="0.088">
   </testcase>
   <testcase classname="ops.e2e.k8s" name="checks/storage/test_store_reachable.sh" time="0.000">
     <skipped message="quarantined until 2026-03-31"/>

@@ -1,0 +1,7 @@
+{
+  "duration_seconds": 2.0,
+  "lane": "stack",
+  "log": "ops/_generated/stack/atlas-ops-20260219-181456/stack-down.log",
+  "run_id": "atlas-ops-20260219-181456",
+  "status": "pass"
+}

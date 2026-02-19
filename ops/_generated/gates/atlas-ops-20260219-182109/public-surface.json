@@ -1,0 +1,15 @@
+{
+  "gate": "public-surface",
+  "run_id": "atlas-ops-20260219-182109",
+  "status": "pass",
+  "exit_code": 0,
+  "command": [
+    "python3",
+    "./scripts/layout/check_public_surface.py"
+  ],
+  "artifacts": {
+    "stdout": "ops/_generated/gates/atlas-ops-20260219-182109/public-surface.stdout.log",
+    "stderr": "ops/_generated/gates/atlas-ops-20260219-182109/public-surface.stderr.log"
+  },
+  "timestamp_utc": "2026-02-19T18:21:09.910941+00:00"
+}
