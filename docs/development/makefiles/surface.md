@@ -27,6 +27,10 @@ Generated from `configs/ops/public-surface.json`. Do not edit manually.
 - `make clean`
 - `make configs-check`
 - `make docs`
+- `make docker-build`
+- `make docker-push`
+- `make docker-scan`
+- `make docker-smoke`
 - `make doctor`
 - `make explain`
 - `make format`

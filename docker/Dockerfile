@@ -1,6 +1,10 @@
 # syntax=docker/dockerfile:1.7
 ARG RUST_VERSION=1.84.1
 ARG DEBIAN_FRONTEND=noninteractive
+ARG IMAGE_VERSION=dev-local
+ARG VCS_REF=unknown
+ARG BUILD_DATE=1970-01-01T00:00:00Z
+ARG IMAGE_PROVENANCE=local
 
 FROM rust:${RUST_VERSION}-bookworm AS builder
 WORKDIR /workspace
@@ -32,4 +36,8 @@ USER nonroot:nonroot
 EXPOSE 8080
 LABEL org.bijux.plugin="atlas"
 LABEL org.opencontainers.image.source="https://github.com/bijux/bijux-atlas"
+LABEL org.opencontainers.image.version="${IMAGE_VERSION}"
+LABEL org.opencontainers.image.revision="${VCS_REF}"
+LABEL org.opencontainers.image.created="${BUILD_DATE}"
+LABEL org.opencontainers.image.ref.name="${IMAGE_PROVENANCE}"
 ENTRYPOINT ["/app/bijux-atlas", "atlas", "serve"]

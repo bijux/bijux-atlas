@@ -292,6 +292,8 @@ Generated from `make help`. Do not edit manually.
 - `critical-query-check`
 - `docker-build`
 - `docker-smoke`
+- `docker-scan`
+- `docker-push`
 - `chart-package`
 - `chart-verify`
 - `chart-validate`
