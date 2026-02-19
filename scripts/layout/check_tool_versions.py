@@ -39,6 +39,10 @@ def detect_version(tool: str) -> str:
     return f"v{match.group(1)}"
 
 
+def normalize_version(version: str) -> str:
+    return version[1:] if version.startswith("v") else version
+
+
 def main() -> int:
     if not LOCK_PATH.exists():
         print(f"missing lockfile: {LOCK_PATH}", file=sys.stderr)
@@ -64,7 +68,7 @@ def main() -> int:
             print(str(err), file=sys.stderr)
             failed = True
             continue
-        if actual != expected:
+        if normalize_version(actual) != normalize_version(str(expected)):
             print(f"{tool} version mismatch: expected {expected}, got {actual}", file=sys.stderr)
             failed = True
         else:
