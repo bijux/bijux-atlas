@@ -12,8 +12,8 @@ Reduces incident response latency by making first-hop telemetry explicit.
 
 ## Contracts
 
-- Dashboard source: `ops/observability/grafana/atlas-observability-dashboard.json`
-- Alert source: `ops/observability/alerts/atlas-alert-rules.yaml`
+- Dashboard source: `ops/obs/grafana/atlas-observability-dashboard.json`
+- Alert source: `ops/obs/alerts/atlas-alert-rules.yaml`
 - Validation target: `ops-observability-validate`.
 - Runbook sources: `docs/operations/runbooks/*.md`
 
@@ -39,6 +39,15 @@ Reduces incident response latency by making first-hop telemetry explicit.
 - `BijuxAtlasStoreDownloadFailures`
 - `BijuxAtlasCacheThrash`
 - `AtlasOverloadSustained`
+- `BijuxAtlasCheapSloBurnFast`
+- `BijuxAtlasCheapSloBurnMedium`
+- `BijuxAtlasCheapSloBurnSlow`
+- `BijuxAtlasStandardSloBurnFast`
+- `BijuxAtlasStandardSloBurnMedium`
+- `BijuxAtlasStandardSloBurnSlow`
+- `BijuxAtlasOverloadSurvivalViolated`
+- `BijuxAtlasRegistryRefreshStale`
+- `BijuxAtlasStoreBackendErrorSpike`
 
 ## Dashboard Panel Coverage Registry
 
