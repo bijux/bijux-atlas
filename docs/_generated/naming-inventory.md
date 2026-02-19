@@ -5,9 +5,9 @@
 
 ## Summary
 
-- Tracked files: `1681`
-- Docs markdown files: `361`
-- Script files under `scripts/`: `267`
+- Tracked files: `1711`
+- Docs markdown files: `363`
+- Script files under `scripts/`: `286`
 - Rust test files: `42`
 - Load suites in `ops/load/suites/suites.json`: `19`
 - Runbooks in `docs/operations/runbooks/`: `17`
@@ -17,7 +17,7 @@
 
 - Forbidden-token hits: `2`
 - Non-kebab docs outside allowed exceptions: `22`
-- Non-kebab scripts under `scripts/`: `231`
+- Non-kebab scripts under `scripts/`: `236`
 
 ## Load Suites
 
@@ -193,6 +193,8 @@
 - `scripts/docs/rewrite_legacy_terms.py`
 - `scripts/docs/run_blessed_snippets.py`
 - `scripts/docs/spellcheck_docs.py`
+- `scripts/gen/generate_scripts_readme.py`
+- `scripts/gen/generate_scripts_surface.py`
 - `scripts/generate_scripts_readme.py`
 - `scripts/internal/__init__.py`
 - `scripts/internal/env_dump.sh`
@@ -312,6 +314,9 @@
 - `scripts/public/perf/validate_suite_manifest.py`
 - `scripts/public/stack/build_stack_report.py`
 - `scripts/public/stack/validate_stack_report.py`
+- `scripts/python/__init__.py`
+- `scripts/python/bijux_scripts/__init__.py`
+- `scripts/python/bijux_scripts/json_helpers.py`
 - `scripts/run_drill.sh`
 - `scripts/tests/test_paths.py`
 - `scripts/tools/__init__.py`

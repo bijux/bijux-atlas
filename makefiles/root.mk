@@ -32,11 +32,30 @@ scripts-graph: ## Generate make-target to scripts call graph
 	@python3 ./scripts/docs/generate_scripts_graph.py
 
 docker-build:
-	@docker build -t bijux-atlas:local -f docker/Dockerfile .
+	@IMAGE_TAG="$${DOCKER_IMAGE:-bijux-atlas:local}"; \
+	IMAGE_VERSION="$${IMAGE_VERSION:-$$(git rev-parse --short=12 HEAD)}"; \
+	VCS_REF="$${VCS_REF:-$$(git rev-parse HEAD)}"; \
+	BUILD_DATE="$${BUILD_DATE:-$$(date -u +%Y-%m-%dT%H:%M:%SZ)}"; \
+	RUST_VERSION="$${RUST_VERSION:-1.84.1}"; \
+	docker build --pull=false -t "$$IMAGE_TAG" -f docker/Dockerfile \
+	  --build-arg RUST_VERSION="$$RUST_VERSION" \
+	  --build-arg IMAGE_VERSION="$$IMAGE_VERSION" \
+	  --build-arg VCS_REF="$$VCS_REF" \
+	  --build-arg BUILD_DATE="$$BUILD_DATE" \
+	  --build-arg IMAGE_PROVENANCE="$${IMAGE_PROVENANCE:-$${IMAGE_TAG}}" \
+	  .
 
 docker-smoke:
-	@docker run --rm bijux-atlas:local --version >/dev/null
-	@echo "docker smoke passed"
+	@$(MAKE) -s docker-build
+	@./scripts/check/docker-runtime-smoke.sh "$${DOCKER_IMAGE:-bijux-atlas:local}"
+
+docker-scan:
+	@./scripts/check/docker-scan.sh "$${DOCKER_IMAGE:-bijux-atlas:local}"
+
+docker-push:
+	@if [ "$${CI:-0}" != "1" ]; then echo "docker-push is CI-only"; exit 2; fi
+	@IMAGE_TAG="$${DOCKER_IMAGE:?DOCKER_IMAGE is required for docker-push}"; \
+	docker push "$$IMAGE_TAG"
 
 chart-package:
 	@mkdir -p artifacts/chart
@@ -54,6 +73,11 @@ chart-validate: ## Validate chart via lint/template and values contract schema c
 no-direct-scripts:
 	@./scripts/layout/check_no_direct_script_runs.sh
 	@python3 ./scripts/layout/check_make_public_scripts.py
+
+docker-contracts: ## Validate Docker layout/policy/no-latest contracts
+	@python3 ./scripts/check/check-docker-layout.py
+	@python3 ./scripts/check/check-docker-policy.py
+	@python3 ./scripts/check/check-no-latest-tags.py
 
 rename-lint: ## Enforce durable naming rules for docs/scripts and concept ownership
 	@python3 ./scripts/docs/check-durable-naming.py
@@ -255,7 +279,7 @@ release-update-compat-matrix:
 
 
 
-.PHONY: architecture-check artifacts-clean artifacts-index bootstrap bootstrap-tools bump chart-package chart-verify ci ci-workflow-contract clean config-drift config-print config-validate configs-check contracts dataset-id-lint debug deep-clean docker-build docker-smoke docs docs-lint-names doctor explain fetch-real-datasets format gates gates-check governance-check help hygiene inventory isolate-clean layout-check layout-migrate list-internal list-public local local-full makefiles-contract nightly no-direct-scripts ops-alerts-validate ops-artifacts-open ops-baseline-policy-check ops-cache-pin-set ops-cache-status ops-catalog-validate ops-check ops-clean ops-contracts-check ops-dashboards-validate ops-dataset-federated-registry-test ops-dataset-multi-release-test ops-dataset-promotion-sim ops-dataset-qc ops-datasets-fetch ops-deploy ops-doctor ops-down ops-drill-corruption-dataset ops-drill-memory-growth ops-drill-otel-outage ops-drill-overload ops-drill-pod-churn ops-drill-rate-limit ops-drill-rollback ops-drill-rollback-under-load ops-drill-store-outage ops-drill-suite ops-drill-toxiproxy-latency ops-drill-upgrade ops-drill-upgrade-under-load ops-e2e-smoke ops-full ops-full-pr ops-gc-smoke ops-gen ops-gen-check ops-incident-repro-kit ops-k8s-smoke ops-k8s-suite ops-k8s-template-tests ops-k8s-tests ops-load-ci ops-load-full ops-load-manifest-validate ops-load-nightly ops-load-shedding ops-load-smoke ops-load-soak ops-load-suite ops-local-full ops-local-full-stack ops-metrics-check ops-obs-down ops-obs-install ops-obs-mode ops-obs-uninstall ops-obs-verify ops-observability-pack-conformance-report ops-observability-pack-export ops-observability-pack-health ops-observability-pack-smoke ops-observability-pack-verify ops-observability-smoke ops-observability-validate ops-open-grafana ops-openapi-validate ops-perf-baseline-update ops-perf-cold-start ops-perf-nightly ops-perf-report ops-perf-warm-start ops-policy-audit ops-prereqs ops-proof-cached-only ops-publish ops-readiness-scorecard ops-realdata ops-redeploy ops-ref-grade-local ops-ref-grade-nightly ops-ref-grade-pr ops-release-matrix ops-release-rollback ops-release-update ops-report ops-slo-alert-proof ops-slo-burn ops-slo-report ops-smoke ops-tools-check ops-traces-check ops-undeploy ops-up ops-values-validate ops-warm ops-warm-datasets ops-warm-shards ops-warm-top policy-allow-env-lint policy-audit policy-drift-diff policy-enforcement-status policy-lint policy-schema-drift prereqs release release-dry-run release-update-compat-matrix rename-lint report root root-determinism root-local root-local-fast root-local-summary scripts-audit scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test ssot-check verify-inventory
+.PHONY: architecture-check artifacts-clean artifacts-index bootstrap bootstrap-tools bump chart-package chart-verify ci ci-workflow-contract clean config-drift config-print config-validate configs-check contracts dataset-id-lint debug deep-clean docker-build docker-contracts docker-push docker-scan docker-smoke docs docs-lint-names doctor explain fetch-real-datasets format gates gates-check governance-check help hygiene inventory isolate-clean layout-check layout-migrate list-internal list-public local local-full makefiles-contract nightly no-direct-scripts ops-alerts-validate ops-artifacts-open ops-baseline-policy-check ops-cache-pin-set ops-cache-status ops-catalog-validate ops-check ops-clean ops-contracts-check ops-dashboards-validate ops-dataset-federated-registry-test ops-dataset-multi-release-test ops-dataset-promotion-sim ops-dataset-qc ops-datasets-fetch ops-deploy ops-doctor ops-down ops-drill-corruption-dataset ops-drill-memory-growth ops-drill-otel-outage ops-drill-overload ops-drill-pod-churn ops-drill-rate-limit ops-drill-rollback ops-drill-rollback-under-load ops-drill-store-outage ops-drill-suite ops-drill-toxiproxy-latency ops-drill-upgrade ops-drill-upgrade-under-load ops-e2e-smoke ops-full ops-full-pr ops-gc-smoke ops-gen ops-gen-check ops-incident-repro-kit ops-k8s-smoke ops-k8s-suite ops-k8s-template-tests ops-k8s-tests ops-load-ci ops-load-full ops-load-manifest-validate ops-load-nightly ops-load-shedding ops-load-smoke ops-load-soak ops-load-suite ops-local-full ops-local-full-stack ops-metrics-check ops-obs-down ops-obs-install ops-obs-mode ops-obs-uninstall ops-obs-verify ops-observability-pack-conformance-report ops-observability-pack-export ops-observability-pack-health ops-observability-pack-smoke ops-observability-pack-verify ops-observability-smoke ops-observability-validate ops-open-grafana ops-openapi-validate ops-perf-baseline-update ops-perf-cold-start ops-perf-nightly ops-perf-report ops-perf-warm-start ops-policy-audit ops-prereqs ops-proof-cached-only ops-publish ops-readiness-scorecard ops-realdata ops-redeploy ops-ref-grade-local ops-ref-grade-nightly ops-ref-grade-pr ops-release-matrix ops-release-rollback ops-release-update ops-report ops-slo-alert-proof ops-slo-burn ops-slo-report ops-smoke ops-tools-check ops-traces-check ops-undeploy ops-up ops-values-validate ops-warm ops-warm-datasets ops-warm-shards ops-warm-top policy-allow-env-lint policy-audit policy-drift-diff policy-enforcement-status policy-lint policy-schema-drift prereqs release release-dry-run release-update-compat-matrix rename-lint report root root-determinism root-local root-local-fast root-local-summary scripts-audit scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-check scripts-test ssot-check verify-inventory
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)
 	@$(MAKE) scripts-audit
 	@python3 ./scripts/docs/check_script_headers.py

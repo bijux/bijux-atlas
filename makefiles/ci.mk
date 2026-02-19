@@ -129,7 +129,9 @@ ci-compatibility-matrix-validate:
 	@$(MAKE) compat-matrix-validate
 
 ci-runtime-security-scan-image:
+	@$(MAKE) docker-contracts
 	@$(MAKE) docker-build
+	@$(MAKE) docker-scan
 
 ci-coverage:
 	@if ! cargo llvm-cov --version >/dev/null 2>&1; then cargo install cargo-llvm-cov --locked; fi

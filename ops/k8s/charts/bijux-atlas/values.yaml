@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/bijux/bijux-atlas
-  tag: latest
+  tag: "0.1.0"
   digest: ""
   pullPolicy: IfNotPresent
 
@@ -56,7 +56,7 @@ cache:
   maxConcurrentDownloads: 3
   initPrewarm:
     enabled: false
-    image: ghcr.io/bijux/bijux-atlas:latest
+    image: ghcr.io/bijux/bijux-atlas:0.1.0
 
 rateLimits:
   perIp:
@@ -173,7 +173,7 @@ rollout:
 catalogPublishJob:
   enabled: false
   backoffLimit: 1
-  image: ghcr.io/bijux/bijux-atlas:latest
+  image: ghcr.io/bijux/bijux-atlas:0.1.0
   command:
     - /app/atlas-cli
     - ingest
@@ -181,7 +181,7 @@ catalogPublishJob:
 datasetWarmupJob:
   enabled: false
   backoffLimit: 1
-  image: ghcr.io/bijux/bijux-atlas:latest
+  image: ghcr.io/bijux/bijux-atlas:0.1.0
 
 extraEnv: []
 
