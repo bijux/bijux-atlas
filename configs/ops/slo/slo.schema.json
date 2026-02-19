@@ -27,7 +27,17 @@
           "target": {"type": "number", "minimum": 0, "maximum": 1},
           "window": {"type": "string", "pattern": "^[0-9]+(m|h|d)$"},
           "budget": {"type": "number", "minimum": 0, "maximum": 1},
-          "notes": {"type": "string"}
+          "notes": {"type": "string"},
+          "threshold": {
+            "type": "object",
+            "required": ["operator", "value", "unit"],
+            "additionalProperties": false,
+            "properties": {
+              "operator": {"type": "string", "enum": ["lt", "lte", "gt", "gte"]},
+              "value": {"type": "number", "minimum": 0},
+              "unit": {"type": "string", "enum": ["ms", "s", "percent", "count"]}
+            }
+          }
         }
       }
     },
