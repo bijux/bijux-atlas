@@ -24,6 +24,7 @@ Does not duplicate page-level details.
 - [SLO](slo.md)
 - [Tracing](tracing.md)
 - [Metric Cardinality Guardrails](metric-cardinality-guardrails.md)
+- [SLO-Critical Metrics](slo-critical-metrics.md)
 - [Dashboard](dashboard.md)
 - [Alerts](alerts.md)
 - [Runbook Map](runbook-dashboard-alert-map.md)
