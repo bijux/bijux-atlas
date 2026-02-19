@@ -25,6 +25,7 @@ Does not duplicate individual script source files.
 - [Realdata Drills](realdata-drills.md)
 - [Fixtures](fixtures.md)
 - [Scripts](scripts.md)
+- [What E2E Is Not](WHAT_E2E_IS_NOT.md)
 - scenario:smoke
 - scenario:k8s-suite
 - scenario:realdata
