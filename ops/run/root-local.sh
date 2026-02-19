@@ -27,6 +27,7 @@ lanes=(
   "rust"
   "docs"
   "ops-lint-schemas"
+  "layer-contract"
   "stack-smoke"
   "inventories-contracts"
 )
@@ -36,6 +37,7 @@ lane_cmd() {
     rust) echo "make -s root" ;;
     docs) echo "make -s docs" ;;
     ops-lint-schemas) echo "make -s ops-lint ops-contracts-check" ;;
+    layer-contract) echo "make -s ops/contract-check" ;;
     stack-smoke)
       if [ "$mode" = "fast" ]; then
         echo "echo 'stack-smoke skipped in fast mode'"

@@ -34,7 +34,7 @@ def main() -> int:
         else:
             active.append({"id": entry_id, "rule": str(entry.get("rule", "")), "expiry": expiry_raw})
 
-    out = ROOT / "artifacts/policy/layer-relaxations-audit.json"
+    out = ROOT / "ops/_artifacts/policy/layer-relaxations-audit.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(
         json.dumps(

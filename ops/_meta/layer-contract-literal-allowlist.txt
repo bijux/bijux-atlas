@@ -1,0 +1,10 @@
+# Paths temporarily allowed to contain namespace/service literals.
+# Remove entries as scripts are migrated to ops/_lib/layer_contract.sh.
+ops/e2e/scripts/verify_metrics.sh
+ops/e2e/scripts/verify_traces.sh
+ops/e2e/scripts/warmup.sh
+ops/stack/scripts/collect_events.sh
+ops/stack/scripts/collect_pod_logs.sh
+ops/stack/scripts/health_report.sh
+ops/stack/scripts/uninstall.sh
+ops/stack/scripts/print_urls.sh
