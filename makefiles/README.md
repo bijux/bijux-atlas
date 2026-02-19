@@ -14,6 +14,12 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 
 - Root `Makefile` is a thin dispatcher that only includes `makefiles/*.mk`.
 - Public interfaces are make targets, not direct script paths.
+- `makefiles/root.mk` is the publication surface for public targets.
+- Tier model:
+  - `root`: CI-fast deterministic gate.
+  - `root-local`: local superset with parallel isolated lanes.
+  - `ci`: workflow-equivalent full CI matrix.
+  - `nightly`: CI plus long-running/nightly ops suites.
 - Domain logic lives in:
   - `makefiles/root.mk`
   - `makefiles/help.mk`
@@ -35,6 +41,10 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 
 ```bash
 $ make help
+$ make gates
+$ make list-public
+$ make explain TARGET=root-local
+$ make root-local-summary RUN_ID=<run-id>
 $ python3 scripts/docs/check_make_targets_documented.py
 $ make ops-script-coverage
 ```
