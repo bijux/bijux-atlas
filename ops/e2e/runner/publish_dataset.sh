@@ -137,8 +137,7 @@ mc mb --ignore-existing local/atlas-artifacts >/dev/null
       case "$rel" in
         release=*"/species="*"/assembly="*)
           compat_rel="${rel#release=}"
-          compat_rel="${compat_rel/species=/}"
-          compat_rel="${compat_rel/assembly=/}"
+          compat_rel="$(printf '%s\n' "$compat_rel" | sed 's#species=##; s#/assembly=#/#')"
           ;;
       esac
       kubectl -n "$STACK_NS" exec -i "$sync_pod" -- sh -ceu "

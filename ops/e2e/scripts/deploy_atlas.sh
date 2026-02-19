@@ -55,7 +55,7 @@ cleanup_stale_nodeport_conflicts() {
     [ -z "$ns" ] && continue
     [ "$ns" = "$NS" ] && continue
     if echo "$ports" | tr ',' '\n' | grep -qx "$node_port"; then
-      if [ "$svc" = "${RELEASE}-bijux-atlas" ] && [[ "$ns" == atlas-ops-* ]]; then
+      if [ "$svc" = "${RELEASE}-bijux-atlas" ] && [[ "$ns" == atlas-* ]]; then
         echo "removing stale NodePort owner: ${ns}/${svc} (port ${node_port})"
         helm -n "$ns" uninstall "$RELEASE" >/dev/null 2>&1 || true
         kubectl -n "$ns" delete svc "$svc" --ignore-not-found >/dev/null 2>&1 || true

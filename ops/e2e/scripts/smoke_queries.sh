@@ -19,6 +19,7 @@ LOCKFILE="$ROOT/ops/e2e/smoke/queries.lock"
 GOLDEN_STATUS="$ROOT/ops/e2e/smoke/goldens/status_codes.json"
 RESP_JSON="$SMOKE_DIR/responses.jsonl"
 RUN_ID="${RUN_ID:-${OPS_RUN_ID:-local}}"
+QUERY_RETRIES="${ATLAS_SMOKE_QUERY_RETRIES:-3}"
 : > "$RESP_JSON"
 
 if ! $CURL "$BASE_URL/healthz" >/dev/null 2>&1; then
@@ -54,9 +55,17 @@ while IFS= read -r q; do
       [ "$HAS_DATASETS" = "1" ] || continue
       ;;
   esac
-  status="$(curl --connect-timeout "$CURL_CONNECT_TIMEOUT" --max-time "$CURL_MAX_TIME" -sS -o "$SMOKE_DIR/body.tmp" -w '%{http_code}' "$BASE_URL$q" || true)"
-  body="$(cat "$SMOKE_DIR/body.tmp" 2>/dev/null || true)"
-  rm -f "$SMOKE_DIR/body.tmp"
+  status=""
+  body=""
+  for attempt in $(seq 1 "$QUERY_RETRIES"); do
+    status="$(curl --connect-timeout "$CURL_CONNECT_TIMEOUT" --max-time "$CURL_MAX_TIME" -sS -o "$SMOKE_DIR/body.tmp" -w '%{http_code}' "$BASE_URL$q" || true)"
+    body="$(cat "$SMOKE_DIR/body.tmp" 2>/dev/null || true)"
+    rm -f "$SMOKE_DIR/body.tmp"
+    if [ "$status" != "000" ] && [ -n "$status" ]; then
+      break
+    fi
+    sleep 1
+  done
   expected="$(python3 -c 'import json,sys; p=sys.argv[1]; f=sys.argv[2]; d=json.load(open(f)); print(d.get(p,\"\"))' "$q" "$GOLDEN_STATUS" 2>/dev/null || true)"
   if [ -n "$expected" ] && [ "$status" != "$expected" ]; then
     echo "status mismatch for $q expected=$expected got=$status" >&2

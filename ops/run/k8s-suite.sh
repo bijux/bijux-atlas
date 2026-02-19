@@ -6,6 +6,12 @@ cd "$ROOT"
 ops_env_load
 ops_entrypoint_start "ops-k8s-suite"
 PROFILE="${PROFILE:-kind}"
+if ! ops_context_guard "$PROFILE"; then
+  if [ "$PROFILE" = "kind" ]; then
+    echo "ops-k8s-suite: kind context missing; bootstrapping stack" >&2
+    make -s ops-stack-up PROFILE=kind
+  fi
+fi
 ops_context_guard "$PROFILE"
 ops_version_guard kind kubectl helm
 SUITE="${SUITE:-full}"

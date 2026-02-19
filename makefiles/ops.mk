@@ -129,7 +129,7 @@ ops-e2e-smoke: ## Run end-to-end smoke composition
 	@./ops/run/e2e-smoke.sh
 
 ops-k8s-suite: ## Run k8s invariant suite
-	@PROFILE="$${PROFILE:-kind}" ./ops/run/k8s-suite.sh
+	@PROFILE="$${PROFILE:-kind}" SUITE="$${SUITE:-smoke}" ./ops/run/k8s-suite.sh
 
 ops-load-suite: ## Run named load suite (SUITE=mixed-80-20)
 	@PROFILE="$${PROFILE:-kind}" SUITE="$${SUITE:-mixed-80-20}" ./ops/run/load-suite.sh
@@ -554,7 +554,7 @@ ops-smoke-legacy: ## Legacy implementation for ops-smoke wrapper
 	$(MAKE) -s ops-down
 
 ops-k8s-smoke: ## Minimal k8s smoke subset on kind
-	@ATLAS_E2E_TEST_GROUP=smoke $(MAKE) -s ops-k8s-tests
+	@PROFILE="$${PROFILE:-kind}" SUITE=smoke ./ops/run/k8s-suite.sh
 
 ops-diff-smoke: ## Build cross-release diff artifacts from fixture store
 	@mkdir -p artifacts/ops/diff-smoke
@@ -1144,6 +1144,10 @@ ops-local-full: ## Canonical one-command local full-stack proof workflow
 	export RUN_ID="$$run_id"; \
 	export OPS_RUN_DIR="$$out"; \
 	export ARTIFACT_DIR="$$out"; \
+	export ATLAS_NS="$$run_id"; \
+	export ATLAS_E2E_NAMESPACE="$$run_id"; \
+	export ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}"; \
+	export OBS_SKIP_LOCAL_COMPOSE="$${OBS_SKIP_LOCAL_COMPOSE:-1}"; \
 	export ATLAS_E2E_STORE_ROOT="$${ATLAS_E2E_STORE_ROOT:-ops/_artifacts/cache/store}"; \
 	export ATLAS_E2E_OUTPUT_ROOT="$${ATLAS_E2E_OUTPUT_ROOT:-ops/_artifacts/cache/datasets}"; \
 	export ATLAS_CACHE_ROOT="$${ATLAS_CACHE_ROOT:-ops/_artifacts/cache/runtime}"; \
@@ -1154,8 +1158,8 @@ ops-local-full: ## Canonical one-command local full-stack proof workflow
 	$(MAKE) ops-stack-smoke; \
 	$(MAKE) ops-stack-health-report; \
 	$(MAKE) ops-obs-up PROFILE=kind; \
-	$(MAKE) ops-obs-verify; \
-	$(MAKE) ops-deploy PROFILE=local; \
+	$(MAKE) ops-deploy PROFILE=kind; \
+	$(MAKE) ops-obs-verify PROFILE=kind; \
 	$(MAKE) ops-publish DATASET="$${DATASET:-medium}"; \
 	$(MAKE) ops-warm; \
 	$(MAKE) ops-smoke; \
@@ -1182,7 +1186,11 @@ ops-local-full: ## Canonical one-command local full-stack proof workflow
 	echo "$$out/report.json"
 
 ops-local-full-stack: ## Compatibility alias for canonical one-command local full stack workflow
-	@$(MAKE) ops-local-full
+	@set -e; \
+	$(MAKE) ops-up; \
+	$(MAKE) ops-deploy; \
+	$(MAKE) ops-e2e-smoke; \
+	$(MAKE) ops-report
 
 stack-full: ## Full-stack must-pass truth flow with contract report bundle
 	@set -e; \

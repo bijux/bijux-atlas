@@ -8,6 +8,12 @@ PASS="${MINIO_ROOT_PASSWORD:-minioadmin}"
 ENDPOINT="${MINIO_ENDPOINT:-http://minio.${NS}.svc.cluster.local:9000}"
 
 kubectl -n "$NS" delete pod minio-bootstrap --ignore-not-found >/dev/null 2>&1 || true
+for _ in 1 2 3 4 5 6 7 8 9 10; do
+  if ! kubectl -n "$NS" get pod minio-bootstrap >/dev/null 2>&1; then
+    break
+  fi
+  sleep 1
+done
 
 # Namespace bootstrap in fresh kind clusters can race default serviceaccount creation.
 for _ in 1 2 3 4 5 6 7 8 9 10; do
