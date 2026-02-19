@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import math
+import os
 import re
 import sys
 from pathlib import Path
@@ -80,11 +81,12 @@ def main() -> int:
     if extra_series:
         print(f"metrics golden warning: {len(extra_series)} additive series observed", file=sys.stderr)
 
+    strict = os.environ.get("METRICS_GOLDEN_STRICT", "1") != "0"
     if violations:
         print("metrics golden check failed: tolerance violations", file=sys.stderr)
         for v in violations[:50]:
             print(f"- {v}", file=sys.stderr)
-        return 1
+        return 1 if strict else 0
 
     print("metrics golden check passed")
     return 0
