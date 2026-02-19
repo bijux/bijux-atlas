@@ -152,7 +152,7 @@ nav:
           - Realdata Drills: operations/e2e/realdata-drills.md
           - Fixtures: operations/e2e/fixtures.md
           - Scripts: operations/e2e/scripts.md
-          - What E2E Is Not: operations/e2e/WHAT_E2E_IS_NOT.md
+          - What E2E Is Not: operations/e2e/what-e2e-is-not.md
       - Load:
           - Index: operations/load/INDEX.md
           - k6: operations/load/k6.md
@@ -240,7 +240,7 @@ nav:
       - Crate Boundary Graph: architecture/crate-boundary-dependency-graph.md
       - Crate Layout Contract: architecture/crate-layout-contract.md
       - Boundaries: architecture/boundaries.md
-      - Layer Boundary Rules: architecture/layering/BOUNDARY_RULES.md
+      - Layer Boundary Rules: architecture/layering/boundary-rules.md
       - Effects: architecture/effects.md
       - Boundary Maps: architecture/boundary-maps.md
   - Science:

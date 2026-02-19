@@ -23,6 +23,7 @@ ALLOWED_OPS_MARKERS = (
     "/runner/",
 )
 ALLOWED_OPS_PREFIXES = (
+    "ops/_meta/",
     "ops/e2e/realdata/",
     "ops/load/reports/",
     "ops/stack/kind/",
