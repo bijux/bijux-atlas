@@ -747,7 +747,7 @@ ops-rollback-drill: ## Compatibility alias for ops-drill-rollback
 
 ops-realdata: ## Run real-data e2e scenarios
 	@$(MAKE) -s ops-env-validate
-	@REALDATA_SOURCE="$${REALDATA_SOURCE:-ops/datasets/real-datasets.json}" ./ops/e2e/realdata/run_all.sh
+	@REALDATA_SOURCE="$${REALDATA_SOURCE:-ops/datasets/real-datasets.json}" ./ops/e2e/realdata/suite.sh --suite full
 
 ops-local-reset: ## Wipe local namespaces/store and restart deterministic local cluster baseline
 	@CONFIRM_RESET=YES $(MAKE) ops-reset
@@ -1048,25 +1048,25 @@ ops-obs-mode-full: ## Compatibility alias for cluster profile
 	@ATLAS_OBS_PROFILE=cluster ./ops/obs/scripts/install_pack.sh
 
 ops-observability-pack-tests: ## Run observability pack conformance tests
-	@./ops/obs/tests/run_all.sh
+	@./ops/obs/tests/suite.sh --suite full
 
 ops-observability-pack-lint: ## Run observability pack lint-only contract checks
 	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck
 	@./ops/obs/tests/test_contracts.sh
 
 observability-pack-test: ## Fast observability pack test (contracts + coverage)
-	@./ops/obs/tests/test_contracts.sh
-	@./ops/obs/tests/test_coverage.sh
+	@./ops/obs/tests/suite.sh --suite contracts
+	@./ops/obs/tests/suite.sh --suite coverage
 	@./ops/obs/scripts/write_pack_conformance_report.py
 
 observability-pack-drills: ## Full observability drill suite (outage matrix + contracts)
-	@./ops/obs/tests/test_coverage.sh
-	@./ops/obs/tests/test_drills.sh
-	@./ops/obs/tests/test_contracts.sh
+	@./ops/obs/tests/suite.sh --suite coverage
+	@./ops/obs/tests/suite.sh --suite drills
+	@./ops/obs/tests/suite.sh --suite contracts
 	@./ops/obs/scripts/write_pack_conformance_report.py
 
 ops-drill-suite: ## Run full observability drill manifest suite and emit report
-	@./ops/obs/tests/test_drills.sh
+	@./ops/obs/tests/suite.sh --suite drills
 
 ops-observability-pack-idempotency: ## Install observability pack twice to validate idempotency
 	@ATLAS_OBS_PROFILE="$${ATLAS_OBS_PROFILE:-kind}" ./ops/obs/scripts/install_pack.sh
@@ -1324,7 +1324,7 @@ e2e-perf:
 	@./ops/load/scripts/run_e2e_perf.sh
 
 e2e-realdata:
-	@REALDATA_SOURCE="$${REALDATA_SOURCE:-ops/datasets/real-datasets.json}" ./ops/e2e/realdata/run_all.sh
+	@REALDATA_SOURCE="$${REALDATA_SOURCE:-ops/datasets/real-datasets.json}" ./ops/e2e/realdata/suite.sh --suite full
 
 observability-check:
 	@$(MAKE) ops-metrics-check

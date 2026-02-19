@@ -9,13 +9,18 @@ OUT_DIR="$ROOT/artifacts/observability"
 OPS_OBS_DIR="$ROOT/artifacts/ops/obs"
 mkdir -p "$OUT_DIR" "$OPS_OBS_DIR"
 
-mapfile -t DRILLS < <(python3 - <<'PY'
+DRILLS=()
+while IFS= read -r line; do
+  [ -n "$line" ] && DRILLS+=("$line")
+done <<EOF
+$(python3 - <<'PY'
 import json
-for d in json.load(open('ops/obs/drills/drills.json')).get('drills',[]):
+for d in json.load(open('ops/obs/drills/drills.json')).get('drills', []):
     if d.get('outage_matrix'):
         print(d['name'])
 PY
 )
+EOF
 
 for drill in "${DRILLS[@]}"; do
   echo "running outage drill: $drill"

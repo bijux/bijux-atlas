@@ -28,26 +28,23 @@ Does not duplicate k6 script implementation.
 - Suite naming convention: `kebab-case`, unique, deterministic.
 - Required suite fields: `purpose`, `kind`, `scenario|script`, `thresholds`, `expected_metrics`, `must_pass`.
 - Result contract: `ops/load/contracts/result-schema.json`
-- `mixed.json`: baseline mixed traffic distribution.
-- `spike.json`: burst overload behavior.
-- `cold-start.json`: startup latency budget.
-- `stampede.json`: thundering herd dataset requests.
-- `store-outage-under-spike.json`: store degradation behavior during spike.
-- `pod-churn.json`: restart churn behavior.
-- `cheap-only-survival.json`: overload cheap-query survival.
-- `response-size-abuse.json`: payload guard enforcement.
-- `multi-release.json`: cross-release query semantics.
-- `diff-heavy.json`: diff endpoint heavy workload profile.
-- `mixed-gene-sequence.json`: combined gene summary and sequence request mix.
-- `load-under-rollout.json`: load while deployment rollout executes.
-- `load-under-rollback.json`: load while deployment rollback executes.
-- `multi-dataset-hotset.json`: hotset cache behavior.
-- `large-dataset-simulation.json`: large dataset load profile.
-- `sharded-fanout.json`: shard fanout caps.
-- `soak-30m.json`: long soak with memory growth checks.
-- `redis-optional.json`: redis disabled fallback.
+- `mixed`: baseline mixed traffic distribution.
+- `spike-overload-proof`: burst overload behavior.
+- `cold-start-p99`: startup latency budget.
+- `store-outage-under-spike`: store degradation behavior during spike.
+- `pod-churn`: restart churn behavior.
+- `cheap-only-survival`: overload cheap-query survival.
+- `response-size-abuse`: payload guard enforcement.
+- `multi-release`: cross-release query semantics.
+- `diff-heavy`: diff endpoint heavy workload profile.
+- `mixed-gene-sequence`: combined gene summary and sequence request mix.
+- `load-under-rollout`: load while deployment rollout executes.
+- `load-under-rollback`: load while deployment rollback executes.
+- `sharded-fanout`: shard fanout caps.
+- `soak-30m`: long soak with memory growth checks.
+- `redis-optional`: redis disabled fallback.
 - `ops/load/evaluations/`: non-gating experiment space with strict promotion policy.
-- `catalog-federated.json`: federated registry behavior.
+- `catalog-federated`: federated registry behavior.
 
 ## Budgets
 

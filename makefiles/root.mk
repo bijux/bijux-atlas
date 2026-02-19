@@ -104,6 +104,7 @@ LOCAL_FULL_ENV := ISO_ROOT=$(LOCAL_FULL_ISO_ROOT) CARGO_TARGET_DIR=$(LOCAL_FULL_
 gates: ## Run public-surface and docs entrypoint gates
 	@python3 ./scripts/layout/check_public_surface.py
 	@python3 ./scripts/docs/check_public_surface_docs.py
+	@python3 ./scripts/docs/check_suite_id_docs.py
 
 explain: ## Explain whether TARGET is a public make target
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make explain TARGET=<name>" >&2; exit 2; }
@@ -249,6 +250,8 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@python3 ./scripts/layout/check_make_public_scripts.py
 	@python3 ./scripts/layout/check_scripts_buckets.py
 	@python3 ./scripts/layout/check_script_relative_calls.py
+	@python3 ./scripts/layout/check_script_naming_convention.py
+	@python3 ./scripts/layout/check_duplicate_script_intent.py
 	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
 	@if command -v shellcheck >/dev/null 2>&1; then find scripts/public scripts/internal scripts/dev -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional for local scripts lint)"; fi
 	@if command -v shfmt >/dev/null 2>&1; then shfmt -d scripts ops/load/scripts; else echo "shfmt not installed (optional)"; fi

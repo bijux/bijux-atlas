@@ -32,21 +32,21 @@ Section pages:
 - `runtime-policy.md`
 - `perf-acceptance-checklist.md`
 
-Required k6 scenarios:
+Required load suite IDs:
 
-- `mixed.json`
-- `spike.json`
-- `cold-start.json`
-- `stampede.json`
-- `store-outage-under-spike.json`
-- `noisy-neighbor-cpu-throttle.json`
-- `pod-churn.json`
-- `response-size-abuse.json`
-- `multi-release.json`
-- `sharded-fanout.json`
-- `diff-heavy.json`
-- `mixed-gene-sequence.json`
-- `soak-30m.json`
+- `mixed`
+- `cheap-only-survival`
+- `warm-steady-state-p99`
+- `cold-start-p99`
+- `spike-overload-proof`
+- `store-outage-under-spike`
+- `pod-churn`
+- `response-size-abuse`
+- `multi-release`
+- `sharded-fanout`
+- `diff-heavy`
+- `mixed-gene-sequence`
+- `soak-30m`
 
 ## Failure modes
 

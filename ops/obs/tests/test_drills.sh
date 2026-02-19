@@ -5,12 +5,17 @@ ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 
 require_bin python3
 
-mapfile -t DRILLS < <(python3 - <<'PY'
+DRILLS=()
+while IFS= read -r line; do
+  [ -n "$line" ] && DRILLS+=("$line")
+done <<EOF
+$(python3 - <<'PY'
 import json
-for d in json.load(open('ops/obs/drills/drills.json')).get('drills',[]):
+for d in json.load(open('ops/obs/drills/drills.json')).get('drills', []):
     print(d['name'])
 PY
 )
+EOF
 
 for drill in "${DRILLS[@]}"; do
   echo "running drill from manifest: $drill"

@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "owner": "bijux-atlas-operations",
+  "suites": [
+    {
+      "id": "contracts",
+      "description": "Observability contract and profile checks",
+      "tests": ["test_contracts.sh", "test_profiles.sh"]
+    },
+    {
+      "id": "coverage",
+      "description": "Metrics/traces/log coverage checks",
+      "tests": ["test_coverage.sh"]
+    },
+    {
+      "id": "drills",
+      "description": "Drill execution suite",
+      "tests": ["test_drills.sh"]
+    },
+    {
+      "id": "full",
+      "description": "Full observability test suite",
+      "tests": ["test_contracts.sh", "test_profiles.sh", "test_coverage.sh", "test_drills.sh"]
+    }
+  ]
+}
