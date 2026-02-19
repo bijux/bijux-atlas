@@ -116,6 +116,39 @@ ops-obs-verify: ## Verify observability pack contracts and readiness
 ops-check: ## Ops lint + schema + metadata validation
 	@./ops/run/ops-check.sh
 
+internal/ops/check: ## Fast ops verification (no cluster bring-up)
+	@start="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; status=pass; fail=""; \
+	if ! $(MAKE) -s ops-check; then status=fail; fail="ops-check failed"; fi; \
+	end="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; \
+	python3 ./scripts/layout/write_make_area_report.py --path "$${ISO_ROOT:-artifacts/isolate/ops/$${RUN_ID:-ops-check}}/report.ops.check.json" --lane "ops/check" --status "$$status" --start "$$start" --end "$$end" --artifact "$${ISO_ROOT:-artifacts/isolate/ops/$${RUN_ID:-ops-check}}" --failure "$$fail" >/dev/null; \
+	[ "$$status" = "pass" ] || { $(call fail_banner,ops/check); exit 1; }
+
+internal/ops/smoke: ## Explicit ops smoke target
+	@$(MAKE) -s ops-k8s-smoke
+
+internal/ops/suite: ## Explicit ops suite target
+	@$(MAKE) -s ops-k8s-suite
+
+internal/ops/fmt: ## Uniform ops format target
+	@$(MAKE) -s ops-fmt
+
+internal/ops/lint: ## Uniform ops lint target
+	@$(MAKE) -s ops-lint
+
+internal/ops/test: ## Uniform ops test target
+	@$(MAKE) -s internal/ops/smoke
+
+internal/ops/build: ## Uniform ops build/generate target
+	@$(MAKE) -s ops-gen
+
+internal/ops/clean: ## Uniform ops clean target (generated outputs only)
+	@$(MAKE) -s ops-clean
+
+internal/ops/all: ## Uniform ops all target
+	@$(MAKE) -s internal/ops/check
+	@$(MAKE) -s internal/ops/lint
+	@$(MAKE) -s internal/ops/smoke
+
 ops-check-legacy: ## Legacy implementation for ops-check wrapper
 	@$(MAKE) -s ops-lint
 	@$(MAKE) -s ops-contracts-check

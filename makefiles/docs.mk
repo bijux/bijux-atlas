@@ -97,4 +97,31 @@ docs-check: ## Docs contract check alias (same as docs-build)
 docs: ## Public docs alias (maps to docs-check only)
 	@$(MAKE) docs-check
 
-.PHONY: docs docs-all docs-build docs-check docs-serve docs-freeze docs-hardening docs-req-lock-refresh _docs-venv
+internal/docs/check: ## Fast docs verification
+	@start="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; status=pass; fail=""; \
+	if ! $(MAKE) docs-freeze; then status=fail; fail="docs-freeze failed"; fi; \
+	end="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; \
+	python3 ./scripts/layout/write_make_area_report.py --path "$${ISO_ROOT:-artifacts/isolate/docs/$${RUN_ID:-docs-check}}/report.docs.check.json" --lane "docs/check" --status "$$status" --start "$$start" --end "$$end" --artifact "$${ISO_ROOT:-artifacts/isolate/docs/$${RUN_ID:-docs-check}}" --failure "$$fail" >/dev/null; \
+	[ "$$status" = "pass" ] || { $(call fail_banner,docs/check); exit 1; }
+
+internal/docs/build: ## Build docs artifacts
+	@$(MAKE) docs-build
+
+internal/docs/fmt: ## Docs formatting helpers
+	@./scripts/docs/render_diagrams.sh
+
+internal/docs/lint: ## Docs lint checks
+	@$(MAKE) docs-lint-names
+
+internal/docs/test: ## Docs tests/contract checks
+	@$(MAKE) internal/docs/check
+
+internal/docs/clean: ## Clean docs generated outputs only
+	@rm -rf artifacts/docs
+
+internal/docs/all: ## Uniform docs all target
+	@$(MAKE) internal/docs/check
+	@$(MAKE) internal/docs/lint
+	@$(MAKE) internal/docs/build
+
+.PHONY: docs docs-all docs-build docs-check docs-serve docs-freeze docs-hardening docs-req-lock-refresh internal/docs/check internal/docs/build internal/docs/fmt internal/docs/lint internal/docs/test internal/docs/clean internal/docs/all _docs-venv
