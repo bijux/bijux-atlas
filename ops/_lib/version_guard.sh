@@ -3,6 +3,11 @@
 set -euo pipefail
 
 ops_version_guard() {
-  local tools=("${@:-kind k6 helm kubectl jq yq}")
+  local tools=()
+  if [ "$#" -gt 0 ]; then
+    tools=("$@")
+  else
+    tools=(kind k6 helm kubectl jq yq)
+  fi
   python3 ./scripts/layout/check_tool_versions.py "${tools[@]}"
 }
