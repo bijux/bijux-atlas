@@ -38,6 +38,6 @@ ready_bad="$(curl -s -o /dev/null -w '%{http_code}' "$BASE_URL/readyz" || true)"
 
 helm upgrade --install "$RELEASE" "$CHART" -n "$NS" --create-namespace -f "$VALUES" -f "$TMP_GOOD" >/dev/null
 wait_ready
-curl -fsS "$BASE_URL/readyz" >/dev/null
+wait_for_http "$BASE_URL/readyz" 200 120
 
 echo "readiness catalog refresh gate passed"

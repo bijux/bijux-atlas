@@ -17,6 +17,7 @@
       "test_hpa.sh",
       "test_rollout.sh",
       "test_rollback.sh",
+      "test_rbac_minimalism.sh",
       "test_image_digest_pinning.sh",
       "test_ingress_profile.sh"
     ],
@@ -33,18 +34,32 @@
       "test_liveness_under_load.sh",
       "test_offline_profile.sh",
       "test_redis_rate_limit.sh",
+      "test_redis_optional.sh",
+      "test_disk_pressure.sh",
+      "test_memory_pressure.sh",
+      "test_store_outage_under_load.sh",
       "test_resource_limits.sh",
       "test_storage_modes.sh"
     ],
     "store": [
-      "test_multi_registry_profile.sh"
+      "test_multi_registry_profile.sh",
+      "test_catalog_publish_job.sh",
+      "test_warmup_job.sh",
+      "test_node_local_cache_profile.sh",
+      "test_store_bootstrap_idempotent.sh",
+      "test_store_bucket_policy.sh",
+      "test_store_reachable.sh"
     ],
     "observability": [
       "test_service_monitor.sh",
-      "test_prometheus_rule.sh"
+      "test_prometheus_rule.sh",
+      "test_logs_json.sh",
+      "test_redis_backend_metric.sh"
     ],
     "stack": [
-      "test_cluster_sanity.sh"
+      "test_cluster_sanity.sh",
+      "test_kind_image_resolution.sh",
+      "test_kind_version_drift.sh"
     ]
   }
 }

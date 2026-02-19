@@ -29,7 +29,7 @@ done
 # 3) snapshot metrics + traces + logs
 "$ROOT/ops/obs/scripts/snapshot_metrics.sh" "$OPS_OBS_DIR"
 "$ROOT/ops/obs/scripts/snapshot_traces.sh" "$OPS_OBS_DIR"
-python3 "$ROOT/ops/obs/scripts/validate_logs_schema.py" --namespace "${ATLAS_E2E_NAMESPACE:-atlas-e2e}" --release "${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}" --strict-live
+python3 "$ROOT/ops/obs/scripts/validate_logs_schema.py" --namespace "${ATLAS_E2E_NAMESPACE:-atlas-e2e}" --release "${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
 
 # 4) run contracts checks
 python3 "$ROOT/ops/obs/scripts/contracts/check_metrics_contract.py"

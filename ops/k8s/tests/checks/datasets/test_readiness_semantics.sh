@@ -13,7 +13,7 @@ server:
 catalog:
   endpoint: "http://non-existent-catalog.invalid/catalog.json"
 YAML
-helm upgrade --install "$RELEASE" "$CHART" -n "$NS" --create-namespace -f "$VALUES" -f "$TMP1" >/dev/null
+install_chart -f "$TMP1"
 sleep 10
 with_port_forward 18080
 code1="$(curl -s -o /dev/null -w '%{http_code}' "$BASE_URL/readyz" || true)"
@@ -28,6 +28,7 @@ catalog:
   endpoint: "http://non-existent-catalog.invalid/catalog.json"
 YAML
 install_chart -f "$TMP2"
+wait_ready
 code2="$(curl -s -o /dev/null -w '%{http_code}' "$BASE_URL/readyz" || true)"
 [ "$code2" = "200" ] || { echo "expected 200 in cached-only mode, got $code2" >&2; exit 1; }
 
