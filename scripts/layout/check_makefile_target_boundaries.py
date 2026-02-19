@@ -16,6 +16,8 @@ SURFACE = ROOT / "configs/ops/public-surface.json"
 TARGET_RE = re.compile(r"^([a-zA-Z0-9_.-]+):(?:\s|$)", flags=re.M)
 ALLOWED_NON_ROOT_PREFIXES = (
     "_",
+    "_internal.",
+    "internal/",
     "ci-",
     "ops-",
     "dev-",
