@@ -87,6 +87,17 @@ Required keys:
 - `schema_version`
 - `areas`
 
+## `ops/_schemas/meta/pins.schema.json`
+
+Required keys:
+- `schema_version`
+- `contract_version`
+- `tools`
+- `images`
+- `helm`
+- `datasets`
+- `policy`
+
 ## `ops/_schemas/obs/drill-manifest.schema.json`
 
 Required keys:

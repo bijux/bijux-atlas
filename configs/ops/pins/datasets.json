@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "datasets": {
+    "lockfile": "ops/datasets/manifest.lock",
+    "entries": [
+      {
+        "name": "medium",
+        "source_url": "ops/datasets/manifest.lock",
+        "pinned_at": "2026-02-19",
+        "owner": "data-platform"
+      },
+      {
+        "name": "real1",
+        "source_url": "ops/datasets/manifest.lock",
+        "pinned_at": "2026-02-19",
+        "owner": "data-platform"
+      }
+    ]
+  }
+}

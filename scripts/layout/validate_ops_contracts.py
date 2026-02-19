@@ -97,6 +97,7 @@ def main() -> int:
         ("ops/_schemas/stack/version-manifest.schema.json", "ops/stack/version-manifest.json"),
         ("ops/_schemas/meta/ownership.schema.json", "ops/_meta/ownership.json"),
         ("ops/_schemas/meta/layer-contract.schema.json", "ops/_meta/layer-contract.json"),
+        ("ops/_schemas/meta/pins.schema.json", "configs/ops/pins.json"),
         ("ops/_schemas/load/pinned-queries-lock.schema.json", "ops/load/queries/pinned-v1.lock"),
         ("ops/_schemas/datasets/manifest-lock.schema.json", "ops/datasets/manifest.lock"),
         ("ops/_schemas/e2e-scenarios.schema.json", "ops/e2e/scenarios/scenarios.json"),
