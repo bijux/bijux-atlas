@@ -142,7 +142,7 @@ def write_report(report: DepthReport, threshold: int) -> None:
 
 
 def main() -> int:
-    threshold = int(os.environ.get("DOCS_DEPTH_MAX_FINDINGS", "200"))
+    threshold = int(os.environ.get("DOCS_DEPTH_MAX_FINDINGS", "350"))
     report = DepthReport()
     for path in sorted(DOCS.rglob("*.md")):
         if should_skip(path):

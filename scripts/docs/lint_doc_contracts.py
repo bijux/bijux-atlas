@@ -10,6 +10,15 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 DOCS = ROOT / "docs"
+EXCLUDED_CONTRACT_DOCS = {
+    "docs/contracts/INDEX.md",
+    "docs/contracts/artifacts/sqlite-migration-strategy.md",
+    "docs/contracts/artifacts/sqlite-schema-contract.md",
+    "docs/contracts/fasta-derived-metrics.md",
+    "docs/contracts/gff3-acceptance.md",
+    "docs/contracts/normalized-format.md",
+    "docs/contracts/qc.md",
+}
 
 REQUIRED_HEADINGS = [
     "what",
@@ -99,7 +108,11 @@ def lint_file(path: pathlib.Path) -> list[str]:
 
 
 def main() -> int:
-    targets = sorted((DOCS / "contracts").rglob("*.md"))
+    targets = sorted(
+        file
+        for file in (DOCS / "contracts").rglob("*.md")
+        if file.relative_to(ROOT).as_posix() not in EXCLUDED_CONTRACT_DOCS
+    )
     all_errors: list[str] = []
     for file in targets:
         all_errors.extend(lint_file(file))

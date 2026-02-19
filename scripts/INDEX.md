@@ -11,19 +11,19 @@ Generated file. Do not edit manually.
 | `scripts/bin/require-isolate` | `platform` | `public` | `_audit`, `_check`, `_coverage`, `_fmt`, `_lint-clippy`, `_lint-configs`, `_lint-docs`, `_lint-rustfmt`, `_test`, `_test-all`, `audit`, `check`, `cli-command-surface`, `coverage`, `crate-docs-contract`, `crate-structure`, `fmt`, `lint`, `test`, `test-all` |
 | `scripts/bootstrap/install_tools.sh` | `developer-experience` | `public` | `bootstrap-tools` |
 | `scripts/contracts/check_all.sh` | `contracts` | `public` | `ssot-check` |
-| `scripts/contracts/check_breaking_contract_change.py` | `contracts` | `internal` | `api-contract-check`, `ci-openapi-drift` |
+| `scripts/contracts/check_breaking_contract_change.py` | `contracts` | `internal` | - |
 | `scripts/contracts/check_chart_values_contract.py` | `contracts` | `public` | `chart-validate`, `ops-values-validate` |
 | `scripts/contracts/check_cli_ssot.py` | `contracts` | `internal` | - |
 | `scripts/contracts/check_config_keys_contract.py` | `contracts` | `internal` | - |
 | `scripts/contracts/check_contract_drift.py` | `contracts` | `internal` | - |
-| `scripts/contracts/check_endpoints_contract.py` | `contracts` | `internal` | `api-contract-check` |
-| `scripts/contracts/check_error_codes_contract.py` | `contracts` | `internal` | `api-contract-check` |
-| `scripts/contracts/check_sqlite_indexes_contract.py` | `contracts` | `internal` | `critical-query-check` |
-| `scripts/contracts/check_v1_surface.py` | `contracts` | `internal` | `api-contract-check` |
+| `scripts/contracts/check_endpoints_contract.py` | `contracts` | `internal` | - |
+| `scripts/contracts/check_error_codes_contract.py` | `contracts` | `internal` | - |
+| `scripts/contracts/check_sqlite_indexes_contract.py` | `contracts` | `internal` | - |
+| `scripts/contracts/check_v1_surface.py` | `contracts` | `internal` | - |
 | `scripts/contracts/format_contracts.py` | `contracts` | `internal` | - |
-| `scripts/contracts/gen_openapi.py` | `contracts` | `internal` | `api-contract-check` |
+| `scripts/contracts/gen_openapi.py` | `contracts` | `internal` | - |
 | `scripts/contracts/generate_chart_values_schema.py` | `contracts` | `public` | `chart-validate`, `ops-values-validate` |
-| `scripts/contracts/generate_contract_artifacts.py` | `contracts` | `public` | `docs-freeze`, `telemetry-contracts` |
+| `scripts/contracts/generate_contract_artifacts.py` | `contracts` | `public` | `telemetry-contracts` |
 | `scripts/demo/demo.sh` | `platform` | `private` | - |
 | `scripts/docs/ban_legacy_terms.sh` | `docs-governance` | `public` | `docs`, `docs-lint-names` |
 | `scripts/docs/check-durable-naming.py` | `docs-governance` | `public` | `rename-lint` |
@@ -38,6 +38,7 @@ Generated file. Do not edit manually.
 | `scripts/docs/check_doc_naming.sh` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/check_docker_entrypoints.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/check_docs_deterministic.py` | `docs-governance` | `public` | `docs` |
+| `scripts/docs/check_docs_freeze_drift.py` | `docs-governance` | `public` | `docs-freeze` |
 | `scripts/docs/check_docs_make_only.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/check_docs_make_targets_exist.py` | `docs-governance` | `public` | `docs` |
 | `scripts/docs/check_duplicate_topics.sh` | `docs-governance` | `public` | `docs`, `rename-lint` |
@@ -144,6 +145,12 @@ Generated file. Do not edit manually.
 | `scripts/public/config-drift-check.py` | `platform` | `public` | `config-drift`, `config-validate` |
 | `scripts/public/config-print.py` | `platform` | `public` | `config-print` |
 | `scripts/public/config-validate.py` | `platform` | `public` | `config-validate` |
+| `scripts/public/contracts/check_breaking_contract_change.py` | `platform` | `public` | `api-contract-check`, `ci-openapi-drift` |
+| `scripts/public/contracts/check_endpoints_contract.py` | `platform` | `public` | `api-contract-check` |
+| `scripts/public/contracts/check_error_codes_contract.py` | `platform` | `public` | `api-contract-check` |
+| `scripts/public/contracts/check_sqlite_indexes_contract.py` | `platform` | `public` | `critical-query-check` |
+| `scripts/public/contracts/check_v1_surface.py` | `platform` | `public` | `api-contract-check` |
+| `scripts/public/contracts/gen_openapi.py` | `platform` | `public` | `api-contract-check` |
 | `scripts/public/generate-config-key-registry.py` | `platform` | `public` | `config-validate` |
 | `scripts/public/no-network-unit-tests.sh` | `platform` | `public` | - |
 | `scripts/public/observability/check_alerts_contract.py` | `platform` | `public` | `ops-alerts-validate`, `ops-metrics-check` |

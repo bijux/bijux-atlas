@@ -20,7 +20,7 @@ PATTERNS=(
   "\\bphase\\s+contract\\b"
   "\\b(step|task|stage|iteration|round)\\s+[0-9ivx]+\\b"
   "\\bvnext\\s+placeholder\\b"
-  "\\btemporary\\b"
+  "\\btemporary\\b" # ATLAS-EXC-0101: scanner pattern token for detecting forbidden legacy wording.
   "\\bwip\\b"
 )
 

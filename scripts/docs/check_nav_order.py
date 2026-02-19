@@ -14,12 +14,12 @@ expected = [
     "Quickstart",
     "Reference",
     "Contracts",
+    "API",
     "Operations",
     "Development",
     "Architecture",
     "Science",
     "Generated",
-    "ADRs",
 ]
 nav_start = mkdocs.find("\nnav:\n")
 if nav_start == -1:

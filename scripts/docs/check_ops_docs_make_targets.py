@@ -20,12 +20,13 @@ for line in help_out.splitlines():
     targets.extend(line.strip().split())
 
 ops_targets = [t for t in sorted(set(targets)) if t.startswith("ops-") or t.startswith("e2e-") or t == "observability-check"]
-pattern = re.compile(r"`(" + "|".join(re.escape(t) for t in ops_targets) + r")`")
+target_pattern = re.compile(r"`(" + "|".join(re.escape(t) for t in ops_targets) + r")`")
+make_cmd_pattern = re.compile(r"\bmake\s+(" + "|".join(re.escape(t) for t in ops_targets) + r")\b")
 
 errors: list[str] = []
 for md in sorted(OPS_DOCS.rglob("*.md")):
     text = md.read_text(encoding="utf-8", errors="ignore")
-    if pattern.search(text):
+    if target_pattern.search(text) or make_cmd_pattern.search(text):
         pass
     else:
         errors.append(f"{md.relative_to(ROOT)}: missing ops make target reference")
