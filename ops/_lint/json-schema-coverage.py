@@ -17,6 +17,7 @@ SCHEMA_COVERED = {
     "ops/_generated/report.unified.example.json",
     "ops/stack/version-manifest.json",
     "ops/_meta/ownership.json",
+    "ops/_meta/layer-contract.json",
     "ops/load/queries/pinned-v1.lock",
     "ops/datasets/manifest.lock",
     "ops/e2e/scenarios/scenarios.json",

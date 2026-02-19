@@ -1,0 +1,104 @@
+{
+  "compatibility": {
+    "current_major": 1,
+    "notes": [
+      "Consumers must ignore unknown fields.",
+      "Required keys are validated by ops/_schemas/meta/layer-contract.schema.json."
+    ],
+    "policy": "Minor/patch updates are backward-compatible; major updates may remove or rename fields."
+  },
+  "contract_version": "1.0.0",
+  "labels": {
+    "required": [
+      "app.kubernetes.io/name",
+      "app.kubernetes.io/instance"
+    ],
+    "required_annotations": []
+  },
+  "namespaces": {
+    "e2e": "atlas-e2e",
+    "k8s": "atlas-e2e",
+    "stack": "atlas-e2e"
+  },
+  "ports": {
+    "atlas": {
+      "container": 8080,
+      "service": 8080
+    },
+    "grafana": {
+      "container": 3000,
+      "service": 3000
+    },
+    "minio": {
+      "api": 9000,
+      "console": 9001
+    },
+    "otel": {
+      "grpc": 4317,
+      "http": 4318
+    },
+    "prometheus": {
+      "container": 9090,
+      "service": 9090
+    },
+    "redis": {
+      "container": 6379,
+      "service": 6379
+    }
+  },
+  "release_metadata": {
+    "defaults": {
+      "app_version": "0.1.0",
+      "chart_name": "bijux-atlas",
+      "chart_version": "0.1.0",
+      "namespace": "atlas-e2e",
+      "release_name": "atlas-e2e"
+    },
+    "required_fields": [
+      "release_name",
+      "namespace",
+      "chart_name",
+      "chart_version",
+      "app_version"
+    ]
+  },
+  "services": {
+    "atlas": {
+      "selector": {
+        "app.kubernetes.io/instance": "atlas-e2e",
+        "app.kubernetes.io/name": "bijux-atlas"
+      },
+      "service_name": "atlas-e2e-bijux-atlas"
+    },
+    "grafana": {
+      "selector": {
+        "app": "grafana"
+      },
+      "service_name": "grafana"
+    },
+    "minio": {
+      "selector": {
+        "app": "minio"
+      },
+      "service_name": "minio"
+    },
+    "otel": {
+      "selector": {
+        "app": "otel-collector"
+      },
+      "service_name": "otel-collector"
+    },
+    "prometheus": {
+      "selector": {
+        "app": "prometheus"
+      },
+      "service_name": "prometheus"
+    },
+    "redis": {
+      "selector": {
+        "app": "redis"
+      },
+      "service_name": "redis"
+    }
+  }
+}

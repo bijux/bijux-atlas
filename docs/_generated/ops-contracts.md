@@ -29,6 +29,7 @@ Generated from ops contracts and schemas.
 - `ops/_schemas/load/pinned-queries-lock.schema.json`
 - `ops/_schemas/load/suite-manifest.schema.json`
 - `ops/_schemas/meta/artifact-allowlist.schema.json`
+- `ops/_schemas/meta/layer-contract.schema.json`
 - `ops/_schemas/meta/ownership.schema.json`
 - `ops/_schemas/obs/drill-manifest.schema.json`
 - `ops/_schemas/report/schema.json`
