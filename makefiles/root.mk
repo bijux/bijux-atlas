@@ -101,6 +101,20 @@ LOCAL_ENV := ISO_ROOT=$(LOCAL_ISO_ROOT) CARGO_TARGET_DIR=$(LOCAL_ISO_ROOT)/targe
 LOCAL_FULL_ISO_ROOT := $(CURDIR)/artifacts/isolates/local-full
 LOCAL_FULL_ENV := ISO_ROOT=$(LOCAL_FULL_ISO_ROOT) CARGO_TARGET_DIR=$(LOCAL_FULL_ISO_ROOT)/target CARGO_HOME=$(LOCAL_FULL_ISO_ROOT)/cargo-home TMPDIR=$(LOCAL_FULL_ISO_ROOT)/tmp TMP=$(LOCAL_FULL_ISO_ROOT)/tmp TEMP=$(LOCAL_FULL_ISO_ROOT)/tmp
 
+gates: ## Run public-surface and docs entrypoint gates
+	@python3 ./scripts/layout/check_public_surface.py
+	@python3 ./scripts/docs/check_public_surface_docs.py
+
+explain: ## Explain whether TARGET is a public make target
+	@[ -n "$${TARGET:-}" ] || { echo "usage: make explain TARGET=<name>" >&2; exit 2; }
+	@python3 ./scripts/layout/explain_public_target.py "$${TARGET}"
+
+root: ## Deterministic CI-fast local gate
+	@$(MAKE) ci
+
+root-local: ## Local superset gate (parallel lanes follow in dedicated workflow)
+	@$(MAKE) local-full
+
 ci: ## Run CI-equivalent meta pipeline mapped to workflow jobs
 	@mkdir -p "$(CI_ISO_ROOT)/target" "$(CI_ISO_ROOT)/cargo-home" "$(CI_ISO_ROOT)/tmp"
 	@$(CI_ENV) $(MAKE) ci-root-layout
@@ -223,7 +237,7 @@ release-update-compat-matrix:
 	@[ -n "$$TAG" ] || { echo "usage: make release-update-compat-matrix TAG=<tag>"; exit 2; }
 	@./scripts/release/update-compat-matrix.sh "$$TAG"
 
-.PHONY: help layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-graph scripts-lint scripts-format scripts-test scripts-audit scripts-clean artifacts-index artifacts-clean isolate-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts rename-lint docs-lint-names doctor dataset-id-lint config-validate config-print config-drift fetch-real-datasets ssot-check policy-lint policy-schema-drift policy-audit policy-enforcement-status policy-allow-env-lint ops-policy-audit policy-drift-diff release-update-compat-matrix ci local local-full contracts hygiene architecture-check clean deep-clean debug bump release-dry-run release
+.PHONY: help gates explain root root-local layout-check layout-migrate governance-check bootstrap bootstrap-tools scripts-index scripts-graph scripts-lint scripts-format scripts-test scripts-audit scripts-clean artifacts-index artifacts-clean isolate-clean docker-build docker-smoke chart-package chart-verify no-direct-scripts rename-lint docs-lint-names doctor dataset-id-lint config-validate config-print config-drift fetch-real-datasets ssot-check policy-lint policy-schema-drift policy-audit policy-enforcement-status policy-allow-env-lint ops-policy-audit policy-drift-diff release-update-compat-matrix ci local local-full contracts hygiene architecture-check clean deep-clean debug bump release-dry-run release
 
 
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)

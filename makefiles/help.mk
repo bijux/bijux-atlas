@@ -3,24 +3,6 @@ SHELL := /bin/sh
 .DEFAULT_GOAL := help
 
 help: ## Show categorized make targets
-	@printf '%s\n' \
-	  '$(REGISTRY_DEV_DESC):' \
-	  '  $(REGISTRY_DEV_TARGETS)' \
-	  '$(REGISTRY_DOCS_DESC):' \
-	  '  $(REGISTRY_DOCS_TARGETS)' \
-	  '$(REGISTRY_CONTRACTS_DESC):' \
-	  '  $(REGISTRY_CONTRACTS_TARGETS)' \
-	  '$(REGISTRY_OPS_QUICK_DESC):' \
-	  '  $(REGISTRY_OPS_QUICK_TARGETS)' \
-	  '$(REGISTRY_OPS_DESC):' \
-	  '  $(REGISTRY_OPS_TARGETS)' \
-	  '$(REGISTRY_RELEASE_DESC):' \
-	  '  $(REGISTRY_RELEASE_TARGETS)' \
-	  '$(REGISTRY_CI_DESC):' \
-	  '  $(REGISTRY_CI_TARGETS)' \
-	  '$(REGISTRY_TOOLING_DESC):' \
-	  '  $(REGISTRY_TOOLING_TARGETS)' \
-	  '$(REGISTRY_META_DESC):' \
-	  '  $(REGISTRY_META_TARGETS)'
+	@python3 ./scripts/layout/render_public_help.py
 
 .PHONY: help

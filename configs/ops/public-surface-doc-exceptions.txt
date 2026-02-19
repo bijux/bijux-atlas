@@ -1,0 +1,2 @@
+# format: <doc-path>::make <target>
+# format: <doc-path>::./ops/<script>
