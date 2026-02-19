@@ -4,7 +4,7 @@
 
 ## What
 
-Defines the supported E2E interface through `make ops-*` targets.
+Defines the supported E2E interface through `ops/run/e2e.sh --suite ...`.
 
 ## Why
 
@@ -12,10 +12,9 @@ Prevents direct script coupling and keeps operational entrypoints stable.
 
 ## Contracts
 
-- Stack lifecycle: `ops-up`, `ops-down`, `ops-reset`
-- Dataset flow: `ops-publish-medium`, `ops-deploy`, `ops-warm`
-- Runtime checks: `ops-smoke`, `ops-metrics-check`, `ops-traces-check`
-- Suites: `ops-k8s-tests`, `ops-load-smoke`, `ops-load-full`, `ops-realdata`
+- Canonical runner: `./ops/run/e2e.sh --suite smoke|k8s-suite|realdata`
+- Modes: `--fast`, `--no-deploy`, `--profile <id>`
+- Suite SSOT: `ops/e2e/suites/suites.json`
 
 ## Failure modes
 
@@ -24,8 +23,8 @@ Direct script usage in docs or workflows causes unsupported entrypoint drift.
 ## How to verify
 
 ```bash
-$ make ops-up ops-deploy ops-warm ops-smoke
-$ make ops-k8s-tests
+$ ./ops/run/e2e.sh --suite smoke
+$ ./ops/run/e2e.sh --suite k8s-suite --profile kind
 ```
 
 Expected output: targets exit zero and produce artifacts under `artifacts/ops/`.

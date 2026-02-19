@@ -4,12 +4,12 @@
 Own composition scenarios across stack + k8s + obs + datasets + load.
 
 ## Public entrypoints
-- `make ops-e2e-smoke`
-- `make ops-realdata`
+- `./ops/run/e2e.sh --suite smoke|k8s-suite|realdata [--fast] [--no-deploy] [--profile kind]`
+- `make ops-e2e SUITE=smoke|k8s-suite|realdata`
 
 ## Suites
-- `ops/e2e/scenarios/manifest.json`
-- `ops/e2e/realdata/suite.sh --suite full`
+- `ops/e2e/suites/suites.json`
+- `ops/e2e/runner/suite.sh --suite <id>`
 
 ## Contracts
 - `ops/CONTRACT.md`

@@ -2,11 +2,14 @@
 
 Canonical page: `docs/operations/e2e/realdata-drills.md`
 
-## Make Target
+## Canonical Runner
 
-Use \# Ops Index
+- `./ops/run/e2e.sh --suite realdata`
+- `./ops/run/e2e.sh --suite realdata --fast`
+- `./ops/run/e2e.sh --suite realdata --no-deploy`
 
-Use Make targets only.
+Compatibility alias:
+- `make ops-realdata`
 
 ## Core
 
@@ -27,7 +30,7 @@ Use Make targets only.
 - `make ops-observability-validate`
 - `make ops-load-smoke`
 - `make ops-dataset-qc`
-- `make ops-realdata`
+- `./ops/run/e2e.sh --suite realdata`
 
 ## Full Flows
 

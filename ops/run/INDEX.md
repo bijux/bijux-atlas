@@ -14,8 +14,7 @@ Single executable script surface for ops commands.
 - `ops/run/obs-up.sh`
 - `ops/run/obs-verify.sh`
 - `ops/run/datasets-verify.sh`
-- `ops/run/e2e-smoke.sh`
-- `ops/run/k8s-suite.sh`
+- `ops/run/e2e.sh`
 - `ops/run/load-suite.sh`
 
 ## Suites
