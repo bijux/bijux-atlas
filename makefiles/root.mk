@@ -275,6 +275,9 @@ scripts/all: ## Scripts lane (lint/tests/audit)
 ops/check: ## Fast ops verification (no cluster bring-up)
 	@$(call with_iso,ops-check,$(MAKE) -s internal/ops/check)
 
+ops/contract-check: ## Validate layer contract SSOT and drift/report gates
+	@$(call with_iso,ops-contract-check,$(MAKE) -s ops-contract-check)
+
 ops/smoke: ## Explicit ops smoke target
 	@$(call with_iso,ops-smoke,$(MAKE) -s internal/ops/smoke)
 

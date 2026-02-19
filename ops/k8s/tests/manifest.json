@@ -19,6 +19,19 @@
       ]
     },
     {
+      "script": "checks/obs/test_layer_contract_render.sh",
+      "groups": [
+        "chart",
+        "contracts"
+      ],
+      "owner": "chart",
+      "retries": 1,
+      "timeout_seconds": 120,
+      "expected_failure_modes": [
+        "layer_contract_render_mismatch"
+      ]
+    },
+    {
       "script": "checks/obs/test_values_contract.sh",
       "groups": [
         "chart",

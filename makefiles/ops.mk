@@ -35,6 +35,9 @@ ops-e2e-validate: ## Validate unified e2e scenario definitions and docs referenc
 	@python3 ./scripts/layout/check_realdata_scenarios.py
 
 ops-contracts-check: ## Validate canonical ops manifests against ops/_schemas and contract invariants
+	@python3 ./ops/_meta/generate_layer_contract.py
+	@python3 ./ops/_lint/check_layer_contract_drift.py
+	@python3 ./ops/_lint/no-layer-literals.py
 	@$(MAKE) -s ops-stack-versions-sync
 	@python3 ./scripts/layout/check_ops_surface_drift.py
 	@python3 ./scripts/layout/validate_ops_contracts.py
@@ -49,7 +52,11 @@ ops-contracts-check: ## Validate canonical ops manifests against ops/_schemas an
 	@python3 ./scripts/docs/generate_ops_schema_docs.py
 	@python3 ./scripts/docs/generate_ops_surface.py
 	@python3 ./scripts/docs/generate_ops_contracts_doc.py
+	@python3 ./scripts/docs/generate_layer_contract_doc.py
 	@$(MAKE) -s ops-k8s-contracts
+
+ops-contract-check: ## Validate SSOT layer contract, render/live checks, and write report
+	@./ops/run/contract-check.sh
 
 ops-gen: ## Regenerate all committed ops generated outputs
 	@$(MAKE) -s ops-stack-versions-sync
@@ -58,6 +65,7 @@ ops-gen: ## Regenerate all committed ops generated outputs
 	@python3 ./scripts/docs/generate_ops_schema_docs.py
 	@python3 ./scripts/docs/generate_ops_surface.py
 	@python3 ./scripts/docs/generate_ops_contracts_doc.py
+	@python3 ./scripts/docs/generate_layer_contract_doc.py
 	@python3 ./scripts/contracts/generate_chart_values_schema.py
 
 ops-gen-clean: ## Cleanup generated ops outputs not in committed generated policy
@@ -65,7 +73,7 @@ ops-gen-clean: ## Cleanup generated ops outputs not in committed generated polic
 
 ops-gen-check: ## Fail when regenerated ops outputs drift from committed state
 	@$(MAKE) -s ops-gen
-	@git diff --exit-code -- ops/_generated docs/_generated/ops-*.md ops/k8s/charts/bijux-atlas/values.schema.json ops/stack/versions.json
+	@git diff --exit-code -- ops/_generated docs/_generated/ops-*.md docs/_generated/layer-contract.md ops/k8s/charts/bijux-atlas/values.schema.json ops/stack/versions.json
 
 ops-doctor: ## Validate and print pinned ops tool versions and canonical env
 	@./ops/run/doctor.sh
