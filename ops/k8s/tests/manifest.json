@@ -39,6 +39,21 @@
     {"script": "test_prometheus_rule.sh", "groups": ["observability"], "owner": "observability", "retries": 1, "timeout_seconds": 240, "expected_failure_modes": ["prometheus_rule_invalid"]},
     {"script": "test_ingress_profile.sh", "groups": ["profiles", "ingress"], "owner": "chart", "retries": 1, "timeout_seconds": 240, "expected_failure_modes": ["ingress_profile_invalid"]},
     {"script": "test_resource_limits.sh", "groups": ["resources"], "owner": "server", "retries": 1, "timeout_seconds": 240, "expected_failure_modes": ["resource_limits_missing"]},
-    {"script": "test_storage_modes.sh", "groups": ["storage"], "owner": "server", "retries": 1, "timeout_seconds": 360, "expected_failure_modes": ["storage_mode_behavior_mismatch"]}
+    {"script": "test_storage_modes.sh", "groups": ["storage"], "owner": "server", "retries": 1, "timeout_seconds": 360, "expected_failure_modes": ["storage_mode_behavior_mismatch"]},
+    {"script": "test_catalog_publish_job.sh", "groups": ["datasets", "jobs"], "owner": "store", "retries": 1, "timeout_seconds": 300, "expected_failure_modes": ["publish_job_failed"]},
+    {"script": "test_disk_pressure.sh", "groups": ["resilience", "resources"], "owner": "server", "retries": 1, "timeout_seconds": 300, "expected_failure_modes": ["disk_pressure_not_handled"]},
+    {"script": "test_kind_image_resolution.sh", "groups": ["cluster", "install"], "owner": "stack", "retries": 1, "timeout_seconds": 180, "expected_failure_modes": ["kind_image_unresolvable"]},
+    {"script": "test_kind_version_drift.sh", "groups": ["cluster", "contracts"], "owner": "stack", "retries": 1, "timeout_seconds": 120, "expected_failure_modes": ["kind_version_drift"]},
+    {"script": "test_logs_json.sh", "groups": ["observability", "contracts"], "owner": "observability", "retries": 1, "timeout_seconds": 180, "expected_failure_modes": ["log_contract_invalid"]},
+    {"script": "test_memory_pressure.sh", "groups": ["resilience", "resources"], "owner": "server", "retries": 1, "timeout_seconds": 300, "expected_failure_modes": ["memory_pressure_not_handled"]},
+    {"script": "test_node_local_cache_profile.sh", "groups": ["profiles", "storage"], "owner": "store", "retries": 1, "timeout_seconds": 180, "expected_failure_modes": ["node_local_cache_profile_invalid"]},
+    {"script": "test_rbac_minimalism.sh", "groups": ["security", "supply-chain"], "owner": "chart", "retries": 1, "timeout_seconds": 180, "expected_failure_modes": ["rbac_scope_too_broad"]},
+    {"script": "test_redis_backend_metric.sh", "groups": ["redis", "observability"], "owner": "observability", "retries": 1, "timeout_seconds": 180, "expected_failure_modes": ["redis_metrics_missing"]},
+    {"script": "test_redis_optional.sh", "groups": ["redis", "profiles"], "owner": "server", "retries": 1, "timeout_seconds": 240, "expected_failure_modes": ["redis_optional_path_broken"]},
+    {"script": "test_store_bootstrap_idempotent.sh", "groups": ["datasets", "idempotency"], "owner": "store", "retries": 1, "timeout_seconds": 240, "expected_failure_modes": ["store_bootstrap_not_idempotent"]},
+    {"script": "test_store_bucket_policy.sh", "groups": ["datasets", "security"], "owner": "store", "retries": 1, "timeout_seconds": 180, "expected_failure_modes": ["store_bucket_policy_invalid"]},
+    {"script": "test_store_outage_under_load.sh", "groups": ["resilience", "load"], "owner": "server", "retries": 1, "timeout_seconds": 300, "expected_failure_modes": ["store_outage_not_survivable"]},
+    {"script": "test_store_reachable.sh", "groups": ["datasets", "sanity"], "owner": "store", "retries": 1, "timeout_seconds": 180, "expected_failure_modes": ["store_unreachable"]},
+    {"script": "test_warmup_job.sh", "groups": ["datasets", "jobs"], "owner": "store", "retries": 1, "timeout_seconds": 240, "expected_failure_modes": ["warmup_job_failed"]}
   ]
 }

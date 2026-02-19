@@ -99,6 +99,7 @@ def main() -> int:
         ("ops/_schemas/load/pinned-queries-lock.schema.json", "ops/load/queries/pinned-v1.lock"),
         ("ops/_schemas/datasets/manifest-lock.schema.json", "ops/datasets/manifest.lock"),
         ("ops/_schemas/e2e-scenarios.schema.json", "ops/e2e/scenarios/scenarios.json"),
+        ("ops/_schemas/e2e-realdata-scenarios.schema.json", "ops/e2e/realdata/scenarios.json"),
     ]
     for schema_rel, data_rel in pairs:
         validate_pair(schema_rel, data_rel, errors)
