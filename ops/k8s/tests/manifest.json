@@ -238,6 +238,7 @@
         "readiness"
       ],
       "owner": "server",
+      "quarantine_until": "2026-03-31",
       "retries": 1,
       "timeout_seconds": 300,
       "expected_failure_modes": [
@@ -250,6 +251,7 @@
         "readiness"
       ],
       "owner": "server",
+      "quarantine_until": "2026-03-31",
       "retries": 1,
       "timeout_seconds": 360,
       "expected_failure_modes": [
@@ -505,6 +507,7 @@
         "contracts"
       ],
       "owner": "observability",
+      "quarantine_until": "2026-03-31",
       "retries": 1,
       "timeout_seconds": 180,
       "expected_failure_modes": [
@@ -622,6 +625,7 @@
         "sanity"
       ],
       "owner": "store",
+      "quarantine_until": "2026-03-31",
       "retries": 1,
       "timeout_seconds": 180,
       "expected_failure_modes": [

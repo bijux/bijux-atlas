@@ -31,4 +31,7 @@ PY
 )
 fi
 
-exec "$DIR/harness.py" --manifest "$DIR/manifest.json" --json-out "$JSON_OUT" --junit-out "$JUNIT_OUT" --retries "$RETRIES" "${group_args[@]}" "$@"
+if [ "${#group_args[@]}" -gt 0 ]; then
+  exec "$DIR/harness.py" --manifest "$DIR/manifest.json" --json-out "$JSON_OUT" --junit-out "$JUNIT_OUT" --retries "$RETRIES" "${group_args[@]}" "$@"
+fi
+exec "$DIR/harness.py" --manifest "$DIR/manifest.json" --json-out "$JSON_OUT" --junit-out "$JUNIT_OUT" --retries "$RETRIES" "$@"

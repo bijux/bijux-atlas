@@ -113,7 +113,7 @@ def main():
     parser.add_argument("--junit-out", default="artifacts/ops/k8s/test-results.xml")
     args = parser.parse_args()
 
-    repo_root = Path(__file__).resolve().parents[4]
+    repo_root = Path(__file__).resolve().parents[3]
     os.chdir(repo_root)
     run_id = os.environ.get("ATLAS_RUN_ID", "local")
     os.environ.setdefault("ATLAS_E2E_NAMESPACE", f"atlas-e2e-{run_id}")
