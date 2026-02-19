@@ -36,6 +36,7 @@ ops-contracts-check: ## Validate canonical ops manifests against ops/_schemas an
 	@$(MAKE) -s ops-stack-versions-sync
 	@python3 ./scripts/layout/check_ops_surface_drift.py
 	@python3 ./scripts/layout/validate_ops_contracts.py
+	@python3 ./ops/_lint/json-schema-coverage.py
 	@python3 ./scripts/layout/check_no_hidden_defaults.py
 	@python3 ./scripts/layout/check_obs_pack_ssot.py
 	@python3 ./scripts/layout/check_ops_canonical_entrypoints.py
@@ -105,6 +106,9 @@ ops-stack-down-legacy: ## Legacy stack down implementation
 
 ops-down: ## Tear down local ops stack
 	@$(MAKE) ops-stack-down
+
+ops-stack-idempotency-check: ## Verify stack up/down is idempotent
+	@PROFILE="$${PROFILE:-kind}" ./ops/stack/scripts/idempotency_check.sh
 
 ops-obs-verify: ## Verify observability pack contracts and readiness
 	@./ops/run/obs-verify.sh
@@ -866,7 +870,10 @@ ops-lint: ## Lint ops shell/python/json/schema contracts
 	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
 	@python3 ./ops/load/scripts/validate_suite_manifest.py
 	@python3 ./ops/k8s/tests/validate_suites.py
+	@python3 ./ops/_lint/no-orphan-contract.py
+	@python3 ./ops/_lint/no-orphan-suite.py
 	@python3 ./ops/_lint/no-unowned-file.py
+	@python3 ./ops/_lint/json-schema-coverage.py
 	@python3 ./ops/_lint/no-unpinned-images.py
 	@python3 ./scripts/layout/check_tool_versions.py kind kubectl helm k6
 	@$(MAKE) -s ops-env-validate

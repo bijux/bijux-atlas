@@ -46,3 +46,15 @@ Use Make targets only.
 - `make ops-local-full`
 - `make ops-ref-grade-local`
 - `make ops-full`
+
+## Area Contracts
+
+- `ops/stack/CONTRACT.md`
+- `ops/k8s/CONTRACT.md`
+- `ops/obs/CONTRACT.md`
+- `ops/load/CONTRACT.md`
+- `ops/datasets/CONTRACT.md`
+- `ops/e2e/CONTRACT.md`
+- `ops/report/CONTRACT.md`
+- `ops/fixtures/CONTRACT.md`
+- `ops/run/CONTRACT.md`

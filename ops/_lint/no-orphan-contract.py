@@ -6,17 +6,18 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-ownership = json.loads((ROOT / "ops/_meta/ownership.json").read_text())
 contracts = json.loads((ROOT / "ops/_meta/contracts.json").read_text())
 registered = {entry["path"] for entry in contracts.get("contracts", [])}
+ops_index = (ROOT / "ops/INDEX.md").read_text(encoding="utf-8")
 errors: list[str] = []
 
-for area in ownership.get("areas", {}):
-    contract = f"{area}/CONTRACT.md"
-    if not (ROOT / contract).exists():
-        errors.append(f"missing contract file for area: {contract}")
-    if contract not in registered:
-        errors.append(f"contract not registered in ops/_meta/contracts.json: {contract}")
+for rel in sorted(registered):
+    if not rel.endswith("CONTRACT.md"):
+        continue
+    if not (ROOT / rel).exists():
+        errors.append(f"registered contract missing on disk: {rel}")
+    if rel != "ops/CONTRACT.md" and rel not in ops_index:
+        errors.append(f"ops/INDEX.md missing contract reference: {rel}")
 
 for path in sorted((ROOT / "ops").glob("*/CONTRACT.md")):
     rel = path.relative_to(ROOT).as_posix()
