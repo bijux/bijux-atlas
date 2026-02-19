@@ -5,7 +5,7 @@ cd "$ROOT"
 . "$ROOT/ops/_lib/common.sh"
 ops_env_load
 ops_entrypoint_start "ops-doctor"
-ops_version_guard python3
+ops_version_guard kind kubectl helm k6
 ./ops/run/prereqs.sh
-python3 ./scripts/layout/check_tool_versions.py || true
+python3 ./scripts/layout/check_tool_versions.py kind kubectl helm k6 || true
 make -s ops-env-print || true
