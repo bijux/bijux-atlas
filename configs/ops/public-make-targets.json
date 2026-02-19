@@ -1,9 +1,9 @@
 {
-  "max_public_targets": 14,
+  "max_public_targets": 18,
   "public_targets": [
     {
       "name": "help",
-      "description": "Show the curated public make target surface",
+      "description": "Show curated public make targets grouped by namespace",
       "lanes": ["dev", "ci", "docs"],
       "area": "policies"
     },
@@ -32,58 +32,64 @@
       "area": "policies"
     },
     {
-      "name": "local",
-      "description": "Fast local loop (fmt + lint + test)",
+      "name": "quick",
+      "description": "Minimal tight loop (fmt + lint + test)",
       "lanes": ["dev"],
       "area": "cargo"
     },
     {
-      "name": "local-full",
-      "description": "Full local loop (fmt + lint + audit + test + coverage + docs)",
-      "lanes": ["dev"],
-      "area": "cargo"
-    },
-    {
-      "name": "root",
-      "description": "Deterministic CI-fast lane",
-      "lanes": ["ci"],
-      "area": "policies"
-    },
-    {
-      "name": "root-local",
-      "description": "Local superset gate with isolated lanes",
+      "name": "cargo/all",
+      "description": "Local exhaustive Rust lane",
       "lanes": ["dev", "ci"],
-      "area": "policies"
+      "area": "cargo"
     },
     {
-      "name": "ci",
-      "description": "CI release matrix gate",
-      "lanes": ["ci"],
-      "area": "policies"
-    },
-    {
-      "name": "nightly",
-      "description": "Nightly superset gate",
-      "lanes": ["ci"],
-      "area": "policies"
-    },
-    {
-      "name": "contracts",
-      "description": "Contracts meta pipeline",
+      "name": "docs/all",
+      "description": "Docs lane",
       "lanes": ["dev", "ci"],
       "area": "docs"
     },
     {
-      "name": "hygiene",
-      "description": "Repository hygiene checks",
+      "name": "ops/all",
+      "description": "Ops lint/schemas/contracts plus bounded smoke lane",
+      "lanes": ["dev", "ci"],
+      "area": "ops"
+    },
+    {
+      "name": "scripts/all",
+      "description": "Scripts lint/tests/audit lane",
       "lanes": ["dev", "ci"],
       "area": "scripts"
     },
     {
-      "name": "config-validate",
-      "description": "Validate config schemas/contracts and drift",
+      "name": "configs/all",
+      "description": "Configs schema and drift lane",
       "lanes": ["dev", "ci"],
       "area": "configs"
+    },
+    {
+      "name": "policies/all",
+      "description": "Policies lane (deny/audit/policy checks)",
+      "lanes": ["dev", "ci"],
+      "area": "policies"
+    },
+    {
+      "name": "local/all",
+      "description": "Run everything meaningful locally",
+      "lanes": ["dev"],
+      "area": "policies"
+    },
+    {
+      "name": "ci/all",
+      "description": "Deterministic CI superset",
+      "lanes": ["ci"],
+      "area": "policies"
+    },
+    {
+      "name": "nightly/all",
+      "description": "Slow nightly suites (perf/load/drills/realdata)",
+      "lanes": ["ci"],
+      "area": "policies"
     }
   ]
 }
