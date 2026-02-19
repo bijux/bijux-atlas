@@ -2,7 +2,8 @@
   "schema_version": 1,
   "exception_budgets": {
     "generated_dead_code_allow": 24,
-    "test_module_layout_allow": 2
+    "test_module_layout_allow": 2,
+    "docs_legacy_token_allow": 2
   },
   "exceptions": [
     {
@@ -24,6 +25,26 @@
       "expiry": "2026-12-31",
       "owner": "cli",
       "risk": "medium"
+    },
+    {
+      "id": "ATLAS-EXC-0101",
+      "policy": "docs_legacy_token_allow",
+      "scope": "repo",
+      "file": "scripts/docs/ban_legacy_terms.sh",
+      "justification": "The scanner must include the literal token to detect forbidden usage in target files.",
+      "expiry": "2027-12-31",
+      "owner": "docs-governance",
+      "risk": "low"
+    },
+    {
+      "id": "ATLAS-EXC-0102",
+      "policy": "docs_legacy_token_allow",
+      "scope": "repo",
+      "file": "scripts/docs/rewrite_legacy_terms.py",
+      "justification": "The rewrite map must include the literal token to propose deterministic replacement text.",
+      "expiry": "2027-12-31",
+      "owner": "docs-governance",
+      "risk": "low"
     }
   ]
 }

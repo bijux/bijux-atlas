@@ -144,7 +144,7 @@ fn docs_reference_canonical_dataset_path() {
         .and_then(|p| p.parent())
         .expect("workspace root")
         .to_path_buf();
-    let docs = std::fs::read_to_string(root.join("docs/api/V1_SURFACE.md")).expect("read docs");
+    let docs = std::fs::read_to_string(root.join("docs/api/v1-surface.md")).expect("read docs");
     assert!(
         docs.contains("/v1/datasets/{release}/{species}/{assembly}"),
         "canonical dataset path missing from V1 surface docs"
