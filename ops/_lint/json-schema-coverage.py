@@ -88,6 +88,10 @@ def main() -> int:
     errors: list[str] = []
     for p in sorted((ROOT / "ops").rglob("*.json")):
         rel = p.relative_to(ROOT).as_posix()
+        if rel.startswith("ops/_generated/") and rel.count("/") >= 4:
+            # Runtime run-scoped outputs under ops/_generated/<area>/<run_id>/*
+            # are ephemeral artifacts, not contract manifests.
+            continue
         if any(rel.startswith(prefix) for prefix in EXCLUDE_PREFIXES):
             continue
         if rel in EXCLUDE_FILES:

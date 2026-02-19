@@ -7,6 +7,7 @@ Use Make targets only.
 - `make ops-help`
 - `make ops-surface`
 - `make ops-layout-lint`
+- `make ops-check`
 - `make ops-prereqs`
 - `make ops-doctor`
 - `make ops-lint`
@@ -29,7 +30,9 @@ Use Make targets only.
 - `make ops-obs-verify`
 - `make ops-obs-drill DRILL=prom-outage PROFILE=kind`
 - `make ops-datasets-verify`
+- `make ops-smoke`
 - `make ops-e2e-smoke`
+- `make ops-k8s-smoke`
 - `make ops-k8s-suite`
 - `make ops-load-suite SUITE=mixed-80-20`
 - `make ops-local-reset`
