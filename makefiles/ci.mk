@@ -180,6 +180,9 @@ ci-make-help-drift:
 ci-slo-config-validate:
 	@python3 ./scripts/layout/check_slo_contracts.py --mode schema
 
+ci-slo-no-loosen:
+	@python3 ./scripts/layout/check_slo_no_loosen_without_approval.py
+
 ci-slo-metrics-contract:
 	@python3 ./scripts/layout/check_slo_contracts.py --mode metrics
 
