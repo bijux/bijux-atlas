@@ -1,6 +1,14 @@
 {
   "schema_version": 1,
   "areas": {
+    "ops": "bijux-atlas-operations",
+    "ops/_artifacts": "bijux-atlas-operations",
+    "ops/_generated": "bijux-atlas-operations",
+    "ops/_lib": "bijux-atlas-operations",
+    "ops/_lint": "bijux-atlas-operations",
+    "ops/_meta": "bijux-atlas-operations",
+    "ops/_schemas": "bijux-atlas-operations",
+    "ops/registry": "bijux-atlas-data",
     "ops/stack": "bijux-atlas-operations",
     "ops/k8s": "bijux-atlas-operations",
     "ops/obs": "bijux-atlas-observability",

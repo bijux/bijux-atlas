@@ -34,6 +34,7 @@ ops-e2e-validate: ## Validate unified e2e scenario definitions and docs referenc
 
 ops-contracts-check: ## Validate canonical ops manifests against ops/_schemas and contract invariants
 	@$(MAKE) -s ops-stack-versions-sync
+	@python3 ./scripts/layout/check_ops_surface_drift.py
 	@python3 ./scripts/layout/validate_ops_contracts.py
 	@python3 ./scripts/layout/check_no_hidden_defaults.py
 	@python3 ./scripts/layout/check_obs_pack_ssot.py
@@ -49,6 +50,7 @@ ops-contracts-check: ## Validate canonical ops manifests against ops/_schemas an
 
 ops-gen: ## Regenerate all committed ops generated outputs
 	@$(MAKE) -s ops-stack-versions-sync
+	@python3 ./scripts/layout/generate_ops_surface_meta.py
 	@python3 ./scripts/layout/validate_ops_contracts.py >/dev/null
 	@python3 ./scripts/docs/generate_ops_schema_docs.py
 	@python3 ./scripts/docs/generate_ops_surface.py
@@ -864,6 +866,8 @@ ops-lint: ## Lint ops shell/python/json/schema contracts
 	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
 	@python3 ./ops/load/scripts/validate_suite_manifest.py
 	@python3 ./ops/k8s/tests/validate_suites.py
+	@python3 ./ops/_lint/no-unowned-file.py
+	@python3 ./ops/_lint/no-unpinned-images.py
 	@python3 ./scripts/layout/check_tool_versions.py kind kubectl helm k6
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) -s ops-layout-lint
@@ -1009,6 +1013,8 @@ ops-alerts-validate: ## Validate alert rules and contract coverage
 ops-observability-validate: ## Validate observability assets/contracts end-to-end
 	@set -e; \
 	trap 'out="artifacts/ops/obs/validate-fail-$$(date +%Y%m%d-%H%M%S)"; mkdir -p "$$out"; kubectl get pods -A -o wide > "$$out/pods.txt" 2>/dev/null || true; kubectl get events -A --sort-by=.lastTimestamp > "$$out/events.txt" 2>/dev/null || true; cp -f ops/obs/grafana/atlas-observability-dashboard.json "$$out/dashboard.json" 2>/dev/null || true; cp -f ops/obs/alerts/atlas-alert-rules.yaml "$$out/alerts.yaml" 2>/dev/null || true; echo "observability validation failed, artifacts: $$out" >&2' ERR; \
+	python3 ./scripts/layout/check_obs_script_name_collisions.py; \
+	python3 ./scripts/docs/check_observability_surface_drift.py; \
 	$(MAKE) ops-dashboards-validate; \
 	$(MAKE) ops-alerts-validate; \
 	./scripts/public/observability/check_metrics_contract.py; \

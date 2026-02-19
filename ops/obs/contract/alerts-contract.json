@@ -1,84 +1,98 @@
 {
   "alert_specs": {
     "AtlasOverloadSustained": {
+      "drill_id": "overload-admission-control",
       "owner": "bijux-atlas-operations",
       "runbook_id": "traffic-spike",
       "severity_tier": "warn",
       "slo_or_invariant": "cheap-endpoint-survival"
     },
     "BijuxAtlasCacheThrash": {
+      "drill_id": "cache-stampede",
       "owner": "bijux-atlas-operations",
       "runbook_id": "store-outage",
       "severity_tier": "warn",
       "slo_or_invariant": "cache-stability"
     },
     "BijuxAtlasCheapSloBurnFast": {
+      "drill_id": "cheap-endpoint-survival",
       "owner": "bijux-atlas-operations",
       "runbook_id": "slo-cheap-burn",
       "severity_tier": "page",
       "slo_or_invariant": "cheap-success-rate"
     },
     "BijuxAtlasCheapSloBurnMedium": {
+      "drill_id": "cheap-endpoint-survival",
       "owner": "bijux-atlas-operations",
       "runbook_id": "slo-cheap-burn",
       "severity_tier": "page",
       "slo_or_invariant": "cheap-success-rate"
     },
     "BijuxAtlasCheapSloBurnSlow": {
+      "drill_id": "cheap-endpoint-survival",
       "owner": "bijux-atlas-operations",
       "runbook_id": "slo-cheap-burn",
       "severity_tier": "warn",
       "slo_or_invariant": "cheap-success-rate"
     },
     "BijuxAtlasHigh5xxRate": {
+      "drill_id": "alert-firing-proof",
       "owner": "bijux-atlas-operations",
       "runbook_id": "incident-playbook",
       "severity_tier": "page",
       "slo_or_invariant": "api-availability-5xx"
     },
     "BijuxAtlasOverloadSurvivalViolated": {
+      "drill_id": "cheap-endpoint-survival",
       "owner": "bijux-atlas-operations",
       "runbook_id": "slo-overload-survival",
       "severity_tier": "page",
       "slo_or_invariant": "cheap-endpoint-survival"
     },
     "BijuxAtlasP95LatencyRegression": {
+      "drill_id": "overload-admission-control",
       "owner": "bijux-atlas-operations",
       "runbook_id": "incident-playbook",
       "severity_tier": "page",
       "slo_or_invariant": "v1-genes-p95"
     },
     "BijuxAtlasRegistryRefreshStale": {
+      "drill_id": "registry-refresh-failure",
       "owner": "bijux-atlas-operations",
       "runbook_id": "slo-registry-refresh-stale",
       "severity_tier": "warn",
       "slo_or_invariant": "registry-refresh-age"
     },
     "BijuxAtlasStandardSloBurnFast": {
+      "drill_id": "overload-admission-control",
       "owner": "bijux-atlas-operations",
       "runbook_id": "slo-standard-burn",
       "severity_tier": "page",
       "slo_or_invariant": "standard-success-rate"
     },
     "BijuxAtlasStandardSloBurnMedium": {
+      "drill_id": "overload-admission-control",
       "owner": "bijux-atlas-operations",
       "runbook_id": "slo-standard-burn",
       "severity_tier": "page",
       "slo_or_invariant": "standard-success-rate"
     },
     "BijuxAtlasStandardSloBurnSlow": {
+      "drill_id": "overload-admission-control",
       "owner": "bijux-atlas-operations",
       "runbook_id": "slo-standard-burn",
       "severity_tier": "warn",
       "slo_or_invariant": "standard-success-rate"
     },
     "BijuxAtlasStoreBackendErrorSpike": {
+      "drill_id": "store-outage-under-load",
       "owner": "bijux-atlas-operations",
       "runbook_id": "slo-store-backend-error-spike",
       "severity_tier": "page",
       "slo_or_invariant": "store-error-rate"
     },
     "BijuxAtlasStoreDownloadFailures": {
+      "drill_id": "store-outage-under-load",
       "owner": "bijux-atlas-operations",
       "runbook_id": "store-outage",
       "severity_tier": "warn",
@@ -102,5 +116,5 @@
     "BijuxAtlasRegistryRefreshStale",
     "BijuxAtlasStoreBackendErrorSpike"
   ],
-  "schema_version": 2
+  "schema_version": 3
 }
