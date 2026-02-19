@@ -5,7 +5,7 @@
 
 ## v1 Rules
 
-- Contract source: `docs/contracts/ENDPOINTS.json`.
+- Contract source: `docs/contracts/endpoints.md`.
 - API paths are frozen to `/v1/...`.
 - v1 is additive-only:
 - New endpoints are allowed.
