@@ -130,7 +130,7 @@ async fn metrics_endpoint_matches_metrics_contract() {
         .to_path_buf();
     let contract_path = root
         .join("ops")
-        .join("observability")
+        .join("obs")
         .join("contract")
         .join("metrics-contract.json");
     let contract: MetricsContract =
@@ -268,7 +268,7 @@ async fn generated_metrics_contract_covers_ops_metrics_contract_and_owners() {
     let ops_contract: MetricsContract = serde_json::from_slice(
         &std::fs::read(
             root.join("ops")
-                .join("observability")
+                .join("obs")
                 .join("contract")
                 .join("metrics-contract.json"),
         )
@@ -399,6 +399,69 @@ async fn policy_rejection_and_overload_emit_contract_metrics() {
             || metrics_after.contains("bijux_dataset_misses"),
         "cache hit/miss metrics missing"
     );
+}
+
+#[tokio::test]
+async fn slo_critical_metrics_present_after_smoke_query() {
+    let ds = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset id");
+    let sqlite = fixture_sqlite();
+    let manifest = ArtifactManifest::new(
+        "1".to_string(),
+        "1".to_string(),
+        ds.clone(),
+        ArtifactChecksums::new(
+            "a".repeat(64),
+            "b".repeat(64),
+            "c".repeat(64),
+            sha256_hex(&sqlite),
+        ),
+        ManifestStats::new(1, 1, 1),
+    );
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds, sqlite);
+    let tmp = tempdir().expect("tempdir");
+    let mgr = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..Default::default()
+        },
+        store,
+    );
+    let app = build_router(AppState::new(mgr));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, _, _) = send_raw(
+        addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&limit=1",
+    )
+    .await;
+    assert_eq!(status, 200);
+
+    let (metrics_status, _, metrics_body) = send_raw(addr, "/metrics").await;
+    assert_eq!(metrics_status, 200);
+    for metric in [
+        "http_requests_total",
+        "http_request_duration_seconds_bucket",
+        "atlas_overload_active",
+        "atlas_shed_total",
+        "atlas_cache_hits_total",
+        "atlas_cache_misses_total",
+        "atlas_store_request_duration_seconds_bucket",
+        "atlas_store_errors_total",
+        "atlas_registry_refresh_age_seconds",
+        "atlas_registry_refresh_failures_total",
+        "atlas_invariant_violations_total",
+    ] {
+        assert!(
+            metrics_body.contains(metric),
+            "slo-critical metric missing after smoke query: {metric}"
+        );
+    }
 }
 
 #[tokio::test]
