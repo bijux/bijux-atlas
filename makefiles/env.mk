@@ -7,6 +7,7 @@ MAKE_RUN_ID ?= $(MAKE_PRIMARY_GOAL)-$(MAKE_RUN_TS)-$(shell sh -c 'echo $$PPID')
 WORKSPACE_ROOT ?= $(abspath .)
 
 ISO_ROOT ?= $(WORKSPACE_ROOT)/artifacts/isolate/$(MAKE_PRIMARY_GOAL)
+ISO_ROOT := $(abspath $(ISO_ROOT))
 ISO_RUN_ID ?= $(MAKE_RUN_ID)
 ISO_TAG ?= $(MAKE_RUN_ID)
 CARGO_TARGET_DIR ?= $(ISO_ROOT)/target
@@ -14,6 +15,11 @@ CARGO_HOME ?= $(ISO_ROOT)/cargo-home
 TMPDIR ?= $(ISO_ROOT)/tmp
 TMP ?= $(TMPDIR)
 TEMP ?= $(TMPDIR)
+CARGO_TARGET_DIR := $(abspath $(CARGO_TARGET_DIR))
+CARGO_HOME := $(abspath $(CARGO_HOME))
+TMPDIR := $(abspath $(TMPDIR))
+TMP := $(abspath $(TMP))
+TEMP := $(abspath $(TEMP))
 
 ATLAS_BASE_URL ?= http://127.0.0.1:18080
 OPS_RUN_ID ?= atlas-ops-$(shell date -u +%Y%m%d-%H%M%S)

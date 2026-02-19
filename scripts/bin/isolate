@@ -55,6 +55,7 @@ fi
 if [ -z "${ISO_ROOT:-}" ]; then
   ISO_ROOT="$ROOT_DIR/artifacts/isolate/$ISO_TAG"
 fi
+ISO_ROOT="$(CDPATH= cd -- "$(dirname -- "$ISO_ROOT")" && pwd)/$(basename -- "$ISO_ROOT")"
 
 ISO_RUN_ID="${ISO_RUN_ID:-$ISO_TAG}"
 

@@ -29,12 +29,17 @@ Generated file. Do not edit manually.
 | `scripts/bin/require-isolate` | `platform` | `public` | `_audit`, `_check`, `_coverage`, `_fmt`, `_lint-clippy`, `_lint-configs`, `_lint-docs`, `_lint-rustfmt`, `_test`, `_test-all`, `audit`, `check`, `cli-command-surface`, `coverage`, `crate-docs-contract`, `crate-structure`, `fmt`, `lint`, `test`, `test-all` |
 | `scripts/bootstrap/install_tools.sh` | `developer-experience` | `public` | `bootstrap-tools` |
 | `scripts/check/check-bin-entrypoints.py` | `platform` | `public` | `scripts-lint` |
+| `scripts/check/check-docker-layout.py` | `platform` | `public` | `docker-contracts` |
+| `scripts/check/check-docker-policy.py` | `platform` | `public` | `docker-contracts` |
+| `scripts/check/check-no-latest-tags.py` | `platform` | `public` | `docker-contracts` |
 | `scripts/check/check-python-lock.py` | `platform` | `public` | `scripts-check`, `scripts-lint` |
 | `scripts/check/check-script-errors.py` | `platform` | `public` | `scripts-check`, `scripts-lint` |
 | `scripts/check/check-script-help.py` | `platform` | `public` | `scripts-check`, `scripts-lint` |
 | `scripts/check/check-script-ownership.py` | `platform` | `public` | `scripts-check`, `scripts-lint` |
 | `scripts/check/check-script-tool-guards.py` | `platform` | `public` | `scripts-check`, `scripts-lint` |
 | `scripts/check/check-script-write-roots.py` | `platform` | `public` | `scripts-check`, `scripts-lint` |
+| `scripts/check/docker-runtime-smoke.sh` | `platform` | `public` | `docker-smoke` |
+| `scripts/check/docker-scan.sh` | `platform` | `public` | `docker-scan` |
 | `scripts/check/no-direct-path-usage.sh` | `platform` | `public` | `scripts-check`, `scripts-lint` |
 | `scripts/check/no-duplicate-script-names.sh` | `platform` | `public` | `scripts-check`, `scripts-lint` |
 | `scripts/check_no_root_dumping.sh` | `platform` | `internal` | `layout-check` |
@@ -155,8 +160,6 @@ Generated file. Do not edit manually.
 | `scripts/gen/generate_scripts_surface.py` | `platform` | `public` | `inventory` |
 | `scripts/generate_scripts_readme.py` | `platform` | `public` | `scripts-index` |
 | `scripts/internal/__init__.py` | `platform` | `internal` | - |
-| `scripts/internal/__pycache__/__init__.cpython-310.pyc` | `platform` | `internal` | - |
-| `scripts/internal/__pycache__/paths.cpython-310.pyc` | `platform` | `internal` | - |
 | `scripts/internal/effects-lint.sh` | `platform` | `internal` | - |
 | `scripts/internal/env_dump.sh` | `platform` | `internal` | - |
 | `scripts/internal/exec.sh` | `platform` | `internal` | - |
@@ -303,11 +306,7 @@ Generated file. Do not edit manually.
 | `scripts/public/stack/build_stack_report.py` | `platform` | `public` | `stack-full` |
 | `scripts/public/stack/validate_stack_report.py` | `platform` | `public` | `stack-full` |
 | `scripts/python/__init__.py` | `platform` | `internal` | - |
-| `scripts/python/__pycache__/__init__.cpython-310.pyc` | `platform` | `internal` | - |
 | `scripts/python/bijux_scripts/__init__.py` | `platform` | `internal` | - |
-| `scripts/python/bijux_scripts/__pycache__/__init__.cpython-310.pyc` | `platform` | `internal` | - |
-| `scripts/python/bijux_scripts/__pycache__/paths.cpython-310.pyc` | `platform` | `internal` | - |
-| `scripts/python/bijux_scripts/__pycache__/reporting.cpython-310.pyc` | `platform` | `internal` | - |
 | `scripts/python/bijux_scripts/json_helpers.py` | `platform` | `internal` | - |
 | `scripts/python/bijux_scripts/paths.py` | `platform` | `internal` | - |
 | `scripts/python/bijux_scripts/reporting.py` | `platform` | `internal` | - |
@@ -316,12 +315,8 @@ Generated file. Do not edit manually.
 | `scripts/release/validate-compat-matrix.sh` | `release-engineering` | `public` | `compat-matrix-validate` |
 | `scripts/requirements.lock.txt` | `platform` | `internal` | - |
 | `scripts/run_drill.sh` | `platform` | `internal` | - |
-| `scripts/tests/__pycache__/test_paths.cpython-310.pyc` | `platform` | `internal` | - |
 | `scripts/tests/test_paths.py` | `platform` | `internal` | - |
 | `scripts/tools/__init__.py` | `platform` | `internal` | - |
-| `scripts/tools/__pycache__/__init__.cpython-310.pyc` | `platform` | `internal` | - |
-| `scripts/tools/__pycache__/path_utils.cpython-310.pyc` | `platform` | `internal` | - |
-| `scripts/tools/__pycache__/reporting.cpython-310.pyc` | `platform` | `internal` | - |
 | `scripts/tools/json_helpers.py` | `platform` | `internal` | - |
 | `scripts/tools/path_utils.py` | `platform` | `internal` | - |
 | `scripts/tools/reporting.py` | `platform` | `internal` | - |
