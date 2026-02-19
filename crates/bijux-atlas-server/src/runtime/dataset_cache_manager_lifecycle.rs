@@ -127,6 +127,9 @@ impl DatasetCacheManager {
         };
 
         if let Err(err) = result {
+            self.metrics
+                .registry_refresh_failures_total
+                .fetch_add(1, Ordering::Relaxed);
             let mut lock = self.catalog_cache.lock().await;
             lock.consecutive_errors = lock.consecutive_errors.saturating_add(1);
             let backoff_ms = self
@@ -167,6 +170,14 @@ impl DatasetCacheManager {
 
     pub async fn registry_health(&self) -> Vec<RegistrySourceHealth> {
         self.registry_health_cache.read().await.clone()
+    }
+
+    pub async fn registry_refresh_age_seconds(&self) -> u64 {
+        let cache = self.catalog_cache.lock().await;
+        match cache.refreshed_at {
+            Some(last) => Instant::now().duration_since(last).as_secs(),
+            None => u64::MAX,
+        }
     }
 
     pub async fn cached_datasets_debug(&self) -> Vec<(String, u64)> {
