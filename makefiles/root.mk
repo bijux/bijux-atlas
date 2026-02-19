@@ -1,4 +1,7 @@
+# Scope: top-level publication surface and orchestration for public make targets.
+# Public targets: declared here; all other makefiles expose internal-only targets.
 SHELL := /bin/sh
+.DEFAULT_GOAL := help
 JOBS  ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 8)
 
 include makefiles/env.mk
@@ -137,18 +140,26 @@ gates-check: ## Run public-surface/docs/makefile boundary checks
 	@$(call gate_json,public-target-budget,python3 ./scripts/layout/check_public_target_budget.py)
 	@$(call gate_json,public-target-ownership,python3 ./scripts/layout/check_make_target_ownership.py)
 	@$(call gate_json,public-target-docs,python3 ./scripts/layout/check_public_targets_documented.py)
+	@$(call gate_json,public-target-descriptions,python3 ./scripts/layout/check_public_target_descriptions.py)
 	@$(call gate_json,public-target-aliases,python3 ./scripts/layout/check_public_target_aliases.py)
 	@$(call gate_json,internal-target-doc-refs,python3 ./scripts/layout/check_internal_targets_not_in_docs.py)
 	@$(call gate_json,makefiles-contract,python3 ./scripts/layout/check_makefiles_contract.py)
+	@$(call gate_json,makefiles-headers,python3 ./scripts/layout/check_makefile_headers.py)
+	@$(call gate_json,makefiles-index-drift,python3 ./scripts/layout/check_makefiles_index_drift.py)
+	@$(call gate_json,make-targets-catalog-drift,python3 ./scripts/layout/check_make_targets_catalog_drift.py)
 	@$(call gate_json,cargo-dev-metadata,python3 ./scripts/layout/check_cargo_dev_metadata.py)
 	@$(call gate_json,root-no-cargo-dev-deps,python3 ./scripts/layout/check_root_no_cargo_dev_deps.py)
 	@$(call gate_json,cargo-invocation-scope,python3 ./scripts/layout/check_cargo_invocations_scoped.py)
+	@$(call gate_json,root-diff-alarm,python3 ./scripts/layout/check_root_diff_alarm.py)
 	@$(call gate_json,ci-entrypoints,python3 ./scripts/layout/check_ci_entrypoints.py)
 	@$(call gate_json,help-excludes-internal,python3 ./scripts/layout/check_help_excludes_internal.py)
 	@$(call gate_json,root-makefile-hygiene,python3 ./scripts/layout/check_root_makefile_hygiene.py)
 
 gates: ## Print public targets grouped by namespace
 	@python3 ./scripts/layout/render_public_help.py --mode gates
+
+help: ## Show curated public make targets from SSOT
+	@python3 ./scripts/layout/render_public_help.py
 
 explain: ## Explain whether TARGET is a public make target
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make explain TARGET=<name>" >&2; exit 2; }
@@ -495,6 +506,7 @@ release-update-compat-matrix:
 
 
 inventory: ## Regenerate inventories (ops surface, make targets, docs status, naming, repo surface)
+	@python3 ./scripts/docs/generate_make_targets_catalog.py
 	@python3 ./scripts/docs/generate_ops_surface.py
 	@python3 ./scripts/docs/generate_make_targets_inventory.py
 	@python3 ./scripts/docs/generate_makefiles_surface.py
@@ -507,7 +519,7 @@ inventory: ## Regenerate inventories (ops surface, make targets, docs status, na
 
 verify-inventory: ## Fail if inventory outputs drift from generated state
 	@$(MAKE) -s inventory
-	@git diff --exit-code -- docs/_generated/repo-surface.md docs/_generated/doc-status.md docs/_generated/naming-inventory.md docs/_generated/ops-surface.md docs/_generated/configs-surface.md docs/_generated/tooling-versions.md docs/_generated/scripts-surface.md docs/development/make-targets.md docs/development/make-targets-inventory.md docs/development/makefiles/surface.md
+	@git diff --exit-code -- makefiles/targets.json docs/_generated/make-targets.md docs/_generated/repo-surface.md docs/_generated/doc-status.md docs/_generated/naming-inventory.md docs/_generated/ops-surface.md docs/_generated/configs-surface.md docs/_generated/tooling-versions.md docs/_generated/scripts-surface.md docs/development/make-targets.md docs/development/make-targets-inventory.md docs/development/makefiles/surface.md
 
 artifacts-index: ## Generate artifacts index for inspection UIs
 	@python3 ./scripts/layout/build_artifacts_index.py
