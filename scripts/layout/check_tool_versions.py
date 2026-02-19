@@ -20,6 +20,7 @@ CMDS = {
     "kubectl": ["kubectl", "version", "--client", "--output=yaml"],
     "jq": ["jq", "--version"],
     "yq": ["yq", "--version"],
+    "python3": ["python3", "--version"],
 }
 
 
@@ -51,6 +52,8 @@ def main() -> int:
             failed = True
             continue
         expected = lock.get(tool)
+        if tool == "python3" and expected is None:
+            expected = lock.get("python")
         if not expected:
             print(f"missing pinned version for {tool} in {LOCK_PATH}", file=sys.stderr)
             failed = True
