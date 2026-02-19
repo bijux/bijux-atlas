@@ -28,6 +28,12 @@ kubectl -n atlas-e2e logs deploy/atlas-e2e-atlas --tail=200
 - Restart refresh worker if wedged.
 - Temporarily increase cache TTL only with incident approval.
 
+## Alerts
+
+- Primary alert: `BijuxAtlasRegistryRefreshStale`.
+- Dashboard: `docs/operations/observability/dashboard.md`.
+- Drill reference: `make ops-drill-store-outage`.
+
 ## Rollback
 
 - Roll back registry integration/config changes from the latest deploy.

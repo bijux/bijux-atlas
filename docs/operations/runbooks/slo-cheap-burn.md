@@ -29,6 +29,12 @@ kubectl -n atlas-observability get prometheusrules
 - Reduce expensive background load that can starve cheap handlers.
 - If needed, temporarily tighten admission on standard/heavy classes.
 
+## Alerts
+
+- Primary alerts: `BijuxAtlasCheapSloBurnFast`, `BijuxAtlasCheapSloBurnMedium`, `BijuxAtlasCheapSloBurnSlow`.
+- Dashboard: `docs/operations/observability/dashboard.md`.
+- Drill reference: `make ops-drill-overload`.
+
 ## Rollback
 
 - Revert latest config/chart changes impacting request routing or concurrency.

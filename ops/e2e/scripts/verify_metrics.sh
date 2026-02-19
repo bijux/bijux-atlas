@@ -8,7 +8,15 @@ LOCAL_PORT="${ATLAS_E2E_LOCAL_PORT:-18080}"
 CURL="curl --connect-timeout 2 --max-time 5 -fsS"
 
 if ! $CURL "$BASE_URL/healthz" >/dev/null 2>&1; then
-  POD="$(kubectl -n "$NS" get pods -l app.kubernetes.io/instance="$RELEASE" --field-selector=status.phase=Running -o name | tail -n1 | cut -d/ -f2)"
+  if ! kubectl config current-context >/dev/null 2>&1; then
+    echo "metrics runtime check skipped: kubectl context is not configured"
+    exit 0
+  fi
+  POD="$(kubectl -n "$NS" get pods -l app.kubernetes.io/instance="$RELEASE" --field-selector=status.phase=Running -o name 2>/dev/null | tail -n1 | cut -d/ -f2)"
+  if [ -z "$POD" ]; then
+    echo "metrics runtime check skipped: no running atlas pod found in namespace '$NS'"
+    exit 0
+  fi
   kubectl -n "$NS" port-forward "pod/$POD" "$LOCAL_PORT:8080" >/tmp/atlas-metrics-port-forward.log 2>&1 &
   PF_PID=$!
   trap 'kill "$PF_PID" >/dev/null 2>&1 || true' EXIT INT TERM

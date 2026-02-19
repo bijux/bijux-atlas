@@ -29,6 +29,12 @@ make ops-drill-toxiproxy-latency
 - Fail over to healthy backend/profile if available.
 - Reduce heavy request load until backend recovers.
 
+## Alerts
+
+- Primary alert: `BijuxAtlasStoreBackendErrorSpike`.
+- Dashboard: `docs/operations/observability/dashboard.md`.
+- Drill references: `make ops-drill-store-outage`, `make ops-drill-toxiproxy-latency`.
+
 ## Rollback
 
 - Roll back store client config/version and retry policy changes.

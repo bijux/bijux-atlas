@@ -30,12 +30,12 @@ Image must contain OCI labels:
 
 - Docker image provides runtime binary surface.
 - Helm chart controls deployment profile, rollout policy, and image pull coordinates.
-- Deployment correctness is validated by `make ops-k8s-contracts` and image pin checks.
+- Deployment correctness is validated by public gates such as `make ops-k8s-suite` and image pin checks.
 
 ## Verify
 
 ```bash
 make docker-build
 make docker-smoke
-make ops-k8s-contracts
+make ops-k8s-suite
 ```

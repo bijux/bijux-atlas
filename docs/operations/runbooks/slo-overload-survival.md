@@ -28,6 +28,12 @@ make ops-slo-alert-proof
 - Increase cheap-class concurrency budget.
 - Reduce standard/heavy queue depth pressure.
 
+## Alerts
+
+- Primary alert: `BijuxAtlasOverloadSurvivalViolated`.
+- Dashboard: `docs/operations/observability/dashboard.md`.
+- Drill reference: `make ops-drill-overload`.
+
 ## Rollback
 
 - Revert overload threshold tuning and controller changes.
