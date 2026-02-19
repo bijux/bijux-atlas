@@ -90,6 +90,24 @@ config-print: ## Print canonical merged config payload as JSON
 config-drift: ## Check config/schema/docs drift without regeneration
 	@python3 ./scripts/public/config-drift-check.py
 
+configs-check: ## Config schemas + drift + ownership + symlink shim + SSOT checks
+	@python3 ./scripts/configs/check_configs_readmes.py
+	@python3 ./scripts/configs/check_config_ownership.py
+	@python3 ./scripts/configs/validate_configs_schemas.py
+	@python3 ./scripts/public/config-validate.py
+	@python3 ./scripts/public/config-drift-check.py
+	@python3 ./scripts/configs/check_ops_env_usage_declared.py
+	@python3 ./scripts/configs/check_no_adhoc_versions.py
+	@python3 ./scripts/configs/check_perf_thresholds_drift.py
+	@python3 ./scripts/configs/check_slo_sync.py
+	@python3 ./scripts/configs/check_openapi_snapshot_generated.py
+	@python3 ./scripts/configs/check_tool_versions_doc_drift.py
+	@python3 ./scripts/configs/check_root_config_shims.py
+	@python3 ./scripts/layout/check_symlink_policy.py
+	@python3 ./scripts/configs/check_duplicate_threshold_sources.py
+	@python3 ./scripts/configs/check_docs_links_for_configs.py
+	@python3 ./ops/_lint/no-shadow-configs.py
+
 CI_ISO_ROOT := $(CURDIR)/artifacts/isolate/ci
 CI_ENV := ISO_ROOT=$(CI_ISO_ROOT) CARGO_TARGET_DIR=$(CI_ISO_ROOT)/target CARGO_HOME=$(CI_ISO_ROOT)/cargo-home TMPDIR=$(CI_ISO_ROOT)/tmp TMP=$(CI_ISO_ROOT)/tmp TEMP=$(CI_ISO_ROOT)/tmp
 LOCAL_ISO_ROOT := $(CURDIR)/artifacts/isolate/local
@@ -237,7 +255,7 @@ release-update-compat-matrix:
 
 
 
-.PHONY: architecture-check artifacts-clean artifacts-index bootstrap bootstrap-tools bump chart-package chart-verify ci ci-workflow-contract clean config-drift config-print config-validate contracts dataset-id-lint debug deep-clean docker-build docker-smoke docs docs-lint-names doctor explain fetch-real-datasets format gates gates-check governance-check help hygiene inventory isolate-clean layout-check layout-migrate list-internal list-public local local-full makefiles-contract nightly no-direct-scripts ops-alerts-validate ops-artifacts-open ops-baseline-policy-check ops-cache-pin-set ops-cache-status ops-catalog-validate ops-check ops-clean ops-contracts-check ops-dashboards-validate ops-dataset-federated-registry-test ops-dataset-multi-release-test ops-dataset-promotion-sim ops-dataset-qc ops-datasets-fetch ops-deploy ops-doctor ops-down ops-drill-corruption-dataset ops-drill-memory-growth ops-drill-otel-outage ops-drill-overload ops-drill-pod-churn ops-drill-rate-limit ops-drill-rollback ops-drill-rollback-under-load ops-drill-store-outage ops-drill-suite ops-drill-toxiproxy-latency ops-drill-upgrade ops-drill-upgrade-under-load ops-e2e-smoke ops-full ops-full-pr ops-gc-smoke ops-gen ops-gen-check ops-incident-repro-kit ops-k8s-smoke ops-k8s-suite ops-k8s-template-tests ops-k8s-tests ops-load-ci ops-load-full ops-load-manifest-validate ops-load-nightly ops-load-shedding ops-load-smoke ops-load-soak ops-load-suite ops-local-full ops-local-full-stack ops-metrics-check ops-obs-down ops-obs-install ops-obs-mode ops-obs-uninstall ops-obs-verify ops-observability-pack-conformance-report ops-observability-pack-export ops-observability-pack-health ops-observability-pack-smoke ops-observability-pack-verify ops-observability-smoke ops-observability-validate ops-open-grafana ops-openapi-validate ops-perf-baseline-update ops-perf-cold-start ops-perf-nightly ops-perf-report ops-perf-warm-start ops-policy-audit ops-prereqs ops-proof-cached-only ops-publish ops-readiness-scorecard ops-realdata ops-redeploy ops-ref-grade-local ops-ref-grade-nightly ops-ref-grade-pr ops-release-matrix ops-release-rollback ops-release-update ops-report ops-slo-alert-proof ops-slo-burn ops-slo-report ops-smoke ops-tools-check ops-traces-check ops-undeploy ops-up ops-values-validate ops-warm ops-warm-datasets ops-warm-shards ops-warm-top policy-allow-env-lint policy-audit policy-drift-diff policy-enforcement-status policy-lint policy-schema-drift prereqs release release-dry-run release-update-compat-matrix rename-lint report root root-determinism root-local root-local-fast root-local-summary scripts-audit scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test ssot-check verify-inventory
+.PHONY: architecture-check artifacts-clean artifacts-index bootstrap bootstrap-tools bump chart-package chart-verify ci ci-workflow-contract clean config-drift config-print config-validate configs-check contracts dataset-id-lint debug deep-clean docker-build docker-smoke docs docs-lint-names doctor explain fetch-real-datasets format gates gates-check governance-check help hygiene inventory isolate-clean layout-check layout-migrate list-internal list-public local local-full makefiles-contract nightly no-direct-scripts ops-alerts-validate ops-artifacts-open ops-baseline-policy-check ops-cache-pin-set ops-cache-status ops-catalog-validate ops-check ops-clean ops-contracts-check ops-dashboards-validate ops-dataset-federated-registry-test ops-dataset-multi-release-test ops-dataset-promotion-sim ops-dataset-qc ops-datasets-fetch ops-deploy ops-doctor ops-down ops-drill-corruption-dataset ops-drill-memory-growth ops-drill-otel-outage ops-drill-overload ops-drill-pod-churn ops-drill-rate-limit ops-drill-rollback ops-drill-rollback-under-load ops-drill-store-outage ops-drill-suite ops-drill-toxiproxy-latency ops-drill-upgrade ops-drill-upgrade-under-load ops-e2e-smoke ops-full ops-full-pr ops-gc-smoke ops-gen ops-gen-check ops-incident-repro-kit ops-k8s-smoke ops-k8s-suite ops-k8s-template-tests ops-k8s-tests ops-load-ci ops-load-full ops-load-manifest-validate ops-load-nightly ops-load-shedding ops-load-smoke ops-load-soak ops-load-suite ops-local-full ops-local-full-stack ops-metrics-check ops-obs-down ops-obs-install ops-obs-mode ops-obs-uninstall ops-obs-verify ops-observability-pack-conformance-report ops-observability-pack-export ops-observability-pack-health ops-observability-pack-smoke ops-observability-pack-verify ops-observability-smoke ops-observability-validate ops-open-grafana ops-openapi-validate ops-perf-baseline-update ops-perf-cold-start ops-perf-nightly ops-perf-report ops-perf-warm-start ops-policy-audit ops-prereqs ops-proof-cached-only ops-publish ops-readiness-scorecard ops-realdata ops-redeploy ops-ref-grade-local ops-ref-grade-nightly ops-ref-grade-pr ops-release-matrix ops-release-rollback ops-release-update ops-report ops-slo-alert-proof ops-slo-burn ops-slo-report ops-smoke ops-tools-check ops-traces-check ops-undeploy ops-up ops-values-validate ops-warm ops-warm-datasets ops-warm-shards ops-warm-top policy-allow-env-lint policy-audit policy-drift-diff policy-enforcement-status policy-lint policy-schema-drift prereqs release release-dry-run release-update-compat-matrix rename-lint report root root-determinism root-local root-local-fast root-local-summary scripts-audit scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test ssot-check verify-inventory
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)
 	@$(MAKE) scripts-audit
 	@python3 ./scripts/docs/check_script_headers.py
@@ -259,13 +277,15 @@ inventory: ## Regenerate inventories (ops surface, make targets, docs status, na
 	@python3 ./scripts/docs/generate_ops_surface.py
 	@python3 ./scripts/docs/generate_make_targets_inventory.py
 	@python3 ./scripts/docs/generate_makefiles_surface.py
+	@python3 ./scripts/configs/generate_configs_surface.py
+	@python3 ./scripts/configs/generate_tooling_versions_doc.py
 	@python3 ./scripts/docs/lint_doc_status.py
 	@python3 ./scripts/docs/naming_inventory.py
 	@python3 ./scripts/docs/generate_repo_surface.py
 
 verify-inventory: ## Fail if inventory outputs drift from generated state
 	@$(MAKE) -s inventory
-	@git diff --exit-code -- docs/_generated/repo-surface.md docs/_generated/doc-status.md docs/_generated/naming-inventory.md docs/_generated/ops-surface.md docs/development/make-targets.md docs/development/make-targets-inventory.md docs/development/makefiles/surface.md
+	@git diff --exit-code -- docs/_generated/repo-surface.md docs/_generated/doc-status.md docs/_generated/naming-inventory.md docs/_generated/ops-surface.md docs/_generated/configs-surface.md docs/_generated/tooling-versions.md docs/development/make-targets.md docs/development/make-targets-inventory.md docs/development/makefiles/surface.md
 
 scripts-format: ## Format scripts (python + shell where available)
 	@if command -v ruff >/dev/null 2>&1; then ruff format scripts; else echo "ruff not installed (optional)"; fi
