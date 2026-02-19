@@ -87,10 +87,14 @@ docs-hardening: ## Run full docs hardening pipeline
 	@$(MAKE) docs-build
 	@$(MAKE) docs-freeze
 
+docs-all: ## Canonical all-docs gate: must pass all docs sub-gates
+	@$(MAKE) docs-hardening
+	@$(MAKE) docs-lint-names
+
 docs-check: ## Docs contract check alias (same as docs-build)
 	@$(MAKE) docs-build
 
 docs: ## Public docs alias (maps to docs-check only)
 	@$(MAKE) docs-check
 
-.PHONY: docs docs-build docs-check docs-serve docs-freeze docs-hardening docs-req-lock-refresh _docs-venv
+.PHONY: docs docs-all docs-build docs-check docs-serve docs-freeze docs-hardening docs-req-lock-refresh _docs-venv
