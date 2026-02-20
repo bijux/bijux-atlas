@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "owner": "bijux-atlas-operations",
+  "overload_response_contract": {
+    "heavy_endpoints_must_include_any": [422, 429, 503],
+    "cheap_endpoints_must_include": [200],
+    "policy_error_codes": ["RateLimited", "QueryRejectedByPolicy", "NotReady"]
+  },
+  "heavy_endpoints": [
+    "/v1/genes",
+    "/v1/sequence/region",
+    "/v1/genes/{gene_id}/sequence"
+  ],
+  "cheap_endpoints": [
+    "/v1/version",
+    "/healthz",
+    "/readyz",
+    "/v1/datasets"
+  ]
+}

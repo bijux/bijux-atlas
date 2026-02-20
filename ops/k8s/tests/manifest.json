@@ -657,6 +657,20 @@
       "expected_failure_modes": [
         "warmup_job_failed"
       ]
+    },
+    {
+      "script": "checks/perf/test_admission_control_api_behavior.sh",
+      "groups": [
+        "admission-control",
+        "rate-limit",
+        "resilience"
+      ],
+      "owner": "server",
+      "retries": 1,
+      "timeout_seconds": 240,
+      "expected_failure_modes": [
+        "admission_policy_not_enforced"
+      ]
     }
   ]
 }

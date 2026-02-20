@@ -46,6 +46,7 @@ ops-contracts-check: ## Validate canonical ops manifests against ops/_schemas an
 	@python3 ./scripts/layout/check_no_hidden_defaults.py
 	@python3 ./scripts/layout/check_obs_pack_ssot.py
 	@python3 ./scripts/layout/check_obs_suites.py
+	@python3 ./ops/obs/scripts/contracts/check_overload_behavior_contract.py
 	@python3 ./scripts/layout/check_ops_canonical_entrypoints.py
 	@python3 ./scripts/layout/check_ops_script_names.py
 	@python3 ./scripts/layout/check_no_empty_dirs.py
@@ -191,6 +192,12 @@ ops-e2e-smoke: ## Compatibility alias for canonical e2e smoke suite
 
 ops-k8s-suite: ## Run k8s invariant suite
 	@PROFILE="$${PROFILE:-kind}" ./ops/run/e2e.sh --suite k8s-suite --profile "$${PROFILE:-kind}" $${E2E_ARGS:-}
+
+ops-api-protection: ## Run k8s API protection suite (rate-limit + admission-control + redis)
+	@ATLAS_E2E_K8S_SUITE=api-protection PROFILE="$${PROFILE:-kind}" ./ops/run/e2e.sh --suite k8s-suite --profile "$${PROFILE:-kind}" $${E2E_ARGS:-}
+
+ops-graceful-degradation: ## Run k8s graceful degradation suite (cached-only + outage survival)
+	@ATLAS_E2E_K8S_SUITE=graceful-degradation PROFILE="$${PROFILE:-kind}" ./ops/run/e2e.sh --suite k8s-suite --profile "$${PROFILE:-kind}" $${E2E_ARGS:-}
 
 ops-load-suite: ## Run named load suite (SUITE=mixed-80-20)
 	@PROFILE="$${PROFILE:-kind}" SUITE="$${SUITE:-mixed-80-20}" ./ops/run/load-suite.sh
@@ -1069,6 +1076,7 @@ ops-perf-baseline-update: ## Update named baseline from artifacts/perf/baseline.
 
 ops-load-manifest-validate: ## Validate load suite SSOT, naming conventions, and pinned query lock
 	@./ops/load/scripts/validate_suite_manifest.py
+	@python3 ./ops/load/scripts/check_abuse_scenarios_required.py
 	@./ops/load/scripts/check_runbook_suite_names.py
 
 ops-perf-suite: ## Perf helper: run an arbitrary perf suite (SCENARIO=<file.js> OUT=<dir>)

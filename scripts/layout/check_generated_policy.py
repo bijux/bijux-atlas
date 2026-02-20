@@ -14,6 +14,8 @@ expected = {
     "docs/_generated/ops-surface.md",
     "docs/_generated/ops-contracts.md",
     "docs/_generated/ops-schemas.md",
+    "docs/_generated/ops-badge.md",
+    "ops/_generated/scorecard.json",
 }
 actual = set()
 for rel in expected:

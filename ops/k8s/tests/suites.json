@@ -5,17 +5,47 @@
     {
       "id": "smoke",
       "description": "Fast k8s invariant smoke suite",
-      "groups": ["sanity", "install", "readiness", "observability"]
+      "groups": [
+        "sanity",
+        "install",
+        "readiness",
+        "observability",
+        "hpa"
+      ]
     },
     {
       "id": "resilience",
       "description": "Resilience and availability suite",
-      "groups": ["resilience", "availability", "rolling-restart", "hpa", "pdb"]
+      "groups": [
+        "resilience",
+        "availability",
+        "rolling-restart",
+        "hpa",
+        "pdb"
+      ]
     },
     {
       "id": "full",
       "description": "Full k8s suite",
       "groups": []
+    },
+    {
+      "id": "api-protection",
+      "description": "Rate-limit, admission-control, and overload protection checks.",
+      "groups": [
+        "rate-limit",
+        "admission-control",
+        "redis"
+      ]
+    },
+    {
+      "id": "graceful-degradation",
+      "description": "Cached-only and store outage survival checks with resilience gates.",
+      "groups": [
+        "resilience",
+        "readiness",
+        "load"
+      ]
     }
   ]
 }
