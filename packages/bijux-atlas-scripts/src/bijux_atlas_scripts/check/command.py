@@ -6,6 +6,7 @@ import subprocess
 
 from ..core.context import RunContext
 from ..lint.runner import run_suite
+from .native import check_duplicate_script_names, check_script_help, check_script_ownership
 
 
 def _run(ctx: RunContext, cmd: list[str]) -> int:
@@ -36,11 +37,32 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if sub == "stack-report":
         return _run(ctx, ["python3", "scripts/areas/public/stack/validate_stack_report.py"])
     if sub == "cli-help":
-        return _run(ctx, ["python3", "scripts/areas/check/check-script-help.py"])
+        code, errors = check_script_help(ctx.repo_root)
+        if errors:
+            print("script help contract failed:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("script help contract passed")
+        return code
     if sub == "ownership":
-        return _run(ctx, ["python3", "scripts/areas/check/check-script-ownership.py"])
+        code, errors = check_script_ownership(ctx.repo_root)
+        if errors:
+            print("script ownership coverage failed:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("script ownership coverage passed")
+        return code
     if sub == "duplicate-script-names":
-        return _run(ctx, ["python3", "scripts/areas/check/check_duplicate_script_names.py"])
+        code, errors = check_duplicate_script_names(ctx.repo_root)
+        if errors:
+            print("duplicate dash/underscore script names detected:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("no duplicate script names")
+        return code
     if sub == "make-scripts-refs":
         return _run(ctx, ["python3", "scripts/areas/check/check-no-make-scripts-references.py"])
     return 2
