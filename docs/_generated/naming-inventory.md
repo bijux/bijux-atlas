@@ -5,9 +5,9 @@
 
 ## Summary
 
-- Tracked files: `2071`
+- Tracked files: `2073`
 - Docs markdown files: `387`
-- Script files under `scripts/`: `360`
+- Script files under `scripts/`: `362`
 - Rust test files: `42`
 - Load suites in `ops/load/suites/suites.json`: `20`
 - Runbooks in `docs/operations/runbooks/`: `17`
@@ -17,7 +17,7 @@
 
 - Forbidden-token hits: `2`
 - Non-kebab docs outside allowed exceptions: `22`
-- Non-kebab scripts under `scripts/`: `303`
+- Non-kebab scripts under `scripts/`: `305`
 
 ## Load Suites
 
@@ -89,6 +89,7 @@
 - `docs/operations/slo/WHY_THESE_SLIS.md`
 - `scripts/areas/_internal/run_suite_wrapper_legacy.sh`
 - `scripts/areas/bootstrap/install_tools.sh`
+- `scripts/areas/check/check_duplicate_script_names.py`
 - `scripts/areas/configs/check_config_files_well_formed.py`
 - `scripts/areas/configs/check_config_keys_docs_coverage.py`
 - `scripts/areas/configs/check_config_ownership.py`
@@ -277,6 +278,7 @@
 - `scripts/areas/layout/check_ops_run_entrypoints.py`
 - `scripts/areas/layout/check_ops_script_names.py`
 - `scripts/areas/layout/check_ops_script_targets.sh`
+- `scripts/areas/layout/check_ops_shell_policy.py`
 - `scripts/areas/layout/check_ops_single_owner_contracts.py`
 - `scripts/areas/layout/check_ops_single_validators.py`
 - `scripts/areas/layout/check_ops_stack_order.sh`

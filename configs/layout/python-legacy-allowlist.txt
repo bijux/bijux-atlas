@@ -113,6 +113,7 @@ scripts/areas/check/check-script-help.py
 scripts/areas/check/check-script-ownership.py
 scripts/areas/check/check-script-tool-guards.py
 scripts/areas/check/check-script-write-roots.py
+scripts/areas/check/check_duplicate_script_names.py
 scripts/areas/configs/check_config_files_well_formed.py
 scripts/areas/configs/check_config_keys_docs_coverage.py
 scripts/areas/configs/check_config_ownership.py
@@ -277,6 +278,7 @@ scripts/areas/layout/check_ops_layout_contract.py
 scripts/areas/layout/check_ops_pins.py
 scripts/areas/layout/check_ops_run_entrypoints.py
 scripts/areas/layout/check_ops_script_names.py
+scripts/areas/layout/check_ops_shell_policy.py
 scripts/areas/layout/check_ops_single_owner_contracts.py
 scripts/areas/layout/check_ops_single_validators.py
 scripts/areas/layout/check_ops_surface_drift.py
