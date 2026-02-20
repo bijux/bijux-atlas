@@ -186,6 +186,12 @@ scripts-install-dev: ## Install python tooling for scripts package development
 scripts-install: ## Install scripts package tooling into local venv
 	@$(MAKE) -s internal/scripts/install
 
+scripts-venv: ## Create deterministic scripts venv under artifacts/isolate/py/
+	@$(MAKE) -s internal/scripts/venv
+
+scripts-lock-check: ## Validate scripts lock consistency against pyproject
+	@$(MAKE) -s internal/scripts/lock-check
+
 scripts-run: ## Run bijux-atlas-scripts command (usage: make scripts-run CMD="doctor --json")
 	@[ -n "$${CMD:-}" ] || { echo "usage: make scripts-run CMD='doctor --json'" >&2; exit 2; }
 	@$(MAKE) -s internal/scripts/run CMD="$${CMD}"

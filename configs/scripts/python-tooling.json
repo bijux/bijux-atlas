@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "toolchain": "pip-tools",
+  "python_version": "3.10",
+  "lockfile": "tools/bijux-atlas-scripts/requirements.lock.txt",
+  "venv_dir": "artifacts/isolate/py/scripts/.venv",
+  "package": "tools/bijux-atlas-scripts"
+}

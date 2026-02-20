@@ -35,3 +35,16 @@ Global context flags:
 - Output file writes are enforced to `artifacts/evidence/**` only.
 - Exit codes map to `ops/_meta/error-registry.json`.
 - Structured logs emit timestamp, level, run_id, component, action, file, and line.
+
+## Packaging And Locking
+
+- Python dependency SSOT uses `pip-tools` style input/lock files:
+- `tools/bijux-atlas-scripts/requirements.in`
+- `tools/bijux-atlas-scripts/requirements.lock.txt`
+- Validate lock consistency with `make scripts-lock-check`.
+- Create deterministic virtualenv with `make scripts-venv` at `artifacts/isolate/py/scripts/.venv`.
+- Install only from lock via `make scripts-install`.
+
+## Publish Policy
+
+- `bijux-atlas-scripts` is internal-only and must not be published to PyPI until an explicit release policy is added.
