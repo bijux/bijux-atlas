@@ -45,7 +45,7 @@ def main() -> int:
         _stage, rel = stage_path.split("\t", 1)
         if mode != "100755":
             continue
-        if rel.startswith("packages/") or rel.startswith("tools/"):
+        if rel.startswith("packages/"):
             continue
         if "/tests/" in rel:
             continue
