@@ -184,12 +184,12 @@ openapi-drift:
 	@./scripts/areas/public/openapi-diff-check.sh
 
 api-contract-check:
-	@python3 ./scripts/areas/public/contracts/gen_openapi.py
+	@./bin/bijux-atlas run ./scripts/areas/public/contracts/gen_openapi.py
 	@./scripts/areas/public/openapi-diff-check.sh
-	@python3 ./scripts/areas/public/contracts/check_endpoints_contract.py
-	@python3 ./scripts/areas/public/contracts/check_error_codes_contract.py
-	@python3 ./scripts/areas/public/contracts/check_v1_surface.py
-	@python3 ./scripts/areas/public/contracts/check_breaking_contract_change.py
+	@./bin/bijux-atlas run ./scripts/areas/public/contracts/check_endpoints_contract.py
+	@./bin/bijux-atlas run ./scripts/areas/public/contracts/check_error_codes_contract.py
+	@./bin/bijux-atlas run ./scripts/areas/public/contracts/check_v1_surface.py
+	@./bin/bijux-atlas run ./scripts/areas/public/contracts/check_breaking_contract_change.py
 
 compat-matrix-validate:
 	@./scripts/areas/release/validate-compat-matrix.sh
@@ -210,8 +210,8 @@ query-plan-gate:
 	@./scripts/areas/public/query-plan-gate.sh
 
 critical-query-check:
-	@python3 ./scripts/areas/public/contracts/check_sqlite_indexes_contract.py
-	@python3 ./scripts/areas/public/perf/run_critical_queries.py
+	@./bin/bijux-atlas run ./scripts/areas/public/contracts/check_sqlite_indexes_contract.py
+	@./bin/bijux-atlas run ./scripts/areas/public/perf/run_critical_queries.py
 
 cold-start-bench:
 	@./ops/load/scripts/cold_start_benchmark.sh
