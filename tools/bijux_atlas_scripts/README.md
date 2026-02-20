@@ -6,6 +6,14 @@ Internal Python package for script orchestration and stable script APIs.
 
 - `bijux-atlas-scripts run <script-path> [args...]`
 - `bijux-atlas-scripts validate-output --schema <schema.json> --file <output.json>`
+- `bijux-atlas-scripts surface --json`
+- `bijux-atlas-scripts doctor --json`
+
+Global context flags:
+- `--run-id`
+- `--evidence-root`
+- `--profile`
+- `--no-network`
 
 ## Modules
 

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["run_id", "profile", "evidence_root", "python", "platform", "tools", "pins", "env"],
+  "additionalProperties": true,
+  "properties": {
+    "run_id": {"type": "string", "minLength": 1},
+    "profile": {"type": "string", "minLength": 1},
+    "evidence_root": {"type": "string", "minLength": 1},
+    "python": {"type": "string", "minLength": 1},
+    "platform": {"type": "string", "minLength": 1},
+    "tools": {"type": "object"},
+    "pins": {"type": "object"},
+    "env": {"type": "object"}
+  }
+}

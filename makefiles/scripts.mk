@@ -60,6 +60,10 @@ scripts-test: ## Run scripts-focused tests
 	@if [ -x "$(SCRIPTS_VENV)/bin/mypy" ]; then PYTHONPATH=tools/bijux_atlas_scripts/src "$(SCRIPTS_VENV)/bin/mypy" tools/bijux_atlas_scripts/src; else echo "mypy not installed (optional)"; fi
 	@PYTHONPATH=tools/bijux_atlas_scripts/src "$(SCRIPTS_VENV)/bin/pytest" -q tools/bijux_atlas_scripts/tests
 	@./scripts/bin/bijux-atlas-scripts validate-output --schema configs/contracts/scripts-tool-output.schema.json --file tools/bijux_atlas_scripts/tests/goldens/tool-output.example.json
+	@./scripts/bin/bijux-atlas-scripts surface --json > artifacts/scripts/surface.json
+	@./scripts/bin/bijux-atlas-scripts validate-output --schema configs/contracts/scripts-surface-output.schema.json --file artifacts/scripts/surface.json
+	@./scripts/bin/bijux-atlas-scripts --run-id scripts-test --profile local doctor --json > artifacts/scripts/doctor.json
+	@./scripts/bin/bijux-atlas-scripts validate-output --schema configs/contracts/scripts-doctor-output.schema.json --file artifacts/scripts/doctor.json
 
 scripts-check: ## Run scripts lint + tests as a single gate
 	@./scripts/areas/check/no-duplicate-script-names.sh
