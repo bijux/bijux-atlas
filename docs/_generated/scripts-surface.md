@@ -10,25 +10,25 @@ Scripts are internal unless listed in `configs/ops/public-surface.json` or `scri
 
 | Command | Owner |
 |---|---|
-| `bijux-atlas-scripts configs` | `bijux-atlas-platform` |
-| `bijux-atlas-scripts docs` | `bijux-atlas-platform` |
-| `bijux-atlas-scripts doctor` | `bijux-atlas-platform` |
-| `bijux-atlas-scripts inventory` | `bijux-atlas-platform` |
-| `bijux-atlas-scripts make` | `bijux-atlas-platform` |
-| `bijux-atlas-scripts ops` | `bijux-atlas-platform` |
-| `bijux-atlas-scripts policies` | `bijux-atlas-platform` |
-| `bijux-atlas-scripts report` | `bijux-atlas-platform` |
-| `bijux-atlas-scripts run` | `bijux-atlas-platform` |
-| `bijux-atlas-scripts surface` | `bijux-atlas-platform` |
-| `bijux-atlas-scripts validate-output` | `bijux-atlas-platform` |
+| `atlasctl configs` | `bijux-atlas-platform` |
+| `atlasctl docs` | `bijux-atlas-platform` |
+| `atlasctl doctor` | `bijux-atlas-platform` |
+| `atlasctl inventory` | `bijux-atlas-platform` |
+| `atlasctl make` | `bijux-atlas-platform` |
+| `atlasctl ops` | `bijux-atlas-platform` |
+| `atlasctl policies` | `bijux-atlas-platform` |
+| `atlasctl report` | `bijux-atlas-platform` |
+| `atlasctl run` | `bijux-atlas-platform` |
+| `atlasctl surface` | `bijux-atlas-platform` |
+| `atlasctl validate-output` | `bijux-atlas-platform` |
 
 ## Python Tool Paths
 
 | Path | Owner |
 |---|---|
 | `packages/bijux-atlas-py/src/bijux_atlas_py` | `bijux-atlas-platform` |
-| `packages/bijux-atlas-scripts/src/bijux_atlas_scripts` | `bijux-atlas-platform` |
-| `packages/bijux-atlas-scripts/tests` | `bijux-atlas-platform` |
+| `packages/atlasctl/src/atlasctl` | `bijux-atlas-platform` |
+| `packages/atlasctl/tests` | `bijux-atlas-platform` |
 | `scripts/bin/bijux-atlas-dev` | `bijux-atlas-platform` |
 | `scripts/bin/bijux-atlas-ops` | `bijux-atlas-operations` |
 | `bin/bijux-atlas` | `bijux-atlas-platform` |

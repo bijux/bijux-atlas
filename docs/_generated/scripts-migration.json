@@ -88,9 +88,9 @@
       "script": "scripts/bin/bijux-atlas-ops"
     },
     {
-      "command": "bijux-atlas-scripts",
+      "command": "atlasctl",
       "mapped_cli": "atlasctl scripts",
-      "script": "scripts/bin/bijux-atlas-scripts"
+      "script": "scripts/bin/atlasctl"
     },
     {
       "command": "isolate",
@@ -189,7 +189,7 @@
     {
       "extension": ".py",
       "is_executable": true,
-      "path": "scripts/areas/check/check-bijux-atlas-scripts-boundaries.py",
+      "path": "scripts/areas/check/check-atlasctl-boundaries.py",
       "tags": []
     },
     {
@@ -2909,7 +2909,7 @@
     {
       "extension": ".py",
       "is_executable": true,
-      "path": "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_alerts_contract.py",
+      "path": "packages/atlasctl/src/atlasctl/obs/contracts/check_alerts_contract.py",
       "tags": [
         "gate_runner"
       ]
@@ -2917,7 +2917,7 @@
     {
       "extension": ".py",
       "is_executable": true,
-      "path": "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_dashboard_contract.py",
+      "path": "packages/atlasctl/src/atlasctl/obs/contracts/check_dashboard_contract.py",
       "tags": [
         "gate_runner"
       ]
@@ -2925,7 +2925,7 @@
     {
       "extension": ".py",
       "is_executable": true,
-      "path": "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_metrics_contract.py",
+      "path": "packages/atlasctl/src/atlasctl/obs/contracts/check_metrics_contract.py",
       "tags": [
         "gate_runner"
       ]
@@ -2933,7 +2933,7 @@
     {
       "extension": ".py",
       "is_executable": true,
-      "path": "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_runtime_metrics.py",
+      "path": "packages/atlasctl/src/atlasctl/obs/contracts/check_runtime_metrics.py",
       "tags": [
         "gate_runner"
       ]
@@ -2941,7 +2941,7 @@
     {
       "extension": ".py",
       "is_executable": true,
-      "path": "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_tracing_contract.py",
+      "path": "packages/atlasctl/src/atlasctl/obs/contracts/check_tracing_contract.py",
       "tags": [
         "gate_runner"
       ]
@@ -2949,7 +2949,7 @@
     {
       "extension": ".py",
       "is_executable": true,
-      "path": "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/lint_runbooks.py",
+      "path": "packages/atlasctl/src/atlasctl/obs/contracts/lint_runbooks.py",
       "tags": [
         "gate_runner"
       ]
@@ -3401,7 +3401,7 @@
     {
       "extension": "",
       "is_executable": true,
-      "path": "scripts/bin/bijux-atlas-scripts",
+      "path": "scripts/bin/atlasctl",
       "tags": []
     },
     {

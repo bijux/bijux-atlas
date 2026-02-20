@@ -23,27 +23,27 @@
     },
     "configs/meta/ownership.json": {
       "commands": {
-        "bijux-atlas-scripts configs": "bijux-atlas-platform",
-        "bijux-atlas-scripts docs": "bijux-atlas-platform",
-        "bijux-atlas-scripts doctor": "bijux-atlas-platform",
-        "bijux-atlas-scripts inventory": "bijux-atlas-platform",
-        "bijux-atlas-scripts make": "bijux-atlas-platform",
-        "bijux-atlas-scripts ops": "bijux-atlas-platform",
-        "bijux-atlas-scripts policies": "bijux-atlas-platform",
-        "bijux-atlas-scripts report": "bijux-atlas-platform",
-        "bijux-atlas-scripts run": "bijux-atlas-platform",
-        "bijux-atlas-scripts surface": "bijux-atlas-platform",
-        "bijux-atlas-scripts validate-output": "bijux-atlas-platform"
+        "atlasctl configs": "bijux-atlas-platform",
+        "atlasctl docs": "bijux-atlas-platform",
+        "atlasctl doctor": "bijux-atlas-platform",
+        "atlasctl inventory": "bijux-atlas-platform",
+        "atlasctl make": "bijux-atlas-platform",
+        "atlasctl ops": "bijux-atlas-platform",
+        "atlasctl policies": "bijux-atlas-platform",
+        "atlasctl report": "bijux-atlas-platform",
+        "atlasctl run": "bijux-atlas-platform",
+        "atlasctl surface": "bijux-atlas-platform",
+        "atlasctl validate-output": "bijux-atlas-platform"
       },
       "paths": {
         "scripts/bin/bijux-atlas-dev": "bijux-atlas-platform",
         "scripts/bin/bijux-atlas-ops": "bijux-atlas-operations",
-        "scripts/bin/bijux-atlas-scripts": "bijux-atlas-platform",
+        "scripts/bin/atlasctl": "bijux-atlas-platform",
         "scripts/bin/isolate": "bijux-atlas-platform",
         "scripts/bin/require-isolate": "bijux-atlas-platform",
         "scripts/bin/run_drill.sh": "bijux-atlas-operations",
-        "tools/bijux-atlas-scripts/src/bijux_atlas_scripts": "bijux-atlas-platform",
-        "tools/bijux-atlas-scripts/tests": "bijux-atlas-platform"
+        "tools/atlasctl/src/atlasctl": "bijux-atlas-platform",
+        "tools/atlasctl/tests": "bijux-atlas-platform"
       },
       "schema_version": 1
     },
