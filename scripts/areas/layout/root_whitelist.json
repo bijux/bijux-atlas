@@ -24,13 +24,7 @@
   ],
   "compat_shims": [
     "Dockerfile",
-    "bin",
-    ".vale",
-    ".vale.ini",
-    "deny.toml",
-    "audit-allowlist.toml",
-    "clippy.toml",
-    "rustfmt.toml"
+    "bin"
   ],
   "local_noise": [
     ".idea",

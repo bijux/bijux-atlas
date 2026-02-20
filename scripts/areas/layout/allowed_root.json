@@ -20,12 +20,6 @@
     "docker",
     "artifacts",
     "Dockerfile",
-    "deny.toml",
-    "audit-allowlist.toml",
-    "clippy.toml",
-    "rustfmt.toml",
-    ".vale",
-    ".vale.ini",
     "bin"
   ]
 }

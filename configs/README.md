@@ -5,6 +5,7 @@ Canonical home for repository configuration files and their consumers.
 Rule:
 - Root shims are allowed only when tooling requires root-path discovery.
 - Canonical config content lives under `configs/`.
+- Root tool-config symlinks are intentionally removed; tooling must use explicit config paths.
 
 ## Config Inventory
 

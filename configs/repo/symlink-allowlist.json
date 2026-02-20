@@ -1,0 +1,9 @@
+{
+  "root": {
+    "Dockerfile": "docker/images/runtime/Dockerfile",
+    "bin": "scripts/bin"
+  },
+  "non_root": {
+    "ops/e2e/stack": "ops/stack"
+  }
+}

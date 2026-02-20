@@ -5,33 +5,31 @@
 
 ## What
 
-Catalog of root-level tool config symlinks and their canonical config location.
+Historical note for removed root tool-config symlinks and current explicit-path usage.
 
 ## Why
 
-Some tools only discover config at repository root; shims preserve compatibility while keeping SSOT in `configs/`.
+Tooling now uses explicit config paths from `configs/` or `.cargo/config.toml` defaults where applicable.
 
 ## Scope
 
-Root config symlinks for rust, security, and docs tooling.
+Rust, security, and docs tool configurations under `configs/`.
 
 ## Non-goals
 
-Does not allow arbitrary new root symlinks.
+Does not allow root tool-config symlinks.
 
 ## Contracts
 
-- `clippy.toml` -> `configs/rust/clippy.toml`
-- `rustfmt.toml` -> `configs/rust/rustfmt.toml`
-- `deny.toml` -> `configs/security/deny.toml`
-- `audit-allowlist.toml` -> `configs/security/audit-allowlist.toml`
-- `.vale.ini` -> `configs/docs/.vale.ini`
-- `.vale` -> `configs/docs/.vale`
+- `cargo fmt` uses `--config-path configs/rust/rustfmt.toml`.
+- `cargo clippy` uses `CLIPPY_CONF_DIR=configs/rust`.
+- `cargo deny` uses `--config configs/security/deny.toml`.
+- `vale` uses `--config=configs/docs/.vale.ini`.
 
 ## Failure modes
 
-- Direct root config edits bypass canonical config ownership.
-- Undocumented shims create non-reproducible local behavior.
+- Root config files can drift from canonical SSOT.
+- Implicit root discovery hides config provenance.
 
 ## How to verify
 
