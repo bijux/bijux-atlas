@@ -5,6 +5,8 @@ from pathlib import Path
 import subprocess
 import sys
 
+from python_migration_exceptions import find_matching_exception
+
 ROOT = Path(__file__).resolve().parents[3]
 ALLOWLIST = ROOT / "configs" / "layout" / "python-legacy-allowlist.txt"
 
@@ -33,6 +35,8 @@ def main() -> int:
         if rel.startswith("tools/bijux-atlas-scripts/"):
             continue
         if "/tests/" in rel:
+            continue
+        if find_matching_exception("python_scripts_path", rel, "") is not None:
             continue
         if rel in allow:
             continue

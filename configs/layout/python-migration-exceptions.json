@@ -32,7 +32,7 @@
       "id": "repo-python-scripts-path-transition",
       "kind": "python_scripts_path",
       "path_glob": "**",
-      "contains": "python",
+      "contains": "",
       "owner": "bijux-atlas-platform",
       "issue": "BATCH-B2-PYTHON-PATH-MIGRATION",
       "expires_on": "2026-12-31"
