@@ -146,7 +146,7 @@ ci-workflows-make-only:
 	@python3 ./scripts/areas/layout/check_workflows_make_only.py
 
 ci-log-fields-contract:
-	@python3 ./ops/obs/scripts/validate_logs_schema.py --file ops/obs/contract/logs.example.jsonl
+	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/validate_logs_schema.py --file ops/obs/contract/logs.example.jsonl
 
 ci-observability-pack-test:
 	@$(MAKE) observability-pack-test

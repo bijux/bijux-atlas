@@ -313,16 +313,16 @@ perf/baseline-update: ## Run smoke suite, update baseline, write diff summary an
 
 perf/regression-check: ## Fail if p95 regression exceeds configured budget
 	@PROFILE="$${PROFILE:-$${ATLAS_PERF_BASELINE_PROFILE:-local}}"; \
-	python3 ./ops/load/scripts/regression_check.py --profile "$$PROFILE" --results "$${RESULTS:-artifacts/perf/results}"
+	./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/regression_check.py --profile "$$PROFILE" --results "$${RESULTS:-artifacts/perf/results}"
 
 perf/triage: ## Print top p95 regressions by suite from latest perf results
 	@PROFILE="$${PROFILE:-$${ATLAS_PERF_BASELINE_PROFILE:-local}}"; \
-	python3 ./ops/load/scripts/triage_regressions.py --profile "$$PROFILE" --results "$${RESULTS:-artifacts/perf/results}"
+	./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/triage_regressions.py --profile "$$PROFILE" --results "$${RESULTS:-artifacts/perf/results}"
 
 perf/compare: ## Compare two evidence perf runs (FROM=<run_id> TO=<run_id>)
 	@[ -n "$${FROM:-}" ] || { echo "usage: make perf/compare FROM=<run_id> TO=<run_id>" >&2; exit 2; }
 	@[ -n "$${TO:-}" ] || { echo "usage: make perf/compare FROM=<run_id> TO=<run_id>" >&2; exit 2; }
-	@./scripts/bin/bijux-atlas-scripts run ./ops/load/scripts/compare_runs.py --from-run "$${FROM}" --to-run "$${TO}"
+	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/compare_runs.py --from-run "$${FROM}" --to-run "$${TO}"
 
 policies/all: ## Policies lane (deny/audit/policy checks)
 	@$(call with_iso,policies-all,$(MAKE) -s policies/check)
