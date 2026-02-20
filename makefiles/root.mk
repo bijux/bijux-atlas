@@ -360,6 +360,8 @@ policies/all: ## Policies lane (deny/audit/policy checks)
 policies/boundaries-check: ## Enforce e2e layer boundary rules and relaxations
 	@python3 ./ops/_lint/layer-relaxations-audit.py
 	@python3 ./ops/_lint/no-layer-fixups.py
+	@python3 ./ops/_lint/no-k8s-test-fixups.py
+	@python3 ./ops/_lint/no-stack-layer-literals.py
 
 local/all: ## Run all meaningful local gates
 	@PARALLEL="$${PARALLEL:-1}" RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-local-all-$(MAKE_RUN_TS)}}" MODE=root-local ./ops/run/root-lanes.sh

@@ -39,6 +39,7 @@ ops-contracts-check: ## Validate canonical ops manifests against ops/_schemas an
 	@python3 ./ops/_meta/generate_layer_contract.py
 	@python3 ./ops/_lint/check_layer_contract_drift.py
 	@python3 ./ops/_lint/no-layer-literals.py
+	@python3 ./ops/_lint/no-stack-layer-literals.py
 	@$(MAKE) -s ops-stack-versions-sync
 	@python3 ./scripts/layout/check_ops_surface_drift.py
 	@python3 ./scripts/layout/validate_ops_contracts.py
