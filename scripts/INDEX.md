@@ -150,7 +150,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/layout/validate_ops_contracts.py` | `repo-surface` | `public` | `ops-contracts-check`, `ops-gen`, `ops-k8s-contracts` |
 | `scripts/areas/layout/validate_ops_env.py` | `repo-surface` | `public` | `ops-env-print`, `ops-env-validate` |
 | `scripts/areas/layout/write_make_area_report.py` | `repo-surface` | `public` | - |
-| `scripts/areas/policy/find_relaxations.sh` | `platform` | `internal` | - |
 | `scripts/areas/public/check-allow-env-schema.py` | `platform` | `public` | `policy-allow-env-lint` |
 | `scripts/areas/public/check-cli-commands.sh` | `platform` | `public` | `cli-command-surface` |
 | `scripts/areas/public/check-markdown-links.sh` | `platform` | `public` | `_lint-docs`, `docs-build` |

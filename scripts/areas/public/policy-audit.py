@@ -43,8 +43,8 @@ def main() -> int:
     parser.add_argument("--enforce", action="store_true")
     args = parser.parse_args()
 
-    run(["./scripts/areas/policy/find_relaxations.sh", str(GREP_OUT)])
-    run(["./bin/bijux-atlas", "policies", "scan-rust-relaxations", "--out", str(RUST_OUT)])
+    run(["./bin/atlasctl", "policies", "scan-grep-relaxations", "--out", str(GREP_OUT)])
+    run(["./bin/atlasctl", "policies", "scan-rust-relaxations", "--out", str(RUST_OUT)])
 
     grep_findings = load_json(GREP_OUT).get("findings", [])
     rust_findings = load_json(RUST_OUT).get("findings", [])
