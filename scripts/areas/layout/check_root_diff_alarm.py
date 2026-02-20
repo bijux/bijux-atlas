@@ -39,7 +39,7 @@ def main() -> int:
     if missing:
         # If companion files are unchanged, allow only when regeneration is a no-op.
         regen = subprocess.run(
-            ["python3", "scripts/areas/docs/generate_make_targets_catalog.py"],
+            ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-make-targets-catalog", "--report", "text"],
             cwd=ROOT,
             capture_output=True,
             text=True,

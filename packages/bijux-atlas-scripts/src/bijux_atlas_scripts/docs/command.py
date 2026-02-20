@@ -205,7 +205,7 @@ def _check_docs_freeze_drift(ctx: RunContext) -> tuple[int, str]:
         before.update(_snapshot_hashes(target))
     cmds = [
         ["python3", "-m", "bijux_atlas_scripts.cli", "contracts", "generate", "--generators", "artifacts"],
-        ["python3", "scripts/areas/docs/generate_chart_contract_index.py"],
+        ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-chart-contract-index", "--report", "text"],
     ]
     for cmd in cmds:
         code, output = _run_check(cmd, ctx.repo_root)
@@ -771,7 +771,7 @@ def _generate_naming_inventory(ctx: RunContext) -> tuple[int, str]:
 
 
 def _check_legacy_terms(ctx: RunContext) -> tuple[int, str]:
-    allowlist = ctx.repo_root / "scripts/areas/docs/legacy-terms-allowlist.txt"
+    allowlist = ctx.repo_root / "configs/docs/legacy-terms-allowlist.txt"
     if not allowlist.exists():
         return 2, f"missing allowlist: {allowlist.relative_to(ctx.repo_root)}"
     allow = [line.strip() for line in allowlist.read_text(encoding="utf-8").splitlines() if line.strip() and not line.startswith("#")]
@@ -2108,8 +2108,7 @@ def _check_script_headers(ctx: RunContext) -> tuple[int, str]:
     if idx.exists():
         text = idx.read_text(encoding="utf-8", errors="ignore")
         required_groups = [
-            "scripts/areas/docs/",
-            "scripts/areas/public/perf/",
+                        "scripts/areas/public/perf/",
             "scripts/areas/public/observability/",
             "scripts/areas/fixtures/",
             "scripts/areas/release/",
@@ -2436,7 +2435,7 @@ def _generate_crates_map(ctx: RunContext) -> tuple[int, str]:
             "",
             "```bash",
             "$ atlasctl docs generate-crates-map",
-            "$ ./scripts/areas/docs/check_crate_docs_contract.sh",
+            " docs crate-docs-contract-check",
             "```",
             "",
             "Expected output: crates map is regenerated and crate docs contract passes.",
@@ -3273,7 +3272,7 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
     if ns.docs_cmd == "lint":
         if ns.fix:
-            code, output = _run_check(["python3", "scripts/areas/docs/rewrite_legacy_terms.py", "docs"], ctx.repo_root)
+            code, output = _rewrite_legacy_terms(ctx, "docs", apply=True)
             if code != 0:
                 if output:
                     print(output)
