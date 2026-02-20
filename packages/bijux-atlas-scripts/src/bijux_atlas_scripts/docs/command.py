@@ -948,6 +948,73 @@ def _check_index_pages(ctx: RunContext) -> tuple[int, str]:
     return (0, "index pages check passed") if not errors else (1, "\n".join(errors))
 
 
+def _check_script_headers(ctx: RunContext) -> tuple[int, str]:
+    root = ctx.repo_root
+    script_paths = sorted(
+        p
+        for p in (root / "scripts").rglob("*")
+        if p.is_file()
+        and p.suffix in {".sh", ".py"}
+        and (
+            p.relative_to(root).as_posix().startswith("scripts/areas/public/")
+            or p.relative_to(root).as_posix().startswith("scripts/bin/")
+        )
+    )
+    errors: list[str] = []
+    for path in script_paths:
+        if "/scripts/areas/_internal/" in path.as_posix():
+            continue
+        txt = path.read_text(encoding="utf-8", errors="ignore").splitlines()
+        first = txt[0] if txt else ""
+        rel = path.relative_to(root).as_posix()
+        is_public = rel.startswith("scripts/areas/public/")
+        is_executable = path.stat().st_mode & 0o111 != 0
+        has_shebang = first.startswith("#!")
+        if not (is_public or is_executable or has_shebang):
+            continue
+        head = "\n".join(txt[:12])
+        if path.suffix == ".sh" and not (
+            head.startswith("#!/usr/bin/env sh")
+            or head.startswith("#!/bin/sh")
+            or head.startswith("#!/usr/bin/env bash")
+            or head.startswith("#!/bin/bash")
+            or head.startswith("#!/usr/bin/env python3")
+        ):
+            errors.append(f"{rel}: missing shebang")
+        if path.suffix == ".py" and not head.startswith("#!/usr/bin/env python3"):
+            errors.append(f"{rel}: missing shebang")
+        legacy_header = "Purpose:" in head and "Inputs:" in head and "Outputs:" in head
+        modern_header = all(token in head.lower() for token in ("owner:", "purpose:", "stability:", "called-by:"))
+        if not (legacy_header or modern_header):
+            errors.append(f"{rel}: missing script header contract")
+        if rel.startswith("scripts/areas/public/"):
+            required = ("owner:", "purpose:", "stability:", "called-by:")
+            missing = [k for k in required if k not in head.lower()]
+            if missing:
+                errors.append(f"{rel}: missing public header fields ({', '.join(missing)})")
+    idx = root / "docs/development/scripts/INDEX.md"
+    if idx.exists():
+        text = idx.read_text(encoding="utf-8", errors="ignore")
+        required_groups = [
+            "scripts/areas/docs/",
+            "scripts/areas/public/perf/",
+            "scripts/areas/public/observability/",
+            "scripts/areas/fixtures/",
+            "scripts/areas/release/",
+            "scripts/areas/layout/",
+            "scripts/bin/",
+            "scripts/areas/public/",
+            "scripts/areas/internal/",
+            "scripts/areas/tools/",
+        ]
+        for group in required_groups:
+            if group not in text:
+                errors.append(f"{idx.relative_to(root)}: missing script group reference `{group}`")
+    else:
+        errors.append(f"{idx.relative_to(root)}: missing scripts index")
+    return (0, "script header check passed") if not errors else (1, "\n".join(errors))
+
+
 def _generate_architecture_map(ctx: RunContext) -> tuple[int, str]:
     category_hints = {
         "bijux-atlas-api": "api-surface",
@@ -1576,6 +1643,11 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
         return code
 
+    if ns.docs_cmd == "script-headers-check":
+        code, output = _check_script_headers(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
     if ns.docs_cmd == "contracts-index":
         if ns.fix:
             return _run_simple(ctx, ["python3", "scripts/areas/docs/generate_contracts_index_doc.py"], ns.report)
@@ -1710,6 +1782,7 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("runbook-map-registration-check", "validate runbook map has every runbook"),
         ("contract-doc-pairs-check", "validate JSON contracts have docs pairs"),
         ("index-pages-check", "validate docs/INDEX.md contract"),
+        ("script-headers-check", "validate script header and docs script-group contract"),
         ("glossary-check", "validate glossary and banned terms policy"),
         ("contracts-index", "validate or generate docs contracts index"),
         ("runbook-map", "validate or generate docs runbook map index"),
