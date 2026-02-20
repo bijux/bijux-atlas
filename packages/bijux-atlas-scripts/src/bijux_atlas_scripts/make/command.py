@@ -28,6 +28,10 @@ def _check(check_id: str, description: str, script: str, actionable: str) -> Mak
     return MakeCheck(check_id, description, ["python3", script], actionable)
 
 
+def _check_cmd(check_id: str, description: str, cmd: list[str], actionable: str) -> MakeCheck:
+    return MakeCheck(check_id, description, cmd, actionable)
+
+
 CHECKS: list[MakeCheck] = [
     _check(
         "public-surface",
@@ -59,10 +63,10 @@ CHECKS: list[MakeCheck] = [
         "scripts/areas/layout/check_no_orphan_owners.py",
         "Add missing owners for areas, paths, and command surfaces.",
     ),
-    _check(
+    _check_cmd(
         "docs-public-surface",
         "Validate docs public surface consistency",
-        "scripts/areas/docs/check_public_surface_docs.py",
+        ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "public-surface-check", "--report", "json"],
         "Regenerate docs/_generated surfaces and align nav references.",
     ),
     _check(

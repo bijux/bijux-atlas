@@ -114,7 +114,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_ops_observability_links.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_ops_readme_canonical_links.py` | `docs-governance` | `public` | `ci-ops-readme-canonical-links` |
 | `scripts/areas/docs/check_ops_readmes_make_only.py` | `docs-governance` | `public` | `ci-ops-readme-make-only` |
-| `scripts/areas/docs/check_public_surface_docs.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_public_targets_docs_sections.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_reference_templates.sh` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_runbook_map_registration.py` | `docs-governance` | `public` | `docs-lint-names` |

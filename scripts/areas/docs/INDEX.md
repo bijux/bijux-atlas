@@ -44,7 +44,6 @@ Scripts in this area.
 - check_ops_observability_links.py
 - check_ops_readme_canonical_links.py
 - check_ops_readmes_make_only.py
-- check_public_surface_docs.py
 - check_reference_templates.sh
 - check_runbook_map_registration.py
 - check_runbooks_contract.py
