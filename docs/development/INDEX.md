@@ -27,6 +27,7 @@ List and maintain links to section pages in this directory.
 - [Make Targets](make-targets.md)
 - [Scripts Index](scripts/INDEX.md)
 - [Scripts Governance](scripts.md)
+- [bijux-atlas-scripts Tooling](tooling/bijux-atlas-scripts.md)
 - [Script Naming](script-naming.md)
 - [Docs Depth Contract](docs-depth-contract.md)
 - [Repository Layout](repo-layout.md)
