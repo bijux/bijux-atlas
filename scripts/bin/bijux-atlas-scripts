@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
+export PYTHONPATH="$ROOT/tools/bijux_atlas_scripts/src${PYTHONPATH:+:$PYTHONPATH}"
+exec python3 -m bijux_atlas_scripts.cli "$@"
