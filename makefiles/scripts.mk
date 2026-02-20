@@ -1,7 +1,7 @@
 # Scope: scripts area internal targets and wrappers.
 # Public targets: none
 SHELL := /bin/sh
-SCRIPTS_VENV := artifacts/isolate/py/scripts/.venv
+SCRIPTS_VENV := artifacts/atlasctl/venv/.venv
 export PYTHONDONTWRITEBYTECODE := 1
 export RUFF_CACHE_DIR := $(CURDIR)/artifacts/atlasctl/ruff
 export MYPY_CACHE_DIR := $(CURDIR)/artifacts/atlasctl/mypy

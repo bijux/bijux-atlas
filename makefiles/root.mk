@@ -238,7 +238,7 @@ scripts-install-dev: ## Install python tooling for scripts package development
 scripts-install: ## Install scripts package tooling into local venv
 	@$(MAKE) -s internal/scripts/install
 
-scripts-venv: ## Create deterministic scripts venv under artifacts/isolate/py/
+scripts-venv: ## Create deterministic scripts venv under artifacts/atlasctl/venv/
 	@$(MAKE) -s internal/scripts/venv
 
 scripts-lock-check: ## Validate scripts lock consistency against pyproject
