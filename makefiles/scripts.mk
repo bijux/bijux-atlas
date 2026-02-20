@@ -44,7 +44,7 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(ATLAS_SCRIPTS) check ownership
 	@$(PY_RUN) scripts/areas/check/check-script-shim-expiry.py
 	@$(PY_RUN) scripts/areas/check/check-script-shims-minimal.py
-	@$(PY_RUN) scripts/areas/check/check-invocation-parity.py
+	@$(ATLAS_SCRIPTS) check invocation-parity
 	@$(ATLAS_SCRIPTS) check python-lock
 	@$(ATLAS_SCRIPTS) check bin-entrypoints
 	@$(ATLAS_SCRIPTS) check root-bin-shims
@@ -57,7 +57,7 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(ATLAS_SCRIPTS) check make-scripts-refs
 	@$(PY_RUN) scripts/areas/check/check-repo-script-boundaries.py
 	@$(PY_RUN) scripts/areas/check/check-atlas-scripts-cli-contract.py
-	@$(PY_RUN) scripts/areas/check/check-scripts-surface-docs-drift.py
+	@$(ATLAS_SCRIPTS) check scripts-surface-docs-drift
 	@$(PY_RUN) scripts/areas/layout/check_make_command_allowlist.py
 	@./ops/_lint/naming.sh
 	@$(PY_RUN) ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout/no_shadow.py

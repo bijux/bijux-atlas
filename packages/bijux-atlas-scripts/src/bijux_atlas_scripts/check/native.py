@@ -742,6 +742,32 @@ def check_no_direct_bash_invocations(repo_root: Path) -> tuple[int, list[str]]:
     return (0 if not errors else 1), errors
 
 
+def check_invocation_parity(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    py_mk = repo_root / "makefiles/python.mk"
+    text = py_mk.read_text(encoding="utf-8")
+    if "python3 -m bijux_atlas_scripts.cli" not in text:
+        errors.append("makefiles/python.mk must invoke atlasctl via python -m bijux_atlas_scripts.cli")
+    docs_text = (repo_root / "docs/development/tooling/bijux-atlas-scripts.md").read_text(
+        encoding="utf-8", errors="ignore"
+    )
+    if re.search(r"scripts/bin/bijux-atlas-scripts", docs_text):
+        errors.append("docs still reference scripts/bin/bijux-atlas-scripts")
+    if "atlasctl" not in docs_text:
+        errors.append("docs/development/tooling/bijux-atlas-scripts.md must reference atlasctl")
+    return (0 if not errors else 1), errors
+
+
+def check_scripts_surface_docs_drift(repo_root: Path) -> tuple[int, list[str]]:
+    doc = repo_root / "docs/development/tooling/bijux-atlas-scripts.md"
+    cfg = repo_root / "configs/scripts/python-tooling.json"
+    payload = json.loads(cfg.read_text(encoding="utf-8"))
+    commands = [str(cmd) for cmd in payload.get("commands", [])]
+    text = doc.read_text(encoding="utf-8")
+    missing = [f"missing `{cmd}` in {doc.relative_to(repo_root)}" for cmd in commands if f"`{cmd}`" not in text]
+    return (0 if not missing else 1), missing
+
+
 def check_root_bin_shims(repo_root: Path) -> tuple[int, list[str]]:
     bin_dir = repo_root / "bin"
     if not bin_dir.exists():
