@@ -1,3 +1,4 @@
+"""Atlasctl effects package."""
 from __future__ import annotations
 
 from .filesystem import ensure_path

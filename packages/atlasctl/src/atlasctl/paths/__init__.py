@@ -1,3 +1,4 @@
+"""Atlasctl paths package."""
 from __future__ import annotations
 
 from .artifacts import artifacts_scripts_dir

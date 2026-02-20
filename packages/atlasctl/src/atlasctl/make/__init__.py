@@ -1,3 +1,4 @@
+"""Atlasctl make package."""
 from __future__ import annotations
 
 from ..core.context import RunContext
