@@ -27,6 +27,10 @@
     {
       "path": "docker",
       "max_top_level_files": 3
+    },
+    {
+      "path": "artifacts/bijux-atlas-scripts",
+      "max_top_level_dirs": 6
     }
   ]
 }

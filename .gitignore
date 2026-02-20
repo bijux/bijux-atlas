@@ -10,6 +10,9 @@
 # -----------------------------------------------------------------------------
 .DS_Store
 .ruff_cache/
+**/.ruff_cache/
+**/.pytest_cache/
+**/.mypy_cache/
 Thumbs.db
 
 # -----------------------------------------------------------------------------
@@ -24,6 +27,9 @@ Thumbs.db
 # -----------------------------------------------------------------------------
 /artifacts/
 artifacts/evidence/**
+artifacts/bijux-atlas-scripts/**
+!artifacts/bijux-atlas-scripts/
+!artifacts/bijux-atlas-scripts/.gitkeep
 ops/_artifacts/
 ops/_evidence/**
 !ops/_evidence/.gitkeep
