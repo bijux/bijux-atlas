@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "endpoints": [
+    {
+      "path": "/v1/version",
+      "method": "get",
+      "class": "cheap",
+      "required_metrics": ["http_requests_total", "http_request_duration_seconds_bucket"],
+      "required_trace_spans": ["request_root", "serialize_response"]
+    },
+    {
+      "path": "/v1/datasets",
+      "method": "get",
+      "class": "cheap",
+      "required_metrics": ["http_requests_total", "atlas_cache_hits_total", "atlas_cache_misses_total"],
+      "required_trace_spans": ["request_root", "dataset_resolve", "cache_lookup", "serialize_response"]
+    },
+    {
+      "path": "/v1/datasets/{release}/{species}/{assembly}",
+      "method": "get",
+      "class": "medium",
+      "required_metrics": ["http_requests_total", "atlas_cache_hits_total", "atlas_cache_misses_total"],
+      "required_trace_spans": ["request_root", "dataset_resolve", "cache_lookup", "serialize_response"]
+    },
+    {
+      "path": "/v1/genes",
+      "method": "get",
+      "class": "heavy",
+      "required_metrics": ["http_requests_total", "http_request_duration_seconds_bucket"],
+      "required_trace_spans": ["request_root", "sqlite_query", "serialize_response"]
+    },
+    {
+      "path": "/v1/genes/{gene_id}/sequence",
+      "method": "get",
+      "class": "heavy",
+      "required_metrics": ["http_requests_total", "atlas_store_request_duration_seconds_bucket", "atlas_store_errors_total"],
+      "required_trace_spans": ["request_root", "store_fetch", "serialize_response"]
+    },
+    {
+      "path": "/v1/genes/{gene_id}/transcripts",
+      "method": "get",
+      "class": "medium",
+      "required_metrics": ["http_requests_total", "http_request_duration_seconds_bucket"],
+      "required_trace_spans": ["request_root", "sqlite_query", "serialize_response"]
+    },
+    {
+      "path": "/v1/transcripts/{tx_id}",
+      "method": "get",
+      "class": "medium",
+      "required_metrics": ["http_requests_total", "http_request_duration_seconds_bucket"],
+      "required_trace_spans": ["request_root", "sqlite_query", "serialize_response"]
+    },
+    {
+      "path": "/v1/sequence/region",
+      "method": "get",
+      "class": "heavy",
+      "required_metrics": ["http_requests_total", "atlas_store_request_duration_seconds_bucket"],
+      "required_trace_spans": ["request_root", "store_fetch", "serialize_response"]
+    },
+    {
+      "path": "/v1/diff/genes",
+      "method": "get",
+      "class": "heavy",
+      "required_metrics": ["http_requests_total", "http_request_duration_seconds_bucket"],
+      "required_trace_spans": ["request_root", "sqlite_query", "serialize_response"]
+    },
+    {
+      "path": "/v1/diff/region",
+      "method": "get",
+      "class": "heavy",
+      "required_metrics": ["http_requests_total", "http_request_duration_seconds_bucket"],
+      "required_trace_spans": ["request_root", "sqlite_query", "serialize_response"]
+    },
+    {
+      "path": "/v1/query/validate",
+      "method": "post",
+      "class": "cheap",
+      "required_metrics": ["http_requests_total", "http_request_duration_seconds_bucket", "atlas_bulkhead_saturation"],
+      "required_trace_spans": ["request_root", "admission_control", "serialize_response"]
+    },
+    {
+      "path": "/v1/openapi.json",
+      "method": "get",
+      "class": "cheap",
+      "required_metrics": ["http_requests_total"],
+      "required_trace_spans": ["request_root", "serialize_response"]
+    },
+    {
+      "path": "/v1/_debug/echo",
+      "method": "get",
+      "class": "cheap",
+      "required_metrics": ["http_requests_total"],
+      "required_trace_spans": ["request_root", "serialize_response"]
+    },
+    {
+      "path": "/v1/releases/{release}/species/{species}/assemblies/{assembly}",
+      "method": "get",
+      "class": "cheap",
+      "required_metrics": ["http_requests_total"],
+      "required_trace_spans": ["request_root", "serialize_response"]
+    },
+    {
+      "path": "/v1/genes/count",
+      "method": "get",
+      "class": "cheap",
+      "required_metrics": ["http_requests_total"],
+      "required_trace_spans": ["request_root", "serialize_response"]
+    }
+  ]
+}
