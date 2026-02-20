@@ -15,6 +15,7 @@ from .native import (
     check_docs_scripts_references,
     check_duplicate_script_names,
     check_effects_lint,
+    check_bijux_atlas_scripts_boundaries,
     check_forbidden_top_dirs,
     check_layout_contract,
     check_make_command_allowlist,
@@ -44,6 +45,7 @@ from .native import (
     check_scripts_lock_sync,
     check_tracked_timestamp_paths,
     check_venv_location_policy,
+    generate_scripts_sbom,
     check_naming_intent_lint,
 )
 
@@ -427,6 +429,20 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         else:
             print("atlasctl cli contract check passed")
         return code
+    if sub == "bijux-boundaries":
+        code, errors = check_bijux_atlas_scripts_boundaries(ctx.repo_root)
+        if errors:
+            print("bijux-atlas-scripts boundary check failed")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("bijux-atlas-scripts boundary check passed")
+        return code
+    if sub == "generate-scripts-sbom":
+        code, outputs = generate_scripts_sbom(ctx.repo_root, ns.lock, ns.out)
+        for out in outputs:
+            print(out)
+        return code
     return 2
 
 
@@ -485,3 +501,7 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     runtime.add_argument("--fix", action="store_true", help="remove forbidden runtime artifact paths in-place")
     p_sub.add_parser("repo-script-boundaries", help="validate script location boundaries and transition exceptions")
     p_sub.add_parser("atlas-cli-contract", help="validate atlasctl CLI help/version deterministic contract")
+    p_sub.add_parser("bijux-boundaries", help="validate bijux-atlas-scripts import boundaries")
+    sbom = p_sub.add_parser("generate-scripts-sbom", help="emit python lock SBOM json")
+    sbom.add_argument("--lock", required=True)
+    sbom.add_argument("--out", required=True)

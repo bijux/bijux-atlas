@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from datetime import date
 from fnmatch import fnmatch
 from pathlib import Path
+from datetime import datetime, timezone
 
 
 @dataclass(frozen=True)
@@ -1021,6 +1022,34 @@ def check_atlas_scripts_cli_contract(repo_root: Path) -> tuple[int, list[str]]:
         if expected_version and expected_version not in out:
             errs.append(f"atlasctl version mismatch: expected {expected_version}, got `{out}`")
     return (0 if not errs else 1), errs
+
+
+def check_bijux_atlas_scripts_boundaries(repo_root: Path) -> tuple[int, list[str]]:
+    from ..layout.boundary_check import check_boundaries
+
+    violations = check_boundaries(repo_root)
+    errors = [f"{v.file}:{v.line} disallowed import {v.source} -> {v.target}" for v in violations]
+    return (0 if not errors else 1), errors
+
+
+def generate_scripts_sbom(repo_root: Path, lock_rel: str, out_rel: str) -> tuple[int, list[str]]:
+    lock = repo_root / lock_rel
+    lines = [ln.strip() for ln in lock.read_text(encoding="utf-8").splitlines() if ln.strip() and not ln.startswith("#")]
+    packages = []
+    for item in lines:
+        name, version = item.split("==", 1)
+        packages.append({"name": name, "version": version, "purl": f"pkg:pypi/{name}@{version}"})
+    payload = {
+        "schema_version": 1,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "source_lock": lock.as_posix(),
+        "package_count": len(packages),
+        "packages": packages,
+    }
+    out = repo_root / out_rel
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return 0, [out_rel]
 
 
 def check_root_bin_shims(repo_root: Path) -> tuple[int, list[str]]:
