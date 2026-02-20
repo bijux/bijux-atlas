@@ -1428,6 +1428,102 @@ def _check_make_targets_drift(ctx: RunContext) -> tuple[int, str]:
     return 0, "make-target docs drift check passed"
 
 
+def _check_docker_entrypoints(ctx: RunContext) -> tuple[int, str]:
+    violations: list[str] = []
+    pattern = re.compile(r"(^|\n)\s*\$\s*docker\s+build\b")
+    for md in (ctx.repo_root / "docs").rglob("*.md"):
+        text = md.read_text(encoding="utf-8", errors="ignore")
+        for match in pattern.finditer(text):
+            line = text.count("\n", 0, match.start()) + 1
+            violations.append(f"{md.relative_to(ctx.repo_root)}:{line}")
+    if violations:
+        return 1, "docs must use make docker-build instead of direct docker build:\n" + "\n".join(
+            f"- {item}" for item in violations
+        )
+    return 0, "docker entrypoint docs check passed"
+
+
+def _check_example_configs(ctx: RunContext) -> tuple[int, str]:
+    example = json.loads((ctx.repo_root / "docs" / "examples" / "policy-config.example.json").read_text(encoding="utf-8"))
+    schema = json.loads((ctx.repo_root / "docs" / "contracts" / "POLICY_SCHEMA.json").read_text(encoding="utf-8"))
+    required = set(schema.get("required", []))
+    missing = sorted(required - set(example.keys()))
+    extra = sorted(set(example.keys()) - set(schema.get("properties", {}).keys()))
+    if missing:
+        return 1, f"example config validation failed: missing keys {missing}"
+    if extra:
+        return 1, f"example config validation failed: unknown keys {extra}"
+    return 0, "example config validation passed"
+
+
+def _check_full_stack_page(ctx: RunContext) -> tuple[int, str]:
+    page = ctx.repo_root / "docs" / "operations" / "full-stack-local.md"
+    text = page.read_text(encoding="utf-8")
+    lines = [line for line in text.splitlines() if line.strip()]
+    if len(lines) > 80:
+        return 1, "full-stack page exceeds one-page policy (>80 non-empty lines)"
+    required = "make ops-up ops-deploy ops-warm ops-smoke"
+    if required not in text:
+        return 1, "full-stack page missing canonical command sequence"
+    mk = (ctx.repo_root / "makefiles" / "ops.mk").read_text(encoding="utf-8")
+    for target in ["ops-up", "ops-deploy", "ops-warm", "ops-smoke"]:
+        if not re.search(rf"^{target}:", mk, flags=re.MULTILINE):
+            return 1, f"missing target in ops.mk: {target}"
+    return 0, "full stack page check passed"
+
+
+def _check_k8s_docs_contract(ctx: RunContext) -> tuple[int, str]:
+    k8s_dir = ctx.repo_root / "docs" / "operations" / "k8s"
+    values = json.loads((ctx.repo_root / "docs" / "contracts" / "CHART_VALUES.json").read_text(encoding="utf-8"))
+    keys = set(values.get("top_level_keys", []))
+    errors: list[str] = []
+    for path in sorted(k8s_dir.glob("*.md")):
+        if path.name == "INDEX.md":
+            continue
+        text = path.read_text(encoding="utf-8")
+        refs = [ref for ref in re.findall(r"`values\.([a-z][a-zA-Z0-9_\-]*)`", text) if ref != "yaml"]
+        if not refs:
+            errors.append(f"{path}: missing values.<key> references")
+            continue
+        for ref in refs:
+            if ref not in keys:
+                errors.append(f"{path}: unknown chart values key `{ref}`")
+    return (0, "k8s docs contract check passed") if not errors else (
+        1,
+        "k8s docs contract check failed:\n" + "\n".join(f"- {e}" for e in errors),
+    )
+
+
+def _check_load_docs_contract(ctx: RunContext) -> tuple[int, str]:
+    load_doc_dir = ctx.repo_root / "docs" / "operations" / "load"
+    scenario_dir = ctx.repo_root / "ops" / "load" / "scenarios"
+    if not scenario_dir.exists():
+        scenario_dir = ctx.repo_root / "ops" / "e2e" / "k6" / "scenarios"
+    if not scenario_dir.exists():
+        scenario_dir = ctx.repo_root / "e2e" / "k6" / "scenarios"
+    scenarios = {p.name for p in scenario_dir.glob("*.json")}
+    suites_manifest = ctx.repo_root / "ops" / "load" / "suites" / "suites.json"
+    suite_ids: set[str] = set()
+    if suites_manifest.exists():
+        data = json.loads(suites_manifest.read_text(encoding="utf-8"))
+        suite_ids = {item["name"] for item in data.get("suites", []) if isinstance(item, dict) and "name" in item}
+    errors: list[str] = []
+    for path in sorted(load_doc_dir.glob("*.md")):
+        text = path.read_text(encoding="utf-8")
+        refs = [ref for ref in re.findall(r"`([a-zA-Z0-9_\-]+\.json)`", text) if ref != "suites.json"]
+        suite_refs = [ref for ref in re.findall(r"`([a-z0-9][a-z0-9\-]+)`", text) if ref in suite_ids]
+        if not refs and not suite_refs:
+            errors.append(f"{path}: no load suite or k6 scenario references found")
+            continue
+        for ref in refs:
+            if ref not in scenarios:
+                errors.append(f"{path}: unknown k6 scenario `{ref}`")
+    return (0, "load docs contract check passed") if not errors else (
+        1,
+        "load docs contract check failed:\n" + "\n".join(f"- {e}" for e in errors),
+    )
+
+
 def _generate_concept_graph(ctx: RunContext) -> tuple[int, str]:
     registry = ctx.repo_root / "docs/_style/concepts.yml"
     out = ctx.repo_root / "docs/_generated/concepts.md"
@@ -2534,6 +2630,31 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
         return code
 
+    if ns.docs_cmd == "docker-entrypoints-check":
+        code, output = _check_docker_entrypoints(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
+    if ns.docs_cmd == "example-configs-check":
+        code, output = _check_example_configs(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
+    if ns.docs_cmd == "full-stack-page-check":
+        code, output = _check_full_stack_page(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
+    if ns.docs_cmd == "k8s-docs-contract-check":
+        code, output = _check_k8s_docs_contract(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
+    if ns.docs_cmd == "load-docs-contract-check":
+        code, output = _check_load_docs_contract(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
     if ns.docs_cmd == "contracts-index":
         if ns.fix:
             code, output = _generate_contracts_index_doc(ctx)
@@ -2693,6 +2814,11 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("critical-make-targets-referenced-check", "validate critical make targets are referenced in docs"),
         ("make-targets-documented-check", "validate public make targets have docs coverage"),
         ("make-targets-drift-check", "validate docs make-targets catalog is in sync"),
+        ("docker-entrypoints-check", "validate docs use make docker entrypoints"),
+        ("example-configs-check", "validate example config docs contract"),
+        ("full-stack-page-check", "validate full-stack operations page contract"),
+        ("k8s-docs-contract-check", "validate k8s docs values key contract"),
+        ("load-docs-contract-check", "validate load docs suite/scenario contract"),
         ("glossary-check", "validate glossary and banned terms policy"),
         ("contracts-index", "validate or generate docs contracts index"),
         ("runbook-map", "validate or generate docs runbook map index"),

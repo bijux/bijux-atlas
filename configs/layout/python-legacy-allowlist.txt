@@ -134,12 +134,7 @@ scripts/areas/configs/generate_tooling_versions_doc.py
 scripts/areas/configs/sync_slo_config.py
 scripts/areas/configs/validate_configs_schemas.py
 scripts/areas/docs/check_configmap_env_docs.py
-scripts/areas/docs/check_docker_entrypoints.py
-scripts/areas/docs/check_example_configs.py
-scripts/areas/docs/check_full_stack_page.py
 scripts/areas/docs/check_generated_contract_docs.py
-scripts/areas/docs/check_k8s_docs_contract.py
-scripts/areas/docs/check_load_docs_contract.py
 scripts/areas/docs/check_make_help_drift.py
 scripts/areas/docs/check_ops_docs_make_targets.py
 scripts/areas/docs/check_ops_observability_links.py
