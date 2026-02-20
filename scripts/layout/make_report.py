@@ -104,6 +104,8 @@ def cmd_print(run_id: str) -> int:
     print(f"total={payload['summary']['total']} passed={payload['summary']['passed']} failed={payload['summary']['failed']}")
     for lane, report in sorted(payload["lanes"].items()):
         print(f"- {lane}: {report.get('status','unknown')} ({report.get('log','-')})")
+        if report.get("status") != "pass" and report.get("repro_command"):
+            print(f"  repro: {report.get('repro_command')}")
     b = payload.get("budget_status", {})
     if b.get("checked", 0):
         print(
@@ -125,12 +127,13 @@ def cmd_md(run_id: str) -> int:
         f"- passed: `{payload['summary']['passed']}`",
         f"- failed: `{payload['summary']['failed']}`",
         "",
-        "| lane | status | failure | log |",
-        "|---|---|---|---|",
+        "| lane | status | failure | repro | log |",
+        "|---|---|---|---|---|",
     ]
     for lane, report in sorted(payload["lanes"].items()):
         fail = (report.get("failure_summary") or "").replace("|", "/")
-        lines.append(f"| {lane} | {report.get('status','unknown')} | {fail} | {report.get('log','-')} |")
+        repro = (report.get("repro_command") or "").replace("|", "/")
+        lines.append(f"| {lane} | {report.get('status','unknown')} | {fail} | `{repro}` | {report.get('log','-')} |")
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(out.relative_to(ROOT))
@@ -152,9 +155,47 @@ def cmd_junit(run_id: str) -> int:
     return 0
 
 
+def cmd_last_fail(run_id: str) -> int:
+    payload = build_unified(run_id)
+    failed = [(lane, report) for lane, report in sorted(payload["lanes"].items()) if report.get("status") != "pass"]
+    if not failed:
+        print(f"no failed lanes for run_id={run_id}")
+        return 0
+    lane, report = failed[-1]
+    log_path = ROOT / str(report.get("log", ""))
+    print(f"last-failed lane: {lane}")
+    print(f"log: {log_path.relative_to(ROOT) if log_path.exists() else report.get('log','-')}")
+    if report.get("repro_command"):
+        print(f"repro: {report.get('repro_command')}")
+    if log_path.exists():
+        print("\n--- last 20 log lines ---")
+        tail = log_path.read_text(encoding="utf-8", errors="replace").splitlines()[-20:]
+        for line in tail:
+            print(line)
+    return 0
+
+
+def cmd_triage(run_id: str) -> int:
+    payload = build_unified(run_id)
+    failed = [(lane, report) for lane, report in sorted(payload["lanes"].items()) if report.get("status") != "pass"]
+    print(f"triage run_id={run_id} failed={len(failed)}")
+    print(f"evidence: {(out_dir(run_id) / 'unified.json').relative_to(ROOT)}")
+    for lane, report in failed:
+        print(f"\n## {lane}")
+        print(f"log: {report.get('log','-')}")
+        if report.get("repro_command"):
+            print(f"repro: {report.get('repro_command')}")
+        log_path = ROOT / str(report.get("log", ""))
+        if log_path.exists():
+            print("--- last 20 lines ---")
+            for line in log_path.read_text(encoding="utf-8", errors="replace").splitlines()[-20:]:
+                print(line)
+    return 1 if failed else 0
+
+
 def main() -> int:
     p = argparse.ArgumentParser()
-    p.add_argument("command", choices=["merge", "print", "md", "junit"])
+    p.add_argument("command", choices=["merge", "print", "md", "junit", "last-fail", "triage"])
     p.add_argument("--run-id", required=True)
     args = p.parse_args()
 
@@ -164,7 +205,11 @@ def main() -> int:
         return cmd_print(args.run_id)
     if args.command == "md":
         return cmd_md(args.run_id)
-    return cmd_junit(args.run_id)
+    if args.command == "junit":
+        return cmd_junit(args.run_id)
+    if args.command == "last-fail":
+        return cmd_last_fail(args.run_id)
+    return cmd_triage(args.run_id)
 
 
 if __name__ == "__main__":

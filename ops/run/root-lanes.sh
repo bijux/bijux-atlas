@@ -64,7 +64,10 @@ lane_log_path() {
 }
 
 collect_lanes() {
-  local include_ops_smoke="${WITH_OPS:-${PREREQS_OK:-0}}"
+  local include_ops_smoke=1
+  if [ "${NO_OPS:-0}" = "1" ]; then
+    include_ops_smoke=0
+  fi
   if [ "$MODE" = "root" ]; then
     printf '%s\n' "${ROOT_FAST_LANES[@]}"
     return 0
@@ -91,6 +94,7 @@ write_summary() {
     echo "- run_id: ${run_id}"
     echo "- mode: ${MODE}"
     echo "- parallel: ${PARALLEL}"
+    echo "- no_ops: ${NO_OPS:-0}"
     echo
     echo "| lane | status | report | isolate | log |"
     echo "|---|---|---|---|---|"
@@ -199,6 +203,7 @@ PY
   LANE_ARTIFACT_PATHS_JSON="$lane_artifacts_json" \
   LANE_FAILURE_SUMMARY="$failure_summary" \
   LANE_BUDGET_STATUS_JSON="$budget_status_json" \
+  LANE_REPRO_COMMAND="make repro TARGET=${lane} RUN_ID=${run_id}" \
   ops_write_lane_report "$lane" "$run_id" "$lane_status" "$duration" "$lane_log" "$report_root" "$started_at" "$ended_at" >/dev/null
   [ "$lane_status" = "pass" ]
 }
