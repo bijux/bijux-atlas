@@ -73,7 +73,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_concept_ids.sh` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_configmap_env_docs.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_critical_make_targets_referenced.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_doc_filename_style.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_doc_naming.sh` | `docs-governance` | `public` | `docs-build` |
 | `scripts/areas/docs/check_docker_entrypoints.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_docs_deterministic.py` | `docs-governance` | `public` | - |
@@ -86,10 +85,7 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_make_help_drift.py` | `docs-governance` | `public` | `ci-make-help-drift` |
 | `scripts/areas/docs/check_make_targets_documented.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_make_targets_drift.py` | `docs-governance` | `public` | `ops-make-targets-doc` |
-| `scripts/areas/docs/check_mkdocs_site_links.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_nav_order.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_no_legacy_root_paths.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_no_placeholders.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_no_removed_make_targets.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_ops_docs_make_targets.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_ops_observability_links.py` | `docs-governance` | `public` | - |

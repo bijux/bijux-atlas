@@ -5,7 +5,6 @@ Scripts in this area.
 - ENTRYPOINTS.md
 - check_concept_ids.sh
 - check_critical_make_targets_referenced.py
-- check_doc_filename_style.py
 - check_doc_naming.sh
 - check_docker_entrypoints.py
 - check_docs_deterministic.py
@@ -18,10 +17,7 @@ Scripts in this area.
 - check_make_help_drift.py
 - check_make_targets_documented.py
 - check_make_targets_drift.py
-- check_mkdocs_site_links.py
 - check_nav_order.py
-- check_no_legacy_root_paths.py
-- check_no_placeholders.py
 - check_ops_docs_make_targets.py
 - check_ops_observability_links.py
 - check_reference_templates.sh

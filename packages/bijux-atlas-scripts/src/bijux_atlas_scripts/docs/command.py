@@ -8,6 +8,7 @@ import shutil
 import subprocess
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from html.parser import HTMLParser
 from pathlib import Path
 from typing import Callable
 
@@ -1197,6 +1198,115 @@ def _check_broken_examples(ctx: RunContext) -> tuple[int, str]:
     return (0, "broken examples check passed") if not errors else (1, "\n".join(errors))
 
 
+def _check_doc_filename_style(ctx: RunContext) -> tuple[int, str]:
+    docs = ctx.repo_root / "docs"
+    kebab = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*\.md$")
+    index = re.compile(r"^INDEX\.md$")
+    adr = re.compile(r"^ADR-\d{4}-[a-z0-9-]+\.md$")
+    scream = re.compile(r"^[A-Z0-9_]+\.md$")
+    exceptions = {"docs/STYLE.md", "docs/contracts/README.md"}
+
+    def allowed(path: Path) -> bool:
+        rel = path.relative_to(ctx.repo_root).as_posix()
+        if rel in exceptions:
+            return True
+        name = path.name
+        if kebab.match(name) or index.match(name) or adr.match(name):
+            return True
+        if rel.startswith("docs/_style/") and scream.match(name):
+            return True
+        if rel.startswith("docs/_generated/contracts/") and scream.match(name):
+            return True
+        if rel.startswith("docs/operations/slo/") and scream.match(name):
+            return True
+        return False
+
+    bad = [p.relative_to(ctx.repo_root).as_posix() for p in sorted(docs.rglob("*.md")) if not allowed(p)]
+    return (0, "doc filename style check passed") if not bad else (1, "\n".join(bad))
+
+
+def _check_no_placeholders(ctx: RunContext) -> tuple[int, str]:
+    docs = ctx.repo_root / "docs"
+    pat = re.compile(r"\b(TODO|TBD|placeholder|coming soon)\b", re.IGNORECASE)
+    violations: list[str] = []
+    for md in sorted(docs.rglob("*.md")):
+        rel = md.relative_to(ctx.repo_root).as_posix()
+        if rel.startswith("docs/_drafts/"):
+            continue
+        for i, line in enumerate(md.read_text(encoding="utf-8", errors="ignore").splitlines(), start=1):
+            if pat.search(line):
+                violations.append(f"{rel}:{i}: placeholder marker")
+    return (0, "docs placeholder check passed") if not violations else (1, "\n".join(violations[:200]))
+
+
+def _check_no_legacy_root_paths(ctx: RunContext) -> tuple[int, str]:
+    docs = ctx.repo_root / "docs"
+    patterns = [
+        re.compile(r"(^|[`\\s])\\.?/charts/"),
+        re.compile(r"(^|[`\\s])\\.?/e2e/"),
+        re.compile(r"(^|[`\\s])\\.?/load/"),
+        re.compile(r"(^|[`\\s])\\.?/observability/"),
+        re.compile(r"(^|[`\\s])\\.?/datasets/"),
+        re.compile(r"(^|[`\\s])\\.?/fixtures/"),
+    ]
+    exceptions = {"docs/operations/migration-note.md"}
+    violations: list[str] = []
+    for path in sorted(docs.rglob("*.md")):
+        rel = path.relative_to(ctx.repo_root).as_posix()
+        if rel in exceptions:
+            continue
+        for lineno, line in enumerate(path.read_text(encoding="utf-8", errors="ignore").splitlines(), start=1):
+            if any(pat.search(line) for pat in patterns):
+                violations.append(f"{rel}:{lineno}: legacy root path reference")
+    return (0, "legacy root path docs check passed") if not violations else (1, "\n".join(violations[:200]))
+
+
+def _check_mkdocs_site_links(ctx: RunContext, site_dir: str) -> tuple[int, str]:
+    class LinkParser(HTMLParser):
+        def __init__(self) -> None:
+            super().__init__()
+            self.links: list[str] = []
+
+        def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+            if tag != "a":
+                return
+            href = dict(attrs).get("href")
+            if href:
+                self.links.append(href)
+
+    site = (ctx.repo_root / site_dir).resolve() if not Path(site_dir).is_absolute() else Path(site_dir)
+    if not site.exists():
+        return 2, f"site dir missing: {site_dir}"
+    errors: list[str] = []
+    for html in site.rglob("*.html"):
+        if html.name == "404.html":
+            continue
+        parser = LinkParser()
+        parser.feed(html.read_text(encoding="utf-8", errors="ignore"))
+        for href in parser.links:
+            if href.startswith(("http://", "https://", "mailto:", "#")):
+                continue
+            if href.startswith("/"):
+                target_root = href.split("#", 1)[0].lstrip("/")
+                resolved = (site / target_root).resolve()
+                if resolved.is_dir():
+                    resolved = resolved / "index.html"
+                elif resolved.suffix == "":
+                    resolved = resolved.with_suffix(".html")
+                if not resolved.exists():
+                    errors.append(f"{html.relative_to(ctx.repo_root)}: broken site-root link -> {href}")
+                continue
+            target = href.split("#", 1)[0]
+            if not target:
+                continue
+            resolved = (html.parent / target).resolve()
+            if resolved.is_dir():
+                resolved = resolved / "index.html"
+            if not resolved.exists():
+                errors.append(f"{html.relative_to(ctx.repo_root)}: broken link -> {href}")
+    return (0, "mkdocs output link-check passed") if not errors else (1, "\n".join(errors))
+
+
 def _generate_concept_graph(ctx: RunContext) -> tuple[int, str]:
     registry = ctx.repo_root / "docs/_style/concepts.yml"
     out = ctx.repo_root / "docs/_generated/concepts.md"
@@ -2227,6 +2337,26 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
         return code
 
+    if ns.docs_cmd == "doc-filename-style-check":
+        code, output = _check_doc_filename_style(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
+    if ns.docs_cmd == "no-placeholders-check":
+        code, output = _check_no_placeholders(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
+    if ns.docs_cmd == "no-legacy-root-paths-check":
+        code, output = _check_no_legacy_root_paths(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
+    if ns.docs_cmd == "mkdocs-site-links-check":
+        code, output = _check_mkdocs_site_links(ctx, ns.site_dir)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
     if ns.docs_cmd == "contracts-index":
         if ns.fix:
             code, output = _generate_contracts_index_doc(ctx)
@@ -2371,6 +2501,10 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("concept-graph-generate", "generate docs/_generated/concepts.md from concept registry"),
         ("adr-headers-check", "validate ADR naming and title/header contract"),
         ("broken-examples-check", "validate docs shell examples against make targets and tools"),
+        ("doc-filename-style-check", "validate docs filename style policy"),
+        ("no-placeholders-check", "forbid TODO/TBD placeholders outside drafts"),
+        ("no-legacy-root-paths-check", "forbid legacy root ops paths in docs"),
+        ("mkdocs-site-links-check", "validate rendered mkdocs site internal links"),
         ("glossary-check", "validate glossary and banned terms policy"),
         ("contracts-index", "validate or generate docs contracts index"),
         ("runbook-map", "validate or generate docs runbook map index"),
@@ -2395,6 +2529,8 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
             cmd.add_argument("--path", default="docs")
         if name == "spellcheck":
             cmd.add_argument("--path", default="docs")
+        if name == "mkdocs-site-links-check":
+            cmd.add_argument("--site-dir", default="artifacts/docs/site")
         if name == "rewrite-legacy-terms":
             cmd.add_argument("--path", default="docs")
             cmd.add_argument("--apply", action="store_true")
