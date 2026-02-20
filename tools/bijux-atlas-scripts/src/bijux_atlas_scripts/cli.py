@@ -4,7 +4,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from . import contracts, layout, registry, report
+from . import contracts, layout, registry
 from .configs.command import configure_configs_parser, run_configs_command
 from .core.context import RunContext
 from .core.fs import ensure_evidence_path
@@ -18,6 +18,7 @@ from .inventory.command import configure_inventory_parser, run_inventory
 from .make.command import configure_make_parser, run_make_command
 from .network_guard import install_no_network_guard
 from .ops.command import configure_ops_parser, run_ops_command
+from .report.command import configure_report_parser, run_report_command
 from .output_contract import validate_json_output
 from .policies.command import configure_policies_parser, run_policies_command
 from .runner import run_legacy_script
@@ -27,7 +28,6 @@ DOMAINS = {
     "contracts": contracts.run,
     "registry": registry.run,
     "layout": layout.run,
-    "report": report.run,
 }
 
 
@@ -52,12 +52,7 @@ def build_parser() -> argparse.ArgumentParser:
     surface_p.add_argument("--json", action="store_true", help="emit JSON output")
     surface_p.add_argument("--out-file", help="optional output path for JSON report")
 
-    domain_names = (
-        "contracts",
-        "registry",
-        "layout",
-        "report",
-    )
+    domain_names = ("contracts", "registry", "layout")
     for name in domain_names:
         register_domain_parser(sub, name, f"{name} domain commands")
     configure_configs_parser(sub)
@@ -66,6 +61,7 @@ def build_parser() -> argparse.ArgumentParser:
     configure_make_parser(sub)
     configure_ops_parser(sub)
     configure_inventory_parser(sub)
+    configure_report_parser(sub)
 
     doctor_p = sub.add_parser("doctor", help="show tooling and context diagnostics")
     doctor_p.add_argument("--json", action="store_true", help="emit JSON output")
@@ -110,6 +106,8 @@ def main(argv: list[str] | None = None) -> int:
             return run_ops_command(ctx, ns)
         if ns.cmd == "inventory":
             return run_inventory(ctx, ns.category, ns.format, ns.out_dir, ns.dry_run, ns.check)
+        if ns.cmd == "report":
+            return run_report_command(ctx, ns)
         if ns.cmd in DOMAINS:
             payload_obj = DOMAINS[ns.cmd](ctx)
             payload = render_payload(payload_obj, bool(ns.json))
