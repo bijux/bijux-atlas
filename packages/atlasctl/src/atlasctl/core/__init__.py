@@ -1,3 +1,4 @@
+"""Atlasctl core package."""
 from .context import RunContext
 from .fs import ensure_evidence_path
 from .logging import log_event

@@ -1,3 +1,4 @@
+"""Atlasctl run_id package."""
 from __future__ import annotations
 
 from .format import build_run_id

@@ -1,3 +1,4 @@
+"""Atlasctl inventory package."""
 from __future__ import annotations
 
 from ..core.context import RunContext
