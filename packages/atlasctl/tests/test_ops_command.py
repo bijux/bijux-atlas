@@ -7,7 +7,6 @@ import sys
 from pathlib import Path
 
 import jsonschema
-
 from atlasctl.core.context import RunContext
 from atlasctl.ops.command import LINT_CHECKS, _run_checks
 

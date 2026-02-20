@@ -5,7 +5,6 @@ import json
 from pathlib import Path
 
 import jsonschema
-
 from atlasctl.core.context import RunContext
 from atlasctl.make.command import CHECKS, run_contracts_check
 from atlasctl.make.target_graph import parse_make_targets, render_tree

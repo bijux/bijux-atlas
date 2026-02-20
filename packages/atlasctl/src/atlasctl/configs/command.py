@@ -5,6 +5,7 @@ import hashlib
 import json
 import re
 import subprocess
+
 try:
     import tomllib  # type: ignore[attr-defined]
 except ModuleNotFoundError:  # pragma: no cover - python<3.11

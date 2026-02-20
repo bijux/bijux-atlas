@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from ...check.native import (
+    check_docs_no_ops_generated_run_paths,
     check_duplicate_script_names,
     check_forbidden_top_dirs,
     check_no_executable_python_outside_packages,
-    check_docs_no_ops_generated_run_paths,
     check_no_ops_generated_placeholder,
     check_no_xtask_refs,
     check_ops_examples_immutable,

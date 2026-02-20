@@ -3,7 +3,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from atlasctl.core.context import RunContext
 from atlasctl.errors import ScriptError
 from atlasctl.fs import ensure_write_path
