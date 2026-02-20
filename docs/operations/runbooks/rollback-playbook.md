@@ -15,6 +15,8 @@
 ## Commands
 
 ```bash
+$ make k8s/apply-config
+$ make k8s/restart
 $ kubectl rollout undo deploy/bijux-atlas -n default
 $ curl -s http://127.0.0.1:8080/readyz
 ```
@@ -36,6 +38,8 @@ $ curl -s http://127.0.0.1:8080/readyz
 ## Rollback
 
 - Revert API image and catalog pointer to last known good state.
+- Config change workflow in prod: update values -> `helm upgrade` -> `make k8s/restart`.
+- Rollback smoke path: `kubectl rollout undo deploy/<release> -n <namespace>` then verify `/readyz`.
 
 ## Postmortem checklist
 
