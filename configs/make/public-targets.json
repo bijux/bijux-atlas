@@ -1,0 +1,118 @@
+{
+  "max_public_targets": 18,
+  "target_public_targets": 13,
+  "public_targets": [
+    {
+      "name": "root",
+      "description": "Run CI-fast lane set and print lane summary",
+      "lanes": [
+        "ci"
+      ],
+      "area": "policies"
+    },
+    {
+      "name": "root-local",
+      "description": "Run local full lane set and print lane summary",
+      "lanes": [
+        "dev"
+      ],
+      "area": "policies"
+    },
+    {
+      "name": "ci",
+      "description": "Run deterministic CI superset",
+      "lanes": [
+        "ci"
+      ],
+      "area": "policies"
+    },
+    {
+      "name": "nightly",
+      "description": "Run slow nightly suites",
+      "lanes": [
+        "ci"
+      ],
+      "area": "policies"
+    },
+    {
+      "name": "fmt",
+      "description": "Run formatter checks",
+      "lanes": [
+        "dev"
+      ],
+      "area": "cargo"
+    },
+    {
+      "name": "lint",
+      "description": "Run lint checks",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "cargo"
+    },
+    {
+      "name": "test",
+      "description": "Run test suite",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "cargo"
+    },
+    {
+      "name": "audit",
+      "description": "Run dependency and policy audits",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "cargo"
+    },
+    {
+      "name": "docs",
+      "description": "Run docs verification lane",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "docs"
+    },
+    {
+      "name": "ops",
+      "description": "Run ops verification lane",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "ops"
+    },
+    {
+      "name": "docker",
+      "description": "Run docker contract checks",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "ops"
+    },
+    {
+      "name": "chart",
+      "description": "Run chart verification checks",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "ops"
+    },
+    {
+      "name": "doctor",
+      "description": "Print tool and environment diagnostics",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "ops"
+    }
+  ]
+}

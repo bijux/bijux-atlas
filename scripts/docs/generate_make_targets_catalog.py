@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-SSOT = ROOT / "configs" / "ops" / "public-make-targets.json"
+SSOT = ROOT / "configs" / "make" / "public-targets.json"
 OWNERS = ROOT / "makefiles" / "ownership.json"
 OUT_JSON = ROOT / "makefiles" / "targets.json"
 OUT_MD = ROOT / "docs" / "_generated" / "make-targets.md"
