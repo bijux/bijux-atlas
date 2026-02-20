@@ -103,7 +103,7 @@ ci-store-conformance:
 
 ci-openapi-drift:
 	@$(MAKE) openapi-drift
-	@python3 ./scripts/areas/public/contracts/check_breaking_contract_change.py
+	@./bin/bijux-atlas run ./scripts/areas/public/contracts/check_breaking_contract_change.py
 
 ci-chart-schema-validate:
 	@$(MAKE) ops-values-validate
@@ -164,16 +164,16 @@ ci-ops-run-entrypoints:
 	@./bin/bijux-atlas ops lint --fail-fast
 
 ci-ops-readme-make-only:
-	@python3 ./scripts/areas/docs/check_ops_readmes_make_only.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/check_ops_readmes_make_only.py
 
 ci-ops-readme-canonical-links:
-	@python3 ./scripts/areas/docs/check_ops_readme_canonical_links.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/check_ops_readme_canonical_links.py
 
 ci-ops-doc-duplication:
-	@python3 ./scripts/areas/docs/check_ops_doc_duplication.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/check_ops_doc_duplication.py
 
 ci-docs-make-only-ops:
-	@python3 ./scripts/areas/docs/check_docs_make_only_ops.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/check_docs_make_only_ops.py
 
 internal/ci/scripts-group:
 	@./bin/bijux-atlas ci scripts
@@ -185,7 +185,7 @@ ci-forbid-raw-paths:
 	@./bin/bijux-atlas check forbidden-paths
 
 ci-make-safety:
-	@python3 ./scripts/areas/layout/check_make_safety.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_make_safety.py
 
 ci-make-help-drift:
 	@./bin/bijux-atlas check make-help
@@ -205,29 +205,29 @@ internal/ci/bin-shims:
 internal/ci/scripts-ssot-final:
 	@STRICT_SCRIPTS_SUNSET="$${STRICT_SCRIPTS_SUNSET:-0}"; \
 	if [ "$$STRICT_SCRIPTS_SUNSET" = "1" ]; then \
-		python3 ./scripts/areas/check/check-scripts-ssot-final.py; \
+		./bin/bijux-atlas run ./scripts/areas/check/check-scripts-ssot-final.py; \
 	else \
 		echo "scripts SSOT final gate skipped (set STRICT_SCRIPTS_SUNSET=1 to enforce)"; \
 	fi
 
 ci-slo-config-validate:
-	@python3 ./scripts/areas/layout/check_slo_contracts.py --mode schema
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_slo_contracts.py --mode schema
 
 ci-slo-no-loosen:
-	@python3 ./scripts/areas/layout/check_slo_no_loosen_without_approval.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_slo_no_loosen_without_approval.py
 
 ci-slo-metrics-contract:
-	@python3 ./scripts/areas/layout/check_slo_contracts.py --mode metrics
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_slo_contracts.py --mode metrics
 
 ci-sli-contract:
-	@python3 ./scripts/areas/layout/check_slo_contracts.py --mode slis
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_slo_contracts.py --mode slis
 
 ci-sli-docs-drift:
-	@python3 ./scripts/areas/docs/generate_sli_doc.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/generate_sli_doc.py
 	@git diff --exit-code docs/operations/slo/SLIS.md
 
 ci-slo-docs-drift:
-	@python3 ./scripts/areas/docs/generate_slos_doc.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/generate_slos_doc.py
 	@git diff --exit-code docs/operations/slo/SLOS.md
 
 ci-init-iso-dirs:
