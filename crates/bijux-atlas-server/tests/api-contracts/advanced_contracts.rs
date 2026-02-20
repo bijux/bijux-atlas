@@ -397,10 +397,7 @@ async fn safety_valve_disables_heavy_endpoints_but_keeps_cheap_endpoints_availab
         .and_then(|e| e.get("code"))
         .and_then(Value::as_str)
         .or_else(|| heavy_json.get("code").and_then(Value::as_str));
-    assert_eq!(
-        heavy_code,
-        Some("QueryRejectedByPolicy")
-    );
+    assert_eq!(heavy_code, Some("QueryRejectedByPolicy"));
 
     let (cheap_status, _, cheap_body) = send_raw(addr, "/v1/version", &[]).await;
     assert_eq!(cheap_status, 200, "cheap endpoint should stay available");
