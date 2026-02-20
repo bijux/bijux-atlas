@@ -51,6 +51,17 @@ Required keys:
 - `schema_version`
 - `profiles`
 
+## `ops/_schemas/k8s/suite-report.schema.json`
+
+Required keys:
+- `schema_version`
+- `run_id`
+- `suite_id`
+- `total`
+- `failed`
+- `passed`
+- `results`
+
 ## `ops/_schemas/load/perf-baseline.schema.json`
 
 Required keys:

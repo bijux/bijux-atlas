@@ -6,6 +6,7 @@ python3 "$ROOT/scripts/areas/layout/check_tool_versions.py" kind kubectl helm >/
 JSON_OUT="${ATLAS_E2E_JSON_OUT:-ops/_artifacts/k8s/test-results.json}"
 JUNIT_OUT="${ATLAS_E2E_JUNIT_OUT:-ops/_artifacts/k8s/test-results.xml}"
 SUMMARY_OUT="${ATLAS_E2E_SUMMARY_OUT:-ops/_artifacts/k8s/test-summary.md}"
+DEGRADATION_SCORE_OUT="${ATLAS_E2E_DEGRADATION_SCORE_OUT:-$(dirname "$JSON_OUT")/graceful-degradation-score.json}"
 RETRIES="${ATLAS_E2E_RETRIES:-1}"
 SUITE=""
 FAIL_FAST="${ATLAS_E2E_FAIL_FAST:-0}"
@@ -61,4 +62,5 @@ status=0
 "$DIR/harness.py" "${harness_args[@]}" || status=$?
 python3 "$DIR/validate_report.py" --report "$JSON_OUT"
 python3 "$DIR/render_summary.py" --json "$JSON_OUT" --out "$SUMMARY_OUT"
+python3 "$DIR/compute_graceful_degradation_score.py" --json "$JSON_OUT" --out "$DEGRADATION_SCORE_OUT"
 exit "$status"
