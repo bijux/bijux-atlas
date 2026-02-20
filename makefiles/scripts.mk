@@ -3,13 +3,13 @@
 SHELL := /bin/sh
 SCRIPTS_VENV := artifacts/isolate/py/scripts/.venv
 export PYTHONDONTWRITEBYTECODE := 1
-export RUFF_CACHE_DIR := $(CURDIR)/artifacts/bijux-atlas-scripts/ruff
-export MYPY_CACHE_DIR := $(CURDIR)/artifacts/bijux-atlas-scripts/mypy
-export HYPOTHESIS_STORAGE_DIRECTORY := $(CURDIR)/artifacts/bijux-atlas-scripts/hypothesis/examples
+export RUFF_CACHE_DIR := $(CURDIR)/artifacts/atlasctl/ruff
+export MYPY_CACHE_DIR := $(CURDIR)/artifacts/atlasctl/mypy
+export HYPOTHESIS_STORAGE_DIRECTORY := $(CURDIR)/artifacts/atlasctl/hypothesis/examples
 
 bootstrap-tools:
 	@if command -v uv >/dev/null 2>&1; then \
-		uv sync --project packages/bijux-atlas-scripts; \
+		uv sync --project packages/atlasctl; \
 	else \
 		$(MAKE) -s internal/scripts/install-lock; \
 	fi
@@ -22,19 +22,19 @@ scripts-graph: ## Generate make-target to scripts call graph
 	@$(ATLAS_SCRIPTS) make graph root-local > docs/development/scripts-graph.md
 
 no-direct-scripts:
-	@./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_no_direct_script_runs.sh
-	@$(PY_RUN) packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_make_public_scripts.py
+	@./packages/atlasctl/src/atlasctl/layout_checks/check_no_direct_script_runs.sh
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_make_public_scripts.py
 
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)
 	@$(MAKE) -s internal/scripts/install-lock
 	@$(MAKE) scripts-audit
 	@$(ATLAS_SCRIPTS) docs script-headers-check --report text
-	@$(PY_RUN) packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_make_public_scripts.py
-	@$(PY_RUN) packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_scripts_buckets.py
-	@$(PY_RUN) packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_script_relative_calls.py
-	@$(PY_RUN) packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_script_naming_convention.py
-	@$(PY_RUN) packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_no_mixed_script_name_variants.py
-	@$(PY_RUN) packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_duplicate_script_intent.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_make_public_scripts.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_scripts_buckets.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_script_relative_calls.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_script_naming_convention.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_no_mixed_script_name_variants.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_duplicate_script_intent.py
 	@$(ATLAS_SCRIPTS) check duplicate-script-names
 	@$(ATLAS_SCRIPTS) check layout
 	@$(ATLAS_SCRIPTS) check cli-help
@@ -58,17 +58,17 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(ATLAS_SCRIPTS) check repo-script-boundaries
 	@$(ATLAS_SCRIPTS) check atlas-cli-contract
 	@$(ATLAS_SCRIPTS) check scripts-surface-docs-drift
-	@$(PY_RUN) packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_make_command_allowlist.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_make_command_allowlist.py
 	@./ops/_lint/naming.sh
-	@$(PY_RUN) ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout/no_shadow.py
-	@$(PY_RUN) packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_public_entrypoint_cap.py
+	@$(PY_RUN) ./packages/atlasctl/src/atlasctl/layout/no_shadow.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_public_entrypoint_cap.py
 	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
-	@if command -v shellcheck >/dev/null 2>&1; then find packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional for local scripts lint)"; fi
+	@if command -v shellcheck >/dev/null 2>&1; then find packages/atlasctl/src/atlasctl/layout_checks -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional for local scripts lint)"; fi
 	@if command -v shfmt >/dev/null 2>&1; then shfmt -d scripts ops/load/scripts; else echo "shfmt not installed (optional)"; fi
-	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" check packages/bijux-atlas-scripts/src packages/bijux-atlas-scripts/tests
+	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/ruff" check packages/atlasctl/src packages/atlasctl/tests
 
 scripts-format: ## Format scripts (python + shell where available)
-	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" format packages/bijux-atlas-scripts/src packages/bijux-atlas-scripts/tests
+	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/ruff" format packages/atlasctl/src packages/atlasctl/tests
 	@if command -v shfmt >/dev/null 2>&1; then find scripts ops/load/scripts -type f -name '*.sh' -print0 | xargs -0 shfmt -w; else echo "shfmt not installed (optional)"; fi
 
 internal/scripts/fmt-alias: ## Alias for scripts-format
@@ -76,32 +76,32 @@ internal/scripts/fmt-alias: ## Alias for scripts-format
 
 scripts-test: ## Run scripts-focused tests
 	@$(MAKE) -s internal/scripts/install-lock
-	@$(PY_RUN) packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_make_public_scripts.py
-	@$(PY_RUN) packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_script_entrypoints.py
-	@$(PY_RUN) packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_scripts_top_level.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_make_public_scripts.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_script_entrypoints.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_scripts_top_level.py
 	@$(PY_RUN) ops/load/scripts/validate_suite_manifest.py
 	@$(PY_RUN) ops/load/scripts/check_pinned_queries_lock.py
 	@$(MAKE) -s internal/scripts/install-lock
-	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" check packages/bijux-atlas-scripts/src packages/bijux-atlas-scripts/tests
-	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/mypy" --ignore-missing-imports packages/bijux-atlas-scripts/tests
-	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/pytest" -q packages/bijux-atlas-scripts/tests
-	@$(ATLAS_SCRIPTS) validate-output --schema configs/contracts/scripts-tool-output.schema.json --file packages/bijux-atlas-scripts/tests/goldens/tool-output.example.json
+	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/ruff" check packages/atlasctl/src packages/atlasctl/tests
+	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/mypy" --ignore-missing-imports packages/atlasctl/tests
+	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/pytest" -q packages/atlasctl/tests
+	@$(ATLAS_SCRIPTS) validate-output --schema configs/contracts/scripts-tool-output.schema.json --file packages/atlasctl/tests/goldens/tool-output.example.json
 	@$(ATLAS_SCRIPTS) surface --json > artifacts/scripts/surface.json
 	@$(ATLAS_SCRIPTS) validate-output --schema configs/contracts/scripts-surface-output.schema.json --file artifacts/scripts/surface.json
 	@$(ATLAS_SCRIPTS) --run-id scripts-test --profile local doctor --json > artifacts/scripts/doctor.json
 	@$(ATLAS_SCRIPTS) validate-output --schema configs/contracts/scripts-doctor-output.schema.json --file artifacts/scripts/doctor.json
 
-scripts-coverage: ## Optional coverage run for bijux-atlas-scripts package
+scripts-coverage: ## Optional coverage run for atlasctl package
 	@$(MAKE) -s internal/scripts/install-lock
-	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/pytest" -q --cov=bijux_atlas_scripts --cov-report=term-missing packages/bijux-atlas-scripts/tests || true
+	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/pytest" -q --cov=atlasctl --cov-report=term-missing packages/atlasctl/tests || true
 
 scripts-deps-audit: ## Dependency policy audit for scripts package (pip-audit if available)
 	@$(MAKE) -s internal/scripts/install-lock
-	@{ "$(SCRIPTS_VENV)/bin/python" -m pip_audit --local --requirement packages/bijux-atlas-scripts/requirements.lock.txt || echo "pip-audit unavailable; skipping"; }
+	@{ "$(SCRIPTS_VENV)/bin/python" -m pip_audit --local --requirement packages/atlasctl/requirements.lock.txt || echo "pip-audit unavailable; skipping"; }
 
 internal/scripts/test-hermetic: ## Run scripts package tests with --no-network guard enabled
 	@$(MAKE) -s scripts-install
-	@BIJUX_SCRIPTS_TEST_NO_NETWORK=1 PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/pytest" -q packages/bijux-atlas-scripts/tests
+	@BIJUX_SCRIPTS_TEST_NO_NETWORK=1 PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/pytest" -q packages/atlasctl/tests
 
 scripts-check: ## Run scripts lint + tests as a single gate
 	@$(MAKE) -s internal/scripts/install-lock
@@ -130,12 +130,12 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(ATLAS_SCRIPTS) check make-scripts-refs
 	@$(ATLAS_SCRIPTS) check repo-script-boundaries
 	@$(ATLAS_SCRIPTS) check atlas-cli-contract
-	@$(PY_RUN) packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_make_command_allowlist.py
-	@$(PY_RUN) packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_script_entrypoints.py
-	@$(PY_RUN) packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_scripts_top_level.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_make_command_allowlist.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_script_entrypoints.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_scripts_top_level.py
 	@if command -v shellcheck >/dev/null 2>&1; then find scripts/areas/check scripts/bin -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional)"; fi
-	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" check scripts/areas/check packages/bijux-atlas-scripts/src packages/bijux-atlas-scripts/tests
-	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/mypy" --ignore-missing-imports packages/bijux-atlas-scripts/src packages/bijux-atlas-scripts/tests
+	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/ruff" check scripts/areas/check packages/atlasctl/src packages/atlasctl/tests
+	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/mypy" --ignore-missing-imports packages/atlasctl/src packages/atlasctl/tests
 
 scripts-all: ## Canonical scripts gate: all script-related gates must pass
 	@$(MAKE) internal/scripts/venv
@@ -153,23 +153,23 @@ internal/scripts/venv:
 
 internal/scripts/install-lock:
 	@$(MAKE) -s internal/scripts/venv
-	@"$(SCRIPTS_VENV)/bin/pip" --disable-pip-version-check install --requirement packages/bijux-atlas-scripts/requirements.lock.txt >/dev/null
+	@"$(SCRIPTS_VENV)/bin/pip" --disable-pip-version-check install --requirement packages/atlasctl/requirements.lock.txt >/dev/null
 
 internal/scripts/sbom: ## Emit scripts package dependency SBOM JSON
-	@$(ATLAS_SCRIPTS) check generate-scripts-sbom --lock packages/bijux-atlas-scripts/requirements.lock.txt --out artifacts/evidence/scripts/sbom/$${RUN_ID:-local}/sbom.json
+	@$(ATLAS_SCRIPTS) check generate-scripts-sbom --lock packages/atlasctl/requirements.lock.txt --out artifacts/evidence/scripts/sbom/$${RUN_ID:-local}/sbom.json
 
 internal/scripts/lock-check:
 	@$(ATLAS_SCRIPTS) check python-lock
 	@$(ATLAS_SCRIPTS) check scripts-lock-sync
 
 packages-lock: ## Refresh python lockfile deterministically from requirements.in
-	@python3 -c 'from pathlib import Path; src=Path("packages/bijux-atlas-scripts/requirements.in"); dst=Path("packages/bijux-atlas-scripts/requirements.lock.txt"); lines=[ln.strip() for ln in src.read_text(encoding="utf-8").splitlines() if ln.strip() and not ln.strip().startswith("#")]; dst.write_text("\\n".join(sorted(set(lines)))+"\\n", encoding="utf-8"); print(f"updated {dst}")'
+	@python3 -c 'from pathlib import Path; src=Path("packages/atlasctl/requirements.in"); dst=Path("packages/atlasctl/requirements.lock.txt"); lines=[ln.strip() for ln in src.read_text(encoding="utf-8").splitlines() if ln.strip() and not ln.strip().startswith("#")]; dst.write_text("\\n".join(sorted(set(lines)))+"\\n", encoding="utf-8"); print(f"updated {dst}")'
 
 scripts-audit: ## Audit script headers, taxonomy buckets, and no-implicit-cwd contract
 	@$(ATLAS_SCRIPTS) docs script-headers-check --report text
-	@$(PY_RUN) packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_scripts_buckets.py
-	@$(PY_RUN) packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_make_public_scripts.py
-	@$(PY_RUN) packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_script_relative_calls.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_scripts_buckets.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_make_public_scripts.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_script_relative_calls.py
 
 internal/scripts/install-dev:
 	@$(MAKE) -s internal/scripts/install-lock

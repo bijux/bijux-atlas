@@ -9,5 +9,5 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[4]
-cmd = [sys.executable, "-m", "bijux_atlas_scripts.cli", "docs", "runbooks-contract-check", "--report", "text"]
+cmd = [sys.executable, "-m", "atlasctl.cli", "docs", "runbooks-contract-check", "--report", "text"]
 raise SystemExit(subprocess.run(cmd, cwd=ROOT).returncode)

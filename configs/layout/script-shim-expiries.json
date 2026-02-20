@@ -1,53 +1,53 @@
 {
   "schema_version": 1,
   "max_active_shims": 12,
-  "migration_doc": "docs/development/tooling/bijux-atlas-scripts.md",
+  "migration_doc": "docs/development/tooling/atlasctl.md",
   "shims": [
     {
       "path": "scripts/bin/render_public_help",
-      "replacement": "scripts/bin/bijux-atlas-scripts run packages/bijux-atlas-scripts/src/bijux_atlas_scripts/make/help.py",
-      "replacement_cli": "bijux-atlas-scripts make help",
-      "migration_doc": "docs/development/tooling/bijux-atlas-scripts.md",
+      "replacement": "scripts/bin/atlasctl run packages/atlasctl/src/atlasctl/make/help.py",
+      "replacement_cli": "atlasctl make help",
+      "migration_doc": "docs/development/tooling/atlasctl.md",
       "expires_on": "2026-06-30",
       "owner": "bijux-atlas-platform"
     },
     {
       "path": "scripts/bin/make_explain",
-      "replacement": "scripts/bin/bijux-atlas-scripts run packages/bijux-atlas-scripts/src/bijux_atlas_scripts/make/explain.py",
-      "replacement_cli": "bijux-atlas-scripts make explain <target>",
-      "migration_doc": "docs/development/tooling/bijux-atlas-scripts.md",
+      "replacement": "scripts/bin/atlasctl run packages/atlasctl/src/atlasctl/make/explain.py",
+      "replacement_cli": "atlasctl make explain <target>",
+      "migration_doc": "docs/development/tooling/atlasctl.md",
       "expires_on": "2026-06-30",
       "owner": "bijux-atlas-platform"
     },
     {
       "path": "scripts/bin/make_graph",
-      "replacement": "scripts/bin/bijux-atlas-scripts run packages/bijux-atlas-scripts/src/bijux_atlas_scripts/make/graph.py",
-      "replacement_cli": "bijux-atlas-scripts make graph <target>",
-      "migration_doc": "docs/development/tooling/bijux-atlas-scripts.md",
+      "replacement": "scripts/bin/atlasctl run packages/atlasctl/src/atlasctl/make/graph.py",
+      "replacement_cli": "atlasctl make graph <target>",
+      "migration_doc": "docs/development/tooling/atlasctl.md",
       "expires_on": "2026-06-30",
       "owner": "bijux-atlas-platform"
     },
     {
       "path": "bin/render_public_help",
-      "replacement": "scripts/bin/bijux-atlas-scripts make help",
-      "replacement_cli": "bijux-atlas-scripts make help",
-      "migration_doc": "docs/development/tooling/bijux-atlas-scripts.md",
+      "replacement": "scripts/bin/atlasctl make help",
+      "replacement_cli": "atlasctl make help",
+      "migration_doc": "docs/development/tooling/atlasctl.md",
       "expires_on": "2026-06-30",
       "owner": "bijux-atlas-platform"
     },
     {
       "path": "bin/make_explain",
-      "replacement": "scripts/bin/bijux-atlas-scripts make explain <target>",
-      "replacement_cli": "bijux-atlas-scripts make explain <target>",
-      "migration_doc": "docs/development/tooling/bijux-atlas-scripts.md",
+      "replacement": "scripts/bin/atlasctl make explain <target>",
+      "replacement_cli": "atlasctl make explain <target>",
+      "migration_doc": "docs/development/tooling/atlasctl.md",
       "expires_on": "2026-06-30",
       "owner": "bijux-atlas-platform"
     },
     {
       "path": "bin/make_graph",
-      "replacement": "scripts/bin/bijux-atlas-scripts make graph <target>",
-      "replacement_cli": "bijux-atlas-scripts make graph <target>",
-      "migration_doc": "docs/development/tooling/bijux-atlas-scripts.md",
+      "replacement": "scripts/bin/atlasctl make graph <target>",
+      "replacement_cli": "atlasctl make graph <target>",
+      "migration_doc": "docs/development/tooling/atlasctl.md",
       "expires_on": "2026-06-30",
       "owner": "bijux-atlas-platform"
     }

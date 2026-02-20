@@ -1,6 +1,6 @@
 # Allowed external command prefixes in make recipes.
 make
-./scripts/bin/bijux-atlas-scripts
+./scripts/bin/atlasctl
 python3
 bash
 sh

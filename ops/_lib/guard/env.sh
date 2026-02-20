@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ops_env_load() {
-  python3 ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/validate_ops_env.py --schema "${OPS_ENV_SCHEMA:-configs/ops/env.schema.json}" >/dev/null
+  python3 ./packages/atlasctl/src/atlasctl/layout_checks/validate_ops_env.py --schema "${OPS_ENV_SCHEMA:-configs/ops/env.schema.json}" >/dev/null
   export RUN_ID="${RUN_ID:-${OPS_RUN_ID:-}}"
   export ARTIFACT_DIR="${ARTIFACT_DIR:-${OPS_RUN_DIR:-}}"
   if [ -z "${RUN_ID:-}" ] || [ -z "${ARTIFACT_DIR:-}" ]; then

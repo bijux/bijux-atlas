@@ -13,7 +13,7 @@ def main() -> int:
     scripts_dir = ROOT / "scripts"
     if scripts_dir.exists():
         message = (
-            "scripts/ directory exists; scripting SSOT is packages/bijux-atlas-scripts"
+            "scripts/ directory exists; scripting SSOT is packages/atlasctl"
         )
         if STRICT:
             print(message, file=sys.stderr)
