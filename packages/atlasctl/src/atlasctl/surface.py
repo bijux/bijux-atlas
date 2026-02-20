@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from .core.fs import ensure_evidence_path
+
 
 def build_surface() -> dict[str, object]:
     root = Path(__file__).resolve().parents[4]
@@ -15,10 +17,10 @@ def build_surface() -> dict[str, object]:
     }
 
 
-def run_surface(as_json: bool, out_file: str | None) -> int:
+def run_surface(as_json: bool, out_file: str | None, ctx=None) -> int:
     payload = build_surface()
     if out_file:
-        out = Path(out_file)
+        out = ensure_evidence_path(ctx, Path(out_file)) if ctx is not None else Path(out_file)
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if as_json:
