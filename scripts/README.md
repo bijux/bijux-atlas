@@ -263,10 +263,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/release/update-compat-matrix.sh` | `release-engineering` | `public` | `release-update-compat-matrix` |
 | `scripts/areas/release/validate-compat-matrix.sh` | `release-engineering` | `public` | `compat-matrix-validate` |
 | `scripts/areas/tests/test_paths.py` | `platform` | `internal` | - |
-| `scripts/areas/tools/__init__.py` | `platform` | `internal` | - |
-| `scripts/areas/tools/json_helpers.py` | `platform` | `internal` | - |
-| `scripts/areas/tools/path_utils.py` | `platform` | `internal` | - |
-| `scripts/areas/tools/reporting.py` | `platform` | `internal` | - |
 | `scripts/bin/bijux-atlas-dev` | `platform` | `public` | - |
 | `scripts/bin/bijux-atlas-ops` | `platform` | `internal` | - |
 | `scripts/bin/bijux-atlas-scripts` | `platform` | `public` | `ci-log-fields-contract`, `docs-build`, `docs-check`, `docs-freeze`, `docs-lint-names`, `docs-req-lock-refresh`, `layout-check`, `observability-pack-drills`, `observability-pack-test`, `ops-catalog-validate`, `ops-check`, `ops-dataset-qc-diff`, `ops-lint`, `ops-lint-all`, `ops-load-ci`, `ops-load-full`, `ops-load-manifest-validate`, `ops-load-nightly`, `ops-load-shedding`, `ops-load-smoke`, `ops-load-soak`, `ops-load-spike-proof`, `ops-local-full`, `ops-metrics-check`, `ops-observability-pack-conformance-report`, `ops-observability-validate`, `ops-perf-report`, `ops-slo-burn` |

@@ -270,7 +270,3 @@ scripts/areas/python/bijux_scripts/paths.py
 scripts/areas/python/bijux_scripts/reporting.py
 scripts/areas/python/bijux_scripts/runner.py
 scripts/areas/tests/test_paths.py
-scripts/areas/tools/__init__.py
-scripts/areas/tools/json_helpers.py
-scripts/areas/tools/path_utils.py
-scripts/areas/tools/reporting.py
