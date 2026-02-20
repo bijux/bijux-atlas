@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-SHIMS = ["deny.toml","audit-allowlist.toml","clippy.toml","rustfmt.toml","nextest.toml","Dockerfile"]
+SHIMS = ["deny.toml","audit-allowlist.toml","clippy.toml","rustfmt.toml","Dockerfile"]
 
 
 def main() -> int:

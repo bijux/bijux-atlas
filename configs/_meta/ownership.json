@@ -3,6 +3,8 @@
   "areas": {
     "configs/coverage": "platform",
     "configs/docs": "docs-governance",
+    "configs/layout": "platform",
+    "configs/make": "platform",
     "configs/nextest": "platform",
     "configs/openapi": "api-contracts",
     "configs/ops": "bijux-atlas-operations",

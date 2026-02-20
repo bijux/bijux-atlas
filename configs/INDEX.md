@@ -5,6 +5,8 @@ Canonical configuration surface for repository behavior.
 ## Areas
 - `configs/coverage` owner: `platform`
 - `configs/docs` owner: `docs-governance`
+- `configs/layout` owner: `platform`
+- `configs/make` owner: `platform`
 - `configs/nextest` owner: `platform`
 - `configs/openapi` owner: `api-contracts`
 - `configs/ops` owner: `bijux-atlas-operations`
