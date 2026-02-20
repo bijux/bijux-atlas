@@ -104,6 +104,13 @@ Required keys:
 - `schema_version`
 - `drills`
 
+## `ops/_schemas/obs/suites.schema.json`
+
+Required keys:
+- `schema_version`
+- `owner`
+- `suites`
+
 ## `ops/_schemas/report/schema.json`
 
 Required keys:

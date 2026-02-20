@@ -34,6 +34,7 @@ Generated from ops contracts and schemas.
 - `ops/_schemas/meta/ownership.schema.json`
 - `ops/_schemas/meta/pins.schema.json`
 - `ops/_schemas/obs/drill-manifest.schema.json`
+- `ops/_schemas/obs/suites.schema.json`
 - `ops/_schemas/report/schema.json`
 - `ops/_schemas/report/stack-contract.schema.json`
 - `ops/_schemas/report/unified.schema.json`
