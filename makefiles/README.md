@@ -90,8 +90,13 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 - `make policies/boundaries-check`: enforce e2e layer-boundary lints and exception expiry checks.
 - `make root`: CI-fast lane subset (no cluster bring-up).
 - `make root-local`: Run all lanes in parallel plus ops smoke lane (`PARALLEL=0` for serial).
+- `make root-local-fast`: Serial debug mode; skips only `internal/lane-ops-smoke` and `internal/lane-obs-full`.
 - `make root-local-summary`: Print pass/fail summary and artifact paths per lane.
 - `make root-local-open`: Open the latest summary file (or print its path).
+- `make lane-status RUN_ID=<id>`: Print all lane statuses and repro hints.
+- `make open RUN_ID=<id>`: Open or print unified report path.
+- `make rerun-failed RUN_ID=<id> [NEW_RUN_ID=<id>]`: Re-run only failed lanes.
+- Lane timeout controls: `LANE_TIMEOUT_SOFT_SECS` (warn) and `LANE_TIMEOUT_HARD_SECS` (terminate with timeout failure).
 - `make report/merge`: Merge lane reports into one unified JSON report.
 - `make report/print`: Print a CI-style human summary.
 - `make report/md`: Generate markdown summary for PR comments.
