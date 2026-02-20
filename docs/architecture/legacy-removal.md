@@ -16,10 +16,10 @@ Short-lived tracker for removing legacy targets, scripts, and references.
 ## Commands
 
 ```bash
-make legacy/list
-make legacy/check
+python3 scripts/areas/layout/legacy_inventory.py --format text --json-out artifacts/evidence/legacy/inventory.json
+python3 scripts/areas/layout/legacy_inventory.py --format text --check-policy --json-out artifacts/evidence/legacy/inventory.json
 ```
 
 ## Milestone
 
-When `configs/policy/legacy-policy.json` sets `purge_enforced=true`, `make legacy/check` fails if any legacy entries remain.
+When `configs/policy/legacy-policy.json` sets `purge_enforced=true`, policy validation fails if any legacy entries remain.

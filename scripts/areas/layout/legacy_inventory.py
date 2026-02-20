@@ -2,7 +2,7 @@
 # owner: repo-surface
 # purpose: inventory legacy references and enforce legacy baseline/policy contracts.
 # stability: public
-# called-by: make legacy/list, make legacy/check, make layout-check
+# called-by: make layout-check
 from __future__ import annotations
 
 import argparse
@@ -60,13 +60,10 @@ def _callers(token: str, max_items: int = 8) -> list[str]:
 
 def _mk_legacy_targets() -> list[dict[str, Any]]:
     entries: list[dict[str, Any]] = []
-    skip_targets = {"legacy/list", "legacy/check", "legacy-audit"}
     for mk in sorted((ROOT / "makefiles").glob("*.mk")):
         text = mk.read_text(encoding="utf-8")
         for m in re.finditer(r"^([A-Za-z0-9_./-]*legacy[A-Za-z0-9_./-]*):", text, flags=re.MULTILINE):
             target = m.group(1)
-            if target in skip_targets:
-                continue
             entries.append(
                 {
                     "kind": "make-target",

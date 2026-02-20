@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Purpose: fail if any make target name matches the forbidden legacy regex.
 from __future__ import annotations
 
 import re
@@ -18,15 +19,13 @@ def main() -> int:
             if target.startswith("."):
                 continue
             if FORBIDDEN_RE.search(target):
-                errs.append(f"{mk.relative_to(ROOT)} contains forbidden legacy target: {target}")
-
+                errs.append(f"{mk.relative_to(ROOT)}: forbidden legacy target `{target}`")
     if errs:
-        print("legacy target contract failed:", file=sys.stderr)
+        print("legacy target name lint failed:", file=sys.stderr)
         for err in errs:
             print(f"- {err}", file=sys.stderr)
         return 1
-
-    print("legacy target contract passed")
+    print("legacy target name lint passed")
     return 0
 
 
