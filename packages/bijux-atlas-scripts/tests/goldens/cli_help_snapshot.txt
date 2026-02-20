@@ -1,0 +1,61 @@
+usage: bijux-atlas [-h] [--version] [--run-id RUN_ID]
+                   [--evidence-root EVIDENCE_ROOT] [--run-dir RUN_DIR]
+                   [--profile PROFILE] [--format {text,json}]
+                   [--network {allow,forbid}] [--no-network]
+                   [--require-clean-git] [--verbose | --quiet]
+                   {version,env,self-check,help,run,validate-output,surface,commands,contracts,registry,layout,configs,policies,docs,make,ops,inventory,lint,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,doctor,completion}
+                   ...
+
+positional arguments:
+  {version,env,self-check,help,run,validate-output,surface,commands,contracts,registry,layout,configs,policies,docs,make,ops,inventory,lint,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,doctor,completion}
+    version             print versions and git context
+    env                 print resolved runtime environment
+    self-check          validate imports, config loading, and schema presence
+    help                print command help
+    run                 run an internal python script by repo-relative path
+    validate-output     validate JSON output against schema
+    surface             print scripts command ownership surface
+    commands            print machine-readable command surface
+    contracts           contracts domain commands
+    registry            registry domain commands
+    layout              layout domain commands
+    configs             configs validation and inventory commands
+    policies            policy relaxations and bypass checks
+    docs                docs checks and generation commands
+    make                make target intelligence and contracts checks
+    ops                 ops lint and contracts command surface
+    inventory           generate inventory docs and JSON from SSOT
+    lint                run canonical lint suites
+    report              unified report and scorecard commands
+    compat              scripts compatibility shim inspection commands
+    legacy              legacy migration debt audit helpers
+    ports               port registry and reservation commands
+    artifacts           artifacts helpers
+    k8s                 k8s wrappers
+    stack               stack lifecycle wrappers
+    obs                 observability wrappers
+    load                load wrappers
+    e2e                 e2e wrappers
+    datasets            dataset wrappers
+    cleanup             cleanup artifacts by retention policy
+    scenario            run scenario from manifest
+    contracts-snapshot  run live contracts snapshot check
+    gates               run curated gate lanes from SSOT manifest
+    doctor              show tooling and context diagnostics
+    completion          emit shell completion stub
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --run-id RUN_ID       run identifier for artifacts
+  --evidence-root EVIDENCE_ROOT
+                        evidence root path
+  --run-dir RUN_DIR     override run directory root
+  --profile PROFILE     profile id
+  --format {text,json}  output format
+  --network {allow,forbid}
+                        network access mode
+  --no-network          deprecated alias for --network=forbid
+  --require-clean-git   fail if git workspace is dirty
+  --verbose             enable verbose diagnostics
+  --quiet               only emit errors
