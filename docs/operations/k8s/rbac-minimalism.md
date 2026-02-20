@@ -13,7 +13,7 @@ Limits permissions surface for runtime security.
 ## Contracts
 
 - Chart renders no Role/RoleBinding/ClusterRole/ClusterRoleBinding resources by default.
-- Enforced by `ops/e2e/k8s/tests/test_rbac_minimalism.sh`.
+- Enforced by `ops/k8s/tests/checks/security/test_rbac_minimalism.sh`.
 
 ## Failure modes
 
