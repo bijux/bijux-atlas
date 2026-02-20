@@ -3,6 +3,21 @@ from __future__ import annotations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+SCAN_ROOTS = (ROOT / "configs", ROOT / "ops")
+SKIP_DIRS = {".git", ".hg", ".svn", "artifacts", "target", "node_modules", ".venv", "__pycache__"}
+
+
+def _iter_candidates(pattern: str) -> list[Path]:
+  out: list[Path] = []
+  for scan_root in SCAN_ROOTS:
+    if not scan_root.exists():
+      continue
+    for path in scan_root.rglob(pattern):
+      rel_parts = path.relative_to(ROOT).parts
+      if any(part in SKIP_DIRS for part in rel_parts):
+        continue
+      out.append(path)
+  return out
 
 
 def main() -> int:
@@ -23,7 +38,7 @@ def main() -> int:
     "k6_thresholds": "*k6*threshold*.json",
   }
   for key,pat in patterns.items():
-    hits=[p.relative_to(ROOT).as_posix() for p in ROOT.rglob(pat) if "artifacts/" not in p.as_posix()]
+    hits=[p.relative_to(ROOT).as_posix() for p in _iter_candidates(pat)]
     canonical=expected[key]
     for h in hits:
       if h != canonical and h not in mirrors.get(key, set()) and not h.startswith("ops/_generated") and not h.startswith("ops/_generated_committed"):
