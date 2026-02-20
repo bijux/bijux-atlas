@@ -37,9 +37,21 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 ## Public Targets
 
 - `make help`: Show curated public targets grouped by namespace.
+- `make help-advanced`: Show curated targets plus maintainer helpers.
 - `make list`: List curated public targets with one-line descriptions.
 - `make explain TARGET=<target>`: Show description, lanes, and expansion tree for one public target.
 - `make graph TARGET=<target>`: Print a compact dependency tree for one public target.
+- `make what TARGET=<target>`: Print explain + graph in one output.
+- `make ci`: Run deterministic CI superset.
+- `make nightly`: Run slow nightly suites.
+- `make fmt`: Run formatter checks.
+- `make lint`: Run lint checks.
+- `make test`: Run tests.
+- `make audit`: Run audits.
+- `make docs`: Run docs verification lane.
+- `make ops`: Run ops verification lane.
+- `make docker`: Run docker contract checks.
+- `make chart`: Run helm chart verification checks.
 - `make gates`: Print top-level areas and mapped public targets.
 - `make quick`: Minimal loop (fmt + lint + test).
 - `make cargo/fmt`: Cargo fmt gate (CI-safe).

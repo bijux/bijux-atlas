@@ -75,6 +75,46 @@
     "owner": "build-and-release",
     "area": "policies"
   },
+  "ci": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "nightly": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "fmt": {
+    "owner": "rust-platform",
+    "area": "cargo"
+  },
+  "lint": {
+    "owner": "rust-platform",
+    "area": "cargo"
+  },
+  "test": {
+    "owner": "rust-platform",
+    "area": "cargo"
+  },
+  "audit": {
+    "owner": "rust-platform",
+    "area": "cargo"
+  },
+  "docs": {
+    "owner": "docs-governance",
+    "area": "docs"
+  },
+  "ops": {
+    "owner": "ops-platform",
+    "area": "ops"
+  },
+  "docker": {
+    "owner": "ops-platform",
+    "area": "ops"
+  },
+  "chart": {
+    "owner": "ops-platform",
+    "area": "ops"
+  },
   "root-local-summary": {
     "owner": "build-and-release",
     "area": "policies"
@@ -101,7 +141,7 @@
   },
   "doctor": {
     "owner": "build-and-release",
-    "area": "policies"
+    "area": "ops"
   },
   "prereqs": {
     "owner": "build-and-release",
