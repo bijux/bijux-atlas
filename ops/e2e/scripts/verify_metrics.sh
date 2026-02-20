@@ -1,10 +1,12 @@
-#!/usr/bin/env sh
-set -eu
+#!/usr/bin/env bash
+set -euo pipefail
 
-BASE_URL="${ATLAS_E2E_BASE_URL:-http://127.0.0.1:18080}"
-NS="${ATLAS_E2E_NAMESPACE:-atlas-e2e}"
-RELEASE="${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
-LOCAL_PORT="${ATLAS_E2E_LOCAL_PORT:-18080}"
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
+source "$ROOT/ops/_lib/common.sh"
+BASE_URL="${ATLAS_E2E_BASE_URL:-http://127.0.0.1:$(ops_layer_port_atlas)}"
+NS="${ATLAS_E2E_NAMESPACE:-$(ops_layer_ns_e2e)}"
+RELEASE="${ATLAS_E2E_RELEASE_NAME:-$(ops_layer_contract_get release_metadata.defaults.release_name)}"
+LOCAL_PORT="${ATLAS_E2E_LOCAL_PORT:-$(ops_layer_port_atlas)}"
 CURL="curl --connect-timeout 2 --max-time 5 -fsS"
 
 if ! $CURL "$BASE_URL/healthz" >/dev/null 2>&1; then
@@ -17,7 +19,7 @@ if ! $CURL "$BASE_URL/healthz" >/dev/null 2>&1; then
     echo "metrics runtime check skipped: no running atlas pod found in namespace '$NS'"
     exit 0
   fi
-  kubectl -n "$NS" port-forward "pod/$POD" "$LOCAL_PORT:8080" >/tmp/atlas-metrics-port-forward.log 2>&1 &
+  kubectl -n "$NS" port-forward "pod/$POD" "$LOCAL_PORT:$(ops_layer_port_atlas)" >/tmp/atlas-metrics-port-forward.log 2>&1 &
   PF_PID=$!
   trap 'kill "$PF_PID" >/dev/null 2>&1 || true' EXIT INT TERM
   BASE_URL="http://127.0.0.1:$LOCAL_PORT"

@@ -38,6 +38,7 @@ ops-e2e-validate: ## Validate unified e2e scenario definitions and docs referenc
 ops-contracts-check: ## Validate canonical ops manifests against ops/_schemas and contract invariants
 	@python3 ./ops/_meta/generate_layer_contract.py
 	@python3 ./ops/_lint/check_layer_contract_drift.py
+	@python3 ./scripts/layout/check_layer_drift.py
 	@python3 ./ops/_lint/no-layer-literals.py
 	@python3 ./ops/_lint/no-stack-layer-literals.py
 	@$(MAKE) -s ops-stack-versions-sync

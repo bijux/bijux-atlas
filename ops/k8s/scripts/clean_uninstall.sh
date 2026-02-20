@@ -5,8 +5,9 @@
 # called-by: make ops-clean-uninstall
 set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
-NS="${ATLAS_E2E_NAMESPACE:-${ATLAS_NS:-atlas-e2e}}"
-RELEASE="${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
+source "$ROOT/ops/_lib/common.sh"
+NS="${ATLAS_E2E_NAMESPACE:-${ATLAS_NS:-$(ops_layer_ns_k8s)}}"
+RELEASE="${ATLAS_E2E_RELEASE_NAME:-$(ops_layer_contract_get release_metadata.defaults.release_name)}"
 helm -n "$NS" uninstall "$RELEASE" >/dev/null 2>&1 || true
 kubectl delete ns "$NS" --ignore-not-found >/dev/null 2>&1 || true
 for _ in $(seq 1 60); do
