@@ -15,6 +15,7 @@ PAIRS = [
   ("configs/policy/layer-live-diff-allowlist.json", "configs/_schemas/layer-live-diff-allowlist.schema.json"),
   ("configs/ops/target-renames.json", "configs/_schemas/target-renames.schema.json"),
   ("configs/ops/hpa-safety-caps.json", "configs/_schemas/hpa-safety-caps.schema.json"),
+  ("configs/meta/ownership.json", "configs/_schemas/meta-ownership.schema.json"),
 ]
 
 

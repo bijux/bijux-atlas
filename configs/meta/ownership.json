@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "commands": {
+    "bijux-atlas-scripts run": "bijux-atlas-platform",
+    "bijux-atlas-scripts validate-output": "bijux-atlas-platform",
+    "bijux-atlas-scripts surface": "bijux-atlas-platform",
+    "bijux-atlas-scripts doctor": "bijux-atlas-platform"
+  },
+  "paths": {
+    "tools/bijux_atlas_scripts/src/bijux_atlas_scripts": "bijux-atlas-platform",
+    "tools/bijux_atlas_scripts/tests": "bijux-atlas-platform",
+    "scripts/bin/bijux-atlas-scripts": "bijux-atlas-platform",
+    "scripts/bin/bijux-atlas-dev": "bijux-atlas-platform",
+    "scripts/bin/bijux-atlas-ops": "bijux-atlas-operations",
+    "scripts/bin/isolate": "bijux-atlas-platform",
+    "scripts/bin/require-isolate": "bijux-atlas-platform",
+    "scripts/bin/run_drill.sh": "bijux-atlas-operations"
+  }
+}
