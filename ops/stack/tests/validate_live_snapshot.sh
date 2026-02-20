@@ -6,7 +6,7 @@ ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 . "$ROOT/ops/_lib/common.sh"
 
 NS="${ATLAS_E2E_NAMESPACE:-$(ops_layer_ns_stack)}"
-OUT="${1:-$ROOT/ops/_evidence/contracts/live-snapshot.services.json}"
+OUT="${1:-$ROOT/artifacts/evidence/contracts/live-snapshot.services.json}"
 mkdir -p "$(dirname "$OUT")"
 
 if ! kubectl cluster-info >/dev/null 2>&1; then

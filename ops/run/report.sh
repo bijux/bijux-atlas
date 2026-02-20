@@ -35,7 +35,7 @@ schema_path = root / os.environ["OPS_REPORT_SCHEMA"]
 
 lanes = {}
 # Prefer canonical make lane reports first.
-make_root = root / "ops/_evidence/make"
+make_root = root / "artifacts/evidence/make"
 if make_root.exists():
     for report_path in sorted(make_root.glob(f"**/{run_id}/report.json")):
         rel = report_path.relative_to(make_root)
@@ -44,7 +44,7 @@ if make_root.exists():
             lanes[lane] = json.loads(report_path.read_text(encoding="utf-8"))
 
 # Backfill with legacy lane reports under ops/_generated/<lane>/<run_id>/report.json.
-evidence_root = root / "ops/_evidence"
+evidence_root = root / "artifacts/evidence"
 for lane_dir in sorted(p for p in evidence_root.iterdir() if p.is_dir()):
     lane = lane_dir.name
     if lane == "make":
@@ -87,7 +87,7 @@ payload = {
     "perf_summary": {"suite_count": 0, "p95_max_ms": 0.0, "p99_max_ms": 0.0},
 }
 
-perf_raw = root / "ops/_evidence/perf" / run_id / "raw"
+perf_raw = root / "artifacts/evidence/perf" / run_id / "raw"
 if perf_raw.exists():
     p95s = []
     p99s = []

@@ -8,10 +8,10 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def main() -> int:
-    run_id = (ROOT / "ops/_evidence/latest-run-id.txt").read_text(encoding="utf-8").strip()
-    unified = ROOT / "ops/_evidence" / "make" / run_id / "unified.json"
+    run_id = (ROOT / "artifacts/evidence/latest-run-id.txt").read_text(encoding="utf-8").strip()
+    unified = ROOT / "artifacts/evidence" / "make" / run_id / "unified.json"
     data = json.loads(unified.read_text(encoding="utf-8"))
-    out = ROOT / "ops/_evidence" / "make" / run_id / "pr-summary.md"
+    out = ROOT / "artifacts/evidence" / "make" / run_id / "pr-summary.md"
     lines = [
         f"## Ops Evidence Summary (`{run_id}`)",
         "",

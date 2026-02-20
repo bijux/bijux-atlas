@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[4]
 BUDGETS = ROOT / "configs/ops/obs/budgets.json"
-LAST_PASS = ROOT / "ops/_evidence/obs/last-pass.json"
+LAST_PASS = ROOT / "artifacts/evidence/obs/last-pass.json"
 
 
 def _current_branch() -> str:

@@ -37,7 +37,7 @@ ROOT_LOCAL_EXTRA_LANES=(
 
 summary_dir_for() {
   local run_id="$1"
-  echo "ops/_evidence/make/root-local/${run_id}"
+  echo "artifacts/evidence/make/root-local/${run_id}"
 }
 
 summary_file_for() {
@@ -48,7 +48,7 @@ summary_file_for() {
 lane_report_path() {
   local lane="$1"
   local run_id="$2"
-  echo "ops/_evidence/make/${lane}/${run_id}/report.json"
+  echo "artifacts/evidence/make/${lane}/${run_id}/report.json"
 }
 
 lane_iso_dir() {
@@ -112,7 +112,7 @@ PY
       echo "| ${lane} | ${status} | ${report} | $(lane_iso_dir "$lane" "$run_id") | $(lane_log_path "$lane" "$run_id") |"
     done
     echo
-    echo "- unified: ops/_evidence/make/${run_id}/unified.json"
+    echo "- unified: artifacts/evidence/make/${run_id}/unified.json"
     echo "- unified-ops: ops/_generated_committed/report.unified.json"
     echo "- scorecard: ops/_generated_committed/scorecard.json"
   } > "$summary_file"
@@ -159,7 +159,7 @@ run_lane() {
   local lane_status="pass"
   local lane_iso
   lane_iso="$(lane_iso_dir "$lane" "$run_id")"
-  local report_root="ops/_evidence/make"
+  local report_root="artifacts/evidence/make"
 
   mkdir -p "$(dirname "$lane_log")" "$lane_iso/target" "$lane_iso/cargo-home" "$lane_iso/tmp"
 
@@ -193,7 +193,7 @@ import json
 print(json.dumps([
   "${lane_iso}",
   "${lane_log}",
-  "ops/_evidence/make/${lane}/${run_id}/report.json"
+  "artifacts/evidence/make/${lane}/${run_id}/report.json"
 ]))
 PY
 )"
@@ -218,9 +218,10 @@ run_lanes() {
 $(collect_lanes)
 EOF
 
-  mkdir -p "ops/_evidence/make/root-local" "$(summary_dir_for "$run_id")"
-  printf '%s\n' "$run_id" > "ops/_evidence/make/root-local/latest-run-id.txt"
-  printf '%s\n' "$run_id" > "ops/_evidence/latest-run-id.txt"
+  mkdir -p "artifacts/evidence/make/root-local" "artifacts/evidence/root-local" "$(summary_dir_for "$run_id")"
+  printf '%s\n' "$run_id" > "artifacts/evidence/root-local/latest-run-id.txt"
+  printf '%s\n' "$run_id" > "artifacts/evidence/make/root-local/latest-run-id.txt"
+  printf '%s\n' "$run_id" > "artifacts/evidence/latest-run-id.txt"
 
   local failed=0
   if [ "$PARALLEL" = "0" ]; then
@@ -260,15 +261,21 @@ EOF
 
 case "$MODE" in
   summary)
-    if [ -z "$SUMMARY_RUN_ID" ] && [ -f "ops/_evidence/latest-run-id.txt" ]; then
-      SUMMARY_RUN_ID="$(cat ops/_evidence/latest-run-id.txt)"
+    if [ -z "$SUMMARY_RUN_ID" ] && [ -f "artifacts/evidence/root-local/latest-run-id.txt" ]; then
+      SUMMARY_RUN_ID="$(cat artifacts/evidence/root-local/latest-run-id.txt)"
+    fi
+    if [ -z "$SUMMARY_RUN_ID" ] && [ -f "artifacts/evidence/latest-run-id.txt" ]; then
+      SUMMARY_RUN_ID="$(cat artifacts/evidence/latest-run-id.txt)"
     fi
     [ -n "$SUMMARY_RUN_ID" ] || { echo "missing SUMMARY_RUN_ID" >&2; exit 2; }
     print_summary "$SUMMARY_RUN_ID"
     ;;
   open)
-    if [ -z "$SUMMARY_RUN_ID" ] && [ -f "ops/_evidence/latest-run-id.txt" ]; then
-      SUMMARY_RUN_ID="$(cat ops/_evidence/latest-run-id.txt)"
+    if [ -z "$SUMMARY_RUN_ID" ] && [ -f "artifacts/evidence/root-local/latest-run-id.txt" ]; then
+      SUMMARY_RUN_ID="$(cat artifacts/evidence/root-local/latest-run-id.txt)"
+    fi
+    if [ -z "$SUMMARY_RUN_ID" ] && [ -f "artifacts/evidence/latest-run-id.txt" ]; then
+      SUMMARY_RUN_ID="$(cat artifacts/evidence/latest-run-id.txt)"
     fi
     [ -n "$SUMMARY_RUN_ID" ] || { echo "missing SUMMARY_RUN_ID" >&2; exit 2; }
     OPEN_SUMMARY=1

@@ -102,36 +102,36 @@ format: ## UX alias for fmt
 	@$(MAKE) fmt
 
 report/merge: ## Merge lane reports into unified make report JSON
-	@run_id="$${RUN_ID:-$$(cat ops/_evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
+	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
 	python3 ./scripts/layout/make_report.py merge --run-id "$$run_id"
 
 report/print: ## Print lane summary like CI/GitHub Actions output
-	@run_id="$${RUN_ID:-$$(cat ops/_evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
+	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
 	python3 ./scripts/layout/make_report.py print --run-id "$$run_id"
 
 report/md: ## Generate markdown summary for PR comments
-	@run_id="$${RUN_ID:-$$(cat ops/_evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
+	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
 	python3 ./scripts/layout/make_report.py md --run-id "$$run_id"
 
 report/junit: ## Optional JUnit conversion for CI systems
-	@run_id="$${RUN_ID:-$$(cat ops/_evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
+	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
 	python3 ./scripts/layout/make_report.py junit --run-id "$$run_id"
 
 logs/last-fail: ## Tail the last failed lane log from latest unified report
-	@run_id="$${RUN_ID:-$$(cat ops/_evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
+	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
 	python3 ./scripts/layout/make_report.py last-fail --run-id "$$run_id"
 
 triage: ## Print failing lanes + last 20 log lines + evidence paths
-	@run_id="$${RUN_ID:-$$(cat ops/_evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
+	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
 	python3 ./scripts/layout/make_report.py triage --run-id "$$run_id"
 
 report: ## Merge lanes, generate confidence scorecard, and print summary
-	@run_id="$${RUN_ID:-$$(cat ops/_evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
+	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
 	python3 ./scripts/layout/make_report.py merge --run-id "$$run_id" >/dev/null; \
-	python3 ./ops/report/make_confidence_scorecard.py --unified "ops/_evidence/make/$$run_id/unified.json" --out "ops/_generated_committed/scorecard.json" --print-summary; \
+	python3 ./ops/report/make_confidence_scorecard.py --unified "artifacts/evidence/make/$$run_id/unified.json" --out "ops/_generated_committed/scorecard.json" --print-summary; \
 	python3 ./scripts/layout/make_report.py print --run-id "$$run_id"
 
-evidence/open: ## Open latest evidence run directory
+evidence/open: ## Open evidence directory (supports AREA=<area> RUN_ID=<id>)
 	@./ops/run/evidence-open.sh
 
 evidence/clean: ## Clean evidence directories using retention policy
@@ -365,7 +365,7 @@ repro: ## Re-run one lane deterministically (usage: make repro TARGET=lane-cargo
 
 retry: ## Retry a target with same RUN_ID (usage: make retry TARGET=<target>)
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make retry TARGET=<target>"; exit 2; }
-	@run_id="$${RUN_ID:-$$(cat ops/_evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
+	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
 	echo "retry target=$${TARGET} run_id=$$run_id"; \
 	RUN_ID="$$run_id" QUIET="$${QUIET:-0}" $(MAKE) -s "$${TARGET}"
 

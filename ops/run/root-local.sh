@@ -20,8 +20,11 @@ elif [ "${1:-}" = "--with-ops" ]; then
 elif [ "${1:-}" = "--summary" ]; then
   mode="summary"
   summary_run_id="${2:-}"
-  if [ -z "$summary_run_id" ] && [ -f "ops/_evidence/latest-run-id.txt" ]; then
-    summary_run_id="$(cat ops/_evidence/latest-run-id.txt)"
+  if [ -z "$summary_run_id" ] && [ -f "artifacts/evidence/root-local/latest-run-id.txt" ]; then
+    summary_run_id="$(cat artifacts/evidence/root-local/latest-run-id.txt)"
+  fi
+  if [ -z "$summary_run_id" ] && [ -f "artifacts/evidence/latest-run-id.txt" ]; then
+    summary_run_id="$(cat artifacts/evidence/latest-run-id.txt)"
   fi
   [ -n "$summary_run_id" ] || { echo "usage: ops/run/root-local.sh --summary <run_id>" >&2; exit 2; }
 fi
@@ -57,7 +60,7 @@ print_summary() {
   local run_id="$1"
   echo "root-local summary run_id=$run_id"
   for lane in "${lanes[@]}"; do
-    local report="ops/_evidence/${lane}/${run_id}/report.json"
+    local report="artifacts/evidence/${lane}/${run_id}/report.json"
     local status="missing"
     if [ -f "$report" ]; then
       status="$(python3 - <<PY
@@ -77,9 +80,10 @@ if [ "$mode" = "summary" ]; then
 fi
 
 run_id="${RUN_ID:-root-local-$(date -u +%Y%m%dT%H%M%SZ)}"
-mkdir -p ops/_evidence/make/root-local
-printf '%s\n' "$run_id" > ops/_evidence/make/root-local/latest-run-id.txt
-printf '%s\n' "$run_id" > ops/_evidence/latest-run-id.txt
+mkdir -p artifacts/evidence/make/root-local artifacts/evidence/root-local
+printf '%s\n' "$run_id" > artifacts/evidence/root-local/latest-run-id.txt
+printf '%s\n' "$run_id" > artifacts/evidence/make/root-local/latest-run-id.txt
+printf '%s\n' "$run_id" > artifacts/evidence/latest-run-id.txt
 
 if [ "$with_ops" = "1" ]; then
   export WITH_OPS=1
@@ -90,7 +94,7 @@ for lane in "${lanes[@]}"; do
   (
     start="$(date +%s)"
     iso="artifacts/isolate/${lane}/${run_id}"
-    report_dir="ops/_evidence/${lane}/${run_id}"
+    report_dir="artifacts/evidence/${lane}/${run_id}"
     log="${report_dir}/run.log"
     mkdir -p "$report_dir" "$iso/target" "$iso/cargo-home" "$iso/tmp"
 
@@ -110,7 +114,7 @@ for lane in "${lanes[@]}"; do
     end="$(date +%s)"
     duration="$((end - start))"
 
-    ops_write_lane_report "${lane}" "${run_id}" "${status}" "${duration}" "${log}" "ops/_evidence" >/dev/null
+    ops_write_lane_report "${lane}" "${run_id}" "${status}" "${duration}" "${log}" "artifacts/evidence" >/dev/null
 
     [ "$status" = "pass" ] || exit 1
   ) &

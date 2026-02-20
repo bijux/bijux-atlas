@@ -94,8 +94,8 @@ def main() -> int:
     dst.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
     diff_lines = _diff(prev.get("rows", []), rows)
-    run_id = (ROOT / "ops/_evidence/latest-run-id.txt").read_text(encoding="utf-8").strip() if (ROOT / "ops/_evidence/latest-run-id.txt").exists() else "manual"
-    out_dir = ROOT / "ops/_evidence/perf" / run_id
+    run_id = (ROOT / "artifacts/evidence/latest-run-id.txt").read_text(encoding="utf-8").strip() if (ROOT / "artifacts/evidence/latest-run-id.txt").exists() else "manual"
+    out_dir = ROOT / "artifacts/evidence/perf" / run_id
     out_dir.mkdir(parents=True, exist_ok=True)
     summary = out_dir / f"baseline-update-{args.profile}.md"
     summary.write_text(

@@ -8,7 +8,7 @@ ops_write_lane_report() {
   local status="$3"
   local duration_seconds="$4"
   local log_path="$5"
-  local out_root="${6:-ops/_evidence}"
+  local out_root="${6:-artifacts/evidence}"
   local started_at="${7:-${LANE_STARTED_AT:-}}"
   local ended_at="${8:-${LANE_ENDED_AT:-}}"
   local artifact_paths_json="${LANE_ARTIFACT_PATHS_JSON:-[]}"

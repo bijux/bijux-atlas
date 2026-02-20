@@ -10,15 +10,15 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def main() -> int:
     proc = subprocess.run(
-        ["git", "status", "--short", "ops/_evidence"],
+        ["git", "status", "--short", "artifacts/evidence"],
         cwd=ROOT,
         capture_output=True,
         text=True,
         check=False,
     )
     allowed_suffixes = {
-        "ops/_evidence/.gitkeep",
-        "ops/_evidence/latest-run-id.txt",
+        "artifacts/evidence/.gitkeep",
+        "artifacts/evidence/latest-run-id.txt",
     }
     lines = []
     for raw in proc.stdout.splitlines():
@@ -26,7 +26,7 @@ def main() -> int:
         if not line:
             continue
         path = line.split()[-1]
-        if path in allowed_suffixes or path == "ops/_evidence/":
+        if path in allowed_suffixes or path == "artifacts/evidence/":
             continue
         lines.append(line)
     if lines:

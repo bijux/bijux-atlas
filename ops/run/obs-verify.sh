@@ -13,7 +13,7 @@ if [ "${1:-}" = "--suite" ]; then
   shift 2
 fi
 start="$(date +%s)"
-log_dir="ops/_evidence/obs-verify/${RUN_ID}"
+log_dir="artifacts/evidence/obs-verify/${RUN_ID}"
 mkdir -p "$log_dir"
 log_file="$log_dir/run.log"
 status="pass"
@@ -28,12 +28,12 @@ python3 ./ops/obs/scripts/contracts/write_obs_conformance_report.py \
   --out-dir "${log_dir}" >/dev/null || true
 cp -f artifacts/ops/obs/traces.exemplars.log "${log_dir}/traces.exemplars.log" 2>/dev/null || true
 if [ "${status}" = "pass" ]; then
-  mkdir -p ops/_evidence/obs
+  mkdir -p artifacts/evidence/obs
   python3 - <<PY
 import json
 from datetime import datetime, timezone
 from pathlib import Path
-out = Path("ops/_evidence/obs/last-pass.json")
+out = Path("artifacts/evidence/obs/last-pass.json")
 payload = {
   "run_id": "${RUN_ID}",
   "suite": "${SUITE}",
@@ -42,5 +42,5 @@ payload = {
 out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 PY
 fi
-ops_write_lane_report "obs-verify" "${RUN_ID}" "${status}" "$((end - start))" "${log_file}" "ops/_evidence" >/dev/null
+ops_write_lane_report "obs-verify" "${RUN_ID}" "${status}" "$((end - start))" "${log_file}" "artifacts/evidence" >/dev/null
 [ "$status" = "pass" ] || exit 1

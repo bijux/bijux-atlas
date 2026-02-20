@@ -16,7 +16,7 @@ ops_version_guard python3 kind kubectl
 ./ops/run/warm-entrypoint.sh --mode shards
 ./ops/run/cache-status.sh
 
-out_dir="ops/_evidence/warm/${RUN_ID}"
+out_dir="artifacts/evidence/warm/${RUN_ID}"
 mkdir -p "$out_dir"
 cp -f artifacts/ops/cache-status/report.json "$out_dir/cache-status.json" 2>/dev/null || true
 printf '%s\n' "warm completed run_id=${RUN_ID}" > "$out_dir/summary.txt"
