@@ -50,13 +50,11 @@ Generated file. Do not edit manually.
 | `scripts/areas/fixtures/fetch-real-datasets.sh` | `dataset-ops` | `public` | `fetch-real-datasets` |
 | `scripts/areas/fixtures/run-medium-ingest.sh` | `dataset-ops` | `public` | `ingest-sharded-medium`, `run-medium-ingest` |
 | `scripts/areas/fixtures/run-medium-serve.sh` | `dataset-ops` | `public` | `run-medium-serve` |
-| `scripts/areas/internal/__init__.py` | `platform` | `internal` | - |
 | `scripts/areas/internal/effects-lint.sh` | `platform` | `internal` | - |
 | `scripts/areas/internal/env_dump.sh` | `platform` | `internal` | - |
 | `scripts/areas/internal/exec.sh` | `platform` | `internal` | - |
 | `scripts/areas/internal/naming-intent-lint.sh` | `platform` | `internal` | - |
 | `scripts/areas/internal/openapi-generate.sh` | `platform` | `internal` | - |
-| `scripts/areas/internal/paths.py` | `platform` | `internal` | - |
 | `scripts/areas/internal/repo_root.sh` | `platform` | `internal` | - |
 | `scripts/areas/layout/allowed_root.json` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/build_artifacts_index.py` | `repo-surface` | `public` | `artifacts-index` |
