@@ -368,7 +368,7 @@ ci/all: ## Deterministic CI superset
 	@$(call with_iso,ci-all,$(MAKE) -s gates-check lane-cargo lane-docs lane-scripts lane-configs-policies lane-ops ci-release-binaries ci-docs-build ci-release-compat-matrix-verify)
 
 nightly/all: ## Slow nightly suites (perf/load/drills/realdata)
-	@$(call with_iso,nightly-all,$(MAKE) -s ci/all ops-load-nightly perf/regression-check ops-drill-suite ops-realdata ops-obs-verify SUITE=full ops-observability-lag-check)
+	@$(call with_iso,nightly-all,$(MAKE) -s ci/all ops-load-nightly perf/regression-check ops-drill-suite ops-drill-metric-cardinality-blowup ops-realdata ops-obs-verify SUITE=full ops-observability-lag-check)
 
 lane-cargo: ## Lane: rust checks/tests in isolated lane-cargo path
 	@$(MAKE) -s cargo/fmt cargo/lint
