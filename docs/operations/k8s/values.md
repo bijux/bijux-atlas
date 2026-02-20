@@ -30,6 +30,7 @@ Does not redefine schema semantics beyond contract references.
 - `values.hpa`
 - `values.image`
 - `values.ingress`
+- `values.metrics`
 - `values.networkPolicy`
 - `values.nodeLocalSsdProfile`
 - `values.nodeSelector`
