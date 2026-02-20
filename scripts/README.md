@@ -143,7 +143,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/layout/validate_ops_contracts.py` | `repo-surface` | `public` | `ops-contracts-check`, `ops-gen`, `ops-k8s-contracts` |
 | `scripts/areas/layout/validate_ops_env.py` | `repo-surface` | `public` | `ops-env-print`, `ops-env-validate` |
 | `scripts/areas/layout/write_make_area_report.py` | `repo-surface` | `public` | - |
-| `scripts/areas/public/check-cli-commands.sh` | `platform` | `public` | `cli-command-surface` |
 | `scripts/areas/public/check-markdown-links.sh` | `platform` | `public` | `_lint-docs`, `docs-build` |
 | `scripts/areas/public/config-drift-check.py` | `platform` | `public` | - |
 | `scripts/areas/public/config-print.py` | `platform` | `public` | - |
@@ -163,8 +162,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/public/policy-audit.py` | `platform` | `public` | `policy-audit` |
 | `scripts/areas/public/policy-lint.sh` | `platform` | `public` | `_lint-configs`, `policy-lint` |
 | `scripts/areas/public/qc-fixtures-gate.sh` | `platform` | `public` | `ci-qc-fixtures` |
-| `scripts/areas/public/query-plan-gate.sh` | `platform` | `public` | `query-plan-gate` |
 | `scripts/areas/public/report-bundle.sh` | `platform` | `public` | `ops-report` |
-| `scripts/areas/public/require-crate-docs.sh` | `platform` | `public` | `crate-structure` |
 | `scripts/areas/public/stack/build_stack_report.py` | `platform` | `public` | `stack-full` |
 | `scripts/areas/public/stack/validate_stack_report.py` | `platform` | `public` | `stack-full` |

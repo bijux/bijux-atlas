@@ -74,7 +74,7 @@ culprits-all: culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per
 
 crate-structure:
 	@./bin/atlasctl env require-isolate >/dev/null
-	@./scripts/areas/public/require-crate-docs.sh
+	@$(ATLAS_SCRIPTS) docs crate-docs-contract-check --report text
 	@$(ATLAS_SCRIPTS) docs crate-docs-contract-check --report text
 
 crate-docs-contract:
@@ -83,6 +83,7 @@ crate-docs-contract:
 
 cli-command-surface:
 	@./bin/atlasctl env require-isolate >/dev/null
-	@./scripts/areas/public/check-cli-commands.sh
+	@cargo test -p bijux-atlas-cli command_surface_ssot_matches_doc -- --exact
+	@cargo test -p bijux-atlas-cli help_output_command_surface_matches_doc_exactly -- --exact
 
 .PHONY: culprits-all culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir crate-structure crate-docs-contract cli-command-surface

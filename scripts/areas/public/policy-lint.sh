@@ -91,9 +91,10 @@ if cfg_data["modes"]["dev"]["allow_override"] is not False:
 print("policy config validated")
 PY
 
-./scripts/areas/public/require-crate-docs.sh
+python3 -m bijux_atlas_scripts.cli docs crate-docs-contract-check --report text
 ./scripts/areas/public/no-network-unit-tests.sh
-./scripts/areas/public/check-cli-commands.sh
+cargo test -p bijux-atlas-cli command_surface_ssot_matches_doc -- --exact
+cargo test -p bijux-atlas-cli help_output_command_surface_matches_doc_exactly -- --exact
 ./bin/atlasctl policies schema-drift
 ./bin/atlasctl policies allow-env-lint
 ./bin/bijux-atlas contracts generate --generators artifacts chart-schema

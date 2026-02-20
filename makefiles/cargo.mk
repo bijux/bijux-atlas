@@ -207,7 +207,10 @@ perf-nightly:
 	@./ops/load/scripts/run_nightly_perf.sh
 
 query-plan-gate:
-	@./scripts/areas/public/query-plan-gate.sh
+	@cargo test -p bijux-atlas-query explain_plan_snapshots_by_query_class -- --nocapture
+	@cargo test -p bijux-atlas-query no_table_scan_assertion_for_indexed_query_plan -- --nocapture
+	@./bin/atlasctl contracts check --checks sqlite-indexes
+	@./bin/atlasctl run scripts/areas/public/perf/run_critical_queries.py
 
 critical-query-check:
 	@$(ATLAS_SCRIPTS) contracts check --checks sqlite-indexes
