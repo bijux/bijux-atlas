@@ -11,8 +11,8 @@ Canonical security policy configs consumed by CI and local gates.
 
 ## Policy
 
-- Root `deny.toml` and `audit-allowlist.toml` are symlink shims only.
-- Canonical content must live under `configs/security/`.
+- Root `deny.toml` and `audit-allowlist.toml` shims are not allowed.
+- Commands must use explicit config path `configs/security/deny.toml`.
 
 ## Verification
 

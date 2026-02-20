@@ -6,7 +6,7 @@ Canonical Rust tool configuration lives here.
 - `rustfmt.toml`: formatting policy used by `cargo fmt`.
 - `rust-toolchain.toml` (root): pinned toolchain selector consumed by cargo/rustup.
 
-Root files `clippy.toml` and `rustfmt.toml` are symlinks only.
+Root `clippy.toml` and `rustfmt.toml` are not allowed; commands use explicit config paths.
 
 ## Policy
 

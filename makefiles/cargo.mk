@@ -29,7 +29,7 @@ internal/cargo/fmt:
 
 _fmt:
 	@./scripts/bin/require-isolate >/dev/null
-	@cargo fmt --all --check
+	@cargo fmt --all -- --check --config-path configs/rust/rustfmt.toml
 	@./scripts/areas/layout/check_repo_hygiene.sh
 
 internal/cargo/lint:
@@ -49,7 +49,7 @@ _lint:
 
 _lint-rustfmt:
 	@./scripts/bin/require-isolate >/dev/null
-	@cargo fmt --all --check
+	@cargo fmt --all -- --check --config-path configs/rust/rustfmt.toml
 
 _lint-configs:
 	@./scripts/bin/require-isolate >/dev/null
@@ -64,7 +64,7 @@ _lint-docs:
 
 _lint-clippy:
 	@./scripts/bin/require-isolate >/dev/null
-	@CARGO_BUILD_JOBS="$(CARGO_BUILD_JOBS)" cargo clippy --workspace --all-targets -- -D warnings
+	@CARGO_BUILD_JOBS="$(CARGO_BUILD_JOBS)" CLIPPY_CONF_DIR="$(CURDIR)/configs/rust" cargo clippy --workspace --all-targets -- -D warnings
 
 check:
 	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
@@ -176,7 +176,7 @@ _audit:
 		echo "cargo-deny is required for stable toolchain. Installing..." >&2; \
 		cargo +stable install cargo-deny --locked; \
 	fi
-	@cargo +stable deny check
+	@cargo +stable deny --config configs/security/deny.toml check
 
 ci-core: internal/cargo/fmt internal/cargo/lint internal/cargo/audit internal/cargo/test coverage
 
