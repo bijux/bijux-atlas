@@ -13,6 +13,10 @@ PARALLEL="${PARALLEL:-1}"
 RUN_ID="${RUN_ID:-root-lanes-$(date -u +%Y%m%dT%H%M%SZ)}"
 SUMMARY_RUN_ID="${SUMMARY_RUN_ID:-$RUN_ID}"
 OPEN_SUMMARY="${OPEN_SUMMARY:-0}"
+SOURCE_RUN_ID="${SOURCE_RUN_ID:-}"
+FAST="${FAST:-0}"
+LANE_TIMEOUT_SOFT_SECS="${LANE_TIMEOUT_SOFT_SECS:-1200}"
+LANE_TIMEOUT_HARD_SECS="${LANE_TIMEOUT_HARD_SECS:-1800}"
 
 ALL_LANES=(
   "lane-cargo"
@@ -73,6 +77,9 @@ collect_lanes() {
     return 0
   fi
   printf '%s\n' "${ALL_LANES[@]}"
+  if [ "$FAST" = "1" ]; then
+    return 0
+  fi
   if [ "$include_ops_smoke" = "1" ]; then
     printf '%s\n' "${ROOT_LOCAL_EXTRA_LANES[@]}"
   fi
@@ -157,14 +164,51 @@ run_lane() {
   local lane_log
   lane_log="$(lane_log_path "$lane" "$run_id")"
   local lane_status="pass"
+  local lane_exit_code=0
+  local lane_timeout_state="none"
   local lane_iso
   lane_iso="$(lane_iso_dir "$lane" "$run_id")"
   local report_root="artifacts/evidence/make"
 
   mkdir -p "$(dirname "$lane_log")" "$lane_iso/target" "$lane_iso/cargo-home" "$lane_iso/tmp"
 
-  if ! RUN_ID="$run_id" MAKE_LANE="$lane" TZ="UTC" LANG="C.UTF-8" LC_ALL="C.UTF-8" \
-      make -s "$lane" >"$lane_log" 2>&1; then
+  RUN_ID="$run_id" \
+  MAKE_LANE="$lane" \
+  ISO_ROOT="$lane_iso" \
+  CARGO_TARGET_DIR="$lane_iso/target" \
+  CARGO_HOME="$lane_iso/cargo-home" \
+  TMPDIR="$lane_iso/tmp" \
+  TMP="$lane_iso/tmp" \
+  TEMP="$lane_iso/tmp" \
+  TZ="UTC" LANG="C.UTF-8" LC_ALL="C.UTF-8" \
+  make -s "$lane" >"$lane_log" 2>&1 &
+  local lane_pid="$!"
+  local soft_marked=0
+  while kill -0 "$lane_pid" 2>/dev/null; do
+    local now
+    now="$(date +%s)"
+    local elapsed="$((now - lane_start))"
+    if [ "$soft_marked" = "0" ] && [ "$elapsed" -ge "$LANE_TIMEOUT_SOFT_SECS" ]; then
+      soft_marked=1
+      lane_timeout_state="soft"
+      echo "lane timeout warning: lane=$lane run_id=$run_id elapsed=${elapsed}s soft=${LANE_TIMEOUT_SOFT_SECS}s" >>"$lane_log"
+    fi
+    if [ "$elapsed" -ge "$LANE_TIMEOUT_HARD_SECS" ]; then
+      lane_timeout_state="hard"
+      echo "lane timeout hard-stop: lane=$lane run_id=$run_id elapsed=${elapsed}s hard=${LANE_TIMEOUT_HARD_SECS}s" >>"$lane_log"
+      kill -TERM "$lane_pid" >/dev/null 2>&1 || true
+      sleep 2
+      kill -KILL "$lane_pid" >/dev/null 2>&1 || true
+      break
+    fi
+    sleep 1
+  done
+  if ! wait "$lane_pid"; then
+    lane_exit_code="$?"
+    lane_status="fail"
+  fi
+  if [ "$lane_timeout_state" = "hard" ] && [ "$lane_exit_code" = "0" ]; then
+    lane_exit_code=124
     lane_status="fail"
   fi
 
@@ -184,7 +228,7 @@ run_lane() {
   fi
   if [ "$lane_status" != "pass" ]; then
     if [ -z "$failure_summary" ]; then
-      failure_summary="$(tail -n 20 "$lane_log" 2>/dev/null | tr '\n' ' ' | sed 's/\"/'\''/g')"
+      failure_summary="exit=${lane_exit_code} timeout=${lane_timeout_state}; $(tail -n 20 "$lane_log" 2>/dev/null | tr '\n' ' ' | sed 's/\"/'\''/g')"
     fi
   fi
   local lane_artifacts_json
@@ -203,9 +247,36 @@ PY
   LANE_ARTIFACT_PATHS_JSON="$lane_artifacts_json" \
   LANE_FAILURE_SUMMARY="$failure_summary" \
   LANE_BUDGET_STATUS_JSON="$budget_status_json" \
+  LANE_TIMEOUT_STATE="$lane_timeout_state" \
+  LANE_EXIT_CODE="$lane_exit_code" \
   LANE_REPRO_COMMAND="make repro TARGET=${lane} RUN_ID=${run_id}" \
   ops_write_lane_report "$lane" "$run_id" "$lane_status" "$duration" "$lane_log" "$report_root" "$started_at" "$ended_at" >/dev/null
   [ "$lane_status" = "pass" ]
+}
+
+collect_failed_lanes_from_run() {
+  local source_run_id="$1"
+  python3 - <<PY
+import json
+from pathlib import Path
+root = Path("artifacts/evidence/make")
+run = "${source_run_id}"
+unified = root / run / "unified.json"
+lanes = []
+if unified.exists():
+    data = json.loads(unified.read_text(encoding="utf-8"))
+    for lane, report in sorted(data.get("lanes", {}).items()):
+        if report.get("status") != "pass":
+            lanes.append(lane)
+else:
+    for path in root.glob(f"*/{run}/report.json"):
+        lane = path.parent.parent.name
+        rep = json.loads(path.read_text(encoding="utf-8"))
+        if rep.get("status") != "pass":
+            lanes.append(lane)
+for lane in lanes:
+    print(lane)
+PY
 }
 
 run_lanes() {
@@ -284,8 +355,23 @@ case "$MODE" in
   root|root-local)
     run_lanes "$RUN_ID"
     ;;
+  rerun-failed)
+    [ -n "$SOURCE_RUN_ID" ] || { echo "missing SOURCE_RUN_ID" >&2; exit 2; }
+    if [ -z "${RUN_ID:-}" ] || [ "$RUN_ID" = "root-lanes-$(date -u +%Y%m%dT%H%M%SZ)" ]; then
+      RUN_ID="${SOURCE_RUN_ID}-rerun-$(date -u +%Y%m%dT%H%M%SZ)"
+    fi
+    mapfile -t failed_lanes < <(collect_failed_lanes_from_run "$SOURCE_RUN_ID")
+    if [ "${#failed_lanes[@]}" -eq 0 ]; then
+      echo "no failed lanes for run_id=${SOURCE_RUN_ID}"
+      exit 0
+    fi
+    collect_lanes() {
+      printf '%s\n' "${failed_lanes[@]}"
+    }
+    run_lanes "$RUN_ID"
+    ;;
   *)
-    echo "unknown MODE=${MODE}; expected root|root-local|summary|open" >&2
+    echo "unknown MODE=${MODE}; expected root|root-local|summary|open|rerun-failed" >&2
     exit 2
     ;;
 esac
