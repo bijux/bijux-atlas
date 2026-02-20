@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # shellcheck source=ops/_lib/common.sh
-source "$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/common.sh"
+source "$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/../common.sh"
 
 ROOT="$REPO_ROOT"
 NS="${ATLAS_E2E_NAMESPACE:-$(ops_layer_ns_k8s)}"

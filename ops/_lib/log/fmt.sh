@@ -2,7 +2,7 @@
 # Purpose: format ops YAML/JSON deterministically.
 set -euo pipefail
 
-ROOT="$(CDPATH='' cd -- "$(dirname -- "$0")/../.." && pwd)"
+ROOT="$(CDPATH='' cd -- "$(dirname -- "$0")/../../.." && pwd)"
 cd "$ROOT"
 
 find ops configs/ops -type f -name '*.json' ! -path '*/_generated/*' -print0 | while IFS= read -r -d '' f; do
