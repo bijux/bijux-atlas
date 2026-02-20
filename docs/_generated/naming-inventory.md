@@ -5,9 +5,9 @@
 
 ## Summary
 
-- Tracked files: `1817`
-- Docs markdown files: `371`
-- Script files under `scripts/`: `322`
+- Tracked files: `1869`
+- Docs markdown files: `374`
+- Script files under `scripts/`: `331`
 - Rust test files: `42`
 - Load suites in `ops/load/suites/suites.json`: `19`
 - Runbooks in `docs/operations/runbooks/`: `17`
@@ -16,8 +16,8 @@
 ## Naming Health
 
 - Forbidden-token hits: `2`
-- Non-kebab docs outside allowed exceptions: `22`
-- Non-kebab scripts under `scripts/`: `267`
+- Non-kebab docs outside allowed exceptions: `23`
+- Non-kebab scripts under `scripts/`: `276`
 
 ## Load Suites
 
@@ -72,6 +72,7 @@
 - `docs/adrs/ADR-0003-federated-registry-deterministic-merge.md`
 - `docs/adrs/ADR-0004-plugin-contract-and-umbrella-dispatch.md`
 - `docs/adrs/ADR-0005-security-defaults-and-enterprise-controls.md`
+- `docs/operations/performance/BUDGETS.md`
 - `docs/operations/slo/BASELINE_UPDATE_POLICY.md`
 - `docs/operations/slo/CHANGELOG.md`
 - `docs/operations/slo/CHANGE_POLICY.md`
@@ -187,6 +188,7 @@
 - `scripts/docs/generate_scripts_graph.py`
 - `scripts/docs/generate_sli_doc.py`
 - `scripts/docs/generate_slos_doc.py`
+- `scripts/docs/generate_upgrade_guide.py`
 - `scripts/docs/lint_depth.py`
 - `scripts/docs/lint_doc_contracts.py`
 - `scripts/docs/lint_doc_status.py`
@@ -215,11 +217,14 @@
 - `scripts/layout/check_duplicate_script_intent.py`
 - `scripts/layout/check_e2e_scenarios.py`
 - `scripts/layout/check_e2e_suites.py`
+- `scripts/layout/check_evidence_not_tracked.py`
 - `scripts/layout/check_forbidden_root_files.sh`
 - `scripts/layout/check_forbidden_root_names.sh`
+- `scripts/layout/check_generated_committed_no_timestamp_dirs.py`
 - `scripts/layout/check_generated_dirs_policy.py`
 - `scripts/layout/check_generated_policy.py`
 - `scripts/layout/check_help_excludes_internal.py`
+- `scripts/layout/check_help_output_determinism.py`
 - `scripts/layout/check_internal_targets_not_in_docs.py`
 - `scripts/layout/check_kind_cluster_contract_drift.sh`
 - `scripts/layout/check_make_lane_reports.py`
@@ -240,6 +245,7 @@
 - `scripts/layout/check_obs_script_name_collisions.py`
 - `scripts/layout/check_obs_suites.py`
 - `scripts/layout/check_ops_artifacts_writes.py`
+- `scripts/layout/check_ops_budgets.py`
 - `scripts/layout/check_ops_canonical_entrypoints.py`
 - `scripts/layout/check_ops_canonical_shims.sh`
 - `scripts/layout/check_ops_concept_ownership.py`
@@ -268,6 +274,7 @@
 - `scripts/layout/check_root_diff_alarm.py`
 - `scripts/layout/check_root_local_lane_isolation.py`
 - `scripts/layout/check_root_makefile_hygiene.py`
+- `scripts/layout/check_root_mk_size_budget.py`
 - `scripts/layout/check_root_no_cargo_dev_deps.py`
 - `scripts/layout/check_root_shape.sh`
 - `scripts/layout/check_script_naming_convention.py`
@@ -286,6 +293,9 @@
 - `scripts/layout/clean_make_artifacts.py`
 - `scripts/layout/clean_ops_generated.py`
 - `scripts/layout/dataset_id_lint.py`
+- `scripts/layout/evidence_check.py`
+- `scripts/layout/evidence_clean.py`
+- `scripts/layout/evidence_pr_summary.py`
 - `scripts/layout/explain_public_target.py`
 - `scripts/layout/generate_ops_pins.py`
 - `scripts/layout/generate_ops_stack_versions.py`
