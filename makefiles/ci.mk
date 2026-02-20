@@ -188,7 +188,7 @@ ci-make-help-drift:
 	@python3 ./scripts/areas/docs/check_make_help_drift.py
 
 internal/ci/scripts-path-usage:
-	@python3 ./scripts/areas/check/check-no-make-scripts-references.py
+	@./bin/bijux-atlas check make-scripts-refs
 
 internal/ci/docs-old-script-paths:
 	@./bin/bijux-atlas compat check --include-docs
