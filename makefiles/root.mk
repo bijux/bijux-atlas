@@ -29,25 +29,7 @@ configs-gen-check: ## Regenerate configs generated docs and fail on drift
 	@./scripts/areas/configs/check_generated_configs_drift.sh
 
 configs-check: ## Config schemas + drift + ownership + symlink shim + SSOT checks
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/configs/check_configs_readmes.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/configs/check_config_ownership.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/configs/check_config_files_well_formed.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/configs/validate_configs_schemas.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/public/config-validate.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/public/config-drift-check.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/configs/check_config_keys_docs_coverage.py
-	@$(MAKE) -s configs-gen-check
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/configs/check_ops_env_usage_declared.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/configs/check_no_adhoc_versions.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/configs/check_perf_thresholds_drift.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/configs/check_slo_sync.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/configs/check_openapi_snapshot_generated.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/configs/check_tool_versions_doc_drift.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/configs/check_root_config_shims.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/check_symlink_policy.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/configs/check_duplicate_threshold_sources.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/configs/check_docs_links_for_configs.py
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/layout/no_shadow.py
+	@./scripts/bin/bijux-atlas-scripts configs check --report text --emit-artifacts
 
 CI_ISO_ROOT := $(CURDIR)/artifacts/isolate/ci
 CI_ENV := ISO_ROOT=$(CI_ISO_ROOT) CARGO_TARGET_DIR=$(CI_ISO_ROOT)/target CARGO_HOME=$(CI_ISO_ROOT)/cargo-home TMPDIR=$(CI_ISO_ROOT)/tmp TMP=$(CI_ISO_ROOT)/tmp TEMP=$(CI_ISO_ROOT)/tmp
@@ -279,7 +261,10 @@ configs/all: ## Configs lane (schema + drift checks)
 	@$(call with_iso,configs-all,$(MAKE) -s configs/check)
 
 policies/check: ## Run deny/audit + policy-relaxation checks
-	@$(call with_iso,policies-check,$(MAKE) -s lane-configs-policies)
+	@$(call with_iso,policies-check,./scripts/bin/bijux-atlas-scripts policies check --report text --emit-artifacts)
+
+policies-check: ## Alias for policies/check
+	@$(MAKE) -s policies/check
 
 budgets/check: ## Validate universal budgets and budget-relaxation expiry policy
 	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/check_ops_budgets.py
