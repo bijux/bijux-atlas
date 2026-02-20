@@ -15,7 +15,6 @@ ALLOWED_PREFIXES = (
     "scripts/areas/internal/",
     "scripts/areas/check/",
     "scripts/areas/configs/",
-    "scripts/areas/gen/",
     "scripts/lib/",
     "scripts/areas/python/",
     "scripts/areas/policy/",
@@ -30,7 +29,6 @@ ALLOWED_PREFIXES = (
     "scripts/areas/demo/",
 )
 LEGACY_ALLOWED = (
-    "scripts/areas/gen/generate_scripts_readme.py",
     "scripts/areas/layout/check_no_root_dumping.sh",
     "scripts/bin/run_drill.sh",
 )

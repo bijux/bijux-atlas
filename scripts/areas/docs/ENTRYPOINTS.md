@@ -10,7 +10,6 @@ This registry defines script stability levels.
 
 - `scripts/areas/public/*`
 - `scripts/areas/check/*`
-- `scripts/areas/gen/*`
 - `scripts/bin/isolate`
 - `scripts/bin/require-isolate`
 - `scripts/bin/bijux-atlas-dev`
@@ -21,7 +20,6 @@ This registry defines script stability levels.
 - `scripts/areas/fixtures/fetch-real-datasets.sh`
 - `scripts/areas/fixtures/run-medium-ingest.sh`
 - `scripts/areas/fixtures/run-medium-serve.sh`
-- `scripts/areas/gen/generate_scripts_readme.py`
 - `scripts/areas/layout/check_no_root_dumping.sh`
 - `scripts/areas/layout/*`
 - `scripts/areas/public/observability/*`

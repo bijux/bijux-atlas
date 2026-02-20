@@ -2,7 +2,7 @@
 # owner: platform
 # purpose: shared repository path helpers for scripts.
 # stability: internal
-# called-by: scripts/areas/gen/generate_scripts_readme.py
+# called-by: atlasctl inventory/scripts migration generators
 # Purpose: expose deterministic path helpers for scripts.
 # Inputs: script name and run id where applicable.
 # Outputs: pathlib.Path objects under repo/artifacts.

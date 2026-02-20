@@ -20,7 +20,7 @@ Does not duplicate script implementation details.
 
 ## Contracts
 
-- `scripts/INDEX.md` is generated (`python3 scripts/areas/gen/generate_scripts_readme.py`) and must not be hand-edited.
+- `scripts` inventory is generated via `atlasctl inventory scripts-migration`.
 - Script taxonomy:
   - `scripts/areas/public/`: make-callable entrypoints.
   - `scripts/areas/internal/`: script-only helpers.

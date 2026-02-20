@@ -165,8 +165,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/fixtures/fetch-real-datasets.sh` | `dataset-ops` | `public` | `fetch-real-datasets` |
 | `scripts/areas/fixtures/run-medium-ingest.sh` | `dataset-ops` | `public` | `ingest-sharded-medium`, `run-medium-ingest` |
 | `scripts/areas/fixtures/run-medium-serve.sh` | `dataset-ops` | `public` | `run-medium-serve` |
-| `scripts/areas/gen/generate_scripts_readme.py` | `platform` | `public` | - |
-| `scripts/areas/gen/generate_scripts_surface.py` | `platform` | `public` | - |
 | `scripts/areas/internal/__init__.py` | `platform` | `internal` | - |
 | `scripts/areas/internal/effects-lint.sh` | `platform` | `internal` | - |
 | `scripts/areas/internal/env_dump.sh` | `platform` | `internal` | - |
