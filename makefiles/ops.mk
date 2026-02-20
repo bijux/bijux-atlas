@@ -677,7 +677,7 @@ ops-k8s-tests: ## Run k8s e2e suite
 	if [ -n "$${ATLAS_E2E_TEST}" ]; then \
 	  group_args="$$group_args --test $${ATLAS_E2E_TEST}"; \
 	fi; \
-	./ops/k8s/tests/suite.sh $$group_args
+	RUN_ID="$${RUN_ID:-$${ATLAS_RUN_ID:-ops-k8s-tests-$(MAKE_RUN_TS)}}" ATLAS_E2E_SUITE="$${ATLAS_E2E_SUITE:-full}" ./ops/run/k8s-tests.sh --suite "$${ATLAS_E2E_SUITE:-full}" $$group_args
 	@python3 ./scripts/areas/ops/check_k8s_flakes.py
 
 ops-k8s-template-tests: ## Run helm template/lint edge-case checks
@@ -940,6 +940,12 @@ ops-lint: ## Lint ops shell/python/json/schema contracts
 	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
 	@python3 ./ops/load/scripts/validate_suite_manifest.py
 	@python3 ./ops/k8s/tests/validate_suites.py
+	@python3 ./scripts/areas/ops/check_k8s_test_lib.py
+	@./ops/k8s/tests/contracts/test_suite_smoke_budget.sh
+	@./ops/k8s/tests/contracts/test_suite_resilience_budget.sh
+	@./ops/k8s/tests/contracts/test_suite_full_budget.sh
+	@./ops/k8s/tests/contracts/test_install_matrix_subset.sh
+	@./ops/k8s/tests/contracts/test_install_matrix_full.sh
 	@python3 ./ops/_lint/no-orphan-contract.py
 	@python3 ./ops/_lint/no-orphan-suite.py
 	@python3 ./ops/_lint/no-unowned-file.py
