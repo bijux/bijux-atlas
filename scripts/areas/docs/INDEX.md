@@ -25,7 +25,6 @@ Scripts in this area.
 - check_nav_order.py
 - check_no_legacy_root_paths.py
 - check_no_placeholders.py
-- check_observability_acceptance_checklist.py
 - check_ops_docs_make_targets.py
 - check_ops_observability_links.py
 - check_reference_templates.sh

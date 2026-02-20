@@ -155,7 +155,6 @@ scripts/areas/docs/check_mkdocs_site_links.py
 scripts/areas/docs/check_nav_order.py
 scripts/areas/docs/check_no_legacy_root_paths.py
 scripts/areas/docs/check_no_placeholders.py
-scripts/areas/docs/check_observability_acceptance_checklist.py
 scripts/areas/docs/check_ops_docs_make_targets.py
 scripts/areas/docs/check_ops_observability_links.py
 scripts/areas/docs/check_public_targets_docs_sections.py
