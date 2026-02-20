@@ -8,8 +8,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-from .evidence_policy import ensure_evidence_path
-from .run_context import RunContext
+from .core.context import RunContext
+from .core.fs import ensure_evidence_path
 
 
 def _tool_version(cmd: list[str]) -> str:

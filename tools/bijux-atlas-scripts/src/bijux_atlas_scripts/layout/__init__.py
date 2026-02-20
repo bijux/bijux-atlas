@@ -5,4 +5,4 @@ from ..domain_cmd import domain_payload
 
 
 def run(ctx: RunContext) -> dict[str, object]:
-    return domain_payload(ctx, "configs")
+    return domain_payload(ctx, "layout")
