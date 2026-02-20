@@ -25,6 +25,14 @@ def _run(ctx: RunContext, cmd: list[str]) -> int:
     return proc.returncode
 
 
+def _run_many(ctx: RunContext, cmds: list[list[str]]) -> int:
+    for cmd in cmds:
+        proc = subprocess.run(cmd, cwd=ctx.repo_root, text=True, check=False)
+        if proc.returncode != 0:
+            return proc.returncode
+    return 0
+
+
 def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     sub = ns.check_cmd
     if sub in {"make", "docs", "configs"}:
@@ -36,7 +44,39 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             print(f"check {sub}: {payload['status']} ({payload['failed_count']}/{payload['total_count']} failed)")
         return code
     if sub == "layout":
-        return _run(ctx, ["python3", "scripts/areas/layout/check_layer_drift.py"])
+        return _run_many(
+            ctx,
+            [
+                ["sh", "scripts/areas/layout/check_root_shape.sh"],
+                ["sh", "scripts/areas/layout/check_no_root_dumping.sh"],
+                ["sh", "scripts/areas/layout/check_forbidden_root_names.sh"],
+                ["sh", "scripts/areas/layout/check_forbidden_root_files.sh"],
+                ["sh", "scripts/areas/layout/check_no_forbidden_paths.sh"],
+                ["python3", "scripts/areas/layout/check_generated_dirs_policy.py"],
+                ["python3", "scripts/areas/layout/check_generated_committed_no_timestamp_dirs.py"],
+                ["python3", "scripts/areas/layout/check_evidence_not_tracked.py"],
+                ["sh", "scripts/areas/layout/check_ops_workspace.sh"],
+                ["python3", "scripts/areas/layout/check_ops_layout_contract.py"],
+                ["python3", "scripts/areas/layout/check_ops_index_surface.py"],
+                ["python3", "scripts/areas/layout/check_ops_artifacts_writes.py"],
+                ["python3", "scripts/areas/layout/check_ops_concept_ownership.py"],
+                ["python3", "scripts/areas/layout/check_ops_single_validators.py"],
+                ["python3", "scripts/areas/layout/check_ops_single_owner_contracts.py"],
+                ["sh", "scripts/areas/layout/check_ops_canonical_shims.sh"],
+                ["sh", "scripts/areas/layout/check_ops_lib_canonical.sh"],
+                ["sh", "scripts/areas/layout/check_repo_hygiene.sh"],
+                ["sh", "scripts/areas/layout/check_artifacts_allowlist.sh"],
+                ["sh", "scripts/areas/layout/check_artifacts_policy.sh"],
+                ["sh", "scripts/areas/layout/check_symlink_index.sh"],
+                ["python3", "scripts/areas/layout/check_symlink_policy.py"],
+                ["sh", "scripts/areas/layout/check_chart_canonical_path.sh"],
+                ["python3", "scripts/areas/layout/check_workflows_make_only.py"],
+                ["python3", "scripts/areas/layout/check_no_legacy_target_names.py"],
+                ["python3", "scripts/areas/layout/check_legacy_deprecation.py"],
+                ["python3", "scripts/areas/layout/check_ops_external_entrypoints.py"],
+                ["python3", "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout/dir_budgets.py"],
+            ],
+        )
     if sub == "obs":
         return _run(
             ctx,
