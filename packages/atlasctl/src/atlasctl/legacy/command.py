@@ -103,6 +103,7 @@ def run_legacy_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         "status": "pass",
         "action": ns.legacy_cmd,
         "run_id": ctx.run_id,
+        "warning": "legacy command is deprecated; no new code is allowed in atlasctl/legacy",
         "count": len(found),
         "references": found,
     }

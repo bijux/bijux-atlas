@@ -16,6 +16,7 @@ from ..core.context import RunContext
 from ..core.env_guard import guard_no_network_mode
 from ..core.fs import ensure_evidence_path
 from ..core.logging import log_event
+from ..core.serialize import dumps_json
 from ..errors import ScriptError
 from ..exit_codes import ERR_CONFIG, ERR_INTERNAL
 from ..network_guard import install_no_network_guard
@@ -146,10 +147,7 @@ def _write_payload_if_requested(ctx: RunContext, out_file: str | None, payload: 
 
 
 def _emit(payload: dict[str, object], as_json: bool) -> None:
-    if as_json:
-        print(json.dumps(payload, sort_keys=True))
-    else:
-        print(json.dumps(payload, indent=2, sort_keys=True))
+    print(dumps_json(payload, pretty=not as_json))
 
 
 def _commands_payload() -> dict[str, object]:
@@ -299,6 +297,7 @@ def main(argv: list[str] | None = None) -> int:
         if ns.cmd == "help":
             payload = _commands_payload()
             rendered = json.dumps(payload, sort_keys=True) if ns.json else json.dumps(payload, indent=2, sort_keys=True)
+            rendered = dumps_json(payload, pretty=not ns.json)
             if ns.out_file:
                 _write_payload_if_requested(ctx, ns.out_file, rendered)
             print(rendered)
@@ -311,7 +310,7 @@ def main(argv: list[str] | None = None) -> int:
                 "command": ns.command,
                 **desc,
             }
-            print(json.dumps(payload, sort_keys=True) if as_json else json.dumps(payload, indent=2, sort_keys=True))
+            print(dumps_json(payload, pretty=not as_json))
             return 0
         if ns.cmd == "completion":
             payload = {"schema_version": 1, "tool": "atlasctl", "shell": ns.shell, "status": "ok"}
