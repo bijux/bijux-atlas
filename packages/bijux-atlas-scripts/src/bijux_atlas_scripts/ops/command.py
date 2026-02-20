@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import shutil
 from dataclasses import dataclass
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -336,6 +337,65 @@ def _ops_policy_audit(ctx: RunContext, report_format: str) -> int:
     return 0 if not violations else 1
 
 
+def _ops_clean_generated(ctx: RunContext, report_format: str, force: bool) -> int:
+    generated_root = ctx.repo_root / "ops" / "_generated"
+    if not generated_root.exists():
+        payload = {
+            "schema_version": 1,
+            "tool": "bijux-atlas",
+            "run_id": ctx.run_id,
+            "status": "pass",
+            "message": "ops/_generated does not exist",
+        }
+        if report_format == "json":
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            print(payload["message"])
+        return 0
+
+    probe = run_command(["git", "check-ignore", "-q", "ops/_generated/probe.file"], ctx.repo_root)
+    ignored = probe.code == 0
+    if not ignored and not force:
+        message = "refusing to clean ops/_generated because it is not ignored; pass --force to override"
+        if report_format == "json":
+            print(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "tool": "bijux-atlas",
+                        "run_id": ctx.run_id,
+                        "status": "fail",
+                        "message": message,
+                    },
+                    sort_keys=True,
+                )
+            )
+        else:
+            print(message)
+        return 1
+
+    removed: list[str] = []
+    for child in sorted(generated_root.iterdir()):
+        removed.append(child.name)
+        if child.is_dir():
+            shutil.rmtree(child)
+        else:
+            child.unlink()
+    payload = {
+        "schema_version": 1,
+        "tool": "bijux-atlas",
+        "run_id": ctx.run_id,
+        "status": "pass",
+        "path": str(generated_root.relative_to(ctx.repo_root)),
+        "removed_entries": removed,
+    }
+    if report_format == "json":
+        print(json.dumps(payload, sort_keys=True))
+    else:
+        print(f"cleaned {payload['path']} ({len(removed)} entries removed)")
+    return 0
+
+
 def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.ops_cmd == "check":
         steps = [
@@ -429,6 +489,8 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _run_simple_cmd(ctx, ["python3", "scripts/areas/ops/check_k8s_flakes.py"], ns.report)
     if ns.ops_cmd == "k8s-test-contract":
         return _run_simple_cmd(ctx, ["python3", "scripts/areas/ops/check_k8s_test_contract.py"], ns.report)
+    if ns.ops_cmd == "clean-generated":
+        return _ops_clean_generated(ctx, ns.report, ns.force)
 
     return 2
 
@@ -461,7 +523,10 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
         ("policy-audit", "validate ops policy configs reflected in ops usage"),
         ("k8s-flakes-check", "evaluate k8s flake report and quarantine policy"),
         ("k8s-test-contract", "validate k8s test manifest ownership/contract"),
+        ("clean-generated", "remove runtime evidence files under ops/_generated"),
     ):
         cmd = ops_sub.add_parser(name, help=help_text)
         cmd.add_argument("--report", choices=["text", "json"], default="text")
         cmd.add_argument("--fix", action="store_true")
+        if name == "clean-generated":
+            cmd.add_argument("--force", action="store_true")

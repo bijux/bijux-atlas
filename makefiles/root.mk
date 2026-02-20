@@ -25,6 +25,8 @@ check: ## Umbrella check: scripts package checks + cargo checks + make contracts
 	@$(MAKE) -s _check
 	@$(SCRIPTS) check make-help
 	@$(SCRIPTS) check forbidden-paths
+	@$(SCRIPTS) check ops-generated-tracked
+	@$(SCRIPTS) check tracked-timestamps
 	@$(MAKE) -s make/command-allowlist
 
 check-scripts: ## Run scripts package lint/tests/contracts

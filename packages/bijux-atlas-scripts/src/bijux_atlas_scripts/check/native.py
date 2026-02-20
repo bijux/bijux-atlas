@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 from pathlib import Path
 
@@ -132,4 +133,38 @@ def check_make_forbidden_paths(repo_root: Path) -> tuple[int, list[str]]:
             for token in forbidden:
                 if token in line:
                     errors.append(f"{mk.relative_to(repo_root)}:{idx}: forbidden `{token}` in make recipe")
+    return (0 if not errors else 1), errors
+
+
+def _git_ls_files(repo_root: Path, pathspecs: list[str]) -> list[str]:
+    cmd = ["git", "ls-files", "--", *pathspecs]
+    proc = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
+    if proc.returncode != 0:
+        return []
+    return [line.strip() for line in proc.stdout.splitlines() if line.strip()]
+
+
+def _looks_like_timestamp_segment(segment: str) -> bool:
+    patterns = (
+        r"^\d{8}$",
+        r"^\d{8}-\d{6}$",
+        r"^\d{4}-\d{2}-\d{2}$",
+        r"^\d{4}-\d{2}-\d{2}[T_]\d{2}[:\-]?\d{2}[:\-]?\d{2}Z?$",
+    )
+    return any(re.match(pat, segment) for pat in patterns)
+
+
+def check_ops_generated_tracked(repo_root: Path) -> tuple[int, list[str]]:
+    tracked = _git_ls_files(repo_root, ["ops/_generated"])
+    errors = [f"tracked runtime artifact: {path}" for path in tracked]
+    return (0 if not errors else 1), errors
+
+
+def check_tracked_timestamp_paths(repo_root: Path) -> tuple[int, list[str]]:
+    tracked = _git_ls_files(repo_root, ["."])
+    errors: list[str] = []
+    for rel in tracked:
+        segments = Path(rel).parts
+        if any(_looks_like_timestamp_segment(seg) for seg in segments):
+            errors.append(f"tracked path contains timestamp-like segment: {rel}")
     return (0 if not errors else 1), errors

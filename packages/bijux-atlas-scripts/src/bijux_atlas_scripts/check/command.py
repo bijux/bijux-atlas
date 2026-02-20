@@ -10,9 +10,11 @@ from .native import (
     check_duplicate_script_names,
     check_make_forbidden_paths,
     check_make_help,
+    check_ops_generated_tracked,
     check_no_xtask_refs,
     check_script_help,
     check_script_ownership,
+    check_tracked_timestamp_paths,
 )
 
 
@@ -100,6 +102,24 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         else:
             print("no xtask references detected")
         return code
+    if sub == "ops-generated-tracked":
+        code, errors = check_ops_generated_tracked(ctx.repo_root)
+        if errors:
+            print("tracked files detected under ops/_generated:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("ops/_generated has no tracked files")
+        return code
+    if sub == "tracked-timestamps":
+        code, errors = check_tracked_timestamp_paths(ctx.repo_root)
+        if errors:
+            print("tracked timestamp-like paths detected:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("no tracked timestamp-like paths detected")
+        return code
     return 2
 
 
@@ -119,3 +139,5 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     p_sub.add_parser("make-help", help="validate deterministic make help output")
     p_sub.add_parser("forbidden-paths", help="forbid scripts/xtask/tools direct recipe paths")
     p_sub.add_parser("no-xtask", help="forbid xtask references outside ADR history")
+    p_sub.add_parser("ops-generated-tracked", help="fail if ops/_generated contains tracked files")
+    p_sub.add_parser("tracked-timestamps", help="fail if tracked paths contain timestamp-like directories")
