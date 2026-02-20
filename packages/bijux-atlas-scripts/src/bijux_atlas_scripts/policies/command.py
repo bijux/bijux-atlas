@@ -208,10 +208,7 @@ def _scan_grep_relaxations(repo_root: Path, out_path: Path) -> dict[str, object]
                 continue
             file_abs, line_no, text = parts
             file_rel = Path(file_abs).resolve().relative_to(repo_root.resolve()).as_posix()
-            if file_rel in {
-                "scripts/areas/public/policy-audit.py",
-                "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/policies/command.py",
-            }:
+            if file_rel in {"packages/bijux-atlas-scripts/src/bijux_atlas_scripts/policies/command.py"}:
                 continue
             match = re.search(r"(ATLAS-EXC-[0-9]{4})", text)
             findings.append(

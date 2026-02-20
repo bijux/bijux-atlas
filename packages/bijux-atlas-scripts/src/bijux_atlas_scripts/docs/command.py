@@ -3224,14 +3224,52 @@ def _generate_docs_evidence_policy(repo_root: Path, out_rel: str = "docs/_genera
     return out_rel
 
 
+def _check_markdown_links(ctx: RunContext) -> tuple[int, str]:
+    import os
+    import re
+
+    root = ctx.repo_root
+    exclude_parts = {".git", "artifacts", "target", ".cargo"}
+    link_re = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+    md_files: list[Path] = []
+
+    for dirpath, dirnames, filenames in os.walk(root, topdown=True, followlinks=False):
+        dirnames[:] = [d for d in dirnames if d not in exclude_parts and not Path(dirpath, d).is_symlink()]
+        for filename in filenames:
+            if not filename.endswith(".md"):
+                continue
+            path = Path(dirpath) / filename
+            if exclude_parts.intersection(path.parts):
+                continue
+            md_files.append(path)
+
+    errors: list[str] = []
+    for md in md_files:
+        text = md.read_text(encoding="utf-8")
+        for target in link_re.findall(text):
+            if target.startswith(("http://", "https://", "mailto:", "#")):
+                continue
+            rel = target.split("#", 1)[0]
+            if not rel:
+                continue
+            resolved = (md.parent / rel).resolve()
+            if not resolved.exists():
+                errors.append(f"{md.relative_to(root)}: missing link target {target}")
+
+    if errors:
+        return 1, "docs markdown link-check failed:\n" + "\n".join(f"- {e}" for e in errors[:200])
+    return 0, f"markdown links OK ({len(md_files)} files)"
+
+
 def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.docs_cmd == "check":
         checks = DOCS_LINT_CHECKS + [
             _check(
                 "docs-link-check",
                 "Validate markdown links",
-                ["./scripts/areas/public/check-markdown-links.sh"],
+                None,
                 "Fix broken internal links and anchors.",
+                fn=_check_markdown_links,
             ),
             _check(
                 "docs-public-surface",
@@ -3273,7 +3311,14 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _run_docs_checks(ctx, DOCS_LINT_CHECKS, ns.report, ns.fail_fast, ns.emit_artifacts)
 
     if ns.docs_cmd == "link-check":
-        return _run_simple(ctx, ["./scripts/areas/public/check-markdown-links.sh"], ns.report)
+        code, output = _check_markdown_links(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        else:
+            print("docs link-check passed")
+        return code
 
     if ns.docs_cmd == "public-surface-check":
         code, output = _check_public_surface_docs(ctx)

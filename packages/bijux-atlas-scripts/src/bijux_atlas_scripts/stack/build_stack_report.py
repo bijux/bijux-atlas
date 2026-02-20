@@ -33,7 +33,7 @@ def main() -> int:
     parser.add_argument("--values-file", default="ops/k8s/values/local.yaml")
     args = parser.parse_args()
 
-    root = Path(__file__).resolve().parents[4]
+    root = Path(__file__).resolve().parents[5]
     out_dir = root / args.out_dir
     out_dir.mkdir(parents=True, exist_ok=True)
 

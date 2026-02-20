@@ -31,7 +31,7 @@ def main() -> int:
     parser.add_argument("--results", default="artifacts/perf/results")
     args = parser.parse_args()
 
-    root = Path(__file__).resolve().parents[4]
+    root = Path(__file__).resolve().parents[5]
     baseline_file = root / "configs/ops/perf/baselines" / f"{args.baseline_profile}.json"
     if not baseline_file.exists():
         print(f"baseline file missing: {baseline_file}", file=sys.stderr)

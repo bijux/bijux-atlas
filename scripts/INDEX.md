@@ -143,23 +143,3 @@ Generated file. Do not edit manually.
 | `scripts/areas/layout/validate_ops_contracts.py` | `repo-surface` | `public` | `ops-contracts-check`, `ops-gen`, `ops-k8s-contracts` |
 | `scripts/areas/layout/validate_ops_env.py` | `repo-surface` | `public` | `ops-env-print`, `ops-env-validate` |
 | `scripts/areas/layout/write_make_area_report.py` | `repo-surface` | `public` | - |
-| `scripts/areas/public/check-markdown-links.sh` | `platform` | `public` | `_lint-docs`, `docs-build` |
-| `scripts/areas/public/config-drift-check.py` | `platform` | `public` | - |
-| `scripts/areas/public/config-print.py` | `platform` | `public` | - |
-| `scripts/areas/public/config-validate.py` | `platform` | `public` | - |
-| `scripts/areas/public/generate-config-key-registry.py` | `platform` | `public` | - |
-| `scripts/areas/public/no-network-unit-tests.sh` | `platform` | `public` | - |
-| `scripts/areas/public/openapi-diff-check.sh` | `platform` | `public` | `api-contract-check`, `openapi-drift`, `ops-openapi-validate` |
-| `scripts/areas/public/ops-policy-audit.py` | `platform` | `public` | - |
-| `scripts/areas/public/perf/check_baseline_update_policy.sh` | `platform` | `public` | - |
-| `scripts/areas/public/perf/check_percent_regression.py` | `platform` | `public` | `stack-full` |
-| `scripts/areas/public/perf/check_pinned_queries_lock.py` | `platform` | `public` | - |
-| `scripts/areas/public/perf/check_prereqs.sh` | `platform` | `public` | - |
-| `scripts/areas/public/perf/check_regression.py` | `platform` | `public` | - |
-| `scripts/areas/public/perf/check_runbook_suite_names.py` | `platform` | `public` | - |
-| `scripts/areas/public/perf/check_spike_assertions.py` | `platform` | `public` | `ops-load-spike-proof` |
-| `scripts/areas/public/perf/run_critical_queries.py` | `platform` | `public` | `critical-query-check` |
-| `scripts/areas/public/policy-audit.py` | `platform` | `public` | `policy-audit` |
-| `scripts/areas/public/policy-lint.sh` | `platform` | `public` | `_lint-configs`, `policy-lint` |
-| `scripts/areas/public/qc-fixtures-gate.sh` | `platform` | `public` | `ci-qc-fixtures` |
-| `scripts/areas/public/report-bundle.sh` | `platform` | `public` | `ops-report` |

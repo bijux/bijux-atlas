@@ -128,7 +128,7 @@ ci-ingest-determinism:
 	@cargo test -p bijux-atlas-ingest tests::tiny_fixture_matches_cross_machine_golden_hashes --locked
 
 ci-qc-fixtures:
-	@./scripts/areas/public/qc-fixtures-gate.sh
+	@./ops/datasets/scripts/fixtures/qc-fixtures-gate.sh
 
 ci-compatibility-matrix-validate:
 	@$(MAKE) compat-matrix-validate
