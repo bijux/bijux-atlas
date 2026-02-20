@@ -556,7 +556,7 @@ telemetry-verify: ## Run telemetry contract verification path (pack+smoke+contra
 	fi
 
 architecture-check: ## Validate runtime architecture boundaries and dependency guardrails
-	@$(ATLAS_SCRIPTS) run scripts/areas/docs/generate_architecture_map.py
+	@$(ATLAS_SCRIPTS) docs generate-architecture-map --report text
 	@if ! git diff --quiet -- docs/architecture/architecture-map.md; then \
 		echo "architecture map drift detected; regenerate docs/architecture/architecture-map.md" >&2; \
 		git --no-pager diff -- docs/architecture/architecture-map.md >&2 || true; \
@@ -615,7 +615,7 @@ verify-inventory: ## Fail if inventory outputs drift from generated state
 	@git diff --exit-code -- docs/_generated/INDEX.md docs/_generated/make-targets.md docs/_generated/make-targets.json docs/_generated/ops-surface.md docs/_generated/ops-surface.json docs/_generated/configs-surface.md docs/_generated/configs-surface.json docs/_generated/schema-index.md docs/_generated/schema-index.json docs/_generated/ownership.md docs/_generated/ownership.json docs/_generated/contracts-index.md docs/_generated/contracts-index.json docs/_generated/inventory-budgets.md docs/_generated/inventory-budgets.json
 
 upgrade-guide: ## Generate make target upgrade guide for renamed/deprecated aliases
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/generate_upgrade_guide.py
+	@$(ATLAS_SCRIPTS) docs generate-upgrade-guide --report text
 
 artifacts-index: ## Generate artifacts index for inspection UIs
 	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/build_artifacts_index.py

@@ -79,7 +79,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_configmap_env_docs.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_contract_doc_pairs.py` | `docs-governance` | `public` | `docs-lint-names` |
 | `scripts/areas/docs/check_contracts_index_nav.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_crate_docs_contract.sh` | `docs-governance` | `public` | `crate-docs-contract`, `crate-structure`, `docs-build` |
 | `scripts/areas/docs/check_critical_make_targets_referenced.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_doc_filename_style.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_doc_naming.sh` | `docs-governance` | `public` | `docs-build` |
@@ -115,7 +114,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_terminology_units_ssot.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_title_case.sh` | `docs-governance` | `public` | `docs-build` |
 | `scripts/areas/docs/extract_code_blocks.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/generate_architecture_map.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_chart_contract_index.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_concept_graph.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_config_keys_doc.py` | `docs-governance` | `public` | - |
@@ -137,7 +135,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/generate_repo_surface.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_runbook_map_index.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_scripts_graph.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/generate_upgrade_guide.py` | `docs-governance` | `public` | `upgrade-guide` |
 | `scripts/areas/docs/legacy-terms-allowlist.txt` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/lint_depth.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/lint_doc_contracts.py` | `docs-governance` | `public` | - |

@@ -36,7 +36,7 @@ Missing sections or shallow docs hide invariants and extension risks.
 ## How to verify
 
 ```bash
-$ ./scripts/areas/docs/check_crate_docs_contract.sh
+$ bin/bijux-atlas docs crate-docs-contract-check --report text
 ```
 
 Expected output: crate docs contract check passes.

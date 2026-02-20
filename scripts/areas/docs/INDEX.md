@@ -10,7 +10,6 @@ Scripts in this area.
 - check_concept_ids.sh
 - check_concept_registry.py
 - check_contract_doc_pairs.py
-- check_crate_docs_contract.sh
 - check_critical_make_targets_referenced.py
 - check_doc_filename_style.py
 - check_doc_naming.sh
@@ -44,7 +43,6 @@ Scripts in this area.
 - check_terminology_units_ssot.py
 - check_title_case.sh
 - extract_code_blocks.py
-- generate_architecture_map.py
 - generate_concept_graph.py
 - generate_crates_map.py
 - generate_k8s_install_matrix.py
@@ -61,7 +59,6 @@ Scripts in this area.
 - generate_ops_surface.py
 - generate_repo_surface.py
 - generate_scripts_graph.py
-- generate_upgrade_guide.py
 - legacy-terms-allowlist.txt
 - lint_depth.py
 - lint_doc_contracts.py
