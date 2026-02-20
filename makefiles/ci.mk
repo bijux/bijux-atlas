@@ -178,6 +178,9 @@ ci-docs-make-only-ops:
 internal/ci/scripts-group:
 	@./bin/bijux-atlas ci scripts
 
+internal/ci/no-xtask:
+	@./bin/bijux-atlas check no-xtask
+
 ci-forbid-raw-paths:
 	@./scripts/areas/layout/check_no_forbidden_paths.sh
 

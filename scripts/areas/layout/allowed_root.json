@@ -13,7 +13,6 @@
     "mkdocs.yml",
     "docs",
     "crates",
-    "xtask",
     "scripts",
     "configs",
     "ops",

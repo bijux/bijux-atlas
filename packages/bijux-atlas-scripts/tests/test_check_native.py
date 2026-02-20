@@ -5,6 +5,7 @@ from pathlib import Path
 
 from bijux_atlas_scripts.check.native import (
     check_duplicate_script_names,
+    check_no_xtask_refs,
     check_script_ownership,
 )
 
@@ -29,3 +30,11 @@ def test_check_script_ownership_passes_for_mapped_paths(tmp_path: Path) -> None:
     code, errors = check_script_ownership(tmp_path)
     assert code == 0
     assert errors == []
+
+
+def test_check_no_xtask_refs_flags_non_adr_mentions(tmp_path: Path) -> None:
+    (tmp_path / "docs").mkdir()
+    (tmp_path / "docs/page.md").write_text("use xtask command\n", encoding="utf-8")
+    code, errors = check_no_xtask_refs(tmp_path)
+    assert code == 1
+    assert "docs/page.md" in errors

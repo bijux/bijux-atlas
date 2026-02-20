@@ -61,3 +61,49 @@ def check_script_ownership(repo_root: Path) -> tuple[int, list[str]]:
             errors.append(rel)
     return (0 if not errors else 1), errors
 
+
+def check_no_xtask_refs(repo_root: Path) -> tuple[int, list[str]]:
+    include_roots = [
+        repo_root / ".github",
+        repo_root / "makefiles",
+        repo_root / "configs",
+        repo_root / "docs",
+        repo_root / "scripts",
+        repo_root / "packages",
+        repo_root / "Cargo.toml",
+    ]
+    allowed_substrings = [
+        "ADR",
+        "adr",
+    ]
+    errors: list[str] = []
+    ignore_paths = {
+        "makefiles/ci.mk",
+        "docs/development/xtask-removal-map.md",
+        "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/check/native.py",
+        "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/check/command.py",
+        "packages/bijux-atlas-scripts/tests/test_check_native.py",
+    }
+    for root in include_roots:
+        paths: list[Path]
+        if isinstance(root, Path) and root.is_file():
+            paths = [root]
+        elif isinstance(root, Path) and root.exists():
+            paths = [p for p in sorted(root.rglob("*")) if p.is_file()]
+        else:
+            paths = []
+        for p in paths:
+            rel = p.relative_to(repo_root).as_posix()
+            if rel in ignore_paths:
+                continue
+            if p.suffix not in {".md", ".mk", ".toml", ".yml", ".yaml", ".json", ".py", ".sh", ""}:
+                continue
+            text = p.read_text(encoding="utf-8", errors="ignore")
+            if "xtask" not in text:
+                continue
+            if any(tok in rel for tok in ("adr", "ADR")):
+                continue
+            if any(tok in text for tok in allowed_substrings) and ("history" in text.lower()):
+                continue
+            errors.append(rel)
+    return (0 if not errors else 1), sorted(set(errors))

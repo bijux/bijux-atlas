@@ -9,7 +9,6 @@
 - `makefiles/`
 - `ops/`
 - `scripts/`
-- `xtask/`
 
 ## Public Make Targets
 - `make ci`
