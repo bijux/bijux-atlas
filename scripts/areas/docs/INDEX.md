@@ -7,8 +7,6 @@ Scripts in this area.
 - check_critical_make_targets_referenced.py
 - check_doc_naming.sh
 - check_docker_entrypoints.py
-- check_docs_deterministic.py
-- check_docs_make_targets_exist.py
 - check_example_configs.py
 - check_full_stack_page.py
 - check_generated_contract_docs.py
@@ -17,7 +15,6 @@ Scripts in this area.
 - check_make_help_drift.py
 - check_make_targets_documented.py
 - check_make_targets_drift.py
-- check_nav_order.py
 - check_ops_docs_make_targets.py
 - check_ops_observability_links.py
 - check_reference_templates.sh
