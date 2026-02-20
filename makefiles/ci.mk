@@ -223,11 +223,11 @@ ci-sli-contract:
 	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/check_slo_contracts.py --mode slis
 
 ci-sli-docs-drift:
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/generate_sli_doc.py
+	@$(ATLAS_SCRIPTS) docs generate-sli-doc --report text
 	@git diff --exit-code docs/operations/slo/SLIS.md
 
 ci-slo-docs-drift:
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/generate_slos_doc.py
+	@$(ATLAS_SCRIPTS) docs generate-slos-doc --report text
 	@git diff --exit-code docs/operations/slo/SLOS.md
 
 ci-init-iso-dirs:
