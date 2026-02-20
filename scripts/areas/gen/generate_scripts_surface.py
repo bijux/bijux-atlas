@@ -17,8 +17,6 @@ lines = [
     "",
     "- `scripts/areas/check/`: validators and lint gates",
     "- `scripts/areas/gen/`: inventory/document generators",
-    "- `scripts/areas/ci/`: CI glue only",
-    "- `scripts/areas/dev/`: local helpers",
     "- `scripts/lib/`: reusable shell/python libraries",
     "- `scripts/bin/`: thin entrypoints",
     "",

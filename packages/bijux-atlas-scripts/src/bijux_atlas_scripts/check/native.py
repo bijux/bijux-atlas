@@ -3,8 +3,8 @@ from __future__ import annotations
 import json
 import re
 import subprocess
-from fnmatch import fnmatch
 from datetime import date
+from fnmatch import fnmatch
 from pathlib import Path
 
 
@@ -27,10 +27,9 @@ def check_duplicate_script_names(repo_root: Path) -> tuple[int, list[str]]:
 
 def check_script_help(repo_root: Path) -> tuple[int, list[str]]:
     targets = [
-        repo_root / "scripts/bin/bijux-atlas-dev",
+        repo_root / "bin/atlasctl",
         repo_root / "scripts/areas/check/no-duplicate-script-names.sh",
         repo_root / "scripts/areas/check/no-direct-path-usage.sh",
-        repo_root / "scripts/areas/ci/scripts-ci.sh",
     ]
     errors: list[str] = []
     for p in targets:
@@ -49,9 +48,9 @@ def check_script_help(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def check_script_ownership(repo_root: Path) -> tuple[int, list[str]]:
-    ownership_path = repo_root / "scripts/areas/_meta/ownership.json"
+    ownership_path = repo_root / "configs/meta/ownership.json"
     payload = json.loads(ownership_path.read_text(encoding="utf-8"))
-    areas = payload["areas"]
+    paths = set(payload.get("paths", {}).keys())
     errors: list[str] = []
     for p in sorted((repo_root / "scripts").rglob("*")):
         if not p.is_file():
@@ -59,7 +58,7 @@ def check_script_ownership(repo_root: Path) -> tuple[int, list[str]]:
         rel = p.relative_to(repo_root).as_posix()
         if rel.startswith("scripts/__pycache__"):
             continue
-        matched = any(rel == area or rel.startswith(area + "/") for area in areas)
+        matched = any(rel == path or rel.startswith(path + "/") for path in paths)
         if not matched:
             errors.append(rel)
     return (0 if not errors else 1), errors
@@ -86,6 +85,7 @@ def check_no_xtask_refs(repo_root: Path) -> tuple[int, list[str]]:
         "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/check/native.py",
         "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/checks/runner.py",
         "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/check/command.py",
+        "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/checks/repo/__init__.py",
         "packages/bijux-atlas-scripts/tests/test_check_native.py",
     }
     for root in include_roots:

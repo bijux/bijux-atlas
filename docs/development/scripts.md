@@ -10,7 +10,6 @@ Repository script taxonomy, contracts, and contribution rules.
 
 - `scripts/areas/public/`: only make-callable script entrypoints.
 - `scripts/areas/internal/`: helper scripts called by public wrappers.
-- `scripts/areas/dev/`: local-only helpers.
 - `scripts/areas/tools/`: shared Python helper modules.
 - Domain buckets are exposed through `atlasctl` command groups (`docs`, `contracts`, `layout`, `fixtures`, `release`, `ops`, `bootstrap`) and thin `bin/` shims only.
 

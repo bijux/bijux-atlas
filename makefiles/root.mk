@@ -24,6 +24,7 @@ check: ## Umbrella check: scripts package checks + cargo checks + make contracts
 	@$(MAKE) -s check-scripts
 	@$(MAKE) -s _check
 	@$(SCRIPTS) check make-help
+	@$(SCRIPTS) check repo
 	@$(SCRIPTS) check forbidden-paths
 	@$(SCRIPTS) check ops-generated-tracked
 	@$(SCRIPTS) check tracked-timestamps

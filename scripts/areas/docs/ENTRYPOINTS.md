@@ -15,7 +15,6 @@ This registry defines script stability levels.
 - `scripts/bin/require-isolate`
 - `scripts/bin/bijux-atlas-dev`
 - `scripts/bin/bijux-atlas-scripts`
-- `scripts/areas/bootstrap/install_tools.sh`
 - `scripts/areas/configs/*`
 - `scripts/areas/docs/*`
 - `scripts/areas/fixtures/fetch-medium.sh`
@@ -47,5 +46,4 @@ This registry defines script stability levels.
 
 ## Private
 
-- `scripts/areas/dev/*`
 - `scripts/areas/demo/demo.sh`
