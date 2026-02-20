@@ -285,16 +285,56 @@
       ]
     },
     {
-      "script": "checks/perf/test_hpa.sh",
+      "script": "checks/perf/test_metrics_pipeline_ready.sh",
       "groups": [
         "hpa",
         "autoscaling"
       ],
       "owner": "chart",
       "retries": 1,
+      "timeout_seconds": 180,
+      "expected_failure_modes": [
+        "metrics_pipeline_not_ready"
+      ]
+    },
+    {
+      "script": "checks/perf/test_hpa.sh",
+      "groups": [
+        "hpa",
+        "autoscaling",
+        "flake-sensitive"
+      ],
+      "owner": "chart",
+      "retries": 1,
       "timeout_seconds": 420,
       "expected_failure_modes": [
         "hpa_no_scale"
+      ]
+    },
+    {
+      "script": "checks/perf/test_hpa_misconfig_negative.sh",
+      "groups": [
+        "hpa",
+        "autoscaling"
+      ],
+      "owner": "chart",
+      "retries": 1,
+      "timeout_seconds": 180,
+      "expected_failure_modes": [
+        "hpa_misconfig_not_rejected"
+      ]
+    },
+    {
+      "script": "checks/perf/test_hpa_disabled_mode.sh",
+      "groups": [
+        "hpa",
+        "autoscaling"
+      ],
+      "owner": "chart",
+      "retries": 1,
+      "timeout_seconds": 240,
+      "expected_failure_modes": [
+        "hpa_disabled_mode_unexpected_scale"
       ]
     },
     {
