@@ -1,63 +1,45 @@
-# Ops Index
+# Ops Canonical Entrypoints
 
-Use Make targets only.
+Public ops automation entrypoints are `ops/run/*` wrappers only.
 
-## Core
+## Canonical Wrappers
 
-- `make ops-help`
-- `make ops-surface`
-- `make ops-layout-lint`
-- `make ops-check`
-- `make ops-prereqs`
-- `make ops-doctor`
-- `make ops-lint`
-- `make ops-fmt`
-- `make ops-gen`
-- `make ops-gen-check`
-- `make ops-contracts-check`
-- `make ops-e2e-validate`
+- `ops/run/stack-up.sh`
+- `ops/run/stack-down.sh`
+- `ops/run/down.sh`
+- `ops/run/deploy-atlas.sh`
+- `ops/run/k8s-restart.sh`
+- `ops/run/k8s-apply-config.sh`
+- `ops/run/e2e.sh`
+- `ops/run/e2e-smoke.sh`
+- `ops/run/k8s-tests.sh`
+- `ops/run/k8s-suite.sh`
+- `ops/run/load-suite.sh`
+- `ops/run/load-smoke.sh`
+- `ops/run/obs-up.sh`
+- `ops/run/obs-verify.sh`
+- `ops/run/obs-validate.sh`
+- `ops/run/ops-check.sh`
+- `ops/run/ops-smoke.sh`
+- `ops/run/prereqs.sh`
+- `ops/run/doctor.sh`
+- `ops/run/report.sh`
+- `ops/run/root-lanes.sh`
+- `ops/run/root-local.sh`
+- `ops/run/warm.sh`
+- `ops/run/warm-entrypoint.sh`
+- `ops/run/warm-dx.sh`
+- `ops/run/cache-status.sh`
+- `ops/run/cache-prune.sh`
+- `ops/run/evidence-open.sh`
+- `ops/run/evidence-bundle.sh`
+- `ops/run/artifacts-open.sh`
+- `ops/run/configmap-drift-report.sh`
+- `ops/run/contract-check.sh`
+- `ops/run/contract-report.py`
+- `ops/run/clean.sh`
 
-## Topology
+## Policy
 
-- `make ops-stack-up`
-- `make ops-stack-down`
-- `make ops-deploy`
-- `make ops-undeploy`
-
-## Domains
-
-- `make ops-obs-up PROFILE=compose`
-- `make ops-obs-verify`
-- `make ops-obs-drill DRILL=prom-outage PROFILE=kind`
-- `make ops-datasets-verify`
-- `make ops-smoke`
-- `make ops-e2e-smoke`
-- `make ops-k8s-smoke`
-- `make ops-k8s-suite`
-- `make ops-load-suite SUITE=mixed-80-20`
-- `make ops-local-reset`
-- `make ops-k8s-tests`
-- `make ops-observability-validate`
-- `make ops-load-smoke`
-- `make ops-dataset-qc`
-- `make ops-realdata`
-
-## Full Flows
-
-- `make ops-ci-fast`
-- `make ops-ci-nightly`
-- `make ops-local-full`
-- `make ops-ref-grade-local`
-- `make ops-full`
-
-## Area Contracts
-
-- `ops/stack/CONTRACT.md`
-- `ops/k8s/CONTRACT.md`
-- `ops/obs/CONTRACT.md`
-- `ops/load/CONTRACT.md`
-- `ops/datasets/CONTRACT.md`
-- `ops/e2e/CONTRACT.md`
-- `ops/report/CONTRACT.md`
-- `ops/fixtures/CONTRACT.md`
-- `ops/run/CONTRACT.md`
+- Do not call `ops/*/scripts/*.sh` directly from docs, CI workflows, or root/ci makefiles.
+- Legacy `legacy/*` or `*-legacy` entrypoint names are forbidden.
