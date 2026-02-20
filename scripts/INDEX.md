@@ -85,7 +85,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_doc_naming.sh` | `docs-governance` | `public` | `docs-build` |
 | `scripts/areas/docs/check_docker_entrypoints.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_docs_deterministic.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_docs_make_only_ops.py` | `docs-governance` | `public` | `ci-docs-make-only-ops` |
 | `scripts/areas/docs/check_docs_make_targets_exist.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_duplicate_topics.sh` | `docs-governance` | `public` | `docs-build`, `rename-lint` |
 | `scripts/areas/docs/check_example_configs.py` | `docs-governance` | `public` | - |
@@ -105,11 +104,8 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_no_removed_make_targets.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_observability_acceptance_checklist.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_observability_docs_checklist.py` | `docs-governance` | `public` | `docs-lint-names` |
-| `scripts/areas/docs/check_ops_doc_duplication.py` | `docs-governance` | `public` | `ci-ops-doc-duplication` |
 | `scripts/areas/docs/check_ops_docs_make_targets.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_ops_observability_links.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_ops_readme_canonical_links.py` | `docs-governance` | `public` | `ci-ops-readme-canonical-links` |
-| `scripts/areas/docs/check_ops_readmes_make_only.py` | `docs-governance` | `public` | `ci-ops-readme-make-only` |
 | `scripts/areas/docs/check_public_targets_docs_sections.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_reference_templates.sh` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_runbook_map_registration.py` | `docs-governance` | `public` | `docs-lint-names` |

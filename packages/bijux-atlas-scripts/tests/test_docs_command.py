@@ -101,3 +101,18 @@ def test_docs_runbooks_contract_check_json() -> None:
     payload = json.loads(proc.stdout)
     assert payload["schema_version"] == 1
     assert payload["status"] in {"pass", "fail"}
+
+
+def test_docs_ops_policy_checks_json() -> None:
+    commands = [
+        "ops-readmes-make-only-check",
+        "ops-readme-canonical-links-check",
+        "ops-doc-duplication-check",
+        "docs-make-only-ops-check",
+    ]
+    for cmd in commands:
+        proc = _run_cli("docs", cmd, "--report", "json")
+        assert proc.returncode in {0, 1}, proc.stderr
+        payload = json.loads(proc.stdout)
+        assert payload["schema_version"] == 1
+        assert payload["status"] in {"pass", "fail"}

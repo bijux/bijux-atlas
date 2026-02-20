@@ -164,16 +164,16 @@ ci-ops-run-entrypoints:
 	@$(ATLAS_SCRIPTS) ops lint --fail-fast
 
 ci-ops-readme-make-only:
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_ops_readmes_make_only.py
+	@$(ATLAS_SCRIPTS) docs ops-readmes-make-only-check --report text
 
 ci-ops-readme-canonical-links:
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_ops_readme_canonical_links.py
+	@$(ATLAS_SCRIPTS) docs ops-readme-canonical-links-check --report text
 
 ci-ops-doc-duplication:
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_ops_doc_duplication.py
+	@$(ATLAS_SCRIPTS) docs ops-doc-duplication-check --report text
 
 ci-docs-make-only-ops:
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_docs_make_only_ops.py
+	@$(ATLAS_SCRIPTS) docs docs-make-only-ops-check --report text
 
 internal/ci/scripts-group:
 	@$(ATLAS_SCRIPTS) ci scripts

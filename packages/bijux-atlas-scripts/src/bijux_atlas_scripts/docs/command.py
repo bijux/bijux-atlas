@@ -418,6 +418,97 @@ def _check_runbooks_contract(ctx: RunContext) -> tuple[int, str]:
     return (0, "") if not errors else (1, "\n".join(errors[:200]))
 
 
+def _check_ops_readmes_make_only(ctx: RunContext) -> tuple[int, str]:
+    script_cmd = re.compile(r"^\s*(\./ops/|bash\s+ops/|sh\s+ops/|python3\s+ops/)")
+    make_cmd = re.compile(r"\bmake\s+[a-zA-Z0-9_.-]+")
+    errors: list[str] = []
+    for md in sorted((ctx.repo_root / "ops").rglob("README.md")):
+        text = md.read_text(encoding="utf-8", errors="ignore")
+        if not make_cmd.search(text):
+            errors.append(f"{md.relative_to(ctx.repo_root)}: missing make target instruction")
+        for line_no, line in enumerate(text.splitlines(), start=1):
+            if script_cmd.search(line):
+                errors.append(f"{md.relative_to(ctx.repo_root)}:{line_no}: raw script run instruction found")
+    return (0, "") if not errors else (1, "\n".join(errors[:200]))
+
+
+def _check_ops_readme_canonical_links(ctx: RunContext) -> tuple[int, str]:
+    errors: list[str] = []
+    for md in sorted((ctx.repo_root / "ops").rglob("README.md")):
+        rel = md.relative_to(ctx.repo_root).as_posix()
+        if rel == "ops/README.md":
+            continue
+        text = md.read_text(encoding="utf-8", errors="ignore")
+        if "ops/README.md" not in text and "docs/operations/INDEX.md" not in text:
+            errors.append(f"{rel}: missing canonical link to ops/README.md or docs/operations/INDEX.md")
+    return (0, "") if not errors else (1, "\n".join(errors[:200]))
+
+
+def _check_ops_doc_duplication(ctx: RunContext) -> tuple[int, str]:
+    ops_docs = ctx.repo_root / "docs" / "operations"
+    headings: dict[str, list[str]] = {}
+    blocks: dict[str, list[str]] = {}
+    common_headings = {
+        "what",
+        "why",
+        "scope",
+        "non-goals",
+        "contracts",
+        "failure modes",
+        "how to verify",
+        "see also",
+        "commands",
+        "symptoms",
+        "metrics",
+        "expected outputs",
+        "mitigations",
+        "alerts",
+        "rollback",
+        "postmortem checklist",
+        "dashboards",
+        "drills",
+    }
+    for md in sorted(ops_docs.rglob("*.md")):
+        rel = md.relative_to(ctx.repo_root).as_posix()
+        text = md.read_text(encoding="utf-8", errors="ignore")
+        for heading in re.findall(r"^##\s+(.+)$", text, flags=re.MULTILINE):
+            headings.setdefault(heading.strip().lower(), []).append(rel)
+        for para in re.split(r"\n\s*\n", text):
+            normalized = "\n".join(line.strip() for line in para.splitlines() if line.strip())
+            if len(normalized) < 220:
+                continue
+            key = hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+            blocks.setdefault(key, []).append(rel)
+    errors: list[str] = []
+    for heading, files in headings.items():
+        if heading in common_headings:
+            continue
+        if len(set(files)) > 6:
+            errors.append(f"heading appears excessively ({len(set(files))} files): '{heading}'")
+    for files in blocks.values():
+        if len(set(files)) > 1:
+            errors.append(f"duplicated long content block across docs: {', '.join(sorted(set(files)))}")
+    return (0, "") if not errors else (1, "\n".join(errors[:200]))
+
+
+def _check_docs_make_only_ops(ctx: RunContext) -> tuple[int, str]:
+    docs_root = ctx.repo_root / "docs"
+    patterns = [
+        re.compile(r"\./ops/[\w./-]+\.sh"),
+        re.compile(r"\bops/[\w./-]+run_all\.sh\b"),
+        re.compile(r"\bops/[\w./-]+scripts/[\w./-]+\.sh\b"),
+    ]
+    errors: list[str] = []
+    for md in sorted(docs_root.rglob("*.md")):
+        text = md.read_text(encoding="utf-8", errors="ignore")
+        for line_no, line in enumerate(text.splitlines(), start=1):
+            for pattern in patterns:
+                if pattern.search(line):
+                    errors.append(f"{md.relative_to(ctx.repo_root)}:{line_no}: raw ops script reference found")
+                    break
+    return (0, "") if not errors else (1, "\n".join(errors[:200]))
+
+
 def _mkdocs_nav_file_refs(mkdocs_text: str) -> list[str]:
     refs: list[str] = []
     for line in mkdocs_text.splitlines():
@@ -708,6 +799,46 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             print("runbook contract check passed")
         return code
 
+    if ns.docs_cmd == "ops-readmes-make-only-check":
+        code, output = _check_ops_readmes_make_only(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        else:
+            print("ops README make-only contract passed")
+        return code
+
+    if ns.docs_cmd == "ops-readme-canonical-links-check":
+        code, output = _check_ops_readme_canonical_links(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        else:
+            print("ops README canonical-link check passed")
+        return code
+
+    if ns.docs_cmd == "ops-doc-duplication-check":
+        code, output = _check_ops_doc_duplication(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        else:
+            print("ops docs duplication check passed")
+        return code
+
+    if ns.docs_cmd == "docs-make-only-ops-check":
+        code, output = _check_docs_make_only_ops(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        else:
+            print("docs make-only ops entrypoint check passed")
+        return code
+
     if ns.docs_cmd == "contracts-index":
         if ns.fix:
             return _run_simple(ctx, ["python3", "scripts/areas/docs/generate_contracts_index_doc.py"], ns.report)
@@ -818,6 +949,10 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("openapi-examples-check", "validate OpenAPI examples against declared schemas"),
         ("observability-surface-check", "validate observability surface generated docs are in sync"),
         ("runbooks-contract-check", "validate runbook content contract"),
+        ("ops-readmes-make-only-check", "validate ops README files use make-only instructions"),
+        ("ops-readme-canonical-links-check", "validate canonical links in ops README files"),
+        ("ops-doc-duplication-check", "detect duplicate long sections in operations docs"),
+        ("docs-make-only-ops-check", "forbid raw ops script references in docs"),
         ("glossary-check", "validate glossary and banned terms policy"),
         ("contracts-index", "validate or generate docs contracts index"),
         ("runbook-map", "validate or generate docs runbook map index"),
