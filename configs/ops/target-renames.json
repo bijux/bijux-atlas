@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "renames": [
+    {"from": "local", "to": "quick", "status": "deprecated"},
+    {"from": "local-full", "to": "local/all", "status": "deprecated"},
+    {"from": "contracts", "to": "policies/all", "status": "deprecated"},
+    {"from": "hygiene", "to": "scripts/all", "status": "deprecated"},
+    {"from": "config-validate", "to": "configs/all", "status": "deprecated"},
+    {"from": "ci", "to": "ci/all", "status": "deprecated"},
+    {"from": "nightly", "to": "nightly/all", "status": "deprecated"},
+    {"from": "ops-e2e-smoke", "to": "ops-e2e --suite smoke", "status": "alias"},
+    {"from": "ops-obs-validate", "to": "ops-observability-validate", "status": "alias"},
+    {"from": "ops-upgrade-drill", "to": "ops-drill-upgrade", "status": "alias"},
+    {"from": "ops-rollback-drill", "to": "ops-drill-rollback", "status": "alias"}
+  ]
+}
