@@ -87,4 +87,3 @@ scripts/areas/public/perf/run_e2e_perf.sh|ops/load/scripts/run_e2e_perf.sh
 scripts/areas/public/perf/run_nightly_perf.sh|ops/load/scripts/run_nightly_perf.sh
 scripts/areas/public/perf/run_suite.sh|ops/load/scripts/run_suite.sh
 scripts/areas/public/perf/update_baseline.sh|ops/load/scripts/update_baseline.sh
-scripts/bin/run_drill.sh|ops/obs/scripts/bin/run_drill.sh

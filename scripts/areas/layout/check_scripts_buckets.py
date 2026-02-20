@@ -24,7 +24,6 @@ ALLOWED_PREFIXES = (
 )
 LEGACY_ALLOWED = (
     "scripts/areas/layout/check_no_root_dumping.sh",
-    "scripts/bin/run_drill.sh",
 )
 
 violations: list[str] = []

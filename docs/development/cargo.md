@@ -4,8 +4,8 @@ All build/test/lint/audit commands must run inside an isolate runner.
 
 ## Required Runner
 
-- `scripts/bin/isolate`: creates isolated runtime rooted at `artifacts/isolate/<tag>`.
-- `scripts/bin/require-isolate`: validates the isolation contract.
+- `atlasctl env isolate`: creates isolated runtime rooted at `artifacts/isolate/<tag>`.
+- `atlasctl env require-isolate`: validates the isolation contract.
 
 ## Environment Contract
 

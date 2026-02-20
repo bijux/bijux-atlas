@@ -30,7 +30,7 @@ Does not duplicate script implementation details.
 - Fixtures/data helpers: `ops/datasets/scripts/fixtures/`
 - Release compatibility matrix automation: `atlasctl compat update-matrix|validate-matrix`
 - Layout checks/migrations: `scripts/areas/layout/`
-- Bootstrap wrappers and runtime helpers: `scripts/bin/`
+- Runtime helpers: `atlasctl env ...` and ops-native script entrypoints under `ops/`
 
 ## Failure modes
 
