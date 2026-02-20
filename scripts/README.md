@@ -73,7 +73,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_adr_headers.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_broken_examples.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_concept_ids.sh` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_concept_registry.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_configmap_env_docs.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_critical_make_targets_referenced.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_doc_filename_style.py` | `docs-governance` | `public` | - |
@@ -100,7 +99,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_reference_templates.sh` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_suite_id_docs.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_chart_contract_index.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/generate_concept_graph.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_config_keys_doc.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_crates_map.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_env_vars_doc.py` | `docs-governance` | `public` | - |

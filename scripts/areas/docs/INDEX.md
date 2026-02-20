@@ -6,7 +6,6 @@ Scripts in this area.
 - check_adr_headers.py
 - check_broken_examples.py
 - check_concept_ids.sh
-- check_concept_registry.py
 - check_critical_make_targets_referenced.py
 - check_doc_filename_style.py
 - check_doc_naming.sh
@@ -29,7 +28,6 @@ Scripts in this area.
 - check_ops_observability_links.py
 - check_reference_templates.sh
 - check_suite_id_docs.py
-- generate_concept_graph.py
 - generate_crates_map.py
 - generate_k8s_install_matrix.py
 - generate_k8s_values_doc.py

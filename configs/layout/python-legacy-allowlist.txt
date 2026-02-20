@@ -135,7 +135,6 @@ scripts/areas/configs/sync_slo_config.py
 scripts/areas/configs/validate_configs_schemas.py
 scripts/areas/docs/check_adr_headers.py
 scripts/areas/docs/check_broken_examples.py
-scripts/areas/docs/check_concept_registry.py
 scripts/areas/docs/check_configmap_env_docs.py
 scripts/areas/docs/check_critical_make_targets_referenced.py
 scripts/areas/docs/check_doc_filename_style.py
@@ -160,7 +159,6 @@ scripts/areas/docs/check_public_targets_docs_sections.py
 scripts/areas/docs/check_no_removed_make_targets.py
 scripts/areas/docs/check_suite_id_docs.py
 scripts/areas/docs/generate_chart_contract_index.py
-scripts/areas/docs/generate_concept_graph.py
 scripts/areas/docs/generate_config_keys_doc.py
 scripts/areas/docs/generate_crates_map.py
 scripts/areas/docs/generate_env_vars_doc.py

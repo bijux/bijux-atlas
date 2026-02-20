@@ -11,6 +11,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable
 
+import yaml
+
 from ..core.context import RunContext
 from ..core.fs import ensure_evidence_path
 from ..make.target_graph import parse_make_targets
@@ -77,7 +79,7 @@ DOCS_GENERATE_COMMANDS: list[list[str]] = [
     ["python3", "scripts/areas/docs/generate_crates_map.py"],
     ["python3", "scripts/areas/docs/generate_architecture_map.py"],
     ["python3", "scripts/areas/docs/generate_k8s_values_doc.py"],
-    ["python3", "scripts/areas/docs/generate_concept_graph.py"],
+    ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "concept-graph-generate", "--report", "text"],
     ["python3", "scripts/areas/docs/generate_openapi_docs.py"],
     ["python3", "scripts/areas/docs/generate_observability_surface.py"],
     ["python3", "scripts/areas/docs/generate_ops_badge.py"],
@@ -1043,6 +1045,169 @@ def _generate_runbook_map_index(ctx: RunContext) -> tuple[int, str]:
     return 0, str(out.relative_to(ctx.repo_root))
 
 
+def _check_concept_registry(ctx: RunContext) -> tuple[int, str]:
+    docs = ctx.repo_root / "docs"
+    registry = docs / "_style/concepts.yml"
+    id_pat = re.compile(r"^Concept ID:\s*`?([a-z0-9.-]+)`?\s*$", re.MULTILINE)
+    ids_pat = re.compile(r"^Concept IDs:\s*`?([a-z0-9.,\s-]+)`?\s*$", re.MULTILINE)
+
+    def extract_ids(text: str) -> list[str]:
+        ids: list[str] = []
+        for m in id_pat.finditer(text):
+            ids.append(m.group(1).strip())
+        for m in ids_pat.finditer(text):
+            ids.extend([p.strip() for p in m.group(1).split(",") if p.strip()])
+        unique: list[str] = []
+        for concept_id in ids:
+            if concept_id not in unique:
+                unique.append(concept_id)
+        return unique
+
+    data = yaml.safe_load(registry.read_text(encoding="utf-8")) if registry.exists() else {}
+    concepts = data.get("concepts", []) if isinstance(data, dict) else []
+    errors: list[str] = []
+    if not concepts:
+        errors.append(f"{registry.relative_to(ctx.repo_root)}: missing concepts list")
+    registry_ids: set[str] = set()
+    canonical_by_id: dict[str, str] = {}
+    pointers_by_id: dict[str, list[str]] = {}
+    for item in concepts:
+        concept_id = item.get("id")
+        canonical = item.get("canonical")
+        pointers = item.get("pointers", [])
+        if not concept_id or not canonical:
+            errors.append("concept entry missing id or canonical")
+            continue
+        if concept_id in registry_ids:
+            errors.append(f"duplicate concept id in registry: {concept_id}")
+        registry_ids.add(concept_id)
+        canonical_by_id[concept_id] = canonical
+        pointers_by_id[concept_id] = pointers
+
+    canonical_claims: dict[str, list[str]] = {k: [] for k in registry_ids}
+    for concept_id, canonical in canonical_by_id.items():
+        path = ctx.repo_root / canonical
+        if not path.exists():
+            errors.append(f"{concept_id}: missing canonical file {canonical}")
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        ids = extract_ids(text)
+        if concept_id not in ids and not canonical.startswith("docs/contracts/"):
+            errors.append(f"{canonical}: missing declaration for {concept_id}")
+        if "Canonical page:" in text:
+            errors.append(f"{canonical}: canonical page must not be a pointer")
+        canonical_claims[concept_id].append(canonical)
+        for pointer in pointers_by_id.get(concept_id, []):
+            ppath = ctx.repo_root / pointer
+            if not ppath.exists():
+                errors.append(f"{concept_id}: missing pointer file {pointer}")
+                continue
+            ptxt = ppath.read_text(encoding="utf-8", errors="ignore")
+            pids = extract_ids(ptxt)
+            if concept_id not in pids:
+                errors.append(f"{pointer}: missing declaration for {concept_id}")
+            if "Canonical page:" not in ptxt:
+                errors.append(f"{pointer}: pointer missing `Canonical page:` line")
+            if canonical not in ptxt:
+                errors.append(f"{pointer}: pointer must link to {canonical}")
+
+    for md in docs.rglob("*.md"):
+        text = md.read_text(encoding="utf-8", errors="ignore")
+        ids = extract_ids(text)
+        rel = md.relative_to(ctx.repo_root).as_posix()
+        for concept_id in ids:
+            if concept_id not in registry_ids:
+                errors.append(f"{rel}: concept `{concept_id}` not declared in docs/_style/concepts.yml")
+            elif "Canonical page:" not in text:
+                canonical_claims[concept_id].append(rel)
+
+    for concept_id, files in canonical_claims.items():
+        unique = sorted(set(files))
+        if len(unique) != 1:
+            errors.append(f"{concept_id}: expected one canonical page, got {unique}")
+            continue
+        expected = canonical_by_id[concept_id]
+        if unique[0] != expected:
+            errors.append(f"{concept_id}: canonical mismatch, expected {expected}, found {unique[0]}")
+
+    return (0, "concept registry check passed") if not errors else (1, "\n".join(errors))
+
+
+def _generate_concept_graph(ctx: RunContext) -> tuple[int, str]:
+    registry = ctx.repo_root / "docs/_style/concepts.yml"
+    out = ctx.repo_root / "docs/_generated/concepts.md"
+    data = yaml.safe_load(registry.read_text(encoding="utf-8")) if registry.exists() else {}
+    concepts = data.get("concepts", []) if isinstance(data, dict) else []
+    lines = [
+        "# Concept Graph",
+        "",
+        "- Owner: `docs-governance`",
+        "",
+        "## What",
+        "",
+        "Generated mapping of concept IDs to canonical and pointer pages.",
+        "",
+        "## Why",
+        "",
+        "Provides a deterministic lookup for concept ownership.",
+        "",
+        "## Scope",
+        "",
+        "Concept registry entries from `docs/_style/concepts.yml`.",
+        "",
+        "## Non-goals",
+        "",
+        "No semantic interpretation beyond declared links.",
+        "",
+        "## Contracts",
+        "",
+        "- Exactly one canonical page per concept.",
+        "- Pointer pages must reference canonical page.",
+        "",
+        "## Failure modes",
+        "",
+        "Registry drift causes stale concept ownership.",
+        "",
+        "## How to verify",
+        "",
+        "```bash",
+        "$ atlasctl docs concept-registry-check --report text",
+        "$ make docs",
+        "```",
+        "",
+        "Expected output: concept checks pass.",
+        "",
+        "## Concepts",
+        "",
+    ]
+    for item in concepts:
+        concept_id = item["id"]
+        canonical = item["canonical"].replace("docs/", "")
+        pointers = [p.replace("docs/", "") for p in item.get("pointers", [])]
+        lines.append(f"### `{concept_id}`")
+        lines.append("")
+        lines.append(f"- Canonical: [{canonical}](../{canonical})")
+        if pointers:
+            for pointer in pointers:
+                lines.append(f"- Pointer: [{pointer}](../{pointer})")
+        else:
+            lines.append("- Pointer: none")
+        lines.append("")
+    lines.extend(
+        [
+            "## See also",
+            "",
+            "- [Concept Registry](../_style/CONCEPT_REGISTRY.md)",
+            "- [Concept IDs](../_style/concept-ids.md)",
+            "- [Docs Home](../index.md)",
+            "",
+        ]
+    )
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(lines), encoding="utf-8")
+    return 0, f"generated {out.relative_to(ctx.repo_root)}"
+
+
 def _render_diagrams(ctx: RunContext) -> tuple[int, str]:
     diagram_dir = ctx.repo_root / "docs/_assets/diagrams"
     rendered = 0
@@ -1978,6 +2143,16 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
         return code
 
+    if ns.docs_cmd == "concept-registry-check":
+        code, output = _check_concept_registry(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
+    if ns.docs_cmd == "concept-graph-generate":
+        code, output = _generate_concept_graph(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
     if ns.docs_cmd == "contracts-index":
         if ns.fix:
             code, output = _generate_contracts_index_doc(ctx)
@@ -2118,6 +2293,8 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("index-pages-check", "validate docs/INDEX.md contract"),
         ("observability-acceptance-checklist", "validate observability acceptance checklist contract"),
         ("script-headers-check", "validate script header and docs script-group contract"),
+        ("concept-registry-check", "validate docs concept registry and canonical ownership"),
+        ("concept-graph-generate", "generate docs/_generated/concepts.md from concept registry"),
         ("glossary-check", "validate glossary and banned terms policy"),
         ("contracts-index", "validate or generate docs contracts index"),
         ("runbook-map", "validate or generate docs runbook map index"),
