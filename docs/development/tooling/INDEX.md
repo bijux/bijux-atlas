@@ -48,3 +48,4 @@ This section does not duplicate full command reference details from each tooling
 - [scripts compatibility matrix](compat-matrix.md)
 - [scripts compatibility policy](scripts-compat-policy.md)
 - [scripts changelog](scripts-changelog.md)
+- [tooling directory intent map](tools.md)
