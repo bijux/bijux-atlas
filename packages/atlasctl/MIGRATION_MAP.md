@@ -2,6 +2,9 @@
 
 Source inventory: `find . -name "*.py"` excluding venv/cache/artifacts.
 
+Split plan: `packages/atlasctl/migration-map/INDEX.md` defines the domain-focused replacement for this monolith.
+Policy: add new migration entries to split files first; treat this file as transitional compatibility data.
+
 Total Python files: 535
 Legacy (outside packages): 409
 
