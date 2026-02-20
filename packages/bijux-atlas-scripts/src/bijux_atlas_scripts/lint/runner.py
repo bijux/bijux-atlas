@@ -37,12 +37,10 @@ def suites(repo_root: Path) -> dict[str, list[LintCheck]]:
             LintCheck("makefiles/public-scripts", _py("scripts/areas/layout/check_make_public_scripts.py")),
         ],
         "docs": [
-            LintCheck("docs/no-orphans", _py("scripts/areas/docs/check_no_orphan_docs.py")),
-            LintCheck("docs/make-targets", _py("scripts/areas/docs/check_make_targets_documented.py")),
+            LintCheck("docs/check", ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "check", "--report", "json"]),
         ],
         "configs": [
-            LintCheck("configs/well-formed", _py("scripts/areas/configs/check_config_files_well_formed.py")),
-            LintCheck("configs/schemas", _py("scripts/areas/configs/validate_configs_schemas.py")),
+            LintCheck("configs/validate", ["python3", "-m", "bijux_atlas_scripts.cli", "configs", "validate", "--report", "json"]),
         ],
         "packages": [
             LintCheck("packages/atlas-scripts-tests", ["python3", "-m", "pytest", "-q", "packages/bijux-atlas-scripts/tests"]),

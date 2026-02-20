@@ -58,6 +58,26 @@ DOCS_LINT_CHECKS: list[DocsCheck] = [
     ),
 ]
 
+DOCS_GENERATE_COMMANDS: list[list[str]] = [
+    ["python3", "scripts/areas/docs/generate_crates_map.py"],
+    ["python3", "scripts/areas/docs/generate_architecture_map.py"],
+    ["python3", "scripts/areas/docs/generate_k8s_values_doc.py"],
+    ["python3", "scripts/areas/docs/generate_concept_graph.py"],
+    ["python3", "scripts/areas/docs/generate_openapi_docs.py"],
+    ["python3", "scripts/areas/docs/generate_observability_surface.py"],
+    ["python3", "scripts/areas/docs/generate_ops_badge.py"],
+    ["python3", "scripts/areas/docs/generate_ops_schema_docs.py"],
+    ["python3", "scripts/areas/docs/generate_ops_surface.py"],
+    ["python3", "scripts/areas/docs/generate_ops_contracts_doc.py"],
+    ["python3", "scripts/areas/docs/generate_make_targets_catalog.py"],
+    ["python3", "scripts/areas/docs/generate_config_keys_doc.py"],
+    ["python3", "scripts/areas/docs/generate_env_vars_doc.py"],
+    ["python3", "scripts/areas/docs/generate_contracts_index_doc.py"],
+    ["python3", "scripts/areas/docs/generate_chart_contract_index.py"],
+    ["python3", "scripts/areas/ops/generate_k8s_test_surface.py"],
+    ["python3", "scripts/areas/docs/generate_runbook_map_index.py"],
+]
+
 
 def _run_check(cmd: list[str], repo_root: Path) -> tuple[int, str]:
     proc = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
@@ -341,6 +361,42 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.docs_cmd == "lint-spelling":
         return _run_simple(ctx, ["python3", "scripts/areas/docs/spellcheck_docs.py", ns.path], ns.report)
 
+    if ns.docs_cmd == "spellcheck":
+        return _run_simple(ctx, ["python3", "scripts/areas/docs/spellcheck_docs.py", ns.path], ns.report)
+
+    if ns.docs_cmd == "style":
+        return _run_simple(ctx, ["python3", "scripts/areas/docs/lint_doc_status.py"], ns.report)
+
+    if ns.docs_cmd == "rewrite-legacy-terms":
+        if not ns.apply:
+            payload = {
+                "schema_version": 1,
+                "tool": "atlasctl",
+                "status": "pass",
+                "note": "no changes applied; pass --apply to rewrite terms",
+            }
+            print(json.dumps(payload, sort_keys=True) if ns.report == "json" else payload["note"])
+            return 0
+        return _run_simple(ctx, ["python3", "scripts/areas/docs/rewrite_legacy_terms.py", ns.path], ns.report)
+
+    if ns.docs_cmd == "generate":
+        errors: list[str] = []
+        for cmd in DOCS_GENERATE_COMMANDS:
+            code, output = _run_check(cmd, ctx.repo_root)
+            if code != 0:
+                errors.append(f"{' '.join(cmd)} -> {output}")
+                if ns.fail_fast:
+                    break
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "pass" if not errors else "fail",
+            "generated_count": len(DOCS_GENERATE_COMMANDS) - len(errors),
+            "errors": errors,
+        }
+        print(json.dumps(payload, sort_keys=True) if ns.report == "json" else json.dumps(payload, indent=2, sort_keys=True))
+        return 0 if not errors else 1
+
     return 2
 
 
@@ -375,6 +431,10 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("extract-code", "extract code blocks from docs"),
         ("render-diagrams", "render docs diagrams"),
         ("lint-spelling", "run docs spelling checks"),
+        ("spellcheck", "run docs spelling checks"),
+        ("style", "run docs style checks"),
+        ("generate", "run docs generators"),
+        ("rewrite-legacy-terms", "explicit legacy-term rewrite command"),
     ):
         cmd = docs_sub.add_parser(name, help=help_text)
         cmd.add_argument("--report", choices=["text", "json"], default="text")
@@ -385,3 +445,10 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
             cmd.add_argument("--out")
         if name == "lint-spelling":
             cmd.add_argument("--path", default="docs")
+        if name == "spellcheck":
+            cmd.add_argument("--path", default="docs")
+        if name == "rewrite-legacy-terms":
+            cmd.add_argument("--path", default="docs")
+            cmd.add_argument("--apply", action="store_true")
+        if name == "generate":
+            cmd.add_argument("--fail-fast", action="store_true")
