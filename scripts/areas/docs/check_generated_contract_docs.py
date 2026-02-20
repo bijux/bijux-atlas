@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 def main() -> int:
     subprocess.run(["./scripts/areas/contracts/generate_contract_artifacts.py"], cwd=ROOT, check=True)
+    subprocess.run(["python3", "scripts/areas/docs/generate_chart_contract_index.py"], cwd=ROOT, check=True)
     targets = [
         "docs/_generated/contracts",
         "docs/contracts/errors.md",

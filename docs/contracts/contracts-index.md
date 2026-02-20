@@ -49,6 +49,7 @@ Does not replace registry-specific detail pages.
 - [_generated/contracts/TRACE_SPANS.md](../_generated/contracts/TRACE_SPANS.md)
 - [_generated/contracts/CONFIG_KEYS.md](../_generated/contracts/CONFIG_KEYS.md)
 - [_generated/contracts/CHART_VALUES.md](../_generated/contracts/CHART_VALUES.md)
+- [_generated/contracts/chart-contract-index.md](../_generated/contracts/chart-contract-index.md)
 - [_generated/contracts/ARTIFACT_SCHEMA.md](../_generated/contracts/ARTIFACT_SCHEMA.md)
 - [_generated/contracts/POLICY_SCHEMA.md](../_generated/contracts/POLICY_SCHEMA.md)
 - [_generated/contracts/QC_SCHEMA.md](../_generated/contracts/QC_SCHEMA.md)

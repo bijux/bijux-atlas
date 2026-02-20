@@ -12,6 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 TARGETS = [
     ROOT / "docs" / "_generated" / "contracts",
+    ROOT / "docs" / "_generated" / "contracts" / "chart-contract-index.md",
     ROOT / "docs" / "_generated" / "openapi",
     ROOT / "docs" / "contracts" / "errors.md",
     ROOT / "docs" / "contracts" / "metrics.md",
@@ -43,6 +44,7 @@ def main() -> int:
         before.update(snapshot(target))
 
     subprocess.run(["./scripts/areas/contracts/generate_contract_artifacts.py"], cwd=ROOT, check=True)
+    subprocess.run(["python3", "scripts/areas/docs/generate_chart_contract_index.py"], cwd=ROOT, check=True)
 
     after: dict[str, str] = {}
     for target in TARGETS:
