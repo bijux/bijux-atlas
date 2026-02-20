@@ -159,7 +159,6 @@ scripts/areas/docs/check_ops_docs_make_targets.py
 scripts/areas/docs/check_ops_observability_links.py
 scripts/areas/docs/check_public_targets_docs_sections.py
 scripts/areas/docs/check_no_removed_make_targets.py
-scripts/areas/docs/check_script_headers.py
 scripts/areas/docs/check_suite_id_docs.py
 scripts/areas/docs/generate_chart_contract_index.py
 scripts/areas/docs/generate_concept_graph.py
