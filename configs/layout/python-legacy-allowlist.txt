@@ -135,7 +135,6 @@ scripts/areas/configs/sync_slo_config.py
 scripts/areas/configs/validate_configs_schemas.py
 scripts/areas/docs/check_configmap_env_docs.py
 scripts/areas/docs/check_critical_make_targets_referenced.py
-scripts/areas/docs/check_doc_filename_style.py
 scripts/areas/docs/check_docker_entrypoints.py
 scripts/areas/docs/check_docs_deterministic.py
 scripts/areas/docs/check_docs_make_targets_exist.py
@@ -147,10 +146,7 @@ scripts/areas/docs/check_load_docs_contract.py
 scripts/areas/docs/check_make_help_drift.py
 scripts/areas/docs/check_make_targets_documented.py
 scripts/areas/docs/check_make_targets_drift.py
-scripts/areas/docs/check_mkdocs_site_links.py
 scripts/areas/docs/check_nav_order.py
-scripts/areas/docs/check_no_legacy_root_paths.py
-scripts/areas/docs/check_no_placeholders.py
 scripts/areas/docs/check_ops_docs_make_targets.py
 scripts/areas/docs/check_ops_observability_links.py
 scripts/areas/docs/check_public_targets_docs_sections.py
