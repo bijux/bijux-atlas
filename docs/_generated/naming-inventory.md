@@ -5,11 +5,11 @@
 
 ## Summary
 
-- Tracked files: `1975`
-- Docs markdown files: `381`
-- Script files under `scripts/`: `349`
+- Tracked files: `2060`
+- Docs markdown files: `387`
+- Script files under `scripts/`: `360`
 - Rust test files: `42`
-- Load suites in `ops/load/suites/suites.json`: `19`
+- Load suites in `ops/load/suites/suites.json`: `20`
 - Runbooks in `docs/operations/runbooks/`: `17`
 - Runbook map rows: `17`
 
@@ -17,7 +17,7 @@
 
 - Forbidden-token hits: `2`
 - Non-kebab docs outside allowed exceptions: `22`
-- Non-kebab scripts under `scripts/`: `293`
+- Non-kebab scripts under `scripts/`: `303`
 
 ## Load Suites
 
@@ -25,6 +25,7 @@
 - `cold-start-p99`
 - `cold-start-prefetch-5pods`
 - `diff-heavy`
+- `hpa-validation-short`
 - `load-under-rollback`
 - `load-under-rollout`
 - `mixed`
@@ -104,6 +105,7 @@
 - `scripts/areas/configs/check_tool_versions_doc_drift.py`
 - `scripts/areas/configs/generate_configs_index.py`
 - `scripts/areas/configs/generate_configs_surface.py`
+- `scripts/areas/configs/generate_env_contract.py`
 - `scripts/areas/configs/generate_tooling_versions_doc.py`
 - `scripts/areas/configs/sync_slo_config.py`
 - `scripts/areas/configs/validate_configs_schemas.py`
@@ -126,6 +128,7 @@
 - `scripts/areas/docs/check_broken_examples.py`
 - `scripts/areas/docs/check_concept_ids.sh`
 - `scripts/areas/docs/check_concept_registry.py`
+- `scripts/areas/docs/check_configmap_env_docs.py`
 - `scripts/areas/docs/check_contract_doc_pairs.py`
 - `scripts/areas/docs/check_contracts_index_nav.py`
 - `scripts/areas/docs/check_crate_docs_contract.sh`
@@ -174,10 +177,12 @@
 - `scripts/areas/docs/check_title_case.sh`
 - `scripts/areas/docs/extract_code_blocks.py`
 - `scripts/areas/docs/generate_architecture_map.py`
+- `scripts/areas/docs/generate_chart_contract_index.py`
 - `scripts/areas/docs/generate_concept_graph.py`
 - `scripts/areas/docs/generate_config_keys_doc.py`
 - `scripts/areas/docs/generate_contracts_index_doc.py`
 - `scripts/areas/docs/generate_crates_map.py`
+- `scripts/areas/docs/generate_env_vars_doc.py`
 - `scripts/areas/docs/generate_k8s_install_matrix.py`
 - `scripts/areas/docs/generate_k8s_values_doc.py`
 - `scripts/areas/docs/generate_layer_contract_doc.py`
@@ -232,6 +237,7 @@
 - `scripts/areas/layout/check_generated_policy.py`
 - `scripts/areas/layout/check_help_excludes_internal.py`
 - `scripts/areas/layout/check_help_output_determinism.py`
+- `scripts/areas/layout/check_help_snapshot.py`
 - `scripts/areas/layout/check_internal_targets_not_in_docs.py`
 - `scripts/areas/layout/check_kind_cluster_contract_drift.sh`
 - `scripts/areas/layout/check_layer_drift.py`
@@ -249,6 +255,7 @@
 - `scripts/areas/layout/check_no_empty_dirs.py`
 - `scripts/areas/layout/check_no_forbidden_paths.sh`
 - `scripts/areas/layout/check_no_hidden_defaults.py`
+- `scripts/areas/layout/check_no_legacy_target_names.py`
 - `scripts/areas/layout/check_no_legacy_targets_in_docs.py`
 - `scripts/areas/layout/check_no_mixed_script_name_variants.py`
 - `scripts/areas/layout/check_no_ops_evidence_writes.py`
@@ -317,6 +324,7 @@
 - `scripts/areas/layout/generate_ops_surface_meta.py`
 - `scripts/areas/layout/graph_public_target.py`
 - `scripts/areas/layout/legacy_audit.sh`
+- `scripts/areas/layout/legacy_inventory.py`
 - `scripts/areas/layout/list_internal_targets.py`
 - `scripts/areas/layout/make_doctor.py`
 - `scripts/areas/layout/make_prereqs.py`
@@ -331,8 +339,11 @@
 - `scripts/areas/layout/validate_ops_contracts.py`
 - `scripts/areas/layout/validate_ops_env.py`
 - `scripts/areas/layout/write_make_area_report.py`
+- `scripts/areas/ops/check_k8s_checks_layout.py`
 - `scripts/areas/ops/check_k8s_flakes.py`
 - `scripts/areas/ops/check_k8s_test_contract.py`
+- `scripts/areas/ops/check_k8s_test_lib.py`
+- `scripts/areas/ops/generate_k8s_test_surface.py`
 - `scripts/areas/policy/find_relaxations.sh`
 - `scripts/areas/public/contracts/check_breaking_contract_change.py`
 - `scripts/areas/public/contracts/check_endpoints_contract.py`

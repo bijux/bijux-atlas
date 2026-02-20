@@ -3,7 +3,7 @@
 Generated from repository files. Do not edit manually.
 
 - CONTRACT files: `12`
-- Schema files: `40`
+- Schema files: `42`
 
 ## CONTRACT.md Files
 
@@ -30,6 +30,8 @@ Generated from repository files. Do not edit manually.
 - `configs/_schemas/public-surface.schema.json`
 - `configs/_schemas/target-renames.schema.json`
 - `configs/_schemas/tool-versions.schema.json`
+- `configs/contracts/env.schema.json`
+- `configs/contracts/scripts-tool-output.schema.json`
 - `configs/ops/env.schema.json`
 - `configs/ops/slo/sli.schema.json`
 - `configs/ops/slo/slo.schema.json`
