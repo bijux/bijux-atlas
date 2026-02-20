@@ -26,6 +26,7 @@ Does not duplicate full decision content from each ADR.
 - [ADR-0004 Plugin Dispatch](ADR-0004-plugin-contract-and-umbrella-dispatch.md)
 - [ADR-0005 Security Defaults](ADR-0005-security-defaults-and-enterprise-controls.md)
 - [ADR-0006 atlas-py vs scripts boundary](ADR-0006-atlas-py-vs-scripts-boundary.md)
+- [ADR-0007 scripts SSOT under packages](ADR-0007-scripts-ssot-under-packages.md)
 
 ## Failure modes
 

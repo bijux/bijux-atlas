@@ -111,3 +111,14 @@ prereqs: ## Check required binaries and versions and store prereqs report
 
 dataset-id-lint: ## Validate DatasetId/DatasetKey contract usage across ops fixtures
 	@python3 ./scripts/areas/layout/dataset_id_lint.py
+
+internal/tooling-versions:
+	@echo "Rust toolchain (rust-toolchain.toml):"
+	@grep '^channel' rust-toolchain.toml | sed -E 's/channel *= *\"([^\"]+)\"/  channel=\1/'
+	@echo "Python tooling pins (configs/ops/pins/tools.json):"
+	@python3 -c 'import json; from pathlib import Path; pins=json.loads(Path("configs/ops/pins/tools.json").read_text(encoding="utf-8"))["tools"]; [print("  {}={}".format(k, pins[k]["version"])) for k in ("python3","pip-tools","uv","ruff","mypy") if k in pins]'
+	@echo "Local binaries:"
+	@python3 --version | sed 's/^/  /'
+	@{ command -v uv >/dev/null 2>&1 && uv --version | sed 's/^/  /'; } || echo "  uv=missing"
+	@{ command -v ruff >/dev/null 2>&1 && ruff --version | sed 's/^/  /'; } || echo "  ruff=missing"
+	@{ command -v mypy >/dev/null 2>&1 && mypy --version | sed 's/^/  /'; } || echo "  mypy=missing"

@@ -241,6 +241,9 @@ cache/status: ## Print cache status and budget policy checks
 
 cache/prune: ## Prune local dataset/cache artifacts
 	@./ops/run/cache-prune.sh
+
+tooling-versions: ## Print Rust + Python tooling versions (pinned + local)
+	@$(MAKE) -s internal/tooling-versions
 ops/suite: ## Explicit ops suite target
 	@$(call with_iso,ops-suite,$(MAKE) -s internal/ops/suite)
 
@@ -463,7 +466,7 @@ dev-bootstrap: ## Setup local python tooling for atlas-scripts (uv sync)
 
 make/guard-no-python-scripts: ## Guard against direct python scripts path invocation in make recipes
 	@! rg -n "python(3)?\\s+\\.?/?scripts/" makefiles/*.mk >/dev/null || { \
-		echo "direct 'python scripts/...' invocation is forbidden; use $(ATLAS_SCRIPTS) or $(PY_RUN)"; \
+		echo "direct python path invocation is forbidden; use $(ATLAS_SCRIPTS) or $(PY_RUN)"; \
 		rg -n "python(3)?\\s+\\.?/?scripts/" makefiles/*.mk; \
 		exit 1; \
 	}

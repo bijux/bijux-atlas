@@ -194,6 +194,14 @@ internal/ci/bin-shims:
 	@python3 ./scripts/areas/check/check-script-shim-expiry.py
 	@python3 ./scripts/areas/check/check-script-shims-minimal.py
 
+internal/ci/scripts-ssot-final:
+	@STRICT_SCRIPTS_SUNSET="$${STRICT_SCRIPTS_SUNSET:-0}"; \
+	if [ "$$STRICT_SCRIPTS_SUNSET" = "1" ]; then \
+		python3 ./scripts/areas/check/check-scripts-ssot-final.py; \
+	else \
+		echo "scripts SSOT final gate skipped (set STRICT_SCRIPTS_SUNSET=1 to enforce)"; \
+	fi
+
 ci-slo-config-validate:
 	@python3 ./scripts/areas/layout/check_slo_contracts.py --mode schema
 
@@ -320,13 +328,14 @@ governance-check: ## Run governance gates: layout + docs + contracts + scripts +
 	@$(MAKE) internal/ci/scripts-path-usage
 	@$(MAKE) internal/ci/docs-old-script-paths
 	@$(MAKE) internal/ci/bin-shims
+	@$(MAKE) internal/ci/scripts-ssot-final
 
 .PHONY: \
 	ci-root-layout ci-script-entrypoints ci-fmt ci-clippy ci-test-nextest ci-deny ci-audit ci-license-check \
 	ci-policy-lint ci-policy-schema-drift ci-config-check ci-ssot-drift ci-crate-structure ci-crate-docs-contract ci-cli-command-surface \
 	ci-release-binaries ci-docs-build ci-latency-regression ci-store-conformance ci-openapi-drift ci-chart-schema-validate ci-api-contract ci-query-plan-gate ci-critical-query-check \
 	ci-sqlite-schema-drift ci-sqlite-index-drift ci-ingest-determinism ci-qc-fixtures ci-compatibility-matrix-validate ci-runtime-security-scan-image ci-coverage ci-workflows-make-only ci-policy-relaxations ci-policy-enforcement ci-policy-allow-env ci-policy-boundaries ci-policy-boundaries ci-ops-policy-audit ci-rename-lint ci-docs-lint-names governance-check \
-	ci-make-help-drift ci-forbid-raw-paths ci-make-safety internal/ci/scripts-path-usage internal/ci/docs-old-script-paths internal/ci/bin-shims \
+	ci-make-help-drift ci-forbid-raw-paths ci-make-safety internal/ci/scripts-path-usage internal/ci/docs-old-script-paths internal/ci/bin-shims internal/ci/scripts-ssot-final \
 	ci-init-iso-dirs ci-init-tmp ci-dependency-lock-refresh ci-release-compat-matrix-verify ci-release-build-artifacts \
 	ci-release-notes-render ci-release-publish-gh ci-cosign-sign ci-cosign-verify ci-chart-package-release ci-reproducible-verify \
 	ci-security-advisory-render ci-ops-install-prereqs ci-ops-install-load-prereqs \
