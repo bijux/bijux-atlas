@@ -37,9 +37,10 @@ Stable (versioned by review):
 
 Generated (rebuildable):
 - `ops/_generated_committed/**`
+- `ops/_examples/**`
 - committed generated files policy:
-  - commit: `ops/_generated_committed/examples/report.example.json`
-  - commit: `ops/_generated_committed/examples/report.unified.example.json`
+  - commit: `ops/_examples/report.example.json`
+  - commit: `ops/_examples/report.unified.example.json`
   - commit: `docs/_generated/ops-surface.md`
   - commit: `docs/_generated/ops-contracts.md`
   - commit: `docs/_generated/ops-schemas.md`

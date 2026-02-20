@@ -184,7 +184,7 @@ def _ops_report(run_id: str, checks: list[dict[str, object]], started_at: str, e
     relaxed = [c for c in checks if c.get("status") == "relaxed"]
     return {
         "schema_version": 1,
-        "tool": "bijux-atlas",
+        "tool": "atlasctl",
         "run_id": run_id,
         "status": "fail" if failed else "pass",
         "started_at": started_at,
@@ -289,7 +289,7 @@ def _run_simple_cmd(ctx: RunContext, cmd: list[str], report_format: str) -> int:
     code, output = _run_check(cmd, ctx.repo_root)
     payload = {
         "schema_version": 1,
-        "tool": "bijux-atlas",
+        "tool": "atlasctl",
         "run_id": ctx.run_id,
         "status": "pass" if code == 0 else "fail",
         "command": " ".join(cmd),
@@ -323,7 +323,7 @@ def _ops_policy_audit(ctx: RunContext, report_format: str) -> int:
 
     payload = {
         "schema_version": 1,
-        "tool": "bijux-atlas",
+        "tool": "atlasctl",
         "run_id": ctx.run_id,
         "status": "pass" if not violations else "fail",
         "violations": violations,
@@ -526,7 +526,7 @@ def _ops_clean_generated(ctx: RunContext, report_format: str, force: bool) -> in
     if not generated_root.exists():
         payload = {
             "schema_version": 1,
-            "tool": "bijux-atlas",
+            "tool": "atlasctl",
             "run_id": ctx.run_id,
             "status": "pass",
             "message": "ops/_generated does not exist",
@@ -546,7 +546,7 @@ def _ops_clean_generated(ctx: RunContext, report_format: str, force: bool) -> in
                 json.dumps(
                     {
                         "schema_version": 1,
-                        "tool": "bijux-atlas",
+                        "tool": "atlasctl",
                         "run_id": ctx.run_id,
                         "status": "fail",
                         "message": message,
@@ -567,7 +567,7 @@ def _ops_clean_generated(ctx: RunContext, report_format: str, force: bool) -> in
             child.unlink()
     payload = {
         "schema_version": 1,
-        "tool": "bijux-atlas",
+        "tool": "atlasctl",
         "run_id": ctx.run_id,
         "status": "pass",
         "path": str(generated_root.relative_to(ctx.repo_root)),
@@ -689,7 +689,7 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         code, output = _k8s_surface_generate(ctx.repo_root)
         print(output)
         return code
-    if ns.ops_cmd == "clean-generated":
+    if ns.ops_cmd in {"clean-generated", "clean"}:
         return _ops_clean_generated(ctx, ns.report, ns.force)
 
     return 2
@@ -727,9 +727,10 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
         ("k8s-flakes-check", "evaluate k8s flake report and quarantine policy"),
         ("k8s-test-contract", "validate k8s test manifest ownership/contract"),
         ("clean-generated", "remove runtime evidence files under ops/_generated"),
+        ("clean", "alias for clean-generated"),
     ):
         cmd = ops_sub.add_parser(name, help=help_text)
         cmd.add_argument("--report", choices=["text", "json"], default="text")
         cmd.add_argument("--fix", action="store_true")
-        if name == "clean-generated":
+        if name in {"clean-generated", "clean"}:
             cmd.add_argument("--force", action="store_true")
