@@ -16,7 +16,7 @@ docker-build:
 	VCS_REF="$${VCS_REF:-$$(git rev-parse HEAD)}"; \
 	BUILD_DATE="$${BUILD_DATE:-$$(date -u +%Y-%m-%dT%H:%M:%SZ)}"; \
 	RUST_VERSION="$${RUST_VERSION:-1.84.1}"; \
-	docker build --pull=false -t "$$IMAGE_TAG" -f docker/Dockerfile \
+	docker build --pull=false -t "$$IMAGE_TAG" -f docker/images/runtime/Dockerfile \
 	  --build-arg RUST_VERSION="$$RUST_VERSION" \
 	  --build-arg IMAGE_VERSION="$$IMAGE_VERSION" \
 	  --build-arg VCS_REF="$$VCS_REF" \
@@ -24,17 +24,26 @@ docker-build:
 	  --build-arg IMAGE_PROVENANCE="$${IMAGE_PROVENANCE:-$${IMAGE_TAG}}" \
 	  .
 
-docker-smoke:
+docker-check: ## Docker fast checks: contracts + build + runtime smoke
+	@$(MAKE) -s docker-contracts
 	@$(MAKE) -s docker-build
-	@./scripts/areas/check/docker-runtime-smoke.sh "$${DOCKER_IMAGE:-bijux-atlas:local}"
+	@$(MAKE) -s docker-smoke
+
+docker-smoke:
+	@docker/scripts/docker-runtime-smoke.sh "$${DOCKER_IMAGE:-bijux-atlas:local}"
 
 docker-scan:
-	@./scripts/areas/check/docker-scan.sh "$${DOCKER_IMAGE:-bijux-atlas:local}"
+	@docker/scripts/docker-scan.sh "$${DOCKER_IMAGE:-bijux-atlas:local}"
 
 docker-push:
 	@if [ "$${CI:-0}" != "1" ]; then echo "docker-push is CI-only"; exit 2; fi
 	@IMAGE_TAG="$${DOCKER_IMAGE:?DOCKER_IMAGE is required for docker-push}"; \
 	docker push "$$IMAGE_TAG"
+
+docker-release: ## CI-only docker release lane (build + contracts + push)
+	@if [ "$${CI:-0}" != "1" ]; then echo "docker-release is CI-only"; exit 2; fi
+	@$(MAKE) -s docker-check
+	@$(MAKE) -s docker-push
 
 chart-package:
 	@mkdir -p artifacts/chart
@@ -53,6 +62,7 @@ docker-contracts: ## Validate Docker layout/policy/no-latest contracts
 	@python3 ./scripts/areas/check/check-docker-layout.py
 	@python3 ./scripts/areas/check/check-docker-policy.py
 	@python3 ./scripts/areas/check/check-no-latest-tags.py
+	@python3 ./scripts/areas/check/check-docker-image-size.py
 
 rename-lint: ## Enforce durable naming rules for docs/scripts and concept ownership
 	@python3 ./scripts/areas/docs/check-durable-naming.py
