@@ -1,2 +1,0 @@
-# Pinned python tooling for scripts quality gates.
-ruff==0.13.2

@@ -263,10 +263,4 @@ scripts/areas/public/policy-enforcement-status.py
 scripts/areas/public/policy-schema-drift.py
 scripts/areas/public/stack/build_stack_report.py
 scripts/areas/public/stack/validate_stack_report.py
-scripts/areas/python/__init__.py
-scripts/areas/python/bijux_scripts/__init__.py
-scripts/areas/python/bijux_scripts/json_helpers.py
-scripts/areas/python/bijux_scripts/paths.py
-scripts/areas/python/bijux_scripts/reporting.py
-scripts/areas/python/bijux_scripts/runner.py
 scripts/areas/tests/test_paths.py
