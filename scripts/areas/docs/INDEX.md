@@ -40,4 +40,3 @@ Scripts in this area.
 - legacy-terms-allowlist.txt
 - lint_depth.py
 - lint_doc_contracts.py
-- run_blessed_snippets.py

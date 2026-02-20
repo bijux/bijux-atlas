@@ -23,7 +23,7 @@ Stale endpoint examples cause false troubleshooting paths.
 ## How to verify
 ```bash
 $ atlasctl docs extract-code --report text
-$ python3 scripts/areas/docs/run_blessed_snippets.py
+$ atlasctl docs run-blessed-snippets --report text
 ```
 
 Expected output: all blessed snippets execute with zero failures.

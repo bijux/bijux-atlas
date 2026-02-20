@@ -1658,6 +1658,32 @@ def _extract_code(ctx: RunContext) -> tuple[int, str]:
     return 0, f"extracted {len(manifest)} blessed snippet(s) to {out.relative_to(ctx.repo_root)}"
 
 
+def _run_blessed_snippets(ctx: RunContext) -> tuple[int, str]:
+    manifest = ctx.repo_root / "artifacts/docs-snippets/manifest.json"
+    network_tokens = ("curl ", "wget ", "http://", "https://", "nc ")
+    if not manifest.exists():
+        return 1, "snippet runner: manifest not found; run atlasctl docs extract-code first"
+    data = json.loads(manifest.read_text(encoding="utf-8"))
+    snippets = data.get("snippets", [])
+    failures: list[str] = []
+    for item in snippets:
+        if not isinstance(item, dict):
+            continue
+        script_path = ctx.repo_root / str(item.get("path", ""))
+        body = script_path.read_text(encoding="utf-8", errors="ignore")
+        if not bool(item.get("allow_network", False)):
+            lowered = body.lower()
+            if any(token in lowered for token in network_tokens):
+                failures.append(f"{item.get('path','')}: network command found without # allow-network")
+                continue
+        proc = subprocess.run(["sh", str(script_path)], cwd=ctx.repo_root, capture_output=True, text=True, check=False)
+        if proc.returncode != 0:
+            failures.append(f"{item.get('path','')}: exit={proc.returncode}\n{proc.stderr.strip()}")
+    if failures:
+        return 1, "snippet execution failed:\n" + "\n".join(f"- {f}" for f in failures)
+    return 0, f"snippet execution passed ({len(snippets)} snippet(s))"
+
+
 def _spellcheck(ctx: RunContext, path_arg: str) -> tuple[int, str]:
     exe = shutil.which("codespell")
     if not exe:
@@ -2404,6 +2430,11 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
         return code
 
+    if ns.docs_cmd == "run-blessed-snippets":
+        code, output = _run_blessed_snippets(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
     if ns.docs_cmd == "render-diagrams":
         code, output = _render_diagrams(ctx)
         print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
@@ -2511,6 +2542,7 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("evidence-policy-page", "generate docs evidence policy page"),
         ("inventory", "generate docs command inventory page"),
         ("extract-code", "extract code blocks from docs"),
+        ("run-blessed-snippets", "run extracted blessed docs snippets with network guardrails"),
         ("render-diagrams", "render docs diagrams"),
         ("lint-spelling", "run docs spelling checks"),
         ("spellcheck", "run docs spelling checks"),
