@@ -17,7 +17,7 @@ def main() -> int:
     if not lockfile.exists():
         raise SystemExit(f"missing lockfile: {lockfile}")
 
-    pyproject = ROOT / "tools/bijux-atlas-scripts/pyproject.toml"
+    pyproject = ROOT / "packages/bijux-atlas-scripts/pyproject.toml"
     text = pyproject.read_text(encoding="utf-8")
     m = re.search(r"\[project\.optional-dependencies\]\s*dev\s*=\s*\[(?P<body>.*?)\]", text, re.S)
     if not m:
