@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "description": "Hard directory budgets; growth beyond these limits fails layout-check.",
+  "budgets": [
+    {
+      "path": "ops/_lib",
+      "max_top_level_files": 3,
+      "ignore_shim_marker": "DIR_BUDGET_SHIM"
+    },
+    {
+      "path": "ops/_lint",
+      "max_top_level_files": 2,
+      "ignore_shim_marker": "DIR_BUDGET_SHIM"
+    },
+    {
+      "path": "scripts",
+      "max_top_level_dirs": 24
+    },
+    {
+      "path": "scripts/layout",
+      "max_top_level_files": 115
+    },
+    {
+      "path": "scripts/docs",
+      "max_top_level_files": 85
+    },
+    {
+      "path": "docker",
+      "max_top_level_files": 3
+    }
+  ]
+}
