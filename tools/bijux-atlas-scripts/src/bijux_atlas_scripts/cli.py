@@ -4,7 +4,8 @@ import argparse
 import sys
 from pathlib import Path
 
-from . import configs, contracts, layout, policies, registry, report
+from . import contracts, layout, registry, report
+from .configs.command import configure_configs_parser, run_configs_command
 from .core.context import RunContext
 from .core.fs import ensure_evidence_path
 from .core.logging import log_event
@@ -18,12 +19,11 @@ from .make.command import configure_make_parser, run_make_command
 from .network_guard import install_no_network_guard
 from .ops.command import configure_ops_parser, run_ops_command
 from .output_contract import validate_json_output
+from .policies.command import configure_policies_parser, run_policies_command
 from .runner import run_legacy_script
 from .surface import run_surface
 
 DOMAINS = {
-    "configs": configs.run,
-    "policies": policies.run,
     "contracts": contracts.run,
     "registry": registry.run,
     "layout": layout.run,
@@ -53,8 +53,6 @@ def build_parser() -> argparse.ArgumentParser:
     surface_p.add_argument("--out-file", help="optional output path for JSON report")
 
     domain_names = (
-        "configs",
-        "policies",
         "contracts",
         "registry",
         "layout",
@@ -62,6 +60,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
     for name in domain_names:
         register_domain_parser(sub, name, f"{name} domain commands")
+    configure_configs_parser(sub)
+    configure_policies_parser(sub)
     configure_docs_parser(sub)
     configure_make_parser(sub)
     configure_ops_parser(sub)
@@ -100,6 +100,10 @@ def main(argv: list[str] | None = None) -> int:
             return run_doctor(ctx, ns.json, ns.out_file)
         if ns.cmd == "docs":
             return run_docs_command(ctx, ns)
+        if ns.cmd == "configs":
+            return run_configs_command(ctx, ns)
+        if ns.cmd == "policies":
+            return run_policies_command(ctx, ns)
         if ns.cmd == "make":
             return run_make_command(ctx, ns)
         if ns.cmd == "ops":
