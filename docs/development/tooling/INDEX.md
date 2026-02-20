@@ -38,3 +38,10 @@ This section does not duplicate full command reference details from each tooling
 ## Pages
 
 - [bijux-atlas-scripts](bijux-atlas-scripts.md)
+- [bijux-atlas-py roadmap](bijux-atlas-py.md)
+- [tooling naming policy](naming-policy.md)
+- [release packaging plan](release-packaging-plan.md)
+- [versioning alignment](versioning-alignment.md)
+- [scripts compatibility matrix](compat-matrix.md)
+- [scripts compatibility policy](scripts-compat-policy.md)
+- [scripts changelog](scripts-changelog.md)

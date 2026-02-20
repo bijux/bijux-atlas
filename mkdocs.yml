@@ -225,6 +225,16 @@ nav:
       - Add Metric/Span: development/add-metric-span.md
       - Scripts Index: development/scripts/INDEX.md
       - Scripts Governance: development/scripts.md
+      - Tooling:
+          - Index: development/tooling/INDEX.md
+          - bijux-atlas-scripts: development/tooling/bijux-atlas-scripts.md
+          - bijux-atlas-py roadmap: development/tooling/bijux-atlas-py.md
+          - naming policy: development/tooling/naming-policy.md
+          - release packaging plan: development/tooling/release-packaging-plan.md
+          - versioning alignment: development/tooling/versioning-alignment.md
+          - scripts compatibility matrix: development/tooling/compat-matrix.md
+          - scripts compatibility policy: development/tooling/scripts-compat-policy.md
+          - scripts changelog: development/tooling/scripts-changelog.md
       - Script Naming: development/script-naming.md
       - Docs Depth Contract: development/docs-depth-contract.md
       - Repo Surface: development/repo-surface.md

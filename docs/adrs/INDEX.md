@@ -25,6 +25,7 @@ Does not duplicate full decision content from each ADR.
 - [ADR-0003 Federated Registry Merge](ADR-0003-federated-registry-deterministic-merge.md)
 - [ADR-0004 Plugin Dispatch](ADR-0004-plugin-contract-and-umbrella-dispatch.md)
 - [ADR-0005 Security Defaults](ADR-0005-security-defaults-and-enterprise-controls.md)
+- [ADR-0006 atlas-py vs scripts boundary](ADR-0006-atlas-py-vs-scripts-boundary.md)
 
 ## Failure modes
 

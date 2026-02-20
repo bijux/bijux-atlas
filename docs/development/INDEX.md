@@ -28,6 +28,8 @@ List and maintain links to section pages in this directory.
 - [Scripts Index](scripts/INDEX.md)
 - [Scripts Governance](scripts.md)
 - [bijux-atlas-scripts Tooling](tooling/bijux-atlas-scripts.md)
+- [Tooling Index](tooling/INDEX.md)
+- [bijux-atlas-py Roadmap](tooling/bijux-atlas-py.md)
 - [Script Naming](script-naming.md)
 - [Docs Depth Contract](docs-depth-contract.md)
 - [Repository Layout](repo-layout.md)
