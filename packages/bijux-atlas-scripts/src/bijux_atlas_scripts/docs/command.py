@@ -92,6 +92,9 @@ DOCS_GENERATE_COMMANDS: list[list[str]] = [
     ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-env-vars-doc", "--report", "text"],
     ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "contracts-index", "--fix", "--report", "text"],
     ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-chart-contract-index", "--report", "text"],
+    ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-k8s-install-matrix", "--report", "text"],
+    ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-make-targets-inventory", "--report", "text"],
+    ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-scripts-graph", "--report", "text"],
     ["python3", "scripts/areas/ops/generate_k8s_test_surface.py"],
     ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "runbook-map", "--fix", "--report", "text"],
 ]
@@ -2823,6 +2826,116 @@ def _generate_chart_contract_index(ctx: RunContext) -> tuple[int, str]:
     return 0, f"generated {out.relative_to(ctx.repo_root)} ({len(tests)} contracts)"
 
 
+def _generate_k8s_install_matrix(ctx: RunContext) -> tuple[int, str]:
+    src = ctx.repo_root / "artifacts" / "ops" / "k8s-install-matrix.json"
+    out = ctx.repo_root / "docs" / "operations" / "k8s" / "release-install-matrix.md"
+    if not src.exists():
+        data = {"generated_at": "unknown", "profiles": [], "tests": []}
+    else:
+        data = json.loads(src.read_text(encoding="utf-8"))
+    lines = [
+        "# Release Install Matrix",
+        "",
+        "- Owner: `bijux-atlas-operations`",
+        "",
+        "## What",
+        "",
+        "Generated matrix of k8s install/test profiles from CI summaries.",
+        "",
+        "## Why",
+        "",
+        "Provides a stable compatibility view across supported chart profiles.",
+        "",
+        "## Contracts",
+        "",
+        f"Generated at: `{data.get('generated_at', 'unknown')}`",
+        "",
+        "Profiles:",
+    ]
+    lines.extend(f"- `{profile}`" for profile in data.get("profiles", []))
+    lines.extend(["", "Verified test groups:"])
+    lines.extend(f"- `{test}`" for test in data.get("tests", []))
+    lines.extend(
+        [
+            "",
+            "## Failure modes",
+            "",
+            "Missing profile/test entries indicate CI generation drift or skipped suites.",
+            "",
+            "## How to verify",
+            "",
+            "```bash",
+            "$ ops/k8s/ci/install-matrix.sh",
+            "$ make docs",
+            "```",
+            "",
+            "Expected output: matrix doc updated and docs checks pass.",
+            "",
+            "## See also",
+            "",
+            "- [K8s Test Contract](k8s-test-contract.md)",
+            "- [Helm Chart Contract](chart.md)",
+            "- `ops-k8s-tests`",
+        ]
+    )
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return 0, f"wrote {out.relative_to(ctx.repo_root)}"
+
+
+def _generate_make_targets_inventory(ctx: RunContext) -> tuple[int, str]:
+    out_main = ctx.repo_root / "docs" / "development" / "make-targets.md"
+    out_compat = ctx.repo_root / "docs" / "development" / "make-targets-inventory.md"
+    help_text = subprocess.check_output(["python3", "-m", "bijux_atlas_scripts.cli", "make", "help"], cwd=ctx.repo_root, text=True)
+    sections = _parse_make_help_sections(help_text)
+    lines: list[str] = [
+        "# Make Targets Inventory",
+        "",
+        "- Owner: `docs-governance`",
+        "",
+        "Generated from `make help`. Do not edit manually.",
+        "",
+    ]
+    for section, targets in sections.items():
+        lines.append(f"## {section}")
+        lines.append("")
+        lines.extend(f"- `{target}`" for target in targets)
+        lines.append("")
+    rendered = "\n".join(lines)
+    out_main.write_text(rendered, encoding="utf-8")
+    out_compat.write_text(rendered, encoding="utf-8")
+    return 0, str(out_main.relative_to(ctx.repo_root))
+
+
+def _generate_scripts_graph(ctx: RunContext) -> tuple[int, str]:
+    mk_files = [ctx.repo_root / "Makefile", *sorted((ctx.repo_root / "makefiles").glob("*.mk"))]
+    out = ctx.repo_root / "docs" / "development" / "scripts-graph.md"
+    target_re = re.compile(r"^([a-zA-Z0-9_.-]+):(?:\s|$)")
+    script_re = re.compile(r"(?:\./|python3\s+|python\s+)(scripts/(?:public|internal)/[^\s\"']+)")
+    rows: list[tuple[str, str]] = []
+    for mk in mk_files:
+        current = ""
+        for line in mk.read_text(encoding="utf-8").splitlines():
+            if line.startswith("\t"):
+                for match in script_re.finditer(line):
+                    rows.append((current, match.group(1).rstrip(";")))
+                continue
+            m = target_re.match(line)
+            if m and not line.startswith("."):
+                current = m.group(1)
+    rows = sorted(set((target, script) for target, script in rows if target and script))
+    lines = [
+        "# Scripts Graph",
+        "",
+        "Generated file. Do not edit by hand.",
+        "",
+        "| Make Target | Script |",
+        "|---|---|",
+    ]
+    lines.extend(f"| `{target}` | `{script}` |" for target, script in rows)
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return 0, f"wrote {out.relative_to(ctx.repo_root)}"
+
+
 def _generate_upgrade_guide(ctx: RunContext) -> tuple[int, str]:
     payload = _read_json(ctx.repo_root / "configs/ops/target-renames.json")
     rows = payload.get("renames", [])
@@ -3450,6 +3563,30 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             print(output)
         return code
 
+    if ns.docs_cmd == "generate-k8s-install-matrix":
+        code, output = _generate_k8s_install_matrix(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
+    if ns.docs_cmd == "generate-make-targets-inventory":
+        code, output = _generate_make_targets_inventory(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
+    if ns.docs_cmd == "generate-scripts-graph":
+        code, output = _generate_scripts_graph(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
     if ns.docs_cmd == "crate-docs-contract-check":
         code, output = _check_crate_docs_contract(ctx)
         if ns.report == "json":
@@ -3810,6 +3947,9 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("generate-k8s-values-doc", "generate docs/operations/k8s/values.md"),
         ("generate-openapi-docs", "generate docs/_generated/openapi/* artifacts"),
         ("generate-chart-contract-index", "generate docs/_generated/contracts/chart-contract-index.md"),
+        ("generate-k8s-install-matrix", "generate docs/operations/k8s/release-install-matrix.md"),
+        ("generate-make-targets-inventory", "generate docs/development/make-targets*.md"),
+        ("generate-scripts-graph", "generate docs/development/scripts-graph.md"),
         ("crate-docs-contract-check", "validate per-crate docs contract"),
         ("durable-naming-check", "enforce durable naming rules across docs/scripts"),
         ("duplicate-topics-check", "enforce duplicate topics pointer and owner contract"),
