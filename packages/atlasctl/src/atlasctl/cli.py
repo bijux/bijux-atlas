@@ -245,11 +245,13 @@ def _emit_runtime_contracts(ctx: RunContext, cmd: str, argv: list[str] | None) -
 
 def _apply_python_env(ctx: RunContext) -> None:
     os.environ.setdefault("BIJUX_ATLAS_SCRIPTS_ARTIFACT_ROOT", str(ctx.scripts_root))
+    os.environ.setdefault("ATLASCTL_ARTIFACT_ROOT", str(ctx.scripts_root))
     os.environ.setdefault("XDG_CACHE_HOME", str((ctx.scripts_root / "cache").resolve()))
     os.environ.setdefault("PYTHONPYCACHEPREFIX", str((ctx.scripts_root / "pycache").resolve()))
     os.environ.setdefault("MYPY_CACHE_DIR", str((ctx.scripts_root / "mypy").resolve()))
     os.environ.setdefault("RUFF_CACHE_DIR", str((ctx.scripts_root / "ruff").resolve()))
     os.environ.setdefault("PIP_CACHE_DIR", str((ctx.scripts_root / "pip").resolve()))
+    os.environ.setdefault("UV_CACHE_DIR", str((ctx.scripts_root / "pip").resolve()))
     required = f"--cache-dir={(ctx.scripts_root / 'pytest').resolve()}"
     existing = os.environ.get("PYTEST_ADDOPTS", "").strip()
     if required not in existing.split():

@@ -110,6 +110,16 @@ def test_explain_command_contract() -> None:
     assert isinstance(payload["touches"], list)
 
 
+def test_python_run_alias_contract() -> None:
+    create = _run_cli("--json", "python", "venv", "create")
+    assert create.returncode == 0
+    proc = _run_cli("--json", "python", "run", "--", "python3", "-c", "import sys")
+    assert proc.returncode == 0
+    payload = json.loads(proc.stdout)
+    assert payload["tool"] == "atlasctl"
+    assert payload["status"] == "ok"
+
+
 def test_out_file_policy_rejects_ops_path() -> None:
     proc = _run_cli("help", "--json", "--out-file", "ops/_evidence/forbidden.json")
     assert proc.returncode == 3
