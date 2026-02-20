@@ -4,23 +4,23 @@ import argparse
 import json
 import subprocess
 
-from ..core.context import RunContext
 from ..checks.runner import domains as check_domains
 from ..checks.runner import run_domain
+from ..core.context import RunContext
 from ..lint.runner import run_suite
 from .native import (
     check_committed_generated_hygiene,
+    check_docs_scripts_references,
+    check_duplicate_script_names,
+    check_forbidden_top_dirs,
     check_layout_contract,
     check_make_command_allowlist,
-    check_duplicate_script_names,
-    check_docs_scripts_references,
-    check_forbidden_top_dirs,
     check_make_forbidden_paths,
     check_make_help,
     check_make_scripts_references,
     check_no_executable_python_outside_packages,
-    check_ops_generated_tracked,
     check_no_xtask_refs,
+    check_ops_generated_tracked,
     check_script_help,
     check_script_ownership,
     check_tracked_timestamp_paths,
@@ -55,6 +55,13 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             print(json.dumps(payload, sort_keys=True))
         else:
             print(f"check {sub}: {payload['status']} ({payload['failed_count']}/{payload['total_count']} failed)")
+        return code
+    if sub == "repo":
+        code, payload = run_domain(ctx.repo_root, "repo")
+        if ctx.output_format == "json":
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            print(f"check repo: {payload['status']} ({payload['failed_count']}/{payload['total_count']} failed)")
         return code
     if sub == "layout":
         code, errors = check_layout_contract(ctx.repo_root)
@@ -219,6 +226,7 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     p_sub.add_parser("make", help="run makefile checks")
     p_sub.add_parser("docs", help="run docs checks")
     p_sub.add_parser("configs", help="run configs checks")
+    p_sub.add_parser("repo", help="run repo hygiene checks (forbidden roots, refs, caches/artifacts)")
     p_sub.add_parser("obs", help="run observability checks")
     p_sub.add_parser("stack-report", help="validate stack report contracts")
     p_sub.add_parser("cli-help", help="validate script/CLI help coverage")

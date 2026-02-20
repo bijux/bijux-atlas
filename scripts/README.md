@@ -17,8 +17,6 @@ Generated file. Do not edit manually.
 |---|---|---|---|
 | `scripts/areas/_internal/check-root-layout.sh` | `internal` | `internal` | - |
 | `scripts/areas/_internal/run_suite_wrapper_legacy.sh` | `internal` | `internal` | - |
-| `scripts/areas/_meta/ownership.json` | `platform` | `internal` | - |
-| `scripts/areas/bootstrap/install_tools.sh` | `developer-experience` | `public` | `bootstrap-tools` |
 | `scripts/areas/check/check-atlas-scripts-cli-contract.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-bijux-atlas-scripts-boundaries.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-bin-entrypoints.py` | `platform` | `public` | - |
@@ -50,7 +48,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/check/no-direct-path-usage.sh` | `platform` | `public` | `scripts-check`, `scripts-lint` |
 | `scripts/areas/check/no-duplicate-script-names.sh` | `platform` | `public` | `scripts-check`, `scripts-lint` |
 | `scripts/areas/check/python_migration_exceptions.py` | `platform` | `public` | - |
-| `scripts/areas/ci/scripts-ci.sh` | `platform` | `internal` | - |
 | `scripts/areas/configs/check_config_files_well_formed.py` | `platform` | `public` | - |
 | `scripts/areas/configs/check_config_keys_docs_coverage.py` | `platform` | `public` | - |
 | `scripts/areas/configs/check_config_ownership.py` | `platform` | `public` | - |

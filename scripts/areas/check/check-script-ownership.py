@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-ownership = json.loads((ROOT / "scripts/areas/_meta/ownership.json").read_text(encoding="utf-8"))["areas"]
+ownership = json.loads((ROOT / "configs/meta/ownership.json").read_text(encoding="utf-8"))["paths"]
 
 errors: list[str] = []
 for p in sorted((ROOT / "scripts").rglob("*")):

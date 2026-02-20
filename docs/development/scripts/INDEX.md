@@ -24,7 +24,6 @@ Does not duplicate script implementation details.
 - Script taxonomy:
   - `scripts/areas/public/`: make-callable entrypoints.
   - `scripts/areas/internal/`: script-only helpers.
-  - `scripts/areas/dev/`: local helpers (not docs/CI contracts).
   - `scripts/areas/tools/`: shared Python helper modules.
 - Contracts: `atlasctl contracts ...`
 - Docs linters/generators: `scripts/areas/docs/`

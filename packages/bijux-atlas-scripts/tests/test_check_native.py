@@ -5,11 +5,11 @@ from pathlib import Path
 
 from bijux_atlas_scripts.check.native import (
     check_committed_generated_hygiene,
+    check_duplicate_script_names,
     check_layout_contract,
     check_make_command_allowlist,
-    check_make_scripts_references,
-    check_duplicate_script_names,
     check_make_forbidden_paths,
+    check_make_scripts_references,
     check_no_xtask_refs,
     check_ops_generated_tracked,
     check_script_ownership,
@@ -28,11 +28,11 @@ def test_check_duplicate_script_names_detects_dash_underscore_conflict(tmp_path:
 
 
 def test_check_script_ownership_passes_for_mapped_paths(tmp_path: Path) -> None:
-    meta = tmp_path / "scripts/areas/_meta"
+    meta = tmp_path / "configs/meta"
     meta.mkdir(parents=True)
     (tmp_path / "scripts/bin").mkdir(parents=True)
     (tmp_path / "scripts/bin/tool.sh").write_text("#!/usr/bin/env sh\n", encoding="utf-8")
-    ownership = {"areas": ["scripts/bin", "scripts/areas/_meta"]}
+    ownership = {"paths": {"scripts/bin": "platform"}}
     (meta / "ownership.json").write_text(json.dumps(ownership), encoding="utf-8")
     code, errors = check_script_ownership(tmp_path)
     assert code == 0

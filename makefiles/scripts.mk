@@ -8,7 +8,11 @@ export MYPY_CACHE_DIR := $(CURDIR)/artifacts/bijux-atlas-scripts/mypy
 export HYPOTHESIS_STORAGE_DIRECTORY := $(CURDIR)/artifacts/bijux-atlas-scripts/hypothesis/examples
 
 bootstrap-tools:
-	@./scripts/areas/bootstrap/install_tools.sh
+	@if command -v uv >/dev/null 2>&1; then \
+		uv sync --project packages/bijux-atlas-scripts; \
+	else \
+		$(MAKE) -s internal/scripts/install-lock; \
+	fi
 
 scripts-index:
 	@$(PY_RUN) scripts/areas/gen/generate_scripts_readme.py
@@ -58,7 +62,7 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(PY_RUN) ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout/no_shadow.py
 	@$(PY_RUN) scripts/areas/layout/check_public_entrypoint_cap.py
 	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
-	@if command -v shellcheck >/dev/null 2>&1; then find scripts/areas/public scripts/areas/internal scripts/areas/dev -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional for local scripts lint)"; fi
+	@if command -v shellcheck >/dev/null 2>&1; then find scripts/areas/public scripts/areas/internal -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional for local scripts lint)"; fi
 	@if command -v shfmt >/dev/null 2>&1; then shfmt -d scripts ops/load/scripts; else echo "shfmt not installed (optional)"; fi
 	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" check packages/bijux-atlas-scripts/src packages/bijux-atlas-scripts/tests
 
@@ -129,7 +133,7 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(PY_RUN) scripts/areas/layout/check_make_command_allowlist.py
 	@$(PY_RUN) scripts/areas/layout/check_script_entrypoints.py
 	@$(PY_RUN) scripts/areas/layout/check_scripts_top_level.py
-	@if command -v shellcheck >/dev/null 2>&1; then find scripts/areas/check scripts/bin scripts/areas/ci scripts/areas/dev -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional)"; fi
+	@if command -v shellcheck >/dev/null 2>&1; then find scripts/areas/check scripts/bin -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional)"; fi
 	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" check scripts/areas/check scripts/areas/gen scripts/areas/python packages/bijux-atlas-scripts/src packages/bijux-atlas-scripts/tests
 	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/mypy" --ignore-missing-imports packages/bijux-atlas-scripts/src packages/bijux-atlas-scripts/tests
 	@python3 -m unittest scripts.areas.tests.test_paths

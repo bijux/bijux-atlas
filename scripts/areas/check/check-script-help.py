@@ -10,7 +10,6 @@ TARGETS = [
     ROOT / "scripts/bin/bijux-atlas-dev",
     ROOT / "scripts/areas/check/no-duplicate-script-names.sh",
     ROOT / "scripts/areas/check/no-direct-path-usage.sh",
-    ROOT / "scripts/areas/ci/scripts-ci.sh",
 ]
 
 errors: list[str] = []
