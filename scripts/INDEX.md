@@ -17,7 +17,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/check/check-atlas-scripts-cli-contract.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-bijux-atlas-scripts-boundaries.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-no-make-scripts-references.py` | `platform` | `public` | - |
-| `scripts/areas/check/check-no-python-executable-outside-tools.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-repo-script-boundaries.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-script-errors.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-script-shim-expiry.py` | `platform` | `public` | - |
