@@ -6,13 +6,14 @@
 - `configs/`: static configuration schemas and policy inputs.
 - `ops/`: operations SSOT (`e2e`, `load`, `observability`, `openapi`, datasets).
 - `docs/`: product/reference/contracts/operations/development docs.
-- `scripts/`: automation entrypoints grouped by domain.
+- `packages/`: Python tooling packages (`bijux-atlas-scripts`, `bijux-atlas-py` scaffold).
+- `scripts/`: deprecated migration area; no new logic is allowed.
 - `makefiles/`: target implementations included by root `Makefile`.
 - `docker/`: canonical container build surface and policy.
 
 Compatibility shims retained at root:
 - Root config symlinks (`deny.toml`, `audit-allowlist.toml`, `clippy.toml`, `rustfmt.toml`, `.vale.ini`, `.vale/`, `nextest.toml`).
-- `bin/` keeps minimal bootstrap wrappers that delegate to `scripts/bin/*`.
+- `bin/` keeps minimal bootstrap wrappers that delegate to package CLIs.
 
 Operational policy:
 - `ops/` is the canonical operations surface.

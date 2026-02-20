@@ -21,6 +21,7 @@ from .errors import ScriptError
 from .exit_codes import ERR_CONFIG, ERR_INTERNAL
 from .gates.command import configure_gates_parser, run_gates_command
 from .inventory.command import configure_inventory_parser, run_inventory
+from .legacy.command import configure_legacy_parser, run_legacy_command
 from .lint.command import configure_lint_parser, run_lint_command
 from .make.command import configure_make_parser, run_make_command
 from .network_guard import install_no_network_guard
@@ -94,6 +95,7 @@ def build_parser() -> argparse.ArgumentParser:
     configure_lint_parser(sub)
     configure_report_parser(sub)
     configure_compat_parser(sub)
+    configure_legacy_parser(sub)
     configure_orchestrate_parsers(sub)
     configure_gates_parser(sub)
 
@@ -258,6 +260,8 @@ def main(argv: list[str] | None = None) -> int:
             return run_lint_command(ctx, ns)
         if ns.cmd == "compat":
             return run_compat_command(ctx, ns)
+        if ns.cmd == "legacy":
+            return run_legacy_command(ctx, ns)
         if ns.cmd in {"ports", "artifacts", "k8s", "stack", "obs", "load", "e2e", "datasets", "cleanup", "scenario"}:
             return run_orchestrate_command(ctx, ns)
         if ns.cmd == "gates":

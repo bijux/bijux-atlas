@@ -404,7 +404,10 @@ retry: ## Retry a target with same RUN_ID (usage: make retry TARGET=<target>)
 	RUN_ID="$$run_id" QUIET="$${QUIET:-0}" $(MAKE) -s "$${TARGET}"
 
 legacy/check: ## Verify legacy inventory and policy contracts
-	@$(ATLAS_SCRIPTS) run scripts/areas/layout/legacy_inventory.py
+	@$(ATLAS_SCRIPTS) legacy check --report text
+
+legacy/audit: ## List non-scripts files still referencing scripts/ paths
+	@$(ATLAS_SCRIPTS) legacy audit --report text
 
 cleanup/verify: ## One-time cleanup safety verification before deleting legacy paths
 	@$(MAKE) -s legacy/check scripts-check ops-contracts-check
