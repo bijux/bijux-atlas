@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Purpose: render markdown summary from unified ops report JSON.
-# Inputs: --unified path to ops/_generated/report.unified.json.
+# Inputs: --unified path to ops/_generated_committed/report.unified.json.
 # Outputs: markdown summary file.
 from __future__ import annotations
 
