@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import re
 import subprocess
+from datetime import date
 from pathlib import Path
 
 
@@ -346,4 +347,40 @@ def check_layout_contract(repo_root: Path) -> tuple[int, list[str]]:
         _code, errs = fn(repo_root)
         errors.extend(errs)
 
+    return (0 if not errors else 1), errors
+
+
+def check_make_scripts_references(repo_root: Path) -> tuple[int, list[str]]:
+    exceptions_path = repo_root / "configs/layout/make-scripts-reference-exceptions.json"
+    makefiles = [repo_root / "Makefile", *sorted((repo_root / "makefiles").glob("*.mk"))]
+    errors: list[str] = []
+    exceptions: list[dict[str, str]] = []
+    if exceptions_path.exists():
+        payload = json.loads(exceptions_path.read_text(encoding="utf-8"))
+        today = date.today()
+        for raw in payload.get("exceptions", []):
+            if not isinstance(raw, dict):
+                continue
+            rid = str(raw.get("id", "<missing-id>"))
+            expiry = str(raw.get("expires_on", ""))
+            try:
+                exp = date.fromisoformat(expiry)
+            except ValueError:
+                errors.append(f"invalid expires_on for exception {rid}: `{expiry}`")
+                continue
+            if exp < today:
+                errors.append(f"expired exception {rid}: {expiry}")
+                continue
+            exceptions.append({"pattern": str(raw.get("pattern", ""))})
+
+    violations: list[str] = []
+    for mk in makefiles:
+        for idx, line in enumerate(mk.read_text(encoding="utf-8").splitlines(), start=1):
+            if "scripts/" not in line or not line.startswith("\t"):
+                continue
+            if any(ex["pattern"] and ex["pattern"] in line for ex in exceptions):
+                continue
+            violations.append(f"{mk.relative_to(repo_root)}:{idx}: unapproved scripts/ reference in make recipe")
+
+    errors.extend(violations)
     return (0 if not errors else 1), errors

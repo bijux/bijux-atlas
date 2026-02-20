@@ -7,6 +7,7 @@ from bijux_atlas_scripts.check.native import (
     check_committed_generated_hygiene,
     check_layout_contract,
     check_make_command_allowlist,
+    check_make_scripts_references,
     check_duplicate_script_names,
     check_make_forbidden_paths,
     check_no_xtask_refs,
@@ -149,3 +150,16 @@ def test_check_layout_contract_passes_minimal_repo(tmp_path: Path) -> None:
     code, errors = check_layout_contract(tmp_path)
     assert code == 0
     assert errors == []
+
+
+def test_check_make_scripts_references_flags_unapproved_scripts_path(tmp_path: Path) -> None:
+    (tmp_path / "configs/layout").mkdir(parents=True)
+    (tmp_path / "makefiles").mkdir(parents=True)
+    (tmp_path / "configs/layout/make-scripts-reference-exceptions.json").write_text(
+        json.dumps({"exceptions": []}),
+        encoding="utf-8",
+    )
+    (tmp_path / "Makefile").write_text("x:\n\t@./scripts/areas/layout/check.sh\n", encoding="utf-8")
+    code, errors = check_make_scripts_references(tmp_path)
+    assert code == 1
+    assert any("scripts/" in e for e in errors)

@@ -13,6 +13,7 @@ from .native import (
     check_duplicate_script_names,
     check_make_forbidden_paths,
     check_make_help,
+    check_make_scripts_references,
     check_ops_generated_tracked,
     check_no_xtask_refs,
     check_script_help,
@@ -83,7 +84,14 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             print("no duplicate script names")
         return code
     if sub == "make-scripts-refs":
-        return _run(ctx, ["python3", "scripts/areas/check/check-no-make-scripts-references.py"])
+        code, errors = check_make_scripts_references(ctx.repo_root)
+        if errors:
+            print("make scripts reference policy failed:")
+            for err in errors[:200]:
+                print(f"- {err}")
+        else:
+            print("make scripts reference policy passed")
+        return code
     if sub == "make-help":
         code, errors = check_make_help(ctx.repo_root)
         if errors:
@@ -93,8 +101,12 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             print("make help output is deterministic")
         return code
     if sub == "forbidden-paths":
-        code_script_refs = _run(ctx, ["python3", "scripts/areas/check/check-no-make-scripts-references.py"])
+        code_script_refs, script_ref_errors = check_make_scripts_references(ctx.repo_root)
         code_paths, errors = check_make_forbidden_paths(ctx.repo_root)
+        if script_ref_errors:
+            print("make scripts reference policy failed:")
+            for err in script_ref_errors[:200]:
+                print(f"- {err}")
         if errors:
             print("forbidden make recipe paths detected:")
             for err in errors:
