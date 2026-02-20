@@ -28,5 +28,5 @@ Generated from `ops/k8s/tests/manifest.json` entries tagged with `chart-contract
 ## Regenerate
 
 ```bash
-python3 scripts/areas/docs/generate_chart_contract_index.py
+atlasctl docs generate-chart-contract-index
 ```

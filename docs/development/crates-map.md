@@ -36,7 +36,7 @@ Stale maps can hide ownership drift and boundary violations.
 ## How to verify
 
 ```bash
- docs generate-crates-map
+$ atlasctl docs generate-crates-map
  docs crate-docs-contract-check
 ```
 
