@@ -171,6 +171,66 @@ def _scan_rust_relaxations(repo_root: Path, out_path: Path) -> dict[str, object]
     return payload
 
 
+def _scan_grep_relaxations(repo_root: Path, out_path: Path) -> dict[str, object]:
+    patterns: tuple[tuple[str, str, bool, str], ...] = (
+        ("allowlist_token", "allowlist", False, "info"),
+        ("skip_token", r"\bskip\b", False, "info"),
+        ("bypass_token", "bypass", False, "warning"),
+        ("cfg_test_token", r"cfg\(test\)", False, "info"),
+        ("todo_relax_token", "TODO relax", True, "error"),
+        ("unsafe_token", r"\bunsafe\b", False, "warning"),
+        ("unwrap_token", r"unwrap\(", False, "warning"),
+        ("temporary_token", "temporary", True, "warning"),
+        ("compat_token", "compat", False, "info"),
+        ("legacy_token", "legacy", False, "info"),
+        ("ignore_token", r"\bignore\b", False, "info"),
+    )
+    findings: list[dict[str, object]] = []
+    scan_paths = ["crates", "scripts", "makefiles", ".github/workflows", "Makefile"]
+    include_globs = ["*.rs", "*.sh", "*.py", "*.mk", "*.yml", "*.yaml", "Makefile"]
+    for pattern_id, regex, requires_exception, severity in patterns:
+        cmd = [
+            "rg",
+            "-n",
+            "--no-heading",
+            "-S",
+            regex,
+            *(str(repo_root / p) for p in scan_paths),
+            *(f"-g{g}" for g in include_globs),
+            "-g!**/target/**",
+            "-g!**/artifacts/**",
+        ]
+        proc = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
+        for line in (proc.stdout or "").splitlines():
+            parts = line.split(":", 2)
+            if len(parts) < 3:
+                continue
+            file_abs, line_no, text = parts
+            file_rel = Path(file_abs).resolve().relative_to(repo_root.resolve()).as_posix()
+            if file_rel in {
+                "scripts/areas/public/policy-audit.py",
+                "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/policies/command.py",
+            }:
+                continue
+            match = re.search(r"(ATLAS-EXC-[0-9]{4})", text)
+            findings.append(
+                {
+                    "source": "grep",
+                    "pattern_id": pattern_id,
+                    "requires_exception": requires_exception,
+                    "severity": severity,
+                    "file": file_rel,
+                    "line": int(line_no),
+                    "exception_id": match.group(1) if match else None,
+                }
+            )
+    findings.sort(key=lambda x: (str(x["file"]), int(x["line"]), str(x["pattern_id"])))
+    payload = {"schema_version": 1, "findings": findings}
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return payload
+
+
 def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     repo = ctx.repo_root
 
@@ -250,6 +310,15 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         else:
             print(out_path.as_posix())
         return 0
+    if ns.policies_cmd == "scan-grep-relaxations":
+        out_rel = getattr(ns, "out", None) or "artifacts/policy/relaxations-grep.json"
+        out_path = repo / out_rel
+        payload = _scan_grep_relaxations(repo, out_path)
+        if ns.report == "json":
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            print(out_path.as_posix())
+        return 0
 
     return 2
 
@@ -281,3 +350,7 @@ def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
     rust_scan = ps.add_parser("scan-rust-relaxations", help="scan Rust sources for relaxation markers")
     rust_scan.add_argument("--out", help="output JSON path", default="artifacts/policy/relaxations-rust.json")
     rust_scan.add_argument("--report", choices=["text", "json"], default="text")
+
+    grep_scan = ps.add_parser("scan-grep-relaxations", help="scan code surfaces for policy-relaxation grep markers")
+    grep_scan.add_argument("--out", help="output JSON path", default="artifacts/policy/relaxations-grep.json")
+    grep_scan.add_argument("--report", choices=["text", "json"], default="text")
