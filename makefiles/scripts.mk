@@ -38,12 +38,12 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(ATLAS_SCRIPTS) check duplicate-script-names
 	@$(ATLAS_SCRIPTS) check layout
 	@$(ATLAS_SCRIPTS) check cli-help
-	@$(PY_RUN) scripts/areas/check/check-script-errors.py
-	@$(PY_RUN) scripts/areas/check/check-script-write-roots.py
-	@$(PY_RUN) scripts/areas/check/check-script-tool-guards.py
+	@$(ATLAS_SCRIPTS) check script-errors
+	@$(ATLAS_SCRIPTS) check script-write-roots
+	@$(ATLAS_SCRIPTS) check script-tool-guards
 	@$(ATLAS_SCRIPTS) check ownership
-	@$(PY_RUN) scripts/areas/check/check-script-shim-expiry.py
-	@$(PY_RUN) scripts/areas/check/check-script-shims-minimal.py
+	@$(ATLAS_SCRIPTS) check script-shim-expiry
+	@$(ATLAS_SCRIPTS) check script-shims-minimal
 	@$(ATLAS_SCRIPTS) check invocation-parity
 	@$(ATLAS_SCRIPTS) check python-lock
 	@$(ATLAS_SCRIPTS) check bin-entrypoints
@@ -120,11 +120,11 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(ATLAS_SCRIPTS) check root-bin-shims
 	@./ops/_lint/no-bin-symlinks.sh
 	@./ops/_lint/no-scripts-bin-dir.sh
-	@$(PY_RUN) scripts/areas/check/check-script-errors.py
-	@$(PY_RUN) scripts/areas/check/check-script-write-roots.py
-	@$(PY_RUN) scripts/areas/check/check-script-tool-guards.py
+	@$(ATLAS_SCRIPTS) check script-errors
+	@$(ATLAS_SCRIPTS) check script-write-roots
+	@$(ATLAS_SCRIPTS) check script-tool-guards
 	@$(ATLAS_SCRIPTS) check ownership
-	@$(PY_RUN) scripts/areas/check/check-script-shims-minimal.py
+	@$(ATLAS_SCRIPTS) check script-shims-minimal
 	@$(ATLAS_SCRIPTS) check python-lock
 	@$(ATLAS_SCRIPTS) check scripts-lock-sync
 	@$(ATLAS_SCRIPTS) check no-adhoc-python

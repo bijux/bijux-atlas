@@ -30,9 +30,14 @@ from .native import (
     check_python_migration_exceptions_expiry,
     check_python_lock,
     check_root_bin_shims,
+    check_script_errors,
     check_scripts_surface_docs_drift,
     check_script_help,
     check_script_ownership,
+    check_script_shim_expiry,
+    check_script_shims_minimal,
+    check_script_tool_guards,
+    check_script_write_roots,
     check_scripts_lock_sync,
     check_tracked_timestamp_paths,
     check_naming_intent_lint,
@@ -333,6 +338,51 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         else:
             print("scripts command surface docs drift check passed")
         return code
+    if sub == "script-errors":
+        code, errors = check_script_errors(ctx.repo_root)
+        if errors:
+            print("structured error contract failed:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("structured error contract passed")
+        return code
+    if sub == "script-write-roots":
+        code, errors = check_script_write_roots(ctx.repo_root)
+        if errors:
+            print("script write-root policy failed:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("script write-root policy passed")
+        return code
+    if sub == "script-tool-guards":
+        code, errors = check_script_tool_guards(ctx.repo_root)
+        if errors:
+            print("scripts using kubectl/helm/kind/k6 without version guard:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("script tool guard check passed")
+        return code
+    if sub == "script-shim-expiry":
+        code, errors = check_script_shim_expiry(ctx.repo_root)
+        if errors:
+            print("script shim expiry check failed")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("script shim expiry check passed")
+        return code
+    if sub == "script-shims-minimal":
+        code, errors = check_script_shims_minimal(ctx.repo_root)
+        if errors:
+            print("script shim minimality check failed:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("script shim minimality check passed")
+        return code
     return 2
 
 
@@ -381,3 +431,8 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     p_sub.add_parser("no-direct-bash-invocations", help="forbid direct bash scripts invocations in docs/makefiles")
     p_sub.add_parser("invocation-parity", help="validate atlasctl invocation parity in make/docs")
     p_sub.add_parser("scripts-surface-docs-drift", help="validate scripts surface docs coverage from python tooling config")
+    p_sub.add_parser("script-errors", help="validate structured script error contract")
+    p_sub.add_parser("script-write-roots", help="validate scripts write only under approved roots")
+    p_sub.add_parser("script-tool-guards", help="validate tool-using scripts include guard calls")
+    p_sub.add_parser("script-shim-expiry", help="validate shim expiry metadata and budget")
+    p_sub.add_parser("script-shims-minimal", help="validate shim wrappers remain minimal and deterministic")

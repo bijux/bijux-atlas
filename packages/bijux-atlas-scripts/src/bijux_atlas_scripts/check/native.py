@@ -768,6 +768,139 @@ def check_scripts_surface_docs_drift(repo_root: Path) -> tuple[int, list[str]]:
     return (0 if not missing else 1), missing
 
 
+def check_script_errors(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for path in sorted((repo_root / "scripts/bin").glob("bijux-atlas-*")):
+        if not path.is_file() or path.name == "bijux-atlas-dev":
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if "python3 -m bijux_atlas_scripts.cli" in text:
+            continue
+        if '"error_code"' not in text and "err(" not in text:
+            errors.append(f"{path.relative_to(repo_root)} must emit structured JSON error_code or delegate to atlasctl")
+    return (0 if not errors else 1), errors
+
+
+def check_script_write_roots(repo_root: Path) -> tuple[int, list[str]]:
+    allowed = (
+        "artifacts/",
+        "ops/_generated/",
+        "ops/_generated_committed/",
+        "artifacts/evidence/",
+        "docs/_generated/",
+        "scripts/_generated/",
+    )
+    write_re = re.compile(r"\b(?:>|>>|tee\s+|mkdir\s+-p\s+|cp\s+[^\n]*\s+)([^\s\"']+)")
+    errors: list[str] = []
+    for path in sorted((repo_root / "scripts/bin").glob("*")):
+        if not path.is_file():
+            continue
+        rel = path.relative_to(repo_root).as_posix()
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        for match in write_re.finditer(text):
+            target = match.group(1)
+            if target.startswith("$") or target.startswith("/") or target.startswith("."):
+                continue
+            if any(target.startswith(prefix) for prefix in allowed):
+                continue
+            errors.append(f"{rel}: {target}")
+    return (0 if not errors else 1), errors
+
+
+def check_script_tool_guards(repo_root: Path) -> tuple[int, list[str]]:
+    tool_re = re.compile(r"\b(kubectl|helm|kind|k6)\b")
+    guards = ("check_tool_versions.py", "ops_version_guard", "scripts/areas/layout/check_tool_versions.py")
+    errors: list[str] = []
+    for scan_dir in (repo_root / "scripts/bin", repo_root / "scripts/check", repo_root / "scripts/ci"):
+        if not scan_dir.exists():
+            continue
+        for path in sorted(scan_dir.rglob("*.sh")):
+            rel = path.relative_to(repo_root).as_posix()
+            text = path.read_text(encoding="utf-8", errors="ignore")
+            if not tool_re.search(text):
+                continue
+            if any(g in text for g in guards):
+                continue
+            errors.append(rel)
+    return (0 if not errors else 1), errors
+
+
+def check_script_shim_expiry(repo_root: Path) -> tuple[int, list[str]]:
+    cfg = repo_root / "configs/layout/script-shim-expiries.json"
+    data = json.loads(cfg.read_text(encoding="utf-8"))
+    shims = data.get("shims", [])
+    known = {entry["path"] for entry in shims if isinstance(entry, dict) and "path" in entry}
+    errors: list[str] = []
+    max_active = int(data.get("max_active_shims", 9999))
+    shim_paths: list[str] = []
+    for base in (repo_root / "scripts/bin", repo_root / "bin"):
+        if not base.exists():
+            continue
+        for path in sorted(base.glob("*")):
+            if not path.is_file() or path.name == "bijux-atlas-scripts":
+                continue
+            text = path.read_text(encoding="utf-8", errors="ignore")
+            if "DEPRECATED:" not in text:
+                continue
+            rel = path.relative_to(repo_root).as_posix()
+            shim_paths.append(rel)
+            if rel not in known:
+                errors.append(f"shim missing expiry metadata: {rel}")
+    if len(shim_paths) > max_active:
+        errors.append(f"shim budget exceeded: active={len(shim_paths)} max_active_shims={max_active}")
+    today = date.today()
+    for row in shims:
+        rel = row.get("path", "")
+        if not rel:
+            errors.append("shim metadata missing path")
+            continue
+        if not str(row.get("replacement", "")).strip():
+            errors.append(f"shim metadata missing replacement command: {rel}")
+        if not str(row.get("migration_doc", "")).strip():
+            errors.append(f"shim metadata missing migration_doc: {rel}")
+        path = repo_root / rel
+        if not path.exists():
+            errors.append(f"shim metadata points to missing file: {rel}")
+            continue
+        exp = date.fromisoformat(str(row.get("expires_on", "")))
+        if exp < today:
+            errors.append(f"shim expired: {rel} expired_on={exp.isoformat()}")
+    return (0 if not errors else 1), errors
+
+
+def check_script_shims_minimal(repo_root: Path) -> tuple[int, list[str]]:
+    cfg = repo_root / "configs/layout/script-shim-expiries.json"
+    payload = json.loads(cfg.read_text(encoding="utf-8"))
+    errors: list[str] = []
+    for row in payload.get("shims", []):
+        if not isinstance(row, dict):
+            continue
+        rel = str(row.get("path", ""))
+        if not rel:
+            continue
+        path = repo_root / rel
+        if not path.exists():
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+        if not lines or not lines[0].startswith("#!/usr/bin/env sh"):
+            errors.append(f"{rel}: shim must use portable sh shebang")
+        if "DEPRECATED:" not in text:
+            errors.append(f"{rel}: missing DEPRECATED warning banner")
+        if "docs/development/tooling/bijux-atlas-scripts.md" not in text:
+            errors.append(f"{rel}: missing migration doc link")
+        if "exec " not in text:
+            errors.append(f"{rel}: missing exec passthrough")
+        if any(tok in text for tok in ("tee ", "mktemp", "touch ", "cat > ", "printf > ", "echo > ")):
+            errors.append(f"{rel}: shim must not write artifacts/files")
+        if "set -x" in text or "uname" in text or "if [ \"$OSTYPE\"" in text:
+            errors.append(f"{rel}: shim must be deterministic and OS-neutral")
+        non_comment = [ln for ln in lines if not ln.startswith("#")]
+        if len(non_comment) > 2:
+            errors.append(f"{rel}: shim must stay minimal (echo + exec only)")
+    return (0 if not errors else 1), errors
+
+
 def check_root_bin_shims(repo_root: Path) -> tuple[int, list[str]]:
     bin_dir = repo_root / "bin"
     if not bin_dir.exists():

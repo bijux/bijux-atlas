@@ -18,11 +18,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/check/check-bijux-atlas-scripts-boundaries.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-no-make-scripts-references.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-repo-script-boundaries.py` | `platform` | `public` | - |
-| `scripts/areas/check/check-script-errors.py` | `platform` | `public` | - |
-| `scripts/areas/check/check-script-shim-expiry.py` | `platform` | `public` | - |
-| `scripts/areas/check/check-script-shims-minimal.py` | `platform` | `public` | - |
-| `scripts/areas/check/check-script-tool-guards.py` | `platform` | `public` | - |
-| `scripts/areas/check/check-script-write-roots.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-scripts-ssot-final.py` | `platform` | `public` | - |
 | `scripts/areas/check/generate-scripts-sbom.py` | `platform` | `public` | - |
 | `scripts/areas/check/python_migration_exceptions.py` | `platform` | `public` | - |
