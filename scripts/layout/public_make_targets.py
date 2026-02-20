@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-SSOT = ROOT / "configs" / "ops" / "public-make-targets.json"
+SSOT = ROOT / "configs" / "make" / "public-targets.json"
 OWNERSHIP = ROOT / "makefiles" / "ownership.json"
 ALLOWED_AREAS = {"cargo", "docs", "ops", "scripts", "configs", "policies"}
 
@@ -14,10 +14,10 @@ def load_ssot() -> dict:
     data = json.loads(SSOT.read_text(encoding="utf-8"))
     targets = data.get("public_targets")
     if not isinstance(targets, list):
-        raise SystemExit("configs/ops/public-make-targets.json: public_targets must be a list")
+        raise SystemExit("configs/make/public-targets.json: public_targets must be a list")
     names = [entry.get("name") for entry in targets if isinstance(entry, dict)]
     if len(names) != len(set(names)):
-        raise SystemExit("configs/ops/public-make-targets.json: duplicate target names")
+        raise SystemExit("configs/make/public-targets.json: duplicate target names")
     return data
 
 

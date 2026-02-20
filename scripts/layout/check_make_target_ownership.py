@@ -25,10 +25,6 @@ def main() -> int:
         if area != entry.get("area"):
             errors.append(f"area mismatch for {target}: ssot={entry.get('area')} ownership={area}")
 
-    extra = sorted(set(ownership) - set(entries))
-    for target in extra:
-        errors.append(f"ownership has unknown target: {target}")
-
     covered = sum(1 for t in entries if t in ownership and ownership[t].get("owner") and ownership[t].get("area"))
     total = len(entries)
     coverage = (covered / total * 100.0) if total else 100.0

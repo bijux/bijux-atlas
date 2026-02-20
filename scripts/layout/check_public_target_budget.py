@@ -10,6 +10,9 @@ def main() -> int:
     data = load_ssot()
     max_targets = int(data.get("max_public_targets", 14))
     target_goal = int(data.get("target_public_targets", max_targets))
+    if max_targets > 18:
+        print(f"public target hard cap must be <= 18, got {max_targets}", file=sys.stderr)
+        return 1
     count = len(data["public_targets"])
     if count > max_targets:
         print(f"public target budget exceeded: {count} > {max_targets}", file=sys.stderr)
