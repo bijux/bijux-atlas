@@ -31,6 +31,7 @@ from .inventory.command import configure_inventory_parser, run_inventory
 from .legacy.command import configure_legacy_parser, run_legacy_command
 from .lint.command import configure_lint_parser, run_lint_command
 from .make.command import configure_make_parser, run_make_command
+from .migrate.command import configure_migrate_parser, run_migrate_command
 from .network_guard import install_no_network_guard
 from .ops.command import configure_ops_parser, run_ops_command
 from .orchestrate.command import configure_orchestrate_parsers, run_orchestrate_command
@@ -100,6 +101,7 @@ def build_parser() -> argparse.ArgumentParser:
     configure_policies_parser(sub)
     configure_docs_parser(sub)
     configure_make_parser(sub)
+    configure_migrate_parser(sub)
     configure_ops_parser(sub)
     configure_inventory_parser(sub)
     configure_lint_parser(sub)
@@ -329,6 +331,8 @@ def main(argv: list[str] | None = None) -> int:
             return run_policies_command(ctx, ns)
         if ns.cmd == "make":
             return run_make_command(ctx, ns)
+        if ns.cmd == "migrate":
+            return run_migrate_command(ctx, ns)
         if ns.cmd == "ops":
             return run_ops_command(ctx, ns)
         if ns.cmd == "inventory":
