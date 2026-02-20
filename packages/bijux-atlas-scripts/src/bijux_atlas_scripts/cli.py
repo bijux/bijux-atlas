@@ -10,6 +10,7 @@ from pathlib import Path
 
 from . import contracts, layout, registry
 from .compat.command import configure_compat_parser, run_compat_command
+from .check.command import configure_check_parser, run_check_command
 from .configs.command import configure_configs_parser, run_configs_command
 from .core.context import RunContext
 from .core.env_guard import guard_no_network_mode
@@ -23,6 +24,7 @@ from .env.command import clean_scripts_artifacts, configure_env_parser, run_env_
 from .errors import ScriptError
 from .exit_codes import ERR_CONFIG, ERR_INTERNAL
 from .gates.command import configure_gates_parser, run_gates_command
+from .gen.command import configure_gen_parser, run_gen_command
 from .inventory.command import configure_inventory_parser, run_inventory
 from .legacy.command import configure_legacy_parser, run_legacy_command
 from .lint.command import configure_lint_parser, run_lint_command
@@ -89,6 +91,8 @@ def build_parser() -> argparse.ArgumentParser:
     for name in domain_names:
         register_domain_parser(sub, name, f"{name} domain commands")
     configure_configs_parser(sub)
+    configure_check_parser(sub)
+    configure_gen_parser(sub)
     configure_policies_parser(sub)
     configure_docs_parser(sub)
     configure_make_parser(sub)
@@ -309,6 +313,10 @@ def main(argv: list[str] | None = None) -> int:
             return run_docs_command(ctx, ns)
         if ns.cmd == "configs":
             return run_configs_command(ctx, ns)
+        if ns.cmd == "check":
+            return run_check_command(ctx, ns)
+        if ns.cmd == "gen":
+            return run_gen_command(ctx, ns)
         if ns.cmd == "policies":
             return run_policies_command(ctx, ns)
         if ns.cmd == "make":
