@@ -5,7 +5,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 scopes = [ROOT / "ops", ROOT / "makefiles"]
 version_re = re.compile(r"\b(?:kind|kubectl|helm|k6)\b[^\n]{0,40}\bv?\d+\.\d+(?:\.\d+)?\b", re.IGNORECASE)
 ignore = (

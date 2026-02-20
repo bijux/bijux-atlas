@@ -5,7 +5,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 image_line = re.compile(r"^\s*image\s*:\s*['\"]?([^'\"\s]+)")
 errors: list[str] = []
 

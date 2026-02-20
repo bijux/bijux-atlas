@@ -6,7 +6,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 GEN = ROOT / "ops" / "_meta" / "generate_layer_contract.py"
 CONTRACT = ROOT / "ops" / "_meta" / "layer-contract.json"
 

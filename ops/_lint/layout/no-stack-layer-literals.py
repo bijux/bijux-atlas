@@ -6,7 +6,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 CONTRACT_PATH = ROOT / "ops" / "_meta" / "layer-contract.json"
 ALLOWLIST = ROOT / "ops" / "_meta" / "stack-layer-literal-allowlist.txt"
 
