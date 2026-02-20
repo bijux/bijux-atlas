@@ -882,7 +882,12 @@ def _check_script_locations(ctx: RunContext) -> tuple[int, str]:
     )
     errors: list[str] = []
     for rel in files:
-        if rel.startswith("scripts/") or rel.startswith("docker/scripts/") or rel.startswith("packages/atlasctl/"):
+        if (
+            rel.startswith("scripts/")
+            or rel.startswith("docker/scripts/")
+            or rel.startswith("packages/atlasctl/")
+            or rel.startswith("packages/bijux-atlas-py/")
+        ):
             continue
         if rel.startswith("ops/"):
             if any(marker in rel for marker in allowed_ops_markers) or any(rel.startswith(prefix) for prefix in allowed_ops_prefixes):

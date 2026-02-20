@@ -5,7 +5,6 @@ import os
 import subprocess
 import sys
 from datetime import datetime, timezone
-from pathlib import Path
 
 from ..core.paths import find_repo_root
 

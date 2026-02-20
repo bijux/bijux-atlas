@@ -8,8 +8,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from . import __version__
-from . import layout, registry
+from . import __version__, layout, registry
 from .check.command import configure_check_parser, run_check_command
 from .ci.command import configure_ci_parser, run_ci_command
 from .compat.command import configure_compat_parser, run_compat_command

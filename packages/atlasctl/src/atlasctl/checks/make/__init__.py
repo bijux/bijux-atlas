@@ -1,6 +1,11 @@
 from __future__ import annotations
 
-from ...check.native import check_make_command_allowlist, check_make_forbidden_paths, check_make_help, check_make_scripts_references
+from ...check.native import (
+    check_make_command_allowlist,
+    check_make_forbidden_paths,
+    check_make_help,
+    check_make_scripts_references,
+)
 from ..base import CheckDef
 
 CHECKS: tuple[CheckDef, ...] = (

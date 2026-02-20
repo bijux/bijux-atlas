@@ -6,7 +6,6 @@ import subprocess
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
 
 from ..contracts.json import write_json
 from ..core.paths import find_repo_root

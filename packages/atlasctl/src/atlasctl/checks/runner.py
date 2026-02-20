@@ -12,7 +12,6 @@ from .make import CHECKS as CHECKS_MAKE
 from .ops import CHECKS as CHECKS_OPS
 from .repo import CHECKS as CHECKS_REPO
 
-
 CHECKS: tuple[CheckDef, ...] = (
     *CHECKS_REPO,
     *CHECKS_MAKE,

@@ -6,13 +6,11 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-from hypothesis import given
-from hypothesis import settings
-from hypothesis import strategies as st
-
 from atlasctl.configs.command import normalize_config_key
 from atlasctl.core.context import RunContext
 from atlasctl.core.fs import ensure_evidence_path
+from hypothesis import given, settings
+from hypothesis import strategies as st
 
 
 @pytest.mark.unit

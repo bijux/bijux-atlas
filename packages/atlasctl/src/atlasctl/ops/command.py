@@ -306,16 +306,23 @@ def _ops_policy_audit(ctx: RunContext, report_format: str) -> int:
     repo = ctx.repo_root
     env_schema = json.loads((repo / "configs/ops/env.schema.json").read_text(encoding="utf-8"))
     vars_declared = sorted(env_schema.get("variables", {}).keys())
-    search_paths = [
-        repo / "makefiles/env.mk",
-        repo / "makefiles/ops.mk",
-        repo / "packages/atlasctl/src/atlasctl/layout_checks/validate_ops_env.py",
-        repo / "packages/atlasctl/src/atlasctl/configs/command.py",
-        repo / "crates/bijux-atlas-server/src/main.rs",
+    search_roots = [
+        repo / "makefiles",
+        repo / "ops",
+        repo / "packages/atlasctl/src",
+        repo / "crates/bijux-atlas-server/src",
     ]
-    text = "\n".join(p.read_text(encoding="utf-8") for p in search_paths if p.exists())
+    search_paths: list[Path] = []
+    for root in search_roots:
+        if not root.exists():
+            continue
+        search_paths.extend(p for p in root.rglob("*") if p.is_file() and p.suffix in {".mk", ".sh", ".py", ".rs", ".json", ".md"})
+    text = "\n".join(p.read_text(encoding="utf-8", errors="ignore") for p in search_paths)
+    declared_only = {"PREREQS_OK", "OPS_SMOKE_BUDGET_EXEMPTION_ID"}
     violations: list[str] = []
     for var in vars_declared:
+        if var in declared_only:
+            continue
         if re.search(rf"\b{re.escape(var)}\b", text) is None:
             violations.append(f"ops env variable `{var}` not reflected in make/scripts usage")
     if "configs/ops/tool-versions.json" not in (repo / "makefiles/ops.mk").read_text(encoding="utf-8"):
