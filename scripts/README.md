@@ -253,13 +253,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/public/require-crate-docs.sh` | `platform` | `public` | `crate-structure` |
 | `scripts/areas/public/stack/build_stack_report.py` | `platform` | `public` | `stack-full` |
 | `scripts/areas/public/stack/validate_stack_report.py` | `platform` | `public` | `stack-full` |
-| `scripts/areas/python/__init__.py` | `platform` | `internal` | - |
-| `scripts/areas/python/bijux_scripts/__init__.py` | `platform` | `internal` | - |
-| `scripts/areas/python/bijux_scripts/json_helpers.py` | `platform` | `internal` | - |
-| `scripts/areas/python/bijux_scripts/paths.py` | `platform` | `internal` | - |
-| `scripts/areas/python/bijux_scripts/reporting.py` | `platform` | `internal` | - |
-| `scripts/areas/python/bijux_scripts/runner.py` | `platform` | `internal` | - |
-| `scripts/areas/python/requirements.lock.txt` | `platform` | `internal` | - |
 | `scripts/areas/release/update-compat-matrix.sh` | `release-engineering` | `public` | `release-update-compat-matrix` |
 | `scripts/areas/release/validate-compat-matrix.sh` | `release-engineering` | `public` | `compat-matrix-validate` |
 | `scripts/areas/tests/test_paths.py` | `platform` | `internal` | - |

@@ -7,7 +7,6 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[3]
 locks = [
-    ROOT / "scripts/areas/python/requirements.lock.txt",
     ROOT / "packages/bijux-atlas-scripts/requirements.lock.txt",
 ]
 pat = re.compile(r"^[a-zA-Z0-9_.-]+==[a-zA-Z0-9_.-]+$")
