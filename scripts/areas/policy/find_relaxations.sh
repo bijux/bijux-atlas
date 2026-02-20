@@ -17,7 +17,7 @@ scan() {
   severity="$4"
 
   rg -n --no-heading -S "$regex" \
-    "$ROOT/crates" "$ROOT/scripts" "$ROOT/xtask" "$ROOT/makefiles" "$ROOT/.github/workflows" "$ROOT/Makefile" \
+    "$ROOT/crates" "$ROOT/scripts" "$ROOT/makefiles" "$ROOT/.github/workflows" "$ROOT/Makefile" \
     -g '*.rs' -g '*.sh' -g '*.py' -g '*.mk' -g '*.yml' -g '*.yaml' -g 'Makefile' \
     -g '!**/target/**' -g '!**/artifacts/**' \
     | while IFS= read -r line; do

@@ -23,7 +23,7 @@ Prevents root sprawl and keeps navigation and automation predictable.
 - `makefiles/`: make target implementations.
 - `ops/`: canonical operations assets.
 - `scripts/`: internal automation scripts.
-- `xtask/`: code generation and automation crate.
+- `packages/bijux-atlas-scripts/`: code generation and automation CLI package.
 
 ## Failure modes
 

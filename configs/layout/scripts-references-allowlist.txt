@@ -305,7 +305,6 @@ packages/bijux-atlas-scripts/tests/test_orchestrate_command.py
 packages/bijux-atlas-scripts/tests/test_quality_contracts.py
 packages/bijux-atlas-scripts/tests/test_report_command.py
 python-toolchain.toml
-xtask/src/main.rs
 configs/layout/scripts-references-allowlist.txt
 packages/bijux-atlas-scripts/tests/test_refgrade_proof.py
 docs/architecture/scripting.md

@@ -16,7 +16,6 @@
     "docker",
     "scripts",
     "tools",
-    "xtask",
     "bin",
     "target",
     ".idea",
