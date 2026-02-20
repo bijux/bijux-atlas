@@ -2,6 +2,7 @@ __all__ = [
     "cli",
     "commands",
     "effects",
+    "env",
     "fs",
     "logging",
     "paths",

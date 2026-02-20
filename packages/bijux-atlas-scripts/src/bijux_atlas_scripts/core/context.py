@@ -19,6 +19,7 @@ class RunContext:
     profile: str
     repo_root: Path
     evidence_root: Path
+    scripts_artifact_root: Path
     run_dir: Path
     output_format: OutputFormat
     network_mode: NetworkMode
@@ -50,6 +51,17 @@ class RunContext:
         resolved_profile = profile or os.environ.get("PROFILE", "local")
         root = Path(evidence_root or os.environ.get("EVIDENCE_ROOT", "artifacts/evidence"))
         evidence_root_path = (repo_root / root).resolve() if not root.is_absolute() else root.resolve()
+        scripts_artifact_raw = Path(
+            os.environ.get(
+                "BIJUX_ATLAS_SCRIPTS_ARTIFACT_ROOT",
+                f"artifacts/bijux-atlas-scripts/run/{resolved_run_id}",
+            )
+        )
+        scripts_artifact_root = (
+            (repo_root / scripts_artifact_raw).resolve()
+            if not scripts_artifact_raw.is_absolute()
+            else scripts_artifact_raw.resolve()
+        )
         run_dir_root = (
             (repo_root / Path(run_dir)).resolve()
             if run_dir and not Path(run_dir).is_absolute()
@@ -64,6 +76,7 @@ class RunContext:
             profile=resolved_profile,
             repo_root=repo_root,
             evidence_root=evidence_root_path,
+            scripts_artifact_root=scripts_artifact_root,
             run_dir=run_dir_root / resolved_run_id,
             output_format=output_format,
             network_mode=resolved_network_mode,

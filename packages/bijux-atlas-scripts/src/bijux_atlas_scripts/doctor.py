@@ -21,11 +21,16 @@ def _tool_version(cmd: list[str]) -> str:
 
 
 def build_report(ctx: RunContext) -> dict[str, object]:
+    toolchain_ok = (ctx.repo_root / "python-toolchain.toml").exists()
+    repo_ok = (ctx.repo_root / ".git").exists() and (ctx.repo_root / "makefiles").is_dir()
+    write_roots_ok = ctx.scripts_artifact_root.as_posix().find("artifacts/bijux-atlas-scripts") != -1
+    python_env_ok = shutil.which("python3") is not None
     return {
         "run_id": ctx.run_id,
         "profile": ctx.profile,
         "repo_root": str(ctx.repo_root),
         "evidence_root": str(ctx.evidence_root),
+        "scripts_artifact_root": str(ctx.scripts_artifact_root),
         "python": sys.version.split()[0],
         "platform": platform.platform(),
         "tools": {
@@ -40,7 +45,14 @@ def build_report(ctx: RunContext) -> dict[str, object]:
         "env": {
             "RUN_ID": os.environ.get("RUN_ID", ""),
             "EVIDENCE_ROOT": os.environ.get("EVIDENCE_ROOT", ""),
+            "BIJUX_ATLAS_SCRIPTS_ARTIFACT_ROOT": os.environ.get("BIJUX_ATLAS_SCRIPTS_ARTIFACT_ROOT", ""),
             "PROFILE": os.environ.get("PROFILE", ""),
+        },
+        "checks": {
+            "python_env_ok": python_env_ok,
+            "repo_root_ok": repo_ok,
+            "toolchain_ok": toolchain_ok,
+            "write_roots_ok": write_roots_ok,
         },
     }
 
