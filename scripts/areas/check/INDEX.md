@@ -8,5 +8,3 @@ Scripts in this area.
 - check-script-errors.py
 - check-script-tool-guards.py
 - check-script-write-roots.py
-- docker-runtime-smoke.sh
-- docker-scan.sh
