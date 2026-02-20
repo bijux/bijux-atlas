@@ -6,6 +6,7 @@ Categories:
 - `scripts/bin/`: thin entrypoints only
 
 Policy: scripts are internal unless listed in `configs/ops/public-surface.json` or the `public` section in `scripts/areas/docs/ENTRYPOINTS.md`.
+Deprecation: Python business logic under `scripts/` is deprecated; new Python code must live in `tools/bijux-atlas-scripts/` and `scripts/bin/` should remain thin shims.
 
 ## Full Inventory
 

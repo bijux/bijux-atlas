@@ -6,6 +6,8 @@ SSOT scripting product for `bijux-atlas`.
 
 `bijux-atlas-scripts` is the stable Python CLI surface for script orchestration, diagnostics, and machine-readable report helpers.
 
+`scripts/` is in deprecation mode for Python business logic and should converge to `scripts/bin/` shims only; new Python logic must live under `tools/bijux-atlas-scripts/`.
+
 ## Command Surface
 
 - `bijux-atlas-scripts run <script-path> [args...]`
