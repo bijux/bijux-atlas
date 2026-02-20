@@ -30,6 +30,7 @@ Does not define product semantics or internal crate APIs.
 - [Runbooks](runbooks/INDEX.md)
 - [Security](security/security-posture.md)
 - [Ops Filesystem Layout](ops-layout.md)
+- [How To Run Locally](how-to-run-locally.md)
 - [Full Stack Local](full-stack-local.md)
 - [Local Stack (Make Only)](local-stack.md)
 - [Health Endpoint Semantics](health-endpoint-semantics.md)

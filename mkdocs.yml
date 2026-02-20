@@ -130,6 +130,7 @@ nav:
       - Deprecation: api/deprecation.md
   - Operations:
       - Index: operations/INDEX.md
+      - How To Run Locally: operations/how-to-run-locally.md
       - Ops Layout: operations/ops-layout.md
       - Full Stack Local: operations/full-stack-local.md
       - Local Stack: operations/local-stack.md
@@ -241,6 +242,7 @@ nav:
       - Crate Layout Contract: architecture/crate-layout-contract.md
       - Boundaries: architecture/boundaries.md
       - Layer Boundary Rules: architecture/layering/boundary-rules.md
+      - Layer Rule (No Cross-Layer Fixups): architecture/layering/no-layer-fixups.md
       - Effects: architecture/effects.md
       - Boundary Maps: architecture/boundary-maps.md
   - Science:
@@ -248,7 +250,12 @@ nav:
       - Reference Science: reference/science/INDEX.md
   - Generated:
       - Index: _generated/INDEX.md
-      - Contracts Index: _generated/contracts/INDEX.md
+      - Make Targets: _generated/make-targets.md
+      - Ops Surface: _generated/ops-surface.md
+      - Config Keys: _generated/config-keys.md
+      - Contracts Index: _generated/contracts-index.md
+      - Runbook Map Index: _generated/runbook-map-index.md
+      - Generated Contracts Catalog: _generated/contracts/INDEX.md
       - OpenAPI Index: _generated/openapi/INDEX.md
   - ADRs:
       - ADR Index: adrs/INDEX.md

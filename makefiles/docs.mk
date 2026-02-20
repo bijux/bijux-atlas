@@ -33,6 +33,10 @@ docs-build: ## Build docs + link-check + spell-check + lint
 	@python3 scripts/areas/docs/generate_ops_schema_docs.py
 	@python3 scripts/areas/docs/generate_ops_surface.py
 	@python3 scripts/areas/docs/generate_ops_contracts_doc.py
+	@python3 scripts/areas/docs/generate_make_targets_catalog.py
+	@python3 scripts/areas/docs/generate_config_keys_doc.py
+	@python3 scripts/areas/docs/generate_contracts_index_doc.py
+	@python3 scripts/areas/docs/generate_runbook_map_index.py
 	@python3 scripts/areas/docs/check_concept_registry.py
 	@./scripts/areas/docs/render_diagrams.sh
 	@python3 scripts/areas/docs/lint_doc_status.py
@@ -70,8 +74,10 @@ docs-build: ## Build docs + link-check + spell-check + lint
 	@./scripts/areas/docs/check_crate_docs_contract.sh
 	@python3 scripts/areas/docs/check_script_headers.py
 	@python3 scripts/areas/docs/check_make_targets_documented.py
+	@python3 scripts/areas/docs/check_public_targets_docs_sections.py
 	@python3 scripts/areas/docs/check_docs_make_targets_exist.py
 	@python3 scripts/areas/docs/check_critical_make_targets_referenced.py
+	@python3 scripts/areas/docs/check_contracts_index_nav.py
 	@python3 scripts/areas/docs/check_doc_filename_style.py
 	@python3 scripts/areas/docs/check_docs_deterministic.py
 	@python3 scripts/areas/docs/check_observability_docs_checklist.py

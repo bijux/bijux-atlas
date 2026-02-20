@@ -39,6 +39,11 @@ Expected output: no generated docs drift.
 ## See also
 
 - [Generated Contracts Index](contracts/INDEX.md)
+- [Generated Make Targets](make-targets.md)
+- [Generated Ops Surface](ops-surface.md)
+- [Generated Config Keys](config-keys.md)
+- [Generated Contracts Catalog](contracts-index.md)
+- [Generated Runbook Map Index](runbook-map-index.md)
 - [Contracts Index](../contracts/contracts-index.md)
 - [Terms Glossary](../_style/terms-glossary.md)
 - [OpenAPI](openapi/INDEX.md)
