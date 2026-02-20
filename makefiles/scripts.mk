@@ -50,7 +50,7 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(ATLAS_SCRIPTS) check root-bin-shims
 	@./ops/_lint/no-bin-symlinks.sh
 	@./ops/_lint/no-scripts-bin-dir.sh
-	@$(PY_RUN) scripts/areas/check/check-no-adhoc-python.py
+	@$(ATLAS_SCRIPTS) check no-adhoc-python
 	@$(PY_RUN) scripts/areas/check/check-venv-location-policy.py
 	@$(PY_RUN) scripts/areas/check/check-python-runtime-artifacts.py --fix
 	@$(PY_RUN) scripts/areas/check/check-python-runtime-artifacts.py
@@ -112,8 +112,8 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(ATLAS_SCRIPTS) check duplicate-script-names
 	@$(ATLAS_SCRIPTS) check layout
 	@$(PY_RUN) scripts/areas/check/check-no-python-executable-outside-tools.py
-	@$(PY_RUN) scripts/areas/check/check-no-direct-python-invocations.py
-	@$(PY_RUN) scripts/areas/check/check-no-direct-bash-invocations.py
+	@$(ATLAS_SCRIPTS) check no-direct-python-invocations
+	@$(ATLAS_SCRIPTS) check no-direct-bash-invocations
 	@$(ATLAS_SCRIPTS) check python-migration-exceptions-expiry
 	@$(PY_RUN) scripts/areas/check/check-bijux-atlas-scripts-boundaries.py
 	@$(ATLAS_SCRIPTS) check cli-help
@@ -127,7 +127,7 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(PY_RUN) scripts/areas/check/check-script-shims-minimal.py
 	@$(ATLAS_SCRIPTS) check python-lock
 	@$(ATLAS_SCRIPTS) check scripts-lock-sync
-	@$(PY_RUN) scripts/areas/check/check-no-adhoc-python.py
+	@$(ATLAS_SCRIPTS) check no-adhoc-python
 	@$(ATLAS_SCRIPTS) check make-scripts-refs
 	@$(PY_RUN) scripts/areas/check/check-repo-script-boundaries.py
 	@$(PY_RUN) scripts/areas/check/check-atlas-scripts-cli-contract.py
