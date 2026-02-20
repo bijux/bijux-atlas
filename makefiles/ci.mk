@@ -143,7 +143,7 @@ ci-coverage:
 	@cargo llvm-cov --workspace --all-features --lcov --output-path artifacts/isolate/coverage/lcov.info
 
 ci-workflows-make-only:
-	@python3 ./scripts/areas/layout/check_workflows_make_only.py
+	@./bin/bijux-atlas check forbidden-paths
 
 ci-log-fields-contract:
 	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/validate_logs_schema.py --file ops/obs/contract/logs.example.jsonl
@@ -155,13 +155,13 @@ ci-observability-pack-drills:
 	@$(MAKE) observability-pack-drills
 
 ci-ops-index-surface:
-	@python3 ./scripts/areas/layout/check_ops_index_surface.py
+	@./bin/bijux-atlas ops surface
 
 ci-ops-gen-check:
 	@$(MAKE) -s ops-gen-check
 
 ci-ops-run-entrypoints:
-	@python3 ./scripts/areas/layout/check_ops_run_entrypoints.py
+	@./bin/bijux-atlas ops lint --fail-fast
 
 ci-ops-readme-make-only:
 	@python3 ./scripts/areas/docs/check_ops_readmes_make_only.py
@@ -182,13 +182,13 @@ internal/ci/no-xtask:
 	@./bin/bijux-atlas check no-xtask
 
 ci-forbid-raw-paths:
-	@./scripts/areas/layout/check_no_forbidden_paths.sh
+	@./bin/bijux-atlas check forbidden-paths
 
 ci-make-safety:
 	@python3 ./scripts/areas/layout/check_make_safety.py
 
 ci-make-help-drift:
-	@python3 ./scripts/areas/docs/check_make_help_drift.py
+	@./bin/bijux-atlas check make-help
 
 internal/ci/scripts-path-usage:
 	@./bin/bijux-atlas check make-scripts-refs
