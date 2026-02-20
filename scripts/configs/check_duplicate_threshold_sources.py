@@ -26,7 +26,7 @@ def main() -> int:
     hits=[p.relative_to(ROOT).as_posix() for p in ROOT.rglob(pat) if "artifacts/" not in p.as_posix()]
     canonical=expected[key]
     for h in hits:
-      if h != canonical and h not in mirrors.get(key, set()) and not h.startswith("ops/_generated"):
+      if h != canonical and h not in mirrors.get(key, set()) and not h.startswith("ops/_generated") and not h.startswith("ops/_generated_committed"):
         errs.append(f"duplicate threshold source for {key}: {h} (canonical {canonical})")
   if errs:
     print("duplicate thresholds check failed")

@@ -4,6 +4,8 @@
     "ops": "bijux-atlas-operations",
     "ops/_artifacts": "bijux-atlas-operations",
     "ops/_generated": "bijux-atlas-operations",
+    "ops/_generated_committed": "bijux-atlas-operations",
+    "ops/_evidence": "bijux-atlas-operations",
     "ops/_lib": "bijux-atlas-operations",
     "ops/_lint": "bijux-atlas-operations",
     "ops/_meta": "bijux-atlas-operations",

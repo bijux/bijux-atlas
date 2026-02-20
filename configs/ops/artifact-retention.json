@@ -1,4 +1,5 @@
 {
   "schema_version": 1,
-  "ops_retention_days": 7
+  "ops_retention_days": 7,
+  "evidence_retention_days": 14
 }
