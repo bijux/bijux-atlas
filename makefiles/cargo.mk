@@ -19,24 +19,24 @@ COVERAGE_OUT = $(ARTIFACTS_DIR)/coverage/lcov.info
 AUTO_ISO_TAG_PREFIX ?= make
 
 internal/cargo/fmt:
-	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
+	@if [ -n "$$ISO_ROOT" ]; then ./bin/atlasctl env require-isolate >/dev/null; fi
 	@if [ -z "$$ISO_ROOT" ]; then \
 		tag="$(AUTO_ISO_TAG_PREFIX)-fmt-$$(date -u +%Y%m%dT%H%M%SZ)-$$PPID"; \
-		ISO_TAG="$$tag" ./scripts/bin/isolate --tag "$$tag" $(MAKE) _fmt; \
+		ISO_TAG="$$tag" ./bin/atlasctl env isolate --tag "$$tag" $(MAKE) _fmt; \
 	else \
 		$(MAKE) _fmt; \
 	fi
 
 _fmt:
-	@./scripts/bin/require-isolate >/dev/null
+	@./bin/atlasctl env require-isolate >/dev/null
 	@cargo fmt --all -- --check --config-path configs/rust/rustfmt.toml
 	@./scripts/areas/layout/check_repo_hygiene.sh
 
 internal/cargo/lint:
-	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
+	@if [ -n "$$ISO_ROOT" ]; then ./bin/atlasctl env require-isolate >/dev/null; fi
 	@if [ -z "$$ISO_ROOT" ]; then \
 		tag="$(AUTO_ISO_TAG_PREFIX)-lint-$$(date -u +%Y%m%dT%H%M%SZ)-$$PPID"; \
-		ISO_TAG="$$tag" ./scripts/bin/isolate --tag "$$tag" $(MAKE) _lint; \
+		ISO_TAG="$$tag" ./bin/atlasctl env isolate --tag "$$tag" $(MAKE) _lint; \
 	else \
 		$(MAKE) _lint; \
 	fi
@@ -48,67 +48,67 @@ _lint:
 	@$(MAKE) _lint-clippy
 
 _lint-rustfmt:
-	@./scripts/bin/require-isolate >/dev/null
+	@./bin/atlasctl env require-isolate >/dev/null
 	@cargo fmt --all -- --check --config-path configs/rust/rustfmt.toml
 
 _lint-configs:
-	@./scripts/bin/require-isolate >/dev/null
+	@./bin/atlasctl env require-isolate >/dev/null
 	@./scripts/areas/public/policy-lint.sh
 	@./scripts/areas/layout/check_no_direct_script_runs.sh
 	@./scripts/areas/layout/check_scripts_readme_drift.sh
 	@./scripts/areas/layout/check_repo_hygiene.sh
 
 _lint-docs:
-	@./scripts/bin/require-isolate >/dev/null
+	@./bin/atlasctl env require-isolate >/dev/null
 	@./scripts/areas/public/check-markdown-links.sh
 
 _lint-clippy:
-	@./scripts/bin/require-isolate >/dev/null
+	@./bin/atlasctl env require-isolate >/dev/null
 	@CARGO_BUILD_JOBS="$(CARGO_BUILD_JOBS)" CLIPPY_CONF_DIR="$(CURDIR)/configs/rust" cargo clippy --workspace --all-targets -- -D warnings
 
 internal/cargo/check:
-	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
+	@if [ -n "$$ISO_ROOT" ]; then ./bin/atlasctl env require-isolate >/dev/null; fi
 	@if [ -z "$$ISO_ROOT" ]; then \
 		tag="$(AUTO_ISO_TAG_PREFIX)-check-$$(date -u +%Y%m%dT%H%M%SZ)-$$PPID"; \
-		ISO_TAG="$$tag" ./scripts/bin/isolate --tag "$$tag" $(MAKE) _check; \
+		ISO_TAG="$$tag" ./bin/atlasctl env isolate --tag "$$tag" $(MAKE) _check; \
 	else \
 		$(MAKE) _check; \
 	fi
 
 _check:
-	@./scripts/bin/require-isolate >/dev/null
+	@./bin/atlasctl env require-isolate >/dev/null
 	@CARGO_BUILD_JOBS="$(CARGO_BUILD_JOBS)" cargo check --workspace --all-targets
 	@./scripts/areas/layout/check_repo_hygiene.sh
 
 internal/cargo/test:
-	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
+	@if [ -n "$$ISO_ROOT" ]; then ./bin/atlasctl env require-isolate >/dev/null; fi
 	@if [ -z "$$ISO_ROOT" ]; then \
 		tag="$(AUTO_ISO_TAG_PREFIX)-test-$$(date -u +%Y%m%dT%H%M%SZ)-$$PPID"; \
-		ISO_TAG="$$tag" ./scripts/bin/isolate --tag "$$tag" $(MAKE) _test; \
+		ISO_TAG="$$tag" ./bin/atlasctl env isolate --tag "$$tag" $(MAKE) _test; \
 	else \
 		$(MAKE) _test; \
 	fi
 
 test-all:
-	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
+	@if [ -n "$$ISO_ROOT" ]; then ./bin/atlasctl env require-isolate >/dev/null; fi
 	@if [ -z "$$ISO_ROOT" ]; then \
 		tag="$(AUTO_ISO_TAG_PREFIX)-test-all-$$(date -u +%Y%m%dT%H%M%SZ)-$$PPID"; \
-		ISO_TAG="$$tag" ./scripts/bin/isolate --tag "$$tag" $(MAKE) _test-all; \
+		ISO_TAG="$$tag" ./bin/atlasctl env isolate --tag "$$tag" $(MAKE) _test-all; \
 	else \
 		$(MAKE) _test-all; \
 	fi
 
 test-contracts:
-	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
+	@if [ -n "$$ISO_ROOT" ]; then ./bin/atlasctl env require-isolate >/dev/null; fi
 	@if [ -z "$$ISO_ROOT" ]; then \
 		tag="$(AUTO_ISO_TAG_PREFIX)-test-contracts-$$(date -u +%Y%m%dT%H%M%SZ)-$$PPID"; \
-		ISO_TAG="$$tag" ./scripts/bin/isolate --tag "$$tag" $(MAKE) _test-contracts; \
+		ISO_TAG="$$tag" ./bin/atlasctl env isolate --tag "$$tag" $(MAKE) _test-contracts; \
 	else \
 		$(MAKE) _test-contracts; \
 	fi
 
 _test:
-	@./scripts/bin/require-isolate >/dev/null
+	@./bin/atlasctl env require-isolate >/dev/null
 	@if ! cargo nextest --version >/dev/null 2>&1; then \
 		echo "cargo-nextest is required. Install: cargo install cargo-nextest --locked" >&2; \
 		exit 1; \
@@ -122,7 +122,7 @@ _test:
 	@./scripts/areas/layout/check_repo_hygiene.sh
 
 _test-all:
-	@./scripts/bin/require-isolate >/dev/null
+	@./bin/atlasctl env require-isolate >/dev/null
 	@if ! cargo nextest --version >/dev/null 2>&1; then \
 		echo "cargo-nextest is required. Install: cargo install cargo-nextest --locked" >&2; \
 		exit 1; \
@@ -136,21 +136,21 @@ _test-all:
 	@./scripts/areas/layout/check_repo_hygiene.sh
 
 _test-contracts:
-	@./scripts/bin/require-isolate >/dev/null
+	@./bin/atlasctl env require-isolate >/dev/null
 	@cargo test -p bijux-atlas-server --test observability_contract
 	@./scripts/areas/layout/check_repo_hygiene.sh
 
 coverage:
-	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
+	@if [ -n "$$ISO_ROOT" ]; then ./bin/atlasctl env require-isolate >/dev/null; fi
 	@if [ -z "$$ISO_ROOT" ]; then \
 		tag="$(AUTO_ISO_TAG_PREFIX)-coverage-$$(date -u +%Y%m%dT%H%M%SZ)-$$PPID"; \
-		ISO_TAG="$$tag" ./scripts/bin/isolate --tag "$$tag" $(MAKE) _coverage; \
+		ISO_TAG="$$tag" ./bin/atlasctl env isolate --tag "$$tag" $(MAKE) _coverage; \
 	else \
 		$(MAKE) _coverage; \
 	fi
 
 _coverage:
-	@./scripts/bin/require-isolate >/dev/null
+	@./bin/atlasctl env require-isolate >/dev/null
 	@if ! cargo llvm-cov --version >/dev/null 2>&1; then \
 		echo "cargo-llvm-cov is required. Install: cargo install cargo-llvm-cov --locked" >&2; \
 		exit 1; \
@@ -162,16 +162,16 @@ _coverage:
 	@./scripts/areas/layout/check_repo_hygiene.sh
 
 internal/cargo/audit:
-	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
+	@if [ -n "$$ISO_ROOT" ]; then ./bin/atlasctl env require-isolate >/dev/null; fi
 	@if [ -z "$$ISO_ROOT" ]; then \
 		tag="$(AUTO_ISO_TAG_PREFIX)-audit-$$(date -u +%Y%m%dT%H%M%SZ)-$$PPID"; \
-		ISO_TAG="$$tag" ./scripts/bin/isolate --tag "$$tag" $(MAKE) _audit; \
+		ISO_TAG="$$tag" ./bin/atlasctl env isolate --tag "$$tag" $(MAKE) _audit; \
 	else \
 		$(MAKE) _audit; \
 	fi
 
 _audit:
-	@./scripts/bin/require-isolate >/dev/null
+	@./bin/atlasctl env require-isolate >/dev/null
 	@if ! cargo +stable deny --version >/dev/null 2>&1; then \
 		echo "cargo-deny is required for stable toolchain. Installing..." >&2; \
 		cargo +stable install cargo-deny --locked; \
@@ -230,51 +230,51 @@ run-medium-serve:
 	@./scripts/areas/fixtures/run-medium-serve.sh
 
 bench-sqlite-query-latency:
-	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
+	@if [ -n "$$ISO_ROOT" ]; then ./bin/atlasctl env require-isolate >/dev/null; fi
 	@if [ -z "$$ISO_ROOT" ]; then \
 		tag="$(AUTO_ISO_TAG_PREFIX)-bench-sqlite-$$(date -u +%Y%m%dT%H%M%SZ)-$$PPID"; \
-		ISO_TAG="$$tag" ./scripts/bin/isolate --tag "$$tag" $(MAKE) _bench-sqlite-query-latency; \
+		ISO_TAG="$$tag" ./bin/atlasctl env isolate --tag "$$tag" $(MAKE) _bench-sqlite-query-latency; \
 	else \
 		$(MAKE) _bench-sqlite-query-latency; \
 	fi
 
 bench-ingest-throughput-medium:
-	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
+	@if [ -n "$$ISO_ROOT" ]; then ./bin/atlasctl env require-isolate >/dev/null; fi
 	@if [ -z "$$ISO_ROOT" ]; then \
 		tag="$(AUTO_ISO_TAG_PREFIX)-bench-throughput-$$(date -u +%Y%m%dT%H%M%SZ)-$$PPID"; \
-		ISO_TAG="$$tag" ./scripts/bin/isolate --tag "$$tag" $(MAKE) _bench-ingest-throughput-medium; \
+		ISO_TAG="$$tag" ./bin/atlasctl env isolate --tag "$$tag" $(MAKE) _bench-ingest-throughput-medium; \
 	else \
 		$(MAKE) _bench-ingest-throughput-medium; \
 	fi
 
 bench-db-size-growth:
-	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
+	@if [ -n "$$ISO_ROOT" ]; then ./bin/atlasctl env require-isolate >/dev/null; fi
 	@if [ -z "$$ISO_ROOT" ]; then \
 		tag="$(AUTO_ISO_TAG_PREFIX)-bench-db-size-$$(date -u +%Y%m%dT%H%M%SZ)-$$PPID"; \
-		ISO_TAG="$$tag" ./scripts/bin/isolate --tag "$$tag" $(MAKE) _bench-db-size-growth; \
+		ISO_TAG="$$tag" ./bin/atlasctl env isolate --tag "$$tag" $(MAKE) _bench-db-size-growth; \
 	else \
 		$(MAKE) _bench-db-size-growth; \
 	fi
 
 bench-smoke:
-	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
+	@if [ -n "$$ISO_ROOT" ]; then ./bin/atlasctl env require-isolate >/dev/null; fi
 	@if [ -z "$$ISO_ROOT" ]; then \
 		tag="$(AUTO_ISO_TAG_PREFIX)-bench-smoke-$$(date -u +%Y%m%dT%H%M%SZ)-$$PPID"; \
-		ISO_TAG="$$tag" ./scripts/bin/isolate --tag "$$tag" $(MAKE) _bench-smoke; \
+		ISO_TAG="$$tag" ./bin/atlasctl env isolate --tag "$$tag" $(MAKE) _bench-smoke; \
 	else \
 		$(MAKE) _bench-smoke; \
 	fi
 
 _bench-sqlite-query-latency:
-	@./scripts/bin/require-isolate >/dev/null
+	@./bin/atlasctl env require-isolate >/dev/null
 	@cargo bench -p bijux-atlas-ingest --features bench-ingest-throughput --bench sqlite_query_latency
 
 _bench-ingest-throughput-medium:
-	@./scripts/bin/require-isolate >/dev/null
+	@./bin/atlasctl env require-isolate >/dev/null
 	@cargo bench -p bijux-atlas-ingest --features bench-ingest-throughput --bench ingest_throughput
 
 _bench-db-size-growth:
-	@./scripts/bin/require-isolate >/dev/null
+	@./bin/atlasctl env require-isolate >/dev/null
 	@cargo bench -p bijux-atlas-ingest --features bench-ingest-throughput --bench db_size_growth
 
 _bench-smoke:

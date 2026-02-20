@@ -73,16 +73,16 @@ culprits-all: culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per
 	@printf '%s\n' "INFO: culprits-all completed."
 
 crate-structure:
-	@./scripts/bin/require-isolate >/dev/null
+	@./bin/atlasctl env require-isolate >/dev/null
 	@./scripts/areas/public/require-crate-docs.sh
 	@$(ATLAS_SCRIPTS) docs crate-docs-contract-check --report text
 
 crate-docs-contract:
-	@./scripts/bin/require-isolate >/dev/null
+	@./bin/atlasctl env require-isolate >/dev/null
 	@$(ATLAS_SCRIPTS) docs crate-docs-contract-check --report text
 
 cli-command-surface:
-	@./scripts/bin/require-isolate >/dev/null
+	@./bin/atlasctl env require-isolate >/dev/null
 	@./scripts/areas/public/check-cli-commands.sh
 
 .PHONY: culprits-all culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir crate-structure crate-docs-contract cli-command-surface
