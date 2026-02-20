@@ -29,6 +29,7 @@ docs-build: ## Build docs + link-check + spell-check + lint
 	@python3 scripts/docs/generate_concept_graph.py
 	@python3 scripts/docs/generate_openapi_docs.py
 	@python3 scripts/docs/generate_observability_surface.py
+	@python3 scripts/docs/generate_ops_badge.py
 	@python3 scripts/docs/generate_ops_schema_docs.py
 	@python3 scripts/docs/generate_ops_surface.py
 	@python3 scripts/docs/generate_ops_contracts_doc.py

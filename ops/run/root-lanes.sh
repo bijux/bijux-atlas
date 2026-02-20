@@ -27,10 +27,12 @@ ROOT_FAST_LANES=(
   "lane-docs"
   "lane-scripts"
   "lane-configs-policies"
+  "internal/lane-obs-cheap"
 )
 
 ROOT_LOCAL_EXTRA_LANES=(
   "internal/lane-ops-smoke"
+  "internal/lane-obs-full"
 )
 
 summary_dir_for() {

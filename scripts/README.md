@@ -136,6 +136,7 @@ Generated file. Do not edit manually.
 | `scripts/docs/generate_makefiles_surface.py` | `docs-governance` | `public` | - |
 | `scripts/docs/generate_observability_surface.py` | `docs-governance` | `public` | `docs-build` |
 | `scripts/docs/generate_openapi_docs.py` | `docs-governance` | `public` | `docs-build` |
+| `scripts/docs/generate_ops_badge.py` | `docs-governance` | `public` | `docs-build` |
 | `scripts/docs/generate_ops_contracts_doc.py` | `docs-governance` | `public` | `docs-build`, `ops-contracts-check`, `ops-gen` |
 | `scripts/docs/generate_ops_schema_docs.py` | `docs-governance` | `public` | `docs-build`, `ops-contracts-check`, `ops-gen` |
 | `scripts/docs/generate_ops_surface.py` | `docs-governance` | `public` | `docs-build`, `ops-contracts-check`, `ops-gen` |
@@ -206,6 +207,7 @@ Generated file. Do not edit manually.
 | `scripts/layout/check_no_mixed_script_name_variants.py` | `repo-surface` | `public` | `scripts-lint` |
 | `scripts/layout/check_obs_pack_ssot.py` | `repo-surface` | `public` | `ops-contracts-check` |
 | `scripts/layout/check_obs_script_name_collisions.py` | `repo-surface` | `public` | `ops-observability-validate` |
+| `scripts/layout/check_obs_suites.py` | `repo-surface` | `public` | `ops-contracts-check` |
 | `scripts/layout/check_ops_artifacts_writes.py` | `repo-surface` | `public` | `layout-check`, `ops-layout-lint` |
 | `scripts/layout/check_ops_canonical_entrypoints.py` | `repo-surface` | `public` | `ops-contracts-check` |
 | `scripts/layout/check_ops_canonical_shims.sh` | `repo-surface` | `public` | `layout-check` |
@@ -261,7 +263,7 @@ Generated file. Do not edit manually.
 | `scripts/layout/list_internal_targets.py` | `repo-surface` | `public` | `internal-list` |
 | `scripts/layout/make_doctor.py` | `repo-surface` | `public` | `doctor` |
 | `scripts/layout/make_prereqs.py` | `repo-surface` | `public` | `prereqs` |
-| `scripts/layout/make_report.py` | `repo-surface` | `public` | - |
+| `scripts/layout/make_report.py` | `repo-surface` | `public` | `report` |
 | `scripts/layout/make_target_graph.py` | `repo-surface` | `public` | - |
 | `scripts/layout/migrate.sh` | `repo-surface` | `public` | `layout-migrate` |
 | `scripts/layout/public_make_targets.py` | `repo-surface` | `public` | - |
