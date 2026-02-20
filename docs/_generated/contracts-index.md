@@ -3,7 +3,7 @@
 Generated from repository files. Do not edit manually.
 
 - CONTRACT files: `12`
-- Schema files: `56`
+- Schema files: `61`
 
 ## CONTRACT.md Files
 
@@ -32,14 +32,19 @@ Generated from repository files. Do not edit manually.
 - `configs/_schemas/public-surface.schema.json`
 - `configs/_schemas/target-renames.schema.json`
 - `configs/_schemas/tool-versions.schema.json`
+- `configs/contracts/atlasctl-output.schema.json`
 - `configs/contracts/env.schema.json`
 - `configs/contracts/inventory-budgets.schema.json`
+- `configs/contracts/inventory-commands.schema.json`
 - `configs/contracts/inventory-configs.schema.json`
 - `configs/contracts/inventory-contracts.schema.json`
+- `configs/contracts/inventory-legacy-scripts.schema.json`
 - `configs/contracts/inventory-make.schema.json`
 - `configs/contracts/inventory-ops.schema.json`
 - `configs/contracts/inventory-owners.schema.json`
 - `configs/contracts/inventory-schemas.schema.json`
+- `configs/contracts/inventory-scripts-migration.schema.json`
+- `configs/contracts/inventory-touched-paths.schema.json`
 - `configs/contracts/make-contracts-check-output.schema.json`
 - `configs/contracts/ops-lint-output.schema.json`
 - `configs/contracts/scripts-doctor-output.schema.json`
