@@ -20,10 +20,10 @@ include makefiles/ops.mk
 include makefiles/policies.mk
 
 config-print: ## Print canonical merged config payload as JSON
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/public/config-print.py
+	@./scripts/bin/bijux-atlas-scripts configs print
 
 config-drift: ## Check config/schema/docs drift without regeneration
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/public/config-drift-check.py
+	@./scripts/bin/bijux-atlas-scripts configs drift
 
 configs-gen-check: ## Regenerate configs generated docs and fail on drift
 	@./scripts/areas/configs/check_generated_configs_drift.sh
