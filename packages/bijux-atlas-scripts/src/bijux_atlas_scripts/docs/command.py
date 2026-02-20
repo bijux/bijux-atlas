@@ -2116,7 +2116,6 @@ def _check_script_headers(ctx: RunContext) -> tuple[int, str]:
             "scripts/bin/",
             "scripts/areas/public/",
             "scripts/areas/internal/",
-            "scripts/areas/tools/",
         ]
         for group in required_groups:
             if group not in text:

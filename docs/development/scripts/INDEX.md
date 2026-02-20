@@ -24,8 +24,7 @@ Does not duplicate script implementation details.
 - Script taxonomy:
   - `scripts/areas/public/`: make-callable entrypoints.
   - `scripts/areas/internal/`: script-only helpers.
-  - `scripts/areas/tools/`: shared Python helper modules.
-- Contracts: `atlasctl contracts ...`
+  - Contracts: `atlasctl contracts ...`
 - Docs linters/generators: `atlasctl docs ...`
 - Perf tooling wrappers: `scripts/areas/public/perf/` (canonical: `ops/load/scripts/`)
 - Observability checks: `scripts/areas/public/observability/`
