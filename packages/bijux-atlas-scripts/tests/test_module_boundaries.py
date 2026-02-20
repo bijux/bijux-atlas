@@ -13,7 +13,7 @@ def test_module_boundary_check_passes_on_repo() -> None:
 
 
 def test_module_boundary_check_detects_forbidden_import(tmp_path: Path) -> None:
-    pkg_root = tmp_path / "tools" / "bijux-atlas-scripts" / "src" / "bijux_atlas_scripts"
+    pkg_root = tmp_path / "packages" / "bijux-atlas-scripts" / "src" / "bijux_atlas_scripts"
     (pkg_root / "ops").mkdir(parents=True)
     (pkg_root / "registry").mkdir(parents=True)
     (pkg_root / "ops" / "bad.py").write_text("import bijux_atlas_scripts.registry.pins\n", encoding="utf-8")

@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
-    env = {"PYTHONPATH": str(ROOT / "tools/bijux-atlas-scripts/src")}
+    env = {"PYTHONPATH": str(ROOT / "packages/bijux-atlas-scripts/src")}
     extra: list[str] = []
     if os.environ.get("BIJUX_SCRIPTS_TEST_NO_NETWORK") == "1":
         extra.append("--no-network")

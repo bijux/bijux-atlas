@@ -23,7 +23,7 @@
     },
     "tool": {
       "type": "string",
-      "const": "bijux-atlas-scripts"
+      "const": "bijux-atlas"
     },
     "run_id": {
       "type": "string",

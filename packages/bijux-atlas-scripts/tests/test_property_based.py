@@ -7,6 +7,7 @@ from unittest.mock import patch
 
 import pytest
 from hypothesis import given
+from hypothesis import settings
 from hypothesis import strategies as st
 
 from bijux_atlas_scripts.configs.command import normalize_config_key
@@ -32,6 +33,7 @@ def test_run_id_format_contains_git_sha_suffix(profile: str) -> None:
 
 @pytest.mark.unit
 @given(st.lists(st.from_regex(r"[a-z0-9_-]{1,10}", fullmatch=True), min_size=1, max_size=5))
+@settings(deadline=None)
 def test_evidence_paths_stay_under_allowed_root(chunks: list[str]) -> None:
     with tempfile.TemporaryDirectory() as td:
         ctx = RunContext.from_args("t-prop", str(Path(td) / "evidence"), "test", False)

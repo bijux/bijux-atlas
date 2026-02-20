@@ -2,10 +2,39 @@ from __future__ import annotations
 
 import argparse
 import json
+from dataclasses import dataclass
 
 from .run_context import RunContext
 
 DomainPayload = dict[str, object]
+
+
+@dataclass(frozen=True)
+class CommandSpec:
+    name: str
+    help_text: str
+    stable: bool = True
+
+
+def registry() -> tuple[CommandSpec, ...]:
+    return (
+        CommandSpec("doctor", "show tooling and context diagnostics"),
+        CommandSpec("inventory", "generate and verify inventories"),
+        CommandSpec("gates", "run gate contracts and lane checks"),
+        CommandSpec("ops", "ops checks and suite orchestration"),
+        CommandSpec("docs", "docs checks and generation"),
+        CommandSpec("configs", "configs checks and inventories"),
+        CommandSpec("policies", "policy relaxations and bypass checks"),
+        CommandSpec("k8s", "k8s checks and suites"),
+        CommandSpec("stack", "stack lifecycle and checks"),
+        CommandSpec("load", "load and perf suites"),
+        CommandSpec("obs", "observability checks and drills"),
+        CommandSpec("report", "unified report and scorecard commands"),
+        CommandSpec("compat", "deprecated shim inventory and checks", stable=False),
+        CommandSpec("contracts", "contracts domain commands"),
+        CommandSpec("registry", "registry domain commands"),
+        CommandSpec("layout", "layout domain commands"),
+    )
 
 
 def register_domain_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser], name: str, help_text: str) -> None:
@@ -17,12 +46,14 @@ def register_domain_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
 
 def domain_payload(ctx: RunContext, domain: str) -> DomainPayload:
     return {
-        "tool": "bijux-atlas-scripts",
+        "tool": "bijux-atlas",
         "domain": domain,
         "run_id": ctx.run_id,
         "profile": ctx.profile,
         "repo_root": str(ctx.repo_root),
         "evidence_root": str(ctx.evidence_root),
+        "format": ctx.output_format,
+        "network": ctx.network_mode,
         "status": "ok",
     }
 

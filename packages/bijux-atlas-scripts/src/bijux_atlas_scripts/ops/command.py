@@ -25,6 +25,9 @@ def _check(check_id: str, description: str, cmd: list[str], actionable: str) -> 
     return OpsCheck(check_id, description, cmd, actionable)
 
 
+SELF_CLI = ["python3", "-m", "bijux_atlas_scripts.cli"]
+
+
 LINT_CHECKS: list[OpsCheck] = [
     _check(
         "ops-run-entrypoints",
@@ -47,11 +50,7 @@ LINT_CHECKS: list[OpsCheck] = [
     _check(
         "ops-load-suite-manifest",
         "Validate load suite manifest",
-        [
-            "./scripts/bin/bijux-atlas-scripts",
-            "run",
-            "./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_suite_manifest.py",
-        ],
+        [*SELF_CLI, "run", "./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_suite_manifest.py"],
         "Fix suite schema violations and keep suite manifest aligned with contract.",
     ),
     _check(
@@ -111,11 +110,7 @@ LINT_CHECKS: list[OpsCheck] = [
     _check(
         "ops-profile-goldens",
         "Validate observability profile goldens",
-        [
-            "./scripts/bin/bijux-atlas-scripts",
-            "run",
-            "./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_profile_goldens.py",
-        ],
+        [*SELF_CLI, "run", "./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_profile_goldens.py"],
         "Refresh approved profile goldens through the documented update flow.",
     ),
     _check(
@@ -186,7 +181,7 @@ def _ops_report(run_id: str, checks: list[dict[str, object]], started_at: str, e
     relaxed = [c for c in checks if c.get("status") == "relaxed"]
     return {
         "schema_version": 1,
-        "tool": "bijux-atlas-scripts",
+        "tool": "bijux-atlas",
         "run_id": run_id,
         "status": "fail" if failed else "pass",
         "started_at": started_at,
@@ -291,7 +286,7 @@ def _run_simple_cmd(ctx: RunContext, cmd: list[str], report_format: str) -> int:
     code, output = _run_check(cmd, ctx.repo_root)
     payload = {
         "schema_version": 1,
-        "tool": "bijux-atlas-scripts",
+        "tool": "bijux-atlas",
         "run_id": ctx.run_id,
         "status": "pass" if code == 0 else "fail",
         "command": " ".join(cmd),
@@ -312,7 +307,7 @@ def _ops_policy_audit(ctx: RunContext, report_format: str) -> int:
         repo / "makefiles/env.mk",
         repo / "makefiles/ops.mk",
         repo / "scripts/areas/layout/validate_ops_env.py",
-        repo / "tools/bijux-atlas-scripts/src/bijux_atlas_scripts/configs/command.py",
+        repo / "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/configs/command.py",
         repo / "crates/bijux-atlas-server/src/main.rs",
     ]
     text = "\n".join(p.read_text(encoding="utf-8") for p in search_paths if p.exists())
@@ -325,7 +320,7 @@ def _ops_policy_audit(ctx: RunContext, report_format: str) -> int:
 
     payload = {
         "schema_version": 1,
-        "tool": "bijux-atlas-scripts",
+        "tool": "bijux-atlas",
         "run_id": ctx.run_id,
         "status": "pass" if not violations else "fail",
         "violations": violations,
@@ -344,13 +339,13 @@ def _ops_policy_audit(ctx: RunContext, report_format: str) -> int:
 def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.ops_cmd == "check":
         steps = [
-            ["./scripts/bin/bijux-atlas-scripts", "ops", "lint", "--report", ns.report, "--emit-artifacts"],
-            ["./scripts/bin/bijux-atlas-scripts", "ops", "contracts-check", "--report", ns.report],
-            ["./scripts/bin/bijux-atlas-scripts", "ops", "suites-check", "--report", ns.report],
-            ["./scripts/bin/bijux-atlas-scripts", "ops", "schema-check", "--report", ns.report],
+            [*SELF_CLI, "ops", "lint", "--report", ns.report, "--emit-artifacts"],
+            [*SELF_CLI, "ops", "contracts-check", "--report", ns.report],
+            [*SELF_CLI, "ops", "suites-check", "--report", ns.report],
+            [*SELF_CLI, "ops", "schema-check", "--report", ns.report],
             ["env", "CACHE_STATUS_STRICT=0", "make", "-s", "ops-cache-status"],
             ["make", "-s", "pins/check"],
-            ["./scripts/bin/bijux-atlas-scripts", "ops", "surface", "--report", ns.report],
+            [*SELF_CLI, "ops", "surface", "--report", ns.report],
             ["python3", "scripts/areas/layout/check_ops_index_surface.py"],
         ]
         for cmd in steps:

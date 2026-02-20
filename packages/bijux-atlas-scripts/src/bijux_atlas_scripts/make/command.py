@@ -234,7 +234,7 @@ def _contracts_report(
     failed = [c for c in checks if c.get("status") == "fail"]
     return {
         "schema_version": 1,
-        "tool": "bijux-atlas-scripts",
+        "tool": "bijux-atlas",
         "run_id": run_id,
         "status": "fail" if failed else "pass",
         "started_at": started_at,

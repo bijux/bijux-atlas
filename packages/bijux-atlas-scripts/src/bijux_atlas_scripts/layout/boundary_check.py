@@ -79,7 +79,7 @@ def _imported_package_group(mod: str) -> str | None:
 
 
 def check_boundaries(repo_root: Path) -> list[Violation]:
-    src_root = repo_root / "tools" / "bijux-atlas-scripts" / "src"
+    src_root = repo_root / "packages" / "bijux-atlas-scripts" / "src"
     pkg_root = src_root / PACKAGE
     violations: list[Violation] = []
 
@@ -124,11 +124,11 @@ def main() -> int:
     repo_root = Path(__file__).resolve().parents[5]
     violations = check_boundaries(repo_root)
     if violations:
-        print("bijux-atlas-scripts boundary check failed")
+        print("bijux-atlas boundary check failed")
         for v in violations:
             print(f"- {v.file}:{v.line} disallowed import {v.source} -> {v.target}")
         return 1
-    print("bijux-atlas-scripts boundary check passed")
+    print("bijux-atlas boundary check passed")
     return 0
 
 
