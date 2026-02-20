@@ -19,6 +19,7 @@ FORBIDDEN = (
 # Explicitly approved harness-level mutation checks.
 ALLOWED_PATHS = {
     "ops/k8s/tests/checks/config/test_configmap_update_reload.sh",
+    "ops/k8s/tests/checks/config/test_configmap_unknown_keys_rejected.sh",
     "ops/k8s/tests/checks/security/test_secrets_rotation.sh",
     "ops/k8s/tests/checks/datasets/test_pdb.sh",
 }
