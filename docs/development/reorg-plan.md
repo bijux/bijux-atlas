@@ -23,7 +23,7 @@ Keep repository operations discoverable and stable by capping public surface and
   - public surface contract
   - docs surface contract
   - suite-id docs contract
-  - JSON gate reports under `ops/_generated/gates/<run_id>/`
+  - JSON gate reports under `ops/_evidence/gates/<run_id>/`
 - `make scripts-lint`:
   - naming convention checks
   - duplicate naming form checks

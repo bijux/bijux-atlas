@@ -87,7 +87,7 @@ ops-gen-clean: ## Cleanup generated ops outputs not in committed generated polic
 
 ops-gen-check: ## Fail when regenerated ops outputs drift from committed state
 	@$(MAKE) -s ops-gen
-	@git diff --exit-code -- ops/_generated docs/_generated/ops-*.md docs/_generated/layer-contract.md ops/k8s/charts/bijux-atlas/values.schema.json ops/stack/versions.json
+	@git diff --exit-code -- ops/_generated_committed docs/_generated/ops-*.md docs/_generated/layer-contract.md ops/k8s/charts/bijux-atlas/values.schema.json ops/stack/versions.json
 
 ops-doctor: ## Validate and print pinned ops tool versions and canonical env
 	@./ops/run/doctor.sh
@@ -923,7 +923,7 @@ ops-report: ## Gather ops evidence into artifacts/ops/<run-id>/
 	python3 ./ops/report/slo_report.py --metrics "$$out/metrics/metrics.txt" --slo-config configs/ops/slo/slo.v1.json --out "$$out/slo-report.json"; \
 	./ops/e2e/runner/write_metadata.sh "$$out"; \
 	./ops/run/report.sh >/dev/null; \
-	python3 ./ops/report/generate.py --unified ops/_generated/report.unified.json --out "$$out/report.md"; \
+	python3 ./ops/report/generate.py --unified ops/_generated_committed/report.unified.json --out "$$out/report.md"; \
 	echo "ops report written to $$out"; \
 	RUN_ID="$${OPS_RUN_ID}" OUT_DIR="$$out/bundle" ./scripts/public/report-bundle.sh >/dev/null; \
 	ln -sfn "$${OPS_RUN_ID}" artifacts/ops/latest; \

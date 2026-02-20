@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-SCORECARD = ROOT / "ops/_generated/scorecard.json"
+SCORECARD = ROOT / "ops/_generated_committed/scorecard.json"
 OUT = ROOT / "docs/_generated/ops-badge.md"
 
 
