@@ -6,9 +6,9 @@ set -euo pipefail
 
 OPS_LIB_ROOT="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=ops/_lib/artifacts.sh
-source "$OPS_LIB_ROOT/artifacts.sh"
+source "$OPS_LIB_ROOT/../artifacts.sh"
 # shellcheck source=ops/_lib/kubectl.sh
-source "$OPS_LIB_ROOT/kubectl.sh"
+source "$OPS_LIB_ROOT/../kubectl.sh"
 
 ops_helm() {
   helm "$@"
