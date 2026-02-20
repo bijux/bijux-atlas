@@ -34,7 +34,7 @@ layout-check: ## Validate repository layout contract and root shape
 
 layout-migrate: ## Apply deterministic layout/path migration helpers
 	@./scripts/areas/layout/replace_paths.sh --apply
-	@./scripts/areas/layout/migrate.sh
+	@./bin/bijux-atlas migrate layout
 
 layout-fix: ## Repair known layout/symlink drift deterministically
 	@$(MAKE) layout-migrate
