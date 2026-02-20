@@ -22,6 +22,14 @@ ALLOWED_INTERNAL_FILES = {
     "configs/ops/public-make-targets.json",
     "configs/perf/critical_queries_explain_snapshot.json",
     "configs/policy/ops-smoke-budget-relaxations.json",
+    "configs/contracts/inventory-budgets.schema.json",
+    "configs/contracts/inventory-configs.schema.json",
+    "configs/contracts/inventory-contracts.schema.json",
+    "configs/contracts/inventory-make.schema.json",
+    "configs/contracts/inventory-ops.schema.json",
+    "configs/contracts/inventory-owners.schema.json",
+    "configs/contracts/inventory-schemas.schema.json",
+    "configs/contracts/make-contracts-check-output.schema.json",
 }
 EXTS = {".json", ".yaml", ".yml", ".toml"}
 
