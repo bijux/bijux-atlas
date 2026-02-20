@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[3]
 ALLOWED_PREFIXES = (
     "scripts/",
     "ops/",
+    "docker/scripts/",
 )
 ALLOWED_OPS_MARKERS = (
     "/scripts/",
@@ -46,6 +47,8 @@ def main() -> int:
     errors: list[str] = []
     for rel in tracked_script_files():
         if rel.startswith("scripts/"):
+            continue
+        if rel.startswith("docker/scripts/"):
             continue
         if rel.startswith("ops/"):
             if any(marker in rel for marker in ALLOWED_OPS_MARKERS):
