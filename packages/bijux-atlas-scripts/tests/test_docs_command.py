@@ -66,3 +66,14 @@ def test_docs_inventory_and_evidence_policy_generation(tmp_path: Path) -> None:
     assert pol.returncode == 0, pol.stderr
     pol_payload = json.loads(pol.stdout)
     assert pol_payload["output"] == pol_out_rel
+
+
+def test_docs_generate_json_integration() -> None:
+    first = _run_cli("docs", "generate", "--report", "json")
+    second = _run_cli("docs", "generate", "--report", "json")
+    assert first.returncode in {0, 1}, first.stderr
+    assert second.returncode in {0, 1}, second.stderr
+    p1 = json.loads(first.stdout)
+    p2 = json.loads(second.stdout)
+    assert "generated_count" in p1
+    assert p1["generated_count"] == p2["generated_count"]
