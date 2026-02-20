@@ -9,6 +9,7 @@ from atlasctl.check.native import (
     check_layout_contract,
     check_make_command_allowlist,
     check_make_forbidden_paths,
+    check_make_no_direct_python_script_invocations,
     check_make_scripts_references,
     check_no_xtask_refs,
     check_ops_generated_tracked,
@@ -56,21 +57,25 @@ def test_check_make_forbidden_paths_blocks_tools_and_xtask(tmp_path: Path) -> No
     assert errors
 
 
+def test_check_make_no_direct_python_script_invocations_flags_direct_calls(tmp_path: Path) -> None:
+    (tmp_path / "makefiles").mkdir(parents=True)
+    (tmp_path / "configs/layout").mkdir(parents=True)
+    (tmp_path / "configs/layout/python-migration-exceptions.json").write_text('{"exceptions":[]}', encoding="utf-8")
+    (tmp_path / "Makefile").write_text("all:\n\t@python3 tools/check.py\n", encoding="utf-8")
+    code, errors = check_make_no_direct_python_script_invocations(tmp_path)
+    assert code == 1
+    assert errors
+
+
 def test_check_ops_generated_tracked_flags_tracked_entries(monkeypatch, tmp_path: Path) -> None:
-    monkeypatch.setattr(
-        "atlasctl.check.native._git_ls_files",
-        lambda _repo_root, _spec: ["ops/_generated/run-1/report.json"],
-    )
+    monkeypatch.setattr("atlasctl.checks.repo.legacy_native._git_ls_files", lambda _repo_root, _spec: ["ops/_generated/run-1/report.json"])
     code, errors = check_ops_generated_tracked(tmp_path)
     assert code == 1
     assert "ops/_generated" in errors[0]
 
 
 def test_check_tracked_timestamp_paths_flags_timestamp_segments(monkeypatch, tmp_path: Path) -> None:
-    monkeypatch.setattr(
-        "atlasctl.check.native._git_ls_files",
-        lambda _repo_root, _spec: ["artifacts/evidence/2026-02-20/report.json", "docs/index.md"],
-    )
+    monkeypatch.setattr("atlasctl.checks.repo.legacy_native._git_ls_files", lambda _repo_root, _spec: ["artifacts/evidence/2026-02-20/report.json", "docs/index.md"])
     code, errors = check_tracked_timestamp_paths(tmp_path)
     assert code == 1
     assert "2026-02-20" in errors[0]
@@ -78,7 +83,7 @@ def test_check_tracked_timestamp_paths_flags_timestamp_segments(monkeypatch, tmp
 
 def test_check_committed_generated_hygiene_flags_logs_and_timestamps(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.setattr(
-        "atlasctl.check.native._git_ls_files",
+        "atlasctl.checks.repo.legacy_native._git_ls_files",
         lambda _repo_root, _spec: [
             "docs/_generated/2026-02-20/index.md",
             "ops/_generated_committed/run.log",
@@ -159,7 +164,7 @@ def test_check_make_scripts_references_flags_unapproved_scripts_path(tmp_path: P
         json.dumps({"exceptions": []}),
         encoding="utf-8",
     )
-    (tmp_path / "Makefile").write_text("x:\n\t@./packages/atlasctl/src/atlasctl/layout_checks/check.sh\n", encoding="utf-8")
+    (tmp_path / "Makefile").write_text("x:\n\t@python3 scripts/check/foo.py\n", encoding="utf-8")
     code, errors = check_make_scripts_references(tmp_path)
     assert code == 1
     assert any("scripts/" in e for e in errors)

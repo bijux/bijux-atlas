@@ -23,6 +23,8 @@ def test_check_list_json_inventory() -> None:
     payload = json.loads(proc.stdout)
     assert payload["status"] == "ok"
     assert any(c["id"] == "repo.no_xtask_refs" for c in payload["checks"])
+    assert any(c["id"] == "repo.no_direct_python_invocations" for c in payload["checks"])
+    assert any(c["id"] == "repo.public_api_exports" for c in payload["checks"])
 
 
 def test_check_explain_json() -> None:
