@@ -209,8 +209,5 @@ Generated file. Do not edit manually.
 | `scripts/bin/bijux-atlas-dev` | `platform` | `public` | - |
 | `scripts/bin/bijux-atlas-ops` | `platform` | `internal` | - |
 | `scripts/bin/bijux-atlas-scripts` | `platform` | `public` | `ci-log-fields-contract`, `docs-build`, `docs-check`, `docs-freeze`, `docs-lint-names`, `docs-req-lock-refresh`, `layout-check`, `observability-pack-drills`, `observability-pack-test`, `ops-catalog-validate`, `ops-check`, `ops-dataset-qc-diff`, `ops-lint`, `ops-lint-all`, `ops-load-ci`, `ops-load-full`, `ops-load-manifest-validate`, `ops-load-nightly`, `ops-load-shedding`, `ops-load-smoke`, `ops-load-soak`, `ops-load-spike-proof`, `ops-local-full`, `ops-metrics-check`, `ops-observability-pack-conformance-report`, `ops-observability-validate`, `ops-perf-report`, `ops-slo-burn` |
-| `scripts/bin/make_explain` | `platform` | `internal` | - |
-| `scripts/bin/make_graph` | `platform` | `internal` | - |
-| `scripts/bin/render_public_help` | `platform` | `internal` | - |
 | `scripts/bin/run_drill.sh` | `platform` | `internal` | - |
 | `scripts/lib/errors.sh` | `platform` | `internal` | - |
