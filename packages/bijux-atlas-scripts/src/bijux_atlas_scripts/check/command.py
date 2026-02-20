@@ -22,6 +22,7 @@ from .native import (
     check_no_executable_python_outside_packages,
     check_no_xtask_refs,
     check_ops_generated_tracked,
+    check_python_migration_exceptions_expiry,
     check_root_bin_shims,
     check_script_help,
     check_script_ownership,
@@ -243,6 +244,15 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         else:
             print("make command allowlist check passed")
         return code
+    if sub == "python-migration-exceptions-expiry":
+        code, errors = check_python_migration_exceptions_expiry(ctx.repo_root)
+        if errors:
+            print("python migration exceptions have expired:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("python migration exceptions expiry check passed")
+        return code
     return 2
 
 
@@ -282,3 +292,4 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     p_sub.add_parser("effects-lint", help="forbid runtime effects leakage in pure/query HTTP layers")
     p_sub.add_parser("naming-intent-lint", help="forbid generic helpers naming in crates tree")
     p_sub.add_parser("make-command-allowlist", help="enforce direct make recipe command allowlist")
+    p_sub.add_parser("python-migration-exceptions-expiry", help="fail on expired python migration exceptions")

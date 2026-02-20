@@ -560,6 +560,21 @@ def check_docker_image_size(repo_root: Path) -> tuple[int, list[str]]:
     return 0, []
 
 
+def check_python_migration_exceptions_expiry(repo_root: Path) -> tuple[int, list[str]]:
+    path = repo_root / "configs" / "layout" / "python-migration-exceptions.json"
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    today = date.today()
+    errors: list[str] = []
+    for row in payload.get("exceptions", []):
+        expires_on = date.fromisoformat(str(row.get("expires_on", "")))
+        if expires_on < today:
+            errors.append(
+                f"{row.get('id')} kind={row.get('kind')} owner={row.get('owner')} "
+                f"expires_on={row.get('expires_on')} issue={row.get('issue')}"
+            )
+    return (0 if not errors else 1), errors
+
+
 def check_root_bin_shims(repo_root: Path) -> tuple[int, list[str]]:
     bin_dir = repo_root / "bin"
     if not bin_dir.exists():
