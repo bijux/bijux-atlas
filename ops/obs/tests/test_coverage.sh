@@ -32,19 +32,19 @@ done
 python3 "$ROOT/ops/obs/scripts/validate_logs_schema.py" --namespace "${ATLAS_E2E_NAMESPACE:-atlas-e2e}" --release "${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
 
 # 4) run contracts checks
-python3 "$ROOT/ops/obs/scripts/contracts/check_metrics_contract.py"
-python3 "$ROOT/ops/obs/scripts/contracts/check_metrics_coverage.py"
-python3 "$ROOT/ops/obs/scripts/contracts/check_metrics_drift.py"
-python3 "$ROOT/ops/obs/scripts/contracts/check_metrics_golden.py"
-python3 "$ROOT/ops/obs/scripts/contracts/check_tracing_contract.py"
-python3 "$ROOT/ops/obs/scripts/contracts/check_trace_golden.py"
+python3 "$ROOT/ops/obs/scripts/areas/contracts/check_metrics_contract.py"
+python3 "$ROOT/ops/obs/scripts/areas/contracts/check_metrics_coverage.py"
+python3 "$ROOT/ops/obs/scripts/areas/contracts/check_metrics_drift.py"
+python3 "$ROOT/ops/obs/scripts/areas/contracts/check_metrics_golden.py"
+python3 "$ROOT/ops/obs/scripts/areas/contracts/check_tracing_contract.py"
+python3 "$ROOT/ops/obs/scripts/areas/contracts/check_trace_golden.py"
 if [ "${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then
-  python3 "$ROOT/ops/obs/scripts/contracts/check_trace_coverage.py"
+  python3 "$ROOT/ops/obs/scripts/areas/contracts/check_trace_coverage.py"
 fi
-python3 "$ROOT/ops/obs/scripts/contracts/extract_trace_exemplars.py"
-python3 "$ROOT/scripts/public/observability/check_dashboard_contract.py"
-python3 "$ROOT/scripts/public/observability/check_alerts_contract.py"
-python3 "$ROOT/scripts/public/observability/lint_runbooks.py"
+python3 "$ROOT/ops/obs/scripts/areas/contracts/extract_trace_exemplars.py"
+python3 "$ROOT/scripts/areas/public/observability/check_dashboard_contract.py"
+python3 "$ROOT/scripts/areas/public/observability/check_alerts_contract.py"
+python3 "$ROOT/scripts/areas/public/observability/lint_runbooks.py"
 
 # minimum coverage threshold (tier-0)
 python3 - <<'PY'

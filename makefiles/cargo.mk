@@ -30,7 +30,7 @@ fmt:
 _fmt:
 	@./scripts/bin/require-isolate >/dev/null
 	@cargo fmt --all --check
-	@./scripts/layout/check_repo_hygiene.sh
+	@./scripts/areas/layout/check_repo_hygiene.sh
 
 lint:
 	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
@@ -53,14 +53,14 @@ _lint-rustfmt:
 
 _lint-configs:
 	@./scripts/bin/require-isolate >/dev/null
-	@./scripts/public/policy-lint.sh
-	@./scripts/layout/check_no_direct_script_runs.sh
-	@./scripts/layout/check_scripts_readme_drift.sh
-	@./scripts/layout/check_repo_hygiene.sh
+	@./scripts/areas/public/policy-lint.sh
+	@./scripts/areas/layout/check_no_direct_script_runs.sh
+	@./scripts/areas/layout/check_scripts_readme_drift.sh
+	@./scripts/areas/layout/check_repo_hygiene.sh
 
 _lint-docs:
 	@./scripts/bin/require-isolate >/dev/null
-	@./scripts/public/check-markdown-links.sh
+	@./scripts/areas/public/check-markdown-links.sh
 
 _lint-clippy:
 	@./scripts/bin/require-isolate >/dev/null
@@ -78,7 +78,7 @@ check:
 _check:
 	@./scripts/bin/require-isolate >/dev/null
 	@CARGO_BUILD_JOBS="$(CARGO_BUILD_JOBS)" cargo check --workspace --all-targets
-	@./scripts/layout/check_repo_hygiene.sh
+	@./scripts/areas/layout/check_repo_hygiene.sh
 
 test:
 	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
@@ -119,7 +119,7 @@ _test:
 	@if [ -d target/nextest ]; then find target/nextest -type f -delete 2>/dev/null || true; fi
 	@if [ -d target/nextest ]; then find target/nextest -type d -empty -delete 2>/dev/null || true; fi
 	@if [ -d target ]; then find target -type d -empty -delete 2>/dev/null || true; fi
-	@./scripts/layout/check_repo_hygiene.sh
+	@./scripts/areas/layout/check_repo_hygiene.sh
 
 _test-all:
 	@./scripts/bin/require-isolate >/dev/null
@@ -133,12 +133,12 @@ _test-all:
 	@if [ -d target/nextest ]; then find target/nextest -type f -delete 2>/dev/null || true; fi
 	@if [ -d target/nextest ]; then find target/nextest -type d -empty -delete 2>/dev/null || true; fi
 	@if [ -d target ]; then find target -type d -empty -delete 2>/dev/null || true; fi
-	@./scripts/layout/check_repo_hygiene.sh
+	@./scripts/areas/layout/check_repo_hygiene.sh
 
 _test-contracts:
 	@./scripts/bin/require-isolate >/dev/null
 	@cargo test -p bijux-atlas-server --test observability_contract
-	@./scripts/layout/check_repo_hygiene.sh
+	@./scripts/areas/layout/check_repo_hygiene.sh
 
 coverage:
 	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
@@ -159,7 +159,7 @@ _coverage:
 	@cargo llvm-cov nextest --workspace --profile "$(NEXTEST_PROFILE)" $(NEXTEST_CONFIG) --lcov --output-path "$(COVERAGE_OUT)"
 	@echo "coverage output: $(COVERAGE_OUT)"
 	@echo "coverage thresholds config: $(COVERAGE_THRESHOLDS)"
-	@./scripts/layout/check_repo_hygiene.sh
+	@./scripts/areas/layout/check_repo_hygiene.sh
 
 audit:
 	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
@@ -181,21 +181,21 @@ _audit:
 ci-core: fmt lint audit test coverage
 
 openapi-drift:
-	@./scripts/public/openapi-diff-check.sh
+	@./scripts/areas/public/openapi-diff-check.sh
 
 api-contract-check:
-	@python3 ./scripts/public/contracts/gen_openapi.py
-	@./scripts/public/openapi-diff-check.sh
-	@python3 ./scripts/public/contracts/check_endpoints_contract.py
-	@python3 ./scripts/public/contracts/check_error_codes_contract.py
-	@python3 ./scripts/public/contracts/check_v1_surface.py
-	@python3 ./scripts/public/contracts/check_breaking_contract_change.py
+	@python3 ./scripts/areas/public/contracts/gen_openapi.py
+	@./scripts/areas/public/openapi-diff-check.sh
+	@python3 ./scripts/areas/public/contracts/check_endpoints_contract.py
+	@python3 ./scripts/areas/public/contracts/check_error_codes_contract.py
+	@python3 ./scripts/areas/public/contracts/check_v1_surface.py
+	@python3 ./scripts/areas/public/contracts/check_breaking_contract_change.py
 
 compat-matrix-validate:
-	@./scripts/release/validate-compat-matrix.sh
+	@./scripts/areas/release/validate-compat-matrix.sh
 
 fetch-fixtures:
-	@./scripts/fixtures/fetch-medium.sh
+	@./scripts/areas/fixtures/fetch-medium.sh
 
 load-test:
 	@k6 run ops/load/k6/mixed-80-20.js
@@ -207,11 +207,11 @@ perf-nightly:
 	@./ops/load/scripts/run_nightly_perf.sh
 
 query-plan-gate:
-	@./scripts/public/query-plan-gate.sh
+	@./scripts/areas/public/query-plan-gate.sh
 
 critical-query-check:
-	@python3 ./scripts/public/contracts/check_sqlite_indexes_contract.py
-	@python3 ./scripts/public/perf/run_critical_queries.py
+	@python3 ./scripts/areas/public/contracts/check_sqlite_indexes_contract.py
+	@python3 ./scripts/areas/public/perf/run_critical_queries.py
 
 cold-start-bench:
 	@./ops/load/scripts/cold_start_benchmark.sh
@@ -221,13 +221,13 @@ memory-profile-load:
 	@echo "outputs: artifacts/benchmarks/memory/"
 
 run-medium-ingest:
-	@./scripts/fixtures/run-medium-ingest.sh
+	@./scripts/areas/fixtures/run-medium-ingest.sh
 
 ingest-sharded-medium:
-	@./scripts/fixtures/run-medium-ingest.sh --sharded
+	@./scripts/areas/fixtures/run-medium-ingest.sh --sharded
 
 run-medium-serve:
-	@./scripts/fixtures/run-medium-serve.sh
+	@./scripts/areas/fixtures/run-medium-serve.sh
 
 bench-sqlite-query-latency:
 	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi

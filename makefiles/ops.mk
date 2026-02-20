@@ -6,10 +6,10 @@ SHELL := /bin/sh
 OPS_ENV_SCHEMA ?= configs/ops/env.schema.json
 
 ops-layout-lint: ## Validate canonical ops layout contract
-	@python3 ./scripts/layout/check_ops_layout_contract.py
-	@./scripts/layout/check_ops_workspace.sh
-	@python3 ./scripts/layout/check_ops_artifacts_writes.py
-	@python3 ./scripts/layout/check_ops_concept_ownership.py
+	@python3 ./scripts/areas/layout/check_ops_layout_contract.py
+	@./scripts/areas/layout/check_ops_workspace.sh
+	@python3 ./scripts/areas/layout/check_ops_artifacts_writes.py
+	@python3 ./scripts/areas/layout/check_ops_concept_ownership.py
 
 ops-surface: ## Print stable ops entrypoints from SSOT surface metadata
 	@python3 -c 'import json; d=json.load(open("ops/_meta/surface.json")); print("\n".join(d.get("entrypoints",[])))'
@@ -18,74 +18,74 @@ ops-help: ## Print canonical ops runbook index
 	@cat ops/INDEX.md
 
 ops-env-validate: ## Validate canonical ops environment contract against schema
-	@python3 ./scripts/layout/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)"
+	@python3 ./scripts/areas/layout/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)"
 
 ops-env-print: ## Print canonical ops environment settings
-	@python3 ./scripts/layout/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)" --print --format json
+	@python3 ./scripts/areas/layout/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)" --print --format json
 
 ops-stack-versions-sync: ## Generate ops/stack/versions.json from configs/ops/tool-versions.json SSOT
-	@python3 ./scripts/layout/generate_ops_stack_versions.py
+	@python3 ./scripts/areas/layout/generate_ops_stack_versions.py
 
 ops-k8s-contracts: ## Validate k8s values/schema/install-matrix/chart drift contracts
 	@$(MAKE) -s ops-values-validate
-	@python3 ./scripts/layout/validate_ops_contracts.py
+	@python3 ./scripts/areas/layout/validate_ops_contracts.py
 
 ops-e2e-validate: ## Validate unified e2e scenario definitions and docs references
-	@python3 ./scripts/layout/check_e2e_suites.py
-	@python3 ./scripts/layout/check_e2e_scenarios.py
-	@python3 ./scripts/layout/check_realdata_scenarios.py
+	@python3 ./scripts/areas/layout/check_e2e_suites.py
+	@python3 ./scripts/areas/layout/check_e2e_scenarios.py
+	@python3 ./scripts/areas/layout/check_realdata_scenarios.py
 
 ops-contracts-check: ## Validate canonical ops manifests against ops/_schemas and contract invariants
 	@python3 ./ops/_meta/generate_layer_contract.py
 	@python3 ./ops/_lint/check_layer_contract_drift.py
-	@python3 ./scripts/layout/check_layer_drift.py
+	@python3 ./scripts/areas/layout/check_layer_drift.py
 	@python3 ./ops/_lint/no-layer-literals.py
 	@python3 ./ops/_lint/no-stack-layer-literals.py
 	@$(MAKE) -s ops-stack-versions-sync
-	@python3 ./scripts/layout/check_ops_surface_drift.py
-	@python3 ./scripts/layout/validate_ops_contracts.py
+	@python3 ./scripts/areas/layout/check_ops_surface_drift.py
+	@python3 ./scripts/areas/layout/validate_ops_contracts.py
 	@python3 ./ops/_lint/json-schema-coverage.py
-	@python3 ./scripts/layout/check_no_hidden_defaults.py
-	@python3 ./scripts/layout/check_obs_pack_ssot.py
-	@python3 ./scripts/layout/check_obs_suites.py
-	@python3 ./ops/obs/scripts/contracts/check_overload_behavior_contract.py
-	@python3 ./scripts/layout/check_ops_canonical_entrypoints.py
-	@python3 ./scripts/layout/check_ops_script_names.py
-	@python3 ./scripts/layout/check_no_empty_dirs.py
-	@python3 ./scripts/layout/check_generated_policy.py
+	@python3 ./scripts/areas/layout/check_no_hidden_defaults.py
+	@python3 ./scripts/areas/layout/check_obs_pack_ssot.py
+	@python3 ./scripts/areas/layout/check_obs_suites.py
+	@python3 ./ops/obs/scripts/areas/contracts/check_overload_behavior_contract.py
+	@python3 ./scripts/areas/layout/check_ops_canonical_entrypoints.py
+	@python3 ./scripts/areas/layout/check_ops_script_names.py
+	@python3 ./scripts/areas/layout/check_no_empty_dirs.py
+	@python3 ./scripts/areas/layout/check_generated_policy.py
 	@$(MAKE) -s ops-e2e-validate
-	@python3 ./scripts/docs/generate_ops_schema_docs.py
-	@python3 ./scripts/docs/generate_ops_surface.py
-	@python3 ./scripts/docs/generate_ops_contracts_doc.py
-	@python3 ./scripts/docs/generate_layer_contract_doc.py
+	@python3 ./scripts/areas/docs/generate_ops_schema_docs.py
+	@python3 ./scripts/areas/docs/generate_ops_surface.py
+	@python3 ./scripts/areas/docs/generate_ops_contracts_doc.py
+	@python3 ./scripts/areas/docs/generate_layer_contract_doc.py
 	@$(MAKE) -s ops-k8s-contracts
 
 ops-contract-check: ## Validate SSOT layer contract, render/live checks, and write report
 	@./ops/run/contract-check.sh
 
 pins/check: ## Validate unified reproducibility pins and emit drift report
-	@python3 ./scripts/layout/generate_ops_pins.py
-	@python3 ./scripts/layout/check_ops_pins.py
+	@python3 ./scripts/areas/layout/generate_ops_pins.py
+	@python3 ./scripts/areas/layout/check_ops_pins.py
 	@python3 ./ops/_lint/pin-relaxations-audit.py
 	@./ops/k8s/tests/checks/obs/test_helm_repo_pinning.sh
 	@$(MAKE) -s ops-kind-version-drift-test
 
 pins/update: ## Manual pins refresh with explicit changelog output
-	@python3 ./scripts/layout/update_ops_pins.py
+	@python3 ./scripts/areas/layout/update_ops_pins.py
 
 ops-gen: ## Regenerate all committed ops generated outputs
 	@$(MAKE) -s ops-stack-versions-sync
-	@python3 ./scripts/layout/generate_ops_pins.py
-	@python3 ./scripts/layout/generate_ops_surface_meta.py
-	@python3 ./scripts/layout/validate_ops_contracts.py >/dev/null
-	@python3 ./scripts/docs/generate_ops_schema_docs.py
-	@python3 ./scripts/docs/generate_ops_surface.py
-	@python3 ./scripts/docs/generate_ops_contracts_doc.py
-	@python3 ./scripts/docs/generate_layer_contract_doc.py
-	@python3 ./scripts/contracts/generate_chart_values_schema.py
+	@python3 ./scripts/areas/layout/generate_ops_pins.py
+	@python3 ./scripts/areas/layout/generate_ops_surface_meta.py
+	@python3 ./scripts/areas/layout/validate_ops_contracts.py >/dev/null
+	@python3 ./scripts/areas/docs/generate_ops_schema_docs.py
+	@python3 ./scripts/areas/docs/generate_ops_surface.py
+	@python3 ./scripts/areas/docs/generate_ops_contracts_doc.py
+	@python3 ./scripts/areas/docs/generate_layer_contract_doc.py
+	@python3 ./scripts/areas/contracts/generate_chart_values_schema.py
 
 ops-gen-clean: ## Cleanup generated ops outputs not in committed generated policy
-	@python3 ./scripts/layout/clean_ops_generated.py
+	@python3 ./scripts/areas/layout/clean_ops_generated.py
 
 ops-gen-check: ## Fail when regenerated ops outputs drift from committed state
 	@$(MAKE) -s ops-gen
@@ -122,7 +122,7 @@ ops-obs-verify: ## Verify observability pack contracts and readiness
 	@./ops/run/obs-verify.sh
 
 ops-observability-lag-check: ## Fail when observability checks have been stale on main branch
-	@python3 ./ops/obs/scripts/contracts/check_observability_lag.py
+	@python3 ./ops/obs/scripts/areas/contracts/check_observability_lag.py
 
 ops-check: ## Ops lint + schema + metadata validation
 	@./ops/run/ops-check.sh
@@ -131,7 +131,7 @@ internal/ops/check: ## Fast ops verification (no cluster bring-up)
 	@start="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; status=pass; fail=""; \
 	if ! $(MAKE) -s ops-check; then status=fail; fail="ops-check failed"; fi; \
 	end="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; \
-	python3 ./scripts/layout/write_make_area_report.py --path "$${ISO_ROOT:-artifacts/isolate/ops/$${RUN_ID:-ops-check}}/report.ops.check.json" --lane "ops/check" --status "$$status" --start "$$start" --end "$$end" --artifact "$${ISO_ROOT:-artifacts/isolate/ops/$${RUN_ID:-ops-check}}" --failure "$$fail" >/dev/null; \
+	python3 ./scripts/areas/layout/write_make_area_report.py --path "$${ISO_ROOT:-artifacts/isolate/ops/$${RUN_ID:-ops-check}}/report.ops.check.json" --lane "ops/check" --status "$$status" --start "$$start" --end "$$end" --artifact "$${ISO_ROOT:-artifacts/isolate/ops/$${RUN_ID:-ops-check}}" --failure "$$fail" >/dev/null; \
 	[ "$$status" = "pass" ] || { $(call fail_banner,ops/check); exit 1; }
 
 internal/ops/smoke: ## Explicit ops smoke target
@@ -188,11 +188,11 @@ ops-obs-drill: ## Run one observability drill locally (DRILL=... PROFILE=kind|co
 	  PROFILE=compose $(MAKE) ops-obs-up; \
 	  echo "compose profile drill support is limited; executing requested drill via canonical runner"; \
 	fi; \
-	./ops/obs/scripts/run_drill.sh "$${DRILL}"
+	./ops/obs/scripts/bin/run_drill.sh "$${DRILL}"
 
 ops-stack-validate: ## Validate stack manifests and formatting drift
-	@./scripts/layout/check_stack_manifest_consolidation.sh
-	@./scripts/layout/check_ops_stack_order.sh
+	@./scripts/areas/layout/check_stack_manifest_consolidation.sh
+	@./scripts/areas/layout/check_ops_stack_order.sh
 	@./ops/stack/scripts/validate.sh
 
 ops-stack-smoke: ## Stack-only smoke test without atlas deploy
@@ -250,7 +250,7 @@ ops-kind-version-drift-test: ## Validate kind version matches pinned tool-versio
 	@./ops/k8s/tests/checks/rollout/test_kind_version_drift.sh
 
 ops-kind-cluster-drift-check: ## Require ops contract marker update when cluster profile changes
-	@./scripts/layout/check_kind_cluster_contract_drift.sh
+	@./scripts/areas/layout/check_kind_cluster_contract_drift.sh
 
 ops-kind-validate: ## Validate kind substrate (context/namespace/sanity/registry/image/version)
 	@$(MAKE) ops-kind-context-guard
@@ -385,7 +385,7 @@ ops-toxi-cut-store: ## Cut or restore store connection (MODE=on|off)
 	@./ops/stack/faults/inject.sh block-minio "$${MODE:-on}"
 
 ops-stack-order-check: ## Validate stack install/uninstall order contract
-	@./scripts/layout/check_ops_stack_order.sh
+	@./scripts/areas/layout/check_ops_stack_order.sh
 
 ops-stack-security-check: ## Validate stack security defaults (no privileged containers)
 	@ns="$${ATLAS_E2E_NAMESPACE:-atlas-e2e}"; \
@@ -421,7 +421,7 @@ ops-reset: ## Reset ops state (namespace/PV store data + local store artifacts)
 ops-publish-medium: ## Ingest + publish medium fixture dataset
 	@$(MAKE) -s ops-env-validate
 	@if [ ! -f ops/fixtures/medium/v1/data/genes.gff3 ] || [ ! -f ops/fixtures/medium/v1/data/genome.fa ] || [ ! -f ops/fixtures/medium/v1/data/genome.fa.fai ]; then \
-	  ./scripts/fixtures/fetch-medium.sh; \
+	  ./scripts/areas/fixtures/fetch-medium.sh; \
 	fi
 	@./ops/e2e/runner/publish_dataset.sh \
 	  --gff3 ops/fixtures/medium/v1/data/genes.gff3 \
@@ -578,7 +578,7 @@ ops-api-smoke: ## Run canonical API smoke queries only
 	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/scripts/smoke_queries.sh
 	@python3 ./ops/e2e/smoke/generate_report.py
-	@python3 ./scripts/docs/check_openapi_examples.py
+	@python3 ./scripts/areas/docs/check_openapi_examples.py
 	@OPS_METRICS_STRICT=0 METRICS_GOLDEN_STRICT=0 $(MAKE) ops-metrics-check
 	@./ops/obs/scripts/snapshot_metrics.sh
 	@./ops/obs/scripts/snapshot_traces.sh
@@ -619,14 +619,14 @@ ops-gc-smoke: ## Validate GC plan/apply against a disposable store fixture
 ops-metrics-check: ## Validate runtime metrics and observability contracts
 	@./ops/e2e/scripts/verify_metrics.sh
 	@./ops/obs/scripts/snapshot_metrics.sh
-	@./scripts/public/observability/check_metrics_contract.py
-	@python3 ./ops/obs/scripts/contracts/check_metrics_drift.py
-	@python3 ./ops/obs/scripts/contracts/check_metrics_coverage.py
-	@python3 ./ops/obs/scripts/contracts/check_metrics_golden.py
-	@./scripts/public/observability/check_dashboard_contract.py
-	@./scripts/public/observability/check_alerts_contract.py
-	@./scripts/public/observability/lint_runbooks.py
-	@./scripts/public/observability/check_runtime_metrics.py
+	@./scripts/areas/public/observability/check_metrics_contract.py
+	@python3 ./ops/obs/scripts/areas/contracts/check_metrics_drift.py
+	@python3 ./ops/obs/scripts/areas/contracts/check_metrics_coverage.py
+	@python3 ./ops/obs/scripts/areas/contracts/check_metrics_golden.py
+	@./scripts/areas/public/observability/check_dashboard_contract.py
+	@./scripts/areas/public/observability/check_alerts_contract.py
+	@./scripts/areas/public/observability/lint_runbooks.py
+	@./scripts/areas/public/observability/check_runtime_metrics.py
 	@if [ "$${OPS_METRICS_STRICT:-1}" = "1" ]; then \
 	  ./ops/obs/scripts/check_metric_cardinality.py; \
 	else \
@@ -640,13 +640,13 @@ ops-metrics-check: ## Validate runtime metrics and observability contracts
 
 ops-traces-check: ## Validate trace signal (when OTEL enabled)
 	@./ops/e2e/scripts/verify_traces.sh
-	@python3 ./ops/obs/scripts/contracts/check_trace_golden.py
-	@python3 ./ops/obs/scripts/contracts/extract_trace_exemplars.py
-	@if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/public/observability/check_tracing_contract.py; python3 ./ops/obs/scripts/contracts/check_trace_coverage.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi
+	@python3 ./ops/obs/scripts/areas/contracts/check_trace_golden.py
+	@python3 ./ops/obs/scripts/areas/contracts/extract_trace_exemplars.py
+	@if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/areas/public/observability/check_tracing_contract.py; python3 ./ops/obs/scripts/areas/contracts/check_trace_coverage.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi
 
 ops-k8s-tests: ## Run k8s e2e suite
 	@$(MAKE) -s ops-env-validate
-	@python3 ./scripts/ops/check_k8s_test_contract.py
+	@python3 ./scripts/areas/ops/check_k8s_test_contract.py
 	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck
 	@lock_dir="artifacts/ops/locks/ops-k8s-tests.lock"; \
 	mkdir -p "artifacts/ops/locks"; \
@@ -669,7 +669,7 @@ ops-k8s-tests: ## Run k8s e2e suite
 	  group_args="$$group_args --test $${ATLAS_E2E_TEST}"; \
 	fi; \
 	./ops/k8s/tests/suite.sh $$group_args
-	@python3 ./scripts/ops/check_k8s_flakes.py
+	@python3 ./scripts/areas/ops/check_k8s_flakes.py
 
 ops-k8s-template-tests: ## Run helm template/lint edge-case checks
 	@./ops/k8s/tests/checks/obs/test_helm_templates.sh
@@ -701,7 +701,7 @@ ops-load-spike-proof: ## Run 10x spike proof suite with overload/bulkhead/memory
 	@$(MAKE) ops-load-manifest-validate
 	@./ops/load/scripts/run_suite.sh spike-overload-proof.json artifacts/perf/results
 	@./ops/load/scripts/validate_results.py artifacts/perf/results
-	@python3 ./scripts/public/perf/check_spike_assertions.py --summary artifacts/perf/results/spike-overload-proof.summary.json --base-url "$${ATLAS_BASE_URL:-http://127.0.0.1:18080}" --wait-seconds "$${ATLAS_OVERLOAD_CLEAR_WAIT_SECONDS:-45}"
+	@python3 ./scripts/areas/public/perf/check_spike_assertions.py --summary artifacts/perf/results/spike-overload-proof.summary.json --base-url "$${ATLAS_BASE_URL:-http://127.0.0.1:18080}" --wait-seconds "$${ATLAS_OVERLOAD_CLEAR_WAIT_SECONDS:-45}"
 	@$(MAKE) ops-slo-burn
 	@python3 -c 'import json; from pathlib import Path; p = Path("artifacts/ops/obs/slo-burn.json"); payload = json.loads(p.read_text()) if p.exists() else (_ for _ in ()).throw(SystemExit("missing SLO burn artifact: artifacts/ops/obs/slo-burn.json")); (_ for _ in ()).throw(SystemExit(f"SLO burn exceeded: {payload}")) if payload.get("burn_exceeded") else print("slo burn within threshold")'
 
@@ -897,7 +897,7 @@ ops-report: ## Gather ops evidence into artifacts/ops/<run-id>/
 	./ops/run/report.sh >/dev/null; \
 	python3 ./ops/report/generate.py --unified ops/_generated_committed/report.unified.json --out "$$out/report.md"; \
 	echo "ops report written to $$out"; \
-	RUN_ID="$${OPS_RUN_ID}" OUT_DIR="$$out/bundle" ./scripts/public/report-bundle.sh >/dev/null; \
+	RUN_ID="$${OPS_RUN_ID}" OUT_DIR="$$out/bundle" ./scripts/areas/public/report-bundle.sh >/dev/null; \
 	ln -sfn "$${OPS_RUN_ID}" artifacts/ops/latest; \
 	$(MAKE) artifacts-index
 
@@ -911,23 +911,23 @@ obs/update-goldens: ## Refresh observability golden snapshots for all supported 
 	@cp ops/obs/contract/trace-structure.golden.json ops/obs/contract/goldens/local/trace-structure.golden.json
 	@cp ops/obs/contract/trace-structure.golden.json ops/obs/contract/goldens/perf/trace-structure.golden.json
 	@cp ops/obs/contract/trace-structure.golden.json ops/obs/contract/goldens/offline/trace-structure.golden.json
-	@python3 ./ops/obs/scripts/contracts/check_profile_goldens.py
+	@python3 ./ops/obs/scripts/areas/contracts/check_profile_goldens.py
 
 ops-slo-report: ## Compute SLO report (SLIs, error budget remaining, burn rates)
 	@python3 ./ops/report/slo_report.py --metrics "$${METRICS:-artifacts/ops/metrics.prom}" --slo-config configs/ops/slo/slo.v1.json --out "$${OUT:-artifacts/ops/slo/report.json}"
 
 ops-script-coverage: ## Validate every ops/**/scripts entrypoint is exposed via make
-	@./scripts/layout/check_ops_script_targets.sh
+	@./scripts/areas/layout/check_ops_script_targets.sh
 	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck
 	@$(MAKE) -s ops-shfmt
 
 ops-make-targets-doc: ## Generate docs/development/make-targets.md from registry SSOT
-	@python3 ./scripts/docs/generate_make_targets_inventory.py
-	@python3 ./scripts/docs/check_make_targets_drift.py
+	@python3 ./scripts/areas/docs/generate_make_targets_inventory.py
+	@python3 ./scripts/areas/docs/check_make_targets_drift.py
 
 ops-lint: ## Lint ops shell/python/json/schema contracts
-	@python3 ./scripts/layout/check_ops_run_entrypoints.py
-	@python3 ./scripts/layout/check_no_ops_evidence_writes.py
+	@python3 ./scripts/areas/layout/check_ops_run_entrypoints.py
+	@python3 ./scripts/areas/layout/check_no_ops_evidence_writes.py
 	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
 	@python3 ./ops/load/scripts/validate_suite_manifest.py
 	@python3 ./ops/k8s/tests/validate_suites.py
@@ -936,8 +936,8 @@ ops-lint: ## Lint ops shell/python/json/schema contracts
 	@python3 ./ops/_lint/no-unowned-file.py
 	@python3 ./ops/_lint/json-schema-coverage.py
 	@python3 ./ops/_lint/no-unpinned-images.py
-	@python3 ./ops/obs/scripts/contracts/check_profile_goldens.py
-	@python3 ./scripts/layout/check_tool_versions.py kind kubectl helm k6
+	@python3 ./ops/obs/scripts/areas/contracts/check_profile_goldens.py
+	@python3 ./scripts/areas/layout/check_tool_versions.py kind kubectl helm k6
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) -s ops-layout-lint
 
@@ -949,8 +949,8 @@ ops-lint-all: ## Run full ops lint suite (naming/docs/ownership/contracts/images
 	@./ops/_lint/no-empty-dirs.sh
 	@python3 ./ops/_lint/no-direct-script-usage.py
 	@python3 ./ops/_lint/no-direct-e2e-scenario-usage.py
-	@python3 ./scripts/layout/check_ops_cross_area_script_refs.py
-	@python3 ./scripts/layout/check_scripts_submodules.py --threshold 25
+	@python3 ./scripts/areas/layout/check_ops_cross_area_script_refs.py
+	@python3 ./scripts/areas/layout/check_scripts_submodules.py --threshold 25
 	@python3 ./ops/_lint/no-unpinned-images.py
 	@python3 ./ops/_lint/no-floating-tool-versions.py
 	@python3 ./ops/_lint/no-unowned-area.py
@@ -972,22 +972,22 @@ ops-shfmt: ## Format-check all ops shell scripts (optional if shfmt unavailable)
 	fi
 
 ops-kind-version-check: ## Validate pinned kind version from configs/ops/tool-versions.json
-	@python3 ./scripts/layout/check_tool_versions.py kind
+	@python3 ./scripts/areas/layout/check_tool_versions.py kind
 
 ops-k6-version-check: ## Validate pinned k6 version from configs/ops/tool-versions.json
-	@python3 ./scripts/layout/check_tool_versions.py k6
+	@python3 ./scripts/areas/layout/check_tool_versions.py k6
 
 ops-helm-version-check: ## Validate pinned helm version from configs/ops/tool-versions.json
-	@python3 ./scripts/layout/check_tool_versions.py helm
+	@python3 ./scripts/areas/layout/check_tool_versions.py helm
 
 ops-kubectl-version-check: ## Validate pinned kubectl version from configs/ops/tool-versions.json
-	@python3 ./scripts/layout/check_tool_versions.py kubectl
+	@python3 ./scripts/areas/layout/check_tool_versions.py kubectl
 
 ops-jq-version-check: ## Validate pinned jq version from configs/ops/tool-versions.json
-	@python3 ./scripts/layout/check_tool_versions.py jq
+	@python3 ./scripts/areas/layout/check_tool_versions.py jq
 
 ops-yq-version-check: ## Validate pinned yq version from configs/ops/tool-versions.json
-	@python3 ./scripts/layout/check_tool_versions.py yq
+	@python3 ./scripts/areas/layout/check_tool_versions.py yq
 
 ops-tools-check: ## Validate all pinned ops tools versions
 	@$(MAKE) ops-kind-version-check
@@ -1058,16 +1058,16 @@ ops-perf-suite: ## Perf helper: run an arbitrary perf suite (SCENARIO=<file.js> 
 	@./ops/load/scripts/run_suite.sh "$$SCENARIO" "$${OUT:-artifacts/perf/results}"
 
 ops-values-validate: ## Validate chart values against SSOT contract
-	@./scripts/contracts/generate_chart_values_schema.py
-	@./scripts/contracts/check_chart_values_contract.py
+	@./scripts/areas/contracts/generate_chart_values_schema.py
+	@./scripts/areas/contracts/check_chart_values_contract.py
 	@./ops/k8s/tests/checks/obs/test_chart_drift.sh
 
 ops-release-matrix: ## Generate k8s release install matrix document from CI summary
 	@./ops/k8s/ci/install-matrix.sh
 
 ops-openapi-validate: ## Validate OpenAPI drift and schema/examples consistency
-	@./scripts/public/openapi-diff-check.sh
-	@python3 ./scripts/docs/check_openapi_examples.py
+	@./scripts/areas/public/openapi-diff-check.sh
+	@python3 ./scripts/areas/docs/check_openapi_examples.py
 
 ops-chart-render-diff: ## Ensure chart render is deterministic for local profile
 	@tmp_a="$$(mktemp)"; tmp_b="$$(mktemp)"; \
@@ -1077,21 +1077,21 @@ ops-chart-render-diff: ## Ensure chart render is deterministic for local profile
 	rm -f "$$tmp_a" "$$tmp_b"
 
 ops-dashboards-validate: ## Validate dashboard references against metrics contract
-	@./scripts/public/observability/check_dashboard_contract.py
+	@./scripts/areas/public/observability/check_dashboard_contract.py
 
 ops-alerts-validate: ## Validate alert rules and contract coverage
-	@./scripts/public/observability/check_alerts_contract.py
+	@./scripts/areas/public/observability/check_alerts_contract.py
 
 ops-observability-validate: ## Validate observability assets/contracts end-to-end
 	@set -e; \
 	trap 'out="artifacts/ops/obs/validate-fail-$$(date +%Y%m%d-%H%M%S)"; mkdir -p "$$out"; kubectl get pods -A -o wide > "$$out/pods.txt" 2>/dev/null || true; kubectl get events -A --sort-by=.lastTimestamp > "$$out/events.txt" 2>/dev/null || true; cp -f ops/obs/grafana/atlas-observability-dashboard.json "$$out/dashboard.json" 2>/dev/null || true; cp -f ops/obs/alerts/atlas-alert-rules.yaml "$$out/alerts.yaml" 2>/dev/null || true; echo "observability validation failed, artifacts: $$out" >&2' ERR; \
-	python3 ./scripts/layout/check_obs_script_name_collisions.py; \
-	python3 ./scripts/docs/check_observability_surface_drift.py; \
+	python3 ./scripts/areas/layout/check_obs_script_name_collisions.py; \
+	python3 ./scripts/areas/docs/check_observability_surface_drift.py; \
 	$(MAKE) ops-dashboards-validate; \
 	$(MAKE) ops-alerts-validate; \
-	./scripts/public/observability/check_metrics_contract.py; \
-	python3 ./ops/obs/scripts/contracts/check_obs_budgets.py; \
-	if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/public/observability/check_tracing_contract.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi; \
+	./scripts/areas/public/observability/check_metrics_contract.py; \
+	python3 ./ops/obs/scripts/areas/contracts/check_obs_budgets.py; \
+	if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/areas/public/observability/check_tracing_contract.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi; \
 	./ops/obs/scripts/snapshot_metrics.sh; \
 	./ops/obs/scripts/snapshot_traces.sh; \
 	./ops/obs/scripts/check_metric_cardinality.py; \
@@ -1145,7 +1145,7 @@ ops-observability-pack-health: ## Query pack health and service readiness
 
 ops-artifacts-index-run: ## Generate per-run artifact index markdown (RUN_ID=<ops-run-id>)
 	@[ -n "$${RUN_ID:-}" ] || { echo "RUN_ID is required" >&2; exit 2; }
-	@python3 ./scripts/layout/build_run_artifact_index.py --run-id "$${RUN_ID}"
+	@python3 ./scripts/areas/layout/build_run_artifact_index.py --run-id "$${RUN_ID}"
 
 ops-observability-pack-conformance-report: ## Write pack conformance report under artifacts
 	@./ops/obs/scripts/write_pack_conformance_report.py
@@ -1255,7 +1255,7 @@ stack-full: ## Full-stack must-pass truth flow with contract report bundle
 	run_id="$${OPS_RUN_ID:-$${ATLAS_RUN_ID:-stack-$$(date +%Y%m%d-%H%M%S)}}"; \
 	report_dir="artifacts/stack-report"; \
 	teardown="$${STACK_KEEP_UP:-0}"; \
-	trap 'python3 ./scripts/public/stack/build_stack_report.py --status "$$status" --run-id "$$run_id" --out-dir "$$report_dir" --values-file "$${ATLAS_VALUES_FILE:-ops/k8s/values/local.yaml}"; python3 ./scripts/public/stack/validate_stack_report.py --report-dir "$$report_dir" --schema ops/_schemas/report/stack-contract.schema.json; if [ "$$teardown" != "1" ]; then $(MAKE) ops-down >/dev/null 2>&1 || true; $(MAKE) ops-kind-down >/dev/null 2>&1 || true; fi' EXIT; \
+	trap 'python3 ./scripts/areas/public/stack/build_stack_report.py --status "$$status" --run-id "$$run_id" --out-dir "$$report_dir" --values-file "$${ATLAS_VALUES_FILE:-ops/k8s/values/local.yaml}"; python3 ./scripts/areas/public/stack/validate_stack_report.py --report-dir "$$report_dir" --schema ops/_schemas/report/stack-contract.schema.json; if [ "$$teardown" != "1" ]; then $(MAKE) ops-down >/dev/null 2>&1 || true; $(MAKE) ops-kind-down >/dev/null 2>&1 || true; fi' EXIT; \
 	$(MAKE) ops-tools-check; \
 	$(MAKE) ops-kind-validate; \
 	$(MAKE) ops-kind-metrics-server-up; \
@@ -1281,7 +1281,7 @@ stack-full: ## Full-stack must-pass truth flow with contract report bundle
 	$(MAKE) ops-otel-required-check; \
 	$(MAKE) ops-load-smoke; \
 	$(MAKE) ops-load-spike-proof; \
-	python3 ./scripts/public/perf/check_percent_regression.py --baseline-profile "$${ATLAS_PERF_BASELINE_PROFILE:-local}" --max-p95-regression 0.15 --results artifacts/perf/results; \
+	python3 ./scripts/areas/public/perf/check_percent_regression.py --baseline-profile "$${ATLAS_PERF_BASELINE_PROFILE:-local}" --max-p95-regression 0.15 --results artifacts/perf/results; \
 	$(MAKE) ops-metrics-check; \
 	$(MAKE) ops-alerts-validate; \
 	$(MAKE) ops-dashboards-validate; \
@@ -1304,7 +1304,7 @@ ops-drill-runner: ## Run core drills and verify runbook contract linkage
 	@./ops/obs/tests/test_drills.sh
 	@$(MAKE) ops-drill-corruption-dataset
 	@$(MAKE) ops-drill-pod-churn
-	@python3 ./scripts/docs/check_runbooks_contract.py
+	@python3 ./scripts/areas/docs/check_runbooks_contract.py
 
 ops-readiness-scorecard: ## Build operational readiness scorecard from latest ops run artifacts
 	@run_dir="$${OPS_RUN_DIR:-artifacts/ops/$${OPS_RUN_ID}}"; \

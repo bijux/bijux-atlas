@@ -12,7 +12,7 @@ Run ingest and publish to a local or object-store-backed mirror:
 
 ```sh
 make fetch-fixtures
-./scripts/fixtures/run-medium-ingest.sh
+./scripts/areas/fixtures/run-medium-ingest.sh
 cargo run -p bijux-atlas-cli --bin bijux-atlas -- atlas dataset publish \
   --source-root artifacts/medium-output \
   --store-root artifacts/server-store \

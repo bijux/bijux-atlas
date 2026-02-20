@@ -21,7 +21,7 @@ if ! ./ops/obs/tests/suite.sh --suite "$SUITE" "$@" >"$log_file" 2>&1; then
   status="fail"
 fi
 end="$(date +%s)"
-python3 ./ops/obs/scripts/contracts/write_obs_conformance_report.py \
+python3 ./ops/obs/scripts/areas/contracts/write_obs_conformance_report.py \
   --run-id "${RUN_ID}" \
   --suite "${SUITE}" \
   --status "${status}" \

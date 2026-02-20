@@ -142,7 +142,7 @@ Invalid or drifted registry content is rejected by contract checks and CI gates.
 ## Examples
 
 ```bash
-$ ./scripts/contracts/check_config_keys_contract.py
+$ ./scripts/areas/contracts/check_config_keys_contract.py
 ```
 
 Expected output: "config key contract check passed".

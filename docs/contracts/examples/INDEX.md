@@ -37,8 +37,8 @@ Expected output: one example JSON file per registry contract.
 ## How to verify
 
 ```bash
-$ ./scripts/contracts/format_contracts.py
-$ ./scripts/contracts/check_all.sh
+$ ./scripts/areas/contracts/format_contracts.py
+$ ./scripts/areas/contracts/check_all.sh
 ```
 
 Expected output: format and contract checks pass.

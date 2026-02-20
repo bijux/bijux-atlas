@@ -18,7 +18,7 @@ Stable naming prevents navigation drift and duplicate concepts.
 - Forbidden filename patterns: random acronyms, `notes`, `misc`, `HUMAN_MACHINE`.
 - Forbidden temporal/task tokens in names: `phase`, `task`, `stage`, `round`, `iteration`, `tmp`, `stub`, `vnext`.
 - Durable naming rubric: file names must describe what the asset is, not when it was added.
-- Public scripts under `scripts/public/` must use `kebab-case` (`verb-noun` style).
+- Public scripts under `scripts/areas/public/` must use `kebab-case` (`verb-noun` style).
 - Rust module files remain `snake_case`.
 - Generated docs under `docs/_generated/` may use generator-defined names, but must still be linked from an `INDEX.md`.
 

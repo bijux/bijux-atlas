@@ -32,7 +32,7 @@ Breaking changes without version bump are contract violations and must fail CI.
 ## How to verify
 
 ```bash
-$ ./scripts/contracts/check_breaking_contract_change.py
+$ ./scripts/areas/contracts/check_breaking_contract_change.py
 $ make openapi-drift
 ```
 

@@ -16,7 +16,7 @@ Defines local-only files/directories that are tolerated in developer workspaces.
 ## Enforcement
 
 - `.gitignore` includes all local-noise entries.
-- `scripts/layout/check_repo_hygiene.sh` fails if these are tracked.
+- `scripts/areas/layout/check_repo_hygiene.sh` fails if these are tracked.
 - In CI, root `target/` presence fails hygiene checks.
 
 ## Notes

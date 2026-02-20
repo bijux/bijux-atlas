@@ -26,10 +26,10 @@ docker-build:
 
 docker-smoke:
 	@$(MAKE) -s docker-build
-	@./scripts/check/docker-runtime-smoke.sh "$${DOCKER_IMAGE:-bijux-atlas:local}"
+	@./scripts/areas/check/docker-runtime-smoke.sh "$${DOCKER_IMAGE:-bijux-atlas:local}"
 
 docker-scan:
-	@./scripts/check/docker-scan.sh "$${DOCKER_IMAGE:-bijux-atlas:local}"
+	@./scripts/areas/check/docker-scan.sh "$${DOCKER_IMAGE:-bijux-atlas:local}"
 
 docker-push:
 	@if [ "$${CI:-0}" != "1" ]; then echo "docker-push is CI-only"; exit 2; fi
@@ -46,34 +46,34 @@ chart-verify:
 
 chart-validate: ## Validate chart via lint/template and values contract schema checks
 	@$(MAKE) chart-verify
-	@./scripts/contracts/generate_chart_values_schema.py
-	@./scripts/contracts/check_chart_values_contract.py
+	@./scripts/areas/contracts/generate_chart_values_schema.py
+	@./scripts/areas/contracts/check_chart_values_contract.py
 
 docker-contracts: ## Validate Docker layout/policy/no-latest contracts
-	@python3 ./scripts/check/check-docker-layout.py
-	@python3 ./scripts/check/check-docker-policy.py
-	@python3 ./scripts/check/check-no-latest-tags.py
+	@python3 ./scripts/areas/check/check-docker-layout.py
+	@python3 ./scripts/areas/check/check-docker-policy.py
+	@python3 ./scripts/areas/check/check-no-latest-tags.py
 
 rename-lint: ## Enforce durable naming rules for docs/scripts and concept ownership
-	@python3 ./scripts/docs/check-durable-naming.py
-	@./scripts/docs/check_duplicate_topics.sh
+	@python3 ./scripts/areas/docs/check-durable-naming.py
+	@./scripts/areas/docs/check_duplicate_topics.sh
 
 docs-lint-names: ## Enforce durable naming contracts, registries, and inventory
-	@python3 ./scripts/docs/naming_inventory.py
-	@./scripts/docs/ban_legacy_terms.sh
-	@python3 ./scripts/docs/check_observability_docs_checklist.py
-	@python3 ./scripts/docs/check_no_orphan_docs.py
-	@python3 ./scripts/docs/check_script_locations.py
-	@python3 ./scripts/docs/check_runbook_map_registration.py
-	@python3 ./scripts/docs/check_contract_doc_pairs.py
+	@python3 ./scripts/areas/docs/naming_inventory.py
+	@./scripts/areas/docs/ban_legacy_terms.sh
+	@python3 ./scripts/areas/docs/check_observability_docs_checklist.py
+	@python3 ./scripts/areas/docs/check_no_orphan_docs.py
+	@python3 ./scripts/areas/docs/check_script_locations.py
+	@python3 ./scripts/areas/docs/check_runbook_map_registration.py
+	@python3 ./scripts/areas/docs/check_contract_doc_pairs.py
 	@python3 ./ops/load/scripts/validate_suite_manifest.py
-	@./scripts/docs/check_index_pages.sh
+	@./scripts/areas/docs/check_index_pages.sh
 
 doctor: ## Print tool/env/path diagnostics and store doctor report
-	@RUN_ID="$${RUN_ID:-doctor-$(MAKE_RUN_TS)}" python3 ./scripts/layout/make_doctor.py
+	@RUN_ID="$${RUN_ID:-doctor-$(MAKE_RUN_TS)}" python3 ./scripts/areas/layout/make_doctor.py
 
 prereqs: ## Check required binaries and versions and store prereqs report
-	@RUN_ID="$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}" python3 ./scripts/layout/make_prereqs.py --run-id "$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}"
+	@RUN_ID="$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}" python3 ./scripts/areas/layout/make_prereqs.py --run-id "$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}"
 
 dataset-id-lint: ## Validate DatasetId/DatasetKey contract usage across ops fixtures
-	@python3 ./scripts/layout/dataset_id_lint.py
+	@python3 ./scripts/areas/layout/dataset_id_lint.py

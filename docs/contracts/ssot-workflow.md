@@ -35,9 +35,9 @@ Does not define product release choreography outside contract updates.
 ## Examples
 
 ```bash
-$ ./scripts/contracts/format_contracts.py
-$ ./scripts/contracts/generate_contract_artifacts.py
-$ ./scripts/contracts/check_all.sh
+$ ./scripts/areas/contracts/format_contracts.py
+$ ./scripts/areas/contracts/generate_contract_artifacts.py
+$ ./scripts/areas/contracts/check_all.sh
 ```
 
 Expected output: all checks pass with no drift.

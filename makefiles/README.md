@@ -137,7 +137,7 @@ $ make root-local-summary
 $ make report/print
 $ make internal-list
 $ make makefiles-contract
-$ python3 scripts/docs/check_make_targets_documented.py
+$ python3 scripts/areas/docs/check_make_targets_documented.py
 $ make ops-script-coverage
 ```
 

@@ -6,9 +6,9 @@ SHELL := /bin/sh
 LEGACY_REMOVAL_DATE := 2026-06-30
 
 legacy/config-validate-core: ## DEPRECATED legacy config schema/contracts validation implementation
-	@python3 ./scripts/public/generate-config-key-registry.py
-	@python3 ./scripts/public/config-validate.py
-	@python3 ./scripts/public/config-drift-check.py
+	@python3 ./scripts/areas/public/generate-config-key-registry.py
+	@python3 ./scripts/areas/public/config-validate.py
+	@python3 ./scripts/areas/public/config-drift-check.py
 
 legacy/root-fast: ## DEPRECATED legacy preserved deterministic lane
 	@$(call with_iso,root,$(MAKE) -s gates-check configs/all lane-cargo ci-deny ops-contracts-check docs-lint-names)

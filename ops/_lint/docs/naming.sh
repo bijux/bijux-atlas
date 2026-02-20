@@ -43,8 +43,8 @@ while IFS= read -r path; do
       fi
       ;;
   esac
-done < <(find ops/run scripts/public/contracts -type f -name '*.sh' -print 2>/dev/null)
+done < <(find ops/run scripts/areas/public/contracts -type f -name '*.sh' -print 2>/dev/null)
 
-python3 ./scripts/layout/check_no_mixed_script_name_variants.py || bad=1
+python3 ./scripts/areas/layout/check_no_mixed_script_name_variants.py || bad=1
 
 exit "$bad"

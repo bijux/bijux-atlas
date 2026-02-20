@@ -20,19 +20,19 @@ Does not duplicate script implementation details.
 
 ## Contracts
 
-- `scripts/INDEX.md` is generated (`python3 scripts/generate_scripts_readme.py`) and must not be hand-edited.
+- `scripts/INDEX.md` is generated (`python3 scripts/areas/gen/generate_scripts_readme.py`) and must not be hand-edited.
 - Script taxonomy:
-  - `scripts/public/`: make-callable entrypoints.
-  - `scripts/internal/`: script-only helpers.
-  - `scripts/dev/`: local helpers (not docs/CI contracts).
-  - `scripts/tools/`: shared Python helper modules.
-- Contracts: `scripts/contracts/`
-- Docs linters/generators: `scripts/docs/`
-- Perf tooling wrappers: `scripts/public/perf/` (canonical: `ops/load/scripts/`)
-- Observability checks: `scripts/public/observability/`
-- Fixtures/data helpers: `scripts/fixtures/`
-- Release automation: `scripts/release/`
-- Layout checks/migrations: `scripts/layout/`
+  - `scripts/areas/public/`: make-callable entrypoints.
+  - `scripts/areas/internal/`: script-only helpers.
+  - `scripts/areas/dev/`: local helpers (not docs/CI contracts).
+  - `scripts/areas/tools/`: shared Python helper modules.
+- Contracts: `scripts/areas/contracts/`
+- Docs linters/generators: `scripts/areas/docs/`
+- Perf tooling wrappers: `scripts/areas/public/perf/` (canonical: `ops/load/scripts/`)
+- Observability checks: `scripts/areas/public/observability/`
+- Fixtures/data helpers: `scripts/areas/fixtures/`
+- Release automation: `scripts/areas/release/`
+- Layout checks/migrations: `scripts/areas/layout/`
 - Bootstrap wrappers and runtime helpers: `scripts/bin/`
 
 ## Failure modes
@@ -42,7 +42,7 @@ Undocumented scripts cause hidden coupling and broken operator workflows.
 ## How to verify
 
 ```bash
-$ python3 scripts/docs/check_script_headers.py
+$ python3 scripts/areas/docs/check_script_headers.py
 ```
 
 Expected output: script header contract passes.

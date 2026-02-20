@@ -5,7 +5,7 @@ ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
 REAL_ROOT="${ATLAS_REALDATA_ROOT:-$ROOT/artifacts/real-datasets}"
 export ATLAS_REALDATA_ROOT="$REAL_ROOT"
 
-"$ROOT/scripts/fixtures/fetch-real-datasets.sh"
+"$ROOT/scripts/areas/fixtures/fetch-real-datasets.sh"
 "$ROOT/ops/e2e/runner/cleanup_store.sh"
 "$ROOT/ops/datasets/scripts/publish_by_name.sh" real110
 "$ROOT/ops/run/deploy-atlas.sh"

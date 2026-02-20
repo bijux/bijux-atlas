@@ -6,7 +6,7 @@
 
 - Drill manifest SSOT: `ops/obs/drills/drills.json`
 - Drill result schema: `ops/obs/drills/result.schema.json`
-- Runner: `scripts/run_drill.sh <name>`
+- Runner: `scripts/bin/run_drill.sh <name>`
 - Suite target: `make ops-drill-suite`
 
 ## Reproducibility rules

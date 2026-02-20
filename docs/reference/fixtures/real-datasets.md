@@ -15,7 +15,7 @@ Outputs are placed under `artifacts/real-datasets/`.
 
 ## Notes
 - `110/homo_sapiens/GRCh38` is the pinned downloadable sample.
-- `111/homo_sapiens/GRCh38` is derived deterministically from 110 using `scripts/fixtures/derive-release-111.sh` for stable diff regression.
+- `111/homo_sapiens/GRCh38` is derived deterministically from 110 using `scripts/areas/fixtures/derive-release-111.sh` for stable diff regression.
 
 ## What
 

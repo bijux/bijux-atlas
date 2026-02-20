@@ -9,5 +9,5 @@ ops_version_guard() {
   else
     tools=(kind k6 helm kubectl jq yq)
   fi
-  python3 ./scripts/layout/check_tool_versions.py "${tools[@]}"
+  python3 ./scripts/areas/layout/check_tool_versions.py "${tools[@]}"
 }

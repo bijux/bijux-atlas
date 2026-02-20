@@ -23,27 +23,27 @@ include makefiles/legacy.mk
 endif
 
 config-print: ## Print canonical merged config payload as JSON
-	@python3 ./scripts/public/config-print.py
+	@python3 ./scripts/areas/public/config-print.py
 
 config-drift: ## Check config/schema/docs drift without regeneration
-	@python3 ./scripts/public/config-drift-check.py
+	@python3 ./scripts/areas/public/config-drift-check.py
 
 configs-check: ## Config schemas + drift + ownership + symlink shim + SSOT checks
-	@python3 ./scripts/configs/check_configs_readmes.py
-	@python3 ./scripts/configs/check_config_ownership.py
-	@python3 ./scripts/configs/validate_configs_schemas.py
-	@python3 ./scripts/public/config-validate.py
-	@python3 ./scripts/public/config-drift-check.py
-	@python3 ./scripts/configs/check_ops_env_usage_declared.py
-	@python3 ./scripts/configs/check_no_adhoc_versions.py
-	@python3 ./scripts/configs/check_perf_thresholds_drift.py
-	@python3 ./scripts/configs/check_slo_sync.py
-	@python3 ./scripts/configs/check_openapi_snapshot_generated.py
-	@python3 ./scripts/configs/check_tool_versions_doc_drift.py
-	@python3 ./scripts/configs/check_root_config_shims.py
-	@python3 ./scripts/layout/check_symlink_policy.py
-	@python3 ./scripts/configs/check_duplicate_threshold_sources.py
-	@python3 ./scripts/configs/check_docs_links_for_configs.py
+	@python3 ./scripts/areas/configs/check_configs_readmes.py
+	@python3 ./scripts/areas/configs/check_config_ownership.py
+	@python3 ./scripts/areas/configs/validate_configs_schemas.py
+	@python3 ./scripts/areas/public/config-validate.py
+	@python3 ./scripts/areas/public/config-drift-check.py
+	@python3 ./scripts/areas/configs/check_ops_env_usage_declared.py
+	@python3 ./scripts/areas/configs/check_no_adhoc_versions.py
+	@python3 ./scripts/areas/configs/check_perf_thresholds_drift.py
+	@python3 ./scripts/areas/configs/check_slo_sync.py
+	@python3 ./scripts/areas/configs/check_openapi_snapshot_generated.py
+	@python3 ./scripts/areas/configs/check_tool_versions_doc_drift.py
+	@python3 ./scripts/areas/configs/check_root_config_shims.py
+	@python3 ./scripts/areas/layout/check_symlink_policy.py
+	@python3 ./scripts/areas/configs/check_duplicate_threshold_sources.py
+	@python3 ./scripts/areas/configs/check_docs_links_for_configs.py
 	@python3 ./ops/_lint/no-shadow-configs.py
 
 CI_ISO_ROOT := $(CURDIR)/artifacts/isolate/ci
@@ -54,112 +54,112 @@ LOCAL_FULL_ISO_ROOT := $(CURDIR)/artifacts/isolate/local-full
 LOCAL_FULL_ENV := ISO_ROOT=$(LOCAL_FULL_ISO_ROOT) CARGO_TARGET_DIR=$(LOCAL_FULL_ISO_ROOT)/target CARGO_HOME=$(LOCAL_FULL_ISO_ROOT)/cargo-home TMPDIR=$(LOCAL_FULL_ISO_ROOT)/tmp TMP=$(LOCAL_FULL_ISO_ROOT)/tmp TEMP=$(LOCAL_FULL_ISO_ROOT)/tmp
 
 gates-check: ## Run public-surface/docs/makefile boundary checks
-	@$(call gate_json,public-surface,python3 ./scripts/layout/check_public_surface.py)
-	@$(call gate_json,docs-public-surface,python3 ./scripts/docs/check_public_surface_docs.py)
-	@$(call gate_json,suite-id-docs,python3 ./scripts/docs/check_suite_id_docs.py)
-	@$(call gate_json,makefile-boundaries,python3 ./scripts/layout/check_makefile_target_boundaries.py)
-	@$(call gate_json,public-target-budget,python3 ./scripts/layout/check_public_target_budget.py)
-	@$(call gate_json,public-target-ownership,python3 ./scripts/layout/check_make_target_ownership.py)
-	@$(call gate_json,public-target-docs,python3 ./scripts/layout/check_public_targets_documented.py)
-	@$(call gate_json,public-target-descriptions,python3 ./scripts/layout/check_public_target_descriptions.py)
-	@$(call gate_json,public-target-aliases,python3 ./scripts/layout/check_public_target_aliases.py)
-	@$(call gate_json,internal-target-doc-refs,python3 ./scripts/layout/check_internal_targets_not_in_docs.py)
-	@$(call gate_json,makefiles-contract,python3 ./scripts/layout/check_makefiles_contract.py)
-	@$(call gate_json,makefiles-headers,python3 ./scripts/layout/check_makefile_headers.py)
-	@$(call gate_json,makefiles-index-drift,python3 ./scripts/layout/check_makefiles_index_drift.py)
-	@$(call gate_json,make-targets-catalog-drift,python3 ./scripts/layout/check_make_targets_catalog_drift.py)
-	@$(call gate_json,cargo-dev-metadata,python3 ./scripts/layout/check_cargo_dev_metadata.py)
-	@$(call gate_json,root-no-cargo-dev-deps,python3 ./scripts/layout/check_root_no_cargo_dev_deps.py)
-	@$(call gate_json,cargo-invocation-scope,python3 ./scripts/layout/check_cargo_invocations_scoped.py)
-	@$(call gate_json,root-diff-alarm,python3 ./scripts/layout/check_root_diff_alarm.py)
-	@$(call gate_json,ci-entrypoints,python3 ./scripts/layout/check_ci_entrypoints.py)
-	@$(call gate_json,help-excludes-internal,python3 ./scripts/layout/check_help_excludes_internal.py)
-	@$(call gate_json,help-output-determinism,python3 ./scripts/layout/check_help_output_determinism.py)
-	@$(call gate_json,root-mk-size-budget,python3 ./scripts/layout/check_root_mk_size_budget.py)
-	@$(call gate_json,root-makefile-hygiene,python3 ./scripts/layout/check_root_makefile_hygiene.py)
+	@$(call gate_json,public-surface,python3 ./scripts/areas/layout/check_public_surface.py)
+	@$(call gate_json,docs-public-surface,python3 ./scripts/areas/docs/check_public_surface_docs.py)
+	@$(call gate_json,suite-id-docs,python3 ./scripts/areas/docs/check_suite_id_docs.py)
+	@$(call gate_json,makefile-boundaries,python3 ./scripts/areas/layout/check_makefile_target_boundaries.py)
+	@$(call gate_json,public-target-budget,python3 ./scripts/areas/layout/check_public_target_budget.py)
+	@$(call gate_json,public-target-ownership,python3 ./scripts/areas/layout/check_make_target_ownership.py)
+	@$(call gate_json,public-target-docs,python3 ./scripts/areas/layout/check_public_targets_documented.py)
+	@$(call gate_json,public-target-descriptions,python3 ./scripts/areas/layout/check_public_target_descriptions.py)
+	@$(call gate_json,public-target-aliases,python3 ./scripts/areas/layout/check_public_target_aliases.py)
+	@$(call gate_json,internal-target-doc-refs,python3 ./scripts/areas/layout/check_internal_targets_not_in_docs.py)
+	@$(call gate_json,makefiles-contract,python3 ./scripts/areas/layout/check_makefiles_contract.py)
+	@$(call gate_json,makefiles-headers,python3 ./scripts/areas/layout/check_makefile_headers.py)
+	@$(call gate_json,makefiles-index-drift,python3 ./scripts/areas/layout/check_makefiles_index_drift.py)
+	@$(call gate_json,make-targets-catalog-drift,python3 ./scripts/areas/layout/check_make_targets_catalog_drift.py)
+	@$(call gate_json,cargo-dev-metadata,python3 ./scripts/areas/layout/check_cargo_dev_metadata.py)
+	@$(call gate_json,root-no-cargo-dev-deps,python3 ./scripts/areas/layout/check_root_no_cargo_dev_deps.py)
+	@$(call gate_json,cargo-invocation-scope,python3 ./scripts/areas/layout/check_cargo_invocations_scoped.py)
+	@$(call gate_json,root-diff-alarm,python3 ./scripts/areas/layout/check_root_diff_alarm.py)
+	@$(call gate_json,ci-entrypoints,python3 ./scripts/areas/layout/check_ci_entrypoints.py)
+	@$(call gate_json,help-excludes-internal,python3 ./scripts/areas/layout/check_help_excludes_internal.py)
+	@$(call gate_json,help-output-determinism,python3 ./scripts/areas/layout/check_help_output_determinism.py)
+	@$(call gate_json,root-mk-size-budget,python3 ./scripts/areas/layout/check_root_mk_size_budget.py)
+	@$(call gate_json,root-makefile-hygiene,python3 ./scripts/areas/layout/check_root_makefile_hygiene.py)
 
 gates: ## Print public targets grouped by namespace
-	@python3 ./scripts/layout/render_public_help.py --mode gates
+	@python3 ./scripts/areas/layout/render_public_help.py --mode gates
 
 help: ## Show curated public make targets from SSOT
-	@python3 ./scripts/layout/render_public_help.py
+	@python3 ./scripts/areas/layout/render_public_help.py
 
 help-advanced: ## Show curated public targets plus maintainer-oriented helpers
-	@python3 ./scripts/layout/render_public_help.py --mode advanced
+	@python3 ./scripts/areas/layout/render_public_help.py --mode advanced
 
 help-all:
-	@python3 ./scripts/layout/render_public_help.py --mode all
+	@python3 ./scripts/areas/layout/render_public_help.py --mode all
 
 explain: ## Explain whether TARGET is a public make target
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make explain TARGET=<name>" >&2; exit 2; }
-	@python3 ./scripts/layout/explain_public_target.py "$${TARGET}"
+	@python3 ./scripts/areas/layout/explain_public_target.py "$${TARGET}"
 
 list: ## Print public make target set from SSOT with one-line descriptions
-	@python3 ./scripts/layout/render_public_help.py --mode list
+	@python3 ./scripts/areas/layout/render_public_help.py --mode list
 
 graph: ## Print compact dependency graph for TARGET
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make graph TARGET=<name>" >&2; exit 2; }
-	@python3 ./scripts/layout/graph_public_target.py "$${TARGET}"
+	@python3 ./scripts/areas/layout/graph_public_target.py "$${TARGET}"
 
 what: ## Print explain + dependency graph for TARGET
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make what TARGET=<name>" >&2; exit 2; }
-	@python3 ./scripts/layout/explain_public_target.py "$${TARGET}"
+	@python3 ./scripts/areas/layout/explain_public_target.py "$${TARGET}"
 	@echo ""
-	@python3 ./scripts/layout/graph_public_target.py "$${TARGET}"
+	@python3 ./scripts/areas/layout/graph_public_target.py "$${TARGET}"
 
 internal-list: ## Print internal make targets for maintainers
-	@python3 ./scripts/layout/list_internal_targets.py
+	@python3 ./scripts/areas/layout/list_internal_targets.py
 
 format: ## UX alias for fmt
 	@$(MAKE) fmt
 
 report/merge: ## Merge lane reports into unified make report JSON
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	python3 ./scripts/layout/make_report.py merge --run-id "$$run_id"
+	python3 ./scripts/areas/layout/make_report.py merge --run-id "$$run_id"
 
 report/print: ## Print lane summary like CI/GitHub Actions output
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	python3 ./scripts/layout/make_report.py print --run-id "$$run_id"
+	python3 ./scripts/areas/layout/make_report.py print --run-id "$$run_id"
 
 report/md: ## Generate markdown summary for PR comments
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	python3 ./scripts/layout/make_report.py md --run-id "$$run_id"
+	python3 ./scripts/areas/layout/make_report.py md --run-id "$$run_id"
 
 report/junit: ## Optional JUnit conversion for CI systems
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	python3 ./scripts/layout/make_report.py junit --run-id "$$run_id"
+	python3 ./scripts/areas/layout/make_report.py junit --run-id "$$run_id"
 
 logs/last-fail: ## Tail the last failed lane log from latest unified report
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	python3 ./scripts/layout/make_report.py last-fail --run-id "$$run_id"
+	python3 ./scripts/areas/layout/make_report.py last-fail --run-id "$$run_id"
 
 triage: ## Print failing lanes + last 20 log lines + evidence paths
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	python3 ./scripts/layout/make_report.py triage --run-id "$$run_id"
+	python3 ./scripts/areas/layout/make_report.py triage --run-id "$$run_id"
 
 legacy-audit: ## List remaining legacy target/script references
-	@./scripts/layout/legacy_audit.sh
+	@./scripts/areas/layout/legacy_audit.sh
 
 report: ## Merge lanes, generate confidence scorecard, and print summary
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	python3 ./scripts/layout/make_report.py merge --run-id "$$run_id" >/dev/null; \
+	python3 ./scripts/areas/layout/make_report.py merge --run-id "$$run_id" >/dev/null; \
 	python3 ./ops/report/make_confidence_scorecard.py --unified "artifacts/evidence/make/$$run_id/unified.json" --out "ops/_generated_committed/scorecard.json" --print-summary; \
-	python3 ./scripts/layout/make_report.py print --run-id "$$run_id"
+	python3 ./scripts/areas/layout/make_report.py print --run-id "$$run_id"
 
 evidence/open: ## Open evidence directory (supports AREA=<area> RUN_ID=<id>)
 	@./ops/run/evidence-open.sh
 
 evidence/clean: ## Clean evidence directories using retention policy
-	@python3 ./scripts/layout/evidence_clean.py
+	@python3 ./scripts/areas/layout/evidence_clean.py
 
 evidence/check: ## Validate evidence JSON schema contract for generated outputs
-	@python3 ./scripts/layout/evidence_check.py
+	@python3 ./scripts/areas/layout/evidence_check.py
 
 evidence/bundle: ## Export latest evidence bundle as tar.zst for CI attachments
 	@./ops/run/evidence-bundle.sh
 
 evidence/pr-summary: ## Generate PR markdown summary from latest evidence unified report
-	@python3 ./scripts/layout/evidence_pr_summary.py
+	@python3 ./scripts/areas/layout/evidence_pr_summary.py
 
 artifacts-open: ## Open latest ops artifact bundle/report directory
 	@$(call with_iso,artifacts-open,$(MAKE) -s ops-artifacts-open)
@@ -289,7 +289,7 @@ policies/check: ## Run deny/audit + policy-relaxation checks
 	@$(call with_iso,policies-check,$(MAKE) -s lane-configs-policies)
 
 budgets/check: ## Validate universal budgets and budget-relaxation expiry policy
-	@python3 ./scripts/layout/check_ops_budgets.py
+	@python3 ./scripts/areas/layout/check_ops_budgets.py
 	@python3 ./ops/_lint/budget-relaxations-audit.py
 
 perf/baseline-update: ## Run smoke suite, update baseline, write diff summary and changelog
@@ -356,13 +356,13 @@ internal/lane-obs-full: ## Internal lane: full observability verification for ro
 root: ## CI-fast lane subset (no cluster bring-up)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-$(MAKE_RUN_TS)}}"; \
 	PARALLEL="$${PARALLEL:-1}" RUN_ID="$$run_id" MODE=root ./ops/run/root-lanes.sh; \
-	python3 ./scripts/layout/make_report.py print --run-id "$$run_id"
+	python3 ./scripts/areas/layout/make_report.py print --run-id "$$run_id"
 
 root-local: ## All lanes in parallel + ops smoke lane (PARALLEL=0 for serial)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-$(MAKE_RUN_TS)}}"; \
 	PARALLEL="$${PARALLEL:-1}" RUN_ID="$$run_id" MODE=root-local ./ops/run/root-lanes.sh; \
 	if [ "$${PERF_CHEAP_REGRESSION:-0}" = "1" ]; then $(MAKE) -s ops-load-smoke perf/regression-check PROFILE="$${PROFILE:-local}"; fi; \
-	python3 ./scripts/layout/make_report.py print --run-id "$$run_id"
+	python3 ./scripts/areas/layout/make_report.py print --run-id "$$run_id"
 
 root-local/no-ops: ## Local lanes without ops smoke lane (explicit skip)
 	@NO_OPS=1 PARALLEL="$${PARALLEL:-1}" RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-no-ops-$(MAKE_RUN_TS)}}" MODE=root-local ./ops/run/root-lanes.sh
@@ -373,7 +373,7 @@ root-local-no-ops: ## Alias for root-local/no-ops
 root-local-fast: ## Debug serial root-local skipping expensive extras (ops-smoke, obs-full)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-fast-$(MAKE_RUN_TS)}}"; \
 	PARALLEL=0 FAST=1 RUN_ID="$$run_id" MODE=root-local ./ops/run/root-lanes.sh; \
-	python3 ./scripts/layout/make_report.py print --run-id "$$run_id"
+	python3 ./scripts/areas/layout/make_report.py print --run-id "$$run_id"
 
 root-local-open: ## Open or print latest root-local summary report
 	@SUMMARY_RUN_ID="$${RUN_ID:-}" MODE=open ./ops/run/root-lanes.sh
@@ -431,13 +431,13 @@ root-local-summary: ## Print status and artifact paths for RUN_ID
 lane-status: ## Print all lane statuses for RUN_ID (or latest)
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || true)}"; \
 	[ -n "$$run_id" ] || { echo "RUN_ID is required (or run root/root-local first)" >&2; exit 2; }; \
-	python3 ./scripts/layout/make_report.py print --run-id "$$run_id"
+	python3 ./scripts/areas/layout/make_report.py print --run-id "$$run_id"
 
 open: ## Open unified report for RUN_ID (or print path if opener unavailable)
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || true)}"; \
 	[ -n "$$run_id" ] || { echo "RUN_ID is required (or run root/root-local first)" >&2; exit 2; }; \
 	path="artifacts/evidence/make/$$run_id/unified.json"; \
-	[ -f "$$path" ] || python3 ./scripts/layout/make_report.py merge --run-id "$$run_id" >/dev/null; \
+	[ -f "$$path" ] || python3 ./scripts/areas/layout/make_report.py merge --run-id "$$run_id" >/dev/null; \
 	echo "$$path"; \
 	if command -v open >/dev/null 2>&1; then open "$$path" >/dev/null 2>&1 || true; \
 	elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$$path" >/dev/null 2>&1 || true; fi
@@ -447,14 +447,14 @@ rerun-failed: ## Rerun only failed lanes from RUN_ID (NEW_RUN_ID optional)
 	[ -n "$$src" ] || { echo "RUN_ID is required (source run id)" >&2; exit 2; }; \
 	new="$${NEW_RUN_ID:-$${src}-rerun-$(MAKE_RUN_TS)}"; \
 	PARALLEL="$${PARALLEL:-0}" MODE=rerun-failed SOURCE_RUN_ID="$$src" RUN_ID="$$new" ./ops/run/root-lanes.sh; \
-	python3 ./scripts/layout/make_report.py print --run-id "$$new"
+	python3 ./scripts/areas/layout/make_report.py print --run-id "$$new"
 
 root-determinism: ## Assert make root determinism (inventory outputs stable across two runs)
-	@./scripts/layout/check_root_determinism.sh
+	@./scripts/areas/layout/check_root_determinism.sh
 
 
 telemetry-contracts: ## Regenerate telemetry generated artifacts from observability contracts
-	@python3 ./scripts/contracts/generate_contract_artifacts.py
+	@python3 ./scripts/areas/contracts/generate_contract_artifacts.py
 	@cargo fmt --all
 
 telemetry-verify: ## Run telemetry contract verification path (pack+smoke+contract tests)
@@ -468,7 +468,7 @@ telemetry-verify: ## Run telemetry contract verification path (pack+smoke+contra
 	fi
 
 architecture-check: ## Validate runtime architecture boundaries and dependency guardrails
-	@python3 scripts/docs/generate_architecture_map.py
+	@python3 scripts/areas/docs/generate_architecture_map.py
 	@if ! git diff --quiet -- docs/architecture/architecture-map.md; then \
 		echo "architecture map drift detected; regenerate docs/architecture/architecture-map.md" >&2; \
 		git --no-pager diff -- docs/architecture/architecture-map.md >&2 || true; \
@@ -481,35 +481,35 @@ architecture-check: ## Validate runtime architecture boundaries and dependency g
 	@cargo test -p bijux-atlas-server --test import_boundary_guardrails
 
 fetch-real-datasets:
-	@./scripts/fixtures/fetch-real-datasets.sh
+	@./scripts/areas/fixtures/fetch-real-datasets.sh
 
 ssot-check:
-	@./scripts/contracts/check_all.sh
+	@./scripts/areas/contracts/check_all.sh
 
 policy-lint:
-	@./scripts/public/policy-lint.sh
+	@./scripts/areas/public/policy-lint.sh
 
 policy-schema-drift:
-	@./scripts/public/policy-schema-drift.py
+	@./scripts/areas/public/policy-schema-drift.py
 
 policy-audit: ## Audit policy relaxations report + enforce registry/expiry/budget gates
-	@./scripts/public/policy-audit.py --enforce
+	@./scripts/areas/public/policy-audit.py --enforce
 
 policy-enforcement-status: ## Validate policy pass/fail coverage table and generate status doc
-	@./scripts/public/policy-enforcement-status.py --enforce
+	@./scripts/areas/public/policy-enforcement-status.py --enforce
 
 policy-allow-env-lint: ## Forbid ALLOW_* escape hatches unless declared in env schema
-	@./scripts/public/check-allow-env-schema.py
+	@./scripts/areas/public/check-allow-env-schema.py
 
 ops-policy-audit: ## Verify ops policy configs are reflected by ops make/scripts contracts
-	@./scripts/public/ops-policy-audit.py
+	@./scripts/areas/public/ops-policy-audit.py
 
 policy-drift-diff: ## Show policy contract drift between two refs (usage: make policy-drift-diff [FROM=HEAD~1 TO=HEAD])
-	@./scripts/public/policy-drift-diff.sh "$${FROM:-HEAD~1}" "$${TO:-HEAD}"
+	@./scripts/areas/public/policy-drift-diff.sh "$${FROM:-HEAD~1}" "$${TO:-HEAD}"
 
 release-update-compat-matrix:
 	@[ -n "$$TAG" ] || { echo "usage: make release-update-compat-matrix TAG=<tag>"; exit 2; }
-	@./scripts/release/update-compat-matrix.sh "$$TAG"
+	@./scripts/areas/release/update-compat-matrix.sh "$$TAG"
 
 
 .PHONY: root-local-no-ops architecture-check artifacts-clean artifacts-index artifacts-open bootstrap bootstrap-tools bump cargo/all chart chart-package chart-verify ci ci/all ci-workflow-contract clean config-drift config-print config-validate configs-check configs/all contracts dataset-id-lint debug deep-clean docker docker-build docker-contracts docker-push docker-scan docker-smoke docs docs/all docs-lint-names doctor evidence/open evidence/clean evidence/check evidence/bundle evidence/pr-summary explain what fetch-real-datasets format gates gates-check governance-check graph help help-advanced help-all open lane-status rerun-failed hygiene internal-list inventory isolate-clean layout-check layout-migrate list local local/all local-full makefiles-contract nightly nightly/all no-direct-scripts obs/update-goldens ops-alerts-validate ops ops/all ops-api-protection ops-artifacts-open ops-baseline-policy-check ops-cache-pin-set ops-cache-status ops-catalog-validate ops-check ops-clean ops-contracts-check ops-dashboards-validate ops-dataset-federated-registry-test ops-dataset-multi-release-test ops-dataset-promotion-sim ops-dataset-qc ops-datasets-fetch ops-deploy ops-doctor ops-down ops-drill-corruption-dataset ops-drill-memory-growth ops-drill-otel-outage ops-drill-overload ops-drill-pod-churn ops-drill-rate-limit ops-drill-rollback ops-drill-rollback-under-load ops-drill-store-outage ops-drill-suite ops-drill-toxiproxy-latency ops-drill-upgrade ops-drill-upgrade-under-load ops-e2e ops-e2e-smoke ops-full ops-full-pr ops-gc-smoke ops-gen ops-gen-check ops-graceful-degradation ops-incident-repro-kit ops-k8s-smoke ops-k8s-suite ops-k8s-template-tests ops-k8s-tests ops-load-ci ops-load-full ops-load-manifest-validate ops-load-nightly ops-load-shedding ops-load-smoke ops-load-soak ops-load-suite ops-local-full ops-local-full-stack ops-metrics-check ops-obs-down ops-obs-install ops-obs-mode ops-obs-uninstall ops-obs-verify ops-observability-pack-conformance-report ops-observability-pack-export ops-observability-pack-health ops-observability-pack-smoke ops-observability-pack-verify ops-observability-smoke ops-observability-validate ops-open-grafana ops-openapi-validate ops-perf-baseline-update ops-perf-cold-start ops-perf-nightly ops-perf-report ops-perf-warm-start ops-policy-audit ops-prereqs ops-proof-cached-only ops-publish ops-readiness-scorecard ops-realdata ops-redeploy ops-ref-grade-local ops-ref-grade-nightly ops-ref-grade-pr ops-release-matrix ops-release-rollback ops-release-update ops-report ops-slo-alert-proof ops-slo-burn ops-slo-report ops-smoke ops-tools-check ops-traces-check ops-undeploy ops-up ops-values-validate ops-warm ops-warm-datasets ops-warm-shards ops-warm-top policies/all policy-allow-env-lint policy-audit policy-drift-diff policy-enforcement-status policy-lint policy-schema-drift prereqs quick release release-dry-run release-update-compat-matrix rename-lint legacy-audit report root root-determinism root-local root-local-fast root-local-summary scripts-all scripts/all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test ssot-check verify-inventory lane-cargo lane-docs lane-ops lane-scripts lane-configs-policies root-local-open repro lane-status open rerun-failed internal/lane-ops-smoke internal/lane-obs-cheap internal/lane-obs-full report/merge report/print report/md report/junit clean-safe clean-all print-env cargo/fmt cargo/lint cargo/test-fast cargo/test cargo/test-all cargo/test-contracts cargo/audit cargo/bench-smoke cargo/coverage configs/check budgets/check perf/baseline-update perf/regression-check perf/triage perf/compare policies/check policies/boundaries-check retry docs/check docs/build docs/fmt docs/lint docs/test docs/clean scripts/check scripts/build scripts/fmt scripts/lint scripts/test scripts/clean ops/check ops/smoke ops/suite ops/fmt ops/lint ops/test ops/build ops/clean pins/check pins/update logs/last-fail cache/status cache/prune root-local/no-ops
@@ -517,29 +517,29 @@ release-update-compat-matrix:
 
 
 inventory: ## Regenerate inventories (ops surface, make targets, docs status, naming, repo surface)
-	@python3 ./scripts/docs/generate_make_targets_catalog.py
-	@python3 ./scripts/docs/generate_ops_surface.py
-	@python3 ./scripts/docs/generate_make_targets_inventory.py
-	@python3 ./scripts/docs/generate_makefiles_surface.py
-	@python3 ./scripts/gen/generate_scripts_surface.py
-	@python3 ./scripts/configs/generate_configs_surface.py
-	@python3 ./scripts/configs/generate_tooling_versions_doc.py
-	@python3 ./scripts/docs/lint_doc_status.py
-	@python3 ./scripts/docs/naming_inventory.py
-	@python3 ./scripts/docs/generate_repo_surface.py
+	@python3 ./scripts/areas/docs/generate_make_targets_catalog.py
+	@python3 ./scripts/areas/docs/generate_ops_surface.py
+	@python3 ./scripts/areas/docs/generate_make_targets_inventory.py
+	@python3 ./scripts/areas/docs/generate_makefiles_surface.py
+	@python3 ./scripts/areas/gen/generate_scripts_surface.py
+	@python3 ./scripts/areas/configs/generate_configs_surface.py
+	@python3 ./scripts/areas/configs/generate_tooling_versions_doc.py
+	@python3 ./scripts/areas/docs/lint_doc_status.py
+	@python3 ./scripts/areas/docs/naming_inventory.py
+	@python3 ./scripts/areas/docs/generate_repo_surface.py
 
 verify-inventory: ## Fail if inventory outputs drift from generated state
 	@$(MAKE) -s inventory
 	@git diff --exit-code -- makefiles/targets.json docs/_generated/make-targets.md docs/_generated/repo-surface.md docs/_generated/doc-status.md docs/_generated/naming-inventory.md docs/_generated/ops-surface.md docs/_generated/configs-surface.md docs/_generated/tooling-versions.md docs/_generated/scripts-surface.md docs/development/make-targets.md docs/development/make-targets-inventory.md docs/development/makefiles/surface.md
 
 upgrade-guide: ## Generate make target upgrade guide for renamed/deprecated aliases
-	@python3 ./scripts/docs/generate_upgrade_guide.py
+	@python3 ./scripts/areas/docs/generate_upgrade_guide.py
 
 artifacts-index: ## Generate artifacts index for inspection UIs
-	@python3 ./scripts/layout/build_artifacts_index.py
+	@python3 ./scripts/areas/layout/build_artifacts_index.py
 
 artifacts-clean: ## Clean old artifacts with safe retention
-	@python3 ./scripts/layout/clean_artifacts.py
+	@python3 ./scripts/areas/layout/clean_artifacts.py
 
 isolate-clean: ## Remove isolate output directories safely
 	@find artifacts/isolate -mindepth 1 -maxdepth 1 -type d -exec rm -r {} + 2>/dev/null || true
@@ -548,11 +548,11 @@ clean: ## Safe clean for generated local outputs
 	@./ops/run/clean.sh
 
 clean-safe: ## Clean only safe generated make artifact directories
-	@python3 ./scripts/layout/clean_make_artifacts.py
+	@python3 ./scripts/areas/layout/clean_make_artifacts.py
 
 clean-all: ## Clean all allowed generated dirs (requires CONFIRM=YES)
 	@[ "$${CONFIRM:-}" = "YES" ] || { echo "refusing clean-all without CONFIRM=YES"; exit 2; }
-	@python3 ./scripts/layout/clean_make_artifacts.py --all
+	@python3 ./scripts/areas/layout/clean_make_artifacts.py --all
 
 deep-clean: ## Extended clean (prints and then removes generated outputs)
 	@printf '%s\n' 'Deleting: artifacts/isolate artifacts/scripts artifacts/perf/results artifacts/ops'
@@ -599,7 +599,7 @@ release-dry-run: ## Build + docs + ops smoke release rehearsal
 release: ## Release entrypoint (currently dry-run only)
 	@$(MAKE) release-dry-run
 makefiles-contract: ## Validate makefile contract boundaries and publication rules
-	@python3 ./scripts/layout/check_makefiles_contract.py
+	@python3 ./scripts/areas/layout/check_makefiles_contract.py
 
 ci-workflow-contract: ## Validate CI and nightly workflows use canonical make entrypoints
-	@python3 ./scripts/layout/check_ci_entrypoints.py
+	@python3 ./scripts/areas/layout/check_ci_entrypoints.py

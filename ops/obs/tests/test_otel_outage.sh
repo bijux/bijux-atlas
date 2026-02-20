@@ -13,6 +13,6 @@ fi
 install_chart
 wait_ready
 with_port_forward 18080
-"$ROOT/ops/obs/scripts/run_drill.sh" otel-outage
+"$ROOT/ops/obs/scripts/bin/run_drill.sh" otel-outage
 
 echo "otel outage drill passed"

@@ -30,7 +30,7 @@ Registry drift causes stale concept ownership.
 ## How to verify
 
 ```bash
-$ python3 scripts/docs/check_concept_registry.py
+$ python3 scripts/areas/docs/check_concept_registry.py
 $ make docs
 ```
 

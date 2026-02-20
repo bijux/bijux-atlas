@@ -53,7 +53,7 @@ Invalid or drifted registry content is rejected by contract checks and CI gates.
 ## Examples
 
 ```bash
-$ ./scripts/internal/openapi-generate.sh
+$ ./scripts/areas/internal/openapi-generate.sh
 ```
 
 Expected output: generator succeeds and endpoint drift checks pass.

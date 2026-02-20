@@ -36,7 +36,7 @@ Unchecked boxes mean the change is incomplete and must not merge.
 ## Examples
 
 ```bash
-$ ./scripts/contracts/check_all.sh
+$ ./scripts/areas/contracts/check_all.sh
 $ make docs docs-freeze
 ```
 
