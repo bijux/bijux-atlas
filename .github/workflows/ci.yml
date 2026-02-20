@@ -24,6 +24,24 @@ jobs:
         run: ./bin/atlasctl --quiet migration gate
       - name: Enforce atlasctl repo hygiene gate
         run: ./bin/atlasctl --quiet check repo
+      - name: Enforce python cache/venv tracking policy
+        run: |
+          ./bin/atlasctl --quiet python lint --json
+          ./bin/atlasctl --quiet check venv-location-policy
+      - name: Enforce no tracked cache dirs
+        run: |
+          bad=$(git status --porcelain | grep -E '(__pycache__/|\.pytest_cache/|\.ruff_cache/|\.mypy_cache/)' || true)
+          if [ -n "$bad" ]; then
+            echo "tracked cache entries detected:"
+            echo "$bad"
+            exit 1
+          fi
+      - name: Verify atlasctl editable install
+        run: |
+          rm -rf artifacts/atlasctl/venv/ci-install
+          python3 -m venv artifacts/atlasctl/venv/ci-install
+          artifacts/atlasctl/venv/ci-install/bin/pip --disable-pip-version-check install -e packages/atlasctl
+          artifacts/atlasctl/venv/ci-install/bin/python -c "import atlasctl; print(atlasctl.__version__)"
       - name: Upload CI artifacts
         if: always()
         uses: actions/upload-artifact@v4
