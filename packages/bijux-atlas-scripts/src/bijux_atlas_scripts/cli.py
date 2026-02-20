@@ -8,17 +8,18 @@ import subprocess
 import sys
 from pathlib import Path
 
-from . import contracts, layout, registry
-from .compat.command import configure_compat_parser, run_compat_command
-from .ci.command import configure_ci_parser, run_ci_command
+from . import layout, registry
 from .check.command import configure_check_parser, run_check_command
+from .ci.command import configure_ci_parser, run_ci_command
+from .compat.command import configure_compat_parser, run_compat_command
 from .configs.command import configure_configs_parser, run_configs_command
+from .contracts.command import configure_contracts_parser, run_contracts_command
 from .core.context import RunContext
 from .core.env_guard import guard_no_network_mode
 from .core.fs import ensure_evidence_path
 from .core.logging import log_event
-from .docs.command import configure_docs_parser, run_docs_command
 from .docker.command import configure_docker_parser, run_docker_command
+from .docs.command import configure_docs_parser, run_docs_command
 from .doctor import run_doctor
 from .domain_cmd import register_domain_parser, render_payload
 from .domain_cmd import registry as command_registry
@@ -42,11 +43,7 @@ from .report.command import configure_report_parser, run_report_command
 from .runner import run_legacy_script
 from .surface import run_surface
 
-DOMAINS = {
-    "contracts": contracts.run,
-    "registry": registry.run,
-    "layout": layout.run,
-}
+DOMAINS = {"registry": registry.run, "layout": layout.run}
 
 EXPLAIN_MAP: dict[str, dict[str, object]] = {
     "check": {"touches": ["makefiles/", "configs/", ".github/workflows/"], "tools": []},
@@ -107,10 +104,11 @@ def build_parser() -> argparse.ArgumentParser:
     commands_p.add_argument("--json", action="store_true", help="emit JSON output")
     commands_p.add_argument("--out-file", help="optional output path for JSON report")
 
-    domain_names = ("contracts", "registry", "layout")
+    domain_names = ("registry", "layout")
     for name in domain_names:
         register_domain_parser(sub, name, f"{name} domain commands")
     configure_configs_parser(sub)
+    configure_contracts_parser(sub)
     configure_docker_parser(sub)
     configure_ci_parser(sub)
     configure_check_parser(sub)
@@ -369,6 +367,8 @@ def main(argv: list[str] | None = None) -> int:
             return run_docs_command(ctx, ns)
         if ns.cmd == "configs":
             return run_configs_command(ctx, ns)
+        if ns.cmd == "contracts":
+            return run_contracts_command(ctx, ns)
         if ns.cmd == "docker":
             return run_docker_command(ctx, ns)
         if ns.cmd == "ci":
