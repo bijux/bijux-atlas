@@ -4,7 +4,6 @@ Scripts in this area.
 
 - ENTRYPOINTS.md
 - check_concept_ids.sh
-- check_critical_make_targets_referenced.py
 - check_doc_naming.sh
 - check_docker_entrypoints.py
 - check_example_configs.py
@@ -13,8 +12,6 @@ Scripts in this area.
 - check_k8s_docs_contract.py
 - check_load_docs_contract.py
 - check_make_help_drift.py
-- check_make_targets_documented.py
-- check_make_targets_drift.py
 - check_ops_docs_make_targets.py
 - check_ops_observability_links.py
 - check_reference_templates.sh

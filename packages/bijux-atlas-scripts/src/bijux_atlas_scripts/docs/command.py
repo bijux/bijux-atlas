@@ -1371,6 +1371,63 @@ def _check_docs_make_targets_exist(ctx: RunContext) -> tuple[int, str]:
     return (0, "docs make-target existence check passed") if not missing else (1, "\n".join(missing[:200]))
 
 
+def _check_critical_make_targets_referenced(ctx: RunContext) -> tuple[int, str]:
+    critical = [
+        "docs",
+        "contracts",
+        "ci",
+        "local",
+        "local-full",
+        "ops-up",
+        "ops-deploy",
+        "ops-smoke",
+        "ops-k8s-tests",
+        "ops-load-smoke",
+        "ops-observability-validate",
+        "ops-full",
+    ]
+    docs = ctx.repo_root / "docs"
+    text = "\n".join(p.read_text(encoding="utf-8", errors="ignore") for p in sorted(docs.rglob("*.md")))
+    missing = [t for t in critical if f"`{t}`" not in text and f"make {t}" not in text]
+    return (0, "critical make target docs coverage passed") if not missing else (1, "\n".join(f"missing docs reference for `{t}`" for t in missing))
+
+
+def _check_make_targets_documented(ctx: RunContext) -> tuple[int, str]:
+    surface_path = ctx.repo_root / "docs/development/makefiles/surface.md"
+    targets_path = ctx.repo_root / "docs/development/make-targets.md"
+    surface_doc = surface_path.read_text(encoding="utf-8", errors="ignore") if surface_path.exists() else ""
+    targets_doc = targets_path.read_text(encoding="utf-8", errors="ignore") if targets_path.exists() else ""
+    help_out = subprocess.run(["make", "help"], cwd=ctx.repo_root, text=True, capture_output=True, check=False).stdout.strip().splitlines()
+    if len(help_out) < 3:
+        return 1, "make target docs check failed: unexpected `make help` output"
+    missing: list[str] = []
+    for line in help_out:
+        if not line.startswith("    "):
+            continue
+        token = line.strip().split()[0]
+        if token.startswith("[") and token.endswith("]"):
+            continue
+        if f"`{token}`" not in surface_doc and f"`{token}`" not in targets_doc:
+            missing.append(token)
+    return (0, "make target docs check passed") if not missing else (1, "\n".join(missing))
+
+
+def _check_make_targets_drift(ctx: RunContext) -> tuple[int, str]:
+    paths = [ctx.repo_root / "docs/development/make-targets.md", ctx.repo_root / "docs/development/make-targets-inventory.md"]
+
+    def digest(path: Path) -> str:
+        return hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else ""
+
+    before = {str(p): digest(p) for p in paths}
+    code, out = _run_check(["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate", "--report", "text"], ctx.repo_root)
+    if code != 0:
+        return 1, out
+    after = {str(p): digest(p) for p in paths}
+    if before != after:
+        return 1, "make-target docs drift detected; regenerate and commit"
+    return 0, "make-target docs drift check passed"
+
+
 def _generate_concept_graph(ctx: RunContext) -> tuple[int, str]:
     registry = ctx.repo_root / "docs/_style/concepts.yml"
     out = ctx.repo_root / "docs/_generated/concepts.md"
@@ -2462,6 +2519,21 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
         return code
 
+    if ns.docs_cmd == "critical-make-targets-referenced-check":
+        code, output = _check_critical_make_targets_referenced(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
+    if ns.docs_cmd == "make-targets-documented-check":
+        code, output = _check_make_targets_documented(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
+    if ns.docs_cmd == "make-targets-drift-check":
+        code, output = _check_make_targets_drift(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
     if ns.docs_cmd == "contracts-index":
         if ns.fix:
             code, output = _generate_contracts_index_doc(ctx)
@@ -2618,6 +2690,9 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("nav-order-check", "validate top-level mkdocs nav ordering"),
         ("docs-deterministic-check", "validate docs determinism settings"),
         ("docs-make-targets-exist-check", "validate make targets referenced in docs exist"),
+        ("critical-make-targets-referenced-check", "validate critical make targets are referenced in docs"),
+        ("make-targets-documented-check", "validate public make targets have docs coverage"),
+        ("make-targets-drift-check", "validate docs make-targets catalog is in sync"),
         ("glossary-check", "validate glossary and banned terms policy"),
         ("contracts-index", "validate or generate docs contracts index"),
         ("runbook-map", "validate or generate docs runbook map index"),
