@@ -1,5 +1,0 @@
-#!/usr/bin/env sh
-# DEPRECATED: use `bin/bijux-atlas make explain`.
-# Migration: docs/development/tooling/bijux-atlas-scripts.md
-echo "DEPRECATED: make_explain -> bijux-atlas make explain" >&2
-exec "$(dirname "$0")/bijux-atlas" make explain "$@"

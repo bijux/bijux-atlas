@@ -28,6 +28,7 @@ check: ## Umbrella check: scripts package checks + cargo checks + make contracts
 	@$(SCRIPTS) check ops-generated-tracked
 	@$(SCRIPTS) check tracked-timestamps
 	@$(SCRIPTS) check committed-generated-hygiene
+	@$(MAKE) -s make/guard-no-script-paths
 	@$(MAKE) -s make/command-allowlist
 
 check-scripts: ## Run scripts package lint/tests/contracts
@@ -458,7 +459,7 @@ legacy/audit: ## List non-scripts files still referencing scripts/ paths
 
 cleanup/verify: ## One-time cleanup safety verification before deleting legacy paths
 	@$(MAKE) -s legacy/check scripts-check ops-contracts-check
-	@./bin/bijux-atlas run ./scripts/areas/layout/check_help_snapshot.py && ./bin/bijux-atlas run ./scripts/areas/layout/check_no_dead_entrypoints.py && ./bin/bijux-atlas run ./scripts/areas/layout/check_no_orphan_docs_refs.py && ./bin/bijux-atlas run ./scripts/areas/layout/check_no_orphan_configs.py && ./bin/bijux-atlas run ./scripts/areas/layout/check_no_orphan_owners.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/check_help_snapshot.py && $(ATLAS_SCRIPTS) run ./scripts/areas/layout/check_no_dead_entrypoints.py && $(ATLAS_SCRIPTS) run ./scripts/areas/layout/check_no_orphan_docs_refs.py && $(ATLAS_SCRIPTS) run ./scripts/areas/layout/check_no_orphan_configs.py && $(ATLAS_SCRIPTS) run ./scripts/areas/layout/check_no_orphan_owners.py
 
 local: ## Developer confidence suite
 	@$(MAKE) -s root-local
@@ -525,6 +526,13 @@ make/guard-no-python-scripts: ## Guard against direct python scripts path invoca
 	@! rg -n "python(3)?\\s+\\.?/?scripts/" makefiles/*.mk >/dev/null || { \
 		echo "direct python path invocation is forbidden; use $(ATLAS_SCRIPTS) or $(PY_RUN)"; \
 		rg -n "python(3)?\\s+\\.?/?scripts/" makefiles/*.mk; \
+		exit 1; \
+	}
+
+make/guard-no-script-paths: ## Guard against direct bash/python scripts path invocation in make recipes
+	@! rg -n "(python(3)?|bash|sh)\\s+\\.?/?scripts/" makefiles/*.mk >/dev/null || { \
+		echo "direct scripts/ path invocation is forbidden in make recipes; use atlasctl commands"; \
+		rg -n "(python(3)?|bash|sh)\\s+\\.?/?scripts/" makefiles/*.mk; \
 		exit 1; \
 	}
 
@@ -596,9 +604,11 @@ release-update-compat-matrix:
 
 
 inventory: ## Regenerate inventories from bijux-atlas-scripts SSOT generators
+	@$(ATLAS_SCRIPTS) make inventory --out-dir docs/_generated
 	@$(ATLAS_SCRIPTS) inventory all --format both --out-dir docs/_generated
 
 verify-inventory: ## Fail if inventory outputs drift from generated state
+	@$(ATLAS_SCRIPTS) make inventory --out-dir docs/_generated --check
 	@$(MAKE) -s inventory
 	@$(ATLAS_SCRIPTS) inventory budgets --check --format json --dry-run >/dev/null
 	@git diff --exit-code -- docs/_generated/INDEX.md docs/_generated/make-targets.md docs/_generated/make-targets.json docs/_generated/ops-surface.md docs/_generated/ops-surface.json docs/_generated/configs-surface.md docs/_generated/configs-surface.json docs/_generated/schema-index.md docs/_generated/schema-index.json docs/_generated/ownership.md docs/_generated/ownership.json docs/_generated/contracts-index.md docs/_generated/contracts-index.json docs/_generated/inventory-budgets.md docs/_generated/inventory-budgets.json

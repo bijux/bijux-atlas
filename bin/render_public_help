@@ -1,5 +1,0 @@
-#!/usr/bin/env sh
-# DEPRECATED: use `bin/bijux-atlas make help`.
-# Migration: docs/development/tooling/bijux-atlas-scripts.md
-echo "DEPRECATED: render_public_help -> bijux-atlas make help" >&2
-exec "$(dirname "$0")/bijux-atlas" make help "$@"

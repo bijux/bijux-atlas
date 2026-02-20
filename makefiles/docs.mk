@@ -8,7 +8,7 @@ DOCS_REQ ?= configs/docs/requirements.lock.txt
 DOCS_SITE ?= $(DOCS_ARTIFACTS)/site
 
 docs-req-lock-refresh: ## Refresh docs requirements lock deterministically
-	@./bin/bijux-atlas run -m venv "$(DOCS_VENV)"
+	@$(ATLAS_SCRIPTS) run -m venv "$(DOCS_VENV)"
 	@"$(DOCS_VENV)/bin/pip" install --upgrade pip >/dev/null
 	@"$(DOCS_VENV)/bin/pip" install -r configs/docs/requirements.txt >/dev/null
 	@"$(DOCS_VENV)/bin/pip" freeze --exclude-editable | LC_ALL=C sort > "$(DOCS_REQ)"
@@ -20,20 +20,20 @@ _docs-venv:
 docs-build: ## Build docs + link-check + spell-check + lint
 	@if [ ! -x "$(DOCS_VENV)/bin/mkdocs" ]; then $(MAKE) _docs-venv; fi
 	@"$(DOCS_VENV)/bin/pip" install -r "$(DOCS_REQ)" >/dev/null
-	@./bin/bijux-atlas docs generate --report text
-	@./bin/bijux-atlas gen make-targets
-	@./bin/bijux-atlas gen surface
-	@./bin/bijux-atlas gen scripting-surface
-	@./bin/bijux-atlas docs render-diagrams --report text
-	@./bin/bijux-atlas docs style --report text
+	@$(ATLAS_SCRIPTS) docs generate --report text
+	@$(ATLAS_SCRIPTS) gen make-targets
+	@$(ATLAS_SCRIPTS) gen surface
+	@$(ATLAS_SCRIPTS) gen scripting-surface
+	@$(ATLAS_SCRIPTS) docs render-diagrams --report text
+	@$(ATLAS_SCRIPTS) docs style --report text
 	@SOURCE_DATE_EPOCH=946684800 "$(DOCS_VENV)/bin/mkdocs" build --strict --config-file mkdocs.yml --site-dir "$(DOCS_SITE)"
-	@./bin/bijux-atlas docs nav-check --report text
-	@./bin/bijux-atlas docs spellcheck --path docs --report text
-	@./bin/bijux-atlas docs lint --report text
+	@$(ATLAS_SCRIPTS) docs nav-check --report text
+	@$(ATLAS_SCRIPTS) docs spellcheck --path docs --report text
+	@$(ATLAS_SCRIPTS) docs lint --report text
 	@if command -v vale >/dev/null 2>&1; then vale --config=configs/docs/.vale.ini docs; else echo "vale not found; using contract style linter + codespell"; fi
-	@./bin/bijux-atlas docs extract-code --report text
-	@./bin/bijux-atlas docs link-check --report text
-	@./bin/bijux-atlas docs check --report text
+	@$(ATLAS_SCRIPTS) docs extract-code --report text
+	@$(ATLAS_SCRIPTS) docs link-check --report text
+	@$(ATLAS_SCRIPTS) docs check --report text
 
 docs-serve: ## Serve docs locally
 	@if [ ! -x "$(DOCS_VENV)/bin/mkdocs" ]; then $(MAKE) _docs-venv; fi
@@ -41,7 +41,7 @@ docs-serve: ## Serve docs locally
 	@SOURCE_DATE_EPOCH=946684800 "$(DOCS_VENV)/bin/mkdocs" serve --config-file mkdocs.yml
 
 docs-freeze: ## Generated docs must be up-to-date with SSOT contracts
-	@./bin/bijux-atlas docs generated-check --report text
+	@$(ATLAS_SCRIPTS) docs generated-check --report text
 
 docs-hardening: ## Run full docs hardening pipeline
 	@$(MAKE) docs-build
@@ -52,7 +52,7 @@ docs-all: ## Canonical all-docs gate: must pass all docs sub-gates
 	@$(MAKE) docs-lint-names
 
 docs-check: ## Docs contract check alias (same as docs-build)
-	@./bin/bijux-atlas docs check --report text --emit-artifacts
+	@$(ATLAS_SCRIPTS) docs check --report text --emit-artifacts
 
 internal/docs/public: ## Public docs alias implementation (root wrapper only)
 	@$(MAKE) docs-check
@@ -68,7 +68,7 @@ internal/docs/build: ## Build docs artifacts
 	@$(MAKE) docs-build
 
 internal/docs/fmt: ## Docs formatting helpers
-	@./bin/bijux-atlas docs render-diagrams --report text
+	@$(ATLAS_SCRIPTS) docs render-diagrams --report text
 
 internal/docs/lint: ## Docs lint checks
 	@$(MAKE) docs-lint-names

@@ -103,7 +103,7 @@ ci-store-conformance:
 
 ci-openapi-drift:
 	@$(MAKE) openapi-drift
-	@./bin/bijux-atlas run ./scripts/areas/public/contracts/check_breaking_contract_change.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/public/contracts/check_breaking_contract_change.py
 
 ci-chart-schema-validate:
 	@$(MAKE) ops-values-validate
@@ -143,10 +143,10 @@ ci-coverage:
 	@cargo llvm-cov --workspace --all-features --lcov --output-path artifacts/isolate/coverage/lcov.info
 
 ci-workflows-make-only:
-	@./bin/bijux-atlas check forbidden-paths
+	@$(ATLAS_SCRIPTS) check forbidden-paths
 
 ci-log-fields-contract:
-	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/validate_logs_schema.py --file ops/obs/contract/logs.example.jsonl
+	@$(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/validate_logs_schema.py --file ops/obs/contract/logs.example.jsonl
 
 ci-observability-pack-test:
 	@$(MAKE) observability-pack-test
@@ -155,79 +155,79 @@ ci-observability-pack-drills:
 	@$(MAKE) observability-pack-drills
 
 ci-ops-index-surface:
-	@./bin/bijux-atlas ops surface
+	@$(ATLAS_SCRIPTS) ops surface
 
 ci-ops-gen-check:
 	@$(MAKE) -s ops-gen-check
 
 ci-ops-run-entrypoints:
-	@./bin/bijux-atlas ops lint --fail-fast
+	@$(ATLAS_SCRIPTS) ops lint --fail-fast
 
 ci-ops-readme-make-only:
-	@./bin/bijux-atlas run ./scripts/areas/docs/check_ops_readmes_make_only.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_ops_readmes_make_only.py
 
 ci-ops-readme-canonical-links:
-	@./bin/bijux-atlas run ./scripts/areas/docs/check_ops_readme_canonical_links.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_ops_readme_canonical_links.py
 
 ci-ops-doc-duplication:
-	@./bin/bijux-atlas run ./scripts/areas/docs/check_ops_doc_duplication.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_ops_doc_duplication.py
 
 ci-docs-make-only-ops:
-	@./bin/bijux-atlas run ./scripts/areas/docs/check_docs_make_only_ops.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_docs_make_only_ops.py
 
 internal/ci/scripts-group:
-	@./bin/bijux-atlas ci scripts
+	@$(ATLAS_SCRIPTS) ci scripts
 
 internal/ci/no-xtask:
-	@./bin/bijux-atlas check no-xtask
+	@$(ATLAS_SCRIPTS) check no-xtask
 
 ci-forbid-raw-paths:
-	@./bin/bijux-atlas check forbidden-paths
+	@$(ATLAS_SCRIPTS) check forbidden-paths
 
 ci-make-safety:
-	@./bin/bijux-atlas run ./scripts/areas/layout/check_make_safety.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/check_make_safety.py
 
 ci-make-help-drift:
-	@./bin/bijux-atlas check make-help
+	@$(ATLAS_SCRIPTS) check make-help
 
 internal/ci/scripts-path-usage:
-	@./bin/bijux-atlas check make-scripts-refs
+	@$(ATLAS_SCRIPTS) check make-scripts-refs
 
 internal/ci/docs-old-script-paths:
-	@./bin/bijux-atlas compat check --include-docs
+	@$(ATLAS_SCRIPTS) compat check --include-docs
 
 internal/ci/bin-shims:
-	@./bin/bijux-atlas check cli-help
-	@./bin/bijux-atlas check ownership
-	@./bin/bijux-atlas check duplicate-script-names
-	@./bin/bijux-atlas --help >/dev/null
+	@$(ATLAS_SCRIPTS) check cli-help
+	@$(ATLAS_SCRIPTS) check ownership
+	@$(ATLAS_SCRIPTS) check duplicate-script-names
+	@$(ATLAS_SCRIPTS) --help >/dev/null
 
 internal/ci/scripts-ssot-final:
 	@STRICT_SCRIPTS_SUNSET="$${STRICT_SCRIPTS_SUNSET:-0}"; \
 	if [ "$$STRICT_SCRIPTS_SUNSET" = "1" ]; then \
-		./bin/bijux-atlas migration gate; \
+		$(ATLAS_SCRIPTS) migration gate; \
 	else \
 		echo "scripts SSOT final gate skipped (set STRICT_SCRIPTS_SUNSET=1 to enforce)"; \
 	fi
 
 ci-slo-config-validate:
-	@./bin/bijux-atlas run ./scripts/areas/layout/check_slo_contracts.py --mode schema
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/check_slo_contracts.py --mode schema
 
 ci-slo-no-loosen:
-	@./bin/bijux-atlas run ./scripts/areas/layout/check_slo_no_loosen_without_approval.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/check_slo_no_loosen_without_approval.py
 
 ci-slo-metrics-contract:
-	@./bin/bijux-atlas run ./scripts/areas/layout/check_slo_contracts.py --mode metrics
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/check_slo_contracts.py --mode metrics
 
 ci-sli-contract:
-	@./bin/bijux-atlas run ./scripts/areas/layout/check_slo_contracts.py --mode slis
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/check_slo_contracts.py --mode slis
 
 ci-sli-docs-drift:
-	@./bin/bijux-atlas run ./scripts/areas/docs/generate_sli_doc.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/generate_sli_doc.py
 	@git diff --exit-code docs/operations/slo/SLIS.md
 
 ci-slo-docs-drift:
-	@./bin/bijux-atlas run ./scripts/areas/docs/generate_slos_doc.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/generate_slos_doc.py
 	@git diff --exit-code docs/operations/slo/SLOS.md
 
 ci-init-iso-dirs:
