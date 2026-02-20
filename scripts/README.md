@@ -105,7 +105,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_no_removed_make_targets.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_observability_acceptance_checklist.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_observability_docs_checklist.py` | `docs-governance` | `public` | `docs-lint-names` |
-| `scripts/areas/docs/check_observability_surface_drift.py` | `docs-governance` | `public` | `ops-observability-validate` |
 | `scripts/areas/docs/check_ops_doc_duplication.py` | `docs-governance` | `public` | `ci-ops-doc-duplication` |
 | `scripts/areas/docs/check_ops_docs_make_targets.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_ops_observability_links.py` | `docs-governance` | `public` | - |
@@ -114,7 +113,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_public_targets_docs_sections.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_reference_templates.sh` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_runbook_map_registration.py` | `docs-governance` | `public` | `docs-lint-names` |
-| `scripts/areas/docs/check_runbooks_contract.py` | `docs-governance` | `public` | `ops-drill-runner` |
 | `scripts/areas/docs/check_script_headers.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_script_locations.py` | `docs-governance` | `public` | `docs-lint-names` |
 | `scripts/areas/docs/check_suite_id_docs.py` | `docs-governance` | `public` | - |

@@ -35,7 +35,6 @@ Scripts in this area.
 - check_no_placeholders.py
 - check_observability_acceptance_checklist.py
 - check_observability_docs_checklist.py
-- check_observability_surface_drift.py
 - check_ops_doc_duplication.py
 - check_ops_docs_make_targets.py
 - check_ops_observability_links.py
@@ -43,7 +42,6 @@ Scripts in this area.
 - check_ops_readmes_make_only.py
 - check_reference_templates.sh
 - check_runbook_map_registration.py
-- check_runbooks_contract.py
 - check_script_headers.py
 - check_script_locations.py
 - check_suite_id_docs.py

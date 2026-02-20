@@ -161,7 +161,6 @@ scripts/areas/docs/check_no_orphan_docs.py
 scripts/areas/docs/check_no_placeholders.py
 scripts/areas/docs/check_observability_acceptance_checklist.py
 scripts/areas/docs/check_observability_docs_checklist.py
-scripts/areas/docs/check_observability_surface_drift.py
 scripts/areas/docs/check_ops_doc_duplication.py
 scripts/areas/docs/check_ops_docs_make_targets.py
 scripts/areas/docs/check_ops_observability_links.py
@@ -169,7 +168,6 @@ scripts/areas/docs/check_ops_readme_canonical_links.py
 scripts/areas/docs/check_ops_readmes_make_only.py
 scripts/areas/docs/check_public_targets_docs_sections.py
 scripts/areas/docs/check_runbook_map_registration.py
-scripts/areas/docs/check_runbooks_contract.py
 scripts/areas/docs/check_no_removed_make_targets.py
 scripts/areas/docs/check_script_headers.py
 scripts/areas/docs/check_script_locations.py
