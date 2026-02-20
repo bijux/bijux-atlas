@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import platform
 import subprocess
 import sys
 from pathlib import Path
@@ -11,12 +12,14 @@ from . import contracts, layout, registry
 from .compat.command import configure_compat_parser, run_compat_command
 from .configs.command import configure_configs_parser, run_configs_command
 from .core.context import RunContext
-from .core.fs import ensure_evidence_path
 from .core.env_guard import guard_no_network_mode
+from .core.fs import ensure_evidence_path
 from .core.logging import log_event
 from .docs.command import configure_docs_parser, run_docs_command
 from .doctor import run_doctor
-from .domain_cmd import register_domain_parser, registry as command_registry, render_payload
+from .domain_cmd import register_domain_parser, render_payload
+from .domain_cmd import registry as command_registry
+from .env.command import configure_env_parser, run_env_command
 from .errors import ScriptError
 from .exit_codes import ERR_CONFIG, ERR_INTERNAL
 from .gates.command import configure_gates_parser, run_gates_command
@@ -58,8 +61,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     version_p = sub.add_parser("version", help="print versions and git context")
     version_p.add_argument("--json", action="store_true", help="emit JSON output")
-    env_p = sub.add_parser("env", help="print resolved runtime environment")
-    env_p.add_argument("--json", action="store_true", help="emit JSON output")
+    configure_env_parser(sub)
     self_p = sub.add_parser("self-check", help="validate imports, config loading, and schema presence")
     self_p.add_argument("--json", action="store_true", help="emit JSON output")
     help_p = sub.add_parser("help", help="print command help")
@@ -160,11 +162,52 @@ def _build_common_payload(ctx: RunContext, status: str = "ok") -> dict[str, obje
         "repo_root": str(ctx.repo_root),
         "run_dir": str(ctx.run_dir),
         "evidence_root": str(ctx.evidence_root),
+        "scripts_artifact_root": str(ctx.scripts_artifact_root),
         "network": ctx.network_mode,
         "format": ctx.output_format,
         "git_sha": ctx.git_sha,
         "git_dirty": ctx.git_dirty,
     }
+
+
+def _ensure_scripts_artifact_root(ctx: RunContext) -> Path:
+    root = ctx.scripts_artifact_root
+    os.environ.setdefault("BIJUX_ATLAS_SCRIPTS_ARTIFACT_ROOT", str(root))
+    (root / "reports").mkdir(parents=True, exist_ok=True)
+    (root / "logs").mkdir(parents=True, exist_ok=True)
+    return root
+
+
+def _emit_runtime_contracts(ctx: RunContext, cmd: str, argv: list[str] | None) -> None:
+    root = _ensure_scripts_artifact_root(ctx)
+    write_roots = {
+        "schema_version": 1,
+        "tool": "bijux-atlas",
+        "run_id": ctx.run_id,
+        "allowed_write_roots": [str(ctx.evidence_root), str(root), str(root / "reports"), str(root / "logs")],
+        "forbidden_roots": [str(ctx.repo_root / p) for p in ("ops", "docs", "configs", "makefiles", "crates")],
+    }
+    run_manifest = {
+        "schema_version": 1,
+        "tool": "bijux-atlas",
+        "run_id": ctx.run_id,
+        "command": cmd,
+        "argv": argv or [],
+        "generated_at": ctx.run_id,
+        "git_sha": ctx.git_sha,
+        "git_dirty": ctx.git_dirty,
+        "host": platform.node(),
+        "repo_root": str(ctx.repo_root),
+        "artifact_root": str(root),
+    }
+    (root / "reports" / "write-roots-contract.json").write_text(
+        json.dumps(write_roots, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (root / "reports" / "run-manifest.json").write_text(
+        json.dumps(run_manifest, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -183,6 +226,7 @@ def main(argv: list[str] | None = None) -> int:
         ns.quiet,
         ns.require_clean_git,
     )
+    _emit_runtime_contracts(ctx, ns.cmd, argv)
     restore_network = None
     if ctx.no_network:
         guard_no_network_mode(True)
@@ -203,8 +247,7 @@ def main(argv: list[str] | None = None) -> int:
             )
             return 0
         if ns.cmd == "env":
-            _emit(_build_common_payload(ctx), as_json)
-            return 0
+            return run_env_command(ctx, ns)
         if ns.cmd == "self-check":
             payload = _build_common_payload(ctx)
             payload["checks"] = {
@@ -231,7 +274,16 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         if ns.cmd == "run":
             if ns.dry_run:
-                _emit({"schema_version": 1, "tool": "bijux-atlas", "status": "ok", "script": ns.script, "args": ns.args}, as_json)
+                _emit(
+                    {
+                        "schema_version": 1,
+                        "tool": "bijux-atlas",
+                        "status": "ok",
+                        "script": ns.script,
+                        "args": ns.args,
+                    },
+                    as_json,
+                )
                 return 0
             return run_legacy_script(ns.script, ns.args, ctx)
         if ns.cmd == "validate-output":
@@ -277,7 +329,12 @@ def main(argv: list[str] | None = None) -> int:
         if ctx.output_format == "json":
             print(
                 json.dumps(
-                    {"schema_version": 1, "tool": "bijux-atlas", "status": "fail", "error": {"message": str(exc), "code": exc.code}},
+                    {
+                        "schema_version": 1,
+                        "tool": "bijux-atlas",
+                        "status": "fail",
+                        "error": {"message": str(exc), "code": exc.code},
+                    },
                     sort_keys=True,
                 ),
                 file=sys.stderr,

@@ -329,6 +329,8 @@ def _cmd_export(ctx: RunContext, run_id: str, out: str | None) -> int:
 def run_report_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.report_cmd == "collect":
         return _cmd_collect(ctx, ns.run_id_override or ctx.run_id, ns.out)
+    if ns.report_cmd == "unified":
+        return _cmd_collect(ctx, ns.run_id_override or ctx.run_id, ns.out)
     if ns.report_cmd == "validate":
         return _cmd_validate(ctx, ns.run_id_override or ctx.run_id, ns.file)
     if ns.report_cmd == "summarize":
@@ -361,6 +363,10 @@ def configure_report_parser(sub: argparse._SubParsersAction[argparse.ArgumentPar
     c = rep.add_parser("collect", help="collect lane reports into unified report JSON")
     c.add_argument("--run-id", dest="run_id_override")
     c.add_argument("--out")
+
+    u = rep.add_parser("unified", help="alias for collect unified report JSON")
+    u.add_argument("--run-id", dest="run_id_override")
+    u.add_argument("--out")
 
     v = rep.add_parser("validate", help="validate unified report against schema")
     v.add_argument("--run-id", dest="run_id_override")
