@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schemas/ops-lint-output.schema.json",
+  "title": "Ops Lint Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "tool",
+    "run_id",
+    "status",
+    "started_at",
+    "ended_at",
+    "checks",
+    "failed_count",
+    "relaxed_count",
+    "total_count"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "tool": {
+      "type": "string",
+      "const": "bijux-atlas-scripts"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "fail"
+      ]
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ended_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "failed_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "relaxed_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "total_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "id",
+          "description",
+          "status",
+          "command",
+          "actionable"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pass",
+              "fail",
+              "relaxed"
+            ]
+          },
+          "command": {
+            "type": "string",
+            "minLength": 1
+          },
+          "actionable": {
+            "type": "string",
+            "minLength": 1
+          },
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
