@@ -48,5 +48,6 @@ Golden-test the following surfaces at minimum:
 - Deprecated flags/options must include an owner and explicit expiry date.
 - Default deprecation window: two minor releases unless an exception is documented.
 - Expired deprecations must fail CI until removed.
+- `atlasctl/legacy` is quarantined: no net-new modules; only migration and deletion work is allowed.
 - `packages/atlasctl/MIGRATION_MAP.md` must be treated as a temporary monolith and split into smaller domain-focused docs.
 - New migration entries should be added to split docs; monolith updates are transitional only.
