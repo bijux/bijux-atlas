@@ -46,6 +46,7 @@ VALIDATOR_COVERED_FILES = {
     "ops/obs/contract/metrics-contract.json",  # checked by check_metrics_coverage.py
     "ops/obs/contract/trace-structure.golden.json",  # checked by check_trace_structure.py
     "ops/obs/contract/endpoint-observability-contract.json",  # checked by endpoint coverage contracts
+    "ops/obs/contract/overload-behavior-contract.json",  # checked by check_overload_behavior_contract.py
     "ops/obs/contract/goldens/profiles.json",  # checked by check_profile_goldens.py
     "ops/obs/drills/result.schema.json",  # consumed by drill report validators
     "ops/report/schema.json",  # used by ops/report/report_contract_check.py
@@ -80,6 +81,7 @@ EXCLUDE_PREFIXES = (
 
 EXCLUDE_FILES = {
     "ops/_generated/report.unified.json",
+    "ops/_generated/scorecard.json",
 }
 
 
