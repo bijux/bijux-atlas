@@ -61,10 +61,10 @@ config-drift: ## Check config/schema/docs drift without regeneration
 	@$(ATLAS_SCRIPTS) configs drift
 
 configs-gen-check: ## Regenerate configs generated docs and fail on drift
-	@./scripts/areas/configs/check_generated_configs_drift.sh
+	@$(ATLAS_SCRIPTS) configs generate --check
 
 configs-check: ## Config schemas + drift + ownership + symlink shim + SSOT checks
-	@$(ATLAS_SCRIPTS) configs check --report text --emit-artifacts
+	@$(ATLAS_SCRIPTS) configs validate --report text --emit-artifacts
 
 CI_ISO_ROOT := $(CURDIR)/artifacts/isolate/ci
 CI_ENV := ISO_ROOT=$(CI_ISO_ROOT) CARGO_TARGET_DIR=$(CI_ISO_ROOT)/target CARGO_HOME=$(CI_ISO_ROOT)/cargo-home TMPDIR=$(CI_ISO_ROOT)/tmp TMP=$(CI_ISO_ROOT)/tmp TEMP=$(CI_ISO_ROOT)/tmp

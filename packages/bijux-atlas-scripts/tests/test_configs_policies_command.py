@@ -24,46 +24,42 @@ def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
     )
 
 
-def test_configs_inventory_json() -> None:
-    proc = _run_cli("configs", "inventory", "--format", "json", "--report", "json")
-    assert proc.returncode == 0, proc.stderr
-    payload = json.loads(proc.stdout)
-    assert payload["kind"] == "configs-inventory"
-    assert payload["schema_version"] == 1
-    assert any(row["path"] == "configs/README.md" for row in payload["files"])
-
-
-def test_configs_schema_check_json() -> None:
-    proc = _run_cli("configs", "schema-check", "--report", "json")
-    assert proc.returncode in {0, 1}, proc.stderr
-    payload = json.loads(proc.stdout)
-    assert payload["tool"] == "bijux-atlas"
-    assert payload["status"] in {"pass", "fail"}
-
-
 def test_configs_print_json() -> None:
     proc = _run_cli("configs", "print", "--report", "json")
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
-    assert payload["tool"] == "bijux-atlas"
+    assert payload["tool"] == "atlasctl"
     assert payload["status"] == "pass"
-    assert "ops_tool_versions" in payload["output"]
+    assert "ops_tool_versions" in payload["payload"]
 
 
 def test_configs_drift_json() -> None:
     proc = _run_cli("configs", "drift", "--report", "json")
     assert proc.returncode in {0, 1}, proc.stderr
     payload = json.loads(proc.stdout)
-    assert payload["tool"] == "bijux-atlas"
-    assert payload["command"] == "drift"
+    assert payload["tool"] == "atlasctl"
+    assert "errors" in payload
 
 
 def test_configs_validate_json() -> None:
     proc = _run_cli("configs", "validate", "--report", "json")
     assert proc.returncode in {0, 1}, proc.stderr
     payload = json.loads(proc.stdout)
-    assert payload["tool"] == "bijux-atlas"
-    assert payload["command"] == "validate"
+    assert payload["tool"] == "atlasctl"
+    assert "checks" in payload
+
+
+def test_configs_validate_schema_pair_bad_fixture() -> None:
+    from bijux_atlas_scripts.configs.command import _validate_schema_pairs
+
+    bad = ROOT / "configs/meta/ownership.json"
+    backup = bad.read_text(encoding="utf-8")
+    try:
+        bad.write_text("{\"invalid\": true}\n", encoding="utf-8")
+        errors = _validate_schema_pairs(ROOT)
+        assert errors
+    finally:
+        bad.write_text(backup, encoding="utf-8")
 
 
 def test_policies_relaxations_check_json() -> None:
