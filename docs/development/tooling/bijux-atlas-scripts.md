@@ -35,3 +35,6 @@ See `tools/bijux-atlas-scripts/PUBLIC_API.md` for current boundaries.
 | `scripts/areas/public/config-print.py` | `bijux-atlas-scripts configs print` |
 | `scripts/areas/public/config-drift-check.py` | `bijux-atlas-scripts configs drift` |
 | `scripts/areas/public/config-validate.py` | `bijux-atlas-scripts configs validate` |
+| `scripts/areas/public/ops-policy-audit.py` | `bijux-atlas-scripts ops policy-audit` |
+| `scripts/areas/ops/check_k8s_flakes.py` | `bijux-atlas-scripts ops k8s-flakes-check` |
+| `scripts/areas/ops/check_k8s_test_contract.py` | `bijux-atlas-scripts ops k8s-test-contract` |

@@ -493,7 +493,7 @@ policy-allow-env-lint: ## Forbid ALLOW_* escape hatches unless declared in env s
 	@./scripts/areas/public/check-allow-env-schema.py
 
 ops-policy-audit: ## Verify ops policy configs are reflected by ops make/scripts contracts
-	@./scripts/areas/public/ops-policy-audit.py
+	@./scripts/bin/bijux-atlas-scripts ops policy-audit
 
 policy-drift-diff: ## Show policy contract drift between two refs (usage: make policy-drift-diff [FROM=HEAD~1 TO=HEAD])
 	@./scripts/areas/public/policy-drift-diff.sh "$${FROM:-HEAD~1}" "$${TO:-HEAD}"
