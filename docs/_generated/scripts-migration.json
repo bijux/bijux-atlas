@@ -1,5 +1,165 @@
 {
+  "area_indexes": [
+    {
+      "area": "_internal",
+      "index": "scripts/areas/_internal/INDEX.md",
+      "mapped_cli_group": "atlasctl check _internal"
+    },
+    {
+      "area": "_meta",
+      "index": "scripts/areas/_meta/INDEX.md",
+      "mapped_cli_group": "atlasctl check _meta"
+    },
+    {
+      "area": "bootstrap",
+      "index": "scripts/areas/bootstrap/INDEX.md",
+      "mapped_cli_group": "atlasctl check bootstrap"
+    },
+    {
+      "area": "check",
+      "index": "scripts/areas/check/INDEX.md",
+      "mapped_cli_group": "atlasctl check check"
+    },
+    {
+      "area": "ci",
+      "index": "scripts/areas/ci/INDEX.md",
+      "mapped_cli_group": "atlasctl check ci"
+    },
+    {
+      "area": "configs",
+      "index": "scripts/areas/configs/INDEX.md",
+      "mapped_cli_group": "atlasctl check configs"
+    },
+    {
+      "area": "contracts",
+      "index": "scripts/areas/contracts/INDEX.md",
+      "mapped_cli_group": "atlasctl check contracts"
+    },
+    {
+      "area": "demo",
+      "index": "scripts/areas/demo/INDEX.md",
+      "mapped_cli_group": "atlasctl check demo"
+    },
+    {
+      "area": "dev",
+      "index": "scripts/areas/dev/INDEX.md",
+      "mapped_cli_group": "atlasctl check dev"
+    },
+    {
+      "area": "docs",
+      "index": "scripts/areas/docs/INDEX.md",
+      "mapped_cli_group": "atlasctl check docs"
+    },
+    {
+      "area": "fixtures",
+      "index": "scripts/areas/fixtures/INDEX.md",
+      "mapped_cli_group": "atlasctl check fixtures"
+    },
+    {
+      "area": "gen",
+      "index": "scripts/areas/gen/INDEX.md",
+      "mapped_cli_group": "atlasctl check gen"
+    },
+    {
+      "area": "internal",
+      "index": "scripts/areas/internal/INDEX.md",
+      "mapped_cli_group": "atlasctl run <module>"
+    },
+    {
+      "area": "layout",
+      "index": "scripts/areas/layout/INDEX.md",
+      "mapped_cli_group": "atlasctl check layout"
+    },
+    {
+      "area": "ops",
+      "index": "scripts/areas/ops/INDEX.md",
+      "mapped_cli_group": "atlasctl ops ops"
+    },
+    {
+      "area": "policy",
+      "index": "scripts/areas/policy/INDEX.md",
+      "mapped_cli_group": "atlasctl check policy"
+    },
+    {
+      "area": "public",
+      "index": "scripts/areas/public/INDEX.md",
+      "mapped_cli_group": "atlasctl check public"
+    },
+    {
+      "area": "python",
+      "index": "scripts/areas/python/INDEX.md",
+      "mapped_cli_group": "atlasctl run <module>"
+    },
+    {
+      "area": "release",
+      "index": "scripts/areas/release/INDEX.md",
+      "mapped_cli_group": "atlasctl check release"
+    },
+    {
+      "area": "tests",
+      "index": "scripts/areas/tests/INDEX.md",
+      "mapped_cli_group": "atlasctl check tests"
+    },
+    {
+      "area": "tools",
+      "index": "scripts/areas/tools/INDEX.md",
+      "mapped_cli_group": "atlasctl run <module>"
+    }
+  ],
+  "bin_commands": [
+    {
+      "command": "bijux-atlas-dev",
+      "mapped_cli": "atlasctl dev",
+      "script": "scripts/bin/bijux-atlas-dev"
+    },
+    {
+      "command": "bijux-atlas-ops",
+      "mapped_cli": "atlasctl ops",
+      "script": "scripts/bin/bijux-atlas-ops"
+    },
+    {
+      "command": "bijux-atlas-scripts",
+      "mapped_cli": "atlasctl scripts",
+      "script": "scripts/bin/bijux-atlas-scripts"
+    },
+    {
+      "command": "isolate",
+      "mapped_cli": "atlasctl gates run",
+      "script": "scripts/bin/isolate"
+    },
+    {
+      "command": "make_explain",
+      "mapped_cli": "atlasctl make explain",
+      "script": "scripts/bin/make_explain"
+    },
+    {
+      "command": "make_graph",
+      "mapped_cli": "atlasctl make graph",
+      "script": "scripts/bin/make_graph"
+    },
+    {
+      "command": "render_public_help",
+      "mapped_cli": "atlasctl make help",
+      "script": "scripts/bin/render_public_help"
+    },
+    {
+      "command": "require-isolate",
+      "mapped_cli": "atlasctl gates run",
+      "script": "scripts/bin/require-isolate"
+    },
+    {
+      "command": "run_drill.sh",
+      "mapped_cli": "atlasctl ops drill",
+      "script": "scripts/bin/run_drill.sh"
+    }
+  ],
   "entries": [
+    {
+      "extension": ".md",
+      "is_executable": false,
+      "path": "scripts/DEPRECATED.md",
+      "tags": []
+    },
     {
       "extension": ".md",
       "is_executable": false,
@@ -119,7 +279,19 @@
     {
       "extension": ".py",
       "is_executable": true,
+      "path": "scripts/areas/check/check-invocation-parity.py",
+      "tags": []
+    },
+    {
+      "extension": ".py",
+      "is_executable": true,
       "path": "scripts/areas/check/check-no-adhoc-python.py",
+      "tags": []
+    },
+    {
+      "extension": ".py",
+      "is_executable": false,
+      "path": "scripts/areas/check/check-no-direct-bash-invocations.py",
       "tags": []
     },
     {
@@ -133,6 +305,14 @@
       "is_executable": true,
       "path": "scripts/areas/check/check-no-latest-tags.py",
       "tags": []
+    },
+    {
+      "extension": ".py",
+      "is_executable": false,
+      "path": "scripts/areas/check/check-no-make-scripts-references.py",
+      "tags": [
+        "make_integration"
+      ]
     },
     {
       "extension": ".py",
@@ -154,8 +334,22 @@
     },
     {
       "extension": ".py",
+      "is_executable": true,
+      "path": "scripts/areas/check/check-python-runtime-artifacts.py",
+      "tags": [
+        "report_emitter"
+      ]
+    },
+    {
+      "extension": ".py",
       "is_executable": false,
       "path": "scripts/areas/check/check-repo-script-boundaries.py",
+      "tags": []
+    },
+    {
+      "extension": ".py",
+      "is_executable": true,
+      "path": "scripts/areas/check/check-root-bin-shims.py",
       "tags": []
     },
     {
@@ -186,6 +380,12 @@
     },
     {
       "extension": ".py",
+      "is_executable": false,
+      "path": "scripts/areas/check/check-script-shims-minimal.py",
+      "tags": []
+    },
+    {
+      "extension": ".py",
       "is_executable": true,
       "path": "scripts/areas/check/check-script-tool-guards.py",
       "tags": []
@@ -201,6 +401,30 @@
       "is_executable": false,
       "path": "scripts/areas/check/check-scripts-lock-sync.py",
       "tags": []
+    },
+    {
+      "extension": ".py",
+      "is_executable": true,
+      "path": "scripts/areas/check/check-scripts-ssot-final.py",
+      "tags": []
+    },
+    {
+      "extension": ".py",
+      "is_executable": true,
+      "path": "scripts/areas/check/check-scripts-surface-docs-drift.py",
+      "tags": [
+        "docs_generator",
+        "gate_runner"
+      ]
+    },
+    {
+      "extension": ".py",
+      "is_executable": true,
+      "path": "scripts/areas/check/check-venv-location-policy.py",
+      "tags": [
+        "config_validator",
+        "policy_checker"
+      ]
     },
     {
       "extension": ".py",

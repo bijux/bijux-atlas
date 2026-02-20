@@ -97,6 +97,8 @@ def collect_budgets(repo_root: Path) -> dict[str, object]:
 def collect_scripts_migration(repo_root: Path) -> dict[str, object]:
     script_root = repo_root / "scripts"
     entries: list[dict[str, object]] = []
+    bin_commands: list[dict[str, str]] = []
+    area_indexes: list[dict[str, str]] = []
     categories = {
         "library_helper": ("lib/", "areas/python/", "areas/tools/", "areas/internal/"),
         "report_emitter": ("report", "score", "summary", "bundle", "evidence", "artifact"),
@@ -113,6 +115,38 @@ def collect_scripts_migration(repo_root: Path) -> dict[str, object]:
         rel = p.relative_to(repo_root).as_posix()
         if "__pycache__/" in rel:
             continue
+        if rel.startswith("scripts/bin/"):
+            name = p.name
+            mapped = name
+            if name.startswith("bijux-atlas-"):
+                mapped = f"atlasctl {name.removeprefix('bijux-atlas-').replace('-', ' ')}"
+            elif name == "run_drill.sh":
+                mapped = "atlasctl ops drill"
+            elif name in {"make_explain", "make_graph", "render_public_help"}:
+                mapped = f"atlasctl make {name.replace('make_', '').replace('render_public_help', 'help')}"
+            elif name in {"isolate", "require-isolate"}:
+                mapped = "atlasctl gates run"
+            bin_commands.append(
+                {
+                    "script": rel,
+                    "command": name,
+                    "mapped_cli": mapped,
+                }
+            )
+        if rel.startswith("scripts/areas/") and rel.endswith("/INDEX.md"):
+            area = rel.split("/")[2]
+            mapped = f"atlasctl check {area}"
+            if area in {"internal", "tools", "python"}:
+                mapped = "atlasctl run <module>"
+            if area in {"ops", "k8s", "stack", "e2e", "obs", "load", "datasets"}:
+                mapped = f"atlasctl ops {area}"
+            area_indexes.append(
+                {
+                    "index": rel,
+                    "area": area,
+                    "mapped_cli_group": mapped,
+                }
+            )
         ext = p.suffix
         is_executable = bool(p.stat().st_mode & 0o111)
         lower = rel.lower()
@@ -128,7 +162,12 @@ def collect_scripts_migration(repo_root: Path) -> dict[str, object]:
                 "tags": sorted(set(tags)),
             }
         )
-    return {"kind": "scripts-migration", "entries": entries}
+    return {
+        "kind": "scripts-migration",
+        "entries": entries,
+        "bin_commands": sorted(bin_commands, key=lambda x: x["script"]),
+        "area_indexes": sorted(area_indexes, key=lambda x: x["index"]),
+    }
 
 
 def render_md(payload: dict[str, object]) -> str:
@@ -172,6 +211,20 @@ def render_md(payload: dict[str, object]) -> str:
         for k, v in counts.items():
             lines.append(f"- `{k}`: `{v}`")
     elif kind == "scripts-migration":
+        lines.append("## scripts/bin command mapping")
+        lines.append("")
+        lines += ["| Script | Legacy Command | Mapped CLI |", "|---|---|---|"]
+        for row in payload.get("bin_commands", []):
+            lines.append(f"| `{row['script']}` | `{row['command']}` | `{row['mapped_cli']}` |")
+        lines.append("")
+        lines.append("## scripts/areas index mapping")
+        lines.append("")
+        lines += ["| Area Index | Area | Mapped CLI Group |", "|---|---|---|"]
+        for row in payload.get("area_indexes", []):
+            lines.append(f"| `{row['index']}` | `{row['area']}` | `{row['mapped_cli_group']}` |")
+        lines.append("")
+        lines.append("## scripts tree inventory")
+        lines.append("")
         lines += ["| Path | Ext | Executable | Tags |", "|---|---|---|---|"]
         for row in payload.get("entries", []):
             tags = ", ".join(row.get("tags", []))
