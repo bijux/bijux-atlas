@@ -3,11 +3,14 @@ from __future__ import annotations
 import argparse
 import json
 import subprocess
+from pathlib import Path
 
 from ...checks.runner import domains as check_domains
 from ...checks.runner import run_domain
 from ...checks.registry import get_check, list_checks
+from ...checks.repo.command_contracts import runtime_contracts_payload
 from ...core.context import RunContext
+from ...core.fs import ensure_evidence_path
 from ...lint.runner import run_suite
 from ...check.native import (
     check_atlas_scripts_cli_contract,
@@ -72,6 +75,8 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                     "severity": c.severity.value,
                     "category": c.category.value,
                     "fix_hint": c.fix_hint,
+                    "slow": c.slow,
+                    "external_tools": list(c.external_tools),
                 }
                 for c in list_checks()
             ],
@@ -97,6 +102,13 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         }
         print(json.dumps(payload, sort_keys=True) if ctx.output_format == "json" or ns.json else json.dumps(payload, indent=2, sort_keys=True))
         return 0
+    if sub == "runtime-contracts":
+        payload = runtime_contracts_payload(ctx.repo_root)
+        if ns.out_file:
+            out = ensure_evidence_path(ctx, Path(ns.out_file))
+            out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        print(json.dumps(payload, sort_keys=True) if ctx.output_format == "json" or ns.json else json.dumps(payload, indent=2, sort_keys=True))
+        return 0 if payload["status"] == "pass" else 1
     if sub == "all":
         code, payload = run_domain(ctx.repo_root, "all", fail_fast=ns.fail_fast)
         if ctx.output_format == "json":
@@ -516,6 +528,8 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     p_sub.add_parser("list", help="list registered checks")
     explain = p_sub.add_parser("explain", help="explain a check id")
     explain.add_argument("check_id")
+    runtime = p_sub.add_parser("runtime-contracts", help="run unified runtime contract checks and emit artifact")
+    runtime.add_argument("--out-file", help="optional artifact output path under evidence root")
     domain = p_sub.add_parser("domain", help="run checks for one domain")
     domain.add_argument("domain", choices=check_domains())
     p_sub.add_parser("layout", help="run layout checks")

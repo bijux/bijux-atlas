@@ -132,7 +132,14 @@ def _commands_payload() -> dict[str, object]:
         "schema_version": 1,
         "tool": "atlasctl",
         "commands": [
-            {"name": c.name, "help": c.help_text, "stable": c.stable}
+            {
+                "name": c.name,
+                "help": c.help_text,
+                "stable": c.stable,
+                "touches": list(c.touches),
+                "tools": list(c.tools),
+                "failure_modes": list(c.failure_modes),
+            }
             for c in sorted(command_registry(), key=lambda c: c.name)
         ],
     }
@@ -315,9 +322,9 @@ def main(argv: list[str] | None = None) -> int:
         if ns.cmd == "validate-output":
             return _import_attr("atlasctl.contracts.output", "validate_json_output")(ns.schema, ns.file, ns.json)
         if ns.cmd == "surface":
-            return run_surface(ns.json, ns.out_file)
+            return run_surface(ns.json, ns.out_file, ctx)
         if ns.cmd == "commands":
-            return run_surface(True, ns.out_file)
+            return run_surface(True, ns.out_file, ctx)
         if ns.cmd == "doctor":
             return _import_attr("atlasctl.commands.doctor", "run_doctor")(ctx, ns.json, ns.out_file)
         if ns.cmd == "docs":

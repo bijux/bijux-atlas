@@ -15,6 +15,11 @@ from ..base import CheckDef
 from .legacy_guard import check_legacy_package_quarantine
 from .module_size import check_module_size
 from .cwd_usage import check_no_path_cwd_usage
+from .command_contracts import (
+    check_command_help_docs_drift,
+    check_command_metadata_contract,
+    check_no_duplicate_command_names,
+)
 from .scripts_dir import check_scripts_dir_absent
 
 CHECKS: tuple[CheckDef, ...] = (
@@ -31,4 +36,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.legacy_quarantine", "repo", "quarantine legacy package growth", 250, check_legacy_package_quarantine, fix_hint="Do not add new modules under atlasctl/legacy."),
     CheckDef("repo.module_size", "repo", "enforce module size budget", 400, check_module_size, fix_hint="Split oversized modules into focused submodules."),
     CheckDef("repo.no_path_cwd_usage", "repo", "forbid Path.cwd usage outside core/repo_root.py", 400, check_no_path_cwd_usage, fix_hint="Use ctx.repo_root or core.repo_root helpers."),
+    CheckDef("repo.command_metadata_contract", "repo", "ensure command metadata includes touches/tools", 400, check_command_metadata_contract, fix_hint="Add touches/tools metadata in cli registry."),
+    CheckDef("repo.no_duplicate_command_names", "repo", "ensure command names are unique", 300, check_no_duplicate_command_names, fix_hint="Rename duplicate command/alias entries."),
+    CheckDef("repo.command_help_docs_drift", "repo", "check command help/docs drift", 500, check_command_help_docs_drift, fix_hint="Regenerate docs/_generated/cli.md from current CLI surface."),
 )

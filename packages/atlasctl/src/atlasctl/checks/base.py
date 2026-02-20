@@ -32,6 +32,8 @@ class CheckDef:
     severity: Severity = Severity.ERROR
     category: CheckCategory = CheckCategory.HYGIENE
     fix_hint: str = "Review check output and apply the documented fix."
+    slow: bool = False
+    external_tools: tuple[str, ...] = ()
     evidence: tuple[str, ...] = ()
 
 
