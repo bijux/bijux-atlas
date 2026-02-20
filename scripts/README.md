@@ -73,19 +73,8 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_concept_ids.sh` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_doc_naming.sh` | `docs-governance` | `public` | `docs-build` |
 | `scripts/areas/docs/check_reference_templates.sh` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/generate_chart_contract_index.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_k8s_install_matrix.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/generate_k8s_values_doc.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/generate_layer_contract_doc.py` | `docs-governance` | `public` | `ops-contracts-check`, `ops-gen` |
 | `scripts/areas/docs/generate_make_targets_inventory.py` | `docs-governance` | `public` | `ops-make-targets-doc` |
-| `scripts/areas/docs/generate_makefiles_surface.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/generate_observability_surface.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/generate_openapi_docs.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/generate_ops_badge.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/generate_ops_contracts_doc.py` | `docs-governance` | `public` | `ops-contracts-check`, `ops-gen` |
-| `scripts/areas/docs/generate_ops_schema_docs.py` | `docs-governance` | `public` | `ops-contracts-check`, `ops-gen` |
-| `scripts/areas/docs/generate_ops_surface.py` | `docs-governance` | `public` | `ops-contracts-check`, `ops-gen` |
-| `scripts/areas/docs/generate_repo_surface.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_scripts_graph.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/legacy-terms-allowlist.txt` | `docs-governance` | `public` | - |
 | `scripts/areas/fixtures/derive-release-111.sh` | `dataset-ops` | `internal` | - |
