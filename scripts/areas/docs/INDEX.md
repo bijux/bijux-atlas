@@ -36,7 +36,6 @@ Scripts in this area.
 - check_observability_acceptance_checklist.py
 - check_observability_docs_checklist.py
 - check_observability_surface_drift.py
-- check_openapi_examples.py
 - check_ops_doc_duplication.py
 - check_ops_docs_make_targets.py
 - check_ops_observability_links.py

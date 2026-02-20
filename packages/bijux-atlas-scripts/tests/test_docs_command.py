@@ -77,3 +77,11 @@ def test_docs_generate_json_integration() -> None:
     p2 = json.loads(second.stdout)
     assert "generated_count" in p1
     assert p1["generated_count"] == p2["generated_count"]
+
+
+def test_docs_openapi_examples_check_json() -> None:
+    proc = _run_cli("docs", "openapi-examples-check", "--report", "json")
+    assert proc.returncode in {0, 1}, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["schema_version"] == 1
+    assert payload["status"] in {"pass", "fail"}

@@ -162,7 +162,6 @@ scripts/areas/docs/check_no_placeholders.py
 scripts/areas/docs/check_observability_acceptance_checklist.py
 scripts/areas/docs/check_observability_docs_checklist.py
 scripts/areas/docs/check_observability_surface_drift.py
-scripts/areas/docs/check_openapi_examples.py
 scripts/areas/docs/check_ops_doc_duplication.py
 scripts/areas/docs/check_ops_docs_make_targets.py
 scripts/areas/docs/check_ops_observability_links.py

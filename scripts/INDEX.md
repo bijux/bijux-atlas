@@ -106,7 +106,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_observability_acceptance_checklist.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_observability_docs_checklist.py` | `docs-governance` | `public` | `docs-lint-names` |
 | `scripts/areas/docs/check_observability_surface_drift.py` | `docs-governance` | `public` | `ops-observability-validate` |
-| `scripts/areas/docs/check_openapi_examples.py` | `docs-governance` | `public` | `ops-api-smoke`, `ops-openapi-validate` |
 | `scripts/areas/docs/check_ops_doc_duplication.py` | `docs-governance` | `public` | `ci-ops-doc-duplication` |
 | `scripts/areas/docs/check_ops_docs_make_targets.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_ops_observability_links.py` | `docs-governance` | `public` | - |
