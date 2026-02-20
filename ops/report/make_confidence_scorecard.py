@@ -8,6 +8,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
+BUDGETS = ROOT / "configs/ops/budgets.json"
 
 
 def _budget(name: str, passed: bool, detail: str) -> dict[str, object]:
@@ -26,14 +27,16 @@ def main() -> int:
     lanes = payload.get("lanes", {})
     summary = payload.get("summary", {"total": 0, "passed": 0, "failed": 0})
 
+    budget_cfg = json.loads(BUDGETS.read_text(encoding="utf-8")) if BUDGETS.exists() else {}
+    smoke_limit = int(budget_cfg.get("smoke", {}).get("max_duration_seconds", 600))
     obs_lane = lanes.get("internal/lane-obs-cheap") or lanes.get("lane-obs-cheap")
     ops_smoke = lanes.get("internal/lane-ops-smoke") or lanes.get("lane-ops-smoke")
-    smoke_duration = int(ops_smoke.get("duration_sec", 0)) if isinstance(ops_smoke, dict) and str(ops_smoke.get("duration_sec", "")).isdigit() else 0
+    smoke_duration = int(float(ops_smoke.get("duration_seconds", 0))) if isinstance(ops_smoke, dict) else 0
 
     budgets = [
         _budget("all-lanes-green", int(summary.get("failed", 0)) == 0 and int(summary.get("total", 0)) > 0, f"failed={summary.get('failed', 0)} total={summary.get('total', 0)}"),
         _budget("obs-cheap-green", isinstance(obs_lane, dict) and obs_lane.get("status") == "pass", "requires internal/lane-obs-cheap passing"),
-        _budget("ops-smoke-time-budget", isinstance(ops_smoke, dict) and ops_smoke.get("status") == "pass" and smoke_duration <= 600, f"duration_sec={smoke_duration}, limit=600"),
+        _budget("ops-smoke-time-budget", isinstance(ops_smoke, dict) and ops_smoke.get("status") == "pass" and smoke_duration <= smoke_limit, f"duration_sec={smoke_duration}, limit={smoke_limit}"),
     ]
     passed = sum(1 for b in budgets if b["status"] == "pass")
 

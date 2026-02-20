@@ -32,10 +32,27 @@ def discover_lane_reports(run_id: str) -> dict[str, dict]:
 
 def build_unified(run_id: str) -> dict:
     lanes = discover_lane_reports(run_id)
+    near = []
+    failed = []
+    checked = 0
+    for lane, report in lanes.items():
+        budget = report.get("budget_status")
+        if isinstance(budget, dict) and budget.get("checked"):
+            checked += 1
+            if budget.get("near_failing"):
+                near.append(lane)
+            if budget.get("status") == "fail":
+                failed.append(lane)
     summary = {
         "total": len(lanes),
         "passed": sum(1 for v in lanes.values() if v.get("status") == "pass"),
         "failed": sum(1 for v in lanes.values() if v.get("status") == "fail"),
+    }
+    budget_status = {
+        "checked": checked,
+        "failed": len(failed),
+        "near_failing": sorted(near),
+        "failed_lanes": sorted(failed),
     }
     return {
         "schema_version": 1,
@@ -43,6 +60,7 @@ def build_unified(run_id: str) -> dict:
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "lanes": lanes,
         "summary": summary,
+        "budget_status": budget_status,
     }
 
 
@@ -69,6 +87,13 @@ def cmd_print(run_id: str) -> int:
     print(f"total={payload['summary']['total']} passed={payload['summary']['passed']} failed={payload['summary']['failed']}")
     for lane, report in sorted(payload["lanes"].items()):
         print(f"- {lane}: {report.get('status','unknown')} ({report.get('log','-')})")
+    b = payload.get("budget_status", {})
+    if b.get("checked", 0):
+        print(
+            f"budget-status: checked={b.get('checked',0)} failed={b.get('failed',0)} near_failing={len(b.get('near_failing',[]))}"
+        )
+        if b.get("near_failing"):
+            print("near-failing lanes: " + ", ".join(sorted(b["near_failing"])))
     return 0
 
 

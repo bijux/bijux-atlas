@@ -13,6 +13,7 @@ ops_write_lane_report() {
   local ended_at="${8:-${LANE_ENDED_AT:-}}"
   local artifact_paths_json="${LANE_ARTIFACT_PATHS_JSON:-[]}"
   local failure_summary="${LANE_FAILURE_SUMMARY:-}"
+  local budget_status_json="${LANE_BUDGET_STATUS_JSON:-null}"
 
   local lane_dir="${out_root}/${lane}/${run_id}"
   local out_file="${lane_dir}/report.json"
@@ -31,6 +32,7 @@ payload = {
   "log": "${log_path}",
   "artifact_paths": json.loads("""${artifact_paths_json}"""),
   "failure_summary": """${failure_summary}""",
+  "budget_status": json.loads("""${budget_status_json}"""),
 }
 out = Path("${out_file}")
 out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\\n", encoding="utf-8")

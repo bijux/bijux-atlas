@@ -170,8 +170,18 @@ run_lane() {
   ended_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   local duration="$((lane_end - lane_start))"
   local failure_summary=""
+  local budget_status_json='null'
+  if budget_output="$(python3 ./ops/_lint/lane-budget-check.py --lane "$lane" --duration-seconds "$duration" 2>&1)"; then
+    budget_status_json="$budget_output"
+  else
+    budget_status_json="$budget_output"
+    lane_status="fail"
+    failure_summary="budget failure: $(printf '%s' "$budget_output" | tr '\n' ' ' | sed 's/\"/'\''/g')"
+  fi
   if [ "$lane_status" != "pass" ]; then
-    failure_summary="$(tail -n 20 "$lane_log" 2>/dev/null | tr '\n' ' ' | sed 's/\"/'\''/g')"
+    if [ -z "$failure_summary" ]; then
+      failure_summary="$(tail -n 20 "$lane_log" 2>/dev/null | tr '\n' ' ' | sed 's/\"/'\''/g')"
+    fi
   fi
   local lane_artifacts_json
   lane_artifacts_json="$(python3 - <<PY
@@ -188,6 +198,7 @@ PY
   LANE_ENDED_AT="$ended_at" \
   LANE_ARTIFACT_PATHS_JSON="$lane_artifacts_json" \
   LANE_FAILURE_SUMMARY="$failure_summary" \
+  LANE_BUDGET_STATUS_JSON="$budget_status_json" \
   ops_write_lane_report "$lane" "$run_id" "$lane_status" "$duration" "$lane_log" "$report_root" "$started_at" "$ended_at" >/dev/null
   [ "$lane_status" = "pass" ]
 }

@@ -60,6 +60,17 @@ summary = {
     "passed": sum(1 for v in lanes.values() if v.get("status") == "pass"),
     "failed": sum(1 for v in lanes.values() if v.get("status") == "fail"),
 }
+checked = 0
+failed_budget = []
+near = []
+for lane_name, lane_payload in lanes.items():
+    budget = lane_payload.get("budget_status")
+    if isinstance(budget, dict) and budget.get("checked"):
+        checked += 1
+        if budget.get("status") == "fail":
+            failed_budget.append(lane_name)
+        if budget.get("near_failing"):
+            near.append(lane_name)
 
 payload = {
     "schema_version": 1,
@@ -67,6 +78,12 @@ payload = {
     "generated_at": datetime.now(timezone.utc).isoformat(),
     "lanes": lanes,
     "summary": summary,
+    "budget_status": {
+        "checked": checked,
+        "failed": len(failed_budget),
+        "near_failing": sorted(near),
+        "failed_lanes": sorted(failed_budget),
+    },
 }
 
 schema = json.loads(schema_path.read_text(encoding='utf-8'))
