@@ -115,6 +115,15 @@ ops-stack-down: ## Tear down stack components and cluster
 ops-down: ## Tear down local ops stack
 	@./ops/run/down.sh
 
+ops-k8s-restart: ## Safe rollout restart for atlas deployment after config changes
+	@./ops/run/k8s-restart.sh
+
+ops-k8s-apply-config: ## Validate/apply values and restart deployment when configmap changed
+	@./ops/run/k8s-apply-config.sh
+
+ops-configmap-drift-report: ## Render configmap snapshots per profile and diff against previous run
+	@./ops/run/configmap-drift-report.sh
+
 ops-stack-idempotency-check: ## Verify stack up/down is idempotent
 	@PROFILE="$${PROFILE:-kind}" ./ops/stack/scripts/idempotency_check.sh
 

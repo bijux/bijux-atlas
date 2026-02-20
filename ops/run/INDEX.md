@@ -14,6 +14,9 @@ Single executable script surface for ops commands.
 - `ops/run/cache-status.sh`
 - `ops/run/warm-entrypoint.sh`
 - `ops/run/deploy-atlas.sh`
+- `ops/run/k8s-restart.sh`
+- `ops/run/k8s-apply-config.sh`
+- `ops/run/k8s-validate-configmap-keys.sh`
 - `ops/run/obs-up.sh`
 - `ops/run/obs-verify.sh`
 - `ops/run/datasets-verify.sh`

@@ -267,6 +267,12 @@ cache/prune: ## Prune local dataset/cache artifacts
 ops/suite: ## Explicit ops suite target
 	@$(call with_iso,ops-suite,$(MAKE) -s internal/ops/suite)
 
+k8s/restart: ## Safe k8s rollout restart for atlas deployment
+	@$(call with_iso,k8s-restart,$(MAKE) -s ops-k8s-restart)
+
+k8s/apply-config: ## Validate values, apply deploy, and restart if configmap changed
+	@$(call with_iso,k8s-apply-config,$(MAKE) -s ops-k8s-apply-config)
+
 ops/fmt: ## Ops formatting
 	@$(call with_iso,ops-fmt,$(MAKE) -s internal/ops/fmt)
 
