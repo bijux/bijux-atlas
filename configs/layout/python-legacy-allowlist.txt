@@ -172,7 +172,6 @@ scripts/areas/docs/generate_repo_surface.py
 scripts/areas/docs/generate_scripts_graph.py
 scripts/areas/docs/lint_depth.py
 scripts/areas/docs/lint_doc_contracts.py
-scripts/areas/docs/run_blessed_snippets.py
 scripts/areas/gen/generate_scripts_readme.py
 scripts/areas/gen/generate_scripts_surface.py
 scripts/areas/internal/__init__.py
