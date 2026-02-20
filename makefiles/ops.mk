@@ -134,7 +134,7 @@ ops-observability-lag-check: ## Fail when observability checks have been stale o
 	@python3 ./ops/obs/scripts/areas/contracts/check_observability_lag.py
 
 ops-check: ## Ops lint + schema + metadata validation
-	@./ops/run/ops-check.sh
+	@./scripts/bin/bijux-atlas-scripts ops check --report text
 
 internal/ops/check: ## Fast ops verification (no cluster bring-up)
 	@start="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; status=pass; fail=""; \
@@ -930,29 +930,7 @@ ops-make-targets-doc: ## Generate docs/development/make-targets.md from registry
 	@python3 ./scripts/areas/docs/check_make_targets_drift.py
 
 ops-lint: ## Lint ops shell/python/json/schema contracts
-	@python3 ./scripts/areas/layout/check_ops_run_entrypoints.py
-	@python3 ./scripts/areas/layout/check_ops_shell_policy.py
-	@python3 ./scripts/areas/layout/check_no_ops_evidence_writes.py
-	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_suite_manifest.py
-	@python3 ./scripts/areas/ops/generate_k8s_test_surface.py
-	@python3 ./ops/k8s/tests/validate_suites.py
-	@python3 ./scripts/areas/ops/check_k8s_test_lib.py
-	@python3 ./scripts/areas/ops/check_k8s_checks_layout.py
-	@./ops/k8s/tests/contracts/test_suite_smoke_budget.sh
-	@./ops/k8s/tests/contracts/test_suite_resilience_budget.sh
-	@./ops/k8s/tests/contracts/test_suite_full_budget.sh
-	@./ops/k8s/tests/contracts/test_install_matrix_subset.sh
-	@./ops/k8s/tests/contracts/test_install_matrix_full.sh
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/ops/lint/orphan_contracts.py
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/ops/lint/orphan_suites.py
-	@python3 ./ops/_lint/no-unowned-file.py
-	@python3 ./ops/_lint/json-schema-coverage.py
-	@python3 ./ops/_lint/no-unpinned-images.py
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_profile_goldens.py
-	@python3 ./scripts/areas/layout/check_tool_versions.py kind kubectl helm k6
-	@$(MAKE) -s ops-env-validate
-	@$(MAKE) -s ops-layout-lint
+	@./scripts/bin/bijux-atlas-scripts ops lint --report text --emit-artifacts
 
 ops-lint-all: ## Run full ops lint suite (naming/docs/ownership/contracts/images/versions)
 	@$(MAKE) -s ops-lint
