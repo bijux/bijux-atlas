@@ -115,7 +115,7 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(ATLAS_SCRIPTS) check no-direct-python-invocations
 	@$(ATLAS_SCRIPTS) check no-direct-bash-invocations
 	@$(ATLAS_SCRIPTS) check python-migration-exceptions-expiry
-	@$(PY_RUN) scripts/areas/check/check-bijux-atlas-scripts-boundaries.py
+	@$(ATLAS_SCRIPTS) check bijux-boundaries
 	@$(ATLAS_SCRIPTS) check cli-help
 	@$(ATLAS_SCRIPTS) check root-bin-shims
 	@./ops/_lint/no-bin-symlinks.sh
@@ -158,7 +158,7 @@ internal/scripts/install-lock:
 	@"$(SCRIPTS_VENV)/bin/pip" --disable-pip-version-check install --requirement packages/bijux-atlas-scripts/requirements.lock.txt >/dev/null
 
 internal/scripts/sbom: ## Emit scripts package dependency SBOM JSON
-	@$(PY_RUN) scripts/areas/check/generate-scripts-sbom.py --lock packages/bijux-atlas-scripts/requirements.lock.txt --out artifacts/evidence/scripts/sbom/$${RUN_ID:-local}/sbom.json
+	@$(ATLAS_SCRIPTS) check generate-scripts-sbom --lock packages/bijux-atlas-scripts/requirements.lock.txt --out artifacts/evidence/scripts/sbom/$${RUN_ID:-local}/sbom.json
 
 internal/scripts/lock-check:
 	@$(ATLAS_SCRIPTS) check python-lock

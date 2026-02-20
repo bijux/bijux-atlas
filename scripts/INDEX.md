@@ -14,10 +14,8 @@ Generated file. Do not edit manually.
 
 | Script | Owner | Stability | Called By |
 |---|---|---|---|
-| `scripts/areas/check/check-bijux-atlas-scripts-boundaries.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-no-make-scripts-references.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-scripts-ssot-final.py` | `platform` | `public` | - |
-| `scripts/areas/check/generate-scripts-sbom.py` | `platform` | `public` | - |
 | `scripts/areas/check/python_migration_exceptions.py` | `platform` | `public` | - |
 | `scripts/areas/fixtures/derive-release-111.sh` | `dataset-ops` | `internal` | - |
 | `scripts/areas/fixtures/fetch-medium.sh` | `dataset-ops` | `public` | `fetch-fixtures`, `ops-publish-medium` |
