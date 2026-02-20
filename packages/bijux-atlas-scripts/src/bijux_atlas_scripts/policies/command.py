@@ -118,6 +118,59 @@ def _write_report(ctx: RunContext, section: str, payload: dict[str, object]) -> 
     out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def _scan_rust_relaxations(repo_root: Path, out_path: Path) -> dict[str, object]:
+    findings: list[dict[str, object]] = []
+    scan_roots = [repo_root / "crates", repo_root / "packages"]
+    for root in scan_roots:
+        if not root.exists():
+            continue
+        for path in sorted(root.rglob("*.rs")):
+            if "generated" in path.parts:
+                continue
+            rel = path.relative_to(repo_root).as_posix()
+            text = path.read_text(encoding="utf-8", errors="ignore")
+            for idx, line in enumerate(text.splitlines(), 1):
+                trimmed = line.strip()
+                exception_id = None
+                for part in line.split():
+                    if part.startswith("ATLAS-EXC-"):
+                        exception_id = part.strip(",;")
+                        break
+                if "#[cfg(test)]" in trimmed or "#[cfg_attr(test" in trimmed:
+                    findings.append(
+                        {
+                            "source": "rust-ast",
+                            "pattern_id": "cfg_test_attribute",
+                            "requires_exception": False,
+                            "severity": "info",
+                            "file": rel,
+                            "line": idx,
+                            "exception_id": exception_id,
+                        }
+                    )
+                if (
+                    trimmed.startswith("#[allow(")
+                    or trimmed.startswith("#![allow(")
+                    or (trimmed.startswith("#[cfg_attr(") and "allow(" in trimmed)
+                ):
+                    findings.append(
+                        {
+                            "source": "rust-ast",
+                            "pattern_id": "allow_attribute",
+                            "requires_exception": True,
+                            "severity": "error",
+                            "file": rel,
+                            "line": idx,
+                            "exception_id": exception_id,
+                        }
+                    )
+    findings = sorted(findings, key=lambda x: (str(x["file"]), int(x["line"]), str(x["pattern_id"])))
+    payload = {"schema_version": 1, "findings": findings}
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return payload
+
+
 def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     repo = ctx.repo_root
 
@@ -188,6 +241,16 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print(json.dumps(payload, sort_keys=True) if ns.report == "json" else f"policies check: {payload['status']}")
         return 0 if not errors else 1
 
+    if ns.policies_cmd == "scan-rust-relaxations":
+        out_rel = getattr(ns, "out", None) or "artifacts/policy/relaxations-rust.json"
+        out_path = repo / out_rel
+        payload = _scan_rust_relaxations(repo, out_path)
+        if ns.report == "json":
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            print(out_path.as_posix())
+        return 0
+
     return 2
 
 
@@ -214,3 +277,7 @@ def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
 
     rep = ps.add_parser("report", help="print active relaxations summary")
     rep.add_argument("--report", choices=["text", "json"], default="json")
+
+    rust_scan = ps.add_parser("scan-rust-relaxations", help="scan Rust sources for relaxation markers")
+    rust_scan.add_argument("--out", help="output JSON path", default="artifacts/policy/relaxations-rust.json")
+    rust_scan.add_argument("--report", choices=["text", "json"], default="text")

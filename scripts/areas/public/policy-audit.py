@@ -44,7 +44,7 @@ def main() -> int:
     args = parser.parse_args()
 
     run(["./scripts/areas/policy/find_relaxations.sh", str(GREP_OUT)])
-    run(["cargo", "run", "--manifest-path", "xtask/Cargo.toml", "--", "scan-relaxations", str(RUST_OUT)])
+    run(["./bin/bijux-atlas", "policies", "scan-rust-relaxations", "--out", str(RUST_OUT)])
 
     grep_findings = load_json(GREP_OUT).get("findings", [])
     rust_findings = load_json(RUST_OUT).get("findings", [])
