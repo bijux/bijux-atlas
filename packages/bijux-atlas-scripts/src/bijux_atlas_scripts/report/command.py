@@ -10,6 +10,7 @@ from pathlib import Path
 from xml.etree.ElementTree import Element, SubElement, tostring
 
 from ..core.context import RunContext
+from ..reporting.make_area_report import main as make_area_report_main
 
 
 def _make_root(ctx: RunContext) -> Path:
@@ -443,6 +444,30 @@ def run_report_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _cmd_artifact_index(ctx, ns.limit, ns.out)
     if ns.report_cmd == "artifact-gc":
         return _cmd_artifact_gc(ctx, ns.older_than_days)
+    if ns.report_cmd == "make-area-write":
+        argv = [
+            "--path",
+            ns.path,
+            "--lane",
+            ns.lane,
+            "--run-id",
+            ns.run_id,
+            "--status",
+            ns.status,
+            "--start",
+            ns.start,
+            "--end",
+            ns.end,
+            "--duration-seconds",
+            str(ns.duration_seconds),
+            "--log",
+            ns.log,
+            "--failure",
+            ns.failure,
+        ]
+        for artifact in ns.artifact:
+            argv.extend(["--artifact", artifact])
+        return make_area_report_main(argv)
     return 2
 
 
@@ -508,3 +533,15 @@ def configure_report_parser(sub: argparse._SubParsersAction[argparse.ArgumentPar
 
     gc = rep.add_parser("artifact-gc", help="garbage collect scripts artifacts by retention")
     gc.add_argument("--older-than-days", type=int)
+
+    mar = rep.add_parser("make-area-write", help="write lane make-area report JSON")
+    mar.add_argument("--path", required=True)
+    mar.add_argument("--lane", required=True)
+    mar.add_argument("--run-id", required=True)
+    mar.add_argument("--status", required=True)
+    mar.add_argument("--start", required=True)
+    mar.add_argument("--end", required=True)
+    mar.add_argument("--duration-seconds", type=float, default=0.0)
+    mar.add_argument("--log", default="-")
+    mar.add_argument("--artifact", action="append", default=[])
+    mar.add_argument("--failure", default="")

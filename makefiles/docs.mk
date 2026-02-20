@@ -61,7 +61,7 @@ internal/docs/check: ## Fast docs verification
 	@start="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; status=pass; fail=""; \
 	if ! $(MAKE) docs-freeze; then status=fail; fail="docs-freeze failed"; fi; \
 	end="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; \
-	PYTHONPATH=packages/bijux-atlas-scripts/src python3 -m bijux_atlas_scripts.reporting.make_area_report --path "$${ISO_ROOT:-artifacts/isolate/docs/$${RUN_ID:-docs-check}}/report.docs.check.json" --lane "docs/check" --status "$$status" --start "$$start" --end "$$end" --artifact "$${ISO_ROOT:-artifacts/isolate/docs/$${RUN_ID:-docs-check}}" --failure "$$fail" >/dev/null; \
+	$(ATLAS_SCRIPTS) report make-area-write --path "$${ISO_ROOT:-artifacts/isolate/docs/$${RUN_ID:-docs-check}}/report.docs.check.json" --lane "docs/check" --run-id "$${RUN_ID:-docs-check}" --status "$$status" --start "$$start" --end "$$end" --artifact "$${ISO_ROOT:-artifacts/isolate/docs/$${RUN_ID:-docs-check}}" --failure "$$fail" >/dev/null; \
 	[ "$$status" = "pass" ] || { $(call fail_banner,docs/check); exit 1; }
 
 internal/docs/build: ## Build docs artifacts
