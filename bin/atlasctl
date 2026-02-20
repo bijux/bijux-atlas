@@ -2,5 +2,5 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PYTHONPATH="$ROOT/packages/bijux-atlas-scripts/src${PYTHONPATH:+:$PYTHONPATH}" \
-  exec python3 -m bijux_atlas_scripts.cli "$@"
+PYTHONPATH="$ROOT/packages/atlasctl/src${PYTHONPATH:+:$PYTHONPATH}" \
+  exec python3 -m atlasctl.cli "$@"
