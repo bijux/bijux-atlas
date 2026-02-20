@@ -107,11 +107,15 @@
     "owner": "ops-platform",
     "area": "ops"
   },
-  "docker": {
+  "k8s": {
     "owner": "ops-platform",
     "area": "ops"
   },
-  "chart": {
+  "load": {
+    "owner": "ops-platform",
+    "area": "ops"
+  },
+  "obs": {
     "owner": "ops-platform",
     "area": "ops"
   },
@@ -140,6 +144,10 @@
     "area": "policies"
   },
   "doctor": {
+    "owner": "build-and-release",
+    "area": "ops"
+  },
+  "report": {
     "owner": "build-and-release",
     "area": "ops"
   },

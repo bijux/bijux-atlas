@@ -18,7 +18,7 @@ COVERAGE_THRESHOLDS := configs/coverage/thresholds.toml
 COVERAGE_OUT = $(ARTIFACTS_DIR)/coverage/lcov.info
 AUTO_ISO_TAG_PREFIX ?= make
 
-fmt:
+internal/cargo/fmt:
 	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
 	@if [ -z "$$ISO_ROOT" ]; then \
 		tag="$(AUTO_ISO_TAG_PREFIX)-fmt-$$(date -u +%Y%m%dT%H%M%SZ)-$$PPID"; \
@@ -32,7 +32,7 @@ _fmt:
 	@cargo fmt --all --check
 	@./scripts/areas/layout/check_repo_hygiene.sh
 
-lint:
+internal/cargo/lint:
 	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
 	@if [ -z "$$ISO_ROOT" ]; then \
 		tag="$(AUTO_ISO_TAG_PREFIX)-lint-$$(date -u +%Y%m%dT%H%M%SZ)-$$PPID"; \
@@ -80,7 +80,7 @@ _check:
 	@CARGO_BUILD_JOBS="$(CARGO_BUILD_JOBS)" cargo check --workspace --all-targets
 	@./scripts/areas/layout/check_repo_hygiene.sh
 
-test:
+internal/cargo/test:
 	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
 	@if [ -z "$$ISO_ROOT" ]; then \
 		tag="$(AUTO_ISO_TAG_PREFIX)-test-$$(date -u +%Y%m%dT%H%M%SZ)-$$PPID"; \
@@ -161,7 +161,7 @@ _coverage:
 	@echo "coverage thresholds config: $(COVERAGE_THRESHOLDS)"
 	@./scripts/areas/layout/check_repo_hygiene.sh
 
-audit:
+internal/cargo/audit:
 	@if [ -n "$$ISO_ROOT" ]; then ./scripts/bin/require-isolate >/dev/null; fi
 	@if [ -z "$$ISO_ROOT" ]; then \
 		tag="$(AUTO_ISO_TAG_PREFIX)-audit-$$(date -u +%Y%m%dT%H%M%SZ)-$$PPID"; \
@@ -178,7 +178,7 @@ _audit:
 	fi
 	@cargo +stable deny check
 
-ci-core: fmt lint audit test coverage
+ci-core: internal/cargo/fmt internal/cargo/lint internal/cargo/audit internal/cargo/test coverage
 
 openapi-drift:
 	@./scripts/areas/public/openapi-diff-check.sh

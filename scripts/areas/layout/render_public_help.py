@@ -36,14 +36,10 @@ def render_list(entries: list[dict]) -> None:
 
 
 def render_gates(entries: list[dict]) -> None:
-    grouped: dict[str, list[str]] = defaultdict(list)
-    for entry in entries:
-        grouped[entry["area"]].append(entry["name"])
-    print("Public Gates by Area:")
-    for area in sorted(grouped):
-        print(f"  [{area}]")
-        for target in sorted(grouped[area]):
-            print(f"    {target}")
+    print("Primary Gates:")
+    for entry in sorted(entries, key=lambda item: item["name"]):
+        lanes = ",".join(entry.get("lanes", []))
+        print(f"  {entry['name']:<12} includes={lanes}  {entry['description']}")
 
 def render_advanced(entries: list[dict]) -> None:
     render_help(entries)

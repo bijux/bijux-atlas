@@ -50,8 +50,10 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 - `make audit`: Run audits.
 - `make docs`: Run docs verification lane.
 - `make ops`: Run ops verification lane.
-- `make docker`: Run docker contract checks.
-- `make chart`: Run helm chart verification checks.
+- `make k8s`: Run canonical k8s verification lane.
+- `make load`: Run canonical load verification lane.
+- `make obs`: Run canonical observability verification lane.
+- `make report`: Print latest lane summary and confidence report.
 - `make gates`: Print top-level areas and mapped public targets.
 - `make quick`: Minimal loop (fmt + lint + test).
 - `make cargo/fmt`: Cargo fmt gate (CI-safe).

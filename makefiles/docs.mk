@@ -86,6 +86,7 @@ docs-build: ## Build docs + link-check + spell-check + lint
 	@./scripts/bin/bijux-atlas-scripts run scripts/areas/docs/check_docs_deterministic.py
 	@./scripts/bin/bijux-atlas-scripts run scripts/areas/docs/check_observability_docs_checklist.py
 	@./scripts/bin/bijux-atlas-scripts run scripts/areas/docs/check_no_legacy_root_paths.py
+	@./scripts/bin/bijux-atlas-scripts run scripts/areas/docs/check_no_removed_make_targets.py
 	@./scripts/bin/bijux-atlas-scripts run scripts/areas/layout/check_no_legacy_targets_in_docs.py
 	@./scripts/bin/bijux-atlas-scripts run scripts/areas/layout/check_ops_external_entrypoints.py
 	@./scripts/bin/bijux-atlas-scripts run scripts/areas/docs/check_full_stack_page.py
@@ -109,7 +110,7 @@ docs-all: ## Canonical all-docs gate: must pass all docs sub-gates
 docs-check: ## Docs contract check alias (same as docs-build)
 	@$(MAKE) docs-build
 
-docs: ## Public docs alias (maps to docs-check only)
+internal/docs/public: ## Public docs alias implementation (root wrapper only)
 	@$(MAKE) docs-check
 
 internal/docs/check: ## Fast docs verification
@@ -139,4 +140,4 @@ internal/docs/all: ## Uniform docs all target
 	@$(MAKE) internal/docs/lint
 	@$(MAKE) internal/docs/build
 
-.PHONY: docs docs-all docs-build docs-check docs-serve docs-freeze docs-hardening docs-req-lock-refresh internal/docs/check internal/docs/build internal/docs/fmt internal/docs/lint internal/docs/test internal/docs/clean internal/docs/all _docs-venv
+.PHONY: docs-all docs-build docs-check docs-serve docs-freeze docs-hardening docs-req-lock-refresh internal/docs/public internal/docs/check internal/docs/build internal/docs/fmt internal/docs/lint internal/docs/test internal/docs/clean internal/docs/all _docs-venv

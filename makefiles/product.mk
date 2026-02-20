@@ -10,6 +10,30 @@ bootstrap:
 	@command -v kind >/dev/null 2>&1 || echo "kind not found (required for k8s e2e)"
 	@command -v kubectl >/dev/null 2>&1 || echo "kubectl not found (required for k8s e2e)"
 
+fmt: ## Run formatter checks
+	@$(MAKE) -s internal/cargo/fmt
+
+lint: ## Run lint checks
+	@$(MAKE) -s internal/cargo/lint
+
+test: ## Run test suite
+	@$(MAKE) -s internal/cargo/test
+
+audit: ## Run dependency and policy audits
+	@$(MAKE) -s internal/cargo/audit
+
+docs: ## Run docs verification lane
+	@$(MAKE) -s docs/check
+
+k8s: ## Run canonical k8s verification lane
+	@$(MAKE) -s ops/smoke
+
+load: ## Run canonical load verification lane
+	@$(MAKE) -s ops-load-smoke
+
+obs: ## Run canonical observability verification lane
+	@$(MAKE) -s ops-obs-verify SUITE=cheap
+
 docker-build:
 	@IMAGE_TAG="$${DOCKER_IMAGE:-bijux-atlas:local}"; \
 	IMAGE_VERSION="$${IMAGE_VERSION:-$$(git rev-parse --short=12 HEAD)}"; \
