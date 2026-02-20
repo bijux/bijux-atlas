@@ -9,9 +9,14 @@ errors: list[str] = []
 for p in sorted((ROOT / "scripts/bin").glob("bijux-atlas-*")):
     if not p.is_file():
         continue
+    if p.name == "bijux-atlas-dev":
+        # Informational index wrapper; no command execution path.
+        continue
     text = p.read_text(encoding="utf-8", errors="ignore")
-    if "scripts/lib/errors.sh" not in text and "err(" not in text:
-        errors.append(f"{p.relative_to(ROOT)} must source scripts/lib/errors.sh or call err()")
+    if "python3 -m bijux_atlas_scripts.cli" in text:
+        continue
+    if '"error_code"' not in text and "err(" not in text:
+        errors.append(f"{p.relative_to(ROOT)} must emit structured JSON error_code or delegate to atlasctl")
 
 if errors:
     print("structured error contract failed:", file=sys.stderr)

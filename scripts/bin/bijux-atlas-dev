@@ -2,7 +2,6 @@
 set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
 cd "$ROOT"
-. "$ROOT/scripts/lib/errors.sh"
 
 show_help() {
   cat <<'EOF'
