@@ -27,7 +27,6 @@
     "bin",
     ".vale",
     ".vale.ini",
-    "nextest.toml",
     "deny.toml",
     "audit-allowlist.toml",
     "clippy.toml",

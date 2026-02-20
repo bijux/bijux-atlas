@@ -19,7 +19,6 @@ Policy rule:
 
 - `Dockerfile` -> `docker/Dockerfile`: root compatibility for tooling expecting root Dockerfile. (Approval: `APPROVAL-DOCKERFILE-SHIM`)
 - `bin` -> `scripts/bin`: root compatibility while `scripts/bin` is canonical. (Approval: `APPROVAL-SCRIPT-BIN-SHIM`)
-- `nextest.toml` -> `configs/nextest/nextest.toml`: tool root-discovery compatibility. (Approval: `APPROVAL-NEXTEST-SHIM`)
 - `deny.toml` -> `configs/security/deny.toml`: tool root-discovery compatibility. (Approval: `APPROVAL-DENY-SHIM`)
 - `audit-allowlist.toml` -> `configs/security/audit-allowlist.toml`: tool root-discovery compatibility. (Approval: `APPROVAL-AUDIT-ALLOWLIST-SHIM`)
 - `clippy.toml` -> `configs/rust/clippy.toml`: tool root-discovery compatibility. (Approval: `APPROVAL-CLIPPY-SHIM`)
