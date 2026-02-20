@@ -16,8 +16,6 @@ Scripts in this area.
 - check_doc_naming.sh
 - check_docker_entrypoints.py
 - check_docs_deterministic.py
-- check_docs_freeze_drift.py
-- check_docs_make_only.py
 - check_docs_make_only_ops.py
 - check_docs_make_targets_exist.py
 - check_duplicate_topics.sh
