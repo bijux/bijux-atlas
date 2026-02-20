@@ -11,7 +11,7 @@ from pathlib import Path
 
 from .. import __version__, layout, registry
 from ..cli.registry import register_domain_parser, render_payload
-from ..cli.registry import registry as command_registry
+from ..cli.registry import command_registry
 from ..core.context import RunContext
 from ..core.env_guard import guard_no_network_mode
 from ..core.fs import ensure_evidence_path
@@ -23,16 +23,6 @@ from ..runner import run_legacy_script
 from ..surface import run_surface
 
 DOMAINS = {"registry": registry.run, "layout": layout.run}
-
-EXPLAIN_MAP: dict[str, dict[str, object]] = {
-    "check": {"touches": ["makefiles/", "configs/", ".github/workflows/"], "tools": []},
-    "docs": {"touches": ["docs/", "mkdocs.yml", "docs/_generated/"], "tools": ["mkdocs"]},
-    "configs": {"touches": ["configs/", "docs/_generated/config*"], "tools": []},
-    "ops": {"touches": ["ops/", "artifacts/evidence/"], "tools": ["kubectl", "helm", "k6"]},
-    "make": {"touches": ["makefiles/", "docs/development/make-targets.md"], "tools": ["make"]},
-    "report": {"touches": ["artifacts/evidence/", "ops/_generated_committed/"], "tools": []},
-    "gates": {"touches": ["configs/gates/lanes.json", "artifacts/evidence/"], "tools": ["make"]},
-}
 
 _CONFIGURE_HOOKS: tuple[tuple[str, str], ...] = (
     ("atlasctl.env.command", "configure_env_parser"),
@@ -314,10 +304,7 @@ def main(argv: list[str] | None = None) -> int:
             print(rendered)
             return 0
         if ns.cmd == "explain":
-            desc = EXPLAIN_MAP.get(
-                ns.command,
-                {"touches": [], "tools": [], "note": "no explicit contract entry; inspect command implementation"},
-            )
+            desc = _import_attr("atlasctl.commands.explain", "describe_command")(ns.command)
             payload = {
                 "schema_version": 1,
                 "tool": "atlasctl",
