@@ -73,9 +73,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_concept_ids.sh` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_doc_naming.sh` | `docs-governance` | `public` | `docs-build` |
 | `scripts/areas/docs/check_reference_templates.sh` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/generate_k8s_install_matrix.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/generate_make_targets_inventory.py` | `docs-governance` | `public` | `ops-make-targets-doc` |
-| `scripts/areas/docs/generate_scripts_graph.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/legacy-terms-allowlist.txt` | `docs-governance` | `public` | - |
 | `scripts/areas/fixtures/derive-release-111.sh` | `dataset-ops` | `internal` | - |
 | `scripts/areas/fixtures/fetch-medium.sh` | `dataset-ops` | `public` | `fetch-fixtures`, `ops-publish-medium` |

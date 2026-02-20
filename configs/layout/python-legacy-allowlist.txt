@@ -133,9 +133,6 @@ scripts/areas/configs/generate_env_contract.py
 scripts/areas/configs/generate_tooling_versions_doc.py
 scripts/areas/configs/sync_slo_config.py
 scripts/areas/configs/validate_configs_schemas.py
-scripts/areas/docs/generate_k8s_install_matrix.py
-scripts/areas/docs/generate_make_targets_inventory.py
-scripts/areas/docs/generate_scripts_graph.py
 scripts/areas/gen/generate_scripts_readme.py
 scripts/areas/gen/generate_scripts_surface.py
 scripts/areas/internal/__init__.py
