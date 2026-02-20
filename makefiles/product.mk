@@ -100,7 +100,7 @@ docs-lint-names: ## Enforce durable naming contracts, registries, and inventory
 	@python3 ./scripts/areas/docs/check_script_locations.py
 	@python3 ./scripts/areas/docs/check_runbook_map_registration.py
 	@python3 ./scripts/areas/docs/check_contract_doc_pairs.py
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_suite_manifest.py
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_suite_manifest.py
 	@./scripts/areas/docs/check_index_pages.sh
 
 doctor: ## Print tool/env/path diagnostics and store doctor report

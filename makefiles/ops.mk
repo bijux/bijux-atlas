@@ -134,7 +134,7 @@ ops-observability-lag-check: ## Fail when observability checks have been stale o
 	@python3 ./ops/obs/scripts/areas/contracts/check_observability_lag.py
 
 ops-check: ## Ops lint + schema + metadata validation
-	@./scripts/bin/bijux-atlas-scripts ops check --report text
+	@./bin/bijux-atlas ops check --report text
 
 internal/ops/check: ## Fast ops verification (no cluster bring-up)
 	@start="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; status=pass; fail=""; \
@@ -484,7 +484,7 @@ ops-release-rollback: ## Roll back catalog pointer for release dataset (artifact
 	  --release "$$release" --species "$$species" --assembly "$$assembly"
 
 ops-catalog-validate: ## Validate published catalog schema + deterministic merge ordering
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/datasets/catalog_validate.py
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/datasets/catalog_validate.py
 
 ops-cache-status: ## Print cache status and enforce local cache budget policy
 	@./ops/run/cache-status.sh
@@ -498,7 +498,7 @@ ops-dataset-qc: ## Enforce dataset QC thresholds for local ops gates
 ops-dataset-qc-diff: ## Diff two QC reports (BASE_QC=... TARGET_QC=...)
 	@[ -n "$${BASE_QC:-}" ] || { echo "BASE_QC is required" >&2; exit 2; }
 	@[ -n "$${TARGET_QC:-}" ] || { echo "TARGET_QC is required" >&2; exit 2; }
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/datasets/qc_diff.py --base "$$BASE_QC" --target "$$TARGET_QC"
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/datasets/qc_diff.py --base "$$BASE_QC" --target "$$TARGET_QC"
 
 ops-drill-corruption-dataset: ## Drill corruption detection and quarantine behavior
 	@./ops/datasets/scripts/sh/corruption_drill.sh
@@ -632,14 +632,14 @@ ops-metrics-check: ## Validate runtime metrics and observability contracts
 	@./scripts/areas/public/observability/lint_runbooks.py
 	@./scripts/areas/public/observability/check_runtime_metrics.py
 	@if [ "$${OPS_METRICS_STRICT:-1}" = "1" ]; then \
-	  ./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/check_metric_cardinality.py; \
+	  ./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/check_metric_cardinality.py; \
 	else \
-	  ./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/check_metric_cardinality.py || echo "cardinality warning tolerated in smoke mode"; \
+	  ./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/check_metric_cardinality.py || echo "cardinality warning tolerated in smoke mode"; \
 	fi
 	@if [ "$${OPS_METRICS_STRICT:-1}" = "1" ]; then \
-	  ./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/validate_logs_schema.py; \
+	  ./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/validate_logs_schema.py; \
 	else \
-	  ./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/validate_logs_schema.py || echo "log schema warning tolerated in smoke mode"; \
+	  ./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/validate_logs_schema.py || echo "log schema warning tolerated in smoke mode"; \
 	fi
 
 ops-traces-check: ## Validate trace signal (when OTEL enabled)
@@ -685,26 +685,26 @@ ops-load-smoke: ## Run short load suite
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
 	@$(MAKE) ops-load-manifest-validate
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/check_pinned_queries_lock.py
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/check_pinned_queries_lock.py
 	@$(MAKE) ops-load-prereqs
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/run_suites_from_manifest.py --profile smoke --out artifacts/perf/results
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/score_k6.py || true
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_results.py artifacts/perf/results
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/run_suites_from_manifest.py --profile smoke --out artifacts/perf/results
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/score_k6.py || true
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_results.py artifacts/perf/results
 
 ops-load-shedding: ## Verify overload shedding policy (cheap survives, non-cheap sheds)
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
 	@$(MAKE) ops-load-manifest-validate
 	@./ops/load/scripts/run_suite.sh cheap-only-survival.json artifacts/perf/results
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_results.py artifacts/perf/results
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/score_k6.py || true
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_results.py artifacts/perf/results
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/score_k6.py || true
 
 ops-load-spike-proof: ## Run 10x spike proof suite with overload/bulkhead/memory assertions
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
 	@$(MAKE) ops-load-manifest-validate
 	@./ops/load/scripts/run_suite.sh spike-overload-proof.json artifacts/perf/results
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_results.py artifacts/perf/results
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_results.py artifacts/perf/results
 	@python3 ./scripts/areas/public/perf/check_spike_assertions.py --summary artifacts/perf/results/spike-overload-proof.summary.json --base-url "$${ATLAS_BASE_URL:-http://127.0.0.1:18080}" --wait-seconds "$${ATLAS_OVERLOAD_CLEAR_WAIT_SECONDS:-45}"
 	@$(MAKE) ops-slo-burn
 	@python3 -c 'import json; from pathlib import Path; p = Path("artifacts/ops/obs/slo-burn.json"); payload = json.loads(p.read_text()) if p.exists() else (_ for _ in ()).throw(SystemExit("missing SLO burn artifact: artifacts/ops/obs/slo-burn.json")); (_ for _ in ()).throw(SystemExit(f"SLO burn exceeded: {payload}")) if payload.get("burn_exceeded") else print("slo burn within threshold")'
@@ -721,9 +721,9 @@ ops-load-full: ## Run nightly/full load suites
 	@$(MAKE) ops-k6-version-check
 	@$(MAKE) ops-load-manifest-validate
 	@$(MAKE) ops-load-prereqs
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/check_pinned_queries_lock.py
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/run_suites_from_manifest.py --profile all --out artifacts/perf/results
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_results.py artifacts/perf/results
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/check_pinned_queries_lock.py
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/run_suites_from_manifest.py --profile all --out artifacts/perf/results
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_results.py artifacts/perf/results
 	@./ops/load/reports/generate.py
 
 ops-load-soak: ## Run long soak-only suite
@@ -731,8 +731,8 @@ ops-load-soak: ## Run long soak-only suite
 	@$(MAKE) ops-k6-version-check
 	@$(MAKE) ops-load-manifest-validate
 	@./ops/load/scripts/run_suite.sh soak-30m.json artifacts/perf/results
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_results.py artifacts/perf/results
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/score_k6.py || true
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_results.py artifacts/perf/results
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/score_k6.py || true
 
 ops-load-under-rollout: ## Run load while rollout is in progress
 	@$(MAKE) -s ops-env-validate
@@ -754,18 +754,18 @@ ops-load-ci: ## Load CI profile (smoke suites + score/report)
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
 	@$(MAKE) ops-load-manifest-validate
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/run_suites_from_manifest.py --profile load-ci --out artifacts/perf/results
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_results.py artifacts/perf/results
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/score_k6.py || true
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/run_suites_from_manifest.py --profile load-ci --out artifacts/perf/results
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_results.py artifacts/perf/results
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/score_k6.py || true
 	@./ops/load/reports/generate.py
 
 ops-load-nightly: ## Load nightly profile (nightly suites + score/report)
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
 	@$(MAKE) ops-load-manifest-validate
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/run_suites_from_manifest.py --profile load-nightly --out artifacts/perf/results
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_results.py artifacts/perf/results
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/score_k6.py || true
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/run_suites_from_manifest.py --profile load-nightly --out artifacts/perf/results
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_results.py artifacts/perf/results
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/score_k6.py || true
 	@./ops/load/reports/generate.py
 
 ops-drill-store-outage: ## Run store outage drill under load
@@ -906,7 +906,7 @@ ops-report: ## Gather ops evidence into artifacts/ops/<run-id>/
 	$(MAKE) artifacts-index
 
 ops-slo-burn: ## Compute SLO burn artifact from k6 score + metrics snapshot
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/compute_slo_burn.py
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/compute_slo_burn.py
 
 obs/update-goldens: ## Refresh observability golden snapshots for all supported profiles
 	@cp ops/obs/contract/metrics.golden.prom ops/obs/contract/goldens/local/metrics.golden.prom
@@ -915,7 +915,7 @@ obs/update-goldens: ## Refresh observability golden snapshots for all supported 
 	@cp ops/obs/contract/trace-structure.golden.json ops/obs/contract/goldens/local/trace-structure.golden.json
 	@cp ops/obs/contract/trace-structure.golden.json ops/obs/contract/goldens/perf/trace-structure.golden.json
 	@cp ops/obs/contract/trace-structure.golden.json ops/obs/contract/goldens/offline/trace-structure.golden.json
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_profile_goldens.py
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_profile_goldens.py
 
 ops-slo-report: ## Compute SLO report (SLIs, error budget remaining, burn rates)
 	@python3 ./ops/report/slo_report.py --metrics "$${METRICS:-artifacts/ops/metrics.prom}" --slo-config configs/ops/slo/slo.v1.json --out "$${OUT:-artifacts/ops/slo/report.json}"
@@ -930,23 +930,23 @@ ops-make-targets-doc: ## Generate docs/development/make-targets.md from registry
 	@python3 ./scripts/areas/docs/check_make_targets_drift.py
 
 ops-lint: ## Lint ops shell/python/json/schema contracts
-	@./scripts/bin/bijux-atlas-scripts ops lint --report text --emit-artifacts
+	@./bin/bijux-atlas ops lint --report text --emit-artifacts
 
 ops-lint-all: ## Run full ops lint suite (naming/docs/ownership/contracts/images/versions)
 	@$(MAKE) -s ops-lint
 	@./ops/_lint/naming.sh
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/ops/lint/duplicate_readmes.py
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/layout/no_shadow.py
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/ops/lint/duplicate_readmes.py
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout/no_shadow.py
 	@./ops/_lint/no-empty-dirs.sh
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/ops/lint/direct_usage.py
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/ops/lint/direct_usage.py
 	@python3 ./ops/_lint/no-direct-e2e-scenario-usage.py
 	@python3 ./scripts/areas/layout/check_ops_cross_area_script_refs.py
 	@python3 ./scripts/areas/layout/check_scripts_submodules.py --threshold 25
 	@python3 ./ops/_lint/no-unpinned-images.py
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/ops/lint/tool_versions.py
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/ops/lint/tool_versions.py
 	@python3 ./ops/_lint/no-unowned-area.py
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/ops/lint/orphan_contracts.py
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/ops/lint/orphan_suites.py
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/ops/lint/orphan_contracts.py
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/ops/lint/orphan_suites.py
 
 ops-fmt: ## Format ops YAML/JSON and refresh make targets inventory docs
 	@./ops/_lib/fmt.sh
@@ -1014,7 +1014,7 @@ ops-perf-nightly: ## Perf helper: run nightly perf suite
 	@./ops/load/scripts/run_nightly_perf.sh
 
 ops-perf-report: ## Generate perf markdown + baseline report from artifacts
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/generate_report.py
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/generate_report.py
 	@./ops/load/reports/generate.py
 	@mkdir -p "$${OPS_RUN_DIR:-artifacts/ops/manual}/load/reports"
 	@cp -f artifacts/ops/load/reports/summary.md "$${OPS_RUN_DIR:-artifacts/ops/manual}/report.md" 2>/dev/null || true
@@ -1039,10 +1039,10 @@ ops-perf-baseline-update: ## Update named baseline from artifacts/perf/baseline.
 	@PERF_BASELINE_UPDATE_FLOW=1 ./ops/load/scripts/update_baseline.sh "$${ATLAS_PERF_BASELINE_PROFILE:-local}"
 
 ops-load-manifest-validate: ## Validate load suite SSOT, naming conventions, and pinned query lock
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_suite_manifest.py
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/check_abuse_scenarios_required.py
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/check_runbook_suite_names.py
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/check_perf_baselines.py
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_suite_manifest.py
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/check_abuse_scenarios_required.py
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/check_runbook_suite_names.py
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/check_perf_baselines.py
 
 ops-perf-suite: ## Perf helper: run an arbitrary perf suite (SCENARIO=<file.js> OUT=<dir>)
 	@[ -n "$$SCENARIO" ] || { echo "usage: make ops-perf-suite SCENARIO=<file.js> [OUT=artifacts/perf/results]" >&2; exit 2; }
@@ -1085,9 +1085,9 @@ ops-observability-validate: ## Validate observability assets/contracts end-to-en
 	if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/areas/public/observability/check_tracing_contract.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi; \
 	./ops/obs/scripts/snapshot_metrics.sh; \
 	./ops/obs/scripts/snapshot_traces.sh; \
-	./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/check_metric_cardinality.py; \
+	./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/check_metric_cardinality.py; \
 	$(MAKE) ops-otel-required-check; \
-	./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/validate_logs_schema.py --namespace "$${ATLAS_E2E_NAMESPACE:-$${ATLAS_NS:-atlas-e2e}}" --release "$${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}" --strict-live
+	./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/validate_logs_schema.py --namespace "$${ATLAS_E2E_NAMESPACE:-$${ATLAS_NS:-atlas-e2e}}" --release "$${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}" --strict-live
 
 ops-obs-validate: ## Compatibility alias for ops-observability-validate
 	@$(MAKE) ops-observability-validate
@@ -1139,7 +1139,7 @@ ops-artifacts-index-run: ## Generate per-run artifact index markdown (RUN_ID=<op
 	@python3 ./scripts/areas/layout/build_run_artifact_index.py --run-id "$${RUN_ID}"
 
 ops-observability-pack-conformance-report: ## Write pack conformance report under artifacts
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/write_pack_conformance_report.py
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/write_pack_conformance_report.py
 
 ops-obs-mode-minimal: ## Compatibility alias for kind profile
 	@ATLAS_OBS_PROFILE=kind ./ops/obs/scripts/install_pack.sh
@@ -1157,13 +1157,13 @@ ops-observability-pack-lint: ## Run observability pack lint-only contract checks
 observability-pack-test: ## Fast observability pack test (contracts + coverage)
 	@./ops/obs/tests/suite.sh --suite contracts
 	@./ops/obs/tests/suite.sh --suite coverage
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/write_pack_conformance_report.py
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/write_pack_conformance_report.py
 
 observability-pack-drills: ## Full observability drill suite (outage matrix + contracts)
 	@./ops/obs/tests/suite.sh --suite coverage
 	@./ops/obs/tests/suite.sh --suite drills
 	@./ops/obs/tests/suite.sh --suite contracts
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/write_pack_conformance_report.py
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/write_pack_conformance_report.py
 
 ops-drill-suite: ## Run full observability drill manifest suite and emit report
 	@./ops/obs/tests/suite.sh --suite drills
@@ -1227,7 +1227,7 @@ ops-local-full: ## Canonical one-command local full-stack proof workflow
 	$(MAKE) ops-proof-cold-start-baseline; \
 	$(MAKE) ops-proof-warm-p99-baseline; \
 	$(MAKE) ops-cache-status; \
-	./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/datasets/cache_budget_check.py; \
+	./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/datasets/cache_budget_check.py; \
 	$(MAKE) ops-report; \
 	$(MAKE) ops-artifacts-index-run RUN_ID="$$run_id"; \
 	test -f "$$out/report.json"; \

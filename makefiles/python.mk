@@ -2,7 +2,7 @@
 # Public targets: none
 SHELL := /bin/sh
 
-ATLAS_SCRIPTS ?= ./scripts/bin/bijux-atlas-scripts
+ATLAS_SCRIPTS ?= ./bin/bijux-atlas
 PY_RUN ?= $(ATLAS_SCRIPTS) run
 
 internal/scripts/cli-check:

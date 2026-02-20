@@ -1,6 +1,3 @@
 #!/usr/bin/env sh
-# owner: bijux-atlas-platform
-# purpose: compatibility shim for make explain command.
-# usage: bin/make_explain <target>
-echo "DEPRECATED: bin/make_explain expires 2026-06-30; use bijux-atlas-scripts make explain <target>; see docs/development/tooling/bijux-atlas-scripts.md" >&2
-exec ./scripts/bin/bijux-atlas-scripts make explain "$@"
+set -eu
+exec "$(dirname "$0")/bijux-atlas" make explain "$@"
