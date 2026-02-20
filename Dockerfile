@@ -1,1 +1,1 @@
-docker/Dockerfile
+docker/images/runtime/Dockerfile

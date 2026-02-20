@@ -5,17 +5,22 @@ This is the single source of truth for container build/test/use in this reposito
 ## Canonical Commands
 
 ```bash
-make docker-build
-make docker-smoke
+make docker-check
 make docker-scan
-make docker-push
+make docker-release
 ```
 
 ## Build
 
-- Canonical Dockerfile: `docker/Dockerfile`
-- Root `Dockerfile` is shim only and must symlink to `docker/Dockerfile`.
+- Canonical Dockerfile: `docker/images/runtime/Dockerfile`
+- Root `Dockerfile` is shim only and must symlink to `docker/images/runtime/Dockerfile`.
 - Build metadata labels are injected by `make docker-build`.
+
+## Directory Layout
+
+- `docker/images/`: image definitions (`runtime/` is canonical).
+- `docker/contracts/`: policy contracts (allowlists, pinning, SBOM, size budget).
+- `docker/scripts/`: docker-focused helper scripts.
 
 ## Runtime Smoke
 
@@ -28,6 +33,7 @@ make docker-push
 ## Push
 
 `make docker-push` is CI-only and fails when run locally without CI marker.
+`make docker-release` is CI-only and runs `docker-check` + `docker-push`.
 
 ## Policy Links
 

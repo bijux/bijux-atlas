@@ -61,7 +61,7 @@ for rel in sorted(symlinks):
 
 dockerfile = ROOT / "Dockerfile"
 if not dockerfile.is_symlink():
-    violations.append("root `Dockerfile` must be a symlink to `docker/Dockerfile`")
+    violations.append("root `Dockerfile` must be a symlink to `docker/images/runtime/Dockerfile`")
 
 if violations:
     print("symlink policy check failed:", file=sys.stderr)

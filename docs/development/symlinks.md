@@ -17,7 +17,7 @@ Policy rule:
 - Allowed shim classes: tool-config discovery shims, `Dockerfile` shim, and `bin` UX shim.
 - New symlinks require a `docs/development/symlinks.md` entry with `APPROVAL-*` token.
 
-- `Dockerfile` -> `docker/Dockerfile`: root compatibility for tooling expecting root Dockerfile. (Approval: `APPROVAL-DOCKERFILE-SHIM`)
+- `Dockerfile` -> `docker/images/runtime/Dockerfile`: root compatibility for tooling expecting root Dockerfile. (Approval: `APPROVAL-DOCKERFILE-SHIM`)
 - `bin` -> `scripts/bin`: root compatibility while `scripts/bin` is canonical. (Approval: `APPROVAL-SCRIPT-BIN-SHIM`)
 - `deny.toml` -> `configs/security/deny.toml`: tool root-discovery compatibility. (Approval: `APPROVAL-DENY-SHIM`)
 - `audit-allowlist.toml` -> `configs/security/audit-allowlist.toml`: tool root-discovery compatibility. (Approval: `APPROVAL-AUDIT-ALLOWLIST-SHIM`)
