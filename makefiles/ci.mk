@@ -146,7 +146,7 @@ ci-workflows-make-only:
 	@python3 ./scripts/areas/layout/check_workflows_make_only.py
 
 ci-log-fields-contract:
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/validate_logs_schema.py --file ops/obs/contract/logs.example.jsonl
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/validate_logs_schema.py --file ops/obs/contract/logs.example.jsonl
 
 ci-observability-pack-test:
 	@$(MAKE) observability-pack-test
@@ -188,11 +188,12 @@ internal/ci/scripts-path-usage:
 	@python3 ./scripts/areas/check/check-no-make-scripts-references.py
 
 internal/ci/docs-old-script-paths:
-	@./scripts/bin/bijux-atlas-scripts compat check --include-docs
+	@./bin/bijux-atlas compat check --include-docs
 
 internal/ci/bin-shims:
 	@python3 ./scripts/areas/check/check-script-shim-expiry.py
 	@python3 ./scripts/areas/check/check-script-shims-minimal.py
+	@./bin/bijux-atlas --help >/dev/null
 
 internal/ci/scripts-ssot-final:
 	@STRICT_SCRIPTS_SUNSET="$${STRICT_SCRIPTS_SUNSET:-0}"; \

@@ -31,14 +31,14 @@ Scripts are internal unless listed in `configs/ops/public-surface.json` or `scri
 | `packages/bijux-atlas-scripts/tests` | `bijux-atlas-platform` |
 | `scripts/bin/bijux-atlas-dev` | `bijux-atlas-platform` |
 | `scripts/bin/bijux-atlas-ops` | `bijux-atlas-operations` |
-| `scripts/bin/bijux-atlas-scripts` | `bijux-atlas-platform` |
+| `bin/bijux-atlas` | `bijux-atlas-platform` |
 | `scripts/bin/isolate` | `bijux-atlas-platform` |
 | `scripts/bin/require-isolate` | `bijux-atlas-platform` |
 | `scripts/bin/run_drill.sh` | `bijux-atlas-operations` |
 
 - `scripts/bin/bijux-atlas-dev`
 - `scripts/bin/bijux-atlas-ops`
-- `scripts/bin/bijux-atlas-scripts`
+- `bin/bijux-atlas`
 - `scripts/bin/isolate`
 - `scripts/bin/make_explain`
 - `scripts/bin/make_graph`

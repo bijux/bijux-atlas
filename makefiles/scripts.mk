@@ -35,8 +35,12 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(PY_RUN) scripts/areas/check/check-script-ownership.py
 	@$(PY_RUN) scripts/areas/check/check-script-shim-expiry.py
 	@$(PY_RUN) scripts/areas/check/check-script-shims-minimal.py
+	@$(PY_RUN) scripts/areas/check/check-invocation-parity.py
 	@$(PY_RUN) scripts/areas/check/check-python-lock.py
 	@$(PY_RUN) scripts/areas/check/check-bin-entrypoints.py
+	@$(PY_RUN) scripts/areas/check/check-root-bin-shims.py
+	@./ops/_lint/no-bin-symlinks.sh
+	@./ops/_lint/no-scripts-bin-dir.sh
 	@$(PY_RUN) scripts/areas/check/check-no-adhoc-python.py
 	@$(PY_RUN) scripts/areas/check/check-no-make-scripts-references.py
 	@$(PY_RUN) scripts/areas/check/check-repo-script-boundaries.py
@@ -44,15 +48,15 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(PY_RUN) scripts/areas/check/check-scripts-surface-docs-drift.py
 	@$(PY_RUN) scripts/areas/layout/check_make_command_allowlist.py
 	@./ops/_lint/naming.sh
-	@$(PY_RUN) ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/layout/no_shadow.py
+	@$(PY_RUN) ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout/no_shadow.py
 	@$(PY_RUN) scripts/areas/layout/check_public_entrypoint_cap.py
 	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
 	@if command -v shellcheck >/dev/null 2>&1; then find scripts/areas/public scripts/areas/internal scripts/areas/dev -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional for local scripts lint)"; fi
 	@if command -v shfmt >/dev/null 2>&1; then shfmt -d scripts ops/load/scripts; else echo "shfmt not installed (optional)"; fi
-	@PYTHONPATH=tools/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" check tools/bijux-atlas-scripts/src tools/bijux-atlas-scripts/tests
+	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" check packages/bijux-atlas-scripts/src packages/bijux-atlas-scripts/tests
 
 scripts-format: ## Format scripts (python + shell where available)
-	@PYTHONPATH=tools/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" format tools/bijux-atlas-scripts/src tools/bijux-atlas-scripts/tests
+	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" format packages/bijux-atlas-scripts/src packages/bijux-atlas-scripts/tests
 	@if command -v shfmt >/dev/null 2>&1; then find scripts ops/load/scripts -type f -name '*.sh' -print0 | xargs -0 shfmt -w; else echo "shfmt not installed (optional)"; fi
 
 internal/scripts/fmt-alias: ## Alias for scripts-format
@@ -67,10 +71,10 @@ scripts-test: ## Run scripts-focused tests
 	@$(PY_RUN) ops/load/scripts/check_pinned_queries_lock.py
 	@python3 -m unittest scripts.areas.tests.test_paths
 	@$(MAKE) -s internal/scripts/install-lock
-	@PYTHONPATH=tools/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" check tools/bijux-atlas-scripts/src tools/bijux-atlas-scripts/tests
-	@PYTHONPATH=tools/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/mypy" --ignore-missing-imports tools/bijux-atlas-scripts/tests
-	@PYTHONPATH=tools/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/pytest" -q tools/bijux-atlas-scripts/tests
-	@$(ATLAS_SCRIPTS) validate-output --schema configs/contracts/scripts-tool-output.schema.json --file tools/bijux-atlas-scripts/tests/goldens/tool-output.example.json
+	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" check packages/bijux-atlas-scripts/src packages/bijux-atlas-scripts/tests
+	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/mypy" --ignore-missing-imports packages/bijux-atlas-scripts/tests
+	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/pytest" -q packages/bijux-atlas-scripts/tests
+	@$(ATLAS_SCRIPTS) validate-output --schema configs/contracts/scripts-tool-output.schema.json --file packages/bijux-atlas-scripts/tests/goldens/tool-output.example.json
 	@$(ATLAS_SCRIPTS) surface --json > artifacts/scripts/surface.json
 	@$(ATLAS_SCRIPTS) validate-output --schema configs/contracts/scripts-surface-output.schema.json --file artifacts/scripts/surface.json
 	@$(ATLAS_SCRIPTS) --run-id scripts-test --profile local doctor --json > artifacts/scripts/doctor.json
@@ -78,7 +82,7 @@ scripts-test: ## Run scripts-focused tests
 
 internal/scripts/test-hermetic: ## Run scripts package tests with --no-network guard enabled
 	@$(MAKE) -s scripts-install
-	@BIJUX_SCRIPTS_TEST_NO_NETWORK=1 PYTHONPATH=tools/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/pytest" -q tools/bijux-atlas-scripts/tests
+	@BIJUX_SCRIPTS_TEST_NO_NETWORK=1 PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/pytest" -q packages/bijux-atlas-scripts/tests
 
 scripts-check: ## Run scripts lint + tests as a single gate
 	@$(MAKE) -s internal/scripts/install-lock
@@ -89,6 +93,9 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(PY_RUN) scripts/areas/check/check-python-migration-exceptions-expiry.py
 	@$(PY_RUN) scripts/areas/check/check-bijux-atlas-scripts-boundaries.py
 	@$(PY_RUN) scripts/areas/check/check-script-help.py
+	@$(PY_RUN) scripts/areas/check/check-root-bin-shims.py
+	@./ops/_lint/no-bin-symlinks.sh
+	@./ops/_lint/no-scripts-bin-dir.sh
 	@$(PY_RUN) scripts/areas/check/check-script-errors.py
 	@$(PY_RUN) scripts/areas/check/check-script-write-roots.py
 	@$(PY_RUN) scripts/areas/check/check-script-tool-guards.py
@@ -104,7 +111,7 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(PY_RUN) scripts/areas/layout/check_script_entrypoints.py
 	@$(PY_RUN) scripts/areas/layout/check_scripts_top_level.py
 	@if command -v shellcheck >/dev/null 2>&1; then find scripts/areas/check scripts/bin scripts/areas/ci scripts/areas/dev -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional)"; fi
-	@PYTHONPATH=tools/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" check scripts/areas/check scripts/areas/gen scripts/areas/python tools/bijux-atlas-scripts/src tools/bijux-atlas-scripts/tests
+	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" check scripts/areas/check scripts/areas/gen scripts/areas/python packages/bijux-atlas-scripts/src packages/bijux-atlas-scripts/tests
 	@python3 -m unittest scripts.areas.tests.test_paths
 
 scripts-all: ## Canonical scripts gate: all script-related gates must pass
@@ -122,10 +129,10 @@ internal/scripts/venv:
 
 internal/scripts/install-lock:
 	@$(MAKE) -s internal/scripts/venv
-	@"$(SCRIPTS_VENV)/bin/pip" --disable-pip-version-check install --requirement tools/bijux-atlas-scripts/requirements.lock.txt >/dev/null
+	@"$(SCRIPTS_VENV)/bin/pip" --disable-pip-version-check install --requirement packages/bijux-atlas-scripts/requirements.lock.txt >/dev/null
 
 internal/scripts/sbom: ## Emit scripts package dependency SBOM JSON
-	@$(PY_RUN) scripts/areas/check/generate-scripts-sbom.py --lock tools/bijux-atlas-scripts/requirements.lock.txt --out artifacts/evidence/scripts/sbom/$${RUN_ID:-local}/sbom.json
+	@$(PY_RUN) scripts/areas/check/generate-scripts-sbom.py --lock packages/bijux-atlas-scripts/requirements.lock.txt --out artifacts/evidence/scripts/sbom/$${RUN_ID:-local}/sbom.json
 
 internal/scripts/lock-check:
 	@$(PY_RUN) scripts/areas/check/check-python-lock.py

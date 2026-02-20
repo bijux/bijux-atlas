@@ -30,7 +30,7 @@ layout-check: ## Validate repository layout contract and root shape
 	@python3 ./scripts/areas/layout/check_no_legacy_target_names.py
 	@python3 ./scripts/areas/layout/check_legacy_deprecation.py
 	@python3 ./scripts/areas/layout/check_ops_external_entrypoints.py
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/layout/dir_budgets.py
+	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout/dir_budgets.py
 
 layout-migrate: ## Apply deterministic layout/path migration helpers
 	@./scripts/areas/layout/replace_paths.sh --apply

@@ -296,16 +296,16 @@ perf/baseline-update: ## Run smoke suite, update baseline, write diff summary an
 
 perf/regression-check: ## Fail if p95 regression exceeds configured budget
 	@PROFILE="$${PROFILE:-$${ATLAS_PERF_BASELINE_PROFILE:-local}}"; \
-	$(ATLAS_SCRIPTS) run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/regression_check.py --profile "$$PROFILE" --results "$${RESULTS:-artifacts/perf/results}"
+	$(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/regression_check.py --profile "$$PROFILE" --results "$${RESULTS:-artifacts/perf/results}"
 
 perf/triage: ## Print top p95 regressions by suite from latest perf results
 	@PROFILE="$${PROFILE:-$${ATLAS_PERF_BASELINE_PROFILE:-local}}"; \
-	$(ATLAS_SCRIPTS) run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/triage_regressions.py --profile "$$PROFILE" --results "$${RESULTS:-artifacts/perf/results}"
+	$(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/triage_regressions.py --profile "$$PROFILE" --results "$${RESULTS:-artifacts/perf/results}"
 
 perf/compare: ## Compare two evidence perf runs (FROM=<run_id> TO=<run_id>)
 	@[ -n "$${FROM:-}" ] || { echo "usage: make perf/compare FROM=<run_id> TO=<run_id>" >&2; exit 2; }
 	@[ -n "$${TO:-}" ] || { echo "usage: make perf/compare FROM=<run_id> TO=<run_id>" >&2; exit 2; }
-	@$(ATLAS_SCRIPTS) run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/compare_runs.py --from-run "$${FROM}" --to-run "$${TO}"
+	@$(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/compare_runs.py --from-run "$${FROM}" --to-run "$${TO}"
 
 policies/all: ## Policies lane (deny/audit/policy checks)
 	@$(call with_iso,policies-all,$(MAKE) -s policies/check)
@@ -460,7 +460,7 @@ rerun-failed: ## Rerun only failed lanes from RUN_ID (NEW_RUN_ID optional)
 
 dev-bootstrap: ## Setup local python tooling for atlas-scripts (uv sync)
 	@if command -v uv >/dev/null 2>&1; then \
-		uv sync --project tools/bijux-atlas-scripts; \
+		uv sync --project packages/bijux-atlas-scripts; \
 	else \
 		echo "uv is not installed; falling back to make scripts-install"; \
 		$(MAKE) -s scripts-install; \

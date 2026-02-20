@@ -28,7 +28,7 @@ jobs:
           path: |
             ~/.cache/pip
             artifacts/isolate/py/scripts/.venv
-          key: scripts-py-${{ runner.os }}-${{ hashFiles('tools/bijux-atlas-scripts/requirements.lock.txt', 'tools/bijux-atlas-scripts/pyproject.toml') }}
+          key: scripts-py-${{ runner.os }}-${{ hashFiles('packages/bijux-atlas-scripts/requirements.lock.txt', 'packages/bijux-atlas-scripts/pyproject.toml') }}
       - name: Install shellcheck
         run: |
           sudo apt-get update
