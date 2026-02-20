@@ -1,10 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
-  "required": ["schema_version", "run_id", "generated_at", "lanes", "summary", "budget_status"],
-  "additionalProperties": false,
+  "required": ["schema_version", "report_version", "run_id", "generated_at", "lanes", "summary", "budget_status"],
+  "additionalProperties": true,
   "properties": {
     "schema_version": {"type": "integer", "const": 1},
+    "report_version": {"type": "integer", "minimum": 1},
     "run_id": {"type": "string", "minLength": 1},
     "generated_at": {"type": "string", "minLength": 1},
     "lanes": {

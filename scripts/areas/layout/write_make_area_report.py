@@ -10,9 +10,12 @@ def main() -> int:
     p = argparse.ArgumentParser()
     p.add_argument("--path", required=True)
     p.add_argument("--lane", required=True)
+    p.add_argument("--run-id", required=False, default="local")
     p.add_argument("--status", required=True)
     p.add_argument("--start", required=True)
     p.add_argument("--end", required=True)
+    p.add_argument("--duration-seconds", type=float, default=0.0)
+    p.add_argument("--log", default="-")
     p.add_argument("--artifact", action="append", default=[])
     p.add_argument("--failure", default="")
     args = p.parse_args()
@@ -20,10 +23,15 @@ def main() -> int:
     out = Path(args.path)
     out.parent.mkdir(parents=True, exist_ok=True)
     payload = {
+        "schema_version": 1,
+        "report_version": 1,
         "lane": args.lane,
+        "run_id": args.run_id,
         "status": args.status,
         "started_at": args.start,
         "ended_at": args.end,
+        "duration_seconds": args.duration_seconds,
+        "log": args.log,
         "artifact_paths": args.artifact,
         "failure_summary": args.failure,
     }

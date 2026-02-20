@@ -78,33 +78,33 @@ format: ## UX alias for fmt
 
 report/merge: ## Merge lane reports into unified make report JSON
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	python3 ./scripts/areas/layout/make_report.py merge --run-id "$$run_id"
+	./scripts/bin/bijux-atlas-scripts report collect --run-id "$$run_id"
 
 report/print: ## Print lane summary like CI/GitHub Actions output
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	python3 ./scripts/areas/layout/make_report.py print --run-id "$$run_id"
+	./scripts/bin/bijux-atlas-scripts report print --run-id "$$run_id"
 
 report/md: ## Generate markdown summary for PR comments
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	python3 ./scripts/areas/layout/make_report.py md --run-id "$$run_id"
+	./scripts/bin/bijux-atlas-scripts report summarize --run-id "$$run_id"
 
 report/junit: ## Optional JUnit conversion for CI systems
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	python3 ./scripts/areas/layout/make_report.py junit --run-id "$$run_id"
+	./scripts/bin/bijux-atlas-scripts report junit --run-id "$$run_id"
 
 logs/last-fail: ## Tail the last failed lane log from latest unified report
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	python3 ./scripts/areas/layout/make_report.py last-fail --run-id "$$run_id"
+	./scripts/bin/bijux-atlas-scripts report last-fail --run-id "$$run_id"
 
 triage: ## Print failing lanes + last 20 log lines + evidence paths
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	python3 ./scripts/areas/layout/make_report.py triage --run-id "$$run_id"
+	./scripts/bin/bijux-atlas-scripts report triage --run-id "$$run_id"
 
 report: ## Merge lanes, generate confidence scorecard, and print summary
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	python3 ./scripts/areas/layout/make_report.py merge --run-id "$$run_id" >/dev/null; \
-	python3 ./ops/report/make_confidence_scorecard.py --unified "artifacts/evidence/make/$$run_id/unified.json" --out "ops/_generated_committed/scorecard.json" --print-summary; \
-	python3 ./scripts/areas/layout/make_report.py print --run-id "$$run_id"
+	./scripts/bin/bijux-atlas-scripts report collect --run-id "$$run_id" >/dev/null; \
+	./scripts/bin/bijux-atlas-scripts report scorecard --run-id "$$run_id"; \
+	./scripts/bin/bijux-atlas-scripts report print --run-id "$$run_id"
 
 evidence/open: ## Open evidence directory (supports AREA=<area> RUN_ID=<id>)
 	@./ops/run/evidence-open.sh
@@ -335,14 +335,16 @@ root: ## CI-fast lane subset (no cluster bring-up)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-$(MAKE_RUN_TS)}}"; \
 	$(MAKE) -s scripts/check; \
 	PARALLEL="$${PARALLEL:-1}" RUN_ID="$$run_id" MODE=root ./ops/run/root-lanes.sh; \
-	python3 ./scripts/areas/layout/make_report.py print --run-id "$$run_id"
+	./scripts/bin/bijux-atlas-scripts report collect --run-id "$$run_id" >/dev/null; \
+	./scripts/bin/bijux-atlas-scripts report print --run-id "$$run_id"
 
 root-local: ## All lanes in parallel + ops smoke lane (PARALLEL=0 for serial)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-$(MAKE_RUN_TS)}}"; \
 	$(MAKE) -s scripts/check; \
 	PARALLEL="$${PARALLEL:-1}" RUN_ID="$$run_id" MODE=root-local ./ops/run/root-lanes.sh; \
 	if [ "$${PERF_CHEAP_REGRESSION:-0}" = "1" ]; then $(MAKE) -s ops-load-smoke perf/regression-check PROFILE="$${PROFILE:-local}"; fi; \
-	python3 ./scripts/areas/layout/make_report.py print --run-id "$$run_id"
+	./scripts/bin/bijux-atlas-scripts report collect --run-id "$$run_id" >/dev/null; \
+	./scripts/bin/bijux-atlas-scripts report print --run-id "$$run_id"
 
 root-local/no-ops: ## Local lanes without ops smoke lane (explicit skip)
 	@NO_OPS=1 PARALLEL="$${PARALLEL:-1}" RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-no-ops-$(MAKE_RUN_TS)}}" MODE=root-local ./ops/run/root-lanes.sh
@@ -353,7 +355,8 @@ root-local-no-ops: ## Alias for root-local/no-ops
 root-local-fast: ## Debug serial root-local skipping expensive extras (ops-smoke, obs-full)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-fast-$(MAKE_RUN_TS)}}"; \
 	PARALLEL=0 FAST=1 RUN_ID="$$run_id" MODE=root-local ./ops/run/root-lanes.sh; \
-	python3 ./scripts/areas/layout/make_report.py print --run-id "$$run_id"
+	./scripts/bin/bijux-atlas-scripts report collect --run-id "$$run_id" >/dev/null; \
+	./scripts/bin/bijux-atlas-scripts report print --run-id "$$run_id"
 
 root-local-open: ## Open or print latest root-local summary report
 	@SUMMARY_RUN_ID="$${RUN_ID:-}" MODE=open ./ops/run/root-lanes.sh
@@ -412,13 +415,13 @@ root-local-summary: ## Print status and artifact paths for RUN_ID
 lane-status: ## Print all lane statuses for RUN_ID (or latest)
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || true)}"; \
 	[ -n "$$run_id" ] || { echo "RUN_ID is required (or run root/root-local first)" >&2; exit 2; }; \
-	python3 ./scripts/areas/layout/make_report.py print --run-id "$$run_id"
+	./scripts/bin/bijux-atlas-scripts report print --run-id "$$run_id"
 
 open: ## Open unified report for RUN_ID (or print path if opener unavailable)
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || true)}"; \
 	[ -n "$$run_id" ] || { echo "RUN_ID is required (or run root/root-local first)" >&2; exit 2; }; \
 	path="artifacts/evidence/make/$$run_id/unified.json"; \
-	[ -f "$$path" ] || python3 ./scripts/areas/layout/make_report.py merge --run-id "$$run_id" >/dev/null; \
+	[ -f "$$path" ] || ./scripts/bin/bijux-atlas-scripts report collect --run-id "$$run_id" >/dev/null; \
 	echo "$$path"; \
 	if command -v open >/dev/null 2>&1; then open "$$path" >/dev/null 2>&1 || true; \
 	elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$$path" >/dev/null 2>&1 || true; fi
@@ -428,7 +431,8 @@ rerun-failed: ## Rerun only failed lanes from RUN_ID (NEW_RUN_ID optional)
 	[ -n "$$src" ] || { echo "RUN_ID is required (source run id)" >&2; exit 2; }; \
 	new="$${NEW_RUN_ID:-$${src}-rerun-$(MAKE_RUN_TS)}"; \
 	PARALLEL="$${PARALLEL:-0}" MODE=rerun-failed SOURCE_RUN_ID="$$src" RUN_ID="$$new" ./ops/run/root-lanes.sh; \
-	python3 ./scripts/areas/layout/make_report.py print --run-id "$$new"
+	./scripts/bin/bijux-atlas-scripts report collect --run-id "$$new" >/dev/null; \
+	./scripts/bin/bijux-atlas-scripts report print --run-id "$$new"
 
 root-determinism: ## Assert make root determinism (inventory outputs stable across two runs)
 	@./scripts/areas/layout/check_root_determinism.sh

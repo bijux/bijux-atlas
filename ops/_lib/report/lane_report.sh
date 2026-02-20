@@ -26,6 +26,8 @@ ops_write_lane_report() {
 import json
 from pathlib import Path
 payload = {
+  "schema_version": 1,
+  "report_version": 1,
   "lane": "${lane}",
   "run_id": "${run_id}",
   "status": "${status}",
