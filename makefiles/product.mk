@@ -83,34 +83,34 @@ chart-validate: ## Validate chart via lint/template and values contract schema c
 	@./scripts/areas/contracts/check_chart_values_contract.py
 
 docker-contracts: ## Validate Docker layout/policy/no-latest contracts
-	@python3 ./scripts/areas/check/check-docker-layout.py
-	@python3 ./scripts/areas/check/check-docker-policy.py
-	@python3 ./scripts/areas/check/check-no-latest-tags.py
-	@python3 ./scripts/areas/check/check-docker-image-size.py
+	@./bin/bijux-atlas run ./scripts/areas/check/check-docker-layout.py
+	@./bin/bijux-atlas run ./scripts/areas/check/check-docker-policy.py
+	@./bin/bijux-atlas run ./scripts/areas/check/check-no-latest-tags.py
+	@./bin/bijux-atlas run ./scripts/areas/check/check-docker-image-size.py
 
 rename-lint: ## Enforce durable naming rules for docs/scripts and concept ownership
-	@python3 ./scripts/areas/docs/check-durable-naming.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/check-durable-naming.py
 	@./scripts/areas/docs/check_duplicate_topics.sh
 
 docs-lint-names: ## Enforce durable naming contracts, registries, and inventory
-	@python3 ./scripts/areas/docs/naming_inventory.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/naming_inventory.py
 	@./scripts/areas/docs/ban_legacy_terms.sh
-	@python3 ./scripts/areas/docs/check_observability_docs_checklist.py
-	@python3 ./scripts/areas/docs/check_no_orphan_docs.py
-	@python3 ./scripts/areas/docs/check_script_locations.py
-	@python3 ./scripts/areas/docs/check_runbook_map_registration.py
-	@python3 ./scripts/areas/docs/check_contract_doc_pairs.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/check_observability_docs_checklist.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/check_no_orphan_docs.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/check_script_locations.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/check_runbook_map_registration.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/check_contract_doc_pairs.py
 	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_suite_manifest.py
 	@./scripts/areas/docs/check_index_pages.sh
 
 doctor: ## Print tool/env/path diagnostics and store doctor report
-	@RUN_ID="$${RUN_ID:-doctor-$(MAKE_RUN_TS)}" python3 ./scripts/areas/layout/make_doctor.py
+	@RUN_ID="$${RUN_ID:-doctor-$(MAKE_RUN_TS)}" ./bin/bijux-atlas run ./scripts/areas/layout/make_doctor.py
 
 prereqs: ## Check required binaries and versions and store prereqs report
-	@RUN_ID="$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}" python3 ./scripts/areas/layout/make_prereqs.py --run-id "$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}"
+	@RUN_ID="$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}" ./bin/bijux-atlas run ./scripts/areas/layout/make_prereqs.py --run-id "$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}"
 
 dataset-id-lint: ## Validate DatasetId/DatasetKey contract usage across ops fixtures
-	@python3 ./scripts/areas/layout/dataset_id_lint.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/dataset_id_lint.py
 
 internal/tooling-versions:
 	@echo "Rust toolchain (rust-toolchain.toml):"
