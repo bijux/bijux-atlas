@@ -32,8 +32,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/check/check-scripts-lock-sync.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-scripts-ssot-final.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-scripts-surface-docs-drift.py` | `platform` | `public` | - |
-| `scripts/areas/check/docker-runtime-smoke.sh` | `platform` | `public` | - |
-| `scripts/areas/check/docker-scan.sh` | `platform` | `public` | - |
 | `scripts/areas/check/generate-scripts-sbom.py` | `platform` | `public` | - |
 | `scripts/areas/check/python_migration_exceptions.py` | `platform` | `public` | - |
 | `scripts/areas/fixtures/derive-release-111.sh` | `dataset-ops` | `internal` | - |
