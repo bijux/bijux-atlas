@@ -25,6 +25,9 @@ from .command_contracts import (
 )
 from .scripts_dir import check_scripts_dir_absent
 from .public_api import check_public_api_exports
+from .type_coverage import check_type_coverage
+from .dependencies import check_dependency_declarations
+from .reachability import check_repo_check_modules_registered
 
 CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.forbidden_top_dirs", "repo", "forbid top-level forbidden directories", 500, check_forbidden_top_dirs, fix_hint="Remove forbidden root directories."),
@@ -47,4 +50,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.no_duplicate_command_names", "repo", "ensure command names are unique", 300, check_no_duplicate_command_names, fix_hint="Rename duplicate command/alias entries."),
     CheckDef("repo.command_help_docs_drift", "repo", "check command help/docs drift", 500, check_command_help_docs_drift, fix_hint="Regenerate docs/_generated/cli.md from current CLI surface."),
     CheckDef("repo.public_api_exports", "repo", "enforce PUBLIC_API.md coverage for __all__ exports", 300, check_public_api_exports, fix_hint="Document exported symbols in PUBLIC_API.md or remove them from __all__."),
+    CheckDef("repo.type_coverage", "repo", "enforce minimum type coverage in core/contracts", 600, check_type_coverage, fix_hint="Add function annotations in core/contracts until the threshold is met."),
+    CheckDef("repo.dependency_declarations", "repo", "ensure pyproject dependency declarations match imports", 600, check_dependency_declarations, fix_hint="Add missing dependencies or remove unused declarations."),
+    CheckDef("repo.check_module_reachability", "repo", "ensure repo check modules are imported and reachable via registry", 300, check_repo_check_modules_registered, fix_hint="Import new repo check modules in checks/repo/__init__.py."),
 )
