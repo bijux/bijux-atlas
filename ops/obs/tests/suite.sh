@@ -2,6 +2,7 @@
 set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 DIR="$ROOT/ops/obs/tests"
+SUITES="$ROOT/ops/obs/suites/suites.json"
 SUITE="${1:-}"
 if [ "$SUITE" = "--suite" ]; then
   SUITE="${2:-full}"
@@ -14,7 +15,7 @@ while IFS= read -r line; do
 done <<EOF
 $(python3 - <<PY
 import json
-s=json.load(open("$DIR/suites.json", encoding="utf-8"))
+s=json.load(open("$SUITES", encoding="utf-8"))
 name="$SUITE"
 for suite in s.get("suites", []):
     if suite.get("id") == name:
