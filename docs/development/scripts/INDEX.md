@@ -26,7 +26,7 @@ Does not duplicate script implementation details.
   - `scripts/areas/internal/`: script-only helpers.
   - `scripts/areas/tools/`: shared Python helper modules.
 - Contracts: `atlasctl contracts ...`
-- Docs linters/generators: `scripts/areas/docs/`
+- Docs linters/generators: `atlasctl docs ...`
 - Perf tooling wrappers: `scripts/areas/public/perf/` (canonical: `ops/load/scripts/`)
 - Observability checks: `scripts/areas/public/observability/`
 - Fixtures/data helpers: `scripts/areas/fixtures/`
@@ -41,7 +41,7 @@ Undocumented scripts cause hidden coupling and broken operator workflows.
 ## How to verify
 
 ```bash
-$ python3 scripts/areas/docs/check_script_headers.py
+$ atlasctl docs script-headers-check --report text
 ```
 
 Expected output: script header contract passes.

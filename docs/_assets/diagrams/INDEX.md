@@ -18,7 +18,7 @@ Diagram sources in one location provide deterministic rendering and stable refer
 
 ## How to Verify
 ```bash
-scripts/areas/docs/render_diagrams.sh
+atlasctl docs render-diagrams --report text
 ```
 
 See also:

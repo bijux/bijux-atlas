@@ -13,7 +13,7 @@
 - This page does not replace area-specific writing contracts.
 
 ## Contracts
-- `scripts/areas/docs/check_index_pages.sh`
+- `atlasctl docs index-pages-check --report text`
 
 ## Failure modes
 - Missing required index sections fails docs hardening.
