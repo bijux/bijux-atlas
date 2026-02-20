@@ -20,7 +20,7 @@
     "ops/report": "bijux-atlas-operations",
     "ops/fixtures": "bijux-atlas-operations",
     "ops/run": "bijux-atlas-operations",
-    "packages/bijux-atlas-scripts": "bijux-atlas-platform",
+    "packages/atlasctl": "bijux-atlas-platform",
     "packages/bijux-atlas-py": "bijux-atlas-platform"
   }
 }

@@ -22,7 +22,7 @@ if ! (
   CACHE_STATUS_STRICT=0 make -s ops-cache-status
   make -s pins/check
   make -s ops-surface
-  python3 ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_ops_index_surface.py
+  python3 ./packages/atlasctl/src/atlasctl/layout_checks/check_ops_index_surface.py
 ) >"$log_file" 2>&1; then
   status="fail"
 fi

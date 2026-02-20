@@ -5,7 +5,7 @@ on:
     paths:
       - '.github/workflows/scripts-lint.yml'
       - 'makefiles/**'
-      - 'packages/bijux-atlas-scripts/**'
+      - 'packages/atlasctl/**'
       - 'docs/**'
       - 'configs/**'
       - 'ops/**'
@@ -14,7 +14,7 @@ on:
     paths:
       - '.github/workflows/scripts-lint.yml'
       - 'makefiles/**'
-      - 'packages/bijux-atlas-scripts/**'
+      - 'packages/atlasctl/**'
       - 'docs/**'
       - 'configs/**'
       - 'ops/**'

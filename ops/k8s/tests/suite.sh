@@ -2,7 +2,7 @@
 set -euo pipefail
 DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 ROOT="$(CDPATH= cd -- "$DIR/../../.." && pwd)"
-python3 "$ROOT/packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_tool_versions.py" kind kubectl helm >/dev/null
+python3 "$ROOT/packages/atlasctl/src/atlasctl/layout_checks/check_tool_versions.py" kind kubectl helm >/dev/null
 JSON_OUT="${ATLAS_E2E_JSON_OUT:-ops/_artifacts/k8s/test-results.json}"
 JUNIT_OUT="${ATLAS_E2E_JUNIT_OUT:-ops/_artifacts/k8s/test-results.xml}"
 SUMMARY_OUT="${ATLAS_E2E_SUMMARY_OUT:-ops/_artifacts/k8s/test-summary.md}"

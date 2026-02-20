@@ -29,7 +29,7 @@
       "max_top_level_files": 3
     },
     {
-      "path": "artifacts/bijux-atlas-scripts",
+      "path": "artifacts/atlasctl",
       "max_top_level_dirs": 6
     }
   ]

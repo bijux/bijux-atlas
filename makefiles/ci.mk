@@ -146,7 +146,7 @@ ci-workflows-make-only:
 	@$(ATLAS_SCRIPTS) check forbidden-paths
 
 ci-log-fields-contract:
-	@$(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/validate_logs_schema.py --file ops/obs/contract/logs.example.jsonl
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/obs/validate_logs_schema.py --file ops/obs/contract/logs.example.jsonl
 
 ci-observability-pack-test:
 	@$(MAKE) observability-pack-test
@@ -185,7 +185,7 @@ ci-forbid-raw-paths:
 	@$(ATLAS_SCRIPTS) check forbidden-paths
 
 ci-make-safety:
-	@$(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_make_safety.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/layout_checks/check_make_safety.py
 
 ci-make-help-drift:
 	@$(ATLAS_SCRIPTS) check make-help
@@ -209,16 +209,16 @@ internal/ci/repo-hygiene:
 	@$(ATLAS_SCRIPTS) check repo
 
 ci-slo-config-validate:
-	@$(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_slo_contracts.py --mode schema
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/layout_checks/check_slo_contracts.py --mode schema
 
 ci-slo-no-loosen:
-	@$(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_slo_no_loosen_without_approval.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/layout_checks/check_slo_no_loosen_without_approval.py
 
 ci-slo-metrics-contract:
-	@$(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_slo_contracts.py --mode metrics
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/layout_checks/check_slo_contracts.py --mode metrics
 
 ci-sli-contract:
-	@$(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_slo_contracts.py --mode slis
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/layout_checks/check_slo_contracts.py --mode slis
 
 ci-sli-docs-drift:
 	@$(ATLAS_SCRIPTS) docs generate-sli-doc --report text

@@ -7,7 +7,7 @@
       "owner": "platform",
       "issue": "MIGRATE-SCRIPTS-TO-PACKAGE",
       "expires_on": "2026-06-30",
-      "reason": "Transitional allowance while make targets are migrated to bijux-atlas-scripts commands."
+      "reason": "Transitional allowance while make targets are migrated to atlasctl commands."
     }
   ]
 }

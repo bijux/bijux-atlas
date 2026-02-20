@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[2]
 def main() -> int:
     cli_shims = sorted((ROOT / "scripts" / "bin").glob("*")) if (ROOT / "scripts" / "bin").exists() else []
     names = {p.name for p in cli_shims if p.is_file()}
-    overlap = sorted(name for name in names if name in {"bijux-atlas-scripts", "atlas-scripts"})
+    overlap = sorted(name for name in names if name in {"atlasctl", "atlas-scripts"})
     if len(overlap) > 1:
         print("duplicate cli lint failed: overlapping script shims detected", file=sys.stderr)
         for name in overlap:
