@@ -68,6 +68,9 @@ scripts-test: ## Run scripts-focused tests
 scripts-check: ## Run scripts lint + tests as a single gate
 	@./scripts/areas/check/no-duplicate-script-names.sh
 	@./scripts/areas/check/no-direct-path-usage.sh
+	@$(PYRUN) scripts/areas/check/check-no-python-executable-outside-tools.py
+	@$(PYRUN) scripts/areas/check/check-no-direct-python-invocations.py
+	@$(PYRUN) scripts/areas/check/check-python-migration-exceptions-expiry.py
 	@$(PYRUN) scripts/areas/check/check-script-help.py
 	@$(PYRUN) scripts/areas/check/check-script-errors.py
 	@$(PYRUN) scripts/areas/check/check-script-write-roots.py
@@ -97,6 +100,13 @@ internal/scripts/install-dev:
 	@python3 -m venv "$(SCRIPTS_VENV)"
 	@"$(SCRIPTS_VENV)/bin/pip" install --upgrade pip >/dev/null
 	@"$(SCRIPTS_VENV)/bin/pip" install -r tools/bijux-atlas-scripts/requirements.lock.txt >/dev/null
+
+scripts-install: ## Install scripts package tooling into local venv
+	@$(MAKE) -s internal/scripts/install-dev
+
+scripts-run: ## Run bijux-atlas-scripts command (usage: make scripts-run CMD=\"doctor --json\")
+	@[ -n "$${CMD:-}" ] || { echo "usage: make scripts-run CMD='doctor --json'" >&2; exit 2; }
+	@./scripts/bin/bijux-atlas-scripts $${CMD}
 
 scripts-clean: ## Remove generated script artifacts
 	@rm -rf artifacts/scripts
@@ -130,4 +140,4 @@ internal/scripts/all: ## Uniform scripts all target
 	@$(MAKE) internal/scripts/test
 	@$(MAKE) internal/scripts/build
 
-.PHONY: bootstrap-tools no-direct-scripts scripts-all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test internal/scripts/check internal/scripts/build internal/scripts/fmt internal/scripts/lint internal/scripts/test internal/scripts/clean internal/scripts/install-dev internal/scripts/all
+.PHONY: bootstrap-tools no-direct-scripts scripts-all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-install scripts-lint scripts-run scripts-test internal/scripts/check internal/scripts/build internal/scripts/fmt internal/scripts/lint internal/scripts/test internal/scripts/clean internal/scripts/install-dev internal/scripts/all
