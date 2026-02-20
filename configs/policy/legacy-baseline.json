@@ -1,0 +1,324 @@
+{
+  "entries": [
+    {
+      "callers": [],
+      "classification": "Rename",
+      "id": "config-key:paths./v1/genes/count.get.deprecated",
+      "kind": "config-key",
+      "locations": [
+        "configs/openapi/v1/openapi.generated.json",
+        "configs/openapi/v1/openapi.snapshot.json"
+      ],
+      "owner": "repo-surface",
+      "value": "paths./v1/genes/count.get.deprecated"
+    },
+    {
+      "callers": [],
+      "classification": "Rename",
+      "id": "config-key:paths./v1/releases/{release}/species/{species}/assemblies/{assembly}.get.deprecated",
+      "kind": "config-key",
+      "locations": [
+        "configs/openapi/v1/openapi.generated.json",
+        "configs/openapi/v1/openapi.snapshot.json"
+      ],
+      "owner": "repo-surface",
+      "value": "paths./v1/releases/{release}/species/{species}/assemblies/{assembly}.get.deprecated"
+    },
+    {
+      "callers": [],
+      "classification": "Rename",
+      "id": "doc-ref:docs/api/INDEX.md",
+      "kind": "doc-ref",
+      "locations": [
+        "docs/api/INDEX.md"
+      ],
+      "owner": "repo-surface",
+      "value": "docs/api/INDEX.md"
+    },
+    {
+      "callers": [],
+      "classification": "Rename",
+      "id": "doc-ref:docs/api/deprecation.md",
+      "kind": "doc-ref",
+      "locations": [
+        "docs/api/deprecation.md"
+      ],
+      "owner": "repo-surface",
+      "value": "docs/api/deprecation.md"
+    },
+    {
+      "callers": [],
+      "classification": "Rename",
+      "id": "doc-ref:docs/api/versioning.md",
+      "kind": "doc-ref",
+      "locations": [
+        "docs/api/versioning.md"
+      ],
+      "owner": "repo-surface",
+      "value": "docs/api/versioning.md"
+    },
+    {
+      "callers": [],
+      "classification": "Rename",
+      "id": "doc-ref:docs/architecture/legacy-removal.md",
+      "kind": "doc-ref",
+      "locations": [
+        "docs/architecture/legacy-removal.md"
+      ],
+      "owner": "repo-surface",
+      "value": "docs/architecture/legacy-removal.md"
+    },
+    {
+      "callers": [],
+      "classification": "Rename",
+      "id": "doc-ref:docs/contracts/artifacts/sqlite-migration-strategy.md",
+      "kind": "doc-ref",
+      "locations": [
+        "docs/contracts/artifacts/sqlite-migration-strategy.md"
+      ],
+      "owner": "repo-surface",
+      "value": "docs/contracts/artifacts/sqlite-migration-strategy.md"
+    },
+    {
+      "callers": [],
+      "classification": "Rename",
+      "id": "doc-ref:docs/contracts/plugin/spec.md",
+      "kind": "doc-ref",
+      "locations": [
+        "docs/contracts/plugin/spec.md"
+      ],
+      "owner": "repo-surface",
+      "value": "docs/contracts/plugin/spec.md"
+    },
+    {
+      "callers": [],
+      "classification": "Rename",
+      "id": "doc-ref:docs/development/repo-layout.md",
+      "kind": "doc-ref",
+      "locations": [
+        "docs/development/repo-layout.md"
+      ],
+      "owner": "repo-surface",
+      "value": "docs/development/repo-layout.md"
+    },
+    {
+      "callers": [],
+      "classification": "Rename",
+      "id": "doc-ref:docs/development/repo-surface.md",
+      "kind": "doc-ref",
+      "locations": [
+        "docs/development/repo-surface.md"
+      ],
+      "owner": "repo-surface",
+      "value": "docs/development/repo-surface.md"
+    },
+    {
+      "callers": [],
+      "classification": "Rename",
+      "id": "doc-ref:docs/operations/local-stack.md",
+      "kind": "doc-ref",
+      "locations": [
+        "docs/operations/local-stack.md"
+      ],
+      "owner": "repo-surface",
+      "value": "docs/operations/local-stack.md"
+    },
+    {
+      "callers": [],
+      "classification": "Rename",
+      "id": "doc-ref:docs/operations/migration-note.md",
+      "kind": "doc-ref",
+      "locations": [
+        "docs/operations/migration-note.md"
+      ],
+      "owner": "repo-surface",
+      "value": "docs/operations/migration-note.md"
+    },
+    {
+      "callers": [],
+      "classification": "Rename",
+      "id": "doc-ref:docs/operations/observability/compatibility.md",
+      "kind": "doc-ref",
+      "locations": [
+        "docs/operations/observability/compatibility.md"
+      ],
+      "owner": "repo-surface",
+      "value": "docs/operations/observability/compatibility.md"
+    },
+    {
+      "callers": [],
+      "classification": "Rename",
+      "id": "doc-ref:docs/product/immutability-and-aliases.md",
+      "kind": "doc-ref",
+      "locations": [
+        "docs/product/immutability-and-aliases.md"
+      ],
+      "owner": "repo-surface",
+      "value": "docs/product/immutability-and-aliases.md"
+    },
+    {
+      "callers": [],
+      "classification": "Rename",
+      "id": "doc-ref:docs/reference/evolution/api-versioning.md",
+      "kind": "doc-ref",
+      "locations": [
+        "docs/reference/evolution/api-versioning.md"
+      ],
+      "owner": "repo-surface",
+      "value": "docs/reference/evolution/api-versioning.md"
+    },
+    {
+      "callers": [],
+      "classification": "Rename",
+      "id": "doc-ref:docs/reference/store/dataset-lifecycle.md",
+      "kind": "doc-ref",
+      "locations": [
+        "docs/reference/store/dataset-lifecycle.md"
+      ],
+      "owner": "repo-surface",
+      "value": "docs/reference/store/dataset-lifecycle.md"
+    },
+    {
+      "callers": [
+        "makefiles/legacy.mk",
+        "configs/policy/legacy-baseline.json"
+      ],
+      "classification": "Collapse",
+      "id": "make-target:legacy/ci",
+      "kind": "make-target",
+      "locations": [
+        "makefiles/legacy.mk"
+      ],
+      "owner": "repo-surface",
+      "value": "legacy/ci"
+    },
+    {
+      "callers": [
+        "makefiles/legacy.mk",
+        "configs/policy/legacy-baseline.json"
+      ],
+      "classification": "Collapse",
+      "id": "make-target:legacy/config-validate-core",
+      "kind": "make-target",
+      "locations": [
+        "makefiles/legacy.mk"
+      ],
+      "owner": "repo-surface",
+      "value": "legacy/config-validate-core"
+    },
+    {
+      "callers": [
+        "configs/policy/legacy-baseline.json",
+        "makefiles/legacy.mk"
+      ],
+      "classification": "Collapse",
+      "id": "make-target:legacy/contracts",
+      "kind": "make-target",
+      "locations": [
+        "makefiles/legacy.mk"
+      ],
+      "owner": "repo-surface",
+      "value": "legacy/contracts"
+    },
+    {
+      "callers": [
+        "makefiles/legacy.mk",
+        "configs/policy/legacy-baseline.json"
+      ],
+      "classification": "Collapse",
+      "id": "make-target:legacy/hygiene",
+      "kind": "make-target",
+      "locations": [
+        "makefiles/legacy.mk"
+      ],
+      "owner": "repo-surface",
+      "value": "legacy/hygiene"
+    },
+    {
+      "callers": [
+        "makefiles/legacy.mk",
+        "configs/policy/legacy-baseline.json"
+      ],
+      "classification": "Collapse",
+      "id": "make-target:legacy/local-fast-loop",
+      "kind": "make-target",
+      "locations": [
+        "makefiles/legacy.mk"
+      ],
+      "owner": "repo-surface",
+      "value": "legacy/local-fast-loop"
+    },
+    {
+      "callers": [
+        "configs/policy/legacy-baseline.json",
+        "makefiles/legacy.mk"
+      ],
+      "classification": "Collapse",
+      "id": "make-target:legacy/local-full-loop",
+      "kind": "make-target",
+      "locations": [
+        "makefiles/legacy.mk"
+      ],
+      "owner": "repo-surface",
+      "value": "legacy/local-full-loop"
+    },
+    {
+      "callers": [
+        "makefiles/legacy.mk",
+        "configs/policy/legacy-baseline.json"
+      ],
+      "classification": "Collapse",
+      "id": "make-target:legacy/nightly",
+      "kind": "make-target",
+      "locations": [
+        "makefiles/legacy.mk"
+      ],
+      "owner": "repo-surface",
+      "value": "legacy/nightly"
+    },
+    {
+      "callers": [
+        "configs/policy/legacy-baseline.json",
+        "makefiles/legacy.mk"
+      ],
+      "classification": "Collapse",
+      "id": "make-target:legacy/root-fast",
+      "kind": "make-target",
+      "locations": [
+        "makefiles/legacy.mk"
+      ],
+      "owner": "repo-surface",
+      "value": "legacy/root-fast"
+    },
+    {
+      "callers": [
+        "makefiles/legacy.mk",
+        "configs/policy/legacy-baseline.json"
+      ],
+      "classification": "Collapse",
+      "id": "make-target:legacy/root-local-fast",
+      "kind": "make-target",
+      "locations": [
+        "makefiles/legacy.mk"
+      ],
+      "owner": "repo-surface",
+      "value": "legacy/root-local-fast"
+    },
+    {
+      "callers": [
+        "makefiles/legacy.mk",
+        "configs/policy/legacy-baseline.json"
+      ],
+      "classification": "Collapse",
+      "id": "make-target:legacy/root-local-full",
+      "kind": "make-target",
+      "locations": [
+        "makefiles/legacy.mk"
+      ],
+      "owner": "repo-surface",
+      "value": "legacy/root-local-full"
+    }
+  ],
+  "generated_at": "2026-02-20T10:54:03.423439+00:00",
+  "schema_version": 1
+}
