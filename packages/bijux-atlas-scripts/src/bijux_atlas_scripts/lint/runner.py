@@ -29,7 +29,7 @@ def suites(repo_root: Path) -> dict[str, list[LintCheck]]:
         "repo": [
             LintCheck("repo/no-root-ad-hoc-python", _py("ops/_lint/no-root-ad-hoc-python.py")),
             LintCheck("repo/no-scripts-dir", _py("ops/_lint/no-scripts-dir.py")),
-            LintCheck("repo/bin-shims", _py("scripts/areas/check/check-root-bin-shims.py")),
+            LintCheck("repo/bin-shims", ["python3", "-m", "bijux_atlas_scripts.cli", "check", "root-bin-shims"]),
             LintCheck("repo/no-bin-symlinks", ["bash", "ops/_lint/no-bin-symlinks.sh"]),
         ],
         "makefiles": [
