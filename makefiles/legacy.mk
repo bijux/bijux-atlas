@@ -1,6 +1,6 @@
 # Scope: legacy aliases and historical targets, opt-in only.
 # Public targets: none
-# DEPRECATION: Legacy targets are temporary compatibility shims.
+# DEPRECATION: Legacy targets are temporary compatibility shims. ATLAS-EXC-0103
 # DEPRECATION: Remove all targets in this file by LEGACY_REMOVAL_DATE.
 SHELL := /bin/sh
 LEGACY_REMOVAL_DATE := 2026-06-30
