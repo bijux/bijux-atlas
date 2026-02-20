@@ -7,6 +7,8 @@ import subprocess
 from ..contracts.command import run_contracts_command
 from ..core.context import RunContext
 
+SELF_CLI = ["python3", "-m", "bijux_atlas_scripts.cli"]
+
 
 def _run(ctx: RunContext, cmd: list[str]) -> int:
     proc = subprocess.run(cmd, cwd=ctx.repo_root, text=True, check=False)
@@ -28,7 +30,7 @@ def run_gen_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if sub == "ops-surface":
         return _run(ctx, ["python3", "scripts/areas/layout/generate_ops_surface_meta.py"])
     if sub == "make-targets":
-        return _run(ctx, ["python3", "scripts/areas/docs/generate_make_targets_inventory.py"])
+        return _run(ctx, [*SELF_CLI, "make", "inventory"])
     if sub == "surface":
         return _run(ctx, ["python3", "scripts/areas/docs/generate_repo_surface.py"])
     if sub == "scripting-surface":

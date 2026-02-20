@@ -420,7 +420,7 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         if ns.fix:
             for cmd in (
                 ["python3", "scripts/areas/layout/generate_ops_surface_meta.py"],
-                ["python3", "scripts/areas/docs/generate_ops_contracts_doc.py"],
+                [*SELF_CLI, "docs", "generate", "--report", "text"],
             ):
                 code, output = _run_check(cmd, ctx.repo_root)
                 if code != 0:
@@ -481,7 +481,7 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _run_simple_cmd(ctx, ["python3", "scripts/areas/layout/check_layer_drift.py"], ns.report)
 
     if ns.ops_cmd == "contracts-index":
-        cmd = ["python3", "scripts/areas/docs/generate_ops_contracts_doc.py"]
+        cmd = [*SELF_CLI, "docs", "generate", "--report", "text"]
         return _run_simple_cmd(ctx, cmd, ns.report)
     if ns.ops_cmd == "policy-audit":
         return _ops_policy_audit(ctx, ns.report)
