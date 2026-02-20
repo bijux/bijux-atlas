@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "atlasctl.commands.v1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "tool",
+    "status",
+    "run_id",
+    "commands"
+  ],
+  "properties": {
+    "schema_name": {
+      "const": "atlasctl.commands.v1"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "tool": {
+      "const": "atlasctl"
+    },
+    "status": {
+      "enum": ["ok", "error"]
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "help", "stable", "touches", "tools", "owner", "doc_link"],
+        "properties": {
+          "name": {"type": "string"},
+          "help": {"type": "string"},
+          "stable": {"type": "boolean"},
+          "touches": {"type": "array", "items": {"type": "string"}},
+          "tools": {"type": "array", "items": {"type": "string"}},
+          "failure_modes": {"type": "array", "items": {"type": "string"}},
+          "owner": {"type": "string"},
+          "doc_link": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    }
+  }
+}

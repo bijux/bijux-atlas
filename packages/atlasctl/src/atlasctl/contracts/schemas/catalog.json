@@ -1,0 +1,29 @@
+{
+  "schemas": [
+    {
+      "name": "atlasctl.help.v1",
+      "version": 1,
+      "file": "atlasctl.help.v1.schema.json"
+    },
+    {
+      "name": "atlasctl.commands.v1",
+      "version": 1,
+      "file": "atlasctl.commands.v1.schema.json"
+    },
+    {
+      "name": "atlasctl.surface.v1",
+      "version": 1,
+      "file": "atlasctl.surface.v1.schema.json"
+    },
+    {
+      "name": "atlasctl.explain.v1",
+      "version": 1,
+      "file": "atlasctl.explain.v1.schema.json"
+    },
+    {
+      "name": "atlasctl.runtime_contracts.v1",
+      "version": 1,
+      "file": "atlasctl.runtime_contracts.v1.schema.json"
+    }
+  ]
+}
