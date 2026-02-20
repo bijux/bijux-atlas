@@ -165,6 +165,7 @@ internal/ops/clean: ## Uniform ops clean target (generated outputs only)
 	@$(MAKE) -s ops-clean
 
 internal/ops/all: ## Uniform ops all target
+	@$(MAKE) -s packages-check
 	@$(MAKE) -s internal/ops/check
 	@$(MAKE) -s internal/ops/lint
 	@$(MAKE) -s internal/ops/smoke
