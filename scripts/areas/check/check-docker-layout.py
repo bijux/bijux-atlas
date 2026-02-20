@@ -9,11 +9,19 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[3]
 root_df = ROOT / "Dockerfile"
-canon = ROOT / "docker" / "Dockerfile"
+canon = ROOT / "docker" / "images" / "runtime" / "Dockerfile"
 
 errors: list[str] = []
+for required in [
+    ROOT / "docker" / "images",
+    ROOT / "docker" / "contracts",
+    ROOT / "docker" / "scripts",
+]:
+    if not required.is_dir():
+        errors.append(f"missing required docker directory: {required.relative_to(ROOT)}")
+
 if not root_df.is_symlink():
-    errors.append("root Dockerfile must be a symlink to docker/Dockerfile")
+    errors.append("root Dockerfile must be a symlink to docker/images/runtime/Dockerfile")
 else:
     target = root_df.resolve()
     if target != canon.resolve():
