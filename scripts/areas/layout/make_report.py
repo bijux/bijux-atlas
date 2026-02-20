@@ -74,6 +74,10 @@ def build_unified(run_id: str) -> dict:
     gd_path = ROOT / "artifacts" / "evidence" / "k8s" / run_id / "graceful-degradation-score.json"
     if gd_path.exists():
         graceful_degradation = json.loads(gd_path.read_text(encoding="utf-8"))
+    k8s_conformance = {"status": "fail", "failed_sections": []}
+    kc_path = ROOT / "artifacts" / "evidence" / "k8s" / run_id / "k8s-conformance-report.json"
+    if kc_path.exists():
+        k8s_conformance = json.loads(kc_path.read_text(encoding="utf-8"))
     return {
         "schema_version": 1,
         "run_id": run_id,
@@ -83,6 +87,7 @@ def build_unified(run_id: str) -> dict:
         "budget_status": budget_status,
         "perf_summary": perf_summary,
         "graceful_degradation": graceful_degradation,
+        "k8s_conformance": k8s_conformance,
     }
 
 

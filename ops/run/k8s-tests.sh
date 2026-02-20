@@ -30,6 +30,7 @@ export ATLAS_E2E_JSON_OUT="${ATLAS_E2E_JSON_OUT:-$out_root/test-results.json}"
 export ATLAS_E2E_JUNIT_OUT="${ATLAS_E2E_JUNIT_OUT:-$out_root/test-results.xml}"
 export ATLAS_E2E_SUMMARY_OUT="${ATLAS_E2E_SUMMARY_OUT:-$out_root/test-summary.md}"
 export ATLAS_E2E_DEGRADATION_SCORE_OUT="${ATLAS_E2E_DEGRADATION_SCORE_OUT:-$out_root/graceful-degradation-score.json}"
+export ATLAS_E2E_CONFORMANCE_OUT="${ATLAS_E2E_CONFORMANCE_OUT:-$out_root/k8s-conformance-report.json}"
 export ATLAS_E2E_SUITE_REPORT="${ATLAS_E2E_JSON_OUT}"
 
 exec "$ROOT/ops/k8s/tests/suite.sh" --suite "$suite" "$@"
