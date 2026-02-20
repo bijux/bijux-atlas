@@ -192,7 +192,7 @@ api-contract-check:
 	@$(ATLAS_SCRIPTS) run ./scripts/areas/public/contracts/check_breaking_contract_change.py
 
 compat-matrix-validate:
-	@./scripts/areas/release/validate-compat-matrix.sh
+	@$(ATLAS_SCRIPTS) compat validate-matrix
 
 fetch-fixtures:
 	@./scripts/areas/fixtures/fetch-medium.sh

@@ -145,6 +145,56 @@ def _compat_check(repo_root: Path, include_docs: bool) -> tuple[int, dict[str, o
     return (0 if not errors else 1), payload
 
 
+def _load_workspace_version(repo_root: Path) -> str:
+    for line in (repo_root / "Cargo.toml").read_text(encoding="utf-8").splitlines():
+        stripped = line.strip()
+        if stripped.startswith("version = "):
+            return stripped.split("=", 1)[1].strip().strip('"').strip("'")
+    raise ValueError("unable to detect workspace version from Cargo.toml")
+
+
+def _next_minor_floor(version: str) -> str:
+    major, minor, _patch = [int(p) for p in version.split(".", 2)]
+    return f"{major}.{minor + 1}.0"
+
+
+def _render_compat_matrix(atlas_version: str) -> str:
+    umb_range = f">={atlas_version},<{_next_minor_floor(atlas_version)}"
+    major = atlas_version.split(".", 1)[0]
+    return (
+        "# Compatibility Matrix: bijux Umbrella <-> bijux-atlas\n\n"
+        "| bijux umbrella | bijux-atlas plugin | status | notes |\n"
+        "|---|---|---|---|\n"
+        f"| `{major}.x` | `{atlas_version}` | supported | plugin advertises `compatible_umbrella: {umb_range}` |\n"
+        f"| future major | `{atlas_version}` | unsupported | plugin handshake must fail compatibility check |\n\n"
+        "## Validation Rule\n\n"
+        "The umbrella validates plugin metadata range against umbrella semver before dispatch.\n"
+        "If incompatible, the umbrella returns a structured machine error and does not execute plugin commands.\n"
+    )
+
+
+def _compat_update_matrix(repo_root: Path, tag: str) -> tuple[int, str]:
+    atlas_version = tag[1:] if tag.startswith("v") else tag
+    out = repo_root / "docs/reference/compatibility/umbrella-atlas-matrix.md"
+    out.write_text(_render_compat_matrix(atlas_version), encoding="utf-8")
+    return 0, out.relative_to(repo_root).as_posix()
+
+
+def _compat_validate_matrix(repo_root: Path) -> tuple[int, dict[str, object]]:
+    ver = _load_workspace_version(repo_root)
+    current = repo_root / "docs/reference/compatibility/umbrella-atlas-matrix.md"
+    expected = _render_compat_matrix(ver)
+    actual = current.read_text(encoding="utf-8")
+    ok = actual == expected
+    return (0 if ok else 1), {
+        "schema_version": 1,
+        "status": "pass" if ok else "fail",
+        "workspace_version": ver,
+        "file": current.relative_to(repo_root).as_posix(),
+        "error": "" if ok else f"compatibility matrix is out of date for workspace version {ver}",
+    }
+
+
 def run_compat_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     repo = ctx.repo_root
     if ns.compat_cmd == "list":
@@ -164,6 +214,20 @@ def run_compat_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             for err in payload["errors"]:
                 print(f"- {err}")
         return code
+    if ns.compat_cmd == "update-matrix":
+        code, out = _compat_update_matrix(repo, ns.tag)
+        print(out)
+        return code
+    if ns.compat_cmd == "validate-matrix":
+        code, payload = _compat_validate_matrix(repo)
+        if ns.report == "json":
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            if payload["status"] == "pass":
+                print("compatibility matrix is up to date")
+            else:
+                print(payload["error"])
+        return code
     return 2
 
 
@@ -177,3 +241,9 @@ def configure_compat_parser(sub: argparse._SubParsersAction[argparse.ArgumentPar
     chk = cs.add_parser("check", help="check shim expiry and stale usage")
     chk.add_argument("--report", choices=["text", "json"], default="text")
     chk.add_argument("--include-docs", action="store_true")
+
+    upd = cs.add_parser("update-matrix", help="update umbrella-atlas compatibility matrix for a release tag")
+    upd.add_argument("--tag", required=True)
+
+    vld = cs.add_parser("validate-matrix", help="validate umbrella-atlas compatibility matrix against workspace version")
+    vld.add_argument("--report", choices=["text", "json"], default="text")
