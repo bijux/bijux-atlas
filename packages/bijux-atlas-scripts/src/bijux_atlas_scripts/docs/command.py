@@ -593,6 +593,214 @@ def _generate_slos_doc(ctx: RunContext) -> tuple[int, str]:
     return 0, f"generated {out.relative_to(ctx.repo_root)}"
 
 
+def _generate_architecture_map(ctx: RunContext) -> tuple[int, str]:
+    category_hints = {
+        "bijux-atlas-api": "api-surface",
+        "bijux-atlas-server": "runtime-server",
+        "bijux-atlas-query": "query-engine",
+        "bijux-atlas-store": "artifact-store",
+        "bijux-atlas-ingest": "ingest-pipeline",
+        "bijux-atlas-cli": "cli-ops",
+        "bijux-atlas-model": "shared-model",
+        "bijux-atlas-core": "shared-core",
+        "bijux-atlas-policies": "policy-contracts",
+    }
+    code, out = _run_check(
+        ["cargo", "metadata", "--locked", "--format-version", "1", "--no-deps"],
+        ctx.repo_root,
+    )
+    if code != 0:
+        return 1, out
+    meta = json.loads(out)
+    packages = {
+        p.get("name"): p
+        for p in meta.get("packages", [])
+        if isinstance(p, dict) and isinstance(p.get("name"), str) and p["name"].startswith("bijux-atlas-")
+    }
+    names = sorted(packages.keys())
+    lines = [
+        "# Architecture Map",
+        "",
+        "- Owner: `atlas-platform`",
+        "- Stability: `stable`",
+        "",
+        "Generated crate-level architecture map from workspace metadata.",
+        "",
+        "## Crate Nodes",
+        "",
+        "| Crate | Role | Internal Dependencies |",
+        "| --- | --- | --- |",
+    ]
+    for name in names:
+        pkg = packages[name]
+        deps = sorted(
+            d.get("name")
+            for d in pkg.get("dependencies", [])
+            if isinstance(d, dict) and isinstance(d.get("name"), str) and d["name"].startswith("bijux-atlas-")
+        )
+        dep_str = ", ".join(f"`{d}`" for d in deps) if deps else "`(none)`"
+        role = category_hints.get(name, "unspecified")
+        lines.append(f"| `{name}` | `{role}` | {dep_str} |")
+    lines += [
+        "",
+        "## Runtime Direction",
+        "",
+        "`bijux-atlas-server -> bijux-atlas-query -> bijux-atlas-store -> immutable artifacts`",
+        "",
+        "## Notes",
+        "",
+        "- This file is generated; do not hand-edit.",
+        "- Regenerate via `atlasctl docs generate-architecture-map`.",
+        "",
+    ]
+    out_path = ctx.repo_root / "docs/architecture/architecture-map.md"
+    out_path.write_text("\n".join(lines), encoding="utf-8")
+    return 0, f"generated {out_path.relative_to(ctx.repo_root)}"
+
+
+def _generate_upgrade_guide(ctx: RunContext) -> tuple[int, str]:
+    payload = _read_json(ctx.repo_root / "configs/ops/target-renames.json")
+    rows = payload.get("renames", [])
+    lines = [
+        "# Make Target Upgrade Guide",
+        "",
+        "Use this table to migrate renamed or aliased make targets.",
+        "",
+        "| Old Target | New Target | Status |",
+        "|---|---|---|",
+    ]
+    if isinstance(rows, list):
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            lines.append(f"| `{row.get('from','')}` | `{row.get('to','')}` | `{row.get('status','')}` |")
+    lines.append("")
+    out = ctx.repo_root / "docs/_generated/upgrade-guide.md"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(lines), encoding="utf-8")
+    return 0, str(out.relative_to(ctx.repo_root))
+
+
+def _check_crate_docs_contract(ctx: RunContext) -> tuple[int, str]:
+    crates_root = ctx.repo_root / "crates"
+    if not crates_root.exists():
+        return 1, "crates directory missing"
+    crates = sorted([p for p in crates_root.iterdir() if p.is_dir()])
+    required_docs = {"INDEX.md", "architecture.md", "effects.md", "public-api.md", "testing.md"}
+    contracts_required = {"bijux-atlas-api", "bijux-atlas-server", "bijux-atlas-policies", "bijux-atlas-store"}
+    failure_modes_required = {"bijux-atlas-server", "bijux-atlas-store", "bijux-atlas-ingest"}
+    required_sections = ["## Purpose", "## Invariants", "## Boundaries", "## Failure modes", "## How to test"]
+    placeholder_pat = re.compile(r"\b(TODO|TBD|coming soon)\b", re.IGNORECASE)
+    pub_pat = re.compile(r"^\s*pub\s+(?:struct|enum|trait|type)\s+([A-Z][A-Za-z0-9_]*)\b", re.MULTILINE)
+    errors: list[str] = []
+
+    for crate in crates:
+        name = crate.name
+        docs = crate / "docs"
+        readme = crate / "README.md"
+        if not docs.is_dir():
+            errors.append(f"{crate}: missing docs directory")
+            continue
+        files = {p.name for p in docs.glob("*.md")}
+        for req in required_docs:
+            if req not in files:
+                errors.append(f"{crate}/docs: missing {req}")
+        if name in contracts_required and "contracts.md" not in files:
+            errors.append(f"{crate}/docs: missing contracts.md (required)")
+        if name in failure_modes_required and "failure-modes.md" not in files:
+            errors.append(f"{crate}/docs: missing failure-modes.md (required)")
+
+        for forbidden in [
+            "HUMAN_MACHINE.md",
+            "PUBLIC_SURFACE_CHECKLIST.md",
+            "EFFECT_BOUNDARY_MAP.md",
+            "PUBLIC_API.md",
+            "ARCHITECTURE.md",
+            "EFFECTS.md",
+        ]:
+            if forbidden in files:
+                errors.append(f"{crate}/docs: legacy filename forbidden: {forbidden}")
+
+        if "patterns.md" in files:
+            text = (docs / "patterns.md").read_text(encoding="utf-8")
+            if len(text.strip()) < 120:
+                errors.append(f"{crate}/docs/patterns.md: too small; remove or document real patterns")
+
+        major = [docs / "testing.md"]
+        if name in contracts_required:
+            major.append(docs / "contracts.md")
+        if name in failure_modes_required:
+            major.append(docs / "failure-modes.md")
+        for md in major:
+            if not md.exists():
+                continue
+            txt = md.read_text(encoding="utf-8")
+            if not re.search(r"^- Owner:\s*`[^`]+`\s*$", txt, re.MULTILINE):
+                errors.append(f"{md}: missing owner header \"- Owner: `...`\"")
+            for sec in required_sections:
+                if sec not in txt:
+                    errors.append(f"{md}: missing section {sec}")
+            if md.name == "contracts.md" and "## Versioning" not in txt:
+                errors.append(f"{md}: missing section ## Versioning")
+            if (txt.count("```") // 2) < 2:
+                errors.append(f"{md}: requires at least 2 examples")
+            if placeholder_pat.search(txt):
+                errors.append(f"{md}: contains placeholder marker TODO/TBD/coming soon")
+            if re.search(r"\]\((?:https?://|file://|/)", txt):
+                errors.append(f"{md}: contains non-relative internal link")
+
+        if not readme.exists():
+            errors.append(f"{crate}: missing README.md")
+        else:
+            rtxt = readme.read_text(encoding="utf-8")
+            for sec in [
+                "## Purpose",
+                "## Public API",
+                "## Boundaries",
+                "## Effects",
+                "## Telemetry",
+                "## Tests",
+                "## Benches",
+                "## Docs index",
+            ]:
+                if sec not in rtxt:
+                    errors.append(f"{readme}: missing section {sec}")
+            for req_link in ["docs/INDEX.md", "docs/public-api.md"]:
+                if req_link not in rtxt:
+                    errors.append(f"{readme}: missing link {req_link}")
+            docs_index_block = re.search(r"## Docs index\n([\s\S]*?)(?:\n## |\Z)", rtxt)
+            if not docs_index_block:
+                errors.append(f"{readme}: missing docs index block")
+            else:
+                links = re.findall(r"\[[^\]]+\]\([^\)]+\)", docs_index_block.group(1))
+                if len(links) < 5:
+                    errors.append(f"{readme}: docs index must list at least 5 important docs")
+
+        idx = docs / "INDEX.md"
+        if idx.exists():
+            itxt = idx.read_text(encoding="utf-8")
+            for req in ["public-api.md", "effects.md", "testing.md"]:
+                if req not in itxt:
+                    errors.append(f"{idx}: must link {req}")
+            if "#how-to-extend" not in itxt and "How to extend" not in itxt:
+                errors.append(f"{idx}: must provide How to extend linkage")
+
+        lib = crate / "src" / "lib.rs"
+        public_api = docs / "public-api.md"
+        if lib.exists() and public_api.exists():
+            names = sorted(set(pub_pat.findall(lib.read_text(encoding="utf-8"))))
+            ptxt = public_api.read_text(encoding="utf-8")
+            if (
+                "../../../../docs/_style/stability-levels.md" not in ptxt
+                and "../../../docs/_style/stability-levels.md" not in ptxt
+            ):
+                errors.append(f"{public_api}: missing stability reference link")
+            for n in names:
+                if n not in ptxt:
+                    errors.append(f"{public_api}: missing mention of public type {n}")
+    return (0, "crate docs contract OK") if not errors else (1, "\n".join(errors[:300]))
+
+
 def _mkdocs_nav_file_refs(mkdocs_text: str) -> list[str]:
     refs: list[str] = []
     for line in mkdocs_text.splitlines():
@@ -939,6 +1147,30 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             print(output)
         return code
 
+    if ns.docs_cmd == "generate-architecture-map":
+        code, output = _generate_architecture_map(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
+    if ns.docs_cmd == "generate-upgrade-guide":
+        code, output = _generate_upgrade_guide(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
+    if ns.docs_cmd == "crate-docs-contract-check":
+        code, output = _check_crate_docs_contract(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
     if ns.docs_cmd == "contracts-index":
         if ns.fix:
             return _run_simple(ctx, ["python3", "scripts/areas/docs/generate_contracts_index_doc.py"], ns.report)
@@ -1055,6 +1287,9 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("docs-make-only-ops-check", "forbid raw ops script references in docs"),
         ("generate-sli-doc", "generate docs/operations/slo/SLIS.md from SLI contract"),
         ("generate-slos-doc", "generate docs/operations/slo/SLOS.md from SLO contract"),
+        ("generate-architecture-map", "generate docs/architecture/architecture-map.md"),
+        ("generate-upgrade-guide", "generate docs/_generated/upgrade-guide.md"),
+        ("crate-docs-contract-check", "validate per-crate docs contract"),
         ("glossary-check", "validate glossary and banned terms policy"),
         ("contracts-index", "validate or generate docs contracts index"),
         ("runbook-map", "validate or generate docs runbook map index"),

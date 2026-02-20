@@ -75,11 +75,11 @@ culprits-all: culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per
 crate-structure:
 	@./scripts/bin/require-isolate >/dev/null
 	@./scripts/areas/public/require-crate-docs.sh
-	@./scripts/areas/docs/check_crate_docs_contract.sh
+	@$(ATLAS_SCRIPTS) docs crate-docs-contract-check --report text
 
 crate-docs-contract:
 	@./scripts/bin/require-isolate >/dev/null
-	@./scripts/areas/docs/check_crate_docs_contract.sh
+	@$(ATLAS_SCRIPTS) docs crate-docs-contract-check --report text
 
 cli-command-surface:
 	@./scripts/bin/require-isolate >/dev/null

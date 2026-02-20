@@ -26,4 +26,4 @@ Generated crate-level architecture map from workspace metadata.
 ## Notes
 
 - This file is generated; do not hand-edit.
-- Regenerate via `python3 scripts/areas/docs/generate_architecture_map.py`.
+- Regenerate via `atlasctl docs generate-architecture-map`.

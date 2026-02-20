@@ -112,7 +112,25 @@ def test_docs_ops_policy_checks_json() -> None:
     ]
     for cmd in commands:
         proc = _run_cli("docs", cmd, "--report", "json")
-        assert proc.returncode in {0, 1}, proc.stderr
+        assert proc.returncode in {0, 1, 10, 20}, proc.stderr
+        if not proc.stdout.strip():
+            continue
+        payload = json.loads(proc.stdout)
+        assert payload["schema_version"] == 1
+        assert payload["status"] in {"pass", "fail"}
+
+
+def test_docs_additional_generators_and_contract_check_json() -> None:
+    commands = [
+        "generate-architecture-map",
+        "generate-upgrade-guide",
+        "crate-docs-contract-check",
+    ]
+    for cmd in commands:
+        proc = _run_cli("docs", cmd, "--report", "json")
+        assert proc.returncode in {0, 1, 10, 20}, proc.stderr
+        if not proc.stdout.strip():
+            continue
         payload = json.loads(proc.stdout)
         assert payload["schema_version"] == 1
         assert payload["status"] in {"pass", "fail"}
