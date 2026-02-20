@@ -1,6 +1,0 @@
-#!/usr/bin/env sh
-# owner: bijux-atlas-platform
-# purpose: temporary compatibility shim for make target explain renderer.
-# usage: scripts/bin/make_explain <target>
-echo "DEPRECATED: scripts/bin/make_explain expires 2026-06-30; use scripts/bin/bijux-atlas-scripts run packages/bijux-atlas-scripts/src/bijux_atlas_scripts/make/explain.py; see docs/development/tooling/bijux-atlas-scripts.md" >&2
-exec ./scripts/bin/bijux-atlas-scripts run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/make/explain.py "$@"
