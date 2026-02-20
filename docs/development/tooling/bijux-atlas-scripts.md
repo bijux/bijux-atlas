@@ -19,5 +19,12 @@
 - `make scripts-run CMD="doctor --json"`
 - `make scripts-check`
 - `make scripts-test`
+- `./scripts/bin/bijux-atlas-scripts inventory scripts-migration --format both --out-dir docs/_generated`
 
 See `tools/bijux-atlas-scripts/PUBLIC_API.md` for current boundaries.
+
+## Scripts Migration Plan
+- Inventory source of truth: `docs/_generated/scripts-migration.json` and `docs/_generated/scripts-migration.md`.
+- Classification buckets: `library_helper`, `report_emitter`, `gate_runner`, `ops_orchestrator`, `docs_generator`, `config_validator`, `policy_checker`, `make_integration`.
+- Porting order: `configs` commands first, then `make/layout`, then `docs/policy`, then remaining ops/public scripts.
+- Migration rule: every moved command must expose deterministic output and be callable via `bijux-atlas-scripts <domain> ...`.
