@@ -260,7 +260,7 @@ Legacy (outside packages): 409
 | `scripts/areas/gen/generate_scripts_readme.py` | `bijux_atlas_scripts.migration.todo` | `bijux-atlas run` | `n/a` | `add unit+integration` |
 | `scripts/areas/gen/generate_scripts_surface.py` | `bijux_atlas_scripts.migration.todo` | `bijux-atlas run` | `n/a` | `add unit+integration` |
 | `scripts/areas/internal/__init__.py` | `bijux_atlas_scripts.migration.todo` | `bijux-atlas run` | `n/a` | `add unit+integration` |
-| `scripts/areas/internal/paths.py` | `bijux_atlas_scripts.migration.todo` | `bijux-atlas run` | `n/a` | `add unit+integration` |
+| `scripts/areas/internal/paths.py` | `bijux_atlas_scripts.paths` | `atlasctl check layout` | `paths/artifacts` | `covered by package unit tests` |
 | `scripts/areas/layout/build_artifacts_index.py` | `bijux_atlas_scripts.layout.migrate.build_artifacts_index` | `bijux-atlas lint repo|makefiles` | `configs/contracts/scripts-tool-output.schema.json` | `packages/bijux-atlas-scripts/tests/test_make_command.py` |
 | `scripts/areas/layout/build_run_artifact_index.py` | `bijux_atlas_scripts.layout.migrate.build_run_artifact_index` | `bijux-atlas lint repo|makefiles` | `configs/contracts/scripts-tool-output.schema.json` | `packages/bijux-atlas-scripts/tests/test_make_command.py` |
 | `scripts/areas/layout/check_cargo_dev_metadata.py` | `bijux_atlas_scripts.layout.migrate.check_cargo_dev_metadata` | `bijux-atlas lint repo|makefiles` | `configs/contracts/scripts-tool-output.schema.json` | `packages/bijux-atlas-scripts/tests/test_make_command.py` |
@@ -415,6 +415,6 @@ Legacy (outside packages): 409
 | `scripts/areas/python/bijux_scripts/runner.py` | `bijux_atlas_scripts.migration.todo` | `bijux-atlas run` | `n/a` | `add unit+integration` |
 | `scripts/areas/tests/test_paths.py` | `bijux_atlas_scripts.migration.todo` | `bijux-atlas run` | `n/a` | `add unit+integration` |
 | `scripts/areas/tools/__init__.py` | `bijux_atlas_scripts.migration.todo` | `bijux-atlas run` | `n/a` | `add unit+integration` |
-| `scripts/areas/tools/json_helpers.py` | `bijux_atlas_scripts.migration.todo` | `bijux-atlas run` | `n/a` | `add unit+integration` |
+| `scripts/areas/tools/json_helpers.py` | `bijux_atlas_scripts.contracts.json` | `atlasctl check configs` | `contracts/json` | `covered by package unit tests` |
 | `scripts/areas/tools/path_utils.py` | `bijux_atlas_scripts.migration.todo` | `bijux-atlas run` | `n/a` | `add unit+integration` |
-| `scripts/areas/tools/reporting.py` | `bijux_atlas_scripts.migration.todo` | `bijux-atlas run` | `n/a` | `add unit+integration` |
+| `scripts/areas/tools/reporting.py` | `bijux_atlas_scripts.reporting` | `atlasctl report` | `reporting/helpers` | `covered by package unit tests` |

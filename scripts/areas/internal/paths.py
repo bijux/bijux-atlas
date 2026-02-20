@@ -10,7 +10,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from scripts.areas.tools.path_utils import repo_root as _repo_root
+from bijux_atlas_scripts.paths import artifacts_scripts_dir as _artifacts_scripts_dir
+from bijux_atlas_scripts.paths import find_root as _repo_root
 
 
 def repo_root() -> Path:
@@ -18,4 +19,4 @@ def repo_root() -> Path:
 
 
 def artifacts_scripts_dir(script_name: str, run_id: str) -> Path:
-    return repo_root() / "artifacts" / "scripts" / script_name / run_id
+    return _artifacts_scripts_dir(script_name=script_name, run_id=run_id)

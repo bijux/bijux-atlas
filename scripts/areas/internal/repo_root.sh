@@ -1,13 +1,10 @@
 #!/usr/bin/env sh
 # owner: platform
-# purpose: print repository root path from any script location.
+# purpose: print repository root path via package canonical helper.
 # stability: internal
-# called-by: scripts/areas/public/report-bundle.sh
-# Purpose: resolve repository root deterministically without implicit cwd.
-# Inputs: script location only.
-# Outputs: absolute repo root path on stdout.
 set -eu
 
 SCRIPT_DIR="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)"
-REPO_ROOT="$(CDPATH='' cd -- "$SCRIPT_DIR/../../.." && pwd)"
-printf '%s\n' "$REPO_ROOT"
+ROOT="$(CDPATH='' cd -- "$SCRIPT_DIR/../../.." && pwd)"
+PYTHONPATH="$ROOT/packages/bijux-atlas-scripts/src${PYTHONPATH:+:$PYTHONPATH}" \
+  python3 -m bijux_atlas_scripts.internal.cli_compat repo-root
