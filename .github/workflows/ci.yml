@@ -20,6 +20,10 @@ jobs:
           components: rustfmt, clippy
       - name: Run canonical CI entrypoint
         run: make ci
+      - name: Enforce atlasctl migration gate
+        run: ./bin/atlasctl --quiet migration gate
+      - name: Enforce atlasctl repo hygiene gate
+        run: ./bin/atlasctl --quiet check repo
       - name: Upload CI artifacts
         if: always()
         uses: actions/upload-artifact@v4
