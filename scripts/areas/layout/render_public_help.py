@@ -4,11 +4,13 @@ from __future__ import annotations
 import argparse
 from collections import defaultdict
 from pathlib import Path
+import re
 
 from public_make_targets import public_entries
 from make_target_graph import parse_make_targets
 
 ROOT = Path(__file__).resolve().parents[3]
+LEGACY_TARGET_RE = re.compile(r"(^|/)legacy($|-)")
 
 
 def namespace_of(name: str) -> str:
@@ -47,7 +49,7 @@ def render_advanced(entries: list[dict]) -> None:
     render_help(entries)
     print("")
     print("Advanced Maintainer Targets:")
-    advanced = ["what", "explain", "graph", "list", "report", "report/print", "legacy-audit"]
+    advanced = ["what", "explain", "graph", "list", "report", "report/print"]
     for t in advanced:
         print(f"  {t}")
 
@@ -62,6 +64,14 @@ def main() -> int:
     p = argparse.ArgumentParser()
     p.add_argument("--mode", choices=["help", "gates", "list", "advanced", "all"], default="help")
     args = p.parse_args()
+
+    graph = parse_make_targets(ROOT / "makefiles")
+    offenders = [target for target in sorted(graph) if LEGACY_TARGET_RE.search(target)]
+    if offenders:
+        print("legacy target names are forbidden in makefiles:", flush=True)
+        for target in offenders:
+            print(f"- {target}", flush=True)
+        return 1
 
     entries = public_entries()
     if args.mode == "gates":
