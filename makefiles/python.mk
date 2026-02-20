@@ -2,7 +2,7 @@
 # Public targets: none
 SHELL := /bin/sh
 
-ATLAS_SCRIPTS ?= PYTHONPATH=packages/bijux-atlas-scripts/src python3 -m bijux_atlas_scripts.cli
+ATLAS_SCRIPTS ?= PYTHONPATH=packages/bijux-atlas-scripts/src python3 -m bijux_atlas_scripts.cli --quiet
 SCRIPTS ?= $(ATLAS_SCRIPTS)
 PY_RUN ?= $(SCRIPTS) run
 
