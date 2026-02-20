@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "policy": "Shell remains for low-level cluster primitives; orchestration moves to bijux-atlas python CLI.",
+  "classified_at": "2026-02-20",
+  "entries": [
+    {"path": "ops/_lib/kubectl.sh", "class": "keep_shell_primitive", "reason": "thin kubectl wrapper"},
+    {"path": "ops/_lib/helm.sh", "class": "keep_shell_primitive", "reason": "thin helm wrapper"},
+    {"path": "ops/_lib/context_guard.sh", "class": "keep_shell_primitive", "reason": "context and kube safety guard"},
+    {"path": "ops/_lib/version_guard.sh", "class": "keep_shell_primitive", "reason": "binary version probing"},
+    {"path": "ops/_lib/retry.sh", "class": "wrap_via_python", "reason": "default retry now in python core.process"},
+    {"path": "ops/_lib/timeout.sh", "class": "wrap_via_python", "reason": "default timeout now in python core.process"},
+    {"path": "ops/_lib/run_id.sh", "class": "wrap_via_python", "reason": "run id now in python RunContext"},
+    {"path": "ops/_lib/ports.sh", "class": "wrap_via_python", "reason": "ports registry surfaced via bijux-atlas ports"},
+    {"path": "ops/_lib/artifacts.sh", "class": "wrap_via_python", "reason": "artifact open/cleanup surfaced via bijux-atlas commands"},
+    {"path": "ops/_lib/lane_report.sh", "class": "migrate_to_python", "reason": "unified reporting handled by python report commands"},
+    {"path": "ops/_lib/layer_contract.sh", "class": "migrate_to_python", "reason": "contract checks are python-first and schema-validated"}
+  ]
+}

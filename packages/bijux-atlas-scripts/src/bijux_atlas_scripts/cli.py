@@ -24,6 +24,7 @@ from .lint.command import configure_lint_parser, run_lint_command
 from .make.command import configure_make_parser, run_make_command
 from .network_guard import install_no_network_guard
 from .ops.command import configure_ops_parser, run_ops_command
+from .orchestrate.command import configure_orchestrate_parsers, run_orchestrate_command
 from .output_contract import validate_json_output
 from .policies.command import configure_policies_parser, run_policies_command
 from .report.command import configure_report_parser, run_report_command
@@ -35,10 +36,6 @@ DOMAINS = {
     "registry": registry.run,
     "layout": layout.run,
     "gates": layout.run,
-    "k8s": layout.run,
-    "stack": layout.run,
-    "load": layout.run,
-    "obs": layout.run,
 }
 
 
@@ -85,7 +82,7 @@ def build_parser() -> argparse.ArgumentParser:
     commands_p.add_argument("--json", action="store_true", help="emit JSON output")
     commands_p.add_argument("--out-file", help="optional output path for JSON report")
 
-    domain_names = ("contracts", "registry", "layout", "gates", "k8s", "stack", "load", "obs")
+    domain_names = ("contracts", "registry", "layout", "gates")
     for name in domain_names:
         register_domain_parser(sub, name, f"{name} domain commands")
     configure_configs_parser(sub)
@@ -97,6 +94,7 @@ def build_parser() -> argparse.ArgumentParser:
     configure_lint_parser(sub)
     configure_report_parser(sub)
     configure_compat_parser(sub)
+    configure_orchestrate_parsers(sub)
 
     doctor_p = sub.add_parser("doctor", help="show tooling and context diagnostics")
     doctor_p.add_argument("--json", action="store_true", help="emit JSON output")
@@ -259,6 +257,8 @@ def main(argv: list[str] | None = None) -> int:
             return run_lint_command(ctx, ns)
         if ns.cmd == "compat":
             return run_compat_command(ctx, ns)
+        if ns.cmd in {"ports", "artifacts", "k8s", "stack", "obs", "load", "e2e", "datasets", "cleanup", "scenario"}:
+            return run_orchestrate_command(ctx, ns)
         if ns.cmd in DOMAINS:
             payload_obj = DOMAINS[ns.cmd](ctx)
             payload = render_payload(payload_obj, as_json)
