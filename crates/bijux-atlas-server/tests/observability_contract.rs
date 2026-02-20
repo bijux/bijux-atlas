@@ -11,6 +11,9 @@ use serde::Deserialize;
 use tempfile::tempdir;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
+#[path = "observability/logging_format.rs"]
+mod logging_format;
+
 #[derive(Debug, Deserialize)]
 struct MetricsContract {
     required_metrics: HashMap<String, Vec<String>>,
