@@ -57,64 +57,36 @@ LOCAL_FULL_ISO_ROOT := $(CURDIR)/artifacts/isolate/local-full
 LOCAL_FULL_ENV := ISO_ROOT=$(LOCAL_FULL_ISO_ROOT) CARGO_TARGET_DIR=$(LOCAL_FULL_ISO_ROOT)/target CARGO_HOME=$(LOCAL_FULL_ISO_ROOT)/cargo-home TMPDIR=$(LOCAL_FULL_ISO_ROOT)/tmp TMP=$(LOCAL_FULL_ISO_ROOT)/tmp TEMP=$(LOCAL_FULL_ISO_ROOT)/tmp
 
 gates-check: ## Run public-surface/docs/makefile boundary checks
-	@$(call gate_json,public-surface,python3 ./scripts/areas/layout/check_public_surface.py)
-	@$(call gate_json,no-dead-entrypoints,python3 ./scripts/areas/layout/check_no_dead_entrypoints.py)
-	@$(call gate_json,no-orphan-docs-refs,python3 ./scripts/areas/layout/check_no_orphan_docs_refs.py)
-	@$(call gate_json,no-orphan-configs,python3 ./scripts/areas/layout/check_no_orphan_configs.py)
-	@$(call gate_json,no-orphan-owners,python3 ./scripts/areas/layout/check_no_orphan_owners.py)
-	@$(call gate_json,docs-public-surface,python3 ./scripts/areas/docs/check_public_surface_docs.py)
-	@$(call gate_json,suite-id-docs,python3 ./scripts/areas/docs/check_suite_id_docs.py)
-	@$(call gate_json,makefile-boundaries,python3 ./scripts/areas/layout/check_makefile_target_boundaries.py)
-	@$(call gate_json,public-target-budget,python3 ./scripts/areas/layout/check_public_target_budget.py)
-	@$(call gate_json,public-target-ownership,python3 ./scripts/areas/layout/check_make_target_ownership.py)
-	@$(call gate_json,public-target-docs,python3 ./scripts/areas/layout/check_public_targets_documented.py)
-	@$(call gate_json,public-target-descriptions,python3 ./scripts/areas/layout/check_public_target_descriptions.py)
-	@$(call gate_json,public-target-aliases,python3 ./scripts/areas/layout/check_public_target_aliases.py)
-	@$(call gate_json,internal-target-doc-refs,python3 ./scripts/areas/layout/check_internal_targets_not_in_docs.py)
-	@$(call gate_json,makefiles-contract,python3 ./scripts/areas/layout/check_makefiles_contract.py)
-	@$(call gate_json,makefiles-headers,python3 ./scripts/areas/layout/check_makefile_headers.py)
-	@$(call gate_json,makefiles-index-drift,python3 ./scripts/areas/layout/check_makefiles_index_drift.py)
-	@$(call gate_json,make-targets-catalog-drift,python3 ./scripts/areas/layout/check_make_targets_catalog_drift.py)
-	@$(call gate_json,cargo-dev-metadata,python3 ./scripts/areas/layout/check_cargo_dev_metadata.py)
-	@$(call gate_json,root-no-cargo-dev-deps,python3 ./scripts/areas/layout/check_root_no_cargo_dev_deps.py)
-	@$(call gate_json,cargo-invocation-scope,python3 ./scripts/areas/layout/check_cargo_invocations_scoped.py)
-	@$(call gate_json,root-diff-alarm,python3 ./scripts/areas/layout/check_root_diff_alarm.py)
-	@$(call gate_json,ci-entrypoints,python3 ./scripts/areas/layout/check_ci_entrypoints.py)
-	@$(call gate_json,help-excludes-internal,python3 ./scripts/areas/layout/check_help_excludes_internal.py)
-	@$(call gate_json,help-output-determinism,python3 ./scripts/areas/layout/check_help_output_determinism.py)
-	@$(call gate_json,help-snapshot,python3 ./scripts/areas/layout/check_help_snapshot.py)
-	@$(call gate_json,no-legacy-target-names,python3 ./scripts/areas/layout/check_no_legacy_target_names.py)
-	@$(call gate_json,root-mk-size-budget,python3 ./scripts/areas/layout/check_root_mk_size_budget.py)
-	@$(call gate_json,root-makefile-hygiene,python3 ./scripts/areas/layout/check_root_makefile_hygiene.py)
+	@./scripts/bin/bijux-atlas-scripts make contracts-check --emit-artifacts
 
 gates: ## Print public targets grouped by namespace
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/help.py --mode gates
+	@./scripts/bin/bijux-atlas-scripts make help --mode gates
 
 help: ## Show curated public make targets from SSOT
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/help.py
+	@./scripts/bin/bijux-atlas-scripts make help
 
 help-advanced: ## Show curated public targets plus maintainer-oriented helpers
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/help.py --mode advanced
+	@./scripts/bin/bijux-atlas-scripts make help --mode advanced
 
 help-all:
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/help.py --mode all
+	@./scripts/bin/bijux-atlas-scripts make help --mode all
 
 explain: ## Explain whether TARGET is a public make target
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make explain TARGET=<name>" >&2; exit 2; }
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/explain.py "$${TARGET}"
+	@./scripts/bin/bijux-atlas-scripts make explain "$${TARGET}"
 
 list: ## Print public make target set from SSOT with one-line descriptions
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/help.py --mode list
+	@./scripts/bin/bijux-atlas-scripts make list
 
 graph: ## Print compact dependency graph for TARGET
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make graph TARGET=<name>" >&2; exit 2; }
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/graph.py "$${TARGET}"
+	@./scripts/bin/bijux-atlas-scripts make graph "$${TARGET}"
 
 what: ## Print explain + dependency graph for TARGET
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make what TARGET=<name>" >&2; exit 2; }
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/explain.py "$${TARGET}"
+	@./scripts/bin/bijux-atlas-scripts make explain "$${TARGET}"
 	@echo ""
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/graph.py "$${TARGET}"
+	@./scripts/bin/bijux-atlas-scripts make graph "$${TARGET}"
 
 internal-list: ## Print internal make targets for maintainers
 	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/list_internal_targets.py
