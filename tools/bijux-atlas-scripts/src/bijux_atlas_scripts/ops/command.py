@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import subprocess
 from dataclasses import dataclass
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -10,6 +9,7 @@ from typing import Callable
 
 from ..core.context import RunContext
 from ..core.fs import ensure_evidence_path
+from ..core.process import run_command
 
 
 @dataclass(frozen=True)
@@ -139,9 +139,8 @@ LINT_CHECKS: list[OpsCheck] = [
 
 
 def _run_check(cmd: list[str], repo_root: Path) -> tuple[int, str]:
-    proc = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
-    output = (proc.stdout or "") + (proc.stderr or "")
-    return proc.returncode, output.strip()
+    result = run_command(cmd, repo_root)
+    return result.code, result.combined_output
 
 
 def _load_relaxations(repo_root: Path) -> tuple[dict[str, dict[str, str]], list[str]]:
