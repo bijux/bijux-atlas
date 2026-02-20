@@ -36,8 +36,8 @@ Stale maps can hide ownership drift and boundary violations.
 ## How to verify
 
 ```bash
-$ python3 scripts/areas/docs/generate_crates_map.py
-$ ./scripts/areas/docs/check_crate_docs_contract.sh
+ docs generate-crates-map
+ docs crate-docs-contract-check
 ```
 
 Expected output: crates map is regenerated and crate docs contract passes.

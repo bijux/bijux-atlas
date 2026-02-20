@@ -10,8 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 allowed = (
     "scripts/areas/layout/",
-    "scripts/areas/docs/",
-    "scripts/areas/public/observability/",
+        "scripts/areas/public/observability/",
     "scripts/tooling/",
     "scripts/areas/tools/",
     "scripts/areas/public/perf/",

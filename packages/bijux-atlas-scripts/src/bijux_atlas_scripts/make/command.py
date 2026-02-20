@@ -69,10 +69,10 @@ CHECKS: list[MakeCheck] = [
         ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "public-surface-check", "--report", "json"],
         "Regenerate docs/_generated surfaces and align nav references.",
     ),
-    _check(
+    _check_cmd(
         "suite-id-docs",
         "Validate suite id docs coverage",
-        "scripts/areas/docs/check_suite_id_docs.py",
+        ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "suite-id-docs-check", "--report", "json"],
         "Document missing suite ids or remove stale suite references.",
     ),
     _check(

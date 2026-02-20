@@ -11,8 +11,7 @@ SHELL_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*\.sh$")
 PY_RE = re.compile(r"^[a-z0-9]+(?:_[a-z0-9]+)*\.py$")
 
 EXEMPT = {
-    "scripts/areas/docs/check-durable-naming.py",
-}
+    }
 
 SHELL_SCOPE = [ROOT / "ops/run", ROOT / "scripts/areas/public/contracts"]
 PY_SCOPE = [ROOT / "scripts/areas/public/contracts", ROOT / "ops/report"]

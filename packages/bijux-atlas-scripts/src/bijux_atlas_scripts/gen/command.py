@@ -32,7 +32,7 @@ def run_gen_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if sub == "make-targets":
         return _run(ctx, [*SELF_CLI, "make", "inventory"])
     if sub == "surface":
-        return _run(ctx, ["python3", "scripts/areas/docs/generate_repo_surface.py"])
+        return _run(ctx, ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-repo-surface", "--report", "text"])
     if sub == "scripting-surface":
         out = ctx.repo_root / "docs/_generated/scripts-surface.md"
         lines = [

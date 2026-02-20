@@ -5,7 +5,6 @@ Categories:
 - `scripts/lib/`: shared script libraries
 - `scripts/bin/`: thin entrypoints only
 
-Policy: scripts are internal unless listed in `configs/ops/public-surface.json` or the `public` section in `scripts/areas/docs/ENTRYPOINTS.md`.
 
 ## Full Inventory
 
@@ -69,11 +68,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/configs/sync_slo_config.py` | `platform` | `public` | - |
 | `scripts/areas/configs/validate_configs_schemas.py` | `platform` | `public` | - |
 | `scripts/areas/demo/demo.sh` | `platform` | `private` | - |
-| `scripts/areas/docs/ENTRYPOINTS.md` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_concept_ids.sh` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_doc_naming.sh` | `docs-governance` | `public` | `docs-build` |
-| `scripts/areas/docs/check_reference_templates.sh` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/legacy-terms-allowlist.txt` | `docs-governance` | `public` | - |
 | `scripts/areas/fixtures/derive-release-111.sh` | `dataset-ops` | `internal` | - |
 | `scripts/areas/fixtures/fetch-medium.sh` | `dataset-ops` | `public` | `fetch-fixtures`, `ops-publish-medium` |
 | `scripts/areas/fixtures/fetch-real-datasets.sh` | `dataset-ops` | `public` | `fetch-real-datasets` |

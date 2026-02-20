@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Purpose: ensure make recipes call only scripts declared as public entrypoints.
-# Inputs: Makefile + makefiles/*.mk and scripts/areas/docs/ENTRYPOINTS.md patterns.
+# Inputs: Makefile + makefiles/*.mk and configs/ops/public-surface.json patterns.
 # Outputs: non-zero exit when make calls non-public scripts.
 from __future__ import annotations
 import fnmatch
@@ -8,17 +8,11 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-entry = (ROOT / "scripts/areas/docs/ENTRYPOINTS.md").read_text().splitlines()
-patterns: list[str] = []
-in_public = False
-for line in entry:
-    if line.strip() == "## Public":
-        in_public = True
-        continue
-    if line.startswith("## ") and line.strip() != "## Public":
-        in_public = False
-    if in_public and line.strip().startswith("- `"):
-        patterns.append(line.strip()[3:-1].split(" ")[0])
+import json
+
+surface = json.loads((ROOT / "configs/ops/public-surface.json").read_text(encoding="utf-8"))
+patterns = [f"{cmd}" for cmd in surface.get("ops_run_commands", []) if cmd.startswith("scripts/")]
+patterns.extend(["scripts/bin/*"])
 
 mk_files = [ROOT / "Makefile"] + sorted((ROOT / "makefiles").glob("*.mk"))
 text = "\n".join(p.read_text() for p in mk_files)

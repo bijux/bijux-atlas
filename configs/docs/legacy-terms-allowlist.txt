@@ -1,7 +1,7 @@
 # owner: docs-governance
 # purpose: allow legitimate domain-specific uses of words that match legacy token scan patterns.
 # stability: public
-# called-by: scripts/areas/docs/ban_legacy_terms.sh
+# called-by: atlasctl docs legacy-terms-check
 
 # GFF3 biology field name; not project phase language.
 cds phase

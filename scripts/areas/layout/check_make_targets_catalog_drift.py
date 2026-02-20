@@ -13,11 +13,11 @@ PATHS = [
 
 
 def main() -> int:
-    subprocess.run(["python3", "scripts/areas/docs/generate_make_targets_catalog.py"], cwd=ROOT, check=True)
+    subprocess.run(["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-make-targets-catalog", "--report", "text"], cwd=ROOT, check=True)
     diff = subprocess.run(["git", "diff", "--", *PATHS], cwd=ROOT, capture_output=True, text=True, check=False)
     if diff.returncode != 0:
         print("make targets catalog drift detected", file=sys.stderr)
-        print("- run: python3 scripts/areas/docs/generate_make_targets_catalog.py", file=sys.stderr)
+        print("- run: python3 -m bijux_atlas_scripts.cli docs generate-make-targets-catalog --report text", file=sys.stderr)
         print(diff.stdout, file=sys.stderr)
         return 1
     print("make targets catalog drift check passed")
