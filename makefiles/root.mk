@@ -363,18 +363,18 @@ root: ## CI-fast lane subset (no cluster bring-up)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-$(MAKE_RUN_TS)}}"; \
 	$(MAKE) -s tools-check; \
 	parallel_flag=""; if [ "$${PARALLEL:-1}" = "1" ]; then parallel_flag="--parallel"; fi; \
-	RUN_ID="$$run_id" $(ATLAS_SCRIPTS) gates run --preset root --all $$parallel_flag --jobs "$${JOBS:-4}"; \
-	$(ATLAS_SCRIPTS) report collect --run-id "$$run_id" >/dev/null; \
-	$(ATLAS_SCRIPTS) report print --run-id "$$run_id"
+	RUN_ID="$$run_id" $(ATLAS_SCRIPTS) --quiet gates run --preset root --all $$parallel_flag --jobs "$${JOBS:-4}"; \
+	$(ATLAS_SCRIPTS) --quiet report collect --run-id "$$run_id" >/dev/null; \
+	$(ATLAS_SCRIPTS) --quiet report print --run-id "$$run_id"
 
 root-local: ## All lanes in parallel + ops smoke lane (PARALLEL=0 for serial)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-$(MAKE_RUN_TS)}}"; \
 	$(MAKE) -s tools-check; \
 	parallel_flag=""; if [ "$${PARALLEL:-1}" = "1" ]; then parallel_flag="--parallel"; fi; \
-	RUN_ID="$$run_id" $(ATLAS_SCRIPTS) gates run --preset root-local --all $$parallel_flag --jobs "$${JOBS:-4}"; \
+	RUN_ID="$$run_id" $(ATLAS_SCRIPTS) --quiet gates run --preset root-local --all $$parallel_flag --jobs "$${JOBS:-4}"; \
 	if [ "$${PERF_CHEAP_REGRESSION:-0}" = "1" ]; then $(MAKE) -s ops-load-smoke perf/regression-check PROFILE="$${PROFILE:-local}"; fi; \
-	$(ATLAS_SCRIPTS) report collect --run-id "$$run_id" >/dev/null; \
-	$(ATLAS_SCRIPTS) report print --run-id "$$run_id"
+	$(ATLAS_SCRIPTS) --quiet report collect --run-id "$$run_id" >/dev/null; \
+	$(ATLAS_SCRIPTS) --quiet report print --run-id "$$run_id"
 
 root-local/no-ops: ## Local lanes without ops smoke lane (explicit skip)
 	@NO_OPS=1 PARALLEL="$${PARALLEL:-1}" RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-no-ops-$(MAKE_RUN_TS)}}" MODE=root-local ./ops/run/root-lanes.sh

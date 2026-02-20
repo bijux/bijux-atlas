@@ -138,6 +138,9 @@ internal/scripts/lock-check:
 	@$(PY_RUN) scripts/areas/check/check-python-lock.py
 	@$(PY_RUN) scripts/areas/check/check-scripts-lock-sync.py
 
+packages-lock: ## Refresh python lockfile deterministically from requirements.in
+	@python3 -c 'from pathlib import Path; src=Path("packages/bijux-atlas-scripts/requirements.in"); dst=Path("packages/bijux-atlas-scripts/requirements.lock.txt"); lines=[ln.strip() for ln in src.read_text(encoding="utf-8").splitlines() if ln.strip() and not ln.strip().startswith("#")]; dst.write_text("\\n".join(sorted(set(lines)))+"\\n", encoding="utf-8"); print(f"updated {dst}")'
+
 scripts-audit: ## Audit script headers, taxonomy buckets, and no-implicit-cwd contract
 	@$(PY_RUN) scripts/areas/docs/check_script_headers.py
 	@$(PY_RUN) scripts/areas/layout/check_scripts_buckets.py
@@ -186,4 +189,4 @@ internal/scripts/all: ## Uniform scripts all target
 	@$(MAKE) internal/scripts/test
 	@$(MAKE) internal/scripts/build
 
-.PHONY: bootstrap-tools no-direct-scripts scripts-all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test internal/scripts/test-hermetic internal/scripts/sbom internal/scripts/fmt-alias internal/scripts/venv internal/scripts/install-lock internal/scripts/lock-check internal/scripts/check internal/scripts/build internal/scripts/fmt internal/scripts/lint internal/scripts/test internal/scripts/clean internal/scripts/install-dev internal/scripts/install internal/scripts/run internal/scripts/all
+.PHONY: bootstrap-tools no-direct-scripts scripts-all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test internal/scripts/test-hermetic internal/scripts/sbom internal/scripts/fmt-alias internal/scripts/venv internal/scripts/install-lock internal/scripts/lock-check packages-lock internal/scripts/check internal/scripts/build internal/scripts/fmt internal/scripts/lint internal/scripts/test internal/scripts/clean internal/scripts/install-dev internal/scripts/install internal/scripts/run internal/scripts/all
