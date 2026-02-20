@@ -4,18 +4,19 @@ import argparse
 import hashlib
 import json
 import re
-import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable
 
 from ..core.context import RunContext
 from ..core.fs import ensure_evidence_path
+from ..core.process import run_command
+from ..core.tooling import read_pins, read_tool_versions
 
 
 def _run(cmd: list[str], repo_root: Path) -> tuple[int, str]:
-    proc = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
-    return proc.returncode, ((proc.stdout or "") + (proc.stderr or "")).strip()
+    res = run_command(cmd, repo_root)
+    return res.code, res.combined_output
 
 
 def _collect_config_files(repo_root: Path) -> list[str]:
@@ -112,6 +113,7 @@ def _config_print(repo_root: Path) -> tuple[int, str]:
         "policy": _read_json(repo_root, "configs/policy/policy.json"),
         "ops_env_schema": _read_json(repo_root, "configs/ops/env.schema.json"),
         "ops_tool_versions": _read_json(repo_root, "configs/ops/tool-versions.json"),
+        "ops_pins": read_pins(repo_root),
         "ops_observability_pack": _read_json(repo_root, "configs/ops/observability-pack.json"),
         "perf_thresholds": _read_json(repo_root, "configs/perf/k6-thresholds.v1.json"),
         "slo": _read_json(repo_root, "configs/slo/slo.json"),
@@ -177,7 +179,7 @@ def run_configs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         "keys-doc-check": lambda r: _run(["python3", "scripts/areas/configs/check_config_keys_docs_coverage.py"], r),
         "tool-versions": lambda r: (
             0,
-            json.dumps(json.loads((r / "configs/ops/tool-versions.json").read_text(encoding="utf-8")), sort_keys=True),
+            json.dumps(read_tool_versions(r), sort_keys=True),
         ),
         "naming-check": _naming_check,
         "directory-budgets-check": lambda r: _run(
