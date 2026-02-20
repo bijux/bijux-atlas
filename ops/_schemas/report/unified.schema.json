@@ -42,6 +42,16 @@
         "near_failing": {"type": "array", "items": {"type": "string"}},
         "failed_lanes": {"type": "array", "items": {"type": "string"}}
       }
+    },
+    "perf_summary": {
+      "type": "object",
+      "required": ["suite_count", "p95_max_ms", "p99_max_ms"],
+      "additionalProperties": true,
+      "properties": {
+        "suite_count": {"type": "integer", "minimum": 0},
+        "p95_max_ms": {"type": "number", "minimum": 0},
+        "p99_max_ms": {"type": "number", "minimum": 0}
+      }
     }
   }
 }
