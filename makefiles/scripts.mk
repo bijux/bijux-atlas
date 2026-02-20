@@ -114,7 +114,7 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(PY_RUN) scripts/areas/check/check-no-python-executable-outside-tools.py
 	@$(PY_RUN) scripts/areas/check/check-no-direct-python-invocations.py
 	@$(PY_RUN) scripts/areas/check/check-no-direct-bash-invocations.py
-	@$(PY_RUN) scripts/areas/check/check-python-migration-exceptions-expiry.py
+	@$(ATLAS_SCRIPTS) check python-migration-exceptions-expiry
 	@$(PY_RUN) scripts/areas/check/check-bijux-atlas-scripts-boundaries.py
 	@$(ATLAS_SCRIPTS) check cli-help
 	@$(ATLAS_SCRIPTS) check root-bin-shims
