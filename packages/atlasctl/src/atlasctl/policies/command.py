@@ -281,25 +281,29 @@ def _policy_enforcement_status(repo_root: Path, enforce: bool) -> tuple[int, lis
     violations: list[str] = []
     covered_hard = 0
     total_hard = len(hard)
+    search_roots = [p for p in ("crates", "scripts", "makefiles", "docs") if (repo_root / p).exists()]
+
+    def _has_ref(needle: str) -> bool:
+        if not needle:
+            return False
+        if not search_roots:
+            return False
+        proc = subprocess.run(
+            ["rg", "-n", "--fixed-strings", needle, *search_roots],
+            cwd=repo_root,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        return bool(proc.stdout.strip())
+
     for policy in data.get("policies", []):
         pid = str(policy.get("id", "")).strip()
         pass_test = str(policy.get("pass_test", "")).strip()
         fail_test = str(policy.get("fail_test", "")).strip()
         is_hard = bool(policy.get("hard", False)) or pid in hard
-        pass_ok = bool(pass_test) and subprocess.run(
-            ["rg", "-n", "--fixed-strings", pass_test, "crates", "scripts", "makefiles", "docs"],
-            cwd=repo_root,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            check=False,
-        ).returncode == 0
-        fail_ok = bool(fail_test) and subprocess.run(
-            ["rg", "-n", "--fixed-strings", fail_test, "crates", "scripts", "makefiles", "docs"],
-            cwd=repo_root,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            check=False,
-        ).returncode == 0
+        pass_ok = _has_ref(pass_test)
+        fail_ok = _has_ref(fail_test)
         status = "PASS" if pass_ok and fail_ok else "FAIL"
         if is_hard and status == "PASS":
             covered_hard += 1
