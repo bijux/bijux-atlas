@@ -35,6 +35,7 @@ docs-build: ## Build docs + link-check + spell-check + lint
 	@python3 scripts/areas/docs/generate_ops_contracts_doc.py
 	@python3 scripts/areas/docs/generate_make_targets_catalog.py
 	@python3 scripts/areas/docs/generate_config_keys_doc.py
+	@python3 scripts/areas/docs/generate_env_vars_doc.py
 	@python3 scripts/areas/docs/generate_contracts_index_doc.py
 	@python3 scripts/areas/docs/generate_chart_contract_index.py
 	@python3 scripts/areas/ops/generate_k8s_test_surface.py

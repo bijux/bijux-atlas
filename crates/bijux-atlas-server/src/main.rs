@@ -291,9 +291,48 @@ fn init_tracing() {
     }
 }
 
+fn validate_runtime_env_contract() -> Result<(), String> {
+    let raw = include_str!("../../../configs/contracts/env.schema.json");
+    let parsed: serde_json::Value =
+        serde_json::from_str(raw).map_err(|e| format!("invalid env contract json: {e}"))?;
+    let allowed: HashSet<String> = parsed["allowed_env"]
+        .as_array()
+        .ok_or_else(|| "env contract missing allowed_env array".to_string())?
+        .iter()
+        .filter_map(|v| v.as_str().map(ToString::to_string))
+        .collect();
+    let dev_flag = parsed["dev_mode_allow_unknown_env"]
+        .as_str()
+        .unwrap_or("ATLAS_DEV_ALLOW_UNKNOWN_ENV");
+    let allow_unknown = env_bool(dev_flag, false);
+
+    let mut unknown: Vec<String> = env::vars()
+        .map(|(k, _)| k)
+        .filter(|k| k.starts_with("ATLAS_") || k.starts_with("BIJUX_"))
+        .filter(|k| !allowed.contains(k))
+        .collect();
+    unknown.sort();
+    unknown.dedup();
+    if unknown.is_empty() {
+        return Ok(());
+    }
+    if allow_unknown {
+        info!(
+            unknown = ?unknown,
+            "unknown env vars permitted in dev mode"
+        );
+        return Ok(());
+    }
+    Err(format!(
+        "unknown env vars rejected by contract; set {dev_flag}=1 only for local dev override: {}",
+        unknown.join(",")
+    ))
+}
+
 #[tokio::main]
 async fn main() -> Result<(), String> {
     init_tracing();
+    validate_runtime_env_contract()?;
 
     let bind_addr = env::var("ATLAS_BIND").unwrap_or_else(|_| "0.0.0.0:8080".to_string());
     let store_root = PathBuf::from(
