@@ -218,7 +218,7 @@ Generated file. Do not edit manually.
 | `scripts/layout/check_ops_canonical_shims.sh` | `repo-surface` | `public` | `layout-check` |
 | `scripts/layout/check_ops_concept_ownership.py` | `repo-surface` | `public` | `layout-check`, `ops-layout-lint` |
 | `scripts/layout/check_ops_cross_area_script_refs.py` | `repo-surface` | `public` | `ops-lint-all` |
-| `scripts/layout/check_ops_index_surface.py` | `repo-surface` | `public` | `ci-ops-index-surface`, `layout-check`, `ops-check-legacy` |
+| `scripts/layout/check_ops_index_surface.py` | `repo-surface` | `public` | `ci-ops-index-surface`, `layout-check`, `ops-check` |
 | `scripts/layout/check_ops_layout_contract.py` | `repo-surface` | `public` | `layout-check`, `ops-layout-lint` |
 | `scripts/layout/check_ops_lib_canonical.sh` | `repo-surface` | `public` | `layout-check` |
 | `scripts/layout/check_ops_pins.py` | `repo-surface` | `public` | - |

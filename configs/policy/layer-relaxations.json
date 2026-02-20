@@ -29,15 +29,6 @@
       "justification": "Realdata upgrade and rollback drills still run direct Helm actions until moved under ops/run."
     },
     {
-      "id": "ATLAS-LAYER-EXC-0004",
-      "rule": "forbid_e2e_cluster_resource_mutations",
-      "path": "ops/e2e/scripts/up.sh",
-      "owner": "ops-platform",
-      "issue": "ISSUE-ATLAS-LAYER-EXC-0004",
-      "expiry": "2026-06-30",
-      "justification": "Bootstrap migration in progress; stack apply/create calls still exist in legacy e2e up flow."
-    },
-    {
       "id": "ATLAS-LAYER-EXC-0005",
       "rule": "forbid_e2e_fixup_kubectl_calls",
       "path": "ops/e2e/scripts/deploy_atlas.sh",

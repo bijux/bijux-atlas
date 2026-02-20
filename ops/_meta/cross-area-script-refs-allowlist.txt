@@ -10,9 +10,7 @@ makefiles/ops.mk|ops/datasets/scripts/sh/fetch_and_verify.sh
 makefiles/ops.mk|ops/datasets/scripts/sh/pin_set.sh
 makefiles/ops.mk|ops/datasets/scripts/sh/promotion_sim.sh
 makefiles/ops.mk|ops/datasets/scripts/sh/snapshot_metadata.sh
-makefiles/ops.mk|ops/e2e/scripts/down.sh
 makefiles/ops.mk|ops/e2e/scripts/smoke_queries.sh
-makefiles/ops.mk|ops/e2e/scripts/up.sh
 makefiles/ops.mk|ops/e2e/scripts/verify_metrics.sh
 makefiles/ops.mk|ops/e2e/scripts/verify_traces.sh
 makefiles/ops.mk|ops/e2e/scripts/warmup.sh
@@ -61,8 +59,6 @@ makefiles/ops.mk|ops/stack/scripts/validate.sh
 makefiles/ops.mk|ops/stack/scripts/wait_ready.sh
 ops/e2e/realdata/run_single_release.sh|ops/datasets/scripts/publish_by_name.sh
 ops/e2e/realdata/run_two_release_diff.sh|ops/datasets/scripts/publish_by_name.sh
-ops/e2e/scripts/down.sh|ops/stack/scripts/uninstall.sh
-ops/e2e/scripts/up.sh|ops/stack/scripts/wait_ready.sh
 ops/k8s/tests/checks/perf/test_store_outage_under_load.sh|ops/obs/scripts/run_drill.sh
 ops/run/datasets-verify.sh|ops/datasets/scripts/suite.sh
 ops/run/deploy-atlas.sh|ops/e2e/scripts/deploy_atlas.sh
@@ -77,7 +73,7 @@ scripts/layout/check_ops_canonical_entrypoints.py|ops/k8s/scripts/deploy_atlas.s
 scripts/layout/check_ops_canonical_entrypoints.py|ops/obs/scripts/verify_pack.sh
 scripts/layout/check_ops_single_validators.py|ops/obs/scripts/verify_pack.sh
 scripts/layout/check_ops_single_validators.py|ops/stack/scripts/validate.sh
-scripts/layout/check_ops_stack_order.sh|ops/e2e/scripts/up.sh
+scripts/layout/check_ops_stack_order.sh|ops/stack/scripts/install.sh
 scripts/layout/check_ops_stack_order.sh|ops/stack/scripts/uninstall.sh
 scripts/public/perf/check_baseline_update_policy.sh|ops/load/scripts/check_baseline_update_policy.sh
 scripts/public/perf/check_prereqs.sh|ops/load/scripts/check_prereqs.sh
