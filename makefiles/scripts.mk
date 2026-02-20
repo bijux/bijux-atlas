@@ -103,10 +103,10 @@ internal/scripts/install-dev:
 	@"$(SCRIPTS_VENV)/bin/pip" install --upgrade pip >/dev/null
 	@"$(SCRIPTS_VENV)/bin/pip" install -r tools/bijux-atlas-scripts/requirements.lock.txt >/dev/null
 
-scripts-install: ## Install scripts package tooling into local venv
+internal/scripts/install:
 	@$(MAKE) -s internal/scripts/install-dev
 
-scripts-run: ## Run bijux-atlas-scripts command (usage: make scripts-run CMD=\"doctor --json\")
+internal/scripts/run:
 	@[ -n "$${CMD:-}" ] || { echo "usage: make scripts-run CMD='doctor --json'" >&2; exit 2; }
 	@./scripts/bin/bijux-atlas-scripts $${CMD}
 
@@ -142,4 +142,4 @@ internal/scripts/all: ## Uniform scripts all target
 	@$(MAKE) internal/scripts/test
 	@$(MAKE) internal/scripts/build
 
-.PHONY: bootstrap-tools no-direct-scripts scripts-all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-install scripts-lint scripts-run scripts-test internal/scripts/check internal/scripts/build internal/scripts/fmt internal/scripts/lint internal/scripts/test internal/scripts/clean internal/scripts/install-dev internal/scripts/all
+.PHONY: bootstrap-tools no-direct-scripts scripts-all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test internal/scripts/check internal/scripts/build internal/scripts/fmt internal/scripts/lint internal/scripts/test internal/scripts/clean internal/scripts/install-dev internal/scripts/install internal/scripts/run internal/scripts/all

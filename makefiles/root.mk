@@ -201,6 +201,13 @@ scripts/check: ## Deterministic scripts check lane
 scripts-install-dev: ## Install python tooling for scripts package development
 	@$(MAKE) -s internal/scripts/install-dev
 
+scripts-install: ## Install scripts package tooling into local venv
+	@$(MAKE) -s internal/scripts/install
+
+scripts-run: ## Run bijux-atlas-scripts command (usage: make scripts-run CMD="doctor --json")
+	@[ -n "$${CMD:-}" ] || { echo "usage: make scripts-run CMD='doctor --json'" >&2; exit 2; }
+	@$(MAKE) -s internal/scripts/run CMD="$${CMD}"
+
 scripts/build: ## Build script inventories and graph
 	@$(call with_iso,scripts-build,$(MAKE) -s internal/scripts/build)
 

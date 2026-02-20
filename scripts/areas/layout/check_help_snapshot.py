@@ -12,11 +12,7 @@ FORBIDDEN_RE = re.compile(r"(^|/)legacy($|-)")
 
 
 def render(mode: str | None = None) -> str:
-    cmd = [
-        "scripts/bin/bijux-atlas-scripts",
-        "run",
-        "tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/help.py",
-    ]
+    cmd = ["scripts/bin/bijux-atlas-scripts", "make", "help"]
     if mode:
         cmd.extend(["--mode", mode])
     p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, check=False)
