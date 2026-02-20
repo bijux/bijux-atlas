@@ -37,8 +37,8 @@ Expected output: one example JSON file per registry contract.
 ## How to verify
 
 ```bash
-$ ./scripts/areas/contracts/format_contracts.py
-$ ./scripts/areas/contracts/check_all.sh
+$ ./bin/bijux-atlas contracts check --checks drift
+$ make ssot-check
 ```
 
 Expected output: format and contract checks pass.

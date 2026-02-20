@@ -533,7 +533,7 @@ root-determinism: ## Assert make root determinism (inventory outputs stable acro
 
 
 telemetry-contracts: ## Regenerate telemetry generated artifacts from observability contracts
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/contracts/generate_contract_artifacts.py
+	@$(ATLAS_SCRIPTS) contracts generate --generators artifacts
 	@cargo fmt --all
 
 telemetry-verify: ## Run telemetry contract verification path (pack+smoke+contract tests)
@@ -563,7 +563,8 @@ fetch-real-datasets:
 	@./scripts/areas/fixtures/fetch-real-datasets.sh
 
 ssot-check:
-	@./scripts/areas/contracts/check_all.sh
+	@$(ATLAS_SCRIPTS) contracts generate --generators artifacts chart-schema
+	@$(ATLAS_SCRIPTS) contracts check --checks breakage drift endpoints error-codes sqlite-indexes chart-values
 
 policy-lint:
 	@./scripts/areas/public/policy-lint.sh

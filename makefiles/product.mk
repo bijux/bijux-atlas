@@ -79,8 +79,8 @@ chart-verify:
 
 chart-validate: ## Validate chart via lint/template and values contract schema checks
 	@$(MAKE) chart-verify
-	@./scripts/areas/contracts/generate_chart_values_schema.py
-	@./scripts/areas/contracts/check_chart_values_contract.py
+	@./bin/bijux-atlas contracts generate --generators chart-schema
+	@./bin/bijux-atlas contracts check --checks chart-values
 
 docker-contracts: ## Validate Docker layout/policy/no-latest contracts
 	@./bin/bijux-atlas run ./scripts/areas/check/check-docker-layout.py

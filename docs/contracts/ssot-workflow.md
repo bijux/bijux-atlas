@@ -30,14 +30,14 @@ Does not define product release choreography outside contract updates.
 
 - Drifted generated output: `check_contract_drift.py` fails.
 - Breaking change: `check_breaking_contract_change.py` fails.
-- Unformatted contracts: `format_contracts.py` check fails.
+- Unformatted contracts: `atlasctl contracts check --checks drift` check fails.
 
 ## Examples
 
 ```bash
-$ ./scripts/areas/contracts/format_contracts.py
-$ ./scripts/areas/contracts/generate_contract_artifacts.py
-$ ./scripts/areas/contracts/check_all.sh
+$ ./bin/bijux-atlas contracts check --checks drift
+$ ./bin/bijux-atlas contracts generate --generators artifacts
+$ make ssot-check
 ```
 
 Expected output: all checks pass with no drift.

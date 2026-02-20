@@ -26,7 +26,7 @@ Does not encode every crate/module edge.
 
 ## Diagram (text)
 
-`docs/contracts/*.json` -> `generate_contract_artifacts.py` -> generated docs/code
+`docs/contracts/*.json` -> `atlasctl contracts generate --generators artifacts` -> generated docs/code
 `crates/*` -> API + ingest/runtime behavior -> k8s chart deploy
 `ops/*` -> stack/deploy/smoke/load/observability checks -> `artifacts/ops/*`
 

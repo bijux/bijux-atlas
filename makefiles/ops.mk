@@ -82,7 +82,7 @@ ops-gen: ## Regenerate all committed ops generated outputs
 	@./bin/bijux-atlas run ./scripts/areas/docs/generate_ops_surface.py
 	@./bin/bijux-atlas run ./scripts/areas/docs/generate_ops_contracts_doc.py
 	@./bin/bijux-atlas run ./scripts/areas/docs/generate_layer_contract_doc.py
-	@./bin/bijux-atlas run ./scripts/areas/contracts/generate_chart_values_schema.py
+	@./bin/bijux-atlas contracts generate --generators chart-schema
 
 ops-gen-clean: ## Cleanup generated ops outputs not in committed generated policy
 	@./bin/bijux-atlas run ./scripts/areas/layout/clean_ops_generated.py
@@ -1050,8 +1050,8 @@ ops-perf-suite: ## Perf helper: run an arbitrary perf suite (SCENARIO=<file.js> 
 	@./ops/load/scripts/run_suite.sh "$$SCENARIO" "$${OUT:-artifacts/perf/results}"
 
 ops-values-validate: ## Validate chart values against SSOT contract
-	@./scripts/areas/contracts/generate_chart_values_schema.py
-	@./scripts/areas/contracts/check_chart_values_contract.py
+	@./bin/bijux-atlas contracts generate --generators chart-schema
+	@./bin/bijux-atlas contracts check --checks chart-values
 	@./ops/k8s/tests/checks/obs/test_chart_drift.sh
 
 ops-release-matrix: ## Generate k8s release install matrix document from CI summary
