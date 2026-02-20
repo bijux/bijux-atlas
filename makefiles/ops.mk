@@ -816,6 +816,10 @@ ops-drill-otel-outage: ## Drill otel outage while atlas keeps serving
 	@$(MAKE) -s ops-env-validate
 	@./ops/obs/scripts/otel-outage.sh
 
+ops-drill-metric-cardinality-blowup: ## Drill cardinality blowup guardrails
+	@$(MAKE) -s ops-env-validate
+	@./ops/obs/scripts/metric-cardinality-blowup-attempt.sh
+
 ops-drill-toxiproxy-latency: ## Inject toxiproxy latency and assert store breaker signal
 	@$(MAKE) -s ops-env-validate
 	@ATLAS_E2E_ENABLE_TOXIPROXY=1 $(MAKE) ops-stack-up
