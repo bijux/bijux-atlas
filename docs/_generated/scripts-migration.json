@@ -27,7 +27,7 @@
     },
     {
       "area": "fixtures",
-      "index": "scripts/areas/fixtures/INDEX.md",
+      "index": "ops/datasets/scripts/fixtures/INDEX.md",
       "mapped_cli_group": "atlasctl check fixtures"
     },
     {
@@ -1456,7 +1456,7 @@
     {
       "extension": ".md",
       "is_executable": false,
-      "path": "scripts/areas/fixtures/INDEX.md",
+      "path": "ops/datasets/scripts/fixtures/INDEX.md",
       "tags": [
         "docs_generator"
       ]
@@ -1464,31 +1464,31 @@
     {
       "extension": ".sh",
       "is_executable": true,
-      "path": "scripts/areas/fixtures/derive-release-111.sh",
+      "path": "ops/datasets/scripts/fixtures/derive-release-111.sh",
       "tags": []
     },
     {
       "extension": ".sh",
       "is_executable": true,
-      "path": "scripts/areas/fixtures/fetch-medium.sh",
+      "path": "ops/datasets/scripts/fixtures/fetch-medium.sh",
       "tags": []
     },
     {
       "extension": ".sh",
       "is_executable": true,
-      "path": "scripts/areas/fixtures/fetch-real-datasets.sh",
+      "path": "ops/datasets/scripts/fixtures/fetch-real-datasets.sh",
       "tags": []
     },
     {
       "extension": ".sh",
       "is_executable": true,
-      "path": "scripts/areas/fixtures/run-medium-ingest.sh",
+      "path": "ops/datasets/scripts/fixtures/run-medium-ingest.sh",
       "tags": []
     },
     {
       "extension": ".sh",
       "is_executable": true,
-      "path": "scripts/areas/fixtures/run-medium-serve.sh",
+      "path": "ops/datasets/scripts/fixtures/run-medium-serve.sh",
       "tags": []
     },
     {

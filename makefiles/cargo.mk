@@ -195,7 +195,7 @@ compat-matrix-validate:
 	@$(ATLAS_SCRIPTS) compat validate-matrix
 
 fetch-fixtures:
-	@./scripts/areas/fixtures/fetch-medium.sh
+	@./ops/datasets/scripts/fixtures/fetch-medium.sh
 
 load-test:
 	@k6 run ops/load/k6/mixed-80-20.js
@@ -221,13 +221,13 @@ memory-profile-load:
 	@echo "outputs: artifacts/benchmarks/memory/"
 
 run-medium-ingest:
-	@./scripts/areas/fixtures/run-medium-ingest.sh
+	@./ops/datasets/scripts/fixtures/run-medium-ingest.sh
 
 ingest-sharded-medium:
-	@./scripts/areas/fixtures/run-medium-ingest.sh --sharded
+	@./ops/datasets/scripts/fixtures/run-medium-ingest.sh --sharded
 
 run-medium-serve:
-	@./scripts/areas/fixtures/run-medium-serve.sh
+	@./ops/datasets/scripts/fixtures/run-medium-serve.sh
 
 bench-sqlite-query-latency:
 	@if [ -n "$$ISO_ROOT" ]; then ./bin/atlasctl env require-isolate >/dev/null; fi

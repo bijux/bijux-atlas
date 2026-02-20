@@ -27,8 +27,8 @@ Does not duplicate script implementation details.
 - Docs linters/generators: `atlasctl docs ...`
 - Perf tooling wrappers: `scripts/areas/public/perf/` (canonical: `ops/load/scripts/`)
 - Observability checks: `scripts/areas/public/observability/`
-- Fixtures/data helpers: `scripts/areas/fixtures/`
-- Release automation: `scripts/areas/release/`
+- Fixtures/data helpers: `ops/datasets/scripts/fixtures/`
+- Release compatibility matrix automation: `atlasctl compat update-matrix|validate-matrix`
 - Layout checks/migrations: `scripts/areas/layout/`
 - Bootstrap wrappers and runtime helpers: `scripts/bin/`
 

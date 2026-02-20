@@ -16,7 +16,7 @@ ALLOWED_PREFIXES = (
     "scripts/lib/",    "scripts/areas/policy/",
         "scripts/areas/layout/",
     "scripts/areas/release/",
-    "scripts/areas/fixtures/",
+    "ops/datasets/scripts/fixtures/",
     "scripts/bin/",
     "scripts/areas/ops/",
     "scripts/areas/tools/",

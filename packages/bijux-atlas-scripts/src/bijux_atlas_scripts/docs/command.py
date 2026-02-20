@@ -2108,8 +2108,6 @@ def _check_script_headers(ctx: RunContext) -> tuple[int, str]:
         required_groups = [
                         "scripts/areas/public/perf/",
             "scripts/areas/public/observability/",
-            "scripts/areas/fixtures/",
-            "scripts/areas/release/",
             "scripts/areas/layout/",
             "scripts/bin/",
             "scripts/areas/public/",

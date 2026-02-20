@@ -422,7 +422,7 @@ ops-reset: ## Reset ops state (namespace/PV store data + local store artifacts)
 ops-publish-medium: ## Ingest + publish medium fixture dataset
 	@$(MAKE) -s ops-env-validate
 	@if [ ! -f ops/fixtures/medium/v1/data/genes.gff3 ] || [ ! -f ops/fixtures/medium/v1/data/genome.fa ] || [ ! -f ops/fixtures/medium/v1/data/genome.fa.fai ]; then \
-	  ./scripts/areas/fixtures/fetch-medium.sh; \
+	  ./ops/datasets/scripts/fixtures/fetch-medium.sh; \
 	fi
 	@./ops/e2e/runner/publish_dataset.sh \
 	  --gff3 ops/fixtures/medium/v1/data/genes.gff3 \

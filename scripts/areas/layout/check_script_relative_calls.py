@@ -16,7 +16,7 @@ allowed = (
     "scripts/areas/public/perf/",
     "scripts/areas/public/contracts/",
     "scripts/areas/release/",
-    "scripts/areas/fixtures/",
+    "ops/datasets/scripts/fixtures/",
     "scripts/areas/policy/",
     "scripts/areas/ops/",
     "scripts/areas/public/require-crate-docs.sh",

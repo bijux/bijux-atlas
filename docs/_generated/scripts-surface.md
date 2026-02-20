@@ -58,7 +58,7 @@ Scripts are internal unless listed in `configs/ops/public-surface.json` or `scri
 - `scripts/areas/demo/`
 - `scripts/areas/dev/`
 - `scripts/areas/docs/`
-- `scripts/areas/fixtures/`
+- `ops/datasets/scripts/fixtures/`
 - `scripts/areas/gen/`
 - `scripts/areas/internal/`
 - `scripts/areas/layout/`
