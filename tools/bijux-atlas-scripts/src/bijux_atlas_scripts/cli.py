@@ -4,7 +4,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from . import configs, contracts, docs, layout, make, ops, policies, registry, report
+from . import configs, contracts, docs, layout, ops, policies, registry, report
 from .core.context import RunContext
 from .core.fs import ensure_evidence_path
 from .core.logging import log_event
@@ -13,6 +13,7 @@ from .domain_cmd import register_domain_parser, render_payload
 from .errors import ScriptError
 from .exit_codes import ERR_INTERNAL
 from .inventory.command import configure_inventory_parser, run_inventory
+from .make.command import configure_make_parser, run_make_command
 from .network_guard import install_no_network_guard
 from .output_contract import validate_json_output
 from .runner import run_legacy_script
@@ -23,7 +24,6 @@ DOMAINS = {
     "docs": docs.run,
     "configs": configs.run,
     "policies": policies.run,
-    "make": make.run,
     "contracts": contracts.run,
     "registry": registry.run,
     "layout": layout.run,
@@ -57,7 +57,6 @@ def build_parser() -> argparse.ArgumentParser:
         "docs",
         "configs",
         "policies",
-        "make",
         "contracts",
         "registry",
         "layout",
@@ -65,6 +64,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     for name in domain_names:
         register_domain_parser(sub, name, f"{name} domain commands")
+    configure_make_parser(sub)
     configure_inventory_parser(sub)
 
     doctor_p = sub.add_parser("doctor", help="show tooling and context diagnostics")
@@ -98,6 +98,8 @@ def main(argv: list[str] | None = None) -> int:
             return run_surface(ns.json, ns.out_file)
         if ns.cmd == "doctor":
             return run_doctor(ctx, ns.json, ns.out_file)
+        if ns.cmd == "make":
+            return run_make_command(ctx, ns)
         if ns.cmd == "inventory":
             return run_inventory(ctx, ns.category, ns.format, ns.out_dir, ns.dry_run, ns.check)
         if ns.cmd in DOMAINS:
