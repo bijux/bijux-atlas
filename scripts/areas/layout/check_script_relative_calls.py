@@ -24,7 +24,6 @@ allowed = (
     "scripts/areas/public/check-cli-commands.sh",
     "scripts/areas/public/policy-schema-drift.py",
     "scripts/areas/public/check-allow-env-schema.py",
-    "scripts/areas/check/",
     "scripts/bin/",
     "scripts/lib/",
     "scripts/README.md",

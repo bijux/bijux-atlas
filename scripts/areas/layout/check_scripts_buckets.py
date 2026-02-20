@@ -12,7 +12,6 @@ SCRIPTS = ROOT / "scripts"
 
 ALLOWED_PREFIXES = (
     "scripts/areas/public/",
-    "scripts/areas/check/",
     "scripts/areas/configs/",
     "scripts/lib/",    "scripts/areas/policy/",
         "scripts/areas/layout/",
