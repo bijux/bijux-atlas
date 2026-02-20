@@ -55,7 +55,7 @@ docs-build: ## Build docs + link-check + spell-check + lint
 	@./scripts/bin/bijux-atlas-scripts run scripts/areas/docs/lint_doc_contracts.py
 	@./scripts/bin/bijux-atlas-scripts run scripts/areas/docs/check_nav_order.py
 	@./scripts/bin/bijux-atlas-scripts run scripts/areas/docs/check_adr_headers.py
-	@if command -v vale >/dev/null 2>&1; then vale docs; else echo "vale not found; using contract style linter + codespell"; fi
+	@if command -v vale >/dev/null 2>&1; then vale --config=configs/docs/.vale.ini docs; else echo "vale not found; using contract style linter + codespell"; fi
 	@./scripts/bin/bijux-atlas-scripts run scripts/areas/docs/check_runbooks_contract.py
 	@./scripts/bin/bijux-atlas-scripts run scripts/areas/docs/check_k8s_docs_contract.py
 	@./scripts/bin/bijux-atlas-scripts run scripts/areas/docs/check_load_docs_contract.py
