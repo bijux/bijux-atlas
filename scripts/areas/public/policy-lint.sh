@@ -96,6 +96,7 @@ PY
 ./scripts/areas/public/check-cli-commands.sh
 ./scripts/areas/public/policy-schema-drift.py
 ./scripts/areas/public/check-allow-env-schema.py
-./scripts/areas/contracts/check_all.sh
+./bin/bijux-atlas contracts generate --generators artifacts chart-schema
+./bin/bijux-atlas contracts check --checks breakage drift endpoints error-codes sqlite-indexes chart-values
 ./scripts/areas/internal/effects-lint.sh
 ./scripts/areas/internal/naming-intent-lint.sh

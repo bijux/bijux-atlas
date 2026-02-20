@@ -23,7 +23,6 @@ ALLOWED_PREFIXES = (
     "scripts/areas/policy/",
     "scripts/areas/docs/",
     "scripts/areas/layout/",
-    "scripts/areas/contracts/",
     "scripts/areas/release/",
     "scripts/areas/fixtures/",
     "scripts/areas/bootstrap/",
