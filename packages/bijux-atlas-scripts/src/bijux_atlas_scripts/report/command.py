@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import subprocess
 import tarfile
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from xml.etree.ElementTree import Element, SubElement, tostring
 
@@ -157,6 +158,31 @@ def _cmd_summarize(ctx: RunContext, run_id: str, out: str | None) -> int:
             status = report.get("status", "unknown")
             log = report.get("log", "-")
             lines.append(f"| {lane} | {status} | {fail} | `{repro}` | {log} |")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(out_path)
+    return 0
+
+
+def _cmd_pr_summary(ctx: RunContext, run_id: str, out: str | None) -> int:
+    payload = build_unified(ctx, run_id)
+    out_path = Path(out) if out else (_run_dir(ctx, run_id) / "pr-summary.md")
+    lines = [
+        f"### bijux-atlas run `{run_id}`",
+        "",
+        f"- Total lanes: {payload['summary']['total']}",
+        f"- Passed: {payload['summary']['passed']}",
+        f"- Failed: {payload['summary']['failed']}",
+        "",
+    ]
+    lanes = payload.get("lanes", {})
+    if isinstance(lanes, dict):
+        for lane, report in sorted(lanes.items()):
+            if not isinstance(report, dict):
+                continue
+            status = report.get("status", "unknown")
+            emoji = "✅" if status == "pass" else "❌"
+            lines.append(f"- {emoji} `{lane}`: {status}")
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(out_path)
@@ -326,6 +352,64 @@ def _cmd_export(ctx: RunContext, run_id: str, out: str | None) -> int:
     return 0
 
 
+def _cmd_artifact_index(ctx: RunContext, limit: int, out: str | None) -> int:
+    root = (ctx.repo_root / "artifacts/bijux-atlas-scripts/run").resolve()
+    rows: list[dict[str, object]] = []
+    if root.exists():
+        candidates = sorted(
+            [p for p in root.iterdir() if p.is_dir()],
+            key=lambda p: p.stat().st_mtime,
+            reverse=True,
+        )
+        for run in candidates[:limit]:
+            rows.append(
+                {
+                    "run_id": run.name,
+                    "path": str(run),
+                    "reports": sorted(str(p.relative_to(ctx.repo_root)) for p in run.glob("reports/*.json")),
+                    "logs": sorted(str(p.relative_to(ctx.repo_root)) for p in run.glob("logs/*.log")),
+                }
+            )
+    payload = {"schema_version": 1, "tool": "bijux-atlas", "artifact_runs": rows}
+    if out:
+        out_path = Path(out)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        print(out_path)
+    else:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _cmd_artifact_gc(ctx: RunContext, older_than_days: int | None) -> int:
+    cfg = ctx.repo_root / "configs/ops/scripts-artifact-retention.json"
+    payload = {"scripts_retention_days": 14}
+    if cfg.exists():
+        payload = json.loads(cfg.read_text(encoding="utf-8"))
+    days = int(payload.get("scripts_retention_days", 14)) if older_than_days is None else int(older_than_days)
+    root = (ctx.repo_root / "artifacts/bijux-atlas-scripts/run").resolve()
+    removed: list[str] = []
+    if root.exists():
+        cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+        for run in sorted([p for p in root.iterdir() if p.is_dir()]):
+            modified = datetime.fromtimestamp(run.stat().st_mtime, tz=timezone.utc)
+            if modified < cutoff:
+                shutil.rmtree(run, ignore_errors=True)
+                removed.append(str(run))
+    print(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "tool": "bijux-atlas",
+                "removed": sorted(removed),
+                "retention_days": days,
+            },
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
 def run_report_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.report_cmd == "collect":
         return _cmd_collect(ctx, ns.run_id_override or ctx.run_id, ns.out)
@@ -353,6 +437,12 @@ def run_report_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _cmd_export(ctx, ns.run_id_override or ctx.run_id, ns.out)
     if ns.report_cmd == "bundle":
         return _cmd_export(ctx, ns.run_id_override or ctx.run_id, ns.out)
+    if ns.report_cmd == "pr-summary":
+        return _cmd_pr_summary(ctx, ns.run_id_override or ctx.run_id, ns.out)
+    if ns.report_cmd == "artifact-index":
+        return _cmd_artifact_index(ctx, ns.limit, ns.out)
+    if ns.report_cmd == "artifact-gc":
+        return _cmd_artifact_gc(ctx, ns.older_than_days)
     return 2
 
 
@@ -407,3 +497,14 @@ def configure_report_parser(sub: argparse._SubParsersAction[argparse.ArgumentPar
     bundle = rep.add_parser("bundle", help="alias for export run evidence bundle")
     bundle.add_argument("--run-id", dest="run_id_override")
     bundle.add_argument("--out")
+
+    ps = rep.add_parser("pr-summary", help="write short PR-friendly summary markdown")
+    ps.add_argument("--run-id", dest="run_id_override")
+    ps.add_argument("--out")
+
+    ai = rep.add_parser("artifact-index", help="list recent scripts artifact runs")
+    ai.add_argument("--limit", type=int, default=10)
+    ai.add_argument("--out")
+
+    gc = rep.add_parser("artifact-gc", help="garbage collect scripts artifacts by retention")
+    gc.add_argument("--older-than-days", type=int)

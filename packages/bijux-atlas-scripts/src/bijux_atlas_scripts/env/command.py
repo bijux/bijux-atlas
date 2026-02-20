@@ -4,6 +4,7 @@ import argparse
 import json
 import shutil
 import subprocess
+from datetime import datetime, timezone
 from pathlib import Path
 
 from ..core.context import RunContext
@@ -19,6 +20,53 @@ def _venv_path(ctx: RunContext, override: str | None) -> Path:
 def _lock_status(ctx: RunContext) -> str:
     lock = ctx.repo_root / "packages/bijux-atlas-scripts/requirements.lock.txt"
     return "ok" if lock.exists() and lock.stat().st_size > 0 else "missing"
+
+
+def _load_scripts_retention(ctx: RunContext) -> tuple[int, int]:
+    cfg = ctx.repo_root / "configs/ops/scripts-artifact-retention.json"
+    if not cfg.exists():
+        return 14, 20
+    payload = json.loads(cfg.read_text(encoding="utf-8"))
+    return int(payload.get("scripts_retention_days", 14)), int(payload.get("scripts_keep_last_runs", 20))
+
+
+def clean_scripts_artifacts(ctx: RunContext, older_than_days: int | None = None) -> dict[str, object]:
+    root = (ctx.repo_root / "artifacts/bijux-atlas-scripts").resolve()
+    removed: list[str] = []
+    if not root.exists():
+        return {
+            "schema_version": 1,
+            "tool": "bijux-atlas",
+            "status": "pass",
+            "action": "clean",
+            "removed": removed,
+        }
+    days, keep_last = _load_scripts_retention(ctx)
+    if older_than_days is not None:
+        days = int(older_than_days)
+    cutoff_ts = datetime.now(timezone.utc).timestamp() - (days * 86400)
+    runs = sorted((root / "run").glob("*"), key=lambda p: p.stat().st_mtime if p.exists() else 0.0, reverse=True)
+    keep = {p.resolve() for p in runs[:keep_last]}
+    for path in runs:
+        if path.resolve() in keep:
+            continue
+        if path.stat().st_mtime <= cutoff_ts:
+            shutil.rmtree(path, ignore_errors=True)
+            removed.append(str(path))
+    for name in (".pytest_cache", ".ruff_cache", ".mypy_cache", ".hypothesis"):
+        path = root / name
+        if path.exists():
+            shutil.rmtree(path, ignore_errors=True)
+            removed.append(str(path))
+    return {
+        "schema_version": 1,
+        "tool": "bijux-atlas",
+        "status": "pass",
+        "action": "clean",
+        "removed": sorted(removed),
+        "retention_days": days,
+        "keep_last_runs": keep_last,
+    }
 
 
 def run_env_command(ctx: RunContext, ns: argparse.Namespace) -> int:
@@ -46,20 +94,8 @@ def run_env_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             print(proc.stderr.strip())
         return proc.returncode
     if subcmd == "clean":
-        root = (ctx.repo_root / "artifacts/bijux-atlas-scripts").resolve()
-        removed: list[str] = []
-        for name in (".pytest_cache", ".ruff_cache", ".mypy_cache", "run"):
-            path = root / name
-            if path.exists():
-                shutil.rmtree(path, ignore_errors=True)
-                removed.append(str(path))
-        payload = {
-            "schema_version": 1,
-            "tool": "bijux-atlas",
-            "status": "pass",
-            "action": "env-clean",
-            "removed": removed,
-        }
+        payload = clean_scripts_artifacts(ctx)
+        removed = payload.get("removed", [])
         print(json.dumps(payload, sort_keys=True) if ns.json else f"removed={len(removed)}")
         return 0
 
