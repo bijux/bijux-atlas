@@ -2,5 +2,5 @@
 # owner: bijux-atlas-platform
 # purpose: temporary compatibility shim for make target graph renderer.
 # usage: scripts/bin/make_graph <target>
-echo "DEPRECATED: scripts/bin/make_graph expires 2026-06-30; use scripts/bin/bijux-atlas-scripts run tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/graph.py; see docs/development/tooling/bijux-atlas-scripts.md" >&2
-exec ./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/graph.py "$@"
+echo "DEPRECATED: scripts/bin/make_graph expires 2026-06-30; use scripts/bin/bijux-atlas-scripts run packages/bijux-atlas-scripts/src/bijux_atlas_scripts/make/graph.py; see docs/development/tooling/bijux-atlas-scripts.md" >&2
+exec ./scripts/bin/bijux-atlas-scripts run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/make/graph.py "$@"

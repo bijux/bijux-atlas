@@ -15,7 +15,6 @@
     "artifacts",
     "docker",
     "scripts",
-    "tools",
     "bin",
     "target",
     ".idea",
