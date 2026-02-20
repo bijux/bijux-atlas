@@ -166,6 +166,7 @@ nav:
           - Values: operations/k8s/values.md
           - Packaging and Ops: operations/k8s/packaging-and-ops.md
           - Values Schema: operations/k8s/values-schema.md
+          - Autoscaling Contract: operations/k8s/autoscaling-contract.md
           - Plugin Mode Entrypoint: operations/k8s/plugin-mode-entrypoint.md
           - Canary Progressive Delivery: operations/k8s/canary-progressive-delivery.md
           - Dataset Locality and Shard Scaling: operations/k8s/dataset-locality-and-shard-scaling.md

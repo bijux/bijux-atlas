@@ -11,6 +11,7 @@
 - `hpa`
 - `image`
 - `ingress`
+- `metrics`
 - `networkPolicy`
 - `nodeLocalSsdProfile`
 - `nodeSelector`

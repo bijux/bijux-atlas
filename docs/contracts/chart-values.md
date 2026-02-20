@@ -31,6 +31,7 @@ Does not define implementation internals outside this contract surface.
 - `hpa`
 - `image`
 - `ingress`
+- `metrics`
 - `networkPolicy`
 - `nodeLocalSsdProfile`
 - `nodeSelector`
