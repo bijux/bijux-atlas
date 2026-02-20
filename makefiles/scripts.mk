@@ -81,7 +81,6 @@ scripts-test: ## Run scripts-focused tests
 	@$(PY_RUN) scripts/areas/layout/check_scripts_top_level.py
 	@$(PY_RUN) ops/load/scripts/validate_suite_manifest.py
 	@$(PY_RUN) ops/load/scripts/check_pinned_queries_lock.py
-	@python3 -m unittest scripts.areas.tests.test_paths
 	@$(MAKE) -s internal/scripts/install-lock
 	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" check packages/bijux-atlas-scripts/src packages/bijux-atlas-scripts/tests
 	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/mypy" --ignore-missing-imports packages/bijux-atlas-scripts/tests
@@ -137,7 +136,6 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@if command -v shellcheck >/dev/null 2>&1; then find scripts/areas/check scripts/bin -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional)"; fi
 	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" check scripts/areas/check packages/bijux-atlas-scripts/src packages/bijux-atlas-scripts/tests
 	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/mypy" --ignore-missing-imports packages/bijux-atlas-scripts/src packages/bijux-atlas-scripts/tests
-	@python3 -m unittest scripts.areas.tests.test_paths
 
 scripts-all: ## Canonical scripts gate: all script-related gates must pass
 	@$(MAKE) internal/scripts/venv

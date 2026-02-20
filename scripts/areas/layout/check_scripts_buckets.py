@@ -20,7 +20,6 @@ ALLOWED_PREFIXES = (
     "scripts/bin/",
     "scripts/areas/ops/",
     "scripts/areas/tools/",
-    "scripts/areas/tests/",
     "scripts/areas/demo/",
 )
 LEGACY_ALLOWED = (
