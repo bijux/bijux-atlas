@@ -156,12 +156,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/public/contracts/gen_openapi.py` | `platform` | `public` | `api-contract-check` |
 | `scripts/areas/public/generate-config-key-registry.py` | `platform` | `public` | - |
 | `scripts/areas/public/no-network-unit-tests.sh` | `platform` | `public` | - |
-| `scripts/areas/public/observability/check_alerts_contract.py` | `platform` | `public` | `ops-alerts-validate`, `ops-metrics-check` |
-| `scripts/areas/public/observability/check_dashboard_contract.py` | `platform` | `public` | `ops-dashboards-validate`, `ops-metrics-check` |
-| `scripts/areas/public/observability/check_metrics_contract.py` | `platform` | `public` | `ops-metrics-check`, `ops-observability-validate` |
-| `scripts/areas/public/observability/check_runtime_metrics.py` | `platform` | `public` | `ops-metrics-check` |
-| `scripts/areas/public/observability/check_tracing_contract.py` | `platform` | `public` | `ops-observability-validate`, `ops-traces-check` |
-| `scripts/areas/public/observability/lint_runbooks.py` | `platform` | `public` | `ops-metrics-check` |
 | `scripts/areas/public/openapi-diff-check.sh` | `platform` | `public` | `api-contract-check`, `openapi-drift`, `ops-openapi-validate` |
 | `scripts/areas/public/ops-policy-audit.py` | `platform` | `public` | - |
 | `scripts/areas/public/perf/check_baseline_update_policy.sh` | `platform` | `public` | - |
