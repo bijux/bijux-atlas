@@ -95,7 +95,7 @@ DOCS_GENERATE_COMMANDS: list[list[str]] = [
     ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-k8s-install-matrix", "--report", "text"],
     ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-make-targets-inventory", "--report", "text"],
     ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-scripts-graph", "--report", "text"],
-    ["python3", "scripts/areas/ops/generate_k8s_test_surface.py"],
+    ["python3", "-m", "bijux_atlas_scripts.cli", "ops", "k8s-surface-generate", "--report", "text"],
     ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "runbook-map", "--fix", "--report", "text"],
 ]
 
