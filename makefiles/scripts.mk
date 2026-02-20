@@ -35,8 +35,8 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(PY_RUN) scripts/areas/layout/check_script_naming_convention.py
 	@$(PY_RUN) scripts/areas/layout/check_no_mixed_script_name_variants.py
 	@$(PY_RUN) scripts/areas/layout/check_duplicate_script_intent.py
-	@./scripts/areas/check/no-duplicate-script-names.sh
-	@./scripts/areas/check/no-direct-path-usage.sh
+	@$(ATLAS_SCRIPTS) check duplicate-script-names
+	@$(ATLAS_SCRIPTS) check layout
 	@$(PY_RUN) scripts/areas/check/check-script-help.py
 	@$(PY_RUN) scripts/areas/check/check-script-errors.py
 	@$(PY_RUN) scripts/areas/check/check-script-write-roots.py
@@ -109,8 +109,8 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(ATLAS_SCRIPTS) python lint --json >/dev/null
 	@$(ATLAS_SCRIPTS) check all
 	@$(ATLAS_SCRIPTS) --quiet legacy check --report text
-	@./scripts/areas/check/no-duplicate-script-names.sh
-	@./scripts/areas/check/no-direct-path-usage.sh
+	@$(ATLAS_SCRIPTS) check duplicate-script-names
+	@$(ATLAS_SCRIPTS) check layout
 	@$(PY_RUN) scripts/areas/check/check-no-python-executable-outside-tools.py
 	@$(PY_RUN) scripts/areas/check/check-no-direct-python-invocations.py
 	@$(PY_RUN) scripts/areas/check/check-no-direct-bash-invocations.py
