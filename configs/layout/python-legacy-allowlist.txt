@@ -137,7 +137,6 @@ scripts/areas/docs/check_adr_headers.py
 scripts/areas/docs/check_broken_examples.py
 scripts/areas/docs/check_concept_registry.py
 scripts/areas/docs/check_configmap_env_docs.py
-scripts/areas/docs/check_contracts_index_nav.py
 scripts/areas/docs/check_critical_make_targets_referenced.py
 scripts/areas/docs/check_doc_filename_style.py
 scripts/areas/docs/check_docker_entrypoints.py
@@ -163,7 +162,6 @@ scripts/areas/docs/check_suite_id_docs.py
 scripts/areas/docs/generate_chart_contract_index.py
 scripts/areas/docs/generate_concept_graph.py
 scripts/areas/docs/generate_config_keys_doc.py
-scripts/areas/docs/generate_contracts_index_doc.py
 scripts/areas/docs/generate_crates_map.py
 scripts/areas/docs/generate_env_vars_doc.py
 scripts/areas/docs/generate_k8s_install_matrix.py
@@ -179,11 +177,9 @@ scripts/areas/docs/generate_ops_contracts_doc.py
 scripts/areas/docs/generate_ops_schema_docs.py
 scripts/areas/docs/generate_ops_surface.py
 scripts/areas/docs/generate_repo_surface.py
-scripts/areas/docs/generate_runbook_map_index.py
 scripts/areas/docs/generate_scripts_graph.py
 scripts/areas/docs/lint_depth.py
 scripts/areas/docs/lint_doc_contracts.py
-scripts/areas/docs/rewrite_legacy_terms.py
 scripts/areas/docs/run_blessed_snippets.py
 scripts/areas/gen/generate_scripts_readme.py
 scripts/areas/gen/generate_scripts_surface.py

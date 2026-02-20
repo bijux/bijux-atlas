@@ -75,7 +75,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_concept_ids.sh` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_concept_registry.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_configmap_env_docs.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_contracts_index_nav.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_critical_make_targets_referenced.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_doc_filename_style.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_doc_naming.sh` | `docs-governance` | `public` | `docs-build` |
@@ -103,7 +102,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/generate_chart_contract_index.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_concept_graph.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_config_keys_doc.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/generate_contracts_index_doc.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_crates_map.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_env_vars_doc.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_k8s_install_matrix.py` | `docs-governance` | `public` | - |
@@ -119,13 +117,10 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/generate_ops_schema_docs.py` | `docs-governance` | `public` | `ops-contracts-check`, `ops-gen` |
 | `scripts/areas/docs/generate_ops_surface.py` | `docs-governance` | `public` | `ops-contracts-check`, `ops-gen` |
 | `scripts/areas/docs/generate_repo_surface.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/generate_runbook_map_index.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_scripts_graph.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/legacy-terms-allowlist.txt` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/lint_depth.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/lint_doc_contracts.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/render_diagrams.sh` | `docs-governance` | `public` | `docs-build` |
-| `scripts/areas/docs/rewrite_legacy_terms.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/run_blessed_snippets.py` | `docs-governance` | `public` | - |
 | `scripts/areas/fixtures/derive-release-111.sh` | `dataset-ops` | `internal` | - |
 | `scripts/areas/fixtures/fetch-medium.sh` | `dataset-ops` | `public` | `fetch-fixtures`, `ops-publish-medium` |

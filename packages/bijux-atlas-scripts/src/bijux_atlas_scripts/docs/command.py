@@ -969,6 +969,145 @@ def _check_observability_acceptance_checklist(ctx: RunContext) -> tuple[int, str
     return 0, "observability acceptance checklist contract passed"
 
 
+def _generate_contracts_index_doc(ctx: RunContext) -> tuple[int, str]:
+    out = ctx.repo_root / "docs/_generated/contracts-index.md"
+    scan_roots = [ctx.repo_root / "ops", ctx.repo_root / "configs", ctx.repo_root / "makefiles", ctx.repo_root / "docker"]
+    contracts: list[Path] = []
+    schemas: list[Path] = []
+    for root in scan_roots:
+        contracts.extend(root.glob("**/CONTRACT.md"))
+        schemas.extend(root.glob("**/*.schema.json"))
+    contracts = sorted(contracts)
+    schemas = sorted(schemas)
+    lines = [
+        "# Contracts And Schemas Index (Generated)",
+        "",
+        "Generated from repository files. Do not edit manually.",
+        "",
+        f"- CONTRACT files: `{len(contracts)}`",
+        f"- Schema files: `{len(schemas)}`",
+        "",
+        "## CONTRACT.md Files",
+        "",
+    ]
+    lines.extend(f"- `{p.relative_to(ctx.repo_root).as_posix()}`" for p in contracts)
+    lines += ["", "## Schema Files", ""]
+    lines.extend(f"- `{p.relative_to(ctx.repo_root).as_posix()}`" for p in schemas)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return 0, str(out.relative_to(ctx.repo_root))
+
+
+def _check_contracts_index_nav(ctx: RunContext) -> tuple[int, str]:
+    mkdocs = (ctx.repo_root / "mkdocs.yml").read_text(encoding="utf-8", errors="ignore")
+    index = ctx.repo_root / "docs/_generated/contracts-index.md"
+    scan_roots = [ctx.repo_root / "ops", ctx.repo_root / "configs", ctx.repo_root / "makefiles", ctx.repo_root / "docker"]
+    errors: list[str] = []
+    if "_generated/contracts-index.md" not in mkdocs:
+        errors.append("mkdocs.yml is missing nav entry for docs/_generated/contracts-index.md")
+    if not index.exists():
+        errors.append("missing docs/_generated/contracts-index.md; run docs generator")
+    else:
+        index_text = index.read_text(encoding="utf-8", errors="ignore")
+        contracts: list[Path] = []
+        for root in scan_roots:
+            contracts.extend(root.glob("**/CONTRACT.md"))
+        for path in sorted(contracts):
+            rel = path.relative_to(ctx.repo_root).as_posix()
+            if f"`{rel}`" not in index_text:
+                errors.append(f"contracts index missing `{rel}`")
+    return (0, "contracts index/nav check passed") if not errors else (1, "\n".join(errors))
+
+
+def _generate_runbook_map_index(ctx: RunContext) -> tuple[int, str]:
+    runbook_dir = ctx.repo_root / "docs/operations/runbooks"
+    map_doc = ctx.repo_root / "docs/operations/observability/runbook-dashboard-alert-map.md"
+    out = ctx.repo_root / "docs/_generated/runbook-map-index.md"
+    runbooks = sorted(p.name for p in runbook_dir.glob("*.md") if p.name != "INDEX.md")
+    mapped = set(re.findall(r"\|\s*`([^`]+\.md)`\s*\|", map_doc.read_text(encoding="utf-8", errors="ignore")))
+    lines = [
+        "# Runbook Map Index (Generated)",
+        "",
+        "Generated from runbooks and observability runbook map.",
+        "",
+        f"- Total runbooks: `{len(runbooks)}`",
+        f"- Mapped runbooks: `{len([r for r in runbooks if r in mapped])}`",
+        "",
+        "| Runbook | In map |",
+        "|---|---|",
+    ]
+    for name in runbooks:
+        lines.append(f"| `{name}` | {'yes' if name in mapped else 'no'} |")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return 0, str(out.relative_to(ctx.repo_root))
+
+
+def _render_diagrams(ctx: RunContext) -> tuple[int, str]:
+    diagram_dir = ctx.repo_root / "docs/_assets/diagrams"
+    rendered = 0
+    messages: list[str] = []
+
+    mmdc = shutil.which("mmdc")
+    if mmdc:
+        for src in sorted(diagram_dir.rglob("*.mmd")):
+            out = src.with_suffix(".svg")
+            proc = subprocess.run([mmdc, "-i", str(src), "-o", str(out)], cwd=ctx.repo_root, text=True, capture_output=True, check=False)
+            if proc.returncode == 0:
+                rendered += 1
+            else:
+                messages.append((proc.stdout + proc.stderr).strip() or f"mmdc failed for {src.relative_to(ctx.repo_root)}")
+    else:
+        messages.append("mmdc not found; skipping Mermaid rendering")
+
+    plantuml = shutil.which("plantuml")
+    if plantuml:
+        for src in sorted(diagram_dir.rglob("*.puml")):
+            proc = subprocess.run([plantuml, "-tsvg", str(src)], cwd=ctx.repo_root, text=True, capture_output=True, check=False)
+            if proc.returncode == 0:
+                rendered += 1
+            else:
+                messages.append((proc.stdout + proc.stderr).strip() or f"plantuml failed for {src.relative_to(ctx.repo_root)}")
+    else:
+        messages.append("plantuml not found; skipping PlantUML rendering")
+
+    if rendered == 0:
+        return 0, "diagram render check completed (no renderer available or no sources)"
+    return 0, f"rendered {rendered} diagram(s)" + (f"\n{chr(10).join(messages)}" if messages else "")
+
+
+def _rewrite_legacy_terms(ctx: RunContext, path_arg: str, apply: bool) -> tuple[int, str]:
+    replacements: list[tuple[re.Pattern[str], str]] = [
+        (re.compile(r"\bphase\s+([0-9]+)\b", re.IGNORECASE), "stability level: provisional"),
+        (re.compile(r"\bstep\s+([0-9]+)\b", re.IGNORECASE), "checkpoint"),
+        (re.compile(r"\bstage\s+([0-9]+)\b", re.IGNORECASE), "boundary"),
+        (re.compile(r"\btask\s+([0-9]+)\b", re.IGNORECASE), "requirement"),
+        (re.compile(r"\biteration\s+([0-9]+)\b", re.IGNORECASE), "revision"),
+        (re.compile(r"\bround\s+([0-9]+)\b", re.IGNORECASE), "review cycle"),
+        (re.compile(r"\bWIP\b", re.IGNORECASE), "draft"),
+        (re.compile(r"\btemporary\b", re.IGNORECASE), "provisional"),
+        (re.compile(r"vnext\s+placeholder", re.IGNORECASE), "future extension (documented non-goal)"),
+    ]
+    path = (ctx.repo_root / path_arg).resolve() if not Path(path_arg).is_absolute() else Path(path_arg)
+    if not path.exists():
+        return 2, f"missing: {path_arg}"
+    text = path.read_text(encoding="utf-8", errors="ignore")
+    out = text
+    for pattern, replacement in replacements:
+        out = pattern.sub(replacement, out)
+    if out == text:
+        return 0, "no legacy term replacements needed"
+    if apply:
+        path.write_text(out, encoding="utf-8")
+        return 0, f"rewrote {path.relative_to(ctx.repo_root)}"
+    diffs: list[str] = [f"--- {path.relative_to(ctx.repo_root)}"]
+    for idx, (old, new) in enumerate(zip(text.splitlines(), out.splitlines()), start=1):
+        if old != new:
+            diffs.append(f"L{idx}: - {old}")
+            diffs.append(f"L{idx}: + {new}")
+    return 1, "\n".join(diffs)
+
+
 def _check_script_headers(ctx: RunContext) -> tuple[int, str]:
     root = ctx.repo_root
     script_paths = sorted(
@@ -1841,17 +1980,18 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
     if ns.docs_cmd == "contracts-index":
         if ns.fix:
-            return _run_simple(ctx, ["python3", "scripts/areas/docs/generate_contracts_index_doc.py"], ns.report)
-        return _run_simple(ctx, ["python3", "scripts/areas/docs/check_contracts_index_nav.py"], ns.report)
+            code, output = _generate_contracts_index_doc(ctx)
+        else:
+            code, output = _check_contracts_index_nav(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
 
     if ns.docs_cmd == "runbook-map":
         if ns.fix:
-            return _run_simple(ctx, ["python3", "scripts/areas/docs/generate_runbook_map_index.py"], ns.report)
-        code, output = _check_runbook_map_registration(ctx)
-        if ns.report == "json":
-            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+            code, output = _generate_runbook_map_index(ctx)
         else:
-            print(output)
+            code, output = _check_runbook_map_registration(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
         return code
 
     if ns.docs_cmd == "evidence-policy-page":
@@ -1886,7 +2026,9 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return code
 
     if ns.docs_cmd == "render-diagrams":
-        return _run_simple(ctx, ["bash", "scripts/areas/docs/render_diagrams.sh"], ns.report)
+        code, output = _render_diagrams(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
 
     if ns.docs_cmd == "lint-spelling":
         code, output = _spellcheck(ctx, ns.path)
@@ -1904,16 +2046,9 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return code
 
     if ns.docs_cmd == "rewrite-legacy-terms":
-        if not ns.apply:
-            payload = {
-                "schema_version": 1,
-                "tool": "atlasctl",
-                "status": "pass",
-                "note": "no changes applied; pass --apply to rewrite terms",
-            }
-            print(json.dumps(payload, sort_keys=True) if ns.report == "json" else payload["note"])
-            return 0
-        return _run_simple(ctx, ["python3", "scripts/areas/docs/rewrite_legacy_terms.py", ns.path], ns.report)
+        code, output = _rewrite_legacy_terms(ctx, ns.path, ns.apply)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
 
     if ns.docs_cmd == "generate":
         errors: list[str] = []

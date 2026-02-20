@@ -48,6 +48,4 @@ Scripts in this area.
 - legacy-terms-allowlist.txt
 - lint_depth.py
 - lint_doc_contracts.py
-- render_diagrams.sh
-- rewrite_legacy_terms.py
 - run_blessed_snippets.py
