@@ -78,22 +78,22 @@ DOCS_LINT_CHECKS: list[DocsCheck] = [
 
 DOCS_GENERATE_COMMANDS: list[list[str]] = [
     ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-crates-map", "--report", "text"],
-    ["python3", "scripts/areas/docs/generate_architecture_map.py"],
-    ["python3", "scripts/areas/docs/generate_k8s_values_doc.py"],
+    ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-architecture-map", "--report", "text"],
+    ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-k8s-values-doc", "--report", "text"],
     ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "concept-graph-generate", "--report", "text"],
-    ["python3", "scripts/areas/docs/generate_openapi_docs.py"],
-    ["python3", "scripts/areas/docs/generate_observability_surface.py"],
-    ["python3", "scripts/areas/docs/generate_ops_badge.py"],
-    ["python3", "scripts/areas/docs/generate_ops_schema_docs.py"],
-    ["python3", "scripts/areas/docs/generate_ops_surface.py"],
-    ["python3", "scripts/areas/docs/generate_ops_contracts_doc.py"],
+    ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-openapi-docs", "--report", "text"],
+    ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-observability-surface", "--report", "text"],
+    ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-ops-badge", "--report", "text"],
+    ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-ops-schema-docs", "--report", "text"],
+    ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-ops-surface", "--report", "text"],
+    ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-ops-contracts-doc", "--report", "text"],
     ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-make-targets-catalog", "--report", "text"],
     ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-config-keys-doc", "--report", "text"],
     ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-env-vars-doc", "--report", "text"],
-    ["python3", "scripts/areas/docs/generate_contracts_index_doc.py"],
-    ["python3", "scripts/areas/docs/generate_chart_contract_index.py"],
+    ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "contracts-index", "--fix", "--report", "text"],
+    ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-chart-contract-index", "--report", "text"],
     ["python3", "scripts/areas/ops/generate_k8s_test_surface.py"],
-    ["python3", "scripts/areas/docs/generate_runbook_map_index.py"],
+    ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "runbook-map", "--fix", "--report", "text"],
 ]
 
 
@@ -2542,6 +2542,287 @@ def _generate_config_keys_doc(ctx: RunContext) -> tuple[int, str]:
     return 0, str(out.relative_to(ctx.repo_root))
 
 
+def _generate_layer_contract_doc(ctx: RunContext) -> tuple[int, str]:
+    inp = ctx.repo_root / "ops" / "_meta" / "layer-contract.json"
+    out = ctx.repo_root / "docs" / "_generated" / "layer-contract.md"
+    contract = json.loads(inp.read_text(encoding="utf-8"))
+    lines = [
+        "# Layer Contract",
+        "",
+        f"- Contract version: `{contract['contract_version']}`",
+        f"- Compatibility policy: {contract['compatibility']['policy']}",
+        "",
+        "## Namespaces",
+    ]
+    for key, val in contract["namespaces"].items():
+        lines.append(f"- `{key}`: `{val}`")
+    lines.extend(["", "## Services"])
+    for key, val in contract["services"].items():
+        lines.append(f"- `{key}`: service `{val['service_name']}`, selector `{json.dumps(val['selector'], sort_keys=True)}`")
+    lines.extend(["", "## Ports"])
+    for key, val in contract["ports"].items():
+        lines.append(f"- `{key}`: `{json.dumps(val, sort_keys=True)}`")
+    lines.extend(["", "## Labels", "- Required labels:"])
+    for item in contract["labels"]["required"]:
+        lines.append(f"- `{item}`")
+    lines.extend(["", "## Release Metadata"])
+    lines.append(f"- Required fields: `{', '.join(contract['release_metadata']['required_fields'])}`")
+    lines.append(f"- Defaults: `{json.dumps(contract['release_metadata']['defaults'], sort_keys=True)}`")
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return 0, f"wrote {out.relative_to(ctx.repo_root)}"
+
+
+def _generate_makefiles_surface(ctx: RunContext) -> tuple[int, str]:
+    surface = json.loads((ctx.repo_root / "configs" / "ops" / "public-surface.json").read_text(encoding="utf-8"))
+    out = ctx.repo_root / "docs" / "development" / "makefiles" / "surface.md"
+    lines = [
+        "# Makefiles Public Surface",
+        "",
+        "Generated from `configs/ops/public-surface.json`. Do not edit manually.",
+        "",
+        "## Core Gates",
+    ]
+    lines.extend(f"- `make {target}`" for target in surface.get("core_targets", []))
+    lines.extend(["", "## Public Targets"])
+    lines.extend(f"- `make {target}`" for target in surface.get("make_targets", []))
+    lines.extend(["", "## Public Ops Run Commands"])
+    lines.extend(f"- `./{cmd}`" for cmd in surface.get("ops_run_commands", []))
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return 0, str(out.relative_to(ctx.repo_root))
+
+
+def _generate_observability_surface(ctx: RunContext) -> tuple[int, str]:
+    out = ctx.repo_root / "docs" / "_generated" / "observability-surface.md"
+    rendered = _render_observability_surface(ctx)
+    out.write_text(rendered + "\n", encoding="utf-8")
+    return 0, f"wrote {out.relative_to(ctx.repo_root)}"
+
+
+def _generate_ops_contracts_doc(ctx: RunContext) -> tuple[int, str]:
+    out = ctx.repo_root / "docs" / "_generated" / "ops-contracts.md"
+    contracts = json.loads((ctx.repo_root / "ops" / "_meta" / "contracts.json").read_text(encoding="utf-8"))
+    schemas = sorted((ctx.repo_root / "ops" / "_schemas").rglob("*.json"))
+    lines = ["# Ops Contracts", "", "Generated from ops contracts and schemas.", "", "## Contract Files", ""]
+    for item in contracts.get("contracts", []):
+        lines.append(f"- `{item['path']}` (version `{item['version']}`)")
+    lines.extend(["", "## Schemas", ""])
+    lines.extend(f"- `{schema.relative_to(ctx.repo_root).as_posix()}`" for schema in schemas)
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return 0, str(out.relative_to(ctx.repo_root))
+
+
+def _generate_ops_schema_docs(ctx: RunContext) -> tuple[int, str]:
+    schemas = sorted((ctx.repo_root / "ops" / "_schemas").rglob("*.json"))
+    out = ctx.repo_root / "docs" / "_generated" / "ops-schemas.md"
+    lines = ["# Ops Schemas", "", "Generated from `ops/_schemas`. Do not edit manually.", ""]
+    for path in schemas:
+        rel = path.relative_to(ctx.repo_root).as_posix()
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            payload = {}
+        required = payload.get("required", []) if isinstance(payload, dict) else []
+        lines.append(f"## `{rel}`")
+        lines.append("")
+        if required:
+            lines.append("Required keys:")
+            lines.extend(f"- `{key}`" for key in required)
+        else:
+            lines.append("Required keys: none")
+        lines.append("")
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return 0, str(out.relative_to(ctx.repo_root))
+
+
+def _generate_ops_surface(ctx: RunContext) -> tuple[int, str]:
+    surface = json.loads((ctx.repo_root / "ops" / "_meta" / "surface.json").read_text(encoding="utf-8"))
+    suites = json.loads((ctx.repo_root / "ops" / "e2e" / "suites" / "suites.json").read_text(encoding="utf-8"))
+    out = ctx.repo_root / "docs" / "_generated" / "ops-surface.md"
+    lines = ["# Ops Surface", "", "Generated from ops manifests.", "", "## Stable Entrypoints", ""]
+    lines.extend(f"- `make {target}`" for target in surface.get("entrypoints", []))
+    lines.extend(["", "## E2E Suites", ""])
+    for suite in suites.get("suites", []):
+        capabilities = ",".join(suite.get("required_capabilities", []))
+        lines.append(f"- `{suite['id']}`: capabilities=`{capabilities}`")
+        for scenario in suite.get("scenarios", []):
+            budget = scenario.get("budget", {})
+            lines.append(
+                f"- scenario `{scenario['id']}`: runner=`{scenario['runner']}`, budget(time_s={budget.get('expected_time_seconds')}, qps={budget.get('expected_qps')})"
+            )
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return 0, str(out.relative_to(ctx.repo_root))
+
+
+def _generate_repo_surface(ctx: RunContext) -> tuple[int, str]:
+    exclude_dirs = {".git", ".github", ".cargo", "target", ".idea", "node_modules"}
+    out = ctx.repo_root / "docs" / "_generated" / "repo-surface.md"
+    surface = json.loads((ctx.repo_root / "configs" / "ops" / "public-surface.json").read_text(encoding="utf-8"))
+    top_dirs = sorted(
+        path.name
+        for path in ctx.repo_root.iterdir()
+        if path.is_dir() and path.name not in exclude_dirs and not path.name.startswith(".")
+    )
+    lines = ["# Repository Surface", "", "## Top-level Areas"]
+    lines.extend(f"- `{name}/`" for name in top_dirs)
+    lines.extend(["", "## Public Make Targets"])
+    lines.extend(f"- `make {target}`" for target in surface.get("make_targets", []))
+    lines.extend(["", "## Public Ops Run Commands"])
+    lines.extend(f"- `./{cmd}`" for cmd in surface.get("ops_run_commands", []))
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return 0, f"wrote {out.relative_to(ctx.repo_root)}"
+
+
+def _generate_ops_badge(ctx: RunContext) -> tuple[int, str]:
+    scorecard = ctx.repo_root / "ops" / "_generated_committed" / "scorecard.json"
+    out = ctx.repo_root / "docs" / "_generated" / "ops-badge.md"
+    status = "unknown"
+    score = 0
+    if scorecard.exists():
+        payload = json.loads(scorecard.read_text(encoding="utf-8"))
+        status = str(payload.get("status", "unknown"))
+        score = int(payload.get("score", 0))
+    color = "red"
+    if status == "pass":
+        color = "brightgreen"
+    elif status == "unknown":
+        color = "lightgrey"
+    lines = [
+        "# Ops Badge",
+        "",
+        f"![ops confidence](https://img.shields.io/badge/ops%20confidence-{status}%20({score}%25)-{color})",
+        "",
+        f"Source: `{scorecard.relative_to(ctx.repo_root)}`",
+        "",
+    ]
+    out.write_text("\n".join(lines), encoding="utf-8")
+    return 0, f"wrote {out.relative_to(ctx.repo_root)}"
+
+
+def _generate_k8s_values_doc(ctx: RunContext) -> tuple[int, str]:
+    src = ctx.repo_root / "docs" / "contracts" / "CHART_VALUES.json"
+    out = ctx.repo_root / "docs" / "operations" / "k8s" / "values.md"
+    data = json.loads(src.read_text(encoding="utf-8"))
+    keys = data.get("top_level_keys", [])
+    lines = [
+        "# Kubernetes Values",
+        "",
+        "- Owner: `bijux-atlas-operations`",
+        "",
+        "## What",
+        "",
+        "Generated summary of Helm top-level values from the chart-values contract.",
+        "",
+        "## Why",
+        "",
+        "Keeps operations docs aligned to chart values SSOT.",
+        "",
+        "## Scope",
+        "",
+        "Top-level chart values keys only.",
+        "",
+        "## Non-goals",
+        "",
+        "Does not redefine schema semantics beyond contract references.",
+        "",
+        "## Contracts",
+    ]
+    lines.extend(f"- `values.{key}`" for key in keys)
+    lines.extend(
+        [
+            "",
+            "## Failure modes",
+            "",
+            "Missing or stale keys can break deployments and profile docs.",
+            "",
+            "## How to verify",
+            "",
+            "```bash",
+            "$ make ops-values-validate",
+            "```",
+            "",
+            "Expected output: generated values doc and chart contract check pass.",
+            "",
+            "## See also",
+            "",
+            "- [Chart Values Contract](../../contracts/chart-values.md)",
+            "- [Helm Chart Contract](chart.md)",
+            "- [K8s Index](INDEX.md)",
+            "- `ops-values-validate`",
+            "",
+        ]
+    )
+    out.write_text("\n".join(lines), encoding="utf-8")
+    return 0, f"generated {out.relative_to(ctx.repo_root)}"
+
+
+def _generate_openapi_docs(ctx: RunContext) -> tuple[int, str]:
+    src_dir = ctx.repo_root / "configs" / "openapi" / "v1"
+    out_dir = ctx.repo_root / "docs" / "_generated" / "openapi"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    generated = src_dir / "openapi.generated.json"
+    snapshot = src_dir / "openapi.snapshot.json"
+    if not generated.exists():
+        return 1, f"missing {generated.relative_to(ctx.repo_root)}"
+    if not snapshot.exists():
+        return 1, f"missing {snapshot.relative_to(ctx.repo_root)}"
+    spec = json.loads(generated.read_text(encoding="utf-8"))
+    paths = sorted(spec.get("paths", {}).keys())
+    (out_dir / "openapi.generated.json").write_text(generated.read_text(encoding="utf-8"))
+    (out_dir / "openapi.snapshot.json").write_text(snapshot.read_text(encoding="utf-8"))
+    index = [
+        "# OpenAPI Artifacts",
+        "",
+        "Generated from `configs/openapi/v1/`.",
+        "",
+        "- Canonical source: `configs/openapi/v1/openapi.generated.json`",
+        "- Snapshot: `configs/openapi/v1/openapi.snapshot.json`",
+        "",
+        "## Paths",
+        "",
+    ]
+    index.extend(f"- `{path}`" for path in paths)
+    (out_dir / "INDEX.md").write_text("\n".join(index) + "\n", encoding="utf-8")
+    return 0, "generated docs/_generated/openapi"
+
+
+def _generate_chart_contract_index(ctx: RunContext) -> tuple[int, str]:
+    manifest = ctx.repo_root / "ops" / "k8s" / "tests" / "manifest.json"
+    out = ctx.repo_root / "docs" / "_generated" / "contracts" / "chart-contract-index.md"
+    doc = json.loads(manifest.read_text(encoding="utf-8"))
+    tests: list[dict[str, object]] = []
+    for test in doc.get("tests", []):
+        groups = set(test.get("groups", []))
+        if "chart-contract" not in groups:
+            continue
+        script = test["script"]
+        if not script.startswith("checks/"):
+            continue
+        tests.append(
+            {
+                "script": script,
+                "owner": test.get("owner", "unknown"),
+                "failure": ", ".join(test.get("expected_failure_modes", [])) or "n/a",
+                "timeout": test.get("timeout_seconds", "n/a"),
+            }
+        )
+    tests.sort(key=lambda item: item["script"])
+    lines = [
+        "# Chart Contract Index",
+        "",
+        "Generated from `ops/k8s/tests/manifest.json` entries tagged with `chart-contract`.",
+        "",
+        "| Contract Test | Owner | Timeout (s) | Failure Modes |",
+        "| --- | --- | ---: | --- |",
+    ]
+    for test in tests:
+        lines.append(f"| `{test['script']}` | `{test['owner']}` | {test['timeout']} | `{test['failure']}` |")
+    lines.extend(["", "## Regenerate", "", "```bash", "atlasctl docs generate-chart-contract-index", "```", ""])
+    out.write_text("\n".join(lines), encoding="utf-8")
+    return 0, f"generated {out.relative_to(ctx.repo_root)} ({len(tests)} contracts)"
+
+
 def _generate_upgrade_guide(ctx: RunContext) -> tuple[int, str]:
     payload = _read_json(ctx.repo_root / "configs/ops/target-renames.json")
     rows = payload.get("renames", [])
@@ -3081,6 +3362,94 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             print(output)
         return code
 
+    if ns.docs_cmd == "generate-layer-contract-doc":
+        code, output = _generate_layer_contract_doc(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
+    if ns.docs_cmd == "generate-makefiles-surface":
+        code, output = _generate_makefiles_surface(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
+    if ns.docs_cmd == "generate-observability-surface":
+        code, output = _generate_observability_surface(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
+    if ns.docs_cmd == "generate-ops-contracts-doc":
+        code, output = _generate_ops_contracts_doc(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
+    if ns.docs_cmd == "generate-ops-schema-docs":
+        code, output = _generate_ops_schema_docs(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
+    if ns.docs_cmd == "generate-ops-surface":
+        code, output = _generate_ops_surface(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
+    if ns.docs_cmd == "generate-repo-surface":
+        code, output = _generate_repo_surface(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
+    if ns.docs_cmd == "generate-ops-badge":
+        code, output = _generate_ops_badge(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
+    if ns.docs_cmd == "generate-k8s-values-doc":
+        code, output = _generate_k8s_values_doc(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
+    if ns.docs_cmd == "generate-openapi-docs":
+        code, output = _generate_openapi_docs(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
+    if ns.docs_cmd == "generate-chart-contract-index":
+        code, output = _generate_chart_contract_index(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
     if ns.docs_cmd == "crate-docs-contract-check":
         code, output = _check_crate_docs_contract(ctx)
         if ns.report == "json":
@@ -3430,6 +3799,17 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("generate-make-targets-catalog", "generate makefiles/targets.json and docs/_generated/make-targets.md"),
         ("generate-env-vars-doc", "generate docs/_generated/env-vars.md"),
         ("generate-config-keys-doc", "generate docs/_generated/config-keys.md"),
+        ("generate-layer-contract-doc", "generate docs/_generated/layer-contract.md"),
+        ("generate-makefiles-surface", "generate docs/development/makefiles/surface.md"),
+        ("generate-observability-surface", "generate docs/_generated/observability-surface.md"),
+        ("generate-ops-contracts-doc", "generate docs/_generated/ops-contracts.md"),
+        ("generate-ops-schema-docs", "generate docs/_generated/ops-schemas.md"),
+        ("generate-ops-surface", "generate docs/_generated/ops-surface.md"),
+        ("generate-repo-surface", "generate docs/_generated/repo-surface.md"),
+        ("generate-ops-badge", "generate docs/_generated/ops-badge.md"),
+        ("generate-k8s-values-doc", "generate docs/operations/k8s/values.md"),
+        ("generate-openapi-docs", "generate docs/_generated/openapi/* artifacts"),
+        ("generate-chart-contract-index", "generate docs/_generated/contracts/chart-contract-index.md"),
         ("crate-docs-contract-check", "validate per-crate docs contract"),
         ("durable-naming-check", "enforce durable naming rules across docs/scripts"),
         ("duplicate-topics-check", "enforce duplicate topics pointer and owner contract"),
