@@ -2,6 +2,7 @@
 # Public targets: none
 SHELL := /bin/sh
 PYRUN := ./scripts/bin/bijux-atlas-scripts run
+SCRIPTS_VENV := artifacts/scripts/.venv
 
 bootstrap-tools:
 	@./scripts/areas/bootstrap/install_tools.sh
@@ -54,10 +55,11 @@ scripts-test: ## Run scripts-focused tests
 	@$(PYRUN) ops/load/scripts/validate_suite_manifest.py
 	@$(PYRUN) ops/load/scripts/check_pinned_queries_lock.py
 	@python3 -m unittest scripts.areas.tests.test_paths
-	@if command -v ruff >/dev/null 2>&1; then ruff check tools/bijux_atlas_scripts/src tools/bijux_atlas_scripts/tests; else echo "ruff not installed (optional)"; fi
-	@if command -v mypy >/dev/null 2>&1; then PYTHONPATH=tools/bijux_atlas_scripts/src mypy tools/bijux_atlas_scripts/src; else echo "mypy not installed (optional)"; fi
-	@PYTHONPATH=tools/bijux_atlas_scripts/src pytest -q tools/bijux_atlas_scripts/tests
-	@./scripts/bin/bijux-atlas-scripts validate-output --schema configs/contracts/scripts-tool-output.schema.json --file ops/_generated_committed/examples/report.example.json
+	@$(MAKE) -s internal/scripts/install-dev
+	@PYTHONPATH=tools/bijux_atlas_scripts/src "$(SCRIPTS_VENV)/bin/ruff" check tools/bijux_atlas_scripts/src tools/bijux_atlas_scripts/tests
+	@if [ -x "$(SCRIPTS_VENV)/bin/mypy" ]; then PYTHONPATH=tools/bijux_atlas_scripts/src "$(SCRIPTS_VENV)/bin/mypy" tools/bijux_atlas_scripts/src; else echo "mypy not installed (optional)"; fi
+	@PYTHONPATH=tools/bijux_atlas_scripts/src "$(SCRIPTS_VENV)/bin/pytest" -q tools/bijux_atlas_scripts/tests
+	@./scripts/bin/bijux-atlas-scripts validate-output --schema configs/contracts/scripts-tool-output.schema.json --file tools/bijux_atlas_scripts/tests/goldens/tool-output.example.json
 
 scripts-check: ## Run scripts lint + tests as a single gate
 	@./scripts/areas/check/no-duplicate-script-names.sh
@@ -87,8 +89,10 @@ scripts-audit: ## Audit script headers, taxonomy buckets, and no-implicit-cwd co
 	@$(PYRUN) scripts/areas/layout/check_make_public_scripts.py
 	@$(PYRUN) scripts/areas/layout/check_script_relative_calls.py
 
-scripts-install-dev: ## Install python tooling for scripts package
-	@python3 -m pip install -r tools/bijux_atlas_scripts/requirements.lock.txt
+internal/scripts/install-dev:
+	@python3 -m venv "$(SCRIPTS_VENV)"
+	@"$(SCRIPTS_VENV)/bin/pip" install --upgrade pip >/dev/null
+	@"$(SCRIPTS_VENV)/bin/pip" install -r tools/bijux_atlas_scripts/requirements.lock.txt >/dev/null
 
 scripts-clean: ## Remove generated script artifacts
 	@rm -rf artifacts/scripts
@@ -122,4 +126,4 @@ internal/scripts/all: ## Uniform scripts all target
 	@$(MAKE) internal/scripts/test
 	@$(MAKE) internal/scripts/build
 
-.PHONY: bootstrap-tools no-direct-scripts scripts-all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-install-dev scripts-lint scripts-test internal/scripts/check internal/scripts/build internal/scripts/fmt internal/scripts/lint internal/scripts/test internal/scripts/clean internal/scripts/all
+.PHONY: bootstrap-tools no-direct-scripts scripts-all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test internal/scripts/check internal/scripts/build internal/scripts/fmt internal/scripts/lint internal/scripts/test internal/scripts/clean internal/scripts/install-dev internal/scripts/all

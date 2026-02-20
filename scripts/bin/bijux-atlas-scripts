@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
+# purpose: stable shim for bijux-atlas-scripts python package CLI.
+# usage: scripts/bin/bijux-atlas-scripts <command> [args...]
 set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
+. "$ROOT/scripts/lib/errors.sh"
 export PYTHONPATH="$ROOT/tools/bijux_atlas_scripts/src${PYTHONPATH:+:$PYTHONPATH}"
 exec python3 -m bijux_atlas_scripts.cli "$@"
