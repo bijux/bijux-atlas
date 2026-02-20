@@ -37,7 +37,7 @@ def clean_scripts_artifacts(ctx: RunContext, older_than_days: int | None = None)
     if not root.exists():
         return {
             "schema_version": 1,
-            "tool": "bijux-atlas",
+            "tool": "atlasctl",
             "status": "pass",
             "action": "clean",
             "removed": removed,
@@ -61,7 +61,7 @@ def clean_scripts_artifacts(ctx: RunContext, older_than_days: int | None = None)
             removed.append(str(path))
     return {
         "schema_version": 1,
-        "tool": "bijux-atlas",
+        "tool": "atlasctl",
         "status": "pass",
         "action": "clean",
         "removed": sorted(removed),
@@ -102,7 +102,7 @@ def run_env_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         )
         payload = {
             "schema_version": 1,
-            "tool": "bijux-atlas",
+            "tool": "atlasctl",
             "status": "pass" if proc.returncode == 0 else "fail",
             "action": "env-create",
             "venv": str(venv),
@@ -181,7 +181,7 @@ def run_env_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     venv = _venv_path(ctx, getattr(ns, "path", None))
     payload = {
         "schema_version": 1,
-        "tool": "bijux-atlas",
+        "tool": "atlasctl",
         "status": "pass",
         "action": "env-info",
         "python3": shutil.which("python3") or "missing",

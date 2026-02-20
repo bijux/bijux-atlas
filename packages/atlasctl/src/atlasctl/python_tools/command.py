@@ -101,8 +101,10 @@ def _cmd_venv_create(ctx: RunContext, path_arg: str | None, as_json: bool) -> in
     return proc.returncode
 
 
-def _cmd_venv_run(ctx: RunContext, path_arg: str | None, cmd: list[str], as_json: bool) -> int:
-    if not cmd:
+def _cmd_venv_run(ctx: RunContext, path_arg: str | None, exec_cmd: list[str], as_json: bool) -> int:
+    if exec_cmd and exec_cmd[0] == "--":
+        exec_cmd = exec_cmd[1:]
+    if not exec_cmd:
         print("usage: atlasctl python venv run -- <cmd>")
         return ERR_USER
     try:
@@ -117,13 +119,13 @@ def _cmd_venv_run(ctx: RunContext, path_arg: str | None, cmd: list[str], as_json
     env = os.environ.copy()
     env["VIRTUAL_ENV"] = str(venv)
     env["PATH"] = f"{venv / 'bin'}:{env.get('PATH', '')}"
-    proc = subprocess.run(cmd, cwd=ctx.repo_root, text=True, check=False, env=env)
+    proc = subprocess.run(exec_cmd, cwd=ctx.repo_root, text=True, check=False, env=env)
     payload = {
         "schema_version": 1,
         "tool": "atlasctl",
         "status": "ok" if proc.returncode == 0 else "fail",
         "venv": str(venv),
-        "command": cmd,
+        "command": exec_cmd,
         "exit_code": proc.returncode,
     }
     if as_json:
@@ -137,11 +139,13 @@ def run_python_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _cmd_lint(ctx, as_json)
     if ns.python_cmd == "clean":
         return _cmd_clean(ctx, as_json)
+    if ns.python_cmd == "run":
+        return _cmd_venv_run(ctx, ns.path, ns.exec_cmd, as_json)
     if ns.python_cmd == "venv":
         if ns.venv_cmd == "create":
             return _cmd_venv_create(ctx, ns.path, as_json)
         if ns.venv_cmd == "run":
-            return _cmd_venv_run(ctx, ns.path, ns.cmd, as_json)
+            return _cmd_venv_run(ctx, ns.path, ns.exec_cmd, as_json)
     return ERR_USER
 
 
@@ -151,6 +155,9 @@ def configure_python_parser(sub: argparse._SubParsersAction[argparse.ArgumentPar
     p_sub = p.add_subparsers(dest="python_cmd", required=True)
     p_sub.add_parser("lint", help="validate no cache dirs are tracked")
     p_sub.add_parser("clean", help="clean python artifact dirs under artifacts/atlasctl")
+    run_alias = p_sub.add_parser("run", help="run command with standardized atlasctl venv and env")
+    run_alias.add_argument("--path", help="override venv path under artifacts root")
+    run_alias.add_argument("exec_cmd", nargs=argparse.REMAINDER)
 
     venv = p_sub.add_parser("venv", help="venv lifecycle helpers")
     venv_sub = venv.add_subparsers(dest="venv_cmd", required=True)
@@ -158,4 +165,4 @@ def configure_python_parser(sub: argparse._SubParsersAction[argparse.ArgumentPar
     create.add_argument("--path", help="override venv path under artifacts root")
     run = venv_sub.add_parser("run", help="run command with standardized venv")
     run.add_argument("--path", help="override venv path under artifacts root")
-    run.add_argument("cmd", nargs=argparse.REMAINDER)
+    run.add_argument("exec_cmd", nargs=argparse.REMAINDER)

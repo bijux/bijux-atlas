@@ -903,10 +903,7 @@ def check_script_shims_minimal(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def check_venv_location_policy(repo_root: Path) -> tuple[int, list[str]]:
-    allowed_prefixes = (
-        "artifacts/atlasctl/venv/.venv",
-        "artifacts/isolate/py/scripts/.venv",
-    )
+    allowed_prefixes = ("artifacts/atlasctl/",)
     proc = subprocess.run(
         ["git", "ls-files", "--others", "--cached", "--exclude-standard"],
         cwd=repo_root,
