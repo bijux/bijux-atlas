@@ -13,6 +13,7 @@ dependencies = []
 [project.optional-dependencies]
 dev = [
   "pytest==8.3.5",
+  "pytest-timeout==2.3.1",
   "ruff==0.13.2",
   "jsonschema==4.25.1",
   "hypothesis==6.138.14",
@@ -31,6 +32,8 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = ["--strict-markers", "-m", "unit"]
+timeout = 120
+timeout_method = "thread"
 markers = [
   "unit: fast unit tests with no network side-effects",
   "integration: integration tests that run commands against workspace fixtures",
@@ -40,6 +43,25 @@ markers = [
 [tool.ruff]
 line-length = 120
 
+[tool.ruff.format]
+quote-style = "double"
+
 [tool.ruff.lint]
-select = ["E", "F", "I"]
-ignore = ["E501"]
+select = ["E", "F", "I", "B", "UP", "SIM", "PIE", "RUF", "ARG"]
+ignore = ["E501", "ARG001", "ARG002", "ARG005", "B008", "B904", "SIM108", "PIE790", "RUF012"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+strict_optional = true
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["atlasctl.core.*", "atlasctl.contracts.*"]
+strict = true
+
+[[tool.mypy.overrides]]
+module = ["atlasctl.tests.*"]
+ignore_errors = true
