@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Scripts Tool Output",
+  "type": "object",
+  "required": ["schema_version", "tool", "status"],
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 1},
+    "tool": {"type": "string", "minLength": 1},
+    "status": {"type": "string", "enum": ["pass", "fail"]},
+    "details": {"type": ["object", "array", "string", "null"]}
+  },
+  "additionalProperties": true
+}

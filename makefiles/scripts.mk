@@ -1,41 +1,43 @@
 # Scope: scripts area internal targets and wrappers.
 # Public targets: none
 SHELL := /bin/sh
+PYRUN := ./scripts/bin/bijux-atlas-scripts run
 
 bootstrap-tools:
 	@./scripts/areas/bootstrap/install_tools.sh
 
 scripts-index:
-	@python3 ./scripts/areas/gen/generate_scripts_readme.py
+	@$(PYRUN) scripts/areas/gen/generate_scripts_readme.py
 
 scripts-graph: ## Generate make-target to scripts call graph
-	@python3 ./scripts/areas/docs/generate_scripts_graph.py
+	@$(PYRUN) scripts/areas/docs/generate_scripts_graph.py
 
 no-direct-scripts:
 	@./scripts/areas/layout/check_no_direct_script_runs.sh
-	@python3 ./scripts/areas/layout/check_make_public_scripts.py
+	@$(PYRUN) scripts/areas/layout/check_make_public_scripts.py
 
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)
 	@$(MAKE) scripts-audit
-	@python3 ./scripts/areas/docs/check_script_headers.py
-	@python3 ./scripts/areas/layout/check_make_public_scripts.py
-	@python3 ./scripts/areas/layout/check_scripts_buckets.py
-	@python3 ./scripts/areas/layout/check_script_relative_calls.py
-	@python3 ./scripts/areas/layout/check_script_naming_convention.py
-	@python3 ./scripts/areas/layout/check_no_mixed_script_name_variants.py
-	@python3 ./scripts/areas/layout/check_duplicate_script_intent.py
+	@$(PYRUN) scripts/areas/docs/check_script_headers.py
+	@$(PYRUN) scripts/areas/layout/check_make_public_scripts.py
+	@$(PYRUN) scripts/areas/layout/check_scripts_buckets.py
+	@$(PYRUN) scripts/areas/layout/check_script_relative_calls.py
+	@$(PYRUN) scripts/areas/layout/check_script_naming_convention.py
+	@$(PYRUN) scripts/areas/layout/check_no_mixed_script_name_variants.py
+	@$(PYRUN) scripts/areas/layout/check_duplicate_script_intent.py
 	@./scripts/areas/check/no-duplicate-script-names.sh
 	@./scripts/areas/check/no-direct-path-usage.sh
-	@python3 ./scripts/areas/check/check-script-help.py
-	@python3 ./scripts/areas/check/check-script-errors.py
-	@python3 ./scripts/areas/check/check-script-write-roots.py
-	@python3 ./scripts/areas/check/check-script-tool-guards.py
-	@python3 ./scripts/areas/check/check-script-ownership.py
-	@python3 ./scripts/areas/check/check-python-lock.py
-	@python3 ./scripts/areas/check/check-bin-entrypoints.py
+	@$(PYRUN) scripts/areas/check/check-script-help.py
+	@$(PYRUN) scripts/areas/check/check-script-errors.py
+	@$(PYRUN) scripts/areas/check/check-script-write-roots.py
+	@$(PYRUN) scripts/areas/check/check-script-tool-guards.py
+	@$(PYRUN) scripts/areas/check/check-script-ownership.py
+	@$(PYRUN) scripts/areas/check/check-python-lock.py
+	@$(PYRUN) scripts/areas/check/check-bin-entrypoints.py
+	@$(PYRUN) scripts/areas/check/check-no-adhoc-python.py
 	@./ops/_lint/naming.sh
-	@python3 ./ops/_lint/no-shadow-configs.py
-	@python3 ./scripts/areas/layout/check_public_entrypoint_cap.py
+	@$(PYRUN) ops/_lint/no-shadow-configs.py
+	@$(PYRUN) scripts/areas/layout/check_public_entrypoint_cap.py
 	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
 	@if command -v shellcheck >/dev/null 2>&1; then find scripts/areas/public scripts/areas/internal scripts/areas/dev -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional for local scripts lint)"; fi
 	@if command -v shfmt >/dev/null 2>&1; then shfmt -d scripts ops/load/scripts; else echo "shfmt not installed (optional)"; fi
@@ -46,26 +48,31 @@ scripts-format: ## Format scripts (python + shell where available)
 	@if command -v shfmt >/dev/null 2>&1; then find scripts ops/load/scripts -type f -name '*.sh' -print0 | xargs -0 shfmt -w; else echo "shfmt not installed (optional)"; fi
 
 scripts-test: ## Run scripts-focused tests
-	@python3 ./scripts/areas/layout/check_make_public_scripts.py
-	@python3 ./scripts/areas/layout/check_script_entrypoints.py
-	@python3 ./scripts/areas/layout/check_scripts_top_level.py
-	@python3 ./ops/load/scripts/validate_suite_manifest.py
-	@python3 ./ops/load/scripts/check_pinned_queries_lock.py
+	@$(PYRUN) scripts/areas/layout/check_make_public_scripts.py
+	@$(PYRUN) scripts/areas/layout/check_script_entrypoints.py
+	@$(PYRUN) scripts/areas/layout/check_scripts_top_level.py
+	@$(PYRUN) ops/load/scripts/validate_suite_manifest.py
+	@$(PYRUN) ops/load/scripts/check_pinned_queries_lock.py
 	@python3 -m unittest scripts.areas.tests.test_paths
+	@if command -v ruff >/dev/null 2>&1; then ruff check tools/bijux_atlas_scripts/src tools/bijux_atlas_scripts/tests; else echo "ruff not installed (optional)"; fi
+	@if command -v mypy >/dev/null 2>&1; then PYTHONPATH=tools/bijux_atlas_scripts/src mypy tools/bijux_atlas_scripts/src; else echo "mypy not installed (optional)"; fi
+	@PYTHONPATH=tools/bijux_atlas_scripts/src pytest -q tools/bijux_atlas_scripts/tests
+	@./scripts/bin/bijux-atlas-scripts validate-output --schema configs/contracts/scripts-tool-output.schema.json --file ops/_generated_committed/examples/report.example.json
 
 scripts-check: ## Run scripts lint + tests as a single gate
 	@./scripts/areas/check/no-duplicate-script-names.sh
 	@./scripts/areas/check/no-direct-path-usage.sh
-	@python3 ./scripts/areas/check/check-script-help.py
-	@python3 ./scripts/areas/check/check-script-errors.py
-	@python3 ./scripts/areas/check/check-script-write-roots.py
-	@python3 ./scripts/areas/check/check-script-tool-guards.py
-	@python3 ./scripts/areas/check/check-script-ownership.py
-	@python3 ./scripts/areas/check/check-python-lock.py
-	@python3 ./scripts/areas/layout/check_script_entrypoints.py
-	@python3 ./scripts/areas/layout/check_scripts_top_level.py
+	@$(PYRUN) scripts/areas/check/check-script-help.py
+	@$(PYRUN) scripts/areas/check/check-script-errors.py
+	@$(PYRUN) scripts/areas/check/check-script-write-roots.py
+	@$(PYRUN) scripts/areas/check/check-script-tool-guards.py
+	@$(PYRUN) scripts/areas/check/check-script-ownership.py
+	@$(PYRUN) scripts/areas/check/check-python-lock.py
+	@$(PYRUN) scripts/areas/check/check-no-adhoc-python.py
+	@$(PYRUN) scripts/areas/layout/check_script_entrypoints.py
+	@$(PYRUN) scripts/areas/layout/check_scripts_top_level.py
 	@if command -v shellcheck >/dev/null 2>&1; then find scripts/areas/check scripts/bin scripts/areas/ci scripts/areas/dev -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional)"; fi
-	@if command -v ruff >/dev/null 2>&1; then ruff check scripts/areas/check scripts/areas/gen scripts/areas/python; else echo "ruff not installed (optional)"; fi
+	@if command -v ruff >/dev/null 2>&1; then ruff check scripts/areas/check scripts/areas/gen scripts/areas/python tools/bijux_atlas_scripts/src tools/bijux_atlas_scripts/tests; else echo "ruff not installed (optional)"; fi
 	@python3 -m unittest scripts.areas.tests.test_paths
 
 scripts-all: ## Canonical scripts gate: all script-related gates must pass
@@ -75,10 +82,13 @@ scripts-all: ## Canonical scripts gate: all script-related gates must pass
 	@$(MAKE) scripts-test
 
 scripts-audit: ## Audit script headers, taxonomy buckets, and no-implicit-cwd contract
-	@python3 ./scripts/areas/docs/check_script_headers.py
-	@python3 ./scripts/areas/layout/check_scripts_buckets.py
-	@python3 ./scripts/areas/layout/check_make_public_scripts.py
-	@python3 ./scripts/areas/layout/check_script_relative_calls.py
+	@$(PYRUN) scripts/areas/docs/check_script_headers.py
+	@$(PYRUN) scripts/areas/layout/check_scripts_buckets.py
+	@$(PYRUN) scripts/areas/layout/check_make_public_scripts.py
+	@$(PYRUN) scripts/areas/layout/check_script_relative_calls.py
+
+scripts-install-dev: ## Install python tooling for scripts package
+	@python3 -m pip install -r tools/bijux_atlas_scripts/requirements.lock.txt
 
 scripts-clean: ## Remove generated script artifacts
 	@rm -rf artifacts/scripts
@@ -112,4 +122,4 @@ internal/scripts/all: ## Uniform scripts all target
 	@$(MAKE) internal/scripts/test
 	@$(MAKE) internal/scripts/build
 
-.PHONY: bootstrap-tools no-direct-scripts scripts-all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test internal/scripts/check internal/scripts/build internal/scripts/fmt internal/scripts/lint internal/scripts/test internal/scripts/clean internal/scripts/all
+.PHONY: bootstrap-tools no-direct-scripts scripts-all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-install-dev scripts-lint scripts-test internal/scripts/check internal/scripts/build internal/scripts/fmt internal/scripts/lint internal/scripts/test internal/scripts/clean internal/scripts/all
