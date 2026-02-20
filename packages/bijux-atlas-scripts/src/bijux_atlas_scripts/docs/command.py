@@ -77,7 +77,7 @@ DOCS_LINT_CHECKS: list[DocsCheck] = [
 ]
 
 DOCS_GENERATE_COMMANDS: list[list[str]] = [
-    ["python3", "scripts/areas/docs/generate_crates_map.py"],
+    ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-crates-map", "--report", "text"],
     ["python3", "scripts/areas/docs/generate_architecture_map.py"],
     ["python3", "scripts/areas/docs/generate_k8s_values_doc.py"],
     ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "concept-graph-generate", "--report", "text"],
@@ -87,9 +87,9 @@ DOCS_GENERATE_COMMANDS: list[list[str]] = [
     ["python3", "scripts/areas/docs/generate_ops_schema_docs.py"],
     ["python3", "scripts/areas/docs/generate_ops_surface.py"],
     ["python3", "scripts/areas/docs/generate_ops_contracts_doc.py"],
-    ["python3", "scripts/areas/docs/generate_make_targets_catalog.py"],
-    ["python3", "scripts/areas/docs/generate_config_keys_doc.py"],
-    ["python3", "scripts/areas/docs/generate_env_vars_doc.py"],
+    ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-make-targets-catalog", "--report", "text"],
+    ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-config-keys-doc", "--report", "text"],
+    ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "generate-env-vars-doc", "--report", "text"],
     ["python3", "scripts/areas/docs/generate_contracts_index_doc.py"],
     ["python3", "scripts/areas/docs/generate_chart_contract_index.py"],
     ["python3", "scripts/areas/ops/generate_k8s_test_surface.py"],
@@ -2208,6 +2208,170 @@ def _generate_architecture_map(ctx: RunContext) -> tuple[int, str]:
     return 0, f"generated {out_path.relative_to(ctx.repo_root)}"
 
 
+def _generate_crates_map(ctx: RunContext) -> tuple[int, str]:
+    cargo = ctx.repo_root / "Cargo.toml"
+    out = ctx.repo_root / "docs" / "development" / "crates-map.md"
+    purpose_hints = {
+        "bijux-atlas-core": "deterministic primitives, canonicalization, error types",
+        "bijux-atlas-model": "domain and artifact data types",
+        "bijux-atlas-policies": "runtime policy schema and validation",
+        "bijux-atlas-store": "artifact backends and integrity boundaries",
+        "bijux-atlas-ingest": "deterministic ingest pipeline to artifacts",
+        "bijux-atlas-query": "query planning, limits, and pagination",
+        "bijux-atlas-api": "wire contracts and request/response schemas",
+        "bijux-atlas-server": "runtime orchestration and effectful serving",
+        "bijux-atlas-cli": "plugin CLI and operational commands",
+    }
+    text = cargo.read_text(encoding="utf-8")
+    members_match = re.search(r"members\s*=\s*\[(.*?)\]", text, re.S)
+    if not members_match:
+        return 1, "workspace members not found in Cargo.toml"
+    crates = sorted({Path(item).name for item in re.findall(r'"([^"]+)"', members_match.group(1)) if item.startswith("crates/")})
+    lines = [
+        "# Crates Map",
+        "",
+        "- Owner: `docs-governance`",
+        "",
+        "## What",
+        "",
+        "Generated map of workspace crates and primary purpose.",
+        "",
+        "## Why",
+        "",
+        "Provides a stable navigation index for crate responsibilities.",
+        "",
+        "## Scope",
+        "",
+        "Covers workspace crates from `Cargo.toml` members under `crates/`.",
+        "",
+        "## Non-goals",
+        "",
+        "Does not replace crate-level architecture and API docs.",
+        "",
+        "## Contracts",
+    ]
+    for crate in crates:
+        lines.append(f"- `{crate}`: {purpose_hints.get(crate, 'crate responsibility documented in crate docs')}.")
+    lines.extend(
+        [
+            "",
+            "## Failure modes",
+            "",
+            "Stale maps can hide ownership drift and boundary violations.",
+            "",
+            "## How to verify",
+            "",
+            "```bash",
+            "$ atlasctl docs generate-crates-map",
+            "$ ./scripts/areas/docs/check_crate_docs_contract.sh",
+            "```",
+            "",
+            "Expected output: crates map is regenerated and crate docs contract passes.",
+            "",
+            "## See also",
+            "",
+            "- [Crate Layout Contract](../architecture/crate-layout-contract.md)",
+            "- [Crate Boundary Graph](../architecture/crate-boundary-dependency-graph.md)",
+            "- [Terms Glossary](../_style/terms-glossary.md)",
+            "",
+        ]
+    )
+    out.write_text("\n".join(lines), encoding="utf-8")
+    return 0, f"generated {out.relative_to(ctx.repo_root)}"
+
+
+def _generate_make_targets_catalog(ctx: RunContext) -> tuple[int, str]:
+    ssot = json.loads((ctx.repo_root / "configs" / "make" / "public-targets.json").read_text(encoding="utf-8"))
+    owners = json.loads((ctx.repo_root / "makefiles" / "ownership.json").read_text(encoding="utf-8"))
+    out_json = ctx.repo_root / "makefiles" / "targets.json"
+    out_md = ctx.repo_root / "docs" / "_generated" / "make-targets.md"
+    entries: list[dict[str, object]] = []
+    for item in sorted(ssot.get("public_targets", []), key=lambda entry: entry["name"]):
+        name = item["name"]
+        meta = owners.get(name, {})
+        lanes = item.get("lanes", [])
+        entries.append(
+            {
+                "name": name,
+                "description": item.get("description", ""),
+                "owner": meta.get("owner", ""),
+                "area": item.get("area", meta.get("area", "")),
+                "lane": lanes[0] if lanes else "",
+                "lanes": lanes,
+            }
+        )
+    payload = {
+        "schema_version": 1,
+        "source": {"ssot": "configs/make/public-targets.json", "ownership": "makefiles/ownership.json"},
+        "targets": entries,
+    }
+    out_json.parent.mkdir(parents=True, exist_ok=True)
+    out_json.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    lines = [
+        "# Make Targets",
+        "",
+        "Generated from `makefiles/targets.json`. Do not edit manually.",
+        "",
+        "| target | description | owner | area | lane |",
+        "|---|---|---|---|---|",
+    ]
+    for target in entries:
+        desc = str(target["description"]).replace("|", "/")
+        lines.append(
+            f"| `{target['name']}` | {desc} | `{target['owner']}` | `{target['area']}` | `{target['lane']}` |"
+        )
+    out_md.parent.mkdir(parents=True, exist_ok=True)
+    out_md.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return 0, f"{out_json.relative_to(ctx.repo_root)}\n{out_md.relative_to(ctx.repo_root)}"
+
+
+def _generate_env_vars_doc(ctx: RunContext) -> tuple[int, str]:
+    contract = ctx.repo_root / "configs" / "contracts" / "env.schema.json"
+    out = ctx.repo_root / "docs" / "_generated" / "env-vars.md"
+    payload = json.loads(contract.read_text(encoding="utf-8"))
+    keys = sorted(payload.get("allowed_env", []))
+    lines = [
+        "# Env Vars (Generated)",
+        "",
+        "Generated from `configs/contracts/env.schema.json`. Do not edit manually.",
+        "",
+        f"- Count: `{len(keys)}`",
+        f"- Enforced prefixes: `{', '.join(payload.get('enforced_prefixes', []))}`",
+        f"- Dev escape hatch: `{payload.get('dev_mode_allow_unknown_env', '')}`",
+        "",
+        "## Allowed Env Vars",
+        "",
+    ]
+    lines.extend(f"- `{key}`" for key in keys)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return 0, str(out.relative_to(ctx.repo_root))
+
+
+def _generate_config_keys_doc(ctx: RunContext) -> tuple[int, str]:
+    registry = ctx.repo_root / "configs" / "config-key-registry.md"
+    out = ctx.repo_root / "docs" / "_generated" / "config-keys.md"
+    keys: list[str] = []
+    for line in registry.read_text(encoding="utf-8").splitlines():
+        item = line.strip()
+        if item.startswith("- `") and item.endswith("`"):
+            keys.append(item[3:-1])
+    lines = [
+        "# Config Keys (Generated)",
+        "",
+        "Generated from `configs/config-key-registry.md`. Do not edit manually.",
+        "",
+        f"- Count: `{len(keys)}`",
+        "",
+        "## Keys",
+        "",
+    ]
+    lines.extend(f"- `{key}`" for key in keys)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return 0, str(out.relative_to(ctx.repo_root))
+
+
 def _generate_upgrade_guide(ctx: RunContext) -> tuple[int, str]:
     payload = _read_json(ctx.repo_root / "configs/ops/target-renames.json")
     rows = payload.get("renames", [])
@@ -2707,8 +2871,40 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             print(output)
         return code
 
+    if ns.docs_cmd == "generate-crates-map":
+        code, output = _generate_crates_map(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
     if ns.docs_cmd == "generate-upgrade-guide":
         code, output = _generate_upgrade_guide(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
+    if ns.docs_cmd == "generate-make-targets-catalog":
+        code, output = _generate_make_targets_catalog(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
+    if ns.docs_cmd == "generate-env-vars-doc":
+        code, output = _generate_env_vars_doc(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
+    if ns.docs_cmd == "generate-config-keys-doc":
+        code, output = _generate_config_keys_doc(ctx)
         if ns.report == "json":
             print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
         elif output:
@@ -3049,7 +3245,11 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("generate-sli-doc", "generate docs/operations/slo/SLIS.md from SLI contract"),
         ("generate-slos-doc", "generate docs/operations/slo/SLOS.md from SLO contract"),
         ("generate-architecture-map", "generate docs/architecture/architecture-map.md"),
+        ("generate-crates-map", "generate docs/development/crates-map.md"),
         ("generate-upgrade-guide", "generate docs/_generated/upgrade-guide.md"),
+        ("generate-make-targets-catalog", "generate makefiles/targets.json and docs/_generated/make-targets.md"),
+        ("generate-env-vars-doc", "generate docs/_generated/env-vars.md"),
+        ("generate-config-keys-doc", "generate docs/_generated/config-keys.md"),
         ("crate-docs-contract-check", "validate per-crate docs contract"),
         ("durable-naming-check", "enforce durable naming rules across docs/scripts"),
         ("duplicate-topics-check", "enforce duplicate topics pointer and owner contract"),

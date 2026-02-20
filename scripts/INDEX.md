@@ -74,13 +74,9 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_doc_naming.sh` | `docs-governance` | `public` | `docs-build` |
 | `scripts/areas/docs/check_reference_templates.sh` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_chart_contract_index.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/generate_config_keys_doc.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/generate_crates_map.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/generate_env_vars_doc.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_k8s_install_matrix.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_k8s_values_doc.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_layer_contract_doc.py` | `docs-governance` | `public` | `ops-contracts-check`, `ops-gen` |
-| `scripts/areas/docs/generate_make_targets_catalog.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_make_targets_inventory.py` | `docs-governance` | `public` | `ops-make-targets-doc` |
 | `scripts/areas/docs/generate_makefiles_surface.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_observability_surface.py` | `docs-governance` | `public` | - |

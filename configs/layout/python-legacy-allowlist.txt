@@ -134,13 +134,9 @@ scripts/areas/configs/generate_tooling_versions_doc.py
 scripts/areas/configs/sync_slo_config.py
 scripts/areas/configs/validate_configs_schemas.py
 scripts/areas/docs/generate_chart_contract_index.py
-scripts/areas/docs/generate_config_keys_doc.py
-scripts/areas/docs/generate_crates_map.py
-scripts/areas/docs/generate_env_vars_doc.py
 scripts/areas/docs/generate_k8s_install_matrix.py
 scripts/areas/docs/generate_k8s_values_doc.py
 scripts/areas/docs/generate_layer_contract_doc.py
-scripts/areas/docs/generate_make_targets_catalog.py
 scripts/areas/docs/generate_make_targets_inventory.py
 scripts/areas/docs/generate_makefiles_surface.py
 scripts/areas/docs/generate_observability_surface.py
