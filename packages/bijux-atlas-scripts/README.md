@@ -6,7 +6,7 @@ SSOT scripting product for `bijux-atlas`.
 
 `bijux-atlas` is the stable Python CLI surface for script orchestration, diagnostics, and machine-readable report helpers.
 
-`scripts/` is in deprecation mode for Python business logic and should converge to `scripts/bin/` shims only; new Python logic must live under `tools/bijux-atlas/`.
+`scripts/` is in deprecation mode for Python business logic and should converge to `scripts/bin/` shims only; new Python logic must live under `packages/bijux-atlas-scripts/`.
 
 ## Command Surface
 
@@ -39,11 +39,19 @@ Global context flags:
 ## Packaging And Locking
 
 - Python dependency SSOT uses `pip-tools` style input/lock files:
-- `tools/bijux-atlas/requirements.in`
-- `tools/bijux-atlas/requirements.lock.txt`
+- `packages/bijux-atlas-scripts/requirements.in`
+- `packages/bijux-atlas-scripts/requirements.lock.txt`
 - Validate lock consistency with `make scripts-lock-check`.
 - Create deterministic virtualenv with `make scripts-venv` at `artifacts/isolate/py/scripts/.venv`.
 - Install only from lock via `make scripts-install`.
+
+## Local Development
+
+- `python -m bijux_atlas_scripts --help`
+- `make scripts-check`
+- `make scripts-test`
+
+The package intentionally has no local `Makefile`; repository-level make targets are the only supported entrypoints.
 
 ## Publish Policy
 
