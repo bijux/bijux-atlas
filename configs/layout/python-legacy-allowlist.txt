@@ -109,11 +109,8 @@ scripts/areas/check/check-no-adhoc-python.py
 scripts/areas/check/check-no-latest-tags.py
 scripts/areas/check/check-python-lock.py
 scripts/areas/check/check-script-errors.py
-scripts/areas/check/check-script-help.py
-scripts/areas/check/check-script-ownership.py
 scripts/areas/check/check-script-tool-guards.py
 scripts/areas/check/check-script-write-roots.py
-scripts/areas/check/check_duplicate_script_names.py
 scripts/areas/gen/generate_scripts_readme.py
 scripts/areas/gen/generate_scripts_surface.py
 scripts/areas/layout/build_artifacts_index.py

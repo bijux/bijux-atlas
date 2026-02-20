@@ -29,8 +29,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/check/check-python-migration-exceptions-expiry.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-repo-script-boundaries.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-script-errors.py` | `platform` | `public` | - |
-| `scripts/areas/check/check-script-help.py` | `platform` | `public` | - |
-| `scripts/areas/check/check-script-ownership.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-script-shim-expiry.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-script-shims-minimal.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-script-tool-guards.py` | `platform` | `public` | - |
@@ -38,7 +36,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/check/check-scripts-lock-sync.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-scripts-ssot-final.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-scripts-surface-docs-drift.py` | `platform` | `public` | - |
-| `scripts/areas/check/check_duplicate_script_names.py` | `platform` | `public` | - |
 | `scripts/areas/check/docker-runtime-smoke.sh` | `platform` | `public` | - |
 | `scripts/areas/check/docker-scan.sh` | `platform` | `public` | - |
 | `scripts/areas/check/generate-scripts-sbom.py` | `platform` | `public` | - |
