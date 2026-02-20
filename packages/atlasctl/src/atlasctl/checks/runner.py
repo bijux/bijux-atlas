@@ -1,55 +1,34 @@
 from __future__ import annotations
 
-import time
 from pathlib import Path
 
-from .base import CheckDef
-from .checks import CHECKS as CHECKS_CHECKS
-from .configs import CHECKS as CHECKS_CONFIGS
-from .docker import CHECKS as CHECKS_DOCKER
-from .docs import CHECKS as CHECKS_DOCS
-from .make import CHECKS as CHECKS_MAKE
-from .ops import CHECKS as CHECKS_OPS
-from .repo import CHECKS as CHECKS_REPO
-
-CHECKS: tuple[CheckDef, ...] = (
-    *CHECKS_REPO,
-    *CHECKS_MAKE,
-    *CHECKS_DOCS,
-    *CHECKS_OPS,
-    *CHECKS_CHECKS,
-    *CHECKS_CONFIGS,
-    *CHECKS_DOCKER,
-)
+from .engine import run_function_checks
+from .registry import list_domains, run_checks_for_domain
 
 
 def domains() -> list[str]:
-    return sorted({"all", *{c.domain for c in CHECKS}})
+    return list_domains()
 
 
 def run_domain(repo_root: Path, domain: str) -> tuple[int, dict[str, object]]:
-    selected = [c for c in CHECKS if domain == "all" or c.domain == domain]
+    selected = run_checks_for_domain(repo_root, domain)
     if not selected:
         return 2, {"schema_version": 1, "status": "fail", "error": f"unknown domain `{domain}`"}
 
+    failed, results = run_function_checks(repo_root, selected)
     rows: list[dict[str, object]] = []
-    failed = 0
-    for chk in selected:
-        start = time.perf_counter()
-        code, errors = chk.fn(repo_root)
-        elapsed_ms = int((time.perf_counter() - start) * 1000)
-        status = "pass" if code == 0 else "fail"
-        if code != 0:
-            failed += 1
+    for result in results:
         rows.append(
             {
-                "id": chk.check_id,
-                "domain": chk.domain,
-                "status": status,
-                "duration_ms": elapsed_ms,
-                "budget_ms": chk.budget_ms,
-                "budget_status": "pass" if elapsed_ms <= chk.budget_ms else "warn",
-                "errors": errors,
+                "id": result.check_id,
+                "domain": result.domain,
+                "status": result.status,
+                "duration_ms": result.duration_ms,
+                "budget_ms": result.budget_ms,
+                "budget_status": result.budget_status,
+                "errors": result.errors,
+                "severity": result.severity,
+                "evidence": list(result.evidence),
             }
         )
     payload = {

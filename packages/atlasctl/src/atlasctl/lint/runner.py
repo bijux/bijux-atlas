@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timezone
 from pathlib import Path
 
 from ..core.process import run_command
+from ..core.clock import utc_now_iso
 
 
 @dataclass(frozen=True)
@@ -54,7 +54,7 @@ def run_suite(repo_root: Path, suite: str, fail_fast: bool) -> tuple[int, dict[s
     if checks is None:
         return 2, {"schema_version": 1, "tool": "bijux-atlas", "suite": suite, "status": "fail", "error": "unknown suite"}
 
-    started_at = datetime.now(timezone.utc).isoformat()
+    started_at = utc_now_iso()
     rows: list[dict[str, object]] = []
     failed = 0
     for check in checks:
@@ -72,7 +72,7 @@ def run_suite(repo_root: Path, suite: str, fail_fast: bool) -> tuple[int, dict[s
         if result.code != 0 and fail_fast:
             break
 
-    ended_at = datetime.now(timezone.utc).isoformat()
+    ended_at = utc_now_iso()
     payload = {
         "schema_version": 1,
         "tool": "bijux-atlas",
