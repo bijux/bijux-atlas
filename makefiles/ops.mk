@@ -45,6 +45,7 @@ ops-contracts-check: ## Validate canonical ops manifests against ops/_schemas an
 	@python3 ./ops/_lint/json-schema-coverage.py
 	@python3 ./scripts/layout/check_no_hidden_defaults.py
 	@python3 ./scripts/layout/check_obs_pack_ssot.py
+	@python3 ./scripts/layout/check_obs_suites.py
 	@python3 ./scripts/layout/check_ops_canonical_entrypoints.py
 	@python3 ./scripts/layout/check_ops_script_names.py
 	@python3 ./scripts/layout/check_no_empty_dirs.py
@@ -924,6 +925,15 @@ ops-report: ## Gather ops evidence into artifacts/ops/<run-id>/
 ops-slo-burn: ## Compute SLO burn artifact from k6 score + metrics snapshot
 	@python3 ./ops/obs/scripts/compute_slo_burn.py
 
+obs/update-goldens: ## Refresh observability golden snapshots for all supported profiles
+	@cp ops/obs/contract/metrics.golden.prom ops/obs/contract/goldens/local/metrics.golden.prom
+	@cp ops/obs/contract/metrics.golden.prom ops/obs/contract/goldens/perf/metrics.golden.prom
+	@cp ops/obs/contract/metrics.golden.prom ops/obs/contract/goldens/offline/metrics.golden.prom
+	@cp ops/obs/contract/trace-structure.golden.json ops/obs/contract/goldens/local/trace-structure.golden.json
+	@cp ops/obs/contract/trace-structure.golden.json ops/obs/contract/goldens/perf/trace-structure.golden.json
+	@cp ops/obs/contract/trace-structure.golden.json ops/obs/contract/goldens/offline/trace-structure.golden.json
+	@python3 ./ops/obs/scripts/contracts/check_profile_goldens.py
+
 ops-slo-report: ## Compute SLO report (SLIs, error budget remaining, burn rates)
 	@python3 ./ops/report/slo_report.py --metrics "$${METRICS:-artifacts/ops/metrics.prom}" --slo-config configs/ops/slo/slo.v1.json --out "$${OUT:-artifacts/ops/slo/report.json}"
 
@@ -946,6 +956,7 @@ ops-lint: ## Lint ops shell/python/json/schema contracts
 	@python3 ./ops/_lint/no-unowned-file.py
 	@python3 ./ops/_lint/json-schema-coverage.py
 	@python3 ./ops/_lint/no-unpinned-images.py
+	@python3 ./ops/obs/scripts/contracts/check_profile_goldens.py
 	@python3 ./scripts/layout/check_tool_versions.py kind kubectl helm k6
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) -s ops-layout-lint

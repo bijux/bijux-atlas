@@ -1,0 +1,32 @@
+{
+  "required_root": {
+    "name": "request_root",
+    "required_attributes": [
+      "request_id",
+      "route",
+      "method"
+    ]
+  },
+  "required_spans": [
+    "admission_control",
+    "cache_lookup",
+    "dataset_resolve",
+    "serialize_response",
+    "sqlite_query",
+    "store_fetch"
+  ],
+  "required_taxonomy": [
+    "admission",
+    "cache",
+    "encode",
+    "resolve_dataset",
+    "sqlite",
+    "store"
+  ],
+  "required_slow_query_fields": [
+    "cost_class",
+    "dataset_hash",
+    "query_name"
+  ],
+  "schema_version": 1
+}

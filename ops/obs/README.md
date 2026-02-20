@@ -6,8 +6,10 @@ Own observability pack assets, contracts, drills, and verification routines.
 ## Entry points
 - `make ops-obs-up PROFILE=compose`
 - `make ops-obs-verify`
+- `./ops/run/obs-verify.sh --suite cheap|contracts|coverage|minimal-drills|root-local|drills|full`
 - `make ops-obs-drill DRILL=otel-outage PROFILE=kind`
 - `make ops-observability-pack-tests`
+- `make obs/update-goldens`
 
 ## Contracts
 - `ops/obs/CONTRACT.md`
