@@ -61,7 +61,7 @@ def test_help_for_all_commands() -> None:
 def test_version_flag() -> None:
     proc = _run_cli("--version")
     assert proc.returncode == 0
-    assert "bijux-atlas 0.1.0+" in proc.stdout.strip()
+    assert "atlasctl 0.1.0+" in proc.stdout.strip()
 
 
 def test_surface_json_schema_valid() -> None:
@@ -89,8 +89,25 @@ def test_domain_json_contract() -> None:
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
     assert payload["domain"] == "contracts"
-    assert payload["tool"] == "bijux-atlas"
+    assert payload["tool"] == "atlasctl"
     assert payload["run_id"] == "t2"
+
+
+def test_global_json_flag_applies_to_version() -> None:
+    proc = _run_cli("--json", "version")
+    assert proc.returncode == 0
+    payload = json.loads(proc.stdout)
+    assert payload["tool"] == "atlasctl"
+    assert "scripts_version" in payload
+
+
+def test_explain_command_contract() -> None:
+    proc = _run_cli("--json", "explain", "check")
+    assert proc.returncode == 0
+    payload = json.loads(proc.stdout)
+    assert payload["tool"] == "atlasctl"
+    assert payload["command"] == "check"
+    assert isinstance(payload["touches"], list)
 
 
 def test_out_file_policy_rejects_ops_path() -> None:
