@@ -109,6 +109,8 @@ PY
     done
     echo
     echo "- unified: ops/_generated/make/${run_id}/unified.json"
+    echo "- unified-ops: ops/_generated/report.unified.json"
+    echo "- scorecard: ops/_generated/scorecard.json"
   } > "$summary_file"
 
   if [ "${QUIET:-0}" != "1" ]; then
