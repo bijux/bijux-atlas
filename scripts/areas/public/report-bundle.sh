@@ -13,7 +13,9 @@ RUN_ID="${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}"
 OUT_DIR="${OUT_DIR:-$ROOT/artifacts/scripts/report_bundle/$RUN_ID}"
 
 mkdir -p "$OUT_DIR"
-SCRIPT_NAME="report_bundle" RUN_ID="$RUN_ID" "$ROOT/scripts/areas/internal/env_dump.sh" >/dev/null
+PYTHONPATH="$ROOT/packages/bijux-atlas-scripts/src${PYTHONPATH:+:$PYTHONPATH}" \
+  SCRIPT_NAME="report_bundle" RUN_ID="$RUN_ID" \
+  python3 -m bijux_atlas_scripts.internal.cli_compat env-dump >/dev/null
 {
   echo "run_id=$RUN_ID"
   echo "generated_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
@@ -22,6 +24,8 @@ SCRIPT_NAME="report_bundle" RUN_ID="$RUN_ID" "$ROOT/scripts/areas/internal/env_d
 
 kubectl get ns >/dev/null 2>&1 && kubectl get ns >"$OUT_DIR/namespaces.txt" 2>/dev/null || true
 kubectl get pods -A >"$OUT_DIR/pods.txt" 2>/dev/null || true
-SCRIPT_NAME="report_bundle" RUN_ID="$RUN_ID" "$ROOT/scripts/areas/internal/exec.sh" sh -c "true" >/dev/null
+PYTHONPATH="$ROOT/packages/bijux-atlas-scripts/src${PYTHONPATH:+:$PYTHONPATH}" \
+  SCRIPT_NAME="report_bundle" RUN_ID="$RUN_ID" \
+  python3 -m bijux_atlas_scripts.internal.cli_compat exec -- sh -c "true" >/dev/null
 
 printf '%s\n' "$OUT_DIR"

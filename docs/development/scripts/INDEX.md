@@ -23,7 +23,6 @@ Does not duplicate script implementation details.
 - `scripts` inventory is generated via `atlasctl inventory scripts-migration`.
 - Script taxonomy:
   - `scripts/areas/public/`: make-callable entrypoints.
-  - `scripts/areas/internal/`: script-only helpers.
   - Contracts: `atlasctl contracts ...`
 - Docs linters/generators: `atlasctl docs ...`
 - Perf tooling wrappers: `scripts/areas/public/perf/` (canonical: `ops/load/scripts/`)

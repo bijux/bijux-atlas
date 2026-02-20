@@ -98,5 +98,5 @@ PY
 ./scripts/areas/public/check-allow-env-schema.py
 ./bin/bijux-atlas contracts generate --generators artifacts chart-schema
 ./bin/bijux-atlas contracts check --checks breakage drift endpoints error-codes sqlite-indexes chart-values
-./scripts/areas/internal/effects-lint.sh
-./scripts/areas/internal/naming-intent-lint.sh
+./bin/atlasctl --quiet check effects-lint
+./bin/atlasctl --quiet check naming-intent-lint

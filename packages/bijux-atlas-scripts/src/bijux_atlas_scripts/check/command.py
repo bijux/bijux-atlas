@@ -12,6 +12,7 @@ from .native import (
     check_committed_generated_hygiene,
     check_docs_scripts_references,
     check_duplicate_script_names,
+    check_effects_lint,
     check_forbidden_top_dirs,
     check_layout_contract,
     check_make_command_allowlist,
@@ -24,6 +25,7 @@ from .native import (
     check_script_help,
     check_script_ownership,
     check_tracked_timestamp_paths,
+    check_naming_intent_lint,
 )
 
 
@@ -204,6 +206,24 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         else:
             print("committed generated directories contain deterministic assets only")
         return code
+    if sub == "effects-lint":
+        code, errors = check_effects_lint(ctx.repo_root)
+        if errors:
+            print("effects lint failed:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("effects lint passed")
+        return code
+    if sub == "naming-intent-lint":
+        code, errors = check_naming_intent_lint(ctx.repo_root)
+        if errors:
+            print("naming intent lint failed:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("naming intent lint passed")
+        return code
     if sub == "make-command-allowlist":
         code, errors = check_make_command_allowlist(ctx.repo_root)
         if errors:
@@ -248,4 +268,6 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
         "committed-generated-hygiene",
         help="fail on runtime/timestamped artifacts in committed generated directories",
     )
+    p_sub.add_parser("effects-lint", help="forbid runtime effects leakage in pure/query HTTP layers")
+    p_sub.add_parser("naming-intent-lint", help="forbid generic helpers naming in crates tree")
     p_sub.add_parser("make-command-allowlist", help="enforce direct make recipe command allowlist")
