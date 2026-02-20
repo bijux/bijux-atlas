@@ -28,8 +28,6 @@ def check_duplicate_script_names(repo_root: Path) -> tuple[int, list[str]]:
 def check_script_help(repo_root: Path) -> tuple[int, list[str]]:
     targets = [
         repo_root / "bin/atlasctl",
-        repo_root / "scripts/areas/check/no-duplicate-script-names.sh",
-        repo_root / "scripts/areas/check/no-direct-path-usage.sh",
     ]
     errors: list[str] = []
     for p in targets:

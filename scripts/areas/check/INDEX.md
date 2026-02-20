@@ -15,5 +15,3 @@ Scripts in this area.
 - check-script-write-roots.py
 - docker-runtime-smoke.sh
 - docker-scan.sh
-- no-direct-path-usage.sh
-- no-duplicate-script-names.sh

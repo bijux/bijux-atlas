@@ -42,8 +42,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/check/docker-runtime-smoke.sh` | `platform` | `public` | - |
 | `scripts/areas/check/docker-scan.sh` | `platform` | `public` | - |
 | `scripts/areas/check/generate-scripts-sbom.py` | `platform` | `public` | - |
-| `scripts/areas/check/no-direct-path-usage.sh` | `platform` | `public` | `scripts-check`, `scripts-lint` |
-| `scripts/areas/check/no-duplicate-script-names.sh` | `platform` | `public` | `scripts-check`, `scripts-lint` |
 | `scripts/areas/check/python_migration_exceptions.py` | `platform` | `public` | - |
 | `scripts/areas/fixtures/derive-release-111.sh` | `dataset-ops` | `internal` | - |
 | `scripts/areas/fixtures/fetch-medium.sh` | `dataset-ops` | `public` | `fetch-fixtures`, `ops-publish-medium` |
