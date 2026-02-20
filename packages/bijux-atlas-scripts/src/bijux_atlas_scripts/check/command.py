@@ -41,6 +41,8 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _run(ctx, ["python3", "scripts/areas/check/check-script-ownership.py"])
     if sub == "duplicate-script-names":
         return _run(ctx, ["python3", "scripts/areas/check/check_duplicate_script_names.py"])
+    if sub == "make-scripts-refs":
+        return _run(ctx, ["python3", "scripts/areas/check/check-no-make-scripts-references.py"])
     return 2
 
 
@@ -56,3 +58,4 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     p_sub.add_parser("cli-help", help="validate script/CLI help coverage")
     p_sub.add_parser("ownership", help="validate script ownership coverage")
     p_sub.add_parser("duplicate-script-names", help="validate duplicate script names")
+    p_sub.add_parser("make-scripts-refs", help="validate no makefile references to scripts paths")

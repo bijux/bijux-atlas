@@ -22,7 +22,7 @@ docs-build: ## Build docs + link-check + spell-check + lint
 	@"$(DOCS_VENV)/bin/pip" install -r "$(DOCS_REQ)" >/dev/null
 	@./bin/bijux-atlas run scripts/areas/docs/generate_crates_map.py
 	@./bin/bijux-atlas run scripts/areas/docs/generate_architecture_map.py
-	@./bin/bijux-atlas run scripts/areas/docs/generate_make_targets_inventory.py
+	@./bin/bijux-atlas gen make-targets
 	@./bin/bijux-atlas run scripts/areas/docs/check_make_targets_drift.py
 	@./bin/bijux-atlas run scripts/areas/docs/check_make_help_drift.py
 	@./bin/bijux-atlas run scripts/areas/docs/generate_k8s_values_doc.py
@@ -32,6 +32,8 @@ docs-build: ## Build docs + link-check + spell-check + lint
 	@./bin/bijux-atlas run scripts/areas/docs/generate_ops_badge.py
 	@./bin/bijux-atlas run scripts/areas/docs/generate_ops_schema_docs.py
 	@./bin/bijux-atlas run scripts/areas/docs/generate_ops_surface.py
+	@./bin/bijux-atlas gen surface
+	@./bin/bijux-atlas gen scripting-surface
 	@./bin/bijux-atlas run scripts/areas/docs/generate_ops_contracts_doc.py
 	@./bin/bijux-atlas run scripts/areas/docs/generate_make_targets_catalog.py
 	@./bin/bijux-atlas run scripts/areas/docs/generate_config_keys_doc.py
