@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-ALLOWED = ("artifacts/", "ops/_generated/", "docs/_generated/", "scripts/_generated/")
+ALLOWED = ("artifacts/", "ops/_generated/", "ops/_generated_committed/", "ops/_evidence/", "docs/_generated/", "scripts/_generated/")
 WRITE_RE = re.compile(r"\b(?:>|>>|tee\s+|mkdir\s+-p\s+|cp\s+[^\n]*\s+)([^\s\"']+)")
 
 errors: list[str] = []

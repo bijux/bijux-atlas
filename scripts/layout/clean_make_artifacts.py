@@ -7,8 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SAFE_DIRS = [
-    ROOT / "ops" / "_generated" / "make",
-    ROOT / "ops" / "_generated" / "root-local",
+    ROOT / "ops" / "_evidence" / "make",
     ROOT / "artifacts" / "isolate",
     ROOT / "artifacts" / "ops",
 ]
@@ -29,7 +28,7 @@ def main() -> int:
     p.add_argument("--all", action="store_true")
     args = p.parse_args()
 
-    targets = SAFE_DIRS if args.all else [ROOT / "ops" / "_generated" / "make", ROOT / "ops" / "_generated" / "root-local"]
+    targets = SAFE_DIRS if args.all else [ROOT / "ops" / "_evidence" / "make"]
     for target in targets:
         target.mkdir(parents=True, exist_ok=True)
         wipe(target)

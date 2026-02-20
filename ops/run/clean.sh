@@ -17,5 +17,17 @@ else:
 PY
 )"
 days="${OPS_RETENTION_DAYS:-$days}"
+evidence_days="$(python3 - <<'PY'
+import json
+from pathlib import Path
+p = Path("configs/ops/artifact-retention.json")
+if p.exists():
+    print(int(json.loads(p.read_text(encoding="utf-8")).get("evidence_retention_days", 14)))
+else:
+    print(14)
+PY
+)"
+evidence_days="${OPS_EVIDENCE_RETENTION_DAYS:-$evidence_days}"
 find artifacts/ops -mindepth 1 -maxdepth 1 -type d -mtime +"$days" -exec rm -rf {} + 2>/dev/null || true
+find ops/_evidence/make -mindepth 1 -maxdepth 1 -type d -name "atlas-ops-*" -mtime +"$evidence_days" -exec rm -rf {} + 2>/dev/null || true
 rm -rf artifacts/perf/results artifacts/e2e-datasets artifacts/e2e-store

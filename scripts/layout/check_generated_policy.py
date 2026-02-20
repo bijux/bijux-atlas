@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Purpose: enforce committed generated-files policy for ops generated outputs.
-# Inputs: ops/_generated and docs/_generated ops artifacts.
+# Inputs: ops/_generated_committed and docs/_generated ops artifacts.
 # Outputs: non-zero if unexpected/missing generated files are detected.
 from __future__ import annotations
 from pathlib import Path
@@ -8,14 +8,14 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 expected = {
-    "ops/_generated/.gitkeep",
-    "ops/_generated/report.example.json",
-    "ops/_generated/report.unified.example.json",
+    "ops/_generated_committed/.gitkeep",
+    "ops/_generated_committed/examples/report.example.json",
+    "ops/_generated_committed/examples/report.unified.example.json",
     "docs/_generated/ops-surface.md",
     "docs/_generated/ops-contracts.md",
     "docs/_generated/ops-schemas.md",
     "docs/_generated/ops-badge.md",
-    "ops/_generated/scorecard.json",
+    "ops/_generated_committed/scorecard.json",
 }
 actual = set()
 for rel in expected:
@@ -24,15 +24,9 @@ for rel in expected:
 missing = sorted(expected - actual)
 unknown = sorted(
     p.relative_to(ROOT).as_posix()
-    for p in (ROOT / "ops/_generated").rglob("*")
+    for p in (ROOT / "ops/_generated_committed").rglob("*")
     if p.is_file()
-    and not p.relative_to(ROOT).as_posix().startswith("ops/_generated/gates/")
-    and not p.relative_to(ROOT).as_posix().startswith("ops/_generated/pins/")
-    and p.relative_to(ROOT).as_posix() != "ops/_generated/report.unified.json"
-    and not (
-        p.relative_to(ROOT).as_posix().startswith("ops/_generated/")
-        and p.relative_to(ROOT).as_posix().count("/") >= 4
-    )
+    and p.relative_to(ROOT).as_posix() != "ops/_generated_committed/report.unified.json"
     and p.relative_to(ROOT).as_posix() not in expected
 )
 unknown.extend(

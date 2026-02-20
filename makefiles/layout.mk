@@ -9,6 +9,8 @@ layout-check: ## Validate repository layout contract and root shape
 	@./scripts/layout/check_forbidden_root_files.sh
 	@./scripts/layout/check_no_forbidden_paths.sh
 	@python3 ./scripts/layout/check_generated_dirs_policy.py
+	@python3 ./scripts/layout/check_generated_committed_no_timestamp_dirs.py
+	@python3 ./scripts/layout/check_evidence_not_tracked.py
 	@./scripts/layout/check_ops_workspace.sh
 	@python3 ./scripts/layout/check_ops_layout_contract.py
 	@python3 ./scripts/layout/check_ops_index_surface.py

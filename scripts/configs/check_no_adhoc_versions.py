@@ -15,7 +15,7 @@ def main() -> int:
   errs=[]
   for p in ROOT.rglob("*versions*.json"):
     rel=p.relative_to(ROOT).as_posix()
-    if rel in ALLOW or rel.startswith("artifacts/") or rel.startswith("ops/_generated/"):
+    if rel in ALLOW or rel.startswith("artifacts/") or rel.startswith("ops/_generated/") or rel.startswith("ops/_generated_committed/") or rel.startswith("ops/_evidence/"):
       continue
     errs.append(rel)
   if errs:

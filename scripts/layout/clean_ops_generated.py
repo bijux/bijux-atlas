@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 # Purpose: clean ops generated outputs while preserving committed generated artifacts policy.
-# Inputs: ops/_generated and docs/_generated.
+# Inputs: ops/_generated_committed and docs/_generated.
 # Outputs: removes stale generated files outside committed allowlist.
 from __future__ import annotations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 allow = {
-    "ops/_generated/.gitkeep",
-    "ops/_generated/report.example.json",
-    "ops/_generated/report.unified.example.json",
+    "ops/_generated_committed/.gitkeep",
+    "ops/_generated_committed/examples/report.example.json",
+    "ops/_generated_committed/examples/report.unified.example.json",
     "docs/_generated/ops-surface.md",
     "docs/_generated/ops-contracts.md",
     "docs/_generated/ops-schemas.md",
 }
 removed = 0
-for base in (ROOT / "ops/_generated", ROOT / "docs/_generated"):
+for base in (ROOT / "ops/_generated_committed", ROOT / "docs/_generated"):
     for p in sorted(base.rglob("*")):
         if not p.is_file():
             continue

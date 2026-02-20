@@ -69,19 +69,12 @@ VALIDATOR_COVERED_FILES = {
 
 EXCLUDE_PREFIXES = (
     "ops/_artifacts/",
-    "ops/_generated/gates/",
-    "ops/_generated/ops-",
-    "ops/_generated/stack/",
-    "ops/_generated/k8s/",
-    "ops/_generated/load/",
-    "ops/_generated/obs/",
-    "ops/_generated/obs-verify/",
-    "ops/_generated/pins/",
+    "ops/_evidence/",
 )
 
 EXCLUDE_FILES = {
-    "ops/_generated/report.unified.json",
-    "ops/_generated/scorecard.json",
+    "ops/_generated_committed/report.unified.json",
+    "ops/_generated_committed/scorecard.json",
 }
 
 
@@ -97,8 +90,8 @@ def main() -> int:
     errors: list[str] = []
     for p in sorted((ROOT / "ops").rglob("*.json")):
         rel = p.relative_to(ROOT).as_posix()
-        if rel.startswith("ops/_generated/") and rel.count("/") >= 4:
-            # Runtime run-scoped outputs under ops/_generated/<area>/<run_id>/*
+        if rel.startswith("ops/_evidence/") and rel.count("/") >= 4:
+            # Runtime run-scoped outputs under ops/_evidence/<area>/<run_id>/*
             # are ephemeral artifacts, not contract manifests.
             continue
         if any(rel.startswith(prefix) for prefix in EXCLUDE_PREFIXES):
