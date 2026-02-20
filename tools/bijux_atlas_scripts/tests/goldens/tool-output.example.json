@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "tool": "bijux-atlas-scripts",
+  "status": "pass",
+  "details": {
+    "check": "example"
+  }
+}

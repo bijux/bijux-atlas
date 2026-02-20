@@ -14,6 +14,7 @@ This registry defines script stability levels.
 - `scripts/bin/isolate`
 - `scripts/bin/require-isolate`
 - `scripts/bin/bijux-atlas-dev`
+- `scripts/bin/bijux-atlas-scripts`
 - `scripts/areas/bootstrap/install_tools.sh`
 - `scripts/areas/contracts/check_all.sh`
 - `scripts/areas/contracts/check_chart_values_contract.py`
@@ -34,6 +35,9 @@ This registry defines script stability levels.
 - `scripts/areas/public/perf/*` (compat wrappers only; canonical implementations live in `ops/load/scripts/`)
 - `scripts/areas/ops/check_k8s_test_contract.py`
 - `scripts/areas/ops/check_k8s_flakes.py`
+- `scripts/areas/ops/check_k8s_checks_layout.py`
+- `scripts/areas/ops/check_k8s_test_lib.py`
+- `scripts/areas/ops/generate_k8s_test_surface.py`
 
 ## Internal
 
