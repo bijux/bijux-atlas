@@ -3,11 +3,11 @@ usage: bijux-atlas [-h] [--version] [--run-id RUN_ID]
                    [--profile PROFILE] [--format {text,json}]
                    [--network {allow,forbid}] [--no-network]
                    [--require-clean-git] [--verbose | --quiet]
-                   {version,env,self-check,help,run,validate-output,surface,commands,contracts,registry,layout,configs,policies,docs,make,ops,inventory,lint,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,doctor,completion}
+                   {version,env,self-check,help,run,validate-output,surface,commands,contracts,registry,layout,configs,policies,docs,make,ops,inventory,lint,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,doctor,completion,clean}
                    ...
 
 positional arguments:
-  {version,env,self-check,help,run,validate-output,surface,commands,contracts,registry,layout,configs,policies,docs,make,ops,inventory,lint,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,doctor,completion}
+  {version,env,self-check,help,run,validate-output,surface,commands,contracts,registry,layout,configs,policies,docs,make,ops,inventory,lint,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,doctor,completion,clean}
     version             print versions and git context
     env                 manage isolated python environment and artifact-root
                         policy
@@ -44,6 +44,7 @@ positional arguments:
     gates               run curated gate lanes from SSOT manifest
     doctor              show tooling and context diagnostics
     completion          emit shell completion stub
+    clean               clean scripts artifacts under approved roots only
 
 options:
   -h, --help            show this help message and exit
