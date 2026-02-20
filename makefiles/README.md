@@ -68,6 +68,7 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 - `make scripts/check`: Deterministic scripts checks lane.
 - `make configs/all`: Config schema + drift lane.
 - `make configs/check`: Config schema + drift checks.
+- `make budgets/check`: Universal budget SSOT + relaxation expiry checks.
 - `make policies/all`: deny/audit/policy-relaxations lane.
 - `make policies/check`: deny/audit/policy-relaxations checks.
 - `make policies/boundaries-check`: enforce e2e layer-boundary lints and exception expiry checks.

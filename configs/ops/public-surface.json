@@ -6,6 +6,7 @@
   ],
   "make_targets": [
     "ci",
+    "budgets/check",
     "clean",
     "configs-check",
     "docs",

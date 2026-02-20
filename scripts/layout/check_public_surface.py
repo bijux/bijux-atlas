@@ -20,7 +20,7 @@ def main() -> int:
     declared: set[str] = set()
     for mk_path in sorted((ROOT / "makefiles").glob("*.mk")):
         mk = mk_path.read_text(encoding="utf-8")
-        declared.update(re.findall(r"^([a-zA-Z0-9_.-]+):(?:\s|$)", mk, flags=re.M))
+        declared.update(re.findall(r"^([a-zA-Z0-9_./-]+):(?:\s|$)", mk, flags=re.M))
 
     phony_targets: set[str] = set()
     for line in root_text.splitlines():
