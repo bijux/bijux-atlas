@@ -2,14 +2,21 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from .repo_root import find_repo_root
 
-def find_repo_root(start: Path | None = None) -> Path:
-    cur = (start or Path(__file__).resolve()).resolve()
-    if cur.is_file():
-        cur = cur.parent
-    while True:
-        if (cur / '.git').exists() and (cur / 'makefiles').is_dir() and (cur / 'configs').is_dir():
-            return cur
-        if cur.parent == cur:
-            raise RuntimeError('unable to resolve repository root')
-        cur = cur.parent
+
+def evidence_root_path(repo_root: Path, configured: str | None) -> Path:
+    raw = Path(configured or "artifacts/evidence")
+    return (repo_root / raw).resolve() if not raw.is_absolute() else raw.resolve()
+
+
+def scripts_artifact_root_path(repo_root: Path, configured: str | None) -> Path:
+    raw = Path(configured or "artifacts/atlasctl/run/default")
+    return (repo_root / raw).resolve() if not raw.is_absolute() else raw.resolve()
+
+
+def run_dir_root_path(repo_root: Path, evidence_root: Path, configured: str | None) -> Path:
+    if not configured:
+        return evidence_root
+    raw = Path(configured)
+    return (repo_root / raw).resolve() if not raw.is_absolute() else raw.resolve()

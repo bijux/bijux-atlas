@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from ..contracts.json import write_json
-from ..core.paths import find_repo_root
+from ..core.repo_root import find_repo_root
 from ..reporting.helpers import script_output_dir, utc_run_id
 
 
@@ -22,7 +22,7 @@ def dump_env(script_name: str = "env-dump", run_id: str | None = None) -> Path:
     out_file = out_dir / "env.txt"
     env_lines = [f"{k}={v}" for k, v in sorted(os.environ.items())]
     payload_lines = [
-        f"pwd={Path.cwd()}",
+        f"pwd={os.getcwd()}",
         f"repo_root={find_repo_root()}",
         f"run_id={resolved_run_id}",
         f"timestamp_utc={datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}",
@@ -49,4 +49,3 @@ def run_timed(cmd: list[str], script_name: str = "exec", run_id: str | None = No
     }
     timing_path = write_json(out_dir / "timing.json", timing)
     return proc.returncode, timing_path
-

@@ -3,10 +3,10 @@ from __future__ import annotations
 import os
 import runpy
 import sys
-from pathlib import Path
 
 from .errors import ScriptError
 from .exit_codes import ERR_CONFIG
+from .core.env import setdefault as env_setdefault
 from .run_context import RunContext
 
 
@@ -15,13 +15,13 @@ def run_legacy_script(script_path: str, args: list[str], ctx: RunContext) -> int
     script = (root / script_path).resolve()
     if not script.exists():
         raise ScriptError(f"script not found: {script_path}", ERR_CONFIG)
-    os.environ.setdefault("RUN_ID", ctx.run_id)
-    os.environ.setdefault("EVIDENCE_ROOT", str(ctx.evidence_root))
-    os.environ.setdefault("BIJUX_ATLAS_SCRIPTS_ARTIFACT_ROOT", str(ctx.scripts_artifact_root))
-    os.environ.setdefault("PROFILE", ctx.profile)
+    env_setdefault("RUN_ID", ctx.run_id)
+    env_setdefault("EVIDENCE_ROOT", str(ctx.evidence_root))
+    env_setdefault("BIJUX_ATLAS_SCRIPTS_ARTIFACT_ROOT", str(ctx.scripts_artifact_root))
+    env_setdefault("PROFILE", ctx.profile)
     old_argv = sys.argv[:]
     old_path = sys.path[:]
-    old_cwd = Path.cwd()
+    old_cwd = os.getcwd()
     sys.argv = [str(script), *args]
     sys.path.insert(0, str(script.parent))
     os.chdir(root)
