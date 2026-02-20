@@ -30,7 +30,7 @@ def main() -> int:
         text=True,
     )
     for rel in sorted(ln.strip() for ln in proc.stdout.splitlines() if ln.strip()):
-        if rel.startswith("tools/bijux_atlas_scripts/"):
+        if rel.startswith("tools/bijux-atlas-scripts/"):
             continue
         if rel in allow:
             continue

@@ -4,5 +4,5 @@
 set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
 . "$ROOT/scripts/lib/errors.sh"
-export PYTHONPATH="$ROOT/tools/bijux_atlas_scripts/src${PYTHONPATH:+:$PYTHONPATH}"
+export PYTHONPATH="$ROOT/tools/bijux-atlas-scripts/src${PYTHONPATH:+:$PYTHONPATH}"
 exec python3 -m bijux_atlas_scripts.cli "$@"

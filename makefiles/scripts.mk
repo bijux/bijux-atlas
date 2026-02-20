@@ -56,10 +56,10 @@ scripts-test: ## Run scripts-focused tests
 	@$(PYRUN) ops/load/scripts/check_pinned_queries_lock.py
 	@python3 -m unittest scripts.areas.tests.test_paths
 	@$(MAKE) -s internal/scripts/install-dev
-	@PYTHONPATH=tools/bijux_atlas_scripts/src "$(SCRIPTS_VENV)/bin/ruff" check tools/bijux_atlas_scripts/src tools/bijux_atlas_scripts/tests
-	@if [ -x "$(SCRIPTS_VENV)/bin/mypy" ]; then PYTHONPATH=tools/bijux_atlas_scripts/src "$(SCRIPTS_VENV)/bin/mypy" tools/bijux_atlas_scripts/src; else echo "mypy not installed (optional)"; fi
-	@PYTHONPATH=tools/bijux_atlas_scripts/src "$(SCRIPTS_VENV)/bin/pytest" -q tools/bijux_atlas_scripts/tests
-	@./scripts/bin/bijux-atlas-scripts validate-output --schema configs/contracts/scripts-tool-output.schema.json --file tools/bijux_atlas_scripts/tests/goldens/tool-output.example.json
+	@PYTHONPATH=tools/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" check tools/bijux-atlas-scripts/src tools/bijux-atlas-scripts/tests
+	@if [ -x "$(SCRIPTS_VENV)/bin/mypy" ]; then PYTHONPATH=tools/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/mypy" tools/bijux-atlas-scripts/src; else echo "mypy not installed (optional)"; fi
+	@PYTHONPATH=tools/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/pytest" -q tools/bijux-atlas-scripts/tests
+	@./scripts/bin/bijux-atlas-scripts validate-output --schema configs/contracts/scripts-tool-output.schema.json --file tools/bijux-atlas-scripts/tests/goldens/tool-output.example.json
 	@./scripts/bin/bijux-atlas-scripts surface --json > artifacts/scripts/surface.json
 	@./scripts/bin/bijux-atlas-scripts validate-output --schema configs/contracts/scripts-surface-output.schema.json --file artifacts/scripts/surface.json
 	@./scripts/bin/bijux-atlas-scripts --run-id scripts-test --profile local doctor --json > artifacts/scripts/doctor.json
@@ -78,7 +78,7 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(PYRUN) scripts/areas/layout/check_script_entrypoints.py
 	@$(PYRUN) scripts/areas/layout/check_scripts_top_level.py
 	@if command -v shellcheck >/dev/null 2>&1; then find scripts/areas/check scripts/bin scripts/areas/ci scripts/areas/dev -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional)"; fi
-	@if command -v ruff >/dev/null 2>&1; then ruff check scripts/areas/check scripts/areas/gen scripts/areas/python tools/bijux_atlas_scripts/src tools/bijux_atlas_scripts/tests; else echo "ruff not installed (optional)"; fi
+	@if command -v ruff >/dev/null 2>&1; then ruff check scripts/areas/check scripts/areas/gen scripts/areas/python tools/bijux-atlas-scripts/src tools/bijux-atlas-scripts/tests; else echo "ruff not installed (optional)"; fi
 	@python3 -m unittest scripts.areas.tests.test_paths
 
 scripts-all: ## Canonical scripts gate: all script-related gates must pass
@@ -96,7 +96,7 @@ scripts-audit: ## Audit script headers, taxonomy buckets, and no-implicit-cwd co
 internal/scripts/install-dev:
 	@python3 -m venv "$(SCRIPTS_VENV)"
 	@"$(SCRIPTS_VENV)/bin/pip" install --upgrade pip >/dev/null
-	@"$(SCRIPTS_VENV)/bin/pip" install -r tools/bijux_atlas_scripts/requirements.lock.txt >/dev/null
+	@"$(SCRIPTS_VENV)/bin/pip" install -r tools/bijux-atlas-scripts/requirements.lock.txt >/dev/null
 
 scripts-clean: ## Remove generated script artifacts
 	@rm -rf artifacts/scripts

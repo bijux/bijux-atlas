@@ -1,4 +1,4 @@
-# Legacy Python files allowed outside tools/bijux_atlas_scripts package.
+# Legacy Python files allowed outside tools/bijux-atlas-scripts package.
 ops/_lint/budget-relaxations-audit.py
 ops/_lint/check_layer_contract_drift.py
 ops/_lint/images/no-unpinned-images.py

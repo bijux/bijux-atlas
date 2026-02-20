@@ -13,7 +13,7 @@ ALLOWED_PREFIXES = (
     "scripts/",
     "ops/",
     "docker/scripts/",
-    "tools/bijux_atlas_scripts/",
+    "tools/bijux-atlas-scripts/",
 )
 ALLOWED_OPS_MARKERS = (
     "/scripts/",
@@ -51,7 +51,7 @@ def main() -> int:
             continue
         if rel.startswith("docker/scripts/"):
             continue
-        if rel.startswith("tools/bijux_atlas_scripts/"):
+        if rel.startswith("tools/bijux-atlas-scripts/"):
             continue
         if rel.startswith("ops/"):
             if any(marker in rel for marker in ALLOWED_OPS_MARKERS):
@@ -62,7 +62,7 @@ def main() -> int:
                 f"{rel}: ops script path is outside approved automation zones"
             )
             continue
-        errors.append(f"{rel}: scripts must live under scripts/, ops/, or tools/bijux_atlas_scripts/")
+        errors.append(f"{rel}: scripts must live under scripts/, ops/, or tools/bijux-atlas-scripts/")
     if errors:
         print("script location check failed:", file=sys.stderr)
         for err in errors:
