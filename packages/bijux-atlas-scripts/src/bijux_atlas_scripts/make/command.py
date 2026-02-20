@@ -381,6 +381,46 @@ def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 print(tracked.stdout + tracked.stderr)
                 return 1
 
+            budget_cfg = ctx.repo_root / "configs/make/public-targets.json"
+            if budget_cfg.exists():
+                cfg = json.loads(budget_cfg.read_text(encoding="utf-8"))
+                max_targets = int(cfg.get("max_public_targets", 20))
+                count_targets = len([t for t in payload["targets"] if t.get("name") != "[global]"])
+                if count_targets > max_targets:
+                    print(
+                        json.dumps(
+                            {
+                                "status": "fail",
+                                "reason": "public target budget exceeded",
+                                "count": count_targets,
+                                "max": max_targets,
+                            },
+                            sort_keys=True,
+                        )
+                    )
+                    return 1
+
+            docs_path = ctx.repo_root / "docs/development/make-targets.md"
+            if docs_path.exists():
+                docs_text = docs_path.read_text(encoding="utf-8")
+                missing = [
+                    str(row["name"])
+                    for row in payload["targets"]
+                    if row.get("name") != "[global]" and f"- `{row['name']}`" not in docs_text
+                ]
+                if missing:
+                    print(
+                        json.dumps(
+                            {
+                                "status": "fail",
+                                "reason": "docs coverage missing for public targets",
+                                "missing": sorted(missing),
+                            },
+                            sort_keys=True,
+                        )
+                    )
+                    return 1
+
         print(json.dumps({"status": "pass", "json": str(json_path), "md": str(md_path)}, sort_keys=True))
         return 0
 
