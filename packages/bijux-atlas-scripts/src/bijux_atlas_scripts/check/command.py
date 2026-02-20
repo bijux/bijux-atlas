@@ -11,9 +11,12 @@ from .native import (
     check_layout_contract,
     check_make_command_allowlist,
     check_duplicate_script_names,
+    check_docs_scripts_references,
+    check_forbidden_top_dirs,
     check_make_forbidden_paths,
     check_make_help,
     check_make_scripts_references,
+    check_no_executable_python_outside_packages,
     check_ops_generated_tracked,
     check_no_xtask_refs,
     check_script_help,
@@ -92,6 +95,15 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         else:
             print("make scripts reference policy passed")
         return code
+    if sub == "docs-scripts-refs":
+        code, errors = check_docs_scripts_references(ctx.repo_root)
+        if errors:
+            print("docs scripts reference policy failed:")
+            for err in errors[:200]:
+                print(f"- {err}")
+        else:
+            print("docs scripts reference policy passed")
+        return code
     if sub == "make-help":
         code, errors = check_make_help(ctx.repo_root)
         if errors:
@@ -123,6 +135,24 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 print(f"- {err}")
         else:
             print("no xtask references detected")
+        return code
+    if sub == "no-python-shebang-outside-packages":
+        code, errors = check_no_executable_python_outside_packages(ctx.repo_root)
+        if errors:
+            print("forbidden executable python files detected:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("no executable python files outside packages")
+        return code
+    if sub == "forbidden-top-dirs":
+        code, errors = check_forbidden_top_dirs(ctx.repo_root)
+        if errors:
+            print("forbidden top-level directories detected:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("no forbidden top-level directories")
         return code
     if sub == "ops-generated-tracked":
         code, errors = check_ops_generated_tracked(ctx.repo_root)
@@ -176,9 +206,15 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     p_sub.add_parser("ownership", help="validate script ownership coverage")
     p_sub.add_parser("duplicate-script-names", help="validate duplicate script names")
     p_sub.add_parser("make-scripts-refs", help="validate no makefile references to scripts paths")
+    p_sub.add_parser("docs-scripts-refs", help="validate docs contain no scripts/ path references")
     p_sub.add_parser("make-help", help="validate deterministic make help output")
     p_sub.add_parser("forbidden-paths", help="forbid scripts/xtask/tools direct recipe paths")
     p_sub.add_parser("no-xtask", help="forbid xtask references outside ADR history")
+    p_sub.add_parser(
+        "no-python-shebang-outside-packages",
+        help="forbid executable python scripts outside packages/",
+    )
+    p_sub.add_parser("forbidden-top-dirs", help="fail if forbidden top-level directories exist")
     p_sub.add_parser("ops-generated-tracked", help="fail if ops/_generated contains tracked files")
     p_sub.add_parser("tracked-timestamps", help="fail if tracked paths contain timestamp-like directories")
     p_sub.add_parser(

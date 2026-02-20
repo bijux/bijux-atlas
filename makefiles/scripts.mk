@@ -50,6 +50,10 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(PY_RUN) scripts/areas/check/check-python-runtime-artifacts.py --fix
 	@$(PY_RUN) scripts/areas/check/check-python-runtime-artifacts.py
 	@$(PY_RUN) scripts/areas/check/check-no-make-scripts-references.py
+	@$(ATLAS_SCRIPTS) check docs-scripts-refs
+	@$(ATLAS_SCRIPTS) check make-scripts-refs
+	@$(ATLAS_SCRIPTS) check no-python-shebang-outside-packages
+	@$(ATLAS_SCRIPTS) check forbidden-top-dirs
 	@$(PY_RUN) scripts/areas/check/check-repo-script-boundaries.py
 	@$(PY_RUN) scripts/areas/check/check-atlas-scripts-cli-contract.py
 	@$(PY_RUN) scripts/areas/check/check-scripts-surface-docs-drift.py

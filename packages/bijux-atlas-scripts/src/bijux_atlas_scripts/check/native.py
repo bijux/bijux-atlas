@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import re
 import subprocess
+from fnmatch import fnmatch
 from datetime import date
 from pathlib import Path
 
@@ -383,4 +384,49 @@ def check_make_scripts_references(repo_root: Path) -> tuple[int, list[str]]:
             violations.append(f"{mk.relative_to(repo_root)}:{idx}: unapproved scripts/ reference in make recipe")
 
     errors.extend(violations)
+    return (0 if not errors else 1), errors
+
+
+def check_docs_scripts_references(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    allowed = {"docs/development/xtask-removal-map.md"}
+    for p in sorted((repo_root / "docs").rglob("*")):
+        if not p.is_file() or p.suffix != ".md":
+            continue
+        rel = p.relative_to(repo_root).as_posix()
+        if rel in allowed:
+            continue
+        for idx, line in enumerate(p.read_text(encoding="utf-8", errors="ignore").splitlines(), start=1):
+            if "scripts/" in line:
+                errors.append(f"{rel}:{idx}: docs must not reference scripts/ paths")
+    return (0 if not errors else 1), errors
+
+
+def check_no_executable_python_outside_packages(repo_root: Path) -> tuple[int, list[str]]:
+    exceptions_cfg = repo_root / "configs/layout/python-migration-exceptions.json"
+    globs: list[str] = []
+    if exceptions_cfg.exists():
+        payload = json.loads(exceptions_cfg.read_text(encoding="utf-8"))
+        globs = [str(row.get("path_glob", "")) for row in payload.get("exceptions", [])]
+    errors: list[str] = []
+    for p in sorted(repo_root.rglob("*.py")):
+        if not p.is_file():
+            continue
+        rel = p.relative_to(repo_root).as_posix()
+        if rel.startswith("packages/") or "/__pycache__/" in rel:
+            continue
+        first = p.read_text(encoding="utf-8", errors="ignore").splitlines()[:1]
+        shebang = first[0] if first else ""
+        if shebang.startswith("#!/usr/bin/env python"):
+            if any(fnmatch(rel, g) or rel == g for g in globs if g):
+                continue
+            errors.append(f"{rel}: executable python outside packages/")
+    return (0 if not errors else 1), errors
+
+
+def check_forbidden_top_dirs(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for name in ("xtask", "tools"):
+        if (repo_root / name).exists():
+            errors.append(f"forbidden top-level directory exists: {name}/")
     return (0 if not errors else 1), errors
