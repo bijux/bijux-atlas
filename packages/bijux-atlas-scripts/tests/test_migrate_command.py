@@ -26,17 +26,22 @@ def _ctx(root: Path) -> RunContext:
     )
 
 
-def test_migrate_layout_runs_sequence(monkeypatch, tmp_path: Path) -> None:
-    calls: list[list[str]] = []
+def test_migrate_layout_rewrites_paths_and_checks_layout(tmp_path: Path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
+    tracked = tmp_path / "docs" / "x.md"
+    tracked.parent.mkdir(parents=True, exist_ok=True)
+    tracked.write_text("use ./charts/ and docs/operations/ops/foo.md\n", encoding="utf-8")
 
     class Dummy:
         returncode = 0
+        stdout = "docs/x.md\n"
 
-    def fake_run(cmd, cwd=None, text=None, check=None):  # type: ignore[no-untyped-def]
-        calls.append(list(cmd))
+    def fake_run(cmd, cwd=None, text=None, capture_output=None, check=None):  # type: ignore[no-untyped-def]
         return Dummy()
 
     monkeypatch.setattr("bijux_atlas_scripts.migrate.command.subprocess.run", fake_run)
+    monkeypatch.setattr("bijux_atlas_scripts.migrate.command.check_layout_contract", lambda _: (0, []))
     ns = argparse.Namespace(migrate_cmd="layout", json=False)
     assert run_migrate_command(_ctx(tmp_path), ns) == 0
-    assert calls and calls[0][:2] == ["bash", "scripts/areas/internal/migrate_paths.sh"]
+    rewritten = tracked.read_text(encoding="utf-8")
+    assert "./ops/k8s/charts/" in rewritten
+    assert "docs/operations/foo.md" in rewritten

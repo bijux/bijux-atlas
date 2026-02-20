@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 from dataclasses import dataclass
 from datetime import date
@@ -10,6 +11,7 @@ from pathlib import Path
 from ..core.context import RunContext
 from ..exit_codes import ERR_CONTRACT, ERR_USER
 from ..inventory.command import collect_commands, collect_legacy_scripts
+from ..check.native import check_layout_contract
 
 
 @dataclass(frozen=True)
@@ -28,6 +30,62 @@ class MigrationException:
 def _run(repo_root: Path, cmd: list[str]) -> int:
     proc = subprocess.run(cmd, cwd=repo_root, text=True, check=False)
     return proc.returncode
+
+
+_PATH_REPLACEMENTS: tuple[tuple[re.Pattern[str], str], ...] = (
+    (re.compile(r"\./charts/"), "./ops/k8s/charts/"),
+    (re.compile(r"\./e2e/"), "./ops/e2e/"),
+    (re.compile(r"\./load/"), "./ops/load/"),
+    (re.compile(r"\./observability/"), "./ops/obs/"),
+    (re.compile(r"\./datasets/"), "./ops/datasets/"),
+    (re.compile(r"\./fixtures/"), "./ops/fixtures/"),
+    (re.compile(r"docs/operations/ops/"), "docs/operations/"),
+    (re.compile(r"operations/ops/"), "operations/"),
+)
+
+
+def _tracked_files(repo_root: Path) -> list[Path]:
+    proc = subprocess.run(
+        ["git", "ls-files", "Makefile", "makefiles", "scripts", ".github", "docs", "ops"],
+        cwd=repo_root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if proc.returncode != 0:
+        return []
+    return [repo_root / line for line in proc.stdout.splitlines() if line.strip()]
+
+
+def _replace_legacy_paths(repo_root: Path) -> int:
+    changed = 0
+    for file_path in _tracked_files(repo_root):
+        if not file_path.is_file():
+            continue
+        try:
+            before = file_path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            continue
+        after = before
+        for pattern, repl in _PATH_REPLACEMENTS:
+            after = pattern.sub(repl, after)
+        if after != before:
+            file_path.write_text(after, encoding="utf-8")
+            changed += 1
+    return changed
+
+
+def _prune_legacy_root_aliases(repo_root: Path) -> None:
+    for legacy in ("charts", "e2e", "load", "observability", "datasets", "fixtures"):
+        path = repo_root / legacy
+        if path.is_symlink() or path.is_file():
+            path.unlink(missing_ok=True)
+            continue
+        if path.is_dir():
+            try:
+                path.rmdir()
+            except OSError:
+                pass
 
 
 def _migration_exceptions(repo_root: Path) -> list[MigrationException]:
@@ -162,26 +220,15 @@ def _diff(ns: argparse.Namespace, ctx: RunContext) -> int:
 
 def run_migrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.migrate_cmd == "layout":
-        sequence = [
-            ["bash", "scripts/areas/internal/migrate_paths.sh", "--apply"],
-            ["bash", "scripts/areas/layout/check_root_shape.sh"],
-            ["bash", "scripts/areas/layout/check_forbidden_root_names.sh"],
-            ["bash", "scripts/areas/layout/check_repo_hygiene.sh"],
-        ]
-        for legacy in ("charts", "e2e", "load", "observability", "datasets", "fixtures"):
-            path = ctx.repo_root / legacy
-            if path.is_symlink() or path.is_file():
-                path.unlink(missing_ok=True)
-            elif path.is_dir():
-                try:
-                    path.rmdir()
-                except OSError:
-                    pass
-        for cmd in sequence:
-            code = _run(ctx.repo_root, cmd)
-            if code != 0:
-                return code
-        print("layout migration completed")
+        changed = _replace_legacy_paths(ctx.repo_root)
+        _prune_legacy_root_aliases(ctx.repo_root)
+        code, errors = check_layout_contract(ctx.repo_root)
+        if code != 0:
+            print("layout migration check failed:")
+            for err in errors[:100]:
+                print(f"- {err}")
+            return code
+        print(f"layout migration completed (updated_files={changed})")
         return 0
     if ns.migrate_cmd == "status":
         return _status(ns, ctx.repo_root)
