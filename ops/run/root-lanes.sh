@@ -4,6 +4,7 @@ set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
 cd "$ROOT"
 . "$ROOT/ops/_lib/common.sh"
+ops_init_run_id
 RUN_ID="${RUN_ID:-root-lanes-$(date -u +%Y%m%dT%H%M%SZ)}"
 export OPS_RUN_ID="${OPS_RUN_ID:-$RUN_ID}"
 export OPS_RUN_DIR="${OPS_RUN_DIR:-$ROOT/artifacts/ops/$OPS_RUN_ID}"
