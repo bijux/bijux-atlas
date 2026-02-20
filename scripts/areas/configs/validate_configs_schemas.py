@@ -14,6 +14,7 @@ PAIRS = [
   ("configs/policy/layer-relaxations.json", "configs/_schemas/layer-relaxations.schema.json"),
   ("configs/policy/layer-live-diff-allowlist.json", "configs/_schemas/layer-live-diff-allowlist.schema.json"),
   ("configs/ops/target-renames.json", "configs/_schemas/target-renames.schema.json"),
+  ("configs/ops/hpa-safety-caps.json", "configs/_schemas/hpa-safety-caps.schema.json"),
 ]
 
 

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "default_max_replicas_cap", "profile_caps"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "default_max_replicas_cap": {"type": "integer", "minimum": 1},
+    "profile_caps": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"type": "integer", "minimum": 1}
+    }
+  }
+}

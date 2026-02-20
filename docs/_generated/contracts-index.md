@@ -3,7 +3,7 @@
 Generated from repository files. Do not edit manually.
 
 - CONTRACT files: `12`
-- Schema files: `38`
+- Schema files: `40`
 
 ## CONTRACT.md Files
 
@@ -23,6 +23,7 @@ Generated from repository files. Do not edit manually.
 ## Schema Files
 
 - `configs/_schemas/configs-ownership.schema.json`
+- `configs/_schemas/hpa-safety-caps.schema.json`
 - `configs/_schemas/layer-live-diff-allowlist.schema.json`
 - `configs/_schemas/layer-relaxations.schema.json`
 - `configs/_schemas/policy-relaxations.schema.json`
@@ -40,6 +41,7 @@ Generated from repository files. Do not edit manually.
 - `ops/_schemas/e2e-scenarios.schema.json`
 - `ops/_schemas/e2e-suites.schema.json`
 - `ops/_schemas/k8s/install-matrix.schema.json`
+- `ops/_schemas/k8s/suite-report.schema.json`
 - `ops/_schemas/load/perf-baseline.schema.json`
 - `ops/_schemas/load/pinned-queries-lock.schema.json`
 - `ops/_schemas/load/suite-manifest.schema.json`

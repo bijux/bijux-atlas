@@ -27,12 +27,14 @@ Does not guarantee exact replica counts at exact timestamps or guarantee product
 - HPA checks require `metrics.k8s.io` API readiness; custom metrics checks require `custom.metrics.k8s.io`.
 - HPA checks must prove both upscale intent (`desiredReplicas` change) and bounded downscale after load stops.
 - HPA failures must dump HPA object/status/events into test artifacts.
+- HPA `maxReplicas` must stay within profile safety caps from `configs/ops/hpa-safety-caps.json` to prevent runaway local scaling.
 
 ## Failure modes
 
 - Missing metrics API/adapter causes preflight failure before scaling checks.
 - Misconfigured HPA values fail during schema/template render.
 - No observed desired replica change or no bounded downscale fails the HPA gate.
+- Any values profile exceeding configured `maxReplicas` safety cap fails the HPA cap contract test.
 
 ## How to verify
 
