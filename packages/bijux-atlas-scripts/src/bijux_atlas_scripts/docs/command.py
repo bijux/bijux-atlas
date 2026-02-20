@@ -1524,6 +1524,176 @@ def _check_load_docs_contract(ctx: RunContext) -> tuple[int, str]:
     )
 
 
+def _parse_make_help_sections(text: str) -> dict[str, list[str]]:
+    sections: dict[str, list[str]] = {}
+    current: str | None = None
+    for line in text.splitlines():
+        if line.endswith(":") and not line.startswith("  "):
+            current = line[:-1]
+            sections[current] = []
+            continue
+        if current and line.startswith("  "):
+            sections[current].append(line.strip().split()[0])
+    return sections
+
+
+def _parse_make_targets_doc_sections(text: str) -> dict[str, list[str]]:
+    sections: dict[str, list[str]] = {}
+    current: str | None = None
+    for line in text.splitlines():
+        if line.startswith("## "):
+            current = line[3:].strip().lower()
+            sections[current] = []
+            continue
+        if current:
+            match = re.match(r"^- `([^`]+)`$", line.strip())
+            if match:
+                sections[current].append(match.group(1))
+    return sections
+
+
+def _check_make_help_drift(ctx: RunContext) -> tuple[int, str]:
+    doc = ctx.repo_root / "docs" / "development" / "make-targets.md"
+    help_out = subprocess.check_output(["make", "help"], cwd=ctx.repo_root, text=True)
+    help_sections = _parse_make_help_sections(help_out)
+    doc_sections = _parse_make_targets_doc_sections(doc.read_text(encoding="utf-8"))
+    normalized_help = {k.lower(): v for k, v in help_sections.items()}
+    if normalized_help != doc_sections:
+        return 1, "make help drift detected vs docs/development/make-targets.md"
+    return 0, "make help drift check passed"
+
+
+def _check_no_removed_make_targets(ctx: RunContext) -> tuple[int, str]:
+    scan_dirs = [ctx.repo_root / "docs", ctx.repo_root / "makefiles" / "README.md"]
+    removed = {"docker", "chart"}
+    patterns = [re.compile(rf"\bmake\s+{re.escape(target)}(?=\s|$|`|,)") for target in sorted(removed)]
+    violations: list[str] = []
+    files: list[Path] = []
+    for item in scan_dirs:
+        if item.is_file():
+            files.append(item)
+        elif item.is_dir():
+            files.extend(sorted(item.rglob("*.md")))
+    for path in files:
+        rel = path.relative_to(ctx.repo_root).as_posix()
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        for idx, line in enumerate(text.splitlines(), start=1):
+            if "make " not in line:
+                continue
+            for pattern in patterns:
+                if pattern.search(line):
+                    violations.append(f"{rel}:{idx}: removed public target reference: {pattern.pattern}")
+                    break
+    return (0, "removed make target docs check passed") if not violations else (
+        1,
+        "removed make target docs check failed:\n" + "\n".join(f"- {v}" for v in violations),
+    )
+
+
+def _check_ops_docs_make_targets(ctx: RunContext) -> tuple[int, str]:
+    ops_docs = ctx.repo_root / "docs" / "operations"
+    help_out = subprocess.check_output(["make", "help"], cwd=ctx.repo_root, text=True)
+    targets: list[str] = []
+    for line in help_out.splitlines():
+        if line.startswith("  "):
+            targets.extend(line.strip().split())
+    ops_targets = [t for t in sorted(set(targets)) if t.startswith("ops-") or t.startswith("e2e-") or t == "observability-check"]
+    if not ops_targets:
+        return 1, "ops docs make-target contract failed: no ops targets discovered in `make help`"
+    target_pattern = re.compile(r"`(" + "|".join(re.escape(t) for t in ops_targets) + r")`")
+    make_cmd_pattern = re.compile(r"\bmake\s+(" + "|".join(re.escape(t) for t in ops_targets) + r")\b")
+    errors: list[str] = []
+    area_has_target: dict[Path, bool] = {}
+    area_index: dict[Path, Path] = {}
+    for md in sorted(ops_docs.rglob("*.md")):
+        text = md.read_text(encoding="utf-8", errors="ignore")
+        area = md.parent
+        area_has_target.setdefault(area, False)
+        if target_pattern.search(text) or make_cmd_pattern.search(text):
+            area_has_target[area] = True
+        if md.name == "INDEX.md":
+            area_index[area] = md
+        if re.search(r"(^|\\s)\\./(ops|scripts)/", text):
+            errors.append(f"{md.relative_to(ctx.repo_root)}: direct script path reference found; use make target")
+    for area, has_target in sorted(area_has_target.items()):
+        if has_target:
+            continue
+        index = area_index.get(area)
+        if index is not None:
+            errors.append(f"{index.relative_to(ctx.repo_root)}: missing ops make target reference for area")
+        else:
+            errors.append(f"{area.relative_to(ctx.repo_root)}: missing INDEX.md with ops make target reference")
+    return (0, "ops docs make-target contract passed") if not errors else (
+        1,
+        "ops docs make-target contract failed:\n" + "\n".join(f"- {e}" for e in errors),
+    )
+
+
+def _check_ops_observability_links(ctx: RunContext) -> tuple[int, str]:
+    doc_dir = ctx.repo_root / "docs" / "operations" / "observability"
+    link_re = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+    errors: list[str] = []
+    for md in sorted(doc_dir.glob("*.md")):
+        text = md.read_text(encoding="utf-8", errors="ignore")
+        for link in link_re.findall(text):
+            if link.startswith(("http://", "https://", "mailto:", "#")):
+                continue
+            target = link.split("#", 1)[0]
+            if not target:
+                continue
+            if not (md.parent / target).resolve().exists():
+                errors.append(f"{md.relative_to(ctx.repo_root)} -> missing link target: {link}")
+    return (0, "ops observability link-check passed") if not errors else (
+        1,
+        "ops observability link-check failed:\n" + "\n".join(f"- {e}" for e in errors),
+    )
+
+
+def _check_public_targets_docs_sections(ctx: RunContext) -> tuple[int, str]:
+    targets_path = ctx.repo_root / "makefiles" / "targets.json"
+    doc = ctx.repo_root / "docs" / "_generated" / "make-targets.md"
+    mkdocs = ctx.repo_root / "mkdocs.yml"
+    errors: list[str] = []
+    if "_generated/make-targets.md" not in mkdocs.read_text(encoding="utf-8", errors="ignore"):
+        errors.append("mkdocs.yml missing nav entry for docs/_generated/make-targets.md")
+    targets = json.loads(targets_path.read_text(encoding="utf-8")).get("targets", [])
+    doc_text = doc.read_text(encoding="utf-8", errors="ignore")
+    for target in targets:
+        name = target.get("name", "") if isinstance(target, dict) else ""
+        if name and f"`{name}`" not in doc_text:
+            errors.append(f"docs/_generated/make-targets.md missing `{name}`")
+    return (0, "public target docs section check passed") if not errors else (
+        1,
+        "public target docs section check failed:\n" + "\n".join(f"- {e}" for e in errors),
+    )
+
+
+def _check_suite_id_docs(ctx: RunContext) -> tuple[int, str]:
+    targets = [
+        ctx.repo_root / "docs" / "operations" / "k8s" / "k8s-test-contract.md",
+        ctx.repo_root / "docs" / "operations" / "load" / "INDEX.md",
+        ctx.repo_root / "docs" / "operations" / "load" / "k6.md",
+        ctx.repo_root / "docs" / "operations" / "load" / "suites.md",
+    ]
+    bad_patterns = [
+        re.compile(r"\btest_[a-z0-9_]+\.sh\b"),
+        re.compile(
+            r"\b(?:mixed|spike|cold-start|stampede|store-outage-under-spike|pod-churn|cheap-only-survival|response-size-abuse|multi-release|sharded-fanout|diff-heavy|mixed-gene-sequence|soak-30m|redis-optional|catalog-federated|multi-dataset-hotset|large-dataset-simulation|load-under-rollout|load-under-rollback)\.json\b"
+        ),
+    ]
+    errors: list[str] = []
+    for path in targets:
+        rel = path.relative_to(ctx.repo_root).as_posix()
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        for pattern in bad_patterns:
+            for match in pattern.findall(text):
+                errors.append(f"{rel}: reference suite ID instead of file `{match}`")
+    return (0, "suite-id docs check passed") if not errors else (
+        1,
+        "suite-id docs check failed:\n" + "\n".join(f"- {e}" for e in errors),
+    )
+
+
 def _generate_concept_graph(ctx: RunContext) -> tuple[int, str]:
     registry = ctx.repo_root / "docs/_style/concepts.yml"
     out = ctx.repo_root / "docs/_generated/concepts.md"
@@ -2655,6 +2825,36 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
         return code
 
+    if ns.docs_cmd == "make-help-drift-check":
+        code, output = _check_make_help_drift(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
+    if ns.docs_cmd == "no-removed-make-targets-check":
+        code, output = _check_no_removed_make_targets(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
+    if ns.docs_cmd == "ops-docs-make-targets-check":
+        code, output = _check_ops_docs_make_targets(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
+    if ns.docs_cmd == "ops-observability-links-check":
+        code, output = _check_ops_observability_links(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
+    if ns.docs_cmd == "public-targets-docs-sections-check":
+        code, output = _check_public_targets_docs_sections(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
+    if ns.docs_cmd == "suite-id-docs-check":
+        code, output = _check_suite_id_docs(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
     if ns.docs_cmd == "contracts-index":
         if ns.fix:
             code, output = _generate_contracts_index_doc(ctx)
@@ -2819,6 +3019,12 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("full-stack-page-check", "validate full-stack operations page contract"),
         ("k8s-docs-contract-check", "validate k8s docs values key contract"),
         ("load-docs-contract-check", "validate load docs suite/scenario contract"),
+        ("make-help-drift-check", "validate make help output matches docs/development/make-targets.md"),
+        ("no-removed-make-targets-check", "forbid references to removed public make targets"),
+        ("ops-docs-make-targets-check", "validate operations docs reference make targets"),
+        ("ops-observability-links-check", "validate observability docs local links resolve"),
+        ("public-targets-docs-sections-check", "validate every public target appears in generated docs"),
+        ("suite-id-docs-check", "forbid file-name references where suite IDs are required"),
         ("glossary-check", "validate glossary and banned terms policy"),
         ("contracts-index", "validate or generate docs contracts index"),
         ("runbook-map", "validate or generate docs runbook map index"),

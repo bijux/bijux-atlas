@@ -74,13 +74,7 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_configmap_env_docs.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_doc_naming.sh` | `docs-governance` | `public` | `docs-build` |
 | `scripts/areas/docs/check_generated_contract_docs.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_make_help_drift.py` | `docs-governance` | `public` | `ci-make-help-drift` |
-| `scripts/areas/docs/check_no_removed_make_targets.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_ops_docs_make_targets.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_ops_observability_links.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_public_targets_docs_sections.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_reference_templates.sh` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_suite_id_docs.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_chart_contract_index.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_config_keys_doc.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_crates_map.py` | `docs-governance` | `public` | - |
