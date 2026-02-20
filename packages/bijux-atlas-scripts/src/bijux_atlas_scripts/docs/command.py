@@ -1133,6 +1133,70 @@ def _check_concept_registry(ctx: RunContext) -> tuple[int, str]:
     return (0, "concept registry check passed") if not errors else (1, "\n".join(errors))
 
 
+def _check_adr_headers(ctx: RunContext) -> tuple[int, str]:
+    errors: list[str] = []
+    acronyms = {"ADR", "API", "SSOT", "CLI", "CI", "SQL", "SQLITE", "K8S"}
+    for path in sorted((ctx.repo_root / "docs/adrs").glob("ADR-*.md")):
+        if path.name == "INDEX.md":
+            continue
+        m = re.match(r"ADR-(\d{4})-([a-z0-9-]+)\.md$", path.name)
+        rel = path.relative_to(ctx.repo_root).as_posix()
+        if not m:
+            errors.append(f"invalid ADR filename: {rel}")
+            continue
+        num = m.group(1)
+        lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
+        first = lines[0].strip() if lines else ""
+        prefix = f"# ADR-{num}: "
+        if not first.startswith(prefix):
+            errors.append(f"header mismatch in {rel}: missing `{prefix}` prefix")
+            continue
+        title = first[len(prefix) :].strip()
+        if not title:
+            errors.append(f"header mismatch in {rel}: missing ADR title text")
+            continue
+        for word in re.findall(r"[A-Za-z0-9]+", title):
+            if word.upper() in acronyms:
+                continue
+            if not word[0].isupper():
+                errors.append(f"header mismatch in {rel}: non-title-case word `{word}`")
+                break
+    return (0, "ADR header check passed") if not errors else (1, "\n".join(errors))
+
+
+def _check_broken_examples(ctx: RunContext) -> tuple[int, str]:
+    docs = ctx.repo_root / "docs"
+    codeblock = re.compile(r"```(?:bash|sh)\n(.*?)```", re.DOTALL)
+    cmdline = re.compile(r"^\$\s+(.+)$", re.MULTILINE)
+    make_db = subprocess.run(["make", "-qp"], cwd=ctx.repo_root, text=True, capture_output=True, check=False).stdout
+    make_targets = set(re.findall(r"^([A-Za-z0-9_.%/+\-]+):", make_db, flags=re.MULTILINE))
+    errors: list[str] = []
+    for md in docs.rglob("*.md"):
+        text = md.read_text(encoding="utf-8", errors="ignore")
+        rel = md.relative_to(ctx.repo_root).as_posix()
+        for block in codeblock.findall(text):
+            for cmd in cmdline.findall(block):
+                parts = cmd.strip().split()
+                while parts and re.match(r"^[A-Z_][A-Z0-9_]*=.*$", parts[0]):
+                    parts = parts[1:]
+                if not parts:
+                    continue
+                tok = parts[0]
+                if tok == "make":
+                    if len(parts) < 2 or parts[1] not in make_targets:
+                        errors.append(f"{rel}: unknown make target in example `{cmd}`")
+                    continue
+                if tok.startswith("./"):
+                    path = (ctx.repo_root / tok).resolve()
+                    if not path.exists() or not path.is_file() or not (path.stat().st_mode & 0o111):
+                        errors.append(f"{rel}: non-executable script path `{tok}`")
+                    continue
+                if tok in {"curl", "kubectl", "k6", "cargo", "rg", "python3", "helm", "jq", "cat"}:
+                    continue
+                errors.append(f"{rel}: command not backed by script path or allowed tool `{cmd}`")
+    return (0, "broken examples check passed") if not errors else (1, "\n".join(errors))
+
+
 def _generate_concept_graph(ctx: RunContext) -> tuple[int, str]:
     registry = ctx.repo_root / "docs/_style/concepts.yml"
     out = ctx.repo_root / "docs/_generated/concepts.md"
@@ -2153,6 +2217,16 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
         return code
 
+    if ns.docs_cmd == "adr-headers-check":
+        code, output = _check_adr_headers(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
+    if ns.docs_cmd == "broken-examples-check":
+        code, output = _check_broken_examples(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
     if ns.docs_cmd == "contracts-index":
         if ns.fix:
             code, output = _generate_contracts_index_doc(ctx)
@@ -2295,6 +2369,8 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("script-headers-check", "validate script header and docs script-group contract"),
         ("concept-registry-check", "validate docs concept registry and canonical ownership"),
         ("concept-graph-generate", "generate docs/_generated/concepts.md from concept registry"),
+        ("adr-headers-check", "validate ADR naming and title/header contract"),
+        ("broken-examples-check", "validate docs shell examples against make targets and tools"),
         ("glossary-check", "validate glossary and banned terms policy"),
         ("contracts-index", "validate or generate docs contracts index"),
         ("runbook-map", "validate or generate docs runbook map index"),

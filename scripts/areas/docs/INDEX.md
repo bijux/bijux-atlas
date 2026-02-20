@@ -3,8 +3,6 @@
 Scripts in this area.
 
 - ENTRYPOINTS.md
-- check_adr_headers.py
-- check_broken_examples.py
 - check_concept_ids.sh
 - check_critical_make_targets_referenced.py
 - check_doc_filename_style.py
