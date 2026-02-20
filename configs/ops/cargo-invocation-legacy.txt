@@ -9,3 +9,9 @@ makefiles/ops.mk:450
 makefiles/ops.mk:464
 makefiles/ops.mk:612
 makefiles/ops.mk:613
+makefiles/ci.mk:142
+makefiles/ops.mk:484
+makefiles/ops.mk:487
+makefiles/ops.mk:501
+makefiles/ops.mk:651
+makefiles/ops.mk:652

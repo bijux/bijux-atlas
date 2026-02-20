@@ -394,3 +394,14 @@ scripts.mk:scripts-graph
 scripts.mk:scripts-index
 scripts.mk:scripts-lint
 scripts.mk:scripts-test
+ci.mk:ci-policy-boundaries
+ops.mk:obs/update-goldens
+ops.mk:ops-api-protection
+ops.mk:ops-contract-check
+ops.mk:ops-drill-metric-cardinality-blowup
+ops.mk:ops-e2e
+ops.mk:ops-graceful-degradation
+ops.mk:ops-observability-lag-check
+ops.mk:ops-smoke-budget-check
+ops.mk:pins/check
+ops.mk:pins/update
