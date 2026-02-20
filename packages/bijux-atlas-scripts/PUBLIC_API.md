@@ -1,11 +1,11 @@
 # PUBLIC API
 
-`bijux-atlas-scripts` exposes a CLI surface and internal module boundaries.
+`bijux-atlas` exposes a CLI surface and internal module boundaries.
 
 ## Stable CLI Commands
-- `bijux-atlas-scripts doctor`
-- `bijux-atlas-scripts surface`
-- `bijux-atlas-scripts validate-output`
+- `bijux-atlas doctor`
+- `bijux-atlas surface`
+- `bijux-atlas validate-output`
 - Domain commands: `ops`, `docs`, `configs`, `policies`, `make`, `inventory`, `contracts`, `registry`, `layout`, `report`
 
 ## Internal Modules
@@ -21,6 +21,6 @@
 - `bijux_atlas_scripts.layout`: layout/boundary checks and structure policy helpers.
 
 ## Boundary Contract
-- Cross-module imports are restricted and enforced by `scripts/areas/check/check-bijux-atlas-scripts-boundaries.py`.
+- Cross-module imports are restricted and enforced by `scripts/areas/check/check-bijux-atlas-boundaries.py`.
 - Shared code belongs in `core` or `contracts`.
 - Domain modules must not depend on each other unless declared in the boundary allowlist.

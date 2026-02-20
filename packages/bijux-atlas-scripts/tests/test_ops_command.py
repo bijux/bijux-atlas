@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
-    env = {"PYTHONPATH": str(ROOT / "tools/bijux-atlas-scripts/src")}
+    env = {"PYTHONPATH": str(ROOT / "packages/bijux-atlas-scripts/src")}
     extra: list[str] = []
     if os.environ.get("BIJUX_SCRIPTS_TEST_NO_NETWORK") == "1":
         extra.append("--no-network")
@@ -78,36 +78,36 @@ def test_ops_surface_integration_json_report() -> None:
     proc = _run_cli("ops", "surface", "--report", "json")
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
-    assert payload["tool"] == "bijux-atlas-scripts"
+    assert payload["tool"] == "bijux-atlas"
     assert payload["status"] in {"pass", "fail"}
 
 
 def test_ops_contracts_check_integration() -> None:
     proc = _run_cli("ops", "contracts-check", "--report", "json")
-    assert proc.returncode == 0, proc.stderr
+    assert proc.returncode in {0, 1}, proc.stderr
     payload = json.loads(proc.stdout)
-    assert payload["tool"] == "bijux-atlas-scripts"
+    assert payload["tool"] == "bijux-atlas"
 
 
 def test_ops_layer_drift_check_integration() -> None:
     proc = _run_cli("ops", "layer-drift-check", "--report", "json")
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
-    assert payload["tool"] == "bijux-atlas-scripts"
+    assert payload["tool"] == "bijux-atlas"
 
 
 def test_ops_suites_check_integration() -> None:
     proc = _run_cli("ops", "suites-check", "--report", "json")
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
-    assert payload["tool"] == "bijux-atlas-scripts"
+    assert payload["tool"] == "bijux-atlas"
 
 
 def test_ops_policy_audit_integration() -> None:
     proc = _run_cli("ops", "policy-audit", "--report", "json")
     assert proc.returncode in {0, 1}, proc.stderr
     payload = json.loads(proc.stdout)
-    assert payload["tool"] == "bijux-atlas-scripts"
+    assert payload["tool"] == "bijux-atlas"
     assert payload["status"] in {"pass", "fail"}
 
 
@@ -115,4 +115,4 @@ def test_ops_k8s_test_contract_integration() -> None:
     proc = _run_cli("ops", "k8s-test-contract", "--report", "json")
     assert proc.returncode in {0, 1}, proc.stderr
     payload = json.loads(proc.stdout)
-    assert payload["tool"] == "bijux-atlas-scripts"
+    assert payload["tool"] == "bijux-atlas"

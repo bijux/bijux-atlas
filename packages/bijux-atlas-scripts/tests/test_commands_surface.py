@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
-    env = {"PYTHONPATH": str(ROOT / "tools/bijux-atlas-scripts/src")}
+    env = {"PYTHONPATH": str(ROOT / "packages/bijux-atlas-scripts/src")}
     return subprocess.run(
         [sys.executable, "-m", "bijux_atlas_scripts.cli", *args],
         cwd=ROOT,
@@ -48,9 +48,9 @@ def test_command_surface_documented_in_tooling_page() -> None:
     assert proc.returncode == 0, proc.stderr
     commands = [entry["command"] for entry in json.loads(proc.stdout)["commands"]]
     for command in (
-        "bijux-atlas-scripts doctor",
-        "bijux-atlas-scripts ops",
-        "bijux-atlas-scripts make",
-        "bijux-atlas-scripts report",
+        "bijux-atlas doctor",
+        "bijux-atlas ops",
+        "bijux-atlas make",
+        "bijux-atlas report",
     ):
         assert command in commands

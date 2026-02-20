@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
-    env = {"PYTHONPATH": str(ROOT / "tools/bijux-atlas-scripts/src")}
+    env = {"PYTHONPATH": str(ROOT / "packages/bijux-atlas-scripts/src")}
     extra: list[str] = []
     if os.environ.get("BIJUX_SCRIPTS_TEST_NO_NETWORK") == "1":
         extra.append("--no-network")
@@ -27,7 +27,7 @@ def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
 
 
 def test_mkdocs_nav_parser_golden() -> None:
-    text = (ROOT / "tools/bijux-atlas-scripts/tests/fixtures/docs/mkdocs-nav.good.yml").read_text(encoding="utf-8")
+    text = (ROOT / "packages/bijux-atlas-scripts/tests/fixtures/docs/mkdocs-nav.good.yml").read_text(encoding="utf-8")
     refs = _mkdocs_nav_file_refs(text)
     assert refs == ["index.md", "operations/index.md", "operations/runbooks.md"]
 
@@ -49,7 +49,7 @@ def test_docs_nav_check_bad_fixture(tmp_path: Path) -> None:
 def test_docs_check_json_integration() -> None:
     proc = _run_cli("docs", "check", "--report", "json", "--fail-fast")
     payload = json.loads(proc.stdout)
-    assert payload["tool"] == "bijux-atlas-scripts"
+    assert payload["tool"] == "bijux-atlas"
     assert payload["schema_version"] == 1
     assert payload["status"] in {"pass", "fail"}
 

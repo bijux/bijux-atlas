@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 
 def _run(*args: str) -> str:
-    env = {"PYTHONPATH": str(ROOT / "tools/bijux-atlas-scripts/src")}
+    env = {"PYTHONPATH": str(ROOT / "packages/bijux-atlas-scripts/src")}
     proc = subprocess.run(
         [sys.executable, *args],
         cwd=ROOT,

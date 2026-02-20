@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
-    env = {"PYTHONPATH": str(ROOT / "tools/bijux-atlas-scripts/src")}
+    env = {"PYTHONPATH": str(ROOT / "packages/bijux-atlas-scripts/src")}
     extra: list[str] = []
     if os.environ.get("BIJUX_SCRIPTS_TEST_NO_NETWORK") == "1":
         extra.append("--no-network")
@@ -61,7 +61,7 @@ def test_help_for_all_commands() -> None:
 def test_version_flag() -> None:
     proc = _run_cli("--version")
     assert proc.returncode == 0
-    assert "bijux-atlas-scripts 0.1.0+" in proc.stdout.strip()
+    assert "bijux-atlas 0.1.0+" in proc.stdout.strip()
 
 
 def test_surface_json_schema_valid() -> None:
@@ -89,7 +89,7 @@ def test_domain_json_contract() -> None:
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
     assert payload["domain"] == "contracts"
-    assert payload["tool"] == "bijux-atlas-scripts"
+    assert payload["tool"] == "bijux-atlas"
     assert payload["run_id"] == "t2"
 
 

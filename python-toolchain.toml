@@ -1,4 +1,4 @@
 [toolchain]
-channel = "3.10.11"
+channel = "3.11.9"
 manager = "pip-tools"
 lockfile = "packages/bijux-atlas-scripts/requirements.lock.txt"

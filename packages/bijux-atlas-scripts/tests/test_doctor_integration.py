@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 @pytest.mark.integration
 def test_doctor_json_output_matches_schema() -> None:
-    env = {"PYTHONPATH": str(ROOT / "tools/bijux-atlas-scripts/src")}
+    env = {"PYTHONPATH": str(ROOT / "packages/bijux-atlas-scripts/src")}
     proc = subprocess.run(
         [sys.executable, "-m", "bijux_atlas_scripts.cli", "--run-id", "integration", "doctor", "--json"],
         cwd=ROOT,

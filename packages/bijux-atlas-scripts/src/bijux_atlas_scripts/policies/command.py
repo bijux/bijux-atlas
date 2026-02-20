@@ -17,6 +17,7 @@ RELAXATION_FILES = (
     "configs/policy/ops-smoke-budget-relaxations.json",
     "configs/policy/ops-lint-relaxations.json",
 )
+SELF_CLI = ["python3", "-m", "bijux_atlas_scripts.cli"]
 
 
 def _run(cmd: list[str], repo_root: Path) -> tuple[int, str]:
@@ -166,8 +167,8 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
     if ns.policies_cmd == "check":
         steps = [
-            ["./scripts/bin/bijux-atlas-scripts", "policies", "relaxations-check", "--report", "json"],
-            ["./scripts/bin/bijux-atlas-scripts", "policies", "bypass-scan", "--report", "json"],
+            [*SELF_CLI, "policies", "relaxations-check", "--report", "json"],
+            [*SELF_CLI, "policies", "bypass-scan", "--report", "json"],
             ["make", "-s", "policy-lint"],
             ["make", "-s", "policy-schema-drift"],
             ["make", "-s", "policy-audit"],

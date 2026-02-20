@@ -1,27 +1,31 @@
 {
-  "schema_version": 1,
   "commands": {
-    "bijux-atlas-scripts run": "bijux-atlas-platform",
-    "bijux-atlas-scripts validate-output": "bijux-atlas-platform",
-    "bijux-atlas-scripts surface": "bijux-atlas-platform",
-    "bijux-atlas-scripts ops": "bijux-atlas-platform",
-    "bijux-atlas-scripts docs": "bijux-atlas-platform",
-    "bijux-atlas-scripts configs": "bijux-atlas-platform",
-    "bijux-atlas-scripts policies": "bijux-atlas-platform",
-    "bijux-atlas-scripts make": "bijux-atlas-platform",
-    "bijux-atlas-scripts inventory": "bijux-atlas-platform",
-    "bijux-atlas-scripts report": "bijux-atlas-platform",
-    "bijux-atlas-scripts doctor": "bijux-atlas-platform"
+    "bijux-atlas configs": "bijux-atlas-platform",
+    "bijux-atlas docs": "bijux-atlas-platform",
+    "bijux-atlas doctor": "bijux-atlas-platform",
+    "bijux-atlas env": "@atlas-devexp",
+    "bijux-atlas help": "@atlas-devexp",
+    "bijux-atlas inventory": "bijux-atlas-platform",
+    "bijux-atlas make": "bijux-atlas-platform",
+    "bijux-atlas ops": "bijux-atlas-platform",
+    "bijux-atlas policies": "bijux-atlas-platform",
+    "bijux-atlas report": "bijux-atlas-platform",
+    "bijux-atlas run": "bijux-atlas-platform",
+    "bijux-atlas self-check": "@atlas-devexp",
+    "bijux-atlas surface": "bijux-atlas-platform",
+    "bijux-atlas validate-output": "bijux-atlas-platform",
+    "bijux-atlas version": "@atlas-devexp"
   },
   "paths": {
+    "packages/bijux-atlas-py/src/bijux_atlas_py": "bijux-atlas-platform",
     "packages/bijux-atlas-scripts/src/bijux_atlas_scripts": "bijux-atlas-platform",
     "packages/bijux-atlas-scripts/tests": "bijux-atlas-platform",
-    "packages/bijux-atlas-py/src/bijux_atlas_py": "bijux-atlas-platform",
-    "scripts/bin/bijux-atlas-scripts": "bijux-atlas-platform",
     "scripts/bin/bijux-atlas-dev": "bijux-atlas-platform",
     "scripts/bin/bijux-atlas-ops": "bijux-atlas-operations",
+    "scripts/bin/bijux-atlas-scripts": "bijux-atlas-platform",
     "scripts/bin/isolate": "bijux-atlas-platform",
     "scripts/bin/require-isolate": "bijux-atlas-platform",
     "scripts/bin/run_drill.sh": "bijux-atlas-operations"
-  }
+  },
+  "schema_version": 1
 }

@@ -35,7 +35,7 @@ def build_report(ctx: RunContext) -> dict[str, object]:
         },
         "pins": {
             "tool_versions": str(ctx.repo_root / "configs/ops/tool-versions.json"),
-            "python_lock": str(ctx.repo_root / "tools/bijux-atlas-scripts/requirements.lock.txt"),
+            "python_lock": str(ctx.repo_root / "packages/bijux-atlas-scripts/requirements.lock.txt"),
         },
         "env": {
             "RUN_ID": os.environ.get("RUN_ID", ""),

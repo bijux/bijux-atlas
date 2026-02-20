@@ -1,12 +1,12 @@
-# bijux-atlas-scripts Contract
+# bijux-atlas Contract
 
 ## Scope
 
-Defines behavior guarantees and boundaries for the `bijux-atlas-scripts` product CLI.
+Defines behavior guarantees and boundaries for the `bijux-atlas` product CLI.
 
 ## Guarantees
 
-- CLI entrypoint is `bijux-atlas-scripts`.
+- CLI entrypoint is `bijux-atlas`.
 - Package layout uses `src/bijux_atlas_scripts/`.
 - Global run context includes: `run_id`, `profile`, `repo_root`, `evidence_root`, `no_network`.
 - Machine-oriented commands provide `--json` output.
@@ -25,5 +25,5 @@ Defines behavior guarantees and boundaries for the `bijux-atlas-scripts` product
 ## Verification
 
 - `make scripts-check`
-- `pytest -q packages/bijux-atlas-scripts/tests`
-- `bijux-atlas-scripts --help`
+- `pytest -q packages/bijux-atlas/tests`
+- `bijux-atlas --help`
