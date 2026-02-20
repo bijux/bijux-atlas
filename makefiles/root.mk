@@ -79,7 +79,10 @@ gates-check: ## Run public-surface/docs/makefile boundary checks
 	@$(MAKE) -s internal/scripts/cli-check
 	@$(ATLAS_SCRIPTS) make contracts-check --emit-artifacts
 
-gates: ## Print public targets grouped by namespace
+gates: ## Run curated root gate preset through atlasctl orchestrator
+	@$(ATLAS_SCRIPTS) --quiet gates run --preset root --all --report text
+
+gates-list: ## Print public targets grouped by namespace
 	@$(ATLAS_SCRIPTS) --quiet gates list
 
 help: ## Show curated public make targets from SSOT
@@ -231,6 +234,17 @@ scripts/check: ## Deterministic scripts check lane
 
 tools-check: ## Alias for python tooling/package checks
 	@$(MAKE) -s scripts/check
+
+atlasctl-lint: ## Lint atlasctl package (ruff + mypy strict domains)
+	@$(MAKE) -s internal/scripts/install-lock
+	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/ruff" check --config packages/atlasctl/pyproject.toml packages/atlasctl/src packages/atlasctl/tests
+	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/mypy" packages/atlasctl/src/atlasctl/core packages/atlasctl/src/atlasctl/contracts
+
+atlasctl-test: ## Test atlasctl package (compile + unit + integration)
+	@$(MAKE) -s internal/scripts/install-lock
+	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/python" -m compileall -q packages/atlasctl/src
+	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/pytest" -q -m unit packages/atlasctl/tests
+	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/pytest" -q -m integration packages/atlasctl/tests
 
 scripts-install-dev: ## Install python tooling for scripts package development
 	@$(MAKE) -s internal/scripts/install-dev
