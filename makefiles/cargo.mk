@@ -184,12 +184,12 @@ openapi-drift:
 	@./scripts/areas/public/openapi-diff-check.sh
 
 api-contract-check:
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/public/contracts/gen_openapi.py
+	@$(ATLAS_SCRIPTS) contracts generate --generators openapi
 	@./scripts/areas/public/openapi-diff-check.sh
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/public/contracts/check_endpoints_contract.py
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/public/contracts/check_error_codes_contract.py
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/public/contracts/check_v1_surface.py
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/public/contracts/check_breaking_contract_change.py
+	@$(ATLAS_SCRIPTS) contracts check --checks endpoints
+	@$(ATLAS_SCRIPTS) contracts check --checks error-codes
+	@$(ATLAS_SCRIPTS) contracts check --checks endpoints
+	@$(ATLAS_SCRIPTS) contracts check --checks breakage
 
 compat-matrix-validate:
 	@$(ATLAS_SCRIPTS) compat validate-matrix
@@ -210,7 +210,7 @@ query-plan-gate:
 	@./scripts/areas/public/query-plan-gate.sh
 
 critical-query-check:
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/public/contracts/check_sqlite_indexes_contract.py
+	@$(ATLAS_SCRIPTS) contracts check --checks sqlite-indexes
 	@$(ATLAS_SCRIPTS) run ./scripts/areas/public/perf/run_critical_queries.py
 
 cold-start-bench:

@@ -103,7 +103,7 @@ ci-store-conformance:
 
 ci-openapi-drift:
 	@$(MAKE) openapi-drift
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/public/contracts/check_breaking_contract_change.py
+	@$(ATLAS_SCRIPTS) contracts check --checks breakage
 
 ci-chart-schema-validate:
 	@$(MAKE) ops-values-validate

@@ -148,12 +148,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/public/config-drift-check.py` | `platform` | `public` | - |
 | `scripts/areas/public/config-print.py` | `platform` | `public` | - |
 | `scripts/areas/public/config-validate.py` | `platform` | `public` | - |
-| `scripts/areas/public/contracts/check_breaking_contract_change.py` | `platform` | `public` | `api-contract-check`, `ci-openapi-drift` |
-| `scripts/areas/public/contracts/check_endpoints_contract.py` | `platform` | `public` | `api-contract-check` |
-| `scripts/areas/public/contracts/check_error_codes_contract.py` | `platform` | `public` | `api-contract-check` |
-| `scripts/areas/public/contracts/check_sqlite_indexes_contract.py` | `platform` | `public` | `critical-query-check` |
-| `scripts/areas/public/contracts/check_v1_surface.py` | `platform` | `public` | `api-contract-check` |
-| `scripts/areas/public/contracts/gen_openapi.py` | `platform` | `public` | `api-contract-check` |
 | `scripts/areas/public/generate-config-key-registry.py` | `platform` | `public` | - |
 | `scripts/areas/public/no-network-unit-tests.sh` | `platform` | `public` | - |
 | `scripts/areas/public/openapi-diff-check.sh` | `platform` | `public` | `api-contract-check`, `openapi-drift`, `ops-openapi-validate` |
