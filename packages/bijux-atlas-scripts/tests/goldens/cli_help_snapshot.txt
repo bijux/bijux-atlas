@@ -9,7 +9,8 @@ usage: bijux-atlas [-h] [--version] [--run-id RUN_ID]
 positional arguments:
   {version,env,self-check,help,run,validate-output,surface,commands,contracts,registry,layout,configs,policies,docs,make,ops,inventory,lint,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,doctor,completion}
     version             print versions and git context
-    env                 print resolved runtime environment
+    env                 manage isolated python environment and artifact-root
+                        policy
     self-check          validate imports, config loading, and schema presence
     help                print command help
     run                 run an internal python script by repo-relative path
