@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import argparse
+import json
 import subprocess
 
 from ..core.context import RunContext
+from ..lint.runner import run_suite
 
 
 def _run(ctx: RunContext, cmd: list[str]) -> int:
@@ -13,14 +15,16 @@ def _run(ctx: RunContext, cmd: list[str]) -> int:
 
 def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     sub = ns.check_cmd
+    if sub in {"make", "docs", "configs"}:
+        suite_name = {"make": "makefiles", "docs": "docs", "configs": "configs"}[sub]
+        code, payload = run_suite(ctx.repo_root, suite_name, fail_fast=False)
+        if ctx.output_format == "json":
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            print(f"check {sub}: {payload['status']} ({payload['failed_count']}/{payload['total_count']} failed)")
+        return code
     if sub == "layout":
         return _run(ctx, ["python3", "scripts/areas/layout/check_layer_drift.py"])
-    if sub == "make":
-        return _run(ctx, ["python3", "scripts/areas/layout/check_makefiles_contract.py"])
-    if sub == "docs":
-        return _run(ctx, ["python3", "scripts/areas/docs/check_make_targets_documented.py"])
-    if sub == "configs":
-        return _run(ctx, ["python3", "scripts/areas/configs/validate_configs_schemas.py"])
     if sub == "obs":
         return _run(
             ctx,
