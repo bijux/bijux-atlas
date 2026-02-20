@@ -39,7 +39,7 @@ def _validate(category: str, payload: dict[str, object]) -> None:
 
 
 def test_inventory_json_categories_schema_valid() -> None:
-    for category in ("make", "ops", "configs", "schemas", "owners", "contracts", "budgets"):
+    for category in ("make", "ops", "configs", "schemas", "owners", "contracts", "budgets", "scripts-migration"):
         proc = _run_inventory(category)
         assert proc.returncode == 0, proc.stderr
         payload = json.loads(proc.stdout)
