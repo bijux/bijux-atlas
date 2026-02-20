@@ -51,6 +51,14 @@ Required keys:
 - `schema_version`
 - `profiles`
 
+## `ops/_schemas/load/perf-baseline.schema.json`
+
+Required keys:
+- `schema_version`
+- `name`
+- `metadata`
+- `rows`
+
 ## `ops/_schemas/load/pinned-queries-lock.schema.json`
 
 Required keys:
@@ -69,6 +77,17 @@ Required keys:
 
 Required keys:
 - `entries`
+
+## `ops/_schemas/meta/budgets.schema.json`
+
+Required keys:
+- `schema_version`
+- `smoke`
+- `root_local`
+- `k6_latency`
+- `cold_start`
+- `cache`
+- `metric_cardinality`
 
 ## `ops/_schemas/meta/layer-contract.schema.json`
 
@@ -97,6 +116,16 @@ Required keys:
 - `helm`
 - `datasets`
 - `policy`
+
+## `ops/_schemas/obs/budgets.schema.json`
+
+Required keys:
+- `schema_version`
+- `cardinality`
+- `required_metric_labels`
+- `endpoint_class_metric_requirements`
+- `span_attribute_requirements`
+- `lag`
 
 ## `ops/_schemas/obs/drill-manifest.schema.json`
 
@@ -137,6 +166,7 @@ Required keys:
 - `generated_at`
 - `lanes`
 - `summary`
+- `budget_status`
 
 ## `ops/_schemas/stack/profile-manifest.schema.json`
 
