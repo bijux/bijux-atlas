@@ -5,7 +5,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 K8S_TESTS = ROOT / "ops" / "k8s" / "tests"
 
 # Mutating manifest-level fixups must stay in harness-managed operations,

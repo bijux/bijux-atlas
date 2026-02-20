@@ -5,7 +5,7 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 
 # Every JSON under ops/ must be covered either by a schema validation pair or a dedicated validator.
 SCHEMA_COVERED = {

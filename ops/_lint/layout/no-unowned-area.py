@@ -5,7 +5,7 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 ownership = json.loads((ROOT / "ops/_meta/ownership.json").read_text())
 owned = sorted(ownership.get("areas", {}).keys())
 errors: list[str] = []

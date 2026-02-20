@@ -8,7 +8,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 E2E = ROOT / "ops/e2e"
 RELAXATIONS = ROOT / "configs/policy/layer-relaxations.json"
 

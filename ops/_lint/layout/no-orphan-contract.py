@@ -5,7 +5,7 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 contracts = json.loads((ROOT / "ops/_meta/contracts.json").read_text())
 registered = {entry["path"] for entry in contracts.get("contracts", [])}
 ops_index = (ROOT / "ops/INDEX.md").read_text(encoding="utf-8")

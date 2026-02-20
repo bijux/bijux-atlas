@@ -6,7 +6,7 @@ import fnmatch
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 SOURCES = ROOT / "configs/ops/config-sources.json"
 errors: list[str] = []
 
