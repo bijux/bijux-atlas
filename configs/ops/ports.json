@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "ports": {
+    "atlas": {
+      "service": 8080,
+      "container": 8080
+    },
+    "prometheus": {
+      "service": 9090,
+      "container": 9090
+    },
+    "otel": {
+      "grpc": 4317,
+      "http": 4318
+    },
+    "grafana": {
+      "service": 3000,
+      "container": 3000
+    },
+    "minio": {
+      "api": 9000,
+      "console": 9001
+    },
+    "redis": {
+      "service": 6379,
+      "container": 6379
+    }
+  }
+}

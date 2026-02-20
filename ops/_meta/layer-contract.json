@@ -15,6 +15,57 @@
     ],
     "required_annotations": []
   },
+  "layer_dependencies": {
+    "e2e": {
+      "may_reference": [
+        "e2e",
+        "k8s",
+        "run",
+        "_lib",
+        "configs"
+      ]
+    },
+    "k8s": {
+      "may_reference": [
+        "k8s",
+        "stack",
+        "obs",
+        "e2e",
+        "_lib",
+        "run",
+        "configs"
+      ]
+    },
+    "load": {
+      "may_reference": [
+        "load",
+        "e2e",
+        "run",
+        "_lib",
+        "configs"
+      ]
+    },
+    "obs": {
+      "may_reference": [
+        "obs",
+        "k8s",
+        "stack",
+        "load",
+        "e2e",
+        "run",
+        "_lib",
+        "configs"
+      ]
+    },
+    "stack": {
+      "may_reference": [
+        "stack",
+        "_lib",
+        "run",
+        "configs"
+      ]
+    }
+  },
   "namespaces": {
     "e2e": "atlas-e2e",
     "k8s": "atlas-e2e",
@@ -100,5 +151,10 @@
       },
       "service_name": "redis"
     }
+  },
+  "ssot": {
+    "namespaces": "configs/ops/namespaces.json",
+    "ports": "configs/ops/ports.json",
+    "profiles": "ops/stack/profiles.json"
   }
 }

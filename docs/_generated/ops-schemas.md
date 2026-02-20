@@ -94,11 +94,19 @@ Required keys:
 Required keys:
 - `contract_version`
 - `compatibility`
+- `layer_dependencies`
+- `ssot`
 - `namespaces`
 - `services`
 - `ports`
 - `labels`
 - `release_metadata`
+
+## `ops/_schemas/meta/namespaces.schema.json`
+
+Required keys:
+- `schema_version`
+- `namespaces`
 
 ## `ops/_schemas/meta/ownership.schema.json`
 
@@ -116,6 +124,12 @@ Required keys:
 - `helm`
 - `datasets`
 - `policy`
+
+## `ops/_schemas/meta/ports.schema.json`
+
+Required keys:
+- `schema_version`
+- `ports`
 
 ## `ops/_schemas/obs/budgets.schema.json`
 

@@ -6,6 +6,8 @@
   "required": [
     "contract_version",
     "compatibility",
+    "layer_dependencies",
+    "ssot",
     "namespaces",
     "services",
     "ports",
@@ -22,6 +24,28 @@
         "policy": {"type": "string", "minLength": 1},
         "current_major": {"type": "integer", "minimum": 1},
         "notes": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "layer_dependencies": {
+      "type": "object",
+      "required": ["stack", "k8s", "e2e", "obs", "load"],
+      "additionalProperties": false,
+      "properties": {
+        "stack": {"$ref": "#/definitions/deps"},
+        "k8s": {"$ref": "#/definitions/deps"},
+        "e2e": {"$ref": "#/definitions/deps"},
+        "obs": {"$ref": "#/definitions/deps"},
+        "load": {"$ref": "#/definitions/deps"}
+      }
+    },
+    "ssot": {
+      "type": "object",
+      "required": ["namespaces", "ports", "profiles"],
+      "additionalProperties": false,
+      "properties": {
+        "namespaces": {"type": "string", "pattern": "^configs/ops/.+\\.json$"},
+        "ports": {"type": "string", "pattern": "^configs/ops/.+\\.json$"},
+        "profiles": {"type": "string", "pattern": "^ops/stack/.+\\.json$"}
       }
     },
     "namespaces": {
@@ -75,6 +99,18 @@
       "properties": {
         "service_name": {"type": "string", "minLength": 1},
         "selector": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "string"}}
+      }
+    },
+    "deps": {
+      "type": "object",
+      "required": ["may_reference"],
+      "additionalProperties": false,
+      "properties": {
+        "may_reference": {
+          "type": "array",
+          "items": {"type": "string", "enum": ["stack", "k8s", "e2e", "obs", "load", "run", "_lib", "configs"]},
+          "minItems": 1
+        }
       }
     }
   }
