@@ -4,8 +4,8 @@
 # Outputs: exit status and deterministic stdout/stderr or generated artifacts.
 set -eu
 
-./scripts/areas/contracts/format_contracts.py
-./scripts/areas/contracts/generate_contract_artifacts.py
+./bin/bijux-atlas contracts check --checks drift
+./bin/bijux-atlas contracts generate --generators artifacts
 mkdir -p configs/openapi/v1
 cargo run --quiet -p bijux-atlas-api --bin atlas-openapi -- --out configs/openapi/v1/openapi.generated.json
 python3 - <<'PY'

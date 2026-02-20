@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Purpose: ensure docs freeze generation is deterministic without requiring a clean git tree.
-# Inputs: generated docs paths and scripts/areas/contracts/generate_contract_artifacts.py.
+# Inputs: generated docs paths and atlasctl contract generators.
 # Outputs: non-zero exit when regeneration mutates target files.
 from __future__ import annotations
 
@@ -43,7 +43,7 @@ def main() -> int:
     for target in TARGETS:
         before.update(snapshot(target))
 
-    subprocess.run(["./scripts/areas/contracts/generate_contract_artifacts.py"], cwd=ROOT, check=True)
+    subprocess.run(["./bin/bijux-atlas", "contracts", "generate", "--generators", "artifacts"], cwd=ROOT, check=True)
     subprocess.run(["python3", "scripts/areas/docs/generate_chart_contract_index.py"], cwd=ROOT, check=True)
 
     after: dict[str, str] = {}

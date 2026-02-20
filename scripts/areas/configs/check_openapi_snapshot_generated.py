@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 
 def main() -> int:
-  subprocess.run(["python3","scripts/areas/contracts/gen_openapi.py"], cwd=ROOT, check=True)
+  subprocess.run(["./bin/bijux-atlas", "contracts", "generate", "--generators", "openapi"], cwd=ROOT, check=True)
   generated = ROOT / "configs/openapi/v1/openapi.generated.json"
   snapshot = ROOT / "configs/openapi/v1/openapi.snapshot.json"
   if generated.read_text(encoding="utf-8") != snapshot.read_text(encoding="utf-8"):

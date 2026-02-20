@@ -71,20 +71,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/configs/generate_tooling_versions_doc.py` | `platform` | `public` | - |
 | `scripts/areas/configs/sync_slo_config.py` | `platform` | `public` | - |
 | `scripts/areas/configs/validate_configs_schemas.py` | `platform` | `public` | - |
-| `scripts/areas/contracts/check_all.sh` | `contracts` | `public` | `ssot-check` |
-| `scripts/areas/contracts/check_breaking_contract_change.py` | `contracts` | `internal` | - |
-| `scripts/areas/contracts/check_chart_values_contract.py` | `contracts` | `public` | `chart-validate`, `ops-values-validate` |
-| `scripts/areas/contracts/check_cli_ssot.py` | `contracts` | `internal` | - |
-| `scripts/areas/contracts/check_config_keys_contract.py` | `contracts` | `internal` | - |
-| `scripts/areas/contracts/check_contract_drift.py` | `contracts` | `internal` | - |
-| `scripts/areas/contracts/check_endpoints_contract.py` | `contracts` | `internal` | - |
-| `scripts/areas/contracts/check_error_codes_contract.py` | `contracts` | `internal` | - |
-| `scripts/areas/contracts/check_sqlite_indexes_contract.py` | `contracts` | `internal` | - |
-| `scripts/areas/contracts/check_v1_surface.py` | `contracts` | `internal` | - |
-| `scripts/areas/contracts/format_contracts.py` | `contracts` | `internal` | - |
-| `scripts/areas/contracts/gen_openapi.py` | `contracts` | `internal` | - |
-| `scripts/areas/contracts/generate_chart_values_schema.py` | `contracts` | `public` | `chart-validate`, `ops-gen`, `ops-values-validate` |
-| `scripts/areas/contracts/generate_contract_artifacts.py` | `contracts` | `public` | - |
 | `scripts/areas/demo/demo.sh` | `platform` | `private` | - |
 | `scripts/areas/docs/ENTRYPOINTS.md` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/ban_legacy_terms.sh` | `docs-governance` | `public` | `docs-build`, `docs-lint-names` |

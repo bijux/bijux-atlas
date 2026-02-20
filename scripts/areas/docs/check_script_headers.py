@@ -58,7 +58,7 @@ for p in script_paths:
 idx = ROOT/'docs'/'development'/'scripts'/'INDEX.md'
 if idx.exists():
     it = idx.read_text(encoding='utf-8')
-    required_groups = ['scripts/areas/contracts/', 'scripts/areas/docs/', 'scripts/areas/public/perf/', 'scripts/areas/public/observability/', 'scripts/areas/fixtures/', 'scripts/areas/release/', 'scripts/areas/layout/', 'scripts/bin/', 'scripts/areas/public/', 'scripts/areas/internal/', 'scripts/areas/dev/', 'scripts/areas/tools/']
+    required_groups = ['scripts/areas/docs/', 'scripts/areas/public/perf/', 'scripts/areas/public/observability/', 'scripts/areas/fixtures/', 'scripts/areas/release/', 'scripts/areas/layout/', 'scripts/bin/', 'scripts/areas/public/', 'scripts/areas/internal/', 'scripts/areas/dev/', 'scripts/areas/tools/']
     for group in required_groups:
         if group not in it:
             errors.append(f'{idx}: missing script group reference `{group}`')

@@ -11,7 +11,6 @@ ROOT = Path(__file__).resolve().parents[3]
 allowed = (
     "scripts/areas/layout/",
     "scripts/areas/docs/",
-    "scripts/areas/contracts/",
     "scripts/areas/public/observability/",
     "scripts/tooling/",
     "scripts/areas/tools/",

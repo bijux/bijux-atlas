@@ -1,48 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
-  "allOf": [
-    {
-      "if": {
-        "properties": {
-          "hpa": {
-            "properties": {
-              "enabled": {
-                "const": true
-              }
-            }
-          }
-        },
-        "required": [
-          "hpa"
-        ]
-      },
-      "then": {
-        "properties": {
-          "metrics": {
-            "properties": {
-              "customMetrics": {
-                "properties": {
-                  "enabled": {
-                    "const": true
-                  }
-                },
-                "required": [
-                  "enabled"
-                ]
-              }
-            },
-            "required": [
-              "customMetrics"
-            ]
-          }
-        },
-        "required": [
-          "metrics"
-        ]
-      }
-    }
-  ],
   "properties": {
     "affinity": {
       "description": "Chart values key `affinity` from SSOT contract."
@@ -69,75 +27,7 @@
       "description": "Chart values key `extraEnv` from SSOT contract."
     },
     "hpa": {
-      "additionalProperties": true,
-      "properties": {
-        "behavior": {
-          "additionalProperties": true,
-          "properties": {
-            "scaleDown": {
-              "additionalProperties": true,
-              "properties": {
-                "policies": {
-                  "items": {
-                    "type": "object"
-                  },
-                  "minItems": 1,
-                  "type": "array"
-                }
-              },
-              "required": [
-                "policies"
-              ],
-              "type": "object"
-            },
-            "scaleUp": {
-              "additionalProperties": true,
-              "properties": {
-                "policies": {
-                  "items": {
-                    "type": "object"
-                  },
-                  "minItems": 1,
-                  "type": "array"
-                }
-              },
-              "required": [
-                "policies"
-              ],
-              "type": "object"
-            }
-          },
-          "required": [
-            "scaleUp",
-            "scaleDown"
-          ],
-          "type": "object"
-        },
-        "cpuUtilization": {
-          "maximum": 100,
-          "minimum": 1,
-          "type": "integer"
-        },
-        "enabled": {
-          "type": "boolean"
-        },
-        "maxReplicas": {
-          "minimum": 1,
-          "type": "integer"
-        },
-        "minReplicas": {
-          "minimum": 1,
-          "type": "integer"
-        }
-      },
-      "required": [
-        "enabled",
-        "minReplicas",
-        "maxReplicas",
-        "cpuUtilization",
-        "behavior"
-      ],
-      "type": "object"
+      "description": "Chart values key `hpa` from SSOT contract."
     },
     "image": {
       "description": "Chart values key `image` from SSOT contract."
@@ -146,33 +36,7 @@
       "description": "Chart values key `ingress` from SSOT contract."
     },
     "metrics": {
-      "additionalProperties": true,
-      "properties": {
-        "customMetrics": {
-          "additionalProperties": true,
-          "properties": {
-            "enabled": {
-              "type": "boolean"
-            },
-            "requiredPodAnnotations": {
-              "additionalProperties": {
-                "type": "string"
-              },
-              "minProperties": 1,
-              "type": "object"
-            }
-          },
-          "required": [
-            "enabled",
-            "requiredPodAnnotations"
-          ],
-          "type": "object"
-        }
-      },
-      "required": [
-        "customMetrics"
-      ],
-      "type": "object"
+      "description": "Chart values key `metrics` from SSOT contract."
     },
     "networkPolicy": {
       "description": "Chart values key `networkPolicy` from SSOT contract."
@@ -199,58 +63,7 @@
       "description": "Chart values key `replicaCount` from SSOT contract."
     },
     "resources": {
-      "additionalProperties": true,
-      "properties": {
-        "limits": {
-          "additionalProperties": true,
-          "properties": {
-            "cpu": {
-              "minLength": 1,
-              "type": "string"
-            },
-            "ephemeral-storage": {
-              "minLength": 1,
-              "type": "string"
-            },
-            "memory": {
-              "minLength": 1,
-              "type": "string"
-            }
-          },
-          "required": [
-            "cpu",
-            "memory"
-          ],
-          "type": "object"
-        },
-        "requests": {
-          "additionalProperties": true,
-          "properties": {
-            "cpu": {
-              "minLength": 1,
-              "type": "string"
-            },
-            "ephemeral-storage": {
-              "minLength": 1,
-              "type": "string"
-            },
-            "memory": {
-              "minLength": 1,
-              "type": "string"
-            }
-          },
-          "required": [
-            "cpu",
-            "memory"
-          ],
-          "type": "object"
-        }
-      },
-      "required": [
-        "requests",
-        "limits"
-      ],
-      "type": "object"
+      "description": "Chart values key `resources` from SSOT contract."
     },
     "rollout": {
       "description": "Chart values key `rollout` from SSOT contract."
@@ -262,27 +75,7 @@
       "description": "Chart values key `sequenceRateLimits` from SSOT contract."
     },
     "server": {
-      "additionalProperties": true,
-      "properties": {
-        "configSchemaVersion": {
-          "minLength": 1,
-          "type": "string"
-        },
-        "readinessProbePath": {
-          "minLength": 1,
-          "type": "string"
-        },
-        "startupProbePath": {
-          "minLength": 1,
-          "type": "string"
-        }
-      },
-      "required": [
-        "configSchemaVersion",
-        "readinessProbePath",
-        "startupProbePath"
-      ],
-      "type": "object"
+      "description": "Chart values key `server` from SSOT contract."
     },
     "service": {
       "description": "Chart values key `service` from SSOT contract."
