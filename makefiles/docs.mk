@@ -108,7 +108,7 @@ docs-all: ## Canonical all-docs gate: must pass all docs sub-gates
 	@$(MAKE) docs-lint-names
 
 docs-check: ## Docs contract check alias (same as docs-build)
-	@$(MAKE) docs-build
+	@./scripts/bin/bijux-atlas-scripts docs check --report text --emit-artifacts
 
 internal/docs/public: ## Public docs alias implementation (root wrapper only)
 	@$(MAKE) docs-check
