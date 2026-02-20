@@ -141,6 +141,7 @@ nav:
       - Health Endpoint Semantics: operations/health-endpoint-semantics.md
       - Canonical Workflows: operations/canonical-workflows.md
       - Runtime Config: operations/config.md
+      - Unified Report: operations/unified-report.md
       - Migration Note: operations/migration-note.md
       - Production Readiness: operations/production-readiness-checklist.md
       - No Direct Path Usage: operations/no-direct-path-usage.md
