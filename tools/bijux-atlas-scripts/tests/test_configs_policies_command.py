@@ -41,6 +41,31 @@ def test_configs_schema_check_json() -> None:
     assert payload["status"] in {"pass", "fail"}
 
 
+def test_configs_print_json() -> None:
+    proc = _run_cli("configs", "print", "--report", "json")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["tool"] == "bijux-atlas-scripts"
+    assert payload["status"] == "pass"
+    assert "ops_tool_versions" in payload["output"]
+
+
+def test_configs_drift_json() -> None:
+    proc = _run_cli("configs", "drift", "--report", "json")
+    assert proc.returncode in {0, 1}, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["tool"] == "bijux-atlas-scripts"
+    assert payload["command"] == "drift"
+
+
+def test_configs_validate_json() -> None:
+    proc = _run_cli("configs", "validate", "--report", "json")
+    assert proc.returncode in {0, 1}, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["tool"] == "bijux-atlas-scripts"
+    assert payload["command"] == "validate"
+
+
 def test_policies_relaxations_check_json() -> None:
     proc = _run_cli("policies", "relaxations-check", "--report", "json")
     assert proc.returncode in {0, 1}, proc.stderr

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import subprocess
@@ -90,6 +91,61 @@ def _schema_check(repo_root: Path) -> tuple[int, str]:
     return 0, "\n".join(output_lines) or "config schema check passed"
 
 
+def _read_json(repo_root: Path, rel: str) -> dict[str, object]:
+    return json.loads((repo_root / rel).read_text(encoding="utf-8"))
+
+
+def _config_print(repo_root: Path) -> tuple[int, str]:
+    sources = [
+        "configs/policy/policy.json",
+        "configs/ops/env.schema.json",
+        "configs/ops/tool-versions.json",
+        "configs/ops/observability-pack.json",
+        "configs/perf/k6-thresholds.v1.json",
+        "configs/slo/slo.json",
+    ]
+    provenance = []
+    for src in sources:
+        raw = (repo_root / src).read_bytes()
+        provenance.append({"path": src, "sha256": hashlib.sha256(raw).hexdigest()})
+    payload = {
+        "policy": _read_json(repo_root, "configs/policy/policy.json"),
+        "ops_env_schema": _read_json(repo_root, "configs/ops/env.schema.json"),
+        "ops_tool_versions": _read_json(repo_root, "configs/ops/tool-versions.json"),
+        "ops_observability_pack": _read_json(repo_root, "configs/ops/observability-pack.json"),
+        "perf_thresholds": _read_json(repo_root, "configs/perf/k6-thresholds.v1.json"),
+        "slo": _read_json(repo_root, "configs/slo/slo.json"),
+        "_provenance": provenance,
+    }
+    return 0, json.dumps(payload, indent=2, sort_keys=True)
+
+
+def _config_drift(repo_root: Path) -> tuple[int, str]:
+    errors: list[str] = []
+    policy_schema = _read_json(repo_root, "configs/policy/policy.schema.json")
+    contracts_policy = _read_json(repo_root, "docs/contracts/POLICY_SCHEMA.json")
+    if policy_schema != contracts_policy:
+        errors.append("policy schema drift between configs and docs/contracts")
+
+    key_doc = repo_root / "configs/config-key-registry.md"
+    if not key_doc.exists():
+        errors.append("missing generated configs/config-key-registry.md (run make config-validate)")
+    else:
+        keys = _read_json(repo_root, "docs/contracts/CONFIG_KEYS.json").get("env_keys", [])
+        text = key_doc.read_text(encoding="utf-8")
+        for key in keys:
+            if f"`{key}`" not in text:
+                errors.append(f"config key registry missing `{key}`")
+                break
+    if errors:
+        return 1, "config drift check failed:\n" + "\n".join(f"- {err}" for err in errors)
+    return 0, "config drift check passed"
+
+
+def _config_validate(repo_root: Path) -> tuple[int, str]:
+    return _run(["python3", "scripts/areas/public/config-validate.py"], repo_root)
+
+
 def run_configs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     repo = ctx.repo_root
     report = ns.report
@@ -106,6 +162,9 @@ def run_configs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return 0
 
     command_map: dict[str, Callable[[Path], tuple[int, str]]] = {
+        "print": _config_print,
+        "drift": _config_drift,
+        "validate": _config_validate,
         "schema-check": _schema_check,
         "no-shadow-check": lambda r: _run(
             [
@@ -200,6 +259,9 @@ def configure_configs_parser(sub: argparse._SubParsersAction[argparse.ArgumentPa
     inv.add_argument("--report", choices=["text", "json"], default="json")
 
     for name in (
+        "print",
+        "drift",
+        "validate",
         "schema-check",
         "no-shadow-check",
         "keys-doc-check",
