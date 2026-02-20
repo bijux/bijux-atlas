@@ -170,7 +170,6 @@ scripts/areas/docs/check_ops_docs_make_targets.py
 scripts/areas/docs/check_ops_observability_links.py
 scripts/areas/docs/check_ops_readme_canonical_links.py
 scripts/areas/docs/check_ops_readmes_make_only.py
-scripts/areas/docs/check_public_surface_docs.py
 scripts/areas/docs/check_public_targets_docs_sections.py
 scripts/areas/docs/check_runbook_map_registration.py
 scripts/areas/docs/check_runbooks_contract.py
