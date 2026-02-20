@@ -192,8 +192,6 @@ scripts/areas/docs/generate_ops_surface.py
 scripts/areas/docs/generate_repo_surface.py
 scripts/areas/docs/generate_runbook_map_index.py
 scripts/areas/docs/generate_scripts_graph.py
-scripts/areas/docs/generate_sli_doc.py
-scripts/areas/docs/generate_slos_doc.py
 scripts/areas/docs/generate_upgrade_guide.py
 scripts/areas/docs/lint_depth.py
 scripts/areas/docs/lint_doc_contracts.py

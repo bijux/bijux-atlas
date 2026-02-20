@@ -61,8 +61,6 @@ Scripts in this area.
 - generate_ops_surface.py
 - generate_repo_surface.py
 - generate_scripts_graph.py
-- generate_sli_doc.py
-- generate_slos_doc.py
 - generate_upgrade_guide.py
 - legacy-terms-allowlist.txt
 - lint_depth.py

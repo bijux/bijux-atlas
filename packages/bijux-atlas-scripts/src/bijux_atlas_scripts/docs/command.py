@@ -509,6 +509,90 @@ def _check_docs_make_only_ops(ctx: RunContext) -> tuple[int, str]:
     return (0, "") if not errors else (1, "\n".join(errors[:200]))
 
 
+def _generate_sli_doc(ctx: RunContext) -> tuple[int, str]:
+    payload = _read_json(ctx.repo_root / "configs/ops/slo/slis.v1.json")
+    slis = payload.get("slis", [])
+    lines = [
+        "# SLIs (v1)",
+        "",
+        "- Generated from `configs/ops/slo/slis.v1.json`.",
+        "",
+        "| SLI | Goal | Primary Metric | Secondary Metric | Status |",
+        "|---|---|---|---|---|",
+    ]
+    if isinstance(slis, list):
+        for sli in slis:
+            if not isinstance(sli, dict):
+                continue
+            secondary = f"`{sli.get('secondary_metric')}`" if sli.get("secondary_metric") else "-"
+            lines.append(
+                "| {name} | {goal} | `{metric}` | {secondary} | `{status}` |".format(
+                    name=sli.get("name", ""),
+                    goal=sli.get("goal", ""),
+                    metric=sli.get("metric", ""),
+                    secondary=secondary,
+                    status=sli.get("status", "unknown"),
+                )
+            )
+    lines.extend(
+        [
+            "",
+            "## Endpoint Class Mapping",
+            "",
+            "- `cheap`: `^/health$`, `^/version$`, `^/metrics$`",
+            "- `standard`: `^/v1/genes$`, `^/v1/genes/[^/]+$`",
+            "- `heavy`: `^/v1/genes/[^/]+/(diff|region|sequence)$`",
+            "",
+        ]
+    )
+    out = ctx.repo_root / "docs/operations/slo/SLIS.md"
+    out.write_text("\n".join(lines), encoding="utf-8")
+    return 0, f"generated {out.relative_to(ctx.repo_root)}"
+
+
+def _generate_slos_doc(ctx: RunContext) -> tuple[int, str]:
+    payload = _read_json(ctx.repo_root / "configs/ops/slo/slo.v1.json")
+    slis = {item.get("id"): item for item in payload.get("slis", []) if isinstance(item, dict)}
+    lines = [
+        "# SLO Targets (v1)",
+        "",
+        "- Generated from `configs/ops/slo/slo.v1.json`.",
+        "",
+        "| SLO ID | SLI | Target | Window | Threshold |",
+        "|---|---|---:|---|---|",
+    ]
+    for slo in payload.get("slos", []):
+        if not isinstance(slo, dict):
+            continue
+        sli_id = slo.get("sli", "")
+        sli_name = slis.get(sli_id, {}).get("name", sli_id) if isinstance(sli_id, str) else sli_id
+        threshold = "-"
+        th = slo.get("threshold")
+        if isinstance(th, dict):
+            threshold = f"`{th.get('operator')} {th.get('value')} {th.get('unit')}`"
+        lines.append(
+            f"| `{slo.get('id','')}` | `{sli_name}` | `{slo.get('target','')}` | `{slo.get('window','')}` | {threshold} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## v1 Pragmatic Targets",
+            "",
+            "- `/readyz` availability: `99.9%` over `30d`.",
+            "- Success: cheap `99.99%`, standard `99.9%`, heavy `99.0%` over `30d`.",
+            "- Latency p99 thresholds: cheap `< 50ms`, standard `< 300ms`, heavy `< 2s`.",
+            "- Overload cheap survival: `> 99.99%`.",
+            "- Shed policy: heavy shedding tolerated; standard shedding bounded.",
+            "- Registry freshness: refresh age `< 10m` for `99%` of windows.",
+            "- Store objective: p95 latency bounded and error rate `< 0.5%`.",
+            "",
+        ]
+    )
+    out = ctx.repo_root / "docs/operations/slo/SLOS.md"
+    out.write_text("\n".join(lines), encoding="utf-8")
+    return 0, f"generated {out.relative_to(ctx.repo_root)}"
+
+
 def _mkdocs_nav_file_refs(mkdocs_text: str) -> list[str]:
     refs: list[str] = []
     for line in mkdocs_text.splitlines():
@@ -839,6 +923,22 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             print("docs make-only ops entrypoint check passed")
         return code
 
+    if ns.docs_cmd == "generate-sli-doc":
+        code, output = _generate_sli_doc(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
+    if ns.docs_cmd == "generate-slos-doc":
+        code, output = _generate_slos_doc(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        return code
+
     if ns.docs_cmd == "contracts-index":
         if ns.fix:
             return _run_simple(ctx, ["python3", "scripts/areas/docs/generate_contracts_index_doc.py"], ns.report)
@@ -953,6 +1053,8 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("ops-readme-canonical-links-check", "validate canonical links in ops README files"),
         ("ops-doc-duplication-check", "detect duplicate long sections in operations docs"),
         ("docs-make-only-ops-check", "forbid raw ops script references in docs"),
+        ("generate-sli-doc", "generate docs/operations/slo/SLIS.md from SLI contract"),
+        ("generate-slos-doc", "generate docs/operations/slo/SLOS.md from SLO contract"),
         ("glossary-check", "validate glossary and banned terms policy"),
         ("contracts-index", "validate or generate docs contracts index"),
         ("runbook-map", "validate or generate docs runbook map index"),

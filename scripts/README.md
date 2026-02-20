@@ -137,8 +137,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/generate_repo_surface.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_runbook_map_index.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_scripts_graph.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/generate_sli_doc.py` | `docs-governance` | `public` | `ci-sli-docs-drift` |
-| `scripts/areas/docs/generate_slos_doc.py` | `docs-governance` | `public` | `ci-slo-docs-drift` |
 | `scripts/areas/docs/generate_upgrade_guide.py` | `docs-governance` | `public` | `upgrade-guide` |
 | `scripts/areas/docs/legacy-terms-allowlist.txt` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/lint_depth.py` | `docs-governance` | `public` | - |
