@@ -54,10 +54,7 @@ ops-contracts-check: ## Validate canonical ops manifests against ops/_schemas an
 	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/check_no_empty_dirs.py
 	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/check_generated_policy.py
 	@$(MAKE) -s ops-e2e-validate
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/generate_ops_schema_docs.py
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/generate_ops_surface.py
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/generate_ops_contracts_doc.py
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/generate_layer_contract_doc.py
+	@$(ATLAS_SCRIPTS) docs generate --report text
 	@$(MAKE) -s ops-k8s-contracts
 
 ops-contract-check: ## Validate SSOT layer contract, render/live checks, and write report
@@ -78,10 +75,7 @@ ops-gen: ## Regenerate all committed ops generated outputs
 	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/generate_ops_pins.py
 	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/generate_ops_surface_meta.py
 	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/validate_ops_contracts.py >/dev/null
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/generate_ops_schema_docs.py
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/generate_ops_surface.py
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/generate_ops_contracts_doc.py
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/generate_layer_contract_doc.py
+	@$(ATLAS_SCRIPTS) docs generate --report text
 	@$(ATLAS_SCRIPTS) contracts generate --generators chart-schema
 
 ops-gen-clean: ## Cleanup generated ops outputs not in committed generated policy
@@ -927,8 +921,7 @@ ops-script-coverage: ## Validate every ops/**/scripts entrypoint is exposed via 
 	@$(MAKE) -s ops-shfmt
 
 ops-make-targets-doc: ## Generate docs/development/make-targets.md from registry SSOT
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/generate_make_targets_inventory.py
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_make_targets_drift.py
+	@$(ATLAS_SCRIPTS) make inventory
 
 ops-lint: ## Lint ops shell/python/json/schema contracts
 	@$(ATLAS_SCRIPTS) ops lint --report text --emit-artifacts
