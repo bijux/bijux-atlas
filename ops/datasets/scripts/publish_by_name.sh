@@ -16,7 +16,7 @@ case "$DATASET" in
       --release 110 --species homo_sapiens --assembly GRCh38
     ;;
   real1)
-    "$ROOT/scripts/areas/fixtures/fetch-real-datasets.sh" >/dev/null
+    "$ROOT/ops/datasets/scripts/fixtures/fetch-real-datasets.sh" >/dev/null
     "$ROOT/ops/e2e/runner/publish_dataset.sh" \
       --gff3 "$REAL_ROOT/111/homo_sapiens/GRCh38/genes.gff3" \
       --fasta "$REAL_ROOT/111/homo_sapiens/GRCh38/genome.fa" \
@@ -24,7 +24,7 @@ case "$DATASET" in
       --release 111 --species homo_sapiens --assembly GRCh38
     ;;
   real110)
-    "$ROOT/scripts/areas/fixtures/fetch-real-datasets.sh" >/dev/null
+    "$ROOT/ops/datasets/scripts/fixtures/fetch-real-datasets.sh" >/dev/null
     "$ROOT/ops/e2e/runner/publish_dataset.sh" \
       --gff3 "$REAL_ROOT/110/homo_sapiens/GRCh38/genes.gff3" \
       --fasta "$REAL_ROOT/110/homo_sapiens/GRCh38/genome.fa" \
@@ -32,7 +32,7 @@ case "$DATASET" in
       --release 110 --species homo_sapiens --assembly GRCh38
     ;;
   real111)
-    "$ROOT/scripts/areas/fixtures/fetch-real-datasets.sh" >/dev/null
+    "$ROOT/ops/datasets/scripts/fixtures/fetch-real-datasets.sh" >/dev/null
     "$ROOT/ops/e2e/runner/publish_dataset.sh" \
       --gff3 "$REAL_ROOT/111/homo_sapiens/GRCh38/genes.gff3" \
       --fasta "$REAL_ROOT/111/homo_sapiens/GRCh38/genome.fa" \

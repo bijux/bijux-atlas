@@ -14,11 +14,6 @@ Generated file. Do not edit manually.
 
 | Script | Owner | Stability | Called By |
 |---|---|---|---|
-| `scripts/areas/fixtures/derive-release-111.sh` | `dataset-ops` | `internal` | - |
-| `scripts/areas/fixtures/fetch-medium.sh` | `dataset-ops` | `public` | `fetch-fixtures`, `ops-publish-medium` |
-| `scripts/areas/fixtures/fetch-real-datasets.sh` | `dataset-ops` | `public` | `fetch-real-datasets` |
-| `scripts/areas/fixtures/run-medium-ingest.sh` | `dataset-ops` | `public` | `ingest-sharded-medium`, `run-medium-ingest` |
-| `scripts/areas/fixtures/run-medium-serve.sh` | `dataset-ops` | `public` | `run-medium-serve` |
 | `scripts/areas/layout/allowed_root.json` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/build_artifacts_index.py` | `repo-surface` | `public` | `artifacts-index` |
 | `scripts/areas/layout/build_run_artifact_index.py` | `repo-surface` | `public` | `ops-artifacts-index-run` |

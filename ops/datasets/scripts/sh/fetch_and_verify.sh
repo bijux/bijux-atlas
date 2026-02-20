@@ -13,7 +13,7 @@ else
   exit 1
 fi
 if [ ! -f "$ROOT/ops/fixtures/medium/v1/data/genes.gff3" ] || [ ! -f "$ROOT/ops/fixtures/medium/v1/data/genome.fa" ] || [ ! -f "$ROOT/ops/fixtures/medium/v1/data/genome.fa.fai" ]; then
-  "$ROOT/scripts/areas/fixtures/fetch-medium.sh" >/dev/null
+  "$ROOT/ops/datasets/scripts/fixtures/fetch-medium.sh" >/dev/null
 fi
 python3 - <<'PY'
 from pathlib import Path
@@ -39,4 +39,4 @@ if errs:
     raise SystemExit(1)
 print("dataset checksum verification passed")
 PY
-"$ROOT/scripts/areas/fixtures/fetch-real-datasets.sh" >/dev/null
+"$ROOT/ops/datasets/scripts/fixtures/fetch-real-datasets.sh" >/dev/null

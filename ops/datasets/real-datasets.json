@@ -19,7 +19,7 @@
       "id": "111/homo_sapiens/GRCh38",
       "kind": "derived",
       "derived_from": "110/homo_sapiens/GRCh38",
-      "transform": "scripts/areas/fixtures/derive-release-111.sh",
+      "transform": "ops/datasets/scripts/fixtures/derive-release-111.sh",
       "files": {
         "gff3": "genes.gff3",
         "fasta": "genome.fa",

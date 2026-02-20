@@ -569,7 +569,7 @@ architecture-check: ## Validate runtime architecture boundaries and dependency g
 	@cargo test -p bijux-atlas-server --test import_boundary_guardrails
 
 fetch-real-datasets:
-	@./scripts/areas/fixtures/fetch-real-datasets.sh
+	@./ops/datasets/scripts/fixtures/fetch-real-datasets.sh
 
 ssot-check:
 	@$(ATLAS_SCRIPTS) contracts generate --generators artifacts chart-schema
