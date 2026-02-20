@@ -47,13 +47,26 @@ DOMAINS = {
     "layout": layout.run,
 }
 
+EXPLAIN_MAP: dict[str, dict[str, object]] = {
+    "check": {"touches": ["makefiles/", "configs/", ".github/workflows/"], "tools": []},
+    "docs": {"touches": ["docs/", "mkdocs.yml", "docs/_generated/"], "tools": ["mkdocs"]},
+    "configs": {"touches": ["configs/", "docs/_generated/config*"], "tools": []},
+    "ops": {"touches": ["ops/", "artifacts/evidence/"], "tools": ["kubectl", "helm", "k6"]},
+    "make": {"touches": ["makefiles/", "docs/development/make-targets.md"], "tools": ["make"]},
+    "report": {"touches": ["artifacts/evidence/", "ops/_generated_committed/"], "tools": []},
+    "gates": {"touches": ["configs/gates/lanes.json", "artifacts/evidence/"], "tools": ["make"]},
+}
+
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="bijux-atlas")
+    p = argparse.ArgumentParser(prog="atlasctl")
     p.add_argument("--version", action="version", version=_version_string())
+    p.add_argument("--json", action="store_true", help="emit JSON output")
     p.add_argument("--run-id", help="run identifier for artifacts")
+    p.add_argument("--artifacts-dir", help="artifacts/evidence root path")
     p.add_argument("--evidence-root", help="evidence root path")
     p.add_argument("--run-dir", help="override run directory root")
+    p.add_argument("--cwd", help="run command from an explicit repository root")
     p.add_argument("--profile", help="profile id")
     p.add_argument("--format", choices=["text", "json"], default=None, help="output format")
     p.add_argument("--network", choices=["allow", "forbid"], default="allow", help="network access mode")
@@ -72,6 +85,9 @@ def build_parser() -> argparse.ArgumentParser:
     help_p = sub.add_parser("help", help="print command help")
     help_p.add_argument("--json", action="store_true", help="emit machine-readable command inventory")
     help_p.add_argument("--out-file", help="optional output path")
+    explain_p = sub.add_parser("explain", help="describe command side-effects and external tools")
+    explain_p.add_argument("command")
+    explain_p.add_argument("--json", action="store_true", help="emit JSON output")
 
     run_p = sub.add_parser("run", help="run an internal python script by repo-relative path")
     run_p.add_argument("script")
@@ -127,7 +143,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def _version_string() -> str:
-    base = "bijux-atlas 0.1.0"
+    base = "atlasctl 0.1.0"
     try:
         repo_root = Path(__file__).resolve().parents[4]
         sha = (
@@ -158,7 +174,7 @@ def _emit(payload: dict[str, object], as_json: bool) -> None:
 def _commands_payload() -> dict[str, object]:
     return {
         "schema_version": 1,
-        "tool": "bijux-atlas",
+        "tool": "atlasctl",
         "commands": [
             {"name": c.name, "help": c.help_text, "stable": c.stable}
             for c in sorted(command_registry(), key=lambda c: c.name)
@@ -169,7 +185,7 @@ def _commands_payload() -> dict[str, object]:
 def _build_common_payload(ctx: RunContext, status: str = "ok") -> dict[str, object]:
     return {
         "schema_version": 1,
-        "tool": "bijux-atlas",
+        "tool": "atlasctl",
         "status": status,
         "run_id": ctx.run_id,
         "profile": ctx.profile,
@@ -196,14 +212,14 @@ def _emit_runtime_contracts(ctx: RunContext, cmd: str, argv: list[str] | None) -
     root = _ensure_scripts_artifact_root(ctx)
     write_roots = {
         "schema_version": 1,
-        "tool": "bijux-atlas",
+        "tool": "atlasctl",
         "run_id": ctx.run_id,
         "allowed_write_roots": [str(ctx.evidence_root), str(root), str(root / "reports"), str(root / "logs")],
         "forbidden_roots": [str(ctx.repo_root / p) for p in ("ops", "docs", "configs", "makefiles", "crates")],
     }
     run_manifest = {
         "schema_version": 1,
-        "tool": "bijux-atlas",
+        "tool": "atlasctl",
         "run_id": ctx.run_id,
         "command": cmd,
         "argv": argv or [],
@@ -225,12 +241,17 @@ def _emit_runtime_contracts(ctx: RunContext, cmd: str, argv: list[str] | None) -
 
 
 def main(argv: list[str] | None = None) -> int:
+    raw_argv = argv if argv is not None else sys.argv[1:]
     p = build_parser()
     ns = p.parse_args(argv)
-    fmt = ns.format or ("json" if "CI" in os.environ else "text")
+    if ns.cwd:
+        os.chdir(ns.cwd)
+    evidence_root = ns.artifacts_dir or ns.evidence_root
+    want_json = "--json" in raw_argv
+    fmt = "json" if want_json else (ns.format or ("json" if "CI" in os.environ else "text"))
     ctx = RunContext.from_args(
         ns.run_id,
-        ns.evidence_root,
+        evidence_root,
         ns.profile,
         ns.no_network,
         fmt,
@@ -279,12 +300,25 @@ def main(argv: list[str] | None = None) -> int:
                 _write_payload_if_requested(ctx, ns.out_file, rendered)
             print(rendered)
             return 0
+        if ns.cmd == "explain":
+            desc = EXPLAIN_MAP.get(
+                ns.command,
+                {"touches": [], "tools": [], "note": "no explicit contract entry; inspect command implementation"},
+            )
+            payload = {
+                "schema_version": 1,
+                "tool": "atlasctl",
+                "command": ns.command,
+                **desc,
+            }
+            print(json.dumps(payload, sort_keys=True) if as_json else json.dumps(payload, indent=2, sort_keys=True))
+            return 0
         if ns.cmd == "completion":
-            payload = {"schema_version": 1, "tool": "bijux-atlas", "shell": ns.shell, "status": "ok"}
+            payload = {"schema_version": 1, "tool": "atlasctl", "shell": ns.shell, "status": "ok"}
             if as_json:
                 print(json.dumps(payload, sort_keys=True))
             else:
-                print(f"# completion for {ns.shell} is not yet generated; use `bijux-atlas help --json`")
+                print(f"# completion for {ns.shell} is not yet generated; use `atlasctl help --json`")
             return 0
         if ns.cmd == "clean":
             payload = clean_scripts_artifacts(ctx, ns.older_than_days)
@@ -298,7 +332,7 @@ def main(argv: list[str] | None = None) -> int:
                 _emit(
                     {
                         "schema_version": 1,
-                        "tool": "bijux-atlas",
+                        "tool": "atlasctl",
                         "status": "ok",
                         "script": ns.script,
                         "args": ns.args,
@@ -362,7 +396,7 @@ def main(argv: list[str] | None = None) -> int:
                 json.dumps(
                     {
                         "schema_version": 1,
-                        "tool": "bijux-atlas",
+                        "tool": "atlasctl",
                         "status": "fail",
                         "error": {"message": str(exc), "code": exc.code},
                     },
@@ -379,7 +413,7 @@ def main(argv: list[str] | None = None) -> int:
                 json.dumps(
                     {
                         "schema_version": 1,
-                        "tool": "bijux-atlas",
+                        "tool": "atlasctl",
                         "status": "fail",
                         "error": {"message": f"internal error: {exc}", "code": ERR_INTERNAL},
                     },
