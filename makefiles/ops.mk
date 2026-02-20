@@ -6,10 +6,10 @@ SHELL := /bin/sh
 OPS_ENV_SCHEMA ?= configs/ops/env.schema.json
 
 ops-layout-lint: ## Validate canonical ops layout contract
-	@python3 ./scripts/areas/layout/check_ops_layout_contract.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_ops_layout_contract.py
 	@./scripts/areas/layout/check_ops_workspace.sh
-	@python3 ./scripts/areas/layout/check_ops_artifacts_writes.py
-	@python3 ./scripts/areas/layout/check_ops_concept_ownership.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_ops_artifacts_writes.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_ops_concept_ownership.py
 
 ops-surface: ## Print stable ops entrypoints from SSOT surface metadata
 	@python3 -c 'import json; d=json.load(open("ops/_meta/surface.json")); print("\n".join(d.get("entrypoints",[])))'
@@ -18,74 +18,74 @@ ops-help: ## Print canonical ops runbook index
 	@cat ops/INDEX.md
 
 ops-env-validate: ## Validate canonical ops environment contract against schema
-	@python3 ./scripts/areas/layout/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)"
+	@./bin/bijux-atlas run ./scripts/areas/layout/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)"
 
 ops-env-print: ## Print canonical ops environment settings
-	@python3 ./scripts/areas/layout/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)" --print --format json
+	@./bin/bijux-atlas run ./scripts/areas/layout/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)" --print --format json
 
 ops-stack-versions-sync: ## Generate ops/stack/versions.json from configs/ops/tool-versions.json SSOT
-	@python3 ./scripts/areas/layout/generate_ops_stack_versions.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/generate_ops_stack_versions.py
 
 ops-k8s-contracts: ## Validate k8s values/schema/install-matrix/chart drift contracts
 	@$(MAKE) -s ops-values-validate
-	@python3 ./scripts/areas/layout/validate_ops_contracts.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/validate_ops_contracts.py
 
 ops-e2e-validate: ## Validate unified e2e scenario definitions and docs references
-	@python3 ./scripts/areas/layout/check_e2e_suites.py
-	@python3 ./scripts/areas/layout/check_e2e_scenarios.py
-	@python3 ./scripts/areas/layout/check_realdata_scenarios.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_e2e_suites.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_e2e_scenarios.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_realdata_scenarios.py
 
 ops-contracts-check: ## Validate canonical ops manifests against ops/_schemas and contract invariants
 	@python3 ./ops/_meta/generate_layer_contract.py
 	@python3 ./ops/_lint/check_layer_contract_drift.py
-	@python3 ./scripts/areas/layout/check_layer_drift.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_layer_drift.py
 	@python3 ./ops/_lint/no-layer-literals.py
 	@python3 ./ops/_lint/no-stack-layer-literals.py
 	@$(MAKE) -s ops-stack-versions-sync
-	@python3 ./scripts/areas/layout/check_ops_surface_drift.py
-	@python3 ./scripts/areas/layout/validate_ops_contracts.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_ops_surface_drift.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/validate_ops_contracts.py
 	@python3 ./ops/_lint/json-schema-coverage.py
-	@python3 ./scripts/areas/layout/check_no_hidden_defaults.py
-	@python3 ./scripts/areas/layout/check_obs_pack_ssot.py
-	@python3 ./scripts/areas/layout/check_obs_suites.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_no_hidden_defaults.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_obs_pack_ssot.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_obs_suites.py
 	@python3 ./ops/obs/scripts/areas/contracts/check_overload_behavior_contract.py
-	@python3 ./scripts/areas/layout/check_ops_canonical_entrypoints.py
-	@python3 ./scripts/areas/layout/check_ops_script_names.py
-	@python3 ./scripts/areas/layout/check_no_empty_dirs.py
-	@python3 ./scripts/areas/layout/check_generated_policy.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_ops_canonical_entrypoints.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_ops_script_names.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_no_empty_dirs.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_generated_policy.py
 	@$(MAKE) -s ops-e2e-validate
-	@python3 ./scripts/areas/docs/generate_ops_schema_docs.py
-	@python3 ./scripts/areas/docs/generate_ops_surface.py
-	@python3 ./scripts/areas/docs/generate_ops_contracts_doc.py
-	@python3 ./scripts/areas/docs/generate_layer_contract_doc.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/generate_ops_schema_docs.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/generate_ops_surface.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/generate_ops_contracts_doc.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/generate_layer_contract_doc.py
 	@$(MAKE) -s ops-k8s-contracts
 
 ops-contract-check: ## Validate SSOT layer contract, render/live checks, and write report
 	@./ops/run/contract-check.sh
 
 pins/check: ## Validate unified reproducibility pins and emit drift report
-	@python3 ./scripts/areas/layout/generate_ops_pins.py
-	@python3 ./scripts/areas/layout/check_ops_pins.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/generate_ops_pins.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_ops_pins.py
 	@python3 ./ops/_lint/pin-relaxations-audit.py
 	@./ops/k8s/tests/checks/obs/test_helm_repo_pinning.sh
 	@$(MAKE) -s ops-kind-version-drift-test
 
 pins/update: ## Manual pins refresh with explicit changelog output
-	@python3 ./scripts/areas/layout/update_ops_pins.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/update_ops_pins.py
 
 ops-gen: ## Regenerate all committed ops generated outputs
 	@$(MAKE) -s ops-stack-versions-sync
-	@python3 ./scripts/areas/layout/generate_ops_pins.py
-	@python3 ./scripts/areas/layout/generate_ops_surface_meta.py
-	@python3 ./scripts/areas/layout/validate_ops_contracts.py >/dev/null
-	@python3 ./scripts/areas/docs/generate_ops_schema_docs.py
-	@python3 ./scripts/areas/docs/generate_ops_surface.py
-	@python3 ./scripts/areas/docs/generate_ops_contracts_doc.py
-	@python3 ./scripts/areas/docs/generate_layer_contract_doc.py
-	@python3 ./scripts/areas/contracts/generate_chart_values_schema.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/generate_ops_pins.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/generate_ops_surface_meta.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/validate_ops_contracts.py >/dev/null
+	@./bin/bijux-atlas run ./scripts/areas/docs/generate_ops_schema_docs.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/generate_ops_surface.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/generate_ops_contracts_doc.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/generate_layer_contract_doc.py
+	@./bin/bijux-atlas run ./scripts/areas/contracts/generate_chart_values_schema.py
 
 ops-gen-clean: ## Cleanup generated ops outputs not in committed generated policy
-	@python3 ./scripts/areas/layout/clean_ops_generated.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/clean_ops_generated.py
 
 ops-gen-check: ## Fail when regenerated ops outputs drift from committed state
 	@$(MAKE) -s ops-gen
@@ -583,7 +583,7 @@ ops-api-smoke: ## Run canonical API smoke queries only
 	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/scripts/smoke_queries.sh
 	@python3 ./ops/e2e/smoke/generate_report.py
-	@python3 ./scripts/areas/docs/check_openapi_examples.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/check_openapi_examples.py
 	@OPS_METRICS_STRICT=0 METRICS_GOLDEN_STRICT=0 $(MAKE) ops-metrics-check
 	@./ops/obs/scripts/snapshot_metrics.sh
 	@./ops/obs/scripts/snapshot_traces.sh
@@ -651,7 +651,7 @@ ops-traces-check: ## Validate trace signal (when OTEL enabled)
 
 ops-k8s-tests: ## Run k8s e2e suite
 	@$(MAKE) -s ops-env-validate
-	@python3 ./scripts/areas/ops/check_k8s_test_contract.py
+	@./bin/bijux-atlas run ./scripts/areas/ops/check_k8s_test_contract.py
 	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck
 	@lock_dir="artifacts/ops/locks/ops-k8s-tests.lock"; \
 	mkdir -p "artifacts/ops/locks"; \
@@ -674,7 +674,7 @@ ops-k8s-tests: ## Run k8s e2e suite
 	  group_args="$$group_args --test $${ATLAS_E2E_TEST}"; \
 	fi; \
 	RUN_ID="$${RUN_ID:-$${ATLAS_RUN_ID:-ops-k8s-tests-$(MAKE_RUN_TS)}}" ATLAS_E2E_SUITE="$${ATLAS_E2E_SUITE:-full}" ./ops/run/k8s-tests.sh --suite "$${ATLAS_E2E_SUITE:-full}" $$group_args
-	@python3 ./scripts/areas/ops/check_k8s_flakes.py
+	@./bin/bijux-atlas run ./scripts/areas/ops/check_k8s_flakes.py
 
 ops-k8s-template-tests: ## Run helm template/lint edge-case checks
 	@./ops/k8s/tests/checks/obs/test_helm_templates.sh
@@ -706,7 +706,7 @@ ops-load-spike-proof: ## Run 10x spike proof suite with overload/bulkhead/memory
 	@$(MAKE) ops-load-manifest-validate
 	@./ops/load/scripts/run_suite.sh spike-overload-proof.json artifacts/perf/results
 	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_results.py artifacts/perf/results
-	@python3 ./scripts/areas/public/perf/check_spike_assertions.py --summary artifacts/perf/results/spike-overload-proof.summary.json --base-url "$${ATLAS_BASE_URL:-http://127.0.0.1:18080}" --wait-seconds "$${ATLAS_OVERLOAD_CLEAR_WAIT_SECONDS:-45}"
+	@./bin/bijux-atlas run ./scripts/areas/public/perf/check_spike_assertions.py --summary artifacts/perf/results/spike-overload-proof.summary.json --base-url "$${ATLAS_BASE_URL:-http://127.0.0.1:18080}" --wait-seconds "$${ATLAS_OVERLOAD_CLEAR_WAIT_SECONDS:-45}"
 	@$(MAKE) ops-slo-burn
 	@python3 -c 'import json; from pathlib import Path; p = Path("artifacts/ops/obs/slo-burn.json"); payload = json.loads(p.read_text()) if p.exists() else (_ for _ in ()).throw(SystemExit("missing SLO burn artifact: artifacts/ops/obs/slo-burn.json")); (_ for _ in ()).throw(SystemExit(f"SLO burn exceeded: {payload}")) if payload.get("burn_exceeded") else print("slo burn within threshold")'
 
@@ -927,8 +927,8 @@ ops-script-coverage: ## Validate every ops/**/scripts entrypoint is exposed via 
 	@$(MAKE) -s ops-shfmt
 
 ops-make-targets-doc: ## Generate docs/development/make-targets.md from registry SSOT
-	@python3 ./scripts/areas/docs/generate_make_targets_inventory.py
-	@python3 ./scripts/areas/docs/check_make_targets_drift.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/generate_make_targets_inventory.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/check_make_targets_drift.py
 
 ops-lint: ## Lint ops shell/python/json/schema contracts
 	@./bin/bijux-atlas ops lint --report text --emit-artifacts
@@ -941,8 +941,8 @@ ops-lint-all: ## Run full ops lint suite (naming/docs/ownership/contracts/images
 	@./ops/_lint/no-empty-dirs.sh
 	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/ops/lint/direct_usage.py
 	@python3 ./ops/_lint/no-direct-e2e-scenario-usage.py
-	@python3 ./scripts/areas/layout/check_ops_cross_area_script_refs.py
-	@python3 ./scripts/areas/layout/check_scripts_submodules.py --threshold 25
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_ops_cross_area_script_refs.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_scripts_submodules.py --threshold 25
 	@python3 ./ops/_lint/no-unpinned-images.py
 	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/ops/lint/tool_versions.py
 	@python3 ./ops/_lint/no-unowned-area.py
@@ -964,22 +964,22 @@ ops-shfmt: ## Format-check all ops shell scripts (optional if shfmt unavailable)
 	fi
 
 ops-kind-version-check: ## Validate pinned kind version from configs/ops/tool-versions.json
-	@python3 ./scripts/areas/layout/check_tool_versions.py kind
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_tool_versions.py kind
 
 ops-k6-version-check: ## Validate pinned k6 version from configs/ops/tool-versions.json
-	@python3 ./scripts/areas/layout/check_tool_versions.py k6
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_tool_versions.py k6
 
 ops-helm-version-check: ## Validate pinned helm version from configs/ops/tool-versions.json
-	@python3 ./scripts/areas/layout/check_tool_versions.py helm
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_tool_versions.py helm
 
 ops-kubectl-version-check: ## Validate pinned kubectl version from configs/ops/tool-versions.json
-	@python3 ./scripts/areas/layout/check_tool_versions.py kubectl
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_tool_versions.py kubectl
 
 ops-jq-version-check: ## Validate pinned jq version from configs/ops/tool-versions.json
-	@python3 ./scripts/areas/layout/check_tool_versions.py jq
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_tool_versions.py jq
 
 ops-yq-version-check: ## Validate pinned yq version from configs/ops/tool-versions.json
-	@python3 ./scripts/areas/layout/check_tool_versions.py yq
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_tool_versions.py yq
 
 ops-tools-check: ## Validate all pinned ops tools versions
 	@$(MAKE) ops-kind-version-check
@@ -1059,7 +1059,7 @@ ops-release-matrix: ## Generate k8s release install matrix document from CI summ
 
 ops-openapi-validate: ## Validate OpenAPI drift and schema/examples consistency
 	@./scripts/areas/public/openapi-diff-check.sh
-	@python3 ./scripts/areas/docs/check_openapi_examples.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/check_openapi_examples.py
 
 ops-chart-render-diff: ## Ensure chart render is deterministic for local profile
 	@tmp_a="$$(mktemp)"; tmp_b="$$(mktemp)"; \
@@ -1077,8 +1077,8 @@ ops-alerts-validate: ## Validate alert rules and contract coverage
 ops-observability-validate: ## Validate observability assets/contracts end-to-end
 	@set -e; \
 	trap 'out="artifacts/ops/obs/validate-fail-$$(date +%Y%m%d-%H%M%S)"; mkdir -p "$$out"; kubectl get pods -A -o wide > "$$out/pods.txt" 2>/dev/null || true; kubectl get events -A --sort-by=.lastTimestamp > "$$out/events.txt" 2>/dev/null || true; cp -f ops/obs/grafana/atlas-observability-dashboard.json "$$out/dashboard.json" 2>/dev/null || true; cp -f ops/obs/alerts/atlas-alert-rules.yaml "$$out/alerts.yaml" 2>/dev/null || true; echo "observability validation failed, artifacts: $$out" >&2' ERR; \
-	python3 ./scripts/areas/layout/check_obs_script_name_collisions.py; \
-	python3 ./scripts/areas/docs/check_observability_surface_drift.py; \
+	./bin/bijux-atlas run ./scripts/areas/layout/check_obs_script_name_collisions.py; \
+	./bin/bijux-atlas run ./scripts/areas/docs/check_observability_surface_drift.py; \
 	$(MAKE) ops-dashboards-validate; \
 	$(MAKE) ops-alerts-validate; \
 	./scripts/areas/public/observability/check_metrics_contract.py; \
@@ -1137,7 +1137,7 @@ ops-observability-pack-health: ## Query pack health and service readiness
 
 ops-artifacts-index-run: ## Generate per-run artifact index markdown (RUN_ID=<ops-run-id>)
 	@[ -n "$${RUN_ID:-}" ] || { echo "RUN_ID is required" >&2; exit 2; }
-	@python3 ./scripts/areas/layout/build_run_artifact_index.py --run-id "$${RUN_ID}"
+	@./bin/bijux-atlas run ./scripts/areas/layout/build_run_artifact_index.py --run-id "$${RUN_ID}"
 
 ops-observability-pack-conformance-report: ## Write pack conformance report under artifacts
 	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/write_pack_conformance_report.py
@@ -1247,7 +1247,7 @@ stack-full: ## Full-stack must-pass truth flow with contract report bundle
 	run_id="$${OPS_RUN_ID:-$${ATLAS_RUN_ID:-stack-$$(date +%Y%m%d-%H%M%S)}}"; \
 	report_dir="artifacts/stack-report"; \
 	teardown="$${STACK_KEEP_UP:-0}"; \
-	trap 'python3 ./scripts/areas/public/stack/build_stack_report.py --status "$$status" --run-id "$$run_id" --out-dir "$$report_dir" --values-file "$${ATLAS_VALUES_FILE:-ops/k8s/values/local.yaml}"; python3 ./scripts/areas/public/stack/validate_stack_report.py --report-dir "$$report_dir" --schema ops/_schemas/report/stack-contract.schema.json; if [ "$$teardown" != "1" ]; then $(MAKE) ops-down >/dev/null 2>&1 || true; $(MAKE) ops-kind-down >/dev/null 2>&1 || true; fi' EXIT; \
+	trap './bin/bijux-atlas run ./scripts/areas/public/stack/build_stack_report.py --status "$$status" --run-id "$$run_id" --out-dir "$$report_dir" --values-file "$${ATLAS_VALUES_FILE:-ops/k8s/values/local.yaml}"; ./bin/bijux-atlas run ./scripts/areas/public/stack/validate_stack_report.py --report-dir "$$report_dir" --schema ops/_schemas/report/stack-contract.schema.json; if [ "$$teardown" != "1" ]; then $(MAKE) ops-down >/dev/null 2>&1 || true; $(MAKE) ops-kind-down >/dev/null 2>&1 || true; fi' EXIT; \
 	$(MAKE) ops-tools-check; \
 	$(MAKE) ops-kind-validate; \
 	$(MAKE) ops-kind-metrics-server-up; \
@@ -1273,7 +1273,7 @@ stack-full: ## Full-stack must-pass truth flow with contract report bundle
 	$(MAKE) ops-otel-required-check; \
 	$(MAKE) ops-load-smoke; \
 	$(MAKE) ops-load-spike-proof; \
-	python3 ./scripts/areas/public/perf/check_percent_regression.py --baseline-profile "$${ATLAS_PERF_BASELINE_PROFILE:-local}" --max-p95-regression 0.15 --results artifacts/perf/results; \
+	./bin/bijux-atlas run ./scripts/areas/public/perf/check_percent_regression.py --baseline-profile "$${ATLAS_PERF_BASELINE_PROFILE:-local}" --max-p95-regression 0.15 --results artifacts/perf/results; \
 	$(MAKE) ops-metrics-check; \
 	$(MAKE) ops-alerts-validate; \
 	$(MAKE) ops-dashboards-validate; \
@@ -1296,7 +1296,7 @@ ops-drill-runner: ## Run core drills and verify runbook contract linkage
 	@./ops/obs/tests/test_drills.sh
 	@$(MAKE) ops-drill-corruption-dataset
 	@$(MAKE) ops-drill-pod-churn
-	@python3 ./scripts/areas/docs/check_runbooks_contract.py
+	@./bin/bijux-atlas run ./scripts/areas/docs/check_runbooks_contract.py
 
 ops-readiness-scorecard: ## Build operational readiness scorecard from latest ops run artifacts
 	@run_dir="$${OPS_RUN_DIR:-artifacts/ops/$${OPS_RUN_ID}}"; \
