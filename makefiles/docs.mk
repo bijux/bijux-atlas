@@ -37,6 +37,7 @@ docs-build: ## Build docs + link-check + spell-check + lint
 	@python3 scripts/areas/docs/generate_config_keys_doc.py
 	@python3 scripts/areas/docs/generate_contracts_index_doc.py
 	@python3 scripts/areas/docs/generate_chart_contract_index.py
+	@python3 scripts/areas/ops/generate_k8s_test_surface.py
 	@python3 scripts/areas/docs/generate_runbook_map_index.py
 	@python3 scripts/areas/docs/check_concept_registry.py
 	@./scripts/areas/docs/render_diagrams.sh
