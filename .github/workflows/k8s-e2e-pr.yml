@@ -49,11 +49,23 @@ jobs:
       - name: Pinned tool checks
         run: make ops-tools-check
 
+      - name: Detect chart changes
+        id: chart_changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            chart:
+              - 'ops/k8s/charts/**'
+
       - name: Boundary lint (ops/e2e layering)
         run: make policies/boundaries-check
 
       - name: Bring up e2e dependencies
         run: make ops-up
+
+      - name: Contract check for chart changes
+        if: steps.chart_changes.outputs.chart == 'true'
+        run: make ops/contract-check
 
       - name: Stack smoke gate
         run: make ops-stack-smoke
