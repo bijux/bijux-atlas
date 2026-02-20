@@ -30,7 +30,7 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = ["--strict-markers"]
+addopts = ["--strict-markers", "-m", "unit"]
 markers = [
   "unit: fast unit tests with no network side-effects",
   "integration: integration tests that run commands against workspace fixtures",
