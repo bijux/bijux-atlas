@@ -3,9 +3,9 @@
 SHELL := /bin/sh
 SCRIPTS_VENV := artifacts/isolate/py/scripts/.venv
 export PYTHONDONTWRITEBYTECODE := 1
-export RUFF_CACHE_DIR := $(CURDIR)/artifacts/bijux-atlas-scripts/.ruff_cache
-export MYPY_CACHE_DIR := $(CURDIR)/artifacts/bijux-atlas-scripts/.mypy_cache
-export HYPOTHESIS_STORAGE_DIRECTORY := $(CURDIR)/artifacts/bijux-atlas-scripts/.hypothesis/examples
+export RUFF_CACHE_DIR := $(CURDIR)/artifacts/bijux-atlas-scripts/ruff
+export MYPY_CACHE_DIR := $(CURDIR)/artifacts/bijux-atlas-scripts/mypy
+export HYPOTHESIS_STORAGE_DIRECTORY := $(CURDIR)/artifacts/bijux-atlas-scripts/hypothesis/examples
 
 bootstrap-tools:
 	@./scripts/areas/bootstrap/install_tools.sh
@@ -101,6 +101,7 @@ internal/scripts/test-hermetic: ## Run scripts package tests with --no-network g
 
 scripts-check: ## Run scripts lint + tests as a single gate
 	@$(MAKE) -s internal/scripts/install-lock
+	@$(ATLAS_SCRIPTS) python lint --json >/dev/null
 	@$(ATLAS_SCRIPTS) --quiet legacy check --report text
 	@./scripts/areas/check/no-duplicate-script-names.sh
 	@./scripts/areas/check/no-direct-path-usage.sh

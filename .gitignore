@@ -29,7 +29,12 @@ Thumbs.db
 artifacts/evidence/**
 artifacts/bijux-atlas-scripts/**
 !artifacts/bijux-atlas-scripts/
-!artifacts/bijux-atlas-scripts/.gitkeep
+artifacts/bijux-atlas-scripts/cache/
+artifacts/bijux-atlas-scripts/pycache/
+artifacts/bijux-atlas-scripts/mypy/
+artifacts/bijux-atlas-scripts/ruff/
+artifacts/bijux-atlas-scripts/pytest/
+artifacts/bijux-atlas-scripts/pip/
 ops/_artifacts/
 ops/_evidence/**
 !ops/_evidence/.gitkeep
