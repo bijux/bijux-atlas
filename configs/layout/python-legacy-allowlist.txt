@@ -144,7 +144,6 @@ scripts/areas/docs/check_critical_make_targets_referenced.py
 scripts/areas/docs/check_doc_filename_style.py
 scripts/areas/docs/check_docker_entrypoints.py
 scripts/areas/docs/check_docs_deterministic.py
-scripts/areas/docs/check_docs_make_only_ops.py
 scripts/areas/docs/check_docs_make_targets_exist.py
 scripts/areas/docs/check_example_configs.py
 scripts/areas/docs/check_full_stack_page.py
@@ -161,11 +160,8 @@ scripts/areas/docs/check_no_orphan_docs.py
 scripts/areas/docs/check_no_placeholders.py
 scripts/areas/docs/check_observability_acceptance_checklist.py
 scripts/areas/docs/check_observability_docs_checklist.py
-scripts/areas/docs/check_ops_doc_duplication.py
 scripts/areas/docs/check_ops_docs_make_targets.py
 scripts/areas/docs/check_ops_observability_links.py
-scripts/areas/docs/check_ops_readme_canonical_links.py
-scripts/areas/docs/check_ops_readmes_make_only.py
 scripts/areas/docs/check_public_targets_docs_sections.py
 scripts/areas/docs/check_runbook_map_registration.py
 scripts/areas/docs/check_no_removed_make_targets.py

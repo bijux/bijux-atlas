@@ -16,7 +16,6 @@ Scripts in this area.
 - check_doc_naming.sh
 - check_docker_entrypoints.py
 - check_docs_deterministic.py
-- check_docs_make_only_ops.py
 - check_docs_make_targets_exist.py
 - check_duplicate_topics.sh
 - check_example_configs.py
@@ -35,11 +34,8 @@ Scripts in this area.
 - check_no_placeholders.py
 - check_observability_acceptance_checklist.py
 - check_observability_docs_checklist.py
-- check_ops_doc_duplication.py
 - check_ops_docs_make_targets.py
 - check_ops_observability_links.py
-- check_ops_readme_canonical_links.py
-- check_ops_readmes_make_only.py
 - check_reference_templates.sh
 - check_runbook_map_registration.py
 - check_script_headers.py
