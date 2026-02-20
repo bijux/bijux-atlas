@@ -116,8 +116,6 @@ scripts/areas/check/check-script-write-roots.py
 scripts/areas/check/check_duplicate_script_names.py
 scripts/areas/gen/generate_scripts_readme.py
 scripts/areas/gen/generate_scripts_surface.py
-scripts/areas/internal/__init__.py
-scripts/areas/internal/paths.py
 scripts/areas/layout/build_artifacts_index.py
 scripts/areas/layout/build_run_artifact_index.py
 scripts/areas/layout/check_cargo_dev_metadata.py
