@@ -5,6 +5,7 @@ SHELL := /bin/sh
 JOBS  ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 8)
 
 include makefiles/env.mk
+include makefiles/python.mk
 include makefiles/_macros.mk
 include makefiles/cargo.mk
 include makefiles/cargo-dev.mk
@@ -20,16 +21,16 @@ include makefiles/ops.mk
 include makefiles/policies.mk
 
 config-print: ## Print canonical merged config payload as JSON
-	@./scripts/bin/bijux-atlas-scripts configs print
+	@$(ATLAS_SCRIPTS) configs print
 
 config-drift: ## Check config/schema/docs drift without regeneration
-	@./scripts/bin/bijux-atlas-scripts configs drift
+	@$(ATLAS_SCRIPTS) configs drift
 
 configs-gen-check: ## Regenerate configs generated docs and fail on drift
 	@./scripts/areas/configs/check_generated_configs_drift.sh
 
 configs-check: ## Config schemas + drift + ownership + symlink shim + SSOT checks
-	@./scripts/bin/bijux-atlas-scripts configs check --report text --emit-artifacts
+	@$(ATLAS_SCRIPTS) configs check --report text --emit-artifacts
 
 CI_ISO_ROOT := $(CURDIR)/artifacts/isolate/ci
 CI_ENV := ISO_ROOT=$(CI_ISO_ROOT) CARGO_TARGET_DIR=$(CI_ISO_ROOT)/target CARGO_HOME=$(CI_ISO_ROOT)/cargo-home TMPDIR=$(CI_ISO_ROOT)/tmp TMP=$(CI_ISO_ROOT)/tmp TEMP=$(CI_ISO_ROOT)/tmp
@@ -39,87 +40,94 @@ LOCAL_FULL_ISO_ROOT := $(CURDIR)/artifacts/isolate/local-full
 LOCAL_FULL_ENV := ISO_ROOT=$(LOCAL_FULL_ISO_ROOT) CARGO_TARGET_DIR=$(LOCAL_FULL_ISO_ROOT)/target CARGO_HOME=$(LOCAL_FULL_ISO_ROOT)/cargo-home TMPDIR=$(LOCAL_FULL_ISO_ROOT)/tmp TMP=$(LOCAL_FULL_ISO_ROOT)/tmp TEMP=$(LOCAL_FULL_ISO_ROOT)/tmp
 
 gates-check: ## Run public-surface/docs/makefile boundary checks
-	@./scripts/bin/bijux-atlas-scripts make contracts-check --emit-artifacts
+	@$(MAKE) -s internal/scripts/cli-check
+	@$(ATLAS_SCRIPTS) make contracts-check --emit-artifacts
 
 gates: ## Print public targets grouped by namespace
-	@./scripts/bin/bijux-atlas-scripts make help --mode gates
+	@$(ATLAS_SCRIPTS) make help --mode gates
 
 help: ## Show curated public make targets from SSOT
-	@./scripts/bin/bijux-atlas-scripts make help
+	@$(ATLAS_SCRIPTS) make help
 
 help-advanced: ## Show curated public targets plus maintainer-oriented helpers
-	@./scripts/bin/bijux-atlas-scripts make help --mode advanced
+	@$(ATLAS_SCRIPTS) make help --mode advanced
 
 help-all:
-	@./scripts/bin/bijux-atlas-scripts make help --mode all
+	@$(ATLAS_SCRIPTS) make help --mode all
 
 explain: ## Explain whether TARGET is a public make target
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make explain TARGET=<name>" >&2; exit 2; }
-	@./scripts/bin/bijux-atlas-scripts make explain "$${TARGET}"
+	@$(ATLAS_SCRIPTS) make explain "$${TARGET}"
 
 list: ## Print public make target set from SSOT with one-line descriptions
-	@./scripts/bin/bijux-atlas-scripts make list
+	@$(ATLAS_SCRIPTS) make list
+
+targets: ## Print generated target catalog from SSOT
+	@$(ATLAS_SCRIPTS) make list
 
 graph: ## Print compact dependency graph for TARGET
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make graph TARGET=<name>" >&2; exit 2; }
-	@./scripts/bin/bijux-atlas-scripts make graph "$${TARGET}"
+	@$(ATLAS_SCRIPTS) make graph "$${TARGET}"
 
 what: ## Print explain + dependency graph for TARGET
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make what TARGET=<name>" >&2; exit 2; }
-	@./scripts/bin/bijux-atlas-scripts make explain "$${TARGET}"
+	@$(ATLAS_SCRIPTS) make explain "$${TARGET}"
 	@echo ""
-	@./scripts/bin/bijux-atlas-scripts make graph "$${TARGET}"
+	@$(ATLAS_SCRIPTS) make graph "$${TARGET}"
 
 internal-list: ## Print internal make targets for maintainers
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/list_internal_targets.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/list_internal_targets.py
 
 format: ## UX alias for fmt
 	@$(MAKE) fmt
 
 report/merge: ## Merge lane reports into unified make report JSON
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	./scripts/bin/bijux-atlas-scripts report collect --run-id "$$run_id"
+	$(ATLAS_SCRIPTS) report collect --run-id "$$run_id"
 
 report/print: ## Print lane summary like CI/GitHub Actions output
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	./scripts/bin/bijux-atlas-scripts report print --run-id "$$run_id"
+	$(ATLAS_SCRIPTS) report print --run-id "$$run_id"
 
 report/md: ## Generate markdown summary for PR comments
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	./scripts/bin/bijux-atlas-scripts report summarize --run-id "$$run_id"
+	$(ATLAS_SCRIPTS) report summarize --run-id "$$run_id"
 
 report/junit: ## Optional JUnit conversion for CI systems
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	./scripts/bin/bijux-atlas-scripts report junit --run-id "$$run_id"
+	$(ATLAS_SCRIPTS) report junit --run-id "$$run_id"
 
 logs/last-fail: ## Tail the last failed lane log from latest unified report
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	./scripts/bin/bijux-atlas-scripts report last-fail --run-id "$$run_id"
+	$(ATLAS_SCRIPTS) report last-fail --run-id "$$run_id"
 
 triage: ## Print failing lanes + last 20 log lines + evidence paths
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	./scripts/bin/bijux-atlas-scripts report triage --run-id "$$run_id"
+	$(ATLAS_SCRIPTS) report triage --run-id "$$run_id"
 
 report: ## Merge lanes, generate confidence scorecard, and print summary
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	./scripts/bin/bijux-atlas-scripts report collect --run-id "$$run_id" >/dev/null; \
-	./scripts/bin/bijux-atlas-scripts report scorecard --run-id "$$run_id"; \
-	./scripts/bin/bijux-atlas-scripts report print --run-id "$$run_id"
+	$(ATLAS_SCRIPTS) report collect --run-id "$$run_id" >/dev/null; \
+	$(ATLAS_SCRIPTS) report scorecard --run-id "$$run_id"; \
+	$(ATLAS_SCRIPTS) report print --run-id "$$run_id"
 
 evidence/open: ## Open evidence directory (supports AREA=<area> RUN_ID=<id>)
 	@./ops/run/evidence-open.sh
 
 evidence/clean: ## Clean evidence directories using retention policy
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/evidence_clean.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/evidence_clean.py
+
+evidence-gc: ## Enforce evidence retention policy
+	@$(PY_RUN) scripts/areas/layout/evidence_clean.py
 
 evidence/check: ## Validate evidence JSON schema contract for generated outputs
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/evidence_check.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/evidence_check.py
 
 evidence/bundle: ## Export latest evidence bundle as tar.zst for CI attachments
 	@./ops/run/evidence-bundle.sh
 
 evidence/pr-summary: ## Generate PR markdown summary from latest evidence unified report
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/evidence_pr_summary.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/evidence_pr_summary.py
 
 artifacts-open: ## Open latest ops artifact bundle/report directory
 	@$(call with_iso,artifacts-open,$(MAKE) -s ops-artifacts-open)
@@ -267,14 +275,14 @@ configs/all: ## Configs lane (schema + drift checks)
 	@$(call with_iso,configs-all,$(MAKE) -s configs/check)
 
 policies/check: ## Run deny/audit + policy-relaxation checks
-	@$(call with_iso,policies-check,./scripts/bin/bijux-atlas-scripts policies check --report text --emit-artifacts)
+	@$(call with_iso,policies-check,$(ATLAS_SCRIPTS) policies check --report text --emit-artifacts)
 
 policies-check: ## Alias for policies/check
 	@$(MAKE) -s policies/check
 
 budgets/check: ## Validate universal budgets and budget-relaxation expiry policy
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/check_ops_budgets.py
-	@./scripts/bin/bijux-atlas-scripts run ./ops/_lint/budget-relaxations-audit.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/check_ops_budgets.py
+	@$(ATLAS_SCRIPTS) run ./ops/_lint/budget-relaxations-audit.py
 
 perf/baseline-update: ## Run smoke suite, update baseline, write diff summary and changelog
 	@PROFILE="$${PROFILE:-$${ATLAS_PERF_BASELINE_PROFILE:-local}}"; \
@@ -283,31 +291,31 @@ perf/baseline-update: ## Run smoke suite, update baseline, write diff summary an
 
 perf/regression-check: ## Fail if p95 regression exceeds configured budget
 	@PROFILE="$${PROFILE:-$${ATLAS_PERF_BASELINE_PROFILE:-local}}"; \
-	./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/regression_check.py --profile "$$PROFILE" --results "$${RESULTS:-artifacts/perf/results}"
+	$(ATLAS_SCRIPTS) run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/regression_check.py --profile "$$PROFILE" --results "$${RESULTS:-artifacts/perf/results}"
 
 perf/triage: ## Print top p95 regressions by suite from latest perf results
 	@PROFILE="$${PROFILE:-$${ATLAS_PERF_BASELINE_PROFILE:-local}}"; \
-	./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/triage_regressions.py --profile "$$PROFILE" --results "$${RESULTS:-artifacts/perf/results}"
+	$(ATLAS_SCRIPTS) run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/triage_regressions.py --profile "$$PROFILE" --results "$${RESULTS:-artifacts/perf/results}"
 
 perf/compare: ## Compare two evidence perf runs (FROM=<run_id> TO=<run_id>)
 	@[ -n "$${FROM:-}" ] || { echo "usage: make perf/compare FROM=<run_id> TO=<run_id>" >&2; exit 2; }
 	@[ -n "$${TO:-}" ] || { echo "usage: make perf/compare FROM=<run_id> TO=<run_id>" >&2; exit 2; }
-	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/compare_runs.py --from-run "$${FROM}" --to-run "$${TO}"
+	@$(ATLAS_SCRIPTS) run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/load/compare_runs.py --from-run "$${FROM}" --to-run "$${TO}"
 
 policies/all: ## Policies lane (deny/audit/policy checks)
 	@$(call with_iso,policies-all,$(MAKE) -s policies/check)
 
 policies/boundaries-check: ## Enforce e2e layer boundary rules and relaxations
-	@./scripts/bin/bijux-atlas-scripts run ./ops/_lint/layer-relaxations-audit.py
-	@./scripts/bin/bijux-atlas-scripts run ./ops/_lint/no-layer-fixups.py
-	@./scripts/bin/bijux-atlas-scripts run ./ops/_lint/no-k8s-test-fixups.py
-	@./scripts/bin/bijux-atlas-scripts run ./ops/_lint/no-stack-layer-literals.py
+	@$(ATLAS_SCRIPTS) run ./ops/_lint/layer-relaxations-audit.py
+	@$(ATLAS_SCRIPTS) run ./ops/_lint/no-layer-fixups.py
+	@$(ATLAS_SCRIPTS) run ./ops/_lint/no-k8s-test-fixups.py
+	@$(ATLAS_SCRIPTS) run ./ops/_lint/no-stack-layer-literals.py
 
 local/all: ## Run all meaningful local gates
 	@PARALLEL="$${PARALLEL:-1}" RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-local-all-$(MAKE_RUN_TS)}}" MODE=root-local ./ops/run/root-lanes.sh
 
 ci/all: ## Deterministic CI superset
-	@$(call with_iso,ci-all,$(MAKE) -s gates-check lane-cargo lane-docs lane-scripts lane-configs-policies lane-ops ci-release-binaries ci-docs-build ci-release-compat-matrix-verify)
+	@$(call with_iso,ci-all,$(MAKE) -s gates-check lane-cargo lane-docs lane-scripts lane-configs lane-policies lane-ops ci-release-binaries ci-docs-build ci-release-compat-matrix-verify)
 
 nightly/all: ## Slow nightly suites (perf/load/drills/realdata)
 	@$(call with_iso,nightly-all,$(MAKE) -s ci/all ops-load-nightly perf/regression-check ops-drill-suite ops-drill-metric-cardinality-blowup ops-realdata ops-obs-verify SUITE=full ops-observability-lag-check)
@@ -325,8 +333,14 @@ lane-ops: ## Lane: ops lint/contracts without cluster bring-up
 lane-scripts: ## Lane: scripts lint/tests/audit
 	@$(MAKE) -s scripts/check
 
-lane-configs-policies: ## Lane: configs + policy checks
-	@$(call with_iso,lane-configs-policies,$(MAKE) -s configs-check budgets/check ci-deny policy-lint policy-schema-drift policy-audit policy-enforcement-status policy-allow-env-lint policies/boundaries-check)
+lane-configs: ## Lane: configs checks and drift gates
+	@$(call with_iso,lane-configs,$(MAKE) -s configs-check budgets/check)
+
+lane-policies: ## Lane: policy checks and boundary enforcement
+	@$(call with_iso,lane-policies,$(MAKE) -s ci-deny policy-lint policy-schema-drift policy-audit policy-enforcement-status policy-allow-env-lint policies/boundaries-check)
+
+lane-configs-policies: ## Alias lane for configs + policies
+	@$(MAKE) -s lane-configs lane-policies
 
 internal/lane-ops-smoke: ## Internal lane: bounded ops smoke path
 	@$(call with_iso,internal-lane-ops-smoke,$(MAKE) -s ops-k8s-smoke)
@@ -341,16 +355,16 @@ root: ## CI-fast lane subset (no cluster bring-up)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-$(MAKE_RUN_TS)}}"; \
 	$(MAKE) -s scripts/check; \
 	PARALLEL="$${PARALLEL:-1}" RUN_ID="$$run_id" MODE=root ./ops/run/root-lanes.sh; \
-	./scripts/bin/bijux-atlas-scripts report collect --run-id "$$run_id" >/dev/null; \
-	./scripts/bin/bijux-atlas-scripts report print --run-id "$$run_id"
+	$(ATLAS_SCRIPTS) report collect --run-id "$$run_id" >/dev/null; \
+	$(ATLAS_SCRIPTS) report print --run-id "$$run_id"
 
 root-local: ## All lanes in parallel + ops smoke lane (PARALLEL=0 for serial)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-$(MAKE_RUN_TS)}}"; \
 	$(MAKE) -s scripts/check; \
 	PARALLEL="$${PARALLEL:-1}" RUN_ID="$$run_id" MODE=root-local ./ops/run/root-lanes.sh; \
 	if [ "$${PERF_CHEAP_REGRESSION:-0}" = "1" ]; then $(MAKE) -s ops-load-smoke perf/regression-check PROFILE="$${PROFILE:-local}"; fi; \
-	./scripts/bin/bijux-atlas-scripts report collect --run-id "$$run_id" >/dev/null; \
-	./scripts/bin/bijux-atlas-scripts report print --run-id "$$run_id"
+	$(ATLAS_SCRIPTS) report collect --run-id "$$run_id" >/dev/null; \
+	$(ATLAS_SCRIPTS) report print --run-id "$$run_id"
 
 root-local/no-ops: ## Local lanes without ops smoke lane (explicit skip)
 	@NO_OPS=1 PARALLEL="$${PARALLEL:-1}" RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-no-ops-$(MAKE_RUN_TS)}}" MODE=root-local ./ops/run/root-lanes.sh
@@ -361,8 +375,8 @@ root-local-no-ops: ## Alias for root-local/no-ops
 root-local-fast: ## Debug serial root-local skipping expensive extras (ops-smoke, obs-full)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-fast-$(MAKE_RUN_TS)}}"; \
 	PARALLEL=0 FAST=1 RUN_ID="$$run_id" MODE=root-local ./ops/run/root-lanes.sh; \
-	./scripts/bin/bijux-atlas-scripts report collect --run-id "$$run_id" >/dev/null; \
-	./scripts/bin/bijux-atlas-scripts report print --run-id "$$run_id"
+	$(ATLAS_SCRIPTS) report collect --run-id "$$run_id" >/dev/null; \
+	$(ATLAS_SCRIPTS) report print --run-id "$$run_id"
 
 root-local-open: ## Open or print latest root-local summary report
 	@SUMMARY_RUN_ID="$${RUN_ID:-}" MODE=open ./ops/run/root-lanes.sh
@@ -380,15 +394,14 @@ retry: ## Retry a target with same RUN_ID (usage: make retry TARGET=<target>)
 	RUN_ID="$$run_id" QUIET="$${QUIET:-0}" $(MAKE) -s "$${TARGET}"
 
 legacy/check: ## Verify legacy inventory and policy contracts
-	@./scripts/bin/bijux-atlas-scripts run scripts/areas/layout/legacy_inventory.py
+	@$(ATLAS_SCRIPTS) run scripts/areas/layout/legacy_inventory.py
 
 cleanup/verify: ## One-time cleanup safety verification before deleting legacy paths
 	@$(MAKE) -s legacy/check scripts-check ops-contracts-check
 	@python3 ./scripts/areas/layout/check_help_snapshot.py && python3 ./scripts/areas/layout/check_no_dead_entrypoints.py && python3 ./scripts/areas/layout/check_no_orphan_docs_refs.py && python3 ./scripts/areas/layout/check_no_orphan_configs.py && python3 ./scripts/areas/layout/check_no_orphan_owners.py
 
-local: ## Deprecated alias for quick
-	@echo "[DEPRECATED] 'make local' -> 'make quick'" >&2
-	@$(MAKE) -s quick
+local: ## Developer confidence suite
+	@$(MAKE) -s root-local
 
 local-full: ## Deprecated alias for local/all
 	@echo "[DEPRECATED] 'make local-full' -> 'make local/all'" >&2
@@ -406,7 +419,7 @@ config-validate: ## Deprecated alias for configs/all
 	@echo "[DEPRECATED] 'make config-validate' -> 'make configs/all'" >&2
 	@$(MAKE) -s configs/all
 
-ci: ## Deprecated alias for ci/all
+ci: ## CI entrypoint mirror
 	@$(MAKE) -s ci/all
 
 nightly: ## Deprecated alias for nightly/all
@@ -421,13 +434,13 @@ root-local-summary: ## Print status and artifact paths for RUN_ID
 lane-status: ## Print all lane statuses for RUN_ID (or latest)
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || true)}"; \
 	[ -n "$$run_id" ] || { echo "RUN_ID is required (or run root/root-local first)" >&2; exit 2; }; \
-	./scripts/bin/bijux-atlas-scripts report print --run-id "$$run_id"
+	$(ATLAS_SCRIPTS) report print --run-id "$$run_id"
 
 open: ## Open unified report for RUN_ID (or print path if opener unavailable)
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || true)}"; \
 	[ -n "$$run_id" ] || { echo "RUN_ID is required (or run root/root-local first)" >&2; exit 2; }; \
 	path="artifacts/evidence/make/$$run_id/unified.json"; \
-	[ -f "$$path" ] || ./scripts/bin/bijux-atlas-scripts report collect --run-id "$$run_id" >/dev/null; \
+	[ -f "$$path" ] || $(ATLAS_SCRIPTS) report collect --run-id "$$run_id" >/dev/null; \
 	echo "$$path"; \
 	if command -v open >/dev/null 2>&1; then open "$$path" >/dev/null 2>&1 || true; \
 	elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$$path" >/dev/null 2>&1 || true; fi
@@ -437,15 +450,30 @@ rerun-failed: ## Rerun only failed lanes from RUN_ID (NEW_RUN_ID optional)
 	[ -n "$$src" ] || { echo "RUN_ID is required (source run id)" >&2; exit 2; }; \
 	new="$${NEW_RUN_ID:-$${src}-rerun-$(MAKE_RUN_TS)}"; \
 	PARALLEL="$${PARALLEL:-0}" MODE=rerun-failed SOURCE_RUN_ID="$$src" RUN_ID="$$new" ./ops/run/root-lanes.sh; \
-	./scripts/bin/bijux-atlas-scripts report collect --run-id "$$new" >/dev/null; \
-	./scripts/bin/bijux-atlas-scripts report print --run-id "$$new"
+	$(ATLAS_SCRIPTS) report collect --run-id "$$new" >/dev/null; \
+	$(ATLAS_SCRIPTS) report print --run-id "$$new"
+
+dev-bootstrap: ## Setup local python tooling for atlas-scripts (uv sync)
+	@if command -v uv >/dev/null 2>&1; then \
+		uv sync --project tools/bijux-atlas-scripts; \
+	else \
+		echo "uv is not installed; falling back to make scripts-install"; \
+		$(MAKE) -s scripts-install; \
+	fi
+
+make/guard-no-python-scripts: ## Guard against direct python scripts path invocation in make recipes
+	@! rg -n "python(3)?\\s+\\.?/?scripts/" makefiles/*.mk >/dev/null || { \
+		echo "direct 'python scripts/...' invocation is forbidden; use $(ATLAS_SCRIPTS) or $(PY_RUN)"; \
+		rg -n "python(3)?\\s+\\.?/?scripts/" makefiles/*.mk; \
+		exit 1; \
+	}
 
 root-determinism: ## Assert make root determinism (inventory outputs stable across two runs)
 	@./scripts/areas/layout/check_root_determinism.sh
 
 
 telemetry-contracts: ## Regenerate telemetry generated artifacts from observability contracts
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/contracts/generate_contract_artifacts.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/contracts/generate_contract_artifacts.py
 	@cargo fmt --all
 
 telemetry-verify: ## Run telemetry contract verification path (pack+smoke+contract tests)
@@ -459,7 +487,7 @@ telemetry-verify: ## Run telemetry contract verification path (pack+smoke+contra
 	fi
 
 architecture-check: ## Validate runtime architecture boundaries and dependency guardrails
-	@./scripts/bin/bijux-atlas-scripts run scripts/areas/docs/generate_architecture_map.py
+	@$(ATLAS_SCRIPTS) run scripts/areas/docs/generate_architecture_map.py
 	@if ! git diff --quiet -- docs/architecture/architecture-map.md; then \
 		echo "architecture map drift detected; regenerate docs/architecture/architecture-map.md" >&2; \
 		git --no-pager diff -- docs/architecture/architecture-map.md >&2 || true; \
@@ -493,7 +521,7 @@ policy-allow-env-lint: ## Forbid ALLOW_* escape hatches unless declared in env s
 	@./scripts/areas/public/check-allow-env-schema.py
 
 ops-policy-audit: ## Verify ops policy configs are reflected by ops make/scripts contracts
-	@./scripts/bin/bijux-atlas-scripts ops policy-audit
+	@$(ATLAS_SCRIPTS) ops policy-audit
 
 policy-drift-diff: ## Show policy contract drift between two refs (usage: make policy-drift-diff [FROM=HEAD~1 TO=HEAD])
 	@./scripts/areas/public/policy-drift-diff.sh "$${FROM:-HEAD~1}" "$${TO:-HEAD}"
@@ -507,21 +535,21 @@ release-update-compat-matrix:
 
 
 inventory: ## Regenerate inventories from bijux-atlas-scripts SSOT generators
-	@./scripts/bin/bijux-atlas-scripts inventory all --format both --out-dir docs/_generated
+	@$(ATLAS_SCRIPTS) inventory all --format both --out-dir docs/_generated
 
 verify-inventory: ## Fail if inventory outputs drift from generated state
 	@$(MAKE) -s inventory
-	@./scripts/bin/bijux-atlas-scripts inventory budgets --check --format json --dry-run >/dev/null
+	@$(ATLAS_SCRIPTS) inventory budgets --check --format json --dry-run >/dev/null
 	@git diff --exit-code -- docs/_generated/INDEX.md docs/_generated/make-targets.md docs/_generated/make-targets.json docs/_generated/ops-surface.md docs/_generated/ops-surface.json docs/_generated/configs-surface.md docs/_generated/configs-surface.json docs/_generated/schema-index.md docs/_generated/schema-index.json docs/_generated/ownership.md docs/_generated/ownership.json docs/_generated/contracts-index.md docs/_generated/contracts-index.json docs/_generated/inventory-budgets.md docs/_generated/inventory-budgets.json
 
 upgrade-guide: ## Generate make target upgrade guide for renamed/deprecated aliases
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/docs/generate_upgrade_guide.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/generate_upgrade_guide.py
 
 artifacts-index: ## Generate artifacts index for inspection UIs
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/build_artifacts_index.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/build_artifacts_index.py
 
 artifacts-clean: ## Clean old artifacts with safe retention
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/clean_artifacts.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/clean_artifacts.py
 
 isolate-clean: ## Remove isolate output directories safely
 	@find artifacts/isolate -mindepth 1 -maxdepth 1 -type d -exec rm -r {} + 2>/dev/null || true
@@ -530,11 +558,11 @@ clean: ## Safe clean for generated local outputs
 	@./ops/run/clean.sh
 
 clean-safe: ## Clean only safe generated make artifact directories
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/clean_make_artifacts.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/clean_make_artifacts.py
 
 clean-all: ## Clean all allowed generated dirs (requires CONFIRM=YES)
 	@[ "$${CONFIRM:-}" = "YES" ] || { echo "refusing clean-all without CONFIRM=YES"; exit 2; }
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/clean_make_artifacts.py --all
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/clean_make_artifacts.py --all
 
 deep-clean: ## Extended clean (prints and then removes generated outputs)
 	@printf '%s\n' 'Deleting: artifacts/isolate artifacts/scripts artifacts/perf/results artifacts/ops'
@@ -581,7 +609,7 @@ release-dry-run: ## Build + docs + ops smoke release rehearsal
 release: ## Release entrypoint (currently dry-run only)
 	@$(MAKE) release-dry-run
 makefiles-contract: ## Validate makefile contract boundaries and publication rules
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/check_makefiles_contract.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/check_makefiles_contract.py
 
 ci-workflow-contract: ## Validate CI and nightly workflows use canonical make entrypoints
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/check_ci_entrypoints.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/check_ci_entrypoints.py
