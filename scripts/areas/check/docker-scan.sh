@@ -5,4 +5,8 @@
 set -euo pipefail
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
-exec "$ROOT/docker/scripts/docker-scan.sh" "$@"
+export PYTHONPATH="$ROOT/packages/bijux-atlas-scripts/src${PYTHONPATH:+:$PYTHONPATH}"
+if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
+  exec python3 -m bijux_atlas_scripts.cli docker scan --help
+fi
+exec python3 -m bijux_atlas_scripts.cli docker scan --image "${1:-bijux-atlas:local}"
