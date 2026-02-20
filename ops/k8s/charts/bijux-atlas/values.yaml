@@ -77,6 +77,7 @@ server:
     - /app/bijux-atlas
     - atlas
     - serve
+  configSchemaVersion: v1
   startupProbePath: /readyz
   readinessProbePath: /readyz
   requestTimeoutMs: 5000

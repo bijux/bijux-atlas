@@ -23,6 +23,7 @@ store:
   credentialsSecretName: ""
 
 server:
+  configSchemaVersion: v1
   enableDebugDatasets: true
   cachedOnlyMode: false
   readinessRequiresCatalog: false

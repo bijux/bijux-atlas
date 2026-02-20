@@ -22,6 +22,7 @@ concurrency:
   heavy: 24
 
 server:
+  configSchemaVersion: v1
   readinessProbePath: /healthz/overload
   responseMaxBytes: 786432
   sqlTimeoutMs: 1200
