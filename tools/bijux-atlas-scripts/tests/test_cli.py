@@ -38,6 +38,7 @@ def test_help_for_all_commands() -> None:
         "run",
         "validate-output",
         "surface",
+        "commands",
         "doctor",
         "ops",
         "docs",

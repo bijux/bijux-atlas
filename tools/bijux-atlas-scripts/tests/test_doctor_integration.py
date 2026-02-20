@@ -6,10 +6,12 @@ import sys
 from pathlib import Path
 
 import jsonschema
+import pytest
 
 ROOT = Path(__file__).resolve().parents[3]
 
 
+@pytest.mark.integration
 def test_doctor_json_output_matches_schema() -> None:
     env = {"PYTHONPATH": str(ROOT / "tools/bijux-atlas-scripts/src")}
     proc = subprocess.run(

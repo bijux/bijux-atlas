@@ -41,6 +41,7 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(PY_RUN) scripts/areas/check/check-no-make-scripts-references.py
 	@$(PY_RUN) scripts/areas/check/check-repo-script-boundaries.py
 	@$(PY_RUN) scripts/areas/check/check-atlas-scripts-cli-contract.py
+	@$(PY_RUN) scripts/areas/check/check-scripts-surface-docs-drift.py
 	@$(PY_RUN) scripts/areas/layout/check_make_command_allowlist.py
 	@./ops/_lint/naming.sh
 	@$(PY_RUN) ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/layout/no_shadow.py
@@ -67,7 +68,7 @@ scripts-test: ## Run scripts-focused tests
 	@python3 -m unittest scripts.areas.tests.test_paths
 	@$(MAKE) -s internal/scripts/install-lock
 	@PYTHONPATH=tools/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" check tools/bijux-atlas-scripts/src tools/bijux-atlas-scripts/tests
-	@if [ -x "$(SCRIPTS_VENV)/bin/mypy" ]; then PYTHONPATH=tools/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/mypy" tools/bijux-atlas-scripts/src; else echo "mypy not installed (optional)"; fi
+	@PYTHONPATH=tools/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/mypy" --ignore-missing-imports tools/bijux-atlas-scripts/tests
 	@PYTHONPATH=tools/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/pytest" -q tools/bijux-atlas-scripts/tests
 	@$(ATLAS_SCRIPTS) validate-output --schema configs/contracts/scripts-tool-output.schema.json --file tools/bijux-atlas-scripts/tests/goldens/tool-output.example.json
 	@$(ATLAS_SCRIPTS) surface --json > artifacts/scripts/surface.json

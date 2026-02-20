@@ -54,6 +54,9 @@ def build_parser() -> argparse.ArgumentParser:
     surface_p = sub.add_parser("surface", help="print scripts command ownership surface")
     surface_p.add_argument("--json", action="store_true", help="emit JSON output")
     surface_p.add_argument("--out-file", help="optional output path for JSON report")
+    commands_p = sub.add_parser("commands", help="print machine-readable command surface")
+    commands_p.add_argument("--json", action="store_true", help="emit JSON output")
+    commands_p.add_argument("--out-file", help="optional output path for JSON report")
 
     domain_names = ("contracts", "registry", "layout")
     for name in domain_names:
@@ -111,6 +114,8 @@ def main(argv: list[str] | None = None) -> int:
             return validate_json_output(ns.schema, ns.file, ns.json)
         if ns.cmd == "surface":
             return run_surface(ns.json, ns.out_file)
+        if ns.cmd == "commands":
+            return run_surface(True, ns.out_file)
         if ns.cmd == "doctor":
             return run_doctor(ctx, ns.json, ns.out_file)
         if ns.cmd == "docs":
