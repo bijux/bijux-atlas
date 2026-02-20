@@ -1,1 +1,1 @@
-{"command": "check", "note": "unknown command", "schema_version": 1, "tool": "atlasctl", "tools": [], "touches": []}
+{"command": "check", "note": "unknown command", "run_id": "pytest-run", "schema_name": "atlasctl.explain.v1", "schema_version": 1, "status": "ok", "tool": "atlasctl", "tools": [], "touches": []}

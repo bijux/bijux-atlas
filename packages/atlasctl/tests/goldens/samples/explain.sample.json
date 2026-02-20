@@ -1,0 +1,17 @@
+{
+  "schema_name": "atlasctl.explain.v1",
+  "schema_version": 1,
+  "tool": "atlasctl",
+  "status": "ok",
+  "run_id": "sample-explain",
+  "command": "doctor",
+  "touches": [
+    "artifacts/evidence/"
+  ],
+  "tools": [
+    "python3"
+  ],
+  "failure_modes": [
+    "tooling probes unavailable"
+  ]
+}

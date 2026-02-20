@@ -38,7 +38,7 @@ def test_validate_output_failure_is_human_readable(tmp_path: Path) -> None:
     proc = _cli(
         "validate-output",
         "--schema",
-        "configs/contracts/scripts-doctor-output.schema.json",
+        "atlasctl.surface.v1",
         "--file",
         str(bad),
     )

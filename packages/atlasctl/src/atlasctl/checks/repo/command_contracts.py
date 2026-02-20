@@ -13,6 +13,10 @@ def check_command_metadata_contract(repo_root: Path) -> tuple[int, list[str]]:
             errors.append(f"{spec.name}: missing touches metadata")
         if spec.tools is None:
             errors.append(f"{spec.name}: missing tools metadata")
+        if not spec.owner:
+            errors.append(f"{spec.name}: missing owner metadata")
+        if not spec.doc_link:
+            errors.append(f"{spec.name}: missing doc_link metadata")
     if errors:
         return 1, errors
     return 0, []
@@ -54,8 +58,12 @@ def runtime_contracts_payload(repo_root: Path) -> dict[str, object]:
         checks.append({"id": cid, "status": "pass" if code == 0 else "fail", "errors": sorted(errors)})
     failed = [c for c in checks if c["status"] == "fail"]
     return {
+        "schema_name": "atlasctl.runtime_contracts.v1",
         "schema_version": 1,
         "tool": "atlasctl",
-        "status": "pass" if not failed else "fail",
-        "checks": checks,
+        "status": "ok" if not failed else "error",
+        "checks": [
+            {"id": c["id"], "status": "ok" if c["status"] == "pass" else "error", "errors": c["errors"]}
+            for c in checks
+        ],
     }

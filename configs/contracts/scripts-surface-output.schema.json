@@ -1,10 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
-  "required": ["schema_version", "commands", "path_owners"],
+  "required": ["schema_name", "schema_version", "tool", "status", "run_id", "commands", "path_owners"],
   "additionalProperties": false,
   "properties": {
+    "schema_name": {"const": "atlasctl.surface.v1"},
     "schema_version": {"type": "integer", "minimum": 1},
+    "tool": {"const": "atlasctl"},
+    "status": {"enum": ["ok", "error"]},
+    "run_id": {"type": "string", "minLength": 1},
     "commands": {
       "type": "array",
       "minItems": 1,
