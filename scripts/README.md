@@ -45,12 +45,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/fixtures/fetch-real-datasets.sh` | `dataset-ops` | `public` | `fetch-real-datasets` |
 | `scripts/areas/fixtures/run-medium-ingest.sh` | `dataset-ops` | `public` | `ingest-sharded-medium`, `run-medium-ingest` |
 | `scripts/areas/fixtures/run-medium-serve.sh` | `dataset-ops` | `public` | `run-medium-serve` |
-| `scripts/areas/internal/effects-lint.sh` | `platform` | `internal` | - |
-| `scripts/areas/internal/env_dump.sh` | `platform` | `internal` | - |
-| `scripts/areas/internal/exec.sh` | `platform` | `internal` | - |
-| `scripts/areas/internal/naming-intent-lint.sh` | `platform` | `internal` | - |
-| `scripts/areas/internal/openapi-generate.sh` | `platform` | `internal` | - |
-| `scripts/areas/internal/repo_root.sh` | `platform` | `internal` | - |
 | `scripts/areas/layout/allowed_root.json` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/build_artifacts_index.py` | `repo-surface` | `public` | `artifacts-index` |
 | `scripts/areas/layout/build_run_artifact_index.py` | `repo-surface` | `public` | `ops-artifacts-index-run` |
@@ -182,11 +176,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/layout/validate_ops_contracts.py` | `repo-surface` | `public` | `ops-contracts-check`, `ops-gen`, `ops-k8s-contracts` |
 | `scripts/areas/layout/validate_ops_env.py` | `repo-surface` | `public` | `ops-env-print`, `ops-env-validate` |
 | `scripts/areas/layout/write_make_area_report.py` | `repo-surface` | `public` | - |
-| `scripts/areas/ops/check_k8s_checks_layout.py` | `platform` | `public` | - |
-| `scripts/areas/ops/check_k8s_flakes.py` | `platform` | `public` | `ops-k8s-tests` |
-| `scripts/areas/ops/check_k8s_test_contract.py` | `platform` | `public` | `ops-k8s-tests` |
-| `scripts/areas/ops/check_k8s_test_lib.py` | `platform` | `public` | - |
-| `scripts/areas/ops/generate_k8s_test_surface.py` | `platform` | `public` | - |
 | `scripts/areas/policy/find_relaxations.sh` | `platform` | `internal` | - |
 | `scripts/areas/public/check-allow-env-schema.py` | `platform` | `public` | `policy-allow-env-lint` |
 | `scripts/areas/public/check-cli-commands.sh` | `platform` | `public` | `cli-command-surface` |
