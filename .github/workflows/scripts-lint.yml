@@ -1,44 +1,31 @@
-name: scripts-lint
+name: repo-hygiene
 
 on:
   pull_request:
     paths:
-      - 'scripts/**'
-      - 'ops/load/scripts/**'
-      - 'makefiles/**'
       - '.github/workflows/scripts-lint.yml'
-  push:
-    branches: [ master ]
-    paths:
-      - 'scripts/**'
-      - 'ops/load/scripts/**'
       - 'makefiles/**'
+      - 'packages/bijux-atlas-scripts/**'
+      - 'docs/**'
+      - 'configs/**'
+      - 'ops/**'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/scripts-lint.yml'
+      - 'makefiles/**'
+      - 'packages/bijux-atlas-scripts/**'
+      - 'docs/**'
+      - 'configs/**'
+      - 'ops/**'
 
 jobs:
-  lint:
+  gate:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-      - name: Cache scripts Python environment
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/pip
-            artifacts/isolate/py/scripts/.venv
-          key: scripts-py-${{ runner.os }}-${{ hashFiles('packages/bijux-atlas-scripts/requirements.lock.txt', 'packages/bijux-atlas-scripts/pyproject.toml') }}
-      - name: Install shellcheck
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y shellcheck
-      - name: Install scripts python environment
-        run: |
-          make scripts-install
-      - name: Scripts lint and gate
-        run: |
-          make scripts-lint
-      - name: Legacy scripts references gate
-        run: |
-          ./bin/bijux-atlas --quiet legacy check --report text
+      - name: Enforce atlasctl migration gate
+        run: ./bin/atlasctl --quiet migration gate
+      - name: Enforce atlasctl repo hygiene
+        run: ./bin/atlasctl --quiet check repo
