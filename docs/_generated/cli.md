@@ -21,6 +21,7 @@ Top-level namespaces:
 - load
 - obs
 - report
+- lint
 - contracts
 - registry
 - layout
