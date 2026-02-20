@@ -42,6 +42,7 @@
 - `commands --json`
 
 See `packages/atlasctl/PUBLIC_API.md` for current boundaries.
+See `packages/atlasctl/ARCHITECTURE.md` and `docs/atlasctl/BOUNDARIES.md` for architecture SSOT and hard boundary policies.
 
 ## Scripts Migration Plan
 - Inventory source of truth: `docs/_generated/scripts-migration.json` and `docs/_generated/scripts-migration.md`.
