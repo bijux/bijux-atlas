@@ -43,17 +43,15 @@ if make_root.exists():
         if lane:
             lanes[lane] = json.loads(report_path.read_text(encoding="utf-8"))
 
-# Backfill with legacy lane reports under ops/_generated/<lane>/<run_id>/report.json.
+# Merge lane reports from evidence directories only.
 evidence_root = root / "artifacts/evidence"
 for lane_dir in sorted(p for p in evidence_root.iterdir() if p.is_dir()):
     lane = lane_dir.name
     if lane == "make":
         continue
     candidate = lane_dir / run_id / "report.json"
-    legacy = lane_dir / f"{run_id}.json"
-    f = candidate if candidate.exists() else legacy
-    if f.exists() and lane not in lanes:
-        lanes[lane] = json.loads(f.read_text(encoding="utf-8"))
+    if candidate.exists() and lane not in lanes:
+        lanes[lane] = json.loads(candidate.read_text(encoding="utf-8"))
 
 summary = {
     "total": len(lanes),

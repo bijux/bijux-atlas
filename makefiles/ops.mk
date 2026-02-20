@@ -406,9 +406,6 @@ ops-stack-security-check: ## Validate stack security defaults (no privileged con
 	fi; \
 	echo "stack security defaults check passed"
 
-ops-stack-uninstall: ## Uninstall stack resources and cluster
-	@./ops/stack/scripts/uninstall.sh
-
 ops-stack-slow-store: ## Enable slow-store mode via toxiproxy latency
 	@ATLAS_E2E_ENABLE_TOXIPROXY=1 $(MAKE) ops-stack-up
 	@./ops/stack/toxiproxy/enable_slow_store.sh
@@ -532,9 +529,7 @@ ops-deploy: ## Deploy atlas chart into local cluster (PROFILE=local|offline|perf
 	./ops/run/deploy-atlas.sh
 
 ops-undeploy: ## Uninstall atlas helm release from namespace
-	@ns="$${ATLAS_E2E_NAMESPACE:-$${ATLAS_NS:-atlas-e2e}}"; \
-	release="$${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"; \
-	helm -n "$$ns" uninstall "$$release" >/dev/null 2>&1 || true
+	@./ops/run/undeploy.sh
 
 ops-clean-uninstall: ## Uninstall and assert no resources left
 	@./ops/k8s/scripts/clean_uninstall.sh
