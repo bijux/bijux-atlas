@@ -1072,12 +1072,13 @@ ops-baseline-policy-check: ## Enforce explicit approval policy for baseline upda
 	@./ops/load/scripts/check_baseline_update_policy.sh
 
 ops-perf-baseline-update: ## Update named baseline from artifacts/perf/baseline.json (requires approval for commit)
-	@./ops/load/scripts/update_baseline.sh "$${ATLAS_PERF_BASELINE_PROFILE:-local}"
+	@PERF_BASELINE_UPDATE_FLOW=1 ./ops/load/scripts/update_baseline.sh "$${ATLAS_PERF_BASELINE_PROFILE:-local}"
 
 ops-load-manifest-validate: ## Validate load suite SSOT, naming conventions, and pinned query lock
 	@./ops/load/scripts/validate_suite_manifest.py
 	@python3 ./ops/load/scripts/check_abuse_scenarios_required.py
 	@./ops/load/scripts/check_runbook_suite_names.py
+	@python3 ./ops/load/scripts/check_perf_baselines.py
 
 ops-perf-suite: ## Perf helper: run an arbitrary perf suite (SCENARIO=<file.js> OUT=<dir>)
 	@[ -n "$$SCENARIO" ] || { echo "usage: make ops-perf-suite SCENARIO=<file.js> [OUT=artifacts/perf/results]" >&2; exit 2; }

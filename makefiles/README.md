@@ -69,6 +69,10 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 - `make configs/all`: Config schema + drift lane.
 - `make configs/check`: Config schema + drift checks.
 - `make budgets/check`: Universal budget SSOT + relaxation expiry checks.
+- `make perf/baseline-update`: Run smoke suite, update baseline, produce diff summary and changelog.
+- `make perf/regression-check`: Compare current perf p95 against baseline budget.
+- `make perf/triage`: Print top regressions by suite/endpoint.
+- `make perf/compare FROM=<id> TO=<id>`: Compare two evidence perf runs.
 - `make policies/all`: deny/audit/policy-relaxations lane.
 - `make policies/check`: deny/audit/policy-relaxations checks.
 - `make policies/boundaries-check`: enforce e2e layer-boundary lints and exception expiry checks.
