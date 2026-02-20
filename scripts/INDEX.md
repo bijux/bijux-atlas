@@ -184,8 +184,10 @@ Generated file. Do not edit manually.
 | `scripts/layout/check_duplicate_script_intent.py` | `repo-surface` | `public` | `scripts-lint` |
 | `scripts/layout/check_e2e_scenarios.py` | `repo-surface` | `public` | `ops-e2e-validate` |
 | `scripts/layout/check_e2e_suites.py` | `repo-surface` | `public` | `ops-e2e-validate` |
+| `scripts/layout/check_evidence_not_tracked.py` | `repo-surface` | `public` | `layout-check` |
 | `scripts/layout/check_forbidden_root_files.sh` | `repo-surface` | `public` | `layout-check` |
 | `scripts/layout/check_forbidden_root_names.sh` | `repo-surface` | `public` | `layout-check` |
+| `scripts/layout/check_generated_committed_no_timestamp_dirs.py` | `repo-surface` | `public` | `layout-check` |
 | `scripts/layout/check_generated_dirs_policy.py` | `repo-surface` | `public` | `layout-check` |
 | `scripts/layout/check_generated_policy.py` | `repo-surface` | `public` | `ops-contracts-check` |
 | `scripts/layout/check_help_excludes_internal.py` | `repo-surface` | `public` | - |
@@ -209,6 +211,7 @@ Generated file. Do not edit manually.
 | `scripts/layout/check_obs_script_name_collisions.py` | `repo-surface` | `public` | `ops-observability-validate` |
 | `scripts/layout/check_obs_suites.py` | `repo-surface` | `public` | `ops-contracts-check` |
 | `scripts/layout/check_ops_artifacts_writes.py` | `repo-surface` | `public` | `layout-check`, `ops-layout-lint` |
+| `scripts/layout/check_ops_budgets.py` | `repo-surface` | `public` | - |
 | `scripts/layout/check_ops_canonical_entrypoints.py` | `repo-surface` | `public` | `ops-contracts-check` |
 | `scripts/layout/check_ops_canonical_shims.sh` | `repo-surface` | `public` | `layout-check` |
 | `scripts/layout/check_ops_concept_ownership.py` | `repo-surface` | `public` | `layout-check`, `ops-layout-lint` |
@@ -255,6 +258,9 @@ Generated file. Do not edit manually.
 | `scripts/layout/clean_make_artifacts.py` | `repo-surface` | `public` | `clean-all`, `clean-safe` |
 | `scripts/layout/clean_ops_generated.py` | `repo-surface` | `public` | `ops-gen-clean` |
 | `scripts/layout/dataset_id_lint.py` | `repo-surface` | `public` | `dataset-id-lint` |
+| `scripts/layout/evidence_check.py` | `repo-surface` | `public` | - |
+| `scripts/layout/evidence_clean.py` | `repo-surface` | `public` | - |
+| `scripts/layout/evidence_pr_summary.py` | `repo-surface` | `public` | - |
 | `scripts/layout/explain_public_target.py` | `repo-surface` | `public` | `explain` |
 | `scripts/layout/generate_ops_pins.py` | `repo-surface` | `public` | `ops-gen` |
 | `scripts/layout/generate_ops_stack_versions.py` | `repo-surface` | `public` | `ops-stack-versions-sync` |
