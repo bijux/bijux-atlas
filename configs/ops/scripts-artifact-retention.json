@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "scripts_retention_days": 14,
+  "scripts_keep_last_runs": 20,
+  "scripts_keep_reports_days": 30
+}

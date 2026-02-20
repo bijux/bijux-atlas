@@ -19,7 +19,7 @@ from .docs.command import configure_docs_parser, run_docs_command
 from .doctor import run_doctor
 from .domain_cmd import register_domain_parser, render_payload
 from .domain_cmd import registry as command_registry
-from .env.command import configure_env_parser, run_env_command
+from .env.command import clean_scripts_artifacts, configure_env_parser, run_env_command
 from .errors import ScriptError
 from .exit_codes import ERR_CONFIG, ERR_INTERNAL
 from .gates.command import configure_gates_parser, run_gates_command
@@ -108,6 +108,10 @@ def build_parser() -> argparse.ArgumentParser:
     completion_p = sub.add_parser("completion", help="emit shell completion stub")
     completion_p.add_argument("shell", choices=["bash", "zsh", "fish"])
     completion_p.add_argument("--json", action="store_true", help="emit JSON output")
+
+    clean_p = sub.add_parser("clean", help="clean scripts artifacts under approved roots only")
+    clean_p.add_argument("--older-than-days", type=int)
+    clean_p.add_argument("--json", action="store_true", help="emit JSON output")
 
     return p
 
@@ -271,6 +275,13 @@ def main(argv: list[str] | None = None) -> int:
                 print(json.dumps(payload, sort_keys=True))
             else:
                 print(f"# completion for {ns.shell} is not yet generated; use `bijux-atlas help --json`")
+            return 0
+        if ns.cmd == "clean":
+            payload = clean_scripts_artifacts(ctx, ns.older_than_days)
+            if as_json or ns.json:
+                print(json.dumps(payload, sort_keys=True))
+            else:
+                print(f"removed={len(payload.get('removed', []))}")
             return 0
         if ns.cmd == "run":
             if ns.dry_run:
