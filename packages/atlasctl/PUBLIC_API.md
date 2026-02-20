@@ -8,6 +8,9 @@
 - `bijux-atlas validate-output`
 - Domain commands: `ops`, `docs`, `configs`, `policies`, `make`, `inventory`, `contracts`, `registry`, `layout`, `report`
 
+## Exported Python Symbols
+- `atlasctl.__version__`
+
 ## Internal Modules
 - `atlasctl.core`: run context, structured logging, filesystem evidence policy, schema helpers.
 - `atlasctl.contracts`: contract validation helpers and schema-facing utilities.

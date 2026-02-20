@@ -5,6 +5,9 @@ from .legacy_native import (
     check_duplicate_script_names,
     check_forbidden_top_dirs,
     check_no_executable_python_outside_packages,
+    check_no_direct_bash_invocations,
+    check_no_direct_python_invocations,
+    check_no_adhoc_python,
     check_no_ops_generated_placeholder,
     check_no_xtask_refs,
     check_ops_examples_immutable,
@@ -21,12 +24,16 @@ from .command_contracts import (
     check_no_duplicate_command_names,
 )
 from .scripts_dir import check_scripts_dir_absent
+from .public_api import check_public_api_exports
 
 CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.forbidden_top_dirs", "repo", "forbid top-level forbidden directories", 500, check_forbidden_top_dirs, fix_hint="Remove forbidden root directories."),
     CheckDef("repo.docs_no_ops_generated_refs", "repo", "disallow docs refs to ops generated runtime paths", 800, check_docs_no_ops_generated_run_paths, fix_hint="Replace generated runtime paths with canonical docs references."),
     CheckDef("repo.no_xtask_refs", "repo", "forbid xtask references", 1000, check_no_xtask_refs, fix_hint="Remove xtask references and use atlasctl workflows."),
     CheckDef("repo.no_exec_python_outside_packages", "repo", "forbid executable python outside package boundaries", 1500, check_no_executable_python_outside_packages, fix_hint="Move script into package module or remove executable bit."),
+    CheckDef("repo.no_direct_python_invocations", "repo", "forbid direct python script calls in docs/makefiles", 1000, check_no_direct_python_invocations, fix_hint="Use atlasctl command entrypoints instead of python path/to/script.py."),
+    CheckDef("repo.no_direct_bash_invocations", "repo", "forbid direct bash script calls in docs/makefiles", 1000, check_no_direct_bash_invocations, fix_hint="Use atlasctl commands instead of bash scripts/... invocations."),
+    CheckDef("repo.no_adhoc_python", "repo", "forbid ad-hoc python files outside package boundaries", 1200, check_no_adhoc_python, fix_hint="Migrate ad-hoc python files into package modules."),
     CheckDef("repo.no_tracked_ops_generated", "repo", "ensure ops/_generated has no tracked files", 1000, check_ops_generated_tracked, fix_hint="Untrack generated files and add to ignore policy."),
     CheckDef("repo.no_ops_generated_placeholder", "repo", "forbid placeholder generated dirs", 400, check_no_ops_generated_placeholder, fix_hint="Remove placeholder generated files/directories."),
     CheckDef("repo.ops_examples_immutable", "repo", "enforce immutability of ops examples", 800, check_ops_examples_immutable, fix_hint="Restore example fixtures to committed canonical content."),
@@ -39,4 +46,5 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.command_metadata_contract", "repo", "ensure command metadata includes touches/tools", 400, check_command_metadata_contract, fix_hint="Add touches/tools metadata in cli registry."),
     CheckDef("repo.no_duplicate_command_names", "repo", "ensure command names are unique", 300, check_no_duplicate_command_names, fix_hint="Rename duplicate command/alias entries."),
     CheckDef("repo.command_help_docs_drift", "repo", "check command help/docs drift", 500, check_command_help_docs_drift, fix_hint="Regenerate docs/_generated/cli.md from current CLI surface."),
+    CheckDef("repo.public_api_exports", "repo", "enforce PUBLIC_API.md coverage for __all__ exports", 300, check_public_api_exports, fix_hint="Document exported symbols in PUBLIC_API.md or remove them from __all__."),
 )

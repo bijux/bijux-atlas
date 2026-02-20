@@ -172,6 +172,27 @@ def check_make_forbidden_paths(repo_root: Path) -> tuple[int, list[str]]:
     return (0 if not errors else 1), errors
 
 
+def check_make_no_direct_python_script_invocations(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    makefiles = [repo_root / "Makefile", *sorted((repo_root / "makefiles").glob("*.mk"))]
+    direct_py_path_re = re.compile(r"\bpython3?\s+([^\s`]+\.py)\b")
+    allowed_module_re = re.compile(r"\bpython3?\s+-m\s+atlasctl(?:\b|$)")
+    for mk in makefiles:
+        lines = mk.read_text(encoding="utf-8", errors="ignore").splitlines()
+        for idx, line in enumerate(lines, start=1):
+            if not line.startswith("\t"):
+                continue
+            if not direct_py_path_re.search(line):
+                continue
+            if allowed_module_re.search(line):
+                continue
+            rel = mk.relative_to(repo_root).as_posix()
+            if _find_python_migration_exception(repo_root, "makefiles_direct_python", rel, line) is not None:
+                continue
+            errors.append(f"{rel}:{idx}: direct `python path/to/script.py` invocation is forbidden in Makefiles")
+    return (0 if not errors else 1), errors
+
+
 def _git_ls_files(repo_root: Path, pathspecs: list[str]) -> list[str]:
     cmd = ["git", "ls-files", "--", *pathspecs]
     proc = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)

@@ -36,3 +36,9 @@ def run_atlasctl(*args: str, cwd: Path | None = None, evidence_root: Path | None
             capture_output=True,
             check=False,
         )
+
+
+def run_atlasctl_isolated(tmp_path: Path, *args: str, cwd: Path | None = None) -> subprocess.CompletedProcess[str]:
+    evidence_root = tmp_path / "evidence"
+    evidence_root.mkdir(parents=True, exist_ok=True)
+    return run_atlasctl(*args, cwd=cwd, evidence_root=evidence_root)
