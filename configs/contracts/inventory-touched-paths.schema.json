@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Touched Paths Inventory",
+  "type": "object",
+  "required": [
+    "kind",
+    "command",
+    "paths"
+  ],
+  "properties": {
+    "kind": {
+      "const": "touched-paths"
+    },
+    "command": {
+      "type": "string"
+    },
+    "paths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false
+}

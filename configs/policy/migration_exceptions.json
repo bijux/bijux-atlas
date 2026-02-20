@@ -1,0 +1,11 @@
+{
+  "exceptions": [
+    {
+      "id": "MIG-001",
+      "owner": "atlas-devex",
+      "expiry": "2026-03-31",
+      "reason": "Temporary allowance while scripts/ callsites are still being rewritten natively in atlasctl.",
+      "allow_remaining": 9999
+    }
+  ]
+}

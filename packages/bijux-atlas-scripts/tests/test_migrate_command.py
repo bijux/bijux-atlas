@@ -37,7 +37,6 @@ def test_migrate_layout_runs_sequence(monkeypatch, tmp_path: Path) -> None:
         return Dummy()
 
     monkeypatch.setattr("bijux_atlas_scripts.migrate.command.subprocess.run", fake_run)
-    ns = argparse.Namespace(migrate_cmd="layout")
+    ns = argparse.Namespace(migrate_cmd="layout", json=False)
     assert run_migrate_command(_ctx(tmp_path), ns) == 0
     assert calls and calls[0][:2] == ["bash", "scripts/areas/internal/migrate_paths.sh"]
-

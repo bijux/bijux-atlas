@@ -39,11 +39,43 @@ def _validate(category: str, payload: dict[str, object]) -> None:
 
 
 def test_inventory_json_categories_schema_valid() -> None:
-    for category in ("make", "ops", "configs", "schemas", "owners", "contracts", "budgets", "scripts-migration"):
+    for category in (
+        "make",
+        "ops",
+        "configs",
+        "schemas",
+        "owners",
+        "contracts",
+        "budgets",
+        "scripts-migration",
+        "legacy-scripts",
+        "commands",
+    ):
         proc = _run_inventory(category)
         assert proc.returncode == 0, proc.stderr
         payload = json.loads(proc.stdout)
         _validate(category, payload)
+
+
+def test_inventory_touched_paths_is_deterministic() -> None:
+    env = {"PYTHONPATH": str(ROOT / "packages/bijux-atlas-scripts/src")}
+    cmd = [
+        sys.executable,
+        "-m",
+        "bijux_atlas_scripts.cli",
+        "inventory",
+        "touched-paths",
+        "--command",
+        "check",
+        "--format",
+        "json",
+        "--dry-run",
+    ]
+    first = subprocess.run(cmd, cwd=ROOT, env=env, text=True, capture_output=True, check=False)
+    second = subprocess.run(cmd, cwd=ROOT, env=env, text=True, capture_output=True, check=False)
+    assert first.returncode == 0, first.stderr
+    assert second.returncode == 0, second.stderr
+    assert first.stdout == second.stdout
 
 
 def test_inventory_budgets_check_passes() -> None:

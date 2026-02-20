@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Command Inventory",
+  "type": "object",
+  "required": [
+    "kind",
+    "commands",
+    "count"
+  ],
+  "properties": {
+    "kind": {
+      "const": "commands"
+    },
+    "commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "help",
+          "stable"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "help": {
+            "type": "string"
+          },
+          "stable": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "additionalProperties": false
+}
