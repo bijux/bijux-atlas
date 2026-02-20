@@ -126,7 +126,7 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(ATLAS_SCRIPTS) check ownership
 	@$(PY_RUN) scripts/areas/check/check-script-shims-minimal.py
 	@$(ATLAS_SCRIPTS) check python-lock
-	@$(PY_RUN) scripts/areas/check/check-scripts-lock-sync.py
+	@$(ATLAS_SCRIPTS) check scripts-lock-sync
 	@$(PY_RUN) scripts/areas/check/check-no-adhoc-python.py
 	@$(ATLAS_SCRIPTS) check make-scripts-refs
 	@$(PY_RUN) scripts/areas/check/check-repo-script-boundaries.py
@@ -162,7 +162,7 @@ internal/scripts/sbom: ## Emit scripts package dependency SBOM JSON
 
 internal/scripts/lock-check:
 	@$(ATLAS_SCRIPTS) check python-lock
-	@$(PY_RUN) scripts/areas/check/check-scripts-lock-sync.py
+	@$(ATLAS_SCRIPTS) check scripts-lock-sync
 
 packages-lock: ## Refresh python lockfile deterministically from requirements.in
 	@python3 -c 'from pathlib import Path; src=Path("packages/bijux-atlas-scripts/requirements.in"); dst=Path("packages/bijux-atlas-scripts/requirements.lock.txt"); lines=[ln.strip() for ln in src.read_text(encoding="utf-8").splitlines() if ln.strip() and not ln.strip().startswith("#")]; dst.write_text("\\n".join(sorted(set(lines)))+"\\n", encoding="utf-8"); print(f"updated {dst}")'

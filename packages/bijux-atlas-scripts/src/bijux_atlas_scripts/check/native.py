@@ -598,6 +598,28 @@ def check_python_lock(repo_root: Path) -> tuple[int, list[str]]:
     return (0 if not errors else 1), errors
 
 
+def check_scripts_lock_sync(repo_root: Path) -> tuple[int, list[str]]:
+    cfg = json.loads((repo_root / "configs/scripts/python-tooling.json").read_text(encoding="utf-8"))
+    errors: list[str] = []
+    if cfg.get("toolchain") != "pip-tools":
+        errors.append("python tooling SSOT must declare toolchain=pip-tools")
+        return 1, errors
+    lockfile = repo_root / str(cfg["lockfile"])
+    if not lockfile.exists():
+        return 1, [f"missing lockfile: {lockfile}"]
+    pyproject = repo_root / "packages/bijux-atlas-scripts/pyproject.toml"
+    text = pyproject.read_text(encoding="utf-8")
+    match = re.search(r"\[project\.optional-dependencies\]\s*dev\s*=\s*\[(?P<body>.*?)\]", text, re.S)
+    if not match:
+        return 1, ["unable to parse [project.optional-dependencies].dev from pyproject.toml"]
+    expected = sorted(re.findall(r'"([^"]+)"', match.group("body")))
+    lines = [ln.strip() for ln in lockfile.read_text(encoding="utf-8").splitlines() if ln.strip() and not ln.startswith("#")]
+    locked = sorted(lines)
+    if expected != locked:
+        return 1, [f"scripts lock drift: expected={expected} locked={locked}"]
+    return 0, []
+
+
 def check_root_bin_shims(repo_root: Path) -> tuple[int, list[str]]:
     bin_dir = repo_root / "bin"
     if not bin_dir.exists():

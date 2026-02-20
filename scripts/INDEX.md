@@ -26,7 +26,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/check/check-script-shims-minimal.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-script-tool-guards.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-script-write-roots.py` | `platform` | `public` | - |
-| `scripts/areas/check/check-scripts-lock-sync.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-scripts-ssot-final.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-scripts-surface-docs-drift.py` | `platform` | `public` | - |
 | `scripts/areas/check/generate-scripts-sbom.py` | `platform` | `public` | - |
