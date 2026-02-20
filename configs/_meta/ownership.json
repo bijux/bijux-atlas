@@ -4,6 +4,7 @@
     "configs/coverage": "platform",
     "configs/docs": "docs-governance",
     "configs/layout": "platform",
+    "configs/meta": "platform",
     "configs/make": "platform",
     "configs/nextest": "platform",
     "configs/openapi": "api-contracts",

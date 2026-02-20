@@ -4,6 +4,7 @@
 # Outputs: scripts/README.md, scripts/INDEX.md, docs/_generated/scripts-surface.md.
 from pathlib import Path
 import fnmatch
+import json
 import re
 
 
@@ -21,6 +22,7 @@ AREAS = SCRIPTS / "areas"
 OUT_README = SCRIPTS / "README.md"
 OUT_INDEX = SCRIPTS / "INDEX.md"
 OUT_SURFACE = ROOT / "docs/_generated/scripts-surface.md"
+OWNERSHIP = ROOT / "configs/meta/ownership.json"
 
 owner_map = {
     "contracts": "contracts",
@@ -33,6 +35,7 @@ owner_map = {
     "fixtures": "dataset-ops",
     "bootstrap": "developer-experience",
 }
+tooling_owners = json.loads(OWNERSHIP.read_text(encoding="utf-8"))
 
 files = sorted(
     p
@@ -114,6 +117,13 @@ surface_lines = [
     "## Public scripts/bin entrypoints",
     "",
 ]
+surface_lines.extend(["## Python Tool Commands", "", "| Command | Owner |", "|---|---|"])
+for cmd, owner in sorted(tooling_owners["commands"].items()):
+    surface_lines.append(f"| `{cmd}` | `{owner}` |")
+surface_lines.extend(["", "## Python Tool Paths", "", "| Path | Owner |", "|---|---|"])
+for rel, owner in sorted(tooling_owners["paths"].items()):
+    surface_lines.append(f"| `{rel}` | `{owner}` |")
+surface_lines.append("")
 for p in sorted((SCRIPTS / "bin").glob("*")):
     if p.is_file():
         surface_lines.append(f"- `{p.relative_to(ROOT).as_posix()}`")

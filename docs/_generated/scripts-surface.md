@@ -6,8 +6,31 @@ Scripts are internal unless listed in `configs/ops/public-surface.json` or `scri
 
 ## Public scripts/bin entrypoints
 
+## Python Tool Commands
+
+| Command | Owner |
+|---|---|
+| `bijux-atlas-scripts doctor` | `bijux-atlas-platform` |
+| `bijux-atlas-scripts run` | `bijux-atlas-platform` |
+| `bijux-atlas-scripts surface` | `bijux-atlas-platform` |
+| `bijux-atlas-scripts validate-output` | `bijux-atlas-platform` |
+
+## Python Tool Paths
+
+| Path | Owner |
+|---|---|
+| `scripts/bin/bijux-atlas-dev` | `bijux-atlas-platform` |
+| `scripts/bin/bijux-atlas-ops` | `bijux-atlas-operations` |
+| `scripts/bin/bijux-atlas-scripts` | `bijux-atlas-platform` |
+| `scripts/bin/isolate` | `bijux-atlas-platform` |
+| `scripts/bin/require-isolate` | `bijux-atlas-platform` |
+| `scripts/bin/run_drill.sh` | `bijux-atlas-operations` |
+| `tools/bijux_atlas_scripts/src/bijux_atlas_scripts` | `bijux-atlas-platform` |
+| `tools/bijux_atlas_scripts/tests` | `bijux-atlas-platform` |
+
 - `scripts/bin/bijux-atlas-dev`
 - `scripts/bin/bijux-atlas-ops`
+- `scripts/bin/bijux-atlas-scripts`
 - `scripts/bin/isolate`
 - `scripts/bin/require-isolate`
 - `scripts/bin/run_drill.sh`
