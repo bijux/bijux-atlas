@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import difflib
 import json
 import re
 import subprocess
@@ -231,6 +232,123 @@ def _scan_grep_relaxations(repo_root: Path, out_path: Path) -> dict[str, object]
     return payload
 
 
+def _policy_schema_drift(repo_root: Path) -> tuple[int, list[str]]:
+    schema_path = repo_root / "configs/policy/policy.schema.json"
+    config_path = repo_root / "configs/policy/policy.json"
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    required = set(schema.get("required", []))
+    config_keys = set(config.keys())
+    errs: list[str] = []
+    if required != config_keys:
+        missing = sorted(required - config_keys)
+        extra = sorted(config_keys - required)
+        errs.append(f"policy schema drift: required/config keys mismatch; missing={missing} extra={extra}")
+    if schema.get("additionalProperties", True):
+        errs.append("policy schema drift: top-level additionalProperties must be false")
+    canonical = json.dumps(schema, indent=2, sort_keys=True) + "\n"
+    if schema_path.read_text(encoding="utf-8") != canonical:
+        errs.append("policy schema drift: schema file is not canonical (run formatter/regenerate)")
+    return (0 if not errs else 1), errs
+
+
+def _policy_allow_env_lint(repo_root: Path) -> tuple[int, list[str]]:
+    schema = repo_root / "configs/ops/env.schema.json"
+    declared = set(json.loads(schema.read_text(encoding="utf-8")).get("variables", {}).keys())
+    allow_pattern = re.compile(r"\b(?:ATLAS_ALLOW_[A-Z0-9_]+|ALLOW_NON_KIND)\b")
+    rg = subprocess.run(
+        ["rg", "-n", r"\b(?:ATLAS_ALLOW_[A-Z0-9_]+|ALLOW_NON_KIND)\b", "crates", "scripts", "makefiles", ".github", "docs"],
+        cwd=repo_root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    violations: list[str] = []
+    for line in rg.stdout.splitlines():
+        parts = line.split(":", 2)
+        if len(parts) < 3:
+            continue
+        path, line_no, text = parts
+        for token in allow_pattern.findall(text):
+            if token not in declared:
+                violations.append(f"{path}:{line_no}: undeclared ALLOW var `{token}`")
+    return (0 if not violations else 1), sorted(set(violations))
+
+
+def _policy_enforcement_status(repo_root: Path, enforce: bool) -> tuple[int, list[str], str]:
+    coverage = repo_root / "configs/policy/policy-enforcement-coverage.json"
+    out = repo_root / "docs/_generated/policy-enforcement-status.md"
+    data = json.loads(coverage.read_text(encoding="utf-8"))
+    hard = set(data.get("hard_policies", []))
+    rows = []
+    violations: list[str] = []
+    covered_hard = 0
+    total_hard = len(hard)
+    for policy in data.get("policies", []):
+        pid = str(policy.get("id", "")).strip()
+        pass_test = str(policy.get("pass_test", "")).strip()
+        fail_test = str(policy.get("fail_test", "")).strip()
+        is_hard = bool(policy.get("hard", False)) or pid in hard
+        pass_ok = bool(pass_test) and subprocess.run(
+            ["rg", "-n", "--fixed-strings", pass_test, "crates", "scripts", "makefiles", "docs"],
+            cwd=repo_root,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        ).returncode == 0
+        fail_ok = bool(fail_test) and subprocess.run(
+            ["rg", "-n", "--fixed-strings", fail_test, "crates", "scripts", "makefiles", "docs"],
+            cwd=repo_root,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        ).returncode == 0
+        status = "PASS" if pass_ok and fail_ok else "FAIL"
+        if is_hard and status == "PASS":
+            covered_hard += 1
+        if not pass_ok:
+            violations.append(f"{pid}: missing pass test reference `{pass_test}`")
+        if not fail_ok:
+            violations.append(f"{pid}: missing fail test reference `{fail_test}`")
+        if pass_test == fail_test:
+            violations.append(f"{pid}: pass/fail tests must be distinct")
+        rows.append((pid, "hard" if is_hard else "soft", pass_test, fail_test, status))
+    hard_percent = 100 if total_hard == 0 else int((covered_hard / total_hard) * 100)
+    lines = [
+        "# Policy Enforcement Status",
+        "",
+        "- Owner: `atlas-platform`",
+        "- Generated from: `configs/policy/policy-enforcement-coverage.json`",
+        f"- Hard policy coverage: `{covered_hard}/{total_hard}` (`{hard_percent}%`)",
+        "",
+        "| Policy | Class | Pass Test | Fail Test | Status |",
+        "| --- | --- | --- | --- | --- |",
+    ]
+    for pid, klass, p, f, status in sorted(rows, key=lambda r: r[0]):
+        lines.append(f"| `{pid}` | `{klass}` | `{p}` | `{f}` | `{status}` |")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    if enforce and hard_percent < 100:
+        violations.append("hard policy coverage must be 100%")
+    return (0 if not (enforce and violations) else 1), violations, out.relative_to(repo_root).as_posix()
+
+
+def _policy_drift_diff(repo_root: Path, from_ref: str, to_ref: str) -> str:
+    paths = [
+        "configs/policy/policy.json",
+        "configs/policy/policy.schema.json",
+        "configs/policy/policy-relaxations.json",
+        "configs/policy/policy-enforcement-coverage.json",
+        "docs/contracts/POLICY_SCHEMA.json",
+    ]
+    out_lines: list[str] = []
+    for p in paths:
+        out_lines.append(f"### {p}: {from_ref}..{to_ref}")
+        proc = subprocess.run(["git", "diff", "--", from_ref, to_ref, "--", p], cwd=repo_root, text=True, capture_output=True, check=False)
+        out_lines.append((proc.stdout or "").rstrip())
+    return "\n".join(out_lines).rstrip() + "\n"
+
+
 def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     repo = ctx.repo_root
 
@@ -319,6 +437,32 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         else:
             print(out_path.as_posix())
         return 0
+    if ns.policies_cmd == "schema-drift":
+        code, errs = _policy_schema_drift(repo)
+        if code == 0:
+            print("policy schema drift check passed")
+        else:
+            for err in errs:
+                print(err)
+        return code
+    if ns.policies_cmd == "allow-env-lint":
+        code, violations = _policy_allow_env_lint(repo)
+        if code == 0:
+            print("allow-env schema lint passed")
+        else:
+            for v in violations:
+                print(f"allow-env violation: {v}")
+        return code
+    if ns.policies_cmd == "enforcement-status":
+        code, violations, out = _policy_enforcement_status(repo, bool(getattr(ns, "enforce", False)))
+        print(f"wrote {out}")
+        if violations and getattr(ns, "enforce", False):
+            for v in violations:
+                print(f"policy-enforcement violation: {v}")
+        return code
+    if ns.policies_cmd == "drift-diff":
+        print(_policy_drift_diff(repo, ns.from_ref, ns.to_ref), end="")
+        return 0
 
     return 2
 
@@ -354,3 +498,10 @@ def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
     grep_scan = ps.add_parser("scan-grep-relaxations", help="scan code surfaces for policy-relaxation grep markers")
     grep_scan.add_argument("--out", help="output JSON path", default="artifacts/policy/relaxations-grep.json")
     grep_scan.add_argument("--report", choices=["text", "json"], default="text")
+    ps.add_parser("schema-drift", help="detect drift between policy config keys and schema")
+    ps.add_parser("allow-env-lint", help="forbid ALLOW_* vars unless declared in env schema")
+    enf = ps.add_parser("enforcement-status", help="validate policy enforcement coverage and generate status doc")
+    enf.add_argument("--enforce", action="store_true")
+    diff = ps.add_parser("drift-diff", help="diff policy contracts between two refs")
+    diff.add_argument("--from-ref", default="HEAD~1")
+    diff.add_argument("--to-ref", default="HEAD")

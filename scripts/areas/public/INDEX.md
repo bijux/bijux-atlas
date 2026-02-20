@@ -3,7 +3,6 @@
 Scripts in this area.
 
 - README.md
-- check-allow-env-schema.py
 - check-cli-commands.sh
 - check-markdown-links.sh
 - config-drift-check.py
@@ -49,10 +48,7 @@ Scripts in this area.
 - perf/validate_results.py
 - perf/validate_suite_manifest.py
 - policy-audit.py
-- policy-drift-diff.sh
-- policy-enforcement-status.py
 - policy-lint.sh
-- policy-schema-drift.py
 - qc-fixtures-gate.sh
 - query-plan-gate.sh
 - report-bundle.sh

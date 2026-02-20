@@ -143,7 +143,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/layout/validate_ops_contracts.py` | `repo-surface` | `public` | `ops-contracts-check`, `ops-gen`, `ops-k8s-contracts` |
 | `scripts/areas/layout/validate_ops_env.py` | `repo-surface` | `public` | `ops-env-print`, `ops-env-validate` |
 | `scripts/areas/layout/write_make_area_report.py` | `repo-surface` | `public` | - |
-| `scripts/areas/public/check-allow-env-schema.py` | `platform` | `public` | `policy-allow-env-lint` |
 | `scripts/areas/public/check-cli-commands.sh` | `platform` | `public` | `cli-command-surface` |
 | `scripts/areas/public/check-markdown-links.sh` | `platform` | `public` | `_lint-docs`, `docs-build` |
 | `scripts/areas/public/config-drift-check.py` | `platform` | `public` | - |
@@ -189,10 +188,7 @@ Generated file. Do not edit manually.
 | `scripts/areas/public/perf/validate_results.py` | `platform` | `public` | - |
 | `scripts/areas/public/perf/validate_suite_manifest.py` | `platform` | `public` | - |
 | `scripts/areas/public/policy-audit.py` | `platform` | `public` | `policy-audit` |
-| `scripts/areas/public/policy-drift-diff.sh` | `platform` | `public` | `policy-drift-diff` |
-| `scripts/areas/public/policy-enforcement-status.py` | `platform` | `public` | `policy-enforcement-status` |
 | `scripts/areas/public/policy-lint.sh` | `platform` | `public` | `_lint-configs`, `policy-lint` |
-| `scripts/areas/public/policy-schema-drift.py` | `platform` | `public` | `policy-schema-drift` |
 | `scripts/areas/public/qc-fixtures-gate.sh` | `platform` | `public` | `ci-qc-fixtures` |
 | `scripts/areas/public/query-plan-gate.sh` | `platform` | `public` | `query-plan-gate` |
 | `scripts/areas/public/report-bundle.sh` | `platform` | `public` | `ops-report` |
