@@ -73,16 +73,16 @@ def test_doctor_json_schema_valid() -> None:
 
 
 def test_domain_json_contract() -> None:
-    proc = _run_cli("--run-id", "t2", "--profile", "test", "ops", "--json")
+    proc = _run_cli("--run-id", "t2", "--profile", "test", "configs", "--json")
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
-    assert payload["domain"] == "ops"
+    assert payload["domain"] == "configs"
     assert payload["tool"] == "bijux-atlas-scripts"
     assert payload["run_id"] == "t2"
 
 
 def test_out_file_policy_rejects_ops_path() -> None:
-    proc = _run_cli("ops", "--json", "--out-file", "ops/_evidence/forbidden.json")
+    proc = _run_cli("configs", "--json", "--out-file", "ops/_evidence/forbidden.json")
     assert proc.returncode == 16
     assert "forbidden write path" in proc.stderr
 
