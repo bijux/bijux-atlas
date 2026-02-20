@@ -129,8 +129,11 @@ def _write_payload_if_requested(ctx: RunContext, out_file: str | None, payload: 
 
 def _commands_payload() -> dict[str, object]:
     return {
+        "schema_name": "atlasctl.commands.v1",
         "schema_version": 1,
         "tool": "atlasctl",
+        "status": "ok",
+        "run_id": "",
         "commands": [
             {
                 "name": c.name,
@@ -139,6 +142,8 @@ def _commands_payload() -> dict[str, object]:
                 "touches": list(c.touches),
                 "tools": list(c.tools),
                 "failure_modes": list(c.failure_modes),
+                "owner": c.owner,
+                "doc_link": c.doc_link,
             }
             for c in sorted(command_registry(), key=lambda c: c.name)
         ],
@@ -156,9 +161,11 @@ def _ensure_scripts_artifact_root(ctx: RunContext) -> Path:
 def _emit_runtime_contracts(ctx: RunContext, cmd: str, argv: list[str] | None) -> None:
     root = _ensure_scripts_artifact_root(ctx)
     write_roots = {
+        "schema_name": "atlasctl.runtime_contracts.v1",
         "schema_version": 1,
         "tool": "atlasctl",
         "run_id": ctx.run_id,
+        "status": "ok",
         "allowed_write_roots": [str(ctx.evidence_root), str(root), str(root / "reports"), str(root / "logs")],
         "forbidden_roots": [str(ctx.repo_root / p) for p in ("ops", "docs", "configs", "makefiles", "crates")],
     }
@@ -204,6 +211,8 @@ def main(argv: list[str] | None = None) -> int:
     raw_argv = argv if argv is not None else sys.argv[1:]
     p = build_parser()
     ns = p.parse_args(argv)
+    if ns.format and "--json" in raw_argv and ns.format != "json":
+        raise ScriptError("conflicting output flags: use either --format json or --json", ERR_CONFIG)
     if ns.cwd:
         os.chdir(ns.cwd)
     if ns.no_network and no_network_flag_expired(date.today(), NO_NETWORK_FLAG_EXPIRY):
@@ -264,7 +273,8 @@ def main(argv: list[str] | None = None) -> int:
             return 0 if payload["status"] == "ok" else ERR_CONFIG
         if ns.cmd == "help":
             payload = _commands_payload()
-            rendered = json.dumps(payload, sort_keys=True) if ns.json else json.dumps(payload, indent=2, sort_keys=True)
+            payload["schema_name"] = "atlasctl.help.v1"
+            payload["run_id"] = ctx.run_id
             rendered = dumps_json(payload, pretty=not ns.json)
             if ns.out_file:
                 _write_payload_if_requested(ctx, ns.out_file, rendered)
@@ -273,8 +283,11 @@ def main(argv: list[str] | None = None) -> int:
         if ns.cmd == "explain":
             desc = _import_attr("atlasctl.commands.explain", "describe_command")(ns.command)
             payload = {
+                "schema_name": "atlasctl.explain.v1",
                 "schema_version": 1,
                 "tool": "atlasctl",
+                "status": "ok",
+                "run_id": ctx.run_id,
                 "command": ns.command,
                 **desc,
             }
@@ -324,7 +337,13 @@ def main(argv: list[str] | None = None) -> int:
         if ns.cmd == "surface":
             return run_surface(ns.json, ns.out_file, ctx)
         if ns.cmd == "commands":
-            return run_surface(True, ns.out_file, ctx)
+            payload = _commands_payload()
+            payload["run_id"] = ctx.run_id
+            rendered = dumps_json(payload, pretty=not ns.json)
+            if ns.out_file:
+                _write_payload_if_requested(ctx, ns.out_file, rendered)
+            print(rendered)
+            return 0
         if ns.cmd == "doctor":
             return _import_attr("atlasctl.commands.doctor", "run_doctor")(ctx, ns.json, ns.out_file)
         if ns.cmd == "docs":

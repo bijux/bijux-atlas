@@ -41,10 +41,11 @@ def render_error(*, as_json: bool, message: str, code: int) -> str:
     if as_json:
         return dumps_json(
             {
+                "schema_name": "atlasctl.error.v1",
                 "schema_version": 1,
                 "tool": "atlasctl",
-                "status": "fail",
-                "error": {"message": message, "code": code},
+                "status": "error",
+                "errors": [{"code": code, "message": message}],
             },
             pretty=False,
         )
