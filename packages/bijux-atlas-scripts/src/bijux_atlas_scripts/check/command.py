@@ -8,6 +8,7 @@ from ..core.context import RunContext
 from ..lint.runner import run_suite
 from .native import (
     check_committed_generated_hygiene,
+    check_make_command_allowlist,
     check_duplicate_script_names,
     check_make_forbidden_paths,
     check_make_help,
@@ -130,6 +131,15 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         else:
             print("committed generated directories contain deterministic assets only")
         return code
+    if sub == "make-command-allowlist":
+        code, errors = check_make_command_allowlist(ctx.repo_root)
+        if errors:
+            print("make command allowlist check failed:")
+            for err in errors[:200]:
+                print(f"- {err}")
+        else:
+            print("make command allowlist check passed")
+        return code
     return 2
 
 
@@ -155,3 +165,4 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
         "committed-generated-hygiene",
         help="fail on runtime/timestamped artifacts in committed generated directories",
     )
+    p_sub.add_parser("make-command-allowlist", help="enforce direct make recipe command allowlist")

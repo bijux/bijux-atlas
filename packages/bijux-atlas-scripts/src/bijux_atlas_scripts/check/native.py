@@ -185,3 +185,75 @@ def check_committed_generated_hygiene(repo_root: Path) -> tuple[int, list[str]]:
         if any(rel.endswith(sfx) for sfx in forbidden_suffixes):
             errors.append(f"runtime/log artifact in committed generated area: {rel}")
     return (0 if not errors else 1), errors
+
+
+def _load_make_command_allowlist(repo_root: Path) -> list[str]:
+    allowlist = repo_root / "configs/layout/make-command-allowlist.txt"
+    if not allowlist.exists():
+        return []
+    return [
+        ln.strip()
+        for ln in allowlist.read_text(encoding="utf-8").splitlines()
+        if ln.strip() and not ln.lstrip().startswith("#")
+    ]
+
+
+def _first_recipe_token(cmd: str) -> str:
+    line = cmd.strip()
+    while True:
+        match = re.match(r"^[A-Za-z_][A-Za-z0-9_]*=(?:\"[^\"]*\"|'[^']*'|[^\s]+)\s+", line)
+        if not match:
+            break
+        line = line[match.end() :].lstrip()
+    if not line:
+        return ""
+    return line.split()[0]
+
+
+def check_make_command_allowlist(repo_root: Path) -> tuple[int, list[str]]:
+    allow = _load_make_command_allowlist(repo_root)
+    if not allow:
+        return 1, ["missing allowlist: configs/layout/make-command-allowlist.txt"]
+    makefiles = [repo_root / "Makefile", *sorted((repo_root / "makefiles").glob("*.mk"))]
+    skip_prefixes = ("if ", "for ", "while ", "case ", "{ ", "(", "then", "else", "fi", "do", "done")
+    skip_tokens = {"\\", "-u", "-n", "-c", "-", "exit", "trap", "done;", "then", "fi;", "do"}
+    violations: list[str] = []
+    for mk in makefiles:
+        continued = False
+        phony_block = False
+        for idx, raw in enumerate(mk.read_text(encoding="utf-8").splitlines(), start=1):
+            if not raw.startswith("\t"):
+                continued = False
+                phony_block = raw.strip().startswith(".PHONY:")
+                continue
+            if phony_block:
+                phony_block = raw.rstrip().endswith("\\")
+                continue
+            if continued:
+                continued = raw.rstrip().endswith("\\")
+                continue
+            cmd = raw.lstrip()[1:].strip() if raw.lstrip().startswith("@") else raw.strip()
+            continued = raw.rstrip().endswith("\\")
+            if not cmd or cmd.startswith("#") or cmd.startswith("-"):
+                continue
+            if "$$(" in cmd or "|" in cmd:
+                continue
+            if ":?" in cmd:
+                continue
+            if any(cmd.startswith(prefix) for prefix in skip_prefixes):
+                continue
+            tok = _first_recipe_token(cmd)
+            if not tok:
+                continue
+            if tok in skip_tokens:
+                continue
+            if tok.startswith("./") or tok.startswith('"') or tok.startswith("'"):
+                continue
+            if tok.startswith("$(") or tok.startswith("$${") or tok.startswith('"$('):
+                continue
+            if not re.fullmatch(r"[A-Za-z0-9_.+-]+", tok):
+                continue
+            if any(tok == item or tok.startswith(item) for item in allow):
+                continue
+            violations.append(f"{mk.relative_to(repo_root)}:{idx}: disallowed recipe command `{tok}`")
+    return (0 if not violations else 1), violations

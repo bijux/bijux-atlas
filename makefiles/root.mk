@@ -52,7 +52,7 @@ doctor: ## Run package doctor diagnostics
 	@$(SCRIPTS) doctor
 
 make/command-allowlist: ## Enforce direct-make command allowlist (cargo/docker/helm/kubectl/k6)
-	@$(SCRIPTS) run ./scripts/areas/layout/check_make_command_allowlist.py
+	@$(SCRIPTS) check make-command-allowlist
 
 config-print: ## Print canonical merged config payload as JSON
 	@$(ATLAS_SCRIPTS) configs print
@@ -149,22 +149,24 @@ report: ## Build unified report and print one-screen summary
 	$(SCRIPTS) report print --run-id "$$run_id"
 
 evidence/open: ## Open evidence directory (supports AREA=<area> RUN_ID=<id>)
-	@./ops/run/evidence-open.sh
+	@$(ATLAS_SCRIPTS) artifacts open
 
 evidence/clean: ## Clean evidence directories using retention policy
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/evidence_clean.py
+	@$(ATLAS_SCRIPTS) report artifact-gc
 
 evidence-gc: ## Enforce evidence retention policy
-	@$(PY_RUN) scripts/areas/layout/evidence_clean.py
+	@$(ATLAS_SCRIPTS) report artifact-gc
 
 evidence/check: ## Validate evidence JSON schema contract for generated outputs
 	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/evidence_check.py
 
 evidence/bundle: ## Export latest evidence bundle as tar.zst for CI attachments
-	@./ops/run/evidence-bundle.sh
+	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
+	$(ATLAS_SCRIPTS) report bundle --run-id "$$run_id"
 
 evidence/pr-summary: ## Generate PR markdown summary from latest evidence unified report
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/evidence_pr_summary.py
+	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
+	$(ATLAS_SCRIPTS) report pr-summary --run-id "$$run_id"
 
 artifacts-open: ## Open latest ops artifact bundle/report directory
 	@$(call with_iso,artifacts-open,$(MAKE) -s ops-artifacts-open)
