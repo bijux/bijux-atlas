@@ -13,6 +13,15 @@ from ..core.fs import ensure_evidence_path
 from ..core.process import run_command
 from ..core.tooling import read_pins, read_tool_versions
 
+_CONFIG_KEY_PATTERN = re.compile(r"^[A-Z][A-Z0-9_]*$")
+
+
+def normalize_config_key(key: str) -> str:
+    normalized = key.strip().replace("-", "_").upper()
+    if not _CONFIG_KEY_PATTERN.match(normalized):
+        raise ValueError(f"invalid config key: {key}")
+    return normalized
+
 
 def _run(cmd: list[str], repo_root: Path) -> tuple[int, str]:
     res = run_command(cmd, repo_root)
@@ -136,7 +145,12 @@ def _config_drift(repo_root: Path) -> tuple[int, str]:
         keys = _read_json(repo_root, "docs/contracts/CONFIG_KEYS.json").get("env_keys", [])
         text = key_doc.read_text(encoding="utf-8")
         for key in keys:
-            if f"`{key}`" not in text:
+            try:
+                normalized_key = normalize_config_key(str(key))
+            except ValueError as exc:
+                errors.append(str(exc))
+                continue
+            if f"`{normalized_key}`" not in text:
                 errors.append(f"config key registry missing `{key}`")
                 break
     if errors:

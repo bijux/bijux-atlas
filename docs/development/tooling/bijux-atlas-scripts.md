@@ -21,6 +21,22 @@
 - `make scripts-test`
 - `./scripts/bin/bijux-atlas-scripts inventory scripts-migration --format both --out-dir docs/_generated`
 
+### Command Surface
+- `doctor`
+- `configs print`
+- `configs drift`
+- `configs validate`
+- `configs check`
+- `ops lint`
+- `ops check`
+- `make help`
+- `make list`
+- `inventory all`
+- `report collect`
+- `compat list`
+- `compat check`
+- `commands --json`
+
 See `tools/bijux-atlas-scripts/PUBLIC_API.md` for current boundaries.
 
 ## Scripts Migration Plan
