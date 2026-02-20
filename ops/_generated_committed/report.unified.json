@@ -1,25 +1,238 @@
 {
-  "schema_version": 1,
-  "run_id": "root-local-20260219T000000Z",
-  "generated_at": "2026-02-19T00:00:00+00:00",
+  "budget_status": {
+    "checked": 5,
+    "failed": 0,
+    "failed_lanes": [],
+    "near_failing": []
+  },
+  "generated_at": "2026-02-20T01:44:05.784090+00:00",
   "lanes": {
-    "rust": {
-      "lane": "rust",
-      "run_id": "root-local-20260219T000000Z",
-      "status": "pass",
-      "duration_seconds": 120,
-      "log": "ops/_generated/rust/root-local-20260219T000000Z.log"
+    "cargo-fmt": {
+      "artifact_paths": [
+        "artifacts/isolate/cargo-fmt/dx-noops-smoke-test",
+        "ops/_evidence/make/cargo-fmt/dx-noops-smoke-test/run.log",
+        "ops/_evidence/make/cargo-fmt/dx-noops-smoke-test/report.json"
+      ],
+      "budget_status": null,
+      "duration_seconds": 100.0,
+      "ended_at": "2026-02-20T01:43:27Z",
+      "failure_summary": "",
+      "lane": "cargo-fmt",
+      "log": "ops/_evidence/make/cargo-fmt/dx-noops-smoke-test/run.log",
+      "repro_command": "",
+      "run_id": "dx-noops-smoke-test",
+      "started_at": "2026-02-20T01:41:47Z",
+      "status": "pass"
+    },
+    "cargo-lint": {
+      "artifact_paths": [
+        "artifacts/isolate/cargo-lint/dx-noops-smoke-test",
+        "ops/_evidence/make/cargo-lint/dx-noops-smoke-test/run.log",
+        "ops/_evidence/make/cargo-lint/dx-noops-smoke-test/report.json"
+      ],
+      "budget_status": null,
+      "duration_seconds": 32.0,
+      "ended_at": "2026-02-20T01:43:59Z",
+      "failure_summary": "@@ -240,6 +242,7 @@ Generated file. Do not edit manually.  | `scripts/layout/check_root_diff_alarm.py` | `repo-surface` | `public` | - |  | `scripts/layout/check_root_local_lane_isolation.py` | `repo-surface` | `public` | - |  | `scripts/layout/check_root_makefile_hygiene.py` | `repo-surface` | `public` | - | +| `scripts/layout/check_root_mk_size_budget.py` | `repo-surface` | `public` | - |  | `scripts/layout/check_root_no_cargo_dev_deps.py` | `repo-surface` | `public` | - |  | `scripts/layout/check_root_shape.sh` | `repo-surface` | `public` | `layout-check` |  | `scripts/layout/check_script_naming_convention.py` | `repo-surface` | `public` | `scripts-lint` | @@ -269,7 +272,7 @@ Generated file. Do not edit manually.  | `scripts/layout/list_internal_targets.py` | `repo-surface` | `public` | `internal-list` |  | `scripts/layout/make_doctor.py` | `repo-surface` | `public` | `doctor` |  | `scripts/layout/make_prereqs.py` | `repo-surface` | `public` | `prereqs` | -| `scripts/layout/make_report.py` | `repo-surface` | `public` | `report` | +| `scripts/layout/make_report.py` | `repo-surface` | `public` | `report`, `triage` |  | `scripts/layout/make_target_graph.py` | `repo-surface` | `public` | - |  | `scripts/layout/migrate.sh` | `repo-surface` | `public` | `layout-migrate` |  | `scripts/layout/public_make_targets.py` | `repo-surface` | `public` | - | make[5]: *** [_lint-configs] Error 1 make[4]: *** [_lint] Error 2 make[3]: *** [lint] Error 2 ",
+      "lane": "cargo-lint",
+      "log": "ops/_evidence/make/cargo-lint/dx-noops-smoke-test/run.log",
+      "repro_command": "",
+      "run_id": "dx-noops-smoke-test",
+      "started_at": "2026-02-20T01:43:27Z",
+      "status": "fail"
+    },
+    "docs-check": {
+      "artifact_paths": [
+        "artifacts/isolate/docs-check/dx-noops-smoke-test",
+        "ops/_evidence/make/docs-check/dx-noops-smoke-test/run.log",
+        "ops/_evidence/make/docs-check/dx-noops-smoke-test/report.json"
+      ],
+      "budget_status": null,
+      "duration_seconds": 1.0,
+      "ended_at": "2026-02-20T01:44:00Z",
+      "failure_summary": "",
+      "lane": "docs-check",
+      "log": "ops/_evidence/make/docs-check/dx-noops-smoke-test/run.log",
+      "repro_command": "",
+      "run_id": "dx-noops-smoke-test",
+      "started_at": "2026-02-20T01:43:59Z",
+      "status": "pass"
+    },
+    "lane-cargo": {
+      "artifact_paths": [
+        "artifacts/isolate/lane-cargo/dx-noops-smoke-test",
+        "ops/_evidence/make/root-local/dx-noops-smoke-test/lane-cargo.log",
+        "ops/_evidence/make/lane-cargo/dx-noops-smoke-test/report.json"
+      ],
+      "budget_status": {
+        "checked": true,
+        "detail": "132.00s <= 2400.00s",
+        "duration_seconds": 132.0,
+        "lane": "lane-cargo",
+        "max_seconds": 2400,
+        "near_failing": false,
+        "status": "pass",
+        "warning_ratio": 0.9
+      },
+      "duration_seconds": 132.0,
+      "ended_at": "2026-02-20T01:43:59Z",
+      "failure_summary": "make[2]: *** [cargo/lint] Error 1 make[1]: *** [lane-cargo] Error 2 ",
+      "lane": "lane-cargo",
+      "log": "ops/_evidence/make/root-local/dx-noops-smoke-test/lane-cargo.log",
+      "repro_command": "make repro TARGET=lane-cargo RUN_ID=dx-noops-smoke-test",
+      "run_id": "dx-noops-smoke-test",
+      "started_at": "2026-02-20T01:41:47Z",
+      "status": "fail"
+    },
+    "lane-configs-policies": {
+      "artifact_paths": [
+        "artifacts/isolate/lane-configs-policies/dx-noops-smoke-test",
+        "ops/_evidence/make/root-local/dx-noops-smoke-test/lane-configs-policies.log",
+        "ops/_evidence/make/lane-configs-policies/dx-noops-smoke-test/report.json"
+      ],
+      "budget_status": {
+        "checked": true,
+        "detail": "3.00s <= 900.00s",
+        "duration_seconds": 3.0,
+        "lane": "lane-configs-policies",
+        "max_seconds": 900,
+        "near_failing": false,
+        "status": "pass",
+        "warning_ratio": 0.9
+      },
+      "duration_seconds": 3.0,
+      "ended_at": "2026-02-20T01:44:05Z",
+      "failure_summary": "make[1]: *** [lane-configs-policies] Error 1 ",
+      "lane": "lane-configs-policies",
+      "log": "ops/_evidence/make/root-local/dx-noops-smoke-test/lane-configs-policies.log",
+      "repro_command": "make repro TARGET=lane-configs-policies RUN_ID=dx-noops-smoke-test",
+      "run_id": "dx-noops-smoke-test",
+      "started_at": "2026-02-20T01:44:02Z",
+      "status": "fail"
+    },
+    "lane-docs": {
+      "artifact_paths": [
+        "artifacts/isolate/lane-docs/dx-noops-smoke-test",
+        "ops/_evidence/make/root-local/dx-noops-smoke-test/lane-docs.log",
+        "ops/_evidence/make/lane-docs/dx-noops-smoke-test/report.json"
+      ],
+      "budget_status": {
+        "checked": true,
+        "detail": "1.00s <= 900.00s",
+        "duration_seconds": 1.0,
+        "lane": "lane-docs",
+        "max_seconds": 900,
+        "near_failing": false,
+        "status": "pass",
+        "warning_ratio": 0.9
+      },
+      "duration_seconds": 1.0,
+      "ended_at": "2026-02-20T01:44:00Z",
+      "failure_summary": "",
+      "lane": "lane-docs",
+      "log": "ops/_evidence/make/root-local/dx-noops-smoke-test/lane-docs.log",
+      "repro_command": "make repro TARGET=lane-docs RUN_ID=dx-noops-smoke-test",
+      "run_id": "dx-noops-smoke-test",
+      "started_at": "2026-02-20T01:43:59Z",
+      "status": "pass"
+    },
+    "lane-ops": {
+      "artifact_paths": [
+        "artifacts/isolate/lane-ops/dx-noops-smoke-test",
+        "ops/_evidence/make/root-local/dx-noops-smoke-test/lane-ops.log",
+        "ops/_evidence/make/lane-ops/dx-noops-smoke-test/report.json"
+      ],
+      "budget_status": {
+        "checked": true,
+        "detail": "0.00s <= 1200.00s",
+        "duration_seconds": 0.0,
+        "lane": "lane-ops",
+        "max_seconds": 1200,
+        "near_failing": false,
+        "status": "pass",
+        "warning_ratio": 0.9
+      },
+      "duration_seconds": 0.0,
+      "ended_at": "2026-02-20T01:44:00Z",
+      "failure_summary": "make[2]: *** [ops/check] Error 1 make[1]: *** [lane-ops] Error 2 ",
+      "lane": "lane-ops",
+      "log": "ops/_evidence/make/root-local/dx-noops-smoke-test/lane-ops.log",
+      "repro_command": "make repro TARGET=lane-ops RUN_ID=dx-noops-smoke-test",
+      "run_id": "dx-noops-smoke-test",
+      "started_at": "2026-02-20T01:44:00Z",
+      "status": "fail"
+    },
+    "lane-scripts": {
+      "artifact_paths": [
+        "artifacts/isolate/lane-scripts/dx-noops-smoke-test",
+        "ops/_evidence/make/root-local/dx-noops-smoke-test/lane-scripts.log",
+        "ops/_evidence/make/lane-scripts/dx-noops-smoke-test/report.json"
+      ],
+      "budget_status": {
+        "checked": true,
+        "detail": "2.00s <= 900.00s",
+        "duration_seconds": 2.0,
+        "lane": "lane-scripts",
+        "max_seconds": 900,
+        "near_failing": false,
+        "status": "pass",
+        "warning_ratio": 0.9
+      },
+      "duration_seconds": 2.0,
+      "ended_at": "2026-02-20T01:44:02Z",
+      "failure_summary": "",
+      "lane": "lane-scripts",
+      "log": "ops/_evidence/make/root-local/dx-noops-smoke-test/lane-scripts.log",
+      "repro_command": "make repro TARGET=lane-scripts RUN_ID=dx-noops-smoke-test",
+      "run_id": "dx-noops-smoke-test",
+      "started_at": "2026-02-20T01:44:00Z",
+      "status": "pass"
+    },
+    "ops-check": {
+      "artifact_paths": [
+        "artifacts/isolate/ops-check/dx-noops-smoke-test",
+        "ops/_evidence/make/ops-check/dx-noops-smoke-test/run.log",
+        "ops/_evidence/make/ops-check/dx-noops-smoke-test/report.json"
+      ],
+      "budget_status": null,
+      "duration_seconds": 0.0,
+      "ended_at": "2026-02-20T01:44:00Z",
+      "failure_summary": "{'ts':'2026-02-20T01:44:00.360268+00:00','level':'info','event':'entrypoint.start','msg':'ops-check','run_id':'atlas-ops-20260220-014147','artifact_dir':'artifacts/ops/atlas-ops-20260220-014147'} kind version ok: v0.31.0 kubectl version ok: v1.35.1 helm version ok: v3.18.3 k6 version ok: v1.6.1 make[4]: *** [ops-check] Error 1 ======================================== MAKE FAILURE: ops/check ======================================== make[3]: *** [internal/ops/check] Error 1 ",
+      "lane": "ops-check",
+      "log": "ops/_evidence/make/ops-check/dx-noops-smoke-test/run.log",
+      "repro_command": "",
+      "run_id": "dx-noops-smoke-test",
+      "started_at": "2026-02-20T01:44:00Z",
+      "status": "fail"
+    },
+    "scripts-check": {
+      "artifact_paths": [
+        "artifacts/isolate/scripts-check/dx-noops-smoke-test",
+        "ops/_evidence/make/scripts-check/dx-noops-smoke-test/run.log",
+        "ops/_evidence/make/scripts-check/dx-noops-smoke-test/report.json"
+      ],
+      "budget_status": null,
+      "duration_seconds": 1.0,
+      "ended_at": "2026-02-20T01:44:02Z",
+      "failure_summary": "",
+      "lane": "scripts-check",
+      "log": "ops/_evidence/make/scripts-check/dx-noops-smoke-test/run.log",
+      "repro_command": "",
+      "run_id": "dx-noops-smoke-test",
+      "started_at": "2026-02-20T01:44:01Z",
+      "status": "pass"
     }
   },
-  "summary": {
-    "total": 1,
-    "passed": 1,
-    "failed": 0
+  "perf_summary": {
+    "p95_max_ms": 0.0,
+    "p99_max_ms": 0.0,
+    "suite_count": 0
   },
-  "budget_status": {
-    "checked": 1,
-    "failed": 0,
-    "near_failing": [],
-    "failed_lanes": []
+  "run_id": "dx-noops-smoke-test",
+  "schema_version": 1,
+  "summary": {
+    "failed": 5,
+    "passed": 5,
+    "total": 10
   }
 }

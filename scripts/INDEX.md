@@ -29,9 +29,9 @@ Generated file. Do not edit manually.
 | `scripts/bin/require-isolate` | `platform` | `public` | `_audit`, `_bench-db-size-growth`, `_bench-ingest-throughput-medium`, `_bench-sqlite-query-latency`, `_check`, `_coverage`, `_fmt`, `_lint-clippy`, `_lint-configs`, `_lint-docs`, `_lint-rustfmt`, `_test`, `_test-all`, `_test-contracts`, `audit`, `bench-db-size-growth`, `bench-ingest-throughput-medium`, `bench-smoke`, `bench-sqlite-query-latency`, `check`, `cli-command-surface`, `coverage`, `crate-docs-contract`, `crate-structure`, `fmt`, `lint`, `test`, `test-all`, `test-contracts` |
 | `scripts/bootstrap/install_tools.sh` | `developer-experience` | `public` | `bootstrap-tools` |
 | `scripts/check/check-bin-entrypoints.py` | `platform` | `public` | `scripts-lint` |
-| `scripts/check/check-docker-layout.py` | `platform` | `public` | - |
-| `scripts/check/check-docker-policy.py` | `platform` | `public` | - |
-| `scripts/check/check-no-latest-tags.py` | `platform` | `public` | - |
+| `scripts/check/check-docker-layout.py` | `platform` | `public` | `docker-contracts` |
+| `scripts/check/check-docker-policy.py` | `platform` | `public` | `docker-contracts` |
+| `scripts/check/check-no-latest-tags.py` | `platform` | `public` | `docker-contracts` |
 | `scripts/check/check-python-lock.py` | `platform` | `public` | `scripts-check`, `scripts-lint` |
 | `scripts/check/check-script-errors.py` | `platform` | `public` | `scripts-check`, `scripts-lint` |
 | `scripts/check/check-script-help.py` | `platform` | `public` | `scripts-check`, `scripts-lint` |
@@ -72,7 +72,7 @@ Generated file. Do not edit manually.
 | `scripts/contracts/format_contracts.py` | `contracts` | `internal` | - |
 | `scripts/contracts/gen_openapi.py` | `contracts` | `internal` | - |
 | `scripts/contracts/generate_chart_values_schema.py` | `contracts` | `public` | `chart-validate`, `ops-gen`, `ops-values-validate` |
-| `scripts/contracts/generate_contract_artifacts.py` | `contracts` | `public` | `telemetry-contracts` |
+| `scripts/contracts/generate_contract_artifacts.py` | `contracts` | `public` | - |
 | `scripts/demo/demo.sh` | `platform` | `private` | - |
 | `scripts/docs/ban_legacy_terms.sh` | `docs-governance` | `public` | `docs-build`, `docs-lint-names` |
 | `scripts/docs/check-durable-naming.py` | `docs-governance` | `public` | `rename-lint` |
@@ -144,6 +144,7 @@ Generated file. Do not edit manually.
 | `scripts/docs/generate_scripts_graph.py` | `docs-governance` | `public` | `scripts-graph` |
 | `scripts/docs/generate_sli_doc.py` | `docs-governance` | `public` | `ci-sli-docs-drift` |
 | `scripts/docs/generate_slos_doc.py` | `docs-governance` | `public` | `ci-slo-docs-drift` |
+| `scripts/docs/generate_upgrade_guide.py` | `docs-governance` | `public` | `upgrade-guide` |
 | `scripts/docs/legacy-terms-allowlist.txt` | `docs-governance` | `public` | - |
 | `scripts/docs/lint_depth.py` | `docs-governance` | `public` | `docs-build` |
 | `scripts/docs/lint_doc_contracts.py` | `docs-governance` | `public` | `docs-build` |
@@ -191,6 +192,7 @@ Generated file. Do not edit manually.
 | `scripts/layout/check_generated_dirs_policy.py` | `repo-surface` | `public` | `layout-check` |
 | `scripts/layout/check_generated_policy.py` | `repo-surface` | `public` | `ops-contracts-check` |
 | `scripts/layout/check_help_excludes_internal.py` | `repo-surface` | `public` | - |
+| `scripts/layout/check_help_output_determinism.py` | `repo-surface` | `public` | - |
 | `scripts/layout/check_internal_targets_not_in_docs.py` | `repo-surface` | `public` | - |
 | `scripts/layout/check_kind_cluster_contract_drift.sh` | `repo-surface` | `public` | `ops-kind-cluster-drift-check` |
 | `scripts/layout/check_make_lane_reports.py` | `repo-surface` | `public` | - |
@@ -240,6 +242,7 @@ Generated file. Do not edit manually.
 | `scripts/layout/check_root_diff_alarm.py` | `repo-surface` | `public` | - |
 | `scripts/layout/check_root_local_lane_isolation.py` | `repo-surface` | `public` | - |
 | `scripts/layout/check_root_makefile_hygiene.py` | `repo-surface` | `public` | - |
+| `scripts/layout/check_root_mk_size_budget.py` | `repo-surface` | `public` | - |
 | `scripts/layout/check_root_no_cargo_dev_deps.py` | `repo-surface` | `public` | - |
 | `scripts/layout/check_root_shape.sh` | `repo-surface` | `public` | `layout-check` |
 | `scripts/layout/check_script_naming_convention.py` | `repo-surface` | `public` | `scripts-lint` |
@@ -269,7 +272,7 @@ Generated file. Do not edit manually.
 | `scripts/layout/list_internal_targets.py` | `repo-surface` | `public` | `internal-list` |
 | `scripts/layout/make_doctor.py` | `repo-surface` | `public` | `doctor` |
 | `scripts/layout/make_prereqs.py` | `repo-surface` | `public` | `prereqs` |
-| `scripts/layout/make_report.py` | `repo-surface` | `public` | `report` |
+| `scripts/layout/make_report.py` | `repo-surface` | `public` | `report`, `triage` |
 | `scripts/layout/make_target_graph.py` | `repo-surface` | `public` | - |
 | `scripts/layout/migrate.sh` | `repo-surface` | `public` | `layout-migrate` |
 | `scripts/layout/public_make_targets.py` | `repo-surface` | `public` | - |
