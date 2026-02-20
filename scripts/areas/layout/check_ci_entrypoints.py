@@ -9,6 +9,26 @@ import sys
 ROOT = Path(__file__).resolve().parents[3]
 WF = ROOT / ".github/workflows"
 CI_MK = ROOT / "makefiles" / "ci.mk"
+PRIMARY = {
+    "root",
+    "root-local",
+    "ci",
+    "nightly",
+    "fmt",
+    "lint",
+    "test",
+    "audit",
+    "docs",
+    "ops",
+    "k8s",
+    "load",
+    "obs",
+    "doctor",
+    "report",
+}
+ALLOWED_WORKFLOW_OVERRIDES = {
+    "dependency-lock.yml": {"ci-init-iso-dirs", "ci-dependency-lock-refresh"},
+}
 
 
 def make_runs(path: Path) -> list[str]:
@@ -27,6 +47,14 @@ def main() -> int:
         text = p.read_text(encoding="utf-8")
         if re.search(r"\b(make\s+)?(legacy/[A-Za-z0-9_./-]+|ops-[A-Za-z0-9-]+-legacy)\b", text):
             errs.append(f"{p.name} must not invoke legacy entrypoints")
+        scoped_primary_check = p.name == "ci.yml" or "schedule:" in text
+        if scoped_primary_check:
+            for cmd in make_runs(p):
+                target = cmd.strip().split()[0]
+                if target in ALLOWED_WORKFLOW_OVERRIDES.get(p.name, set()):
+                    continue
+                if target not in PRIMARY:
+                    errs.append(f"{p.name} uses non-primary make target: {target}")
         if "schedule:" not in text:
             continue
         if p.name == "dependency-lock.yml":

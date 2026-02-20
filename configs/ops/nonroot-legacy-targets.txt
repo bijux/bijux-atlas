@@ -202,6 +202,9 @@ ops.mk:ops-k6-version-check
 ops.mk:ops-k8s-contracts
 ops.mk:ops-k8s-smoke
 ops.mk:ops-k8s-suite
+ops.mk:ops-k8s-restart
+ops.mk:ops-k8s-apply-config
+ops.mk:ops-configmap-drift-report
 ops.mk:ops-k8s-template-tests
 ops.mk:ops-k8s-tests
 ops.mk:ops-kind-cleanup-leftovers
