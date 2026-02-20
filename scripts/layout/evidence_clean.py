@@ -8,33 +8,44 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 RETENTION = ROOT / "configs" / "ops" / "artifact-retention.json"
-EVIDENCE_MAKE = ROOT / "ops" / "_evidence" / "make"
+EVIDENCE_ROOT = ROOT / "artifacts" / "evidence"
 
 
-def load_days() -> int:
+def load_policy() -> tuple[int, int]:
     if not RETENTION.exists():
-        return 14
+        return 14, 10
     payload = json.loads(RETENTION.read_text(encoding="utf-8"))
-    return int(payload.get("evidence_retention_days", 14))
+    return int(payload.get("evidence_retention_days", 14)), int(payload.get("evidence_keep_last_per_area", 10))
 
 
 def main() -> int:
-    days = load_days()
+    days, keep_last = load_policy()
     cutoff = datetime.now(timezone.utc) - timedelta(days=days)
-    if not EVIDENCE_MAKE.exists():
-        print("no ops/_evidence/make directory")
+    if not EVIDENCE_ROOT.exists():
+        print("no artifacts/evidence directory")
         return 0
     removed = 0
-    for path in sorted(EVIDENCE_MAKE.iterdir()):
-        if not path.is_dir():
+    for area_dir in sorted(EVIDENCE_ROOT.iterdir()):
+        if not area_dir.is_dir():
             continue
-        if path.name == "root-local":
+        run_dirs = sorted((p for p in area_dir.iterdir() if p.is_dir()), key=lambda p: p.stat().st_mtime, reverse=True)
+        if not run_dirs:
             continue
-        if datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc) < cutoff:
+        for idx, path in enumerate(run_dirs):
+            too_old = datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc) < cutoff
+            if idx < keep_last and not too_old:
+                continue
+            if idx < keep_last and too_old:
+                continue
+            if not too_old:
+                continue
             shutil.rmtree(path, ignore_errors=True)
             removed += 1
             print(f"removed {path.relative_to(ROOT)}")
-    print(f"evidence cleanup complete (removed={removed}, retention_days={days})")
+    print(
+        "evidence cleanup complete "
+        f"(removed={removed}, retention_days={days}, keep_last_per_area={keep_last})"
+    )
     return 0
 
 

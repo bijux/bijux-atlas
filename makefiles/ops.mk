@@ -963,6 +963,7 @@ ops-make-targets-doc: ## Generate docs/development/make-targets.md from registry
 
 ops-lint: ## Lint ops shell/python/json/schema contracts
 	@python3 ./scripts/layout/check_ops_run_entrypoints.py
+	@python3 ./scripts/layout/check_no_ops_evidence_writes.py
 	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
 	@python3 ./ops/load/scripts/validate_suite_manifest.py
 	@python3 ./ops/k8s/tests/validate_suites.py

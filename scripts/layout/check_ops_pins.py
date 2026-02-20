@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Purpose: enforce reproducibility pin contracts and emit drift report.
 # Inputs: configs/ops/pins.json and ops manifests/scripts.
-# Outputs: non-zero on violations; writes ops/_generated/pins/pin-drift-report.json.
+# Outputs: non-zero on violations; writes artifacts/evidence/pins/<run_id>/pin-drift-report.json.
 from __future__ import annotations
 
 import datetime as dt
@@ -15,7 +15,8 @@ ROOT = Path(__file__).resolve().parents[2]
 PINS_PATH = ROOT / "configs/ops/pins.json"
 TOOLS_LOCK_PATH = ROOT / "configs/ops/tool-versions.json"
 STACK_VERSION_MANIFEST = ROOT / "ops/stack/version-manifest.json"
-OUT = ROOT / "ops/_generated/pins/pin-drift-report.json"
+RUN_ID = os.environ.get("RUN_ID") or os.environ.get("OPS_RUN_ID") or "manual"
+OUT = ROOT / "artifacts" / "evidence" / "pins" / RUN_ID / "pin-drift-report.json"
 PIN_RELAXATIONS_PATH = ROOT / "configs/policy/pin-relaxations.json"
 
 
