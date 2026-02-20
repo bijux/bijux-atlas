@@ -36,3 +36,15 @@ def no_network_for_unit(request: pytest.FixtureRequest, monkeypatch: pytest.Monk
 
     monkeypatch.setattr(socket, "create_connection", _blocked)
     monkeypatch.setattr(socket.socket, "connect", _blocked_connect)
+
+
+@pytest.fixture
+def minimal_repo_root(tmp_path: Path) -> Path:
+    repo = tmp_path / "repo"
+    (repo / ".git").mkdir(parents=True)
+    (repo / "makefiles").mkdir()
+    (repo / "configs").mkdir()
+    (repo / "docs/_generated").mkdir(parents=True)
+    (repo / "ops").mkdir()
+    (repo / "artifacts/evidence").mkdir(parents=True)
+    return repo
