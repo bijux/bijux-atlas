@@ -1,10 +1,19 @@
 from __future__ import annotations
 
 import socket
+from pathlib import Path
 
 import pytest
+from hypothesis import settings
+from hypothesis.database import DirectoryBasedExampleDatabase
 
 _ALLOWED_MARKERS = {"unit", "integration", "slow"}
+
+_ROOT = Path(__file__).resolve().parents[3]
+_HYPOTHESIS_DB = _ROOT / "artifacts/bijux-atlas-scripts/.hypothesis/examples"
+_HYPOTHESIS_DB.parent.mkdir(parents=True, exist_ok=True)
+settings.register_profile("atlas", database=DirectoryBasedExampleDatabase(_HYPOTHESIS_DB))
+settings.load_profile("atlas")
 
 
 def pytest_collection_modifyitems(items: list[pytest.Item]) -> None:
