@@ -16,7 +16,10 @@ class CommandSpec:
     stable: bool = True
 
 
-def registry() -> tuple[CommandSpec, ...]:
+CANONICAL_DOMAINS: tuple[str, ...] = ("repo", "docs", "ops", "make", "configs", "contracts", "docker", "ci")
+
+
+def command_registry() -> tuple[CommandSpec, ...]:
     return (
         CommandSpec("doctor", "show tooling and context diagnostics"),
         CommandSpec("inventory", "generate and verify inventories"),
@@ -37,6 +40,11 @@ def registry() -> tuple[CommandSpec, ...]:
         CommandSpec("registry", "registry domain commands"),
         CommandSpec("layout", "layout domain commands"),
     )
+
+
+def registry() -> tuple[CommandSpec, ...]:
+    # Backward-compatible alias.
+    return command_registry()
 
 
 def register_domain_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser], name: str, help_text: str) -> None:
