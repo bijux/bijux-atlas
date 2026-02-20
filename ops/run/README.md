@@ -19,7 +19,8 @@ Contracts:
 - `ops/run/CONTRACT.md`
 
 Artifacts:
-- Entrypoints must emit logs/artifacts under `ops/_artifacts/<run_id>/` and/or `ops/_generated/`.
+- Entrypoints must emit runtime evidence under `artifacts/evidence/<area>/<run_id>/`.
+- Committed generated artifacts remain under `ops/_generated_committed/`.
 
 Failure modes:
 - Missing run context (`RUN_ID`/artifact dir).
