@@ -17,12 +17,8 @@ Generated file. Do not edit manually.
 | `scripts/areas/check/check-atlas-scripts-cli-contract.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-bijux-atlas-scripts-boundaries.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-bin-entrypoints.py` | `platform` | `public` | - |
-| `scripts/areas/check/check-docker-image-size.py` | `platform` | `public` | `docker-contracts` |
-| `scripts/areas/check/check-docker-layout.py` | `platform` | `public` | `docker-contracts` |
-| `scripts/areas/check/check-docker-policy.py` | `platform` | `public` | `docker-contracts` |
 | `scripts/areas/check/check-no-adhoc-python.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-no-direct-python-invocations.py` | `platform` | `public` | - |
-| `scripts/areas/check/check-no-latest-tags.py` | `platform` | `public` | `docker-contracts` |
 | `scripts/areas/check/check-no-make-scripts-references.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-no-python-executable-outside-tools.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-python-lock.py` | `platform` | `public` | - |

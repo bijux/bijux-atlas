@@ -102,11 +102,7 @@ ops/report/slo_report.py
 ops/run/contract-report.py
 ops/stack/tests/check_live_layer_snapshot.py
 scripts/areas/check/check-bin-entrypoints.py
-scripts/areas/check/check-docker-image-size.py
-scripts/areas/check/check-docker-layout.py
-scripts/areas/check/check-docker-policy.py
 scripts/areas/check/check-no-adhoc-python.py
-scripts/areas/check/check-no-latest-tags.py
 scripts/areas/check/check-python-lock.py
 scripts/areas/check/check-script-errors.py
 scripts/areas/check/check-script-tool-guards.py

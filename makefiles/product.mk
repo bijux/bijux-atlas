@@ -83,10 +83,7 @@ chart-validate: ## Validate chart via lint/template and values contract schema c
 	@$(ATLAS_SCRIPTS) contracts check --checks chart-values
 
 docker-contracts: ## Validate Docker layout/policy/no-latest contracts
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/check/check-docker-layout.py
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/check/check-docker-policy.py
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/check/check-no-latest-tags.py
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/check/check-docker-image-size.py
+	@$(ATLAS_SCRIPTS) check domain docker
 
 rename-lint: ## Enforce durable naming rules for docs/scripts and concept ownership
 	@$(ATLAS_SCRIPTS) docs durable-naming-check --report text
