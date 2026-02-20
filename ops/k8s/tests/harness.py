@@ -3,10 +3,12 @@ import argparse
 import datetime as dt
 import json
 import os
+import re
 import subprocess
 import sys
 import time
 from pathlib import Path
+from signal import SIGKILL, SIGTERM
 from xml.sax.saxutils import escape
 
 
@@ -20,8 +22,28 @@ def parse_date(s: str) -> dt.date:
 
 def load_manifest(path: Path):
     with path.open() as f:
-        data = json.load(f)
-    return data.get("tests", [])
+        return json.load(f)
+
+
+def _extract_emitted_failure_modes(text: str) -> list[str]:
+    modes: list[str] = []
+    for m in re.findall(r"failure_mode\s*[:=]\s*([a-z0-9_]+)", text, flags=re.IGNORECASE):
+        modes.append(m.lower())
+    return modes
+
+
+def _classify_observed_failure_mode(attempts, expected_modes):
+    expected = {m.lower() for m in expected_modes if isinstance(m, str)}
+    emitted: list[str] = []
+    for a in attempts:
+        emitted.extend(_extract_emitted_failure_modes((a.get("stderr") or "") + "\n" + (a.get("stdout") or "")))
+    undeclared = sorted({m for m in emitted if m not in expected})
+    if undeclared:
+        return "undeclared_failure_mode", sorted(set(emitted)), undeclared
+    for m in emitted:
+        if m in expected:
+            return m, sorted(set(emitted)), []
+    return "unclassified", sorted(set(emitted)), []
 
 
 def select_tests(tests, groups, names):
@@ -36,26 +58,45 @@ def select_tests(tests, groups, names):
     return out
 
 
-def run_one(script_path: Path, retries: int, timeout_seconds: int, env):
+def run_one(script_path: Path, retries: int, timeout_seconds: int, env, test_artifact_dir: Path):
     attempts = []
     for attempt in range(1, retries + 1):
         start = time.time()
+        attempt_dir = test_artifact_dir / f"attempt-{attempt}"
+        attempt_dir.mkdir(parents=True, exist_ok=True)
+        env_with_attempt = env.copy()
+        env_with_attempt["ATLAS_TEST_ARTIFACT_DIR"] = str(attempt_dir)
         try:
-            proc = subprocess.run(
+            proc = subprocess.Popen(
                 [str(script_path)],
                 text=True,
-                capture_output=True,
-                env=env,
-                timeout=timeout_seconds,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                env=env_with_attempt,
+                preexec_fn=os.setsid if os.name != "nt" else None,
             )
+            try:
+                stdout, stderr = proc.communicate(timeout=timeout_seconds)
+            except subprocess.TimeoutExpired:
+                if os.name != "nt":
+                    os.killpg(proc.pid, SIGTERM)
+                    time.sleep(0.5)
+                    try:
+                        os.killpg(proc.pid, SIGKILL)
+                    except ProcessLookupError:
+                        pass
+                else:
+                    proc.kill()
+                stdout, stderr = proc.communicate()
+                raise subprocess.TimeoutExpired(proc.args, timeout_seconds, output=stdout, stderr=stderr)
             duration = time.time() - start
             attempt_result = {
                 "attempt": attempt,
                 "exit_code": proc.returncode,
                 "duration_seconds": round(duration, 3),
                 "timed_out": False,
-                "stdout": proc.stdout,
-                "stderr": proc.stderr,
+                "stdout": stdout,
+                "stderr": stderr,
             }
         except subprocess.TimeoutExpired as exc:
             duration = time.time() - start
@@ -67,6 +108,9 @@ def run_one(script_path: Path, retries: int, timeout_seconds: int, env):
                 "stdout": exc.stdout or "",
                 "stderr": (exc.stderr or "") + f"\nTimed out after {timeout_seconds}s",
             }
+        (attempt_dir / "stdout.txt").write_text(attempt_result["stdout"], encoding="utf-8")
+        (attempt_dir / "stderr.txt").write_text(attempt_result["stderr"], encoding="utf-8")
+        (attempt_dir / "attempt.json").write_text(json.dumps(attempt_result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         attempts.append(attempt_result)
         if attempt_result["exit_code"] == 0:
             break
@@ -96,11 +140,26 @@ def write_junit(results, out_path: Path):
     out_path.write_text("\n".join(lines) + "\n")
 
 
-def maybe_collect_failure_bundle(repo_root: Path, failed: bool, env):
+def maybe_collect_failure_bundle(repo_root: Path, failed: bool, env, out_dir: Path):
     if not failed:
         return
+    out_dir.mkdir(parents=True, exist_ok=True)
     cmd = [str(repo_root / "ops/_lib/k8s-test-report.sh"), env.get("ATLAS_E2E_NAMESPACE", "atlas-e2e-local"), env.get("ATLAS_E2E_RELEASE_NAME", "atlas-e2e")]
-    subprocess.run(cmd, env=env, text=True, capture_output=True)
+    proc = subprocess.run(cmd, env=env, text=True, capture_output=True)
+    (out_dir / "k8s-test-report.stdout.txt").write_text(proc.stdout or "", encoding="utf-8")
+    (out_dir / "k8s-test-report.stderr.txt").write_text(proc.stderr or "", encoding="utf-8")
+
+
+def _validate_report_payload(payload):
+    errors = []
+    if payload.get("schema_version") != 1:
+        errors.append("schema_version must be 1")
+    for req in ("run_id", "suite_id", "total", "failed", "passed", "results"):
+        if req not in payload:
+            errors.append(f"missing required report key `{req}`")
+    if not isinstance(payload.get("results"), list):
+        errors.append("results must be a list")
+    return errors
 
 
 def main():
@@ -111,6 +170,9 @@ def main():
     parser.add_argument("--retries", type=int, default=1)
     parser.add_argument("--json-out", default="artifacts/ops/k8s/test-results.json")
     parser.add_argument("--junit-out", default="artifacts/ops/k8s/test-results.xml")
+    parser.add_argument("--suite-id", default="adhoc")
+    parser.add_argument("--fail-fast", action="store_true")
+    parser.add_argument("--include-quarantined", action="store_true")
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parents[3]
@@ -118,19 +180,25 @@ def main():
     run_id = os.environ.get("ATLAS_RUN_ID", "local")
     os.environ.setdefault("ATLAS_E2E_NAMESPACE", f"atlas-e2e-{run_id}")
 
-    tests = load_manifest(Path(args.manifest))
+    manifest_doc = load_manifest(Path(args.manifest))
+    tests = manifest_doc.get("tests", [])
+    flake_policy = manifest_doc.get("flake_policy", {})
     selected = select_tests(tests, set(args.group), set(args.test))
+    selected.sort(key=lambda t: t["script"])
     if not selected:
         print("no tests selected", file=sys.stderr)
         return 2
 
+    suite_start = time.time()
+    per_test_root = Path(args.json_out).parent / "tests"
     results = []
     failed = 0
     flaky = []
+    fail_fast_triggered = False
     for t in selected:
         script = t["script"]
         quarantine_until = t.get("quarantine_until")
-        if quarantine_until and today_utc() <= parse_date(quarantine_until):
+        if quarantine_until and not args.include_quarantined and today_utc() <= parse_date(quarantine_until):
             results.append(
                 {
                     "script": script,
@@ -187,11 +255,17 @@ def main():
             failed += 1
             continue
 
-        attempts = run_one(spath, retries, timeout_seconds, os.environ.copy())
+        test_artifact_dir = per_test_root / Path(script).stem
+        attempts = run_one(spath, retries, timeout_seconds, os.environ.copy(), test_artifact_dir)
         status = "passed" if attempts[-1]["exit_code"] == 0 else "failed"
         duration = sum(a["duration_seconds"] for a in attempts)
         if status == "passed" and len(attempts) > 1:
             flaky.append({"script": script, "attempts": len(attempts), "owner": t.get("owner", "unknown")})
+        observed_mode = None
+        emitted_modes = []
+        undeclared_modes = []
+        if status != "passed":
+            observed_mode, emitted_modes, undeclared_modes = _classify_observed_failure_mode(attempts, t.get("expected_failure_modes", []))
 
         results.append(
             {
@@ -203,23 +277,44 @@ def main():
                 "owner": t.get("owner", "unknown"),
                 "timeout_seconds": timeout_seconds,
                 "expected_failure_modes": t.get("expected_failure_modes", []),
+                "observed_failure_mode": observed_mode,
+                "emitted_failure_modes": emitted_modes,
+                "undeclared_failure_modes": undeclared_modes,
+                "artifacts_dir": str(test_artifact_dir),
             }
         )
         if status != "passed":
             failed += 1
+            if args.fail_fast:
+                fail_fast_triggered = True
+                break
+        print(f"[{len(results)}/{len(selected)}] {script}: {status} ({duration:.2f}s)")
 
+    total_duration = round(time.time() - suite_start, 3)
     payload = {
+        "schema_version": 1,
         "run_id": run_id,
+        "suite_id": args.suite_id,
         "namespace": os.environ.get("ATLAS_E2E_NAMESPACE"),
         "timestamp": int(time.time()),
+        "duration_seconds": total_duration,
         "total": len(results),
         "failed": failed,
         "passed": sum(1 for r in results if r["status"] == "passed"),
         "skipped": sum(1 for r in results if r["status"] == "skipped"),
         "flake_count": len(flaky),
         "flakes": flaky,
+        "fail_fast": bool(args.fail_fast),
+        "fail_fast_triggered": fail_fast_triggered,
+        "quarantine_enforced": not args.include_quarantined,
+        "flake_policy": flake_policy,
         "results": results,
     }
+    report_errors = _validate_report_payload(payload)
+    if report_errors:
+        for err in report_errors:
+            print(f"suite report validation error: {err}", file=sys.stderr)
+        return 2
 
     jout = Path(args.json_out)
     jout.parent.mkdir(parents=True, exist_ok=True)
@@ -230,7 +325,7 @@ def main():
     flake_out.parent.mkdir(parents=True, exist_ok=True)
     flake_out.write_text(json.dumps({"flake_count": len(flaky), "flakes": flaky}, indent=2, sort_keys=True) + "\n")
 
-    maybe_collect_failure_bundle(repo_root, failed > 0, os.environ.copy())
+    maybe_collect_failure_bundle(repo_root, failed > 0, os.environ.copy(), jout.parent / "failure-bundle")
 
     print(f"k8s test harness: {len(results)} tests, failed={failed}, flakes={len(flaky)}")
     print(f"json: {args.json_out}")

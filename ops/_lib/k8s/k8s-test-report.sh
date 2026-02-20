@@ -16,6 +16,8 @@ kubectl -n "$NS" get configmap "$RELEASE" -o yaml > "$OUT/configmap.yaml" 2>/dev
 kubectl -n "$NS" describe pods > "$OUT/describe-pods.txt" 2>/dev/null || true
 kubectl -n "$NS" describe svc > "$OUT/describe-services.txt" 2>/dev/null || true
 kubectl -n "$NS" describe deploy > "$OUT/describe-deployments.txt" 2>/dev/null || true
+kubectl -n "$NS" describe hpa > "$OUT/describe-hpa.txt" 2>/dev/null || true
+kubectl -n "$NS" get events --sort-by=.lastTimestamp > "$OUT/events.describe.txt" 2>/dev/null || true
 if kubectl top pods -n "$NS" >/dev/null 2>&1; then
   kubectl top pods -n "$NS" > "$OUT/top-pods.txt" 2>/dev/null || true
 fi
