@@ -22,6 +22,7 @@ fi
 
 end="$(date +%s)"
 duration="$((end - start))"
+LANE_REPRO_COMMAND="make ops/smoke REUSE=1" \
 ops_write_lane_report "ops-smoke" "${RUN_ID}" "${status}" "${duration}" "${log_file}" "ops/_generated" >/dev/null
 
 ./ops/run/report.sh >/dev/null
