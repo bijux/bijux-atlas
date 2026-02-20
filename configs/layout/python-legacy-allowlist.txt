@@ -187,6 +187,7 @@ scripts/areas/docs/check_public_surface_docs.py
 scripts/areas/docs/check_public_targets_docs_sections.py
 scripts/areas/docs/check_runbook_map_registration.py
 scripts/areas/docs/check_runbooks_contract.py
+scripts/areas/docs/check_no_removed_make_targets.py
 scripts/areas/docs/check_script_headers.py
 scripts/areas/docs/check_script_locations.py
 scripts/areas/docs/check_suite_id_docs.py

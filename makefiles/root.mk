@@ -58,6 +58,10 @@ LOCAL_FULL_ENV := ISO_ROOT=$(LOCAL_FULL_ISO_ROOT) CARGO_TARGET_DIR=$(LOCAL_FULL_
 
 gates-check: ## Run public-surface/docs/makefile boundary checks
 	@$(call gate_json,public-surface,python3 ./scripts/areas/layout/check_public_surface.py)
+	@$(call gate_json,no-dead-entrypoints,python3 ./scripts/areas/layout/check_no_dead_entrypoints.py)
+	@$(call gate_json,no-orphan-docs-refs,python3 ./scripts/areas/layout/check_no_orphan_docs_refs.py)
+	@$(call gate_json,no-orphan-configs,python3 ./scripts/areas/layout/check_no_orphan_configs.py)
+	@$(call gate_json,no-orphan-owners,python3 ./scripts/areas/layout/check_no_orphan_owners.py)
 	@$(call gate_json,docs-public-surface,python3 ./scripts/areas/docs/check_public_surface_docs.py)
 	@$(call gate_json,suite-id-docs,python3 ./scripts/areas/docs/check_suite_id_docs.py)
 	@$(call gate_json,makefile-boundaries,python3 ./scripts/areas/layout/check_makefile_target_boundaries.py)
@@ -404,6 +408,19 @@ retry: ## Retry a target with same RUN_ID (usage: make retry TARGET=<target>)
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
 	echo "retry target=$${TARGET} run_id=$$run_id"; \
 	RUN_ID="$$run_id" QUIET="$${QUIET:-0}" $(MAKE) -s "$${TARGET}"
+
+legacy/check: ## Verify legacy inventory and policy contracts
+	@./scripts/bin/bijux-atlas-scripts run scripts/areas/layout/legacy_inventory.py
+
+cleanup/verify: ## One-time cleanup safety verification before deleting legacy paths
+	@$(MAKE) -s legacy/check
+	@$(MAKE) -s scripts-check
+	@$(MAKE) -s ops-contracts-check
+	@python3 ./scripts/areas/layout/check_help_snapshot.py
+	@python3 ./scripts/areas/layout/check_no_dead_entrypoints.py
+	@python3 ./scripts/areas/layout/check_no_orphan_docs_refs.py
+	@python3 ./scripts/areas/layout/check_no_orphan_configs.py
+	@python3 ./scripts/areas/layout/check_no_orphan_owners.py
 
 local: ## Deprecated alias for quick
 	@echo "[DEPRECATED] 'make local' -> 'make quick'" >&2
