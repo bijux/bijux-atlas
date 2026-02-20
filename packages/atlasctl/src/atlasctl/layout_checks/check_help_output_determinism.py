@@ -5,7 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 CMD = ["python3", "./packages/atlasctl/src/atlasctl/layout_checks/render_public_help.py"]
 
 

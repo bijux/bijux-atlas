@@ -5,7 +5,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 TARGET = ROOT / "ops" / "_generated_committed"
 TS = re.compile(r".*(\d{8}[-T]\d{6}|\d{4}-\d{2}-\d{2}).*")
 

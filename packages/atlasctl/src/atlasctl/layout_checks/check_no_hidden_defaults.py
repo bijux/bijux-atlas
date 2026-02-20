@@ -3,11 +3,12 @@
 # Inputs: ops/run/*.sh.
 # Outputs: non-zero if scripts skip ops_env_load or hide env defaults.
 from __future__ import annotations
+
 import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 errors: list[str] = []
 allowed = {
     ("clean.sh", "OPS_RETENTION_DAYS"),

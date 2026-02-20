@@ -3,10 +3,11 @@
 # Inputs: configs/ops/tool-versions.json.
 # Outputs: ops/stack/versions.json.
 from __future__ import annotations
+
 import json
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 src = ROOT / "configs/ops/tool-versions.json"
 out = ROOT / "ops/stack/versions.json"
 data = json.loads(src.read_text(encoding="utf-8"))

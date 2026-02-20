@@ -9,7 +9,7 @@ Scripts in this area.
 - check_artifacts_policy.sh
 - check_cargo_dev_metadata.py
 - check_cargo_invocations_scoped.py
-- check_chart_canonical_path.sh
+- check_chart_canonical_path.py
 - check_ci_entrypoints.py
 - check_dataset_manifest_lock.py
 - check_dir_budgets.py
@@ -90,7 +90,7 @@ Scripts in this area.
 - check_slo_contracts.py
 - check_slo_no_loosen_without_approval.py
 - check_stack_manifest_consolidation.sh
-- check_symlink_index.sh
+- check_symlink_index.py
 - check_symlink_policy.py
 - check_tool_versions.py
 - check_workflows_make_only.py

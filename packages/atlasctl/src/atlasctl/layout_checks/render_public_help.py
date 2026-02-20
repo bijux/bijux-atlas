@@ -2,14 +2,14 @@
 from __future__ import annotations
 
 import argparse
+import re
 from collections import defaultdict
 from pathlib import Path
-import re
 
-from public_make_targets import public_entries
 from make_target_graph import parse_make_targets
+from public_make_targets import public_entries
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 LEGACY_TARGET_RE = re.compile(r"(^|/)legacy($|-)")
 
 

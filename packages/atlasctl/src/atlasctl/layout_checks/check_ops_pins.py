@@ -11,7 +11,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 PINS_PATH = ROOT / "configs/ops/pins.json"
 TOOLS_LOCK_PATH = ROOT / "configs/ops/tool-versions.json"
 STACK_VERSION_MANIFEST = ROOT / "ops/stack/version-manifest.json"

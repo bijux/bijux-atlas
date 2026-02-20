@@ -3,10 +3,11 @@
 # Inputs: ops/_generated_committed and docs/_generated ops artifacts.
 # Outputs: non-zero if unexpected/missing generated files are detected.
 from __future__ import annotations
-from pathlib import Path
-import sys
 
-ROOT = Path(__file__).resolve().parents[3]
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[5]
 expected = {
     "ops/_generated_committed/.gitkeep",
     "docs/_generated/ops-surface.md",

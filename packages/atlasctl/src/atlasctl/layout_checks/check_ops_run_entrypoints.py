@@ -2,11 +2,11 @@
 # Purpose: enforce ops run entrypoint wrapper contract and guard usage.
 # Inputs: ops/run/*.sh wrappers.
 # Outputs: non-zero exit on missing common bootstrap or forbidden direct network calls.
-from pathlib import Path
 import re
 import sys
+from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 RUN_DIR = ROOT / "ops" / "run"
 NET_CMDS = ("curl", "kubectl", "helm")
 

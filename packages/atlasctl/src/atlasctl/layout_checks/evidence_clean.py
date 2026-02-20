@@ -6,7 +6,7 @@ import shutil
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 RETENTION = ROOT / "configs" / "ops" / "artifact-retention.json"
 EVIDENCE_ROOT = ROOT / "artifacts" / "evidence"
 

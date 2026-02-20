@@ -5,7 +5,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 ops_mk = (ROOT / "makefiles" / "ops.mk").read_text(encoding="utf-8", errors="ignore")
 
 checks = {

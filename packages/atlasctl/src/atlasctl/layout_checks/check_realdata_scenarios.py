@@ -5,7 +5,7 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 SCHEMA_PATH = ROOT / "ops/_schemas/e2e-realdata-scenarios.schema.json"
 MANIFEST_PATH = ROOT / "ops/e2e/realdata/scenarios.json"
 REALDATA_DIR = ROOT / "ops/e2e/realdata"

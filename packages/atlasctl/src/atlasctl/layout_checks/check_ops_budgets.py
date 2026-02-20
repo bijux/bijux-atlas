@@ -5,7 +5,7 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 BUDGETS = ROOT / "configs/ops/budgets.json"
 SCHEMA = ROOT / "ops/_schemas/meta/budgets.schema.json"
 DOC = ROOT / "docs/operations/performance/budgets.md"

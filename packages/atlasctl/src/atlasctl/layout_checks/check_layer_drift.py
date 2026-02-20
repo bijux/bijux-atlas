@@ -6,7 +6,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 CONTRACT = json.loads((ROOT / "ops/_meta/layer-contract.json").read_text(encoding="utf-8"))
 
 AREAS = ("stack", "k8s", "e2e", "obs", "load")

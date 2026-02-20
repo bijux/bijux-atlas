@@ -2,14 +2,14 @@
 # Purpose: validate SLO SSOT configs and ensure SLO SLIs reference real metrics/labels.
 from __future__ import annotations
 
-import json
 import argparse
+import json
 import re
 import sys
 from pathlib import Path
 from typing import Any
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 
 
 def _type_ok(value: Any, t: str) -> bool:

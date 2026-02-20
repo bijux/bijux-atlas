@@ -5,7 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 TARGET = ROOT / "ops/_meta/surface.json"
 GEN = ROOT / "packages/atlasctl/src/atlasctl/layout_checks/generate_ops_surface_meta.py"
 

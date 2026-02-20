@@ -8,7 +8,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 mk_files = [ROOT / "Makefile", *sorted((ROOT / "makefiles").glob("*.mk"))]
 
 violations: list[str] = []

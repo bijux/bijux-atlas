@@ -3,10 +3,11 @@
 # Inputs: artifacts/ tree.
 # Outputs: artifacts/index.json summary.
 from __future__ import annotations
+
 import json
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 art = ROOT / 'artifacts'
 art.mkdir(exist_ok=True)
 ops = art / 'ops'

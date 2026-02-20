@@ -3,10 +3,11 @@
 # Inputs: ops/_artifacts/<run_id> directory.
 # Outputs: ops/_artifacts/<run_id>/index.md.
 from __future__ import annotations
+
 import argparse
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 
 p = argparse.ArgumentParser()
 p.add_argument("--run-id", required=True)

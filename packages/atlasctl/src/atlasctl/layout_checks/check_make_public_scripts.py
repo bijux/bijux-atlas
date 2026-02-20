@@ -3,12 +3,13 @@
 # Inputs: Makefile + makefiles/*.mk and configs/ops/public-surface.json patterns.
 # Outputs: non-zero exit when make calls non-public scripts.
 from __future__ import annotations
+
 import fnmatch
+import json
 import re
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
-import json
+ROOT = Path(__file__).resolve().parents[5]
 
 surface = json.loads((ROOT / "configs/ops/public-surface.json").read_text(encoding="utf-8"))
 patterns = [f"{cmd}" for cmd in surface.get("ops_run_commands", []) if cmd.startswith("scripts/")]

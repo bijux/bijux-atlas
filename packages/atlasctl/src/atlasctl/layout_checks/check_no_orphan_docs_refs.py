@@ -6,7 +6,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 DOCS = ROOT / "docs"
 MAKE_TARGET_RE = re.compile(r"`make\s+([A-Za-z0-9_./-]+)\b[^`]*`")
 

@@ -2,10 +2,10 @@
 # Purpose: ensure every root-level symlink is documented and allowlisted.
 # Inputs: root symlinks, docs/development/symlinks.md, configs/repo/symlink-allowlist.json.
 # Outputs: non-zero on undocumented or unallowlisted root symlinks.
-from pathlib import Path
 import json
 import re
 import sys
+from pathlib import Path
 
 root = Path(__file__).resolve().parents[3]
 doc = root / "docs" / "development" / "symlinks.md"

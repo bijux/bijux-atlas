@@ -6,7 +6,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 SSOT = ROOT / "configs" / "ops" / "public-make-targets.json"
 
 FORBIDDEN = re.compile(r"\b(phase|step|task|stage)\b", re.I)

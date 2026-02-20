@@ -6,7 +6,7 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 SURFACE = ROOT / "configs/ops/public-surface.json"
 MAX_PER_AREA = 10
 

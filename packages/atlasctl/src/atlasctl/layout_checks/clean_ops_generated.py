@@ -3,9 +3,10 @@
 # Inputs: ops/_generated_committed and docs/_generated.
 # Outputs: removes stale generated files outside committed allowlist.
 from __future__ import annotations
+
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 allow = {
     "ops/_generated_committed/.gitkeep",
     "docs/_generated/ops-surface.md",

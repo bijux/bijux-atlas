@@ -5,7 +5,7 @@ import argparse
 import shutil
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 SAFE_DIRS = [
     ROOT / "ops" / "_evidence" / "make",
     ROOT / "artifacts" / "isolate",

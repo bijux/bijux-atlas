@@ -7,12 +7,13 @@
 # Inputs: repository fixture manifests under ops/ and scripts/layout policy constants.
 # Outputs: exit 0 when all IDs are valid, else deterministic validation errors on stderr.
 from __future__ import annotations
+
 import json
 import re
-from pathlib import Path
 import sys
+from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 RELEASE_RE = re.compile(r"^[0-9]{1,16}$")
 SPECIES_RE = re.compile(r"^[a-z0-9_]{1,64}$")
 ASSEMBLY_RE = re.compile(r"^[A-Za-z0-9._]{1,64}$")

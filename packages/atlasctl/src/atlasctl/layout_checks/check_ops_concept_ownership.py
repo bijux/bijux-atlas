@@ -6,7 +6,7 @@ import sys
 from os import walk
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 OPS = ROOT / "ops"
 errors: list[str] = []
 

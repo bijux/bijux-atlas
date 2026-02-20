@@ -5,7 +5,7 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 index_text = (ROOT / "ops" / "INDEX.md").read_text(encoding="utf-8")
 public_surface = json.loads((ROOT / "configs" / "ops" / "public-surface.json").read_text(encoding="utf-8"))
 

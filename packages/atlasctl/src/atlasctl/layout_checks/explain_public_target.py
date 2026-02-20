@@ -2,13 +2,13 @@
 from __future__ import annotations
 
 import argparse
-from pathlib import Path
 import re
+from pathlib import Path
 
 from make_target_graph import parse_make_targets, render_tree
 from public_make_targets import entry_map
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 LEGACY_TARGET_RE = re.compile(r"(^|/)legacy($|-)")
 
 

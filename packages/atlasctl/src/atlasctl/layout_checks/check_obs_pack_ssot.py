@@ -3,11 +3,12 @@
 # Inputs: ops/obs scripts/config refs.
 # Outputs: non-zero when install path bypasses SSOT config.
 from __future__ import annotations
+
 import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 config = ROOT / "configs/ops/observability-pack.json"
 _ = json.loads(config.read_text(encoding="utf-8"))
 install = (ROOT / "ops/obs/scripts/install_pack.sh").read_text(encoding="utf-8")

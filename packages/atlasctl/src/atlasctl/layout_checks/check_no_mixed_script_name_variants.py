@@ -2,11 +2,11 @@
 # Purpose: forbid underscore+dash duplicate naming variants for executable scripts.
 from __future__ import annotations
 
+import sys
 from collections import defaultdict
 from pathlib import Path
-import sys
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 SCOPES = [ROOT / "ops", ROOT / "scripts"]
 
 by_key: dict[tuple[str, str, str], set[str]] = defaultdict(set)

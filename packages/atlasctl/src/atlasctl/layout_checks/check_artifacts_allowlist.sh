@@ -40,7 +40,7 @@ while IFS= read -r p; do
       \#*) continue ;;
     esac
     case "$p" in
-      $pat) ok=1; break ;;
+      "$pat") ok=1; break ;;
     esac
   done < "$ALLOWLIST"
 

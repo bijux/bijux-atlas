@@ -5,7 +5,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 ROOT_MK = ROOT / "makefiles" / "root.mk"
 DEV_MK = ROOT / "makefiles" / "cargo-dev.mk"
 

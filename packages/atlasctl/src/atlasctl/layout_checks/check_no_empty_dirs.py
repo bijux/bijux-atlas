@@ -3,10 +3,11 @@
 # Inputs: ops/** directories.
 # Outputs: non-zero for empty dirs without INDEX.md.
 from __future__ import annotations
-from pathlib import Path
-import sys
 
-ROOT = Path(__file__).resolve().parents[3]
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[5]
 SKIP_PREFIXES = (
     "ops/_artifacts/",
     "ops/_generated/",

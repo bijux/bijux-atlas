@@ -7,7 +7,7 @@ from pathlib import Path
 
 from public_make_targets import public_names
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 TARGET_RE = re.compile(r"^([A-Za-z0-9_./-]+):(?:\s|$)", flags=re.M)
 
 
