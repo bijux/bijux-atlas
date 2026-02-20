@@ -4,6 +4,9 @@ metadata:
   name: {{ include "bijux-atlas.fullname" . }}-config
   labels:
     {{- include "bijux-atlas.labels" . | nindent 4 }}
+{{- if and .Values.server.cachedOnlyMode .Values.server.readinessRequiresCatalog }}
+{{- fail "server.cachedOnlyMode=true requires server.readinessRequiresCatalog=false" }}
+{{- end }}
 data:
   ATLAS_CONFIG_RELEASE_ID: {{ printf "%s:%d" .Release.Name .Release.Revision | quote }}
   ATLAS_CONFIG_SCHEMA_VERSION: {{ .Values.server.configSchemaVersion | quote }}
