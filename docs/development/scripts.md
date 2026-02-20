@@ -12,7 +12,7 @@ Repository script taxonomy, contracts, and contribution rules.
 - `scripts/areas/internal/`: helper scripts called by public wrappers.
 - `scripts/areas/dev/`: local-only helpers.
 - `scripts/areas/tools/`: shared Python helper modules.
-- Domain buckets allowed for cross-cutting workflows: `scripts/areas/docs/`, `scripts/areas/contracts/`, `scripts/areas/layout/`, `scripts/areas/fixtures/`, `scripts/areas/release/`, `scripts/areas/ops/`, `scripts/areas/bootstrap/`, `scripts/bin/`.
+- Domain buckets are exposed through `atlasctl` command groups (`docs`, `contracts`, `layout`, `fixtures`, `release`, `ops`, `bootstrap`) and thin `bin/` shims only.
 
 ## Contracts
 

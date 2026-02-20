@@ -20,9 +20,9 @@ Does not supersede required reviewer approval policy.
 
 ## Contracts
 
-- [ ] `format_contracts.py` passes.
-- [ ] `generate_contract_artifacts.py` run and committed.
-- [ ] `check_all.sh` passes.
+- [ ] `atlasctl contracts check --checks drift` passes.
+- [ ] `atlasctl contracts generate --generators artifacts` run and committed.
+- [ ] `make ssot-check` passes.
 - [ ] `check_breaking_contract_change.py` output reviewed.
 - [ ] Any new relaxation is explicitly registered in `configs/policy/policy-relaxations.json` with owner/justification/expiry and `ATLAS-EXC-*` reference tag in code.
 - [ ] Any allowlist relaxation is scoped to `dataset_identity` + `artifact_hash` (no repo-wide or name-only allowlists).
@@ -36,7 +36,7 @@ Unchecked boxes mean the change is incomplete and must not merge.
 ## Examples
 
 ```bash
-$ ./scripts/areas/contracts/check_all.sh
+$ make ssot-check
 $ make docs docs-freeze
 ```
 

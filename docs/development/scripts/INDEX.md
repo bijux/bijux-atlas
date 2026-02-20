@@ -26,7 +26,7 @@ Does not duplicate script implementation details.
   - `scripts/areas/internal/`: script-only helpers.
   - `scripts/areas/dev/`: local helpers (not docs/CI contracts).
   - `scripts/areas/tools/`: shared Python helper modules.
-- Contracts: `scripts/areas/contracts/`
+- Contracts: `atlasctl contracts ...`
 - Docs linters/generators: `scripts/areas/docs/`
 - Perf tooling wrappers: `scripts/areas/public/perf/` (canonical: `ops/load/scripts/`)
 - Observability checks: `scripts/areas/public/observability/`
