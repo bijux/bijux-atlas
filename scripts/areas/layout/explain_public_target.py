@@ -3,11 +3,13 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+import re
 
 from make_target_graph import parse_make_targets, render_tree
 from public_make_targets import entry_map
 
 ROOT = Path(__file__).resolve().parents[3]
+LEGACY_TARGET_RE = re.compile(r"(^|/)legacy($|-)")
 
 
 def main() -> int:
@@ -16,6 +18,10 @@ def main() -> int:
     args = p.parse_args()
 
     target = args.target
+    if LEGACY_TARGET_RE.search(target):
+        print(f"legacy target names are forbidden: {target}")
+        return 2
+
     entries = entry_map()
     if target not in entries:
         print(f"not public: {target}")

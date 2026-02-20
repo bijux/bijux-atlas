@@ -13,7 +13,6 @@
 - `env.mk`
 - `help.mk`
 - `layout.mk`
-- `legacy.mk`
 - `ops.mk`
 - `path_contract.mk`
 - `policies.mk`
