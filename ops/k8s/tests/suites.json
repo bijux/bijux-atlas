@@ -3,48 +3,54 @@
   "owner": "bijux-atlas-operations",
   "suites": [
     {
-      "id": "smoke",
-      "description": "Fast k8s invariant smoke suite",
+      "id": "api-protection",
+      "description": "Rate-limit, admission-control, and overload protection checks.",
       "groups": [
-        "sanity",
-        "install",
-        "readiness",
-        "observability",
-        "hpa"
-      ]
-    },
-    {
-      "id": "resilience",
-      "description": "Resilience and availability suite",
-      "groups": [
-        "resilience",
-        "availability",
-        "rolling-restart",
-        "hpa",
-        "pdb"
+        "admission-control",
+        "rate-limit",
+        "redis"
       ]
     },
     {
       "id": "full",
       "description": "Full k8s suite",
+      "budget_minutes": 60,
+      "require_progress_logs": true,
       "groups": []
-    },
-    {
-      "id": "api-protection",
-      "description": "Rate-limit, admission-control, and overload protection checks.",
-      "groups": [
-        "rate-limit",
-        "admission-control",
-        "redis"
-      ]
     },
     {
       "id": "graceful-degradation",
       "description": "Cached-only and store outage survival checks with resilience gates.",
       "groups": [
-        "resilience",
+        "load",
         "readiness",
-        "load"
+        "resilience"
+      ]
+    },
+    {
+      "id": "resilience",
+      "description": "Resilience and availability suite",
+      "fail_fast": true,
+      "budget_minutes": 20,
+      "groups": [
+        "autoscaling",
+        "availability",
+        "pdb",
+        "resilience",
+        "rolling-restart"
+      ]
+    },
+    {
+      "id": "smoke",
+      "description": "Fast k8s invariant smoke suite",
+      "fail_fast": true,
+      "budget_minutes": 10,
+      "groups": [
+        "autoscaling",
+        "install",
+        "observability",
+        "readiness",
+        "sanity"
       ]
     }
   ]

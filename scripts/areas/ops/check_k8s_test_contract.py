@@ -3,6 +3,7 @@
 # Inputs: command-line args and repository files/env as documented by caller.
 # Outputs: exit status and deterministic stdout/stderr or generated artifacts.
 import json
+import re
 from pathlib import Path
 
 manifest = json.loads(Path("ops/k8s/tests/manifest.json").read_text())
@@ -22,6 +23,24 @@ for t in tests:
         errors.append(f"missing owner in manifest: {t['script']}")
     if "timeout_seconds" not in t:
         errors.append(f"missing timeout_seconds in manifest: {t['script']}")
+    groups = t.get("groups")
+    if not isinstance(groups, list) or not groups:
+        errors.append(f"missing/non-list groups in manifest: {t['script']}")
+    efm = t.get("expected_failure_modes")
+    if not isinstance(efm, list) or not efm:
+        errors.append(f"missing/non-list expected_failure_modes in manifest: {t['script']}")
+    if groups != sorted(groups or []):
+        errors.append(f"manifest groups must be sorted for deterministic ordering: {t['script']}")
+
+    # Failure-mode contract: any explicit failure_mode emitted by script must be declared in expected_failure_modes.
+    script_path = Path("ops/k8s/tests") / t["script"]
+    if script_path.exists():
+        body = script_path.read_text(encoding="utf-8")
+        emitted = {m.lower() for m in re.findall(r"failure_mode\\s*[:=]\\s*([a-z0-9_]+)", body, flags=re.IGNORECASE)}
+        declared = {m.lower() for m in t.get("expected_failure_modes", []) if isinstance(m, str)}
+        undeclared = sorted(emitted - declared)
+        if undeclared:
+            errors.append(f"script emits undeclared failure_mode(s) {undeclared} for {t['script']}")
 
 claimed = set()
 for owner, scripts in owners.items():
