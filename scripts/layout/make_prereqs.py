@@ -41,7 +41,7 @@ def main() -> int:
             versions[tool] = f"error: {exc}"
             status = "fail"
 
-    out_dir = ROOT / "ops" / "_generated" / "make" / args.run_id
+    out_dir = ROOT / "ops" / "_evidence" / "make" / args.run_id
     out_dir.mkdir(parents=True, exist_ok=True)
     out = out_dir / "prereqs.json"
     payload = {

@@ -11,7 +11,7 @@ ops_entrypoint_start "ops-check"
 ops_version_guard kind kubectl helm k6
 
 start="$(date +%s)"
-log_dir="ops/_generated/ops-check/${RUN_ID}"
+log_dir="ops/_evidence/ops-check/${RUN_ID}"
 mkdir -p "$log_dir"
 log_file="$log_dir/run.log"
 
@@ -22,6 +22,6 @@ fi
 
 end="$(date +%s)"
 duration="$((end - start))"
-ops_write_lane_report "ops-check" "${RUN_ID}" "${status}" "${duration}" "${log_file}" "ops/_generated" >/dev/null
+ops_write_lane_report "ops-check" "${RUN_ID}" "${status}" "${duration}" "${log_file}" "ops/_evidence" >/dev/null
 
 [ "$status" = "pass" ] || exit 1
