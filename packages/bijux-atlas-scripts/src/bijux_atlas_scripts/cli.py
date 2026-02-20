@@ -381,12 +381,12 @@ def main(argv: list[str] | None = None) -> int:
             return run_policies_command(ctx, ns)
         if ns.cmd == "make":
             return run_make_command(ctx, ns)
-        if ns.cmd == "migrate":
+        if ns.cmd == "migration":
             return run_migrate_command(ctx, ns)
         if ns.cmd == "ops":
             return run_ops_command(ctx, ns)
         if ns.cmd == "inventory":
-            return run_inventory(ctx, ns.category, ns.format, ns.out_dir, ns.dry_run, ns.check)
+            return run_inventory(ctx, ns.category, ns.format, ns.out_dir, ns.dry_run, ns.check, ns.command)
         if ns.cmd == "report":
             return run_report_command(ctx, ns)
         if ns.cmd == "lint":

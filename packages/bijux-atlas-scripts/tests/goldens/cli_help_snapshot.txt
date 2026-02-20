@@ -1,18 +1,20 @@
-usage: bijux-atlas [-h] [--version] [--run-id RUN_ID]
-                   [--evidence-root EVIDENCE_ROOT] [--run-dir RUN_DIR]
-                   [--profile PROFILE] [--format {text,json}]
-                   [--network {allow,forbid}] [--no-network]
-                   [--require-clean-git] [--verbose | --quiet]
-                   {version,env,self-check,help,run,validate-output,surface,commands,contracts,registry,layout,configs,policies,docs,make,ops,inventory,lint,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,doctor,completion,clean}
-                   ...
+usage: atlasctl [-h] [--version] [--json] [--run-id RUN_ID]
+                [--artifacts-dir ARTIFACTS_DIR]
+                [--evidence-root EVIDENCE_ROOT] [--run-dir RUN_DIR]
+                [--cwd CWD] [--profile PROFILE] [--format {text,json}]
+                [--network {allow,forbid}] [--no-network]
+                [--require-clean-git] [--verbose | --quiet]
+                {version,env,self-check,help,explain,run,validate-output,surface,commands,contracts,registry,layout,configs,docker,ci,check,gen,policies,docs,make,migration,ops,inventory,lint,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,python,doctor,completion,clean}
+                ...
 
 positional arguments:
-  {version,env,self-check,help,run,validate-output,surface,commands,contracts,registry,layout,configs,policies,docs,make,ops,inventory,lint,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,doctor,completion,clean}
+  {version,env,self-check,help,explain,run,validate-output,surface,commands,contracts,registry,layout,configs,docker,ci,check,gen,policies,docs,make,migration,ops,inventory,lint,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,python,doctor,completion,clean}
     version             print versions and git context
     env                 manage isolated python environment and artifact-root
                         policy
     self-check          validate imports, config loading, and schema presence
     help                print command help
+    explain             describe command side-effects and external tools
     run                 run an internal python script by repo-relative path
     validate-output     validate JSON output against schema
     surface             print scripts command ownership surface
@@ -21,9 +23,14 @@ positional arguments:
     registry            registry domain commands
     layout              layout domain commands
     configs             configs validation and inventory commands
+    docker              docker verification command group
+    ci                  ci command group
+    check               area-based checks mapped from scripts/areas
+    gen                 generation commands mapped from scripts/areas
     policies            policy relaxations and bypass checks
     docs                docs checks and generation commands
     make                make target intelligence and contracts checks
+    migration           migration tracking and enforcement commands
     ops                 ops lint and contracts command surface
     inventory           generate inventory docs and JSON from SSOT
     lint                run canonical lint suites
@@ -42,6 +49,7 @@ positional arguments:
     scenario            run scenario from manifest
     contracts-snapshot  run live contracts snapshot check
     gates               run curated gate lanes from SSOT manifest
+    python              python runtime isolation helpers
     doctor              show tooling and context diagnostics
     completion          emit shell completion stub
     clean               clean scripts artifacts under approved roots only
@@ -49,10 +57,14 @@ positional arguments:
 options:
   -h, --help            show this help message and exit
   --version             show program's version number and exit
+  --json                emit JSON output
   --run-id RUN_ID       run identifier for artifacts
+  --artifacts-dir ARTIFACTS_DIR
+                        artifacts/evidence root path
   --evidence-root EVIDENCE_ROOT
                         evidence root path
   --run-dir RUN_DIR     override run directory root
+  --cwd CWD             run command from an explicit repository root
   --profile PROFILE     profile id
   --format {text,json}  output format
   --network {allow,forbid}
