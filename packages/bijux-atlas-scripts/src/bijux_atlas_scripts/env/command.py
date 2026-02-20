@@ -71,6 +71,24 @@ def clean_scripts_artifacts(ctx: RunContext, older_than_days: int | None = None)
 
 def run_env_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     subcmd = getattr(ns, "env_cmd", None) or "info"
+    env_payload = {
+        "XDG_CACHE_HOME": str((ctx.scripts_root / "cache").resolve()),
+        "PYTHONPYCACHEPREFIX": str((ctx.scripts_root / "pycache").resolve()),
+        "MYPY_CACHE_DIR": str((ctx.scripts_root / "mypy").resolve()),
+        "RUFF_CACHE_DIR": str((ctx.scripts_root / "ruff").resolve()),
+        "PIP_CACHE_DIR": str((ctx.scripts_root / "pip").resolve()),
+        "PYTEST_ADDOPTS": f"--cache-dir={(ctx.scripts_root / 'pytest').resolve()}",
+    }
+    if subcmd == "print":
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "action": "env-print",
+            "env": env_payload,
+        }
+        print(json.dumps(payload, sort_keys=True) if ns.json else json.dumps(payload, indent=2, sort_keys=True))
+        return 0
     if subcmd == "create":
         venv = _venv_path(ctx, ns.path)
         venv.parent.mkdir(parents=True, exist_ok=True)
@@ -131,3 +149,5 @@ def configure_env_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
 
     clean = env_sub.add_parser("clean", help="clean package caches under artifacts root")
     clean.add_argument("--json", action="store_true", help="emit JSON output")
+    prn = env_sub.add_parser("print", help="print standardized python/cache environment values")
+    prn.add_argument("--json", action="store_true", help="emit JSON output")

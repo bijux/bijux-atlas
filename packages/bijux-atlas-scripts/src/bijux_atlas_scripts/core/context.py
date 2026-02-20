@@ -30,6 +30,10 @@ class RunContext:
     git_sha: str
     git_dirty: bool
 
+    @property
+    def scripts_root(self) -> Path:
+        return (self.repo_root / "artifacts/bijux-atlas-scripts").resolve()
+
     @classmethod
     def from_args(
         cls,

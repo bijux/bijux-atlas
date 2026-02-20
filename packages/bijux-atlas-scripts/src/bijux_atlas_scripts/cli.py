@@ -37,6 +37,7 @@ from .ops.command import configure_ops_parser, run_ops_command
 from .orchestrate.command import configure_orchestrate_parsers, run_orchestrate_command
 from .output_contract import validate_json_output
 from .policies.command import configure_policies_parser, run_policies_command
+from .python_tools.command import configure_python_parser, run_python_command
 from .report.command import configure_report_parser, run_report_command
 from .runner import run_legacy_script
 from .surface import run_surface
@@ -126,6 +127,7 @@ def build_parser() -> argparse.ArgumentParser:
     configure_legacy_parser(sub)
     configure_orchestrate_parsers(sub)
     configure_gates_parser(sub)
+    configure_python_parser(sub)
 
     doctor_p = sub.add_parser("doctor", help="show tooling and context diagnostics")
     doctor_p.add_argument("--json", action="store_true", help="emit JSON output")
@@ -240,6 +242,19 @@ def _emit_runtime_contracts(ctx: RunContext, cmd: str, argv: list[str] | None) -
     )
 
 
+def _apply_python_env(ctx: RunContext) -> None:
+    os.environ.setdefault("BIJUX_ATLAS_SCRIPTS_ARTIFACT_ROOT", str(ctx.scripts_root))
+    os.environ.setdefault("XDG_CACHE_HOME", str((ctx.scripts_root / "cache").resolve()))
+    os.environ.setdefault("PYTHONPYCACHEPREFIX", str((ctx.scripts_root / "pycache").resolve()))
+    os.environ.setdefault("MYPY_CACHE_DIR", str((ctx.scripts_root / "mypy").resolve()))
+    os.environ.setdefault("RUFF_CACHE_DIR", str((ctx.scripts_root / "ruff").resolve()))
+    os.environ.setdefault("PIP_CACHE_DIR", str((ctx.scripts_root / "pip").resolve()))
+    required = f"--cache-dir={(ctx.scripts_root / 'pytest').resolve()}"
+    existing = os.environ.get("PYTEST_ADDOPTS", "").strip()
+    if required not in existing.split():
+        os.environ["PYTEST_ADDOPTS"] = f"{existing} {required}".strip()
+
+
 def main(argv: list[str] | None = None) -> int:
     raw_argv = argv if argv is not None else sys.argv[1:]
     p = build_parser()
@@ -261,7 +276,8 @@ def main(argv: list[str] | None = None) -> int:
         ns.quiet,
         ns.require_clean_git,
     )
-    _emit_runtime_contracts(ctx, ns.cmd, argv)
+    _apply_python_env(ctx)
+    _emit_runtime_contracts(ctx, ns.cmd, raw_argv)
     restore_network = None
     if ctx.no_network:
         guard_no_network_mode(True)
@@ -379,6 +395,8 @@ def main(argv: list[str] | None = None) -> int:
             return run_compat_command(ctx, ns)
         if ns.cmd == "legacy":
             return run_legacy_command(ctx, ns)
+        if ns.cmd == "python":
+            return run_python_command(ctx, ns)
         if ns.cmd in {"ports", "artifacts", "k8s", "stack", "obs", "load", "e2e", "datasets", "cleanup", "scenario"}:
             return run_orchestrate_command(ctx, ns)
         if ns.cmd == "gates":
