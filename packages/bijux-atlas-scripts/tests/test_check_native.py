@@ -5,6 +5,7 @@ from pathlib import Path
 
 from bijux_atlas_scripts.check.native import (
     check_committed_generated_hygiene,
+    check_layout_contract,
     check_make_command_allowlist,
     check_duplicate_script_names,
     check_make_forbidden_paths,
@@ -93,5 +94,58 @@ def test_check_make_command_allowlist_passes_for_allowlisted_command(tmp_path: P
     (tmp_path / "makefiles").mkdir(parents=True)
     (tmp_path / "Makefile").write_text("all:\n\t@echo ok\n", encoding="utf-8")
     code, errors = check_make_command_allowlist(tmp_path)
+    assert code == 0
+    assert errors == []
+
+
+def test_check_layout_contract_flags_unexpected_root_entry(tmp_path: Path) -> None:
+    (tmp_path / "configs/repo").mkdir(parents=True)
+    (tmp_path / ".github/workflows").mkdir(parents=True)
+    (tmp_path / "makefiles").mkdir(parents=True)
+    (tmp_path / "configs/repo/surfaces.json").write_text(
+        json.dumps(
+            {
+                "allowed_root_dirs": [".github", "configs", "makefiles"],
+                "allowed_root_files": ["README.md"],
+            }
+        ),
+        encoding="utf-8",
+    )
+    (tmp_path / "configs/repo/root-files-allowlist.txt").write_text("README.md\n", encoding="utf-8")
+    (tmp_path / "configs/repo/symlink-allowlist.json").write_text(
+        json.dumps({"root": {}, "non_root": {}}),
+        encoding="utf-8",
+    )
+    (tmp_path / ".github/workflows/ci.yml").write_text("- run: make check\n", encoding="utf-8")
+    (tmp_path / "makefiles/root.mk").write_text("check:\n\t@echo ok\n", encoding="utf-8")
+    (tmp_path / "README.md").write_text("x\n", encoding="utf-8")
+    (tmp_path / "unexpected").mkdir()
+    code, errors = check_layout_contract(tmp_path)
+    assert code == 1
+    assert any("unexpected root directory: unexpected" in e for e in errors)
+
+
+def test_check_layout_contract_passes_minimal_repo(tmp_path: Path) -> None:
+    (tmp_path / "configs/repo").mkdir(parents=True)
+    (tmp_path / ".github/workflows").mkdir(parents=True)
+    (tmp_path / "makefiles").mkdir(parents=True)
+    (tmp_path / "configs/repo/surfaces.json").write_text(
+        json.dumps(
+            {
+                "allowed_root_dirs": [".github", "configs", "makefiles"],
+                "allowed_root_files": ["README.md"],
+            }
+        ),
+        encoding="utf-8",
+    )
+    (tmp_path / "configs/repo/root-files-allowlist.txt").write_text("README.md\n", encoding="utf-8")
+    (tmp_path / "configs/repo/symlink-allowlist.json").write_text(
+        json.dumps({"root": {}, "non_root": {}}),
+        encoding="utf-8",
+    )
+    (tmp_path / ".github/workflows/ci.yml").write_text("- run: make check\n", encoding="utf-8")
+    (tmp_path / "makefiles/root.mk").write_text("check:\n\t@echo ok\n", encoding="utf-8")
+    (tmp_path / "README.md").write_text("x\n", encoding="utf-8")
+    code, errors = check_layout_contract(tmp_path)
     assert code == 0
     assert errors == []
