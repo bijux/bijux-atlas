@@ -2,7 +2,6 @@
 
 Categories:
 - `scripts/areas/`: internal script areas by concern
-- `scripts/lib/`: shared script libraries
 
 
 ## Full Inventory
@@ -200,4 +199,3 @@ Generated file. Do not edit manually.
 | `scripts/areas/public/require-crate-docs.sh` | `platform` | `public` | `crate-structure` |
 | `scripts/areas/public/stack/build_stack_report.py` | `platform` | `public` | `stack-full` |
 | `scripts/areas/public/stack/validate_stack_report.py` | `platform` | `public` | `stack-full` |
-| `scripts/lib/errors.sh` | `platform` | `internal` | - |
