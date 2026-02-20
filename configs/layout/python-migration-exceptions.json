@@ -31,6 +31,33 @@
       "expires_on": "2026-06-30"
     },
     {
+      "id": "docs-direct-bash-transition",
+      "kind": "docs_direct_bash",
+      "path_glob": "docs/**",
+      "contains": "bash",
+      "owner": "bijux-atlas-platform",
+      "issue": "BATCH-A-DOCS-BASH-MIGRATION",
+      "expires_on": "2026-06-30"
+    },
+    {
+      "id": "makefiles-direct-bash-transition",
+      "kind": "makefiles_direct_bash",
+      "path_glob": "makefiles/*.mk",
+      "contains": "bash",
+      "owner": "bijux-atlas-platform",
+      "issue": "BATCH-A-MAKE-BASH-MIGRATION",
+      "expires_on": "2026-06-30"
+    },
+    {
+      "id": "makefile-direct-bash-transition",
+      "kind": "makefiles_direct_bash",
+      "path_glob": "Makefile",
+      "contains": "bash",
+      "owner": "bijux-atlas-platform",
+      "issue": "BATCH-A-MAKE-BASH-MIGRATION",
+      "expires_on": "2026-06-30"
+    },
+    {
       "id": "repo-python-scripts-path-transition",
       "kind": "python_scripts_path",
       "path_glob": "**",

@@ -99,6 +99,7 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@./scripts/areas/check/no-direct-path-usage.sh
 	@$(PY_RUN) scripts/areas/check/check-no-python-executable-outside-tools.py
 	@$(PY_RUN) scripts/areas/check/check-no-direct-python-invocations.py
+	@$(PY_RUN) scripts/areas/check/check-no-direct-bash-invocations.py
 	@$(PY_RUN) scripts/areas/check/check-python-migration-exceptions-expiry.py
 	@$(PY_RUN) scripts/areas/check/check-bijux-atlas-scripts-boundaries.py
 	@$(PY_RUN) scripts/areas/check/check-script-help.py
