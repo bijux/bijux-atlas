@@ -395,6 +395,18 @@ async fn policy_rejection_and_overload_emit_contract_metrics() {
         "response size histogram metric missing"
     );
     assert!(
+        metrics_after.contains("atlas_client_requests_total"),
+        "client fingerprint metric missing"
+    );
+    assert!(
+        metrics_after.contains("bijux_store_breaker_half_open_total"),
+        "store breaker half-open counter missing"
+    );
+    assert!(
+        metrics_after.contains("bijux_store_breaker_open_current"),
+        "store breaker current-open gauge missing"
+    );
+    assert!(
         metrics_after.contains("bijux_dataset_hits")
             || metrics_after.contains("bijux_dataset_misses"),
         "cache hit/miss metrics missing"

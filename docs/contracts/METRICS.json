@@ -38,6 +38,16 @@
     },
     {
       "labels": [
+        "client_type",
+        "dataset",
+        "subsystem",
+        "user_agent_family",
+        "version"
+      ],
+      "name": "atlas_client_requests_total"
+    },
+    {
+      "labels": [
         "dataset",
         "dataset_hash",
         "subsystem",
@@ -270,7 +280,23 @@
         "subsystem",
         "version"
       ],
+      "name": "bijux_store_breaker_half_open_total"
+    },
+    {
+      "labels": [
+        "dataset",
+        "subsystem",
+        "version"
+      ],
       "name": "bijux_store_breaker_open"
+    },
+    {
+      "labels": [
+        "dataset",
+        "subsystem",
+        "version"
+      ],
+      "name": "bijux_store_breaker_open_current"
     },
     {
       "labels": [

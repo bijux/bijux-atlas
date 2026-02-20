@@ -360,6 +360,54 @@ async fn query_budget_caps_return_expected_status_codes() {
 }
 
 #[tokio::test]
+async fn safety_valve_disables_heavy_endpoints_but_keeps_cheap_endpoints_available() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds, sqlite);
+    let tmp = tempdir().expect("tempdir");
+    let cache = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..DatasetCacheConfig::default()
+        },
+        store,
+    );
+    let api = ApiConfig {
+        disable_heavy_endpoints: true,
+        ..ApiConfig::default()
+    };
+    let app = build_router(AppState::with_config(cache, api, Default::default()));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind");
+    let addr = listener.local_addr().expect("addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (heavy_status, _, heavy_body) = send_raw(
+        addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&limit=1",
+        &[],
+    )
+    .await;
+    assert_eq!(heavy_status, 503);
+    let heavy_json: Value = serde_json::from_str(&heavy_body).expect("heavy error json");
+    let heavy_code = heavy_json
+        .get("error")
+        .and_then(|e| e.get("code"))
+        .and_then(Value::as_str)
+        .or_else(|| heavy_json.get("code").and_then(Value::as_str));
+    assert_eq!(
+        heavy_code,
+        Some("QueryRejectedByPolicy")
+    );
+
+    let (cheap_status, _, cheap_body) = send_raw(addr, "/v1/version", &[]).await;
+    assert_eq!(cheap_status, 200, "cheap endpoint should stay available");
+    assert!(cheap_body.contains("\"api_version\""));
+}
+
+#[tokio::test]
 async fn cheap_endpoint_remains_available_while_noncheap_is_shed() {
     let (ds, manifest, sqlite) = mk_dataset();
     let store = Arc::new(FakeStore::default());

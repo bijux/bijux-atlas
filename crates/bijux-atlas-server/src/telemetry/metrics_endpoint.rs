@@ -188,6 +188,7 @@ bijux_runtime_policy_hash{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n
         "bijux_store_open_failure_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_store_download_failure_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_store_breaker_open_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_store_breaker_half_open_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_store_retry_budget_exhausted_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_verify_marker_fast_path_hits_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_verify_full_hash_checks_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n",
@@ -214,6 +215,14 @@ bijux_verify_full_hash_checks_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{
             .cache
             .metrics
             .store_breaker_open_total
+            .load(Ordering::Relaxed),
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        state
+            .cache
+            .metrics
+            .store_breaker_half_open_total
             .load(Ordering::Relaxed),
         METRIC_SUBSYSTEM,
         METRIC_VERSION,
@@ -402,6 +411,7 @@ bijux_cheap_queries_served_while_overloaded_total{{subsystem=\"{}\",version=\"{}
 bijux_cached_only_mode{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_draining_mode{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_store_breaker_open{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
+bijux_store_breaker_open_current{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 bijux_request_queue_depth{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} {}\n\
 atlas_policy_relaxation_active{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",mode=\"{}\"}} {}\n\
 atlas_policy_violations_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",policy=\"all\"}} {}\n\
@@ -471,6 +481,10 @@ bijux_fs_space_pressure_events_total{{subsystem=\"{}\",version=\"{}\",dataset=\"
         METRIC_VERSION,
         METRIC_DATASET_ALL,
         draining_mode,
+        METRIC_SUBSYSTEM,
+        METRIC_VERSION,
+        METRIC_DATASET_ALL,
+        store_breaker_open,
         METRIC_SUBSYSTEM,
         METRIC_VERSION,
         METRIC_DATASET_ALL,
@@ -659,6 +673,7 @@ bijux_redis_cache_tracked_keys{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}}
 
     let req_counts = state.metrics.counts.lock().await.clone();
     let req_exemplars = state.metrics.exemplars.lock().await.clone();
+    let client_fingerprints = state.metrics.client_fingerprint_counts.lock().await.clone();
     for ((route, method, status, class), count) in req_counts {
         if state.api.enable_exemplars {
             if let Some((trace_id, ts_ms)) =
@@ -686,6 +701,14 @@ bijux_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=
                 METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, route, method, status, class, count
             ));
         }
+    }
+    let mut client_fingerprints_sorted = client_fingerprints.into_iter().collect::<Vec<_>>();
+    client_fingerprints_sorted.sort_by(|a, b| a.0.cmp(&b.0));
+    for ((client_type, ua_family), count) in client_fingerprints_sorted {
+        body.push_str(&format!(
+            "atlas_client_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",client_type=\"{}\",user_agent_family=\"{}\"}} {}\n",
+            METRIC_SUBSYSTEM, METRIC_VERSION, METRIC_DATASET_ALL, client_type, ua_family, count
+        ));
     }
     let req_lat = state.metrics.latency_ns.lock().await.clone();
     for (route, vals) in req_lat {

@@ -13,3 +13,10 @@ $ make ops-drill-memory-growth
 ```
 
 Canonical targets: `ops-smoke`, `ops-drill-rate-limit`, `ops-drill-memory-growth`.
+
+## Safety Valve Policy
+
+- Emergency heavy-endpoint safety valve: set `ATLAS_DISABLE_HEAVY_ENDPOINTS=1`.
+- When enabled, heavy endpoints return `503` with `QueryRejectedByPolicy` while cheap endpoints stay available.
+- Validate behavior via API contracts:
+  - `cargo test -p bijux-atlas-server --test api-contracts safety_valve_disables_heavy_endpoints_but_keeps_cheap_endpoints_available`
