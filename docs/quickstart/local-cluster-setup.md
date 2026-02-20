@@ -60,5 +60,5 @@ Provenance headers on responses:
 Run end-to-end local demo:
 
 ```sh
-./scripts/demo.sh
+make local-full
 ```
