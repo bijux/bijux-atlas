@@ -1,4 +1,22 @@
 {{- if .Values.hpa.enabled }}
+{{- if not .Values.metrics.customMetrics.enabled }}
+{{- fail "hpa.enabled=true requires metrics.customMetrics.enabled=true" }}
+{{- end }}
+{{- if gt (int .Values.hpa.minReplicas) (int .Values.hpa.maxReplicas) }}
+{{- fail "hpa.minReplicas must be <= hpa.maxReplicas" }}
+{{- end }}
+{{- if or (lt (int .Values.hpa.cpuUtilization) 1) (gt (int .Values.hpa.cpuUtilization) 100) }}
+{{- fail "hpa.cpuUtilization must be within 1..100" }}
+{{- end }}
+{{- if not .Values.serviceMonitor.enabled }}
+{{- fail "hpa.enabled=true requires serviceMonitor.enabled=true for metrics pipeline" }}
+{{- end }}
+{{- if not (hasKey .Values.metrics.customMetrics.requiredPodAnnotations "prometheus.io/scrape") }}
+{{- fail "hpa.enabled=true requires metrics.customMetrics.requiredPodAnnotations[\"prometheus.io/scrape\"]" }}
+{{- end }}
+{{- if not (hasKey .Values.metrics.customMetrics.requiredPodAnnotations "prometheus.io/path") }}
+{{- fail "hpa.enabled=true requires metrics.customMetrics.requiredPodAnnotations[\"prometheus.io/path\"]" }}
+{{- end }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
