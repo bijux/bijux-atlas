@@ -205,7 +205,7 @@ internal/ci/bin-shims:
 internal/ci/scripts-ssot-final:
 	@STRICT_SCRIPTS_SUNSET="$${STRICT_SCRIPTS_SUNSET:-0}"; \
 	if [ "$$STRICT_SCRIPTS_SUNSET" = "1" ]; then \
-		./bin/bijux-atlas run ./scripts/areas/check/check-scripts-ssot-final.py; \
+		./bin/bijux-atlas migration gate; \
 	else \
 		echo "scripts SSOT final gate skipped (set STRICT_SCRIPTS_SUNSET=1 to enforce)"; \
 	fi
