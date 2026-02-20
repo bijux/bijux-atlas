@@ -22,7 +22,7 @@ Stale endpoint examples cause false troubleshooting paths.
 
 ## How to verify
 ```bash
-$ python3 scripts/areas/docs/extract_code_blocks.py
+$ atlasctl docs extract-code --report text
 $ python3 scripts/areas/docs/run_blessed_snippets.py
 ```
 

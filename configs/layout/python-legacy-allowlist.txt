@@ -162,8 +162,6 @@ scripts/areas/docs/check_public_targets_docs_sections.py
 scripts/areas/docs/check_no_removed_make_targets.py
 scripts/areas/docs/check_script_headers.py
 scripts/areas/docs/check_suite_id_docs.py
-scripts/areas/docs/check_terminology_units_ssot.py
-scripts/areas/docs/extract_code_blocks.py
 scripts/areas/docs/generate_chart_contract_index.py
 scripts/areas/docs/generate_concept_graph.py
 scripts/areas/docs/generate_config_keys_doc.py
@@ -187,11 +185,8 @@ scripts/areas/docs/generate_runbook_map_index.py
 scripts/areas/docs/generate_scripts_graph.py
 scripts/areas/docs/lint_depth.py
 scripts/areas/docs/lint_doc_contracts.py
-scripts/areas/docs/lint_doc_status.py
-scripts/areas/docs/lint_glossary_links.py
 scripts/areas/docs/rewrite_legacy_terms.py
 scripts/areas/docs/run_blessed_snippets.py
-scripts/areas/docs/spellcheck_docs.py
 scripts/areas/gen/generate_scripts_readme.py
 scripts/areas/gen/generate_scripts_surface.py
 scripts/areas/internal/__init__.py

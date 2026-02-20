@@ -102,9 +102,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_reference_templates.sh` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_script_headers.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_suite_id_docs.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_terminology_units_ssot.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_title_case.sh` | `docs-governance` | `public` | `docs-build` |
-| `scripts/areas/docs/extract_code_blocks.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_chart_contract_index.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_concept_graph.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_config_keys_doc.py` | `docs-governance` | `public` | - |
@@ -129,12 +126,9 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/legacy-terms-allowlist.txt` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/lint_depth.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/lint_doc_contracts.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/lint_doc_status.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/lint_glossary_links.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/render_diagrams.sh` | `docs-governance` | `public` | `docs-build` |
 | `scripts/areas/docs/rewrite_legacy_terms.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/run_blessed_snippets.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/spellcheck_docs.py` | `docs-governance` | `public` | - |
 | `scripts/areas/fixtures/derive-release-111.sh` | `dataset-ops` | `internal` | - |
 | `scripts/areas/fixtures/fetch-medium.sh` | `dataset-ops` | `public` | `fetch-fixtures`, `ops-publish-medium` |
 | `scripts/areas/fixtures/fetch-real-datasets.sh` | `dataset-ops` | `public` | `fetch-real-datasets` |
