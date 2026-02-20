@@ -88,8 +88,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/generate_repo_surface.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_scripts_graph.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/legacy-terms-allowlist.txt` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/lint_depth.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/lint_doc_contracts.py` | `docs-governance` | `public` | - |
 | `scripts/areas/fixtures/derive-release-111.sh` | `dataset-ops` | `internal` | - |
 | `scripts/areas/fixtures/fetch-medium.sh` | `dataset-ops` | `public` | `fetch-fixtures`, `ops-publish-medium` |
 | `scripts/areas/fixtures/fetch-real-datasets.sh` | `dataset-ops` | `public` | `fetch-real-datasets` |
