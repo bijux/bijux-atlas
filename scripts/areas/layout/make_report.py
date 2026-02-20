@@ -70,6 +70,10 @@ def build_unified(run_id: str) -> dict:
                 "p95_max_ms": max(p95s),
                 "p99_max_ms": max(p99s) if p99s else 0.0,
             }
+    graceful_degradation = {"status": "fail", "score_percent": 0.0, "total_considered": 0, "failed": 0}
+    gd_path = ROOT / "artifacts" / "evidence" / "k8s" / run_id / "graceful-degradation-score.json"
+    if gd_path.exists():
+        graceful_degradation = json.loads(gd_path.read_text(encoding="utf-8"))
     return {
         "schema_version": 1,
         "run_id": run_id,
@@ -78,6 +82,7 @@ def build_unified(run_id: str) -> dict:
         "summary": summary,
         "budget_status": budget_status,
         "perf_summary": perf_summary,
+        "graceful_degradation": graceful_degradation,
     }
 
 

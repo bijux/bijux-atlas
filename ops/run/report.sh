@@ -85,6 +85,7 @@ payload = {
         "failed_lanes": sorted(failed_budget),
     },
     "perf_summary": {"suite_count": 0, "p95_max_ms": 0.0, "p99_max_ms": 0.0},
+    "graceful_degradation": {"status": "fail", "score_percent": 0.0, "total_considered": 0, "failed": 0},
 }
 
 perf_raw = root / "artifacts/evidence/perf" / run_id / "raw"
@@ -102,6 +103,10 @@ if perf_raw.exists():
             "p95_max_ms": max(p95s),
             "p99_max_ms": max(p99s) if p99s else 0.0,
         }
+
+gd_path = root / "artifacts/evidence/k8s" / run_id / "graceful-degradation-score.json"
+if gd_path.exists():
+    payload["graceful_degradation"] = json.loads(gd_path.read_text(encoding="utf-8"))
 
 schema = json.loads(schema_path.read_text(encoding='utf-8'))
 for key in schema.get("required", []):

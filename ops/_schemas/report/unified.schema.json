@@ -52,6 +52,17 @@
         "p95_max_ms": {"type": "number", "minimum": 0},
         "p99_max_ms": {"type": "number", "minimum": 0}
       }
+    },
+    "graceful_degradation": {
+      "type": "object",
+      "required": ["status", "score_percent", "total_considered", "failed"],
+      "additionalProperties": true,
+      "properties": {
+        "status": {"type": "string", "enum": ["pass", "fail"]},
+        "score_percent": {"type": "number", "minimum": 0, "maximum": 100},
+        "total_considered": {"type": "integer", "minimum": 0},
+        "failed": {"type": "integer", "minimum": 0}
+      }
     }
   }
 }
