@@ -10,7 +10,7 @@ root = Path(__file__).resolve().parents[2]
 exempt = {
     "docs/development/symlinks.md",
     "docs/development/root-inventory.md",
-    "scripts/areas/layout/check_chart_canonical_path.sh",
+    "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_chart_canonical_path.sh",
 }
 
 violations = []

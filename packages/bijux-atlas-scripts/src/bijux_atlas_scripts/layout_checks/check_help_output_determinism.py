@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-CMD = ["python3", "./scripts/areas/layout/render_public_help.py"]
+CMD = ["python3", "./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/render_public_help.py"]
 
 
 def main() -> int:

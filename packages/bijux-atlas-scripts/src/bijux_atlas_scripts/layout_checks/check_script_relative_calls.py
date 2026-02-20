@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 allowed = (
-    "scripts/areas/layout/",
+    "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/",
         "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/",
     "scripts/tooling/",
     "scripts/areas/tools/",
@@ -22,7 +22,7 @@ allowed = (
     "scripts/areas/public/no-network-unit-tests.sh",
     "scripts/README.md",
     "scripts/INDEX.md",
-    "scripts/areas/layout/check_no_root_dumping.sh",
+    "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_no_root_dumping.sh",
     "ops/load/scripts/",
     "ops/obs/scripts/",
     "ops/run/",

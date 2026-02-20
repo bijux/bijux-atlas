@@ -20,11 +20,11 @@ class Check:
 CHECKS = [
     Check("generate-layer-contract", ["python3", "ops/_meta/generate_layer_contract.py"]),
     Check("check-layer-contract-drift", ["python3", "ops/_lint/check_layer_contract_drift.py"]),
-    Check("check-layer-drift-static", ["python3", "scripts/areas/layout/check_layer_drift.py"]),
-    Check("validate-ops-contracts", ["python3", "scripts/areas/layout/validate_ops_contracts.py"]),
+    Check("check-layer-drift-static", ["python3", "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_layer_drift.py"]),
+    Check("validate-ops-contracts", ["python3", "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/validate_ops_contracts.py"]),
     Check("check-literals", ["python3", "ops/_lint/no-layer-literals.py"]),
     Check("check-stack-literals", ["python3", "ops/_lint/no-stack-layer-literals.py"]),
-    Check("check-no-hidden-defaults", ["python3", "scripts/areas/layout/check_no_hidden_defaults.py"]),
+    Check("check-no-hidden-defaults", ["python3", "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_no_hidden_defaults.py"]),
     Check("check-k8s-layer-contract", ["ops/k8s/tests/checks/obs/test_layer_contract_render.sh"]),
     Check("check-live-layer-contract", ["ops/stack/tests/validate_live_snapshot.sh"]),
 ]

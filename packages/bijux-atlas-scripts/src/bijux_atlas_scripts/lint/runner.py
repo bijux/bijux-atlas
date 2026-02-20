@@ -33,8 +33,8 @@ def suites(repo_root: Path) -> dict[str, list[LintCheck]]:
             LintCheck("repo/no-bin-symlinks", ["bash", "ops/_lint/no-bin-symlinks.sh"]),
         ],
         "makefiles": [
-            LintCheck("makefiles/safety", _py("scripts/areas/layout/check_make_safety.py")),
-            LintCheck("makefiles/public-scripts", _py("scripts/areas/layout/check_make_public_scripts.py")),
+            LintCheck("makefiles/safety", _py("packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_make_safety.py")),
+            LintCheck("makefiles/public-scripts", _py("packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_make_public_scripts.py")),
         ],
         "docs": [
             LintCheck("docs/check", ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "check", "--report", "json"]),

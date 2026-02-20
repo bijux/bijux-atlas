@@ -29,7 +29,7 @@ Does not duplicate script implementation details.
 - Observability checks: `packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/`
 - Fixtures/data helpers: `ops/datasets/scripts/fixtures/`
 - Release compatibility matrix automation: `atlasctl compat update-matrix|validate-matrix`
-- Layout checks/migrations: `scripts/areas/layout/`
+- Layout checks/migrations: `packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/`
 - Runtime helpers: `atlasctl env ...` and ops-native script entrypoints under `ops/`
 
 ## Failure modes
