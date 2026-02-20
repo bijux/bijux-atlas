@@ -159,22 +159,7 @@ Generated file. Do not edit manually.
 | `scripts/areas/public/perf/check_regression.py` | `platform` | `public` | - |
 | `scripts/areas/public/perf/check_runbook_suite_names.py` | `platform` | `public` | - |
 | `scripts/areas/public/perf/check_spike_assertions.py` | `platform` | `public` | `ops-load-spike-proof` |
-| `scripts/areas/public/perf/cold_start_benchmark.sh` | `platform` | `public` | - |
-| `scripts/areas/public/perf/cold_start_prefetch_5pods.sh` | `platform` | `public` | - |
-| `scripts/areas/public/perf/compare_redis.sh` | `platform` | `public` | - |
-| `scripts/areas/public/perf/generate_report.py` | `platform` | `public` | - |
-| `scripts/areas/public/perf/load_under_rollback.sh` | `platform` | `public` | - |
-| `scripts/areas/public/perf/load_under_rollout.sh` | `platform` | `public` | - |
-| `scripts/areas/public/perf/prepare_perf_store.sh` | `platform` | `public` | - |
 | `scripts/areas/public/perf/run_critical_queries.py` | `platform` | `public` | `critical-query-check` |
-| `scripts/areas/public/perf/run_e2e_perf.sh` | `platform` | `public` | - |
-| `scripts/areas/public/perf/run_nightly_perf.sh` | `platform` | `public` | - |
-| `scripts/areas/public/perf/run_suite.sh` | `platform` | `public` | - |
-| `scripts/areas/public/perf/run_suites_from_manifest.py` | `platform` | `public` | - |
-| `scripts/areas/public/perf/score_k6.py` | `platform` | `public` | - |
-| `scripts/areas/public/perf/update_baseline.sh` | `platform` | `public` | - |
-| `scripts/areas/public/perf/validate_results.py` | `platform` | `public` | - |
-| `scripts/areas/public/perf/validate_suite_manifest.py` | `platform` | `public` | - |
 | `scripts/areas/public/policy-audit.py` | `platform` | `public` | `policy-audit` |
 | `scripts/areas/public/policy-lint.sh` | `platform` | `public` | `_lint-configs`, `policy-lint` |
 | `scripts/areas/public/qc-fixtures-gate.sh` | `platform` | `public` | `ci-qc-fixtures` |
