@@ -35,6 +35,12 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         )
     if sub == "stack-report":
         return _run(ctx, ["python3", "scripts/areas/public/stack/validate_stack_report.py"])
+    if sub == "cli-help":
+        return _run(ctx, ["python3", "scripts/areas/check/check-script-help.py"])
+    if sub == "ownership":
+        return _run(ctx, ["python3", "scripts/areas/check/check-script-ownership.py"])
+    if sub == "duplicate-script-names":
+        return _run(ctx, ["python3", "scripts/areas/check/check_duplicate_script_names.py"])
     return 2
 
 
@@ -47,3 +53,6 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     p_sub.add_parser("configs", help="run configs checks")
     p_sub.add_parser("obs", help="run observability checks")
     p_sub.add_parser("stack-report", help="validate stack report contracts")
+    p_sub.add_parser("cli-help", help="validate script/CLI help coverage")
+    p_sub.add_parser("ownership", help="validate script ownership coverage")
+    p_sub.add_parser("duplicate-script-names", help="validate duplicate script names")
