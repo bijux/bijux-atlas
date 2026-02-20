@@ -41,15 +41,12 @@ docs-build: ## Build docs + link-check + spell-check + lint
 	@./bin/bijux-atlas run scripts/areas/ops/generate_k8s_test_surface.py
 	@./bin/bijux-atlas run scripts/areas/docs/generate_runbook_map_index.py
 	@./bin/bijux-atlas run scripts/areas/docs/check_concept_registry.py
-	@./scripts/areas/docs/render_diagrams.sh
+	@./bin/bijux-atlas docs render-diagrams --report text
 	@./bin/bijux-atlas run scripts/areas/docs/lint_doc_status.py
 	@SOURCE_DATE_EPOCH=946684800 "$(DOCS_VENV)/bin/mkdocs" build --strict --config-file mkdocs.yml --site-dir "$(DOCS_SITE)"
 	@./bin/bijux-atlas run scripts/areas/docs/check_mkdocs_site_links.py "$(DOCS_SITE)"
-	@./bin/bijux-atlas run scripts/areas/docs/spellcheck_docs.py docs
-	@./scripts/areas/docs/check_doc_naming.sh
-	@./scripts/areas/docs/ban_legacy_terms.sh
-	@./scripts/areas/docs/check_index_pages.sh
-	@./scripts/areas/docs/check_title_case.sh
+	@./bin/bijux-atlas docs lint-spelling --path docs --report text
+	@./bin/bijux-atlas docs lint --report text
 	@./bin/bijux-atlas run scripts/areas/docs/check_no_orphan_docs.py
 	@./bin/bijux-atlas run scripts/areas/docs/check_ops_observability_links.py
 	@./bin/bijux-atlas run scripts/areas/docs/lint_doc_contracts.py
@@ -71,11 +68,9 @@ docs-build: ## Build docs + link-check + spell-check + lint
 	@./bin/bijux-atlas run scripts/areas/docs/check_terminology_units_ssot.py
 	@./bin/bijux-atlas run scripts/areas/docs/lint_glossary_links.py
 	@./bin/bijux-atlas run scripts/areas/docs/lint_depth.py
-	@./bin/bijux-atlas run scripts/areas/docs/extract_code_blocks.py
+	@./bin/bijux-atlas docs extract-code --report text
 	@./bin/bijux-atlas run scripts/areas/docs/run_blessed_snippets.py
-	@./scripts/areas/public/check-markdown-links.sh
-	@./scripts/areas/docs/check_duplicate_topics.sh
-	@./scripts/areas/docs/check_crate_docs_contract.sh
+	@./bin/bijux-atlas docs link-check --report text
 	@./bin/bijux-atlas run scripts/areas/docs/check_script_headers.py
 	@./bin/bijux-atlas run scripts/areas/docs/check_make_targets_documented.py
 	@./bin/bijux-atlas run scripts/areas/docs/check_public_targets_docs_sections.py
@@ -124,7 +119,7 @@ internal/docs/build: ## Build docs artifacts
 	@$(MAKE) docs-build
 
 internal/docs/fmt: ## Docs formatting helpers
-	@./scripts/areas/docs/render_diagrams.sh
+	@./bin/bijux-atlas docs render-diagrams --report text
 
 internal/docs/lint: ## Docs lint checks
 	@$(MAKE) docs-lint-names

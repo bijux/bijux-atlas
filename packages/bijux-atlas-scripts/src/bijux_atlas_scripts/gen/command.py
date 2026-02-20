@@ -19,6 +19,12 @@ def run_gen_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _run(ctx, ["bash", "scripts/areas/internal/openapi-generate.sh"])
     if sub == "ops-surface":
         return _run(ctx, ["python3", "scripts/areas/layout/generate_ops_surface_meta.py"])
+    if sub == "make-targets":
+        return _run(ctx, ["python3", "scripts/areas/docs/generate_make_targets_inventory.py"])
+    if sub == "surface":
+        return _run(ctx, ["python3", "scripts/areas/docs/generate_repo_surface.py"])
+    if sub == "scripting-surface":
+        return _run(ctx, ["python3", "scripts/areas/gen/generate_scripts_surface.py"])
     return 2
 
 
@@ -28,3 +34,6 @@ def configure_gen_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     p_sub.add_parser("contracts", help="generate contracts artifacts")
     p_sub.add_parser("openapi", help="generate openapi snapshot and telemetry artifacts")
     p_sub.add_parser("ops-surface", help="generate ops surface metadata")
+    p_sub.add_parser("make-targets", help="generate make targets inventory artifacts")
+    p_sub.add_parser("surface", help="generate repo public surface artifacts")
+    p_sub.add_parser("scripting-surface", help="generate scripts/CLI surface artifacts")

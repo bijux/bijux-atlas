@@ -332,6 +332,15 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print(json.dumps(payload, sort_keys=True) if ns.report == "json" else payload["output"])
         return 0
 
+    if ns.docs_cmd == "extract-code":
+        return _run_simple(ctx, ["python3", "scripts/areas/docs/extract_code_blocks.py"], ns.report)
+
+    if ns.docs_cmd == "render-diagrams":
+        return _run_simple(ctx, ["bash", "scripts/areas/docs/render_diagrams.sh"], ns.report)
+
+    if ns.docs_cmd == "lint-spelling":
+        return _run_simple(ctx, ["python3", "scripts/areas/docs/spellcheck_docs.py", ns.path], ns.report)
+
     return 2
 
 
@@ -363,6 +372,9 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("runbook-map", "validate or generate docs runbook map index"),
         ("evidence-policy-page", "generate docs evidence policy page"),
         ("inventory", "generate docs command inventory page"),
+        ("extract-code", "extract code blocks from docs"),
+        ("render-diagrams", "render docs diagrams"),
+        ("lint-spelling", "run docs spelling checks"),
     ):
         cmd = docs_sub.add_parser(name, help=help_text)
         cmd.add_argument("--report", choices=["text", "json"], default="text")
@@ -371,3 +383,5 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
             cmd.add_argument("--out")
         if name == "evidence-policy-page":
             cmd.add_argument("--out")
+        if name == "lint-spelling":
+            cmd.add_argument("--path", default="docs")

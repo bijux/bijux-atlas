@@ -175,6 +175,9 @@ ci-ops-doc-duplication:
 ci-docs-make-only-ops:
 	@python3 ./scripts/areas/docs/check_docs_make_only_ops.py
 
+internal/ci/scripts-group:
+	@./bin/bijux-atlas ci scripts
+
 ci-forbid-raw-paths:
 	@./scripts/areas/layout/check_no_forbidden_paths.sh
 
@@ -191,8 +194,9 @@ internal/ci/docs-old-script-paths:
 	@./bin/bijux-atlas compat check --include-docs
 
 internal/ci/bin-shims:
-	@python3 ./scripts/areas/check/check-script-shim-expiry.py
-	@python3 ./scripts/areas/check/check-script-shims-minimal.py
+	@./bin/bijux-atlas check cli-help
+	@./bin/bijux-atlas check ownership
+	@./bin/bijux-atlas check duplicate-script-names
 	@./bin/bijux-atlas --help >/dev/null
 
 internal/ci/scripts-ssot-final:

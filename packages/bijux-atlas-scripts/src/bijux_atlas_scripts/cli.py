@@ -10,6 +10,7 @@ from pathlib import Path
 
 from . import contracts, layout, registry
 from .compat.command import configure_compat_parser, run_compat_command
+from .ci.command import configure_ci_parser, run_ci_command
 from .check.command import configure_check_parser, run_check_command
 from .configs.command import configure_configs_parser, run_configs_command
 from .core.context import RunContext
@@ -91,6 +92,7 @@ def build_parser() -> argparse.ArgumentParser:
     for name in domain_names:
         register_domain_parser(sub, name, f"{name} domain commands")
     configure_configs_parser(sub)
+    configure_ci_parser(sub)
     configure_check_parser(sub)
     configure_gen_parser(sub)
     configure_policies_parser(sub)
@@ -313,6 +315,8 @@ def main(argv: list[str] | None = None) -> int:
             return run_docs_command(ctx, ns)
         if ns.cmd == "configs":
             return run_configs_command(ctx, ns)
+        if ns.cmd == "ci":
+            return run_ci_command(ctx, ns)
         if ns.cmd == "check":
             return run_check_command(ctx, ns)
         if ns.cmd == "gen":
