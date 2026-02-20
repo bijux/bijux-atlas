@@ -21,6 +21,7 @@ Generated from `ops/k8s/tests/manifest.json` entries tagged with `chart-contract
 | `checks/obs/test_values_profiles_are_valid.sh` | `chart` | 240 | `invalid_values_profile` |
 | `checks/obs/test_values_schema_strict.sh` | `chart` | 120 | `values_schema_not_strict` |
 | `checks/perf/test_hpa_behavior_contract.sh` | `chart` | 120 | `hpa_behavior_contract_drift` |
+| `checks/perf/test_hpa_max_replicas_cap.sh` | `chart` | 120 | `hpa_max_replicas_cap_exceeded` |
 | `checks/perf/test_hpa_metrics_names_contract.sh` | `chart` | 120 | `hpa_metric_names_contract_drift` |
 | `checks/security/test_image_digest_policy.sh` | `chart` | 120 | `image_digest_policy_violation` |
 

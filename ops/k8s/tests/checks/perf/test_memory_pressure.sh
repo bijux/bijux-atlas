@@ -18,5 +18,14 @@ restarts_now="$(kubectl -n "$NS" get pod "$pod_now" -o jsonpath='{.status.contai
 # recover to baseline and ensure service stabilizes
 helm upgrade "$RELEASE" "$CHART" -n "$NS" -f "$VALUES" >/dev/null
 wait_ready
+kubectl -n "$NS" get pod "$pod_now" -o jsonpath='{.status.phase}' >/dev/null 2>&1 || true
+if [ "${restarts_now:-0}" -lt "${start_restarts:-0}" ]; then
+  echo "failure_mode: memory_pressure_restart_counter_invalid" >&2
+  exit 1
+fi
+if ! kubectl -n "$NS" get events --sort-by=.lastTimestamp | grep -Eq 'OOMKilled|Evicted|Killing'; then
+  echo "failure_mode: memory_pressure_no_signal_observed" >&2
+  exit 1
+fi
 
-echo "memory pressure simulation passed (restarts: $start_restarts -> $restarts_now)"
+echo "memory pressure OOM/restart safety contract passed (restarts: $start_restarts -> $restarts_now)"
