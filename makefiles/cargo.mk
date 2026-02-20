@@ -176,7 +176,7 @@ _audit:
 		echo "cargo-deny is required for stable toolchain. Installing..." >&2; \
 		cargo +stable install cargo-deny --locked; \
 	fi
-	@cargo +stable deny --config configs/security/deny.toml check
+	@cargo +stable deny check --config configs/security/deny.toml
 
 ci-core: internal/cargo/fmt internal/cargo/lint internal/cargo/audit internal/cargo/test coverage
 

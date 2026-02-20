@@ -25,7 +25,7 @@ ci-test-nextest:
 
 ci-deny:
 	@if ! cargo +stable deny --version >/dev/null 2>&1; then cargo +stable install cargo-deny --locked; fi
-	@cargo +stable deny check
+	@cargo +stable deny check --config configs/security/deny.toml
 
 ci-audit:
 	@if ! cargo audit --version >/dev/null 2>&1; then cargo install cargo-audit --locked; fi
@@ -33,7 +33,7 @@ ci-audit:
 
 ci-license-check:
 	@if ! cargo +stable deny --version >/dev/null 2>&1; then cargo +stable install cargo-deny --locked; fi
-	@cargo +stable deny check licenses
+	@cargo +stable deny check licenses --config configs/security/deny.toml
 
 ci-policy-lint:
 	@$(MAKE) policy-lint
