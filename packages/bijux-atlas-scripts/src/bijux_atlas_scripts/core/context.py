@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Literal
 
 from .git import read_git_context
+from .paths import find_repo_root
 
 OutputFormat = Literal["text", "json"]
 NetworkMode = Literal["allow", "forbid"]
@@ -42,7 +43,7 @@ class RunContext:
         quiet: bool = False,
         require_clean_git: bool = False,
     ) -> "RunContext":
-        repo_root = Path(__file__).resolve().parents[5]
+        repo_root = find_repo_root()
         git_ctx = read_git_context(repo_root)
         default_run = f"atlas-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S')}-{git_ctx.sha}"
         resolved_run_id = run_id or os.environ.get("RUN_ID", default_run)

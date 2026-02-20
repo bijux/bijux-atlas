@@ -12,6 +12,7 @@ from .compat.command import configure_compat_parser, run_compat_command
 from .configs.command import configure_configs_parser, run_configs_command
 from .core.context import RunContext
 from .core.fs import ensure_evidence_path
+from .core.env_guard import guard_no_network_mode
 from .core.logging import log_event
 from .docs.command import configure_docs_parser, run_docs_command
 from .doctor import run_doctor
@@ -183,6 +184,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     restore_network = None
     if ctx.no_network:
+        guard_no_network_mode(True)
         restore_network = install_no_network_guard()
     try:
         if ctx.require_clean_git and ctx.git_dirty:

@@ -4,8 +4,10 @@ import inspect
 import json
 import sys
 from datetime import datetime, timezone
+from typing import TYPE_CHECKING
 
-from .context import RunContext
+if TYPE_CHECKING:
+    from .context import RunContext
 
 
 def log_event(ctx: RunContext, level: str, component: str, action: str, **fields: object) -> None:
