@@ -307,3 +307,6 @@ packages/bijux-atlas-scripts/tests/test_report_command.py
 python-toolchain.toml
 xtask/src/main.rs
 configs/layout/scripts-references-allowlist.txt
+packages/bijux-atlas-scripts/tests/test_refgrade_proof.py
+docs/architecture/scripting.md
+configs/repo/root-files-allowlist.txt

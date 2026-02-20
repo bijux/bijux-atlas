@@ -6,7 +6,7 @@ import sys
 
 from python_migration_exceptions import find_matching_exception
 
-TOOLS_PREFIX = "tools/bijux-atlas-scripts/"
+PACKAGE_PREFIX = "packages/bijux-atlas-scripts/"
 
 
 def main() -> int:
@@ -24,7 +24,7 @@ def main() -> int:
         _stage, rel = _stage_and_path.split("\t", 1)
         if mode != "100755":
             continue
-        if rel.startswith(TOOLS_PREFIX):
+        if rel.startswith(PACKAGE_PREFIX):
             continue
         if "/tests/" in rel:
             continue
@@ -35,7 +35,7 @@ def main() -> int:
     if errors:
         print("python executable placement check failed:", file=sys.stderr)
         for rel in errors:
-            print(f"- executable .py outside tools package: {rel}", file=sys.stderr)
+            print(f"- executable .py outside scripts package: {rel}", file=sys.stderr)
         return 1
 
     print("python executable placement check passed")

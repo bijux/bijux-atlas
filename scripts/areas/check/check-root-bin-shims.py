@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[3]
 BIN = ROOT / "bin"
 MAX_LINES = 30
 ALLOWED = re.compile(
-    r"^(#!|set -euo pipefail|set -eu|ROOT=|PYTHONPATH=|\s*exec python3 -m bijux_atlas_scripts\.cli \"\$@\"|exec \".*/bijux-atlas\" make (explain|graph|help) \"\$@\"|\s*$)"
+    r"^(#!|# DEPRECATED:|# Migration:|echo \"DEPRECATED: .*\" >&2|set -euo pipefail|set -eu|ROOT=|PYTHONPATH=|\s*exec python3 -m bijux_atlas_scripts\.cli \"\$@\"|exec \".*/bijux-atlas\" make (explain|graph|help) \"\$@\"|\s*$)"
 )
 
 
