@@ -71,6 +71,7 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(PYRUN) scripts/areas/check/check-no-python-executable-outside-tools.py
 	@$(PYRUN) scripts/areas/check/check-no-direct-python-invocations.py
 	@$(PYRUN) scripts/areas/check/check-python-migration-exceptions-expiry.py
+	@$(PYRUN) scripts/areas/check/check-bijux-atlas-scripts-boundaries.py
 	@$(PYRUN) scripts/areas/check/check-script-help.py
 	@$(PYRUN) scripts/areas/check/check-script-errors.py
 	@$(PYRUN) scripts/areas/check/check-script-write-roots.py
