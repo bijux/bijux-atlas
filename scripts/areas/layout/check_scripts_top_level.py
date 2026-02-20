@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 SCRIPTS = ROOT / "scripts"
-ALLOWED = {"README.md", "INDEX.md", "bin", "areas", "lib"}
+ALLOWED = {"README.md", "INDEX.md", "DEPRECATED.md", "bin", "areas", "lib"}
 
 
 def main() -> int:
