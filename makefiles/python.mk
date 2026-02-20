@@ -3,7 +3,8 @@
 SHELL := /bin/sh
 
 ATLAS_SCRIPTS ?= ./bin/bijux-atlas
-PY_RUN ?= $(ATLAS_SCRIPTS) run
+SCRIPTS ?= $(ATLAS_SCRIPTS)
+PY_RUN ?= $(SCRIPTS) run
 
 internal/scripts/cli-check:
 	@[ -x "$(ATLAS_SCRIPTS)" ] || { \

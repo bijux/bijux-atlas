@@ -6,7 +6,14 @@ import subprocess
 
 from ..core.context import RunContext
 from ..lint.runner import run_suite
-from .native import check_duplicate_script_names, check_no_xtask_refs, check_script_help, check_script_ownership
+from .native import (
+    check_duplicate_script_names,
+    check_make_forbidden_paths,
+    check_make_help,
+    check_no_xtask_refs,
+    check_script_help,
+    check_script_ownership,
+)
 
 
 def _run(ctx: RunContext, cmd: list[str]) -> int:
@@ -65,6 +72,25 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return code
     if sub == "make-scripts-refs":
         return _run(ctx, ["python3", "scripts/areas/check/check-no-make-scripts-references.py"])
+    if sub == "make-help":
+        code, errors = check_make_help(ctx.repo_root)
+        if errors:
+            for err in errors:
+                print(err)
+        else:
+            print("make help output is deterministic")
+        return code
+    if sub == "forbidden-paths":
+        code_script_refs = _run(ctx, ["python3", "scripts/areas/check/check-no-make-scripts-references.py"])
+        code_paths, errors = check_make_forbidden_paths(ctx.repo_root)
+        if errors:
+            print("forbidden make recipe paths detected:")
+            for err in errors:
+                print(f"- {err}")
+        if code_script_refs == 0 and code_paths == 0:
+            print("make forbidden path checks passed")
+            return 0
+        return 1
     if sub == "no-xtask":
         code, errors = check_no_xtask_refs(ctx.repo_root)
         if errors:
@@ -90,4 +116,6 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     p_sub.add_parser("ownership", help="validate script ownership coverage")
     p_sub.add_parser("duplicate-script-names", help="validate duplicate script names")
     p_sub.add_parser("make-scripts-refs", help="validate no makefile references to scripts paths")
+    p_sub.add_parser("make-help", help="validate deterministic make help output")
+    p_sub.add_parser("forbidden-paths", help="forbid scripts/xtask/tools direct recipe paths")
     p_sub.add_parser("no-xtask", help="forbid xtask references outside ADR history")
