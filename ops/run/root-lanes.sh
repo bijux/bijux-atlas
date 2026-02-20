@@ -4,13 +4,15 @@ set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
 cd "$ROOT"
 . "$ROOT/ops/_lib/common.sh"
+RUN_ID="${RUN_ID:-root-lanes-$(date -u +%Y%m%dT%H%M%SZ)}"
+export OPS_RUN_ID="${OPS_RUN_ID:-$RUN_ID}"
+export OPS_RUN_DIR="${OPS_RUN_DIR:-$ROOT/artifacts/ops/$OPS_RUN_ID}"
 ops_env_load
 ops_entrypoint_start "ops-root-lanes"
 ops_version_guard python3
 
 MODE="${MODE:-root-local}"
 PARALLEL="${PARALLEL:-1}"
-RUN_ID="${RUN_ID:-root-lanes-$(date -u +%Y%m%dT%H%M%SZ)}"
 SUMMARY_RUN_ID="${SUMMARY_RUN_ID:-$RUN_ID}"
 OPEN_SUMMARY="${OPEN_SUMMARY:-0}"
 SOURCE_RUN_ID="${SOURCE_RUN_ID:-}"
@@ -360,7 +362,13 @@ case "$MODE" in
     if [ -z "${RUN_ID:-}" ] || [ "$RUN_ID" = "root-lanes-$(date -u +%Y%m%dT%H%M%SZ)" ]; then
       RUN_ID="${SOURCE_RUN_ID}-rerun-$(date -u +%Y%m%dT%H%M%SZ)"
     fi
-    mapfile -t failed_lanes < <(collect_failed_lanes_from_run "$SOURCE_RUN_ID")
+    failed_lanes=()
+    while IFS= read -r lane; do
+      [ -n "$lane" ] || continue
+      failed_lanes+=("$lane")
+    done <<EOF
+$(collect_failed_lanes_from_run "$SOURCE_RUN_ID")
+EOF
     if [ "${#failed_lanes[@]}" -eq 0 ]; then
       echo "no failed lanes for run_id=${SOURCE_RUN_ID}"
       exit 0
