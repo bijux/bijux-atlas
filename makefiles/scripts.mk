@@ -65,10 +65,10 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
 	@if command -v shellcheck >/dev/null 2>&1; then find packages/atlasctl/src/atlasctl/layout_checks -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional for local scripts lint)"; fi
 	@if command -v shfmt >/dev/null 2>&1; then shfmt -d scripts ops/load/scripts; else echo "shfmt not installed (optional)"; fi
-	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/ruff" check packages/atlasctl/src packages/atlasctl/tests
+	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/ruff" check --config packages/atlasctl/pyproject.toml packages/atlasctl/src packages/atlasctl/tests
 
 scripts-format: ## Format scripts (python + shell where available)
-	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/ruff" format packages/atlasctl/src packages/atlasctl/tests
+	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/ruff" format --config packages/atlasctl/pyproject.toml packages/atlasctl/src packages/atlasctl/tests
 	@if command -v shfmt >/dev/null 2>&1; then find scripts ops/load/scripts -type f -name '*.sh' -print0 | xargs -0 shfmt -w; else echo "shfmt not installed (optional)"; fi
 
 internal/scripts/fmt-alias: ## Alias for scripts-format
@@ -82,7 +82,7 @@ scripts-test: ## Run scripts-focused tests
 	@$(PY_RUN) ops/load/scripts/validate_suite_manifest.py
 	@$(PY_RUN) ops/load/scripts/check_pinned_queries_lock.py
 	@$(MAKE) -s internal/scripts/install-lock
-	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/ruff" check packages/atlasctl/src packages/atlasctl/tests
+	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/ruff" check --config packages/atlasctl/pyproject.toml packages/atlasctl/src packages/atlasctl/tests
 	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/mypy" --ignore-missing-imports packages/atlasctl/tests
 	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/pytest" -q packages/atlasctl/tests
 	@$(ATLAS_SCRIPTS) validate-output --schema configs/contracts/scripts-tool-output.schema.json --file packages/atlasctl/tests/goldens/tool-output.example.json
@@ -134,7 +134,7 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_script_entrypoints.py
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_scripts_top_level.py
 	@if command -v shellcheck >/dev/null 2>&1; then find scripts/areas/check scripts/bin -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional)"; fi
-	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/ruff" check scripts/areas/check packages/atlasctl/src packages/atlasctl/tests
+	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/ruff" check --config packages/atlasctl/pyproject.toml scripts/areas/check packages/atlasctl/src packages/atlasctl/tests
 	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/mypy" --ignore-missing-imports packages/atlasctl/src packages/atlasctl/tests
 
 scripts-all: ## Canonical scripts gate: all script-related gates must pass

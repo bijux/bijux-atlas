@@ -23,6 +23,10 @@
 
 ### Command Surface
 - `doctor`
+- `check` (repository checks and policy gates)
+- `gen` (report and metadata generation helpers)
+- `ci` (CI-facing wrappers and validations)
+- `release` (release workflow wrappers)
 - `configs print`
 - `configs drift`
 - `configs validate`
