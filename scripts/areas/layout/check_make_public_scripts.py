@@ -12,7 +12,6 @@ import json
 
 surface = json.loads((ROOT / "configs/ops/public-surface.json").read_text(encoding="utf-8"))
 patterns = [f"{cmd}" for cmd in surface.get("ops_run_commands", []) if cmd.startswith("scripts/")]
-patterns.extend(["scripts/bin/*"])
 
 mk_files = [ROOT / "Makefile"] + sorted((ROOT / "makefiles").glob("*.mk"))
 text = "\n".join(p.read_text() for p in mk_files)
