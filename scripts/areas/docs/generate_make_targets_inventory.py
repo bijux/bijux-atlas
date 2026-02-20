@@ -12,8 +12,8 @@ OUT_MAIN = ROOT / "docs" / "development" / "make-targets.md"
 OUT_COMPAT = ROOT / "docs" / "development" / "make-targets-inventory.md"
 HELP_CMD = [
     "scripts/bin/bijux-atlas-scripts",
-    "run",
-    "tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/help.py",
+    "make",
+    "help",
 ]
 
 

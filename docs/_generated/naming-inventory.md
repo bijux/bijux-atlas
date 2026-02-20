@@ -5,9 +5,9 @@
 
 ## Summary
 
-- Tracked files: `2073`
-- Docs markdown files: `387`
-- Script files under `scripts/`: `362`
+- Tracked files: `2207`
+- Docs markdown files: `393`
+- Script files under `scripts/`: `373`
 - Rust test files: `42`
 - Load suites in `ops/load/suites/suites.json`: `20`
 - Runbooks in `docs/operations/runbooks/`: `17`
@@ -17,7 +17,7 @@
 
 - Forbidden-token hits: `2`
 - Non-kebab docs outside allowed exceptions: `22`
-- Non-kebab scripts under `scripts/`: `305`
+- Non-kebab scripts under `scripts/`: `311`
 
 ## Load Suites
 
@@ -90,6 +90,7 @@
 - `scripts/areas/_internal/run_suite_wrapper_legacy.sh`
 - `scripts/areas/bootstrap/install_tools.sh`
 - `scripts/areas/check/check_duplicate_script_names.py`
+- `scripts/areas/check/python_migration_exceptions.py`
 - `scripts/areas/configs/check_config_files_well_formed.py`
 - `scripts/areas/configs/check_config_keys_docs_coverage.py`
 - `scripts/areas/configs/check_config_ownership.py`
@@ -157,6 +158,7 @@
 - `scripts/areas/docs/check_no_legacy_root_paths.py`
 - `scripts/areas/docs/check_no_orphan_docs.py`
 - `scripts/areas/docs/check_no_placeholders.py`
+- `scripts/areas/docs/check_no_removed_make_targets.py`
 - `scripts/areas/docs/check_observability_acceptance_checklist.py`
 - `scripts/areas/docs/check_observability_docs_checklist.py`
 - `scripts/areas/docs/check_observability_surface_drift.py`
@@ -252,6 +254,7 @@
 - `scripts/areas/layout/check_makefile_target_boundaries.py`
 - `scripts/areas/layout/check_makefiles_contract.py`
 - `scripts/areas/layout/check_makefiles_index_drift.py`
+- `scripts/areas/layout/check_no_dead_entrypoints.py`
 - `scripts/areas/layout/check_no_direct_script_runs.sh`
 - `scripts/areas/layout/check_no_empty_dirs.py`
 - `scripts/areas/layout/check_no_forbidden_paths.sh`
@@ -260,6 +263,9 @@
 - `scripts/areas/layout/check_no_legacy_targets_in_docs.py`
 - `scripts/areas/layout/check_no_mixed_script_name_variants.py`
 - `scripts/areas/layout/check_no_ops_evidence_writes.py`
+- `scripts/areas/layout/check_no_orphan_configs.py`
+- `scripts/areas/layout/check_no_orphan_docs_refs.py`
+- `scripts/areas/layout/check_no_orphan_owners.py`
 - `scripts/areas/layout/check_no_root_dumping.sh`
 - `scripts/areas/layout/check_obs_pack_ssot.py`
 - `scripts/areas/layout/check_obs_script_name_collisions.py`

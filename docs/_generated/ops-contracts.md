@@ -41,6 +41,7 @@ Generated from ops contracts and schemas.
 - `ops/_schemas/obs/budgets.schema.json`
 - `ops/_schemas/obs/drill-manifest.schema.json`
 - `ops/_schemas/obs/suites.schema.json`
+- `ops/_schemas/report/lane.schema.json`
 - `ops/_schemas/report/schema.json`
 - `ops/_schemas/report/stack-contract.schema.json`
 - `ops/_schemas/report/unified.schema.json`

@@ -165,6 +165,20 @@ Required keys:
 - `owner`
 - `suites`
 
+## `ops/_schemas/report/lane.schema.json`
+
+Required keys:
+- `schema_version`
+- `report_version`
+- `lane`
+- `run_id`
+- `status`
+- `started_at`
+- `ended_at`
+- `duration_seconds`
+- `log`
+- `artifact_paths`
+
 ## `ops/_schemas/report/schema.json`
 
 Required keys:
@@ -187,6 +201,7 @@ Required keys:
 
 Required keys:
 - `schema_version`
+- `report_version`
 - `run_id`
 - `generated_at`
 - `lanes`
