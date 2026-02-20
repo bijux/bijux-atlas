@@ -458,7 +458,7 @@ legacy/audit: ## List non-scripts files still referencing scripts/ paths
 
 cleanup/verify: ## One-time cleanup safety verification before deleting legacy paths
 	@$(MAKE) -s legacy/check scripts-check ops-contracts-check
-	@python3 ./scripts/areas/layout/check_help_snapshot.py && python3 ./scripts/areas/layout/check_no_dead_entrypoints.py && python3 ./scripts/areas/layout/check_no_orphan_docs_refs.py && python3 ./scripts/areas/layout/check_no_orphan_configs.py && python3 ./scripts/areas/layout/check_no_orphan_owners.py
+	@./bin/bijux-atlas run ./scripts/areas/layout/check_help_snapshot.py && ./bin/bijux-atlas run ./scripts/areas/layout/check_no_dead_entrypoints.py && ./bin/bijux-atlas run ./scripts/areas/layout/check_no_orphan_docs_refs.py && ./bin/bijux-atlas run ./scripts/areas/layout/check_no_orphan_configs.py && ./bin/bijux-atlas run ./scripts/areas/layout/check_no_orphan_owners.py
 
 local: ## Developer confidence suite
 	@$(MAKE) -s root-local
