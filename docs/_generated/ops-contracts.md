@@ -33,8 +33,10 @@ Generated from ops contracts and schemas.
 - `ops/_schemas/meta/artifact-allowlist.schema.json`
 - `ops/_schemas/meta/budgets.schema.json`
 - `ops/_schemas/meta/layer-contract.schema.json`
+- `ops/_schemas/meta/namespaces.schema.json`
 - `ops/_schemas/meta/ownership.schema.json`
 - `ops/_schemas/meta/pins.schema.json`
+- `ops/_schemas/meta/ports.schema.json`
 - `ops/_schemas/obs/budgets.schema.json`
 - `ops/_schemas/obs/drill-manifest.schema.json`
 - `ops/_schemas/obs/suites.schema.json`

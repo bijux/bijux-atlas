@@ -9,6 +9,9 @@ ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "ops" / "_meta" / "layer-contract.json"
 VALUES = ROOT / "ops" / "k8s" / "charts" / "bijux-atlas" / "values.yaml"
 CHART = ROOT / "ops" / "k8s" / "charts" / "bijux-atlas" / "Chart.yaml"
+NAMESPACES_SSOT = ROOT / "configs" / "ops" / "namespaces.json"
+PORTS_SSOT = ROOT / "configs" / "ops" / "ports.json"
+PROFILES_SSOT = ROOT / "ops" / "stack" / "profiles.json"
 STACK_FILES = {
     "minio": ROOT / "ops" / "stack" / "minio" / "minio.yaml",
     "prometheus": ROOT / "ops" / "stack" / "prometheus" / "prometheus.yaml",
@@ -59,8 +62,10 @@ def _metadata_name(text: str, kind: str) -> str:
 def main() -> int:
     values = VALUES.read_text(encoding="utf-8")
     chart = CHART.read_text(encoding="utf-8")
+    namespaces_ssot = json.loads(NAMESPACES_SSOT.read_text(encoding="utf-8"))["namespaces"]
+    ports_ssot = json.loads(PORTS_SSOT.read_text(encoding="utf-8"))["ports"]
 
-    ns = "atlas-e2e"
+    ns = str(namespaces_ssot.get("stack", "atlas-e2e"))
     stack_texts = {name: path.read_text(encoding="utf-8") for name, path in STACK_FILES.items()}
     for text in stack_texts.values():
         ns = _find_namespace(text)
@@ -87,24 +92,24 @@ def main() -> int:
             "selector": {"app": name if name != "otel" else "otel-collector"},
         }
 
-    ports = {
+    observed_ports = {
         "atlas": {"service": atlas_port, "container": atlas_port},
     }
     for name, text in stack_texts.items():
         svc = _service_ports(text)
         dep = _deployment_ports(text)
         if name == "otel":
-            ports[name] = {
+            observed_ports[name] = {
                 "grpc": svc.get("grpc", dep.get("grpc", 4317)),
                 "http": svc.get("http", dep.get("http", 4318)),
             }
         elif name == "minio":
-            ports[name] = {
+            observed_ports[name] = {
                 "api": svc.get("api", dep.get("api", 9000)),
                 "console": svc.get("console", dep.get("console", 9001)),
             }
         else:
-            ports[name] = {
+            observed_ports[name] = {
                 "service": next(iter(svc.values()), 0),
                 "container": next(iter(dep.values()), next(iter(svc.values()), 0)),
             }
@@ -119,9 +124,21 @@ def main() -> int:
                 "Required keys are validated by ops/_schemas/meta/layer-contract.schema.json.",
             ],
         },
-        "namespaces": {"stack": ns, "k8s": ns, "e2e": ns},
+        "layer_dependencies": {
+            "stack": {"may_reference": ["stack", "_lib", "run", "configs"]},
+            "k8s": {"may_reference": ["k8s", "stack", "obs", "e2e", "_lib", "run", "configs"]},
+            "e2e": {"may_reference": ["e2e", "k8s", "run", "_lib", "configs"]},
+            "obs": {"may_reference": ["obs", "k8s", "stack", "load", "e2e", "run", "_lib", "configs"]},
+            "load": {"may_reference": ["load", "e2e", "run", "_lib", "configs"]},
+        },
+        "ssot": {
+            "namespaces": "configs/ops/namespaces.json",
+            "ports": "configs/ops/ports.json",
+            "profiles": "ops/stack/profiles.json",
+        },
+        "namespaces": namespaces_ssot,
         "services": services,
-        "ports": ports,
+        "ports": ports_ssot,
         "labels": {
             "required": ["app.kubernetes.io/name", "app.kubernetes.io/instance"],
             "required_annotations": [],
@@ -130,13 +147,19 @@ def main() -> int:
             "required_fields": ["release_name", "namespace", "chart_name", "chart_version", "app_version"],
             "defaults": {
                 "release_name": "atlas-e2e",
-                "namespace": ns,
+                "namespace": str(namespaces_ssot.get("k8s", ns)),
                 "chart_name": chart_name,
                 "chart_version": chart_version,
                 "app_version": app_version,
             },
         },
     }
+
+    # Surface drift in generator output if observed runtime ports disagree with declared SSOT.
+    if observed_ports != ports_ssot:
+        print("warning: observed stack/chart ports differ from configs/ops/ports.json; SSOT value is emitted")
+    if not PROFILES_SSOT.exists():
+        raise SystemExit("missing profile SSOT: ops/stack/profiles.json")
 
     OUT.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(f"wrote {OUT.relative_to(ROOT)}")
