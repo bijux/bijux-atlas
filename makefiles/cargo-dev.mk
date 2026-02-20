@@ -4,7 +4,7 @@ SHELL := /bin/sh
 
 DEV_ISO_TAG ?= dev-ci-local
 ROOT_MAKE ?= Makefile
-ISO_DEV = ./scripts/bin/isolate --tag "$(DEV_ISO_TAG)" --reuse
+ISO_DEV = ./bin/atlasctl env isolate --tag "$(DEV_ISO_TAG)" --reuse
 
 dev-fmt: ## DEV_ONLY=1
 	@$(ISO_DEV) $(MAKE) -f $(ROOT_MAKE) _fmt

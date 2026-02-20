@@ -24,7 +24,7 @@ for path in mk_files:
         stripped = line.strip()
         if not stripped.startswith("@") and not line.startswith("\t"):
             continue
-        if cargo_re.search(line) and "CARGO_TARGET_DIR" not in line and "scripts/bin/isolate" not in line and "cargo --version" not in line:
+        if cargo_re.search(line) and "CARGO_TARGET_DIR" not in line and "atlasctl env isolate" not in line and "cargo --version" not in line:
             # global env default is acceptable; this check prevents explicit unset patterns.
             if "CARGO_TARGET_DIR:-" in line:
                 violations.append(f"{path.relative_to(ROOT)}:{idx}: cargo invocation uses fallback pattern")

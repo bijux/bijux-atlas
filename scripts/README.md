@@ -209,10 +209,8 @@ Generated file. Do not edit manually.
 | `scripts/bin/bijux-atlas-dev` | `platform` | `public` | - |
 | `scripts/bin/bijux-atlas-ops` | `platform` | `internal` | - |
 | `scripts/bin/bijux-atlas-scripts` | `platform` | `public` | `ci-log-fields-contract`, `docs-build`, `docs-check`, `docs-freeze`, `docs-lint-names`, `docs-req-lock-refresh`, `layout-check`, `observability-pack-drills`, `observability-pack-test`, `ops-catalog-validate`, `ops-check`, `ops-dataset-qc-diff`, `ops-lint`, `ops-lint-all`, `ops-load-ci`, `ops-load-full`, `ops-load-manifest-validate`, `ops-load-nightly`, `ops-load-shedding`, `ops-load-smoke`, `ops-load-soak`, `ops-load-spike-proof`, `ops-local-full`, `ops-metrics-check`, `ops-observability-pack-conformance-report`, `ops-observability-validate`, `ops-perf-report`, `ops-slo-burn` |
-| `scripts/bin/isolate` | `platform` | `public` | `bench-db-size-growth`, `bench-ingest-throughput-medium`, `bench-smoke`, `bench-sqlite-query-latency`, `check`, `coverage`, `test-all`, `test-contracts` |
 | `scripts/bin/make_explain` | `platform` | `internal` | - |
 | `scripts/bin/make_graph` | `platform` | `internal` | - |
 | `scripts/bin/render_public_help` | `platform` | `internal` | - |
-| `scripts/bin/require-isolate` | `platform` | `public` | `_audit`, `_bench-db-size-growth`, `_bench-ingest-throughput-medium`, `_bench-sqlite-query-latency`, `_check`, `_coverage`, `_fmt`, `_lint-clippy`, `_lint-configs`, `_lint-docs`, `_lint-rustfmt`, `_test`, `_test-all`, `_test-contracts`, `bench-db-size-growth`, `bench-ingest-throughput-medium`, `bench-smoke`, `bench-sqlite-query-latency`, `check`, `cli-command-surface`, `coverage`, `crate-docs-contract`, `crate-structure`, `test-all`, `test-contracts` |
 | `scripts/bin/run_drill.sh` | `platform` | `internal` | - |
 | `scripts/lib/errors.sh` | `platform` | `internal` | - |

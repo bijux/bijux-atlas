@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import subprocess
 from datetime import datetime, timezone
@@ -116,6 +117,65 @@ def run_env_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         removed = payload.get("removed", [])
         print(json.dumps(payload, sort_keys=True) if ns.json else f"removed={len(removed)}")
         return 0
+    if subcmd == "require-isolate":
+        required = ("ISO_TAG", "ISO_RUN_ID", "ISO_ROOT", "CARGO_TARGET_DIR", "CARGO_HOME", "TMPDIR", "TMP", "TEMP")
+        for key in required:
+            if not os.environ.get(key):
+                print(f"isolate-required: missing env var: {key}")
+                return 1
+        iso_root = os.environ["ISO_ROOT"]
+        if "/artifacts/isolate/" not in iso_root and not iso_root.startswith("artifacts/isolate/"):
+            print(f"isolate-required: ISO_ROOT must be under artifacts/isolate: {iso_root}")
+            return 1
+        iso_root_abs = str(Path(iso_root).resolve())
+        for key in ("CARGO_TARGET_DIR", "CARGO_HOME", "TMPDIR", "TMP", "TEMP"):
+            path = os.environ[key]
+            path_abs = str(Path(path).resolve())
+            if not path_abs.startswith(iso_root_abs + "/"):
+                print(f"isolate-required: path not inside ISO_ROOT: {path}")
+                return 1
+        print("isolate-required: OK")
+        return 0
+    if subcmd == "isolate":
+        explicit_tag = getattr(ns, "tag", None) or os.environ.get("ISO_TAG", "")
+        git_sha = ctx.git_sha or "nogit"
+        iso_tag = explicit_tag or f"{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}-{git_sha}-{os.getpid()}"
+        iso_root_env = os.environ.get("ISO_ROOT")
+        iso_root = Path(iso_root_env).resolve() if iso_root_env else (ctx.repo_root / "artifacts/isolate" / iso_tag).resolve()
+        iso_run_id = os.environ.get("ISO_RUN_ID", iso_tag)
+        env = os.environ.copy()
+        env["ISO_TAG"] = iso_tag
+        env["ISO_RUN_ID"] = iso_run_id
+        env["ISO_ROOT"] = str(iso_root)
+        env["CARGO_TARGET_DIR"] = str(iso_root / "target")
+        env["CARGO_HOME"] = str(iso_root / "cargo-home")
+        env["TMPDIR"] = str(iso_root / "tmp")
+        env["TMP"] = str(iso_root / "tmp")
+        env["TEMP"] = str(iso_root / "tmp")
+        env["TZ"] = "UTC"
+        env["LC_ALL"] = "C"
+        if ns.print_root:
+            print(env["ISO_ROOT"])
+            return 0
+        if ns.print_tag:
+            print(env["ISO_TAG"])
+            return 0
+        if ns.print_env:
+            keys = ("ISO_TAG", "ISO_RUN_ID", "ISO_ROOT", "CARGO_TARGET_DIR", "CARGO_HOME", "TMPDIR", "TMP", "TEMP", "TZ", "LC_ALL")
+            for key in keys:
+                print(f"{key}={env[key]}")
+            return 0
+        if not ns.exec_cmd:
+            print("usage: atlasctl env isolate [options] <command> [args...]")
+            return 2
+        if ns.require_clean and not ns.reuse and iso_root.exists():
+            print(f"isolate: ISO_ROOT already exists: {iso_root}")
+            return 1
+        (iso_root / "target").mkdir(parents=True, exist_ok=True)
+        (iso_root / "cargo-home").mkdir(parents=True, exist_ok=True)
+        (iso_root / "tmp").mkdir(parents=True, exist_ok=True)
+        proc = subprocess.run(ns.exec_cmd, cwd=ctx.repo_root, env=env, check=False)
+        return proc.returncode
 
     # info
     venv = _venv_path(ctx, getattr(ns, "path", None))
@@ -151,3 +211,14 @@ def configure_env_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     clean.add_argument("--json", action="store_true", help="emit JSON output")
     prn = env_sub.add_parser("print", help="print standardized python/cache environment values")
     prn.add_argument("--json", action="store_true", help="emit JSON output")
+    req = env_sub.add_parser("require-isolate", help="assert isolate env variables are set and rooted under artifacts/isolate")
+    req.add_argument("--json", action="store_true", help="emit JSON output")
+    iso = env_sub.add_parser("isolate", help="run command inside deterministic isolate runtime directories")
+    iso.add_argument("--print-root", action="store_true")
+    iso.add_argument("--print-env", action="store_true")
+    iso.add_argument("--print-tag", action="store_true")
+    iso.add_argument("--tag")
+    iso.add_argument("--require-clean", action="store_true")
+    iso.add_argument("--reuse", action="store_true")
+    iso.add_argument("exec_cmd", nargs=argparse.REMAINDER)
+    iso.add_argument("--json", action="store_true", help="emit JSON output")
