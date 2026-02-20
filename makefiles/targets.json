@@ -2,220 +2,66 @@
   "schema_version": 1,
   "source": {
     "ownership": "makefiles/ownership.json",
-    "ssot": "configs/ops/public-make-targets.json"
+    "ssot": "configs/make/public-targets.json"
   },
   "targets": [
     {
-      "area": "ops",
-      "description": "Open latest ops artifact bundle/report directory",
+      "area": "cargo",
+      "description": "Run dependency and policy audits",
       "lane": "dev",
       "lanes": [
         "dev",
         "ci"
       ],
-      "name": "artifacts-open",
+      "name": "audit",
+      "owner": "rust-platform"
+    },
+    {
+      "area": "ops",
+      "description": "Run chart verification checks",
+      "lane": "dev",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "name": "chart",
       "owner": "ops-platform"
     },
     {
-      "area": "cargo",
-      "description": "Local exhaustive Rust lane",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "cargo/all",
-      "owner": "rust-platform"
-    },
-    {
-      "area": "cargo",
-      "description": "Cargo audit gate",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "cargo/audit",
-      "owner": "rust-platform"
-    },
-    {
-      "area": "cargo",
-      "description": "Cargo benchmark smoke lane",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "cargo/bench-smoke",
-      "owner": "rust-platform"
-    },
-    {
-      "area": "cargo",
-      "description": "Cargo coverage lane (kept out of root)",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "cargo/coverage",
-      "owner": "rust-platform"
-    },
-    {
-      "area": "cargo",
-      "description": "Cargo fmt gate",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "cargo/fmt",
-      "owner": "rust-platform"
-    },
-    {
-      "area": "cargo",
-      "description": "Cargo lint gate",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "cargo/lint",
-      "owner": "rust-platform"
-    },
-    {
-      "area": "cargo",
-      "description": "Cargo CI-profile tests",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "cargo/test",
-      "owner": "rust-platform"
-    },
-    {
-      "area": "cargo",
-      "description": "Cargo full nextest tests",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "cargo/test-all",
-      "owner": "rust-platform"
-    },
-    {
-      "area": "cargo",
-      "description": "Cargo contract-focused tests",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "cargo/test-contracts",
-      "owner": "rust-platform"
-    },
-    {
-      "area": "cargo",
-      "description": "Cargo fast unit-focused tests",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "cargo/test-fast",
-      "owner": "rust-platform"
-    },
-    {
       "area": "policies",
-      "description": "Deterministic CI superset",
+      "description": "Run deterministic CI superset",
       "lane": "ci",
       "lanes": [
         "ci"
       ],
-      "name": "ci/all",
+      "name": "ci",
       "owner": "build-and-release"
     },
     {
-      "area": "scripts",
-      "description": "Clean all allowed generated dirs (CONFIRM=YES)",
+      "area": "ops",
+      "description": "Run docker contract checks",
       "lane": "dev",
       "lanes": [
         "dev",
         "ci"
       ],
-      "name": "clean-all",
-      "owner": "repo-hygiene"
-    },
-    {
-      "area": "scripts",
-      "description": "Clean only safe generated make artifact dirs",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "clean-safe",
-      "owner": "repo-hygiene"
-    },
-    {
-      "area": "configs",
-      "description": "Configs schema and drift lane",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "configs/all",
-      "owner": "config-governance"
-    },
-    {
-      "area": "configs",
-      "description": "Configs schema+drift checks",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "configs/check",
-      "owner": "config-governance"
+      "name": "docker",
+      "owner": "ops-platform"
     },
     {
       "area": "docs",
-      "description": "Docs lane",
+      "description": "Run docs verification lane",
       "lane": "dev",
       "lanes": [
         "dev",
         "ci"
       ],
-      "name": "docs/all",
+      "name": "docs",
       "owner": "docs-governance"
     },
     {
-      "area": "docs",
-      "description": "Docs build artifacts",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "docs/build",
-      "owner": "docs-governance"
-    },
-    {
-      "area": "docs",
-      "description": "Docs fast verification",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "docs/check",
-      "owner": "docs-governance"
-    },
-    {
-      "area": "policies",
-      "description": "Print tool/env/path diagnostics and store report",
+      "area": "ops",
+      "description": "Print tool and environment diagnostics",
       "lane": "dev",
       "lanes": [
         "dev",
@@ -225,302 +71,50 @@
       "owner": "build-and-release"
     },
     {
-      "area": "policies",
-      "description": "Explain one public target, lanes, and internal expansion",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "explain",
-      "owner": "build-and-release"
-    },
-    {
-      "area": "policies",
-      "description": "Show public targets grouped by area",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "gates",
-      "owner": "build-and-release"
-    },
-    {
-      "area": "policies",
-      "description": "Print a compact dependency graph for a public target",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "graph",
-      "owner": "build-and-release"
-    },
-    {
-      "area": "policies",
-      "description": "Show curated public make targets grouped by namespace",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci",
-        "docs"
-      ],
-      "name": "help",
-      "owner": "build-and-release"
-    },
-    {
       "area": "cargo",
-      "description": "Lane: rust checks/tests with isolated artifacts",
+      "description": "Run formatter checks",
       "lane": "dev",
       "lanes": [
-        "dev",
-        "ci"
+        "dev"
       ],
-      "name": "lane-cargo",
+      "name": "fmt",
       "owner": "rust-platform"
     },
     {
-      "area": "configs",
-      "description": "Lane: configs and policies checks",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "lane-configs-policies",
-      "owner": "config-governance"
-    },
-    {
-      "area": "docs",
-      "description": "Lane: docs build/freeze/hardening",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "lane-docs",
-      "owner": "docs-governance"
-    },
-    {
-      "area": "ops",
-      "description": "Lane: ops lint/contracts without cluster bring-up",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "lane-ops",
-      "owner": "ops-platform"
-    },
-    {
-      "area": "scripts",
-      "description": "Lane: scripts lint/tests/audit",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "lane-scripts",
-      "owner": "repo-hygiene"
-    },
-    {
-      "area": "policies",
-      "description": "List curated public targets with one-line descriptions",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "list",
-      "owner": "build-and-release"
-    },
-    {
-      "area": "policies",
-      "description": "Run everything meaningful locally",
-      "lane": "dev",
-      "lanes": [
-        "dev"
-      ],
-      "name": "local/all",
-      "owner": "build-and-release"
-    },
-    {
-      "area": "policies",
-      "description": "Slow nightly suites (perf/load/drills/realdata)",
-      "lane": "ci",
-      "lanes": [
-        "ci"
-      ],
-      "name": "nightly/all",
-      "owner": "build-and-release"
-    },
-    {
-      "area": "ops",
-      "description": "Ops lint/schemas/contracts lane",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "ops/all",
-      "owner": "ops-platform"
-    },
-    {
-      "area": "ops",
-      "description": "Ops fast verification",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "ops/check",
-      "owner": "ops-platform"
-    },
-    {
-      "area": "ops",
-      "description": "Ops smoke checks",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "ops/smoke",
-      "owner": "ops-platform"
-    },
-    {
-      "area": "ops",
-      "description": "Ops suite checks",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "ops/suite",
-      "owner": "ops-platform"
-    },
-    {
-      "area": "policies",
-      "description": "Policies lane (deny/audit/policy checks)",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "policies/all",
-      "owner": "policy-governance"
-    },
-    {
-      "area": "policies",
-      "description": "Policies deny/audit/relaxation checks",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "policies/check",
-      "owner": "policy-governance"
-    },
-    {
-      "area": "policies",
-      "description": "Validate required binaries and versions and store report",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "prereqs",
-      "owner": "build-and-release"
-    },
-    {
-      "area": "policies",
-      "description": "Print key environment variables used by lanes",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "print-env",
-      "owner": "build-and-release"
-    },
-    {
       "area": "cargo",
-      "description": "Minimal tight loop (fmt + lint + test)",
+      "description": "Run lint checks",
       "lane": "dev",
       "lanes": [
-        "dev"
+        "dev",
+        "ci"
       ],
-      "name": "quick",
-      "owner": "build-and-release"
+      "name": "lint",
+      "owner": "rust-platform"
     },
     {
       "area": "policies",
-      "description": "Generate optional JUnit report",
+      "description": "Run slow nightly suites",
       "lane": "ci",
       "lanes": [
         "ci"
       ],
-      "name": "report/junit",
+      "name": "nightly",
       "owner": "build-and-release"
     },
     {
-      "area": "docs",
-      "description": "Generate markdown summary for PR comments",
+      "area": "ops",
+      "description": "Run ops verification lane",
       "lane": "dev",
       "lanes": [
         "dev",
         "ci"
       ],
-      "name": "report/md",
-      "owner": "build-and-release"
+      "name": "ops",
+      "owner": "ops-platform"
     },
     {
       "area": "policies",
-      "description": "Merge lane reports into unified JSON",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "report/merge",
-      "owner": "build-and-release"
-    },
-    {
-      "area": "policies",
-      "description": "Print human make lane summary",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "report/print",
-      "owner": "build-and-release"
-    },
-    {
-      "area": "policies",
-      "description": "Re-run one lane deterministically with optional seed",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "repro",
-      "owner": "build-and-release"
-    },
-    {
-      "area": "policies",
-      "description": "Retry target with same RUN_ID",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "retry",
-      "owner": "build-and-release"
-    },
-    {
-      "area": "policies",
-      "description": "CI-fast lane subset (no cluster bring-up)",
+      "description": "Run CI-fast lane set and print lane summary",
       "lane": "ci",
       "lanes": [
         "ci"
@@ -530,58 +124,24 @@
     },
     {
       "area": "policies",
-      "description": "All lanes in parallel plus ops smoke lane",
+      "description": "Run local full lane set and print lane summary",
       "lane": "dev",
       "lanes": [
-        "dev",
-        "ci"
+        "dev"
       ],
       "name": "root-local",
       "owner": "build-and-release"
     },
     {
-      "area": "policies",
-      "description": "Open or print the root-local summary report",
+      "area": "cargo",
+      "description": "Run test suite",
       "lane": "dev",
       "lanes": [
         "dev",
         "ci"
       ],
-      "name": "root-local-open",
-      "owner": "build-and-release"
-    },
-    {
-      "area": "policies",
-      "description": "Print pass/fail summary by lane",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "root-local-summary",
-      "owner": "build-and-release"
-    },
-    {
-      "area": "scripts",
-      "description": "Scripts lint/tests/audit lane",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "scripts/all",
-      "owner": "repo-hygiene"
-    },
-    {
-      "area": "scripts",
-      "description": "Deterministic scripts checks",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "scripts/check",
-      "owner": "repo-hygiene"
+      "name": "test",
+      "owner": "rust-platform"
     }
   ]
 }
