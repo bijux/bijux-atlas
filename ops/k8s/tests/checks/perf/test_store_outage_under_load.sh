@@ -8,7 +8,7 @@ need curl
 install_chart
 wait_ready
 with_port_forward 18080
-"$ROOT/ops/obs/scripts/run_drill.sh" store-outage-under-load
+"$ROOT/ops/obs/scripts/bin/run_drill.sh" store-outage-under-load
 
 curl -fsS "$BASE_URL/healthz" >/dev/null
 

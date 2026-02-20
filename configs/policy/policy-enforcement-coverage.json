@@ -10,13 +10,13 @@
     {
       "id": "policy_relaxations_registry",
       "hard": true,
-      "pass_test": "scripts/public/policy-audit.py",
+      "pass_test": "scripts/areas/public/policy-audit.py",
       "fail_test": "exception {entry['id']} expired on"
     },
     {
       "id": "no_network_unit_tests",
       "hard": true,
-      "pass_test": "scripts/public/no-network-unit-tests.sh",
+      "pass_test": "scripts/areas/public/no-network-unit-tests.sh",
       "fail_test": "network usage in unit tests is forbidden"
     },
     {

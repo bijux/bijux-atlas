@@ -10,4 +10,4 @@ cat > "$OUT" <<JSON
   "tests": ["install", "networkpolicy", "hpa", "pdb", "rollout", "rollback", "secrets", "configmap", "serviceMonitor"]
 }
 JSON
-python3 "$ROOT/scripts/docs/generate_k8s_install_matrix.py" "$OUT"
+python3 "$ROOT/scripts/areas/docs/generate_k8s_install_matrix.py" "$OUT"

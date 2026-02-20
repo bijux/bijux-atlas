@@ -4,7 +4,7 @@ ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 ATLAS_BASE_URL="${ATLAS_BASE_URL:-http://127.0.0.1:18080}"
 ALERTS_FILE="$ROOT/ops/obs/alerts/atlas-alert-rules.yaml"
 
-python3 "$ROOT/scripts/public/observability/check_alerts_contract.py"
+python3 "$ROOT/scripts/areas/public/observability/check_alerts_contract.py"
 
 if command -v promtool >/dev/null 2>&1; then
   promtool check rules "$ALERTS_FILE" >/dev/null

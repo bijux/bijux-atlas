@@ -22,8 +22,8 @@ Stale endpoint examples cause false troubleshooting paths.
 
 ## How to verify
 ```bash
-$ python3 scripts/docs/extract_code_blocks.py
-$ python3 scripts/docs/run_blessed_snippets.py
+$ python3 scripts/areas/docs/extract_code_blocks.py
+$ python3 scripts/areas/docs/run_blessed_snippets.py
 ```
 
 Expected output: all blessed snippets execute with zero failures.

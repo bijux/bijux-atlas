@@ -9,6 +9,6 @@ for rb in store-outage.md traffic-spike.md rollback-playbook.md pod-churn.md dat
   test -s "$ROOT/docs/operations/runbooks/$rb"
 done
 for drill in store-outage-under-load overload-admission-control prom-outage otel-outage; do
-  "$ROOT/ops/obs/scripts/run_drill.sh" "$drill"
+  "$ROOT/ops/obs/scripts/bin/run_drill.sh" "$drill"
 done
 echo "runbook proof top5 drill passed"

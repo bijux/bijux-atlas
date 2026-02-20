@@ -5,7 +5,7 @@ on:
     paths:
       - 'docs/**'
       - 'mkdocs.yml'
-      - 'scripts/docs/**'
+      - 'scripts/areas/docs/**'
       - 'makefiles/docs.mk'
       - 'docs/contracts/**/*.json'
       - 'docs/_generated/openapi/**'

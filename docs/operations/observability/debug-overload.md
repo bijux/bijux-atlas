@@ -10,6 +10,6 @@
 
 ## Commands
 
-- `scripts/run_drill.sh overload-admission-control`
+- `scripts/bin/run_drill.sh overload-admission-control`
 - `make observability-pack-drills`
 - `make ops-report`

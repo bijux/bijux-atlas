@@ -24,7 +24,7 @@ EOF
 
 for drill in "${DRILLS[@]}"; do
   echo "running outage drill: $drill"
-  "$ROOT/ops/obs/scripts/run_drill.sh" "$drill"
+  "$ROOT/ops/obs/scripts/bin/run_drill.sh" "$drill"
 done
 
 cp -f "$OPS_OBS_DIR"/metrics.prom "$OUT_DIR"/metrics.prom 2>/dev/null || true

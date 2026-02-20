@@ -45,7 +45,7 @@ Expected output: breaking-change detector fails unless explicitly coordinated.
 ## How to verify
 
 ```bash
-$ ./scripts/contracts/check_breaking_contract_change.py
+$ ./scripts/areas/contracts/check_breaking_contract_change.py
 ```
 
 Expected output: breaking changes are flagged.

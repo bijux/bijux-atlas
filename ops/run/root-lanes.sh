@@ -322,12 +322,12 @@ EOF
   fi
 
   RUN_ID="$run_id" ./ops/run/report.sh >/dev/null || true
-  python3 ./scripts/layout/check_make_lane_reports.py "$run_id" "${lanes[@]}"
-  python3 ./scripts/layout/make_report.py merge --run-id "$run_id" >/dev/null
+  python3 ./scripts/areas/layout/check_make_lane_reports.py "$run_id" "${lanes[@]}"
+  python3 ./scripts/areas/layout/make_report.py merge --run-id "$run_id" >/dev/null
   write_summary "$run_id" "${lanes[@]}"
 
   # Isolation guard: lane tmp directories must be unique and scoped under artifacts/isolate/.
-  python3 ./scripts/layout/check_root_local_lane_isolation.py "$run_id" "${lanes[@]}"
+  python3 ./scripts/areas/layout/check_root_local_lane_isolation.py "$run_id" "${lanes[@]}"
 
   return "$failed"
 }

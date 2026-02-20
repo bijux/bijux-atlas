@@ -103,7 +103,7 @@ ci-store-conformance:
 
 ci-openapi-drift:
 	@$(MAKE) openapi-drift
-	@python3 ./scripts/public/contracts/check_breaking_contract_change.py
+	@python3 ./scripts/areas/public/contracts/check_breaking_contract_change.py
 
 ci-chart-schema-validate:
 	@$(MAKE) ops-values-validate
@@ -128,7 +128,7 @@ ci-ingest-determinism:
 	@cargo test -p bijux-atlas-ingest tests::tiny_fixture_matches_cross_machine_golden_hashes --locked
 
 ci-qc-fixtures:
-	@./scripts/public/qc-fixtures-gate.sh
+	@./scripts/areas/public/qc-fixtures-gate.sh
 
 ci-compatibility-matrix-validate:
 	@$(MAKE) compat-matrix-validate
@@ -143,7 +143,7 @@ ci-coverage:
 	@cargo llvm-cov --workspace --all-features --lcov --output-path artifacts/isolate/coverage/lcov.info
 
 ci-workflows-make-only:
-	@python3 ./scripts/layout/check_workflows_make_only.py
+	@python3 ./scripts/areas/layout/check_workflows_make_only.py
 
 ci-log-fields-contract:
 	@python3 ./ops/obs/scripts/validate_logs_schema.py --file ops/obs/contract/logs.example.jsonl
@@ -155,53 +155,53 @@ ci-observability-pack-drills:
 	@$(MAKE) observability-pack-drills
 
 ci-ops-index-surface:
-	@python3 ./scripts/layout/check_ops_index_surface.py
+	@python3 ./scripts/areas/layout/check_ops_index_surface.py
 
 ci-ops-gen-check:
 	@$(MAKE) -s ops-gen-check
 
 ci-ops-run-entrypoints:
-	@python3 ./scripts/layout/check_ops_run_entrypoints.py
+	@python3 ./scripts/areas/layout/check_ops_run_entrypoints.py
 
 ci-ops-readme-make-only:
-	@python3 ./scripts/docs/check_ops_readmes_make_only.py
+	@python3 ./scripts/areas/docs/check_ops_readmes_make_only.py
 
 ci-ops-readme-canonical-links:
-	@python3 ./scripts/docs/check_ops_readme_canonical_links.py
+	@python3 ./scripts/areas/docs/check_ops_readme_canonical_links.py
 
 ci-ops-doc-duplication:
-	@python3 ./scripts/docs/check_ops_doc_duplication.py
+	@python3 ./scripts/areas/docs/check_ops_doc_duplication.py
 
 ci-docs-make-only-ops:
-	@python3 ./scripts/docs/check_docs_make_only_ops.py
+	@python3 ./scripts/areas/docs/check_docs_make_only_ops.py
 
 ci-forbid-raw-paths:
-	@./scripts/layout/check_no_forbidden_paths.sh
+	@./scripts/areas/layout/check_no_forbidden_paths.sh
 
 ci-make-safety:
-	@python3 ./scripts/layout/check_make_safety.py
+	@python3 ./scripts/areas/layout/check_make_safety.py
 
 ci-make-help-drift:
-	@python3 ./scripts/docs/check_make_help_drift.py
+	@python3 ./scripts/areas/docs/check_make_help_drift.py
 
 ci-slo-config-validate:
-	@python3 ./scripts/layout/check_slo_contracts.py --mode schema
+	@python3 ./scripts/areas/layout/check_slo_contracts.py --mode schema
 
 ci-slo-no-loosen:
-	@python3 ./scripts/layout/check_slo_no_loosen_without_approval.py
+	@python3 ./scripts/areas/layout/check_slo_no_loosen_without_approval.py
 
 ci-slo-metrics-contract:
-	@python3 ./scripts/layout/check_slo_contracts.py --mode metrics
+	@python3 ./scripts/areas/layout/check_slo_contracts.py --mode metrics
 
 ci-sli-contract:
-	@python3 ./scripts/layout/check_slo_contracts.py --mode slis
+	@python3 ./scripts/areas/layout/check_slo_contracts.py --mode slis
 
 ci-sli-docs-drift:
-	@python3 ./scripts/docs/generate_sli_doc.py
+	@python3 ./scripts/areas/docs/generate_sli_doc.py
 	@git diff --exit-code docs/operations/slo/SLIS.md
 
 ci-slo-docs-drift:
-	@python3 ./scripts/docs/generate_slos_doc.py
+	@python3 ./scripts/areas/docs/generate_slos_doc.py
 	@git diff --exit-code docs/operations/slo/SLOS.md
 
 ci-init-iso-dirs:

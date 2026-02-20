@@ -12,10 +12,10 @@ mkdir -p "$OUT_DIR"
 python3 "$ROOT/ops/obs/scripts/validate_logs_schema.py" --file "$ROOT/ops/obs/contract/logs.example.jsonl"
 
 # Keep cheap gate deterministic and contract-backed.
-python3 "$ROOT/ops/obs/scripts/contracts/check_metrics_contract.py"
-python3 "$ROOT/ops/obs/scripts/contracts/check_trace_golden.py"
-python3 "$ROOT/ops/obs/scripts/contracts/check_dashboard_metric_compat.py"
-python3 "$ROOT/ops/obs/scripts/contracts/check_alerts_contract.py"
+python3 "$ROOT/ops/obs/scripts/areas/contracts/check_metrics_contract.py"
+python3 "$ROOT/ops/obs/scripts/areas/contracts/check_trace_golden.py"
+python3 "$ROOT/ops/obs/scripts/areas/contracts/check_dashboard_metric_compat.py"
+python3 "$ROOT/ops/obs/scripts/areas/contracts/check_alerts_contract.py"
 "$ROOT/ops/obs/scripts/log-schema-violation-injection.sh"
 
 echo "observability cheap suite passed"

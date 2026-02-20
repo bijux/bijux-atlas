@@ -36,7 +36,7 @@ with_iso = run_id="$(RUN_ID)"; iso="$(call iso_dir,$(1))"; \
 
 # Usage: $(call gate_json,<gate-name>,<command...>)
 gate_json = run_id="$${RUN_ID:-gates-$(MAKE_RUN_TS)}"; \
-	RUN_ID="$$run_id" python3 ./scripts/layout/run_gate.py $(1) $(2)
+	RUN_ID="$$run_id" python3 ./scripts/areas/layout/run_gate.py $(1) $(2)
 
 # Usage: $(call py_venv,<venv_path>,<command>)
 py_venv = if [ ! -x "$(1)/bin/python" ]; then python3 -m venv "$(1)"; fi; \

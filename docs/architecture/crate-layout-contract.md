@@ -26,4 +26,4 @@ Each crate `INDEX.md` must include and link:
 - `Tests`
 - `Benches`
 
-This contract is enforced by `scripts/public/require-crate-docs.sh` and checked in CI.
+This contract is enforced by `scripts/areas/public/require-crate-docs.sh` and checked in CI.

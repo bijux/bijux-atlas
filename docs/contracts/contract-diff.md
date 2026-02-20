@@ -32,7 +32,7 @@ Missing or unordered review causes drift and compatibility regressions.
 
 ```bash
 $ rg --files docs/contracts | rg '\.json$'
-$ python3 scripts/contracts/check_breaking_contract_change.py
+$ python3 scripts/areas/contracts/check_breaking_contract_change.py
 ```
 
 Expected output: contract files are listed and breakage checker passes for additive changes.
@@ -40,7 +40,7 @@ Expected output: contract files are listed and breakage checker passes for addit
 ## How to verify
 
 ```bash
-$ ./scripts/contracts/check_breaking_contract_change.py
+$ ./scripts/areas/contracts/check_breaking_contract_change.py
 ```
 
 Expected output: no breaking contract change unless intentionally approved.

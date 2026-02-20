@@ -5,7 +5,7 @@
 set -eu
 
 ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
-python3 "$ROOT/scripts/layout/check_tool_versions.py" k6 >/dev/null
+python3 "$ROOT/scripts/areas/layout/check_tool_versions.py" k6 >/dev/null
 K6_VERSION="$(python3 - <<PY
 import json
 from pathlib import Path

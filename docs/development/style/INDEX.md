@@ -13,7 +13,7 @@
 - This page does not replace area-specific writing contracts.
 
 ## Contracts
-- `scripts/docs/check_index_pages.sh`
+- `scripts/areas/docs/check_index_pages.sh`
 
 ## Failure modes
 - Missing required index sections fails docs hardening.

@@ -18,7 +18,7 @@ Diagram sources in one location provide deterministic rendering and stable refer
 
 ## How to Verify
 ```bash
-scripts/docs/render_diagrams.sh
+scripts/areas/docs/render_diagrams.sh
 ```
 
 See also:

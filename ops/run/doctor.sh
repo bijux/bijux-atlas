@@ -9,8 +9,8 @@ ops_version_guard kind kubectl helm k6
 ./ops/run/prereqs.sh
 echo "evidence root: artifacts/evidence"
 echo "evidence run id pointer: artifacts/evidence/latest-run-id.txt"
-python3 ./scripts/layout/check_tool_versions.py kind kubectl helm k6 jq yq python3 || true
-python3 ./scripts/layout/check_ops_pins.py || true
+python3 ./scripts/areas/layout/check_tool_versions.py kind kubectl helm k6 jq yq python3 || true
+python3 ./scripts/areas/layout/check_ops_pins.py || true
 pin_report="artifacts/evidence/pins/${RUN_ID}/pin-drift-report.json"
 if [ -f "$pin_report" ]; then
   echo "pin drift report: $pin_report"

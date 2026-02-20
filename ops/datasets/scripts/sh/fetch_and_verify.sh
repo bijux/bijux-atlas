@@ -5,7 +5,7 @@
 # called-by: make ops-datasets-fetch
 set -euo pipefail
 ROOT="$(CDPATH='' cd -- "$(dirname -- "$0")/../../../.." && pwd)"
-python3 "$ROOT/scripts/layout/check_dataset_manifest_lock.py"
+python3 "$ROOT/scripts/areas/layout/check_dataset_manifest_lock.py"
 if [ -f "$ROOT/ops/datasets/manifest.lock" ]; then
   :
 else
@@ -13,7 +13,7 @@ else
   exit 1
 fi
 if [ ! -f "$ROOT/ops/fixtures/medium/v1/data/genes.gff3" ] || [ ! -f "$ROOT/ops/fixtures/medium/v1/data/genome.fa" ] || [ ! -f "$ROOT/ops/fixtures/medium/v1/data/genome.fa.fai" ]; then
-  "$ROOT/scripts/fixtures/fetch-medium.sh" >/dev/null
+  "$ROOT/scripts/areas/fixtures/fetch-medium.sh" >/dev/null
 fi
 python3 - <<'PY'
 from pathlib import Path
@@ -39,4 +39,4 @@ if errs:
     raise SystemExit(1)
 print("dataset checksum verification passed")
 PY
-"$ROOT/scripts/fixtures/fetch-real-datasets.sh" >/dev/null
+"$ROOT/scripts/areas/fixtures/fetch-real-datasets.sh" >/dev/null

@@ -9,7 +9,7 @@
 
 ## Contract / SSOT Checklist
 - [ ] Any API/CLI/metrics/error/chart/trace/config/artifact surface change updates `docs/contracts/*` first.
-- [ ] Generated artifacts were refreshed (`scripts/contracts/generate_contract_artifacts.py`).
+- [ ] Generated artifacts were refreshed (`scripts/areas/contracts/generate_contract_artifacts.py`).
 - [ ] `make ssot-check` is green.
 - [ ] OpenAPI drift reviewed (`make openapi-drift`).
 

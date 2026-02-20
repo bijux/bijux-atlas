@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ops_env_load() {
-  python3 ./scripts/layout/validate_ops_env.py --schema "${OPS_ENV_SCHEMA:-configs/ops/env.schema.json}" >/dev/null
+  python3 ./scripts/areas/layout/validate_ops_env.py --schema "${OPS_ENV_SCHEMA:-configs/ops/env.schema.json}" >/dev/null
   export RUN_ID="${RUN_ID:-${OPS_RUN_ID:-}}"
   export ARTIFACT_DIR="${ARTIFACT_DIR:-${OPS_RUN_DIR:-}}"
   if [ -z "${RUN_ID:-}" ] || [ -z "${ARTIFACT_DIR:-}" ]; then

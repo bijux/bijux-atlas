@@ -115,9 +115,9 @@ fn main() -> ExitCode {
         .expect("workspace root");
 
     let result = match arg.as_str() {
-        "format-contracts" => run(root, "./scripts/contracts/format_contracts.py"),
-        "generate-contracts" => run(root, "./scripts/contracts/generate_contract_artifacts.py"),
-        "check-contracts" => run(root, "./scripts/contracts/check_all.sh"),
+        "format-contracts" => run(root, "./scripts/areas/contracts/format_contracts.py"),
+        "generate-contracts" => run(root, "./scripts/areas/contracts/generate_contract_artifacts.py"),
+        "check-contracts" => run(root, "./scripts/areas/contracts/check_all.sh"),
         "scan-relaxations" => {
             let out = args
                 .next()
