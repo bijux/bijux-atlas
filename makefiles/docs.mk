@@ -76,6 +76,8 @@ docs-build: ## Build docs + link-check + spell-check + lint
 	@python3 scripts/docs/check_docs_deterministic.py
 	@python3 scripts/docs/check_observability_docs_checklist.py
 	@python3 scripts/docs/check_no_legacy_root_paths.py
+	@python3 scripts/layout/check_no_legacy_targets_in_docs.py
+	@python3 scripts/layout/check_ops_external_entrypoints.py
 	@python3 scripts/docs/check_full_stack_page.py
 
 docs-serve: ## Serve docs locally
