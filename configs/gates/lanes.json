@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "lanes": [
+    {
+      "id": "lane-cargo",
+      "description": "Rust checks/tests",
+      "make_target": "lane-cargo"
+    },
+    {
+      "id": "lane-docs",
+      "description": "Docs checks",
+      "make_target": "lane-docs"
+    },
+    {
+      "id": "lane-scripts",
+      "description": "Python tooling checks",
+      "make_target": "lane-scripts"
+    },
+    {
+      "id": "lane-configs",
+      "description": "Config and budget checks",
+      "make_target": "lane-configs"
+    },
+    {
+      "id": "lane-policies",
+      "description": "Policy and boundary checks",
+      "make_target": "lane-policies"
+    },
+    {
+      "id": "lane-ops",
+      "description": "Ops checks without cluster bring-up",
+      "make_target": "lane-ops"
+    },
+    {
+      "id": "internal/lane-obs-cheap",
+      "description": "Cheap observability verification",
+      "make_target": "internal/lane-obs-cheap"
+    },
+    {
+      "id": "internal/lane-ops-smoke",
+      "description": "Ops smoke lane",
+      "make_target": "internal/lane-ops-smoke"
+    },
+    {
+      "id": "internal/lane-obs-full",
+      "description": "Full observability verification",
+      "make_target": "internal/lane-obs-full"
+    }
+  ],
+  "presets": {
+    "root": [
+      "lane-cargo",
+      "lane-docs",
+      "lane-scripts",
+      "lane-configs",
+      "lane-policies",
+      "lane-ops",
+      "internal/lane-obs-cheap"
+    ],
+    "root-local": [
+      "lane-cargo",
+      "lane-docs",
+      "lane-scripts",
+      "lane-configs",
+      "lane-policies",
+      "lane-ops",
+      "internal/lane-obs-cheap",
+      "internal/lane-ops-smoke",
+      "internal/lane-obs-full"
+    ]
+  }
+}

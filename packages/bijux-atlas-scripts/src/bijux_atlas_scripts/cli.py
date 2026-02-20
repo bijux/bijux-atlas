@@ -19,6 +19,7 @@ from .doctor import run_doctor
 from .domain_cmd import register_domain_parser, registry as command_registry, render_payload
 from .errors import ScriptError
 from .exit_codes import ERR_CONFIG, ERR_INTERNAL
+from .gates.command import configure_gates_parser, run_gates_command
 from .inventory.command import configure_inventory_parser, run_inventory
 from .lint.command import configure_lint_parser, run_lint_command
 from .make.command import configure_make_parser, run_make_command
@@ -35,7 +36,6 @@ DOMAINS = {
     "contracts": contracts.run,
     "registry": registry.run,
     "layout": layout.run,
-    "gates": layout.run,
 }
 
 
@@ -82,7 +82,7 @@ def build_parser() -> argparse.ArgumentParser:
     commands_p.add_argument("--json", action="store_true", help="emit JSON output")
     commands_p.add_argument("--out-file", help="optional output path for JSON report")
 
-    domain_names = ("contracts", "registry", "layout", "gates")
+    domain_names = ("contracts", "registry", "layout")
     for name in domain_names:
         register_domain_parser(sub, name, f"{name} domain commands")
     configure_configs_parser(sub)
@@ -95,6 +95,7 @@ def build_parser() -> argparse.ArgumentParser:
     configure_report_parser(sub)
     configure_compat_parser(sub)
     configure_orchestrate_parsers(sub)
+    configure_gates_parser(sub)
 
     doctor_p = sub.add_parser("doctor", help="show tooling and context diagnostics")
     doctor_p.add_argument("--json", action="store_true", help="emit JSON output")
@@ -259,6 +260,8 @@ def main(argv: list[str] | None = None) -> int:
             return run_compat_command(ctx, ns)
         if ns.cmd in {"ports", "artifacts", "k8s", "stack", "obs", "load", "e2e", "datasets", "cleanup", "scenario"}:
             return run_orchestrate_command(ctx, ns)
+        if ns.cmd == "gates":
+            return run_gates_command(ctx, ns)
         if ns.cmd in DOMAINS:
             payload_obj = DOMAINS[ns.cmd](ctx)
             payload = render_payload(payload_obj, as_json)
