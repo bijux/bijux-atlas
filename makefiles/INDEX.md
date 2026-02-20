@@ -1,6 +1,6 @@
 # Makefiles Index
 
-- File count: 14
+- File count: 16
 - Owner: `build-and-release`
 
 ## Files
@@ -13,9 +13,11 @@
 - `env.mk`
 - `help.mk`
 - `layout.mk`
+- `legacy.mk`
 - `ops.mk`
 - `path_contract.mk`
 - `policies.mk`
+- `product.mk`
 - `registry.mk`
 - `root.mk`
 - `scripts.mk`

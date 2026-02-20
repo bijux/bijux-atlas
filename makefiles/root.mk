@@ -15,91 +15,12 @@ include makefiles/path_contract.mk
 include makefiles/registry.mk
 include makefiles/help.mk
 include makefiles/layout.mk
+include makefiles/product.mk
 include makefiles/ops.mk
 include makefiles/policies.mk
-
-bootstrap:
-	@python3 --version
-	@command -v pip >/dev/null 2>&1 || { echo "missing pip" >&2; exit 1; }
-	@python3 -m pip install -r configs/docs/requirements.txt >/dev/null
-	@command -v k6 >/dev/null 2>&1 || echo "k6 not found (optional for non-perf workflows)"
-	@command -v kind >/dev/null 2>&1 || echo "kind not found (required for k8s e2e)"
-	@command -v kubectl >/dev/null 2>&1 || echo "kubectl not found (required for k8s e2e)"
-
-
-docker-build:
-	@IMAGE_TAG="$${DOCKER_IMAGE:-bijux-atlas:local}"; \
-	IMAGE_VERSION="$${IMAGE_VERSION:-$$(git rev-parse --short=12 HEAD)}"; \
-	VCS_REF="$${VCS_REF:-$$(git rev-parse HEAD)}"; \
-	BUILD_DATE="$${BUILD_DATE:-$$(date -u +%Y-%m-%dT%H:%M:%SZ)}"; \
-	RUST_VERSION="$${RUST_VERSION:-1.84.1}"; \
-	docker build --pull=false -t "$$IMAGE_TAG" -f docker/Dockerfile \
-	  --build-arg RUST_VERSION="$$RUST_VERSION" \
-	  --build-arg IMAGE_VERSION="$$IMAGE_VERSION" \
-	  --build-arg VCS_REF="$$VCS_REF" \
-	  --build-arg BUILD_DATE="$$BUILD_DATE" \
-	  --build-arg IMAGE_PROVENANCE="$${IMAGE_PROVENANCE:-$${IMAGE_TAG}}" \
-	  .
-
-docker-smoke:
-	@$(MAKE) -s docker-build
-	@./scripts/check/docker-runtime-smoke.sh "$${DOCKER_IMAGE:-bijux-atlas:local}"
-
-docker-scan:
-	@./scripts/check/docker-scan.sh "$${DOCKER_IMAGE:-bijux-atlas:local}"
-
-docker-push:
-	@if [ "$${CI:-0}" != "1" ]; then echo "docker-push is CI-only"; exit 2; fi
-	@IMAGE_TAG="$${DOCKER_IMAGE:?DOCKER_IMAGE is required for docker-push}"; \
-	docker push "$$IMAGE_TAG"
-
-chart-package:
-	@mkdir -p artifacts/chart
-	@helm package ops/k8s/charts/bijux-atlas --destination artifacts/chart
-
-chart-verify:
-	@helm lint ops/k8s/charts/bijux-atlas
-	@helm template atlas ops/k8s/charts/bijux-atlas >/dev/null
-
-chart-validate: ## Validate chart via lint/template and values contract schema checks
-	@$(MAKE) chart-verify
-	@./scripts/contracts/generate_chart_values_schema.py
-	@./scripts/contracts/check_chart_values_contract.py
-
-
-docker-contracts: ## Validate Docker layout/policy/no-latest contracts
-	@python3 ./scripts/check/check-docker-layout.py
-	@python3 ./scripts/check/check-docker-policy.py
-	@python3 ./scripts/check/check-no-latest-tags.py
-
-rename-lint: ## Enforce durable naming rules for docs/scripts and concept ownership
-	@python3 ./scripts/docs/check-durable-naming.py
-	@./scripts/docs/check_duplicate_topics.sh
-
-docs-lint-names: ## Enforce durable naming contracts, registries, and inventory
-	@python3 ./scripts/docs/naming_inventory.py
-	@./scripts/docs/ban_legacy_terms.sh
-	@python3 ./scripts/docs/check_observability_docs_checklist.py
-	@python3 ./scripts/docs/check_no_orphan_docs.py
-	@python3 ./scripts/docs/check_script_locations.py
-	@python3 ./scripts/docs/check_runbook_map_registration.py
-	@python3 ./scripts/docs/check_contract_doc_pairs.py
-	@python3 ./ops/load/scripts/validate_suite_manifest.py
-	@./scripts/docs/check_index_pages.sh
-
-doctor: ## Print tool/env/path diagnostics and store doctor report
-	@RUN_ID="$${RUN_ID:-doctor-$(MAKE_RUN_TS)}" python3 ./scripts/layout/make_doctor.py
-
-prereqs: ## Check required binaries and versions and store prereqs report
-	@RUN_ID="$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}" python3 ./scripts/layout/make_prereqs.py --run-id "$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}"
-
-dataset-id-lint: ## Validate DatasetId/DatasetKey contract usage across ops fixtures
-	@python3 ./scripts/layout/dataset_id_lint.py
-
-legacy/config-validate-core: ## Legacy config schema/contracts validation implementation
-	@python3 ./scripts/public/generate-config-key-registry.py
-	@python3 ./scripts/public/config-validate.py
-	@python3 ./scripts/public/config-drift-check.py
+ifeq ($(ALLOW_LEGACY),1)
+include makefiles/legacy.mk
+endif
 
 config-print: ## Print canonical merged config payload as JSON
 	@python3 ./scripts/public/config-print.py
@@ -153,6 +74,8 @@ gates-check: ## Run public-surface/docs/makefile boundary checks
 	@$(call gate_json,root-diff-alarm,python3 ./scripts/layout/check_root_diff_alarm.py)
 	@$(call gate_json,ci-entrypoints,python3 ./scripts/layout/check_ci_entrypoints.py)
 	@$(call gate_json,help-excludes-internal,python3 ./scripts/layout/check_help_excludes_internal.py)
+	@$(call gate_json,help-output-determinism,python3 ./scripts/layout/check_help_output_determinism.py)
+	@$(call gate_json,root-mk-size-budget,python3 ./scripts/layout/check_root_mk_size_budget.py)
 	@$(call gate_json,root-makefile-hygiene,python3 ./scripts/layout/check_root_makefile_hygiene.py)
 
 gates: ## Print public targets grouped by namespace
@@ -450,49 +373,12 @@ nightly: ## Deprecated alias for nightly/all
 	@echo "[DEPRECATED] 'make nightly' -> 'make nightly/all'" >&2
 	@$(MAKE) -s nightly/all
 
-legacy/root-fast: ## Legacy preserved deterministic lane
-	@$(call with_iso,root,$(MAKE) -s gates-check configs/all lane-cargo ci-deny ops-contracts-check docs-lint-names)
-
-legacy/root-local-full: ## Legacy local superset gate with 5 parallel isolated lanes + unified summary
-	@PARALLEL=1 MODE=root-local RUN_ID="$${RUN_ID:-legacy-root-local-$(MAKE_RUN_TS)}" ./ops/run/root-lanes.sh
-
-legacy/root-local-fast: ## Legacy local superset fast mode (skip stack-smoke lane)
-	@PARALLEL=0 MODE=root RUN_ID="$${RUN_ID:-legacy-root-fast-$(MAKE_RUN_TS)}" ./ops/run/root-lanes.sh
-
 root-local-summary: ## Print status and artifact paths for RUN_ID
 	@SUMMARY_RUN_ID="$${RUN_ID:-}" MODE=summary ./ops/run/root-lanes.sh
-
-legacy/ci: ## Legacy root + CI-only packaging/publish checks
-	@$(call with_iso,ci,$(MAKE) -s root ci-release-binaries ci-docs-build ci-release-compat-matrix-verify)
-
-legacy/nightly: ## Legacy nightly superset (ci + nightly ops suites)
-	@$(call with_iso,nightly,$(MAKE) -s ci ops-load-nightly ops-drill-suite ops-realdata)
 
 root-determinism: ## Assert make root determinism (inventory outputs stable across two runs)
 	@./scripts/layout/check_root_determinism.sh
 
-legacy/local-fast-loop: ## Legacy fast local loop
-	@mkdir -p "$(LOCAL_ISO_ROOT)/target" "$(LOCAL_ISO_ROOT)/cargo-home" "$(LOCAL_ISO_ROOT)/tmp"
-	@$(LOCAL_ENV) $(MAKE) fmt
-	@$(LOCAL_ENV) $(MAKE) lint
-	@$(LOCAL_ENV) $(MAKE) test
-
-legacy/local-full-loop: ## Legacy full local loop
-	@mkdir -p "$(LOCAL_FULL_ISO_ROOT)/target" "$(LOCAL_FULL_ISO_ROOT)/cargo-home" "$(LOCAL_FULL_ISO_ROOT)/tmp"
-	@$(LOCAL_FULL_ENV) $(MAKE) fmt
-	@$(LOCAL_FULL_ENV) $(MAKE) lint
-	@$(LOCAL_FULL_ENV) $(MAKE) audit
-	@$(LOCAL_FULL_ENV) $(MAKE) test
-	@$(LOCAL_FULL_ENV) $(MAKE) coverage
-	@$(LOCAL_FULL_ENV) $(MAKE) docs
-	@$(LOCAL_FULL_ENV) $(MAKE) docs-freeze
-
-legacy/contracts: ## Legacy contracts meta pipeline
-	@ISO_ROOT=artifacts/isolate/contracts $(MAKE) ssot-check
-	@ISO_ROOT=artifacts/isolate/contracts $(MAKE) policy-lint
-	@ISO_ROOT=artifacts/isolate/contracts $(MAKE) policy-schema-drift
-	@ISO_ROOT=artifacts/isolate/contracts $(MAKE) openapi-drift
-	@ISO_ROOT=artifacts/isolate/contracts $(MAKE) docs-freeze
 
 telemetry-contracts: ## Regenerate telemetry generated artifacts from observability contracts
 	@python3 ./scripts/contracts/generate_contract_artifacts.py
@@ -507,13 +393,6 @@ telemetry-verify: ## Run telemetry contract verification path (pack+smoke+contra
 	  $(MAKE) ops-observability-pack-lint; \
 	  echo "live pack smoke skipped (set ATLAS_TELEMETRY_VERIFY_LIVE=1)"; \
 	fi
-
-legacy/hygiene: ## Legacy repo hygiene checks
-	@ISO_ROOT=artifacts/isolate/hygiene $(MAKE) layout-check
-	@ISO_ROOT=artifacts/isolate/hygiene $(MAKE) scripts-audit
-	@ISO_ROOT=artifacts/isolate/hygiene $(MAKE) ci-workflows-make-only
-	@ISO_ROOT=artifacts/isolate/hygiene $(MAKE) ci-make-help-drift
-	@ISO_ROOT=artifacts/isolate/hygiene $(MAKE) path-contract-check
 
 architecture-check: ## Validate runtime architecture boundaries and dependency guardrails
 	@python3 scripts/docs/generate_architecture_map.py
@@ -560,7 +439,7 @@ release-update-compat-matrix:
 	@./scripts/release/update-compat-matrix.sh "$$TAG"
 
 
-.PHONY: architecture-check artifacts-clean artifacts-index artifacts-open bootstrap bootstrap-tools bump cargo/all chart-package chart-verify ci ci/all ci-workflow-contract clean config-drift config-print config-validate configs-check configs/all contracts dataset-id-lint debug deep-clean docker-build docker-contracts docker-push docker-scan docker-smoke docs docs/all docs-lint-names doctor evidence/open evidence/clean evidence/check evidence/bundle evidence/pr-summary explain fetch-real-datasets format gates gates-check governance-check graph help hygiene internal-list inventory isolate-clean layout-check layout-migrate legacy/ci legacy/contracts legacy/hygiene legacy/local-fast-loop legacy/local-full-loop legacy/nightly legacy/root-fast legacy/root-local-fast legacy/root-local-full list local local/all local-full makefiles-contract nightly nightly/all no-direct-scripts obs/update-goldens ops-alerts-validate ops/all ops-api-protection ops-artifacts-open ops-baseline-policy-check ops-cache-pin-set ops-cache-status ops-catalog-validate ops-check ops-clean ops-contracts-check ops-dashboards-validate ops-dataset-federated-registry-test ops-dataset-multi-release-test ops-dataset-promotion-sim ops-dataset-qc ops-datasets-fetch ops-deploy ops-doctor ops-down ops-drill-corruption-dataset ops-drill-memory-growth ops-drill-otel-outage ops-drill-overload ops-drill-pod-churn ops-drill-rate-limit ops-drill-rollback ops-drill-rollback-under-load ops-drill-store-outage ops-drill-suite ops-drill-toxiproxy-latency ops-drill-upgrade ops-drill-upgrade-under-load ops-e2e ops-e2e-smoke ops-full ops-full-pr ops-gc-smoke ops-gen ops-gen-check ops-graceful-degradation ops-incident-repro-kit ops-k8s-smoke ops-k8s-suite ops-k8s-template-tests ops-k8s-tests ops-load-ci ops-load-full ops-load-manifest-validate ops-load-nightly ops-load-shedding ops-load-smoke ops-load-soak ops-load-suite ops-local-full ops-local-full-stack ops-metrics-check ops-obs-down ops-obs-install ops-obs-mode ops-obs-uninstall ops-obs-verify ops-observability-pack-conformance-report ops-observability-pack-export ops-observability-pack-health ops-observability-pack-smoke ops-observability-pack-verify ops-observability-smoke ops-observability-validate ops-open-grafana ops-openapi-validate ops-perf-baseline-update ops-perf-cold-start ops-perf-nightly ops-perf-report ops-perf-warm-start ops-policy-audit ops-prereqs ops-proof-cached-only ops-publish ops-readiness-scorecard ops-realdata ops-redeploy ops-ref-grade-local ops-ref-grade-nightly ops-ref-grade-pr ops-release-matrix ops-release-rollback ops-release-update ops-report ops-slo-alert-proof ops-slo-burn ops-slo-report ops-smoke ops-tools-check ops-traces-check ops-undeploy ops-up ops-values-validate ops-warm ops-warm-datasets ops-warm-shards ops-warm-top policies/all policy-allow-env-lint policy-audit policy-drift-diff policy-enforcement-status policy-lint policy-schema-drift prereqs quick release release-dry-run release-update-compat-matrix rename-lint report root root-determinism root-local root-local-fast root-local-summary scripts-all scripts/all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test ssot-check verify-inventory lane-cargo lane-docs lane-ops lane-scripts lane-configs-policies root-local-open repro internal/lane-ops-smoke internal/lane-obs-cheap internal/lane-obs-full legacy/config-validate-core report/merge report/print report/md report/junit clean-safe clean-all print-env cargo/fmt cargo/lint cargo/test-fast cargo/test cargo/test-all cargo/test-contracts cargo/audit cargo/bench-smoke cargo/coverage configs/check budgets/check perf/baseline-update perf/regression-check perf/triage perf/compare policies/check policies/boundaries-check retry docs/check docs/build docs/fmt docs/lint docs/test docs/clean scripts/check scripts/build scripts/fmt scripts/lint scripts/test scripts/clean ops/check ops/smoke ops/suite ops/fmt ops/lint ops/test ops/build ops/clean pins/check pins/update
+.PHONY: architecture-check artifacts-clean artifacts-index artifacts-open bootstrap bootstrap-tools bump cargo/all chart-package chart-verify ci ci/all ci-workflow-contract clean config-drift config-print config-validate configs-check configs/all contracts dataset-id-lint debug deep-clean docker-build docker-contracts docker-push docker-scan docker-smoke docs docs/all docs-lint-names doctor evidence/open evidence/clean evidence/check evidence/bundle evidence/pr-summary explain fetch-real-datasets format gates gates-check governance-check graph help hygiene internal-list inventory isolate-clean layout-check layout-migrate list local local/all local-full makefiles-contract nightly nightly/all no-direct-scripts obs/update-goldens ops-alerts-validate ops/all ops-api-protection ops-artifacts-open ops-baseline-policy-check ops-cache-pin-set ops-cache-status ops-catalog-validate ops-check ops-clean ops-contracts-check ops-dashboards-validate ops-dataset-federated-registry-test ops-dataset-multi-release-test ops-dataset-promotion-sim ops-dataset-qc ops-datasets-fetch ops-deploy ops-doctor ops-down ops-drill-corruption-dataset ops-drill-memory-growth ops-drill-otel-outage ops-drill-overload ops-drill-pod-churn ops-drill-rate-limit ops-drill-rollback ops-drill-rollback-under-load ops-drill-store-outage ops-drill-suite ops-drill-toxiproxy-latency ops-drill-upgrade ops-drill-upgrade-under-load ops-e2e ops-e2e-smoke ops-full ops-full-pr ops-gc-smoke ops-gen ops-gen-check ops-graceful-degradation ops-incident-repro-kit ops-k8s-smoke ops-k8s-suite ops-k8s-template-tests ops-k8s-tests ops-load-ci ops-load-full ops-load-manifest-validate ops-load-nightly ops-load-shedding ops-load-smoke ops-load-soak ops-load-suite ops-local-full ops-local-full-stack ops-metrics-check ops-obs-down ops-obs-install ops-obs-mode ops-obs-uninstall ops-obs-verify ops-observability-pack-conformance-report ops-observability-pack-export ops-observability-pack-health ops-observability-pack-smoke ops-observability-pack-verify ops-observability-smoke ops-observability-validate ops-open-grafana ops-openapi-validate ops-perf-baseline-update ops-perf-cold-start ops-perf-nightly ops-perf-report ops-perf-warm-start ops-policy-audit ops-prereqs ops-proof-cached-only ops-publish ops-readiness-scorecard ops-realdata ops-redeploy ops-ref-grade-local ops-ref-grade-nightly ops-ref-grade-pr ops-release-matrix ops-release-rollback ops-release-update ops-report ops-slo-alert-proof ops-slo-burn ops-slo-report ops-smoke ops-tools-check ops-traces-check ops-undeploy ops-up ops-values-validate ops-warm ops-warm-datasets ops-warm-shards ops-warm-top policies/all policy-allow-env-lint policy-audit policy-drift-diff policy-enforcement-status policy-lint policy-schema-drift prereqs quick release release-dry-run release-update-compat-matrix rename-lint report root root-determinism root-local root-local-fast root-local-summary scripts-all scripts/all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test ssot-check verify-inventory lane-cargo lane-docs lane-ops lane-scripts lane-configs-policies root-local-open repro internal/lane-ops-smoke internal/lane-obs-cheap internal/lane-obs-full report/merge report/print report/md report/junit clean-safe clean-all print-env cargo/fmt cargo/lint cargo/test-fast cargo/test cargo/test-all cargo/test-contracts cargo/audit cargo/bench-smoke cargo/coverage configs/check budgets/check perf/baseline-update perf/regression-check perf/triage perf/compare policies/check policies/boundaries-check retry docs/check docs/build docs/fmt docs/lint docs/test docs/clean scripts/check scripts/build scripts/fmt scripts/lint scripts/test scripts/clean ops/check ops/smoke ops/suite ops/fmt ops/lint ops/test ops/build ops/clean pins/check pins/update
 
 
 
@@ -579,6 +458,9 @@ inventory: ## Regenerate inventories (ops surface, make targets, docs status, na
 verify-inventory: ## Fail if inventory outputs drift from generated state
 	@$(MAKE) -s inventory
 	@git diff --exit-code -- makefiles/targets.json docs/_generated/make-targets.md docs/_generated/repo-surface.md docs/_generated/doc-status.md docs/_generated/naming-inventory.md docs/_generated/ops-surface.md docs/_generated/configs-surface.md docs/_generated/tooling-versions.md docs/_generated/scripts-surface.md docs/development/make-targets.md docs/development/make-targets-inventory.md docs/development/makefiles/surface.md
+
+upgrade-guide: ## Generate make target upgrade guide for renamed/deprecated aliases
+	@python3 ./scripts/docs/generate_upgrade_guide.py
 
 artifacts-index: ## Generate artifacts index for inspection UIs
 	@python3 ./scripts/layout/build_artifacts_index.py
