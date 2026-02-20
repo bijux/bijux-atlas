@@ -901,6 +901,128 @@ def check_script_shims_minimal(repo_root: Path) -> tuple[int, list[str]]:
     return (0 if not errors else 1), errors
 
 
+def check_venv_location_policy(repo_root: Path) -> tuple[int, list[str]]:
+    allowed_prefixes = (
+        "artifacts/bijux-atlas-scripts/venv/.venv",
+        "artifacts/isolate/py/scripts/.venv",
+    )
+    proc = subprocess.run(
+        ["git", "ls-files", "--others", "--cached", "--exclude-standard"],
+        cwd=repo_root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    paths = [p.strip() for p in proc.stdout.splitlines() if p.strip()]
+    violations: list[str] = []
+    for rel in paths:
+        if ".venv" not in Path(rel).parts:
+            continue
+        if any(rel.startswith(prefix) for prefix in allowed_prefixes):
+            continue
+        violations.append(rel)
+    root_venv = repo_root / ".venv"
+    if root_venv.exists():
+        violations.append(".venv")
+    return (0 if not violations else 1), violations
+
+
+def check_python_runtime_artifacts(repo_root: Path, *, fix: bool = False) -> tuple[int, list[str]]:
+    allowed_prefix = (repo_root / "artifacts").resolve()
+
+    def allowed(path: Path) -> bool:
+        resolved = path.resolve()
+        return resolved == allowed_prefix or allowed_prefix in resolved.parents
+
+    violations: list[str] = []
+    paths_to_remove: list[Path] = []
+    forbidden_dirs = {".venv", ".ruff_cache", ".pytest_cache", ".mypy_cache", "__pycache__", ".hypothesis"}
+    for path in repo_root.rglob("*"):
+        if path.is_dir() and path.name in forbidden_dirs and not allowed(path):
+            if ".git" in path.parts:
+                continue
+            violations.append(f"forbidden dir outside artifacts: {path.relative_to(repo_root)}")
+            paths_to_remove.append(path)
+    for path in repo_root.rglob("*.pyc"):
+        if not allowed(path):
+            if ".git" in path.parts:
+                continue
+            violations.append(f"forbidden pyc outside artifacts: {path.relative_to(repo_root)}")
+            paths_to_remove.append(path)
+    tracked = subprocess.run(["git", "ls-files"], cwd=repo_root, check=False, text=True, capture_output=True)
+    for rel in tracked.stdout.splitlines():
+        if fnmatch(rel, "*.pyc"):
+            violations.append(f"tracked pyc file: {rel}")
+    if violations and fix:
+        for path in sorted(set(paths_to_remove), key=lambda p: len(p.parts), reverse=True):
+            if path.is_dir():
+                subprocess.run(["rm", "-rf", str(path)], check=False)
+            elif path.is_file():
+                path.unlink(missing_ok=True)
+        return 0, [f"python runtime artifact policy auto-fixed ({len(paths_to_remove)} paths)"]
+    return (0 if not violations else 1), violations
+
+
+def check_repo_script_boundaries(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    scripts_files = [p for p in _git_ls_files(repo_root, ["scripts/**"]) if not p.endswith(".md")]
+    for rel in scripts_files:
+        if _find_python_migration_exception(repo_root, "scripts_dir", rel, "") is None:
+            errors.append(f"scripts directory transition is closed; file must move under packages/: {rel}")
+
+    exec_proc = subprocess.run(
+        ["git", "ls-files", "--stage", "*.py"],
+        cwd=repo_root,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    for line in exec_proc.stdout.splitlines():
+        if not line.strip():
+            continue
+        mode, _obj, stage_path = line.split(maxsplit=2)
+        _stage, rel = stage_path.split("\t", 1)
+        if mode != "100755":
+            continue
+        if rel.startswith("packages/") or "/tests/" in rel:
+            continue
+        if _find_python_migration_exception(repo_root, "executable_python", rel, rel) is None:
+            errors.append(f"executable python outside packages/: {rel}")
+
+    for rel in _git_ls_files(repo_root, ["*.sh"]):
+        if rel.startswith("docker/") or rel.startswith("packages/"):
+            continue
+        if _find_python_migration_exception(repo_root, "shell_location", rel, "") is None:
+            errors.append(f"shell script outside docker/ or packages/: {rel}")
+    return (0 if not errors else 1), errors
+
+
+def check_atlas_scripts_cli_contract(repo_root: Path) -> tuple[int, list[str]]:
+    cli = repo_root / "bin/atlasctl"
+    pyproject = repo_root / "packages/bijux-atlas-scripts/pyproject.toml"
+    expected_version = ""
+    for ln in pyproject.read_text(encoding="utf-8").splitlines():
+        stripped = ln.strip()
+        if stripped.startswith("version = "):
+            expected_version = stripped.split("=", 1)[1].strip().strip('"').strip("'")
+            break
+    errs: list[str] = []
+    h1 = subprocess.run([str(cli), "--help"], cwd=repo_root, text=True, capture_output=True, check=False)
+    h2 = subprocess.run([str(cli), "--help"], cwd=repo_root, text=True, capture_output=True, check=False)
+    if h1.returncode != 0 or h2.returncode != 0:
+        errs.append("atlasctl --help must exit 0")
+    if h1.stdout != h2.stdout:
+        errs.append("atlasctl --help output is not deterministic")
+    v = subprocess.run([str(cli), "--version"], cwd=repo_root, text=True, capture_output=True, check=False)
+    if v.returncode != 0:
+        errs.append("atlasctl --version must exit 0")
+    else:
+        out = (v.stdout or v.stderr).strip()
+        if expected_version and expected_version not in out:
+            errs.append(f"atlasctl version mismatch: expected {expected_version}, got `{out}`")
+    return (0 if not errs else 1), errs
+
+
 def check_root_bin_shims(repo_root: Path) -> tuple[int, list[str]]:
     bin_dir = repo_root / "bin"
     if not bin_dir.exists():

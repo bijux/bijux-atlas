@@ -51,12 +51,12 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@./ops/_lint/no-bin-symlinks.sh
 	@./ops/_lint/no-scripts-bin-dir.sh
 	@$(ATLAS_SCRIPTS) check no-adhoc-python
-	@$(PY_RUN) scripts/areas/check/check-venv-location-policy.py
-	@$(PY_RUN) scripts/areas/check/check-python-runtime-artifacts.py --fix
-	@$(PY_RUN) scripts/areas/check/check-python-runtime-artifacts.py
+	@$(ATLAS_SCRIPTS) check venv-location-policy
+	@$(ATLAS_SCRIPTS) check python-runtime-artifacts --fix
+	@$(ATLAS_SCRIPTS) check python-runtime-artifacts
 	@$(ATLAS_SCRIPTS) check make-scripts-refs
-	@$(PY_RUN) scripts/areas/check/check-repo-script-boundaries.py
-	@$(PY_RUN) scripts/areas/check/check-atlas-scripts-cli-contract.py
+	@$(ATLAS_SCRIPTS) check repo-script-boundaries
+	@$(ATLAS_SCRIPTS) check atlas-cli-contract
 	@$(ATLAS_SCRIPTS) check scripts-surface-docs-drift
 	@$(PY_RUN) scripts/areas/layout/check_make_command_allowlist.py
 	@./ops/_lint/naming.sh
@@ -129,8 +129,8 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(ATLAS_SCRIPTS) check scripts-lock-sync
 	@$(ATLAS_SCRIPTS) check no-adhoc-python
 	@$(ATLAS_SCRIPTS) check make-scripts-refs
-	@$(PY_RUN) scripts/areas/check/check-repo-script-boundaries.py
-	@$(PY_RUN) scripts/areas/check/check-atlas-scripts-cli-contract.py
+	@$(ATLAS_SCRIPTS) check repo-script-boundaries
+	@$(ATLAS_SCRIPTS) check atlas-cli-contract
 	@$(PY_RUN) scripts/areas/layout/check_make_command_allowlist.py
 	@$(PY_RUN) scripts/areas/layout/check_script_entrypoints.py
 	@$(PY_RUN) scripts/areas/layout/check_scripts_top_level.py

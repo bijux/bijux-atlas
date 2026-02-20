@@ -14,10 +14,8 @@ Generated file. Do not edit manually.
 
 | Script | Owner | Stability | Called By |
 |---|---|---|---|
-| `scripts/areas/check/check-atlas-scripts-cli-contract.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-bijux-atlas-scripts-boundaries.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-no-make-scripts-references.py` | `platform` | `public` | - |
-| `scripts/areas/check/check-repo-script-boundaries.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-scripts-ssot-final.py` | `platform` | `public` | - |
 | `scripts/areas/check/generate-scripts-sbom.py` | `platform` | `public` | - |
 | `scripts/areas/check/python_migration_exceptions.py` | `platform` | `public` | - |
