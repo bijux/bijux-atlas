@@ -1,7 +1,0 @@
-{
-  "schema_version": 1,
-  "allow_new_entries": false,
-  "purge_enforced": false,
-  "purge_milestone": "2026-09-30",
-  "notes": "Set purge_enforced=true at milestone flip to hard-fail on any remaining legacy inventory entries."
-}

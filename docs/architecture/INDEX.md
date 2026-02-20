@@ -50,3 +50,4 @@ Expected output: docs build and docs-structure checks pass.
 - [No Serving Writes](no-serving-writes.md)
 - [Build/Serve Split](build-serve-split.md)
 - [Layer Boundary Rules](layering/boundary-rules.md)
+- [Removed Compatibility Paths](removed-compatibility-paths.md)

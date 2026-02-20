@@ -91,6 +91,7 @@ nav:
       - Tracing: contracts/tracing.md
       - Endpoints: contracts/endpoints.md
       - Config Keys: contracts/config-keys.md
+      - Env Vars: _generated/env-vars.md
       - Chart Values: contracts/chart-values.md
       - GFF3 Acceptance: contracts/gff3-acceptance.md
       - FASTA-Derived Metrics: contracts/fasta-derived-metrics.md
@@ -244,6 +245,7 @@ nav:
       - Crate Layout Contract: architecture/crate-layout-contract.md
       - Boundaries: architecture/boundaries.md
       - Layer Boundary Rules: architecture/layering/boundary-rules.md
+      - Removed Compatibility Paths: architecture/removed-compatibility-paths.md
       - Layer Rule (No Cross-Layer Fixups): architecture/layering/no-layer-fixups.md
       - Effects: architecture/effects.md
       - Boundary Maps: architecture/boundary-maps.md

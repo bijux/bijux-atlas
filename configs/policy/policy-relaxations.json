@@ -3,7 +3,7 @@
   "exception_budgets": {
     "generated_dead_code_allow": 24,
     "test_module_layout_allow": 2,
-    "docs_legacy_token_allow": 3
+    "docs_legacy_token_allow": 2
   },
   "exceptions": [
     {
@@ -53,18 +53,6 @@
       "risk": "low",
       "issue_id": "ISSUE-ATLAS-EXC-0102",
       "removal_plan": "Remove exception after planned contract cleanups and delete tagged usage in code."
-    },
-    {
-      "id": "ATLAS-EXC-0103",
-      "policy": "docs_legacy_token_allow",
-      "scope": "repo",
-      "file": "makefiles/legacy.mk",
-      "justification": "The deprecation banner intentionally uses the literal token in the compatibility notice.",
-      "expiry": "2027-12-31",
-      "owner": "platform",
-      "risk": "low",
-      "issue_id": "ISSUE-ATLAS-EXC-0103",
-      "removal_plan": "Delete this exception when legacy targets are removed."
     }
   ]
 }
