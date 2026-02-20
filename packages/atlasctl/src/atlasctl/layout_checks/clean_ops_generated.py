@@ -8,8 +8,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 allow = {
     "ops/_generated_committed/.gitkeep",
-    "ops/_generated_committed/examples/report.example.json",
-    "ops/_generated_committed/examples/report.unified.example.json",
     "docs/_generated/ops-surface.md",
     "docs/_generated/ops-contracts.md",
     "docs/_generated/ops-schemas.md",

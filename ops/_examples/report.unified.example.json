@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
   "report_version": 1,
-  "run_id": "root-local-20260219T000000Z",
-  "generated_at": "2026-02-19T00:00:00+00:00",
+  "run_id": "atlas-ops-example",
+  "generated_at": "1970-01-01T00:00:00Z",
   "lanes": {
     "rust": {
       "lane": "rust",
-      "run_id": "root-local-20260219T000000Z",
+      "run_id": "atlas-ops-example",
       "status": "pass",
       "duration_seconds": 120,
-      "log": "ops/_generated/rust/root-local-20260219T000000Z.log"
+      "log": "ops/_examples/logs/rust-example.log"
     }
   },
   "summary": {
