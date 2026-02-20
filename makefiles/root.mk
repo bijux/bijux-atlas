@@ -579,22 +579,22 @@ policy-lint:
 	@./scripts/areas/public/policy-lint.sh
 
 policy-schema-drift:
-	@./scripts/areas/public/policy-schema-drift.py
+	@./bin/atlasctl policies schema-drift
 
 policy-audit: ## Audit policy relaxations report + enforce registry/expiry/budget gates
 	@./scripts/areas/public/policy-audit.py --enforce
 
 policy-enforcement-status: ## Validate policy pass/fail coverage table and generate status doc
-	@./scripts/areas/public/policy-enforcement-status.py --enforce
+	@./bin/atlasctl policies enforcement-status --enforce
 
 policy-allow-env-lint: ## Forbid ALLOW_* escape hatches unless declared in env schema
-	@./scripts/areas/public/check-allow-env-schema.py
+	@./bin/atlasctl policies allow-env-lint
 
 ops-policy-audit: ## Verify ops policy configs are reflected by ops make/scripts contracts
 	@$(ATLAS_SCRIPTS) ops policy-audit
 
 policy-drift-diff: ## Show policy contract drift between two refs (usage: make policy-drift-diff [FROM=HEAD~1 TO=HEAD])
-	@./scripts/areas/public/policy-drift-diff.sh "$${FROM:-HEAD~1}" "$${TO:-HEAD}"
+	@./bin/atlasctl policies drift-diff --from-ref "$${FROM:-HEAD~1}" --to-ref "$${TO:-HEAD}"
 
 release-update-compat-matrix:
 	@[ -n "$$TAG" ] || { echo "usage: make release-update-compat-matrix TAG=<tag>"; exit 2; }

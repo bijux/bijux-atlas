@@ -94,8 +94,8 @@ PY
 ./scripts/areas/public/require-crate-docs.sh
 ./scripts/areas/public/no-network-unit-tests.sh
 ./scripts/areas/public/check-cli-commands.sh
-./scripts/areas/public/policy-schema-drift.py
-./scripts/areas/public/check-allow-env-schema.py
+./bin/atlasctl policies schema-drift
+./bin/atlasctl policies allow-env-lint
 ./bin/bijux-atlas contracts generate --generators artifacts chart-schema
 ./bin/bijux-atlas contracts check --checks breakage drift endpoints error-codes sqlite-indexes chart-values
 ./bin/atlasctl --quiet check effects-lint

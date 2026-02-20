@@ -12,15 +12,7 @@ SCRIPTS = ROOT / "scripts"
 
 ALLOWED_PREFIXES = (
     "scripts/areas/public/",
-    "scripts/areas/configs/",
-    "scripts/lib/",    "scripts/areas/policy/",
-        "scripts/areas/layout/",
-    "scripts/areas/release/",
-    "ops/datasets/scripts/fixtures/",
-    "scripts/bin/",
-    "scripts/areas/ops/",
-    "scripts/areas/tools/",
-    "scripts/areas/demo/",
+    "scripts/areas/layout/",
 )
 LEGACY_ALLOWED = (
     "scripts/areas/layout/check_no_root_dumping.sh",
