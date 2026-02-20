@@ -15,16 +15,23 @@ def main() -> int:
     shims = data.get("shims", [])
     known = {entry["path"] for entry in shims if isinstance(entry, dict) and "path" in entry}
     errors: list[str] = []
-
-    for path in sorted((ROOT / "scripts/bin").glob("*")):
-        if not path.is_file() or path.name == "bijux-atlas-scripts":
+    max_active = int(data.get("max_active_shims", 9999))
+    shim_paths = []
+    for base in (ROOT / "scripts/bin", ROOT / "bin"):
+        if not base.exists():
             continue
-        text = path.read_text(encoding="utf-8", errors="ignore")
-        if "DEPRECATED:" not in text:
-            continue
-        rel = path.relative_to(ROOT).as_posix()
-        if rel not in known:
-            errors.append(f"shim missing expiry metadata: {rel}")
+        for path in sorted(base.glob("*")):
+            if not path.is_file() or path.name == "bijux-atlas-scripts":
+                continue
+            text = path.read_text(encoding="utf-8", errors="ignore")
+            if "DEPRECATED:" not in text:
+                continue
+            rel = path.relative_to(ROOT).as_posix()
+            shim_paths.append(rel)
+            if rel not in known:
+                errors.append(f"shim missing expiry metadata: {rel}")
+    if len(shim_paths) > max_active:
+        errors.append(f"shim budget exceeded: active={len(shim_paths)} max_active_shims={max_active}")
 
     today = date.today()
     for row in shims:
@@ -32,6 +39,10 @@ def main() -> int:
         if not rel:
             errors.append("shim metadata missing path")
             continue
+        if not str(row.get("replacement", "")).strip():
+            errors.append(f"shim metadata missing replacement command: {rel}")
+        if not str(row.get("migration_doc", "")).strip():
+            errors.append(f"shim metadata missing migration_doc: {rel}")
         p = ROOT / rel
         if not p.exists():
             errors.append(f"shim metadata points to missing file: {rel}")

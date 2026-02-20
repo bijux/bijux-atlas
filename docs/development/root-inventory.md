@@ -15,7 +15,7 @@ Prevents root sprawl and keeps navigation and automation predictable.
 - `.cargo/`: Cargo root-discovery workspace config.
 - `.github/`: CI workflows.
 - `artifacts/`: isolated and ops outputs.
-- `bin` (symlink): compatibility alias to `scripts/bin`.
+- `bin/`: compatibility command shims that redirect to `bijux-atlas-scripts`.
 - `configs/`: canonical static configuration files.
 - `crates/`: Rust workspace crates.
 - `docker/`: canonical Docker build surface.

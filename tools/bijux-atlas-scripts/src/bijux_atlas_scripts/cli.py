@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 
 from . import contracts, layout, registry
+from .compat.command import configure_compat_parser, run_compat_command
 from .configs.command import configure_configs_parser, run_configs_command
 from .core.context import RunContext
 from .core.fs import ensure_evidence_path
@@ -64,6 +65,7 @@ def build_parser() -> argparse.ArgumentParser:
     configure_ops_parser(sub)
     configure_inventory_parser(sub)
     configure_report_parser(sub)
+    configure_compat_parser(sub)
 
     doctor_p = sub.add_parser("doctor", help="show tooling and context diagnostics")
     doctor_p.add_argument("--json", action="store_true", help="emit JSON output")
@@ -125,6 +127,8 @@ def main(argv: list[str] | None = None) -> int:
             return run_inventory(ctx, ns.category, ns.format, ns.out_dir, ns.dry_run, ns.check)
         if ns.cmd == "report":
             return run_report_command(ctx, ns)
+        if ns.cmd == "compat":
+            return run_compat_command(ctx, ns)
         if ns.cmd in DOMAINS:
             payload_obj = DOMAINS[ns.cmd](ctx)
             payload = render_payload(payload_obj, bool(ns.json))

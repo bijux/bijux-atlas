@@ -17,6 +17,8 @@
     "make help",
     "make list",
     "inventory all",
-    "report collect"
+    "report collect",
+    "compat list",
+    "compat check"
   ]
 }
