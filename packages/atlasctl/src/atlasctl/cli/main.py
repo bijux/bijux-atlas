@@ -99,6 +99,9 @@ def build_parser() -> argparse.ArgumentParser:
     clean_p = sub.add_parser("clean", help="clean scripts artifacts under approved roots only")
     clean_p.add_argument("--older-than-days", type=int)
     clean_p.add_argument("--json", action="store_true", help="emit JSON output")
+    fix_p = sub.add_parser("fix", help="run explicit fixers (separate from checks)")
+    fix_p.add_argument("thing", nargs="?", default="list", help="fixer id or `list`")
+    fix_p.add_argument("--json", action="store_true", help="emit JSON output")
 
     return p
 
@@ -283,6 +286,17 @@ def main(argv: list[str] | None = None) -> int:
                 print(json.dumps(payload, sort_keys=True))
             else:
                 print(f"removed={len(payload.get('removed', []))}")
+            return 0
+        if ns.cmd == "fix":
+            payload = {
+                "schema_version": 1,
+                "tool": "atlasctl",
+                "status": "ok",
+                "thing": ns.thing,
+                "fixers": [],
+                "note": "Fixers are explicit actions and are never run as part of `atlasctl check`.",
+            }
+            print(dumps_json(payload, pretty=not (as_json or ns.json)))
             return 0
         if ns.cmd == "run":
             if ns.dry_run:
