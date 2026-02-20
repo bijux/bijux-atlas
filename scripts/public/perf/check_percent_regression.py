@@ -32,7 +32,7 @@ def main() -> int:
     args = parser.parse_args()
 
     root = Path(__file__).resolve().parents[3]
-    baseline_file = root / "ops/load/baselines" / f"{args.baseline_profile}.json"
+    baseline_file = root / "configs/ops/perf/baselines" / f"{args.baseline_profile}.json"
     if not baseline_file.exists():
         print(f"baseline file missing: {baseline_file}", file=sys.stderr)
         return 1
