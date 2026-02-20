@@ -66,6 +66,7 @@ wait_for_http() {
 
 with_port_forward() {
   PF_LOCAL_PORT="${1:-$(ops_layer_port_atlas)}"
+  BASE_URL="http://127.0.0.1:${PF_LOCAL_PORT}"
   kubectl -n "$NS" port-forward "svc/$SERVICE_NAME" "${PF_LOCAL_PORT}:$(ops_layer_port_atlas)" >/tmp/bijux-atlas-port-forward.log 2>&1 &
   PF_PID=$!
   sleep 2
@@ -103,19 +104,49 @@ install_chart() {
       fi
     done < <(kubectl get svc -A -o custom-columns=NS:.metadata.namespace,NAME:.metadata.name,NODEPORTS:.spec.ports[*].nodePort --no-headers)
   fi
+  local helm_args=(
+    upgrade --install "$RELEASE" "$CHART" -n "$NS" --create-namespace -f "$VALUES" --atomic --wait --timeout 5m
+  )
   if [ "$USE_LOCAL_IMAGE" = "1" ]; then
     if ! docker image inspect "$LOCAL_IMAGE_REF" >/dev/null 2>&1; then
       docker build -t "$LOCAL_IMAGE_REF" -f "$ROOT/docker/Dockerfile" "$ROOT"
     fi
     kind load docker-image "$LOCAL_IMAGE_REF" --name "$CLUSTER_NAME"
-    helm upgrade --install "$RELEASE" "$CHART" -n "$NS" --create-namespace -f "$VALUES" --atomic --wait --timeout 5m \
-      --set image.repository="${LOCAL_IMAGE_REF%:*}" \
-      --set image.tag="${LOCAL_IMAGE_REF#*:}" \
-      --set image.pullPolicy=IfNotPresent \
-      "$@"
-  else
-    helm upgrade --install "$RELEASE" "$CHART" -n "$NS" --create-namespace -f "$VALUES" --atomic --wait --timeout 5m "$@"
+    helm_args+=(
+      --set image.repository="${LOCAL_IMAGE_REF%:*}"
+      --set image.tag="${LOCAL_IMAGE_REF#*:}"
+      --set image.pullPolicy=IfNotPresent
+    )
   fi
+  if [ "$#" -gt 0 ]; then
+    helm_args+=("$@")
+  fi
+
+  local attempt=1
+  local out_file
+  out_file="$(mktemp)"
+  while [ "$attempt" -le 2 ]; do
+    if helm "${helm_args[@]}" >"$out_file" 2>&1; then
+      cat "$out_file"
+      rm -f "$out_file"
+      return 0
+    fi
+    if [ "$attempt" -eq 1 ] && grep -Eq 'services ".*" not found: uninstall: Release not loaded: .* release: not found' "$out_file"; then
+      cat "$out_file" >&2
+      echo "helm atomic rollback race detected; retrying install once after cleanup" >&2
+      helm -n "$NS" uninstall "$RELEASE" >/dev/null 2>&1 || true
+      kubectl -n "$NS" delete svc "$SERVICE_NAME" --ignore-not-found >/dev/null 2>&1 || true
+      attempt=$((attempt + 1))
+      sleep 2
+      continue
+    fi
+    cat "$out_file" >&2
+    rm -f "$out_file"
+    return 1
+  done
+  cat "$out_file" >&2
+  rm -f "$out_file"
+  return 1
 }
 
 pod_name() {

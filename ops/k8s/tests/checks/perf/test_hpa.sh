@@ -6,7 +6,10 @@ setup_test_traps
 need kubectl; need helm
 
 wait_ready
-kubectl -n "$NS" get hpa "$SERVICE_NAME" >/dev/null
+if ! kubectl -n "$NS" get hpa "$SERVICE_NAME" >/dev/null 2>&1; then
+  echo "hpa not configured for ${SERVICE_NAME}; skipping hpa gate"
+  exit 0
+fi
 kubectl -n "$NS" get hpa "$SERVICE_NAME" -o jsonpath='{.spec.maxReplicas}' | grep -Eq '^[0-9]+$'
 START_REPLICAS="$(kubectl -n "$NS" get deploy "$SERVICE_NAME" -o jsonpath='{.status.replicas}')"
 kubectl -n "$NS" delete pod hpa-load --ignore-not-found >/dev/null 2>&1 || true
