@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 TARGET = ROOT / "ops/_meta/surface.json"
-GEN = ROOT / "scripts/areas/layout/generate_ops_surface_meta.py"
+GEN = ROOT / "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/generate_ops_surface_meta.py"
 
 
 def main() -> int:

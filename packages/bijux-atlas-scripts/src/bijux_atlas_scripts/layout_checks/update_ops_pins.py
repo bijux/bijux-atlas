@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 
 def main() -> int:
-    subprocess.check_call(["python3", "scripts/areas/layout/generate_ops_pins.py"], cwd=ROOT)
+    subprocess.check_call(["python3", "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/generate_ops_pins.py"], cwd=ROOT)
     diff = subprocess.check_output(
         ["git", "diff", "--", "configs/ops/pins.json", "configs/ops/pins/"],
         cwd=ROOT,

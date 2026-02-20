@@ -5,7 +5,7 @@ SHELL := /bin/sh
 CANONICAL_PATHS := artifacts crates docs makefiles ops scripts configs docker .github .cargo
 
 path-contract-check: ## Validate canonical repository path contract and forbidden raw paths
-	@./scripts/areas/layout/check_no_forbidden_paths.sh
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/check_make_safety.py
+	@./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_no_forbidden_paths.sh
+	@$(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_make_safety.py
 
 .PHONY: path-contract-check

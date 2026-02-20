@@ -159,7 +159,7 @@ def test_check_make_scripts_references_flags_unapproved_scripts_path(tmp_path: P
         json.dumps({"exceptions": []}),
         encoding="utf-8",
     )
-    (tmp_path / "Makefile").write_text("x:\n\t@./scripts/areas/layout/check.sh\n", encoding="utf-8")
+    (tmp_path / "Makefile").write_text("x:\n\t@./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check.sh\n", encoding="utf-8")
     code, errors = check_make_scripts_references(tmp_path)
     assert code == 1
     assert any("scripts/" in e for e in errors)

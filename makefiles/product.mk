@@ -101,13 +101,13 @@ docs-lint-names: ## Enforce durable naming contracts, registries, and inventory
 	@$(ATLAS_SCRIPTS) docs index-pages-check --report text
 
 internal/product/doctor: ## Print tool/env/path diagnostics and store doctor report
-	@RUN_ID="$${RUN_ID:-doctor-$(MAKE_RUN_TS)}" $(ATLAS_SCRIPTS) run ./scripts/areas/layout/make_doctor.py
+	@RUN_ID="$${RUN_ID:-doctor-$(MAKE_RUN_TS)}" $(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/make_doctor.py
 
 prereqs: ## Check required binaries and versions and store prereqs report
-	@RUN_ID="$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}" $(ATLAS_SCRIPTS) run ./scripts/areas/layout/make_prereqs.py --run-id "$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}"
+	@RUN_ID="$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}" $(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/make_prereqs.py --run-id "$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}"
 
 dataset-id-lint: ## Validate DatasetId/DatasetKey contract usage across ops fixtures
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/dataset_id_lint.py
+	@$(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/dataset_id_lint.py
 
 internal/tooling-versions:
 	@echo "Rust toolchain (rust-toolchain.toml):"

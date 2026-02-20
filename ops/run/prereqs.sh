@@ -10,8 +10,8 @@ for c in docker kind kubectl helm k6 python3; do
   command -v "$c" >/dev/null 2>&1 || ops_fail "$OPS_ERR_PREREQ" "missing required tool: $c"
 done
 ops_version_guard kind kubectl helm k6
-python3 ./scripts/areas/layout/check_tool_versions.py kind kubectl helm k6 jq yq python3
-python3 ./scripts/areas/layout/check_ops_pins.py
+python3 ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_tool_versions.py kind kubectl helm k6 jq yq python3
+python3 ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_ops_pins.py
 python3 --version
 kubectl version --client >/dev/null
 helm version --short >/dev/null

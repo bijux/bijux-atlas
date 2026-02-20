@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Purpose: assert repository root shape against a categorized JSON whitelist.
-# Inputs: scripts/areas/layout/root_whitelist.json and root filesystem entries.
+# Inputs: packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/root_whitelist.json and root filesystem entries.
 # Outputs: non-zero exit on missing required or unexpected root entries.
 set -euo pipefail
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
-ALLOW_JSON="$ROOT/scripts/areas/layout/root_whitelist.json"
+ALLOW_JSON="$ROOT/packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/root_whitelist.json"
 
 python3 - "$ROOT" "$ALLOW_JSON" <<'PY'
 from __future__ import annotations

@@ -12,10 +12,10 @@ SCRIPTS = ROOT / "scripts"
 
 ALLOWED_PREFIXES = (
     "scripts/areas/public/",
-    "scripts/areas/layout/",
+    "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/",
 )
 LEGACY_ALLOWED = (
-    "scripts/areas/layout/check_no_root_dumping.sh",
+    "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_no_root_dumping.sh",
 )
 
 violations: list[str] = []

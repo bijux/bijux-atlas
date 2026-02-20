@@ -115,7 +115,7 @@ def check_no_xtask_refs(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
     ignore_paths = {
         "makefiles/ci.mk",
-        "docs/development/xtask-removal-map.md",
+        "docs/development/task-runner-removal-map.md",
         "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/check/native.py",
         "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/checks/runner.py",
         "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/check/command.py",
@@ -424,7 +424,7 @@ def check_make_scripts_references(repo_root: Path) -> tuple[int, list[str]]:
 
 def check_docs_scripts_references(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
-    allowed = {"docs/development/xtask-removal-map.md"}
+    allowed = {"docs/development/task-runner-removal-map.md"}
     for p in sorted((repo_root / "docs").rglob("*")):
         if not p.is_file() or p.suffix != ".md":
             continue
@@ -810,7 +810,7 @@ def check_script_write_roots(repo_root: Path) -> tuple[int, list[str]]:
 
 def check_script_tool_guards(repo_root: Path) -> tuple[int, list[str]]:
     tool_re = re.compile(r"\b(kubectl|helm|kind|k6)\b")
-    guards = ("check_tool_versions.py", "ops_version_guard", "scripts/areas/layout/check_tool_versions.py")
+    guards = ("check_tool_versions.py", "ops_version_guard", "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_tool_versions.py")
     errors: list[str] = []
     for scan_dir in (repo_root / "scripts/bin", repo_root / "scripts/check", repo_root / "scripts/ci"):
         if not scan_dir.exists():

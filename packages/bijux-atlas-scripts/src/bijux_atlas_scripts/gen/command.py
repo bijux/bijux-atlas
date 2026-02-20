@@ -28,7 +28,7 @@ def run_gen_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             argparse.Namespace(contracts_cmd="generate", report="text", generators=["openapi"]),
         )
     if sub == "ops-surface":
-        return _run(ctx, ["python3", "scripts/areas/layout/generate_ops_surface_meta.py"])
+        return _run(ctx, ["python3", "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/generate_ops_surface_meta.py"])
     if sub == "make-targets":
         return _run(ctx, [*SELF_CLI, "make", "inventory"])
     if sub == "surface":

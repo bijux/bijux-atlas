@@ -10,8 +10,8 @@ ops_version_guard kind kubectl helm k6
 ./ops/run/prereqs.sh
 echo "evidence root: artifacts/evidence"
 echo "evidence run id pointer: artifacts/evidence/latest-run-id.txt"
-python3 ./scripts/areas/layout/check_tool_versions.py kind kubectl helm k6 jq yq python3 || true
-python3 ./scripts/areas/layout/check_ops_pins.py || true
+python3 ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_tool_versions.py kind kubectl helm k6 jq yq python3 || true
+python3 ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_ops_pins.py || true
 if rg -n "(?:legacy/[A-Za-z0-9_.-]+|ops-[A-Za-z0-9-]+-legacy|ops/.*/_legacy/|ops/.*/scripts/.*legacy)" \
   makefiles docs .github/workflows >/dev/null 2>&1; then
   echo "legacy ops path/target references found in public surfaces" >&2
