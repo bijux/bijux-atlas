@@ -20,7 +20,6 @@ dev = [
 ]
 
 [project.scripts]
-bijux-atlas = "bijux_atlas_scripts.cli:main"
 atlasctl = "bijux_atlas_scripts.cli:main"
 
 [tool.setuptools]
