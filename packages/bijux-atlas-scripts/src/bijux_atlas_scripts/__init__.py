@@ -1,5 +1,13 @@
 __all__ = [
     "cli",
+    "commands",
+    "effects",
+    "fs",
+    "logging",
+    "paths",
+    "policy",
+    "run_id",
+    "subprocess",
     "core",
     "contracts",
     "doctor",
