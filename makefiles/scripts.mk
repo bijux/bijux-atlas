@@ -102,6 +102,7 @@ internal/scripts/test-hermetic: ## Run scripts package tests with --no-network g
 scripts-check: ## Run scripts lint + tests as a single gate
 	@$(MAKE) -s internal/scripts/install-lock
 	@$(ATLAS_SCRIPTS) python lint --json >/dev/null
+	@$(ATLAS_SCRIPTS) check all
 	@$(ATLAS_SCRIPTS) --quiet legacy check --report text
 	@./scripts/areas/check/no-duplicate-script-names.sh
 	@./scripts/areas/check/no-direct-path-usage.sh
@@ -110,14 +111,14 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(PY_RUN) scripts/areas/check/check-no-direct-bash-invocations.py
 	@$(PY_RUN) scripts/areas/check/check-python-migration-exceptions-expiry.py
 	@$(PY_RUN) scripts/areas/check/check-bijux-atlas-scripts-boundaries.py
-	@$(PY_RUN) scripts/areas/check/check-script-help.py
+	@$(ATLAS_SCRIPTS) check cli-help
 	@$(PY_RUN) scripts/areas/check/check-root-bin-shims.py
 	@./ops/_lint/no-bin-symlinks.sh
 	@./ops/_lint/no-scripts-bin-dir.sh
 	@$(PY_RUN) scripts/areas/check/check-script-errors.py
 	@$(PY_RUN) scripts/areas/check/check-script-write-roots.py
 	@$(PY_RUN) scripts/areas/check/check-script-tool-guards.py
-	@$(PY_RUN) scripts/areas/check/check-script-ownership.py
+	@$(ATLAS_SCRIPTS) check ownership
 	@$(PY_RUN) scripts/areas/check/check-script-shims-minimal.py
 	@$(PY_RUN) scripts/areas/check/check-python-lock.py
 	@$(PY_RUN) scripts/areas/check/check-scripts-lock-sync.py
