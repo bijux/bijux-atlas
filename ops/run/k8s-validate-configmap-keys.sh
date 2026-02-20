@@ -5,6 +5,8 @@ cd "$ROOT"
 . "$ROOT/ops/_lib/common.sh"
 ops_init_run_id
 ops_env_load
+ops_entrypoint_start "ops-k8s-validate-configmap-keys"
+ops_version_guard helm kubectl
 
 NS="${1:-${ATLAS_E2E_NAMESPACE:-${ATLAS_NS:-$(ops_layer_ns_k8s)}}}"
 SERVICE_NAME="${2:-${ATLAS_E2E_SERVICE_NAME:-$(ops_layer_service_atlas)}}"
