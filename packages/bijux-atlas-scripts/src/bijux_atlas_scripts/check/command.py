@@ -11,6 +11,7 @@ from ..lint.runner import run_suite
 from .native import (
     check_committed_generated_hygiene,
     check_bin_entrypoints,
+    check_atlas_scripts_cli_contract,
     check_docs_scripts_references,
     check_duplicate_script_names,
     check_effects_lint,
@@ -28,7 +29,9 @@ from .native import (
     check_no_xtask_refs,
     check_ops_generated_tracked,
     check_python_migration_exceptions_expiry,
+    check_python_runtime_artifacts,
     check_python_lock,
+    check_repo_script_boundaries,
     check_root_bin_shims,
     check_script_errors,
     check_scripts_surface_docs_drift,
@@ -40,6 +43,7 @@ from .native import (
     check_script_write_roots,
     check_scripts_lock_sync,
     check_tracked_timestamp_paths,
+    check_venv_location_policy,
     check_naming_intent_lint,
 )
 
@@ -383,6 +387,46 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         else:
             print("script shim minimality check passed")
         return code
+    if sub == "venv-location-policy":
+        code, errors = check_venv_location_policy(ctx.repo_root)
+        if errors:
+            print("venv location policy failed:")
+            for err in errors[:200]:
+                print(f"- forbidden .venv location: {err}")
+        else:
+            print("venv location policy passed")
+        return code
+    if sub == "python-runtime-artifacts":
+        code, errors = check_python_runtime_artifacts(ctx.repo_root, fix=bool(getattr(ns, "fix", False)))
+        if errors:
+            if code == 0:
+                for err in errors:
+                    print(err)
+            else:
+                print("python runtime artifact policy failed:")
+                for err in errors[:200]:
+                    print(f"- {err}")
+        else:
+            print("python runtime artifact policy passed")
+        return code
+    if sub == "repo-script-boundaries":
+        code, errors = check_repo_script_boundaries(ctx.repo_root)
+        if errors:
+            print("repo script boundary check failed:")
+            for err in errors[:200]:
+                print(f"- {err}")
+        else:
+            print("repo script boundary check passed")
+        return code
+    if sub == "atlas-cli-contract":
+        code, errors = check_atlas_scripts_cli_contract(ctx.repo_root)
+        if errors:
+            print("atlasctl cli contract check failed:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("atlasctl cli contract check passed")
+        return code
     return 2
 
 
@@ -436,3 +480,8 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     p_sub.add_parser("script-tool-guards", help="validate tool-using scripts include guard calls")
     p_sub.add_parser("script-shim-expiry", help="validate shim expiry metadata and budget")
     p_sub.add_parser("script-shims-minimal", help="validate shim wrappers remain minimal and deterministic")
+    p_sub.add_parser("venv-location-policy", help="validate .venv locations are restricted")
+    runtime = p_sub.add_parser("python-runtime-artifacts", help="validate runtime python artifacts stay outside tracked paths")
+    runtime.add_argument("--fix", action="store_true", help="remove forbidden runtime artifact paths in-place")
+    p_sub.add_parser("repo-script-boundaries", help="validate script location boundaries and transition exceptions")
+    p_sub.add_parser("atlas-cli-contract", help="validate atlasctl CLI help/version deterministic contract")
