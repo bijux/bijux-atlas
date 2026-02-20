@@ -45,7 +45,7 @@ def main() -> int:
 
     current_legacy: set[str] = set()
     for mk_name, targets in by_file.items():
-        if mk_name in {"root.mk", "product.mk", "legacy.mk", "env.mk", "_macros.mk", "registry.mk", "help.mk"}:
+        if mk_name in {"root.mk", "product.mk", "env.mk", "_macros.mk", "registry.mk", "help.mk"}:
             continue
         for target in sorted(targets):
             if target in public:

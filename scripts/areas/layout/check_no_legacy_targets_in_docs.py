@@ -7,12 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 DOCS = ROOT / "docs"
-LEGACY_TARGETS = (
-    "ops-stack-up-legacy",
-    "ops-stack-down-legacy",
-    "ops-check-legacy",
-    "ops-smoke-legacy",
-)
+LEGACY_TARGET_RE = re.compile(r"(?<![A-Za-z0-9_./-])(legacy/[A-Za-z0-9_-]+|[A-Za-z0-9_/-]+-legacy)(?![A-Za-z0-9_./-])")
 
 
 def main() -> int:
@@ -20,10 +15,10 @@ def main() -> int:
     md_files = sorted(DOCS.rglob("*.md"))
     for path in md_files:
         text = path.read_text(encoding="utf-8")
-        for target in LEGACY_TARGETS:
-            for m in re.finditer(rf"\b{re.escape(target)}\b", text):
-                lineno = text.count("\n", 0, m.start()) + 1
-                errs.append(f"{path.relative_to(ROOT)}:{lineno}: legacy target reference `{target}`")
+        for m in LEGACY_TARGET_RE.finditer(text):
+            target = m.group(1)
+            lineno = text.count("\n", 0, m.start()) + 1
+            errs.append(f"{path.relative_to(ROOT)}:{lineno}: legacy target reference `{target}`")
 
     if errs:
         print("legacy targets in docs check failed:", file=sys.stderr)
