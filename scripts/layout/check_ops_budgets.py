@@ -8,7 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 BUDGETS = ROOT / "configs/ops/budgets.json"
 SCHEMA = ROOT / "ops/_schemas/meta/budgets.schema.json"
-DOC = ROOT / "docs/operations/performance/BUDGETS.md"
+DOC = ROOT / "docs/operations/performance/budgets.md"
 
 
 def _require(cond: bool, msg: str, errors: list[str]) -> None:

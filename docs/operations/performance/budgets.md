@@ -2,6 +2,16 @@
 
 Canonical SSOT: `configs/ops/budgets.json`.
 
+## What
+
+Defines the single source of truth for runtime and performance budgets enforced by ops checks.
+
+## Why
+
+Prevents hidden threshold drift and keeps failure criteria consistent across local and CI lanes.
+
+## Contracts
+
 ## smoke
 - `max_duration_seconds`: hard limit for `ops-smoke` runtime.
 
@@ -23,4 +33,21 @@ Canonical SSOT: `configs/ops/budgets.json`.
 ## metric_cardinality
 - `max_series_per_metric`: maximum series budget per metric.
 
-Budget changes must include rationale in the PR description and, when temporary, an entry in `configs/policy/budget-relaxations.json`.
+## Failure modes
+
+Embedded constants in scripts, missing budget keys, or undocumented budget changes can cause unreviewed regressions.
+
+## How to verify
+
+```bash
+make lane-configs-policies
+```
+
+Expected output: config/policy lane passes, including budget schema and budget enforcement checks.
+
+## See also
+
+- `configs/ops/budgets.json`
+- `configs/policy/budget-relaxations.json`
+
+Budget changes must include rationale in the PR description and, when time-bound, an entry in `configs/policy/budget-relaxations.json`.
