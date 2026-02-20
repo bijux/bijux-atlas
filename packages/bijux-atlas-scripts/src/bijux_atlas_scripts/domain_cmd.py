@@ -30,6 +30,7 @@ def registry() -> tuple[CommandSpec, ...]:
         CommandSpec("load", "load and perf suites"),
         CommandSpec("obs", "observability checks and drills"),
         CommandSpec("report", "unified report and scorecard commands"),
+        CommandSpec("lint", "lint suite runner"),
         CommandSpec("compat", "deprecated shim inventory and checks", stable=False),
         CommandSpec("contracts", "contracts domain commands"),
         CommandSpec("registry", "registry domain commands"),
