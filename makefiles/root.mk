@@ -487,7 +487,7 @@ nightly: ## Deprecated alias for nightly/all
 	@$(MAKE) -s nightly/all
 
 ops: ## Run canonical ops verification lane
-	@$(MAKE) -s ops/check
+	@$(ATLAS_SCRIPTS) ops check --report text
 
 root-local-summary: ## Print status and artifact paths for RUN_ID
 	@SUMMARY_RUN_ID="$${RUN_ID:-}" MODE=summary ./ops/run/root-lanes.sh
