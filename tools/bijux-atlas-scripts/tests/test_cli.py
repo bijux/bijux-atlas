@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -12,8 +13,11 @@ ROOT = Path(__file__).resolve().parents[3]
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
     env = {"PYTHONPATH": str(ROOT / "tools/bijux-atlas-scripts/src")}
+    extra: list[str] = []
+    if os.environ.get("BIJUX_SCRIPTS_TEST_NO_NETWORK") == "1":
+        extra.append("--no-network")
     return subprocess.run(
-        [sys.executable, "-m", "bijux_atlas_scripts.cli", *args],
+        [sys.executable, "-m", "bijux_atlas_scripts.cli", *extra, *args],
         cwd=ROOT,
         env=env,
         text=True,
@@ -50,6 +54,12 @@ def test_help_for_all_commands() -> None:
         proc = _run_cli(command, "--help")
         assert proc.returncode == 0
         assert "usage:" in proc.stdout.lower()
+
+
+def test_version_flag() -> None:
+    proc = _run_cli("--version")
+    assert proc.returncode == 0
+    assert "bijux-atlas-scripts 0.1.0+" in proc.stdout.strip()
 
 
 def test_surface_json_schema_valid() -> None:

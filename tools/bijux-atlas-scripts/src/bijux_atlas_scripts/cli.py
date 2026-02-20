@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import subprocess
 import sys
 from pathlib import Path
 
@@ -18,9 +19,9 @@ from .inventory.command import configure_inventory_parser, run_inventory
 from .make.command import configure_make_parser, run_make_command
 from .network_guard import install_no_network_guard
 from .ops.command import configure_ops_parser, run_ops_command
-from .report.command import configure_report_parser, run_report_command
 from .output_contract import validate_json_output
 from .policies.command import configure_policies_parser, run_policies_command
+from .report.command import configure_report_parser, run_report_command
 from .runner import run_legacy_script
 from .surface import run_surface
 
@@ -33,6 +34,7 @@ DOMAINS = {
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="bijux-atlas-scripts")
+    p.add_argument("--version", action="version", version=_version_string())
     p.add_argument("--run-id", help="run identifier for artifacts")
     p.add_argument("--evidence-root", help="evidence root path")
     p.add_argument("--profile", help="profile id")
@@ -68,6 +70,21 @@ def build_parser() -> argparse.ArgumentParser:
     doctor_p.add_argument("--out-file", help="optional output path for JSON report")
 
     return p
+
+
+def _version_string() -> str:
+    base = "bijux-atlas-scripts 0.1.0"
+    try:
+        repo_root = Path(__file__).resolve().parents[4]
+        sha = (
+            subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=repo_root, text=True)
+            .strip()
+        )
+        if sha:
+            return f"{base}+{sha}"
+    except Exception:
+        pass
+    return f"{base}+unknown"
 
 
 def _write_payload_if_requested(ctx: RunContext, out_file: str | None, payload: str) -> None:

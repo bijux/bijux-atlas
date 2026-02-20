@@ -154,7 +154,9 @@ def _cmd_summarize(ctx: RunContext, run_id: str, out: str | None) -> int:
                 continue
             fail = str(report.get("failure_summary", "")).replace("|", "/")
             repro = str(report.get("repro_command", "")).replace("|", "/")
-            lines.append(f"| {lane} | {report.get('status', 'unknown')} | {fail} | `{repro}` | {report.get('log', '-')} |")
+            status = report.get("status", "unknown")
+            log = report.get("log", "-")
+            lines.append(f"| {lane} | {status} | {fail} | `{repro}` | {log} |")
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(out_path)
@@ -164,7 +166,8 @@ def _cmd_summarize(ctx: RunContext, run_id: str, out: str | None) -> int:
 def _cmd_print(ctx: RunContext, run_id: str) -> int:
     payload = build_unified(ctx, run_id)
     print(f"make report summary: run_id={run_id}")
-    print(f"total={payload['summary']['total']} passed={payload['summary']['passed']} failed={payload['summary']['failed']}")
+    summary = payload["summary"]
+    print(f"total={summary['total']} passed={summary['passed']} failed={summary['failed']}")
     lanes = payload.get("lanes", {})
     if isinstance(lanes, dict):
         for lane, report in sorted(lanes.items()):
