@@ -138,7 +138,6 @@ ops.mk:ops-cache-status
 ops.mk:ops-catalog-validate
 ops.mk:ops-chart-render-diff
 ops.mk:ops-check
-ops.mk:ops-check-legacy
 ops.mk:ops-ci
 ops.mk:ops-ci-fast
 ops.mk:ops-ci-nightly
@@ -336,10 +335,8 @@ ops.mk:ops-slo-alert-proof
 ops.mk:ops-slo-burn
 ops.mk:ops-slo-report
 ops.mk:ops-smoke
-ops.mk:ops-smoke-legacy
 ops.mk:ops-soak
 ops.mk:ops-stack-down
-ops.mk:ops-stack-down-legacy
 ops.mk:ops-stack-health-report
 ops.mk:ops-stack-idempotency-check
 ops.mk:ops-stack-order-check
@@ -348,7 +345,6 @@ ops.mk:ops-stack-slow-store
 ops.mk:ops-stack-smoke
 ops.mk:ops-stack-uninstall
 ops.mk:ops-stack-up
-ops.mk:ops-stack-up-legacy
 ops.mk:ops-stack-validate
 ops.mk:ops-stack-version
 ops.mk:ops-stack-versions-sync
