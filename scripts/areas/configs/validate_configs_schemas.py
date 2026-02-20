@@ -7,6 +7,7 @@ import jsonschema
 ROOT = Path(__file__).resolve().parents[3]
 
 PAIRS = [
+  ("configs/_meta/ownership.json", "configs/_schemas/configs-ownership.schema.json"),
   ("configs/ops/tool-versions.json", "configs/_schemas/tool-versions.schema.json"),
   ("configs/ops/public-surface.json", "configs/_schemas/public-surface.schema.json"),
   ("configs/policy/policy-relaxations.json", "configs/_schemas/policy-relaxations.schema.json"),

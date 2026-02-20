@@ -26,16 +26,25 @@ def main() -> int:
     "dataset_qc": "configs/ops/dataset-qc-thresholds.v1.json",
     "cache_budget": "configs/ops/cache-budget-thresholds.v1.json",
     "k6_thresholds": "configs/perf/k6-thresholds.v1.json",
+    "namespaces": "configs/ops/namespaces.json",
+    "ports": "configs/ops/ports.json",
+    "tool_versions": "configs/ops/tool-versions.json",
   }
   mirrors = {
     "k6_thresholds": {"ops/load/contracts/k6-thresholds.v1.json"},
     "dataset_qc": set(),
     "cache_budget": set(),
+    "namespaces": set(),
+    "ports": set(),
+    "tool_versions": {"ops/stack/versions.json", "ops/stack/version-manifest.json"},
   }
   patterns = {
     "dataset_qc": "*dataset*qc*threshold*.json",
     "cache_budget": "*cache*budget*threshold*.json",
     "k6_thresholds": "*k6*threshold*.json",
+    "namespaces": "namespaces.json",
+    "ports": "ports.json",
+    "tool_versions": "tool-versions.json",
   }
   for key,pat in patterns.items():
     hits=[p.relative_to(ROOT).as_posix() for p in _iter_candidates(pat)]

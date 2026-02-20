@@ -34,7 +34,7 @@ Rule:
   - Consumed by: `make ops-env-print`, env contract validation.
 - `configs/ops/tool-versions.json`
   - Consumed by: `make ops-tools-check`, `make doctor`.
-- `configs/ops/obs-pack.json`
+- `configs/ops/observability-pack.json`
   - Consumed by: observability pack profile/install/version checks, `make config-validate`.
 - `configs/ops/artifacts-allowlist.txt`
   - Consumed by: layout/artifacts policy checks.
@@ -50,7 +50,7 @@ Rule:
   - Consumed by: OpenAPI drift checks and docs examples.
 - `configs/openapi/v1/openapi.snapshot.json`
   - Consumed by: OpenAPI determinism/drift tests.
-- `configs/perf/thresholds.json`
+- `configs/perf/k6-thresholds.v1.json`
   - Consumed by: perf/load validation tooling.
 - `configs/coverage/thresholds.toml`
   - Consumed by: coverage governance checks.
@@ -70,6 +70,7 @@ Rule:
 - `configs/docs/README.md`
 - `configs/nextest/README.md`
 - `configs/coverage/README.md`
+- `configs/repo/root-symlink-shims.md`
 - `docs/development/tool-config-shims.md`
 - `docs/development/config-versioning.md`
 

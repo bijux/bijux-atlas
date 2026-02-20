@@ -3,7 +3,7 @@
 Generated file. Do not edit manually.
 
 - Source: `docs/contracts/CONFIG_KEYS.json`
-- Count: `111`
+- Count: `112`
 
 ## Keys
 

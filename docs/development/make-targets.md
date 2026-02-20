@@ -22,6 +22,7 @@ Generated from `make help`. Do not edit manually.
 - `[configs]`
 - `configs/all`
 - `configs/check`
+- `configs-gen-check`
 - `[docs]`
 - `docs/all`
 - `docs/build`
