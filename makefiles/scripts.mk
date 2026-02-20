@@ -46,7 +46,7 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(PY_RUN) scripts/areas/check/check-script-shims-minimal.py
 	@$(PY_RUN) scripts/areas/check/check-invocation-parity.py
 	@$(PY_RUN) scripts/areas/check/check-python-lock.py
-	@$(PY_RUN) scripts/areas/check/check-bin-entrypoints.py
+	@$(ATLAS_SCRIPTS) check bin-entrypoints
 	@$(ATLAS_SCRIPTS) check root-bin-shims
 	@./ops/_lint/no-bin-symlinks.sh
 	@./ops/_lint/no-scripts-bin-dir.sh

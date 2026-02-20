@@ -10,6 +10,7 @@ from ..core.context import RunContext
 from ..lint.runner import run_suite
 from .native import (
     check_committed_generated_hygiene,
+    check_bin_entrypoints,
     check_docs_scripts_references,
     check_duplicate_script_names,
     check_effects_lint,
@@ -121,6 +122,15 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 print(f"- {err}")
         else:
             print("no duplicate script names")
+        return code
+    if sub == "bin-entrypoints":
+        code, errors = check_bin_entrypoints(ctx.repo_root)
+        if errors:
+            print("bin entrypoint cap failed:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("scripts/bin cap ok")
         return code
     if sub == "make-scripts-refs":
         code, errors = check_make_scripts_references(ctx.repo_root)
@@ -271,6 +281,7 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     p_sub.add_parser("stack-report", help="validate stack report contracts")
     p_sub.add_parser("cli-help", help="validate script/CLI help coverage")
     p_sub.add_parser("ownership", help="validate script ownership coverage")
+    p_sub.add_parser("bin-entrypoints", help="validate scripts/bin entrypoint cap")
     p_sub.add_parser("root-bin-shims", help="validate root bin shim minimalism policy")
     p_sub.add_parser("duplicate-script-names", help="validate duplicate script names")
     p_sub.add_parser("make-scripts-refs", help="validate no makefile references to scripts paths")

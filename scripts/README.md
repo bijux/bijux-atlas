@@ -16,7 +16,6 @@ Generated file. Do not edit manually.
 |---|---|---|---|
 | `scripts/areas/check/check-atlas-scripts-cli-contract.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-bijux-atlas-scripts-boundaries.py` | `platform` | `public` | - |
-| `scripts/areas/check/check-bin-entrypoints.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-no-adhoc-python.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-no-direct-python-invocations.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-no-make-scripts-references.py` | `platform` | `public` | - |
