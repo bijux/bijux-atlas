@@ -22,7 +22,13 @@ for concept, cfg in rules.get("concepts", {}).items():
             if not p.exists() or not p.is_file():
                 continue
             rel = p.relative_to(ROOT).as_posix()
-            if rel.startswith("ops/_generated/") or rel.startswith("ops/_artifacts/") or rel.startswith("artifacts/"):
+            if (
+                rel.startswith("ops/_generated/")
+                or rel.startswith("ops/_generated_committed/")
+                or rel.startswith("ops/_artifacts/")
+                or rel.startswith("ops/_evidence/")
+                or rel.startswith("artifacts/")
+            ):
                 continue
             if rel == canonical or rel in allow:
                 continue
