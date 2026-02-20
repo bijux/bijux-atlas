@@ -7,6 +7,7 @@ gates
 inventory
 k8s
 layout
+legacy
 lint
 load
 obs

@@ -39,3 +39,6 @@ jobs:
       - name: Scripts lint and gate
         run: |
           make scripts-lint
+      - name: Legacy scripts references gate
+        run: |
+          ./bin/bijux-atlas --quiet legacy check --report text
