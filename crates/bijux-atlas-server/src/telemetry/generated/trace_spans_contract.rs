@@ -11,10 +11,28 @@ pub const CONTRACT_TRACE_SPAN_NAMES: &[&str] = &[
 
 #[allow(dead_code)]
 pub const CONTRACT_TRACE_SPAN_ATTRIBUTES: &[(&str, &[&str])] = &[
-    ("admission_control", &["route"]),
-    ("cache_lookup", &["dataset"]),
-    ("dataset_resolve", &["route"]),
-    ("serialize_response", &["route", "status"]),
-    ("sqlite_query", &["class"]),
-    ("store_fetch", &["backend", "dataset"]),
+    (
+        "admission_control",
+        &["route"],
+    ),
+    (
+        "cache_lookup",
+        &["dataset"],
+    ),
+    (
+        "dataset_resolve",
+        &["route"],
+    ),
+    (
+        "serialize_response",
+        &["route", "status"],
+    ),
+    (
+        "sqlite_query",
+        &["class"],
+    ),
+    (
+        "store_fetch",
+        &["backend", "dataset"],
+    ),
 ];

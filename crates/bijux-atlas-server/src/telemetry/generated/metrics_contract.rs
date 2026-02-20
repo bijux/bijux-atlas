@@ -62,13 +62,7 @@ pub const CONTRACT_METRIC_LABELS: &[(&str, &[&str])] = &[
     ),
     (
         "atlas_client_requests_total",
-        &[
-            "client_type",
-            "dataset",
-            "subsystem",
-            "user_agent_family",
-            "version",
-        ],
+        &["client_type", "dataset", "subsystem", "user_agent_family", "version"],
     ),
     (
         "atlas_dataset_missing_total",
@@ -110,13 +104,22 @@ pub const CONTRACT_METRIC_LABELS: &[(&str, &[&str])] = &[
         "atlas_store_request_duration_seconds_bucket",
         &["backend", "dataset", "le", "subsystem", "version"],
     ),
-    ("bijux_dataset_count", &["dataset", "subsystem", "version"]),
+    (
+        "bijux_dataset_count",
+        &["dataset", "subsystem", "version"],
+    ),
     (
         "bijux_dataset_disk_usage_bytes",
         &["dataset", "subsystem", "version"],
     ),
-    ("bijux_dataset_hits", &["dataset", "subsystem", "version"]),
-    ("bijux_dataset_misses", &["dataset", "subsystem", "version"]),
+    (
+        "bijux_dataset_hits",
+        &["dataset", "subsystem", "version"],
+    ),
+    (
+        "bijux_dataset_misses",
+        &["dataset", "subsystem", "version"],
+    ),
     (
         "bijux_disk_io_latency_p95_ns",
         &["dataset", "subsystem", "version"],
@@ -139,15 +142,7 @@ pub const CONTRACT_METRIC_LABELS: &[(&str, &[&str])] = &[
     ),
     (
         "bijux_http_requests_total",
-        &[
-            "class",
-            "dataset",
-            "method",
-            "route",
-            "status",
-            "subsystem",
-            "version",
-        ],
+        &["class", "dataset", "method", "route", "status", "subsystem", "version"],
     ),
     (
         "bijux_http_response_size_p95_bytes",
@@ -203,14 +198,6 @@ pub const CONTRACT_METRIC_LABELS: &[(&str, &[&str])] = &[
     ),
     (
         "http_requests_total",
-        &[
-            "class",
-            "dataset",
-            "method",
-            "route",
-            "status",
-            "subsystem",
-            "version",
-        ],
+        &["class", "dataset", "method", "route", "status", "subsystem", "version"],
     ),
 ];
