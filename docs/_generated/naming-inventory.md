@@ -5,9 +5,9 @@
 
 ## Summary
 
-- Tracked files: `1965`
-- Docs markdown files: `376`
-- Script files under `scripts/`: `344`
+- Tracked files: `1975`
+- Docs markdown files: `381`
+- Script files under `scripts/`: `349`
 - Rust test files: `42`
 - Load suites in `ops/load/suites/suites.json`: `19`
 - Runbooks in `docs/operations/runbooks/`: `17`
@@ -17,7 +17,7 @@
 
 - Forbidden-token hits: `2`
 - Non-kebab docs outside allowed exceptions: `22`
-- Non-kebab scripts under `scripts/`: `288`
+- Non-kebab scripts under `scripts/`: `293`
 
 ## Load Suites
 
@@ -127,6 +127,7 @@
 - `scripts/areas/docs/check_concept_ids.sh`
 - `scripts/areas/docs/check_concept_registry.py`
 - `scripts/areas/docs/check_contract_doc_pairs.py`
+- `scripts/areas/docs/check_contracts_index_nav.py`
 - `scripts/areas/docs/check_crate_docs_contract.sh`
 - `scripts/areas/docs/check_critical_make_targets_referenced.py`
 - `scripts/areas/docs/check_doc_filename_style.py`
@@ -162,6 +163,7 @@
 - `scripts/areas/docs/check_ops_readme_canonical_links.py`
 - `scripts/areas/docs/check_ops_readmes_make_only.py`
 - `scripts/areas/docs/check_public_surface_docs.py`
+- `scripts/areas/docs/check_public_targets_docs_sections.py`
 - `scripts/areas/docs/check_reference_templates.sh`
 - `scripts/areas/docs/check_runbook_map_registration.py`
 - `scripts/areas/docs/check_runbooks_contract.py`
@@ -173,6 +175,8 @@
 - `scripts/areas/docs/extract_code_blocks.py`
 - `scripts/areas/docs/generate_architecture_map.py`
 - `scripts/areas/docs/generate_concept_graph.py`
+- `scripts/areas/docs/generate_config_keys_doc.py`
+- `scripts/areas/docs/generate_contracts_index_doc.py`
 - `scripts/areas/docs/generate_crates_map.py`
 - `scripts/areas/docs/generate_k8s_install_matrix.py`
 - `scripts/areas/docs/generate_k8s_values_doc.py`
@@ -187,6 +191,7 @@
 - `scripts/areas/docs/generate_ops_schema_docs.py`
 - `scripts/areas/docs/generate_ops_surface.py`
 - `scripts/areas/docs/generate_repo_surface.py`
+- `scripts/areas/docs/generate_runbook_map_index.py`
 - `scripts/areas/docs/generate_scripts_graph.py`
 - `scripts/areas/docs/generate_sli_doc.py`
 - `scripts/areas/docs/generate_slos_doc.py`
