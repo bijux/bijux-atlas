@@ -369,11 +369,13 @@ internal/lane-obs-full: ## Internal lane: full observability verification for ro
 
 root: ## CI-fast lane subset (no cluster bring-up)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-$(MAKE_RUN_TS)}}"; \
+	$(MAKE) -s scripts/check; \
 	PARALLEL="$${PARALLEL:-1}" RUN_ID="$$run_id" MODE=root ./ops/run/root-lanes.sh; \
 	python3 ./scripts/areas/layout/make_report.py print --run-id "$$run_id"
 
 root-local: ## All lanes in parallel + ops smoke lane (PARALLEL=0 for serial)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-$(MAKE_RUN_TS)}}"; \
+	$(MAKE) -s scripts/check; \
 	PARALLEL="$${PARALLEL:-1}" RUN_ID="$$run_id" MODE=root-local ./ops/run/root-lanes.sh; \
 	if [ "$${PERF_CHEAP_REGRESSION:-0}" = "1" ]; then $(MAKE) -s ops-load-smoke perf/regression-check PROFILE="$${PROFILE:-local}"; fi; \
 	python3 ./scripts/areas/layout/make_report.py print --run-id "$$run_id"
