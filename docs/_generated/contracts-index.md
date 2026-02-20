@@ -3,7 +3,7 @@
 Generated from repository files. Do not edit manually.
 
 - CONTRACT files: `12`
-- Schema files: `42`
+- Schema files: `45`
 
 ## CONTRACT.md Files
 
@@ -26,11 +26,14 @@ Generated from repository files. Do not edit manually.
 - `configs/_schemas/hpa-safety-caps.schema.json`
 - `configs/_schemas/layer-live-diff-allowlist.schema.json`
 - `configs/_schemas/layer-relaxations.schema.json`
+- `configs/_schemas/meta-ownership.schema.json`
 - `configs/_schemas/policy-relaxations.schema.json`
 - `configs/_schemas/public-surface.schema.json`
 - `configs/_schemas/target-renames.schema.json`
 - `configs/_schemas/tool-versions.schema.json`
 - `configs/contracts/env.schema.json`
+- `configs/contracts/scripts-doctor-output.schema.json`
+- `configs/contracts/scripts-surface-output.schema.json`
 - `configs/contracts/scripts-tool-output.schema.json`
 - `configs/ops/env.schema.json`
 - `configs/ops/slo/sli.schema.json`
