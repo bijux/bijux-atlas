@@ -3,7 +3,9 @@
   "additionalProperties": false,
   "required": [
     "kind",
-    "entries"
+    "entries",
+    "bin_commands",
+    "area_indexes"
   ],
   "properties": {
     "kind": {
@@ -46,6 +48,54 @@
                 "make_integration"
               ]
             }
+          }
+        }
+      }
+    },
+    "bin_commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "script",
+          "command",
+          "mapped_cli"
+        ],
+        "properties": {
+          "script": {
+            "type": "string",
+            "pattern": "^scripts/bin/.+"
+          },
+          "command": {
+            "type": "string"
+          },
+          "mapped_cli": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "area_indexes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "index",
+          "area",
+          "mapped_cli_group"
+        ],
+        "properties": {
+          "index": {
+            "type": "string",
+            "pattern": "^scripts/areas/.+/INDEX\\.md$"
+          },
+          "area": {
+            "type": "string"
+          },
+          "mapped_cli_group": {
+            "type": "string"
           }
         }
       }
