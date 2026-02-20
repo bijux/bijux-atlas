@@ -111,7 +111,7 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(ATLAS_SCRIPTS) --quiet legacy check --report text
 	@$(ATLAS_SCRIPTS) check duplicate-script-names
 	@$(ATLAS_SCRIPTS) check layout
-	@$(PY_RUN) scripts/areas/check/check-no-python-executable-outside-tools.py
+	@$(ATLAS_SCRIPTS) check no-python-shebang-outside-packages
 	@$(ATLAS_SCRIPTS) check no-direct-python-invocations
 	@$(ATLAS_SCRIPTS) check no-direct-bash-invocations
 	@$(ATLAS_SCRIPTS) check python-migration-exceptions-expiry
