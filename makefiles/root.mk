@@ -532,21 +532,13 @@ release-update-compat-matrix:
 
 
 
-inventory: ## Regenerate inventories (ops surface, make targets, docs status, naming, repo surface)
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/docs/generate_make_targets_catalog.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/docs/generate_ops_surface.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/docs/generate_make_targets_inventory.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/docs/generate_makefiles_surface.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/gen/generate_scripts_surface.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/configs/generate_configs_surface.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/configs/generate_tooling_versions_doc.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/docs/lint_doc_status.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/docs/naming_inventory.py
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/docs/generate_repo_surface.py
+inventory: ## Regenerate inventories from bijux-atlas-scripts SSOT generators
+	@./scripts/bin/bijux-atlas-scripts inventory all --format both --out-dir docs/_generated
 
 verify-inventory: ## Fail if inventory outputs drift from generated state
 	@$(MAKE) -s inventory
-	@git diff --exit-code -- makefiles/targets.json docs/_generated/make-targets.md docs/_generated/repo-surface.md docs/_generated/doc-status.md docs/_generated/naming-inventory.md docs/_generated/ops-surface.md docs/_generated/configs-surface.md docs/_generated/tooling-versions.md docs/_generated/scripts-surface.md docs/development/make-targets.md docs/development/make-targets-inventory.md docs/development/makefiles/surface.md
+	@./scripts/bin/bijux-atlas-scripts inventory budgets --check --format json --dry-run >/dev/null
+	@git diff --exit-code -- docs/_generated/INDEX.md docs/_generated/make-targets.md docs/_generated/make-targets.json docs/_generated/ops-surface.md docs/_generated/ops-surface.json docs/_generated/configs-surface.md docs/_generated/configs-surface.json docs/_generated/schema-index.md docs/_generated/schema-index.json docs/_generated/ownership.md docs/_generated/ownership.json docs/_generated/contracts-index.md docs/_generated/contracts-index.json docs/_generated/inventory-budgets.md docs/_generated/inventory-budgets.json
 
 upgrade-guide: ## Generate make target upgrade guide for renamed/deprecated aliases
 	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/docs/generate_upgrade_guide.py

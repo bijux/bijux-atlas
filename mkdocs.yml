@@ -256,8 +256,12 @@ nav:
       - Index: _generated/INDEX.md
       - Make Targets: _generated/make-targets.md
       - Ops Surface: _generated/ops-surface.md
+      - Configs Surface: _generated/configs-surface.md
+      - Schema Index: _generated/schema-index.md
+      - Ownership: _generated/ownership.md
       - Config Keys: _generated/config-keys.md
       - Contracts Index: _generated/contracts-index.md
+      - Inventory Budgets: _generated/inventory-budgets.md
       - Runbook Map Index: _generated/runbook-map-index.md
       - Generated Contracts Catalog: _generated/contracts/INDEX.md
       - OpenAPI Index: _generated/openapi/INDEX.md
