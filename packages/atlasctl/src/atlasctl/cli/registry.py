@@ -17,6 +17,8 @@ class CommandSpec:
     tools: tuple[str, ...] = ()
     failure_modes: tuple[str, ...] = ()
     stable: bool = True
+    owner: str = "platform"
+    doc_link: str = "docs/_generated/cli.md"
 
 
 CANONICAL_DOMAINS: tuple[str, ...] = ("repo", "docs", "ops", "make", "configs", "contracts", "docker", "ci")
@@ -24,24 +26,24 @@ CANONICAL_DOMAINS: tuple[str, ...] = ("repo", "docs", "ops", "make", "configs", 
 
 def command_registry() -> tuple[CommandSpec, ...]:
     return (
-        CommandSpec("doctor", "show tooling and context diagnostics", ("artifacts/evidence/",), ("python3",), ("tooling probes unavailable",)),
-        CommandSpec("inventory", "generate and verify inventories", ("docs/_generated/",), (), ("inventory drift",)),
-        CommandSpec("gates", "run gate contracts and lane checks", ("configs/gates/", "artifacts/evidence/"), ("make",), ("gate contract failures",)),
-        CommandSpec("ops", "ops checks and suite orchestration", ("ops/", "artifacts/evidence/"), ("kubectl", "helm", "k6"), ("ops contract drift",)),
-        CommandSpec("docs", "docs checks and generation", ("docs/", "docs/_generated/"), ("mkdocs",), ("doc drift",)),
-        CommandSpec("configs", "configs checks and inventories", ("configs/",), (), ("schema/config validation errors",)),
-        CommandSpec("policies", "policy relaxations and bypass checks", ("configs/policy/",), (), ("policy violations",)),
-        CommandSpec("k8s", "k8s checks and suites", ("ops/k8s/",), ("kubectl", "helm"), ("k8s contract violations",)),
-        CommandSpec("stack", "stack lifecycle and checks", ("ops/stack/",), ("kubectl",), ("stack lifecycle failures",)),
-        CommandSpec("load", "load and perf suites", ("ops/load/",), ("k6",), ("load baseline regressions",)),
-        CommandSpec("obs", "observability checks and drills", ("ops/obs/",), (), ("observability coverage gaps",)),
-        CommandSpec("report", "unified report and scorecard commands", ("artifacts/evidence/",), (), ("report assembly failures",)),
-        CommandSpec("lint", "lint suite runner", ("ops/_lint/",), (), ("lint policy failures",)),
-        CommandSpec("legacy", "legacy migration audits", ("configs/layout/",), (), ("legacy reference drift",)),
-        CommandSpec("compat", "deprecated shim inventory and checks", (), (), ("compat shim drift",), stable=False),
-        CommandSpec("contracts", "contracts domain commands", ("configs/contracts/",), (), ("contract generation/validation failures",)),
-        CommandSpec("registry", "registry domain commands", ("configs/ops/pins/",), (), ("registry inconsistency",)),
-        CommandSpec("layout", "layout domain commands", ("makefiles/", "docs/development/repo-layout.md"), (), ("layout boundary violations",)),
+        CommandSpec("doctor", "show tooling and context diagnostics", ("artifacts/evidence/",), ("python3",), ("tooling probes unavailable",), owner="platform", doc_link="docs/atlasctl/BOUNDARIES.md"),
+        CommandSpec("inventory", "generate and verify inventories", ("docs/_generated/",), (), ("inventory drift",), owner="repo", doc_link="docs/_generated/cli.md"),
+        CommandSpec("gates", "run gate contracts and lane checks", ("configs/gates/", "artifacts/evidence/"), ("make",), ("gate contract failures",), owner="ops", doc_link="docs/_generated/cli.md"),
+        CommandSpec("ops", "ops checks and suite orchestration", ("ops/", "artifacts/evidence/"), ("kubectl", "helm", "k6"), ("ops contract drift",), owner="ops", doc_link="docs/_generated/cli.md"),
+        CommandSpec("docs", "docs checks and generation", ("docs/", "docs/_generated/"), ("mkdocs",), ("doc drift",), owner="docs", doc_link="docs/_generated/cli.md"),
+        CommandSpec("configs", "configs checks and inventories", ("configs/",), (), ("schema/config validation errors",), owner="platform", doc_link="docs/_generated/cli.md"),
+        CommandSpec("policies", "policy relaxations and bypass checks", ("configs/policy/",), (), ("policy violations",), owner="platform", doc_link="docs/_generated/cli.md"),
+        CommandSpec("k8s", "k8s checks and suites", ("ops/k8s/",), ("kubectl", "helm"), ("k8s contract violations",), owner="ops", doc_link="docs/_generated/cli.md"),
+        CommandSpec("stack", "stack lifecycle and checks", ("ops/stack/",), ("kubectl",), ("stack lifecycle failures",), owner="ops", doc_link="docs/_generated/cli.md"),
+        CommandSpec("load", "load and perf suites", ("ops/load/",), ("k6",), ("load baseline regressions",), owner="ops", doc_link="docs/_generated/cli.md"),
+        CommandSpec("obs", "observability checks and drills", ("ops/obs/",), (), ("observability coverage gaps",), owner="ops", doc_link="docs/_generated/cli.md"),
+        CommandSpec("report", "unified report and scorecard commands", ("artifacts/evidence/",), (), ("report assembly failures",), owner="platform", doc_link="docs/_generated/cli.md"),
+        CommandSpec("lint", "lint suite runner", ("ops/_lint/",), (), ("lint policy failures",), owner="platform", doc_link="docs/_generated/cli.md"),
+        CommandSpec("legacy", "legacy migration audits", ("configs/layout/",), (), ("legacy reference drift",), owner="platform", doc_link="docs/_generated/cli.md"),
+        CommandSpec("compat", "deprecated shim inventory and checks", (), (), ("compat shim drift",), stable=False, owner="platform", doc_link="docs/_generated/cli.md"),
+        CommandSpec("contracts", "contracts domain commands", ("configs/contracts/",), (), ("contract generation/validation failures",), owner="platform", doc_link="docs/_generated/cli.md"),
+        CommandSpec("registry", "registry domain commands", ("configs/ops/pins/",), (), ("registry inconsistency",), owner="platform", doc_link="docs/_generated/cli.md"),
+        CommandSpec("layout", "layout domain commands", ("makefiles/", "docs/development/repo-layout.md"), (), ("layout boundary violations",), owner="repo", doc_link="docs/development/repo-layout.md"),
     )
 
 
