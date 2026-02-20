@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from dataclasses import dataclass
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -303,6 +304,43 @@ def _run_simple_cmd(ctx: RunContext, cmd: list[str], report_format: str) -> int:
     return code
 
 
+def _ops_policy_audit(ctx: RunContext, report_format: str) -> int:
+    repo = ctx.repo_root
+    env_schema = json.loads((repo / "configs/ops/env.schema.json").read_text(encoding="utf-8"))
+    vars_declared = sorted(env_schema.get("variables", {}).keys())
+    search_paths = [
+        repo / "makefiles/env.mk",
+        repo / "makefiles/ops.mk",
+        repo / "scripts/areas/layout/validate_ops_env.py",
+        repo / "tools/bijux-atlas-scripts/src/bijux_atlas_scripts/configs/command.py",
+        repo / "crates/bijux-atlas-server/src/main.rs",
+    ]
+    text = "\n".join(p.read_text(encoding="utf-8") for p in search_paths if p.exists())
+    violations: list[str] = []
+    for var in vars_declared:
+        if re.search(rf"\b{re.escape(var)}\b", text) is None:
+            violations.append(f"ops env variable `{var}` not reflected in make/scripts usage")
+    if "configs/ops/tool-versions.json" not in (repo / "makefiles/ops.mk").read_text(encoding="utf-8"):
+        violations.append("ops.mk must reference configs/ops/tool-versions.json")
+
+    payload = {
+        "schema_version": 1,
+        "tool": "bijux-atlas-scripts",
+        "run_id": ctx.run_id,
+        "status": "pass" if not violations else "fail",
+        "violations": violations,
+    }
+    if report_format == "json":
+        print(json.dumps(payload, sort_keys=True))
+    else:
+        if violations:
+            for v in violations:
+                print(f"ops-policy-audit violation: {v}")
+        else:
+            print("ops policy audit passed")
+    return 0 if not violations else 1
+
+
 def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.ops_cmd == "check":
         steps = [
@@ -390,6 +428,12 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.ops_cmd == "contracts-index":
         cmd = ["python3", "scripts/areas/docs/generate_ops_contracts_doc.py"]
         return _run_simple_cmd(ctx, cmd, ns.report)
+    if ns.ops_cmd == "policy-audit":
+        return _ops_policy_audit(ctx, ns.report)
+    if ns.ops_cmd == "k8s-flakes-check":
+        return _run_simple_cmd(ctx, ["python3", "scripts/areas/ops/check_k8s_flakes.py"], ns.report)
+    if ns.ops_cmd == "k8s-test-contract":
+        return _run_simple_cmd(ctx, ["python3", "scripts/areas/ops/check_k8s_test_contract.py"], ns.report)
 
     return 2
 
@@ -419,6 +463,9 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
         ("naming-check", "validate ops naming conventions"),
         ("layer-drift-check", "validate cross-layer drift rules"),
         ("contracts-index", "generate ops contracts docs index"),
+        ("policy-audit", "validate ops policy configs reflected in ops usage"),
+        ("k8s-flakes-check", "evaluate k8s flake report and quarantine policy"),
+        ("k8s-test-contract", "validate k8s test manifest ownership/contract"),
     ):
         cmd = ops_sub.add_parser(name, help=help_text)
         cmd.add_argument("--report", choices=["text", "json"], default="text")

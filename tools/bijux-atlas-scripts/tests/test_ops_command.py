@@ -101,3 +101,18 @@ def test_ops_suites_check_integration() -> None:
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
     assert payload["tool"] == "bijux-atlas-scripts"
+
+
+def test_ops_policy_audit_integration() -> None:
+    proc = _run_cli("ops", "policy-audit", "--report", "json")
+    assert proc.returncode in {0, 1}, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["tool"] == "bijux-atlas-scripts"
+    assert payload["status"] in {"pass", "fail"}
+
+
+def test_ops_k8s_test_contract_integration() -> None:
+    proc = _run_cli("ops", "k8s-test-contract", "--report", "json")
+    assert proc.returncode in {0, 1}, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["tool"] == "bijux-atlas-scripts"
