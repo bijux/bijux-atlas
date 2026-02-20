@@ -26,7 +26,7 @@ def main() -> int:
     parser.add_argument("--schema", default="ops/_schemas/report/stack-contract.schema.json")
     args = parser.parse_args()
 
-    root = Path(__file__).resolve().parents[4]
+    root = Path(__file__).resolve().parents[5]
     report_dir = root / args.report_dir
     summary_path = report_dir / "pass-fail-summary.json"
 

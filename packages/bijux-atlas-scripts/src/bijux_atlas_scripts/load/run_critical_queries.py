@@ -14,7 +14,7 @@ import sqlite3
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parents[4]
+ROOT = Path(__file__).resolve().parents[5]
 CRITICAL_QUERIES_PATH = ROOT / "configs" / "perf" / "critical_queries.json"
 SQLITE_INDEX_CONTRACT_PATH = ROOT / "docs" / "contracts" / "SQLITE_INDEXES.json"
 SQLITE_SCHEMA_PATH = ROOT / "crates" / "bijux-atlas-ingest" / "sql" / "schema_v4.sql"

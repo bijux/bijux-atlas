@@ -576,13 +576,13 @@ ssot-check:
 	@$(ATLAS_SCRIPTS) contracts check --checks breakage drift endpoints error-codes sqlite-indexes chart-values
 
 policy-lint:
-	@./scripts/areas/public/policy-lint.sh
+	@./bin/atlasctl policies check --fail-fast
 
 policy-schema-drift:
 	@./bin/atlasctl policies schema-drift
 
 policy-audit: ## Audit policy relaxations report + enforce registry/expiry/budget gates
-	@./scripts/areas/public/policy-audit.py --enforce
+	@./bin/atlasctl policies check --fail-fast
 
 policy-enforcement-status: ## Validate policy pass/fail coverage table and generate status doc
 	@./bin/atlasctl policies enforcement-status --enforce

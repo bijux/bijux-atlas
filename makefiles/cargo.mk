@@ -53,14 +53,15 @@ _lint-rustfmt:
 
 _lint-configs:
 	@./bin/atlasctl env require-isolate >/dev/null
-	@./scripts/areas/public/policy-lint.sh
-	@./scripts/areas/layout/check_no_direct_script_runs.sh
-	@./scripts/areas/layout/check_scripts_readme_drift.sh
+	@./bin/atlasctl --quiet policies check --fail-fast
+	@./bin/atlasctl --quiet check no-direct-bash-invocations
+	@./bin/atlasctl --quiet check no-direct-python-invocations
+	@./bin/atlasctl --quiet check scripts-surface-docs-drift
 	@./bin/atlasctl --quiet check repo
 
 _lint-docs:
 	@./bin/atlasctl env require-isolate >/dev/null
-	@./scripts/areas/public/check-markdown-links.sh
+	@./bin/atlasctl --quiet docs link-check --report text
 
 _lint-clippy:
 	@./bin/atlasctl env require-isolate >/dev/null
@@ -181,11 +182,26 @@ _audit:
 ci-core: internal/cargo/fmt internal/cargo/lint internal/cargo/audit internal/cargo/test coverage
 
 openapi-drift:
-	@./scripts/areas/public/openapi-diff-check.sh
+	@./bin/atlasctl --quiet contracts check --checks drift
+	@./bin/atlasctl --quiet contracts generate --generators artifacts openapi
+	@python3 - <<'PY'
+import json
+from pathlib import Path
+contract = json.loads(Path("docs/contracts/ENDPOINTS.json").read_text())
+expected = {e["path"] for e in contract["endpoints"]}
+generated = json.loads(Path("configs/openapi/v1/openapi.generated.json").read_text())
+paths = set(generated.get("paths", {}).keys())
+if expected != paths:
+    missing = sorted(paths - expected)
+    extra = sorted(expected - paths)
+    raise SystemExit(f"openapi generation drift against ENDPOINTS.json; missing={missing} extra={extra}")
+print("openapi generation matches endpoint SSOT")
+PY
+	@diff -u configs/openapi/v1/openapi.snapshot.json configs/openapi/v1/openapi.generated.json
 
 api-contract-check:
 	@$(ATLAS_SCRIPTS) contracts generate --generators openapi
-	@./scripts/areas/public/openapi-diff-check.sh
+	@$(MAKE) openapi-drift
 	@$(ATLAS_SCRIPTS) contracts check --checks endpoints
 	@$(ATLAS_SCRIPTS) contracts check --checks error-codes
 	@$(ATLAS_SCRIPTS) contracts check --checks endpoints
@@ -210,11 +226,11 @@ query-plan-gate:
 	@cargo test -p bijux-atlas-query explain_plan_snapshots_by_query_class -- --nocapture
 	@cargo test -p bijux-atlas-query no_table_scan_assertion_for_indexed_query_plan -- --nocapture
 	@./bin/atlasctl contracts check --checks sqlite-indexes
-	@./bin/atlasctl run scripts/areas/public/perf/run_critical_queries.py
+	@./bin/atlasctl run packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/run_critical_queries.py
 
 critical-query-check:
 	@$(ATLAS_SCRIPTS) contracts check --checks sqlite-indexes
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/public/perf/run_critical_queries.py
+	@$(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/run_critical_queries.py
 
 cold-start-bench:
 	@./ops/load/scripts/cold_start_benchmark.sh

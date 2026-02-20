@@ -700,7 +700,7 @@ ops-load-spike-proof: ## Run 10x spike proof suite with overload/bulkhead/memory
 	@$(MAKE) ops-load-manifest-validate
 	@./ops/load/scripts/run_suite.sh spike-overload-proof.json artifacts/perf/results
 	@$(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_results.py artifacts/perf/results
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/public/perf/check_spike_assertions.py --summary artifacts/perf/results/spike-overload-proof.summary.json --base-url "$${ATLAS_BASE_URL:-http://127.0.0.1:18080}" --wait-seconds "$${ATLAS_OVERLOAD_CLEAR_WAIT_SECONDS:-45}"
+	@$(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/check_spike_assertions.py --summary artifacts/perf/results/spike-overload-proof.summary.json --base-url "$${ATLAS_BASE_URL:-http://127.0.0.1:18080}" --wait-seconds "$${ATLAS_OVERLOAD_CLEAR_WAIT_SECONDS:-45}"
 	@$(MAKE) ops-slo-burn
 	@python3 -c 'import json; from pathlib import Path; p = Path("artifacts/ops/obs/slo-burn.json"); payload = json.loads(p.read_text()) if p.exists() else (_ for _ in ()).throw(SystemExit("missing SLO burn artifact: artifacts/ops/obs/slo-burn.json")); (_ for _ in ()).throw(SystemExit(f"SLO burn exceeded: {payload}")) if payload.get("burn_exceeded") else print("slo burn within threshold")'
 
@@ -896,7 +896,7 @@ ops-report: ## Gather ops evidence into artifacts/ops/<run-id>/
 	./ops/run/report.sh >/dev/null; \
 	python3 ./ops/report/generate.py --unified ops/_generated_committed/report.unified.json --out "$$out/report.md"; \
 	echo "ops report written to $$out"; \
-	RUN_ID="$${OPS_RUN_ID}" OUT_DIR="$$out/bundle" ./scripts/areas/public/report-bundle.sh >/dev/null; \
+	$(ATLAS_SCRIPTS) report bundle --run-id "$${OPS_RUN_ID}" --out "$$out/bundle/bundle.tar.zst" >/dev/null; \
 	ln -sfn "$${OPS_RUN_ID}" artifacts/ops/latest; \
 	$(MAKE) artifacts-index
 
@@ -1051,7 +1051,7 @@ ops-release-matrix: ## Generate k8s release install matrix document from CI summ
 	@./ops/k8s/ci/install-matrix.sh
 
 ops-openapi-validate: ## Validate OpenAPI drift and schema/examples consistency
-	@./scripts/areas/public/openapi-diff-check.sh
+	@$(MAKE) openapi-drift
 	@$(ATLAS_SCRIPTS) docs openapi-examples-check --report text
 
 ops-chart-render-diff: ## Ensure chart render is deterministic for local profile
@@ -1266,7 +1266,7 @@ stack-full: ## Full-stack must-pass truth flow with contract report bundle
 	$(MAKE) ops-otel-required-check; \
 	$(MAKE) ops-load-smoke; \
 	$(MAKE) ops-load-spike-proof; \
-	$(ATLAS_SCRIPTS) run ./scripts/areas/public/perf/check_percent_regression.py --baseline-profile "$${ATLAS_PERF_BASELINE_PROFILE:-local}" --max-p95-regression 0.15 --results artifacts/perf/results; \
+	$(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/check_percent_regression.py --baseline-profile "$${ATLAS_PERF_BASELINE_PROFILE:-local}" --max-p95-regression 0.15 --results artifacts/perf/results; \
 	$(MAKE) ops-metrics-check; \
 	$(MAKE) ops-alerts-validate; \
 	$(MAKE) ops-dashboards-validate; \
