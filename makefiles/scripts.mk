@@ -45,7 +45,7 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(PY_RUN) scripts/areas/check/check-script-shim-expiry.py
 	@$(PY_RUN) scripts/areas/check/check-script-shims-minimal.py
 	@$(PY_RUN) scripts/areas/check/check-invocation-parity.py
-	@$(PY_RUN) scripts/areas/check/check-python-lock.py
+	@$(ATLAS_SCRIPTS) check python-lock
 	@$(ATLAS_SCRIPTS) check bin-entrypoints
 	@$(ATLAS_SCRIPTS) check root-bin-shims
 	@./ops/_lint/no-bin-symlinks.sh
@@ -125,7 +125,7 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(PY_RUN) scripts/areas/check/check-script-tool-guards.py
 	@$(ATLAS_SCRIPTS) check ownership
 	@$(PY_RUN) scripts/areas/check/check-script-shims-minimal.py
-	@$(PY_RUN) scripts/areas/check/check-python-lock.py
+	@$(ATLAS_SCRIPTS) check python-lock
 	@$(PY_RUN) scripts/areas/check/check-scripts-lock-sync.py
 	@$(PY_RUN) scripts/areas/check/check-no-adhoc-python.py
 	@$(ATLAS_SCRIPTS) check make-scripts-refs
@@ -161,7 +161,7 @@ internal/scripts/sbom: ## Emit scripts package dependency SBOM JSON
 	@$(PY_RUN) scripts/areas/check/generate-scripts-sbom.py --lock packages/bijux-atlas-scripts/requirements.lock.txt --out artifacts/evidence/scripts/sbom/$${RUN_ID:-local}/sbom.json
 
 internal/scripts/lock-check:
-	@$(PY_RUN) scripts/areas/check/check-python-lock.py
+	@$(ATLAS_SCRIPTS) check python-lock
 	@$(PY_RUN) scripts/areas/check/check-scripts-lock-sync.py
 
 packages-lock: ## Refresh python lockfile deterministically from requirements.in
