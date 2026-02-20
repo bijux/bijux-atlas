@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "atlasctl.runtime_contracts.v1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["schema_name", "schema_version", "tool", "status", "checks"],
+  "properties": {
+    "schema_name": {"const": "atlasctl.runtime_contracts.v1"},
+    "schema_version": {"const": 1},
+    "tool": {"const": "atlasctl"},
+    "status": {"enum": ["ok", "error"]},
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "status", "errors"],
+        "properties": {
+          "id": {"type": "string"},
+          "status": {"enum": ["ok", "error"]},
+          "errors": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": true
+      }
+    }
+  }
+}

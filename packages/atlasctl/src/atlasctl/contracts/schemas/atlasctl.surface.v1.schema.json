@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "atlasctl.surface.v1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "tool",
+    "status",
+    "run_id",
+    "commands",
+    "path_owners"
+  ],
+  "properties": {
+    "schema_name": {"const": "atlasctl.surface.v1"},
+    "schema_version": {"const": 1},
+    "tool": {"const": "atlasctl"},
+    "status": {"enum": ["ok", "error"]},
+    "run_id": {"type": "string", "minLength": 1},
+    "commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["command", "owner"],
+        "properties": {
+          "command": {"type": "string"},
+          "owner": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "path_owners": {
+      "type": "object"
+    }
+  }
+}
