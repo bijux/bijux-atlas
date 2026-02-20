@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ...check.native import check_docs_no_ops_generated_run_paths, check_docs_scripts_references
+from ..repo.legacy_native import check_docs_no_ops_generated_run_paths, check_docs_scripts_references
 from ..base import CheckDef
 
 CHECKS: tuple[CheckDef, ...] = (

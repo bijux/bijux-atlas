@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ...check.native import (
+from .legacy_native import (
     check_docs_no_ops_generated_run_paths,
     check_duplicate_script_names,
     check_forbidden_top_dirs,
@@ -13,6 +13,7 @@ from ...check.native import (
 )
 from ..base import CheckDef
 from .legacy_guard import check_legacy_package_quarantine
+from .module_size import check_module_size
 from .scripts_dir import check_scripts_dir_absent
 
 CHECKS: tuple[CheckDef, ...] = (
@@ -27,4 +28,5 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo/duplicate-script-names", "repo", 1200, check_duplicate_script_names),
     CheckDef("repo/no-scripts-dir", "repo", 250, check_scripts_dir_absent),
     CheckDef("repo/legacy-quarantine", "repo", 250, check_legacy_package_quarantine),
+    CheckDef("repo/module-size", "repo", 400, check_module_size),
 )

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ...check.native import check_script_help, check_script_ownership
+from ..repo.legacy_native import check_script_help, check_script_ownership
 from ..base import CheckDef
 
 CHECKS: tuple[CheckDef, ...] = (

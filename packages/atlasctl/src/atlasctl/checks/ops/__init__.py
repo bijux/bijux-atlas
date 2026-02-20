@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ...check.native import (
+from ..repo.legacy_native import (
     check_committed_generated_hygiene,
     check_ops_generated_tracked,
     check_tracked_timestamp_paths,

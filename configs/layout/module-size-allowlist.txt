@@ -1,0 +1,5 @@
+# Temporary exceptions for split-in-progress legacy backend modules.
+packages/atlasctl/src/atlasctl/commands/docs/legacy.py
+packages/atlasctl/src/atlasctl/commands/check/legacy.py
+packages/atlasctl/src/atlasctl/commands/ops/legacy.py
+packages/atlasctl/src/atlasctl/checks/repo/legacy_native.py
