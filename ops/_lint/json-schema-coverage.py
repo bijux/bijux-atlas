@@ -23,6 +23,7 @@ SCHEMA_COVERED = {
     "ops/e2e/scenarios/scenarios.json",
     "ops/e2e/realdata/scenarios.json",
     "ops/e2e/suites/suites.json",
+    "ops/obs/suites/suites.json",
 }
 
 VALIDATOR_COVERED_PREFIXES = (
@@ -32,6 +33,7 @@ VALIDATOR_COVERED_PREFIXES = (
     "ops/load/contracts/",
     "ops/k8s/charts/",
     "ops/obs/grafana/",
+    "ops/obs/contract/goldens/",
 )
 
 VALIDATOR_COVERED_FILES = {
@@ -43,6 +45,8 @@ VALIDATOR_COVERED_FILES = {
     "ops/obs/contract/logs-fields-contract.json",  # checked by check_logs_contract.py
     "ops/obs/contract/metrics-contract.json",  # checked by check_metrics_coverage.py
     "ops/obs/contract/trace-structure.golden.json",  # checked by check_trace_structure.py
+    "ops/obs/contract/endpoint-observability-contract.json",  # checked by endpoint coverage contracts
+    "ops/obs/contract/goldens/profiles.json",  # checked by check_profile_goldens.py
     "ops/obs/drills/result.schema.json",  # consumed by drill report validators
     "ops/report/schema.json",  # used by ops/report/report_contract_check.py
     "ops/registry/pins.json",  # validated by ops-registry pin checks
