@@ -1,161 +1,164 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "bijux-atlas chart values",
+  "type": "object",
   "additionalProperties": false,
   "properties": {
-    "affinity": {
-      "description": "Chart values key `affinity` from SSOT contract."
-    },
-    "alertRules": {
-      "description": "Chart values key `alertRules` from SSOT contract."
-    },
-    "cache": {
-      "description": "Chart values key `cache` from SSOT contract."
-    },
-    "catalog": {
-      "description": "Chart values key `catalog` from SSOT contract."
-    },
-    "catalogPublishJob": {
-      "description": "Chart values key `catalogPublishJob` from SSOT contract."
-    },
-    "concurrency": {
-      "description": "Chart values key `concurrency` from SSOT contract."
-    },
-    "datasetWarmupJob": {
-      "description": "Chart values key `datasetWarmupJob` from SSOT contract."
-    },
-    "extraEnv": {
-      "description": "Chart values key `extraEnv` from SSOT contract."
-    },
+    "affinity": {"description": "Chart values key `affinity` from SSOT contract."},
+    "alertRules": {"description": "Chart values key `alertRules` from SSOT contract."},
+    "cache": {"description": "Chart values key `cache` from SSOT contract."},
+    "catalog": {"description": "Chart values key `catalog` from SSOT contract."},
+    "catalogPublishJob": {"description": "Chart values key `catalogPublishJob` from SSOT contract."},
+    "concurrency": {"description": "Chart values key `concurrency` from SSOT contract."},
+    "datasetWarmupJob": {"description": "Chart values key `datasetWarmupJob` from SSOT contract."},
+    "extraEnv": {"description": "Chart values key `extraEnv` from SSOT contract."},
     "hpa": {
-      "description": "Chart values key `hpa` from SSOT contract."
+      "description": "Chart values key `hpa` from SSOT contract.",
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "minReplicas": {"type": "integer", "minimum": 1},
+        "maxReplicas": {"type": "integer", "minimum": 1},
+        "cpuUtilization": {"type": "integer", "minimum": 1, "maximum": 100},
+        "behavior": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": ["scaleUp", "scaleDown"],
+          "properties": {
+            "scaleUp": {
+              "type": "object",
+              "additionalProperties": true,
+              "required": ["policies"],
+              "properties": {
+                "policies": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {"type": "object"}
+                }
+              }
+            },
+            "scaleDown": {
+              "type": "object",
+              "additionalProperties": true,
+              "required": ["policies"],
+              "properties": {
+                "policies": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {"type": "object"}
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": ["enabled", "minReplicas", "maxReplicas", "cpuUtilization", "behavior"]
     },
-    "image": {
-      "description": "Chart values key `image` from SSOT contract."
+    "image": {"description": "Chart values key `image` from SSOT contract."},
+    "ingress": {"description": "Chart values key `ingress` from SSOT contract."},
+    "metrics": {
+      "description": "Chart values key `metrics` from SSOT contract.",
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "customMetrics": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "enabled": {"type": "boolean"},
+            "requiredPodAnnotations": {
+              "type": "object",
+              "minProperties": 1,
+              "additionalProperties": {"type": "string"}
+            }
+          },
+          "required": ["enabled", "requiredPodAnnotations"]
+        }
+      },
+      "required": ["customMetrics"]
     },
-    "ingress": {
-      "description": "Chart values key `ingress` from SSOT contract."
-    },
-    "networkPolicy": {
-      "description": "Chart values key `networkPolicy` from SSOT contract."
-    },
-    "nodeLocalSsdProfile": {
-      "description": "Chart values key `nodeLocalSsdProfile` from SSOT contract."
-    },
-    "nodeSelector": {
-      "description": "Chart values key `nodeSelector` from SSOT contract."
-    },
-    "pdb": {
-      "description": "Chart values key `pdb` from SSOT contract."
-    },
-    "podSecurityContext": {
-      "description": "Chart values key `podSecurityContext` from SSOT contract."
-    },
-    "priorityClassName": {
-      "description": "Chart values key `priorityClassName` from SSOT contract."
-    },
-    "rateLimits": {
-      "description": "Chart values key `rateLimits` from SSOT contract."
-    },
-    "replicaCount": {
-      "description": "Chart values key `replicaCount` from SSOT contract."
-    },
+    "networkPolicy": {"description": "Chart values key `networkPolicy` from SSOT contract."},
+    "nodeLocalSsdProfile": {"description": "Chart values key `nodeLocalSsdProfile` from SSOT contract."},
+    "nodeSelector": {"description": "Chart values key `nodeSelector` from SSOT contract."},
+    "pdb": {"description": "Chart values key `pdb` from SSOT contract."},
+    "podSecurityContext": {"description": "Chart values key `podSecurityContext` from SSOT contract."},
+    "priorityClassName": {"description": "Chart values key `priorityClassName` from SSOT contract."},
+    "rateLimits": {"description": "Chart values key `rateLimits` from SSOT contract."},
+    "replicaCount": {"description": "Chart values key `replicaCount` from SSOT contract."},
     "resources": {
+      "type": "object",
       "additionalProperties": true,
       "properties": {
         "limits": {
+          "type": "object",
           "additionalProperties": true,
           "properties": {
-            "cpu": {
-              "minLength": 1,
-              "type": "string"
-            },
-            "ephemeral-storage": {
-              "minLength": 1,
-              "type": "string"
-            },
-            "memory": {
-              "minLength": 1,
-              "type": "string"
-            }
+            "cpu": {"type": "string", "minLength": 1},
+            "memory": {"type": "string", "minLength": 1},
+            "ephemeral-storage": {"type": "string", "minLength": 1}
           },
-          "required": [
-            "cpu",
-            "memory"
-          ],
-          "type": "object"
+          "required": ["cpu", "memory"]
         },
         "requests": {
+          "type": "object",
           "additionalProperties": true,
           "properties": {
-            "cpu": {
-              "minLength": 1,
-              "type": "string"
-            },
-            "ephemeral-storage": {
-              "minLength": 1,
-              "type": "string"
-            },
-            "memory": {
-              "minLength": 1,
-              "type": "string"
-            }
+            "cpu": {"type": "string", "minLength": 1},
+            "memory": {"type": "string", "minLength": 1},
+            "ephemeral-storage": {"type": "string", "minLength": 1}
           },
-          "required": [
-            "cpu",
-            "memory"
-          ],
-          "type": "object"
+          "required": ["cpu", "memory"]
         }
       },
-      "required": [
-        "requests",
-        "limits"
-      ],
-      "type": "object"
+      "required": ["requests", "limits"]
     },
-    "rollout": {
-      "description": "Chart values key `rollout` from SSOT contract."
-    },
-    "securityContext": {
-      "description": "Chart values key `securityContext` from SSOT contract."
-    },
-    "sequenceRateLimits": {
-      "description": "Chart values key `sequenceRateLimits` from SSOT contract."
-    },
+    "rollout": {"description": "Chart values key `rollout` from SSOT contract."},
+    "securityContext": {"description": "Chart values key `securityContext` from SSOT contract."},
+    "sequenceRateLimits": {"description": "Chart values key `sequenceRateLimits` from SSOT contract."},
     "server": {
+      "type": "object",
       "additionalProperties": true,
       "properties": {
-        "readinessProbePath": {
-          "minLength": 1,
-          "type": "string"
-        },
-        "startupProbePath": {
-          "minLength": 1,
-          "type": "string"
-        }
+        "readinessProbePath": {"type": "string", "minLength": 1},
+        "startupProbePath": {"type": "string", "minLength": 1}
       },
-      "required": [
-        "readinessProbePath",
-        "startupProbePath"
-      ],
-      "type": "object"
+      "required": ["readinessProbePath", "startupProbePath"]
     },
-    "service": {
-      "description": "Chart values key `service` from SSOT contract."
-    },
-    "serviceMonitor": {
-      "description": "Chart values key `serviceMonitor` from SSOT contract."
-    },
-    "store": {
-      "description": "Chart values key `store` from SSOT contract."
-    },
-    "terminationGracePeriodSeconds": {
-      "description": "Chart values key `terminationGracePeriodSeconds` from SSOT contract."
-    },
-    "tolerations": {
-      "description": "Chart values key `tolerations` from SSOT contract."
-    }
+    "service": {"description": "Chart values key `service` from SSOT contract."},
+    "serviceMonitor": {"description": "Chart values key `serviceMonitor` from SSOT contract."},
+    "store": {"description": "Chart values key `store` from SSOT contract."},
+    "terminationGracePeriodSeconds": {"description": "Chart values key `terminationGracePeriodSeconds` from SSOT contract."},
+    "tolerations": {"description": "Chart values key `tolerations` from SSOT contract."}
   },
-  "title": "bijux-atlas chart values",
-  "type": "object"
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "hpa": {
+            "properties": {
+              "enabled": {"const": true}
+            }
+          }
+        },
+        "required": ["hpa"]
+      },
+      "then": {
+        "required": ["metrics"],
+        "properties": {
+          "metrics": {
+            "required": ["customMetrics"],
+            "properties": {
+              "customMetrics": {
+                "required": ["enabled"],
+                "properties": {
+                  "enabled": {"const": true}
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }

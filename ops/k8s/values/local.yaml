@@ -32,6 +32,13 @@ server:
 serviceMonitor:
   enabled: false
 
+metrics:
+  customMetrics:
+    enabled: false
+    requiredPodAnnotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/path: "/metrics"
+
 alertRules:
   enabled: false
 

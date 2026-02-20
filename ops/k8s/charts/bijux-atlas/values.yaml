@@ -123,6 +123,13 @@ serviceMonitor:
   scrapeTimeout: 5s
   labels: {}
 
+metrics:
+  customMetrics:
+    enabled: true
+    requiredPodAnnotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/path: "/metrics"
+
 alertRules:
   enabled: true
 

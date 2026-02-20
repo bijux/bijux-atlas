@@ -32,3 +32,10 @@ hpa:
   minReplicas: 3
   maxReplicas: 30
   cpuUtilization: 65
+
+metrics:
+  customMetrics:
+    enabled: true
+    requiredPodAnnotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/path: "/metrics"
