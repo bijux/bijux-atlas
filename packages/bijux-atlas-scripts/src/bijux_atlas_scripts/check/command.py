@@ -7,6 +7,7 @@ import subprocess
 from ..core.context import RunContext
 from ..lint.runner import run_suite
 from .native import (
+    check_committed_generated_hygiene,
     check_duplicate_script_names,
     check_make_forbidden_paths,
     check_make_help,
@@ -120,6 +121,15 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         else:
             print("no tracked timestamp-like paths detected")
         return code
+    if sub == "committed-generated-hygiene":
+        code, errors = check_committed_generated_hygiene(ctx.repo_root)
+        if errors:
+            print("committed generated hygiene violations detected:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("committed generated directories contain deterministic assets only")
+        return code
     return 2
 
 
@@ -141,3 +151,7 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     p_sub.add_parser("no-xtask", help="forbid xtask references outside ADR history")
     p_sub.add_parser("ops-generated-tracked", help="fail if ops/_generated contains tracked files")
     p_sub.add_parser("tracked-timestamps", help="fail if tracked paths contain timestamp-like directories")
+    p_sub.add_parser(
+        "committed-generated-hygiene",
+        help="fail on runtime/timestamped artifacts in committed generated directories",
+    )
