@@ -57,6 +57,7 @@ docs-build: ## Build docs + link-check + spell-check + lint
 	@python3 scripts/areas/docs/check_k8s_docs_contract.py
 	@python3 scripts/areas/docs/check_load_docs_contract.py
 	@python3 scripts/areas/docs/check_ops_docs_make_targets.py
+	@python3 scripts/areas/docs/check_configmap_env_docs.py
 	@python3 scripts/areas/docs/check_docs_make_only.py
 	@python3 scripts/areas/docs/check_no_placeholders.py
 	@python3 scripts/areas/docs/check_broken_examples.py

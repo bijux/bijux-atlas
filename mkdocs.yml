@@ -139,6 +139,7 @@ nav:
       - Ops Acceptance Checklist: operations/ops-acceptance-checklist.md
       - Health Endpoint Semantics: operations/health-endpoint-semantics.md
       - Canonical Workflows: operations/canonical-workflows.md
+      - Runtime Config: operations/config.md
       - Migration Note: operations/migration-note.md
       - Production Readiness: operations/production-readiness-checklist.md
       - No Direct Path Usage: operations/no-direct-path-usage.md
