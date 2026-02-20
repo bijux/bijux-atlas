@@ -3,8 +3,12 @@ from __future__ import annotations
 
 import argparse
 from collections import defaultdict
+from pathlib import Path
 
 from public_make_targets import public_entries
+from make_target_graph import parse_make_targets
+
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def namespace_of(name: str) -> str:
@@ -39,10 +43,24 @@ def render_gates(entries: list[dict]) -> None:
         for target in sorted(grouped[area]):
             print(f"    {target}")
 
+def render_advanced(entries: list[dict]) -> None:
+    render_help(entries)
+    print("")
+    print("Advanced Maintainer Targets:")
+    advanced = ["what", "explain", "graph", "list", "report", "report/print", "legacy-audit"]
+    for t in advanced:
+        print(f"  {t}")
+
+
+def render_all() -> None:
+    graph = parse_make_targets(ROOT / "makefiles")
+    for target in sorted(graph):
+        print(target)
+
 
 def main() -> int:
     p = argparse.ArgumentParser()
-    p.add_argument("--mode", choices=["help", "gates", "list"], default="help")
+    p.add_argument("--mode", choices=["help", "gates", "list", "advanced", "all"], default="help")
     args = p.parse_args()
 
     entries = public_entries()
@@ -50,6 +68,10 @@ def main() -> int:
         render_gates(entries)
     elif args.mode == "list":
         render_list(entries)
+    elif args.mode == "advanced":
+        render_advanced(entries)
+    elif args.mode == "all":
+        render_all()
     else:
         render_help(entries)
     return 0
