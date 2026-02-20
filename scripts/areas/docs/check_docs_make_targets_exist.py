@@ -12,8 +12,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 DOCS = ROOT / "docs"
 
-LINE_CMD_RE = re.compile(r"^\s*(?:\$|#)?\s*(?:[A-Za-z_][A-Za-z0-9_]*=[^\s]+\s+)*make\s+([A-Za-z0-9_.-]+)")
-INLINE_CMD_RE = re.compile(r"`(?:[A-Za-z_][A-Za-z0-9_]*=[^\s`]+\s+)*make\s+([A-Za-z0-9_.-]+)`")
+LINE_CMD_RE = re.compile(r"^\s*(?:\$|#)?\s*(?:[A-Za-z_][A-Za-z0-9_]*=[^\s]+\s+)*make\s+([A-Za-z0-9_./-]+)")
+INLINE_CMD_RE = re.compile(r"`(?:[A-Za-z_][A-Za-z0-9_]*=[^\s`]+\s+)*make\s+([A-Za-z0-9_./-]+)`")
 
 
 def load_targets() -> set[str]:
@@ -25,7 +25,7 @@ def load_targets() -> set[str]:
         candidate = line.split(":", 1)[0].strip()
         if not candidate:
             continue
-        if any(ch in candidate for ch in " %/$()"):
+        if any(ch in candidate for ch in " %$()"):
             continue
         targets.add(candidate)
     return targets

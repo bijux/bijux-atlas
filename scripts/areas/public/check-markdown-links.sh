@@ -9,17 +9,23 @@
 set -eu
 
 python3 - <<'PY'
+import os
 import re
 from pathlib import Path
 
 root = Path('.')
 exclude_parts = {'.git', 'artifacts', 'target', '.cargo'}
 md_files = []
-for p in root.rglob('*.md'):
-    parts = set(p.parts)
-    if parts & exclude_parts:
-        continue
-    md_files.append(p)
+for dirpath, dirnames, filenames in os.walk(root, topdown=True, followlinks=False):
+    dirnames[:] = [d for d in dirnames if d not in exclude_parts and not Path(dirpath, d).is_symlink()]
+    for filename in filenames:
+        if not filename.endswith('.md'):
+            continue
+        p = Path(dirpath) / filename
+        parts = set(p.parts)
+        if parts & exclude_parts:
+            continue
+        md_files.append(p)
 
 link_re = re.compile(r'\[[^\]]+\]\(([^)]+)\)')
 errors = []

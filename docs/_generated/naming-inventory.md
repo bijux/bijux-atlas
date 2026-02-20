@@ -5,9 +5,9 @@
 
 ## Summary
 
-- Tracked files: `1869`
-- Docs markdown files: `374`
-- Script files under `scripts/`: `331`
+- Tracked files: `1965`
+- Docs markdown files: `376`
+- Script files under `scripts/`: `344`
 - Rust test files: `42`
 - Load suites in `ops/load/suites/suites.json`: `19`
 - Runbooks in `docs/operations/runbooks/`: `17`
@@ -16,8 +16,8 @@
 ## Naming Health
 
 - Forbidden-token hits: `2`
-- Non-kebab docs outside allowed exceptions: `23`
-- Non-kebab scripts under `scripts/`: `276`
+- Non-kebab docs outside allowed exceptions: `22`
+- Non-kebab scripts under `scripts/`: `288`
 
 ## Load Suites
 
@@ -72,7 +72,6 @@
 - `docs/adrs/ADR-0003-federated-registry-deterministic-merge.md`
 - `docs/adrs/ADR-0004-plugin-contract-and-umbrella-dispatch.md`
 - `docs/adrs/ADR-0005-security-defaults-and-enterprise-controls.md`
-- `docs/operations/performance/BUDGETS.md`
 - `docs/operations/slo/BASELINE_UPDATE_POLICY.md`
 - `docs/operations/slo/CHANGELOG.md`
 - `docs/operations/slo/CHANGE_POLICY.md`
@@ -89,11 +88,13 @@
 - `docs/operations/slo/WHY_THESE_SLIS.md`
 - `scripts/areas/_internal/run_suite_wrapper_legacy.sh`
 - `scripts/areas/bootstrap/install_tools.sh`
-- `scripts/areas/layout/check_no_root_dumping.sh`
+- `scripts/areas/configs/check_config_files_well_formed.py`
+- `scripts/areas/configs/check_config_keys_docs_coverage.py`
 - `scripts/areas/configs/check_config_ownership.py`
 - `scripts/areas/configs/check_configs_readmes.py`
 - `scripts/areas/configs/check_docs_links_for_configs.py`
 - `scripts/areas/configs/check_duplicate_threshold_sources.py`
+- `scripts/areas/configs/check_generated_configs_drift.sh`
 - `scripts/areas/configs/check_no_adhoc_versions.py`
 - `scripts/areas/configs/check_openapi_snapshot_generated.py`
 - `scripts/areas/configs/check_ops_env_usage_declared.py`
@@ -101,6 +102,7 @@
 - `scripts/areas/configs/check_root_config_shims.py`
 - `scripts/areas/configs/check_slo_sync.py`
 - `scripts/areas/configs/check_tool_versions_doc_drift.py`
+- `scripts/areas/configs/generate_configs_index.py`
 - `scripts/areas/configs/generate_configs_surface.py`
 - `scripts/areas/configs/generate_tooling_versions_doc.py`
 - `scripts/areas/configs/sync_slo_config.py`
@@ -200,7 +202,6 @@
 - `scripts/areas/docs/spellcheck_docs.py`
 - `scripts/areas/gen/generate_scripts_readme.py`
 - `scripts/areas/gen/generate_scripts_surface.py`
-- `scripts/areas/gen/generate_scripts_readme.py`
 - `scripts/areas/internal/__init__.py`
 - `scripts/areas/internal/env_dump.sh`
 - `scripts/areas/internal/migrate_paths.sh`
@@ -214,6 +215,7 @@
 - `scripts/areas/layout/check_chart_canonical_path.sh`
 - `scripts/areas/layout/check_ci_entrypoints.py`
 - `scripts/areas/layout/check_dataset_manifest_lock.py`
+- `scripts/areas/layout/check_dir_budgets.py`
 - `scripts/areas/layout/check_duplicate_script_intent.py`
 - `scripts/areas/layout/check_e2e_scenarios.py`
 - `scripts/areas/layout/check_e2e_suites.py`
@@ -227,6 +229,8 @@
 - `scripts/areas/layout/check_help_output_determinism.py`
 - `scripts/areas/layout/check_internal_targets_not_in_docs.py`
 - `scripts/areas/layout/check_kind_cluster_contract_drift.sh`
+- `scripts/areas/layout/check_layer_drift.py`
+- `scripts/areas/layout/check_legacy_deprecation.py`
 - `scripts/areas/layout/check_make_lane_reports.py`
 - `scripts/areas/layout/check_make_public_scripts.py`
 - `scripts/areas/layout/check_make_safety.py`
@@ -240,7 +244,10 @@
 - `scripts/areas/layout/check_no_empty_dirs.py`
 - `scripts/areas/layout/check_no_forbidden_paths.sh`
 - `scripts/areas/layout/check_no_hidden_defaults.py`
+- `scripts/areas/layout/check_no_legacy_targets_in_docs.py`
 - `scripts/areas/layout/check_no_mixed_script_name_variants.py`
+- `scripts/areas/layout/check_no_ops_evidence_writes.py`
+- `scripts/areas/layout/check_no_root_dumping.sh`
 - `scripts/areas/layout/check_obs_pack_ssot.py`
 - `scripts/areas/layout/check_obs_script_name_collisions.py`
 - `scripts/areas/layout/check_obs_suites.py`
@@ -250,6 +257,7 @@
 - `scripts/areas/layout/check_ops_canonical_shims.sh`
 - `scripts/areas/layout/check_ops_concept_ownership.py`
 - `scripts/areas/layout/check_ops_cross_area_script_refs.py`
+- `scripts/areas/layout/check_ops_external_entrypoints.py`
 - `scripts/areas/layout/check_ops_index_surface.py`
 - `scripts/areas/layout/check_ops_layout_contract.py`
 - `scripts/areas/layout/check_ops_lib_canonical.sh`
@@ -277,11 +285,13 @@
 - `scripts/areas/layout/check_root_mk_size_budget.py`
 - `scripts/areas/layout/check_root_no_cargo_dev_deps.py`
 - `scripts/areas/layout/check_root_shape.sh`
+- `scripts/areas/layout/check_script_entrypoints.py`
 - `scripts/areas/layout/check_script_naming_convention.py`
 - `scripts/areas/layout/check_script_relative_calls.py`
 - `scripts/areas/layout/check_scripts_buckets.py`
 - `scripts/areas/layout/check_scripts_readme_drift.sh`
 - `scripts/areas/layout/check_scripts_submodules.py`
+- `scripts/areas/layout/check_scripts_top_level.py`
 - `scripts/areas/layout/check_slo_contracts.py`
 - `scripts/areas/layout/check_slo_no_loosen_without_approval.py`
 - `scripts/areas/layout/check_stack_manifest_consolidation.sh`
@@ -301,6 +311,7 @@
 - `scripts/areas/layout/generate_ops_stack_versions.py`
 - `scripts/areas/layout/generate_ops_surface_meta.py`
 - `scripts/areas/layout/graph_public_target.py`
+- `scripts/areas/layout/legacy_audit.sh`
 - `scripts/areas/layout/list_internal_targets.py`
 - `scripts/areas/layout/make_doctor.py`
 - `scripts/areas/layout/make_prereqs.py`
@@ -358,8 +369,8 @@
 - `scripts/areas/python/__init__.py`
 - `scripts/areas/python/bijux_scripts/__init__.py`
 - `scripts/areas/python/bijux_scripts/json_helpers.py`
-- `scripts/bin/run_drill.sh`
 - `scripts/areas/tests/test_paths.py`
 - `scripts/areas/tools/__init__.py`
 - `scripts/areas/tools/json_helpers.py`
 - `scripts/areas/tools/path_utils.py`
+- `scripts/bin/run_drill.sh`
