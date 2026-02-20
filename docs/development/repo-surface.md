@@ -24,7 +24,7 @@ Does not freeze internal implementation details.
 - Script interfaces: [`scripts/INDEX.md`](scripts/INDEX.md)
 - SSOT contracts: [`../contracts/INDEX.md`](../contracts/INDEX.md)
 - Root layout SSOT:
-  - Allowlist source: `packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/root_whitelist.json`.
+  - Allowlist source: `packages/atlasctl/src/atlasctl/layout_checks/root_whitelist.json`.
   - Classification is explicit and enforced:
     - `required`: must exist at root.
     - `allowed`: allowed at root.

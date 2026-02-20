@@ -5,7 +5,7 @@
 
 ## Goal
 
-Run `bijux-atlas-scripts` in environments without outbound network access.
+Run `atlasctl` in environments without outbound network access.
 
 ## Rules
 
@@ -26,4 +26,4 @@ BIJUX_SCRIPTS_TEST_NO_NETWORK=1 make scripts-test-hermetic
 
 - CI containers should pre-install dependencies from lockfiles.
 - Avoid runtime `pip install` during gate execution.
-- Prefer `PYTHONPATH=packages/bijux-atlas-scripts/src` or installed console entrypoint.
+- Prefer `PYTHONPATH=packages/atlasctl/src` or installed console entrypoint.

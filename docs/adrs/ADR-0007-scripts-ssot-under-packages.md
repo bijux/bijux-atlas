@@ -10,7 +10,7 @@ Repository automation logic was historically spread across `scripts/` and `tools
 
 ## Decision
 
-- `bijux-atlas-scripts` is the SSOT tooling product surface.
+- `atlasctl` is the SSOT tooling product surface.
 - Python package roots are `packages/` (primary) and `tools/` during transition.
 - Make targets must invoke package entrypoints, not arbitrary `python <path>` scripts.
 - Legacy `scripts/` remains transition-only until complete removal gates are satisfied.

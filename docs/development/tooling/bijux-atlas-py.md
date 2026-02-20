@@ -18,17 +18,17 @@ Roadmap and non-goals for `bijux-atlas-py`, a future user-facing Python library.
 
 ## Non-goals
 
-- No dependency on `bijux-atlas-scripts`.
+- No dependency on `atlasctl`.
 - No direct reuse of internal tooling command code as library API.
 - No FFI crate in this groundwork bundle.
 
 ## Boundary With Scripts
 
-- `bijux-atlas-scripts` is an internal operator/developer CLI surface.
+- `atlasctl` is an internal operator/developer CLI surface.
 - `bijux-atlas-py` is a future user-facing library surface.
 - Shared logic must live in stable data contracts or dedicated shared libraries, not in CLI command modules.
 
 ## See also
 
-- [bijux-atlas-scripts Tooling](bijux-atlas-scripts.md)
+- [atlasctl Tooling](atlasctl.md)
 - [ADR-0006 atlas-py vs scripts boundary](../../adrs/ADR-0006-atlas-py-vs-scripts-boundary.md)

@@ -15,7 +15,7 @@ Prevents root sprawl and keeps navigation and automation predictable.
 - `.cargo/`: Cargo root-discovery workspace config.
 - `.github/`: CI workflows.
 - `artifacts/`: isolated and ops outputs.
-- `bin/`: compatibility command shims that redirect to `bijux-atlas-scripts`.
+- `bin/`: compatibility command shims that redirect to `atlasctl`.
 - `configs/`: canonical static configuration files.
 - `crates/`: Rust workspace crates.
 - `docker/`: canonical Docker build surface.
@@ -23,7 +23,7 @@ Prevents root sprawl and keeps navigation and automation predictable.
 - `makefiles/`: make target implementations.
 - `ops/`: canonical operations assets.
 - `scripts/`: internal automation scripts.
-- `packages/bijux-atlas-scripts/`: code generation and automation CLI package.
+- `packages/atlasctl/`: code generation and automation CLI package.
 
 ## Failure modes
 
