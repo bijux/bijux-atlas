@@ -86,6 +86,7 @@ payload = {
     },
     "perf_summary": {"suite_count": 0, "p95_max_ms": 0.0, "p99_max_ms": 0.0},
     "graceful_degradation": {"status": "fail", "score_percent": 0.0, "total_considered": 0, "failed": 0},
+    "k8s_conformance": {"status": "fail", "failed_sections": []},
 }
 
 perf_raw = root / "artifacts/evidence/perf" / run_id / "raw"
@@ -107,6 +108,9 @@ if perf_raw.exists():
 gd_path = root / "artifacts/evidence/k8s" / run_id / "graceful-degradation-score.json"
 if gd_path.exists():
     payload["graceful_degradation"] = json.loads(gd_path.read_text(encoding="utf-8"))
+kc_path = root / "artifacts/evidence/k8s" / run_id / "k8s-conformance-report.json"
+if kc_path.exists():
+    payload["k8s_conformance"] = json.loads(kc_path.read_text(encoding="utf-8"))
 
 schema = json.loads(schema_path.read_text(encoding='utf-8'))
 for key in schema.get("required", []):

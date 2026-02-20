@@ -63,6 +63,15 @@
         "total_considered": {"type": "integer", "minimum": 0},
         "failed": {"type": "integer", "minimum": 0}
       }
+    },
+    "k8s_conformance": {
+      "type": "object",
+      "required": ["status"],
+      "additionalProperties": true,
+      "properties": {
+        "status": {"type": "string", "enum": ["pass", "fail"]},
+        "failed_sections": {"type": "array", "items": {"type": "string"}}
+      }
     }
   }
 }
