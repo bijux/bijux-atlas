@@ -207,8 +207,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/public/require-crate-docs.sh` | `platform` | `public` | `crate-structure` |
 | `scripts/areas/public/stack/build_stack_report.py` | `platform` | `public` | `stack-full` |
 | `scripts/areas/public/stack/validate_stack_report.py` | `platform` | `public` | `stack-full` |
-| `scripts/areas/release/update-compat-matrix.sh` | `release-engineering` | `public` | `release-update-compat-matrix` |
-| `scripts/areas/release/validate-compat-matrix.sh` | `release-engineering` | `public` | `compat-matrix-validate` |
 | `scripts/areas/tests/test_paths.py` | `platform` | `internal` | - |
 | `scripts/bin/bijux-atlas-dev` | `platform` | `public` | - |
 | `scripts/bin/bijux-atlas-ops` | `platform` | `internal` | - |

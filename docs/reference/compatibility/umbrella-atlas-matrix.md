@@ -1,45 +1,11 @@
-# Umbrella Atlas Matrix
+# Compatibility Matrix: bijux Umbrella <-> bijux-atlas
 
-Concept IDs: concept.compatibility-matrix
+| bijux umbrella | bijux-atlas plugin | status | notes |
+|---|---|---|---|
+| `0.x` | `0.1.0` | supported | plugin advertises `compatible_umbrella: >=0.1.0,<0.2.0` |
+| future major | `0.1.0` | unsupported | plugin handshake must fail compatibility check |
 
-- Owner: `bijux-atlas-cli`
+## Validation Rule
 
-Canonical page: [`docs/contracts/compatibility.md`](../../contracts/compatibility.md)
-
-## What
-
-Reference definition for this topic.
-
-## Why
-
-Defines stable semantics and operational expectations.
-
-## Scope
-
-Applies to the documented subsystem behavior only.
-
-## Non-goals
-
-Does not define unrelated implementation details.
-
-## Contracts
-
-Normative behavior and limits are listed here.
-
-## Failure modes
-
-Known failure classes and rejection behavior.
-
-## How to verify
-
-```bash
-$ make docs
-```
-
-Expected output: docs checks pass.
-
-## See also
-
-- [Reference Index](INDEX.md)
-- [Contracts Index](../../contracts/contracts-index.md)
-- [Terms Glossary](../../_style/terms-glossary.md)
+The umbrella validates plugin metadata range against umbrella semver before dispatch.
+If incompatible, the umbrella returns a structured machine error and does not execute plugin commands.
