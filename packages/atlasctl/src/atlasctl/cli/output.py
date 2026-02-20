@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import date
+
 from ..core.serialize import dumps_json
 
 
@@ -25,3 +27,29 @@ def build_base_payload(ctx, status: str = "ok") -> dict[str, object]:
         "git_sha": ctx.git_sha,
         "git_dirty": ctx.git_dirty,
     }
+
+
+def resolve_output_format(*, cli_json: bool, cli_format: str | None, ci_present: bool) -> str:
+    if cli_json:
+        return "json"
+    if cli_format:
+        return cli_format
+    return "json" if ci_present else "text"
+
+
+def render_error(*, as_json: bool, message: str, code: int) -> str:
+    if as_json:
+        return dumps_json(
+            {
+                "schema_version": 1,
+                "tool": "atlasctl",
+                "status": "fail",
+                "error": {"message": message, "code": code},
+            },
+            pretty=False,
+        )
+    return message
+
+
+def no_network_flag_expired(today: date, expiry: date) -> bool:
+    return today > expiry

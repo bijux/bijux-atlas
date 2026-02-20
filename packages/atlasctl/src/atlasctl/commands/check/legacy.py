@@ -81,6 +81,15 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             print(f"check {sub}: {payload['status']} ({payload['failed_count']}/{payload['total_count']} failed)")
         return code
     if sub == "repo":
+        if getattr(ns, "repo_check", "all") == "module-size":
+            code, errors = check_module_size(ctx.repo_root)
+            if errors:
+                print("oversized atlasctl modules detected:")
+                for err in errors:
+                    print(f"- {err}")
+            else:
+                print("module size policy passed")
+            return code
         code, payload = run_domain(ctx.repo_root, "repo")
         if ctx.output_format == "json":
             print(json.dumps(payload, sort_keys=True))
@@ -469,7 +478,8 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     p_sub.add_parser("make", help="run makefile checks")
     p_sub.add_parser("docs", help="run docs checks")
     p_sub.add_parser("configs", help="run configs checks")
-    p_sub.add_parser("repo", help="run repo hygiene checks (forbidden roots, refs, caches/artifacts)")
+    repo = p_sub.add_parser("repo", help="run repo hygiene checks (forbidden roots, refs, caches/artifacts)")
+    repo.add_argument("repo_check", nargs="?", choices=["all", "module-size"], default="all")
     p_sub.add_parser("obs", help="run observability checks")
     p_sub.add_parser("stack-report", help="validate stack report contracts")
     p_sub.add_parser("cli-help", help="validate script/CLI help coverage")

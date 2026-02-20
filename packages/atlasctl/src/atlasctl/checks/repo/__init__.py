@@ -14,6 +14,7 @@ from .legacy_native import (
 from ..base import CheckDef
 from .legacy_guard import check_legacy_package_quarantine
 from .module_size import check_module_size
+from .cwd_usage import check_no_path_cwd_usage
 from .scripts_dir import check_scripts_dir_absent
 
 CHECKS: tuple[CheckDef, ...] = (
@@ -29,4 +30,5 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo/no-scripts-dir", "repo", 250, check_scripts_dir_absent),
     CheckDef("repo/legacy-quarantine", "repo", 250, check_legacy_package_quarantine),
     CheckDef("repo/module-size", "repo", 400, check_module_size),
+    CheckDef("repo/no-path-cwd-usage", "repo", 400, check_no_path_cwd_usage),
 )
