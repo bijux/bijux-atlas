@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 POLICY = ROOT / "configs/policy/legacy-policy.json"
 BASELINE = ROOT / "configs/policy/legacy-baseline.json"
 EVIDENCE = ROOT / "artifacts/evidence/legacy/inventory.json"

@@ -5,7 +5,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 AREAS = ("datasets", "e2e", "fixtures", "k8s", "load", "obs", "report", "run", "stack")
 PATTERN = re.compile(r"ops/(" + "|".join(AREAS) + r")/scripts/[a-zA-Z0-9_./-]+\.sh")
 ALLOWLIST = ROOT / "ops/_meta/cross-area-script-refs-allowlist.txt"

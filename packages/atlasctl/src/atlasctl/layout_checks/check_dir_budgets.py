@@ -3,7 +3,7 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 BUDGETS_PATH = ROOT / "configs/layout/dir-budgets.json"
 
 

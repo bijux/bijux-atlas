@@ -3,10 +3,11 @@
 # Inputs: artifacts/ops run directories.
 # Outputs: removes old runs, preserves latest and recent N.
 from __future__ import annotations
-from pathlib import Path
-import shutil
 
-ROOT = Path(__file__).resolve().parents[3]
+import shutil
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[5]
 keep = 5
 ops = ROOT / 'artifacts' / 'ops'
 if not ops.exists():

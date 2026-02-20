@@ -6,7 +6,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 DOCS = ROOT / "docs"
 WORKFLOWS = ROOT / ".github" / "workflows"
 

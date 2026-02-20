@@ -5,7 +5,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 MAKEFILES = sorted((ROOT / "makefiles").glob("*.mk"))
 CARGO_RE = re.compile(r"(^|\s)cargo(\s|$)")
 LEGACY = ROOT / "configs" / "ops" / "cargo-invocation-legacy.txt"

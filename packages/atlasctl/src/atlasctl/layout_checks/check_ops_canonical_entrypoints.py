@@ -3,10 +3,11 @@
 # Inputs: makefiles/ops.mk and selected scripts.
 # Outputs: non-zero if non-canonical entrypoints are used.
 from __future__ import annotations
-from pathlib import Path
-import sys
 
-ROOT = Path(__file__).resolve().parents[3]
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[5]
 ops_mk = (ROOT / "makefiles/ops.mk").read_text(encoding="utf-8")
 errors: list[str] = []
 

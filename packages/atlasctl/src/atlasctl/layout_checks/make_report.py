@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from xml.etree.ElementTree import Element, SubElement, tostring
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 MAKE_ROOT = ROOT / "artifacts" / "evidence" / "make"
 
 

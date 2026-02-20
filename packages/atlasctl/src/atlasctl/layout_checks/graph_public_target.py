@@ -7,7 +7,7 @@ from pathlib import Path
 from make_target_graph import parse_make_targets, render_tree
 from public_make_targets import public_names
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 
 
 def main() -> int:

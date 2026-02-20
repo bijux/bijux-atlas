@@ -4,10 +4,10 @@
 # Outputs: non-zero if script file sits outside approved bucket paths.
 from __future__ import annotations
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 SCRIPTS = ROOT / "scripts"
 
 ALLOWED_PREFIXES = (

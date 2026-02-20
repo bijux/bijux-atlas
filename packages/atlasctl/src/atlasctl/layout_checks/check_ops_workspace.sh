@@ -51,7 +51,7 @@ allowed_entries=(
 
 for dir in "${required_dirs[@]}"; do
   if [ ! -d "$dir" ]; then
-    echo "missing required ops directory: ${dir#$ROOT/}" >&2
+    echo "missing required ops directory: ${dir#"$ROOT"/}" >&2
     exit 1
   fi
 done

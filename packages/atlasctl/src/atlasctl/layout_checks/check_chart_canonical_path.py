@@ -2,15 +2,15 @@
 # Purpose: enforce canonical chart path usage via ops/k8s/charts/bijux-atlas.
 # Inputs: repository text files.
 # Outputs: non-zero on non-canonical chart path references.
-from pathlib import Path
 import re
 import sys
+from pathlib import Path
 
 root = Path(__file__).resolve().parents[2]
 exempt = {
     "docs/development/symlinks.md",
     "docs/development/root-inventory.md",
-    "packages/atlasctl/src/atlasctl/layout_checks/check_chart_canonical_path.sh",
+    "packages/atlasctl/src/atlasctl/layout_checks/check_chart_canonical_path.py",
 }
 
 violations = []

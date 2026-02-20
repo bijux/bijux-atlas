@@ -5,7 +5,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 DOCS = ROOT / "docs"
 LEGACY_TARGET_RE = re.compile(r"(?<![A-Za-z0-9_./-])(legacy/[A-Za-z0-9_-]+|[A-Za-z0-9_/-]+-legacy)(?![A-Za-z0-9_./-])")
 

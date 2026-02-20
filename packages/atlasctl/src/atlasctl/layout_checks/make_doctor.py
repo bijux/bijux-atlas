@@ -8,7 +8,7 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 
 TOOLS = ["python3", "cargo", "docker", "kind", "kubectl", "helm", "k6", "jq", "yq"]
 KEY_ENV = ["RUN_ID", "ISO_ROOT", "CARGO_TARGET_DIR", "CARGO_HOME", "TMPDIR", "ATLAS_BASE_URL", "ATLAS_NS"]

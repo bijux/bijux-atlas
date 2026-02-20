@@ -2,11 +2,11 @@
 # Purpose: ensure CI/nightly workflows use canonical make entrypoints.
 from __future__ import annotations
 
-from pathlib import Path
 import re
 import sys
+from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 WF = ROOT / ".github/workflows"
 CI_MK = ROOT / "makefiles" / "ci.mk"
 PRIMARY = {

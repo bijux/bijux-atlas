@@ -3,11 +3,12 @@
 # Inputs: ops/**/*.sh and ops/**/*.json manifests.
 # Outputs: non-zero when forbidden temporal/task naming appears.
 from __future__ import annotations
+
 import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 forbidden = re.compile(r"\b(phase|task|stage|tmp|temp|final|draft|new|old|vnext)\b", re.IGNORECASE)
 errors: list[str] = []
 

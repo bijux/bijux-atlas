@@ -7,7 +7,7 @@ from pathlib import Path
 
 from public_make_targets import public_names
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 README = ROOT / "makefiles" / "README.md"
 LINE_RE = re.compile(r"`make\s+([A-Za-z0-9_./-]+)(?:\s+[^`]*)?`")
 

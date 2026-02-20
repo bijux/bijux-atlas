@@ -5,7 +5,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 DOCS = [ROOT / "docs", ROOT / "makefiles" / "README.md", ROOT / "README.md"]
 PATTERNS = [
     re.compile(r"\bmake\s+(internal/[A-Za-z0-9_./-]+)\b"),

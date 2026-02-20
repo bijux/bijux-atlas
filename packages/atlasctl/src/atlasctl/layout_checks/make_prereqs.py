@@ -9,7 +9,7 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 REQUIRED = ["python3", "cargo", "docker", "kind", "kubectl", "helm", "k6"]
 
 

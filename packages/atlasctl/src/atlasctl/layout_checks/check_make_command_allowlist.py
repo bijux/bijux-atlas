@@ -4,11 +4,11 @@
 # Outputs: non-zero on disallowed recipe command prefixes.
 from __future__ import annotations
 
-from pathlib import Path
 import re
 import sys
+from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 ALLOWLIST = ROOT / "configs" / "layout" / "make-command-allowlist.txt"
 MK_FILES = [ROOT / "Makefile", *sorted((ROOT / "makefiles").glob("*.mk"))]
 

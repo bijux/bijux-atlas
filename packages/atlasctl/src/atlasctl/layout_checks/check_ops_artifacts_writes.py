@@ -6,7 +6,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 allowlist_path = ROOT / "configs" / "ops" / "artifacts-allowlist.txt"
 schema_path = ROOT / "ops" / "_schemas" / "meta" / "artifact-allowlist.schema.json"
 allowlist = [

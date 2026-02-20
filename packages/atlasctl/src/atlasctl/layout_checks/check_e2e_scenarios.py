@@ -3,12 +3,13 @@
 # Inputs: ops/e2e/scenarios/scenarios.json, ops/_schemas/e2e-scenarios.schema.json, docs/operations/e2e/*.md.
 # Outputs: non-zero on missing/invalid scenarios or docs references.
 from __future__ import annotations
+
 import json
 import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 manifest = json.loads((ROOT / "ops/e2e/scenarios/scenarios.json").read_text(encoding="utf-8"))
 schema = json.loads((ROOT / "ops/_schemas/e2e-scenarios.schema.json").read_text(encoding="utf-8"))
 

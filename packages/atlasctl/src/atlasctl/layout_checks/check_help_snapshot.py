@@ -7,7 +7,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 FORBIDDEN_RE = re.compile(r"(^|/)legacy($|-)")
 
 

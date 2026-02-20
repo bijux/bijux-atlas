@@ -11,7 +11,7 @@ OPS_MK="$ROOT/makefiles/ops.mk"
 
 missing=0
 for script in $(find "$ROOT/ops" -type f -path '*/scripts/*.sh' | sort); do
-  rel="${script#$ROOT/}"
+  rel="${script#"$ROOT"/}"
   if ! rg -n --fixed-strings "$rel" "$OPS_MK" >/dev/null; then
     echo "ops script not mapped by make target: $rel" >&2
     missing=1
