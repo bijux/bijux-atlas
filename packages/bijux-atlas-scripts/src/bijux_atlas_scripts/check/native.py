@@ -257,3 +257,93 @@ def check_make_command_allowlist(repo_root: Path) -> tuple[int, list[str]]:
                 continue
             violations.append(f"{mk.relative_to(repo_root)}:{idx}: disallowed recipe command `{tok}`")
     return (0 if not violations else 1), violations
+
+
+def check_layout_contract(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+
+    # Root shape contract.
+    surfaces = json.loads((repo_root / "configs/repo/surfaces.json").read_text(encoding="utf-8"))
+    allow_dirs = set(surfaces.get("allowed_root_dirs", [])) | set(surfaces.get("canonical_surfaces", []))
+    allow_files = {
+        ln.strip()
+        for ln in (repo_root / "configs/repo/root-files-allowlist.txt").read_text(encoding="utf-8").splitlines()
+        if ln.strip() and not ln.strip().startswith("#")
+    }
+    allow_files |= set(surfaces.get("allowed_root_files", []))
+    for entry in sorted(repo_root.iterdir(), key=lambda p: p.name):
+        if entry.name in {".git"}:
+            continue
+        if entry.name in {".DS_Store"}:
+            continue
+        if entry.is_dir():
+            if entry.name not in allow_dirs:
+                errors.append(f"unexpected root directory: {entry.name}")
+        elif entry.is_file() or entry.is_symlink():
+            if entry.name not in allow_files:
+                errors.append(f"unexpected root file/symlink: {entry.name}")
+
+    # Workflow make-only contract.
+    run_line = re.compile(r"^\s*-\s*run:\s*(.+)\s*$")
+    for wf in sorted((repo_root / ".github/workflows").glob("*.yml")):
+        for idx, line in enumerate(wf.read_text(encoding="utf-8").splitlines(), start=1):
+            m = run_line.match(line)
+            if not m:
+                continue
+            cmd = m.group(1).strip().strip('"')
+            if cmd.startswith("|"):
+                errors.append(f"{wf.relative_to(repo_root)}:{idx}: multiline run block forbidden")
+                continue
+            if not cmd.startswith("make "):
+                errors.append(f"{wf.relative_to(repo_root)}:{idx}: workflow run must use make, found `{cmd}`")
+
+    # Legacy target names contract.
+    target_re = re.compile(r"^([A-Za-z0-9_./-]+):(?:\s|$)", re.M)
+    forbidden_legacy = re.compile(r"(^|/)legacy($|-)")
+    for mk in sorted((repo_root / "makefiles").glob("*.mk")):
+        text = mk.read_text(encoding="utf-8")
+        for target in target_re.findall(text):
+            if target.startswith("."):
+                continue
+            if forbidden_legacy.search(target):
+                errors.append(f"{mk.relative_to(repo_root)}: forbidden legacy target `{target}`")
+
+    # Symlink policy contract.
+    symlink_cfg = json.loads((repo_root / "configs/repo/symlink-allowlist.json").read_text(encoding="utf-8"))
+    allowed_root = symlink_cfg.get("root", {})
+    allowed_non_root = symlink_cfg.get("non_root", {})
+    for rel, target in sorted(allowed_root.items()):
+        p = repo_root / rel
+        if not p.is_symlink():
+            errors.append(f"missing allowlisted root symlink: {rel}")
+            continue
+        resolved = p.resolve()
+        try:
+            got = resolved.relative_to(repo_root).as_posix()
+        except ValueError:
+            errors.append(f"root symlink points outside repo: {rel}")
+            continue
+        if got != target:
+            errors.append(f"root symlink target drift: {rel} -> {got} (expected {target})")
+    for rel, target in sorted(allowed_non_root.items()):
+        p = repo_root / rel
+        if not p.exists():
+            continue
+        if not p.is_symlink():
+            errors.append(f"allowlisted non-root path exists but is not symlink: {rel}")
+            continue
+        resolved = p.resolve()
+        try:
+            got = resolved.relative_to(repo_root).as_posix()
+        except ValueError:
+            errors.append(f"non-root symlink points outside repo: {rel}")
+            continue
+        if got != target:
+            errors.append(f"non-root symlink target drift: {rel} -> {got} (expected {target})")
+
+    # Existing tracked/generated hygiene contracts.
+    for fn in (check_ops_generated_tracked, check_tracked_timestamp_paths, check_committed_generated_hygiene):
+        _code, errs = fn(repo_root)
+        errors.extend(errs)
+
+    return (0 if not errors else 1), errors

@@ -8,6 +8,7 @@ from ..core.context import RunContext
 from ..lint.runner import run_suite
 from .native import (
     check_committed_generated_hygiene,
+    check_layout_contract,
     check_make_command_allowlist,
     check_duplicate_script_names,
     check_make_forbidden_paths,
@@ -36,7 +37,14 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             print(f"check {sub}: {payload['status']} ({payload['failed_count']}/{payload['total_count']} failed)")
         return code
     if sub == "layout":
-        return _run(ctx, ["python3", "scripts/areas/layout/check_layer_drift.py"])
+        code, errors = check_layout_contract(ctx.repo_root)
+        if errors:
+            print("layout contract failed:")
+            for err in errors[:200]:
+                print(f"- {err}")
+        else:
+            print("layout contract passed")
+        return code
     if sub == "obs":
         return _run(
             ctx,
