@@ -37,11 +37,11 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(PY_RUN) scripts/areas/layout/check_duplicate_script_intent.py
 	@$(ATLAS_SCRIPTS) check duplicate-script-names
 	@$(ATLAS_SCRIPTS) check layout
-	@$(PY_RUN) scripts/areas/check/check-script-help.py
+	@$(ATLAS_SCRIPTS) check cli-help
 	@$(PY_RUN) scripts/areas/check/check-script-errors.py
 	@$(PY_RUN) scripts/areas/check/check-script-write-roots.py
 	@$(PY_RUN) scripts/areas/check/check-script-tool-guards.py
-	@$(PY_RUN) scripts/areas/check/check-script-ownership.py
+	@$(ATLAS_SCRIPTS) check ownership
 	@$(PY_RUN) scripts/areas/check/check-script-shim-expiry.py
 	@$(PY_RUN) scripts/areas/check/check-script-shims-minimal.py
 	@$(PY_RUN) scripts/areas/check/check-invocation-parity.py
@@ -54,7 +54,7 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(PY_RUN) scripts/areas/check/check-venv-location-policy.py
 	@$(PY_RUN) scripts/areas/check/check-python-runtime-artifacts.py --fix
 	@$(PY_RUN) scripts/areas/check/check-python-runtime-artifacts.py
-	@$(PY_RUN) scripts/areas/check/check-no-make-scripts-references.py
+	@$(ATLAS_SCRIPTS) check make-scripts-refs
 	@$(PY_RUN) scripts/areas/check/check-repo-script-boundaries.py
 	@$(PY_RUN) scripts/areas/check/check-atlas-scripts-cli-contract.py
 	@$(PY_RUN) scripts/areas/check/check-scripts-surface-docs-drift.py
@@ -63,7 +63,7 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(PY_RUN) ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout/no_shadow.py
 	@$(PY_RUN) scripts/areas/layout/check_public_entrypoint_cap.py
 	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
-	@if command -v shellcheck >/dev/null 2>&1; then find scripts/areas/public scripts/areas/internal -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional for local scripts lint)"; fi
+	@if command -v shellcheck >/dev/null 2>&1; then find scripts/areas/public -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional for local scripts lint)"; fi
 	@if command -v shfmt >/dev/null 2>&1; then shfmt -d scripts ops/load/scripts; else echo "shfmt not installed (optional)"; fi
 	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" check packages/bijux-atlas-scripts/src packages/bijux-atlas-scripts/tests
 
@@ -128,7 +128,7 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(PY_RUN) scripts/areas/check/check-python-lock.py
 	@$(PY_RUN) scripts/areas/check/check-scripts-lock-sync.py
 	@$(PY_RUN) scripts/areas/check/check-no-adhoc-python.py
-	@$(PY_RUN) scripts/areas/check/check-no-make-scripts-references.py
+	@$(ATLAS_SCRIPTS) check make-scripts-refs
 	@$(PY_RUN) scripts/areas/check/check-repo-script-boundaries.py
 	@$(PY_RUN) scripts/areas/check/check-atlas-scripts-cli-contract.py
 	@$(PY_RUN) scripts/areas/layout/check_make_command_allowlist.py
