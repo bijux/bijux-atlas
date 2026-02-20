@@ -27,6 +27,7 @@ Generated from `make help`. Do not edit manually.
 - `docs/build`
 - `docs/check`
 - `[global]`
+- `artifacts-open`
 - `clean-all`
 - `clean-safe`
 - `doctor`

@@ -79,6 +79,7 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 - `make report/print`: Print a CI-style human summary.
 - `make report/md`: Generate markdown summary for PR comments.
 - `make report/junit`: Generate optional JUnit XML from lane reports.
+- `make artifacts-open`: Open latest ops artifact/report directory helper.
 - `make doctor`: Print tool versions/paths/env and store doctor report.
 - `make prereqs`: Validate required tools/versions before heavy lanes.
 - `make print-env`: Print key lane/gate environment variables.

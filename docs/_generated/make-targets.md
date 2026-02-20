@@ -4,6 +4,7 @@ Generated from `makefiles/targets.json`. Do not edit manually.
 
 | target | description | owner | area | lane |
 |---|---|---|---|---|
+| `artifacts-open` | Open latest ops artifact bundle/report directory | `ops-platform` | `ops` | `dev` |
 | `cargo/all` | Local exhaustive Rust lane | `rust-platform` | `cargo` | `dev` |
 | `cargo/audit` | Cargo audit gate | `rust-platform` | `cargo` | `dev` |
 | `cargo/bench-smoke` | Cargo benchmark smoke lane | `rust-platform` | `cargo` | `dev` |
