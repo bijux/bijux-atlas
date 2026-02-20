@@ -11,5 +11,5 @@
 - Added lock/venv/install gates for scripts package.
 - Added `--version` output with git SHA suffix.
 - Added hermetic scripts test mode and scripts SBOM generator.
-- Added compatibility command surface: `bijux-atlas-scripts compat list|check`.
+- Added compatibility command surface: `atlasctl compat list|check`.
 - Added root `bin/` migration shims with expiry enforcement.

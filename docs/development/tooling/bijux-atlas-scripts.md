@@ -1,4 +1,4 @@
-# bijux-atlas-scripts
+# atlasctl
 
 `bijux-atlas` is the canonical Python tooling CLI surface for repository checks and report helpers.
 
@@ -37,7 +37,7 @@
 - `compat check`
 - `commands --json`
 
-See `packages/bijux-atlas-scripts/PUBLIC_API.md` for current boundaries.
+See `packages/atlasctl/PUBLIC_API.md` for current boundaries.
 
 ## Scripts Migration Plan
 - Inventory source of truth: `docs/_generated/scripts-migration.json` and `docs/_generated/scripts-migration.md`.

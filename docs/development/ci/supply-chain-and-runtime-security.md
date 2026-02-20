@@ -4,7 +4,7 @@
 
 - Generate SBOM for each released image (SPDX JSON).
 - Attach SBOM to release artifacts.
-- Include Python tooling package SBOM metadata for `packages/bijux-atlas-scripts` (or `tools/bijux-atlas-scripts` during transition).
+- Include Python tooling package SBOM metadata for `packages/atlasctl` (or `tools/atlasctl` during transition).
 
 ## Image Signing
 
@@ -16,7 +16,7 @@
 - CI runs Trivy filesystem scan on repository contents.
 - CI runs Trivy image scan on built container image.
 - Block release on critical vulnerabilities unless explicitly waived.
-- Runtime image policy: tooling-only packages (`bijux-atlas-scripts`) are not shipped in runtime images unless explicitly approved.
+- Runtime image policy: tooling-only packages (`atlasctl`) are not shipped in runtime images unless explicitly approved.
 
 ## Locking and Reproducibility
 

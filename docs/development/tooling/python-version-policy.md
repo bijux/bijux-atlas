@@ -6,10 +6,10 @@
 ## Policy
 
 - Python tooling version is pinned in `configs/ops/pins/tools.json` under `tools.python3`.
-- `bijux-atlas-scripts` requires Python `>=3.10` and is validated through `packages/bijux-atlas-scripts/pyproject.toml`.
+- `atlasctl` requires Python `>=3.10` and is validated through `packages/atlasctl/pyproject.toml`.
 - Lockfiles are mandatory for deterministic installs:
-  - `packages/bijux-atlas-scripts/requirements.lock.txt`
-  - `packages/bijux-atlas-scripts/requirements.lock.txt` (if package path is used)
+  - `packages/atlasctl/requirements.lock.txt`
+  - `packages/atlasctl/requirements.lock.txt` (if package path is used)
 - Rust policy remains in `rust-toolchain.toml`; use `make tooling-versions` to print both Rust and Python versions.
 
 ## Verification

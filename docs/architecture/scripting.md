@@ -9,15 +9,15 @@ Defines the end-state contract for repository automation and scripting.
 
 ## Core decisions
 
-1. All automation logic lives in `packages/bijux-atlas-scripts`.
+1. All automation logic lives in `packages/atlasctl`.
 2. The single scripting CLI name is `bijux-atlas`.
 3. `packages/bijux-atlas-py` is reserved for user-facing Python APIs and must not host repo-ops automation.
 4. Root `bin/` stays, but only for minimal execution shims (no business logic).
 5. No direct `python scripts/...` invocations are allowed in docs/make surfaces.
 6. No direct `bash scripts/...` invocations are allowed in docs/make surfaces.
-7. Makefile automation must invoke the package CLI (`./bin/bijux-atlas` or `python -m bijux_atlas_scripts`), not ad-hoc Python paths.
+7. Makefile automation must invoke the package CLI (`./bin/bijux-atlas` or `python -m atlasctl`), not ad-hoc Python paths.
 8. Runtime evidence is non-committed and must write under ignored artifact roots.
-9. Script-focused artifacts default to `artifacts/bijux-atlas-scripts/`; lane evidence remains under `artifacts/evidence/`.
+9. Script-focused artifacts default to `artifacts/atlasctl/`; lane evidence remains under `artifacts/evidence/`.
 10. Run IDs use `atlas-YYYYMMDD-HHMMSS-<gitsha>` and are only allowed in ignored artifact paths.
 11. Deterministic generated outputs can be committed only when timestamp-free.
 12. Runtime logs, lane reports, and run evidence must never be committed.

@@ -1,6 +1,6 @@
 # Scripts Compatibility Matrix
 
-Current state: `bijux-atlas-scripts` is internal tooling and is validated against the same repository revision only.
+Current state: `atlasctl` is internal tooling and is validated against the same repository revision only.
 
 | scripts version | repository version | support |
 |---|---|---|

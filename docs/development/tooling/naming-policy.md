@@ -1,6 +1,6 @@
 # Tooling Naming Policy
 
-- CLI: `bijux-atlas-scripts`
+- CLI: `atlasctl`
 - Python library: `bijux-atlas-py`
 - Rust binary: `bijux-atlas`
 

@@ -5,7 +5,7 @@
 
 ## Exit Criteria
 
-- [x] `bijux-atlas-scripts` command surface exists and is tested.
+- [x] `atlasctl` command surface exists and is tested.
 - [x] Lockfile-pinned Python dependencies are enforced.
 - [x] `make scripts-check` and `make scripts-test` are mandatory gates.
 - [x] Script output schemas are validated in CI.

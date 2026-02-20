@@ -12,10 +12,10 @@ Prevents root sprawl and keeps `ops/` as the single operational source of truth.
 
 ## Contracts
 
-- Root allowlist is defined in `packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/root_whitelist.json`.
+- Root allowlist is defined in `packages/atlasctl/src/atlasctl/layout_checks/root_whitelist.json`.
 - Legacy root aliases are forbidden: `charts`, `e2e`, `load`, `observability`, `datasets`, `fixtures`.
-- Root shape gate: `packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_root_shape.sh`.
-- Forbidden-name gate: `packages/bijux-atlas-scripts/src/bijux_atlas_scripts/layout_checks/check_forbidden_root_names.sh`.
+- Root shape gate: `packages/atlasctl/src/atlasctl/layout_checks/check_root_shape.sh`.
+- Forbidden-name gate: `packages/atlasctl/src/atlasctl/layout_checks/check_forbidden_root_names.sh`.
 - Migration entrypoint: `make layout-migrate`.
 - Python package surfaces live under `packages/` and `tools/`.
 - New executable Python files outside package roots are forbidden by `scripts/areas/check/check-no-python-executable-outside-tools.py`.
