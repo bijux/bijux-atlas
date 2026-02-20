@@ -19,6 +19,7 @@ from .domain_cmd import register_domain_parser, registry as command_registry, re
 from .errors import ScriptError
 from .exit_codes import ERR_CONFIG, ERR_INTERNAL
 from .inventory.command import configure_inventory_parser, run_inventory
+from .lint.command import configure_lint_parser, run_lint_command
 from .make.command import configure_make_parser, run_make_command
 from .network_guard import install_no_network_guard
 from .ops.command import configure_ops_parser, run_ops_command
@@ -92,6 +93,7 @@ def build_parser() -> argparse.ArgumentParser:
     configure_make_parser(sub)
     configure_ops_parser(sub)
     configure_inventory_parser(sub)
+    configure_lint_parser(sub)
     configure_report_parser(sub)
     configure_compat_parser(sub)
 
@@ -251,6 +253,8 @@ def main(argv: list[str] | None = None) -> int:
             return run_inventory(ctx, ns.category, ns.format, ns.out_dir, ns.dry_run, ns.check)
         if ns.cmd == "report":
             return run_report_command(ctx, ns)
+        if ns.cmd == "lint":
+            return run_lint_command(ctx, ns)
         if ns.cmd == "compat":
             return run_compat_command(ctx, ns)
         if ns.cmd in DOMAINS:
