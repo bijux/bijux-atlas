@@ -4,7 +4,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from . import configs, contracts, docs, inventory, layout, make, ops, policies, registry, report
+from . import configs, contracts, docs, layout, make, ops, policies, registry, report
 from .core.context import RunContext
 from .core.fs import ensure_evidence_path
 from .core.logging import log_event
@@ -12,6 +12,7 @@ from .doctor import run_doctor
 from .domain_cmd import register_domain_parser, render_payload
 from .errors import ScriptError
 from .exit_codes import ERR_INTERNAL
+from .inventory.command import configure_inventory_parser, run_inventory
 from .network_guard import install_no_network_guard
 from .output_contract import validate_json_output
 from .runner import run_legacy_script
@@ -23,7 +24,6 @@ DOMAINS = {
     "configs": configs.run,
     "policies": policies.run,
     "make": make.run,
-    "inventory": inventory.run,
     "contracts": contracts.run,
     "registry": registry.run,
     "layout": layout.run,
@@ -58,7 +58,6 @@ def build_parser() -> argparse.ArgumentParser:
         "configs",
         "policies",
         "make",
-        "inventory",
         "contracts",
         "registry",
         "layout",
@@ -66,6 +65,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     for name in domain_names:
         register_domain_parser(sub, name, f"{name} domain commands")
+    configure_inventory_parser(sub)
 
     doctor_p = sub.add_parser("doctor", help="show tooling and context diagnostics")
     doctor_p.add_argument("--json", action="store_true", help="emit JSON output")
@@ -98,6 +98,8 @@ def main(argv: list[str] | None = None) -> int:
             return run_surface(ns.json, ns.out_file)
         if ns.cmd == "doctor":
             return run_doctor(ctx, ns.json, ns.out_file)
+        if ns.cmd == "inventory":
+            return run_inventory(ctx, ns.category, ns.format, ns.out_dir, ns.dry_run, ns.check)
         if ns.cmd in DOMAINS:
             payload_obj = DOMAINS[ns.cmd](ctx)
             payload = render_payload(payload_obj, bool(ns.json))

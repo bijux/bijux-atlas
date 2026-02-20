@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["kind", "make_targets", "ops_run_commands", "core_targets"],
+  "properties": {
+    "kind": {"const": "ops"},
+    "make_targets": {"type": "array", "items": {"type": "string"}},
+    "ops_run_commands": {"type": "array", "items": {"type": "string"}},
+    "core_targets": {"type": "array", "items": {"type": "string"}}
+  }
+}
