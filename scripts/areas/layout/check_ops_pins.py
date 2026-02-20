@@ -44,7 +44,7 @@ def _validate_provenance(bucket: dict, errors: list[str], prefix: str) -> None:
 
 
 def _check_no_latest(errors: list[str]) -> None:
-    code, out = _run(["python3", "scripts/areas/check/check-no-latest-tags.py"])
+    code, out = _run(["./bin/atlasctl", "--quiet", "check", "domain", "docker"])
     if code != 0:
         errors.append("no-latest policy failed")
 
