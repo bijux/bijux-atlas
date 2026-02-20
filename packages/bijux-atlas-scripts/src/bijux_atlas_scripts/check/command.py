@@ -20,6 +20,7 @@ from .native import (
     check_make_forbidden_paths,
     check_make_help,
     check_make_scripts_references,
+    check_invocation_parity,
     check_no_adhoc_python,
     check_no_direct_bash_invocations,
     check_no_direct_python_invocations,
@@ -29,6 +30,7 @@ from .native import (
     check_python_migration_exceptions_expiry,
     check_python_lock,
     check_root_bin_shims,
+    check_scripts_surface_docs_drift,
     check_script_help,
     check_script_ownership,
     check_scripts_lock_sync,
@@ -313,6 +315,24 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         else:
             print("direct bash invocation policy check passed")
         return code
+    if sub == "invocation-parity":
+        code, errors = check_invocation_parity(ctx.repo_root)
+        if errors:
+            print("invocation parity check failed:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("invocation parity check passed")
+        return code
+    if sub == "scripts-surface-docs-drift":
+        code, errors = check_scripts_surface_docs_drift(ctx.repo_root)
+        if errors:
+            print("scripts command surface docs drift detected:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("scripts command surface docs drift check passed")
+        return code
     return 2
 
 
@@ -359,3 +379,5 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     p_sub.add_parser("no-adhoc-python", help="validate no unregistered ad-hoc python scripts are tracked")
     p_sub.add_parser("no-direct-python-invocations", help="forbid direct python invocations in docs/makefiles")
     p_sub.add_parser("no-direct-bash-invocations", help="forbid direct bash scripts invocations in docs/makefiles")
+    p_sub.add_parser("invocation-parity", help="validate atlasctl invocation parity in make/docs")
+    p_sub.add_parser("scripts-surface-docs-drift", help="validate scripts surface docs coverage from python tooling config")
