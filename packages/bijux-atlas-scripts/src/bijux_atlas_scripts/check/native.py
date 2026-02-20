@@ -585,6 +585,19 @@ def check_bin_entrypoints(repo_root: Path) -> tuple[int, list[str]]:
     return 0, []
 
 
+def check_python_lock(repo_root: Path) -> tuple[int, list[str]]:
+    locks = [repo_root / "packages/bijux-atlas-scripts/requirements.lock.txt"]
+    pat = re.compile(r"^[a-zA-Z0-9_.-]+==[a-zA-Z0-9_.-]+$")
+    errors: list[str] = []
+    for lock in locks:
+        text = lock.read_text(encoding="utf-8")
+        lines = [ln.strip() for ln in text.splitlines() if ln.strip() and not ln.strip().startswith("#")]
+        invalid = [ln for ln in lines if not pat.match(ln)]
+        for line in invalid:
+            errors.append(f"{lock.relative_to(repo_root)}: {line}")
+    return (0 if not errors else 1), errors
+
+
 def check_root_bin_shims(repo_root: Path) -> tuple[int, list[str]]:
     bin_dir = repo_root / "bin"
     if not bin_dir.exists():

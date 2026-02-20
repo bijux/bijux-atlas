@@ -24,6 +24,7 @@ from .native import (
     check_no_xtask_refs,
     check_ops_generated_tracked,
     check_python_migration_exceptions_expiry,
+    check_python_lock,
     check_root_bin_shims,
     check_script_help,
     check_script_ownership,
@@ -263,6 +264,15 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         else:
             print("python migration exceptions expiry check passed")
         return code
+    if sub == "python-lock":
+        code, errors = check_python_lock(ctx.repo_root)
+        if errors:
+            print("invalid scripts requirements lock entries:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("scripts python lock format passed")
+        return code
     return 2
 
 
@@ -304,3 +314,4 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     p_sub.add_parser("naming-intent-lint", help="forbid generic helpers naming in crates tree")
     p_sub.add_parser("make-command-allowlist", help="enforce direct make recipe command allowlist")
     p_sub.add_parser("python-migration-exceptions-expiry", help="fail on expired python migration exceptions")
+    p_sub.add_parser("python-lock", help="validate scripts python lockfile line format")
