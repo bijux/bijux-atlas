@@ -31,6 +31,10 @@ Rule:
   - Consumed by: `make policy-lint`, `make config-validate`.
 - `configs/policy/policy.json`
   - Consumed by: runtime policy loading and policy lint gates.
+- `configs/contracts/ops-lint-output.schema.json`
+  - Consumed by: `bijux-atlas-scripts ops lint --report json` output validation.
+- `configs/contracts/inventory-scripts-migration.schema.json`
+  - Consumed by: scripts migration inventory report validation (`make legacy/check`).
 - `configs/ops/env.schema.json`
   - Consumed by: `make ops-env-print`, env contract validation.
 - `configs/ops/tool-versions.json`
