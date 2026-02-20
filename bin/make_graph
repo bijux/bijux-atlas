@@ -1,5 +1,0 @@
-#!/usr/bin/env sh
-# DEPRECATED: use `bin/bijux-atlas make graph`.
-# Migration: docs/development/tooling/bijux-atlas-scripts.md
-echo "DEPRECATED: make_graph -> bijux-atlas make graph" >&2
-exec "$(dirname "$0")/bijux-atlas" make graph "$@"

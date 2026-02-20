@@ -3,11 +3,11 @@
 SHELL := /bin/sh
 
 layout-check: ## Validate repository layout contract and root shape
-	@./bin/bijux-atlas check layout
+	@$(ATLAS_SCRIPTS) check layout
 
 layout-migrate: ## Apply deterministic layout/path migration helpers
 	@./scripts/areas/layout/replace_paths.sh --apply
-	@./bin/bijux-atlas migrate layout
+	@$(ATLAS_SCRIPTS) migrate layout
 
 layout-fix: ## Repair known layout/symlink drift deterministically
 	@$(MAKE) layout-migrate

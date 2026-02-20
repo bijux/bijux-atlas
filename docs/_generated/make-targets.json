@@ -1,5 +1,5 @@
 {
-  "kind": "make",
+  "schema_version": 1,
   "targets": [
     {
       "area": "policies",
@@ -7,7 +7,8 @@
       "lanes": [
         "ci"
       ],
-      "name": "root"
+      "name": "root",
+      "owner": "build-and-release"
     },
     {
       "area": "policies",
@@ -15,7 +16,8 @@
       "lanes": [
         "dev"
       ],
-      "name": "root-local"
+      "name": "root-local",
+      "owner": "build-and-release"
     },
     {
       "area": "policies",
@@ -23,7 +25,8 @@
       "lanes": [
         "ci"
       ],
-      "name": "ci"
+      "name": "ci",
+      "owner": "build-and-release"
     },
     {
       "area": "policies",
@@ -31,7 +34,8 @@
       "lanes": [
         "ci"
       ],
-      "name": "nightly"
+      "name": "nightly",
+      "owner": "build-and-release"
     },
     {
       "area": "cargo",
@@ -39,7 +43,8 @@
       "lanes": [
         "dev"
       ],
-      "name": "fmt"
+      "name": "fmt",
+      "owner": "rust-platform"
     },
     {
       "area": "cargo",
@@ -48,7 +53,8 @@
         "dev",
         "ci"
       ],
-      "name": "lint"
+      "name": "lint",
+      "owner": "rust-platform"
     },
     {
       "area": "cargo",
@@ -57,7 +63,8 @@
         "dev",
         "ci"
       ],
-      "name": "test"
+      "name": "test",
+      "owner": "rust-platform"
     },
     {
       "area": "cargo",
@@ -66,7 +73,8 @@
         "dev",
         "ci"
       ],
-      "name": "audit"
+      "name": "audit",
+      "owner": "rust-platform"
     },
     {
       "area": "docs",
@@ -75,7 +83,8 @@
         "dev",
         "ci"
       ],
-      "name": "docs"
+      "name": "docs",
+      "owner": "docs-governance"
     },
     {
       "area": "ops",
@@ -84,7 +93,8 @@
         "dev",
         "ci"
       ],
-      "name": "ops"
+      "name": "ops",
+      "owner": "ops-platform"
     },
     {
       "area": "ops",
@@ -93,7 +103,8 @@
         "dev",
         "ci"
       ],
-      "name": "k8s"
+      "name": "k8s",
+      "owner": "ops-platform"
     },
     {
       "area": "ops",
@@ -102,7 +113,8 @@
         "dev",
         "ci"
       ],
-      "name": "load"
+      "name": "load",
+      "owner": "ops-platform"
     },
     {
       "area": "ops",
@@ -111,7 +123,8 @@
         "dev",
         "ci"
       ],
-      "name": "obs"
+      "name": "obs",
+      "owner": "ops-platform"
     },
     {
       "area": "ops",
@@ -120,7 +133,8 @@
         "dev",
         "ci"
       ],
-      "name": "doctor"
+      "name": "doctor",
+      "owner": "build-and-release"
     },
     {
       "area": "ops",
@@ -129,7 +143,8 @@
         "dev",
         "ci"
       ],
-      "name": "report"
+      "name": "report",
+      "owner": "build-and-release"
     }
   ]
 }

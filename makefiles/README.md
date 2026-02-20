@@ -139,7 +139,7 @@ $ make root-local-summary
 $ make report/print
 $ make internal-list
 $ make makefiles-contract
-$ ./bin/bijux-atlas docs check
+$ atlasctl docs check
 $ make ops-script-coverage
 ```
 

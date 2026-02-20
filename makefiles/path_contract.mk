@@ -6,6 +6,6 @@ CANONICAL_PATHS := artifacts crates docs makefiles ops scripts configs docker .g
 
 path-contract-check: ## Validate canonical repository path contract and forbidden raw paths
 	@./scripts/areas/layout/check_no_forbidden_paths.sh
-	@./bin/bijux-atlas run ./scripts/areas/layout/check_make_safety.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/check_make_safety.py
 
 .PHONY: path-contract-check

@@ -12,16 +12,16 @@ def main() -> int:
     errors: list[str] = []
     py_mk = ROOT / "makefiles/python.mk"
     text = py_mk.read_text(encoding="utf-8")
-    if "ATLAS_SCRIPTS ?= ./bin/bijux-atlas" not in text:
-        errors.append("makefiles/python.mk must set ATLAS_SCRIPTS to ./bin/bijux-atlas")
+    if "python3 -m bijux_atlas_scripts.cli" not in text:
+        errors.append("makefiles/python.mk must invoke atlasctl via python -m bijux_atlas_scripts.cli")
 
     docs_text = (ROOT / "docs/development/tooling/bijux-atlas-scripts.md").read_text(
         encoding="utf-8", errors="ignore"
     )
     if re.search(r"scripts/bin/bijux-atlas-scripts", docs_text):
         errors.append("docs still reference scripts/bin/bijux-atlas-scripts")
-    if "bijux-atlas" not in docs_text:
-        errors.append("docs/development/tooling/bijux-atlas-scripts.md must reference bijux-atlas")
+    if "atlasctl" not in docs_text:
+        errors.append("docs/development/tooling/bijux-atlas-scripts.md must reference atlasctl")
 
     if errors:
         for err in errors:

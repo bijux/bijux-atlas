@@ -54,10 +54,10 @@ docker-check: ## Docker fast checks: contracts + build + runtime smoke
 	@$(MAKE) -s docker-smoke
 
 docker-smoke:
-	@./bin/bijux-atlas docker smoke --image "$${DOCKER_IMAGE:-bijux-atlas:local}"
+	@$(ATLAS_SCRIPTS) docker smoke --image "$${DOCKER_IMAGE:-bijux-atlas:local}"
 
 docker-scan:
-	@./bin/bijux-atlas docker scan --image "$${DOCKER_IMAGE:-bijux-atlas:local}"
+	@$(ATLAS_SCRIPTS) docker scan --image "$${DOCKER_IMAGE:-bijux-atlas:local}"
 
 docker-push:
 	@if [ "$${CI:-0}" != "1" ]; then echo "docker-push is CI-only"; exit 2; fi
@@ -79,38 +79,38 @@ chart-verify:
 
 chart-validate: ## Validate chart via lint/template and values contract schema checks
 	@$(MAKE) chart-verify
-	@./bin/bijux-atlas contracts generate --generators chart-schema
-	@./bin/bijux-atlas contracts check --checks chart-values
+	@$(ATLAS_SCRIPTS) contracts generate --generators chart-schema
+	@$(ATLAS_SCRIPTS) contracts check --checks chart-values
 
 docker-contracts: ## Validate Docker layout/policy/no-latest contracts
-	@./bin/bijux-atlas run ./scripts/areas/check/check-docker-layout.py
-	@./bin/bijux-atlas run ./scripts/areas/check/check-docker-policy.py
-	@./bin/bijux-atlas run ./scripts/areas/check/check-no-latest-tags.py
-	@./bin/bijux-atlas run ./scripts/areas/check/check-docker-image-size.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/check/check-docker-layout.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/check/check-docker-policy.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/check/check-no-latest-tags.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/check/check-docker-image-size.py
 
 rename-lint: ## Enforce durable naming rules for docs/scripts and concept ownership
-	@./bin/bijux-atlas run ./scripts/areas/docs/check-durable-naming.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check-durable-naming.py
 	@./scripts/areas/docs/check_duplicate_topics.sh
 
 docs-lint-names: ## Enforce durable naming contracts, registries, and inventory
-	@./bin/bijux-atlas run ./scripts/areas/docs/naming_inventory.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/naming_inventory.py
 	@./scripts/areas/docs/ban_legacy_terms.sh
-	@./bin/bijux-atlas run ./scripts/areas/docs/check_observability_docs_checklist.py
-	@./bin/bijux-atlas run ./scripts/areas/docs/check_no_orphan_docs.py
-	@./bin/bijux-atlas run ./scripts/areas/docs/check_script_locations.py
-	@./bin/bijux-atlas run ./scripts/areas/docs/check_runbook_map_registration.py
-	@./bin/bijux-atlas run ./scripts/areas/docs/check_contract_doc_pairs.py
-	@./bin/bijux-atlas run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_suite_manifest.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_observability_docs_checklist.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_no_orphan_docs.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_script_locations.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_runbook_map_registration.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_contract_doc_pairs.py
+	@$(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_suite_manifest.py
 	@./scripts/areas/docs/check_index_pages.sh
 
-doctor: ## Print tool/env/path diagnostics and store doctor report
-	@RUN_ID="$${RUN_ID:-doctor-$(MAKE_RUN_TS)}" ./bin/bijux-atlas run ./scripts/areas/layout/make_doctor.py
+internal/product/doctor: ## Print tool/env/path diagnostics and store doctor report
+	@RUN_ID="$${RUN_ID:-doctor-$(MAKE_RUN_TS)}" $(ATLAS_SCRIPTS) run ./scripts/areas/layout/make_doctor.py
 
 prereqs: ## Check required binaries and versions and store prereqs report
-	@RUN_ID="$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}" ./bin/bijux-atlas run ./scripts/areas/layout/make_prereqs.py --run-id "$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}"
+	@RUN_ID="$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}" $(ATLAS_SCRIPTS) run ./scripts/areas/layout/make_prereqs.py --run-id "$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}"
 
 dataset-id-lint: ## Validate DatasetId/DatasetKey contract usage across ops fixtures
-	@./bin/bijux-atlas run ./scripts/areas/layout/dataset_id_lint.py
+	@$(ATLAS_SCRIPTS) run ./scripts/areas/layout/dataset_id_lint.py
 
 internal/tooling-versions:
 	@echo "Rust toolchain (rust-toolchain.toml):"
