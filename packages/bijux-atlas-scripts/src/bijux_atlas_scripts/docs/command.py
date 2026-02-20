@@ -166,14 +166,6 @@ def _run_simple(ctx: RunContext, cmd: list[str], report: str) -> int:
     return code
 
 
-def _run_many(ctx: RunContext, cmds: list[list[str]], report: str) -> int:
-    for cmd in cmds:
-        code = _run_simple(ctx, cmd, report)
-        if code != 0:
-            return code
-    return 0
-
-
 def _generate_docs_inventory(repo_root: Path, out: Path) -> None:
     out.parent.mkdir(parents=True, exist_ok=True)
     lines = [
@@ -349,78 +341,6 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.docs_cmd == "lint-spelling":
         return _run_simple(ctx, ["python3", "scripts/areas/docs/spellcheck_docs.py", ns.path], ns.report)
 
-    if ns.docs_cmd == "build-metadata":
-        return _run_many(
-            ctx,
-            [
-                ["python3", "scripts/areas/docs/check_make_targets_drift.py"],
-                ["python3", "scripts/areas/docs/check_make_help_drift.py"],
-                ["python3", "scripts/areas/docs/generate_crates_map.py"],
-                ["python3", "scripts/areas/docs/generate_architecture_map.py"],
-                ["python3", "scripts/areas/docs/generate_k8s_values_doc.py"],
-                ["python3", "scripts/areas/docs/generate_concept_graph.py"],
-                ["python3", "scripts/areas/docs/generate_openapi_docs.py"],
-                ["python3", "scripts/areas/docs/generate_observability_surface.py"],
-                ["python3", "scripts/areas/docs/generate_ops_badge.py"],
-                ["python3", "scripts/areas/docs/generate_ops_schema_docs.py"],
-                ["python3", "scripts/areas/docs/generate_ops_surface.py"],
-                ["python3", "scripts/areas/docs/generate_ops_contracts_doc.py"],
-                ["python3", "scripts/areas/docs/generate_make_targets_catalog.py"],
-                ["python3", "scripts/areas/docs/generate_config_keys_doc.py"],
-                ["python3", "scripts/areas/docs/generate_env_vars_doc.py"],
-                ["python3", "scripts/areas/docs/generate_contracts_index_doc.py"],
-                ["python3", "scripts/areas/docs/generate_chart_contract_index.py"],
-                ["python3", "scripts/areas/ops/generate_k8s_test_surface.py"],
-                ["python3", "scripts/areas/docs/generate_runbook_map_index.py"],
-            ],
-            ns.report,
-        )
-
-    if ns.docs_cmd == "verify":
-        return _run_many(
-            ctx,
-            [
-                ["python3", "scripts/areas/docs/check_concept_registry.py"],
-                ["python3", "scripts/areas/docs/check_mkdocs_site_links.py", ns.site],
-                ["python3", "scripts/areas/docs/check_no_orphan_docs.py"],
-                ["python3", "scripts/areas/docs/check_ops_observability_links.py"],
-                ["python3", "scripts/areas/docs/lint_doc_contracts.py"],
-                ["python3", "scripts/areas/docs/check_nav_order.py"],
-                ["python3", "scripts/areas/docs/check_adr_headers.py"],
-                ["python3", "scripts/areas/docs/check_runbooks_contract.py"],
-                ["python3", "scripts/areas/docs/check_k8s_docs_contract.py"],
-                ["python3", "scripts/areas/docs/check_load_docs_contract.py"],
-                ["python3", "scripts/areas/docs/check_ops_docs_make_targets.py"],
-                ["python3", "scripts/areas/docs/check_configmap_env_docs.py"],
-                ["python3", "scripts/areas/docs/check_docs_make_only.py"],
-                ["python3", "scripts/areas/docs/check_no_placeholders.py"],
-                ["python3", "scripts/areas/docs/check_broken_examples.py"],
-                ["python3", "scripts/areas/docs/check_example_configs.py"],
-                ["python3", "scripts/areas/docs/check_openapi_examples.py"],
-                ["python3", "scripts/areas/docs/check_generated_contract_docs.py"],
-                ["python3", "scripts/areas/docs/check_docker_entrypoints.py"],
-                ["python3", "scripts/areas/docs/check_terminology_units_ssot.py"],
-                ["python3", "scripts/areas/docs/lint_glossary_links.py"],
-                ["python3", "scripts/areas/docs/lint_depth.py"],
-                ["python3", "scripts/areas/docs/run_blessed_snippets.py"],
-                ["python3", "scripts/areas/docs/check_script_headers.py"],
-                ["python3", "scripts/areas/docs/check_make_targets_documented.py"],
-                ["python3", "scripts/areas/docs/check_public_targets_docs_sections.py"],
-                ["python3", "scripts/areas/docs/check_docs_make_targets_exist.py"],
-                ["python3", "scripts/areas/docs/check_critical_make_targets_referenced.py"],
-                ["python3", "scripts/areas/docs/check_contracts_index_nav.py"],
-                ["python3", "scripts/areas/docs/check_doc_filename_style.py"],
-                ["python3", "scripts/areas/docs/check_docs_deterministic.py"],
-                ["python3", "scripts/areas/docs/check_observability_docs_checklist.py"],
-                ["python3", "scripts/areas/docs/check_no_legacy_root_paths.py"],
-                ["python3", "scripts/areas/docs/check_no_removed_make_targets.py"],
-                ["python3", "scripts/areas/layout/check_no_legacy_targets_in_docs.py"],
-                ["python3", "scripts/areas/layout/check_ops_external_entrypoints.py"],
-                ["python3", "scripts/areas/docs/check_full_stack_page.py"],
-            ],
-            ns.report,
-        )
-
     return 2
 
 
@@ -455,8 +375,6 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("extract-code", "extract code blocks from docs"),
         ("render-diagrams", "render docs diagrams"),
         ("lint-spelling", "run docs spelling checks"),
-        ("build-metadata", "generate deterministic docs metadata outputs"),
-        ("verify", "run extended docs verification checks"),
     ):
         cmd = docs_sub.add_parser(name, help=help_text)
         cmd.add_argument("--report", choices=["text", "json"], default="text")
@@ -467,5 +385,3 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
             cmd.add_argument("--out")
         if name == "lint-spelling":
             cmd.add_argument("--path", default="docs")
-        if name == "verify":
-            cmd.add_argument("--site", default="artifacts/docs/site")
