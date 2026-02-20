@@ -1,3 +1,6 @@
+{{- if and (gt (int .Values.replicaCount) 1) (not .Values.pdb.enabled) }}
+{{- fail "pdb.enabled must be true when replicaCount > 1" }}
+{{- end }}
 {{- if .Values.pdb.enabled }}
 apiVersion: policy/v1
 kind: PodDisruptionBudget

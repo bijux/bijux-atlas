@@ -4,6 +4,9 @@ metadata:
   name: {{ include "bijux-atlas.fullname" . }}
   labels:
     {{- include "bijux-atlas.labels" . | nindent 4 }}
+{{- if and .Values.server.readOnlyFsMode (not .Values.securityContext.readOnlyRootFilesystem) }}
+{{- fail "server.readOnlyFsMode=true requires securityContext.readOnlyRootFilesystem=true" }}
+{{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:

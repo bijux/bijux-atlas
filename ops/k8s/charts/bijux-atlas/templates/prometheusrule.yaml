@@ -1,3 +1,6 @@
+{{- if and .Values.alertRules.enabled (not .Values.serviceMonitor.enabled) }}
+{{- fail "alertRules.enabled=true requires serviceMonitor.enabled=true" }}
+{{- end }}
 {{- if .Values.alertRules.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
