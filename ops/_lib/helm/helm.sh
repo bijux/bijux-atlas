@@ -4,11 +4,11 @@
 # Outputs: helm command output; manifest and k8s diagnostics on failure.
 set -euo pipefail
 
-OPS_LIB_ROOT="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+_OPS_LIB_DIR="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=ops/_lib/artifacts.sh
-source "$OPS_LIB_ROOT/../artifacts.sh"
+source "$_OPS_LIB_DIR/../artifacts.sh"
 # shellcheck source=ops/_lib/kubectl.sh
-source "$OPS_LIB_ROOT/../kubectl.sh"
+source "$_OPS_LIB_DIR/../kubectl.sh"
 
 ops_helm() {
   helm "$@"

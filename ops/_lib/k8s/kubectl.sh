@@ -4,9 +4,9 @@
 # Outputs: kubectl command output; bundle artifacts on failure.
 set -euo pipefail
 
-OPS_LIB_ROOT="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+_OPS_LIB_DIR="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=ops/_lib/artifacts.sh
-source "$OPS_LIB_ROOT/../artifacts.sh"
+source "$_OPS_LIB_DIR/../artifacts.sh"
 
 ops_kubectl_guardrails() {
   if [ "${I_KNOW_WHAT_I_AM_DOING:-0}" = "1" ] || [ "${ALLOW_NON_KIND:-0}" = "1" ]; then
