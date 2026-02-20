@@ -14,8 +14,9 @@
     "bijux-atlas-scripts doctor": "bijux-atlas-platform"
   },
   "paths": {
-    "tools/bijux-atlas-scripts/src/bijux_atlas_scripts": "bijux-atlas-platform",
-    "tools/bijux-atlas-scripts/tests": "bijux-atlas-platform",
+    "packages/bijux-atlas-scripts/src/bijux_atlas_scripts": "bijux-atlas-platform",
+    "packages/bijux-atlas-scripts/tests": "bijux-atlas-platform",
+    "packages/bijux-atlas-py/src/bijux_atlas_py": "bijux-atlas-platform",
     "scripts/bin/bijux-atlas-scripts": "bijux-atlas-platform",
     "scripts/bin/bijux-atlas-dev": "bijux-atlas-platform",
     "scripts/bin/bijux-atlas-ops": "bijux-atlas-operations",

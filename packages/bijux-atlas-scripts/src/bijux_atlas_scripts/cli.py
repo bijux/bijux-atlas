@@ -1,189 +1,156 @@
 from __future__ import annotations
 
-import json
+import argparse
 import subprocess
+import sys
 from pathlib import Path
-from typing import Any
 
-import jsonschema
-import typer
+from . import contracts, layout, registry
+from .compat.command import configure_compat_parser, run_compat_command
+from .configs.command import configure_configs_parser, run_configs_command
+from .core.context import RunContext
+from .core.fs import ensure_evidence_path
+from .core.logging import log_event
+from .docs.command import configure_docs_parser, run_docs_command
+from .doctor import run_doctor
+from .domain_cmd import register_domain_parser, render_payload
+from .errors import ScriptError
+from .exit_codes import ERR_INTERNAL
+from .inventory.command import configure_inventory_parser, run_inventory
+from .make.command import configure_make_parser, run_make_command
+from .network_guard import install_no_network_guard
+from .ops.command import configure_ops_parser, run_ops_command
+from .output_contract import validate_json_output
+from .policies.command import configure_policies_parser, run_policies_command
+from .report.command import configure_report_parser, run_report_command
+from .runner import run_legacy_script
+from .surface import run_surface
 
-from .run_id import make_run_id
-from .version import __version__
-
-app = typer.Typer(help="atlas-scripts command surface (SSOT wrapper CLI)")
-gates_app = typer.Typer(help="gate discovery and execution")
-make_app = typer.Typer(help="make metadata helpers")
-docs_app = typer.Typer(help="docs helpers")
-ops_app = typer.Typer(help="ops helpers")
-obs_app = typer.Typer(help="observability helpers")
-pins_app = typer.Typer(help="pin policy helpers")
-inventory_app = typer.Typer(help="inventory helpers")
-schema_app = typer.Typer(help="schema helpers")
-json_app = typer.Typer(help="json helpers")
-report_app = typer.Typer(help="report helpers")
-evidence_app = typer.Typer(help="evidence helpers")
-
-app.add_typer(gates_app, name="gates")
-app.add_typer(make_app, name="make")
-app.add_typer(docs_app, name="docs")
-app.add_typer(ops_app, name="ops")
-app.add_typer(obs_app, name="obs")
-app.add_typer(pins_app, name="pins")
-app.add_typer(inventory_app, name="inventory")
-app.add_typer(schema_app, name="schema")
-app.add_typer(json_app, name="json")
-app.add_typer(report_app, name="report")
-app.add_typer(evidence_app, name="evidence")
-
-
-def _repo_root() -> Path:
-    return Path(__file__).resolve().parents[4]
-
-
-def _run(cmd: list[str], cwd: Path | None = None) -> int:
-    proc = subprocess.run(cmd, cwd=cwd or _repo_root(), check=False)
-    return proc.returncode
-
-
-def _run_make(target: str, *extra: str) -> int:
-    return _run(["make", "-s", target, *extra], cwd=_repo_root())
-
-
-@app.callback()
-def _main(version: bool = typer.Option(False, "--version", help="show version and exit")) -> None:
-    if version:
-        typer.echo(f"atlas-scripts {__version__}")
-        raise typer.Exit(0)
-
-
-@app.command("doctor")
-def doctor(json_out: bool = typer.Option(False, "--json")) -> None:
-    payload = {"tool": "atlas-scripts", "version": __version__, "run_id": make_run_id("atlas-scripts")}
-    if json_out:
-        typer.echo(json.dumps(payload, sort_keys=True))
-    else:
-        typer.echo(f"tool={payload['tool']} version={payload['version']} run_id={payload['run_id']}")
-
-
-GATE_TARGETS = {
-    "root": "root",
-    "root-local": "root-local",
-    "scripts-check": "scripts-check",
-    "docs-check": "docs/check",
-    "ops-check": "ops/check",
-    "pins-check": "pins/check",
+DOMAINS = {
+    "contracts": contracts.run,
+    "registry": registry.run,
+    "layout": layout.run,
 }
 
 
-@gates_app.command("list")
-def gates_list() -> None:
-    typer.echo(json.dumps({"gates": sorted(GATE_TARGETS.keys())}, sort_keys=True))
+def build_parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(prog="bijux-atlas-scripts")
+    p.add_argument("--version", action="version", version=_version_string())
+    p.add_argument("--run-id", help="run identifier for artifacts")
+    p.add_argument("--evidence-root", help="evidence root path")
+    p.add_argument("--profile", help="profile id")
+    p.add_argument("--no-network", action="store_true", help="deny outbound network calls")
+    sub = p.add_subparsers(dest="cmd", required=True)
+
+    run_p = sub.add_parser("run", help="run an internal python script by repo-relative path")
+    run_p.add_argument("script")
+    run_p.add_argument("args", nargs=argparse.REMAINDER)
+
+    val_p = sub.add_parser("validate-output", help="validate JSON output against schema")
+    val_p.add_argument("--schema", required=True)
+    val_p.add_argument("--file", required=True)
+    val_p.add_argument("--json", action="store_true", help="emit JSON status output")
+
+    surface_p = sub.add_parser("surface", help="print scripts command ownership surface")
+    surface_p.add_argument("--json", action="store_true", help="emit JSON output")
+    surface_p.add_argument("--out-file", help="optional output path for JSON report")
+    commands_p = sub.add_parser("commands", help="print machine-readable command surface")
+    commands_p.add_argument("--json", action="store_true", help="emit JSON output")
+    commands_p.add_argument("--out-file", help="optional output path for JSON report")
+
+    domain_names = ("contracts", "registry", "layout")
+    for name in domain_names:
+        register_domain_parser(sub, name, f"{name} domain commands")
+    configure_configs_parser(sub)
+    configure_policies_parser(sub)
+    configure_docs_parser(sub)
+    configure_make_parser(sub)
+    configure_ops_parser(sub)
+    configure_inventory_parser(sub)
+    configure_report_parser(sub)
+    configure_compat_parser(sub)
+
+    doctor_p = sub.add_parser("doctor", help="show tooling and context diagnostics")
+    doctor_p.add_argument("--json", action="store_true", help="emit JSON output")
+    doctor_p.add_argument("--out-file", help="optional output path for JSON report")
+
+    return p
 
 
-@gates_app.command("run")
-def gates_run(gate: str) -> None:
-    target = GATE_TARGETS.get(gate)
-    if not target:
-        raise typer.BadParameter(f"unknown gate: {gate}")
-    raise typer.Exit(_run_make(target))
+def _version_string() -> str:
+    base = "bijux-atlas-scripts 0.1.0"
+    try:
+        repo_root = Path(__file__).resolve().parents[4]
+        sha = (
+            subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=repo_root, text=True)
+            .strip()
+        )
+        if sha:
+            return f"{base}+{sha}"
+    except Exception:
+        pass
+    return f"{base}+unknown"
 
 
-@make_app.command("catalog")
-def make_catalog() -> None:
-    raise typer.Exit(_run_make("inventory"))
+def _write_payload_if_requested(ctx: RunContext, out_file: str | None, payload: str) -> None:
+    if not out_file:
+        return
+    out_path = ensure_evidence_path(ctx, Path(out_file))
+    out_path.write_text(payload + "\n", encoding="utf-8")
 
 
-@docs_app.command("build-metadata")
-def docs_build_metadata() -> None:
-    raise typer.Exit(_run(["./scripts/bin/bijux-atlas-scripts", "docs", "inventory", "--report", "json"], cwd=_repo_root()))
+def main(argv: list[str] | None = None) -> int:
+    p = build_parser()
+    ns = p.parse_args(argv)
+    ctx = RunContext.from_args(ns.run_id, ns.evidence_root, ns.profile, ns.no_network)
+    restore_network = None
+    if ctx.no_network:
+        restore_network = install_no_network_guard()
+    try:
+        log_event(ctx, "info", "cli", "start", cmd=ns.cmd)
+        if ns.cmd == "run":
+            return run_legacy_script(ns.script, ns.args, ctx)
+        if ns.cmd == "validate-output":
+            return validate_json_output(ns.schema, ns.file, ns.json)
+        if ns.cmd == "surface":
+            return run_surface(ns.json, ns.out_file)
+        if ns.cmd == "commands":
+            return run_surface(True, ns.out_file)
+        if ns.cmd == "doctor":
+            return run_doctor(ctx, ns.json, ns.out_file)
+        if ns.cmd == "docs":
+            return run_docs_command(ctx, ns)
+        if ns.cmd == "configs":
+            return run_configs_command(ctx, ns)
+        if ns.cmd == "policies":
+            return run_policies_command(ctx, ns)
+        if ns.cmd == "make":
+            return run_make_command(ctx, ns)
+        if ns.cmd == "ops":
+            return run_ops_command(ctx, ns)
+        if ns.cmd == "inventory":
+            return run_inventory(ctx, ns.category, ns.format, ns.out_dir, ns.dry_run, ns.check)
+        if ns.cmd == "report":
+            return run_report_command(ctx, ns)
+        if ns.cmd == "compat":
+            return run_compat_command(ctx, ns)
+        if ns.cmd in DOMAINS:
+            payload_obj = DOMAINS[ns.cmd](ctx)
+            payload = render_payload(payload_obj, bool(ns.json))
+            _write_payload_if_requested(ctx, ns.out_file, payload)
+            print(payload)
+            return 0
+        return 2
+    except ScriptError as exc:
+        print(str(exc), file=sys.stderr)
+        return exc.code
+    except Exception as exc:  # pragma: no cover
+        print(f"internal error: {exc}", file=sys.stderr)
+        return ERR_INTERNAL
+    finally:
+        if restore_network:
+            restore_network()
 
 
-@docs_app.command("verify")
-def docs_verify() -> None:
-    raise typer.Exit(_run_make("docs/check"))
-
-
-@ops_app.command("smoke")
-def ops_smoke() -> None:
-    raise typer.Exit(_run_make("ops/smoke"))
-
-
-@ops_app.command("check")
-def ops_check() -> None:
-    raise typer.Exit(_run_make("ops/check"))
-
-
-@ops_app.command("k8s-suite")
-def ops_k8s_suite() -> None:
-    raise typer.Exit(_run_make("ops-k8s-suite"))
-
-
-@obs_app.command("verify")
-def obs_verify(suite: str = typer.Option("cheap", "--suite")) -> None:
-    raise typer.Exit(_run_make("ops-obs-verify", f"SUITE={suite}"))
-
-
-@pins_app.command("check")
-def pins_check() -> None:
-    raise typer.Exit(_run_make("pins/check"))
-
-
-@pins_app.command("update")
-def pins_update(allow_update: bool = typer.Option(False, "--allow-update", help="guarded update flag")) -> None:
-    if not allow_update:
-        raise typer.BadParameter("pins update is guarded; use --allow-update")
-    raise typer.Exit(_run_make("pins/update"))
-
-
-@inventory_app.command("build")
-def inventory_build() -> None:
-    raise typer.Exit(_run_make("inventory"))
-
-
-@inventory_app.command("drift")
-def inventory_drift() -> None:
-    raise typer.Exit(_run_make("verify-inventory"))
-
-
-@schema_app.command("validate")
-def schema_validate(path: str = typer.Argument(..., help="json file path to validate")) -> None:
-    target = Path(path)
-    if not target.exists():
-        raise typer.BadParameter(f"missing file: {path}")
-    data = json.loads(target.read_text(encoding="utf-8"))
-    schema_path = _repo_root() / "ops/_schemas/report/unified.schema.json"
-    schema = json.loads(schema_path.read_text(encoding="utf-8"))
-    jsonschema.validate(data, schema)
-    typer.echo("ok")
-
-
-@json_app.command("canonicalize")
-def json_canonicalize(path: str = typer.Argument(...), inplace: bool = typer.Option(True, "--inplace/--stdout")) -> None:
-    target = Path(path)
-    payload: Any = json.loads(target.read_text(encoding="utf-8"))
-    canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"))
-    if inplace:
-        target.write_text(canonical + "\n", encoding="utf-8")
-        typer.echo(str(target))
-    else:
-        typer.echo(canonical)
-
-
-@report_app.command("unify")
-def report_unify(run_id: str = typer.Option("latest", "--run-id")) -> None:
-    if run_id == "latest":
-        latest_file = _repo_root() / "artifacts/evidence/latest-run-id.txt"
-        if latest_file.exists():
-            run_id = latest_file.read_text(encoding="utf-8").strip() or "latest"
-    raise typer.Exit(_run(["./scripts/bin/bijux-atlas-scripts", "report", "collect", "--run-id", run_id], cwd=_repo_root()))
-
-
-@evidence_app.command("gc")
-def evidence_gc() -> None:
-    raise typer.Exit(_run_make("evidence/clean"))
-
-
-def main() -> int:
-    app(prog_name="atlas-scripts")
-    return 0
+if __name__ == "__main__":
+    raise SystemExit(main())

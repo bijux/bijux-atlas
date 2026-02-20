@@ -2,6 +2,9 @@
 
 Placeholder package for future user-facing Python APIs.
 
-Boundary:
+Status: planning-only, no runtime functionality yet.
+
+Boundaries:
 - Must not depend on `bijux-atlas-scripts`.
-- May depend on stable data/API contracts only.
+- May use file-format contracts (sqlite/parquet) and HTTP client route.
+- FFI route (`pyo3`) is deferred.

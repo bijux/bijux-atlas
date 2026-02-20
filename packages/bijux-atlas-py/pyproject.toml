@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "bijux-atlas-py"
 version = "0.0.0"
-description = "Future user-facing Python library for bijux-atlas"
+description = "User-facing Python library placeholder for bijux-atlas"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = []

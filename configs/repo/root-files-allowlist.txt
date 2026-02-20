@@ -7,3 +7,4 @@ Makefile
 README.md
 mkdocs.yml
 rust-toolchain.toml
+python-toolchain.toml

@@ -19,43 +19,58 @@ Generated file. Do not edit manually.
 | `scripts/areas/_internal/run_suite_wrapper_legacy.sh` | `internal` | `internal` | - |
 | `scripts/areas/_meta/ownership.json` | `platform` | `internal` | - |
 | `scripts/areas/bootstrap/install_tools.sh` | `developer-experience` | `public` | `bootstrap-tools` |
+| `scripts/areas/check/check-atlas-scripts-cli-contract.py` | `platform` | `public` | - |
+| `scripts/areas/check/check-bijux-atlas-scripts-boundaries.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-bin-entrypoints.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-docker-image-size.py` | `platform` | `public` | `docker-contracts` |
 | `scripts/areas/check/check-docker-layout.py` | `platform` | `public` | `docker-contracts` |
 | `scripts/areas/check/check-docker-policy.py` | `platform` | `public` | `docker-contracts` |
 | `scripts/areas/check/check-no-adhoc-python.py` | `platform` | `public` | - |
+| `scripts/areas/check/check-no-direct-python-invocations.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-no-latest-tags.py` | `platform` | `public` | `docker-contracts` |
+| `scripts/areas/check/check-no-make-scripts-references.py` | `platform` | `public` | - |
+| `scripts/areas/check/check-no-python-executable-outside-tools.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-python-lock.py` | `platform` | `public` | - |
+| `scripts/areas/check/check-python-migration-exceptions-expiry.py` | `platform` | `public` | - |
+| `scripts/areas/check/check-repo-script-boundaries.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-script-errors.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-script-help.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-script-ownership.py` | `platform` | `public` | - |
+| `scripts/areas/check/check-script-shim-expiry.py` | `platform` | `public` | - |
+| `scripts/areas/check/check-script-shims-minimal.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-script-tool-guards.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-script-write-roots.py` | `platform` | `public` | - |
+| `scripts/areas/check/check-scripts-lock-sync.py` | `platform` | `public` | - |
+| `scripts/areas/check/check-scripts-ssot-final.py` | `platform` | `public` | - |
+| `scripts/areas/check/check-scripts-surface-docs-drift.py` | `platform` | `public` | - |
+| `scripts/areas/check/check_duplicate_script_names.py` | `platform` | `public` | - |
 | `scripts/areas/check/docker-runtime-smoke.sh` | `platform` | `public` | - |
 | `scripts/areas/check/docker-scan.sh` | `platform` | `public` | - |
+| `scripts/areas/check/generate-scripts-sbom.py` | `platform` | `public` | - |
 | `scripts/areas/check/no-direct-path-usage.sh` | `platform` | `public` | `scripts-check`, `scripts-lint` |
 | `scripts/areas/check/no-duplicate-script-names.sh` | `platform` | `public` | `scripts-check`, `scripts-lint` |
+| `scripts/areas/check/python_migration_exceptions.py` | `platform` | `public` | - |
 | `scripts/areas/ci/scripts-ci.sh` | `platform` | `internal` | - |
-| `scripts/areas/configs/check_config_files_well_formed.py` | `platform` | `public` | `configs-check` |
-| `scripts/areas/configs/check_config_keys_docs_coverage.py` | `platform` | `public` | `configs-check` |
-| `scripts/areas/configs/check_config_ownership.py` | `platform` | `public` | `configs-check` |
-| `scripts/areas/configs/check_configs_readmes.py` | `platform` | `public` | `configs-check` |
-| `scripts/areas/configs/check_docs_links_for_configs.py` | `platform` | `public` | `configs-check` |
-| `scripts/areas/configs/check_duplicate_threshold_sources.py` | `platform` | `public` | `configs-check` |
+| `scripts/areas/configs/check_config_files_well_formed.py` | `platform` | `public` | - |
+| `scripts/areas/configs/check_config_keys_docs_coverage.py` | `platform` | `public` | - |
+| `scripts/areas/configs/check_config_ownership.py` | `platform` | `public` | - |
+| `scripts/areas/configs/check_configs_readmes.py` | `platform` | `public` | - |
+| `scripts/areas/configs/check_docs_links_for_configs.py` | `platform` | `public` | - |
+| `scripts/areas/configs/check_duplicate_threshold_sources.py` | `platform` | `public` | - |
 | `scripts/areas/configs/check_generated_configs_drift.sh` | `platform` | `public` | `configs-gen-check` |
-| `scripts/areas/configs/check_no_adhoc_versions.py` | `platform` | `public` | `configs-check` |
-| `scripts/areas/configs/check_openapi_snapshot_generated.py` | `platform` | `public` | `configs-check` |
-| `scripts/areas/configs/check_ops_env_usage_declared.py` | `platform` | `public` | `configs-check` |
-| `scripts/areas/configs/check_perf_thresholds_drift.py` | `platform` | `public` | `configs-check` |
-| `scripts/areas/configs/check_root_config_shims.py` | `platform` | `public` | `configs-check` |
-| `scripts/areas/configs/check_slo_sync.py` | `platform` | `public` | `configs-check` |
-| `scripts/areas/configs/check_tool_versions_doc_drift.py` | `platform` | `public` | `configs-check` |
+| `scripts/areas/configs/check_no_adhoc_versions.py` | `platform` | `public` | - |
+| `scripts/areas/configs/check_openapi_snapshot_generated.py` | `platform` | `public` | - |
+| `scripts/areas/configs/check_ops_env_usage_declared.py` | `platform` | `public` | - |
+| `scripts/areas/configs/check_perf_thresholds_drift.py` | `platform` | `public` | - |
+| `scripts/areas/configs/check_root_config_shims.py` | `platform` | `public` | - |
+| `scripts/areas/configs/check_slo_sync.py` | `platform` | `public` | - |
+| `scripts/areas/configs/check_tool_versions_doc_drift.py` | `platform` | `public` | - |
 | `scripts/areas/configs/generate_configs_index.py` | `platform` | `public` | - |
 | `scripts/areas/configs/generate_configs_surface.py` | `platform` | `public` | - |
 | `scripts/areas/configs/generate_env_contract.py` | `platform` | `public` | - |
 | `scripts/areas/configs/generate_tooling_versions_doc.py` | `platform` | `public` | - |
 | `scripts/areas/configs/sync_slo_config.py` | `platform` | `public` | - |
-| `scripts/areas/configs/validate_configs_schemas.py` | `platform` | `public` | `configs-check` |
+| `scripts/areas/configs/validate_configs_schemas.py` | `platform` | `public` | - |
 | `scripts/areas/contracts/check_all.sh` | `contracts` | `public` | `ssot-check` |
 | `scripts/areas/contracts/check_breaking_contract_change.py` | `contracts` | `internal` | - |
 | `scripts/areas/contracts/check_chart_values_contract.py` | `contracts` | `public` | `chart-validate`, `ops-values-validate` |
@@ -106,6 +121,7 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_no_legacy_root_paths.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_no_orphan_docs.py` | `docs-governance` | `public` | `docs-lint-names` |
 | `scripts/areas/docs/check_no_placeholders.py` | `docs-governance` | `public` | - |
+| `scripts/areas/docs/check_no_removed_make_targets.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_observability_acceptance_checklist.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_observability_docs_checklist.py` | `docs-governance` | `public` | `docs-lint-names` |
 | `scripts/areas/docs/check_observability_surface_drift.py` | `docs-governance` | `public` | `ops-observability-validate` |
@@ -187,7 +203,7 @@ Generated file. Do not edit manually.
 | `scripts/areas/layout/check_chart_canonical_path.sh` | `repo-surface` | `public` | `layout-check` |
 | `scripts/areas/layout/check_ci_entrypoints.py` | `repo-surface` | `public` | `ci-workflow-contract` |
 | `scripts/areas/layout/check_dataset_manifest_lock.py` | `repo-surface` | `public` | - |
-| `scripts/areas/layout/check_dir_budgets.py` | `repo-surface` | `public` | `layout-check` |
+| `scripts/areas/layout/check_dir_budgets.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/check_duplicate_script_intent.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/check_e2e_scenarios.py` | `repo-surface` | `public` | `ops-e2e-validate` |
 | `scripts/areas/layout/check_e2e_suites.py` | `repo-surface` | `public` | `ops-e2e-validate` |
@@ -204,6 +220,7 @@ Generated file. Do not edit manually.
 | `scripts/areas/layout/check_kind_cluster_contract_drift.sh` | `repo-surface` | `public` | `ops-kind-cluster-drift-check` |
 | `scripts/areas/layout/check_layer_drift.py` | `repo-surface` | `public` | `ops-contracts-check` |
 | `scripts/areas/layout/check_legacy_deprecation.py` | `repo-surface` | `public` | `layout-check` |
+| `scripts/areas/layout/check_make_command_allowlist.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/check_make_lane_reports.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/check_make_public_scripts.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/check_make_safety.py` | `repo-surface` | `public` | `ci-make-safety`, `path-contract-check` |
@@ -213,6 +230,7 @@ Generated file. Do not edit manually.
 | `scripts/areas/layout/check_makefile_target_boundaries.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/check_makefiles_contract.py` | `repo-surface` | `public` | `makefiles-contract`, `release` |
 | `scripts/areas/layout/check_makefiles_index_drift.py` | `repo-surface` | `public` | - |
+| `scripts/areas/layout/check_no_dead_entrypoints.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/check_no_direct_script_runs.sh` | `repo-surface` | `public` | `_lint-configs`, `no-direct-scripts` |
 | `scripts/areas/layout/check_no_empty_dirs.py` | `repo-surface` | `public` | `ops-contracts-check` |
 | `scripts/areas/layout/check_no_forbidden_paths.sh` | `repo-surface` | `public` | `ci-forbid-raw-paths`, `layout-check`, `path-contract-check` |
@@ -220,7 +238,10 @@ Generated file. Do not edit manually.
 | `scripts/areas/layout/check_no_legacy_target_names.py` | `repo-surface` | `public` | `layout-check` |
 | `scripts/areas/layout/check_no_legacy_targets_in_docs.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/check_no_mixed_script_name_variants.py` | `repo-surface` | `public` | - |
-| `scripts/areas/layout/check_no_ops_evidence_writes.py` | `repo-surface` | `public` | `ops-lint` |
+| `scripts/areas/layout/check_no_ops_evidence_writes.py` | `repo-surface` | `public` | - |
+| `scripts/areas/layout/check_no_orphan_configs.py` | `repo-surface` | `public` | - |
+| `scripts/areas/layout/check_no_orphan_docs_refs.py` | `repo-surface` | `public` | - |
+| `scripts/areas/layout/check_no_orphan_owners.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/check_no_root_dumping.sh` | `repo-surface` | `public` | `layout-check` |
 | `scripts/areas/layout/check_obs_pack_ssot.py` | `repo-surface` | `public` | `ops-contracts-check` |
 | `scripts/areas/layout/check_obs_script_name_collisions.py` | `repo-surface` | `public` | `ops-observability-validate` |
@@ -236,9 +257,10 @@ Generated file. Do not edit manually.
 | `scripts/areas/layout/check_ops_layout_contract.py` | `repo-surface` | `public` | `layout-check`, `ops-layout-lint` |
 | `scripts/areas/layout/check_ops_lib_canonical.sh` | `repo-surface` | `public` | `layout-check` |
 | `scripts/areas/layout/check_ops_pins.py` | `repo-surface` | `public` | - |
-| `scripts/areas/layout/check_ops_run_entrypoints.py` | `repo-surface` | `public` | `ci-ops-run-entrypoints`, `ops-lint` |
+| `scripts/areas/layout/check_ops_run_entrypoints.py` | `repo-surface` | `public` | `ci-ops-run-entrypoints` |
 | `scripts/areas/layout/check_ops_script_names.py` | `repo-surface` | `public` | `ops-contracts-check` |
 | `scripts/areas/layout/check_ops_script_targets.sh` | `repo-surface` | `public` | `ops-script-coverage` |
+| `scripts/areas/layout/check_ops_shell_policy.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/check_ops_single_owner_contracts.py` | `repo-surface` | `public` | `layout-check` |
 | `scripts/areas/layout/check_ops_single_validators.py` | `repo-surface` | `public` | `layout-check` |
 | `scripts/areas/layout/check_ops_stack_order.sh` | `repo-surface` | `public` | `ops-stack-order-check`, `ops-stack-validate` |
@@ -270,8 +292,8 @@ Generated file. Do not edit manually.
 | `scripts/areas/layout/check_slo_no_loosen_without_approval.py` | `repo-surface` | `public` | `ci-slo-no-loosen` |
 | `scripts/areas/layout/check_stack_manifest_consolidation.sh` | `repo-surface` | `public` | `ops-stack-validate` |
 | `scripts/areas/layout/check_symlink_index.sh` | `repo-surface` | `public` | `layout-check` |
-| `scripts/areas/layout/check_symlink_policy.py` | `repo-surface` | `public` | `configs-check`, `layout-check` |
-| `scripts/areas/layout/check_tool_versions.py` | `repo-surface` | `public` | `ops-helm-version-check`, `ops-jq-version-check`, `ops-k6-version-check`, `ops-kind-version-check`, `ops-kubectl-version-check`, `ops-lint`, `ops-yq-version-check` |
+| `scripts/areas/layout/check_symlink_policy.py` | `repo-surface` | `public` | `layout-check` |
+| `scripts/areas/layout/check_tool_versions.py` | `repo-surface` | `public` | `ops-helm-version-check`, `ops-jq-version-check`, `ops-k6-version-check`, `ops-kind-version-check`, `ops-kubectl-version-check`, `ops-yq-version-check` |
 | `scripts/areas/layout/check_workflows_make_only.py` | `repo-surface` | `public` | `ci-workflows-make-only`, `layout-check` |
 | `scripts/areas/layout/clean_artifacts.py` | `repo-surface` | `public` | `artifacts-clean` |
 | `scripts/areas/layout/clean_make_artifacts.py` | `repo-surface` | `public` | `clean-all`, `clean-safe` |
@@ -280,22 +302,22 @@ Generated file. Do not edit manually.
 | `scripts/areas/layout/evidence_check.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/evidence_clean.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/evidence_pr_summary.py` | `repo-surface` | `public` | - |
-| `scripts/areas/layout/explain_public_target.py` | `repo-surface` | `public` | `explain`, `what` |
+| `scripts/areas/layout/explain_public_target.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/generate_ops_pins.py` | `repo-surface` | `public` | `ops-gen` |
 | `scripts/areas/layout/generate_ops_stack_versions.py` | `repo-surface` | `public` | `ops-stack-versions-sync` |
 | `scripts/areas/layout/generate_ops_surface_meta.py` | `repo-surface` | `public` | `ops-gen` |
-| `scripts/areas/layout/graph_public_target.py` | `repo-surface` | `public` | `graph`, `what` |
+| `scripts/areas/layout/graph_public_target.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/legacy_audit.sh` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/legacy_inventory.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/list_internal_targets.py` | `repo-surface` | `public` | `internal-list` |
 | `scripts/areas/layout/make_doctor.py` | `repo-surface` | `public` | `doctor` |
 | `scripts/areas/layout/make_prereqs.py` | `repo-surface` | `public` | `prereqs` |
-| `scripts/areas/layout/make_report.py` | `repo-surface` | `public` | `lane-status`, `open`, `report`, `rerun-failed`, `root`, `root-local`, `root-local-fast`, `triage` |
+| `scripts/areas/layout/make_report.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/make_target_graph.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/migrate.sh` | `repo-surface` | `public` | `layout-migrate` |
 | `scripts/areas/layout/public_make_targets.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/public_surface.py` | `repo-surface` | `public` | - |
-| `scripts/areas/layout/render_public_help.py` | `repo-surface` | `public` | `gates`, `help`, `help-advanced`, `help-all`, `list` |
+| `scripts/areas/layout/render_public_help.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/replace_paths.sh` | `repo-surface` | `public` | `layout-migrate` |
 | `scripts/areas/layout/root_whitelist.json` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/run_gate.py` | `repo-surface` | `public` | - |
@@ -303,18 +325,18 @@ Generated file. Do not edit manually.
 | `scripts/areas/layout/validate_ops_contracts.py` | `repo-surface` | `public` | `ops-contracts-check`, `ops-gen`, `ops-k8s-contracts` |
 | `scripts/areas/layout/validate_ops_env.py` | `repo-surface` | `public` | `ops-env-print`, `ops-env-validate` |
 | `scripts/areas/layout/write_make_area_report.py` | `repo-surface` | `public` | - |
-| `scripts/areas/ops/check_k8s_checks_layout.py` | `platform` | `public` | `ops-lint` |
+| `scripts/areas/ops/check_k8s_checks_layout.py` | `platform` | `public` | - |
 | `scripts/areas/ops/check_k8s_flakes.py` | `platform` | `public` | `ops-k8s-tests` |
 | `scripts/areas/ops/check_k8s_test_contract.py` | `platform` | `public` | `ops-k8s-tests` |
-| `scripts/areas/ops/check_k8s_test_lib.py` | `platform` | `public` | `ops-lint` |
-| `scripts/areas/ops/generate_k8s_test_surface.py` | `platform` | `public` | `ops-lint` |
+| `scripts/areas/ops/check_k8s_test_lib.py` | `platform` | `public` | - |
+| `scripts/areas/ops/generate_k8s_test_surface.py` | `platform` | `public` | - |
 | `scripts/areas/policy/find_relaxations.sh` | `platform` | `internal` | - |
 | `scripts/areas/public/check-allow-env-schema.py` | `platform` | `public` | `policy-allow-env-lint` |
 | `scripts/areas/public/check-cli-commands.sh` | `platform` | `public` | `cli-command-surface` |
 | `scripts/areas/public/check-markdown-links.sh` | `platform` | `public` | `_lint-docs`, `docs-build` |
-| `scripts/areas/public/config-drift-check.py` | `platform` | `public` | `config-drift`, `configs-check` |
-| `scripts/areas/public/config-print.py` | `platform` | `public` | `config-print` |
-| `scripts/areas/public/config-validate.py` | `platform` | `public` | `configs-check` |
+| `scripts/areas/public/config-drift-check.py` | `platform` | `public` | - |
+| `scripts/areas/public/config-print.py` | `platform` | `public` | - |
+| `scripts/areas/public/config-validate.py` | `platform` | `public` | - |
 | `scripts/areas/public/contracts/check_breaking_contract_change.py` | `platform` | `public` | `api-contract-check`, `ci-openapi-drift` |
 | `scripts/areas/public/contracts/check_endpoints_contract.py` | `platform` | `public` | `api-contract-check` |
 | `scripts/areas/public/contracts/check_error_codes_contract.py` | `platform` | `public` | `api-contract-check` |
@@ -330,7 +352,7 @@ Generated file. Do not edit manually.
 | `scripts/areas/public/observability/check_tracing_contract.py` | `platform` | `public` | `ops-observability-validate`, `ops-traces-check` |
 | `scripts/areas/public/observability/lint_runbooks.py` | `platform` | `public` | `ops-metrics-check` |
 | `scripts/areas/public/openapi-diff-check.sh` | `platform` | `public` | `api-contract-check`, `openapi-drift`, `ops-openapi-validate` |
-| `scripts/areas/public/ops-policy-audit.py` | `platform` | `public` | `ops-policy-audit` |
+| `scripts/areas/public/ops-policy-audit.py` | `platform` | `public` | - |
 | `scripts/areas/public/perf/check_baseline_update_policy.sh` | `platform` | `public` | - |
 | `scripts/areas/public/perf/check_percent_regression.py` | `platform` | `public` | `stack-full` |
 | `scripts/areas/public/perf/check_pinned_queries_lock.py` | `platform` | `public` | - |
@@ -381,8 +403,11 @@ Generated file. Do not edit manually.
 | `scripts/areas/tools/reporting.py` | `platform` | `internal` | - |
 | `scripts/bin/bijux-atlas-dev` | `platform` | `public` | - |
 | `scripts/bin/bijux-atlas-ops` | `platform` | `internal` | - |
-| `scripts/bin/bijux-atlas-scripts` | `platform` | `public` | `architecture-check`, `artifacts-clean`, `artifacts-index`, `ci-workflow-contract`, `clean-all`, `clean-safe`, `config-drift`, `config-print`, `configs-check`, `docs-build`, `docs-freeze`, `docs-req-lock-refresh`, `explain`, `gates`, `graph`, `help`, `help-advanced`, `help-all`, `internal-list`, `list`, `makefiles-contract`, `release`, `scripts-test`, `upgrade-guide`, `what` |
-| `scripts/bin/isolate` | `platform` | `public` | `audit`, `bench-db-size-growth`, `bench-ingest-throughput-medium`, `bench-smoke`, `bench-sqlite-query-latency`, `check`, `coverage`, `fmt`, `lint`, `test`, `test-all`, `test-contracts` |
-| `scripts/bin/require-isolate` | `platform` | `public` | `_audit`, `_bench-db-size-growth`, `_bench-ingest-throughput-medium`, `_bench-sqlite-query-latency`, `_check`, `_coverage`, `_fmt`, `_lint-clippy`, `_lint-configs`, `_lint-docs`, `_lint-rustfmt`, `_test`, `_test-all`, `_test-contracts`, `audit`, `bench-db-size-growth`, `bench-ingest-throughput-medium`, `bench-smoke`, `bench-sqlite-query-latency`, `check`, `cli-command-surface`, `coverage`, `crate-docs-contract`, `crate-structure`, `fmt`, `lint`, `test`, `test-all`, `test-contracts` |
+| `scripts/bin/bijux-atlas-scripts` | `platform` | `public` | `ci-log-fields-contract`, `docs-build`, `docs-check`, `docs-freeze`, `docs-lint-names`, `docs-req-lock-refresh`, `layout-check`, `observability-pack-drills`, `observability-pack-test`, `ops-catalog-validate`, `ops-check`, `ops-dataset-qc-diff`, `ops-lint`, `ops-lint-all`, `ops-load-ci`, `ops-load-full`, `ops-load-manifest-validate`, `ops-load-nightly`, `ops-load-shedding`, `ops-load-smoke`, `ops-load-soak`, `ops-load-spike-proof`, `ops-local-full`, `ops-metrics-check`, `ops-observability-pack-conformance-report`, `ops-observability-validate`, `ops-perf-report`, `ops-slo-burn` |
+| `scripts/bin/isolate` | `platform` | `public` | `bench-db-size-growth`, `bench-ingest-throughput-medium`, `bench-smoke`, `bench-sqlite-query-latency`, `check`, `coverage`, `test-all`, `test-contracts` |
+| `scripts/bin/make_explain` | `platform` | `internal` | - |
+| `scripts/bin/make_graph` | `platform` | `internal` | - |
+| `scripts/bin/render_public_help` | `platform` | `internal` | - |
+| `scripts/bin/require-isolate` | `platform` | `public` | `_audit`, `_bench-db-size-growth`, `_bench-ingest-throughput-medium`, `_bench-sqlite-query-latency`, `_check`, `_coverage`, `_fmt`, `_lint-clippy`, `_lint-configs`, `_lint-docs`, `_lint-rustfmt`, `_test`, `_test-all`, `_test-contracts`, `bench-db-size-growth`, `bench-ingest-throughput-medium`, `bench-smoke`, `bench-sqlite-query-latency`, `check`, `cli-command-surface`, `coverage`, `crate-docs-contract`, `crate-structure`, `test-all`, `test-contracts` |
 | `scripts/bin/run_drill.sh` | `platform` | `internal` | - |
 | `scripts/lib/errors.sh` | `platform` | `internal` | - |

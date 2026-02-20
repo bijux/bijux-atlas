@@ -25,5 +25,5 @@ Defines behavior guarantees and boundaries for the `bijux-atlas-scripts` product
 ## Verification
 
 - `make scripts-check`
-- `pytest -q tools/bijux-atlas-scripts/tests`
+- `pytest -q packages/bijux-atlas-scripts/tests`
 - `bijux-atlas-scripts --help`

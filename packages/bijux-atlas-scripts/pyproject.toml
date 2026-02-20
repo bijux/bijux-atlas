@@ -5,24 +5,22 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "bijux-atlas-scripts"
 version = "0.1.0"
-description = "Internal Python tooling package for bijux-atlas"
+description = "Internal Python tooling package for bijux-atlas scripts"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = [
-  "typer==0.16.0",
-  "jsonschema==4.25.1",
-]
+dependencies = []
 
 [project.optional-dependencies]
 dev = [
   "pytest==8.3.5",
   "ruff==0.13.2",
   "jsonschema==4.25.1",
+  "hypothesis==6.138.14",
+  "mypy==1.17.1",
 ]
 
 [project.scripts]
 bijux-atlas-scripts = "bijux_atlas_scripts.cli:main"
-atlas-scripts = "bijux_atlas_scripts.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
@@ -32,13 +30,15 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+addopts = ["--strict-markers"]
+markers = [
+  "unit: fast unit tests with no network side-effects",
+  "integration: integration tests that run commands against workspace fixtures",
+  "slow: intentionally slower validations",
+]
 
 [tool.ruff]
 line-length = 120
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
-
-[tool.bijux_atlas_scripts]
-python_toolchain = "pip-tools"
-lockfile = "requirements.lock.txt"
