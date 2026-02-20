@@ -915,7 +915,7 @@ obs/update-goldens: ## Refresh observability golden snapshots for all supported 
 	@cp ops/obs/contract/trace-structure.golden.json ops/obs/contract/goldens/local/trace-structure.golden.json
 	@cp ops/obs/contract/trace-structure.golden.json ops/obs/contract/goldens/perf/trace-structure.golden.json
 	@cp ops/obs/contract/trace-structure.golden.json ops/obs/contract/goldens/offline/trace-structure.golden.json
-	@python3 ./ops/obs/scripts/areas/contracts/check_profile_goldens.py
+	@python3 ./ops/obs/scripts/contracts/check_profile_goldens.py
 
 ops-slo-report: ## Compute SLO report (SLIs, error budget remaining, burn rates)
 	@python3 ./ops/report/slo_report.py --metrics "$${METRICS:-artifacts/ops/metrics.prom}" --slo-config configs/ops/slo/slo.v1.json --out "$${OUT:-artifacts/ops/slo/report.json}"
@@ -931,6 +931,7 @@ ops-make-targets-doc: ## Generate docs/development/make-targets.md from registry
 
 ops-lint: ## Lint ops shell/python/json/schema contracts
 	@python3 ./scripts/areas/layout/check_ops_run_entrypoints.py
+	@python3 ./scripts/areas/layout/check_ops_shell_policy.py
 	@python3 ./scripts/areas/layout/check_no_ops_evidence_writes.py
 	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
 	@python3 ./ops/load/scripts/validate_suite_manifest.py
@@ -948,7 +949,7 @@ ops-lint: ## Lint ops shell/python/json/schema contracts
 	@python3 ./ops/_lint/no-unowned-file.py
 	@python3 ./ops/_lint/json-schema-coverage.py
 	@python3 ./ops/_lint/no-unpinned-images.py
-	@python3 ./ops/obs/scripts/areas/contracts/check_profile_goldens.py
+	@python3 ./ops/obs/scripts/contracts/check_profile_goldens.py
 	@python3 ./scripts/areas/layout/check_tool_versions.py kind kubectl helm k6
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) -s ops-layout-lint

@@ -43,3 +43,15 @@ Public ops automation entrypoints are `ops/run/*` wrappers only.
 
 - Do not call `ops/*/scripts/*.sh` directly from docs, CI workflows, or root/ci makefiles.
 - Legacy `legacy/*` or `*-legacy` entrypoint names are forbidden.
+
+## Contracts
+
+- `ops/datasets/CONTRACT.md`
+- `ops/e2e/CONTRACT.md`
+- `ops/fixtures/CONTRACT.md`
+- `ops/k8s/CONTRACT.md`
+- `ops/load/CONTRACT.md`
+- `ops/obs/CONTRACT.md`
+- `ops/report/CONTRACT.md`
+- `ops/run/CONTRACT.md`
+- `ops/stack/CONTRACT.md`

@@ -15,7 +15,7 @@ OUT_DIR="${OPS_RUN_DIR}/contracts"
 OUT_JSON="$OUT_DIR/report.json"
 mkdir -p "$OUT_DIR"
 
-python3 "$ROOT/ops/run/contract-report.py" --run-id "$RUN_ID" --out "${OUT_JSON#$ROOT/}"
+python3 "$ROOT/ops/run/contract-report.py" --run-id "$RUN_ID" --out "${OUT_JSON#"$ROOT"/}"
 cat "$OUT_JSON"
 python3 - "$OUT_JSON" <<'PY'
 import json, sys

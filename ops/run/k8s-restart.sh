@@ -18,8 +18,8 @@ TIMEOUT="${ATLAS_E2E_TIMEOUT:-180s}"
 ./ops/run/k8s-validate-configmap-keys.sh "$NS" "$SERVICE_NAME"
 
 echo "rolling restart deployment/${SERVICE_NAME} in namespace ${NS}"
-kubectl -n "$NS" rollout restart deployment/"$SERVICE_NAME" >/dev/null
-kubectl -n "$NS" rollout status deployment/"$SERVICE_NAME" --timeout="$TIMEOUT" >/dev/null
-kubectl -n "$NS" get deploy "$SERVICE_NAME" -o jsonpath='{.status.readyReplicas}' | grep -Eq '^[1-9][0-9]*$'
+ops_kubectl -n "$NS" rollout restart deployment/"$SERVICE_NAME" >/dev/null
+ops_kubectl -n "$NS" rollout status deployment/"$SERVICE_NAME" --timeout="$TIMEOUT" >/dev/null
+ops_kubectl -n "$NS" get deploy "$SERVICE_NAME" -o jsonpath='{.status.readyReplicas}' | grep -Eq '^[1-9][0-9]*$'
 
 echo "k8s restart passed (ns=${NS} release=${RELEASE} service=${SERVICE_NAME})"

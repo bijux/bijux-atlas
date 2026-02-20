@@ -16,7 +16,7 @@ profiles=(local perf offline)
 
 for profile in "${profiles[@]}"; do
   values_file="$ROOT/ops/k8s/values/${profile}.yaml"
-  helm template "atlas-${profile}" "$ROOT/ops/k8s/charts/bijux-atlas" -n "${ATLAS_NS:-atlas-e2e}" -f "$values_file" \
+  ops_helm template "atlas-${profile}" "$ROOT/ops/k8s/charts/bijux-atlas" -n "${ATLAS_NS:-$(ops_layer_ns_e2e)}" -f "$values_file" \
     | awk '
       $0 ~ /^kind: ConfigMap$/ {in_cm=1}
       in_cm {print}
