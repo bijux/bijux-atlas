@@ -84,13 +84,13 @@ def test_doctor_json_schema_valid() -> None:
     jsonschema.validate(payload, schema)
 
 
-def test_domain_json_contract() -> None:
-    proc = _run_cli("--run-id", "t2", "--profile", "test", "contracts", "--json")
+def test_contracts_check_json_contract() -> None:
+    proc = _run_cli("--run-id", "t2", "--profile", "test", "contracts", "check", "--report", "json")
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
-    assert payload["domain"] == "contracts"
+    assert payload["schema_version"] == 1
     assert payload["tool"] == "atlasctl"
-    assert payload["run_id"] == "t2"
+    assert payload["status"] == "pass"
 
 
 def test_global_json_flag_applies_to_version() -> None:
@@ -111,8 +111,8 @@ def test_explain_command_contract() -> None:
 
 
 def test_out_file_policy_rejects_ops_path() -> None:
-    proc = _run_cli("contracts", "--json", "--out-file", "ops/_evidence/forbidden.json")
-    assert proc.returncode == 16
+    proc = _run_cli("help", "--json", "--out-file", "ops/_evidence/forbidden.json")
+    assert proc.returncode == 3
     assert "forbidden write path" in proc.stderr
 
 
@@ -122,5 +122,5 @@ def test_no_network_mode_blocks_connect() -> None:
     probe.parent.mkdir(parents=True, exist_ok=True)
     probe.write_text(code, encoding="utf-8")
     proc = _run_cli("--no-network", "run", str(probe.relative_to(ROOT)))
-    assert proc.returncode == 11
+    assert proc.returncode == 2
     assert "network disabled by --no-network" in proc.stderr

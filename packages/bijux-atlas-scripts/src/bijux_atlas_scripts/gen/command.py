@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import subprocess
 
+from ..contracts.command import run_contracts_command
 from ..core.context import RunContext
 
 
@@ -14,9 +15,15 @@ def _run(ctx: RunContext, cmd: list[str]) -> int:
 def run_gen_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     sub = ns.gen_cmd
     if sub == "contracts":
-        return _run(ctx, ["python3", "scripts/areas/contracts/generate_contract_artifacts.py"])
+        return run_contracts_command(
+            ctx,
+            argparse.Namespace(contracts_cmd="generate", report="text", generators=["artifacts"]),
+        )
     if sub == "openapi":
-        return _run(ctx, ["bash", "scripts/areas/internal/openapi-generate.sh"])
+        return run_contracts_command(
+            ctx,
+            argparse.Namespace(contracts_cmd="generate", report="text", generators=["openapi"]),
+        )
     if sub == "ops-surface":
         return _run(ctx, ["python3", "scripts/areas/layout/generate_ops_surface_meta.py"])
     if sub == "make-targets":
