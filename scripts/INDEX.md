@@ -70,8 +70,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/configs/validate_configs_schemas.py` | `platform` | `public` | - |
 | `scripts/areas/demo/demo.sh` | `platform` | `private` | - |
 | `scripts/areas/docs/ENTRYPOINTS.md` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_adr_headers.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_broken_examples.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_concept_ids.sh` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_configmap_env_docs.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_critical_make_targets_referenced.py` | `docs-governance` | `public` | - |
