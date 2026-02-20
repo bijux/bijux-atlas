@@ -38,6 +38,9 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(PYRUN) scripts/areas/check/check-python-lock.py
 	@$(PYRUN) scripts/areas/check/check-bin-entrypoints.py
 	@$(PYRUN) scripts/areas/check/check-no-adhoc-python.py
+	@$(PYRUN) scripts/areas/check/check-repo-script-boundaries.py
+	@$(PYRUN) scripts/areas/check/check-atlas-scripts-cli-contract.py
+	@$(PYRUN) scripts/areas/layout/check_make_command_allowlist.py
 	@./ops/_lint/naming.sh
 	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/layout/no_shadow.py
 	@$(PYRUN) scripts/areas/layout/check_public_entrypoint_cap.py
@@ -91,6 +94,9 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(PYRUN) scripts/areas/check/check-python-lock.py
 	@$(PYRUN) scripts/areas/check/check-scripts-lock-sync.py
 	@$(PYRUN) scripts/areas/check/check-no-adhoc-python.py
+	@$(PYRUN) scripts/areas/check/check-repo-script-boundaries.py
+	@$(PYRUN) scripts/areas/check/check-atlas-scripts-cli-contract.py
+	@$(PYRUN) scripts/areas/layout/check_make_command_allowlist.py
 	@$(PYRUN) scripts/areas/layout/check_script_entrypoints.py
 	@$(PYRUN) scripts/areas/layout/check_scripts_top_level.py
 	@if command -v shellcheck >/dev/null 2>&1; then find scripts/areas/check scripts/bin scripts/areas/ci scripts/areas/dev -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional)"; fi

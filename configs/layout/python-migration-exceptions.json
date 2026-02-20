@@ -1,5 +1,7 @@
 {
   "schema_version": 1,
+  "policy_version": 2,
+  "default_expiry_max_days": 180,
   "exceptions": [
     {
       "id": "makefiles-direct-python-transition",
@@ -8,7 +10,7 @@
       "contains": "python",
       "owner": "bijux-atlas-platform",
       "issue": "BATCH-B2-MAKE-PYTHON-MIGRATION",
-      "expires_on": "2026-12-31"
+      "expires_on": "2026-06-30"
     },
     {
       "id": "makefile-direct-python-transition",
@@ -17,7 +19,7 @@
       "contains": "python",
       "owner": "bijux-atlas-platform",
       "issue": "BATCH-B2-MAKE-PYTHON-MIGRATION",
-      "expires_on": "2026-12-31"
+      "expires_on": "2026-06-30"
     },
     {
       "id": "docs-direct-python-transition",
@@ -26,7 +28,7 @@
       "contains": "python",
       "owner": "bijux-atlas-platform",
       "issue": "BATCH-B2-DOCS-PYTHON-MIGRATION",
-      "expires_on": "2026-12-31"
+      "expires_on": "2026-06-30"
     },
     {
       "id": "repo-python-scripts-path-transition",
@@ -35,7 +37,7 @@
       "contains": "",
       "owner": "bijux-atlas-platform",
       "issue": "BATCH-B2-PYTHON-PATH-MIGRATION",
-      "expires_on": "2026-12-31"
+      "expires_on": "2026-06-30"
     },
     {
       "id": "scripts-executable-python-transition",
@@ -44,7 +46,7 @@
       "contains": "",
       "owner": "bijux-atlas-platform",
       "issue": "BATCH-B2-EXECUTABLE-PYTHON-MIGRATION",
-      "expires_on": "2026-12-31"
+      "expires_on": "2026-06-30"
     },
     {
       "id": "ops-executable-python-transition",
@@ -53,7 +55,25 @@
       "contains": "",
       "owner": "bijux-atlas-platform",
       "issue": "BATCH-B2-EXECUTABLE-PYTHON-MIGRATION",
-      "expires_on": "2026-12-31"
+      "expires_on": "2026-06-30"
+    },
+    {
+      "id": "scripts-dir-removal-transition",
+      "kind": "scripts_dir",
+      "path_glob": "scripts/**",
+      "contains": "",
+      "owner": "bijux-atlas-platform",
+      "issue": "BATCH-C-SCRIPTS-DIR-REMOVAL",
+      "expires_on": "2026-06-30"
+    },
+    {
+      "id": "shell-outside-packages-transition",
+      "kind": "shell_location",
+      "path_glob": "**/*.sh",
+      "contains": "",
+      "owner": "bijux-atlas-platform",
+      "issue": "BATCH-C-SHELL-LOCATION-MIGRATION",
+      "expires_on": "2026-06-30"
     }
   ]
 }
