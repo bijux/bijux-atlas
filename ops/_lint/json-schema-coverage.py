@@ -13,7 +13,7 @@ SCHEMA_COVERED = {
     "ops/k8s/install-matrix.json",
     "ops/load/suites/suites.json",
     "ops/obs/drills/drills.json",
-    "ops/_generated/report.example.json",
+    "ops/_generated_committed/examples/report.example.json",
     "ops/_generated_committed/examples/report.unified.example.json",
     "ops/stack/version-manifest.json",
     "ops/_meta/ownership.json",
