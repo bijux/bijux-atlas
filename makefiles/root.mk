@@ -20,6 +20,33 @@ include makefiles/product.mk
 include makefiles/ops.mk
 include makefiles/policies.mk
 
+check: ## Umbrella check: scripts package checks + cargo checks + make contracts
+	@$(MAKE) -s check-scripts
+	@$(MAKE) -s _check
+	@$(SCRIPTS) check make-help
+	@$(SCRIPTS) check forbidden-paths
+
+check-scripts: ## Run scripts package lint/tests/contracts
+	@$(MAKE) -s scripts-check
+
+gen: ## Run deterministic generators through package CLI
+	@$(SCRIPTS) gen contracts
+	@$(SCRIPTS) gen make-targets
+	@$(SCRIPTS) gen surface
+	@$(SCRIPTS) gen scripting-surface
+
+clean-scripts: ## Clean scripts artifacts via package CLI
+	@$(SCRIPTS) clean
+
+artifacts-gc: ## Garbage collect scripts artifacts retention policy
+	@$(SCRIPTS) report artifact-gc
+
+ci-local: ## Local runner mirroring CI top-level entrypoint set
+	@$(MAKE) -s ci/all
+
+doctor: ## Run package doctor diagnostics
+	@$(SCRIPTS) doctor
+
 config-print: ## Print canonical merged config payload as JSON
 	@$(ATLAS_SCRIPTS) configs print
 
@@ -109,11 +136,10 @@ triage: ## Print failing lanes + last 20 log lines + evidence paths
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
 	$(ATLAS_SCRIPTS) report triage --run-id "$$run_id"
 
-report: ## Merge lanes, generate confidence scorecard, and print summary
+report: ## Build unified report and print one-screen summary
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	$(ATLAS_SCRIPTS) report collect --run-id "$$run_id" >/dev/null; \
-	$(ATLAS_SCRIPTS) report scorecard --run-id "$$run_id"; \
-	$(ATLAS_SCRIPTS) report print --run-id "$$run_id"
+	$(SCRIPTS) report unified --run-id "$$run_id" >/dev/null; \
+	$(SCRIPTS) report print --run-id "$$run_id"
 
 evidence/open: ## Open evidence directory (supports AREA=<area> RUN_ID=<id>)
 	@./ops/run/evidence-open.sh

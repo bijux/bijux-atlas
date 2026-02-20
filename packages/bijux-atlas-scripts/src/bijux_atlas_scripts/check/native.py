@@ -107,3 +107,29 @@ def check_no_xtask_refs(repo_root: Path) -> tuple[int, list[str]]:
                 continue
             errors.append(rel)
     return (0 if not errors else 1), sorted(set(errors))
+
+
+def check_make_help(repo_root: Path) -> tuple[int, list[str]]:
+    cmd = ["make", "-s", "help"]
+    p1 = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
+    p2 = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
+    if p1.returncode != 0 or p2.returncode != 0:
+        return 1, ["`make -s help` failed while validating help output"]
+    if p1.stdout != p2.stdout:
+        return 1, ["`make -s help` output is non-deterministic across two runs"]
+    return 0, []
+
+
+def check_make_forbidden_paths(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    makefiles = [repo_root / "Makefile", *sorted((repo_root / "makefiles").glob("*.mk"))]
+    forbidden = ("xtask/", "tools/")
+    for mk in makefiles:
+        text = mk.read_text(encoding="utf-8", errors="ignore").splitlines()
+        for idx, line in enumerate(text, start=1):
+            if not line.startswith("\t"):
+                continue
+            for token in forbidden:
+                if token in line:
+                    errors.append(f"{mk.relative_to(repo_root)}:{idx}: forbidden `{token}` in make recipe")
+    return (0 if not errors else 1), errors
