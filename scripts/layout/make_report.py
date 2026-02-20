@@ -8,7 +8,7 @@ from pathlib import Path
 from xml.etree.ElementTree import Element, SubElement, tostring
 
 ROOT = Path(__file__).resolve().parents[2]
-MAKE_ROOT = ROOT / "ops" / "_evidence" / "make"
+MAKE_ROOT = ROOT / "artifacts" / "evidence" / "make"
 
 
 def discover_lane_reports(run_id: str) -> dict[str, dict]:
@@ -55,7 +55,7 @@ def build_unified(run_id: str) -> dict:
         "failed_lanes": sorted(failed),
     }
     perf_summary = {"suite_count": 0, "p95_max_ms": 0.0, "p99_max_ms": 0.0}
-    perf_raw = ROOT / "ops" / "_evidence" / "perf" / run_id / "raw"
+    perf_raw = ROOT / "artifacts" / "evidence" / "perf" / run_id / "raw"
     if perf_raw.exists():
         p95s = []
         p99s = []

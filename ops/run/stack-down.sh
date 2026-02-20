@@ -8,9 +8,9 @@ ops_entrypoint_start "ops-stack-down"
 ops_version_guard kind kubectl helm
 start_ts="$(date +%s)"
 status="pass"
-log_file="ops/_generated/stack/${RUN_ID}/stack-down.log"
-health_json="ops/_generated/stack/${RUN_ID}/health-report-after-down.json"
-snapshot_json="ops/_generated/stack/state-snapshot.json"
+log_file="artifacts/evidence/stack/${RUN_ID}/stack-down.log"
+health_json="artifacts/evidence/stack/${RUN_ID}/health-report-after-down.json"
+snapshot_json="artifacts/evidence/stack/state-snapshot.json"
 atlas_ns="${ATLAS_E2E_NAMESPACE:?ATLAS_E2E_NAMESPACE is required by configs/ops/env.schema.json}"
 mkdir -p "$(dirname "$log_file")"
 if ! make -s ops-stack-down-legacy >"$log_file" 2>&1; then

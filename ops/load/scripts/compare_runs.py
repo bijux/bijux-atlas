@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 def _read(run_id: str) -> dict[str, float]:
     d: dict[str, float] = {}
-    root = ROOT / "ops/_evidence/perf" / run_id / "raw"
+    root = ROOT / "artifacts/evidence/perf" / run_id / "raw"
     for f in sorted(root.glob("*.summary.json")):
         data = json.loads(f.read_text(encoding="utf-8"))
         d[f.stem.replace(".summary", "")] = float(

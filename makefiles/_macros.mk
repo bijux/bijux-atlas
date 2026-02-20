@@ -12,7 +12,7 @@ iso_dir = artifacts/isolate/$(1)/$(RUN_ID)
 # Usage: $(call with_iso,<lane>,<command>)
 with_iso = run_id="$(RUN_ID)"; iso="$(call iso_dir,$(1))"; \
 	mkdir -p "$$iso/target" "$$iso/cargo-home" "$$iso/tmp"; \
-	report_dir="ops/_evidence/make/$(1)/$$run_id"; \
+	report_dir="artifacts/evidence/make/$(1)/$$run_id"; \
 	report_path="$$report_dir/report.json"; \
 	log_path="$$report_dir/run.log"; \
 	started_at="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; start_epoch="$$(date +%s)"; \
@@ -31,7 +31,7 @@ with_iso = run_id="$(RUN_ID)"; iso="$(call iso_dir,$(1))"; \
 	LANE_STARTED_AT="$$started_at" LANE_ENDED_AT="$$ended_at" \
 	LANE_ARTIFACT_PATHS_JSON="$$(python3 -c 'import json; print(json.dumps(["'"$$iso"'","'"$$log_path"'","'"$$report_path"'"]))')" \
 	LANE_FAILURE_SUMMARY="$$failure_summary" \
-	bash -lc '. ./ops/_lib/lane_report.sh; ops_write_lane_report "$(1)" "'"$$run_id"'" "'"$$status"'" "'"$$duration"'" "'"$$log_path"'" "ops/_evidence/make" >/dev/null'; \
+	bash -lc '. ./ops/_lib/lane_report.sh; ops_write_lane_report "$(1)" "'"$$run_id"'" "'"$$status"'" "'"$$duration"'" "'"$$log_path"'" "artifacts/evidence/make" >/dev/null'; \
 	[ "$$status" = "pass" ]
 
 # Usage: $(call gate_json,<gate-name>,<command...>)

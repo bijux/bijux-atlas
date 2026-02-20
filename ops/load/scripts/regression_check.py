@@ -50,8 +50,8 @@ def main() -> int:
                 f"{suite}: measured p95={measured[suite]:.2f}ms exceeds +{max_ratio*100:.0f}% baseline ({allowed:.2f}ms)"
             )
 
-    run_id = (ROOT / "ops/_evidence/latest-run-id.txt").read_text(encoding="utf-8").strip() if (ROOT / "ops/_evidence/latest-run-id.txt").exists() else "manual"
-    out = ROOT / "ops/_evidence/perf" / run_id / "regression-check.txt"
+    run_id = (ROOT / "artifacts/evidence/latest-run-id.txt").read_text(encoding="utf-8").strip() if (ROOT / "artifacts/evidence/latest-run-id.txt").exists() else "manual"
+    out = ROOT / "artifacts/evidence/perf" / run_id / "regression-check.txt"
     out.parent.mkdir(parents=True, exist_ok=True)
     if violations:
         out.write_text("\n".join(violations) + "\n", encoding="utf-8")

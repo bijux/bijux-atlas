@@ -11,7 +11,7 @@ ops_entrypoint_start "ops-smoke"
 ops_version_guard kind kubectl helm k6
 
 start="$(date +%s)"
-log_dir="ops/_generated/ops-smoke/${RUN_ID}"
+log_dir="artifacts/evidence/ops-smoke/${RUN_ID}"
 mkdir -p "$log_dir"
 log_file="$log_dir/run.log"
 
@@ -23,7 +23,7 @@ fi
 end="$(date +%s)"
 duration="$((end - start))"
 LANE_REPRO_COMMAND="make ops/smoke REUSE=1" \
-ops_write_lane_report "ops-smoke" "${RUN_ID}" "${status}" "${duration}" "${log_file}" "ops/_generated" >/dev/null
+ops_write_lane_report "ops-smoke" "${RUN_ID}" "${status}" "${duration}" "${log_file}" "artifacts/evidence" >/dev/null
 
 ./ops/run/report.sh >/dev/null
 if [ "$status" = "pass" ]; then
