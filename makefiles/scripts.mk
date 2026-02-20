@@ -42,6 +42,7 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@./ops/_lint/no-bin-symlinks.sh
 	@./ops/_lint/no-scripts-bin-dir.sh
 	@$(PY_RUN) scripts/areas/check/check-no-adhoc-python.py
+	@$(PY_RUN) scripts/areas/check/check-venv-location-policy.py
 	@$(PY_RUN) scripts/areas/check/check-no-make-scripts-references.py
 	@$(PY_RUN) scripts/areas/check/check-repo-script-boundaries.py
 	@$(PY_RUN) scripts/areas/check/check-atlas-scripts-cli-contract.py
