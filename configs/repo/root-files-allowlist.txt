@@ -1,4 +1,9 @@
 # Allowed root-level files
+# Directories are validated via configs/repo/surfaces.json.
+# Legacy root areas are forbidden for new automation logic:
+# - scripts/
+# - tools/
+# - xtask/
 .dockerignore
 .gitignore
 Cargo.lock
