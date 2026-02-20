@@ -84,6 +84,7 @@ def check_no_xtask_refs(repo_root: Path) -> tuple[int, list[str]]:
         "makefiles/ci.mk",
         "docs/development/xtask-removal-map.md",
         "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/check/native.py",
+        "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/checks/runner.py",
         "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/check/command.py",
         "packages/bijux-atlas-scripts/tests/test_check_native.py",
     }

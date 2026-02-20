@@ -5,6 +5,8 @@ import json
 import subprocess
 
 from ..core.context import RunContext
+from ..checks.runner import domains as check_domains
+from ..checks.runner import run_domain
 from ..lint.runner import run_suite
 from .native import (
     check_committed_generated_hygiene,
@@ -32,6 +34,20 @@ def _run(ctx: RunContext, cmd: list[str]) -> int:
 
 def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     sub = ns.check_cmd
+    if sub == "all":
+        code, payload = run_domain(ctx.repo_root, "all")
+        if ctx.output_format == "json":
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            print(f"check all: {payload['status']} ({payload['failed_count']}/{payload['total_count']} failed)")
+        return code
+    if sub == "domain":
+        code, payload = run_domain(ctx.repo_root, ns.domain)
+        if ctx.output_format == "json":
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            print(f"check {ns.domain}: {payload['status']} ({payload['failed_count']}/{payload['total_count']} failed)")
+        return code
     if sub in {"make", "docs", "configs"}:
         suite_name = {"make": "makefiles", "docs": "docs", "configs": "configs"}[sub]
         code, payload = run_suite(ctx.repo_root, suite_name, fail_fast=False)
@@ -196,6 +212,9 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     p = sub.add_parser("check", help="area-based checks mapped from scripts/areas")
     p_sub = p.add_subparsers(dest="check_cmd", required=True)
+    p_sub.add_parser("all", help="run all native atlasctl checks")
+    domain = p_sub.add_parser("domain", help="run checks for one domain")
+    domain.add_argument("domain", choices=check_domains())
     p_sub.add_parser("layout", help="run layout checks")
     p_sub.add_parser("make", help="run makefile checks")
     p_sub.add_parser("docs", help="run docs checks")
