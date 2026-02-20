@@ -939,8 +939,10 @@ ops-lint: ## Lint ops shell/python/json/schema contracts
 	@python3 ./scripts/areas/layout/check_no_ops_evidence_writes.py
 	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
 	@python3 ./ops/load/scripts/validate_suite_manifest.py
+	@python3 ./scripts/areas/ops/generate_k8s_test_surface.py
 	@python3 ./ops/k8s/tests/validate_suites.py
 	@python3 ./scripts/areas/ops/check_k8s_test_lib.py
+	@python3 ./scripts/areas/ops/check_k8s_checks_layout.py
 	@./ops/k8s/tests/contracts/test_suite_smoke_budget.sh
 	@./ops/k8s/tests/contracts/test_suite_resilience_budget.sh
 	@./ops/k8s/tests/contracts/test_suite_full_budget.sh
