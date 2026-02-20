@@ -20,7 +20,7 @@ def main() -> int:
     gate_name = sys.argv[1]
     cmd = sys.argv[2:]
     run_id = os.environ.get("RUN_ID", datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ"))
-    out_dir = ROOT / "ops" / "_generated" / "gates" / run_id
+    out_dir = ROOT / "ops" / "_evidence" / "gates" / run_id
     out_dir.mkdir(parents=True, exist_ok=True)
 
     proc = subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True)

@@ -179,26 +179,41 @@ format: ## UX alias for fmt
 	@$(MAKE) fmt
 
 report/merge: ## Merge lane reports into unified make report JSON
-	@run_id="$${RUN_ID:-$$(cat ops/_generated/root-local/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
+	@run_id="$${RUN_ID:-$$(cat ops/_evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
 	python3 ./scripts/layout/make_report.py merge --run-id "$$run_id"
 
 report/print: ## Print lane summary like CI/GitHub Actions output
-	@run_id="$${RUN_ID:-$$(cat ops/_generated/root-local/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
+	@run_id="$${RUN_ID:-$$(cat ops/_evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
 	python3 ./scripts/layout/make_report.py print --run-id "$$run_id"
 
 report/md: ## Generate markdown summary for PR comments
-	@run_id="$${RUN_ID:-$$(cat ops/_generated/root-local/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
+	@run_id="$${RUN_ID:-$$(cat ops/_evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
 	python3 ./scripts/layout/make_report.py md --run-id "$$run_id"
 
 report/junit: ## Optional JUnit conversion for CI systems
-	@run_id="$${RUN_ID:-$$(cat ops/_generated/root-local/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
+	@run_id="$${RUN_ID:-$$(cat ops/_evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
 	python3 ./scripts/layout/make_report.py junit --run-id "$$run_id"
 
 report: ## Merge lanes, generate confidence scorecard, and print summary
-	@run_id="$${RUN_ID:-$$(cat ops/_generated/root-local/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
+	@run_id="$${RUN_ID:-$$(cat ops/_evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
 	python3 ./scripts/layout/make_report.py merge --run-id "$$run_id" >/dev/null; \
-	python3 ./ops/report/make_confidence_scorecard.py --unified "ops/_generated/make/$$run_id/unified.json" --out "ops/_generated/scorecard.json" --print-summary; \
+	python3 ./ops/report/make_confidence_scorecard.py --unified "ops/_evidence/make/$$run_id/unified.json" --out "ops/_generated_committed/scorecard.json" --print-summary; \
 	python3 ./scripts/layout/make_report.py print --run-id "$$run_id"
+
+evidence/open: ## Open latest evidence run directory
+	@./ops/run/evidence-open.sh
+
+evidence/clean: ## Clean evidence directories using retention policy
+	@python3 ./scripts/layout/evidence_clean.py
+
+evidence/check: ## Validate evidence JSON schema contract for generated outputs
+	@python3 ./scripts/layout/evidence_check.py
+
+evidence/bundle: ## Export latest evidence bundle as tar.zst for CI attachments
+	@./ops/run/evidence-bundle.sh
+
+evidence/pr-summary: ## Generate PR markdown summary from latest evidence unified report
+	@python3 ./scripts/layout/evidence_pr_summary.py
 
 artifacts-open: ## Open latest ops artifact bundle/report directory
 	@$(call with_iso,artifacts-open,$(MAKE) -s ops-artifacts-open)
@@ -378,7 +393,7 @@ repro: ## Re-run one lane deterministically (usage: make repro TARGET=lane-cargo
 
 retry: ## Retry a target with same RUN_ID (usage: make retry TARGET=<target>)
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make retry TARGET=<target>"; exit 2; }
-	@run_id="$${RUN_ID:-$$(cat ops/_generated/root-local/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
+	@run_id="$${RUN_ID:-$$(cat ops/_evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
 	echo "retry target=$${TARGET} run_id=$$run_id"; \
 	RUN_ID="$$run_id" QUIET="$${QUIET:-0}" $(MAKE) -s "$${TARGET}"
 
@@ -520,7 +535,7 @@ release-update-compat-matrix:
 	@./scripts/release/update-compat-matrix.sh "$$TAG"
 
 
-.PHONY: architecture-check artifacts-clean artifacts-index artifacts-open bootstrap bootstrap-tools bump cargo/all chart-package chart-verify ci ci/all ci-workflow-contract clean config-drift config-print config-validate configs-check configs/all contracts dataset-id-lint debug deep-clean docker-build docker-contracts docker-push docker-scan docker-smoke docs docs/all docs-lint-names doctor explain fetch-real-datasets format gates gates-check governance-check graph help hygiene internal-list inventory isolate-clean layout-check layout-migrate legacy/ci legacy/contracts legacy/hygiene legacy/local-fast-loop legacy/local-full-loop legacy/nightly legacy/root-fast legacy/root-local-fast legacy/root-local-full list local local/all local-full makefiles-contract nightly nightly/all no-direct-scripts obs/update-goldens ops-alerts-validate ops/all ops-api-protection ops-artifacts-open ops-baseline-policy-check ops-cache-pin-set ops-cache-status ops-catalog-validate ops-check ops-clean ops-contracts-check ops-dashboards-validate ops-dataset-federated-registry-test ops-dataset-multi-release-test ops-dataset-promotion-sim ops-dataset-qc ops-datasets-fetch ops-deploy ops-doctor ops-down ops-drill-corruption-dataset ops-drill-memory-growth ops-drill-otel-outage ops-drill-overload ops-drill-pod-churn ops-drill-rate-limit ops-drill-rollback ops-drill-rollback-under-load ops-drill-store-outage ops-drill-suite ops-drill-toxiproxy-latency ops-drill-upgrade ops-drill-upgrade-under-load ops-e2e ops-e2e-smoke ops-full ops-full-pr ops-gc-smoke ops-gen ops-gen-check ops-graceful-degradation ops-incident-repro-kit ops-k8s-smoke ops-k8s-suite ops-k8s-template-tests ops-k8s-tests ops-load-ci ops-load-full ops-load-manifest-validate ops-load-nightly ops-load-shedding ops-load-smoke ops-load-soak ops-load-suite ops-local-full ops-local-full-stack ops-metrics-check ops-obs-down ops-obs-install ops-obs-mode ops-obs-uninstall ops-obs-verify ops-observability-pack-conformance-report ops-observability-pack-export ops-observability-pack-health ops-observability-pack-smoke ops-observability-pack-verify ops-observability-smoke ops-observability-validate ops-open-grafana ops-openapi-validate ops-perf-baseline-update ops-perf-cold-start ops-perf-nightly ops-perf-report ops-perf-warm-start ops-policy-audit ops-prereqs ops-proof-cached-only ops-publish ops-readiness-scorecard ops-realdata ops-redeploy ops-ref-grade-local ops-ref-grade-nightly ops-ref-grade-pr ops-release-matrix ops-release-rollback ops-release-update ops-report ops-slo-alert-proof ops-slo-burn ops-slo-report ops-smoke ops-tools-check ops-traces-check ops-undeploy ops-up ops-values-validate ops-warm ops-warm-datasets ops-warm-shards ops-warm-top policies/all policy-allow-env-lint policy-audit policy-drift-diff policy-enforcement-status policy-lint policy-schema-drift prereqs quick release release-dry-run release-update-compat-matrix rename-lint report root root-determinism root-local root-local-fast root-local-summary scripts-all scripts/all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test ssot-check verify-inventory lane-cargo lane-docs lane-ops lane-scripts lane-configs-policies root-local-open repro internal/lane-ops-smoke internal/lane-obs-cheap internal/lane-obs-full legacy/config-validate-core report/merge report/print report/md report/junit clean-safe clean-all print-env cargo/fmt cargo/lint cargo/test-fast cargo/test cargo/test-all cargo/test-contracts cargo/audit cargo/bench-smoke cargo/coverage configs/check policies/check policies/boundaries-check retry docs/check docs/build docs/fmt docs/lint docs/test docs/clean scripts/check scripts/build scripts/fmt scripts/lint scripts/test scripts/clean ops/check ops/smoke ops/suite ops/fmt ops/lint ops/test ops/build ops/clean pins/check pins/update
+.PHONY: architecture-check artifacts-clean artifacts-index artifacts-open bootstrap bootstrap-tools bump cargo/all chart-package chart-verify ci ci/all ci-workflow-contract clean config-drift config-print config-validate configs-check configs/all contracts dataset-id-lint debug deep-clean docker-build docker-contracts docker-push docker-scan docker-smoke docs docs/all docs-lint-names doctor evidence/open evidence/clean evidence/check evidence/bundle evidence/pr-summary explain fetch-real-datasets format gates gates-check governance-check graph help hygiene internal-list inventory isolate-clean layout-check layout-migrate legacy/ci legacy/contracts legacy/hygiene legacy/local-fast-loop legacy/local-full-loop legacy/nightly legacy/root-fast legacy/root-local-fast legacy/root-local-full list local local/all local-full makefiles-contract nightly nightly/all no-direct-scripts obs/update-goldens ops-alerts-validate ops/all ops-api-protection ops-artifacts-open ops-baseline-policy-check ops-cache-pin-set ops-cache-status ops-catalog-validate ops-check ops-clean ops-contracts-check ops-dashboards-validate ops-dataset-federated-registry-test ops-dataset-multi-release-test ops-dataset-promotion-sim ops-dataset-qc ops-datasets-fetch ops-deploy ops-doctor ops-down ops-drill-corruption-dataset ops-drill-memory-growth ops-drill-otel-outage ops-drill-overload ops-drill-pod-churn ops-drill-rate-limit ops-drill-rollback ops-drill-rollback-under-load ops-drill-store-outage ops-drill-suite ops-drill-toxiproxy-latency ops-drill-upgrade ops-drill-upgrade-under-load ops-e2e ops-e2e-smoke ops-full ops-full-pr ops-gc-smoke ops-gen ops-gen-check ops-graceful-degradation ops-incident-repro-kit ops-k8s-smoke ops-k8s-suite ops-k8s-template-tests ops-k8s-tests ops-load-ci ops-load-full ops-load-manifest-validate ops-load-nightly ops-load-shedding ops-load-smoke ops-load-soak ops-load-suite ops-local-full ops-local-full-stack ops-metrics-check ops-obs-down ops-obs-install ops-obs-mode ops-obs-uninstall ops-obs-verify ops-observability-pack-conformance-report ops-observability-pack-export ops-observability-pack-health ops-observability-pack-smoke ops-observability-pack-verify ops-observability-smoke ops-observability-validate ops-open-grafana ops-openapi-validate ops-perf-baseline-update ops-perf-cold-start ops-perf-nightly ops-perf-report ops-perf-warm-start ops-policy-audit ops-prereqs ops-proof-cached-only ops-publish ops-readiness-scorecard ops-realdata ops-redeploy ops-ref-grade-local ops-ref-grade-nightly ops-ref-grade-pr ops-release-matrix ops-release-rollback ops-release-update ops-report ops-slo-alert-proof ops-slo-burn ops-slo-report ops-smoke ops-tools-check ops-traces-check ops-undeploy ops-up ops-values-validate ops-warm ops-warm-datasets ops-warm-shards ops-warm-top policies/all policy-allow-env-lint policy-audit policy-drift-diff policy-enforcement-status policy-lint policy-schema-drift prereqs quick release release-dry-run release-update-compat-matrix rename-lint report root root-determinism root-local root-local-fast root-local-summary scripts-all scripts/all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test ssot-check verify-inventory lane-cargo lane-docs lane-ops lane-scripts lane-configs-policies root-local-open repro internal/lane-ops-smoke internal/lane-obs-cheap internal/lane-obs-full legacy/config-validate-core report/merge report/print report/md report/junit clean-safe clean-all print-env cargo/fmt cargo/lint cargo/test-fast cargo/test cargo/test-all cargo/test-contracts cargo/audit cargo/bench-smoke cargo/coverage configs/check policies/check policies/boundaries-check retry docs/check docs/build docs/fmt docs/lint docs/test docs/clean scripts/check scripts/build scripts/fmt scripts/lint scripts/test scripts/clean ops/check ops/smoke ops/suite ops/fmt ops/lint ops/test ops/build ops/clean pins/check pins/update
 
 
 

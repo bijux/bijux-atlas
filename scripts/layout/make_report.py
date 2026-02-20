@@ -8,7 +8,7 @@ from pathlib import Path
 from xml.etree.ElementTree import Element, SubElement, tostring
 
 ROOT = Path(__file__).resolve().parents[2]
-MAKE_ROOT = ROOT / "ops" / "_generated" / "make"
+MAKE_ROOT = ROOT / "ops" / "_evidence" / "make"
 
 
 def discover_lane_reports(run_id: str) -> dict[str, dict]:

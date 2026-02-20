@@ -32,7 +32,7 @@ def tool_version(tool: str) -> str:
 
 def main() -> int:
     run_id = os.environ.get("RUN_ID", "doctor")
-    out_dir = ROOT / "ops" / "_generated" / "make" / run_id
+    out_dir = ROOT / "ops" / "_evidence" / "make" / run_id
     out_dir.mkdir(parents=True, exist_ok=True)
     out = out_dir / "doctor.json"
 
@@ -42,7 +42,7 @@ def main() -> int:
         "tools": {tool: tool_version(tool) for tool in TOOLS},
         "paths": {
             "workspace": str(ROOT),
-            "ops_generated_make": str(ROOT / "ops" / "_generated" / "make"),
+            "ops_evidence_make": str(ROOT / "ops" / "_evidence" / "make"),
             "artifacts_isolate": str(ROOT / "artifacts" / "isolate"),
         },
         "env": {k: os.environ.get(k, "") for k in KEY_ENV},

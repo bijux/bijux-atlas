@@ -16,7 +16,7 @@ ops_entrypoint_start "ops-report-merge"
 ops_version_guard python3
 
 run_id="${RUN_ID}"
-out="ops/_generated/report.unified.json"
+out="ops/_generated_committed/report.unified.json"
 schema="ops/_schemas/report/unified.schema.json"
 export OPS_REPORT_RUN_ID="$run_id"
 export OPS_REPORT_OUT="$out"
@@ -35,7 +35,7 @@ schema_path = root / os.environ["OPS_REPORT_SCHEMA"]
 
 lanes = {}
 # Prefer canonical make lane reports first.
-make_root = root / "ops/_generated/make"
+make_root = root / "ops/_evidence/make"
 if make_root.exists():
     for report_path in sorted(make_root.glob(f"**/{run_id}/report.json")):
         rel = report_path.relative_to(make_root)
@@ -44,10 +44,10 @@ if make_root.exists():
             lanes[lane] = json.loads(report_path.read_text(encoding="utf-8"))
 
 # Backfill with legacy lane reports under ops/_generated/<lane>/<run_id>/report.json.
-generated_root = root / "ops/_generated"
-for lane_dir in sorted(p for p in generated_root.iterdir() if p.is_dir()):
+evidence_root = root / "ops/_evidence"
+for lane_dir in sorted(p for p in evidence_root.iterdir() if p.is_dir()):
     lane = lane_dir.name
-    if lane in {"make", "gates"}:
+    if lane == "make":
         continue
     candidate = lane_dir / run_id / "report.json"
     legacy = lane_dir / f"{run_id}.json"

@@ -17,7 +17,7 @@ def main() -> int:
 
     missing: list[str] = []
     for lane in lanes:
-        path = ROOT / "ops" / "_generated" / "make" / lane / run_id / "report.json"
+        path = ROOT / "ops" / "_evidence" / "make" / lane / run_id / "report.json"
         if not path.exists():
             missing.append(str(path.relative_to(ROOT)))
 
