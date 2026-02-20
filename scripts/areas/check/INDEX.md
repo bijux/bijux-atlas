@@ -9,8 +9,6 @@ Scripts in this area.
 - check-no-latest-tags.py
 - check-python-lock.py
 - check-script-errors.py
-- check-script-help.py
-- check-script-ownership.py
 - check-script-tool-guards.py
 - check-script-write-roots.py
 - docker-runtime-smoke.sh
