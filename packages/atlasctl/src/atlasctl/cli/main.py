@@ -5,25 +5,28 @@ import importlib
 import json
 import os
 import platform
-import subprocess
 import sys
+from datetime import date
 from pathlib import Path
 
 from .. import __version__, layout, registry
 from ..cli.registry import register_domain_parser, render_payload
 from ..cli.registry import command_registry
 from ..core.context import RunContext
+from ..core.env import getenv, setdefault as env_setdefault, setenv
 from ..core.env_guard import guard_no_network_mode
+from ..core.exec import check_output
 from ..core.fs import ensure_evidence_path
 from ..core.logging import log_event
 from ..core.serialize import dumps_json
+from ..core.repo_root import try_find_repo_root
 from ..errors import ScriptError
 from ..exit_codes import ERR_CONFIG, ERR_INTERNAL
 from ..network_guard import install_no_network_guard
 from ..runner import run_legacy_script
 from ..surface import run_surface
-from .constants import CONFIGURE_HOOKS, DOMAINS
-from .output import build_base_payload, emit
+from .constants import CONFIGURE_HOOKS, DOMAINS, NO_NETWORK_FLAG_EXPIRY
+from .output import build_base_payload, emit, no_network_flag_expired, render_error, resolve_output_format
 DOMAIN_RUNNERS = {"registry": registry.run, "layout": layout.run}
 
 
@@ -103,11 +106,10 @@ def build_parser() -> argparse.ArgumentParser:
 def _version_string() -> str:
     base = f"atlasctl {__version__}"
     try:
-        repo_root = Path(__file__).resolve().parents[5]
-        sha = (
-            subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=repo_root, text=True)
-            .strip()
-        )
+        repo_root = try_find_repo_root()
+        if repo_root is None:
+            return f"{base}+unknown"
+        sha = check_output(["git", "rev-parse", "--short", "HEAD"], cwd=repo_root).strip()
         if sha:
             return f"{base}+{sha}"
     except Exception:
@@ -135,7 +137,7 @@ def _commands_payload() -> dict[str, object]:
 
 def _ensure_scripts_artifact_root(ctx: RunContext) -> Path:
     root = ctx.scripts_artifact_root
-    os.environ.setdefault("BIJUX_ATLAS_SCRIPTS_ARTIFACT_ROOT", str(root))
+    env_setdefault("BIJUX_ATLAS_SCRIPTS_ARTIFACT_ROOT", str(root))
     (root / "reports").mkdir(parents=True, exist_ok=True)
     (root / "logs").mkdir(parents=True, exist_ok=True)
     return root
@@ -174,18 +176,18 @@ def _emit_runtime_contracts(ctx: RunContext, cmd: str, argv: list[str] | None) -
 
 
 def _apply_python_env(ctx: RunContext) -> None:
-    os.environ.setdefault("BIJUX_ATLAS_SCRIPTS_ARTIFACT_ROOT", str(ctx.scripts_root))
-    os.environ.setdefault("ATLASCTL_ARTIFACT_ROOT", str(ctx.scripts_root))
-    os.environ.setdefault("XDG_CACHE_HOME", str((ctx.scripts_root / "cache").resolve()))
-    os.environ.setdefault("PYTHONPYCACHEPREFIX", str((ctx.scripts_root / "pycache").resolve()))
-    os.environ.setdefault("MYPY_CACHE_DIR", str((ctx.scripts_root / "mypy").resolve()))
-    os.environ.setdefault("RUFF_CACHE_DIR", str((ctx.scripts_root / "ruff").resolve()))
-    os.environ.setdefault("PIP_CACHE_DIR", str((ctx.scripts_root / "pip").resolve()))
-    os.environ.setdefault("UV_CACHE_DIR", str((ctx.scripts_root / "pip").resolve()))
+    env_setdefault("BIJUX_ATLAS_SCRIPTS_ARTIFACT_ROOT", str(ctx.scripts_root))
+    env_setdefault("ATLASCTL_ARTIFACT_ROOT", str(ctx.scripts_root))
+    env_setdefault("XDG_CACHE_HOME", str((ctx.scripts_root / "cache").resolve()))
+    env_setdefault("PYTHONPYCACHEPREFIX", str((ctx.scripts_root / "pycache").resolve()))
+    env_setdefault("MYPY_CACHE_DIR", str((ctx.scripts_root / "mypy").resolve()))
+    env_setdefault("RUFF_CACHE_DIR", str((ctx.scripts_root / "ruff").resolve()))
+    env_setdefault("PIP_CACHE_DIR", str((ctx.scripts_root / "pip").resolve()))
+    env_setdefault("UV_CACHE_DIR", str((ctx.scripts_root / "pip").resolve()))
     required = f"--cache-dir={(ctx.scripts_root / 'pytest').resolve()}"
-    existing = os.environ.get("PYTEST_ADDOPTS", "").strip()
+    existing = getenv("PYTEST_ADDOPTS", "").strip()
     if required not in existing.split():
-        os.environ["PYTEST_ADDOPTS"] = f"{existing} {required}".strip()
+        setenv("PYTEST_ADDOPTS", f"{existing} {required}".strip())
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -194,9 +196,11 @@ def main(argv: list[str] | None = None) -> int:
     ns = p.parse_args(argv)
     if ns.cwd:
         os.chdir(ns.cwd)
+    if ns.no_network and no_network_flag_expired(date.today(), NO_NETWORK_FLAG_EXPIRY):
+        print("--no-network flag expired; use --network=forbid", file=sys.stderr)
+        return ERR_CONFIG
     evidence_root = ns.artifacts_dir or ns.evidence_root
-    want_json = "--json" in raw_argv
-    fmt = "json" if want_json else (ns.format or ("json" if "CI" in os.environ else "text"))
+    fmt = resolve_output_format(cli_json=("--json" in raw_argv), cli_format=ns.format, ci_present=bool(getenv("CI")))
     ctx = RunContext.from_args(
         ns.run_id,
         evidence_root,
@@ -350,38 +354,14 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         return 2
     except ScriptError as exc:
-        if ctx.output_format == "json":
-            print(
-                json.dumps(
-                    {
-                        "schema_version": 1,
-                        "tool": "atlasctl",
-                        "status": "fail",
-                        "error": {"message": str(exc), "code": exc.code},
-                    },
-                    sort_keys=True,
-                ),
-                file=sys.stderr,
-            )
-        else:
-            print(str(exc), file=sys.stderr)
+        print(render_error(as_json=(ctx.output_format == "json"), message=str(exc), code=exc.code), file=sys.stderr)
         return exc.code
     except Exception as exc:  # pragma: no cover
-        if "ctx" in locals() and ctx.output_format == "json":
-            print(
-                json.dumps(
-                    {
-                        "schema_version": 1,
-                        "tool": "atlasctl",
-                        "status": "fail",
-                        "error": {"message": f"internal error: {exc}", "code": ERR_INTERNAL},
-                    },
-                    sort_keys=True,
-                ),
-                file=sys.stderr,
-            )
-        else:
-            print(f"internal error: {exc}", file=sys.stderr)
+        as_json = "ctx" in locals() and ctx.output_format == "json"
+        print(
+            render_error(as_json=as_json, message=f"internal error: {exc}", code=ERR_INTERNAL),
+            file=sys.stderr,
+        )
         return ERR_INTERNAL
     finally:
         if restore_network:

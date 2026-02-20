@@ -1,8 +1,10 @@
 """CLI constants and registration tables."""
 
 from __future__ import annotations
+from datetime import date
 
 DOMAINS = ("registry", "layout")
+NO_NETWORK_FLAG_EXPIRY = date(2026, 12, 31)
 
 CONFIGURE_HOOKS: tuple[tuple[str, str], ...] = (
     ("atlasctl.env.command", "configure_env_parser"),
