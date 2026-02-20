@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import re
+import shutil
 import subprocess
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -38,14 +39,16 @@ DOCS_LINT_CHECKS: list[DocsCheck] = [
     _check(
         "docs-terminology-units",
         "Validate terminology and units SSOT usage",
-        ["python3", "scripts/areas/docs/check_terminology_units_ssot.py"],
+        None,
         "Align terminology and units references with docs SSOT conventions.",
+        fn=lambda ctx: _check_terminology_units_ssot(ctx),
     ),
     _check(
         "docs-status-lint",
         "Validate document status contract",
-        ["python3", "scripts/areas/docs/lint_doc_status.py"],
+        None,
         "Fix missing/invalid status frontmatter values.",
+        fn=lambda ctx: _lint_doc_status(ctx),
     ),
     _check(
         "docs-index-pages",
@@ -57,8 +60,9 @@ DOCS_LINT_CHECKS: list[DocsCheck] = [
     _check(
         "docs-title-case",
         "Validate title case contract",
-        ["./scripts/areas/docs/check_title_case.sh"],
+        None,
         "Normalize page titles to the required style.",
+        fn=lambda ctx: _check_title_case(ctx),
     ),
     _check(
         "docs-no-orphans",
@@ -1015,6 +1019,169 @@ def _check_script_headers(ctx: RunContext) -> tuple[int, str]:
     return (0, "script header check passed") if not errors else (1, "\n".join(errors))
 
 
+def _check_terminology_units_ssot(ctx: RunContext) -> tuple[int, str]:
+    docs = ctx.repo_root / "docs"
+    errors: list[str] = []
+    term_bans = {
+        r"\bgenome build\b": "assembly",
+        r"\bwhitelist\b": "allowlist",
+        r"\bblacklist\b": "denylist",
+    }
+    units_pat = re.compile(
+        r"\b(coordinate|span|size|latency|timeout)\b[^\n]{0,40}\b(?<![pP.])(\d{2,})\b(?!\s*(bp|bytes|seconds|ms|s))(?!\.)",
+        re.IGNORECASE,
+    )
+    ssot_ban = re.compile(r"docs/contracts/(ERROR_CODES|METRICS|TRACE_SPANS|ENDPOINTS|CONFIG_KEYS|CHART_VALUES)\.json")
+    for path in docs.rglob("*.md"):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if path.name == "terms-glossary.md":
+            continue
+        rel = path.relative_to(ctx.repo_root).as_posix()
+        for pat, repl in term_bans.items():
+            if re.search(pat, text, flags=re.IGNORECASE):
+                errors.append(f"{rel}: terminology violation; use `{repl}`")
+        if {"reference", "product", "operations"} & set(path.parts) and units_pat.search(text):
+            errors.append(f"{rel}: possible missing unit annotation (bp/bytes/seconds)")
+        if "contracts" not in path.parts and ssot_ban.search(text):
+            errors.append(f"{rel}: reference docs/contracts/*.md instead of raw registry json")
+    return (0, "terminology/units/ssot check passed") if not errors else (1, "\n".join(errors))
+
+
+def _lint_doc_status(ctx: RunContext) -> tuple[int, str]:
+    docs = ctx.repo_root / "docs"
+    out = docs / "_generated/doc-status.md"
+    allowed = {"active", "frozen", "draft"}
+    drafted: list[str] = []
+    invalid: list[str] = []
+    rows: list[tuple[str, str]] = []
+
+    def _read_status(path: Path) -> str | None:
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if not text.startswith("---\n"):
+            return None
+        end = text.find("\n---\n", 4)
+        if end == -1:
+            return None
+        frontmatter = text[4:end]
+        for line in frontmatter.splitlines():
+            m = re.match(r"status:\s*([a-zA-Z-]+)\s*$", line.strip())
+            if m:
+                return m.group(1).lower()
+        return None
+
+    def _badge(status: str) -> str:
+        mapping = {
+            "active": "![active](https://img.shields.io/badge/status-active-brightgreen)",
+            "frozen": "![frozen](https://img.shields.io/badge/status-frozen-blue)",
+            "draft": "![draft](https://img.shields.io/badge/status-draft-lightgrey)",
+        }
+        return mapping[status]
+
+    for path in sorted(docs.rglob("*.md")):
+        rel = path.relative_to(docs).as_posix()
+        if rel.startswith("_generated/"):
+            continue
+        status = _read_status(path)
+        if status is None:
+            continue
+        if status not in allowed:
+            invalid.append(f"{rel}: {status}")
+            continue
+        rows.append((rel, status))
+        if status == "draft":
+            drafted.append(rel)
+
+    lines = ["# Document Status", "", "## What", "Status summary generated from document frontmatter.", "", "## Contracts", "- Allowed statuses: `active`, `frozen`, `draft`.", "- `draft` is forbidden on default branch.", "", "## Pages", "", "| Page | Status |", "|---|---|"]
+    for rel, status in rows:
+        lines.append(f"| `{rel}` | {_badge(status)} `{status}` |")
+    if not rows:
+        lines.append("| (none) | n/a |")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    if invalid:
+        return 1, "invalid doc status values:\n" + "\n".join(f"- {i}" for i in invalid)
+    if drafted:
+        return 1, "draft docs are not allowed:\n" + "\n".join(f"- {i}" for i in drafted)
+    return 0, "doc status lint passed"
+
+
+def _check_title_case(ctx: RunContext) -> tuple[int, str]:
+    allow = re.compile(r"API|SSOT|ADR|K8s|k6|v1|CI|CLI|JSON|YAML|HMAC|SSRF|SLO|SDK|DNA|ETag|URL|GC|EMBL")
+    errors: list[str] = []
+    for path in sorted((ctx.repo_root / "docs").rglob("*.md")):
+        lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
+        title = lines[0][2:] if lines and lines[0].startswith("# ") else ""
+        if not title:
+            continue
+        if re.search(r"[A-Z]{4,}", title) and not allow.search(title):
+            errors.append(f"{path.relative_to(ctx.repo_root).as_posix()}: {title}")
+    return (0, "title case check passed") if not errors else (1, "\n".join(errors))
+
+
+def _glossary_check(ctx: RunContext) -> tuple[int, str]:
+    glossary = ctx.repo_root / "docs/_style/terms-glossary.md"
+    text = glossary.read_text(encoding="utf-8", errors="ignore")
+    terms: list[str] = []
+    for line in text.splitlines():
+        m = re.match(r"- `([^`]+)`:", line.strip())
+        if m:
+            terms.append(m.group(1))
+    corpus = []
+    for path in (ctx.repo_root / "docs").rglob("*.md"):
+        if path == glossary:
+            continue
+        corpus.append(path.read_text(encoding="utf-8", errors="ignore"))
+    full = "\n".join(corpus)
+    missing = [term for term in terms if re.search(rf"\b{re.escape(term)}\b", full) is None]
+    return (0, "glossary link lint passed") if not missing else (1, "glossary link lint failed; missing term usage:\n" + "\n".join(f"- {m}" for m in missing))
+
+
+def _extract_code(ctx: RunContext) -> tuple[int, str]:
+    fence_re = re.compile(r"```(?:bash|sh)\n(.*?)```", re.DOTALL)
+    docs = ctx.repo_root / "docs"
+    out = ctx.repo_root / "artifacts/docs-snippets"
+    out.mkdir(parents=True, exist_ok=True)
+    for old in out.glob("*.sh"):
+        old.unlink()
+    manifest: list[dict[str, object]] = []
+    idx = 0
+    for path in sorted(docs.rglob("*.md")):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        for block in fence_re.findall(text):
+            lines = [ln.rstrip("\n") for ln in block.splitlines()]
+            cleaned = [ln for ln in lines if ln.strip()]
+            if not cleaned or cleaned[0].strip() != "# blessed-snippet":
+                continue
+            allow_network = any(ln.strip() == "# allow-network" for ln in cleaned[1:3])
+            body = [ln for ln in cleaned[1:] if ln.strip() not in {"# allow-network"}]
+            idx += 1
+            script = out / f"snippet-{idx:03d}.sh"
+            script.write_text("#!/usr/bin/env sh\nset -eu\n" + "\n".join(body) + "\n", encoding="utf-8")
+            script.chmod(0o755)
+            manifest.append({"id": idx, "source": str(path.relative_to(ctx.repo_root)), "path": str(script.relative_to(ctx.repo_root)), "allow_network": allow_network})
+    (out / "manifest.json").write_text(json.dumps({"snippets": manifest}, indent=2) + "\n", encoding="utf-8")
+    return 0, f"extracted {len(manifest)} blessed snippet(s) to {out.relative_to(ctx.repo_root)}"
+
+
+def _spellcheck(ctx: RunContext, path_arg: str) -> tuple[int, str]:
+    exe = shutil.which("codespell")
+    if not exe:
+        return 2, "codespell not found in PATH"
+    root = ctx.repo_root / path_arg
+    targets = [root / "index.md", root / "_style"]
+    cmd = [exe, "--quiet-level", "2", "--skip", "*.json,*.png,*.jpg,*.svg"]
+    ignore_words = ctx.repo_root / "configs/docs/codespell-ignore-words.txt"
+    if ignore_words.exists():
+        cmd.extend(["--ignore-words", str(ignore_words)])
+    for target in targets:
+        if target.exists():
+            cmd.append(str(target))
+    proc = subprocess.run(cmd, cwd=ctx.repo_root, text=True, capture_output=True, check=False)
+    if proc.returncode != 0:
+        return proc.returncode, (proc.stdout + proc.stderr).strip() or "spellcheck failed"
+    return 0, "spellcheck passed"
+
+
 def _generate_architecture_map(ctx: RunContext) -> tuple[int, str]:
     category_hints = {
         "bijux-atlas-api": "api-surface",
@@ -1481,7 +1648,9 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return code
 
     if ns.docs_cmd == "glossary-check":
-        return _run_simple(ctx, ["python3", "scripts/areas/docs/lint_glossary_links.py"], ns.report)
+        code, output = _glossary_check(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
 
     if ns.docs_cmd == "openapi-examples-check":
         code, output = _check_openapi_examples(ctx)
@@ -1690,19 +1859,27 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return 0
 
     if ns.docs_cmd == "extract-code":
-        return _run_simple(ctx, ["python3", "scripts/areas/docs/extract_code_blocks.py"], ns.report)
+        code, output = _extract_code(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
 
     if ns.docs_cmd == "render-diagrams":
         return _run_simple(ctx, ["bash", "scripts/areas/docs/render_diagrams.sh"], ns.report)
 
     if ns.docs_cmd == "lint-spelling":
-        return _run_simple(ctx, ["python3", "scripts/areas/docs/spellcheck_docs.py", ns.path], ns.report)
+        code, output = _spellcheck(ctx, ns.path)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
 
     if ns.docs_cmd == "spellcheck":
-        return _run_simple(ctx, ["python3", "scripts/areas/docs/spellcheck_docs.py", ns.path], ns.report)
+        code, output = _spellcheck(ctx, ns.path)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
 
     if ns.docs_cmd == "style":
-        return _run_simple(ctx, ["python3", "scripts/areas/docs/lint_doc_status.py"], ns.report)
+        code, output = _lint_doc_status(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
 
     if ns.docs_cmd == "rewrite-legacy-terms":
         if not ns.apply:

@@ -31,9 +31,6 @@ Scripts in this area.
 - check_reference_templates.sh
 - check_script_headers.py
 - check_suite_id_docs.py
-- check_terminology_units_ssot.py
-- check_title_case.sh
-- extract_code_blocks.py
 - generate_concept_graph.py
 - generate_crates_map.py
 - generate_k8s_install_matrix.py
@@ -53,9 +50,6 @@ Scripts in this area.
 - legacy-terms-allowlist.txt
 - lint_depth.py
 - lint_doc_contracts.py
-- lint_doc_status.py
-- lint_glossary_links.py
 - render_diagrams.sh
 - rewrite_legacy_terms.py
 - run_blessed_snippets.py
-- spellcheck_docs.py
