@@ -12,6 +12,8 @@ errors: list[str] = []
 
 if "./ops/run/deploy-atlas.sh" not in ops_mk:
     errors.append("ops-deploy must call ./ops/run/deploy-atlas.sh")
+if "./ops/run/undeploy.sh" not in ops_mk:
+    errors.append("ops-undeploy must call ./ops/run/undeploy.sh")
 if "./ops/k8s/scripts/deploy_atlas.sh" in ops_mk:
     errors.append("ops-deploy must not call ./ops/k8s/scripts/deploy_atlas.sh directly")
 if "./ops/e2e/scripts/deploy_atlas.sh" in ops_mk:
@@ -33,6 +35,8 @@ if "./ops/run/stack-up.sh" not in stack_up_block:
     errors.append("ops-stack-up must call ./ops/run/stack-up.sh")
 if "./ops/run/stack-down.sh" not in stack_down_block:
     errors.append("ops-stack-down must call ./ops/run/stack-down.sh")
+if "ops-stack-uninstall:" in ops_mk:
+    errors.append("ops-stack-uninstall duplicate path is forbidden; use ops-stack-down")
 if "./ops/e2e/scripts/up.sh" in ops_mk or "./ops/e2e/scripts/down.sh" in ops_mk:
     errors.append("ops-stack up/down must not call legacy e2e up/down scripts")
 
