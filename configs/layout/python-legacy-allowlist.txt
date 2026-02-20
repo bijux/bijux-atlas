@@ -263,6 +263,10 @@ scripts/areas/layout/check_no_empty_dirs.py
 scripts/areas/layout/check_no_hidden_defaults.py
 scripts/areas/layout/check_no_legacy_target_names.py
 scripts/areas/layout/check_no_legacy_targets_in_docs.py
+scripts/areas/layout/check_no_dead_entrypoints.py
+scripts/areas/layout/check_no_orphan_configs.py
+scripts/areas/layout/check_no_orphan_docs_refs.py
+scripts/areas/layout/check_no_orphan_owners.py
 scripts/areas/layout/check_no_mixed_script_name_variants.py
 scripts/areas/layout/check_no_ops_evidence_writes.py
 scripts/areas/layout/check_obs_pack_ssot.py
