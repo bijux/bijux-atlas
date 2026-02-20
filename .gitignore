@@ -27,6 +27,8 @@ ops/_artifacts/
 ops/_evidence/**
 !ops/_evidence/.gitkeep
 !ops/_evidence/latest-run-id.txt
+ops/_generated/**
+!ops/_generated/INDEX.md
 ops/openapi/v1/openapi.generated.json
 
 # -----------------------------------------------------------------------------
