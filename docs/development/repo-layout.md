@@ -17,6 +17,9 @@ Prevents root sprawl and keeps `ops/` as the single operational source of truth.
 - Root shape gate: `scripts/areas/layout/check_root_shape.sh`.
 - Forbidden-name gate: `scripts/areas/layout/check_forbidden_root_names.sh`.
 - Migration entrypoint: `make layout-migrate`.
+- Python package surfaces live under `packages/` and `tools/`.
+- New executable Python files outside package roots are forbidden by `scripts/areas/check/check-no-python-executable-outside-tools.py`.
+- Legacy `scripts/` is transition-only and being removed; no new non-shim entrypoints may be added.
 
 ## Failure modes
 

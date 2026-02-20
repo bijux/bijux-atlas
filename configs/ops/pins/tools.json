@@ -31,6 +31,30 @@
       "pinned_at": "2026-02-19",
       "owner": "ops-platform"
     },
+    "pip-tools": {
+      "version": "7.4.1",
+      "source_url": "https://github.com/jazzband/pip-tools/releases",
+      "pinned_at": "2026-02-20",
+      "owner": "ops-platform"
+    },
+    "uv": {
+      "version": "0.8.8",
+      "source_url": "https://github.com/astral-sh/uv/releases",
+      "pinned_at": "2026-02-20",
+      "owner": "ops-platform"
+    },
+    "ruff": {
+      "version": "0.13.2",
+      "source_url": "https://github.com/astral-sh/ruff/releases",
+      "pinned_at": "2026-02-20",
+      "owner": "ops-platform"
+    },
+    "mypy": {
+      "version": "1.17.1",
+      "source_url": "https://github.com/python/mypy/releases",
+      "pinned_at": "2026-02-20",
+      "owner": "ops-platform"
+    },
     "jq": {
       "version": "v1.7.1",
       "source_url": "https://github.com/jqlang/jq/releases",
