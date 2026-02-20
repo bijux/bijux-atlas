@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Atlasctl Output Envelope",
+  "type": "object",
+  "required": ["schema_version", "tool"],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "tool": {
+      "type": "string",
+      "const": "atlasctl"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["ok", "pass", "fail"]
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "command": {
+      "type": "string"
+    },
+    "error": {
+      "type": "object",
+      "required": ["message", "code"],
+      "properties": {
+        "message": { "type": "string" },
+        "code": { "type": "integer" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
