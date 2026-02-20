@@ -5,9 +5,9 @@
 
 ## Summary
 
-- Tracked files: `1794`
-- Docs markdown files: `370`
-- Script files under `scripts/`: `320`
+- Tracked files: `1817`
+- Docs markdown files: `371`
+- Script files under `scripts/`: `322`
 - Rust test files: `42`
 - Load suites in `ops/load/suites/suites.json`: `19`
 - Runbooks in `docs/operations/runbooks/`: `17`
@@ -17,7 +17,7 @@
 
 - Forbidden-token hits: `2`
 - Non-kebab docs outside allowed exceptions: `22`
-- Non-kebab scripts under `scripts/`: `265`
+- Non-kebab scripts under `scripts/`: `267`
 
 ## Load Suites
 
@@ -179,6 +179,7 @@
 - `scripts/docs/generate_makefiles_surface.py`
 - `scripts/docs/generate_observability_surface.py`
 - `scripts/docs/generate_openapi_docs.py`
+- `scripts/docs/generate_ops_badge.py`
 - `scripts/docs/generate_ops_contracts_doc.py`
 - `scripts/docs/generate_ops_schema_docs.py`
 - `scripts/docs/generate_ops_surface.py`
@@ -237,6 +238,7 @@
 - `scripts/layout/check_no_mixed_script_name_variants.py`
 - `scripts/layout/check_obs_pack_ssot.py`
 - `scripts/layout/check_obs_script_name_collisions.py`
+- `scripts/layout/check_obs_suites.py`
 - `scripts/layout/check_ops_artifacts_writes.py`
 - `scripts/layout/check_ops_canonical_entrypoints.py`
 - `scripts/layout/check_ops_canonical_shims.sh`
