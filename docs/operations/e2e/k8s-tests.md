@@ -4,7 +4,7 @@
 
 ## What
 
-Canonical description of chart validation tests under `ops/e2e/k8s/tests`.
+Canonical description of chart validation tests under `ops/k8s/tests`.
 
 ## Why
 
@@ -21,6 +21,7 @@ Does not duplicate each test script implementation.
 ## Contracts
 
 - Runner: `ops-k8s-tests`
+- Local one-command smoke runner: `k8s-smoke`
 - Report on failure: `ops/k8s/tests/report.sh`
 - Full contract list: `../k8s/k8s-test-contract.md`
 
@@ -31,10 +32,11 @@ Chart drift can break runtime semantics while unit tests remain green.
 ## How to verify
 
 ```bash
+$ make k8s-smoke
 $ make ops-k8s-tests
 ```
 
-Expected output: all K8s e2e tests pass.
+Expected output: smoke or full K8s suite passes with evidence under `artifacts/evidence/k8s/<run_id>/`.
 
 ## See also
 

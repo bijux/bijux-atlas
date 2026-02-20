@@ -43,6 +43,7 @@ Expected output: no generated docs drift.
 - [Generated Ops Surface](ops-surface.md)
 - [Generated Config Keys](config-keys.md)
 - [Generated Contracts Catalog](contracts-index.md)
+- [K8s Test Surface](k8s-test-surface.md)
 - [Generated Runbook Map Index](runbook-map-index.md)
 - [Contracts Index](../contracts/contracts-index.md)
 - [Terms Glossary](../_style/terms-glossary.md)
