@@ -1,53 +1,26 @@
 from __future__ import annotations
 
 import time
-from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable
 
-from ..check.native import (
-    check_committed_generated_hygiene,
-    check_docs_scripts_references,
-    check_duplicate_script_names,
-    check_forbidden_top_dirs,
-    check_make_command_allowlist,
-    check_make_forbidden_paths,
-    check_make_help,
-    check_make_scripts_references,
-    check_no_executable_python_outside_packages,
-    check_no_xtask_refs,
-    check_ops_generated_tracked,
-    check_script_help,
-    check_script_ownership,
-    check_tracked_timestamp_paths,
-)
-
-CheckFunc = Callable[[Path], tuple[int, list[str]]]
-
-
-@dataclass(frozen=True)
-class CheckDef:
-    check_id: str
-    domain: str
-    budget_ms: int
-    fn: CheckFunc
+from .base import CheckDef
+from .checks import CHECKS as CHECKS_CHECKS
+from .configs import CHECKS as CHECKS_CONFIGS
+from .docker import CHECKS as CHECKS_DOCKER
+from .docs import CHECKS as CHECKS_DOCS
+from .make import CHECKS as CHECKS_MAKE
+from .ops import CHECKS as CHECKS_OPS
+from .repo import CHECKS as CHECKS_REPO
 
 
 CHECKS: tuple[CheckDef, ...] = (
-    CheckDef("repo/forbidden-top-dirs", "repo", 500, check_forbidden_top_dirs),
-    CheckDef("repo/no-xtask-refs", "repo", 1000, check_no_xtask_refs),
-    CheckDef("repo/no-exec-python-outside-packages", "repo", 1500, check_no_executable_python_outside_packages),
-    CheckDef("repo/duplicate-script-names", "repo", 1200, check_duplicate_script_names),
-    CheckDef("make/scripts-refs", "make", 1000, check_make_scripts_references),
-    CheckDef("make/help-determinism", "make", 2000, check_make_help),
-    CheckDef("make/forbidden-paths", "make", 1000, check_make_forbidden_paths),
-    CheckDef("make/command-allowlist", "make", 1500, check_make_command_allowlist),
-    CheckDef("docs/no-scripts-path-refs", "docs", 800, check_docs_scripts_references),
-    CheckDef("ops/no-tracked-generated", "ops", 800, check_ops_generated_tracked),
-    CheckDef("ops/no-tracked-timestamps", "ops", 1000, check_tracked_timestamp_paths),
-    CheckDef("ops/committed-generated-hygiene", "ops", 1000, check_committed_generated_hygiene),
-    CheckDef("checks/help-coverage", "checks", 1500, check_script_help),
-    CheckDef("checks/ownership-coverage", "checks", 1500, check_script_ownership),
+    *CHECKS_REPO,
+    *CHECKS_MAKE,
+    *CHECKS_DOCS,
+    *CHECKS_OPS,
+    *CHECKS_CHECKS,
+    *CHECKS_CONFIGS,
+    *CHECKS_DOCKER,
 )
 
 
