@@ -44,7 +44,18 @@ if [ "$reuse" = "1" ] && [ -f "$snapshot_json" ]; then
   fi
 fi
 
-if ! make -s ops-stack-up-legacy >"$log_file" 2>&1; then
+if ! (
+  make -s ops-env-validate
+  make -s ops-kind-up
+  ./ops/stack/kind/context_guard.sh
+  ./ops/stack/kind/namespace_guard.sh
+  make -s ops-kind-version-check
+  make -s ops-kubectl-version-check
+  make -s ops-helm-version-check
+  if [ "${ATLAS_KIND_REGISTRY_ENABLE:-0}" = "1" ]; then make -s ops-kind-registry-up; fi
+  ./ops/stack/scripts/install.sh
+  make -s ops-cluster-sanity
+) >"$log_file" 2>&1; then
   status="fail"
 fi
 ATLAS_HEALTH_REPORT_FORMAT=json ./ops/stack/scripts/health_report.sh "$atlas_ns" "$health_json" >/dev/null || true

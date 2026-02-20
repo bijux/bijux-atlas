@@ -102,18 +102,6 @@ ops-stack-up: ## Bring up stack components only (kind + stack manifests)
 	@$(MAKE) -s ops-env-validate
 	@PROFILE="$${PROFILE:-kind}" ./ops/run/stack-up.sh $${REUSE:+--reuse} --profile "$${PROFILE:-kind}"
 
-ops-stack-up-legacy: ## Legacy stack up implementation
-	@$(MAKE) -s ops-env-validate
-	@$(MAKE) ops-kind-up
-	@./ops/stack/kind/context_guard.sh
-	@./ops/stack/kind/namespace_guard.sh
-	@$(MAKE) ops-kind-version-check
-	@$(MAKE) ops-kubectl-version-check
-	@$(MAKE) ops-helm-version-check
-	@if [ "$${ATLAS_KIND_REGISTRY_ENABLE:-0}" = "1" ]; then $(MAKE) ops-kind-registry-up; fi
-	@./ops/e2e/scripts/up.sh
-	@$(MAKE) ops-cluster-sanity
-
 ops-up: ## Bring up local ops stack (kind + minio + prometheus + optional otel/redis)
 	@$(MAKE) ops-stack-up
 
@@ -122,12 +110,6 @@ ops-cluster-sanity: ## Validate cluster node/dns/storageclass sanity
 
 ops-stack-down: ## Tear down stack components and cluster
 	@./ops/run/stack-down.sh
-
-ops-stack-down-legacy: ## Legacy stack down implementation
-	@$(MAKE) -s ops-env-validate
-	@./ops/stack/kind/context_guard.sh
-	@./ops/stack/kind/namespace_guard.sh
-	@./ops/e2e/scripts/down.sh
 
 ops-down: ## Tear down local ops stack
 	@./ops/run/down.sh
@@ -176,14 +158,6 @@ internal/ops/all: ## Uniform ops all target
 	@$(MAKE) -s internal/ops/check
 	@$(MAKE) -s internal/ops/lint
 	@$(MAKE) -s internal/ops/smoke
-
-ops-check-legacy: ## Legacy implementation for ops-check wrapper
-	@$(MAKE) -s ops-lint
-	@$(MAKE) -s ops-contracts-check
-	@CACHE_STATUS_STRICT=0 $(MAKE) -s ops-cache-status
-	@$(MAKE) -s pins/check
-	@$(MAKE) -s ops-surface
-	@python3 ./scripts/layout/check_ops_index_surface.py
 
 ops-datasets-verify: ## Verify datasets lock/catalog/fetch contract
 	@./ops/run/datasets-verify.sh
@@ -615,17 +589,6 @@ ops-smoke: ## Bounded full smoke: stack up + API smoke + obs verify + stack down
 ops-smoke-budget-check: ## Enforce ops smoke duration budget from committed policy
 	@[ -n "$${RUN_ID:-}" ] || { echo "RUN_ID is required (use lane run id)"; exit 2; }
 	@RUN_ID="$$RUN_ID" python3 ./ops/_lint/ops-smoke-budget-check.py
-
-ops-smoke-legacy: ## Legacy implementation for ops-smoke wrapper
-	@set -e; \
-	REUSE=1 $(MAKE) -s ops-up; \
-	trap '$(MAKE) -s ops-down >/dev/null 2>&1 || true' EXIT INT TERM; \
-	$(MAKE) -s ops-deploy; \
-	$(MAKE) -s ops-warm; \
-	$(MAKE) -s ops-api-smoke; \
-	OBS_SKIP_LOCAL_COMPOSE=1 SUITE=contracts $(MAKE) -s ops-obs-verify; \
-	trap - EXIT INT TERM; \
-	$(MAKE) -s ops-down
 
 ops-k8s-smoke: ## Minimal k8s smoke subset on kind
 	@PROFILE="$${PROFILE:-kind}" SUITE=smoke ./ops/run/k8s-suite.sh

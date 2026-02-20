@@ -16,7 +16,14 @@ mkdir -p "$log_dir"
 log_file="$log_dir/run.log"
 
 status="pass"
-if ! make -s ops-check-legacy >"$log_file" 2>&1; then
+if ! (
+  make -s ops-lint
+  make -s ops-contracts-check
+  CACHE_STATUS_STRICT=0 make -s ops-cache-status
+  make -s pins/check
+  make -s ops-surface
+  python3 ./scripts/layout/check_ops_index_surface.py
+) >"$log_file" 2>&1; then
   status="fail"
 fi
 
