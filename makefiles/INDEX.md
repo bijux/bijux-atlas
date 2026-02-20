@@ -1,6 +1,6 @@
 # Makefiles Index
 
-- File count: 15
+- File count: 16
 - Owner: `build-and-release`
 
 ## Files
@@ -17,6 +17,7 @@
 - `path_contract.mk`
 - `policies.mk`
 - `product.mk`
+- `python.mk`
 - `registry.mk`
 - `root.mk`
 - `scripts.mk`
