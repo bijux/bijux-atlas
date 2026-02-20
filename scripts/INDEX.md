@@ -73,12 +73,7 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_concept_ids.sh` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_configmap_env_docs.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_doc_naming.sh` | `docs-governance` | `public` | `docs-build` |
-| `scripts/areas/docs/check_docker_entrypoints.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_example_configs.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_full_stack_page.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_generated_contract_docs.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_k8s_docs_contract.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_load_docs_contract.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_make_help_drift.py` | `docs-governance` | `public` | `ci-make-help-drift` |
 | `scripts/areas/docs/check_no_removed_make_targets.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_ops_docs_make_targets.py` | `docs-governance` | `public` | - |
