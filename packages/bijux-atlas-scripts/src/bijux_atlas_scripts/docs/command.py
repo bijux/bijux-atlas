@@ -2074,8 +2074,6 @@ def _check_script_headers(ctx: RunContext) -> tuple[int, str]:
     )
     errors: list[str] = []
     for path in script_paths:
-        if "/scripts/areas/_internal/" in path.as_posix():
-            continue
         txt = path.read_text(encoding="utf-8", errors="ignore").splitlines()
         first = txt[0] if txt else ""
         rel = path.relative_to(root).as_posix()

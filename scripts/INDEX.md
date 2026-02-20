@@ -14,8 +14,6 @@ Generated file. Do not edit manually.
 
 | Script | Owner | Stability | Called By |
 |---|---|---|---|
-| `scripts/areas/_internal/check-root-layout.sh` | `internal` | `internal` | - |
-| `scripts/areas/_internal/run_suite_wrapper_legacy.sh` | `internal` | `internal` | - |
 | `scripts/areas/check/check-atlas-scripts-cli-contract.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-bijux-atlas-scripts-boundaries.py` | `platform` | `public` | - |
 | `scripts/areas/check/check-bin-entrypoints.py` | `platform` | `public` | - |
