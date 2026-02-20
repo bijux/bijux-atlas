@@ -7,11 +7,16 @@ from __future__ import annotations
 from pathlib import Path
 import re
 import sys
+import json
 
 ROOT = Path(__file__).resolve().parents[3]
+policy = json.loads((ROOT / "docker/contracts/no-latest.json").read_text(encoding="utf-8"))
+if not policy.get("forbid_latest", True):
+    print("no latest tags policy skipped (forbid_latest=false)")
+    raise SystemExit(0)
 needle = re.compile(r":[Ll][Aa][Tt][Ee][Ss][Tt](\b|@)")
 scan_files = [
-    ROOT / "docker/Dockerfile",
+    ROOT / "docker/images/runtime/Dockerfile",
     *sorted((ROOT / "ops").rglob("*.yaml")),
     *sorted((ROOT / "ops").rglob("*.yml")),
     *sorted((ROOT / "ops").rglob("*.sh")),
