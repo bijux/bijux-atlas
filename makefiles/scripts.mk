@@ -33,6 +33,7 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(PYRUN) scripts/areas/check/check-script-write-roots.py
 	@$(PYRUN) scripts/areas/check/check-script-tool-guards.py
 	@$(PYRUN) scripts/areas/check/check-script-ownership.py
+	@$(PYRUN) scripts/areas/check/check-script-shim-expiry.py
 	@$(PYRUN) scripts/areas/check/check-python-lock.py
 	@$(PYRUN) scripts/areas/check/check-bin-entrypoints.py
 	@$(PYRUN) scripts/areas/check/check-no-adhoc-python.py
