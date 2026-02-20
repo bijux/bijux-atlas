@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "exceptions": [
+    {
+      "id": "makefiles-direct-python-transition",
+      "kind": "makefiles_direct_python",
+      "path_glob": "makefiles/*.mk",
+      "contains": "python",
+      "owner": "bijux-atlas-platform",
+      "issue": "BATCH-B2-MAKE-PYTHON-MIGRATION",
+      "expires_on": "2026-12-31"
+    },
+    {
+      "id": "makefile-direct-python-transition",
+      "kind": "makefiles_direct_python",
+      "path_glob": "Makefile",
+      "contains": "python",
+      "owner": "bijux-atlas-platform",
+      "issue": "BATCH-B2-MAKE-PYTHON-MIGRATION",
+      "expires_on": "2026-12-31"
+    },
+    {
+      "id": "docs-direct-python-transition",
+      "kind": "docs_direct_python",
+      "path_glob": "docs/**",
+      "contains": "python",
+      "owner": "bijux-atlas-platform",
+      "issue": "BATCH-B2-DOCS-PYTHON-MIGRATION",
+      "expires_on": "2026-12-31"
+    },
+    {
+      "id": "repo-python-scripts-path-transition",
+      "kind": "python_scripts_path",
+      "path_glob": "**",
+      "contains": "python",
+      "owner": "bijux-atlas-platform",
+      "issue": "BATCH-B2-PYTHON-PATH-MIGRATION",
+      "expires_on": "2026-12-31"
+    },
+    {
+      "id": "scripts-executable-python-transition",
+      "kind": "executable_python",
+      "path_glob": "scripts/**/*.py",
+      "contains": "",
+      "owner": "bijux-atlas-platform",
+      "issue": "BATCH-B2-EXECUTABLE-PYTHON-MIGRATION",
+      "expires_on": "2026-12-31"
+    },
+    {
+      "id": "ops-executable-python-transition",
+      "kind": "executable_python",
+      "path_glob": "ops/**/*.py",
+      "contains": "",
+      "owner": "bijux-atlas-platform",
+      "issue": "BATCH-B2-EXECUTABLE-PYTHON-MIGRATION",
+      "expires_on": "2026-12-31"
+    }
+  ]
+}
