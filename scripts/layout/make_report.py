@@ -54,6 +54,22 @@ def build_unified(run_id: str) -> dict:
         "near_failing": sorted(near),
         "failed_lanes": sorted(failed),
     }
+    perf_summary = {"suite_count": 0, "p95_max_ms": 0.0, "p99_max_ms": 0.0}
+    perf_raw = ROOT / "ops" / "_evidence" / "perf" / run_id / "raw"
+    if perf_raw.exists():
+        p95s = []
+        p99s = []
+        for summary in sorted(perf_raw.glob("*.summary.json")):
+            data = json.loads(summary.read_text(encoding="utf-8"))
+            vals = data.get("metrics", {}).get("http_req_duration", {}).get("values", {})
+            p95s.append(float(vals.get("p(95)", 0.0)))
+            p99s.append(float(vals.get("p(99)", 0.0)))
+        if p95s:
+            perf_summary = {
+                "suite_count": len(p95s),
+                "p95_max_ms": max(p95s),
+                "p99_max_ms": max(p99s) if p99s else 0.0,
+            }
     return {
         "schema_version": 1,
         "run_id": run_id,
@@ -61,6 +77,7 @@ def build_unified(run_id: str) -> dict:
         "lanes": lanes,
         "summary": summary,
         "budget_status": budget_status,
+        "perf_summary": perf_summary,
     }
 
 

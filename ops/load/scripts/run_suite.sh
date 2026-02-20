@@ -45,6 +45,16 @@ else
   NAME="${SUITE%.js}"
 fi
 
+python3 - <<PY
+import json,sys
+from pathlib import Path
+root=Path("$ROOT")
+manifest=json.loads((root/"ops/load/suites/suites.json").read_text())
+names={s.get("name","") for s in manifest.get("suites",[])}
+if "$NAME" not in names:
+    raise SystemExit(f"adhoc suite forbidden: {\"$NAME\"} is not declared in ops/load/suites/suites.json")
+PY
+
 SUMMARY_JSON="$OUT_DIR/${NAME}.summary.json"
 
 if command -v k6 >/dev/null 2>&1; then
@@ -60,5 +70,11 @@ fi
 cat > "${OUT_DIR}/${NAME}.meta.json" <<JSON
 {"suite":"$INPUT","resolved_suite":"$SUITE","git_sha":"$GIT_SHA","image_digest":"$IMAGE_DIGEST","dataset_hash":"$DATASET_HASH","dataset_release":"$DATASET_RELEASE","policy_hash":"$POLICY_HASH","base_url":"$BASE_URL"}
 JSON
+
+RUN_REF="${RUN_ID:-$(cat "$ROOT/ops/_evidence/latest-run-id.txt" 2>/dev/null || echo manual)}"
+EVIDENCE_RAW="$ROOT/ops/_evidence/perf/$RUN_REF/raw"
+mkdir -p "$EVIDENCE_RAW"
+cp -f "$SUMMARY_JSON" "$EVIDENCE_RAW/${NAME}.summary.json"
+cp -f "${OUT_DIR}/${NAME}.meta.json" "$EVIDENCE_RAW/${NAME}.meta.json"
 
 echo "suite complete: $INPUT ($SUITE) -> $SUMMARY_JSON"

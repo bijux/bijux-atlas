@@ -100,6 +100,8 @@ def main() -> int:
         ("ops/_schemas/meta/pins.schema.json", "configs/ops/pins.json"),
         ("ops/_schemas/meta/budgets.schema.json", "configs/ops/budgets.json"),
         ("ops/_schemas/load/pinned-queries-lock.schema.json", "ops/load/queries/pinned-v1.lock"),
+        ("ops/_schemas/load/perf-baseline.schema.json", "configs/ops/perf/baselines/local.json"),
+        ("ops/_schemas/load/perf-baseline.schema.json", "configs/ops/perf/baselines/ci-runner.json"),
         ("ops/_schemas/datasets/manifest-lock.schema.json", "ops/datasets/manifest.lock"),
         ("ops/_schemas/e2e-scenarios.schema.json", "ops/e2e/scenarios/scenarios.json"),
         ("ops/_schemas/e2e-realdata-scenarios.schema.json", "ops/e2e/realdata/scenarios.json"),

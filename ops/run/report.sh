@@ -84,7 +84,24 @@ payload = {
         "near_failing": sorted(near),
         "failed_lanes": sorted(failed_budget),
     },
+    "perf_summary": {"suite_count": 0, "p95_max_ms": 0.0, "p99_max_ms": 0.0},
 }
+
+perf_raw = root / "ops/_evidence/perf" / run_id / "raw"
+if perf_raw.exists():
+    p95s = []
+    p99s = []
+    for summary_path in sorted(perf_raw.glob("*.summary.json")):
+        summary_payload = json.loads(summary_path.read_text(encoding="utf-8"))
+        values = summary_payload.get("metrics", {}).get("http_req_duration", {}).get("values", {})
+        p95s.append(float(values.get("p(95)", 0.0)))
+        p99s.append(float(values.get("p(99)", 0.0)))
+    if p95s:
+        payload["perf_summary"] = {
+            "suite_count": len(p95s),
+            "p95_max_ms": max(p95s),
+            "p99_max_ms": max(p99s) if p99s else 0.0,
+        }
 
 schema = json.loads(schema_path.read_text(encoding='utf-8'))
 for key in schema.get("required", []):
