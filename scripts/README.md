@@ -95,7 +95,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_no_legacy_root_paths.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_no_placeholders.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_no_removed_make_targets.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_observability_acceptance_checklist.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_ops_docs_make_targets.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_ops_observability_links.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_public_targets_docs_sections.py` | `docs-governance` | `public` | - |

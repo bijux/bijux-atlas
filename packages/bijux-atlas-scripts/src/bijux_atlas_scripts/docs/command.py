@@ -952,6 +952,23 @@ def _check_index_pages(ctx: RunContext) -> tuple[int, str]:
     return (0, "index pages check passed") if not errors else (1, "\n".join(errors))
 
 
+def _check_observability_acceptance_checklist(ctx: RunContext) -> tuple[int, str]:
+    path = ctx.repo_root / "docs/operations/observability/acceptance-checklist.md"
+    if not path.exists():
+        return 1, f"missing checklist: {path.relative_to(ctx.repo_root)}"
+    text = path.read_text(encoding="utf-8", errors="ignore")
+    required = [
+        "## Required Checks",
+        "## Release Notes",
+        "make telemetry-verify",
+        "make observability-pack-drills",
+    ]
+    missing = [item for item in required if item not in text]
+    if missing:
+        return 1, "acceptance checklist missing required entries:\n" + "\n".join(f"- {item}" for item in missing)
+    return 0, "observability acceptance checklist contract passed"
+
+
 def _check_script_headers(ctx: RunContext) -> tuple[int, str]:
     root = ctx.repo_root
     script_paths = sorted(
@@ -1812,6 +1829,11 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
         return code
 
+    if ns.docs_cmd == "observability-acceptance-checklist":
+        code, output = _check_observability_acceptance_checklist(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
     if ns.docs_cmd == "script-headers-check":
         code, output = _check_script_headers(ctx)
         print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
@@ -1959,6 +1981,7 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("runbook-map-registration-check", "validate runbook map has every runbook"),
         ("contract-doc-pairs-check", "validate JSON contracts have docs pairs"),
         ("index-pages-check", "validate docs/INDEX.md contract"),
+        ("observability-acceptance-checklist", "validate observability acceptance checklist contract"),
         ("script-headers-check", "validate script header and docs script-group contract"),
         ("glossary-check", "validate glossary and banned terms policy"),
         ("contracts-index", "validate or generate docs contracts index"),
