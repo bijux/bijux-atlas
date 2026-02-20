@@ -4,10 +4,10 @@
 # Outputs: deterministic directories under artifacts/ops/<run-id>/.
 set -euo pipefail
 
-OPS_LIB_ROOT="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(CDPATH='' cd -- "${OPS_LIB_ROOT}/../../.." && pwd)"
+_OPS_LIB_DIR="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(CDPATH='' cd -- "${_OPS_LIB_DIR}/../../.." && pwd)"
 # shellcheck source=ops/_lib/run_id.sh
-source "${OPS_LIB_ROOT}/run_id.sh"
+source "${_OPS_LIB_DIR}/run_id.sh"
 
 ops_run_id() {
   ops_init_run_id
