@@ -1,8 +1,10 @@
-from __future__ import annotations
+"""Legacy report compatibility package.
 
-from ..core.context import RunContext
-from ..domain_cmd import domain_payload
+Canonical package: atlasctl.reporting.
+"""
+
+from ..cli.registry import domain_payload
 
 
-def run(ctx: RunContext) -> dict[str, object]:
+def run(ctx):
     return domain_payload(ctx, "report")
