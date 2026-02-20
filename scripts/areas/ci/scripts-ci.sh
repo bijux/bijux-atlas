@@ -13,4 +13,5 @@ EOF
   exit 0
 fi
 
-exec make -s scripts-check
+export PYTHONPATH="$ROOT/packages/bijux-atlas-scripts/src${PYTHONPATH:+:$PYTHONPATH}"
+exec python3 -m bijux_atlas_scripts.cli ci scripts
