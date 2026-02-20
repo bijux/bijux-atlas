@@ -3,4 +3,4 @@
 Shared script libraries.
 
 - `errors.sh`: structured shell error emission
-- `scripts/python/bijux_scripts`: shared Python helpers
+- `scripts/areas/python/bijux_scripts`: shared Python helpers

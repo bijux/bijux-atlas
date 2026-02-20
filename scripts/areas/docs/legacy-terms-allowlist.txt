@@ -1,0 +1,13 @@
+# owner: docs-governance
+# purpose: allow legitimate domain-specific uses of words that match legacy token scan patterns.
+# stability: public
+# called-by: scripts/areas/docs/ban_legacy_terms.sh
+
+# GFF3 biology field name; not project phase language.
+cds phase
+invalid cds phase
+gff3 phase
+
+# Technical terms unrelated to project planning language.
+docker multi-stage build
+status.phase
