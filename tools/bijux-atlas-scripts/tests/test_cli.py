@@ -49,6 +49,7 @@ def test_help_for_all_commands() -> None:
         "registry",
         "layout",
         "report",
+        "compat",
     )
     for command in commands:
         proc = _run_cli(command, "--help")

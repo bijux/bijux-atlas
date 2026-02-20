@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+# owner: bijux-atlas-platform
+# purpose: compatibility shim for help renderer.
+# usage: bin/render_public_help [--mode MODE]
+echo "DEPRECATED: bin/render_public_help expires 2026-06-30; use bijux-atlas-scripts make help; see docs/development/tooling/bijux-atlas-scripts.md" >&2
+exec ./scripts/bin/bijux-atlas-scripts make help "$@"

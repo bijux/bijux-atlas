@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "exceptions": [
+    {
+      "id": "docs-shim-transition",
+      "match": "docs/",
+      "owner": "docs-governance",
+      "issue": "MIGRATE-DOCS-SCRIPT-PATHS",
+      "expires_on": "2026-06-30"
+    },
+    {
+      "id": "make-shim-transition",
+      "match": "makefiles/",
+      "owner": "platform",
+      "issue": "MIGRATE-MAKE-SCRIPT-PATHS",
+      "expires_on": "2026-06-30"
+    },
+    {
+      "id": "scripts-shim-transition",
+      "match": "scripts/",
+      "owner": "platform",
+      "issue": "MIGRATE-SCRIPTS-PATHS",
+      "expires_on": "2026-06-30"
+    }
+  ]
+}

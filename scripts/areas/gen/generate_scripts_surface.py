@@ -35,5 +35,12 @@ for p in sorted((ROOT / "scripts/areas/check").glob("*")):
     if p.is_file():
         lines.append(f"- `{p.relative_to(ROOT).as_posix()}`")
 
+lines.extend(["", "## root bin shims", ""])
+bin_root = ROOT / "bin"
+if bin_root.exists():
+    for p in sorted(bin_root.glob("*")):
+        if p.is_file():
+            lines.append(f"- `{p.relative_to(ROOT).as_posix()}`")
+
 out.write_text("\n".join(lines) + "\n", encoding="utf-8")
 print(out)
