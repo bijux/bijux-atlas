@@ -168,3 +168,20 @@ def check_tracked_timestamp_paths(repo_root: Path) -> tuple[int, list[str]]:
         if any(_looks_like_timestamp_segment(seg) for seg in segments):
             errors.append(f"tracked path contains timestamp-like segment: {rel}")
     return (0 if not errors else 1), errors
+
+
+def check_committed_generated_hygiene(repo_root: Path) -> tuple[int, list[str]]:
+    tracked = _git_ls_files(
+        repo_root,
+        ["docs/_generated", "ops/_generated_committed", "ops/_generated.example"],
+    )
+    forbidden_suffixes = (".log", ".stderr", ".stdout", ".tmp")
+    errors: list[str] = []
+    for rel in tracked:
+        path = Path(rel)
+        segments = path.parts
+        if any(_looks_like_timestamp_segment(seg) for seg in segments):
+            errors.append(f"timestamp-like path in committed generated area: {rel}")
+        if any(rel.endswith(sfx) for sfx in forbidden_suffixes):
+            errors.append(f"runtime/log artifact in committed generated area: {rel}")
+    return (0 if not errors else 1), errors

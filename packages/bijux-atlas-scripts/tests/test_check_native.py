@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from bijux_atlas_scripts.check.native import (
+    check_committed_generated_hygiene,
     check_duplicate_script_names,
     check_make_forbidden_paths,
     check_no_xtask_refs,
@@ -70,3 +71,16 @@ def test_check_tracked_timestamp_paths_flags_timestamp_segments(monkeypatch, tmp
     code, errors = check_tracked_timestamp_paths(tmp_path)
     assert code == 1
     assert "2026-02-20" in errors[0]
+
+
+def test_check_committed_generated_hygiene_flags_logs_and_timestamps(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(
+        "bijux_atlas_scripts.check.native._git_ls_files",
+        lambda _repo_root, _spec: [
+            "docs/_generated/2026-02-20/index.md",
+            "ops/_generated_committed/run.log",
+        ],
+    )
+    code, errors = check_committed_generated_hygiene(tmp_path)
+    assert code == 1
+    assert len(errors) == 2
