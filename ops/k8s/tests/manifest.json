@@ -8,8 +8,8 @@
     {
       "script": "checks/rollout/test_cluster_sanity.sh",
       "groups": [
-        "sanity",
-        "cluster"
+        "cluster",
+        "sanity"
       ],
       "owner": "stack",
       "retries": 1,
@@ -137,8 +137,8 @@
       "script": "checks/obs/test_values_profiles_are_valid.sh",
       "groups": [
         "chart",
-        "profiles",
-        "chart-contract"
+        "chart-contract",
+        "profiles"
       ],
       "owner": "chart",
       "retries": 1,
@@ -164,9 +164,9 @@
     {
       "script": "checks/obs/test_hpa_enabled_requires_metrics_stack.sh",
       "groups": [
-        "hpa",
+        "autoscaling",
         "chart-contract",
-        "autoscaling"
+        "hpa"
       ],
       "owner": "chart",
       "retries": 1,
@@ -178,9 +178,9 @@
     {
       "script": "checks/obs/test_hpa_enabled_requires_resources.sh",
       "groups": [
-        "hpa",
+        "autoscaling",
         "chart-contract",
-        "autoscaling"
+        "hpa"
       ],
       "owner": "chart",
       "retries": 1,
@@ -192,8 +192,8 @@
     {
       "script": "checks/obs/test_observability_objects_contract.sh",
       "groups": [
-        "observability",
-        "chart-contract"
+        "chart-contract",
+        "observability"
       ],
       "owner": "observability",
       "retries": 1,
@@ -217,8 +217,8 @@
     {
       "script": "checks/rollout/test_install_twice.sh",
       "groups": [
-        "install",
-        "idempotency"
+        "idempotency",
+        "install"
       ],
       "owner": "chart",
       "retries": 1,
@@ -230,8 +230,8 @@
     {
       "script": "checks/rollout/test_uninstall_reinstall.sh",
       "groups": [
-        "install",
-        "idempotency"
+        "idempotency",
+        "install"
       ],
       "owner": "chart",
       "retries": 1,
@@ -293,8 +293,8 @@
     {
       "script": "checks/config/test_configmap.sh",
       "groups": [
-        "config",
-        "chart-contract"
+        "chart-contract",
+        "config"
       ],
       "owner": "server",
       "retries": 1,
@@ -306,8 +306,8 @@
     {
       "script": "checks/config/test_configmap_update_reload.sh",
       "groups": [
-        "config",
-        "chart-contract"
+        "chart-contract",
+        "config"
       ],
       "owner": "server",
       "retries": 1,
@@ -319,9 +319,9 @@
     {
       "script": "checks/config/test_configmap_schema_completeness.sh",
       "groups": [
+        "chart-contract",
         "config",
-        "docs",
-        "chart-contract"
+        "docs"
       ],
       "owner": "server",
       "retries": 1,
@@ -333,9 +333,9 @@
     {
       "script": "checks/config/test_configmap_unknown_keys_rejected.sh",
       "groups": [
+        "chart-contract",
         "config",
-        "security",
-        "chart-contract"
+        "security"
       ],
       "owner": "server",
       "retries": 1,
@@ -347,8 +347,8 @@
     {
       "script": "checks/config/test_configmap_version_stamp.sh",
       "groups": [
-        "config",
-        "chart-contract"
+        "chart-contract",
+        "config"
       ],
       "owner": "server",
       "retries": 1,
@@ -360,8 +360,8 @@
     {
       "script": "checks/config/test_configmap_must_exist.sh",
       "groups": [
-        "config",
-        "chart-contract"
+        "chart-contract",
+        "config"
       ],
       "owner": "server",
       "retries": 1,
@@ -373,8 +373,8 @@
     {
       "script": "checks/config/test_deployment_envFrom_configmap.sh",
       "groups": [
-        "config",
-        "chart-contract"
+        "chart-contract",
+        "config"
       ],
       "owner": "chart",
       "retries": 1,
@@ -386,8 +386,8 @@
     {
       "script": "checks/config/test_configmap_keys_match_runtime_expected.sh",
       "groups": [
-        "config",
-        "chart-contract"
+        "chart-contract",
+        "config"
       ],
       "owner": "server",
       "retries": 1,
@@ -451,8 +451,8 @@
     {
       "script": "checks/datasets/test_pdb.sh",
       "groups": [
-        "pdb",
-        "availability"
+        "availability",
+        "pdb"
       ],
       "owner": "chart",
       "retries": 1,
@@ -464,9 +464,9 @@
     {
       "script": "checks/datasets/test_pdb_required_when_replicas_gt1.sh",
       "groups": [
-        "pdb",
+        "availability",
         "chart-contract",
-        "availability"
+        "pdb"
       ],
       "owner": "chart",
       "retries": 1,
@@ -478,8 +478,8 @@
     {
       "script": "checks/perf/test_metrics_pipeline_ready.sh",
       "groups": [
-        "hpa",
-        "autoscaling"
+        "autoscaling",
+        "hpa"
       ],
       "owner": "chart",
       "retries": 1,
@@ -491,9 +491,9 @@
     {
       "script": "checks/perf/test_hpa.sh",
       "groups": [
-        "hpa",
         "autoscaling",
-        "flake-sensitive"
+        "flake-sensitive",
+        "hpa"
       ],
       "owner": "chart",
       "retries": 1,
@@ -505,8 +505,8 @@
     {
       "script": "checks/perf/test_hpa_misconfig_negative.sh",
       "groups": [
-        "hpa",
-        "autoscaling"
+        "autoscaling",
+        "hpa"
       ],
       "owner": "chart",
       "retries": 1,
@@ -518,8 +518,8 @@
     {
       "script": "checks/perf/test_hpa_disabled_mode.sh",
       "groups": [
-        "hpa",
-        "autoscaling"
+        "autoscaling",
+        "hpa"
       ],
       "owner": "chart",
       "retries": 1,
@@ -531,9 +531,9 @@
     {
       "script": "checks/perf/test_hpa_metrics_names_contract.sh",
       "groups": [
-        "hpa",
+        "autoscaling",
         "chart-contract",
-        "autoscaling"
+        "hpa"
       ],
       "owner": "chart",
       "retries": 1,
@@ -545,9 +545,9 @@
     {
       "script": "checks/perf/test_hpa_behavior_contract.sh",
       "groups": [
-        "hpa",
+        "autoscaling",
         "chart-contract",
-        "autoscaling"
+        "hpa"
       ],
       "owner": "chart",
       "retries": 1,
@@ -559,8 +559,8 @@
     {
       "script": "checks/rollout/test_rollout.sh",
       "groups": [
-        "rollout",
-        "availability"
+        "availability",
+        "rollout"
       ],
       "owner": "chart",
       "retries": 1,
@@ -572,8 +572,8 @@
     {
       "script": "checks/rollout/test_rollback.sh",
       "groups": [
-        "rollback",
-        "availability"
+        "availability",
+        "rollback"
       ],
       "owner": "chart",
       "retries": 1,
@@ -623,8 +623,8 @@
     {
       "script": "checks/security/test_image_digest_policy.sh",
       "groups": [
-        "supply-chain",
-        "chart-contract"
+        "chart-contract",
+        "supply-chain"
       ],
       "owner": "chart",
       "retries": 1,
@@ -649,8 +649,8 @@
     {
       "script": "checks/perf/test_redis_rate_limit.sh",
       "groups": [
-        "redis",
-        "rate-limit"
+        "rate-limit",
+        "redis"
       ],
       "owner": "server",
       "retries": 1,
@@ -699,8 +699,8 @@
     {
       "script": "checks/network/test_ingress_profile.sh",
       "groups": [
-        "profiles",
-        "ingress"
+        "ingress",
+        "profiles"
       ],
       "owner": "chart",
       "retries": 1,
@@ -788,8 +788,8 @@
     {
       "script": "checks/obs/test_logs_json.sh",
       "groups": [
-        "observability",
-        "contracts"
+        "contracts",
+        "observability"
       ],
       "owner": "observability",
       "quarantine_until": "2026-03-31",
@@ -841,8 +841,8 @@
     {
       "script": "checks/obs/test_redis_backend_metric.sh",
       "groups": [
-        "redis",
-        "observability"
+        "observability",
+        "redis"
       ],
       "owner": "observability",
       "retries": 1,
@@ -854,8 +854,8 @@
     {
       "script": "checks/perf/test_redis_optional.sh",
       "groups": [
-        "redis",
-        "profiles"
+        "profiles",
+        "redis"
       ],
       "owner": "server",
       "retries": 1,
@@ -893,8 +893,8 @@
     {
       "script": "checks/perf/test_store_outage_under_load.sh",
       "groups": [
-        "resilience",
-        "load"
+        "load",
+        "resilience"
       ],
       "owner": "server",
       "retries": 1,

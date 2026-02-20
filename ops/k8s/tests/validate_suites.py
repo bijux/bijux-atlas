@@ -30,6 +30,19 @@ def main() -> int:
         for g in t.get("groups", [])
         if isinstance(g, str) and g
     }
+    for t in manifest_tests:
+        script = str(t.get("script", "")).strip()
+        groups = t.get("groups", [])
+        if not isinstance(groups, list) or not groups:
+            errors.append(f"manifest test `{script}` must belong to at least one group")
+        elif groups != sorted(groups):
+            errors.append(f"manifest test `{script}` groups must be sorted deterministically")
+        owner = t.get("owner")
+        if not isinstance(owner, str) or not owner.strip():
+            errors.append(f"manifest test `{script}` must declare non-empty owner")
+        efm = t.get("expected_failure_modes")
+        if not isinstance(efm, list) or not efm or not all(isinstance(x, str) and x for x in efm):
+            errors.append(f"manifest test `{script}` must declare non-empty expected_failure_modes list")
 
     disk_test_scripts = {
         p.name
@@ -47,7 +60,12 @@ def main() -> int:
 
     suite_ids: set[str] = set()
     suite_groups: set[str] = set()
-    for suite in suites.get("suites", []):
+    suites_list = suites.get("suites", [])
+    ids_in_order = [s.get("id") for s in suites_list if isinstance(s, dict)]
+    if ids_in_order != sorted(ids_in_order):
+        errors.append("suites.json must keep suites sorted by id for deterministic ordering")
+
+    for suite in suites_list:
         sid = suite.get("id")
         if not isinstance(sid, str) or not sid:
             errors.append("suites.json contains suite without valid id")
@@ -60,6 +78,8 @@ def main() -> int:
         if not isinstance(groups, list):
             errors.append(f"suite `{sid}` groups must be a list")
             continue
+        if groups != sorted(groups):
+            errors.append(f"suite `{sid}` groups must be sorted deterministically")
         for g in groups:
             if not isinstance(g, str) or not g:
                 errors.append(f"suite `{sid}` has invalid group entry")
