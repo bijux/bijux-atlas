@@ -368,7 +368,7 @@ ci/all: ## Deterministic CI superset
 	@$(call with_iso,ci-all,$(MAKE) -s gates-check lane-cargo lane-docs lane-scripts lane-configs-policies lane-ops ci-release-binaries ci-docs-build ci-release-compat-matrix-verify)
 
 nightly/all: ## Slow nightly suites (perf/load/drills/realdata)
-	@$(call with_iso,nightly-all,$(MAKE) -s ci/all ops-load-nightly perf/regression-check ops-drill-suite ops-realdata ops-obs-verify SUITE=full)
+	@$(call with_iso,nightly-all,$(MAKE) -s ci/all ops-load-nightly perf/regression-check ops-drill-suite ops-realdata ops-obs-verify SUITE=full ops-observability-lag-check)
 
 lane-cargo: ## Lane: rust checks/tests in isolated lane-cargo path
 	@$(MAKE) -s cargo/fmt cargo/lint
@@ -390,7 +390,7 @@ internal/lane-ops-smoke: ## Internal lane: bounded ops smoke path
 	@$(call with_iso,internal-lane-ops-smoke,$(MAKE) -s ops-k8s-smoke)
 
 internal/lane-obs-cheap: ## Internal lane: cheap observability verification for CI-fast
-	@$(call with_iso,internal-lane-obs-cheap,$(MAKE) -s ops-obs-verify SUITE=cheap)
+	@$(call with_iso,internal-lane-obs-cheap,$(MAKE) -s ops-obs-verify SUITE=cheap ops-observability-lag-check)
 
 internal/lane-obs-full: ## Internal lane: full observability verification for root-local
 	@$(call with_iso,internal-lane-obs-full,$(MAKE) -s ops-obs-verify SUITE=root-local)

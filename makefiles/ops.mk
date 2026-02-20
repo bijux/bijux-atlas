@@ -137,6 +137,9 @@ ops-stack-idempotency-check: ## Verify stack up/down is idempotent
 ops-obs-verify: ## Verify observability pack contracts and readiness
 	@./ops/run/obs-verify.sh
 
+ops-observability-lag-check: ## Fail when observability checks have been stale on main branch
+	@python3 ./ops/obs/scripts/contracts/check_observability_lag.py
+
 ops-check: ## Ops lint + schema + metadata validation
 	@./ops/run/ops-check.sh
 
