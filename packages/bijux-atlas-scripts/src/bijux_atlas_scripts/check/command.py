@@ -28,6 +28,7 @@ from .native import (
     check_root_bin_shims,
     check_script_help,
     check_script_ownership,
+    check_scripts_lock_sync,
     check_tracked_timestamp_paths,
     check_naming_intent_lint,
 )
@@ -273,6 +274,15 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         else:
             print("scripts python lock format passed")
         return code
+    if sub == "scripts-lock-sync":
+        code, errors = check_scripts_lock_sync(ctx.repo_root)
+        if errors:
+            print("scripts lock drift detected:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("scripts lock check passed")
+        return code
     return 2
 
 
@@ -315,3 +325,4 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     p_sub.add_parser("make-command-allowlist", help="enforce direct make recipe command allowlist")
     p_sub.add_parser("python-migration-exceptions-expiry", help="fail on expired python migration exceptions")
     p_sub.add_parser("python-lock", help="validate scripts python lockfile line format")
+    p_sub.add_parser("scripts-lock-sync", help="validate scripts lockfile remains in sync with pyproject dev deps")
