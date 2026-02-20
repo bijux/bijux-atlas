@@ -1,0 +1,19 @@
+# Paths temporarily allowed to keep stack literals while migrating to ops_layer_* helpers.
+ops/stack/scripts/collect_events.sh
+ops/stack/scripts/collect_pod_logs.sh
+ops/stack/scripts/health_report.sh
+ops/stack/scripts/uninstall.sh
+ops/stack/scripts/print_urls.sh
+ops/stack/faults/block-minio.sh
+ops/stack/faults/cpu-throttle.sh
+ops/stack/faults/fill-node-disk.sh
+ops/stack/faults/inject.sh
+ops/stack/faults/throttle-network.sh
+ops/stack/faults/toxiproxy-latency.sh
+ops/stack/kind/down.sh
+ops/stack/kind/up.sh
+ops/stack/minio/bootstrap.sh
+ops/stack/minio/rotate_creds.sh
+ops/stack/registry/up.sh
+ops/stack/tests/minio-invariants.sh
+ops/stack/toxiproxy/bootstrap.sh
