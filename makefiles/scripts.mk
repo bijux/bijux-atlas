@@ -2,6 +2,10 @@
 # Public targets: none
 SHELL := /bin/sh
 SCRIPTS_VENV := artifacts/isolate/py/scripts/.venv
+export PYTHONDONTWRITEBYTECODE := 1
+export RUFF_CACHE_DIR := $(CURDIR)/artifacts/bijux-atlas-scripts/.ruff_cache
+export MYPY_CACHE_DIR := $(CURDIR)/artifacts/bijux-atlas-scripts/.mypy_cache
+export HYPOTHESIS_STORAGE_DIRECTORY := $(CURDIR)/artifacts/bijux-atlas-scripts/.hypothesis/examples
 
 bootstrap-tools:
 	@./scripts/areas/bootstrap/install_tools.sh
@@ -43,6 +47,7 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@./ops/_lint/no-scripts-bin-dir.sh
 	@$(PY_RUN) scripts/areas/check/check-no-adhoc-python.py
 	@$(PY_RUN) scripts/areas/check/check-venv-location-policy.py
+	@$(PY_RUN) scripts/areas/check/check-python-runtime-artifacts.py
 	@$(PY_RUN) scripts/areas/check/check-no-make-scripts-references.py
 	@$(PY_RUN) scripts/areas/check/check-repo-script-boundaries.py
 	@$(PY_RUN) scripts/areas/check/check-atlas-scripts-cli-contract.py
