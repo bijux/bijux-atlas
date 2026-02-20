@@ -2,7 +2,6 @@
 
 ## Top-level Areas
 - `artifacts/`
-- `bin/`
 - `configs/`
 - `crates/`
 - `docker/`

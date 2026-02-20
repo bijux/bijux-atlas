@@ -57,6 +57,8 @@ for rel in sorted(symlinks):
         declared = entries[rel]
         if not declared["approval"].startswith("APPROVAL-"):
             violations.append(f"root symlink `{rel}` missing required approval token prefix APPROVAL-")
+        if declared["target"].startswith("scripts/"):
+            violations.append(f"root symlink `{rel}` cannot target scripts/ by policy")
         if target != declared["target"] or target != allowed_root[rel]:
             violations.append(f"root symlink `{rel}` target drift: expected `{declared['target']}`, got `{target}`")
     else:
@@ -65,6 +67,8 @@ for rel in sorted(symlinks):
             violations.append(f"non-root symlink forbidden by policy: `{rel}`")
         elif target != expected:
             violations.append(f"non-root symlink `{rel}` target drift: expected `{expected}`, got `{target}`")
+        elif expected.startswith("scripts/"):
+            violations.append(f"non-root symlink `{rel}` cannot target scripts/ by policy")
 
 dockerfile = ROOT / "Dockerfile"
 if not dockerfile.is_symlink():
