@@ -10,13 +10,13 @@ Maps each repository policy to the exact enforcement point so policy drift is ob
 | Symlink policy | `scripts/areas/layout/check_symlink_policy.py`, `docs/development/symlinks.md`, `layout-check` |
 | Makefile-only workflow execution | `scripts/areas/layout/check_workflows_make_only.py`, `ci-workflows-make-only` |
 | SSOT contract drift | `make ssot-check`, `api-contract-check`, `ci-api-contract` |
-| OpenAPI drift + breaking change detection | `scripts/areas/public/openapi-diff-check.sh`, `bin/bijux-atlas contracts check --checks breakage`, `ci-openapi-drift` |
+| OpenAPI drift + breaking change detection | `atlasctl contracts check --checks drift breakage`, `atlasctl contracts generate --generators openapi artifacts`, `ci-openapi-drift` |
 | Docs drift and link integrity | `make docs`, `make docs-freeze`, `scripts/areas/public/check-markdown-links.sh`, `ci-docs-build` |
 | Script surface governance | `atlasctl docs script-headers-check`, `scripts/areas/layout/check_make_public_scripts.py`, `scripts/areas/layout/check_scripts_buckets.py`, `scripts-audit` |
-| Policy schema drift | `scripts/areas/public/policy-schema-drift.py`, `ci-policy-schema-drift` |
+| Policy schema drift | `atlasctl policies schema-drift`, `ci-policy-schema-drift` |
 | Policy relaxations registry (SSOT exceptions) | `configs/policy/policy-relaxations.json`, `scripts/areas/policy/find_relaxations.sh`, `bijux-atlas policies scan-rust-relaxations`, `scripts/areas/public/policy-audit.py`, `ci-policy-relaxations` |
-| Policy enforcement coverage contract | `configs/policy/policy-enforcement-coverage.json`, `scripts/areas/public/policy-enforcement-status.py`, `docs/_generated/policy-enforcement-status.md`, `ci-policy-enforcement` |
-| Escape-hatch env control (`ALLOW_*`) | `configs/ops/env.schema.json`, `scripts/areas/public/check-allow-env-schema.py`, `ci-policy-allow-env` |
+| Policy enforcement coverage contract | `configs/policy/policy-enforcement-coverage.json`, `atlasctl policies enforcement-status --enforce`, `docs/_generated/policy-enforcement-status.md`, `ci-policy-enforcement` |
+| Escape-hatch env control (`ALLOW_*`) | `configs/ops/env.schema.json`, `atlasctl policies allow-env-lint`, `ci-policy-allow-env` |
 | Ops policy reflection | `scripts/areas/public/ops-policy-audit.py`, `ci-ops-policy-audit` |
 | Crate boundary guardrails | `crates/bijux-atlas-core/tests/guardrails.rs`, `make architecture-check` |
 | SQLite index/schema contracts | `bin/bijux-atlas contracts check --checks sqlite-indexes`, ingest schema/index drift tests, `ci-sqlite-*` |
