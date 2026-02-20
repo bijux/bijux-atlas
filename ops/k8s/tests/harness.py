@@ -147,6 +147,30 @@ def main():
 
         retries = max(args.retries, int(t.get("retries", 1)))
         timeout_seconds = int(t.get("timeout_seconds", 600))
+        if "flake-sensitive" in t.get("groups", []) and retries > 1 and not t.get("flake_issue_id"):
+            results.append(
+                {
+                    "script": script,
+                    "status": "failed",
+                    "duration_seconds": 0.0,
+                    "attempts": [
+                        {
+                            "attempt": 1,
+                            "exit_code": 2,
+                            "stdout": "",
+                            "stderr": "flake-sensitive test retries>1 requires flake_issue_id",
+                            "duration_seconds": 0.0,
+                            "timed_out": False,
+                        }
+                    ],
+                    "groups": t.get("groups", []),
+                    "owner": t.get("owner", "unknown"),
+                    "timeout_seconds": timeout_seconds,
+                    "expected_failure_modes": t.get("expected_failure_modes", []),
+                }
+            )
+            failed += 1
+            continue
         spath = repo_root / "ops/k8s/tests" / script
         if not spath.exists():
             results.append(
