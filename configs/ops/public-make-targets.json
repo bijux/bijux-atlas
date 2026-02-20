@@ -2,6 +2,15 @@
   "max_public_targets": 54,
   "public_targets": [
     {
+      "name": "artifacts-open",
+      "description": "Open latest ops artifact bundle/report directory",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "ops"
+    },
+    {
       "name": "cargo/all",
       "description": "Local exhaustive Rust lane",
       "lanes": [

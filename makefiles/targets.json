@@ -6,6 +6,17 @@
   },
   "targets": [
     {
+      "area": "ops",
+      "description": "Open latest ops artifact bundle/report directory",
+      "lane": "dev",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "name": "artifacts-open",
+      "owner": "ops-platform"
+    },
+    {
       "area": "cargo",
       "description": "Local exhaustive Rust lane",
       "lane": "dev",

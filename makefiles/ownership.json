@@ -206,5 +206,9 @@
   "retry": {
     "owner": "build-and-release",
     "area": "policies"
+  },
+  "artifacts-open": {
+    "owner": "ops-platform",
+    "area": "ops"
   }
 }
