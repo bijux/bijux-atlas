@@ -575,6 +575,16 @@ def check_python_migration_exceptions_expiry(repo_root: Path) -> tuple[int, list
     return (0 if not errors else 1), errors
 
 
+def check_bin_entrypoints(repo_root: Path) -> tuple[int, list[str]]:
+    scripts_bin = repo_root / "scripts" / "bin"
+    if not scripts_bin.exists():
+        return 0, []
+    files = sorted(p for p in scripts_bin.glob("*") if p.is_file())
+    if len(files) > 15:
+        return 1, [f"scripts/bin cap exceeded: {len(files)} > 15"]
+    return 0, []
+
+
 def check_root_bin_shims(repo_root: Path) -> tuple[int, list[str]]:
     bin_dir = repo_root / "bin"
     if not bin_dir.exists():
