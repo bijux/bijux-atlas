@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "default_max_replicas_cap": 50,
+  "profile_caps": {
+    "local": 10,
+    "offline": 10,
+    "perf": 30,
+    "multi-registry": 20,
+    "ingress": 20
+  }
+}
