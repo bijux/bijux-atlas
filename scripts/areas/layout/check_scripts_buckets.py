@@ -1,0 +1,61 @@
+#!/usr/bin/env python3
+# Purpose: enforce script bucket taxonomy and required metadata headers.
+# Inputs: scripts/**/*.sh and scripts/**/*.py.
+# Outputs: non-zero if script file sits outside approved bucket paths.
+from __future__ import annotations
+
+from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[3]
+SCRIPTS = ROOT / "scripts"
+
+ALLOWED_PREFIXES = (
+    "scripts/areas/public/",
+    "scripts/areas/internal/",
+    "scripts/areas/dev/",
+    "scripts/areas/check/",
+    "scripts/areas/ci/",
+    "scripts/areas/configs/",
+    "scripts/areas/gen/",
+    "scripts/lib/",
+    "scripts/areas/python/",
+    "scripts/areas/policy/",
+    "scripts/areas/docs/",
+    "scripts/areas/layout/",
+    "scripts/areas/contracts/",
+    "scripts/areas/release/",
+    "scripts/areas/fixtures/",
+    "scripts/areas/bootstrap/",
+    "scripts/bin/",
+    "scripts/areas/ops/",
+    "scripts/areas/tools/",
+    "scripts/areas/tests/",
+    "scripts/areas/demo/",
+)
+LEGACY_ALLOWED = (
+    "scripts/areas/gen/generate_scripts_readme.py",
+    "scripts/areas/layout/check_no_root_dumping.sh",
+    "scripts/bin/run_drill.sh",
+)
+
+violations: list[str] = []
+for path in sorted(SCRIPTS.rglob("*")):
+    if not path.is_file() or path.suffix not in {".sh", ".py"}:
+        continue
+    rel = path.relative_to(ROOT).as_posix()
+    if rel.startswith("scripts/areas/_internal/"):
+        continue
+    if rel in LEGACY_ALLOWED:
+        continue
+    if any(rel.startswith(prefix) for prefix in ALLOWED_PREFIXES):
+        continue
+    violations.append(rel)
+
+if violations:
+    print("scripts bucket check failed:", file=sys.stderr)
+    for rel in violations:
+        print(f"- {rel}: move under scripts/public|internal|dev or approved domain buckets", file=sys.stderr)
+    raise SystemExit(1)
+
+print("scripts bucket check passed")
