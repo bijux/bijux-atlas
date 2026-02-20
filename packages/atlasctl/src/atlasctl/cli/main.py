@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib
 import json
 import os
 import platform
@@ -8,41 +9,18 @@ import subprocess
 import sys
 from pathlib import Path
 
-from . import __version__, layout, registry
-from .check.command import configure_check_parser, run_check_command
-from .ci.command import configure_ci_parser, run_ci_command
-from .compat.command import configure_compat_parser, run_compat_command
-from .configs.command import configure_configs_parser, run_configs_command
-from .contracts.command import configure_contracts_parser, run_contracts_command
-from .core.context import RunContext
-from .core.env_guard import guard_no_network_mode
-from .core.fs import ensure_evidence_path
-from .core.logging import log_event
-from .docker.command import configure_docker_parser, run_docker_command
-from .docs.command import configure_docs_parser, run_docs_command
-from .doctor import run_doctor
-from .domain_cmd import register_domain_parser, render_payload
-from .domain_cmd import registry as command_registry
-from .env.command import clean_scripts_artifacts, configure_env_parser, run_env_command
-from .errors import ScriptError
-from .exit_codes import ERR_CONFIG, ERR_INTERNAL
-from .gates.command import configure_gates_parser, run_gates_command
-from .gen.command import configure_gen_parser, run_gen_command
-from .inventory.command import configure_inventory_parser, run_inventory
-from .legacy.command import configure_legacy_parser, run_legacy_command
-from .lint.command import configure_lint_parser, run_lint_command
-from .make.command import configure_make_parser, run_make_command
-from .migrate.command import configure_migrate_parser, run_migrate_command
-from .network_guard import install_no_network_guard
-from .ops.command import configure_ops_parser, run_ops_command
-from .orchestrate.command import configure_orchestrate_parsers, run_orchestrate_command
-from .output_contract import validate_json_output
-from .paths.command import configure_paths_parser, run_paths_command
-from .policies.command import configure_policies_parser, run_policies_command
-from .python_tools.command import configure_python_parser, run_python_command
-from .report.command import configure_report_parser, run_report_command
-from .runner import run_legacy_script
-from .surface import run_surface
+from .. import __version__, layout, registry
+from ..cli.registry import register_domain_parser, render_payload
+from ..cli.registry import registry as command_registry
+from ..core.context import RunContext
+from ..core.env_guard import guard_no_network_mode
+from ..core.fs import ensure_evidence_path
+from ..core.logging import log_event
+from ..errors import ScriptError
+from ..exit_codes import ERR_CONFIG, ERR_INTERNAL
+from ..network_guard import install_no_network_guard
+from ..runner import run_legacy_script
+from ..surface import run_surface
 
 DOMAINS = {"registry": registry.run, "layout": layout.run}
 
@@ -55,6 +33,34 @@ EXPLAIN_MAP: dict[str, dict[str, object]] = {
     "report": {"touches": ["artifacts/evidence/", "ops/_generated_committed/"], "tools": []},
     "gates": {"touches": ["configs/gates/lanes.json", "artifacts/evidence/"], "tools": ["make"]},
 }
+
+_CONFIGURE_HOOKS: tuple[tuple[str, str], ...] = (
+    ("atlasctl.env.command", "configure_env_parser"),
+    ("atlasctl.paths.command", "configure_paths_parser"),
+    ("atlasctl.configs.command", "configure_configs_parser"),
+    ("atlasctl.contracts.command", "configure_contracts_parser"),
+    ("atlasctl.docker.command", "configure_docker_parser"),
+    ("atlasctl.ci.command", "configure_ci_parser"),
+    ("atlasctl.checks.command", "configure_check_parser"),
+    ("atlasctl.gen.command", "configure_gen_parser"),
+    ("atlasctl.policies.command", "configure_policies_parser"),
+    ("atlasctl.docs.command", "configure_docs_parser"),
+    ("atlasctl.make.command", "configure_make_parser"),
+    ("atlasctl.migrate.command", "configure_migrate_parser"),
+    ("atlasctl.ops.command", "configure_ops_parser"),
+    ("atlasctl.inventory.command", "configure_inventory_parser"),
+    ("atlasctl.lint.command", "configure_lint_parser"),
+    ("atlasctl.reporting.command", "configure_report_parser"),
+    ("atlasctl.compat.command", "configure_compat_parser"),
+    ("atlasctl.legacy.command", "configure_legacy_parser"),
+    ("atlasctl.orchestrate.command", "configure_orchestrate_parsers"),
+    ("atlasctl.gates.command", "configure_gates_parser"),
+    ("atlasctl.python_tools.command", "configure_python_parser"),
+)
+
+
+def _import_attr(module_name: str, attr: str):
+    return getattr(importlib.import_module(module_name), attr)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -78,8 +84,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     version_p = sub.add_parser("version", help="print versions and git context")
     version_p.add_argument("--json", action="store_true", help="emit JSON output")
-    configure_env_parser(sub)
-    configure_paths_parser(sub)
+    for module_name, attr in _CONFIGURE_HOOKS[:2]:
+        _import_attr(module_name, attr)(sub)
     self_p = sub.add_parser("self-check", help="validate imports, config loading, and schema presence")
     self_p.add_argument("--json", action="store_true", help="emit JSON output")
     help_p = sub.add_parser("help", help="print command help")
@@ -109,25 +115,8 @@ def build_parser() -> argparse.ArgumentParser:
     domain_names = ("registry", "layout")
     for name in domain_names:
         register_domain_parser(sub, name, f"{name} domain commands")
-    configure_configs_parser(sub)
-    configure_contracts_parser(sub)
-    configure_docker_parser(sub)
-    configure_ci_parser(sub)
-    configure_check_parser(sub)
-    configure_gen_parser(sub)
-    configure_policies_parser(sub)
-    configure_docs_parser(sub)
-    configure_make_parser(sub)
-    configure_migrate_parser(sub)
-    configure_ops_parser(sub)
-    configure_inventory_parser(sub)
-    configure_lint_parser(sub)
-    configure_report_parser(sub)
-    configure_compat_parser(sub)
-    configure_legacy_parser(sub)
-    configure_orchestrate_parsers(sub)
-    configure_gates_parser(sub)
-    configure_python_parser(sub)
+    for module_name, attr in _CONFIGURE_HOOKS[2:]:
+        _import_attr(module_name, attr)(sub)
 
     doctor_p = sub.add_parser("doctor", help="show tooling and context diagnostics")
     doctor_p.add_argument("--json", action="store_true", help="emit JSON output")
@@ -147,7 +136,7 @@ def build_parser() -> argparse.ArgumentParser:
 def _version_string() -> str:
     base = f"atlasctl {__version__}"
     try:
-        repo_root = Path(__file__).resolve().parents[4]
+        repo_root = Path(__file__).resolve().parents[5]
         sha = (
             subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=repo_root, text=True)
             .strip()
@@ -301,9 +290,9 @@ def main(argv: list[str] | None = None) -> int:
             )
             return 0
         if ns.cmd == "env":
-            return run_env_command(ctx, ns)
+            return _import_attr("atlasctl.env.command", "run_env_command")(ctx, ns)
         if ns.cmd == "paths":
-            return run_paths_command(ctx, ns)
+            return _import_attr("atlasctl.paths.command", "run_paths_command")(ctx, ns)
         if ns.cmd == "self-check":
             payload = _build_common_payload(ctx)
             payload["checks"] = {
@@ -345,7 +334,7 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"# completion for {ns.shell} is not yet generated; use `atlasctl help --json`")
             return 0
         if ns.cmd == "clean":
-            payload = clean_scripts_artifacts(ctx, ns.older_than_days)
+            payload = _import_attr("atlasctl.env.command", "clean_scripts_artifacts")(ctx, ns.older_than_days)
             if as_json or ns.json:
                 print(json.dumps(payload, sort_keys=True))
             else:
@@ -366,51 +355,53 @@ def main(argv: list[str] | None = None) -> int:
                 return 0
             return run_legacy_script(ns.script, ns.args, ctx)
         if ns.cmd == "validate-output":
-            return validate_json_output(ns.schema, ns.file, ns.json)
+            return _import_attr("atlasctl.contracts.output", "validate_json_output")(ns.schema, ns.file, ns.json)
         if ns.cmd == "surface":
             return run_surface(ns.json, ns.out_file)
         if ns.cmd == "commands":
             return run_surface(True, ns.out_file)
         if ns.cmd == "doctor":
-            return run_doctor(ctx, ns.json, ns.out_file)
+            return _import_attr("atlasctl.commands.doctor", "run_doctor")(ctx, ns.json, ns.out_file)
         if ns.cmd == "docs":
-            return run_docs_command(ctx, ns)
+            return _import_attr("atlasctl.docs.command", "run_docs_command")(ctx, ns)
         if ns.cmd == "configs":
-            return run_configs_command(ctx, ns)
+            return _import_attr("atlasctl.configs.command", "run_configs_command")(ctx, ns)
         if ns.cmd == "contracts":
-            return run_contracts_command(ctx, ns)
+            return _import_attr("atlasctl.contracts.command", "run_contracts_command")(ctx, ns)
         if ns.cmd == "docker":
-            return run_docker_command(ctx, ns)
+            return _import_attr("atlasctl.docker.command", "run_docker_command")(ctx, ns)
         if ns.cmd == "ci":
-            return run_ci_command(ctx, ns)
+            return _import_attr("atlasctl.ci.command", "run_ci_command")(ctx, ns)
         if ns.cmd == "check":
-            return run_check_command(ctx, ns)
+            return _import_attr("atlasctl.checks.command", "run_check_command")(ctx, ns)
         if ns.cmd == "gen":
-            return run_gen_command(ctx, ns)
+            return _import_attr("atlasctl.gen.command", "run_gen_command")(ctx, ns)
         if ns.cmd == "policies":
-            return run_policies_command(ctx, ns)
+            return _import_attr("atlasctl.policies.command", "run_policies_command")(ctx, ns)
         if ns.cmd == "make":
-            return run_make_command(ctx, ns)
+            return _import_attr("atlasctl.make.command", "run_make_command")(ctx, ns)
         if ns.cmd == "migration":
-            return run_migrate_command(ctx, ns)
+            return _import_attr("atlasctl.migrate.command", "run_migrate_command")(ctx, ns)
         if ns.cmd == "ops":
-            return run_ops_command(ctx, ns)
+            return _import_attr("atlasctl.ops.command", "run_ops_command")(ctx, ns)
         if ns.cmd == "inventory":
-            return run_inventory(ctx, ns.category, ns.format, ns.out_dir, ns.dry_run, ns.check, ns.command)
+            return _import_attr("atlasctl.inventory.command", "run_inventory")(
+                ctx, ns.category, ns.format, ns.out_dir, ns.dry_run, ns.check, ns.command
+            )
         if ns.cmd == "report":
-            return run_report_command(ctx, ns)
+            return _import_attr("atlasctl.reporting.command", "run_report_command")(ctx, ns)
         if ns.cmd == "lint":
-            return run_lint_command(ctx, ns)
+            return _import_attr("atlasctl.lint.command", "run_lint_command")(ctx, ns)
         if ns.cmd == "compat":
-            return run_compat_command(ctx, ns)
+            return _import_attr("atlasctl.compat.command", "run_compat_command")(ctx, ns)
         if ns.cmd == "legacy":
-            return run_legacy_command(ctx, ns)
+            return _import_attr("atlasctl.legacy.command", "run_legacy_command")(ctx, ns)
         if ns.cmd == "python":
-            return run_python_command(ctx, ns)
+            return _import_attr("atlasctl.python_tools.command", "run_python_command")(ctx, ns)
         if ns.cmd in {"ports", "artifacts", "k8s", "stack", "obs", "load", "e2e", "datasets", "cleanup", "scenario"}:
-            return run_orchestrate_command(ctx, ns)
+            return _import_attr("atlasctl.orchestrate.command", "run_orchestrate_command")(ctx, ns)
         if ns.cmd == "gates":
-            return run_gates_command(ctx, ns)
+            return _import_attr("atlasctl.gates.command", "run_gates_command")(ctx, ns)
         if ns.cmd in DOMAINS:
             payload_obj = DOMAINS[ns.cmd](ctx)
             payload = render_payload(payload_obj, as_json)
