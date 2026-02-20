@@ -44,7 +44,7 @@ gates-check: ## Run public-surface/docs/makefile boundary checks
 	@$(ATLAS_SCRIPTS) make contracts-check --emit-artifacts
 
 gates: ## Print public targets grouped by namespace
-	@$(ATLAS_SCRIPTS) make help --mode gates
+	@$(ATLAS_SCRIPTS) --quiet gates list
 
 help: ## Show curated public make targets from SSOT
 	@$(ATLAS_SCRIPTS) make help
@@ -187,6 +187,9 @@ docs/all: ## Docs lane
 	@$(call with_iso,docs-all,$(MAKE) -s internal/docs/all)
 scripts/check: ## Deterministic scripts check lane
 	@$(call with_iso,scripts-check,$(MAKE) -s internal/scripts/check)
+
+tools-check: ## Alias for python tooling/package checks
+	@$(MAKE) -s scripts/check
 
 scripts-install-dev: ## Install python tooling for scripts package development
 	@$(MAKE) -s internal/scripts/install-dev
@@ -358,15 +361,17 @@ internal/lane-obs-full: ## Internal lane: full observability verification for ro
 
 root: ## CI-fast lane subset (no cluster bring-up)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-$(MAKE_RUN_TS)}}"; \
-	$(MAKE) -s scripts/check; \
-	PARALLEL="$${PARALLEL:-1}" RUN_ID="$$run_id" MODE=root ./ops/run/root-lanes.sh; \
+	$(MAKE) -s tools-check; \
+	parallel_flag=""; if [ "$${PARALLEL:-1}" = "1" ]; then parallel_flag="--parallel"; fi; \
+	RUN_ID="$$run_id" $(ATLAS_SCRIPTS) gates run --preset root --all $$parallel_flag --jobs "$${JOBS:-4}"; \
 	$(ATLAS_SCRIPTS) report collect --run-id "$$run_id" >/dev/null; \
 	$(ATLAS_SCRIPTS) report print --run-id "$$run_id"
 
 root-local: ## All lanes in parallel + ops smoke lane (PARALLEL=0 for serial)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-$(MAKE_RUN_TS)}}"; \
-	$(MAKE) -s scripts/check; \
-	PARALLEL="$${PARALLEL:-1}" RUN_ID="$$run_id" MODE=root-local ./ops/run/root-lanes.sh; \
+	$(MAKE) -s tools-check; \
+	parallel_flag=""; if [ "$${PARALLEL:-1}" = "1" ]; then parallel_flag="--parallel"; fi; \
+	RUN_ID="$$run_id" $(ATLAS_SCRIPTS) gates run --preset root-local --all $$parallel_flag --jobs "$${JOBS:-4}"; \
 	if [ "$${PERF_CHEAP_REGRESSION:-0}" = "1" ]; then $(MAKE) -s ops-load-smoke perf/regression-check PROFILE="$${PROFILE:-local}"; fi; \
 	$(ATLAS_SCRIPTS) report collect --run-id "$$run_id" >/dev/null; \
 	$(ATLAS_SCRIPTS) report print --run-id "$$run_id"
@@ -560,6 +565,7 @@ isolate-clean: ## Remove isolate output directories safely
 	@find artifacts/isolate -mindepth 1 -maxdepth 1 -type d -exec rm -r {} + 2>/dev/null || true
 
 clean: ## Safe clean for generated local outputs
+	@$(ATLAS_SCRIPTS) cleanup --older-than "$${OLDER_THAN_DAYS:-14}"
 	@./ops/run/clean.sh
 
 clean-safe: ## Clean only safe generated make artifact directories
