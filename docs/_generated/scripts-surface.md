@@ -25,8 +25,8 @@ Scripts are internal unless listed in `configs/ops/public-surface.json` or `scri
 | `scripts/bin/isolate` | `bijux-atlas-platform` |
 | `scripts/bin/require-isolate` | `bijux-atlas-platform` |
 | `scripts/bin/run_drill.sh` | `bijux-atlas-operations` |
-| `tools/bijux_atlas_scripts/src/bijux_atlas_scripts` | `bijux-atlas-platform` |
-| `tools/bijux_atlas_scripts/tests` | `bijux-atlas-platform` |
+| `tools/bijux-atlas-scripts/src/bijux_atlas_scripts` | `bijux-atlas-platform` |
+| `tools/bijux-atlas-scripts/tests` | `bijux-atlas-platform` |
 
 - `scripts/bin/bijux-atlas-dev`
 - `scripts/bin/bijux-atlas-ops`
