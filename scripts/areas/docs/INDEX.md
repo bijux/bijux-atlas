@@ -20,5 +20,3 @@ Scripts in this area.
 - generate_repo_surface.py
 - generate_scripts_graph.py
 - legacy-terms-allowlist.txt
-- lint_depth.py
-- lint_doc_contracts.py
