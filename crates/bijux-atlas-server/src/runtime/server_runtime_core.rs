@@ -141,6 +141,7 @@ pub struct CacheMetrics {
     pub store_download_failures: AtomicU64,
     pub store_open_failures: AtomicU64,
     pub store_breaker_open_total: AtomicU64,
+    pub store_breaker_half_open_total: AtomicU64,
     pub store_retry_budget_exhausted_total: AtomicU64,
     pub store_download_ttfb_ns: Mutex<Vec<u64>>,
     pub store_download_bytes_total: AtomicU64,
@@ -175,6 +176,7 @@ struct RequestMetrics {
     response_size_bytes: Mutex<HashMap<String, Vec<u64>>>,
     heavy_latency_recent_ns: Mutex<VecDeque<u64>>,
     exemplars: Mutex<HashMap<RequestMetricKey, RequestExemplar>>,
+    client_fingerprint_counts: Mutex<HashMap<(String, String), u64>>,
 }
 
 type RequestMetricKey = (String, String, u16, String);
@@ -291,6 +293,17 @@ impl RequestMetrics {
         let idx = ((v.len() as f64) * 0.95).ceil() as usize - 1;
         let p95_ns = v[idx.min(v.len() - 1)];
         p95_ns > (threshold_ms * 1_000_000)
+    }
+
+    pub(crate) async fn observe_client_fingerprint(
+        &self,
+        client_type: &str,
+        user_agent_family: &str,
+    ) {
+        let mut counts = self.client_fingerprint_counts.lock().await;
+        *counts
+            .entry((client_type.to_string(), user_agent_family.to_string()))
+            .or_insert(0) += 1;
     }
 }
 
@@ -410,12 +423,29 @@ async fn resilience_middleware(
         ));
         return (StatusCode::SERVICE_UNAVAILABLE, err).into_response();
     }
+    if state.api.disable_heavy_endpoints && is_heavy_endpoint_path(&path) {
+        let err = Json(ApiError::new(
+            ApiErrorCode::QueryRejectedByPolicy,
+            "heavy endpoints are temporarily disabled by safety valve policy",
+            serde_json::json!({"policy":"disable_heavy_endpoints"}),
+            "req-unknown",
+        ));
+        return (StatusCode::SERVICE_UNAVAILABLE, err).into_response();
+    }
     let mut resp = next.run(req).await;
     if crate::middleware::shedding::overloaded(&state).await {
         resp.headers_mut()
             .insert("x-atlas-system-stress", HeaderValue::from_static("true"));
     }
     resp
+}
+
+fn is_heavy_endpoint_path(path: &str) -> bool {
+    path == "/v1/genes"
+        || path == "/v1/sequence/region"
+        || path == "/v1/diff/genes"
+        || path == "/v1/diff/region"
+        || (path.starts_with("/v1/genes/") && path.ends_with("/sequence"))
 }
 
 fn normalized_header_value(headers: &HeaderMap, key: &str, max_len: usize) -> Option<String> {
@@ -506,6 +536,14 @@ async fn security_middleware(
         ));
         return (StatusCode::BAD_REQUEST, err).into_response();
     }
+
+    let user_agent = normalized_header_value(req.headers(), "user-agent", 512);
+    let client_type = classify_client_type(user_agent.as_deref());
+    let ua_family = classify_user_agent_family(user_agent.as_deref());
+    state
+        .metrics
+        .observe_client_fingerprint(client_type, ua_family)
+        .await;
 
     let api_key = normalized_header_value(req.headers(), "x-api-key", 256);
     if state.api.require_api_key && api_key.is_none() {
@@ -607,6 +645,40 @@ async fn security_middleware(
         );
     }
     resp
+}
+
+fn classify_client_type(user_agent: Option<&str>) -> &'static str {
+    let Some(ua) = user_agent else {
+        return "unknown";
+    };
+    let normalized = ua.to_ascii_lowercase();
+    if normalized.contains("mozilla/")
+        || normalized.contains("chrome/")
+        || normalized.contains("safari/")
+        || normalized.contains("firefox/")
+    {
+        "human"
+    } else {
+        "machine"
+    }
+}
+
+fn classify_user_agent_family(user_agent: Option<&str>) -> &'static str {
+    let Some(ua) = user_agent else {
+        return "unknown";
+    };
+    let normalized = ua.to_ascii_lowercase();
+    if normalized.contains("curl/") {
+        "curl"
+    } else if normalized.contains("k6/") {
+        "k6"
+    } else if normalized.contains("mozilla/") {
+        "browser"
+    } else if normalized.contains("python-requests") {
+        "python-requests"
+    } else {
+        "other"
+    }
 }
 
 async fn cors_middleware(

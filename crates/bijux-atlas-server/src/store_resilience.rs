@@ -13,11 +13,15 @@ impl DatasetCacheManager {
     }
 
     pub(super) async fn check_store_breaker(&self) -> Result<(), CacheError> {
-        let lock = self.store_breaker.lock().await;
+        let mut lock = self.store_breaker.lock().await;
         if let Some(until) = lock.open_until {
             if Instant::now() < until {
                 return Err(CacheError("store circuit breaker open".to_string()));
             }
+            lock.open_until = None;
+            self.metrics
+                .store_breaker_half_open_total
+                .fetch_add(1, Ordering::Relaxed);
         }
         Ok(())
     }

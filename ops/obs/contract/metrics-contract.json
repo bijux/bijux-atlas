@@ -188,6 +188,47 @@
       "type": "counter",
       "unit": "count"
     },
+    "atlas_client_requests_total": {
+      "cardinality_budget": {
+        "max_new_series_per_hour": 128,
+        "max_series": 512
+      },
+      "criticality": "tier-0",
+      "example_series": "atlas_client_requests_total{client_type=\"example\",dataset=\"example\",subsystem=\"example\",user_agent_family=\"example\",version=\"example\"}} 1",
+      "forbidden_labels": [
+        "request_id",
+        "trace_id",
+        "dataset_id",
+        "gene_id",
+        "tx_id",
+        "path",
+        "query",
+        "raw_path"
+      ],
+      "owner": {
+        "crate": "bijux-atlas-server",
+        "module": "src/telemetry/metrics_endpoint.rs"
+      },
+      "required_labels": [
+        "client_type",
+        "dataset",
+        "subsystem",
+        "user_agent_family",
+        "version"
+      ],
+      "semantic": {
+        "on_break_action": "check exporter, contract, and runtime telemetry path",
+        "what_it_measures": "atlas_client_requests_total contract metric"
+      },
+      "slo_relevance": {
+        "relevant": true,
+        "slos": [
+          "availability"
+        ]
+      },
+      "type": "counter",
+      "unit": "count"
+    },
     "atlas_dataset_missing_total": {
       "cardinality_budget": {
         "max_new_series_per_hour": 500,
@@ -1224,6 +1265,45 @@
       "type": "gauge",
       "unit": "seconds"
     },
+    "bijux_store_breaker_half_open_total": {
+      "cardinality_budget": {
+        "max_new_series_per_hour": 128,
+        "max_series": 512
+      },
+      "criticality": "tier-1",
+      "example_series": "bijux_store_breaker_half_open_total{dataset=\"example\",subsystem=\"example\",version=\"example\"}} 1",
+      "forbidden_labels": [
+        "request_id",
+        "trace_id",
+        "dataset_id",
+        "gene_id",
+        "tx_id",
+        "path",
+        "query",
+        "raw_path"
+      ],
+      "owner": {
+        "crate": "bijux-atlas-server",
+        "module": "src/telemetry/metrics_endpoint.rs"
+      },
+      "required_labels": [
+        "dataset",
+        "subsystem",
+        "version"
+      ],
+      "semantic": {
+        "on_break_action": "check exporter, contract, and runtime telemetry path",
+        "what_it_measures": "bijux_store_breaker_half_open_total contract metric"
+      },
+      "slo_relevance": {
+        "relevant": true,
+        "slos": [
+          "dependency"
+        ]
+      },
+      "type": "counter",
+      "unit": "count"
+    },
     "bijux_store_breaker_open": {
       "cardinality_budget": {
         "max_new_series_per_hour": 500,
@@ -1261,6 +1341,45 @@
       },
       "type": "gauge",
       "unit": "unitless"
+    },
+    "bijux_store_breaker_open_current": {
+      "cardinality_budget": {
+        "max_new_series_per_hour": 128,
+        "max_series": 512
+      },
+      "criticality": "tier-1",
+      "example_series": "bijux_store_breaker_open_current{dataset=\"example\",subsystem=\"example\",version=\"example\"}} 1",
+      "forbidden_labels": [
+        "request_id",
+        "trace_id",
+        "dataset_id",
+        "gene_id",
+        "tx_id",
+        "path",
+        "query",
+        "raw_path"
+      ],
+      "owner": {
+        "crate": "bijux-atlas-server",
+        "module": "src/telemetry/metrics_endpoint.rs"
+      },
+      "required_labels": [
+        "dataset",
+        "subsystem",
+        "version"
+      ],
+      "semantic": {
+        "on_break_action": "check exporter, contract, and runtime telemetry path",
+        "what_it_measures": "bijux_store_breaker_open_current contract metric"
+      },
+      "slo_relevance": {
+        "relevant": true,
+        "slos": [
+          "dependency"
+        ]
+      },
+      "type": "gauge",
+      "unit": "count"
     },
     "bijux_store_download_p95_seconds": {
       "cardinality_budget": {
@@ -1496,6 +1615,13 @@
       "subsystem",
       "version"
     ],
+    "atlas_client_requests_total": [
+      "client_type",
+      "dataset",
+      "subsystem",
+      "user_agent_family",
+      "version"
+    ],
     "atlas_dataset_missing_total": [
       "dataset",
       "dataset_hash",
@@ -1646,7 +1772,17 @@
       "subsystem",
       "version"
     ],
+    "bijux_store_breaker_half_open_total": [
+      "dataset",
+      "subsystem",
+      "version"
+    ],
     "bijux_store_breaker_open": [
+      "dataset",
+      "subsystem",
+      "version"
+    ],
+    "bijux_store_breaker_open_current": [
       "dataset",
       "subsystem",
       "version"

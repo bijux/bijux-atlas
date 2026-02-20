@@ -400,6 +400,7 @@ async fn main() -> Result<(), String> {
         adaptive_rate_limit_factor: env_f64("ATLAS_ADAPTIVE_RATE_LIMIT_FACTOR", 0.5),
         adaptive_heavy_limit_factor: env_f64("ATLAS_ADAPTIVE_HEAVY_LIMIT_FACTOR", 0.5),
         emergency_global_breaker: env_bool("ATLAS_EMERGENCY_GLOBAL_BREAKER", false),
+        disable_heavy_endpoints: env_bool("ATLAS_DISABLE_HEAVY_ENDPOINTS", false),
         memory_pressure_shed_enabled: env_bool("ATLAS_MEMORY_PRESSURE_SHED_ENABLED", false),
         memory_pressure_rss_bytes: env_u64(
             "ATLAS_MEMORY_PRESSURE_RSS_BYTES",

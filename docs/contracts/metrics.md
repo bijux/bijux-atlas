@@ -24,6 +24,7 @@ Does not define implementation internals outside this contract surface.
 - `atlas_bulkhead_saturation` labels: class, dataset, subsystem, version
 - `atlas_cache_hits_total` labels: cache, dataset, subsystem, version
 - `atlas_cache_misses_total` labels: cache, dataset, subsystem, version
+- `atlas_client_requests_total` labels: client_type, dataset, subsystem, user_agent_family, version
 - `atlas_dataset_missing_total` labels: dataset, dataset_hash, subsystem, version
 - `atlas_invariant_violations_total` labels: dataset, invariant, subsystem, version
 - `atlas_overload_active` labels: dataset, subsystem, version
@@ -50,7 +51,9 @@ Does not define implementation internals outside this contract surface.
 - `bijux_request_stage_latency_p95_seconds` labels: dataset, stage, subsystem, version
 - `bijux_runtime_policy_hash` labels: dataset, subsystem, version
 - `bijux_sqlite_query_latency_p95_seconds` labels: dataset, query_type, subsystem, version
+- `bijux_store_breaker_half_open_total` labels: dataset, subsystem, version
 - `bijux_store_breaker_open` labels: dataset, subsystem, version
+- `bijux_store_breaker_open_current` labels: dataset, subsystem, version
 - `bijux_store_download_p95_seconds` labels: dataset, subsystem, version
 - `bijux_store_fetch_latency_p95_seconds` labels: backend, dataset, subsystem, version
 - `bijux_store_open_p95_seconds` labels: dataset, subsystem, version
