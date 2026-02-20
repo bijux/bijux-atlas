@@ -28,7 +28,7 @@ no-direct-scripts:
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)
 	@$(MAKE) -s internal/scripts/install-lock
 	@$(MAKE) scripts-audit
-	@$(PY_RUN) scripts/areas/docs/check_script_headers.py
+	@$(ATLAS_SCRIPTS) docs script-headers-check --report text
 	@$(PY_RUN) scripts/areas/layout/check_make_public_scripts.py
 	@$(PY_RUN) scripts/areas/layout/check_scripts_buckets.py
 	@$(PY_RUN) scripts/areas/layout/check_script_relative_calls.py
@@ -168,7 +168,7 @@ packages-lock: ## Refresh python lockfile deterministically from requirements.in
 	@python3 -c 'from pathlib import Path; src=Path("packages/bijux-atlas-scripts/requirements.in"); dst=Path("packages/bijux-atlas-scripts/requirements.lock.txt"); lines=[ln.strip() for ln in src.read_text(encoding="utf-8").splitlines() if ln.strip() and not ln.strip().startswith("#")]; dst.write_text("\\n".join(sorted(set(lines)))+"\\n", encoding="utf-8"); print(f"updated {dst}")'
 
 scripts-audit: ## Audit script headers, taxonomy buckets, and no-implicit-cwd contract
-	@$(PY_RUN) scripts/areas/docs/check_script_headers.py
+	@$(ATLAS_SCRIPTS) docs script-headers-check --report text
 	@$(PY_RUN) scripts/areas/layout/check_scripts_buckets.py
 	@$(PY_RUN) scripts/areas/layout/check_make_public_scripts.py
 	@$(PY_RUN) scripts/areas/layout/check_script_relative_calls.py
@@ -190,7 +190,7 @@ internal/scripts/check: ## Deterministic scripts check lane
 	@start="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; status=pass; fail=""; \
 	if ! $(MAKE) scripts-check; then status=fail; fail="scripts-check failed"; fi; \
 	end="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; \
-	PYTHONPATH=packages/bijux-atlas-scripts/src python3 -m bijux_atlas_scripts.reporting.make_area_report --path "$${ISO_ROOT:-artifacts/isolate/scripts/$${RUN_ID:-scripts-check}}/report.scripts.check.json" --lane "scripts/check" --status "$$status" --start "$$start" --end "$$end" --artifact "$${ISO_ROOT:-artifacts/isolate/scripts/$${RUN_ID:-scripts-check}}" --failure "$$fail" >/dev/null; \
+	$(ATLAS_SCRIPTS) report make-area-write --path "$${ISO_ROOT:-artifacts/isolate/scripts/$${RUN_ID:-scripts-check}}/report.scripts.check.json" --lane "scripts/check" --run-id "$${RUN_ID:-scripts-check}" --status "$$status" --start "$$start" --end "$$end" --artifact "$${ISO_ROOT:-artifacts/isolate/scripts/$${RUN_ID:-scripts-check}}" --failure "$$fail" >/dev/null; \
 	[ "$$status" = "pass" ] || { $(call fail_banner,scripts/check); exit 1; }
 
 internal/scripts/build: ## Build script inventories/graphs
