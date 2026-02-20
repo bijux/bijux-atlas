@@ -20,6 +20,9 @@ from .native import (
     check_make_forbidden_paths,
     check_make_help,
     check_make_scripts_references,
+    check_no_adhoc_python,
+    check_no_direct_bash_invocations,
+    check_no_direct_python_invocations,
     check_no_executable_python_outside_packages,
     check_no_xtask_refs,
     check_ops_generated_tracked,
@@ -283,6 +286,33 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         else:
             print("scripts lock check passed")
         return code
+    if sub == "no-adhoc-python":
+        code, errors = check_no_adhoc_python(ctx.repo_root)
+        if errors:
+            print("no ad-hoc python script check failed")
+            for err in errors[:200]:
+                print(f"- unregistered python file outside tools package: {err}")
+        else:
+            print("no ad-hoc python script check passed")
+        return code
+    if sub == "no-direct-python-invocations":
+        code, errors = check_no_direct_python_invocations(ctx.repo_root)
+        if errors:
+            print("direct python invocation policy check failed:")
+            for err in errors[:200]:
+                print(f"- {err}")
+        else:
+            print("direct python invocation policy check passed")
+        return code
+    if sub == "no-direct-bash-invocations":
+        code, errors = check_no_direct_bash_invocations(ctx.repo_root)
+        if errors:
+            print("direct bash invocation policy check failed:")
+            for err in errors[:200]:
+                print(f"- {err}")
+        else:
+            print("direct bash invocation policy check passed")
+        return code
     return 2
 
 
@@ -326,3 +356,6 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     p_sub.add_parser("python-migration-exceptions-expiry", help="fail on expired python migration exceptions")
     p_sub.add_parser("python-lock", help="validate scripts python lockfile line format")
     p_sub.add_parser("scripts-lock-sync", help="validate scripts lockfile remains in sync with pyproject dev deps")
+    p_sub.add_parser("no-adhoc-python", help="validate no unregistered ad-hoc python scripts are tracked")
+    p_sub.add_parser("no-direct-python-invocations", help="forbid direct python invocations in docs/makefiles")
+    p_sub.add_parser("no-direct-bash-invocations", help="forbid direct bash scripts invocations in docs/makefiles")

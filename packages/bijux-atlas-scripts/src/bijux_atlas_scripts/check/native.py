@@ -4,9 +4,43 @@ import json
 import os
 import re
 import subprocess
+from dataclasses import dataclass
 from datetime import date
 from fnmatch import fnmatch
 from pathlib import Path
+
+
+@dataclass(frozen=True)
+class PythonMigrationException:
+    kind: str
+    path_glob: str
+    contains: str
+
+
+def _load_python_migration_exceptions(repo_root: Path) -> list[PythonMigrationException]:
+    payload = json.loads((repo_root / "configs/layout/python-migration-exceptions.json").read_text(encoding="utf-8"))
+    items: list[PythonMigrationException] = []
+    for row in payload.get("exceptions", []):
+        items.append(
+            PythonMigrationException(
+                kind=str(row.get("kind", "")),
+                path_glob=str(row.get("path_glob", "")),
+                contains=str(row.get("contains", "")),
+            )
+        )
+    return items
+
+
+def _find_python_migration_exception(repo_root: Path, kind: str, rel_path: str, line: str) -> PythonMigrationException | None:
+    for entry in _load_python_migration_exceptions(repo_root):
+        if entry.kind != kind:
+            continue
+        if not fnmatch(rel_path, entry.path_glob):
+            continue
+        if entry.contains and entry.contains not in line:
+            continue
+        return entry
+    return None
 
 
 def check_duplicate_script_names(repo_root: Path) -> tuple[int, list[str]]:
@@ -618,6 +652,94 @@ def check_scripts_lock_sync(repo_root: Path) -> tuple[int, list[str]]:
     if expected != locked:
         return 1, [f"scripts lock drift: expected={expected} locked={locked}"]
     return 0, []
+
+
+def check_no_adhoc_python(repo_root: Path) -> tuple[int, list[str]]:
+    allowlist = repo_root / "configs/layout/python-legacy-allowlist.txt"
+    allow = {
+        line.strip()
+        for line in allowlist.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.strip().startswith("#")
+    }
+    proc = subprocess.run(["git", "ls-files", "*.py"], cwd=repo_root, check=False, text=True, capture_output=True)
+    errors: list[str] = []
+    for rel in sorted(ln.strip() for ln in proc.stdout.splitlines() if ln.strip()):
+        if rel.startswith("packages/bijux-atlas-scripts/"):
+            continue
+        if "/tests/" in rel:
+            continue
+        if _find_python_migration_exception(repo_root, "python_scripts_path", rel, "") is not None:
+            continue
+        if rel in allow:
+            continue
+        errors.append(rel)
+    return (0 if not errors else 1), errors
+
+
+def check_no_direct_python_invocations(repo_root: Path) -> tuple[int, list[str]]:
+    docs = repo_root / "docs"
+    makefiles = repo_root / "makefiles"
+    makefile = repo_root / "Makefile"
+    direct_py_re = re.compile(r"\bpython3?\s+([^\s`]+\.py)\b")
+    py_scripts_re = re.compile(r"\bpython3?\s+scripts/[^\s`]+\.py\b")
+    allowed_make_re = re.compile(r"\bpython3?\s+-m\s+bijux_atlas_scripts(?:\b|$)")
+    errors: list[str] = []
+
+    def scan(path: Path, kind: str) -> None:
+        rel = path.relative_to(repo_root).as_posix()
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        for lineno, line in enumerate(text.splitlines(), start=1):
+            if py_scripts_re.search(line):
+                if _find_python_migration_exception(repo_root, "python_scripts_path", rel, line) is None:
+                    errors.append(f"{rel}:{lineno}: direct `python scripts/*.py` invocation is forbidden")
+            if kind == "docs":
+                if direct_py_re.search(line):
+                    if _find_python_migration_exception(repo_root, "docs_direct_python", rel, line) is None:
+                        errors.append(
+                            f"{rel}:{lineno}: docs must reference `bijux-atlas-scripts`, not direct python execution"
+                        )
+            if kind == "makefiles":
+                if direct_py_re.search(line) and not allowed_make_re.search(line):
+                    if _find_python_migration_exception(repo_root, "makefiles_direct_python", rel, line) is None:
+                        errors.append(
+                            f"{rel}:{lineno}: makefiles must use `bijux-atlas-scripts` or `python -m bijux_atlas_scripts...`"
+                        )
+
+    for path in docs.rglob("*.md"):
+        if "docs/_generated/" in path.as_posix():
+            continue
+        scan(path, "docs")
+    for path in makefiles.glob("*.mk"):
+        scan(path, "makefiles")
+    scan(makefile, "makefiles")
+    return (0 if not errors else 1), errors
+
+
+def check_no_direct_bash_invocations(repo_root: Path) -> tuple[int, list[str]]:
+    docs = repo_root / "docs"
+    makefiles = repo_root / "makefiles"
+    makefile = repo_root / "Makefile"
+    bash_scripts_re = re.compile(r"\bbash\s+([^\s`]*scripts/[^\s`]+)\b")
+    errors: list[str] = []
+
+    def scan(path: Path, kind: str) -> None:
+        rel = path.relative_to(repo_root).as_posix()
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        for lineno, line in enumerate(text.splitlines(), start=1):
+            if not bash_scripts_re.search(line):
+                continue
+            exc_kind = "docs_direct_bash" if kind == "docs" else "makefiles_direct_bash"
+            if _find_python_migration_exception(repo_root, exc_kind, rel, line) is None:
+                errors.append(f"{rel}:{lineno}: direct `bash ...scripts/...` invocation is forbidden")
+
+    for path in docs.rglob("*.md"):
+        if "docs/_generated/" in path.as_posix():
+            continue
+        scan(path, "docs")
+    for path in makefiles.glob("*.mk"):
+        scan(path, "makefiles")
+    scan(makefile, "makefiles")
+    return (0 if not errors else 1), errors
 
 
 def check_root_bin_shims(repo_root: Path) -> tuple[int, list[str]]:
