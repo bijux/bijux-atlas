@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "cardinality": {
+    "forbidden_labels": [
+      "request_id",
+      "cursor",
+      "gene_id",
+      "tx_id",
+      "api_key",
+      "trace_id"
+    ],
+    "max_series_per_metric": 2000
+  },
+  "required_metric_labels": {
+    "http_requests_total": [
+      "class",
+      "dataset",
+      "method",
+      "route",
+      "status",
+      "subsystem",
+      "version"
+    ],
+    "http_request_duration_seconds_bucket": [
+      "class",
+      "dataset",
+      "route",
+      "subsystem",
+      "version",
+      "le"
+    ],
+    "atlas_bulkhead_saturation": [
+      "class",
+      "dataset",
+      "subsystem",
+      "version"
+    ],
+    "atlas_bulkhead_inflight": [
+      "class",
+      "dataset",
+      "subsystem",
+      "version"
+    ]
+  },
+  "endpoint_class_metric_requirements": {
+    "cheap": [
+      "http_requests_total"
+    ],
+    "medium": [
+      "http_requests_total"
+    ],
+    "heavy": [
+      "http_requests_total"
+    ]
+  },
+  "span_attribute_requirements": {
+    "cheap": [
+      "method",
+      "route",
+      "request_id"
+    ],
+    "medium": [
+      "request_id",
+      "method",
+      "route",
+      "status"
+    ],
+    "heavy": [
+      "request_id",
+      "method",
+      "route",
+      "status",
+      "class"
+    ]
+  },
+  "lag": {
+    "max_days_since_pass_on_main": 7
+  }
+}

@@ -1117,6 +1117,7 @@ ops-observability-validate: ## Validate observability assets/contracts end-to-en
 	$(MAKE) ops-dashboards-validate; \
 	$(MAKE) ops-alerts-validate; \
 	./scripts/public/observability/check_metrics_contract.py; \
+	python3 ./ops/obs/scripts/contracts/check_obs_budgets.py; \
 	if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/public/observability/check_tracing_contract.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi; \
 	./ops/obs/scripts/snapshot_metrics.sh; \
 	./ops/obs/scripts/snapshot_traces.sh; \
