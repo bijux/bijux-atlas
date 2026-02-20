@@ -40,7 +40,10 @@
       "additionalProperties": false,
       "properties": {
         "default_p95_ms": {"type": "number", "exclusiveMinimum": 0},
-        "default_p99_ms": {"type": "number", "exclusiveMinimum": 0}
+        "default_p99_ms": {"type": "number", "exclusiveMinimum": 0},
+        "max_p95_regression_ratio": {"type": "number", "minimum": 0, "maximum": 1},
+        "baseline_freshness_days": {"type": "integer", "minimum": 1},
+        "baseline_freshness_warn_only": {"type": "boolean"}
       }
     },
     "cold_start": {
