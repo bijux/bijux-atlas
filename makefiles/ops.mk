@@ -944,8 +944,8 @@ ops-lint: ## Lint ops shell/python/json/schema contracts
 	@./ops/k8s/tests/contracts/test_suite_full_budget.sh
 	@./ops/k8s/tests/contracts/test_install_matrix_subset.sh
 	@./ops/k8s/tests/contracts/test_install_matrix_full.sh
-	@python3 ./ops/_lint/no-orphan-contract.py
-	@python3 ./ops/_lint/no-orphan-suite.py
+	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/ops/lint/orphan_contracts.py
+	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/ops/lint/orphan_suites.py
 	@python3 ./ops/_lint/no-unowned-file.py
 	@python3 ./ops/_lint/json-schema-coverage.py
 	@python3 ./ops/_lint/no-unpinned-images.py
@@ -957,18 +957,18 @@ ops-lint: ## Lint ops shell/python/json/schema contracts
 ops-lint-all: ## Run full ops lint suite (naming/docs/ownership/contracts/images/versions)
 	@$(MAKE) -s ops-lint
 	@./ops/_lint/naming.sh
-	@python3 ./ops/_lint/no-duplicate-readmes.py
-	@python3 ./ops/_lint/no-shadow-configs.py
+	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/ops/lint/duplicate_readmes.py
+	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/layout/no_shadow.py
 	@./ops/_lint/no-empty-dirs.sh
-	@python3 ./ops/_lint/no-direct-script-usage.py
+	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/ops/lint/direct_usage.py
 	@python3 ./ops/_lint/no-direct-e2e-scenario-usage.py
 	@python3 ./scripts/areas/layout/check_ops_cross_area_script_refs.py
 	@python3 ./scripts/areas/layout/check_scripts_submodules.py --threshold 25
 	@python3 ./ops/_lint/no-unpinned-images.py
-	@python3 ./ops/_lint/no-floating-tool-versions.py
+	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/ops/lint/tool_versions.py
 	@python3 ./ops/_lint/no-unowned-area.py
-	@python3 ./ops/_lint/no-orphan-contract.py
-	@python3 ./ops/_lint/no-orphan-suite.py
+	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/ops/lint/orphan_contracts.py
+	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/ops/lint/orphan_suites.py
 
 ops-fmt: ## Format ops YAML/JSON and refresh make targets inventory docs
 	@./ops/_lib/fmt.sh

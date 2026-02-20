@@ -47,7 +47,7 @@ configs-check: ## Config schemas + drift + ownership + symlink shim + SSOT check
 	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/check_symlink_policy.py
 	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/configs/check_duplicate_threshold_sources.py
 	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/configs/check_docs_links_for_configs.py
-	@./scripts/bin/bijux-atlas-scripts run ./ops/_lint/no-shadow-configs.py
+	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/layout/no_shadow.py
 
 CI_ISO_ROOT := $(CURDIR)/artifacts/isolate/ci
 CI_ENV := ISO_ROOT=$(CI_ISO_ROOT) CARGO_TARGET_DIR=$(CI_ISO_ROOT)/target CARGO_HOME=$(CI_ISO_ROOT)/cargo-home TMPDIR=$(CI_ISO_ROOT)/tmp TMP=$(CI_ISO_ROOT)/tmp TEMP=$(CI_ISO_ROOT)/tmp
@@ -88,33 +88,33 @@ gates-check: ## Run public-surface/docs/makefile boundary checks
 	@$(call gate_json,root-makefile-hygiene,python3 ./scripts/areas/layout/check_root_makefile_hygiene.py)
 
 gates: ## Print public targets grouped by namespace
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/render_public_help.py --mode gates
+	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/help.py --mode gates
 
 help: ## Show curated public make targets from SSOT
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/render_public_help.py
+	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/help.py
 
 help-advanced: ## Show curated public targets plus maintainer-oriented helpers
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/render_public_help.py --mode advanced
+	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/help.py --mode advanced
 
 help-all:
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/render_public_help.py --mode all
+	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/help.py --mode all
 
 explain: ## Explain whether TARGET is a public make target
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make explain TARGET=<name>" >&2; exit 2; }
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/explain_public_target.py "$${TARGET}"
+	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/explain.py "$${TARGET}"
 
 list: ## Print public make target set from SSOT with one-line descriptions
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/render_public_help.py --mode list
+	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/help.py --mode list
 
 graph: ## Print compact dependency graph for TARGET
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make graph TARGET=<name>" >&2; exit 2; }
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/graph_public_target.py "$${TARGET}"
+	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/graph.py "$${TARGET}"
 
 what: ## Print explain + dependency graph for TARGET
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make what TARGET=<name>" >&2; exit 2; }
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/explain_public_target.py "$${TARGET}"
+	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/explain.py "$${TARGET}"
 	@echo ""
-	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/graph_public_target.py "$${TARGET}"
+	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/graph.py "$${TARGET}"
 
 internal-list: ## Print internal make targets for maintainers
 	@./scripts/bin/bijux-atlas-scripts run ./scripts/areas/layout/list_internal_targets.py

@@ -37,7 +37,7 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(PYRUN) scripts/areas/check/check-bin-entrypoints.py
 	@$(PYRUN) scripts/areas/check/check-no-adhoc-python.py
 	@./ops/_lint/naming.sh
-	@$(PYRUN) ops/_lint/no-shadow-configs.py
+	@./scripts/bin/bijux-atlas-scripts run ./tools/bijux-atlas-scripts/src/bijux_atlas_scripts/layout/no_shadow.py
 	@$(PYRUN) scripts/areas/layout/check_public_entrypoint_cap.py
 	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
 	@if command -v shellcheck >/dev/null 2>&1; then find scripts/areas/public scripts/areas/internal scripts/areas/dev -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional for local scripts lint)"; fi

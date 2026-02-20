@@ -12,12 +12,16 @@ FORBIDDEN_RE = re.compile(r"(^|/)legacy($|-)")
 
 
 def render(mode: str | None = None) -> str:
-    cmd = ["python3", "scripts/areas/layout/render_public_help.py"]
+    cmd = [
+        "scripts/bin/bijux-atlas-scripts",
+        "run",
+        "tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/help.py",
+    ]
     if mode:
         cmd.extend(["--mode", mode])
     p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, check=False)
     if p.returncode != 0:
-        raise RuntimeError(f"render_public_help.py failed for mode={mode or 'help'}: {p.stderr or p.stdout}")
+        raise RuntimeError(f"help renderer failed for mode={mode or 'help'}: {p.stderr or p.stdout}")
     return p.stdout
 
 

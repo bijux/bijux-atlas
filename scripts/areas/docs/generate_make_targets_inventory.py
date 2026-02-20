@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Purpose: generate markdown inventory of public make/ops commands from make help output.
-# Inputs: make help output rendered via scripts/areas/layout/render_public_help.py.
+# Inputs: make help output rendered via bijux-atlas-scripts make/help module.
 # Outputs: docs/development/make-targets.md and docs/development/make-targets-inventory.md.
 from __future__ import annotations
 
@@ -10,7 +10,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 OUT_MAIN = ROOT / "docs" / "development" / "make-targets.md"
 OUT_COMPAT = ROOT / "docs" / "development" / "make-targets-inventory.md"
-HELP_CMD = ["python3", "scripts/areas/layout/render_public_help.py"]
+HELP_CMD = [
+    "scripts/bin/bijux-atlas-scripts",
+    "run",
+    "tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/help.py",
+]
 
 
 def parse_help_sections(text: str) -> dict[str, list[str]]:
