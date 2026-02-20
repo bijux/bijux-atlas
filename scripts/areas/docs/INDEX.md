@@ -28,7 +28,6 @@ Scripts in this area.
 - check_ops_docs_make_targets.py
 - check_ops_observability_links.py
 - check_reference_templates.sh
-- check_script_headers.py
 - check_suite_id_docs.py
 - generate_concept_graph.py
 - generate_crates_map.py

@@ -99,7 +99,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_ops_observability_links.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_public_targets_docs_sections.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_reference_templates.sh` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_script_headers.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_suite_id_docs.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_chart_contract_index.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_concept_graph.py` | `docs-governance` | `public` | - |
