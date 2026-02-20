@@ -11,6 +11,7 @@ Generated from observability contract SSOT files:
 - `atlas_bulkhead_saturation`
 - `atlas_cache_hits_total`
 - `atlas_cache_misses_total`
+- `atlas_client_requests_total`
 - `atlas_dataset_missing_total`
 - `atlas_invariant_violations_total`
 - `atlas_overload_active`
@@ -37,7 +38,9 @@ Generated from observability contract SSOT files:
 - `bijux_request_stage_latency_p95_seconds`
 - `bijux_runtime_policy_hash`
 - `bijux_sqlite_query_latency_p95_seconds`
+- `bijux_store_breaker_half_open_total`
 - `bijux_store_breaker_open`
+- `bijux_store_breaker_open_current`
 - `bijux_store_download_p95_seconds`
 - `bijux_store_fetch_latency_p95_seconds`
 - `bijux_store_open_p95_seconds`
