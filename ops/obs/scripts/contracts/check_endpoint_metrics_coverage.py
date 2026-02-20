@@ -9,13 +9,16 @@ ROOT = Path(__file__).resolve().parents[4]
 OPENAPI = ROOT / "configs/openapi/v1/openapi.generated.json"
 CONTRACT = ROOT / "ops/obs/contract/endpoint-observability-contract.json"
 METRICS_CONTRACT = ROOT / "ops/obs/contract/metrics-contract.json"
+OBS_BUDGETS = ROOT / "configs/ops/obs/budgets.json"
 
 
 def main() -> int:
     spec = json.loads(OPENAPI.read_text(encoding="utf-8"))
     coverage = json.loads(CONTRACT.read_text(encoding="utf-8"))
     metrics = json.loads(METRICS_CONTRACT.read_text(encoding="utf-8"))
+    budgets = json.loads(OBS_BUDGETS.read_text(encoding="utf-8"))
     known_metrics = set(metrics.get("required_metric_specs", {}).keys())
+    required_by_class = budgets.get("endpoint_class_metric_requirements", {})
 
     endpoints = {
         (path, method)
@@ -34,6 +37,14 @@ def main() -> int:
         klass = entry.get("class")
         if klass not in {"cheap", "medium", "heavy"}:
             errors.append(f"invalid endpoint class `{klass}` for {entry.get('method')} {entry.get('path')}")
+        class_required = set(required_by_class.get(klass, []))
+        endpoint_metrics = set(entry.get("required_metrics", []))
+        missing_class_required = sorted(class_required - endpoint_metrics)
+        if missing_class_required:
+            errors.append(
+                f"endpoint {entry.get('method')} {entry.get('path')} missing class-required metrics: "
+                + ", ".join(missing_class_required)
+            )
         for metric in entry.get("required_metrics", []):
             if metric not in known_metrics:
                 errors.append(f"unknown metric `{metric}` for endpoint {entry.get('method')} {entry.get('path')}")

@@ -107,6 +107,7 @@ def main() -> int:
         ("ops/_schemas/e2e-realdata-scenarios.schema.json", "ops/e2e/realdata/scenarios.json"),
         ("ops/_schemas/e2e-suites.schema.json", "ops/e2e/suites/suites.json"),
         ("ops/_schemas/obs/suites.schema.json", "ops/obs/suites/suites.json"),
+        ("ops/_schemas/obs/budgets.schema.json", "configs/ops/obs/budgets.json"),
     ]
     for schema_rel, data_rel in pairs:
         validate_pair(schema_rel, data_rel, errors)
