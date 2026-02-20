@@ -25,6 +25,7 @@ check: ## Umbrella check: scripts package checks + cargo checks + make contracts
 	@$(MAKE) -s _check
 	@$(SCRIPTS) check make-help
 	@$(SCRIPTS) check forbidden-paths
+	@$(MAKE) -s make/command-allowlist
 
 check-scripts: ## Run scripts package lint/tests/contracts
 	@$(MAKE) -s scripts-check
@@ -46,6 +47,9 @@ ci-local: ## Local runner mirroring CI top-level entrypoint set
 
 doctor: ## Run package doctor diagnostics
 	@$(SCRIPTS) doctor
+
+make/command-allowlist: ## Enforce direct-make command allowlist (cargo/docker/helm/kubectl/k6)
+	@$(SCRIPTS) run ./scripts/areas/layout/check_make_command_allowlist.py
 
 config-print: ## Print canonical merged config payload as JSON
 	@$(ATLAS_SCRIPTS) configs print
