@@ -4,10 +4,11 @@ import argparse
 import sys
 from pathlib import Path
 
-from . import configs, contracts, docs, layout, policies, registry, report
+from . import configs, contracts, layout, policies, registry, report
 from .core.context import RunContext
 from .core.fs import ensure_evidence_path
 from .core.logging import log_event
+from .docs.command import configure_docs_parser, run_docs_command
 from .doctor import run_doctor
 from .domain_cmd import register_domain_parser, render_payload
 from .errors import ScriptError
@@ -21,7 +22,6 @@ from .runner import run_legacy_script
 from .surface import run_surface
 
 DOMAINS = {
-    "docs": docs.run,
     "configs": configs.run,
     "policies": policies.run,
     "contracts": contracts.run,
@@ -53,7 +53,6 @@ def build_parser() -> argparse.ArgumentParser:
     surface_p.add_argument("--out-file", help="optional output path for JSON report")
 
     domain_names = (
-        "docs",
         "configs",
         "policies",
         "contracts",
@@ -63,6 +62,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     for name in domain_names:
         register_domain_parser(sub, name, f"{name} domain commands")
+    configure_docs_parser(sub)
     configure_make_parser(sub)
     configure_ops_parser(sub)
     configure_inventory_parser(sub)
@@ -98,6 +98,8 @@ def main(argv: list[str] | None = None) -> int:
             return run_surface(ns.json, ns.out_file)
         if ns.cmd == "doctor":
             return run_doctor(ctx, ns.json, ns.out_file)
+        if ns.cmd == "docs":
+            return run_docs_command(ctx, ns)
         if ns.cmd == "make":
             return run_make_command(ctx, ns)
         if ns.cmd == "ops":
