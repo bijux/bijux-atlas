@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "smoke": {
+    "max_duration_seconds": 600
+  },
+  "root_local": {
+    "lane_max_duration_seconds": {
+      "lane-cargo": 2400,
+      "lane-docs": 900,
+      "lane-ops": 1200,
+      "lane-scripts": 900,
+      "lane-configs-policies": 900,
+      "internal/lane-ops-smoke": 1200,
+      "internal/lane-obs-cheap": 180,
+      "internal/lane-obs-full": 1200
+    },
+    "warning_band_ratio": 0.9
+  },
+  "k6_latency": {
+    "default_p95_ms": 1200,
+    "default_p99_ms": 2500
+  },
+  "cold_start": {
+    "max_p99_ms": 4000
+  },
+  "cache": {
+    "max_download_bytes": 2147483648,
+    "max_dataset_count": 16
+  },
+  "metric_cardinality": {
+    "max_series_per_metric": 5000
+  }
+}

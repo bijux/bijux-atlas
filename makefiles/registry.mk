@@ -12,7 +12,7 @@ REGISTRY_DOCS_DESC := docs
 REGISTRY_DOCS_TARGETS := docs docs-serve docs-freeze docs-hardening
 
 REGISTRY_CONTRACTS_DESC := contracts
-REGISTRY_CONTRACTS_TARGETS := contracts ssot-check policy-lint policy-schema-drift policy-audit policy-enforcement-status policy-allow-env-lint policies/boundaries-check policy-drift-diff ops-policy-audit rename-lint docs-lint-names config-validate config-print config-drift openapi-drift api-contract-check telemetry-contracts telemetry-verify ops-values-validate ops-chart-render-diff ops-openapi-validate ops-dashboards-validate ops-alerts-validate
+REGISTRY_CONTRACTS_TARGETS := contracts ssot-check budgets/check policy-lint policy-schema-drift policy-audit policy-enforcement-status policy-allow-env-lint policies/boundaries-check policy-drift-diff ops-policy-audit rename-lint docs-lint-names config-validate config-print config-drift openapi-drift api-contract-check telemetry-contracts telemetry-verify ops-values-validate ops-chart-render-diff ops-openapi-validate ops-dashboards-validate ops-alerts-validate
 
 REGISTRY_OPS_QUICK_DESC := ops quick
 REGISTRY_OPS_QUICK_TARGETS := stack-full stack-full-chaos ops-full ops-full-pr ops-full-nightly
