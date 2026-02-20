@@ -5,6 +5,8 @@ metadata:
   labels:
     {{- include "bijux-atlas.labels" . | nindent 4 }}
 data:
+  ATLAS_CONFIG_RELEASE_ID: {{ printf "%s:%d" .Release.Name .Release.Revision | quote }}
+  ATLAS_CONFIG_SCHEMA_VERSION: {{ .Values.server.configSchemaVersion | quote }}
   ATLAS_CATALOG_ENDPOINT: {{ .Values.catalog.endpoint | quote }}
   ATLAS_STORE_ENDPOINT: {{ .Values.store.endpoint | quote }}
   ATLAS_STORE_S3_ENABLED: {{ if .Values.store.endpoint }}"true"{{ else }}"false"{{ end }}

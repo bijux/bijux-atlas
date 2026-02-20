@@ -120,10 +120,11 @@
       "type": "object",
       "additionalProperties": true,
       "properties": {
+        "configSchemaVersion": {"type": "string", "minLength": 1},
         "readinessProbePath": {"type": "string", "minLength": 1},
         "startupProbePath": {"type": "string", "minLength": 1}
       },
-      "required": ["readinessProbePath", "startupProbePath"]
+      "required": ["configSchemaVersion", "readinessProbePath", "startupProbePath"]
     },
     "service": {"description": "Chart values key `service` from SSOT contract."},
     "serviceMonitor": {"description": "Chart values key `serviceMonitor` from SSOT contract."},

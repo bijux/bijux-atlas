@@ -220,6 +220,44 @@
       ]
     },
     {
+      "script": "checks/config/test_configmap_schema_completeness.sh",
+      "groups": [
+        "config",
+        "docs"
+      ],
+      "owner": "server",
+      "retries": 1,
+      "timeout_seconds": 120,
+      "expected_failure_modes": [
+        "config_schema_docs_drift"
+      ]
+    },
+    {
+      "script": "checks/config/test_configmap_unknown_keys_rejected.sh",
+      "groups": [
+        "config",
+        "security"
+      ],
+      "owner": "server",
+      "retries": 1,
+      "timeout_seconds": 180,
+      "expected_failure_modes": [
+        "unknown_configmap_keys_allowed"
+      ]
+    },
+    {
+      "script": "checks/config/test_configmap_version_stamp.sh",
+      "groups": [
+        "config"
+      ],
+      "owner": "server",
+      "retries": 1,
+      "timeout_seconds": 180,
+      "expected_failure_modes": [
+        "configmap_version_stamp_missing"
+      ]
+    },
+    {
       "script": "checks/datasets/test_cached_only_mode.sh",
       "groups": [
         "readiness",
