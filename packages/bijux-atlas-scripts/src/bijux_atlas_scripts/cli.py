@@ -18,6 +18,7 @@ from .core.env_guard import guard_no_network_mode
 from .core.fs import ensure_evidence_path
 from .core.logging import log_event
 from .docs.command import configure_docs_parser, run_docs_command
+from .docker.command import configure_docker_parser, run_docker_command
 from .doctor import run_doctor
 from .domain_cmd import register_domain_parser, render_payload
 from .domain_cmd import registry as command_registry
@@ -92,6 +93,7 @@ def build_parser() -> argparse.ArgumentParser:
     for name in domain_names:
         register_domain_parser(sub, name, f"{name} domain commands")
     configure_configs_parser(sub)
+    configure_docker_parser(sub)
     configure_ci_parser(sub)
     configure_check_parser(sub)
     configure_gen_parser(sub)
@@ -315,6 +317,8 @@ def main(argv: list[str] | None = None) -> int:
             return run_docs_command(ctx, ns)
         if ns.cmd == "configs":
             return run_configs_command(ctx, ns)
+        if ns.cmd == "docker":
+            return run_docker_command(ctx, ns)
         if ns.cmd == "ci":
             return run_ci_command(ctx, ns)
         if ns.cmd == "check":

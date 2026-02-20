@@ -54,10 +54,10 @@ docker-check: ## Docker fast checks: contracts + build + runtime smoke
 	@$(MAKE) -s docker-smoke
 
 docker-smoke:
-	@docker/scripts/docker-runtime-smoke.sh "$${DOCKER_IMAGE:-bijux-atlas:local}"
+	@./bin/bijux-atlas docker smoke --image "$${DOCKER_IMAGE:-bijux-atlas:local}"
 
 docker-scan:
-	@docker/scripts/docker-scan.sh "$${DOCKER_IMAGE:-bijux-atlas:local}"
+	@./bin/bijux-atlas docker scan --image "$${DOCKER_IMAGE:-bijux-atlas:local}"
 
 docker-push:
 	@if [ "$${CI:-0}" != "1" ]; then echo "docker-push is CI-only"; exit 2; fi
