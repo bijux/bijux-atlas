@@ -8,7 +8,10 @@ version = "0.1.0"
 description = "Internal Python tooling package for bijux-atlas"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+  "typer==0.16.0",
+  "jsonschema==4.25.1",
+]
 
 [project.optional-dependencies]
 dev = [
@@ -19,6 +22,7 @@ dev = [
 
 [project.scripts]
 bijux-atlas-scripts = "bijux_atlas_scripts.cli:main"
+atlas-scripts = "bijux_atlas_scripts.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
