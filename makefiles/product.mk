@@ -122,3 +122,14 @@ internal/tooling-versions:
 	@{ command -v uv >/dev/null 2>&1 && uv --version | sed 's/^/  /'; } || echo "  uv=missing"
 	@{ command -v ruff >/dev/null 2>&1 && ruff --version | sed 's/^/  /'; } || echo "  ruff=missing"
 	@{ command -v mypy >/dev/null 2>&1 && mypy --version | sed 's/^/  /'; } || echo "  mypy=missing"
+
+internal/packages/check:
+	@python3 -m venv artifacts/isolate/py/packages-check/.venv
+	@artifacts/isolate/py/packages-check/.venv/bin/pip --disable-pip-version-check install --upgrade pip >/dev/null
+	@artifacts/isolate/py/packages-check/.venv/bin/pip --disable-pip-version-check install -e packages/bijux-atlas-scripts -e packages/bijux-atlas-py >/dev/null
+	@artifacts/isolate/py/packages-check/.venv/bin/python -c "import bijux_atlas_scripts, bijux_atlas_py"
+	@python3 ops/_lint/check-surfaces.py
+	@python3 ops/_lint/no-root-ad-hoc-python.py
+	@python3 ops/_lint/no-direct-bash-entrypoints.py
+	@python3 ops/_lint/no-duplicate-cli.py
+	@python3 ops/_lint/no-scripts-dir.py

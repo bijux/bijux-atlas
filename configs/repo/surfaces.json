@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "canonical_surfaces": [
+    "crates",
+    "configs",
+    "ops",
+    "docs",
+    "makefiles",
+    "packages"
+  ],
+  "allowed_root_dirs": [
+    ".git",
+    ".github",
+    ".cargo",
+    "artifacts",
+    "docker",
+    "scripts",
+    "tools",
+    "xtask",
+    "bin",
+    "target",
+    ".idea",
+    ".venv",
+    ".hypothesis",
+    ".ruff_cache",
+    ".mypy_cache"
+  ],
+  "allowed_root_files": [
+    "Cargo.toml",
+    "Cargo.lock",
+    "Makefile",
+    "README.md",
+    "mkdocs.yml",
+    "rust-toolchain.toml",
+    "python-toolchain.toml",
+    ".gitignore",
+    ".dockerignore",
+    "Dockerfile"
+  ]
+}

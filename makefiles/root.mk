@@ -221,6 +221,8 @@ scripts/clean: ## Scripts generated-output cleanup
 
 scripts/all: ## Scripts lane (lint/tests/audit)
 	@$(call with_iso,scripts-all,$(MAKE) -s internal/scripts/all)
+packages-check: ## Validate python package surfaces and repository scripting policy
+	@$(MAKE) -s internal/packages/check
 ops/check: ## Fast ops verification (no cluster bring-up)
 	@$(call with_iso,ops-check,$(MAKE) -s internal/ops/check)
 
