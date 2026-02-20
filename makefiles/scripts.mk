@@ -38,6 +38,7 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(PYRUN) scripts/areas/check/check-python-lock.py
 	@$(PYRUN) scripts/areas/check/check-bin-entrypoints.py
 	@$(PYRUN) scripts/areas/check/check-no-adhoc-python.py
+	@$(PYRUN) scripts/areas/check/check-no-make-scripts-references.py
 	@$(PYRUN) scripts/areas/check/check-repo-script-boundaries.py
 	@$(PYRUN) scripts/areas/check/check-atlas-scripts-cli-contract.py
 	@$(PYRUN) scripts/areas/layout/check_make_command_allowlist.py
@@ -94,6 +95,7 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(PYRUN) scripts/areas/check/check-python-lock.py
 	@$(PYRUN) scripts/areas/check/check-scripts-lock-sync.py
 	@$(PYRUN) scripts/areas/check/check-no-adhoc-python.py
+	@$(PYRUN) scripts/areas/check/check-no-make-scripts-references.py
 	@$(PYRUN) scripts/areas/check/check-repo-script-boundaries.py
 	@$(PYRUN) scripts/areas/check/check-atlas-scripts-cli-contract.py
 	@$(PYRUN) scripts/areas/layout/check_make_command_allowlist.py

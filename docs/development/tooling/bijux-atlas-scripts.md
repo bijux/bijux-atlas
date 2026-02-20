@@ -28,6 +28,7 @@ See `tools/bijux-atlas-scripts/PUBLIC_API.md` for current boundaries.
 - Classification buckets: `library_helper`, `report_emitter`, `gate_runner`, `ops_orchestrator`, `docs_generator`, `config_validator`, `policy_checker`, `make_integration`.
 - Porting order: `configs` commands first, then `make/layout`, then `docs/policy`, then remaining ops/public scripts.
 - Migration rule: every moved command must expose deterministic output and be callable via `bijux-atlas-scripts <domain> ...`.
+- Migration gate: direct `scripts/` calls from make recipes are controlled by `scripts/areas/check/check-no-make-scripts-references.py` with dated exceptions in `configs/layout/make-scripts-reference-exceptions.json`.
 
 ## Current Port Status
 | Legacy script | Package command |

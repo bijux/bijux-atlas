@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "exceptions": [
+    {
+      "id": "make-scripts-reference-transition",
+      "pattern": "scripts/",
+      "owner": "platform",
+      "issue": "MIGRATE-SCRIPTS-TO-PACKAGE",
+      "expires_on": "2026-06-30",
+      "reason": "Transitional allowance while make targets are migrated to bijux-atlas-scripts commands."
+    }
+  ]
+}
