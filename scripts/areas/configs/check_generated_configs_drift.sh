@@ -8,10 +8,10 @@ before_registry="$(shasum configs/config-key-registry.md | awk '{print $1}')"
 before_env_contract="$(shasum configs/contracts/env.schema.json 2>/dev/null | awk '{print $1}')"
 before_env_doc="$(shasum docs/_generated/env-vars.md 2>/dev/null | awk '{print $1}')"
 
-python3 ./scripts/areas/configs/generate_configs_index.py >/dev/null
-python3 ./scripts/areas/public/generate-config-key-registry.py >/dev/null
-python3 ./scripts/areas/configs/generate_env_contract.py >/dev/null
-python3 ./scripts/areas/docs/generate_env_vars_doc.py >/dev/null
+./scripts/bin/bijux-atlas-scripts run scripts/areas/configs/generate_configs_index.py >/dev/null
+./scripts/bin/bijux-atlas-scripts run scripts/areas/public/generate-config-key-registry.py >/dev/null
+./scripts/bin/bijux-atlas-scripts run scripts/areas/configs/generate_env_contract.py >/dev/null
+./scripts/bin/bijux-atlas-scripts run scripts/areas/docs/generate_env_vars_doc.py >/dev/null
 
 after_index="$(shasum configs/INDEX.md | awk '{print $1}')"
 after_registry="$(shasum configs/config-key-registry.md | awk '{print $1}')"
