@@ -743,6 +743,51 @@ def check_no_direct_bash_invocations(repo_root: Path) -> tuple[int, list[str]]:
     return (0 if not errors else 1), errors
 
 
+def check_docs_no_ops_generated_run_paths(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    pattern = re.compile(r"ops/_generated/atlas-ops-[A-Za-z0-9._/-]*")
+    for path in sorted((repo_root / "docs").rglob("*.md")):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        rel = path.relative_to(repo_root).as_posix()
+        for lineno, line in enumerate(text.splitlines(), start=1):
+            if pattern.search(line):
+                errors.append(f"{rel}:{lineno}: forbidden run-scoped generated path reference")
+    return (0 if not errors else 1), errors
+
+
+def check_no_ops_generated_placeholder(repo_root: Path) -> tuple[int, list[str]]:
+    candidates = (repo_root / "ops/_generated/.keep", repo_root / "ops/_generated/.gitkeep")
+    errors = [f"forbidden placeholder present: {p.relative_to(repo_root).as_posix()}" for p in candidates if p.exists()]
+    return (0 if not errors else 1), errors
+
+
+def check_ops_examples_immutable(repo_root: Path) -> tuple[int, list[str]]:
+    root = repo_root / "ops/_examples"
+    expected = {"report.example.json", "report.unified.example.json"}
+    errors: list[str] = []
+    if not root.exists():
+        return 1, ["missing examples directory: ops/_examples"]
+    actual = {p.name for p in root.glob("*.json")}
+    for name in sorted(expected - actual):
+        errors.append(f"missing example file: ops/_examples/{name}")
+    for name in sorted(actual - expected):
+        errors.append(f"unexpected example file: ops/_examples/{name}")
+    for name in sorted(expected & actual):
+        path = root / name
+        if path.stat().st_size > 32 * 1024:
+            errors.append(f"example too large (>32KB): {path.relative_to(repo_root).as_posix()}")
+        text = path.read_text(encoding="utf-8")
+        if re.search(r"atlas-ops-\d{8}", text):
+            errors.append(f"example contains run-scoped atlas-ops timestamp id: {path.relative_to(repo_root).as_posix()}")
+        if "ops/_generated/" in text:
+            errors.append(f"example references mutable ops/_generated path: {path.relative_to(repo_root).as_posix()}")
+        try:
+            json.loads(text)
+        except json.JSONDecodeError as exc:
+            errors.append(f"invalid JSON in example {path.relative_to(repo_root).as_posix()}: {exc}")
+    return (0 if not errors else 1), errors
+
+
 def check_invocation_parity(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
     py_mk = repo_root / "makefiles/python.mk"
