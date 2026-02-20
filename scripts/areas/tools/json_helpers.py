@@ -1,3 +1,3 @@
 #!/usr/bin/env python3
-"""Compatibility shim. Canonical module lives in scripts/areas/python/bijux_scripts/json_helpers.py."""
-from scripts.areas.python.bijux_scripts.json_helpers import read_json  # noqa: F401
+"""Compatibility shim. Canonical module lives in package bijux_atlas_scripts.contracts.json."""
+from bijux_atlas_scripts.contracts.json import read_json  # noqa: F401
