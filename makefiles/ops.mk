@@ -1240,7 +1240,7 @@ stack-full: ## Full-stack must-pass truth flow with contract report bundle
 	run_id="$${OPS_RUN_ID:-$${ATLAS_RUN_ID:-stack-$$(date +%Y%m%d-%H%M%S)}}"; \
 	report_dir="artifacts/stack-report"; \
 	teardown="$${STACK_KEEP_UP:-0}"; \
-	trap '$(ATLAS_SCRIPTS) run ./scripts/areas/public/stack/build_stack_report.py --status "$$status" --run-id "$$run_id" --out-dir "$$report_dir" --values-file "$${ATLAS_VALUES_FILE:-ops/k8s/values/local.yaml}"; $(ATLAS_SCRIPTS) run ./scripts/areas/public/stack/validate_stack_report.py --report-dir "$$report_dir" --schema ops/_schemas/report/stack-contract.schema.json; if [ "$$teardown" != "1" ]; then $(MAKE) ops-down >/dev/null 2>&1 || true; $(MAKE) ops-kind-down >/dev/null 2>&1 || true; fi' EXIT; \
+	trap '$(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/stack/build_stack_report.py --status "$$status" --run-id "$$run_id" --out-dir "$$report_dir" --values-file "$${ATLAS_VALUES_FILE:-ops/k8s/values/local.yaml}"; $(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/stack/validate_stack_report.py --report-dir "$$report_dir" --schema ops/_schemas/report/stack-contract.schema.json; if [ "$$teardown" != "1" ]; then $(MAKE) ops-down >/dev/null 2>&1 || true; $(MAKE) ops-kind-down >/dev/null 2>&1 || true; fi' EXIT; \
 	$(MAKE) ops-tools-check; \
 	$(MAKE) ops-kind-validate; \
 	$(MAKE) ops-kind-metrics-server-up; \

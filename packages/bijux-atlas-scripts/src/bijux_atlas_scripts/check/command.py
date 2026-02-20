@@ -104,7 +104,10 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             ],
         )
     if sub == "stack-report":
-        return _run(ctx, ["python3", "scripts/areas/public/stack/validate_stack_report.py"])
+        return _run(
+            ctx,
+            ["python3", "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/stack/validate_stack_report.py"],
+        )
     if sub == "cli-help":
         code, errors = check_script_help(ctx.repo_root)
         if errors:

@@ -163,5 +163,3 @@ Generated file. Do not edit manually.
 | `scripts/areas/public/policy-lint.sh` | `platform` | `public` | `_lint-configs`, `policy-lint` |
 | `scripts/areas/public/qc-fixtures-gate.sh` | `platform` | `public` | `ci-qc-fixtures` |
 | `scripts/areas/public/report-bundle.sh` | `platform` | `public` | `ops-report` |
-| `scripts/areas/public/stack/build_stack_report.py` | `platform` | `public` | `stack-full` |
-| `scripts/areas/public/stack/validate_stack_report.py` | `platform` | `public` | `stack-full` |

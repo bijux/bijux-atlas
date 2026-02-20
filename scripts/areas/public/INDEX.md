@@ -23,5 +23,3 @@ Scripts in this area.
 - policy-lint.sh
 - qc-fixtures-gate.sh
 - report-bundle.sh
-- stack/build_stack_report.py
-- stack/validate_stack_report.py
