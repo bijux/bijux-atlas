@@ -144,8 +144,6 @@ scripts/areas/docs/check_critical_make_targets_referenced.py
 scripts/areas/docs/check_doc_filename_style.py
 scripts/areas/docs/check_docker_entrypoints.py
 scripts/areas/docs/check_docs_deterministic.py
-scripts/areas/docs/check_docs_freeze_drift.py
-scripts/areas/docs/check_docs_make_only.py
 scripts/areas/docs/check_docs_make_only_ops.py
 scripts/areas/docs/check_docs_make_targets_exist.py
 scripts/areas/docs/check_example_configs.py

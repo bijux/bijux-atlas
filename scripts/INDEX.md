@@ -85,8 +85,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_doc_naming.sh` | `docs-governance` | `public` | `docs-build` |
 | `scripts/areas/docs/check_docker_entrypoints.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_docs_deterministic.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_docs_freeze_drift.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_docs_make_only.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_docs_make_only_ops.py` | `docs-governance` | `public` | `ci-docs-make-only-ops` |
 | `scripts/areas/docs/check_docs_make_targets_exist.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_duplicate_topics.sh` | `docs-governance` | `public` | `docs-build`, `rename-lint` |
