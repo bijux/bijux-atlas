@@ -27,6 +27,8 @@ layout-check: ## Validate repository layout contract and root shape
 	@python3 ./scripts/layout/check_symlink_policy.py
 	@./scripts/layout/check_chart_canonical_path.sh
 	@python3 ./scripts/layout/check_workflows_make_only.py
+	@python3 ./scripts/layout/check_legacy_deprecation.py
+	@python3 ./scripts/layout/check_ops_external_entrypoints.py
 	@python3 ./scripts/layout/check_dir_budgets.py
 
 layout-migrate: ## Apply deterministic layout/path migration helpers

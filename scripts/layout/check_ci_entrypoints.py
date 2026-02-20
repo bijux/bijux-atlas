@@ -8,6 +8,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 WF = ROOT / ".github/workflows"
+CI_MK = ROOT / "makefiles" / "ci.mk"
 
 
 def make_runs(path: Path) -> list[str]:
@@ -24,6 +25,8 @@ def main() -> int:
 
     for p in sorted(WF.glob("*.yml")):
         text = p.read_text(encoding="utf-8")
+        if re.search(r"\b(make\s+)?(legacy/[A-Za-z0-9_./-]+|ops-[A-Za-z0-9-]+-legacy)\b", text):
+            errs.append(f"{p.name} must not invoke legacy entrypoints")
         if "schedule:" not in text:
             continue
         if p.name == "dependency-lock.yml":
@@ -31,6 +34,10 @@ def main() -> int:
         runs = make_runs(p)
         if not any(cmd.strip().startswith("nightly") for cmd in runs):
             errs.append(f"{p.name} must run `make nightly`")
+
+    ci_mk = CI_MK.read_text(encoding="utf-8")
+    if re.search(r"\b(legacy/[A-Za-z0-9_./-]+|ops-[A-Za-z0-9-]+-legacy)\b", ci_mk):
+        errs.append("makefiles/ci.mk must not reference legacy entrypoints")
 
     if errs:
         print("ci entrypoint contract check failed", file=sys.stderr)
