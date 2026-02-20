@@ -28,6 +28,7 @@ layout-check: ## Validate repository layout contract and root shape
 	@./scripts/areas/layout/check_chart_canonical_path.sh
 	@python3 ./scripts/areas/layout/check_workflows_make_only.py
 	@python3 ./scripts/areas/layout/check_legacy_deprecation.py
+	@python3 ./scripts/areas/layout/legacy_inventory.py --check-policy --json-out artifacts/evidence/legacy/inventory.json --format text
 	@python3 ./scripts/areas/layout/check_ops_external_entrypoints.py
 	@python3 ./scripts/areas/layout/check_dir_budgets.py
 
