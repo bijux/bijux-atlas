@@ -7,7 +7,9 @@ from bijux_atlas_scripts.check.native import (
     check_duplicate_script_names,
     check_make_forbidden_paths,
     check_no_xtask_refs,
+    check_ops_generated_tracked,
     check_script_ownership,
+    check_tracked_timestamp_paths,
 )
 
 
@@ -48,3 +50,23 @@ def test_check_make_forbidden_paths_blocks_tools_and_xtask(tmp_path: Path) -> No
     code, errors = check_make_forbidden_paths(tmp_path)
     assert code == 1
     assert errors
+
+
+def test_check_ops_generated_tracked_flags_tracked_entries(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(
+        "bijux_atlas_scripts.check.native._git_ls_files",
+        lambda _repo_root, _spec: ["ops/_generated/run-1/report.json"],
+    )
+    code, errors = check_ops_generated_tracked(tmp_path)
+    assert code == 1
+    assert "ops/_generated" in errors[0]
+
+
+def test_check_tracked_timestamp_paths_flags_timestamp_segments(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(
+        "bijux_atlas_scripts.check.native._git_ls_files",
+        lambda _repo_root, _spec: ["artifacts/evidence/2026-02-20/report.json", "docs/index.md"],
+    )
+    code, errors = check_tracked_timestamp_paths(tmp_path)
+    assert code == 1
+    assert "2026-02-20" in errors[0]
