@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "max": {
+    "public_make_targets": 18,
+    "scripts_commands": 12,
+    "ops_areas": 16
+  }
+}

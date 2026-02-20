@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["kind", "contract_files", "schema_files"],
+  "properties": {
+    "kind": {"const": "contracts"},
+    "contract_files": {"type": "array", "items": {"type": "string"}},
+    "schema_files": {"type": "array", "items": {"type": "string"}}
+  }
+}

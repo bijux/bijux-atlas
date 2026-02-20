@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["kind", "targets"],
+  "properties": {
+    "kind": {"const": "make"},
+    "targets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "description", "area", "lanes"],
+        "properties": {
+          "name": {"type": "string"},
+          "description": {"type": "string"},
+          "area": {"type": "string"},
+          "lanes": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}

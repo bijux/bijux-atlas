@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["kind", "counts", "scripts_commands", "ops_areas"],
+  "properties": {
+    "kind": {"const": "budgets"},
+    "counts": {
+      "type": "object",
+      "required": ["public_make_targets", "scripts_commands", "ops_areas"],
+      "properties": {
+        "public_make_targets": {"type": "integer", "minimum": 0},
+        "scripts_commands": {"type": "integer", "minimum": 0},
+        "ops_areas": {"type": "integer", "minimum": 0}
+      }
+    },
+    "scripts_commands": {"type": "array", "items": {"type": "string"}},
+    "ops_areas": {"type": "array", "items": {"type": "string"}}
+  }
+}
