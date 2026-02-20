@@ -1307,6 +1307,70 @@ def _check_mkdocs_site_links(ctx: RunContext, site_dir: str) -> tuple[int, str]:
     return (0, "mkdocs output link-check passed") if not errors else (1, "\n".join(errors))
 
 
+def _check_nav_order(ctx: RunContext) -> tuple[int, str]:
+    mkdocs = (ctx.repo_root / "mkdocs.yml").read_text(encoding="utf-8", errors="ignore")
+    expected = [
+        "Product",
+        "Quickstart",
+        "Reference",
+        "Contracts",
+        "API",
+        "Operations",
+        "Development",
+        "Architecture",
+        "Science",
+        "Generated",
+    ]
+    nav_start = mkdocs.find("\nnav:\n")
+    if nav_start == -1:
+        return 1, "nav ordering check failed: missing nav section"
+    nav_text = mkdocs[nav_start:]
+    found = re.findall(r"^  - ([A-Za-z]+):\s*$", nav_text, flags=re.M)
+    if found[: len(expected)] != expected:
+        return 1, f"nav ordering check failed\nexpected: {expected}\nfound:    {found[:len(expected)]}"
+    return 0, "nav ordering check passed"
+
+
+def _check_docs_deterministic(ctx: RunContext) -> tuple[int, str]:
+    mkdocs = (ctx.repo_root / "mkdocs.yml").read_text(encoding="utf-8", errors="ignore")
+    docs_mk = (ctx.repo_root / "makefiles/docs.mk").read_text(encoding="utf-8", errors="ignore")
+    errors: list[str] = []
+    if "enable_creation_date: false" not in mkdocs:
+        errors.append("mkdocs.yml must set `enable_creation_date: false`")
+    if "fallback_to_build_date: false" not in mkdocs:
+        errors.append("mkdocs.yml must set `fallback_to_build_date: false`")
+    if "SOURCE_DATE_EPOCH=" not in docs_mk:
+        errors.append("makefiles/docs.mk must set SOURCE_DATE_EPOCH for mkdocs build")
+    return (0, "docs determinism check passed") if not errors else (1, "\n".join(errors))
+
+
+def _check_docs_make_targets_exist(ctx: RunContext) -> tuple[int, str]:
+    line_cmd_re = re.compile(r"^\s*(?:\$|#)?\s*(?:[A-Za-z_][A-Za-z0-9_]*=[^\s]+\s+)*make\s+([A-Za-z0-9_./-]+)")
+    inline_cmd_re = re.compile(r"`(?:[A-Za-z_][A-Za-z0-9_]*=[^\s`]+\s+)*make\s+([A-Za-z0-9_./-]+)`")
+    docs = ctx.repo_root / "docs"
+    proc = subprocess.run(["make", "-qp"], cwd=ctx.repo_root, text=True, capture_output=True, check=False)
+    targets: set[str] = set()
+    for line in proc.stdout.splitlines():
+        if ":" not in line or line.startswith("\t") or line.startswith("#"):
+            continue
+        candidate = line.split(":", 1)[0].strip()
+        if not candidate:
+            continue
+        if any(ch in candidate for ch in " %$()"):
+            continue
+        targets.add(candidate)
+    missing: list[str] = []
+    for path in sorted(docs.rglob("*.md")):
+        rel = path.relative_to(ctx.repo_root).as_posix()
+        for lineno, line in enumerate(path.read_text(encoding="utf-8", errors="ignore").splitlines(), start=1):
+            matches = list(line_cmd_re.finditer(line)) + list(inline_cmd_re.finditer(line))
+            for match in matches:
+                target = match.group(1)
+                if target not in targets:
+                    missing.append(f"{rel}:{lineno}: unknown make target `{target}`")
+    return (0, "docs make-target existence check passed") if not missing else (1, "\n".join(missing[:200]))
+
+
 def _generate_concept_graph(ctx: RunContext) -> tuple[int, str]:
     registry = ctx.repo_root / "docs/_style/concepts.yml"
     out = ctx.repo_root / "docs/_generated/concepts.md"
@@ -2383,6 +2447,21 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
         return code
 
+    if ns.docs_cmd == "nav-order-check":
+        code, output = _check_nav_order(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
+    if ns.docs_cmd == "docs-deterministic-check":
+        code, output = _check_docs_deterministic(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
+    if ns.docs_cmd == "docs-make-targets-exist-check":
+        code, output = _check_docs_make_targets_exist(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
     if ns.docs_cmd == "contracts-index":
         if ns.fix:
             code, output = _generate_contracts_index_doc(ctx)
@@ -2536,6 +2615,9 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("no-placeholders-check", "forbid TODO/TBD placeholders outside drafts"),
         ("no-legacy-root-paths-check", "forbid legacy root ops paths in docs"),
         ("mkdocs-site-links-check", "validate rendered mkdocs site internal links"),
+        ("nav-order-check", "validate top-level mkdocs nav ordering"),
+        ("docs-deterministic-check", "validate docs determinism settings"),
+        ("docs-make-targets-exist-check", "validate make targets referenced in docs exist"),
         ("glossary-check", "validate glossary and banned terms policy"),
         ("contracts-index", "validate or generate docs contracts index"),
         ("runbook-map", "validate or generate docs runbook map index"),
