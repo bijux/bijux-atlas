@@ -20,7 +20,7 @@
   "scripts_commands": [
     "bijux-atlas-dev",
     "bijux-atlas-ops",
-    "bijux-atlas-scripts",
+    "atlasctl",
     "isolate",
     "make_explain",
     "make_graph",

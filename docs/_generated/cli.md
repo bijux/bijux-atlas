@@ -5,7 +5,7 @@ Canonical entrypoint: `bijux-atlas`
 Generate from source of truth:
 
 ```bash
-python -m bijux_atlas_scripts.cli help --json
+python -m atlasctl.cli help --json
 ```
 
 Top-level namespaces:
