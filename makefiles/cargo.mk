@@ -30,7 +30,7 @@ internal/cargo/fmt:
 _fmt:
 	@./bin/atlasctl env require-isolate >/dev/null
 	@cargo fmt --all -- --check --config-path configs/rust/rustfmt.toml
-	@./scripts/areas/layout/check_repo_hygiene.sh
+	@./bin/atlasctl --quiet check repo
 
 internal/cargo/lint:
 	@if [ -n "$$ISO_ROOT" ]; then ./bin/atlasctl env require-isolate >/dev/null; fi
@@ -56,7 +56,7 @@ _lint-configs:
 	@./scripts/areas/public/policy-lint.sh
 	@./scripts/areas/layout/check_no_direct_script_runs.sh
 	@./scripts/areas/layout/check_scripts_readme_drift.sh
-	@./scripts/areas/layout/check_repo_hygiene.sh
+	@./bin/atlasctl --quiet check repo
 
 _lint-docs:
 	@./bin/atlasctl env require-isolate >/dev/null
@@ -78,7 +78,7 @@ internal/cargo/check:
 _check:
 	@./bin/atlasctl env require-isolate >/dev/null
 	@CARGO_BUILD_JOBS="$(CARGO_BUILD_JOBS)" cargo check --workspace --all-targets
-	@./scripts/areas/layout/check_repo_hygiene.sh
+	@./bin/atlasctl --quiet check repo
 
 internal/cargo/test:
 	@if [ -n "$$ISO_ROOT" ]; then ./bin/atlasctl env require-isolate >/dev/null; fi
@@ -119,7 +119,7 @@ _test:
 	@if [ -d target/nextest ]; then find target/nextest -type f -delete 2>/dev/null || true; fi
 	@if [ -d target/nextest ]; then find target/nextest -type d -empty -delete 2>/dev/null || true; fi
 	@if [ -d target ]; then find target -type d -empty -delete 2>/dev/null || true; fi
-	@./scripts/areas/layout/check_repo_hygiene.sh
+	@./bin/atlasctl --quiet check repo
 
 _test-all:
 	@./bin/atlasctl env require-isolate >/dev/null
@@ -133,12 +133,12 @@ _test-all:
 	@if [ -d target/nextest ]; then find target/nextest -type f -delete 2>/dev/null || true; fi
 	@if [ -d target/nextest ]; then find target/nextest -type d -empty -delete 2>/dev/null || true; fi
 	@if [ -d target ]; then find target -type d -empty -delete 2>/dev/null || true; fi
-	@./scripts/areas/layout/check_repo_hygiene.sh
+	@./bin/atlasctl --quiet check repo
 
 _test-contracts:
 	@./bin/atlasctl env require-isolate >/dev/null
 	@cargo test -p bijux-atlas-server --test observability_contract
-	@./scripts/areas/layout/check_repo_hygiene.sh
+	@./bin/atlasctl --quiet check repo
 
 coverage:
 	@if [ -n "$$ISO_ROOT" ]; then ./bin/atlasctl env require-isolate >/dev/null; fi
@@ -159,7 +159,7 @@ _coverage:
 	@cargo llvm-cov nextest --workspace --profile "$(NEXTEST_PROFILE)" $(NEXTEST_CONFIG) --lcov --output-path "$(COVERAGE_OUT)"
 	@echo "coverage output: $(COVERAGE_OUT)"
 	@echo "coverage thresholds config: $(COVERAGE_THRESHOLDS)"
-	@./scripts/areas/layout/check_repo_hygiene.sh
+	@./bin/atlasctl --quiet check repo
 
 internal/cargo/audit:
 	@if [ -n "$$ISO_ROOT" ]; then ./bin/atlasctl env require-isolate >/dev/null; fi
