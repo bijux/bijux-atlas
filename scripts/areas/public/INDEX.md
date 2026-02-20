@@ -3,7 +3,6 @@
 Scripts in this area.
 
 - README.md
-- check-cli-commands.sh
 - check-markdown-links.sh
 - config-drift-check.py
 - config-print.py
@@ -23,8 +22,6 @@ Scripts in this area.
 - policy-audit.py
 - policy-lint.sh
 - qc-fixtures-gate.sh
-- query-plan-gate.sh
 - report-bundle.sh
-- require-crate-docs.sh
 - stack/build_stack_report.py
 - stack/validate_stack_report.py
