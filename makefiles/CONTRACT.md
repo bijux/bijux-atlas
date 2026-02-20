@@ -15,7 +15,7 @@ Define stable boundaries between public make surface and internal make implement
 
 ## Artifact rules
 - Make-driven lanes write into `artifacts/isolate/<lane>/<run_id>/...`.
-- Gate checks emit JSON status in `ops/_evidence/gates/<run_id>/`.
+- Gate checks emit JSON status in `artifacts/evidence/gates/<run_id>/`.
 
 ## Verification
 - `make makefiles-contract`

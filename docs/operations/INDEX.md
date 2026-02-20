@@ -41,6 +41,7 @@ Does not define product semantics or internal crate APIs.
 - [Production Readiness Checklist](production-readiness-checklist.md)
 - [Ops Acceptance Checklist](ops-acceptance-checklist.md)
 - [Retention and GC](retention-and-gc.md)
+- [Evidence Policy](evidence-policy.md)
 - [Input Sources](input-sources.md)
 - [Cache Topology](cache-topology.md)
 - [Policy Violation Triage](policy-violation-triage.md)

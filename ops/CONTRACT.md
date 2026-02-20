@@ -22,7 +22,7 @@
   - `ops/e2e/` composition-only scenarios across domains
     - `ops/e2e/k8s/tests/` only wrapper entry scripts, not invariant test ownership
 - Deterministic generated outputs under `ops/_generated_committed/` only.
-- Runtime evidence outputs under `ops/_evidence/` only.
+- Runtime evidence outputs under `artifacts/evidence/` only.
 - Runtime artifacts write under `ops/_artifacts/` only, unless allowlisted in `configs/ops/artifacts-allowlist.txt`.
 - JSON schemas for ops manifests live under `ops/_schemas/`.
 - Symlinked domain directories inside `ops/` are forbidden.
@@ -47,12 +47,13 @@ Generated (rebuildable):
 
 Runtime artifacts (ephemeral evidence):
 - `ops/_artifacts/**`
-- `ops/_evidence/**`
+- `artifacts/evidence/**`
 
 ## Artifact Rules
 
-- Scripts must not write to repo-root `artifacts/` directly.
-- Legacy compatibility, if needed, is via symlink: `artifacts/ops -> ops/_artifacts`.
+- Runtime evidence must write under `artifacts/evidence/**`.
+- Runtime artifacts (non-evidence) write under `ops/_artifacts/**`.
+- `ops/_generated/` is reserved for static/generated contract assets only (no run-scoped evidence).
 - Any explicit exception must be listed in `configs/ops/artifacts-allowlist.txt`.
 
 ## Schema Evolution
