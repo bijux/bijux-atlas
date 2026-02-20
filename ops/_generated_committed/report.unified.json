@@ -15,5 +15,11 @@
     "total": 1,
     "passed": 1,
     "failed": 0
+  },
+  "budget_status": {
+    "checked": 1,
+    "failed": 0,
+    "near_failing": [],
+    "failed_lanes": []
   }
 }

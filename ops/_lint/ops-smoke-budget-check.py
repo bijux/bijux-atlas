@@ -8,20 +8,22 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-BUDGET = ROOT / "configs/ops/policies/ops-smoke-budget.json"
-RELAX = ROOT / "configs/policy/ops-smoke-budget-relaxations.json"
+BUDGET = ROOT / "configs/ops/budgets.json"
+RELAX = ROOT / "configs/policy/budget-relaxations.json"
 
 
 def _allow_exemption(duration: float, maximum: float) -> bool:
     if duration <= maximum:
         return True
-    exc_id = os.environ.get("OPS_SMOKE_BUDGET_EXEMPTION_ID", "").strip()
+    exc_id = os.environ.get("BUDGET_RELAXATION_ID", "").strip()
     if not exc_id or exc_id == "none":
         return False
     payload = json.loads(RELAX.read_text(encoding="utf-8"))
     today = dt.date.today()
     for e in payload.get("exceptions", []):
         if str(e.get("id", "")).strip() != exc_id:
+            continue
+        if str(e.get("budget_id", "")).strip() != "smoke_duration":
             continue
         expiry = str(e.get("expiry", "")).strip()
         try:
@@ -42,7 +44,7 @@ def main() -> int:
         print(f"missing report: {report}", file=sys.stderr)
         return 1
     budget = json.loads(BUDGET.read_text(encoding="utf-8"))
-    max_seconds = float(budget.get("max_duration_seconds", 600))
+    max_seconds = float(budget.get("smoke", {}).get("max_duration_seconds", 600))
     payload = json.loads(report.read_text(encoding="utf-8"))
     duration = float(payload.get("duration_seconds", 0.0))
     if _allow_exemption(duration, max_seconds):
@@ -50,7 +52,7 @@ def main() -> int:
         return 0
     print(
         f"ops smoke budget failed: duration={duration:.2f}s exceeds {max_seconds:.2f}s; "
-        "set OPS_SMOKE_BUDGET_EXEMPTION_ID with a valid non-expired relaxation to bypass",
+        "set BUDGET_RELAXATION_ID with a valid non-expired `smoke_duration` relaxation to bypass",
         file=sys.stderr,
     )
     return 1
