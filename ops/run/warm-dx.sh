@@ -10,6 +10,7 @@ export RUN_ID="$OPS_RUN_ID"
 export ARTIFACT_DIR="$OPS_RUN_DIR"
 ops_env_load
 ops_entrypoint_start "ops-warm-dx"
+ops_version_guard python3 kind kubectl
 
 ./ops/run/warm-entrypoint.sh --mode datasets
 ./ops/run/warm-entrypoint.sh --mode shards
