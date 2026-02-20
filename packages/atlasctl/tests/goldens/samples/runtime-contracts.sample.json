@@ -1,0 +1,13 @@
+{
+  "schema_name": "atlasctl.runtime_contracts.v1",
+  "schema_version": 1,
+  "tool": "atlasctl",
+  "status": "ok",
+  "checks": [
+    {
+      "id": "contracts.command_metadata",
+      "status": "ok",
+      "errors": []
+    }
+  ]
+}
