@@ -4,23 +4,27 @@
 # Outputs: non-zero when undocumented or disallowed symlinks exist.
 from __future__ import annotations
 
+import json
 from pathlib import Path
 import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[3]
 DOC = ROOT / "docs" / "development" / "symlinks.md"
+ALLOWLIST = ROOT / "configs" / "repo" / "symlink-allowlist.json"
 if not DOC.exists():
     print(f"missing symlink policy doc: {DOC}", file=sys.stderr)
+    raise SystemExit(1)
+if not ALLOWLIST.exists():
+    print(f"missing symlink allowlist: {ALLOWLIST}", file=sys.stderr)
     raise SystemExit(1)
 
 text = DOC.read_text(encoding="utf-8")
 entry_re = re.compile(r"- `([^`]+)` -> `([^`]+)`: .*\(Approval: `([^`]+)`\)")
 entries = {name: {"target": target, "approval": approval} for name, target, approval in entry_re.findall(text)}
-
-allowed_non_root = {
-    "ops/e2e/stack": "ops/stack",
-}
+allowed = json.loads(ALLOWLIST.read_text(encoding="utf-8"))
+allowed_root = allowed.get("root", {})
+allowed_non_root = allowed.get("non_root", {})
 
 symlinks = [p.name for p in ROOT.iterdir() if p.is_symlink()]
 if (ROOT / "ops/e2e/stack").is_symlink():
@@ -44,13 +48,16 @@ for rel in sorted(symlinks):
             violations.append(f"symlink `{rel}` points outside repo: `{resolved}`")
             target = str(resolved)
     if "/" not in rel:
+        if rel not in allowed_root:
+            violations.append(f"root symlink `{rel}` is not allowlisted in configs/repo/symlink-allowlist.json")
+            continue
         if rel not in entries:
             violations.append(f"root symlink `{rel}` missing docs/development/symlinks.md entry")
             continue
         declared = entries[rel]
         if not declared["approval"].startswith("APPROVAL-"):
             violations.append(f"root symlink `{rel}` missing required approval token prefix APPROVAL-")
-        if target != declared["target"]:
+        if target != declared["target"] or target != allowed_root[rel]:
             violations.append(f"root symlink `{rel}` target drift: expected `{declared['target']}`, got `{target}`")
     else:
         expected = allowed_non_root.get(rel)
@@ -62,6 +69,15 @@ for rel in sorted(symlinks):
 dockerfile = ROOT / "Dockerfile"
 if not dockerfile.is_symlink():
     violations.append("root `Dockerfile` must be a symlink to `docker/images/runtime/Dockerfile`")
+
+for rel, expected in sorted(allowed_root.items()):
+    p = ROOT / rel
+    if not p.is_symlink():
+        violations.append(f"allowlisted root symlink missing: `{rel}` -> `{expected}`")
+for rel, expected in sorted(allowed_non_root.items()):
+    p = ROOT / rel
+    if p.exists() and not p.is_symlink():
+        violations.append(f"allowlisted non-root path `{rel}` exists but is not a symlink")
 
 if violations:
     print("symlink policy check failed:", file=sys.stderr)

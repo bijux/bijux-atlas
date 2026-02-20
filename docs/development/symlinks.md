@@ -14,17 +14,13 @@ Prevents hidden compatibility behavior and enforces explicit symlink governance.
 
 Policy rule:
 - Only compatibility shims are allowed at root.
-- Allowed shim classes: tool-config discovery shims, `Dockerfile` shim, and `bin` UX shim.
-- New symlinks require a `docs/development/symlinks.md` entry with `APPROVAL-*` token.
+- Allowed shim classes: `Dockerfile` shim and `bin` UX shim.
+- New symlinks require:
+  - An entry in `configs/repo/symlink-allowlist.json`.
+  - A `docs/development/symlinks.md` entry with `APPROVAL-*` token.
 
 - `Dockerfile` -> `docker/images/runtime/Dockerfile`: root compatibility for tooling expecting root Dockerfile. (Approval: `APPROVAL-DOCKERFILE-SHIM`)
 - `bin` -> `scripts/bin`: root compatibility while `scripts/bin` is canonical. (Approval: `APPROVAL-SCRIPT-BIN-SHIM`)
-- `deny.toml` -> `configs/security/deny.toml`: tool root-discovery compatibility. (Approval: `APPROVAL-DENY-SHIM`)
-- `audit-allowlist.toml` -> `configs/security/audit-allowlist.toml`: tool root-discovery compatibility. (Approval: `APPROVAL-AUDIT-ALLOWLIST-SHIM`)
-- `clippy.toml` -> `configs/rust/clippy.toml`: tool root-discovery compatibility. (Approval: `APPROVAL-CLIPPY-SHIM`)
-- `rustfmt.toml` -> `configs/rust/rustfmt.toml`: tool root-discovery compatibility. (Approval: `APPROVAL-RUSTFMT-SHIM`)
-- `.vale` -> `configs/docs/.vale`: tool root-discovery compatibility. (Approval: `APPROVAL-VALE-DIR-SHIM`)
-- `.vale.ini` -> `configs/docs/.vale.ini`: tool root-discovery compatibility. (Approval: `APPROVAL-VALE-INI-SHIM`)
 
 Non-root compatibility pointer:
 - `ops/e2e/stack` -> `ops/stack`: compatibility pointer from e2e harness to canonical stack manifests.
