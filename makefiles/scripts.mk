@@ -80,6 +80,14 @@ scripts-test: ## Run scripts-focused tests
 	@$(ATLAS_SCRIPTS) --run-id scripts-test --profile local doctor --json > artifacts/scripts/doctor.json
 	@$(ATLAS_SCRIPTS) validate-output --schema configs/contracts/scripts-doctor-output.schema.json --file artifacts/scripts/doctor.json
 
+scripts-coverage: ## Optional coverage run for bijux-atlas-scripts package
+	@$(MAKE) -s internal/scripts/install-lock
+	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/pytest" -q --cov=bijux_atlas_scripts --cov-report=term-missing packages/bijux-atlas-scripts/tests || true
+
+scripts-deps-audit: ## Dependency policy audit for scripts package (pip-audit if available)
+	@$(MAKE) -s internal/scripts/install-lock
+	@{ "$(SCRIPTS_VENV)/bin/python" -m pip_audit --local --requirement packages/bijux-atlas-scripts/requirements.lock.txt || echo "pip-audit unavailable; skipping"; }
+
 internal/scripts/test-hermetic: ## Run scripts package tests with --no-network guard enabled
 	@$(MAKE) -s scripts-install
 	@BIJUX_SCRIPTS_TEST_NO_NETWORK=1 PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/pytest" -q packages/bijux-atlas-scripts/tests
@@ -113,6 +121,7 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(PY_RUN) scripts/areas/layout/check_scripts_top_level.py
 	@if command -v shellcheck >/dev/null 2>&1; then find scripts/areas/check scripts/bin scripts/areas/ci scripts/areas/dev -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional)"; fi
 	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" check scripts/areas/check scripts/areas/gen scripts/areas/python packages/bijux-atlas-scripts/src packages/bijux-atlas-scripts/tests
+	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/mypy" --ignore-missing-imports packages/bijux-atlas-scripts/src packages/bijux-atlas-scripts/tests
 	@python3 -m unittest scripts.areas.tests.test_paths
 
 scripts-all: ## Canonical scripts gate: all script-related gates must pass
@@ -123,6 +132,7 @@ scripts-all: ## Canonical scripts gate: all script-related gates must pass
 	@$(MAKE) scripts-lint
 	@$(MAKE) scripts-check
 	@$(MAKE) scripts-test
+	@$(MAKE) scripts-deps-audit
 
 internal/scripts/venv:
 	@python3 -m venv "$(SCRIPTS_VENV)"
@@ -190,4 +200,4 @@ internal/scripts/all: ## Uniform scripts all target
 	@$(MAKE) internal/scripts/test
 	@$(MAKE) internal/scripts/build
 
-.PHONY: bootstrap-tools no-direct-scripts scripts-all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test internal/scripts/test-hermetic internal/scripts/sbom internal/scripts/fmt-alias internal/scripts/venv internal/scripts/install-lock internal/scripts/lock-check packages-lock internal/scripts/check internal/scripts/build internal/scripts/fmt internal/scripts/lint internal/scripts/test internal/scripts/clean internal/scripts/install-dev internal/scripts/install internal/scripts/run internal/scripts/all
+.PHONY: bootstrap-tools no-direct-scripts scripts-all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test scripts-coverage scripts-deps-audit internal/scripts/test-hermetic internal/scripts/sbom internal/scripts/fmt-alias internal/scripts/venv internal/scripts/install-lock internal/scripts/lock-check packages-lock internal/scripts/check internal/scripts/build internal/scripts/fmt internal/scripts/lint internal/scripts/test internal/scripts/clean internal/scripts/install-dev internal/scripts/install internal/scripts/run internal/scripts/all
