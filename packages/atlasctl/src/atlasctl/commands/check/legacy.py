@@ -6,6 +6,7 @@ import subprocess
 
 from ...checks.runner import domains as check_domains
 from ...checks.runner import run_domain
+from ...checks.registry import get_check, list_checks
 from ...core.context import RunContext
 from ...lint.runner import run_suite
 from ...check.native import (
@@ -58,15 +59,53 @@ def _run(ctx: RunContext, cmd: list[str]) -> int:
 
 def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     sub = ns.check_cmd
+    if sub == "list":
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "checks": [
+                {
+                    "id": c.check_id,
+                    "domain": c.domain,
+                    "description": c.description,
+                    "severity": c.severity.value,
+                    "category": c.category.value,
+                    "fix_hint": c.fix_hint,
+                }
+                for c in list_checks()
+            ],
+        }
+        print(json.dumps(payload, sort_keys=True) if ctx.output_format == "json" or ns.json else json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+    if sub == "explain":
+        check = get_check(ns.check_id)
+        if check is None:
+            print(f"unknown check id: {ns.check_id}")
+            return 2
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "id": check.check_id,
+            "domain": check.domain,
+            "description": check.description,
+            "severity": check.severity.value,
+            "category": check.category.value,
+            "failure_modes": ["policy violation", "contract drift", "hygiene drift"],
+            "how_to_fix": check.fix_hint,
+        }
+        print(json.dumps(payload, sort_keys=True) if ctx.output_format == "json" or ns.json else json.dumps(payload, indent=2, sort_keys=True))
+        return 0
     if sub == "all":
-        code, payload = run_domain(ctx.repo_root, "all")
+        code, payload = run_domain(ctx.repo_root, "all", fail_fast=ns.fail_fast)
         if ctx.output_format == "json":
             print(json.dumps(payload, sort_keys=True))
         else:
             print(f"check all: {payload['status']} ({payload['failed_count']}/{payload['total_count']} failed)")
         return code
     if sub == "domain":
-        code, payload = run_domain(ctx.repo_root, ns.domain)
+        code, payload = run_domain(ctx.repo_root, ns.domain, fail_fast=ns.fail_fast)
         if ctx.output_format == "json":
             print(json.dumps(payload, sort_keys=True))
         else:
@@ -74,7 +113,7 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return code
     if sub in {"make", "docs", "configs"}:
         suite_name = {"make": "makefiles", "docs": "docs", "configs": "configs"}[sub]
-        code, payload = run_suite(ctx.repo_root, suite_name, fail_fast=False)
+        code, payload = run_suite(ctx.repo_root, suite_name, fail_fast=ns.fail_fast)
         if ctx.output_format == "json":
             print(json.dumps(payload, sort_keys=True))
         else:
@@ -470,8 +509,13 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
 def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     p = sub.add_parser("check", help="area-based checks mapped from scripts/areas")
+    p.add_argument("--fail-fast", action="store_true", help="stop after first failing check in multi-check runs")
+    p.add_argument("--json", action="store_true", help="emit JSON output")
     p_sub = p.add_subparsers(dest="check_cmd", required=True)
     p_sub.add_parser("all", help="run all native atlasctl checks")
+    p_sub.add_parser("list", help="list registered checks")
+    explain = p_sub.add_parser("explain", help="explain a check id")
+    explain.add_argument("check_id")
     domain = p_sub.add_parser("domain", help="run checks for one domain")
     domain.add_argument("domain", choices=check_domains())
     p_sub.add_parser("layout", help="run layout checks")
