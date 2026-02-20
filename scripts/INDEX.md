@@ -71,9 +71,7 @@ Generated file. Do not edit manually.
 | `scripts/areas/demo/demo.sh` | `platform` | `private` | - |
 | `scripts/areas/docs/ENTRYPOINTS.md` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_concept_ids.sh` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_configmap_env_docs.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_doc_naming.sh` | `docs-governance` | `public` | `docs-build` |
-| `scripts/areas/docs/check_generated_contract_docs.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_reference_templates.sh` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_chart_contract_index.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/generate_config_keys_doc.py` | `docs-governance` | `public` | - |

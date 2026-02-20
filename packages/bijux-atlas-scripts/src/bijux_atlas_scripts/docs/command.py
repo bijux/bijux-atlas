@@ -1694,6 +1694,59 @@ def _check_suite_id_docs(ctx: RunContext) -> tuple[int, str]:
     )
 
 
+def _check_configmap_env_docs(ctx: RunContext) -> tuple[int, str]:
+    template = ctx.repo_root / "ops" / "k8s" / "charts" / "bijux-atlas" / "templates" / "configmap.yaml"
+    config_doc = ctx.repo_root / "docs" / "operations" / "config.md"
+    values_doc = ctx.repo_root / "docs" / "operations" / "k8s" / "values.md"
+    tmpl_text = template.read_text(encoding="utf-8")
+    doc_text = config_doc.read_text(encoding="utf-8")
+    values_doc_text = values_doc.read_text(encoding="utf-8")
+    cfg_keys = sorted(set(re.findall(r"^\s+(ATLAS_[A-Z0-9_]+):", tmpl_text, flags=re.MULTILINE)))
+    top_level_values = sorted(set(re.findall(r"\.Values\.([a-zA-Z0-9_]+)", tmpl_text)))
+    errors: list[str] = []
+    for key in cfg_keys:
+        if f"`{key}`" not in doc_text:
+            errors.append(f"missing key in docs/operations/config.md: {key}")
+    for top in top_level_values:
+        if f"`values.{top}`" not in values_doc_text:
+            errors.append(f"missing values reference in docs/operations/k8s/values.md: values.{top}")
+    return (0, "configmap env docs check passed") if not errors else (
+        1,
+        "configmap env docs check failed:\n" + "\n".join(f"- {e}" for e in errors),
+    )
+
+
+def _check_generated_contract_docs(ctx: RunContext) -> tuple[int, str]:
+    code, out = _run_check(["./bin/bijux-atlas", "contracts", "generate", "--generators", "artifacts"], ctx.repo_root)
+    if code != 0:
+        return 1, out
+    code, out = _run_check(
+        ["python3", "-m", "bijux_atlas_scripts.cli", "docs", "contracts-index", "--fix", "--report", "text"],
+        ctx.repo_root,
+    )
+    if code != 0:
+        return 1, out
+    targets = [
+        "docs/_generated/contracts",
+        "docs/contracts/errors.md",
+        "docs/contracts/metrics.md",
+        "docs/contracts/tracing.md",
+        "docs/contracts/endpoints.md",
+        "docs/contracts/config-keys.md",
+        "docs/contracts/chart-values.md",
+    ]
+    proc = subprocess.run(
+        ["git", "diff", "--", *targets],
+        cwd=ctx.repo_root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if proc.stdout.strip() or proc.stderr.strip():
+        return 1, "generated contract docs drift detected"
+    return 0, "generated contract docs check passed"
+
+
 def _generate_concept_graph(ctx: RunContext) -> tuple[int, str]:
     registry = ctx.repo_root / "docs/_style/concepts.yml"
     out = ctx.repo_root / "docs/_generated/concepts.md"
@@ -2855,6 +2908,16 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
         return code
 
+    if ns.docs_cmd == "configmap-env-docs-check":
+        code, output = _check_configmap_env_docs(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
+    if ns.docs_cmd == "generated-contract-docs-check":
+        code, output = _check_generated_contract_docs(ctx)
+        print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True) if ns.report == "json" else output)
+        return code
+
     if ns.docs_cmd == "contracts-index":
         if ns.fix:
             code, output = _generate_contracts_index_doc(ctx)
@@ -3025,6 +3088,8 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("ops-observability-links-check", "validate observability docs local links resolve"),
         ("public-targets-docs-sections-check", "validate every public target appears in generated docs"),
         ("suite-id-docs-check", "forbid file-name references where suite IDs are required"),
+        ("configmap-env-docs-check", "validate ATLAS_* configmap keys are documented"),
+        ("generated-contract-docs-check", "validate generated contract markdown is drift-free"),
         ("glossary-check", "validate glossary and banned terms policy"),
         ("contracts-index", "validate or generate docs contracts index"),
         ("runbook-map", "validate or generate docs runbook map index"),

@@ -5,7 +5,6 @@ Scripts in this area.
 - ENTRYPOINTS.md
 - check_concept_ids.sh
 - check_doc_naming.sh
-- check_generated_contract_docs.py
 - check_reference_templates.sh
 - generate_crates_map.py
 - generate_k8s_install_matrix.py
