@@ -11,6 +11,7 @@ from typing import Any
 from ..core.context import RunContext
 from ..core.fs import ensure_evidence_path
 from ..core.process import run_command
+from ..core.schema_utils import validate_json
 
 
 @dataclass(frozen=True)
@@ -46,6 +47,7 @@ def _write_wrapper_artifacts(ctx: RunContext, area: str, action: str, cmd: list[
         "details": {"exit_code": code},
     }
     report_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    validate_json(payload, ctx.repo_root / "configs/contracts/scripts-tool-output.schema.json")
     return payload
 
 
@@ -102,6 +104,7 @@ def _ports_reserve(ctx: RunContext, report_format: str, name: str, port: int | N
         "action": "reserve",
         "details": {"name": name, "port": chosen},
     }
+    validate_json(reservation, ctx.repo_root / "configs/contracts/scripts-tool-output.schema.json")
     (out_dir / "report.json").write_text(json.dumps(reservation, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     (out_dir / "run.log").write_text(f"reserved {name}={chosen}\n", encoding="utf-8")
     _emit(reservation, report_format)
@@ -135,6 +138,7 @@ def _cleanup(ctx: RunContext, report_format: str, older_than_days: int) -> int:
         "action": "gc",
         "details": {"older_than_days": older_than_days, "removed_dirs": sorted(removed)},
     }
+    validate_json(payload, ctx.repo_root / "configs/contracts/scripts-tool-output.schema.json")
     _emit(payload, report_format)
     return 0
 
@@ -205,6 +209,14 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         mapping = {
             "smoke": ["bash", "ops/run/load-smoke.sh"],
             "suite": ["bash", "ops/run/load-suite.sh"],
+            "baseline-compare": [
+                "python3",
+                "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/compare_runs.py",
+            ],
+            "baseline-update": [
+                "python3",
+                "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/update_baseline.py",
+            ],
         }
         return _run_wrapped(ctx, CommandSpec("load", ns.load_cmd, mapping[ns.load_cmd]), ns.report)
     if ns.cmd == "e2e":
@@ -220,6 +232,12 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             "pin": ["python3", "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/datasets/build_manifest_lock.py"],
         }
         return _run_wrapped(ctx, CommandSpec("datasets", ns.datasets_cmd, mapping[ns.datasets_cmd]), ns.report)
+    if ns.cmd == "contracts-snapshot":
+        return _run_wrapped(
+            ctx,
+            CommandSpec("contracts", "snapshot", ["bash", "ops/run/contract-check.sh"]),
+            ns.report,
+        )
     if ns.cmd == "cleanup":
         return _cleanup(ctx, ns.report, ns.older_than)
     if ns.cmd == "scenario":
@@ -262,7 +280,7 @@ def configure_orchestrate_parsers(sub: argparse._SubParsersAction[argparse.Argum
 
     load = sub.add_parser("load", help="load wrappers")
     load_sub = load.add_subparsers(dest="load_cmd", required=True)
-    for name in ("smoke", "suite"):
+    for name in ("smoke", "suite", "baseline-compare", "baseline-update"):
         cmd = load_sub.add_parser(name)
         cmd.add_argument("--report", choices=["text", "json"], default="text")
 
@@ -286,3 +304,6 @@ def configure_orchestrate_parsers(sub: argparse._SubParsersAction[argparse.Argum
     scenario.add_argument("--manifest", default="ops/e2e/suites/suites.json")
     scenario.add_argument("--scenario", required=True)
     scenario.add_argument("--report", choices=["text", "json"], default="text")
+
+    contracts_snapshot = sub.add_parser("contracts-snapshot", help="run live contracts snapshot check")
+    contracts_snapshot.add_argument("--report", choices=["text", "json"], default="text")
