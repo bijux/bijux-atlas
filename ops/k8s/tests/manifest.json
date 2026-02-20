@@ -108,6 +108,101 @@
       ]
     },
     {
+      "script": "checks/obs/test_no_checksum_rollout.sh",
+      "groups": [
+        "chart",
+        "chart-contract"
+      ],
+      "owner": "chart",
+      "retries": 1,
+      "timeout_seconds": 120,
+      "expected_failure_modes": [
+        "checksum_rollout_policy_violation"
+      ]
+    },
+    {
+      "script": "checks/obs/test_values_minimums.sh",
+      "groups": [
+        "chart",
+        "chart-contract"
+      ],
+      "owner": "chart",
+      "retries": 1,
+      "timeout_seconds": 120,
+      "expected_failure_modes": [
+        "unsafe_values_minimums"
+      ]
+    },
+    {
+      "script": "checks/obs/test_values_profiles_are_valid.sh",
+      "groups": [
+        "chart",
+        "profiles",
+        "chart-contract"
+      ],
+      "owner": "chart",
+      "retries": 1,
+      "timeout_seconds": 240,
+      "expected_failure_modes": [
+        "invalid_values_profile"
+      ]
+    },
+    {
+      "script": "checks/obs/test_values_schema_strict.sh",
+      "groups": [
+        "chart",
+        "chart-contract",
+        "schema"
+      ],
+      "owner": "chart",
+      "retries": 1,
+      "timeout_seconds": 120,
+      "expected_failure_modes": [
+        "values_schema_not_strict"
+      ]
+    },
+    {
+      "script": "checks/obs/test_hpa_enabled_requires_metrics_stack.sh",
+      "groups": [
+        "hpa",
+        "chart-contract",
+        "autoscaling"
+      ],
+      "owner": "chart",
+      "retries": 1,
+      "timeout_seconds": 120,
+      "expected_failure_modes": [
+        "hpa_enabled_without_metrics_stack"
+      ]
+    },
+    {
+      "script": "checks/obs/test_hpa_enabled_requires_resources.sh",
+      "groups": [
+        "hpa",
+        "chart-contract",
+        "autoscaling"
+      ],
+      "owner": "chart",
+      "retries": 1,
+      "timeout_seconds": 120,
+      "expected_failure_modes": [
+        "hpa_enabled_without_resources"
+      ]
+    },
+    {
+      "script": "checks/obs/test_observability_objects_contract.sh",
+      "groups": [
+        "observability",
+        "chart-contract"
+      ],
+      "owner": "observability",
+      "retries": 1,
+      "timeout_seconds": 120,
+      "expected_failure_modes": [
+        "observability_objects_contract_drift"
+      ]
+    },
+    {
       "script": "checks/rollout/test_install.sh",
       "groups": [
         "install"
@@ -198,7 +293,8 @@
     {
       "script": "checks/config/test_configmap.sh",
       "groups": [
-        "config"
+        "config",
+        "chart-contract"
       ],
       "owner": "server",
       "retries": 1,
@@ -210,7 +306,8 @@
     {
       "script": "checks/config/test_configmap_update_reload.sh",
       "groups": [
-        "config"
+        "config",
+        "chart-contract"
       ],
       "owner": "server",
       "retries": 1,
@@ -223,7 +320,8 @@
       "script": "checks/config/test_configmap_schema_completeness.sh",
       "groups": [
         "config",
-        "docs"
+        "docs",
+        "chart-contract"
       ],
       "owner": "server",
       "retries": 1,
@@ -236,7 +334,8 @@
       "script": "checks/config/test_configmap_unknown_keys_rejected.sh",
       "groups": [
         "config",
-        "security"
+        "security",
+        "chart-contract"
       ],
       "owner": "server",
       "retries": 1,
@@ -248,13 +347,53 @@
     {
       "script": "checks/config/test_configmap_version_stamp.sh",
       "groups": [
-        "config"
+        "config",
+        "chart-contract"
       ],
       "owner": "server",
       "retries": 1,
       "timeout_seconds": 180,
       "expected_failure_modes": [
         "configmap_version_stamp_missing"
+      ]
+    },
+    {
+      "script": "checks/config/test_configmap_must_exist.sh",
+      "groups": [
+        "config",
+        "chart-contract"
+      ],
+      "owner": "server",
+      "retries": 1,
+      "timeout_seconds": 180,
+      "expected_failure_modes": [
+        "configmap_missing_or_missing_required_keys"
+      ]
+    },
+    {
+      "script": "checks/config/test_deployment_envFrom_configmap.sh",
+      "groups": [
+        "config",
+        "chart-contract"
+      ],
+      "owner": "chart",
+      "retries": 1,
+      "timeout_seconds": 120,
+      "expected_failure_modes": [
+        "deployment_envfrom_configmap_drift"
+      ]
+    },
+    {
+      "script": "checks/config/test_configmap_keys_match_runtime_expected.sh",
+      "groups": [
+        "config",
+        "chart-contract"
+      ],
+      "owner": "server",
+      "retries": 1,
+      "timeout_seconds": 120,
+      "expected_failure_modes": [
+        "configmap_keys_not_in_runtime_contract"
       ]
     },
     {
@@ -323,6 +462,20 @@
       ]
     },
     {
+      "script": "checks/datasets/test_pdb_required_when_replicas_gt1.sh",
+      "groups": [
+        "pdb",
+        "chart-contract",
+        "availability"
+      ],
+      "owner": "chart",
+      "retries": 1,
+      "timeout_seconds": 120,
+      "expected_failure_modes": [
+        "pdb_not_required_for_replicas_gt1"
+      ]
+    },
+    {
       "script": "checks/perf/test_metrics_pipeline_ready.sh",
       "groups": [
         "hpa",
@@ -373,6 +526,34 @@
       "timeout_seconds": 240,
       "expected_failure_modes": [
         "hpa_disabled_mode_unexpected_scale"
+      ]
+    },
+    {
+      "script": "checks/perf/test_hpa_metrics_names_contract.sh",
+      "groups": [
+        "hpa",
+        "chart-contract",
+        "autoscaling"
+      ],
+      "owner": "chart",
+      "retries": 1,
+      "timeout_seconds": 120,
+      "expected_failure_modes": [
+        "hpa_metric_names_contract_drift"
+      ]
+    },
+    {
+      "script": "checks/perf/test_hpa_behavior_contract.sh",
+      "groups": [
+        "hpa",
+        "chart-contract",
+        "autoscaling"
+      ],
+      "owner": "chart",
+      "retries": 1,
+      "timeout_seconds": 120,
+      "expected_failure_modes": [
+        "hpa_behavior_contract_drift"
       ]
     },
     {
@@ -437,6 +618,19 @@
       "timeout_seconds": 120,
       "expected_failure_modes": [
         "image_not_digest_pinned"
+      ]
+    },
+    {
+      "script": "checks/security/test_image_digest_policy.sh",
+      "groups": [
+        "supply-chain",
+        "chart-contract"
+      ],
+      "owner": "chart",
+      "retries": 1,
+      "timeout_seconds": 120,
+      "expected_failure_modes": [
+        "image_digest_policy_violation"
       ]
     },
     {

@@ -9,6 +9,10 @@
       "test_chart_contract_required_fields.sh",
       "test_layer_contract_render.sh",
       "test_helm_repo_pinning.sh",
+      "test_no_checksum_rollout.sh",
+      "test_values_minimums.sh",
+      "test_values_profiles_are_valid.sh",
+      "test_values_schema_strict.sh",
       "test_install.sh",
       "test_install_twice.sh",
       "test_uninstall_reinstall.sh",
@@ -18,11 +22,18 @@
       "test_hpa.sh",
       "test_hpa_disabled_mode.sh",
       "test_hpa_misconfig_negative.sh",
+      "test_hpa_metrics_names_contract.sh",
+      "test_hpa_behavior_contract.sh",
+      "test_hpa_enabled_requires_metrics_stack.sh",
+      "test_hpa_enabled_requires_resources.sh",
       "test_metrics_pipeline_ready.sh",
+      "test_pdb_required_when_replicas_gt1.sh",
+      "test_deployment_envFrom_configmap.sh",
       "test_rollout.sh",
       "test_rollback.sh",
       "test_rbac_minimalism.sh",
       "test_image_digest_pinning.sh",
+      "test_image_digest_policy.sh",
       "test_ingress_profile.sh"
     ],
     "server": [
@@ -33,6 +44,8 @@
       "test_configmap_schema_completeness.sh",
       "test_configmap_unknown_keys_rejected.sh",
       "test_configmap_version_stamp.sh",
+      "test_configmap_must_exist.sh",
+      "test_configmap_keys_match_runtime_expected.sh",
       "test_cached_only_mode.sh",
       "test_dataset_missing_behavior.sh",
       "test_readiness_semantics.sh",
@@ -62,7 +75,8 @@
       "test_service_monitor.sh",
       "test_prometheus_rule.sh",
       "test_logs_json.sh",
-      "test_redis_backend_metric.sh"
+      "test_redis_backend_metric.sh",
+      "test_observability_objects_contract.sh"
     ],
     "stack": [
       "test_cluster_sanity.sh",
