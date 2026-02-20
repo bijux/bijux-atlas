@@ -8,8 +8,8 @@ ops_env_load
 ops_entrypoint_start "ops-undeploy"
 ops_version_guard helm
 
-ns="${ATLAS_E2E_NAMESPACE:-${ATLAS_NS:-atlas-e2e}}"
-release="${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
-helm -n "$ns" uninstall "$release" >/dev/null 2>&1 || true
+ns="${ATLAS_E2E_NAMESPACE:-${ATLAS_NS:-$(ops_layer_ns_e2e)}}"
+release="${ATLAS_E2E_RELEASE_NAME:-$(ops_layer_contract_get release_metadata.defaults.release_name)}"
+ops_helm -n "$ns" uninstall "$release" >/dev/null 2>&1 || true
 
 echo "undeploy complete: release=$release namespace=$ns"

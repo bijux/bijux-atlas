@@ -22,7 +22,7 @@ tmpl_keys="$(mktemp)"
 live_keys="$(mktemp)"
 trap 'rm -f "$tmpl_keys" "$live_keys"' EXIT
 
-helm template "$SERVICE_NAME" "$ROOT/ops/k8s/charts/bijux-atlas" -n "$NS" -f "${ATLAS_E2E_VALUES_FILE:-${ATLAS_VALUES_FILE:-$ROOT/ops/k8s/values/local.yaml}}" \
+ops_helm template "$SERVICE_NAME" "$ROOT/ops/k8s/charts/bijux-atlas" -n "$NS" -f "${ATLAS_E2E_VALUES_FILE:-${ATLAS_VALUES_FILE:-$ROOT/ops/k8s/values/local.yaml}}" \
   | awk '
     $0 ~ /^kind: ConfigMap$/ {in_cm=1; next}
     in_cm && $0 ~ /^metadata:/ {next}
@@ -31,7 +31,7 @@ helm template "$SERVICE_NAME" "$ROOT/ops/k8s/charts/bijux-atlas" -n "$NS" -f "${
     in_data && $0 !~ /^[[:space:]]/ {in_cm=0; in_data=0}
   ' | sort -u > "$tmpl_keys"
 
-kubectl -n "$NS" get configmap "$CM_NAME" -o jsonpath='{range $k,$v := .data}{$k}{"\n"}{end}' 2>/dev/null | sort -u > "$live_keys"
+ops_kubectl -n "$NS" get configmap "$CM_NAME" -o jsonpath='{range $k,$v := .data}{$k}{"\n"}{end}' 2>/dev/null | sort -u > "$live_keys"
 
 unknown="$(comm -13 "$tmpl_keys" "$live_keys" || true)"
 if [ -n "$unknown" ]; then
