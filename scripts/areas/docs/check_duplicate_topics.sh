@@ -37,6 +37,6 @@ for file in docs/architecture/boundaries.md docs/architecture/effects.md docs/ar
 done
 
 # Concept-id duplicate ownership enforcement.
-python3 ./scripts/areas/docs/check_concept_registry.py
+./scripts/bin/bijux-atlas-scripts run scripts/areas/docs/check_concept_registry.py
 
 echo "duplicate-topics check passed"
