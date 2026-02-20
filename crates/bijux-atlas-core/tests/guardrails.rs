@@ -125,7 +125,10 @@ fn collect_rs_files(dir: &Path) -> Vec<PathBuf> {
     if !dir.exists() {
         return files;
     }
-    for entry in fs::read_dir(dir).expect("read_dir failed") {
+    let Ok(entries) = fs::read_dir(dir) else {
+        return files;
+    };
+    for entry in entries {
         let entry = entry.expect("dir entry failed");
         let path = entry.path();
         if path.is_dir() {
@@ -346,7 +349,10 @@ fn collect_files_by_name(dir: &Path, name: &str) -> Vec<PathBuf> {
     if !dir.exists() {
         return out;
     }
-    for entry in fs::read_dir(dir).expect("read_dir failed") {
+    let Ok(entries) = fs::read_dir(dir) else {
+        return out;
+    };
+    for entry in entries {
         let entry = entry.expect("dir entry failed");
         let path = entry.path();
         if path.is_dir() {
