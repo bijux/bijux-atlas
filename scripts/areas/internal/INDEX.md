@@ -7,7 +7,6 @@ Scripts in this area.
 - effects-lint.sh
 - env_dump.sh
 - exec.sh
-- migrate_paths.sh
 - naming-intent-lint.sh
 - openapi-generate.sh
 - paths.py

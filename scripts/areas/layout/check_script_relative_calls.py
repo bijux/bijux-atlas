@@ -31,7 +31,6 @@ allowed = (
     "scripts/areas/python/",
     "scripts/areas/internal/effects-lint.sh",
     "scripts/areas/internal/naming-intent-lint.sh",
-    "scripts/areas/internal/migrate_paths.sh",
     "scripts/areas/internal/openapi-generate.sh",
     "scripts/areas/internal/exec.sh",
     "scripts/areas/internal/env_dump.sh",

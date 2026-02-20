@@ -116,7 +116,6 @@ Scripts in this area.
 - public_make_targets.py
 - public_surface.py
 - render_public_help.py
-- replace_paths.sh
 - root_whitelist.json
 - run_gate.py
 - update_ops_pins.py

@@ -169,7 +169,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/internal/effects-lint.sh` | `platform` | `internal` | - |
 | `scripts/areas/internal/env_dump.sh` | `platform` | `internal` | - |
 | `scripts/areas/internal/exec.sh` | `platform` | `internal` | - |
-| `scripts/areas/internal/migrate_paths.sh` | `platform` | `internal` | - |
 | `scripts/areas/internal/naming-intent-lint.sh` | `platform` | `internal` | - |
 | `scripts/areas/internal/openapi-generate.sh` | `platform` | `internal` | - |
 | `scripts/areas/internal/paths.py` | `platform` | `internal` | - |
@@ -299,7 +298,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/layout/public_make_targets.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/public_surface.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/render_public_help.py` | `repo-surface` | `public` | - |
-| `scripts/areas/layout/replace_paths.sh` | `repo-surface` | `public` | `layout-migrate` |
 | `scripts/areas/layout/root_whitelist.json` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/run_gate.py` | `repo-surface` | `public` | - |
 | `scripts/areas/layout/update_ops_pins.py` | `repo-surface` | `public` | - |

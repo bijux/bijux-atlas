@@ -11,7 +11,6 @@ exempt = {
     "docs/development/symlinks.md",
     "docs/development/root-inventory.md",
     "scripts/areas/layout/check_chart_canonical_path.sh",
-    "scripts/areas/internal/migrate_paths.sh",
 }
 
 violations = []
