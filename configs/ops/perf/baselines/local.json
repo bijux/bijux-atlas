@@ -1,0 +1,37 @@
+{
+  "name": "local",
+  "source": "approved-threshold-bootstrap",
+  "notes": "bootstrap baseline aligned to smoke thresholds for deterministic local regression checks",
+  "metadata": {
+    "captured_at": "2026-02-18T00:00:00Z",
+    "profile": "local",
+    "tool_versions": {
+      "k6": "v1.6.1",
+      "kind": "v0.31.0",
+      "kubectl": "v1.35.1",
+      "helm": "v3.18.3"
+    },
+    "environment": "local",
+    "dataset_set": [
+      "release-110-homo_sapiens-GRCh38"
+    ],
+    "dataset_lock_hash": "409003e7142f19d2",
+    "k8s_profile": "local",
+    "replicas": 1
+  },
+  "rows": [
+    {
+      "suite": "mixed",
+      "p95_ms": 900.0,
+      "p99_ms": 1300.0,
+      "fail_rate": 0.02
+    },
+    {
+      "suite": "cheap-only-survival",
+      "p95_ms": 900.0,
+      "p99_ms": 1500.0,
+      "fail_rate": 0.03
+    }
+  ],
+  "schema_version": 1
+}

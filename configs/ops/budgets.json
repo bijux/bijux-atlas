@@ -18,7 +18,10 @@
   },
   "k6_latency": {
     "default_p95_ms": 1200,
-    "default_p99_ms": 2500
+    "default_p99_ms": 2500,
+    "max_p95_regression_ratio": 0.15,
+    "baseline_freshness_days": 30,
+    "baseline_freshness_warn_only": true
   },
   "cold_start": {
     "max_p99_ms": 4000
