@@ -5,7 +5,7 @@
 
 ## Summary
 
-- Tracked files: `2110`
+- Tracked files: `2108`
 - Docs markdown files: `412`
 - Script files under `scripts/`: `0`
 - Rust test files: `42`

@@ -6,9 +6,9 @@ Patch releases must remain backward compatible for:
 - documented flags,
 - JSON output schemas with required core fields.
 
-## 2-Step Removal Policy
-- Step 1 (`deprecate`): add shim entry to `configs/layout/script-shim-expiries.json` with owner, issue, replacement, migration doc, and expiry.
-- Step 2 (`remove`): delete shim and remove exceptions/allowlists once expiry date is reached.
+## Two-Phase Removal Policy
+- `deprecate`: add shim entry to `configs/layout/script-shim-expiries.json` with owner, issue, replacement, migration doc, and expiry.
+- `remove`: delete shim and remove exceptions/allowlists once expiry date is reached.
 
 ## Shim Rules
 - Shims must print a deprecation warning and migration doc link.
