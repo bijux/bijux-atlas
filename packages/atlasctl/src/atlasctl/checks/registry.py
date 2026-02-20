@@ -5,11 +5,13 @@ from pathlib import Path
 
 from .base import CheckDef
 from .checks import CHECKS as CHECKS_CHECKS
+from .contracts import CHECKS as CHECKS_CONTRACTS
 from .configs import CHECKS as CHECKS_CONFIGS
 from .docker import CHECKS as CHECKS_DOCKER
 from .docs import CHECKS as CHECKS_DOCS
 from .make import CHECKS as CHECKS_MAKE
 from .ops import CHECKS as CHECKS_OPS
+from .python import CHECKS as CHECKS_PYTHON
 from .repo import CHECKS as CHECKS_REPO
 
 
@@ -20,12 +22,14 @@ _CHECKS: tuple[CheckDef, ...] = (
     *CHECKS_OPS,
     *CHECKS_CHECKS,
     *CHECKS_CONFIGS,
+    *CHECKS_PYTHON,
     *CHECKS_DOCKER,
+    *CHECKS_CONTRACTS,
 )
 
 
 def list_checks() -> tuple[CheckDef, ...]:
-    return _CHECKS
+    return tuple(sorted(_CHECKS, key=lambda c: c.check_id))
 
 
 def list_domains() -> list[str]:
@@ -41,5 +45,12 @@ def checks_by_domain() -> dict[str, list[CheckDef]]:
 
 def run_checks_for_domain(repo_root: Path, domain: str) -> list[CheckDef]:
     if domain == "all":
-        return list(_CHECKS)
-    return [c for c in _CHECKS if c.domain == domain]
+        return list(list_checks())
+    return [c for c in list_checks() if c.domain == domain]
+
+
+def get_check(check_id: str) -> CheckDef | None:
+    for check in list_checks():
+        if check.check_id == check_id:
+            return check
+    return None
