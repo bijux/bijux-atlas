@@ -198,6 +198,108 @@ def _check_docs_freeze_drift(ctx: RunContext) -> tuple[int, str]:
     return 1, "\n".join(drift)
 
 
+def _resolve_openapi_schema(schema: dict[str, object], schemas: dict[str, dict[str, object]]) -> dict[str, object]:
+    ref = schema.get("$ref")
+    if not isinstance(ref, str):
+        return schema
+    name = ref.split("/")[-1]
+    target = schemas.get(name, {})
+    return _resolve_openapi_schema(target, schemas)
+
+
+def _validate_openapi_example(
+    value: object,
+    schema: dict[str, object],
+    schemas: dict[str, dict[str, object]],
+    path: str,
+) -> list[str]:
+    resolved = _resolve_openapi_schema(schema, schemas)
+    errs: list[str] = []
+    typ = resolved.get("type")
+    if typ == "object":
+        if not isinstance(value, dict):
+            return [f"{path}: expected object"]
+        required = resolved.get("required", [])
+        if isinstance(required, list):
+            for req in required:
+                if isinstance(req, str) and req not in value:
+                    errs.append(f"{path}: missing required field `{req}`")
+        props = resolved.get("properties", {})
+        if isinstance(props, dict):
+            for key, item in value.items():
+                prop_schema = props.get(key)
+                if isinstance(prop_schema, dict):
+                    errs.extend(_validate_openapi_example(item, prop_schema, schemas, f"{path}.{key}"))
+    elif typ == "array":
+        if not isinstance(value, list):
+            return [f"{path}: expected array"]
+        items = resolved.get("items", {})
+        if isinstance(items, dict):
+            for idx, item in enumerate(value):
+                errs.extend(_validate_openapi_example(item, items, schemas, f"{path}[{idx}]"))
+    elif typ == "string" and not isinstance(value, str):
+        errs.append(f"{path}: expected string")
+    elif typ == "integer" and not isinstance(value, int):
+        errs.append(f"{path}: expected integer")
+    elif typ == "number" and not isinstance(value, (int, float)):
+        errs.append(f"{path}: expected number")
+    elif typ == "boolean" and not isinstance(value, bool):
+        errs.append(f"{path}: expected boolean")
+    return errs
+
+
+def _check_openapi_examples(ctx: RunContext) -> tuple[int, str]:
+    openapi_path = ctx.repo_root / "configs" / "openapi" / "v1" / "openapi.generated.json"
+    openapi = json.loads(openapi_path.read_text(encoding="utf-8"))
+    schemas_obj = openapi.get("components", {}).get("schemas", {})
+    schemas: dict[str, dict[str, object]] = {
+        k: v for k, v in schemas_obj.items() if isinstance(k, str) and isinstance(v, dict)
+    }
+    errors: list[str] = []
+    paths = openapi.get("paths", {})
+    if isinstance(paths, dict):
+        for route, methods in paths.items():
+            if not isinstance(methods, dict):
+                continue
+            for method, op in methods.items():
+                if not isinstance(op, dict):
+                    continue
+                responses = op.get("responses", {})
+                if not isinstance(responses, dict):
+                    continue
+                for status, resp in responses.items():
+                    if not isinstance(resp, dict):
+                        continue
+                    content = resp.get("content", {})
+                    if not isinstance(content, dict):
+                        continue
+                    for media, media_obj in content.items():
+                        if not isinstance(media_obj, dict):
+                            continue
+                        schema = media_obj.get("schema")
+                        if not isinstance(schema, dict):
+                            continue
+                        example = media_obj.get("example")
+                        if example is not None:
+                            errors.extend(
+                                _validate_openapi_example(example, schema, schemas, f"{method} {route} {status} {media}")
+                            )
+                        examples = media_obj.get("examples", {})
+                        if isinstance(examples, dict):
+                            for ex_name, ex in examples.items():
+                                if not isinstance(ex, dict) or "value" not in ex:
+                                    continue
+                                errors.extend(
+                                    _validate_openapi_example(
+                                        ex["value"],
+                                        schema,
+                                        schemas,
+                                        f"{method} {route} {status} {media} examples.{ex_name}",
+                                    )
+                                )
+    return (0, "") if not errors else (1, "\n".join(errors[:200]))
+
+
 def _mkdocs_nav_file_refs(mkdocs_text: str) -> list[str]:
     refs: list[str] = []
     for line in mkdocs_text.splitlines():
@@ -458,6 +560,16 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.docs_cmd == "glossary-check":
         return _run_simple(ctx, ["python3", "scripts/areas/docs/lint_glossary_links.py"], ns.report)
 
+    if ns.docs_cmd == "openapi-examples-check":
+        code, output = _check_openapi_examples(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        else:
+            print("openapi examples check passed")
+        return code
+
     if ns.docs_cmd == "contracts-index":
         if ns.fix:
             return _run_simple(ctx, ["python3", "scripts/areas/docs/generate_contracts_index_doc.py"], ns.report)
@@ -565,6 +677,7 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("ops-entrypoints-check", "ensure docs mention only make targets and ops/run entrypoints"),
         ("nav-check", "validate mkdocs nav references existing docs files"),
         ("generated-check", "validate generated docs are up-to-date"),
+        ("openapi-examples-check", "validate OpenAPI examples against declared schemas"),
         ("glossary-check", "validate glossary and banned terms policy"),
         ("contracts-index", "validate or generate docs contracts index"),
         ("runbook-map", "validate or generate docs runbook map index"),

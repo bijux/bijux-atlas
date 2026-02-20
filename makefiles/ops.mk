@@ -577,7 +577,7 @@ ops-api-smoke: ## Run canonical API smoke queries only
 	@$(MAKE) -s ops-env-validate
 	@./ops/e2e/scripts/smoke_queries.sh
 	@python3 ./ops/e2e/smoke/generate_report.py
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_openapi_examples.py
+	@$(ATLAS_SCRIPTS) docs openapi-examples-check --report text
 	@OPS_METRICS_STRICT=0 METRICS_GOLDEN_STRICT=0 $(MAKE) ops-metrics-check
 	@./ops/obs/scripts/snapshot_metrics.sh
 	@./ops/obs/scripts/snapshot_traces.sh
@@ -1052,7 +1052,7 @@ ops-release-matrix: ## Generate k8s release install matrix document from CI summ
 
 ops-openapi-validate: ## Validate OpenAPI drift and schema/examples consistency
 	@./scripts/areas/public/openapi-diff-check.sh
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_openapi_examples.py
+	@$(ATLAS_SCRIPTS) docs openapi-examples-check --report text
 
 ops-chart-render-diff: ## Ensure chart render is deterministic for local profile
 	@tmp_a="$$(mktemp)"; tmp_b="$$(mktemp)"; \
