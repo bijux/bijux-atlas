@@ -17,17 +17,6 @@
       "owner": "rust-platform"
     },
     {
-      "area": "ops",
-      "description": "Run chart verification checks",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "chart",
-      "owner": "ops-platform"
-    },
-    {
       "area": "policies",
       "description": "Run deterministic CI superset",
       "lane": "ci",
@@ -36,17 +25,6 @@
       ],
       "name": "ci",
       "owner": "build-and-release"
-    },
-    {
-      "area": "ops",
-      "description": "Run docker contract checks",
-      "lane": "dev",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "name": "docker",
-      "owner": "ops-platform"
     },
     {
       "area": "docs",
@@ -81,6 +59,17 @@
       "owner": "rust-platform"
     },
     {
+      "area": "ops",
+      "description": "Run canonical k8s verification lane",
+      "lane": "dev",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "name": "k8s",
+      "owner": "ops-platform"
+    },
+    {
       "area": "cargo",
       "description": "Run lint checks",
       "lane": "dev",
@@ -90,6 +79,17 @@
       ],
       "name": "lint",
       "owner": "rust-platform"
+    },
+    {
+      "area": "ops",
+      "description": "Run canonical load verification lane",
+      "lane": "dev",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "name": "load",
+      "owner": "ops-platform"
     },
     {
       "area": "policies",
@@ -103,6 +103,17 @@
     },
     {
       "area": "ops",
+      "description": "Run canonical observability verification lane",
+      "lane": "dev",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "name": "obs",
+      "owner": "ops-platform"
+    },
+    {
+      "area": "ops",
       "description": "Run ops verification lane",
       "lane": "dev",
       "lanes": [
@@ -111,6 +122,17 @@
       ],
       "name": "ops",
       "owner": "ops-platform"
+    },
+    {
+      "area": "ops",
+      "description": "Print latest lane summary and confidence report",
+      "lane": "dev",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "name": "report",
+      "owner": "build-and-release"
     },
     {
       "area": "policies",

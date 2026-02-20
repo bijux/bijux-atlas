@@ -8,15 +8,17 @@ Generated from `make help`. Do not edit manually.
 
 - `[global]`
 - `audit`
-- `chart`
 - `ci`
-- `docker`
 - `docs`
 - `doctor`
 - `fmt`
+- `k8s`
 - `lint`
+- `load`
 - `nightly`
+- `obs`
 - `ops`
+- `report`
 - `root`
 - `root-local`
 - `test`
