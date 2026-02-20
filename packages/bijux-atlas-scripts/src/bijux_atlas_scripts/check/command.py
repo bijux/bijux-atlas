@@ -22,6 +22,7 @@ from .native import (
     check_no_executable_python_outside_packages,
     check_no_xtask_refs,
     check_ops_generated_tracked,
+    check_root_bin_shims,
     check_script_help,
     check_script_ownership,
     check_tracked_timestamp_paths,
@@ -101,6 +102,15 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 print(f"- {err}")
         else:
             print("script ownership coverage passed")
+        return code
+    if sub == "root-bin-shims":
+        code, errors = check_root_bin_shims(ctx.repo_root)
+        if errors:
+            print("root bin shim policy failed:")
+            for err in errors:
+                print(f"- {err}")
+        else:
+            print("root bin shim policy passed")
         return code
     if sub == "duplicate-script-names":
         code, errors = check_duplicate_script_names(ctx.repo_root)
@@ -251,6 +261,7 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     p_sub.add_parser("stack-report", help="validate stack report contracts")
     p_sub.add_parser("cli-help", help="validate script/CLI help coverage")
     p_sub.add_parser("ownership", help="validate script ownership coverage")
+    p_sub.add_parser("root-bin-shims", help="validate root bin shim minimalism policy")
     p_sub.add_parser("duplicate-script-names", help="validate duplicate script names")
     p_sub.add_parser("make-scripts-refs", help="validate no makefile references to scripts paths")
     p_sub.add_parser("docs-scripts-refs", help="validate docs contain no scripts/ path references")
