@@ -32,8 +32,8 @@ Duplicate canonical ownership or missing concept declarations create contract dr
 ## How to verify
 
 ```bash
-$ python3 scripts/areas/docs/check_concept_registry.py
-$ python3 scripts/areas/docs/generate_concept_graph.py
+$ atlasctl docs check --report text
+$ atlasctl docs generate --report text
 $ make docs
 ```
 

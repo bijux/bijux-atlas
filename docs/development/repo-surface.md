@@ -51,8 +51,7 @@ Surface drift breaks automation and team workflows.
 ## How to verify
 
 ```bash
-$ python3 scripts/areas/docs/check_make_targets_documented.py
-$ python3 scripts/areas/docs/check_script_headers.py
+$ atlasctl docs script-headers-check --report text
 $ make layout-check
 $ make no-direct-scripts
 ```

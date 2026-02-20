@@ -35,7 +35,7 @@ Documentation must be executable and reviewable. Surface-level text without cont
 
 ## How to Verify
 ```bash
-python3 scripts/areas/docs/lint_depth.py
+atlasctl docs check --report text
 ```
 
 See also:
