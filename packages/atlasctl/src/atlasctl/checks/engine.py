@@ -50,20 +50,27 @@ def run_function_checks(repo_root: Path, checks: list[CheckDef]) -> tuple[int, l
         except Exception as exc:
             code, errors = 1, [f"internal check error: {exc}"]
         elapsed_ms = int((time.perf_counter() - start) * 1000)
+        normalized_errors = sorted(errors)
         status = "pass" if code == 0 else "fail"
         if code != 0:
             failed += 1
         rows.append(
             CheckResult(
-                check_id=chk.check_id,
+                id=chk.check_id,
                 domain=chk.domain,
                 status=status,
-                duration_ms=elapsed_ms,
-                budget_ms=chk.budget_ms,
-                budget_status="pass" if elapsed_ms <= chk.budget_ms else "warn",
-                errors=errors,
+                errors=normalized_errors,
+                warnings=[],
+                evidence_paths=list(chk.evidence),
+                metrics={
+                    "duration_ms": elapsed_ms,
+                    "budget_ms": chk.budget_ms,
+                    "budget_status": "pass" if elapsed_ms <= chk.budget_ms else "warn",
+                },
+                description=chk.description,
+                fix_hint=chk.fix_hint,
+                category=chk.category.value,
                 severity=chk.severity.value,
-                evidence=chk.evidence,
             )
         )
     return failed, rows

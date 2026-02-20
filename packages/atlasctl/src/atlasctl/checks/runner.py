@@ -10,25 +10,34 @@ def domains() -> list[str]:
     return list_domains()
 
 
-def run_domain(repo_root: Path, domain: str) -> tuple[int, dict[str, object]]:
+def run_domain(repo_root: Path, domain: str, fail_fast: bool = False) -> tuple[int, dict[str, object]]:
     selected = run_checks_for_domain(repo_root, domain)
     if not selected:
         return 2, {"schema_version": 1, "status": "fail", "error": f"unknown domain `{domain}`"}
 
-    failed, results = run_function_checks(repo_root, selected)
+    failed, results = run_function_checks(repo_root, sorted(selected, key=lambda c: c.check_id))
+    if fail_fast and failed:
+        first_fail = next((i for i, r in enumerate(results) if r.status == "fail"), len(results) - 1)
+        results = results[: first_fail + 1]
+        failed = 1
     rows: list[dict[str, object]] = []
     for result in results:
         rows.append(
             {
-                "id": result.check_id,
+                "id": result.id,
                 "domain": result.domain,
                 "status": result.status,
-                "duration_ms": result.duration_ms,
-                "budget_ms": result.budget_ms,
-                "budget_status": result.budget_status,
+                "duration_ms": result.metrics.get("duration_ms", 0),
+                "budget_ms": result.metrics.get("budget_ms", 0),
+                "budget_status": result.metrics.get("budget_status", "pass"),
                 "errors": result.errors,
+                "warnings": result.warnings,
+                "evidence_paths": result.evidence_paths,
+                "metrics": result.metrics,
+                "description": result.description,
+                "fix_hint": result.fix_hint,
+                "category": result.category,
                 "severity": result.severity,
-                "evidence": list(result.evidence),
             }
         )
     payload = {
