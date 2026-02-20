@@ -2909,7 +2909,7 @@
     {
       "extension": ".py",
       "is_executable": true,
-      "path": "scripts/areas/public/observability/check_alerts_contract.py",
+      "path": "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_alerts_contract.py",
       "tags": [
         "gate_runner"
       ]
@@ -2917,7 +2917,7 @@
     {
       "extension": ".py",
       "is_executable": true,
-      "path": "scripts/areas/public/observability/check_dashboard_contract.py",
+      "path": "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_dashboard_contract.py",
       "tags": [
         "gate_runner"
       ]
@@ -2925,7 +2925,7 @@
     {
       "extension": ".py",
       "is_executable": true,
-      "path": "scripts/areas/public/observability/check_metrics_contract.py",
+      "path": "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_metrics_contract.py",
       "tags": [
         "gate_runner"
       ]
@@ -2933,7 +2933,7 @@
     {
       "extension": ".py",
       "is_executable": true,
-      "path": "scripts/areas/public/observability/check_runtime_metrics.py",
+      "path": "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_runtime_metrics.py",
       "tags": [
         "gate_runner"
       ]
@@ -2941,7 +2941,7 @@
     {
       "extension": ".py",
       "is_executable": true,
-      "path": "scripts/areas/public/observability/check_tracing_contract.py",
+      "path": "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_tracing_contract.py",
       "tags": [
         "gate_runner"
       ]
@@ -2949,7 +2949,7 @@
     {
       "extension": ".py",
       "is_executable": true,
-      "path": "scripts/areas/public/observability/lint_runbooks.py",
+      "path": "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/lint_runbooks.py",
       "tags": [
         "gate_runner"
       ]

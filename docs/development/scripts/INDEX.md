@@ -26,7 +26,7 @@ Does not duplicate script implementation details.
   - Contracts: `atlasctl contracts ...`
 - Docs linters/generators: `atlasctl docs ...`
 - Perf tooling wrappers: `scripts/areas/public/perf/` (canonical: `ops/load/scripts/`)
-- Observability checks: `scripts/areas/public/observability/`
+- Observability checks: `packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/`
 - Fixtures/data helpers: `ops/datasets/scripts/fixtures/`
 - Release compatibility matrix automation: `atlasctl compat update-matrix|validate-matrix`
 - Layout checks/migrations: `scripts/areas/layout/`

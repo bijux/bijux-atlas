@@ -618,14 +618,14 @@ ops-gc-smoke: ## Validate GC plan/apply against a disposable store fixture
 ops-metrics-check: ## Validate runtime metrics and observability contracts
 	@./ops/e2e/scripts/verify_metrics.sh
 	@./ops/obs/scripts/snapshot_metrics.sh
-	@./scripts/areas/public/observability/check_metrics_contract.py
+	@./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_metrics_contract.py
 	@python3 ./ops/obs/scripts/areas/contracts/check_metrics_drift.py
 	@python3 ./ops/obs/scripts/areas/contracts/check_metrics_coverage.py
 	@python3 ./ops/obs/scripts/areas/contracts/check_metrics_golden.py
-	@./scripts/areas/public/observability/check_dashboard_contract.py
-	@./scripts/areas/public/observability/check_alerts_contract.py
-	@./scripts/areas/public/observability/lint_runbooks.py
-	@./scripts/areas/public/observability/check_runtime_metrics.py
+	@./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_dashboard_contract.py
+	@./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_alerts_contract.py
+	@./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/lint_runbooks.py
+	@./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_runtime_metrics.py
 	@if [ "$${OPS_METRICS_STRICT:-1}" = "1" ]; then \
 	  $(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/check_metric_cardinality.py; \
 	else \
@@ -641,7 +641,7 @@ ops-traces-check: ## Validate trace signal (when OTEL enabled)
 	@./ops/e2e/scripts/verify_traces.sh
 	@python3 ./ops/obs/scripts/areas/contracts/check_trace_golden.py
 	@python3 ./ops/obs/scripts/areas/contracts/extract_trace_exemplars.py
-	@if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/areas/public/observability/check_tracing_contract.py; python3 ./ops/obs/scripts/areas/contracts/check_trace_coverage.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi
+	@if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_tracing_contract.py; python3 ./ops/obs/scripts/areas/contracts/check_trace_coverage.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi
 
 ops-k8s-tests: ## Run k8s e2e suite
 	@$(MAKE) -s ops-env-validate
@@ -1062,10 +1062,10 @@ ops-chart-render-diff: ## Ensure chart render is deterministic for local profile
 	rm -f "$$tmp_a" "$$tmp_b"
 
 ops-dashboards-validate: ## Validate dashboard references against metrics contract
-	@./scripts/areas/public/observability/check_dashboard_contract.py
+	@./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_dashboard_contract.py
 
 ops-alerts-validate: ## Validate alert rules and contract coverage
-	@./scripts/areas/public/observability/check_alerts_contract.py
+	@./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_alerts_contract.py
 
 ops-observability-validate: ## Validate observability assets/contracts end-to-end
 	@set -e; \
@@ -1074,9 +1074,9 @@ ops-observability-validate: ## Validate observability assets/contracts end-to-en
 	$(ATLAS_SCRIPTS) docs observability-surface-check --report text; \
 	$(MAKE) ops-dashboards-validate; \
 	$(MAKE) ops-alerts-validate; \
-	./scripts/areas/public/observability/check_metrics_contract.py; \
+	./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_metrics_contract.py; \
 	python3 ./ops/obs/scripts/areas/contracts/check_obs_budgets.py; \
-	if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./scripts/areas/public/observability/check_tracing_contract.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi; \
+	if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_tracing_contract.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi; \
 	./ops/obs/scripts/snapshot_metrics.sh; \
 	./ops/obs/scripts/snapshot_traces.sh; \
 	$(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/check_metric_cardinality.py; \

@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 allowed = (
     "scripts/areas/layout/",
-        "scripts/areas/public/observability/",
+        "packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/",
     "scripts/tooling/",
     "scripts/areas/tools/",
     "scripts/areas/public/perf/",

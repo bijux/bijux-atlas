@@ -13,7 +13,7 @@
 - `code`
 
 ## Enforcement
-- `scripts/areas/public/observability/check_metrics_contract.py` validates required metrics and label policy.
+- `packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_metrics_contract.py` validates required metrics and label policy.
 - `make observability-check` is the authoritative gate for observability contracts.
 
 ## See also

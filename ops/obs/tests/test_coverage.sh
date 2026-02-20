@@ -42,9 +42,9 @@ if [ "${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then
   python3 "$ROOT/ops/obs/scripts/areas/contracts/check_trace_coverage.py"
 fi
 python3 "$ROOT/ops/obs/scripts/areas/contracts/extract_trace_exemplars.py"
-python3 "$ROOT/scripts/areas/public/observability/check_dashboard_contract.py"
-python3 "$ROOT/scripts/areas/public/observability/check_alerts_contract.py"
-python3 "$ROOT/scripts/areas/public/observability/lint_runbooks.py"
+python3 "$ROOT/packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_dashboard_contract.py"
+python3 "$ROOT/packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/check_alerts_contract.py"
+python3 "$ROOT/packages/bijux-atlas-scripts/src/bijux_atlas_scripts/obs/contracts/lint_runbooks.py"
 
 # minimum coverage threshold (tier-0)
 python3 - <<'PY'
