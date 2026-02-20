@@ -1,0 +1,64 @@
+from __future__ import annotations
+
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+from bijux_atlas_scripts.docs.command import _mkdocs_nav_file_refs
+
+ROOT = Path(__file__).resolve().parents[3]
+
+
+def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
+    env = {"PYTHONPATH": str(ROOT / "tools/bijux-atlas-scripts/src")}
+    return subprocess.run(
+        [sys.executable, "-m", "bijux_atlas_scripts.cli", *args],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+
+def test_mkdocs_nav_parser_golden() -> None:
+    text = (ROOT / "tools/bijux-atlas-scripts/tests/fixtures/docs/mkdocs-nav.good.yml").read_text(encoding="utf-8")
+    refs = _mkdocs_nav_file_refs(text)
+    assert refs == ["index.md", "operations/index.md", "operations/runbooks.md"]
+
+
+def test_docs_nav_check_bad_fixture(tmp_path: Path) -> None:
+    (tmp_path / "docs").mkdir(parents=True)
+    (tmp_path / "docs/index.md").write_text("# Index\n", encoding="utf-8")
+    (tmp_path / "mkdocs.yml").write_text(
+        "site_name: Test\nnav:\n  - Home: index.md\n  - Missing: missing.md\n",
+        encoding="utf-8",
+    )
+
+    from bijux_atlas_scripts.docs.command import _mkdocs_missing_files
+
+    missing = _mkdocs_missing_files(tmp_path)
+    assert missing == ["missing.md"]
+
+
+def test_docs_check_json_integration() -> None:
+    proc = _run_cli("docs", "check", "--report", "json", "--fail-fast")
+    payload = json.loads(proc.stdout)
+    assert payload["tool"] == "bijux-atlas-scripts"
+    assert payload["schema_version"] == 1
+    assert payload["status"] in {"pass", "fail"}
+
+
+def test_docs_inventory_and_evidence_policy_generation(tmp_path: Path) -> None:
+    inv_out_rel = f"artifacts/scripts/docs-inventory-{tmp_path.name}.md"
+    inv = _run_cli("docs", "inventory", "--report", "json", "--out", inv_out_rel)
+    assert inv.returncode == 0, inv.stderr
+    inv_payload = json.loads(inv.stdout)
+    assert inv_payload["output"] == inv_out_rel
+
+    pol_out_rel = f"artifacts/scripts/evidence-policy-{tmp_path.name}.md"
+    pol = _run_cli("docs", "evidence-policy-page", "--report", "json", "--out", pol_out_rel)
+    assert pol.returncode == 0, pol.stderr
+    pol_payload = json.loads(pol.stdout)
+    assert pol_payload["output"] == pol_out_rel
