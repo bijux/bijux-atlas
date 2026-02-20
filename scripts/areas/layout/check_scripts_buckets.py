@@ -35,8 +35,6 @@ for path in sorted(SCRIPTS.rglob("*")):
     if not path.is_file() or path.suffix not in {".sh", ".py"}:
         continue
     rel = path.relative_to(ROOT).as_posix()
-    if rel.startswith("scripts/areas/_internal/"):
-        continue
     if rel in LEGACY_ALLOWED:
         continue
     if any(rel.startswith(prefix) for prefix in ALLOWED_PREFIXES):
