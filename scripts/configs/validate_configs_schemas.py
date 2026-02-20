@@ -11,6 +11,7 @@ PAIRS = [
   ("configs/ops/public-surface.json", "configs/_schemas/public-surface.schema.json"),
   ("configs/policy/policy-relaxations.json", "configs/_schemas/policy-relaxations.schema.json"),
   ("configs/policy/layer-relaxations.json", "configs/_schemas/layer-relaxations.schema.json"),
+  ("configs/policy/layer-live-diff-allowlist.json", "configs/_schemas/layer-live-diff-allowlist.schema.json"),
 ]
 
 
