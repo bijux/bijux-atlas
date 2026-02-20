@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
+source "$ROOT/_lib/common.sh"
+
+STACK_NS="${ATLAS_STACK_NAMESPACE:-$(ops_layer_ns_e2e)}"
+CLUSTER_NAME="${ATLAS_E2E_CLUSTER_NAME:-bijux-atlas-e2e}"
+ENABLE_REDIS="${ATLAS_E2E_ENABLE_REDIS:-0}"
+ENABLE_OTEL="${ATLAS_E2E_ENABLE_OTEL:-1}"
+ENABLE_TOXIPROXY="${ATLAS_E2E_ENABLE_TOXIPROXY:-0}"
+NS="$STACK_NS"
+
+if [ "${OPS_DRY_RUN:-0}" = "1" ]; then
+  echo "DRY-RUN install.sh cluster=$CLUSTER_NAME ns=$NS"
+  exit 0
+fi
+
+if ! kind get clusters | grep -qx "$CLUSTER_NAME"; then
+  kind create cluster --config "$ROOT/stack/kind/cluster.yaml" --name "$CLUSTER_NAME"
+fi
+
+if ! ops_wait_namespace_termination "$NS" 120; then
+  echo "namespace $NS is still terminating after timeout" >&2
+  ops_kubectl_dump_bundle "$NS" "$(ops_artifact_dir failure-bundle)"
+  exit 1
+fi
+ops_kubectl get ns "$NS" >/dev/null 2>&1 || ops_kubectl create ns "$NS" >/dev/null
+
+ops_kubectl_retry apply -f "$ROOT/stack/minio/minio.yaml"
+ops_kubectl_retry apply -f "$ROOT/stack/prometheus/prometheus.yaml"
+ops_kubectl_retry apply -f "$ROOT/stack/grafana/grafana.yaml"
+
+if [ "$ENABLE_REDIS" = "1" ]; then
+  ops_kubectl_retry apply -f "$ROOT/stack/redis/redis.yaml"
+fi
+
+if [ "$ENABLE_OTEL" = "1" ]; then
+  ops_kubectl_retry apply -f "$ROOT/stack/otel/otel-collector.yaml"
+fi
+
+if [ "$ENABLE_TOXIPROXY" = "1" ]; then
+  ops_kubectl_retry apply -f "$ROOT/stack/toxiproxy/toxiproxy.yaml"
+  "$ROOT/stack/toxiproxy/bootstrap.sh"
+fi
+
+NS="$STACK_NS" "$ROOT/stack/minio/bootstrap.sh"
+"$ROOT/stack/scripts/wait_ready.sh" "$NS" "${ATLAS_E2E_TIMEOUT:-180s}"

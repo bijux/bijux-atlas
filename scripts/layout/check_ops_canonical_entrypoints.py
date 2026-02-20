@@ -22,6 +22,19 @@ if "./ops/e2e/scripts/smoke_queries.sh" not in ops_mk:
     errors.append("ops-smoke must call ./ops/e2e/scripts/smoke_queries.sh")
 if "./ops/run/obs-verify.sh" not in ops_mk and "./ops/obs/scripts/verify_pack.sh" not in ops_mk:
     errors.append("ops observability verify flow must use verify_pack entrypoint")
+if "ops-stack-up-legacy" in ops_mk or "ops-stack-down-legacy" in ops_mk:
+    errors.append("legacy stack entrypoint targets must not exist in makefiles/ops.mk")
+if "ops-check-legacy" in ops_mk or "ops-smoke-legacy" in ops_mk:
+    errors.append("legacy ops-check/ops-smoke entrypoint targets must not exist in makefiles/ops.mk")
+
+stack_up_block = ops_mk.split("ops-stack-up:", 1)[1].split("\n\n", 1)[0] if "ops-stack-up:" in ops_mk else ""
+stack_down_block = ops_mk.split("ops-stack-down:", 1)[1].split("\n\n", 1)[0] if "ops-stack-down:" in ops_mk else ""
+if "./ops/run/stack-up.sh" not in stack_up_block:
+    errors.append("ops-stack-up must call ./ops/run/stack-up.sh")
+if "./ops/run/stack-down.sh" not in stack_down_block:
+    errors.append("ops-stack-down must call ./ops/run/stack-down.sh")
+if "./ops/e2e/scripts/up.sh" in ops_mk or "./ops/e2e/scripts/down.sh" in ops_mk:
+    errors.append("ops-stack up/down must not call legacy e2e up/down scripts")
 
 for path in [ROOT / "ops/e2e/realdata/run_single_release.sh", ROOT / "ops/e2e/realdata/run_two_release_diff.sh"]:
     txt = path.read_text(encoding="utf-8")

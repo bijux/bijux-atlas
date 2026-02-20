@@ -16,7 +16,16 @@ mkdir -p "$log_dir"
 log_file="$log_dir/run.log"
 
 status="pass"
-if ! make -s ops-smoke-legacy >"$log_file" 2>&1; then
+if ! (
+  REUSE=1 make -s ops-up
+  trap 'make -s ops-down >/dev/null 2>&1 || true' EXIT INT TERM
+  make -s ops-deploy
+  make -s ops-warm
+  make -s ops-api-smoke
+  OBS_SKIP_LOCAL_COMPOSE=1 SUITE=contracts make -s ops-obs-verify
+  trap - EXIT INT TERM
+  make -s ops-down
+) >"$log_file" 2>&1; then
   status="fail"
 fi
 

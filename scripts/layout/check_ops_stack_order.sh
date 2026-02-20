@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Purpose: enforce deterministic stack install/uninstall order contract.
-# Inputs: ops/e2e/scripts/up.sh and ops/stack/scripts/uninstall.sh.
+# Inputs: ops/stack/scripts/install.sh and ops/stack/scripts/uninstall.sh.
 # Outputs: non-zero on order drift.
 set -euo pipefail
 ROOT="$(CDPATH='' cd -- "$(dirname -- "$0")/../.." && pwd)"
-UP="$ROOT/ops/e2e/scripts/up.sh"
+UP="$ROOT/ops/stack/scripts/install.sh"
 DOWN="$ROOT/ops/stack/scripts/uninstall.sh"
 
 assert_order() {

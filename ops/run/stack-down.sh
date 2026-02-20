@@ -13,7 +13,12 @@ health_json="artifacts/evidence/stack/${RUN_ID}/health-report-after-down.json"
 snapshot_json="artifacts/evidence/stack/state-snapshot.json"
 atlas_ns="${ATLAS_E2E_NAMESPACE:?ATLAS_E2E_NAMESPACE is required by configs/ops/env.schema.json}"
 mkdir -p "$(dirname "$log_file")"
-if ! make -s ops-stack-down-legacy >"$log_file" 2>&1; then
+if ! (
+  make -s ops-env-validate
+  ./ops/stack/kind/context_guard.sh
+  ./ops/stack/kind/namespace_guard.sh
+  ./ops/stack/scripts/uninstall.sh
+) >"$log_file" 2>&1; then
   status="fail"
 fi
 ATLAS_HEALTH_REPORT_FORMAT=json ./ops/stack/scripts/health_report.sh "$atlas_ns" "$health_json" >/dev/null || true
