@@ -37,7 +37,7 @@ Redis must never cache region queries unless there is an explicit bounded key-sp
 Run:
 
 ```bash
-./scripts/areas/public/perf/compare_redis.sh
+./ops/load/scripts/compare_redis.sh
 ```
 
 Output:
