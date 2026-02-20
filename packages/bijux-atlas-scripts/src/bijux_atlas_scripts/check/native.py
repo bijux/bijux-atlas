@@ -394,6 +394,8 @@ def check_docs_scripts_references(repo_root: Path) -> tuple[int, list[str]]:
         if not p.is_file() or p.suffix != ".md":
             continue
         rel = p.relative_to(repo_root).as_posix()
+        if rel.startswith("docs/_generated/"):
+            continue
         if rel in allowed:
             continue
         for idx, line in enumerate(p.read_text(encoding="utf-8", errors="ignore").splitlines(), start=1):
