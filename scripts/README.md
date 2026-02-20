@@ -47,26 +47,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/check/no-direct-path-usage.sh` | `platform` | `public` | `scripts-check`, `scripts-lint` |
 | `scripts/areas/check/no-duplicate-script-names.sh` | `platform` | `public` | `scripts-check`, `scripts-lint` |
 | `scripts/areas/check/python_migration_exceptions.py` | `platform` | `public` | - |
-| `scripts/areas/configs/check_config_files_well_formed.py` | `platform` | `public` | - |
-| `scripts/areas/configs/check_config_keys_docs_coverage.py` | `platform` | `public` | - |
-| `scripts/areas/configs/check_config_ownership.py` | `platform` | `public` | - |
-| `scripts/areas/configs/check_configs_readmes.py` | `platform` | `public` | - |
-| `scripts/areas/configs/check_docs_links_for_configs.py` | `platform` | `public` | - |
-| `scripts/areas/configs/check_duplicate_threshold_sources.py` | `platform` | `public` | - |
-| `scripts/areas/configs/check_generated_configs_drift.sh` | `platform` | `public` | `configs-gen-check` |
-| `scripts/areas/configs/check_no_adhoc_versions.py` | `platform` | `public` | - |
-| `scripts/areas/configs/check_openapi_snapshot_generated.py` | `platform` | `public` | - |
-| `scripts/areas/configs/check_ops_env_usage_declared.py` | `platform` | `public` | - |
-| `scripts/areas/configs/check_perf_thresholds_drift.py` | `platform` | `public` | - |
-| `scripts/areas/configs/check_root_config_shims.py` | `platform` | `public` | - |
-| `scripts/areas/configs/check_slo_sync.py` | `platform` | `public` | - |
-| `scripts/areas/configs/check_tool_versions_doc_drift.py` | `platform` | `public` | - |
-| `scripts/areas/configs/generate_configs_index.py` | `platform` | `public` | - |
-| `scripts/areas/configs/generate_configs_surface.py` | `platform` | `public` | - |
-| `scripts/areas/configs/generate_env_contract.py` | `platform` | `public` | - |
-| `scripts/areas/configs/generate_tooling_versions_doc.py` | `platform` | `public` | - |
-| `scripts/areas/configs/sync_slo_config.py` | `platform` | `public` | - |
-| `scripts/areas/configs/validate_configs_schemas.py` | `platform` | `public` | - |
 | `scripts/areas/demo/demo.sh` | `platform` | `private` | - |
 | `scripts/areas/fixtures/derive-release-111.sh` | `dataset-ops` | `internal` | - |
 | `scripts/areas/fixtures/fetch-medium.sh` | `dataset-ops` | `public` | `fetch-fixtures`, `ops-publish-medium` |
