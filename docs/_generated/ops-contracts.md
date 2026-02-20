@@ -27,12 +27,15 @@ Generated from ops contracts and schemas.
 - `ops/_schemas/e2e-scenarios.schema.json`
 - `ops/_schemas/e2e-suites.schema.json`
 - `ops/_schemas/k8s/install-matrix.schema.json`
+- `ops/_schemas/load/perf-baseline.schema.json`
 - `ops/_schemas/load/pinned-queries-lock.schema.json`
 - `ops/_schemas/load/suite-manifest.schema.json`
 - `ops/_schemas/meta/artifact-allowlist.schema.json`
+- `ops/_schemas/meta/budgets.schema.json`
 - `ops/_schemas/meta/layer-contract.schema.json`
 - `ops/_schemas/meta/ownership.schema.json`
 - `ops/_schemas/meta/pins.schema.json`
+- `ops/_schemas/obs/budgets.schema.json`
 - `ops/_schemas/obs/drill-manifest.schema.json`
 - `ops/_schemas/obs/suites.schema.json`
 - `ops/_schemas/report/schema.json`
