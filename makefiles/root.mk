@@ -223,8 +223,6 @@ docs/clean: ## Clean docs generated outputs only
 
 docs/all: ## Docs lane
 	@$(call with_iso,docs-all,$(MAKE) -s internal/docs/all)
-
-
 scripts/check: ## Deterministic scripts check lane
 	@$(call with_iso,scripts-check,$(MAKE) -s internal/scripts/check)
 
@@ -248,7 +246,6 @@ scripts/clean: ## Scripts generated-output cleanup
 
 scripts/all: ## Scripts lane (lint/tests/audit)
 	@$(call with_iso,scripts-all,$(MAKE) -s internal/scripts/all)
-
 ops/check: ## Fast ops verification (no cluster bring-up)
 	@$(call with_iso,ops-check,$(MAKE) -s internal/ops/check)
 
@@ -261,7 +258,6 @@ ops/smoke: ## Explicit ops smoke target
 
 k8s-smoke: ## One-command local k8s smoke runner
 	@$(MAKE) -s ops-k8s-smoke
-
 warm: ## Warm datasets + shards and record cache state
 	@./ops/run/warm-dx.sh
 
@@ -270,7 +266,6 @@ cache/status: ## Print cache status and budget policy checks
 
 cache/prune: ## Prune local dataset/cache artifacts
 	@./ops/run/cache-prune.sh
-
 ops/suite: ## Explicit ops suite target
 	@$(call with_iso,ops-suite,$(MAKE) -s internal/ops/suite)
 
@@ -413,14 +408,8 @@ legacy/check: ## Verify legacy inventory and policy contracts
 	@./scripts/bin/bijux-atlas-scripts run scripts/areas/layout/legacy_inventory.py
 
 cleanup/verify: ## One-time cleanup safety verification before deleting legacy paths
-	@$(MAKE) -s legacy/check
-	@$(MAKE) -s scripts-check
-	@$(MAKE) -s ops-contracts-check
-	@python3 ./scripts/areas/layout/check_help_snapshot.py
-	@python3 ./scripts/areas/layout/check_no_dead_entrypoints.py
-	@python3 ./scripts/areas/layout/check_no_orphan_docs_refs.py
-	@python3 ./scripts/areas/layout/check_no_orphan_configs.py
-	@python3 ./scripts/areas/layout/check_no_orphan_owners.py
+	@$(MAKE) -s legacy/check scripts-check ops-contracts-check
+	@python3 ./scripts/areas/layout/check_help_snapshot.py && python3 ./scripts/areas/layout/check_no_dead_entrypoints.py && python3 ./scripts/areas/layout/check_no_orphan_docs_refs.py && python3 ./scripts/areas/layout/check_no_orphan_configs.py && python3 ./scripts/areas/layout/check_no_orphan_owners.py
 
 local: ## Deprecated alias for quick
 	@echo "[DEPRECATED] 'make local' -> 'make quick'" >&2
