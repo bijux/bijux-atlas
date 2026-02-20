@@ -5,6 +5,7 @@ from pathlib import Path
 
 from bijux_atlas_scripts.check.native import (
     check_committed_generated_hygiene,
+    check_make_command_allowlist,
     check_duplicate_script_names,
     check_make_forbidden_paths,
     check_no_xtask_refs,
@@ -84,3 +85,13 @@ def test_check_committed_generated_hygiene_flags_logs_and_timestamps(monkeypatch
     code, errors = check_committed_generated_hygiene(tmp_path)
     assert code == 1
     assert len(errors) == 2
+
+
+def test_check_make_command_allowlist_passes_for_allowlisted_command(tmp_path: Path) -> None:
+    (tmp_path / "configs/layout").mkdir(parents=True)
+    (tmp_path / "configs/layout/make-command-allowlist.txt").write_text("echo\n", encoding="utf-8")
+    (tmp_path / "makefiles").mkdir(parents=True)
+    (tmp_path / "Makefile").write_text("all:\n\t@echo ok\n", encoding="utf-8")
+    code, errors = check_make_command_allowlist(tmp_path)
+    assert code == 0
+    assert errors == []
