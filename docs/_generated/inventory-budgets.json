@@ -1,0 +1,31 @@
+{
+  "counts": {
+    "ops_areas": 10,
+    "public_make_targets": 15,
+    "scripts_commands": 9
+  },
+  "kind": "budgets",
+  "ops_areas": [
+    "datasets",
+    "e2e",
+    "fixtures",
+    "k8s",
+    "load",
+    "obs",
+    "registry",
+    "report",
+    "run",
+    "stack"
+  ],
+  "scripts_commands": [
+    "bijux-atlas-dev",
+    "bijux-atlas-ops",
+    "bijux-atlas-scripts",
+    "isolate",
+    "make_explain",
+    "make_graph",
+    "render_public_help",
+    "require-isolate",
+    "run_drill.sh"
+  ]
+}
