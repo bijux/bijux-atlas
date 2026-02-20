@@ -202,6 +202,16 @@
       "run_in": ["nightly", "load-nightly"],
       "expected_metrics": ["http_req_duration", "http_req_failed"],
       "thresholds": {"p95_ms_max": 1400, "p99_ms_max": 2600, "error_rate_max": 0.05}
+    },
+    {
+      "name": "hpa-validation-short",
+      "purpose": "short predictable profile for autoscaling validation",
+      "kind": "k6",
+      "scenario": "hpa-validation-short.json",
+      "must_pass": true,
+      "run_in": ["hpa-validation", "nightly", "load-nightly"],
+      "expected_metrics": ["http_req_duration", "http_req_failed", "http_reqs"],
+      "thresholds": {"p95_ms_max": 2200, "p99_ms_max": 3500, "error_rate_max": 0.15}
     }
   ]
 }
