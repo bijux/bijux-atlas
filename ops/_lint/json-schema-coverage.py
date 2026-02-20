@@ -75,6 +75,7 @@ EXCLUDE_PREFIXES = (
 EXCLUDE_FILES = {
     "ops/_generated_committed/report.unified.json",
     "ops/_generated_committed/scorecard.json",
+    "ops/_generated/pins/pin-drift-report.json",
 }
 
 
@@ -90,6 +91,10 @@ def main() -> int:
     errors: list[str] = []
     for p in sorted((ROOT / "ops").rglob("*.json")):
         rel = p.relative_to(ROOT).as_posix()
+        if rel.startswith("ops/_generated/") and rel.count("/") >= 4:
+            # Runtime run-scoped outputs under ops/_generated/<area>/<run_id>/*
+            # are ephemeral artifacts, not contract manifests.
+            continue
         if rel.startswith("ops/_evidence/") and rel.count("/") >= 4:
             # Runtime run-scoped outputs under ops/_evidence/<area>/<run_id>/*
             # are ephemeral artifacts, not contract manifests.
