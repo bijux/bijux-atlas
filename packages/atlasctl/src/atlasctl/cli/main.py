@@ -22,32 +22,9 @@ from ..exit_codes import ERR_CONFIG, ERR_INTERNAL
 from ..network_guard import install_no_network_guard
 from ..runner import run_legacy_script
 from ..surface import run_surface
-
-DOMAINS = {"registry": registry.run, "layout": layout.run}
-
-_CONFIGURE_HOOKS: tuple[tuple[str, str], ...] = (
-    ("atlasctl.env.command", "configure_env_parser"),
-    ("atlasctl.paths.command", "configure_paths_parser"),
-    ("atlasctl.configs.command", "configure_configs_parser"),
-    ("atlasctl.contracts.command", "configure_contracts_parser"),
-    ("atlasctl.docker.command", "configure_docker_parser"),
-    ("atlasctl.ci.command", "configure_ci_parser"),
-    ("atlasctl.checks.command", "configure_check_parser"),
-    ("atlasctl.gen.command", "configure_gen_parser"),
-    ("atlasctl.policies.command", "configure_policies_parser"),
-    ("atlasctl.docs.command", "configure_docs_parser"),
-    ("atlasctl.make.command", "configure_make_parser"),
-    ("atlasctl.migrate.command", "configure_migrate_parser"),
-    ("atlasctl.ops.command", "configure_ops_parser"),
-    ("atlasctl.inventory.command", "configure_inventory_parser"),
-    ("atlasctl.lint.command", "configure_lint_parser"),
-    ("atlasctl.reporting.command", "configure_report_parser"),
-    ("atlasctl.compat.command", "configure_compat_parser"),
-    ("atlasctl.legacy.command", "configure_legacy_parser"),
-    ("atlasctl.orchestrate.command", "configure_orchestrate_parsers"),
-    ("atlasctl.gates.command", "configure_gates_parser"),
-    ("atlasctl.python_tools.command", "configure_python_parser"),
-)
+from .constants import CONFIGURE_HOOKS, DOMAINS
+from .output import build_base_payload, emit
+DOMAIN_RUNNERS = {"registry": registry.run, "layout": layout.run}
 
 
 def _import_attr(module_name: str, attr: str):
@@ -75,7 +52,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     version_p = sub.add_parser("version", help="print versions and git context")
     version_p.add_argument("--json", action="store_true", help="emit JSON output")
-    for module_name, attr in _CONFIGURE_HOOKS[:2]:
+    for module_name, attr in CONFIGURE_HOOKS[:2]:
         _import_attr(module_name, attr)(sub)
     self_p = sub.add_parser("self-check", help="validate imports, config loading, and schema presence")
     self_p.add_argument("--json", action="store_true", help="emit JSON output")
@@ -103,10 +80,9 @@ def build_parser() -> argparse.ArgumentParser:
     commands_p.add_argument("--json", action="store_true", help="emit JSON output")
     commands_p.add_argument("--out-file", help="optional output path for JSON report")
 
-    domain_names = ("registry", "layout")
-    for name in domain_names:
+    for name in DOMAINS:
         register_domain_parser(sub, name, f"{name} domain commands")
-    for module_name, attr in _CONFIGURE_HOOKS[2:]:
+    for module_name, attr in CONFIGURE_HOOKS[2:]:
         _import_attr(module_name, attr)(sub)
 
     doctor_p = sub.add_parser("doctor", help="show tooling and context diagnostics")
@@ -146,10 +122,6 @@ def _write_payload_if_requested(ctx: RunContext, out_file: str | None, payload: 
     out_path.write_text(payload + "\n", encoding="utf-8")
 
 
-def _emit(payload: dict[str, object], as_json: bool) -> None:
-    print(dumps_json(payload, pretty=not as_json))
-
-
 def _commands_payload() -> dict[str, object]:
     return {
         "schema_version": 1,
@@ -158,24 +130,6 @@ def _commands_payload() -> dict[str, object]:
             {"name": c.name, "help": c.help_text, "stable": c.stable}
             for c in sorted(command_registry(), key=lambda c: c.name)
         ],
-    }
-
-
-def _build_common_payload(ctx: RunContext, status: str = "ok") -> dict[str, object]:
-    return {
-        "schema_version": 1,
-        "tool": "atlasctl",
-        "status": status,
-        "run_id": ctx.run_id,
-        "profile": ctx.profile,
-        "repo_root": str(ctx.repo_root),
-        "run_dir": str(ctx.run_dir),
-        "evidence_root": str(ctx.evidence_root),
-        "scripts_artifact_root": str(ctx.scripts_artifact_root),
-        "network": ctx.network_mode,
-        "format": ctx.output_format,
-        "git_sha": ctx.git_sha,
-        "git_dirty": ctx.git_dirty,
     }
 
 
@@ -268,9 +222,9 @@ def main(argv: list[str] | None = None) -> int:
             log_event(ctx, "info", "cli", "start", cmd=ns.cmd, fmt=ctx.output_format, network=ctx.network_mode)
         as_json = ctx.output_format == "json" or bool(getattr(ns, "json", False))
         if ns.cmd == "version":
-            _emit(
+            emit(
                 {
-                    **_build_common_payload(ctx),
+                    **build_base_payload(ctx),
                     "atlasctl_version": __version__,
                     "scripts_version": _version_string().split()[1],
                 },
@@ -282,7 +236,7 @@ def main(argv: list[str] | None = None) -> int:
         if ns.cmd == "paths":
             return _import_attr("atlasctl.paths.command", "run_paths_command")(ctx, ns)
         if ns.cmd == "self-check":
-            payload = _build_common_payload(ctx)
+            payload = build_base_payload(ctx)
             payload["checks"] = {
                 "imports": "ok",
                 "config_dir_exists": (ctx.repo_root / "configs").is_dir(),
@@ -292,7 +246,7 @@ def main(argv: list[str] | None = None) -> int:
                 "python_version": platform.python_version(),
             }
             payload["status"] = "ok" if payload["checks"]["config_dir_exists"] and payload["checks"]["schemas_dir_exists"] and payload["checks"]["contracts_schema_exists"] else "fail"
-            _emit(payload, as_json)
+            emit(payload, as_json)
             return 0 if payload["status"] == "ok" else ERR_CONFIG
         if ns.cmd == "help":
             payload = _commands_payload()
@@ -328,7 +282,7 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         if ns.cmd == "run":
             if ns.dry_run:
-                _emit(
+                emit(
                     {
                         "schema_version": 1,
                         "tool": "atlasctl",
@@ -389,7 +343,7 @@ def main(argv: list[str] | None = None) -> int:
         if ns.cmd == "gates":
             return _import_attr("atlasctl.gates.command", "run_gates_command")(ctx, ns)
         if ns.cmd in DOMAINS:
-            payload_obj = DOMAINS[ns.cmd](ctx)
+            payload_obj = DOMAIN_RUNNERS[ns.cmd](ctx)
             payload = render_payload(payload_obj, as_json)
             _write_payload_if_requested(ctx, ns.out_file, payload)
             print(payload)
