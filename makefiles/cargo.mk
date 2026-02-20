@@ -184,19 +184,7 @@ ci-core: internal/cargo/fmt internal/cargo/lint internal/cargo/audit internal/ca
 openapi-drift:
 	@./bin/atlasctl --quiet contracts check --checks drift
 	@./bin/atlasctl --quiet contracts generate --generators artifacts openapi
-	@python3 - <<'PY'
-import json
-from pathlib import Path
-contract = json.loads(Path("docs/contracts/ENDPOINTS.json").read_text())
-expected = {e["path"] for e in contract["endpoints"]}
-generated = json.loads(Path("configs/openapi/v1/openapi.generated.json").read_text())
-paths = set(generated.get("paths", {}).keys())
-if expected != paths:
-    missing = sorted(paths - expected)
-    extra = sorted(expected - paths)
-    raise SystemExit(f"openapi generation drift against ENDPOINTS.json; missing={missing} extra={extra}")
-print("openapi generation matches endpoint SSOT")
-PY
+	@python3 -c 'import json; from pathlib import Path; contract=json.loads(Path("docs/contracts/ENDPOINTS.json").read_text()); expected={e["path"] for e in contract["endpoints"]}; generated=json.loads(Path("configs/openapi/v1/openapi.generated.json").read_text()); paths=set(generated.get("paths", {}).keys()); assert expected == paths, f"openapi generation drift against ENDPOINTS.json; missing={sorted(paths-expected)} extra={sorted(expected-paths)}"; print("openapi generation matches endpoint SSOT")'
 	@diff -u configs/openapi/v1/openapi.snapshot.json configs/openapi/v1/openapi.generated.json
 
 api-contract-check:
