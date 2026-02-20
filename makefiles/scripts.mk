@@ -183,7 +183,7 @@ internal/scripts/check: ## Deterministic scripts check lane
 	@start="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; status=pass; fail=""; \
 	if ! $(MAKE) scripts-check; then status=fail; fail="scripts-check failed"; fi; \
 	end="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; \
-	python3 ./scripts/areas/layout/write_make_area_report.py --path "$${ISO_ROOT:-artifacts/isolate/scripts/$${RUN_ID:-scripts-check}}/report.scripts.check.json" --lane "scripts/check" --status "$$status" --start "$$start" --end "$$end" --artifact "$${ISO_ROOT:-artifacts/isolate/scripts/$${RUN_ID:-scripts-check}}" --failure "$$fail" >/dev/null; \
+	PYTHONPATH=packages/bijux-atlas-scripts/src python3 -m bijux_atlas_scripts.reporting.make_area_report --path "$${ISO_ROOT:-artifacts/isolate/scripts/$${RUN_ID:-scripts-check}}/report.scripts.check.json" --lane "scripts/check" --status "$$status" --start "$$start" --end "$$end" --artifact "$${ISO_ROOT:-artifacts/isolate/scripts/$${RUN_ID:-scripts-check}}" --failure "$$fail" >/dev/null; \
 	[ "$$status" = "pass" ] || { $(call fail_banner,scripts/check); exit 1; }
 
 internal/scripts/build: ## Build script inventories/graphs

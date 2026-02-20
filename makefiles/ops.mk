@@ -140,7 +140,7 @@ internal/ops/check: ## Fast ops verification (no cluster bring-up)
 	@start="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; status=pass; fail=""; \
 	if ! $(MAKE) -s ops-check; then status=fail; fail="ops-check failed"; fi; \
 	end="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; \
-	python3 ./scripts/areas/layout/write_make_area_report.py --path "$${ISO_ROOT:-artifacts/isolate/ops/$${RUN_ID:-ops-check}}/report.ops.check.json" --lane "ops/check" --status "$$status" --start "$$start" --end "$$end" --artifact "$${ISO_ROOT:-artifacts/isolate/ops/$${RUN_ID:-ops-check}}" --failure "$$fail" >/dev/null; \
+	PYTHONPATH=packages/bijux-atlas-scripts/src python3 -m bijux_atlas_scripts.reporting.make_area_report --path "$${ISO_ROOT:-artifacts/isolate/ops/$${RUN_ID:-ops-check}}/report.ops.check.json" --lane "ops/check" --status "$$status" --start "$$start" --end "$$end" --artifact "$${ISO_ROOT:-artifacts/isolate/ops/$${RUN_ID:-ops-check}}" --failure "$$fail" >/dev/null; \
 	[ "$$status" = "pass" ] || { $(call fail_banner,ops/check); exit 1; }
 
 internal/ops/smoke: ## Explicit ops smoke target
