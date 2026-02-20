@@ -12,6 +12,7 @@ from typing import Callable
 
 from ..core.context import RunContext
 from ..core.fs import ensure_evidence_path
+from ..make.target_graph import parse_make_targets
 
 
 @dataclass(frozen=True)
@@ -300,6 +301,123 @@ def _check_openapi_examples(ctx: RunContext) -> tuple[int, str]:
     return (0, "") if not errors else (1, "\n".join(errors[:200]))
 
 
+def _read_json(path: Path) -> dict[str, object]:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _as_str_list(value: object) -> list[str]:
+    if isinstance(value, list):
+        return [str(v) for v in value]
+    if isinstance(value, dict):
+        return [str(k) for k in value.keys()]
+    return []
+
+
+def _render_observability_surface(ctx: RunContext) -> str:
+    metrics = _read_json(ctx.repo_root / "ops/obs/contract/metrics-contract.json")
+    alerts = _read_json(ctx.repo_root / "ops/obs/contract/alerts-contract.json")
+    dashboard = _read_json(ctx.repo_root / "ops/obs/contract/dashboard-panels-contract.json")
+    logs = _read_json(ctx.repo_root / "ops/obs/contract/logs-fields-contract.json")
+
+    metric_names = sorted(_as_str_list(metrics.get("required_metrics", [])))
+    alert_names = sorted(_as_str_list(alerts.get("required_alerts", [])))
+    dashboard_panels = sorted(_as_str_list(dashboard.get("required_panels", [])))
+    log_fields = sorted(_as_str_list(logs.get("required_fields", [])))
+
+    lines = [
+        "# Observability Surface",
+        "",
+        "Generated from observability contract SSOT files:",
+        "- `ops/obs/contract/metrics-contract.json`",
+        "- `ops/obs/contract/alerts-contract.json`",
+        "- `ops/obs/contract/dashboard-panels-contract.json`",
+        "- `ops/obs/contract/logs-fields-contract.json`",
+        "",
+        "## Metrics",
+    ]
+    lines += [f"- `{name}`" for name in metric_names] or ["- _none_"]
+    lines += ["", "## Alerts"]
+    lines += [f"- `{name}`" for name in alert_names] or ["- _none_"]
+    lines += ["", "## Dashboard Panels"]
+    lines += [f"- `{name}`" for name in dashboard_panels] or ["- _none_"]
+    lines += ["", "## Log Fields"]
+    lines += [f"- `{name}`" for name in log_fields] or ["- _none_"]
+    lines += ["", "## Verification", "```bash", "make ops-observability-validate", "```", ""]
+    return "\n".join(lines)
+
+
+def _check_observability_surface_drift(ctx: RunContext) -> tuple[int, str]:
+    target = ctx.repo_root / "docs/_generated/observability-surface.md"
+    before = target.read_text(encoding="utf-8") if target.exists() else ""
+    rendered = _render_observability_surface(ctx)
+    return (0, "") if before == rendered else (1, "observability surface drift detected; regenerate generated docs")
+
+
+def _check_runbooks_contract(ctx: RunContext) -> tuple[int, str]:
+    runbook_dir = ctx.repo_root / "docs" / "operations" / "runbooks"
+    required_sections = [
+        "Symptoms",
+        "Metrics",
+        "Commands",
+        "Expected outputs",
+        "Mitigations",
+        "Alerts",
+        "Rollback",
+        "Postmortem checklist",
+    ]
+    alerts_contract = _read_json(ctx.repo_root / "ops" / "obs" / "contract" / "alerts-contract.json")
+    alert_names = {str(v) for v in alerts_contract.get("required_alerts", []) if isinstance(v, str)}
+    metrics_contract = _read_json(ctx.repo_root / "docs" / "contracts" / "METRICS.json")
+    metrics = {str(m.get("name")) for m in metrics_contract.get("metrics", []) if isinstance(m, dict) and "name" in m}
+    endpoints_contract = _read_json(ctx.repo_root / "docs" / "contracts" / "ENDPOINTS.json")
+    endpoint_registry = {
+        str(e.get("path")) for e in endpoints_contract.get("endpoints", []) if isinstance(e, dict) and "path" in e
+    }
+    endpoint_registry.update({"/metrics", "/healthz", "/readyz", "/debug/datasets", "/debug/registry-health"})
+    make_targets = {name for name, _, _ in parse_make_targets(ctx.repo_root)}
+    errors: list[str] = []
+    for path in sorted(runbook_dir.glob("*.md")):
+        if path.name == "INDEX.md":
+            continue
+        text = path.read_text(encoding="utf-8")
+        rel = path.relative_to(ctx.repo_root).as_posix()
+        for section in required_sections:
+            if not re.search(rf"^##\s+{re.escape(section)}\s*$", text, flags=re.MULTILINE):
+                errors.append(f"{rel}: missing section '## {section}'")
+        for metric in re.findall(r"`(bijux_[a-z0-9_]+)`", text):
+            if metric not in metrics:
+                errors.append(f"{rel}: unknown metric `{metric}`")
+        for endpoint in re.findall(r"(/(?:v1|metrics|healthz|readyz|debug)[a-zA-Z0-9_\-/{}:?=&.]*)", text):
+            endpoint_base = endpoint.split("?")[0]
+            if endpoint_base not in endpoint_registry:
+                errors.append(f"{rel}: unknown endpoint `{endpoint_base}`")
+        for cmd in re.findall(r"^\$\s+(.+)$", text, flags=re.MULTILINE):
+            if cmd.startswith("make "):
+                target = cmd.split()[1]
+                if target not in make_targets:
+                    errors.append(f"{rel}: unknown make target `{target}`")
+        obs_dir = "observability"
+        dashboard_pattern = rf"(docs/operations/{obs_dir}/dashboard\.md|\.\./{obs_dir}/dashboard\.md)"
+        if not re.search(dashboard_pattern, text):
+            errors.append(f"{rel}: missing dashboard link to observability dashboard")
+        if not re.search(r"ops-drill-[a-z0-9-]+", text):
+            errors.append(f"{rel}: missing drill make target reference (ops-drill-*)")
+        listed_alerts = sorted(set(a for a in re.findall(r"`([A-Za-z][A-Za-z0-9]+)`", text) if a in alert_names))
+        if not listed_alerts:
+            errors.append(f"{rel}: Alerts section must list at least one known alert id")
+
+    map_doc = (ctx.repo_root / "docs/operations/observability/runbook-dashboard-alert-map.md").read_text(encoding="utf-8")
+    for alert in sorted(alert_names):
+        if alert not in map_doc:
+            errors.append(f"runbook-dashboard-alert-map: missing alert `{alert}`")
+    for path in sorted(runbook_dir.glob("*.md")):
+        if path.name == "INDEX.md":
+            continue
+        if path.name not in map_doc:
+            errors.append(f"runbook-dashboard-alert-map: missing runbook row for `{path.name}`")
+    return (0, "") if not errors else (1, "\n".join(errors[:200]))
+
+
 def _mkdocs_nav_file_refs(mkdocs_text: str) -> list[str]:
     refs: list[str] = []
     for line in mkdocs_text.splitlines():
@@ -570,6 +688,26 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             print("openapi examples check passed")
         return code
 
+    if ns.docs_cmd == "observability-surface-check":
+        code, output = _check_observability_surface_drift(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        else:
+            print("observability surface drift check passed")
+        return code
+
+    if ns.docs_cmd == "runbooks-contract-check":
+        code, output = _check_runbooks_contract(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        else:
+            print("runbook contract check passed")
+        return code
+
     if ns.docs_cmd == "contracts-index":
         if ns.fix:
             return _run_simple(ctx, ["python3", "scripts/areas/docs/generate_contracts_index_doc.py"], ns.report)
@@ -678,6 +816,8 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("nav-check", "validate mkdocs nav references existing docs files"),
         ("generated-check", "validate generated docs are up-to-date"),
         ("openapi-examples-check", "validate OpenAPI examples against declared schemas"),
+        ("observability-surface-check", "validate observability surface generated docs are in sync"),
+        ("runbooks-contract-check", "validate runbook content contract"),
         ("glossary-check", "validate glossary and banned terms policy"),
         ("contracts-index", "validate or generate docs contracts index"),
         ("runbook-map", "validate or generate docs runbook map index"),

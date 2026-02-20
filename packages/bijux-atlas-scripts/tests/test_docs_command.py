@@ -85,3 +85,19 @@ def test_docs_openapi_examples_check_json() -> None:
     payload = json.loads(proc.stdout)
     assert payload["schema_version"] == 1
     assert payload["status"] in {"pass", "fail"}
+
+
+def test_docs_observability_surface_check_json() -> None:
+    proc = _run_cli("docs", "observability-surface-check", "--report", "json")
+    assert proc.returncode in {0, 1}, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["schema_version"] == 1
+    assert payload["status"] in {"pass", "fail"}
+
+
+def test_docs_runbooks_contract_check_json() -> None:
+    proc = _run_cli("docs", "runbooks-contract-check", "--report", "json")
+    assert proc.returncode in {0, 1}, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["schema_version"] == 1
+    assert payload["status"] in {"pass", "fail"}

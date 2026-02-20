@@ -1071,7 +1071,7 @@ ops-observability-validate: ## Validate observability assets/contracts end-to-en
 	@set -e; \
 	trap 'out="artifacts/ops/obs/validate-fail-$$(date +%Y%m%d-%H%M%S)"; mkdir -p "$$out"; kubectl get pods -A -o wide > "$$out/pods.txt" 2>/dev/null || true; kubectl get events -A --sort-by=.lastTimestamp > "$$out/events.txt" 2>/dev/null || true; cp -f ops/obs/grafana/atlas-observability-dashboard.json "$$out/dashboard.json" 2>/dev/null || true; cp -f ops/obs/alerts/atlas-alert-rules.yaml "$$out/alerts.yaml" 2>/dev/null || true; echo "observability validation failed, artifacts: $$out" >&2' ERR; \
 	$(ATLAS_SCRIPTS) run ./scripts/areas/layout/check_obs_script_name_collisions.py; \
-	$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_observability_surface_drift.py; \
+	$(ATLAS_SCRIPTS) docs observability-surface-check --report text; \
 	$(MAKE) ops-dashboards-validate; \
 	$(MAKE) ops-alerts-validate; \
 	./scripts/areas/public/observability/check_metrics_contract.py; \
@@ -1289,7 +1289,7 @@ ops-drill-runner: ## Run core drills and verify runbook contract linkage
 	@./ops/obs/tests/test_drills.sh
 	@$(MAKE) ops-drill-corruption-dataset
 	@$(MAKE) ops-drill-pod-churn
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_runbooks_contract.py
+	@$(ATLAS_SCRIPTS) docs runbooks-contract-check --report text
 
 ops-readiness-scorecard: ## Build operational readiness scorecard from latest ops run artifacts
 	@run_dir="$${OPS_RUN_DIR:-artifacts/ops/$${OPS_RUN_ID}}"; \
