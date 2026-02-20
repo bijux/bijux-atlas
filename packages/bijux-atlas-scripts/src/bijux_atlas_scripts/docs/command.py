@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import subprocess
@@ -17,12 +18,19 @@ from ..core.fs import ensure_evidence_path
 class DocsCheck:
     check_id: str
     description: str
-    cmd: list[str]
+    cmd: list[str] | None
+    fn: Callable[[RunContext], tuple[int, str]] | None
     actionable: str
 
 
-def _check(check_id: str, description: str, cmd: list[str], actionable: str) -> DocsCheck:
-    return DocsCheck(check_id, description, cmd, actionable)
+def _check(
+    check_id: str,
+    description: str,
+    cmd: list[str] | None,
+    actionable: str,
+    fn: Callable[[RunContext], tuple[int, str]] | None = None,
+) -> DocsCheck:
+    return DocsCheck(check_id, description, cmd, fn, actionable)
 
 
 DOCS_LINT_CHECKS: list[DocsCheck] = [
@@ -85,6 +93,111 @@ def _run_check(cmd: list[str], repo_root: Path) -> tuple[int, str]:
     return proc.returncode, output.strip()
 
 
+def _load_public_targets(repo_root: Path) -> set[str]:
+    payload = json.loads((repo_root / "configs/ops/public-surface.json").read_text(encoding="utf-8"))
+    return set(payload.get("make_targets", []))
+
+
+def _load_public_surface_exceptions(repo_root: Path) -> set[str]:
+    path = repo_root / "configs/ops/public-surface-doc-exceptions.txt"
+    if not path.exists():
+        return set()
+    return {line.strip() for line in path.read_text(encoding="utf-8").splitlines() if line.strip() and not line.startswith("#")}
+
+
+def _check_public_surface_docs(ctx: RunContext) -> tuple[int, str]:
+    public_targets = _load_public_targets(ctx.repo_root)
+    exceptions = _load_public_surface_exceptions(ctx.repo_root)
+    docs_roots = [ctx.repo_root / "docs" / "operations", ctx.repo_root / "docs" / "quickstart", ctx.repo_root / "docs" / "development"]
+    make_re = re.compile(r"\bmake\s+([a-zA-Z0-9_.-]+)")
+    ops_script_re = re.compile(r"\./(ops/[^\s`]+(?:\.sh|\.py))")
+    errs: list[str] = []
+    for base in docs_roots:
+        if not base.exists():
+            continue
+        for md in base.rglob("*.md"):
+            text = md.read_text(encoding="utf-8", errors="ignore")
+            rel = md.relative_to(ctx.repo_root).as_posix()
+            for target in make_re.findall(text):
+                if target == "ops-":
+                    continue
+                if not (target.startswith("ops-") or target in {"root", "root-local", "gates", "explain", "help"}):
+                    continue
+                key = f"{rel}::make {target}"
+                if target not in public_targets and key not in exceptions:
+                    errs.append(f"{rel}: non-public make target referenced: {target}")
+            for script in ops_script_re.findall(text):
+                key = f"{rel}::./{script}"
+                if script.startswith("ops/run/"):
+                    continue
+                if key not in exceptions:
+                    errs.append(f"{rel}: non-public ops script referenced: ./{script}")
+    return (0, "") if not errs else (1, "\n".join(errs))
+
+
+def _check_docs_make_only(ctx: RunContext) -> tuple[int, str]:
+    docs = sorted((ctx.repo_root / "docs" / "operations").rglob("*.md"))
+    patterns = [
+        re.compile(r"(^|\s)(\./)?scripts/[\w./-]+"),
+        re.compile(r"(^|\s)(\./)?ops/.+/scripts/[\w./-]+"),
+    ]
+    violations: list[str] = []
+    for doc in docs:
+        rel = doc.relative_to(ctx.repo_root).as_posix()
+        for idx, line in enumerate(doc.read_text(encoding="utf-8").splitlines(), start=1):
+            if line.strip().startswith("#"):
+                continue
+            if "`" not in line and "scripts/" not in line:
+                continue
+            if any(pat.search(line) for pat in patterns):
+                violations.append(f"{rel}:{idx}: direct script path in docs; reference `make <target>` instead")
+    return (0, "") if not violations else (1, "\n".join(violations))
+
+
+def _snapshot_hashes(path: Path) -> dict[str, str]:
+    if path.is_file():
+        return {str(path): hashlib.sha256(path.read_bytes()).hexdigest()}
+    if path.is_dir():
+        out: dict[str, str] = {}
+        for child in sorted(p for p in path.rglob("*") if p.is_file()):
+            out[str(child)] = hashlib.sha256(child.read_bytes()).hexdigest()
+        return out
+    return {}
+
+
+def _check_docs_freeze_drift(ctx: RunContext) -> tuple[int, str]:
+    targets = [
+        ctx.repo_root / "docs" / "_generated" / "contracts",
+        ctx.repo_root / "docs" / "_generated" / "contracts" / "chart-contract-index.md",
+        ctx.repo_root / "docs" / "_generated" / "openapi",
+        ctx.repo_root / "docs" / "contracts" / "errors.md",
+        ctx.repo_root / "docs" / "contracts" / "metrics.md",
+        ctx.repo_root / "docs" / "contracts" / "tracing.md",
+        ctx.repo_root / "docs" / "contracts" / "endpoints.md",
+        ctx.repo_root / "docs" / "contracts" / "config-keys.md",
+        ctx.repo_root / "docs" / "contracts" / "chart-values.md",
+    ]
+    before: dict[str, str] = {}
+    for target in targets:
+        before.update(_snapshot_hashes(target))
+    cmds = [
+        ["python3", "-m", "bijux_atlas_scripts.cli", "contracts", "generate", "--generators", "artifacts"],
+        ["python3", "scripts/areas/docs/generate_chart_contract_index.py"],
+    ]
+    for cmd in cmds:
+        code, output = _run_check(cmd, ctx.repo_root)
+        if code != 0:
+            return 1, output
+    after: dict[str, str] = {}
+    for target in targets:
+        after.update(_snapshot_hashes(target))
+    if before == after:
+        return 0, ""
+    changed = sorted({*before.keys(), *after.keys()})
+    drift = [str(Path(path).relative_to(ctx.repo_root)) for path in changed if before.get(path) != after.get(path)]
+    return 1, "\n".join(drift)
+
+
 def _mkdocs_nav_file_refs(mkdocs_text: str) -> list[str]:
     refs: list[str] = []
     for line in mkdocs_text.splitlines():
@@ -120,12 +233,17 @@ def _run_docs_checks(
     started_at = datetime.now(timezone.utc).isoformat()
     rows: list[dict[str, object]] = []
     for check in checks:
-        code, output = runner(check.cmd, ctx.repo_root)
+        if check.fn is not None:
+            code, output = check.fn(ctx)
+        elif check.cmd is not None:
+            code, output = runner(check.cmd, ctx.repo_root)
+        else:
+            code, output = 2, "invalid docs check configuration"
         row: dict[str, object] = {
             "id": check.check_id,
             "description": check.description,
             "status": "pass" if code == 0 else "fail",
-            "command": " ".join(check.cmd),
+            "command": " ".join(check.cmd) if check.cmd else "native",
             "actionable": check.actionable,
         }
         if code != 0:
@@ -245,14 +363,16 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             _check(
                 "docs-public-surface",
                 "Validate docs public surface",
-                ["python3", "scripts/areas/docs/check_public_surface_docs.py"],
+                None,
                 "Regenerate/align docs public surface JSON and docs references.",
+                fn=_check_public_surface_docs,
             ),
             _check(
                 "docs-no-internal-target-refs",
                 "Validate no internal make target refs",
-                ["python3", "scripts/areas/docs/check_docs_make_only.py"],
+                None,
                 "Replace internal make targets with public targets in docs.",
+                fn=_check_docs_make_only,
             ),
             _check(
                 "docs-ops-entrypoints",
@@ -263,8 +383,9 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             _check(
                 "docs-generated",
                 "Validate generated docs are up-to-date",
-                ["python3", "scripts/areas/docs/check_docs_freeze_drift.py"],
+                None,
                 "Regenerate docs outputs and commit deterministic updates.",
+                fn=_check_docs_freeze_drift,
             ),
         ]
         return _run_docs_checks(ctx, checks, ns.report, ns.fail_fast, ns.emit_artifacts)
@@ -282,10 +403,24 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _run_simple(ctx, ["./scripts/areas/public/check-markdown-links.sh"], ns.report)
 
     if ns.docs_cmd == "public-surface-check":
-        return _run_simple(ctx, ["python3", "scripts/areas/docs/check_public_surface_docs.py"], ns.report)
+        code, output = _check_public_surface_docs(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        else:
+            print("docs public surface check passed")
+        return code
 
     if ns.docs_cmd == "no-internal-target-refs":
-        return _run_simple(ctx, ["python3", "scripts/areas/docs/check_docs_make_only.py"], ns.report)
+        code, output = _check_docs_make_only(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        else:
+            print("docs make-only check passed")
+        return code
 
     if ns.docs_cmd == "ops-entrypoints-check":
         return _run_simple(ctx, ["python3", "scripts/areas/layout/check_ops_external_entrypoints.py"], ns.report)
@@ -311,7 +446,14 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return 0 if not missing else 1
 
     if ns.docs_cmd == "generated-check":
-        return _run_simple(ctx, ["python3", "scripts/areas/docs/check_docs_freeze_drift.py"], ns.report)
+        code, output = _check_docs_freeze_drift(ctx)
+        if ns.report == "json":
+            print(json.dumps({"schema_version": 1, "status": "pass" if code == 0 else "fail", "output": output}, sort_keys=True))
+        elif output:
+            print(output)
+        else:
+            print("docs freeze check passed")
+        return code
 
     if ns.docs_cmd == "glossary-check":
         return _run_simple(ctx, ["python3", "scripts/areas/docs/lint_glossary_links.py"], ns.report)
