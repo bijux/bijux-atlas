@@ -41,6 +41,9 @@ def test_help_for_all_commands() -> None:
         "policies",
         "make",
         "inventory",
+        "contracts",
+        "registry",
+        "layout",
         "report",
     )
     for command in commands:

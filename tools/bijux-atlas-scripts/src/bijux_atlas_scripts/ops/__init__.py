@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+from ..core.context import RunContext
 from ..domain_cmd import domain_payload
-from ..run_context import RunContext
 
 
 def run(ctx: RunContext) -> dict[str, object]:

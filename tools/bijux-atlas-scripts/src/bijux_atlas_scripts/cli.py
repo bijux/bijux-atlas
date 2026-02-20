@@ -4,17 +4,17 @@ import argparse
 import sys
 from pathlib import Path
 
-from . import configs, docs, inventory, make, ops, policies, report
+from . import configs, contracts, docs, inventory, layout, make, ops, policies, registry, report
+from .core.context import RunContext
+from .core.fs import ensure_evidence_path
+from .core.logging import log_event
 from .doctor import run_doctor
 from .domain_cmd import register_domain_parser, render_payload
 from .errors import ScriptError
-from .evidence_policy import ensure_evidence_path
 from .exit_codes import ERR_INTERNAL
 from .network_guard import install_no_network_guard
 from .output_contract import validate_json_output
-from .run_context import RunContext
 from .runner import run_legacy_script
-from .structured_log import log_event
 from .surface import run_surface
 
 DOMAINS = {
@@ -24,6 +24,9 @@ DOMAINS = {
     "policies": policies.run,
     "make": make.run,
     "inventory": inventory.run,
+    "contracts": contracts.run,
+    "registry": registry.run,
+    "layout": layout.run,
     "report": report.run,
 }
 
@@ -49,7 +52,19 @@ def build_parser() -> argparse.ArgumentParser:
     surface_p.add_argument("--json", action="store_true", help="emit JSON output")
     surface_p.add_argument("--out-file", help="optional output path for JSON report")
 
-    for name in ("ops", "docs", "configs", "policies", "make", "inventory", "report"):
+    domain_names = (
+        "ops",
+        "docs",
+        "configs",
+        "policies",
+        "make",
+        "inventory",
+        "contracts",
+        "registry",
+        "layout",
+        "report",
+    )
+    for name in domain_names:
         register_domain_parser(sub, name, f"{name} domain commands")
 
     doctor_p = sub.add_parser("doctor", help="show tooling and context diagnostics")
