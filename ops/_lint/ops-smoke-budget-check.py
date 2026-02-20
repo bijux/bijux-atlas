@@ -39,7 +39,7 @@ def main() -> int:
     if not run_id:
         print("RUN_ID is required for ops smoke budget check", file=sys.stderr)
         return 2
-    report = ROOT / "ops/_generated/ops-smoke" / run_id / "report.json"
+    report = ROOT / "artifacts/evidence/ops-smoke" / run_id / "report.json"
     if not report.exists():
         print(f"missing report: {report}", file=sys.stderr)
         return 1

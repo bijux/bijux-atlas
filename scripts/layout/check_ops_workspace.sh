@@ -18,7 +18,6 @@ required_dirs=(
   "$OPS/_schemas"
   "$OPS/_generated"
   "$OPS/_generated_committed"
-  "$OPS/_evidence"
   "$OPS/_artifacts"
   "$OPS/_lint"
   "$OPS/run"

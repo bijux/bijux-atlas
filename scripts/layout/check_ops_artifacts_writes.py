@@ -36,6 +36,8 @@ for path in sorted((ROOT / "ops").rglob("*")):
                 raw = raw[2:]
             if raw.startswith("artifacts/ops"):
                 continue
+            if raw.startswith("artifacts/evidence"):
+                continue
             allowed = raw in allowlist or rel in allowlist
             if not allowed:
                 for item in allowlist:

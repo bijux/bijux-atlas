@@ -23,6 +23,7 @@ Thumbs.db
 # Atlas isolated runner outputs (kept out of git by policy)
 # -----------------------------------------------------------------------------
 /artifacts/
+artifacts/evidence/**
 ops/_artifacts/
 ops/_evidence/**
 !ops/_evidence/.gitkeep
