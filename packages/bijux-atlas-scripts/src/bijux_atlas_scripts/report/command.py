@@ -349,6 +349,8 @@ def run_report_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _cmd_trend(ctx, ns.limit)
     if ns.report_cmd == "export":
         return _cmd_export(ctx, ns.run_id_override or ctx.run_id, ns.out)
+    if ns.report_cmd == "bundle":
+        return _cmd_export(ctx, ns.run_id_override or ctx.run_id, ns.out)
     return 2
 
 
@@ -395,3 +397,7 @@ def configure_report_parser(sub: argparse._SubParsersAction[argparse.ArgumentPar
     ex = rep.add_parser("export", help="export run evidence bundle")
     ex.add_argument("--run-id", dest="run_id_override")
     ex.add_argument("--out")
+
+    bundle = rep.add_parser("bundle", help="alias for export run evidence bundle")
+    bundle.add_argument("--run-id", dest="run_id_override")
+    bundle.add_argument("--out")
