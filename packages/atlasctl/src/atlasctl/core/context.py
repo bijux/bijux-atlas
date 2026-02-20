@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-import os
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Literal
 
+from .env import getenv
 from .git import read_git_context
-from .paths import find_repo_root
+from .paths import evidence_root_path, find_repo_root, run_dir_root_path, scripts_artifact_root_path
 
 OutputFormat = Literal["text", "json"]
 NetworkMode = Literal["allow", "forbid"]
@@ -51,35 +51,21 @@ class RunContext:
         repo_root = find_repo_root()
         git_ctx = read_git_context(repo_root)
         default_run = f"atlas-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S')}-{git_ctx.sha}"
-        resolved_run_id = run_id or os.environ.get("RUN_ID", default_run)
-        resolved_profile = profile or os.environ.get("PROFILE", "local")
-        root = Path(evidence_root or os.environ.get("EVIDENCE_ROOT", "artifacts/evidence"))
-        evidence_root_path = (repo_root / root).resolve() if not root.is_absolute() else root.resolve()
-        scripts_artifact_raw = Path(
-            os.environ.get(
-                "BIJUX_ATLAS_SCRIPTS_ARTIFACT_ROOT",
-                f"artifacts/atlasctl/run/{resolved_run_id}",
-            )
+        resolved_run_id = run_id or getenv("RUN_ID", default_run)
+        resolved_profile = profile or getenv("PROFILE", "local")
+        resolved_evidence_root = evidence_root_path(repo_root, evidence_root or getenv("EVIDENCE_ROOT"))
+        scripts_artifact_root = scripts_artifact_root_path(
+            repo_root,
+            getenv("BIJUX_ATLAS_SCRIPTS_ARTIFACT_ROOT", f"artifacts/atlasctl/run/{resolved_run_id}"),
         )
-        scripts_artifact_root = (
-            (repo_root / scripts_artifact_raw).resolve()
-            if not scripts_artifact_raw.is_absolute()
-            else scripts_artifact_raw.resolve()
-        )
-        run_dir_root = (
-            (repo_root / Path(run_dir)).resolve()
-            if run_dir and not Path(run_dir).is_absolute()
-            else Path(run_dir).resolve()
-            if run_dir
-            else evidence_root_path
-        )
+        run_dir_root = run_dir_root_path(repo_root, resolved_evidence_root, run_dir)
         resolved_network_mode: NetworkMode = "forbid" if no_network else network_mode
         resolved_no_network = resolved_network_mode == "forbid"
         return cls(
             run_id=resolved_run_id,
             profile=resolved_profile,
             repo_root=repo_root,
-            evidence_root=evidence_root_path,
+            evidence_root=resolved_evidence_root,
             scripts_artifact_root=scripts_artifact_root,
             run_dir=run_dir_root / resolved_run_id,
             output_format=output_format,
