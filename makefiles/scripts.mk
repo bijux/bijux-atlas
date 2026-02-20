@@ -15,10 +15,11 @@ bootstrap-tools:
 	fi
 
 scripts-index:
-	@$(PY_RUN) scripts/areas/gen/generate_scripts_readme.py
+	@$(ATLAS_SCRIPTS) inventory scripts-migration --format md --out-dir docs/_generated
+	@$(ATLAS_SCRIPTS) inventory scripts-migration --format json --out-dir docs/_generated
 
 scripts-graph: ## Generate make-target to scripts call graph
-	@$(PY_RUN) scripts/areas/docs/generate_scripts_graph.py
+	@$(ATLAS_SCRIPTS) make graph root-local > docs/development/scripts-graph.md
 
 no-direct-scripts:
 	@./scripts/areas/layout/check_no_direct_script_runs.sh
@@ -134,7 +135,7 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(PY_RUN) scripts/areas/layout/check_script_entrypoints.py
 	@$(PY_RUN) scripts/areas/layout/check_scripts_top_level.py
 	@if command -v shellcheck >/dev/null 2>&1; then find scripts/areas/check scripts/bin -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional)"; fi
-	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" check scripts/areas/check scripts/areas/gen scripts/areas/python packages/bijux-atlas-scripts/src packages/bijux-atlas-scripts/tests
+	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/ruff" check scripts/areas/check scripts/areas/python packages/bijux-atlas-scripts/src packages/bijux-atlas-scripts/tests
 	@PYTHONPATH=packages/bijux-atlas-scripts/src "$(SCRIPTS_VENV)/bin/mypy" --ignore-missing-imports packages/bijux-atlas-scripts/src packages/bijux-atlas-scripts/tests
 	@python3 -m unittest scripts.areas.tests.test_paths
 

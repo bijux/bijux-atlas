@@ -6,24 +6,9 @@
       "mapped_cli_group": "atlasctl check _internal"
     },
     {
-      "area": "_meta",
-      "index": "scripts/areas/_meta/INDEX.md",
-      "mapped_cli_group": "atlasctl check _meta"
-    },
-    {
-      "area": "bootstrap",
-      "index": "scripts/areas/bootstrap/INDEX.md",
-      "mapped_cli_group": "atlasctl check bootstrap"
-    },
-    {
       "area": "check",
       "index": "scripts/areas/check/INDEX.md",
       "mapped_cli_group": "atlasctl check check"
-    },
-    {
-      "area": "ci",
-      "index": "scripts/areas/ci/INDEX.md",
-      "mapped_cli_group": "atlasctl check ci"
     },
     {
       "area": "configs",
@@ -31,19 +16,9 @@
       "mapped_cli_group": "atlasctl check configs"
     },
     {
-      "area": "contracts",
-      "index": "scripts/areas/contracts/INDEX.md",
-      "mapped_cli_group": "atlasctl check contracts"
-    },
-    {
       "area": "demo",
       "index": "scripts/areas/demo/INDEX.md",
       "mapped_cli_group": "atlasctl check demo"
-    },
-    {
-      "area": "dev",
-      "index": "scripts/areas/dev/INDEX.md",
-      "mapped_cli_group": "atlasctl check dev"
     },
     {
       "area": "docs",
@@ -54,11 +29,6 @@
       "area": "fixtures",
       "index": "scripts/areas/fixtures/INDEX.md",
       "mapped_cli_group": "atlasctl check fixtures"
-    },
-    {
-      "area": "gen",
-      "index": "scripts/areas/gen/INDEX.md",
-      "mapped_cli_group": "atlasctl check gen"
     },
     {
       "area": "internal",
@@ -192,34 +162,6 @@
       "extension": ".sh",
       "is_executable": true,
       "path": "scripts/areas/_internal/run_suite_wrapper_legacy.sh",
-      "tags": []
-    },
-    {
-      "extension": ".md",
-      "is_executable": false,
-      "path": "scripts/areas/_meta/INDEX.md",
-      "tags": [
-        "docs_generator"
-      ]
-    },
-    {
-      "extension": ".json",
-      "is_executable": false,
-      "path": "scripts/areas/_meta/ownership.json",
-      "tags": []
-    },
-    {
-      "extension": ".md",
-      "is_executable": false,
-      "path": "scripts/areas/bootstrap/INDEX.md",
-      "tags": [
-        "docs_generator"
-      ]
-    },
-    {
-      "extension": ".sh",
-      "is_executable": true,
-      "path": "scripts/areas/bootstrap/install_tools.sh",
       "tags": []
     },
     {
@@ -475,26 +417,6 @@
     {
       "extension": ".md",
       "is_executable": false,
-      "path": "scripts/areas/ci/INDEX.md",
-      "tags": [
-        "docs_generator"
-      ]
-    },
-    {
-      "extension": ".md",
-      "is_executable": false,
-      "path": "scripts/areas/ci/README.md",
-      "tags": []
-    },
-    {
-      "extension": ".sh",
-      "is_executable": true,
-      "path": "scripts/areas/ci/scripts-ci.sh",
-      "tags": []
-    },
-    {
-      "extension": ".md",
-      "is_executable": false,
       "path": "scripts/areas/configs/INDEX.md",
       "tags": [
         "config_validator",
@@ -687,133 +609,6 @@
     {
       "extension": ".md",
       "is_executable": false,
-      "path": "scripts/areas/contracts/INDEX.md",
-      "tags": [
-        "docs_generator",
-        "gate_runner"
-      ]
-    },
-    {
-      "extension": ".sh",
-      "is_executable": true,
-      "path": "scripts/areas/contracts/check_all.sh",
-      "tags": [
-        "gate_runner"
-      ]
-    },
-    {
-      "extension": ".py",
-      "is_executable": true,
-      "path": "scripts/areas/contracts/check_breaking_contract_change.py",
-      "tags": [
-        "gate_runner"
-      ]
-    },
-    {
-      "extension": ".py",
-      "is_executable": true,
-      "path": "scripts/areas/contracts/check_chart_values_contract.py",
-      "tags": [
-        "gate_runner"
-      ]
-    },
-    {
-      "extension": ".py",
-      "is_executable": true,
-      "path": "scripts/areas/contracts/check_cli_ssot.py",
-      "tags": [
-        "gate_runner"
-      ]
-    },
-    {
-      "extension": ".py",
-      "is_executable": true,
-      "path": "scripts/areas/contracts/check_config_keys_contract.py",
-      "tags": [
-        "config_validator",
-        "gate_runner"
-      ]
-    },
-    {
-      "extension": ".py",
-      "is_executable": true,
-      "path": "scripts/areas/contracts/check_contract_drift.py",
-      "tags": [
-        "gate_runner"
-      ]
-    },
-    {
-      "extension": ".py",
-      "is_executable": true,
-      "path": "scripts/areas/contracts/check_endpoints_contract.py",
-      "tags": [
-        "gate_runner"
-      ]
-    },
-    {
-      "extension": ".py",
-      "is_executable": true,
-      "path": "scripts/areas/contracts/check_error_codes_contract.py",
-      "tags": [
-        "gate_runner"
-      ]
-    },
-    {
-      "extension": ".py",
-      "is_executable": true,
-      "path": "scripts/areas/contracts/check_sqlite_indexes_contract.py",
-      "tags": [
-        "docs_generator",
-        "gate_runner"
-      ]
-    },
-    {
-      "extension": ".py",
-      "is_executable": false,
-      "path": "scripts/areas/contracts/check_v1_surface.py",
-      "tags": [
-        "gate_runner"
-      ]
-    },
-    {
-      "extension": ".py",
-      "is_executable": true,
-      "path": "scripts/areas/contracts/format_contracts.py",
-      "tags": [
-        "gate_runner"
-      ]
-    },
-    {
-      "extension": ".py",
-      "is_executable": false,
-      "path": "scripts/areas/contracts/gen_openapi.py",
-      "tags": [
-        "gate_runner"
-      ]
-    },
-    {
-      "extension": ".py",
-      "is_executable": true,
-      "path": "scripts/areas/contracts/generate_chart_values_schema.py",
-      "tags": [
-        "config_validator",
-        "docs_generator",
-        "gate_runner"
-      ]
-    },
-    {
-      "extension": ".py",
-      "is_executable": true,
-      "path": "scripts/areas/contracts/generate_contract_artifacts.py",
-      "tags": [
-        "docs_generator",
-        "gate_runner",
-        "report_emitter"
-      ]
-    },
-    {
-      "extension": ".md",
-      "is_executable": false,
       "path": "scripts/areas/demo/INDEX.md",
       "tags": [
         "docs_generator"
@@ -823,20 +618,6 @@
       "extension": ".sh",
       "is_executable": true,
       "path": "scripts/areas/demo/demo.sh",
-      "tags": []
-    },
-    {
-      "extension": ".md",
-      "is_executable": false,
-      "path": "scripts/areas/dev/INDEX.md",
-      "tags": [
-        "docs_generator"
-      ]
-    },
-    {
-      "extension": ".md",
-      "is_executable": false,
-      "path": "scripts/areas/dev/README.md",
       "tags": []
     },
     {
@@ -1709,36 +1490,6 @@
       "is_executable": true,
       "path": "scripts/areas/fixtures/run-medium-serve.sh",
       "tags": []
-    },
-    {
-      "extension": ".md",
-      "is_executable": false,
-      "path": "scripts/areas/gen/INDEX.md",
-      "tags": [
-        "docs_generator"
-      ]
-    },
-    {
-      "extension": ".md",
-      "is_executable": false,
-      "path": "scripts/areas/gen/README.md",
-      "tags": []
-    },
-    {
-      "extension": ".py",
-      "is_executable": true,
-      "path": "scripts/areas/gen/generate_scripts_readme.py",
-      "tags": [
-        "docs_generator"
-      ]
-    },
-    {
-      "extension": ".py",
-      "is_executable": true,
-      "path": "scripts/areas/gen/generate_scripts_surface.py",
-      "tags": [
-        "docs_generator"
-      ]
     },
     {
       "extension": ".md",
