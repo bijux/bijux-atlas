@@ -117,8 +117,13 @@ for crate in CRATES:
     if lib.exists() and (docs / 'public-api.md').exists():
         names = sorted(set(pub_pat.findall(lib.read_text(encoding='utf-8'))))
         ptxt = (docs / 'public-api.md').read_text(encoding='utf-8')
-        if '../../../../docs/_style/stability-levels.md' not in ptxt:
-            errors.append(f'{docs / "public-api.md"}: missing stability reference link to ../../../../docs/_style/stability-levels.md')
+        if (
+            '../../../../docs/_style/stability-levels.md' not in ptxt
+            and '../../../docs/_style/stability-levels.md' not in ptxt
+        ):
+            errors.append(
+                f'{docs / "public-api.md"}: missing stability reference link to ../../../docs/_style/stability-levels.md'
+            )
         for n in names:
             if n not in ptxt:
                 errors.append(f'{docs / "public-api.md"}: missing mention of public type {n}')
