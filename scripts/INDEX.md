@@ -70,14 +70,11 @@ Generated file. Do not edit manually.
 | `scripts/areas/configs/validate_configs_schemas.py` | `platform` | `public` | - |
 | `scripts/areas/demo/demo.sh` | `platform` | `private` | - |
 | `scripts/areas/docs/ENTRYPOINTS.md` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/ban_legacy_terms.sh` | `docs-governance` | `public` | `docs-build`, `docs-lint-names` |
-| `scripts/areas/docs/check-durable-naming.py` | `docs-governance` | `public` | `rename-lint` |
 | `scripts/areas/docs/check_adr_headers.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_broken_examples.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_concept_ids.sh` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_concept_registry.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_configmap_env_docs.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_contract_doc_pairs.py` | `docs-governance` | `public` | `docs-lint-names` |
 | `scripts/areas/docs/check_contracts_index_nav.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_critical_make_targets_referenced.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_doc_filename_style.py` | `docs-governance` | `public` | - |
@@ -85,11 +82,9 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_docker_entrypoints.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_docs_deterministic.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_docs_make_targets_exist.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_duplicate_topics.sh` | `docs-governance` | `public` | `docs-build`, `rename-lint` |
 | `scripts/areas/docs/check_example_configs.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_full_stack_page.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_generated_contract_docs.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_index_pages.sh` | `docs-governance` | `public` | `docs-build`, `docs-lint-names` |
 | `scripts/areas/docs/check_k8s_docs_contract.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_load_docs_contract.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_make_help_drift.py` | `docs-governance` | `public` | `ci-make-help-drift` |
@@ -98,18 +93,14 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/check_mkdocs_site_links.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_nav_order.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_no_legacy_root_paths.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_no_orphan_docs.py` | `docs-governance` | `public` | `docs-lint-names` |
 | `scripts/areas/docs/check_no_placeholders.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_no_removed_make_targets.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_observability_acceptance_checklist.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_observability_docs_checklist.py` | `docs-governance` | `public` | `docs-lint-names` |
 | `scripts/areas/docs/check_ops_docs_make_targets.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_ops_observability_links.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_public_targets_docs_sections.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_reference_templates.sh` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_runbook_map_registration.py` | `docs-governance` | `public` | `docs-lint-names` |
 | `scripts/areas/docs/check_script_headers.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/check_script_locations.py` | `docs-governance` | `public` | `docs-lint-names` |
 | `scripts/areas/docs/check_suite_id_docs.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_terminology_units_ssot.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/check_title_case.sh` | `docs-governance` | `public` | `docs-build` |
@@ -140,7 +131,6 @@ Generated file. Do not edit manually.
 | `scripts/areas/docs/lint_doc_contracts.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/lint_doc_status.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/lint_glossary_links.py` | `docs-governance` | `public` | - |
-| `scripts/areas/docs/naming_inventory.py` | `docs-governance` | `public` | `docs-lint-names` |
 | `scripts/areas/docs/render_diagrams.sh` | `docs-governance` | `public` | `docs-build` |
 | `scripts/areas/docs/rewrite_legacy_terms.py` | `docs-governance` | `public` | - |
 | `scripts/areas/docs/run_blessed_snippets.py` | `docs-governance` | `public` | - |

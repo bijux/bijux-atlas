@@ -89,19 +89,19 @@ docker-contracts: ## Validate Docker layout/policy/no-latest contracts
 	@$(ATLAS_SCRIPTS) run ./scripts/areas/check/check-docker-image-size.py
 
 rename-lint: ## Enforce durable naming rules for docs/scripts and concept ownership
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check-durable-naming.py
-	@./scripts/areas/docs/check_duplicate_topics.sh
+	@$(ATLAS_SCRIPTS) docs durable-naming-check --report text
+	@$(ATLAS_SCRIPTS) docs duplicate-topics-check --report text
 
 docs-lint-names: ## Enforce durable naming contracts, registries, and inventory
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/naming_inventory.py
-	@./scripts/areas/docs/ban_legacy_terms.sh
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_observability_docs_checklist.py
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_no_orphan_docs.py
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_script_locations.py
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_runbook_map_registration.py
-	@$(ATLAS_SCRIPTS) run ./scripts/areas/docs/check_contract_doc_pairs.py
+	@$(ATLAS_SCRIPTS) docs naming-inventory --report text
+	@$(ATLAS_SCRIPTS) docs legacy-terms-check --report text
+	@$(ATLAS_SCRIPTS) docs observability-docs-checklist --report text
+	@$(ATLAS_SCRIPTS) docs no-orphan-docs-check --report text
+	@$(ATLAS_SCRIPTS) docs script-locations-check --report text
+	@$(ATLAS_SCRIPTS) docs runbook-map-registration-check --report text
+	@$(ATLAS_SCRIPTS) docs contract-doc-pairs-check --report text
 	@$(ATLAS_SCRIPTS) run ./packages/bijux-atlas-scripts/src/bijux_atlas_scripts/load/validate_suite_manifest.py
-	@./scripts/areas/docs/check_index_pages.sh
+	@$(ATLAS_SCRIPTS) docs index-pages-check --report text
 
 internal/product/doctor: ## Print tool/env/path diagnostics and store doctor report
 	@RUN_ID="$${RUN_ID:-doctor-$(MAKE_RUN_TS)}" $(ATLAS_SCRIPTS) run ./scripts/areas/layout/make_doctor.py

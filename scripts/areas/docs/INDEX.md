@@ -3,24 +3,19 @@
 Scripts in this area.
 
 - ENTRYPOINTS.md
-- ban_legacy_terms.sh
-- check-durable-naming.py
 - check_adr_headers.py
 - check_broken_examples.py
 - check_concept_ids.sh
 - check_concept_registry.py
-- check_contract_doc_pairs.py
 - check_critical_make_targets_referenced.py
 - check_doc_filename_style.py
 - check_doc_naming.sh
 - check_docker_entrypoints.py
 - check_docs_deterministic.py
 - check_docs_make_targets_exist.py
-- check_duplicate_topics.sh
 - check_example_configs.py
 - check_full_stack_page.py
 - check_generated_contract_docs.py
-- check_index_pages.sh
 - check_k8s_docs_contract.py
 - check_load_docs_contract.py
 - check_make_help_drift.py
@@ -29,16 +24,12 @@ Scripts in this area.
 - check_mkdocs_site_links.py
 - check_nav_order.py
 - check_no_legacy_root_paths.py
-- check_no_orphan_docs.py
 - check_no_placeholders.py
 - check_observability_acceptance_checklist.py
-- check_observability_docs_checklist.py
 - check_ops_docs_make_targets.py
 - check_ops_observability_links.py
 - check_reference_templates.sh
-- check_runbook_map_registration.py
 - check_script_headers.py
-- check_script_locations.py
 - check_suite_id_docs.py
 - check_terminology_units_ssot.py
 - check_title_case.sh
@@ -64,7 +55,6 @@ Scripts in this area.
 - lint_doc_contracts.py
 - lint_doc_status.py
 - lint_glossary_links.py
-- naming_inventory.py
 - render_diagrams.sh
 - rewrite_legacy_terms.py
 - run_blessed_snippets.py
