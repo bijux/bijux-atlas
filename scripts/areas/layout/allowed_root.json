@@ -20,7 +20,6 @@
     "docker",
     "artifacts",
     "Dockerfile",
-    "nextest.toml",
     "deny.toml",
     "audit-allowlist.toml",
     "clippy.toml",

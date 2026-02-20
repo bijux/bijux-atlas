@@ -13,7 +13,7 @@ Some tools only discover config at repository root; shims preserve compatibility
 
 ## Scope
 
-Root config symlinks for rust, security, docs, and test tooling.
+Root config symlinks for rust, security, and docs tooling.
 
 ## Non-goals
 
@@ -23,7 +23,6 @@ Does not allow arbitrary new root symlinks.
 
 - `clippy.toml` -> `configs/rust/clippy.toml`
 - `rustfmt.toml` -> `configs/rust/rustfmt.toml`
-- `nextest.toml` -> `configs/nextest/nextest.toml`
 - `deny.toml` -> `configs/security/deny.toml`
 - `audit-allowlist.toml` -> `configs/security/audit-allowlist.toml`
 - `.vale.ini` -> `configs/docs/.vale.ini`

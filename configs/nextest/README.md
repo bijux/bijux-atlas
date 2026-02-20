@@ -14,8 +14,8 @@ Canonical test-runner profile configuration.
 
 ## Policy
 
-- Root `nextest.toml` is a symlink shim only.
 - Canonical configuration must stay in `configs/nextest/nextest.toml`.
+- Tooling should reference this canonical path directly.
 
 ## Verification
 
