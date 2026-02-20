@@ -21,7 +21,8 @@ Runbook index: `ops/INDEX.md`.
 - `ops/_lib/`: shared helper libraries.
 - `ops/_meta/`: ownership/surface/contracts metadata.
 - `ops/_schemas/`: ops JSON schemas.
-- `ops/_generated/`: generated ops outputs.
+- `ops/_generated_committed/`: deterministic generated ops outputs committed to git.
+- `ops/_evidence/`: runtime evidence outputs (gitignored).
 - `ops/_artifacts/`: canonical runtime artifacts root.
 
 ## Run

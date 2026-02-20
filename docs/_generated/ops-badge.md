@@ -2,4 +2,4 @@
 
 ![ops confidence](https://img.shields.io/badge/ops%20confidence-fail%20(0%25)-red)
 
-Source: `ops/_generated/scorecard.json`
+Source: `ops/_generated_committed/scorecard.json`

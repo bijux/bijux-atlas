@@ -21,7 +21,8 @@
   - `ops/datasets/` dataset manifests, pinning, QC, promotion
   - `ops/e2e/` composition-only scenarios across domains
     - `ops/e2e/k8s/tests/` only wrapper entry scripts, not invariant test ownership
-- Generated outputs under `ops/_generated/` only.
+- Deterministic generated outputs under `ops/_generated_committed/` only.
+- Runtime evidence outputs under `ops/_evidence/` only.
 - Runtime artifacts write under `ops/_artifacts/` only, unless allowlisted in `configs/ops/artifacts-allowlist.txt`.
 - JSON schemas for ops manifests live under `ops/_schemas/`.
 - Symlinked domain directories inside `ops/` are forbidden.
@@ -35,10 +36,10 @@ Stable (versioned by review):
 - domain definitions and tests under canonical subtrees
 
 Generated (rebuildable):
-- `ops/_generated/**`
+- `ops/_generated_committed/**`
 - committed generated files policy:
-  - commit: `ops/_generated/report.example.json`
-  - commit: `ops/_generated/report.unified.example.json`
+  - commit: `ops/_generated_committed/examples/report.example.json`
+  - commit: `ops/_generated_committed/examples/report.unified.example.json`
   - commit: `docs/_generated/ops-surface.md`
   - commit: `docs/_generated/ops-contracts.md`
   - commit: `docs/_generated/ops-schemas.md`
@@ -46,6 +47,7 @@ Generated (rebuildable):
 
 Runtime artifacts (ephemeral evidence):
 - `ops/_artifacts/**`
+- `ops/_evidence/**`
 
 ## Artifact Rules
 

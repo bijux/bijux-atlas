@@ -16,8 +16,8 @@
             "expected_time_seconds": 180,
             "expected_qps": 5,
             "expected_artifacts": [
-              "ops/_generated/e2e-smoke",
-              "ops/_generated/report.unified.json"
+              "ops/_evidence/e2e-smoke",
+              "ops/_generated_committed/report.unified.json"
             ]
           }
         },
