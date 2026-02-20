@@ -1,5 +1,5 @@
 {
-  "max_public_targets": 54,
+  "max_public_targets": 53,
   "public_targets": [
     {
       "name": "artifacts-open",
@@ -473,5 +473,6 @@
         "ci"
       ]
     }
-  ]
+  ],
+  "target_public_targets": 25
 }
