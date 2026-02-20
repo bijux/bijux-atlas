@@ -12,6 +12,7 @@ from ...check.native import (
     check_tracked_timestamp_paths,
 )
 from ..base import CheckDef
+from .legacy_guard import check_legacy_package_quarantine
 from .scripts_dir import check_scripts_dir_absent
 
 CHECKS: tuple[CheckDef, ...] = (
@@ -25,4 +26,5 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo/no-tracked-timestamp-paths", "repo", 1000, check_tracked_timestamp_paths),
     CheckDef("repo/duplicate-script-names", "repo", 1200, check_duplicate_script_names),
     CheckDef("repo/no-scripts-dir", "repo", 250, check_scripts_dir_absent),
+    CheckDef("repo/legacy-quarantine", "repo", 250, check_legacy_package_quarantine),
 )

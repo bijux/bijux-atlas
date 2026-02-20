@@ -1,49 +1,42 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from pathlib import Path
 
-from ..core.process import run_command
 from ..core.clock import utc_now_iso
-
-
-@dataclass(frozen=True)
-class LintCheck:
-    check_id: str
-    cmd: list[str]
+from ..checks.engine import CommandCheckDef, run_command_checks
 
 
 def _py(script: str) -> list[str]:
     return ["python3", script]
 
 
-def suites(repo_root: Path) -> dict[str, list[LintCheck]]:
+def suites(repo_root: Path) -> dict[str, list[CommandCheckDef]]:
     return {
         "ops": [
-            LintCheck("ops/no-direct-script-usage", _py("ops/_lint/no-direct-script-usage.py")),
-            LintCheck("ops/no-duplicate-readmes", _py("ops/_lint/no-duplicate-readmes.py")),
-            LintCheck("ops/no-floating-tool-versions", _py("ops/_lint/no-floating-tool-versions.py")),
-            LintCheck("ops/no-orphan-contract", _py("ops/_lint/no-orphan-contract.py")),
-            LintCheck("ops/no-orphan-suite", _py("ops/_lint/no-orphan-suite.py")),
+            CommandCheckDef("ops/no-direct-script-usage", "ops", _py("ops/_lint/no-direct-script-usage.py")),
+            CommandCheckDef("ops/no-duplicate-readmes", "ops", _py("ops/_lint/no-duplicate-readmes.py")),
+            CommandCheckDef("ops/no-floating-tool-versions", "ops", _py("ops/_lint/no-floating-tool-versions.py")),
+            CommandCheckDef("ops/no-orphan-contract", "ops", _py("ops/_lint/no-orphan-contract.py")),
+            CommandCheckDef("ops/no-orphan-suite", "ops", _py("ops/_lint/no-orphan-suite.py")),
         ],
         "repo": [
-            LintCheck("repo/no-root-ad-hoc-python", _py("ops/_lint/no-root-ad-hoc-python.py")),
-            LintCheck("repo/no-scripts-dir", _py("ops/_lint/no-scripts-dir.py")),
-            LintCheck("repo/bin-shims", ["python3", "-m", "atlasctl.cli", "check", "root-bin-shims"]),
-            LintCheck("repo/no-bin-symlinks", ["bash", "ops/_lint/no-bin-symlinks.sh"]),
+            CommandCheckDef("repo/no-root-ad-hoc-python", "repo", _py("ops/_lint/no-root-ad-hoc-python.py")),
+            CommandCheckDef("repo/no-scripts-dir", "repo", _py("ops/_lint/no-scripts-dir.py")),
+            CommandCheckDef("repo/bin-shims", "repo", ["python3", "-m", "atlasctl.cli", "check", "root-bin-shims"]),
+            CommandCheckDef("repo/no-bin-symlinks", "repo", ["bash", "ops/_lint/no-bin-symlinks.sh"]),
         ],
         "makefiles": [
-            LintCheck("makefiles/safety", _py("packages/atlasctl/src/atlasctl/layout_checks/check_make_safety.py")),
-            LintCheck("makefiles/public-scripts", _py("packages/atlasctl/src/atlasctl/layout_checks/check_make_public_scripts.py")),
+            CommandCheckDef("makefiles/safety", "makefiles", _py("packages/atlasctl/src/atlasctl/layout_checks/check_make_safety.py")),
+            CommandCheckDef("makefiles/public-scripts", "makefiles", _py("packages/atlasctl/src/atlasctl/layout_checks/check_make_public_scripts.py")),
         ],
         "docs": [
-            LintCheck("docs/check", ["python3", "-m", "atlasctl.cli", "docs", "check", "--report", "json"]),
+            CommandCheckDef("docs/check", "docs", ["python3", "-m", "atlasctl.cli", "docs", "check", "--report", "json"]),
         ],
         "configs": [
-            LintCheck("configs/validate", ["python3", "-m", "atlasctl.cli", "configs", "validate", "--report", "json"]),
+            CommandCheckDef("configs/validate", "configs", ["python3", "-m", "atlasctl.cli", "configs", "validate", "--report", "json"]),
         ],
         "packages": [
-            LintCheck("packages/atlas-scripts-tests", ["python3", "-m", "pytest", "-q", "packages/atlasctl/tests"]),
+            CommandCheckDef("packages/atlas-scripts-tests", "packages", ["python3", "-m", "pytest", "-q", "packages/atlasctl/tests"]),
         ],
     }
 
@@ -55,22 +48,11 @@ def run_suite(repo_root: Path, suite: str, fail_fast: bool) -> tuple[int, dict[s
         return 2, {"schema_version": 1, "tool": "bijux-atlas", "suite": suite, "status": "fail", "error": "unknown suite"}
 
     started_at = utc_now_iso()
-    rows: list[dict[str, object]] = []
-    failed = 0
-    for check in checks:
-        result = run_command(check.cmd, repo_root)
-        status = "pass" if result.code == 0 else "fail"
-        row: dict[str, object] = {
-            "id": check.check_id,
-            "command": " ".join(check.cmd),
-            "status": status,
-        }
-        if result.code != 0:
-            failed += 1
-            row["error"] = result.combined_output
-        rows.append(row)
-        if result.code != 0 and fail_fast:
-            break
+    failed, rows = run_command_checks(repo_root, checks)
+    if fail_fast and failed:
+        first_fail = next((i for i, row in enumerate(rows) if row["status"] == "fail"), len(rows) - 1)
+        rows = rows[: first_fail + 1]
+        failed = 1
 
     ended_at = utc_now_iso()
     payload = {

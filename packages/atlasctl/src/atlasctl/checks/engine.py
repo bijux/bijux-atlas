@@ -4,6 +4,7 @@ import time
 from pathlib import Path
 
 from .base import CheckDef, CheckResult
+from ..core.process import run_command
 
 
 class CommandCheckDef:
@@ -12,6 +13,31 @@ class CommandCheckDef:
         self.domain = domain
         self.cmd = cmd
         self.budget_ms = budget_ms
+
+
+def run_command_checks(repo_root: Path, checks: list[CommandCheckDef]) -> tuple[int, list[dict[str, object]]]:
+    rows: list[dict[str, object]] = []
+    failed = 0
+    for chk in checks:
+        start = time.perf_counter()
+        result = run_command(chk.cmd, repo_root)
+        elapsed_ms = int((time.perf_counter() - start) * 1000)
+        status = "pass" if result.code == 0 else "fail"
+        if result.code != 0:
+            failed += 1
+        row: dict[str, object] = {
+            "id": chk.check_id,
+            "domain": chk.domain,
+            "command": " ".join(chk.cmd),
+            "status": status,
+            "duration_ms": elapsed_ms,
+            "budget_ms": chk.budget_ms,
+            "budget_status": "pass" if elapsed_ms <= chk.budget_ms else "warn",
+        }
+        if result.code != 0:
+            row["error"] = result.combined_output
+        rows.append(row)
+    return failed, rows
 
 
 def run_function_checks(repo_root: Path, checks: list[CheckDef]) -> tuple[int, list[CheckResult]]:
