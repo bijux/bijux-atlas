@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "shims": [
+    {
+      "path": "scripts/bin/render_public_help",
+      "replacement": "scripts/bin/bijux-atlas-scripts run tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/help.py",
+      "expires_on": "2026-06-30",
+      "owner": "bijux-atlas-platform"
+    },
+    {
+      "path": "scripts/bin/make_explain",
+      "replacement": "scripts/bin/bijux-atlas-scripts run tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/explain.py",
+      "expires_on": "2026-06-30",
+      "owner": "bijux-atlas-platform"
+    },
+    {
+      "path": "scripts/bin/make_graph",
+      "replacement": "scripts/bin/bijux-atlas-scripts run tools/bijux-atlas-scripts/src/bijux_atlas_scripts/make/graph.py",
+      "expires_on": "2026-06-30",
+      "owner": "bijux-atlas-platform"
+    }
+  ]
+}
