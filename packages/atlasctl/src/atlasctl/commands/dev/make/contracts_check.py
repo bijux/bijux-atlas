@@ -76,6 +76,12 @@ CHECKS: list[MakeCheck] = [
         "Update workflow jobs to call approved public targets only.",
     ),
     _check(
+        "ci-legacy-target-cutoff",
+        "Validate CI workflows have no legacy targets after cutoff date",
+        "packages/atlasctl/src/atlasctl/checks/layout/workflows/check_ci_legacy_target_cutoff.py",
+        "Replace legacy make target calls in workflows with canonical atlasctl-backed targets before cutoff date.",
+    ),
+    _check(
         "ci-write-scope",
         "Validate ci wrappers avoid direct writes outside isolate/evidence",
         "packages/atlasctl/src/atlasctl/checks/layout/workflows/check_ci_writes_scoped.py",
