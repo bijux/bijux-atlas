@@ -10,6 +10,7 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 - [Control Plane Execution Model](control-plane/execution-model.md)
 - [Module Taxonomy](control-plane/taxonomy.md)
 - [How To Split A Module](architecture/how-to-split-a-module.md)
+- [Budget Policies and Refactoring](architecture/budgets.md)
 - [CLI Stability](cli-stability.md)
 - [Compatibility Promise](compatibility-promise.md)
 - [Contracts](contracts.md)
