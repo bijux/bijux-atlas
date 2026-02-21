@@ -14,7 +14,7 @@ from typing import Any
 from xml.etree.ElementTree import Element, SubElement, tostring
 
 from ..checks.execution import run_function_checks
-from ..checks.registry import get_check
+from ..checks.registry import check_tags, get_check, list_checks
 from ..contracts.catalog import schema_path_for
 from ..contracts.validate import validate_file
 from ..core.context import RunContext
@@ -33,6 +33,7 @@ class SuiteSpec:
     name: str
     includes: tuple[str, ...]
     items: tuple[str, ...]
+    complete: bool = False
 
 
 @dataclass(frozen=True)
@@ -65,7 +66,7 @@ def load_suites(repo_root: Path) -> tuple[str, dict[str, SuiteSpec]]:
             continue
         includes = tuple(str(item).strip() for item in value.get("includes", []) if str(item).strip())
         items = tuple(str(item).strip() for item in value.get("items", []) if str(item).strip())
-        suites[name] = SuiteSpec(name=name, includes=includes, items=items)
+        suites[name] = SuiteSpec(name=name, includes=includes, items=items, complete=bool(value.get("complete", False)))
     if default not in suites:
         raise ScriptError(f"default suite `{default}` is not defined in pyproject", ERR_CONFIG)
     return default, suites
@@ -77,7 +78,7 @@ def _parse_task(suite: str, raw: str) -> TaskSpec:
     kind, value = raw.split(":", 1)
     kind = kind.strip()
     value = value.strip()
-    if kind not in {"check", "cmd", "schema"} or not value:
+    if kind not in {"check", "check-tag", "cmd", "schema"} or not value:
         raise ScriptError(f"invalid suite task entry `{raw}` in suite `{suite}`", ERR_CONFIG)
     return TaskSpec(suite=suite, kind=kind, value=value)
 
@@ -179,6 +180,11 @@ def _execute_task(repo_root: Path, task: TaskSpec) -> tuple[str, str]:
     return ("pass", "") if ok else ("fail", detail)
 
 
+def _expand_check_tag(task: TaskSpec) -> list[TaskSpec]:
+    matched = [check for check in list_checks() if task.value in check_tags(check)]
+    return [TaskSpec(suite=task.suite, kind="check", value=check.check_id) for check in matched]
+
+
 def _write_junit(path: Path, suite_name: str, results: list[dict[str, object]]) -> None:
     total = len(results)
     failed = sum(1 for row in results if row["status"] == "fail")
@@ -192,9 +198,60 @@ def _write_junit(path: Path, suite_name: str, results: list[dict[str, object]]) 
     path.write_text(tostring(node, encoding="unicode"), encoding="utf-8")
 
 
+def _suite_task_set(suites: dict[str, SuiteSpec], suite_name: str) -> set[tuple[str, str]]:
+    tasks = expand_suite(suites, suite_name)
+    entries: set[tuple[str, str]] = set()
+    for task in tasks:
+        if task.kind == "check-tag":
+            for expanded in _expand_check_tag(task):
+                entries.add((expanded.kind, expanded.value))
+            continue
+        entries.add((task.kind, task.value))
+    return entries
+
+
+def suite_inventory_violations(suites: dict[str, SuiteSpec]) -> list[str]:
+    errors: list[str] = []
+    all_check_ids = {check.check_id for check in list_checks()}
+    task_sets = {name: _suite_task_set(suites, name) for name in suites}
+    covered_checks = {value for entries in task_sets.values() for kind, value in entries if kind == "check"}
+    orphan = sorted(all_check_ids - covered_checks)
+    for check_id in orphan:
+        check = get_check(check_id)
+        if check is None:
+            continue
+        if "experimental" in check_tags(check):
+            continue
+        errors.append(f"orphan check not assigned to any suite: {check_id}")
+
+    refgrade = suites.get("refgrade")
+    if refgrade and refgrade.complete:
+        refgrade_checks = {value for kind, value in task_sets.get("refgrade", set()) if kind == "check"}
+        required = {check.check_id for check in list_checks() if "refgrade_required" in check_tags(check)}
+        missing = sorted(required - refgrade_checks)
+        for check_id in missing:
+            errors.append(f"refgrade complete policy violation: missing refgrade_required check `{check_id}`")
+    return errors
+
+
 def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     as_json = ctx.output_format == "json" or bool(getattr(ns, "json", False))
     default_suite, suites = load_suites(ctx.repo_root)
+    if ns.suite_cmd == "check":
+        errors = suite_inventory_violations(suites)
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok" if not errors else "error",
+            "errors": errors,
+        }
+        if as_json:
+            print(dumps_json(payload, pretty=False))
+        else:
+            print("suite inventory: ok" if not errors else "suite inventory: fail")
+            for err in errors[:40]:
+                print(f"- {err}")
+        return 0 if not errors else 1
     if ns.suite_cmd == "list":
         payload = {
             "schema_version": 1,
@@ -202,7 +259,13 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             "status": "ok",
             "default": default_suite,
             "suites": [
-                {"name": spec.name, "includes": list(spec.includes), "item_count": len(spec.items), "items": list(spec.items)}
+                {
+                    "name": spec.name,
+                    "includes": list(spec.includes),
+                    "item_count": len(spec.items),
+                    "items": list(spec.items),
+                    "complete": spec.complete,
+                }
                 for spec in sorted(suites.values(), key=lambda item: item.name)
             ],
         }
@@ -210,7 +273,13 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return 0
 
     suite_name = ns.name or default_suite
-    expanded = expand_suite(suites, suite_name)
+    expanded_raw = expand_suite(suites, suite_name)
+    expanded: list[TaskSpec] = []
+    for task in expanded_raw:
+        if task.kind == "check-tag":
+            expanded.extend(_expand_check_tag(task))
+        else:
+            expanded.append(task)
     selected = _filter_tasks(expanded, only=ns.only or [], skip=ns.skip or [])
     if ns.list:
         payload = {
@@ -223,6 +292,9 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         }
         print(dumps_json(payload, pretty=not as_json))
         return 0
+
+    target_dir = Path(ns.target_dir) if ns.target_dir else (ctx.repo_root / "artifacts/isolate" / ctx.run_id / "atlasctl-suite")
+    target_dir.mkdir(parents=True, exist_ok=True)
 
     start = time.perf_counter()
     results: list[dict[str, object]] = []
@@ -273,7 +345,9 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         "suite": suite_name,
         "summary": summary,
         "results": results,
+        "target_dir": target_dir.as_posix(),
     }
+    (target_dir / "results.json").write_text(dumps_json(payload, pretty=True) + "\n", encoding="utf-8")
     if as_json:
         print(dumps_json(payload, pretty=False))
     return 0 if failed == 0 else 1
@@ -285,6 +359,8 @@ def configure_suite_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
 
     suite_list = suite_sub.add_parser("list", help="list configured suites")
     suite_list.add_argument("--json", action="store_true")
+    suite_check = suite_sub.add_parser("check", help="validate suite inventory/tag coverage policy")
+    suite_check.add_argument("--json", action="store_true")
 
     run = suite_sub.add_parser("run", help="run a configured suite")
     run.add_argument("name", nargs="?", help="suite name (defaults to configured default)")
@@ -293,6 +369,7 @@ def configure_suite_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     run.add_argument("--list", action="store_true", help="list expanded tasks without running")
     run.add_argument("--only", action="append", default=[], help="glob pattern to include task labels")
     run.add_argument("--skip", action="append", default=[], help="glob pattern to skip task labels")
+    run.add_argument("--target-dir", help="suite output directory")
     group = run.add_mutually_exclusive_group()
     group.add_argument("--fail-fast", action="store_true", help="stop at first failure")
     group.add_argument("--keep-going", action="store_true", help="continue through all tasks (default)")
