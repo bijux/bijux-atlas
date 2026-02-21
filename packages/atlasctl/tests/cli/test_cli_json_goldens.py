@@ -42,7 +42,7 @@ def test_surface_json_golden() -> None:
 
 
 def test_explain_json_golden() -> None:
-    proc = run_atlasctl("--quiet", "--json", "explain", "check")
+    proc = run_atlasctl("--quiet", "--json", "explain", "command", "check")
     assert proc.returncode == 0, proc.stderr
     validate("atlasctl.explain.v1", json.loads(proc.stdout))
     assert _normalized_payload(proc.stdout) == _normalized_payload(_golden("explain.check.json.golden"))

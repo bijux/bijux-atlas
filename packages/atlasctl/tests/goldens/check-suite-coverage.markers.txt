@@ -8,6 +8,7 @@ repo.command_help_docs_drift
 repo.command_import_lint
 repo.command_metadata_contract
 repo.command_ownership_docs
+repo.command_surface_stability
 repo.command_test_coverage
 repo.compileall_gate
 repo.console_script_entry
@@ -54,6 +55,7 @@ repo.ops_examples_immutable
 repo.optional_dependency_groups
 repo.package_has_module_or_readme
 repo.public_api_exports
+repo.public_commands_docs_index
 repo.pyproject_minimalism
 repo.pyproject_no_duplicate_tool_config
 repo.pyproject_required_blocks
