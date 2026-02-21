@@ -39,6 +39,7 @@ from .contracts.command_contracts import (
     check_command_ownership_docs,
     check_command_surface_stability,
     check_internal_commands_not_public,
+    check_network_default_deny_policy,
     check_no_deprecated_commands,
     check_no_duplicate_command_implementation_patterns,
     check_no_duplicate_command_names,
@@ -106,8 +107,11 @@ from .reachability import (
 )
 from .enforcement.refgrade_proof import check_refgrade_target_shape
 from .enforcement.import_policy import (
+    check_cli_import_scope,
     check_command_import_lint,
+    check_core_no_command_imports,
     check_checks_import_lint,
+    check_checks_no_cli_imports,
     check_contract_import_boundaries,
     check_cold_import_budget,
     check_compileall_gate,
@@ -119,11 +123,13 @@ from .enforcement.import_policy import (
     check_no_legacy_module_paths,
     check_no_legacy_obs_imports_in_modern,
     check_no_modern_imports_from_legacy,
+    check_registry_definition_boundary,
     check_runcontext_single_builder,
 )
 from .enforcement.boundaries.effect_boundaries import (
     check_effect_boundary_exceptions_policy,
     check_forbidden_effect_calls,
+    check_managed_artifact_write_roots,
     check_subprocess_boundary,
 )
 from .contracts.pyproject_contracts import (
@@ -456,6 +462,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.package_has_module_or_readme", "repo", "require each non-legacy package to contain a module or README", 300, check_package_has_module_or_readme, fix_hint="Add module implementation or README.md to document empty package."),
     CheckDef("repo.no_path_cwd_usage", "repo", "forbid Path.cwd usage outside core/repo_root.py", 400, check_no_path_cwd_usage, fix_hint="Use ctx.repo_root or core.repo_root helpers."),
     CheckDef("repo.command_metadata_contract", "repo", "ensure command metadata includes touches/tools/effect declarations", 400, check_command_metadata_contract, fix_hint="Add touches/tools/effect metadata in cli registry."),
+    CheckDef("repo.network_default_deny", "repo", "enforce network-forbidden-by-default command policy", 300, check_network_default_deny_policy, fix_hint="Require explicit --allow-network for network-capable commands and keep default deny."),
     CheckDef("repo.argparse_policy", "repo", "restrict direct argparse parser construction to canonical parser modules", 300, check_argparse_policy, fix_hint="Move parser construction into cli/parser.py or commands/*/parser.py."),
     CheckDef("repo.no_duplicate_command_names", "repo", "ensure command names are unique", 300, check_no_duplicate_command_names, fix_hint="Rename duplicate command/alias entries."),
     CheckDef("repo.no_legacy_command_names", "repo", "forbid command names containing legacy", 300, check_no_legacy_command_names, fix_hint="Remove legacy command names and keep internal legacy reporting under `atlasctl internal legacy inventory`."),
@@ -538,9 +545,14 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.runcontext_single_builder", "repo", "ensure RunContext is built only in core/context.py", 300, check_runcontext_single_builder, fix_hint="Use RunContext.from_args and avoid constructing context-like objects elsewhere."),
     CheckDef("repo.command_import_lint", "repo", "enforce command module import boundaries", 300, check_command_import_lint, fix_hint="Restrict command imports to core/contracts/checks/adapters/commands/cli."),
     CheckDef("repo.checks_import_lint", "repo", "enforce checks module import boundaries", 300, check_checks_import_lint, fix_hint="Restrict checks imports to core/contracts/reporting/adapters/checks."),
+    CheckDef("repo.core_no_command_imports", "repo", "forbid core modules from importing command/cli layers", 300, check_core_no_command_imports, fix_hint="Keep core independent from command and cli glue layers."),
+    CheckDef("repo.checks_no_cli_imports", "repo", "forbid checks modules from importing cli layer", 300, check_checks_no_cli_imports, fix_hint="Keep checks pure and independent from cli modules."),
+    CheckDef("repo.cli_import_scope", "repo", "restrict cli imports to commands/core and approved runtime shims", 300, check_cli_import_scope, fix_hint="Route feature logic through commands; keep cli as parser/dispatch glue."),
+    CheckDef("repo.registry_definition_boundary", "repo", "forbid registry modules from importing command/cli/suite/check runtime modules", 300, check_registry_definition_boundary, fix_hint="Keep registry declarative and independent from runtime command/check implementations."),
     CheckDef("repo.checks_canonical_location", "repo", "require check implementations under atlasctl/checks canonical tree", 300, check_checks_canonical_location, fix_hint="Move check_*.py implementations under packages/atlasctl/src/atlasctl/checks/ or extend migration allowlist explicitly."),
     CheckDef("repo.check_impl_no_cli_imports", "repo", "forbid direct CLI imports from check implementation files", 300, check_check_impl_no_cli_imports, fix_hint="Keep check implementations pure and route CLI wiring through commands/cli modules."),
     CheckDef("repo.effect_boundaries", "repo", "forbid direct subprocess/fs/env/network effects outside core boundaries", 300, check_forbidden_effect_calls, fix_hint="Route effects through core.exec/core.process/core.fs/core.env/core.network."),
+    CheckDef("repo.managed_artifact_write_roots", "repo", "enforce managed write roots under artifacts and reject out-of-root writes", 300, check_managed_artifact_write_roots, fix_hint="Keep managed write roots under artifacts/ and route writes through core.fs."),
     CheckDef("repo.subprocess_boundary", "repo", "restrict subprocess imports to core execution boundary", 300, check_subprocess_boundary, fix_hint="Use core.exec/core.process for subprocess calls."),
     CheckDef("repo.effect_boundary_exceptions_policy", "repo", "enforce explicit sorted effect boundary exceptions with reasons", 300, check_effect_boundary_exceptions_policy, fix_hint="Keep configs/policy/effect-boundary-exceptions.json sorted and justified."),
     CheckDef("repo.compileall_gate", "repo", "ensure atlasctl source compiles with compileall", 300, check_compileall_gate, fix_hint="Fix syntax/import issues until python -m compileall passes."),

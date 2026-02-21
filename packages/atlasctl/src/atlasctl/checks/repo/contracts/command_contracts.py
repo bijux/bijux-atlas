@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 from ....cli.surface_registry import command_registry
-from ....core.effects import all_command_effects, command_effects, command_group, group_allowed_effects
+from ....core.effects import all_command_effects, command_effects, command_group, group_allowed_effects, resolve_network_mode
 from ....contracts.ids import RUNTIME_CONTRACTS
 
 _PUBLIC_UNSTABLE_ALLOWLIST: set[str] = set()
@@ -57,6 +57,29 @@ def check_command_metadata_contract(repo_root: Path) -> tuple[int, list[str]]:
     if errors:
         return 1, errors
     return 0, []
+
+
+def check_network_default_deny_policy(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for spec in command_registry():
+        default = resolve_network_mode(
+            command_name=spec.name,
+            requested_allow_network=False,
+            explicit_network=None,
+            deprecated_no_network=False,
+        )
+        if default.allow_effective:
+            errors.append(f"{spec.name}: network must be denied by default")
+        requested = resolve_network_mode(
+            command_name=spec.name,
+            requested_allow_network=True,
+            explicit_network=None,
+            deprecated_no_network=False,
+        )
+        declared = set(command_effects(spec.name))
+        if "network" not in declared and requested.allow_effective:
+            errors.append(f"{spec.name}: --allow-network enabled without declared network effect")
+    return (0 if not errors else 1), errors
 
 
 def check_no_duplicate_command_names(repo_root: Path) -> tuple[int, list[str]]:
