@@ -173,6 +173,65 @@ def _write_junitxml(path: Path, rows: list[dict[str, object]]) -> None:
     path.write_text(tostring(suite, encoding="unicode"), encoding="utf-8")
 
 
+def _resolve_failures_report(last_run: str) -> Path:
+    path = Path(last_run)
+    if path.is_file():
+        return path
+    if not path.exists():
+        raise FileNotFoundError(f"last-run path does not exist: {last_run}")
+    candidates = sorted(path.rglob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+    for candidate in candidates:
+        try:
+            payload = json.loads(candidate.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if payload.get("kind") in {"check-run", "check-run-report"} and isinstance(payload.get("rows"), list):
+            return candidate
+    raise FileNotFoundError(f"no check-run report json found under: {last_run}")
+
+
+def _run_check_failures(ctx: RunContext, ns: argparse.Namespace) -> int:
+    try:
+        report_path = _resolve_failures_report(str(ns.last_run))
+    except FileNotFoundError as exc:
+        print(json.dumps({"schema_version": 1, "tool": "atlasctl", "status": "error", "error": str(exc)}, sort_keys=True) if (ctx.output_format == "json" or ns.json) else str(exc))
+        return ERR_USER
+    payload = json.loads(report_path.read_text(encoding="utf-8"))
+    group = str(getattr(ns, "group", "") or "").strip()
+    rows = payload.get("rows", [])
+    if group:
+        rows = [row for row in rows if str(row.get("id", "")).startswith(f"checks_{group}_")]
+    failed = [row for row in rows if row.get("status") == "FAIL"]
+    out = {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "kind": "check-failures",
+        "status": "ok",
+        "source": report_path.as_posix(),
+        "group": group or "all",
+        "failed_count": len(failed),
+        "failures": [
+            {
+                "id": str(row.get("id", "")),
+                "domain": str(row.get("domain", "")),
+                "hint": str(row.get("hint", "")),
+                "detail": str(row.get("detail", "")),
+            }
+            for row in failed
+        ],
+    }
+    if ctx.output_format == "json" or ns.json:
+        print(json.dumps(out, sort_keys=True))
+        return 0 if not failed else ERR_USER
+    if not failed:
+        print(f"failures: none ({group or 'all'})")
+        return 0
+    print(f"failures ({group or 'all'}): {len(failed)}")
+    for row in out["failures"]:
+        print(f"- {row['id']}: {row['detail'] or row['hint']}")
+    return ERR_USER
+
+
 def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     started = time.perf_counter()
     select_value = str(getattr(ns, "select", "") or "").strip()
@@ -446,6 +505,8 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         }
         print(json.dumps(payload, sort_keys=True) if (ns.json or ctx.output_format == "json") else "\n".join(f"{row['old']} -> {row['new']}" for row in payload["renames"]))
         return 0
+    if sub == "failures":
+        return _run_check_failures(ctx, ns)
     if sub == "list":
         checks = list_checks()
         if not (ctx.output_format == "json" or ns.json):
@@ -751,6 +812,10 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     runtime.add_argument("--out-file", help="optional artifact output path under evidence root")
     rename = parser_sub.add_parser("rename-report", help="list legacy check ids mapped to canonical checks_* ids")
     rename.add_argument("--json", action="store_true", help="emit JSON output")
+    failures = parser_sub.add_parser("failures", help="summarize failing checks from a check-run report")
+    failures.add_argument("--last-run", required=True, help="path to check-run report json or run directory")
+    failures.add_argument("--group", help="filter by domain group, e.g. repo")
+    failures.add_argument("--json", action="store_true", help="emit JSON output")
     domain = parser_sub.add_parser("domain", help="run checks for one domain")
     domain.add_argument("domain", choices=check_domains())
 
@@ -829,5 +894,9 @@ def configure_checks_parser(sub: argparse._SubParsersAction[argparse.ArgumentPar
     owners.add_argument("--json", action="store_true", help="emit JSON output")
     rename = parser_sub.add_parser("rename-report", help="list legacy check ids mapped to canonical checks_* ids")
     rename.add_argument("--json", action="store_true", help="emit JSON output")
+    failures = parser_sub.add_parser("failures", help="summarize failing checks from a check-run report")
+    failures.add_argument("--last-run", required=True, help="path to check-run report json or run directory")
+    failures.add_argument("--group", help="filter by domain group, e.g. repo")
+    failures.add_argument("--json", action="store_true", help="emit JSON output")
     explain = parser_sub.add_parser("explain", help="explain a check id")
     explain.add_argument("check_id")
