@@ -69,7 +69,7 @@ def test_check_run_writes_json_and_junit_reports(tmp_path: Path) -> None:
         "2",
         "--json-report",
         str(json_report),
-        "--junitxml",
+        "--junit-xml",
         str(junit_report),
     )
     assert proc.returncode == 0, proc.stderr
@@ -103,3 +103,27 @@ def test_check_run_profile_and_slow_report(tmp_path: Path) -> None:
     assert proc.returncode == 0, proc.stderr
     assert slow_report.exists()
     assert profile_out.exists()
+
+
+def test_check_run_accepts_check_target_and_jsonl(tmp_path: Path) -> None:
+    proc = run_atlasctl_isolated(
+        tmp_path,
+        "--quiet",
+        "check",
+        "run",
+        "atlasctl::docs::__no_match__",
+        "--jsonl",
+    )
+    assert proc.returncode == 0, proc.stderr
+    lines = [line for line in proc.stdout.splitlines() if line.strip()]
+    assert any('"kind": "check-row"' in line for line in lines)
+    assert any('"kind": "summary"' in line for line in lines)
+
+
+def test_check_show_source_and_unknown_exit_code(tmp_path: Path) -> None:
+    known = run_atlasctl_isolated(tmp_path, "--quiet", "check", "--show-source", "repo.module_size")
+    assert known.returncode == 0, known.stderr
+    assert known.stdout.strip().endswith("checks/repo/enforcement/module_size.py")
+
+    unknown = run_atlasctl_isolated(tmp_path, "--quiet", "check", "--show-source", "repo.__missing__")
+    assert unknown.returncode == 2, unknown.stderr

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import inspect
 from pathlib import Path
 
 from ..checks.registry import get_check
@@ -30,15 +31,25 @@ def describe_command(name: str) -> dict[str, object]:
 def describe_thing(repo_root: Path, thing: str) -> dict[str, object]:
     check = get_check(thing)
     if check is not None:
+        source = inspect.getsourcefile(check.fn)
+        source_rel = None
+        if source:
+            source_path = Path(source).resolve()
+            try:
+                source_rel = source_path.relative_to(repo_root).as_posix()
+            except ValueError:
+                source_rel = source_path.as_posix()
         return {
             "kind": "check",
             "name": check.check_id,
             "contract": "atlasctl.check-list.v1",
             "purpose": check.title,
-            "examples": [f"atlasctl check run --select atlasctl::{check.domain}::{check.check_id}"],
+            "examples": [f"atlasctl check run atlasctl::{check.domain}::{check.check_id}"],
             "touches": [],
             "tools": [],
             "tags": list(check.tags),
+            "owners": list(check.owners),
+            "source": source_rel,
         }
     suites = load_first_class_suites()
     suite = suites.get(thing)
