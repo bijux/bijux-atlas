@@ -400,11 +400,9 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         steps = [
             [*SELF_CLI, "policies", "relaxations-check", "--report", "json"],
             [*SELF_CLI, "policies", "bypass-scan", "--report", "json"],
-            ["make", "-s", "policy-lint"],
-            ["make", "-s", "policy-schema-drift"],
-            ["make", "-s", "policy-audit"],
-            ["make", "-s", "policy-enforcement-status"],
-            ["make", "-s", "policy-allow-env-lint"],
+            [*SELF_CLI, "policies", "schema-drift"],
+            [*SELF_CLI, "policies", "enforcement-status", "--enforce"],
+            [*SELF_CLI, "policies", "allow-env-lint"],
         ]
         errors: list[str] = []
         for cmd in steps:
