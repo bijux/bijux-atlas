@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from helpers import run_atlasctl
+from tests.helpers import run_atlasctl
 
 
 def test_explain_supports_suite_and_check_targets() -> None:

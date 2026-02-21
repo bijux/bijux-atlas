@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from helpers import run_atlasctl
+from tests.helpers import run_atlasctl
 
 
 def test_no_network_mode_blocks_network_probe(tmp_path: Path) -> None:

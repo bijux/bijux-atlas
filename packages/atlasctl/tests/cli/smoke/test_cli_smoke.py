@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from helpers import run_atlasctl_isolated
+from tests.helpers import run_atlasctl_isolated
 
 
 @pytest.mark.unit

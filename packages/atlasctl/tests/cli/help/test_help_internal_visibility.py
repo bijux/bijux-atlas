@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from helpers import run_atlasctl
+from tests.helpers import run_atlasctl
 
 
 def test_help_output_hides_legacy_and_compat_by_default() -> None:

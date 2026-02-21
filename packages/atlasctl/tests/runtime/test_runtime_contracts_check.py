@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from helpers import run_atlasctl
+from tests.helpers import run_atlasctl
 
 
 def test_runtime_contracts_check_writes_artifact(tmp_path: Path) -> None:

@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from helpers import run_atlasctl
+from tests.helpers import run_atlasctl
 
 
 ROOT = Path(__file__).resolve().parents[4]
