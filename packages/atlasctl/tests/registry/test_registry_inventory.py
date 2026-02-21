@@ -14,8 +14,7 @@ def test_list_commands_hides_internal_by_default() -> None:
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
     names = {item["name"] for item in payload["items"]}
-    assert "legacy" not in names
-    assert "compat" not in names
+    assert "internal" not in names
 
 
 def test_list_commands_include_internal_flag() -> None:
@@ -23,8 +22,7 @@ def test_list_commands_include_internal_flag() -> None:
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
     names = {item["name"] for item in payload["items"]}
-    assert "legacy" in names
-    assert "compat" in names
+    assert "internal" in names
 
 
 def test_registry_inventory_is_stable() -> None:

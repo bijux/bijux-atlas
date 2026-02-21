@@ -69,8 +69,3 @@ def test_commands_lint_passes() -> None:
     payload = json.loads(proc.stdout)
     assert payload["status"] == "ok"
 
-
-@pytest.mark.unit
-def test_commands_compat_check_passes() -> None:
-    proc = _run_cli("commands", "compat-check", "--json")
-    assert proc.returncode == 0, proc.stderr
