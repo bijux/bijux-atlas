@@ -78,6 +78,63 @@ def test_run_dev_cargo_json_payload(monkeypatch, capsys) -> None:
     assert calls
 
 
+def test_run_dev_cargo_explain(monkeypatch, capsys) -> None:
+    calls: list[list[str]] = []
+
+    def fake_subprocess_run(cmd, **_kwargs):
+        calls.append(cmd)
+        class P:
+            returncode = 0
+            stdout = ""
+            stderr = ""
+        return P()
+
+    monkeypatch.setattr("atlasctl.core.effects.dev_cargo.subprocess.run", fake_subprocess_run)
+    ctx = RunContext.from_args("dev-explain", None, "test", False)
+    rc = run_dev_cargo(ctx, DevCargoParams(action="fmt", explain=True, json_output=True, verbose=False))
+    assert rc == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["kind"] == "dev-cargo-explain"
+    assert payload["include_repo_checks"] is False
+    assert not any("cargo fmt --all" in " ".join(cmd) for cmd in calls)
+
+
+def test_check_fast_variant_skips_repo_checks(monkeypatch) -> None:
+    calls: list[list[str]] = []
+
+    def fake_subprocess_run(cmd, **_kwargs):
+        calls.append(cmd)
+        class P:
+            returncode = 0
+            stdout = ""
+            stderr = ""
+        return P()
+
+    monkeypatch.setattr("atlasctl.core.effects.dev_cargo.subprocess.run", fake_subprocess_run)
+    ctx = RunContext.from_args("dev-fast-check", None, "test", False)
+    rc = run_dev_cargo(ctx, DevCargoParams(action="check", json_output=True, verbose=False))
+    assert rc == 0
+    assert not any("check run --group repo" in " ".join(cmd) for cmd in calls)
+
+
+def test_check_all_variant_runs_repo_checks(monkeypatch) -> None:
+    calls: list[list[str]] = []
+
+    def fake_subprocess_run(cmd, **_kwargs):
+        calls.append(cmd)
+        class P:
+            returncode = 0
+            stdout = ""
+            stderr = ""
+        return P()
+
+    monkeypatch.setattr("atlasctl.core.effects.dev_cargo.subprocess.run", fake_subprocess_run)
+    ctx = RunContext.from_args("dev-full-check", None, "test", False)
+    rc = run_dev_cargo(ctx, DevCargoParams(action="check", all_tests=True, json_output=True, verbose=False))
+    assert rc == 0
+    assert any("check run --group repo" in " ".join(cmd) for cmd in calls)
+
+
 def test_dev_forward_propagates_quiet_and_json(monkeypatch) -> None:
     seen: list[str] = []
 
