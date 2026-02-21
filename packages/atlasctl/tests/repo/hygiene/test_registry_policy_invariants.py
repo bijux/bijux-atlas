@@ -38,6 +38,7 @@ def test_effect_shell_and_reachability_checks_pass() -> None:
             "repo.shell_no_network_fetch",
             "repo.shell_no_direct_python",
             "repo.shell_invocation_boundary",
+            "repo.core_no_bash_subprocess",
             "repo.dead_modules",
             "repo.dead_module_reachability",
         ]
