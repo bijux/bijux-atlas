@@ -55,10 +55,21 @@ def _run_step(
 ) -> dict[str, Any]:
     shell = isinstance(cmd, str)
     display = cmd if isinstance(cmd, str) else " ".join(cmd)
-    if verbose:
-        proc = subprocess.run(cmd, cwd=ctx.repo_root, env=env, text=True, shell=shell, check=False)
-        return {"command": display, "exit_code": proc.returncode}
-    proc = subprocess.run(cmd, cwd=ctx.repo_root, env=env, text=True, shell=shell, capture_output=True, check=False)
+    try:
+        if verbose:
+            proc = subprocess.run(cmd, cwd=ctx.repo_root, env=env, text=True, shell=shell, check=False)
+            return {"command": display, "exit_code": proc.returncode}
+        proc = subprocess.run(cmd, cwd=ctx.repo_root, env=env, text=True, shell=shell, capture_output=True, check=False)
+    except OSError as exc:
+        return {
+            "command": display,
+            "exit_code": 1,
+            "stdout": "",
+            "stderr": (
+                f"runtime error: {exc}. "
+                "Next: run `./bin/atlasctl install doctor` and ensure required tools are installed."
+            ),
+        }
     return {
         "command": display,
         "exit_code": proc.returncode,
@@ -83,7 +94,7 @@ def _emit_result(ctx: RunContext, ns: argparse.Namespace, action: str, steps: li
     elif ok:
         print(f"ci {action}: pass")
     else:
-        print(f"ci {action}: fail")
+        print(f"ci {action}: fail (next: rerun with --verbose and inspect failing step output)")
     return 0 if ok else 1
 
 
@@ -131,6 +142,44 @@ def run_ci_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             suite_cmd.append("--fail-fast")
         else:
             suite_cmd.append("--keep-going")
+        execution_mode = "fail-fast" if bool(getattr(ns, "fail_fast", False)) else "keep-going"
+        isolate_mode = "debug-no-isolate" if bool(getattr(ns, "no_isolate", False)) else "isolate"
+        planned_cmd = suite_cmd if bool(getattr(ns, "no_isolate", False)) else [
+            sys.executable,
+            "-m",
+            "atlasctl.cli",
+            "env",
+            "isolate",
+            "--tag",
+            f"ci-{ctx.run_id}",
+            *suite_cmd,
+        ]
+        if bool(getattr(ns, "explain", False)):
+            explain_payload = {
+                "schema_version": 1,
+                "tool": "atlasctl",
+                "status": "ok",
+                "run_id": ctx.run_id,
+                "action": "ci-run-explain",
+                "lane_filter": lanes or ["all"],
+                "mode": isolate_mode,
+                "execution": execution_mode,
+                "artifacts": {
+                    "json": str(out_dir / "suite-ci.report.json"),
+                    "junit": str(junit_path),
+                    "summary": str(out_dir / "suite-ci.summary.txt"),
+                },
+                "planned_steps": [{"id": "ci.step.001", "command": " ".join(planned_cmd)}],
+            }
+            if ns.json or ctx.output_format == "json":
+                print(json.dumps(explain_payload, sort_keys=True))
+            else:
+                print(
+                    "ci run plan: "
+                    f"mode={isolate_mode} execution={execution_mode} lanes={','.join(lanes) if lanes else 'all'}"
+                )
+                print(f"- {' '.join(planned_cmd)}")
+            return 0
 
         if bool(getattr(ns, "no_isolate", False)):
             proc = subprocess.run(
@@ -158,7 +207,20 @@ def run_ci_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 capture_output=True,
                 check=False,
             )
-        payload = json.loads(proc.stdout) if proc.stdout.strip() else {"status": "error", "summary": {"passed": 0, "failed": 1, "skipped": 0}}
+        if proc.stdout.strip():
+            try:
+                payload = json.loads(proc.stdout)
+            except json.JSONDecodeError:
+                payload = {
+                    "status": "error",
+                    "summary": {"passed": 0, "failed": 1, "skipped": 0},
+                    "errors": [
+                        "runtime error: suite output was not valid JSON. "
+                        "Next: rerun with `atlasctl dev ci run --verbose --no-isolate`."
+                    ],
+                }
+        else:
+            payload = {"status": "error", "summary": {"passed": 0, "failed": 1, "skipped": 0}}
         suite_steps = [
             {
                 "id": f"ci.step.{idx:03d}",
@@ -188,10 +250,15 @@ def run_ci_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                         "status": "ok" if proc.returncode == 0 else "error",
                         "run_id": ctx.run_id,
                         "lane_filter": lanes or ["all"],
-                        "mode": "debug-no-isolate" if bool(getattr(ns, "no_isolate", False)) else "isolate",
-                        "execution": "fail-fast" if bool(getattr(ns, "fail_fast", False)) else "keep-going",
+                        "mode": isolate_mode,
+                        "execution": execution_mode,
                         "suite_result": payload,
                         "suite_steps": suite_steps,
+                        "next": (
+                            "rerun with `atlasctl dev ci run --verbose --no-isolate` for step-level diagnostics"
+                            if proc.returncode != 0
+                            else ""
+                        ),
                         "artifacts": {
                             "json": str(out_dir / "suite-ci.report.json"),
                             "junit": str(junit_path),
@@ -204,8 +271,8 @@ def run_ci_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         elif proc.returncode == 0:
             print(f"ci run: pass (suite ci) run_id={ctx.run_id}")
         else:
-            print(f"ci run: fail (suite ci) run_id={ctx.run_id}")
-        return proc.returncode
+            print(f"ci run: fail (suite ci) run_id={ctx.run_id} (next: rerun with --verbose --no-isolate)")
+        return 0 if proc.returncode == 0 else 1
     if ns.ci_cmd == "fast":
         step = _run_step(
             ctx,
@@ -361,6 +428,7 @@ def configure_ci_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]
     mode.add_argument("--fail-fast", action="store_true", help="stop at first failing suite step")
     mode.add_argument("--keep-going", action="store_true", help="continue through all suite steps (default)")
     run.add_argument("--no-isolate", action="store_true", help="debug only: skip isolate wrapper around suite execution")
+    run.add_argument("--explain", action="store_true", help="print planned CI run steps without executing")
     run.add_argument("--verbose", action="store_true", help="show underlying tool command output")
     for name in (
         "fast",
