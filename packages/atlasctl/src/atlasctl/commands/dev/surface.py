@@ -3,13 +3,15 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .contracts.ids import SURFACE
-from .contracts.validate_self import validate_self
-from .core.fs import ensure_evidence_path
+from ...contracts.ids import SURFACE
+from ...contracts.validate_self import validate_self
+from ...core.fs import ensure_evidence_path
 
 
 def build_surface(run_id: str) -> dict[str, object]:
-    root = Path(__file__).resolve().parents[4]
+    root = next((parent for parent in Path(__file__).resolve().parents if (parent / ".git").exists()), None)
+    if root is None:
+        raise RuntimeError("unable to locate repository root")
     ownership = json.loads((root / "configs/meta/ownership.json").read_text(encoding="utf-8"))
     commands = [{"command": command, "owner": owner} for command, owner in sorted(ownership["commands"].items())]
     return {

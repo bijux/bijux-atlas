@@ -3,8 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from ...errors import ScriptError
-from ...exit_codes import ERR_VALIDATION
+from ..errors import ScriptError
+from ..exit_codes import ERR_VALIDATION
 
 
 def validate_json_file_against_schema(schema_path: Path, payload_path: Path) -> None:

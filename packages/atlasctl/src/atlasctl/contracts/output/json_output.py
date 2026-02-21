@@ -4,8 +4,8 @@ import json
 from pathlib import Path
 
 from ...core.schema.schema import validate_json_file_against_schema
-from ...errors import ScriptError
-from ...exit_codes import ERR_VALIDATION
+from ...core.errors import ScriptError
+from ...core.exit_codes import ERR_VALIDATION
 from ..schema.validate import validate_file
 
 

@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 from atlasctl.core.context import RunContext
-from atlasctl.errors import ScriptError
+from atlasctl.core.errors import ScriptError
 from atlasctl.core.fs import ensure_evidence_path
 
 

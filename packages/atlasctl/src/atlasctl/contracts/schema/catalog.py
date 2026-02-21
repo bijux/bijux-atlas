@@ -7,8 +7,8 @@ from dataclasses import dataclass
 from pathlib import Path
 import subprocess
 
-from ...errors import ScriptError
-from ...exit_codes import ERR_VALIDATION
+from ...core.errors import ScriptError
+from ...core.exit_codes import ERR_VALIDATION
 from .schemas import schemas_root
 
 

@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 from atlasctl.core.schema.schema import validate_json_file_against_schema
-from atlasctl.errors import ScriptError
+from atlasctl.core.errors import ScriptError
 
 
 def test_validate_json_file_against_schema_pass(tmp_path: Path) -> None:
