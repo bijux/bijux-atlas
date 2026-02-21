@@ -9,8 +9,12 @@ Canonical SSOT is `packages/atlasctl/pyproject.toml` under `[tool.atlasctl.budge
 Supported keys:
 - `max_py_files_per_dir`
 - `max_modules_per_dir`
+- `max_shell_files_per_dir`
 - `max_total_loc_per_dir`
 - `max_total_bytes_per_dir`
+- `max_imports_per_file`
+- `max_public_symbols_per_module`
+- `max_branch_keywords_per_file` (complexity heuristic)
 
 Warnings are emitted when usage is within 10% of budget. Failing above budget is a hard error.
 
@@ -30,6 +34,14 @@ Warnings are emitted when usage is within 10% of budget. Failing above budget is
 Use these culprits reports:
 - `atlasctl policies culprits modules-per-dir`
 - `atlasctl policies culprits py-files-per-dir`
+- `atlasctl policies culprits shell-files-per-dir`
 - `atlasctl policies culprits dir-loc`
+- `atlasctl policies culprits imports-per-file`
+- `atlasctl policies culprits public-symbols-per-file`
+- `atlasctl policies culprits complexity-heuristic`
+- `atlasctl policies culprits-biggest-files --limit 20`
+- `atlasctl policies culprits-biggest-dirs --limit 20`
 
 Each output includes directory, measured count, budget, status, and top offenders.
+
+Complexity heuristic is gated only for `packages/atlasctl/src/atlasctl/core/` and `packages/atlasctl/src/atlasctl/cli/`.
