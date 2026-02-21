@@ -74,6 +74,8 @@ def run_dev_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             DevCargoParams(
                 action=sub,
                 all_tests=bool(getattr(ns, "all", False)),
+                and_checks=bool(getattr(ns, "and_checks", False)),
+                explain=bool(getattr(ns, "explain", False)),
                 json_output=bool(getattr(ns, "json", False) or ctx.output_format == "json"),
                 verbose=bool(getattr(ns, "verbose", False) or ctx.verbose),
             ),
@@ -88,6 +90,8 @@ def run_dev_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 action="test",
                 all_tests=bool(getattr(ns, "all", False)),
                 contracts_tests=bool(getattr(ns, "contracts", False)),
+                and_checks=bool(getattr(ns, "and_checks", False)),
+                explain=bool(getattr(ns, "explain", False)),
                 json_output=bool(getattr(ns, "json", False) or ctx.output_format == "json"),
                 verbose=bool(getattr(ns, "verbose", False) or ctx.verbose),
             ),
@@ -154,19 +158,31 @@ def configure_dev_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
         sp.add_argument("args", nargs=argparse.REMAINDER)
     fmt = dev_sub.add_parser("fmt", help="run canonical cargo fmt lane")
     fmt.add_argument("--all", action="store_true", help="run full fmt variant")
+    fmt.add_argument("--and-checks", action="store_true", help="append repo checks to the fast variant")
+    fmt.add_argument("--explain", action="store_true", help="print planned steps without executing")
     lint = dev_sub.add_parser("lint", help="run canonical cargo lint lane")
     lint.add_argument("--all", action="store_true", help="run full lint variant")
+    lint.add_argument("--and-checks", action="store_true", help="append repo checks to the fast variant")
+    lint.add_argument("--explain", action="store_true", help="print planned steps without executing")
     check = dev_sub.add_parser("check", help="run canonical cargo check lane")
     check.add_argument("--all", action="store_true", help="run full check variant")
+    check.add_argument("--and-checks", action="store_true", help="append repo checks to the fast variant")
+    check.add_argument("--explain", action="store_true", help="print planned steps without executing")
     check.add_argument("args", nargs=argparse.REMAINDER)
     test = dev_sub.add_parser("test", help="run canonical cargo test lane")
     test.add_argument("--all", action="store_true", help="run ignored tests too")
     test.add_argument("--contracts", action="store_true", help="run contracts-only tests")
+    test.add_argument("--and-checks", action="store_true", help="append repo checks to the fast variant")
+    test.add_argument("--explain", action="store_true", help="print planned steps without executing")
     test.add_argument("args", nargs=argparse.REMAINDER)
     coverage = dev_sub.add_parser("coverage", help="run canonical cargo coverage lane")
     coverage.add_argument("--all", action="store_true", help="run full coverage variant")
+    coverage.add_argument("--and-checks", action="store_true", help="append repo checks to the fast variant")
+    coverage.add_argument("--explain", action="store_true", help="print planned steps without executing")
     audit = dev_sub.add_parser("audit", help="run canonical cargo audit lane")
     audit.add_argument("--all", action="store_true", help="run full audit variant")
+    audit.add_argument("--and-checks", action="store_true", help="append repo checks to the fast variant")
+    audit.add_argument("--explain", action="store_true", help="print planned steps without executing")
     split = dev_sub.add_parser("split-module", help="generate a module split plan for a path")
     split.add_argument("--path", required=True)
     split.add_argument("--json", action="store_true", help="emit JSON output")

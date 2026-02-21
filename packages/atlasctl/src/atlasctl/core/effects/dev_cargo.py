@@ -12,6 +12,7 @@ from typing import Any
 
 from ...contracts.output.base import build_output_base
 from ..context import RunContext
+from ..dev_gate_semantics import should_run_repo_checks
 from ..isolation import build_isolate_env
 from .run_meta import write_run_meta
 
@@ -27,6 +28,8 @@ class DevCargoParams:
     contracts_tests: bool = False
     json_output: bool = False
     verbose: bool = False
+    and_checks: bool = False
+    explain: bool = False
 
 
 def _now_tag(action: str) -> str:
@@ -140,9 +143,108 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
             return False
         return True
 
+    include_repo_checks = should_run_repo_checks(all_variant=params.all_tests, and_checks=params.and_checks)
+
+    def explain_cmds() -> list[list[str]]:
+        if action == "fmt":
+            cmds: list[list[str]] = [["cargo", "fmt", "--all", "--", "--check", "--config-path", RUSTFMT_CONFIG]]
+            if include_repo_checks:
+                cmds.append(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose))
+            return cmds
+        if action == "lint":
+            cmds = [
+                ["cargo", "fmt", "--all", "--", "--check", "--config-path", RUSTFMT_CONFIG],
+                _atlasctl_cmd("policies", "check", "--fail-fast", quiet=ctx.quiet),
+                _atlasctl_cmd("check", "no-direct-bash-invocations", quiet=ctx.quiet),
+                _atlasctl_cmd("check", "no-direct-python-invocations", quiet=ctx.quiet),
+                _atlasctl_cmd("check", "scripts-surface-docs-drift", quiet=ctx.quiet),
+                _atlasctl_cmd("docs", "link-check", "--report", "text", quiet=ctx.quiet),
+                ["cargo", "clippy", "--workspace", "--all-targets", "--", "-D", "warnings"],
+            ]
+            if include_repo_checks:
+                cmds.append(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose))
+            return cmds
+        if action == "check":
+            cmds = [["cargo", "check", "--workspace", "--all-targets"]]
+            if include_repo_checks:
+                cmds.append(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose))
+            return cmds
+        if action == "test":
+            if params.contracts_tests:
+                cmds = [["cargo", "test", "-p", "bijux-atlas-server", "--test", "observability_contract"]]
+            else:
+                profile = env.get("NEXTEST_PROFILE", "ci")
+                cmd = [
+                    "cargo",
+                    "nextest",
+                    "run",
+                    "--workspace",
+                    "--all-targets",
+                    "--profile",
+                    profile,
+                    "--config-file",
+                    NEXTEST_TOML,
+                ]
+                if params.all_tests:
+                    cmd.extend(["--run-ignored", "all"])
+                cmds = [["cargo", "nextest", "--version"], cmd]
+            if include_repo_checks:
+                cmds.append(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose))
+            return cmds
+        if action == "coverage":
+            profile = env.get("NEXTEST_PROFILE", "ci")
+            output = Path(env.get("ISO_ROOT", str(ctx.repo_root / "artifacts" / "isolate" / "local"))) / "coverage" / "lcov.info"
+            cmds = [
+                ["cargo", "llvm-cov", "--version"],
+                [
+                    "cargo",
+                    "llvm-cov",
+                    "nextest",
+                    "--workspace",
+                    "--profile",
+                    profile,
+                    "--config-file",
+                    NEXTEST_TOML,
+                    "--lcov",
+                    "--output-path",
+                    str(output),
+                ],
+            ]
+            if include_repo_checks:
+                cmds.append(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose))
+            return cmds
+        if action == "audit":
+            cmds = [["cargo", "+stable", "deny", "--version"], ["cargo", "+stable", "deny", "check", "--config", DENY_CONFIG]]
+            if include_repo_checks:
+                cmds.append(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose))
+            return cmds
+        return []
+
+    if params.explain:
+        planned = [" ".join(cmd) for cmd in explain_cmds()]
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "kind": "dev-cargo-explain",
+            "action": action,
+            "all_variant": params.all_tests,
+            "and_checks": params.and_checks,
+            "include_repo_checks": include_repo_checks,
+            "planned_steps": planned,
+        }
+        if params.json_output:
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            variant = "all" if params.all_tests else "default"
+            print(f"plan: dev {action} ({variant})")
+            for idx, cmd in enumerate(planned, start=1):
+                print(f"{idx}. {cmd}")
+        return 0
+
     if action == "fmt":
         fmt_ok = run_cmd(["cargo", "fmt", "--all", "--", "--check", "--config-path", RUSTFMT_CONFIG])
-        if fmt_ok and params.all_tests:
+        if fmt_ok and include_repo_checks:
             run_cmd(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose))
     elif action == "lint":
         lint_ok = (
@@ -164,12 +266,12 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
                 ]
             )
         )
-        if lint_ok and params.all_tests:
+        if lint_ok and include_repo_checks:
             run_cmd(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose))
     elif action == "check":
-        run_cmd(["cargo", "check", "--workspace", "--all-targets"]) and run_cmd(
-            _atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose)
-        )
+        check_ok = run_cmd(["cargo", "check", "--workspace", "--all-targets"])
+        if check_ok and include_repo_checks:
+            run_cmd(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose))
     elif action == "test":
         if params.contracts_tests:
             run_cmd(["cargo", "test", "-p", "bijux-atlas-server", "--test", "observability_contract"]) and run_cmd(
@@ -192,7 +294,7 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
                 cmd.extend(["--run-ignored", "all"])
             run_cmd(["cargo", "nextest", "--version"]) and run_cmd(cmd)
             _run_test_cleanup(env)
-            if not failures:
+            if not failures and include_repo_checks:
                 run_cmd(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose))
     elif action == "coverage":
         profile = env.get("NEXTEST_PROFILE", "ci")
@@ -212,7 +314,9 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
                 "--output-path",
                 str(output),
             ]
-        ) and run_cmd(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose))
+        )
+        if not failures and include_repo_checks:
+            run_cmd(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose))
     elif action == "audit":
         if shutil.which("cargo") is None:
             failures.append("cargo not found")
@@ -230,6 +334,8 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
                 run_cmd(["cargo", "+stable", "install", "cargo-deny", "--locked"])
             if not failures:
                 run_cmd(["cargo", "+stable", "deny", "check", "--config", DENY_CONFIG])
+            if not failures and include_repo_checks:
+                run_cmd(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose))
     else:
         failures.append(f"unsupported action: {action}")
 
