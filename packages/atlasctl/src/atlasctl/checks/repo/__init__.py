@@ -41,6 +41,7 @@ from .enforcement.argparse_policy import check_argparse_policy
 from .enforcement.package_shape import (
     check_atlasctl_package_root_shape,
     check_canonical_concept_homes,
+    check_checks_domain_split,
     check_layout_domain_readmes,
     check_layout_no_legacy_imports,
     check_no_nested_same_name_packages,
@@ -331,6 +332,7 @@ CHECKS: tuple[CheckDef, ...] = (
         fix_hint="Resolve shadow config sources reported by atlasctl/layout/no_shadow.py.",
     ),
     CheckDef("repo.layout_domain_readmes", "repo", "ensure each layout check domain includes a README", 300, check_layout_domain_readmes, fix_hint="Add README.md to each checks/layout/<domain>/ directory."),
+    CheckDef("repo.checks_domain_split", "repo", "require canonical check domain tree (repo_shape/makefiles/ops/docs/observability/artifacts)", 300, check_checks_domain_split, fix_hint="Create or migrate domain packages under packages/atlasctl/src/atlasctl/checks/."),
     CheckDef("repo.layout_no_legacy_imports", "repo", "forbid legacy imports in checks/layout modules", 300, check_layout_no_legacy_imports, fix_hint="Remove atlasctl.legacy imports from layout checks."),
     CheckDef(
         "repo.atlasctl_package_root_shape",
