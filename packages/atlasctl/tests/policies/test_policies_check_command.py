@@ -44,3 +44,27 @@ def test_policies_check_does_not_invoke_recursive_make_policy_targets(tmp_path: 
     assert policies_command.run_policies_command(_ctx(tmp_path), ns) == 0
     assert all(not (cmd[:2] == ["make", "-s"]) for cmd in commands)
 
+
+def test_policies_repo_stats_writes_artifact(tmp_path: Path, monkeypatch) -> None:
+    ns = argparse.Namespace(
+        policies_cmd="repo-stats",
+        report="json",
+        out_file="artifacts/reports/atlasctl/repo-stats/test.json",
+        diff_previous=False,
+    )
+
+    monkeypatch.setattr(
+        policies_command,
+        "_repo_stats_payload",
+        lambda _repo_root: {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "total_dirs": 1,
+            "top_dirs": [{"dir": "packages/atlasctl/src/atlasctl", "total_loc": 10}],
+        },
+    )
+    code = policies_command.run_policies_command(_ctx(tmp_path), ns)
+    assert code == 0
+    out = tmp_path / ns.out_file
+    assert out.exists()
