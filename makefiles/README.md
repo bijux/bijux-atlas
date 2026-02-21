@@ -13,6 +13,7 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 ## Contracts
 
 - Root `Makefile` is a thin dispatcher that only includes `makefiles/*.mk`.
+- Make recipes may delegate only to `atlasctl` wrappers (`atlasctl`/`$(ATLAS_SCRIPTS)`), with minimal shell setup (`mkdir -p`, `export`, `echo`) allowed.
 - Public interfaces are make targets, not direct script paths.
 - `makefiles/root.mk` is the publication surface for public targets.
 - `makefiles/_macros.mk` centralizes shared run-id/isolation/logging/python helpers.
@@ -114,6 +115,7 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 - `make nightly/all`: Slow nightly suites.
 - `make repro TARGET=<lane-target> [SEED=<n>]`: Deterministic lane replay with seed propagation.
 - `make retry TARGET=<target>`: Re-run a target with the same `RUN_ID`.
+- `atlasctl run-id --prefix <lane>`: Generate a canonical run id for forwarding via `RUN_ID`.
 
 ## Cargo Boundary
 
