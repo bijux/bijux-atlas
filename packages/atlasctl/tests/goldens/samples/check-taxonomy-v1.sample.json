@@ -3,28 +3,15 @@
     {
       "category": "hygiene",
       "domain": "repo",
-      "id": "checks_repo_modules_size_budget",
+      "id": "repo.module_size",
       "owners": [
         "platform"
       ],
       "severity": "error",
       "tags": [
         "repo",
-        "policies",
-        "fast"
+        "required"
       ]
-    }
-  ],
-  "taxonomy": [
-    {
-      "areas": {
-        "modules": 1
-      },
-      "checks": [
-        "checks_repo_modules_size_budget"
-      ],
-      "count": 1,
-      "domain": "repo"
     }
   ],
   "schema_name": "atlasctl.check-taxonomy.v1",

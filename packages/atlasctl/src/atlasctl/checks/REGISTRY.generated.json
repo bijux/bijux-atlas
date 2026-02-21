@@ -1648,6 +1648,32 @@
       ]
     },
     {
+      "area": "manifests",
+      "callable": "check_ops_manifests_schema",
+      "category": "hygiene",
+      "description": "validate ops manifests against atlas.ops.manifest.v1 schema",
+      "domain": "ops",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Fix ops/manifests/*.json|*.yaml to satisfy atlas.ops.manifest.v1.",
+      "groups": [
+        "fast",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_manifests_schema",
+      "legacy_id": "ops.manifests_schema",
+      "module": "atlasctl.checks.ops",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
       "area": "no",
       "callable": "check_ops_generated_tracked",
       "category": "hygiene",

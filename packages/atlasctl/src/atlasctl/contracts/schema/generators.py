@@ -274,6 +274,19 @@ def generate_schema_samples(repo_root: Path) -> list[str]:
                 }
             ],
         },
+        "atlasctl.ops.manifest.v1": {
+            "schema_name": "atlasctl.ops.manifest.v1",
+            "schema_version": 1,
+            "name": "sample-ops-manifest",
+            "description": "sample manifest payload",
+            "steps": [
+                {
+                    "id": "sample-step",
+                    "command": ["echo", "ok"],
+                    "allow_failure": False,
+                }
+            ],
+        },
     }
     errors: list[str] = []
     for schema_name in sorted(load_catalog().keys()):

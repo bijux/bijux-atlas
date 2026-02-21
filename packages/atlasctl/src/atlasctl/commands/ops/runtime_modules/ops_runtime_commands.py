@@ -158,6 +158,79 @@ def _emit_ops_status(report_format: str, code: int, output: str) -> int:
     return code
 
 
+def _load_ops_manifest(ctx: RunContext, manifest_path: str) -> dict[str, object]:
+    path = (ctx.repo_root / manifest_path).resolve()
+    if not path.exists():
+        raise FileNotFoundError(f"manifest not found: {manifest_path}")
+    suffix = path.suffix.lower()
+    raw = path.read_text(encoding="utf-8")
+    if suffix == ".json":
+        payload = json.loads(raw)
+    elif suffix in {".yaml", ".yml"}:
+        try:
+            import yaml  # type: ignore
+        except ModuleNotFoundError as exc:
+            raise RuntimeError("yaml manifest requires PyYAML; install it or use .json manifest") from exc
+        payload = yaml.safe_load(raw)
+    else:
+        raise RuntimeError(f"unsupported manifest format `{suffix}`; use .json/.yaml")
+    if not isinstance(payload, dict):
+        raise RuntimeError("manifest payload must be an object")
+    from atlasctl.contracts.schema.validate import validate
+
+    validate("atlasctl.ops.manifest.v1", payload)
+    return payload
+
+
+def _ops_manifest_run(ctx: RunContext, report_format: str, manifest_path: str, fail_fast: bool) -> int:
+    try:
+        manifest = _load_ops_manifest(ctx, manifest_path)
+    except Exception as exc:
+        return _emit_ops_status(report_format, 2, f"ops manifest load/validate failed: {exc}")
+    steps = manifest.get("steps", [])
+    if not isinstance(steps, list):
+        return _emit_ops_status(report_format, 2, "ops manifest `steps` must be a list")
+    rows: list[dict[str, object]] = []
+    failures: list[str] = []
+    for item in steps:
+        if not isinstance(item, dict):
+            continue
+        step_id = str(item.get("id", "")).strip() or "<unnamed>"
+        cmd = item.get("command", [])
+        allow_failure = bool(item.get("allow_failure", False))
+        if not isinstance(cmd, list) or not cmd:
+            rows.append({"id": step_id, "status": "fail", "exit_code": 2, "error": "invalid command list"})
+            failures.append(step_id)
+            if fail_fast:
+                break
+            continue
+        result = run_command([str(part) for part in cmd], ctx.repo_root, ctx=ctx)
+        code = int(result.code)
+        status = "pass" if code == 0 else ("allowed-fail" if allow_failure else "fail")
+        rows.append({"id": step_id, "status": status, "exit_code": code, "command": [str(part) for part in cmd]})
+        if code != 0 and not allow_failure:
+            failures.append(step_id)
+            if fail_fast:
+                break
+    payload = {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "kind": "ops-manifest-run",
+        "status": "pass" if not failures else "fail",
+        "manifest": manifest_path,
+        "run_id": ctx.run_id,
+        "steps": rows,
+        "failed_steps": failures,
+    }
+    if report_format == "json":
+        print(json.dumps(payload, sort_keys=True))
+    else:
+        print(f"ops run manifest={manifest_path} status={payload['status']}")
+        for row in rows:
+            print(f"- {row['id']}: {row['status']}")
+    return 0 if not failures else 1
+
+
 def _ops_clean_generated(ctx: RunContext, report_format: str, force: bool) -> int:
     generated_root = ctx.repo_root / "ops" / "_generated"
     if not generated_root.exists():
@@ -265,6 +338,13 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.ops_cmd == "help":
         readme = ctx.repo_root / "ops" / "INDEX.md"
         return _emit_ops_status(ns.report, 0, readme.read_text(encoding="utf-8"))
+    if ns.ops_cmd == "run":
+        return _ops_manifest_run(
+            ctx,
+            ns.report,
+            manifest_path=ns.manifest,
+            fail_fast=bool(getattr(ns, "fail_fast", False)),
+        )
 
     if ns.ops_cmd == "surface":
         surface = ctx.repo_root / "ops" / "_meta" / "surface.json"
@@ -621,6 +701,10 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     down_cmd.add_argument("--report", choices=["text", "json"], default="text")
     restart_cmd = ops_sub.add_parser("restart", help="restart deployed atlas workloads safely")
     restart_cmd.add_argument("--report", choices=["text", "json"], default="text")
+    run_cmd = ops_sub.add_parser("run", help="run ops workflow manifest")
+    run_cmd.add_argument("--report", choices=["text", "json"], default="text")
+    run_cmd.add_argument("--manifest", required=True, help="ops workflow manifest path (.json/.yaml)")
+    run_cmd.add_argument("--fail-fast", action="store_true", help="stop on first failing manifest step")
 
     lint = ops_sub.add_parser("lint", help="run canonical ops lint checks")
     lint.add_argument("--report", choices=["text", "json"], default="text")

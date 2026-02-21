@@ -1264,6 +1264,26 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_ops_manifests_schema"
+domain = "ops"
+area = "manifests"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.ops"
+callable = "check_ops_manifests_schema"
+description = "validate ops manifests against atlas.ops.manifest.v1 schema"
+severity = "error"
+category = "hygiene"
+fix_hint = "Fix ops/manifests/*.json|*.yaml to satisfy atlas.ops.manifest.v1."
+legacy_id = "ops.manifests_schema"
+groups = ["fast", "ops", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_ops_no_tracked_generated"
 domain = "ops"
 area = "no"

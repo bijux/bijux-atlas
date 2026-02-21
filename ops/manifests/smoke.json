@@ -1,0 +1,21 @@
+{
+  "schema_name": "atlasctl.ops.manifest.v1",
+  "schema_version": 1,
+  "name": "ops-smoke",
+  "description": "Minimal manifest-driven ops smoke run",
+  "steps": [
+    {
+      "id": "ops-help",
+      "command": [
+        "python3",
+        "-m",
+        "atlasctl.cli",
+        "--quiet",
+        "ops",
+        "help",
+        "--report",
+        "text"
+      ]
+    }
+  ]
+}
