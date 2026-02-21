@@ -22,14 +22,40 @@ def _smoke_command(ns: argparse.Namespace) -> list[str]:
     return cmd
 
 
-def run_test_command(ctx: RunContext, ns: argparse.Namespace) -> int:
-    if ns.test_cmd != "smoke":
-        return 2
-    cmd = _smoke_command(ns)
+def _run_command(kind: str, ns: argparse.Namespace) -> list[str]:
+    marker = {"unit": "unit", "integration": "integration"}[kind]
+    cmd = [sys.executable, "-m", "pytest", "-q", "-m", marker]
+    if ns.pytest_args:
+        cmd.extend(ns.pytest_args)
+    return cmd
+
+
+def _isolation_env(ctx: RunContext, target_dir: str | None = None) -> tuple[dict[str, str], str]:
     env = os.environ.copy()
     src_path = str(ctx.repo_root / "packages/atlasctl/src")
     existing = env.get("PYTHONPATH", "")
     env["PYTHONPATH"] = f"{src_path}:{existing}" if existing else src_path
+    resolved_target = target_dir or str(ctx.repo_root / "artifacts/isolate" / ctx.run_id / "atlasctl-test")
+    os.makedirs(resolved_target, exist_ok=True)
+    env["TMPDIR"] = resolved_target
+    existing_opts = [token for token in env.get("PYTEST_ADDOPTS", "").split() if not token.startswith("--cache-dir=")]
+    existing_opts.append(f"--basetemp={resolved_target}")
+    env["PYTEST_ADDOPTS"] = " ".join(existing_opts).strip()
+    return env, resolved_target
+
+
+def run_test_command(ctx: RunContext, ns: argparse.Namespace) -> int:
+    if ns.test_cmd == "smoke":
+        cmd = _smoke_command(ns)
+        suite = "smoke"
+        target_dir = None
+    elif ns.test_cmd == "run":
+        cmd = _run_command(ns.kind, ns)
+        suite = ns.kind
+        target_dir = ns.target_dir
+    else:
+        return 2
+    env, resolved_target = _isolation_env(ctx, target_dir)
     proc = subprocess.run(
         cmd,
         cwd=ctx.repo_root,
@@ -42,14 +68,15 @@ def run_test_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         "schema_version": 1,
         "tool": "atlasctl",
         "status": "ok" if proc.returncode == 0 else "error",
-        "suite": "smoke",
+        "suite": suite,
         "command": cmd,
         "exit_code": proc.returncode,
+        "target_dir": resolved_target,
     }
     if ns.json or ctx.output_format == "json":
         print(json.dumps(payload, sort_keys=True))
     else:
-        print(f"atlasctl test smoke: {'pass' if proc.returncode == 0 else 'fail'} (exit={proc.returncode})")
+        print(f"atlasctl test {suite}: {'pass' if proc.returncode == 0 else 'fail'} (exit={proc.returncode})")
     if (proc.stdout or "").strip():
         print(proc.stdout.rstrip())
     if (proc.stderr or "").strip():
@@ -62,4 +89,9 @@ def configure_test_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
     p_sub = p.add_subparsers(dest="test_cmd", required=True)
     smoke = p_sub.add_parser("smoke", help="run fast CLI smoke unit tests")
     smoke.add_argument("--json", action="store_true", help="emit machine-readable summary")
-    smoke.add_argument("pytest_args", nargs=argparse.REMAINDER, help="extra pytest args")
+    smoke.add_argument("pytest_args", nargs="*", help="extra pytest args")
+    run = p_sub.add_parser("run", help="run canonical pytest suites")
+    run.add_argument("kind", choices=["unit", "integration"])
+    run.add_argument("--json", action="store_true", help="emit machine-readable summary")
+    run.add_argument("--target-dir", help="isolation directory for pytest temp/cache artifacts")
+    run.add_argument("pytest_args", nargs="*", help="extra pytest args")
