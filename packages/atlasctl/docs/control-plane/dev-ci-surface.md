@@ -26,3 +26,14 @@ This document is the SSOT for the supported DEV/CI control-plane entrypoints.
 
 - Humans should run the stable front door commands above.
 - CI workflows should use the same stable front door (`atlasctl dev ci run`) for CI suite execution.
+
+## CI Run Contract
+
+- `atlasctl dev ci run` emits:
+- JSON report
+- JUnit XML
+- text summary
+- Artifacts default to `artifacts/evidence/ci/<run_id>/...`.
+- Supports lane filtering via `--lane` (for example `rust`, `fmt`, `lint`, `test`, `contracts`, `docs`, `ops`).
+- Supports execution mode flags: `--fail-fast` or `--keep-going`.
+- Isolation is required by default; `--no-isolate` is debug-only.
