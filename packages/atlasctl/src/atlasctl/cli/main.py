@@ -18,7 +18,7 @@ from ..core.fs import write_json, write_text
 from ..core.logging import log_event
 from ..core.telemetry import emit_telemetry
 from ..core.repo_root import try_find_repo_root
-from ..contracts.ids import COMMANDS, RUNTIME_CONTRACTS
+from ..contracts.ids import COMMANDS, HELP, RUNTIME_CONTRACTS
 from ..errors import ScriptError
 from ..exit_codes import ERR_CONFIG, ERR_INTERNAL
 from ..network_guard import install_no_network_guard, resolve_network_mode
@@ -275,6 +275,18 @@ def main(argv: list[str] | None = None) -> int:
         as_json = bool(getattr(ns, "json", False) or "--json" in raw_argv)
         payload = {"schema_version": 1, "tool": "atlasctl", "status": "ok", "atlasctl_version": __version__, "scripts_version": _version_string().split()[1]}
         print(json.dumps(payload, sort_keys=True) if as_json else _version_string())
+        return 0
+    if ns.cmd in {"help", "commands"} and try_find_repo_root() is None:
+        as_json = bool(getattr(ns, "json", False) or "--json" in raw_argv)
+        include_internal = bool(getattr(ns, "include_internal", False))
+        payload = _commands_payload(include_internal=include_internal)
+        if ns.cmd == "help":
+            payload["schema_name"] = HELP
+        if as_json:
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            names = [str(item["name"]) for item in payload["commands"] if isinstance(item, dict)]
+            print("\n".join(names))
         return 0
 
     fmt = resolve_output_format(cli_json=("--json" in raw_argv), cli_format=ns.format, ci_present=bool(getenv("CI")))
