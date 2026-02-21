@@ -1,6 +1,29 @@
 {
-  "generated_at": "1970-01-01T00:00:00Z",
-  "run_id": "example",
-  "status": "unknown",
-  "score": 0
+  "budgets": [
+    {
+      "detail": "failed=9 total=9",
+      "name": "all-lanes-green",
+      "status": "fail"
+    },
+    {
+      "detail": "requires internal/lane-obs-cheap passing",
+      "name": "obs-cheap-green",
+      "status": "fail"
+    },
+    {
+      "detail": "duration_sec=0, limit=600",
+      "name": "ops-smoke-time-budget",
+      "status": "fail"
+    }
+  ],
+  "generated_at": "2026-02-21T22:58:26.021653+00:00",
+  "run_id": "atlas-ops-20260221-190731",
+  "schema_version": 1,
+  "score": 0,
+  "status": "fail",
+  "summary": {
+    "failed": 9,
+    "passed": 0,
+    "total": 9
+  }
 }

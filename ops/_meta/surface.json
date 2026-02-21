@@ -1,5 +1,4 @@
 {
-  "schema_version": 1,
   "entrypoints": [
     "ops-alerts-validate",
     "ops-artifacts-open",
@@ -103,5 +102,6 @@
     "ops-warm-datasets",
     "ops-warm-shards",
     "ops-warm-top"
-  ]
+  ],
+  "schema_version": 1
 }

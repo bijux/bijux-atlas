@@ -113,11 +113,35 @@
       "source_url": "https://kubernetes.io/releases/",
       "version": "v1.35.1"
     },
+    "mypy": {
+      "owner": "ops-platform",
+      "pinned_at": "2026-02-20",
+      "source_url": "https://github.com/python/mypy/releases",
+      "version": "1.17.1"
+    },
+    "pip-tools": {
+      "owner": "ops-platform",
+      "pinned_at": "2026-02-20",
+      "source_url": "https://github.com/jazzband/pip-tools/releases",
+      "version": "7.4.1"
+    },
     "python3": {
       "owner": "ops-platform",
       "pinned_at": "2026-02-19",
       "source_url": "https://www.python.org/downloads/",
       "version": "3.10.11"
+    },
+    "ruff": {
+      "owner": "ops-platform",
+      "pinned_at": "2026-02-20",
+      "source_url": "https://github.com/astral-sh/ruff/releases",
+      "version": "0.13.2"
+    },
+    "uv": {
+      "owner": "ops-platform",
+      "pinned_at": "2026-02-20",
+      "source_url": "https://github.com/astral-sh/uv/releases",
+      "version": "0.8.8"
     },
     "yq": {
       "owner": "ops-platform",
