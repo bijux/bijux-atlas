@@ -24,6 +24,7 @@ _MODERN_LEGACY_ALLOWLIST = {
 }
 _COMMAND_IMPORT_ALLOW_PREFIXES = ("core", "contracts", "checks", "adapters", "commands", "cli")
 _COMMAND_IMPORT_ALLOW_EXACT = {"errors", "exit_codes", "run_context"}
+_COLD_IMPORT_BUDGET_MS = 250.0
 
 
 def _iter_py_files(repo_root: Path) -> list[Path]:
@@ -136,3 +137,31 @@ def check_import_smoke(repo_root: Path) -> tuple[int, list[str]]:
     if proc.returncode == 0:
         return 0, []
     return 1, [proc.stderr.strip() or proc.stdout.strip() or "import atlasctl failed"]
+
+
+def check_cold_import_budget(repo_root: Path) -> tuple[int, list[str]]:
+    env = dict(os.environ)
+    src_path = str(repo_root / "packages/atlasctl/src")
+    existing = env.get("PYTHONPATH", "")
+    env["PYTHONPATH"] = f"{src_path}:{existing}" if existing else src_path
+    proc = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            "import time; t=time.perf_counter(); import atlasctl; print((time.perf_counter()-t)*1000)",
+        ],
+        cwd=repo_root,
+        text=True,
+        capture_output=True,
+        check=False,
+        env=env,
+    )
+    if proc.returncode != 0:
+        return 1, [proc.stderr.strip() or proc.stdout.strip() or "cold import budget check failed"]
+    try:
+        elapsed_ms = float((proc.stdout or "").strip())
+    except ValueError:
+        return 1, [f"unexpected cold import timing output: {(proc.stdout or '').strip()}"]
+    if elapsed_ms <= _COLD_IMPORT_BUDGET_MS:
+        return 0, []
+    return 1, [f"cold import budget exceeded: {elapsed_ms:.2f}ms > {_COLD_IMPORT_BUDGET_MS:.2f}ms"]
