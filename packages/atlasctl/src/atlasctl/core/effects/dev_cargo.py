@@ -53,6 +53,15 @@ def _atlasctl_cmd(*args: str, quiet: bool = False) -> list[str]:
     return cmd
 
 
+def _atlasctl_repo_check_cmd(*, quiet: bool, verbose: bool) -> list[str]:
+    cmd = _atlasctl_cmd("check", "run", "--group", "repo", quiet=quiet)
+    if verbose:
+        cmd.append("--verbose")
+    else:
+        cmd.append("--quiet")
+    return cmd
+
+
 def _run(
     *,
     ctx: RunContext,
@@ -124,7 +133,7 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
 
     if action == "fmt":
         run_cmd(["cargo", "fmt", "--all", "--", "--check", "--config-path", RUSTFMT_CONFIG]) and run_cmd(
-            _atlasctl_cmd("check", "repo", quiet=ctx.quiet)
+            _atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose)
         )
     elif action == "lint":
         run_cmd(["cargo", "fmt", "--all", "--", "--check", "--config-path", RUSTFMT_CONFIG]) and run_cmd(
@@ -132,7 +141,7 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
         ) and run_cmd(_atlasctl_cmd("check", "no-direct-bash-invocations", quiet=ctx.quiet)) and run_cmd(
             _atlasctl_cmd("check", "no-direct-python-invocations", quiet=ctx.quiet)
         ) and run_cmd(_atlasctl_cmd("check", "scripts-surface-docs-drift", quiet=ctx.quiet)) and run_cmd(
-            _atlasctl_cmd("check", "repo", quiet=ctx.quiet)
+            _atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose)
         ) and run_cmd(_atlasctl_cmd("docs", "link-check", "--report", "text", quiet=ctx.quiet)) and run_cmd(
             [
                 "cargo",
@@ -146,12 +155,12 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
         )
     elif action == "check":
         run_cmd(["cargo", "check", "--workspace", "--all-targets"]) and run_cmd(
-            _atlasctl_cmd("check", "repo", quiet=ctx.quiet)
+            _atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose)
         )
     elif action == "test":
         if params.contracts_tests:
             run_cmd(["cargo", "test", "-p", "bijux-atlas-server", "--test", "observability_contract"]) and run_cmd(
-                _atlasctl_cmd("check", "repo", quiet=ctx.quiet)
+                _atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose)
             )
         else:
             profile = env.get("NEXTEST_PROFILE", "ci")
@@ -171,7 +180,7 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
             run_cmd(["cargo", "nextest", "--version"]) and run_cmd(cmd)
             _run_test_cleanup(env)
             if not failures:
-                run_cmd(_atlasctl_cmd("check", "repo", quiet=ctx.quiet))
+                run_cmd(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose))
     elif action == "coverage":
         profile = env.get("NEXTEST_PROFILE", "ci")
         output = Path(env.get("ISO_ROOT", str(ctx.repo_root / "artifacts" / "isolate" / "local"))) / "coverage" / "lcov.info"
@@ -190,7 +199,7 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
                 "--output-path",
                 str(output),
             ]
-        ) and run_cmd(_atlasctl_cmd("check", "repo", quiet=ctx.quiet))
+        ) and run_cmd(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose))
     elif action == "audit":
         if shutil.which("cargo") is None:
             failures.append("cargo not found")
