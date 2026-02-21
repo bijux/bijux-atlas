@@ -28,10 +28,19 @@ with_iso = run_id="$(RUN_ID)"; iso="$(call iso_dir,$(1))"; \
 	fi; \
 	ended_at="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; end_epoch="$$(date +%s)"; \
 	duration="$$(($$end_epoch - $$start_epoch))"; \
-	LANE_STARTED_AT="$$started_at" LANE_ENDED_AT="$$ended_at" \
-	LANE_ARTIFACT_PATHS_JSON="$$(python3 -c 'import json; print(json.dumps(["'"$$iso"'","'"$$log_path"'","'"$$report_path"'"]))')" \
-	LANE_FAILURE_SUMMARY="$$failure_summary" \
-	bash -lc '. ./ops/_lib/lane_report.sh; ops_write_lane_report "$(1)" "'"$$run_id"'" "'"$$status"'" "'"$$duration"'" "'"$$log_path"'" "artifacts/evidence/make" >/dev/null'; \
+	$(ATLAS_SCRIPTS) report make-area-write \
+		--path "artifacts/evidence/make/$(1)/$$run_id/report.json" \
+		--lane "$(1)" \
+		--run-id "$$run_id" \
+		--status "$$status" \
+		--start "$$started_at" \
+		--end "$$ended_at" \
+		--duration-seconds "$$duration" \
+		--log "$$log_path" \
+		--artifact "$$iso" \
+		--artifact "$$log_path" \
+		--artifact "$$report_path" \
+		--failure "$$failure_summary" >/dev/null; \
 	[ "$$status" = "pass" ]
 
 # Usage: $(call gate_json,<gate-name>,<command...>)

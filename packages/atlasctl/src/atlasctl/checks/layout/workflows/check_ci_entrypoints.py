@@ -6,7 +6,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[6]
+ROOT = Path(__file__).resolve().parents[7]
 WF = ROOT / ".github/workflows"
 CI_MK = ROOT / "makefiles" / "ci.mk"
 PRIMARY = {
