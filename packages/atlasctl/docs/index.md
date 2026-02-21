@@ -5,6 +5,10 @@ Use this page as the entrypoint for package-level documentation.
 ## Core Docs
 
 - [Architecture](architecture.md)
+- [Control Plane](control-plane/index.md)
+- [Control Plane Surface](control-plane/surface.md)
+- [Control Plane Execution Model](control-plane/execution-model.md)
+- [Module Taxonomy](control-plane/taxonomy.md)
 - [How To Split A Module](architecture/how-to-split-a-module.md)
 - [CLI Stability](cli-stability.md)
 - [Compatibility Promise](compatibility-promise.md)
