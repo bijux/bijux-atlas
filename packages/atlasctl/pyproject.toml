@@ -259,4 +259,9 @@ includes = ["ci"]
 complete = true
 items = [
   "cmd:atlasctl suite check --json",
+  "check:repo.dir_budget_py_files",
+  "check:repo.single_registry_module",
+  "cmd:atlasctl contracts validate --report json",
+  "check:repo.legacy_package_absent",
+  "check:repo.legacy_zero_importers",
 ]

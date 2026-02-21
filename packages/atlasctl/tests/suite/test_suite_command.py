@@ -63,6 +63,19 @@ def test_ci_suite_stable_and_contains_expected_items() -> None:
     assert len([task for task in tasks if "atlasctl test run" in task]) == 1
 
 
+def test_refgrade_proof_suite_contains_release_gates() -> None:
+    proc = run_atlasctl("--quiet", "suite", "run", "refgrade_proof", "--list", "--json")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    tasks = set(payload["tasks"])
+    assert "cmd:atlasctl suite check --json" in tasks
+    assert "check:repo.dir_budget_py_files" in tasks
+    assert "check:repo.single_registry_module" in tasks
+    assert "cmd:atlasctl contracts validate --report json" in tasks
+    assert "check:repo.legacy_package_absent" in tasks
+    assert "check:repo.legacy_zero_importers" in tasks
+
+
 def test_suite_run_pytest_q_output_mode() -> None:
     proc = run_atlasctl("--quiet", "suite", "run", "fast", "--only", "check repo.module_size", "--pytest-q")
     assert proc.returncode in {0, 1}, proc.stderr
