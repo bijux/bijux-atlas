@@ -19,7 +19,7 @@
 - Canonical top-level architecture map: `atlasctl/core`, `atlasctl/cli`, `atlasctl/commands`, `atlasctl/checks`, `atlasctl/contracts`.
 - Command modules follow `command.py` per domain package.
 - Duplicate domains are forbidden: `checks/` is canonical; `check/` remains legacy-only compatibility until removal.
-- `layout_checks/` are classified as legacy checks; net-new checks go in first-class `atlasctl/checks`.
+- `checks/layout/` contains migrated layout checks; net-new checks must live under first-class `atlasctl/checks/*`.
 
 ## Error, Exit, And Logging Policy
 

@@ -22,19 +22,19 @@ scripts-graph: ## Generate make-target to scripts call graph
 	@$(ATLAS_SCRIPTS) make graph root-local > docs/development/scripts-graph.md
 
 no-direct-scripts:
-	@./packages/atlasctl/src/atlasctl/layout_checks/check_no_direct_script_runs.sh
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_make_public_scripts.py
+	@./packages/atlasctl/src/atlasctl/checks/layout/check_no_direct_script_runs.sh
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/check_make_public_scripts.py
 
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)
 	@$(MAKE) -s internal/scripts/install-lock
 	@$(MAKE) scripts-audit
 	@$(ATLAS_SCRIPTS) docs script-headers-check --report text
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_make_public_scripts.py
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_scripts_buckets.py
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_script_relative_calls.py
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_script_naming_convention.py
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_no_mixed_script_name_variants.py
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_duplicate_script_intent.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/check_make_public_scripts.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/check_scripts_buckets.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/check_script_relative_calls.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/check_script_naming_convention.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/check_no_mixed_script_name_variants.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/check_duplicate_script_intent.py
 	@$(ATLAS_SCRIPTS) check duplicate-script-names
 	@$(ATLAS_SCRIPTS) check layout
 	@$(ATLAS_SCRIPTS) check cli-help
@@ -58,12 +58,12 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(ATLAS_SCRIPTS) check repo-script-boundaries
 	@$(ATLAS_SCRIPTS) check atlas-cli-contract
 	@$(ATLAS_SCRIPTS) check scripts-surface-docs-drift
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_make_command_allowlist.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/check_make_command_allowlist.py
 	@./ops/_lint/naming.sh
 	@$(PY_RUN) ./packages/atlasctl/src/atlasctl/layout/no_shadow.py
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_public_entrypoint_cap.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/check_public_entrypoint_cap.py
 	@SHELLCHECK_STRICT=1 $(MAKE) -s ops-shellcheck
-	@if command -v shellcheck >/dev/null 2>&1; then find packages/atlasctl/src/atlasctl/layout_checks -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional for local scripts lint)"; fi
+	@if command -v shellcheck >/dev/null 2>&1; then find packages/atlasctl/src/atlasctl/checks/layout -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional for local scripts lint)"; fi
 	@if command -v shfmt >/dev/null 2>&1; then shfmt -d scripts ops/load/scripts; else echo "shfmt not installed (optional)"; fi
 	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/ruff" check --config packages/atlasctl/pyproject.toml packages/atlasctl/src packages/atlasctl/tests
 
@@ -76,9 +76,9 @@ internal/scripts/fmt-alias: ## Alias for scripts-format
 
 scripts-test: ## Run scripts-focused tests
 	@$(MAKE) -s internal/scripts/install-lock
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_make_public_scripts.py
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_script_entrypoints.py
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_scripts_top_level.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/check_make_public_scripts.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/check_script_entrypoints.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/check_scripts_top_level.py
 	@$(PY_RUN) ops/load/scripts/validate_suite_manifest.py
 	@$(PY_RUN) ops/load/scripts/check_pinned_queries_lock.py
 	@$(MAKE) -s internal/scripts/install-lock
@@ -131,9 +131,9 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(ATLAS_SCRIPTS) check make-scripts-refs
 	@$(ATLAS_SCRIPTS) check repo-script-boundaries
 	@$(ATLAS_SCRIPTS) check atlas-cli-contract
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_make_command_allowlist.py
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_script_entrypoints.py
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_scripts_top_level.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/check_make_command_allowlist.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/check_script_entrypoints.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/check_scripts_top_level.py
 	@if command -v shellcheck >/dev/null 2>&1; then find scripts/areas/check scripts/bin -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional)"; fi
 	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/ruff" check --config packages/atlasctl/pyproject.toml scripts/areas/check packages/atlasctl/src packages/atlasctl/tests
 	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/mypy" packages/atlasctl/src/atlasctl/core packages/atlasctl/src/atlasctl/contracts
@@ -180,9 +180,9 @@ packages-lock: ## Backward-compatible alias for deps-lock
 
 scripts-audit: ## Audit script headers, taxonomy buckets, and no-implicit-cwd contract
 	@$(ATLAS_SCRIPTS) docs script-headers-check --report text
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_scripts_buckets.py
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_make_public_scripts.py
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/layout_checks/check_script_relative_calls.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/check_scripts_buckets.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/check_make_public_scripts.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/check_script_relative_calls.py
 
 internal/scripts/install-dev:
 	@$(MAKE) -s internal/scripts/install-lock

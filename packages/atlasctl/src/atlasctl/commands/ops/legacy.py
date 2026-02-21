@@ -35,19 +35,19 @@ LINT_CHECKS: list[OpsCheck] = [
     _check(
         "ops-run-entrypoints",
         "Ensure ops run entrypoints policy",
-        ["python3", "packages/atlasctl/src/atlasctl/layout_checks/check_ops_run_entrypoints.py"],
+        ["python3", "packages/atlasctl/src/atlasctl/checks/layout/check_ops_run_entrypoints.py"],
         "Route public ops entrypoints through ops/run/* wrappers.",
     ),
     _check(
         "ops-shell-policy",
         "Ensure ops shell policy",
-        ["python3", "packages/atlasctl/src/atlasctl/layout_checks/check_ops_shell_policy.py"],
+        ["python3", "packages/atlasctl/src/atlasctl/checks/layout/check_ops_shell_policy.py"],
         "Use shared ops shell wrappers and policy-compliant shell structure.",
     ),
     _check(
         "ops-evidence-writes",
         "Ensure ops evidence write policy",
-        ["python3", "packages/atlasctl/src/atlasctl/layout_checks/check_no_ops_evidence_writes.py"],
+        ["python3", "packages/atlasctl/src/atlasctl/checks/layout/check_no_ops_evidence_writes.py"],
         "Write runtime artifacts only under artifacts/evidence or approved allowlist roots.",
     ),
     _check(
@@ -119,7 +119,7 @@ LINT_CHECKS: list[OpsCheck] = [
     _check(
         "ops-tool-versions",
         "Validate pinned tool versions",
-        ["python3", "packages/atlasctl/src/atlasctl/layout_checks/check_tool_versions.py", "kind", "kubectl", "helm", "k6"],
+        ["python3", "packages/atlasctl/src/atlasctl/checks/layout/check_tool_versions.py", "kind", "kubectl", "helm", "k6"],
         "Update tool pins and local toolchain to match configs/ops/tool-versions.json.",
     ),
     _check(
@@ -597,7 +597,7 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             ["env", "CACHE_STATUS_STRICT=0", "make", "-s", "ops-cache-status"],
             ["make", "-s", "pins/check"],
             [*SELF_CLI, "ops", "surface", "--report", ns.report],
-            ["python3", "packages/atlasctl/src/atlasctl/layout_checks/check_ops_index_surface.py"],
+            ["python3", "packages/atlasctl/src/atlasctl/checks/layout/check_ops_index_surface.py"],
         ]
         for cmd in steps:
             code, output = _run_check(cmd, ctx.repo_root)
@@ -610,7 +610,7 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.ops_cmd == "lint":
         if ns.fix:
             for cmd in (
-                ["python3", "packages/atlasctl/src/atlasctl/layout_checks/generate_ops_surface_meta.py"],
+                ["python3", "packages/atlasctl/src/atlasctl/checks/layout/generate_ops_surface_meta.py"],
                 [*SELF_CLI, "docs", "generate", "--report", "text"],
             ):
                 code, output = _run_check(cmd, ctx.repo_root)
@@ -628,11 +628,11 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
     if ns.ops_cmd == "surface":
         if ns.fix:
-            return _run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/layout_checks/generate_ops_surface_meta.py"], ns.report)
-        return _run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/layout_checks/check_ops_surface_drift.py"], ns.report)
+            return _run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/checks/layout/generate_ops_surface_meta.py"], ns.report)
+        return _run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/checks/layout/check_ops_surface_drift.py"], ns.report)
 
     if ns.ops_cmd == "contracts-check":
-        return _run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/layout_checks/validate_ops_contracts.py"], ns.report)
+        return _run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/checks/layout/validate_ops_contracts.py"], ns.report)
 
     if ns.ops_cmd == "suites-check":
         return _run_simple_cmd(
@@ -642,7 +642,7 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         )
 
     if ns.ops_cmd == "schema-check":
-        return _run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/layout_checks/validate_ops_contracts.py"], ns.report)
+        return _run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/checks/layout/validate_ops_contracts.py"], ns.report)
 
     if ns.ops_cmd == "tool-versions-check":
         return _run_simple_cmd(
@@ -661,15 +661,15 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.ops_cmd == "directory-budgets-check":
         return _run_simple_cmd(
             ctx,
-            ["python3", "packages/atlasctl/src/atlasctl/layout_checks/check_scripts_submodules.py", "--threshold", "25"],
+            ["python3", "packages/atlasctl/src/atlasctl/checks/layout/check_scripts_submodules.py", "--threshold", "25"],
             ns.report,
         )
 
     if ns.ops_cmd == "naming-check":
-        return _run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/layout_checks/check_ops_script_names.py"], ns.report)
+        return _run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/checks/layout/check_ops_script_names.py"], ns.report)
 
     if ns.ops_cmd == "layer-drift-check":
-        return _run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/layout_checks/check_layer_drift.py"], ns.report)
+        return _run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/checks/layout/check_layer_drift.py"], ns.report)
 
     if ns.ops_cmd == "contracts-index":
         cmd = [*SELF_CLI, "docs", "generate", "--report", "text"]

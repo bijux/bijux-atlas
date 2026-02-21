@@ -26,8 +26,8 @@ def suites(repo_root: Path) -> dict[str, list[CommandCheckDef]]:
             CommandCheckDef("repo/no-bin-symlinks", "repo", ["bash", "ops/_lint/no-bin-symlinks.sh"]),
         ],
         "makefiles": [
-            CommandCheckDef("makefiles/safety", "makefiles", _py("packages/atlasctl/src/atlasctl/layout_checks/check_make_safety.py")),
-            CommandCheckDef("makefiles/public-scripts", "makefiles", _py("packages/atlasctl/src/atlasctl/layout_checks/check_make_public_scripts.py")),
+            CommandCheckDef("makefiles/safety", "makefiles", _py("packages/atlasctl/src/atlasctl/checks/layout/check_make_safety.py")),
+            CommandCheckDef("makefiles/public-scripts", "makefiles", _py("packages/atlasctl/src/atlasctl/checks/layout/check_make_public_scripts.py")),
         ],
         "docs": [
             CommandCheckDef("docs/check", "docs", ["python3", "-m", "atlasctl.cli", "docs", "check", "--report", "json"]),
