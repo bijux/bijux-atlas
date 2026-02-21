@@ -43,6 +43,7 @@ Workflow: pip-tools (requirements.in + requirements.lock.txt)
 
 ## Commands
 
+- `python -m atlasctl.cli deps --report json`
 - `python -m atlasctl.cli deps lock`
 - `python -m atlasctl.cli deps export-requirements`
 - `python -m atlasctl.cli deps sync`
