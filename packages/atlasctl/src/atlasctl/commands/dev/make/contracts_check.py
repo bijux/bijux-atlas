@@ -178,6 +178,12 @@ CHECKS: list[MakeCheck] = [
         "Use lane wrappers to scope cargo invocations correctly.",
     ),
     _check(
+        "cargo-mk-wrapper-purity",
+        "Validate cargo.mk contains wrappers only (no cargo/python3/rm logic)",
+        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_cargo_mk_wrapper_purity.py",
+        "Keep makefiles/cargo.mk as pure atlasctl delegation wrappers only.",
+    ),
+    _check(
         "root-diff-alarm",
         "Validate root diff alarm contract",
         "packages/atlasctl/src/atlasctl/checks/layout/policies/root/check_root_diff_alarm.py",
