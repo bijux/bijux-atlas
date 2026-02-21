@@ -65,6 +65,14 @@ _ATLASCTL_PACKAGE_ROOT_ALLOWED = {
     "requirements.in",
     "requirements.lock.txt",
 }
+_CHECK_DOMAIN_PATHS = {
+    "repo_shape": Path("packages/atlasctl/src/atlasctl/checks/repo_shape"),
+    "makefiles": Path("packages/atlasctl/src/atlasctl/checks/make"),
+    "ops": Path("packages/atlasctl/src/atlasctl/checks/ops"),
+    "docs": Path("packages/atlasctl/src/atlasctl/checks/docs"),
+    "observability": Path("packages/atlasctl/src/atlasctl/checks/observability"),
+    "artifacts": Path("packages/atlasctl/src/atlasctl/checks/layout/artifacts"),
+}
 
 
 def _iter_top_level_dirs(repo_root: Path) -> list[str]:
@@ -204,4 +212,14 @@ def check_atlasctl_package_root_shape(repo_root: Path) -> tuple[int, list[str]]:
             )
     if offenders:
         return 1, offenders
+    return 0, []
+
+
+def check_checks_domain_split(repo_root: Path) -> tuple[int, list[str]]:
+    missing: list[str] = []
+    for name, rel_path in sorted(_CHECK_DOMAIN_PATHS.items()):
+        if not (repo_root / rel_path).exists():
+            missing.append(f"{name}: {rel_path.as_posix()}")
+    if missing:
+        return 1, [f"missing canonical check domain path: {item}" for item in missing]
     return 0, []
