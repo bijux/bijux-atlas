@@ -12,16 +12,16 @@ ops-layout-lint: ## Validate canonical ops layout contract
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/governance/check_ops_concept_ownership.py
 
 ops-surface: ## Print stable ops entrypoints from SSOT surface metadata
-	@python3 -c 'import json; d=json.load(open("ops/_meta/surface.json")); print("\n".join(d.get("entrypoints",[])))'
+	@./bin/atlasctl ops surface --report text
 
 ops-help: ## Print canonical ops runbook index
 	@cat ops/INDEX.md
 
 ops-env-validate: ## Validate canonical ops environment contract against schema
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/validation/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)"
+	@./bin/atlasctl ops env --report text validate --schema "$(OPS_ENV_SCHEMA)"
 
 ops-env-print: ## Print canonical ops environment settings
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/validation/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)" --print --format json
+	@./bin/atlasctl ops env --report text print --schema "$(OPS_ENV_SCHEMA)" --format json
 
 ops-stack-versions-sync: ## Generate ops/stack/versions.json from configs/ops/tool-versions.json SSOT
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/generation/generate_ops_stack_versions.py
@@ -61,29 +61,19 @@ ops-contract-check: ## Validate SSOT layer contract, render/live checks, and wri
 	@./ops/run/contract-check.sh
 
 pins/check: ## Validate unified reproducibility pins and emit drift report
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/generation/generate_ops_pins.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/pins/check_ops_pins.py
-	@python3 ./ops/_lint/pin-relaxations-audit.py
-	@./ops/k8s/tests/checks/obs/test_helm_repo_pinning.sh
-	@$(MAKE) -s ops-kind-version-drift-test
+	@./bin/atlasctl ops pins --report text check
 
 pins/update: ## Manual pins refresh with explicit changelog output
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/generation/update_ops_pins.py
+	@./bin/atlasctl ops pins --report text update
 
 ops-gen: ## Regenerate all committed ops generated outputs
-	@$(MAKE) -s ops-stack-versions-sync
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/generation/generate_ops_pins.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/generation/generate_ops_surface_meta.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/validation/validate_ops_contracts.py >/dev/null
-	@$(ATLAS_SCRIPTS) docs generate --report text
-	@$(ATLAS_SCRIPTS) contracts generate --generators chart-schema
+	@./bin/atlasctl ops gen --report text run
 
 ops-gen-clean: ## Cleanup generated ops outputs not in committed generated policy
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/artifacts/clean_ops_generated.py
 
 ops-gen-check: ## Fail when regenerated ops outputs drift from committed state
-	@$(MAKE) -s ops-gen
-	@git diff --exit-code -- ops/_generated_committed docs/_generated/ops-*.md docs/_generated/layer-contract.md ops/k8s/charts/bijux-atlas/values.schema.json ops/stack/versions.json
+	@./bin/atlasctl ops gen --report text check
 
 ops-doctor: ## Validate and print pinned ops tool versions and canonical env
 	@./ops/run/doctor.sh
@@ -128,7 +118,7 @@ ops-observability-lag-check: ## Fail when observability checks have been stale o
 	@python3 ./ops/obs/scripts/areas/contracts/check_observability_lag.py
 
 ops-check: ## Ops lint + schema + metadata validation
-	@$(ATLAS_SCRIPTS) ops check --report text
+	@./bin/atlasctl ops check --report text
 
 internal/ops/check: ## Fast ops verification (no cluster bring-up)
 	@start="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; status=pass; fail=""; \
