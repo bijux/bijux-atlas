@@ -22,8 +22,10 @@ _MODERN_LEGACY_ALLOWLIST = {
     "packages/atlasctl/src/atlasctl/commands/ops/render.py",
     "packages/atlasctl/src/atlasctl/commands/ops/validate.py",
 }
-_COMMAND_IMPORT_ALLOW_PREFIXES = ("core", "contracts", "checks", "adapters", "commands", "cli")
+_COMMAND_IMPORT_ALLOW_PREFIXES = ("core", "contracts", "checks", "reporting", "adapters")
 _COMMAND_IMPORT_ALLOW_EXACT = {"errors", "exit_codes", "run_context"}
+_CHECK_IMPORT_ALLOW_PREFIXES = ("core", "contracts", "reporting", "adapters", "checks")
+_CHECK_IMPORT_ALLOW_EXACT = {"errors", "exit_codes", "run_context"}
 _COLD_IMPORT_BUDGET_MS = 250.0
 
 
@@ -199,6 +201,30 @@ def check_command_import_lint(repo_root: Path) -> tuple[int, list[str]]:
             if prefix in _COMMAND_IMPORT_ALLOW_EXACT:
                 continue
             if prefix in _COMMAND_IMPORT_ALLOW_PREFIXES:
+                continue
+            bad_prefixes.add(prefix)
+        if bad_prefixes:
+            offenders.append(f"{rel}: disallowed atlasctl imports {sorted(bad_prefixes)}")
+    return (0 if not offenders else 1), offenders
+
+
+def check_checks_import_lint(repo_root: Path) -> tuple[int, list[str]]:
+    offenders: list[str] = []
+    for path in sorted((repo_root / _SRC_ROOT / "checks").rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        if "/legacy/" in rel:
+            continue
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=rel)
+        bad_prefixes: set[str] = set()
+        for node in ast.walk(tree):
+            if not isinstance(node, (ast.Import, ast.ImportFrom)):
+                continue
+            prefix = _module_prefix(node)
+            if prefix is None:
+                continue
+            if prefix in _CHECK_IMPORT_ALLOW_EXACT:
+                continue
+            if prefix in _CHECK_IMPORT_ALLOW_PREFIXES:
                 continue
             bad_prefixes.add(prefix)
         if bad_prefixes:

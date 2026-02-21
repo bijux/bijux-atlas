@@ -5,6 +5,8 @@ from pathlib import Path
 
 from ....cli.registry import command_registry
 
+_PUBLIC_UNSTABLE_ALLOWLIST = {"compat"}
+
 
 def check_command_metadata_contract(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
@@ -32,6 +34,44 @@ def check_no_duplicate_command_names(repo_root: Path) -> tuple[int, list[str]]:
     if dupes:
         return 1, [f"duplicate command names: {', '.join(sorted(set(dupes)))}"]
     return 0, []
+
+
+def check_internal_commands_not_public(repo_root: Path) -> tuple[int, list[str]]:
+    docs_cli = repo_root / "docs/_generated/cli.md"
+    if not docs_cli.exists():
+        return 1, ["docs/_generated/cli.md missing"]
+    text = docs_cli.read_text(encoding="utf-8", errors="ignore")
+    errors: list[str] = []
+    for spec in command_registry():
+        if spec.stable:
+            continue
+        if spec.name in _PUBLIC_UNSTABLE_ALLOWLIST:
+            continue
+        if f"`{spec.name}`" in text or f"- {spec.name}" in text:
+            errors.append(f"internal/unstable command exposed in public docs: {spec.name}")
+    return (0 if not errors else 1), errors
+
+
+def check_command_alias_budget(repo_root: Path) -> tuple[int, list[str]]:
+    # Current policy: no command aliases in public command registry.
+    # Legacy/compat aliases are represented as distinct commands and should be minimized.
+    names = [spec.name for spec in command_registry()]
+    if len(names) != len(set(names)):
+        return 1, ["alias/name budget exceeded: duplicate command identifiers present"]
+    return 0, []
+
+
+def check_command_ownership_docs(repo_root: Path) -> tuple[int, list[str]]:
+    ownership_doc = repo_root / "packages/atlasctl/docs/ownership.md"
+    if not ownership_doc.exists():
+        return 1, ["packages/atlasctl/docs/ownership.md missing"]
+    text = ownership_doc.read_text(encoding="utf-8", errors="ignore")
+    errors: list[str] = []
+    owners = sorted({spec.owner for spec in command_registry()})
+    for owner in owners:
+        if owner not in text:
+            errors.append(f"command owner not documented in ownership.md: {owner}")
+    return (0 if not errors else 1), errors
 
 
 def check_command_help_docs_drift(repo_root: Path) -> tuple[int, list[str]]:
