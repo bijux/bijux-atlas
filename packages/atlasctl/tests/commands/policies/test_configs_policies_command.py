@@ -74,7 +74,7 @@ def test_policies_bypass_scan_fixture_detects_missing_relaxation_id(tmp_path: Pa
     (tmp_path / "makefiles").mkdir(parents=True)
     (tmp_path / "makefiles/root.mk").write_text("target:\n\t@echo BYPASS this check\n", encoding="utf-8")
 
-    from atlasctl.policies.command import _bypass_scan
+    from atlasctl.commands.policies.runtime.command import _bypass_scan
 
     code, payload = _bypass_scan(tmp_path)
     assert code == 1
@@ -126,7 +126,7 @@ def test_policies_relaxations_fixture_expiry_enforced(tmp_path: Path) -> None:
             encoding="utf-8",
         )
 
-    from atlasctl.policies.command import _check_relaxations
+    from atlasctl.commands.policies.runtime.command import _check_relaxations
 
     code, payload = _check_relaxations(tmp_path, require_docs_ref=False)
     assert code == 1

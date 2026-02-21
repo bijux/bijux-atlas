@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from atlasctl.policies.dir_entry_budgets import report_budgets
+from atlasctl.commands.policies.runtime.dir_entry_budgets import report_budgets
 from tests.helpers import golden_text
 
 

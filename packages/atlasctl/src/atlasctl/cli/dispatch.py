@@ -194,7 +194,7 @@ def dispatch_command(
         "list": ("atlasctl.commands.listing", "run_list_command"),
         "deps": ("atlasctl.commands.dev.deps.command", "run_deps_command"),
         "gen": ("atlasctl.commands.dev.gen.command", "run_gen_command"),
-        "policies": ("atlasctl.policies.command", "run_policies_command"),
+        "policies": ("atlasctl.commands.policies.runtime.command", "run_policies_command"),
         "repo": ("atlasctl.commands.dev.repo.command", "run_repo_command"),
         "make": ("atlasctl.commands.dev.make.command", "run_make_command"),
         "ops": ("atlasctl.commands.ops.runtime", "run_ops_command"),
@@ -213,7 +213,7 @@ def dispatch_command(
         module_name, attr = module_dispatch[ns.cmd]
         return import_attr(module_name, attr)(ctx, ns)
     if ns.cmd in {"ports", "artifacts", "k8s", "stack", "obs", "load", "e2e", "datasets", "cleanup", "scenario"}:
-        return import_attr("atlasctl.orchestrate.command", "run_orchestrate_command")(ctx, ns)
+        return import_attr("atlasctl.commands.ops.orchestrate.command", "run_orchestrate_command")(ctx, ns)
     if ns.cmd in DOMAINS:
         payload_obj = domain_runners[ns.cmd](ctx)
         payload = render_payload(payload_obj, as_json)

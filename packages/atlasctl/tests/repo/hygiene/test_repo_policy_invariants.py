@@ -29,11 +29,15 @@ from atlasctl.checks.repo.enforcement.check_structure import (
     check_checks_canonical_location,
 )
 from atlasctl.checks.repo.enforcement.package_shape import check_checks_domain_split
-from atlasctl.policies.culprits import check_critical_dir_count_trend
+from atlasctl.commands.policies.runtime.culprits import check_critical_dir_count_trend
 
 
 def _repo_root() -> Path:
-    return Path(__file__).resolve().parents[4]
+    path = Path(__file__).resolve()
+    for parent in path.parents:
+        if (parent / ".git").exists():
+            return parent
+    raise AssertionError("unable to locate repository root")
 
 
 def test_import_boundary_checks_pass() -> None:

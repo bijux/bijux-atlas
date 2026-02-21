@@ -10,7 +10,7 @@ from pathlib import Path
 
 from ..core.context import RunContext
 from ..core.fs import ensure_evidence_path
-from ..policies.culprits import budget_suite
+from ..commands.policies.runtime.culprits import budget_suite
 
 
 def _tool_version(cmd: list[str]) -> str:

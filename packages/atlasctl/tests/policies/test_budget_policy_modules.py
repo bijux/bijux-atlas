@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.policies.module_budgets import check_modules_per_domain
-from atlasctl.policies.tree_depth import check_tree_depth
+from atlasctl.commands.policies.runtime.module_budgets import check_modules_per_domain
+from atlasctl.commands.policies.runtime.tree_depth import check_tree_depth
 
 
 def _write_pyproject(repo: Path, body: str) -> None:

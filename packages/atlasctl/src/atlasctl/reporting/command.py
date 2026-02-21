@@ -4,7 +4,7 @@ import argparse
 import json
 from ..reporting.make_area_report import main as make_area_report_main
 from ..core.context import RunContext
-from ..policies.dir_entry_budgets import report_budgets
+from ..commands.policies.runtime.dir_entry_budgets import report_budgets
 from .actions import (
     _cmd_artifact_gc,
     _cmd_artifact_index,

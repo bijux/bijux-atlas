@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 from atlasctl.core.context import RunContext
-from atlasctl.policies.command import run_policies_command
+from atlasctl.commands.policies.runtime.command import run_policies_command
 
 
 def _ctx(root: Path) -> RunContext:

@@ -19,17 +19,17 @@ from .native import (
 from ..base import CheckDef
 from .enforcement.legacy_guard import check_legacy_package_absent
 from .enforcement.module_size import check_module_size
-from ...policies.culprits import (
+from ...commands.policies.runtime.culprits import (
     check_budget_drift_approval,
     check_critical_dir_count_trend,
     check_budget_exceptions_documented,
     check_budget_exceptions_sorted,
     check_budget_metric,
 )
-from ...policies.dir_budgets import check_loc_per_dir, check_modules_per_dir, check_py_files_per_dir
-from ...policies.dir_entry_budgets import check_dir_entry_budgets, check_py_files_per_dir_budget
-from ...policies.module_budgets import check_modules_per_domain
-from ...policies.tree_depth import check_tree_depth
+from ...commands.policies.runtime.dir_budgets import check_loc_per_dir, check_modules_per_dir, check_py_files_per_dir
+from ...commands.policies.runtime.dir_entry_budgets import check_dir_entry_budgets, check_py_files_per_dir_budget
+from ...commands.policies.runtime.module_budgets import check_modules_per_domain
+from ...commands.policies.runtime.tree_depth import check_tree_depth
 from .enforcement.cwd_usage import check_no_path_cwd_usage
 from .contracts.command_contracts import (
     check_command_alias_budget,

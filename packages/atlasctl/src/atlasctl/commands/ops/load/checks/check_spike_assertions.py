@@ -15,7 +15,7 @@ import sys
 import time
 from pathlib import Path
 
-from ...core.network import http_get
+from .....core.network import http_get
 
 
 def read_counter(summary: dict, metric: str) -> float:

@@ -13,7 +13,7 @@ _ROOT_MODULES = {
     "atlasctl.cli.main",
     "atlasctl.cli.surface_registry",
     "atlasctl.checks.registry",
-    "atlasctl.policies.command",
+    "atlasctl.commands.policies.runtime.command",
 }
 
 

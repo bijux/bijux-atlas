@@ -6,7 +6,7 @@ from pathlib import Path
 
 from ....core.context import RunContext
 from ....core.fs import ensure_evidence_path
-from ....policies.culprits import collect_dir_stats
+from ....commands.policies.runtime.culprits import collect_dir_stats
 
 
 def _density_rows(repo_root: Path) -> list[dict[str, object]]:
