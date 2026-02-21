@@ -9,6 +9,8 @@ from pathlib import Path
 
 from ....contracts.command import run_contracts_command
 from ....core.context import RunContext
+from ....checks.registry.ssot import generate_registry_json, legacy_checks, toml_entry_from_check, write_registry_toml
+from ....checks.registry.catalog import check_tags
 
 SELF_CLI = ["python3", "-m", "atlasctl.cli"]
 
@@ -79,6 +81,13 @@ def _generate_goldens(ctx: RunContext) -> tuple[int, dict[str, str]]:
 
 def run_gen_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     sub = ns.gen_cmd
+    if sub == "checks-registry":
+        checks = sorted(legacy_checks(), key=lambda c: c.check_id)
+        rows = sorted((toml_entry_from_check(check, groups=check_tags(check)) for check in checks), key=lambda row: str(row.get("id", "")))
+        write_registry_toml(ctx.repo_root, rows)
+        out, _changed = generate_registry_json(ctx.repo_root, check_only=False)
+        print(json.dumps({"schema_version": 1, "tool": "atlasctl", "status": "ok", "registry_toml": "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml", "registry_json": str(out.relative_to(ctx.repo_root))}, sort_keys=True))
+        return 0
     if sub == "contracts":
         return run_contracts_command(
             ctx,
@@ -137,3 +146,4 @@ def configure_gen_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     p_sub.add_parser("make-targets", help="generate make targets inventory artifacts")
     p_sub.add_parser("surface", help="generate repo public surface artifacts")
     p_sub.add_parser("scripting-surface", help="generate scripts/CLI surface artifacts")
+    p_sub.add_parser("checks-registry", help="generate checks REGISTRY.toml and REGISTRY.generated.json")

@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "checks": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "area": {
+            "type": "string"
+          },
+          "callable": {
+            "type": "string"
+          },
+          "category": {
+            "enum": [
+              "policy",
+              "hygiene",
+              "contract",
+              "drift",
+              "security"
+            ],
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "effects": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "evidence": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "external_tools": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "fix_hint": {
+            "type": "string"
+          },
+          "groups": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "id": {
+            "pattern": "^checks_[a-z0-9]+_[a-z0-9_]+$",
+            "type": "string"
+          },
+          "legacy_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "module": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "error",
+              "warn",
+              "info"
+            ],
+            "type": "string"
+          },
+          "speed": {
+            "enum": [
+              "fast",
+              "slow"
+            ],
+            "type": "string"
+          },
+          "timeout_ms": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "writes_allowed_roots": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "domain",
+          "area",
+          "owner",
+          "speed",
+          "groups",
+          "timeout_ms",
+          "module",
+          "callable",
+          "description"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "kind": {
+      "const": "atlasctl-checks-registry",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "checks"
+  ],
+  "title": "atlasctl.checks.registry.v1",
+  "type": "object"
+}
