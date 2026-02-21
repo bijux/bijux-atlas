@@ -99,3 +99,31 @@ def test_culprits_files_per_dir_alias(monkeypatch, tmp_path: Path, capsys) -> No
     code = policies_command.run_policies_command(_ctx(tmp_path), ns)
     assert code == 0
     assert '"metric": "files-per-dir"' in capsys.readouterr().out
+
+
+def test_check_dir_entry_budgets_json(monkeypatch, tmp_path: Path, capsys) -> None:
+    ns = argparse.Namespace(
+        policies_cmd="check-dir-entry-budgets",
+        json=True,
+        print_culprits=False,
+        top=5,
+        fail_on_warn=False,
+        out_file="",
+    )
+    monkeypatch.setattr(
+        budget_handlers,
+        "evaluate_budget",
+        lambda _repo, _metric, fail_on_warn=False, top_n=10: {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "metric": "entries-per-dir",
+            "status": "ok",
+            "fail_count": 0,
+            "warn_count": 0,
+            "items": [],
+            "culprits": [],
+        },
+    )
+    code = policies_command.run_policies_command(_ctx(tmp_path), ns)
+    assert code == 0
+    assert '"metric": "entries-per-dir"' in capsys.readouterr().out
