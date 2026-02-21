@@ -85,6 +85,18 @@ def dispatch_command(
         write_payload(ctx, ns.out_file, rendered)
         print(rendered)
         return 0
+    if ns.cmd == "run-id":
+        build_run_id = import_attr("atlasctl.run_id.format", "build_run_id")
+        run_id = build_run_id(ctx.git_sha, ns.prefix)
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "run_id": run_id,
+            "prefix": ns.prefix,
+        }
+        print(dumps_json(payload, pretty=not (as_json or ns.json)) if (as_json or ns.json) else run_id)
+        return 0
     if ns.cmd == "explain":
         explain_name = _resolve_explain_name()
         if getattr(ns, "subject_or_name", "") == "command":

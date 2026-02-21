@@ -28,12 +28,14 @@ Public command index (stable surface). Command wiring is registry-first via `src
 - `lint`
 - `list`
 - `load`
+- `make`
 - `obs`
 - `ops`
 - `policies`
 - `registry`
 - `repo`
 - `report`
+- `run-id`
 - `suite`
 - `stack`
 - `test`

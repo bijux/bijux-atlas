@@ -7,6 +7,7 @@ from pathlib import Path
 
 from ..checks.registry import get_check
 from ..cli.surface_registry import command_registry
+from ..make.public_targets import entry_map, load_ownership
 from ..suite.manifests import load_first_class_suites
 
 
@@ -29,6 +30,33 @@ def describe_command(name: str) -> dict[str, object]:
 
 
 def describe_thing(repo_root: Path, thing: str) -> dict[str, object]:
+    if thing.startswith("make:"):
+        target = thing.split(":", 1)[1]
+        entries = entry_map()
+        if target in entries:
+            ownership = load_ownership().get(target, {})
+            entry = entries[target]
+            return {
+                "kind": "make-target",
+                "name": target,
+                "contract": "atlasctl.make.surface.v1",
+                "purpose": entry.get("description", ""),
+                "examples": [f"make {target}", f"atlasctl make explain {target}", f"atlasctl make run {target} --json"],
+                "touches": ["makefiles/root.mk", "configs/make/public-targets.json"],
+                "tools": ["make", "atlasctl"],
+                "owner": ownership.get("owner", ""),
+                "area": ownership.get("area", entry.get("area", "")),
+            }
+        return {
+            "kind": "make-target",
+            "name": target,
+            "contract": "atlasctl.make.surface.v1",
+            "purpose": "",
+            "examples": ["atlasctl make list-public-targets --json"],
+            "touches": ["configs/make/public-targets.json"],
+            "tools": ["atlasctl"],
+            "note": "unknown public make target",
+        }
     check = get_check(thing)
     if check is not None:
         source = inspect.getsourcefile(check.fn)
