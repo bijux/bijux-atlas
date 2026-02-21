@@ -698,6 +698,7 @@ release-dry-run: ## Build + docs + ops smoke release rehearsal
 	@ISO_ROOT=artifacts/isolate/release-dry-run $(MAKE) lint
 	@ISO_ROOT=artifacts/isolate/release-dry-run $(MAKE) policy-audit
 	@ISO_ROOT=artifacts/isolate/release-dry-run $(MAKE) test
+	@./bin/atlasctl suite run refgrade_proof --json --target-dir artifacts/isolate/release-dry-run/atlasctl-suite-proof >/dev/null
 	@ISO_ROOT=artifacts/isolate/release-dry-run $(MAKE) docs
 	@ISO_ROOT=artifacts/isolate/release-dry-run $(MAKE) ops-full-pr
 
