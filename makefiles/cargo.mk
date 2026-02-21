@@ -214,11 +214,11 @@ query-plan-gate:
 	@cargo test -p bijux-atlas-query explain_plan_snapshots_by_query_class -- --nocapture
 	@cargo test -p bijux-atlas-query no_table_scan_assertion_for_indexed_query_plan -- --nocapture
 	@./bin/atlasctl contracts check --checks sqlite-indexes
-	@./bin/atlasctl run packages/atlasctl/src/atlasctl/load/run_critical_queries.py
+	@./bin/atlasctl run packages/atlasctl/src/atlasctl/load/run/run_critical_queries.py
 
 critical-query-check:
 	@$(ATLAS_SCRIPTS) contracts check --checks sqlite-indexes
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/run_critical_queries.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/run/run_critical_queries.py
 
 cold-start-bench:
 	@./ops/load/scripts/cold_start_benchmark.sh

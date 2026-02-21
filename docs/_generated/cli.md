@@ -28,5 +28,6 @@ Top-level namespaces:
 - version
 - env
 - self-check
+- legacy
 - compat (experimental)
 - completion (experimental)
