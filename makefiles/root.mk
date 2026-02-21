@@ -397,7 +397,7 @@ lane-scripts: ## Lane: scripts lint/tests/audit
 	@$(MAKE) -s scripts/check
 
 lane-configs: ## Lane: configs checks and drift gates
-	@$(call with_iso,lane-configs,$(MAKE) -s configs-check budgets/check)
+	@$(call with_iso,lane-configs,$(MAKE) -s configs-check budgets/check atlasctl-budgets)
 
 lane-policies: ## Lane: policy checks and boundary enforcement
 	@$(call with_iso,lane-policies,$(MAKE) -s ci-deny policy-lint policy-schema-drift policy-audit policy-enforcement-status policy-allow-env-lint policies/boundaries-check)
