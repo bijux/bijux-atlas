@@ -9,6 +9,14 @@ permissions:
   contents: read
 
 jobs:
+  atlasctl-suite-ci-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run atlasctl CI suite only
+        run: ./bin/atlasctl --quiet suite run ci --json
+
   root-and-ci-only:
     runs-on: ubuntu-latest
     timeout-minutes: 120

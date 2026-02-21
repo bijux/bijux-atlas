@@ -85,8 +85,8 @@ scripts-test: ## Run scripts-focused tests
 	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/ruff" check --config packages/atlasctl/pyproject.toml packages/atlasctl/src packages/atlasctl/tests
 	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/mypy" packages/atlasctl/src/atlasctl/core packages/atlasctl/src/atlasctl/contracts
 	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/python" -m compileall -q packages/atlasctl/src
-	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/pytest" -q -m unit packages/atlasctl/tests
-	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/pytest" -q -m integration packages/atlasctl/tests
+	@$(ATLAS_SCRIPTS) test run unit
+	@$(ATLAS_SCRIPTS) test run integration
 	@$(ATLAS_SCRIPTS) validate-output --schema atlasctl.surface.v1 --file packages/atlasctl/tests/goldens/samples/surface.sample.json
 	@$(ATLAS_SCRIPTS) surface --json > artifacts/scripts/surface.json
 	@$(ATLAS_SCRIPTS) validate-output --schema atlasctl.surface.v1 --file artifacts/scripts/surface.json
@@ -102,7 +102,7 @@ scripts-deps-audit: ## Dependency policy audit for scripts package (pip-audit if
 
 internal/scripts/test-hermetic: ## Run scripts package tests with --no-network guard enabled
 	@$(MAKE) -s scripts-install
-	@BIJUX_SCRIPTS_TEST_NO_NETWORK=1 PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/pytest" -q packages/atlasctl/tests
+	@BIJUX_SCRIPTS_TEST_NO_NETWORK=1 $(ATLAS_SCRIPTS) test run unit
 
 scripts-check: ## Run scripts lint + tests as a single gate
 	@$(MAKE) -s internal/scripts/install-lock
