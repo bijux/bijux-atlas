@@ -326,7 +326,7 @@ def main(argv: list[str] | None = None) -> int:
         restore_network = install_no_network_guard()
 
     try:
-        should_emit_diag = (not ctx.quiet) and (ctx.output_format != "json")
+        should_emit_diag = bool(ctx.verbose) and (not ctx.quiet) and (ctx.output_format != "json")
         if should_emit_diag:
             print(f"run_id={ctx.run_id}", file=sys.stderr)
         if ctx.require_clean_git and ctx.git_dirty:
