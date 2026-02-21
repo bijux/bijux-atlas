@@ -12,6 +12,8 @@ def test_test_inventory_json() -> None:
     assert payload["status"] == "ok"
     assert payload["total_tests"] >= 1
     assert any(row["domain"] == "cli" for row in payload["domains"])
+    names = {row["name"] for row in payload["taxonomy"]}
+    assert {"unit", "contract", "golden", "integration", "repo-sim"}.issubset(names)
 
 
 def test_test_refresh_goldens_json() -> None:
