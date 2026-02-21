@@ -1,0 +1,21 @@
+{
+  "checks": [
+    {
+      "category": "hygiene",
+      "domain": "repo",
+      "id": "repo.module_size",
+      "owners": [
+        "platform"
+      ],
+      "severity": "error",
+      "tags": [
+        "repo",
+        "refgrade_required"
+      ]
+    }
+  ],
+  "schema_name": "atlasctl.check-taxonomy.v1",
+  "schema_version": 1,
+  "status": "ok",
+  "tool": "atlasctl"
+}

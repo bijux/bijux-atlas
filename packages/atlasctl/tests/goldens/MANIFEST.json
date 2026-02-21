@@ -29,6 +29,10 @@
       "path": "contracts/contracts-list.json.golden"
     },
     {
+      "name": "contracts-validate-self.json.golden",
+      "path": "contracts/contracts-validate-self.json.golden"
+    },
+    {
       "name": "explain.check.json.golden",
       "path": "contracts/explain.check.json.golden"
     },
@@ -85,6 +89,10 @@
       "path": "samples/check-list-v1.sample.json"
     },
     {
+      "name": "check-taxonomy-v1.sample.json",
+      "path": "samples/check-taxonomy-v1.sample.json"
+    },
+    {
       "name": "commands-v1.sample.json",
       "path": "samples/commands-v1.sample.json"
     },
@@ -107,6 +115,10 @@
     {
       "name": "runtime_contracts-v1.sample.json",
       "path": "samples/runtime_contracts-v1.sample.json"
+    },
+    {
+      "name": "suite-manifests-v1.sample.json",
+      "path": "samples/suite-manifests-v1.sample.json"
     },
     {
       "name": "suite-run-v1.sample.json",
