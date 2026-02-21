@@ -1,6 +1,6 @@
 # Atlasctl Docs Index
 
-Use this page as the entrypoint for package-level documentation.
+This is the single documentation entrypoint for `packages/atlasctl`.
 
 ## Core Docs
 
@@ -25,6 +25,10 @@ Use this page as the entrypoint for package-level documentation.
 - [Migration Index](migration/index.md)
 - [Legacy Removal Plan](migration/legacy-removal-plan.md)
 - [Epic G Make Thin Wrapper](migration/epic-g-make-thin-wrapper.md)
+
+## Decisions
+
+- [Decisions Index](decisions/INDEX.md)
 
 ## Commands
 
