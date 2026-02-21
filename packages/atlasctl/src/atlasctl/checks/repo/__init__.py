@@ -25,8 +25,11 @@ from ...policies.culprits import (
 )
 from .enforcement.cwd_usage import check_no_path_cwd_usage
 from .contracts.command_contracts import (
+    check_command_alias_budget,
     check_command_help_docs_drift,
     check_command_metadata_contract,
+    check_command_ownership_docs,
+    check_internal_commands_not_public,
     check_no_duplicate_command_names,
 )
 from .enforcement.argparse_policy import check_argparse_policy
@@ -55,6 +58,7 @@ from .reachability import check_repo_check_modules_registered
 from .enforcement.refgrade_proof import check_refgrade_target_shape
 from .enforcement.import_policy import (
     check_command_import_lint,
+    check_checks_import_lint,
     check_contract_import_boundaries,
     check_cold_import_budget,
     check_compileall_gate,
@@ -67,6 +71,7 @@ from .enforcement.import_policy import (
     check_no_modern_imports_from_legacy,
     check_runcontext_single_builder,
 )
+from .enforcement.boundaries.effect_boundaries import check_forbidden_effect_calls, check_subprocess_boundary
 from .contracts.pyproject_contracts import (
     check_dependency_gate_targets,
     check_deps_workflow_doc,
@@ -83,6 +88,11 @@ from .contracts.pyproject_contracts import (
     check_requirements_sync_with_pyproject,
 )
 from .contracts.suite_inventory import check_suite_inventory_policy
+from .contracts.test_guardrails import (
+    check_check_test_coverage,
+    check_command_test_coverage,
+    check_test_duplicate_expectations,
+)
 from ..layout.root import (
     FORBIDDEN_PATHS_DESCRIPTION,
     FORBIDDEN_PATHS_CHECK_ID,
@@ -241,6 +251,9 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.command_metadata_contract", "repo", "ensure command metadata includes touches/tools", 400, check_command_metadata_contract, fix_hint="Add touches/tools metadata in cli registry."),
     CheckDef("repo.argparse_policy", "repo", "restrict direct argparse parser construction to canonical parser modules", 300, check_argparse_policy, fix_hint="Move parser construction into cli/parser.py or commands/*/parser.py."),
     CheckDef("repo.no_duplicate_command_names", "repo", "ensure command names are unique", 300, check_no_duplicate_command_names, fix_hint="Rename duplicate command/alias entries."),
+    CheckDef("repo.command_alias_budget", "repo", "enforce command alias/name budget", 300, check_command_alias_budget, fix_hint="Remove duplicate alias identifiers from command surface."),
+    CheckDef("repo.internal_commands_not_public", "repo", "ensure unstable/internal commands are not exposed in public docs", 300, check_internal_commands_not_public, fix_hint="Mark internal commands stable=false and exclude them from public docs."),
+    CheckDef("repo.command_ownership_docs", "repo", "ensure command owners are documented", 300, check_command_ownership_docs, fix_hint="Document all command owners in packages/atlasctl/docs/ownership.md."),
     CheckDef("repo.command_help_docs_drift", "repo", "check command help/docs drift", 500, check_command_help_docs_drift, fix_hint="Regenerate docs/_generated/cli.md from current CLI surface."),
     CheckDef("repo.public_api_exports", "repo", "enforce docs/public-api.md coverage for __all__ exports", 300, check_public_api_exports, fix_hint="Document exported symbols in docs/public-api.md or remove them from __all__."),
     CheckDef("repo.type_coverage", "repo", "enforce minimum type coverage in core/contracts", 600, check_type_coverage, fix_hint="Add function annotations in core/contracts until the threshold is met."),
@@ -259,6 +272,9 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.dependency_owner_justification", "repo", "ensure each dependency has owner and justification", 300, check_dependency_owner_justification, fix_hint="Add dependency ownership + justification entries in docs/deps.md."),
     CheckDef("repo.dependency_gate_targets", "repo", "ensure dependency gate make targets exist", 300, check_dependency_gate_targets, fix_hint="Define deps-lock/deps-sync/deps-check-venv/deps-cold-start in makefiles/scripts.mk."),
     CheckDef("repo.deps_command_surface", "repo", "ensure atlasctl deps command surface is runnable", 300, check_deps_command_surface, fix_hint="Wire atlasctl deps parser/runner and keep command import path valid."),
+    CheckDef("repo.tests_no_duplicate_expectations", "repo", "forbid duplicate test function names across test modules", 300, check_test_duplicate_expectations, fix_hint="Rename duplicated test_* functions to avoid conflicting expectations."),
+    CheckDef("repo.command_test_coverage", "repo", "ensure each command has explicit test coverage marker", 300, check_command_test_coverage, fix_hint="Add at least one test mentioning each command."),
+    CheckDef("repo.check_test_coverage", "repo", "ensure each registered check has test or golden coverage marker", 300, check_check_test_coverage, fix_hint="Add test/golden references for uncovered checks."),
     CheckDef(
         "repo.suite_inventory_policy",
         "repo",
@@ -277,6 +293,9 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.contract_import_boundaries", "repo", "enforce contracts/core-contracts import boundaries", 300, check_contract_import_boundaries, fix_hint="Commands/checks should import schema contracts from atlasctl.contracts only."),
     CheckDef("repo.runcontext_single_builder", "repo", "ensure RunContext is built only in core/context.py", 300, check_runcontext_single_builder, fix_hint="Use RunContext.from_args and avoid constructing context-like objects elsewhere."),
     CheckDef("repo.command_import_lint", "repo", "enforce command module import boundaries", 300, check_command_import_lint, fix_hint="Restrict command imports to core/contracts/checks/adapters/commands/cli."),
+    CheckDef("repo.checks_import_lint", "repo", "enforce checks module import boundaries", 300, check_checks_import_lint, fix_hint="Restrict checks imports to core/contracts/reporting/adapters/checks."),
+    CheckDef("repo.effect_boundaries", "repo", "forbid direct subprocess/env/write-text effects outside approved core boundaries", 300, check_forbidden_effect_calls, fix_hint="Route effects through core.exec/core.env/core.fs or approved generators."),
+    CheckDef("repo.subprocess_boundary", "repo", "restrict subprocess imports to core execution boundary", 300, check_subprocess_boundary, fix_hint="Use core.exec/core.process for subprocess calls."),
     CheckDef("repo.compileall_gate", "repo", "ensure atlasctl source compiles with compileall", 300, check_compileall_gate, fix_hint="Fix syntax/import issues until python -m compileall passes."),
     CheckDef("repo.import_smoke", "repo", "ensure atlasctl package imports in minimal environment", 300, check_import_smoke, fix_hint="Keep top-level imports light and dependency-safe."),
     CheckDef("repo.cold_import_budget", "repo", "enforce cold import time budget for atlasctl package", 300, check_cold_import_budget, fix_hint="Reduce top-level imports and defer heavy initialization."),
