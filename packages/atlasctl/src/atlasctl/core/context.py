@@ -27,6 +27,7 @@ class RunContext:
     quiet: bool
     require_clean_git: bool
     no_network: bool
+    log_json: bool
     git_sha: str
     git_dirty: bool
 
@@ -77,6 +78,7 @@ class RunContext:
         verbose: bool = False,
         quiet: bool = False,
         require_clean_git: bool = False,
+        log_json: bool = False,
     ) -> "RunContext":
         repo_root = find_repo_root()
         git_ctx = read_git_context(repo_root)
@@ -104,6 +106,7 @@ class RunContext:
             quiet=quiet,
             require_clean_git=require_clean_git,
             no_network=resolved_no_network,
+            log_json=log_json,
             git_sha=git_ctx.sha,
             git_dirty=git_ctx.is_dirty,
         )

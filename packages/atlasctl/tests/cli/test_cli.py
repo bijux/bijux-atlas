@@ -134,3 +134,4 @@ def test_no_network_mode_blocks_connect() -> None:
     proc = _run_cli("--no-network", "run", str(probe.relative_to(ROOT)))
     assert proc.returncode == 2
     assert "network disabled by --no-network" in proc.stderr
+
