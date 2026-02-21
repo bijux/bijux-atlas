@@ -41,7 +41,7 @@ Does not define scientific curation policy.
 
 ```bash
 $ make contracts
-$ make dev-test-all
+$ make dev-test
 $ make ops-smoke
 ```
 

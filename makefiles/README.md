@@ -30,7 +30,6 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
   - `makefiles/ci.mk`
   - `makefiles/cargo.mk`
   - `makefiles/dev.mk`
-  - `makefiles/cargo-dev.mk` (deprecated compatibility shim)
   - `makefiles/docs.mk`
   - `makefiles/ops.mk`
   - `makefiles/policies.mk`
@@ -129,7 +128,6 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 
 - `makefiles/cargo.mk`: CI-safe, deterministic cargo targets only.
 - `makefiles/dev.mk`: canonical local developer wrappers for atlasctl DEV commands.
-- `makefiles/cargo-dev.mk`: deprecated compatibility aliases that fail with migration guidance.
 - Profile SSOT: `docs/development/cargo-profiles-ssot.md`.
 
 ## Failure modes

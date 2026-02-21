@@ -6,7 +6,7 @@ SHELL := /bin/sh
 REGISTRY_CATEGORIES := DEV DOCS CONTRACTS OPS_QUICK OPS RELEASE CI TOOLING META
 
 REGISTRY_DEV_DESC := dev
-REGISTRY_DEV_TARGETS := dev-fmt dev-lint dev-check dev-test dev-test-all dev-coverage dev-audit dev-ci dev-clean local local-full
+REGISTRY_DEV_TARGETS := dev-fmt dev-lint dev-test dev-coverage ci local local-full
 
 REGISTRY_DOCS_DESC := docs
 REGISTRY_DOCS_TARGETS := docs docs-serve docs-freeze docs-hardening

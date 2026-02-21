@@ -44,6 +44,6 @@ Protects cheap/critical reads during traffic spikes while bounding expensive wor
 ## How to verify
 
 ```bash
-make dev-test-all
+make dev-test
 make ops-load-shedding
 ```

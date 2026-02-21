@@ -18,8 +18,8 @@ ALIAS_OF: dict[str, str] = {
     "_lint-clippy": "internal/cargo/lint",
     "_test": "internal/cargo/test",
     "_test-all": "internal/cargo/test",
-    "test-all": "internal/cargo/test",
-    "test-contracts": "internal/cargo/test",
+    "test-all": "test",
+    "test-contracts": "test",
     "_audit": "internal/cargo/audit",
     "_coverage": "coverage",
 }
@@ -53,6 +53,18 @@ def _classify_target(target: str, source_file: str) -> str:
 
 
 def _map_to_intent(target: str) -> str | None:
+    if target == "fmt":
+        return "atlasctl dev fmt"
+    if target == "lint":
+        return "atlasctl dev lint"
+    if target == "check":
+        return "atlasctl dev check"
+    if target == "test":
+        return "atlasctl dev test"
+    if target == "audit":
+        return "atlasctl dev audit"
+    if target == "coverage":
+        return "atlasctl dev coverage"
     if target in {"ci-fmt", "internal/cargo/fmt", "_fmt"}:
         return "atlasctl dev fmt"
     if target in {"ci-clippy", "internal/cargo/lint", "_lint", "_lint-rustfmt", "_lint-configs", "_lint-docs", "_lint-clippy"}:
@@ -61,7 +73,7 @@ def _map_to_intent(target: str) -> str | None:
         return "atlasctl dev test"
     if target in {"ci-deny", "ci-audit", "ci-license-check", "internal/cargo/audit", "_audit"}:
         return "atlasctl dev audit"
-    if target in {"coverage", "ci-coverage", "_coverage"}:
+    if target in {"ci-coverage", "_coverage"}:
         return "atlasctl dev coverage"
     if target.startswith("ci-"):
         return f"atlasctl dev ci run --lane {target}"

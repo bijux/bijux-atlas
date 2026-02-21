@@ -32,7 +32,7 @@ Missing control documentation can create unsafe deployment defaults.
 ## How to verify
 
 ```bash
-$ make dev-audit
+$ atlasctl dev audit
 ```
 
 Expected output: security checks pass with no errors.
