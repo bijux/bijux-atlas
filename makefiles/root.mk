@@ -8,6 +8,7 @@ include makefiles/env.mk
 include makefiles/python.mk
 include makefiles/_macros.mk
 include makefiles/dev.mk
+include makefiles/ci.mk
 include makefiles/docs.mk
 include makefiles/scripts.mk
 include makefiles/path_contract.mk
@@ -18,7 +19,7 @@ include makefiles/product.mk
 include makefiles/ops.mk
 include makefiles/policies.mk
 
-check: ## Umbrella check: scripts package checks + cargo checks + make contracts
+repo-check: ## Umbrella check: scripts package checks + cargo checks + make contracts
 	@$(MAKE) -s check-scripts
 	@./bin/atlasctl dev check
 	@$(SCRIPTS) check make-help
