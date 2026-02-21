@@ -6,6 +6,8 @@ import json
 from atlasctl.commands.dev.command import run_dev_command
 from atlasctl.commands.dev.cargo.command import DevCargoParams, run_dev_cargo
 from atlasctl.core.context import RunContext
+from atlasctl.core.errors import ScriptError
+import pytest
 
 
 def test_dev_fmt_invokes_cargo_runtime(monkeypatch) -> None:
@@ -91,3 +93,10 @@ def test_dev_forward_propagates_quiet_and_json(monkeypatch) -> None:
     assert rc == 0
     assert "--quiet" in seen
     assert "--format" in seen and "json" in seen
+
+
+def test_dev_fmt_refuses_without_isolate(monkeypatch) -> None:
+    monkeypatch.setattr("atlasctl.commands.dev.cargo.command._build_isolate_env", lambda _ctx, _action: {})
+    ctx = RunContext.from_args("dev-no-isolate", None, "test", False)
+    with pytest.raises(ScriptError):
+        run_dev_cargo(ctx, DevCargoParams(action="fmt", json_output=True, verbose=False))
