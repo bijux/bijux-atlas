@@ -26,7 +26,7 @@ _FORBIDDEN_TOOL_CONFIGS = (
     "tox.ini",
 )
 
-_REQUIRED_OPTIONAL_DEP_GROUPS = ("dev", "test", "ops", "docs")
+_REQUIRED_OPTIONAL_DEP_GROUPS = ("dev", "ci", "test", "ops", "docs")
 _ALLOWED_TOOL_PREFIXES = {"setuptools", "pytest", "ruff", "mypy", "coverage"}
 _DEPS_WORKFLOW_MARKER = "Workflow: pip-tools (requirements.in + requirements.lock.txt)"
 _REQ_ALLOWED = {"requirements.in", "requirements.lock.txt"}
@@ -91,6 +91,26 @@ def check_optional_dependency_groups(repo_root: Path) -> tuple[int, list[str]]:
     body = block.group(1) if block else ""
     declared = set(re.findall(r"(?m)^([A-Za-z0-9_-]+)\s*=", body))
     errors = [f"missing required optional dependency group: {name}" for name in _REQUIRED_OPTIONAL_DEP_GROUPS if name not in declared]
+    for name in sorted(declared):
+        m = re.search(rf'(?ms)^{re.escape(name)}\s*=\s*\[(.*?)\]\s*(?:^[A-Za-z0-9_-]+\s*=|\Z)', body)
+        vals = re.findall(r'"([^"]+)"', m.group(1) if m else "")
+        if not vals:
+            errors.append(f"optional dependency group must be non-empty: {name}")
+    return (0 if not errors else 1), errors
+
+
+def check_python_requires_version_and_ci(repo_root: Path) -> tuple[int, list[str]]:
+    pyproject = _read_pyproject(repo_root)
+    requires = re.search(r'(?m)^requires-python\s*=\s*"([^"]+)"\s*$', pyproject)
+    errors: list[str] = []
+    if not requires:
+        return 1, ["missing requires-python in pyproject [project] block"]
+    required = requires.group(1)
+    if required != ">=3.11":
+        errors.append(f"requires-python must be pinned to >=3.11 (found: {required})")
+    ci = (repo_root / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    if 'python-version: "3.11"' not in ci and "python-version: '3.11'" not in ci:
+        errors.append("ci workflow must set Python 3.11 via actions/setup-python")
     return (0 if not errors else 1), errors
 
 

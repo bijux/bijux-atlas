@@ -9,7 +9,10 @@ description = "Internal Python tooling package for bijux-atlas scripts"
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
-dependencies = []
+dependencies = [
+  "jsonschema==4.25.1",
+  "tomli>=2.0.0; python_version < '3.11'",
+]
 
 [project.urls]
 Documentation = "docs/index.md"
@@ -22,6 +25,12 @@ dev = [
   "jsonschema==4.25.1",
   "hypothesis==6.138.14",
   "mypy==1.17.1",
+  "tomli>=2.0.0; python_version < '3.11'",
+]
+ci = [
+  "pytest==8.3.5",
+  "pytest-timeout==2.3.1",
+  "ruff==0.13.2",
 ]
 test = [
   "pytest==8.3.5",
@@ -29,7 +38,7 @@ test = [
   "hypothesis==6.138.14",
 ]
 ops = [
-  "jsonschema==4.25.1",
+  "kubernetes==31.0.0",
 ]
 docs = [
   "mkdocs==1.6.1",
