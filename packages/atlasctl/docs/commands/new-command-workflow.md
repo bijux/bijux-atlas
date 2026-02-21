@@ -1,6 +1,6 @@
 # How To Add A New Command
 
-1. Add the command to `packages/atlasctl/src/atlasctl/cli/registry.py` with complete metadata:
+1. Add the command to `packages/atlasctl/src/atlasctl/cli/surface_registry.py` with complete metadata:
    `owner`, `doc_link`, `purpose`, `examples`, `touches`, `tools`, and effect metadata.
 2. Add parser wiring in `packages/atlasctl/src/atlasctl/cli/main.py` (and command module parser if domain-specific).
 3. Add command dispatch in `packages/atlasctl/src/atlasctl/cli/dispatch.py`.

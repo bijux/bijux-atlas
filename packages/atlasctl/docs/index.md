@@ -5,6 +5,7 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 ## Core Docs
 
 - [Architecture](architecture.md)
+- [Naming Conventions](architecture/naming-conventions.md)
 - [Control Plane](control-plane/index.md)
 - [Control Plane Surface](control-plane/surface.md)
 - [Control Plane Execution Model](control-plane/execution-model.md)
@@ -15,7 +16,7 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 - [Compatibility Promise](compatibility-promise.md)
 - [Contracts](contracts.md)
 - [Ownership](ownership.md)
-- [Public API](public-api.md)
+- [Public API](PUBLIC_API.md)
 - [Versioning](versioning.md)
 - [Environment Variables](env.md)
 - [Dependency Workflow](deps.md)
