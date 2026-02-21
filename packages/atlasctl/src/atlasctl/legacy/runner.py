@@ -4,10 +4,10 @@ import os
 import runpy
 import sys
 
-from .errors import ScriptError
-from .exit_codes import ERR_CONFIG
-from .core.env import setdefault as env_setdefault
-from .run_context import RunContext
+from ..core.env import setdefault as env_setdefault
+from ..errors import ScriptError
+from ..exit_codes import ERR_CONFIG
+from ..run_context import RunContext
 
 
 def run_legacy_script(script_path: str, args: list[str], ctx: RunContext) -> int:

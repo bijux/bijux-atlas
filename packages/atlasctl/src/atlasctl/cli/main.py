@@ -23,7 +23,7 @@ from ..core.repo_root import try_find_repo_root
 from ..errors import ScriptError
 from ..exit_codes import ERR_CONFIG, ERR_INTERNAL
 from ..network_guard import install_no_network_guard
-from ..runner import run_legacy_script
+from ..legacy.runner import run_legacy_script
 from ..surface import run_surface
 from .constants import CONFIGURE_HOOKS, DOMAINS, NO_NETWORK_FLAG_EXPIRY
 from .output import build_base_payload, emit, no_network_flag_expired, render_error, resolve_output_format
