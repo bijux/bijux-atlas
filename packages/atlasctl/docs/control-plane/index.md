@@ -27,3 +27,4 @@ When moving modules, keep the old import path working only within the same PR, t
 - [Control Plane Surface](surface.md)
 - [Execution Model](execution-model.md)
 - [Module Taxonomy](taxonomy.md)
+- [Shell Policy](shell-policy.md)

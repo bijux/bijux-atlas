@@ -12,6 +12,7 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 - [Module Taxonomy](control-plane/taxonomy.md)
 - [Control Plane Suites](control-plane/suites.md)
 - [Legacy Policy](control-plane/legacy-policy.md)
+- [Shell Policy](control-plane/shell-policy.md)
 - [How To Split A Module](architecture/how-to-split-a-module.md)
 - [Budget Policies and Refactoring](architecture/budgets.md)
 - [CLI Stability](cli-stability.md)
