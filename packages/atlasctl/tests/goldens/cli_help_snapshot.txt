@@ -4,11 +4,11 @@ usage: atlasctl [-h] [--version] [--json] [--run-id RUN_ID]
                 [--cwd CWD] [--profile PROFILE] [--format {text,json}]
                 [--network {allow,forbid}] [--no-network]
                 [--require-clean-git] [--verbose | --quiet]
-                {version,env,paths,self-check,help,explain,run,validate-output,surface,commands,config,registry,layout,configs,contracts,docker,ci,check,deps,gen,policies,docs,make,migration,ops,inventory,lint,test,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,python,doctor,completion,clean,fix}
+                {version,env,paths,self-check,help,explain,run,validate-output,surface,commands,config,registry,layout,configs,contracts,docker,ci,check,deps,gen,policies,docs,make,migration,ops,inventory,lint,test,suite,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,python,doctor,completion,clean,fix}
                 ...
 
 positional arguments:
-  {version,env,paths,self-check,help,explain,run,validate-output,surface,commands,config,registry,layout,configs,contracts,docker,ci,check,deps,gen,policies,docs,make,migration,ops,inventory,lint,test,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,python,doctor,completion,clean,fix}
+  {version,env,paths,self-check,help,explain,run,validate-output,surface,commands,config,registry,layout,configs,contracts,docker,ci,check,deps,gen,policies,docs,make,migration,ops,inventory,lint,test,suite,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,python,doctor,completion,clean,fix}
     version             print versions and git context
     env                 manage isolated python environment and artifact-root
                         policy
@@ -38,9 +38,10 @@ positional arguments:
     inventory           generate inventory docs and JSON from SSOT
     lint                run canonical lint suites
     test                run atlasctl test suites
+    suite               run atlasctl named suites
     report              unified report and scorecard commands
     compat              scripts compatibility shim inspection commands
-    legacy              legacy migration debt audit helpers
+    legacy              legacy inventory and removal tracking
     ports               port registry and reservation commands
     artifacts           artifacts helpers
     k8s                 k8s wrappers
