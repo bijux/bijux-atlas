@@ -29,15 +29,15 @@ def _extract_public_api_symbols(api_doc: Path) -> set[str]:
 def check_public_api_exports(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
     init_path = repo_root / "packages/atlasctl/src/atlasctl/__init__.py"
-    api_doc = repo_root / "packages/atlasctl/PUBLIC_API.md"
+    api_doc = repo_root / "packages/atlasctl/docs/public-api.md"
     if not init_path.exists():
         return 1, ["missing packages/atlasctl/src/atlasctl/__init__.py"]
     if not api_doc.exists():
-        return 1, ["missing packages/atlasctl/PUBLIC_API.md"]
+        return 1, ["missing packages/atlasctl/docs/public-api.md"]
 
     exported = _extract_dunder_all_symbols(init_path)
     documented = _extract_public_api_symbols(api_doc)
     undocumented = sorted(name for name in exported if name not in documented)
     for name in undocumented:
-        errors.append(f"__init__.__all__ symbol not documented in PUBLIC_API.md: {name}")
+        errors.append(f"__init__.__all__ symbol not documented in docs/public-api.md: {name}")
     return (0 if not errors else 1), errors

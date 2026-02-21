@@ -109,7 +109,7 @@ def _migration_exceptions(repo_root: Path) -> list[MigrationException]:
 
 
 def _map_entries(repo_root: Path) -> list[dict[str, str]]:
-    path = repo_root / "packages/atlasctl/MIGRATION_MAP.md"
+    path = repo_root / "packages/atlasctl/docs/migration/map.md"
     if not path.exists():
         return []
     lines = path.read_text(encoding="utf-8").splitlines()
@@ -131,7 +131,7 @@ def _migration_status_payload(repo_root: Path) -> dict[str, object]:
     map_entries = _map_entries(repo_root)
     mapped = {row["legacy"] for row in map_entries}
     blocked_map = {
-        row["legacy"]: "migration.todo entry in MIGRATION_MAP.md"
+        row["legacy"]: "migration.todo entry in docs/migration/map.md"
         for row in map_entries
         if "migration.todo" in row["module"]
     }
