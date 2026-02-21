@@ -7,6 +7,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+from .cargo.command import DevCargoParams, run_dev_cargo
 from ...core.context import RunContext
 
 _DEV_FORWARD: dict[str, str] = {
@@ -17,12 +18,6 @@ _DEV_FORWARD: dict[str, str] = {
     "ci": "ci",
     "commands": "commands",
     "explain": "explain",
-}
-_DEV_MAKE_SHORTCUTS: dict[str, str] = {
-    "fmt": "fmt",
-    "lint": "lint",
-    "coverage": "coverage",
-    "audit": "audit",
 }
 _DEV_ITEMS: tuple[str, ...] = (
     "audit",
@@ -66,23 +61,29 @@ def run_dev_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return 0
     if sub == "split-module":
         return _run_split_module(ctx, ns)
-    if sub == "test" and not getattr(ns, "args", []):
-        proc = subprocess.run(
-            ["make", "-s", "test"],
-            cwd=ctx.repo_root,
-            text=True,
-            check=False,
+    if sub in {"fmt", "lint", "check", "coverage", "audit"}:
+        return run_dev_cargo(
+            ctx,
+            DevCargoParams(
+                action=sub,
+                json_output=bool(getattr(ns, "json", False) or ctx.output_format == "json"),
+                verbose=bool(getattr(ns, "verbose", False) or ctx.verbose),
+            ),
         )
-        return proc.returncode
-    shortcut_target = _DEV_MAKE_SHORTCUTS.get(sub)
-    if shortcut_target:
-        proc = subprocess.run(
-            ["make", "-s", shortcut_target],
-            cwd=ctx.repo_root,
-            text=True,
-            check=False,
+    if sub == "test":
+        args = list(getattr(ns, "args", []))
+        if args:
+            return _forward(ctx, "test", *args)
+        return run_dev_cargo(
+            ctx,
+            DevCargoParams(
+                action="test",
+                all_tests=bool(getattr(ns, "all", False)),
+                contracts_tests=bool(getattr(ns, "contracts", False)),
+                json_output=bool(getattr(ns, "json", False) or ctx.output_format == "json"),
+                verbose=bool(getattr(ns, "verbose", False) or ctx.verbose),
+            ),
         )
-        return proc.returncode
     forwarded = _DEV_FORWARD.get(sub)
     if not forwarded:
         return 2
@@ -131,22 +132,27 @@ def configure_dev_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     parser = sub.add_parser("dev", help="dev control-plane group (checks, suites, tests, listing)")
     parser.add_argument("--list", action="store_true", help="list available dev commands")
     parser.add_argument("--json", action="store_true", help="emit machine-readable JSON output")
+    parser.add_argument("--verbose", action="store_true", help="show underlying tool command output")
     dev_sub = parser.add_subparsers(dest="dev_cmd", required=False)
     for name, help_text in (
         ("list", "forward to `atlasctl list ...`"),
-        ("check", "forward to `atlasctl check ...`"),
         ("suite", "forward to `atlasctl suite ...`"),
-        ("test", "forward to `atlasctl test ...`"),
         ("ci", "forward to `atlasctl ci ...`"),
         ("commands", "forward to `atlasctl commands ...`"),
         ("explain", "forward to `atlasctl explain ...`"),
     ):
         sp = dev_sub.add_parser(name, help=help_text)
         sp.add_argument("args", nargs=argparse.REMAINDER)
-    dev_sub.add_parser("fmt", help="run canonical format lane (`make fmt`)")
-    dev_sub.add_parser("lint", help="run canonical lint lane (`make lint`)")
-    dev_sub.add_parser("coverage", help="run canonical coverage lane (`make coverage`)")
-    dev_sub.add_parser("audit", help="run canonical audit lane (`make audit`)")
+    dev_sub.add_parser("fmt", help="run canonical cargo fmt lane")
+    dev_sub.add_parser("lint", help="run canonical cargo lint lane")
+    check = dev_sub.add_parser("check", help="run canonical cargo check lane")
+    check.add_argument("args", nargs=argparse.REMAINDER)
+    test = dev_sub.add_parser("test", help="run canonical cargo test lane")
+    test.add_argument("--all", action="store_true", help="run ignored tests too")
+    test.add_argument("--contracts", action="store_true", help="run contracts-only tests")
+    test.add_argument("args", nargs=argparse.REMAINDER)
+    dev_sub.add_parser("coverage", help="run canonical cargo coverage lane")
+    dev_sub.add_parser("audit", help="run canonical cargo audit lane")
     split = dev_sub.add_parser("split-module", help="generate a module split plan for a path")
     split.add_argument("--path", required=True)
     split.add_argument("--json", action="store_true", help="emit JSON output")
