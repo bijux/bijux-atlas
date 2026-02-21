@@ -30,6 +30,14 @@ from .contracts.command_contracts import (
     check_no_duplicate_command_names,
 )
 from .enforcement.argparse_policy import check_argparse_policy
+from .enforcement.package_shape import check_no_nested_same_name_packages
+from .enforcement.shell_policy import (
+    check_no_layout_shadow_configs,
+    check_shell_headers_and_strict_mode,
+    check_shell_invocation_via_core_exec,
+    check_shell_location_policy,
+    check_shell_no_python_direct_calls,
+)
 from .domains.scripts_dir import check_scripts_dir_absent
 from .contracts.public_api import check_public_api_exports
 from .contracts.type_coverage import check_type_coverage
@@ -115,6 +123,86 @@ CHECKS: tuple[CheckDef, ...] = (
         300,
         check_budget_exceptions_documented,
         fix_hint="Document each budget exception path in docs/architecture-budgets.md.",
+    ),
+    CheckDef(
+        "repo.dir_budget_shell_files",
+        "repo",
+        "enforce per-directory shell file count budget",
+        400,
+        lambda repo_root: check_budget_metric(repo_root, "shell-files-per-dir"),
+        fix_hint="Move shell scripts into approved layout/ops directories and split crowded directories.",
+    ),
+    CheckDef(
+        "repo.file_import_budget",
+        "repo",
+        "enforce python import count budget per file",
+        400,
+        lambda repo_root: check_budget_metric(repo_root, "imports-per-file"),
+        fix_hint="Reduce import fan-in and use lazy imports where needed.",
+    ),
+    CheckDef(
+        "repo.file_public_symbol_budget",
+        "repo",
+        "enforce public symbol budget per module",
+        400,
+        lambda repo_root: check_budget_metric(repo_root, "public-symbols-per-file"),
+        fix_hint="Split dumping-ground modules and narrow __all__ exports.",
+    ),
+    CheckDef(
+        "repo.file_complexity_budget",
+        "repo",
+        "enforce complexity heuristic budget in core/cli",
+        400,
+        lambda repo_root: check_budget_metric(repo_root, "complexity-heuristic"),
+        fix_hint="Split high-complexity control flow and extract focused helpers.",
+    ),
+    CheckDef(
+        "repo.shell_location_policy",
+        "repo",
+        "forbid shell scripts outside approved directories",
+        300,
+        check_shell_location_policy,
+        fix_hint="Keep shell scripts under checks/layout or ops only.",
+    ),
+    CheckDef(
+        "repo.shell_strict_mode",
+        "repo",
+        "require shell header and strict mode",
+        300,
+        check_shell_headers_and_strict_mode,
+        fix_hint="Add #!/usr/bin/env bash and set -euo pipefail to all shell scripts.",
+    ),
+    CheckDef(
+        "repo.shell_no_direct_python",
+        "repo",
+        "forbid direct python invocation in shell scripts",
+        300,
+        check_shell_no_python_direct_calls,
+        fix_hint="Call atlasctl entrypoints instead of python commands in shell scripts.",
+    ),
+    CheckDef(
+        "repo.shell_invocation_boundary",
+        "repo",
+        "forbid direct shell subprocess invocations outside core.exec",
+        300,
+        check_shell_invocation_via_core_exec,
+        fix_hint="Route shell invocations through core.exec wrapper helpers.",
+    ),
+    CheckDef(
+        "repo.layout_no_shadow",
+        "repo",
+        "enforce no-shadow config policy",
+        300,
+        check_no_layout_shadow_configs,
+        fix_hint="Resolve shadow config sources reported by atlasctl/layout/no_shadow.py.",
+    ),
+    CheckDef(
+        "repo.no_nested_same_name_packages",
+        "repo",
+        "forbid nested package segments with same name",
+        300,
+        check_no_nested_same_name_packages,
+        fix_hint="Flatten nested same-name package segments (example: checks/checks).",
     ),
     CheckDef("repo.no_path_cwd_usage", "repo", "forbid Path.cwd usage outside core/repo_root.py", 400, check_no_path_cwd_usage, fix_hint="Use ctx.repo_root or core.repo_root helpers."),
     CheckDef("repo.command_metadata_contract", "repo", "ensure command metadata includes touches/tools", 400, check_command_metadata_contract, fix_hint="Add touches/tools metadata in cli registry."),
