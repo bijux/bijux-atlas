@@ -7,9 +7,9 @@ from pathlib import Path
 
 import jsonschema
 from atlasctl.core.context import RunContext
-from atlasctl.make.command import run_make_command
-from atlasctl.make.contracts_check import CHECKS, run_contracts_check
-from atlasctl.make.target_graph import parse_make_targets, render_tree
+from atlasctl.commands.dev.make.command import run_make_command
+from atlasctl.commands.dev.make.contracts_check import CHECKS, run_contracts_check
+from atlasctl.commands.dev.make.target_graph import parse_make_targets, render_tree
 
 ROOT = Path(__file__).resolve().parents[4]
 
@@ -75,7 +75,7 @@ def test_contracts_check_fail_fast_and_actionable_output(capsys) -> None:
 def test_make_surface_parser_shape() -> None:
     parser = argparse.ArgumentParser()
     sub = parser.add_subparsers(dest="cmd", required=True)
-    from atlasctl.make.command import configure_make_parser
+    from atlasctl.commands.dev.make.command import configure_make_parser
 
     configure_make_parser(sub)
     ns = parser.parse_args(["make", "surface"])
@@ -86,7 +86,7 @@ def test_make_surface_parser_shape() -> None:
 def test_make_parser_supports_new_subcommands() -> None:
     parser = argparse.ArgumentParser()
     sub = parser.add_subparsers(dest="cmd", required=True)
-    from atlasctl.make.command import configure_make_parser
+    from atlasctl.commands.dev.make.command import configure_make_parser
 
     configure_make_parser(sub)
     for argv in (
@@ -110,7 +110,7 @@ def test_make_run_rejects_non_public_target() -> None:
 
 
 def test_make_run_writes_evidence(monkeypatch) -> None:
-    from atlasctl.make import command as make_command
+    from atlasctl.commands.dev.make import command as make_command
 
     def fake_run(*_args, **_kwargs):
         return SimpleNamespace(returncode=0, stdout="ok\n", stderr="")

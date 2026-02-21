@@ -4,21 +4,18 @@ import argparse
 from pathlib import Path
 
 from atlasctl.core.context import RunContext
-from atlasctl.docker.command import run_docker_command
+from atlasctl.commands.ops.docker.command import run_docker_command
 
 
 def test_docker_scan_invokes_canonical_script(monkeypatch, tmp_path: Path) -> None:
     calls: list[list[str]] = []
 
-    class Dummy:
-        returncode = 0
-
-    def fake_run(cmd, cwd=None, text=None, check=None):  # type: ignore[no-untyped-def]
-        calls.append(list(cmd))
+    def fake_shell(script, args, cwd=None):  # type: ignore[no-untyped-def]
+        calls.append([str(script), *list(args)])
         assert cwd is not None
-        return Dummy()
+        return {"exit_code": 0}
 
-    monkeypatch.setattr("atlasctl.docker.command.subprocess.run", fake_run)
+    monkeypatch.setattr("atlasctl.commands.ops.docker.command.run_shell_script", fake_shell)
     ctx = RunContext(
         run_id="r1",
         profile="local",
@@ -34,7 +31,8 @@ def test_docker_scan_invokes_canonical_script(monkeypatch, tmp_path: Path) -> No
         no_network=False,
         git_sha="unknown",
         git_dirty=False,
+        log_json=False,
     )
     ns = argparse.Namespace(docker_cmd="scan", image="x:y")
     assert run_docker_command(ctx, ns) == 0
-    assert calls and calls[0][0] == "docker/scripts/docker-scan.sh"
+    assert calls and calls[0][0].endswith("docker/scripts/docker-scan.sh")

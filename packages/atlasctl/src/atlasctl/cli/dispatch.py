@@ -180,34 +180,34 @@ def dispatch_command(
     if ns.cmd == "config":
         mapped = argparse.Namespace(**vars(ns))
         mapped.configs_cmd = {"dump": "print", "validate": "validate", "drift": "drift"}[ns.config_cmd]
-        return import_attr("atlasctl.configs.command", "run_configs_command")(ctx, mapped)
+        return import_attr("atlasctl.commands.configs.command", "run_configs_command")(ctx, mapped)
     if ns.cmd == "inventory":
-        return import_attr("atlasctl.inventory.command", "run_inventory")(ctx, ns.category, ns.format, ns.out_dir, ns.dry_run, ns.check, ns.command)
+        return import_attr("atlasctl.commands.dev.inventory.command", "run_inventory")(ctx, ns.category, ns.format, ns.out_dir, ns.dry_run, ns.check, ns.command)
 
     module_dispatch = {
         "docs": ("atlasctl.commands.docs.runtime", "run_docs_command"),
-        "configs": ("atlasctl.configs.command", "run_configs_command"),
+        "configs": ("atlasctl.commands.configs.command", "run_configs_command"),
         "contracts": ("atlasctl.contracts.command", "run_contracts_command"),
-        "docker": ("atlasctl.docker.command", "run_docker_command"),
-        "ci": ("atlasctl.ci.command", "run_ci_command"),
+        "docker": ("atlasctl.commands.ops.docker.command", "run_docker_command"),
+        "ci": ("atlasctl.commands.dev.ci.command", "run_ci_command"),
         "check": ("atlasctl.checks.command", "run_check_command"),
         "list": ("atlasctl.commands.listing", "run_list_command"),
-        "deps": ("atlasctl.deps.command", "run_deps_command"),
-        "gen": ("atlasctl.gen.command", "run_gen_command"),
+        "deps": ("atlasctl.commands.dev.deps.command", "run_deps_command"),
+        "gen": ("atlasctl.commands.dev.gen.command", "run_gen_command"),
         "policies": ("atlasctl.policies.command", "run_policies_command"),
-        "repo": ("atlasctl.repo.command", "run_repo_command"),
-        "make": ("atlasctl.make.command", "run_make_command"),
+        "repo": ("atlasctl.commands.dev.repo.command", "run_repo_command"),
+        "make": ("atlasctl.commands.dev.make.command", "run_make_command"),
         "ops": ("atlasctl.commands.ops.runtime", "run_ops_command"),
         "report": ("atlasctl.reporting.command", "run_report_command"),
-        "lint": ("atlasctl.lint.command", "run_lint_command"),
+        "lint": ("atlasctl.commands.policies.lint.command", "run_lint_command"),
         "test": ("atlasctl.test_tools.command", "run_test_command"),
         "suite": ("atlasctl.suite.command", "run_suite_command"),
-        "python": ("atlasctl.python_tools.command", "run_python_command"),
+        "python": ("atlasctl.commands.dev.python_tools.command", "run_python_command"),
         "install": ("atlasctl.commands.dev.install", "run_install_command"),
         "release": ("atlasctl.commands.dev.release", "run_release_command"),
-        "gates": ("atlasctl.gates.command", "run_gates_command"),
-        "dev": ("atlasctl.dev.command", "run_dev_command"),
-        "internal": ("atlasctl.internal.command", "run_internal_command"),
+        "gates": ("atlasctl.commands.policies.gates.command", "run_gates_command"),
+        "dev": ("atlasctl.commands.dev.command", "run_dev_command"),
+        "internal": ("atlasctl.commands.internal.command", "run_internal_command"),
     }
     if ns.cmd in module_dispatch:
         module_name, attr = module_dispatch[ns.cmd]

@@ -13,7 +13,7 @@ from typing import Callable
 import yaml
 from ...core.context import RunContext
 from ...core.fs import ensure_evidence_path
-from ...make.target_graph import parse_make_targets
+from atlasctl.commands.dev.make.target_graph import parse_make_targets
 @dataclass(frozen=True)
 class DocsCheck:
     check_id: str

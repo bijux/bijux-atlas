@@ -6,7 +6,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
@@ -50,7 +50,7 @@ def test_configs_validate_json() -> None:
 
 
 def test_configs_validate_schema_pair_bad_fixture() -> None:
-    from atlasctl.configs.command import _validate_schema_pairs
+    from atlasctl.commands.configs.command import _validate_schema_pairs
 
     bad = ROOT / "configs/meta/ownership.json"
     backup = bad.read_text(encoding="utf-8")
