@@ -5,6 +5,7 @@ import socket
 from fnmatch import fnmatch
 from pathlib import Path
 
+# network-test: allowed (socket monkeypatch guardrail coverage)
 from atlasctl.cli import main as cli_main
 from atlasctl.core.runtime.scan import iter_python_files
 

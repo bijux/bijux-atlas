@@ -73,7 +73,12 @@ repo.script_help_coverage
 repo.script_ownership_coverage
 repo.subprocess_boundary
 repo.suite_marker_rules
+repo.test_determinism_patterns
+repo.test_no_duplicated_coverage
+repo.test_no_unmarked_network
 repo.test_ownership_tags
 repo.test_skip_justification
+repo.test_taxonomy_layout
+repo.test_write_sandbox
 repo.tests_no_duplicate_expectations
 repo.type_coverage
