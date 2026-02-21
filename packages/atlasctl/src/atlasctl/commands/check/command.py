@@ -11,6 +11,7 @@ from typing import Callable
 from xml.etree.ElementTree import Element, SubElement, tostring
 
 from ...checks.registry import check_rename_aliases, check_tags, get_check, list_checks
+from ...checks.registry.ssot import generate_registry_json
 from ...checks.execution import run_function_checks
 from ...contracts.ids import CHECK_LIST, CHECK_TAXONOMY
 from ...contracts.validate_self import validate_self
@@ -624,11 +625,54 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             for check_id in sorted(ids):
                 print(f"- {check_id}")
         return 0
+    if sub == "groups":
+        checks = list_checks()
+        grouped: dict[str, list[str]] = {}
+        for check in checks:
+            for group in check_tags(check):
+                grouped.setdefault(group, []).append(check.check_id)
+        if ctx.output_format == "json" or ns.json:
+            payload = {
+                "schema_version": 1,
+                "tool": "atlasctl",
+                "status": "ok",
+                "kind": "check-groups",
+                "groups": [{"group": group, "checks": sorted(ids), "count": len(ids)} for group, ids in sorted(grouped.items())],
+            }
+            print(json.dumps(payload, sort_keys=True))
+            return 0
+        for group, ids in sorted(grouped.items()):
+            print(f"{group} ({len(ids)})")
+            for check_id in sorted(ids):
+                print(f"- {check_id}")
+        return 0
+    if sub == "slow":
+        checks = [check for check in list_checks() if check.slow]
+        if ctx.output_format == "json" or ns.json:
+            payload = {
+                "schema_version": 1,
+                "tool": "atlasctl",
+                "status": "ok",
+                "kind": "check-slow",
+                "checks": [check.check_id for check in checks],
+                "count": len(checks),
+            }
+            print(json.dumps(payload, sort_keys=True))
+            return 0
+        for check in checks:
+            print(check.check_id)
+        return 0
     if sub == "explain":
         check = get_check(ns.check_id)
         if check is None:
             print(f"unknown check id: {ns.check_id}")
             return ERR_USER
+        module_doc = ""
+        try:
+            module = inspect.getmodule(check.fn)
+            module_doc = str(getattr(module, "__doc__", "") or "").strip()
+        except Exception:
+            module_doc = ""
         payload = {
             "schema_version": 1,
             "tool": "atlasctl",
@@ -645,6 +689,9 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             "failure_modes": ["policy violation", "contract drift", "hygiene drift"],
             "how_to_fix": check.fix_hint,
             "source": _check_source_path(ctx, check.check_id),
+            "module": check.fn.__module__,
+            "callable": check.fn.__name__,
+            "module_docstring": module_doc,
         }
         print(json.dumps(payload, sort_keys=True) if ctx.output_format == "json" or ns.json else json.dumps(payload, indent=2, sort_keys=True))
         return 0
@@ -755,6 +802,17 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             ctx,
             ["python3", "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_ops_mk_contract.py"],
         )
+    if sub == "checks-registry-drift":
+        try:
+            _out, changed = generate_registry_json(ctx.repo_root, check_only=True)
+        except Exception as exc:
+            print(f"checks registry validation failed: {exc}")
+            return ERR_CONTRACT
+        if changed:
+            print("checks registry drift detected: run `./bin/atlasctl gen checks-registry`")
+            return ERR_USER
+        print("checks registry drift check passed")
+        return 0
 
     check_map: dict[str, tuple[NativeCheck, str, str, int | None, str]] = {
         "cli-help": (check_script_help, "script help contract failed:", "script help contract passed", None, "- "),
@@ -836,6 +894,10 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     parser_sub.add_parser("list", help="list registered checks")
     explain = parser_sub.add_parser("explain", help="explain a check id")
     explain.add_argument("check_id")
+    groups = parser_sub.add_parser("groups", help="show checks grouped by tags/groups")
+    groups.add_argument("--json", action="store_true", help="emit JSON output")
+    slow = parser_sub.add_parser("slow", help="list slow checks")
+    slow.add_argument("--json", action="store_true", help="emit JSON output")
     runtime = parser_sub.add_parser("runtime-contracts", help="run unified runtime contract checks and emit artifact")
     runtime.add_argument("--out-file", help="optional artifact output path under evidence root")
     rename = parser_sub.add_parser("rename-report", help="list legacy check ids mapped to canonical checks_* ids")
@@ -900,6 +962,7 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
         ("workflow-calls-atlasctl", "validate workflow calls resolve to atlasctl entrypoints"),
         ("ci-surface-documented", "validate DEV/CI command surface docs coverage"),
         ("ops-mk-contract", "validate ops.mk wrapper-only contract and target budget"),
+        ("checks-registry-drift", "validate checks REGISTRY.generated.json is in sync with REGISTRY.toml"),
     ]:
         parser_sub.add_parser(name, help=help_text)
 
@@ -921,6 +984,10 @@ def configure_checks_parser(sub: argparse._SubParsersAction[argparse.ArgumentPar
     parser_sub.add_parser("tree", help="show checks grouped by domain/area")
     owners = parser_sub.add_parser("owners", help="show check ownership report")
     owners.add_argument("--json", action="store_true", help="emit JSON output")
+    groups = parser_sub.add_parser("groups", help="show checks grouped by tags/groups")
+    groups.add_argument("--json", action="store_true", help="emit JSON output")
+    slow = parser_sub.add_parser("slow", help="list slow checks")
+    slow.add_argument("--json", action="store_true", help="emit JSON output")
     rename = parser_sub.add_parser("rename-report", help="list legacy check ids mapped to canonical checks_* ids")
     rename.add_argument("--json", action="store_true", help="emit JSON output")
     failures = parser_sub.add_parser("failures", help="summarize failing checks from a check-run report")

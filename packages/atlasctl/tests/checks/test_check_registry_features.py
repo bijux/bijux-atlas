@@ -58,6 +58,19 @@ def test_checks_tree_and_owners_json() -> None:
     assert any(row["owner"] == "platform" for row in owner_payload["owners"])
 
 
+def test_checks_groups_and_slow_json() -> None:
+    groups = _run("--json", "checks", "groups")
+    assert groups.returncode == 0, groups.stderr
+    groups_payload = json.loads(groups.stdout)
+    assert groups_payload["kind"] == "check-groups"
+    assert any(row["group"] == "required" for row in groups_payload["groups"])
+
+    slow = _run("--json", "checks", "slow")
+    assert slow.returncode == 0, slow.stderr
+    slow_payload = json.loads(slow.stdout)
+    assert slow_payload["kind"] == "check-slow"
+
+
 def test_check_repo_module_size_alias() -> None:
     proc = _run("check", "repo", "module-size")
     assert proc.returncode in (0, 1), proc.stderr
