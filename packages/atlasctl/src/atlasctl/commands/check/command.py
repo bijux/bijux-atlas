@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Callable
 from xml.etree.ElementTree import Element, SubElement, tostring
 
-from ...checks.registry import check_tags, get_check, list_checks
+from ...checks.registry import check_rename_aliases, check_tags, get_check, list_checks
 from ...checks.execution import run_function_checks
 from ...contracts.ids import CHECK_LIST
 from ...contracts.validate_self import validate_self
@@ -436,6 +436,16 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         except Exception as exc:  # pragma: no cover
             print(f"internal check runner error: {exc}")
             return ERR_CONTRACT
+    if sub == "rename-report":
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "kind": "check-rename-report",
+            "renames": [{"old": old, "new": new} for old, new in check_rename_aliases().items()],
+        }
+        print(json.dumps(payload, sort_keys=True) if (ns.json or ctx.output_format == "json") else "\n".join(f"{row['old']} -> {row['new']}" for row in payload["renames"]))
+        return 0
     if sub == "list":
         checks = list_checks()
         if not (ctx.output_format == "json" or ns.json):
@@ -676,6 +686,8 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     explain.add_argument("check_id")
     runtime = parser_sub.add_parser("runtime-contracts", help="run unified runtime contract checks and emit artifact")
     runtime.add_argument("--out-file", help="optional artifact output path under evidence root")
+    rename = parser_sub.add_parser("rename-report", help="list legacy check ids mapped to canonical checks_* ids")
+    rename.add_argument("--json", action="store_true", help="emit JSON output")
     domain = parser_sub.add_parser("domain", help="run checks for one domain")
     domain.add_argument("domain", choices=check_domains())
 
@@ -739,3 +751,14 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     sbom = parser_sub.add_parser("generate-scripts-sbom", help="emit python lock SBOM json")
     sbom.add_argument("--lock", required=True)
     sbom.add_argument("--out", required=True)
+
+
+def configure_checks_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
+    parser = sub.add_parser("checks", help="alias of `atlasctl check`")
+    parser.add_argument("--fail-fast", action="store_true", help="stop after first failing check in multi-check runs")
+    parser.add_argument("--json", action="store_true", help="emit JSON output")
+    parser.add_argument("--list", dest="list_checks", action="store_true", help="list registered checks")
+    parser.add_argument("--show-source", help="print source file for check id")
+    parser_sub = parser.add_subparsers(dest="check_cmd", required=False)
+    rename = parser_sub.add_parser("rename-report", help="list legacy check ids mapped to canonical checks_* ids")
+    rename.add_argument("--json", action="store_true", help="emit JSON output")
