@@ -10,6 +10,7 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 - [Control Plane Surface](control-plane/surface.md)
 - [Control Plane Execution Model](control-plane/execution-model.md)
 - [Module Taxonomy](control-plane/taxonomy.md)
+- [Control Plane Suites](control-plane/suites.md)
 - [How To Split A Module](architecture/how-to-split-a-module.md)
 - [Budget Policies and Refactoring](architecture/budgets.md)
 - [CLI Stability](cli-stability.md)
@@ -17,6 +18,7 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 - [Contracts](contracts.md)
 - [Ownership](ownership.md)
 - [Public API](PUBLIC_API.md)
+- [Legacy Public API Path](public-api.md)
 - [Versioning](versioning.md)
 - [Environment Variables](env.md)
 - [Dependency Workflow](deps.md)
@@ -26,15 +28,26 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 
 - [Migration Index](migration/index.md)
 - [Legacy Removal Plan](migration/legacy-removal-plan.md)
+- [Legacy Definition](migration/legacy-definition.md)
+- [Epic F Hotspots](migration/epic-f-hotspots.md)
 - [Epic G Make Thin Wrapper](migration/epic-g-make-thin-wrapper.md)
 
 ## Decisions
 
 - [Decisions Index](decisions/INDEX.md)
+- [DEC-0001 Control Plane SSOT](decisions/DEC-0001-control-plane-ssot.md)
+- [DEC-0002 Dependency Lock Strategy](decisions/DEC-0002-dependency-lock-strategy.md)
 
 ## Commands
 
 - [Command Groups](commands/index.md)
+- [New Command Workflow](commands/new-command-workflow.md)
+- [Docs Group Commands](commands/groups/docs.md)
+- [Configs Group Commands](commands/groups/configs.md)
+- [Dev Group Commands](commands/groups/dev.md)
+- [Ops Group Commands](commands/groups/ops.md)
+- [Policies Group Commands](commands/groups/policies.md)
+- [Internal Group Commands](commands/groups/internal.md)
 
 ## Checks
 

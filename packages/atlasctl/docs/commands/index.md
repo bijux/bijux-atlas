@@ -2,6 +2,15 @@
 
 Public command index (stable surface). Command wiring is registry-first via `src/atlasctl/cli/surface_registry.py`.
 
+## Command Groups
+
+- [Docs](groups/docs.md)
+- [Configs](groups/configs.md)
+- [Dev](groups/dev.md)
+- [Ops](groups/ops.md)
+- [Policies](groups/policies.md)
+- [Internal](groups/internal.md)
+
 ## Stable Commands
 
 - `check`
