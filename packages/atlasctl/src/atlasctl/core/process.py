@@ -32,6 +32,7 @@ def run_command(
     retry_delay_seconds: float = 0.0,
     ctx: RunContext | None = None,
 ) -> CommandResult:
+    # Authoritative process runner API for the codebase.
     attempt = 0
     last_result: CommandResult | None = None
     while attempt <= retries:

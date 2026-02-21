@@ -1,11 +1,11 @@
-"""Compatibility shim for `atlasctl.core.models` package."""
+"""Shared core models and types."""
 
 from .models import ContractsIndexModel, OwnershipModel, SurfaceModel
 from .types import EvidenceConfig, PathConfig, build_evidence_config, build_path_config
 
 __all__ = [
-    "OwnershipModel",
     "ContractsIndexModel",
+    "OwnershipModel",
     "SurfaceModel",
     "EvidenceConfig",
     "PathConfig",
