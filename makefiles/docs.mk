@@ -1,87 +1,75 @@
-# Scope: docs area internal targets and wrappers.
-# Public targets: none
 SHELL := /bin/sh
 
-DOCS_ARTIFACTS ?= $(if $(ISO_ROOT),$(ISO_ROOT)/docs,artifacts/docs)
-DOCS_VENV ?= $(DOCS_ARTIFACTS)/.venv
-DOCS_REQ ?= configs/docs/requirements.lock.txt
-DOCS_SITE ?= $(DOCS_ARTIFACTS)/site
-
 docs-req-lock-refresh: ## Refresh docs requirements lock deterministically
-	@$(ATLAS_SCRIPTS) run -m venv "$(DOCS_VENV)"
-	@"$(DOCS_VENV)/bin/pip" install --upgrade pip >/dev/null
-	@"$(DOCS_VENV)/bin/pip" install -r configs/docs/requirements.txt >/dev/null
-	@"$(DOCS_VENV)/bin/pip" freeze --exclude-editable | LC_ALL=C sort > "$(DOCS_REQ)"
-
-_docs-venv:
-	@mkdir -p "$(DOCS_ARTIFACTS)"
-	@$(call py_venv,$(DOCS_VENV),"$(DOCS_VENV)/bin/pip" install -r "$(DOCS_REQ)" >/dev/null)
+	@./bin/atlasctl docs requirements lock-refresh --report text
 
 docs-build: ## Build docs + link-check + spell-check + lint
-	@if [ ! -x "$(DOCS_VENV)/bin/mkdocs" ]; then $(MAKE) _docs-venv; fi
-	@"$(DOCS_VENV)/bin/pip" install -r "$(DOCS_REQ)" >/dev/null
-	@$(ATLAS_SCRIPTS) docs generate --report text
-	@$(ATLAS_SCRIPTS) gen make-targets
-	@$(ATLAS_SCRIPTS) gen surface
-	@$(ATLAS_SCRIPTS) gen scripting-surface
-	@$(ATLAS_SCRIPTS) docs render-diagrams --report text
-	@$(ATLAS_SCRIPTS) docs style --report text
-	@SOURCE_DATE_EPOCH=946684800 "$(DOCS_VENV)/bin/mkdocs" build --strict --config-file mkdocs.yml --site-dir "$(DOCS_SITE)"
-	@$(ATLAS_SCRIPTS) docs nav-check --report text
-	@$(ATLAS_SCRIPTS) docs spellcheck --path docs --report text
-	@$(ATLAS_SCRIPTS) docs lint --report text
-	@if command -v vale >/dev/null 2>&1; then vale --config=configs/docs/.vale.ini docs; else echo "vale not found; using contract style linter + codespell"; fi
-	@$(ATLAS_SCRIPTS) docs extract-code --report text
-	@$(ATLAS_SCRIPTS) docs link-check --report text
-	@$(ATLAS_SCRIPTS) docs check --report text
+	@./bin/atlasctl docs build --report text
 
 docs-serve: ## Serve docs locally
-	@if [ ! -x "$(DOCS_VENV)/bin/mkdocs" ]; then $(MAKE) _docs-venv; fi
-	@"$(DOCS_VENV)/bin/pip" install -r "$(DOCS_REQ)" >/dev/null
-	@SOURCE_DATE_EPOCH=946684800 "$(DOCS_VENV)/bin/mkdocs" serve --config-file mkdocs.yml
+	@./bin/atlasctl docs serve --report text
 
 docs-freeze: ## Generated docs must be up-to-date with SSOT contracts
-	@$(ATLAS_SCRIPTS) docs generated-check --report text
+	@./bin/atlasctl docs freeze --report text
 
 docs-hardening: ## Run full docs hardening pipeline
-	@$(MAKE) docs-build
-	@$(MAKE) docs-freeze
+	@./bin/atlasctl docs test --report text
 
 docs-all: ## Canonical all-docs gate: must pass all docs sub-gates
-	@$(MAKE) docs-hardening
-	@$(MAKE) docs-lint-names
+	@./bin/atlasctl docs build --report text --all
 
 docs-check: ## Docs contract check alias (same as docs-build)
-	@$(ATLAS_SCRIPTS) docs check --report text --emit-artifacts
+	@./bin/atlasctl docs check --report text --emit-artifacts
+
+docs-fmt: ## Render docs diagrams and formatting surfaces
+	@./bin/atlasctl docs fmt --report text
+
+docs-fmt-all: ## Full docs format pipeline
+	@./bin/atlasctl docs fmt --report text --all
+
+docs-lint: ## Run docs lint checks
+	@./bin/atlasctl docs lint --report text
+
+docs-lint-all: ## Run full docs lint checks
+	@./bin/atlasctl docs lint --report text --all
+
+docs-test: ## Run docs verification tests (freeze + links + nav)
+	@./bin/atlasctl docs test --report text
+
+docs-test-all: ## Run full docs verification tests
+	@./bin/atlasctl docs test --report text --all
+
+docs-build-all: ## Build docs with full checks enabled
+	@./bin/atlasctl docs build --report text --all
+
+docs-check-all: ## Run full docs check gate
+	@./bin/atlasctl docs check --report text --emit-artifacts --all
+
+docs: ## Canonical docs gate
+	@./bin/atlasctl docs check --report text
 
 internal/docs/public: ## Public docs alias implementation (root wrapper only)
-	@$(MAKE) docs-check
+	@./bin/atlasctl docs check --report text
 
 internal/docs/check: ## Fast docs verification
-	@start="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; status=pass; fail=""; \
-	if ! $(MAKE) docs-freeze; then status=fail; fail="docs-freeze failed"; fi; \
-	end="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; \
-	$(ATLAS_SCRIPTS) report make-area-write --path "$${ISO_ROOT:-artifacts/isolate/docs/$${RUN_ID:-docs-check}}/report.docs.check.json" --lane "docs/check" --run-id "$${RUN_ID:-docs-check}" --status "$$status" --start "$$start" --end "$$end" --artifact "$${ISO_ROOT:-artifacts/isolate/docs/$${RUN_ID:-docs-check}}" --failure "$$fail" >/dev/null; \
-	[ "$$status" = "pass" ] || { $(call fail_banner,docs/check); exit 1; }
+	@./bin/atlasctl docs check --report text
 
 internal/docs/build: ## Build docs artifacts
-	@$(MAKE) docs-build
+	@./bin/atlasctl docs build --report text
 
 internal/docs/fmt: ## Docs formatting helpers
-	@$(ATLAS_SCRIPTS) docs render-diagrams --report text
+	@./bin/atlasctl docs fmt --report text
 
 internal/docs/lint: ## Docs lint checks
-	@$(MAKE) docs-lint-names
+	@./bin/atlasctl docs lint --report text
 
 internal/docs/test: ## Docs tests/contract checks
-	@$(MAKE) internal/docs/check
+	@./bin/atlasctl docs test --report text
 
 internal/docs/clean: ## Clean docs generated outputs only
-	@rm -rf artifacts/docs
+	@./bin/atlasctl docs clean --report text
 
 internal/docs/all: ## Uniform docs all target
-	@$(MAKE) internal/docs/check
-	@$(MAKE) internal/docs/lint
-	@$(MAKE) internal/docs/build
+	@./bin/atlasctl docs build --report text --all
 
-.PHONY: docs-all docs-build docs-check docs-serve docs-freeze docs-hardening docs-req-lock-refresh internal/docs/public internal/docs/check internal/docs/build internal/docs/fmt internal/docs/lint internal/docs/test internal/docs/clean internal/docs/all _docs-venv
+.PHONY: docs docs-all docs-build docs-build-all docs-check docs-check-all docs-serve docs-freeze docs-fmt docs-fmt-all docs-lint docs-lint-all docs-test docs-test-all docs-hardening docs-req-lock-refresh internal/docs/public internal/docs/check internal/docs/build internal/docs/fmt internal/docs/lint internal/docs/test internal/docs/clean internal/docs/all

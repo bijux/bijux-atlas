@@ -184,6 +184,12 @@ CHECKS: list[MakeCheck] = [
         "Keep makefiles/dev.mk as a thin wrapper and move execution logic into atlasctl subcommands.",
     ),
     _check(
+        "docs-mk-target-budget",
+        "Validate docs.mk target count budget",
+        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_docs_mk_target_budget.py",
+        "Keep docs.mk as a minimal atlasctl wrapper surface and move sequencing into atlasctl docs commands.",
+    ),
+    _check(
         "dev-mk-internal-allowlist",
         "Validate dev.mk internal target allowlist",
         "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_dev_mk_internal_allowlist.py",

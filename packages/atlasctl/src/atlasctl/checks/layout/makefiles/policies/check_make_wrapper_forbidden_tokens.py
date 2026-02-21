@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[8]
 WRAPPERS = [
     ROOT / "makefiles" / "dev.mk",
     ROOT / "makefiles" / "ci.mk",
+    ROOT / "makefiles" / "docs.mk",
 ]
 FORBIDDEN = (
     "cargo ",
@@ -21,6 +22,7 @@ FORBIDDEN = (
     "rm ",
     "make ",
     "pip ",
+    "mkdocs ",
 )
 
 

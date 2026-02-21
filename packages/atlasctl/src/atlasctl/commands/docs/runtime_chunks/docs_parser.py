@@ -9,6 +9,7 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
     check.add_argument("--fail-fast", action="store_true")
     check.add_argument("--emit-artifacts", action="store_true")
     check.add_argument("--fix", action="store_true")
+    check.add_argument("--all", action="store_true", help="run full docs check pipeline")
 
     validate = docs_sub.add_parser("validate", help="validate docs links, nav, and required pages")
     validate.add_argument("--report", choices=["text", "json"], default="text")
@@ -20,6 +21,35 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
     lint.add_argument("--fail-fast", action="store_true")
     lint.add_argument("--emit-artifacts", action="store_true")
     lint.add_argument("--fix", action="store_true")
+    lint.add_argument("--all", action="store_true", help="run full docs lint pipeline")
+
+    build = docs_sub.add_parser("build", help="build docs site + run canonical docs checks")
+    build.add_argument("--report", choices=["text", "json"], default="text")
+    build.add_argument("--all", action="store_true", help="run full docs build pipeline")
+    build.add_argument("--fail-fast", action="store_true")
+
+    serve = docs_sub.add_parser("serve", help="serve docs locally with mkdocs")
+    serve.add_argument("--report", choices=["text", "json"], default="text")
+
+    freeze = docs_sub.add_parser("freeze", help="validate generated docs are up-to-date")
+    freeze.add_argument("--report", choices=["text", "json"], default="text")
+
+    fmt = docs_sub.add_parser("fmt", help="run docs formatting/render steps")
+    fmt.add_argument("--report", choices=["text", "json"], default="text")
+    fmt.add_argument("--all", action="store_true", help="run full docs format pipeline")
+
+    test = docs_sub.add_parser("test", help="run docs test gate (freeze + links + nav)")
+    test.add_argument("--report", choices=["text", "json"], default="text")
+    test.add_argument("--all", action="store_true", help="run full docs test pipeline")
+    test.add_argument("--fail-fast", action="store_true")
+
+    clean = docs_sub.add_parser("clean", help="clean docs build artifacts")
+    clean.add_argument("--report", choices=["text", "json"], default="text")
+
+    requirements = docs_sub.add_parser("requirements", help="docs requirements management")
+    req_sub = requirements.add_subparsers(dest="docs_requirements_cmd", required=True)
+    req_lock = req_sub.add_parser("lock-refresh", help="refresh docs requirements lock deterministically")
+    req_lock.add_argument("--report", choices=["text", "json"], default="text")
 
     for name, help_text in (
         ("link-check", "run internal markdown link checks"),
