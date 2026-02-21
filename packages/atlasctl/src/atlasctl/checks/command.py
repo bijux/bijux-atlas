@@ -1,3 +1,5 @@
 """Canonical checks command entrypoint."""
 
-from ..check.command import *  # noqa: F401,F403
+from ..commands.check.legacy import configure_check_parser, run_check_command
+
+__all__ = ["configure_check_parser", "run_check_command"]

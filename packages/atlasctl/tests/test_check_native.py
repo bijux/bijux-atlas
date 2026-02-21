@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from atlasctl.check.native import (
+from atlasctl.checks.native import (
     check_committed_generated_hygiene,
     check_duplicate_script_names,
     check_layout_contract,
