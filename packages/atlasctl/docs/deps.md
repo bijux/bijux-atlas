@@ -15,6 +15,7 @@ Workflow: pip-tools (requirements.in + requirements.lock.txt)
 - Route B is authoritative for this package.
 - Do not add `uv.lock` or other requirements files in package root.
 - Update lockfile whenever dependency declarations change.
+- Keep tool and test configuration in `pyproject.toml`; keep `requirements.in` only as the explicit lock input for deterministic installs.
 
 ## Commands
 
