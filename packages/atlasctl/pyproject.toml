@@ -10,6 +10,9 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = []
 
+[project.urls]
+Documentation = "docs/index.md"
+
 [project.optional-dependencies]
 dev = [
   "pytest==8.3.5",
@@ -21,7 +24,7 @@ dev = [
 ]
 
 [project.scripts]
-atlasctl = "atlasctl.cli:main"
+atlasctl = "atlasctl.cli.main:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
@@ -65,3 +68,11 @@ strict = true
 [[tool.mypy.overrides]]
 module = ["atlasctl.tests.*"]
 ignore_errors = true
+
+[tool.coverage.run]
+branch = true
+source = ["src/atlasctl"]
+
+[tool.coverage.report]
+skip_empty = true
+show_missing = true
