@@ -26,6 +26,9 @@ from ...policies.culprits import (
     check_budget_exceptions_sorted,
     check_budget_metric,
 )
+from ...policies.dir_budgets import check_loc_per_dir, check_modules_per_dir, check_py_files_per_dir
+from ...policies.module_budgets import check_modules_per_domain
+from ...policies.tree_depth import check_tree_depth
 from .enforcement.cwd_usage import check_no_path_cwd_usage
 from .contracts.command_contracts import (
     check_command_alias_budget,
@@ -49,7 +52,6 @@ from .enforcement.package_shape import (
     check_layout_domain_readmes,
     check_layout_no_legacy_imports,
     check_no_nested_same_name_packages,
-    check_package_max_depth,
     check_top_level_package_group_mapping,
 )
 from .enforcement.check_structure import (
@@ -180,7 +182,7 @@ CHECKS: tuple[CheckDef, ...] = (
         "repo",
         "enforce per-directory python module count budget",
         400,
-        lambda repo_root: check_budget_metric(repo_root, "modules-per-dir"),
+        check_modules_per_dir,
         fix_hint="Split high-density directories into intent-focused subpackages.",
     ),
     CheckDef(
@@ -188,7 +190,7 @@ CHECKS: tuple[CheckDef, ...] = (
         "repo",
         "enforce per-directory python file count budget",
         400,
-        lambda repo_root: check_budget_metric(repo_root, "py-files-per-dir"),
+        check_py_files_per_dir,
         fix_hint="Split high-density directories and keep directory fan-in bounded.",
     ),
     CheckDef(
@@ -196,8 +198,16 @@ CHECKS: tuple[CheckDef, ...] = (
         "repo",
         "enforce per-directory total LOC budget",
         400,
-        lambda repo_root: check_budget_metric(repo_root, "dir-loc"),
+        check_loc_per_dir,
         fix_hint="Move unrelated files into domain subpackages to reduce dir-level LOC density.",
+    ),
+    CheckDef(
+        "repo.module_budget_domains",
+        "repo",
+        "enforce module count budget per top-level atlasctl domain",
+        400,
+        check_modules_per_domain,
+        fix_hint="Split high-density top-level domains and relocate modules by control-plane ownership.",
     ),
     CheckDef(
         "repo.dir_budget_exceptions_documented",
@@ -359,7 +369,7 @@ CHECKS: tuple[CheckDef, ...] = (
         "repo",
         "enforce maximum atlasctl package nesting depth",
         300,
-        check_package_max_depth,
+        check_tree_depth,
         fix_hint="Flatten deep package hierarchies under packages/atlasctl/src/atlasctl.",
     ),
     CheckDef(
