@@ -15,7 +15,7 @@ positional arguments:
     paths               print key repo and runtime paths
     self-check          validate imports, config loading, and schema presence
     help                print command help
-    explain             describe command side-effects and external tools
+    explain             describe command contracts and usage
     run                 run an internal python script by repo-relative path
     validate-output     validate JSON output against schema
     surface             print scripts command ownership surface

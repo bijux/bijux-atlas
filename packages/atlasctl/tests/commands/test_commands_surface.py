@@ -60,3 +60,17 @@ def test_command_surface_documented_in_tooling_page() -> None:
 def test_commands_verify_stability_passes() -> None:
     proc = _run_cli("commands", "--json", "--verify-stability")
     assert proc.returncode == 0, proc.stderr
+
+
+@pytest.mark.unit
+def test_commands_lint_passes() -> None:
+    proc = _run_cli("commands", "lint", "--json")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["status"] == "ok"
+
+
+@pytest.mark.unit
+def test_commands_compat_check_passes() -> None:
+    proc = _run_cli("commands", "compat-check", "--json")
+    assert proc.returncode == 0, proc.stderr

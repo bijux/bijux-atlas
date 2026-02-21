@@ -30,6 +30,17 @@ def dispatch_command(
     domain_runners: dict[str, Callable[[RunContext], object]],
     version_string: Callable[[], str],
 ) -> int:
+    def _resolve_explain_name() -> str:
+        first = getattr(ns, "subject_or_name", "")
+        second = getattr(ns, "name", None)
+        if first == "command":
+            if not second:
+                raise ScriptError("usage: atlasctl explain command <name>", ERR_CONFIG)
+            return second
+        if second is not None:
+            raise ScriptError("usage: atlasctl explain command <name>", ERR_CONFIG)
+        return first
+
     if getattr(ns, "dry_run", False):
         spec = command_spec(ns.cmd)
         if spec is not None and spec.effect_level == "effectful":
@@ -75,14 +86,15 @@ def dispatch_command(
         print(rendered)
         return 0
     if ns.cmd == "explain":
-        desc = import_attr("atlasctl.commands.explain", "describe_command")(ns.command)
+        explain_name = _resolve_explain_name()
+        desc = import_attr("atlasctl.commands.explain", "describe_command")(explain_name)
         payload = {
             "schema_name": EXPLAIN,
             "schema_version": 1,
             "tool": "atlasctl",
             "status": "ok",
             "run_id": ctx.run_id,
-            "command": ns.command,
+            "command": explain_name,
             **desc,
         }
         validate_self(EXPLAIN, payload)
@@ -110,9 +122,15 @@ def dispatch_command(
     if ns.cmd == "surface":
         return run_surface(ns.json, ns.out_file, ctx)
     if ns.cmd == "commands":
+        if ns.commands_cmd == "lint":
+            lint = import_attr("atlasctl.checks.repo.contracts.command_contracts", "command_lint_payload")
+            payload = lint(ctx.repo_root)
+            code = 0 if payload["status"] == "ok" else ERR_CONFIG
+            print(dumps_json(payload, pretty=not ns.json))
+            return code
         payload = commands_payload()
         payload["run_id"] = ctx.run_id
-        if getattr(ns, "verify_stability", False):
+        if getattr(ns, "verify_stability", False) or ns.commands_cmd == "compat-check":
             golden_path = ctx.repo_root / "packages/atlasctl/tests/goldens/commands.json.golden"
             if not golden_path.exists():
                 raise ScriptError(f"missing commands stability golden: {golden_path.relative_to(ctx.repo_root)}", ERR_CONFIG)

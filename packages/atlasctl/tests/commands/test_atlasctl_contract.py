@@ -41,7 +41,7 @@ def test_self_check_json_matches_atlasctl_schema() -> None:
 
 
 def test_explain_json_matches_atlasctl_schema() -> None:
-    proc = _run_cli("--json", "explain", "check")
+    proc = _run_cli("--json", "explain", "command", "check")
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
     jsonschema.validate(payload, _atlasctl_schema())

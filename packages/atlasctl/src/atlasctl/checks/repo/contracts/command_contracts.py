@@ -9,6 +9,7 @@ from ....contracts.ids import RUNTIME_CONTRACTS
 _PUBLIC_UNSTABLE_ALLOWLIST = {"compat"}
 _ALLOWED_EFFECT_LEVELS = {"pure", "effectful"}
 _ALLOWED_RUN_ID_MODES = {"not_required", "accept_or_generate"}
+_MAX_ALIASES_PER_COMMAND = 1
 
 
 def check_command_metadata_contract(repo_root: Path) -> tuple[int, list[str]]:
@@ -30,6 +31,14 @@ def check_command_metadata_contract(repo_root: Path) -> tuple[int, list[str]]:
             errors.append(f"{spec.name}: effectful commands must accept or generate run_id")
         if spec.effect_level == "effectful" and not spec.supports_dry_run:
             errors.append(f"{spec.name}: effectful commands must support dry-run")
+        if len(spec.aliases) > _MAX_ALIASES_PER_COMMAND:
+            errors.append(f"{spec.name}: alias budget exceeded ({len(spec.aliases)} > {_MAX_ALIASES_PER_COMMAND})")
+        if spec.aliases != tuple(sorted(spec.aliases)):
+            errors.append(f"{spec.name}: aliases must be sorted")
+        if not (spec.purpose or "").strip():
+            errors.append(f"{spec.name}: missing purpose metadata")
+        if not spec.examples:
+            errors.append(f"{spec.name}: missing examples metadata")
     if errors:
         return 1, errors
     return 0, []
@@ -102,12 +111,84 @@ def check_command_help_docs_drift(repo_root: Path) -> tuple[int, list[str]]:
     return (0 if not errors else 1), errors
 
 
+def check_public_commands_docs_index(repo_root: Path) -> tuple[int, list[str]]:
+    index = repo_root / "packages/atlasctl/docs/commands/index.md"
+    if not index.exists():
+        return 1, ["packages/atlasctl/docs/commands/index.md missing"]
+    text = index.read_text(encoding="utf-8", errors="ignore")
+    errors: list[str] = []
+    for spec in command_registry():
+        if not spec.stable:
+            continue
+        if f"`{spec.name}`" not in text:
+            errors.append(f"{spec.name}: missing from packages/atlasctl/docs/commands/index.md")
+    return (0 if not errors else 1), errors
+
+
+def check_command_surface_stability(repo_root: Path) -> tuple[int, list[str]]:
+    golden_path = repo_root / "packages/atlasctl/tests/goldens/commands.json.golden"
+    if not golden_path.exists():
+        return 1, [f"{golden_path.relative_to(repo_root).as_posix()} missing"]
+    expected = json.loads(golden_path.read_text(encoding="utf-8"))
+    current = {
+        "schema_name": "atlasctl.commands.v1",
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "status": "ok",
+        "run_id": "",
+        "commands": [
+            {
+                "name": cmd.name,
+                "help": cmd.help_text,
+                "stable": cmd.stable,
+                "touches": list(cmd.touches),
+                "tools": list(cmd.tools),
+                "failure_modes": list(cmd.failure_modes),
+                "owner": cmd.owner,
+                "doc_link": cmd.doc_link,
+                "effect_level": cmd.effect_level,
+                "run_id_mode": cmd.run_id_mode,
+                "supports_dry_run": cmd.supports_dry_run,
+                "aliases": list(cmd.aliases),
+                "purpose": cmd.purpose or cmd.help_text,
+                "examples": list(cmd.examples),
+            }
+            for cmd in sorted(command_registry(), key=lambda item: item.name)
+        ],
+    }
+    expected["run_id"] = ""
+    if current != expected:
+        return 1, ["command surface drift: run `python -m atlasctl.cli gen goldens`"]
+    return 0, []
+
+
+def command_lint_payload(repo_root: Path) -> dict[str, object]:
+    checks: list[tuple[str, tuple[int, list[str]]]] = [
+        ("command_metadata", check_command_metadata_contract(repo_root)),
+        ("duplicate_names", check_no_duplicate_command_names(repo_root)),
+        ("docs_index", check_public_commands_docs_index(repo_root)),
+        ("surface_stability", check_command_surface_stability(repo_root)),
+        ("alias_budget", check_command_alias_budget(repo_root)),
+    ]
+    return {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "status": "ok" if all(code == 0 for _, (code, _) in checks) else "error",
+        "checks": [
+            {"id": cid, "status": "ok" if code == 0 else "error", "errors": errors}
+            for cid, (code, errors) in checks
+        ],
+    }
+
+
 def runtime_contracts_payload(repo_root: Path) -> dict[str, object]:
     checks = []
     for fn, cid in (
         (check_command_metadata_contract, "contracts.command_metadata"),
         (check_no_duplicate_command_names, "contracts.no_duplicate_commands"),
         (check_command_help_docs_drift, "contracts.help_docs_drift"),
+        (check_public_commands_docs_index, "contracts.docs_index"),
+        (check_command_surface_stability, "contracts.command_surface_stability"),
     ):
         code, errors = fn(repo_root)
         checks.append({"id": cid, "status": "pass" if code == 0 else "fail", "errors": sorted(errors)})

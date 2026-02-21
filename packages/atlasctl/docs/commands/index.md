@@ -1,17 +1,36 @@
-# Command Groups
+# Atlasctl Commands
 
-Atlasctl command implementation lives in `src/atlasctl/commands/` and follows `configure(parser)` + `run(ctx, ns)`.
+Public command index (stable surface). Command wiring is registry-first via `src/atlasctl/cli/registry.py`.
 
-## Groups
+## Stable Commands
 
-- `check`: check registry execution and check-related commands.
-- `docs`: docs generation, validation, and contracts.
-- `ops`: operations command surface.
-- `make`: make surface and contracts commands.
-- `configs`: config validation and generation commands.
-- `contracts`: schema and contract-oriented commands.
-- `docker`: docker-related checks and commands.
-- `ci`: CI-oriented commands.
-- `inventory`: inventory generation and validation.
-- `report`: report aggregation and artifacts.
-- `legacy`: legacy inventory and historical migration metadata.
+- `check`
+- `commands`
+- `configs`
+- `contracts`
+- `doctor`
+- `docs`
+- `gates`
+- `help`
+- `inventory`
+- `k8s`
+- `layout`
+- `legacy`
+- `lint`
+- `load`
+- `obs`
+- `ops`
+- `policies`
+- `registry`
+- `repo`
+- `report`
+- `suite`
+- `stack`
+- `test`
+- `version`
+
+## Workflow
+
+- Add new commands using `src/atlasctl/cli/registry.py` as the single command catalog.
+- Update snapshots only through `python -m atlasctl.cli gen goldens`.
+- Follow `packages/atlasctl/docs/commands/new-command-workflow.md` when adding a command.

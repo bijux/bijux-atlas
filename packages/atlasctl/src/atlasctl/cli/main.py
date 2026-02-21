@@ -70,6 +70,9 @@ def _commands_payload() -> dict[str, object]:
                 "effect_level": cmd.effect_level,
                 "run_id_mode": cmd.run_id_mode,
                 "supports_dry_run": cmd.supports_dry_run,
+                "aliases": list(cmd.aliases),
+                "purpose": cmd.purpose or cmd.help_text,
+                "examples": list(cmd.examples),
             }
             for cmd in sorted(command_registry(), key=lambda item: item.name)
         ],
@@ -155,8 +158,9 @@ def build_parser() -> argparse.ArgumentParser:
     help_parser = sub.add_parser("help", help="print command help")
     help_parser.add_argument("--json", action="store_true", help="emit machine-readable command inventory")
     help_parser.add_argument("--out-file", help="optional output path")
-    explain_parser = sub.add_parser("explain", help="describe command side-effects and external tools")
-    explain_parser.add_argument("command")
+    explain_parser = sub.add_parser("explain", help="describe command contracts and usage")
+    explain_parser.add_argument("subject_or_name")
+    explain_parser.add_argument("name", nargs="?")
     explain_parser.add_argument("--json", action="store_true", help="emit JSON output")
 
     run_parser = sub.add_parser("run", help="run an internal python script by repo-relative path")
@@ -173,6 +177,7 @@ def build_parser() -> argparse.ArgumentParser:
     surface_parser.add_argument("--json", action="store_true", help="emit JSON output")
     surface_parser.add_argument("--out-file", help="optional output path for JSON report")
     commands_parser = sub.add_parser("commands", help="print machine-readable command surface")
+    commands_parser.add_argument("commands_cmd", nargs="?", choices=["list", "lint", "compat-check"], default="list")
     commands_parser.add_argument("--json", action="store_true", help="emit JSON output")
     commands_parser.add_argument("--out-file", help="optional output path for JSON report")
     commands_parser.add_argument("--verify-stability", action="store_true", help="compare command payload against commands golden")
@@ -213,6 +218,11 @@ def main(argv: list[str] | None = None) -> int:
     if ns.no_network and no_network_flag_expired(date.today(), NO_NETWORK_FLAG_EXPIRY):
         print("--no-network flag expired; use --network=forbid", file=sys.stderr)
         return ERR_CONFIG
+    if ns.cmd == "version" and try_find_repo_root() is None:
+        as_json = bool(getattr(ns, "json", False) or "--json" in raw_argv)
+        payload = {"schema_version": 1, "tool": "atlasctl", "status": "ok", "atlasctl_version": __version__, "scripts_version": _version_string().split()[1]}
+        print(json.dumps(payload, sort_keys=True) if as_json else _version_string())
+        return 0
 
     fmt = resolve_output_format(cli_json=("--json" in raw_argv), cli_format=ns.format, ci_present=bool(getenv("CI")))
     ctx = RunContext.from_args(ns.run_id, ns.artifacts_dir or ns.evidence_root, ns.profile, ns.no_network, fmt, ns.network, ns.run_dir, ns.verbose, ns.quiet, ns.require_clean_git)
