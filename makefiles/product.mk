@@ -11,16 +11,16 @@ bootstrap:
 	@command -v kubectl >/dev/null 2>&1 || echo "kubectl not found (required for k8s e2e)"
 
 fmt: ## Run formatter checks
-	@$(MAKE) -s internal/cargo/fmt
+	@$(ATLAS_SCRIPTS) dev fmt
 
 lint: ## Run lint checks
-	@$(MAKE) -s internal/cargo/lint
+	@$(ATLAS_SCRIPTS) dev lint
 
 test: ## Run test suite
-	@$(MAKE) -s internal/cargo/test
+	@$(ATLAS_SCRIPTS) dev test
 
 audit: ## Run dependency and policy audits
-	@$(MAKE) -s internal/cargo/audit
+	@$(ATLAS_SCRIPTS) dev audit
 
 docs: ## Run docs verification lane
 	@$(MAKE) -s docs/check
