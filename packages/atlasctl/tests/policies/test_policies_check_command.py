@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 
 from atlasctl.core.context import RunContext
+from atlasctl.policies import budget_handlers
 from atlasctl.policies import command as policies_command
 
 
@@ -91,7 +92,7 @@ def test_culprits_files_per_dir_alias(monkeypatch, tmp_path: Path, capsys) -> No
     )
 
     monkeypatch.setattr(
-        policies_command,
+        budget_handlers,
         "evaluate_metric",
         lambda _repo, metric: {"schema_version": 1, "tool": "atlasctl", "status": "ok", "metric": metric, "items": []},
     )
