@@ -5,19 +5,19 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[8]
-CI_MK = ROOT / "makefiles" / "ci.mk"
-MAX_LINES = 120
+DEV_MK = ROOT / "makefiles" / "dev.mk"
+MAX_LINES = 220
 
 
 def main() -> int:
-    lines = len(CI_MK.read_text(encoding="utf-8").splitlines())
+    lines = len(DEV_MK.read_text(encoding="utf-8").splitlines())
     if lines > MAX_LINES:
         print(
-            f"ci.mk size budget exceeded: {lines} > {MAX_LINES} (move logic into atlasctl dev ci subcommands)",
+            f"dev.mk size budget exceeded: {lines} > {MAX_LINES} (move logic into atlasctl dev subcommands)",
             file=sys.stderr,
         )
         return 1
-    print(f"ci.mk size budget check passed: {lines}/{MAX_LINES}")
+    print(f"dev.mk size budget check passed: {lines}/{MAX_LINES}")
     return 0
 
 
