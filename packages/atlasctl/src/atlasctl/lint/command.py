@@ -6,7 +6,7 @@ import json
 from ..core.context import RunContext
 from ..core.fs import ensure_evidence_path
 from ..core.schema.schema_utils import validate_json
-from .runner import run_suite
+from .runner import run_lint_suite
 
 SUITES = ("ops", "repo", "makefiles", "docs", "configs", "packages")
 
@@ -18,7 +18,7 @@ def configure_lint_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
     p.add_argument("--report", choices=["text", "json"], default="text")
 
 def run_lint_command(ctx: RunContext, ns: argparse.Namespace) -> int:
-    code, payload = run_suite(ctx.repo_root, ns.suite, ns.fail_fast)
+    code, payload = run_lint_suite(ctx.repo_root, ns.suite, ns.fail_fast)
     schema_path = ctx.repo_root / "configs/contracts/scripts-tool-output.schema.json"
     validate_json({"schema_version": 1, "tool": payload["tool"], "status": payload["status"]}, schema_path)
 

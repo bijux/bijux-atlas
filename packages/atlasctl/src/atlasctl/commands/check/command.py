@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import json
 import subprocess
-import time
 from pathlib import Path
 from typing import Callable
 from xml.etree.ElementTree import Element, SubElement, tostring
@@ -58,7 +57,7 @@ from ...checks.runner import domains as check_domains
 from ...checks.runner import run_domain
 from ...core.context import RunContext
 from ...core.fs import ensure_evidence_path
-from ...lint.runner import run_suite
+from ...lint.runner import run_lint_suite
 
 NativeCheck = Callable[[Path], tuple[int, list[str]]]
 SHELL_POLICY_CHECK_IDS: tuple[str, ...] = (
@@ -103,7 +102,7 @@ def _run_domain(ctx: RunContext, domain: str, fail_fast: bool = False, label: st
 
 
 def _run_suite_domain(ctx: RunContext, suite_name: str, label: str, fail_fast: bool) -> int:
-    code, payload = run_suite(ctx.repo_root, suite_name, fail_fast=fail_fast)
+    code, payload = run_lint_suite(ctx.repo_root, suite_name, fail_fast=fail_fast)
     if ctx.output_format == "json":
         print(json.dumps(payload, sort_keys=True))
     else:
@@ -147,11 +146,17 @@ def _write_junitxml(path: Path, rows: list[dict[str, object]]) -> None:
 def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     selected_domain, selector = _parse_select(ns.select or "")
     checks = [check for check in list_checks() if selected_domain is None or check.domain == selected_domain]
+    matched_checks = [
+        check for check in checks if _match_selected(check.check_id, check.title, check.domain, selected_domain, selector)
+    ]
+    _failed_total, executed_results = run_function_checks(ctx.repo_root, matched_checks)
+    executed_by_id = {result.id: result for result in executed_results}
     rows: list[dict[str, object]] = []
     fail_count = 0
     maxfail = 1 if ns.failfast else max(0, int(ns.maxfail or 0))
     for check in checks:
-        if not _match_selected(check.check_id, check.title, check.domain, selected_domain, selector):
+        result = executed_by_id.get(check.check_id)
+        if result is None:
             rows.append(
                 {
                     "id": check.check_id,
@@ -165,21 +170,16 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
                 }
             )
             continue
-        started = time.perf_counter()
-        try:
-            code, errors = check.fn(ctx.repo_root)
-        except Exception as exc:  # pragma: no cover
-            code, errors = 1, [f"internal check error: {exc}"]
-        duration_ms = int((time.perf_counter() - started) * 1000)
-        status = "PASS" if code == 0 else "FAIL"
-        detail = "; ".join(errors[:2]) if errors else ""
+        status = "PASS" if result.status == "pass" else "FAIL"
+        detail_errors = list(result.errors) + [f"WARN: {warn}" for warn in result.warnings]
+        detail = "; ".join(detail_errors[:2]) if detail_errors else ""
         rows.append(
             {
                 "id": check.check_id,
                 "title": check.title,
                 "domain": check.domain,
                 "status": status,
-                "duration_ms": duration_ms,
+                "duration_ms": int(result.metrics.get("duration_ms", 0)),
                 "hint": check.fix_hint,
                 "detail": detail,
                 "owners": list(check.owners),

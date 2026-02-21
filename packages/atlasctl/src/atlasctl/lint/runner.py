@@ -41,7 +41,7 @@ def suites(repo_root: Path) -> dict[str, list[CommandCheckDef]]:
     }
 
 
-def run_suite(repo_root: Path, suite: str, fail_fast: bool) -> tuple[int, dict[str, object]]:
+def run_lint_suite(repo_root: Path, suite: str, fail_fast: bool) -> tuple[int, dict[str, object]]:
     all_suites = suites(repo_root)
     checks = all_suites.get(suite)
     if checks is None:
