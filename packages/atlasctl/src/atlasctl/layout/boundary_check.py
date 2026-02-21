@@ -44,7 +44,7 @@ ALLOWED_DEPS: dict[str, set[str]] = {
     "compat": {"compat", "core", "contracts"},
 }
 
-COMPAT_MODULES = {"run_context", "structured_log", "evidence_policy", "output_contract"}
+COMPAT_MODULES = {"run_context", "structured_log", "evidence_policy"}
 
 
 @dataclass(frozen=True)

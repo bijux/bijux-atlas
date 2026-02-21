@@ -8,7 +8,7 @@ from atlasctl.core.models.models import ContractsIndexModel, OwnershipModel, Sur
 from atlasctl.core.paths import find_repo_root
 from atlasctl.core.process import run_command
 from atlasctl.core.runtime.tooling import read_pins, read_tool_versions
-from atlasctl.core.contracts.yaml_utils import validate_yaml_required_keys
+from atlasctl.core.schema.yaml_utils import validate_yaml_required_keys
 
 ROOT = Path(__file__).resolve().parents[3]
 

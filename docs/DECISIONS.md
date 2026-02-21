@@ -26,9 +26,9 @@ Scope: `packages/atlasctl/` architecture and boundary contract.
 - New checks must register in the `checks` registry and be discoverable via `atlasctl check list`.
 - CI and local developer targets should consume lock-resolved dependencies.
 - Contracts boundary:
-  - `atlasctl/contracts/` is the public schema and output contract layer.
-  - `atlasctl/core/contracts/` is internal validation/serialization utility code.
-  - `commands/` and `checks/` must import schemas from `atlasctl/contracts`, not `atlasctl/core/contracts`.
+  - `atlasctl/contracts/` is the public schema catalog, schema IDs, and output contract layer.
+  - `atlasctl/core/schema/` contains internal schema/yaml helper utilities only (no contract ownership).
+  - `commands/` and `checks/` must import schemas from `atlasctl/contracts`, not `atlasctl/core/schema`.
 - Integration boundary:
   - `atlasctl/adapters/` is the canonical external integration layer.
   - `atlasctl/core/integration/` is deprecated and must not be reintroduced.
