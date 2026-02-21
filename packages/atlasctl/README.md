@@ -8,6 +8,8 @@ SSOT scripting product for `bijux-atlas`.
 
 `scripts/` is in deprecation mode for Python business logic and should converge to `scripts/bin/` shims only; new Python logic must live under `packages/atlasctl/`.
 
+Documentation start point: [`docs/index.md`](docs/index.md).
+
 ## Command Surface
 
 - `bijux-atlas run <script-path> [args...]`
