@@ -75,6 +75,12 @@ CHECKS: list[MakeCheck] = [
         "packages/atlasctl/src/atlasctl/checks/layout/workflows/check_ci_entrypoints.py",
         "Update workflow jobs to call approved public targets only.",
     ),
+    _check(
+        "ci-write-scope",
+        "Validate ci wrappers avoid direct writes outside isolate/evidence",
+        "packages/atlasctl/src/atlasctl/checks/layout/workflows/check_ci_writes_scoped.py",
+        "Keep makefiles/ci.mk wrapper-only and route all writes through atlasctl-managed isolate/evidence outputs.",
+    ),
     _check_cmd(
         "dev-ci-target-map",
         "Validate cargo/ci make targets are mapped to atlasctl DEV/CI intents",
