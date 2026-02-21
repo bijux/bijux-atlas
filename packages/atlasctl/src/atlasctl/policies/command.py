@@ -9,6 +9,7 @@ from pathlib import Path
 
 from ..core.context import RunContext
 from ..core.fs import ensure_evidence_path
+from .culprits import evaluate_metric, render_text
 from .scans import policy_drift_diff, scan_grep_relaxations, scan_rust_relaxations
 
 RELAXATION_FILES = (
@@ -337,6 +338,13 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.policies_cmd == "drift-diff":
         print(policy_drift_diff(repo, ns.from_ref, ns.to_ref), end="")
         return 0
+    if ns.policies_cmd == "culprits":
+        payload = evaluate_metric(repo, ns.culprits_metric)
+        if ns.report == "json":
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            print(render_text(payload))
+        return 0 if payload["status"] == "ok" else 1
 
     return 2
 
@@ -379,3 +387,6 @@ def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
     diff = ps.add_parser("drift-diff", help="diff policy contracts between two refs")
     diff.add_argument("--from-ref", default="HEAD~1")
     diff.add_argument("--to-ref", default="HEAD")
+    culprits = ps.add_parser("culprits", help="report directory budget culprits")
+    culprits.add_argument("culprits_metric", choices=["modules-per-dir", "py-files-per-dir", "dir-loc"])
+    culprits.add_argument("--report", choices=["text", "json"], default="text")
