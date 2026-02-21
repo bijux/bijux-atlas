@@ -25,4 +25,12 @@ Scope: `packages/atlasctl/` architecture and boundary contract.
 - New commands must register via `cli` + `commands` canonical path.
 - New checks must register in the `checks` registry and be discoverable via `atlasctl check list`.
 - CI and local developer targets should consume lock-resolved dependencies.
-
+- Contracts boundary:
+  - `atlasctl/contracts/` is the public schema and output contract layer.
+  - `atlasctl/core/contracts/` is internal validation/serialization utility code.
+  - `commands/` and `checks/` must import schemas from `atlasctl/contracts`, not `atlasctl/core/contracts`.
+- Integration boundary:
+  - `atlasctl/adapters/` is the canonical external integration layer.
+  - `atlasctl/core/integration/` is deprecated and must not be reintroduced.
+- Context boundary:
+  - `RunContext` construction is centralized in `atlasctl/core/context.py` via `RunContext.from_args`.
