@@ -45,6 +45,8 @@ def test_suite_inventory_shape() -> None:
     payload = json.loads(proc.stdout)
     names = {item["name"] for item in payload["first_class_suites"]}
     assert {"docs", "dev", "ops", "policies", "configs", "local", "slow", "refgrade", "ci", "all", "internal", "refgrade_proof"}.issubset(names)
+    configured = {item["name"] for item in payload["suites"]}
+    assert "release_0_1" in configured
 
 
 def test_suite_membership_snapshot_golden() -> None:
