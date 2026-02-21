@@ -109,7 +109,7 @@ def dispatch_command(
         print(rendered)
         return 0
     if ns.cmd == "doctor":
-        return import_attr("atlasctl.commands.doctor", "run_doctor")(ctx, ns.json, ns.out_file)
+        return import_attr("atlasctl.commands.doctor", "run_doctor")(ctx, ns.json, getattr(ns, "out_file", None))
     if ns.cmd == "config":
         mapped = argparse.Namespace(**vars(ns))
         mapped.configs_cmd = {"dump": "print", "validate": "validate", "drift": "drift"}[ns.config_cmd]

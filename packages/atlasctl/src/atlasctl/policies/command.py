@@ -9,7 +9,15 @@ from pathlib import Path
 
 from ..core.context import RunContext
 from ..core.fs import ensure_evidence_path
-from .culprits import biggest_dirs, biggest_files, budget_suite, evaluate_metric, render_table_text, render_text
+from .culprits import (
+    biggest_dirs,
+    biggest_files,
+    budget_suite,
+    collect_dir_stats,
+    evaluate_metric,
+    render_table_text,
+    render_text,
+)
 from .dead_modules import analyze_dead_modules
 from .scans import policy_drift_diff, scan_grep_relaxations, scan_rust_relaxations
 
@@ -127,6 +135,50 @@ def _write_out_file(repo_root: Path, out_file: str, content: str) -> None:
     out_path = repo_root / out_file
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(content + "\n", encoding="utf-8")
+
+
+def _repo_stats_payload(repo_root: Path) -> dict[str, object]:
+    rows = collect_dir_stats(repo_root)
+    top_dirs = sorted(rows, key=lambda row: row.total_loc, reverse=True)[:20]
+    return {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "status": "ok",
+        "total_dirs": len(rows),
+        "top_dirs": [
+            {
+                "dir": row.dir,
+                "py_files": row.py_files,
+                "modules": row.modules,
+                "shell_files": row.shell_files,
+                "total_loc": row.total_loc,
+                "rule": row.rule,
+                "enforce": row.enforce,
+            }
+            for row in top_dirs
+        ],
+    }
+
+
+def _repo_stats_diff(current: dict[str, object], previous: dict[str, object]) -> dict[str, object]:
+    now = {str(item["dir"]): int(item["total_loc"]) for item in current.get("top_dirs", []) if isinstance(item, dict)}
+    old = {str(item["dir"]): int(item["total_loc"]) for item in previous.get("top_dirs", []) if isinstance(item, dict)}
+    deltas: list[dict[str, object]] = []
+    for directory in sorted(set(now) | set(old)):
+        deltas.append(
+            {
+                "dir": directory,
+                "loc_now": now.get(directory, 0),
+                "loc_prev": old.get(directory, 0),
+                "delta_loc": now.get(directory, 0) - old.get(directory, 0),
+            }
+        )
+    return {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "status": "ok",
+        "deltas": sorted(deltas, key=lambda row: abs(int(row["delta_loc"])), reverse=True)[:20],
+    }
 
 
 def _policy_schema_drift(repo_root: Path) -> tuple[int, list[str]]:
@@ -386,6 +438,24 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         if getattr(ns, "fail_on_found", False) and payload["candidate_count"] > 0:
             return 1
         return 0
+    if ns.policies_cmd == "repo-stats":
+        payload = _repo_stats_payload(repo)
+        out_rel = str(getattr(ns, "out_file", "")) or f"artifacts/reports/atlasctl/repo-stats/{ctx.run_id}.json"
+        out_path = repo / out_rel
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        if getattr(ns, "diff_previous", False):
+            previous = sorted(out_path.parent.glob("*.json"))
+            prior = [p for p in previous if p != out_path]
+            if prior:
+                prev_payload = json.loads(prior[-1].read_text(encoding="utf-8"))
+                diff_payload = _repo_stats_diff(payload, prev_payload)
+                diff_path = out_path.with_suffix(".diff.json")
+                diff_path.write_text(json.dumps(diff_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+                payload["diff_file"] = diff_path.relative_to(repo).as_posix()
+                payload["diff"] = diff_payload
+        print(json.dumps(payload, sort_keys=True) if ns.report == "json" else json.dumps(payload, indent=2, sort_keys=True))
+        return 0
 
     return 2
 
@@ -458,3 +528,7 @@ def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
     dead.add_argument("--report", choices=["text", "json"], default="text")
     dead.add_argument("--out-file", help="write report to file path", default="")
     dead.add_argument("--fail-on-found", action="store_true", help="exit non-zero when candidates are found")
+    stats = ps.add_parser("repo-stats", help="emit repository directory stats and optional diff against prior run")
+    stats.add_argument("--report", choices=["text", "json"], default="json")
+    stats.add_argument("--out-file", help="write report to file path", default="")
+    stats.add_argument("--diff-previous", action="store_true")

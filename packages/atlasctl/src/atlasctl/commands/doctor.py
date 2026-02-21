@@ -10,6 +10,7 @@ from pathlib import Path
 
 from ..core.context import RunContext
 from ..core.fs import ensure_evidence_path
+from ..policies.culprits import budget_suite
 
 
 def _tool_version(cmd: list[str]) -> str:
@@ -25,6 +26,13 @@ def build_report(ctx: RunContext) -> dict[str, object]:
     repo_ok = (ctx.repo_root / ".git").exists() and (ctx.repo_root / "makefiles").is_dir()
     write_roots_ok = ctx.scripts_artifact_root.as_posix().find("artifacts/atlasctl") != -1
     python_env_ok = shutil.which("python3") is not None
+    budget = budget_suite(ctx.repo_root)
+    tree_health = {
+        "status": budget.get("status", "unknown"),
+        "report_count": len(budget.get("reports", [])),
+        "failing_metrics": [r.get("metric") for r in budget.get("reports", []) if r.get("status") == "fail"],
+        "warning_metrics": [r.get("metric") for r in budget.get("reports", []) if r.get("status") == "warn"],
+    }
     return {
         "run_id": ctx.run_id,
         "profile": ctx.profile,
@@ -54,6 +62,7 @@ def build_report(ctx: RunContext) -> dict[str, object]:
             "toolchain_ok": toolchain_ok,
             "write_roots_ok": write_roots_ok,
         },
+        "tree_health": tree_health,
     }
 
 
