@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from ....core.context import RunContext
+from ....core.isolation import build_isolate_env, clean_isolate_roots, require_isolate_env
 
 
 def _venv_path(ctx: RunContext, override: str | None) -> Path:
@@ -118,42 +119,20 @@ def run_env_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print(json.dumps(payload, sort_keys=True) if ns.json else f"removed={len(removed)}")
         return 0
     if subcmd == "require-isolate":
-        required = ("ISO_TAG", "ISO_RUN_ID", "ISO_ROOT", "CARGO_TARGET_DIR", "CARGO_HOME", "TMPDIR", "TMP", "TEMP")
-        for key in required:
-            if not os.environ.get(key):
-                print(f"isolate-required: missing env var: {key}")
-                return 1
-        iso_root = os.environ["ISO_ROOT"]
-        if "/artifacts/isolate/" not in iso_root and not iso_root.startswith("artifacts/isolate/"):
-            print(f"isolate-required: ISO_ROOT must be under artifacts/isolate: {iso_root}")
+        ok, message = require_isolate_env(os.environ.copy())
+        if not ok:
+            print(f"isolate-required: {message}")
             return 1
-        iso_root_abs = str(Path(iso_root).resolve())
-        for key in ("CARGO_TARGET_DIR", "CARGO_HOME", "TMPDIR", "TMP", "TEMP"):
-            path = os.environ[key]
-            path_abs = str(Path(path).resolve())
-            if not path_abs.startswith(iso_root_abs + "/"):
-                print(f"isolate-required: path not inside ISO_ROOT: {path}")
-                return 1
         print("isolate-required: OK")
         return 0
     if subcmd == "isolate":
-        explicit_tag = getattr(ns, "tag", None) or os.environ.get("ISO_TAG", "")
-        git_sha = ctx.git_sha or "nogit"
-        iso_tag = explicit_tag or f"{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}-{git_sha}-{os.getpid()}"
-        iso_root_env = os.environ.get("ISO_ROOT")
-        iso_root = Path(iso_root_env).resolve() if iso_root_env else (ctx.repo_root / "artifacts/isolate" / iso_tag).resolve()
-        iso_run_id = os.environ.get("ISO_RUN_ID", iso_tag)
-        env = os.environ.copy()
-        env["ISO_TAG"] = iso_tag
-        env["ISO_RUN_ID"] = iso_run_id
-        env["ISO_ROOT"] = str(iso_root)
-        env["CARGO_TARGET_DIR"] = str(iso_root / "target")
-        env["CARGO_HOME"] = str(iso_root / "cargo-home")
-        env["TMPDIR"] = str(iso_root / "tmp")
-        env["TMP"] = str(iso_root / "tmp")
-        env["TEMP"] = str(iso_root / "tmp")
-        env["TZ"] = "UTC"
-        env["LC_ALL"] = "C"
+        env = build_isolate_env(
+            repo_root=ctx.repo_root,
+            git_sha=ctx.git_sha or "nogit",
+            prefix="atlasctl-env-isolate",
+            tag=getattr(ns, "tag", None) or os.environ.get("ISO_TAG", ""),
+            base_env=os.environ.copy(),
+        )
         if ns.print_root:
             print(env["ISO_ROOT"])
             return 0
@@ -165,9 +144,25 @@ def run_env_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             for key in keys:
                 print(f"{key}={env[key]}")
             return 0
+        if ns.clean:
+            removed = clean_isolate_roots(
+                ctx.repo_root,
+                older_than_days=int(getattr(ns, "older_than_days", 14)),
+                keep_last=int(getattr(ns, "keep_last", 20)),
+            )
+            payload = {
+                "schema_version": 1,
+                "tool": "atlasctl",
+                "status": "ok",
+                "action": "isolate-clean",
+                "removed": removed,
+            }
+            print(json.dumps(payload, sort_keys=True) if ns.json else f"removed={len(removed)}")
+            return 0
         if not ns.exec_cmd:
             print("usage: atlasctl env isolate [options] <command> [args...]")
             return 2
+        iso_root = Path(env["ISO_ROOT"])
         if ns.require_clean and not ns.reuse and iso_root.exists():
             print(f"isolate: ISO_ROOT already exists: {iso_root}")
             return 1
@@ -220,5 +215,8 @@ def configure_env_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     iso.add_argument("--tag")
     iso.add_argument("--require-clean", action="store_true")
     iso.add_argument("--reuse", action="store_true")
+    iso.add_argument("--clean", action="store_true", help="remove stale isolate roots under artifacts/isolate")
+    iso.add_argument("--older-than-days", type=int, default=14, help="age threshold for --clean")
+    iso.add_argument("--keep-last", type=int, default=20, help="retain newest N roots for --clean")
     iso.add_argument("exec_cmd", nargs=argparse.REMAINDER)
     iso.add_argument("--json", action="store_true", help="emit JSON output")

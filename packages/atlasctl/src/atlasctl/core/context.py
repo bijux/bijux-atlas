@@ -6,7 +6,9 @@ from pathlib import Path
 from typing import Literal
 
 from .adapters.git import read_git_context
+from .errors import ScriptError
 from .env import getenv
+from .isolation import require_isolate_env
 from .paths import evidence_root_path, find_repo_root, run_dir_root_path, scripts_artifact_root_path
 
 OutputFormat = Literal["text", "json"]
@@ -64,6 +66,11 @@ class RunContext:
         from . import network as network_module
 
         return network_module
+
+    def require_isolate(self, env: dict[str, str] | None = None) -> None:
+        ok, message = require_isolate_env(env)
+        if not ok:
+            raise ScriptError(f"isolate-required: {message}", 1)
 
     @classmethod
     def from_args(
