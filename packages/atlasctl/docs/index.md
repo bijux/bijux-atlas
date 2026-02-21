@@ -11,6 +11,8 @@ Use this page as the entrypoint for package-level documentation.
 - [Ownership](ownership.md)
 - [Public API](public-api.md)
 - [Versioning](versioning.md)
+- [Environment Variables](env.md)
+- [Dependency Workflow](deps.md)
 - [License](license.md)
 
 ## Migration
