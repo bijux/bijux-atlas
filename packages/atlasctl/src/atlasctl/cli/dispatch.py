@@ -113,6 +113,20 @@ def dispatch_command(
         print(dumps_json(payload, pretty=not (as_json or ns.json)))
         return 0
     if ns.cmd == "run":
+        if ns.script == "suite":
+            if not ns.args:
+                raise ScriptError("usage: atlasctl run suite <name> [--list|--json|--target-dir PATH]", ERR_CONFIG)
+            suite_name = ns.args[0]
+            list_flag = "--list" in ns.args[1:]
+            json_flag = "--json" in ns.args[1:]
+            target_dir: str | None = None
+            if "--target-dir" in ns.args[1:]:
+                idx = ns.args.index("--target-dir")
+                if idx + 1 >= len(ns.args):
+                    raise ScriptError("missing value for --target-dir", ERR_CONFIG)
+                target_dir = ns.args[idx + 1]
+            mapped = argparse.Namespace(suite_cmd=suite_name, json=json_flag, list=list_flag, target_dir=target_dir)
+            return import_attr("atlasctl.suite.command", "run_suite_command")(ctx, mapped)
         if ns.dry_run:
             emit({"schema_version": 1, "tool": "atlasctl", "status": "ok", "script": ns.script, "args": ns.args}, as_json)
             return 0
