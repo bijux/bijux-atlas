@@ -20,7 +20,9 @@ from ..base import CheckDef
 from .enforcement.legacy_guard import check_legacy_package_absent
 from .enforcement.module_size import check_module_size
 from ...policies.culprits import (
+    check_budget_drift_approval,
     check_budget_exceptions_documented,
+    check_budget_exceptions_sorted,
     check_budget_metric,
 )
 from .enforcement.cwd_usage import check_no_path_cwd_usage
@@ -159,7 +161,23 @@ CHECKS: tuple[CheckDef, ...] = (
         "ensure budget exceptions are documented",
         300,
         check_budget_exceptions_documented,
-        fix_hint="Document each budget exception path in docs/architecture-budgets.md.",
+        fix_hint="Document each budget exception path in packages/atlasctl/docs/architecture.md.",
+    ),
+    CheckDef(
+        "repo.dir_budget_exceptions_sorted",
+        "repo",
+        "ensure budget exceptions are sorted deterministically",
+        300,
+        check_budget_exceptions_sorted,
+        fix_hint="Sort [[tool.atlasctl.budgets.exceptions]] entries by path in pyproject.toml.",
+    ),
+    CheckDef(
+        "repo.budget_drift_approval",
+        "repo",
+        "forbid budget loosening without explicit approval marker",
+        300,
+        check_budget_drift_approval,
+        fix_hint="Update configs/policy/atlasctl-budgets-baseline.json or add approved budget-loosening marker.",
     ),
     CheckDef(
         "repo.dir_budget_shell_files",
