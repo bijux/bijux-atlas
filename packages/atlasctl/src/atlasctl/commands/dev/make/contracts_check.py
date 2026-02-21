@@ -202,6 +202,24 @@ CHECKS: list[MakeCheck] = [
         "Keep makefiles/cargo.mk as pure atlasctl delegation wrappers only.",
     ),
     _check(
+        "make-wrapper-forbidden-tokens",
+        "Validate wrapper makefiles contain no direct tool tokens",
+        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_wrapper_forbidden_tokens.py",
+        "Keep wrapper recipes as atlasctl-only delegation (no cargo/python3/kubectl/etc).",
+    ),
+    _check(
+        "make-wrapper-no-multiline",
+        "Validate wrapper make targets use single-line recipes",
+        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_wrapper_no_multiline_recipes.py",
+        "Use single-line `@./bin/atlasctl ...` recipes in wrapper makefiles.",
+    ),
+    _check(
+        "make-wrapper-owners",
+        "Validate wrapper make targets have ownership metadata",
+        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_wrapper_target_owners.py",
+        "Add owner/area entries in makefiles/ownership.json for wrapper targets.",
+    ),
+    _check(
         "root-diff-alarm",
         "Validate root diff alarm contract",
         "packages/atlasctl/src/atlasctl/checks/layout/policies/root/check_root_diff_alarm.py",
