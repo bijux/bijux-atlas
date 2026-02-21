@@ -1,3 +1,4 @@
+check
 compat
 configs
 contracts
@@ -16,3 +17,5 @@ policies
 registry
 report
 stack
+suite
+test

@@ -1,1 +1,1 @@
-{"command": "check", "note": "unknown command", "run_id": "atlas-20260221-102443-f46144c7", "schema_name": "atlasctl.explain.v1", "schema_version": 1, "status": "ok", "tool": "atlasctl", "tools": [], "touches": []}
+{"command": "check", "failure_modes": ["check failures"], "run_id": "atlas-20260221-104110-cc083aaa", "schema_name": "atlasctl.explain.v1", "schema_version": 1, "status": "ok", "tool": "atlasctl", "tools": [], "touches": ["artifacts/evidence/"]}
