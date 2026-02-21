@@ -10,6 +10,9 @@ Define stable boundaries between public make surface and internal make implement
 - Make recipes must call stable `atlasctl` entrypoints only (for CI suite use `atlasctl dev ci run`).
 - Make recipes must not call internal suite plumbing directly (forbidden: `atlasctl suite run ci` from makefiles).
 - `makefiles/ci.mk` is wrapper-only and size-capped (max 120 lines).
+- Makefiles may not contain tool logic (tool install, toolchain orchestration, cleanup, ad-hoc scripts).
+- Wrapper makefiles (`makefiles/cargo.mk`, `makefiles/ci.mk`, `makefiles/dev.mk`) may only delegate to stable `./bin/atlasctl ...` entrypoints.
+- Wrapper make recipes must be single-line delegations; multi-line shell blocks in wrapper recipes are forbidden.
 
 ## Internal target rules
 - Non-root makefiles must not publish public targets.
@@ -24,3 +27,4 @@ Define stable boundaries between public make surface and internal make implement
 - `make makefiles-contract`
 - `make gates-check`
 - `make help`
+- `atlasctl check make-delegation-only`
