@@ -268,6 +268,7 @@ items = [
   "cmd:atlasctl policies check-dir-entry-budgets --json",
   "cmd:atlasctl policies check-py-files-per-dir --json",
   "cmd:atlasctl contracts validate --report json",
+  "cmd:atlasctl contracts validate-self --report json",
   "cmd:atlasctl policies culprits-suite --report json",
   "schema:atlasctl.help.v1",
 ]
@@ -294,6 +295,7 @@ items = [
   "check:repo.dir_budget_py_files",
   "check:repo.single_registry_module",
   "cmd:atlasctl contracts validate --report json",
+  "cmd:atlasctl contracts validate-self --report json",
   "check:repo.legacy_package_absent",
   "check:repo.legacy_zero_importers",
 ]
