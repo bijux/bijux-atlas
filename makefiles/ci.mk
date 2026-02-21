@@ -2,6 +2,9 @@
 # Public targets: none
 SHELL := /bin/sh
 
+ci:
+	@./bin/atlasctl dev ci run --json
+
 ci-fast:
 	@./bin/atlasctl dev ci fast
 
@@ -56,4 +59,4 @@ governance-check:
 ci-workflows-make-only:
 	@./bin/atlasctl check forbidden-paths
 
-.PHONY: ci-fast ci-contracts ci-docs ci-ops ci-init-iso-dirs ci-init-tmp ci-dependency-lock-refresh ci-release-compat-matrix-verify ci-release-build-artifacts ci-release-notes-render ci-release-publish-gh ci-cosign-sign ci-cosign-verify ci-chart-package-release ci-reproducible-verify ci-security-advisory-render governance-check ci-workflows-make-only
+.PHONY: ci ci-fast ci-contracts ci-docs ci-ops ci-init-iso-dirs ci-init-tmp ci-dependency-lock-refresh ci-release-compat-matrix-verify ci-release-build-artifacts ci-release-notes-render ci-release-publish-gh ci-cosign-sign ci-cosign-verify ci-chart-package-release ci-reproducible-verify ci-security-advisory-render governance-check ci-workflows-make-only
