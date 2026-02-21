@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import time
+import signal
 from pathlib import Path
 from typing import Callable
 
@@ -46,13 +47,32 @@ def run_function_checks(
     repo_root: Path,
     checks: list[CheckDef],
     on_result: Callable[[CheckResult], None] | None = None,
+    timeout_ms: int | None = None,
 ) -> tuple[int, list[CheckResult]]:
     rows: list[CheckResult] = []
     failed = 0
     for chk in checks:
         start = time.perf_counter()
         try:
-            code, errors = chk.fn(repo_root)
+            if timeout_ms and timeout_ms > 0:
+                class _CheckTimeoutError(Exception):
+                    pass
+
+                def _raise_timeout(_signum: int, _frame: object) -> None:
+                    raise _CheckTimeoutError()
+
+                prev_handler = signal.getsignal(signal.SIGALRM)
+                signal.signal(signal.SIGALRM, _raise_timeout)
+                signal.setitimer(signal.ITIMER_REAL, timeout_ms / 1000.0)
+                try:
+                    code, errors = chk.fn(repo_root)
+                except _CheckTimeoutError:
+                    code, errors = 1, [f"check timed out after {timeout_ms}ms"]
+                finally:
+                    signal.setitimer(signal.ITIMER_REAL, 0)
+                    signal.signal(signal.SIGALRM, prev_handler)
+            else:
+                code, errors = chk.fn(repo_root)
         except Exception as exc:
             code, errors = 1, [f"internal check error: {exc}"]
         elapsed_ms = int((time.perf_counter() - start) * 1000)
