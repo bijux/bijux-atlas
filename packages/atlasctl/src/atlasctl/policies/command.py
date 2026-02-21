@@ -334,6 +334,8 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         steps = [
             [*SELF_CLI, "policies", "relaxations-check", "--report", "json", "--require-doc-refs"],
             [*SELF_CLI, "policies", "bypass-scan", "--report", "json"],
+            [*SELF_CLI, "policies", "check-dir-entry-budgets", "--json"],
+            [*SELF_CLI, "policies", "check-py-files-per-dir", "--json"],
             [*SELF_CLI, "policies", "schema-drift"],
             [*SELF_CLI, "policies", "enforcement-status", "--enforce"],
             [*SELF_CLI, "policies", "allow-env-lint"],
