@@ -14,6 +14,12 @@ ci-fast: ## CI fast lane wrapper
 ci-all: ## CI all lanes wrapper
 	@./bin/atlasctl ci all --json
 
+ci-pr: ## CI PR lane (fast checks only)
+	@./bin/atlasctl ci pr --json
+
+ci-nightly: ## CI nightly lane (includes slow checks)
+	@./bin/atlasctl ci nightly --json
+
 ci-contracts: ## CI contracts lane wrapper
 	@./bin/atlasctl ci contracts --json
 
@@ -38,4 +44,4 @@ ci-artifacts: ## Show CI artifact output locations
 ci-help: ## Show CI command help
 	@./bin/atlasctl help ci
 
-.PHONY: ci internal/ci/run ci-fast ci-all ci-contracts ci-docs ci-ops ci-release ci-release-all ci-init ci-artifacts ci-help
+.PHONY: ci internal/ci/run ci-fast ci-all ci-pr ci-nightly ci-contracts ci-docs ci-ops ci-release ci-release-all ci-init ci-artifacts ci-help

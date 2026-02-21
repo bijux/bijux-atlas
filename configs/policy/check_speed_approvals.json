@@ -1,0 +1,6 @@
+{
+  "checks": {
+    "checks_repo_root_determinism": 2600
+  },
+  "schema_version": 1
+}
