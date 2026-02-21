@@ -141,9 +141,9 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
         return True
 
     if action == "fmt":
-        run_cmd(["cargo", "fmt", "--all", "--", "--check", "--config-path", RUSTFMT_CONFIG]) and run_cmd(
-            _atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose)
-        )
+        fmt_ok = run_cmd(["cargo", "fmt", "--all", "--", "--check", "--config-path", RUSTFMT_CONFIG])
+        if fmt_ok and params.all_tests:
+            run_cmd(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose))
     elif action == "lint":
         run_cmd(["cargo", "fmt", "--all", "--", "--check", "--config-path", RUSTFMT_CONFIG]) and run_cmd(
             _atlasctl_cmd("policies", "check", "--fail-fast", quiet=ctx.quiet)
