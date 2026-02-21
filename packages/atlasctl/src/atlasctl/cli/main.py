@@ -392,7 +392,7 @@ def main(argv: list[str] | None = None) -> int:
         if ns.cmd == "lint":
             return _import_attr("atlasctl.lint.command", "run_lint_command")(ctx, ns)
         if ns.cmd == "compat":
-            return _import_attr("atlasctl.compat.command", "run_compat_command")(ctx, ns)
+            return _import_attr("atlasctl.commands.compat", "run_compat_command")(ctx, ns)
         if ns.cmd == "legacy":
             return _import_attr("atlasctl.legacy.command", "run_legacy_command")(ctx, ns)
         if ns.cmd == "python":

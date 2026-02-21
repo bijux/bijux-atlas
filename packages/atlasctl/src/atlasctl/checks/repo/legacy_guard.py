@@ -13,6 +13,8 @@ _ALLOWED = {
     "logging.py",
     "structured_log.py",
     "domain_cmd.py",
+    "runner.py",
+    "evidence_policy.py",
 }
 
 
