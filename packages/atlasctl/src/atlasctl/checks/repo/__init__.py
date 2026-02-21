@@ -30,7 +30,7 @@ from .contracts.command_contracts import (
     check_no_duplicate_command_names,
 )
 from .enforcement.argparse_policy import check_argparse_policy
-from .enforcement.package_shape import check_no_nested_same_name_packages
+from .enforcement.package_shape import check_layout_domain_readmes, check_no_nested_same_name_packages
 from .enforcement.shell_policy import (
     check_no_layout_shadow_configs,
     check_shell_headers_and_strict_mode,
@@ -211,6 +211,7 @@ CHECKS: tuple[CheckDef, ...] = (
         check_no_layout_shadow_configs,
         fix_hint="Resolve shadow config sources reported by atlasctl/layout/no_shadow.py.",
     ),
+    CheckDef("repo.layout_domain_readmes", "repo", "ensure each layout check domain includes a README", 300, check_layout_domain_readmes, fix_hint="Add README.md to each checks/layout/<domain>/ directory."),
     CheckDef(ROOT_SHAPE_CHECK_ID, "repo", ROOT_SHAPE_DESCRIPTION, 500, run_root_shape, fix_hint="Align root entries with checks/layout/root_whitelist.json."),
     CheckDef(FORBIDDEN_PATHS_CHECK_ID, "repo", FORBIDDEN_PATHS_DESCRIPTION, 500, run_forbidden_paths, fix_hint="Remove forbidden legacy path references from make/docs/workflows."),
     CheckDef(DIRECT_SCRIPT_RUNS_CHECK_ID, "repo", DIRECT_SCRIPT_RUNS_DESCRIPTION, 500, run_no_direct_script_runs, fix_hint="Invoke workflows through make targets instead of direct scripts/ops paths."),
