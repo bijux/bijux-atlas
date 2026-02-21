@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[8]
 DEV_MK = ROOT / "makefiles" / "dev.mk"
-MAX_LINES = 220
+MAX_LINES = 120
 
 
 def main() -> int:

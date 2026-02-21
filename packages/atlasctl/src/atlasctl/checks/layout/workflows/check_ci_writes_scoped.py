@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[7]
-CI_MK = ROOT / "makefiles" / "dev.mk"
+CI_MK = ROOT / "makefiles" / "ci.mk"
 
 # CI wrappers must not embed direct filesystem writes; atlasctl owns writes.
 FORBIDDEN_WRITE_PATTERNS = (
@@ -26,7 +26,7 @@ def main() -> int:
         body = line.strip()
         for pattern in FORBIDDEN_WRITE_PATTERNS:
             if pattern.search(body):
-                errors.append(f"makefiles/dev.mk:{idx}: ci wrappers must not perform direct writes: `{body}`")
+                errors.append(f"makefiles/ci.mk:{idx}: ci wrappers must not perform direct writes: `{body}`")
                 break
     if errors:
         print("ci write-scope check failed", file=sys.stderr)

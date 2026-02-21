@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[8]
 WRAPPERS = [
     ROOT / "makefiles" / "dev.mk",
+    ROOT / "makefiles" / "ci.mk",
 ]
 ATLASCTL_RE = re.compile(r"^\t@\.\/bin\/atlasctl\b")
 
