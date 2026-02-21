@@ -37,10 +37,10 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 
 - Minimal DEV/CI wrappers:
   - `make ci`
-  - `make dev-fmt`
-  - `make dev-lint`
-  - `make dev-test`
-  - `make dev-coverage`
+  - `make fmt`
+  - `make lint`
+  - `make test`
+  - `make coverage`
 
 - `make help`: Show curated public targets grouped by namespace.
 - `make help-advanced`: Show curated targets plus maintainer helpers.
@@ -124,7 +124,8 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 
 ## Dev Boundary
 
-- `makefiles/dev.mk`: canonical developer and CI wrappers for atlasctl DEV commands.
+- `makefiles/dev.mk`: canonical developer wrappers for atlasctl DEV commands.
+- `makefiles/ci.mk`: canonical CI wrappers for atlasctl CI commands.
 - Profile SSOT: `docs/development/cargo-profiles-ssot.md`.
 
 ## Failure modes
