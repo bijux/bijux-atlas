@@ -1,5 +1,6 @@
-# License Handling
+# License
 
-This package inherits repository licensing policy.
+`atlasctl` is licensed under the MIT License.
 
-No separate package license grant is introduced here; distribution must follow repo-level license terms.
+- Canonical license text: `packages/atlasctl/LICENSE`
+- Copyright: `Copyright (c) 2026 Bijan Mousavi`

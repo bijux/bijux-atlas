@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "Internal Python tooling package for bijux-atlas scripts"
 readme = "README.md"
 requires-python = ">=3.11"
+license = {text = "MIT"}
 dependencies = []
 
 [project.urls]
