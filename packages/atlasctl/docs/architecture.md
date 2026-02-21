@@ -20,3 +20,17 @@
 - Makefiles may expose convenience targets but must delegate behavior to `atlasctl` as source of truth.
 
 See `docs/atlasctl/BOUNDARIES.md` for effect boundaries, invariants, output contracts, and policy enforcement rules.
+
+## Budget Policy
+
+- Budget SSOT is `packages/atlasctl/pyproject.toml` under `[tool.atlasctl.budgets]`.
+- Canonical keys include:
+  - `max_py_files_per_dir`
+  - `max_modules_per_dir`
+  - `max_loc_per_file`
+  - `max_loc_per_dir`
+- Subtree-specific budget overrides are defined with `[[tool.atlasctl.budgets.rules]]`.
+
+### Budget Exceptions
+
+- `packages/atlasctl/src/atlasctl/legacy/docs_runtime_chunks`: legacy compatibility runtime shards with dynamic loading.

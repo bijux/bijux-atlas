@@ -1,0 +1,6 @@
+{
+  "approved": false,
+  "approval_id": "",
+  "owner": "platform",
+  "reason": "Set approved=true with non-empty approval_id when loosening atlasctl budget thresholds."
+}

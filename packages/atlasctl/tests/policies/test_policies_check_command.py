@@ -68,3 +68,33 @@ def test_policies_repo_stats_writes_artifact(tmp_path: Path, monkeypatch) -> Non
     assert code == 0
     out = tmp_path / ns.out_file
     assert out.exists()
+
+
+def test_policies_explain_budgets_json(tmp_path: Path) -> None:
+    pyproject = tmp_path / "packages/atlasctl/pyproject.toml"
+    pyproject.parent.mkdir(parents=True, exist_ok=True)
+    pyproject.write_text("[tool.atlasctl.budgets]\nmax_py_files_per_dir = 10\nmax_modules_per_dir = 10\n", encoding="utf-8")
+    ns = argparse.Namespace(
+        policies_cmd="explain",
+        subject="budgets",
+        report="json",
+    )
+    code = policies_command.run_policies_command(_ctx(tmp_path), ns)
+    assert code == 0
+
+
+def test_culprits_files_per_dir_alias(monkeypatch, tmp_path: Path, capsys) -> None:
+    ns = argparse.Namespace(
+        policies_cmd="culprits-files-per-dir",
+        report="json",
+        out_file="",
+    )
+
+    monkeypatch.setattr(
+        policies_command,
+        "evaluate_metric",
+        lambda _repo, metric: {"schema_version": 1, "tool": "atlasctl", "status": "ok", "metric": metric, "items": []},
+    )
+    code = policies_command.run_policies_command(_ctx(tmp_path), ns)
+    assert code == 0
+    assert '"metric": "files-per-dir"' in capsys.readouterr().out
