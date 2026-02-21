@@ -29,6 +29,7 @@ class CheckDef:
     description: str
     budget_ms: int
     fn: CheckFunc
+    legacy_check_id: str | None = None
     severity: Severity = Severity.ERROR
     category: CheckCategory = CheckCategory.HYGIENE
     fix_hint: str = "Review check output and apply the documented fix."
