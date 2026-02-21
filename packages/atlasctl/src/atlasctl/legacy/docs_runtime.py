@@ -4,14 +4,14 @@ from pathlib import Path
 
 _CHUNK_DIR = Path(__file__).with_name("docs_runtime_chunks")
 _CHUNKS = (
-    "chunk_01.py",
-    "chunk_02.py",
-    "chunk_03.py",
-    "chunk_04.py",
-    "chunk_05.py",
-    "chunk_06.py",
-    "chunk_07.py",
-    "chunk_08.py",
+    "docs_contracts.py",
+    "docs_generation.py",
+    "docs_validation.py",
+    "docs_outputs.py",
+    "docs_navigation.py",
+    "docs_inventory.py",
+    "docs_dispatch.py",
+    "docs_parser.py",
 )
 
 for _chunk in _CHUNKS:

@@ -9,6 +9,7 @@ from pathlib import Path
 
 from ..core.context import RunContext
 from ..core.fs import ensure_evidence_path
+from .scans import policy_drift_diff, scan_grep_relaxations, scan_rust_relaxations
 
 RELAXATION_FILES = (
     "configs/policy/pin-relaxations.json",
@@ -118,116 +119,6 @@ def _write_report(ctx: RunContext, section: str, payload: dict[str, object]) -> 
     out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
-def _scan_rust_relaxations(repo_root: Path, out_path: Path) -> dict[str, object]:
-    findings: list[dict[str, object]] = []
-    scan_roots = [repo_root / "crates", repo_root / "packages"]
-    for root in scan_roots:
-        if not root.exists():
-            continue
-        for path in sorted(root.rglob("*.rs")):
-            if "generated" in path.parts:
-                continue
-            rel = path.relative_to(repo_root).as_posix()
-            text = path.read_text(encoding="utf-8", errors="ignore")
-            for idx, line in enumerate(text.splitlines(), 1):
-                trimmed = line.strip()
-                exception_id = None
-                for part in line.split():
-                    if part.startswith("ATLAS-EXC-"):
-                        exception_id = part.strip(",;")
-                        break
-                if "#[cfg(test)]" in trimmed or "#[cfg_attr(test" in trimmed:
-                    findings.append(
-                        {
-                            "source": "rust-ast",
-                            "pattern_id": "cfg_test_attribute",
-                            "requires_exception": False,
-                            "severity": "info",
-                            "file": rel,
-                            "line": idx,
-                            "exception_id": exception_id,
-                        }
-                    )
-                if (
-                    trimmed.startswith("#[allow(")
-                    or trimmed.startswith("#![allow(")
-                    or (trimmed.startswith("#[cfg_attr(") and "allow(" in trimmed)
-                ):
-                    findings.append(
-                        {
-                            "source": "rust-ast",
-                            "pattern_id": "allow_attribute",
-                            "requires_exception": True,
-                            "severity": "error",
-                            "file": rel,
-                            "line": idx,
-                            "exception_id": exception_id,
-                        }
-                    )
-    findings = sorted(findings, key=lambda x: (str(x["file"]), int(x["line"]), str(x["pattern_id"])))
-    payload = {"schema_version": 1, "findings": findings}
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    return payload
-
-
-def _scan_grep_relaxations(repo_root: Path, out_path: Path) -> dict[str, object]:
-    patterns: tuple[tuple[str, str, bool, str], ...] = (
-        ("allowlist_token", "allowlist", False, "info"),
-        ("skip_token", r"\bskip\b", False, "info"),
-        ("bypass_token", "bypass", False, "warning"),
-        ("cfg_test_token", r"cfg\(test\)", False, "info"),
-        ("todo_relax_token", "TODO relax", True, "error"),
-        ("unsafe_token", r"\bunsafe\b", False, "warning"),
-        ("unwrap_token", r"unwrap\(", False, "warning"),
-        ("temporary_token", "temporary", True, "warning"),
-        ("compat_token", "compat", False, "info"),
-        ("legacy_token", "legacy", False, "info"),
-        ("ignore_token", r"\bignore\b", False, "info"),
-    )
-    findings: list[dict[str, object]] = []
-    scan_paths = ["crates", "scripts", "makefiles", ".github/workflows", "Makefile"]
-    include_globs = ["*.rs", "*.sh", "*.py", "*.mk", "*.yml", "*.yaml", "Makefile"]
-    for pattern_id, regex, requires_exception, severity in patterns:
-        cmd = [
-            "rg",
-            "-n",
-            "--no-heading",
-            "-S",
-            regex,
-            *(str(repo_root / p) for p in scan_paths),
-            *(f"-g{g}" for g in include_globs),
-            "-g!**/target/**",
-            "-g!**/artifacts/**",
-        ]
-        proc = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
-        for line in (proc.stdout or "").splitlines():
-            parts = line.split(":", 2)
-            if len(parts) < 3:
-                continue
-            file_abs, line_no, text = parts
-            file_rel = Path(file_abs).resolve().relative_to(repo_root.resolve()).as_posix()
-            if file_rel in {"packages/atlasctl/src/atlasctl/policies/command.py"}:
-                continue
-            match = re.search(r"(ATLAS-EXC-[0-9]{4})", text)
-            findings.append(
-                {
-                    "source": "grep",
-                    "pattern_id": pattern_id,
-                    "requires_exception": requires_exception,
-                    "severity": severity,
-                    "file": file_rel,
-                    "line": int(line_no),
-                    "exception_id": match.group(1) if match else None,
-                }
-            )
-    findings.sort(key=lambda x: (str(x["file"]), int(x["line"]), str(x["pattern_id"])))
-    payload = {"schema_version": 1, "findings": findings}
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    return payload
-
-
 def _policy_schema_drift(repo_root: Path) -> tuple[int, list[str]]:
     schema_path = repo_root / "configs/policy/policy.schema.json"
     config_path = repo_root / "configs/policy/policy.json"
@@ -333,21 +224,6 @@ def _policy_enforcement_status(repo_root: Path, enforce: bool) -> tuple[int, lis
     return (0 if not (enforce and violations) else 1), violations, out.relative_to(repo_root).as_posix()
 
 
-def _policy_drift_diff(repo_root: Path, from_ref: str, to_ref: str) -> str:
-    paths = [
-        "configs/policy/policy.json",
-        "configs/policy/policy.schema.json",
-        "configs/policy/policy-relaxations.json",
-        "configs/policy/policy-enforcement-coverage.json",
-        "docs/contracts/POLICY_SCHEMA.json",
-    ]
-    out_lines: list[str] = []
-    for p in paths:
-        out_lines.append(f"### {p}: {from_ref}..{to_ref}")
-        proc = subprocess.run(["git", "diff", "--", from_ref, to_ref, "--", p], cwd=repo_root, text=True, capture_output=True, check=False)
-        out_lines.append((proc.stdout or "").rstrip())
-    return "\n".join(out_lines).rstrip() + "\n"
-
 
 def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     repo = ctx.repo_root
@@ -420,7 +296,7 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.policies_cmd == "scan-rust-relaxations":
         out_rel = getattr(ns, "out", None) or "artifacts/policy/relaxations-rust.json"
         out_path = repo / out_rel
-        payload = _scan_rust_relaxations(repo, out_path)
+        payload = scan_rust_relaxations(repo, out_path)
         if ns.report == "json":
             print(json.dumps(payload, sort_keys=True))
         else:
@@ -429,7 +305,7 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.policies_cmd == "scan-grep-relaxations":
         out_rel = getattr(ns, "out", None) or "artifacts/policy/relaxations-grep.json"
         out_path = repo / out_rel
-        payload = _scan_grep_relaxations(repo, out_path)
+        payload = scan_grep_relaxations(repo, out_path)
         if ns.report == "json":
             print(json.dumps(payload, sort_keys=True))
         else:
@@ -459,7 +335,7 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 print(f"policy-enforcement violation: {v}")
         return code
     if ns.policies_cmd == "drift-diff":
-        print(_policy_drift_diff(repo, ns.from_ref, ns.to_ref), end="")
+        print(policy_drift_diff(repo, ns.from_ref, ns.to_ref), end="")
         return 0
 
     return 2
