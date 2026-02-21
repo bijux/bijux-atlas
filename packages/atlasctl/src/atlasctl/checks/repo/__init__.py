@@ -91,7 +91,9 @@ from .contracts.suite_inventory import check_suite_inventory_policy
 from .contracts.test_guardrails import (
     check_check_test_coverage,
     check_command_test_coverage,
+    check_legacy_parity_tests_present,
     check_test_duplicate_expectations,
+    check_test_ownership_tags,
 )
 from ..layout.root import (
     FORBIDDEN_PATHS_DESCRIPTION,
@@ -273,8 +275,10 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.dependency_gate_targets", "repo", "ensure dependency gate make targets exist", 300, check_dependency_gate_targets, fix_hint="Define deps-lock/deps-sync/deps-check-venv/deps-cold-start in makefiles/scripts.mk."),
     CheckDef("repo.deps_command_surface", "repo", "ensure atlasctl deps command surface is runnable", 300, check_deps_command_surface, fix_hint="Wire atlasctl deps parser/runner and keep command import path valid."),
     CheckDef("repo.tests_no_duplicate_expectations", "repo", "forbid duplicate test function names across test modules", 300, check_test_duplicate_expectations, fix_hint="Rename duplicated test_* functions to avoid conflicting expectations."),
+    CheckDef("repo.test_ownership_tags", "repo", "ensure tests declare ownership tags or live in domain directories", 300, check_test_ownership_tags, fix_hint="Add '# test-domain: <domain>' header to top-level tests."),
     CheckDef("repo.command_test_coverage", "repo", "ensure each command has explicit test coverage marker", 300, check_command_test_coverage, fix_hint="Add at least one test mentioning each command."),
     CheckDef("repo.check_test_coverage", "repo", "ensure each registered check has test or golden coverage marker", 300, check_check_test_coverage, fix_hint="Add test/golden references for uncovered checks."),
+    CheckDef("repo.legacy_parity_tests", "repo", "ensure legacy parity tests remain while legacy modules exist", 300, check_legacy_parity_tests_present, fix_hint="Keep at least one test_legacy*.py parity suite until legacy code is deleted."),
     CheckDef(
         "repo.suite_inventory_policy",
         "repo",

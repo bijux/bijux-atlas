@@ -27,6 +27,7 @@ repo.internal_commands_not_public
 repo.internal_import_boundaries
 repo.layout_domain_readmes
 repo.layout_no_legacy_imports
+repo.legacy_parity_tests
 repo.legacy_quarantine
 repo.modern_no_legacy_imports
 repo.modern_no_legacy_obs_imports
@@ -62,5 +63,6 @@ repo.runcontext_single_builder
 repo.script_help_coverage
 repo.script_ownership_coverage
 repo.subprocess_boundary
+repo.test_ownership_tags
 repo.tests_no_duplicate_expectations
 repo.type_coverage

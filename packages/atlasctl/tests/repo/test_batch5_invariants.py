@@ -10,7 +10,9 @@ from atlasctl.checks.repo.contracts.command_contracts import (
 from atlasctl.checks.repo.contracts.test_guardrails import (
     check_check_test_coverage,
     check_command_test_coverage,
+    check_legacy_parity_tests_present,
     check_test_duplicate_expectations,
+    check_test_ownership_tags,
 )
 from atlasctl.checks.repo.enforcement.boundaries.effect_boundaries import (
     check_forbidden_effect_calls,
@@ -49,6 +51,12 @@ def test_command_inventory_invariant_checks_pass() -> None:
 
 def test_test_guardrail_checks_pass() -> None:
     root = _repo_root()
-    for fn in (check_test_duplicate_expectations, check_command_test_coverage, check_check_test_coverage):
+    for fn in (
+        check_test_duplicate_expectations,
+        check_test_ownership_tags,
+        check_command_test_coverage,
+        check_check_test_coverage,
+        check_legacy_parity_tests_present,
+    ):
         code, errors = fn(root)
         assert code == 0, errors
