@@ -1,69 +1,51 @@
-# Scope: canonical developer + CI wrappers delegated to stable atlasctl DEV entrypoints.
-# Public targets: none
+# Scope: canonical developer + CI wrappers delegated to stable atlasctl entrypoints.
+# Public targets are surfaced via root help/catalog.
 SHELL := /bin/sh
 
-fmt: ## Rust formatter check (same as `atlasctl dev fmt`)
+fmt: ## Rust formatter check
 	@./bin/atlasctl dev fmt
 
-lint: ## Rust lint/policy lane (same as `atlasctl dev lint`)
+fmt-all: ## Rust formatter full variant
+	@./bin/atlasctl dev fmt --all
+
+lint: ## Rust lint/policy lane
 	@./bin/atlasctl dev lint
 
-test: ## Rust tests lane (same as `atlasctl dev test`)
+lint-all: ## Rust lint full variant
+	@./bin/atlasctl dev lint --all
+
+test: ## Rust tests lane
 	@./bin/atlasctl dev test
 
-audit: ## Rust security/audit lane (same as `atlasctl dev audit`)
+test-all: ## Rust tests full variant (includes ignored)
+	@./bin/atlasctl dev test --all
+
+test-contracts: ## Rust contract-focused tests
+	@./bin/atlasctl dev test --contracts
+
+audit: ## Rust security/audit lane
 	@./bin/atlasctl dev audit
 
-coverage: ## Rust coverage lane (same as `atlasctl dev coverage`)
+audit-all: ## Rust audit full variant
+	@./bin/atlasctl dev audit --all
+
+coverage: ## Rust coverage lane
 	@./bin/atlasctl dev coverage
 
-dev-fmt: ## Stable DEV wrapper: formatter lane via atlasctl
-	@./bin/atlasctl dev fmt
+coverage-all: ## Rust coverage full variant
+	@./bin/atlasctl dev coverage --all
 
-dev-lint: ## Stable DEV wrapper: lint lane via atlasctl
-	@./bin/atlasctl dev lint
+check-all: ## Rust check full variant
+	@./bin/atlasctl dev check --all
 
-dev-test: ## Stable DEV wrapper: test lane via atlasctl
-	@./bin/atlasctl dev test
-
-dev-coverage: ## Stable DEV wrapper: coverage lane via atlasctl
-	@./bin/atlasctl dev coverage
-
-ci: ## CI entrypoint mirror
-	@./bin/atlasctl dev ci run --json --out-dir artifacts/reports/atlasctl/suite-ci
-
-internal/dev/fmt: ## Internal DEV wrapper: fmt
-	@./bin/atlasctl dev fmt
-
-internal/dev/lint: ## Internal DEV wrapper: lint
-	@./bin/atlasctl dev lint
+ci: ## Canonical CI entrypoint
+	@./bin/atlasctl ci run --json --out-dir artifacts/reports/atlasctl/suite-ci
 
 internal/dev/check: ## Internal DEV wrapper: check
 	@./bin/atlasctl dev check
 
-internal/dev/test: ## Internal DEV wrapper: test
-	@./bin/atlasctl dev test
-
-internal/dev/test-all: ## Internal DEV wrapper: test all (ignored included)
-	@./bin/atlasctl dev test --all
-
-internal/dev/audit: ## Internal DEV wrapper: audit
-	@./bin/atlasctl dev audit
-
-internal/dev/coverage: ## Internal DEV wrapper: coverage
-	@./bin/atlasctl dev coverage
-
-internal/dev/ci: ## Internal DEV wrapper: canonical ci run
-	@./bin/atlasctl dev ci run --json
-
-test-all: ## Run tests including ignored (`atlasctl dev test --all`)
-	@./bin/atlasctl dev test --all
-
-test-contracts: ## Run contracts-only test slice (`atlasctl dev test --contracts`)
-	@./bin/atlasctl dev test --contracts
-
-ci-core: ## Canonical CI run wrapper (`atlasctl dev ci run --json`)
-	@./bin/atlasctl dev ci run --json
+internal/ci/run: ## Internal CI wrapper: canonical run
+	@./bin/atlasctl ci run --json
 
 ci-fast: ## CI fast lane wrapper
 	@./bin/atlasctl dev ci fast
@@ -119,4 +101,4 @@ governance-check: ## CI governance checks wrapper
 ci-workflows-make-only: ## Guardrail: enforce workflow make/atlasctl entrypoints
 	@./bin/atlasctl check forbidden-paths
 
-.PHONY: fmt lint test audit coverage dev-fmt dev-lint dev-test dev-coverage ci internal/dev/fmt internal/dev/lint internal/dev/check internal/dev/test internal/dev/test-all internal/dev/audit internal/dev/coverage internal/dev/ci test-all test-contracts ci-core ci-fast ci-contracts ci-docs ci-ops ci-init-iso-dirs ci-init-tmp ci-dependency-lock-refresh ci-release-compat-matrix-verify ci-release-build-artifacts ci-release-notes-render ci-release-publish-gh ci-cosign-sign ci-cosign-verify ci-chart-package-release ci-reproducible-verify ci-security-advisory-render governance-check ci-workflows-make-only
+.PHONY: fmt fmt-all lint lint-all test test-all test-contracts audit audit-all coverage coverage-all check-all ci internal/dev/check internal/ci/run ci-fast ci-contracts ci-docs ci-ops ci-init-iso-dirs ci-init-tmp ci-dependency-lock-refresh ci-release-compat-matrix-verify ci-release-build-artifacts ci-release-notes-render ci-release-publish-gh ci-cosign-sign ci-cosign-verify ci-chart-package-release ci-reproducible-verify ci-security-advisory-render governance-check ci-workflows-make-only
