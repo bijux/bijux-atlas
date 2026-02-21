@@ -7,8 +7,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-from ..core.context import RunContext
-from ..core.fs import write_json
+from ....core.context import RunContext
+from ....core.fs import write_json
 
 _SMOKE_TESTS = (
     "packages/atlasctl/tests/cli/smoke/test_cli_smoke.py",

@@ -200,7 +200,7 @@ def dispatch_command(
         "ops": ("atlasctl.commands.ops.runtime", "run_ops_command"),
         "report": ("atlasctl.reporting.command", "run_report_command"),
         "lint": ("atlasctl.commands.policies.lint.command", "run_lint_command"),
-        "test": ("atlasctl.test_tools.command", "run_test_command"),
+        "test": ("atlasctl.commands.internal.test_tools.command", "run_test_command"),
         "suite": ("atlasctl.suite.command", "run_suite_command"),
         "python": ("atlasctl.commands.dev.python_tools.command", "run_python_command"),
         "install": ("atlasctl.commands.dev.install", "run_install_command"),

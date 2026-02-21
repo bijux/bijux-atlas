@@ -40,7 +40,6 @@ _TOP_LEVEL_GROUP_MAP = {
     "run_id": "dev",
     "stack": "ops",
     "suite": "dev",
-    "test_tools": "internal",
 }
 _MAX_PACKAGE_DEPTH = 4
 _CANONICAL_CONCEPT_HOME = {
