@@ -239,6 +239,12 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     if target_value and not select_value:
         select_value = target_value
     selected_domain, selector = _parse_select(select_value)
+    domain_aliases = set(check_domains())
+    if target_value in domain_aliases:
+        if target_value != "all" and not str(getattr(ns, "group", "") or "").strip():
+            setattr(ns, "group", target_value)
+        selected_domain = None
+        selector = ""
     checks = [check for check in list_checks() if selected_domain is None or check.domain == selected_domain]
     group = str(getattr(ns, "group", "") or "").strip()
     if group:
@@ -256,6 +262,7 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     matched_checks = [
         check for check in checks if _match_selected(check.check_id, check.title, check.domain, selected_domain, selector)
     ]
+    report_checks = matched_checks if selector else checks
     live_print = bool(matched_checks) and not (ctx.output_format == "json" or ns.json or bool(getattr(ns, "jsonl", False)))
     timeout_ms = max(0, int(getattr(ns, "timeout_ms", 2000) or 0))
     total_live = len(matched_checks)
@@ -298,8 +305,7 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     executed_by_id = {result.id: result for result in executed_results}
     rows: list[dict[str, object]] = []
     fail_count = 0
-    maxfail = 1 if ns.failfast else max(0, int(ns.maxfail or 0))
-    for check in checks:
+    for check in report_checks:
         result = executed_by_id.get(check.check_id)
         if result is None:
             rows.append(
@@ -332,8 +338,6 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
         )
         if status == "FAIL":
             fail_count += 1
-            if maxfail and fail_count >= maxfail:
-                break
 
     total_duration_ms = int((time.perf_counter() - started) * 1000)
     pass_count = sum(1 for row in rows if row["status"] == "PASS")
