@@ -371,6 +371,8 @@ def main(argv: list[str] | None = None) -> int:
             return _import_attr("atlasctl.ci.command", "run_ci_command")(ctx, ns)
         if ns.cmd == "check":
             return _import_attr("atlasctl.checks.command", "run_check_command")(ctx, ns)
+        if ns.cmd == "deps":
+            return _import_attr("atlasctl.deps.command", "run_deps_command")(ctx, ns)
         if ns.cmd == "gen":
             return _import_attr("atlasctl.gen.command", "run_gen_command")(ctx, ns)
         if ns.cmd == "policies":
