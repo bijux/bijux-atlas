@@ -36,3 +36,7 @@ Use this page as the entrypoint for package-level documentation.
 ## Contributing
 
 - [Contributing Guide](contributing/index.md)
+
+## Testing
+
+- [Suite Coverage Markers](testing/suite-markers.md)

@@ -11,6 +11,18 @@ def _tests_root(repo_root: Path) -> Path:
     return repo_root / "packages/atlasctl/tests"
 
 
+def _suite_markers_path(repo_root: Path) -> Path:
+    return _tests_root(repo_root) / "goldens" / "check-suite-coverage.markers.txt"
+
+
+def _load_suite_markers(repo_root: Path) -> list[str]:
+    path = _suite_markers_path(repo_root)
+    if not path.exists():
+        return []
+    lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
+    return [line.strip() for line in lines if line.strip() and not line.strip().startswith("#")]
+
+
 def check_test_ownership_tags(repo_root: Path) -> tuple[int, list[str]]:
     roots = _tests_root(repo_root)
     errors: list[str] = []
@@ -65,15 +77,36 @@ def check_command_test_coverage(repo_root: Path) -> tuple[int, list[str]]:
 
 def check_check_test_coverage(repo_root: Path) -> tuple[int, list[str]]:
     tests_text = "\n".join(path.read_text(encoding="utf-8", errors="ignore") for path in _tests_root(repo_root).rglob("*.py"))
-    goldens_text = "\n".join(path.read_text(encoding="utf-8", errors="ignore") for path in (_tests_root(repo_root) / "goldens").rglob("*") if path.is_file())
+    markers = set(_load_suite_markers(repo_root))
     repo_init = (repo_root / "packages/atlasctl/src/atlasctl/checks/repo/__init__.py").read_text(encoding="utf-8", errors="ignore")
     check_ids = sorted(set(re.findall(r'CheckDef\("([^"]+)"', repo_init)))
     missing: list[str] = []
     for marker in check_ids:
-        if marker in tests_text or marker in goldens_text:
+        if marker in tests_text or marker in markers:
             continue
         missing.append(marker)
     return (0 if not missing else 1), [f"check missing test/suite marker: {check_id}" for check_id in missing]
+
+
+def check_suite_marker_rules(repo_root: Path) -> tuple[int, list[str]]:
+    path = _suite_markers_path(repo_root)
+    if not path.exists():
+        return 1, [f"missing suite coverage markers file: {path.relative_to(repo_root).as_posix()}"]
+    markers = _load_suite_markers(repo_root)
+    if not markers:
+        return 1, ["suite coverage markers file is empty"]
+    errors: list[str] = []
+    if markers != sorted(markers):
+        errors.append("suite coverage markers must be sorted lexicographically")
+    dupes = sorted({marker for marker in markers if markers.count(marker) > 1})
+    for marker in dupes:
+        errors.append(f"duplicate suite coverage marker: {marker}")
+    repo_init = (repo_root / "packages/atlasctl/src/atlasctl/checks/repo/__init__.py").read_text(encoding="utf-8", errors="ignore")
+    check_ids = set(re.findall(r'CheckDef\("([^"]+)"', repo_init))
+    unknown = sorted(marker for marker in set(markers) if marker not in check_ids)
+    for marker in unknown:
+        errors.append(f"unknown suite coverage marker: {marker}")
+    return (0 if not errors else 1), errors
 
 
 def check_json_goldens_validate_schema(repo_root: Path) -> tuple[int, list[str]]:
