@@ -145,10 +145,10 @@ def dispatch_command(
             code = 0 if payload["status"] == "ok" else ERR_CONFIG
             print(dumps_json(payload, pretty=not ns.json))
             return code
-        include_internal = bool(getattr(ns, "include_internal", False) or ns.commands_cmd == "compat-check")
+        include_internal = bool(getattr(ns, "include_internal", False))
         payload = commands_payload(include_internal=include_internal)
         payload["run_id"] = ctx.run_id
-        if getattr(ns, "verify_stability", False) or ns.commands_cmd == "compat-check":
+        if getattr(ns, "verify_stability", False):
             golden_path = ctx.repo_root / "packages/atlasctl/tests/goldens/list/commands.json.golden"
             if not golden_path.exists():
                 raise ScriptError(f"missing commands stability golden: {golden_path.relative_to(ctx.repo_root)}", ERR_CONFIG)
@@ -185,14 +185,11 @@ def dispatch_command(
         "policies": ("atlasctl.policies.command", "run_policies_command"),
         "repo": ("atlasctl.repo.command", "run_repo_command"),
         "make": ("atlasctl.make.command", "run_make_command"),
-        "migration": ("atlasctl.migrate.command", "run_migrate_command"),
         "ops": ("atlasctl.commands.ops.runtime", "run_ops_command"),
         "report": ("atlasctl.reporting.command", "run_report_command"),
         "lint": ("atlasctl.lint.command", "run_lint_command"),
         "test": ("atlasctl.test_tools.command", "run_test_command"),
         "suite": ("atlasctl.suite.command", "run_suite_command"),
-        "compat": ("atlasctl.commands.compat", "run_compat_command"),
-        "legacy": ("atlasctl.commands.legacy_inventory", "run_legacy_command"),
         "python": ("atlasctl.python_tools.command", "run_python_command"),
         "gates": ("atlasctl.gates.command", "run_gates_command"),
         "dev": ("atlasctl.dev.command", "run_dev_command"),

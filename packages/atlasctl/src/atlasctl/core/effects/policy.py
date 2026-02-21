@@ -28,8 +28,6 @@ _COMMAND_GROUPS: dict[str, CommandGroup] = {
     "layout": "dev",
     "list": "dev",
     "dev": "dev",
-    "legacy": "internal",
-    "compat": "internal",
     "internal": "internal",
 }
 
@@ -58,8 +56,6 @@ _COMMAND_EFFECTS: dict[str, tuple[EffectName, ...]] = {
     "report": ("read", "write", "process"),
     "suite": ("read", "write", "process"),
     "lint": ("read", "write", "process"),
-    "legacy": ("read", "write", "process"),
-    "compat": ("read", "write", "process"),
     "contracts": ("read", "write", "process"),
     "check": ("read", "write", "process"),
     "test": ("read", "write", "process"),
