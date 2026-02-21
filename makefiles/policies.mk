@@ -93,25 +93,8 @@ culprits-max_loc-py:
 culprits-file-max_py_files_per_dir:
 	@$(ATLAS_SCRIPTS) policies culprits py-files-per-dir --report text
 
-culprits-file-max_py_files_per_dir.py:
-	@$(ATLAS_SCRIPTS) policies culprits py-files-per-dir --report text
-
 culprits-all-py: culprits-max_loc-py culprits-file-max_py_files_per_dir
 	@printf '%s\n' "INFO: culprits-all-py completed."
-
-culprits-file-max_modules_per_dir.py:
-	@$(ATLAS_SCRIPTS) policies culprits modules-per-dir --report text
-
-culprits-file-max_loc_per_dir.py:
-	@$(ATLAS_SCRIPTS) policies culprits dir-loc --report text
-
-culprits-all-py-budgets: culprits-file-max_modules_per_dir.py culprits-file-max_py_files_per_dir.py culprits-file-max_loc_per_dir.py
-	@printf '%s\n' "INFO: culprits-all-py-budgets completed."
-
-atlasctl-budgets:
-	@mkdir -p artifacts/reports/atlasctl
-	@$(ATLAS_SCRIPTS) policies culprits-suite --report text --out-file artifacts/reports/atlasctl/budgets.txt >/dev/null
-	@$(ATLAS_SCRIPTS) policies culprits-suite --report json --out-file artifacts/reports/atlasctl/budgets.json >/dev/null
 
 culprits-all: culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir
 	@printf '%s\n' "INFO: culprits-all completed."
@@ -131,3 +114,17 @@ cli-command-surface:
 	@cargo test -p bijux-atlas-cli help_output_command_surface_matches_doc_exactly -- --exact
 
 .PHONY: culprits-all culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir culprits-all-py culprits-max_loc-py culprits-file-max_py_files_per_dir culprits-file-max_py_files_per_dir.py culprits-file-max_modules_per_dir.py culprits-file-max_loc_per_dir.py culprits-all-py-budgets atlasctl-budgets crate-structure crate-docs-contract cli-command-surface
+
+culprits-atlasctl-max_depth:
+	@root="packages/atlasctl/src/atlasctl"; \
+	out=$$(find "$$root" -type f \( -name "*.py" -o -name "*.json" -o -name "*.md" \) -print0 \
+	| xargs -0 -I{} sh -c 'p="{}"; d=$$(printf "%s\n" "$$p" | awk -F/ "{print NF}"); echo "$$d $$p"' \
+	| sort -n \
+	| awk '$$1 > 8'); \
+	if [ -n "$$out" ]; then \
+		printf '%s\n' "ERROR: atlasctl max_depth violations (depth > 8):"; \
+		printf '%s\n' "$$out"; \
+		exit 1; \
+	else \
+		printf '%s\n' "INFO: atlasctl max_depth policy compliant."; \
+	fi
