@@ -31,6 +31,7 @@ from .dependencies import check_dependency_declarations
 from .reachability import check_repo_check_modules_registered
 from .import_policy import (
     check_command_import_lint,
+    check_cold_import_budget,
     check_compileall_gate,
     check_import_smoke,
     check_internal_import_boundaries,
@@ -95,4 +96,5 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.command_import_lint", "repo", "enforce command module import boundaries", 300, check_command_import_lint, fix_hint="Restrict command imports to core/contracts/checks/adapters/commands/cli."),
     CheckDef("repo.compileall_gate", "repo", "ensure atlasctl source compiles with compileall", 300, check_compileall_gate, fix_hint="Fix syntax/import issues until python -m compileall passes."),
     CheckDef("repo.import_smoke", "repo", "ensure atlasctl package imports in minimal environment", 300, check_import_smoke, fix_hint="Keep top-level imports light and dependency-safe."),
+    CheckDef("repo.cold_import_budget", "repo", "enforce cold import time budget for atlasctl package", 300, check_cold_import_budget, fix_hint="Reduce top-level imports and defer heavy initialization."),
 )

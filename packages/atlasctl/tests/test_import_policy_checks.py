@@ -4,6 +4,7 @@ from pathlib import Path
 
 from atlasctl.checks.repo.import_policy import (
     check_command_import_lint,
+    check_cold_import_budget,
     check_compileall_gate,
     check_import_smoke,
     check_internal_import_boundaries,
@@ -19,6 +20,7 @@ def test_import_policy_checks_pass_repo() -> None:
         check_command_import_lint,
         check_compileall_gate,
         check_import_smoke,
+        check_cold_import_budget,
     )
     for check in checks:
         code, errors = check(repo_root)
