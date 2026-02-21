@@ -1,5 +1,16 @@
 from __future__ import annotations
 
+from .enforcement import (
+    check_make_ci_entrypoints_contract,
+    check_make_index_drift_contract,
+    check_make_no_direct_artifact_writes,
+    check_make_no_direct_python_only_atlasctl,
+    check_make_no_direct_scripts_only_atlasctl,
+    check_make_lane_reports_via_atlasctl_reporting,
+    check_make_public_targets_documented,
+    check_make_target_boundaries_enforced,
+    check_make_target_ownership_complete,
+)
 from ..repo.native import (
     check_make_command_allowlist,
     check_make_forbidden_paths,
@@ -10,6 +21,78 @@ from ..repo.native import (
 from ..base import CheckDef
 
 CHECKS: tuple[CheckDef, ...] = (
+    CheckDef(
+        "make.no_direct_scripts_only_atlasctl",
+        "make",
+        "forbid direct script path invocations in make recipes",
+        1000,
+        check_make_no_direct_scripts_only_atlasctl,
+        fix_hint="Delegate script execution through atlasctl commands.",
+    ),
+    CheckDef(
+        "make.no_direct_python_only_atlasctl",
+        "make",
+        "forbid direct python invocations in make recipes",
+        1000,
+        check_make_no_direct_python_only_atlasctl,
+        fix_hint="Use atlasctl entrypoints instead of direct python invocations.",
+    ),
+    CheckDef(
+        "make.no_direct_artifact_writes",
+        "make",
+        "forbid direct artifact writes in make recipes",
+        1000,
+        check_make_no_direct_artifact_writes,
+        fix_hint="Write artifacts via atlasctl reporting and command surfaces only.",
+    ),
+    CheckDef(
+        "make.lane_reports_via_atlasctl_reporting",
+        "make",
+        "require lane reports to be emitted through atlasctl reporting command",
+        900,
+        check_make_lane_reports_via_atlasctl_reporting,
+        fix_hint="Use `atlasctl report make-area-write` for lane report emission.",
+    ),
+    CheckDef(
+        "make.ci_entrypoints_contract",
+        "make",
+        "validate CI workflow entrypoints contract",
+        900,
+        check_make_ci_entrypoints_contract,
+        fix_hint="Keep workflow run commands on approved make/atlasctl entrypoints.",
+    ),
+    CheckDef(
+        "make.public_targets_documented",
+        "make",
+        "require documented public make targets",
+        900,
+        check_make_public_targets_documented,
+        fix_hint="Document every public make target in generated/public docs.",
+    ),
+    CheckDef(
+        "make.target_ownership_complete",
+        "make",
+        "require make target ownership coverage",
+        900,
+        check_make_target_ownership_complete,
+        fix_hint="Add missing make target ownership metadata.",
+    ),
+    CheckDef(
+        "make.target_boundaries_enforced",
+        "make",
+        "enforce make target boundary contracts",
+        900,
+        check_make_target_boundaries_enforced,
+        fix_hint="Keep target cross-area dependencies within contract boundaries.",
+    ),
+    CheckDef(
+        "make.index_drift_contract",
+        "make",
+        "enforce makefiles index drift contract",
+        900,
+        check_make_index_drift_contract,
+        fix_hint="Regenerate and commit makefiles index changes.",
+    ),
     CheckDef("make.scripts_refs", "make", "forbid scripts/ references in make recipes", 1000, check_make_scripts_references, fix_hint="Replace scripts/ invocations with atlasctl commands."),
     CheckDef("make.help_determinism", "make", "ensure deterministic make help output", 2000, check_make_help, fix_hint="Regenerate and normalize make help output."),
     CheckDef("make.forbidden_paths", "make", "forbid direct forbidden paths in make recipes", 1000, check_make_forbidden_paths, fix_hint="Route commands through allowed wrappers."),
