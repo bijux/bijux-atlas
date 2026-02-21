@@ -209,6 +209,7 @@ def dispatch_command(
         "release": ("atlasctl.commands.dev.release", "run_release_command"),
         "gates": ("atlasctl.commands.policies.gates.command", "run_gates_command"),
         "dev": ("atlasctl.commands.dev.command", "run_dev_command"),
+        "migrate": ("atlasctl.commands.dev.migrate", "run_migrate_command"),
         "internal": ("atlasctl.commands.internal.command", "run_internal_command"),
     }
     if ns.cmd in module_dispatch:

@@ -4,6 +4,86 @@
 schema = "checks.registry.v1"
 
 [[checks]]
+id = "checks_checks_registry_change_docs_gate"
+domain = "checks"
+area = "registry"
+owner = "platform"
+speed = "fast"
+timeout_ms = 500
+module = "atlasctl.checks.checks.check_registry_change_gates"
+callable = "check_registry_change_requires_docs_update"
+description = "require docs update when checks registry changes"
+severity = "error"
+category = "policy"
+fix_hint = "Update docs/checks/registry.md when REGISTRY.toml changes."
+legacy_id = "checks.registry_change_docs_gate"
+groups = ["checks", "ci", "fast", "registry", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_checks_registry_change_goldens_gate"
+domain = "checks"
+area = "registry"
+owner = "platform"
+speed = "fast"
+timeout_ms = 500
+module = "atlasctl.checks.checks.check_registry_change_gates"
+callable = "check_registry_change_requires_golden_update"
+description = "require checks list/tree/owners goldens update when registry changes"
+severity = "error"
+category = "policy"
+fix_hint = "Refresh check list/tree/owners goldens when REGISTRY.toml changes."
+legacy_id = "checks.registry_change_goldens_gate"
+groups = ["checks", "ci", "fast", "registry", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_checks_registry_change_owners_gate"
+domain = "checks"
+area = "registry"
+owner = "platform"
+speed = "fast"
+timeout_ms = 500
+module = "atlasctl.checks.checks.check_registry_change_gates"
+callable = "check_registry_change_requires_owner_update"
+description = "require ownership metadata update when checks registry changes"
+severity = "error"
+category = "policy"
+fix_hint = "Update makefiles/ownership.json when REGISTRY.toml changes."
+legacy_id = "checks.registry_change_owners_gate"
+groups = ["checks", "ci", "fast", "registry", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_checks_registry_integrity"
+domain = "checks"
+area = "registry"
+owner = "platform"
+speed = "slow"
+timeout_ms = 2500
+module = "atlasctl.checks.checks.check_registry_integrity"
+callable = "check_registry_integrity"
+description = "validate checks registry TOML/JSON integrity and drift"
+severity = "error"
+category = "contract"
+fix_hint = "Run `./bin/atlasctl gen checks-registry` and commit REGISTRY.toml/REGISTRY.generated.json."
+legacy_id = "checks.registry_integrity"
+groups = ["checks", "registry", "required", "slow"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_configs_pyproject_no_duplicate_tool_config"
 domain = "configs"
 area = "pyproject"
@@ -69,7 +149,7 @@ domain = "contracts"
 area = "general"
 owner = "platform"
 speed = "slow"
-timeout_ms = 1200
+timeout_ms = 2000
 module = "atlasctl.checks.repo.native_loader"
 callable = "check_layout_contract"
 description = "validate repository layout contract"
@@ -3689,7 +3769,7 @@ domain = "repo"
 area = "root"
 owner = "platform"
 speed = "slow"
-timeout_ms = 1500
+timeout_ms = 2000
 module = "atlasctl.checks.layout.root.check_root_determinism"
 callable = "run"
 description = "verify deterministic root output across two make root runs"

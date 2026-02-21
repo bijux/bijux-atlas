@@ -1,6 +1,117 @@
 {
   "checks": [
     {
+      "area": "registry",
+      "callable": "check_registry_change_requires_docs_update",
+      "category": "policy",
+      "description": "require docs update when checks registry changes",
+      "domain": "checks",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Update docs/checks/registry.md when REGISTRY.toml changes.",
+      "groups": [
+        "checks",
+        "ci",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_change_docs_gate",
+      "legacy_id": "checks.registry_change_docs_gate",
+      "module": "atlasctl.checks.checks.check_registry_change_gates",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "registry",
+      "callable": "check_registry_change_requires_golden_update",
+      "category": "policy",
+      "description": "require checks list/tree/owners goldens update when registry changes",
+      "domain": "checks",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Refresh check list/tree/owners goldens when REGISTRY.toml changes.",
+      "groups": [
+        "checks",
+        "ci",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_change_goldens_gate",
+      "legacy_id": "checks.registry_change_goldens_gate",
+      "module": "atlasctl.checks.checks.check_registry_change_gates",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "registry",
+      "callable": "check_registry_change_requires_owner_update",
+      "category": "policy",
+      "description": "require ownership metadata update when checks registry changes",
+      "domain": "checks",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Update makefiles/ownership.json when REGISTRY.toml changes.",
+      "groups": [
+        "checks",
+        "ci",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_change_owners_gate",
+      "legacy_id": "checks.registry_change_owners_gate",
+      "module": "atlasctl.checks.checks.check_registry_change_gates",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "registry",
+      "callable": "check_registry_integrity",
+      "category": "contract",
+      "description": "validate checks registry TOML/JSON integrity and drift",
+      "domain": "checks",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Run `./bin/atlasctl gen checks-registry` and commit REGISTRY.toml/REGISTRY.generated.json.",
+      "groups": [
+        "checks",
+        "registry",
+        "required",
+        "slow"
+      ],
+      "id": "checks_checks_registry_integrity",
+      "legacy_id": "checks.registry_integrity",
+      "module": "atlasctl.checks.checks.check_registry_integrity",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "slow",
+      "timeout_ms": 2500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
       "area": "pyproject",
       "callable": "check_pyproject_no_duplicate_tool_config",
       "category": "hygiene",
@@ -101,7 +212,7 @@
       "owner": "platform",
       "severity": "error",
       "speed": "slow",
-      "timeout_ms": 1200,
+      "timeout_ms": 2000,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -4807,7 +4918,7 @@
       "owner": "platform",
       "severity": "error",
       "speed": "slow",
-      "timeout_ms": 1500,
+      "timeout_ms": 2000,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]

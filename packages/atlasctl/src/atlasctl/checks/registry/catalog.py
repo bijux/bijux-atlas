@@ -5,7 +5,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from ..core.base import CheckCategory, CheckDef, Severity
-from .ssot import RegistryEntry, legacy_fn_by_id, load_registry_entries
+from .ssot import RegistryEntry, legacy_check_by_id, load_registry_entries
 
 _CHECKS_CACHE: tuple[CheckDef, ...] | None = None
 _ALIASES_CACHE: dict[str, str] | None = None
@@ -15,7 +15,8 @@ def _from_entry(entry: RegistryEntry) -> CheckDef:
     module = importlib.import_module(entry.module)
     fn = getattr(module, entry.callable, None)
     if fn is None:
-        fn = legacy_fn_by_id().get(entry.id)
+        legacy = legacy_check_by_id().get(entry.id)
+        fn = legacy.fn if legacy is not None else None
     if fn is None:
         raise ValueError(f"missing callable for check `{entry.id}`: {entry.module}:{entry.callable}")
     return CheckDef(

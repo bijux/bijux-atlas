@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib
 import json
+from datetime import date
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -11,6 +12,7 @@ from ..contracts import CHECKS as CHECKS_CONTRACTS
 from ..configs import CHECKS as CHECKS_CONFIGS
 from ..docker import CHECKS as CHECKS_DOCKER
 from ..docs import CHECKS as CHECKS_DOCS
+from ..checks import CHECKS as CHECKS_CHECKS
 from ..licensing import CHECKS as CHECKS_LICENSE
 from ..make import CHECKS as CHECKS_MAKE
 from ..ops import CHECKS as CHECKS_OPS
@@ -33,6 +35,7 @@ REGISTRY_JSON = Path("packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.j
 REGISTRY_SCHEMA = Path("packages/atlasctl/src/atlasctl/contracts/schema/schemas/checks.registry.v1.schema.json")
 RENAMES_JSON = Path("configs/policy/target-renames.json")
 FILENAME_ALLOWLIST_JSON = Path("configs/policy/check-filename-allowlist.json")
+TRANSITION_ALLOWLIST_JSON = Path("configs/policy/checks-registry-transition.json")
 
 
 @dataclass(frozen=True)
@@ -130,7 +133,7 @@ def _validate_entries(entries: list[RegistryEntry]) -> None:
     if allowlist_payload_path.exists():
         payload = json.loads(allowlist_payload_path.read_text(encoding="utf-8"))
         allowlist = {str(name) for name in payload.get("allowlist", [])}
-    legacy_map = legacy_fn_by_id()
+    legacy_map = legacy_check_by_id()
     for idx, e in enumerate(entries, start=1):
         if e.id in seen:
             errors.append(f"duplicate id: {e.id}")
@@ -142,8 +145,10 @@ def _validate_entries(entries: list[RegistryEntry]) -> None:
             errors.append(f"{e.id}: id must match checks_<domain>_<area>_<name>")
         if e.speed not in {"fast", "slow"}:
             errors.append(f"{e.id}: speed must be fast|slow")
-        if e.timeout_ms <= 0:
-            errors.append(f"{e.id}: timeout_ms must be positive")
+        if e.timeout_ms < 50:
+            errors.append(f"{e.id}: timeout_ms must be >= 50ms")
+        if e.speed == "slow" and e.timeout_ms < 2000:
+            errors.append(f"{e.id}: slow checks must have timeout_ms >= 2000")
         try:
             mod = importlib.import_module(e.module)
         except Exception as exc:  # pragma: no cover
@@ -157,6 +162,11 @@ def _validate_entries(entries: list[RegistryEntry]) -> None:
             errors.append(f"{e.id}: check module must not be __init__.py")
         if e.domain not in e.id.split("_"):
             errors.append(f"{e.id}: domain segment missing from id")
+        legacy = legacy_map.get(e.id)
+        if legacy is not None:
+            expected_speed = "slow" if bool(legacy.slow) else "fast"
+            if e.speed != expected_speed:
+                errors.append(f"{e.id}: speed mismatch; expected `{expected_speed}` from implementation")
         if idx > 1 and entries[idx - 2].id > e.id:
             errors.append("registry entries must be sorted by id")
     if errors:
@@ -204,6 +214,10 @@ def generate_registry_json(repo_root: Path | None = None, *, check_only: bool = 
     registered = {entry.id for entry in entries}
     missing_registry = sorted(legacy - registered)
     missing_impl = sorted(registered - legacy)
+    transition = _load_transition_allowlist(root)
+    allow = set(transition["allowlist"])
+    if transition["active"]:
+        missing_registry = sorted(item for item in missing_registry if item not in allow)
     if missing_registry or missing_impl:
         errors: list[str] = []
         if missing_registry:
@@ -229,6 +243,32 @@ def generate_registry_json(repo_root: Path | None = None, *, check_only: bool = 
     return out, changed
 
 
+def registry_delta(repo_root: Path | None = None) -> dict[str, list[str]]:
+    root = repo_root or _repo_root()
+    entries = _parse_toml(root)
+    registered = {entry.id for entry in entries}
+    implemented = {canonical_check_id(check) for check in legacy_checks()}
+    return {
+        "unregistered_implementations": sorted(implemented - registered),
+        "orphan_registry_entries": sorted(registered - implemented),
+    }
+
+
+def _load_transition_allowlist(repo_root: Path) -> dict[str, object]:
+    path = repo_root / TRANSITION_ALLOWLIST_JSON
+    if not path.exists():
+        return {"active": False, "allowlist": []}
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    expiry = str(payload.get("allow_unregistered_until", "")).strip()
+    allowlist = [str(item).strip() for item in payload.get("allowlist", []) if str(item).strip()]
+    active = False
+    try:
+        active = bool(expiry) and date.today() <= date.fromisoformat(expiry)
+    except ValueError:
+        active = False
+    return {"active": active, "allowlist": allowlist}
+
+
 def toml_entry_from_check(check: CheckDef, *, groups: tuple[str, ...]) -> dict[str, Any]:
     canonical_id = canonical_check_id(check)
     segments = canonical_id.split("_")
@@ -241,7 +281,7 @@ def toml_entry_from_check(check: CheckDef, *, groups: tuple[str, ...]) -> dict[s
         "owner": owner,
         "speed": "slow" if check.slow else "fast",
         "groups": list(groups),
-        "timeout_ms": check.budget_ms,
+        "timeout_ms": max(check.budget_ms, 2000) if check.slow else check.budget_ms,
         "module": check.fn.__module__,
         "callable": check.fn.__name__,
         "description": check.description,
@@ -312,6 +352,7 @@ def legacy_checks() -> tuple[CheckDef, ...]:
         *CHECKS_PYTHON,
         *CHECKS_DOCKER,
         *CHECKS_CONTRACTS,
+        *CHECKS_CHECKS,
     )
 
 
@@ -349,8 +390,13 @@ def _normalize_checks_id(check_id: str, domain: str) -> str:
             token = f"checks_{token}"
         else:
             token = f"checks_{domain}_{token}"
+    parts = token.split("_")
+    if len(parts) < 3:
+        token = f"checks_{domain}_{'_'.join(parts[1:]) if len(parts) > 1 else token}"
+    elif parts[1] != domain:
+        token = "checks_" + domain + "_" + "_".join(parts[1:])
     return token
 
 
-def legacy_fn_by_id() -> dict[str, Any]:
-    return {canonical_check_id(check): check.fn for check in legacy_checks()}
+def legacy_check_by_id() -> dict[str, CheckDef]:
+    return {canonical_check_id(check): check for check in legacy_checks()}
