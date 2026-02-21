@@ -3,8 +3,8 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from atlasctl.policies import budget_handlers
-from atlasctl.policies.errors import BudgetMetricError
+from atlasctl.commands.policies.runtime import budget_handlers
+from atlasctl.commands.policies.runtime.errors import BudgetMetricError
 
 
 def test_budget_metric_error_has_stable_code() -> None:

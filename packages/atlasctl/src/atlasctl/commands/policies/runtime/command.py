@@ -7,8 +7,8 @@ import re
 import subprocess
 from pathlib import Path
 
-from ..core.context import RunContext
-from ..core.fs import ensure_evidence_path
+from ....core.context import RunContext
+from ....core.fs import ensure_evidence_path
 from .culprits import (
     collect_dir_stats,
     evaluate_metric,  # compat for tests/monkeypatch consumers

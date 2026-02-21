@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from atlasctl.policies.dir_entry_budgets import evaluate_budget
+from atlasctl.commands.policies.runtime.dir_entry_budgets import evaluate_budget
 
 
 def _write_exceptions(repo: Path, payload: dict[str, object]) -> None:

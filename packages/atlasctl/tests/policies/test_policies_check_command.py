@@ -4,8 +4,8 @@ import argparse
 from pathlib import Path
 
 from atlasctl.core.context import RunContext
-from atlasctl.policies import budget_handlers
-from atlasctl.policies import command as policies_command
+from atlasctl.commands.policies.runtime import budget_handlers
+from atlasctl.commands.policies.runtime import command as policies_command
 
 
 def _ctx(root: Path) -> RunContext:

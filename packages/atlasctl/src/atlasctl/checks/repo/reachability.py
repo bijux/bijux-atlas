@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from ...policies.dead_modules import analyze_dead_modules
+from ...commands.policies.runtime.dead_modules import analyze_dead_modules
 
 
 ALLOWED_UNLISTED = {"__init__.py", "legacy_native.py"}
