@@ -60,7 +60,11 @@ timeout = 120
 timeout_method = "thread"
 markers = [
   "unit: fast unit tests with no network side-effects",
+  "contract: schema and command/output contract checks",
+  "golden: snapshot/golden output verification tests",
   "integration: integration tests that run commands against workspace fixtures",
+  "repo_sim: repository simulation tests with fixture repos/sandboxes",
+  "network: tests that intentionally exercise network paths",
   "slow: intentionally slower validations",
 ]
 
