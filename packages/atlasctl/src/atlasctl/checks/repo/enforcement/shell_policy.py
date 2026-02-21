@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -11,10 +12,26 @@ _ALLOWED_SHELL_PREFIXES = (
 )
 _SHELL_HEADER = "#!/usr/bin/env bash"
 _STRICT_MODE = "set -euo pipefail"
+_MAX_SHELL_SCRIPTS = 64
 
 
 def _iter_shell_files(repo_root: Path) -> list[Path]:
+    tracked = subprocess.run(
+        ["git", "ls-files", "*.sh"],
+        cwd=repo_root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if tracked.returncode == 0:
+        files = [repo_root / line.strip() for line in tracked.stdout.splitlines() if line.strip()]
+        return sorted(path for path in files if path.exists())
     return sorted(p for p in repo_root.rglob("*.sh") if ".git/" not in p.as_posix())
+
+
+def _iter_layout_shell_checks(repo_root: Path) -> list[Path]:
+    root = repo_root / "packages/atlasctl/src/atlasctl/checks/layout/shell"
+    return sorted(root.glob("*.sh"))
 
 
 def check_shell_location_policy(repo_root: Path) -> tuple[int, list[str]]:
@@ -61,10 +78,28 @@ def check_shell_no_python_direct_calls(repo_root: Path) -> tuple[int, list[str]]
     return (0 if not offenders else 1), offenders
 
 
+def check_shell_no_network_download_tools(repo_root: Path) -> tuple[int, list[str]]:
+    offenders: list[str] = []
+    forbidden_tokens = ("curl ", "wget ")
+    for path in _iter_layout_shell_checks(repo_root):
+        rel = path.relative_to(repo_root).as_posix()
+        for lineno, line in enumerate(path.read_text(encoding="utf-8", errors="ignore").splitlines(), 1):
+            striped = line.strip()
+            if striped.startswith("#"):
+                continue
+            if "shell-allow-network-fetch" in striped:
+                continue
+            if any(token in striped for token in forbidden_tokens):
+                offenders.append(f"{rel}:{lineno}: direct curl/wget usage is forbidden")
+                break
+    return (0 if not offenders else 1), offenders
+
+
 def check_shell_invocation_via_core_exec(repo_root: Path) -> tuple[int, list[str]]:
     src_root = repo_root / "packages/atlasctl/src/atlasctl"
     allowed = {
         "packages/atlasctl/src/atlasctl/core/exec.py",
+        "packages/atlasctl/src/atlasctl/core/exec_shell.py",
         "packages/atlasctl/src/atlasctl/checks/repo/enforcement/shell_policy.py",
     }
     offenders: list[str] = []
@@ -78,6 +113,41 @@ def check_shell_invocation_via_core_exec(repo_root: Path) -> tuple[int, list[str
         if "subprocess.run(" in text or "subprocess.Popen(" in text or "os.system(" in text:
             offenders.append(f"{rel}: invoke shell scripts through core.exec helpers")
     return (0 if not offenders else 1), offenders
+
+
+def check_shell_scripts_readonly(repo_root: Path) -> tuple[int, list[str]]:
+    offenders: list[str] = []
+    forbidden_markers = ("cp ", "mv ", "rm ", "touch ", "mkdir ")
+    redirection = re.compile(r"(?:^|\s)(>>?|1>>?|2>>?)\s*(?![&/])")
+    for path in _iter_layout_shell_checks(repo_root):
+        rel = path.relative_to(repo_root).as_posix()
+        for lineno, line in enumerate(path.read_text(encoding="utf-8", errors="ignore").splitlines(), 1):
+            striped = line.strip()
+            if striped.startswith("#"):
+                continue
+            if "mktemp" in striped:
+                continue
+            if any(token in striped for token in forbidden_markers) or redirection.search(striped):
+                offenders.append(f"{rel}:{lineno}: shell check scripts must not write files directly")
+                break
+    return (0 if not offenders else 1), offenders
+
+
+def check_shell_script_budget(repo_root: Path) -> tuple[int, list[str]]:
+    count = len(_iter_shell_files(repo_root))
+    if count <= _MAX_SHELL_SCRIPTS:
+        return 0, []
+    return 1, [f"shell script budget exceeded: {count} > {_MAX_SHELL_SCRIPTS}"]
+
+
+def check_shell_docs_present(repo_root: Path) -> tuple[int, list[str]]:
+    root = repo_root / "packages/atlasctl/src/atlasctl/checks/layout/shell"
+    required = (
+        root / "README.md",
+        root / "POLICY.md",
+    )
+    errors = [f"missing shell docs file: {path.relative_to(repo_root).as_posix()}" for path in required if not path.exists()]
+    return (0 if not errors else 1), errors
 
 
 def check_no_layout_shadow_configs(repo_root: Path) -> tuple[int, list[str]]:
@@ -95,4 +165,3 @@ def check_no_layout_shadow_configs(repo_root: Path) -> tuple[int, list[str]]:
     err = (proc.stderr or "").strip()
     message = err or out or "layout no_shadow check failed"
     return 1, [message]
-

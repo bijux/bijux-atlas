@@ -1,8 +1,8 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 # Purpose: enforce that every executable ops/**/scripts entrypoint is reachable via a make target.
 # Inputs: ops/**/scripts/*.sh and makefiles/ops.mk target list.
 # Outputs: non-zero exit when any script is not referenced by make target recipes.
-set -eu
+set -euo pipefail
 
 ROOT="$(CDPATH='' cd -- "$(dirname -- "$0")/../../.." && pwd)"
 OPS_MK="$ROOT/makefiles/ops.mk"

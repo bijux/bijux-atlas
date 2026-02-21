@@ -1,8 +1,8 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 # Purpose: enforce ops/_lib as the canonical shared shell helper location.
 # Inputs: ops tree.
 # Outputs: non-zero when duplicate common libs are found outside ops/_lib.
-set -eu
+set -euo pipefail
 
 ROOT="$(CDPATH='' cd -- "$(dirname -- "$0")/../../.." && pwd)"
 cd "$ROOT"

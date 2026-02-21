@@ -1,8 +1,8 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 # Purpose: enforce root hygiene (no tracked IDE/OS/build pollution).
 # Inputs: git index and repository filesystem.
 # Outputs: non-zero when forbidden files/dirs are found.
-set -eu
+set -euo pipefail
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 cd "$ROOT"
