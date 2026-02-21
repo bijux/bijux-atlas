@@ -91,12 +91,20 @@ def test_make_parser_supports_new_subcommands() -> None:
     configure_make_parser(sub)
     for argv in (
         ["make", "list-targets", "--json"],
+        ["make", "list-public-targets", "--json"],
         ["make", "inventory-logic", "--json"],
         ["make", "doctor", "--json"],
         ["make", "run", "ci"],
     ):
         ns = parser.parse_args(argv)
         assert ns.cmd == "make"
+
+
+def test_make_run_rejects_non_public_target() -> None:
+    ctx = RunContext.from_args("make-run-guard", None, "test", False)
+    ns = argparse.Namespace(make_cmd="run", target="internal/ci/scripts-path-usage", args=[], json=True)
+    rc = run_make_command(ctx, ns)
+    assert rc == 2
 
 
 def test_make_run_writes_evidence(monkeypatch) -> None:
