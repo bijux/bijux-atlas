@@ -52,7 +52,7 @@ def test_reports_from_key_commands_validate_base_contract() -> None:
     import jsonschema
 
     for cmd in (
-        ("--quiet", "legacy", "audit", "--report", "json"),
+        ("--quiet", "legacy", "inventory", "--report", "json"),
         ("--quiet", "ports", "show", "--report", "json"),
         ("--quiet", "gates", "list", "--report", "json"),
     ):

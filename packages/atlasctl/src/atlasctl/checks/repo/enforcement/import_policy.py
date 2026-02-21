@@ -8,20 +8,6 @@ from pathlib import Path
 
 
 _SRC_ROOT = Path("packages/atlasctl/src/atlasctl")
-_MODERN_LEGACY_ALLOWLIST = {
-    "packages/atlasctl/src/atlasctl/cli/constants.py",
-    "packages/atlasctl/src/atlasctl/cli/main.py",
-    "packages/atlasctl/src/atlasctl/commands/check/parser.py",
-    "packages/atlasctl/src/atlasctl/commands/check/run.py",
-    "packages/atlasctl/src/atlasctl/commands/docs/generate.py",
-    "packages/atlasctl/src/atlasctl/commands/docs/parser.py",
-    "packages/atlasctl/src/atlasctl/commands/docs/run.py",
-    "packages/atlasctl/src/atlasctl/commands/docs/validate.py",
-    "packages/atlasctl/src/atlasctl/commands/ops/deploy.py",
-    "packages/atlasctl/src/atlasctl/commands/ops/pin.py",
-    "packages/atlasctl/src/atlasctl/commands/ops/render.py",
-    "packages/atlasctl/src/atlasctl/commands/ops/validate.py",
-}
 _COMMAND_IMPORT_ALLOW_PREFIXES = ("core", "contracts", "checks", "reporting", "adapters")
 _COMMAND_IMPORT_ALLOW_EXACT = {"errors", "exit_codes", "run_context"}
 _CHECK_IMPORT_ALLOW_PREFIXES = ("core", "contracts", "reporting", "adapters", "checks")
@@ -69,8 +55,6 @@ def check_no_modern_imports_from_legacy(repo_root: Path) -> tuple[int, list[str]
     offenders: list[str] = []
     for path in _iter_py_files(repo_root):
         rel = path.relative_to(repo_root).as_posix()
-        if "/legacy/" in rel or rel in _MODERN_LEGACY_ALLOWLIST:
-            continue
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=rel)
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
@@ -90,8 +74,6 @@ def check_no_legacy_obs_imports_in_modern(repo_root: Path) -> tuple[int, list[st
     offenders: list[str] = []
     for path in _iter_py_files(repo_root):
         rel = path.relative_to(repo_root).as_posix()
-        if "/legacy/" in rel:
-            continue
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=rel)
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):

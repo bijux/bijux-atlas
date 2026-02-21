@@ -4,13 +4,13 @@ import os
 import runpy
 import sys
 
-from ..core.env import setdefault as env_setdefault
+from .env import setdefault as env_setdefault
+from .context import RunContext
 from ..errors import ScriptError
 from ..exit_codes import ERR_CONFIG
-from ..run_context import RunContext
 
 
-def run_legacy_script(script_path: str, args: list[str], ctx: RunContext) -> int:
+def run_script(script_path: str, args: list[str], ctx: RunContext) -> int:
     root = ctx.repo_root
     script = (root / script_path).resolve()
     if not script.exists():

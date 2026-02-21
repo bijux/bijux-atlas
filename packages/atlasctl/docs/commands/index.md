@@ -14,4 +14,4 @@ Atlasctl command implementation lives in `src/atlasctl/commands/` and follows `c
 - `ci`: CI-oriented commands.
 - `inventory`: inventory generation and validation.
 - `report`: report aggregation and artifacts.
-- `legacy`: legacy compatibility commands (read-only path).
+- `legacy`: legacy inventory and historical migration metadata.

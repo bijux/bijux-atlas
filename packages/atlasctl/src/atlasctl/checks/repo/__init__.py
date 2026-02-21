@@ -17,7 +17,7 @@ from .native import (
     check_tracked_timestamp_paths,
 )
 from ..base import CheckDef
-from .enforcement.legacy_guard import check_legacy_package_quarantine
+from .enforcement.legacy_guard import check_legacy_package_absent
 from .enforcement.module_size import check_module_size
 from ...policies.culprits import (
     check_budget_exceptions_documented,
@@ -54,7 +54,7 @@ from .domains.scripts_dir import check_scripts_dir_absent
 from .contracts.public_api import check_public_api_exports
 from .contracts.type_coverage import check_type_coverage
 from .contracts.dependencies import check_dependency_declarations
-from .reachability import check_repo_check_modules_registered
+from .reachability import check_no_legacy_importers, check_repo_check_modules_registered
 from .enforcement.refgrade_proof import check_refgrade_target_shape
 from .enforcement.import_policy import (
     check_command_import_lint,
@@ -88,13 +88,7 @@ from .contracts.pyproject_contracts import (
     check_requirements_sync_with_pyproject,
 )
 from .contracts.suite_inventory import check_suite_inventory_policy
-from .contracts.test_guardrails import (
-    check_check_test_coverage,
-    check_command_test_coverage,
-    check_legacy_parity_tests_present,
-    check_test_duplicate_expectations,
-    check_test_ownership_tags,
-)
+from .contracts.test_guardrails import check_check_test_coverage, check_command_test_coverage, check_test_duplicate_expectations, check_test_ownership_tags
 from ..layout.root import (
     FORBIDDEN_PATHS_DESCRIPTION,
     FORBIDDEN_PATHS_CHECK_ID,
@@ -126,7 +120,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.script_help_coverage", "repo", "validate script help contract coverage", 1500, check_script_help, fix_hint="Add --help contract output to required scripts."),
     CheckDef("repo.script_ownership_coverage", "repo", "validate script ownership coverage", 1500, check_script_ownership, fix_hint="Update ownership metadata for uncovered scripts."),
     CheckDef("repo.no_scripts_dir", "repo", "forbid legacy root scripts dir", 250, check_scripts_dir_absent, fix_hint="Migrate scripts into atlasctl package commands."),
-    CheckDef("repo.legacy_quarantine", "repo", "quarantine legacy package growth", 250, check_legacy_package_quarantine, fix_hint="Do not add new modules under atlasctl/legacy."),
+    CheckDef("repo.legacy_package_absent", "repo", "require atlasctl legacy package to be absent", 250, check_legacy_package_absent, fix_hint="Delete packages/atlasctl/src/atlasctl/legacy and migrate importers."),
     CheckDef("repo.module_size", "repo", "enforce module size budget", 400, check_module_size, fix_hint="Split oversized modules into focused submodules."),
     CheckDef(
         "repo.dir_budget_modules",
@@ -261,6 +255,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.type_coverage", "repo", "enforce minimum type coverage in core/contracts", 600, check_type_coverage, fix_hint="Add function annotations in core/contracts until the threshold is met."),
     CheckDef("repo.dependency_declarations", "repo", "ensure pyproject dependency declarations match imports", 600, check_dependency_declarations, fix_hint="Add missing dependencies or remove unused declarations."),
     CheckDef("repo.check_module_reachability", "repo", "ensure repo check modules are imported and reachable via registry", 300, check_repo_check_modules_registered, fix_hint="Import new repo check modules in checks/repo/__init__.py."),
+    CheckDef("repo.legacy_zero_importers", "repo", "require zero importers of removed atlasctl legacy namespace", 300, check_no_legacy_importers, fix_hint="Remove imports/references to atlasctl.legacy."),
     CheckDef("repo.pyproject_required_blocks", "repo", "ensure pyproject contains required project and tool config blocks", 300, check_pyproject_required_blocks, fix_hint="Add required [project]/[tool.*] blocks to packages/atlasctl/pyproject.toml."),
     CheckDef("repo.pyproject_no_duplicate_tool_config", "repo", "forbid duplicate tool config files beside pyproject", 300, check_pyproject_no_duplicate_tool_config, fix_hint="Remove duplicated tool config files and keep pyproject as SSOT."),
     CheckDef("repo.console_script_entry", "repo", "ensure atlasctl console script entry exists and points to callable target", 300, check_console_script_entry, fix_hint="Set [project.scripts] atlasctl = \"atlasctl.cli.main:main\" and ensure target is importable."),
@@ -278,7 +273,6 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.test_ownership_tags", "repo", "ensure tests declare ownership tags or live in domain directories", 300, check_test_ownership_tags, fix_hint="Add '# test-domain: <domain>' header to top-level tests."),
     CheckDef("repo.command_test_coverage", "repo", "ensure each command has explicit test coverage marker", 300, check_command_test_coverage, fix_hint="Add at least one test mentioning each command."),
     CheckDef("repo.check_test_coverage", "repo", "ensure each registered check has test or golden coverage marker", 300, check_check_test_coverage, fix_hint="Add test/golden references for uncovered checks."),
-    CheckDef("repo.legacy_parity_tests", "repo", "ensure legacy parity tests remain while legacy modules exist", 300, check_legacy_parity_tests_present, fix_hint="Keep at least one test_legacy*.py parity suite until legacy code is deleted."),
     CheckDef(
         "repo.suite_inventory_policy",
         "repo",

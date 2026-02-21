@@ -9,10 +9,10 @@ from collections.abc import Callable
 from .. import __version__
 from ..cli.registry import render_payload
 from ..core.context import RunContext
+from ..core.script_runner import run_script
 from ..core.serialize import dumps_json
 from ..errors import ScriptError
 from ..exit_codes import ERR_CONFIG
-from ..legacy.runner import run_legacy_script
 from ..surface import run_surface
 from .constants import DOMAINS
 from .output import build_base_payload, emit
@@ -85,7 +85,7 @@ def dispatch_command(
         if ns.dry_run:
             emit({"schema_version": 1, "tool": "atlasctl", "status": "ok", "script": ns.script, "args": ns.args}, as_json)
             return 0
-        return run_legacy_script(ns.script, ns.args, ctx)
+        return run_script(ns.script, ns.args, ctx)
     if ns.cmd == "validate-output":
         return import_attr("atlasctl.contracts.output", "validate_json_output")(ns.schema, ns.file, ns.json)
     if ns.cmd == "surface":

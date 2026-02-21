@@ -1,1 +1,0 @@
-"""Observability contracts subgroup."""

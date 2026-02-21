@@ -24,6 +24,8 @@ jobs:
         run: ./bin/atlasctl --quiet migration gate
       - name: Enforce atlasctl repo hygiene gate
         run: ./bin/atlasctl --quiet check repo
+      - name: Enforce no legacy package tree
+        run: test ! -d packages/atlasctl/src/atlasctl/legacy
       - name: Enforce python cache/venv tracking policy
         run: |
           ./bin/atlasctl --quiet python lint --json
