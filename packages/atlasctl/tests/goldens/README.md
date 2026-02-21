@@ -17,5 +17,6 @@ All golden snapshots under this directory are SSOT test fixtures for atlasctl CL
 - `surface.json.golden`
 - `explain.check.json.golden`
 - `check-list.json.golden`
+- `suite_refgrade.expected.txt`
 - `cli_help_snapshot.txt`
 - `cli_help_commands.expected.txt`
