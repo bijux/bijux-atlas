@@ -10,18 +10,6 @@ bootstrap:
 	@command -v kind >/dev/null 2>&1 || echo "kind not found (required for k8s e2e)"
 	@command -v kubectl >/dev/null 2>&1 || echo "kubectl not found (required for k8s e2e)"
 
-fmt: ## Run formatter checks
-	@$(ATLAS_SCRIPTS) dev fmt
-
-lint: ## Run lint checks
-	@$(ATLAS_SCRIPTS) dev lint
-
-test: ## Run test suite
-	@$(ATLAS_SCRIPTS) dev test
-
-audit: ## Run dependency and policy audits
-	@$(ATLAS_SCRIPTS) dev audit
-
 docs: ## Run docs verification lane
 	@$(MAKE) -s docs/check
 
