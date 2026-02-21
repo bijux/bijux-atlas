@@ -1,19 +1,19 @@
 # Ops Command Group
 
-Commands in this group run operational checks and runtime workflows.
+Commands mapped to `ops` effects policy.
 
 ## Commands
 
-- `ops`
 - `k8s`
-- `stack`
 - `load`
 - `obs`
+- `ops`
+- `stack`
 
 ## Examples
 
-- `atlasctl ops status --report json`
 - `atlasctl k8s conformance --report json`
-- `atlasctl stack status --report json`
 - `atlasctl load run --report json`
 - `atlasctl obs checks --report json`
+- `atlasctl ops status --report json`
+- `atlasctl stack status --report json`

@@ -1,6 +1,6 @@
 # Configs Command Group
 
-Commands in this group validate and inspect configuration contracts.
+Commands mapped to `configs` effects policy.
 
 ## Commands
 

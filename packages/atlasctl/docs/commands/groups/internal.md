@@ -1,14 +1,15 @@
 # Internal Command Group
 
-Commands in this group are internal or migration-only and are hidden from default public help.
+Commands mapped to `internal` effects policy.
 
 ## Commands
 
-- `legacy`
 - `compat`
 - `internal`
+- `legacy`
 
 ## Examples
 
-- `atlasctl help --include-internal --json`
+- `atlasctl compat list --json`
 - `atlasctl internal legacy --inventory --report json`
+- `atlasctl legacy --inventory --report json`

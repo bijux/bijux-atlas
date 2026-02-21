@@ -7,6 +7,7 @@ from .integrity import (
     check_docs_registry_command_drift,
     check_docs_index_complete,
     check_docs_links_exist,
+    check_migration_docs_not_stale,
     check_no_package_root_markdown_except_readme,
     check_stable_command_examples_in_group_docs,
 )
@@ -20,4 +21,5 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("docs.command_group_pages", "docs", "require command-group docs pages with examples section", 600, check_command_group_docs_pages, fix_hint="Add docs/commands/groups/<group>.md pages with ## Examples."),
     CheckDef("docs.registry_command_drift", "docs", "forbid docs references to unknown atlasctl commands", 600, check_docs_registry_command_drift, fix_hint="Fix stale command references to match cli surface registry."),
     CheckDef("docs.stable_command_examples", "docs", "require stable commands to have examples in group docs", 600, check_stable_command_examples_in_group_docs, fix_hint="Add command entries and atlasctl examples to docs/commands/groups/*.md."),
+    CheckDef("docs.migration_not_stale", "docs", "forbid stale migration wording once removals are active", 600, check_migration_docs_not_stale, fix_hint="Remove stale parallel-legacy wording from docs/migration pages."),
 )

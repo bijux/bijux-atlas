@@ -1,37 +1,37 @@
 # Dev Command Group
 
-Commands in this group provide developer tooling and control-plane workflows.
+Commands mapped to `dev` effects policy.
 
 ## Commands
 
+- `check`
+- `contracts`
+- `dev`
 - `doctor`
-- `inventory`
 - `gates`
+- `inventory`
+- `layout`
+- `lint`
+- `list`
+- `registry`
 - `repo`
 - `report`
 - `suite`
-- `lint`
-- `contracts`
-- `check`
 - `test`
-- `registry`
-- `layout`
-- `list`
-- `dev`
 
 ## Examples
 
+- `atlasctl check list --json`
+- `atlasctl contracts list --json`
+- `atlasctl dev check -- domain repo`
 - `atlasctl doctor --json`
+- `atlasctl gates --report json`
 - `atlasctl inventory --category all --format json`
-- `atlasctl gates run ci --report json`
+- `atlasctl layout root-shape --json`
+- `atlasctl lint run --report json`
+- `atlasctl list checks --json`
+- `atlasctl registry list --json`
 - `atlasctl repo stats --json`
 - `atlasctl report summary --run-id local`
 - `atlasctl suite run ci --json`
-- `atlasctl lint run --report json`
-- `atlasctl contracts list --json`
-- `atlasctl check list --json`
-- `atlasctl test inventory --json`
-- `atlasctl registry list --json`
-- `atlasctl layout root-shape --json`
-- `atlasctl list commands --json`
-- `atlasctl dev check -- domain repo`
+- `atlasctl test all --report json`

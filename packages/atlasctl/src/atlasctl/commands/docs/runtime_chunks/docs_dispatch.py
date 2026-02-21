@@ -18,14 +18,23 @@ def _run_simple_path(ctx: RunContext, report: str, path: str) -> int:
 
 
 def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
-    if ns.docs_cmd == "check":
-        checks = DOCS_LINT_CHECKS + [
+    if ns.docs_cmd in {"check", "validate"}:
+        def _check_nav_contract(inner_ctx: RunContext) -> tuple[int, str]:
+            missing = _mkdocs_missing_files(inner_ctx.repo_root)
+            if missing:
+                return 1, "\n".join(missing)
+            return 0, ""
+
+        checks = [
             _check("docs-link-check", "Validate markdown links", None, "Fix broken internal links and anchors.", fn=_check_markdown_links),
+            _check("docs-nav-check", "Validate mkdocs nav references existing docs files", None, "Fix mkdocs.yml nav entries to point to real docs pages.", fn=_check_nav_contract),
             _check("docs-public-surface", "Validate docs public surface", None, "Regenerate/align docs public surface JSON and docs references.", fn=_check_public_surface_docs),
             _check("docs-no-internal-target-refs", "Validate no internal make target refs", None, "Replace internal make targets with public targets in docs.", fn=_check_docs_make_only),
             _check("docs-ops-entrypoints", "Validate ops docs entrypoint policy", ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_external_entrypoints.py"], "Reference only make targets and ops/run entrypoints in docs."),
             _check("docs-generated", "Validate generated docs are up-to-date", None, "Regenerate docs outputs and commit deterministic updates.", fn=_check_docs_freeze_drift),
         ]
+        if ns.docs_cmd == "check":
+            checks = DOCS_LINT_CHECKS + checks
         return _run_docs_checks(ctx, checks, ns.report, ns.fail_fast, ns.emit_artifacts)
 
     if ns.docs_cmd == "lint":
@@ -149,6 +158,7 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         "generate-sli-doc": _generate_sli_doc,
         "generate-slos-doc": _generate_slos_doc,
         "generate-architecture-map": _generate_architecture_map,
+        "generate-command-groups-docs": _generate_command_group_docs,
         "generate-crates-map": _generate_crates_map,
         "generate-upgrade-guide": _generate_upgrade_guide,
         "generate-make-targets-catalog": _generate_make_targets_catalog,
@@ -180,6 +190,8 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 errors.append(f"{' '.join(cmd)} -> {output}")
                 if ns.fail_fast:
                     break
+        if not errors:
+            _generate_docs_inventory(ctx.repo_root, ctx.repo_root / "packages/atlasctl/docs/_generated/commands-inventory.md")
         payload = {"schema_version": 1, "tool": "atlasctl", "status": "pass" if not errors else "fail", "generated_count": len(DOCS_GENERATE_COMMANDS) - len(errors), "errors": errors}
         print(json.dumps(payload, sort_keys=True) if ns.report == "json" else json.dumps(payload, indent=2, sort_keys=True))
         return 0 if not errors else 1

@@ -1,6 +1,6 @@
 # Docs Command Group
 
-Commands in this group own documentation validation and generation workflows.
+Commands mapped to `docs` effects policy.
 
 ## Commands
 
@@ -8,5 +8,4 @@ Commands in this group own documentation validation and generation workflows.
 
 ## Examples
 
-- `atlasctl docs validate --report json`
-- `atlasctl docs generate --report json`
+- `atlasctl docs check --report json`

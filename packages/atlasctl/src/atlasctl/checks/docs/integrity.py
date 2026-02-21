@@ -122,3 +122,22 @@ def check_stable_command_examples_in_group_docs(repo_root: Path) -> tuple[int, l
         if f"atlasctl {spec.name}" not in text:
             errors.append(f"{path.relative_to(repo_root).as_posix()}: missing example usage for `{spec.name}`")
     return (0 if not errors else 1), errors
+
+
+def check_migration_docs_not_stale(repo_root: Path) -> tuple[int, list[str]]:
+    migration_root = _docs_root(repo_root) / "migration"
+    if not migration_root.exists():
+        return 0, []
+    banned = (
+        "legacy parity shim",
+        "parallel legacy path",
+        "keep legacy indefinitely",
+    )
+    errors: list[str] = []
+    for md in sorted(migration_root.rglob("*.md")):
+        rel = md.relative_to(repo_root).as_posix()
+        text = md.read_text(encoding="utf-8", errors="ignore").lower()
+        for term in banned:
+            if term in text:
+                errors.append(f"{rel}: stale migration wording `{term}`")
+    return (0 if not errors else 1), errors

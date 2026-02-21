@@ -8,6 +8,11 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
     check.add_argument("--emit-artifacts", action="store_true")
     check.add_argument("--fix", action="store_true")
 
+    validate = docs_sub.add_parser("validate", help="validate docs links, nav, and required pages")
+    validate.add_argument("--report", choices=["text", "json"], default="text")
+    validate.add_argument("--fail-fast", action="store_true")
+    validate.add_argument("--emit-artifacts", action="store_true")
+
     lint = docs_sub.add_parser("lint", help="run docs lint checks")
     lint.add_argument("--report", choices=["text", "json"], default="text")
     lint.add_argument("--fail-fast", action="store_true")
@@ -31,6 +36,7 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("generate-sli-doc", "generate docs/operations/slo/SLIS.md from SLI contract"),
         ("generate-slos-doc", "generate docs/operations/slo/SLOS.md from SLO contract"),
         ("generate-architecture-map", "generate docs/architecture/architecture-map.md"),
+        ("generate-command-groups-docs", "generate docs/commands/groups/*.md from command registry"),
         ("generate-crates-map", "generate docs/development/crates-map.md"),
         ("generate-upgrade-guide", "generate docs/_generated/upgrade-guide.md"),
         ("generate-make-targets-catalog", "generate makefiles/targets.json and docs/_generated/make-targets.md"),

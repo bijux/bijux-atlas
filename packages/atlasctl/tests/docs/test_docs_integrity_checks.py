@@ -6,6 +6,7 @@ from atlasctl.checks.docs.integrity import (
     check_command_group_docs_pages,
     check_docs_index_complete,
     check_docs_links_exist,
+    check_migration_docs_not_stale,
     check_docs_registry_command_drift,
     check_no_package_root_markdown_except_readme,
     check_stable_command_examples_in_group_docs,
@@ -21,6 +22,7 @@ def test_docs_integrity_checks_pass_on_repo() -> None:
         check_command_group_docs_pages,
         check_docs_registry_command_drift,
         check_stable_command_examples_in_group_docs,
+        check_migration_docs_not_stale,
     ):
         code, errors = fn(repo_root)
         assert code == 0, (fn.__name__, errors)

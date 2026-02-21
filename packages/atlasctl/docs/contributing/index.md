@@ -21,3 +21,8 @@
 
 - Lock-resolved dependencies are required for deterministic CI.
 - Update lock artifacts and validation checks in the same change when deps change.
+
+## Cookbooks
+
+- [Add A Check Or Command](add-check-or-command.md)
+- [Refactor Check IDs](refactor-check-ids.md)
