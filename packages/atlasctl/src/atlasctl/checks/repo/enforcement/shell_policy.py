@@ -4,30 +4,38 @@ import re
 import sys
 from pathlib import Path
 import subprocess
+import ast
 
 
-_ALLOWED_SHELL_PREFIXES = (
-    "packages/atlasctl/src/atlasctl/shell/layout/",
-)
+_VENDORED_SHELL_DIR = "ops/vendor/layout-checks"
 _SHELL_HEADER = "#!/usr/bin/env bash"
 _STRICT_MODE = "set -euo pipefail"
 _MAX_SHELL_SCRIPTS = 16
 
+
+def _read_allowlist(repo_root: Path, rel_path: str) -> set[str]:
+    path = repo_root / rel_path
+    if not path.exists():
+        return set()
+    return {
+        line.strip()
+        for line in path.read_text(encoding="utf-8", errors="ignore").splitlines()
+        if line.strip() and not line.strip().startswith("#")
+    }
+
 def _iter_layout_shell_checks(repo_root: Path) -> list[Path]:
-    root = repo_root / "packages/atlasctl/src/atlasctl/shell/layout"
+    root = repo_root / _VENDORED_SHELL_DIR
     return sorted(root.glob("*.sh"))
 
 
 def check_shell_location_policy(repo_root: Path) -> tuple[int, list[str]]:
-    offenders: list[str] = []
-    for path in sorted((repo_root / "packages/atlasctl/src/atlasctl/checks/layout").rglob("*.sh")):
-        rel = path.relative_to(repo_root).as_posix()
-        if rel.startswith(_ALLOWED_SHELL_PREFIXES):
-            continue
-        offenders.append(rel)
+    offenders = [
+        path.relative_to(repo_root).as_posix()
+        for path in sorted((repo_root / "packages/atlasctl/src/atlasctl").rglob("*.sh"))
+    ]
     if offenders:
         return 1, [
-            "layout shell scripts are allowed only under packages/atlasctl/src/atlasctl/shell/layout/",
+            "shell scripts are forbidden inside packages/atlasctl/src/atlasctl; quarantine under ops/vendor/layout-checks/ or port to python",
             *offenders,
         ]
     return 0, []
@@ -64,9 +72,12 @@ def check_shell_no_python_direct_calls(repo_root: Path) -> tuple[int, list[str]]
 
 def check_shell_no_network_download_tools(repo_root: Path) -> tuple[int, list[str]]:
     offenders: list[str] = []
+    allowed_paths = _read_allowlist(repo_root, "configs/policy/shell-network-fetch-allowlist.txt")
     forbidden_tokens = ("curl ", "wget ")
     for path in _iter_layout_shell_checks(repo_root):
         rel = path.relative_to(repo_root).as_posix()
+        if rel in allowed_paths:
+            continue
         for lineno, line in enumerate(path.read_text(encoding="utf-8", errors="ignore").splitlines(), 1):
             striped = line.strip()
             if striped.startswith("#"):
@@ -91,15 +102,62 @@ def check_shell_invocation_via_core_exec(repo_root: Path) -> tuple[int, list[str
         rel = path.relative_to(repo_root).as_posix()
         if rel in allowed or "/legacy/" in rel:
             continue
-        lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
-        for idx, line in enumerate(lines):
-            snippet = " ".join(lines[idx : idx + 3])
-            if not any(token in snippet for token in ("subprocess.run(", "subprocess.Popen(", "os.system(")):
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8", errors="ignore"))
+        except SyntaxError:
+            continue
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call):
                 continue
-            if not any(token in snippet for token in (".sh", "\"bash\"", "'bash'", "\"sh\"", "'sh'")):
+            shell_invocation = False
+            if isinstance(node.func, ast.Attribute) and isinstance(node.func.value, ast.Name):
+                is_subprocess = node.func.value.id == "subprocess" and node.func.attr in {"run", "Popen"}
+                is_os_system = node.func.value.id == "os" and node.func.attr == "system"
+                shell_invocation = is_subprocess or is_os_system
+            if not shell_invocation or not node.args:
                 continue
-            offenders.append(f"{rel}: invoke shell scripts through core.exec helpers")
-            break
+            arg0 = node.args[0]
+            if isinstance(arg0, ast.Constant) and isinstance(arg0.value, str):
+                if ".sh" in arg0.value or "bash" in arg0.value or "sh" in arg0.value:
+                    offenders.append(f"{rel}:{getattr(node, 'lineno', 0)}: invoke shell scripts through core.exec helpers")
+                    break
+            if isinstance(arg0, ast.List):
+                heads = [elt.value for elt in arg0.elts if isinstance(elt, ast.Constant) and isinstance(elt.value, str)]
+                if any(head in {"bash", "sh"} for head in heads) or any(part.endswith(".sh") for part in heads):
+                    offenders.append(f"{rel}:{getattr(node, 'lineno', 0)}: invoke shell scripts through core.exec helpers")
+                    break
+    return (0 if not offenders else 1), offenders
+
+
+def check_core_no_bash_subprocess(repo_root: Path) -> tuple[int, list[str]]:
+    allowlist = _read_allowlist(repo_root, "configs/policy/shell-probes-allowlist.txt")
+    core_root = repo_root / "packages/atlasctl/src/atlasctl/core"
+    offenders: list[str] = []
+    for path in sorted(core_root.rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        if rel in allowlist:
+            continue
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8", errors="ignore"))
+        except SyntaxError:
+            continue
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call):
+                continue
+            func = node.func
+            if not isinstance(func, ast.Attribute) or func.attr not in {"run", "Popen"}:
+                continue
+            if not isinstance(func.value, ast.Name) or func.value.id != "subprocess":
+                continue
+            if not node.args:
+                continue
+            first = node.args[0]
+            if not isinstance(first, ast.List) or not first.elts:
+                continue
+            head = first.elts[0]
+            if isinstance(head, ast.Constant) and isinstance(head.value, str) and head.value in {"bash", "sh"}:
+                offenders.append(f"{rel}:{getattr(node, 'lineno', 0)}: subprocess {head.value} invocation forbidden in core logic")
+                break
     return (0 if not offenders else 1), offenders
 
 
@@ -129,7 +187,7 @@ def check_shell_script_budget(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def check_shell_docs_present(repo_root: Path) -> tuple[int, list[str]]:
-    root = repo_root / "packages/atlasctl/src/atlasctl/shell/layout"
+    root = repo_root / _VENDORED_SHELL_DIR
     required = (
         root / "README.md",
         root / "POLICY.md",

@@ -71,6 +71,7 @@ SHELL_POLICY_CHECK_IDS: tuple[str, ...] = (
     "repo.shell_no_direct_python",
     "repo.shell_no_network_fetch",
     "repo.shell_invocation_boundary",
+    "repo.core_no_bash_subprocess",
     "repo.shell_readonly_checks",
     "repo.shell_script_budget",
     "repo.shell_docs_present",
