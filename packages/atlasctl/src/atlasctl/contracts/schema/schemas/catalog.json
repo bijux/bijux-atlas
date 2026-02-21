@@ -6,6 +6,11 @@
       "file": "atlasctl.check-list.v1.schema.json"
     },
     {
+      "name": "atlasctl.check-taxonomy.v1",
+      "version": 1,
+      "file": "atlasctl.check-taxonomy.v1.schema.json"
+    },
+    {
       "name": "atlasctl.commands.v1",
       "version": 1,
       "file": "atlasctl.commands.v1.schema.json"
@@ -34,6 +39,11 @@
       "name": "atlasctl.runtime_contracts.v1",
       "version": 1,
       "file": "atlasctl.runtime_contracts.v1.schema.json"
+    },
+    {
+      "name": "atlasctl.suite-manifests.v1",
+      "version": 1,
+      "file": "atlasctl.suite-manifests.v1.schema.json"
     },
     {
       "name": "atlasctl.suite-run.v1",

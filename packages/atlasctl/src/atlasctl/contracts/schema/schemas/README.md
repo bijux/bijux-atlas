@@ -1,3 +1,18 @@
-# schemas package
+# Schema Catalog
 
-This package is intentionally namespace-oriented and currently exposes module entrypoints via subcommands or registries.
+Generated from `packages/atlasctl/src/atlasctl/contracts/schema/schemas/*.schema.json`.
+Do not edit rows manually; regenerate via `atlasctl contracts generate --generators catalog`.
+
+| schema_name | version | file | sha256_16 |
+|---|---:|---|---|
+| atlasctl.check-list.v1 | 1 | atlasctl.check-list.v1.schema.json | `34b683b40cda96eb` |
+| atlasctl.check-taxonomy.v1 | 1 | atlasctl.check-taxonomy.v1.schema.json | `177140f8e557be19` |
+| atlasctl.commands.v1 | 1 | atlasctl.commands.v1.schema.json | `85a3fe7e9d88e85b` |
+| atlasctl.explain.v1 | 1 | atlasctl.explain.v1.schema.json | `0ea5e9b7d6ba22f0` |
+| atlasctl.help.v1 | 1 | atlasctl.help.v1.schema.json | `0afd4c50eba70e0f` |
+| atlasctl.output-base.v1 | 1 | atlasctl.output-base.v1.schema.json | `2dcde2ec625976de` |
+| atlasctl.output-base.v2 | 2 | atlasctl.output-base.v2.schema.json | `65403c8c9bb1f558` |
+| atlasctl.runtime_contracts.v1 | 1 | atlasctl.runtime_contracts.v1.schema.json | `328c97c92f64d965` |
+| atlasctl.suite-manifests.v1 | 1 | atlasctl.suite-manifests.v1.schema.json | `3c2765203ad31ba7` |
+| atlasctl.suite-run.v1 | 1 | atlasctl.suite-run.v1.schema.json | `bde01f643602012b` |
+| atlasctl.surface.v1 | 1 | atlasctl.surface.v1.schema.json | `a858fb6ee571e589` |
