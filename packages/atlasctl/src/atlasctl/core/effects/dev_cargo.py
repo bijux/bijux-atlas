@@ -81,10 +81,21 @@ def _run(
         if not quiet:
             print(f"result: {'pass' if proc.returncode == 0 else 'fail'}")
         return proc.returncode
-    proc = subprocess.run(cmd, cwd=ctx.repo_root, env=env, text=True, capture_output=True, check=False)
+    live_repo_progress = (
+        isinstance(cmd, list)
+        and len(cmd) >= 6
+        and cmd[1:6] == ["-m", "atlasctl.cli", "check", "run", "--group"]
+        and (not quiet)
+    )
+    if live_repo_progress:
+        proc = subprocess.run(cmd, cwd=ctx.repo_root, env=env, text=True, check=False)
+        step["stdout"] = ""
+        step["stderr"] = ""
+    else:
+        proc = subprocess.run(cmd, cwd=ctx.repo_root, env=env, text=True, capture_output=True, check=False)
+        step["stdout"] = proc.stdout or ""
+        step["stderr"] = proc.stderr or ""
     step["exit_code"] = proc.returncode
-    step["stdout"] = proc.stdout or ""
-    step["stderr"] = proc.stderr or ""
     steps.append(step)
     if not quiet:
         print(f"result: {'pass' if proc.returncode == 0 else 'fail'}")
