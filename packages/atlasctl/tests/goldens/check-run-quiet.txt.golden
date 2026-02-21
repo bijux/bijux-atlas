@@ -1,0 +1,6 @@
+SKIP docs.index_complete
+SKIP docs.links_exist
+SKIP docs.no_ops_generated_run_path_refs
+SKIP docs.no_scripts_path_refs
+SKIP docs.package_root_markdown
+summary: failed=0 total=5
