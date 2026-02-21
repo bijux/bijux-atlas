@@ -1,6 +1,11 @@
 {
   "command": "help",
+  "contract": "atlasctl.commands.v1",
+  "examples": [
+    "atlasctl explain help --json"
+  ],
   "failure_modes": [],
+  "purpose": "describe command contract",
   "run_id": "sample-explain",
   "schema_name": "atlasctl.explain.v1",
   "schema_version": 1,

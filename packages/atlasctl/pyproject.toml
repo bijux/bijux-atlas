@@ -220,6 +220,7 @@ includes = ["fast"]
 complete = true
 items = [
   "check-tag:refgrade_required",
+  "cmd:atlasctl contracts validate --report json",
   "cmd:atlasctl policies culprits-suite --report json",
   "schema:atlasctl.help.v1",
 ]

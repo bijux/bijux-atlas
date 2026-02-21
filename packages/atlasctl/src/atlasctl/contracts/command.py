@@ -6,6 +6,7 @@ from pathlib import Path
 
 from ..core.context import RunContext
 from .catalog import lint_catalog, list_catalog_entries
+from .output_base import build_output_base
 from .checks import (
     check_breaking,
     check_chart_values,
@@ -33,47 +34,69 @@ GEN_HANDLERS = {
 }
 
 
-def _emit(report: str, errors: list[str]) -> int:
-    payload = {
-        "schema_version": 1,
-        "tool": "atlasctl",
-        "status": "pass" if not errors else "fail",
-        "errors": errors,
-    }
-    print(json.dumps(payload, sort_keys=True) if report == "json" else json.dumps(payload, indent=2, sort_keys=True))
+def _as_json(ns: argparse.Namespace, report: str) -> bool:
+    return bool(getattr(ns, "json", False) or report == "json")
+
+
+def _emit(run_id: str, ns: argparse.Namespace, report: str, errors: list[str], warnings: list[str] | None = None, meta: dict[str, object] | None = None) -> int:
+    payload = build_output_base(
+        run_id=run_id,
+        ok=not errors,
+        errors=errors,
+        warnings=warnings or [],
+        meta=meta or {},
+    )
+    payload["status"] = "pass" if not errors else "fail"
+    print(json.dumps(payload, sort_keys=True) if _as_json(ns, report) else json.dumps(payload, indent=2, sort_keys=True))
     return 0 if not errors else 1
 
 
 def run_contracts_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     report = getattr(ns, "report", "text")
+    as_json = _as_json(ns, report)
     if ns.contracts_cmd == "list":
         rows = [
             {"schema_name": entry.name, "schema_version": entry.version, "file": entry.file}
             for entry in sorted(list_catalog_entries(), key=lambda row: row.name)
         ]
-        payload = {"schema_version": 1, "tool": "atlasctl", "status": "ok", "schemas": rows}
-        print(json.dumps(payload, sort_keys=True) if report == "json" else json.dumps(payload, indent=2, sort_keys=True))
+        payload = build_output_base(run_id=ctx.run_id, ok=True, meta={"schemas": rows})
+        payload["status"] = "ok"
+        print(json.dumps(payload, sort_keys=True) if as_json else json.dumps(payload, indent=2, sort_keys=True))
         return 0
     if ns.contracts_cmd == "lint":
         errors = lint_catalog()
-        return _emit(report, errors)
+        return _emit(ctx.run_id, ns, report, errors, meta={"checks": ["catalog_lint"]})
+    if ns.contracts_cmd == "validate":
+        errors: list[str] = []
+        errors.extend(lint_catalog())
+        for entry in list_catalog_entries():
+            schema_path = ctx.repo_root / "packages/atlasctl/src/atlasctl/contracts/schemas" / entry.file
+            if not schema_path.exists():
+                errors.append(f"missing schema file: {entry.file}")
+                continue
+            try:
+                json.loads(schema_path.read_text(encoding="utf-8"))
+            except json.JSONDecodeError as exc:
+                errors.append(f"invalid json schema file {entry.file}: {exc}")
+        return _emit(ctx.run_id, ns, report, errors, meta={"checks": ["catalog_lint", "schema_json_parse"]})
     if ns.contracts_cmd == "check":
         checks = ns.checks or list(CHECK_HANDLERS)
         errors: list[str] = []
         for check in checks:
             errors.extend(CHECK_HANDLERS[check](ctx.repo_root, ns))
-        return _emit(report, errors)
+        return _emit(ctx.run_id, ns, report, errors, meta={"checks": checks})
     if ns.contracts_cmd == "generate":
         generators = ns.generators or list(GEN_HANDLERS)
         errors: list[str] = []
         for generator in generators:
             errors.extend(GEN_HANDLERS[generator](ctx.repo_root))
-        return _emit(report, errors)
+        return _emit(ctx.run_id, ns, report, errors, meta={"generators": generators})
     return 2
 
 
 def configure_contracts_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     parser = sub.add_parser("contracts", help="contracts checks and generators")
+    parser.add_argument("--json", action="store_true", help="emit JSON output")
     subp = parser.add_subparsers(dest="contracts_cmd", required=True)
 
     lst = subp.add_parser("list", help="list schema ids and versions from catalog")
@@ -81,6 +104,8 @@ def configure_contracts_parser(sub: argparse._SubParsersAction[argparse.Argument
 
     lint = subp.add_parser("lint", help="lint schema catalog naming/order/coverage rules")
     lint.add_argument("--report", choices=["text", "json"], default="text")
+    validate = subp.add_parser("validate", help="validate schema catalog and schema JSON files")
+    validate.add_argument("--report", choices=["text", "json"], default="text")
 
     check = subp.add_parser("check", help="check contract breakage/drift/endpoints/error-codes/sqlite-indexes/chart-values")
     check.add_argument("--report", choices=["text", "json"], default="text")
