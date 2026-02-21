@@ -9,9 +9,9 @@ import sys
 from ..core.context import RunContext
 
 _SMOKE_TESTS = (
-    "packages/atlasctl/tests/test_cli_smoke.py",
-    "packages/atlasctl/tests/test_cli_help_snapshot.py",
-    "packages/atlasctl/tests/test_cli_json_goldens.py",
+    "packages/atlasctl/tests/cli/test_cli_smoke.py",
+    "packages/atlasctl/tests/cli/test_cli_help_snapshot.py",
+    "packages/atlasctl/tests/cli/test_cli_json_goldens.py",
 )
 
 

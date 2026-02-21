@@ -7,7 +7,7 @@ from typing import Literal
 
 from .env import getenv
 from .git import read_git_context
-from .paths import evidence_root_path, find_repo_root, run_dir_root_path, scripts_artifact_root_path
+from .domains.paths import evidence_root_path, find_repo_root, run_dir_root_path, scripts_artifact_root_path
 
 OutputFormat = Literal["text", "json"]
 NetworkMode = Literal["allow", "forbid"]

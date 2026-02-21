@@ -15,22 +15,22 @@ from .legacy_native import (
     check_tracked_timestamp_paths,
 )
 from ..base import CheckDef
-from .legacy_guard import check_legacy_package_quarantine
-from .module_size import check_module_size
-from .cwd_usage import check_no_path_cwd_usage
-from .command_contracts import (
+from .enforcement.legacy_guard import check_legacy_package_quarantine
+from .enforcement.module_size import check_module_size
+from .enforcement.cwd_usage import check_no_path_cwd_usage
+from .contracts.command_contracts import (
     check_command_help_docs_drift,
     check_command_metadata_contract,
     check_no_duplicate_command_names,
 )
-from .argparse_policy import check_argparse_policy
-from .scripts_dir import check_scripts_dir_absent
-from .public_api import check_public_api_exports
-from .type_coverage import check_type_coverage
-from .dependencies import check_dependency_declarations
+from .enforcement.argparse_policy import check_argparse_policy
+from .domains.scripts_dir import check_scripts_dir_absent
+from .contracts.public_api import check_public_api_exports
+from .contracts.type_coverage import check_type_coverage
+from .contracts.dependencies import check_dependency_declarations
 from .reachability import check_repo_check_modules_registered
-from .refgrade_proof import check_refgrade_target_shape
-from .import_policy import (
+from .enforcement.refgrade_proof import check_refgrade_target_shape
+from .enforcement.import_policy import (
     check_command_import_lint,
     check_cold_import_budget,
     check_compileall_gate,
@@ -38,7 +38,7 @@ from .import_policy import (
     check_internal_import_boundaries,
     check_no_modern_imports_from_legacy,
 )
-from .pyproject_contracts import (
+from .contracts.pyproject_contracts import (
     check_dependency_gate_targets,
     check_deps_workflow_doc,
     check_deps_command_surface,
