@@ -70,6 +70,7 @@ from .enforcement.package_hygiene import (
     check_package_has_module_or_readme,
 )
 from .enforcement.shell_policy import (
+    check_core_no_bash_subprocess,
     check_no_layout_shadow_configs,
     check_shell_docs_present,
     check_shell_no_network_download_tools,
@@ -315,10 +316,10 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef(
         "repo.shell_location_policy",
         "repo",
-        "forbid shell scripts outside approved directories",
+        "forbid shell scripts under atlasctl python package tree",
         300,
         check_shell_location_policy,
-        fix_hint="Keep shell scripts under checks/layout or ops only.",
+        fix_hint="Move shell scripts to ops/vendor/layout-checks or port them to python.",
     ),
     CheckDef(
         "repo.shell_strict_mode",
@@ -361,6 +362,14 @@ CHECKS: tuple[CheckDef, ...] = (
         fix_hint="Route shell invocations through core.exec wrapper helpers.",
     ),
     CheckDef(
+        "repo.core_no_bash_subprocess",
+        "repo",
+        "forbid subprocess.run(['bash'|'sh', ...]) in core logic",
+        300,
+        check_core_no_bash_subprocess,
+        fix_hint="Use core.exec wrappers; do not invoke bash/sh directly in core.",
+    ),
+    CheckDef(
         "repo.shell_script_budget",
         "repo",
         "cap total shell script count in repository",
@@ -374,7 +383,7 @@ CHECKS: tuple[CheckDef, ...] = (
         "require shell directory README and policy docs",
         300,
         check_shell_docs_present,
-        fix_hint="Add README.md and POLICY.md under shell/layout.",
+        fix_hint="Add README.md and POLICY.md under ops/vendor/layout-checks.",
     ),
     CheckDef(
         "repo.layout_no_shadow",
