@@ -14,10 +14,30 @@ _DEV_FORWARD: dict[str, str] = {
     "check": "check",
     "suite": "suite",
     "test": "test",
+    "ci": "ci",
     "commands": "commands",
     "explain": "explain",
 }
-_DEV_ITEMS: tuple[str, ...] = ("check", "commands", "explain", "list", "split-module", "suite", "test")
+_DEV_MAKE_SHORTCUTS: dict[str, str] = {
+    "fmt": "fmt",
+    "lint": "lint",
+    "coverage": "coverage",
+    "audit": "audit",
+}
+_DEV_ITEMS: tuple[str, ...] = (
+    "audit",
+    "check",
+    "ci",
+    "commands",
+    "coverage",
+    "explain",
+    "fmt",
+    "lint",
+    "list",
+    "split-module",
+    "suite",
+    "test",
+)
 
 
 def _forward(ctx: RunContext, *args: str) -> int:
@@ -46,6 +66,23 @@ def run_dev_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return 0
     if sub == "split-module":
         return _run_split_module(ctx, ns)
+    if sub == "test" and not getattr(ns, "args", []):
+        proc = subprocess.run(
+            ["make", "-s", "test"],
+            cwd=ctx.repo_root,
+            text=True,
+            check=False,
+        )
+        return proc.returncode
+    shortcut_target = _DEV_MAKE_SHORTCUTS.get(sub)
+    if shortcut_target:
+        proc = subprocess.run(
+            ["make", "-s", shortcut_target],
+            cwd=ctx.repo_root,
+            text=True,
+            check=False,
+        )
+        return proc.returncode
     forwarded = _DEV_FORWARD.get(sub)
     if not forwarded:
         return 2
@@ -100,11 +137,16 @@ def configure_dev_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
         ("check", "forward to `atlasctl check ...`"),
         ("suite", "forward to `atlasctl suite ...`"),
         ("test", "forward to `atlasctl test ...`"),
+        ("ci", "forward to `atlasctl ci ...`"),
         ("commands", "forward to `atlasctl commands ...`"),
         ("explain", "forward to `atlasctl explain ...`"),
     ):
         sp = dev_sub.add_parser(name, help=help_text)
         sp.add_argument("args", nargs=argparse.REMAINDER)
+    dev_sub.add_parser("fmt", help="run canonical format lane (`make fmt`)")
+    dev_sub.add_parser("lint", help="run canonical lint lane (`make lint`)")
+    dev_sub.add_parser("coverage", help="run canonical coverage lane (`make coverage`)")
+    dev_sub.add_parser("audit", help="run canonical audit lane (`make audit`)")
     split = dev_sub.add_parser("split-module", help="generate a module split plan for a path")
     split.add_argument("--path", required=True)
     split.add_argument("--json", action="store_true", help="emit JSON output")
