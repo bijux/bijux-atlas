@@ -142,6 +142,12 @@ CHECKS: list[MakeCheck] = [
         "Add or correct required makefile scope headers.",
     ),
     _check(
+        "ci-mk-size-budget",
+        "Validate ci.mk size budget",
+        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_ci_mk_size_budget.py",
+        "Keep makefiles/ci.mk as a thin wrapper and move execution logic into atlasctl dev ci commands.",
+    ),
+    _check(
         "makefiles-index-drift",
         "Validate makefiles index drift",
         "packages/atlasctl/src/atlasctl/checks/layout/makefiles/index/check_makefiles_index_drift.py",
