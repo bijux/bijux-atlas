@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 import pytest
-from atlasctl.core.contracts.schema import validate_json_file_against_schema
+from atlasctl.core.schema.schema import validate_json_file_against_schema
 from atlasctl.errors import ScriptError
 
 

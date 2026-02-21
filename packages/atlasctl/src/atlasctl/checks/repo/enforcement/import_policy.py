@@ -139,15 +139,15 @@ def check_contract_import_boundaries(repo_root: Path) -> tuple[int, list[str]]:
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 names = [alias.name for alias in node.names]
-                if any(name.startswith("atlasctl.core.contracts") for name in names):
+                if any(name.startswith("atlasctl.core.schema") for name in names):
                     offenders.append(rel)
                     break
             elif isinstance(node, ast.ImportFrom):
-                if node.level == 0 and node.module and node.module.startswith("atlasctl.core.contracts"):
+                if node.level == 0 and node.module and node.module.startswith("atlasctl.core.schema"):
                     offenders.append(rel)
                     break
     if offenders:
-        return 1, [f"commands/checks must import schemas from atlasctl.contracts, not core.contracts: {rel}" for rel in sorted(set(offenders))]
+        return 1, [f"commands/checks must import schemas from atlasctl.contracts, not core.schema: {rel}" for rel in sorted(set(offenders))]
     return 0, []
 
 

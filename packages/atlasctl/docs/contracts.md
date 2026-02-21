@@ -18,7 +18,8 @@ Defines behavior guarantees and boundaries for the `bijux-atlas` product CLI.
 ## Boundaries
 
 - The CLI must not write runtime outputs under `ops/**`.
-- The CLI may execute legacy scripts only through `run` with context propagation.
+- `atlasctl/contracts/` is canonical for schema IDs, schema catalog loading, and output validation entrypoints.
+- `atlasctl/core/schema/` is internal helper code only and must not be used as a public contract namespace.
 - New command families must preserve help output and JSON contract tests.
 - Packaging is internal-only; publishing to PyPI is forbidden until an explicit release policy is added.
 - Package distribution uses MIT licensing as defined in `packages/atlasctl/LICENSE`.

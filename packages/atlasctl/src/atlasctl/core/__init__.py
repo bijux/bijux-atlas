@@ -5,7 +5,7 @@ from .fs import ensure_evidence_path
 from .logging import log_event
 from .repo_root import find_repo_root, try_find_repo_root
 from .serialize import dumps_json
-from .contracts.schema import validate_json_file_against_schema
+from .schema.schema import validate_json_file_against_schema
 
 __all__ = [
     "RunContext",
