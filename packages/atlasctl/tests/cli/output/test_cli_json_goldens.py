@@ -49,3 +49,9 @@ def test_commands_out_file_is_validated() -> None:
     proc = run_atlasctl("commands", "--json", "--out-file", "ops/_evidence/forbidden.json")
     assert proc.returncode == 3
     assert "forbidden write path" in proc.stderr
+
+
+def test_json_mode_emits_no_diagnostic_stderr() -> None:
+    proc = run_atlasctl("help", "--json")
+    assert proc.returncode == 0, proc.stderr
+    assert proc.stderr.strip() == ""

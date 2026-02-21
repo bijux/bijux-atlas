@@ -75,3 +75,19 @@ def test_run_dev_cargo_json_payload(monkeypatch, capsys) -> None:
     assert payload["ok"] is True
     assert calls
 
+
+def test_dev_forward_propagates_quiet_and_json(monkeypatch) -> None:
+    seen: list[str] = []
+
+    def fake_subprocess_run(cmd, **_kwargs):
+        seen.extend(cmd)
+        class P:
+            returncode = 0
+        return P()
+
+    ctx = RunContext.from_args("dev-forward-flags", None, "test", False, "json", quiet=True)
+    monkeypatch.setattr("atlasctl.commands.dev.command.subprocess.run", fake_subprocess_run)
+    rc = run_dev_command(ctx, argparse.Namespace(dev_cmd="ci", args=["run", "--explain"]))
+    assert rc == 0
+    assert "--quiet" in seen
+    assert "--format" in seen and "json" in seen
