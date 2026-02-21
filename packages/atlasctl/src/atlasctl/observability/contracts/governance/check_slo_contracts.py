@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-ROOT = Path(__file__).resolve().parents[6]
+ROOT = Path(__file__).resolve().parents[7]
 
 
 def _type_ok(value: Any, t: str) -> bool:

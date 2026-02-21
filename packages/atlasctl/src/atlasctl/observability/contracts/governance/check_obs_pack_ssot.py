@@ -8,7 +8,7 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[6]
+ROOT = Path(__file__).resolve().parents[7]
 config = ROOT / "configs/ops/observability-pack.json"
 _ = json.loads(config.read_text(encoding="utf-8"))
 install = (ROOT / "ops/obs/scripts/install_pack.sh").read_text(encoding="utf-8")

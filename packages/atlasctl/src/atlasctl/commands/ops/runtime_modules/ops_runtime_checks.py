@@ -119,7 +119,7 @@ LINT_CHECKS: list[OpsCheck] = [
     _check(
         "ops-tool-versions",
         "Validate pinned tool versions",
-        ["python3", "packages/atlasctl/src/atlasctl/checks/layout/contracts/observability/check_tool_versions.py", "kind", "kubectl", "helm", "k6"],
+        ["python3", "packages/atlasctl/src/atlasctl/observability/contracts/governance/check_tool_versions.py", "kind", "kubectl", "helm", "k6"],
         "Update tool pins and local toolchain to match configs/ops/tool-versions.json.",
     ),
     _check(
