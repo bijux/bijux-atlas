@@ -41,5 +41,10 @@ Commands mapped to `dev` effects policy.
 - `atlasctl repo stats --json`
 - `atlasctl report summary --run-id local`
 - `atlasctl run-id --prefix ci`
-- `atlasctl suite run ci --json`
+- `atlasctl dev ci run --json`
+- `atlasctl dev fmt`
+- `atlasctl dev lint`
+- `atlasctl dev test`
+- `atlasctl dev coverage`
+- `atlasctl dev audit`
 - `atlasctl test all --report json`

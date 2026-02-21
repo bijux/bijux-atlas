@@ -243,7 +243,7 @@ atlasctl-lint: ## Lint atlasctl package (ruff + mypy strict domains)
 atlasctl-test: ## Test atlasctl package (compile + unit + integration)
 	@$(MAKE) -s internal/scripts/install-lock
 	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/python" -m compileall -q packages/atlasctl/src
-	@$(ATLAS_SCRIPTS) suite run ci --json --target-dir artifacts/reports/atlasctl/suite-ci >/dev/null
+	@$(ATLAS_SCRIPTS) dev ci run --json --out-dir artifacts/reports/atlasctl/suite-ci >/dev/null
 	@$(ATLAS_SCRIPTS) test run integration
 
 scripts-install-dev: ## Install python tooling for scripts package development
@@ -386,7 +386,7 @@ local/all: ## Run all meaningful local gates
 	@PARALLEL="$${PARALLEL:-1}" RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-local-all-$(MAKE_RUN_TS)}}" MODE=root-local ./ops/run/root-lanes.sh
 
 ci/all: ## Deterministic CI superset
-	@$(ATLAS_SCRIPTS) suite run ci --json --target-dir artifacts/reports/atlasctl/suite-ci >/dev/null
+	@$(ATLAS_SCRIPTS) dev ci run --json --out-dir artifacts/reports/atlasctl/suite-ci >/dev/null
 
 nightly/all: ## Slow nightly suites (perf/load/drills/realdata)
 	@$(call with_iso,nightly-all,$(MAKE) -s ci/all ops-load-nightly perf/regression-check ops-drill-suite ops-drill-metric-cardinality-blowup ops-realdata ops-obs-verify SUITE=full ops-observability-lag-check)
