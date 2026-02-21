@@ -8,7 +8,7 @@ import pytest
 from atlasctl.contracts.validate import load_catalog, validate
 
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[4]
 
 
 @pytest.mark.unit

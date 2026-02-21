@@ -1,9 +1,9 @@
 {
   "schemas": [
     {
-      "name": "atlasctl.help.v1",
+      "name": "atlasctl.check-list.v1",
       "version": 1,
-      "file": "atlasctl.help.v1.schema.json"
+      "file": "atlasctl.check-list.v1.schema.json"
     },
     {
       "name": "atlasctl.commands.v1",
@@ -11,14 +11,14 @@
       "file": "atlasctl.commands.v1.schema.json"
     },
     {
-      "name": "atlasctl.surface.v1",
-      "version": 1,
-      "file": "atlasctl.surface.v1.schema.json"
-    },
-    {
       "name": "atlasctl.explain.v1",
       "version": 1,
       "file": "atlasctl.explain.v1.schema.json"
+    },
+    {
+      "name": "atlasctl.help.v1",
+      "version": 1,
+      "file": "atlasctl.help.v1.schema.json"
     },
     {
       "name": "atlasctl.runtime_contracts.v1",
@@ -26,14 +26,14 @@
       "file": "atlasctl.runtime_contracts.v1.schema.json"
     },
     {
-      "name": "atlasctl.check-list.v1",
-      "version": 1,
-      "file": "atlasctl.check-list.v1.schema.json"
-    },
-    {
       "name": "atlasctl.suite-run.v1",
       "version": 1,
       "file": "atlasctl.suite-run.v1.schema.json"
+    },
+    {
+      "name": "atlasctl.surface.v1",
+      "version": 1,
+      "file": "atlasctl.surface.v1.schema.json"
     }
   ]
 }
