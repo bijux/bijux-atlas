@@ -43,19 +43,23 @@ def _is_allowed(rel: str, rules: list[str]) -> bool:
     return any(rel == rule or rel.startswith(rule) for rule in rules)
 
 
-def _tracked_files() -> list[str]:
-    proc = subprocess.run(["git", "ls-files"], cwd=ROOT, text=True, capture_output=True, check=False)
+def _tracked_files(diff_only: bool) -> list[str]:
+    cmd = ["git", "diff", "--name-only", "--diff-filter=ACMRTUXB", "HEAD"] if diff_only else ["git", "ls-files"]
+    proc = subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True, check=False)
     if proc.returncode != 0:
         return []
     return [line.strip() for line in proc.stdout.splitlines() if line.strip()]
 
 
 def main() -> int:
+    diff_only = "--all-files" not in sys.argv[1:]
     rules = _allow_rules()
     errors: list[str] = []
-    for rel in _tracked_files():
+    for rel in _tracked_files(diff_only=diff_only):
         path = ROOT / rel
         if path.suffix.lower() not in TEXT_EXTS:
+            continue
+        if not path.exists():
             continue
         if _is_allowed(rel, rules):
             continue
