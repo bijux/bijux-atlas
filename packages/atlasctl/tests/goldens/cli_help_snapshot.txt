@@ -4,14 +4,15 @@ usage: atlasctl [-h] [--version] [--json] [--run-id RUN_ID]
                 [--cwd CWD] [--profile PROFILE] [--format {text,json}]
                 [--network {allow,forbid}] [--no-network]
                 [--require-clean-git] [--verbose | --quiet]
-                {version,env,self-check,help,explain,run,validate-output,surface,commands,contracts,registry,layout,configs,docker,ci,check,gen,policies,docs,make,migration,ops,inventory,lint,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,python,doctor,completion,clean}
+                {version,env,paths,self-check,help,explain,run,validate-output,surface,commands,config,registry,layout,configs,contracts,docker,ci,check,deps,gen,policies,docs,make,migration,ops,inventory,lint,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,python,doctor,completion,clean,fix}
                 ...
 
 positional arguments:
-  {version,env,self-check,help,explain,run,validate-output,surface,commands,contracts,registry,layout,configs,docker,ci,check,gen,policies,docs,make,migration,ops,inventory,lint,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,python,doctor,completion,clean}
+  {version,env,paths,self-check,help,explain,run,validate-output,surface,commands,config,registry,layout,configs,contracts,docker,ci,check,deps,gen,policies,docs,make,migration,ops,inventory,lint,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,python,doctor,completion,clean,fix}
     version             print versions and git context
     env                 manage isolated python environment and artifact-root
                         policy
+    paths               print key repo and runtime paths
     self-check          validate imports, config loading, and schema presence
     help                print command help
     explain             describe command side-effects and external tools
@@ -19,13 +20,15 @@ positional arguments:
     validate-output     validate JSON output against schema
     surface             print scripts command ownership surface
     commands            print machine-readable command surface
-    contracts           contracts domain commands
+    config              configuration commands (alias over `configs`)
     registry            registry domain commands
     layout              layout domain commands
-    configs             configs validation and inventory commands
+    configs             native configs validation/generation/sync commands
+    contracts           contracts checks and generators
     docker              docker verification command group
     ci                  ci command group
     check               area-based checks mapped from scripts/areas
+    deps                dependency workflow commands (pip-tools route)
     gen                 generation commands mapped from scripts/areas
     policies            policy relaxations and bypass checks
     docs                docs checks and generation commands
@@ -53,6 +56,7 @@ positional arguments:
     doctor              show tooling and context diagnostics
     completion          emit shell completion stub
     clean               clean scripts artifacts under approved roots only
+    fix                 run explicit fixers (separate from checks)
 
 options:
   -h, --help            show this help message and exit
