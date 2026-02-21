@@ -7,7 +7,7 @@ OPS_ENV_SCHEMA ?= configs/ops/env.schema.json
 
 ops-layout-lint: ## Validate canonical ops layout contract
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_layout_contract.py
-	@./packages/atlasctl/src/atlasctl/shell/layout/check_ops_workspace.sh
+	@./ops/vendor/layout-checks/check_ops_workspace.sh
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_artifacts_writes.py
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/governance/check_ops_concept_ownership.py
 
@@ -195,8 +195,8 @@ ops-obs-drill: ## Run one observability drill locally (DRILL=... PROFILE=kind|co
 	./ops/obs/scripts/bin/run_drill.sh "$${DRILL}"
 
 ops-stack-validate: ## Validate stack manifests and formatting drift
-	@./packages/atlasctl/src/atlasctl/shell/layout/check_stack_manifest_consolidation.sh
-	@./packages/atlasctl/src/atlasctl/shell/layout/check_ops_stack_order.sh
+	@./ops/vendor/layout-checks/check_stack_manifest_consolidation.sh
+	@./ops/vendor/layout-checks/check_ops_stack_order.sh
 	@./ops/stack/scripts/validate.sh
 
 ops-stack-smoke: ## Stack-only smoke test without atlas deploy
@@ -254,7 +254,7 @@ ops-kind-version-drift-test: ## Validate kind version matches pinned tool-versio
 	@./ops/k8s/tests/checks/rollout/test_kind_version_drift.sh
 
 ops-kind-cluster-drift-check: ## Require ops contract marker update when cluster profile changes
-	@./packages/atlasctl/src/atlasctl/shell/layout/check_kind_cluster_contract_drift.sh
+	@./ops/vendor/layout-checks/check_kind_cluster_contract_drift.sh
 
 ops-kind-validate: ## Validate kind substrate (context/namespace/sanity/registry/image/version)
 	@$(MAKE) ops-kind-context-guard
@@ -389,7 +389,7 @@ ops-toxi-cut-store: ## Cut or restore store connection (MODE=on|off)
 	@./ops/stack/faults/inject.sh block-minio "$${MODE:-on}"
 
 ops-stack-order-check: ## Validate stack install/uninstall order contract
-	@./packages/atlasctl/src/atlasctl/shell/layout/check_ops_stack_order.sh
+	@./ops/vendor/layout-checks/check_ops_stack_order.sh
 
 ops-stack-security-check: ## Validate stack security defaults (no privileged containers)
 	@ns="$${ATLAS_E2E_NAMESPACE:-atlas-e2e}"; \
@@ -916,7 +916,7 @@ ops-slo-report: ## Compute SLO report (SLIs, error budget remaining, burn rates)
 	@python3 ./ops/report/slo_report.py --metrics "$${METRICS:-artifacts/ops/metrics.prom}" --slo-config configs/ops/slo/slo.v1.json --out "$${OUT:-artifacts/ops/slo/report.json}"
 
 ops-script-coverage: ## Validate every ops/**/scripts entrypoint is exposed via make
-	@./packages/atlasctl/src/atlasctl/shell/layout/check_ops_script_targets.sh
+	@./ops/vendor/layout-checks/check_ops_script_targets.sh
 	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck
 	@$(MAKE) -s ops-shfmt
 
