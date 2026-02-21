@@ -57,6 +57,7 @@ repo.no_tracked_ops_generated
 repo.no_tracked_timestamp_paths
 repo.no_xtask_refs
 repo.ops_examples_immutable
+repo.output_format_stability
 repo.optional_dependency_groups
 repo.package_has_module_or_readme
 repo.public_api_exports
