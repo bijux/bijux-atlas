@@ -4324,6 +4324,26 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_repo_top_level_structure"
+domain = "repo"
+area = "top"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.check_top_level_structure"
+callable = "check_top_level_structure"
+description = "enforce atlasctl top-level package intent and budget"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep atlasctl top-level package set within STRUCTURE.md contract."
+legacy_id = "repo.top_level_structure"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_repo_type_coverage"
 domain = "repo"
 area = "type"
