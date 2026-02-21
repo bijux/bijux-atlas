@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from atlasctl.policies.dir_entry_budgets import report_budgets
+from tests.helpers import golden_text
 
 
 def _write_exceptions(repo: Path) -> None:
@@ -28,5 +29,4 @@ def test_budget_report_by_domain_golden(tmp_path: Path) -> None:
     _write_exceptions(tmp_path)
     payload = report_budgets(tmp_path, by_domain=True)
     got = json.dumps(payload, sort_keys=True)
-    golden_path = Path(__file__).resolve().parents[1] / "goldens" / "report_budgets_by_domain.json.golden"
-    assert got == golden_path.read_text(encoding="utf-8").strip()
+    assert got == golden_text("report_budgets_by_domain.json.golden")

@@ -193,7 +193,7 @@ def check_no_duplicate_command_implementation_patterns(repo_root: Path) -> tuple
 
 
 def check_command_surface_stability(repo_root: Path) -> tuple[int, list[str]]:
-    golden_path = repo_root / "packages/atlasctl/tests/goldens/commands.json.golden"
+    golden_path = repo_root / "packages/atlasctl/tests/goldens/list/commands.json.golden"
     if not golden_path.exists():
         return 1, [f"{golden_path.relative_to(repo_root).as_posix()} missing"]
     expected = json.loads(golden_path.read_text(encoding="utf-8"))
@@ -230,7 +230,7 @@ def check_command_surface_stability(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def check_stable_command_no_breaking_changes(repo_root: Path) -> tuple[int, list[str]]:
-    golden_path = repo_root / "packages/atlasctl/tests/goldens/commands.json.golden"
+    golden_path = repo_root / "packages/atlasctl/tests/goldens/list/commands.json.golden"
     if not golden_path.exists():
         return 1, [f"{golden_path.relative_to(repo_root).as_posix()} missing"]
     expected = json.loads(golden_path.read_text(encoding="utf-8"))
