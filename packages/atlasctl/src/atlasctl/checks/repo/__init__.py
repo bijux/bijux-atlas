@@ -29,6 +29,7 @@ from .public_api import check_public_api_exports
 from .type_coverage import check_type_coverage
 from .dependencies import check_dependency_declarations
 from .reachability import check_repo_check_modules_registered
+from .refgrade_proof import check_refgrade_target_shape
 from .import_policy import (
     check_command_import_lint,
     check_cold_import_budget,
@@ -91,6 +92,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.dependency_owner_justification", "repo", "ensure each dependency has owner and justification", 300, check_dependency_owner_justification, fix_hint="Add dependency ownership + justification entries in docs/deps.md."),
     CheckDef("repo.dependency_gate_targets", "repo", "ensure dependency gate make targets exist", 300, check_dependency_gate_targets, fix_hint="Define deps-lock/deps-sync/deps-check-venv/deps-cold-start in makefiles/scripts.mk."),
     CheckDef("repo.deps_command_surface", "repo", "ensure atlasctl deps command surface is runnable", 300, check_deps_command_surface, fix_hint="Wire atlasctl deps parser/runner and keep command import path valid."),
+    CheckDef("repo.refgrade_target_shape", "repo", "enforce package root minimalism and src no-symlink target shape", 300, check_refgrade_target_shape, fix_hint="Keep package-root items minimal and remove symlinks from src tree."),
     CheckDef("repo.internal_import_boundaries", "repo", "forbid atlasctl.internal imports outside internal namespace", 300, check_internal_import_boundaries, fix_hint="Route shared helpers through public modules instead of atlasctl.internal."),
     CheckDef("repo.modern_no_legacy_imports", "repo", "forbid modern modules from importing atlasctl.legacy", 300, check_no_modern_imports_from_legacy, fix_hint="Migrate callers to canonical modules under atlasctl.core/commands/checks."),
     CheckDef("repo.command_import_lint", "repo", "enforce command module import boundaries", 300, check_command_import_lint, fix_hint="Restrict command imports to core/contracts/checks/adapters/commands/cli."),
