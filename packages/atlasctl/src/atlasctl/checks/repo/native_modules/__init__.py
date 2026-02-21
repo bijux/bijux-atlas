@@ -1,1 +1,1 @@
-"""Legacy repo checks split modules."""
+"""Compatibility package for moved repo native modules."""
