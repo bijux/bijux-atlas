@@ -91,22 +91,19 @@ culprits-max_loc-py:
 	fi
 
 culprits-file-max_py_files_per_dir:
-	@out=$$(find packages -name "*.py" -print0 \
-	| xargs -0 -n1 dirname \
-	| sort \
-	| uniq -c \
-	| awk '$$1 > 10' \
-	| sort -nr); \
-	if [ -n "$$out" ]; then \
-		printf '%s\n' "ERROR: max_py_files_per_dir policy violations (files > 10):"; \
-		printf '%s\n' "$$out"; \
-		exit 1; \
-	else \
-		printf '%s\n' "INFO: max_py_files_per_dir policy compliant across python packages."; \
-	fi
+	@$(ATLAS_SCRIPTS) policies culprits py-files-per-dir --report text
 
 culprits-all-py: culprits-max_loc-py culprits-file-max_py_files_per_dir
 	@printf '%s\n' "INFO: culprits-all-py completed."
+
+culprits-file-max_modules_per_dir.py:
+	@$(ATLAS_SCRIPTS) policies culprits modules-per-dir --report text
+
+culprits-file-max_loc_per_dir.py:
+	@$(ATLAS_SCRIPTS) policies culprits dir-loc --report text
+
+culprits-all-py-budgets: culprits-file-max_modules_per_dir.py culprits-file-max_py_files_per_dir culprits-file-max_loc_per_dir.py
+	@printf '%s\n' "INFO: culprits-all-py-budgets completed."
 
 culprits-all: culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir
 	@printf '%s\n' "INFO: culprits-all completed."
@@ -125,4 +122,4 @@ cli-command-surface:
 	@cargo test -p bijux-atlas-cli command_surface_ssot_matches_doc -- --exact
 	@cargo test -p bijux-atlas-cli help_output_command_surface_matches_doc_exactly -- --exact
 
-.PHONY: culprits-all culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir culprits-all-py culprits-max_loc-py culprits-file-max_py_files_per_dir crate-structure crate-docs-contract cli-command-surface
+.PHONY: culprits-all culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir culprits-all-py culprits-max_loc-py culprits-file-max_py_files_per_dir culprits-file-max_modules_per_dir.py culprits-file-max_loc_per_dir.py culprits-all-py-budgets crate-structure crate-docs-contract cli-command-surface
