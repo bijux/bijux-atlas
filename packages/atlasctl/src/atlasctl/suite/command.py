@@ -242,9 +242,12 @@ def suite_inventory_violations(suites: dict[str, SuiteSpec]) -> list[str]:
         check = get_check(check_id)
         if check is None:
             continue
-        if "experimental" in check_tags(check):
+        tags = set(check_tags(check))
+        if "internal" in tags or "internal-only" in tags:
             continue
-        errors.append(f"orphan check not assigned to any suite: {check_id}")
+        errors.append(
+            f"orphan check not assigned to any suite: {check_id}; every new check must declare suite membership or be internal-only"
+        )
 
     refgrade = suites.get("refgrade")
     if refgrade and refgrade.complete:
@@ -289,12 +292,30 @@ def _suite_manifest_docs_violations(repo_root: Path, manifests: dict[str, SuiteM
     return errors
 
 
+def _suite_markers_docs_violations(repo_root: Path) -> list[str]:
+    path = repo_root / "packages/atlasctl/docs/control-plane/suite-markers.md"
+    if not path.exists():
+        return [f"missing suite markers docs file: {path.relative_to(repo_root).as_posix()}"]
+    text = path.read_text(encoding="utf-8")
+    errors: list[str] = []
+    for marker in ("refgrade", "ci", "local", "slow"):
+        if f"`{marker}`" not in text:
+            errors.append(f"suite markers docs drift: missing marker `{marker}` in packages/atlasctl/docs/control-plane/suite-markers.md")
+    return errors
+
+
 def _first_class_suite_coverage_violations(manifests: dict[str, SuiteManifest]) -> list[str]:
     covered = set(manifests["all"].check_ids)
     errors: list[str] = []
     for check in list_checks():
-        if check.check_id not in covered:
-            errors.append(f"orphan check not assigned to first-class suites: {check.check_id}")
+        if check.check_id in covered:
+            continue
+        tags = set(check_tags(check))
+        if {"internal", "internal-only"}.intersection(tags):
+            continue
+        errors.append(
+            f"check missing suite membership: {check.check_id}; add it to a suite or mark as internal-only"
+        )
     return errors
 
 
@@ -314,6 +335,15 @@ def _first_class_effect_policy_violations(manifest: SuiteManifest) -> list[str]:
     return errors
 
 
+def _suite_legacy_check_violations(manifests: dict[str, SuiteManifest]) -> list[str]:
+    errors: list[str] = []
+    for manifest in sorted(manifests.values(), key=lambda item: item.name):
+        for check_id in manifest.check_ids:
+            if "legacy" in check_id:
+                errors.append(f"suite `{manifest.name}` must not include legacy checks: {check_id}")
+    return errors
+
+
 def _run_first_class_suite(ctx: RunContext, manifest: SuiteManifest, as_json: bool, list_only: bool, target_dir: str | None) -> int:
     if list_only:
         payload = {
@@ -322,6 +352,8 @@ def _run_first_class_suite(ctx: RunContext, manifest: SuiteManifest, as_json: bo
             "status": "ok",
             "suite": manifest.name,
             "required_env": list(manifest.required_env),
+            "markers": list(manifest.markers),
+            "internal": manifest.internal,
             "default_effects": list(manifest.default_effects),
             "time_budget_ms": manifest.time_budget_ms,
             "check_ids": list(manifest.check_ids),
@@ -341,12 +373,17 @@ def _run_first_class_suite(ctx: RunContext, manifest: SuiteManifest, as_json: bo
         failed += 1
     rows = [
         {
-            "id": row.id,
+            "index": idx,
+            "suite": manifest.name,
+            "label": f"check {row.id}",
+            "kind": "check",
+            "value": row.id,
             "status": row.status,
-            "duration_ms": row.metrics.get("duration_ms", 0),
+            "duration_ms": int(row.metrics.get("duration_ms", 0)),
             "hint": row.fix_hint,
+            "detail": "; ".join([*row.errors[:2], *row.warnings[:2]]),
         }
-        for row in results
+        for idx, row in enumerate(results, start=1)
     ]
     summary = {
         "passed": sum(1 for row in rows if row["status"] == "pass"),
@@ -359,15 +396,19 @@ def _run_first_class_suite(ctx: RunContext, manifest: SuiteManifest, as_json: bo
     }
     payload = {
         "schema_version": 1,
+        "schema_name": SUITE_RUN,
         "tool": "atlasctl",
         "status": "ok" if failed == 0 else "error",
         "suite": manifest.name,
+        "markers": list(manifest.markers),
+        "internal": manifest.internal,
         "required_env": list(manifest.required_env),
         "default_effects": list(manifest.default_effects),
         "summary": summary,
         "results": rows,
         "target_dir": target.as_posix(),
     }
+    validate_self(SUITE_RUN, payload)
     (target / "results.json").write_text(dumps_json(payload, pretty=True) + "\n", encoding="utf-8")
     print(dumps_json(payload, pretty=not as_json))
     return 0 if failed == 0 else 1
@@ -390,11 +431,16 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 print(item)
         return 0
     if ns.suite_cmd in first_class:
+        manifest = first_class[ns.suite_cmd]
+        if manifest.internal and os.environ.get("ATLASCTL_INTERNAL") != "1":
+            msg = "internal suite execution requires ATLASCTL_INTERNAL=1"
+            print(dumps_json({"schema_version": 1, "tool": "atlasctl", "status": "error", "error": msg}, pretty=False) if as_json else msg)
+            return ERR_USER
         return _run_first_class_suite(
             ctx,
-            first_class[ns.suite_cmd],
+            manifest,
             as_json=as_json,
-            list_only=bool(getattr(ns, "list", False)),
+            list_only=bool(getattr(ns, "list", False) or getattr(ns, "dry_run", False)),
             target_dir=getattr(ns, "target_dir", None),
         )
     default_suite, suites = load_suites(ctx.repo_root)
@@ -460,6 +506,8 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         errors = suite_inventory_violations(suites)
         errors.extend(_first_class_suite_coverage_violations(first_class))
         errors.extend(_suite_manifest_docs_violations(ctx.repo_root, first_class))
+        errors.extend(_suite_markers_docs_violations(ctx.repo_root))
+        errors.extend(_suite_legacy_check_violations(first_class))
         for manifest in first_class.values():
             errors.extend(_first_class_effect_policy_violations(manifest))
         payload = {
@@ -476,6 +524,23 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 print(f"- {err}")
         return 0 if not errors else ERR_USER
     if ns.suite_cmd == "list":
+        if bool(getattr(ns, "by_group", False)):
+            grouped: dict[str, list[str]] = {}
+            for manifest in sorted(first_class.values(), key=lambda item: item.name):
+                for marker in manifest.markers:
+                    grouped.setdefault(marker, []).append(manifest.name)
+            payload = {
+                "schema_version": 1,
+                "tool": "atlasctl",
+                "status": "ok",
+                "by_group": {k: sorted(set(v)) for k, v in sorted(grouped.items())},
+            }
+            if as_json:
+                print(dumps_json(payload, pretty=False))
+            else:
+                for marker, names in payload["by_group"].items():
+                    print(f"{marker}: {', '.join(names)}")
+            return 0
         if not as_json:
             names = sorted({*first_class.keys(), *suites.keys()})
             for name in names:
@@ -509,8 +574,43 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         }
         print(dumps_json(payload, pretty=not as_json))
         return 0
+    if ns.suite_cmd == "coverage":
+        coverage: dict[str, list[str]] = {}
+        for manifest in sorted(first_class.values(), key=lambda item: item.name):
+            for check_id in manifest.check_ids:
+                coverage.setdefault(check_id, []).append(manifest.name)
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "unassigned": sorted([check.check_id for check in list_checks() if check.check_id not in coverage]),
+            "coverage": {check_id: sorted(names) for check_id, names in sorted(coverage.items())},
+        }
+        if as_json:
+            print(dumps_json(payload, pretty=False))
+        else:
+            for check_id, suites_for_check in payload["coverage"].items():
+                print(f"{check_id}: {', '.join(suites_for_check)}")
+            if payload["unassigned"]:
+                print("unassigned:")
+                for check_id in payload["unassigned"]:
+                    print(f"- {check_id}")
+        return 0 if not payload["unassigned"] else ERR_USER
 
     suite_name = ns.name or default_suite
+    if ns.suite_cmd == "run" and suite_name in first_class:
+        manifest = first_class[suite_name]
+        if manifest.internal and os.environ.get("ATLASCTL_INTERNAL") != "1":
+            msg = "internal suite execution requires ATLASCTL_INTERNAL=1"
+            print(dumps_json({"schema_version": 1, "tool": "atlasctl", "status": "error", "error": msg}, pretty=False) if as_json else msg)
+            return ERR_USER
+        return _run_first_class_suite(
+            ctx,
+            manifest,
+            as_json=as_json,
+            list_only=bool(getattr(ns, "list", False) or getattr(ns, "dry_run", False)),
+            target_dir=getattr(ns, "target_dir", None),
+        )
     expanded_raw = expand_suite(suites, suite_name)
     expanded: list[TaskSpec] = []
     for task in expanded_raw:
@@ -519,12 +619,13 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         else:
             expanded.append(task)
     selected = _filter_tasks(expanded, only=ns.only or [], skip=ns.skip or [])
-    if ns.list:
+    if ns.list or bool(getattr(ns, "dry_run", False)):
         payload = {
             "schema_version": 1,
             "tool": "atlasctl",
             "status": "ok",
             "suite": suite_name,
+            "mode": "dry-run" if bool(getattr(ns, "dry_run", False)) else "list",
             "total_count": len(selected),
             "tasks": [f"{task.kind}:{task.value}" for task in selected],
         }
@@ -668,6 +769,9 @@ def configure_suite_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
 
     suite_list = suite_sub.add_parser("list", help="list configured suites")
     suite_list.add_argument("--json", action="store_true")
+    suite_list.add_argument("--by-group", action="store_true", help="group suites by marker")
+    coverage = suite_sub.add_parser("coverage", help="show check-to-suite coverage")
+    coverage.add_argument("--json", action="store_true")
     suite_check = suite_sub.add_parser("check", help="validate suite inventory/tag coverage policy")
     suite_check.add_argument("--json", action="store_true")
 
@@ -676,6 +780,7 @@ def configure_suite_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     run.add_argument("--json", action="store_true", help="emit machine-readable results")
     run.add_argument("--junit", help="write junit xml report")
     run.add_argument("--list", action="store_true", help="list expanded tasks without running")
+    run.add_argument("--dry-run", action="store_true", help="print tasks without executing")
     run.add_argument("--only", action="append", default=[], help="glob pattern to include task labels")
     run.add_argument("--skip", action="append", default=[], help="glob pattern to skip task labels")
     run.add_argument("--target-dir", help="suite output directory")
@@ -701,8 +806,14 @@ def configure_suite_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     diff.add_argument("run2")
     diff.add_argument("--json", action="store_true")
 
-    for suite_name in ("docs", "dev", "ops", "policies", "configs", "all"):
+    for suite_name in ("docs", "dev", "ops", "policies", "configs", "local", "slow", "refgrade", "ci", "refgrade_proof", "all"):
         sp = suite_sub.add_parser(suite_name, help=f"run first-class `{suite_name}` suite")
         sp.add_argument("--json", action="store_true", help="emit machine-readable results")
         sp.add_argument("--list", action="store_true", help="list suite checks only")
+        sp.add_argument("--dry-run", action="store_true", help="print checks without executing")
         sp.add_argument("--target-dir", help="suite output directory")
+    internal = suite_sub.add_parser("internal", help="run first-class `internal` suite (requires ATLASCTL_INTERNAL=1)")
+    internal.add_argument("--json", action="store_true", help="emit machine-readable results")
+    internal.add_argument("--list", action="store_true", help="list suite checks only")
+    internal.add_argument("--dry-run", action="store_true", help="print checks without executing")
+    internal.add_argument("--target-dir", help="suite output directory")
