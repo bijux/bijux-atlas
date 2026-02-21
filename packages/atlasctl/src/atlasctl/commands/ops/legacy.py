@@ -113,7 +113,7 @@ LINT_CHECKS: list[OpsCheck] = [
     _check(
         "ops-profile-goldens",
         "Validate observability profile goldens",
-        [*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/obs/contracts/check_profile_goldens.py"],
+        [*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/observability/contracts/check_profile_goldens.py"],
         "Refresh approved profile goldens through the documented update flow.",
     ),
     _check(

@@ -16,10 +16,10 @@ Prevents deployments with missing telemetry coverage or invalid alerting assets.
 - Smoke gate target: `ops-observability-smoke`.
 - Install/uninstall targets: `ops-obs-install`, `ops-obs-uninstall`.
 - Alias validate target: `ops-obs-validate`.
-- Metrics contract must pass: `packages/atlasctl/src/atlasctl/obs/contracts/check_metrics_contract.py`.
-- Dashboard contract must pass: `packages/atlasctl/src/atlasctl/obs/contracts/check_dashboard_contract.py`.
-- Alerts contract must pass: `packages/atlasctl/src/atlasctl/obs/contracts/check_alerts_contract.py`.
-- Tracing contract is optional unless OTEL enabled: `packages/atlasctl/src/atlasctl/obs/contracts/check_tracing_contract.py`.
+- Metrics contract must pass: `packages/atlasctl/src/atlasctl/observability/contracts/check_metrics_contract.py`.
+- Dashboard contract must pass: `packages/atlasctl/src/atlasctl/observability/contracts/check_dashboard_contract.py`.
+- Alerts contract must pass: `packages/atlasctl/src/atlasctl/observability/contracts/check_alerts_contract.py`.
+- Tracing contract is optional unless OTEL enabled: `packages/atlasctl/src/atlasctl/observability/contracts/check_tracing_contract.py`.
 - Runtime cardinality guardrail must pass: `ops-metrics-check`.
 - Logs schema must pass: `ops-metrics-check`.
 - K8s log gate must validate schema: `ops/k8s/tests/checks/obs/runtime/test_logs_json.sh`.

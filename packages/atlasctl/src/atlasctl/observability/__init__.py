@@ -1,1 +1,1 @@
-"""Canonical observability package namespace (compat wrappers)."""
+"""Canonical observability package namespace."""

@@ -168,7 +168,7 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             ctx,
             [
                 "python3",
-                "packages/atlasctl/src/atlasctl/obs/contracts/check_metrics_contract.py",
+                "packages/atlasctl/src/atlasctl/observability/contracts/check_metrics_contract.py",
             ],
         )
     if sub == "stack-report":
