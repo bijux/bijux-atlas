@@ -21,6 +21,7 @@ from .enforcement.legacy_guard import check_legacy_package_absent
 from .enforcement.module_size import check_module_size
 from ...policies.culprits import (
     check_budget_drift_approval,
+    check_critical_dir_count_trend,
     check_budget_exceptions_documented,
     check_budget_exceptions_sorted,
     check_budget_metric,
@@ -41,6 +42,7 @@ from .enforcement.package_shape import (
     check_no_nested_same_name_packages,
 )
 from .enforcement.package_hygiene import (
+    check_folder_intent_contract,
     check_no_empty_packages,
     check_no_placeholder_module_names,
     check_package_has_module_or_readme,
@@ -190,6 +192,14 @@ CHECKS: tuple[CheckDef, ...] = (
         fix_hint="Update configs/policy/atlasctl-budgets-baseline.json or add approved budget-loosening marker.",
     ),
     CheckDef(
+        "repo.dir_count_trend_gate",
+        "repo",
+        "forbid critical directory file/module count drift above baseline",
+        300,
+        check_critical_dir_count_trend,
+        fix_hint="Split critical directories or update configs/policy/atlasctl-dir-count-baseline.json with approval.",
+    ),
+    CheckDef(
         "repo.dir_budget_shell_files",
         "repo",
         "enforce per-directory shell file count budget",
@@ -310,6 +320,14 @@ CHECKS: tuple[CheckDef, ...] = (
         fix_hint="Flatten nested same-name package segments (example: checks/checks).",
     ),
     CheckDef("repo.no_empty_packages", "repo", "forbid empty non-legacy packages without README", 300, check_no_empty_packages, fix_hint="Add a real module or README.md to package directories."),
+    CheckDef(
+        "repo.folder_intent_contract",
+        "repo",
+        "require intent marker for checks directories",
+        300,
+        check_folder_intent_contract,
+        fix_hint="Add README.md or check_*.py module in each checks directory.",
+    ),
     CheckDef("repo.no_placeholder_module_names", "repo", "forbid placeholder-like module filenames in modern code", 300, check_no_placeholder_module_names, fix_hint="Rename modules to intent-revealing names."),
     CheckDef("repo.package_has_module_or_readme", "repo", "require each non-legacy package to contain a module or README", 300, check_package_has_module_or_readme, fix_hint="Add module implementation or README.md to document empty package."),
     CheckDef("repo.no_path_cwd_usage", "repo", "forbid Path.cwd usage outside core/repo_root.py", 400, check_no_path_cwd_usage, fix_hint="Use ctx.repo_root or core.repo_root helpers."),

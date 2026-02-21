@@ -23,6 +23,7 @@ from atlasctl.checks.repo.enforcement.import_policy import (
     check_checks_import_lint,
     check_command_import_lint,
 )
+from atlasctl.policies.culprits import check_critical_dir_count_trend
 
 
 def _repo_root() -> Path:
@@ -63,3 +64,8 @@ def test_test_guardrail_checks_pass() -> None:
     ):
         code, errors = fn(root)
         assert code == 0, errors
+
+
+def test_critical_dir_count_trend_gate_passes() -> None:
+    code, errors = check_critical_dir_count_trend(_repo_root())
+    assert code == 0, errors
