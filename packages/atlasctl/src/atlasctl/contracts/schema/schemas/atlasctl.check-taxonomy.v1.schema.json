@@ -8,7 +8,8 @@
     "schema_version",
     "tool",
     "status",
-    "checks"
+    "checks",
+    "taxonomy"
   ],
   "properties": {
     "schema_name": {
@@ -27,11 +28,46 @@
         "error"
       ]
     },
+    "taxonomy": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "domain",
+          "count",
+          "areas",
+          "checks"
+        ],
+        "properties": {
+          "domain": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "areas": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "checks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
     "checks": {
       "type": "array",
       "items": {
         "type": "object",
-        "additionalProperties": false,
+        "additionalProperties": true,
         "required": [
           "id",
           "domain",
@@ -55,7 +91,8 @@
             "type": "string",
             "enum": [
               "error",
-              "warn"
+              "warn",
+              "info"
             ]
           },
           "tags": {

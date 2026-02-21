@@ -12,7 +12,7 @@ from xml.etree.ElementTree import Element, SubElement, tostring
 
 from ...checks.registry import check_rename_aliases, check_tags, get_check, list_checks
 from ...checks.execution import run_function_checks
-from ...contracts.ids import CHECK_LIST
+from ...contracts.ids import CHECK_LIST, CHECK_TAXONOMY
 from ...contracts.validate_self import validate_self
 from ...checks.repo.contracts.command_contracts import runtime_contracts_payload
 from ...checks.repo.native import (
@@ -452,11 +452,25 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             for check in checks:
                 print(check.check_id)
             return 0
+        domains: dict[str, dict[str, object]] = {}
+        for check in checks:
+            segments = check.check_id.split("_")
+            area = segments[2] if len(segments) > 3 else "general"
+            bucket = domains.setdefault(
+                check.domain,
+                {"count": 0, "areas": {}, "checks": []},
+            )
+            bucket["count"] = int(bucket["count"]) + 1
+            areas = bucket["areas"]
+            areas[area] = int(areas.get(area, 0)) + 1
+            bucket["checks"].append(check.check_id)
+        use_taxonomy = str(getattr(ns, "cmd", "")) == "checks"
         payload = {
-            "schema_name": CHECK_LIST,
+            "schema_name": CHECK_TAXONOMY if use_taxonomy else CHECK_LIST,
             "schema_version": 1,
             "tool": "atlasctl",
             "status": "ok",
+            "taxonomy": [{"domain": domain, **meta} for domain, meta in sorted(domains.items())],
             "checks": [
                 {
                     "id": check.check_id,
@@ -475,8 +489,57 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 for check in checks
             ],
         }
-        validate_self(CHECK_LIST, payload)
+        validate_self(CHECK_TAXONOMY if use_taxonomy else CHECK_LIST, payload)
         print(json.dumps(payload, sort_keys=True) if ctx.output_format == "json" or ns.json else json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+    if sub == "tree":
+        checks = list_checks()
+        tree: dict[str, dict[str, list[str]]] = {}
+        for check in checks:
+            parts = check.check_id.split("_")
+            domain = parts[1] if len(parts) > 1 else check.domain
+            area = parts[2] if len(parts) > 2 else "general"
+            tree.setdefault(domain, {}).setdefault(area, []).append(check.check_id)
+        if ctx.output_format == "json" or ns.json:
+            payload = {
+                "schema_name": CHECK_TAXONOMY,
+                "schema_version": 1,
+                "tool": "atlasctl",
+                "status": "ok",
+                "tree": [
+                    {"domain": domain, "areas": [{"name": area, "checks": sorted(ids)} for area, ids in sorted(areas.items())]}
+                    for domain, areas in sorted(tree.items())
+                ],
+            }
+            print(json.dumps(payload, sort_keys=True))
+            return 0
+        for domain, areas in sorted(tree.items()):
+            print(domain)
+            for area, ids in sorted(areas.items()):
+                print(f"  {area}")
+                for check_id in sorted(ids):
+                    print(f"    - {check_id}")
+        return 0
+    if sub == "owners":
+        checks = list_checks()
+        ownership: dict[str, list[str]] = {}
+        for check in checks:
+            for owner in check.owners or ("unowned",):
+                ownership.setdefault(owner, []).append(check.check_id)
+        if ctx.output_format == "json" or ns.json:
+            payload = {
+                "schema_version": 1,
+                "tool": "atlasctl",
+                "status": "ok",
+                "kind": "check-owners",
+                "owners": [{"owner": owner, "checks": sorted(ids), "count": len(ids)} for owner, ids in sorted(ownership.items())],
+            }
+            print(json.dumps(payload, sort_keys=True))
+            return 0
+        for owner, ids in sorted(ownership.items()):
+            print(f"{owner} ({len(ids)})")
+            for check_id in sorted(ids):
+                print(f"- {check_id}")
         return 0
     if sub == "explain":
         check = get_check(ns.check_id)
@@ -760,5 +823,11 @@ def configure_checks_parser(sub: argparse._SubParsersAction[argparse.ArgumentPar
     parser.add_argument("--list", dest="list_checks", action="store_true", help="list registered checks")
     parser.add_argument("--show-source", help="print source file for check id")
     parser_sub = parser.add_subparsers(dest="check_cmd", required=False)
+    parser_sub.add_parser("list", help="list registered checks")
+    parser_sub.add_parser("tree", help="show checks grouped by domain/area")
+    owners = parser_sub.add_parser("owners", help="show check ownership report")
+    owners.add_argument("--json", action="store_true", help="emit JSON output")
     rename = parser_sub.add_parser("rename-report", help="list legacy check ids mapped to canonical checks_* ids")
     rename.add_argument("--json", action="store_true", help="emit JSON output")
+    explain = parser_sub.add_parser("explain", help="explain a check id")
+    explain.add_argument("check_id")
