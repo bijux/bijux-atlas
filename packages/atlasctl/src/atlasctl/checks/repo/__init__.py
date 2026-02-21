@@ -99,6 +99,10 @@ from .contracts.test_guardrails import (
     check_test_ownership_tags,
 )
 from ..layout.root import (
+    FORBIDDEN_ROOT_FILES_CHECK_ID,
+    FORBIDDEN_ROOT_FILES_DESCRIPTION,
+    FORBIDDEN_ROOT_NAMES_CHECK_ID,
+    FORBIDDEN_ROOT_NAMES_DESCRIPTION,
     FORBIDDEN_PATHS_DESCRIPTION,
     FORBIDDEN_PATHS_CHECK_ID,
     ROOT_DETERMINISM_DESCRIPTION,
@@ -107,6 +111,8 @@ from ..layout.root import (
     ROOT_SHAPE_CHECK_ID,
     DIRECT_SCRIPT_RUNS_DESCRIPTION,
     DIRECT_SCRIPT_RUNS_CHECK_ID,
+    run_forbidden_root_files,
+    run_forbidden_root_names,
     run_forbidden_paths,
     run_no_direct_script_runs,
     run_root_determinism,
@@ -254,6 +260,8 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.layout_domain_readmes", "repo", "ensure each layout check domain includes a README", 300, check_layout_domain_readmes, fix_hint="Add README.md to each checks/layout/<domain>/ directory."),
     CheckDef("repo.layout_no_legacy_imports", "repo", "forbid legacy imports in checks/layout modules", 300, check_layout_no_legacy_imports, fix_hint="Remove atlasctl.legacy imports from layout checks."),
     CheckDef(ROOT_SHAPE_CHECK_ID, "repo", ROOT_SHAPE_DESCRIPTION, 500, run_root_shape, fix_hint="Align root entries with checks/layout/root_whitelist.json."),
+    CheckDef(FORBIDDEN_ROOT_FILES_CHECK_ID, "repo", FORBIDDEN_ROOT_FILES_DESCRIPTION, 400, run_forbidden_root_files, fix_hint="Remove forbidden junk files from repository root."),
+    CheckDef(FORBIDDEN_ROOT_NAMES_CHECK_ID, "repo", FORBIDDEN_ROOT_NAMES_DESCRIPTION, 400, run_forbidden_root_names, fix_hint="Remove forbidden top-level legacy names from repository root."),
     CheckDef(FORBIDDEN_PATHS_CHECK_ID, "repo", FORBIDDEN_PATHS_DESCRIPTION, 500, run_forbidden_paths, fix_hint="Remove forbidden legacy path references from make/docs/workflows."),
     CheckDef(DIRECT_SCRIPT_RUNS_CHECK_ID, "repo", DIRECT_SCRIPT_RUNS_DESCRIPTION, 500, run_no_direct_script_runs, fix_hint="Invoke workflows through make targets instead of direct scripts/ops paths."),
     CheckDef(ROOT_DETERMINISM_CHECK_ID, "repo", ROOT_DETERMINISM_DESCRIPTION, 1500, run_root_determinism, fix_hint="Stabilize generated root outputs so consecutive runs are identical.", slow=True),
