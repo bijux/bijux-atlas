@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -93,7 +94,7 @@ def _compat_check(repo_root: Path, include_docs: bool) -> tuple[int, dict[str, o
     if include_docs:
         scan_paths.append("docs")
     stale_usage: list[str] = []
-    use_rg = bool(subprocess.run(["sh", "-c", "command -v rg >/dev/null 2>&1"], cwd=repo_root).returncode == 0)
+    use_rg = shutil.which("rg") is not None
     for row in shims:
         rel = str(row.get("path", ""))
         if not rel:

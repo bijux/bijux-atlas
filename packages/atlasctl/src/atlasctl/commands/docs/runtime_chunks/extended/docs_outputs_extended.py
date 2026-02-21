@@ -268,9 +268,9 @@ def _run_blessed_snippets(ctx: RunContext) -> tuple[int, str]:
             if any(token in lowered for token in network_tokens):
                 failures.append(f"{item.get('path','')}: network command found without # allow-network")
                 continue
-        proc = subprocess.run(["sh", str(script_path)], cwd=ctx.repo_root, capture_output=True, text=True, check=False)
-        if proc.returncode != 0:
-            failures.append(f"{item.get('path','')}: exit={proc.returncode}\n{proc.stderr.strip()}")
+        payload = run_shell_script(script_path, cwd=ctx.repo_root)
+        if payload["exit_code"] != 0:
+            failures.append(f"{item.get('path','')}: exit={payload['exit_code']}\n{str(payload['stderr']).strip()}")
     if failures:
         return 1, "snippet execution failed:\n" + "\n".join(f"- {f}" for f in failures)
     return 0, f"snippet execution passed ({len(snippets)} snippet(s))"
