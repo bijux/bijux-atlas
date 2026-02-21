@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from . import exec as exec_core
-from .logging import log_event
+from .runtime.logging import log_event
 
 if TYPE_CHECKING:
     from .context import RunContext

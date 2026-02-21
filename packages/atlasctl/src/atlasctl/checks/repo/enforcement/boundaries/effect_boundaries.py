@@ -8,7 +8,7 @@ _SRC_ROOT = Path("packages/atlasctl/src/atlasctl")
 _EXCEPTIONS_PATH = Path("configs/policy/effect-boundary-exceptions.json")
 _CORE_EXEC = "packages/atlasctl/src/atlasctl/core/exec.py"
 _CORE_FS = "packages/atlasctl/src/atlasctl/core/fs.py"
-_CORE_ENV = "packages/atlasctl/src/atlasctl/core/env.py"
+_CORE_ENV = "packages/atlasctl/src/atlasctl/core.runtime.env.py"
 _CORE_NETWORK = "packages/atlasctl/src/atlasctl/core/network.py"
 _RULES = (
     "subprocess_import",

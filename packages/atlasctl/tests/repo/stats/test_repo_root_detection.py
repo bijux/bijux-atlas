@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from atlasctl.core.repo_root import find_repo_root
+from atlasctl.core.runtime.repo_root import find_repo_root
 
 
 def test_find_repo_root_from_nested_file(tmp_path: Path) -> None:

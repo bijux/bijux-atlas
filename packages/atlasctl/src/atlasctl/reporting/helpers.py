@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from pathlib import Path
 
-from ..core.paths import find_repo_root
+from ..core.runtime.paths import find_repo_root
 
 
 def utc_run_id() -> str:

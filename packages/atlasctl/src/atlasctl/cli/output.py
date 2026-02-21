@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import date
 
-from ..core.serialize import dumps_json
+from ..core.runtime.serialize import dumps_json
 
 
 def emit(payload: dict[str, object], as_json: bool) -> None:

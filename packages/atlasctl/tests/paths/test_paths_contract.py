@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.core.paths import find_repo_root
+from atlasctl.core.runtime.paths import find_repo_root
 from atlasctl.reporting import script_output_dir
 
 

@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from ...contracts.json import write_json
-from ...core.repo_root import find_repo_root
+from ...core.runtime.repo_root import find_repo_root
 from ...reporting.helpers import script_output_dir, utc_run_id
 
 

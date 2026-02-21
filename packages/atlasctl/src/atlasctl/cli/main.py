@@ -12,17 +12,17 @@ from .. import __version__, registry
 from ..checks.repo import layout
 from ..cli.surface_registry import command_registry, register_domain_parser
 from ..core.context import RunContext
-from ..core.env import getenv, setdefault as env_setdefault, setenv
+from ..core.runtime.env import getenv, setdefault as env_setdefault, setenv
 from ..core.exec import check_output
 from ..core.effects import command_effects, command_group
 from ..core.fs import write_json, write_text
-from ..core.logging import log_event
-from ..core.telemetry import emit_telemetry
-from ..core.repo_root import try_find_repo_root
+from ..core.runtime.logging import log_event
+from ..core.runtime.telemetry import emit_telemetry
+from ..core.runtime.repo_root import try_find_repo_root
 from ..contracts.ids import COMMANDS, HELP, RUNTIME_CONTRACTS
 from ..core.errors import ScriptError
 from ..core.exit_codes import ERR_CONFIG, ERR_INTERNAL
-from ..core.network_guard import install_no_network_guard, resolve_network_mode
+from ..core.runtime.network_guard import install_no_network_guard, resolve_network_mode
 from .constants import CONFIGURE_HOOKS, DOMAINS, NO_NETWORK_FLAG_EXPIRY
 from .dispatch import dispatch_command
 from .output import no_network_flag_expired, render_error, resolve_output_format

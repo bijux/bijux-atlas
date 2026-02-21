@@ -14,7 +14,7 @@ _LEGACY_CONCEPTS: tuple[dict[str, str], ...] = (
     {"module": "legacy/report/*", "status": "deleted", "reason": "reporting package is canonical"},
     {"module": "legacy/effects/*", "status": "deleted", "reason": "effect boundaries are enforced in checks/repo"},
     {"module": "legacy/subprocess.py", "status": "deleted", "reason": "core/exec.py is canonical process boundary"},
-    {"module": "legacy/logging.py", "status": "deleted", "reason": "core/logging.py is canonical logging boundary"},
+    {"module": "legacy/logging.py", "status": "deleted", "reason": "core.runtime.logging.py is canonical logging boundary"},
     {"module": "legacy/repo_checks_native*", "status": "moved", "reason": "moved into checks/repo and checks/repo/domains"},
     {"module": "legacy/ops_runtime*", "status": "moved", "reason": "moved into commands/ops and checks/layout/ops"},
     {"module": "legacy/docs_runtime*", "status": "moved", "reason": "moved into commands/docs runtime modules"},
@@ -33,7 +33,7 @@ def _classify(rel: str) -> tuple[str, str]:
     if rel == "legacy/subprocess.py":
         return "delete", "core/exec.py is the only approved command execution boundary"
     if rel == "legacy/logging.py":
-        return "delete", "core/logging.py is the only approved logging boundary"
+        return "delete", "core.runtime.logging.py is the only approved logging boundary"
     if rel.startswith("legacy/repo_checks_native"):
         return "move", "repo checks live under checks/repo and checks/repo/domains"
     if rel.startswith("legacy/ops_runtime"):
