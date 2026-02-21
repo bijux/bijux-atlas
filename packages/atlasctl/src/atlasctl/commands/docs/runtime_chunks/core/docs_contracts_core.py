@@ -70,6 +70,7 @@ DOCS_GENERATE_COMMANDS: list[list[str]] = [
     ["python3", "-m", "atlasctl.cli", "docs", "generate-crates-map", "--report", "text"],
     ["python3", "-m", "atlasctl.cli", "docs", "generate-architecture-map", "--report", "text"],
     ["python3", "-m", "atlasctl.cli", "docs", "generate-command-groups-docs", "--report", "text"],
+    ["python3", "-m", "atlasctl.cli", "docs", "generate-registry-indexes", "--report", "text"],
     ["python3", "-m", "atlasctl.cli", "docs", "generate-k8s-values-doc", "--report", "text"],
     ["python3", "-m", "atlasctl.cli", "docs", "concept-graph-generate", "--report", "text"],
     ["python3", "-m", "atlasctl.cli", "docs", "generate-openapi-docs", "--report", "text"],
