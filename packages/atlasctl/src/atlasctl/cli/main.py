@@ -201,7 +201,7 @@ def build_parser() -> argparse.ArgumentParser:
     surface_parser.add_argument("--json", action="store_true", help="emit JSON output")
     surface_parser.add_argument("--out-file", help="optional output path for JSON report")
     commands_parser = sub.add_parser("commands", help="print machine-readable command surface")
-    commands_parser.add_argument("commands_cmd", nargs="?", choices=["list", "lint", "compat-check"], default="list")
+    commands_parser.add_argument("commands_cmd", nargs="?", choices=["list", "lint"], default="list")
     commands_parser.add_argument("--json", action="store_true", help="emit JSON output")
     commands_parser.add_argument("--out-file", help="optional output path for JSON report")
     commands_parser.add_argument("--verify-stability", action="store_true", help="compare command payload against commands golden")

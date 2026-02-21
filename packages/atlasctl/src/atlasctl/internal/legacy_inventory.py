@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import argparse
 import json
 import re
 import subprocess
@@ -60,7 +59,7 @@ def _reference_hits(repo_root: Path, pattern: str = "legacy") -> list[str]:
     return sorted(set(hits))
 
 
-def run_legacy_command(ctx: RunContext, ns: argparse.Namespace) -> int:
+def run_legacy_inventory(ctx: RunContext, report: str) -> int:
     legacy_root = ctx.repo_root / "packages/atlasctl/src/atlasctl/legacy"
     rows: list[dict[str, str]] = []
     if legacy_root.exists():
@@ -75,7 +74,7 @@ def run_legacy_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     payload = {
         "schema_version": 1,
         "tool": "atlasctl",
-        "status": "ok",
+        "status": "ok" if len(rows) == 0 else "error",
         "action": "inventory",
         "run_id": ctx.run_id,
         "legacy_definition": "legacy means pre-1.0 compatibility modules/shims kept only to support migration and slated for deletion",
@@ -84,20 +83,12 @@ def run_legacy_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         "legacy_modules": rows,
         "reference_count": len(references),
         "references": references,
-        "policy": "pre-1.0: legacy code must be deleted, not preserved",
+        "policy": "pre-1.0 release 0.1 hard gate: no legacy codepaths",
     }
-    if ns.report == "json":
+    if report == "json":
         print(json.dumps(payload, sort_keys=True))
     else:
         print(f"legacy inventory: count={payload['count']}")
         for row in rows:
             print(f"- {row['module']} [{row['action']}] {row['reason']}")
-    return 0
-
-
-def configure_legacy_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    p = sub.add_parser("legacy", help=argparse.SUPPRESS)
-    p.set_defaults(legacy_cmd="inventory")
-    p.add_argument("legacy_cmd", nargs="?", choices=["inventory"], default="inventory")
-    p.add_argument("--inventory", action="store_true", help="emit legacy inventory (default action)")
-    p.add_argument("--report", choices=["text", "json"], default="text")
+    return 0 if len(rows) == 0 else 2

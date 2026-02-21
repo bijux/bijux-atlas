@@ -5,7 +5,7 @@ import subprocess
 from pathlib import Path
 
 from .catalog import load_catalog
-from .checks import load_json
+from ..checks import load_json
 
 
 def generate_openapi(repo_root: Path) -> list[str]:
