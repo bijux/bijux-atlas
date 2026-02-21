@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import time
 from pathlib import Path
+from typing import Callable
 
 from .base import CheckDef, CheckResult
 from ..registry.catalog import check_tags
@@ -41,7 +42,11 @@ def run_command_checks(repo_root: Path, checks: list[CommandCheckDef]) -> tuple[
     return failed, rows
 
 
-def run_function_checks(repo_root: Path, checks: list[CheckDef]) -> tuple[int, list[CheckResult]]:
+def run_function_checks(
+    repo_root: Path,
+    checks: list[CheckDef],
+    on_result: Callable[[CheckResult], None] | None = None,
+) -> tuple[int, list[CheckResult]]:
     rows: list[CheckResult] = []
     failed = 0
     for chk in checks:
@@ -56,28 +61,29 @@ def run_function_checks(repo_root: Path, checks: list[CheckDef]) -> tuple[int, l
         status = "pass" if code == 0 else "fail"
         if code != 0:
             failed += 1
-        rows.append(
-            CheckResult(
-                id=chk.check_id,
-                title=chk.title,
-                domain=chk.domain,
-                status=status,
-                errors=normalized_errors,
-                warnings=warnings,
-                evidence_paths=list(chk.evidence),
-                metrics={
-                    "duration_ms": elapsed_ms,
-                    "budget_ms": chk.budget_ms,
-                    "budget_status": "pass" if elapsed_ms <= chk.budget_ms else "warn",
-                },
-                description=chk.description,
-                fix_hint=chk.fix_hint,
-                category=chk.category.value,
-                severity=chk.severity.value,
-                tags=list(check_tags(chk)),
-                effects=list(chk.effects),
-                owners=list(chk.owners),
-                writes_allowed_roots=list(chk.writes_allowed_roots),
-            )
+        row = CheckResult(
+            id=chk.check_id,
+            title=chk.title,
+            domain=chk.domain,
+            status=status,
+            errors=normalized_errors,
+            warnings=warnings,
+            evidence_paths=list(chk.evidence),
+            metrics={
+                "duration_ms": elapsed_ms,
+                "budget_ms": chk.budget_ms,
+                "budget_status": "pass" if elapsed_ms <= chk.budget_ms else "warn",
+            },
+            description=chk.description,
+            fix_hint=chk.fix_hint,
+            category=chk.category.value,
+            severity=chk.severity.value,
+            tags=list(check_tags(chk)),
+            effects=list(chk.effects),
+            owners=list(chk.owners),
+            writes_allowed_roots=list(chk.writes_allowed_roots),
         )
+        rows.append(row)
+        if on_result is not None:
+            on_result(row)
     return failed, rows
