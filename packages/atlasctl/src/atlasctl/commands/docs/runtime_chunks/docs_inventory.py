@@ -304,6 +304,28 @@ def _generate_docs_inventory(repo_root: Path, out: Path) -> None:
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def _generate_registry_indexes(ctx: RunContext) -> tuple[int, str]:
+    from ...checks.docs.integrity import (
+        _render_checks_index,
+        _render_commands_index,
+        _render_suites_index,
+    )
+
+    docs_root = ctx.repo_root / "packages/atlasctl/docs"
+    targets = {
+        "commands/index.md": _render_commands_index(ctx.repo_root).strip() + "\n",
+        "checks/index.md": _render_checks_index().strip() + "\n",
+        "control-plane/suites.md": _render_suites_index(ctx.repo_root).strip() + "\n",
+    }
+    written: list[str] = []
+    for rel, content in targets.items():
+        path = docs_root / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content, encoding="utf-8")
+        written.append(path.relative_to(ctx.repo_root).as_posix())
+    return 0, "\n".join(written)
+
+
 def _generate_command_group_docs(ctx: RunContext) -> tuple[int, str]:
     from ...cli.surface_registry import command_registry
     from ...core.effects import command_group

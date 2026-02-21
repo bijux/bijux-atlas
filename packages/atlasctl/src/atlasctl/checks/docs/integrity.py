@@ -1,12 +1,14 @@
 from __future__ import annotations
 
+import json
 import re
+import subprocess
 from pathlib import Path
 
-from ...cli.surface_registry import command_registry
 from ...core.effects import command_group
 
 _MD_LINK_RE = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+_HEADING_RE = re.compile(r"^(#{1,6})\s+\S")
 
 
 def _package_root(repo_root: Path) -> Path:
@@ -70,6 +72,8 @@ def check_docs_index_complete(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def check_command_group_docs_pages(repo_root: Path) -> tuple[int, list[str]]:
+    from ...cli.surface_registry import command_registry
+
     groups_dir = _docs_root(repo_root) / "commands/groups"
     required_groups = sorted({command_group(spec.name) for spec in command_registry()})
     errors: list[str] = []
@@ -85,6 +89,8 @@ def check_command_group_docs_pages(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def check_docs_registry_command_drift(repo_root: Path) -> tuple[int, list[str]]:
+    from ...cli.surface_registry import command_registry
+
     docs_root = _docs_root(repo_root)
     scoped_roots = (docs_root / "commands", docs_root / "control-plane")
     known = {spec.name for spec in command_registry()}
@@ -106,6 +112,8 @@ def check_docs_registry_command_drift(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def check_stable_command_examples_in_group_docs(repo_root: Path) -> tuple[int, list[str]]:
+    from ...cli.surface_registry import command_registry
+
     groups_dir = _docs_root(repo_root) / "commands/groups"
     errors: list[str] = []
     for spec in command_registry():
@@ -159,4 +167,241 @@ def check_docs_check_id_drift(repo_root: Path) -> tuple[int, list[str]]:
         for check_id in sorted(set(token_re.findall(text))):
             if check_id not in known:
                 errors.append(f"{rel}: unknown check id reference `check:{check_id}`")
+    return (0 if not errors else 1), errors
+
+
+def check_docs_nav_references_exist(repo_root: Path) -> tuple[int, list[str]]:
+    nav_file = repo_root / "mkdocs.yml"
+    docs_root = repo_root / "docs"
+    if not nav_file.exists():
+        return 0, []
+    errors: list[str] = []
+    nav_text = nav_file.read_text(encoding="utf-8", errors="ignore")
+    for raw in re.findall(r":\s*([A-Za-z0-9_./-]+\.md)\s*$", nav_text, flags=re.MULTILINE):
+        if raw.startswith("http"):
+            continue
+        path = (docs_root / raw).resolve()
+        if not path.exists():
+            errors.append(f"mkdocs.yml: missing docs nav target `{raw}`")
+    return (0 if not errors else 1), sorted(set(errors))
+
+
+def check_docs_no_orphans(repo_root: Path) -> tuple[int, list[str]]:
+    docs_root = _docs_root(repo_root)
+    allow = {
+        "README.md",
+        "index.md",
+        "PUBLIC_API.md",
+    }
+    allow_prefixes = (
+        "_generated/",
+        "_meta/",
+        "_drafts/",
+    )
+    referenced: set[str] = set()
+    for md in sorted(docs_root.rglob("*.md")):
+        rel = md.relative_to(docs_root).as_posix()
+        text = md.read_text(encoding="utf-8", errors="ignore")
+        for raw_target in _MD_LINK_RE.findall(text):
+            target = raw_target.strip()
+            if not target or target.startswith("#") or "://" in target or target.startswith("mailto:"):
+                continue
+            target_path = target.split("#", 1)[0]
+            if not target_path:
+                continue
+            resolved = (md.parent / target_path).resolve()
+            try:
+                rel_target = resolved.relative_to(docs_root.resolve()).as_posix()
+            except ValueError:
+                continue
+            if rel_target.endswith(".md"):
+                referenced.add(rel_target)
+    index = docs_root / "index.md"
+    if index.exists():
+        text = index.read_text(encoding="utf-8", errors="ignore")
+        for md in sorted(docs_root.rglob("*.md")):
+            rel = md.relative_to(docs_root).as_posix()
+            if rel in text:
+                referenced.add(rel)
+    errors: list[str] = []
+    for md in sorted(docs_root.rglob("*.md")):
+        rel = md.relative_to(docs_root).as_posix()
+        if rel in allow:
+            continue
+        if rel.startswith(allow_prefixes):
+            continue
+        if rel not in referenced:
+            errors.append(f"orphan docs file not linked from docs graph: {rel}")
+    return (0 if not errors else 1), errors
+
+
+def _render_commands_index(repo_root: Path) -> str:
+    from ...cli.surface_registry import command_registry
+
+    groups = sorted({command_group(spec.name) for spec in command_registry()})
+    lines = [
+        "# Atlasctl Commands",
+        "",
+        "Generated from CLI registry (`src/atlasctl/cli/surface_registry.py`).",
+        "",
+        "## Command Groups",
+        "",
+    ]
+    for group in groups:
+        lines.append(f"- [{group.capitalize()}](groups/{group}.md)")
+    lines.extend(["", "## Stable Commands", ""])
+    for spec in sorted(command_registry(), key=lambda item: item.name):
+        if spec.internal:
+            continue
+        lines.append(f"- `{spec.name}`")
+    lines.extend(
+        [
+            "",
+            "Internal commands are hidden from default help output.",
+            "Use `atlasctl help --include-internal --json` to inspect them explicitly.",
+            "",
+        ]
+    )
+    return "\n".join(lines)
+
+
+def _render_checks_index() -> str:
+    checks_root = Path(__file__).resolve().parents[1]
+    domains: dict[str, int] = {}
+    pat = re.compile(r'CheckDef\("([^"]+)",\s*"([^"]+)"')
+    for path in sorted(checks_root.rglob("__init__.py")):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        for _, domain in pat.findall(text):
+            domains[domain] = domains.get(domain, 0) + 1
+    lines = [
+        "# Check Domains",
+        "",
+        "Generated from check registry (`src/atlasctl/checks/registry.py`).",
+        "",
+        "## Domains",
+        "",
+    ]
+    for domain, count in sorted(domains.items()):
+        lines.append(f"- `{domain}` ({count})")
+    lines.extend(["", "Use `atlasctl check list --json` for machine-readable inventory.", ""])
+    return "\n".join(lines)
+
+
+def _render_suites_index(repo_root: Path) -> str:
+    from ...suite.command import load_suites
+    from ...suite.manifests import load_first_class_suites
+
+    default_suite, suites = load_suites(repo_root)
+    first_class = load_first_class_suites()
+    lines = [
+        "# Suites",
+        "",
+        "Generated from suite registries (`pyproject.toml` + `src/atlasctl/registry/suites.py`).",
+        "",
+        f"- Default suite: `{default_suite}`",
+        "",
+        "## Configured Suites",
+        "",
+    ]
+    for name in sorted(suites):
+        spec = suites[name]
+        lines.append(f"- `{name}`: includes={list(spec.includes)} items={len(spec.items)} complete={spec.complete}")
+    lines.extend(["", "## First-Class Suites", ""])
+    for name in sorted(first_class):
+        spec = first_class[name]
+        lines.append(f"- `{name}`: checks={len(spec.check_ids)} markers={list(spec.markers)}")
+    lines.append("")
+    return "\n".join(lines)
+
+
+def check_docs_registry_indexes(repo_root: Path) -> tuple[int, list[str]]:
+    docs_root = _docs_root(repo_root)
+    expected = {
+        "commands/index.md": _render_commands_index(repo_root).strip(),
+        "checks/index.md": _render_checks_index().strip(),
+        "control-plane/suites.md": _render_suites_index(repo_root).strip(),
+    }
+    errors: list[str] = []
+    for rel, want in expected.items():
+        path = docs_root / rel
+        if not path.exists():
+            errors.append(f"missing generated docs index: {path.relative_to(repo_root).as_posix()}")
+            continue
+        got = path.read_text(encoding="utf-8", errors="ignore").strip()
+        if got != want:
+            errors.append(f"docs registry index drift: {path.relative_to(repo_root).as_posix()} (run `atlasctl docs generate-registry-indexes --report text`)")
+    return (0 if not errors else 1), errors
+
+
+def check_docs_new_command_workflow(repo_root: Path) -> tuple[int, list[str]]:
+    proc = subprocess.run(
+        ["git", "diff", "--name-only", "HEAD~1", "HEAD"],
+        cwd=repo_root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    changed = [line.strip() for line in proc.stdout.splitlines() if line.strip()] if proc.returncode == 0 else []
+    if "packages/atlasctl/src/atlasctl/cli/surface_registry.py" not in changed:
+        return 0, []
+    required = [
+        "packages/atlasctl/docs/commands/index.md",
+        "packages/atlasctl/pyproject.toml",
+    ]
+    errors = [f"new command workflow requires updating `{path}`" for path in required if path not in changed]
+    test_touched = any(path.startswith("packages/atlasctl/tests/") for path in changed)
+    if not test_touched:
+        errors.append("new command workflow requires at least one test update under packages/atlasctl/tests/")
+    return (0 if not errors else 1), errors
+
+
+def check_docs_ownership_metadata(repo_root: Path) -> tuple[int, list[str]]:
+    docs_root = _docs_root(repo_root)
+    meta = docs_root / "_meta" / "owners.json"
+    if not meta.exists():
+        return 1, [f"missing docs ownership metadata: {meta.relative_to(repo_root).as_posix()}"]
+    payload = json.loads(meta.read_text(encoding="utf-8"))
+    owners = payload.get("owners", {})
+    if not isinstance(owners, dict):
+        return 1, [f"{meta.relative_to(repo_root).as_posix()}: owners must be an object"]
+    major: set[str] = set()
+    for path in docs_root.iterdir():
+        if path.name.startswith("_") or path.name == "index.md":
+            continue
+        if path.is_dir():
+            major.add(path.name)
+    errors = [f"missing docs owner mapping for area `{area}`" for area in sorted(major) if area not in owners]
+    return (0 if not errors else 1), errors
+
+
+def check_docs_lint_style(repo_root: Path) -> tuple[int, list[str]]:
+    docs_root = _docs_root(repo_root)
+    errors: list[str] = []
+    for md in sorted(docs_root.rglob("*.md")):
+        rel = md.relative_to(repo_root).as_posix()
+        if "/_generated/" in rel:
+            continue
+        lines = md.read_text(encoding="utf-8", errors="ignore").splitlines()
+        for idx, line in enumerate(lines, 1):
+            raw = line.rstrip("\n")
+            if len(raw) > 160 and not raw.startswith("|"):
+                errors.append(f"{rel}:{idx}: line length exceeds 160 chars")
+            low = raw.lower()
+            if "todo" in low or "tbd" in low:
+                errors.append(f"{rel}:{idx}: TODO/TBD placeholders are forbidden")
+        for idx, line in enumerate(lines, 1):
+            if line.startswith("#") and not _HEADING_RE.match(line):
+                errors.append(f"{rel}:{idx}: invalid heading format")
+    return (0 if not errors else 1), errors
+
+
+def check_docs_no_placeholder_release_docs(repo_root: Path) -> tuple[int, list[str]]:
+    docs_root = _docs_root(repo_root)
+    errors: list[str] = []
+    for md in sorted(docs_root.rglob("*.md")):
+        rel = md.relative_to(repo_root).as_posix().lower()
+        if "/_drafts/" in rel:
+            continue
+        if "placeholder" in rel or "/tmp" in rel:
+            errors.append(f"placeholder doc path forbidden for release: {rel}")
     return (0 if not errors else 1), errors

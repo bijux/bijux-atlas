@@ -39,6 +39,7 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("generate-slos-doc", "generate docs/operations/slo/SLOS.md from SLO contract"),
         ("generate-architecture-map", "generate docs/architecture/architecture-map.md"),
         ("generate-command-groups-docs", "generate docs/commands/groups/*.md from command registry"),
+        ("generate-registry-indexes", "generate docs command/check/suite indexes from registry"),
         ("generate-crates-map", "generate docs/development/crates-map.md"),
         ("generate-upgrade-guide", "generate docs/_generated/upgrade-guide.md"),
         ("generate-make-targets-catalog", "generate makefiles/targets.json and docs/_generated/make-targets.md"),
