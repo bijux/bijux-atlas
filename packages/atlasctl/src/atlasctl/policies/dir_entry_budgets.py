@@ -6,6 +6,11 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
+try:
+    import tomllib  # py311+
+except ModuleNotFoundError:  # pragma: no cover
+    import tomli as tomllib  # type: ignore
+
 
 _SCOPE_ROOTS = (
     "packages/atlasctl/src/atlasctl",
@@ -79,6 +84,28 @@ def _load_exceptions(repo_root: Path) -> tuple[int, list[BudgetException], list[
     return max_ex, rows, errors
 
 
+def _budget_profile_errors(repo_root: Path) -> list[str]:
+    pyproject = repo_root / "packages/atlasctl/pyproject.toml"
+    if not pyproject.exists():
+        return ["missing pyproject for budget profile validation"]
+    data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
+    rules = data.get("tool", {}).get("atlasctl", {}).get("budgets", {}).get("rules", [])
+    globs = [str(row.get("path_glob", "")).strip() for row in rules if isinstance(row, dict)]
+    src_root = repo_root / "packages/atlasctl/src/atlasctl"
+    if not src_root.exists():
+        return []
+    errors: list[str] = []
+    for domain_dir in sorted(path for path in src_root.iterdir() if path.is_dir() and path.name != "__pycache__"):
+        rel = domain_dir.relative_to(repo_root).as_posix()
+        domain_glob = f"{rel}*"
+        covered = domain_glob in globs or "packages/atlasctl/src/atlasctl/*" in globs
+        if not covered:
+            errors.append(f"top-level domain missing budget profile rule: {rel}")
+    if "packages/atlasctl/tests/*" not in globs and "packages/atlasctl/tests/**" not in globs:
+        errors.append("tests budget profile missing: add rule for packages/atlasctl/tests/*")
+    return errors
+
+
 def _entry_count(directory: Path) -> int:
     return sum(1 for p in directory.iterdir() if p.name != "__pycache__")
 
@@ -104,6 +131,7 @@ def _status_for(value: int, budget: int) -> str:
 
 def _collect_budget_rows(repo_root: Path, metric: str) -> list[dict[str, Any]]:
     max_ex, exceptions, errors = _load_exceptions(repo_root)
+    errors.extend(_budget_profile_errors(repo_root))
     exc_map = {exc.path: exc for exc in exceptions}
     rows: list[dict[str, Any]] = []
     for directory in _iter_scoped_dirs(repo_root):
