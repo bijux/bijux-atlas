@@ -197,7 +197,27 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     matched_checks = [
         check for check in checks if _match_selected(check.check_id, check.title, check.domain, selected_domain, selector)
     ]
-    _failed_total, executed_results = run_function_checks(ctx.repo_root, matched_checks)
+    live_print = bool(matched_checks) and not (ctx.output_format == "json" or ns.json or bool(getattr(ns, "jsonl", False)))
+
+    def _emit_live_row(result):  # noqa: ANN001
+        row_status = "PASS" if result.status == "pass" else "FAIL"
+        row_duration = int(result.metrics.get("duration_ms", 0))
+        if ns.run_quiet:
+            print(f"{row_status} {result.id}")
+            return
+        if ns.run_verbose:
+            owners = ",".join(result.owners) if result.owners else "-"
+            print(f"{row_status} {result.id} [{row_duration}ms] owners={owners} hint={result.fix_hint}")
+            if row_status == "FAIL" and result.errors:
+                print(f"  detail: {result.errors[0]}")
+            return
+        print(f"{row_status} {result.id} ({row_duration}ms)")
+
+    _failed_total, executed_results = run_function_checks(
+        ctx.repo_root,
+        matched_checks,
+        on_result=_emit_live_row if live_print else None,
+    )
     executed_by_id = {result.id: result for result in executed_results}
     rows: list[dict[str, object]] = []
     fail_count = 0
@@ -297,17 +317,18 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             )
         )
     else:
-        for row in rows:
-            if ns.run_quiet:
-                print(f"{row['status']} {row['id']}")
-                continue
-            if ns.run_verbose:
-                owners = ",".join(row["owners"]) if row["owners"] else "-"
-                print(f"{row['status']} {row['id']} [{row['duration_ms']}ms] owners={owners} hint={row['hint']}")
-                if row["status"] == "FAIL" and row["detail"]:
-                    print(f"  detail: {row['detail']}")
-                continue
-            print(f"{row['status']} {row['id']} ({row['duration_ms']}ms)")
+        if not live_print:
+            for row in rows:
+                if ns.run_quiet:
+                    print(f"{row['status']} {row['id']}")
+                    continue
+                if ns.run_verbose:
+                    owners = ",".join(row["owners"]) if row["owners"] else "-"
+                    print(f"{row['status']} {row['id']} [{row['duration_ms']}ms] owners={owners} hint={row['hint']}")
+                    if row["status"] == "FAIL" and row["detail"]:
+                        print(f"  detail: {row['detail']}")
+                    continue
+                print(f"{row['status']} {row['id']} ({row['duration_ms']}ms)")
         if ns.durations and ns.durations > 0:
             print("durations:")
             ranked = sorted(rows, key=lambda item: int(item["duration_ms"]), reverse=True)[: ns.durations]
