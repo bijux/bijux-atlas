@@ -9,7 +9,7 @@ from pathlib import Path
 
 from ..core.context import RunContext
 from ..core.fs import ensure_evidence_path
-from .culprits import evaluate_metric, render_text
+from .culprits import biggest_dirs, biggest_files, budget_suite, evaluate_metric, render_table_text, render_text
 from .scans import policy_drift_diff, scan_grep_relaxations, scan_rust_relaxations
 
 RELAXATION_FILES = (
@@ -118,6 +118,14 @@ def _bypass_scan(repo_root: Path) -> tuple[int, dict[str, object]]:
 def _write_report(ctx: RunContext, section: str, payload: dict[str, object]) -> None:
     out = ensure_evidence_path(ctx, ctx.evidence_root / "policies" / section / ctx.run_id / "report.json")
     out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def _write_out_file(repo_root: Path, out_file: str, content: str) -> None:
+    if not out_file:
+        return
+    out_path = repo_root / out_file
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(content + "\n", encoding="utf-8")
 
 
 def _policy_schema_drift(repo_root: Path) -> tuple[int, list[str]]:
@@ -340,10 +348,32 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return 0
     if ns.policies_cmd == "culprits":
         payload = evaluate_metric(repo, ns.culprits_metric)
+        output = json.dumps(payload, sort_keys=True) if ns.report == "json" else render_text(payload)
+        _write_out_file(repo, str(getattr(ns, "out_file", "")), output)
         if ns.report == "json":
-            print(json.dumps(payload, sort_keys=True))
+            print(output)
         else:
-            print(render_text(payload))
+            print(output)
+        return 0 if payload["status"] == "ok" else 1
+    if ns.policies_cmd == "culprits-biggest-files":
+        payload = biggest_files(repo, limit=ns.limit)
+        output = json.dumps(payload, sort_keys=True) if ns.report == "json" else render_table_text(payload, "biggest-files")
+        _write_out_file(repo, str(getattr(ns, "out_file", "")), output)
+        print(output)
+        return 0
+    if ns.policies_cmd == "culprits-biggest-dirs":
+        payload = biggest_dirs(repo, limit=ns.limit)
+        output = json.dumps(payload, sort_keys=True) if ns.report == "json" else render_table_text(payload, "biggest-dirs")
+        _write_out_file(repo, str(getattr(ns, "out_file", "")), output)
+        print(output)
+        return 0
+    if ns.policies_cmd == "culprits-suite":
+        payload = budget_suite(repo)
+        output = json.dumps(payload, sort_keys=True) if ns.report == "json" else "\n\n".join(
+            render_text(report) for report in payload["reports"]
+        )
+        _write_out_file(repo, str(getattr(ns, "out_file", "")), output)
+        print(output)
         return 0 if payload["status"] == "ok" else 1
 
     return 2
@@ -388,5 +418,28 @@ def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
     diff.add_argument("--from-ref", default="HEAD~1")
     diff.add_argument("--to-ref", default="HEAD")
     culprits = ps.add_parser("culprits", help="report directory budget culprits")
-    culprits.add_argument("culprits_metric", choices=["modules-per-dir", "py-files-per-dir", "dir-loc"])
+    culprits.add_argument(
+        "culprits_metric",
+        choices=[
+            "modules-per-dir",
+            "py-files-per-dir",
+            "shell-files-per-dir",
+            "dir-loc",
+            "imports-per-file",
+            "public-symbols-per-file",
+            "complexity-heuristic",
+        ],
+    )
     culprits.add_argument("--report", choices=["text", "json"], default="text")
+    culprits.add_argument("--out-file", help="write report to file path", default="")
+    big_files = ps.add_parser("culprits-biggest-files", help="top N biggest python files")
+    big_files.add_argument("--limit", type=int, default=20)
+    big_files.add_argument("--report", choices=["text", "json"], default="text")
+    big_files.add_argument("--out-file", help="write report to file path", default="")
+    big_dirs = ps.add_parser("culprits-biggest-dirs", help="top N biggest python directories")
+    big_dirs.add_argument("--limit", type=int, default=20)
+    big_dirs.add_argument("--report", choices=["text", "json"], default="text")
+    big_dirs.add_argument("--out-file", help="write report to file path", default="")
+    suite = ps.add_parser("culprits-suite", help="run full directory budget suite")
+    suite.add_argument("--report", choices=["text", "json"], default="text")
+    suite.add_argument("--out-file", help="write report to file path", default="")

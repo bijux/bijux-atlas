@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ast
 from dataclasses import dataclass
 from fnmatch import fnmatch
 from pathlib import Path
@@ -11,6 +12,9 @@ except ModuleNotFoundError:  # pragma: no cover
     import tomli as tomllib  # type: ignore
 
 
+_BRANCH_TOKENS = (" if ", " elif ", " for ", " while ", " except ", " case ", " and ", " or ")
+
+
 @dataclass(frozen=True)
 class BudgetRule:
     name: str
@@ -18,8 +22,12 @@ class BudgetRule:
     enforce: bool
     max_py_files_per_dir: int
     max_modules_per_dir: int
+    max_shell_files_per_dir: int
     max_total_loc_per_dir: int
     max_total_bytes_per_dir: int
+    max_imports_per_file: int
+    max_public_symbols_per_module: int
+    max_branch_keywords_per_file: int
 
 
 @dataclass(frozen=True)
@@ -33,9 +41,22 @@ class DirStat:
     dir: str
     py_files: int
     modules: int
+    shell_files: int
     total_loc: int
     total_bytes: int
     top_offenders: list[dict[str, Any]]
+    rule: str
+    enforce: bool
+    budget: dict[str, int]
+
+
+@dataclass(frozen=True)
+class FileStat:
+    path: str
+    loc: int
+    import_count: int
+    public_symbols: int
+    branch_keywords: int
     rule: str
     enforce: bool
     budget: dict[str, int]
@@ -52,8 +73,12 @@ def load_budgets(repo_root: Path) -> tuple[dict[str, int], list[BudgetRule], lis
     defaults = {
         "max_py_files_per_dir": int(budgets.get("max_py_files_per_dir", 10)),
         "max_modules_per_dir": int(budgets.get("max_modules_per_dir", budgets.get("max_py_files_per_dir", 10))),
+        "max_shell_files_per_dir": int(budgets.get("max_shell_files_per_dir", 10)),
         "max_total_loc_per_dir": int(budgets.get("max_total_loc_per_dir", 3000)),
         "max_total_bytes_per_dir": int(budgets.get("max_total_bytes_per_dir", 300000)),
+        "max_imports_per_file": int(budgets.get("max_imports_per_file", 40)),
+        "max_public_symbols_per_module": int(budgets.get("max_public_symbols_per_module", 30)),
+        "max_branch_keywords_per_file": int(budgets.get("max_branch_keywords_per_file", 80)),
     }
     rules: list[BudgetRule] = []
     for row in budgets.get("rules", []):
@@ -66,8 +91,16 @@ def load_budgets(repo_root: Path) -> tuple[dict[str, int], list[BudgetRule], lis
                 enforce=bool(row.get("enforce", True)),
                 max_py_files_per_dir=int(row.get("max_py_files_per_dir", defaults["max_py_files_per_dir"])),
                 max_modules_per_dir=int(row.get("max_modules_per_dir", defaults["max_modules_per_dir"])),
+                max_shell_files_per_dir=int(row.get("max_shell_files_per_dir", defaults["max_shell_files_per_dir"])),
                 max_total_loc_per_dir=int(row.get("max_total_loc_per_dir", defaults["max_total_loc_per_dir"])),
                 max_total_bytes_per_dir=int(row.get("max_total_bytes_per_dir", defaults["max_total_bytes_per_dir"])),
+                max_imports_per_file=int(row.get("max_imports_per_file", defaults["max_imports_per_file"])),
+                max_public_symbols_per_module=int(
+                    row.get("max_public_symbols_per_module", defaults["max_public_symbols_per_module"])
+                ),
+                max_branch_keywords_per_file=int(
+                    row.get("max_branch_keywords_per_file", defaults["max_branch_keywords_per_file"])
+                ),
             )
         )
     exceptions: list[BudgetException] = []
@@ -78,7 +111,9 @@ def load_budgets(repo_root: Path) -> tuple[dict[str, int], list[BudgetRule], lis
     return defaults, rules, exceptions
 
 
-def _rule_for_dir(rel_dir: str, defaults: dict[str, int], rules: list[BudgetRule], exceptions: list[BudgetException]) -> tuple[str, bool, dict[str, int]]:
+def _rule_for_dir(
+    rel_dir: str, defaults: dict[str, int], rules: list[BudgetRule], exceptions: list[BudgetException]
+) -> tuple[str, bool, dict[str, int]]:
     for exc in exceptions:
         if exc.path == rel_dir:
             return ("exception", False, defaults)
@@ -92,23 +127,70 @@ def _rule_for_dir(rel_dir: str, defaults: dict[str, int], rules: list[BudgetRule
         {
             "max_py_files_per_dir": rule.max_py_files_per_dir,
             "max_modules_per_dir": rule.max_modules_per_dir,
+            "max_shell_files_per_dir": rule.max_shell_files_per_dir,
             "max_total_loc_per_dir": rule.max_total_loc_per_dir,
             "max_total_bytes_per_dir": rule.max_total_bytes_per_dir,
+            "max_imports_per_file": rule.max_imports_per_file,
+            "max_public_symbols_per_module": rule.max_public_symbols_per_module,
+            "max_branch_keywords_per_file": rule.max_branch_keywords_per_file,
         },
     )
 
 
+def _count_imports(tree: ast.AST) -> int:
+    count = 0
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            count += 1
+    return count
+
+
+def _count_public_symbols(tree: ast.AST) -> int:
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Assign):
+            continue
+        for target in node.targets:
+            if not isinstance(target, ast.Name) or target.id != "__all__":
+                continue
+            if isinstance(node.value, (ast.List, ast.Tuple)):
+                return len(node.value.elts)
+    return 0
+
+
+def _branch_score(text: str) -> int:
+    lowered = f" {text.lower()} "
+    return sum(lowered.count(token) for token in _BRANCH_TOKENS)
+
+
+def _iter_repo_shell_files(repo_root: Path) -> list[Path]:
+    roots = [
+        repo_root / "packages/atlasctl/src",
+        repo_root / "ops",
+    ]
+    files: list[Path] = []
+    for root in roots:
+        if root.exists():
+            files.extend(sorted(root.rglob("*.sh")))
+    return [path for path in files if ".git/" not in path.as_posix()]
+
+
 def collect_dir_stats(repo_root: Path) -> list[DirStat]:
     defaults, rules, exceptions = load_budgets(repo_root)
-    files = sorted((repo_root / "packages").rglob("*.py"))
+    py_files = sorted((repo_root / "packages").rglob("*.py"))
+    shell_files = _iter_repo_shell_files(repo_root)
     by_dir: dict[str, list[Path]] = {}
-    for path in files:
+    for path in py_files:
         rel_dir = path.parent.relative_to(repo_root).as_posix()
         by_dir.setdefault(rel_dir, []).append(path)
+    shell_by_dir: dict[str, int] = {}
+    for path in shell_files:
+        rel_dir = path.parent.relative_to(repo_root).as_posix()
+        shell_by_dir[rel_dir] = shell_by_dir.get(rel_dir, 0) + 1
+        by_dir.setdefault(rel_dir, [])
 
     rows: list[DirStat] = []
     for rel_dir, paths in sorted(by_dir.items()):
-        offenders = []
+        offenders: list[dict[str, Any]] = []
         total_loc = 0
         total_bytes = 0
         modules = 0
@@ -128,9 +210,34 @@ def collect_dir_stats(repo_root: Path) -> list[DirStat]:
                 dir=rel_dir,
                 py_files=len(paths),
                 modules=modules,
+                shell_files=shell_by_dir.get(rel_dir, 0),
                 total_loc=total_loc,
                 total_bytes=total_bytes,
                 top_offenders=top,
+                rule=rule_name,
+                enforce=enforce,
+                budget=budget,
+            )
+        )
+    return rows
+
+
+def collect_file_stats(repo_root: Path) -> list[FileStat]:
+    defaults, rules, exceptions = load_budgets(repo_root)
+    rows: list[FileStat] = []
+    for path in sorted((repo_root / "packages").rglob("*.py")):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        rel_path = path.relative_to(repo_root).as_posix()
+        rel_dir = path.parent.relative_to(repo_root).as_posix()
+        tree = ast.parse(text, filename=rel_path)
+        rule_name, enforce, budget = _rule_for_dir(rel_dir, defaults, rules, exceptions)
+        rows.append(
+            FileStat(
+                path=rel_path,
+                loc=len(text.splitlines()),
+                import_count=_count_imports(tree),
+                public_symbols=_count_public_symbols(tree),
+                branch_keywords=_branch_score(text),
                 rule=rule_name,
                 enforce=enforce,
                 budget=budget,
@@ -148,16 +255,18 @@ def _status(value: int, budget: int) -> str:
     return "ok"
 
 
-def evaluate_metric(repo_root: Path, metric: str) -> dict[str, Any]:
+def _evaluate_dir_metric(repo_root: Path, metric: str) -> dict[str, Any]:
     stats = collect_dir_stats(repo_root)
     budget_key = {
         "modules-per-dir": "max_modules_per_dir",
         "py-files-per-dir": "max_py_files_per_dir",
+        "shell-files-per-dir": "max_shell_files_per_dir",
         "dir-loc": "max_total_loc_per_dir",
     }[metric]
     value_key = {
         "modules-per-dir": "modules",
         "py-files-per-dir": "py_files",
+        "shell-files-per-dir": "shell_files",
         "dir-loc": "total_loc",
     }[metric]
 
@@ -180,7 +289,6 @@ def evaluate_metric(repo_root: Path, metric: str) -> dict[str, Any]:
                 "top_offenders": row.top_offenders,
             }
         )
-
     rows = sorted(rows, key=lambda item: ({"fail": 0, "warn": 1, "ok": 2}[str(item["status"])], str(item["dir"])))
     return {
         "schema_version": 1,
@@ -193,19 +301,127 @@ def evaluate_metric(repo_root: Path, metric: str) -> dict[str, Any]:
     }
 
 
+def _evaluate_file_metric(repo_root: Path, metric: str) -> dict[str, Any]:
+    stats = collect_file_stats(repo_root)
+    budget_key = {
+        "imports-per-file": "max_imports_per_file",
+        "public-symbols-per-file": "max_public_symbols_per_module",
+        "complexity-heuristic": "max_branch_keywords_per_file",
+    }[metric]
+    value_key = {
+        "imports-per-file": "import_count",
+        "public-symbols-per-file": "public_symbols",
+        "complexity-heuristic": "branch_keywords",
+    }[metric]
+    scope_prefixes = ("packages/atlasctl/src/atlasctl/core/", "packages/atlasctl/src/atlasctl/cli/")
+
+    rows: list[dict[str, Any]] = []
+    any_fail = False
+    for row in stats:
+        if metric == "complexity-heuristic" and not row.path.startswith(scope_prefixes):
+            continue
+        budget = int(row.budget[budget_key])
+        value = int(getattr(row, value_key))
+        status = _status(value, budget) if row.enforce else "ok"
+        if status == "fail":
+            any_fail = True
+        rows.append(
+            {
+                "file": row.path,
+                "count": value,
+                "budget": budget,
+                "status": status,
+                "rule": row.rule,
+                "enforce": row.enforce,
+            }
+        )
+    rows = sorted(
+        rows,
+        key=lambda item: ({"fail": 0, "warn": 1, "ok": 2}[str(item["status"])], -int(item["count"]), str(item["file"])),
+    )
+    return {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "status": "fail" if any_fail else "ok",
+        "metric": metric,
+        "items": rows,
+        "failed_count": sum(1 for item in rows if item["status"] == "fail"),
+        "warn_count": sum(1 for item in rows if item["status"] == "warn"),
+    }
+
+
+def evaluate_metric(repo_root: Path, metric: str) -> dict[str, Any]:
+    if metric in {"modules-per-dir", "py-files-per-dir", "shell-files-per-dir", "dir-loc"}:
+        return _evaluate_dir_metric(repo_root, metric)
+    if metric in {"imports-per-file", "public-symbols-per-file", "complexity-heuristic"}:
+        return _evaluate_file_metric(repo_root, metric)
+    raise ValueError(f"unsupported culprits metric: {metric}")
+
+
+def biggest_files(repo_root: Path, limit: int = 20) -> dict[str, Any]:
+    rows = []
+    for path in sorted((repo_root / "packages").rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        rows.append({"file": rel, "loc": len(text.splitlines()), "bytes": path.stat().st_size})
+    rows = sorted(rows, key=lambda item: (int(item["loc"]), int(item["bytes"]), str(item["file"])), reverse=True)[:limit]
+    return {"schema_version": 1, "tool": "atlasctl", "status": "ok", "metric": "biggest-files", "items": rows}
+
+
+def biggest_dirs(repo_root: Path, limit: int = 20) -> dict[str, Any]:
+    rows = collect_dir_stats(repo_root)
+    items = [
+        {"dir": row.dir, "loc": row.total_loc, "py_files": row.py_files, "modules": row.modules, "shell_files": row.shell_files}
+        for row in rows
+    ]
+    items = sorted(items, key=lambda item: (int(item["loc"]), int(item["py_files"]), str(item["dir"])), reverse=True)[:limit]
+    return {"schema_version": 1, "tool": "atlasctl", "status": "ok", "metric": "biggest-dirs", "items": items}
+
+
+def budget_suite(repo_root: Path) -> dict[str, Any]:
+    metrics = ["modules-per-dir", "py-files-per-dir", "shell-files-per-dir", "dir-loc"]
+    reports = [evaluate_metric(repo_root, metric) for metric in metrics]
+    status = "ok"
+    for report in reports:
+        if report["status"] != "ok":
+            status = "fail"
+            break
+    return {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "status": status,
+        "metric": "budget-suite",
+        "reports": reports,
+    }
+
+
 def render_text(payload: dict[str, Any]) -> str:
     metric = str(payload["metric"])
     lines = [f"culprits {metric}: {payload['status']}"]
+    item_key = "dir" if metric in {"modules-per-dir", "py-files-per-dir", "shell-files-per-dir", "dir-loc"} else "file"
     for item in payload["items"]:
-        status = str(item["status"]).upper()
+        status = str(item.get("status", "ok")).upper()
         if status == "OK":
             continue
-        lines.append(f"- {status} {item['dir']}: count={item['count']} budget={item['budget']} rule={item['rule']}")
-        if item["top_offenders"]:
-            top = ", ".join(f"{o['file']} ({o['loc']} loc)" for o in item["top_offenders"][:3])
+        lines.append(
+            f"- {status} {item[item_key]}: count={item['count']} budget={item['budget']} rule={item.get('rule', 'default')}"
+        )
+        top_offenders = item.get("top_offenders", [])
+        if top_offenders:
+            top = ", ".join(f"{o['file']} ({o['loc']} loc)" for o in top_offenders[:3])
             lines.append(f"  top offenders: {top}")
     if len(lines) == 1:
         lines.append("- no offenders")
+    return "\n".join(lines)
+
+
+def render_table_text(payload: dict[str, Any], label: str) -> str:
+    lines = [f"{label}: {payload['status']}"]
+    for item in payload.get("items", []):
+        if "file" in item:
+            lines.append(f"- {item['file']}: {item.get('loc', item.get('count', 0))}")
+        elif "dir" in item:
+            lines.append(f"- {item['dir']}: {item.get('loc', item.get('count', 0))}")
     return "\n".join(lines)
 
 
@@ -224,12 +440,13 @@ def check_budget_metric(repo_root: Path, metric: str) -> tuple[int, list[str]]:
     errors: list[str] = []
     for item in payload["items"]:
         status = str(item["status"])
+        label = str(item.get("dir", item.get("file", "")))
         if status == "fail":
             errors.append(
-                f"{item['dir']}: {item['count']} > {item['budget']} ({metric}); suggested split: {suggested_splits(str(item['dir']))}"
+                f"{label}: {item['count']} > {item['budget']} ({metric}); suggested split: {suggested_splits(label)}"
             )
         elif status == "warn":
-            errors.append(f"WARN: {item['dir']}: {item['count']} is within 10% of budget {item['budget']} ({metric})")
+            errors.append(f"WARN: {label}: {item['count']} is within 10% of budget {item['budget']} ({metric})")
     return (1 if payload["failed_count"] else 0), errors
 
 
