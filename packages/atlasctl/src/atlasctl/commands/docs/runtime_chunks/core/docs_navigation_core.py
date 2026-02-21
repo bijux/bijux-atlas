@@ -153,6 +153,7 @@ def _generate_make_targets_catalog(ctx: RunContext) -> tuple[int, str]:
     owners = json.loads((ctx.repo_root / "makefiles" / "ownership.json").read_text(encoding="utf-8"))
     out_json = ctx.repo_root / "makefiles" / "targets.json"
     out_md = ctx.repo_root / "docs" / "_generated" / "make-targets.md"
+    out_catalog = ctx.repo_root / "artifacts" / "generated" / "make" / "targets.catalog.json"
     entries: list[dict[str, object]] = []
     for item in sorted(ssot.get("public_targets", []), key=lambda entry: entry["name"]):
         name = item["name"]
@@ -175,6 +176,8 @@ def _generate_make_targets_catalog(ctx: RunContext) -> tuple[int, str]:
     }
     out_json.parent.mkdir(parents=True, exist_ok=True)
     out_json.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    out_catalog.parent.mkdir(parents=True, exist_ok=True)
+    out_catalog.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     lines = [
         "# Make Targets",
         "",
@@ -190,7 +193,11 @@ def _generate_make_targets_catalog(ctx: RunContext) -> tuple[int, str]:
         )
     out_md.parent.mkdir(parents=True, exist_ok=True)
     out_md.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    return 0, f"{out_json.relative_to(ctx.repo_root)}\n{out_md.relative_to(ctx.repo_root)}"
+    return 0, (
+        f"{out_json.relative_to(ctx.repo_root)}\n"
+        f"{out_md.relative_to(ctx.repo_root)}\n"
+        f"{out_catalog.relative_to(ctx.repo_root)}"
+    )
 def _generate_env_vars_doc(ctx: RunContext) -> tuple[int, str]:
     contract = ctx.repo_root / "configs" / "contracts" / "env.schema.json"
     out = ctx.repo_root / "docs" / "_generated" / "env-vars.md"
