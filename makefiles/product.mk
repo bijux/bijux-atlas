@@ -10,9 +10,6 @@ bootstrap:
 	@command -v kind >/dev/null 2>&1 || echo "kind not found (required for k8s e2e)"
 	@command -v kubectl >/dev/null 2>&1 || echo "kubectl not found (required for k8s e2e)"
 
-docs: ## Run docs verification lane
-	@$(MAKE) -s docs/check
-
 k8s: ## Run canonical k8s verification lane
 	@$(MAKE) -s ops/smoke
 

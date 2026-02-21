@@ -184,13 +184,19 @@ def _check_nav_order(ctx: RunContext) -> tuple[int, str]:
 def _check_docs_deterministic(ctx: RunContext) -> tuple[int, str]:
     mkdocs = (ctx.repo_root / "mkdocs.yml").read_text(encoding="utf-8", errors="ignore")
     docs_mk = (ctx.repo_root / "makefiles/docs.mk").read_text(encoding="utf-8", errors="ignore")
+    docs_dispatch = (ctx.repo_root / "packages/atlasctl/src/atlasctl/commands/docs/runtime_chunks/docs_dispatch.py").read_text(
+        encoding="utf-8",
+        errors="ignore",
+    )
     errors: list[str] = []
     if "enable_creation_date: false" not in mkdocs:
         errors.append("mkdocs.yml must set `enable_creation_date: false`")
     if "fallback_to_build_date: false" not in mkdocs:
         errors.append("mkdocs.yml must set `fallback_to_build_date: false`")
-    if "SOURCE_DATE_EPOCH=" not in docs_mk:
-        errors.append("makefiles/docs.mk must set SOURCE_DATE_EPOCH for mkdocs build")
+    if "atlasctl docs build" not in docs_mk:
+        errors.append("makefiles/docs.mk must delegate docs-build to atlasctl docs build")
+    if "SOURCE_DATE_EPOCH=946684800" not in docs_dispatch:
+        errors.append("atlasctl docs build/serve must enforce SOURCE_DATE_EPOCH=946684800")
     return (0, "docs determinism check passed") if not errors else (1, "\n".join(errors))
 def _check_docs_make_targets_exist(ctx: RunContext) -> tuple[int, str]:
     line_cmd_re = re.compile(r"^\s*(?:\$|#)?\s*(?:[A-Za-z_][A-Za-z0-9_]*=[^\s]+\s+)*make\s+([A-Za-z0-9_./-]+)")

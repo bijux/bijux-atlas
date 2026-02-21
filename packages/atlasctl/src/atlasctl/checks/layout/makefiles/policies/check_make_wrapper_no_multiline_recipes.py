@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[8]
 WRAPPERS = [
     ROOT / "makefiles" / "dev.mk",
     ROOT / "makefiles" / "ci.mk",
+    ROOT / "makefiles" / "docs.mk",
 ]
 TARGET_RE = re.compile(r"^([A-Za-z0-9_./-]+):(?:\s|$)")
 MULTILINE_ALLOWLIST = {"makefiles/dev.mk": {"all", "all-all"}}

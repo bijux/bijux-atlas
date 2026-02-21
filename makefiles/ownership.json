@@ -239,6 +239,66 @@
     "owner": "docs-governance",
     "area": "docs"
   },
+  "docs-req-lock-refresh": {
+    "owner": "docs-governance",
+    "area": "docs"
+  },
+  "docs-build": {
+    "owner": "docs-governance",
+    "area": "docs"
+  },
+  "docs-build-all": {
+    "owner": "docs-governance",
+    "area": "docs"
+  },
+  "docs-serve": {
+    "owner": "docs-governance",
+    "area": "docs"
+  },
+  "docs-freeze": {
+    "owner": "docs-governance",
+    "area": "docs"
+  },
+  "docs-hardening": {
+    "owner": "docs-governance",
+    "area": "docs"
+  },
+  "docs-all": {
+    "owner": "docs-governance",
+    "area": "docs"
+  },
+  "docs-check": {
+    "owner": "docs-governance",
+    "area": "docs"
+  },
+  "docs-check-all": {
+    "owner": "docs-governance",
+    "area": "docs"
+  },
+  "docs-fmt": {
+    "owner": "docs-governance",
+    "area": "docs"
+  },
+  "docs-fmt-all": {
+    "owner": "docs-governance",
+    "area": "docs"
+  },
+  "docs-lint": {
+    "owner": "docs-governance",
+    "area": "docs"
+  },
+  "docs-lint-all": {
+    "owner": "docs-governance",
+    "area": "docs"
+  },
+  "docs-test": {
+    "owner": "docs-governance",
+    "area": "docs"
+  },
+  "docs-test-all": {
+    "owner": "docs-governance",
+    "area": "docs"
+  },
   "ops/check": {
     "owner": "ops-platform",
     "area": "ops"

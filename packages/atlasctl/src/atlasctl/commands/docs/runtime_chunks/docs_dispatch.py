@@ -17,6 +17,67 @@ def _run_simple_path(ctx: RunContext, report: str, path: str) -> int:
     return _run_simple(ctx, ["python3", path], report)
 
 
+def _docs_artifacts_root(ctx: RunContext) -> Path:
+    iso_root = ctx.repo_root / "artifacts" / "isolate" / "docs" / ctx.run_id
+    if iso_root.exists():
+        return iso_root / "docs"
+    return ctx.repo_root / "artifacts" / "docs" / ctx.run_id
+
+
+def _docs_venv_path(ctx: RunContext) -> Path:
+    return _docs_artifacts_root(ctx) / ".venv"
+
+
+def _ensure_docs_venv(ctx: RunContext) -> tuple[int, str]:
+    venv = _docs_venv_path(ctx)
+    req_lock = ctx.repo_root / "configs" / "docs" / "requirements.lock.txt"
+    for cmd in (
+        ["python3", "-m", "venv", str(venv)],
+        [str(venv / "bin" / "pip"), "install", "--upgrade", "pip"],
+        [str(venv / "bin" / "pip"), "install", "-r", str(req_lock)],
+    ):
+        code, output = _run_check(cmd, ctx.repo_root)
+        if code != 0:
+            return code, output
+    return 0, str(venv)
+
+
+def _run_docs_pipeline(ctx: RunContext, steps: list[tuple[str, list[str]]], report: str, fail_fast: bool = True) -> int:
+    rows: list[dict[str, object]] = []
+    for step_id, cmd in steps:
+        code, output = _run_check(cmd, ctx.repo_root)
+        rows.append(
+            {
+                "id": step_id,
+                "status": "pass" if code == 0 else "fail",
+                "command": " ".join(cmd),
+                "output": output,
+            }
+        )
+        if code != 0 and fail_fast:
+            break
+    failed = [row for row in rows if row["status"] == "fail"]
+    payload = {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "run_id": ctx.run_id,
+        "status": "pass" if not failed else "fail",
+        "steps": rows,
+    }
+    if report == "json":
+        print(json.dumps(payload, sort_keys=True))
+    else:
+        for row in rows:
+            print(f"{row['status'].upper()} {row['id']}")
+            if row["status"] == "fail" and row["output"]:
+                first = str(row["output"]).splitlines()
+                if first:
+                    print(first[0])
+        if not failed:
+            print("docs pipeline passed")
+    return 0 if not failed else 1
+
+
 def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if not getattr(ns, "docs_cmd", None) and bool(getattr(ns, "list", False)):
         items = sorted(
@@ -41,6 +102,13 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 "public-surface-check",
                 "generated-check",
                 "ops-entrypoints-check",
+                "build",
+                "serve",
+                "freeze",
+                "fmt",
+                "test",
+                "clean",
+                "requirements",
             }
         )
         if bool(getattr(ns, "json", False)):
@@ -49,6 +117,87 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             for item in items:
                 print(item)
         return 0
+    if ns.docs_cmd == "requirements":
+        if ns.docs_requirements_cmd != "lock-refresh":
+            return 2
+        venv = _docs_venv_path(ctx)
+        req = ctx.repo_root / "configs" / "docs" / "requirements.txt"
+        out = ctx.repo_root / "configs" / "docs" / "requirements.lock.txt"
+        steps = [
+            ("venv-create", ["python3", "-m", "venv", str(venv)]),
+            ("pip-upgrade", [str(venv / "bin" / "pip"), "install", "--upgrade", "pip"]),
+            ("req-install", [str(venv / "bin" / "pip"), "install", "-r", str(req)]),
+            ("req-freeze", ["sh", "-c", f"\"{venv}/bin/pip\" freeze --exclude-editable | LC_ALL=C sort > \"{out}\""]),
+        ]
+        return _run_docs_pipeline(ctx, steps, ns.report, fail_fast=True)
+
+    if ns.docs_cmd == "clean":
+        target = _docs_artifacts_root(ctx)
+        if target.exists():
+            shutil.rmtree(target)
+            return _emit_status(ns.report, 0, f"removed {target.relative_to(ctx.repo_root)}")
+        return _emit_status(ns.report, 0, "nothing to clean")
+
+    if ns.docs_cmd == "freeze":
+        return _run_check_fn(ctx, ns.report, _check_docs_freeze_drift, "docs freeze check passed")
+
+    if ns.docs_cmd == "fmt":
+        steps = [
+            ("render-diagrams", ["python3", "-m", "atlasctl.cli", "docs", "render-diagrams", "--report", "text"]),
+            ("docs-style", ["python3", "-m", "atlasctl.cli", "docs", "style", "--report", "text"]),
+        ]
+        if bool(getattr(ns, "all", False)):
+            steps.append(("extract-code", ["python3", "-m", "atlasctl.cli", "docs", "extract-code", "--report", "text"]))
+        return _run_docs_pipeline(ctx, steps, ns.report, fail_fast=True)
+
+    if ns.docs_cmd == "test":
+        steps = [
+            ("docs-freeze", ["python3", "-m", "atlasctl.cli", "docs", "freeze", "--report", "text"]),
+            ("docs-nav-check", ["python3", "-m", "atlasctl.cli", "docs", "nav-check", "--report", "text"]),
+            ("docs-link-check", ["python3", "-m", "atlasctl.cli", "docs", "link-check", "--report", "text"]),
+        ]
+        if bool(getattr(ns, "all", False)):
+            steps.append(("docs-check", ["python3", "-m", "atlasctl.cli", "docs", "check", "--report", "text"]))
+        return _run_docs_pipeline(ctx, steps, ns.report, fail_fast=bool(getattr(ns, "fail_fast", False)))
+
+    if ns.docs_cmd == "build":
+        code, output = _ensure_docs_venv(ctx)
+        if code != 0:
+            return _emit_status(ns.report, code, output)
+        venv = Path(output)
+        docs_artifacts = _docs_artifacts_root(ctx)
+        site_dir = docs_artifacts / "site"
+        steps = [
+            ("docs-generate", ["python3", "-m", "atlasctl.cli", "docs", "generate", "--report", "text"]),
+            ("docs-fmt", ["python3", "-m", "atlasctl.cli", "docs", "fmt", "--report", "text"]),
+            (
+                "mkdocs-build",
+                [
+                    "env",
+                    "SOURCE_DATE_EPOCH=946684800",
+                    str(venv / "bin" / "mkdocs"),
+                    "build",
+                    "--strict",
+                    "--config-file",
+                    "mkdocs.yml",
+                    "--site-dir",
+                    str(site_dir),
+                ],
+            ),
+            ("docs-check", ["python3", "-m", "atlasctl.cli", "docs", "check", "--report", "text"]),
+        ]
+        if bool(getattr(ns, "all", False)):
+            steps.append(("docs-test", ["python3", "-m", "atlasctl.cli", "docs", "test", "--report", "text", "--all"]))
+        return _run_docs_pipeline(ctx, steps, ns.report, fail_fast=bool(getattr(ns, "fail_fast", False)))
+
+    if ns.docs_cmd == "serve":
+        code, output = _ensure_docs_venv(ctx)
+        if code != 0:
+            return _emit_status(ns.report, code, output)
+        venv = Path(output)
+        cmd = ["env", "SOURCE_DATE_EPOCH=946684800", str(venv / "bin" / "mkdocs"), "serve", "--config-file", "mkdocs.yml"]
+        return _run_simple(ctx, cmd, ns.report)
+
     if ns.docs_cmd in {"check", "validate"}:
         def _check_nav_contract(inner_ctx: RunContext) -> tuple[int, str]:
             missing = _mkdocs_missing_files(inner_ctx.repo_root)
@@ -66,6 +215,16 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         ]
         if ns.docs_cmd == "check":
             checks = DOCS_LINT_CHECKS + checks
+            if bool(getattr(ns, "all", False)):
+                checks.append(
+                    _check(
+                        "docs-mkdocs-site-links",
+                        "Validate rendered mkdocs site links",
+                        None,
+                        "Rebuild docs site and fix broken internal links.",
+                        fn=lambda inner_ctx: _check_mkdocs_site_links(inner_ctx, str(_docs_artifacts_root(inner_ctx) / "site")),
+                    )
+                )
         return _run_docs_checks(ctx, checks, ns.report, ns.fail_fast, ns.emit_artifacts)
 
     if ns.docs_cmd == "lint":
@@ -75,7 +234,15 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 if output:
                     print(output)
                 return code
-        return _run_docs_checks(ctx, DOCS_LINT_CHECKS, ns.report, ns.fail_fast, ns.emit_artifacts)
+        checks = list(DOCS_LINT_CHECKS)
+        if bool(getattr(ns, "all", False)):
+            checks.extend(
+                [
+                    _check("docs-spelling", "Validate docs spelling", None, "Fix docs spelling and glossary violations.", fn=lambda inner_ctx: _spellcheck(inner_ctx, "docs")),
+                    _check("docs-style", "Validate docs style checks", None, "Fix docs style lint issues.", fn=lambda inner_ctx: _lint_doc_status(inner_ctx)),
+                ]
+            )
+        return _run_docs_checks(ctx, checks, ns.report, ns.fail_fast, ns.emit_artifacts)
 
     if ns.docs_cmd == "ops-entrypoints-check":
         return _run_simple_path(ctx, ns.report, "packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_external_entrypoints.py")
