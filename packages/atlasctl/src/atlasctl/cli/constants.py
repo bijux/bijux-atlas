@@ -17,6 +17,7 @@ CONFIGURE_HOOKS: tuple[tuple[str, str], ...] = (
     ("atlasctl.deps.command", "configure_deps_parser"),
     ("atlasctl.gen.command", "configure_gen_parser"),
     ("atlasctl.policies.command", "configure_policies_parser"),
+    ("atlasctl.repo.command", "configure_repo_parser"),
     ("atlasctl.commands.docs.runtime", "configure_docs_parser"),
     ("atlasctl.make.command", "configure_make_parser"),
     ("atlasctl.migrate.command", "configure_migrate_parser"),

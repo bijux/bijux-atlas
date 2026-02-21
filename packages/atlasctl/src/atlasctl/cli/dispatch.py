@@ -131,6 +131,7 @@ def dispatch_command(
         "deps": ("atlasctl.deps.command", "run_deps_command"),
         "gen": ("atlasctl.gen.command", "run_gen_command"),
         "policies": ("atlasctl.policies.command", "run_policies_command"),
+        "repo": ("atlasctl.repo.command", "run_repo_command"),
         "make": ("atlasctl.make.command", "run_make_command"),
         "migration": ("atlasctl.migrate.command", "run_migrate_command"),
         "ops": ("atlasctl.commands.ops.runtime", "run_ops_command"),
