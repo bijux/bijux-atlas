@@ -14,7 +14,7 @@ from ..cli.registry import register_domain_parser, render_payload
 from ..cli.registry import command_registry
 from ..core.context import RunContext
 from ..core.env import getenv, setdefault as env_setdefault, setenv
-from ..core.env_guard import guard_no_network_mode
+from ..core.runtime.env_guard import guard_no_network_mode
 from ..core.exec import check_output
 from ..core.fs import ensure_evidence_path
 from ..core.logging import log_event

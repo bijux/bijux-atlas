@@ -11,7 +11,7 @@ from typing import Any
 from ..core.context import RunContext
 from ..core.fs import ensure_evidence_path
 from ..core.process import run_command
-from ..core.schema_utils import validate_json
+from ..core.contracts.schema_utils import validate_json
 
 
 @dataclass(frozen=True)
@@ -211,11 +211,11 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             "suite": ["bash", "ops/run/load-suite.sh"],
             "baseline-compare": [
                 "python3",
-                "packages/atlasctl/src/atlasctl/load/compare_runs.py",
+                "packages/atlasctl/src/atlasctl/load/baseline/compare_runs.py",
             ],
             "baseline-update": [
                 "python3",
-                "packages/atlasctl/src/atlasctl/load/update_baseline.py",
+                "packages/atlasctl/src/atlasctl/load/baseline/update_baseline.py",
             ],
         }
         return _run_wrapped(ctx, CommandSpec("load", ns.load_cmd, mapping[ns.load_cmd]), ns.report)

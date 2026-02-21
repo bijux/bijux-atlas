@@ -16,7 +16,7 @@ import jsonschema
 
 from ..core.context import RunContext
 from ..core.fs import ensure_evidence_path
-from ..core.tooling import read_pins, read_tool_versions
+from ..core.runtime.tooling import read_pins, read_tool_versions
 
 CONFIG_SCHEMA_PAIRS: tuple[tuple[str, str], ...] = (
     ("configs/_meta/ownership.json", "configs/_schemas/configs-ownership.schema.json"),

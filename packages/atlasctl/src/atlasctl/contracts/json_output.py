@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from ..core.schema import validate_json_file_against_schema
+from ..core.contracts.schema import validate_json_file_against_schema
 from ..errors import ScriptError
 from ..exit_codes import ERR_VALIDATION
 from .validate import validate_file
