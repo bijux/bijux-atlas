@@ -75,16 +75,3 @@ def check_check_test_coverage(repo_root: Path) -> tuple[int, list[str]]:
         missing.append(marker)
     return (0 if not missing else 1), [f"check missing test/suite marker: {check_id}" for check_id in missing]
 
-
-def check_legacy_parity_tests_present(repo_root: Path) -> tuple[int, list[str]]:
-    legacy_dir = repo_root / "packages/atlasctl/src/atlasctl/legacy"
-    if not legacy_dir.exists():
-        return 0, []
-    legacy_files = [p for p in legacy_dir.rglob("*.py") if "__pycache__" not in p.as_posix()]
-    if not legacy_files:
-        return 0, []
-    tests_root = _tests_root(repo_root)
-    parity_tests = sorted(tests_root.rglob("test_legacy*.py"))
-    if parity_tests:
-        return 0, []
-    return 1, ["legacy modules exist but no legacy parity tests were found under packages/atlasctl/tests"]

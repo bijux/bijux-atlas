@@ -1,1 +1,0 @@
-"""Legacy repo-check helpers."""

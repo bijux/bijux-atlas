@@ -66,3 +66,6 @@ repo.subprocess_boundary
 repo.test_ownership_tags
 repo.tests_no_duplicate_expectations
 repo.type_coverage
+
+repo.legacy_package_absent
+repo.legacy_zero_importers

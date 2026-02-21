@@ -5,7 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[4]
 
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
@@ -20,18 +20,15 @@ def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
     )
 
 
-def test_legacy_audit_json() -> None:
-    proc = _run_cli("--quiet", "legacy", "audit", "--report", "json")
+def test_legacy_inventory_json() -> None:
+    proc = _run_cli("--quiet", "legacy", "inventory", "--report", "json")
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
-    assert payload["action"] == "audit"
-    assert payload["status"] == "pass"
-    assert isinstance(payload["references"], list)
+    assert payload["action"] == "inventory"
+    assert payload["status"] == "ok"
+    assert isinstance(payload["legacy_modules"], list)
 
 
-def test_legacy_check_json() -> None:
-    proc = _run_cli("--quiet", "legacy", "check", "--report", "json")
-    assert proc.returncode in (0, 1), proc.stderr
-    payload = json.loads(proc.stdout)
-    assert payload["action"] == "check"
-    assert "uncovered_count" in payload
+def test_no_legacy_package_exists() -> None:
+    legacy = ROOT / "packages/atlasctl/src/atlasctl/legacy"
+    assert not legacy.exists()

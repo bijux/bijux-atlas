@@ -40,7 +40,7 @@ def command_registry() -> tuple[CommandSpec, ...]:
         CommandSpec("report", "unified report and scorecard commands", ("artifacts/evidence/",), (), ("report assembly failures",), owner="platform", doc_link="docs/_generated/cli.md"),
         CommandSpec("suite", "atlasctl-native suite runner", ("artifacts/reports/atlasctl/",), ("python3",), ("suite task failures",), owner="platform", doc_link="docs/_generated/cli.md"),
         CommandSpec("lint", "lint suite runner", ("ops/_lint/",), (), ("lint policy failures",), owner="platform", doc_link="docs/_generated/cli.md"),
-        CommandSpec("legacy", "legacy migration audits", ("configs/layout/",), (), ("legacy reference drift",), owner="platform", doc_link="docs/_generated/cli.md"),
+        CommandSpec("legacy", "legacy inventory and historical migration metadata", ("configs/layout/",), (), ("legacy inventory drift",), owner="platform", doc_link="docs/_generated/cli.md"),
         CommandSpec("compat", "deprecated shim inventory and checks", ("configs/layout/",), (), ("compat shim drift",), stable=False, owner="platform", doc_link="docs/_generated/cli.md"),
         CommandSpec("contracts", "contracts domain commands", ("configs/contracts/",), (), ("contract generation/validation failures",), owner="platform", doc_link="docs/_generated/cli.md"),
         CommandSpec("registry", "registry domain commands", ("configs/ops/pins/",), (), ("registry inconsistency",), owner="platform", doc_link="docs/_generated/cli.md"),
