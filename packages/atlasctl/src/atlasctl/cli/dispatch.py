@@ -122,6 +122,7 @@ def dispatch_command(
         "report": ("atlasctl.reporting.command", "run_report_command"),
         "lint": ("atlasctl.lint.command", "run_lint_command"),
         "test": ("atlasctl.test_tools.command", "run_test_command"),
+        "suite": ("atlasctl.suite.command", "run_suite_command"),
         "compat": ("atlasctl.commands.compat", "run_compat_command"),
         "legacy": ("atlasctl.legacy.command", "run_legacy_command"),
         "python": ("atlasctl.python_tools.command", "run_python_command"),
