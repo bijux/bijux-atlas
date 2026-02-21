@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[4]
 
 
 def test_contracts_list_json_matches_golden() -> None:
+    # schema-validate-exempt: contracts list payload does not have a dedicated schema yet.
     proc = run_atlasctl("--quiet", "contracts", "list", "--report", "json")
     assert proc.returncode == 0, proc.stderr
     golden = (ROOT / "packages/atlasctl/tests/goldens/contracts-list.json.golden").read_text(encoding="utf-8").strip()

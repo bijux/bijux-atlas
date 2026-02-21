@@ -75,3 +75,17 @@ def check_check_test_coverage(repo_root: Path) -> tuple[int, list[str]]:
         missing.append(marker)
     return (0 if not missing else 1), [f"check missing test/suite marker: {check_id}" for check_id in missing]
 
+
+def check_json_goldens_validate_schema(repo_root: Path) -> tuple[int, list[str]]:
+    offenders: list[str] = []
+    for path in sorted(_tests_root(repo_root).rglob("test_*.py")):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if ".json.golden" not in text:
+            continue
+        if "# schema-validate-exempt" in text:
+            continue
+        if "_golden(" not in text and "golden =" not in text:
+            continue
+        if "validate(" not in text:
+            offenders.append(path.relative_to(repo_root).as_posix())
+    return (0 if not offenders else 1), [f"json golden test missing schema validate() call: {rel}" for rel in offenders]
