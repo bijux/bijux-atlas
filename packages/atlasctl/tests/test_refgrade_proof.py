@@ -140,13 +140,13 @@ def test_run_dir_isolation_parallel_runs(tmp_path: Path) -> None:
 
 def test_ops_generated_runtime_dir_not_required_by_tooling() -> None:
     command_roots = [
-        ROOT / "packages/atlasctl/src/atlasctl/cli.py",
+        ROOT / "packages/atlasctl/src/atlasctl/cli/main.py",
         ROOT / "packages/atlasctl/src/atlasctl/orchestrate/command.py",
-        ROOT / "packages/atlasctl/src/atlasctl/report/command.py",
+        ROOT / "packages/atlasctl/src/atlasctl/reporting/command.py",
         ROOT / "packages/atlasctl/src/atlasctl/gates/command.py",
-        ROOT / "packages/atlasctl/src/atlasctl/docs/command.py",
+        ROOT / "packages/atlasctl/src/atlasctl/commands/docs/legacy.py",
         ROOT / "packages/atlasctl/src/atlasctl/configs/command.py",
-        ROOT / "packages/atlasctl/src/atlasctl/ops/command.py",
+        ROOT / "packages/atlasctl/src/atlasctl/commands/ops/legacy.py",
     ]
     for path in command_roots:
         text = path.read_text(encoding="utf-8")

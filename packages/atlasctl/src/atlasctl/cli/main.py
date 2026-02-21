@@ -356,7 +356,7 @@ def main(argv: list[str] | None = None) -> int:
         if ns.cmd == "doctor":
             return _import_attr("atlasctl.commands.doctor", "run_doctor")(ctx, ns.json, ns.out_file)
         if ns.cmd == "docs":
-            return _import_attr("atlasctl.docs.command", "run_docs_command")(ctx, ns)
+            return _import_attr("atlasctl.commands.docs.legacy", "run_docs_command")(ctx, ns)
         if ns.cmd == "configs":
             return _import_attr("atlasctl.configs.command", "run_configs_command")(ctx, ns)
         if ns.cmd == "config":
@@ -382,7 +382,7 @@ def main(argv: list[str] | None = None) -> int:
         if ns.cmd == "migration":
             return _import_attr("atlasctl.migrate.command", "run_migrate_command")(ctx, ns)
         if ns.cmd == "ops":
-            return _import_attr("atlasctl.ops.command", "run_ops_command")(ctx, ns)
+            return _import_attr("atlasctl.commands.ops.legacy", "run_ops_command")(ctx, ns)
         if ns.cmd == "inventory":
             return _import_attr("atlasctl.inventory.command", "run_inventory")(
                 ctx, ns.category, ns.format, ns.out_dir, ns.dry_run, ns.check, ns.command

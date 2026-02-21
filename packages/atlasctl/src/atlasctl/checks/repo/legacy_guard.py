@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-_ALLOWED = {"__init__.py", "command.py"}
+_ALLOWED = {"__init__.py", "command.py", "docs_command.py", "ops_command.py"}
 
 
 def check_legacy_package_quarantine(repo_root: Path) -> tuple[int, list[str]]:
@@ -17,7 +17,7 @@ def check_legacy_package_quarantine(repo_root: Path) -> tuple[int, list[str]]:
 
     if offenders:
         return 1, [
-            "legacy package is quarantined; only command.py and __init__.py are allowed",
+            "legacy package is quarantined; only approved shim modules are allowed",
             *offenders,
         ]
     return 0, []

@@ -6,7 +6,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from atlasctl.docs.command import _mkdocs_nav_file_refs
+from atlasctl.commands.docs.legacy import _mkdocs_nav_file_refs
 
 ROOT = Path(__file__).resolve().parents[3]
 
@@ -40,7 +40,7 @@ def test_docs_nav_check_bad_fixture(tmp_path: Path) -> None:
         encoding="utf-8",
     )
 
-    from atlasctl.docs.command import _mkdocs_missing_files
+    from atlasctl.commands.docs.legacy import _mkdocs_missing_files
 
     missing = _mkdocs_missing_files(tmp_path)
     assert missing == ["missing.md"]

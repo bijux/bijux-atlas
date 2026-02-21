@@ -1,4 +1,4 @@
-"""Compatibility shim for ops command module."""
+"""Legacy ops command compatibility shim."""
 
 from ..commands.ops import legacy as _legacy
 
