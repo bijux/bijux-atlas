@@ -214,6 +214,36 @@ max_imports_per_file = 999
 max_public_symbols_per_module = 999
 max_branch_keywords_per_file = 999
 
+[[tool.atlasctl.budgets.rules]]
+name = "src_domain_default"
+path_glob = "packages/atlasctl/src/atlasctl/*"
+enforce = true
+max_py_files_per_dir = 10
+max_modules_per_dir = 10
+max_loc_per_file = 600
+max_loc_per_dir = 2600
+max_shell_files_per_dir = 10
+max_total_loc_per_dir = 2600
+max_total_bytes_per_dir = 280000
+max_imports_per_file = 40
+max_public_symbols_per_module = 30
+max_branch_keywords_per_file = 80
+
+[[tool.atlasctl.budgets.rules]]
+name = "tests_domain_default"
+path_glob = "packages/atlasctl/tests/*"
+enforce = true
+max_py_files_per_dir = 10
+max_modules_per_dir = 10
+max_loc_per_file = 600
+max_loc_per_dir = 2600
+max_shell_files_per_dir = 10
+max_total_loc_per_dir = 2600
+max_total_bytes_per_dir = 280000
+max_imports_per_file = 40
+max_public_symbols_per_module = 30
+max_branch_keywords_per_file = 80
+
 [[tool.atlasctl.budgets.exceptions]]
 path = "packages/atlasctl/src/atlasctl/legacy/docs_runtime_chunks"
 reason = "legacy compatibility runtime shards with dynamic loading"
@@ -235,6 +265,8 @@ includes = ["fast"]
 complete = true
 items = [
   "check-tag:refgrade_required",
+  "cmd:atlasctl policies check-dir-entry-budgets --json",
+  "cmd:atlasctl policies check-py-files-per-dir --json",
   "cmd:atlasctl contracts validate --report json",
   "cmd:atlasctl policies culprits-suite --report json",
   "schema:atlasctl.help.v1",

@@ -54,3 +54,28 @@ def test_exception_registry_requires_owner_and_non_expired(tmp_path: Path) -> No
     assert any("missing owner" in err for err in errs)
     assert any("expired on" in err for err in errs)
     assert any("exception count exceeded" in err for err in errs)
+
+
+def test_budget_profile_registration_required_for_top_level_domains(tmp_path: Path) -> None:
+    pkg = tmp_path / "packages/atlasctl/src/atlasctl/newdomain"
+    pkg.mkdir(parents=True)
+    (tmp_path / "packages/atlasctl/tests/newdomain").mkdir(parents=True)
+    _write_exceptions(tmp_path, {"schema_version": 1, "max_exceptions": 3, "exceptions": []})
+    pyproject = tmp_path / "packages/atlasctl/pyproject.toml"
+    pyproject.parent.mkdir(parents=True, exist_ok=True)
+    pyproject.write_text(
+        "\n".join(
+            [
+                "[tool.atlasctl.budgets]",
+                "",
+                "[[tool.atlasctl.budgets.rules]]",
+                "name = 'other'",
+                "path_glob = 'packages/atlasctl/src/atlasctl/core*'",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    payload = evaluate_budget(tmp_path, "entries-per-dir")
+    first = payload["items"][0]
+    assert first["path"] == "_exceptions_"
+    assert any("top-level domain missing budget profile rule" in err for err in first["errors"])

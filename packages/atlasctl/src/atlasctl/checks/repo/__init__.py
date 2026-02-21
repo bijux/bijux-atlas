@@ -27,6 +27,7 @@ from ...policies.culprits import (
     check_budget_metric,
 )
 from ...policies.dir_budgets import check_loc_per_dir, check_modules_per_dir, check_py_files_per_dir
+from ...policies.dir_entry_budgets import check_dir_entry_budgets, check_py_files_per_dir_budget
 from ...policies.module_budgets import check_modules_per_domain
 from ...policies.tree_depth import check_tree_depth
 from .enforcement.cwd_usage import check_no_path_cwd_usage
@@ -210,6 +211,22 @@ CHECKS: tuple[CheckDef, ...] = (
         400,
         check_py_files_per_dir,
         fix_hint="Split high-density directories and keep directory fan-in bounded.",
+    ),
+    CheckDef(
+        "repo.dir_budget_entries",
+        "repo",
+        "enforce per-directory entries budget in atlasctl src/tests",
+        400,
+        check_dir_entry_budgets,
+        fix_hint="Split crowded directories; required reading: packages/atlasctl/docs/architecture/how-to-split-a-module.md.",
+    ),
+    CheckDef(
+        "repo.dir_budget_py_scope",
+        "repo",
+        "enforce per-directory .py file budget in atlasctl src/tests (excluding __init__.py)",
+        400,
+        check_py_files_per_dir_budget,
+        fix_hint="Split module directories and keep <=10 python files per dir; see how-to-split-a-module.md.",
     ),
     CheckDef(
         "repo.dir_budget_loc",
