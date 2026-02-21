@@ -145,23 +145,27 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
         if fmt_ok and params.all_tests:
             run_cmd(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose))
     elif action == "lint":
-        run_cmd(["cargo", "fmt", "--all", "--", "--check", "--config-path", RUSTFMT_CONFIG]) and run_cmd(
-            _atlasctl_cmd("policies", "check", "--fail-fast", quiet=ctx.quiet)
-        ) and run_cmd(_atlasctl_cmd("check", "no-direct-bash-invocations", quiet=ctx.quiet)) and run_cmd(
-            _atlasctl_cmd("check", "no-direct-python-invocations", quiet=ctx.quiet)
-        ) and run_cmd(_atlasctl_cmd("check", "scripts-surface-docs-drift", quiet=ctx.quiet)) and run_cmd(
-            _atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose)
-        ) and run_cmd(_atlasctl_cmd("docs", "link-check", "--report", "text", quiet=ctx.quiet)) and run_cmd(
-            [
-                "cargo",
-                "clippy",
-                "--workspace",
-                "--all-targets",
-                "--",
-                "-D",
-                "warnings",
-            ]
+        lint_ok = (
+            run_cmd(["cargo", "fmt", "--all", "--", "--check", "--config-path", RUSTFMT_CONFIG])
+            and run_cmd(_atlasctl_cmd("policies", "check", "--fail-fast", quiet=ctx.quiet))
+            and run_cmd(_atlasctl_cmd("check", "no-direct-bash-invocations", quiet=ctx.quiet))
+            and run_cmd(_atlasctl_cmd("check", "no-direct-python-invocations", quiet=ctx.quiet))
+            and run_cmd(_atlasctl_cmd("check", "scripts-surface-docs-drift", quiet=ctx.quiet))
+            and run_cmd(_atlasctl_cmd("docs", "link-check", "--report", "text", quiet=ctx.quiet))
+            and run_cmd(
+                [
+                    "cargo",
+                    "clippy",
+                    "--workspace",
+                    "--all-targets",
+                    "--",
+                    "-D",
+                    "warnings",
+                ]
+            )
         )
+        if lint_ok and params.all_tests:
+            run_cmd(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose))
     elif action == "check":
         run_cmd(["cargo", "check", "--workspace", "--all-targets"]) and run_cmd(
             _atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose)
