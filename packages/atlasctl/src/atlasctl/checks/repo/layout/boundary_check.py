@@ -121,7 +121,10 @@ def check_boundaries(repo_root: Path) -> list[Violation]:
 
 
 def main() -> int:
-    repo_root = Path(__file__).resolve().parents[5]
+    repo_root = next((parent for parent in Path(__file__).resolve().parents if (parent / ".git").exists()), None)
+    if repo_root is None:
+        print("bijux-atlas boundary check failed: unable to locate repository root")
+        return 1
     violations = check_boundaries(repo_root)
     if violations:
         print("bijux-atlas boundary check failed")

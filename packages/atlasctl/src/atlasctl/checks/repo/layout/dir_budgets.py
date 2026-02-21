@@ -3,7 +3,7 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[5]
+ROOT = next((parent for parent in Path(__file__).resolve().parents if (parent / ".git").exists()), Path(__file__).resolve().parents[0])
 BUDGETS_PATH = ROOT / "configs/layout/dir-budgets.json"
 
 
