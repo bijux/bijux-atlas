@@ -126,6 +126,32 @@ max_public_symbols_per_module = 50
 max_branch_keywords_per_file = 120
 
 [[tool.atlasctl.budgets.rules]]
+name = "checks_layout_shell_cap"
+path_glob = "packages/atlasctl/src/atlasctl/checks/layout/shell*"
+enforce = true
+max_py_files_per_dir = 12
+max_modules_per_dir = 12
+max_shell_files_per_dir = 24
+max_total_loc_per_dir = 1200
+max_total_bytes_per_dir = 120000
+max_imports_per_file = 50
+max_public_symbols_per_module = 50
+max_branch_keywords_per_file = 120
+
+[[tool.atlasctl.budgets.rules]]
+name = "checks_layout_contracts_cap"
+path_glob = "packages/atlasctl/src/atlasctl/checks/layout/contracts*"
+enforce = true
+max_py_files_per_dir = 12
+max_modules_per_dir = 10
+max_shell_files_per_dir = 2
+max_total_loc_per_dir = 2200
+max_total_bytes_per_dir = 220000
+max_imports_per_file = 50
+max_public_symbols_per_module = 50
+max_branch_keywords_per_file = 120
+
+[[tool.atlasctl.budgets.rules]]
 name = "ops_shell_relaxed"
 path_glob = "ops/*"
 enforce = true
