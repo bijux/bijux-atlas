@@ -28,6 +28,19 @@ _CHECKS: tuple[CheckDef, ...] = (
 )
 
 
+def check_tags(check: CheckDef) -> tuple[str, ...]:
+    tags = set(check.tags)
+    tags.add(check.domain)
+    if check.slow:
+        tags.add("slow")
+    else:
+        tags.add("fast")
+    if "experimental" not in tags:
+        tags.add("refgrade_required")
+    tags.add("refgrade")
+    return tuple(sorted(tags))
+
+
 def list_checks() -> tuple[CheckDef, ...]:
     seen: set[str] = set()
     duplicates: set[str] = set()

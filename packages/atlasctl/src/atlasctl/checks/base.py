@@ -33,6 +33,7 @@ class CheckDef:
     category: CheckCategory = CheckCategory.HYGIENE
     fix_hint: str = "Review check output and apply the documented fix."
     slow: bool = False
+    tags: tuple[str, ...] = ()
     external_tools: tuple[str, ...] = ()
     evidence: tuple[str, ...] = ()
 

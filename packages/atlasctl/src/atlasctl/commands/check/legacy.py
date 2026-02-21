@@ -6,7 +6,7 @@ import subprocess
 from pathlib import Path
 from typing import Callable
 
-from ...checks.registry import get_check, list_checks
+from ...checks.registry import check_tags, get_check, list_checks
 from ...checks.repo.contracts.command_contracts import runtime_contracts_payload
 from ...checks.repo.native import (
     check_atlas_scripts_cli_contract,
@@ -112,6 +112,7 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                     "category": check.category.value,
                     "fix_hint": check.fix_hint,
                     "slow": check.slow,
+                    "tags": list(check_tags(check)),
                     "external_tools": list(check.external_tools),
                 }
                 for check in list_checks()
@@ -133,6 +134,7 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             "description": check.description,
             "severity": check.severity.value,
             "category": check.category.value,
+            "tags": list(check_tags(check)),
             "failure_modes": ["policy violation", "contract drift", "hygiene drift"],
             "how_to_fix": check.fix_hint,
         }
