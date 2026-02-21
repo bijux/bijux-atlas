@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from ..core.context import RunContext
+from .catalog import lint_catalog, list_catalog_entries
 from .checks import (
     check_breaking,
     check_chart_values,
@@ -44,6 +45,17 @@ def _emit(report: str, errors: list[str]) -> int:
 
 def run_contracts_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     report = getattr(ns, "report", "text")
+    if ns.contracts_cmd == "list":
+        rows = [
+            {"schema_name": entry.name, "schema_version": entry.version, "file": entry.file}
+            for entry in sorted(list_catalog_entries(), key=lambda row: row.name)
+        ]
+        payload = {"schema_version": 1, "tool": "atlasctl", "status": "ok", "schemas": rows}
+        print(json.dumps(payload, sort_keys=True) if report == "json" else json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+    if ns.contracts_cmd == "lint":
+        errors = lint_catalog()
+        return _emit(report, errors)
     if ns.contracts_cmd == "check":
         checks = ns.checks or list(CHECK_HANDLERS)
         errors: list[str] = []
@@ -62,6 +74,12 @@ def run_contracts_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 def configure_contracts_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     parser = sub.add_parser("contracts", help="contracts checks and generators")
     subp = parser.add_subparsers(dest="contracts_cmd", required=True)
+
+    lst = subp.add_parser("list", help="list schema ids and versions from catalog")
+    lst.add_argument("--report", choices=["text", "json"], default="text")
+
+    lint = subp.add_parser("lint", help="lint schema catalog naming/order/coverage rules")
+    lint.add_argument("--report", choices=["text", "json"], default="text")
 
     check = subp.add_parser("check", help="check contract breakage/drift/endpoints/error-codes/sqlite-indexes/chart-values")
     check.add_argument("--report", choices=["text", "json"], default="text")
