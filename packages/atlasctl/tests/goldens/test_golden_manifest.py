@@ -18,6 +18,7 @@ def test_golden_manifest_matches_filesystem() -> None:
         if rel == 'MANIFEST.json' or rel.startswith('__pycache__/'):
             continue
         actual.append((path.name, rel))
+    actual = sorted(actual)
 
     assert manifest == actual
 

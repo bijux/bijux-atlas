@@ -37,6 +37,7 @@ def test_json_outputs_validate_against_declared_schema() -> None:
         ("--json", "check", "list"),
         ("explain", "command", "check", "--json"),
         ("--json", "contracts", "list"),
+        ("--json", "contracts", "validate-self"),
     ]
     for args in commands:
         proc = run_atlasctl("--quiet", *args)
@@ -63,3 +64,4 @@ def test_refgrade_suite_has_contracts_validate_gate() -> None:
     _, suites = load_suites(Path(__file__).resolve().parents[4])
     refgrade = suites["refgrade"]
     assert "cmd:atlasctl contracts validate --report json" in refgrade.items
+    assert "cmd:atlasctl contracts validate-self --report json" in refgrade.items

@@ -1,0 +1,28 @@
+{
+  "markers": [
+    "refgrade",
+    "ci",
+    "local",
+    "slow"
+  ],
+  "schema_name": "atlasctl.suite-manifests.v1",
+  "schema_version": 1,
+  "status": "ok",
+  "suites": [
+    {
+      "default_effects": [
+        "read",
+        "process"
+      ],
+      "markers": [
+        "refgrade_required"
+      ],
+      "name": "refgrade",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 300000
+    }
+  ],
+  "tool": "atlasctl"
+}

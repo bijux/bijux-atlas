@@ -1,15 +1,19 @@
 {
+  "aliases": [],
   "command": "help",
   "contract": "atlasctl.commands.v1",
+  "effect_level": "pure",
   "examples": [
-    "atlasctl explain help --json"
+    "atlasctl explain command help --json"
   ],
   "failure_modes": [],
-  "purpose": "describe command contract",
+  "purpose": "describe command behavior",
   "run_id": "sample-explain",
+  "run_id_mode": "not_required",
   "schema_name": "atlasctl.explain.v1",
   "schema_version": 1,
   "status": "ok",
+  "supports_dry_run": true,
   "tool": "atlasctl",
   "tools": [],
   "touches": []
