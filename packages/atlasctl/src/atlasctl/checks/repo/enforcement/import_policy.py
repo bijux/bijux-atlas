@@ -12,6 +12,8 @@ _COMMAND_IMPORT_ALLOW_PREFIXES = ("core", "contracts", "checks", "reporting", "a
 _COMMAND_IMPORT_ALLOW_EXACT = {"errors", "exit_codes", "run_context"}
 _CHECK_IMPORT_ALLOW_PREFIXES = ("core", "contracts", "reporting", "adapters", "checks")
 _CHECK_IMPORT_ALLOW_EXACT = {"errors", "exit_codes", "run_context"}
+_CLI_IMPORT_ALLOW_PREFIXES = ("commands", "core", "cli")
+_CLI_IMPORT_ALLOW_EXACT = {"errors", "exit_codes", "network_guard"}
 _COLD_IMPORT_BUDGET_MS = 250.0
 
 
@@ -28,6 +30,17 @@ def _module_prefix(node: ast.ImportFrom | ast.Import) -> str | None:
     if node.level != 0 or not node.module or not node.module.startswith("atlasctl."):
         return None
     return node.module.split(".", 2)[1]
+
+
+def _first_atlasctl_import(node: ast.ImportFrom | ast.Import) -> tuple[str, int] | None:
+    if isinstance(node, ast.Import):
+        for alias in node.names:
+            if alias.name.startswith("atlasctl."):
+                return alias.name, node.lineno
+        return None
+    if node.level == 0 and node.module and node.module.startswith("atlasctl."):
+        return node.module, node.lineno
+    return None
 
 
 def check_internal_import_boundaries(repo_root: Path) -> tuple[int, list[str]]:
@@ -185,7 +198,7 @@ def check_command_import_lint(repo_root: Path) -> tuple[int, list[str]]:
         if rel.endswith("/legacy.py"):
             continue
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=rel)
-        bad_prefixes: set[str] = set()
+        bad_edges: set[str] = set()
         for node in ast.walk(tree):
             if not isinstance(node, (ast.Import, ast.ImportFrom)):
                 continue
@@ -196,9 +209,12 @@ def check_command_import_lint(repo_root: Path) -> tuple[int, list[str]]:
                 continue
             if prefix in _COMMAND_IMPORT_ALLOW_PREFIXES:
                 continue
-            bad_prefixes.add(prefix)
-        if bad_prefixes:
-            offenders.append(f"{rel}: disallowed atlasctl imports {sorted(bad_prefixes)}")
+            imported = _first_atlasctl_import(node)
+            if imported is None:
+                continue
+            bad_edges.add(f"{rel}:{imported[1]} import-chain commands -> {imported[0]}")
+        if bad_edges:
+            offenders.extend(sorted(bad_edges))
     return (0 if not offenders else 1), offenders
 
 
@@ -209,7 +225,7 @@ def check_checks_import_lint(repo_root: Path) -> tuple[int, list[str]]:
         if "/legacy/" in rel:
             continue
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=rel)
-        bad_prefixes: set[str] = set()
+        bad_edges: set[str] = set()
         for node in ast.walk(tree):
             if not isinstance(node, (ast.Import, ast.ImportFrom)):
                 continue
@@ -220,10 +236,79 @@ def check_checks_import_lint(repo_root: Path) -> tuple[int, list[str]]:
                 continue
             if prefix in _CHECK_IMPORT_ALLOW_PREFIXES:
                 continue
-            bad_prefixes.add(prefix)
-        if bad_prefixes:
-            offenders.append(f"{rel}: disallowed atlasctl imports {sorted(bad_prefixes)}")
+            imported = _first_atlasctl_import(node)
+            if imported is None:
+                continue
+            bad_edges.add(f"{rel}:{imported[1]} import-chain checks -> {imported[0]}")
+        if bad_edges:
+            offenders.extend(sorted(bad_edges))
     return (0 if not offenders else 1), offenders
+
+
+def check_core_no_command_imports(repo_root: Path) -> tuple[int, list[str]]:
+    offenders: list[str] = []
+    for path in sorted((repo_root / _SRC_ROOT / "core").rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=rel)
+        for node in ast.walk(tree):
+            imported = _first_atlasctl_import(node) if isinstance(node, (ast.Import, ast.ImportFrom)) else None
+            if imported is None:
+                continue
+            target = imported[0]
+            if target.startswith("atlasctl.commands.") or target == "atlasctl.commands" or target.startswith("atlasctl.cli.") or target == "atlasctl.cli":
+                offenders.append(f"{rel}:{imported[1]} import-chain core -> {target}")
+    return (0 if not offenders else 1), sorted(set(offenders))
+
+
+def check_checks_no_cli_imports(repo_root: Path) -> tuple[int, list[str]]:
+    offenders: list[str] = []
+    for path in sorted((repo_root / _SRC_ROOT / "checks").rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=rel)
+        for node in ast.walk(tree):
+            imported = _first_atlasctl_import(node) if isinstance(node, (ast.Import, ast.ImportFrom)) else None
+            if imported is None:
+                continue
+            target = imported[0]
+            if target == "atlasctl.cli" or target.startswith("atlasctl.cli."):
+                offenders.append(f"{rel}:{imported[1]} import-chain checks -> {target}")
+    return (0 if not offenders else 1), sorted(set(offenders))
+
+
+def check_cli_import_scope(repo_root: Path) -> tuple[int, list[str]]:
+    offenders: list[str] = []
+    for path in sorted((repo_root / _SRC_ROOT / "cli").rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=rel)
+        for node in ast.walk(tree):
+            if not isinstance(node, (ast.Import, ast.ImportFrom)):
+                continue
+            prefix = _module_prefix(node)
+            if prefix is None:
+                continue
+            if prefix in _CLI_IMPORT_ALLOW_EXACT or prefix in _CLI_IMPORT_ALLOW_PREFIXES:
+                continue
+            imported = _first_atlasctl_import(node)
+            if imported is None:
+                continue
+            offenders.append(f"{rel}:{imported[1]} import-chain cli -> {imported[0]}")
+    return (0 if not offenders else 1), sorted(set(offenders))
+
+
+def check_registry_definition_boundary(repo_root: Path) -> tuple[int, list[str]]:
+    offenders: list[str] = []
+    forbidden = ("atlasctl.commands", "atlasctl.cli")
+    for path in sorted((repo_root / _SRC_ROOT / "registry").rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=rel)
+        for node in ast.walk(tree):
+            imported = _first_atlasctl_import(node) if isinstance(node, (ast.Import, ast.ImportFrom)) else None
+            if imported is None:
+                continue
+            target = imported[0]
+            if any(target == base or target.startswith(f"{base}.") for base in forbidden):
+                offenders.append(f"{rel}:{imported[1]} import-chain registry -> {target}")
+    return (0 if not offenders else 1), sorted(set(offenders))
 
 
 def check_compileall_gate(repo_root: Path) -> tuple[int, list[str]]:

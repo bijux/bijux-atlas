@@ -179,3 +179,37 @@ def check_effect_boundary_exceptions_policy(repo_root: Path) -> tuple[int, list[
             if not reason:
                 errors.append(f"{_EXCEPTIONS_PATH.as_posix()}: {rule} path {rel} missing reason")
     return (0 if not errors else 1), sorted(set(errors))
+
+
+def check_managed_artifact_write_roots(repo_root: Path) -> tuple[int, list[str]]:
+    from atlasctl.core.context import RunContext
+    from atlasctl.core.fs import ensure_managed_write_path
+
+    errors: list[str] = []
+    ctx = RunContext.from_args(
+        run_id="boundary-check",
+        evidence_root=None,
+        profile="local",
+        no_network=True,
+        output_format="text",
+        network_mode="forbid",
+        run_dir=None,
+        verbose=False,
+        quiet=True,
+        require_clean_git=False,
+        log_json=False,
+    )
+    for root in (ctx.evidence_root, ctx.scripts_artifact_root):
+        try:
+            rel = root.resolve().relative_to(ctx.repo_root)
+        except ValueError:
+            errors.append(f"managed write root must be under repository artifacts/: {root}")
+            continue
+        if not rel.as_posix().startswith("artifacts/"):
+            errors.append(f"managed write root must stay under artifacts/: {rel.as_posix()}")
+    try:
+        ensure_managed_write_path(ctx, ctx.repo_root / "docs" / "not-allowed.txt")
+        errors.append("core.fs allowed write outside artifacts roots without explicit exception")
+    except Exception:
+        pass
+    return (0 if not errors else 1), sorted(set(errors))

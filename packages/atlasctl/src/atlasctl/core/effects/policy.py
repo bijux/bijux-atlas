@@ -27,6 +27,8 @@ _COMMAND_GROUPS: dict[str, CommandGroup] = {
     "registry": "dev",
     "layout": "dev",
     "list": "dev",
+    "make": "dev",
+    "run-id": "dev",
     "dev": "dev",
     "internal": "internal",
 }
@@ -37,7 +39,7 @@ _GROUP_ALLOWED_EFFECTS: dict[CommandGroup, tuple[EffectName, ...]] = {
     "dev": ("read", "write", "process"),
     "ops": ("read", "write", "process", "network"),
     "policies": ("read", "write", "process"),
-    "internal": ("read", "write", "process", "network"),
+    "internal": ("read", "write", "process"),
 }
 
 _COMMAND_EFFECTS: dict[str, tuple[EffectName, ...]] = {
@@ -62,6 +64,8 @@ _COMMAND_EFFECTS: dict[str, tuple[EffectName, ...]] = {
     "registry": ("read", "write", "process"),
     "layout": ("read", "write", "process"),
     "list": ("read", "write", "process"),
+    "make": ("read", "write", "process"),
+    "run-id": ("read", "write", "process"),
     "dev": ("read", "write", "process"),
     "internal": ("read", "write", "process"),
 }
