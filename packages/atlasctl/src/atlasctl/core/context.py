@@ -34,6 +34,36 @@ class RunContext:
     def scripts_root(self) -> Path:
         return (self.repo_root / "artifacts/atlasctl").resolve()
 
+    @property
+    def fs(self):  # noqa: ANN201
+        from . import fs as fs_module
+
+        return fs_module
+
+    @property
+    def exec(self):  # noqa: ANN201
+        from . import exec as exec_module
+
+        return exec_module
+
+    @property
+    def env(self):  # noqa: ANN201
+        from . import env as env_module
+
+        return env_module
+
+    @property
+    def process(self):  # noqa: ANN201
+        from . import process as process_module
+
+        return process_module
+
+    @property
+    def network(self):  # noqa: ANN201
+        from . import network as network_module
+
+        return network_module
+
     @classmethod
     def from_args(
         cls,

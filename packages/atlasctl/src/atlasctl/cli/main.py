@@ -13,7 +13,7 @@ from ..cli.registry import command_registry, register_domain_parser
 from ..core.context import RunContext
 from ..core.env import getenv, setdefault as env_setdefault, setenv
 from ..core.exec import check_output
-from ..core.fs import ensure_evidence_path
+from ..core.fs import write_json, write_text
 from ..core.logging import log_event
 from ..core.repo_root import try_find_repo_root
 from ..contracts.ids import COMMANDS, RUNTIME_CONTRACTS
@@ -47,8 +47,7 @@ def _version_string() -> str:
 
 def _write_payload_if_requested(ctx: RunContext, out_file: str | None, payload: str) -> None:
     if out_file:
-        out_path = ensure_evidence_path(ctx, Path(out_file))
-        out_path.write_text(payload + "\n", encoding="utf-8")
+        write_text(ctx, Path(out_file), payload + "\n")
 
 
 def _commands_payload() -> dict[str, object]:
@@ -108,8 +107,8 @@ def _emit_runtime_contracts(ctx: RunContext, cmd: str, argv: list[str] | None) -
         "repo_root": str(ctx.repo_root),
         "artifact_root": str(root),
     }
-    (root / "reports" / "write-roots-contract.json").write_text(json.dumps(write_roots, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    (root / "reports" / "run-manifest.json").write_text(json.dumps(run_manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_json(ctx, root / "reports" / "write-roots-contract.json", write_roots)
+    write_json(ctx, root / "reports" / "run-manifest.json", run_manifest)
 
 
 def _apply_python_env(ctx: RunContext) -> None:

@@ -67,10 +67,6 @@
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {
-        "path": "packages/atlasctl/src/atlasctl/cli/main.py",
-        "reason": "temporary boundary exception; migrate to core boundary"
-      },
-      {
         "path": "packages/atlasctl/src/atlasctl/commands/compat.py",
         "reason": "temporary boundary exception; migrate to core boundary"
       },
