@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 from atlasctl.core.context import RunContext
 from atlasctl.errors import ScriptError
-from atlasctl.fs import ensure_write_path
+from atlasctl.core.fs import ensure_evidence_path
 from atlasctl.reporting import write_json_report
 
 
@@ -27,4 +27,4 @@ def test_reporting_writer_stays_in_evidence() -> None:
 def test_forbidden_ops_write_is_rejected() -> None:
     ctx = _ctx()
     with pytest.raises(ScriptError):
-        ensure_write_path(ctx, Path("ops/_generated/forbidden-write.json"))
+        ensure_evidence_path(ctx, Path("ops/_generated/forbidden-write.json"))

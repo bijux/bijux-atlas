@@ -183,7 +183,7 @@ def collect_legacy_scripts(repo_root: Path) -> dict[str, object]:
 
 
 def collect_commands(_repo_root: Path) -> dict[str, object]:
-    from ..domain_cmd import registry as command_registry
+    from ..cli.registry import registry as command_registry
 
     commands = [
         {
