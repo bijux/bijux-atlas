@@ -8,7 +8,7 @@ from pathlib import Path
 
 from atlasctl.cli import build_parser
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
@@ -50,6 +50,7 @@ def test_help_for_all_commands() -> None:
         "registry",
         "layout",
         "report",
+        "run-id",
         "internal",
     )
     for command in commands:
@@ -108,6 +109,15 @@ def test_explain_command_contract() -> None:
     assert payload["tool"] == "atlasctl"
     assert payload["command"] == "check"
     assert isinstance(payload["touches"], list)
+
+
+def test_run_id_command_contract() -> None:
+    proc = _run_cli("--json", "run-id", "--prefix", "ci")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["tool"] == "atlasctl"
+    assert payload["status"] == "ok"
+    assert payload["run_id"].startswith("ci-")
 
 
 def test_python_run_alias_contract() -> None:
