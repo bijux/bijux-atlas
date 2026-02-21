@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[8]
 OWNERS = ROOT / "makefiles" / "ownership.json"
 WRAPPERS = [
     ROOT / "makefiles" / "dev.mk",
+    ROOT / "makefiles" / "ci.mk",
 ]
 TARGET_RE = re.compile(r"^([A-Za-z0-9_./-]+):(?:\s|$)", re.M)
 

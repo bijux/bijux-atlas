@@ -14,7 +14,19 @@ TARGET_RE = re.compile(r"^([A-Za-z0-9_./-]+):(?:\s|$)", re.M)
 def main() -> int:
     text = DEV_MK.read_text(encoding="utf-8")
     targets = [t for t in TARGET_RE.findall(text) if not t.startswith(".")]
-    legacy = {"dev-check", "dev-test-all", "dev-audit", "dev-ci", "dev-clean"}
+    legacy = {
+        "dev-fmt",
+        "dev-lint",
+        "dev-test",
+        "dev-coverage",
+        "internal/dev/fmt",
+        "internal/dev/lint",
+        "internal/dev/test",
+        "internal/dev/audit",
+        "internal/dev/coverage",
+        "internal/dev/ci",
+        "ci-core",
+    }
     errors: list[str] = [f"legacy dev-* target still present in dev.mk: {t}" for t in targets if t in legacy]
 
     if errors:

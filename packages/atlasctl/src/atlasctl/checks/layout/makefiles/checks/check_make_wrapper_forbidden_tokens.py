@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[8]
 WRAPPERS = [
     ROOT / "makefiles" / "dev.mk",
+    ROOT / "makefiles" / "ci.mk",
 ]
 FORBIDDEN = (
     "cargo ",
@@ -18,6 +19,7 @@ FORBIDDEN = (
     "docker ",
     "k6 ",
     "rm ",
+    "make ",
     "pip ",
 )
 

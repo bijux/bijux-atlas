@@ -95,9 +95,9 @@ CHECKS: list[MakeCheck] = [
     ),
     _check_cmd(
         "dev-ci-target-map",
-        "Validate cargo/ci make targets are mapped to atlasctl DEV/CI intents",
+        "Validate dev/ci make targets are mapped to atlasctl DEV/CI intents",
         ["python3", "-m", "atlasctl.cli", "make", "dev-ci-target-map", "--check", "--json"],
-        "Map every cargo.mk/ci.mk target to one stable atlasctl intent and declare aliases explicitly.",
+        "Map every dev.mk/ci.mk target to one stable atlasctl intent and declare aliases explicitly.",
     ),
     _check(
         "help-excludes-internal",
@@ -161,9 +161,15 @@ CHECKS: list[MakeCheck] = [
     ),
     _check(
         "ci-mk-size-budget",
-        "Validate ci.mk size budget",
+        "Validate dev.mk size budget",
         "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_ci_mk_size_budget.py",
-        "Keep makefiles/ci.mk as a thin wrapper and move execution logic into atlasctl dev ci commands.",
+        "Keep makefiles/dev.mk as a thin wrapper and move execution logic into atlasctl subcommands.",
+    ),
+    _check(
+        "dev-mk-internal-allowlist",
+        "Validate dev.mk internal target allowlist",
+        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_dev_mk_internal_allowlist.py",
+        "Do not add internal/* targets to dev.mk beyond the explicit allowlist.",
     ),
     _check(
         "makefiles-index-drift",

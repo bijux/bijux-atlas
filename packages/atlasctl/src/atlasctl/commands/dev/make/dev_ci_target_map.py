@@ -11,6 +11,7 @@ TARGET_RE = re.compile(r"^([A-Za-z0-9_./-]+):(?:.*?)(?:\s+##\s*(.*))?$")
 
 ALIAS_OF: dict[str, str] = {
     "test-all": "test",
+    "internal/dev/check": "check",
     "fmt-all": "fmt",
     "lint-all": "lint",
     "audit-all": "audit",
@@ -122,7 +123,10 @@ def _duplicate_mapping_errors(rows: list[dict[str, str]]) -> list[str]:
 
 
 def build_dev_ci_target_payload(repo_root: Path) -> dict[str, object]:
-    sources = [repo_root / "makefiles" / "dev.mk"]
+    sources = [
+        repo_root / "makefiles" / "dev.mk",
+        repo_root / "makefiles" / "ci.mk",
+    ]
     dumps: list[dict[str, object]] = []
     mapping_rows: list[dict[str, str]] = []
     unmapped: list[str] = []
@@ -169,9 +173,12 @@ def run_dev_ci_target_map(ctx: RunContext, out_dir_arg: str, check: bool, as_jso
     payload = build_dev_ci_target_payload(ctx.repo_root)
     dumps = payload["dumps"]
     dev_dump = next(item for item in dumps if str(item["file"]).endswith("dev.mk"))
+    ci_dump = next(item for item in dumps if str(item["file"]).endswith("ci.mk"))
     dev_path = ensure_evidence_path(ctx, out_dir / "dev-targets.json")
+    ci_path = ensure_evidence_path(ctx, out_dir / "ci-targets.json")
     map_path = ensure_evidence_path(ctx, out_dir / "ci-target-map.json")
     dev_path.write_text(json.dumps(dev_dump, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    ci_path.write_text(json.dumps(ci_dump, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     map_path.write_text(
         json.dumps(
             {
@@ -193,6 +200,7 @@ def run_dev_ci_target_map(ctx: RunContext, out_dir_arg: str, check: bool, as_jso
         "status": payload["status"],
         "artifacts": {
             "dev_targets": str(dev_path.relative_to(ctx.repo_root)),
+            "ci_targets": str(ci_path.relative_to(ctx.repo_root)),
             "target_map": str(map_path.relative_to(ctx.repo_root)),
         },
         "errors": payload["errors"],
