@@ -1,10 +1,5 @@
-from __future__ import annotations
+"""Compatibility shim for `atlasctl.contracts.validate_self`."""
 
-from typing import Any
+from .schema.validate_self import validate_self
 
-from .validate import validate
-
-
-def validate_self(schema_name: str, payload: dict[str, Any]) -> dict[str, Any]:
-    validate(schema_name, payload)
-    return payload
+__all__ = ["validate_self"]
