@@ -24,3 +24,17 @@ def test_check_list_json_matches_schema_and_golden() -> None:
     payload = json.loads(proc.stdout)
     validate("atlasctl.check-list.v1", payload)
     assert proc.stdout.strip() == _golden("check-list.json.golden")
+
+
+def test_checks_list_taxonomy_json_matches_schema_and_golden() -> None:
+    proc = run_atlasctl("--quiet", "--json", "checks", "list")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    validate("atlasctl.check-taxonomy.v1", payload)
+    assert proc.stdout.strip() == _golden("check/checks-list-taxonomy.json.golden")
+
+
+def test_checks_tree_json_matches_golden() -> None:
+    proc = run_atlasctl("--quiet", "--json", "checks", "tree")
+    assert proc.returncode == 0, proc.stderr
+    assert proc.stdout.strip() == _golden("check/checks-tree.json.golden")

@@ -5,6 +5,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from tests.helpers import golden_text
+
 ROOT = Path(__file__).resolve().parents[4]
 
 
@@ -51,3 +53,9 @@ def test_legacy_check_id_resolves_in_explain() -> None:
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
     assert payload["id"] == "checks_repo_cli_argparse_policy"
+
+
+def test_checks_owners_json_golden() -> None:
+    proc = _run_cli("checks", "owners", "--json")
+    assert proc.returncode == 0, proc.stderr
+    assert proc.stdout.strip() == golden_text("check/checks-owners.json.golden")
