@@ -34,6 +34,7 @@ CONFIG_SCHEMA_PAIRS: tuple[tuple[str, str], ...] = (
 SKIP_PARTS = {"_schemas", "__pycache__", ".vale"}
 KEY_RE = re.compile(r"`(ATLAS_[A-Z0-9_]+|BIJUX_[A-Z0-9_]+|HOME|HOSTNAME|XDG_CACHE_HOME|XDG_CONFIG_HOME|REDIS_URL)`")
 VERSION_NAME = re.compile(r".*version[s]?(?:[-_.].*)?\.(json|yaml|yml|toml)$", re.IGNORECASE)
+_CONFIGS_ITEMS: tuple[str, ...] = ("drift", "generate", "print", "sync", "validate")
 
 
 def _load_json(path: Path) -> dict[str, object]:
@@ -249,6 +250,13 @@ def _emit(payload: dict[str, object], report: str) -> None:
 def run_configs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     report = getattr(ns, "report", "text")
     repo = ctx.repo_root
+    if not getattr(ns, "configs_cmd", None) and bool(getattr(ns, "list", False)):
+        if bool(getattr(ns, "json", False)):
+            _emit({"schema_version": 1, "tool": "atlasctl", "status": "ok", "group": "configs", "items": list(_CONFIGS_ITEMS)}, "json")
+        else:
+            for item in _CONFIGS_ITEMS:
+                print(item)
+        return 0
 
     if ns.configs_cmd == "print":
         _emit({"schema_version": 1, "tool": "atlasctl", "status": "pass", "payload": _print_payload(repo)}, report)
@@ -316,7 +324,9 @@ def run_configs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
 def configure_configs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     p = sub.add_parser("configs", help="native configs validation/generation/sync commands")
-    cfg = p.add_subparsers(dest="configs_cmd", required=True)
+    p.add_argument("--list", action="store_true", help="list available configs commands")
+    p.add_argument("--json", action="store_true", help="emit machine-readable JSON output")
+    cfg = p.add_subparsers(dest="configs_cmd", required=False)
 
     c_print = cfg.add_parser("print", help="print canonical merged config payload")
     c_print.add_argument("--report", choices=["text", "json"], default="json")

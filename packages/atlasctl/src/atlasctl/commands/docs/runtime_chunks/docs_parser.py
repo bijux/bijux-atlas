@@ -1,6 +1,8 @@
 def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     p = sub.add_parser("docs", help="docs checks and generation commands")
-    docs_sub = p.add_subparsers(dest="docs_cmd", required=True)
+    p.add_argument("--list", action="store_true", help="list available docs commands")
+    p.add_argument("--json", action="store_true", help="emit machine-readable JSON output")
+    docs_sub = p.add_subparsers(dest="docs_cmd", required=False)
 
     check = docs_sub.add_parser("check", help="run canonical docs check suite")
     check.add_argument("--report", choices=["text", "json"], default="text")
