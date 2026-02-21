@@ -7,14 +7,14 @@ import subprocess
 
 
 _ALLOWED_SHELL_PREFIXES = (
-    "packages/atlasctl/src/atlasctl/checks/layout/shell/",
+    "packages/atlasctl/src/atlasctl/shell/layout/",
 )
 _SHELL_HEADER = "#!/usr/bin/env bash"
 _STRICT_MODE = "set -euo pipefail"
 _MAX_SHELL_SCRIPTS = 16
 
 def _iter_layout_shell_checks(repo_root: Path) -> list[Path]:
-    root = repo_root / "packages/atlasctl/src/atlasctl/checks/layout/shell"
+    root = repo_root / "packages/atlasctl/src/atlasctl/shell/layout"
     return sorted(root.glob("*.sh"))
 
 
@@ -27,7 +27,7 @@ def check_shell_location_policy(repo_root: Path) -> tuple[int, list[str]]:
         offenders.append(rel)
     if offenders:
         return 1, [
-            "layout shell scripts are allowed only under packages/atlasctl/src/atlasctl/checks/layout/shell/",
+            "layout shell scripts are allowed only under packages/atlasctl/src/atlasctl/shell/layout/",
             *offenders,
         ]
     return 0, []
@@ -129,7 +129,7 @@ def check_shell_script_budget(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def check_shell_docs_present(repo_root: Path) -> tuple[int, list[str]]:
-    root = repo_root / "packages/atlasctl/src/atlasctl/checks/layout/shell"
+    root = repo_root / "packages/atlasctl/src/atlasctl/shell/layout"
     required = (
         root / "README.md",
         root / "POLICY.md",

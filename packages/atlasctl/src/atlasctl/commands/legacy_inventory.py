@@ -10,7 +10,7 @@ from ..core.context import RunContext
 
 
 _LEGACY_CONCEPTS: tuple[dict[str, str], ...] = (
-    {"module": "legacy/layout_shell/*", "status": "deleted", "reason": "replaced by checks/layout/shell and repo checks"},
+    {"module": "legacy/layout_shell/*", "status": "deleted", "reason": "replaced by shell/layout and repo checks"},
     {"module": "legacy/obs/*", "status": "deleted", "reason": "observability package is canonical"},
     {"module": "legacy/report/*", "status": "deleted", "reason": "reporting package is canonical"},
     {"module": "legacy/effects/*", "status": "deleted", "reason": "effect boundaries are enforced in checks/repo"},
@@ -24,7 +24,7 @@ _LEGACY_CONCEPTS: tuple[dict[str, str], ...] = (
 
 def _classify(rel: str) -> tuple[str, str]:
     if rel.startswith("legacy/layout_shell/"):
-        return "delete", "legacy shell layout checks were replaced by checks/layout/shell and repo checks"
+        return "delete", "legacy shell layout checks were replaced by shell/layout and repo checks"
     if rel.startswith("legacy/obs/"):
         return "delete", "observability package is canonical for runtime and contract checks"
     if rel.startswith("legacy/report/"):

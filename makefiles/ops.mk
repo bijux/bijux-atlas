@@ -7,7 +7,7 @@ OPS_ENV_SCHEMA ?= configs/ops/env.schema.json
 
 ops-layout-lint: ## Validate canonical ops layout contract
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_layout_contract.py
-	@./packages/atlasctl/src/atlasctl/checks/layout/shell/check_ops_workspace.sh
+	@./packages/atlasctl/src/atlasctl/shell/layout/check_ops_workspace.sh
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_artifacts_writes.py
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/governance/check_ops_concept_ownership.py
 
@@ -31,28 +31,28 @@ ops-k8s-contracts: ## Validate k8s values/schema/install-matrix/chart drift cont
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/validation/validate_ops_contracts.py
 
 ops-e2e-validate: ## Validate unified e2e scenario definitions and docs references
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/scenarios/check_e2e_suites.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/scenarios/check_e2e_scenarios.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/scenarios/check_realdata_scenarios.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/policies/scenarios/check_e2e_suites.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/policies/scenarios/check_e2e_scenarios.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/policies/scenarios/check_realdata_scenarios.py
 
 ops-contracts-check: ## Validate canonical ops manifests against ops/_schemas and contract invariants
 	@python3 ./ops/_meta/generate_layer_contract.py
 	@python3 ./ops/_lint/check_layer_contract_drift.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/policies/check_layer_drift.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/policies/policies/check_layer_drift.py
 	@python3 ./ops/_lint/no-layer-literals.py
 	@python3 ./ops/_lint/no-stack-layer-literals.py
 	@$(MAKE) -s ops-stack-versions-sync
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_surface_drift.py
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/validation/validate_ops_contracts.py
 	@python3 ./ops/_lint/json-schema-coverage.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_no_hidden_defaults.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_no_hidden_defaults.py
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/contracts/governance/check_obs_pack_ssot.py
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/contracts/governance/check_obs_suites.py
 	@python3 ./ops/obs/scripts/areas/contracts/check_overload_behavior_contract.py
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_canonical_entrypoints.py
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_script_names.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_no_empty_dirs.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_generated_policy.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_no_empty_dirs.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_generated_policy.py
 	@$(MAKE) -s ops-e2e-validate
 	@$(ATLAS_SCRIPTS) docs generate --report text
 	@$(MAKE) -s ops-k8s-contracts
@@ -195,8 +195,8 @@ ops-obs-drill: ## Run one observability drill locally (DRILL=... PROFILE=kind|co
 	./ops/obs/scripts/bin/run_drill.sh "$${DRILL}"
 
 ops-stack-validate: ## Validate stack manifests and formatting drift
-	@./packages/atlasctl/src/atlasctl/checks/layout/shell/check_stack_manifest_consolidation.sh
-	@./packages/atlasctl/src/atlasctl/checks/layout/shell/check_ops_stack_order.sh
+	@./packages/atlasctl/src/atlasctl/shell/layout/check_stack_manifest_consolidation.sh
+	@./packages/atlasctl/src/atlasctl/shell/layout/check_ops_stack_order.sh
 	@./ops/stack/scripts/validate.sh
 
 ops-stack-smoke: ## Stack-only smoke test without atlas deploy
@@ -254,7 +254,7 @@ ops-kind-version-drift-test: ## Validate kind version matches pinned tool-versio
 	@./ops/k8s/tests/checks/rollout/test_kind_version_drift.sh
 
 ops-kind-cluster-drift-check: ## Require ops contract marker update when cluster profile changes
-	@./packages/atlasctl/src/atlasctl/checks/layout/shell/check_kind_cluster_contract_drift.sh
+	@./packages/atlasctl/src/atlasctl/shell/layout/check_kind_cluster_contract_drift.sh
 
 ops-kind-validate: ## Validate kind substrate (context/namespace/sanity/registry/image/version)
 	@$(MAKE) ops-kind-context-guard
@@ -389,7 +389,7 @@ ops-toxi-cut-store: ## Cut or restore store connection (MODE=on|off)
 	@./ops/stack/faults/inject.sh block-minio "$${MODE:-on}"
 
 ops-stack-order-check: ## Validate stack install/uninstall order contract
-	@./packages/atlasctl/src/atlasctl/checks/layout/shell/check_ops_stack_order.sh
+	@./packages/atlasctl/src/atlasctl/shell/layout/check_ops_stack_order.sh
 
 ops-stack-security-check: ## Validate stack security defaults (no privileged containers)
 	@ns="$${ATLAS_E2E_NAMESPACE:-atlas-e2e}"; \
@@ -916,7 +916,7 @@ ops-slo-report: ## Compute SLO report (SLIs, error budget remaining, burn rates)
 	@python3 ./ops/report/slo_report.py --metrics "$${METRICS:-artifacts/ops/metrics.prom}" --slo-config configs/ops/slo/slo.v1.json --out "$${OUT:-artifacts/ops/slo/report.json}"
 
 ops-script-coverage: ## Validate every ops/**/scripts entrypoint is exposed via make
-	@./packages/atlasctl/src/atlasctl/checks/layout/shell/check_ops_script_targets.sh
+	@./packages/atlasctl/src/atlasctl/shell/layout/check_ops_script_targets.sh
 	@SHELLCHECK_STRICT=1 $(MAKE) ops-shellcheck
 	@$(MAKE) -s ops-shfmt
 

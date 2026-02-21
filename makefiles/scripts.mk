@@ -22,7 +22,7 @@ scripts-graph: ## Generate make-target to scripts call graph
 	@$(ATLAS_SCRIPTS) make graph root-local > docs/development/scripts-graph.md
 
 no-direct-scripts:
-	@./packages/atlasctl/src/atlasctl/checks/layout/shell/check_no_direct_script_runs.sh
+	@./packages/atlasctl/src/atlasctl/shell/layout/check_no_direct_script_runs.sh
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_public_scripts.py
 
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)
@@ -33,8 +33,8 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/scripts/check_scripts_buckets.py
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/scripts/check_script_relative_calls.py
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/scripts/check_script_naming_convention.py
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/contracts/policies/check_no_mixed_script_name_variants.py
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/contracts/policies/check_duplicate_script_intent.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/policies/policies/check_no_mixed_script_name_variants.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/policies/policies/check_duplicate_script_intent.py
 	@$(ATLAS_SCRIPTS) check duplicate-script-names
 	@$(ATLAS_SCRIPTS) check layout
 	@$(ATLAS_SCRIPTS) check cli-help

@@ -1,3 +1,5 @@
-# policies checks
+# Layout Policies
 
-This domain contains layout checks focused on policies concerns.
+This package is the canonical home for layout policy checks.
+
+Legacy imports from `checks.layout.contracts` are migrated to this package.

@@ -209,15 +209,15 @@
     ],
     "subprocess_call": [
       {
-        "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_evidence_not_tracked.py",
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_evidence_not_tracked.py",
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {
-        "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_no_dead_entrypoints.py",
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_no_dead_entrypoints.py",
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {
-        "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/root/check_root_diff_alarm.py",
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/root/check_root_diff_alarm.py",
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {
@@ -427,15 +427,15 @@
     ],
     "subprocess_import": [
       {
-        "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_evidence_not_tracked.py",
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_evidence_not_tracked.py",
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {
-        "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_no_dead_entrypoints.py",
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_no_dead_entrypoints.py",
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {
-        "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/root/check_root_diff_alarm.py",
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/root/check_root_diff_alarm.py",
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {

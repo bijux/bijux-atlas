@@ -36,7 +36,7 @@ CHECKS: list[MakeCheck] = [
     _check(
         "no-dead-entrypoints",
         "Validate referenced scripts and targets exist",
-        "packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_no_dead_entrypoints.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_no_dead_entrypoints.py",
         "Update stale references or remove dead entrypoints.",
     ),
     _check(
@@ -48,13 +48,13 @@ CHECKS: list[MakeCheck] = [
     _check(
         "no-orphan-configs",
         "Validate config files are referenced or declared internal",
-        "packages/atlasctl/src/atlasctl/checks/layout/contracts/orphans/check_no_orphan_configs.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/policies/orphans/check_no_orphan_configs.py",
         "Add docs/contract references or annotate internal config ownership.",
     ),
     _check(
         "no-orphan-owners",
         "Validate ownership coverage",
-        "packages/atlasctl/src/atlasctl/checks/layout/contracts/orphans/check_no_orphan_owners.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/policies/orphans/check_no_orphan_owners.py",
         "Add missing owners for areas, paths, and command surfaces.",
     ),
     _check_cmd(
@@ -150,25 +150,25 @@ CHECKS: list[MakeCheck] = [
     _check(
         "cargo-dev-metadata",
         "Validate cargo-dev metadata consistency",
-        "packages/atlasctl/src/atlasctl/checks/layout/contracts/policies/check_cargo_dev_metadata.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/policies/policies/check_cargo_dev_metadata.py",
         "Align cargo-dev metadata with declared make targets.",
     ),
     _check(
         "root-no-cargo-dev-deps",
         "Validate root has no cargo-dev deps",
-        "packages/atlasctl/src/atlasctl/checks/layout/contracts/root/check_root_no_cargo_dev_deps.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/policies/root/check_root_no_cargo_dev_deps.py",
         "Move cargo-dev-only dependencies out of the root lane.",
     ),
     _check(
         "cargo-invocation-scope",
         "Validate cargo invocation scoping",
-        "packages/atlasctl/src/atlasctl/checks/layout/contracts/policies/check_cargo_invocations_scoped.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/policies/policies/check_cargo_invocations_scoped.py",
         "Use lane wrappers to scope cargo invocations correctly.",
     ),
     _check(
         "root-diff-alarm",
         "Validate root diff alarm contract",
-        "packages/atlasctl/src/atlasctl/checks/layout/contracts/root/check_root_diff_alarm.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/policies/root/check_root_diff_alarm.py",
         "Update root diff alarm allowlist or reduce root-level churn.",
     ),
     _check(
@@ -186,19 +186,19 @@ CHECKS: list[MakeCheck] = [
     _check(
         "no-legacy-target-names",
         "Validate no legacy target names",
-        "packages/atlasctl/src/atlasctl/checks/layout/contracts/legacy/check_no_legacy_target_names.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/policies/legacy/check_no_legacy_target_names.py",
         "Rename or delete legacy targets; do not keep compatibility aliases.",
     ),
     _check(
         "root-mk-size-budget",
         "Validate root.mk size budget",
-        "packages/atlasctl/src/atlasctl/checks/layout/contracts/root/check_root_mk_size_budget.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/policies/root/check_root_mk_size_budget.py",
         "Move lane-specific logic to dedicated makefiles to stay within budget.",
     ),
     _check(
         "root-makefile-hygiene",
         "Validate root makefile hygiene",
-        "packages/atlasctl/src/atlasctl/checks/layout/contracts/root/check_root_makefile_hygiene.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/policies/root/check_root_makefile_hygiene.py",
         "Fix ordering, phony coverage, and structural hygiene issues in root.mk.",
     ),
 ]

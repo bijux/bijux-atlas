@@ -14,8 +14,8 @@ Prevents root sprawl and keeps `ops/` as the single operational source of truth.
 
 - Root allowlist is defined in `packages/atlasctl/src/atlasctl/checks/layout/root_whitelist.json`.
 - Legacy root aliases are forbidden: `charts`, `e2e`, `load`, `observability`, `datasets`, `fixtures`.
-- Root shape gate: `packages/atlasctl/src/atlasctl/checks/layout/shell/check_root_shape.sh`.
-- Forbidden-name gate: `packages/atlasctl/src/atlasctl/checks/layout/shell/check_forbidden_root_names.sh`.
+- Root shape gate: `packages/atlasctl/src/atlasctl/shell/layout/check_root_shape.sh`.
+- Forbidden-name gate: `packages/atlasctl/src/atlasctl/shell/layout/check_forbidden_root_names.sh`.
 - Migration entrypoint: `make layout-migrate`.
 - Python package surfaces live under `packages/` and `tools/`.
 - New executable Python files outside package roots are forbidden by `scripts/areas/check/check-no-python-executable-outside-tools.py`.
