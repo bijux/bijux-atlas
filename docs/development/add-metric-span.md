@@ -41,7 +41,7 @@ Does not prescribe dashboard layout details.
 
 ```bash
 $ make contracts
-$ make dev-test
+$ make test
 $ make ops-observability-validate
 ```
 

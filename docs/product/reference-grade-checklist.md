@@ -20,11 +20,11 @@ No manual-only checklist items without corresponding gate.
 
 ## Contracts
 
-- [ ] `dev-fmt`: formatting clean.
-- [ ] `dev-lint`: lint clean.
-- [ ] `dev-audit`: dependency and security checks clean.
-- [ ] `dev-test`: all required tests pass (use `atlasctl dev test --all` when validating ignored suites).
-- [ ] `dev-coverage`: coverage gate passes.
+- [ ] `fmt`: formatting clean.
+- [ ] `lint`: lint clean.
+- [ ] `audit`: dependency and security checks clean.
+- [ ] `test`: all required tests pass (use `atlasctl dev test --all` when validating ignored suites).
+- [ ] `coverage`: coverage gate passes.
 - [ ] `openapi-drift`: OpenAPI snapshots match.
 - [ ] `docs`: docs build + lint + link checks pass.
 - [ ] `docs-freeze`: generated docs are up-to-date.

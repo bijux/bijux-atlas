@@ -64,5 +64,5 @@ Redis is optional and scoped to runtime protections (rate limiting / response ca
 ## How to verify
 
 ```bash
-make dev-test
+make test
 ```

@@ -41,7 +41,7 @@ Does not describe endpoint business logic design.
 
 ```bash
 $ make contracts
-$ make dev-test
+$ make test
 $ make docs
 ```
 
