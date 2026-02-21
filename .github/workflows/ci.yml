@@ -62,6 +62,16 @@ jobs:
           python3 -m venv artifacts/atlasctl/venv/ci-install
           artifacts/atlasctl/venv/ci-install/bin/pip --disable-pip-version-check install -e packages/atlasctl
           artifacts/atlasctl/venv/ci-install/bin/python -c "import atlasctl; print(atlasctl.__version__)"
+      - name: Verify atlasctl wheel install smoke
+        run: |
+          rm -rf artifacts/atlasctl/venv/ci-wheel artifacts/atlasctl/dist
+          python3 -m venv artifacts/atlasctl/venv/ci-wheel
+          artifacts/atlasctl/venv/ci-wheel/bin/pip --disable-pip-version-check install --upgrade pip build
+          artifacts/atlasctl/venv/ci-wheel/bin/python -m build --wheel packages/atlasctl --outdir artifacts/atlasctl/dist
+          artifacts/atlasctl/venv/ci-wheel/bin/pip --disable-pip-version-check install artifacts/atlasctl/dist/atlasctl-*.whl
+          wheel_bin="$PWD/artifacts/atlasctl/venv/ci-wheel/bin"
+          (cd /tmp && "$wheel_bin/atlasctl" --version)
+          (cd /tmp && "$wheel_bin/python" -m atlasctl --help > /tmp/atlasctl-help.txt)
       - name: Upload CI artifacts
         if: always()
         uses: actions/upload-artifact@v4
