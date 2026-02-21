@@ -122,6 +122,18 @@ def check_forbidden_deprecated_namespace_dirs(repo_root: Path) -> tuple[int, lis
     return 0, []
 
 
+def check_no_legacy_module_paths(repo_root: Path) -> tuple[int, list[str]]:
+    offenders: list[str] = []
+    root = repo_root / _SRC_ROOT
+    for path in sorted(root.rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        if "/legacy/" in rel:
+            offenders.append(rel)
+    if offenders:
+        return 1, [f"legacy module path forbidden pre-1.0: {rel}" for rel in offenders]
+    return 0, []
+
+
 def check_forbidden_core_integration_dir(repo_root: Path) -> tuple[int, list[str]]:
     path = repo_root / _SRC_ROOT / "core" / "integration"
     if path.exists():
