@@ -408,7 +408,8 @@ lane-configs: ## Lane: configs checks and drift gates
 	@$(call with_iso,lane-configs,$(MAKE) -s configs-check budgets/check atlasctl-budgets)
 
 lane-policies: ## Lane: policy checks and boundary enforcement
-	@$(call with_iso,lane-policies,$(MAKE) -s ci-deny policy-lint policy-schema-drift policy-audit policy-enforcement-status policy-allow-env-lint policies/boundaries-check)
+	@$(call with_iso,lane-policies,$(ATLAS_SCRIPTS) dev audit)
+	@$(call with_iso,lane-policies,$(MAKE) -s policy-lint policy-schema-drift policy-audit policy-enforcement-status policy-allow-env-lint policies/boundaries-check)
 
 lane-configs-policies: ## Alias lane for configs + policies
 	@$(MAKE) -s lane-configs lane-policies
@@ -504,7 +505,7 @@ config-validate: ## Deprecated alias for configs/all
 	@$(MAKE) -s configs/all
 
 ci: ## CI entrypoint mirror
-	@$(MAKE) -s ci/all
+	@$(ATLAS_SCRIPTS) dev ci run --json --out-dir artifacts/reports/atlasctl/suite-ci >/dev/null
 
 nightly: ## Deprecated alias for nightly/all
 	@$(MAKE) -s nightly/all

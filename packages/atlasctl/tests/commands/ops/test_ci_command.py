@@ -24,3 +24,21 @@ def test_ci_run_invokes_suite_ci(monkeypatch, capsys) -> None:
     payload = json.loads(capsys.readouterr().out.strip())
     assert payload["suite_result"]["kind"] == "suite-run"
     assert "artifacts" in payload
+
+
+def test_ci_dependency_lock_refresh_json(monkeypatch, capsys) -> None:
+    calls: list[list[str]] = []
+
+    def fake_run(cmd, **_kwargs):
+        calls.append(cmd if isinstance(cmd, list) else [str(cmd)])
+        return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+    monkeypatch.setattr("atlasctl.commands.dev.ci.command.subprocess.run", fake_run)
+    ctx = RunContext.from_args("ci-lock-test", None, "test", False)
+    ns = argparse.Namespace(ci_cmd="dependency-lock-refresh", json=True, verbose=False)
+    rc = run_ci_command(ctx, ns)
+    assert rc == 0
+    assert len(calls) >= 3
+    payload = json.loads(capsys.readouterr().out.strip())
+    assert payload["schema_name"] == "atlasctl.output-base.v2"
+    assert payload["meta"]["action"] == "dependency-lock-refresh"
