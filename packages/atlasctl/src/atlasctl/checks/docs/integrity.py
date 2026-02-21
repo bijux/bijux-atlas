@@ -141,3 +141,22 @@ def check_migration_docs_not_stale(repo_root: Path) -> tuple[int, list[str]]:
             if term in text:
                 errors.append(f"{rel}: stale migration wording `{term}`")
     return (0 if not errors else 1), errors
+
+
+def check_docs_check_id_drift(repo_root: Path) -> tuple[int, list[str]]:
+    docs_root = _docs_root(repo_root)
+    checks_root = _package_root(repo_root) / "src/atlasctl/checks"
+    known: set[str] = set()
+    pat = re.compile(r'CheckDef\("([^"]+)"')
+    for path in sorted(checks_root.rglob("__init__.py")):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        known.update(pat.findall(text))
+    token_re = re.compile(r"\bcheck:([a-z0-9_.-]+)\b")
+    errors: list[str] = []
+    for md in sorted(docs_root.rglob("*.md")):
+        rel = md.relative_to(repo_root).as_posix()
+        text = md.read_text(encoding="utf-8", errors="ignore")
+        for check_id in sorted(set(token_re.findall(text))):
+            if check_id not in known:
+                errors.append(f"{rel}: unknown check id reference `check:{check_id}`")
+    return (0 if not errors else 1), errors
