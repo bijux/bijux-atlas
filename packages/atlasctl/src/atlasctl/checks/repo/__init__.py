@@ -28,6 +28,11 @@ from .public_api import check_public_api_exports
 from .type_coverage import check_type_coverage
 from .dependencies import check_dependency_declarations
 from .reachability import check_repo_check_modules_registered
+from .pyproject_contracts import (
+    check_console_script_entry,
+    check_pyproject_no_duplicate_tool_config,
+    check_pyproject_required_blocks,
+)
 
 CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.forbidden_top_dirs", "repo", "forbid top-level forbidden directories", 500, check_forbidden_top_dirs, fix_hint="Remove forbidden root directories."),
@@ -53,4 +58,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.type_coverage", "repo", "enforce minimum type coverage in core/contracts", 600, check_type_coverage, fix_hint="Add function annotations in core/contracts until the threshold is met."),
     CheckDef("repo.dependency_declarations", "repo", "ensure pyproject dependency declarations match imports", 600, check_dependency_declarations, fix_hint="Add missing dependencies or remove unused declarations."),
     CheckDef("repo.check_module_reachability", "repo", "ensure repo check modules are imported and reachable via registry", 300, check_repo_check_modules_registered, fix_hint="Import new repo check modules in checks/repo/__init__.py."),
+    CheckDef("repo.pyproject_required_blocks", "repo", "ensure pyproject contains required project and tool config blocks", 300, check_pyproject_required_blocks, fix_hint="Add required [project]/[tool.*] blocks to packages/atlasctl/pyproject.toml."),
+    CheckDef("repo.pyproject_no_duplicate_tool_config", "repo", "forbid duplicate tool config files beside pyproject", 300, check_pyproject_no_duplicate_tool_config, fix_hint="Remove duplicated tool config files and keep pyproject as SSOT."),
+    CheckDef("repo.console_script_entry", "repo", "ensure atlasctl console script entry exists and points to callable target", 300, check_console_script_entry, fix_hint="Set [project.scripts] atlasctl = \"atlasctl.cli.main:main\" and ensure target is importable."),
 )
