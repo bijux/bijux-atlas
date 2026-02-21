@@ -60,18 +60,25 @@ def _run(
     cmd: list[str],
     steps: list[dict[str, Any]],
     verbose: bool,
+    quiet: bool,
 ) -> int:
     step = {"command": " ".join(cmd)}
+    if (not quiet) and (not verbose):
+        print(f"run: {step['command']}")
     if verbose:
         proc = subprocess.run(cmd, cwd=ctx.repo_root, env=env, text=True, check=False)
         step["exit_code"] = proc.returncode
         steps.append(step)
+        if not quiet:
+            print(f"result: {'pass' if proc.returncode == 0 else 'fail'}")
         return proc.returncode
     proc = subprocess.run(cmd, cwd=ctx.repo_root, env=env, text=True, capture_output=True, check=False)
     step["exit_code"] = proc.returncode
     step["stdout"] = proc.stdout or ""
     step["stderr"] = proc.stderr or ""
     steps.append(step)
+    if not quiet:
+        print(f"result: {'pass' if proc.returncode == 0 else 'fail'}")
     return proc.returncode
 
 
@@ -106,8 +113,10 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
     if cargo_jobs:
         env["CARGO_BUILD_JOBS"] = cargo_jobs
 
+    emit_progress = (not params.json_output) and (not ctx.quiet)
+
     def run_cmd(cmd: list[str]) -> bool:
-        code = _run(ctx=ctx, env=env, cmd=cmd, steps=steps, verbose=params.verbose)
+        code = _run(ctx=ctx, env=env, cmd=cmd, steps=steps, verbose=params.verbose, quiet=not emit_progress)
         if code != 0:
             failures.append(" ".join(cmd))
             return False
