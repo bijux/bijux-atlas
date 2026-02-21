@@ -552,7 +552,7 @@ make/guard-no-script-paths: ## Guard against direct bash/python scripts path inv
 	}
 
 root-determinism: ## Assert make root determinism (inventory outputs stable across two runs)
-	@./packages/atlasctl/src/atlasctl/checks/layout/check_root_determinism.sh
+	@./packages/atlasctl/src/atlasctl/checks/layout/shell/check_root_determinism.sh
 
 
 telemetry-contracts: ## Regenerate telemetry generated artifacts from observability contracts

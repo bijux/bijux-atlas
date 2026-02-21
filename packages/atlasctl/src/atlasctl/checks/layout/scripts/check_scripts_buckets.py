@@ -15,7 +15,7 @@ ALLOWED_PREFIXES = (
     "packages/atlasctl/src/atlasctl/checks/layout/",
 )
 LEGACY_ALLOWED = (
-    "packages/atlasctl/src/atlasctl/checks/layout/check_no_root_dumping.sh",
+    "packages/atlasctl/src/atlasctl/checks/layout/shell/check_no_root_dumping.sh",
 )
 
 violations: list[str] = []
