@@ -39,9 +39,12 @@ from .contracts.command_contracts import (
 )
 from .enforcement.argparse_policy import check_argparse_policy
 from .enforcement.package_shape import (
+    check_canonical_concept_homes,
     check_layout_domain_readmes,
     check_layout_no_legacy_imports,
     check_no_nested_same_name_packages,
+    check_package_max_depth,
+    check_top_level_package_group_mapping,
 )
 from .enforcement.package_hygiene import (
     check_folder_intent_contract,
@@ -319,6 +322,30 @@ CHECKS: tuple[CheckDef, ...] = (
     ),
     CheckDef("repo.layout_domain_readmes", "repo", "ensure each layout check domain includes a README", 300, check_layout_domain_readmes, fix_hint="Add README.md to each checks/layout/<domain>/ directory."),
     CheckDef("repo.layout_no_legacy_imports", "repo", "forbid legacy imports in checks/layout modules", 300, check_layout_no_legacy_imports, fix_hint="Remove atlasctl.legacy imports from layout checks."),
+    CheckDef(
+        "repo.top_level_package_group_mapping",
+        "repo",
+        "require top-level atlasctl packages to map to control-plane groups",
+        300,
+        check_top_level_package_group_mapping,
+        fix_hint="Map new top-level packages to docs/configs/dev/ops/policies/internal in package_shape policy.",
+    ),
+    CheckDef(
+        "repo.package_max_depth",
+        "repo",
+        "enforce maximum atlasctl package nesting depth",
+        300,
+        check_package_max_depth,
+        fix_hint="Flatten deep package hierarchies under packages/atlasctl/src/atlasctl.",
+    ),
+    CheckDef(
+        "repo.canonical_concept_homes",
+        "repo",
+        "forbid duplicate top-level concept packages for registry/runner/contracts/output",
+        300,
+        check_canonical_concept_homes,
+        fix_hint="Keep only canonical concept homes: registry, suite, contracts, reporting.",
+    ),
     CheckDef(ROOT_SHAPE_CHECK_ID, "repo", ROOT_SHAPE_DESCRIPTION, 500, run_root_shape, fix_hint="Align root entries with checks/layout/root_whitelist.json."),
     CheckDef(FORBIDDEN_ROOT_FILES_CHECK_ID, "repo", FORBIDDEN_ROOT_FILES_DESCRIPTION, 400, run_forbidden_root_files, fix_hint="Remove forbidden junk files from repository root."),
     CheckDef(FORBIDDEN_ROOT_NAMES_CHECK_ID, "repo", FORBIDDEN_ROOT_NAMES_DESCRIPTION, 400, run_forbidden_root_names, fix_hint="Remove forbidden top-level legacy names from repository root."),
