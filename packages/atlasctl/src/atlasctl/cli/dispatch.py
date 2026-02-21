@@ -149,7 +149,7 @@ def dispatch_command(
         payload = commands_payload(include_internal=include_internal)
         payload["run_id"] = ctx.run_id
         if getattr(ns, "verify_stability", False) or ns.commands_cmd == "compat-check":
-            golden_path = ctx.repo_root / "packages/atlasctl/tests/goldens/commands.json.golden"
+            golden_path = ctx.repo_root / "packages/atlasctl/tests/goldens/list/commands.json.golden"
             if not golden_path.exists():
                 raise ScriptError(f"missing commands stability golden: {golden_path.relative_to(ctx.repo_root)}", ERR_CONFIG)
             expected = json.loads(golden_path.read_text(encoding="utf-8"))

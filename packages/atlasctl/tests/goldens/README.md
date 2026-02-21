@@ -10,13 +10,13 @@ All golden snapshots under this directory are SSOT test fixtures for atlasctl CL
   - or `atlasctl gen goldens` (console script)
 - Review the diff and commit only intentional behavior changes.
 
-## Current generated files
+## Layout
 
-- `help.json.golden`
-- `commands.json.golden`
-- `surface.json.golden`
-- `explain.check.json.golden`
-- `check-list.json.golden`
-- `suite_refgrade.expected.txt`
-- `cli_help_snapshot.txt`
-- `cli_help_commands.expected.txt`
+- `check/`: check-run and check-list golden outputs.
+- `list/`: list/commands inventory goldens.
+- `help/`: help surface and help text snapshots.
+- `contracts/`: schema/output contract representative payloads.
+- `suite/`: suite inventories and suite run snapshot text.
+- `samples/`: sample schema payloads.
+
+`MANIFEST.json` is generated and must match files on disk.

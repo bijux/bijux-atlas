@@ -14,7 +14,7 @@ def _tests_root(repo_root: Path) -> Path:
 
 
 def _suite_markers_path(repo_root: Path) -> Path:
-    return _tests_root(repo_root) / "goldens" / "check-suite-coverage.markers.txt"
+    return _tests_root(repo_root) / "goldens" / "check" / "check-suite-coverage.markers.txt"
 
 
 def _load_suite_markers(repo_root: Path) -> list[str]:
@@ -191,7 +191,7 @@ def check_no_unjustified_skips(repo_root: Path) -> tuple[int, list[str]]:
 def check_no_conflicting_json_goldens(repo_root: Path) -> tuple[int, list[str]]:
     golden_dir = _tests_root(repo_root) / "goldens"
     schema_to_files: dict[str, list[str]] = {}
-    for golden in sorted(golden_dir.glob("*.json.golden")):
+    for golden in sorted(golden_dir.rglob("*.json.golden")):
         text = golden.read_text(encoding="utf-8", errors="ignore").strip()
         if not text:
             continue

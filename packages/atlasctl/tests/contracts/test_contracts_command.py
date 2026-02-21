@@ -1,18 +1,15 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
-from helpers import run_atlasctl
-
-ROOT = Path(__file__).resolve().parents[4]
+from tests.helpers import golden_text, run_atlasctl
 
 
 def test_contracts_list_json_matches_golden() -> None:
     # schema-validate-exempt: contracts list payload does not have a dedicated schema yet.
     proc = run_atlasctl("--quiet", "contracts", "list", "--report", "json")
     assert proc.returncode == 0, proc.stderr
-    golden = (ROOT / "packages/atlasctl/tests/goldens/contracts-list.json.golden").read_text(encoding="utf-8").strip()
+    golden = golden_text("contracts-list.json.golden")
     assert json.loads(proc.stdout) == json.loads(golden)
 
 

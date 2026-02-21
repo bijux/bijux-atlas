@@ -1,6 +1,6 @@
 # Suite Coverage Markers
 
-`packages/atlasctl/tests/goldens/check-suite-coverage.markers.txt` is the suite-marker SSOT for repo-check coverage hints.
+`packages/atlasctl/tests/goldens/check/check-suite-coverage.markers.txt` is the suite-marker SSOT for repo-check coverage hints.
 
 Rules:
 

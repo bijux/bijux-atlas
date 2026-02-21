@@ -40,29 +40,40 @@ def _write(path: Path, value: str) -> None:
 
 def _generate_goldens(ctx: RunContext) -> tuple[int, dict[str, str]]:
     targets: dict[str, list[str]] = {
-        "help.json.golden": ["--quiet", "help", "--json"],
-        "commands.json.golden": ["--quiet", "commands", "--json"],
-        "surface.json.golden": ["--quiet", "surface", "--json"],
-        "explain.check.json.golden": ["--quiet", "--json", "explain", "check"],
-        "check-list.json.golden": ["--quiet", "--json", "check", "list"],
-        "cli_help_snapshot.txt": ["--help"],
+        "help/help.json.golden": ["--quiet", "help", "--json"],
+        "list/commands.json.golden": ["--quiet", "commands", "--json"],
+        "contracts/surface.json.golden": ["--quiet", "surface", "--json"],
+        "contracts/explain.check.json.golden": ["--quiet", "--json", "explain", "check"],
+        "check/check-list.json.golden": ["--quiet", "--json", "check", "list"],
+        "help/cli_help_snapshot.txt": ["--help"],
     }
     out_dir = ctx.repo_root / "packages/atlasctl/tests/goldens"
     written: dict[str, str] = {}
-    for name, cmd in targets.items():
+    for rel_name, cmd in targets.items():
         proc = _run_capture(ctx, cmd)
         if proc.returncode != 0:
-            msg = proc.stderr.strip() or proc.stdout.strip() or f"failed to generate {name}"
-            return 1, {"error": f"{name}: {msg}"}
-        content = proc.stdout if name.endswith(".txt") else proc.stdout.strip() + "\n"
-        path = out_dir / name
+            msg = proc.stderr.strip() or proc.stdout.strip() or f"failed to generate {rel_name}"
+            return 1, {"error": f"{rel_name}: {msg}"}
+        content = proc.stdout if rel_name.endswith(".txt") else proc.stdout.strip() + "\n"
+        path = out_dir / rel_name
         _write(path, content)
-        written[name] = path.relative_to(ctx.repo_root).as_posix()
-    commands = json.loads((out_dir / "help.json.golden").read_text(encoding="utf-8"))["commands"]
+        written[path.name] = path.relative_to(ctx.repo_root).as_posix()
+    commands = json.loads((out_dir / "help/help.json.golden").read_text(encoding="utf-8"))["commands"]
     command_names = "\n".join(row["name"] for row in commands) + "\n"
-    cmd_path = out_dir / "cli_help_commands.expected.txt"
+    cmd_path = out_dir / "help/cli_help_commands.expected.txt"
     _write(cmd_path, command_names)
     written["cli_help_commands.expected.txt"] = cmd_path.relative_to(ctx.repo_root).as_posix()
+    entries: list[dict[str, str]] = []
+    for path in sorted(out_dir.rglob("*")):
+        if not path.is_file():
+            continue
+        rel = path.relative_to(out_dir).as_posix()
+        if rel == "MANIFEST.json" or rel.startswith("__pycache__/"):
+            continue
+        entries.append({"name": path.name, "path": rel})
+    manifest = {"schema_version": 1, "generated_by": "atlasctl", "entries": entries}
+    _write(out_dir / "MANIFEST.json", json.dumps(manifest, indent=2, sort_keys=True) + "\n")
+    written["MANIFEST.json"] = (out_dir / "MANIFEST.json").relative_to(ctx.repo_root).as_posix()
     return 0, written
 
 
