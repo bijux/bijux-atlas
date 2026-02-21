@@ -17,12 +17,14 @@ def test_ci_run_invokes_suite_ci(monkeypatch, capsys) -> None:
 
     monkeypatch.setattr("atlasctl.commands.dev.ci.command.subprocess.run", fake_run)
     ctx = RunContext.from_args("ci-run-test", None, "test", False)
-    ns = argparse.Namespace(ci_cmd="run", json=True, out_dir=None)
+    ns = argparse.Namespace(ci_cmd="run", json=True, out_dir=None, lane=["docs"], fail_fast=True, keep_going=False, no_isolate=False, verbose=False)
     rc = run_ci_command(ctx, ns)
     assert rc == 0
     assert calls and any("suite" in cmd and "run" in cmd and "ci" in cmd for cmd in calls)
     payload = json.loads(capsys.readouterr().out.strip())
     assert payload["suite_result"]["kind"] == "suite-run"
+    assert payload["lane_filter"] == ["docs"]
+    assert payload["execution"] == "fail-fast"
     assert "artifacts" in payload
 
 
@@ -42,3 +44,21 @@ def test_ci_dependency_lock_refresh_json(monkeypatch, capsys) -> None:
     payload = json.loads(capsys.readouterr().out.strip())
     assert payload["schema_name"] == "atlasctl.output-base.v2"
     assert payload["meta"]["action"] == "dependency-lock-refresh"
+
+
+def test_ci_run_no_isolate_mode(monkeypatch, capsys) -> None:
+    calls: list[list[str]] = []
+
+    def fake_run(cmd, **_kwargs):
+        calls.append(cmd)
+        return SimpleNamespace(returncode=0, stdout='{"tool":"atlasctl","status":"ok","summary":{"passed":1,"failed":0,"skipped":0},"results":[]}\n', stderr="")
+
+    monkeypatch.setattr("atlasctl.commands.dev.ci.command.subprocess.run", fake_run)
+    ctx = RunContext.from_args("ci-run-debug", None, "test", False)
+    ns = argparse.Namespace(ci_cmd="run", json=True, out_dir=None, lane=[], fail_fast=False, keep_going=True, no_isolate=True, verbose=False)
+    rc = run_ci_command(ctx, ns)
+    assert rc == 0
+    assert calls
+    assert calls[0][0] != "env"
+    payload = json.loads(capsys.readouterr().out.strip())
+    assert payload["mode"] == "debug-no-isolate"
