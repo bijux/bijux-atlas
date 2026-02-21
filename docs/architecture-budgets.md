@@ -22,8 +22,8 @@ Warnings are emitted when usage is within 10% of budget. Failing above budget is
 
 - `src/atlasctl/core/*`: stricter budgets because core should remain small and stable.
 - `src/atlasctl/checks/layout/*`: higher allowance because this area hosts many policy checks, but still bounded.
-- `src/atlasctl/checks/layout/shell/*`: explicit shell-count cap for transitional shell checks.
-- `src/atlasctl/checks/layout/contracts/*`: stricter module-count cap to force continued split into first-class layout domains.
+- `src/atlasctl/shell/layout/*`: explicit shell-count cap for transitional shell checks.
+- `src/atlasctl/checks/layout/policies/*`: stricter module-count cap to force continued split into first-class layout domains.
 - `src/atlasctl/legacy/*`: enforcement disabled; no new code should be added and migration should reduce density over time.
 
 ## Exceptions

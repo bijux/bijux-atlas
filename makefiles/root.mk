@@ -482,7 +482,7 @@ legacy/audit: ## List non-scripts files still referencing scripts/ paths
 
 cleanup/verify: ## One-time cleanup safety verification before deleting legacy paths
 	@$(MAKE) -s legacy/check scripts-check ops-contracts-check
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/docs/check_help_snapshot.py && $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_no_dead_entrypoints.py && $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/docs/check_no_orphan_docs_refs.py && $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/orphans/check_no_orphan_configs.py && $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/orphans/check_no_orphan_owners.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/docs/check_help_snapshot.py && $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_no_dead_entrypoints.py && $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/docs/check_no_orphan_docs_refs.py && $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/policies/orphans/check_no_orphan_configs.py && $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/policies/orphans/check_no_orphan_owners.py
 
 local: ## Developer confidence suite
 	@$(MAKE) -s root-local
@@ -560,7 +560,7 @@ make/guard-no-script-paths: ## Guard against direct bash/python scripts path inv
 	}
 
 root-determinism: ## Assert make root determinism (inventory outputs stable across two runs)
-	@./packages/atlasctl/src/atlasctl/checks/layout/shell/check_root_determinism.sh
+	@./packages/atlasctl/src/atlasctl/shell/layout/check_root_determinism.sh
 
 
 telemetry-contracts: ## Regenerate telemetry generated artifacts from observability contracts

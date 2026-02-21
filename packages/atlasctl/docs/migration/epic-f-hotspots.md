@@ -47,10 +47,10 @@ Observability contract ownership is canonical in:
 - `packages/atlasctl/src/atlasctl/observability/contracts/*`
 
 Legacy layout observability contract scripts are removed from:
-- `packages/atlasctl/src/atlasctl/checks/layout/contracts/observability/*`
+- `packages/atlasctl/src/atlasctl/checks/layout/policies/observability/*`
 
 ## Next splits
 
 - Split `checks/layout/makefiles/checks` by concept (`contracts`, `safety`, `ownership`).
 - Split `checks/layout/ops/checks` by concept (`layout`, `surface`, `governance`).
-- Keep `checks/layout/contracts/*` focused to non-observability layout contracts only.
+- Keep `checks/layout/policies/*` focused to non-observability layout contracts only.

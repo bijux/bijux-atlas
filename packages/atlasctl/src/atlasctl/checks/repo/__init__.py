@@ -370,7 +370,7 @@ CHECKS: tuple[CheckDef, ...] = (
         "require shell directory README and policy docs",
         300,
         check_shell_docs_present,
-        fix_hint="Add README.md and POLICY.md under checks/layout/shell.",
+        fix_hint="Add README.md and POLICY.md under shell/layout.",
     ),
     CheckDef(
         "repo.layout_no_shadow",

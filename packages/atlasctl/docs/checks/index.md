@@ -25,6 +25,6 @@ Use `atlasctl check list --json` for machine-readable inventory.
 - `checks/layout/scripts`: script-area and naming/bucket checks.
 - `checks/layout/docs`: docs/help surface integrity checks.
 - `checks/layout/workflows`: workflow invocation and entrypoint checks.
-- `checks/layout/contracts`: legacy contract subgroup during migration.
+- `checks/layout/policies`: canonical layout policy subgroup.
 - `checks/layout/governance`: gate orchestration and inventory checks.
 - `checks/layout/public_surface`: public target/help surface checks.

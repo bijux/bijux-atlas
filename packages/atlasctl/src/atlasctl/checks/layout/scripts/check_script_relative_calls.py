@@ -22,7 +22,7 @@ allowed = (
     "scripts/areas/public/no-network-unit-tests.sh",
     "scripts/README.md",
     "scripts/INDEX.md",
-    "packages/atlasctl/src/atlasctl/checks/layout/shell/check_no_root_dumping.sh",
+    "packages/atlasctl/src/atlasctl/shell/layout/check_no_root_dumping.sh",
     "ops/load/scripts/",
     "ops/obs/scripts/",
     "ops/run/",

@@ -1,7 +1,7 @@
 # Layout shell-to-python migration checklist
 
 This checklist tracks migration of legacy shell checks under
-`packages/atlasctl/src/atlasctl/checks/layout/shell/`.
+`packages/atlasctl/src/atlasctl/shell/layout/`.
 
 ## Converted to Python (`checks/layout/root`)
 - [x] `check_root_shape.sh` -> `root/check_root_shape.py` (`repo.root_shape`)
@@ -30,4 +30,4 @@ This checklist tracks migration of legacy shell checks under
 - Existing shell checks remain transitional and must keep strict shell headers.
 
 ## Long-Term Plan
-- Reduce shell checks to near-zero by porting remaining `checks/layout/shell/*.sh` into `checks/layout/*` Python modules.
+- Reduce shell checks to near-zero by porting remaining `shell/layout/*.sh` into `checks/layout/*` Python modules.

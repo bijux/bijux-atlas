@@ -49,115 +49,115 @@
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_evidence_not_tracked.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_evidence_not_tracked.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_generated_committed_no_timestamp_dirs.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_generated_committed_no_timestamp_dirs.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_generated_dirs_policy.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_generated_dirs_policy.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_generated_policy.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_generated_policy.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_no_dead_entrypoints.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_no_dead_entrypoints.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_no_empty_dirs.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_no_empty_dirs.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_no_hidden_defaults.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_no_hidden_defaults.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_no_ops_evidence_writes.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_no_ops_evidence_writes.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/orphans/check_no_orphan_configs.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/orphans/check_no_orphan_configs.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/orphans/check_no_orphan_owners.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/orphans/check_no_orphan_owners.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/policies/check_cargo_dev_metadata.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/policies/check_cargo_dev_metadata.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/policies/check_cargo_invocations_scoped.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/policies/check_cargo_invocations_scoped.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/policies/check_chart_canonical_path.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/policies/check_chart_canonical_path.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/policies/check_dataset_manifest_lock.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/policies/check_dataset_manifest_lock.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/policies/check_dir_budgets.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/policies/check_dir_budgets.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/policies/check_duplicate_script_intent.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/policies/check_duplicate_script_intent.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/policies/check_layer_drift.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/policies/check_layer_drift.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/policies/check_no_mixed_script_name_variants.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/policies/check_no_mixed_script_name_variants.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/root/check_root_diff_alarm.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/root/check_root_diff_alarm.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/root/check_root_local_lane_isolation.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/root/check_root_local_lane_isolation.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/root/check_root_makefile_hygiene.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/root/check_root_makefile_hygiene.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/root/check_root_mk_size_budget.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/root/check_root_mk_size_budget.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/root/check_root_no_cargo_dev_deps.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/root/check_root_no_cargo_dev_deps.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/root/check_symlink_index.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/root/check_symlink_index.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/root/check_symlink_policy.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/root/check_symlink_policy.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/scenarios/check_e2e_scenarios.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/scenarios/check_e2e_scenarios.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/scenarios/check_e2e_suites.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/scenarios/check_e2e_suites.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/scenarios/check_realdata_scenarios.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/scenarios/check_realdata_scenarios.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {

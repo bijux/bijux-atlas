@@ -10,7 +10,7 @@ root = Path(__file__).resolve().parents[3]
 exempt = {
     "docs/development/symlinks.md",
     "docs/development/root-inventory.md",
-    "packages/atlasctl/src/atlasctl/checks/layout/contracts/policies/check_chart_canonical_path.py",
+    "packages/atlasctl/src/atlasctl/checks/layout/policies/policies/check_chart_canonical_path.py",
 }
 
 violations = []

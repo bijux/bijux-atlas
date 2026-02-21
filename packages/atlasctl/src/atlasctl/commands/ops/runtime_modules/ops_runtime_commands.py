@@ -192,7 +192,7 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_script_names.py"], ns.report)
 
     if ns.ops_cmd == "layer-drift-check":
-        return _run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/checks/layout/contracts/policies/check_layer_drift.py"], ns.report)
+        return _run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/checks/layout/policies/policies/check_layer_drift.py"], ns.report)
 
     if ns.ops_cmd == "contracts-index":
         cmd = [*SELF_CLI, "docs", "generate", "--report", "text"]
