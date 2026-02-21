@@ -27,10 +27,24 @@ _CHECKS: tuple[CheckDef, ...] = (
     *CHECKS_CONTRACTS,
 )
 
+_STABLE_TAGS = {"docs", "dev", "ops", "policies", "configs", "internal"}
+_DOMAIN_TO_STABLE_TAG = {
+    "repo": "policies",
+    "license": "policies",
+    "make": "dev",
+    "docs": "docs",
+    "ops": "ops",
+    "configs": "configs",
+    "python": "dev",
+    "docker": "ops",
+    "contracts": "policies",
+}
+
 
 def check_tags(check: CheckDef) -> tuple[str, ...]:
     tags = set(check.tags)
     tags.add(check.domain)
+    tags.add(_DOMAIN_TO_STABLE_TAG.get(check.domain, "internal"))
     if check.slow:
         tags.add("slow")
     else:
@@ -38,6 +52,7 @@ def check_tags(check: CheckDef) -> tuple[str, ...]:
     if "experimental" not in tags:
         tags.add("refgrade_required")
     tags.add("refgrade")
+    tags.update(sorted(tag for tag in check.tags if tag in _STABLE_TAGS))
     return tuple(sorted(tags))
 
 

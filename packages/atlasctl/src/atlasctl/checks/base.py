@@ -34,14 +34,25 @@ class CheckDef:
     fix_hint: str = "Review check output and apply the documented fix."
     slow: bool = False
     tags: tuple[str, ...] = ()
+    effects: tuple[str, ...] = ()
+    owners: tuple[str, ...] = ()
     external_tools: tuple[str, ...] = ()
     evidence: tuple[str, ...] = ()
     writes_allowed_roots: tuple[str, ...] = ("artifacts/evidence/",)
+
+    @property
+    def id(self) -> str:
+        return self.check_id
+
+    @property
+    def title(self) -> str:
+        return self.description
 
 
 @dataclass(frozen=True)
 class CheckResult:
     id: str
+    title: str
     domain: str
     status: str
     errors: list[str]
@@ -52,13 +63,16 @@ class CheckResult:
     fix_hint: str
     category: str
     severity: str
+    tags: list[str]
+    effects: list[str]
+    owners: list[str]
     writes_allowed_roots: list[str]
 
 
 class Check(Protocol):
     id: str
+    title: str
     domain: str
-    description: str
 
     def run(self, repo_root: Path) -> CheckResult:
         ...

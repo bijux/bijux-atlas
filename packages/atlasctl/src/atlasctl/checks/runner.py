@@ -25,6 +25,7 @@ def run_domain(repo_root: Path, domain: str, fail_fast: bool = False) -> tuple[i
         rows.append(
             {
                 "id": result.id,
+                "title": result.title,
                 "domain": result.domain,
                 "status": result.status,
                 "duration_ms": result.metrics.get("duration_ms", 0),
@@ -38,6 +39,9 @@ def run_domain(repo_root: Path, domain: str, fail_fast: bool = False) -> tuple[i
                 "fix_hint": result.fix_hint,
                 "category": result.category,
                 "severity": result.severity,
+                "tags": result.tags,
+                "effects": result.effects,
+                "owners": result.owners,
             }
         )
     payload = {
