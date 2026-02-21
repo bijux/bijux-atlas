@@ -70,13 +70,11 @@ culprits-file-max_modules_per_dir:
 	fi
 
 culprits-max_loc-py:
-	@err=$$(find packages -type d -regex '.*/src/[^/]+$$' -print0 \
-	| xargs -0 -I{} find "{}" -name "*.py" -type f ! -path "*/legacy/*" -print0 \
+	@err=$$(find packages -name "*.py" -print0 \
 	| xargs -0 wc -l \
 	| sort -n \
 	| awk '$$2 ~ /^packages\// && $$1 > 600'); \
-	warn=$$(find packages -type d -regex '.*/src/[^/]+$$' -print0 \
-	| xargs -0 -I{} find "{}" -name "*.py" -type f ! -path "*/legacy/*" -print0 \
+	warn=$$(find packages -name "*.py" -print0 \
 	| xargs -0 wc -l \
 	| sort -n \
 	| awk '$$2 ~ /^packages\// && $$1 > 400 && $$1 <= 600'); \
@@ -93,8 +91,11 @@ culprits-max_loc-py:
 	fi
 
 culprits-file-max_py_files_per_dir:
-	@out=$$(find packages -type d -regex '.*/src/[^/]+$$' -print0 \
-	| xargs -0 -I{} sh -c 'd="{}"; c=$$(find "$$d" -maxdepth 1 -name "*.py" -type f | wc -l | tr -d " "); if [ "$$c" -gt 10 ]; then echo "$$c $$d"; fi' \
+	@out=$$(find packages -name "*.py" -print0 \
+	| xargs -0 -n1 dirname \
+	| sort \
+	| uniq -c \
+	| awk '$$1 > 10' \
 	| sort -nr); \
 	if [ -n "$$out" ]; then \
 		printf '%s\n' "ERROR: max_py_files_per_dir policy violations (files > 10):"; \
