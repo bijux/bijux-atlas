@@ -25,6 +25,10 @@ def configure_ci_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]
     run.add_argument("--no-isolate", action="store_true", help="debug only: skip isolate wrapper around suite execution")
     run.add_argument("--explain", action="store_true", help="print planned CI run steps without executing")
     run.add_argument("--verbose", action="store_true", help="show underlying tool command output")
+    report = ci_sub.add_parser("report", help="show CI run report paths")
+    report.add_argument("--latest", action="store_true", help="show the latest CI run report")
+    report.add_argument("--json", action="store_true", help="emit JSON output")
+    report.add_argument("--verbose", action="store_true", help="show underlying tool command output")
     for name in (
         "fast",
         "contracts",

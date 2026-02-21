@@ -13,6 +13,7 @@ from typing import Any
 from ...contracts.output.base import build_output_base
 from ..context import RunContext
 from ..isolation import build_isolate_env
+from .run_meta import write_run_meta
 
 NEXTEST_TOML = "configs/nextest/nextest.toml"
 DENY_CONFIG = "configs/security/deny.toml"
@@ -208,8 +209,13 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
         "isolate_root": env.get("ISO_ROOT", ""),
         "isolate_tag": env.get("ISO_TAG", ""),
     }
+    out_dir = ctx.repo_root / "artifacts" / "evidence" / "dev" / ctx.run_id
+    out_dir.mkdir(parents=True, exist_ok=True)
+    meta_path = write_run_meta(ctx, out_dir, lane=action)
+    meta["run_meta"] = str(meta_path)
     payload = build_output_base(run_id=ctx.run_id, ok=ok, errors=failures, meta=meta, version=2)
     payload["status"] = "ok" if ok else "error"
+    (out_dir / f"dev-{action}.report.json").write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if params.json_output:
         print(json.dumps(payload, sort_keys=True))
     elif ok:

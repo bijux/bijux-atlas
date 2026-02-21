@@ -150,7 +150,9 @@ def test_ci_run_writes_expected_artifacts(monkeypatch, tmp_path: Path, capsys) -
     payload = json.loads(capsys.readouterr().out.strip())
     assert (out_dir / "suite-ci.report.json").exists()
     assert (out_dir / "suite-ci.summary.txt").exists()
+    assert (out_dir / "run.meta.json").exists()
     assert payload["artifacts"]["json"].endswith("suite-ci.report.json")
+    assert payload["artifacts"]["meta"].endswith("run.meta.json")
 
 
 def test_ci_run_lane_filter_builds_only_patterns(monkeypatch) -> None:
@@ -202,3 +204,31 @@ def test_ci_out_dir_resolution(tmp_path: Path) -> None:
     abs_path = _ci_out_dir(ctx, str(tmp_path / "abs"))
     assert str(rel).endswith("artifacts/evidence/ci/custom")
     assert abs_path == tmp_path / "abs"
+
+
+def test_ci_report_latest(monkeypatch, tmp_path: Path, capsys) -> None:
+    old = tmp_path / "artifacts" / "evidence" / "ci" / "run-old"
+    new = tmp_path / "artifacts" / "evidence" / "ci" / "run-new"
+    old.mkdir(parents=True, exist_ok=True)
+    new.mkdir(parents=True, exist_ok=True)
+    (new / "suite-ci.report.json").write_text("{}\n", encoding="utf-8")
+    (new / "suite-ci.summary.txt").write_text("ok\n", encoding="utf-8")
+    (new / "run.meta.json").write_text("{}\n", encoding="utf-8")
+    monkeypatch.setattr("atlasctl.core.context.find_repo_root", lambda: tmp_path)
+
+    ctx = RunContext.from_args("ci-report", None, "test", False)
+    ns = argparse.Namespace(ci_cmd="report", latest=True, json=True, verbose=False)
+    rc = run_ci_command(ctx, ns)
+    assert rc == 0
+    payload = json.loads(capsys.readouterr().out.strip())
+    assert payload["run_id"] == "run-new"
+    assert payload["artifacts"]["meta"].endswith("run.meta.json")
+
+
+def test_ci_report_requires_latest_flag(capsys) -> None:
+    ctx = RunContext.from_args("ci-report-arg", None, "test", False)
+    ns = argparse.Namespace(ci_cmd="report", latest=False, json=True, verbose=False)
+    rc = run_ci_command(ctx, ns)
+    assert rc == 2
+    payload = json.loads(capsys.readouterr().out.strip())
+    assert payload["status"] == "error"
