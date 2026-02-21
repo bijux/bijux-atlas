@@ -191,6 +191,7 @@ def dispatch_command(
         "docker": ("atlasctl.commands.ops.docker.command", "run_docker_command"),
         "ci": ("atlasctl.commands.dev.ci.command", "run_ci_command"),
         "check": ("atlasctl.checks.command", "run_check_command"),
+        "checks": ("atlasctl.checks.command", "run_check_command"),
         "list": ("atlasctl.commands.listing", "run_list_command"),
         "deps": ("atlasctl.commands.dev.deps.command", "run_deps_command"),
         "gen": ("atlasctl.commands.dev.gen.command", "run_gen_command"),
