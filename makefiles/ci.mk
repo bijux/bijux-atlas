@@ -53,6 +53,9 @@ ci-policy-allow-env:
 ci-policy-boundaries:
 	@$(MAKE) policies/boundaries-check
 
+ci-atlasctl-budgets:
+	@$(MAKE) atlasctl-budgets
+
 ci-ops-policy-audit:
 	@$(MAKE) ops-policy-audit
 

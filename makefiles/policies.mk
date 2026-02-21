@@ -93,6 +93,9 @@ culprits-max_loc-py:
 culprits-file-max_py_files_per_dir:
 	@$(ATLAS_SCRIPTS) policies culprits py-files-per-dir --report text
 
+culprits-file-max_py_files_per_dir.py:
+	@$(ATLAS_SCRIPTS) policies culprits py-files-per-dir --report text
+
 culprits-all-py: culprits-max_loc-py culprits-file-max_py_files_per_dir
 	@printf '%s\n' "INFO: culprits-all-py completed."
 
@@ -102,8 +105,13 @@ culprits-file-max_modules_per_dir.py:
 culprits-file-max_loc_per_dir.py:
 	@$(ATLAS_SCRIPTS) policies culprits dir-loc --report text
 
-culprits-all-py-budgets: culprits-file-max_modules_per_dir.py culprits-file-max_py_files_per_dir culprits-file-max_loc_per_dir.py
+culprits-all-py-budgets: culprits-file-max_modules_per_dir.py culprits-file-max_py_files_per_dir.py culprits-file-max_loc_per_dir.py
 	@printf '%s\n' "INFO: culprits-all-py-budgets completed."
+
+atlasctl-budgets:
+	@mkdir -p artifacts/reports/atlasctl
+	@$(ATLAS_SCRIPTS) policies culprits-suite --report text --out-file artifacts/reports/atlasctl/budgets.txt >/dev/null
+	@$(ATLAS_SCRIPTS) policies culprits-suite --report json --out-file artifacts/reports/atlasctl/budgets.json >/dev/null
 
 culprits-all: culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir
 	@printf '%s\n' "INFO: culprits-all completed."
@@ -122,4 +130,4 @@ cli-command-surface:
 	@cargo test -p bijux-atlas-cli command_surface_ssot_matches_doc -- --exact
 	@cargo test -p bijux-atlas-cli help_output_command_surface_matches_doc_exactly -- --exact
 
-.PHONY: culprits-all culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir culprits-all-py culprits-max_loc-py culprits-file-max_py_files_per_dir culprits-file-max_modules_per_dir.py culprits-file-max_loc_per_dir.py culprits-all-py-budgets crate-structure crate-docs-contract cli-command-surface
+.PHONY: culprits-all culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir culprits-all-py culprits-max_loc-py culprits-file-max_py_files_per_dir culprits-file-max_py_files_per_dir.py culprits-file-max_modules_per_dir.py culprits-file-max_loc_per_dir.py culprits-all-py-budgets atlasctl-budgets crate-structure crate-docs-contract cli-command-surface
