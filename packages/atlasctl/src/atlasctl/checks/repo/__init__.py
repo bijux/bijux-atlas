@@ -29,7 +29,10 @@ from .type_coverage import check_type_coverage
 from .dependencies import check_dependency_declarations
 from .reachability import check_repo_check_modules_registered
 from .pyproject_contracts import (
+    check_dependency_gate_targets,
     check_deps_workflow_doc,
+    check_deps_command_surface,
+    check_dependency_owner_justification,
     check_console_script_entry,
     check_env_docs_present,
     check_optional_dependency_groups,
@@ -37,6 +40,8 @@ from .pyproject_contracts import (
     check_pyproject_no_duplicate_tool_config,
     check_pyproject_required_blocks,
     check_python_module_help,
+    check_requirements_artifact_policy,
+    check_requirements_sync_with_pyproject,
 )
 
 CHECKS: tuple[CheckDef, ...] = (
@@ -71,4 +76,9 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.pyproject_minimalism", "repo", "forbid dead/unknown pyproject tool keys", 300, check_pyproject_minimalism, fix_hint="Remove unknown [tool.*] sections or document and allow them explicitly."),
     CheckDef("repo.deps_workflow_doc", "repo", "ensure docs/deps.md matches chosen dependency workflow", 300, check_deps_workflow_doc, fix_hint="Update docs/deps.md and keep requirements.in/requirements.lock.txt in sync."),
     CheckDef("repo.env_docs_present", "repo", "ensure docs/env.md exists and lists canonical env vars", 300, check_env_docs_present, fix_hint="Create docs/env.md and document canonical runtime environment variables."),
+    CheckDef("repo.requirements_artifact_policy", "repo", "ensure only route-B requirements artifacts exist", 300, check_requirements_artifact_policy, fix_hint="Keep only requirements.in and requirements.lock.txt in package root for route-B workflow."),
+    CheckDef("repo.requirements_sync", "repo", "ensure requirements files match pyproject dev dependency declarations", 300, check_requirements_sync_with_pyproject, fix_hint="Regenerate requirements.lock.txt from requirements.in and keep pyproject optional-deps dev aligned."),
+    CheckDef("repo.dependency_owner_justification", "repo", "ensure each dependency has owner and justification", 300, check_dependency_owner_justification, fix_hint="Add dependency ownership + justification entries in docs/deps.md."),
+    CheckDef("repo.dependency_gate_targets", "repo", "ensure dependency gate make targets exist", 300, check_dependency_gate_targets, fix_hint="Define deps-lock/deps-sync/deps-check-venv/deps-cold-start in makefiles/scripts.mk."),
+    CheckDef("repo.deps_command_surface", "repo", "ensure atlasctl deps command surface is runnable", 300, check_deps_command_surface, fix_hint="Wire atlasctl deps parser/runner and keep command import path valid."),
 )

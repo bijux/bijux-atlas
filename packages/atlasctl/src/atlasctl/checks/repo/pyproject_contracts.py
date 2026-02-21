@@ -29,6 +29,7 @@ _FORBIDDEN_TOOL_CONFIGS = (
 _REQUIRED_OPTIONAL_DEP_GROUPS = ("dev", "test", "ops", "docs")
 _ALLOWED_TOOL_PREFIXES = {"setuptools", "pytest", "ruff", "mypy", "coverage"}
 _DEPS_WORKFLOW_MARKER = "Workflow: pip-tools (requirements.in + requirements.lock.txt)"
+_REQ_ALLOWED = {"requirements.in", "requirements.lock.txt"}
 
 
 def _read_pyproject(repo_root: Path) -> str:
@@ -130,3 +131,82 @@ def check_env_docs_present(repo_root: Path) -> tuple[int, list[str]]:
     required = ("BIJUX_ATLAS_SCRIPTS_ARTIFACT_ROOT", "ATLASCTL_ARTIFACT_ROOT", "XDG_CACHE_HOME")
     errors = [f"docs/env.md missing env var: {name}" for name in required if name not in text]
     return (0 if not errors else 1), errors
+
+
+def check_requirements_artifact_policy(repo_root: Path) -> tuple[int, list[str]]:
+    package_root = repo_root / "packages/atlasctl"
+    found = sorted(p.name for p in package_root.glob("requirements*.txt"))
+    errors = [f"unexpected requirements artifact: packages/atlasctl/{name}" for name in found if name not in _REQ_ALLOWED]
+    if (package_root / "uv.lock").exists():
+        errors.append("unexpected lock artifact for route-B workflow: packages/atlasctl/uv.lock")
+    if not (package_root / "requirements.in").exists():
+        errors.append("missing packages/atlasctl/requirements.in")
+    if not (package_root / "requirements.lock.txt").exists():
+        errors.append("missing packages/atlasctl/requirements.lock.txt")
+    return (0 if not errors else 1), errors
+
+
+def check_requirements_sync_with_pyproject(repo_root: Path) -> tuple[int, list[str]]:
+    text = _read_pyproject(repo_root)
+    block = re.search(r"(?ms)^dev\s*=\s*\[(.*?)\]", text)
+    pyproject_dev = sorted(set(re.findall(r'"([^"]+)"', block.group(1) if block else "")))
+    req_in = repo_root / "packages/atlasctl/requirements.in"
+    req_lock = repo_root / "packages/atlasctl/requirements.lock.txt"
+    req_lines = sorted(
+        {
+            ln.strip()
+            for ln in req_in.read_text(encoding="utf-8").splitlines()
+            if ln.strip() and not ln.strip().startswith("#")
+        }
+    )
+    lock_lines = sorted(
+        {
+            ln.strip()
+            for ln in req_lock.read_text(encoding="utf-8").splitlines()
+            if ln.strip() and not ln.strip().startswith("#")
+        }
+    )
+    errors: list[str] = []
+    if pyproject_dev != req_lines:
+        errors.append(f"requirements.in drift from pyproject optional-deps dev: pyproject={pyproject_dev} requirements.in={req_lines}")
+    if req_lines != lock_lines:
+        errors.append(f"requirements.lock.txt drift from requirements.in: in={req_lines} lock={lock_lines}")
+    return (0 if not errors else 1), errors
+
+
+def check_dependency_owner_justification(repo_root: Path) -> tuple[int, list[str]]:
+    deps_doc = repo_root / "packages/atlasctl/docs/deps.md"
+    text = deps_doc.read_text(encoding="utf-8")
+    table_deps = set(re.findall(r"\|\s*`([^`]+==[^`]+)`\s*\|\s*`[^`]+`\s*\|\s*[^|]+\|", text))
+    req_in = repo_root / "packages/atlasctl/requirements.in"
+    req_deps = {
+        ln.strip()
+        for ln in req_in.read_text(encoding="utf-8").splitlines()
+        if ln.strip() and not ln.strip().startswith("#")
+    }
+    missing = sorted(dep for dep in req_deps if dep not in table_deps)
+    errors = [f"missing owner+justification in docs/deps.md for dependency: {dep}" for dep in missing]
+    return (0 if not errors else 1), errors
+
+
+def check_dependency_gate_targets(repo_root: Path) -> tuple[int, list[str]]:
+    mk = (repo_root / "makefiles/scripts.mk").read_text(encoding="utf-8")
+    required = ("deps-lock:", "deps-sync:", "deps-check-venv:", "deps-cold-start:")
+    errors = [f"missing make dependency gate target: {name[:-1]}" for name in required if name not in mk]
+    return (0 if not errors else 1), errors
+
+
+def check_deps_command_surface(repo_root: Path) -> tuple[int, list[str]]:
+    env = {"PYTHONPATH": str(repo_root / "packages/atlasctl/src")}
+    proc = subprocess.run(
+        [sys.executable, "-m", "atlasctl.cli", "deps", "cold-start", "--runs", "1", "--max-ms", "5000"],
+        cwd=repo_root,
+        text=True,
+        capture_output=True,
+        check=False,
+        env=env,
+    )
+    if proc.returncode == 0:
+        return 0, []
+    msg = proc.stderr.strip() or proc.stdout.strip() or "atlasctl deps command failed"
+    return 1, [msg]
