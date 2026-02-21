@@ -11,6 +11,22 @@ def _tests_root(repo_root: Path) -> Path:
     return repo_root / "packages/atlasctl/tests"
 
 
+def check_test_ownership_tags(repo_root: Path) -> tuple[int, list[str]]:
+    roots = _tests_root(repo_root)
+    errors: list[str] = []
+    for path in sorted(roots.rglob("test_*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
+        tag_line = next((line.strip() for line in lines[:10] if line.strip().startswith("# test-domain:")), "")
+        if tag_line:
+            continue
+        parts = path.relative_to(roots).parts
+        if len(parts) >= 2:
+            continue
+        errors.append(f"test ownership tag missing: {rel}")
+    return (0 if not errors else 1), errors
+
+
 def check_test_duplicate_expectations(repo_root: Path) -> tuple[int, list[str]]:
     roots = _tests_root(repo_root)
     names: dict[str, list[tuple[str, str]]] = {}
@@ -58,3 +74,17 @@ def check_check_test_coverage(repo_root: Path) -> tuple[int, list[str]]:
             continue
         missing.append(marker)
     return (0 if not missing else 1), [f"check missing test/suite marker: {check_id}" for check_id in missing]
+
+
+def check_legacy_parity_tests_present(repo_root: Path) -> tuple[int, list[str]]:
+    legacy_dir = repo_root / "packages/atlasctl/src/atlasctl/legacy"
+    if not legacy_dir.exists():
+        return 0, []
+    legacy_files = [p for p in legacy_dir.rglob("*.py") if "__pycache__" not in p.as_posix()]
+    if not legacy_files:
+        return 0, []
+    tests_root = _tests_root(repo_root)
+    parity_tests = sorted(tests_root.rglob("test_legacy*.py"))
+    if parity_tests:
+        return 0, []
+    return 1, ["legacy modules exist but no legacy parity tests were found under packages/atlasctl/tests"]
