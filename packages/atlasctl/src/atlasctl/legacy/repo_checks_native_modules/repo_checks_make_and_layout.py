@@ -8,7 +8,7 @@ from datetime import date, datetime, timezone
 from fnmatch import fnmatch
 from pathlib import Path
 
-from ..repo.native_runtime import (
+from atlasctl.legacy.repo.native_runtime import (
     _find_python_migration_exception,
     check_duplicate_script_names,
     check_script_help,
@@ -325,4 +325,3 @@ def check_layout_contract(repo_root: Path) -> tuple[int, list[str]]:
         errors.extend(errs)
 
     return (0 if not errors else 1), errors
-

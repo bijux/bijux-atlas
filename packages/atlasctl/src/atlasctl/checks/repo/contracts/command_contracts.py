@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from ...cli.registry import command_registry
+from ....cli.registry import command_registry
 
 
 def check_command_metadata_contract(repo_root: Path) -> tuple[int, list[str]]:
