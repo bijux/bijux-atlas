@@ -51,4 +51,5 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 
 ## Testing
 
+- [Test Taxonomy](testing/taxonomy.md)
 - [Suite Coverage Markers](testing/suite-markers.md)
