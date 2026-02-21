@@ -318,11 +318,13 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 "pins",
                 "gen",
                 "stack",
+                "deploy",
                 "k8s",
                 "e2e",
                 "obs",
                 "kind",
                 "load",
+                "datasets",
                 "help",
                 "up",
                 "down",
@@ -363,6 +365,9 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
     if ns.ops_cmd == "restart":
         return _run_simple_cmd(ctx, ["bash", "ops/run/k8s-restart.sh"], ns.report)
+
+    if ns.ops_cmd == "deploy":
+        return _run_simple_cmd(ctx, ["bash", "ops/run/deploy-atlas.sh"], ns.report)
 
     if ns.ops_cmd == "env":
         sub = getattr(ns, "ops_env_cmd", "")
@@ -463,7 +468,7 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             return _run_simple_cmd(ctx, diff_cmd, ns.report)
         return 2
 
-    if ns.ops_cmd in {"stack", "k8s", "e2e", "obs", "kind", "load"}:
+    if ns.ops_cmd in {"stack", "k8s", "e2e", "obs", "kind", "load", "datasets"}:
         # Domain tree front-doors: keep shape stable even where implementations are delegated.
         sub_name = {
             "stack": "ops_stack_cmd",
@@ -472,6 +477,7 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             "obs": "ops_obs_cmd",
             "kind": "ops_kind_cmd",
             "load": "ops_load_cmd",
+            "datasets": "ops_datasets_cmd",
         }[ns.ops_cmd]
         sub = getattr(ns, sub_name, "")
         if ns.ops_cmd == "k8s" and sub == "contracts":
@@ -553,6 +559,12 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         if ns.ops_cmd == "load" and sub == "run":
             suite = getattr(ns, "suite", "mixed-80-20")
             return _run_simple_cmd(ctx, ["env", f"SUITE={suite}", "bash", "ops/run/load-suite.sh"], ns.report)
+        if ns.ops_cmd == "datasets" and sub == "verify":
+            return _run_simple_cmd(ctx, ["bash", "ops/run/datasets-verify.sh"], ns.report)
+        if ns.ops_cmd == "datasets" and sub == "fetch":
+            return _run_simple_cmd(ctx, ["bash", "ops/run/warm.sh"], ns.report)
+        if ns.ops_cmd == "datasets" and sub == "pin":
+            return _run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/datasets/build_manifest_lock.py"], ns.report)
         return 2
 
     if ns.ops_cmd == "check":
@@ -701,6 +713,8 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     down_cmd.add_argument("--report", choices=["text", "json"], default="text")
     restart_cmd = ops_sub.add_parser("restart", help="restart deployed atlas workloads safely")
     restart_cmd.add_argument("--report", choices=["text", "json"], default="text")
+    deploy_cmd = ops_sub.add_parser("deploy", help="deploy atlas workloads")
+    deploy_cmd.add_argument("--report", choices=["text", "json"], default="text")
     run_cmd = ops_sub.add_parser("run", help="run ops workflow manifest")
     run_cmd.add_argument("--report", choices=["text", "json"], default="text")
     run_cmd.add_argument("--manifest", required=True, help="ops workflow manifest path (.json/.yaml)")
@@ -776,6 +790,13 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     load_sub = load.add_subparsers(dest="ops_load_cmd", required=True)
     load_run = load_sub.add_parser("run", help="run load suite")
     load_run.add_argument("--suite", default="mixed-80-20")
+
+    datasets = ops_sub.add_parser("datasets", help="ops dataset commands")
+    datasets.add_argument("--report", choices=["text", "json"], default="text")
+    datasets_sub = datasets.add_subparsers(dest="ops_datasets_cmd", required=True)
+    datasets_sub.add_parser("verify", help="verify dataset state")
+    datasets_sub.add_parser("fetch", help="warm/fetch datasets")
+    datasets_sub.add_parser("pin", help="rebuild datasets lock manifest")
 
     for name, help_text in (
         ("surface", "validate or generate ops surface metadata"),
