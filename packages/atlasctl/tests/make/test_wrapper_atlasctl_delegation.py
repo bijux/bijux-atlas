@@ -22,7 +22,7 @@ def _recipes(path: Path) -> dict[str, list[str]]:
 
 
 def test_wrapper_makefiles_delegate_once_to_atlasctl() -> None:
-    for rel in ("makefiles/cargo.mk", "makefiles/ci.mk", "makefiles/dev.mk"):
+    for rel in ("makefiles/dev.mk",):
         recipes = _recipes(ROOT / rel)
         for target, lines in recipes.items():
             assert len(lines) == 1, f"{rel}:{target} must have exactly one recipe line"
@@ -32,11 +32,11 @@ def test_wrapper_makefiles_delegate_once_to_atlasctl() -> None:
 
 
 def test_core_wrapper_targets_use_expected_atlasctl_args() -> None:
-    cargo = _recipes(ROOT / "makefiles/cargo.mk")
-    ci = _recipes(ROOT / "makefiles/ci.mk")
     dev = _recipes(ROOT / "makefiles/dev.mk")
-    assert cargo["fmt"] == ["@./bin/atlasctl dev fmt"]
-    assert cargo["test"] == ["@./bin/atlasctl dev test"]
-    assert ci["ci"] == ["@./bin/atlasctl dev ci run --json"]
-    assert dev["internal/dev/fmt"] == ["@./bin/atlasctl dev fmt"]
-    assert dev["internal/dev/test"] == ["@./bin/atlasctl dev test"]
+    assert dev["fmt"] == ["@./bin/atlasctl dev fmt"]
+    assert dev["fmt-all"] == ["@./bin/atlasctl dev fmt --all"]
+    assert dev["test"] == ["@./bin/atlasctl dev test"]
+    assert dev["test-all"] == ["@./bin/atlasctl dev test --all"]
+    assert dev["ci"] == ["@./bin/atlasctl ci run --json --out-dir artifacts/reports/atlasctl/suite-ci"]
+    assert dev["internal/dev/check"] == ["@./bin/atlasctl dev check"]
+    assert dev["internal/ci/run"] == ["@./bin/atlasctl ci run --json"]
