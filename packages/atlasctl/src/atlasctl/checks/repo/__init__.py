@@ -74,6 +74,20 @@ from .contracts.pyproject_contracts import (
     check_requirements_sync_with_pyproject,
 )
 from .contracts.suite_inventory import check_suite_inventory_policy
+from ..layout.root import (
+    FORBIDDEN_PATHS_DESCRIPTION,
+    FORBIDDEN_PATHS_CHECK_ID,
+    ROOT_DETERMINISM_DESCRIPTION,
+    ROOT_DETERMINISM_CHECK_ID,
+    ROOT_SHAPE_DESCRIPTION,
+    ROOT_SHAPE_CHECK_ID,
+    DIRECT_SCRIPT_RUNS_DESCRIPTION,
+    DIRECT_SCRIPT_RUNS_CHECK_ID,
+    run_forbidden_paths,
+    run_no_direct_script_runs,
+    run_root_determinism,
+    run_root_shape,
+)
 
 CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.forbidden_top_dirs", "repo", "forbid top-level forbidden directories", 500, check_forbidden_top_dirs, fix_hint="Remove forbidden root directories."),
@@ -197,6 +211,10 @@ CHECKS: tuple[CheckDef, ...] = (
         check_no_layout_shadow_configs,
         fix_hint="Resolve shadow config sources reported by atlasctl/layout/no_shadow.py.",
     ),
+    CheckDef(ROOT_SHAPE_CHECK_ID, "repo", ROOT_SHAPE_DESCRIPTION, 500, run_root_shape, fix_hint="Align root entries with checks/layout/root_whitelist.json."),
+    CheckDef(FORBIDDEN_PATHS_CHECK_ID, "repo", FORBIDDEN_PATHS_DESCRIPTION, 500, run_forbidden_paths, fix_hint="Remove forbidden legacy path references from make/docs/workflows."),
+    CheckDef(DIRECT_SCRIPT_RUNS_CHECK_ID, "repo", DIRECT_SCRIPT_RUNS_DESCRIPTION, 500, run_no_direct_script_runs, fix_hint="Invoke workflows through make targets instead of direct scripts/ops paths."),
+    CheckDef(ROOT_DETERMINISM_CHECK_ID, "repo", ROOT_DETERMINISM_DESCRIPTION, 1500, run_root_determinism, fix_hint="Stabilize generated root outputs so consecutive runs are identical.", slow=True),
     CheckDef(
         "repo.no_nested_same_name_packages",
         "repo",
