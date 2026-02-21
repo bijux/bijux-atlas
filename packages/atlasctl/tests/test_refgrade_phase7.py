@@ -61,3 +61,15 @@ def test_refgrade_target_tree_shape() -> None:
                     offenders.append(rel)
                     break
     assert offenders == [], f"modern modules importing atlasctl.legacy: {sorted(set(offenders))}"
+
+
+def test_goldens_are_generated_only_via_gen_command() -> None:
+    offenders: list[str] = []
+    for path in sorted(SRC_ROOT.rglob("*.py")):
+        rel = path.relative_to(ROOT).as_posix()
+        if rel == "packages/atlasctl/src/atlasctl/gen/command.py":
+            continue
+        text = path.read_text(encoding="utf-8")
+        if "tests/goldens" in text:
+            offenders.append(rel)
+    assert offenders == [], f"only atlasctl gen goldens may reference tests/goldens write path: {offenders}"
