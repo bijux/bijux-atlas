@@ -1,1 +1,1 @@
-"""Legacy repo native runtime split modules."""
+"""Compatibility package for moved repo native runtime modules."""

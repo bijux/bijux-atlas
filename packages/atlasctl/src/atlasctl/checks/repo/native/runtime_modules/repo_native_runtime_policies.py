@@ -230,7 +230,7 @@ def generate_scripts_sbom(repo_root: Path, lock_rel: str, out_rel: str) -> tuple
     out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return 0, [out_rel]
 
-from .native_lint import (
+from atlasctl.checks.repo.native_lint import (
     check_effects_lint,
     check_naming_intent_lint,
     check_root_bin_shims,

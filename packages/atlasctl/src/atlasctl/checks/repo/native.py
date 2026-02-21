@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from . import native_loader as _native_loader
+from .native import loader as _native_loader
 
 __all__ = [name for name in dir(_native_loader) if name.startswith(("check_", "generate_"))]
 
