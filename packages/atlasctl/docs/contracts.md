@@ -21,6 +21,7 @@ Defines behavior guarantees and boundaries for the `bijux-atlas` product CLI.
 - The CLI may execute legacy scripts only through `run` with context propagation.
 - New command families must preserve help output and JSON contract tests.
 - Packaging is internal-only; publishing to PyPI is forbidden until an explicit release policy is added.
+- Package distribution uses MIT licensing as defined in `packages/atlasctl/LICENSE`.
 
 ## Verification
 

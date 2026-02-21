@@ -58,3 +58,7 @@ The package intentionally has no local `Makefile`; repository-level make targets
 ## Publish Policy
 
 - `bijux-atlas` is internal-only and must not be published to PyPI until an explicit release policy is added.
+
+## License
+
+- This package is licensed under MIT. See [`LICENSE`](LICENSE).
