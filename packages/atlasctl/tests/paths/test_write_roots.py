@@ -4,9 +4,9 @@ from pathlib import Path
 
 import pytest
 from atlasctl.core.context import RunContext
-from atlasctl.errors import ScriptError
+from atlasctl.core.errors import ScriptError
 from atlasctl.core.fs import ensure_evidence_path, write_text
-from atlasctl.policy import is_forbidden_repo_path
+from atlasctl.core.write_policy import is_forbidden_repo_path
 
 
 def _ctx() -> RunContext:

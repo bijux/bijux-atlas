@@ -24,8 +24,8 @@ from ..core.context import RunContext
 from ..core.telemetry import emit_telemetry
 from ..core.logging import log_event
 from ..core.serialize import dumps_json
-from ..errors import ScriptError
-from ..exit_codes import ERR_CONFIG, ERR_USER
+from ..core.errors import ScriptError
+from ..core.exit_codes import ERR_CONFIG, ERR_USER
 from .manifests import SuiteManifest, load_first_class_suites
 
 try:

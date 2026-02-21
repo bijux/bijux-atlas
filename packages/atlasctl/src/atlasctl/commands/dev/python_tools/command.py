@@ -8,7 +8,7 @@ import subprocess
 from pathlib import Path
 
 from ....core.context import RunContext
-from ....exit_codes import ERR_PREREQ, ERR_USER
+from ....core.exit_codes import ERR_PREREQ, ERR_USER
 
 
 def _venv_path(ctx: RunContext, override: str | None) -> Path:

@@ -20,9 +20,9 @@ from ..core.logging import log_event
 from ..core.telemetry import emit_telemetry
 from ..core.repo_root import try_find_repo_root
 from ..contracts.ids import COMMANDS, HELP, RUNTIME_CONTRACTS
-from ..errors import ScriptError
-from ..exit_codes import ERR_CONFIG, ERR_INTERNAL
-from ..network_guard import install_no_network_guard, resolve_network_mode
+from ..core.errors import ScriptError
+from ..core.exit_codes import ERR_CONFIG, ERR_INTERNAL
+from ..core.network_guard import install_no_network_guard, resolve_network_mode
 from .constants import CONFIGURE_HOOKS, DOMAINS, NO_NETWORK_FLAG_EXPIRY
 from .dispatch import dispatch_command
 from .output import no_network_flag_expired, render_error, resolve_output_format

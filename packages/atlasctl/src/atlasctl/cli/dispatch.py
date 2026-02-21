@@ -13,9 +13,9 @@ from ..core.script_runner import run_script
 from ..core.serialize import dumps_json
 from ..contracts.ids import EXPLAIN, HELP
 from ..contracts.validate_self import validate_self
-from ..errors import ScriptError
-from ..exit_codes import ERR_CONFIG
-from ..surface import run_surface
+from ..core.errors import ScriptError
+from ..core.exit_codes import ERR_CONFIG
+from ..commands.dev.surface import run_surface
 from .constants import DOMAINS
 from .output import build_base_payload, emit
 

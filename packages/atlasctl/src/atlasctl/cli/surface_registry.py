@@ -4,7 +4,7 @@ import argparse
 import json
 from dataclasses import dataclass
 
-from ..run_context import RunContext
+from ..core.context import RunContext
 
 DomainPayload = dict[str, object]
 

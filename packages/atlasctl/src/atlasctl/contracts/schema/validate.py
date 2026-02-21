@@ -4,8 +4,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-from ...errors import ScriptError
-from ...exit_codes import ERR_VALIDATION
+from ...core.errors import ScriptError
+from ...core.exit_codes import ERR_VALIDATION
 from .catalog import load_catalog, schema_path_for
 
 

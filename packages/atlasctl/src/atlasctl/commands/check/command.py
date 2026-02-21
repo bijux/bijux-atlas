@@ -61,7 +61,7 @@ from ...checks.runner import run_domain
 from ...core.context import RunContext
 from ...core.fs import ensure_evidence_path
 from ...core.telemetry import emit_telemetry
-from ...exit_codes import ERR_CONTRACT, ERR_USER
+from ...core.exit_codes import ERR_CONTRACT, ERR_USER
 from ...commands.policies.lint.suite_engine import run_lint_suite
 
 NativeCheck = Callable[[Path], tuple[int, list[str]]]

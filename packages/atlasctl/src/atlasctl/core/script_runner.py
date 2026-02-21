@@ -6,8 +6,8 @@ import sys
 
 from .env import setdefault as env_setdefault
 from .context import RunContext
-from ..errors import ScriptError
-from ..exit_codes import ERR_CONFIG
+from .errors import ScriptError
+from .exit_codes import ERR_CONFIG
 
 
 def run_script(script_path: str, args: list[str], ctx: RunContext) -> int:

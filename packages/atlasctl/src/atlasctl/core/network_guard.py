@@ -3,7 +3,7 @@ from __future__ import annotations
 import socket
 from typing import Any, Callable
 
-from .core.effects import NetworkDecision, resolve_network_mode as resolve_network_mode_policy
+from .effects import NetworkDecision, resolve_network_mode as resolve_network_mode_policy
 from .errors import ScriptError
 from .exit_codes import ERR_CONTEXT
 
