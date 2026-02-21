@@ -100,3 +100,22 @@ def test_dev_fmt_refuses_without_isolate(monkeypatch) -> None:
     ctx = RunContext.from_args("dev-no-isolate", None, "test", False)
     with pytest.raises(ScriptError):
         run_dev_cargo(ctx, DevCargoParams(action="fmt", json_output=True, verbose=False))
+
+
+def test_dev_writes_evidence_and_meta(monkeypatch, tmp_path) -> None:
+    def fake_subprocess_run(_cmd, **_kwargs):
+        class P:
+            returncode = 0
+            stdout = ""
+            stderr = ""
+
+        return P()
+
+    monkeypatch.setattr("atlasctl.core.context.find_repo_root", lambda: tmp_path)
+    monkeypatch.setattr("atlasctl.core.effects.dev_cargo.subprocess.run", fake_subprocess_run)
+    ctx = RunContext.from_args("dev-evidence", None, "test", False)
+    rc = run_dev_cargo(ctx, DevCargoParams(action="check", json_output=True, verbose=False))
+    assert rc == 0
+    out_dir = tmp_path / "artifacts" / "evidence" / "dev" / "dev-evidence"
+    assert (out_dir / "run.meta.json").exists()
+    assert (out_dir / "dev-check.report.json").exists()

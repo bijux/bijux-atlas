@@ -10,6 +10,7 @@ from typing import Any
 
 from ...contracts.output.base import build_output_base
 from ..context import RunContext
+from .run_meta import write_run_meta
 
 LANE_FILTERS: dict[str, tuple[str, ...]] = {
     "fmt": ("*fmt*",),
@@ -241,6 +242,7 @@ def run_ci_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             f"json={out_dir / 'suite-ci.report.json'}\n"
         )
         (out_dir / "suite-ci.summary.txt").write_text(summary_txt, encoding="utf-8")
+        meta_path = write_run_meta(ctx, out_dir, lane="ci")
         if ns.json or ctx.output_format == "json":
             print(
                 json.dumps(
@@ -263,6 +265,7 @@ def run_ci_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                             "json": str(out_dir / "suite-ci.report.json"),
                             "junit": str(junit_path),
                             "summary": str(out_dir / "suite-ci.summary.txt"),
+                            "meta": str(meta_path),
                         },
                     },
                     sort_keys=True,
@@ -273,6 +276,45 @@ def run_ci_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         else:
             print(f"ci run: fail (suite ci) run_id={ctx.run_id} (next: rerun with --verbose --no-isolate)")
         return 0 if proc.returncode == 0 else 1
+    if ns.ci_cmd == "report":
+        if not bool(getattr(ns, "latest", False)):
+            msg = "only `atlasctl dev ci report --latest` is supported"
+            print(json.dumps({"status": "error", "message": msg}, sort_keys=True) if (ns.json or ctx.output_format == "json") else msg)
+            return 2
+        root = ctx.repo_root / "artifacts" / "evidence" / "ci"
+        if not root.exists():
+            payload = {"status": "error", "message": "no ci evidence runs found", "next": "run `./bin/atlasctl dev ci run` first"}
+            print(json.dumps(payload, sort_keys=True) if (ns.json or ctx.output_format == "json") else payload["message"])
+            return 1
+        runs = [p for p in root.iterdir() if p.is_dir()]
+        if not runs:
+            payload = {"status": "error", "message": "no ci evidence runs found", "next": "run `./bin/atlasctl dev ci run` first"}
+            print(json.dumps(payload, sort_keys=True) if (ns.json or ctx.output_format == "json") else payload["message"])
+            return 1
+        latest = max(runs, key=lambda p: p.stat().st_mtime)
+        report = latest / "suite-ci.report.json"
+        summary = latest / "suite-ci.summary.txt"
+        meta = latest / "run.meta.json"
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "run_id": latest.name,
+            "latest": str(latest),
+            "artifacts": {
+                "json": str(report),
+                "summary": str(summary),
+                "meta": str(meta),
+            },
+        }
+        if ns.json or ctx.output_format == "json":
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            print(f"latest ci report: {latest.name}")
+            print(f"- json: {report}")
+            print(f"- summary: {summary}")
+            print(f"- meta: {meta}")
+        return 0
     if ns.ci_cmd == "fast":
         step = _run_step(
             ctx,
