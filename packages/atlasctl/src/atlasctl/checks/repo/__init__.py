@@ -92,6 +92,7 @@ from .contracts.test_guardrails import (
     check_check_test_coverage,
     check_command_test_coverage,
     check_json_goldens_validate_schema,
+    check_suite_marker_rules,
     check_test_duplicate_expectations,
     check_test_ownership_tags,
 )
@@ -277,6 +278,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.deps_command_surface", "repo", "ensure atlasctl deps command surface is runnable", 300, check_deps_command_surface, fix_hint="Wire atlasctl deps parser/runner and keep command import path valid."),
     CheckDef("repo.tests_no_duplicate_expectations", "repo", "forbid duplicate test function names across test modules", 300, check_test_duplicate_expectations, fix_hint="Rename duplicated test_* functions to avoid conflicting expectations."),
     CheckDef("repo.test_ownership_tags", "repo", "ensure tests declare ownership tags or live in domain directories", 300, check_test_ownership_tags, fix_hint="Add '# test-domain: <domain>' header to top-level tests."),
+    CheckDef("repo.suite_marker_rules", "repo", "enforce check-suite-coverage marker file policy", 300, check_suite_marker_rules, fix_hint="Keep check-suite-coverage.markers.txt sorted, unique, and only registered check ids."),
     CheckDef("repo.command_test_coverage", "repo", "ensure each command has explicit test coverage marker", 300, check_command_test_coverage, fix_hint="Add at least one test mentioning each command."),
     CheckDef("repo.json_goldens_validate_schema", "repo", "require schema validation in JSON golden tests", 300, check_json_goldens_validate_schema, fix_hint="Call contracts.validate() before asserting JSON golden snapshots."),
     CheckDef("repo.check_test_coverage", "repo", "ensure each registered check has test or golden coverage marker", 300, check_check_test_coverage, fix_hint="Add test/golden references for uncovered checks."),

@@ -11,6 +11,7 @@ from atlasctl.checks.repo.contracts.test_guardrails import (
     check_check_test_coverage,
     check_command_test_coverage,
     check_json_goldens_validate_schema,
+    check_suite_marker_rules,
     check_test_duplicate_expectations,
     check_test_ownership_tags,
 )
@@ -55,6 +56,7 @@ def test_test_guardrail_checks_pass() -> None:
     for fn in (
         check_test_duplicate_expectations,
         check_test_ownership_tags,
+        check_suite_marker_rules,
         check_command_test_coverage,
         check_json_goldens_validate_schema,
         check_check_test_coverage,
