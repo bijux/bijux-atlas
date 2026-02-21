@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ast
+import json
 import re
 from pathlib import Path
 
@@ -122,3 +123,66 @@ def check_json_goldens_validate_schema(repo_root: Path) -> tuple[int, list[str]]
         if "validate(" not in text:
             offenders.append(path.relative_to(repo_root).as_posix())
     return (0 if not offenders else 1), [f"json golden test missing schema validate() call: {rel}" for rel in offenders]
+
+
+def check_no_unjustified_skips(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for path in sorted(_tests_root(repo_root).rglob("test_*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
+        text = "\n".join(lines)
+        if "pytest.mark.skip" not in text and "pytest.skip(" not in text:
+            continue
+        for idx, line in enumerate(lines, start=1):
+            if "pytest.mark.skip" not in line and "pytest.skip(" not in line:
+                continue
+            window = lines[max(0, idx - 4) : idx + 2]
+            joined = "\n".join(window)
+            if "skip-justification:" not in joined or "skip-expires:" not in joined:
+                errors.append(f"{rel}:{idx}: skip requires skip-justification and skip-expires markers")
+    return (0 if not errors else 1), errors
+
+
+def check_no_conflicting_json_goldens(repo_root: Path) -> tuple[int, list[str]]:
+    golden_dir = _tests_root(repo_root) / "goldens"
+    schema_to_files: dict[str, list[str]] = {}
+    for golden in sorted(golden_dir.glob("*.json.golden")):
+        text = golden.read_text(encoding="utf-8", errors="ignore").strip()
+        if not text:
+            continue
+        try:
+            payload = json.loads(text)
+        except Exception:
+            continue
+        schema_name = str(payload.get("schema_name", "")).strip()
+        if not schema_name:
+            continue
+        schema_to_files.setdefault(schema_name, []).append(golden.name)
+    errors: list[str] = []
+    for schema_name, files in sorted(schema_to_files.items()):
+        if len(files) > 1:
+            errors.append(f"conflicting goldens for schema {schema_name}: {sorted(files)}")
+    return (0 if not errors else 1), errors
+
+
+def check_duplicate_contract_assertions(repo_root: Path) -> tuple[int, list[str]]:
+    contract_assertions: dict[tuple[str, str], list[str]] = {}
+    for path in sorted(_tests_root(repo_root).rglob("test_*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        tree = ast.parse(path.read_text(encoding="utf-8", errors="ignore"), filename=rel)
+        for node in tree.body:
+            if not isinstance(node, ast.FunctionDef) or not node.name.startswith("test_"):
+                continue
+            schemas: set[str] = set()
+            for sub in ast.walk(node):
+                if isinstance(sub, ast.Call) and isinstance(sub.func, ast.Name) and sub.func.id == "validate":
+                    if sub.args and isinstance(sub.args[0], ast.Constant) and isinstance(sub.args[0].value, str):
+                        schemas.add(sub.args[0].value)
+            for schema in sorted(schemas):
+                key = (rel, schema)
+                contract_assertions.setdefault(key, []).append(node.name)
+    errors: list[str] = []
+    for (rel, schema), tests in sorted(contract_assertions.items()):
+        if len(tests) > 1:
+            errors.append(f"{rel}: duplicate assertions for contract `{schema}` in tests {sorted(tests)}")
+    return (0 if not errors else 1), errors
