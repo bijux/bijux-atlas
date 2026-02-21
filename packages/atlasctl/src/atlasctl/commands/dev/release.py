@@ -4,7 +4,7 @@ import argparse
 import json
 import subprocess
 
-from ..core.context import RunContext
+from ...core.context import RunContext
 
 
 def _run(ctx: RunContext, cmd: list[str]) -> tuple[bool, str]:

@@ -6,7 +6,7 @@ import shutil
 import subprocess
 import sys
 
-from ..core.context import RunContext
+from ...core.context import RunContext
 
 
 def _tool_status(name: str, probe: list[str]) -> dict[str, str]:
