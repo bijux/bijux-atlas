@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-import subprocess
 import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from . import exec as exec_core
 from .logging import log_event
 
 if TYPE_CHECKING:
@@ -38,13 +38,12 @@ def run_command(
         attempt += 1
         started = time.monotonic()
         try:
-            proc = subprocess.run(
+            proc = exec_core.run(
                 cmd,
                 cwd=cwd,
                 text=True,
                 capture_output=True,
-                check=False,
-                timeout=(timeout_seconds if timeout_seconds > 0 else None),
+                timeout_seconds=(timeout_seconds if timeout_seconds > 0 else None),
             )
             result = CommandResult(
                 code=proc.returncode,
@@ -52,11 +51,20 @@ def run_command(
                 stderr=proc.stderr or "",
                 duration_ms=int((time.monotonic() - started) * 1000),
             )
-        except subprocess.TimeoutExpired as exc:
+        except TimeoutError:
             result = CommandResult(
                 code=124,
-                stdout=(exc.stdout or ""),
-                stderr=((exc.stderr or "") + f"\ncommand timed out after {timeout_seconds}s").strip(),
+                stdout="",
+                stderr=f"command timed out after {timeout_seconds}s",
+                duration_ms=int((time.monotonic() - started) * 1000),
+            )
+        except Exception as exc:
+            if exc.__class__.__name__ != "TimeoutExpired":
+                raise
+            result = CommandResult(
+                code=124,
+                stdout=(getattr(exc, "stdout", "") or ""),
+                stderr=((getattr(exc, "stderr", "") or "") + f"\ncommand timed out after {timeout_seconds}s").strip(),
                 duration_ms=int((time.monotonic() - started) * 1000),
             )
         if ctx and not ctx.quiet:

@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from ....cli.registry import command_registry
+from ....core.effects import all_command_effects, command_effects, command_group, group_allowed_effects
 from ....contracts.ids import RUNTIME_CONTRACTS
 
 _PUBLIC_UNSTABLE_ALLOWLIST = {"compat"}
@@ -14,6 +15,7 @@ _MAX_ALIASES_PER_COMMAND = 1
 
 def check_command_metadata_contract(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
+    declared = all_command_effects()
     for spec in command_registry():
         if not spec.touches:
             errors.append(f"{spec.name}: missing touches metadata")
@@ -39,6 +41,19 @@ def check_command_metadata_contract(repo_root: Path) -> tuple[int, list[str]]:
             errors.append(f"{spec.name}: missing purpose metadata")
         if not spec.examples:
             errors.append(f"{spec.name}: missing examples metadata")
+        if spec.name not in declared:
+            errors.append(f"{spec.name}: missing per-command effects declaration")
+            continue
+        effects = command_effects(spec.name)
+        if not effects:
+            errors.append(f"{spec.name}: empty effects declaration")
+        group = command_group(spec.name)
+        allowed = set(group_allowed_effects(group))
+        unknown = [effect for effect in effects if effect not in allowed]
+        if unknown:
+            errors.append(f"{spec.name}: effects {unknown} violate allowed group effects for {group} ({sorted(allowed)})")
+        if "network" in effects and group in {"docs", "policies"}:
+            errors.append(f"{spec.name}: docs/policies command cannot declare network effect")
     if errors:
         return 1, errors
     return 0, []

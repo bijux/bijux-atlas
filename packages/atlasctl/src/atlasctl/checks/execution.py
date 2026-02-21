@@ -72,6 +72,7 @@ def run_function_checks(repo_root: Path, checks: list[CheckDef]) -> tuple[int, l
                 fix_hint=chk.fix_hint,
                 category=chk.category.value,
                 severity=chk.severity.value,
+                writes_allowed_roots=list(chk.writes_allowed_roots),
             )
         )
     return failed, rows
