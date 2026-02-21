@@ -17,3 +17,7 @@ Each suite manifest defines:
 - time budget policy
 
 `atlasctl suite check` treats these manifests as SSOT and fails on drift.
+
+Runner UX:
+
+- `atlasctl suite run <name> --pytest-q` prints pytest-style progress and summary.

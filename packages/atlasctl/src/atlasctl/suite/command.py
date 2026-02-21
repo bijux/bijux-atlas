@@ -528,7 +528,10 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             line = f"{line} :: {detail}"
         if ctx.verbose:
             log_event(ctx, "info" if status == "pass" else "error", "suite", "item", label=task.label, status=status, duration_ms=duration_ms)
-        if not as_json and (not ctx.quiet or status == "fail"):
+        if not as_json and bool(getattr(ns, "pytest_q", False)):
+            sys.stdout.write("." if status == "pass" else "F")
+            sys.stdout.flush()
+        elif not as_json and (not ctx.quiet or status == "fail"):
             print(line)
         results.append(
             {
@@ -555,7 +558,11 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         "skipped": skipped,
         "duration_ms": total_duration_ms,
     }
-    if not as_json and not ctx.quiet:
+    if not as_json and bool(getattr(ns, "pytest_q", False)):
+        seconds = total_duration_ms / 1000
+        print()
+        print(f"=== {passed} passed, {failed} failed, {skipped} skipped in {seconds:.2f}s ===")
+    elif not as_json and not ctx.quiet:
         print(f"summary: passed={passed} failed={failed} skipped={skipped} duration_ms={total_duration_ms}")
 
     if ns.junit:
@@ -596,6 +603,7 @@ def configure_suite_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     run.add_argument("--skip", action="append", default=[], help="glob pattern to skip task labels")
     run.add_argument("--target-dir", help="suite output directory")
     run.add_argument("--show-output", action="store_true", help="stream command task output")
+    run.add_argument("--pytest-q", action="store_true", help="pytest-style quiet progress and summary output")
     group = run.add_mutually_exclusive_group()
     group.add_argument("--fail-fast", action="store_true", help="stop at first failure")
     group.add_argument("--keep-going", action="store_true", help="continue through all tasks (default)")
