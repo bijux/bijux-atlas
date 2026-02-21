@@ -22,4 +22,9 @@ def log_event(ctx: RunContext, level: str, component: str, action: str, **fields
         "line": caller.lineno,
         **fields,
     }
-    sys.stderr.write(json.dumps(payload, sort_keys=True) + "\n")
+    if ctx.log_json:
+        sys.stderr.write(json.dumps(payload, sort_keys=True) + "\n")
+        return
+    core = f"ts={payload['ts']} level={level} run_id={ctx.run_id} component={component} action={action}"
+    extras = " ".join(f"{key}={value}" for key, value in sorted(fields.items()))
+    sys.stderr.write((core if not extras else f"{core} {extras}") + "\n")

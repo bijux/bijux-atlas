@@ -16,6 +16,7 @@ from ..core.exec import check_output
 from ..core.effects import command_effects, command_group
 from ..core.fs import write_json, write_text
 from ..core.logging import log_event
+from ..core.telemetry import emit_telemetry
 from ..core.repo_root import try_find_repo_root
 from ..contracts.ids import COMMANDS, RUNTIME_CONTRACTS
 from ..errors import ScriptError
@@ -160,6 +161,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--cwd", help="run command from an explicit repository root")
     parser.add_argument("--profile", help="profile id")
     parser.add_argument("--format", choices=["text", "json"], default=None, help="output format")
+    parser.add_argument("--log-json", action="store_true", help="emit structured JSON logs to stderr")
     parser.add_argument("--network", choices=["allow", "forbid"], default=None, help="network access mode (default: forbid)")
     parser.add_argument("--allow-network", action="store_true", help="explicitly allow network when command group policy permits it")
     parser.add_argument("--no-network", action="store_true", help="deprecated alias for --network=forbid")
@@ -295,6 +297,7 @@ def main(argv: list[str] | None = None) -> int:
         ns.verbose,
         ns.quiet,
         ns.require_clean_git,
+        ns.log_json,
     )
     _apply_python_env(ctx)
     _emit_runtime_contracts(ctx, ns.cmd, raw_argv)
@@ -307,6 +310,7 @@ def main(argv: list[str] | None = None) -> int:
         restore_network = install_no_network_guard()
 
     try:
+        print(f"run_id={ctx.run_id}", file=sys.stderr)
         if ctx.require_clean_git and ctx.git_dirty:
             raise ScriptError("git workspace is dirty; rerun without --require-clean-git or commit changes", ERR_CONFIG)
         if decision.allow_effective and not ctx.quiet:
@@ -328,21 +332,36 @@ def main(argv: list[str] | None = None) -> int:
                 network_requested=decision.allow_requested,
                 network_reason=decision.reason,
             )
+        emit_telemetry(ctx, "cli.start", cmd=ns.cmd, output_format=ctx.output_format, network=ctx.network_mode)
         as_json = ctx.output_format == "json" or bool(getattr(ns, "json", False))
-        return dispatch_command(ctx, ns, as_json, _import_attr, _commands_payload, _write_payload_if_requested, DOMAIN_RUNNERS, _version_string)
+        rc = dispatch_command(ctx, ns, as_json, _import_attr, _commands_payload, _write_payload_if_requested, DOMAIN_RUNNERS, _version_string)
+        emit_telemetry(ctx, "cli.finish", cmd=ns.cmd, rc=rc)
+        return rc
     except ScriptError as exc:
+        emit_telemetry(ctx, "cli.error", cmd=ns.cmd, kind=exc.kind, code=exc.code)
         print(
             render_error(
                 as_json=(ctx.output_format == "json"),
                 message=str(exc),
                 code=exc.code,
                 kind=exc.kind,
+                run_id=ctx.run_id,
             ),
             file=sys.stderr,
         )
         return exc.code
     except Exception as exc:  # pragma: no cover
-        print(render_error(as_json=("ctx" in locals() and ctx.output_format == "json"), message=f"internal error: {exc}", code=ERR_INTERNAL), file=sys.stderr)
+        if "ctx" in locals():
+            emit_telemetry(ctx, "cli.internal_error", cmd=getattr(ns, "cmd", "unknown"), error=str(exc))
+        print(
+            render_error(
+                as_json=("ctx" in locals() and ctx.output_format == "json"),
+                message=f"internal error: {exc}",
+                code=ERR_INTERNAL,
+                run_id=(ctx.run_id if "ctx" in locals() else ""),
+            ),
+            file=sys.stderr,
+        )
         return ERR_INTERNAL
     finally:
         if restore_network:
