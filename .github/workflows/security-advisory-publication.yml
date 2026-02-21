@@ -36,7 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Render advisory document
-        run: make ci-security-advisory-render
+        run: ./bin/atlasctl dev ci security-advisory-render
         env:
           ADVISORY_ID: ${{ inputs.advisory_id }}
           ADVISORY_SEVERITY: ${{ inputs.severity }}
