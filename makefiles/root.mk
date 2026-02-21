@@ -8,7 +8,7 @@ include makefiles/env.mk
 include makefiles/python.mk
 include makefiles/_macros.mk
 include makefiles/cargo.mk
-include makefiles/cargo-dev.mk
+include makefiles/dev.mk
 include makefiles/ci.mk
 include makefiles/docs.mk
 include makefiles/scripts.mk
@@ -49,6 +49,12 @@ artifacts-gc: ## Garbage collect scripts artifacts retention policy
 
 ci-local: ## Local runner mirroring CI top-level entrypoint set
 	@$(MAKE) -s ci/all
+
+dev-fmt: ## Stable DEV wrapper: formatter lane via atlasctl
+	@$(MAKE) -s internal/dev/fmt
+
+dev-test: ## Stable DEV wrapper: test lane via atlasctl
+	@$(MAKE) -s internal/dev/test
 
 doctor: ## Run package doctor diagnostics
 	@$(SCRIPTS) doctor
