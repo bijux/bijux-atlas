@@ -69,6 +69,44 @@ culprits-file-max_modules_per_dir:
 		printf '%s\n' "INFO: max_modules_per_dir policy compliant across all crates."; \
 	fi
 
+culprits-max_loc-py:
+	@err=$$(find packages -type d -regex '.*/src/[^/]+$$' -print0 \
+	| xargs -0 -I{} find "{}" -name "*.py" -type f ! -path "*/legacy/*" -print0 \
+	| xargs -0 wc -l \
+	| sort -n \
+	| awk '$$2 ~ /^packages\// && $$1 > 600'); \
+	warn=$$(find packages -type d -regex '.*/src/[^/]+$$' -print0 \
+	| xargs -0 -I{} find "{}" -name "*.py" -type f ! -path "*/legacy/*" -print0 \
+	| xargs -0 wc -l \
+	| sort -n \
+	| awk '$$2 ~ /^packages\// && $$1 > 400 && $$1 <= 600'); \
+	if [ -n "$$err" ]; then \
+		printf '%s\n' "ERROR: max_loc_py policy violations (LOC > 600):"; \
+		printf '%s\n' "$$err"; \
+		exit 1; \
+	fi; \
+	if [ -n "$$warn" ]; then \
+		printf '%s\n' "WARN: max_loc_py advisory violations (400 < LOC <= 600):"; \
+		printf '%s\n' "$$warn"; \
+	else \
+		printf '%s\n' "INFO: max_loc_py policy compliant across python packages."; \
+	fi
+
+culprits-file-max_py_files_per_dir:
+	@out=$$(find packages -type d -regex '.*/src/[^/]+$$' -print0 \
+	| xargs -0 -I{} sh -c 'd="{}"; c=$$(find "$$d" -maxdepth 1 -name "*.py" -type f | wc -l | tr -d " "); if [ "$$c" -gt 10 ]; then echo "$$c $$d"; fi' \
+	| sort -nr); \
+	if [ -n "$$out" ]; then \
+		printf '%s\n' "ERROR: max_py_files_per_dir policy violations (files > 10):"; \
+		printf '%s\n' "$$out"; \
+		exit 1; \
+	else \
+		printf '%s\n' "INFO: max_py_files_per_dir policy compliant across python packages."; \
+	fi
+
+culprits-all-py: culprits-max_loc-py culprits-file-max_py_files_per_dir
+	@printf '%s\n' "INFO: culprits-all-py completed."
+
 culprits-all: culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir
 	@printf '%s\n' "INFO: culprits-all completed."
 
@@ -86,4 +124,4 @@ cli-command-surface:
 	@cargo test -p bijux-atlas-cli command_surface_ssot_matches_doc -- --exact
 	@cargo test -p bijux-atlas-cli help_output_command_surface_matches_doc_exactly -- --exact
 
-.PHONY: culprits-all culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir crate-structure crate-docs-contract cli-command-surface
+.PHONY: culprits-all culprits-max_loc culprits-max_depth culprits-file-max_rs_files_per_dir culprits-file-max_modules_per_dir culprits-all-py culprits-max_loc-py culprits-file-max_py_files_per_dir crate-structure crate-docs-contract cli-command-surface
