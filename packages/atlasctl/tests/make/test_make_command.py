@@ -146,6 +146,7 @@ def test_dev_ci_target_map_payload_is_complete_for_repo() -> None:
     assert errors["duplicate_without_alias"] == []
     rows = payload["target_map"]
     by_target = {row["target"]: row for row in rows}
-    assert by_target["ci-fmt"]["atlasctl"] == "atlasctl dev fmt"
-    assert by_target["ci-test-nextest"]["atlasctl"] == "atlasctl dev test"
-    assert by_target["ci-deny"]["atlasctl"] == "atlasctl dev audit"
+    assert by_target["internal/cargo/fmt"]["atlasctl"] == "atlasctl dev fmt"
+    assert by_target["internal/cargo/test"]["atlasctl"] == "atlasctl dev test"
+    assert by_target["internal/cargo/audit"]["atlasctl"] == "atlasctl dev audit"
+    assert by_target["ci-fast"]["atlasctl"] == "atlasctl dev ci run --lane ci-fast"
