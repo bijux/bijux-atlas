@@ -85,6 +85,10 @@
       "path": "list/list-checks.json.golden"
     },
     {
+      "name": "ci-list.json.golden",
+      "path": "list/ci-list.json.golden"
+    },
+    {
       "name": "list-commands.json.golden",
       "path": "list/list-commands.json.golden"
     },

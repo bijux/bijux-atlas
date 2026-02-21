@@ -82,6 +82,12 @@ CHECKS: list[MakeCheck] = [
         "Use atlasctl commands or approved public wrappers in workflows.",
     ),
     _check(
+        "ci-lane-mapping",
+        "Validate ci.mk wrappers map 1:1 to atlasctl ci lanes",
+        "packages/atlasctl/src/atlasctl/checks/layout/workflows/check_ci_lane_mapping.py",
+        "Keep ci.mk wrappers and atlasctl ci lane registry aligned.",
+    ),
+    _check(
         "ci-legacy-target-cutoff",
         "Validate CI workflows have no legacy targets after cutoff date",
         "packages/atlasctl/src/atlasctl/checks/layout/workflows/check_ci_legacy_target_cutoff.py",
@@ -92,6 +98,12 @@ CHECKS: list[MakeCheck] = [
         "Validate ci wrappers avoid direct writes outside isolate/evidence",
         "packages/atlasctl/src/atlasctl/checks/layout/workflows/check_ci_writes_scoped.py",
         "Keep makefiles/ci.mk wrapper-only and route all writes through atlasctl-managed isolate/evidence outputs.",
+    ),
+    _check(
+        "ci-artifact-uploads",
+        "Validate CI workflows always upload artifacts for reports/logs",
+        "packages/atlasctl/src/atlasctl/checks/layout/workflows/check_ci_artifact_uploads.py",
+        "Add upload-artifact step with `if: always()` for workflows running CI.",
     ),
     _check_cmd(
         "dev-ci-target-map",
@@ -116,6 +128,12 @@ CHECKS: list[MakeCheck] = [
         "Ensure public target docs coverage",
         "packages/atlasctl/src/atlasctl/checks/layout/public_surface/checks/check_public_targets_documented.py",
         "Document missing targets under docs/_generated/make-targets.md.",
+    ),
+    _check(
+        "ci-targets-documented",
+        "Ensure ci.mk targets are documented",
+        "packages/atlasctl/src/atlasctl/checks/layout/docs/check_ci_targets_documented.py",
+        "Document every ci.mk target in docs/development/ci/ci.md.",
     ),
     _check(
         "public-target-budget",
