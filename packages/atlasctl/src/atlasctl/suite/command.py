@@ -25,6 +25,7 @@ from ..core.logging import log_event
 from ..core.serialize import dumps_json
 from ..errors import ScriptError
 from ..exit_codes import ERR_CONFIG
+from .manifests import SuiteManifest, load_first_class_suites
 
 try:
     import tomllib  # py311+
@@ -274,8 +275,114 @@ def suite_inventory_violations(suites: dict[str, SuiteSpec]) -> list[str]:
     return errors
 
 
+def _suite_manifest_docs_violations(repo_root: Path, manifests: dict[str, SuiteManifest]) -> list[str]:
+    path = repo_root / "packages/atlasctl/docs/control-plane/suites.md"
+    if not path.exists():
+        return [f"missing suite docs file: {path.relative_to(repo_root).as_posix()}"]
+    text = path.read_text(encoding="utf-8", errors="ignore")
+    errors: list[str] = []
+    for name in sorted(manifests):
+        marker = f"- `{name}`"
+        if marker not in text:
+            errors.append(f"suite docs drift: missing suite marker `{marker}` in packages/atlasctl/docs/control-plane/suites.md")
+    return errors
+
+
+def _first_class_suite_coverage_violations(manifests: dict[str, SuiteManifest]) -> list[str]:
+    covered = set(manifests["all"].check_ids)
+    errors: list[str] = []
+    for check in list_checks():
+        if check.check_id not in covered:
+            errors.append(f"orphan check not assigned to first-class suites: {check.check_id}")
+    return errors
+
+
+def _first_class_effect_policy_violations(manifest: SuiteManifest) -> list[str]:
+    allowed = set(manifest.default_effects)
+    errors: list[str] = []
+    for check_id in manifest.check_ids:
+        check = get_check(check_id)
+        if check is None:
+            errors.append(f"suite `{manifest.name}` references unknown check id: {check_id}")
+            continue
+        unknown = sorted(set(check.effects) - allowed)
+        if unknown:
+            errors.append(
+                f"suite `{manifest.name}` check `{check_id}` effects {unknown} violate suite default effects {sorted(allowed)}"
+            )
+    return errors
+
+
+def _run_first_class_suite(ctx: RunContext, manifest: SuiteManifest, as_json: bool, list_only: bool, target_dir: str | None) -> int:
+    if list_only:
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "suite": manifest.name,
+            "required_env": list(manifest.required_env),
+            "default_effects": list(manifest.default_effects),
+            "time_budget_ms": manifest.time_budget_ms,
+            "check_ids": list(manifest.check_ids),
+            "total_count": len(manifest.check_ids),
+        }
+        print(dumps_json(payload, pretty=not as_json))
+        return 0
+
+    checks = [check for check_id in manifest.check_ids if (check := get_check(check_id)) is not None]
+    target = Path(target_dir) if target_dir else (ctx.repo_root / "artifacts/isolate" / ctx.run_id / "atlasctl-suite")
+    target.mkdir(parents=True, exist_ok=True)
+    started = time.perf_counter()
+    failed, results = run_function_checks(ctx.repo_root, checks)
+    total_duration_ms = int((time.perf_counter() - started) * 1000)
+    budget_exceeded = total_duration_ms > manifest.time_budget_ms
+    if budget_exceeded:
+        failed += 1
+    rows = [
+        {
+            "id": row.id,
+            "status": row.status,
+            "duration_ms": row.metrics.get("duration_ms", 0),
+            "hint": row.fix_hint,
+        }
+        for row in results
+    ]
+    summary = {
+        "passed": sum(1 for row in rows if row["status"] == "pass"),
+        "failed": sum(1 for row in rows if row["status"] == "fail"),
+        "total": len(rows),
+        "pass_rate": (sum(1 for row in rows if row["status"] == "pass") / len(rows)) if rows else 1.0,
+        "duration_ms": total_duration_ms,
+        "time_budget_ms": manifest.time_budget_ms,
+        "budget_status": "fail" if budget_exceeded else "pass",
+    }
+    payload = {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "status": "ok" if failed == 0 else "error",
+        "suite": manifest.name,
+        "required_env": list(manifest.required_env),
+        "default_effects": list(manifest.default_effects),
+        "summary": summary,
+        "results": rows,
+        "target_dir": target.as_posix(),
+    }
+    (target / "results.json").write_text(dumps_json(payload, pretty=True) + "\n", encoding="utf-8")
+    print(dumps_json(payload, pretty=not as_json))
+    return 0 if failed == 0 else 1
+
+
 def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     as_json = ctx.output_format == "json" or bool(getattr(ns, "json", False))
+    first_class = load_first_class_suites()
+    if ns.suite_cmd in first_class:
+        return _run_first_class_suite(
+            ctx,
+            first_class[ns.suite_cmd],
+            as_json=as_json,
+            list_only=bool(getattr(ns, "list", False)),
+            target_dir=getattr(ns, "target_dir", None),
+        )
     default_suite, suites = load_suites(ctx.repo_root)
     if ns.suite_cmd == "explain":
         suite_name = ns.name or default_suite
@@ -337,6 +444,10 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return 0
     if ns.suite_cmd == "check":
         errors = suite_inventory_violations(suites)
+        errors.extend(_first_class_suite_coverage_violations(first_class))
+        errors.extend(_suite_manifest_docs_violations(ctx.repo_root, first_class))
+        for manifest in first_class.values():
+            errors.extend(_first_class_effect_policy_violations(manifest))
         payload = {
             "schema_version": 1,
             "tool": "atlasctl",
@@ -356,6 +467,16 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             "tool": "atlasctl",
             "status": "ok",
             "default": default_suite,
+            "first_class_suites": [
+                {
+                    "name": manifest.name,
+                    "required_env": list(manifest.required_env),
+                    "default_effects": list(manifest.default_effects),
+                    "time_budget_ms": manifest.time_budget_ms,
+                    "check_count": len(manifest.check_ids),
+                }
+                for manifest in sorted(first_class.values(), key=lambda item: item.name)
+            ],
             "suites": [
                 {
                     "name": spec.name,
@@ -491,3 +612,9 @@ def configure_suite_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     diff.add_argument("run1")
     diff.add_argument("run2")
     diff.add_argument("--json", action="store_true")
+
+    for suite_name in ("docs", "dev", "ops", "policies", "configs", "all"):
+        sp = suite_sub.add_parser(suite_name, help=f"run first-class `{suite_name}` suite")
+        sp.add_argument("--json", action="store_true", help="emit machine-readable results")
+        sp.add_argument("--list", action="store_true", help="list suite checks only")
+        sp.add_argument("--target-dir", help="suite output directory")
