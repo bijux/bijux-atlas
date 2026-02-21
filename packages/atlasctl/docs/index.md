@@ -18,11 +18,7 @@ Use this page as the entrypoint for package-level documentation.
 ## Migration
 
 - [Migration Index](migration/index.md)
-- [Migration Map](migration/map.md)
-- [Layout Checks Migration](migration/layout-checks.md)
-- [Scripts Areas Migration](migration/scripts-areas.md)
-- [Ops Runtime Migration](migration/ops-runtime.md)
-- [Ops Lint Migration](migration/ops-lint.md)
+- [Legacy Removal Plan](migration/legacy-removal-plan.md)
 
 ## Commands
 
@@ -35,6 +31,7 @@ Use this page as the entrypoint for package-level documentation.
 ## Schemas
 
 - [Schema Catalog and Versioning](schemas/index.md)
+- [Schema Versioning Policy](schemas/versioning-policy.md)
 
 ## Contributing
 

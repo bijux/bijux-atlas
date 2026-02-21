@@ -16,6 +16,7 @@ from ..core.exec import check_output
 from ..core.fs import ensure_evidence_path
 from ..core.logging import log_event
 from ..core.repo_root import try_find_repo_root
+from ..contracts.ids import COMMANDS, RUNTIME_CONTRACTS
 from ..errors import ScriptError
 from ..exit_codes import ERR_CONFIG, ERR_INTERNAL
 from ..network_guard import install_no_network_guard
@@ -52,7 +53,7 @@ def _write_payload_if_requested(ctx: RunContext, out_file: str | None, payload: 
 
 def _commands_payload() -> dict[str, object]:
     return {
-        "schema_name": "atlasctl.commands.v1",
+        "schema_name": COMMANDS,
         "schema_version": 1,
         "tool": "atlasctl",
         "status": "ok",
@@ -84,7 +85,7 @@ def _ensure_scripts_artifact_root(ctx: RunContext) -> Path:
 def _emit_runtime_contracts(ctx: RunContext, cmd: str, argv: list[str] | None) -> None:
     root = _ensure_scripts_artifact_root(ctx)
     write_roots = {
-        "schema_name": "atlasctl.runtime_contracts.v1",
+        "schema_name": RUNTIME_CONTRACTS,
         "schema_version": 1,
         "tool": "atlasctl",
         "run_id": ctx.run_id,

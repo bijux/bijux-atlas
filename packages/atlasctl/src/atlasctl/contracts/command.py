@@ -14,7 +14,7 @@ from .checks import (
     check_error_codes,
     check_sqlite_indexes,
 )
-from .generators import generate_chart_schema, generate_contract_artifacts, generate_openapi
+from .generators import generate_chart_schema, generate_contract_artifacts, generate_openapi, generate_schema_samples
 
 CHECK_HANDLERS = {
     "breakage": lambda root, ns: check_breaking(root, ns.before, ns.after),
@@ -29,6 +29,7 @@ GEN_HANDLERS = {
     "openapi": generate_openapi,
     "chart-schema": generate_chart_schema,
     "artifacts": generate_contract_artifacts,
+    "samples": generate_schema_samples,
 }
 
 

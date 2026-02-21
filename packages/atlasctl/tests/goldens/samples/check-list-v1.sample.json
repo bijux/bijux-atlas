@@ -1,0 +1,7 @@
+{
+  "checks": [],
+  "schema_name": "atlasctl.check-list.v1",
+  "schema_version": 1,
+  "status": "ok",
+  "tool": "atlasctl"
+}

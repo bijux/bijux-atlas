@@ -16,6 +16,8 @@ from xml.etree.ElementTree import Element, SubElement, tostring
 from ..checks.execution import run_function_checks
 from ..checks.registry import check_tags, get_check, list_checks
 from ..contracts.catalog import schema_path_for
+from ..contracts.ids import SUITE_RUN
+from ..contracts.validate_self import validate_self
 from ..contracts.validate import validate_file
 from ..core.context import RunContext
 from ..core.logging import log_event
@@ -409,7 +411,7 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         _write_junit(ctx.repo_root / ns.junit, suite_name, results)
 
     payload = {
-        "schema_name": "atlasctl.suite-run.v1",
+        "schema_name": SUITE_RUN,
         "schema_version": 1,
         "tool": "atlasctl",
         "status": "ok" if failed == 0 else "error",
@@ -418,6 +420,7 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         "results": results,
         "target_dir": target_dir.as_posix(),
     }
+    validate_self(SUITE_RUN, payload)
     (target_dir / "results.json").write_text(dumps_json(payload, pretty=True) + "\n", encoding="utf-8")
     if as_json:
         print(dumps_json(payload, pretty=False))

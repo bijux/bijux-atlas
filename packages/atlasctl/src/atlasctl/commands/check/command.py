@@ -7,6 +7,8 @@ from pathlib import Path
 from typing import Callable
 
 from ...checks.registry import check_tags, get_check, list_checks
+from ...contracts.ids import CHECK_LIST
+from ...contracts.validate_self import validate_self
 from ...checks.repo.contracts.command_contracts import runtime_contracts_payload
 from ...checks.repo.native import (
     check_atlas_scripts_cli_contract,
@@ -100,6 +102,7 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     sub = ns.check_cmd
     if sub == "list":
         payload = {
+            "schema_name": CHECK_LIST,
             "schema_version": 1,
             "tool": "atlasctl",
             "status": "ok",
@@ -118,6 +121,7 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 for check in list_checks()
             ],
         }
+        validate_self(CHECK_LIST, payload)
         print(json.dumps(payload, sort_keys=True) if ctx.output_format == "json" or ns.json else json.dumps(payload, indent=2, sort_keys=True))
         return 0
     if sub == "explain":
