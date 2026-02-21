@@ -7,6 +7,8 @@ from ....cli.registry import command_registry
 from ....contracts.ids import RUNTIME_CONTRACTS
 
 _PUBLIC_UNSTABLE_ALLOWLIST = {"compat"}
+_ALLOWED_EFFECT_LEVELS = {"pure", "effectful"}
+_ALLOWED_RUN_ID_MODES = {"not_required", "accept_or_generate"}
 
 
 def check_command_metadata_contract(repo_root: Path) -> tuple[int, list[str]]:
@@ -20,6 +22,14 @@ def check_command_metadata_contract(repo_root: Path) -> tuple[int, list[str]]:
             errors.append(f"{spec.name}: missing owner metadata")
         if not spec.doc_link:
             errors.append(f"{spec.name}: missing doc_link metadata")
+        if spec.effect_level not in _ALLOWED_EFFECT_LEVELS:
+            errors.append(f"{spec.name}: invalid effect_level={spec.effect_level}")
+        if spec.run_id_mode not in _ALLOWED_RUN_ID_MODES:
+            errors.append(f"{spec.name}: invalid run_id_mode={spec.run_id_mode}")
+        if spec.effect_level == "effectful" and spec.run_id_mode != "accept_or_generate":
+            errors.append(f"{spec.name}: effectful commands must accept or generate run_id")
+        if spec.effect_level == "effectful" and not spec.supports_dry_run:
+            errors.append(f"{spec.name}: effectful commands must support dry-run")
     if errors:
         return 1, errors
     return 0, []

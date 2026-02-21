@@ -68,6 +68,9 @@ def _commands_payload() -> dict[str, object]:
                 "failure_modes": list(cmd.failure_modes),
                 "owner": cmd.owner,
                 "doc_link": cmd.doc_link,
+                "effect_level": cmd.effect_level,
+                "run_id_mode": cmd.run_id_mode,
+                "supports_dry_run": cmd.supports_dry_run,
             }
             for cmd in sorted(command_registry(), key=lambda item: item.name)
         ],
@@ -129,6 +132,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--version", action="version", version=_version_string())
     parser.add_argument("--json", action="store_true", help="emit JSON output")
     parser.add_argument("--run-id", help="run identifier for artifacts")
+    parser.add_argument("--dry-run", action="store_true", help="resolve and report command without mutating side effects")
     parser.add_argument("--artifacts-dir", help="artifacts/evidence root path")
     parser.add_argument("--evidence-root", help="evidence root path")
     parser.add_argument("--run-dir", help="override run directory root")

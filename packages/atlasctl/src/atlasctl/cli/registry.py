@@ -19,6 +19,9 @@ class CommandSpec:
     stable: bool = True
     owner: str = "platform"
     doc_link: str = "docs/_generated/cli.md"
+    effect_level: str = "effectful"
+    run_id_mode: str = "accept_or_generate"
+    supports_dry_run: bool = True
 
 
 CANONICAL_DOMAINS: tuple[str, ...] = ("repo", "docs", "ops", "make", "configs", "contracts", "docker", "ci")
@@ -54,6 +57,13 @@ def command_registry() -> tuple[CommandSpec, ...]:
 def registry() -> tuple[CommandSpec, ...]:
     # Backward-compatible alias.
     return command_registry()
+
+
+def command_spec(name: str) -> CommandSpec | None:
+    for spec in command_registry():
+        if spec.name == name:
+            return spec
+    return None
 
 
 def register_domain_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser], name: str, help_text: str) -> None:

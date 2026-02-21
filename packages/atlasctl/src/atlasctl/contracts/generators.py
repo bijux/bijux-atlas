@@ -177,6 +177,9 @@ def generate_schema_samples(repo_root: Path) -> list[str]:
             "touches": [],
             "tools": [],
             "failure_modes": [],
+            "effect_level": "pure",
+            "run_id_mode": "not_required",
+            "supports_dry_run": True,
         },
         "atlasctl.help.v1": {
             "schema_name": "atlasctl.help.v1",

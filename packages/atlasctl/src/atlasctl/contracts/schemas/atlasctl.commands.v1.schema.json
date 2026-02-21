@@ -32,7 +32,7 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["name", "help", "stable", "touches", "tools", "owner", "doc_link"],
+        "required": ["name", "help", "stable", "touches", "tools", "owner", "doc_link", "effect_level", "run_id_mode", "supports_dry_run"],
         "properties": {
           "name": {"type": "string"},
           "help": {"type": "string"},
@@ -41,7 +41,10 @@
           "tools": {"type": "array", "items": {"type": "string"}},
           "failure_modes": {"type": "array", "items": {"type": "string"}},
           "owner": {"type": "string"},
-          "doc_link": {"type": "string"}
+          "doc_link": {"type": "string"},
+          "effect_level": {"enum": ["pure", "effectful"]},
+          "run_id_mode": {"enum": ["not_required", "accept_or_generate"]},
+          "supports_dry_run": {"type": "boolean"}
         },
         "additionalProperties": true
       }

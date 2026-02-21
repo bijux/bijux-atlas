@@ -23,6 +23,9 @@
     "touches": {"type": "array", "items": {"type": "string"}},
     "tools": {"type": "array", "items": {"type": "string"}},
     "failure_modes": {"type": "array", "items": {"type": "string"}},
+    "effect_level": {"enum": ["pure", "effectful"]},
+    "run_id_mode": {"enum": ["not_required", "accept_or_generate"]},
+    "supports_dry_run": {"type": "boolean"},
     "note": {"type": "string"}
   }
 }

@@ -4,8 +4,12 @@
 
 - Commands must not execute subprocesses directly; use `atlasctl.core.exec` (process/effect wrappers in `core`).
 - Commands must not write files directly; use `atlasctl.core.fs` and allowed roots policy.
+- Environment reads/writes must route through `atlasctl.core.env`.
+- Process-level concerns must route through `atlasctl.core.process`.
+- Network calls must route through `atlasctl.core.network`.
 - Allowed write roots are repository-governed output locations only (for example `artifacts/`, `docs/_generated/`, `ops/_generated_committed/`, and other roots explicitly allowed by policy checks).
 - External tools must be invoked through explicit wrappers and deterministic arguments; no hidden side effects.
+- Boundary exceptions are explicit in `configs/policy/effect-boundary-exceptions.json`; every exception needs a non-empty reason and deterministic ordering.
 
 ## Invariants
 
