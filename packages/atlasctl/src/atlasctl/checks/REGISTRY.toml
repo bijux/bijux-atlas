@@ -1,0 +1,4284 @@
+# This file is the SSOT for atlasctl checks. Keep entries sorted by `id`.
+# Regenerate with: ./bin/atlasctl gen checks-registry
+
+schema = "checks.registry.v1"
+
+[[checks]]
+id = "checks_configs_pyproject_no_duplicate_tool_config"
+domain = "configs"
+area = "pyproject"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.repo.contracts.pyproject_contracts"
+callable = "check_pyproject_no_duplicate_tool_config"
+description = "forbid duplicate pyproject tool blocks"
+severity = "error"
+category = "hygiene"
+fix_hint = "Deduplicate tool.atlasctl/tool.pytest sections in packages/atlasctl/pyproject.toml."
+legacy_id = "configs.pyproject_no_duplicate_tool_config"
+groups = ["configs", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_configs_pyproject_required_blocks"
+domain = "configs"
+area = "pyproject"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.repo.contracts.pyproject_contracts"
+callable = "check_pyproject_required_blocks"
+description = "validate required pyproject blocks"
+severity = "error"
+category = "hygiene"
+fix_hint = "Restore missing [project]/[build-system]/tool config blocks in packages/atlasctl/pyproject.toml."
+legacy_id = "configs.pyproject_required_blocks"
+groups = ["configs", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_contracts_atlasctl_cli"
+domain = "contracts"
+area = "atlasctl"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1200
+module = "atlasctl.checks.repo.native_runtime"
+callable = "check_atlas_scripts_cli_contract"
+description = "validate atlasctl CLI contract surface"
+severity = "error"
+category = "contract"
+fix_hint = "Update CLI contract docs/tests to match behavior."
+legacy_id = "contracts.atlasctl_cli"
+groups = ["contracts", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_contracts_layout"
+domain = "contracts"
+area = "general"
+owner = "platform"
+speed = "slow"
+timeout_ms = 1200
+module = "atlasctl.checks.repo.native_loader"
+callable = "check_layout_contract"
+description = "validate repository layout contract"
+severity = "error"
+category = "contract"
+fix_hint = "Fix layout violations reported by the contract checker."
+legacy_id = "contracts.layout"
+groups = ["contracts", "required", "slow"]
+effects = []
+external_tools = ["bash"]
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_contracts_schema_catalog"
+domain = "contracts"
+area = "schema"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1200
+module = "atlasctl.checks.contracts.schema_contracts"
+callable = "check_schema_catalog_integrity"
+description = "validate schema catalog for duplicate names and missing files"
+severity = "error"
+category = "contract"
+fix_hint = "Fix catalog duplicates and missing schema files."
+legacy_id = "contracts.schema_catalog"
+groups = ["contracts", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_contracts_schema_catalog_files_exist"
+domain = "contracts"
+area = "schema"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1200
+module = "atlasctl.checks.contracts.schema_contracts"
+callable = "check_schema_catalog_files_exist"
+description = "ensure schemas listed in catalog exist on disk"
+severity = "error"
+category = "contract"
+fix_hint = "Add missing schema files or fix catalog file entries."
+legacy_id = "contracts.schema_catalog_files_exist"
+groups = ["contracts", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_contracts_schema_catalog_referenced"
+domain = "contracts"
+area = "schema"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1200
+module = "atlasctl.checks.contracts.schema_contracts"
+callable = "check_schema_catalog_referenced"
+description = "ensure schema catalog contains only referenced schemas"
+severity = "error"
+category = "contract"
+fix_hint = "Remove or reference orphan schemas in catalog."
+legacy_id = "contracts.schema_catalog_referenced"
+groups = ["contracts", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_contracts_schema_catalog_sorted"
+domain = "contracts"
+area = "schema"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1200
+module = "atlasctl.checks.contracts.schema_contracts"
+callable = "check_schema_catalog_sorted"
+description = "ensure schema catalog order is deterministic"
+severity = "error"
+category = "contract"
+fix_hint = "Sort catalog.json entries by schema name."
+legacy_id = "contracts.schema_catalog_sorted"
+groups = ["contracts", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_contracts_schema_catalog_ssot"
+domain = "contracts"
+area = "schema"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1200
+module = "atlasctl.checks.contracts.schema_contracts"
+callable = "check_schema_catalog_ssot"
+description = "enforce contracts catalog.json as schema SSOT"
+severity = "error"
+category = "contract"
+fix_hint = "Route schema catalog access through atlasctl.contracts.catalog only."
+legacy_id = "contracts.schema_catalog_ssot"
+groups = ["contracts", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_contracts_schema_change_release_notes"
+domain = "contracts"
+area = "schema"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1200
+module = "atlasctl.checks.contracts.schema_contracts"
+callable = "check_schema_change_release_notes"
+description = "enforce schema bump + release notes policy for schema changes"
+severity = "error"
+category = "contract"
+fix_hint = "Add new versioned schema file and update packages/atlasctl/docs/release-notes.md."
+legacy_id = "contracts.schema_change_release_notes"
+groups = ["contracts", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_contracts_schema_disk_files_listed"
+domain = "contracts"
+area = "schema"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1200
+module = "atlasctl.checks.contracts.schema_contracts"
+callable = "check_schema_disk_files_listed"
+description = "ensure no schema file exists outside catalog"
+severity = "error"
+category = "contract"
+fix_hint = "Add schema file to catalog.json or remove stale schema file."
+legacy_id = "contracts.schema_disk_files_listed"
+groups = ["contracts", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_contracts_schema_goldens"
+domain = "contracts"
+area = "schema"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1200
+module = "atlasctl.checks.contracts.schema_contracts"
+callable = "check_schema_goldens_validate"
+description = "validate JSON goldens against declared schemas"
+severity = "error"
+category = "contract"
+fix_hint = "Fix golden payload shape/schema alignment."
+legacy_id = "contracts.schema_goldens"
+groups = ["contracts", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_contracts_schema_id_naming"
+domain = "contracts"
+area = "schema"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1200
+module = "atlasctl.checks.contracts.schema_contracts"
+callable = "check_schema_id_naming"
+description = "enforce schema id naming/version suffix policy"
+severity = "error"
+category = "contract"
+fix_hint = "Use atlasctl.<name>.v<major> and keep catalog version aligned with suffix."
+legacy_id = "contracts.schema_id_naming"
+groups = ["contracts", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_contracts_schema_readme_updated"
+domain = "contracts"
+area = "schema"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1200
+module = "atlasctl.checks.contracts.schema_contracts"
+callable = "check_schema_readme_updated"
+description = "ensure schemas README stays in sync with schema catalog/files"
+severity = "error"
+category = "contract"
+fix_hint = "Regenerate schema catalog metadata and update contracts/schema/schemas/README.md."
+legacy_id = "contracts.schema_readme_updated"
+groups = ["contracts", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_contracts_schema_samples"
+domain = "contracts"
+area = "schema"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1200
+module = "atlasctl.checks.contracts.schema_contracts"
+callable = "check_schema_samples_validate"
+description = "validate sample payloads against declared schemas"
+severity = "error"
+category = "contract"
+fix_hint = "Update sample payloads or schema definitions."
+legacy_id = "contracts.schema_samples"
+groups = ["contracts", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_docker_image_size"
+domain = "docker"
+area = "image"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1200
+module = "atlasctl.checks.repo.native_loader"
+callable = "check_docker_image_size"
+description = "enforce docker image size budget"
+severity = "error"
+category = "hygiene"
+fix_hint = "Reduce image size or adjust documented budget."
+legacy_id = "docker.image_size"
+groups = ["docker", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_docker_layout"
+domain = "docker"
+area = "general"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1200
+module = "atlasctl.checks.repo.native_loader"
+callable = "check_docker_layout"
+description = "validate docker layout contracts"
+severity = "error"
+category = "hygiene"
+fix_hint = "Align docker files to layout contract."
+legacy_id = "docker.layout"
+groups = ["docker", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_docker_no_latest_tags"
+domain = "docker"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1200
+module = "atlasctl.checks.repo.native_loader"
+callable = "check_no_latest_tags"
+description = "forbid floating latest image tags"
+severity = "error"
+category = "hygiene"
+fix_hint = "Pin image tags to immutable versions."
+legacy_id = "docker.no_latest_tags"
+groups = ["docker", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_docker_policy"
+domain = "docker"
+area = "general"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1200
+module = "atlasctl.checks.repo.native_loader"
+callable = "check_docker_policy"
+description = "validate docker policy contracts"
+severity = "error"
+category = "hygiene"
+fix_hint = "Resolve policy violations in docker contracts."
+legacy_id = "docker.policy"
+groups = ["docker", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_docs_check_id_drift"
+domain = "docs"
+area = "check"
+owner = "platform"
+speed = "fast"
+timeout_ms = 600
+module = "atlasctl.checks.docs.integrity"
+callable = "check_docs_check_id_drift"
+description = "forbid docs references to unknown check ids"
+severity = "error"
+category = "hygiene"
+fix_hint = "Update check:id references to registered check ids."
+legacy_id = "docs.check_id_drift"
+groups = ["docs", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_docs_command_group_pages"
+domain = "docs"
+area = "command"
+owner = "platform"
+speed = "fast"
+timeout_ms = 600
+module = "atlasctl.checks.docs.integrity"
+callable = "check_command_group_docs_pages"
+description = "require command-group docs pages with examples section"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add docs/commands/groups/<group>.md pages with ## Examples."
+legacy_id = "docs.command_group_pages"
+groups = ["docs", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_docs_index_complete"
+domain = "docs"
+area = "index"
+owner = "platform"
+speed = "fast"
+timeout_ms = 600
+module = "atlasctl.checks.docs.integrity"
+callable = "check_docs_index_complete"
+description = "validate docs/index.md covers all docs files"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add missing docs entries to packages/atlasctl/docs/index.md."
+legacy_id = "docs.index_complete"
+groups = ["docs", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_docs_links_exist"
+domain = "docs"
+area = "links"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1200
+module = "atlasctl.checks.docs.integrity"
+callable = "check_docs_links_exist"
+description = "validate docs markdown link targets exist"
+severity = "error"
+category = "hygiene"
+fix_hint = "Fix broken relative links in packages/atlasctl/docs."
+legacy_id = "docs.links_exist"
+groups = ["docs", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_docs_lint_style"
+domain = "docs"
+area = "lint"
+owner = "platform"
+speed = "fast"
+timeout_ms = 600
+module = "atlasctl.checks.docs.integrity"
+callable = "check_docs_lint_style"
+description = "enforce docs style lint policy"
+severity = "error"
+category = "hygiene"
+fix_hint = "Fix long lines, invalid headings, and TODO/TBD placeholders."
+legacy_id = "docs.lint_style"
+groups = ["docs", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_docs_migration_not_stale"
+domain = "docs"
+area = "migration"
+owner = "platform"
+speed = "fast"
+timeout_ms = 600
+module = "atlasctl.checks.docs.integrity"
+callable = "check_migration_docs_not_stale"
+description = "forbid stale migration wording once removals are active"
+severity = "error"
+category = "hygiene"
+fix_hint = "Remove stale parallel-legacy wording from docs/migration pages."
+legacy_id = "docs.migration_not_stale"
+groups = ["docs", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_docs_nav_references_exist"
+domain = "docs"
+area = "nav"
+owner = "platform"
+speed = "fast"
+timeout_ms = 600
+module = "atlasctl.checks.docs.integrity"
+callable = "check_docs_nav_references_exist"
+description = "validate mkdocs nav references existing docs pages"
+severity = "error"
+category = "hygiene"
+fix_hint = "Fix missing docs files referenced in mkdocs.yml nav."
+legacy_id = "docs.nav_references_exist"
+groups = ["docs", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_docs_new_command_workflow"
+domain = "docs"
+area = "new"
+owner = "platform"
+speed = "fast"
+timeout_ms = 600
+module = "atlasctl.checks.docs.integrity"
+callable = "check_docs_new_command_workflow"
+description = "require docs/tests updates when command registry changes"
+severity = "error"
+category = "hygiene"
+fix_hint = "Update docs index, pyproject, and tests for command-surface changes."
+legacy_id = "docs.new_command_workflow"
+groups = ["docs", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_docs_no_ops_generated_run_path_refs"
+domain = "docs"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.repo.native_runtime"
+callable = "check_docs_no_ops_generated_run_paths"
+description = "forbid runtime ops generated path references in docs"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use stable docs or generated index links."
+legacy_id = "docs.no_ops_generated_run_path_refs"
+groups = ["docs", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_docs_no_orphans"
+domain = "docs"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 600
+module = "atlasctl.checks.docs.integrity"
+callable = "check_docs_no_orphans"
+description = "forbid orphan docs files outside allowed generated/meta paths"
+severity = "error"
+category = "hygiene"
+fix_hint = "Link docs pages from docs/index.md or other docs pages."
+legacy_id = "docs.no_orphans"
+groups = ["docs", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_docs_no_placeholder_release_docs"
+domain = "docs"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 600
+module = "atlasctl.checks.docs.integrity"
+callable = "check_docs_no_placeholder_release_docs"
+description = "forbid placeholder docs paths in release docs tree"
+severity = "error"
+category = "hygiene"
+fix_hint = "Remove placeholder docs files or move drafts under docs/_drafts/."
+legacy_id = "docs.no_placeholder_release_docs"
+groups = ["docs", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_docs_no_scripts_path_refs"
+domain = "docs"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.repo.native_loader"
+callable = "check_docs_scripts_references"
+description = "forbid scripts/ path references in docs"
+severity = "error"
+category = "hygiene"
+fix_hint = "Update docs references to atlasctl commands."
+legacy_id = "docs.no_scripts_path_refs"
+groups = ["docs", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_docs_ownership_metadata"
+domain = "docs"
+area = "ownership"
+owner = "platform"
+speed = "fast"
+timeout_ms = 600
+module = "atlasctl.checks.docs.integrity"
+callable = "check_docs_ownership_metadata"
+description = "require docs ownership metadata for major docs areas"
+severity = "error"
+category = "hygiene"
+fix_hint = "Update packages/atlasctl/docs/_meta/owners.json with major area owners."
+legacy_id = "docs.ownership_metadata"
+groups = ["docs", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_docs_package_root_markdown"
+domain = "docs"
+area = "package"
+owner = "platform"
+speed = "fast"
+timeout_ms = 400
+module = "atlasctl.checks.docs.integrity"
+callable = "check_no_package_root_markdown_except_readme"
+description = "forbid markdown files at package root except README"
+severity = "error"
+category = "hygiene"
+fix_hint = "Move package root markdown docs into packages/atlasctl/docs/."
+legacy_id = "docs.package_root_markdown"
+groups = ["docs", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_docs_registry_command_drift"
+domain = "docs"
+area = "registry"
+owner = "platform"
+speed = "fast"
+timeout_ms = 600
+module = "atlasctl.checks.docs.integrity"
+callable = "check_docs_registry_command_drift"
+description = "forbid docs references to unknown atlasctl commands"
+severity = "error"
+category = "hygiene"
+fix_hint = "Fix stale command references to match cli surface registry."
+legacy_id = "docs.registry_command_drift"
+groups = ["docs", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_docs_registry_indexes"
+domain = "docs"
+area = "registry"
+owner = "platform"
+speed = "fast"
+timeout_ms = 600
+module = "atlasctl.checks.docs.integrity"
+callable = "check_docs_registry_indexes"
+description = "require registry-generated command/check/suite index pages to be in sync"
+severity = "error"
+category = "hygiene"
+fix_hint = "Run `atlasctl docs generate-registry-indexes --report text`."
+legacy_id = "docs.registry_indexes"
+groups = ["docs", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_docs_stable_command_examples"
+domain = "docs"
+area = "stable"
+owner = "platform"
+speed = "fast"
+timeout_ms = 600
+module = "atlasctl.checks.docs.integrity"
+callable = "check_stable_command_examples_in_group_docs"
+description = "require stable commands to have examples in group docs"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add command entries and atlasctl examples to docs/commands/groups/*.md."
+legacy_id = "docs.stable_command_examples"
+groups = ["docs", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_license_file_mit"
+domain = "license"
+area = "file"
+owner = "platform"
+speed = "fast"
+timeout_ms = 150
+module = "atlasctl.checks.licensing.policy"
+callable = "check_license_file_mit"
+description = "ensure package license file exists and is MIT"
+severity = "error"
+category = "contract"
+fix_hint = "Create packages/atlasctl/LICENSE with canonical MIT text and copyright."
+legacy_id = "license.file_mit"
+groups = ["fast", "license", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_license_spdx_policy"
+domain = "license"
+area = "spdx"
+owner = "platform"
+speed = "fast"
+timeout_ms = 150
+module = "atlasctl.checks.licensing.policy"
+callable = "check_spdx_policy"
+description = "enforce SPDX policy for python source headers"
+severity = "error"
+category = "policy"
+fix_hint = "If SPDX header is present, set it to SPDX-License-Identifier: MIT."
+legacy_id = "license.spdx_policy"
+groups = ["fast", "license", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_license_statements_consistent"
+domain = "license"
+area = "statements"
+owner = "platform"
+speed = "fast"
+timeout_ms = 150
+module = "atlasctl.checks.licensing.policy"
+callable = "check_license_statements_consistent"
+description = "ensure package docs contain only MIT-compatible license statements"
+severity = "error"
+category = "policy"
+fix_hint = "Update README/docs license references to MIT and remove conflicting statements."
+legacy_id = "license.statements_consistent"
+groups = ["fast", "license", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_ci_entrypoints_contract"
+domain = "make"
+area = "ci"
+owner = "platform"
+speed = "fast"
+timeout_ms = 900
+module = "atlasctl.checks.make.enforcement"
+callable = "check_make_ci_entrypoints_contract"
+description = "validate CI workflow entrypoints contract"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep workflow run commands on approved make/atlasctl entrypoints."
+legacy_id = "make.ci_entrypoints_contract"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_ci_workflows_make_only"
+domain = "make"
+area = "ci"
+owner = "platform"
+speed = "fast"
+timeout_ms = 900
+module = "atlasctl.checks.make.enforcement"
+callable = "check_ci_workflows_call_make_and_make_calls_atlasctl"
+description = "require CI workflows to call make entrypoints and keep atlasctl delegation in makefiles"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use `run: make <target>` in workflows and keep atlasctl delegation in makefiles."
+legacy_id = "make.ci_workflows_make_only"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_command_allowlist"
+domain = "make"
+area = "command"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1500
+module = "atlasctl.checks.repo.native_loader"
+callable = "check_make_command_allowlist"
+description = "enforce allowed direct recipe commands"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use allowed command wrappers in make targets."
+legacy_id = "make.command_allowlist"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_forbidden_paths"
+domain = "make"
+area = "forbidden"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.repo.native_loader"
+callable = "check_make_forbidden_paths"
+description = "forbid direct forbidden paths in make recipes"
+severity = "error"
+category = "hygiene"
+fix_hint = "Route commands through allowed wrappers."
+legacy_id = "make.forbidden_paths"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_help_determinism"
+domain = "make"
+area = "help"
+owner = "platform"
+speed = "fast"
+timeout_ms = 2000
+module = "atlasctl.checks.repo.native_loader"
+callable = "check_make_help"
+description = "ensure deterministic make help output"
+severity = "error"
+category = "hygiene"
+fix_hint = "Regenerate and normalize make help output."
+legacy_id = "make.help_determinism"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_index_drift_contract"
+domain = "make"
+area = "index"
+owner = "platform"
+speed = "fast"
+timeout_ms = 900
+module = "atlasctl.checks.make.enforcement"
+callable = "check_make_index_drift_contract"
+description = "enforce makefiles index drift contract"
+severity = "error"
+category = "hygiene"
+fix_hint = "Regenerate and commit makefiles index changes."
+legacy_id = "make.index_drift_contract"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_lane_reports_via_atlasctl_reporting"
+domain = "make"
+area = "lane"
+owner = "platform"
+speed = "fast"
+timeout_ms = 900
+module = "atlasctl.checks.make.enforcement"
+callable = "check_make_lane_reports_via_atlasctl_reporting"
+description = "require lane reports to be emitted through atlasctl reporting command"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use `atlasctl report make-area-write` for lane report emission."
+legacy_id = "make.lane_reports_via_atlasctl_reporting"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_no_bypass_atlasctl"
+domain = "make"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.make.enforcement"
+callable = "check_make_no_bypass_atlasctl_without_allowlist"
+description = "forbid make recipes bypassing atlasctl without explicit allowlist"
+severity = "error"
+category = "hygiene"
+fix_hint = "Route recipe logic through atlasctl, or add a documented delegation exception."
+legacy_id = "make.no_bypass_atlasctl"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_no_direct_artifact_writes"
+domain = "make"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.make.enforcement"
+callable = "check_make_no_direct_artifact_writes"
+description = "forbid direct artifact writes in make recipes"
+severity = "error"
+category = "hygiene"
+fix_hint = "Write artifacts via atlasctl reporting and command surfaces only."
+legacy_id = "make.no_direct_artifact_writes"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_no_direct_bash_ops"
+domain = "make"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.make.enforcement"
+callable = "check_make_no_direct_bash_ops"
+description = "forbid direct `bash ops/...` invocations in make recipes"
+severity = "error"
+category = "hygiene"
+fix_hint = "Route ops scripts through atlasctl make/ops commands."
+legacy_id = "make.no_direct_bash_ops"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_no_direct_python"
+domain = "make"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.repo.native_loader"
+callable = "check_make_no_direct_python_script_invocations"
+description = "forbid direct python script execution in make recipes"
+severity = "error"
+category = "hygiene"
+fix_hint = "Replace `python3 path/to/script.py` with atlasctl commands."
+legacy_id = "make.no_direct_python"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_no_direct_python_only_atlasctl"
+domain = "make"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.make.enforcement"
+callable = "check_make_no_direct_python_only_atlasctl"
+description = "forbid direct python invocations in make recipes"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use atlasctl entrypoints instead of direct python invocations."
+legacy_id = "make.no_direct_python_only_atlasctl"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_no_direct_script_exec_drift"
+domain = "make"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.make.enforcement"
+callable = "check_make_no_direct_script_exec_drift"
+description = "drift check for direct script execution in make recipes"
+severity = "error"
+category = "hygiene"
+fix_hint = "Replace direct script execution with atlasctl command wrappers."
+legacy_id = "make.no_direct_script_exec_drift"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_no_direct_scripts_only_atlasctl"
+domain = "make"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.make.enforcement"
+callable = "check_make_no_direct_scripts_only_atlasctl"
+description = "forbid direct script path invocations in make recipes"
+severity = "error"
+category = "hygiene"
+fix_hint = "Delegate script execution through atlasctl commands."
+legacy_id = "make.no_direct_scripts_only_atlasctl"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_public_target_atlasctl_mapping"
+domain = "make"
+area = "public"
+owner = "platform"
+speed = "fast"
+timeout_ms = 900
+module = "atlasctl.checks.make.enforcement"
+callable = "check_public_make_targets_map_to_atlasctl"
+description = "require every public make target to delegate to atlasctl"
+severity = "error"
+category = "hygiene"
+fix_hint = "Update public make target recipe bodies to call atlasctl wrappers only."
+legacy_id = "make.public_target_atlasctl_mapping"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_public_targets_documented"
+domain = "make"
+area = "public"
+owner = "platform"
+speed = "fast"
+timeout_ms = 900
+module = "atlasctl.checks.make.enforcement"
+callable = "check_make_public_targets_documented"
+description = "require documented public make targets"
+severity = "error"
+category = "hygiene"
+fix_hint = "Document every public make target in generated/public docs."
+legacy_id = "make.public_targets_documented"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_scripts_refs"
+domain = "make"
+area = "scripts"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.repo.native_loader"
+callable = "check_make_scripts_references"
+description = "forbid scripts/ references in make recipes"
+severity = "error"
+category = "hygiene"
+fix_hint = "Replace scripts/ invocations with atlasctl commands."
+legacy_id = "make.scripts_refs"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_target_boundaries_enforced"
+domain = "make"
+area = "target"
+owner = "platform"
+speed = "fast"
+timeout_ms = 900
+module = "atlasctl.checks.make.enforcement"
+callable = "check_make_target_boundaries_enforced"
+description = "enforce make target boundary contracts"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep target cross-area dependencies within contract boundaries."
+legacy_id = "make.target_boundaries_enforced"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_target_ownership_complete"
+domain = "make"
+area = "target"
+owner = "platform"
+speed = "fast"
+timeout_ms = 900
+module = "atlasctl.checks.make.enforcement"
+callable = "check_make_target_ownership_complete"
+description = "require make target ownership coverage"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add missing make target ownership metadata."
+legacy_id = "make.target_ownership_complete"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_ops_committed_generated_hygiene"
+domain = "ops"
+area = "committed"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.repo.native_loader"
+callable = "check_committed_generated_hygiene"
+description = "validate deterministic committed generated assets"
+severity = "error"
+category = "hygiene"
+fix_hint = "Regenerate committed outputs deterministically."
+legacy_id = "ops.committed_generated_hygiene"
+groups = ["fast", "ops", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_ops_no_tracked_generated"
+domain = "ops"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.repo.native_loader"
+callable = "check_ops_generated_tracked"
+description = "forbid tracked files in generated ops dirs"
+severity = "error"
+category = "hygiene"
+fix_hint = "Untrack generated ops files."
+legacy_id = "ops.no_tracked_generated"
+groups = ["fast", "ops", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_ops_no_tracked_timestamps"
+domain = "ops"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.repo.native_loader"
+callable = "check_tracked_timestamp_paths"
+description = "forbid tracked timestamped paths"
+severity = "error"
+category = "hygiene"
+fix_hint = "Remove timestamped tracked paths."
+legacy_id = "ops.no_tracked_timestamps"
+groups = ["fast", "ops", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_python_lock"
+domain = "python"
+area = "general"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.repo.native_runtime"
+callable = "check_python_lock"
+description = "validate python lock format"
+severity = "error"
+category = "contract"
+fix_hint = "Regenerate and normalize python lock entries."
+legacy_id = "python.lock"
+groups = ["fast", "python", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_python_migration_exceptions_expiry"
+domain = "python"
+area = "migration"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.repo.native_runtime"
+callable = "check_python_migration_exceptions_expiry"
+description = "fail on expired python migration exceptions"
+severity = "error"
+category = "policy"
+fix_hint = "Update or remove expired migration exceptions."
+legacy_id = "python.migration_exceptions_expiry"
+groups = ["fast", "python", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_budget_drift_approval"
+domain = "repo"
+area = "budget"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.commands.policies.runtime.culprits"
+callable = "check_budget_drift_approval"
+description = "forbid budget loosening without explicit approval marker"
+severity = "error"
+category = "hygiene"
+fix_hint = "Update configs/policy/atlasctl-budgets-baseline.json or add approved budget-loosening marker."
+legacy_id = "repo.budget_drift_approval"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_canonical_concept_homes"
+domain = "repo"
+area = "canonical"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.package_shape"
+callable = "check_canonical_concept_homes"
+description = "forbid duplicate top-level concept packages for registry/runner/contracts/output"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep only canonical concept homes: registry, suite, contracts, reporting."
+legacy_id = "repo.canonical_concept_homes"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_check_impl_no_cli_imports"
+domain = "repo"
+area = "check"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.check_structure"
+callable = "check_check_impl_no_cli_imports"
+description = "forbid direct CLI imports from check implementation files"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep check implementations pure and route CLI wiring through commands/cli modules."
+legacy_id = "repo.check_impl_no_cli_imports"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_check_test_coverage"
+domain = "repo"
+area = "check"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.test_guardrails"
+callable = "check_check_test_coverage"
+description = "ensure each registered check has test or golden coverage marker"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add test/golden references for uncovered checks."
+legacy_id = "repo.check_test_coverage"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_checks_canonical_location"
+domain = "repo"
+area = "checks"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.check_structure"
+callable = "check_checks_canonical_location"
+description = "require check implementations under atlasctl/checks canonical tree"
+severity = "error"
+category = "hygiene"
+fix_hint = "Move check_*.py implementations under packages/atlasctl/src/atlasctl/checks/ or extend migration allowlist explicitly."
+legacy_id = "repo.checks_canonical_location"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_checks_domain_split"
+domain = "repo"
+area = "checks"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.package_shape"
+callable = "check_checks_domain_split"
+description = "require canonical check domain tree (repo_shape/makefiles/ops/docs/observability/artifacts)"
+severity = "error"
+category = "hygiene"
+fix_hint = "Create or migrate domain packages under packages/atlasctl/src/atlasctl/checks/."
+legacy_id = "repo.checks_domain_split"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_checks_import_lint"
+domain = "repo"
+area = "checks"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.import_policy"
+callable = "check_checks_import_lint"
+description = "enforce checks module import boundaries"
+severity = "error"
+category = "hygiene"
+fix_hint = "Restrict checks imports to core/contracts/reporting/adapters/checks."
+legacy_id = "repo.checks_import_lint"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_checks_no_cli_imports"
+domain = "repo"
+area = "checks"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.import_policy"
+callable = "check_checks_no_cli_imports"
+description = "forbid checks modules from importing cli layer"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep checks pure and independent from cli modules."
+legacy_id = "repo.checks_no_cli_imports"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_cli_argparse_policy"
+domain = "repo"
+area = "cli"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.argparse_policy"
+callable = "check_argparse_policy"
+description = "restrict direct argparse parser construction to canonical parser modules"
+severity = "error"
+category = "hygiene"
+fix_hint = "Move parser construction into cli/parser.py or commands/*/parser.py."
+legacy_id = "repo.argparse_policy"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_cli_canonical_paths"
+domain = "repo"
+area = "cli"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.command_contracts"
+callable = "check_cli_canonical_paths"
+description = "enforce canonical cli parser/dispatch/output path"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep parser in cli/main.py, dispatch in cli/dispatch.py, and payload formatting in cli/output.py."
+legacy_id = "repo.cli_canonical_paths"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_cli_import_scope"
+domain = "repo"
+area = "cli"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.import_policy"
+callable = "check_cli_import_scope"
+description = "restrict cli imports to commands/core and approved runtime shims"
+severity = "error"
+category = "hygiene"
+fix_hint = "Route feature logic through commands; keep cli as parser/dispatch glue."
+legacy_id = "repo.cli_import_scope"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_cold_import_budget"
+domain = "repo"
+area = "cold"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.import_policy"
+callable = "check_cold_import_budget"
+description = "enforce cold import time budget for atlasctl package"
+severity = "error"
+category = "hygiene"
+fix_hint = "Reduce top-level imports and defer heavy initialization."
+legacy_id = "repo.cold_import_budget"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_command_alias_budget"
+domain = "repo"
+area = "command"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.command_contracts"
+callable = "check_command_alias_budget"
+description = "enforce command alias/name budget"
+severity = "error"
+category = "hygiene"
+fix_hint = "Remove duplicate alias identifiers from command surface."
+legacy_id = "repo.command_alias_budget"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_command_metadata_contract"
+domain = "repo"
+area = "command"
+owner = "platform"
+speed = "fast"
+timeout_ms = 400
+module = "atlasctl.checks.repo.contracts.command_contracts"
+callable = "check_command_metadata_contract"
+description = "ensure command metadata includes touches/tools/effect declarations"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add touches/tools/effect metadata in cli registry."
+legacy_id = "repo.command_metadata_contract"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_command_module_cli_intent"
+domain = "repo"
+area = "command"
+owner = "platform"
+speed = "fast"
+timeout_ms = 250
+module = "atlasctl.checks.repo.contracts.naming_hygiene"
+callable = "check_command_module_cli_intent"
+description = "enforce command.py modules as CLI entry shims only"
+severity = "error"
+category = "hygiene"
+fix_hint = "Ensure command.py files include configure_* parser and run_* command entrypoints."
+legacy_id = "repo.command_module_cli_intent"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_command_ownership_docs"
+domain = "repo"
+area = "command"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.command_contracts"
+callable = "check_command_ownership_docs"
+description = "ensure command owners are documented"
+severity = "error"
+category = "hygiene"
+fix_hint = "Document all command owners in packages/atlasctl/docs/ownership.md."
+legacy_id = "repo.command_ownership_docs"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_command_test_coverage"
+domain = "repo"
+area = "command"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.test_guardrails"
+callable = "check_command_test_coverage"
+description = "ensure each command has explicit test coverage marker"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add at least one test mentioning each command."
+legacy_id = "repo.command_test_coverage"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_commands_help_docs_drift"
+domain = "repo"
+area = "commands"
+owner = "platform"
+speed = "fast"
+timeout_ms = 500
+module = "atlasctl.checks.repo.contracts.command_contracts"
+callable = "check_command_help_docs_drift"
+description = "check command help/docs drift"
+severity = "error"
+category = "hygiene"
+fix_hint = "Regenerate docs/_generated/cli.md from current CLI surface."
+legacy_id = "repo.command_help_docs_drift"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_commands_import_lint"
+domain = "repo"
+area = "commands"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.import_policy"
+callable = "check_command_import_lint"
+description = "enforce command module import boundaries"
+severity = "error"
+category = "hygiene"
+fix_hint = "Restrict command imports to core/contracts/checks/adapters/commands/cli."
+legacy_id = "repo.command_import_lint"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_commands_surface_stability"
+domain = "repo"
+area = "commands"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.command_contracts"
+callable = "check_command_surface_stability"
+description = "enforce strict command surface compatibility against commands golden"
+severity = "error"
+category = "hygiene"
+fix_hint = "Regenerate commands goldens intentionally via `python -m atlasctl.cli gen goldens`."
+legacy_id = "repo.command_surface_stability"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_compileall_gate"
+domain = "repo"
+area = "compileall"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.import_policy"
+callable = "check_compileall_gate"
+description = "ensure atlasctl source compiles with compileall"
+severity = "error"
+category = "hygiene"
+fix_hint = "Fix syntax/import issues until python -m compileall passes."
+legacy_id = "repo.compileall_gate"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_console_script_entry"
+domain = "repo"
+area = "console"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.pyproject_contracts"
+callable = "check_console_script_entry"
+description = "ensure atlasctl console script entry exists and points to callable target"
+severity = "error"
+category = "hygiene"
+fix_hint = "Set [project.scripts] atlasctl = \"atlasctl.cli.main:main\" and ensure target is importable."
+legacy_id = "repo.console_script_entry"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_contract_import_boundaries"
+domain = "repo"
+area = "contract"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.import_policy"
+callable = "check_contract_import_boundaries"
+description = "enforce contracts/core-contracts import boundaries"
+severity = "error"
+category = "hygiene"
+fix_hint = "Commands/checks should import schema contracts from atlasctl.contracts only."
+legacy_id = "repo.contract_import_boundaries"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_contracts_namespace_purpose"
+domain = "repo"
+area = "contracts"
+owner = "platform"
+speed = "fast"
+timeout_ms = 250
+module = "atlasctl.checks.repo.contracts.naming_hygiene"
+callable = "check_contracts_namespace_purpose"
+description = "enforce contracts namespace for schema and validation modules only"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep random non-schema logic out of atlasctl/contracts and move it to proper domains."
+legacy_id = "repo.contracts_namespace_purpose"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_core_no_bash_subprocess"
+domain = "repo"
+area = "core"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.shell_policy"
+callable = "check_core_no_bash_subprocess"
+description = "forbid subprocess.run(['bash'|'sh', ...]) in core logic"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use core.exec wrappers; do not invoke bash/sh directly in core."
+legacy_id = "repo.core_no_bash_subprocess"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_core_no_command_imports"
+domain = "repo"
+area = "core"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.import_policy"
+callable = "check_core_no_command_imports"
+description = "forbid core modules from importing command/cli layers"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep core independent from command and cli glue layers."
+legacy_id = "repo.core_no_command_imports"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_dead_module_reachability"
+domain = "repo"
+area = "dead"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.reachability"
+callable = "check_dead_module_reachability_allowlist"
+description = "enforce dead module candidates are explicitly allowlisted"
+severity = "error"
+category = "hygiene"
+fix_hint = "Update configs/policy/dead-modules-allowlist.json with intended exceptions."
+legacy_id = "repo.dead_module_reachability"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_dead_modules"
+domain = "repo"
+area = "dead"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.reachability"
+callable = "check_dead_modules_report_runs"
+description = "ensure dead modules analyzer runs and returns canonical payload"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep policies/dead_modules.py runnable and deterministic."
+legacy_id = "repo.dead_modules"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_dependency_declarations"
+domain = "repo"
+area = "dependency"
+owner = "platform"
+speed = "fast"
+timeout_ms = 600
+module = "atlasctl.checks.repo.contracts.dependencies"
+callable = "check_dependency_declarations"
+description = "ensure pyproject dependency declarations match imports"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add missing dependencies or remove unused declarations."
+legacy_id = "repo.dependency_declarations"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_dependency_gate_targets"
+domain = "repo"
+area = "dependency"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.pyproject_contracts"
+callable = "check_dependency_gate_targets"
+description = "ensure dependency gate make targets exist"
+severity = "error"
+category = "hygiene"
+fix_hint = "Define deps-lock/deps-sync/deps-check-venv/deps-cold-start in makefiles/scripts.mk."
+legacy_id = "repo.dependency_gate_targets"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_dependency_owner_justification"
+domain = "repo"
+area = "dependency"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.pyproject_contracts"
+callable = "check_dependency_owner_justification"
+description = "ensure each dependency has owner and justification"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add dependency ownership + justification entries in docs/deps.md."
+legacy_id = "repo.dependency_owner_justification"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_deps_command_surface"
+domain = "repo"
+area = "deps"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.pyproject_contracts"
+callable = "check_deps_command_surface"
+description = "ensure atlasctl deps command surface is runnable"
+severity = "error"
+category = "hygiene"
+fix_hint = "Wire atlasctl deps parser/runner and keep command import path valid."
+legacy_id = "repo.deps_command_surface"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_deps_workflow_doc"
+domain = "repo"
+area = "deps"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.pyproject_contracts"
+callable = "check_deps_workflow_doc"
+description = "ensure docs/deps.md matches chosen dependency workflow"
+severity = "error"
+category = "hygiene"
+fix_hint = "Update docs/deps.md and keep requirements.in/requirements.lock.txt in sync."
+legacy_id = "repo.deps_workflow_doc"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_dir_budget_entries"
+domain = "repo"
+area = "dir"
+owner = "platform"
+speed = "fast"
+timeout_ms = 400
+module = "atlasctl.commands.policies.runtime.budgets.dir_entry_budgets"
+callable = "check_dir_entry_budgets"
+description = "enforce per-directory entries budget in atlasctl src/tests"
+severity = "error"
+category = "hygiene"
+fix_hint = "Split crowded directories; required reading: packages/atlasctl/docs/architecture/how-to-split-a-module.md."
+legacy_id = "repo.dir_budget_entries"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_dir_budget_exceptions_documented"
+domain = "repo"
+area = "dir"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.commands.policies.runtime.culprits"
+callable = "check_budget_exceptions_documented"
+description = "ensure budget exceptions are documented"
+severity = "error"
+category = "hygiene"
+fix_hint = "Document each budget exception path in packages/atlasctl/docs/architecture.md."
+legacy_id = "repo.dir_budget_exceptions_documented"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_dir_budget_exceptions_sorted"
+domain = "repo"
+area = "dir"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.commands.policies.runtime.culprits"
+callable = "check_budget_exceptions_sorted"
+description = "ensure budget exceptions are sorted deterministically"
+severity = "error"
+category = "hygiene"
+fix_hint = "Sort [[tool.atlasctl.budgets.exceptions]] entries by path in pyproject.toml."
+legacy_id = "repo.dir_budget_exceptions_sorted"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_dir_budget_loc"
+domain = "repo"
+area = "dir"
+owner = "platform"
+speed = "fast"
+timeout_ms = 400
+module = "atlasctl.commands.policies.runtime.budgets.dir_budgets"
+callable = "check_loc_per_dir"
+description = "enforce per-directory total LOC budget"
+severity = "error"
+category = "hygiene"
+fix_hint = "Move unrelated files into domain subpackages to reduce dir-level LOC density."
+legacy_id = "repo.dir_budget_loc"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_dir_budget_modules"
+domain = "repo"
+area = "dir"
+owner = "platform"
+speed = "fast"
+timeout_ms = 400
+module = "atlasctl.commands.policies.runtime.budgets.dir_budgets"
+callable = "check_modules_per_dir"
+description = "enforce per-directory python module count budget"
+severity = "error"
+category = "hygiene"
+fix_hint = "Split high-density directories into intent-focused subpackages."
+legacy_id = "repo.dir_budget_modules"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_dir_budget_py_files"
+domain = "repo"
+area = "dir"
+owner = "platform"
+speed = "fast"
+timeout_ms = 400
+module = "atlasctl.commands.policies.runtime.budgets.dir_budgets"
+callable = "check_py_files_per_dir"
+description = "enforce per-directory python file count budget"
+severity = "error"
+category = "hygiene"
+fix_hint = "Split high-density directories and keep directory fan-in bounded."
+legacy_id = "repo.dir_budget_py_files"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_dir_budget_py_scope"
+domain = "repo"
+area = "dir"
+owner = "platform"
+speed = "fast"
+timeout_ms = 400
+module = "atlasctl.commands.policies.runtime.budgets.dir_entry_budgets"
+callable = "check_py_files_per_dir_budget"
+description = "enforce per-directory .py file budget in atlasctl src/tests (excluding __init__.py)"
+severity = "error"
+category = "hygiene"
+fix_hint = "Split module directories and keep <=10 python files per dir; see how-to-split-a-module.md."
+legacy_id = "repo.dir_budget_py_scope"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_dir_budget_shell_files"
+domain = "repo"
+area = "dir"
+owner = "platform"
+speed = "fast"
+timeout_ms = 400
+module = "atlasctl.checks.repo"
+callable = "<lambda>"
+description = "enforce per-directory shell file count budget"
+severity = "error"
+category = "hygiene"
+fix_hint = "Move shell scripts into approved layout/ops directories and split crowded directories."
+legacy_id = "repo.dir_budget_shell_files"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_dir_count_trend_gate"
+domain = "repo"
+area = "dir"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.commands.policies.runtime.culprits"
+callable = "check_critical_dir_count_trend"
+description = "forbid critical directory file/module count drift above baseline"
+severity = "error"
+category = "hygiene"
+fix_hint = "Split critical directories or update configs/policy/atlasctl-dir-count-baseline.json with approval."
+legacy_id = "repo.dir_count_trend_gate"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_docs_no_ops_generated_refs"
+domain = "repo"
+area = "docs"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.repo.native_runtime"
+callable = "check_docs_no_ops_generated_run_paths"
+description = "disallow docs refs to ops generated runtime paths"
+severity = "error"
+category = "hygiene"
+fix_hint = "Replace generated runtime paths with canonical docs references."
+legacy_id = "repo.docs_no_ops_generated_refs"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_duplicate_contract_assertions"
+domain = "repo"
+area = "duplicate"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.test_guardrails"
+callable = "check_duplicate_contract_assertions"
+description = "forbid duplicate contract assertions inside one test module"
+severity = "error"
+category = "hygiene"
+fix_hint = "Consolidate duplicate validate(schema) assertions into one test."
+legacy_id = "repo.duplicate_contract_assertions"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_duplicate_script_names"
+domain = "repo"
+area = "duplicate"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1200
+module = "atlasctl.checks.repo.native_runtime"
+callable = "check_duplicate_script_names"
+description = "forbid duplicate script stem names"
+severity = "error"
+category = "hygiene"
+fix_hint = "Rename colliding script names."
+legacy_id = "repo.duplicate_script_names"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_effect_boundaries"
+domain = "repo"
+area = "effect"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.boundaries.effect_boundaries"
+callable = "check_forbidden_effect_calls"
+description = "forbid direct subprocess/fs/env/network effects outside core boundaries"
+severity = "error"
+category = "hygiene"
+fix_hint = "Route effects through core.exec/core.process/core.fs/core.runtime.env/core.network."
+legacy_id = "repo.effect_boundaries"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_effect_boundary_exceptions_policy"
+domain = "repo"
+area = "effect"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.boundaries.effect_boundaries"
+callable = "check_effect_boundary_exceptions_policy"
+description = "enforce explicit sorted effect boundary exceptions with reasons"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep configs/policy/effect-boundary-exceptions.json sorted and justified."
+legacy_id = "repo.effect_boundary_exceptions_policy"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_env_docs_present"
+domain = "repo"
+area = "env"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.pyproject_contracts"
+callable = "check_env_docs_present"
+description = "ensure docs/env.md exists and lists canonical env vars"
+severity = "error"
+category = "hygiene"
+fix_hint = "Create docs/env.md and document canonical runtime environment variables."
+legacy_id = "repo.env_docs_present"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_file_complexity_budget"
+domain = "repo"
+area = "file"
+owner = "platform"
+speed = "fast"
+timeout_ms = 400
+module = "atlasctl.checks.repo"
+callable = "<lambda>"
+description = "enforce complexity heuristic budget in core/cli"
+severity = "error"
+category = "hygiene"
+fix_hint = "Split high-complexity control flow and extract focused helpers."
+legacy_id = "repo.file_complexity_budget"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_file_import_budget"
+domain = "repo"
+area = "file"
+owner = "platform"
+speed = "fast"
+timeout_ms = 400
+module = "atlasctl.checks.repo"
+callable = "<lambda>"
+description = "enforce python import count budget per file"
+severity = "error"
+category = "hygiene"
+fix_hint = "Reduce import fan-in and use lazy imports where needed."
+legacy_id = "repo.file_import_budget"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_file_public_symbol_budget"
+domain = "repo"
+area = "file"
+owner = "platform"
+speed = "fast"
+timeout_ms = 400
+module = "atlasctl.checks.repo"
+callable = "<lambda>"
+description = "enforce public symbol budget per module"
+severity = "error"
+category = "hygiene"
+fix_hint = "Split dumping-ground modules and narrow __all__ exports."
+legacy_id = "repo.file_public_symbol_budget"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_folder_intent_contract"
+domain = "repo"
+area = "folder"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.package_hygiene"
+callable = "check_folder_intent_contract"
+description = "require intent marker for checks directories"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add README.md or check_*.py module in each checks directory."
+legacy_id = "repo.folder_intent_contract"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_forbidden_root_files"
+domain = "repo"
+area = "forbidden"
+owner = "platform"
+speed = "fast"
+timeout_ms = 400
+module = "atlasctl.checks.layout.root.check_forbidden_root_files"
+callable = "run"
+description = "forbid junk files at repository root"
+severity = "error"
+category = "hygiene"
+fix_hint = "Remove forbidden junk files from repository root."
+legacy_id = "repo.forbidden_root_files"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_forbidden_root_names"
+domain = "repo"
+area = "forbidden"
+owner = "platform"
+speed = "fast"
+timeout_ms = 400
+module = "atlasctl.checks.layout.root.check_forbidden_root_names"
+callable = "run"
+description = "forbid legacy top-level root names"
+severity = "error"
+category = "hygiene"
+fix_hint = "Remove forbidden top-level legacy names from repository root."
+legacy_id = "repo.forbidden_root_names"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_forbidden_top_dirs"
+domain = "repo"
+area = "forbidden"
+owner = "platform"
+speed = "fast"
+timeout_ms = 500
+module = "atlasctl.checks.repo.native_loader"
+callable = "check_forbidden_top_dirs"
+description = "forbid top-level forbidden directories"
+severity = "error"
+category = "hygiene"
+fix_hint = "Remove forbidden root directories."
+legacy_id = "repo.forbidden_top_dirs"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_import_smoke"
+domain = "repo"
+area = "import"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.import_policy"
+callable = "check_import_smoke"
+description = "ensure atlasctl package imports in minimal environment"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep top-level imports light and dependency-safe."
+legacy_id = "repo.import_smoke"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_internal_commands_not_public"
+domain = "repo"
+area = "internal"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.command_contracts"
+callable = "check_internal_commands_not_public"
+description = "ensure unstable/internal commands are not exposed in public docs"
+severity = "error"
+category = "hygiene"
+fix_hint = "Mark internal commands stable=false and exclude them from public docs."
+legacy_id = "repo.internal_commands_not_public"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_internal_import_boundaries"
+domain = "repo"
+area = "internal"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.import_policy"
+callable = "check_internal_import_boundaries"
+description = "forbid atlasctl.internal imports outside internal namespace"
+severity = "error"
+category = "hygiene"
+fix_hint = "Route shared helpers through public modules instead of atlasctl.internal."
+legacy_id = "repo.internal_import_boundaries"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_internal_utils_stdlib_only"
+domain = "repo"
+area = "internal"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.dependencies"
+callable = "check_internal_utils_stdlib_only"
+description = "prefer stdlib-only internal utility modules"
+severity = "error"
+category = "hygiene"
+fix_hint = "Replace third-party imports in atlasctl/internal with stdlib equivalents or add a justified exception."
+legacy_id = "repo.internal_utils_stdlib_only"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_json_golden_conflicts"
+domain = "repo"
+area = "json"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.test_guardrails"
+callable = "check_no_conflicting_json_goldens"
+description = "forbid conflicting JSON goldens for the same schema surface"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep one .json.golden per schema surface."
+legacy_id = "repo.json_golden_conflicts"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_json_goldens_validate_schema"
+domain = "repo"
+area = "json"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.test_guardrails"
+callable = "check_json_goldens_validate_schema"
+description = "require schema validation in JSON golden tests"
+severity = "error"
+category = "hygiene"
+fix_hint = "Call contracts.validate() before asserting JSON golden snapshots."
+legacy_id = "repo.json_goldens_validate_schema"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_layout_domain_alias_cleanup"
+domain = "repo"
+area = "layout"
+owner = "platform"
+speed = "fast"
+timeout_ms = 250
+module = "atlasctl.checks.repo.contracts.naming_hygiene"
+callable = "check_layout_domain_alias_cleanup"
+description = "forbid deprecated layout registry aliases"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use domain-specific check packages and remove deprecated checks/layout alias modules."
+legacy_id = "repo.layout_domain_alias_cleanup"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_layout_domain_readmes"
+domain = "repo"
+area = "layout"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.package_shape"
+callable = "check_layout_domain_readmes"
+description = "ensure each layout check domain includes a README"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add README.md to each checks/layout/<domain>/ directory."
+legacy_id = "repo.layout_domain_readmes"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_layout_no_legacy_imports"
+domain = "repo"
+area = "layout"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.package_shape"
+callable = "check_layout_no_legacy_imports"
+description = "forbid legacy imports in checks/layout modules"
+severity = "error"
+category = "hygiene"
+fix_hint = "Remove atlasctl.legacy imports from layout checks."
+legacy_id = "repo.layout_no_legacy_imports"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_layout_no_shadow"
+domain = "repo"
+area = "layout"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.shell_policy"
+callable = "check_no_layout_shadow_configs"
+description = "enforce no-shadow config policy"
+severity = "error"
+category = "hygiene"
+fix_hint = "Resolve shadow config sources reported by atlasctl/layout/no_shadow.py."
+legacy_id = "repo.layout_no_shadow"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_legacy_package_absent"
+domain = "repo"
+area = "legacy"
+owner = "platform"
+speed = "fast"
+timeout_ms = 250
+module = "atlasctl.checks.repo.enforcement.legacy_guard"
+callable = "check_legacy_package_absent"
+description = "require atlasctl legacy package to be absent"
+severity = "error"
+category = "hygiene"
+fix_hint = "Delete packages/atlasctl/src/atlasctl/legacy and migrate importers."
+legacy_id = "repo.legacy_package_absent"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_legacy_zero_importers"
+domain = "repo"
+area = "legacy"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.reachability"
+callable = "check_no_legacy_importers"
+description = "require zero importers of removed atlasctl legacy namespace"
+severity = "error"
+category = "hygiene"
+fix_hint = "Remove imports/references to atlasctl.legacy."
+legacy_id = "repo.legacy_zero_importers"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_managed_artifact_write_roots"
+domain = "repo"
+area = "managed"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.boundaries.effect_boundaries"
+callable = "check_managed_artifact_write_roots"
+description = "enforce managed write roots under artifacts and reject out-of-root writes"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep managed write roots under artifacts/ and route writes through core.fs."
+legacy_id = "repo.managed_artifact_write_roots"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_modern_no_legacy_imports"
+domain = "repo"
+area = "modern"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.import_policy"
+callable = "check_no_modern_imports_from_legacy"
+description = "forbid modern modules from importing atlasctl.legacy"
+severity = "error"
+category = "hygiene"
+fix_hint = "Migrate callers to canonical modules under atlasctl.core/commands/checks."
+legacy_id = "repo.modern_no_legacy_imports"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_modern_no_legacy_obs_imports"
+domain = "repo"
+area = "modern"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.import_policy"
+callable = "check_no_legacy_obs_imports_in_modern"
+description = "forbid modern modules from importing atlasctl.legacy.obs"
+severity = "error"
+category = "hygiene"
+fix_hint = "Migrate observability imports to atlasctl.observability."
+legacy_id = "repo.modern_no_legacy_obs_imports"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_module_budget_domains"
+domain = "repo"
+area = "module"
+owner = "platform"
+speed = "fast"
+timeout_ms = 400
+module = "atlasctl.commands.policies.runtime.budgets.module_budgets"
+callable = "check_modules_per_domain"
+description = "enforce module count budget per top-level atlasctl domain"
+severity = "error"
+category = "hygiene"
+fix_hint = "Split high-density top-level domains and relocate modules by control-plane ownership."
+legacy_id = "repo.module_budget_domains"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_module_size"
+domain = "repo"
+area = "module"
+owner = "platform"
+speed = "fast"
+timeout_ms = 400
+module = "atlasctl.checks.repo.enforcement.module_size"
+callable = "check_module_size"
+description = "enforce module size budget"
+severity = "error"
+category = "hygiene"
+fix_hint = "Split oversized modules into focused submodules."
+legacy_id = "repo.module_size"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_modules_reachability"
+domain = "repo"
+area = "modules"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.reachability"
+callable = "check_repo_check_modules_registered"
+description = "ensure repo check modules are imported and reachable via registry"
+severity = "error"
+category = "hygiene"
+fix_hint = "Import new repo check modules in checks/repo/__init__.py."
+legacy_id = "repo.check_module_reachability"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_network_default_deny"
+domain = "repo"
+area = "network"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.command_contracts"
+callable = "check_network_default_deny_policy"
+description = "enforce network-forbidden-by-default command policy"
+severity = "error"
+category = "hygiene"
+fix_hint = "Require explicit --allow-network for network-capable commands and keep default deny."
+legacy_id = "repo.network_default_deny"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_adhoc_python"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1200
+module = "atlasctl.checks.repo.native_runtime"
+callable = "check_no_adhoc_python"
+description = "forbid ad-hoc python files outside package boundaries"
+severity = "error"
+category = "hygiene"
+fix_hint = "Migrate ad-hoc python files into package modules."
+legacy_id = "repo.no_adhoc_python"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_core_integration_dir"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.import_policy"
+callable = "check_forbidden_core_integration_dir"
+description = "forbid deprecated core/integration namespace"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use top-level atlasctl.adapters for integration concerns."
+legacy_id = "repo.no_core_integration_dir"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_deprecated_commands"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.command_contracts"
+callable = "check_no_deprecated_commands"
+description = "forbid deprecated command surfaces before 0.1 release"
+severity = "error"
+category = "hygiene"
+fix_hint = "Remove compat/migration/legacy top-level commands before release."
+legacy_id = "repo.no_deprecated_commands"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_deprecated_namespace_dirs"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.import_policy"
+callable = "check_forbidden_deprecated_namespace_dirs"
+description = "forbid deprecated atlasctl/check report obs directories"
+severity = "error"
+category = "hygiene"
+fix_hint = "Remove deprecated namespace directories and keep checks/reporting/observability as canonical roots."
+legacy_id = "repo.no_deprecated_namespace_dirs"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_deprecated_namespaces"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.import_policy"
+callable = "check_forbidden_deprecated_namespaces"
+description = "forbid imports from atlasctl.check/report/obs namespaces"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use atlasctl.checks and atlasctl.reporting canonical namespaces."
+legacy_id = "repo.no_deprecated_namespaces"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_direct_bash_invocations"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.repo.native_runtime"
+callable = "check_no_direct_bash_invocations"
+description = "forbid direct bash script calls in docs/makefiles"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use atlasctl commands instead of bash scripts/... invocations."
+legacy_id = "repo.no_direct_bash_invocations"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_direct_python_invocations"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.repo.native_runtime"
+callable = "check_no_direct_python_invocations"
+description = "forbid direct python script calls in docs/makefiles"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use atlasctl command entrypoints instead of python path/to/script.py."
+legacy_id = "repo.no_direct_python_invocations"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_direct_script_runs"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 500
+module = "atlasctl.checks.layout.root.check_no_direct_script_runs"
+callable = "run"
+description = "forbid direct scripts/ or ops/ invocations in GitHub workflows"
+severity = "error"
+category = "hygiene"
+fix_hint = "Invoke workflows through make targets instead of direct scripts/ops paths."
+legacy_id = "repo.no_direct_script_runs"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_duplicate_command_impl_patterns"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.command_contracts"
+callable = "check_no_duplicate_command_implementation_patterns"
+description = "forbid duplicate command implementation patterns"
+severity = "error"
+category = "hygiene"
+fix_hint = "Pick one command implementation pattern and remove duplicate modules."
+legacy_id = "repo.no_duplicate_command_impl_patterns"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_duplicate_command_names"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.command_contracts"
+callable = "check_no_duplicate_command_names"
+description = "ensure command names are unique"
+severity = "error"
+category = "hygiene"
+fix_hint = "Rename duplicate command/alias entries."
+legacy_id = "repo.no_duplicate_command_names"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_empty_dirs_or_pointless_nests"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.package_hygiene"
+callable = "check_no_empty_dirs_or_pointless_nests"
+description = "forbid empty directories and pointless single-child nesting under src/atlasctl"
+severity = "error"
+category = "hygiene"
+fix_hint = "Delete empty directories and flatten single-child nests without modules or README markers."
+legacy_id = "repo.no_empty_dirs_or_pointless_nests"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_empty_packages"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.package_hygiene"
+callable = "check_no_empty_packages"
+description = "forbid empty non-legacy packages without README"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add a real module or README.md to package directories."
+legacy_id = "repo.no_empty_packages"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_exec_python_outside_packages"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1500
+module = "atlasctl.checks.repo.native_loader"
+callable = "check_no_executable_python_outside_packages"
+description = "forbid executable python outside package boundaries"
+severity = "error"
+category = "hygiene"
+fix_hint = "Move script into package module or remove executable bit."
+legacy_id = "repo.no_exec_python_outside_packages"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_forbidden_paths"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 500
+module = "atlasctl.checks.layout.root.check_forbidden_paths"
+callable = "run"
+description = "forbid legacy root path references in tracked text surfaces"
+severity = "error"
+category = "hygiene"
+fix_hint = "Remove forbidden legacy path references from make/docs/workflows."
+legacy_id = "repo.no_forbidden_paths"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_legacy_command_names"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.command_contracts"
+callable = "check_no_legacy_command_names"
+description = "forbid command names containing legacy"
+severity = "error"
+category = "hygiene"
+fix_hint = "Remove legacy command names and keep internal legacy reporting under `atlasctl internal legacy inventory`."
+legacy_id = "repo.no_legacy_command_names"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_legacy_module_paths"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.import_policy"
+callable = "check_no_legacy_module_paths"
+description = "forbid legacy module paths in atlasctl src tree"
+severity = "error"
+category = "hygiene"
+fix_hint = "Delete or move modules out of any */legacy/* path."
+legacy_id = "repo.no_legacy_module_paths"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_nested_same_name_packages"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.package_shape"
+callable = "check_no_nested_same_name_packages"
+description = "forbid nested package segments with same name"
+severity = "error"
+category = "hygiene"
+fix_hint = "Flatten nested same-name package segments (example: checks/checks)."
+legacy_id = "repo.no_nested_same_name_packages"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_ops_generated_placeholder"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 400
+module = "atlasctl.checks.repo.native_runtime"
+callable = "check_no_ops_generated_placeholder"
+description = "forbid placeholder generated dirs"
+severity = "error"
+category = "hygiene"
+fix_hint = "Remove placeholder generated files/directories."
+legacy_id = "repo.no_ops_generated_placeholder"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_path_cwd_usage"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 400
+module = "atlasctl.checks.repo.enforcement.cwd_usage"
+callable = "check_no_path_cwd_usage"
+description = "forbid Path.cwd usage outside core.runtime.repo_root.py"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use ctx.repo_root or core.runtime.repo_root helpers."
+legacy_id = "repo.no_path_cwd_usage"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_placeholder_module_names"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.package_hygiene"
+callable = "check_no_placeholder_module_names"
+description = "forbid placeholder-like module filenames in modern code"
+severity = "error"
+category = "hygiene"
+fix_hint = "Rename modules to intent-revealing names."
+legacy_id = "repo.no_placeholder_module_names"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_scripts_dir"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 250
+module = "atlasctl.checks.repo.domains.scripts_dir"
+callable = "check_scripts_dir_absent"
+description = "forbid legacy root scripts dir"
+severity = "error"
+category = "hygiene"
+fix_hint = "Migrate scripts into atlasctl package commands."
+legacy_id = "repo.no_scripts_dir"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_tracked_ops_generated"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.repo.native_loader"
+callable = "check_ops_generated_tracked"
+description = "ensure ops/_generated has no tracked files"
+severity = "error"
+category = "hygiene"
+fix_hint = "Untrack generated files and add to ignore policy."
+legacy_id = "repo.no_tracked_ops_generated"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_tracked_timestamp_paths"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.repo.native_loader"
+callable = "check_tracked_timestamp_paths"
+description = "forbid timestamp-like tracked paths"
+severity = "error"
+category = "hygiene"
+fix_hint = "Remove timestamped tracked files/dirs."
+legacy_id = "repo.no_tracked_timestamp_paths"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_undocumented_help_commands"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.command_contracts"
+callable = "check_no_undocumented_help_commands"
+description = "forbid undocumented commands in public help surface"
+severity = "error"
+category = "hygiene"
+fix_hint = "Document command in packages/atlasctl/docs/commands/index.md or mark it internal."
+legacy_id = "repo.no_undocumented_help_commands"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_wildcard_exports"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 250
+module = "atlasctl.checks.repo.contracts.naming_hygiene"
+callable = "check_no_wildcard_exports"
+description = "forbid wildcard imports/exports outside public surface"
+severity = "error"
+category = "hygiene"
+fix_hint = "Replace wildcard imports with explicit module references and __all__."
+legacy_id = "repo.no_wildcard_exports"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_no_xtask_refs"
+domain = "repo"
+area = "no"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.repo.native_loader"
+callable = "check_no_xtask_refs"
+description = "forbid xtask references"
+severity = "error"
+category = "hygiene"
+fix_hint = "Remove xtask references and use atlasctl workflows."
+legacy_id = "repo.no_xtask_refs"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_ops_examples_immutable"
+domain = "repo"
+area = "ops"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.repo.native_runtime"
+callable = "check_ops_examples_immutable"
+description = "enforce immutability of ops examples"
+severity = "error"
+category = "hygiene"
+fix_hint = "Restore example fixtures to committed canonical content."
+legacy_id = "repo.ops_examples_immutable"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_optional_dependency_groups"
+domain = "repo"
+area = "optional"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.pyproject_contracts"
+callable = "check_optional_dependency_groups"
+description = "ensure required pyproject optional-dependency groups exist and are non-empty"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add required [project.optional-dependencies] groups with entries: dev/ci/test/ops/docs."
+legacy_id = "repo.optional_dependency_groups"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_optional_dependency_usage_gates"
+domain = "repo"
+area = "optional"
+owner = "platform"
+speed = "fast"
+timeout_ms = 400
+module = "atlasctl.checks.repo.contracts.dependencies"
+callable = "check_optional_dependency_usage_gates"
+description = "forbid optional dependency usage without explicit allowlist gate"
+severity = "error"
+category = "hygiene"
+fix_hint = "Move dependency to base deps or add justified exception in configs/policy/dependency-exceptions.json."
+legacy_id = "repo.optional_dependency_usage_gates"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_output_format_stability"
+domain = "repo"
+area = "output"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.test_guardrails"
+callable = "check_output_format_stability"
+description = "enforce output formatting stability across OS"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use LF-only snapshots and avoid platform-dependent line separator logic."
+legacy_id = "repo.output_format_stability"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_package_has_module_or_readme"
+domain = "repo"
+area = "package"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.package_hygiene"
+callable = "check_package_has_module_or_readme"
+description = "require each non-legacy package to contain a module or README"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add module implementation or README.md to document empty package."
+legacy_id = "repo.package_has_module_or_readme"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_package_max_depth"
+domain = "repo"
+area = "package"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.commands.policies.runtime.budgets.tree_depth"
+callable = "check_tree_depth"
+description = "enforce maximum atlasctl package nesting depth"
+severity = "error"
+category = "hygiene"
+fix_hint = "Flatten deep package hierarchies under packages/atlasctl/src/atlasctl."
+legacy_id = "repo.package_max_depth"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_packages_atlasctl_root_shape"
+domain = "repo"
+area = "packages"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.package_shape"
+callable = "check_atlasctl_package_root_shape"
+description = "require atlasctl package root to contain only allowed files and directories"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep only LICENSE, README.md, docs/, pyproject.toml, src/, tests/ (+ optional requirements input/lock) in packages/atlasctl root."
+legacy_id = "repo.atlasctl_package_root_shape"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_packaging_metadata_completeness"
+domain = "repo"
+area = "packaging"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.pyproject_contracts"
+callable = "check_packaging_metadata_completeness"
+description = "ensure pyproject packaging metadata is complete (classifiers and project URLs)"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add required project classifiers and URLs in packages/atlasctl/pyproject.toml."
+legacy_id = "repo.packaging_metadata_completeness"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_public_api_doc_exists"
+domain = "repo"
+area = "public"
+owner = "platform"
+speed = "fast"
+timeout_ms = 250
+module = "atlasctl.checks.repo.contracts.naming_hygiene"
+callable = "check_public_api_doc_exists"
+description = "require canonical PUBLIC_API.md documentation file"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add packages/atlasctl/docs/PUBLIC_API.md and keep API docs there."
+legacy_id = "repo.public_api_doc_exists"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_public_api_exports"
+domain = "repo"
+area = "public"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.public_api"
+callable = "check_public_api_exports"
+description = "enforce docs/PUBLIC_API.md coverage for __all__ exports"
+severity = "error"
+category = "hygiene"
+fix_hint = "Document exported symbols in docs/PUBLIC_API.md or remove them from __all__."
+legacy_id = "repo.public_api_exports"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_public_commands_docs_index"
+domain = "repo"
+area = "public"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.command_contracts"
+callable = "check_public_commands_docs_index"
+description = "ensure public commands are listed in docs/commands/index.md"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add missing public commands to packages/atlasctl/docs/commands/index.md."
+legacy_id = "repo.public_commands_docs_index"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_pyproject_minimalism"
+domain = "repo"
+area = "pyproject"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.pyproject_contracts"
+callable = "check_pyproject_minimalism"
+description = "forbid dead/unknown pyproject tool keys"
+severity = "error"
+category = "hygiene"
+fix_hint = "Remove unknown [tool.*] sections or document and allow them explicitly."
+legacy_id = "repo.pyproject_minimalism"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_pyproject_no_duplicate_tool_config"
+domain = "repo"
+area = "pyproject"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.pyproject_contracts"
+callable = "check_pyproject_no_duplicate_tool_config"
+description = "forbid duplicate tool config files beside pyproject"
+severity = "error"
+category = "hygiene"
+fix_hint = "Remove duplicated tool config files and keep pyproject as SSOT."
+legacy_id = "repo.pyproject_no_duplicate_tool_config"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_pyproject_required_blocks"
+domain = "repo"
+area = "pyproject"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.pyproject_contracts"
+callable = "check_pyproject_required_blocks"
+description = "ensure pyproject contains required project and tool config blocks"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add required [project]/[tool.*] blocks to packages/atlasctl/pyproject.toml."
+legacy_id = "repo.pyproject_required_blocks"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_python_module_help"
+domain = "repo"
+area = "python"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.pyproject_contracts"
+callable = "check_python_module_help"
+description = "ensure python -m atlasctl --help works"
+severity = "error"
+category = "hygiene"
+fix_hint = "Ensure atlasctl package entrypoint remains runnable with python -m atlasctl."
+legacy_id = "repo.python_module_help"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_python_requires_version_and_ci"
+domain = "repo"
+area = "python"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.pyproject_contracts"
+callable = "check_python_requires_version_and_ci"
+description = "enforce pyproject requires-python and CI python version alignment"
+severity = "error"
+category = "hygiene"
+fix_hint = "Pin requires-python to >=3.11 and set actions/setup-python python-version: 3.11 in CI."
+legacy_id = "repo.python_requires_version_and_ci"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_registry_definition_boundary"
+domain = "repo"
+area = "registry"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.import_policy"
+callable = "check_registry_definition_boundary"
+description = "forbid registry modules from importing command/cli/suite/check runtime modules"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep registry declarative and independent from runtime command/check implementations."
+legacy_id = "repo.registry_definition_boundary"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_registry_single_source"
+domain = "repo"
+area = "registry"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.command_contracts"
+callable = "check_registry_single_source"
+description = "enforce registry-only command/check registration points"
+severity = "error"
+category = "hygiene"
+fix_hint = "Declare commands only in cli/surface_registry.py and checks only in checks/*/__init__.py."
+legacy_id = "repo.registry_single_source"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_required_target_shape"
+domain = "repo"
+area = "required"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.required_proof"
+callable = "check_required_target_shape"
+description = "enforce package root minimalism and src no-symlink target shape"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep package-root items minimal and remove symlinks from src tree."
+legacy_id = "repo.required_target_shape"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_requirements_artifact_policy"
+domain = "repo"
+area = "requirements"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.pyproject_contracts"
+callable = "check_requirements_artifact_policy"
+description = "ensure only route-B requirements artifacts exist"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep only requirements.in and requirements.lock.txt in package root for route-B workflow."
+legacy_id = "repo.requirements_artifact_policy"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_requirements_sync"
+domain = "repo"
+area = "requirements"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.pyproject_contracts"
+callable = "check_requirements_sync_with_pyproject"
+description = "ensure requirements files match pyproject dev dependency declarations"
+severity = "error"
+category = "hygiene"
+fix_hint = "Regenerate requirements.lock.txt from requirements.in and keep pyproject optional-deps dev aligned."
+legacy_id = "repo.requirements_sync"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_root_determinism"
+domain = "repo"
+area = "root"
+owner = "platform"
+speed = "slow"
+timeout_ms = 1500
+module = "atlasctl.checks.layout.root.check_root_determinism"
+callable = "run"
+description = "verify deterministic root output across two make root runs"
+severity = "error"
+category = "hygiene"
+fix_hint = "Stabilize generated root outputs so consecutive runs are identical."
+legacy_id = "repo.root_determinism"
+groups = ["repo", "required", "slow"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_root_shape"
+domain = "repo"
+area = "root"
+owner = "platform"
+speed = "fast"
+timeout_ms = 500
+module = "atlasctl.checks.layout.root.check_root_shape"
+callable = "run"
+description = "enforce repository root shape contract from root_whitelist.json"
+severity = "error"
+category = "hygiene"
+fix_hint = "Align root entries with checks/layout/root_whitelist.json."
+legacy_id = "repo.root_shape"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_runcontext_single_builder"
+domain = "repo"
+area = "runcontext"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.import_policy"
+callable = "check_runcontext_single_builder"
+description = "ensure RunContext is built only in core/context.py"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use RunContext.from_args and avoid constructing context-like objects elsewhere."
+legacy_id = "repo.runcontext_single_builder"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_script_help_coverage"
+domain = "repo"
+area = "script"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1500
+module = "atlasctl.checks.repo.native_runtime"
+callable = "check_script_help"
+description = "validate script help contract coverage"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add --help contract output to required scripts."
+legacy_id = "repo.script_help_coverage"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_script_ownership_coverage"
+domain = "repo"
+area = "script"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1500
+module = "atlasctl.checks.repo.native_runtime"
+callable = "check_script_ownership"
+description = "validate script ownership coverage"
+severity = "error"
+category = "hygiene"
+fix_hint = "Update ownership metadata for uncovered scripts."
+legacy_id = "repo.script_ownership_coverage"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_shell_docs_present"
+domain = "repo"
+area = "shell"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.shell_policy"
+callable = "check_shell_docs_present"
+description = "require shell directory README and policy docs"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add README.md and POLICY.md under ops/vendor/layout-checks."
+legacy_id = "repo.shell_docs_present"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_shell_invocation_boundary"
+domain = "repo"
+area = "shell"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.shell_policy"
+callable = "check_shell_invocation_via_core_exec"
+description = "forbid direct shell subprocess invocations outside core.exec"
+severity = "error"
+category = "hygiene"
+fix_hint = "Route shell invocations through core.exec wrapper helpers."
+legacy_id = "repo.shell_invocation_boundary"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_shell_location_policy"
+domain = "repo"
+area = "shell"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.shell_policy"
+callable = "check_shell_location_policy"
+description = "forbid shell scripts under atlasctl python package tree"
+severity = "error"
+category = "hygiene"
+fix_hint = "Move shell scripts to ops/vendor/layout-checks or port them to python."
+legacy_id = "repo.shell_location_policy"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_shell_no_direct_python"
+domain = "repo"
+area = "shell"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.shell_policy"
+callable = "check_shell_no_python_direct_calls"
+description = "forbid direct python invocation in shell scripts"
+severity = "error"
+category = "hygiene"
+fix_hint = "Call atlasctl entrypoints instead of python commands in shell scripts."
+legacy_id = "repo.shell_no_direct_python"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_shell_no_network_fetch"
+domain = "repo"
+area = "shell"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.shell_policy"
+callable = "check_shell_no_network_download_tools"
+description = "forbid direct curl/wget usage in shell scripts"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use atlasctl-managed fetch entrypoints or explicit allow annotation."
+legacy_id = "repo.shell_no_network_fetch"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_shell_readonly_checks"
+domain = "repo"
+area = "shell"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.shell_policy"
+callable = "check_shell_scripts_readonly"
+description = "forbid direct file writes in layout shell checks"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep layout shell checks read-only and route outputs through stdout/stderr only."
+legacy_id = "repo.shell_readonly_checks"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_shell_script_budget"
+domain = "repo"
+area = "shell"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.shell_policy"
+callable = "check_shell_script_budget"
+description = "cap total shell script count in repository"
+severity = "error"
+category = "hygiene"
+fix_hint = "Port shell scripts to Python modules and delete duplicates."
+legacy_id = "repo.shell_script_budget"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_shell_strict_mode"
+domain = "repo"
+area = "shell"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.shell_policy"
+callable = "check_shell_headers_and_strict_mode"
+description = "require shell header and strict mode"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add #!/usr/bin/env bash and set -euo pipefail to all shell scripts."
+legacy_id = "repo.shell_strict_mode"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_single_registry_module"
+domain = "repo"
+area = "single"
+owner = "platform"
+speed = "fast"
+timeout_ms = 250
+module = "atlasctl.checks.repo.contracts.naming_hygiene"
+callable = "check_single_registry_module"
+description = "enforce a single canonical registry.py module"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep only packages/atlasctl/src/atlasctl/checks/registry.py as registry.py."
+legacy_id = "repo.single_registry_module"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_single_runner_module"
+domain = "repo"
+area = "single"
+owner = "platform"
+speed = "fast"
+timeout_ms = 250
+module = "atlasctl.checks.repo.contracts.naming_hygiene"
+callable = "check_single_runner_module"
+description = "enforce a single canonical runner.py module"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep only packages/atlasctl/src/atlasctl/checks/runner.py as runner.py."
+legacy_id = "repo.single_runner_module"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_stable_command_no_breaking_changes"
+domain = "repo"
+area = "stable"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.command_contracts"
+callable = "check_stable_command_no_breaking_changes"
+description = "forbid breaking changes in stable command contracts"
+severity = "error"
+category = "hygiene"
+fix_hint = "Avoid breaking stable command metadata or intentionally refresh commands goldens."
+legacy_id = "repo.stable_command_no_breaking_changes"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_subprocess_boundary"
+domain = "repo"
+area = "subprocess"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.boundaries.effect_boundaries"
+callable = "check_subprocess_boundary"
+description = "restrict subprocess imports to core execution boundary"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use core.exec/core.process for subprocess calls."
+legacy_id = "repo.subprocess_boundary"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_suite_inventory_policy"
+domain = "repo"
+area = "suite"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.suite_inventory"
+callable = "check_suite_inventory_policy"
+description = "validate suite inventory coverage and required tag policy"
+severity = "error"
+category = "hygiene"
+fix_hint = "Assign checks to suites and ensure required complete suites include all required checks."
+legacy_id = "repo.suite_inventory_policy"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_suite_marker_rules"
+domain = "repo"
+area = "suite"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.test_guardrails"
+callable = "check_suite_marker_rules"
+description = "enforce check-suite-coverage marker file policy"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep tests/goldens/check/check-suite-coverage.markers.txt sorted, unique, and only registered check ids."
+legacy_id = "repo.suite_marker_rules"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_test_determinism_patterns"
+domain = "repo"
+area = "test"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.test_guardrails"
+callable = "check_test_determinism_patterns"
+description = "forbid nondeterministic test patterns without explicit marker"
+severity = "error"
+category = "hygiene"
+fix_hint = "Replace unstable time/random/env usage or annotate with determinism-allow: reason."
+legacy_id = "repo.test_determinism_patterns"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_test_no_duplicated_coverage"
+domain = "repo"
+area = "test"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.test_guardrails"
+callable = "check_no_duplicated_coverage_paths"
+description = "forbid duplicated golden coverage across multiple tests"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep one canonical test per golden surface and remove duplicate assertions."
+legacy_id = "repo.test_no_duplicated_coverage"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_test_no_unmarked_network"
+domain = "repo"
+area = "test"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.test_guardrails"
+callable = "check_no_unmarked_test_network"
+description = "forbid test network usage unless marked"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add @pytest.mark.network or '# network-test: allowed' near intentional network tests."
+legacy_id = "repo.test_no_unmarked_network"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_test_ownership_tags"
+domain = "repo"
+area = "test"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.test_guardrails"
+callable = "check_test_ownership_tags"
+description = "ensure tests declare ownership tags or live in domain directories"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add '# test-domain: <domain>' header to top-level tests."
+legacy_id = "repo.test_ownership_tags"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_test_skip_justification"
+domain = "repo"
+area = "test"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.test_guardrails"
+callable = "check_no_unjustified_skips"
+description = "forbid skipped tests without justification and expiry markers"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add skip-justification and skip-expires markers near skip usage."
+legacy_id = "repo.test_skip_justification"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_test_taxonomy_layout"
+domain = "repo"
+area = "test"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.test_guardrails"
+callable = "check_test_taxonomy_layout"
+description = "enforce test taxonomy and placement invariants"
+severity = "error"
+category = "hygiene"
+fix_hint = "Place tests under domain folders and align declared # test-taxonomy with placement."
+legacy_id = "repo.test_taxonomy_layout"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_test_write_sandbox"
+domain = "repo"
+area = "test"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.test_guardrails"
+callable = "check_test_write_sandbox"
+description = "forbid writes outside temp/artifacts isolation sandbox in tests"
+severity = "error"
+category = "hygiene"
+fix_hint = "Write via tmp_path/tempfile or artifacts/isolate run directories only."
+legacy_id = "repo.test_write_sandbox"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_tests_no_duplicate_expectations"
+domain = "repo"
+area = "tests"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.test_guardrails"
+callable = "check_test_duplicate_expectations"
+description = "forbid duplicate test function names across test modules"
+severity = "error"
+category = "hygiene"
+fix_hint = "Rename duplicated test_* functions to avoid conflicting expectations."
+legacy_id = "repo.tests_no_duplicate_expectations"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_top_level_package_group_mapping"
+domain = "repo"
+area = "top"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.enforcement.package_shape"
+callable = "check_top_level_package_group_mapping"
+description = "require top-level atlasctl packages to map to control-plane groups"
+severity = "error"
+category = "hygiene"
+fix_hint = "Map new top-level packages to docs/configs/dev/ops/policies/internal in package_shape policy."
+legacy_id = "repo.top_level_package_group_mapping"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_type_coverage"
+domain = "repo"
+area = "type"
+owner = "platform"
+speed = "fast"
+timeout_ms = 600
+module = "atlasctl.checks.repo.contracts.type_coverage"
+callable = "check_type_coverage"
+description = "enforce minimum type coverage in core/contracts"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add function annotations in core/contracts until the threshold is met."
+legacy_id = "repo.type_coverage"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_version_matches_pyproject"
+domain = "repo"
+area = "version"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.contracts.pyproject_contracts"
+callable = "check_version_matches_pyproject"
+description = "ensure atlasctl package version and --version output match pyproject"
+severity = "error"
+category = "hygiene"
+fix_hint = "Align atlasctl.__version__ with pyproject [project].version and keep --version output stable outside git repos."
+legacy_id = "repo.version_matches_pyproject"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
