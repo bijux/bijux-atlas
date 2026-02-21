@@ -44,10 +44,23 @@ _DOMAIN_TO_STABLE_TAG = {
     "contracts": "policies",
 }
 _RENAMES_PATH = Path("configs/policy/target-renames.json")
+_FILENAME_ALLOWLIST_PATH = Path("configs/policy/check-filename-allowlist.json")
 _DOMAIN_PATH_ALLOW = {
     "license": ("/checks/licensing/",),
     "repo": ("/checks/repo/", "/checks/layout/root/"),
     "configs": ("/checks/configs/", "/checks/repo/contracts/"),
+}
+_FORBIDDEN_TAGS = {"refgrade", "refgrade_required", "elite"}
+_DEFAULT_DOMAIN_OWNER = {
+    "repo": "platform",
+    "make": "platform",
+    "docs": "docs",
+    "ops": "ops",
+    "configs": "platform",
+    "python": "platform",
+    "docker": "ops",
+    "contracts": "platform",
+    "license": "platform",
 }
 
 
@@ -81,13 +94,24 @@ def _canonical_checks() -> tuple[tuple[CheckDef, ...], dict[str, str]]:
     for check in _CHECKS:
         new_id = overrides.get(check.check_id) or _default_new_check_id(check)
         legacy = check.check_id if new_id != check.check_id else None
-        out.append(replace(check, check_id=new_id, legacy_check_id=legacy))
+        owners = check.owners or (_DEFAULT_DOMAIN_OWNER.get(check.domain, "platform"),)
+        out.append(replace(check, check_id=new_id, legacy_check_id=legacy, owners=owners))
         if legacy:
             aliases[legacy] = new_id
     return tuple(out), aliases
 
 
 _CHECKS_CANON, _ALIASES = _canonical_checks()
+
+
+def _filename_allowlist() -> set[str]:
+    repo_root = Path(__file__).resolve().parents[6]
+    path = repo_root / _FILENAME_ALLOWLIST_PATH
+    if not path.exists():
+        return set()
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    names = payload.get("allowlist", [])
+    return {str(item) for item in names if str(item).strip()}
 
 
 def check_tags(check: CheckDef) -> tuple[str, ...]:
@@ -106,6 +130,7 @@ def list_checks() -> tuple[CheckDef, ...]:
     seen: set[str] = set()
     duplicates: set[str] = set()
     errors: list[str] = []
+    filename_allowlist = _filename_allowlist()
     for check in _CHECKS_CANON:
         if check.check_id in seen:
             duplicates.add(check.check_id)
@@ -121,6 +146,19 @@ def list_checks() -> tuple[CheckDef, ...]:
             allowed = _DOMAIN_PATH_ALLOW.get(check.domain, (f"/checks/{check.domain}/",))
             if not any(token in rel for token in allowed):
                 errors.append(f"{check.check_id}: check fn path must match domain `{check.domain}` allowlist (got {rel})")
+        name = Path(rel).name
+        should_enforce_name = bool(check.legacy_check_id is None)
+        if should_enforce_name and name not in {"", "<string>"} and not name.startswith("check_") and name not in filename_allowlist:
+            errors.append(f"{check.check_id}: filename must start with `check_` or be allowlisted (got {name})")
+        if not check.owners:
+            errors.append(f"{check.check_id}: check must declare at least one owner")
+        if check.severity.value not in {"error", "warn", "info"}:
+            errors.append(f"{check.check_id}: unsupported severity `{check.severity.value}`")
+        if not isinstance(check.slow, bool):
+            errors.append(f"{check.check_id}: slow must be boolean")
+        forbidden = _FORBIDDEN_TAGS.intersection(set(check.tags))
+        if forbidden:
+            errors.append(f"{check.check_id}: forbidden tags present: {', '.join(sorted(forbidden))}")
     if duplicates:
         dup_list = ", ".join(sorted(duplicates))
         raise ValueError(f"duplicate check ids in registry: {dup_list}")
