@@ -1,0 +1,26 @@
+{
+  "schema_name": "atlasctl.suite-run.v1",
+  "schema_version": 1,
+  "tool": "atlasctl",
+  "status": "ok",
+  "suite": "fast",
+  "summary": {
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "duration_ms": 12
+  },
+  "results": [
+    {
+      "index": 1,
+      "suite": "fast",
+      "label": "check repo.module_size",
+      "kind": "check",
+      "value": "repo.module_size",
+      "status": "pass",
+      "detail": "",
+      "duration_ms": 12
+    }
+  ],
+  "target_dir": "artifacts/isolate/sample-run/atlasctl-suite"
+}
