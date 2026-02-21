@@ -9,6 +9,11 @@ description = "Internal Python tooling package for bijux-atlas scripts"
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+]
 dependencies = [
   "jsonschema==4.25.1",
   "tomli>=2.0.0; python_version < '3.11'",
@@ -16,6 +21,9 @@ dependencies = [
 
 [project.urls]
 Documentation = "docs/index.md"
+Homepage = "https://github.com/bijouxlab/bijux-atlas"
+Repository = "https://github.com/bijouxlab/bijux-atlas"
+Issues = "https://github.com/bijouxlab/bijux-atlas/issues"
 
 [project.optional-dependencies]
 dev = [
