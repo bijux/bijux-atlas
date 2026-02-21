@@ -8,6 +8,15 @@
 - `atlasctl validate-output`
 - Domain commands: `ops`, `docs`, `configs`, `policies`, `make`, `inventory`, `contracts`, `registry`, `layout`, `reporting`
 
+## Stable DEV/CI Surface
+
+- `atlasctl dev ci run` (canonical CI one-liner)
+- `atlasctl dev fmt`
+- `atlasctl dev lint`
+- `atlasctl dev test`
+- `atlasctl dev coverage`
+- `atlasctl dev audit`
+
 ## Exported Python Symbols
 - `atlasctl.__version__`
 

@@ -7,6 +7,8 @@ Define stable boundaries between public make surface and internal make implement
 - `configs/ops/public-surface.json` is the SSOT for public make targets.
 - `makefiles/root.mk` is the publication surface for public targets (`.PHONY` includes public targets).
 - `make help` prints only curated public targets from SSOT.
+- Make recipes must call stable `atlasctl` entrypoints only (for CI suite use `atlasctl dev ci run`).
+- Make recipes must not call internal suite plumbing directly (forbidden: `atlasctl suite run ci` from makefiles).
 
 ## Internal target rules
 - Non-root makefiles must not publish public targets.
