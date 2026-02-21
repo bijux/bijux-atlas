@@ -1,30 +1,28 @@
-# First-Class Suites
+# Suites
 
-Suite manifests are first-class and deterministic.
+Generated from suite registries (`pyproject.toml` + `src/atlasctl/registry/suites.py`).
 
-- `docs`
-- `dev`
-- `ops`
-- `policies`
-- `configs`
-- `local`
-- `slow`
-- `refgrade`
-- `ci`
-- `refgrade_proof`
-- `all`
-- `internal` (gated by `ATLASCTL_INTERNAL=1`)
+- Default suite: `refgrade`
 
-Each suite manifest defines:
+## Configured Suites
 
-- check IDs
-- required environment
-- default effects policy
-- time budget policy
+- `ci`: includes=['refgrade'] items=2 complete=False
+- `fast`: includes=[] items=4 complete=False
+- `ops`: includes=[] items=2 complete=False
+- `refgrade`: includes=['fast'] items=7 complete=True
+- `refgrade_proof`: includes=['ci'] items=7 complete=True
 
-`atlasctl suite check` treats these manifests as SSOT and fails on drift.
+## First-Class Suites
 
-Runner UX:
-
-- `atlasctl suite run <name> --pytest-q` prints pytest-style progress and summary.
-- `atlasctl suite run <name> --dry-run` prints deterministic planned tasks.
+- `all`: checks=214 markers=['docs', 'dev', 'ops', 'policies', 'configs']
+- `ci`: checks=214 markers=['refgrade_required']
+- `configs`: checks=2 markers=['configs']
+- `dev`: checks=21 markers=['dev']
+- `docs`: checks=17 markers=['docs']
+- `internal`: checks=0 markers=['internal', 'internal-only']
+- `local`: checks=212 markers=['fast']
+- `ops`: checks=7 markers=['ops']
+- `policies`: checks=167 markers=['policies']
+- `refgrade`: checks=214 markers=['refgrade_required']
+- `refgrade_proof`: checks=214 markers=['refgrade_required']
+- `slow`: checks=2 markers=['slow']

@@ -13,9 +13,11 @@ Commands mapped to `dev` effects policy.
 - `layout`
 - `lint`
 - `list`
+- `make`
 - `registry`
 - `repo`
 - `report`
+- `run-id`
 - `suite`
 - `test`
 
@@ -30,8 +32,10 @@ Commands mapped to `dev` effects policy.
 - `atlasctl layout root-shape --json`
 - `atlasctl lint run --report json`
 - `atlasctl list checks --json`
+- `atlasctl make lint --json`
 - `atlasctl registry list --json`
 - `atlasctl repo stats --json`
 - `atlasctl report summary --run-id local`
+- `atlasctl run-id --prefix ci`
 - `atlasctl suite run ci --json`
 - `atlasctl test all --report json`

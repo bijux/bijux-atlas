@@ -1,27 +1,25 @@
 # Atlasctl Commands
 
-Public command index (stable surface). Command wiring is registry-first via `src/atlasctl/cli/surface_registry.py`.
+Generated from CLI registry (`src/atlasctl/cli/surface_registry.py`).
 
 ## Command Groups
 
-- [Docs](groups/docs.md)
 - [Configs](groups/configs.md)
 - [Dev](groups/dev.md)
+- [Docs](groups/docs.md)
+- [Internal](groups/internal.md)
 - [Ops](groups/ops.md)
 - [Policies](groups/policies.md)
-- [Internal](groups/internal.md)
 
 ## Stable Commands
 
 - `check`
-- `commands`
 - `configs`
 - `contracts`
-- `doctor`
 - `dev`
 - `docs`
+- `doctor`
 - `gates`
-- `help`
 - `inventory`
 - `k8s`
 - `layout`
@@ -36,16 +34,9 @@ Public command index (stable surface). Command wiring is registry-first via `src
 - `repo`
 - `report`
 - `run-id`
-- `suite`
 - `stack`
+- `suite`
 - `test`
-- `version`
 
-Internal commands are hidden from default help output.  
+Internal commands are hidden from default help output.
 Use `atlasctl help --include-internal --json` to inspect them explicitly.
-
-## Workflow
-
-- Add new commands using `src/atlasctl/cli/surface_registry.py` as the single command catalog.
-- Update snapshots only through `python -m atlasctl.cli gen goldens`.
-- Follow `packages/atlasctl/docs/commands/new-command-workflow.md` when adding a command.
