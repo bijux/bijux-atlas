@@ -171,6 +171,7 @@ def build_parser() -> argparse.ArgumentParser:
     commands_parser = sub.add_parser("commands", help="print machine-readable command surface")
     commands_parser.add_argument("--json", action="store_true", help="emit JSON output")
     commands_parser.add_argument("--out-file", help="optional output path for JSON report")
+    commands_parser.add_argument("--verify-stability", action="store_true", help="compare command payload against commands golden")
 
     config_parser = sub.add_parser("config", help="configuration commands (alias over `configs`)")
     config_sub = config_parser.add_subparsers(dest="config_cmd", required=True)

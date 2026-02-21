@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[4]
 
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
@@ -54,3 +54,9 @@ def test_command_surface_documented_in_tooling_page() -> None:
         "bijux-atlas report",
     ):
         assert command in commands
+
+
+@pytest.mark.unit
+def test_commands_verify_stability_passes() -> None:
+    proc = _run_cli("commands", "--json", "--verify-stability")
+    assert proc.returncode == 0, proc.stderr
