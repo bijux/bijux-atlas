@@ -31,3 +31,19 @@ def test_suite_run_only_single_check() -> None:
     assert payload["suite"] == "fast"
     assert payload["summary"]["passed"] + payload["summary"]["failed"] >= 1
     assert payload["results"][0]["label"] == "check repo.module_size"
+
+
+def test_suite_inventory_check_json() -> None:
+    proc = run_atlasctl("--quiet", "suite", "check", "--json")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["status"] == "ok"
+
+
+def test_suite_run_writes_target_dir(tmp_path) -> None:
+    target = tmp_path / "suite-out"
+    proc = run_atlasctl("--quiet", "suite", "run", "fast", "--only", "check repo.module_size", "--json", "--target-dir", str(target))
+    assert proc.returncode in {0, 1}, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["target_dir"] == str(target)
+    assert (target / "results.json").exists()
