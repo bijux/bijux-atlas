@@ -4,6 +4,8 @@ from .enforcement import (
     check_make_ci_entrypoints_contract,
     check_make_index_drift_contract,
     check_make_no_direct_artifact_writes,
+    check_make_no_bypass_atlasctl_without_allowlist,
+    check_make_no_direct_script_exec_drift,
     check_make_no_direct_python_only_atlasctl,
     check_make_no_direct_scripts_only_atlasctl,
     check_make_lane_reports_via_atlasctl_reporting,
@@ -98,4 +100,6 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("make.forbidden_paths", "make", "forbid direct forbidden paths in make recipes", 1000, check_make_forbidden_paths, fix_hint="Route commands through allowed wrappers."),
     CheckDef("make.command_allowlist", "make", "enforce allowed direct recipe commands", 1500, check_make_command_allowlist, fix_hint="Use allowed command wrappers in make targets."),
     CheckDef("make.no_direct_python", "make", "forbid direct python script execution in make recipes", 1000, check_make_no_direct_python_script_invocations, fix_hint="Replace `python3 path/to/script.py` with atlasctl commands."),
+    CheckDef("make.no_direct_script_exec_drift", "make", "drift check for direct script execution in make recipes", 1000, check_make_no_direct_script_exec_drift, fix_hint="Replace direct script execution with atlasctl command wrappers."),
+    CheckDef("make.no_bypass_atlasctl", "make", "forbid make recipes bypassing atlasctl without explicit allowlist", 1000, check_make_no_bypass_atlasctl_without_allowlist, fix_hint="Route recipe logic through atlasctl, or add a documented delegation exception."),
 )
