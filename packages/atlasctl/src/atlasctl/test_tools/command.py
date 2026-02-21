@@ -11,9 +11,9 @@ from ..core.context import RunContext
 from ..core.fs import write_json
 
 _SMOKE_TESTS = (
-    "packages/atlasctl/tests/cli/test_cli_smoke.py",
-    "packages/atlasctl/tests/cli/test_cli_help_snapshot.py",
-    "packages/atlasctl/tests/cli/test_cli_json_goldens.py",
+    "packages/atlasctl/tests/cli/smoke/test_cli_smoke.py",
+    "packages/atlasctl/tests/cli/help/test_cli_help_snapshot.py",
+    "packages/atlasctl/tests/cli/output/test_cli_json_goldens.py",
 )
 
 
@@ -53,6 +53,11 @@ def _isolation_env(ctx: RunContext, target_dir: str | None = None) -> tuple[dict
     resolved_target = target_dir or str(ctx.repo_root / "artifacts/isolate" / ctx.run_id / "atlasctl-test")
     os.makedirs(resolved_target, exist_ok=True)
     env["TMPDIR"] = resolved_target
+    # Enforce deterministic test runtime defaults.
+    env["PYTHONHASHSEED"] = "0"
+    env["TZ"] = "UTC"
+    env["LC_ALL"] = "C"
+    env["LANG"] = "C"
     existing_opts = [token for token in env.get("PYTEST_ADDOPTS", "").split() if not token.startswith("--cache-dir=")]
     existing_opts.append(f"--basetemp={resolved_target}")
     env["PYTEST_ADDOPTS"] = " ".join(existing_opts).strip()
@@ -131,6 +136,12 @@ def run_test_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         "command": cmd,
         "exit_code": proc.returncode,
         "target_dir": resolved_target,
+        "strict_env": {
+            "PYTHONHASHSEED": env.get("PYTHONHASHSEED", ""),
+            "TZ": env.get("TZ", ""),
+            "LC_ALL": env.get("LC_ALL", ""),
+            "LANG": env.get("LANG", ""),
+        },
     }
     if ns.json or ctx.output_format == "json":
         print(json.dumps(payload, sort_keys=True))
