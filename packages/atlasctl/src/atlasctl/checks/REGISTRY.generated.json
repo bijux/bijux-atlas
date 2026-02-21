@@ -5626,6 +5626,32 @@
       ]
     },
     {
+      "area": "top",
+      "callable": "check_top_level_structure",
+      "category": "hygiene",
+      "description": "enforce atlasctl top-level package intent and budget",
+      "domain": "repo",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Keep atlasctl top-level package set within STRUCTURE.md contract.",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_top_level_structure",
+      "legacy_id": "repo.top_level_structure",
+      "module": "atlasctl.checks.repo.enforcement.check_top_level_structure",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 300,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
       "area": "type",
       "callable": "check_type_coverage",
       "category": "hygiene",
