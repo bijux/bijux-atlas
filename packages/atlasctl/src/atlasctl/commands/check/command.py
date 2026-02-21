@@ -553,6 +553,26 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         for out in outputs:
             print(out)
         return code
+    if sub == "make-targets-drift":
+        return _run(
+            ctx,
+            ["python3", "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_targets_drift.py"],
+        )
+    if sub == "make-delegation-only":
+        return _run(
+            ctx,
+            ["python3", "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_delegation_only.py"],
+        )
+    if sub == "workflow-calls-atlasctl":
+        return _run(
+            ctx,
+            ["python3", "packages/atlasctl/src/atlasctl/checks/layout/workflows/check_workflow_calls_atlasctl.py"],
+        )
+    if sub == "ci-surface-documented":
+        return _run(
+            ctx,
+            ["python3", "packages/atlasctl/src/atlasctl/checks/layout/docs/check_ci_surface_documented.py"],
+        )
 
     check_map: dict[str, tuple[NativeCheck, str, str, int | None, str]] = {
         "cli-help": (check_script_help, "script help contract failed:", "script help contract passed", None, "- "),
@@ -686,6 +706,10 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
         ("repo-script-boundaries", "validate script location boundaries and transition exceptions"),
         ("atlas-cli-contract", "validate atlasctl CLI help/version deterministic contract"),
         ("bijux-boundaries", "validate atlasctl import boundaries"),
+        ("make-targets-drift", "validate make target SSOT drift"),
+        ("make-delegation-only", "validate wrapper makefiles delegate only to atlasctl"),
+        ("workflow-calls-atlasctl", "validate workflow calls resolve to atlasctl entrypoints"),
+        ("ci-surface-documented", "validate DEV/CI command surface docs coverage"),
     ]:
         parser_sub.add_parser(name, help=help_text)
 
