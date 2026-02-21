@@ -2113,7 +2113,7 @@ def _check_script_headers(ctx: RunContext) -> tuple[int, str]:
         required_groups = [
                         "scripts/areas/public/perf/",
             "scripts/areas/public/observability/",
-            "packages/atlasctl/src/atlasctl/layout_checks/",
+            "packages/atlasctl/src/atlasctl/checks/layout/",
             "scripts/areas/public/",
         ]
         for group in required_groups:
@@ -3293,7 +3293,7 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             _check(
                 "docs-ops-entrypoints",
                 "Validate ops docs entrypoint policy",
-                ["python3", "packages/atlasctl/src/atlasctl/layout_checks/check_ops_external_entrypoints.py"],
+                ["python3", "packages/atlasctl/src/atlasctl/checks/layout/check_ops_external_entrypoints.py"],
                 "Reference only make targets and ops/run entrypoints in docs.",
             ),
             _check(
@@ -3346,7 +3346,7 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return code
 
     if ns.docs_cmd == "ops-entrypoints-check":
-        return _run_simple(ctx, ["python3", "packages/atlasctl/src/atlasctl/layout_checks/check_ops_external_entrypoints.py"], ns.report)
+        return _run_simple(ctx, ["python3", "packages/atlasctl/src/atlasctl/checks/layout/check_ops_external_entrypoints.py"], ns.report)
 
     if ns.docs_cmd == "nav-check":
         missing = _mkdocs_missing_files(ctx.repo_root)

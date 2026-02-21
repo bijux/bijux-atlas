@@ -30,7 +30,7 @@ Does not duplicate script implementation details.
 - Observability checks: `packages/atlasctl/src/atlasctl/obs/contracts/`
 - Fixtures/data helpers: `ops/datasets/scripts/fixtures/`
 - Release compatibility matrix automation: `atlasctl compat update-matrix|validate-matrix`
-- Layout checks/migrations: `packages/atlasctl/src/atlasctl/layout_checks/`
+- Layout checks/migrations: `packages/atlasctl/src/atlasctl/checks/layout/`
 - Runtime helpers: `atlasctl env ...` and ops-native script entrypoints under `ops/`
 
 ## Failure modes
