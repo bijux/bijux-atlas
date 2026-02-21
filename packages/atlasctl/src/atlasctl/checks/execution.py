@@ -4,6 +4,7 @@ import time
 from pathlib import Path
 
 from .base import CheckDef, CheckResult
+from .registry import check_tags
 from ..core.process import run_command
 
 
@@ -58,6 +59,7 @@ def run_function_checks(repo_root: Path, checks: list[CheckDef]) -> tuple[int, l
         rows.append(
             CheckResult(
                 id=chk.check_id,
+                title=chk.title,
                 domain=chk.domain,
                 status=status,
                 errors=normalized_errors,
@@ -72,6 +74,9 @@ def run_function_checks(repo_root: Path, checks: list[CheckDef]) -> tuple[int, l
                 fix_hint=chk.fix_hint,
                 category=chk.category.value,
                 severity=chk.severity.value,
+                tags=list(check_tags(chk)),
+                effects=list(chk.effects),
+                owners=list(chk.owners),
                 writes_allowed_roots=list(chk.writes_allowed_roots),
             )
         )

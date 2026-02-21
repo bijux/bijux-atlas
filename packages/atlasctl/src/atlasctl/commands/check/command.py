@@ -120,6 +120,7 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             "checks": [
                 {
                     "id": check.check_id,
+                    "title": check.title,
                     "domain": check.domain,
                     "description": check.description,
                     "severity": check.severity.value,
@@ -127,6 +128,8 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                     "fix_hint": check.fix_hint,
                     "slow": check.slow,
                     "tags": list(check_tags(check)),
+                    "effects": list(check.effects),
+                    "owners": list(check.owners),
                     "external_tools": list(check.external_tools),
                 }
                 for check in list_checks()
@@ -145,11 +148,14 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             "tool": "atlasctl",
             "status": "ok",
             "id": check.check_id,
+            "title": check.title,
             "domain": check.domain,
             "description": check.description,
             "severity": check.severity.value,
             "category": check.category.value,
             "tags": list(check_tags(check)),
+            "effects": list(check.effects),
+            "owners": list(check.owners),
             "failure_modes": ["policy violation", "contract drift", "hygiene drift"],
             "how_to_fix": check.fix_hint,
         }
