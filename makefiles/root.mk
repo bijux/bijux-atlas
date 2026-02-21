@@ -7,9 +7,7 @@ JOBS  ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 8)
 include makefiles/env.mk
 include makefiles/python.mk
 include makefiles/_macros.mk
-include makefiles/cargo.mk
 include makefiles/dev.mk
-include makefiles/ci.mk
 include makefiles/docs.mk
 include makefiles/scripts.mk
 include makefiles/path_contract.mk
@@ -49,18 +47,6 @@ artifacts-gc: ## Garbage collect scripts artifacts retention policy
 
 ci-local: ## Local runner mirroring CI top-level entrypoint set
 	@$(MAKE) -s ci/all
-
-dev-fmt: ## Stable DEV wrapper: formatter lane via atlasctl
-	@./bin/atlasctl dev fmt
-
-dev-lint: ## Stable DEV wrapper: lint lane via atlasctl
-	@./bin/atlasctl dev lint
-
-dev-test: ## Stable DEV wrapper: test lane via atlasctl
-	@./bin/atlasctl dev test
-
-dev-coverage: ## Stable DEV wrapper: coverage lane via atlasctl
-	@./bin/atlasctl dev coverage
 
 doctor: ## Run package doctor diagnostics
 	@$(SCRIPTS) doctor
@@ -515,9 +501,6 @@ hygiene: ## Deprecated alias for scripts/all
 config-validate: ## Deprecated alias for configs/all
 	@echo "[DEPRECATED] 'make config-validate' -> 'make configs/all'" >&2
 	@$(MAKE) -s configs/all
-
-ci: ## CI entrypoint mirror
-	@$(ATLAS_SCRIPTS) dev ci run --json --out-dir artifacts/reports/atlasctl/suite-ci >/dev/null
 
 nightly: ## Deprecated alias for nightly/all
 	@$(MAKE) -s nightly/all
