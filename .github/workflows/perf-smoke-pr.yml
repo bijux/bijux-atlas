@@ -24,7 +24,7 @@ jobs:
       - uses: grafana/setup-k6-action@v1
 
       - name: Pinned tool checks
-        run: make ops-k6-version-check
+        run: make pins/check
 
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
@@ -45,7 +45,7 @@ jobs:
           exit 1
 
       - name: Run smoke perf scoring
-        run: make ops-perf-e2e
+        run: ./bin/atlasctl ops load --report text run --suite mixed-80-20
 
       - name: Upload perf smoke artifacts
         if: always()

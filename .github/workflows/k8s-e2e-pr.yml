@@ -47,7 +47,7 @@ jobs:
         uses: grafana/setup-k6-action@v1
 
       - name: Pinned tool checks
-        run: make ops-tools-check
+        run: make pins/check
 
       - name: Detect chart changes
         id: chart_changes
@@ -65,16 +65,10 @@ jobs:
 
       - name: Contract check for chart changes
         if: steps.chart_changes.outputs.chart == 'true'
-        run: make ops/contract-check
+        run: ./bin/atlasctl ops k8s --report text contracts
 
-      - name: Stack smoke gate
-        run: make ops-stack-smoke
-
-      - name: Run PR subset (install + values + smoke)
-        run: |
-          make ops-k8s-tests ATLAS_E2E_TEST=test_values_contract.sh
-          make ops-k8s-tests ATLAS_E2E_TEST=test_install.sh
-          make ops-k8s-tests ATLAS_E2E_TEST=test_readiness_semantics.sh
+      - name: K8s suite
+        run: ./bin/atlasctl ops e2e --report text run --suite k8s-suite
 
       - name: Upload K8s test artifacts
         if: always()

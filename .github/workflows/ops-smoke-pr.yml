@@ -55,17 +55,10 @@ jobs:
           sudo apt-get install -y curl netcat-openbsd shellcheck
 
       - name: Pinned tool checks
-        run: make ops-tools-check
+        run: make pins/check
 
-      - name: Run ops smoke
-        run: |
-          make ops-up
-          make ops-deploy
-          make ops-warm
-          make ops-smoke
-          make observability-pack-test
-          make ops-slo-alert-proof
-          make ops-report
+      - name: Run ops smoke lane
+        run: make ops-check
 
       - name: Upload ops artifacts
         if: always()
