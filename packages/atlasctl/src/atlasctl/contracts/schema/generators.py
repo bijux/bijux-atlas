@@ -4,7 +4,7 @@ import json
 import subprocess
 from pathlib import Path
 
-from .catalog import load_catalog
+from .catalog import load_catalog, write_catalog_deterministic, write_schema_readme_deterministic
 from ..checks import load_json
 
 
@@ -193,6 +193,29 @@ def generate_schema_samples(repo_root: Path) -> list[str]:
             "run_id": "sample-help",
             "commands": [],
         },
+        "atlasctl.output-base.v1": {
+            "schema_name": "atlasctl.output-base.v1",
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "run_id": "sample-output-base-v1",
+            "ok": True,
+            "errors": [],
+            "warnings": [],
+            "meta": {},
+        },
+        "atlasctl.output-base.v2": {
+            "schema_name": "atlasctl.output-base.v2",
+            "schema_version": 2,
+            "tool": "atlasctl",
+            "status": "ok",
+            "run_id": "sample-output-base-v2",
+            "ok": True,
+            "errors": [],
+            "warnings": [],
+            "meta": {},
+            "contract_version": 2,
+        },
         "atlasctl.runtime_contracts.v1": {
             "schema_name": "atlasctl.runtime_contracts.v1",
             "schema_version": 1,
@@ -219,6 +242,38 @@ def generate_schema_samples(repo_root: Path) -> list[str]:
             "commands": [],
             "path_owners": {},
         },
+        "atlasctl.check-taxonomy.v1": {
+            "schema_name": "atlasctl.check-taxonomy.v1",
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "checks": [
+                {
+                    "id": "repo.module_size",
+                    "domain": "repo",
+                    "category": "hygiene",
+                    "severity": "error",
+                    "tags": ["repo", "refgrade_required"],
+                    "owners": ["platform"],
+                }
+            ],
+        },
+        "atlasctl.suite-manifests.v1": {
+            "schema_name": "atlasctl.suite-manifests.v1",
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "markers": ["refgrade", "ci", "local", "slow"],
+            "suites": [
+                {
+                    "name": "refgrade",
+                    "markers": ["refgrade_required"],
+                    "required_env": ["PYTHONPATH"],
+                    "default_effects": ["read", "process"],
+                    "time_budget_ms": 300000,
+                }
+            ],
+        },
     }
     errors: list[str] = []
     for schema_name in sorted(load_catalog().keys()):
@@ -229,3 +284,10 @@ def generate_schema_samples(repo_root: Path) -> list[str]:
         name = schema_name.removeprefix("atlasctl.").replace(".", "-") + ".sample.json"
         (out_dir / name).write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return errors
+
+
+def generate_schema_catalog(repo_root: Path) -> list[str]:
+    _ = repo_root
+    write_catalog_deterministic()
+    write_schema_readme_deterministic()
+    return []

@@ -10,3 +10,5 @@ Rules:
 - Breaking changes require a new major version and a new schema file.
 - Existing schema versions are immutable after release.
 - Every schema in catalog must have a sample payload in `tests/goldens/samples/`.
+- Any schema change must include a release-note entry in `packages/atlasctl/docs/release-notes.md`.
+- `packages/atlasctl/src/atlasctl/contracts/schema/schemas/README.md` is generated and must be kept in sync with schema files.
