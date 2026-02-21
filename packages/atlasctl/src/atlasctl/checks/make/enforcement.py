@@ -145,3 +145,23 @@ def check_make_lane_reports_via_atlasctl_reporting(repo_root: Path) -> tuple[int
             if "lane_report.sh" in line:
                 errors.append(f"{rel}:{lineno}: lane reporting must use `atlasctl report make-area-write`")
     return (0 if not errors else 1), errors
+
+
+def check_make_no_direct_script_exec_drift(repo_root: Path) -> tuple[int, list[str]]:
+    # Explicit drift check alias for direct script invocation prohibition.
+    return check_make_no_direct_scripts_only_atlasctl(repo_root)
+
+
+def check_make_no_bypass_atlasctl_without_allowlist(repo_root: Path) -> tuple[int, list[str]]:
+    exceptions = _load_exceptions(repo_root, "bypass_atlasctl")
+    errors: list[str] = []
+    for rel, lineno, body in _iter_make_recipe_lines(repo_root):
+        if "atlasctl" in body or "$(ATLAS_SCRIPTS)" in body or "$(MAKE)" in body:
+            continue
+        if body.startswith("@echo ") or body.startswith("echo "):
+            continue
+        msg = f"{rel}:{lineno}: make recipe bypasses atlasctl wrapper"
+        if msg in exceptions:
+            continue
+        errors.append(msg)
+    return (0 if not errors else 1), sorted(errors)
