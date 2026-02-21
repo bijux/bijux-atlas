@@ -1,6 +1,6 @@
 # Policies Command Group
 
-Commands in this group enforce policy gates and culprit analysis.
+Commands mapped to `policies` effects policy.
 
 ## Commands
 

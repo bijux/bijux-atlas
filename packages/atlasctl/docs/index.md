@@ -61,8 +61,14 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 ## Contributing
 
 - [Contributing Guide](contributing/index.md)
+- [Cookbook: Add Check Or Command](contributing/add-check-or-command.md)
+- [Cookbook: Refactor Check IDs](contributing/refactor-check-ids.md)
 
 ## Testing
 
 - [Test Taxonomy](testing/taxonomy.md)
 - [Suite Coverage Markers](testing/suite-markers.md)
+
+## Release
+
+- [Atlasctl Release Process](release-process.md)
