@@ -18,6 +18,7 @@ from ..make import CHECKS as CHECKS_MAKE
 from ..ops import CHECKS as CHECKS_OPS
 from ..python import CHECKS as CHECKS_PYTHON
 from ..repo import CHECKS as CHECKS_REPO
+from ...core.owners import load_owner_catalog
 
 try:
     import tomllib  # type: ignore[attr-defined]
@@ -128,6 +129,7 @@ def _entry_as_dict(entry: RegistryEntry) -> dict[str, Any]:
 def _validate_entries(entries: list[RegistryEntry]) -> None:
     errors: list[str] = []
     seen: set[str] = set()
+    valid_owners = set(load_owner_catalog(_repo_root()).owners)
     allowlist: set[str] = set()
     allowlist_payload_path = _repo_root() / FILENAME_ALLOWLIST_JSON
     if allowlist_payload_path.exists():
@@ -145,6 +147,8 @@ def _validate_entries(entries: list[RegistryEntry]) -> None:
             errors.append(f"{e.id}: id must match checks_<domain>_<area>_<name>")
         if e.speed not in {"fast", "slow"}:
             errors.append(f"{e.id}: speed must be fast|slow")
+        if e.owner not in valid_owners:
+            errors.append(f"{e.id}: owner `{e.owner}` not present in configs/meta/owners.json")
         if e.timeout_ms < 50:
             errors.append(f"{e.id}: timeout_ms must be >= 50ms")
         if e.speed == "slow" and e.timeout_ms < 2000:

@@ -59,6 +59,20 @@ def test_checks_tree_and_owners_json() -> None:
     assert any(row["owner"] == "platform" for row in owner_payload["owners"])
 
 
+def test_owners_list_and_validate_json() -> None:
+    owners = _run("--json", "owners", "list")
+    assert owners.returncode == 0, owners.stderr
+    owners_payload = json.loads(owners.stdout)
+    assert owners_payload["kind"] == "owners-list"
+    assert any(row["id"] == "platform" for row in owners_payload["owners"])
+
+    validate = _run("--json", "owners", "validate")
+    assert validate.returncode == 0, validate.stderr
+    validate_payload = json.loads(validate.stdout)
+    assert validate_payload["kind"] == "owners-validate"
+    assert validate_payload["status"] == "pass"
+
+
 def test_checks_groups_and_slow_json() -> None:
     groups = _run("--json", "checks", "groups")
     assert groups.returncode == 0, groups.stderr

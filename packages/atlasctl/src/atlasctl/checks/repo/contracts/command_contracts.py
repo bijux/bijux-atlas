@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from ....cli.surface_registry import command_registry
+from ....core.owners import load_owner_catalog
 from ....core.effects import all_command_effects, command_effects, command_group, group_allowed_effects, resolve_network_mode
 from ....contracts.ids import RUNTIME_CONTRACTS
 
@@ -16,6 +17,8 @@ _MAX_ALIASES_PER_COMMAND = 1
 def check_command_metadata_contract(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
     declared = all_command_effects()
+    owner_catalog = load_owner_catalog(repo_root)
+    known_owners = set(owner_catalog.owners)
     for spec in command_registry():
         if not spec.touches:
             errors.append(f"{spec.name}: missing touches metadata")
@@ -23,6 +26,8 @@ def check_command_metadata_contract(repo_root: Path) -> tuple[int, list[str]]:
             errors.append(f"{spec.name}: missing tools metadata")
         if not spec.owner:
             errors.append(f"{spec.name}: missing owner metadata")
+        elif spec.owner not in known_owners:
+            errors.append(f"{spec.name}: owner `{spec.owner}` is not declared in configs/meta/owners.json")
         if not spec.doc_link:
             errors.append(f"{spec.name}: missing doc_link metadata")
         if spec.effect_level not in _ALLOWED_EFFECT_LEVELS:
@@ -57,6 +62,30 @@ def check_command_metadata_contract(repo_root: Path) -> tuple[int, list[str]]:
     if errors:
         return 1, errors
     return 0, []
+
+
+def check_command_group_owners(repo_root: Path) -> tuple[int, list[str]]:
+    catalog = load_owner_catalog(repo_root)
+    known_owners = set(catalog.owners)
+    mapping = dict(catalog.command_groups)
+    errors: list[str] = []
+    seen_groups: set[str] = set()
+    for spec in command_registry():
+        group = spec.name.split(" ", 1)[0]
+        seen_groups.add(group)
+        mapped_owner = mapping.get(group)
+        if not mapped_owner:
+            errors.append(f"{group}: missing command_groups owner mapping in configs/meta/owners.json")
+            continue
+        if mapped_owner not in known_owners:
+            errors.append(f"{group}: mapped owner `{mapped_owner}` is unknown")
+            continue
+        if mapped_owner != spec.owner:
+            errors.append(f"{group}: owner mismatch (registry={spec.owner}, owners.json={mapped_owner})")
+    extra = sorted(set(mapping) - seen_groups)
+    for group in extra:
+        errors.append(f"{group}: owners.json command_groups entry has no matching command group")
+    return (0 if not errors else 1), errors
 
 
 def check_network_default_deny_policy(repo_root: Path) -> tuple[int, list[str]]:

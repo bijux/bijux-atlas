@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "owners": [
+    {
+      "id": "docs",
+      "name": "Docs Team"
+    },
+    {
+      "id": "ops",
+      "name": "Ops Team"
+    },
+    {
+      "id": "platform",
+      "name": "Platform Team"
+    },
+    {
+      "id": "repo",
+      "name": "Repo Team"
+    }
+  ],
+  "command_groups": {
+    "check": "platform",
+    "configs": "platform",
+    "contracts": "platform",
+    "dev": "platform",
+    "doctor": "platform",
+    "docs": "docs",
+    "gates": "ops",
+    "install": "platform",
+    "internal": "platform",
+    "inventory": "repo",
+    "k8s": "ops",
+    "layout": "repo",
+    "lint": "platform",
+    "list": "platform",
+    "load": "ops",
+    "make": "platform",
+    "ops": "ops",
+    "obs": "ops",
+    "owners": "platform",
+    "policies": "platform",
+    "registry": "platform",
+    "release": "platform",
+    "repo": "repo",
+    "report": "platform",
+    "run-id": "platform",
+    "stack": "ops",
+    "suite": "platform",
+    "test": "platform"
+  }
+}
