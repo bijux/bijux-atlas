@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from ..core.context import RunContext
+from ..core.fs import ensure_evidence_path
 from ..core.process import run_command
 
 
@@ -66,7 +67,7 @@ def run_gates_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.gates_cmd == "list":
         payload = {
             "schema_version": 1,
-            "tool": "bijux-atlas",
+            "tool": "atlasctl",
             "status": "pass",
             "action": "list",
             "lanes": [
@@ -79,10 +80,11 @@ def run_gates_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return 0
 
     selected: list[str]
+    single_lane = ns.lane or ns.lane_id
     if ns.all:
         selected = presets.get(ns.preset, [])
-    elif ns.lane:
-        selected = [ns.lane]
+    elif single_lane:
+        selected = [single_lane]
     else:
         selected = presets.get(ns.preset, [])
     lanes: list[Lane] = []
@@ -90,7 +92,7 @@ def run_gates_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if missing:
         payload = {
             "schema_version": 1,
-            "tool": "bijux-atlas",
+            "tool": "atlasctl",
             "status": "fail",
             "action": "run",
             "run_id": ctx.run_id,
@@ -115,7 +117,7 @@ def run_gates_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     failed = [r for r in ordered if r["status"] == "fail"]
     payload = {
         "schema_version": 1,
-        "tool": "bijux-atlas",
+        "tool": "atlasctl",
         "status": "fail" if failed else "pass",
         "action": "run",
         "run_id": ctx.run_id,
@@ -124,6 +126,16 @@ def run_gates_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         "failed_count": len(failed),
         "results": ordered,
     }
+    out_json = ensure_evidence_path(ctx, ctx.evidence_root / "gates" / ctx.run_id / "report.json")
+    out_txt = ensure_evidence_path(ctx, ctx.evidence_root / "gates" / ctx.run_id / "report.txt")
+    out_json.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    lines = [
+        f"gates run: status={payload['status']} total={payload['total_count']} failed={payload['failed_count']} run_id={payload['run_id']}"
+    ]
+    lines.extend(f"- {row['status'].upper()} {row['id']} ({row['make_target']})" for row in ordered)
+    out_txt.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    payload["artifact_json"] = out_json.relative_to(ctx.repo_root).as_posix()
+    payload["artifact_txt"] = out_txt.relative_to(ctx.repo_root).as_posix()
     _emit(payload, ns.report)
     return 1 if failed else 0
 
@@ -136,6 +148,7 @@ def configure_gates_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     listing.add_argument("--report", choices=["text", "json"], default="text")
 
     run = gates_sub.add_parser("run", help="run one lane, a preset, or all lanes from preset")
+    run.add_argument("lane_id", nargs="?", default="", help="optional positional lane id")
     run.add_argument("--lane", help="single lane id")
     run.add_argument("--preset", default="root", help="preset id from configs/gates/lanes.json")
     run.add_argument("--all", action="store_true", help="run all lanes from selected preset")
