@@ -1,3 +1,3 @@
 from __future__ import annotations
 
-from ...legacy.repo_checks_native import *  # noqa: F403
+from .native_loader import *  # noqa: F403
