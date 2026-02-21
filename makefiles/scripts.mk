@@ -22,7 +22,7 @@ scripts-graph: ## Generate make-target to scripts call graph
 	@$(ATLAS_SCRIPTS) make graph root-local > docs/development/scripts-graph.md
 
 no-direct-scripts:
-	@./packages/atlasctl/src/atlasctl/checks/layout/check_no_direct_script_runs.sh
+	@./packages/atlasctl/src/atlasctl/checks/layout/shell/check_no_direct_script_runs.sh
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_public_scripts.py
 
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)

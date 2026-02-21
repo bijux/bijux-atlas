@@ -6,7 +6,7 @@ Maps each repository policy to the exact enforcement point so policy drift is ob
 ## Policy To Enforcement
 | Policy | Enforcement location(s) |
 |---|---|
-| Root/layout contract | `packages/atlasctl/src/atlasctl/checks/layout/check_root_shape.sh`, `make layout-check`, `ci-root-layout` |
+| Root/layout contract | `packages/atlasctl/src/atlasctl/checks/layout/shell/check_root_shape.sh`, `make layout-check`, `ci-root-layout` |
 | Symlink policy | `packages/atlasctl/src/atlasctl/checks/layout/contracts/root/check_symlink_policy.py`, `docs/development/symlinks.md`, `layout-check` |
 | Makefile-only workflow execution | `packages/atlasctl/src/atlasctl/checks/layout/workflows/check_workflows_make_only.py`, `ci-workflows-make-only` |
 | SSOT contract drift | `make ssot-check`, `api-contract-check`, `ci-api-contract` |

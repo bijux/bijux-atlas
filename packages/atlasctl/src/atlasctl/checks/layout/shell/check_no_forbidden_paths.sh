@@ -9,7 +9,7 @@ cd "$ROOT"
 
 PATTERN='\./(charts|e2e|load|observability|datasets|fixtures)/|docs/operations/ops/'
 if rg -n "$PATTERN" Makefile makefiles .github ops scripts \
-  -g '!packages/atlasctl/src/atlasctl/checks/layout/check_no_forbidden_paths.sh'; then
+  -g '!packages/atlasctl/src/atlasctl/checks/layout/shell/check_no_forbidden_paths.sh'; then
   echo "forbidden legacy path references found" >&2
   exit 1
 fi
