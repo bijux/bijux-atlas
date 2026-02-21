@@ -18,6 +18,7 @@ from ..checks.registry import check_tags, get_check, list_checks
 from ..contracts.catalog import schema_path_for
 from ..contracts.validate import validate_file
 from ..core.context import RunContext
+from ..core.logging import log_event
 from ..core.serialize import dumps_json
 from ..errors import ScriptError
 from ..exit_codes import ERR_CONFIG
@@ -127,16 +128,18 @@ def _filter_tasks(tasks: list[TaskSpec], only: list[str], skip: list[str]) -> li
 def _run_check_task(repo_root: Path, check_id: str) -> tuple[bool, str]:
     check = get_check(check_id)
     if check is None:
-        return False, f"unknown check id `{check_id}`"
+        return False, f"why=unknown check id `{check_id}`; how_to_fix=use `atlasctl check list --json` to discover valid ids; evidence=n/a"
     failed, results = run_function_checks(repo_root, [check])
     result = results[0]
     if failed == 0:
         return True, ""
     details = result.errors[:2] + result.warnings[:2]
-    return False, "; ".join(details) if details else "check failed"
+    reason = "; ".join(details) if details else "check failed"
+    evidence = ", ".join(result.evidence_paths) if result.evidence_paths else "n/a"
+    return False, f"why={reason}; how_to_fix={check.fix_hint}; evidence={evidence}"
 
 
-def _run_cmd_task(repo_root: Path, cmd_spec: str) -> tuple[bool, str]:
+def _run_cmd_task(repo_root: Path, cmd_spec: str, show_output: bool) -> tuple[bool, str]:
     parts = shlex.split(cmd_spec)
     if not parts:
         return False, "empty cmd task"
@@ -149,10 +152,15 @@ def _run_cmd_task(repo_root: Path, cmd_spec: str) -> tuple[bool, str]:
     existing = env.get("PYTHONPATH", "")
     env["PYTHONPATH"] = f"{src_path}:{existing}" if existing else src_path
     proc = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False, env=env)
+    if show_output and (proc.stdout or "").strip():
+        print(proc.stdout.rstrip())
+    if show_output and (proc.stderr or "").strip():
+        print(proc.stderr.rstrip(), file=sys.stderr)
     if proc.returncode == 0:
         return True, ""
     line = ((proc.stderr or "") + "\n" + (proc.stdout or "")).strip().splitlines()
-    return False, line[0] if line else f"command failed with exit {proc.returncode}"
+    reason = line[0] if line else f"command failed with exit {proc.returncode}"
+    return False, f"why={reason}; how_to_fix=run the command directly and resolve failures; evidence=n/a"
 
 
 def _run_schema_task(repo_root: Path, schema_spec: str) -> tuple[bool, str]:
@@ -160,19 +168,19 @@ def _run_schema_task(repo_root: Path, schema_spec: str) -> tuple[bool, str]:
         schema_name, file_path = schema_spec.split("@", 1)
         path = (repo_root / file_path.strip()).resolve()
         if not path.exists():
-            return False, f"missing payload file `{file_path.strip()}`"
+            return False, f"why=missing payload file `{file_path.strip()}`; how_to_fix=generate or provide payload file path; evidence=n/a"
         validate_file(schema_name.strip(), path)
         return True, ""
     schema_path_for(schema_spec.strip())
     return True, ""
 
 
-def _execute_task(repo_root: Path, task: TaskSpec) -> tuple[str, str]:
+def _execute_task(repo_root: Path, task: TaskSpec, show_output: bool) -> tuple[str, str]:
     try:
         if task.kind == "check":
             ok, detail = _run_check_task(repo_root, task.value)
         elif task.kind == "cmd":
-            ok, detail = _run_cmd_task(repo_root, task.value)
+            ok, detail = _run_cmd_task(repo_root, task.value, show_output=show_output)
         else:
             ok, detail = _run_schema_task(repo_root, task.value)
     except Exception as exc:  # pragma: no cover
@@ -237,6 +245,64 @@ def suite_inventory_violations(suites: dict[str, SuiteSpec]) -> list[str]:
 def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     as_json = ctx.output_format == "json" or bool(getattr(ns, "json", False))
     default_suite, suites = load_suites(ctx.repo_root)
+    if ns.suite_cmd == "explain":
+        suite_name = ns.name or default_suite
+        expanded = expand_suite(suites, suite_name)
+        lines = [f"suite {suite_name} rationale", f"- includes: {', '.join(suites[suite_name].includes) or 'none'}"]
+        for task in expanded:
+            if task.kind == "check":
+                lines.append(f"- {task.kind}:{task.value}: registry check for policy/contract enforcement")
+            elif task.kind == "check-tag":
+                lines.append(f"- {task.kind}:{task.value}: expands to all checks tagged `{task.value}`")
+            elif task.kind == "cmd":
+                lines.append(f"- {task.kind}:{task.value}: command-level integration validation")
+            else:
+                lines.append(f"- {task.kind}:{task.value}: schema existence/payload validation")
+        text = "\n".join(lines)
+        print(dumps_json({"schema_version": 1, "tool": "atlasctl", "status": "ok", "suite": suite_name, "explain": lines}, pretty=False) if as_json else text)
+        return 0
+    if ns.suite_cmd == "artifacts":
+        run_id = ns.run_id or ctx.run_id
+        target_dir = ctx.repo_root / "artifacts/isolate" / run_id / "atlasctl-suite"
+        payload = {"schema_version": 1, "tool": "atlasctl", "status": "ok", "run_id": run_id, "target_dir": target_dir.as_posix(), "results_file": (target_dir / "results.json").as_posix()}
+        print(dumps_json(payload, pretty=False) if as_json else f"{payload['results_file']}")
+        return 0
+    if ns.suite_cmd == "doctor":
+        run_id = ns.run_id or ctx.run_id
+        results_file = ctx.repo_root / "artifacts/isolate" / run_id / "atlasctl-suite" / "results.json"
+        if not results_file.exists():
+            msg = f"no suite results for run_id `{run_id}`"
+            print(dumps_json({"schema_version": 1, "tool": "atlasctl", "status": "error", "error": msg}, pretty=False) if as_json else msg)
+            return 1
+        payload = json.loads(results_file.read_text(encoding="utf-8"))
+        failed = [row for row in payload.get("results", []) if row.get("status") == "fail"]
+        advice = [f"fix failing task: {row.get('label')}" for row in failed[:10]]
+        out = {"schema_version": 1, "tool": "atlasctl", "status": "ok", "run_id": run_id, "failed_count": len(failed), "advice": advice}
+        print(dumps_json(out, pretty=False) if as_json else "\n".join(advice or ["no failed tasks"]))
+        return 0
+    if ns.suite_cmd == "diff":
+        left = ctx.repo_root / "artifacts/isolate" / ns.run1 / "atlasctl-suite" / "results.json"
+        right = ctx.repo_root / "artifacts/isolate" / ns.run2 / "atlasctl-suite" / "results.json"
+        if not left.exists() or not right.exists():
+            missing = left if not left.exists() else right
+            msg = f"missing suite results file: {missing.as_posix()}"
+            print(dumps_json({"schema_version": 1, "tool": "atlasctl", "status": "error", "error": msg}, pretty=False) if as_json else msg)
+            return 1
+        lhs = json.loads(left.read_text(encoding="utf-8"))
+        rhs = json.loads(right.read_text(encoding="utf-8"))
+        lf = {row["label"] for row in lhs.get("results", []) if row.get("status") == "fail"}
+        rf = {row["label"] for row in rhs.get("results", []) if row.get("status") == "fail"}
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "run1": ns.run1,
+            "run2": ns.run2,
+            "new_failures": sorted(rf - lf),
+            "fixed": sorted(lf - rf),
+        }
+        print(dumps_json(payload, pretty=False) if as_json else f"new_failures={len(payload['new_failures'])} fixed={len(payload['fixed'])}")
+        return 0
     if ns.suite_cmd == "check":
         errors = suite_inventory_violations(suites)
         payload = {
@@ -298,14 +364,18 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
     start = time.perf_counter()
     results: list[dict[str, object]] = []
+    if ctx.verbose and not ctx.quiet:
+        log_event(ctx, "info", "suite", "start", suite=suite_name, total=len(selected))
     for idx, task in enumerate(selected, start=1):
         item_start = time.perf_counter()
-        status, detail = _execute_task(ctx.repo_root, task)
+        status, detail = _execute_task(ctx.repo_root, task, show_output=bool(ns.show_output))
         duration_ms = int((time.perf_counter() - item_start) * 1000)
         line = f"({idx}/{len(selected)}) {'PASS' if status == 'pass' else 'FAIL'} {task.label}"
         if detail and status == "fail":
             line = f"{line} :: {detail}"
-        if not as_json:
+        if ctx.verbose:
+            log_event(ctx, "info" if status == "pass" else "error", "suite", "item", label=task.label, status=status, duration_ms=duration_ms)
+        if not as_json and (not ctx.quiet or status == "fail"):
             print(line)
         results.append(
             {
@@ -332,13 +402,14 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         "skipped": skipped,
         "duration_ms": total_duration_ms,
     }
-    if not as_json:
+    if not as_json and not ctx.quiet:
         print(f"summary: passed={passed} failed={failed} skipped={skipped} duration_ms={total_duration_ms}")
 
     if ns.junit:
         _write_junit(ctx.repo_root / ns.junit, suite_name, results)
 
     payload = {
+        "schema_name": "atlasctl.suite-run.v1",
         "schema_version": 1,
         "tool": "atlasctl",
         "status": "ok" if failed == 0 else "error",
@@ -370,6 +441,20 @@ def configure_suite_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     run.add_argument("--only", action="append", default=[], help="glob pattern to include task labels")
     run.add_argument("--skip", action="append", default=[], help="glob pattern to skip task labels")
     run.add_argument("--target-dir", help="suite output directory")
+    run.add_argument("--show-output", action="store_true", help="stream command task output")
     group = run.add_mutually_exclusive_group()
     group.add_argument("--fail-fast", action="store_true", help="stop at first failure")
     group.add_argument("--keep-going", action="store_true", help="continue through all tasks (default)")
+    explain = suite_sub.add_parser("explain", help="explain suite tasks and rationale")
+    explain.add_argument("name", nargs="?")
+    explain.add_argument("--json", action="store_true")
+    doctor = suite_sub.add_parser("doctor", help="suggest next actions from a suite run")
+    doctor.add_argument("--run-id", help="run id to inspect")
+    doctor.add_argument("--json", action="store_true")
+    artifacts = suite_sub.add_parser("artifacts", help="print suite artifact locations")
+    artifacts.add_argument("--run-id", help="run id to inspect")
+    artifacts.add_argument("--json", action="store_true")
+    diff = suite_sub.add_parser("diff", help="diff two suite runs")
+    diff.add_argument("run1")
+    diff.add_argument("run2")
+    diff.add_argument("--json", action="store_true")
