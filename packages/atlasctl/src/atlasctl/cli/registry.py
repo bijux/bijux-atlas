@@ -43,6 +43,8 @@ def command_registry() -> tuple[CommandSpec, ...]:
         CommandSpec("legacy", "legacy inventory and historical migration metadata", ("configs/layout/",), (), ("legacy inventory drift",), owner="platform", doc_link="docs/_generated/cli.md"),
         CommandSpec("compat", "deprecated shim inventory and checks", ("configs/layout/",), (), ("compat shim drift",), stable=False, owner="platform", doc_link="docs/_generated/cli.md"),
         CommandSpec("contracts", "contracts domain commands", ("configs/contracts/",), (), ("contract generation/validation failures",), owner="platform", doc_link="docs/_generated/cli.md"),
+        CommandSpec("check", "run registered check suites and individual checks", ("artifacts/evidence/",), (), ("check failures",), owner="platform", doc_link="docs/_generated/cli.md"),
+        CommandSpec("test", "run canonical atlasctl test suites", ("artifacts/isolate/",), ("python3",), ("pytest suite failures",), owner="platform", doc_link="docs/_generated/cli.md"),
         CommandSpec("registry", "registry domain commands", ("configs/ops/pins/",), (), ("registry inconsistency",), owner="platform", doc_link="docs/_generated/cli.md"),
         CommandSpec("layout", "layout domain commands", ("makefiles/", "docs/development/repo-layout.md"), (), ("layout boundary violations",), owner="repo", doc_link="docs/development/repo-layout.md"),
     )

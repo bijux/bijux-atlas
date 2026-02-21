@@ -47,3 +47,16 @@ def test_suite_run_writes_target_dir(tmp_path) -> None:
     payload = json.loads(proc.stdout)
     assert payload["target_dir"] == str(target)
     assert (target / "results.json").exists()
+
+
+def test_ci_suite_stable_and_contains_expected_items() -> None:
+    proc1 = run_atlasctl("--quiet", "suite", "run", "ci", "--list", "--json")
+    proc2 = run_atlasctl("--quiet", "suite", "run", "ci", "--list", "--json")
+    assert proc1.returncode == 0, proc1.stderr
+    assert proc2.returncode == 0, proc2.stderr
+    payload1 = json.loads(proc1.stdout)
+    payload2 = json.loads(proc2.stdout)
+    assert payload1["tasks"] == payload2["tasks"]
+    tasks = set(payload1["tasks"])
+    assert "cmd:atlasctl test run unit" in tasks
+    assert "cmd:atlasctl policies check --report json" in tasks
