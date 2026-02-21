@@ -34,7 +34,7 @@ jobs:
           test -f artifacts/isolate/release-suite-all/atlasctl-suite/results.json
       - name: Observability acceptance checklist gate
         run: PYTHONPATH=packages/atlasctl/src python3 -m atlasctl.cli docs observability-acceptance-checklist --report text
-      - run: ./bin/atlasctl dev ci release-compat-matrix-verify
+      - run: ./bin/atlasctl ci release-compat-matrix-verify
 
   build-artifacts:
     runs-on: ubuntu-latest
@@ -51,7 +51,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.84.1
-      - run: ./bin/atlasctl dev ci release-build-artifacts
+      - run: ./bin/atlasctl ci release-build-artifacts
       - uses: actions/upload-artifact@v4
         with:
           name: release-binaries
@@ -67,11 +67,11 @@ jobs:
       TEMP: artifacts/isolates/release-notes/tmp
     steps:
       - uses: actions/checkout@v4
-      - run: ./bin/atlasctl dev ci init-tmp
+      - run: ./bin/atlasctl ci init-tmp
       - name: Render notes
-        run: ./bin/atlasctl dev ci release-notes-render
+        run: ./bin/atlasctl ci release-notes-render
       - name: Publish GitHub Release
-        run: ./bin/atlasctl dev ci release-publish-gh
+        run: ./bin/atlasctl ci release-publish-gh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -109,7 +109,7 @@ jobs:
           format: spdx-json
           output-file: artifacts/sbom.spdx.json
       - uses: sigstore/cosign-installer@v3
-      - run: ./bin/atlasctl dev ci cosign-sign
+      - run: ./bin/atlasctl ci cosign-sign
         env:
           COSIGN_IMAGE_REF: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}
       - uses: actions/upload-artifact@v4
@@ -122,7 +122,7 @@ jobs:
     needs: container
     steps:
       - uses: sigstore/cosign-installer@v3
-      - run: ./bin/atlasctl dev ci cosign-verify
+      - run: ./bin/atlasctl ci cosign-verify
         env:
           COSIGN_CERT_IDENTITY: https://github.com/${{ github.repository }}/.github/workflows/release.yml@refs/tags/${{ github.ref_name }}
           COSIGN_IMAGE_REF: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ needs.container.outputs.image-digest }}
@@ -133,7 +133,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: azure/setup-helm@v4
-      - run: ./bin/atlasctl dev ci chart-package-release
+      - run: ./bin/atlasctl ci chart-package-release
       - uses: helm/chart-releaser-action@v1.7.0
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}

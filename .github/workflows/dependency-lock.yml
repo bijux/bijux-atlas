@@ -24,8 +24,8 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.84.1
-      - run: ./bin/atlasctl dev ci init-iso-dirs
-      - run: ./bin/atlasctl dev ci dependency-lock-refresh
+      - run: ./bin/atlasctl ci init --json
+      - run: ./bin/atlasctl ci dependency-lock-refresh --json
       - name: Open lockfile PR
         uses: peter-evans/create-pull-request@v6
         with:
