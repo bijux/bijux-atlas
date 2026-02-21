@@ -1,6 +1,6 @@
 # Makefiles Index
 
-- File count: 16
+- File count: 17
 - Owner: `build-and-release`
 
 ## Files
@@ -9,6 +9,7 @@
 - `cargo-dev.mk`
 - `cargo.mk`
 - `ci.mk`
+- `dev.mk`
 - `docs.mk`
 - `env.mk`
 - `help.mk`

@@ -1,37 +1,34 @@
-# Scope: local developer convenience cargo targets (dev-only).
+# Scope: deprecated cargo-dev compatibility aliases.
 # Public targets: none
 SHELL := /bin/sh
 
-DEV_ISO_TAG ?= dev-ci-local
-ROOT_MAKE ?= Makefile
-ISO_DEV = ISO_TAG="$(DEV_ISO_TAG)" ./bin/atlasctl env isolate --tag "$(DEV_ISO_TAG)" --reuse
+_DEPRECATED := "deprecated target: use \`make dev-*\` wrappers from makefiles/dev.mk or \`./bin/atlasctl dev ...\` directly"
 
 dev-fmt: ## DEV_ONLY=1
-	@$(ISO_DEV) ./bin/atlasctl dev fmt
+	@echo $(_DEPRECATED) >&2; exit 2
 
 dev-lint: ## DEV_ONLY=1
-	@$(ISO_DEV) ./bin/atlasctl dev lint
+	@echo $(_DEPRECATED) >&2; exit 2
 
 dev-check: ## DEV_ONLY=1
-	@$(ISO_DEV) ./bin/atlasctl dev check
+	@echo $(_DEPRECATED) >&2; exit 2
 
 dev-test: ## DEV_ONLY=1
-	@$(ISO_DEV) ./bin/atlasctl dev test
+	@echo $(_DEPRECATED) >&2; exit 2
 
 dev-test-all: ## DEV_ONLY=1
-	@$(ISO_DEV) ./bin/atlasctl dev test --all
+	@echo $(_DEPRECATED) >&2; exit 2
 
 dev-audit: ## DEV_ONLY=1
-	@$(ISO_DEV) ./bin/atlasctl dev audit
+	@echo $(_DEPRECATED) >&2; exit 2
 
 dev-coverage: ## DEV_ONLY=1
-	@$(ISO_DEV) ./bin/atlasctl dev coverage
+	@echo $(_DEPRECATED) >&2; exit 2
 
 dev-ci: ## DEV_ONLY=1
-	@$(ISO_DEV) $(MAKE) -f $(ROOT_MAKE) ci
+	@echo $(_DEPRECATED) >&2; exit 2
 
 dev-clean: ## DEV_ONLY=1
-	@rm -rf "artifacts/isolate/$(DEV_ISO_TAG)"
-	@echo "removed artifacts/isolate/$(DEV_ISO_TAG)"
+	@echo $(_DEPRECATED) >&2; exit 2
 
 .PHONY: dev-fmt dev-lint dev-check dev-test dev-test-all dev-audit dev-coverage dev-ci dev-clean
