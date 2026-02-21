@@ -99,6 +99,7 @@ def test_make_parser_supports_new_subcommands() -> None:
         ["make", "doctor", "--json"],
         ["make", "run", "ci"],
         ["make", "dev-ci-target-map", "--json"],
+        ["make", "target-map", "--json"],
     ):
         ns = parser.parse_args(argv)
         assert ns.cmd == "make"

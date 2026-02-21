@@ -418,7 +418,7 @@ def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             emit_artifacts=ns.emit_artifacts,
             as_json=ns.json,
         )
-    if ns.make_cmd == "dev-ci-target-map":
+    if ns.make_cmd in {"dev-ci-target-map", "target-map"}:
         return run_dev_ci_target_map(
             ctx,
             out_dir_arg=ns.out_dir,
@@ -491,3 +491,8 @@ def configure_make_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
     dc.add_argument("--out-dir", default="artifacts/evidence/make")
     dc.add_argument("--check", action="store_true", help="fail on unmapped or duplicate target intents")
     dc.add_argument("--json", action="store_true", help="emit JSON output")
+
+    tm = make_sub.add_parser("target-map", help="emit canonical make target to atlasctl command mapping")
+    tm.add_argument("--out-dir", default="artifacts/evidence/make")
+    tm.add_argument("--check", action="store_true", help="fail on unmapped or duplicate target intents")
+    tm.add_argument("--json", action="store_true", help="emit JSON output")
