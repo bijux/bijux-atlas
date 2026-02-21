@@ -5,7 +5,7 @@ from ..repo.native import (
     check_ops_generated_tracked,
     check_tracked_timestamp_paths,
 )
-from ..base import CheckDef
+from ..framework import CheckDef
 
 CHECKS: tuple[CheckDef, ...] = (
     CheckDef("ops.no_tracked_generated", "ops", "forbid tracked files in generated ops dirs", 800, check_ops_generated_tracked, fix_hint="Untrack generated ops files."),
