@@ -25,6 +25,7 @@ class CommandSpec:
     aliases: tuple[str, ...] = ()
     purpose: str = ""
     examples: tuple[str, ...] = ()
+    internal: bool = False
 
 
 CANONICAL_DOMAINS: tuple[str, ...] = ("repo", "docs", "ops", "make", "configs", "contracts", "docker", "ci")
@@ -47,8 +48,8 @@ def command_registry() -> tuple[CommandSpec, ...]:
         CommandSpec("report", "unified report and scorecard commands", ("artifacts/evidence/",), (), ("report assembly failures",), owner="platform", doc_link="docs/_generated/cli.md", purpose="assemble and emit canonical reports", examples=("atlasctl report summary --run-id local",)),
         CommandSpec("suite", "atlasctl-native suite runner", ("artifacts/reports/atlasctl/",), ("python3",), ("suite task failures",), owner="platform", doc_link="docs/_generated/cli.md", purpose="run canonical suite definitions", examples=("atlasctl suite run ci --json",)),
         CommandSpec("lint", "lint suite runner", ("ops/_lint/",), (), ("lint policy failures",), owner="platform", doc_link="docs/_generated/cli.md", purpose="run lint lanes through atlasctl", examples=("atlasctl lint run --report json",)),
-        CommandSpec("legacy", "legacy inventory and historical migration metadata", ("configs/layout/",), (), ("legacy inventory drift",), owner="platform", doc_link="docs/_generated/cli.md", purpose="inspect temporary legacy migration state", examples=("atlasctl legacy inventory --json",)),
-        CommandSpec("compat", "deprecated shim inventory and checks", ("configs/layout/",), (), ("compat shim drift",), stable=False, owner="platform", doc_link="docs/_generated/cli.md", purpose="inspect compatibility shim status", examples=("atlasctl compat list --json",)),
+        CommandSpec("legacy", "legacy inventory and historical migration metadata", ("configs/layout/",), (), ("legacy inventory drift",), stable=False, owner="platform", doc_link="docs/_generated/cli.md", purpose="inspect temporary legacy migration state", examples=("atlasctl legacy --inventory --report json",), internal=True),
+        CommandSpec("compat", "deprecated shim inventory and checks", ("configs/layout/",), (), ("compat shim drift",), stable=False, owner="platform", doc_link="docs/_generated/cli.md", purpose="inspect compatibility shim status", examples=("atlasctl compat list --json",), internal=True),
         CommandSpec("contracts", "contracts domain commands", ("configs/contracts/",), (), ("contract generation/validation failures",), owner="platform", doc_link="docs/_generated/cli.md", purpose="manage schema contracts and validation", examples=("atlasctl contracts list --json",)),
         CommandSpec("check", "run registered check suites and individual checks", ("artifacts/evidence/",), (), ("check failures",), owner="platform", doc_link="docs/_generated/cli.md", purpose="execute registered policy checks", examples=("atlasctl check list --json",)),
         CommandSpec("test", "run canonical atlasctl test suites", ("artifacts/isolate/",), ("python3",), ("pytest suite failures",), owner="platform", doc_link="docs/_generated/cli.md", purpose="run canonical test lanes", examples=("atlasctl test all --report json",)),

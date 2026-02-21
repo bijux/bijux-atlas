@@ -77,7 +77,7 @@ def dispatch_command(
         emit(payload, as_json)
         return 0 if payload["status"] == "ok" else ERR_CONFIG
     if ns.cmd == "help":
-        payload = commands_payload()
+        payload = commands_payload(include_internal=bool(getattr(ns, "include_internal", False)))
         payload["schema_name"] = HELP
         payload["run_id"] = ctx.run_id
         validate_self(HELP, payload)
@@ -128,7 +128,8 @@ def dispatch_command(
             code = 0 if payload["status"] == "ok" else ERR_CONFIG
             print(dumps_json(payload, pretty=not ns.json))
             return code
-        payload = commands_payload()
+        include_internal = bool(getattr(ns, "include_internal", False) or ns.commands_cmd == "compat-check")
+        payload = commands_payload(include_internal=include_internal)
         payload["run_id"] = ctx.run_id
         if getattr(ns, "verify_stability", False) or ns.commands_cmd == "compat-check":
             golden_path = ctx.repo_root / "packages/atlasctl/tests/goldens/commands.json.golden"

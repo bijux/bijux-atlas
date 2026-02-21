@@ -233,7 +233,7 @@ def run_compat_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
 
 def configure_compat_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    p = sub.add_parser("compat", help="scripts compatibility shim inspection commands")
+    p = sub.add_parser("compat", help=argparse.SUPPRESS)
     cs = p.add_subparsers(dest="compat_cmd", required=True)
 
     lst = cs.add_parser("list", help="list deprecated shim aliases and replacements")

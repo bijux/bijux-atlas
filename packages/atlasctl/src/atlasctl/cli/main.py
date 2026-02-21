@@ -4,6 +4,7 @@ import argparse
 import importlib
 import json
 import os
+import re
 import sys
 from datetime import date
 from pathlib import Path
@@ -51,7 +52,7 @@ def _write_payload_if_requested(ctx: RunContext, out_file: str | None, payload: 
         write_text(ctx, Path(out_file), payload + "\n")
 
 
-def _commands_payload() -> dict[str, object]:
+def _commands_payload(include_internal: bool = False) -> dict[str, object]:
     return {
         "schema_name": COMMANDS,
         "schema_version": 1,
@@ -74,8 +75,10 @@ def _commands_payload() -> dict[str, object]:
                 "aliases": list(cmd.aliases),
                 "purpose": cmd.purpose or cmd.help_text,
                 "examples": list(cmd.examples),
+                "internal": cmd.internal,
             }
             for cmd in sorted(command_registry(), key=lambda item: item.name)
+            if include_internal or not cmd.internal
         ],
     }
 
@@ -164,6 +167,7 @@ def build_parser() -> argparse.ArgumentParser:
     help_parser = sub.add_parser("help", help="print command help")
     help_parser.add_argument("--json", action="store_true", help="emit machine-readable command inventory")
     help_parser.add_argument("--out-file", help="optional output path")
+    help_parser.add_argument("--include-internal", action="store_true", help="include internal/legacy commands")
     explain_parser = sub.add_parser("explain", help="describe command contracts and usage")
     explain_parser.add_argument("subject_or_name")
     explain_parser.add_argument("name", nargs="?")
@@ -187,6 +191,7 @@ def build_parser() -> argparse.ArgumentParser:
     commands_parser.add_argument("--json", action="store_true", help="emit JSON output")
     commands_parser.add_argument("--out-file", help="optional output path for JSON report")
     commands_parser.add_argument("--verify-stability", action="store_true", help="compare command payload against commands golden")
+    commands_parser.add_argument("--include-internal", action="store_true", help="include internal/legacy commands in list output")
 
     config_parser = sub.add_parser("config", help="configuration commands (alias over `configs`)")
     config_sub = config_parser.add_subparsers(dest="config_cmd", required=True)
@@ -210,6 +215,18 @@ def build_parser() -> argparse.ArgumentParser:
     fix_parser.add_argument("thing", nargs="?", default="list", help="fixer id or `list`")
     fix_parser.add_argument("--json", action="store_true", help="emit JSON output")
 
+    raw_format_help = parser.format_help
+
+    def _format_help_public() -> str:
+        text = raw_format_help()
+        # Hide internal-only commands from default root help output.
+        text = re.sub(r"\bcompat,legacy,?", "", text)
+        text = re.sub(r",\s*,", ", ", text)
+        text = re.sub(r"\{\s*,", "{", text)
+        lines = [line for line in text.splitlines() if "==SUPPRESS==" not in line]
+        return "\n".join(lines) + ("\n" if text.endswith("\n") else "")
+
+    parser.format_help = _format_help_public  # type: ignore[assignment]
     return parser
 
 
