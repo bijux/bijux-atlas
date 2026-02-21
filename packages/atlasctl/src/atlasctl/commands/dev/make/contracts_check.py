@@ -172,6 +172,18 @@ CHECKS: list[MakeCheck] = [
         "Do not add internal/* targets to dev.mk beyond the explicit allowlist.",
     ),
     _check(
+        "ci-mk-target-budget",
+        "Validate ci.mk target count budget",
+        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_ci_mk_target_budget.py",
+        "Keep ci.mk wrapper target count <= 15 and collapse extra steps into atlasctl ci subcommands.",
+    ),
+    _check(
+        "ci-mk-no-external-tools",
+        "Validate ci.mk has no external tool invocations",
+        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_ci_mk_no_external_tools.py",
+        "Keep ci.mk recipes as pure ./bin/atlasctl delegation.",
+    ),
+    _check(
         "makefiles-index-drift",
         "Validate makefiles index drift",
         "packages/atlasctl/src/atlasctl/checks/layout/makefiles/index/check_makefiles_index_drift.py",
