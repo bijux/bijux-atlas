@@ -2,13 +2,13 @@ usage: atlasctl [-h] [--version] [--json] [--run-id RUN_ID] [--dry-run]
                 [--artifacts-dir ARTIFACTS_DIR]
                 [--evidence-root EVIDENCE_ROOT] [--run-dir RUN_DIR]
                 [--cwd CWD] [--profile PROFILE] [--format {text,json}]
-                [--network {allow,forbid}] [--no-network]
+                [--network {allow,forbid}] [--allow-network] [--no-network]
                 [--require-clean-git] [--verbose | --quiet]
-                {version,env,paths,self-check,help,explain,run,validate-output,surface,commands,config,registry,layout,configs,contracts,docker,ci,check,deps,gen,policies,repo,docs,make,migration,ops,inventory,lint,test,suite,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,python,doctor,completion,clean,fix}
+                {version,env,paths,self-check,help,explain,run,validate-output,surface,commands,config,registry,layout,configs,contracts,docker,ci,check,deps,gen,policies,repo,docs,make,migration,ops,inventory,lint,test,suite,report,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,python,doctor,completion,clean,fix}
                 ...
 
 positional arguments:
-  {version,env,paths,self-check,help,explain,run,validate-output,surface,commands,config,registry,layout,configs,contracts,docker,ci,check,deps,gen,policies,repo,docs,make,migration,ops,inventory,lint,test,suite,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,python,doctor,completion,clean,fix}
+  {version,env,paths,self-check,help,explain,run,validate-output,surface,commands,config,registry,layout,configs,contracts,docker,ci,check,deps,gen,policies,repo,docs,make,migration,ops,inventory,lint,test,suite,report,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,python,doctor,completion,clean,fix}
     version             print versions and git context
     env                 manage isolated python environment and artifact-root
                         policy
@@ -41,8 +41,6 @@ positional arguments:
     test                run atlasctl test suites
     suite               run atlasctl named suites
     report              unified report and scorecard commands
-    compat              scripts compatibility shim inspection commands
-    legacy              legacy inventory and removal tracking
     ports               port registry and reservation commands
     artifacts           artifacts helpers
     k8s                 k8s wrappers
@@ -77,7 +75,9 @@ options:
   --profile PROFILE     profile id
   --format {text,json}  output format
   --network {allow,forbid}
-                        network access mode
+                        network access mode (default: forbid)
+  --allow-network       explicitly allow network when command group policy
+                        permits it
   --no-network          deprecated alias for --network=forbid
   --require-clean-git   fail if git workspace is dirty
   --verbose             enable verbose diagnostics
