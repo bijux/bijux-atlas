@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "atlasctl.check-list.v1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "tool",
+    "status",
+    "checks"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "tool": {
+      "const": "atlasctl"
+    },
+    "status": {
+      "enum": [
+        "ok",
+        "error"
+      ]
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "domain",
+          "description",
+          "severity",
+          "category",
+          "slow",
+          "fix_hint",
+          "external_tools"
+        ],
+        "properties": {
+          "id": {"type": "string"},
+          "domain": {"type": "string"},
+          "description": {"type": "string"},
+          "severity": {"enum": ["error", "warning"]},
+          "category": {"type": "string"},
+          "slow": {"type": "boolean"},
+          "fix_hint": {"type": "string"},
+          "external_tools": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": true
+      }
+    }
+  }
+}

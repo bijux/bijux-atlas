@@ -24,6 +24,11 @@
       "name": "atlasctl.runtime_contracts.v1",
       "version": 1,
       "file": "atlasctl.runtime_contracts.v1.schema.json"
+    },
+    {
+      "name": "atlasctl.check-list.v1",
+      "version": 1,
+      "file": "atlasctl.check-list.v1.schema.json"
     }
   ]
 }
