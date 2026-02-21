@@ -10,3 +10,4 @@ Policy:
 Migration plan:
 - Root-shape and forbidden-path checks are being migrated to Python first.
 - Remaining shell checks are tracked for gradual conversion as domain checks gain parity.
+- Checklist: `docs/architecture/layout-shell-migration.md`.

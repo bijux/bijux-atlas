@@ -1,6 +1,23 @@
 # layout
 
-Scripts in this area.
+Canonical layout check domains:
+
+- `artifacts/`
+- `docs/`
+- `governance/`
+- `makefiles/`
+- `ops/`
+- `public_surface/`
+- `scripts/`
+- `workflows/`
+- `root/`
+- `shell/` (transitional; migration tracked in `docs/architecture/layout-shell-migration.md`)
+- `hygiene/` (canonical domain package; migration bridge from `contracts/hygiene`)
+- `policies/` (canonical domain package; migration bridge from `contracts/policies`)
+- `orphans/` (canonical domain package; migration bridge from `contracts/orphans`)
+- `scenarios/` (canonical domain package; migration bridge from `contracts/scenarios`)
+
+Legacy subgroup `contracts/` remains during migration and is being flattened into first-class domains.
 
 - allowed_root.json
 - build_artifacts_index.py
