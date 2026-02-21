@@ -4,11 +4,46 @@ import argparse
 import json
 import os
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
 from ....contracts.output.base import build_output_base
 from ....core.context import RunContext
+
+LANE_FILTERS: dict[str, tuple[str, ...]] = {
+    "fmt": ("*fmt*",),
+    "lint": ("*lint*", "*clippy*"),
+    "test": ("*test*",),
+    "contracts": ("*contract*", "*schema*"),
+    "docs": ("check docs*", "cmd atlasctl docs*"),
+    "ops": ("check ops*", "cmd atlasctl ops*"),
+    "rust": ("check repo*", "cmd *cargo*"),
+}
+
+
+def _ci_out_dir(ctx: RunContext, override: str | None) -> Path:
+    if override:
+        path = Path(override)
+        return path if path.is_absolute() else (ctx.repo_root / path)
+    return ctx.repo_root / "artifacts" / "evidence" / "ci" / ctx.run_id
+
+
+def _lane_for_label(label: str) -> str:
+    low = label.lower()
+    if "contract" in low or "schema" in low:
+        return "contracts"
+    if "docs" in low:
+        return "docs"
+    if "ops" in low or "k8s" in low:
+        return "ops"
+    if "fmt" in low:
+        return "fmt"
+    if "lint" in low or "clippy" in low:
+        return "lint"
+    if "test" in low:
+        return "test"
+    return "rust"
 
 
 def _run_step(
@@ -58,38 +93,88 @@ def run_ci_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         step = _run_step(ctx, ["make", "-s", "scripts-check"], verbose=verbose)
         return _emit_result(ctx, ns, "scripts", [step])
     if ns.ci_cmd == "run":
-        out_dir = Path(ns.out_dir) if ns.out_dir else (ctx.repo_root / "artifacts" / "evidence" / "ci" / ctx.run_id)
+        out_dir = _ci_out_dir(ctx, getattr(ns, "out_dir", None))
         out_dir.mkdir(parents=True, exist_ok=True)
         junit_path = out_dir / "suite-ci.junit.xml"
-        proc = subprocess.run(
-            [
-                "python3",
-                "-m",
-                "atlasctl.cli",
-                "--quiet",
-                "--format",
-                "json",
-                "--run-id",
-                ctx.run_id,
-                "suite",
-                "run",
-                "ci",
-                "--json",
-                "--junit",
-                str(junit_path),
-            ],
-            cwd=ctx.repo_root,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
+        suite_cmd: list[str] = [
+            sys.executable,
+            "-m",
+            "atlasctl.cli",
+            "--quiet",
+            "--format",
+            "json",
+            "--run-id",
+            ctx.run_id,
+            "suite",
+            "run",
+            "ci",
+            "--json",
+            "--junit",
+            str(junit_path),
+        ]
+        lanes = list(getattr(ns, "lane", []) or [])
+        if lanes:
+            seen: set[str] = set()
+            only_patterns: list[str] = []
+            for lane in lanes:
+                values = LANE_FILTERS.get(lane)
+                if not values:
+                    continue
+                for pattern in values:
+                    if pattern in seen:
+                        continue
+                    seen.add(pattern)
+                    only_patterns.append(pattern)
+            for pattern in only_patterns:
+                suite_cmd.extend(["--only", pattern])
+        if bool(getattr(ns, "fail_fast", False)):
+            suite_cmd.append("--fail-fast")
+        else:
+            suite_cmd.append("--keep-going")
+
+        if bool(getattr(ns, "no_isolate", False)):
+            proc = subprocess.run(
+                suite_cmd,
+                cwd=ctx.repo_root,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+        else:
+            tag = f"ci-{ctx.run_id}"
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "atlasctl.cli",
+                    "env",
+                    "isolate",
+                    "--tag",
+                    tag,
+                    *suite_cmd,
+                ],
+                cwd=ctx.repo_root,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
         payload = json.loads(proc.stdout) if proc.stdout.strip() else {"status": "error", "summary": {"passed": 0, "failed": 1, "skipped": 0}}
+        suite_steps = [
+            {
+                "id": f"ci.step.{idx:03d}",
+                "lane": _lane_for_label(str(row.get("label", ""))),
+                "label": str(row.get("label", "")),
+                "status": str(row.get("status", "unknown")),
+            }
+            for idx, row in enumerate(payload.get("results", []), start=1)
+        ]
         (out_dir / "suite-ci.report.json").write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         summary = payload.get("summary", {})
         summary_txt = (
             f"run_id={ctx.run_id}\n"
             f"status={payload.get('status','error')}\n"
             f"passed={summary.get('passed', 0)} failed={summary.get('failed', 0)} skipped={summary.get('skipped', 0)}\n"
+            f"lanes={','.join(lanes) if lanes else 'all'}\n"
             f"junit={junit_path}\n"
             f"json={out_dir / 'suite-ci.report.json'}\n"
         )
@@ -102,7 +187,11 @@ def run_ci_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                         "tool": "atlasctl",
                         "status": "ok" if proc.returncode == 0 else "error",
                         "run_id": ctx.run_id,
+                        "lane_filter": lanes or ["all"],
+                        "mode": "debug-no-isolate" if bool(getattr(ns, "no_isolate", False)) else "isolate",
+                        "execution": "fail-fast" if bool(getattr(ns, "fail_fast", False)) else "keep-going",
                         "suite_result": payload,
+                        "suite_steps": suite_steps,
                         "artifacts": {
                             "json": str(out_dir / "suite-ci.report.json"),
                             "junit": str(junit_path),
@@ -267,6 +356,11 @@ def configure_ci_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]
     run = ci_sub.add_parser("run", help="run canonical CI suite locally")
     run.add_argument("--json", action="store_true", help="emit JSON output")
     run.add_argument("--out-dir", help="output directory for CI artifacts")
+    run.add_argument("--lane", action="append", choices=sorted(LANE_FILTERS.keys()), help="restrict suite run to a logical lane")
+    mode = run.add_mutually_exclusive_group()
+    mode.add_argument("--fail-fast", action="store_true", help="stop at first failing suite step")
+    mode.add_argument("--keep-going", action="store_true", help="continue through all suite steps (default)")
+    run.add_argument("--no-isolate", action="store_true", help="debug only: skip isolate wrapper around suite execution")
     run.add_argument("--verbose", action="store_true", help="show underlying tool command output")
     for name in (
         "fast",
