@@ -120,7 +120,7 @@ CHECKS: list[MakeCheck] = [
     _check(
         "public-target-ownership",
         "Ensure public target ownership coverage",
-        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_target_ownership.py",
+        "packages/atlasctl/src/atlasctl/checks/make/impl/check_make_target_ownership.py",
         "Add missing target owners in makefiles/ownership.json.",
     ),
     _check(
@@ -162,19 +162,19 @@ CHECKS: list[MakeCheck] = [
     _check(
         "makefile-boundaries",
         "Validate makefile target boundaries",
-        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_makefile_target_boundaries.py",
+        "packages/atlasctl/src/atlasctl/checks/make/impl/check_makefile_target_boundaries.py",
         "Keep top-level/public and internal target boundaries strict.",
     ),
     _check(
         "makefiles-contract",
         "Validate makefiles contract",
-        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_makefiles_contract.py",
+        "packages/atlasctl/src/atlasctl/checks/make/impl/check_makefiles_contract.py",
         "Regenerate makefile contract artifacts and align file ownership.",
     ),
     _check(
         "makefiles-headers",
         "Validate makefile header contract",
-        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_makefile_headers.py",
+        "packages/atlasctl/src/atlasctl/checks/make/impl/check_makefile_headers.py",
         "Add or correct required makefile scope headers.",
     ),
     _check(
@@ -216,7 +216,7 @@ CHECKS: list[MakeCheck] = [
     _check(
         "make-targets-catalog-drift",
         "Validate make targets catalog drift",
-        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_targets_catalog_drift.py",
+        "packages/atlasctl/src/atlasctl/checks/make/impl/check_make_targets_catalog_drift.py",
         "Regenerate make targets catalog and commit updates.",
     ),
     _check(
