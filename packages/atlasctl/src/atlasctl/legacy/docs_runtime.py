@@ -4,15 +4,21 @@ from pathlib import Path
 
 _CHUNK_DIR = Path(__file__).with_name("docs_runtime_chunks")
 _CHUNKS = (
-    "docs_contracts.py",
-    "docs_generation.py",
-    "docs_validation.py",
-    "docs_outputs.py",
-    "docs_navigation.py",
+    "core/docs_contracts_core.py",
+    "extended/docs_contracts_extended.py",
+    "core/docs_generation_core.py",
+    "extended/docs_generation_extended.py",
+    "core/docs_validation_core.py",
+    "extended/docs_validation_extended.py",
+    "core/docs_outputs_core.py",
+    "extended/docs_outputs_extended.py",
+    "core/docs_navigation_core.py",
+    "extended/docs_navigation_extended.py",
     "docs_inventory.py",
     "docs_dispatch.py",
     "docs_parser.py",
 )
+
 
 for _chunk in _CHUNKS:
     _path = _CHUNK_DIR / _chunk
