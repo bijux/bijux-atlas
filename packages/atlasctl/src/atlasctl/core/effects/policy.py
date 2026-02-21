@@ -29,6 +29,8 @@ _COMMAND_GROUPS: dict[str, CommandGroup] = {
     "list": "dev",
     "make": "dev",
     "run-id": "dev",
+    "install": "dev",
+    "release": "dev",
     "dev": "dev",
     "internal": "internal",
 }
@@ -66,6 +68,8 @@ _COMMAND_EFFECTS: dict[str, tuple[EffectName, ...]] = {
     "list": ("read", "write", "process"),
     "make": ("read", "write", "process"),
     "run-id": ("read", "write", "process"),
+    "install": ("read", "write", "process"),
+    "release": ("read", "write", "process"),
     "dev": ("read", "write", "process"),
     "internal": ("read", "write", "process"),
 }

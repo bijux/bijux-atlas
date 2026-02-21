@@ -299,3 +299,12 @@ items = [
   "check:repo.legacy_package_absent",
   "check:repo.legacy_zero_importers",
 ]
+
+[tool.atlasctl.suites.release_0_1]
+includes = ["refgrade_proof"]
+complete = true
+items = [
+  "cmd:atlasctl release checklist --dry-run --json",
+  "check:repo.packaging_metadata_completeness",
+  "check:repo.version_matches_pyproject",
+]
