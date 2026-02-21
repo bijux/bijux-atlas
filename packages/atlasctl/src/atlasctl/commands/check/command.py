@@ -233,6 +233,61 @@ def _run_check_failures(ctx: RunContext, ns: argparse.Namespace) -> int:
     return ERR_USER
 
 
+def _run_check_triage_slow(ctx: RunContext, ns: argparse.Namespace) -> int:
+    report_path = _resolve_failures_report(str(ns.last_run))
+    payload = json.loads(report_path.read_text(encoding="utf-8"))
+    rows = payload.get("rows", [])
+    ranked = sorted(
+        [row for row in rows if row.get("status") in {"PASS", "FAIL"}],
+        key=lambda row: int(row.get("duration_ms", 0)),
+        reverse=True,
+    )[: max(1, int(getattr(ns, "top", 10) or 10))]
+    out = {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "kind": "check-triage-slow",
+        "status": "ok",
+        "source": report_path.as_posix(),
+        "rows": [{"id": row.get("id"), "domain": row.get("domain"), "duration_ms": int(row.get("duration_ms", 0))} for row in ranked],
+    }
+    if ctx.output_format == "json" or ns.json:
+        print(json.dumps(out, sort_keys=True))
+    else:
+        for row in out["rows"]:
+            print(f"{row['id']}\t{row['domain']}\t{row['duration_ms']}ms")
+    return 0
+
+
+def _run_check_triage_failures(ctx: RunContext, ns: argparse.Namespace) -> int:
+    report_path = _resolve_failures_report(str(ns.last_run))
+    payload = json.loads(report_path.read_text(encoding="utf-8"))
+    rows = [row for row in payload.get("rows", []) if row.get("status") == "FAIL"]
+    groups: dict[str, dict[str, int]] = {}
+    for row in rows:
+        cid = str(row.get("id", ""))
+        parts = cid.split("_")
+        domain = parts[1] if len(parts) > 1 else str(row.get("domain", "unknown"))
+        area = parts[2] if len(parts) > 2 else "general"
+        groups.setdefault(domain, {})
+        groups[domain][area] = int(groups[domain].get(area, 0)) + 1
+    out = {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "kind": "check-triage-failures",
+        "status": "ok",
+        "source": report_path.as_posix(),
+        "groups": [{"domain": d, "areas": [{"area": a, "count": c} for a, c in sorted(areas.items())]} for d, areas in sorted(groups.items())],
+    }
+    if ctx.output_format == "json" or ns.json:
+        print(json.dumps(out, sort_keys=True))
+    else:
+        for group in out["groups"]:
+            print(group["domain"])
+            for area in group["areas"]:
+                print(f"- {area['area']}: {area['count']}")
+    return 0 if not rows else ERR_USER
+
+
 def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     started = time.perf_counter()
     select_value = str(getattr(ns, "select", "") or "").strip()
@@ -257,8 +312,15 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     group = str(getattr(ns, "group", "") or "").strip()
     if domain_value and not group:
         group = domain_value
-    if group:
-        checks = [check for check in checks if check.domain == group]
+    if group and group != "all":
+        if group.endswith("-slow"):
+            base = group.removesuffix("-slow")
+            checks = [check for check in checks if check.domain == base and check.slow]
+        elif group.endswith("-fast"):
+            base = group.removesuffix("-fast")
+            checks = [check for check in checks if check.domain == base and not check.slow]
+        else:
+            checks = [check for check in checks if check.domain == group]
     only_slow = bool(getattr(ns, "only_slow", False))
     only_fast = bool(getattr(ns, "only_fast", False))
     if only_slow and only_fast:
@@ -267,6 +329,12 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     if only_slow:
         checks = [check for check in checks if check.slow]
     if only_fast:
+        checks = [check for check in checks if not check.slow]
+    include_all = bool(getattr(ns, "include_all", False))
+    explicit_selector = bool(id_value or target_value or select_value or k_value)
+    if explicit_selector:
+        include_all = True
+    if not include_all and not only_slow and not group.endswith("-slow"):
         checks = [check for check in checks if not check.slow]
     match_pattern = str(getattr(ns, "match", "") or "").strip()
     if match_pattern:
@@ -318,12 +386,34 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
         timeout_label = "disabled" if timeout_ms == 0 else f"{timeout_ms}ms"
         print(f"running {total_live} checks (timeout={timeout_label} per check)")
 
-    _failed_total, executed_results = run_function_checks(
-        ctx.repo_root,
-        matched_checks,
-        on_result=_emit_live_row if live_print else None,
-        timeout_ms=timeout_ms if timeout_ms > 0 else None,
-    )
+    jobs = max(1, int(getattr(ns, "jobs", 1) or 1))
+    max_failures = int(getattr(ns, "max_failures", 0) or getattr(ns, "maxfail", 0) or 0)
+    if bool(getattr(ns, "failfast", False)):
+        max_failures = 1
+    executed_results = []
+    if max_failures > 0 and jobs == 1:
+        fail_seen = 0
+        for check in matched_checks:
+            _failed, one = run_function_checks(
+                ctx.repo_root,
+                [check],
+                on_result=_emit_live_row if live_print else None,
+                timeout_ms=timeout_ms if timeout_ms > 0 else None,
+                jobs=1,
+            )
+            executed_results.extend(one)
+            if _failed:
+                fail_seen += _failed
+                if fail_seen >= max_failures and not bool(getattr(ns, "keep_going", False)):
+                    break
+    else:
+        _failed_total, executed_results = run_function_checks(
+            ctx.repo_root,
+            matched_checks,
+            on_result=_emit_live_row if live_print else None,
+            timeout_ms=timeout_ms if timeout_ms > 0 else None,
+            jobs=jobs,
+        )
     executed_by_id = {result.id: result for result in executed_results}
     rows: list[dict[str, object]] = []
     fail_count = 0
@@ -381,7 +471,23 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
         if max_slowest_ms and slow_rows and int(slow_rows[0]["duration_ms"]) > max_slowest_ms:
             ratchet_errors.append(f"slowest check ratchet exceeded: {int(slow_rows[0]['duration_ms'])}ms > {max_slowest_ms}ms")
 
-    final_failed = fail_count + (1 if ratchet_errors else 0)
+    approvals_path = Path("configs/policy/check_speed_approvals.json")
+    approvals: dict[str, int] = {}
+    if approvals_path.exists():
+        try:
+            payload = json.loads((ctx.repo_root / approvals_path).read_text(encoding="utf-8"))
+            approvals = {str(k): int(v) for k, v in payload.get("checks", {}).items()}
+        except Exception:
+            approvals = {}
+    speed_regressions: list[str] = []
+    for row in slow_rows:
+        cid = str(row["id"])
+        approved = approvals.get(cid)
+        if approved is None:
+            continue
+        if int(row["duration_ms"]) > approved:
+            speed_regressions.append(f"{cid}: {int(row['duration_ms'])}ms > approved {approved}ms")
+    final_failed = fail_count + (1 if ratchet_errors else 0) + (1 if speed_regressions else 0)
     summary = {
         "passed": pass_count,
         "failed": fail_count,
@@ -401,7 +507,9 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             "slow_threshold_ms": slow_threshold_ms,
             "slow_checks": slow_rows,
             "ratchet_errors": ratchet_errors,
+            "speed_regressions": speed_regressions,
             "rows": rows,
+            "timing_histogram": _timing_histogram(rows),
         }
         print(json.dumps(payload, sort_keys=True))
     elif bool(getattr(ns, "jsonl", False)):
@@ -447,6 +555,13 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
                 print(f"- {row['id']}: {row['duration_ms']}ms")
         for msg in ratchet_errors:
             print(f"ratchet: {msg}")
+        for msg in speed_regressions:
+            print(f"speed-regression: {msg}")
+        if fail_count:
+            print("failing checks:")
+            for row in rows:
+                if row["status"] == "FAIL":
+                    print(f"- {row['id']}: {row['detail'] or row['hint']}")
 
     if ns.json_report:
         report_path = ensure_evidence_path(ctx, Path(ns.json_report))
@@ -504,6 +619,17 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             + "\n",
             encoding="utf-8",
         )
+    timings_path = ctx.repo_root / "artifacts" / "evidence" / "checks" / ctx.run_id / "timings.json"
+    timings_path.parent.mkdir(parents=True, exist_ok=True)
+    timings_payload = {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "kind": "check-timings",
+        "run_id": ctx.run_id,
+        "rows": [{"id": row["id"], "domain": row["domain"], "duration_ms": row["duration_ms"]} for row in rows],
+        "timing_histogram": _timing_histogram(rows),
+    }
+    timings_path.write_text(json.dumps(timings_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     emit_telemetry(
         ctx,
         "check.run",
@@ -518,6 +644,31 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
         junit_path = ensure_evidence_path(ctx, Path(junit_out))
         _write_junitxml(junit_path, rows)
     return 0 if final_failed == 0 else ERR_USER
+
+
+def _timing_histogram(rows: list[dict[str, object]]) -> dict[str, int]:
+    buckets = {
+        "lt_100ms": 0,
+        "100_500ms": 0,
+        "500_1000ms": 0,
+        "1000_2000ms": 0,
+        "gte_2000ms": 0,
+    }
+    for row in rows:
+        if row.get("status") == "SKIP":
+            continue
+        d = int(row.get("duration_ms", 0))
+        if d < 100:
+            buckets["lt_100ms"] += 1
+        elif d < 500:
+            buckets["100_500ms"] += 1
+        elif d < 1000:
+            buckets["500_1000ms"] += 1
+        elif d < 2000:
+            buckets["1000_2000ms"] += 1
+        else:
+            buckets["gte_2000ms"] += 1
+    return buckets
 
 
 def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
@@ -551,6 +702,10 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return 0
     if sub == "failures":
         return _run_check_failures(ctx, ns)
+    if sub == "triage-slow":
+        return _run_check_triage_slow(ctx, ns)
+    if sub == "triage-failures":
+        return _run_check_triage_failures(ctx, ns)
     if sub == "list":
         checks = list_checks()
         if not (ctx.output_format == "json" or ns.json):
@@ -652,6 +807,12 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         for check in checks:
             for group in check_tags(check):
                 grouped.setdefault(group, []).append(check.check_id)
+            grouped.setdefault(f"{check.domain}-slow", [])
+            grouped.setdefault(f"{check.domain}-fast", [])
+            if check.slow:
+                grouped[f"{check.domain}-slow"].append(check.check_id)
+            else:
+                grouped[f"{check.domain}-fast"].append(check.check_id)
         if ctx.output_format == "json" or ns.json:
             payload = {
                 "schema_version": 1,
@@ -889,12 +1050,15 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
 
     parser_sub.add_parser("all", help="run all native atlasctl checks")
     run = parser_sub.add_parser("run", help="run registered checks with pytest-like output")
+    run.add_argument("--all", dest="include_all", action="store_true", help="include slow checks (default is fast-only)")
     run.add_argument("--quiet", dest="run_quiet", action="store_true", help="one line per check: PASS/FAIL/SKIP")
     run.add_argument("--info", dest="run_info", action="store_true", help="default info output mode with id + timing")
     run.add_argument("--verbose", dest="run_verbose", action="store_true", help="include timing, owners, and failure hints")
     run.add_argument("--maxfail", type=int, default=0, help="stop after N failing checks (0 disables)")
+    run.add_argument("--max-failures", type=int, default=0, help="alias of --maxfail")
     run.add_argument("--failfast", action="store_true", help="stop after first failing check")
     run.add_argument("--fail-fast", dest="failfast", action="store_true", help="stop after first failing check")
+    run.add_argument("--keep-going", action="store_true", help="continue through all checks (default)")
     run.add_argument("--durations", type=int, default=0, help="show N slowest checks in summary")
     run.add_argument("--junitxml", help="write junit xml output path")
     run.add_argument("--junit-xml", dest="junit_xml", help="write junit xml output path")
@@ -906,6 +1070,7 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     run.add_argument("--slow-ratchet-config", default="configs/policy/slow-checks-ratchet.json", help="slow-check ratchet config json")
     run.add_argument("--profile", action="store_true", help="emit check run performance profile artifact")
     run.add_argument("--profile-out", help="performance profile output path")
+    run.add_argument("--jobs", type=int, default=1, help="number of worker jobs for check execution")
     run.add_argument("--match", help="glob pattern over check ids/titles")
     run.add_argument("--group", help="filter checks by group/domain")
     run.add_argument("--domain", dest="domain_filter", help="filter checks by domain")
@@ -933,6 +1098,13 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     failures.add_argument("--last-run", required=True, help="path to check-run report json or run directory")
     failures.add_argument("--group", help="filter by domain group, e.g. repo")
     failures.add_argument("--json", action="store_true", help="emit JSON output")
+    triage_slow = parser_sub.add_parser("triage-slow", help="list top-N slow checks from a check-run report")
+    triage_slow.add_argument("--last-run", required=True, help="path to check-run report json or run directory")
+    triage_slow.add_argument("--top", type=int, default=10, help="number of slow checks to include")
+    triage_slow.add_argument("--json", action="store_true", help="emit JSON output")
+    triage_fail = parser_sub.add_parser("triage-failures", help="group failing checks by domain/area from a check-run report")
+    triage_fail.add_argument("--last-run", required=True, help="path to check-run report json or run directory")
+    triage_fail.add_argument("--json", action="store_true", help="emit JSON output")
     domain = parser_sub.add_parser("domain", help="run checks for one domain")
     domain.add_argument("domain", choices=check_domains())
 
@@ -1021,5 +1193,12 @@ def configure_checks_parser(sub: argparse._SubParsersAction[argparse.ArgumentPar
     failures.add_argument("--last-run", required=True, help="path to check-run report json or run directory")
     failures.add_argument("--group", help="filter by domain group, e.g. repo")
     failures.add_argument("--json", action="store_true", help="emit JSON output")
+    triage_slow = parser_sub.add_parser("triage-slow", help="list top-N slow checks from a check-run report")
+    triage_slow.add_argument("--last-run", required=True, help="path to check-run report json or run directory")
+    triage_slow.add_argument("--top", type=int, default=10, help="number of slow checks to include")
+    triage_slow.add_argument("--json", action="store_true", help="emit JSON output")
+    triage_fail = parser_sub.add_parser("triage-failures", help="group failing checks by domain/area from a check-run report")
+    triage_fail.add_argument("--last-run", required=True, help="path to check-run report json or run directory")
+    triage_fail.add_argument("--json", action="store_true", help="emit JSON output")
     explain = parser_sub.add_parser("explain", help="explain a check id")
     explain.add_argument("check_id")

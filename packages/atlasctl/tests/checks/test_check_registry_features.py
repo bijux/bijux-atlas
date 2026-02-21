@@ -96,7 +96,10 @@ def test_check_run_selector_flags() -> None:
 
     by_domain = _run("check", "run", "--domain", "checks", "--quiet")
     assert by_domain.returncode in (0, 1), by_domain.stderr
-    assert "checks_checks_registry_integrity" in by_domain.stdout
+    assert "checks_checks_registry_integrity" not in by_domain.stdout
+    by_domain_all = _run("check", "run", "--domain", "checks", "--all", "--quiet")
+    assert by_domain_all.returncode in (0, 1), by_domain_all.stderr
+    assert "checks_checks_registry_integrity" in by_domain_all.stdout
 
 
 def test_migrate_checks_registry_json() -> None:
