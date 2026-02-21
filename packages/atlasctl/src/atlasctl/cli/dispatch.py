@@ -7,7 +7,7 @@ import sys
 from collections.abc import Callable
 
 from .. import __version__
-from ..cli.registry import render_payload
+from ..cli.registry import command_spec, render_payload
 from ..core.context import RunContext
 from ..core.script_runner import run_script
 from ..core.serialize import dumps_json
@@ -30,6 +30,21 @@ def dispatch_command(
     domain_runners: dict[str, Callable[[RunContext], object]],
     version_string: Callable[[], str],
 ) -> int:
+    if getattr(ns, "dry_run", False):
+        spec = command_spec(ns.cmd)
+        if spec is not None and spec.effect_level == "effectful":
+            emit(
+                {
+                    **build_base_payload(ctx),
+                    "status": "ok",
+                    "dry_run": True,
+                    "command": ns.cmd,
+                    "effect_level": spec.effect_level,
+                    "run_id_mode": spec.run_id_mode,
+                },
+                as_json,
+            )
+            return 0
     if ns.cmd == "version":
         emit({**build_base_payload(ctx), "atlasctl_version": __version__, "scripts_version": version_string().split()[1]}, as_json)
         return 0

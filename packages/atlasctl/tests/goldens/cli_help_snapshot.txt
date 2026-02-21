@@ -1,14 +1,14 @@
-usage: atlasctl [-h] [--version] [--json] [--run-id RUN_ID]
+usage: atlasctl [-h] [--version] [--json] [--run-id RUN_ID] [--dry-run]
                 [--artifacts-dir ARTIFACTS_DIR]
                 [--evidence-root EVIDENCE_ROOT] [--run-dir RUN_DIR]
                 [--cwd CWD] [--profile PROFILE] [--format {text,json}]
                 [--network {allow,forbid}] [--no-network]
                 [--require-clean-git] [--verbose | --quiet]
-                {version,env,paths,self-check,help,explain,run,validate-output,surface,commands,config,registry,layout,configs,contracts,docker,ci,check,deps,gen,policies,docs,make,migration,ops,inventory,lint,test,suite,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,python,doctor,completion,clean,fix}
+                {version,env,paths,self-check,help,explain,run,validate-output,surface,commands,config,registry,layout,configs,contracts,docker,ci,check,deps,gen,policies,repo,docs,make,migration,ops,inventory,lint,test,suite,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,python,doctor,completion,clean,fix}
                 ...
 
 positional arguments:
-  {version,env,paths,self-check,help,explain,run,validate-output,surface,commands,config,registry,layout,configs,contracts,docker,ci,check,deps,gen,policies,docs,make,migration,ops,inventory,lint,test,suite,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,python,doctor,completion,clean,fix}
+  {version,env,paths,self-check,help,explain,run,validate-output,surface,commands,config,registry,layout,configs,contracts,docker,ci,check,deps,gen,policies,repo,docs,make,migration,ops,inventory,lint,test,suite,report,compat,legacy,ports,artifacts,k8s,stack,obs,load,e2e,datasets,cleanup,scenario,contracts-snapshot,gates,python,doctor,completion,clean,fix}
     version             print versions and git context
     env                 manage isolated python environment and artifact-root
                         policy
@@ -31,6 +31,7 @@ positional arguments:
     deps                dependency workflow commands (pip-tools route)
     gen                 generation commands mapped from scripts/areas
     policies            policy relaxations and bypass checks
+    repo                repository stats and density reports
     docs                docs checks and generation commands
     make                make target intelligence and contracts checks
     migration           migration tracking and enforcement commands
@@ -65,6 +66,8 @@ options:
   --version             show program's version number and exit
   --json                emit JSON output
   --run-id RUN_ID       run identifier for artifacts
+  --dry-run             resolve and report command without mutating side
+                        effects
   --artifacts-dir ARTIFACTS_DIR
                         artifacts/evidence root path
   --evidence-root EVIDENCE_ROOT

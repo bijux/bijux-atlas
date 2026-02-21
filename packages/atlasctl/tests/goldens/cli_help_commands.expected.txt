@@ -15,6 +15,7 @@ obs
 ops
 policies
 registry
+repo
 report
 stack
 suite

@@ -12,5 +12,8 @@ def describe_command(name: str) -> dict[str, object]:
                 "touches": list(spec.touches),
                 "tools": list(spec.tools),
                 "failure_modes": list(spec.failure_modes),
+                "effect_level": spec.effect_level,
+                "run_id_mode": spec.run_id_mode,
+                "supports_dry_run": spec.supports_dry_run,
             }
     return {"touches": [], "tools": [], "note": "unknown command"}

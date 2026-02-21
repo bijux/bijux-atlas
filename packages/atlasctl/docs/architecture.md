@@ -19,6 +19,15 @@
 - Normal commands are leaf actions under a domain and do not introduce new domain boundaries.
 - Makefiles may expose convenience targets but must delegate behavior to `atlasctl` as source of truth.
 
+### Effects And Boundaries In Atlasctl
+
+- Only `atlasctl.core.fs` is allowed to own direct file-write primitives.
+- Only `atlasctl.core.exec` is allowed to own subprocess execution primitives.
+- Only `atlasctl.core.env` is allowed to own direct environment-variable reads/writes.
+- Only `atlasctl.core.process` is allowed to own process lifecycle/retry/timeouts.
+- Only `atlasctl.core.network` is allowed to own direct network request primitives.
+- Any temporary exception must be listed in `configs/policy/effect-boundary-exceptions.json` with a reason.
+
 See `docs/atlasctl/BOUNDARIES.md` for effect boundaries, invariants, output contracts, and policy enforcement rules.
 
 ## Budget Policy

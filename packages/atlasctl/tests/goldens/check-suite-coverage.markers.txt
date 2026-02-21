@@ -20,6 +20,7 @@ repo.deps_workflow_doc
 repo.docs_no_ops_generated_refs
 repo.duplicate_script_names
 repo.effect_boundaries
+repo.effect_boundary_exceptions_policy
 repo.env_docs_present
 repo.forbidden_top_dirs
 repo.import_smoke

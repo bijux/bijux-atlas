@@ -14,8 +14,8 @@
       "max_py_files": 10
     },
     "packages/atlasctl/src/atlasctl/core": {
-      "max_modules": 11,
-      "max_py_files": 12
+      "max_modules": 12,
+      "max_py_files": 13
     },
     "packages/atlasctl/src/atlasctl/observability/contracts/metrics": {
       "max_modules": 8,
