@@ -7,7 +7,7 @@ from ....cli.surface_registry import command_registry
 from ....core.effects import all_command_effects, command_effects, command_group, group_allowed_effects
 from ....contracts.ids import RUNTIME_CONTRACTS
 
-_PUBLIC_UNSTABLE_ALLOWLIST = {"compat"}
+_PUBLIC_UNSTABLE_ALLOWLIST: set[str] = set()
 _ALLOWED_EFFECT_LEVELS = {"pure", "effectful"}
 _ALLOWED_RUN_ID_MODES = {"not_required", "accept_or_generate"}
 _MAX_ALIASES_PER_COMMAND = 1
@@ -89,11 +89,44 @@ def check_internal_commands_not_public(repo_root: Path) -> tuple[int, list[str]]
 
 def check_command_alias_budget(repo_root: Path) -> tuple[int, list[str]]:
     # Current policy: no command aliases in public command registry.
-    # Legacy/compat aliases are represented as distinct commands and should be minimized.
     names = [spec.name for spec in command_registry()]
     if len(names) != len(set(names)):
         return 1, ["alias/name budget exceeded: duplicate command identifiers present"]
     return 0, []
+
+
+def check_no_legacy_command_names(repo_root: Path) -> tuple[int, list[str]]:
+    offenders = [spec.name for spec in command_registry() if "legacy" in spec.name]
+    if offenders:
+        return 1, [f"command names must not contain `legacy`: {', '.join(sorted(offenders))}"]
+    return 0, []
+
+
+def check_no_deprecated_commands(repo_root: Path) -> tuple[int, list[str]]:
+    deprecated = {"compat", "migration", "migrate", "legacy"}
+    offenders = sorted(spec.name for spec in command_registry() if spec.name in deprecated)
+    if offenders:
+        return 1, [f"deprecated commands must not ship pre-1.0: {', '.join(offenders)}"]
+    return 0, []
+
+
+def check_registry_single_source(repo_root: Path) -> tuple[int, list[str]]:
+    src_root = repo_root / "packages/atlasctl/src/atlasctl"
+    command_spec_offenders: list[str] = []
+    checkdef_offenders: list[str] = []
+    for path in sorted(src_root.rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if "CommandSpec(" in text and rel != "packages/atlasctl/src/atlasctl/cli/surface_registry.py":
+            command_spec_offenders.append(rel)
+        if "CheckDef(" in text and "/checks/" in rel and not rel.endswith("__init__.py"):
+            checkdef_offenders.append(rel)
+    errors: list[str] = []
+    if command_spec_offenders:
+        errors.append(f"command registration must be defined only in cli/surface_registry.py: {', '.join(command_spec_offenders)}")
+    if checkdef_offenders:
+        errors.append(f"check registration must be declared in checks/*/__init__.py only: {', '.join(checkdef_offenders)}")
+    return (0 if not errors else 1), errors
 
 
 def check_command_ownership_docs(repo_root: Path) -> tuple[int, list[str]]:

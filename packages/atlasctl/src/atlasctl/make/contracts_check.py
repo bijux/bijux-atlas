@@ -186,7 +186,7 @@ CHECKS: list[MakeCheck] = [
     _check(
         "no-legacy-target-names",
         "Validate no legacy target names",
-        "packages/atlasctl/src/atlasctl/checks/layout/policies/legacy/check_no_legacy_target_names.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/policies/deprecation/check_no_legacy_target_names.py",
         "Rename or delete legacy targets; do not keep compatibility aliases.",
     ),
     _check(

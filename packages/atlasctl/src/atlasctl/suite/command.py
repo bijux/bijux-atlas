@@ -336,11 +336,17 @@ def _first_class_effect_policy_violations(manifest: SuiteManifest) -> list[str]:
 
 
 def _suite_legacy_check_violations(manifests: dict[str, SuiteManifest]) -> list[str]:
+    import inspect
+
     errors: list[str] = []
     for manifest in sorted(manifests.values(), key=lambda item: item.name):
         for check_id in manifest.check_ids:
-            if "legacy" in check_id:
-                errors.append(f"suite `{manifest.name}` must not include legacy checks: {check_id}")
+            check = get_check(check_id)
+            if check is None:
+                continue
+            source = inspect.getsourcefile(check.fn) or ""
+            if "/legacy/" in source.replace("\\", "/"):
+                errors.append(f"suite `{manifest.name}` must not include legacy-path checks: {check_id}")
     return errors
 
 

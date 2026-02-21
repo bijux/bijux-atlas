@@ -113,8 +113,6 @@ def check_command_test_coverage(repo_root: Path) -> tuple[int, list[str]]:
         docs_text = docs_cli.read_text(encoding="utf-8", errors="ignore")
     missing: list[str] = []
     for spec in command_registry():
-        if spec.name in {"legacy", "compat"}:
-            continue
         token = f"\"{spec.name}\""
         if token not in tests_text and f" {spec.name} " not in tests_text and spec.name not in docs_text:
             missing.append(spec.name)
