@@ -4,7 +4,6 @@ import argparse
 import importlib
 import json
 import os
-import re
 import sys
 from datetime import date
 from pathlib import Path
@@ -27,6 +26,14 @@ from .dispatch import dispatch_command
 from .output import no_network_flag_expired, render_error, resolve_output_format
 
 DOMAIN_RUNNERS = {"registry": registry.run, "layout": layout.run}
+_PUBLIC_GROUPS: tuple[tuple[str, str], ...] = (
+    ("docs", "documentation and docs contracts"),
+    ("configs", "configuration validation and sync"),
+    ("dev", "development checks, suites, and tests"),
+    ("ops", "operations and runtime orchestration"),
+    ("policies", "policy enforcement and culprits"),
+    ("internal", "internal/legacy compatibility and diagnostics"),
+)
 
 
 def _import_attr(module_name: str, attr: str):
@@ -167,7 +174,7 @@ def build_parser() -> argparse.ArgumentParser:
     help_parser = sub.add_parser("help", help="print command help")
     help_parser.add_argument("--json", action="store_true", help="emit machine-readable command inventory")
     help_parser.add_argument("--out-file", help="optional output path")
-    help_parser.add_argument("--include-internal", action="store_true", help="include internal/legacy commands")
+    help_parser.add_argument("--include-internal", action="store_true", help=argparse.SUPPRESS)
     explain_parser = sub.add_parser("explain", help="describe command contracts and usage")
     explain_parser.add_argument("subject_or_name")
     explain_parser.add_argument("name", nargs="?")
@@ -192,7 +199,7 @@ def build_parser() -> argparse.ArgumentParser:
     commands_parser.add_argument("--json", action="store_true", help="emit JSON output")
     commands_parser.add_argument("--out-file", help="optional output path for JSON report")
     commands_parser.add_argument("--verify-stability", action="store_true", help="compare command payload against commands golden")
-    commands_parser.add_argument("--include-internal", action="store_true", help="include internal/legacy commands in list output")
+    commands_parser.add_argument("--include-internal", action="store_true", help=argparse.SUPPRESS)
 
     config_parser = sub.add_parser("config", help="configuration commands (alias over `configs`)")
     config_sub = config_parser.add_subparsers(dest="config_cmd", required=True)
@@ -220,12 +227,25 @@ def build_parser() -> argparse.ArgumentParser:
 
     def _format_help_public() -> str:
         text = raw_format_help()
-        # Hide internal-only commands from default root help output.
-        text = re.sub(r"\bcompat,legacy,?", "", text)
-        text = re.sub(r",\s*,", ", ", text)
-        text = re.sub(r"\{\s*,", "{", text)
         lines = [line for line in text.splitlines() if "==SUPPRESS==" not in line]
-        return "\n".join(lines) + ("\n" if text.endswith("\n") else "")
+        header: list[str] = []
+        in_options = False
+        for line in lines:
+            if line.strip() == "options:":
+                in_options = True
+            if in_options:
+                header.append(line)
+        out = [
+            "usage: atlasctl [global options] <group> ...",
+            "",
+            "control-plane groups:",
+            *[f"  {name:<10} {desc}" for name, desc in _PUBLIC_GROUPS],
+            "",
+            "run `atlasctl <group> --help` for group commands.",
+            "",
+            *header,
+        ]
+        return "\n".join(out).rstrip() + "\n"
 
     parser.format_help = _format_help_public  # type: ignore[assignment]
     return parser

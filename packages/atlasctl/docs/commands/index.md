@@ -9,6 +9,7 @@ Public command index (stable surface). Command wiring is registry-first via `src
 - `configs`
 - `contracts`
 - `doctor`
+- `dev`
 - `docs`
 - `gates`
 - `help`
@@ -16,6 +17,7 @@ Public command index (stable surface). Command wiring is registry-first via `src
 - `k8s`
 - `layout`
 - `lint`
+- `list`
 - `load`
 - `obs`
 - `ops`

@@ -186,5 +186,5 @@ def configure_list_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
     parser.add_argument("list_kind", choices=["checks", "commands", "suites"])
     parser.add_argument("--json", action="store_true", help="emit JSON output")
     parser.add_argument("--tags", default="", help="comma-separated tag filters")
-    parser.add_argument("--include-internal", action="store_true", help="include internal entries")
+    parser.add_argument("--include-internal", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--pattern", help="substring or regex pattern filter")
