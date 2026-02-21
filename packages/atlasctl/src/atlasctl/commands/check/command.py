@@ -3,8 +3,10 @@ from __future__ import annotations
 import argparse
 import json
 import subprocess
+import time
 from pathlib import Path
 from typing import Callable
+from xml.etree.ElementTree import Element, SubElement, tostring
 
 from ...checks.registry import check_tags, get_check, list_checks
 from ...checks.execution import run_function_checks
@@ -109,8 +111,136 @@ def _run_suite_domain(ctx: RunContext, suite_name: str, label: str, fail_fast: b
     return code
 
 
+def _parse_select(value: str) -> tuple[str | None, str]:
+    if not value:
+        return None, ""
+    if value.startswith("atlasctl::"):
+        parts = value.split("::")
+        if len(parts) == 3:
+            _, domain, selector = parts
+            return domain.strip() or None, selector.strip()
+    return None, value
+
+
+def _match_selected(check_id: str, title: str, domain: str, selected_domain: str | None, selector: str) -> bool:
+    if selected_domain and domain != selected_domain:
+        return False
+    if not selector:
+        return True
+    return selector == check_id or selector in check_id or selector in title
+
+
+def _write_junitxml(path: Path, rows: list[dict[str, object]]) -> None:
+    suite = Element("testsuite", name="atlasctl-check-run", tests=str(len(rows)), failures=str(sum(1 for row in rows if row["status"] == "FAIL")))
+    for row in rows:
+        case = SubElement(suite, "testcase", classname=f"atlasctl.checks.{row['domain']}", name=str(row["id"]), time=f"{float(row['duration_ms']) / 1000.0:.6f}")
+        if row["status"] == "FAIL":
+            failure = SubElement(case, "failure", message=str(row.get("hint", "failed")))
+            failure.text = str(row.get("detail", "check failed"))
+        if row["status"] == "SKIP":
+            skipped = SubElement(case, "skipped", message="filtered by --select")
+            skipped.text = "filtered by --select"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(tostring(suite, encoding="unicode"), encoding="utf-8")
+
+
+def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
+    selected_domain, selector = _parse_select(ns.select or "")
+    checks = [check for check in list_checks() if selected_domain is None or check.domain == selected_domain]
+    rows: list[dict[str, object]] = []
+    fail_count = 0
+    maxfail = 1 if ns.failfast else max(0, int(ns.maxfail or 0))
+    for check in checks:
+        if not _match_selected(check.check_id, check.title, check.domain, selected_domain, selector):
+            rows.append(
+                {
+                    "id": check.check_id,
+                    "title": check.title,
+                    "domain": check.domain,
+                    "status": "SKIP",
+                    "duration_ms": 0,
+                    "hint": "filtered by --select",
+                    "detail": "",
+                    "owners": list(check.owners),
+                }
+            )
+            continue
+        started = time.perf_counter()
+        try:
+            code, errors = check.fn(ctx.repo_root)
+        except Exception as exc:  # pragma: no cover
+            code, errors = 1, [f"internal check error: {exc}"]
+        duration_ms = int((time.perf_counter() - started) * 1000)
+        status = "PASS" if code == 0 else "FAIL"
+        detail = "; ".join(errors[:2]) if errors else ""
+        rows.append(
+            {
+                "id": check.check_id,
+                "title": check.title,
+                "domain": check.domain,
+                "status": status,
+                "duration_ms": duration_ms,
+                "hint": check.fix_hint,
+                "detail": detail,
+                "owners": list(check.owners),
+            }
+        )
+        if status == "FAIL":
+            fail_count += 1
+            if maxfail and fail_count >= maxfail:
+                break
+
+    if ctx.output_format == "json" or ns.json:
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "kind": "check-run",
+            "status": "ok" if fail_count == 0 else "error",
+            "failed": fail_count,
+            "total": len(rows),
+            "rows": rows,
+        }
+        print(json.dumps(payload, sort_keys=True))
+    else:
+        for row in rows:
+            if ns.run_quiet:
+                print(f"{row['status']} {row['id']}")
+                continue
+            if ns.run_verbose:
+                owners = ",".join(row["owners"]) if row["owners"] else "-"
+                print(f"{row['status']} {row['id']} [{row['duration_ms']}ms] owners={owners} hint={row['hint']}")
+                if row["status"] == "FAIL" and row["detail"]:
+                    print(f"  detail: {row['detail']}")
+                continue
+            print(f"{row['status']} {row['id']} ({row['duration_ms']}ms)")
+        if ns.durations and ns.durations > 0:
+            print("durations:")
+            ranked = sorted(rows, key=lambda item: int(item["duration_ms"]), reverse=True)[: ns.durations]
+            for row in ranked:
+                print(f"- {row['id']}: {row['duration_ms']}ms")
+        print(f"summary: failed={fail_count} total={len(rows)}")
+
+    if ns.json_report:
+        report_path = ensure_evidence_path(ctx, Path(ns.json_report))
+        report_payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "kind": "check-run-report",
+            "failed": fail_count,
+            "total": len(rows),
+            "rows": rows,
+        }
+        report_path.write_text(json.dumps(report_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    if ns.junitxml:
+        junit_path = ensure_evidence_path(ctx, Path(ns.junitxml))
+        _write_junitxml(junit_path, rows)
+    return 0 if fail_count == 0 else 1
+
+
 def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     sub = ns.check_cmd
+    if sub == "run":
+        return _run_check_registry(ctx, ns)
     if sub == "list":
         payload = {
             "schema_name": CHECK_LIST,
@@ -295,6 +425,16 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     parser_sub = parser.add_subparsers(dest="check_cmd", required=True)
 
     parser_sub.add_parser("all", help="run all native atlasctl checks")
+    run = parser_sub.add_parser("run", help="run registered checks with pytest-like output")
+    run.add_argument("--quiet", dest="run_quiet", action="store_true", help="one line per check: PASS/FAIL/SKIP")
+    run.add_argument("--verbose", dest="run_verbose", action="store_true", help="include timing, owners, and failure hints")
+    run.add_argument("--maxfail", type=int, default=0, help="stop after N failing checks (0 disables)")
+    run.add_argument("--failfast", action="store_true", help="stop after first failing check")
+    run.add_argument("--durations", type=int, default=0, help="show N slowest checks in summary")
+    run.add_argument("--junitxml", help="write junit xml output path")
+    run.add_argument("--json-report", help="write json report output path")
+    run.add_argument("--select", help="check selector, e.g. atlasctl::docs::check_x")
+    run.add_argument("--json", action="store_true", help="emit JSON output")
     parser_sub.add_parser("list", help="list registered checks")
     explain = parser_sub.add_parser("explain", help="explain a check id")
     explain.add_argument("check_id")
