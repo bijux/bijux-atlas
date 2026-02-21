@@ -196,8 +196,6 @@ def _gen_openapi(repo_root: Path) -> list[str]:
     )
     if proc.returncode != 0:
         return [proc.stderr.strip() or "openapi generation failed"]
-    payload = _load(out)
-    out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return []
 
 
