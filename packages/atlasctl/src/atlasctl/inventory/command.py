@@ -10,12 +10,10 @@ from .collectors import (
     collect_commands,
     collect_configs,
     collect_contracts,
-    collect_legacy_scripts,
     collect_make,
     collect_ops,
     collect_owners,
     collect_schemas,
-    collect_scripts_migration,
     collect_touched_paths,
 )
 from .rendering import outputs_for, render_md, validate_json_schema
@@ -75,8 +73,6 @@ def run_inventory(
         "owners": collect_owners,
         "contracts": collect_contracts,
         "budgets": collect_budgets,
-        "scripts-migration": collect_scripts_migration,
-        "legacy-scripts": collect_legacy_scripts,
         "commands": collect_commands,
     }
 
@@ -138,8 +134,6 @@ def configure_inventory_parser(sub: argparse._SubParsersAction[argparse.Argument
             "owners",
             "contracts",
             "budgets",
-            "scripts-migration",
-            "legacy-scripts",
             "commands",
             "touched-paths",
         ],
