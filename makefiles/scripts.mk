@@ -163,8 +163,20 @@ internal/scripts/lock-check:
 	@$(ATLAS_SCRIPTS) check python-lock
 	@$(ATLAS_SCRIPTS) check scripts-lock-sync
 
-packages-lock: ## Refresh python lockfile deterministically from requirements.in
-	@python3 -c 'from pathlib import Path; src=Path("packages/atlasctl/requirements.in"); dst=Path("packages/atlasctl/requirements.lock.txt"); lines=[ln.strip() for ln in src.read_text(encoding="utf-8").splitlines() if ln.strip() and not ln.strip().startswith("#")]; dst.write_text("\\n".join(sorted(set(lines)))+"\\n", encoding="utf-8"); print(f"updated {dst}")'
+deps-lock: ## Refresh python lockfile deterministically via atlasctl
+	@$(ATLAS_SCRIPTS) deps lock
+
+deps-sync: ## Install scripts deps from lock into active interpreter
+	@$(ATLAS_SCRIPTS) deps sync
+
+deps-check-venv: ## Validate dependency install/import in a clean temporary venv
+	@$(ATLAS_SCRIPTS) deps check-venv
+
+deps-cold-start: ## Measure atlasctl import cold-start budget
+	@$(ATLAS_SCRIPTS) deps cold-start --runs 3 --max-ms 500
+
+packages-lock: ## Backward-compatible alias for deps-lock
+	@$(MAKE) -s deps-lock
 
 scripts-audit: ## Audit script headers, taxonomy buckets, and no-implicit-cwd contract
 	@$(ATLAS_SCRIPTS) docs script-headers-check --report text
@@ -214,4 +226,4 @@ internal/scripts/all: ## Uniform scripts all target
 	@$(MAKE) internal/scripts/test
 	@$(MAKE) internal/scripts/build
 
-.PHONY: bootstrap-tools no-direct-scripts scripts-all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test scripts-coverage scripts-deps-audit internal/scripts/test-hermetic internal/scripts/sbom internal/scripts/fmt-alias internal/scripts/venv internal/scripts/install-lock internal/scripts/lock-check packages-lock internal/scripts/check internal/scripts/build internal/scripts/fmt internal/scripts/lint internal/scripts/test internal/scripts/clean internal/scripts/install-dev internal/scripts/install internal/scripts/run internal/scripts/all
+.PHONY: bootstrap-tools no-direct-scripts scripts-all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test scripts-coverage scripts-deps-audit deps-lock deps-sync deps-check-venv deps-cold-start internal/scripts/test-hermetic internal/scripts/sbom internal/scripts/fmt-alias internal/scripts/venv internal/scripts/install-lock internal/scripts/lock-check packages-lock internal/scripts/check internal/scripts/build internal/scripts/fmt internal/scripts/lint internal/scripts/test internal/scripts/clean internal/scripts/install-dev internal/scripts/install internal/scripts/run internal/scripts/all
