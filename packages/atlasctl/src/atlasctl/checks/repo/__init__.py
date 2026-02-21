@@ -88,7 +88,13 @@ from .contracts.pyproject_contracts import (
     check_requirements_sync_with_pyproject,
 )
 from .contracts.suite_inventory import check_suite_inventory_policy
-from .contracts.test_guardrails import check_check_test_coverage, check_command_test_coverage, check_test_duplicate_expectations, check_test_ownership_tags
+from .contracts.test_guardrails import (
+    check_check_test_coverage,
+    check_command_test_coverage,
+    check_json_goldens_validate_schema,
+    check_test_duplicate_expectations,
+    check_test_ownership_tags,
+)
 from ..layout.root import (
     FORBIDDEN_PATHS_DESCRIPTION,
     FORBIDDEN_PATHS_CHECK_ID,
@@ -272,6 +278,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.tests_no_duplicate_expectations", "repo", "forbid duplicate test function names across test modules", 300, check_test_duplicate_expectations, fix_hint="Rename duplicated test_* functions to avoid conflicting expectations."),
     CheckDef("repo.test_ownership_tags", "repo", "ensure tests declare ownership tags or live in domain directories", 300, check_test_ownership_tags, fix_hint="Add '# test-domain: <domain>' header to top-level tests."),
     CheckDef("repo.command_test_coverage", "repo", "ensure each command has explicit test coverage marker", 300, check_command_test_coverage, fix_hint="Add at least one test mentioning each command."),
+    CheckDef("repo.json_goldens_validate_schema", "repo", "require schema validation in JSON golden tests", 300, check_json_goldens_validate_schema, fix_hint="Call contracts.validate() before asserting JSON golden snapshots."),
     CheckDef("repo.check_test_coverage", "repo", "ensure each registered check has test or golden coverage marker", 300, check_check_test_coverage, fix_hint="Add test/golden references for uncovered checks."),
     CheckDef(
         "repo.suite_inventory_policy",

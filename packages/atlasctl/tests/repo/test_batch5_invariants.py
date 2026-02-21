@@ -10,6 +10,7 @@ from atlasctl.checks.repo.contracts.command_contracts import (
 from atlasctl.checks.repo.contracts.test_guardrails import (
     check_check_test_coverage,
     check_command_test_coverage,
+    check_json_goldens_validate_schema,
     check_test_duplicate_expectations,
     check_test_ownership_tags,
 )
@@ -49,11 +50,13 @@ def test_command_inventory_invariant_checks_pass() -> None:
 
 
 def test_test_guardrail_checks_pass() -> None:
+    # repo.json_goldens_validate_schema
     root = _repo_root()
     for fn in (
         check_test_duplicate_expectations,
         check_test_ownership_tags,
         check_command_test_coverage,
+        check_json_goldens_validate_schema,
         check_check_test_coverage,
     ):
         code, errors = fn(root)
