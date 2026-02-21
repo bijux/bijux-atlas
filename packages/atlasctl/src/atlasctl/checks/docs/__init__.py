@@ -4,6 +4,7 @@ from ..repo.native import check_docs_no_ops_generated_run_paths, check_docs_scri
 from ..base import CheckDef
 from .integrity import (
     check_command_group_docs_pages,
+    check_docs_check_id_drift,
     check_docs_registry_command_drift,
     check_docs_index_complete,
     check_docs_links_exist,
@@ -20,6 +21,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("docs.index_complete", "docs", "validate docs/index.md covers all docs files", 600, check_docs_index_complete, fix_hint="Add missing docs entries to packages/atlasctl/docs/index.md."),
     CheckDef("docs.command_group_pages", "docs", "require command-group docs pages with examples section", 600, check_command_group_docs_pages, fix_hint="Add docs/commands/groups/<group>.md pages with ## Examples."),
     CheckDef("docs.registry_command_drift", "docs", "forbid docs references to unknown atlasctl commands", 600, check_docs_registry_command_drift, fix_hint="Fix stale command references to match cli surface registry."),
+    CheckDef("docs.check_id_drift", "docs", "forbid docs references to unknown check ids", 600, check_docs_check_id_drift, fix_hint="Update check:id references to registered check ids."),
     CheckDef("docs.stable_command_examples", "docs", "require stable commands to have examples in group docs", 600, check_stable_command_examples_in_group_docs, fix_hint="Add command entries and atlasctl examples to docs/commands/groups/*.md."),
     CheckDef("docs.migration_not_stale", "docs", "forbid stale migration wording once removals are active", 600, check_migration_docs_not_stale, fix_hint="Remove stale parallel-legacy wording from docs/migration pages."),
 )
