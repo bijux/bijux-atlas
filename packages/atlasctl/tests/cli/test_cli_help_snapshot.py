@@ -4,7 +4,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[4]
 
 
 def test_cli_help_snapshot() -> None:
@@ -18,5 +18,5 @@ def test_cli_help_snapshot() -> None:
         check=False,
     )
     assert proc.returncode == 0, proc.stderr
-    golden = (Path(__file__).resolve().parent / "goldens" / "cli_help_snapshot.txt").read_text(encoding="utf-8")
+    golden = (ROOT / "packages/atlasctl/tests/goldens/cli_help_snapshot.txt").read_text(encoding="utf-8")
     assert proc.stdout == golden

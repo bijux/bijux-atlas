@@ -1,6 +1,7 @@
 check
 configs
 contracts
+dev
 docs
 doctor
 gates
@@ -8,6 +9,7 @@ inventory
 k8s
 layout
 lint
+list
 load
 obs
 ops

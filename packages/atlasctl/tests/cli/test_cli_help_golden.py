@@ -5,7 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[4]
 
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
@@ -25,7 +25,7 @@ def test_help_json_command_names_match_golden() -> None:
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
     names = [entry["name"] for entry in payload["commands"]]
-    golden = (Path(__file__).resolve().parent / "goldens" / "cli_help_commands.expected.txt").read_text(
+    golden = (ROOT / "packages/atlasctl/tests/goldens/cli_help_commands.expected.txt").read_text(
         encoding="utf-8"
     )
     expected = [line.strip() for line in golden.splitlines() if line.strip()]
