@@ -60,8 +60,8 @@ def test_group_representative_outputs_golden() -> None:
     assert json.dumps(payload, sort_keys=True) == _golden("group-output-representatives.json.golden")
 
 
-def test_refgrade_suite_has_contracts_validate_gate() -> None:
+def test_required_suite_has_contracts_validate_gate() -> None:
     _, suites = load_suites(Path(__file__).resolve().parents[4])
-    refgrade = suites["refgrade"]
-    assert "cmd:atlasctl contracts validate --report json" in refgrade.items
-    assert "cmd:atlasctl contracts validate-self --report json" in refgrade.items
+    required = suites["required"]
+    assert "cmd:atlasctl contracts validate --report json" in required.items
+    assert "cmd:atlasctl contracts validate-self --report json" in required.items

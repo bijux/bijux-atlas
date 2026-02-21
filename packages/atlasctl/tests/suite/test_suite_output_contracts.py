@@ -10,10 +10,10 @@ def _golden(name: str) -> str:
     return golden_text(name)
 
 
-def test_suite_refgrade_list_output_golden() -> None:
-    proc = run_atlasctl("--quiet", "suite", "run", "refgrade", "--list", "--json")
+def test_suite_required_list_output_golden() -> None:
+    proc = run_atlasctl("--quiet", "suite", "run", "required", "--list", "--json")
     assert proc.returncode == 0, proc.stderr
-    assert proc.stdout.strip() == _golden("suite_refgrade.expected.txt")
+    assert proc.stdout.strip() == _golden("suite_required.expected.txt")
 
 
 def test_suite_run_json_schema_contract(tmp_path) -> None:

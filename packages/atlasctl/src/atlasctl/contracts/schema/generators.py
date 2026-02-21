@@ -253,7 +253,7 @@ def generate_schema_samples(repo_root: Path) -> list[str]:
                     "domain": "repo",
                     "category": "hygiene",
                     "severity": "error",
-                    "tags": ["repo", "refgrade_required"],
+                    "tags": ["repo", "required"],
                     "owners": ["platform"],
                 }
             ],
@@ -263,11 +263,11 @@ def generate_schema_samples(repo_root: Path) -> list[str]:
             "schema_version": 1,
             "tool": "atlasctl",
             "status": "ok",
-            "markers": ["refgrade", "ci", "local", "slow"],
+            "markers": ["required", "ci", "local", "slow"],
             "suites": [
                 {
-                    "name": "refgrade",
-                    "markers": ["refgrade_required"],
+                    "name": "required",
+                    "markers": ["required"],
                     "required_env": ["PYTHONPATH"],
                     "default_effects": ["read", "process"],
                     "time_budget_ms": 300000,

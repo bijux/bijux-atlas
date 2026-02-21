@@ -161,8 +161,8 @@
       "path": "suite/suite-membership.json.golden"
     },
     {
-      "name": "suite_refgrade.expected.txt",
-      "path": "suite/suite_refgrade.expected.txt"
+      "name": "suite_required.expected.txt",
+      "path": "suite/suite_required.expected.txt"
     },
     {
       "name": "test_golden_manifest.py",

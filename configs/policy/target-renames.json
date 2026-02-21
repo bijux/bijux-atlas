@@ -179,7 +179,7 @@
     "repo.pyproject_required_blocks": "checks_repo_pyproject_required_blocks",
     "repo.python_module_help": "checks_repo_python_module_help",
     "repo.python_requires_version_and_ci": "checks_repo_python_requires_version_and_ci",
-    "repo.refgrade_target_shape": "checks_repo_refgrade_target_shape",
+    "repo.required_target_shape": "checks_repo_required_target_shape",
     "repo.registry_definition_boundary": "checks_repo_registry_definition_boundary",
     "repo.registry_single_source": "checks_repo_registry_single_source",
     "repo.requirements_artifact_policy": "checks_repo_requirements_artifact_policy",

@@ -249,7 +249,7 @@ path = "packages/atlasctl/src/atlasctl/legacy/docs_runtime_chunks"
 reason = "legacy compatibility runtime shards with dynamic loading"
 
 [tool.atlasctl.suites]
-default = "refgrade"
+default = "required"
 
 [tool.atlasctl.suites.fast]
 includes = []
@@ -260,11 +260,11 @@ items = [
   "cmd:atlasctl policies culprits-suite --report json",
 ]
 
-[tool.atlasctl.suites.refgrade]
+[tool.atlasctl.suites.required]
 includes = ["fast"]
 complete = true
 items = [
-  "check-tag:refgrade_required",
+  "check-tag:required",
   "cmd:atlasctl policies check-dir-entry-budgets --json",
   "cmd:atlasctl policies check-py-files-per-dir --json",
   "cmd:atlasctl contracts validate --report json",
@@ -281,13 +281,13 @@ items = [
 ]
 
 [tool.atlasctl.suites.ci]
-includes = ["refgrade"]
+includes = ["required"]
 items = [
   "cmd:atlasctl test run unit",
   "cmd:atlasctl policies check --report json",
 ]
 
-[tool.atlasctl.suites.refgrade_proof]
+[tool.atlasctl.suites.required_proof]
 includes = ["ci"]
 complete = true
 items = [
@@ -301,7 +301,7 @@ items = [
 ]
 
 [tool.atlasctl.suites.release_0_1]
-includes = ["refgrade_proof"]
+includes = ["required_proof"]
 complete = true
 items = [
   "cmd:atlasctl release checklist --dry-run --json",

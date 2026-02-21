@@ -306,6 +306,6 @@ packages/atlasctl/tests/test_quality_contracts.py
 packages/atlasctl/tests/test_report_command.py
 python-toolchain.toml
 configs/layout/scripts-references-allowlist.txt
-packages/atlasctl/tests/test_refgrade_proof.py
+packages/atlasctl/tests/repo/contracts/test_required_proof.py
 docs/architecture/scripting.md
 configs/repo/root-files-allowlist.txt

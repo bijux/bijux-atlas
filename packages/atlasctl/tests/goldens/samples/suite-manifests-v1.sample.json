@@ -1,6 +1,6 @@
 {
   "markers": [
-    "refgrade",
+    "required",
     "ci",
     "local",
     "slow"
@@ -15,9 +15,9 @@
         "process"
       ],
       "markers": [
-        "refgrade_required"
+        "required"
       ],
-      "name": "refgrade",
+      "name": "required",
       "required_env": [
         "PYTHONPATH"
       ],

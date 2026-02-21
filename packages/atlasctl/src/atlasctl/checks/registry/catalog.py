@@ -118,6 +118,8 @@ def check_tags(check: CheckDef) -> tuple[str, ...]:
     tags = set(check.tags)
     tags.add(check.domain)
     tags.add(_DOMAIN_TO_STABLE_TAG.get(check.domain, "internal"))
+    if "internal" not in tags and "internal-only" not in tags:
+        tags.add("required")
     if check.slow:
         tags.add("slow")
     else:

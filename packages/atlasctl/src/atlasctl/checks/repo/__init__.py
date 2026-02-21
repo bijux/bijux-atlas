@@ -105,7 +105,7 @@ from .reachability import (
     check_no_legacy_importers,
     check_repo_check_modules_registered,
 )
-from .contracts.refgrade_proof import check_refgrade_target_shape
+from .contracts.required_proof import check_required_target_shape
 from .enforcement.import_policy import (
     check_cli_import_scope,
     check_command_import_lint,
@@ -528,12 +528,12 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef(
         "repo.suite_inventory_policy",
         "repo",
-        "validate suite inventory coverage and refgrade-required tag policy",
+        "validate suite inventory coverage and required tag policy",
         300,
         check_suite_inventory_policy,
-        fix_hint="Assign checks to suites and ensure refgrade complete suites include all refgrade_required checks.",
+        fix_hint="Assign checks to suites and ensure required complete suites include all required checks.",
     ),
-    CheckDef("repo.refgrade_target_shape", "repo", "enforce package root minimalism and src no-symlink target shape", 300, check_refgrade_target_shape, fix_hint="Keep package-root items minimal and remove symlinks from src tree."),
+    CheckDef("repo.required_target_shape", "repo", "enforce package root minimalism and src no-symlink target shape", 300, check_required_target_shape, fix_hint="Keep package-root items minimal and remove symlinks from src tree."),
     CheckDef("repo.internal_import_boundaries", "repo", "forbid atlasctl.internal imports outside internal namespace", 300, check_internal_import_boundaries, fix_hint="Route shared helpers through public modules instead of atlasctl.internal."),
     CheckDef("repo.modern_no_legacy_imports", "repo", "forbid modern modules from importing atlasctl.legacy", 300, check_no_modern_imports_from_legacy, fix_hint="Migrate callers to canonical modules under atlasctl.core/commands/checks."),
     CheckDef("repo.no_legacy_module_paths", "repo", "forbid legacy module paths in atlasctl src tree", 300, check_no_legacy_module_paths, fix_hint="Delete or move modules out of any */legacy/* path."),

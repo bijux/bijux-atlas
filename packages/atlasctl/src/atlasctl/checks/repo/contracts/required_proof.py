@@ -16,7 +16,7 @@ _ALLOWED_PACKAGE_ROOT_ITEMS = {
 }
 
 
-def check_refgrade_target_shape(repo_root: Path) -> tuple[int, list[str]]:
+def check_required_target_shape(repo_root: Path) -> tuple[int, list[str]]:
     package_root = repo_root / "packages/atlasctl"
     errors: list[str] = []
 
