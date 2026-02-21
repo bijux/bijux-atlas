@@ -9,6 +9,7 @@ from .contracts import CHECKS as CHECKS_CONTRACTS
 from .configs import CHECKS as CHECKS_CONFIGS
 from .docker import CHECKS as CHECKS_DOCKER
 from .docs import CHECKS as CHECKS_DOCS
+from .licensing import CHECKS as CHECKS_LICENSE
 from .make import CHECKS as CHECKS_MAKE
 from .ops import CHECKS as CHECKS_OPS
 from .python import CHECKS as CHECKS_PYTHON
@@ -17,6 +18,7 @@ from .repo import CHECKS as CHECKS_REPO
 
 _CHECKS: tuple[CheckDef, ...] = (
     *CHECKS_REPO,
+    *CHECKS_LICENSE,
     *CHECKS_MAKE,
     *CHECKS_DOCS,
     *CHECKS_OPS,
