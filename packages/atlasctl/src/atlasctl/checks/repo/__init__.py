@@ -39,6 +39,7 @@ from .contracts.command_contracts import (
     check_no_duplicate_command_names,
     check_no_undocumented_help_commands,
     check_public_commands_docs_index,
+    check_stable_command_no_breaking_changes,
 )
 from .enforcement.argparse_policy import check_argparse_policy
 from .enforcement.package_shape import (
@@ -403,6 +404,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.public_commands_docs_index", "repo", "ensure public commands are listed in docs/commands/index.md", 300, check_public_commands_docs_index, fix_hint="Add missing public commands to packages/atlasctl/docs/commands/index.md."),
     CheckDef("repo.no_undocumented_help_commands", "repo", "forbid undocumented commands in public help surface", 300, check_no_undocumented_help_commands, fix_hint="Document command in packages/atlasctl/docs/commands/index.md or mark it internal."),
     CheckDef("repo.command_surface_stability", "repo", "enforce strict command surface compatibility against commands golden", 300, check_command_surface_stability, fix_hint="Regenerate commands goldens intentionally via `python -m atlasctl.cli gen goldens`."),
+    CheckDef("repo.stable_command_no_breaking_changes", "repo", "forbid breaking changes in stable command contracts", 300, check_stable_command_no_breaking_changes, fix_hint="Avoid breaking stable command metadata or intentionally refresh commands goldens."),
     CheckDef("repo.cli_canonical_paths", "repo", "enforce canonical cli parser/dispatch/output path", 300, check_cli_canonical_paths, fix_hint="Keep parser in cli/main.py, dispatch in cli/dispatch.py, and payload formatting in cli/output.py."),
     CheckDef("repo.no_duplicate_command_impl_patterns", "repo", "forbid duplicate command implementation patterns", 300, check_no_duplicate_command_implementation_patterns, fix_hint="Pick one command implementation pattern and remove duplicate modules."),
     CheckDef("repo.command_ownership_docs", "repo", "ensure command owners are documented", 300, check_command_ownership_docs, fix_hint="Document all command owners in packages/atlasctl/docs/ownership.md."),

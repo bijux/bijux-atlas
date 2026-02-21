@@ -229,6 +229,37 @@ def check_command_surface_stability(repo_root: Path) -> tuple[int, list[str]]:
     return 0, []
 
 
+def check_stable_command_no_breaking_changes(repo_root: Path) -> tuple[int, list[str]]:
+    golden_path = repo_root / "packages/atlasctl/tests/goldens/commands.json.golden"
+    if not golden_path.exists():
+        return 1, [f"{golden_path.relative_to(repo_root).as_posix()} missing"]
+    expected = json.loads(golden_path.read_text(encoding="utf-8"))
+    expected_rows = [row for row in expected.get("commands", []) if bool(row.get("stable", False))]
+    current_rows = [
+        {
+            "name": cmd.name,
+            "help": cmd.help_text,
+            "stable": cmd.stable,
+            "touches": list(cmd.touches),
+            "tools": list(cmd.tools),
+            "failure_modes": list(cmd.failure_modes),
+            "owner": cmd.owner,
+            "doc_link": cmd.doc_link,
+            "effect_level": cmd.effect_level,
+            "run_id_mode": cmd.run_id_mode,
+            "supports_dry_run": cmd.supports_dry_run,
+            "aliases": list(cmd.aliases),
+            "purpose": cmd.purpose or cmd.help_text,
+            "examples": list(cmd.examples),
+        }
+        for cmd in sorted(command_registry(), key=lambda item: item.name)
+        if cmd.stable
+    ]
+    if current_rows != expected_rows:
+        return 1, ["stable command contract breaking change detected; update commands golden intentionally"]
+    return 0, []
+
+
 def command_lint_payload(repo_root: Path) -> dict[str, object]:
     checks: list[tuple[str, tuple[int, list[str]]]] = [
         ("command_metadata", check_command_metadata_contract(repo_root)),
@@ -238,6 +269,7 @@ def command_lint_payload(repo_root: Path) -> dict[str, object]:
         ("cli_canonical_paths", check_cli_canonical_paths(repo_root)),
         ("duplicate_impl_patterns", check_no_duplicate_command_implementation_patterns(repo_root)),
         ("surface_stability", check_command_surface_stability(repo_root)),
+        ("stable_no_breaking_changes", check_stable_command_no_breaking_changes(repo_root)),
         ("alias_budget", check_command_alias_budget(repo_root)),
     ]
     return {
@@ -262,6 +294,7 @@ def runtime_contracts_payload(repo_root: Path) -> dict[str, object]:
         (check_cli_canonical_paths, "contracts.cli_canonical_paths"),
         (check_no_duplicate_command_implementation_patterns, "contracts.duplicate_impl_patterns"),
         (check_command_surface_stability, "contracts.command_surface_stability"),
+        (check_stable_command_no_breaking_changes, "contracts.stable_no_breaking_changes"),
     ):
         code, errors = fn(repo_root)
         checks.append({"id": cid, "status": "pass" if code == 0 else "fail", "errors": sorted(errors)})

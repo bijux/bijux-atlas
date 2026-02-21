@@ -65,6 +65,10 @@ def _commands_payload(include_internal: bool = False) -> dict[str, object]:
         "schema_version": 1,
         "tool": "atlasctl",
         "status": "ok",
+        "ok": True,
+        "errors": [],
+        "warnings": [],
+        "meta": {"include_internal": include_internal},
         "run_id": "",
         "commands": [
             {
