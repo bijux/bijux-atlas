@@ -19,8 +19,8 @@ def run_release_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.release_cmd != "checklist":
         return 2
     checks = [
-        ("suite_refgrade", ["python3", "-m", "atlasctl.cli", "--quiet", "suite", "run", "refgrade", "--json"]),
-        ("suite_refgrade_proof", ["python3", "-m", "atlasctl.cli", "--quiet", "suite", "run", "refgrade_proof", "--json"]),
+        ("suite_required", ["python3", "-m", "atlasctl.cli", "--quiet", "suite", "run", "required", "--json"]),
+        ("suite_required_proof", ["python3", "-m", "atlasctl.cli", "--quiet", "suite", "run", "required_proof", "--json"]),
         ("suite_release_0_1", ["python3", "-m", "atlasctl.cli", "--quiet", "suite", "run", "release_0_1", "--json"]),
         ("suite_inventory", ["python3", "-m", "atlasctl.cli", "--quiet", "suite", "check", "--json"]),
     ]

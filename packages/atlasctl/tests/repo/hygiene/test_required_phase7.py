@@ -28,7 +28,7 @@ def test_no_duplicate_command_names_and_no_shadow_import_modules() -> None:
     assert overlap == [], f"top-level atlasctl modules shadow stdlib names: {overlap}"
 
 
-def test_refgrade_target_tree_shape() -> None:
+def test_required_target_tree_shape() -> None:
     package_root = ROOT / "packages/atlasctl"
     allowed = {
         "src",

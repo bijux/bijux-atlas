@@ -10,16 +10,16 @@ def test_suite_list_json() -> None:
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
     assert payload["tool"] == "atlasctl"
-    assert payload["default"] == "refgrade"
+    assert payload["default"] == "required"
     names = [item["name"] for item in payload["suites"]]
-    assert {"fast", "refgrade", "ops", "ci", "refgrade_proof", "local", "slow", "internal"}.issubset(set(names))
+    assert {"fast", "required", "ops", "ci", "required_proof"}.issubset(set(names))
 
 
-def test_suite_run_list_refgrade() -> None:
-    proc = run_atlasctl("--quiet", "suite", "run", "refgrade", "--list", "--json")
+def test_suite_run_list_required() -> None:
+    proc = run_atlasctl("--quiet", "suite", "run", "required", "--list", "--json")
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
-    assert payload["suite"] == "refgrade"
+    assert payload["suite"] == "required"
     assert payload["total_count"] >= 1
     assert any(item.startswith("check:") for item in payload["tasks"])
 
@@ -63,8 +63,8 @@ def test_ci_suite_stable_and_contains_expected_items() -> None:
     assert len([task for task in tasks if "atlasctl test run" in task]) == 1
 
 
-def test_refgrade_proof_suite_contains_release_gates() -> None:
-    proc = run_atlasctl("--quiet", "suite", "refgrade_proof", "--list", "--json")
+def test_required_proof_suite_contains_release_gates() -> None:
+    proc = run_atlasctl("--quiet", "suite", "required_proof", "--list", "--json")
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
     tasks = set(payload["check_ids"])
@@ -126,10 +126,10 @@ def test_suite_coverage_json() -> None:
 
 
 def test_suite_run_dry_run() -> None:
-    proc = run_atlasctl("--quiet", "suite", "run", "refgrade", "--dry-run", "--json")
+    proc = run_atlasctl("--quiet", "suite", "run", "required", "--dry-run", "--json")
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
-    assert payload["suite"] == "refgrade"
+    assert payload["suite"] == "required"
     assert payload["mode"] == "dry-run"
     assert payload["tasks"]
 
@@ -138,7 +138,7 @@ def test_suite_list_by_group() -> None:
     proc = run_atlasctl("--quiet", "suite", "list", "--by-group", "--json")
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
-    assert "refgrade" in payload["by_group"]
+    assert "required" in payload["by_group"]
     assert "slow" in payload["by_group"]
 
 

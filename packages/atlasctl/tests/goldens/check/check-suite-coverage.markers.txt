@@ -177,7 +177,7 @@ repo.pyproject_no_duplicate_tool_config
 repo.pyproject_required_blocks
 repo.python_module_help
 repo.python_requires_version_and_ci
-repo.refgrade_target_shape
+repo.required_target_shape
 repo.registry_definition_boundary
 repo.registry_single_source
 repo.requirements_artifact_policy

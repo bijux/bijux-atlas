@@ -35,11 +35,11 @@ _SUITE_MANIFEST_SPECS: tuple[SuiteManifestSpec, ...] = (
     SuiteManifestSpec("configs", ("configs",), ("PYTHONPATH",), ("read",), 120_000),
     SuiteManifestSpec("local", ("fast",), ("PYTHONPATH",), ("read", "process"), 120_000),
     SuiteManifestSpec("slow", ("slow",), ("PYTHONPATH",), ("read", "process"), 300_000),
-    SuiteManifestSpec("refgrade", ("refgrade_required",), ("PYTHONPATH",), ("read", "process"), 300_000),
-    SuiteManifestSpec("ci", ("refgrade_required",), ("PYTHONPATH",), ("read", "process"), 420_000),
+    SuiteManifestSpec("required", ("required",), ("PYTHONPATH",), ("read", "process"), 300_000),
+    SuiteManifestSpec("ci", ("required",), ("PYTHONPATH",), ("read", "process"), 420_000),
     SuiteManifestSpec(
-        "refgrade_proof",
-        ("refgrade_required",),
+        "required_proof",
+        ("required",),
         ("PYTHONPATH",),
         ("read", "process"),
         480_000,
@@ -68,7 +68,7 @@ _SUITE_MANIFEST_SPECS: tuple[SuiteManifestSpec, ...] = (
     ),
 )
 
-_SUITE_MARKERS: tuple[str, ...] = ("refgrade", "ci", "local", "slow")
+_SUITE_MARKERS: tuple[str, ...] = ("required", "ci", "local", "slow")
 
 
 def suite_manifest_specs() -> tuple[SuiteManifestSpec, ...]:

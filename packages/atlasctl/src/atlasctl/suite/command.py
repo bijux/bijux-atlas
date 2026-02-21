@@ -65,7 +65,7 @@ def load_suites(repo_root: Path) -> tuple[str, dict[str, SuiteSpec]]:
     root = data.get("tool", {}).get("atlasctl", {}).get("suites", {})
     if not isinstance(root, dict):
         raise ScriptError("invalid [tool.atlasctl.suites] config", ERR_CONFIG)
-    default = str(root.get("default", "refgrade")).strip() or "refgrade"
+    default = str(root.get("default", "required")).strip() or "required"
     suites: dict[str, SuiteSpec] = {}
     for name, value in root.items():
         if name == "default" or not isinstance(value, dict):
@@ -249,13 +249,13 @@ def suite_inventory_violations(suites: dict[str, SuiteSpec]) -> list[str]:
             f"orphan check not assigned to any suite: {check_id}; every new check must declare suite membership or be internal-only"
         )
 
-    refgrade = suites.get("refgrade")
-    if refgrade and refgrade.complete:
-        refgrade_checks = {value for kind, value in task_sets.get("refgrade", set()) if kind == "check"}
-        required = {check.check_id for check in list_checks() if "refgrade_required" in check_tags(check)}
-        missing = sorted(required - refgrade_checks)
+    required_suite = suites.get("required")
+    if required_suite and required_suite.complete:
+        required_suite_checks = {value for kind, value in task_sets.get("required", set()) if kind == "check"}
+        required_tagged_checks = {check.check_id for check in list_checks() if "required" in check_tags(check)}
+        missing = sorted(required_tagged_checks - required_suite_checks)
         for check_id in missing:
-            errors.append(f"refgrade complete policy violation: missing refgrade_required check `{check_id}`")
+            errors.append(f"required complete policy violation: missing required check `{check_id}`")
 
     command_catalog = {spec.name for spec in command_registry()}
     for suite_name, entries in sorted(task_sets.items()):
@@ -298,7 +298,7 @@ def _suite_markers_docs_violations(repo_root: Path) -> list[str]:
         return [f"missing suite markers docs file: {path.relative_to(repo_root).as_posix()}"]
     text = path.read_text(encoding="utf-8")
     errors: list[str] = []
-    for marker in ("refgrade", "ci", "local", "slow"):
+    for marker in ("required", "ci", "local", "slow"):
         if f"`{marker}`" not in text:
             errors.append(f"suite markers docs drift: missing marker `{marker}` in packages/atlasctl/docs/control-plane/suite-markers.md")
     return errors
@@ -812,7 +812,7 @@ def configure_suite_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     diff.add_argument("run2")
     diff.add_argument("--json", action="store_true")
 
-    for suite_name in ("docs", "dev", "ops", "policies", "configs", "local", "slow", "refgrade", "ci", "refgrade_proof", "all"):
+    for suite_name in ("docs", "dev", "ops", "policies", "configs", "local", "slow", "required", "ci", "required_proof", "all"):
         sp = suite_sub.add_parser(suite_name, help=f"run first-class `{suite_name}` suite")
         sp.add_argument("--json", action="store_true", help="emit machine-readable results")
         sp.add_argument("--list", action="store_true", help="list suite checks only")

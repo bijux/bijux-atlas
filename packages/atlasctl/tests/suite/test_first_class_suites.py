@@ -44,7 +44,7 @@ def test_suite_inventory_shape() -> None:
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
     names = {item["name"] for item in payload["first_class_suites"]}
-    assert {"docs", "dev", "ops", "policies", "configs", "local", "slow", "refgrade", "ci", "all", "internal", "refgrade_proof"}.issubset(names)
+    assert {"docs", "dev", "ops", "policies", "configs", "local", "slow", "required", "ci", "all", "internal", "required_proof"}.issubset(names)
     configured = {item["name"] for item in payload["suites"]}
     assert "release_0_1" in configured
 

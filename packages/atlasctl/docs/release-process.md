@@ -1,7 +1,7 @@
 # Atlasctl Release Process
 
 1. Run `atlasctl suite run all --json`.
-2. Run `atlasctl suite run refgrade_proof --json`.
+2. Run `atlasctl suite run required_proof --json`.
 3. Run `atlasctl suite check --json` and ensure suite inventory is clean.
 4. Run `atlasctl contracts validate --report json`.
 5. Run `atlasctl docs validate --report json`.
