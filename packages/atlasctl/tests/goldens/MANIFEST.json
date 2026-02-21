@@ -69,6 +69,10 @@
       "path": "help/help.json.golden"
     },
     {
+      "name": "make_help_snapshot.txt",
+      "path": "help/make_help_snapshot.txt"
+    },
+    {
       "name": "commands.json.golden",
       "path": "list/commands.json.golden"
     },

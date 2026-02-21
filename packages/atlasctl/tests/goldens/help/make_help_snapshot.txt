@@ -1,0 +1,17 @@
+Public Make Targets:
+  [global]
+    audit          Run dependency and policy audits
+    ci             Run deterministic CI superset
+    docs           Run docs verification lane
+    doctor         Print tool and environment diagnostics
+    fmt            Run formatter checks
+    k8s            Run canonical k8s verification lane
+    lint           Run lint checks
+    load           Run canonical load verification lane
+    nightly        Run slow nightly suites
+    obs            Run canonical observability verification lane
+    ops            Run ops verification lane
+    report         Print latest lane summary and confidence report
+    root           Run CI-fast lane set and print lane summary
+    root-local     Run local full lane set and print lane summary
+    test           Run test suite
