@@ -2,7 +2,7 @@
 # Public targets: none
 SHELL := /bin/sh
 
-CANONICAL_PATHS := artifacts crates docs makefiles ops scripts configs docker .github .cargo
+CANONICAL_PATHS := artifacts crates docs makefiles ops configs docker .github .cargo
 
 path-contract-check: ## Validate canonical repository path contract and forbidden raw paths
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/root/check_forbidden_paths.py
