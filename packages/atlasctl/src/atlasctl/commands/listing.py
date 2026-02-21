@@ -5,7 +5,7 @@ import re
 from typing import Any
 
 from ..checks.registry import check_tags, list_checks
-from ..cli.registry import command_registry
+from ..cli.surface_registry import command_registry
 from ..core.effects import command_group
 from ..core.serialize import dumps_json
 from ..core.context import RunContext

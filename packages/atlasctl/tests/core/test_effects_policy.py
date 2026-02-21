@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from atlasctl.cli.registry import command_registry
+from atlasctl.cli.surface_registry import command_registry
 from atlasctl.core.effects import command_effects, command_group, group_allowed_effects
 from atlasctl.network_guard import resolve_network_mode
 

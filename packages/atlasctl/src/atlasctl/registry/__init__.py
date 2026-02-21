@@ -5,7 +5,7 @@ from .checks import CheckRecord
 from .commands import CommandRecord
 from .suites import SuiteRecord
 from ..core.context import RunContext
-from ..cli.registry import domain_payload
+from ..cli.surface_registry import domain_payload
 
 
 def run(ctx: RunContext) -> dict[str, object]:

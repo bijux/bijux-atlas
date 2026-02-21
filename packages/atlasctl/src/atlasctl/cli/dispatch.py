@@ -7,7 +7,7 @@ import sys
 from collections.abc import Callable
 
 from .. import __version__
-from ..cli.registry import command_spec, render_payload
+from ..cli.surface_registry import command_spec, render_payload
 from ..core.context import RunContext
 from ..core.script_runner import run_script
 from ..core.serialize import dumps_json

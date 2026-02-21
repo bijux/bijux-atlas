@@ -15,7 +15,7 @@ from xml.etree.ElementTree import Element, SubElement, tostring
 
 from ..checks.execution import run_function_checks
 from ..checks.registry import check_tags, get_check, list_checks
-from ..cli.registry import command_registry
+from ..cli.surface_registry import command_registry
 from ..contracts.catalog import schema_path_for
 from ..contracts.ids import SUITE_RUN
 from ..contracts.validate_self import validate_self

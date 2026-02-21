@@ -5,7 +5,7 @@ import json
 import re
 from pathlib import Path
 
-from ....cli.registry import command_registry
+from ....cli.surface_registry import command_registry
 
 
 def _tests_root(repo_root: Path) -> Path:

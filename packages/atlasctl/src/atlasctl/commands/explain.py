@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from ..checks.registry import get_check
-from ..cli.registry import command_registry
+from ..cli.surface_registry import command_registry
 from ..suite.manifests import load_first_class_suites
 
 

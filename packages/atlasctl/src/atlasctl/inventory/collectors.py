@@ -151,7 +151,7 @@ def collect_legacy_scripts(repo_root: Path) -> dict[str, object]:
 
 
 def collect_commands(_repo_root: Path) -> dict[str, object]:
-    from ..cli.registry import registry as command_registry
+    from ..cli.surface_registry import registry as command_registry
 
     commands = [{"name": c.name, "help": c.help_text, "stable": bool(c.stable)} for c in sorted(command_registry(), key=lambda c: c.name)]
     return {"kind": "commands", "commands": commands, "count": len(commands)}

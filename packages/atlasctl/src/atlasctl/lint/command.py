@@ -6,7 +6,7 @@ import json
 from ..core.context import RunContext
 from ..core.fs import ensure_evidence_path
 from ..core.schema.schema_utils import validate_json
-from .runner import run_lint_suite
+from .suite_engine import run_lint_suite
 
 SUITES = ("ops", "repo", "makefiles", "docs", "configs", "packages")
 

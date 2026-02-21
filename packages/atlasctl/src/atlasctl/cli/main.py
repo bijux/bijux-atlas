@@ -9,7 +9,7 @@ from datetime import date
 from pathlib import Path
 
 from .. import __version__, layout, registry
-from ..cli.registry import command_registry, register_domain_parser
+from ..cli.surface_registry import command_registry, register_domain_parser
 from ..core.context import RunContext
 from ..core.env import getenv, setdefault as env_setdefault, setenv
 from ..core.exec import check_output
