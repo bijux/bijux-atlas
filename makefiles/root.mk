@@ -386,7 +386,7 @@ local/all: ## Run all meaningful local gates
 	@PARALLEL="$${PARALLEL:-1}" RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-local-all-$(MAKE_RUN_TS)}}" MODE=root-local ./ops/run/root-lanes.sh
 
 ci/all: ## Deterministic CI superset
-	@$(call with_iso,ci-all,$(MAKE) -s gates-check lane-cargo lane-docs lane-scripts lane-configs lane-policies lane-ops ci-release-binaries ci-docs-build ci-release-compat-matrix-verify)
+	@$(ATLAS_SCRIPTS) suite run ci --json --target-dir artifacts/reports/atlasctl/suite-ci >/dev/null
 
 nightly/all: ## Slow nightly suites (perf/load/drills/realdata)
 	@$(call with_iso,nightly-all,$(MAKE) -s ci/all ops-load-nightly perf/regression-check ops-drill-suite ops-drill-metric-cardinality-blowup ops-realdata ops-obs-verify SUITE=full ops-observability-lag-check)

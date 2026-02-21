@@ -10,7 +10,12 @@ MAKE_CALL_RE = re.compile(r"\$\(MAKE\)\s+([^#]+)")
 
 def parse_make_targets(makefiles_dir: Path) -> dict[str, list[str]]:
     graph: dict[str, list[str]] = {}
-    for mk in sorted(makefiles_dir.glob("*.mk")):
+    make_roots = []
+    root_makefile = makefiles_dir.parent / "Makefile"
+    if root_makefile.exists():
+        make_roots.append(root_makefile)
+    make_roots.extend(sorted(makefiles_dir.glob("*.mk")))
+    for mk in make_roots:
         text = mk.read_text(encoding="utf-8")
         current_target: str | None = None
         for line in text.splitlines():

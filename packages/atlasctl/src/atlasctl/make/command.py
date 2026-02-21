@@ -3,14 +3,36 @@ from __future__ import annotations
 import argparse
 import json
 import subprocess
+import sys
 from pathlib import Path
 
 from ..core.context import RunContext
+from ..core.fs import ensure_evidence_path
 from .contracts_check import run_contracts_check
 from .explain import LEGACY_TARGET_RE
 from .help import render_advanced, render_all, render_gates, render_help, render_list
 from .public_targets import entry_map, load_ownership, public_entries, public_names
 from .target_graph import parse_make_targets, render_tree
+
+
+def _inventory_direct_make_logic(repo_root: Path) -> dict[str, object]:
+    rows: list[dict[str, object]] = []
+    files = [repo_root / "Makefile", *sorted((repo_root / "makefiles").glob("*.mk"))]
+    current_target = ""
+    for path in files:
+        rel = path.relative_to(repo_root).as_posix()
+        for lineno, line in enumerate(path.read_text(encoding="utf-8", errors="ignore").splitlines(), start=1):
+            if line.startswith("\t"):
+                body = line.strip()
+                if not body:
+                    continue
+                if "atlasctl" in body or "$(ATLAS_SCRIPTS)" in body:
+                    continue
+                rows.append({"target": current_target or "<unknown>", "file": rel, "line": lineno, "recipe": body})
+                continue
+            if ":" in line and not line.startswith("#"):
+                current_target = line.split(":", 1)[0].strip()
+    return {"schema_version": 1, "tool": "atlasctl", "status": "ok", "items": rows}
 
 
 def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
@@ -151,6 +173,108 @@ def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             print(line)
         return 0
 
+    if ns.make_cmd == "list-targets":
+        graph = parse_make_targets(ctx.repo_root / "makefiles")
+        rows = [{"name": name, "deps": graph.get(name, [])} for name in sorted(graph)]
+        payload = {"schema_version": 1, "tool": "atlasctl", "status": "ok", "targets": rows}
+        print(json.dumps(payload, sort_keys=True) if ns.json or ctx.output_format == "json" else json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+
+    if ns.make_cmd == "inventory-logic":
+        payload = _inventory_direct_make_logic(ctx.repo_root)
+        rendered = json.dumps(payload, sort_keys=True) if ns.json or ctx.output_format == "json" else json.dumps(payload, indent=2, sort_keys=True)
+        if ns.out_file:
+            ensure_evidence_path(ctx, Path(ns.out_file)).write_text(rendered + "\n", encoding="utf-8")
+        print(rendered)
+        return 0
+
+    if ns.make_cmd == "run":
+        run_id = ctx.run_id
+        isolate_dir = ctx.repo_root / "artifacts" / "isolate" / run_id / "atlasctl-make"
+        isolate_dir.mkdir(parents=True, exist_ok=True)
+        cmd = ["make", "-s", ns.target, *ns.args]
+        env = dict(**__import__("os").environ)
+        env["RUN_ID"] = run_id
+        env["ISO_ROOT"] = str(isolate_dir)
+        proc = subprocess.run(cmd, cwd=ctx.repo_root, text=True, capture_output=True, check=False, env=env)
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok" if proc.returncode == 0 else "fail",
+            "command": "make run",
+            "target": ns.target,
+            "args": ns.args,
+            "run_id": run_id,
+            "isolate_dir": str(isolate_dir.relative_to(ctx.repo_root)),
+            "exit_code": proc.returncode,
+            "stdout": proc.stdout or "",
+            "stderr": proc.stderr or "",
+        }
+        out = ensure_evidence_path(ctx, ctx.evidence_root / "make" / run_id / f"run-{ns.target.replace('/', '_')}.json")
+        out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        if ns.json or ctx.output_format == "json":
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            print(f"make run target={ns.target} status={payload['status']} exit={proc.returncode}")
+        return 0 if proc.returncode == 0 else 1
+
+    if ns.make_cmd == "doctor":
+        cmd = [sys.executable, "-m", "atlasctl.cli", "--quiet", "--format", "json", "suite", "run", "ci"]
+        proc = subprocess.run(cmd, cwd=ctx.repo_root, text=True, capture_output=True, check=False)
+        if proc.returncode == 0:
+            if ns.json or ctx.output_format == "json":
+                print(proc.stdout.strip())
+            else:
+                print("make doctor: pass (suite ci)")
+            return 0
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "fail",
+            "command": "make doctor",
+            "suggestions": [
+                "atlasctl suite explain ci",
+                "atlasctl check domain make --fail-fast",
+                "atlasctl report last-fail",
+            ],
+            "suite_output": proc.stdout.strip(),
+            "suite_error": proc.stderr.strip(),
+        }
+        print(json.dumps(payload, sort_keys=True) if ns.json or ctx.output_format == "json" else "make doctor: fail (run `atlasctl suite explain ci`)")
+        return 1
+
+    if ns.make_cmd == "prereqs":
+        run_id = ns.run_id or f"prereqs-{ctx.run_id}"
+        cmd = [
+            sys.executable,
+            "-m",
+            "atlasctl.cli",
+            "--quiet",
+            "run",
+            "./packages/atlasctl/src/atlasctl/checks/layout/makefiles/tools/make_prereqs.py",
+            "--run-id",
+            run_id,
+        ]
+        proc = subprocess.run(cmd, cwd=ctx.repo_root, text=True, capture_output=True, check=False)
+        if ns.json or ctx.output_format == "json":
+            print(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "tool": "atlasctl",
+                        "status": "ok" if proc.returncode == 0 else "fail",
+                        "command": "make prereqs",
+                        "run_id": run_id,
+                        "stdout": proc.stdout,
+                        "stderr": proc.stderr,
+                    },
+                    sort_keys=True,
+                )
+            )
+        else:
+            print(f"make prereqs: {'pass' if proc.returncode == 0 else 'fail'}")
+        return proc.returncode
+
     if ns.make_cmd == "contracts-check":
         return run_contracts_check(
             ctx,
@@ -176,6 +300,26 @@ def configure_make_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
 
     graph = make_sub.add_parser("graph", help="print public target dependency graph")
     graph.add_argument("target")
+    graph.add_argument("--json", action="store_true", help="emit JSON output")
+
+    make_sub.add_parser("list-targets", help="list all parsed make targets deterministically").add_argument(
+        "--json", action="store_true", help="emit JSON output"
+    )
+    inv_logic = make_sub.add_parser("inventory-logic", help="inventory targets with direct non-atlasctl logic")
+    inv_logic.add_argument("--json", action="store_true", help="emit JSON output")
+    inv_logic.add_argument("--out-file", default="", help="write output under evidence root")
+
+    run_p = make_sub.add_parser("run", help="run a make target via atlasctl wrapper")
+    run_p.add_argument("target")
+    run_p.add_argument("args", nargs=argparse.REMAINDER)
+    run_p.add_argument("--json", action="store_true", help="emit JSON output")
+
+    doctor = make_sub.add_parser("doctor", help="diagnose make lane failures from suite ci")
+    doctor.add_argument("--json", action="store_true", help="emit JSON output")
+
+    prereqs = make_sub.add_parser("prereqs", help="run make prereqs diagnostics via atlasctl")
+    prereqs.add_argument("--run-id", default="")
+    prereqs.add_argument("--json", action="store_true", help="emit JSON output")
 
     surface = make_sub.add_parser("surface", help="emit public target machine surface")
     surface.add_argument("--pretty", action="store_true", help="render human-readable output")

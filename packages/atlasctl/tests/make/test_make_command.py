@@ -2,14 +2,16 @@ from __future__ import annotations
 
 import argparse
 import json
+from types import SimpleNamespace
 from pathlib import Path
 
 import jsonschema
 from atlasctl.core.context import RunContext
-from atlasctl.make.command import CHECKS, run_contracts_check
+from atlasctl.make.command import run_make_command
+from atlasctl.make.contracts_check import CHECKS, run_contracts_check
 from atlasctl.make.target_graph import parse_make_targets, render_tree
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[4]
 
 
 def test_parse_make_targets_from_fixture(tmp_path: Path) -> None:
@@ -79,3 +81,39 @@ def test_make_surface_parser_shape() -> None:
     ns = parser.parse_args(["make", "surface"])
     assert ns.cmd == "make"
     assert ns.make_cmd == "surface"
+
+
+def test_make_parser_supports_new_subcommands() -> None:
+    parser = argparse.ArgumentParser()
+    sub = parser.add_subparsers(dest="cmd", required=True)
+    from atlasctl.make.command import configure_make_parser
+
+    configure_make_parser(sub)
+    for argv in (
+        ["make", "list-targets", "--json"],
+        ["make", "inventory-logic", "--json"],
+        ["make", "doctor", "--json"],
+        ["make", "run", "ci"],
+    ):
+        ns = parser.parse_args(argv)
+        assert ns.cmd == "make"
+
+
+def test_make_run_writes_evidence(monkeypatch) -> None:
+    from atlasctl.make import command as make_command
+
+    def fake_run(*_args, **_kwargs):
+        return SimpleNamespace(returncode=0, stdout="ok\n", stderr="")
+
+    monkeypatch.setattr(make_command.subprocess, "run", fake_run)
+    ctx = RunContext.from_args("make-run-test", None, "test", False)
+    ns = argparse.Namespace(make_cmd="run", target="ci", args=[], json=True)
+    rc = run_make_command(ctx, ns)
+    assert rc == 0
+    out_path = (
+        ctx.evidence_root
+        / "make"
+        / ctx.run_id
+        / "run-ci.json"
+    )
+    assert out_path.exists()
