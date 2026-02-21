@@ -22,7 +22,7 @@ include makefiles/policies.mk
 
 check: ## Umbrella check: scripts package checks + cargo checks + make contracts
 	@$(MAKE) -s check-scripts
-	@$(MAKE) -s _check
+	@./bin/atlasctl dev check
 	@$(SCRIPTS) check make-help
 	@$(SCRIPTS) check repo
 	@$(SCRIPTS) check forbidden-paths
@@ -51,10 +51,16 @@ ci-local: ## Local runner mirroring CI top-level entrypoint set
 	@$(MAKE) -s ci/all
 
 dev-fmt: ## Stable DEV wrapper: formatter lane via atlasctl
-	@$(MAKE) -s internal/dev/fmt
+	@./bin/atlasctl dev fmt
+
+dev-lint: ## Stable DEV wrapper: lint lane via atlasctl
+	@./bin/atlasctl dev lint
 
 dev-test: ## Stable DEV wrapper: test lane via atlasctl
-	@$(MAKE) -s internal/dev/test
+	@./bin/atlasctl dev test
+
+dev-coverage: ## Stable DEV wrapper: coverage lane via atlasctl
+	@./bin/atlasctl dev coverage
 
 doctor: ## Run package doctor diagnostics
 	@$(SCRIPTS) doctor

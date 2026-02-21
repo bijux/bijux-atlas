@@ -258,5 +258,121 @@
   "artifacts-open": {
     "owner": "ops-platform",
     "area": "ops"
+  },
+  "check": {
+    "owner": "rust-platform",
+    "area": "cargo"
+  },
+  "test-all": {
+    "owner": "rust-platform",
+    "area": "cargo"
+  },
+  "test-contracts": {
+    "owner": "rust-platform",
+    "area": "cargo"
+  },
+  "coverage": {
+    "owner": "rust-platform",
+    "area": "cargo"
+  },
+  "bench-smoke": {
+    "owner": "rust-platform",
+    "area": "cargo"
+  },
+  "ci-core": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "openapi-drift": {
+    "owner": "contract-governance",
+    "area": "configs"
+  },
+  "api-contract-check": {
+    "owner": "contract-governance",
+    "area": "configs"
+  },
+  "compat-matrix-validate": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "query-plan-gate": {
+    "owner": "rust-platform",
+    "area": "cargo"
+  },
+  "critical-query-check": {
+    "owner": "rust-platform",
+    "area": "cargo"
+  },
+  "ci-fast": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "ci-contracts": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "ci-docs": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "ci-ops": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "ci-init-iso-dirs": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "ci-init-tmp": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "ci-dependency-lock-refresh": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "ci-release-compat-matrix-verify": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "ci-release-build-artifacts": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "ci-release-notes-render": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "ci-release-publish-gh": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "ci-cosign-sign": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "ci-cosign-verify": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "ci-chart-package-release": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "ci-reproducible-verify": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "ci-security-advisory-render": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "governance-check": {
+    "owner": "policy-governance",
+    "area": "policies"
+  },
+  "ci-workflows-make-only": {
+    "owner": "policy-governance",
+    "area": "policies"
   }
 }

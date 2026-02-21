@@ -38,6 +38,13 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 
 ## Public Targets
 
+- Minimal DEV/CI wrappers:
+  - `make ci`
+  - `make dev-fmt`
+  - `make dev-lint`
+  - `make dev-test`
+  - `make dev-coverage`
+
 - `make help`: Show curated public targets grouped by namespace.
 - `make help-advanced`: Show curated targets plus maintainer helpers.
 - `make list`: List curated public targets with one-line descriptions.
