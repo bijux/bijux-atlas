@@ -26,6 +26,7 @@ def test_check_list_json_inventory() -> None:
     assert any(c["id"] == "checks_repo_no_direct_python_invocations" for c in payload["checks"])
     assert any(c["id"] == "checks_repo_public_api_exports" for c in payload["checks"])
     assert any(c["id"] == "checks_license_file_mit" for c in payload["checks"])
+    assert any(c["id"] == "checks_checks_registry_integrity" for c in payload["checks"])
 
 
 def test_check_explain_json() -> None:
@@ -82,3 +83,24 @@ def test_check_license_alias() -> None:
     payload = json.loads(proc.stdout)
     assert payload["domain"] == "license"
     assert payload["status"] in {"pass", "fail"}
+
+
+def test_check_run_selector_flags() -> None:
+    by_id = _run("check", "run", "--id", "checks_checks_registry_integrity", "--quiet")
+    assert by_id.returncode in (0, 1), by_id.stderr
+    assert "checks_checks_registry_integrity" in by_id.stdout
+
+    by_k = _run("check", "run", "-k", "registry_integrity", "--quiet")
+    assert by_k.returncode in (0, 1), by_k.stderr
+    assert "checks_checks_registry_integrity" in by_k.stdout
+
+    by_domain = _run("check", "run", "--domain", "checks", "--quiet")
+    assert by_domain.returncode in (0, 1), by_domain.stderr
+    assert "checks_checks_registry_integrity" in by_domain.stdout
+
+
+def test_migrate_checks_registry_json() -> None:
+    proc = _run("--json", "migrate", "checks-registry")
+    assert proc.returncode in (0, 1), proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["kind"] == "migrate-checks-registry"

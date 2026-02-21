@@ -236,7 +236,14 @@ def _run_check_failures(ctx: RunContext, ns: argparse.Namespace) -> int:
 def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     started = time.perf_counter()
     select_value = str(getattr(ns, "select", "") or "").strip()
+    id_value = str(getattr(ns, "id", "") or "").strip()
+    k_value = str(getattr(ns, "k", "") or "").strip()
     target_value = str(getattr(ns, "check_target", "") or "").strip()
+    domain_value = str(getattr(ns, "domain_filter", "") or "").strip()
+    if id_value and not select_value:
+        select_value = id_value
+    if k_value and not select_value:
+        select_value = k_value
     if target_value and not select_value:
         select_value = target_value
     selected_domain, selector = _parse_select(select_value)
@@ -248,8 +255,19 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
         selector = ""
     checks = [check for check in list_checks() if selected_domain is None or check.domain == selected_domain]
     group = str(getattr(ns, "group", "") or "").strip()
+    if domain_value and not group:
+        group = domain_value
     if group:
         checks = [check for check in checks if check.domain == group]
+    only_slow = bool(getattr(ns, "only_slow", False))
+    only_fast = bool(getattr(ns, "only_fast", False))
+    if only_slow and only_fast:
+        print("invalid selection: --slow and --fast cannot be used together")
+        return ERR_USER
+    if only_slow:
+        checks = [check for check in checks if check.slow]
+    if only_fast:
+        checks = [check for check in checks if not check.slow]
     match_pattern = str(getattr(ns, "match", "") or "").strip()
     if match_pattern:
         checks = [
@@ -266,6 +284,9 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     report_checks = matched_checks if selector else checks
     live_print = bool(matched_checks) and not (ctx.output_format == "json" or ns.json or bool(getattr(ns, "jsonl", False)))
     timeout_ms = max(0, int(getattr(ns, "timeout_ms", 2000) or 0))
+    if timeout_ms and timeout_ms < 50:
+        print("invalid --timeout-ms: minimum is 50ms (or 0 to disable)")
+        return ERR_USER
     total_live = len(matched_checks)
     live_index = 0
 
@@ -887,6 +908,12 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     run.add_argument("--profile-out", help="performance profile output path")
     run.add_argument("--match", help="glob pattern over check ids/titles")
     run.add_argument("--group", help="filter checks by group/domain")
+    run.add_argument("--domain", dest="domain_filter", help="filter checks by domain")
+    run.add_argument("--id", help="run a single check id")
+    run.add_argument("-k", help="substring selector over check id/title")
+    run.add_argument("--slow", dest="only_slow", action="store_true", help="run only slow checks")
+    run.add_argument("--fast", dest="only_fast", action="store_true", help="run only fast checks")
+    run.add_argument("--from-registry", action="store_true", default=True, help="load checks from registry (default)")
     run.add_argument("--require-markers", action="append", default=[], help="require check markers/tags (repeatable or comma-separated)")
     run.add_argument("--select", help="check selector, e.g. atlasctl::docs::check_x")
     run.add_argument("check_target", nargs="?", help="fully-qualified check id, e.g. atlasctl::docs::check_x")
