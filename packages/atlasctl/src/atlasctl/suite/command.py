@@ -21,6 +21,7 @@ from ..contracts.ids import SUITE_RUN
 from ..contracts.validate_self import validate_self
 from ..contracts.validate import validate_file
 from ..core.context import RunContext
+from ..core.telemetry import emit_telemetry
 from ..core.logging import log_event
 from ..core.serialize import dumps_json
 from ..errors import ScriptError
@@ -558,6 +559,12 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         "skipped": skipped,
         "duration_ms": total_duration_ms,
     }
+    slow_threshold_ms = max(1, int(getattr(ns, "slow_threshold_ms", 1000)))
+    slow_rows = sorted(
+        [row for row in results if int(row["duration_ms"]) >= slow_threshold_ms],
+        key=lambda item: int(item["duration_ms"]),
+        reverse=True,
+    )
     if not as_json and bool(getattr(ns, "pytest_q", False)):
         seconds = total_duration_ms / 1000
         print()
@@ -575,11 +582,60 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         "status": "ok" if failed == 0 else "error",
         "suite": suite_name,
         "summary": summary,
+        "slow_threshold_ms": slow_threshold_ms,
+        "slow_checks": slow_rows,
         "results": results,
         "target_dir": target_dir.as_posix(),
     }
     validate_self(SUITE_RUN, payload)
     (target_dir / "results.json").write_text(dumps_json(payload, pretty=True) + "\n", encoding="utf-8")
+    if getattr(ns, "slow_report", None):
+        (ctx.repo_root / ns.slow_report).parent.mkdir(parents=True, exist_ok=True)
+        (ctx.repo_root / ns.slow_report).write_text(
+            dumps_json(
+                {
+                    "schema_version": 1,
+                    "tool": "atlasctl",
+                    "kind": "suite-slow-report",
+                    "run_id": ctx.run_id,
+                    "suite": suite_name,
+                    "threshold_ms": slow_threshold_ms,
+                    "slow_checks": slow_rows,
+                    "summary": summary,
+                },
+                pretty=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+    if getattr(ns, "profile", False):
+        profile_path = target_dir / "profile.json"
+        profile_path.write_text(
+            dumps_json(
+                {
+                    "schema_version": 1,
+                    "tool": "atlasctl",
+                    "kind": "suite-profile",
+                    "run_id": ctx.run_id,
+                    "suite": suite_name,
+                    "summary": summary,
+                    "rows": results,
+                },
+                pretty=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+    emit_telemetry(
+        ctx,
+        "suite.run",
+        suite=suite_name,
+        passed=passed,
+        failed=failed,
+        skipped=skipped,
+        duration_ms=total_duration_ms,
+        slow_checks=len(slow_rows),
+    )
     if as_json:
         print(dumps_json(payload, pretty=False))
     return 0 if failed == 0 else 1
@@ -604,6 +660,9 @@ def configure_suite_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     run.add_argument("--target-dir", help="suite output directory")
     run.add_argument("--show-output", action="store_true", help="stream command task output")
     run.add_argument("--pytest-q", action="store_true", help="pytest-style quiet progress and summary output")
+    run.add_argument("--slow-threshold-ms", type=int, default=1000, help="threshold for slow suite items report")
+    run.add_argument("--slow-report", help="write slow suite items report path")
+    run.add_argument("--profile", action="store_true", help="emit suite performance profile artifact")
     group = run.add_mutually_exclusive_group()
     group.add_argument("--fail-fast", action="store_true", help="stop at first failure")
     group.add_argument("--keep-going", action="store_true", help="continue through all tasks (default)")
