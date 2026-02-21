@@ -87,7 +87,15 @@
     "owner": "rust-platform",
     "area": "cargo"
   },
+  "fmt-all": {
+    "owner": "rust-platform",
+    "area": "cargo"
+  },
   "lint": {
+    "owner": "rust-platform",
+    "area": "cargo"
+  },
+  "lint-all": {
     "owner": "rust-platform",
     "area": "cargo"
   },
@@ -96,6 +104,10 @@
     "area": "cargo"
   },
   "audit": {
+    "owner": "rust-platform",
+    "area": "cargo"
+  },
+  "audit-all": {
     "owner": "rust-platform",
     "area": "cargo"
   },
@@ -263,6 +275,10 @@
     "owner": "rust-platform",
     "area": "cargo"
   },
+  "check-all": {
+    "owner": "rust-platform",
+    "area": "cargo"
+  },
   "test-all": {
     "owner": "rust-platform",
     "area": "cargo"
@@ -275,13 +291,21 @@
     "owner": "rust-platform",
     "area": "cargo"
   },
-  "bench-smoke": {
+  "coverage-all": {
     "owner": "rust-platform",
     "area": "cargo"
   },
-  "ci-core": {
-    "owner": "build-and-release",
-    "area": "policies"
+  "all": {
+    "owner": "rust-platform",
+    "area": "cargo"
+  },
+  "all-all": {
+    "owner": "rust-platform",
+    "area": "cargo"
+  },
+  "bench-smoke": {
+    "owner": "rust-platform",
+    "area": "cargo"
   },
   "openapi-drift": {
     "owner": "contract-governance",
