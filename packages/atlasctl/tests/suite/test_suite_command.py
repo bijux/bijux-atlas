@@ -61,3 +61,11 @@ def test_ci_suite_stable_and_contains_expected_items() -> None:
     assert "cmd:atlasctl test run unit" in tasks
     assert "cmd:atlasctl policies check --report json" in tasks
     assert len([task for task in tasks if "atlasctl test run" in task]) == 1
+
+
+def test_suite_run_pytest_q_output_mode() -> None:
+    proc = run_atlasctl("--quiet", "suite", "run", "fast", "--only", "check repo.module_size", "--pytest-q")
+    assert proc.returncode in {0, 1}, proc.stderr
+    text = proc.stdout
+    assert "." in text or "F" in text
+    assert "passed" in text and "failed" in text and "skipped" in text
