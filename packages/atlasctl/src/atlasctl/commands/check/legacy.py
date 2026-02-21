@@ -12,7 +12,7 @@ from ...checks.repo.command_contracts import runtime_contracts_payload
 from ...core.context import RunContext
 from ...core.fs import ensure_evidence_path
 from ...lint.runner import run_suite
-from ...check.native import (
+from ...checks.repo.legacy_native import (
     check_atlas_scripts_cli_contract,
     check_atlasctl_boundaries,
     check_bin_entrypoints,

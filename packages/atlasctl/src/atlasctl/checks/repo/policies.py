@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from ...check.native import (
+from .legacy_native import (
     check_make_command_allowlist,
     check_make_forbidden_paths,
     check_naming_intent_lint,

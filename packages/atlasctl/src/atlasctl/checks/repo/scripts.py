@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from ...check.native import (
+from .legacy_native import (
     check_docs_scripts_references,
     check_duplicate_script_names,
     check_make_scripts_references,

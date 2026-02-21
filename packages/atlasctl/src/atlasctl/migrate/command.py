@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
 
-from ..check.native import check_layout_contract
+from ..checks.repo.legacy_native import check_layout_contract
 from ..core.context import RunContext
 from ..exit_codes import ERR_CONTRACT, ERR_USER
 from ..inventory.command import collect_commands, collect_legacy_scripts

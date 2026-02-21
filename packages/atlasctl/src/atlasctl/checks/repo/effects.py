@@ -2,6 +2,6 @@
 
 from __future__ import annotations
 
-from ...check.native import check_effects_lint, check_script_write_roots
+from .legacy_native import check_effects_lint, check_script_write_roots
 
 __all__ = ["check_effects_lint", "check_script_write_roots"]
