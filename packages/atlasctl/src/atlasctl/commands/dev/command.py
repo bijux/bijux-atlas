@@ -73,6 +73,7 @@ def run_dev_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             ctx,
             DevCargoParams(
                 action=sub,
+                all_tests=bool(getattr(ns, "all", False)),
                 json_output=bool(getattr(ns, "json", False) or ctx.output_format == "json"),
                 verbose=bool(getattr(ns, "verbose", False) or ctx.verbose),
             ),
@@ -151,16 +152,21 @@ def configure_dev_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     ):
         sp = dev_sub.add_parser(name, help=help_text)
         sp.add_argument("args", nargs=argparse.REMAINDER)
-    dev_sub.add_parser("fmt", help="run canonical cargo fmt lane")
-    dev_sub.add_parser("lint", help="run canonical cargo lint lane")
+    fmt = dev_sub.add_parser("fmt", help="run canonical cargo fmt lane")
+    fmt.add_argument("--all", action="store_true", help="run full fmt variant")
+    lint = dev_sub.add_parser("lint", help="run canonical cargo lint lane")
+    lint.add_argument("--all", action="store_true", help="run full lint variant")
     check = dev_sub.add_parser("check", help="run canonical cargo check lane")
+    check.add_argument("--all", action="store_true", help="run full check variant")
     check.add_argument("args", nargs=argparse.REMAINDER)
     test = dev_sub.add_parser("test", help="run canonical cargo test lane")
     test.add_argument("--all", action="store_true", help="run ignored tests too")
     test.add_argument("--contracts", action="store_true", help="run contracts-only tests")
     test.add_argument("args", nargs=argparse.REMAINDER)
-    dev_sub.add_parser("coverage", help="run canonical cargo coverage lane")
-    dev_sub.add_parser("audit", help="run canonical cargo audit lane")
+    coverage = dev_sub.add_parser("coverage", help="run canonical cargo coverage lane")
+    coverage.add_argument("--all", action="store_true", help="run full coverage variant")
+    audit = dev_sub.add_parser("audit", help="run canonical cargo audit lane")
+    audit.add_argument("--all", action="store_true", help="run full audit variant")
     split = dev_sub.add_parser("split-module", help="generate a module split plan for a path")
     split.add_argument("--path", required=True)
     split.add_argument("--json", action="store_true", help="emit JSON output")

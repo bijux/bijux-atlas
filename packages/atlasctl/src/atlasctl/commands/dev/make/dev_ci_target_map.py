@@ -10,18 +10,12 @@ from ....core.fs import ensure_evidence_path
 TARGET_RE = re.compile(r"^([A-Za-z0-9_./-]+):(?:.*?)(?:\s+##\s*(.*))?$")
 
 ALIAS_OF: dict[str, str] = {
-    "_fmt": "internal/cargo/fmt",
-    "_lint": "internal/cargo/lint",
-    "_lint-rustfmt": "internal/cargo/lint",
-    "_lint-configs": "internal/cargo/lint",
-    "_lint-docs": "internal/cargo/lint",
-    "_lint-clippy": "internal/cargo/lint",
-    "_test": "internal/cargo/test",
-    "_test-all": "internal/cargo/test",
     "test-all": "test",
+    "fmt-all": "fmt",
+    "lint-all": "lint",
+    "audit-all": "audit",
+    "coverage-all": "coverage",
     "test-contracts": "test",
-    "_audit": "internal/cargo/audit",
-    "_coverage": "coverage",
 }
 
 
@@ -45,9 +39,9 @@ def _parse_makefile_targets(path: Path) -> list[dict[str, str]]:
 def _classify_target(target: str, source_file: str) -> str:
     if target.startswith("internal/") or target.startswith("_"):
         return "internal"
-    if target.startswith("ci-") or target == "ci-core":
+    if target.startswith("ci-"):
         return "ci-only"
-    if source_file.endswith("cargo.mk") and target == "coverage":
+    if target in {"fmt", "lint", "test", "audit", "coverage", "check", "ci"}:
         return "public"
     return "legacy"
 
@@ -65,21 +59,41 @@ def _map_to_intent(target: str) -> str | None:
         return "atlasctl dev audit"
     if target == "coverage":
         return "atlasctl dev coverage"
-    if target in {"ci-fmt", "internal/cargo/fmt", "_fmt"}:
-        return "atlasctl dev fmt"
-    if target in {"ci-clippy", "internal/cargo/lint", "_lint", "_lint-rustfmt", "_lint-configs", "_lint-docs", "_lint-clippy"}:
-        return "atlasctl dev lint"
-    if target in {"ci-test-nextest", "internal/cargo/test", "_test", "_test-all", "test-all", "test-contracts"}:
-        return "atlasctl dev test"
-    if target in {"ci-deny", "ci-audit", "ci-license-check", "internal/cargo/audit", "_audit"}:
-        return "atlasctl dev audit"
-    if target in {"ci-coverage", "_coverage"}:
-        return "atlasctl dev coverage"
-    if target.startswith("ci-"):
-        return f"atlasctl dev ci run --lane {target}"
-    if target.startswith("internal/") or target.startswith("_"):
+    if target in {"fmt-all"}:
+        return "atlasctl dev fmt --all"
+    if target in {"lint-all"}:
+        return "atlasctl dev lint --all"
+    if target in {"check-all"}:
+        return "atlasctl dev check --all"
+    if target in {"test-all"}:
+        return "atlasctl dev test --all"
+    if target in {"test-contracts"}:
+        return "atlasctl dev test --contracts"
+    if target in {"audit-all"}:
+        return "atlasctl dev audit --all"
+    if target in {"coverage-all"}:
+        return "atlasctl dev coverage --all"
+    if target in {"internal/dev/check"}:
+        return "atlasctl dev check"
+    if target == "ci":
+        return "atlasctl ci run --json --out-dir artifacts/reports/atlasctl/suite-ci"
+    if target == "internal/ci/run":
+        return "atlasctl ci run --json"
+    if target == "ci-fast":
+        return "atlasctl dev ci fast"
+    if target == "ci-contracts":
+        return "atlasctl dev ci contracts"
+    if target == "ci-docs":
+        return "atlasctl dev ci docs"
+    if target == "ci-ops":
+        return "atlasctl dev ci ops"
+    if target in {"ci-init-iso-dirs", "ci-init-tmp", "ci-dependency-lock-refresh", "ci-release-compat-matrix-verify", "ci-release-build-artifacts", "ci-release-notes-render", "ci-release-publish-gh", "ci-cosign-sign", "ci-cosign-verify", "ci-chart-package-release", "ci-reproducible-verify", "ci-security-advisory-render", "governance-check", "ci-workflows-make-only"}:
         return f"atlasctl make run {target}"
-    if target:
+    if target.startswith("ci-"):
+        return f"atlasctl make run {target}"
+    if target in {"test"}:
+        return "atlasctl dev test"
+    if target.startswith("internal/") or target.startswith("_") or target:
         return f"atlasctl make run {target}"
     return None
 
@@ -108,10 +122,7 @@ def _duplicate_mapping_errors(rows: list[dict[str, str]]) -> list[str]:
 
 
 def build_dev_ci_target_payload(repo_root: Path) -> dict[str, object]:
-    sources = [
-        repo_root / "makefiles" / "cargo.mk",
-        repo_root / "makefiles" / "ci.mk",
-    ]
+    sources = [repo_root / "makefiles" / "dev.mk"]
     dumps: list[dict[str, object]] = []
     mapping_rows: list[dict[str, str]] = []
     unmapped: list[str] = []
@@ -157,13 +168,10 @@ def run_dev_ci_target_map(ctx: RunContext, out_dir_arg: str, check: bool, as_jso
         out_dir = (ctx.repo_root / out_dir).resolve()
     payload = build_dev_ci_target_payload(ctx.repo_root)
     dumps = payload["dumps"]
-    cargo_dump = next(item for item in dumps if str(item["file"]).endswith("cargo.mk"))
-    ci_dump = next(item for item in dumps if str(item["file"]).endswith("ci.mk"))
-    cargo_path = ensure_evidence_path(ctx, out_dir / "cargo-targets.json")
-    ci_path = ensure_evidence_path(ctx, out_dir / "ci-targets.json")
+    dev_dump = next(item for item in dumps if str(item["file"]).endswith("dev.mk"))
+    dev_path = ensure_evidence_path(ctx, out_dir / "dev-targets.json")
     map_path = ensure_evidence_path(ctx, out_dir / "ci-target-map.json")
-    cargo_path.write_text(json.dumps(cargo_dump, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    ci_path.write_text(json.dumps(ci_dump, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    dev_path.write_text(json.dumps(dev_dump, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     map_path.write_text(
         json.dumps(
             {
@@ -184,8 +192,7 @@ def run_dev_ci_target_map(ctx: RunContext, out_dir_arg: str, check: bool, as_jso
         "tool": "atlasctl",
         "status": payload["status"],
         "artifacts": {
-            "cargo_targets": str(cargo_path.relative_to(ctx.repo_root)),
-            "ci_targets": str(ci_path.relative_to(ctx.repo_root)),
+            "dev_targets": str(dev_path.relative_to(ctx.repo_root)),
             "target_map": str(map_path.relative_to(ctx.repo_root)),
         },
         "errors": payload["errors"],
