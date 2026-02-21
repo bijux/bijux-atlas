@@ -25,6 +25,33 @@ RELAXATION_FILES = (
     "configs/policy/ops-lint-relaxations.json",
 )
 SELF_CLI = ["python3", "-m", "atlasctl.cli"]
+_POLICIES_ITEMS: tuple[str, ...] = (
+    "allow-env-lint",
+    "bypass-scan",
+    "check",
+    "check-dir-entry-budgets",
+    "check-py-files-per-dir",
+    "culprits",
+    "culprits-biggest-dirs",
+    "culprits-biggest-files",
+    "culprits-files-per-dir",
+    "culprits-largest-files",
+    "culprits-loc-per-dir",
+    "culprits-modules-per-dir",
+    "culprits-suite",
+    "dead-modules",
+    "drift-diff",
+    "enforcement-status",
+    "explain",
+    "ownership-check",
+    "relaxations-check",
+    "repo-stats",
+    "report",
+    "report-budgets",
+    "scan-grep-relaxations",
+    "scan-rust-relaxations",
+    "schema-drift",
+)
 
 
 def _run(cmd: list[str], repo_root: Path) -> tuple[int, str]:
@@ -285,6 +312,13 @@ def _policy_enforcement_status(repo_root: Path, enforce: bool) -> tuple[int, lis
 
 def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     repo = ctx.repo_root
+    if not getattr(ns, "policies_cmd", None) and bool(getattr(ns, "list", False)):
+        if bool(getattr(ns, "json", False)):
+            print(json.dumps({"schema_version": 1, "tool": "atlasctl", "status": "ok", "group": "policies", "items": list(_POLICIES_ITEMS)}, sort_keys=True))
+        else:
+            for item in _POLICIES_ITEMS:
+                print(item)
+        return 0
 
     if ns.policies_cmd == "relaxations-check":
         code, payload = _check_relaxations(repo, require_docs_ref=getattr(ns, "require_docs_ref", False))
@@ -434,7 +468,9 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
 def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     p = sub.add_parser("policies", help="policy relaxations and bypass checks")
-    ps = p.add_subparsers(dest="policies_cmd", required=True)
+    p.add_argument("--list", action="store_true", help="list available policies commands")
+    p.add_argument("--json", action="store_true", help="emit machine-readable JSON output")
+    ps = p.add_subparsers(dest="policies_cmd", required=False)
 
     check = ps.add_parser("check", help="run canonical policies checks")
     check.add_argument("--report", choices=["text", "json"], default="text")

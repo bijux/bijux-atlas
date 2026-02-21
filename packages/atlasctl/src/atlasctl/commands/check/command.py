@@ -415,6 +415,11 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             print(f"internal check runner error: {exc}")
             return ERR_CONTRACT
     if sub == "list":
+        checks = list_checks()
+        if not (ctx.output_format == "json" or ns.json):
+            for check in checks:
+                print(check.check_id)
+            return 0
         payload = {
             "schema_name": CHECK_LIST,
             "schema_version": 1,
@@ -435,7 +440,7 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                     "owners": list(check.owners),
                     "external_tools": list(check.external_tools),
                 }
-                for check in list_checks()
+                for check in checks
             ],
         }
         validate_self(CHECK_LIST, payload)

@@ -111,6 +111,37 @@ def _ops_clean_generated(ctx: RunContext, report_format: str, force: bool) -> in
 
 
 def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
+    if not getattr(ns, "ops_cmd", None) and bool(getattr(ns, "list", False)):
+        items = sorted(
+            {
+                "check",
+                "lint",
+                "surface",
+                "contracts-check",
+                "suites-check",
+                "schema-check",
+                "tool-versions-check",
+                "no-direct-script-usage-check",
+                "directory-budgets-check",
+                "naming-check",
+                "layer-drift-check",
+                "contracts-index",
+                "policy-audit",
+                "k8s-surface-generate",
+                "k8s-checks-layout",
+                "k8s-test-lib-contract",
+                "k8s-flakes-check",
+                "k8s-test-contract",
+                "clean-generated",
+                "clean",
+            }
+        )
+        if bool(getattr(ns, "json", False)):
+            print(json.dumps({"schema_version": 1, "tool": "atlasctl", "status": "ok", "group": "ops", "items": items}, sort_keys=True))
+        else:
+            for item in items:
+                print(item)
+        return 0
     if ns.ops_cmd == "check":
         steps = [
             [*SELF_CLI, "ops", "lint", "--report", ns.report, "--emit-artifacts"],
@@ -242,7 +273,9 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
 def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     p = sub.add_parser("ops", help="ops lint and contracts command surface")
-    ops_sub = p.add_subparsers(dest="ops_cmd", required=True)
+    p.add_argument("--list", action="store_true", help="list available ops commands")
+    p.add_argument("--json", action="store_true", help="emit machine-readable JSON output")
+    ops_sub = p.add_subparsers(dest="ops_cmd", required=False)
 
     check = ops_sub.add_parser("check", help="run canonical ops/check lane")
     check.add_argument("--report", choices=["text", "json"], default="text")

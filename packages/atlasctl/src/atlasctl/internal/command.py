@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import subprocess
 import sys
@@ -13,6 +14,7 @@ _INTERNAL_FORWARD: dict[str, str] = {
     "self-check": "self-check",
     "doctor": "doctor",
 }
+_INTERNAL_ITEMS: tuple[str, ...] = ("compat", "doctor", "legacy", "self-check")
 
 
 def _forward(ctx: RunContext, *args: str) -> int:
@@ -32,6 +34,13 @@ def _forward(ctx: RunContext, *args: str) -> int:
 
 def run_internal_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     sub = getattr(ns, "internal_cmd", "")
+    if not sub and bool(getattr(ns, "list", False)):
+        if bool(getattr(ns, "json", False)):
+            print(json.dumps({"schema_version": 1, "tool": "atlasctl", "status": "ok", "group": "internal", "items": list(_INTERNAL_ITEMS)}, sort_keys=True))
+        else:
+            for item in _INTERNAL_ITEMS:
+                print(item)
+        return 0
     forwarded = _INTERNAL_FORWARD.get(sub)
     if not forwarded:
         return 2
@@ -40,7 +49,9 @@ def run_internal_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
 def configure_internal_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     parser = sub.add_parser("internal", help="internal control-plane group (legacy/compat/diagnostics)")
-    internal_sub = parser.add_subparsers(dest="internal_cmd", required=True)
+    parser.add_argument("--list", action="store_true", help="list available internal commands")
+    parser.add_argument("--json", action="store_true", help="emit machine-readable JSON output")
+    internal_sub = parser.add_subparsers(dest="internal_cmd", required=False)
     for name, help_text in (
         ("legacy", "forward to `atlasctl legacy ...`"),
         ("compat", "forward to `atlasctl compat ...`"),

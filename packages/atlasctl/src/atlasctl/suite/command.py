@@ -376,6 +376,19 @@ def _run_first_class_suite(ctx: RunContext, manifest: SuiteManifest, as_json: bo
 def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     as_json = ctx.output_format == "json" or bool(getattr(ns, "json", False))
     first_class = load_first_class_suites()
+    if not getattr(ns, "suite_cmd", None) and bool(getattr(ns, "list_suites", False)):
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "items": sorted([*first_class.keys(), *load_suites(ctx.repo_root)[1].keys()]),
+        }
+        if as_json:
+            print(dumps_json(payload, pretty=False))
+        else:
+            for item in payload["items"]:
+                print(item)
+        return 0
     if ns.suite_cmd in first_class:
         return _run_first_class_suite(
             ctx,
@@ -463,6 +476,11 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 print(f"- {err}")
         return 0 if not errors else 1
     if ns.suite_cmd == "list":
+        if not as_json:
+            names = sorted({*first_class.keys(), *suites.keys()})
+            for name in names:
+                print(name)
+            return 0
         payload = {
             "schema_version": 1,
             "tool": "atlasctl",
@@ -643,7 +661,9 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
 def configure_suite_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     parser = sub.add_parser("suite", help="run atlasctl named suites")
-    suite_sub = parser.add_subparsers(dest="suite_cmd", required=True)
+    parser.add_argument("--list", dest="list_suites", action="store_true", help="list configured suites")
+    parser.add_argument("--json", action="store_true", help="emit machine-readable JSON output")
+    suite_sub = parser.add_subparsers(dest="suite_cmd", required=False)
 
     suite_list = suite_sub.add_parser("list", help="list configured suites")
     suite_list.add_argument("--json", action="store_true")

@@ -17,6 +17,7 @@ _DEV_FORWARD: dict[str, str] = {
     "commands": "commands",
     "explain": "explain",
 }
+_DEV_ITEMS: tuple[str, ...] = ("check", "commands", "explain", "list", "split-module", "suite", "test")
 
 
 def _forward(ctx: RunContext, *args: str) -> int:
@@ -36,6 +37,13 @@ def _forward(ctx: RunContext, *args: str) -> int:
 
 def run_dev_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     sub = getattr(ns, "dev_cmd", "")
+    if not sub and bool(getattr(ns, "list", False)):
+        if bool(getattr(ns, "json", False)):
+            print(json.dumps({"schema_version": 1, "tool": "atlasctl", "status": "ok", "group": "dev", "items": list(_DEV_ITEMS)}, sort_keys=True))
+        else:
+            for item in _DEV_ITEMS:
+                print(item)
+        return 0
     if sub == "split-module":
         return _run_split_module(ctx, ns)
     forwarded = _DEV_FORWARD.get(sub)
@@ -84,7 +92,9 @@ def _run_split_module(ctx: RunContext, ns: argparse.Namespace) -> int:
 
 def configure_dev_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     parser = sub.add_parser("dev", help="dev control-plane group (checks, suites, tests, listing)")
-    dev_sub = parser.add_subparsers(dest="dev_cmd", required=True)
+    parser.add_argument("--list", action="store_true", help="list available dev commands")
+    parser.add_argument("--json", action="store_true", help="emit machine-readable JSON output")
+    dev_sub = parser.add_subparsers(dest="dev_cmd", required=False)
     for name, help_text in (
         ("list", "forward to `atlasctl list ...`"),
         ("check", "forward to `atlasctl check ...`"),

@@ -18,6 +18,36 @@ def _run_simple_path(ctx: RunContext, report: str, path: str) -> int:
 
 
 def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
+    if not getattr(ns, "docs_cmd", None) and bool(getattr(ns, "list", False)):
+        items = sorted(
+            {
+                "check",
+                "validate",
+                "lint",
+                "generate",
+                "inventory",
+                "extract-code",
+                "run-blessed-snippets",
+                "rewrite-legacy-terms",
+                "contracts-index",
+                "runbook-map",
+                "style",
+                "spellcheck",
+                "lint-spelling",
+                "nav-check",
+                "link-check",
+                "mkdocs-site-links-check",
+                "public-surface-check",
+                "generated-check",
+                "ops-entrypoints-check",
+            }
+        )
+        if bool(getattr(ns, "json", False)):
+            print(json.dumps({"schema_version": 1, "tool": "atlasctl", "status": "ok", "group": "docs", "items": items}, sort_keys=True))
+        else:
+            for item in items:
+                print(item)
+        return 0
     if ns.docs_cmd in {"check", "validate"}:
         def _check_nav_contract(inner_ctx: RunContext) -> tuple[int, str]:
             missing = _mkdocs_missing_files(inner_ctx.repo_root)
