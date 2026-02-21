@@ -43,7 +43,6 @@ def _check_script_locations(ctx: RunContext) -> tuple[int, str]:
             rel.startswith("scripts/")
             or rel.startswith("docker/scripts/")
             or rel.startswith("packages/atlasctl/")
-            or rel.startswith("packages/bijux-atlas-py/")
         ):
             continue
         if rel.startswith("ops/"):

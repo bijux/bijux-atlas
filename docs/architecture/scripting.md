@@ -11,7 +11,7 @@ Defines the end-state contract for repository automation and scripting.
 
 1. All automation logic lives in `packages/atlasctl`.
 2. The single scripting CLI name is `bijux-atlas`.
-3. `packages/bijux-atlas-py` is reserved for user-facing Python APIs and must not host repo-ops automation.
+3. User-facing library implementations (Python or other languages) belong under `packages/<name>` and must not host repo-ops automation.
 4. Root `bin/` stays, but only for minimal execution shims (no business logic).
 5. No direct `python scripts/...` invocations are allowed in docs/make surfaces.
 6. No direct `bash scripts/...` invocations are allowed in docs/make surfaces.

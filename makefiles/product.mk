@@ -123,8 +123,8 @@ internal/tooling-versions:
 internal/packages/check:
 	@python3 -m venv artifacts/isolate/py/packages-check/.venv
 	@artifacts/isolate/py/packages-check/.venv/bin/pip --disable-pip-version-check install --upgrade pip >/dev/null
-	@artifacts/isolate/py/packages-check/.venv/bin/pip --disable-pip-version-check install -e packages/atlasctl -e packages/bijux-atlas-py >/dev/null
-	@artifacts/isolate/py/packages-check/.venv/bin/python -c "import atlasctl, bijux_atlas_py"
+	@artifacts/isolate/py/packages-check/.venv/bin/pip --disable-pip-version-check install -e packages/atlasctl >/dev/null
+	@artifacts/isolate/py/packages-check/.venv/bin/python -c "import atlasctl"
 	@python3 ops/_lint/check-surfaces.py
 	@python3 ops/_lint/no-root-ad-hoc-python.py
 	@python3 ops/_lint/no-direct-bash-entrypoints.py
