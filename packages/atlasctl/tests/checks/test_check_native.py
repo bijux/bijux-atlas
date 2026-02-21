@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from atlasctl.checks.native import (
+from atlasctl.checks.repo.native import (
     check_committed_generated_hygiene,
     check_duplicate_script_names,
     check_layout_contract,
@@ -68,14 +68,14 @@ def test_check_make_no_direct_python_script_invocations_flags_direct_calls(tmp_p
 
 
 def test_check_ops_generated_tracked_flags_tracked_entries(monkeypatch, tmp_path: Path) -> None:
-    monkeypatch.setattr("atlasctl.checks.repo.legacy_native._git_ls_files", lambda _repo_root, _spec: ["ops/_generated/run-1/report.json"])
+    monkeypatch.setattr("atlasctl.checks.repo.native._git_ls_files", lambda _repo_root, _spec: ["ops/_generated/run-1/report.json"])
     code, errors = check_ops_generated_tracked(tmp_path)
     assert code == 1
     assert "ops/_generated" in errors[0]
 
 
 def test_check_tracked_timestamp_paths_flags_timestamp_segments(monkeypatch, tmp_path: Path) -> None:
-    monkeypatch.setattr("atlasctl.checks.repo.legacy_native._git_ls_files", lambda _repo_root, _spec: ["artifacts/evidence/2026-02-20/report.json", "docs/index.md"])
+    monkeypatch.setattr("atlasctl.checks.repo.native._git_ls_files", lambda _repo_root, _spec: ["artifacts/evidence/2026-02-20/report.json", "docs/index.md"])
     code, errors = check_tracked_timestamp_paths(tmp_path)
     assert code == 1
     assert "2026-02-20" in errors[0]
@@ -83,7 +83,7 @@ def test_check_tracked_timestamp_paths_flags_timestamp_segments(monkeypatch, tmp
 
 def test_check_committed_generated_hygiene_flags_logs_and_timestamps(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.setattr(
-        "atlasctl.checks.repo.legacy_native._git_ls_files",
+        "atlasctl.checks.repo.native._git_ls_files",
         lambda _repo_root, _spec: [
             "docs/_generated/2026-02-20/index.md",
             "ops/_generated_committed/run.log",

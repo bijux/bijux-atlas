@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ..repo.legacy_native import check_docs_no_ops_generated_run_paths, check_docs_scripts_references
+from ..repo.native import check_docs_no_ops_generated_run_paths, check_docs_scripts_references
 from ..base import CheckDef
 from .integrity import (
     check_docs_index_complete,

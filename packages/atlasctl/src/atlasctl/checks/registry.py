@@ -4,7 +4,6 @@ from collections import defaultdict
 from pathlib import Path
 
 from .base import CheckDef
-from .checks import CHECKS as CHECKS_CHECKS
 from .contracts import CHECKS as CHECKS_CONTRACTS
 from .configs import CHECKS as CHECKS_CONFIGS
 from .docker import CHECKS as CHECKS_DOCKER
@@ -22,7 +21,6 @@ _CHECKS: tuple[CheckDef, ...] = (
     *CHECKS_MAKE,
     *CHECKS_DOCS,
     *CHECKS_OPS,
-    *CHECKS_CHECKS,
     *CHECKS_CONFIGS,
     *CHECKS_PYTHON,
     *CHECKS_DOCKER,
@@ -31,6 +29,15 @@ _CHECKS: tuple[CheckDef, ...] = (
 
 
 def list_checks() -> tuple[CheckDef, ...]:
+    seen: set[str] = set()
+    duplicates: set[str] = set()
+    for check in _CHECKS:
+        if check.check_id in seen:
+            duplicates.add(check.check_id)
+        seen.add(check.check_id)
+    if duplicates:
+        dup_list = ", ".join(sorted(duplicates))
+        raise ValueError(f"duplicate check ids in registry: {dup_list}")
     return tuple(sorted(_CHECKS, key=lambda c: c.check_id))
 
 

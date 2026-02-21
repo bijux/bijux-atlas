@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ..repo.legacy_native import check_atlas_scripts_cli_contract, check_layout_contract
+from ..repo.native import check_atlas_scripts_cli_contract, check_layout_contract
 from ..base import CheckCategory, CheckDef
 from .schema_contracts import check_schema_catalog_integrity, check_schema_samples_validate
 

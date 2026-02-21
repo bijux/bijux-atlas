@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ..repo.legacy_native import check_python_lock, check_python_migration_exceptions_expiry
+from ..repo.native import check_python_lock, check_python_migration_exceptions_expiry
 from ..base import CheckCategory, CheckDef
 
 CHECKS: tuple[CheckDef, ...] = (

@@ -84,6 +84,60 @@ def check_no_modern_imports_from_legacy(repo_root: Path) -> tuple[int, list[str]
     return 0, []
 
 
+def check_no_legacy_obs_imports_in_modern(repo_root: Path) -> tuple[int, list[str]]:
+    offenders: list[str] = []
+    for path in _iter_py_files(repo_root):
+        rel = path.relative_to(repo_root).as_posix()
+        if "/legacy/" in rel:
+            continue
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=rel)
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                if any(alias.name.startswith("atlasctl.legacy.obs") for alias in node.names):
+                    offenders.append(rel)
+                    break
+            elif isinstance(node, ast.ImportFrom):
+                if node.level == 0 and node.module and node.module.startswith("atlasctl.legacy.obs"):
+                    offenders.append(rel)
+                    break
+    if offenders:
+        return 1, [f"forbidden modern import of atlasctl.legacy.obs: {rel}" for rel in sorted(set(offenders))]
+    return 0, []
+
+
+def check_forbidden_deprecated_namespaces(repo_root: Path) -> tuple[int, list[str]]:
+    offenders: list[str] = []
+    for path in _iter_py_files(repo_root):
+        rel = path.relative_to(repo_root).as_posix()
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=rel)
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                names = [alias.name for alias in node.names]
+                if any(name.startswith("atlasctl.check") or name.startswith("atlasctl.report") or name.startswith("atlasctl.obs") for name in names):
+                    offenders.append(rel)
+                    break
+            elif isinstance(node, ast.ImportFrom):
+                if node.level == 0 and node.module and (
+                    node.module.startswith("atlasctl.check")
+                    or node.module.startswith("atlasctl.report")
+                    or node.module.startswith("atlasctl.obs")
+                ):
+                    offenders.append(rel)
+                    break
+    if offenders:
+        return 1, [f"forbidden deprecated namespace import detected: {rel}" for rel in sorted(set(offenders))]
+    return 0, []
+
+
+def check_forbidden_deprecated_namespace_dirs(repo_root: Path) -> tuple[int, list[str]]:
+    base = repo_root / _SRC_ROOT
+    forbidden = ("check", "report", "obs")
+    offenders = [str((base / name).relative_to(repo_root).as_posix()) for name in forbidden if (base / name).exists()]
+    if offenders:
+        return 1, [f"forbidden deprecated namespace directory present: {path}" for path in sorted(offenders)]
+    return 0, []
+
+
 def check_command_import_lint(repo_root: Path) -> tuple[int, list[str]]:
     offenders: list[str] = []
     for path in sorted((repo_root / _SRC_ROOT / "commands").rglob("*.py")):
