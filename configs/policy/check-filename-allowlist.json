@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "allowlist": [
+    "__init__.py",
+    "integrity.py",
+    "policy.py",
+    "enforcement.py",
+    "native.py",
+    "native_lint.py",
+    "native_loader.py",
+    "native_runtime.py",
+    "reachability.py",
+    "registry.py"
+  ]
+}

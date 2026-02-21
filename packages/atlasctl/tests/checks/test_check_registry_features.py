@@ -22,18 +22,40 @@ def test_check_list_json_inventory() -> None:
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
     assert payload["status"] == "ok"
-    assert any(c["id"] == "repo.no_xtask_refs" for c in payload["checks"])
-    assert any(c["id"] == "repo.no_direct_python_invocations" for c in payload["checks"])
-    assert any(c["id"] == "repo.public_api_exports" for c in payload["checks"])
-    assert any(c["id"] == "license.file_mit" for c in payload["checks"])
+    assert any(c["id"] == "checks_repo_no_xtask_refs" for c in payload["checks"])
+    assert any(c["id"] == "checks_repo_no_direct_python_invocations" for c in payload["checks"])
+    assert any(c["id"] == "checks_repo_public_api_exports" for c in payload["checks"])
+    assert any(c["id"] == "checks_license_file_mit" for c in payload["checks"])
 
 
 def test_check_explain_json() -> None:
-    proc = _run("--json", "check", "explain", "repo.no_xtask_refs")
+    proc = _run("--json", "check", "explain", "checks_repo_no_xtask_refs")
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
-    assert payload["id"] == "repo.no_xtask_refs"
+    assert payload["id"] == "checks_repo_no_xtask_refs"
     assert "how_to_fix" in payload
+
+
+def test_checks_list_taxonomy_json() -> None:
+    proc = _run("--json", "checks", "list")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["schema_name"] == "atlasctl.check-taxonomy.v1"
+    assert any(item["domain"] == "repo" for item in payload["taxonomy"])
+
+
+def test_checks_tree_and_owners_json() -> None:
+    tree = _run("--json", "checks", "tree")
+    assert tree.returncode == 0, tree.stderr
+    tree_payload = json.loads(tree.stdout)
+    assert tree_payload["status"] == "ok"
+    assert "tree" in tree_payload
+
+    owners = _run("--json", "checks", "owners")
+    assert owners.returncode == 0, owners.stderr
+    owner_payload = json.loads(owners.stdout)
+    assert owner_payload["kind"] == "check-owners"
+    assert any(row["owner"] == "platform" for row in owner_payload["owners"])
 
 
 def test_check_repo_module_size_alias() -> None:

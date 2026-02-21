@@ -11,6 +11,9 @@ def test_registered_checks_expose_batch6_interface() -> None:
         assert check.title == check.description
         assert isinstance(check.effects, tuple)
         assert isinstance(check.owners, tuple)
+        assert check.check_id.startswith("checks_")
+        assert check.check_id.startswith(f"checks_{check.domain}_")
+        assert check.owners
 
 
 def test_registered_checks_have_stable_control_plane_tags() -> None:
