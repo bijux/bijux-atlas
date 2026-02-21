@@ -93,6 +93,8 @@ def test_make_parser_supports_new_subcommands() -> None:
         ["make", "list-targets", "--json"],
         ["make", "list-public-targets", "--json"],
         ["make", "inventory-logic", "--json"],
+        ["make", "lint", "--json"],
+        ["make", "rewrite", "--json"],
         ["make", "doctor", "--json"],
         ["make", "run", "ci"],
     ):
@@ -125,3 +127,10 @@ def test_make_run_writes_evidence(monkeypatch) -> None:
         / "run-ci.json"
     )
     assert out_path.exists()
+
+
+def test_make_rewrite_preview_json() -> None:
+    ctx = RunContext.from_args("make-rewrite-test", None, "test", False)
+    ns = argparse.Namespace(make_cmd="rewrite", write=False, limit=2, json=True)
+    rc = run_make_command(ctx, ns)
+    assert rc == 0

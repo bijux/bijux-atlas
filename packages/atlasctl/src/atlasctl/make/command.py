@@ -16,9 +16,13 @@ from .public_targets import entry_map, load_ownership, public_entries, public_na
 from .target_graph import parse_make_targets, render_tree
 
 
+def _iter_makefiles(repo_root: Path) -> list[Path]:
+    return [repo_root / "Makefile", *sorted((repo_root / "makefiles").glob("*.mk"))]
+
+
 def _inventory_direct_make_logic(repo_root: Path) -> dict[str, object]:
     rows: list[dict[str, object]] = []
-    files = [repo_root / "Makefile", *sorted((repo_root / "makefiles").glob("*.mk"))]
+    files = _iter_makefiles(repo_root)
     current_target = ""
     for path in files:
         rel = path.relative_to(repo_root).as_posix()
@@ -51,6 +55,75 @@ def _is_public_or_allowlisted_target(repo_root: Path, target: str) -> bool:
     return target in set(public_names()) or target in _load_run_allowlist(repo_root)
 
 
+def _run_make_lint(repo_root: Path, as_json: bool) -> int:
+    from ..checks.make import CHECKS
+
+    rows: list[dict[str, object]] = []
+    for check in CHECKS:
+        code, errors = check.fn(repo_root)
+        rows.append(
+            {
+                "id": check.check_id,
+                "title": check.title,
+                "status": "pass" if code == 0 else "fail",
+                "errors": list(errors),
+            }
+        )
+    failed = [row for row in rows if row["status"] == "fail"]
+    payload = {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "status": "ok" if not failed else "fail",
+        "total_count": len(rows),
+        "failed_count": len(failed),
+        "checks": rows,
+    }
+    if as_json:
+        print(json.dumps(payload, sort_keys=True))
+    else:
+        print(f"make lint: {payload['status']} ({payload['failed_count']}/{payload['total_count']} failed)")
+        for row in failed:
+            print(f"- FAIL {row['id']}")
+            for err in row["errors"][:8]:
+                print(f"  - {err}")
+    return 0 if not failed else 1
+
+
+def _rewrite_makefiles(repo_root: Path, write: bool, limit: int) -> tuple[int, dict[str, object]]:
+    replacements: list[dict[str, object]] = []
+    patterns = [
+        ("python3 ./packages/atlasctl/src/atlasctl/", "$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/"),
+        ("bash ops/", "$(ATLAS_SCRIPTS) run ./ops/"),
+        ("sh ops/", "$(ATLAS_SCRIPTS) run ./ops/"),
+    ]
+    for path in _iter_makefiles(repo_root):
+        original = path.read_text(encoding="utf-8", errors="ignore")
+        updated = original
+        file_changes = 0
+        for before, after in patterns:
+            count = updated.count(before)
+            if count:
+                updated = updated.replace(before, after)
+                file_changes += count
+        if file_changes == 0:
+            continue
+        rel = path.relative_to(repo_root).as_posix()
+        replacements.append({"file": rel, "replacements": file_changes})
+        if write:
+            path.write_text(updated, encoding="utf-8")
+        if len(replacements) >= limit:
+            break
+    payload = {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "status": "ok",
+        "write": write,
+        "changed_files": len(replacements),
+        "items": replacements,
+    }
+    return 0, payload
+
+
 def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     entries = public_entries()
     if ns.make_cmd == "help":
@@ -69,6 +142,20 @@ def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.make_cmd == "list":
         render_list(entries)
         return 0
+
+    if ns.make_cmd == "lint":
+        return _run_make_lint(ctx.repo_root, ns.json or ctx.output_format == "json")
+
+    if ns.make_cmd == "rewrite":
+        code, payload = _rewrite_makefiles(ctx.repo_root, bool(ns.write), int(ns.limit))
+        if ns.json or ctx.output_format == "json":
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            mode = "applied" if ns.write else "preview"
+            print(f"make rewrite ({mode}): changed_files={payload['changed_files']}")
+            for item in payload["items"]:
+                print(f"- {item['file']}: replacements={item['replacements']}")
+        return code
 
     if ns.make_cmd == "list-public-targets":
         rows = [
@@ -190,6 +277,7 @@ def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print(f"target: {target}")
         print(f"description: {entry['description']}")
         print(f"lanes: {', '.join(entry['lanes'])}")
+        print("atlasctl mapping: atlasctl make run <target>")
         graph = parse_make_targets(ctx.repo_root / "makefiles")
         print("internal expansion tree:")
         for line in render_tree(graph, target):
@@ -341,6 +429,12 @@ def configure_make_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
     help_p.add_argument("--mode", choices=["help", "gates", "list", "advanced", "all"], default="help")
 
     make_sub.add_parser("list", help="list curated public make targets")
+    lint = make_sub.add_parser("lint", help="run make policy lint checks")
+    lint.add_argument("--json", action="store_true", help="emit JSON output")
+    rewrite = make_sub.add_parser("rewrite", help="rewrite obvious direct script/python make invocations to atlasctl wrappers")
+    rewrite.add_argument("--write", action="store_true", help="apply rewrites in-place")
+    rewrite.add_argument("--limit", type=int, default=200, help="maximum files to rewrite in one run")
+    rewrite.add_argument("--json", action="store_true", help="emit JSON output")
 
     explain = make_sub.add_parser("explain", help="explain a public target")
     explain.add_argument("target")

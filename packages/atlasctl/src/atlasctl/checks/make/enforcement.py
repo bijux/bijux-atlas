@@ -5,6 +5,7 @@ import re
 import subprocess
 from pathlib import Path
 
+from ...make.public_targets import public_names
 from ..repo.native import (
     check_make_no_direct_python_script_invocations,
     check_make_scripts_references,
@@ -12,6 +13,7 @@ from ..repo.native import (
 
 _MAKE_RECIPE_RE = re.compile(r"^\t(?P<body>.*)$")
 _SCRIPT_PATH_RE = re.compile(r"(^|\s)(?:\./)?(?:ops|scripts|packages/atlasctl/src/atlasctl)/[^\s]+")
+_BASH_OPS_RE = re.compile(r"(?:^|\s)(?:bash|sh)\s+(?:\./)?ops/[^\s]+")
 _WRITE_RE = re.compile(r"(?:^|\s)(?:cp\s+[^\n]*\s+|mv\s+[^\n]*\s+|cat\s+>\s*|tee\s+|mkdir\s+-p\s+|touch\s+|>\s*|>>\s*)([^\s\"';]+)")
 
 
@@ -64,6 +66,19 @@ def check_make_no_direct_python_only_atlasctl(repo_root: Path) -> tuple[int, lis
     exceptions = _load_exceptions(repo_root, "direct_python")
     filtered = [err for err in errors if err not in exceptions]
     return (0 if not filtered else 1), sorted(filtered)
+
+
+def check_make_no_direct_bash_ops(repo_root: Path) -> tuple[int, list[str]]:
+    exceptions = _load_exceptions(repo_root, "direct_bash_ops")
+    errors: list[str] = []
+    for rel, lineno, body in _iter_make_recipe_lines(repo_root):
+        if _BASH_OPS_RE.search(body) is None:
+            continue
+        msg = f"{rel}:{lineno}: direct `bash ops/...` invocation is forbidden in make recipes"
+        if msg in exceptions:
+            continue
+        errors.append(msg)
+    return (0 if not errors else 1), sorted(errors)
 
 
 def check_make_no_direct_artifact_writes(repo_root: Path) -> tuple[int, list[str]]:
@@ -164,4 +179,39 @@ def check_make_no_bypass_atlasctl_without_allowlist(repo_root: Path) -> tuple[in
         if msg in exceptions:
             continue
         errors.append(msg)
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_ci_workflows_call_make_and_make_calls_atlasctl(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    workflows = sorted((repo_root / ".github" / "workflows").glob("*.yml"))
+    for wf in workflows:
+        text = wf.read_text(encoding="utf-8", errors="ignore")
+        run_lines = [line.strip() for line in text.splitlines() if line.strip().startswith("run:")]
+        if not run_lines:
+            continue
+        make_lines = [line for line in run_lines if re.search(r"\brun:\s*make\b", line)]
+        if not make_lines:
+            errors.append(f"{wf.relative_to(repo_root).as_posix()}: workflow must call make entrypoints")
+        direct_atlasctl = [line for line in run_lines if "atlasctl " in line and "make " not in line]
+        if direct_atlasctl:
+            errors.append(f"{wf.relative_to(repo_root).as_posix()}: workflow run lines must call make, not atlasctl directly")
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_public_make_targets_map_to_atlasctl(repo_root: Path) -> tuple[int, list[str]]:
+    root_mk = repo_root / "makefiles" / "root.mk"
+    if not root_mk.exists():
+        return 1, ["makefiles/root.mk missing"]
+    text = root_mk.read_text(encoding="utf-8", errors="ignore")
+    errors: list[str] = []
+    for target in public_names():
+        pattern = re.compile(rf"(?m)^{re.escape(target)}:\s.*?(?:\n(?:\t.*\n?)*)")
+        match = pattern.search(text)
+        if not match:
+            errors.append(f"public target missing from makefiles/root.mk: {target}")
+            continue
+        block = match.group(0)
+        if "atlasctl" not in block and "$(ATLAS_SCRIPTS)" not in block:
+            errors.append(f"public target must delegate to atlasctl: {target}")
     return (0 if not errors else 1), sorted(errors)
