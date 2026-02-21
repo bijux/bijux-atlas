@@ -95,6 +95,22 @@ def test_dev_forward_propagates_quiet_and_json(monkeypatch) -> None:
     assert "--format" in seen and "json" in seen
 
 
+def test_dev_make_help_forwards_to_make_help(monkeypatch) -> None:
+    seen: list[str] = []
+
+    def fake_subprocess_run(cmd, **_kwargs):
+        seen.extend(cmd)
+        class P:
+            returncode = 0
+        return P()
+
+    ctx = RunContext.from_args("dev-make-help", None, "test", False)
+    monkeypatch.setattr("atlasctl.commands.dev.command.subprocess.run", fake_subprocess_run)
+    rc = run_dev_command(ctx, argparse.Namespace(dev_cmd="make", args=["help"]))
+    assert rc == 0
+    assert seen[-2:] == ["make", "help"]
+
+
 def test_dev_fmt_refuses_without_isolate(monkeypatch) -> None:
     monkeypatch.setattr("atlasctl.core.effects.dev_cargo._build_isolate_env", lambda _ctx, _action: {})
     ctx = RunContext.from_args("dev-no-isolate", None, "test", False)

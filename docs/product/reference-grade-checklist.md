@@ -23,7 +23,7 @@ No manual-only checklist items without corresponding gate.
 - [ ] `dev-fmt`: formatting clean.
 - [ ] `dev-lint`: lint clean.
 - [ ] `dev-audit`: dependency and security checks clean.
-- [ ] `dev-test-all`: all tests pass with no skips in required suites.
+- [ ] `dev-test`: all required tests pass (use `atlasctl dev test --all` when validating ignored suites).
 - [ ] `dev-coverage`: coverage gate passes.
 - [ ] `openapi-drift`: OpenAPI snapshots match.
 - [ ] `docs`: docs build + lint + link checks pass.
@@ -37,7 +37,7 @@ Any unchecked item blocks release.
 ## How to verify
 
 ```bash
-$ make dev-ci
+$ make ci
 ```
 
 Expected output: formatting, lint, audit, test, coverage, OpenAPI drift, docs, and SSOT checks finish successfully.

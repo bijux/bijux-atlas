@@ -38,7 +38,7 @@ Institutes need deterministic, versioned query behavior over immutable datasets 
 
 ```bash
 $ make ssot-check
-$ make dev-test-all
+$ make dev-test
 ```
 
 Expected output: contract checks and full test suite pass.
