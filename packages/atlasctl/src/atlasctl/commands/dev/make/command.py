@@ -10,6 +10,7 @@ from pathlib import Path
 from ....core.context import RunContext
 from ....core.fs import ensure_evidence_path
 from .contracts_check import run_contracts_check
+from .dev_ci_target_map import run_dev_ci_target_map
 from .explain import LEGACY_TARGET_RE
 from .help import render_advanced, render_all, render_gates, render_help, render_list
 from .public_targets import entry_map, load_ownership, public_entries, public_names
@@ -417,6 +418,13 @@ def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             emit_artifacts=ns.emit_artifacts,
             as_json=ns.json,
         )
+    if ns.make_cmd == "dev-ci-target-map":
+        return run_dev_ci_target_map(
+            ctx,
+            out_dir_arg=ns.out_dir,
+            check=bool(ns.check),
+            as_json=bool(ns.json or ctx.output_format == "json"),
+        )
 
     return 2
 
@@ -478,3 +486,8 @@ def configure_make_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
     cc.add_argument("--json", action="store_true")
     cc.add_argument("--fail-fast", action="store_true")
     cc.add_argument("--emit-artifacts", action="store_true")
+
+    dc = make_sub.add_parser("dev-ci-target-map", help="dump cargo/ci targets and enforce dev-ci target mapping")
+    dc.add_argument("--out-dir", default="artifacts/evidence/make")
+    dc.add_argument("--check", action="store_true", help="fail on unmapped or duplicate target intents")
+    dc.add_argument("--json", action="store_true", help="emit JSON output")

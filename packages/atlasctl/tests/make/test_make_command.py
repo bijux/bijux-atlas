@@ -9,6 +9,7 @@ import jsonschema
 from atlasctl.core.context import RunContext
 from atlasctl.commands.dev.make.command import run_make_command
 from atlasctl.commands.dev.make.contracts_check import CHECKS, run_contracts_check
+from atlasctl.commands.dev.make.dev_ci_target_map import build_dev_ci_target_payload
 from atlasctl.commands.dev.make.target_graph import parse_make_targets, render_tree
 
 ROOT = Path(__file__).resolve().parents[4]
@@ -97,6 +98,7 @@ def test_make_parser_supports_new_subcommands() -> None:
         ["make", "rewrite", "--json"],
         ["make", "doctor", "--json"],
         ["make", "run", "ci"],
+        ["make", "dev-ci-target-map", "--json"],
     ):
         ns = parser.parse_args(argv)
         assert ns.cmd == "make"
@@ -134,3 +136,16 @@ def test_make_rewrite_preview_json() -> None:
     ns = argparse.Namespace(make_cmd="rewrite", write=False, limit=2, json=True)
     rc = run_make_command(ctx, ns)
     assert rc == 0
+
+
+def test_dev_ci_target_map_payload_is_complete_for_repo() -> None:
+    payload = build_dev_ci_target_payload(ROOT)
+    assert payload["status"] == "ok"
+    errors = payload["errors"]
+    assert errors["unmapped"] == []
+    assert errors["duplicate_without_alias"] == []
+    rows = payload["target_map"]
+    by_target = {row["target"]: row for row in rows}
+    assert by_target["ci-fmt"]["atlasctl"] == "atlasctl dev fmt"
+    assert by_target["ci-test-nextest"]["atlasctl"] == "atlasctl dev test"
+    assert by_target["ci-deny"]["atlasctl"] == "atlasctl dev audit"
