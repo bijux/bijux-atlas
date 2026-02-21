@@ -32,6 +32,7 @@ def test_check_run_info_output_golden(tmp_path: Path) -> None:
         "run",
         "--select",
         "atlasctl::docs::__no_match__",
+        "--info",
     )
     assert proc.returncode == 0, proc.stderr
     assert proc.stdout.strip() == _golden("check-run-info.txt.golden")
@@ -127,3 +128,23 @@ def test_check_show_source_and_unknown_exit_code(tmp_path: Path) -> None:
 
     unknown = run_atlasctl_isolated(tmp_path, "--quiet", "check", "--show-source", "repo.__missing__")
     assert unknown.returncode == 2, unknown.stderr
+
+
+def test_check_run_group_and_match_filters(tmp_path: Path) -> None:
+    proc = run_atlasctl_isolated(
+        tmp_path,
+        "--quiet",
+        "check",
+        "run",
+        "--group",
+        "docs",
+        "--match",
+        "atlasctl::docs::*",
+        "--require-markers",
+        "docs",
+        "--select",
+        "atlasctl::docs::__no_match__",
+        "--quiet",
+    )
+    assert proc.returncode == 0, proc.stderr
+    assert proc.stdout.strip()

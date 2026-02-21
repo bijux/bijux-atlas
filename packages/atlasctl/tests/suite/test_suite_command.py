@@ -26,7 +26,7 @@ def test_suite_run_list_refgrade() -> None:
 
 def test_suite_run_only_single_check() -> None:
     proc = run_atlasctl("--quiet", "suite", "run", "fast", "--only", "check repo.module_size", "--json")
-    assert proc.returncode in {0, 1}, proc.stderr
+    assert proc.returncode in {0, 2}, proc.stderr
     payload = json.loads(proc.stdout)
     assert payload["suite"] == "fast"
     assert payload["summary"]["passed"] + payload["summary"]["failed"] >= 1
@@ -43,7 +43,7 @@ def test_suite_inventory_check_json() -> None:
 def test_suite_run_writes_target_dir(tmp_path) -> None:
     target = tmp_path / "suite-out"
     proc = run_atlasctl("--quiet", "suite", "run", "fast", "--only", "check repo.module_size", "--json", "--target-dir", str(target))
-    assert proc.returncode in {0, 1}, proc.stderr
+    assert proc.returncode in {0, 2}, proc.stderr
     payload = json.loads(proc.stdout)
     assert payload["target_dir"] == str(target)
     assert (target / "results.json").exists()
@@ -78,10 +78,18 @@ def test_refgrade_proof_suite_contains_release_gates() -> None:
 
 def test_suite_run_pytest_q_output_mode() -> None:
     proc = run_atlasctl("--quiet", "suite", "run", "fast", "--only", "check repo.module_size", "--pytest-q")
-    assert proc.returncode in {0, 1}, proc.stderr
+    assert proc.returncode in {0, 2}, proc.stderr
     text = proc.stdout
     assert "." in text or "F" in text
     assert "passed" in text and "failed" in text and "skipped" in text
+
+
+def test_suite_run_text_style_matches_check_style() -> None:
+    proc = run_atlasctl("--quiet", "suite", "run", "fast", "--only", "check repo.module_size")
+    assert proc.returncode in {0, 2}, proc.stderr
+    text = proc.stdout
+    assert ("PASS check repo.module_size (" in text) or ("FAIL check repo.module_size (" in text)
+    assert "summary: passed=" in text and "failed=" in text and "total=" in text
 
 
 def test_suite_run_profile_and_slow_report(tmp_path) -> None:
@@ -103,7 +111,7 @@ def test_suite_run_profile_and_slow_report(tmp_path) -> None:
         "--slow-report",
         str(slow_report),
     )
-    assert proc.returncode in {0, 1}, proc.stderr
+    assert proc.returncode in {0, 2}, proc.stderr
     payload = json.loads(proc.stdout)
     assert payload["slow_threshold_ms"] == 1
     assert "slow_checks" in payload
