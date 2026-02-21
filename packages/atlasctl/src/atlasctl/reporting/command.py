@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from pathlib import Path
 from ..reporting.make_area_report import main as make_area_report_main
 from ..core.context import RunContext
 from ..commands.policies.runtime.dir_entry_budgets import report_budgets
@@ -89,11 +90,52 @@ def run_report_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         for artifact in ns.artifact:
             argv.extend(["--artifact", artifact])
         return make_area_report_main(argv)
+    if ns.report_cmd == "ci-summary":
+        root = ctx.repo_root / "artifacts" / "evidence" / "ci"
+        run_dir: Path
+        if bool(getattr(ns, "latest", False)):
+            if not root.exists():
+                payload = {"schema_version": 1, "tool": "atlasctl", "status": "error", "message": "no ci evidence runs found"}
+                print(json.dumps(payload, sort_keys=True))
+                return 1
+            runs = [p for p in root.iterdir() if p.is_dir()]
+            if not runs:
+                payload = {"schema_version": 1, "tool": "atlasctl", "status": "error", "message": "no ci evidence runs found"}
+                print(json.dumps(payload, sort_keys=True))
+                return 1
+            run_dir = max(runs, key=lambda p: p.stat().st_mtime)
+        else:
+            run_dir = root / (ns.run_id_override or ctx.run_id)
+        report = run_dir / "suite-ci.report.json"
+        summary = run_dir / "suite-ci.summary.txt"
+        meta = run_dir / "run.meta.json"
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok" if report.exists() else "error",
+            "kind": "ci-summary",
+            "run_id": run_dir.name,
+            "artifacts": {
+                "json": str(report),
+                "summary": str(summary),
+                "meta": str(meta),
+            },
+        }
+        if report.exists():
+            try:
+                report_payload = json.loads(report.read_text(encoding="utf-8"))
+                payload["suite_status"] = report_payload.get("status", "unknown")
+                payload["suite_summary"] = report_payload.get("summary", {})
+            except json.JSONDecodeError:
+                payload["suite_status"] = "invalid-json"
+                payload["suite_summary"] = {}
+        print(json.dumps(payload, sort_keys=True))
+        return 0 if payload["status"] == "ok" else 1
     return 2
 
 
-def configure_report_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    p = sub.add_parser("report", help="unified report and scorecard commands")
+def _configure_report_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser], name: str) -> None:
+    p = sub.add_parser(name, help="unified report and scorecard commands")
     rep = p.add_subparsers(dest="report_cmd", required=True)
 
     c = rep.add_parser("collect", help="collect lane reports into unified report JSON")
@@ -170,3 +212,14 @@ def configure_report_parser(sub: argparse._SubParsersAction[argparse.ArgumentPar
     mar.add_argument("--log", default="-")
     mar.add_argument("--artifact", action="append", default=[])
     mar.add_argument("--failure", default="")
+    ci = rep.add_parser("ci-summary", help="print CI summary payload from evidence")
+    ci.add_argument("--run-id", dest="run_id_override")
+    ci.add_argument("--latest", action="store_true", help="use latest ci run directory")
+
+
+def configure_report_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
+    _configure_report_parser(sub, "report")
+
+
+def configure_reporting_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
+    _configure_report_parser(sub, "reporting")

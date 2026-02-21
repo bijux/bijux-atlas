@@ -199,6 +199,7 @@ def dispatch_command(
         "make": ("atlasctl.commands.dev.make.command", "run_make_command"),
         "ops": ("atlasctl.commands.ops.runtime", "run_ops_command"),
         "report": ("atlasctl.reporting.command", "run_report_command"),
+        "reporting": ("atlasctl.reporting.command", "run_report_command"),
         "lint": ("atlasctl.commands.policies.lint.command", "run_lint_command"),
         "test": ("atlasctl.commands.internal.test_tools.command", "run_test_command"),
         "suite": ("atlasctl.suite.command", "run_suite_command"),
