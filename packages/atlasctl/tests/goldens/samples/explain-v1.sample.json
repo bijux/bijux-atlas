@@ -1,0 +1,11 @@
+{
+  "command": "help",
+  "failure_modes": [],
+  "run_id": "sample-explain",
+  "schema_name": "atlasctl.explain.v1",
+  "schema_version": 1,
+  "status": "ok",
+  "tool": "atlasctl",
+  "tools": [],
+  "touches": []
+}

@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from ....cli.registry import command_registry
+from ....contracts.ids import RUNTIME_CONTRACTS
 
 _PUBLIC_UNSTABLE_ALLOWLIST = {"compat"}
 
@@ -102,7 +103,7 @@ def runtime_contracts_payload(repo_root: Path) -> dict[str, object]:
         checks.append({"id": cid, "status": "pass" if code == 0 else "fail", "errors": sorted(errors)})
     failed = [c for c in checks if c["status"] == "fail"]
     return {
-        "schema_name": "atlasctl.runtime_contracts.v1",
+        "schema_name": RUNTIME_CONTRACTS,
         "schema_version": 1,
         "tool": "atlasctl",
         "status": "ok" if not failed else "error",

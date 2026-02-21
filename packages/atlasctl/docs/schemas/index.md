@@ -14,3 +14,4 @@ Schema files live under:
 - Changes that break compatibility require a version bump.
 - `atlasctl validate-output --schema <name> --file <payload.json>` validates by schema name.
 - Contract checks validate catalog integrity and sample payloads.
+- See [Schema Versioning Policy](versioning-policy.md) for naming and compatibility rules.

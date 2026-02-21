@@ -4,6 +4,7 @@ import json
 import subprocess
 from pathlib import Path
 
+from .catalog import load_catalog
 from .checks import load_json
 
 
@@ -145,3 +146,79 @@ def generate_contract_artifacts(repo_root: Path) -> list[str]:
         encoding="utf-8",
     )
     return []
+
+
+def generate_schema_samples(repo_root: Path) -> list[str]:
+    out_dir = repo_root / "packages/atlasctl/tests/goldens/samples"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    templates: dict[str, dict[str, object]] = {
+        "atlasctl.check-list.v1": {
+            "schema_name": "atlasctl.check-list.v1",
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "checks": [],
+        },
+        "atlasctl.commands.v1": {
+            "schema_name": "atlasctl.commands.v1",
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "run_id": "sample-commands",
+            "commands": [],
+        },
+        "atlasctl.explain.v1": {
+            "schema_name": "atlasctl.explain.v1",
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "run_id": "sample-explain",
+            "command": "help",
+            "touches": [],
+            "tools": [],
+            "failure_modes": [],
+        },
+        "atlasctl.help.v1": {
+            "schema_name": "atlasctl.help.v1",
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "run_id": "sample-help",
+            "commands": [],
+        },
+        "atlasctl.runtime_contracts.v1": {
+            "schema_name": "atlasctl.runtime_contracts.v1",
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "checks": [],
+        },
+        "atlasctl.suite-run.v1": {
+            "schema_name": "atlasctl.suite-run.v1",
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "suite": "sample",
+            "summary": {"passed": 0, "failed": 0, "skipped": 0, "duration_ms": 0},
+            "results": [],
+            "target_dir": "artifacts/isolate/sample",
+        },
+        "atlasctl.surface.v1": {
+            "schema_name": "atlasctl.surface.v1",
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "run_id": "sample-surface",
+            "commands": [],
+            "path_owners": {},
+        },
+    }
+    errors: list[str] = []
+    for schema_name in sorted(load_catalog().keys()):
+        payload = templates.get(schema_name)
+        if payload is None:
+            errors.append(f"missing sample template for schema {schema_name}")
+            continue
+        name = schema_name.removeprefix("atlasctl.").replace(".", "-") + ".sample.json"
+        (out_dir / name).write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return errors

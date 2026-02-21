@@ -24,6 +24,10 @@ jobs:
         run: ./bin/atlasctl --quiet migration gate
       - name: Enforce atlasctl repo hygiene gate
         run: ./bin/atlasctl --quiet check repo
+      - name: Enforce contract catalog and samples
+        run: |
+          ./bin/atlasctl --quiet contracts lint --report json
+          PYTHONPATH=packages/atlasctl/src pytest -q packages/atlasctl/tests/contracts/test_contract_schemas.py
       - name: Enforce no legacy package tree
         run: test ! -d packages/atlasctl/src/atlasctl/legacy
       - name: Enforce python cache/venv tracking policy

@@ -13,12 +13,33 @@ def check_schema_catalog_integrity(repo_root: Path) -> tuple[int, list[str]]:
     return (0 if not errors else 1), sorted(errors)
 
 
+def check_schema_catalog_files_exist(repo_root: Path) -> tuple[int, list[str]]:
+    errors = [err for err in lint_catalog() if "missing schema file" in err]
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_schema_disk_files_listed(repo_root: Path) -> tuple[int, list[str]]:
+    errors = [err for err in lint_catalog() if "schema files not in catalog" in err]
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_schema_catalog_sorted(repo_root: Path) -> tuple[int, list[str]]:
+    errors = [err for err in lint_catalog() if "order must be sorted" in err]
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_schema_id_naming(repo_root: Path) -> tuple[int, list[str]]:
+    errors = [err for err in lint_catalog() if "invalid schema id format" in err or "version mismatch" in err]
+    return (0 if not errors else 1), sorted(errors)
+
+
 def check_schema_samples_validate(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
     samples = sorted((repo_root / "packages/atlasctl/tests/goldens/samples").glob("*.json"))
     if not samples:
         return 1, ["no sample payloads found under packages/atlasctl/tests/goldens/samples"]
     catalog = load_catalog()
+    covered: set[str] = set()
     for sample in samples:
         payload = json.loads(sample.read_text(encoding="utf-8"))
         schema_name = payload.get("schema_name")
@@ -28,6 +49,7 @@ def check_schema_samples_validate(repo_root: Path) -> tuple[int, list[str]]:
         if schema_name not in catalog:
             errors.append(f"{sample.name}: unknown schema_name {schema_name}")
             continue
+        covered.add(schema_name)
         expected_version = int(catalog[schema_name].version)
         if int(payload.get("schema_version", -1)) != expected_version:
             errors.append(f"{sample.name}: schema_version mismatch for {schema_name} (expected {expected_version})")
@@ -36,6 +58,9 @@ def check_schema_samples_validate(repo_root: Path) -> tuple[int, list[str]]:
             validate(schema_name, payload)
         except Exception as exc:
             errors.append(f"{sample.name}: {exc}")
+    missing = sorted(set(catalog.keys()) - covered)
+    for schema_name in missing:
+        errors.append(f"missing sample payload for schema {schema_name}")
     return (0 if not errors else 1), sorted(errors)
 
 

@@ -1,0 +1,8 @@
+{
+  "commands": [],
+  "run_id": "sample-help",
+  "schema_name": "atlasctl.help.v1",
+  "schema_version": 1,
+  "status": "ok",
+  "tool": "atlasctl"
+}

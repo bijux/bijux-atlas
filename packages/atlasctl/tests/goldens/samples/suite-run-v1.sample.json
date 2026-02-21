@@ -1,0 +1,15 @@
+{
+  "results": [],
+  "schema_name": "atlasctl.suite-run.v1",
+  "schema_version": 1,
+  "status": "ok",
+  "suite": "sample",
+  "summary": {
+    "duration_ms": 0,
+    "failed": 0,
+    "passed": 0,
+    "skipped": 0
+  },
+  "target_dir": "artifacts/isolate/sample",
+  "tool": "atlasctl"
+}

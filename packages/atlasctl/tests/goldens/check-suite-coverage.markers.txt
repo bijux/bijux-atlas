@@ -69,3 +69,7 @@ repo.type_coverage
 
 repo.legacy_package_absent
 repo.legacy_zero_importers
+contracts.schema_catalog_files_exist
+contracts.schema_disk_files_listed
+contracts.schema_catalog_sorted
+contracts.schema_id_naming

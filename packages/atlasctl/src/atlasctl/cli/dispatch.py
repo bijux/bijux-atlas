@@ -11,6 +11,8 @@ from ..cli.registry import render_payload
 from ..core.context import RunContext
 from ..core.script_runner import run_script
 from ..core.serialize import dumps_json
+from ..contracts.ids import EXPLAIN, HELP
+from ..contracts.validate_self import validate_self
 from ..errors import ScriptError
 from ..exit_codes import ERR_CONFIG
 from ..surface import run_surface
@@ -50,8 +52,9 @@ def dispatch_command(
         return 0 if payload["status"] == "ok" else ERR_CONFIG
     if ns.cmd == "help":
         payload = commands_payload()
-        payload["schema_name"] = "atlasctl.help.v1"
+        payload["schema_name"] = HELP
         payload["run_id"] = ctx.run_id
+        validate_self(HELP, payload)
         rendered = dumps_json(payload, pretty=not ns.json)
         write_payload(ctx, ns.out_file, rendered)
         print(rendered)
@@ -59,7 +62,7 @@ def dispatch_command(
     if ns.cmd == "explain":
         desc = import_attr("atlasctl.commands.explain", "describe_command")(ns.command)
         payload = {
-            "schema_name": "atlasctl.explain.v1",
+            "schema_name": EXPLAIN,
             "schema_version": 1,
             "tool": "atlasctl",
             "status": "ok",
@@ -67,6 +70,7 @@ def dispatch_command(
             "command": ns.command,
             **desc,
         }
+        validate_self(EXPLAIN, payload)
         print(dumps_json(payload, pretty=not as_json))
         return 0
     if ns.cmd == "completion":

@@ -24,4 +24,5 @@ def test_suite_run_json_schema_contract(tmp_path) -> None:
     proc = run_atlasctl("--quiet", "suite", "run", "fast", "--only", "check repo.module_size", "--json", "--target-dir", str(target))
     assert proc.returncode in {0, 1}, proc.stderr
     payload = json.loads(proc.stdout)
+    assert payload["schema_name"] == "atlasctl.suite-run.v1"
     validate("atlasctl.suite-run.v1", payload)
