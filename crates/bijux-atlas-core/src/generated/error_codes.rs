@@ -104,6 +104,7 @@ impl ErrorCode {
     }
 }
 
+#[allow(dead_code)]
 pub const ERROR_CODES: &[&str] = &[
     "ArtifactCorrupted",
     "ArtifactQuarantined",
