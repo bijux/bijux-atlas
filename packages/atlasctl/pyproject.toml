@@ -154,3 +154,38 @@ max_branch_keywords_per_file = 999
 [[tool.atlasctl.budgets.exceptions]]
 path = "packages/atlasctl/src/atlasctl/legacy/docs_runtime_chunks"
 reason = "legacy compatibility runtime shards with dynamic loading"
+
+[tool.atlasctl.suites]
+default = "refgrade"
+
+[tool.atlasctl.suites.fast]
+includes = []
+items = [
+  "check:repo.module_size",
+  "check:repo.pyproject_required_blocks",
+  "cmd:atlasctl check list --json",
+]
+
+[tool.atlasctl.suites.refgrade]
+includes = ["fast"]
+items = [
+  "check:repo.dir_budget_py_files",
+  "check:repo.dir_budget_modules",
+  "check:repo.dir_budget_loc",
+  "cmd:atlasctl policies culprits-suite --report json",
+  "schema:atlasctl.help.v1",
+]
+
+[tool.atlasctl.suites.ops]
+includes = []
+items = [
+  "cmd:atlasctl ops lint --report json",
+  "cmd:atlasctl check domain ops --fail-fast",
+]
+
+[tool.atlasctl.suites.ci]
+includes = ["refgrade"]
+items = [
+  "cmd:atlasctl policies check --report json",
+  "cmd:atlasctl check all --json --fail-fast",
+]
