@@ -1,0 +1,13 @@
+{
+  "schema_name": "atlasctl.output-base.v2",
+  "schema_version": 2,
+  "tool": "atlasctl",
+  "ok": true,
+  "errors": [],
+  "warnings": [],
+  "meta": {
+    "example": "base-output-v2"
+  },
+  "run_id": "sample-run",
+  "contract_version": 2
+}

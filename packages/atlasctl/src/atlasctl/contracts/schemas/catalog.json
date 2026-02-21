@@ -21,6 +21,16 @@
       "file": "atlasctl.help.v1.schema.json"
     },
     {
+      "name": "atlasctl.output-base.v1",
+      "version": 1,
+      "file": "atlasctl.output-base.v1.schema.json"
+    },
+    {
+      "name": "atlasctl.output-base.v2",
+      "version": 2,
+      "file": "atlasctl.output-base.v2.schema.json"
+    },
+    {
       "name": "atlasctl.runtime_contracts.v1",
       "version": 1,
       "file": "atlasctl.runtime_contracts.v1.schema.json"
