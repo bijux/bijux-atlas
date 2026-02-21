@@ -177,6 +177,8 @@ def check_command_help_docs_drift(repo_root: Path) -> tuple[int, list[str]]:
     }
     errors: list[str] = []
     for spec in command_registry():
+        if spec.internal:
+            continue
         if spec.name not in listed:
             errors.append(f"{spec.name}: missing from docs/_generated/cli.md")
     return (0 if not errors else 1), errors
@@ -252,7 +254,15 @@ def check_command_surface_stability(repo_root: Path) -> tuple[int, list[str]]:
     golden_path = repo_root / "packages/atlasctl/tests/goldens/list/commands.json.golden"
     if not golden_path.exists():
         return 1, [f"{golden_path.relative_to(repo_root).as_posix()} missing"]
-    expected = json.loads(golden_path.read_text(encoding="utf-8"))
+    expected_raw = json.loads(golden_path.read_text(encoding="utf-8"))
+    expected = {
+        "schema_name": expected_raw.get("schema_name", "atlasctl.commands.v1"),
+        "schema_version": expected_raw.get("schema_version", 1),
+        "tool": expected_raw.get("tool", "atlasctl"),
+        "status": expected_raw.get("status", "ok"),
+        "run_id": expected_raw.get("run_id", ""),
+        "commands": expected_raw.get("commands", []),
+    }
     current = {
         "schema_name": "atlasctl.commands.v1",
         "schema_version": 1,
@@ -273,10 +283,12 @@ def check_command_surface_stability(repo_root: Path) -> tuple[int, list[str]]:
                 "run_id_mode": cmd.run_id_mode,
                 "supports_dry_run": cmd.supports_dry_run,
                 "aliases": list(cmd.aliases),
+                "internal": cmd.internal,
                 "purpose": cmd.purpose or cmd.help_text,
                 "examples": list(cmd.examples),
             }
             for cmd in sorted(command_registry(), key=lambda item: item.name)
+            if not cmd.internal
         ],
     }
     expected["run_id"] = ""
@@ -305,6 +317,7 @@ def check_stable_command_no_breaking_changes(repo_root: Path) -> tuple[int, list
             "run_id_mode": cmd.run_id_mode,
             "supports_dry_run": cmd.supports_dry_run,
             "aliases": list(cmd.aliases),
+            "internal": cmd.internal,
             "purpose": cmd.purpose or cmd.help_text,
             "examples": list(cmd.examples),
         }

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import argparse
+import sys
 from pathlib import Path
 
 from .public_targets import public_names
@@ -11,11 +11,10 @@ ROOT = Path(__file__).resolve().parents[7]
 
 
 def main() -> int:
-    p = argparse.ArgumentParser()
-    p.add_argument("target")
-    args = p.parse_args()
-
-    target = args.target
+    if len(sys.argv) != 2:
+        print("usage: atlasctl-dev-make-graph <target>")
+        return 2
+    target = sys.argv[1]
     if target not in set(public_names()):
         print(f"not public: {target}")
         return 1

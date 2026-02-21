@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import argparse
 import re
+import sys
 from collections import defaultdict
 from pathlib import Path
 
@@ -57,9 +57,15 @@ def render_all() -> None:
 
 
 def main() -> int:
-    p = argparse.ArgumentParser()
-    p.add_argument("--mode", choices=["help", "gates", "list", "advanced", "all"], default="help")
-    args = p.parse_args()
+    mode = "help"
+    if len(sys.argv) == 3 and sys.argv[1] == "--mode":
+        mode = sys.argv[2]
+    elif len(sys.argv) not in {1, 3}:
+        print("usage: atlasctl-dev-make-help [--mode help|gates|list|advanced|all]")
+        return 2
+    if mode not in {"help", "gates", "list", "advanced", "all"}:
+        print(f"invalid mode: {mode}")
+        return 2
 
     graph = parse_make_targets(ROOT / "makefiles")
     offenders = [target for target in sorted(graph) if LEGACY_TARGET_RE.search(target)]
@@ -70,13 +76,13 @@ def main() -> int:
         return 1
 
     entries = public_entries()
-    if args.mode == "gates":
+    if mode == "gates":
         render_gates(entries)
-    elif args.mode == "list":
+    elif mode == "list":
         render_list(entries)
-    elif args.mode == "advanced":
+    elif mode == "advanced":
         render_advanced(entries)
-    elif args.mode == "all":
+    elif mode == "all":
         render_all()
     else:
         render_help(entries)

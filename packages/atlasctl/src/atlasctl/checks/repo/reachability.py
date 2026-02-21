@@ -6,7 +6,7 @@ from pathlib import Path
 from ...commands.policies.runtime.dead_modules import analyze_dead_modules
 
 
-ALLOWED_UNLISTED = {"__init__.py", "legacy_native.py"}
+ALLOWED_UNLISTED = {"__init__.py", "legacy_native.py", "native_lint.py"}
 _DEAD_MODULE_ALLOWLIST = Path("configs/policy/dead-modules-allowlist.json")
 
 

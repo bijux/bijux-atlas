@@ -37,6 +37,7 @@ _ATLASCTL_PACKAGE_ROOT_ALLOWED = {
     "tests",
     "requirements.in",
     "requirements.lock.txt",
+    "uv.lock",
 }
 _CHECK_DOMAIN_PATHS = {
     "repo_shape": Path("packages/atlasctl/src/atlasctl/checks/repo_shape"),

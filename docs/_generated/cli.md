@@ -9,25 +9,29 @@ python -m atlasctl.cli help --json
 ```
 
 Top-level namespaces:
-- doctor
-- inventory
-- gates
-- ops
-- docs
+- check
 - configs
-- policies
-- k8s
-- stack
-- load
-- obs
-- report
-- lint
 - contracts
-- registry
+- dev
+- docs
+- doctor
+- gates
+- install
+- inventory
+- k8s
 - layout
-- version
-- env
-- self-check
-- legacy
-- compat (experimental)
-- completion (experimental)
+- lint
+- list
+- load
+- make
+- obs
+- ops
+- policies
+- registry
+- release
+- repo
+- report
+- run-id
+- stack
+- suite
+- test
