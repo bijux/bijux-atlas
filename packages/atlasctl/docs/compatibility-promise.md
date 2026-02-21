@@ -10,6 +10,8 @@
 ## Exceptions
 - Experimental commands marked in `cli-stability.md` may change.
 - Breaking changes require explicit migration notes and deprecation window.
+- See `support-policy.md` for stable vs internal surfaces.
+- See `schemas/breaking-change-policy.md` for output schema versioning rules.
 
 ## Verification
 - `make scripts-check`
