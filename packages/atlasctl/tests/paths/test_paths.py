@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.paths import find_root, resolve
+from atlasctl.commands.dev.paths import find_root, resolve
 
 
 def test_find_root_resolves_repo() -> None:

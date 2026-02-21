@@ -8,7 +8,7 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
-from ..core.context import RunContext
+from ....core.context import RunContext
 
 
 def _venv_path(ctx: RunContext, override: str | None) -> Path:

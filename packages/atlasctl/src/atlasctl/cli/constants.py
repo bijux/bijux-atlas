@@ -7,8 +7,8 @@ DOMAINS = ("registry", "layout")
 NO_NETWORK_FLAG_EXPIRY = date(2026, 12, 31)
 
 CONFIGURE_HOOKS: tuple[tuple[str, str], ...] = (
-    ("atlasctl.env.command", "configure_env_parser"),
-    ("atlasctl.paths.command", "configure_paths_parser"),
+    ("atlasctl.commands.dev.env.command", "configure_env_parser"),
+    ("atlasctl.commands.dev.paths.command", "configure_paths_parser"),
     ("atlasctl.commands.configs.command", "configure_configs_parser"),
     ("atlasctl.contracts.command", "configure_contracts_parser"),
     ("atlasctl.commands.ops.docker.command", "configure_docker_parser"),

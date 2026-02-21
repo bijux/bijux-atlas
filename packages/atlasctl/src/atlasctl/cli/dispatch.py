@@ -60,9 +60,9 @@ def dispatch_command(
         emit({**build_base_payload(ctx), "atlasctl_version": __version__, "scripts_version": version_string().split()[1]}, as_json)
         return 0
     if ns.cmd == "env":
-        return import_attr("atlasctl.env.command", "run_env_command")(ctx, ns)
+        return import_attr("atlasctl.commands.dev.env.command", "run_env_command")(ctx, ns)
     if ns.cmd == "paths":
-        return import_attr("atlasctl.paths.command", "run_paths_command")(ctx, ns)
+        return import_attr("atlasctl.commands.dev.paths.command", "run_paths_command")(ctx, ns)
     if ns.cmd == "self-check":
         payload = build_base_payload(ctx)
         payload["checks"] = {
@@ -86,7 +86,7 @@ def dispatch_command(
         print(rendered)
         return 0
     if ns.cmd == "run-id":
-        build_run_id = import_attr("atlasctl.run_id.format", "build_run_id")
+        build_run_id = import_attr("atlasctl.core.run_id.format", "build_run_id")
         run_id = build_run_id(ctx.git_sha, ns.prefix)
         payload = {
             "schema_version": 1,
@@ -120,7 +120,7 @@ def dispatch_command(
         print(json.dumps(payload, sort_keys=True) if as_json else f"# completion for {ns.shell} is not yet generated; use `atlasctl help --json`")
         return 0
     if ns.cmd == "clean":
-        payload = import_attr("atlasctl.env.command", "clean_scripts_artifacts")(ctx, ns.older_than_days)
+        payload = import_attr("atlasctl.commands.dev.env.command", "clean_scripts_artifacts")(ctx, ns.older_than_days)
         print(json.dumps(payload, sort_keys=True) if (as_json or ns.json) else f"removed={len(payload.get('removed', []))}")
         return 0
     if ns.cmd == "fix":
