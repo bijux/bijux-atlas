@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+# schema-validate-exempt: docs --list payload has no dedicated schema contract yet.
 import json
 
 from tests.helpers import golden_text, run_atlasctl

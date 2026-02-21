@@ -180,25 +180,25 @@ CHECKS: list[MakeCheck] = [
     _check(
         "ci-mk-size-budget",
         "Validate dev.mk size budget",
-        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_ci_mk_size_budget.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_ci_mk_size_budget.py",
         "Keep makefiles/dev.mk as a thin wrapper and move execution logic into atlasctl subcommands.",
     ),
     _check(
         "dev-mk-internal-allowlist",
         "Validate dev.mk internal target allowlist",
-        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_dev_mk_internal_allowlist.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_dev_mk_internal_allowlist.py",
         "Do not add internal/* targets to dev.mk beyond the explicit allowlist.",
     ),
     _check(
         "ci-mk-target-budget",
         "Validate ci.mk target count budget",
-        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_ci_mk_target_budget.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_ci_mk_target_budget.py",
         "Keep ci.mk wrapper target count <= 15 and collapse extra steps into atlasctl ci subcommands.",
     ),
     _check(
         "ci-mk-no-external-tools",
         "Validate ci.mk has no external tool invocations",
-        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_ci_mk_no_external_tools.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_ci_mk_no_external_tools.py",
         "Keep ci.mk recipes as pure ./bin/atlasctl delegation.",
     ),
     _check(
@@ -234,25 +234,25 @@ CHECKS: list[MakeCheck] = [
     _check(
         "cargo-mk-wrapper-purity",
         "Validate cargo.mk contains wrappers only (no cargo/python3/rm logic)",
-        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_cargo_mk_wrapper_purity.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_cargo_mk_wrapper_purity.py",
         "Keep makefiles/cargo.mk as pure atlasctl delegation wrappers only.",
     ),
     _check(
         "make-wrapper-forbidden-tokens",
         "Validate wrapper makefiles contain no direct tool tokens",
-        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_wrapper_forbidden_tokens.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_make_wrapper_forbidden_tokens.py",
         "Keep wrapper recipes as atlasctl-only delegation (no cargo/python3/kubectl/etc).",
     ),
     _check(
         "make-wrapper-no-multiline",
         "Validate wrapper make targets use single-line recipes",
-        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_wrapper_no_multiline_recipes.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_make_wrapper_no_multiline_recipes.py",
         "Use single-line `@./bin/atlasctl ...` recipes in wrapper makefiles.",
     ),
     _check(
         "make-wrapper-owners",
         "Validate wrapper make targets have ownership metadata",
-        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_wrapper_target_owners.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_make_wrapper_target_owners.py",
         "Add owner/area entries in makefiles/ownership.json for wrapper targets.",
     ),
     _check(

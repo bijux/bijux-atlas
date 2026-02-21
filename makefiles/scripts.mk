@@ -58,7 +58,7 @@ scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + o
 	@$(ATLAS_SCRIPTS) check repo-script-boundaries
 	@$(ATLAS_SCRIPTS) check atlas-cli-contract
 	@$(ATLAS_SCRIPTS) check scripts-surface-docs-drift
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_command_allowlist.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_make_command_allowlist.py
 	@./ops/_lint/naming.sh
 	@$(PY_RUN) ./packages/atlasctl/src/atlasctl/layout/no_shadow.py
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/public_surface/checks/check_public_entrypoint_cap.py
@@ -131,7 +131,7 @@ scripts-check: ## Run scripts lint + tests as a single gate
 	@$(ATLAS_SCRIPTS) check make-scripts-refs
 	@$(ATLAS_SCRIPTS) check repo-script-boundaries
 	@$(ATLAS_SCRIPTS) check atlas-cli-contract
-	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_command_allowlist.py
+	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_make_command_allowlist.py
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/scripts/check_script_entrypoints.py
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/scripts/check_scripts_top_level.py
 	@if command -v shellcheck >/dev/null 2>&1; then find scripts/areas/check scripts/bin -type f -name '*.sh' -print0 | xargs -0 shellcheck --rcfile ./configs/shellcheck/shellcheckrc -x; else echo "shellcheck not installed (optional)"; fi

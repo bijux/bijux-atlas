@@ -32,11 +32,14 @@ def check_no_xtask_refs(repo_root: Path) -> tuple[int, list[str]]:
     ]
     errors: list[str] = []
     ignore_paths = {
+        "configs/policy/target-renames.json",
         "makefiles/ci.mk",
         "docs/development/task-runner-removal-map.md",
         "packages/atlasctl/src/atlasctl/checks/runner.py",
         "packages/atlasctl/src/atlasctl/checks/repo/__init__.py",
         "packages/atlasctl/src/atlasctl/checks/repo/paths.py",
+        "packages/atlasctl/src/atlasctl/checks/repo/domains/paths.py",
+        "packages/atlasctl/src/atlasctl/checks/repo/native_modules/repo_checks_scripts_and_docker.py",
         "packages/atlasctl/tests/checks/test_check_native.py",
         "packages/atlasctl/tests/checks/test_check_registry_features.py",
     }
