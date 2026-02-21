@@ -17,6 +17,19 @@ _SMOKE_TESTS = (
 )
 
 
+def _infer_test_taxonomy(rel_from_tests: str) -> str:
+    low = rel_from_tests.lower()
+    if low.startswith("contracts/"):
+        return "contract"
+    if low.startswith("integration/"):
+        return "integration"
+    if low.startswith("repo/") or low.startswith("inventory/"):
+        return "repo-sim"
+    if "golden" in low or low.startswith("goldens/"):
+        return "golden"
+    return "unit"
+
+
 def _smoke_command(ns: argparse.Namespace) -> list[str]:
     cmd = [sys.executable, "-m", "pytest", "-q", "-m", "unit", *_SMOKE_TESTS]
     if ns.pytest_args:
@@ -58,16 +71,24 @@ def run_test_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     elif ns.test_cmd == "inventory":
         tests_root = ctx.repo_root / "packages/atlasctl/tests"
         by_domain: dict[str, list[str]] = {}
+        by_taxonomy: dict[str, list[str]] = {}
         for path in sorted(tests_root.rglob("test_*.py")):
             rel = path.relative_to(ctx.repo_root).as_posix()
+            rel_from_tests = path.relative_to(tests_root).as_posix()
             domain = path.parent.relative_to(tests_root).parts[0] if path.parent != tests_root else "root"
+            taxonomy = _infer_test_taxonomy(rel_from_tests)
             by_domain.setdefault(domain, []).append(rel)
+            by_taxonomy.setdefault(taxonomy, []).append(rel)
         payload = {
             "schema_version": 1,
             "tool": "atlasctl",
             "status": "ok",
             "total_tests": sum(len(rows) for rows in by_domain.values()),
             "domains": [{"domain": domain, "count": len(rows), "tests": rows} for domain, rows in sorted(by_domain.items())],
+            "taxonomy": [
+                {"name": name, "count": len(rows), "tests": rows}
+                for name, rows in sorted(by_taxonomy.items())
+            ],
         }
         if ns.out_file:
             write_json(ctx, Path(ns.out_file), payload)
