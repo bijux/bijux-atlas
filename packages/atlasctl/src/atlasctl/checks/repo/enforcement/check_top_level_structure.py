@@ -15,6 +15,8 @@ INTENDED = {
     "internal",
 }
 TRANSITION_ALLOW = {"docs", "__pycache__"}
+MAX_TREE_DEPTH = 6
+MAX_PY_FILES_PER_DIR = 30
 
 
 def check_top_level_structure(repo_root: Path) -> tuple[int, list[str]]:
@@ -32,4 +34,18 @@ def check_top_level_structure(repo_root: Path) -> tuple[int, list[str]]:
     missing = sorted(name for name in INTENDED if name not in dirs)
     if missing:
         errors.append(f"missing intended top-level atlasctl packages: {', '.join(missing)}")
+
+    for path in sorted(root.rglob("*")):
+        if not path.is_dir() or "__pycache__" in path.parts:
+            continue
+        depth = len(path.relative_to(root).parts)
+        if depth > MAX_TREE_DEPTH:
+            errors.append(
+                f"{path.relative_to(repo_root).as_posix()}: depth {depth} > {MAX_TREE_DEPTH}",
+            )
+        py_files = sum(1 for child in path.iterdir() if child.is_file() and child.suffix == ".py")
+        if py_files > MAX_PY_FILES_PER_DIR:
+            errors.append(
+                f"{path.relative_to(repo_root).as_posix()}: python file budget exceeded ({py_files} > {MAX_PY_FILES_PER_DIR})",
+            )
     return (0 if not errors else 1), errors
