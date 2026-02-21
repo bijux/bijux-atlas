@@ -88,3 +88,40 @@ source = ["src/atlasctl"]
 [tool.coverage.report]
 skip_empty = true
 show_missing = true
+
+[tool.atlasctl.budgets]
+max_py_files_per_dir = 10
+max_modules_per_dir = 10
+max_total_loc_per_dir = 2600
+max_total_bytes_per_dir = 280000
+
+[[tool.atlasctl.budgets.rules]]
+name = "core_strict"
+path_glob = "packages/atlasctl/src/atlasctl/core*"
+enforce = true
+max_py_files_per_dir = 10
+max_modules_per_dir = 9
+max_total_loc_per_dir = 1800
+max_total_bytes_per_dir = 180000
+
+[[tool.atlasctl.budgets.rules]]
+name = "checks_layout_relaxed"
+path_glob = "packages/atlasctl/src/atlasctl/checks/layout*"
+enforce = true
+max_py_files_per_dir = 12
+max_modules_per_dir = 12
+max_total_loc_per_dir = 3400
+max_total_bytes_per_dir = 340000
+
+[[tool.atlasctl.budgets.rules]]
+name = "legacy_loose"
+path_glob = "packages/atlasctl/src/atlasctl/legacy*"
+enforce = false
+max_py_files_per_dir = 999
+max_modules_per_dir = 999
+max_total_loc_per_dir = 999999
+max_total_bytes_per_dir = 99999999
+
+[[tool.atlasctl.budgets.exceptions]]
+path = "packages/atlasctl/src/atlasctl/legacy/docs_runtime_chunks"
+reason = "legacy compatibility runtime shards with dynamic loading"
