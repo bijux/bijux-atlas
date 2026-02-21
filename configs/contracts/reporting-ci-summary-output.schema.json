@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "tool",
+    "status",
+    "kind",
+    "run_id",
+    "artifacts"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 1},
+    "tool": {"type": "string", "const": "atlasctl"},
+    "status": {"type": "string", "enum": ["ok", "error"]},
+    "kind": {"type": "string", "const": "ci-summary"},
+    "run_id": {"type": "string", "minLength": 1},
+    "artifacts": {
+      "type": "object",
+      "required": ["json", "summary", "meta"],
+      "properties": {
+        "json": {"type": "string", "minLength": 1},
+        "summary": {"type": "string", "minLength": 1},
+        "meta": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

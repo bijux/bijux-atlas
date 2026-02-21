@@ -8,11 +8,12 @@ from pathlib import Path
 
 import jsonschema
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[4]
 
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
-    env = {"PYTHONPATH": str(ROOT / "packages/atlasctl/src")}
+    env = os.environ.copy()
+    env["PYTHONPATH"] = str(ROOT / "packages/atlasctl/src")
     extra: list[str] = []
     if os.environ.get("BIJUX_SCRIPTS_TEST_NO_NETWORK") == "1":
         extra.append("--no-network")
@@ -99,3 +100,24 @@ def test_report_budgets_json_by_domain() -> None:
     payload = json.loads(proc.stdout)
     assert payload["tool"] == "atlasctl"
     assert "by_domain" in payload
+
+
+def test_reporting_ci_summary_latest() -> None:
+    run_id = "ci-summary-test"
+    ci_dir = ROOT / "artifacts/evidence/ci" / run_id
+    ci_dir.mkdir(parents=True, exist_ok=True)
+    (ci_dir / "suite-ci.report.json").write_text(
+        json.dumps({"status": "ok", "summary": {"passed": 2, "failed": 0, "skipped": 0}}) + "\n",
+        encoding="utf-8",
+    )
+    (ci_dir / "suite-ci.summary.txt").write_text("ok\n", encoding="utf-8")
+    (ci_dir / "run.meta.json").write_text("{}\n", encoding="utf-8")
+
+    proc = _run_cli("reporting", "ci-summary", "--latest")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    schema = json.loads((ROOT / "configs/contracts/reporting-ci-summary-output.schema.json").read_text(encoding="utf-8"))
+    jsonschema.validate(payload, schema)
+    assert payload["kind"] == "ci-summary"
+    assert payload["suite_status"] == "ok"
+    assert payload["suite_summary"]["passed"] == 2
