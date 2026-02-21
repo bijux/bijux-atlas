@@ -25,6 +25,4 @@ jobs:
           python-version: '3.10'
       - name: Contract and observability lint
         run: |
-          make ops-dashboards-validate
-          make ops-alerts-validate
-          make ops-observability-pack-lint
+          ./bin/atlasctl ops obs --report text verify
