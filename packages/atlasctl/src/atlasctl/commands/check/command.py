@@ -60,7 +60,7 @@ from ...checks.runner import domains as check_domains
 from ...checks.runner import run_domain
 from ...core.context import RunContext
 from ...core.fs import ensure_evidence_path
-from ...core.telemetry import emit_telemetry
+from ...core.runtime.telemetry import emit_telemetry
 from ...core.exit_codes import ERR_CONTRACT, ERR_USER
 from ...commands.policies.lint.suite_engine import run_lint_suite
 
@@ -716,7 +716,7 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if sub == "make-delegation-only":
         return _run(
             ctx,
-            ["python3", "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_delegation_only.py"],
+            ["python3", "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_make_delegation_only.py"],
         )
     if sub == "workflow-calls-atlasctl":
         return _run(

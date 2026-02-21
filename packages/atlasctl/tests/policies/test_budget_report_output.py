@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+# schema-validate-exempt: report_budgets helper payload has no dedicated schema contract yet.
 import json
 from pathlib import Path
 

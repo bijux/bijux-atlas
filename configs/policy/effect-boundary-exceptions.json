@@ -11,10 +11,6 @@
       {
         "path": "packages/atlasctl/src/atlasctl/core/runtime/env_guard.py",
         "reason": "temporary boundary exception; migrate to core boundary"
-      },
-      {
-        "path": "packages/atlasctl/src/atlasctl/env/command.py",
-        "reason": "temporary boundary exception; migrate to core boundary"
       }
     ],
     "path_write_call": [
@@ -67,10 +63,6 @@
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {
-        "path": "packages/atlasctl/src/atlasctl/commands/compat.py",
-        "reason": "temporary boundary exception; migrate to core boundary"
-      },
-      {
         "path": "packages/atlasctl/src/atlasctl/commands/docs/runtime_chunks/core/docs_generation_core.py",
         "reason": "temporary boundary exception; migrate to core boundary"
       },
@@ -112,14 +104,6 @@
       },
       {
         "path": "packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/ops_runtime_checks.py",
-        "reason": "temporary boundary exception; migrate to core boundary"
-      },
-      {
-        "path": "packages/atlasctl/src/atlasctl/configs/command.py",
-        "reason": "temporary boundary exception; migrate to core boundary"
-      },
-      {
-        "path": "packages/atlasctl/src/atlasctl/contracts/generators.py",
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {
@@ -209,18 +193,6 @@
     ],
     "subprocess_call": [
       {
-        "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_evidence_not_tracked.py",
-        "reason": "temporary boundary exception; migrate to core boundary"
-      },
-      {
-        "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_no_dead_entrypoints.py",
-        "reason": "temporary boundary exception; migrate to core boundary"
-      },
-      {
-        "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/root/check_root_diff_alarm.py",
-        "reason": "temporary boundary exception; migrate to core boundary"
-      },
-      {
         "path": "packages/atlasctl/src/atlasctl/checks/layout/docs/check_help_output_determinism.py",
         "reason": "temporary boundary exception; migrate to core boundary"
       },
@@ -266,6 +238,18 @@
       },
       {
         "path": "packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_surface_drift.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_evidence_not_tracked.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_no_dead_entrypoints.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/root/check_root_diff_alarm.py",
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {
@@ -345,15 +329,7 @@
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {
-        "path": "packages/atlasctl/src/atlasctl/configs/command.py",
-        "reason": "temporary boundary exception; migrate to core boundary"
-      },
-      {
         "path": "packages/atlasctl/src/atlasctl/contracts/checks.py",
-        "reason": "temporary boundary exception; migrate to core boundary"
-      },
-      {
-        "path": "packages/atlasctl/src/atlasctl/contracts/generators.py",
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {
@@ -427,18 +403,6 @@
     ],
     "subprocess_import": [
       {
-        "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_evidence_not_tracked.py",
-        "reason": "temporary boundary exception; migrate to core boundary"
-      },
-      {
-        "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_no_dead_entrypoints.py",
-        "reason": "temporary boundary exception; migrate to core boundary"
-      },
-      {
-        "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/root/check_root_diff_alarm.py",
-        "reason": "temporary boundary exception; migrate to core boundary"
-      },
-      {
         "path": "packages/atlasctl/src/atlasctl/checks/layout/docs/check_help_output_determinism.py",
         "reason": "temporary boundary exception; migrate to core boundary"
       },
@@ -487,6 +451,18 @@
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_evidence_not_tracked.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_no_dead_entrypoints.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/policies/root/check_root_diff_alarm.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
         "path": "packages/atlasctl/src/atlasctl/checks/make/enforcement.py",
         "reason": "temporary boundary exception; migrate to core boundary"
       },
@@ -531,15 +507,7 @@
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {
-        "path": "packages/atlasctl/src/atlasctl/configs/command.py",
-        "reason": "temporary boundary exception; migrate to core boundary"
-      },
-      {
         "path": "packages/atlasctl/src/atlasctl/contracts/checks.py",
-        "reason": "temporary boundary exception; migrate to core boundary"
-      },
-      {
-        "path": "packages/atlasctl/src/atlasctl/contracts/generators.py",
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {

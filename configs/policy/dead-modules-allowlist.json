@@ -197,7 +197,7 @@
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_command_allowlist.py",
+      "path": "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_make_command_allowlist.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {

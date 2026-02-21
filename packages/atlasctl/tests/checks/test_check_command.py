@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+# schema-validate-exempt: check-owners payload has no dedicated schema contract yet.
 import json
 import subprocess
 import sys
