@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from ....cli.registry import command_registry
+from ....cli.surface_registry import command_registry
 from ....core.effects import all_command_effects, command_effects, command_group, group_allowed_effects
 from ....contracts.ids import RUNTIME_CONTRACTS
 

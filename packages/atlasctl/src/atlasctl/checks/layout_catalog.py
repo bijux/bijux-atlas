@@ -18,6 +18,8 @@ class LayoutCheckSpec:
 
 # Canonical registry for first-class layout checks.
 _LAYOUT_CHECK_MODULES = (
+    "atlasctl.checks.layout.root.check_forbidden_root_files",
+    "atlasctl.checks.layout.root.check_forbidden_root_names",
     "atlasctl.checks.layout.root.check_root_shape",
     "atlasctl.checks.layout.root.check_forbidden_paths",
     "atlasctl.checks.layout.root.check_no_direct_script_runs",

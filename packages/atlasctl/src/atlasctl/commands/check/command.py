@@ -57,7 +57,7 @@ from ...checks.runner import domains as check_domains
 from ...checks.runner import run_domain
 from ...core.context import RunContext
 from ...core.fs import ensure_evidence_path
-from ...lint.runner import run_lint_suite
+from ...lint.suite_engine import run_lint_suite
 
 NativeCheck = Callable[[Path], tuple[int, list[str]]]
 SHELL_POLICY_CHECK_IDS: tuple[str, ...] = (
