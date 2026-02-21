@@ -15,6 +15,9 @@ _ALLOWED = {
     "domain_cmd.py",
     "runner.py",
     "evidence_policy.py",
+    "docs_runtime.py",
+    "ops_runtime.py",
+    "repo_checks_native.py",
 }
 
 
