@@ -2,7 +2,8 @@
 
 Workflow: pip-tools (requirements.in + requirements.lock.txt)
 
-`atlasctl` keeps package metadata in `pyproject.toml` and uses `pip-tools` inputs/locks for deterministic local and CI installs.
+`pyproject.toml` is the dependency/configuration center.
+`requirements.in` and `requirements.lock.txt` are derived lock workflow artifacts for deterministic local and CI installs.
 
 ## Files
 
@@ -12,10 +13,33 @@ Workflow: pip-tools (requirements.in + requirements.lock.txt)
 
 ## Policy
 
-- Route B is authoritative for this package.
+- Chosen workflow: Route B (`requirements.in` compiled to `requirements.lock.txt`).
 - Do not add `uv.lock` or other requirements files in package root.
 - Update lockfile whenever dependency declarations change.
 - Keep tool and test configuration in `pyproject.toml`; keep `requirements.in` only as the explicit lock input for deterministic installs.
+
+## Compile Command
+
+- Canonical lock refresh command:
+  - `python -m atlasctl.cli deps lock`
+
+## Hash Policy
+
+- Lock entries are exact version pins.
+- Per-package hash pins are currently not required for this internal package workflow.
+- If hashes are adopted later, enforce them through the same `deps lock` command and CI lane.
+
+## Update Cadence
+
+- Refresh lock on any dependency declaration change in `pyproject.toml`.
+- Minimum cadence: weekly during active development.
+- Required refresh before release tagging and when CI dependency checks fail.
+
+## Exceptions
+
+- Dependency-policy exceptions must be recorded in:
+  - `configs/policy/dependency-exceptions.json`
+- Every exception entry must include a justification string.
 
 ## Commands
 
