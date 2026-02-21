@@ -612,6 +612,7 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     run.add_argument("--verbose", dest="run_verbose", action="store_true", help="include timing, owners, and failure hints")
     run.add_argument("--maxfail", type=int, default=0, help="stop after N failing checks (0 disables)")
     run.add_argument("--failfast", action="store_true", help="stop after first failing check")
+    run.add_argument("--fail-fast", dest="failfast", action="store_true", help="stop after first failing check")
     run.add_argument("--durations", type=int, default=0, help="show N slowest checks in summary")
     run.add_argument("--junitxml", help="write junit xml output path")
     run.add_argument("--junit-xml", dest="junit_xml", help="write junit xml output path")

@@ -25,7 +25,7 @@ from ..core.telemetry import emit_telemetry
 from ..core.logging import log_event
 from ..core.serialize import dumps_json
 from ..errors import ScriptError
-from ..exit_codes import ERR_CONFIG
+from ..exit_codes import ERR_CONFIG, ERR_USER
 from .manifests import SuiteManifest, load_first_class_suites
 
 try:
@@ -426,7 +426,7 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         if not results_file.exists():
             msg = f"no suite results for run_id `{run_id}`"
             print(dumps_json({"schema_version": 1, "tool": "atlasctl", "status": "error", "error": msg}, pretty=False) if as_json else msg)
-            return 1
+            return ERR_USER
         payload = json.loads(results_file.read_text(encoding="utf-8"))
         failed = [row for row in payload.get("results", []) if row.get("status") == "fail"]
         advice = [f"fix failing task: {row.get('label')}" for row in failed[:10]]
@@ -440,7 +440,7 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             missing = left if not left.exists() else right
             msg = f"missing suite results file: {missing.as_posix()}"
             print(dumps_json({"schema_version": 1, "tool": "atlasctl", "status": "error", "error": msg}, pretty=False) if as_json else msg)
-            return 1
+            return ERR_USER
         lhs = json.loads(left.read_text(encoding="utf-8"))
         rhs = json.loads(right.read_text(encoding="utf-8"))
         lf = {row["label"] for row in lhs.get("results", []) if row.get("status") == "fail"}
@@ -474,7 +474,7 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             print("suite inventory: ok" if not errors else "suite inventory: fail")
             for err in errors[:40]:
                 print(f"- {err}")
-        return 0 if not errors else 1
+        return 0 if not errors else ERR_USER
     if ns.suite_cmd == "list":
         if not as_json:
             names = sorted({*first_class.keys(), *suites.keys()})
@@ -542,7 +542,8 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         item_start = time.perf_counter()
         status, detail = _execute_task(ctx.repo_root, task, show_output=bool(ns.show_output))
         duration_ms = int((time.perf_counter() - item_start) * 1000)
-        line = f"({idx}/{len(selected)}) {'PASS' if status == 'pass' else 'FAIL'} {task.label}"
+        status_upper = "PASS" if status == "pass" else "FAIL"
+        line = f"{status_upper} {task.label} ({duration_ms}ms)"
         if detail and status == "fail":
             line = f"{line} :: {detail}"
         if ctx.verbose:
@@ -588,7 +589,7 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print()
         print(f"=== {passed} passed, {failed} failed, {skipped} skipped in {seconds:.2f}s ===")
     elif not as_json and not ctx.quiet:
-        print(f"summary: passed={passed} failed={failed} skipped={skipped} duration_ms={total_duration_ms}")
+        print(f"summary: passed={passed} failed={failed} skipped={skipped} total={len(results)} duration_ms={total_duration_ms}")
 
     if ns.junit:
         _write_junit(ctx.repo_root / ns.junit, suite_name, results)
@@ -656,7 +657,7 @@ def run_suite_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     )
     if as_json:
         print(dumps_json(payload, pretty=False))
-    return 0 if failed == 0 else 1
+    return 0 if failed == 0 else ERR_USER
 
 
 def configure_suite_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
