@@ -4,7 +4,7 @@ import ast
 import json
 from pathlib import Path
 
-from helpers import run_atlasctl
+from tests.helpers import run_atlasctl
 
 ROOT = Path(__file__).resolve().parents[3]
 SRC_ROOT = ROOT / "packages/atlasctl/src/atlasctl"
