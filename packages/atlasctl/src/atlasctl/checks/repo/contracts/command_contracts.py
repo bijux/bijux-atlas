@@ -133,10 +133,62 @@ def check_public_commands_docs_index(repo_root: Path) -> tuple[int, list[str]]:
     text = index.read_text(encoding="utf-8", errors="ignore")
     errors: list[str] = []
     for spec in command_registry():
-        if not spec.stable:
+        if spec.internal:
             continue
         if f"`{spec.name}`" not in text:
             errors.append(f"{spec.name}: missing from packages/atlasctl/docs/commands/index.md")
+    return (0 if not errors else 1), errors
+
+
+def check_no_undocumented_help_commands(repo_root: Path) -> tuple[int, list[str]]:
+    index = repo_root / "packages/atlasctl/docs/commands/index.md"
+    if not index.exists():
+        return 1, ["packages/atlasctl/docs/commands/index.md missing"]
+    text = index.read_text(encoding="utf-8", errors="ignore")
+    errors: list[str] = []
+    for spec in command_registry():
+        if spec.internal:
+            continue
+        if f"`{spec.name}`" not in text:
+            errors.append(f"undocumented command appears in help surface: {spec.name}")
+    return (0 if not errors else 1), errors
+
+
+def check_cli_canonical_paths(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    main = repo_root / "packages/atlasctl/src/atlasctl/cli/main.py"
+    dispatch = repo_root / "packages/atlasctl/src/atlasctl/cli/dispatch.py"
+    output = repo_root / "packages/atlasctl/src/atlasctl/cli/output.py"
+    for path in (main, dispatch, output):
+        if not path.exists():
+            errors.append(f"missing canonical cli path: {path.relative_to(repo_root).as_posix()}")
+    if main.exists():
+        text = main.read_text(encoding="utf-8", errors="ignore")
+        if "dispatch_command(" not in text:
+            errors.append("cli/main.py must delegate command execution via dispatch_command")
+    if dispatch.exists():
+        text = dispatch.read_text(encoding="utf-8", errors="ignore")
+        if "emit(" not in text:
+            errors.append("cli/dispatch.py must use cli.output.emit for payload output")
+    return (0 if not errors else 1), errors
+
+
+def check_no_duplicate_command_implementation_patterns(repo_root: Path) -> tuple[int, list[str]]:
+    src = repo_root / "packages/atlasctl/src/atlasctl"
+    commands_dir = src / "commands"
+    if not commands_dir.exists():
+        return 0, []
+    errors: list[str] = []
+    for path in sorted(commands_dir.glob("*.py")):
+        if path.name == "__init__.py":
+            continue
+        stem = path.stem
+        peer = src / stem / "command.py"
+        if peer.exists():
+            errors.append(
+                "duplicate command implementation pattern detected: "
+                f"{path.relative_to(repo_root).as_posix()} and {peer.relative_to(repo_root).as_posix()}"
+            )
     return (0 if not errors else 1), errors
 
 
@@ -182,6 +234,9 @@ def command_lint_payload(repo_root: Path) -> dict[str, object]:
         ("command_metadata", check_command_metadata_contract(repo_root)),
         ("duplicate_names", check_no_duplicate_command_names(repo_root)),
         ("docs_index", check_public_commands_docs_index(repo_root)),
+        ("help_documented", check_no_undocumented_help_commands(repo_root)),
+        ("cli_canonical_paths", check_cli_canonical_paths(repo_root)),
+        ("duplicate_impl_patterns", check_no_duplicate_command_implementation_patterns(repo_root)),
         ("surface_stability", check_command_surface_stability(repo_root)),
         ("alias_budget", check_command_alias_budget(repo_root)),
     ]
@@ -203,6 +258,9 @@ def runtime_contracts_payload(repo_root: Path) -> dict[str, object]:
         (check_no_duplicate_command_names, "contracts.no_duplicate_commands"),
         (check_command_help_docs_drift, "contracts.help_docs_drift"),
         (check_public_commands_docs_index, "contracts.docs_index"),
+        (check_no_undocumented_help_commands, "contracts.help_documented"),
+        (check_cli_canonical_paths, "contracts.cli_canonical_paths"),
+        (check_no_duplicate_command_implementation_patterns, "contracts.duplicate_impl_patterns"),
         (check_command_surface_stability, "contracts.command_surface_stability"),
     ):
         code, errors = fn(repo_root)
