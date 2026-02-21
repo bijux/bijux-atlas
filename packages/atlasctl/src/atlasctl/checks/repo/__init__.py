@@ -19,6 +19,10 @@ from .native import (
 from ..base import CheckDef
 from .enforcement.legacy_guard import check_legacy_package_quarantine
 from .enforcement.module_size import check_module_size
+from ...policies.culprits import (
+    check_budget_exceptions_documented,
+    check_budget_metric,
+)
 from .enforcement.cwd_usage import check_no_path_cwd_usage
 from .contracts.command_contracts import (
     check_command_help_docs_drift,
@@ -80,6 +84,38 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.no_scripts_dir", "repo", "forbid legacy root scripts dir", 250, check_scripts_dir_absent, fix_hint="Migrate scripts into atlasctl package commands."),
     CheckDef("repo.legacy_quarantine", "repo", "quarantine legacy package growth", 250, check_legacy_package_quarantine, fix_hint="Do not add new modules under atlasctl/legacy."),
     CheckDef("repo.module_size", "repo", "enforce module size budget", 400, check_module_size, fix_hint="Split oversized modules into focused submodules."),
+    CheckDef(
+        "repo.dir_budget_modules",
+        "repo",
+        "enforce per-directory python module count budget",
+        400,
+        lambda repo_root: check_budget_metric(repo_root, "modules-per-dir"),
+        fix_hint="Split high-density directories into intent-focused subpackages.",
+    ),
+    CheckDef(
+        "repo.dir_budget_py_files",
+        "repo",
+        "enforce per-directory python file count budget",
+        400,
+        lambda repo_root: check_budget_metric(repo_root, "py-files-per-dir"),
+        fix_hint="Split high-density directories and keep directory fan-in bounded.",
+    ),
+    CheckDef(
+        "repo.dir_budget_loc",
+        "repo",
+        "enforce per-directory total LOC budget",
+        400,
+        lambda repo_root: check_budget_metric(repo_root, "dir-loc"),
+        fix_hint="Move unrelated files into domain subpackages to reduce dir-level LOC density.",
+    ),
+    CheckDef(
+        "repo.dir_budget_exceptions_documented",
+        "repo",
+        "ensure budget exceptions are documented",
+        300,
+        check_budget_exceptions_documented,
+        fix_hint="Document each budget exception path in docs/architecture-budgets.md.",
+    ),
     CheckDef("repo.no_path_cwd_usage", "repo", "forbid Path.cwd usage outside core/repo_root.py", 400, check_no_path_cwd_usage, fix_hint="Use ctx.repo_root or core.repo_root helpers."),
     CheckDef("repo.command_metadata_contract", "repo", "ensure command metadata includes touches/tools", 400, check_command_metadata_contract, fix_hint="Add touches/tools metadata in cli registry."),
     CheckDef("repo.argparse_policy", "repo", "restrict direct argparse parser construction to canonical parser modules", 300, check_argparse_policy, fix_hint="Move parser construction into cli/parser.py or commands/*/parser.py."),

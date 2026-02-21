@@ -50,7 +50,8 @@ def run_function_checks(repo_root: Path, checks: list[CheckDef]) -> tuple[int, l
         except Exception as exc:
             code, errors = 1, [f"internal check error: {exc}"]
         elapsed_ms = int((time.perf_counter() - start) * 1000)
-        normalized_errors = sorted(errors)
+        warnings = sorted([msg.removeprefix("WARN: ").strip() for msg in errors if msg.startswith("WARN:")])
+        normalized_errors = sorted([msg for msg in errors if not msg.startswith("WARN:")])
         status = "pass" if code == 0 else "fail"
         if code != 0:
             failed += 1
@@ -60,7 +61,7 @@ def run_function_checks(repo_root: Path, checks: list[CheckDef]) -> tuple[int, l
                 domain=chk.domain,
                 status=status,
                 errors=normalized_errors,
-                warnings=[],
+                warnings=warnings,
                 evidence_paths=list(chk.evidence),
                 metrics={
                     "duration_ms": elapsed_ms,
