@@ -6,7 +6,7 @@ from tests.helpers import run_atlasctl
 
 
 def test_legacy_inventory_flag_outputs_payload() -> None:
-    proc = run_atlasctl("--quiet", "legacy", "--inventory", "--report", "json")
+    proc = run_atlasctl("--quiet", "internal", "legacy", "inventory", "--report", "json")
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
     assert payload["action"] == "inventory"
@@ -15,7 +15,7 @@ def test_legacy_inventory_flag_outputs_payload() -> None:
 
 
 def test_legacy_inventory_default_action() -> None:
-    proc = run_atlasctl("--quiet", "legacy", "--report", "json")
+    proc = run_atlasctl("--quiet", "internal", "legacy", "inventory", "--report", "json")
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
     assert payload["action"] == "inventory"

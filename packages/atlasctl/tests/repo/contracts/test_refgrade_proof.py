@@ -52,7 +52,7 @@ def test_reports_from_key_commands_validate_base_contract() -> None:
     import jsonschema
 
     for cmd in (
-        ("--quiet", "legacy", "inventory", "--report", "json"),
+        ("--quiet", "internal", "legacy", "inventory", "--report", "json"),
         ("--quiet", "ports", "show", "--report", "json"),
         ("--quiet", "gates", "list", "--report", "json"),
     ):
@@ -74,7 +74,7 @@ def test_schema_files_are_referenced_by_docs_or_code() -> None:
                 except Exception:
                     pass
     text = "\n".join(corpus)
-    transitional = {"inventory-scripts-migration.schema.json"}
+    transitional: set[str] = set()
     missing = [s.name for s in schema_files if s.name not in text and s.name not in transitional]
     assert not missing, f"unreferenced schemas: {missing}"
 

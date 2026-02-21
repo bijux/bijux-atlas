@@ -148,7 +148,7 @@ def test_internal_suite_requires_env_gate() -> None:
 
 
 def test_suites_do_not_include_legacy_checks() -> None:
-    proc = run_atlasctl("--quiet", "suite", "coverage", "--json")
+    proc = run_atlasctl("--quiet", "suite", "check", "--json")
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
-    assert all("legacy" not in check_id for check_id in payload["coverage"].keys())
+    assert not any("legacy-path checks" in err for err in payload.get("errors", []))

@@ -47,8 +47,6 @@ def test_inventory_json_categories_schema_valid() -> None:
         "owners",
         "contracts",
         "budgets",
-        "scripts-migration",
-        "legacy-scripts",
         "commands",
     ):
         proc = _run_inventory(category)
