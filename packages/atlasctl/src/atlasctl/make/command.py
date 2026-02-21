@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -35,6 +36,21 @@ def _inventory_direct_make_logic(repo_root: Path) -> dict[str, object]:
     return {"schema_version": 1, "tool": "atlasctl", "status": "ok", "items": rows}
 
 
+def _load_run_allowlist(repo_root: Path) -> set[str]:
+    cfg = repo_root / "configs/make/run-allowlist.json"
+    if not cfg.exists():
+        return set()
+    payload = json.loads(cfg.read_text(encoding="utf-8"))
+    rows = payload.get("allow_make_run_targets", [])
+    if not isinstance(rows, list):
+        return set()
+    return {str(item).strip() for item in rows if str(item).strip()}
+
+
+def _is_public_or_allowlisted_target(repo_root: Path, target: str) -> bool:
+    return target in set(public_names()) or target in _load_run_allowlist(repo_root)
+
+
 def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     entries = public_entries()
     if ns.make_cmd == "help":
@@ -52,6 +68,19 @@ def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
     if ns.make_cmd == "list":
         render_list(entries)
+        return 0
+
+    if ns.make_cmd == "list-public-targets":
+        rows = [
+            {
+                "name": entry["name"],
+                "description": entry.get("description", ""),
+                "lanes": list(entry.get("lanes", [])),
+            }
+            for entry in sorted(entries, key=lambda row: str(row.get("name", "")))
+        ]
+        payload = {"schema_version": 1, "tool": "atlasctl", "status": "ok", "targets": rows}
+        print(json.dumps(payload, sort_keys=True) if ns.json or ctx.output_format == "json" else "\n".join(f"- {row['name']}: {row['description']}" for row in rows))
         return 0
 
     if ns.make_cmd == "surface":
@@ -144,6 +173,10 @@ def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print(json.dumps({"status": "pass", "json": str(json_path), "md": str(md_path)}, sort_keys=True))
         return 0
 
+    if ns.make_cmd == "catalog":
+        inv_ns = argparse.Namespace(make_cmd="inventory", out_dir=ns.out_dir, check=ns.check)
+        return run_make_command(ctx, inv_ns)
+
     if ns.make_cmd == "explain":
         target = ns.target
         if LEGACY_TARGET_RE.search(target):
@@ -169,6 +202,17 @@ def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             print(f"not public: {target}")
             return 1
         graph = parse_make_targets(ctx.repo_root / "makefiles")
+        if ns.json or ctx.output_format == "json":
+            payload = {
+                "schema_version": 1,
+                "tool": "atlasctl",
+                "status": "ok",
+                "root": target,
+                "graph": [{"target": name, "deps": graph.get(name, [])} for name in sorted(graph)],
+                "tree": render_tree(graph, target),
+            }
+            print(json.dumps(payload, sort_keys=True))
+            return 0
         for line in render_tree(graph, target):
             print(line)
         return 0
@@ -189,11 +233,14 @@ def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return 0
 
     if ns.make_cmd == "run":
+        if not _is_public_or_allowlisted_target(ctx.repo_root, ns.target):
+            print(f"make run target is not public/allowlisted: {ns.target}")
+            return 2
         run_id = ctx.run_id
         isolate_dir = ctx.repo_root / "artifacts" / "isolate" / run_id / "atlasctl-make"
         isolate_dir.mkdir(parents=True, exist_ok=True)
         cmd = ["make", "-s", ns.target, *ns.args]
-        env = dict(**__import__("os").environ)
+        env = dict(**os.environ)
         env["RUN_ID"] = run_id
         env["ISO_ROOT"] = str(isolate_dir)
         proc = subprocess.run(cmd, cwd=ctx.repo_root, text=True, capture_output=True, check=False, env=env)
@@ -305,6 +352,8 @@ def configure_make_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
     make_sub.add_parser("list-targets", help="list all parsed make targets deterministically").add_argument(
         "--json", action="store_true", help="emit JSON output"
     )
+    list_public = make_sub.add_parser("list-public-targets", help="list SSOT public make targets")
+    list_public.add_argument("--json", action="store_true", help="emit JSON output")
     inv_logic = make_sub.add_parser("inventory-logic", help="inventory targets with direct non-atlasctl logic")
     inv_logic.add_argument("--json", action="store_true", help="emit JSON output")
     inv_logic.add_argument("--out-file", default="", help="write output under evidence root")
@@ -327,6 +376,9 @@ def configure_make_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
     inv = make_sub.add_parser("inventory", help="generate make target inventory artifacts")
     inv.add_argument("--out-dir", default="docs/_generated")
     inv.add_argument("--check", action="store_true", help="fail if generated outputs differ")
+    catalog = make_sub.add_parser("catalog", help="generate or validate make target catalog drift")
+    catalog.add_argument("--out-dir", default="docs/_generated")
+    catalog.add_argument("--check", action="store_true", help="fail if catalog outputs differ")
 
     cc = make_sub.add_parser("contracts-check", help="run make/gates contract checks")
     cc.add_argument("--json", action="store_true")
