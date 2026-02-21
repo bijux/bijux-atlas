@@ -244,6 +244,12 @@ CHECKS: list[MakeCheck] = [
         "Rename or delete legacy targets; do not keep compatibility aliases.",
     ),
     _check(
+        "forbidden-adjectives",
+        "Validate forbidden legacy adjectives are not used",
+        "packages/atlasctl/src/atlasctl/checks/layout/policies/deprecation/check_forbidden_adjectives.py",
+        "Remove forbidden adjectives (`elite`, `refgrade`, `gold`) or add tightly-scoped allowlist entries for historical quotes.",
+    ),
+    _check(
         "root-mk-size-budget",
         "Validate root.mk size budget",
         "packages/atlasctl/src/atlasctl/checks/layout/policies/root/check_root_mk_size_budget.py",

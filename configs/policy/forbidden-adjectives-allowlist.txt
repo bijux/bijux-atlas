@@ -1,0 +1,8 @@
+# Paths that may contain historical/quoted uses of forbidden adjectives.
+# One path prefix or exact relative path per line.
+
+docs/_generated/
+docs/contracts/
+docs/reference/
+packages/atlasctl/
+configs/docs/.vale/styles/Bijux/MarketingAdjectives.yml
