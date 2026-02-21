@@ -29,9 +29,14 @@ from .type_coverage import check_type_coverage
 from .dependencies import check_dependency_declarations
 from .reachability import check_repo_check_modules_registered
 from .pyproject_contracts import (
+    check_deps_workflow_doc,
     check_console_script_entry,
+    check_env_docs_present,
+    check_optional_dependency_groups,
+    check_pyproject_minimalism,
     check_pyproject_no_duplicate_tool_config,
     check_pyproject_required_blocks,
+    check_python_module_help,
 )
 
 CHECKS: tuple[CheckDef, ...] = (
@@ -61,4 +66,9 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.pyproject_required_blocks", "repo", "ensure pyproject contains required project and tool config blocks", 300, check_pyproject_required_blocks, fix_hint="Add required [project]/[tool.*] blocks to packages/atlasctl/pyproject.toml."),
     CheckDef("repo.pyproject_no_duplicate_tool_config", "repo", "forbid duplicate tool config files beside pyproject", 300, check_pyproject_no_duplicate_tool_config, fix_hint="Remove duplicated tool config files and keep pyproject as SSOT."),
     CheckDef("repo.console_script_entry", "repo", "ensure atlasctl console script entry exists and points to callable target", 300, check_console_script_entry, fix_hint="Set [project.scripts] atlasctl = \"atlasctl.cli.main:main\" and ensure target is importable."),
+    CheckDef("repo.python_module_help", "repo", "ensure python -m atlasctl --help works", 300, check_python_module_help, fix_hint="Ensure atlasctl package entrypoint remains runnable with python -m atlasctl."),
+    CheckDef("repo.optional_dependency_groups", "repo", "ensure required pyproject optional-dependency groups exist", 300, check_optional_dependency_groups, fix_hint="Add required [project.optional-dependencies] groups: dev/test/ops/docs."),
+    CheckDef("repo.pyproject_minimalism", "repo", "forbid dead/unknown pyproject tool keys", 300, check_pyproject_minimalism, fix_hint="Remove unknown [tool.*] sections or document and allow them explicitly."),
+    CheckDef("repo.deps_workflow_doc", "repo", "ensure docs/deps.md matches chosen dependency workflow", 300, check_deps_workflow_doc, fix_hint="Update docs/deps.md and keep requirements.in/requirements.lock.txt in sync."),
+    CheckDef("repo.env_docs_present", "repo", "ensure docs/env.md exists and lists canonical env vars", 300, check_env_docs_present, fix_hint="Create docs/env.md and document canonical runtime environment variables."),
 )
