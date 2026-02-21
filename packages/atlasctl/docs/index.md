@@ -15,6 +15,7 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 - [Budget Policies and Refactoring](architecture/budgets.md)
 - [CLI Stability](cli-stability.md)
 - [Compatibility Promise](compatibility-promise.md)
+- [Support Policy](support-policy.md)
 - [Contracts](contracts.md)
 - [Ownership](ownership.md)
 - [Public API](PUBLIC_API.md)
@@ -22,6 +23,7 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 - [Versioning](versioning.md)
 - [Environment Variables](env.md)
 - [Dependency Workflow](deps.md)
+- [Install](install.md)
 - [License](license.md)
 
 ## Migration
@@ -57,6 +59,7 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 
 - [Schema Catalog and Versioning](schemas/index.md)
 - [Schema Versioning Policy](schemas/versioning-policy.md)
+- [Output Breaking Change Policy](schemas/breaking-change-policy.md)
 
 ## Contributing
 
@@ -72,3 +75,4 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 ## Release
 
 - [Atlasctl Release Process](release-process.md)
+- [Atlasctl Release Notes](release-notes.md)
