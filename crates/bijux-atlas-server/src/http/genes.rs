@@ -14,5 +14,4 @@ mod genes_admission;
 #[path = "genes/response.rs"]
 mod genes_response;
 
-
 include!("genes/handler.rs");
