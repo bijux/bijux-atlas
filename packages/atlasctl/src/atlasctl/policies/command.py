@@ -10,15 +10,10 @@ from pathlib import Path
 from ..core.context import RunContext
 from ..core.fs import ensure_evidence_path
 from .culprits import (
-    biggest_dirs,
-    biggest_files,
-    budget_suite,
     collect_dir_stats,
-    explain_budgets,
-    evaluate_metric,
-    render_table_text,
-    render_text,
+    evaluate_metric,  # compat for tests/monkeypatch consumers
 )
+from .budget_handlers import handle_budget_command
 from .dead_modules import analyze_dead_modules
 from .scans import policy_drift_diff, scan_grep_relaxations, scan_rust_relaxations
 
@@ -400,58 +395,9 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.policies_cmd == "drift-diff":
         print(policy_drift_diff(repo, ns.from_ref, ns.to_ref), end="")
         return 0
-    if ns.policies_cmd == "culprits":
-        payload = evaluate_metric(repo, ns.culprits_metric)
-        output = json.dumps(payload, sort_keys=True) if ns.report == "json" else render_text(payload)
-        _write_out_file(repo, str(getattr(ns, "out_file", "")), output)
-        if ns.report == "json":
-            print(output)
-        else:
-            print(output)
-        return 0 if payload["status"] == "ok" else 1
-    if ns.policies_cmd in {"culprits-files-per-dir", "culprits-modules-per-dir", "culprits-loc-per-dir"}:
-        metric = {
-            "culprits-files-per-dir": "files-per-dir",
-            "culprits-modules-per-dir": "modules-per-dir",
-            "culprits-loc-per-dir": "loc-per-dir",
-        }[ns.policies_cmd]
-        payload = evaluate_metric(repo, metric)
-        output = json.dumps(payload, sort_keys=True) if ns.report == "json" else render_text(payload)
-        _write_out_file(repo, str(getattr(ns, "out_file", "")), output)
-        print(output)
-        return 0 if payload["status"] == "ok" else 1
-    if ns.policies_cmd == "culprits-largest-files":
-        payload = biggest_files(repo, limit=ns.limit)
-        output = json.dumps(payload, sort_keys=True) if ns.report == "json" else render_text(payload)
-        _write_out_file(repo, str(getattr(ns, "out_file", "")), output)
-        print(output)
-        return 0 if payload["status"] == "ok" else 1
-    if ns.policies_cmd == "culprits-biggest-files":
-        payload = biggest_files(repo, limit=ns.limit)
-        output = json.dumps(payload, sort_keys=True) if ns.report == "json" else render_table_text(payload, "biggest-files")
-        _write_out_file(repo, str(getattr(ns, "out_file", "")), output)
-        print(output)
-        return 0
-    if ns.policies_cmd == "culprits-biggest-dirs":
-        payload = biggest_dirs(repo, limit=ns.limit)
-        output = json.dumps(payload, sort_keys=True) if ns.report == "json" else render_table_text(payload, "biggest-dirs")
-        _write_out_file(repo, str(getattr(ns, "out_file", "")), output)
-        print(output)
-        return 0
-    if ns.policies_cmd == "culprits-suite":
-        payload = budget_suite(repo)
-        output = json.dumps(payload, sort_keys=True) if ns.report == "json" else "\n\n".join(
-            render_text(report) for report in payload["reports"]
-        )
-        _write_out_file(repo, str(getattr(ns, "out_file", "")), output)
-        print(output)
-        return 0 if payload["status"] == "ok" else 1
-    if ns.policies_cmd == "explain":
-        if ns.subject == "budgets":
-            payload = explain_budgets(repo)
-            print(json.dumps(payload, sort_keys=True) if ns.report == "json" else json.dumps(payload, indent=2, sort_keys=True))
-            return 0
-        return 2
+    budget_code = handle_budget_command(ns, repo, _write_out_file)
+    if budget_code is not None:
+        return budget_code
     if ns.policies_cmd == "dead-modules":
         payload = analyze_dead_modules(repo)
         output = json.dumps(payload, sort_keys=True) if ns.report == "json" else "\n".join(
