@@ -6,6 +6,7 @@ from pathlib import Path
 
 _SRC_ROOT = "packages/atlasctl/src/atlasctl"
 _PLACEHOLDER_STEM = re.compile(r"(?:^|[_-])(part\d+|chunk[_-]?\d+|placeholder|tmp)(?:$|[_-])", re.IGNORECASE)
+_MARKER_REASON = "marker-only package:"
 
 
 def _package_dirs(src_root: Path) -> list[Path]:
@@ -27,6 +28,9 @@ def check_no_empty_packages(repo_root: Path) -> tuple[int, list[str]]:
         if py_files:
             continue
         if (directory / "README.md").exists():
+            continue
+        init_text = (directory / "__init__.py").read_text(encoding="utf-8", errors="ignore").lower()
+        if _MARKER_REASON in init_text:
             continue
         offenders.append(rel)
     if offenders:
@@ -61,4 +65,21 @@ def check_package_has_module_or_readme(repo_root: Path) -> tuple[int, list[str]]
             offenders.append(rel)
     if offenders:
         return 1, [f"package must contain a real module or README.md: {path}" for path in offenders]
+    return 0, []
+
+
+def check_folder_intent_contract(repo_root: Path) -> tuple[int, list[str]]:
+    checks_root = repo_root / _SRC_ROOT / "checks"
+    offenders: list[str] = []
+    for directory in sorted(path for path in checks_root.rglob("*") if path.is_dir()):
+        rel = directory.relative_to(repo_root).as_posix()
+        if "__pycache__" in rel or "/legacy/" in rel:
+            continue
+        has_readme = (directory / "README.md").exists()
+        check_modules = sorted(directory.glob("check_*.py"))
+        if has_readme or check_modules:
+            continue
+        offenders.append(rel)
+    if offenders:
+        return 1, [f"check directory missing intent marker (README.md or check_*.py): {path}" for path in offenders]
     return 0, []

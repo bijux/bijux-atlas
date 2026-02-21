@@ -565,3 +565,32 @@ def check_budget_drift_approval(repo_root: Path) -> tuple[int, list[str]]:
     if not str(approval.get("approval_id", "")).strip():
         return 1, [f"budget loosened but approval_id missing in {approval_path.relative_to(repo_root).as_posix()}", *loosened]
     return 0, []
+
+
+def check_critical_dir_count_trend(repo_root: Path) -> tuple[int, list[str]]:
+    baseline_path = repo_root / "configs/policy/atlasctl-dir-count-baseline.json"
+    if not baseline_path.exists():
+        return 1, [f"missing dir-count baseline file: {baseline_path.relative_to(repo_root).as_posix()}"]
+    import json
+
+    baseline = json.loads(baseline_path.read_text(encoding="utf-8"))
+    expected = baseline.get("critical_dirs", {})
+    if not isinstance(expected, dict):
+        return 1, [f"invalid critical_dirs in baseline: {baseline_path.relative_to(repo_root).as_posix()}"]
+    stats = {row.dir: row for row in collect_dir_stats(repo_root)}
+    errors: list[str] = []
+    for rel_dir, limits in sorted(expected.items()):
+        if not isinstance(limits, dict):
+            errors.append(f"{rel_dir}: invalid baseline row")
+            continue
+        row = stats.get(rel_dir)
+        if row is None:
+            errors.append(f"{rel_dir}: directory missing from current stats")
+            continue
+        max_py = int(limits.get("max_py_files", row.py_files))
+        max_modules = int(limits.get("max_modules", row.modules))
+        if row.py_files > max_py:
+            errors.append(f"{rel_dir}: py_files drifted up {row.py_files} > {max_py}")
+        if row.modules > max_modules:
+            errors.append(f"{rel_dir}: modules drifted up {row.modules} > {max_modules}")
+    return (0 if not errors else 1), errors
