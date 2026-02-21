@@ -20,6 +20,12 @@ Single taxonomy for `packages/atlasctl/src/atlasctl`.
 - `reporting/`: canonical output/report assembly.
 - `suite/`: deterministic suite runner and artifacts model.
 
+## Policy Internals
+
+- `policies/models/`: shared policy dataclasses only (no IO).
+- `policies/errors/`: typed policy exceptions with stable error codes.
+- `policies/*_handlers.py`: command orchestration wrappers; keep business logic in pure modules.
+
 ## Canonical Concept Homes
 
 - Registry: `registry/`
