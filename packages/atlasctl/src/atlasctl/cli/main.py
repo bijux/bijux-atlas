@@ -82,6 +82,15 @@ def build_parser() -> argparse.ArgumentParser:
     commands_p = sub.add_parser("commands", help="print machine-readable command surface")
     commands_p.add_argument("--json", action="store_true", help="emit JSON output")
     commands_p.add_argument("--out-file", help="optional output path for JSON report")
+    config_p = sub.add_parser("config", help="configuration commands (alias over `configs`)")
+    config_sub = config_p.add_subparsers(dest="config_cmd", required=True)
+    config_dump = config_sub.add_parser("dump", help="dump canonical config payload")
+    config_dump.add_argument("--report", choices=["text", "json"], default="json")
+    config_validate = config_sub.add_parser("validate", help="validate config schemas and policy")
+    config_validate.add_argument("--report", choices=["text", "json"], default="text")
+    config_validate.add_argument("--emit-artifacts", action="store_true")
+    config_drift = config_sub.add_parser("drift", help="check generated config drift")
+    config_drift.add_argument("--report", choices=["text", "json"], default="text")
 
     for name in DOMAINS:
         register_domain_parser(sub, name, f"{name} domain commands")
@@ -350,6 +359,10 @@ def main(argv: list[str] | None = None) -> int:
             return _import_attr("atlasctl.docs.command", "run_docs_command")(ctx, ns)
         if ns.cmd == "configs":
             return _import_attr("atlasctl.configs.command", "run_configs_command")(ctx, ns)
+        if ns.cmd == "config":
+            mapped = argparse.Namespace(**vars(ns))
+            mapped.configs_cmd = {"dump": "print", "validate": "validate", "drift": "drift"}[ns.config_cmd]
+            return _import_attr("atlasctl.configs.command", "run_configs_command")(ctx, mapped)
         if ns.cmd == "contracts":
             return _import_attr("atlasctl.contracts.command", "run_contracts_command")(ctx, ns)
         if ns.cmd == "docker":
