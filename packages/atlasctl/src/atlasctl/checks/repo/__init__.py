@@ -31,6 +31,11 @@ from .contracts.command_contracts import (
 )
 from .enforcement.argparse_policy import check_argparse_policy
 from .enforcement.package_shape import check_layout_domain_readmes, check_no_nested_same_name_packages
+from .enforcement.package_hygiene import (
+    check_no_empty_packages,
+    check_no_placeholder_module_names,
+    check_package_has_module_or_readme,
+)
 from .enforcement.shell_policy import (
     check_no_layout_shadow_configs,
     check_shell_headers_and_strict_mode,
@@ -224,6 +229,9 @@ CHECKS: tuple[CheckDef, ...] = (
         check_no_nested_same_name_packages,
         fix_hint="Flatten nested same-name package segments (example: checks/checks).",
     ),
+    CheckDef("repo.no_empty_packages", "repo", "forbid empty non-legacy packages without README", 300, check_no_empty_packages, fix_hint="Add a real module or README.md to package directories."),
+    CheckDef("repo.no_placeholder_module_names", "repo", "forbid placeholder-like module filenames in modern code", 300, check_no_placeholder_module_names, fix_hint="Rename modules to intent-revealing names."),
+    CheckDef("repo.package_has_module_or_readme", "repo", "require each non-legacy package to contain a module or README", 300, check_package_has_module_or_readme, fix_hint="Add module implementation or README.md to document empty package."),
     CheckDef("repo.no_path_cwd_usage", "repo", "forbid Path.cwd usage outside core/repo_root.py", 400, check_no_path_cwd_usage, fix_hint="Use ctx.repo_root or core.repo_root helpers."),
     CheckDef("repo.command_metadata_contract", "repo", "ensure command metadata includes touches/tools", 400, check_command_metadata_contract, fix_hint="Add touches/tools metadata in cli registry."),
     CheckDef("repo.argparse_policy", "repo", "restrict direct argparse parser construction to canonical parser modules", 300, check_argparse_policy, fix_hint="Move parser construction into cli/parser.py or commands/*/parser.py."),
