@@ -10,6 +10,7 @@ from pathlib import Path
 from ..core.context import RunContext
 from ..core.fs import ensure_evidence_path
 from .culprits import biggest_dirs, biggest_files, budget_suite, evaluate_metric, render_table_text, render_text
+from .dead_modules import analyze_dead_modules
 from .scans import policy_drift_diff, scan_grep_relaxations, scan_rust_relaxations
 
 RELAXATION_FILES = (
@@ -375,6 +376,16 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         _write_out_file(repo, str(getattr(ns, "out_file", "")), output)
         print(output)
         return 0 if payload["status"] == "ok" else 1
+    if ns.policies_cmd == "dead-modules":
+        payload = analyze_dead_modules(repo)
+        output = json.dumps(payload, sort_keys=True) if ns.report == "json" else "\n".join(
+            ["dead modules candidates:", *[f"- {row['module']} ({row['path']})" for row in payload["candidates"]]]
+        )
+        _write_out_file(repo, str(getattr(ns, "out_file", "")), output)
+        print(output)
+        if getattr(ns, "fail_on_found", False) and payload["candidate_count"] > 0:
+            return 1
+        return 0
 
     return 2
 
@@ -443,3 +454,7 @@ def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
     suite = ps.add_parser("culprits-suite", help="run full directory budget suite")
     suite.add_argument("--report", choices=["text", "json"], default="text")
     suite.add_argument("--out-file", help="write report to file path", default="")
+    dead = ps.add_parser("dead-modules", help="report potential dead modules in atlasctl src tree")
+    dead.add_argument("--report", choices=["text", "json"], default="text")
+    dead.add_argument("--out-file", help="write report to file path", default="")
+    dead.add_argument("--fail-on-found", action="store_true", help="exit non-zero when candidates are found")
