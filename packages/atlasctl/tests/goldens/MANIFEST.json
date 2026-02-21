@@ -25,6 +25,18 @@
       "path": "check/check-suite-coverage.markers.txt"
     },
     {
+      "name": "checks-list-taxonomy.json.golden",
+      "path": "check/checks-list-taxonomy.json.golden"
+    },
+    {
+      "name": "checks-owners.json.golden",
+      "path": "check/checks-owners.json.golden"
+    },
+    {
+      "name": "checks-tree.json.golden",
+      "path": "check/checks-tree.json.golden"
+    },
+    {
       "name": "contracts-list.json.golden",
       "path": "contracts/contracts-list.json.golden"
     },
@@ -73,6 +85,10 @@
       "path": "help/make_help_snapshot.txt"
     },
     {
+      "name": "ci-list.json.golden",
+      "path": "list/ci-list.json.golden"
+    },
+    {
       "name": "commands.json.golden",
       "path": "list/commands.json.golden"
     },
@@ -83,10 +99,6 @@
     {
       "name": "list-checks.json.golden",
       "path": "list/list-checks.json.golden"
-    },
-    {
-      "name": "ci-list.json.golden",
-      "path": "list/ci-list.json.golden"
     },
     {
       "name": "list-commands.json.golden",

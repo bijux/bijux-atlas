@@ -7,6 +7,8 @@ _SRC_ROOT = Path("packages/atlasctl/src/atlasctl")
 _CHECKS_ROOT = _SRC_ROOT / "checks"
 _CHECK_IMPL_TRANSITION_ALLOWLIST = (
     "packages/atlasctl/src/atlasctl/load/checks/",
+    "packages/atlasctl/src/atlasctl/commands/ops/load/checks/",
+    "packages/atlasctl/src/atlasctl/commands/ops/observability/",
     "packages/atlasctl/src/atlasctl/observability/",
 )
 

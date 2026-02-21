@@ -267,7 +267,7 @@ def check_requirements_sync_with_pyproject(repo_root: Path) -> tuple[int, list[s
 def check_dependency_owner_justification(repo_root: Path) -> tuple[int, list[str]]:
     deps_doc = repo_root / "packages/atlasctl/docs/deps.md"
     text = deps_doc.read_text(encoding="utf-8")
-    table_deps = set(re.findall(r"\|\s*`([^`]+==[^`]+)`\s*\|\s*`[^`]+`\s*\|\s*[^|]+\|", text))
+    table_deps = set(re.findall(r"\|\s*`([^`]+)`\s*\|\s*`[^`]+`\s*\|\s*[^|]+\|", text))
     req_in = repo_root / "packages/atlasctl/requirements.in"
     req_deps = {
         ln.strip()

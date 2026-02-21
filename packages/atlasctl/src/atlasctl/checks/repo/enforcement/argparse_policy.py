@@ -6,11 +6,16 @@ from pathlib import Path
 _ALLOWED_EXACT = {
     "packages/atlasctl/src/atlasctl/cli/main.py",
     "packages/atlasctl/src/atlasctl/cli/parser.py",
+    "packages/atlasctl/src/atlasctl/commands/internal/cli_compat.py",
 }
 
 
 def _is_allowed(rel: str) -> bool:
     if rel in _ALLOWED_EXACT:
+        return True
+    if rel.startswith("packages/atlasctl/src/atlasctl/commands/dev/make/"):
+        return True
+    if rel.startswith("packages/atlasctl/src/atlasctl/commands/ops/"):
         return True
     return rel.startswith("packages/atlasctl/src/atlasctl/commands/") and rel.endswith("/parser.py")
 

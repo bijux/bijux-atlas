@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import argparse
 import re
+import sys
 from pathlib import Path
 
 from .public_targets import entry_map
@@ -13,11 +13,10 @@ LEGACY_TARGET_RE = re.compile(r"(^|/)legacy($|-)")
 
 
 def main() -> int:
-    p = argparse.ArgumentParser()
-    p.add_argument("target")
-    args = p.parse_args()
-
-    target = args.target
+    if len(sys.argv) != 2:
+        print("usage: atlasctl-dev-make-explain <target>")
+        return 2
+    target = sys.argv[1]
     if LEGACY_TARGET_RE.search(target):
         print(f"legacy target names are forbidden: {target}")
         return 2
