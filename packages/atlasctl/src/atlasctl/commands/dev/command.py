@@ -26,14 +26,20 @@ _DEV_ITEMS: tuple[str, ...] = (
     "ci",
     "commands",
     "coverage",
+    "coverage-and-slow",
     "explain",
     "fmt",
+    "fmt-and-slow",
     "lint",
+    "lint-and-slow",
     "list",
     "make",
     "split-module",
     "suite",
     "test",
+    "test-and-slow",
+    "audit-and-slow",
+    "check-and-slow",
 )
 
 
@@ -59,6 +65,8 @@ def _forward(ctx: RunContext, *args: str) -> int:
 
 def run_dev_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     sub = getattr(ns, "dev_cmd", "")
+    slow_variant = sub.endswith("-and-slow")
+    normalized_sub = sub.removesuffix("-and-slow") if slow_variant else sub
     if not sub and bool(getattr(ns, "list", False)):
         if bool(getattr(ns, "json", False)):
             print(json.dumps({"schema_version": 1, "tool": "atlasctl", "status": "ok", "group": "dev", "items": list(_DEV_ITEMS)}, sort_keys=True))
@@ -68,19 +76,20 @@ def run_dev_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return 0
     if sub == "split-module":
         return _run_split_module(ctx, ns)
-    if sub in {"fmt", "lint", "check", "coverage", "audit"}:
+    if normalized_sub in {"fmt", "lint", "check", "coverage", "audit"}:
         return run_dev_cargo(
             ctx,
             DevCargoParams(
-                action=sub,
-                all_tests=bool(getattr(ns, "all", False)),
+                action=normalized_sub,
+                all_tests=bool(getattr(ns, "all", False) or slow_variant),
                 and_checks=bool(getattr(ns, "and_checks", False)),
                 explain=bool(getattr(ns, "explain", False)),
+                include_slow_checks=bool(getattr(ns, "and_slow", False) or slow_variant),
                 json_output=bool(getattr(ns, "json", False) or ctx.output_format == "json"),
                 verbose=bool(getattr(ns, "verbose", False) or ctx.verbose),
             ),
         )
-    if sub == "test":
+    if normalized_sub == "test":
         args = list(getattr(ns, "args", []))
         if args:
             return _forward(ctx, "test", *args)
@@ -88,10 +97,11 @@ def run_dev_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             ctx,
             DevCargoParams(
                 action="test",
-                all_tests=bool(getattr(ns, "all", False)),
+                all_tests=bool(getattr(ns, "all", False) or slow_variant),
                 contracts_tests=bool(getattr(ns, "contracts", False)),
                 and_checks=bool(getattr(ns, "and_checks", False)),
                 explain=bool(getattr(ns, "explain", False)),
+                include_slow_checks=bool(getattr(ns, "and_slow", False) or slow_variant),
                 json_output=bool(getattr(ns, "json", False) or ctx.output_format == "json"),
                 verbose=bool(getattr(ns, "verbose", False) or ctx.verbose),
             ),
@@ -160,29 +170,41 @@ def configure_dev_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     fmt.add_argument("--all", action="store_true", help="run full fmt variant")
     fmt.add_argument("--and-checks", action="store_true", help="append repo checks to the fast variant")
     fmt.add_argument("--explain", action="store_true", help="print planned steps without executing")
+    fmt.add_argument("--and-slow", action="store_true", help="include slow repo checks when running full variant")
+    dev_sub.add_parser("fmt-and-slow", help="run fmt full variant including slow repo checks")
     lint = dev_sub.add_parser("lint", help="run canonical cargo lint lane")
     lint.add_argument("--all", action="store_true", help="run full lint variant")
     lint.add_argument("--and-checks", action="store_true", help="append repo checks to the fast variant")
     lint.add_argument("--explain", action="store_true", help="print planned steps without executing")
+    lint.add_argument("--and-slow", action="store_true", help="include slow repo checks when running full variant")
+    dev_sub.add_parser("lint-and-slow", help="run lint full variant including slow repo checks")
     check = dev_sub.add_parser("check", help="run canonical cargo check lane")
     check.add_argument("--all", action="store_true", help="run full check variant")
     check.add_argument("--and-checks", action="store_true", help="append repo checks to the fast variant")
     check.add_argument("--explain", action="store_true", help="print planned steps without executing")
+    check.add_argument("--and-slow", action="store_true", help="include slow repo checks when running full variant")
     check.add_argument("args", nargs=argparse.REMAINDER)
+    dev_sub.add_parser("check-and-slow", help="run check full variant including slow repo checks")
     test = dev_sub.add_parser("test", help="run canonical cargo test lane")
     test.add_argument("--all", action="store_true", help="run ignored tests too")
     test.add_argument("--contracts", action="store_true", help="run contracts-only tests")
     test.add_argument("--and-checks", action="store_true", help="append repo checks to the fast variant")
     test.add_argument("--explain", action="store_true", help="print planned steps without executing")
+    test.add_argument("--and-slow", action="store_true", help="include slow repo checks when running full variant")
     test.add_argument("args", nargs=argparse.REMAINDER)
+    dev_sub.add_parser("test-and-slow", help="run test full variant including slow repo checks")
     coverage = dev_sub.add_parser("coverage", help="run canonical cargo coverage lane")
     coverage.add_argument("--all", action="store_true", help="run full coverage variant")
     coverage.add_argument("--and-checks", action="store_true", help="append repo checks to the fast variant")
     coverage.add_argument("--explain", action="store_true", help="print planned steps without executing")
+    coverage.add_argument("--and-slow", action="store_true", help="include slow repo checks when running full variant")
+    dev_sub.add_parser("coverage-and-slow", help="run coverage full variant including slow repo checks")
     audit = dev_sub.add_parser("audit", help="run canonical cargo audit lane")
     audit.add_argument("--all", action="store_true", help="run full audit variant")
     audit.add_argument("--and-checks", action="store_true", help="append repo checks to the fast variant")
     audit.add_argument("--explain", action="store_true", help="print planned steps without executing")
+    audit.add_argument("--and-slow", action="store_true", help="include slow repo checks when running full variant")
+    dev_sub.add_parser("audit-and-slow", help="run audit full variant including slow repo checks")
     split = dev_sub.add_parser("split-module", help="generate a module split plan for a path")
     split.add_argument("--path", required=True)
     split.add_argument("--json", action="store_true", help="emit JSON output")
