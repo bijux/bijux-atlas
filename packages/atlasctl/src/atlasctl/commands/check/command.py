@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Callable
 
 from ...checks.registry import check_tags, get_check, list_checks
+from ...checks.execution import run_function_checks
 from ...contracts.ids import CHECK_LIST
 from ...contracts.validate_self import validate_self
 from ...checks.repo.contracts.command_contracts import runtime_contracts_payload
@@ -58,6 +59,16 @@ from ...core.fs import ensure_evidence_path
 from ...lint.runner import run_suite
 
 NativeCheck = Callable[[Path], tuple[int, list[str]]]
+SHELL_POLICY_CHECK_IDS: tuple[str, ...] = (
+    "repo.shell_location_policy",
+    "repo.shell_strict_mode",
+    "repo.shell_no_direct_python",
+    "repo.shell_no_network_fetch",
+    "repo.shell_invocation_boundary",
+    "repo.shell_readonly_checks",
+    "repo.shell_script_budget",
+    "repo.shell_docs_present",
+)
 
 
 def _run(ctx: RunContext, cmd: list[str]) -> int:
@@ -167,6 +178,34 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _run_domain(ctx, "repo")
     if sub == "layout":
         return _run_native_check(ctx, check_layout_contract, "layout contract failed:", "layout contract passed", limit=200)
+    if sub == "shell":
+        checks = [check for cid in SHELL_POLICY_CHECK_IDS if (check := get_check(cid)) is not None]
+        failed, results = run_function_checks(ctx.repo_root, checks)
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok" if failed == 0 else "error",
+            "group": "shell",
+            "failed_count": failed,
+            "total_count": len(results),
+            "results": [
+                {
+                    "id": row.id,
+                    "status": row.status,
+                    "errors": row.errors,
+                    "warnings": row.warnings,
+                }
+                for row in results
+            ],
+        }
+        if ctx.output_format == "json" or ns.json:
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            print(f"check shell: {payload['status']} ({failed}/{len(results)} failed)")
+            for row in payload["results"]:
+                if row["status"] != "pass":
+                    print(f"- {row['id']}: {', '.join(row['errors'][:2])}")
+        return 0 if failed == 0 else 1
     if sub == "obs":
         return _run(ctx, ["python3", "packages/atlasctl/src/atlasctl/observability/contracts/metrics/check_metrics_contract.py"])
     if sub == "stack-report":
@@ -259,6 +298,7 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     domain.add_argument("domain", choices=check_domains())
 
     parser_sub.add_parser("layout", help="run layout checks")
+    parser_sub.add_parser("shell", help="run shell policy checks")
     parser_sub.add_parser("make", help="run makefile checks")
     parser_sub.add_parser("docs", help="run docs checks")
     parser_sub.add_parser("configs", help="run configs checks")

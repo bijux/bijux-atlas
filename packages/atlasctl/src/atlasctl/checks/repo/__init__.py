@@ -47,10 +47,14 @@ from .enforcement.package_hygiene import (
 )
 from .enforcement.shell_policy import (
     check_no_layout_shadow_configs,
+    check_shell_docs_present,
+    check_shell_no_network_download_tools,
     check_shell_headers_and_strict_mode,
     check_shell_invocation_via_core_exec,
     check_shell_location_policy,
     check_shell_no_python_direct_calls,
+    check_shell_script_budget,
+    check_shell_scripts_readonly,
 )
 from .domains.scripts_dir import check_scripts_dir_absent
 from .contracts.public_api import check_public_api_exports
@@ -242,12 +246,44 @@ CHECKS: tuple[CheckDef, ...] = (
         fix_hint="Call atlasctl entrypoints instead of python commands in shell scripts.",
     ),
     CheckDef(
+        "repo.shell_no_network_fetch",
+        "repo",
+        "forbid direct curl/wget usage in shell scripts",
+        300,
+        check_shell_no_network_download_tools,
+        fix_hint="Use atlasctl-managed fetch entrypoints or explicit allow annotation.",
+    ),
+    CheckDef(
+        "repo.shell_readonly_checks",
+        "repo",
+        "forbid direct file writes in layout shell checks",
+        300,
+        check_shell_scripts_readonly,
+        fix_hint="Keep layout shell checks read-only and route outputs through stdout/stderr only.",
+    ),
+    CheckDef(
         "repo.shell_invocation_boundary",
         "repo",
         "forbid direct shell subprocess invocations outside core.exec",
         300,
         check_shell_invocation_via_core_exec,
         fix_hint="Route shell invocations through core.exec wrapper helpers.",
+    ),
+    CheckDef(
+        "repo.shell_script_budget",
+        "repo",
+        "cap total shell script count in repository",
+        300,
+        check_shell_script_budget,
+        fix_hint="Port shell scripts to Python modules and delete duplicates.",
+    ),
+    CheckDef(
+        "repo.shell_docs_present",
+        "repo",
+        "require shell directory README and policy docs",
+        300,
+        check_shell_docs_present,
+        fix_hint="Add README.md and POLICY.md under checks/layout/shell.",
     ),
     CheckDef(
         "repo.layout_no_shadow",

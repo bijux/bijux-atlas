@@ -1,8 +1,8 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 # Purpose: ensure artifacts tree only contains approved output paths.
 # Inputs: artifacts/ filesystem state and allowlist patterns.
 # Outputs: non-zero when unexpected paths are found.
-set -eu
+set -euo pipefail
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 ALLOWLIST="$ROOT/configs/ops/artifacts-allowlist.txt"
@@ -20,16 +20,11 @@ if [ "${ARTIFACTS_ALLOWLIST_STRICT:-0}" != "1" ]; then
 fi
 
 fail=0
-FILES_TMP="$(mktemp)"
-trap 'rm -f "$FILES_TMP"' EXIT
 
 if [ -d "$ROOT/artifacts/target" ]; then
   echo "unexpected artifact directory: artifacts/target" >&2
   fail=1
 fi
-
-find "$ROOT/artifacts" -path "$ROOT/artifacts/target" -prune -o -type f -print \
-  | sed "s#$ROOT/##" | sort > "$FILES_TMP"
 
 while IFS= read -r p; do
   [ -n "$p" ] || continue
@@ -48,7 +43,7 @@ while IFS= read -r p; do
     echo "unexpected artifact path: $p" >&2
     fail=1
   fi
-done < "$FILES_TMP"
+done < <(find "$ROOT/artifacts" -path "$ROOT/artifacts/target" -prune -o -type f -print | sed "s#$ROOT/##" | sort)
 
 if [ "$fail" -ne 0 ]; then
   exit 1
