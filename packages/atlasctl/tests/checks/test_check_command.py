@@ -59,3 +59,27 @@ def test_checks_owners_json_golden() -> None:
     proc = _run_cli("checks", "owners", "--json")
     assert proc.returncode == 0, proc.stderr
     assert proc.stdout.strip() == golden_text("check/checks-owners.json.golden")
+
+
+def test_checks_failures_json_report() -> None:
+    report = ROOT / "artifacts/evidence/checks/test-check-failures.json"
+    report.parent.mkdir(parents=True, exist_ok=True)
+    report.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "tool": "atlasctl",
+                "kind": "check-run-report",
+                "rows": [
+                    {"id": "checks_repo_cli_argparse_policy", "domain": "repo", "status": "FAIL", "hint": "h", "detail": "d"},
+                    {"id": "checks_docs_links_exist", "domain": "docs", "status": "PASS", "hint": "", "detail": ""},
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    proc = _run_cli("checks", "failures", "--last-run", str(report), "--group", "repo", "--json")
+    assert proc.returncode == 2, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["kind"] == "check-failures"
+    assert payload["failed_count"] == 1
