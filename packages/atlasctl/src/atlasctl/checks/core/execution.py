@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import time
 import signal
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Callable
 
@@ -48,13 +49,14 @@ def run_function_checks(
     checks: list[CheckDef],
     on_result: Callable[[CheckResult], None] | None = None,
     timeout_ms: int | None = None,
+    jobs: int = 1,
 ) -> tuple[int, list[CheckResult]]:
-    rows: list[CheckResult] = []
-    failed = 0
-    for chk in checks:
+    checks = sorted(checks, key=lambda c: c.check_id)
+
+    def _run_one(chk: CheckDef) -> CheckResult:
         start = time.perf_counter()
         try:
-            if timeout_ms and timeout_ms > 0:
+            if timeout_ms and timeout_ms > 0 and jobs <= 1:
                 class _CheckTimeoutError(Exception):
                     pass
 
@@ -79,9 +81,7 @@ def run_function_checks(
         warnings = sorted([msg.removeprefix("WARN: ").strip() for msg in errors if msg.startswith("WARN:")])
         normalized_errors = sorted([msg for msg in errors if not msg.startswith("WARN:")])
         status = "pass" if code == 0 else "fail"
-        if code != 0:
-            failed += 1
-        row = CheckResult(
+        return CheckResult(
             id=chk.check_id,
             title=chk.title,
             domain=chk.domain,
@@ -103,7 +103,19 @@ def run_function_checks(
             owners=list(chk.owners),
             writes_allowed_roots=list(chk.writes_allowed_roots),
         )
-        rows.append(row)
+
+    rows: list[CheckResult] = []
+    failed = 0
+    if jobs > 1:
+        with ThreadPoolExecutor(max_workers=jobs) as ex:
+            produced = list(ex.map(_run_one, checks))
+        rows.extend(produced)
+    else:
+        for chk in checks:
+            rows.append(_run_one(chk))
+    for row in rows:
+        if row.status != "pass":
+            failed += 1
         if on_result is not None:
             on_result(row)
     return failed, rows
