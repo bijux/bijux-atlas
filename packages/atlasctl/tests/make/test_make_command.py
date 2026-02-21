@@ -149,4 +149,4 @@ def test_dev_ci_target_map_payload_is_complete_for_repo() -> None:
     assert by_target["fmt"]["atlasctl"] == "atlasctl dev fmt"
     assert by_target["test"]["atlasctl"] == "atlasctl dev test"
     assert by_target["audit"]["atlasctl"] == "atlasctl dev audit"
-    assert by_target["ci-fast"]["atlasctl"] == "atlasctl dev ci fast"
+    assert by_target["ci-fast"]["atlasctl"] == "atlasctl ci fast --json"

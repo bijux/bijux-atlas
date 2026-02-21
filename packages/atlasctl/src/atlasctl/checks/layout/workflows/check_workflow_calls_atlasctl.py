@@ -22,10 +22,12 @@ def main() -> int:
     ci_mk = CI_MK.read_text(encoding="utf-8")
     errors: list[str] = []
     for target in sorted(ci_targets):
-        if f"{target}:" not in ci_mk or f"\n\t@./bin/atlasctl dev ci " not in ci_mk and target != "ci":
+        if f"{target}:" not in ci_mk or f"\n\t@./bin/atlasctl ci " not in ci_mk and target not in {"ci", "ci-help"}:
             if target == "ci" and "\n\t@./bin/atlasctl ci run --json" in ci_mk:
                 continue
-            errors.append(f"makefiles/ci.mk target `{target}` must delegate to ./bin/atlasctl dev ci ...")
+            if target == "ci-help" and "\n\t@./bin/atlasctl help ci" in ci_mk:
+                continue
+            errors.append(f"makefiles/ci.mk target `{target}` must delegate to ./bin/atlasctl ci ...")
 
     for workflow in WORKFLOWS:
         for lineno, line in enumerate(workflow.read_text(encoding="utf-8").splitlines(), start=1):
