@@ -23,11 +23,6 @@ def render_md(payload: dict[str, object]) -> str:
         lines += [f"- `{item}`" for item in payload.get("schema_files", [])]
     elif kind == "budgets":
         lines += [f"- `{k}`: `{v}`" for k, v in payload.get("counts", {}).items()]
-    elif kind == "scripts-migration":
-        lines += ["## scripts/bin command mapping", "", "| Script | Legacy Command | Mapped CLI |", "|---|---|---|"]
-        lines += [f"| `{r['script']}` | `{r['command']}` | `{r['mapped_cli']}` |" for r in payload.get("bin_commands", [])]
-    elif kind == "legacy-scripts":
-        lines += [f"- total: `{payload.get('count', 0)}`", ""] + [f"- `{item}`" for item in payload.get("files", [])]
     elif kind == "commands":
         lines += [f"- total: `{payload.get('count', 0)}`", "", "| Command | Stable | Help |", "|---|---|---|"]
         lines += [f"| `{r['name']}` | `{r['stable']}` | {r['help']} |" for r in payload.get("commands", [])]
@@ -45,8 +40,6 @@ def outputs_for(kind: str) -> tuple[Path, Path]:
         "owners": (Path("ownership.json"), Path("ownership.md")),
         "contracts": (Path("contracts-index.json"), Path("contracts-index.md")),
         "budgets": (Path("inventory-budgets.json"), Path("inventory-budgets.md")),
-        "scripts-migration": (Path("scripts-migration.json"), Path("scripts-migration.md")),
-        "legacy-scripts": (Path("legacy-scripts.json"), Path("legacy-scripts.md")),
         "commands": (Path("commands.json"), Path("commands.md")),
         "touched-paths": (Path("touched-paths.json"), Path("touched-paths.md")),
     }
