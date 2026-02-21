@@ -5,6 +5,7 @@ Use this page as the entrypoint for package-level documentation.
 ## Core Docs
 
 - [Architecture](architecture.md)
+- [How To Split A Module](architecture/how-to-split-a-module.md)
 - [CLI Stability](cli-stability.md)
 - [Compatibility Promise](compatibility-promise.md)
 - [Contracts](contracts.md)

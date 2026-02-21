@@ -33,6 +33,7 @@ def command_registry() -> tuple[CommandSpec, ...]:
         CommandSpec("docs", "docs checks and generation", ("docs/", "docs/_generated/"), ("mkdocs",), ("doc drift",), owner="docs", doc_link="docs/_generated/cli.md"),
         CommandSpec("configs", "configs checks and inventories", ("configs/",), (), ("schema/config validation errors",), owner="platform", doc_link="docs/_generated/cli.md"),
         CommandSpec("policies", "policy relaxations and bypass checks", ("configs/policy/",), (), ("policy violations",), owner="platform", doc_link="docs/_generated/cli.md"),
+        CommandSpec("repo", "repository stats and density reports", ("configs/policy/", "artifacts/reports/atlasctl/"), (), ("repo stats generation failure",), owner="repo", doc_link="docs/_generated/cli.md"),
         CommandSpec("k8s", "k8s checks and suites", ("ops/k8s/",), ("kubectl", "helm"), ("k8s contract violations",), owner="ops", doc_link="docs/_generated/cli.md"),
         CommandSpec("stack", "stack lifecycle and checks", ("ops/stack/",), ("kubectl",), ("stack lifecycle failures",), owner="ops", doc_link="docs/_generated/cli.md"),
         CommandSpec("load", "load and perf suites", ("ops/load/",), ("k6",), ("load baseline regressions",), owner="ops", doc_link="docs/_generated/cli.md"),
