@@ -38,6 +38,7 @@ repo.legacy_package_absent
 repo.legacy_zero_importers
 repo.modern_no_legacy_imports
 repo.modern_no_legacy_obs_imports
+repo.module_budget_domains
 repo.module_size
 repo.no_adhoc_python
 repo.no_core_integration_dir
