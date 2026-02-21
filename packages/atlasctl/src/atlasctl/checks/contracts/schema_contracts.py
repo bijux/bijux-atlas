@@ -3,13 +3,21 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from ...contracts.validate import load_catalog, validate
+from ...contracts.catalog import catalog_path, load_catalog
+from ...contracts.validate import validate
 
 
 def check_schema_catalog_integrity(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
-    catalog_path = repo_root / "packages/atlasctl/src/atlasctl/contracts/schemas/catalog.json"
-    raw = json.loads(catalog_path.read_text(encoding="utf-8"))
+    cat_path = catalog_path()
+    raw = json.loads(cat_path.read_text(encoding="utf-8"))
+    extra_catalog_files = [
+        path.name
+        for path in cat_path.parent.glob("*catalog*.json")
+        if path.name != "catalog.json"
+    ]
+    if extra_catalog_files:
+        errors.append(f"unexpected extra schema catalog files: {sorted(extra_catalog_files)}")
     names: set[str] = set()
     for row in raw.get("schemas", []):
         name = str(row.get("name", ""))
@@ -23,7 +31,11 @@ def check_schema_catalog_integrity(repo_root: Path) -> tuple[int, list[str]]:
         if not file_name:
             errors.append(f"{name}: missing file")
             continue
-        schema_file = catalog_path.parent / file_name
+        rel = Path(file_name)
+        if rel.is_absolute() or ".." in rel.parts:
+            errors.append(f"{name}: schema path must be repo-relative without traversal: {file_name}")
+            continue
+        schema_file = cat_path.parent / rel
         if not schema_file.exists():
             errors.append(f"{name}: schema file missing: {schema_file.relative_to(repo_root)}")
     return (0 if not errors else 1), sorted(errors)
