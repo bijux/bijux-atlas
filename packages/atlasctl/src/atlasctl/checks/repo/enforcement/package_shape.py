@@ -55,6 +55,16 @@ _FORBIDDEN_CONCEPT_ALIASES = {
     "contracts": {"contract"},
     "output": {"output", "outputs", "reports"},
 }
+_ATLASCTL_PACKAGE_ROOT_ALLOWED = {
+    "LICENSE",
+    "README.md",
+    "docs",
+    "pyproject.toml",
+    "src",
+    "tests",
+    "requirements.in",
+    "requirements.lock.txt",
+}
 
 
 def _iter_top_level_dirs(repo_root: Path) -> list[str]:
@@ -173,6 +183,25 @@ def check_canonical_concept_homes(repo_root: Path) -> tuple[int, list[str]]:
         for alias in sorted(aliases):
             if alias in top_level:
                 offenders.append(f"duplicate {concept} concept package '{alias}' is forbidden; use '{canonical}'")
+    if offenders:
+        return 1, offenders
+    return 0, []
+
+
+def check_atlasctl_package_root_shape(repo_root: Path) -> tuple[int, list[str]]:
+    package_root = repo_root / "packages/atlasctl"
+    offenders: list[str] = []
+    if not package_root.exists():
+        return 1, ["missing package root: packages/atlasctl"]
+    for child in sorted(package_root.iterdir(), key=lambda p: p.name):
+        name = child.name
+        if name.startswith("."):
+            continue
+        if name not in _ATLASCTL_PACKAGE_ROOT_ALLOWED:
+            offenders.append(
+                f"packages/atlasctl/{name}: not allowed in package root "
+                "(allowed: LICENSE, README.md, docs/, pyproject.toml, src/, tests/, requirements.in, requirements.lock.txt)",
+            )
     if offenders:
         return 1, offenders
     return 0, []

@@ -39,6 +39,7 @@ from .contracts.command_contracts import (
 )
 from .enforcement.argparse_policy import check_argparse_policy
 from .enforcement.package_shape import (
+    check_atlasctl_package_root_shape,
     check_canonical_concept_homes,
     check_layout_domain_readmes,
     check_layout_no_legacy_imports,
@@ -322,6 +323,14 @@ CHECKS: tuple[CheckDef, ...] = (
     ),
     CheckDef("repo.layout_domain_readmes", "repo", "ensure each layout check domain includes a README", 300, check_layout_domain_readmes, fix_hint="Add README.md to each checks/layout/<domain>/ directory."),
     CheckDef("repo.layout_no_legacy_imports", "repo", "forbid legacy imports in checks/layout modules", 300, check_layout_no_legacy_imports, fix_hint="Remove atlasctl.legacy imports from layout checks."),
+    CheckDef(
+        "repo.atlasctl_package_root_shape",
+        "repo",
+        "require atlasctl package root to contain only allowed files and directories",
+        300,
+        check_atlasctl_package_root_shape,
+        fix_hint="Keep only LICENSE, README.md, docs/, pyproject.toml, src/, tests/ (+ optional requirements input/lock) in packages/atlasctl root.",
+    ),
     CheckDef(
         "repo.top_level_package_group_mapping",
         "repo",
