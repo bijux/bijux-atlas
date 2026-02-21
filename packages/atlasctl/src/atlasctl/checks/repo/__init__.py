@@ -77,6 +77,15 @@ from .enforcement.shell_policy import (
 )
 from .domains.scripts_dir import check_scripts_dir_absent
 from .contracts.public_api import check_public_api_exports
+from .contracts.naming_hygiene import (
+    check_command_module_cli_intent,
+    check_contracts_namespace_purpose,
+    check_layout_domain_alias_cleanup,
+    check_no_wildcard_exports,
+    check_public_api_doc_exists,
+    check_single_registry_module,
+    check_single_runner_module,
+)
 from .contracts.type_coverage import check_type_coverage
 from .contracts.dependencies import (
     check_dependency_declarations,
@@ -419,7 +428,14 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.no_duplicate_command_impl_patterns", "repo", "forbid duplicate command implementation patterns", 300, check_no_duplicate_command_implementation_patterns, fix_hint="Pick one command implementation pattern and remove duplicate modules."),
     CheckDef("repo.command_ownership_docs", "repo", "ensure command owners are documented", 300, check_command_ownership_docs, fix_hint="Document all command owners in packages/atlasctl/docs/ownership.md."),
     CheckDef("repo.command_help_docs_drift", "repo", "check command help/docs drift", 500, check_command_help_docs_drift, fix_hint="Regenerate docs/_generated/cli.md from current CLI surface."),
-    CheckDef("repo.public_api_exports", "repo", "enforce docs/public-api.md coverage for __all__ exports", 300, check_public_api_exports, fix_hint="Document exported symbols in docs/public-api.md or remove them from __all__."),
+    CheckDef("repo.public_api_exports", "repo", "enforce docs/PUBLIC_API.md coverage for __all__ exports", 300, check_public_api_exports, fix_hint="Document exported symbols in docs/PUBLIC_API.md or remove them from __all__."),
+    CheckDef("repo.public_api_doc_exists", "repo", "require canonical PUBLIC_API.md documentation file", 250, check_public_api_doc_exists, fix_hint="Add packages/atlasctl/docs/PUBLIC_API.md and keep API docs there."),
+    CheckDef("repo.single_registry_module", "repo", "enforce a single canonical registry.py module", 250, check_single_registry_module, fix_hint="Keep only packages/atlasctl/src/atlasctl/checks/registry.py as registry.py."),
+    CheckDef("repo.single_runner_module", "repo", "enforce a single canonical runner.py module", 250, check_single_runner_module, fix_hint="Keep only packages/atlasctl/src/atlasctl/checks/runner.py as runner.py."),
+    CheckDef("repo.command_module_cli_intent", "repo", "enforce command.py modules as CLI entry shims only", 250, check_command_module_cli_intent, fix_hint="Ensure command.py files include configure_* parser and run_* command entrypoints."),
+    CheckDef("repo.no_wildcard_exports", "repo", "forbid wildcard imports/exports outside public surface", 250, check_no_wildcard_exports, fix_hint="Replace wildcard imports with explicit module references and __all__."),
+    CheckDef("repo.contracts_namespace_purpose", "repo", "enforce contracts namespace for schema and validation modules only", 250, check_contracts_namespace_purpose, fix_hint="Keep random non-schema logic out of atlasctl/contracts and move it to proper domains."),
+    CheckDef("repo.layout_domain_alias_cleanup", "repo", "forbid deprecated layout registry aliases", 250, check_layout_domain_alias_cleanup, fix_hint="Use domain-specific check packages and remove deprecated checks/layout alias modules."),
     CheckDef("repo.type_coverage", "repo", "enforce minimum type coverage in core/contracts", 600, check_type_coverage, fix_hint="Add function annotations in core/contracts until the threshold is met."),
     CheckDef("repo.dependency_declarations", "repo", "ensure pyproject dependency declarations match imports", 600, check_dependency_declarations, fix_hint="Add missing dependencies or remove unused declarations."),
     CheckDef("repo.optional_dependency_usage_gates", "repo", "forbid optional dependency usage without explicit allowlist gate", 400, check_optional_dependency_usage_gates, fix_hint="Move dependency to base deps or add justified exception in configs/policy/dependency-exceptions.json."),
