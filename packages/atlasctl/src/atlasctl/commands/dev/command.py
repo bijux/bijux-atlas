@@ -109,6 +109,9 @@ def run_dev_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     forwarded = _DEV_FORWARD.get(sub)
     if not forwarded:
         return 2
+    if sub == "ci":
+        if not (ctx.quiet or bool(getattr(ns, "json", False))):
+            print("deprecated: `atlasctl dev ci ...` is an alias; use `atlasctl ci ...`")
     return _forward(ctx, forwarded, *getattr(ns, "args", []))
 
 

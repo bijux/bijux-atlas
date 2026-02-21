@@ -8,12 +8,13 @@ import sys
 
 from ...core.context import RunContext
 from .legacy_inventory import run_legacy_inventory
+from .legacy_targets import run_legacy_targets
 
 _INTERNAL_FORWARD: dict[str, str] = {
     "self-check": "self-check",
     "doctor": "doctor",
 }
-_INTERNAL_ITEMS: tuple[str, ...] = ("doctor", "legacy", "self-check")
+_INTERNAL_ITEMS: tuple[str, ...] = ("doctor", "legacy", "legacy-targets", "self-check")
 
 
 def _forward(ctx: RunContext, *args: str) -> int:
@@ -45,6 +46,8 @@ def run_internal_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         if action == "inventory":
             return run_legacy_inventory(ctx, getattr(ns, "report", "text"))
         return 2
+    if sub == "legacy-targets":
+        return run_legacy_targets(ctx, getattr(ns, "report", "text"))
     forwarded = _INTERNAL_FORWARD.get(sub)
     if not forwarded:
         return 2
@@ -64,3 +67,5 @@ def configure_internal_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
     for name, help_text in (("self-check", "forward to `atlasctl self-check`"), ("doctor", "forward to `atlasctl doctor`")):
         sp = internal_sub.add_parser(name, help=help_text)
         sp.add_argument("args", nargs=argparse.REMAINDER)
+    legacy_targets = internal_sub.add_parser("legacy-targets", help="list deprecated legacy targets with expiry")
+    legacy_targets.add_argument("--report", choices=["text", "json"], default="text")
