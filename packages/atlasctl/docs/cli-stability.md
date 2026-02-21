@@ -21,7 +21,6 @@ Stable:
 - `atlasctl self-check`
 
 Experimental:
-- `atlasctl compat ...`
 - `atlasctl completion ...`
 
 Exit codes:

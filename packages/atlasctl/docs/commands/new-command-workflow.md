@@ -10,4 +10,4 @@
    `python -m atlasctl.cli gen goldens`
 7. Run command-surface checks:
    `python -m atlasctl.cli commands lint --json`
-   and `python -m atlasctl.cli commands compat-check --json`.
+   and `python -m atlasctl.cli commands --json --verify-stability`.
