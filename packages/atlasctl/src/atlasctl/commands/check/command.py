@@ -257,25 +257,43 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
         check for check in checks if _match_selected(check.check_id, check.title, check.domain, selected_domain, selector)
     ]
     live_print = bool(matched_checks) and not (ctx.output_format == "json" or ns.json or bool(getattr(ns, "jsonl", False)))
+    timeout_ms = max(0, int(getattr(ns, "timeout_ms", 2000) or 0))
+    total_live = len(matched_checks)
+    live_index = 0
+
+    def _format_progress_line(index: int, total: int, check_id: str, status: str) -> str:
+        prefix = f"[{index}/{total}] {check_id} "
+        suffix = status
+        width = 110
+        dots = "." * max(8, width - len(prefix) - len(suffix) - 1)
+        return f"{prefix}{dots} {suffix}"
 
     def _emit_live_row(result):  # noqa: ANN001
+        nonlocal live_index
+        live_index += 1
         row_status = "PASS" if result.status == "pass" else "FAIL"
         row_duration = int(result.metrics.get("duration_ms", 0))
         if ns.run_quiet:
-            print(f"{row_status} {result.id}")
+            print(_format_progress_line(live_index, total_live, result.id, row_status))
             return
         if ns.run_verbose:
             owners = ",".join(result.owners) if result.owners else "-"
-            print(f"{row_status} {result.id} [{row_duration}ms] owners={owners} hint={result.fix_hint}")
+            print(_format_progress_line(live_index, total_live, result.id, f"{row_status} ({row_duration}ms)"))
+            print(f"  owners={owners} hint={result.fix_hint}")
             if row_status == "FAIL" and result.errors:
                 print(f"  detail: {result.errors[0]}")
             return
-        print(f"{row_status} {result.id} ({row_duration}ms)")
+        print(_format_progress_line(live_index, total_live, result.id, row_status))
+
+    if live_print:
+        timeout_label = "disabled" if timeout_ms == 0 else f"{timeout_ms}ms"
+        print(f"running {total_live} checks (timeout={timeout_label} per check)")
 
     _failed_total, executed_results = run_function_checks(
         ctx.repo_root,
         matched_checks,
         on_result=_emit_live_row if live_print else None,
+        timeout_ms=timeout_ms if timeout_ms > 0 else None,
     )
     executed_by_id = {result.id: result for result in executed_results}
     rows: list[dict[str, object]] = []
@@ -801,6 +819,7 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     run.add_argument("--jsonl", action="store_true", help="stream JSONL row events and summary")
     run.add_argument("--slow-report", help="write slow checks report output path")
     run.add_argument("--slow-threshold-ms", type=int, default=800, help="threshold for slow checks report")
+    run.add_argument("--timeout-ms", type=int, default=2000, help="per-check timeout in milliseconds (0 disables timeout)")
     run.add_argument("--slow-ratchet-config", default="configs/policy/slow-checks-ratchet.json", help="slow-check ratchet config json")
     run.add_argument("--profile", action="store_true", help="emit check run performance profile artifact")
     run.add_argument("--profile-out", help="performance profile output path")
