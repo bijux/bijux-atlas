@@ -13,9 +13,9 @@ from .culprits import (
     collect_dir_stats,
     evaluate_metric,  # compat for tests/monkeypatch consumers
 )
-from .budget_handlers import handle_budget_command
+from .budgets.handlers import handle_budget_command
 from .dead_modules import analyze_dead_modules
-from .scans import policy_drift_diff, scan_grep_relaxations, scan_rust_relaxations
+from .scans.repo_scans import policy_drift_diff, scan_grep_relaxations, scan_rust_relaxations
 
 RELAXATION_FILES = (
     "configs/policy/pin-relaxations.json",
