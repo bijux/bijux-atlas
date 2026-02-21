@@ -121,6 +121,10 @@
       "path": "suite/suite-inventory.json.golden"
     },
     {
+      "name": "suite-membership.json.golden",
+      "path": "suite/suite-membership.json.golden"
+    },
+    {
       "name": "suite_refgrade.expected.txt",
       "path": "suite/suite_refgrade.expected.txt"
     },
@@ -128,7 +132,5 @@
       "name": "test_golden_manifest.py",
       "path": "test_golden_manifest.py"
     }
-  ],
-  "generated_by": "atlasctl",
-  "schema_version": 1
+  ]
 }
