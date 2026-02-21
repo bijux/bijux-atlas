@@ -28,6 +28,27 @@ def main() -> int:
         "ci-core",
     }
     errors: list[str] = [f"legacy dev-* target still present in dev.mk: {t}" for t in targets if t in legacy]
+    recipe_by_target: dict[str, str] = {}
+    current: str | None = None
+    for raw in text.splitlines():
+        m = TARGET_RE.match(raw)
+        if m:
+            current = m.group(1)
+            continue
+        if current and raw.startswith("\t"):
+            recipe_by_target[current] = raw.strip()
+
+    if "fmt" not in targets:
+        errors.append("missing required dev.mk target: fmt")
+    if "fmt-all" not in targets:
+        errors.append("missing required dev.mk target: fmt-all")
+    if recipe_by_target.get("fmt-all") != "@./bin/atlasctl dev fmt --all":
+        errors.append("fmt-all must reference canonical full fmt gate (`@./bin/atlasctl dev fmt --all`)")
+
+    for base in ("fmt", "lint", "test", "audit", "coverage", "check"):
+        full = f"{base}-all"
+        if base in targets and full not in targets:
+            errors.append(f"missing required full variant for `{base}`: expected `{full}`")
 
     if errors:
         print("dev wrapper metadata check failed", file=sys.stderr)

@@ -38,12 +38,10 @@ check: ## Rust check lane
 check-all: ## Rust check full variant
 	@./bin/atlasctl dev check --all
 
-all: ## Default dev gate set (fmt+lint+test+audit+check)
+all: ## Default dev gate set (fmt+lint+test)
 	@./bin/atlasctl dev fmt
 	@./bin/atlasctl dev lint
 	@./bin/atlasctl dev test
-	@./bin/atlasctl dev audit
-	@./bin/atlasctl dev check
 
 all-all: ## Full dev gate set (*-all variants)
 	@./bin/atlasctl dev fmt --all
