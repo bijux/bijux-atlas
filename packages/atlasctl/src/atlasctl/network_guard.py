@@ -3,6 +3,7 @@ from __future__ import annotations
 import socket
 from typing import Any, Callable
 
+from .core.effects import NetworkDecision, resolve_network_mode as resolve_network_mode_policy
 from .errors import ScriptError
 from .exit_codes import ERR_CONTEXT
 
@@ -27,3 +28,18 @@ def install_no_network_guard() -> Callable[..., Any]:
         socket.create_connection = original_create_connection  # type: ignore[assignment]
 
     return restore
+
+
+def resolve_network_mode(
+    *,
+    command_name: str,
+    requested_allow_network: bool,
+    explicit_network: str | None,
+    deprecated_no_network: bool,
+) -> NetworkDecision:
+    return resolve_network_mode_policy(
+        command_name=command_name,
+        requested_allow_network=requested_allow_network,
+        explicit_network=explicit_network,
+        deprecated_no_network=deprecated_no_network,
+    )

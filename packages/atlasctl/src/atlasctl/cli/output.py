@@ -37,7 +37,7 @@ def resolve_output_format(*, cli_json: bool, cli_format: str | None, ci_present:
     return "json" if ci_present else "text"
 
 
-def render_error(*, as_json: bool, message: str, code: int) -> str:
+def render_error(*, as_json: bool, message: str, code: int, kind: str = "generic_error") -> str:
     if as_json:
         return dumps_json(
             {
@@ -45,7 +45,7 @@ def render_error(*, as_json: bool, message: str, code: int) -> str:
                 "schema_version": 1,
                 "tool": "atlasctl",
                 "status": "error",
-                "errors": [{"code": code, "message": message}],
+                "errors": [{"code": code, "kind": kind, "message": message}],
             },
             pretty=False,
         )

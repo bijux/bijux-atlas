@@ -36,6 +36,7 @@ class CheckDef:
     tags: tuple[str, ...] = ()
     external_tools: tuple[str, ...] = ()
     evidence: tuple[str, ...] = ()
+    writes_allowed_roots: tuple[str, ...] = ("artifacts/evidence/",)
 
 
 @dataclass(frozen=True)
@@ -51,6 +52,7 @@ class CheckResult:
     fix_hint: str
     category: str
     severity: str
+    writes_allowed_roots: list[str]
 
 
 class Check(Protocol):

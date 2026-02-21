@@ -13,13 +13,14 @@ from ..cli.registry import command_registry, register_domain_parser
 from ..core.context import RunContext
 from ..core.env import getenv, setdefault as env_setdefault, setenv
 from ..core.exec import check_output
+from ..core.effects import command_effects, command_group
 from ..core.fs import write_json, write_text
 from ..core.logging import log_event
 from ..core.repo_root import try_find_repo_root
 from ..contracts.ids import COMMANDS, RUNTIME_CONTRACTS
 from ..errors import ScriptError
 from ..exit_codes import ERR_CONFIG, ERR_INTERNAL
-from ..network_guard import install_no_network_guard
+from ..network_guard import install_no_network_guard, resolve_network_mode
 from .constants import CONFIGURE_HOOKS, DOMAINS, NO_NETWORK_FLAG_EXPIRY
 from .dispatch import dispatch_command
 from .output import no_network_flag_expired, render_error, resolve_output_format
@@ -109,6 +110,10 @@ def _emit_runtime_contracts(ctx: RunContext, cmd: str, argv: list[str] | None) -
         "git_dirty": ctx.git_dirty,
         "repo_root": str(ctx.repo_root),
         "artifact_root": str(root),
+        "command_group": command_group(cmd),
+        "declared_effects": list(command_effects(cmd)),
+        "network_mode": ctx.network_mode,
+        "network_requested": bool("--allow-network" in (argv or [])),
     }
     write_json(ctx, root / "reports" / "write-roots-contract.json", write_roots)
     write_json(ctx, root / "reports" / "run-manifest.json", run_manifest)
@@ -141,7 +146,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--cwd", help="run command from an explicit repository root")
     parser.add_argument("--profile", help="profile id")
     parser.add_argument("--format", choices=["text", "json"], default=None, help="output format")
-    parser.add_argument("--network", choices=["allow", "forbid"], default="allow", help="network access mode")
+    parser.add_argument("--network", choices=["allow", "forbid"], default=None, help="network access mode (default: forbid)")
+    parser.add_argument("--allow-network", action="store_true", help="explicitly allow network when command group policy permits it")
     parser.add_argument("--no-network", action="store_true", help="deprecated alias for --network=forbid")
     parser.add_argument("--require-clean-git", action="store_true", help="fail if git workspace is dirty")
     vg = parser.add_mutually_exclusive_group()
@@ -225,7 +231,29 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     fmt = resolve_output_format(cli_json=("--json" in raw_argv), cli_format=ns.format, ci_present=bool(getenv("CI")))
-    ctx = RunContext.from_args(ns.run_id, ns.artifacts_dir or ns.evidence_root, ns.profile, ns.no_network, fmt, ns.network, ns.run_dir, ns.verbose, ns.quiet, ns.require_clean_git)
+    decision = resolve_network_mode(
+        command_name=ns.cmd,
+        requested_allow_network=bool(getattr(ns, "allow_network", False)),
+        explicit_network=ns.network,
+        deprecated_no_network=ns.no_network,
+    )
+    if getattr(ns, "allow_network", False) and not decision.allow_effective:
+        raise ScriptError(
+            f"--allow-network denied for command group `{decision.group}` (reason={decision.reason})",
+            ERR_CONFIG,
+        )
+    ctx = RunContext.from_args(
+        ns.run_id,
+        ns.artifacts_dir or ns.evidence_root,
+        ns.profile,
+        decision.mode == "forbid",
+        fmt,
+        decision.mode,  # type: ignore[arg-type]
+        ns.run_dir,
+        ns.verbose,
+        ns.quiet,
+        ns.require_clean_git,
+    )
     _apply_python_env(ctx)
     _emit_runtime_contracts(ctx, ns.cmd, raw_argv)
 
@@ -239,12 +267,37 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if ctx.require_clean_git and ctx.git_dirty:
             raise ScriptError("git workspace is dirty; rerun without --require-clean-git or commit changes", ERR_CONFIG)
+        if decision.allow_effective and not ctx.quiet:
+            print(
+                f"NETWORK ENABLED: command={ns.cmd} group={decision.group} reason={decision.reason}",
+                file=sys.stderr,
+            )
         if not ctx.quiet:
-            log_event(ctx, "info", "cli", "start", cmd=ns.cmd, fmt=ctx.output_format, network=ctx.network_mode)
+            log_event(
+                ctx,
+                "info",
+                "cli",
+                "start",
+                cmd=ns.cmd,
+                fmt=ctx.output_format,
+                network=ctx.network_mode,
+                command_group=decision.group,
+                declared_effects=list(command_effects(ns.cmd)),
+                network_requested=decision.allow_requested,
+                network_reason=decision.reason,
+            )
         as_json = ctx.output_format == "json" or bool(getattr(ns, "json", False))
         return dispatch_command(ctx, ns, as_json, _import_attr, _commands_payload, _write_payload_if_requested, DOMAIN_RUNNERS, _version_string)
     except ScriptError as exc:
-        print(render_error(as_json=(ctx.output_format == "json"), message=str(exc), code=exc.code), file=sys.stderr)
+        print(
+            render_error(
+                as_json=(ctx.output_format == "json"),
+                message=str(exc),
+                code=exc.code,
+                kind=exc.kind,
+            ),
+            file=sys.stderr,
+        )
         return exc.code
     except Exception as exc:  # pragma: no cover
         print(render_error(as_json=("ctx" in locals() and ctx.output_format == "json"), message=f"internal error: {exc}", code=ERR_INTERNAL), file=sys.stderr)
