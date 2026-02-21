@@ -228,3 +228,10 @@ items = [
   "cmd:atlasctl test run unit",
   "cmd:atlasctl policies check --report json",
 ]
+
+[tool.atlasctl.suites.refgrade_proof]
+includes = ["ci"]
+complete = true
+items = [
+  "cmd:atlasctl suite check --json",
+]

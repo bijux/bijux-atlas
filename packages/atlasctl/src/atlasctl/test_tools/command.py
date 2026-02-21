@@ -5,8 +5,10 @@ import json
 import os
 import subprocess
 import sys
+from pathlib import Path
 
 from ..core.context import RunContext
+from ..core.fs import write_json
 
 _SMOKE_TESTS = (
     "packages/atlasctl/tests/cli/test_cli_smoke.py",
@@ -53,6 +55,42 @@ def run_test_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         cmd = _run_command(ns.kind, ns)
         suite = ns.kind
         target_dir = ns.target_dir
+    elif ns.test_cmd == "inventory":
+        tests_root = ctx.repo_root / "packages/atlasctl/tests"
+        by_domain: dict[str, list[str]] = {}
+        for path in sorted(tests_root.rglob("test_*.py")):
+            rel = path.relative_to(ctx.repo_root).as_posix()
+            domain = path.parent.relative_to(tests_root).parts[0] if path.parent != tests_root else "root"
+            by_domain.setdefault(domain, []).append(rel)
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "total_tests": sum(len(rows) for rows in by_domain.values()),
+            "domains": [{"domain": domain, "count": len(rows), "tests": rows} for domain, rows in sorted(by_domain.items())],
+        }
+        if ns.out_file:
+            write_json(ctx, Path(ns.out_file), payload)
+        print(json.dumps(payload, sort_keys=True) if (ns.json or ctx.output_format == "json") else f"tests={payload['total_tests']} domains={len(by_domain)}")
+        return 0
+    elif ns.test_cmd == "refresh-goldens":
+        env, resolved_target = _isolation_env(ctx, ns.target_dir)
+        cmd = [sys.executable, "-m", "atlasctl.cli", "--quiet", "gen", "goldens"]
+        proc = subprocess.run(cmd, cwd=ctx.repo_root, env=env, text=True, capture_output=True, check=False)
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok" if proc.returncode == 0 else "error",
+            "command": cmd,
+            "exit_code": proc.returncode,
+            "target_dir": resolved_target,
+        }
+        print(json.dumps(payload, sort_keys=True) if (ns.json or ctx.output_format == "json") else f"refresh-goldens exit={proc.returncode}")
+        if (proc.stdout or "").strip():
+            print(proc.stdout.rstrip())
+        if (proc.stderr or "").strip():
+            print(proc.stderr.rstrip(), file=sys.stderr)
+        return proc.returncode
     else:
         return 2
     env, resolved_target = _isolation_env(ctx, target_dir)
@@ -95,3 +133,9 @@ def configure_test_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
     run.add_argument("--json", action="store_true", help="emit machine-readable summary")
     run.add_argument("--target-dir", help="isolation directory for pytest temp/cache artifacts")
     run.add_argument("pytest_args", nargs="*", help="extra pytest args")
+    inventory = p_sub.add_parser("inventory", help="report test inventory by domain")
+    inventory.add_argument("--json", action="store_true", help="emit machine-readable summary")
+    inventory.add_argument("--out-file", help="optional report output path")
+    refresh = p_sub.add_parser("refresh-goldens", help="refresh goldens in isolated deterministic lane")
+    refresh.add_argument("--json", action="store_true", help="emit machine-readable summary")
+    refresh.add_argument("--target-dir", help="isolation directory for refresh artifacts")

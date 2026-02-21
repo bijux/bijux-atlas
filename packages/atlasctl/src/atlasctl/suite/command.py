@@ -254,6 +254,13 @@ def suite_inventory_violations(suites: dict[str, SuiteSpec]) -> list[str]:
 
     command_catalog = {spec.name for spec in command_registry()}
     for suite_name, entries in sorted(task_sets.items()):
+        pytest_like = [value for kind, value in entries if kind == "cmd" and ("pytest" in value or "atlasctl test run" in value)]
+        if suite_name == "ci":
+            if any("pytest" in value and "atlasctl test run" not in value for value in pytest_like):
+                errors.append("ci suite must not invoke pytest directly; use `atlasctl test run unit` once")
+            atlasctl_test_runs = [value for value in pytest_like if "atlasctl test run" in value]
+            if len(atlasctl_test_runs) != 1:
+                errors.append(f"ci suite must include exactly one atlasctl test run entry; found {len(atlasctl_test_runs)}")
         for kind, value in sorted(entries):
             if kind != "cmd":
                 continue

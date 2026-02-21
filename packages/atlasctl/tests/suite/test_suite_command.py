@@ -12,7 +12,7 @@ def test_suite_list_json() -> None:
     assert payload["tool"] == "atlasctl"
     assert payload["default"] == "refgrade"
     names = [item["name"] for item in payload["suites"]]
-    assert {"fast", "refgrade", "ops", "ci"}.issubset(set(names))
+    assert {"fast", "refgrade", "ops", "ci", "refgrade_proof"}.issubset(set(names))
 
 
 def test_suite_run_list_refgrade() -> None:
@@ -60,3 +60,4 @@ def test_ci_suite_stable_and_contains_expected_items() -> None:
     tasks = set(payload1["tasks"])
     assert "cmd:atlasctl test run unit" in tasks
     assert "cmd:atlasctl policies check --report json" in tasks
+    assert len([task for task in tasks if "atlasctl test run" in task]) == 1
