@@ -13,7 +13,7 @@ Scope: `packages/atlasctl/` architecture and boundary contract.
 5. Canonical CLI entry: `python -m atlasctl` plus installed `atlasctl` console script.
 6. Canonical check system: **registry-based** under `atlasctl/checks/*`.
 7. Canonical command system: **`atlasctl/commands/*` with `configure()/run()`**.
-8. Legacy policy: code under `atlasctl/legacy/` is compatibility-only and read-only except deletions/migrations.
+8. Legacy policy (pre-1.0 hard reset): legacy code must be deleted, not preserved.
 9. Observability namespace decision: **`observability/` is canonical**; `obs/` remains compatibility-only.
 10. Filesystem boundary decision: **`core/fs.py` is canonical**; top-level `fs.py` is non-canonical legacy surface.
 11. Process execution boundary decision: **`core/exec.py` is canonical**; top-level `subprocess.py` is non-canonical legacy surface.
