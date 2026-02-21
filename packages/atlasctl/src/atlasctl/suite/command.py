@@ -21,9 +21,9 @@ from ..contracts.ids import SUITE_RUN
 from ..contracts.validate_self import validate_self
 from ..contracts.validate import validate_file
 from ..core.context import RunContext
-from ..core.telemetry import emit_telemetry
-from ..core.logging import log_event
-from ..core.serialize import dumps_json
+from ..core.runtime.telemetry import emit_telemetry
+from ..core.runtime.logging import log_event
+from ..core.runtime.serialize import dumps_json
 from ..core.errors import ScriptError
 from ..core.exit_codes import ERR_CONFIG, ERR_USER
 from .manifests import SuiteManifest, load_first_class_suites

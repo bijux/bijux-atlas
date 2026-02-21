@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from ....core.repo_root import find_repo_root
+from ....core.runtime.repo_root import find_repo_root
 
 
 def find_root(start: Path | None = None) -> Path:

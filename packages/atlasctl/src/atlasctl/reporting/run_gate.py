@@ -6,7 +6,7 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 
-from ..core.paths import find_repo_root
+from ..core.runtime.paths import find_repo_root
 
 
 def main(argv: list[str] | None = None) -> int:

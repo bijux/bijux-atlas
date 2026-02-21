@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 _ALLOWED = {
-    "packages/atlasctl/src/atlasctl/core/repo_root.py",
+    "packages/atlasctl/src/atlasctl/core.runtime.repo_root.py",
     "packages/atlasctl/src/atlasctl/checks/repo/cwd_usage.py",
 }
 
@@ -19,5 +19,5 @@ def check_no_path_cwd_usage(repo_root: Path) -> tuple[int, list[str]]:
         if "Path.cwd(" in text:
             offenders.append(rel)
     if offenders:
-        return 1, ["Path.cwd() is forbidden outside core/repo_root.py", *offenders]
+        return 1, ["Path.cwd() is forbidden outside core.runtime.repo_root.py", *offenders]
     return 0, []

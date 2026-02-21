@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .context import RunContext
+from ..context import RunContext
 
 FORBIDDEN_SOURCE_ROOTS = ("ops", "configs", "docs", "makefiles", "crates")
 

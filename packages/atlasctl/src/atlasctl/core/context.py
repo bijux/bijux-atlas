@@ -7,9 +7,9 @@ from typing import Literal
 
 from .adapters.git import read_git_context
 from .errors import ScriptError
-from .env import getenv
+from .runtime.env import getenv
 from .isolation import require_isolate_env
-from .paths import evidence_root_path, find_repo_root, run_dir_root_path, scripts_artifact_root_path
+from .runtime.paths import evidence_root_path, find_repo_root, run_dir_root_path, scripts_artifact_root_path
 
 OutputFormat = Literal["text", "json"]
 NetworkMode = Literal["allow", "forbid"]
@@ -51,7 +51,7 @@ class RunContext:
 
     @property
     def env(self):  # noqa: ANN201
-        from . import env as env_module
+        from .runtime import env as env_module
 
         return env_module
 

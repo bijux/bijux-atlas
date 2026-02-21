@@ -5,7 +5,7 @@ from pathlib import Path
 from atlasctl.core.runtime.env_guard import ensure_within_repo, guard_no_network_mode
 from atlasctl.core.git import read_git_context
 from atlasctl.core.models.models import ContractsIndexModel, OwnershipModel, SurfaceModel
-from atlasctl.core.paths import find_repo_root
+from atlasctl.core.runtime.paths import find_repo_root
 from atlasctl.core.process import run_command
 from atlasctl.core.runtime.tooling import read_pins, read_tool_versions
 from atlasctl.core.schema.yaml_utils import validate_yaml_required_keys

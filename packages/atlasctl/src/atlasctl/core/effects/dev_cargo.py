@@ -57,8 +57,6 @@ def _atlasctl_repo_check_cmd(*, quiet: bool, verbose: bool) -> list[str]:
     cmd = _atlasctl_cmd("check", "run", "--group", "repo", quiet=quiet)
     if verbose:
         cmd.append("--verbose")
-    else:
-        cmd.append("--quiet")
     return cmd
 
 

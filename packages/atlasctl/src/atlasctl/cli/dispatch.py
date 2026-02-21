@@ -9,8 +9,8 @@ from collections.abc import Callable
 from .. import __version__
 from ..cli.surface_registry import command_spec, render_payload
 from ..core.context import RunContext
-from ..core.script_runner import run_script
-from ..core.serialize import dumps_json
+from ..core.runtime.script_runner import run_script
+from ..core.runtime.serialize import dumps_json
 from ..contracts.ids import EXPLAIN, HELP
 from ..contracts.validate_self import validate_self
 from ..core.errors import ScriptError
