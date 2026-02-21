@@ -40,8 +40,13 @@ def _forward(ctx: RunContext, *args: str) -> int:
     src_path = str(ctx.repo_root / "packages/atlasctl/src")
     existing = env.get("PYTHONPATH", "")
     env["PYTHONPATH"] = f"{src_path}:{existing}" if existing else src_path
+    forwarded_flags: list[str] = []
+    if ctx.quiet:
+        forwarded_flags.append("--quiet")
+    if ctx.output_format == "json":
+        forwarded_flags.extend(["--format", "json"])
     proc = subprocess.run(
-        [sys.executable, "-m", "atlasctl.cli", *args],
+        [sys.executable, "-m", "atlasctl.cli", *forwarded_flags, *args],
         cwd=ctx.repo_root,
         env=env,
         text=True,
