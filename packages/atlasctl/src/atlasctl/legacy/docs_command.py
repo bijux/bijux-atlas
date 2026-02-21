@@ -1,4 +1,4 @@
-"""Compatibility shim for docs command module."""
+"""Legacy docs command compatibility shim."""
 
 from ..commands.docs import legacy as _legacy
 

@@ -3,7 +3,7 @@
 Canonical package: atlasctl.reporting.
 """
 
-from ..cli.registry import domain_payload
+from ...cli.registry import domain_payload
 
 
 def run(ctx):
