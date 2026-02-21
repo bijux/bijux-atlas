@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Callable
 
 from ...checks.registry import get_check, list_checks
-from ...checks.repo.command_contracts import runtime_contracts_payload
+from ...checks.repo.contracts.command_contracts import runtime_contracts_payload
 from ...checks.repo.native import (
     check_atlas_scripts_cli_contract,
     check_atlasctl_boundaries,
@@ -48,7 +48,7 @@ from ...checks.repo.native import (
     check_venv_location_policy,
     generate_scripts_sbom,
 )
-from ...checks.repo.module_size import check_module_size
+from ...checks.repo.enforcement.module_size import check_module_size
 from ...checks.runner import domains as check_domains
 from ...checks.runner import run_domain
 from ...core.context import RunContext
