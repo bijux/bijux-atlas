@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import argparse
+import inspect
 import json
 import subprocess
 import time
+from fnmatch import fnmatch
 from pathlib import Path
 from typing import Callable
 from xml.etree.ElementTree import Element, SubElement, tostring
@@ -59,6 +61,7 @@ from ...checks.runner import run_domain
 from ...core.context import RunContext
 from ...core.fs import ensure_evidence_path
 from ...core.telemetry import emit_telemetry
+from ...exit_codes import ERR_CONTRACT, ERR_USER
 from ...lint.suite_engine import run_lint_suite
 
 NativeCheck = Callable[[Path], tuple[int, list[str]]]
@@ -123,6 +126,30 @@ def _parse_select(value: str) -> tuple[str | None, str]:
     return None, value
 
 
+def _split_marker_values(raw_values: list[str] | None) -> set[str]:
+    values: set[str] = set()
+    for raw in raw_values or []:
+        for part in str(raw).split(","):
+            marker = part.strip()
+            if marker:
+                values.add(marker)
+    return values
+
+
+def _check_source_path(ctx: RunContext, check_id: str) -> str | None:
+    check = get_check(check_id)
+    if check is None:
+        return None
+    source = inspect.getsourcefile(check.fn)
+    if not source:
+        return None
+    path = Path(source).resolve()
+    try:
+        return path.relative_to(ctx.repo_root).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
 def _match_selected(check_id: str, title: str, domain: str, selected_domain: str | None, selector: str) -> bool:
     if selected_domain and domain != selected_domain:
         return False
@@ -147,8 +174,25 @@ def _write_junitxml(path: Path, rows: list[dict[str, object]]) -> None:
 
 def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     started = time.perf_counter()
-    selected_domain, selector = _parse_select(ns.select or "")
+    select_value = str(getattr(ns, "select", "") or "").strip()
+    target_value = str(getattr(ns, "check_target", "") or "").strip()
+    if target_value and not select_value:
+        select_value = target_value
+    selected_domain, selector = _parse_select(select_value)
     checks = [check for check in list_checks() if selected_domain is None or check.domain == selected_domain]
+    group = str(getattr(ns, "group", "") or "").strip()
+    if group:
+        checks = [check for check in checks if check.domain == group]
+    match_pattern = str(getattr(ns, "match", "") or "").strip()
+    if match_pattern:
+        checks = [
+            check
+            for check in checks
+            if fnmatch(check.check_id, match_pattern) or fnmatch(check.title, match_pattern) or fnmatch(f"atlasctl::{check.domain}::{check.check_id}", match_pattern)
+        ]
+    required_markers = _split_marker_values(getattr(ns, "require_markers", []))
+    if required_markers:
+        checks = [check for check in checks if required_markers.issubset(set(check_tags(check)))]
     matched_checks = [
         check for check in checks if _match_selected(check.check_id, check.title, check.domain, selected_domain, selector)
     ]
@@ -236,6 +280,21 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             "rows": rows,
         }
         print(json.dumps(payload, sort_keys=True))
+    elif bool(getattr(ns, "jsonl", False)):
+        for row in rows:
+            print(json.dumps({"kind": "check-row", **row}, sort_keys=True))
+        print(
+            json.dumps(
+                {
+                    "kind": "summary",
+                    "summary": summary,
+                    "slow_threshold_ms": slow_threshold_ms,
+                    "slow_checks": slow_rows,
+                    "ratchet_errors": ratchet_errors,
+                },
+                sort_keys=True,
+            )
+        )
     else:
         for row in rows:
             if ns.run_quiet:
@@ -329,16 +388,32 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
         duration_ms=total_duration_ms,
         slow_checks=len(slow_rows),
     )
-    if ns.junitxml:
-        junit_path = ensure_evidence_path(ctx, Path(ns.junitxml))
+    junit_out = getattr(ns, "junit_xml", None) or getattr(ns, "junitxml", None)
+    if junit_out:
+        junit_path = ensure_evidence_path(ctx, Path(junit_out))
         _write_junitxml(junit_path, rows)
-    return 0 if final_failed == 0 else 1
+    return 0 if final_failed == 0 else ERR_USER
 
 
 def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
+    show_source_id = str(getattr(ns, "show_source", "") or "").strip()
+    if show_source_id:
+        path = _check_source_path(ctx, show_source_id)
+        if path is None:
+            print(json.dumps({"schema_version": 1, "tool": "atlasctl", "status": "error", "error": f"unknown check id: {show_source_id}"}, sort_keys=True) if ctx.output_format == "json" or getattr(ns, "json", False) else f"unknown check id: {show_source_id}")
+            return ERR_USER
+        payload = {"schema_version": 1, "tool": "atlasctl", "status": "ok", "id": show_source_id, "source": path}
+        print(json.dumps(payload, sort_keys=True) if ctx.output_format == "json" or getattr(ns, "json", False) else path)
+        return 0
     sub = ns.check_cmd
+    if not sub and bool(getattr(ns, "list_checks", False)):
+        sub = "list"
     if sub == "run":
-        return _run_check_registry(ctx, ns)
+        try:
+            return _run_check_registry(ctx, ns)
+        except Exception as exc:  # pragma: no cover
+            print(f"internal check runner error: {exc}")
+            return ERR_CONTRACT
     if sub == "list":
         payload = {
             "schema_name": CHECK_LIST,
@@ -370,7 +445,7 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         check = get_check(ns.check_id)
         if check is None:
             print(f"unknown check id: {ns.check_id}")
-            return 2
+            return ERR_USER
         payload = {
             "schema_version": 1,
             "tool": "atlasctl",
@@ -386,6 +461,7 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             "owners": list(check.owners),
             "failure_modes": ["policy violation", "contract drift", "hygiene drift"],
             "how_to_fix": check.fix_hint,
+            "source": _check_source_path(ctx, check.check_id),
         }
         print(json.dumps(payload, sort_keys=True) if ctx.output_format == "json" or ns.json else json.dumps(payload, indent=2, sort_keys=True))
         return 0
@@ -394,7 +470,7 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         if ns.out_file:
             ensure_evidence_path(ctx, Path(ns.out_file)).write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         print(json.dumps(payload, sort_keys=True) if ctx.output_format == "json" or ns.json else json.dumps(payload, indent=2, sort_keys=True))
-        return 0 if payload["status"] == "pass" else 1
+        return 0 if payload["status"] == "pass" else ERR_USER
 
     if sub == "all":
         return _run_domain(ctx, "all", fail_fast=ns.fail_fast, label="all")
@@ -439,7 +515,7 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             for row in payload["results"]:
                 if row["status"] != "pass":
                     print(f"- {row['id']}: {', '.join(row['errors'][:2])}")
-        return 0 if failed == 0 else 1
+        return 0 if failed == 0 else ERR_USER
     if sub == "obs":
         return _run(ctx, ["python3", "packages/atlasctl/src/atlasctl/observability/contracts/metrics/check_metrics_contract.py"])
     if sub == "stack-report":
@@ -454,7 +530,7 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         if refs_code == 0 and path_code == 0:
             print("make forbidden path checks passed")
             return 0
-        return 1
+        return ERR_USER
     if sub == "python-runtime-artifacts":
         code, errors = check_python_runtime_artifacts(ctx.repo_root, fix=bool(getattr(ns, "fix", False)))
         if errors:
@@ -513,30 +589,39 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         fn, title, ok_message, limit, prefix = check_map[sub]
         return _run_native_check(ctx, fn, title, ok_message, limit=limit, prefix=prefix)
 
-    return 2
+    return ERR_USER
 
 
 def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     parser = sub.add_parser("check", help="area-based checks mapped from scripts/areas")
     parser.add_argument("--fail-fast", action="store_true", help="stop after first failing check in multi-check runs")
     parser.add_argument("--json", action="store_true", help="emit JSON output")
-    parser_sub = parser.add_subparsers(dest="check_cmd", required=True)
+    parser.add_argument("--list", dest="list_checks", action="store_true", help="list registered checks")
+    parser.add_argument("--show-source", help="print source file for check id")
+    parser_sub = parser.add_subparsers(dest="check_cmd", required=False)
 
     parser_sub.add_parser("all", help="run all native atlasctl checks")
     run = parser_sub.add_parser("run", help="run registered checks with pytest-like output")
     run.add_argument("--quiet", dest="run_quiet", action="store_true", help="one line per check: PASS/FAIL/SKIP")
+    run.add_argument("--info", dest="run_info", action="store_true", help="default info output mode with id + timing")
     run.add_argument("--verbose", dest="run_verbose", action="store_true", help="include timing, owners, and failure hints")
     run.add_argument("--maxfail", type=int, default=0, help="stop after N failing checks (0 disables)")
     run.add_argument("--failfast", action="store_true", help="stop after first failing check")
     run.add_argument("--durations", type=int, default=0, help="show N slowest checks in summary")
     run.add_argument("--junitxml", help="write junit xml output path")
+    run.add_argument("--junit-xml", dest="junit_xml", help="write junit xml output path")
     run.add_argument("--json-report", help="write json report output path")
+    run.add_argument("--jsonl", action="store_true", help="stream JSONL row events and summary")
     run.add_argument("--slow-report", help="write slow checks report output path")
     run.add_argument("--slow-threshold-ms", type=int, default=800, help="threshold for slow checks report")
     run.add_argument("--slow-ratchet-config", default="configs/policy/slow-checks-ratchet.json", help="slow-check ratchet config json")
     run.add_argument("--profile", action="store_true", help="emit check run performance profile artifact")
     run.add_argument("--profile-out", help="performance profile output path")
+    run.add_argument("--match", help="glob pattern over check ids/titles")
+    run.add_argument("--group", help="filter checks by group/domain")
+    run.add_argument("--require-markers", action="append", default=[], help="require check markers/tags (repeatable or comma-separated)")
     run.add_argument("--select", help="check selector, e.g. atlasctl::docs::check_x")
+    run.add_argument("check_target", nargs="?", help="fully-qualified check id, e.g. atlasctl::docs::check_x")
     run.add_argument("--json", action="store_true", help="emit JSON output")
     parser_sub.add_parser("list", help="list registered checks")
     explain = parser_sub.add_parser("explain", help="explain a check id")
