@@ -5,6 +5,7 @@ dev
 docs
 doctor
 gates
+install
 inventory
 k8s
 layout
@@ -16,6 +17,7 @@ obs
 ops
 policies
 registry
+release
 repo
 report
 run-id

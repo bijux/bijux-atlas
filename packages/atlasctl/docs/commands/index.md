@@ -20,6 +20,7 @@ Generated from CLI registry (`src/atlasctl/cli/surface_registry.py`).
 - `docs`
 - `doctor`
 - `gates`
+- `install`
 - `inventory`
 - `k8s`
 - `layout`
@@ -31,6 +32,7 @@ Generated from CLI registry (`src/atlasctl/cli/surface_registry.py`).
 - `ops`
 - `policies`
 - `registry`
+- `release`
 - `repo`
 - `report`
 - `run-id`

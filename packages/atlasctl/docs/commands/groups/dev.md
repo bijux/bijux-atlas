@@ -9,12 +9,14 @@ Commands mapped to `dev` effects policy.
 - `dev`
 - `doctor`
 - `gates`
+- `install`
 - `inventory`
 - `layout`
 - `lint`
 - `list`
 - `make`
 - `registry`
+- `release`
 - `repo`
 - `report`
 - `run-id`
@@ -28,12 +30,14 @@ Commands mapped to `dev` effects policy.
 - `atlasctl dev check -- domain repo`
 - `atlasctl doctor --json`
 - `atlasctl gates --report json`
+- `atlasctl install doctor --json`
 - `atlasctl inventory --category all --format json`
 - `atlasctl layout root-shape --json`
 - `atlasctl lint run --report json`
 - `atlasctl list checks --json`
 - `atlasctl make lint --json`
 - `atlasctl registry list --json`
+- `atlasctl release checklist --plan --json`
 - `atlasctl repo stats --json`
 - `atlasctl report summary --run-id local`
 - `atlasctl run-id --prefix ci`

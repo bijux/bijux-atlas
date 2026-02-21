@@ -11,6 +11,7 @@ Generated from suite registries (`pyproject.toml` + `src/atlasctl/registry/suite
 - `ops`: includes=[] items=2 complete=False
 - `refgrade`: includes=['fast'] items=7 complete=True
 - `refgrade_proof`: includes=['ci'] items=7 complete=True
+- `release_0_1`: includes=['refgrade_proof'] items=3 complete=True
 
 ## First-Class Suites
 
