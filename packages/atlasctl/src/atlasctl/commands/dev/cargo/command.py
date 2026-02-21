@@ -12,6 +12,7 @@ from typing import Any
 
 from ....contracts.output.base import build_output_base
 from ....core.context import RunContext
+from ....core.isolation import build_isolate_env
 
 NEXTEST_TOML = "configs/nextest/nextest.toml"
 DENY_CONFIG = "configs/security/deny.toml"
@@ -33,24 +34,13 @@ def _now_tag(action: str) -> str:
 
 
 def _build_isolate_env(ctx: RunContext, action: str) -> dict[str, str]:
-    env = os.environ.copy()
-    if env.get("ISO_ROOT"):
-        return env
-    iso_tag = _now_tag(action)
-    iso_root = (ctx.repo_root / "artifacts" / "isolate" / iso_tag).resolve()
-    env["ISO_TAG"] = iso_tag
-    env["ISO_RUN_ID"] = iso_tag
-    env["ISO_ROOT"] = str(iso_root)
-    env["CARGO_TARGET_DIR"] = str(iso_root / "target")
-    env["CARGO_HOME"] = str(iso_root / "cargo-home")
-    env["TMPDIR"] = str(iso_root / "tmp")
-    env["TMP"] = str(iso_root / "tmp")
-    env["TEMP"] = str(iso_root / "tmp")
-    env["TZ"] = "UTC"
-    env["LC_ALL"] = "C"
-    Path(env["CARGO_TARGET_DIR"]).mkdir(parents=True, exist_ok=True)
-    Path(env["CARGO_HOME"]).mkdir(parents=True, exist_ok=True)
-    Path(env["TMPDIR"]).mkdir(parents=True, exist_ok=True)
+    env = build_isolate_env(
+        repo_root=ctx.repo_root,
+        git_sha=ctx.git_sha,
+        prefix=f"atlasctl-{action}",
+        tag=os.environ.get("ISO_TAG") or _now_tag(action),
+        base_env=os.environ.copy(),
+    )
     return env
 
 
@@ -107,6 +97,7 @@ def _run_test_cleanup(env: dict[str, str]) -> None:
 
 def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
     env = _build_isolate_env(ctx, params.action)
+    ctx.require_isolate(env)
     steps: list[dict[str, Any]] = []
     failures: list[str] = []
     action = params.action
@@ -231,4 +222,3 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
                     print(f"- failed: {step['command']}")
                     break
     return 0 if ok else 1
-

@@ -5,7 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[5]
 
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
@@ -49,3 +49,19 @@ def test_runtime_contract_files_emitted() -> None:
     root = ROOT / "artifacts/atlasctl/run" / run_id / "reports"
     assert (root / "write-roots-contract.json").exists()
     assert (root / "run-manifest.json").exists()
+
+
+def test_env_isolate_print_root() -> None:
+    proc = _run_cli("--quiet", "env", "isolate", "--print-root")
+    assert proc.returncode == 0, proc.stderr
+    assert "artifacts/isolate/" in proc.stdout.strip()
+
+
+def test_env_isolate_clean_json() -> None:
+    stale = ROOT / "artifacts" / "isolate" / "pytest-stale-isolate"
+    stale.mkdir(parents=True, exist_ok=True)
+    proc = _run_cli("--quiet", "env", "isolate", "--clean", "--older-than-days", "0", "--keep-last", "0", "--json")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["status"] == "ok"
+    assert payload["action"] == "isolate-clean"
