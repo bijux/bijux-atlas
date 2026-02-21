@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .engine import run_function_checks
+from .execution import run_function_checks
 from .registry import list_domains, run_checks_for_domain
 
 
