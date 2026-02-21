@@ -4,7 +4,12 @@ import json
 import re
 from pathlib import Path
 
-from ...contracts.catalog import lint_catalog, load_catalog
+from ...contracts.catalog import (
+    lint_catalog,
+    load_catalog,
+    check_schema_readme_sync,
+    check_schema_change_release_policy,
+)
 from ...contracts.validate import validate
 
 
@@ -132,4 +137,14 @@ def check_schema_catalog_ssot(repo_root: Path) -> tuple[int, list[str]]:
             errors.append(
                 f"schema catalog SSOT violation: {rel} references catalog.json directly; use contracts.catalog APIs"
             )
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_schema_readme_updated(repo_root: Path) -> tuple[int, list[str]]:
+    errors = check_schema_readme_sync()
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_schema_change_release_notes(repo_root: Path) -> tuple[int, list[str]]:
+    errors = check_schema_change_release_policy(repo_root)
     return (0 if not errors else 1), sorted(errors)

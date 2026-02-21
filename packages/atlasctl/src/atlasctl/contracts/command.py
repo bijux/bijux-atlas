@@ -5,8 +5,9 @@ import json
 from pathlib import Path
 
 from ..core.context import RunContext
-from .catalog import lint_catalog, list_catalog_entries
+from .catalog import lint_catalog, list_catalog_entries, check_schema_change_release_policy, check_schema_readme_sync
 from .output_base import build_output_base
+from .validate_self import validate_self
 from .checks import (
     check_breaking,
     check_chart_values,
@@ -15,7 +16,7 @@ from .checks import (
     check_error_codes,
     check_sqlite_indexes,
 )
-from .generators import generate_chart_schema, generate_contract_artifacts, generate_openapi, generate_schema_samples
+from .generators import generate_chart_schema, generate_contract_artifacts, generate_openapi, generate_schema_samples, generate_schema_catalog
 
 CHECK_HANDLERS = {
     "breakage": lambda root, ns: check_breaking(root, ns.before, ns.after),
@@ -31,7 +32,29 @@ GEN_HANDLERS = {
     "chart-schema": generate_chart_schema,
     "artifacts": generate_contract_artifacts,
     "samples": generate_schema_samples,
+    "catalog": generate_schema_catalog,
 }
+
+
+def _iter_contract_payloads(repo_root: Path) -> list[tuple[str, dict[str, object]]]:
+    files: list[Path] = []
+    files.extend(sorted((repo_root / "packages/atlasctl/tests/goldens").rglob("*.json.golden")))
+    files.extend(sorted((repo_root / "packages/atlasctl/tests/goldens/samples").glob("*.json")))
+    out: list[tuple[str, dict[str, object]]] = []
+    for path in files:
+        text = path.read_text(encoding="utf-8", errors="ignore").strip()
+        if not text.startswith("{"):
+            continue
+        try:
+            payload = json.loads(text)
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(payload, dict):
+            continue
+        schema_name = payload.get("schema_name")
+        if isinstance(schema_name, str):
+            out.append((path.relative_to(repo_root).as_posix(), payload))
+    return out
 
 
 def _as_json(ns: argparse.Namespace, report: str) -> bool:
@@ -79,6 +102,25 @@ def run_contracts_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             except json.JSONDecodeError as exc:
                 errors.append(f"invalid json schema file {entry.file}: {exc}")
         return _emit(ctx.run_id, ns, report, errors, meta={"checks": ["catalog_lint", "schema_json_parse"]})
+    if ns.contracts_cmd == "validate-self":
+        errors: list[str] = []
+        validated: list[str] = []
+        for rel, payload in _iter_contract_payloads(ctx.repo_root):
+            try:
+                schema_name = str(payload["schema_name"])
+                validate_self(schema_name, payload)
+                validated.append(rel)
+            except Exception as exc:
+                errors.append(f"{rel}: {exc}")
+        errors.extend(check_schema_readme_sync())
+        errors.extend(check_schema_change_release_policy(ctx.repo_root))
+        return _emit(
+            ctx.run_id,
+            ns,
+            report,
+            errors,
+            meta={"validated_payloads": sorted(validated), "checks": ["self_schema_validation", "schema_readme_sync", "schema_change_release_policy"]},
+        )
     if ns.contracts_cmd == "check":
         checks = ns.checks or list(CHECK_HANDLERS)
         errors: list[str] = []
@@ -106,6 +148,8 @@ def configure_contracts_parser(sub: argparse._SubParsersAction[argparse.Argument
     lint.add_argument("--report", choices=["text", "json"], default="text")
     validate = subp.add_parser("validate", help="validate schema catalog and schema JSON files")
     validate.add_argument("--report", choices=["text", "json"], default="text")
+    validate_self_cmd = subp.add_parser("validate-self", help="validate contract payloads against declared schemas")
+    validate_self_cmd.add_argument("--report", choices=["text", "json"], default="text")
 
     check = subp.add_parser("check", help="check contract breakage/drift/endpoints/error-codes/sqlite-indexes/chart-values")
     check.add_argument("--report", choices=["text", "json"], default="text")
