@@ -118,7 +118,7 @@ def dispatch_command(
         return import_attr("atlasctl.inventory.command", "run_inventory")(ctx, ns.category, ns.format, ns.out_dir, ns.dry_run, ns.check, ns.command)
 
     module_dispatch = {
-        "docs": ("atlasctl.commands.docs.legacy", "run_docs_command"),
+        "docs": ("atlasctl.commands.docs.runtime", "run_docs_command"),
         "configs": ("atlasctl.configs.command", "run_configs_command"),
         "contracts": ("atlasctl.contracts.command", "run_contracts_command"),
         "docker": ("atlasctl.docker.command", "run_docker_command"),
@@ -129,7 +129,7 @@ def dispatch_command(
         "policies": ("atlasctl.policies.command", "run_policies_command"),
         "make": ("atlasctl.make.command", "run_make_command"),
         "migration": ("atlasctl.migrate.command", "run_migrate_command"),
-        "ops": ("atlasctl.commands.ops.legacy", "run_ops_command"),
+        "ops": ("atlasctl.commands.ops.runtime", "run_ops_command"),
         "report": ("atlasctl.reporting.command", "run_report_command"),
         "lint": ("atlasctl.lint.command", "run_lint_command"),
         "test": ("atlasctl.test_tools.command", "run_test_command"),

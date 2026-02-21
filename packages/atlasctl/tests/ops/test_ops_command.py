@@ -8,7 +8,7 @@ from pathlib import Path
 
 import jsonschema
 from atlasctl.core.context import RunContext
-from atlasctl.commands.ops.legacy import LINT_CHECKS, _run_checks
+from atlasctl.commands.ops.runtime import LINT_CHECKS, _run_checks
 
 ROOT = Path(__file__).resolve().parents[3]
 
