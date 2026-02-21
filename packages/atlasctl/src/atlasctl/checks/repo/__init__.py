@@ -34,14 +34,17 @@ from .reachability import check_repo_check_modules_registered
 from .enforcement.refgrade_proof import check_refgrade_target_shape
 from .enforcement.import_policy import (
     check_command_import_lint,
+    check_contract_import_boundaries,
     check_cold_import_budget,
     check_compileall_gate,
+    check_forbidden_core_integration_dir,
     check_forbidden_deprecated_namespace_dirs,
     check_forbidden_deprecated_namespaces,
     check_import_smoke,
     check_internal_import_boundaries,
     check_no_legacy_obs_imports_in_modern,
     check_no_modern_imports_from_legacy,
+    check_runcontext_single_builder,
 )
 from .contracts.pyproject_contracts import (
     check_dependency_gate_targets,
@@ -105,6 +108,9 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.modern_no_legacy_obs_imports", "repo", "forbid modern modules from importing atlasctl.legacy.obs", 300, check_no_legacy_obs_imports_in_modern, fix_hint="Migrate observability imports to atlasctl.observability."),
     CheckDef("repo.no_deprecated_namespaces", "repo", "forbid imports from atlasctl.check/report/obs namespaces", 300, check_forbidden_deprecated_namespaces, fix_hint="Use atlasctl.checks and atlasctl.reporting canonical namespaces."),
     CheckDef("repo.no_deprecated_namespace_dirs", "repo", "forbid deprecated atlasctl/check report obs directories", 300, check_forbidden_deprecated_namespace_dirs, fix_hint="Remove deprecated namespace directories and keep checks/reporting/observability as canonical roots."),
+    CheckDef("repo.no_core_integration_dir", "repo", "forbid deprecated core/integration namespace", 300, check_forbidden_core_integration_dir, fix_hint="Use top-level atlasctl.adapters for integration concerns."),
+    CheckDef("repo.contract_import_boundaries", "repo", "enforce contracts/core-contracts import boundaries", 300, check_contract_import_boundaries, fix_hint="Commands/checks should import schema contracts from atlasctl.contracts only."),
+    CheckDef("repo.runcontext_single_builder", "repo", "ensure RunContext is built only in core/context.py", 300, check_runcontext_single_builder, fix_hint="Use RunContext.from_args and avoid constructing context-like objects elsewhere."),
     CheckDef("repo.command_import_lint", "repo", "enforce command module import boundaries", 300, check_command_import_lint, fix_hint="Restrict command imports to core/contracts/checks/adapters/commands/cli."),
     CheckDef("repo.compileall_gate", "repo", "ensure atlasctl source compiles with compileall", 300, check_compileall_gate, fix_hint="Fix syntax/import issues until python -m compileall passes."),
     CheckDef("repo.import_smoke", "repo", "ensure atlasctl package imports in minimal environment", 300, check_import_smoke, fix_hint="Keep top-level imports light and dependency-safe."),

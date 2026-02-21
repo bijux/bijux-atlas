@@ -138,6 +138,50 @@ def check_forbidden_deprecated_namespace_dirs(repo_root: Path) -> tuple[int, lis
     return 0, []
 
 
+def check_forbidden_core_integration_dir(repo_root: Path) -> tuple[int, list[str]]:
+    path = repo_root / _SRC_ROOT / "core" / "integration"
+    if path.exists():
+        return 1, [f"forbidden deprecated core integration namespace present: {path.relative_to(repo_root).as_posix()}"]
+    return 0, []
+
+
+def check_contract_import_boundaries(repo_root: Path) -> tuple[int, list[str]]:
+    offenders: list[str] = []
+    for path in _iter_py_files(repo_root):
+        rel = path.relative_to(repo_root).as_posix()
+        if not ("/commands/" in rel or "/checks/" in rel):
+            continue
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=rel)
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                names = [alias.name for alias in node.names]
+                if any(name.startswith("atlasctl.core.contracts") for name in names):
+                    offenders.append(rel)
+                    break
+            elif isinstance(node, ast.ImportFrom):
+                if node.level == 0 and node.module and node.module.startswith("atlasctl.core.contracts"):
+                    offenders.append(rel)
+                    break
+    if offenders:
+        return 1, [f"commands/checks must import schemas from atlasctl.contracts, not core.contracts: {rel}" for rel in sorted(set(offenders))]
+    return 0, []
+
+
+def check_runcontext_single_builder(repo_root: Path) -> tuple[int, list[str]]:
+    offenders: list[str] = []
+    core_context = "packages/atlasctl/src/atlasctl/core/context.py"
+    for path in _iter_py_files(repo_root):
+        rel = path.relative_to(repo_root).as_posix()
+        if rel == core_context or "/tests/" in rel:
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if "RunContext(" in text:
+            offenders.append(rel)
+    if offenders:
+        return 1, [f"RunContext must be built only in core/context.py via RunContext.from_args: {rel}" for rel in sorted(set(offenders))]
+    return 0, []
+
+
 def check_command_import_lint(repo_root: Path) -> tuple[int, list[str]]:
     offenders: list[str] = []
     for path in sorted((repo_root / _SRC_ROOT / "commands").rglob("*.py")):
