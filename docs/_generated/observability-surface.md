@@ -94,3 +94,4 @@ Generated from observability contract SSOT files:
 ```bash
 make ops-observability-validate
 ```
+

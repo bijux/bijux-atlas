@@ -6,10 +6,10 @@ SHELL := /bin/sh
 OPS_ENV_SCHEMA ?= configs/ops/env.schema.json
 
 ops-layout-lint: ## Validate canonical ops layout contract
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_ops_layout_contract.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_layout_contract.py
 	@./packages/atlasctl/src/atlasctl/checks/layout/check_ops_workspace.sh
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_ops_artifacts_writes.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_ops_concept_ownership.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_artifacts_writes.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/governance/check_ops_concept_ownership.py
 
 ops-surface: ## Print stable ops entrypoints from SSOT surface metadata
 	@python3 -c 'import json; d=json.load(open("ops/_meta/surface.json")); print("\n".join(d.get("entrypoints",[])))'
@@ -18,41 +18,41 @@ ops-help: ## Print canonical ops runbook index
 	@cat ops/INDEX.md
 
 ops-env-validate: ## Validate canonical ops environment contract against schema
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)"
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/validation/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)"
 
 ops-env-print: ## Print canonical ops environment settings
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)" --print --format json
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/validation/validate_ops_env.py --schema "$(OPS_ENV_SCHEMA)" --print --format json
 
 ops-stack-versions-sync: ## Generate ops/stack/versions.json from configs/ops/tool-versions.json SSOT
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/generate_ops_stack_versions.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/generation/generate_ops_stack_versions.py
 
 ops-k8s-contracts: ## Validate k8s values/schema/install-matrix/chart drift contracts
 	@$(MAKE) -s ops-values-validate
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/validate_ops_contracts.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/validation/validate_ops_contracts.py
 
 ops-e2e-validate: ## Validate unified e2e scenario definitions and docs references
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_e2e_suites.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_e2e_scenarios.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_realdata_scenarios.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/scenarios/check_e2e_suites.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/scenarios/check_e2e_scenarios.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/scenarios/check_realdata_scenarios.py
 
 ops-contracts-check: ## Validate canonical ops manifests against ops/_schemas and contract invariants
 	@python3 ./ops/_meta/generate_layer_contract.py
 	@python3 ./ops/_lint/check_layer_contract_drift.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_layer_drift.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/policies/check_layer_drift.py
 	@python3 ./ops/_lint/no-layer-literals.py
 	@python3 ./ops/_lint/no-stack-layer-literals.py
 	@$(MAKE) -s ops-stack-versions-sync
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_ops_surface_drift.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/validate_ops_contracts.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_surface_drift.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/validation/validate_ops_contracts.py
 	@python3 ./ops/_lint/json-schema-coverage.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_no_hidden_defaults.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_obs_pack_ssot.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_obs_suites.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_no_hidden_defaults.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/observability/check_obs_pack_ssot.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/observability/check_obs_suites.py
 	@python3 ./ops/obs/scripts/areas/contracts/check_overload_behavior_contract.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_ops_canonical_entrypoints.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_ops_script_names.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_no_empty_dirs.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_generated_policy.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_canonical_entrypoints.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_script_names.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_no_empty_dirs.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_generated_policy.py
 	@$(MAKE) -s ops-e2e-validate
 	@$(ATLAS_SCRIPTS) docs generate --report text
 	@$(MAKE) -s ops-k8s-contracts
@@ -61,25 +61,25 @@ ops-contract-check: ## Validate SSOT layer contract, render/live checks, and wri
 	@./ops/run/contract-check.sh
 
 pins/check: ## Validate unified reproducibility pins and emit drift report
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/generate_ops_pins.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_ops_pins.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/generation/generate_ops_pins.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/pins/check_ops_pins.py
 	@python3 ./ops/_lint/pin-relaxations-audit.py
 	@./ops/k8s/tests/checks/obs/test_helm_repo_pinning.sh
 	@$(MAKE) -s ops-kind-version-drift-test
 
 pins/update: ## Manual pins refresh with explicit changelog output
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/update_ops_pins.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/generation/update_ops_pins.py
 
 ops-gen: ## Regenerate all committed ops generated outputs
 	@$(MAKE) -s ops-stack-versions-sync
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/generate_ops_pins.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/generate_ops_surface_meta.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/validate_ops_contracts.py >/dev/null
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/generation/generate_ops_pins.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/generation/generate_ops_surface_meta.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/validation/validate_ops_contracts.py >/dev/null
 	@$(ATLAS_SCRIPTS) docs generate --report text
 	@$(ATLAS_SCRIPTS) contracts generate --generators chart-schema
 
 ops-gen-clean: ## Cleanup generated ops outputs not in committed generated policy
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/clean_ops_generated.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/artifacts/clean_ops_generated.py
 
 ops-gen-check: ## Fail when regenerated ops outputs drift from committed state
 	@$(MAKE) -s ops-gen
@@ -618,14 +618,14 @@ ops-gc-smoke: ## Validate GC plan/apply against a disposable store fixture
 ops-metrics-check: ## Validate runtime metrics and observability contracts
 	@./ops/e2e/scripts/verify_metrics.sh
 	@./ops/obs/scripts/snapshot_metrics.sh
-	@./packages/atlasctl/src/atlasctl/observability/contracts/check_metrics_contract.py
+	@./packages/atlasctl/src/atlasctl/observability/contracts/metrics/check_metrics_contract.py
 	@python3 ./ops/obs/scripts/areas/contracts/check_metrics_drift.py
 	@python3 ./ops/obs/scripts/areas/contracts/check_metrics_coverage.py
 	@python3 ./ops/obs/scripts/areas/contracts/check_metrics_golden.py
-	@./packages/atlasctl/src/atlasctl/observability/contracts/check_dashboard_contract.py
-	@./packages/atlasctl/src/atlasctl/observability/contracts/check_alerts_contract.py
-	@./packages/atlasctl/src/atlasctl/observability/contracts/lint_runbooks.py
-	@./packages/atlasctl/src/atlasctl/observability/contracts/check_runtime_metrics.py
+	@./packages/atlasctl/src/atlasctl/observability/contracts/dashboards/check_dashboard_contract.py
+	@./packages/atlasctl/src/atlasctl/observability/contracts/alerts/check_alerts_contract.py
+	@./packages/atlasctl/src/atlasctl/observability/contracts/governance/lint_runbooks.py
+	@./packages/atlasctl/src/atlasctl/observability/contracts/metrics/check_runtime_metrics.py
 	@if [ "$${OPS_METRICS_STRICT:-1}" = "1" ]; then \
 	  $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/check_metric_cardinality.py; \
 	else \
@@ -641,7 +641,7 @@ ops-traces-check: ## Validate trace signal (when OTEL enabled)
 	@./ops/e2e/scripts/verify_traces.sh
 	@python3 ./ops/obs/scripts/areas/contracts/check_trace_golden.py
 	@python3 ./ops/obs/scripts/areas/contracts/extract_trace_exemplars.py
-	@if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./packages/atlasctl/src/atlasctl/observability/contracts/check_tracing_contract.py; python3 ./ops/obs/scripts/areas/contracts/check_trace_coverage.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi
+	@if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./packages/atlasctl/src/atlasctl/observability/contracts/tracing/check_tracing_contract.py; python3 ./ops/obs/scripts/areas/contracts/check_trace_coverage.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi
 
 ops-k8s-tests: ## Run k8s e2e suite
 	@$(MAKE) -s ops-env-validate
@@ -680,27 +680,27 @@ ops-load-smoke: ## Run short load suite
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
 	@$(MAKE) ops-load-manifest-validate
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/check_pinned_queries_lock.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/checks/check_pinned_queries_lock.py
 	@$(MAKE) ops-load-prereqs
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/run_suites_from_manifest.py --profile smoke --out artifacts/perf/results
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/score_k6.py || true
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/validate_results.py artifacts/perf/results
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/run/run_suites_from_manifest.py --profile smoke --out artifacts/perf/results
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/reports/score_k6.py || true
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/reports/validate_results.py artifacts/perf/results
 
 ops-load-shedding: ## Verify overload shedding policy (cheap survives, non-cheap sheds)
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
 	@$(MAKE) ops-load-manifest-validate
 	@./ops/load/scripts/run_suite.sh cheap-only-survival.json artifacts/perf/results
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/validate_results.py artifacts/perf/results
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/score_k6.py || true
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/reports/validate_results.py artifacts/perf/results
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/reports/score_k6.py || true
 
 ops-load-spike-proof: ## Run 10x spike proof suite with overload/bulkhead/memory assertions
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
 	@$(MAKE) ops-load-manifest-validate
 	@./ops/load/scripts/run_suite.sh spike-overload-proof.json artifacts/perf/results
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/validate_results.py artifacts/perf/results
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/check_spike_assertions.py --summary artifacts/perf/results/spike-overload-proof.summary.json --base-url "$${ATLAS_BASE_URL:-http://127.0.0.1:18080}" --wait-seconds "$${ATLAS_OVERLOAD_CLEAR_WAIT_SECONDS:-45}"
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/reports/validate_results.py artifacts/perf/results
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/checks/check_spike_assertions.py --summary artifacts/perf/results/spike-overload-proof.summary.json --base-url "$${ATLAS_BASE_URL:-http://127.0.0.1:18080}" --wait-seconds "$${ATLAS_OVERLOAD_CLEAR_WAIT_SECONDS:-45}"
 	@$(MAKE) ops-slo-burn
 	@python3 -c 'import json; from pathlib import Path; p = Path("artifacts/ops/obs/slo-burn.json"); payload = json.loads(p.read_text()) if p.exists() else (_ for _ in ()).throw(SystemExit("missing SLO burn artifact: artifacts/ops/obs/slo-burn.json")); (_ for _ in ()).throw(SystemExit(f"SLO burn exceeded: {payload}")) if payload.get("burn_exceeded") else print("slo burn within threshold")'
 
@@ -716,9 +716,9 @@ ops-load-full: ## Run nightly/full load suites
 	@$(MAKE) ops-k6-version-check
 	@$(MAKE) ops-load-manifest-validate
 	@$(MAKE) ops-load-prereqs
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/check_pinned_queries_lock.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/run_suites_from_manifest.py --profile all --out artifacts/perf/results
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/validate_results.py artifacts/perf/results
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/checks/check_pinned_queries_lock.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/run/run_suites_from_manifest.py --profile all --out artifacts/perf/results
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/reports/validate_results.py artifacts/perf/results
 	@./ops/load/reports/generate.py
 
 ops-load-soak: ## Run long soak-only suite
@@ -726,8 +726,8 @@ ops-load-soak: ## Run long soak-only suite
 	@$(MAKE) ops-k6-version-check
 	@$(MAKE) ops-load-manifest-validate
 	@./ops/load/scripts/run_suite.sh soak-30m.json artifacts/perf/results
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/validate_results.py artifacts/perf/results
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/score_k6.py || true
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/reports/validate_results.py artifacts/perf/results
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/reports/score_k6.py || true
 
 ops-load-under-rollout: ## Run load while rollout is in progress
 	@$(MAKE) -s ops-env-validate
@@ -749,18 +749,18 @@ ops-load-ci: ## Load CI profile (smoke suites + score/report)
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
 	@$(MAKE) ops-load-manifest-validate
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/run_suites_from_manifest.py --profile load-ci --out artifacts/perf/results
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/validate_results.py artifacts/perf/results
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/score_k6.py || true
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/run/run_suites_from_manifest.py --profile load-ci --out artifacts/perf/results
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/reports/validate_results.py artifacts/perf/results
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/reports/score_k6.py || true
 	@./ops/load/reports/generate.py
 
 ops-load-nightly: ## Load nightly profile (nightly suites + score/report)
 	@$(MAKE) -s ops-env-validate
 	@$(MAKE) ops-k6-version-check
 	@$(MAKE) ops-load-manifest-validate
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/run_suites_from_manifest.py --profile load-nightly --out artifacts/perf/results
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/validate_results.py artifacts/perf/results
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/score_k6.py || true
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/run/run_suites_from_manifest.py --profile load-nightly --out artifacts/perf/results
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/reports/validate_results.py artifacts/perf/results
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/reports/score_k6.py || true
 	@./ops/load/reports/generate.py
 
 ops-drill-store-outage: ## Run store outage drill under load
@@ -910,7 +910,7 @@ obs/update-goldens: ## Refresh observability golden snapshots for all supported 
 	@cp ops/obs/contract/trace-structure.golden.json ops/obs/contract/goldens/local/trace-structure.golden.json
 	@cp ops/obs/contract/trace-structure.golden.json ops/obs/contract/goldens/perf/trace-structure.golden.json
 	@cp ops/obs/contract/trace-structure.golden.json ops/obs/contract/goldens/offline/trace-structure.golden.json
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/contracts/check_profile_goldens.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/contracts/profiles/check_profile_goldens.py
 
 ops-slo-report: ## Compute SLO report (SLIs, error budget remaining, burn rates)
 	@python3 ./ops/report/slo_report.py --metrics "$${METRICS:-artifacts/ops/metrics.prom}" --slo-config configs/ops/slo/slo.v1.json --out "$${OUT:-artifacts/ops/slo/report.json}"
@@ -934,8 +934,8 @@ ops-lint-all: ## Run full ops lint suite (naming/docs/ownership/contracts/images
 	@./ops/_lint/no-empty-dirs.sh
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/ops/lint/direct_usage.py
 	@python3 ./ops/_lint/no-direct-e2e-scenario-usage.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_ops_cross_area_script_refs.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_scripts_submodules.py --threshold 25
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_cross_area_script_refs.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/scripts/check_scripts_submodules.py --threshold 25
 	@python3 ./ops/_lint/no-unpinned-images.py
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/ops/lint/tool_versions.py
 	@python3 ./ops/_lint/no-unowned-area.py
@@ -957,22 +957,22 @@ ops-shfmt: ## Format-check all ops shell scripts (optional if shfmt unavailable)
 	fi
 
 ops-kind-version-check: ## Validate pinned kind version from configs/ops/tool-versions.json
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_tool_versions.py kind
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/observability/check_tool_versions.py kind
 
 ops-k6-version-check: ## Validate pinned k6 version from configs/ops/tool-versions.json
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_tool_versions.py k6
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/observability/check_tool_versions.py k6
 
 ops-helm-version-check: ## Validate pinned helm version from configs/ops/tool-versions.json
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_tool_versions.py helm
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/observability/check_tool_versions.py helm
 
 ops-kubectl-version-check: ## Validate pinned kubectl version from configs/ops/tool-versions.json
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_tool_versions.py kubectl
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/observability/check_tool_versions.py kubectl
 
 ops-jq-version-check: ## Validate pinned jq version from configs/ops/tool-versions.json
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_tool_versions.py jq
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/observability/check_tool_versions.py jq
 
 ops-yq-version-check: ## Validate pinned yq version from configs/ops/tool-versions.json
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_tool_versions.py yq
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/observability/check_tool_versions.py yq
 
 ops-tools-check: ## Validate all pinned ops tools versions
 	@$(MAKE) ops-kind-version-check
@@ -1008,7 +1008,7 @@ ops-perf-nightly: ## Perf helper: run nightly perf suite
 	@./ops/load/scripts/run_nightly_perf.sh
 
 ops-perf-report: ## Generate perf markdown + baseline report from artifacts
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/generate_report.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/reports/generate_report.py
 	@./ops/load/reports/generate.py
 	@mkdir -p "$${OPS_RUN_DIR:-artifacts/ops/manual}/load/reports"
 	@cp -f artifacts/ops/load/reports/summary.md "$${OPS_RUN_DIR:-artifacts/ops/manual}/report.md" 2>/dev/null || true
@@ -1033,10 +1033,10 @@ ops-perf-baseline-update: ## Update named baseline from artifacts/perf/baseline.
 	@PERF_BASELINE_UPDATE_FLOW=1 ./ops/load/scripts/update_baseline.sh "$${ATLAS_PERF_BASELINE_PROFILE:-local}"
 
 ops-load-manifest-validate: ## Validate load suite SSOT, naming conventions, and pinned query lock
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/validate_suite_manifest.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/check_abuse_scenarios_required.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/check_runbook_suite_names.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/check_perf_baselines.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/contracts/validate_suite_manifest.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/checks/check_abuse_scenarios_required.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/checks/check_runbook_suite_names.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/checks/check_perf_baselines.py
 
 ops-perf-suite: ## Perf helper: run an arbitrary perf suite (SCENARIO=<file.js> OUT=<dir>)
 	@[ -n "$$SCENARIO" ] || { echo "usage: make ops-perf-suite SCENARIO=<file.js> [OUT=artifacts/perf/results]" >&2; exit 2; }
@@ -1062,21 +1062,21 @@ ops-chart-render-diff: ## Ensure chart render is deterministic for local profile
 	rm -f "$$tmp_a" "$$tmp_b"
 
 ops-dashboards-validate: ## Validate dashboard references against metrics contract
-	@./packages/atlasctl/src/atlasctl/observability/contracts/check_dashboard_contract.py
+	@./packages/atlasctl/src/atlasctl/observability/contracts/dashboards/check_dashboard_contract.py
 
 ops-alerts-validate: ## Validate alert rules and contract coverage
-	@./packages/atlasctl/src/atlasctl/observability/contracts/check_alerts_contract.py
+	@./packages/atlasctl/src/atlasctl/observability/contracts/alerts/check_alerts_contract.py
 
 ops-observability-validate: ## Validate observability assets/contracts end-to-end
 	@set -e; \
 	trap 'out="artifacts/ops/obs/validate-fail-$$(date +%Y%m%d-%H%M%S)"; mkdir -p "$$out"; kubectl get pods -A -o wide > "$$out/pods.txt" 2>/dev/null || true; kubectl get events -A --sort-by=.lastTimestamp > "$$out/events.txt" 2>/dev/null || true; cp -f ops/obs/grafana/atlas-observability-dashboard.json "$$out/dashboard.json" 2>/dev/null || true; cp -f ops/obs/alerts/atlas-alert-rules.yaml "$$out/alerts.yaml" 2>/dev/null || true; echo "observability validation failed, artifacts: $$out" >&2' ERR; \
-	$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/check_obs_script_name_collisions.py; \
+	$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/observability/check_obs_script_name_collisions.py; \
 	$(ATLAS_SCRIPTS) docs observability-surface-check --report text; \
 	$(MAKE) ops-dashboards-validate; \
 	$(MAKE) ops-alerts-validate; \
-	./packages/atlasctl/src/atlasctl/observability/contracts/check_metrics_contract.py; \
+	./packages/atlasctl/src/atlasctl/observability/contracts/metrics/check_metrics_contract.py; \
 	python3 ./ops/obs/scripts/areas/contracts/check_obs_budgets.py; \
-	if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./packages/atlasctl/src/atlasctl/observability/contracts/check_tracing_contract.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi; \
+	if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./packages/atlasctl/src/atlasctl/observability/contracts/tracing/check_tracing_contract.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi; \
 	./ops/obs/scripts/snapshot_metrics.sh; \
 	./ops/obs/scripts/snapshot_traces.sh; \
 	$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/check_metric_cardinality.py; \
@@ -1130,7 +1130,7 @@ ops-observability-pack-health: ## Query pack health and service readiness
 
 ops-artifacts-index-run: ## Generate per-run artifact index markdown (RUN_ID=<ops-run-id>)
 	@[ -n "$${RUN_ID:-}" ] || { echo "RUN_ID is required" >&2; exit 2; }
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/build_run_artifact_index.py --run-id "$${RUN_ID}"
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/artifacts/build_run_artifact_index.py --run-id "$${RUN_ID}"
 
 ops-observability-pack-conformance-report: ## Write pack conformance report under artifacts
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/write_pack_conformance_report.py
@@ -1266,7 +1266,7 @@ stack-full: ## Full-stack must-pass truth flow with contract report bundle
 	$(MAKE) ops-otel-required-check; \
 	$(MAKE) ops-load-smoke; \
 	$(MAKE) ops-load-spike-proof; \
-	$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/check_percent_regression.py --baseline-profile "$${ATLAS_PERF_BASELINE_PROFILE:-local}" --max-p95-regression 0.15 --results artifacts/perf/results; \
+	$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/checks/check_percent_regression.py --baseline-profile "$${ATLAS_PERF_BASELINE_PROFILE:-local}" --max-p95-regression 0.15 --results artifacts/perf/results; \
 	$(MAKE) ops-metrics-check; \
 	$(MAKE) ops-alerts-validate; \
 	$(MAKE) ops-dashboards-validate; \
