@@ -24,7 +24,7 @@ def _run(*args: str) -> str:
 def test_help_renderer_parity_modes() -> None:
     modes = [None, "gates", "list", "advanced", "all"]
     for mode in modes:
-        old_args = ["packages/atlasctl/src/atlasctl/checks/layout/render_public_help.py"]
+        old_args = ["packages/atlasctl/src/atlasctl/checks/layout/public_surface/tools/render_public_help.py"]
         new_args = [
             "-m",
             "atlasctl.make.help",

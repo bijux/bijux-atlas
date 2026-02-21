@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.checks.repo.import_policy import (
+from atlasctl.checks.repo.enforcement.import_policy import (
     check_command_import_lint,
     check_cold_import_budget,
     check_compileall_gate,

@@ -6,7 +6,7 @@ from fnmatch import fnmatch
 from pathlib import Path
 
 from atlasctl.cli import main as cli_main
-from atlasctl.core.scan import iter_python_files
+from atlasctl.core.runtime.scan import iter_python_files
 
 ROOT = Path(__file__).resolve().parents[3]
 
