@@ -24,6 +24,7 @@ def test_package_shape_and_budget_checks_pass() -> None:
             "repo.package_has_module_or_readme",
             "repo.dir_count_trend_gate",
             "repo.budget_drift_approval",
+            "repo.module_budget_domains",
         ]
     )
 
