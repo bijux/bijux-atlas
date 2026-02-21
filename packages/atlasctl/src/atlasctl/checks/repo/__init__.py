@@ -47,6 +47,10 @@ from .enforcement.package_shape import (
     check_package_max_depth,
     check_top_level_package_group_mapping,
 )
+from .enforcement.check_structure import (
+    check_check_impl_no_cli_imports,
+    check_checks_canonical_location,
+)
 from .enforcement.package_hygiene import (
     check_folder_intent_contract,
     check_no_empty_packages,
@@ -446,6 +450,8 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.runcontext_single_builder", "repo", "ensure RunContext is built only in core/context.py", 300, check_runcontext_single_builder, fix_hint="Use RunContext.from_args and avoid constructing context-like objects elsewhere."),
     CheckDef("repo.command_import_lint", "repo", "enforce command module import boundaries", 300, check_command_import_lint, fix_hint="Restrict command imports to core/contracts/checks/adapters/commands/cli."),
     CheckDef("repo.checks_import_lint", "repo", "enforce checks module import boundaries", 300, check_checks_import_lint, fix_hint="Restrict checks imports to core/contracts/reporting/adapters/checks."),
+    CheckDef("repo.checks_canonical_location", "repo", "require check implementations under atlasctl/checks canonical tree", 300, check_checks_canonical_location, fix_hint="Move check_*.py implementations under packages/atlasctl/src/atlasctl/checks/ or extend migration allowlist explicitly."),
+    CheckDef("repo.check_impl_no_cli_imports", "repo", "forbid direct CLI imports from check implementation files", 300, check_check_impl_no_cli_imports, fix_hint="Keep check implementations pure and route CLI wiring through commands/cli modules."),
     CheckDef("repo.effect_boundaries", "repo", "forbid direct subprocess/fs/env/network effects outside core boundaries", 300, check_forbidden_effect_calls, fix_hint="Route effects through core.exec/core.process/core.fs/core.env/core.network."),
     CheckDef("repo.subprocess_boundary", "repo", "restrict subprocess imports to core execution boundary", 300, check_subprocess_boundary, fix_hint="Use core.exec/core.process for subprocess calls."),
     CheckDef("repo.effect_boundary_exceptions_policy", "repo", "enforce explicit sorted effect boundary exceptions with reasons", 300, check_effect_boundary_exceptions_policy, fix_hint="Keep configs/policy/effect-boundary-exceptions.json sorted and justified."),

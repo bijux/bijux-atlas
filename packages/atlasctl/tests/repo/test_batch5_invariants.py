@@ -24,6 +24,10 @@ from atlasctl.checks.repo.enforcement.import_policy import (
     check_checks_import_lint,
     check_command_import_lint,
 )
+from atlasctl.checks.repo.enforcement.check_structure import (
+    check_check_impl_no_cli_imports,
+    check_checks_canonical_location,
+)
 from atlasctl.policies.culprits import check_critical_dir_count_trend
 
 
@@ -33,7 +37,7 @@ def _repo_root() -> Path:
 
 def test_import_boundary_checks_pass() -> None:
     root = _repo_root()
-    for fn in (check_command_import_lint, check_checks_import_lint):
+    for fn in (check_command_import_lint, check_checks_import_lint, check_checks_canonical_location, check_check_impl_no_cli_imports):
         code, errors = fn(root)
         assert code == 0, errors
 
