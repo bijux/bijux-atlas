@@ -65,6 +65,7 @@ Expected output: docs checks pass.
 ## See also
 
 - [Atlasctl Architecture Docs](atlasctl/INDEX.md)
+- [Checks Registry Contract](checks/registry.md)
 - [Product Index](product/INDEX.md)
 - [Naming Standard](_style/naming-standard.md)
 - [Terms Glossary](_style/terms-glossary.md)

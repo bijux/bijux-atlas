@@ -27,6 +27,7 @@
 
 - Regenerate: `./bin/atlasctl gen checks-registry`
 - Drift check: `./bin/atlasctl check checks-registry-drift`
+- Migration inventory: `./bin/atlasctl migrate checks-registry`
 - Browse:
   - `./bin/atlasctl checks list --json`
   - `./bin/atlasctl checks tree --json`
@@ -34,3 +35,12 @@
   - `./bin/atlasctl checks groups --json`
   - `./bin/atlasctl checks slow --json`
   - `./bin/atlasctl checks explain <id> --json`
+
+## Check Run Selection
+
+- `./bin/atlasctl check run --id <id>`
+- `./bin/atlasctl check run -k <substring>`
+- `./bin/atlasctl check run --domain repo`
+- `./bin/atlasctl check run --group repo`
+- `./bin/atlasctl check run --slow`
+- `./bin/atlasctl check run --fast`
