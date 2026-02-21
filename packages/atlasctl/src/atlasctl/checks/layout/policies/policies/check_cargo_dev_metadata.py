@@ -6,29 +6,24 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[6]
-CARGO_DEV = ROOT / "makefiles" / "cargo-dev.mk"
+DEV_MK = ROOT / "makefiles" / "dev.mk"
 
 TARGET_RE = re.compile(r"^([A-Za-z0-9_./-]+):(?:\s|$)", re.M)
-DEV_META_RE = re.compile(r"^([A-Za-z0-9_./-]+):.*##\s*DEV_ONLY=1\s*$", re.M)
 
 
 def main() -> int:
-    text = CARGO_DEV.read_text(encoding="utf-8")
+    text = DEV_MK.read_text(encoding="utf-8")
     targets = [t for t in TARGET_RE.findall(text) if not t.startswith(".")]
-    meta = set(DEV_META_RE.findall(text))
-
-    errors: list[str] = []
-    for t in targets:
-        if t not in meta:
-            errors.append(f"missing DEV_ONLY=1 metadata for target: {t}")
+    legacy = {"dev-check", "dev-test-all", "dev-audit", "dev-ci", "dev-clean"}
+    errors: list[str] = [f"legacy dev-* target still present in dev.mk: {t}" for t in targets if t in legacy]
 
     if errors:
-        print("cargo-dev metadata check failed", file=sys.stderr)
+        print("dev wrapper metadata check failed", file=sys.stderr)
         for e in errors:
             print(f"- {e}", file=sys.stderr)
         return 1
 
-    print("cargo-dev metadata check passed")
+    print("dev wrapper metadata check passed")
     return 0
 
 

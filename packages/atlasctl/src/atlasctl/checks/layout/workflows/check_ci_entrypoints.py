@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[7]
 WF = ROOT / ".github/workflows"
-CI_MK = ROOT / "makefiles" / "ci.mk"
+DEV_MK = ROOT / "makefiles" / "dev.mk"
 PRIMARY = {
     "root",
     "root-local",
@@ -66,9 +66,9 @@ def main() -> int:
         if not any(cmd.strip().startswith("nightly") for cmd in runs):
             errs.append(f"{p.name} must run `make nightly`")
 
-    ci_mk = CI_MK.read_text(encoding="utf-8")
-    if re.search(r"\b(legacy/[A-Za-z0-9_./-]+|ops-[A-Za-z0-9-]+-legacy)\b", ci_mk):
-        errs.append("makefiles/ci.mk must not reference legacy entrypoints")
+    dev_mk = DEV_MK.read_text(encoding="utf-8")
+    if re.search(r"\b(legacy/[A-Za-z0-9_./-]+|ops-[A-Za-z0-9-]+-legacy)\b", dev_mk):
+        errs.append("makefiles/dev.mk must not reference legacy entrypoints")
 
     if errs:
         print("ci entrypoint contract check failed", file=sys.stderr)

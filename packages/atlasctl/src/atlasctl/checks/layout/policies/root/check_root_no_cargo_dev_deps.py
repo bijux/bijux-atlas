@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[6]
 ROOT_MK = ROOT / "makefiles" / "root.mk"
-DEV_MK = ROOT / "makefiles" / "cargo-dev.mk"
+DEV_MK = ROOT / "makefiles" / "dev.mk"
 
 TARGET_RE = re.compile(r"^([A-Za-z0-9_./-]+):(?:\s|$)", re.M)
 
@@ -16,6 +16,8 @@ ROOT_CRITICAL = {"root", "root-local", "lane-cargo", "cargo/all", "ci/all"}
 
 def main() -> int:
     root_text = ROOT_MK.read_text(encoding="utf-8")
+    if not DEV_MK.exists():
+        return 1, ["makefiles/dev.mk missing"]
     dev_text = DEV_MK.read_text(encoding="utf-8")
     dev_targets = {t for t in TARGET_RE.findall(dev_text) if not t.startswith(".")}
 
@@ -32,15 +34,15 @@ def main() -> int:
         if current_target is None:
             continue
         if any(re.search(rf"\b{re.escape(dev)}\b", line) for dev in dev_targets):
-            errors.append(f"{current_target} references cargo-dev target in recipe: {line.strip()}")
+            errors.append(f"{current_target} references dev wrapper target in recipe: {line.strip()}")
 
     if errors:
-        print("root/cargo-dev boundary check failed", file=sys.stderr)
+        print("root/dev wrapper boundary check failed", file=sys.stderr)
         for e in errors:
             print(f"- {e}", file=sys.stderr)
         return 1
 
-    print("root/cargo-dev boundary check passed")
+    print("root/dev wrapper boundary check passed")
     return 0
 
 

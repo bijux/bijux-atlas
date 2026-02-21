@@ -10,7 +10,7 @@ MAKEFILES = sorted((ROOT / "makefiles").glob("*.mk"))
 CARGO_RE = re.compile(r"(^|\s)cargo(\s|$)")
 LEGACY = ROOT / "configs" / "ops" / "cargo-invocation-legacy.txt"
 
-ALLOWED_FILES = {"cargo.mk", "cargo-dev.mk"}
+ALLOWED_FILES = {"dev.mk"}
 
 
 def main() -> int:
@@ -33,7 +33,7 @@ def main() -> int:
             key = f"{rel}:{i}"
             if key in legacy:
                 continue
-            errors.append(f"{rel}:{i}: new cargo invocation outside makefiles/cargo*.mk")
+            errors.append(f"{rel}:{i}: new cargo invocation outside makefiles/dev.mk")
 
     if errors:
         print("cargo invocation scope check failed", file=sys.stderr)

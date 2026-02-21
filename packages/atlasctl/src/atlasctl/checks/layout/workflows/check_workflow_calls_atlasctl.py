@@ -8,24 +8,24 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[7]
 WORKFLOWS = sorted((ROOT / ".github" / "workflows").glob("*.yml"))
-CI_MK = ROOT / "makefiles" / "ci.mk"
+DEV_MK = ROOT / "makefiles" / "dev.mk"
 RUN_RE = re.compile(r"^\s*-\s*run:\s*(.+)\s*$")
 CI_TARGET_RE = re.compile(r"^([A-Za-z0-9_./-]+):(?:\s|$)", re.M)
 
 
 def _ci_targets() -> set[str]:
-    return {target for target in CI_TARGET_RE.findall(CI_MK.read_text(encoding="utf-8")) if target.startswith("ci")}
+    return {target for target in CI_TARGET_RE.findall(DEV_MK.read_text(encoding="utf-8")) if target.startswith("ci")}
 
 
 def main() -> int:
     ci_targets = _ci_targets()
-    ci_mk = CI_MK.read_text(encoding="utf-8")
+    ci_mk = DEV_MK.read_text(encoding="utf-8")
     errors: list[str] = []
     for target in sorted(ci_targets):
         if f"{target}:" not in ci_mk or f"\n\t@./bin/atlasctl dev ci " not in ci_mk and target != "ci":
             if target == "ci" and "\n\t@./bin/atlasctl dev ci run --json" in ci_mk:
                 continue
-            errors.append(f"makefiles/ci.mk target `{target}` must delegate to ./bin/atlasctl dev ci ...")
+            errors.append(f"makefiles/dev.mk target `{target}` must delegate to ./bin/atlasctl dev ci ...")
 
     for workflow in WORKFLOWS:
         for lineno, line in enumerate(workflow.read_text(encoding="utf-8").splitlines(), start=1):

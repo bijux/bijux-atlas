@@ -27,8 +27,6 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
   - `makefiles/root.mk`
   - `makefiles/help.mk`
   - `makefiles/layout.mk`
-  - `makefiles/ci.mk`
-  - `makefiles/cargo.mk`
   - `makefiles/dev.mk`
   - `makefiles/docs.mk`
   - `makefiles/ops.mk`
@@ -124,10 +122,9 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 - `make retry TARGET=<target>`: Re-run a target with the same `RUN_ID`.
 - `atlasctl run-id --prefix <lane>`: Generate a canonical run id for forwarding via `RUN_ID`.
 
-## Cargo Boundary
+## Dev Boundary
 
-- `makefiles/cargo.mk`: CI-safe, deterministic cargo targets only.
-- `makefiles/dev.mk`: canonical local developer wrappers for atlasctl DEV commands.
+- `makefiles/dev.mk`: canonical developer and CI wrappers for atlasctl DEV commands.
 - Profile SSOT: `docs/development/cargo-profiles-ssot.md`.
 
 ## Failure modes

@@ -10,8 +10,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[8]
 OWNERS = ROOT / "makefiles" / "ownership.json"
 WRAPPERS = [
-    ROOT / "makefiles" / "cargo.mk",
-    ROOT / "makefiles" / "ci.mk",
     ROOT / "makefiles" / "dev.mk",
 ]
 TARGET_RE = re.compile(r"^([A-Za-z0-9_./-]+):(?:\s|$)", re.M)

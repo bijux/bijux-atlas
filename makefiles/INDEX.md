@@ -1,14 +1,11 @@
 # Makefiles Index
 
-- File count: 17
+- File count: 14
 - Owner: `build-and-release`
 
 ## Files
 
 - `_macros.mk`
-- `cargo-dev.mk`
-- `cargo.mk`
-- `ci.mk`
 - `dev.mk`
 - `docs.mk`
 - `env.mk`
