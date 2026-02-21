@@ -123,6 +123,13 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         else:
             print(f"check {ns.domain}: {payload['status']} ({payload['failed_count']}/{payload['total_count']} failed)")
         return code
+    if sub == "license":
+        code, payload = run_domain(ctx.repo_root, "license", fail_fast=ns.fail_fast)
+        if ctx.output_format == "json":
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            print(f"check license: {payload['status']} ({payload['failed_count']}/{payload['total_count']} failed)")
+        return code
     if sub in {"make", "docs", "configs"}:
         suite_name = {"make": "makefiles", "docs": "docs", "configs": "configs"}[sub]
         code, payload = run_suite(ctx.repo_root, suite_name, fail_fast=ns.fail_fast)
@@ -536,6 +543,7 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     p_sub.add_parser("make", help="run makefile checks")
     p_sub.add_parser("docs", help="run docs checks")
     p_sub.add_parser("configs", help="run configs checks")
+    p_sub.add_parser("license", help="run licensing checks")
     repo = p_sub.add_parser("repo", help="run repo hygiene checks (forbidden roots, refs, caches/artifacts)")
     repo.add_argument("repo_check", nargs="?", choices=["all", "module-size"], default="all")
     p_sub.add_parser("obs", help="run observability checks")

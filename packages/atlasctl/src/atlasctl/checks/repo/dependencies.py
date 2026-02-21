@@ -21,7 +21,7 @@ def _top_imports(path: Path) -> set[str]:
             for alias in node.names:
                 names.add(alias.name.split(".")[0])
         elif isinstance(node, ast.ImportFrom):
-            if node.module:
+            if node.level == 0 and node.module:
                 names.add(node.module.split(".")[0])
     return names
 
