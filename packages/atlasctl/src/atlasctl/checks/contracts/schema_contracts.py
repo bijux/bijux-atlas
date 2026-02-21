@@ -110,3 +110,26 @@ def check_schema_goldens_validate(repo_root: Path) -> tuple[int, list[str]]:
         except Exception as exc:
             errors.append(f"{golden.name}: {exc}")
     return (0 if not errors else 1), sorted(errors)
+
+
+def check_schema_catalog_ssot(repo_root: Path) -> tuple[int, list[str]]:
+    src_root = repo_root / "packages/atlasctl/src/atlasctl"
+    if not src_root.exists():
+        return 1, ["missing atlasctl src root"]
+    allow_rel = {
+        "contracts/catalog.py",
+        "contracts/schemas/README.md",
+    }
+    errors: list[str] = []
+    for path in sorted(src_root.rglob("*")):
+        if not path.is_file() or path.suffix not in {".py", ".md"}:
+            continue
+        rel = path.relative_to(src_root).as_posix()
+        if rel in allow_rel:
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if "catalog.json" in text:
+            errors.append(
+                f"schema catalog SSOT violation: {rel} references catalog.json directly; use contracts.catalog APIs"
+            )
+    return (0 if not errors else 1), sorted(errors)

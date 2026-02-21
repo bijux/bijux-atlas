@@ -10,6 +10,7 @@ from .schema_contracts import (
     check_schema_disk_files_listed,
     check_schema_id_naming,
     check_schema_goldens_validate,
+    check_schema_catalog_ssot,
     check_schema_samples_validate,
 )
 
@@ -22,6 +23,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("contracts.schema_catalog_sorted", "contracts", "ensure schema catalog order is deterministic", 1200, check_schema_catalog_sorted, category=CheckCategory.CONTRACT, fix_hint="Sort catalog.json entries by schema name."),
     CheckDef("contracts.schema_id_naming", "contracts", "enforce schema id naming/version suffix policy", 1200, check_schema_id_naming, category=CheckCategory.CONTRACT, fix_hint="Use atlasctl.<name>.v<major> and keep catalog version aligned with suffix."),
     CheckDef("contracts.schema_catalog_referenced", "contracts", "ensure schema catalog contains only referenced schemas", 1200, check_schema_catalog_referenced, category=CheckCategory.CONTRACT, fix_hint="Remove or reference orphan schemas in catalog."),
+    CheckDef("contracts.schema_catalog_ssot", "contracts", "enforce contracts catalog.json as schema SSOT", 1200, check_schema_catalog_ssot, category=CheckCategory.CONTRACT, fix_hint="Route schema catalog access through atlasctl.contracts.catalog only."),
     CheckDef("contracts.schema_samples", "contracts", "validate sample payloads against declared schemas", 1200, check_schema_samples_validate, category=CheckCategory.CONTRACT, fix_hint="Update sample payloads or schema definitions."),
     CheckDef("contracts.schema_goldens", "contracts", "validate JSON goldens against declared schemas", 1200, check_schema_goldens_validate, category=CheckCategory.CONTRACT, fix_hint="Fix golden payload shape/schema alignment."),
 )
