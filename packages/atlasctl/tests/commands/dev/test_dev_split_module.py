@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from helpers import run_atlasctl
+from tests.helpers import run_atlasctl
 
 
 def test_dev_split_module_json() -> None:

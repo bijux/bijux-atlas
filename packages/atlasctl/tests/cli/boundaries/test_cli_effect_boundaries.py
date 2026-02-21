@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from helpers import ROOT, run_atlasctl_isolated
+from tests.helpers import ROOT, run_atlasctl_isolated
 
 
 def test_allow_network_banner_and_manifest_flag(tmp_path: Path) -> None:

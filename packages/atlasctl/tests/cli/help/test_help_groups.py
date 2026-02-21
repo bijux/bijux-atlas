@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from helpers import run_atlasctl
+from tests.helpers import run_atlasctl
 
 
 def test_root_help_shows_only_control_plane_groups() -> None:
