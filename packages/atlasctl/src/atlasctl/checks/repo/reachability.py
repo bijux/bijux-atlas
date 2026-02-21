@@ -1,9 +1,13 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
+
+from ...policies.dead_modules import analyze_dead_modules
 
 
 ALLOWED_UNLISTED = {"__init__.py", "legacy_native.py"}
+_DEAD_MODULE_ALLOWLIST = Path("configs/policy/dead-modules-allowlist.json")
 
 
 def check_repo_check_modules_registered(repo_root: Path) -> tuple[int, list[str]]:
@@ -34,3 +38,27 @@ def check_no_legacy_importers(repo_root: Path) -> tuple[int, list[str]]:
     if offenders:
         return 1, [f"legacy reachability violation (importer exists): {rel}" for rel in offenders]
     return 0, []
+
+
+def check_dead_modules_report_runs(repo_root: Path) -> tuple[int, list[str]]:
+    payload = analyze_dead_modules(repo_root)
+    if not isinstance(payload, dict):
+        return 1, ["dead modules analysis returned non-object payload"]
+    if "candidate_count" not in payload or "candidates" not in payload:
+        return 1, ["dead modules analysis payload missing candidate_count/candidates"]
+    return 0, []
+
+
+def check_dead_module_reachability_allowlist(repo_root: Path) -> tuple[int, list[str]]:
+    allowlist_path = repo_root / _DEAD_MODULE_ALLOWLIST
+    if not allowlist_path.exists():
+        return 1, [f"missing dead modules allowlist: {_DEAD_MODULE_ALLOWLIST.as_posix()}"]
+    payload = json.loads(allowlist_path.read_text(encoding="utf-8"))
+    allowed = {str(item.get("path", "")).strip() for item in payload.get("allow", []) if isinstance(item, dict)}
+    candidates = {str(item.get("path", "")).strip() for item in analyze_dead_modules(repo_root).get("candidates", []) if isinstance(item, dict)}
+    errors: list[str] = []
+    for path in sorted(candidates - allowed):
+        errors.append(f"dead module candidate missing allowlist entry: {path}")
+    for path in sorted(allowed - candidates):
+        errors.append(f"stale dead module allowlist entry: {path}")
+    return (0 if not errors else 1), errors

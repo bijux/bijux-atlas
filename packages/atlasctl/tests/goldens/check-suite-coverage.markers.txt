@@ -13,12 +13,15 @@ repo.command_test_coverage
 repo.compileall_gate
 repo.console_script_entry
 repo.contract_import_boundaries
+repo.dead_module_reachability
+repo.dead_modules
 repo.dependency_declarations
 repo.dependency_gate_targets
 repo.dependency_owner_justification
 repo.deps_command_surface
 repo.deps_workflow_doc
 repo.docs_no_ops_generated_refs
+repo.duplicate_contract_assertions
 repo.duplicate_script_names
 repo.effect_boundaries
 repo.effect_boundary_exceptions_policy
@@ -27,6 +30,7 @@ repo.forbidden_top_dirs
 repo.import_smoke
 repo.internal_commands_not_public
 repo.internal_import_boundaries
+repo.json_golden_conflicts
 repo.json_goldens_validate_schema
 repo.layout_domain_readmes
 repo.layout_no_legacy_imports
@@ -69,5 +73,6 @@ repo.script_ownership_coverage
 repo.subprocess_boundary
 repo.suite_marker_rules
 repo.test_ownership_tags
+repo.test_skip_justification
 repo.tests_no_duplicate_expectations
 repo.type_coverage

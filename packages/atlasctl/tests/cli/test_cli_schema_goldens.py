@@ -6,7 +6,7 @@ from pathlib import Path
 from atlasctl.contracts.validate import validate
 from helpers import run_atlasctl
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def _golden(name: str) -> str:
