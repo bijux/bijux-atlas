@@ -14,7 +14,7 @@ def test_json_helpers_roundtrip(tmp_path: Path) -> None:
     assert read_json(path) == payload
 
 
-def test_artifacts_scripts_dir_shape(monkeypatch, tmp_path: Path) -> None:
+def test_artifacts_scripts_dir_shape_migration_helpers(monkeypatch, tmp_path: Path) -> None:
     (tmp_path / ".git").mkdir()
     monkeypatch.chdir(tmp_path)
     out = artifacts_scripts_dir("example", "run-1")
