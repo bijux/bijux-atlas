@@ -4,7 +4,7 @@ Scope: `ops/_lint/*` and `ops/_lint/policy/*`.
 
 ## Table Contract
 
-Use the same columns as `packages/atlasctl/MIGRATION_MAP.md`:
+Use the same columns as `packages/atlasctl/docs/migration/map.md`:
 
 | Legacy Script | New Module Path | New CLI Command | Output Schema | Tests |
 |---|---|---|---|---|

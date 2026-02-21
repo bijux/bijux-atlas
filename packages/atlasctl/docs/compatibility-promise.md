@@ -8,7 +8,7 @@
 - Exit code meanings remain stable for documented errors.
 
 ## Exceptions
-- Experimental commands marked in `CLI_STABILITY.md` may change.
+- Experimental commands marked in `cli-stability.md` may change.
 - Breaking changes require explicit migration notes and deprecation window.
 
 ## Verification
