@@ -4,6 +4,7 @@ import importlib
 import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 
@@ -30,6 +31,12 @@ _REQUIRED_OPTIONAL_DEP_GROUPS = ("dev", "ci", "test", "ops", "docs")
 _ALLOWED_TOOL_PREFIXES = {"setuptools", "pytest", "ruff", "mypy", "coverage"}
 _DEPS_WORKFLOW_MARKER = "Workflow: pip-tools (requirements.in + requirements.lock.txt)"
 _REQ_ALLOWED = {"requirements.in", "requirements.lock.txt"}
+_REQUIRED_CLASSIFIERS = {
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+}
+_REQUIRED_PROJECT_URL_KEYS = {"Documentation", "Homepage", "Repository", "Issues"}
 
 
 def _read_pyproject(repo_root: Path) -> str:
@@ -71,18 +78,81 @@ def check_console_script_entry(repo_root: Path) -> tuple[int, list[str]]:
 
 def check_python_module_help(repo_root: Path) -> tuple[int, list[str]]:
     env = {"PYTHONPATH": str(repo_root / "packages/atlasctl/src")}
-    proc = subprocess.run(
-        [sys.executable, "-m", "atlasctl", "--help"],
-        cwd=repo_root,
-        text=True,
-        capture_output=True,
-        check=False,
-        env=env,
-    )
-    if proc.returncode == 0:
-        return 0, []
-    msg = proc.stderr.strip() or proc.stdout.strip() or "python -m atlasctl --help failed"
-    return 1, [msg]
+    errors: list[str] = []
+    with tempfile.TemporaryDirectory(prefix="atlasctl-smoke-") as tmp:
+        workdir = Path(tmp)
+        help_proc = subprocess.run(
+            [sys.executable, "-m", "atlasctl", "--help"],
+            cwd=workdir,
+            text=True,
+            capture_output=True,
+            check=False,
+            env=env,
+        )
+        if help_proc.returncode != 0:
+            msg = help_proc.stderr.strip() or help_proc.stdout.strip() or "python -m atlasctl --help failed"
+            errors.append(msg)
+        version_proc = subprocess.run(
+            [sys.executable, "-m", "atlasctl", "--version"],
+            cwd=workdir,
+            text=True,
+            capture_output=True,
+            check=False,
+            env=env,
+        )
+        if version_proc.returncode != 0:
+            msg = version_proc.stderr.strip() or version_proc.stdout.strip() or "python -m atlasctl --version failed"
+            errors.append(msg)
+    return (0 if not errors else 1), errors
+
+
+def check_version_matches_pyproject(repo_root: Path) -> tuple[int, list[str]]:
+    pyproject = _read_pyproject(repo_root)
+    project_version = re.search(r'(?m)^version\s*=\s*"([^"]+)"\s*$', pyproject)
+    if not project_version:
+        return 1, ["missing project.version in packages/atlasctl/pyproject.toml"]
+    expected = project_version.group(1)
+    init_path = repo_root / "packages/atlasctl/src/atlasctl/__init__.py"
+    init_text = init_path.read_text(encoding="utf-8")
+    package_version = re.search(r'(?m)^__version__\s*=\s*"([^"]+)"\s*$', init_text)
+    if not package_version:
+        return 1, ["missing atlasctl.__version__ in packages/atlasctl/src/atlasctl/__init__.py"]
+    errors: list[str] = []
+    actual = package_version.group(1)
+    if actual != expected:
+        errors.append(f"atlasctl.__version__ ({actual}) must match pyproject project.version ({expected})")
+    env = {"PYTHONPATH": str(repo_root / "packages/atlasctl/src")}
+    with tempfile.TemporaryDirectory(prefix="atlasctl-version-") as tmp:
+        proc = subprocess.run(
+            [sys.executable, "-m", "atlasctl", "--version"],
+            cwd=Path(tmp),
+            text=True,
+            capture_output=True,
+            check=False,
+            env=env,
+        )
+    if proc.returncode != 0:
+        msg = proc.stderr.strip() or proc.stdout.strip() or "python -m atlasctl --version failed"
+        errors.append(msg)
+    else:
+        out = proc.stdout.strip()
+        if not out.startswith(f"atlasctl {expected}+"):
+            errors.append(f"--version output must start with `atlasctl {expected}+` (got: {out})")
+    return (0 if not errors else 1), errors
+
+
+def check_packaging_metadata_completeness(repo_root: Path) -> tuple[int, list[str]]:
+    pyproject_text = _read_pyproject(repo_root)
+    errors: list[str] = []
+    for classifier in sorted(_REQUIRED_CLASSIFIERS):
+        if classifier not in pyproject_text:
+            errors.append(f"missing required classifier in pyproject [project]: {classifier}")
+    urls_block = re.search(r"(?ms)^\[project\.urls\]\n(.*?)(?:^\[|\Z)", pyproject_text)
+    declared_urls = set(re.findall(r"(?m)^([A-Za-z0-9_-]+)\s*=", urls_block.group(1) if urls_block else ""))
+    for key in sorted(_REQUIRED_PROJECT_URL_KEYS):
+        if key not in declared_urls:
+            errors.append(f"missing required project URL key in [project.urls]: {key}")
+    return (0 if not errors else 1), errors
 
 
 def check_optional_dependency_groups(repo_root: Path) -> tuple[int, list[str]]:

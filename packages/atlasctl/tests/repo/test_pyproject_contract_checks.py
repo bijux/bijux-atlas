@@ -10,12 +10,14 @@ from atlasctl.checks.repo.pyproject_contracts import (
     check_console_script_entry,
     check_env_docs_present,
     check_optional_dependency_groups,
+    check_packaging_metadata_completeness,
     check_pyproject_minimalism,
     check_pyproject_no_duplicate_tool_config,
     check_pyproject_required_blocks,
     check_python_module_help,
     check_requirements_artifact_policy,
     check_requirements_sync_with_pyproject,
+    check_version_matches_pyproject,
 )
 
 
@@ -26,6 +28,8 @@ def test_pyproject_contract_checks_pass_repo() -> None:
         check_pyproject_no_duplicate_tool_config,
         check_console_script_entry,
         check_python_module_help,
+        check_version_matches_pyproject,
+        check_packaging_metadata_completeness,
         check_optional_dependency_groups,
         check_pyproject_minimalism,
         check_deps_workflow_doc,

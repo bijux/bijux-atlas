@@ -128,6 +128,7 @@ from .contracts.pyproject_contracts import (
     check_console_script_entry,
     check_env_docs_present,
     check_optional_dependency_groups,
+    check_packaging_metadata_completeness,
     check_python_requires_version_and_ci,
     check_pyproject_minimalism,
     check_pyproject_no_duplicate_tool_config,
@@ -135,6 +136,7 @@ from .contracts.pyproject_contracts import (
     check_python_module_help,
     check_requirements_artifact_policy,
     check_requirements_sync_with_pyproject,
+    check_version_matches_pyproject,
 )
 from .contracts.suite_inventory import check_suite_inventory_policy
 from .contracts.test_guardrails import (
@@ -453,6 +455,8 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.dead_module_reachability", "repo", "enforce dead module candidates are explicitly allowlisted", 300, check_dead_module_reachability_allowlist, fix_hint="Update configs/policy/dead-modules-allowlist.json with intended exceptions."),
     CheckDef("repo.legacy_zero_importers", "repo", "require zero importers of removed atlasctl legacy namespace", 300, check_no_legacy_importers, fix_hint="Remove imports/references to atlasctl.legacy."),
     CheckDef("repo.pyproject_required_blocks", "repo", "ensure pyproject contains required project and tool config blocks", 300, check_pyproject_required_blocks, fix_hint="Add required [project]/[tool.*] blocks to packages/atlasctl/pyproject.toml."),
+    CheckDef("repo.version_matches_pyproject", "repo", "ensure atlasctl package version and --version output match pyproject", 300, check_version_matches_pyproject, fix_hint="Align atlasctl.__version__ with pyproject [project].version and keep --version output stable outside git repos."),
+    CheckDef("repo.packaging_metadata_completeness", "repo", "ensure pyproject packaging metadata is complete (classifiers and project URLs)", 300, check_packaging_metadata_completeness, fix_hint="Add required project classifiers and URLs in packages/atlasctl/pyproject.toml."),
     CheckDef("repo.pyproject_no_duplicate_tool_config", "repo", "forbid duplicate tool config files beside pyproject", 300, check_pyproject_no_duplicate_tool_config, fix_hint="Remove duplicated tool config files and keep pyproject as SSOT."),
     CheckDef("repo.console_script_entry", "repo", "ensure atlasctl console script entry exists and points to callable target", 300, check_console_script_entry, fix_hint="Set [project.scripts] atlasctl = \"atlasctl.cli.main:main\" and ensure target is importable."),
     CheckDef("repo.python_module_help", "repo", "ensure python -m atlasctl --help works", 300, check_python_module_help, fix_hint="Ensure atlasctl package entrypoint remains runnable with python -m atlasctl."),
