@@ -1,13 +1,20 @@
 from __future__ import annotations
 
 import argparse
+import json
 import subprocess
 import sys
 import tempfile
 import time
 from pathlib import Path
+from typing import Any
 
 from ..core.context import RunContext
+
+try:
+    import tomllib  # py311+
+except ModuleNotFoundError:  # pragma: no cover
+    import tomli as tomllib  # type: ignore
 
 
 def _requirements_paths(repo_root: Path) -> tuple[Path, Path]:
@@ -29,7 +36,61 @@ def _run(cmd: list[str], cwd: Path) -> tuple[int, str]:
     return proc.returncode, (proc.stdout + proc.stderr).strip()
 
 
+def _normalize_lines(path: Path) -> list[str]:
+    if not path.exists():
+        return []
+    return sorted(
+        {
+            ln.strip()
+            for ln in path.read_text(encoding="utf-8").splitlines()
+            if ln.strip() and not ln.strip().startswith("#")
+        }
+    )
+
+
+def _deps_report_payload(ctx: RunContext) -> dict[str, Any]:
+    req_in, req_lock = _requirements_paths(ctx.repo_root)
+    pyproject = ctx.repo_root / "packages/atlasctl/pyproject.toml"
+    data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
+    project = data.get("project", {})
+    required = [str(item) for item in project.get("dependencies", [])]
+    optional_raw = project.get("optional-dependencies", {})
+    optional: dict[str, list[str]] = {}
+    for group, values in sorted(optional_raw.items()):
+        if isinstance(values, list):
+            optional[str(group)] = [str(v) for v in values]
+    req_in_lines = _normalize_lines(req_in)
+    req_lock_lines = _normalize_lines(req_lock)
+    drift = sorted(set(req_in_lines).symmetric_difference(set(req_lock_lines)))
+    lock_fresh = not drift
+    return {
+        "tool": "atlasctl",
+        "status": "ok" if lock_fresh else "stale",
+        "workflow": "pip-tools",
+        "requires_python": str(project.get("requires-python", "")),
+        "dependencies": required,
+        "optional_dependencies": optional,
+        "requirements_in": req_in.relative_to(ctx.repo_root).as_posix(),
+        "requirements_lock": req_lock.relative_to(ctx.repo_root).as_posix(),
+        "lock_fresh": lock_fresh,
+        "lock_drift_items": drift,
+    }
+
+
 def run_deps_command(ctx: RunContext, ns: argparse.Namespace) -> int:
+    report = getattr(ns, "deps_report", None)
+    if report:
+        payload = _deps_report_payload(ctx)
+        if report == "json":
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            print(f"status={payload['status']} workflow={payload['workflow']} requires_python={payload['requires_python']}")
+            print(f"lock_fresh={payload['lock_fresh']}")
+            if payload["lock_drift_items"]:
+                for item in payload["lock_drift_items"]:
+                    print(f"drift: {item}")
+        return 0 if payload["lock_fresh"] else 1
+
     req_in, req_lock = _requirements_paths(ctx.repo_root)
 
     if ns.deps_cmd == "lock":
@@ -95,7 +156,8 @@ def run_deps_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
 def configure_deps_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     p = sub.add_parser("deps", help="dependency workflow commands (pip-tools route)")
-    ps = p.add_subparsers(dest="deps_cmd", required=True)
+    p.add_argument("--report", dest="deps_report", choices=("text", "json"), default=None, help="print dependency report and lock freshness")
+    ps = p.add_subparsers(dest="deps_cmd", required=False)
 
     ps.add_parser("lock", help="refresh requirements.lock.txt deterministically from requirements.in")
 
