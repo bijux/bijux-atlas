@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-MAX_MODULE_LOC = 600
+MAX_MODULE_LOC = 400
 ALLOWLIST_PATH = Path("configs/layout/module-size-allowlist.txt")
 
 
