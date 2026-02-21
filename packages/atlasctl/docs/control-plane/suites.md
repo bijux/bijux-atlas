@@ -7,7 +7,13 @@ Suite manifests are first-class and deterministic.
 - `ops`
 - `policies`
 - `configs`
+- `local`
+- `slow`
+- `refgrade`
+- `ci`
+- `refgrade_proof`
 - `all`
+- `internal` (gated by `ATLASCTL_INTERNAL=1`)
 
 Each suite manifest defines:
 
@@ -21,3 +27,4 @@ Each suite manifest defines:
 Runner UX:
 
 - `atlasctl suite run <name> --pytest-q` prints pytest-style progress and summary.
+- `atlasctl suite run <name> --dry-run` prints deterministic planned tasks.
