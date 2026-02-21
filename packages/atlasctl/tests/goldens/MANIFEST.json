@@ -73,6 +73,10 @@
       "path": "list/commands.json.golden"
     },
     {
+      "name": "docs-list.json.golden",
+      "path": "list/docs-list.json.golden"
+    },
+    {
       "name": "list-checks.json.golden",
       "path": "list/list-checks.json.golden"
     },
