@@ -343,3 +343,26 @@ def check_no_duplicated_coverage_paths(repo_root: Path) -> tuple[int, list[str]]
         if len(users) > 1:
             errors.append(f"duplicated golden coverage `{golden_rel}` across tests: {sorted(users)}")
     return (0 if not errors else 1), errors
+
+
+def check_output_format_stability(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    src_root = repo_root / "packages/atlasctl/src/atlasctl"
+    for path in sorted(src_root.rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        if "/commands/" not in rel and "/cli/" not in rel and "/report" not in rel and "/suite/" not in rel:
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if "os.linesep" in text:
+            errors.append(f"{rel}: avoid os.linesep in user-facing output; use \\n for stable formatting")
+    golden_root = repo_root / "packages/atlasctl/tests/goldens"
+    for golden in sorted(golden_root.rglob("*")):
+        if not golden.is_file():
+            continue
+        rel = golden.relative_to(repo_root).as_posix()
+        if golden.suffix not in {".golden", ".txt", ".json"}:
+            continue
+        content = golden.read_bytes()
+        if b"\r\n" in content:
+            errors.append(f"{rel}: contains CRLF newlines; keep LF-only snapshots")
+    return (0 if not errors else 1), errors
