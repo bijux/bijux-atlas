@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from .legacy import run_ops_command
+from .runtime import run_ops_command
 
 
 def run_validate(ctx, ns):

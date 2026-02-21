@@ -20,7 +20,7 @@ _WRITE_ALLOW_SEGMENTS = (
     "/gen/",
     "/commands/doctor.py",
     "/commands/compat.py",
-    "/commands/check/legacy.py",
+    "/commands/check/command.py",
     "/legacy/",
     "/tests/",
 )
@@ -52,7 +52,7 @@ _SUBPROCESS_ALLOW_SEGMENTS = (
     "/python_tools/",
     "/test_tools/",
     "/commands/compat.py",
-    "/commands/check/legacy.py",
+    "/commands/check/command.py",
     "/commands/doctor.py",
     "/legacy/",
     "/tests/",

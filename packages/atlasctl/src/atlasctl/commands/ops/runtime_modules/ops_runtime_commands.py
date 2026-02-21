@@ -42,7 +42,7 @@ def _ops_policy_audit(ctx: RunContext, report_format: str) -> int:
     return 0 if not violations else 1
 
 
-from .runtime.ops_k8s import (
+from .ops_k8s import (
     _k8s_checks_layout,
     _k8s_flakes,
     _k8s_test_contract,

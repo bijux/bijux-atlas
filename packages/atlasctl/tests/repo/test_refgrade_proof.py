@@ -144,9 +144,9 @@ def test_ops_generated_runtime_dir_not_required_by_tooling() -> None:
         ROOT / "packages/atlasctl/src/atlasctl/orchestrate/command.py",
         ROOT / "packages/atlasctl/src/atlasctl/reporting/command.py",
         ROOT / "packages/atlasctl/src/atlasctl/gates/command.py",
-        ROOT / "packages/atlasctl/src/atlasctl/commands/docs/legacy.py",
+        ROOT / "packages/atlasctl/src/atlasctl/commands/docs/runtime.py",
         ROOT / "packages/atlasctl/src/atlasctl/configs/command.py",
-        ROOT / "packages/atlasctl/src/atlasctl/commands/ops/legacy.py",
+        ROOT / "packages/atlasctl/src/atlasctl/commands/ops/runtime.py",
     ]
     for path in command_roots:
         text = path.read_text(encoding="utf-8")

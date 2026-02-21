@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-_CHUNK_DIR = Path(__file__).with_name("docs_runtime_chunks")
+_CHUNK_DIR = Path(__file__).with_name("runtime_chunks")
 _CHUNKS = (
     "core/docs_contracts_core.py",
     "extended/docs_contracts_extended.py",
