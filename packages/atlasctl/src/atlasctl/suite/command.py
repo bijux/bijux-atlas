@@ -15,6 +15,7 @@ from xml.etree.ElementTree import Element, SubElement, tostring
 
 from ..checks.execution import run_function_checks
 from ..checks.registry import check_tags, get_check, list_checks
+from ..cli.registry import command_registry
 from ..contracts.catalog import schema_path_for
 from ..contracts.ids import SUITE_RUN
 from ..contracts.validate_self import validate_self
@@ -220,6 +221,15 @@ def _suite_task_set(suites: dict[str, SuiteSpec], suite_name: str) -> set[tuple[
     return entries
 
 
+def _atlasctl_subcommand_from_cmd_spec(cmd_spec: str) -> str | None:
+    parts = shlex.split(cmd_spec)
+    if len(parts) >= 2 and parts[0] == "atlasctl":
+        return parts[1].strip()
+    if len(parts) >= 4 and parts[1] == "-m" and parts[2] in {"atlasctl", "atlasctl.cli"}:
+        return parts[3].strip()
+    return None
+
+
 def suite_inventory_violations(suites: dict[str, SuiteSpec]) -> list[str]:
     errors: list[str] = []
     all_check_ids = {check.check_id for check in list_checks()}
@@ -241,6 +251,19 @@ def suite_inventory_violations(suites: dict[str, SuiteSpec]) -> list[str]:
         missing = sorted(required - refgrade_checks)
         for check_id in missing:
             errors.append(f"refgrade complete policy violation: missing refgrade_required check `{check_id}`")
+
+    command_catalog = {spec.name for spec in command_registry()}
+    for suite_name, entries in sorted(task_sets.items()):
+        for kind, value in sorted(entries):
+            if kind != "cmd":
+                continue
+            subcommand = _atlasctl_subcommand_from_cmd_spec(value)
+            if subcommand is None:
+                continue
+            if subcommand not in command_catalog:
+                errors.append(
+                    f"orphan command not in command catalog: suite `{suite_name}` references `atlasctl {subcommand}`"
+                )
     return errors
 
 
