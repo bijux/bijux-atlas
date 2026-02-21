@@ -30,6 +30,11 @@ def configure_ci_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]
     report.add_argument("--json", action="store_true", help="emit JSON output")
     report.add_argument("--verbose", action="store_true", help="show underlying tool command output")
     for name in (
+        "all",
+        "init",
+        "artifacts",
+        "release",
+        "release-all",
         "fast",
         "contracts",
         "docs",

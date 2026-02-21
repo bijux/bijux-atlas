@@ -101,6 +101,67 @@ def _emit_result(ctx: RunContext, ns: argparse.Namespace, action: str, steps: li
 
 def run_ci_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     verbose = bool(getattr(ns, "verbose", False) or ctx.verbose)
+    if ns.ci_cmd == "all":
+        step = _run_step(
+            ctx,
+            [
+                sys.executable,
+                "-m",
+                "atlasctl.cli",
+                "--quiet",
+                "ci",
+                "run",
+                "--json",
+                "--keep-going",
+            ],
+            verbose=verbose,
+        )
+        return _emit_result(ctx, ns, "all", [step])
+    if ns.ci_cmd == "init":
+        steps = [
+            _run_step(ctx, [sys.executable, "-m", "atlasctl.cli", "--quiet", "ci", "init-iso-dirs", "--json"], verbose=verbose),
+            _run_step(ctx, [sys.executable, "-m", "atlasctl.cli", "--quiet", "ci", "init-tmp", "--json"], verbose=verbose),
+        ]
+        return _emit_result(ctx, ns, "init", steps)
+    if ns.ci_cmd == "artifacts":
+        root = ctx.repo_root / "artifacts" / "evidence" / "ci"
+        latest = None
+        if root.exists():
+            runs = [p for p in root.iterdir() if p.is_dir()]
+            if runs:
+                latest = max(runs, key=lambda p: p.stat().st_mtime)
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "root": str(root),
+            "current_run_dir": str(root / ctx.run_id),
+            "latest_run_dir": str(latest) if latest else "",
+            "next": "run `./bin/atlasctl ci run --json` to populate artifacts",
+        }
+        if ns.json or ctx.output_format == "json":
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            print(f"ci artifacts root: {payload['root']}")
+            print(f"current run: {payload['current_run_dir']}")
+            if payload["latest_run_dir"]:
+                print(f"latest run: {payload['latest_run_dir']}")
+        return 0
+    if ns.ci_cmd == "release":
+        steps = [
+            _run_step(ctx, [sys.executable, "-m", "atlasctl.cli", "--quiet", "ci", "release-compat-matrix-verify", "--json"], verbose=verbose),
+            _run_step(ctx, [sys.executable, "-m", "atlasctl.cli", "--quiet", "ci", "release-build-artifacts", "--json"], verbose=verbose),
+            _run_step(ctx, [sys.executable, "-m", "atlasctl.cli", "--quiet", "ci", "release-notes-render", "--json"], verbose=verbose),
+        ]
+        return _emit_result(ctx, ns, "release", steps)
+    if ns.ci_cmd == "release-all":
+        steps = [
+            _run_step(ctx, [sys.executable, "-m", "atlasctl.cli", "--quiet", "ci", "release", "--json"], verbose=verbose),
+            _run_step(ctx, [sys.executable, "-m", "atlasctl.cli", "--quiet", "ci", "release-publish-gh", "--json"], verbose=verbose),
+            _run_step(ctx, [sys.executable, "-m", "atlasctl.cli", "--quiet", "ci", "reproducible-verify", "--json"], verbose=verbose),
+            _run_step(ctx, [sys.executable, "-m", "atlasctl.cli", "--quiet", "ci", "security-advisory-render", "--json"], verbose=verbose),
+        ]
+        return _emit_result(ctx, ns, "release-all", steps)
     if ns.ci_cmd == "scripts":
         step = _run_step(ctx, ["make", "-s", "scripts-check"], verbose=verbose)
         return _emit_result(ctx, ns, "scripts", [step])
@@ -473,6 +534,11 @@ def configure_ci_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]
     run.add_argument("--explain", action="store_true", help="print planned CI run steps without executing")
     run.add_argument("--verbose", action="store_true", help="show underlying tool command output")
     for name in (
+        "all",
+        "init",
+        "artifacts",
+        "release",
+        "release-all",
         "fast",
         "contracts",
         "docs",

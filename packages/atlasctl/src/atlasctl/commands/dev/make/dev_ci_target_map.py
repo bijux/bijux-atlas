@@ -81,15 +81,25 @@ def _map_to_intent(target: str) -> str | None:
     if target == "internal/ci/run":
         return "atlasctl ci run --json"
     if target == "ci-fast":
-        return "atlasctl dev ci fast"
+        return "atlasctl ci fast --json"
+    if target == "ci-all":
+        return "atlasctl ci all --json"
     if target == "ci-contracts":
-        return "atlasctl dev ci contracts"
+        return "atlasctl ci contracts --json"
     if target == "ci-docs":
-        return "atlasctl dev ci docs"
+        return "atlasctl ci docs --json"
     if target == "ci-ops":
-        return "atlasctl dev ci ops"
-    if target in {"ci-init-iso-dirs", "ci-init-tmp", "ci-dependency-lock-refresh", "ci-release-compat-matrix-verify", "ci-release-build-artifacts", "ci-release-notes-render", "ci-release-publish-gh", "ci-cosign-sign", "ci-cosign-verify", "ci-chart-package-release", "ci-reproducible-verify", "ci-security-advisory-render", "governance-check", "ci-workflows-make-only"}:
-        return f"atlasctl make run {target}"
+        return "atlasctl ci ops --json"
+    if target == "ci-release":
+        return "atlasctl ci release --json"
+    if target == "ci-release-all":
+        return "atlasctl ci release-all --json"
+    if target == "ci-init":
+        return "atlasctl ci init --json"
+    if target == "ci-artifacts":
+        return "atlasctl ci artifacts --json"
+    if target == "ci-help":
+        return "atlasctl help ci"
     if target.startswith("ci-"):
         return f"atlasctl make run {target}"
     if target in {"test"}:

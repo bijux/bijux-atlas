@@ -331,6 +331,10 @@
     "owner": "build-and-release",
     "area": "policies"
   },
+  "ci-all": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
   "ci-contracts": {
     "owner": "build-and-release",
     "area": "policies"
@@ -340,6 +344,26 @@
     "area": "policies"
   },
   "ci-ops": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "ci-release": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "ci-release-all": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "ci-init": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "ci-artifacts": {
+    "owner": "build-and-release",
+    "area": "policies"
+  },
+  "ci-help": {
     "owner": "build-and-release",
     "area": "policies"
   },
