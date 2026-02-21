@@ -319,9 +319,9 @@ def run_ci_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.ci_cmd == "security-advisory-render":
         step = _run_step(
             ctx,
-            'mkdir -p docs/security/advisories && '
+            'mkdir -p artifacts/evidence/security/advisories && '
             'DATE_UTC="$(date -u +%Y-%m-%d)"; '
-            'FILE="docs/security/advisories/${ADVISORY_ID}.md"; '
+            'FILE="artifacts/evidence/security/advisories/${ADVISORY_ID}.md"; '
             "printf '%s\\n' "
             '"# Security Advisory ${ADVISORY_ID}" "" '
             '"- Published: ${DATE_UTC}" '
