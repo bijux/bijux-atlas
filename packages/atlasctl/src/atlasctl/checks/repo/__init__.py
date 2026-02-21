@@ -29,6 +29,13 @@ from .public_api import check_public_api_exports
 from .type_coverage import check_type_coverage
 from .dependencies import check_dependency_declarations
 from .reachability import check_repo_check_modules_registered
+from .import_policy import (
+    check_command_import_lint,
+    check_compileall_gate,
+    check_import_smoke,
+    check_internal_import_boundaries,
+    check_no_modern_imports_from_legacy,
+)
 from .pyproject_contracts import (
     check_dependency_gate_targets,
     check_deps_workflow_doc,
@@ -83,4 +90,9 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.dependency_owner_justification", "repo", "ensure each dependency has owner and justification", 300, check_dependency_owner_justification, fix_hint="Add dependency ownership + justification entries in docs/deps.md."),
     CheckDef("repo.dependency_gate_targets", "repo", "ensure dependency gate make targets exist", 300, check_dependency_gate_targets, fix_hint="Define deps-lock/deps-sync/deps-check-venv/deps-cold-start in makefiles/scripts.mk."),
     CheckDef("repo.deps_command_surface", "repo", "ensure atlasctl deps command surface is runnable", 300, check_deps_command_surface, fix_hint="Wire atlasctl deps parser/runner and keep command import path valid."),
+    CheckDef("repo.internal_import_boundaries", "repo", "forbid atlasctl.internal imports outside internal namespace", 300, check_internal_import_boundaries, fix_hint="Route shared helpers through public modules instead of atlasctl.internal."),
+    CheckDef("repo.modern_no_legacy_imports", "repo", "forbid modern modules from importing atlasctl.legacy", 300, check_no_modern_imports_from_legacy, fix_hint="Migrate callers to canonical modules under atlasctl.core/commands/checks."),
+    CheckDef("repo.command_import_lint", "repo", "enforce command module import boundaries", 300, check_command_import_lint, fix_hint="Restrict command imports to core/contracts/checks/adapters/commands/cli."),
+    CheckDef("repo.compileall_gate", "repo", "ensure atlasctl source compiles with compileall", 300, check_compileall_gate, fix_hint="Fix syntax/import issues until python -m compileall passes."),
+    CheckDef("repo.import_smoke", "repo", "ensure atlasctl package imports in minimal environment", 300, check_import_smoke, fix_hint="Keep top-level imports light and dependency-safe."),
 )
