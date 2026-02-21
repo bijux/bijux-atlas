@@ -25,8 +25,9 @@ def test_wrapper_makefiles_delegate_once_to_atlasctl() -> None:
     for rel in ("makefiles/dev.mk", "makefiles/ci.mk"):
         recipes = _recipes(ROOT / rel)
         for target, lines in recipes.items():
-            if rel == "makefiles/dev.mk" and target in {"all", "all-all"}:
-                assert len(lines) == 5, f"{rel}:{target} must define five ordered gate steps"
+            if rel == "makefiles/dev.mk" and target in {"all", "all-all", "all-and-slow"}:
+                expected = 3 if target == "all" else 5
+                assert len(lines) == expected, f"{rel}:{target} must define {expected} ordered gate steps"
                 for line in lines:
                     assert line.startswith("@./bin/atlasctl "), f"{rel}:{target} must delegate through ./bin/atlasctl"
                     assert line.count("./bin/atlasctl") == 1, f"{rel}:{target} must call atlasctl exactly once per line"
@@ -42,6 +43,7 @@ def test_core_wrapper_targets_use_expected_atlasctl_args() -> None:
     ci = _recipes(ROOT / "makefiles/ci.mk")
     assert dev["fmt"] == ["@./bin/atlasctl dev fmt"]
     assert dev["fmt-all"] == ["@./bin/atlasctl dev fmt --all"]
+    assert dev["fmt-and-slow"] == ["@./bin/atlasctl dev fmt --all --and-slow"]
     assert dev["test"] == ["@./bin/atlasctl dev test"]
     assert dev["test-all"] == ["@./bin/atlasctl dev test --all"]
     assert dev["check"] == ["@./bin/atlasctl dev check"]
