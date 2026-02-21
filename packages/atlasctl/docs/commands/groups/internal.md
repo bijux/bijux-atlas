@@ -4,12 +4,12 @@ Commands mapped to `internal` effects policy.
 
 ## Commands
 
-- `compat`
-- `internal`
 - `legacy`
+- `self-check`
+- `doctor`
 
 ## Examples
 
-- `atlasctl compat list --json`
-- `atlasctl internal legacy --inventory --report json`
-- `atlasctl legacy --inventory --report json`
+- `atlasctl internal legacy inventory --report json`
+- `atlasctl internal self-check`
+- `atlasctl internal doctor`

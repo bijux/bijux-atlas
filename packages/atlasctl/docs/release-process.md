@@ -6,4 +6,5 @@
 4. Run `atlasctl contracts validate --report json`.
 5. Run `atlasctl docs validate --report json`.
 6. Refresh goldens only with `atlasctl gen goldens`, then review diffs.
-7. Update `docs/release-notes.md` and tag only after all gates pass.
+7. Run `atlasctl internal legacy inventory --report json` and confirm `count=0`.
+8. Update `docs/release-notes.md` and tag only after all gates pass.

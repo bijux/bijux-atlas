@@ -39,7 +39,7 @@ Public command index (stable surface). Command wiring is registry-first via `src
 - `test`
 - `version`
 
-Internal and migration-only commands (including `legacy` and `compat`) are hidden from default help output.  
+Internal commands are hidden from default help output.  
 Use `atlasctl help --include-internal --json` to inspect them explicitly.
 
 ## Workflow
