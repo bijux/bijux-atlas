@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 from atlasctl.core.context import RunContext
 from atlasctl.errors import ScriptError
-from atlasctl.fs import ensure_write_path
+from atlasctl.core.fs import ensure_evidence_path
 
 
 def _ctx() -> RunContext:
@@ -15,10 +15,10 @@ def _ctx() -> RunContext:
 def test_forbidden_docs_write_is_rejected() -> None:
     ctx = _ctx()
     with pytest.raises(ScriptError):
-        ensure_write_path(ctx, Path("docs/_generated/forbidden.json"))
+        ensure_evidence_path(ctx, Path("docs/_generated/forbidden.json"))
 
 
 def test_forbidden_configs_write_is_rejected() -> None:
     ctx = _ctx()
     with pytest.raises(ScriptError):
-        ensure_write_path(ctx, Path("configs/forbidden.json"))
+        ensure_evidence_path(ctx, Path("configs/forbidden.json"))
