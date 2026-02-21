@@ -1,1 +1,1 @@
-"""Chunked legacy docs runtime implementation."""
+"""Chunked docs runtime implementation."""

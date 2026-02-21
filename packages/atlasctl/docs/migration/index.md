@@ -4,6 +4,8 @@ Historical note: the pre-1.0 legacy removal hard reset was completed and `packag
 
 For remaining migration activity, use command-level docs and `legacy-removal-plan.md` only.
 
+- [Legacy Definition](legacy-definition.md)
+
 ## Temporary Status And Expiry
 
 `docs/migration/` is temporary and must converge toward zero open items.
