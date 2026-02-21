@@ -67,7 +67,11 @@ from .enforcement.shell_policy import (
 from .domains.scripts_dir import check_scripts_dir_absent
 from .contracts.public_api import check_public_api_exports
 from .contracts.type_coverage import check_type_coverage
-from .contracts.dependencies import check_dependency_declarations
+from .contracts.dependencies import (
+    check_dependency_declarations,
+    check_internal_utils_stdlib_only,
+    check_optional_dependency_usage_gates,
+)
 from .reachability import (
     check_dead_module_reachability_allowlist,
     check_dead_modules_report_runs,
@@ -103,6 +107,7 @@ from .contracts.pyproject_contracts import (
     check_console_script_entry,
     check_env_docs_present,
     check_optional_dependency_groups,
+    check_python_requires_version_and_ci,
     check_pyproject_minimalism,
     check_pyproject_no_duplicate_tool_config,
     check_pyproject_required_blocks,
@@ -393,6 +398,8 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.public_api_exports", "repo", "enforce docs/public-api.md coverage for __all__ exports", 300, check_public_api_exports, fix_hint="Document exported symbols in docs/public-api.md or remove them from __all__."),
     CheckDef("repo.type_coverage", "repo", "enforce minimum type coverage in core/contracts", 600, check_type_coverage, fix_hint="Add function annotations in core/contracts until the threshold is met."),
     CheckDef("repo.dependency_declarations", "repo", "ensure pyproject dependency declarations match imports", 600, check_dependency_declarations, fix_hint="Add missing dependencies or remove unused declarations."),
+    CheckDef("repo.optional_dependency_usage_gates", "repo", "forbid optional dependency usage without explicit allowlist gate", 400, check_optional_dependency_usage_gates, fix_hint="Move dependency to base deps or add justified exception in configs/policy/dependency-exceptions.json."),
+    CheckDef("repo.internal_utils_stdlib_only", "repo", "prefer stdlib-only internal utility modules", 300, check_internal_utils_stdlib_only, fix_hint="Replace third-party imports in atlasctl/internal with stdlib equivalents or add a justified exception."),
     CheckDef("repo.check_module_reachability", "repo", "ensure repo check modules are imported and reachable via registry", 300, check_repo_check_modules_registered, fix_hint="Import new repo check modules in checks/repo/__init__.py."),
     CheckDef("repo.dead_modules", "repo", "ensure dead modules analyzer runs and returns canonical payload", 300, check_dead_modules_report_runs, fix_hint="Keep policies/dead_modules.py runnable and deterministic."),
     CheckDef("repo.dead_module_reachability", "repo", "enforce dead module candidates are explicitly allowlisted", 300, check_dead_module_reachability_allowlist, fix_hint="Update configs/policy/dead-modules-allowlist.json with intended exceptions."),
@@ -401,7 +408,8 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.pyproject_no_duplicate_tool_config", "repo", "forbid duplicate tool config files beside pyproject", 300, check_pyproject_no_duplicate_tool_config, fix_hint="Remove duplicated tool config files and keep pyproject as SSOT."),
     CheckDef("repo.console_script_entry", "repo", "ensure atlasctl console script entry exists and points to callable target", 300, check_console_script_entry, fix_hint="Set [project.scripts] atlasctl = \"atlasctl.cli.main:main\" and ensure target is importable."),
     CheckDef("repo.python_module_help", "repo", "ensure python -m atlasctl --help works", 300, check_python_module_help, fix_hint="Ensure atlasctl package entrypoint remains runnable with python -m atlasctl."),
-    CheckDef("repo.optional_dependency_groups", "repo", "ensure required pyproject optional-dependency groups exist", 300, check_optional_dependency_groups, fix_hint="Add required [project.optional-dependencies] groups: dev/test/ops/docs."),
+    CheckDef("repo.optional_dependency_groups", "repo", "ensure required pyproject optional-dependency groups exist and are non-empty", 300, check_optional_dependency_groups, fix_hint="Add required [project.optional-dependencies] groups with entries: dev/ci/test/ops/docs."),
+    CheckDef("repo.python_requires_version_and_ci", "repo", "enforce pyproject requires-python and CI python version alignment", 300, check_python_requires_version_and_ci, fix_hint="Pin requires-python to >=3.11 and set actions/setup-python python-version: 3.11 in CI."),
     CheckDef("repo.pyproject_minimalism", "repo", "forbid dead/unknown pyproject tool keys", 300, check_pyproject_minimalism, fix_hint="Remove unknown [tool.*] sections or document and allow them explicitly."),
     CheckDef("repo.deps_workflow_doc", "repo", "ensure docs/deps.md matches chosen dependency workflow", 300, check_deps_workflow_doc, fix_hint="Update docs/deps.md and keep requirements.in/requirements.lock.txt in sync."),
     CheckDef("repo.env_docs_present", "repo", "ensure docs/env.md exists and lists canonical env vars", 300, check_env_docs_present, fix_hint="Create docs/env.md and document canonical runtime environment variables."),

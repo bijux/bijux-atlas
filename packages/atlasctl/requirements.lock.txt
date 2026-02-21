@@ -4,3 +4,4 @@ mypy==1.17.1
 pytest-timeout==2.3.1
 pytest==8.3.5
 ruff==0.13.2
+tomli>=2.0.0; python_version < "3.11"
