@@ -1,0 +1,1 @@
+{"by_domain": [{"domain": "docs", "entry_fail": 1, "entry_warn": 0, "py_fail": 1, "py_warn": 0}, {"domain": "other", "entry_fail": 0, "entry_warn": 0, "py_fail": 0, "py_warn": 0}, {"domain": "tests:docs", "entry_fail": 0, "entry_warn": 1, "py_fail": 0, "py_warn": 1}], "schema_version": 1, "status": "fail", "tool": "atlasctl"}

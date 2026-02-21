@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import argparse
+import json
 from ..reporting.make_area_report import main as make_area_report_main
 from ..core.context import RunContext
+from ..policies.dir_entry_budgets import report_budgets
 from .actions import (
     _cmd_artifact_gc,
     _cmd_artifact_index,
@@ -54,6 +56,15 @@ def run_report_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _cmd_artifact_index(ctx, ns.limit, ns.out)
     if ns.report_cmd == "artifact-gc":
         return _cmd_artifact_gc(ctx, ns.older_than_days)
+    if ns.report_cmd == "budgets":
+        payload = report_budgets(ctx.repo_root, by_domain=bool(getattr(ns, "by_domain", False)))
+        text = json.dumps(payload, sort_keys=True) if bool(getattr(ns, "json", False)) else json.dumps(payload, indent=2, sort_keys=True)
+        if ns.out:
+            out = ctx.repo_root / ns.out
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(text + "\n", encoding="utf-8")
+        print(text)
+        return 0 if payload.get("status") == "ok" else 1
     if ns.report_cmd == "make-area-write":
         argv = [
             "--path",
@@ -143,6 +154,10 @@ def configure_report_parser(sub: argparse._SubParsersAction[argparse.ArgumentPar
 
     gc = rep.add_parser("artifact-gc", help="garbage collect scripts artifacts by retention")
     gc.add_argument("--older-than-days", type=int)
+    budgets = rep.add_parser("budgets", help="ranked directory budget report")
+    budgets.add_argument("--by-domain", action="store_true", help="aggregate budget offenders by top-level domain")
+    budgets.add_argument("--json", action="store_true", help="emit JSON output")
+    budgets.add_argument("--out", help="write output to file path")
 
     mar = rep.add_parser("make-area-write", help="write lane make-area report JSON")
     mar.add_argument("--path", required=True)

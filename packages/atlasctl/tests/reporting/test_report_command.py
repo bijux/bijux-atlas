@@ -91,3 +91,11 @@ def test_report_diff_and_export() -> None:
     assert export.returncode == 0, export.stderr
     bundle = ROOT / "artifacts/evidence/make" / run_b / "evidence.tar.gz"
     assert bundle.exists()
+
+
+def test_report_budgets_json_by_domain() -> None:
+    proc = _run_cli("report", "budgets", "--json", "--by-domain")
+    assert proc.returncode in {0, 1}, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["tool"] == "atlasctl"
+    assert "by_domain" in payload

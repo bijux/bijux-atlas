@@ -35,7 +35,7 @@ def _iter_scoped_dirs(repo_root: Path) -> list[Path]:
         for path in sorted(root.rglob("*")):
             if path.is_dir() and path.name != "__pycache__":
                 dirs.append(path)
-    return sorted({p.resolve() for p in dirs})
+    return sorted({p for p in dirs})
 
 
 def _load_exceptions(repo_root: Path) -> tuple[int, list[BudgetException], list[str]]:
@@ -246,4 +246,3 @@ def check_py_files_per_dir_budget(repo_root: Path, *, fail_on_warn: bool = False
     if payload["status"] == "ok":
         return 0, []
     return 1, [render_budget_text(payload, print_culprits=True)]
-
