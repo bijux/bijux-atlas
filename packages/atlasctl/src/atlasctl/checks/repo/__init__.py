@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from .legacy_native import (
+from .native import (
     check_docs_no_ops_generated_run_paths,
     check_duplicate_script_names,
     check_forbidden_top_dirs,
@@ -12,6 +12,8 @@ from .legacy_native import (
     check_no_xtask_refs,
     check_ops_examples_immutable,
     check_ops_generated_tracked,
+    check_script_help,
+    check_script_ownership,
     check_tracked_timestamp_paths,
 )
 from ..base import CheckDef
@@ -34,8 +36,11 @@ from .enforcement.import_policy import (
     check_command_import_lint,
     check_cold_import_budget,
     check_compileall_gate,
+    check_forbidden_deprecated_namespace_dirs,
+    check_forbidden_deprecated_namespaces,
     check_import_smoke,
     check_internal_import_boundaries,
+    check_no_legacy_obs_imports_in_modern,
     check_no_modern_imports_from_legacy,
 )
 from .contracts.pyproject_contracts import (
@@ -67,6 +72,8 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.ops_examples_immutable", "repo", "enforce immutability of ops examples", 800, check_ops_examples_immutable, fix_hint="Restore example fixtures to committed canonical content."),
     CheckDef("repo.no_tracked_timestamp_paths", "repo", "forbid timestamp-like tracked paths", 1000, check_tracked_timestamp_paths, fix_hint="Remove timestamped tracked files/dirs."),
     CheckDef("repo.duplicate_script_names", "repo", "forbid duplicate script stem names", 1200, check_duplicate_script_names, fix_hint="Rename colliding script names."),
+    CheckDef("repo.script_help_coverage", "repo", "validate script help contract coverage", 1500, check_script_help, fix_hint="Add --help contract output to required scripts."),
+    CheckDef("repo.script_ownership_coverage", "repo", "validate script ownership coverage", 1500, check_script_ownership, fix_hint="Update ownership metadata for uncovered scripts."),
     CheckDef("repo.no_scripts_dir", "repo", "forbid legacy root scripts dir", 250, check_scripts_dir_absent, fix_hint="Migrate scripts into atlasctl package commands."),
     CheckDef("repo.legacy_quarantine", "repo", "quarantine legacy package growth", 250, check_legacy_package_quarantine, fix_hint="Do not add new modules under atlasctl/legacy."),
     CheckDef("repo.module_size", "repo", "enforce module size budget", 400, check_module_size, fix_hint="Split oversized modules into focused submodules."),
@@ -95,6 +102,9 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.refgrade_target_shape", "repo", "enforce package root minimalism and src no-symlink target shape", 300, check_refgrade_target_shape, fix_hint="Keep package-root items minimal and remove symlinks from src tree."),
     CheckDef("repo.internal_import_boundaries", "repo", "forbid atlasctl.internal imports outside internal namespace", 300, check_internal_import_boundaries, fix_hint="Route shared helpers through public modules instead of atlasctl.internal."),
     CheckDef("repo.modern_no_legacy_imports", "repo", "forbid modern modules from importing atlasctl.legacy", 300, check_no_modern_imports_from_legacy, fix_hint="Migrate callers to canonical modules under atlasctl.core/commands/checks."),
+    CheckDef("repo.modern_no_legacy_obs_imports", "repo", "forbid modern modules from importing atlasctl.legacy.obs", 300, check_no_legacy_obs_imports_in_modern, fix_hint="Migrate observability imports to atlasctl.observability."),
+    CheckDef("repo.no_deprecated_namespaces", "repo", "forbid imports from atlasctl.check/report/obs namespaces", 300, check_forbidden_deprecated_namespaces, fix_hint="Use atlasctl.checks and atlasctl.reporting canonical namespaces."),
+    CheckDef("repo.no_deprecated_namespace_dirs", "repo", "forbid deprecated atlasctl/check report obs directories", 300, check_forbidden_deprecated_namespace_dirs, fix_hint="Remove deprecated namespace directories and keep checks/reporting/observability as canonical roots."),
     CheckDef("repo.command_import_lint", "repo", "enforce command module import boundaries", 300, check_command_import_lint, fix_hint="Restrict command imports to core/contracts/checks/adapters/commands/cli."),
     CheckDef("repo.compileall_gate", "repo", "ensure atlasctl source compiles with compileall", 300, check_compileall_gate, fix_hint="Fix syntax/import issues until python -m compileall passes."),
     CheckDef("repo.import_smoke", "repo", "ensure atlasctl package imports in minimal environment", 300, check_import_smoke, fix_hint="Keep top-level imports light and dependency-safe."),

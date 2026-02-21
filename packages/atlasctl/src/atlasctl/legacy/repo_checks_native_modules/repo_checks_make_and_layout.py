@@ -8,7 +8,7 @@ from datetime import date, datetime, timezone
 from fnmatch import fnmatch
 from pathlib import Path
 
-from .repo.native_runtime import (
+from ..repo.native_runtime import (
     _find_python_migration_exception,
     check_duplicate_script_names,
     check_script_help,
@@ -34,13 +34,11 @@ def check_no_xtask_refs(repo_root: Path) -> tuple[int, list[str]]:
     ignore_paths = {
         "makefiles/ci.mk",
         "docs/development/task-runner-removal-map.md",
-        "packages/atlasctl/src/atlasctl/check/native.py",
         "packages/atlasctl/src/atlasctl/checks/runner.py",
-        "packages/atlasctl/src/atlasctl/check/command.py",
         "packages/atlasctl/src/atlasctl/checks/repo/__init__.py",
         "packages/atlasctl/src/atlasctl/checks/repo/paths.py",
-        "packages/atlasctl/tests/test_check_native.py",
-        "packages/atlasctl/tests/test_check_registry_features.py",
+        "packages/atlasctl/tests/checks/test_check_native.py",
+        "packages/atlasctl/tests/checks/test_check_registry_features.py",
     }
     for root in include_roots:
         paths: list[Path]
@@ -327,5 +325,4 @@ def check_layout_contract(repo_root: Path) -> tuple[int, list[str]]:
         errors.extend(errs)
 
     return (0 if not errors else 1), errors
-
 

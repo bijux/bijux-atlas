@@ -8,7 +8,7 @@ from typing import Callable
 
 from ...checks.registry import get_check, list_checks
 from ...checks.repo.command_contracts import runtime_contracts_payload
-from ...checks.repo.legacy_native import (
+from ...checks.repo.native import (
     check_atlas_scripts_cli_contract,
     check_atlasctl_boundaries,
     check_bin_entrypoints,
