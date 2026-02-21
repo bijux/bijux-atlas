@@ -5,7 +5,7 @@ import re
 import subprocess
 from pathlib import Path
 
-from ...make.public_targets import public_names
+from ...commands.dev.make.public_targets import public_names
 from ..repo.native import (
     check_make_no_direct_python_script_invocations,
     check_make_scripts_references,

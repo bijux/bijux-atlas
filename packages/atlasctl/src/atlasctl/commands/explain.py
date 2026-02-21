@@ -7,7 +7,7 @@ from pathlib import Path
 
 from ..checks.registry import get_check
 from ..cli.surface_registry import command_registry
-from ..make.public_targets import entry_map, load_ownership
+from .dev.make.public_targets import entry_map, load_ownership
 from ..suite.manifests import load_first_class_suites
 
 

@@ -7,7 +7,7 @@ import argparse
 from pathlib import Path
 
 from atlasctl.core.context import RunContext
-from atlasctl.gates import command as gates_command
+from atlasctl.commands.policies.gates import command as gates_command
 
 ROOT = Path(__file__).resolve().parents[4]
 
