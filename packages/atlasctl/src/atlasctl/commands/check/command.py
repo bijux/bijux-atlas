@@ -728,6 +728,11 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             ctx,
             ["python3", "packages/atlasctl/src/atlasctl/checks/layout/docs/check_ci_surface_documented.py"],
         )
+    if sub == "ops-mk-contract":
+        return _run(
+            ctx,
+            ["python3", "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_ops_mk_contract.py"],
+        )
 
     check_map: dict[str, tuple[NativeCheck, str, str, int | None, str]] = {
         "cli-help": (check_script_help, "script help contract failed:", "script help contract passed", None, "- "),
@@ -871,6 +876,7 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
         ("make-delegation-only", "validate wrapper makefiles delegate only to atlasctl"),
         ("workflow-calls-atlasctl", "validate workflow calls resolve to atlasctl entrypoints"),
         ("ci-surface-documented", "validate DEV/CI command surface docs coverage"),
+        ("ops-mk-contract", "validate ops.mk wrapper-only contract and target budget"),
     ]:
         parser_sub.add_parser(name, help=help_text)
 

@@ -248,6 +248,12 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 "k8s",
                 "e2e",
                 "obs",
+                "kind",
+                "load",
+                "help",
+                "up",
+                "down",
+                "restart",
             }
         )
         if bool(getattr(ns, "json", False)):
@@ -256,6 +262,28 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             for item in items:
                 print(item)
         return 0
+    if ns.ops_cmd == "help":
+        readme = ctx.repo_root / "ops" / "INDEX.md"
+        return _emit_ops_status(ns.report, 0, readme.read_text(encoding="utf-8"))
+
+    if ns.ops_cmd == "surface":
+        surface = ctx.repo_root / "ops" / "_meta" / "surface.json"
+        payload = json.loads(surface.read_text(encoding="utf-8"))
+        entrypoints = payload.get("entrypoints", [])
+        if ns.report == "json":
+            return _emit_ops_status(ns.report, 0, json.dumps({"schema_version": 1, "tool": "atlasctl", "entrypoints": entrypoints}, sort_keys=True))
+        text = "\n".join(str(item) for item in entrypoints if isinstance(item, str))
+        return _emit_ops_status(ns.report, 0, text)
+
+    if ns.ops_cmd == "up":
+        return _run_simple_cmd(ctx, ["bash", "ops/run/stack-up.sh", "--profile", os.environ.get("PROFILE", "kind")], ns.report)
+
+    if ns.ops_cmd == "down":
+        return _run_simple_cmd(ctx, ["bash", "ops/run/down.sh"], ns.report)
+
+    if ns.ops_cmd == "restart":
+        return _run_simple_cmd(ctx, ["bash", "ops/run/k8s-restart.sh"], ns.report)
+
     if ns.ops_cmd == "env":
         sub = getattr(ns, "ops_env_cmd", "")
         if sub == "validate":
@@ -355,13 +383,15 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             return _run_simple_cmd(ctx, diff_cmd, ns.report)
         return 2
 
-    if ns.ops_cmd in {"stack", "k8s", "e2e", "obs"}:
+    if ns.ops_cmd in {"stack", "k8s", "e2e", "obs", "kind", "load"}:
         # Domain tree front-doors: keep shape stable even where implementations are delegated.
         sub_name = {
             "stack": "ops_stack_cmd",
             "k8s": "ops_k8s_cmd",
             "e2e": "ops_e2e_cmd",
             "obs": "ops_obs_cmd",
+            "kind": "ops_kind_cmd",
+            "load": "ops_load_cmd",
         }[ns.ops_cmd]
         sub = getattr(ns, sub_name, "")
         if ns.ops_cmd == "k8s" and sub == "contracts":
@@ -384,12 +414,65 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             return 0
         if ns.ops_cmd == "obs" and sub == "verify":
             return _run_simple_cmd(ctx, ["bash", "ops/run/obs-verify.sh"], ns.report)
+        if ns.ops_cmd == "obs" and sub == "drill":
+            drill = getattr(ns, "drill", "")
+            if not drill:
+                return _emit_ops_status(ns.report, 2, "missing --drill")
+            return _run_simple_cmd(ctx, ["bash", "ops/obs/scripts/bin/run_drill.sh", drill], ns.report)
         if ns.ops_cmd == "stack" and sub == "versions-sync":
             return _run_simple_cmd(
                 ctx,
                 ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/generation/generate_ops_stack_versions.py"],
                 ns.report,
             )
+        if ns.ops_cmd == "stack" and sub == "up":
+            profile = getattr(ns, "profile", "kind")
+            return _run_simple_cmd(ctx, ["bash", "ops/run/stack-up.sh", "--profile", profile], ns.report)
+        if ns.ops_cmd == "stack" and sub == "down":
+            return _run_simple_cmd(ctx, ["bash", "ops/run/stack-down.sh"], ns.report)
+        if ns.ops_cmd == "stack" and sub == "restart":
+            return _run_simple_cmd(ctx, ["bash", "ops/run/k8s-restart.sh"], ns.report)
+        if ns.ops_cmd == "kind" and sub == "up":
+            return _run_simple_cmd(ctx, ["bash", "ops/stack/kind/up.sh"], ns.report)
+        if ns.ops_cmd == "kind" and sub == "down":
+            return _run_simple_cmd(ctx, ["bash", "ops/stack/kind/down.sh"], ns.report)
+        if ns.ops_cmd == "kind" and sub == "reset":
+            return _run_simple_cmd(ctx, ["bash", "ops/stack/kind/reset.sh"], ns.report)
+        if ns.ops_cmd == "kind" and sub == "validate":
+            steps = [
+                ["bash", "ops/stack/kind/context_guard.sh"],
+                ["bash", "ops/stack/kind/namespace_guard.sh"],
+                ["bash", "ops/k8s/tests/checks/rollout/test_cluster_sanity.sh"],
+                ["bash", "ops/k8s/tests/checks/rollout/test_kind_image_resolution.sh"],
+                ["bash", "ops/k8s/tests/checks/rollout/test_kind_version_drift.sh"],
+                ["bash", "ops/vendor/layout-checks/check_kind_cluster_contract_drift.sh"],
+            ]
+            for cmd in steps:
+                code, output = _run_check(cmd, ctx.repo_root)
+                if output:
+                    print(output)
+                if code != 0:
+                    return code
+            return 0
+        if ns.ops_cmd == "kind" and sub == "fault":
+            fault = getattr(ns, "name", "")
+            if fault == "disk-pressure":
+                return _run_simple_cmd(ctx, ["bash", "ops/stack/faults/inject.sh", "fill-node-disk", os.environ.get("MODE", "fill")], ns.report)
+            if fault == "latency":
+                return _run_simple_cmd(
+                    ctx,
+                    ["bash", "ops/stack/faults/inject.sh", "toxiproxy-latency", os.environ.get("LATENCY_MS", "250"), os.environ.get("JITTER_MS", "25")],
+                    ns.report,
+                )
+            if fault == "cpu-throttle":
+                return _run_simple_cmd(ctx, ["bash", "ops/stack/faults/inject.sh", "cpu-throttle"], ns.report)
+            return _emit_ops_status(ns.report, 2, f"unsupported fault `{fault}`")
+        if ns.ops_cmd == "e2e" and sub == "run":
+            suite = getattr(ns, "suite", "smoke")
+            return _run_simple_cmd(ctx, ["bash", "ops/run/e2e.sh", "--suite", suite], ns.report)
+        if ns.ops_cmd == "load" and sub == "run":
+            suite = getattr(ns, "suite", "mixed-80-20")
+            return _run_simple_cmd(ctx, ["env", f"SUITE={suite}", "bash", "ops/run/load-suite.sh"], ns.report)
         return 2
 
     if ns.ops_cmd == "check":
@@ -522,7 +605,7 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
 
 def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    p = sub.add_parser("ops", help="ops lint and contracts command surface")
+    p = sub.add_parser("ops", help="ops control-plane command surface")
     p.add_argument("--list", action="store_true", help="list available ops commands")
     p.add_argument("--json", action="store_true", help="emit machine-readable JSON output")
     ops_sub = p.add_subparsers(dest="ops_cmd", required=False)
@@ -530,6 +613,14 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     check = ops_sub.add_parser("check", help="run canonical ops/check lane")
     check.add_argument("--report", choices=["text", "json"], default="text")
     check.add_argument("--fix", action="store_true")
+    help_cmd = ops_sub.add_parser("help", help="show canonical ops runbook index")
+    help_cmd.add_argument("--report", choices=["text", "json"], default="text")
+    up_cmd = ops_sub.add_parser("up", help="bring up full local ops environment")
+    up_cmd.add_argument("--report", choices=["text", "json"], default="text")
+    down_cmd = ops_sub.add_parser("down", help="tear down full local ops environment")
+    down_cmd.add_argument("--report", choices=["text", "json"], default="text")
+    restart_cmd = ops_sub.add_parser("restart", help="restart deployed atlas workloads safely")
+    restart_cmd.add_argument("--report", choices=["text", "json"], default="text")
 
     lint = ops_sub.add_parser("lint", help="run canonical ops lint checks")
     lint.add_argument("--report", choices=["text", "json"], default="text")
@@ -562,6 +653,10 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     stack.add_argument("--report", choices=["text", "json"], default="text")
     stack_sub = stack.add_subparsers(dest="ops_stack_cmd", required=True)
     stack_sub.add_parser("versions-sync", help="sync stack versions json from tool versions SSOT")
+    stack_up = stack_sub.add_parser("up", help="bring up stack components")
+    stack_up.add_argument("--profile", default="kind")
+    stack_sub.add_parser("down", help="tear down stack components")
+    stack_sub.add_parser("restart", help="restart atlas deployment")
 
     k8s = ops_sub.add_parser("k8s", help="ops kubernetes commands")
     k8s.add_argument("--report", choices=["text", "json"], default="text")
@@ -572,11 +667,31 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     e2e.add_argument("--report", choices=["text", "json"], default="text")
     e2e_sub = e2e.add_subparsers(dest="ops_e2e_cmd", required=True)
     e2e_sub.add_parser("validate", help="validate e2e scenarios and suites")
+    e2e_run = e2e_sub.add_parser("run", help="run e2e suite")
+    e2e_run.add_argument("--suite", choices=["smoke", "k8s-suite", "realdata"], default="smoke")
 
     obs = ops_sub.add_parser("obs", help="ops observability commands")
     obs.add_argument("--report", choices=["text", "json"], default="text")
     obs_sub = obs.add_subparsers(dest="ops_obs_cmd", required=True)
     obs_sub.add_parser("verify", help="run observability verification")
+    obs_drill = obs_sub.add_parser("drill", help="run one observability drill")
+    obs_drill.add_argument("--drill", required=True)
+
+    kind = ops_sub.add_parser("kind", help="kind substrate commands")
+    kind.add_argument("--report", choices=["text", "json"], default="text")
+    kind_sub = kind.add_subparsers(dest="ops_kind_cmd", required=True)
+    kind_sub.add_parser("up", help="create kind cluster")
+    kind_sub.add_parser("down", help="delete kind cluster")
+    kind_sub.add_parser("reset", help="reset kind cluster")
+    kind_sub.add_parser("validate", help="validate kind substrate contracts")
+    kind_fault = kind_sub.add_parser("fault", help="inject kind fault")
+    kind_fault.add_argument("name", choices=["disk-pressure", "latency", "cpu-throttle"])
+
+    load = ops_sub.add_parser("load", help="ops load commands")
+    load.add_argument("--report", choices=["text", "json"], default="text")
+    load_sub = load.add_subparsers(dest="ops_load_cmd", required=True)
+    load_run = load_sub.add_parser("run", help="run load suite")
+    load_run.add_argument("--suite", default="mixed-80-20")
 
     for name, help_text in (
         ("surface", "validate or generate ops surface metadata"),
