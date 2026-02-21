@@ -69,3 +69,30 @@ def test_suite_run_pytest_q_output_mode() -> None:
     text = proc.stdout
     assert "." in text or "F" in text
     assert "passed" in text and "failed" in text and "skipped" in text
+
+
+def test_suite_run_profile_and_slow_report(tmp_path) -> None:
+    target = tmp_path / "suite-profile-out"
+    slow_report = tmp_path / "suite-slow.json"
+    proc = run_atlasctl(
+        "--quiet",
+        "suite",
+        "run",
+        "fast",
+        "--only",
+        "check repo.module_size",
+        "--json",
+        "--target-dir",
+        str(target),
+        "--profile",
+        "--slow-threshold-ms",
+        "1",
+        "--slow-report",
+        str(slow_report),
+    )
+    assert proc.returncode in {0, 1}, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["slow_threshold_ms"] == 1
+    assert "slow_checks" in payload
+    assert (target / "profile.json").exists()
+    assert slow_report.exists()

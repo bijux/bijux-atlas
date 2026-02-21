@@ -79,5 +79,29 @@ def test_check_run_writes_json_and_junit_reports(tmp_path: Path) -> None:
     assert junit_report.exists()
     payload = json.loads(json_report.read_text(encoding="utf-8"))
     assert payload["kind"] == "check-run-report"
-    assert payload["failed"] == 0
-    assert payload["total"] >= 1
+    assert payload["summary"]["failed"] == 0
+    assert payload["summary"]["total"] >= 1
+
+
+def test_check_run_profile_and_slow_report(tmp_path: Path) -> None:
+    evidence_root = tmp_path / "evidence"
+    slow_report = evidence_root / "reports" / "check-slow.json"
+    profile_out = evidence_root / "reports" / "check-profile.json"
+    proc = run_atlasctl_isolated(
+        tmp_path,
+        "--quiet",
+        "check",
+        "run",
+        "--select",
+        "atlasctl::docs::__no_match__",
+        "--profile",
+        "--profile-out",
+        str(profile_out),
+        "--slow-threshold-ms",
+        "1",
+        "--slow-report",
+        str(slow_report),
+    )
+    assert proc.returncode == 0, proc.stderr
+    assert slow_report.exists()
+    assert profile_out.exists()

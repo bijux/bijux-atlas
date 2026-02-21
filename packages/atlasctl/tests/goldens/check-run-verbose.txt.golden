@@ -1,6 +1,11 @@
+SKIP docs.check_id_drift [0ms] owners=- hint=filtered by --select
+SKIP docs.command_group_pages [0ms] owners=- hint=filtered by --select
 SKIP docs.index_complete [0ms] owners=- hint=filtered by --select
 SKIP docs.links_exist [0ms] owners=- hint=filtered by --select
+SKIP docs.migration_not_stale [0ms] owners=- hint=filtered by --select
 SKIP docs.no_ops_generated_run_path_refs [0ms] owners=- hint=filtered by --select
 SKIP docs.no_scripts_path_refs [0ms] owners=- hint=filtered by --select
 SKIP docs.package_root_markdown [0ms] owners=- hint=filtered by --select
-summary: failed=0 total=5
+SKIP docs.registry_command_drift [0ms] owners=- hint=filtered by --select
+SKIP docs.stable_command_examples [0ms] owners=- hint=filtered by --select
+summary: passed=0 failed=0 skipped=10 total=10 duration_ms=0

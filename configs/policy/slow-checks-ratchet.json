@@ -1,0 +1,4 @@
+{
+  "max_slow_checks": 25,
+  "max_slowest_ms": 60000
+}

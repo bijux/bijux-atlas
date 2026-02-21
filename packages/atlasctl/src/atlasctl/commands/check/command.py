@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import subprocess
+import time
 from pathlib import Path
 from typing import Callable
 from xml.etree.ElementTree import Element, SubElement, tostring
@@ -57,6 +58,7 @@ from ...checks.runner import domains as check_domains
 from ...checks.runner import run_domain
 from ...core.context import RunContext
 from ...core.fs import ensure_evidence_path
+from ...core.telemetry import emit_telemetry
 from ...lint.suite_engine import run_lint_suite
 
 NativeCheck = Callable[[Path], tuple[int, list[str]]]
@@ -144,6 +146,7 @@ def _write_junitxml(path: Path, rows: list[dict[str, object]]) -> None:
 
 
 def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
+    started = time.perf_counter()
     selected_domain, selector = _parse_select(ns.select or "")
     checks = [check for check in list_checks() if selected_domain is None or check.domain == selected_domain]
     matched_checks = [
@@ -190,14 +193,46 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             if maxfail and fail_count >= maxfail:
                 break
 
+    total_duration_ms = int((time.perf_counter() - started) * 1000)
+    pass_count = sum(1 for row in rows if row["status"] == "PASS")
+    skip_count = sum(1 for row in rows if row["status"] == "SKIP")
+    slow_threshold_ms = max(1, int(getattr(ns, "slow_threshold_ms", 800)))
+    slow_rows = sorted(
+        [row for row in rows if row["status"] != "SKIP" and int(row["duration_ms"]) >= slow_threshold_ms],
+        key=lambda item: int(item["duration_ms"]),
+        reverse=True,
+    )
+    ratchet_errors: list[str] = []
+    ratchet_path = Path(getattr(ns, "slow_ratchet_config", "configs/policy/slow-checks-ratchet.json"))
+    if ratchet_path.exists():
+        ratchet = json.loads(ratchet_path.read_text(encoding="utf-8"))
+        max_slow_checks = int(ratchet.get("max_slow_checks", 0))
+        max_slowest_ms = int(ratchet.get("max_slowest_ms", 0))
+        if max_slow_checks and len(slow_rows) > max_slow_checks:
+            ratchet_errors.append(f"slow checks ratchet exceeded: {len(slow_rows)} > {max_slow_checks}")
+        if max_slowest_ms and slow_rows and int(slow_rows[0]["duration_ms"]) > max_slowest_ms:
+            ratchet_errors.append(f"slowest check ratchet exceeded: {int(slow_rows[0]['duration_ms'])}ms > {max_slowest_ms}ms")
+
+    final_failed = fail_count + (1 if ratchet_errors else 0)
+    summary = {
+        "passed": pass_count,
+        "failed": fail_count,
+        "skipped": skip_count,
+        "total": len(rows),
+        "duration_ms": total_duration_ms,
+    }
+
     if ctx.output_format == "json" or ns.json:
         payload = {
             "schema_version": 1,
             "tool": "atlasctl",
             "kind": "check-run",
-            "status": "ok" if fail_count == 0 else "error",
-            "failed": fail_count,
-            "total": len(rows),
+            "run_id": ctx.run_id,
+            "status": "ok" if final_failed == 0 else "error",
+            "summary": summary,
+            "slow_threshold_ms": slow_threshold_ms,
+            "slow_checks": slow_rows,
+            "ratchet_errors": ratchet_errors,
             "rows": rows,
         }
         print(json.dumps(payload, sort_keys=True))
@@ -218,7 +253,16 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             ranked = sorted(rows, key=lambda item: int(item["duration_ms"]), reverse=True)[: ns.durations]
             for row in ranked:
                 print(f"- {row['id']}: {row['duration_ms']}ms")
-        print(f"summary: failed={fail_count} total={len(rows)}")
+        print(
+            f"summary: passed={pass_count} failed={fail_count} skipped={skip_count} "
+            f"total={len(rows)} duration_ms={total_duration_ms}"
+        )
+        if slow_rows:
+            print(f"slow checks (threshold={slow_threshold_ms}ms):")
+            for row in slow_rows[:10]:
+                print(f"- {row['id']}: {row['duration_ms']}ms")
+        for msg in ratchet_errors:
+            print(f"ratchet: {msg}")
 
     if ns.json_report:
         report_path = ensure_evidence_path(ctx, Path(ns.json_report))
@@ -226,15 +270,69 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             "schema_version": 1,
             "tool": "atlasctl",
             "kind": "check-run-report",
-            "failed": fail_count,
-            "total": len(rows),
+            "run_id": ctx.run_id,
+            "summary": summary,
+            "slow_threshold_ms": slow_threshold_ms,
+            "slow_checks": slow_rows,
+            "ratchet_errors": ratchet_errors,
             "rows": rows,
         }
         report_path.write_text(json.dumps(report_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    slow_report = getattr(ns, "slow_report", None)
+    if slow_report:
+        slow_path = ensure_evidence_path(ctx, Path(slow_report))
+        slow_path.write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "tool": "atlasctl",
+                    "kind": "check-slow-report",
+                    "run_id": ctx.run_id,
+                    "threshold_ms": slow_threshold_ms,
+                    "summary": summary,
+                    "slow_checks": slow_rows,
+                    "ratchet_errors": ratchet_errors,
+                },
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+    if ns.profile:
+        profile_path = ensure_evidence_path(
+            ctx,
+            Path(getattr(ns, "profile_out", f"artifacts/isolate/{ctx.run_id}/atlasctl-check/profile.json")),
+        )
+        profile_path.write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "tool": "atlasctl",
+                    "kind": "check-profile",
+                    "run_id": ctx.run_id,
+                    "summary": summary,
+                    "rows": rows,
+                },
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+    emit_telemetry(
+        ctx,
+        "check.run",
+        passed=pass_count,
+        failed=fail_count,
+        skipped=skip_count,
+        duration_ms=total_duration_ms,
+        slow_checks=len(slow_rows),
+    )
     if ns.junitxml:
         junit_path = ensure_evidence_path(ctx, Path(ns.junitxml))
         _write_junitxml(junit_path, rows)
-    return 0 if fail_count == 0 else 1
+    return 0 if final_failed == 0 else 1
 
 
 def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
@@ -433,6 +531,11 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     run.add_argument("--durations", type=int, default=0, help="show N slowest checks in summary")
     run.add_argument("--junitxml", help="write junit xml output path")
     run.add_argument("--json-report", help="write json report output path")
+    run.add_argument("--slow-report", help="write slow checks report output path")
+    run.add_argument("--slow-threshold-ms", type=int, default=800, help="threshold for slow checks report")
+    run.add_argument("--slow-ratchet-config", default="configs/policy/slow-checks-ratchet.json", help="slow-check ratchet config json")
+    run.add_argument("--profile", action="store_true", help="emit check run performance profile artifact")
+    run.add_argument("--profile-out", help="performance profile output path")
     run.add_argument("--select", help="check selector, e.g. atlasctl::docs::check_x")
     run.add_argument("--json", action="store_true", help="emit JSON output")
     parser_sub.add_parser("list", help="list registered checks")

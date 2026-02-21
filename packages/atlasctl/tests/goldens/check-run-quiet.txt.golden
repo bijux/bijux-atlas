@@ -1,6 +1,11 @@
+SKIP docs.check_id_drift
+SKIP docs.command_group_pages
 SKIP docs.index_complete
 SKIP docs.links_exist
+SKIP docs.migration_not_stale
 SKIP docs.no_ops_generated_run_path_refs
 SKIP docs.no_scripts_path_refs
 SKIP docs.package_root_markdown
-summary: failed=0 total=5
+SKIP docs.registry_command_drift
+SKIP docs.stable_command_examples
+summary: passed=0 failed=0 skipped=10 total=10 duration_ms=0
