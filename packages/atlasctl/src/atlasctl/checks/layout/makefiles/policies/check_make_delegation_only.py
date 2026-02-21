@@ -11,6 +11,7 @@ WRAPPERS = [
     ROOT / "makefiles" / "dev.mk",
     ROOT / "makefiles" / "ci.mk",
     ROOT / "makefiles" / "docs.mk",
+    ROOT / "makefiles" / "ops.mk",
 ]
 ATLASCTL_RE = re.compile(r"^\t@\.\/bin\/atlasctl\b")
 
