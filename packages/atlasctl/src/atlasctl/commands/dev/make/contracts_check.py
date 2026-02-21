@@ -75,6 +75,12 @@ CHECKS: list[MakeCheck] = [
         "packages/atlasctl/src/atlasctl/checks/layout/workflows/check_ci_entrypoints.py",
         "Update workflow jobs to call approved public targets only.",
     ),
+    _check_cmd(
+        "dev-ci-target-map",
+        "Validate cargo/ci make targets are mapped to atlasctl DEV/CI intents",
+        ["python3", "-m", "atlasctl.cli", "make", "dev-ci-target-map", "--check", "--json"],
+        "Map every cargo.mk/ci.mk target to one stable atlasctl intent and declare aliases explicitly.",
+    ),
     _check(
         "help-excludes-internal",
         "Ensure help excludes internal targets",
