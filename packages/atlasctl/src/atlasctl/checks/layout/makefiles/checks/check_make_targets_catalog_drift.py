@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[6]
 PATHS = [
     "makefiles/targets.json",
     "docs/_generated/make-targets.md",
+    "artifacts/generated/make/targets.catalog.json",
 ]
 
 
