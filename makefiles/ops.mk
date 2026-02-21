@@ -618,30 +618,30 @@ ops-gc-smoke: ## Validate GC plan/apply against a disposable store fixture
 ops-metrics-check: ## Validate runtime metrics and observability contracts
 	@./ops/e2e/scripts/verify_metrics.sh
 	@./ops/obs/scripts/snapshot_metrics.sh
-	@./packages/atlasctl/src/atlasctl/obs/contracts/check_metrics_contract.py
+	@./packages/atlasctl/src/atlasctl/observability/contracts/check_metrics_contract.py
 	@python3 ./ops/obs/scripts/areas/contracts/check_metrics_drift.py
 	@python3 ./ops/obs/scripts/areas/contracts/check_metrics_coverage.py
 	@python3 ./ops/obs/scripts/areas/contracts/check_metrics_golden.py
-	@./packages/atlasctl/src/atlasctl/obs/contracts/check_dashboard_contract.py
-	@./packages/atlasctl/src/atlasctl/obs/contracts/check_alerts_contract.py
-	@./packages/atlasctl/src/atlasctl/obs/contracts/lint_runbooks.py
-	@./packages/atlasctl/src/atlasctl/obs/contracts/check_runtime_metrics.py
+	@./packages/atlasctl/src/atlasctl/observability/contracts/check_dashboard_contract.py
+	@./packages/atlasctl/src/atlasctl/observability/contracts/check_alerts_contract.py
+	@./packages/atlasctl/src/atlasctl/observability/contracts/lint_runbooks.py
+	@./packages/atlasctl/src/atlasctl/observability/contracts/check_runtime_metrics.py
 	@if [ "$${OPS_METRICS_STRICT:-1}" = "1" ]; then \
-	  $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/obs/check_metric_cardinality.py; \
+	  $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/check_metric_cardinality.py; \
 	else \
-	  $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/obs/check_metric_cardinality.py || echo "cardinality warning tolerated in smoke mode"; \
+	  $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/check_metric_cardinality.py || echo "cardinality warning tolerated in smoke mode"; \
 	fi
 	@if [ "$${OPS_METRICS_STRICT:-1}" = "1" ]; then \
-	  $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/obs/validate_logs_schema.py; \
+	  $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/validate_logs_schema.py; \
 	else \
-	  $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/obs/validate_logs_schema.py || echo "log schema warning tolerated in smoke mode"; \
+	  $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/validate_logs_schema.py || echo "log schema warning tolerated in smoke mode"; \
 	fi
 
 ops-traces-check: ## Validate trace signal (when OTEL enabled)
 	@./ops/e2e/scripts/verify_traces.sh
 	@python3 ./ops/obs/scripts/areas/contracts/check_trace_golden.py
 	@python3 ./ops/obs/scripts/areas/contracts/extract_trace_exemplars.py
-	@if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./packages/atlasctl/src/atlasctl/obs/contracts/check_tracing_contract.py; python3 ./ops/obs/scripts/areas/contracts/check_trace_coverage.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi
+	@if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./packages/atlasctl/src/atlasctl/observability/contracts/check_tracing_contract.py; python3 ./ops/obs/scripts/areas/contracts/check_trace_coverage.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi
 
 ops-k8s-tests: ## Run k8s e2e suite
 	@$(MAKE) -s ops-env-validate
@@ -901,7 +901,7 @@ ops-report: ## Gather ops evidence into artifacts/ops/<run-id>/
 	$(MAKE) artifacts-index
 
 ops-slo-burn: ## Compute SLO burn artifact from k6 score + metrics snapshot
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/obs/compute_slo_burn.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/compute_slo_burn.py
 
 obs/update-goldens: ## Refresh observability golden snapshots for all supported profiles
 	@cp ops/obs/contract/metrics.golden.prom ops/obs/contract/goldens/local/metrics.golden.prom
@@ -910,7 +910,7 @@ obs/update-goldens: ## Refresh observability golden snapshots for all supported 
 	@cp ops/obs/contract/trace-structure.golden.json ops/obs/contract/goldens/local/trace-structure.golden.json
 	@cp ops/obs/contract/trace-structure.golden.json ops/obs/contract/goldens/perf/trace-structure.golden.json
 	@cp ops/obs/contract/trace-structure.golden.json ops/obs/contract/goldens/offline/trace-structure.golden.json
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/obs/contracts/check_profile_goldens.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/contracts/check_profile_goldens.py
 
 ops-slo-report: ## Compute SLO report (SLIs, error budget remaining, burn rates)
 	@python3 ./ops/report/slo_report.py --metrics "$${METRICS:-artifacts/ops/metrics.prom}" --slo-config configs/ops/slo/slo.v1.json --out "$${OUT:-artifacts/ops/slo/report.json}"
@@ -1062,10 +1062,10 @@ ops-chart-render-diff: ## Ensure chart render is deterministic for local profile
 	rm -f "$$tmp_a" "$$tmp_b"
 
 ops-dashboards-validate: ## Validate dashboard references against metrics contract
-	@./packages/atlasctl/src/atlasctl/obs/contracts/check_dashboard_contract.py
+	@./packages/atlasctl/src/atlasctl/observability/contracts/check_dashboard_contract.py
 
 ops-alerts-validate: ## Validate alert rules and contract coverage
-	@./packages/atlasctl/src/atlasctl/obs/contracts/check_alerts_contract.py
+	@./packages/atlasctl/src/atlasctl/observability/contracts/check_alerts_contract.py
 
 ops-observability-validate: ## Validate observability assets/contracts end-to-end
 	@set -e; \
@@ -1074,14 +1074,14 @@ ops-observability-validate: ## Validate observability assets/contracts end-to-en
 	$(ATLAS_SCRIPTS) docs observability-surface-check --report text; \
 	$(MAKE) ops-dashboards-validate; \
 	$(MAKE) ops-alerts-validate; \
-	./packages/atlasctl/src/atlasctl/obs/contracts/check_metrics_contract.py; \
+	./packages/atlasctl/src/atlasctl/observability/contracts/check_metrics_contract.py; \
 	python3 ./ops/obs/scripts/areas/contracts/check_obs_budgets.py; \
-	if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./packages/atlasctl/src/atlasctl/obs/contracts/check_tracing_contract.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi; \
+	if [ "$${ATLAS_E2E_ENABLE_OTEL:-0}" = "1" ]; then ./packages/atlasctl/src/atlasctl/observability/contracts/check_tracing_contract.py; else echo "trace contract skipped (ATLAS_E2E_ENABLE_OTEL=0)"; fi; \
 	./ops/obs/scripts/snapshot_metrics.sh; \
 	./ops/obs/scripts/snapshot_traces.sh; \
-	$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/obs/check_metric_cardinality.py; \
+	$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/check_metric_cardinality.py; \
 	$(MAKE) ops-otel-required-check; \
-	$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/obs/validate_logs_schema.py --namespace "$${ATLAS_E2E_NAMESPACE:-$${ATLAS_NS:-atlas-e2e}}" --release "$${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}" --strict-live
+	$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/validate_logs_schema.py --namespace "$${ATLAS_E2E_NAMESPACE:-$${ATLAS_NS:-atlas-e2e}}" --release "$${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}" --strict-live
 
 ops-obs-validate: ## Compatibility alias for ops-observability-validate
 	@$(MAKE) ops-observability-validate
@@ -1133,7 +1133,7 @@ ops-artifacts-index-run: ## Generate per-run artifact index markdown (RUN_ID=<op
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/build_run_artifact_index.py --run-id "$${RUN_ID}"
 
 ops-observability-pack-conformance-report: ## Write pack conformance report under artifacts
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/obs/write_pack_conformance_report.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/write_pack_conformance_report.py
 
 ops-obs-mode-minimal: ## Compatibility alias for kind profile
 	@ATLAS_OBS_PROFILE=kind ./ops/obs/scripts/install_pack.sh
@@ -1151,13 +1151,13 @@ ops-observability-pack-lint: ## Run observability pack lint-only contract checks
 observability-pack-test: ## Fast observability pack test (contracts + coverage)
 	@./ops/obs/tests/suite.sh --suite contracts
 	@./ops/obs/tests/suite.sh --suite coverage
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/obs/write_pack_conformance_report.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/write_pack_conformance_report.py
 
 observability-pack-drills: ## Full observability drill suite (outage matrix + contracts)
 	@./ops/obs/tests/suite.sh --suite coverage
 	@./ops/obs/tests/suite.sh --suite drills
 	@./ops/obs/tests/suite.sh --suite contracts
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/obs/write_pack_conformance_report.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/write_pack_conformance_report.py
 
 ops-drill-suite: ## Run full observability drill manifest suite and emit report
 	@./ops/obs/tests/suite.sh --suite drills

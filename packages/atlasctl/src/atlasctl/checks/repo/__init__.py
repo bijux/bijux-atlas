@@ -23,6 +23,7 @@ from .command_contracts import (
     check_command_metadata_contract,
     check_no_duplicate_command_names,
 )
+from .argparse_policy import check_argparse_policy
 from .scripts_dir import check_scripts_dir_absent
 from .public_api import check_public_api_exports
 from .type_coverage import check_type_coverage
@@ -62,6 +63,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.module_size", "repo", "enforce module size budget", 400, check_module_size, fix_hint="Split oversized modules into focused submodules."),
     CheckDef("repo.no_path_cwd_usage", "repo", "forbid Path.cwd usage outside core/repo_root.py", 400, check_no_path_cwd_usage, fix_hint="Use ctx.repo_root or core.repo_root helpers."),
     CheckDef("repo.command_metadata_contract", "repo", "ensure command metadata includes touches/tools", 400, check_command_metadata_contract, fix_hint="Add touches/tools metadata in cli registry."),
+    CheckDef("repo.argparse_policy", "repo", "restrict direct argparse parser construction to canonical parser modules", 300, check_argparse_policy, fix_hint="Move parser construction into cli/parser.py or commands/*/parser.py."),
     CheckDef("repo.no_duplicate_command_names", "repo", "ensure command names are unique", 300, check_no_duplicate_command_names, fix_hint="Rename duplicate command/alias entries."),
     CheckDef("repo.command_help_docs_drift", "repo", "check command help/docs drift", 500, check_command_help_docs_drift, fix_hint="Regenerate docs/_generated/cli.md from current CLI surface."),
     CheckDef("repo.public_api_exports", "repo", "enforce docs/public-api.md coverage for __all__ exports", 300, check_public_api_exports, fix_hint="Document exported symbols in docs/public-api.md or remove them from __all__."),

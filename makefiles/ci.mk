@@ -146,7 +146,7 @@ ci-workflows-make-only:
 	@$(ATLAS_SCRIPTS) check forbidden-paths
 
 ci-log-fields-contract:
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/obs/validate_logs_schema.py --file ops/obs/contract/logs.example.jsonl
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/validate_logs_schema.py --file ops/obs/contract/logs.example.jsonl
 
 ci-observability-pack-test:
 	@$(MAKE) observability-pack-test
