@@ -87,7 +87,10 @@ def dispatch_command(
         return 0
     if ns.cmd == "explain":
         explain_name = _resolve_explain_name()
-        desc = import_attr("atlasctl.commands.explain", "describe_command")(explain_name)
+        if getattr(ns, "subject_or_name", "") == "command":
+            desc = import_attr("atlasctl.commands.explain", "describe_command")(explain_name)
+        else:
+            desc = import_attr("atlasctl.commands.explain", "describe_thing")(ctx.repo_root, explain_name)
         payload = {
             "schema_name": EXPLAIN,
             "schema_version": 1,
@@ -192,6 +195,8 @@ def dispatch_command(
         "legacy": ("atlasctl.commands.legacy_inventory", "run_legacy_command"),
         "python": ("atlasctl.python_tools.command", "run_python_command"),
         "gates": ("atlasctl.gates.command", "run_gates_command"),
+        "dev": ("atlasctl.dev.command", "run_dev_command"),
+        "internal": ("atlasctl.internal.command", "run_internal_command"),
     }
     if ns.cmd in module_dispatch:
         module_name, attr = module_dispatch[ns.cmd]
