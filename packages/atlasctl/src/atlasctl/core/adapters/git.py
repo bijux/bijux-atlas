@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-from ..core.process import run_command
+from ..process import run_command
 
 
 @dataclass(frozen=True)

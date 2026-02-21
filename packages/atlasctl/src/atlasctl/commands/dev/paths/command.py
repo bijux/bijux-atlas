@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 
-from ..core.context import RunContext
+from ....core.context import RunContext
 
 
 def run_paths_command(ctx: RunContext, ns: argparse.Namespace) -> int:

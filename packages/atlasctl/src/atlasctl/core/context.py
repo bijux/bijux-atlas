@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Literal
 
-from ..adapters.git import read_git_context
+from .adapters.git import read_git_context
 from .env import getenv
 from .paths import evidence_root_path, find_repo_root, run_dir_root_path, scripts_artifact_root_path
 

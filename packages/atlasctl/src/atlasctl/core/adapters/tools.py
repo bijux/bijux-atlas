@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from ..core.runtime.tooling import read_pins, read_tool_versions
+from ..runtime.tooling import read_pins, read_tool_versions
 
 
 __all__ = ["read_tool_versions", "read_pins", "tool_versions", "tool_pins"]
