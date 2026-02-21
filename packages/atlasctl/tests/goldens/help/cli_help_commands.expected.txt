@@ -11,12 +11,14 @@ layout
 lint
 list
 load
+make
 obs
 ops
 policies
 registry
 repo
 report
+run-id
 stack
 suite
 test
