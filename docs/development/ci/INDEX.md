@@ -37,5 +37,7 @@ Expected output: docs build and docs-structure checks pass.
 ## See also
 
 - [Docs Home](../../index.md)
+- [CI Surface](ci.md)
+- [CI Cache Policy](cache-policy.md)
 - [Naming Standard](../../_style/naming-standard.md)
 - [Terms Glossary](../../_style/terms-glossary.md)

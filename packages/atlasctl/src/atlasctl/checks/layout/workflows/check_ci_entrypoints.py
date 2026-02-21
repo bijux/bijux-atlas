@@ -28,7 +28,7 @@ PRIMARY = {
     "report",
 }
 ALLOWED_WORKFLOW_OVERRIDES = {
-    "dependency-lock.yml": {"ci-init-iso-dirs", "ci-dependency-lock-refresh"},
+    "dependency-lock.yml": {"ci-init"},
 }
 
 
@@ -43,9 +43,9 @@ def main() -> int:
     ci_text = ci_file.read_text(encoding="utf-8")
     ci_runs = make_runs(ci_file)
     has_make_ci = any(cmd.strip().startswith("ci") for cmd in ci_runs)
-    has_atlasctl_ci = re.search(r"\./bin/atlasctl\s+dev\s+ci\s+run\b", ci_text) is not None
+    has_atlasctl_ci = re.search(r"\./bin/atlasctl\s+ci\s+run\b", ci_text) is not None
     if not (has_make_ci or has_atlasctl_ci):
-        errs.append("ci.yml must run canonical CI front door (`./bin/atlasctl dev ci run` or `make ci`)")
+        errs.append("ci.yml must run canonical CI front door (`./bin/atlasctl ci run` or `make ci`)")
 
     for p in sorted(WF.glob("*.yml")):
         text = p.read_text(encoding="utf-8")

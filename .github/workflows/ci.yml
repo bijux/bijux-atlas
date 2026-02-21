@@ -18,7 +18,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Run atlasctl CI suite only
-        run: ./bin/atlasctl dev ci run --json
+        run: make ci
 
   root-and-ci-only:
     runs-on: ubuntu-latest
@@ -33,7 +33,7 @@ jobs:
           toolchain: 1.84.1
           components: rustfmt, clippy
       - name: Run canonical CI entrypoint
-        run: ./bin/atlasctl dev ci run --json
+        run: make ci
       - name: Enforce atlasctl migration gate
         run: ./bin/atlasctl --quiet migration gate
       - name: Enforce atlasctl repo hygiene gate
@@ -41,7 +41,7 @@ jobs:
       - name: Enforce contract catalog and samples
         run: |
           ./bin/atlasctl --quiet contracts lint --report json
-          PYTHONPATH=packages/atlasctl/src pytest -q packages/atlasctl/tests/contracts/test_contract_schemas.py
+          ./bin/atlasctl --quiet contracts validate-self
       - name: Enforce atlasctl directory budget gates
         run: |
           ./bin/atlasctl --quiet policies check-dir-entry-budgets --json
@@ -76,6 +76,11 @@ jobs:
           wheel_bin="$PWD/artifacts/atlasctl/venv/ci-wheel/bin"
           (cd /tmp && "$wheel_bin/atlasctl" --version)
           (cd /tmp && "$wheel_bin/python" -m atlasctl --help > /tmp/atlasctl-help.txt)
+      - name: Generate CI job summary
+        if: always()
+        run: |
+          ./bin/atlasctl reporting ci-summary --latest > artifacts/evidence/ci/ci-summary.json
+          cat artifacts/evidence/ci/ci-summary.json >> "$GITHUB_STEP_SUMMARY"
       - name: Upload CI artifacts
         if: always()
         uses: actions/upload-artifact@v4
