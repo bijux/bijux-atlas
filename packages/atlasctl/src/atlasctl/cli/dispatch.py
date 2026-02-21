@@ -93,6 +93,17 @@ def dispatch_command(
     if ns.cmd == "commands":
         payload = commands_payload()
         payload["run_id"] = ctx.run_id
+        if getattr(ns, "verify_stability", False):
+            golden_path = ctx.repo_root / "packages/atlasctl/tests/goldens/commands.json.golden"
+            if not golden_path.exists():
+                raise ScriptError(f"missing commands stability golden: {golden_path.relative_to(ctx.repo_root)}", ERR_CONFIG)
+            expected = json.loads(golden_path.read_text(encoding="utf-8"))
+            compare_current = dict(payload)
+            compare_expected = dict(expected)
+            compare_current["run_id"] = ""
+            compare_expected["run_id"] = ""
+            if compare_current != compare_expected:
+                raise ScriptError("commands stability verification failed against commands.json.golden", ERR_CONFIG)
         rendered = dumps_json(payload, pretty=not ns.json)
         write_payload(ctx, ns.out_file, rendered)
         print(rendered)
