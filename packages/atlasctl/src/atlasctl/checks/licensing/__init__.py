@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ..base import CheckCategory, CheckDef
+from ..framework import CheckCategory, CheckDef
 from .policy import check_license_file_mit, check_license_statements_consistent, check_spdx_policy
 
 CHECKS: tuple[CheckDef, ...] = (

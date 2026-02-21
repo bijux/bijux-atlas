@@ -23,7 +23,7 @@ from ..repo.native import (
     check_make_no_direct_python_script_invocations,
     check_make_scripts_references,
 )
-from ..base import CheckDef
+from ..framework import CheckDef
 
 CHECKS: tuple[CheckDef, ...] = (
     CheckDef(
