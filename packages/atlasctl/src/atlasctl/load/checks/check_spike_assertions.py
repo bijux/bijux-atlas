@@ -13,9 +13,9 @@ import argparse
 import json
 import sys
 import time
-import urllib.error
-import urllib.request
 from pathlib import Path
+
+from ...core.network import http_get
 
 
 def read_counter(summary: dict, metric: str) -> float:
@@ -24,12 +24,9 @@ def read_counter(summary: dict, metric: str) -> float:
 
 
 def fetch_overload_status(base_url: str) -> tuple[int, bool]:
-    req = urllib.request.Request(f"{base_url.rstrip('/')}/healthz/overload", method="GET")
-    with urllib.request.urlopen(req, timeout=5) as resp:  # nosec - local test endpoint
-        status = int(resp.status)
-        body = resp.read().decode("utf-8", errors="replace")
-        overloaded = '"overloaded":true' in body.replace(" ", "")
-        return status, overloaded
+    status, body = http_get(f"{base_url.rstrip('/')}/healthz/overload", timeout_seconds=5)
+    overloaded = '"overloaded":true' in body.replace(" ", "")
+    return status, overloaded
 
 
 def main() -> int:
@@ -69,7 +66,7 @@ def main() -> int:
             if last_status == 200 and not overloaded:
                 recovered = True
                 break
-        except urllib.error.URLError:
+        except Exception:
             pass
         time.sleep(max(1, args.poll_seconds))
 

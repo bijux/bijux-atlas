@@ -1,0 +1,619 @@
+{
+  "rules": {
+    "network_call": [
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/validate_ops_env.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      }
+    ],
+    "open_write_call": [],
+    "os_environ_access": [
+      {
+        "path": "packages/atlasctl/src/atlasctl/core/runtime/env_guard.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/env/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      }
+    ],
+    "path_write_call": [
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/artifacts/evidence_pr_summary.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/artifacts/write_make_area_report.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/governance/legacy_inventory.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/governance/run_gate.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/makefiles/tools/make_doctor.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/makefiles/tools/make_prereqs.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/makefiles/tools/make_report.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/ops/generation/generate_ops_pins.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/ops/generation/generate_ops_stack_versions.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/ops/generation/generate_ops_surface_meta.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/ops/pins/check_ops_pins.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/repo/native_runtime_modules/repo_native_runtime_policies.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/cli/main.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/compat.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/docs/runtime_chunks/core/docs_generation_core.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/docs/runtime_chunks/core/docs_navigation_core.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/docs/runtime_chunks/core/docs_outputs_core.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/docs/runtime_chunks/docs_inventory.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/docs/runtime_chunks/extended/docs_contracts_extended.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/docs/runtime_chunks/extended/docs_generation_extended.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/docs/runtime_chunks/extended/docs_navigation_extended.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/docs/runtime_chunks/extended/docs_outputs_extended.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/doctor.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/ops/ops_k8s.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/ops_runtime_checks.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/configs/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/contracts/generators.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/contracts/json.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/deps/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/gen/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/internal/system.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/lint/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/load/checks/check_percent_regression.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/load/run/run_critical_queries.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/make/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/make/contracts_check.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/migrate/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/orchestrate/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/policies/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/policies/scans.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/reporting/actions.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/reporting/artifact_actions.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/reporting/make_area_report.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/reporting/run_gate.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/reporting/writer.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/stack/build_stack_report.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/suite/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/surface.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      }
+    ],
+    "subprocess_call": [
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_evidence_not_tracked.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_no_dead_entrypoints.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/root/check_root_diff_alarm.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/docs/check_help_output_determinism.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/docs/check_help_snapshot.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/docs/check_no_orphan_docs_refs.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/governance/legacy_inventory.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/governance/run_gate.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_targets_catalog_drift.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_makefiles_contract.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/makefiles/tools/make_doctor.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/makefiles/tools/make_prereqs.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/ops/generation/update_ops_pins.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/ops/pins/check_ops_pins.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_surface_drift.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/make/enforcement.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/repo/contracts/pyproject_contracts.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/repo/enforcement/import_policy.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/repo/enforcement/shell_policy.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/repo/native_modules/repo_checks_make_and_layout.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/repo/native_modules/repo_checks_scripts_and_docker.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/repo/native_runtime_modules/repo_native_runtime_core.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/repo/native_runtime_modules/repo_native_runtime_policies.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/ci/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/check/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/compat.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/docs/runtime_chunks/core/docs_contracts_core.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/docs/runtime_chunks/core/docs_navigation_core.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/docs/runtime_chunks/core/docs_outputs_core.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/docs/runtime_chunks/core/docs_validation_core.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/docs/runtime_chunks/docs_inventory.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/docs/runtime_chunks/extended/docs_outputs_extended.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/docs/runtime_chunks/extended/docs_validation_extended.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/doctor.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/configs/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/contracts/checks.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/contracts/generators.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/core/runtime/env_guard.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/deps/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/env/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/gen/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/internal/system.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/make/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/make/contracts_check.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/migrate/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/observability/contracts/governance/check_slo_no_loosen_without_approval.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/observability/contracts/governance/check_tool_versions.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/policies/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/policies/scans.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/python_tools/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/reporting/actions.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/reporting/run_gate.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/suite/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/test_tools/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      }
+    ],
+    "subprocess_import": [
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_evidence_not_tracked.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_no_dead_entrypoints.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/contracts/root/check_root_diff_alarm.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/docs/check_help_output_determinism.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/docs/check_help_snapshot.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/docs/check_no_orphan_docs_refs.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/governance/legacy_inventory.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/governance/run_gate.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_targets_catalog_drift.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_makefiles_contract.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/makefiles/tools/make_doctor.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/makefiles/tools/make_prereqs.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/ops/generation/update_ops_pins.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/ops/pins/check_ops_pins.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_surface_drift.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/make/enforcement.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/repo/contracts/pyproject_contracts.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/repo/enforcement/import_policy.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/repo/enforcement/shell_policy.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/repo/native_modules/repo_checks_make_and_layout.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/checks/repo/native_runtime_modules/repo_native_runtime_core.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/ci/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/check/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/compat.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/docs/runtime_chunks/core/docs_contracts_core.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/commands/doctor.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/configs/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/contracts/checks.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/contracts/generators.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/core/runtime/env_guard.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/deps/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/env/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/gen/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/internal/system.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/make/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/make/contracts_check.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/migrate/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/observability/contracts/governance/check_slo_no_loosen_without_approval.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/observability/contracts/governance/check_tool_versions.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/policies/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/policies/scans.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/python_tools/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/reporting/actions.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/reporting/run_gate.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/suite/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      },
+      {
+        "path": "packages/atlasctl/src/atlasctl/test_tools/command.py",
+        "reason": "temporary boundary exception; migrate to core boundary"
+      }
+    ]
+  }
+}
