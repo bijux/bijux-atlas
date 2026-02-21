@@ -31,6 +31,8 @@ CI_LANES: tuple[tuple[str, str, str, str, str], ...] = (
     ("ci-ops", "ops CI lane", "atlasctl ci ops --json", "lane", "ops"),
     ("ci-release", "release CI lane", "atlasctl ci release --json", "lane", "release"),
     ("ci-release-all", "release full CI lane", "atlasctl ci release-all --json", "lane", "release-all"),
+    ("ci-pr", "PR checks lane (fast checks only)", "atlasctl check run --group all --json", "lane", "pr"),
+    ("ci-nightly", "Nightly checks lane (includes slow)", "atlasctl check run --group all --all --json", "lane", "nightly"),
     ("ci-init", "initialize CI isolate/tmp dirs", "atlasctl ci init --json", "helper", ""),
     ("ci-artifacts", "print CI artifact locations", "atlasctl ci artifacts --json", "helper", ""),
 )
@@ -201,6 +203,20 @@ def run_ci_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.ci_cmd == "scripts":
         step = _run_step(ctx, ["make", "-s", "scripts-check"], verbose=verbose)
         return _emit_result(ctx, ns, "scripts", [step])
+    if ns.ci_cmd == "pr":
+        step = _run_step(
+            ctx,
+            [sys.executable, "-m", "atlasctl.cli", "--quiet", "--format", "json", "check", "run", "--group", "all", "--json"],
+            verbose=verbose,
+        )
+        return _emit_result(ctx, ns, "pr", [step])
+    if ns.ci_cmd == "nightly":
+        step = _run_step(
+            ctx,
+            [sys.executable, "-m", "atlasctl.cli", "--quiet", "--format", "json", "check", "run", "--group", "all", "--all", "--json"],
+            verbose=verbose,
+        )
+        return _emit_result(ctx, ns, "nightly", [step])
     if ns.ci_cmd == "run":
         out_dir = _ci_out_dir(ctx, getattr(ns, "out_dir", None))
         out_dir.mkdir(parents=True, exist_ok=True)

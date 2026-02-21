@@ -55,6 +55,8 @@ def configure_ci_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]
         "reproducible-verify",
         "security-advisory-render",
         "governance-check",
+        "pr",
+        "nightly",
     ):
         sp = ci_sub.add_parser(name, help=f"run ci action: {name}")
         sp.add_argument("--json", action="store_true", help="emit JSON output")
