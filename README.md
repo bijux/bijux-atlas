@@ -6,7 +6,7 @@
 - `configs/`: static configuration schemas and policy inputs.
 - `ops/`: operations SSOT (`e2e`, `load`, `observability`, `openapi`, datasets).
 - `docs/`: product/reference/contracts/operations/development docs.
-- `packages/`: Python tooling packages (`atlasctl`, `bijux-atlas-py` scaffold).
+- `packages/`: package implementations by language/runtime (for example Python via `atlasctl`).
 - `scripts/`: deprecated migration area; no new logic is allowed.
 - `makefiles/`: target implementations included by root `Makefile`.
 - `docker/`: canonical container build surface and policy.
