@@ -79,7 +79,11 @@ from .enforcement.import_policy import (
     check_no_modern_imports_from_legacy,
     check_runcontext_single_builder,
 )
-from .enforcement.boundaries.effect_boundaries import check_forbidden_effect_calls, check_subprocess_boundary
+from .enforcement.boundaries.effect_boundaries import (
+    check_effect_boundary_exceptions_policy,
+    check_forbidden_effect_calls,
+    check_subprocess_boundary,
+)
 from .contracts.pyproject_contracts import (
     check_dependency_gate_targets,
     check_deps_workflow_doc,
@@ -331,7 +335,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.no_placeholder_module_names", "repo", "forbid placeholder-like module filenames in modern code", 300, check_no_placeholder_module_names, fix_hint="Rename modules to intent-revealing names."),
     CheckDef("repo.package_has_module_or_readme", "repo", "require each non-legacy package to contain a module or README", 300, check_package_has_module_or_readme, fix_hint="Add module implementation or README.md to document empty package."),
     CheckDef("repo.no_path_cwd_usage", "repo", "forbid Path.cwd usage outside core/repo_root.py", 400, check_no_path_cwd_usage, fix_hint="Use ctx.repo_root or core.repo_root helpers."),
-    CheckDef("repo.command_metadata_contract", "repo", "ensure command metadata includes touches/tools", 400, check_command_metadata_contract, fix_hint="Add touches/tools metadata in cli registry."),
+    CheckDef("repo.command_metadata_contract", "repo", "ensure command metadata includes touches/tools/effect declarations", 400, check_command_metadata_contract, fix_hint="Add touches/tools/effect metadata in cli registry."),
     CheckDef("repo.argparse_policy", "repo", "restrict direct argparse parser construction to canonical parser modules", 300, check_argparse_policy, fix_hint="Move parser construction into cli/parser.py or commands/*/parser.py."),
     CheckDef("repo.no_duplicate_command_names", "repo", "ensure command names are unique", 300, check_no_duplicate_command_names, fix_hint="Rename duplicate command/alias entries."),
     CheckDef("repo.command_alias_budget", "repo", "enforce command alias/name budget", 300, check_command_alias_budget, fix_hint="Remove duplicate alias identifiers from command surface."),
@@ -381,8 +385,9 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.runcontext_single_builder", "repo", "ensure RunContext is built only in core/context.py", 300, check_runcontext_single_builder, fix_hint="Use RunContext.from_args and avoid constructing context-like objects elsewhere."),
     CheckDef("repo.command_import_lint", "repo", "enforce command module import boundaries", 300, check_command_import_lint, fix_hint="Restrict command imports to core/contracts/checks/adapters/commands/cli."),
     CheckDef("repo.checks_import_lint", "repo", "enforce checks module import boundaries", 300, check_checks_import_lint, fix_hint="Restrict checks imports to core/contracts/reporting/adapters/checks."),
-    CheckDef("repo.effect_boundaries", "repo", "forbid direct subprocess/env/write-text effects outside approved core boundaries", 300, check_forbidden_effect_calls, fix_hint="Route effects through core.exec/core.env/core.fs or approved generators."),
+    CheckDef("repo.effect_boundaries", "repo", "forbid direct subprocess/fs/env/network effects outside core boundaries", 300, check_forbidden_effect_calls, fix_hint="Route effects through core.exec/core.process/core.fs/core.env/core.network."),
     CheckDef("repo.subprocess_boundary", "repo", "restrict subprocess imports to core execution boundary", 300, check_subprocess_boundary, fix_hint="Use core.exec/core.process for subprocess calls."),
+    CheckDef("repo.effect_boundary_exceptions_policy", "repo", "enforce explicit sorted effect boundary exceptions with reasons", 300, check_effect_boundary_exceptions_policy, fix_hint="Keep configs/policy/effect-boundary-exceptions.json sorted and justified."),
     CheckDef("repo.compileall_gate", "repo", "ensure atlasctl source compiles with compileall", 300, check_compileall_gate, fix_hint="Fix syntax/import issues until python -m compileall passes."),
     CheckDef("repo.import_smoke", "repo", "ensure atlasctl package imports in minimal environment", 300, check_import_smoke, fix_hint="Keep top-level imports light and dependency-safe."),
     CheckDef("repo.cold_import_budget", "repo", "enforce cold import time budget for atlasctl package", 300, check_cold_import_budget, fix_hint="Reduce top-level imports and defer heavy initialization."),

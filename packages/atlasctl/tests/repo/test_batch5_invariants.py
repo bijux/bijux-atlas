@@ -16,6 +16,7 @@ from atlasctl.checks.repo.contracts.test_guardrails import (
     check_test_ownership_tags,
 )
 from atlasctl.checks.repo.enforcement.boundaries.effect_boundaries import (
+    check_effect_boundary_exceptions_policy,
     check_forbidden_effect_calls,
     check_subprocess_boundary,
 )
@@ -39,7 +40,7 @@ def test_import_boundary_checks_pass() -> None:
 
 def test_effect_boundary_checks_pass() -> None:
     root = _repo_root()
-    for fn in (check_subprocess_boundary, check_forbidden_effect_calls):
+    for fn in (check_subprocess_boundary, check_forbidden_effect_calls, check_effect_boundary_exceptions_policy):
         code, errors = fn(root)
         assert code == 0, errors
 
