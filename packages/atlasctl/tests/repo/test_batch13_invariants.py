@@ -14,7 +14,7 @@ def test_no_legacy_observability_or_reporting_namespace() -> None:
 
 def test_suite_runner_has_single_canonical_command() -> None:
     suite_command = ROOT / "packages/atlasctl/src/atlasctl/suite/command.py"
-    lint_runner = ROOT / "packages/atlasctl/src/atlasctl/lint/runner.py"
+    lint_runner = ROOT / "packages/atlasctl/src/atlasctl/lint/suite_engine.py"
     assert "def run_suite_command(" in suite_command.read_text(encoding="utf-8")
     assert "def run_lint_suite(" in lint_runner.read_text(encoding="utf-8")
     assert "def run_suite(" not in lint_runner.read_text(encoding="utf-8")
