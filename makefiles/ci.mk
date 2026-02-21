@@ -15,17 +15,16 @@ ci-docs-lint-names:
 	@$(MAKE) docs-lint-names
 
 ci-fmt:
-	@$(MAKE) fmt
+	@$(ATLAS_SCRIPTS) dev fmt
 
 ci-clippy:
-	@$(MAKE) _lint-clippy
+	@$(ATLAS_SCRIPTS) dev lint
 
 ci-test-nextest:
-	@$(MAKE) test
+	@$(ATLAS_SCRIPTS) dev test
 
 ci-deny:
-	@if ! cargo +stable deny --version >/dev/null 2>&1; then cargo +stable install cargo-deny --locked; fi
-	@cargo +stable deny check --config configs/security/deny.toml
+	@$(ATLAS_SCRIPTS) dev audit
 
 ci-audit:
 	@if ! cargo audit --version >/dev/null 2>&1; then cargo install cargo-audit --locked; fi
@@ -142,8 +141,7 @@ ci-runtime-security-scan-image:
 	@$(MAKE) docker-scan
 
 ci-coverage:
-	@if ! cargo llvm-cov --version >/dev/null 2>&1; then cargo install cargo-llvm-cov --locked; fi
-	@cargo llvm-cov --workspace --all-features --lcov --output-path artifacts/isolate/coverage/lcov.info
+	@$(ATLAS_SCRIPTS) dev coverage
 
 ci-workflows-make-only:
 	@$(ATLAS_SCRIPTS) check forbidden-paths
