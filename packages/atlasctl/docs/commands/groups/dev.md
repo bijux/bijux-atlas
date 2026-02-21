@@ -44,7 +44,10 @@ Commands mapped to `dev` effects policy.
 - `atlasctl dev ci run --json`
 - `atlasctl dev fmt`
 - `atlasctl dev lint`
+- `atlasctl dev check`
 - `atlasctl dev test`
+- `atlasctl dev test --all`
+- `atlasctl dev test --contracts`
 - `atlasctl dev coverage`
 - `atlasctl dev audit`
 - `atlasctl test all --report json`

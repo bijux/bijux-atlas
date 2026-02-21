@@ -13,6 +13,7 @@
 - `atlasctl dev ci run` (canonical CI one-liner)
 - `atlasctl dev fmt`
 - `atlasctl dev lint`
+- `atlasctl dev check`
 - `atlasctl dev test`
 - `atlasctl dev coverage`
 - `atlasctl dev audit`
