@@ -243,8 +243,8 @@ atlasctl-lint: ## Lint atlasctl package (ruff + mypy strict domains)
 atlasctl-test: ## Test atlasctl package (compile + unit + integration)
 	@$(MAKE) -s internal/scripts/install-lock
 	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/python" -m compileall -q packages/atlasctl/src
-	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/pytest" -q -m unit packages/atlasctl/tests
-	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/pytest" -q -m integration packages/atlasctl/tests
+	@$(ATLAS_SCRIPTS) suite run ci --json --target-dir artifacts/reports/atlasctl/suite-ci >/dev/null
+	@$(ATLAS_SCRIPTS) test run integration
 
 scripts-install-dev: ## Install python tooling for scripts package development
 	@$(MAKE) -s internal/scripts/install-dev
@@ -344,8 +344,16 @@ policies-check: ## Alias for policies/check
 	@$(MAKE) -s policies/check
 
 budgets/check: ## Validate universal budgets and budget-relaxation expiry policy
+	@$(MAKE) -s budgets
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_budgets.py
 	@$(ATLAS_SCRIPTS) run ./ops/_lint/budget-relaxations-audit.py
+
+budgets: ## Run fast suite budgets gate and emit culprits artifacts
+	@mkdir -p artifacts/reports/atlasctl
+	@$(ATLAS_SCRIPTS) suite run fast --json --target-dir artifacts/reports/atlasctl/suite-fast >/dev/null
+	@$(ATLAS_SCRIPTS) policies culprits-suite --report json --out-file artifacts/reports/atlasctl/budgets.json >/dev/null
+	@$(ATLAS_SCRIPTS) policies culprits-suite --report text --out-file artifacts/reports/atlasctl/budgets.txt >/dev/null
+	@printf '%s\n' "INFO: wrote artifacts/reports/atlasctl/budgets.{json,txt}"
 
 perf/baseline-update: ## Run smoke suite, update baseline, write diff summary and changelog
 	@PROFILE="$${PROFILE:-$${ATLAS_PERF_BASELINE_PROFILE:-local}}"; \
