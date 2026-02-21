@@ -60,6 +60,7 @@ from .enforcement.check_structure import (
 )
 from .enforcement.package_hygiene import (
     check_folder_intent_contract,
+    check_no_empty_dirs_or_pointless_nests,
     check_no_empty_packages,
     check_no_placeholder_module_names,
     check_package_has_module_or_readme,
@@ -410,6 +411,7 @@ CHECKS: tuple[CheckDef, ...] = (
         fix_hint="Flatten nested same-name package segments (example: checks/checks).",
     ),
     CheckDef("repo.no_empty_packages", "repo", "forbid empty non-legacy packages without README", 300, check_no_empty_packages, fix_hint="Add a real module or README.md to package directories."),
+    CheckDef("repo.no_empty_dirs_or_pointless_nests", "repo", "forbid empty directories and pointless single-child nesting under src/atlasctl", 300, check_no_empty_dirs_or_pointless_nests, fix_hint="Delete empty directories and flatten single-child nests without modules or README markers."),
     CheckDef(
         "repo.folder_intent_contract",
         "repo",

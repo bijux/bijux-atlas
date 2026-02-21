@@ -83,3 +83,30 @@ def check_folder_intent_contract(repo_root: Path) -> tuple[int, list[str]]:
     if offenders:
         return 1, [f"check directory missing intent marker (README.md or check_*.py): {path}" for path in offenders]
     return 0, []
+
+
+def check_no_empty_dirs_or_pointless_nests(repo_root: Path) -> tuple[int, list[str]]:
+    src_root = repo_root / _SRC_ROOT
+    offenders: list[str] = []
+    for directory in sorted(path for path in src_root.rglob("*") if path.is_dir()):
+        rel = directory.relative_to(repo_root).as_posix()
+        if "__pycache__" in rel or "/legacy/" in rel:
+            continue
+        entries = sorted(path for path in directory.iterdir() if path.name != "__pycache__")
+        if not entries:
+            offenders.append(f"empty directory is forbidden: {rel}")
+            continue
+        files = [path for path in entries if path.is_file()]
+        subdirs = [path for path in entries if path.is_dir()]
+        has_python = any(path.suffix == ".py" for path in files)
+        has_readme = any(path.name == "README.md" for path in files)
+        if directory == src_root:
+            continue
+        if not has_python and not has_readme and len(subdirs) == 1:
+            offenders.append(
+                "pointless single-child nesting is forbidden: "
+                f"{rel} -> {subdirs[0].relative_to(repo_root).as_posix()}",
+            )
+    if offenders:
+        return 1, offenders
+    return 0, []
