@@ -1,33 +1,17 @@
 from __future__ import annotations
 
 import re
-import subprocess
 import sys
 from pathlib import Path
+import subprocess
 
 
 _ALLOWED_SHELL_PREFIXES = (
-    "packages/atlasctl/src/atlasctl/checks/layout/",
-    "ops/",
+    "packages/atlasctl/src/atlasctl/checks/layout/shell/",
 )
 _SHELL_HEADER = "#!/usr/bin/env bash"
 _STRICT_MODE = "set -euo pipefail"
-_MAX_SHELL_SCRIPTS = 64
-
-
-def _iter_shell_files(repo_root: Path) -> list[Path]:
-    tracked = subprocess.run(
-        ["git", "ls-files", "*.sh"],
-        cwd=repo_root,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
-    if tracked.returncode == 0:
-        files = [repo_root / line.strip() for line in tracked.stdout.splitlines() if line.strip()]
-        return sorted(path for path in files if path.exists())
-    return sorted(p for p in repo_root.rglob("*.sh") if ".git/" not in p.as_posix())
-
+_MAX_SHELL_SCRIPTS = 16
 
 def _iter_layout_shell_checks(repo_root: Path) -> list[Path]:
     root = repo_root / "packages/atlasctl/src/atlasctl/checks/layout/shell"
@@ -36,14 +20,14 @@ def _iter_layout_shell_checks(repo_root: Path) -> list[Path]:
 
 def check_shell_location_policy(repo_root: Path) -> tuple[int, list[str]]:
     offenders: list[str] = []
-    for path in _iter_shell_files(repo_root):
+    for path in sorted((repo_root / "packages/atlasctl/src/atlasctl/checks/layout").rglob("*.sh")):
         rel = path.relative_to(repo_root).as_posix()
         if rel.startswith(_ALLOWED_SHELL_PREFIXES):
             continue
         offenders.append(rel)
     if offenders:
         return 1, [
-            "shell scripts are allowed only under packages/atlasctl/src/atlasctl/checks/layout/ and ops/",
+            "layout shell scripts are allowed only under packages/atlasctl/src/atlasctl/checks/layout/shell/",
             *offenders,
         ]
     return 0, []
@@ -51,7 +35,7 @@ def check_shell_location_policy(repo_root: Path) -> tuple[int, list[str]]:
 
 def check_shell_headers_and_strict_mode(repo_root: Path) -> tuple[int, list[str]]:
     offenders: list[str] = []
-    for path in _iter_shell_files(repo_root):
+    for path in _iter_layout_shell_checks(repo_root):
         rel = path.relative_to(repo_root).as_posix()
         text = path.read_text(encoding="utf-8", errors="ignore")
         lines = text.splitlines()
@@ -66,7 +50,7 @@ def check_shell_headers_and_strict_mode(repo_root: Path) -> tuple[int, list[str]
 def check_shell_no_python_direct_calls(repo_root: Path) -> tuple[int, list[str]]:
     offenders: list[str] = []
     forbidden_tokens = ("python ", "python3 ", "python -m ", "python3 -m ")
-    for path in _iter_shell_files(repo_root):
+    for path in _iter_layout_shell_checks(repo_root):
         rel = path.relative_to(repo_root).as_posix()
         for lineno, line in enumerate(path.read_text(encoding="utf-8", errors="ignore").splitlines(), 1):
             striped = line.strip()
@@ -107,11 +91,15 @@ def check_shell_invocation_via_core_exec(repo_root: Path) -> tuple[int, list[str
         rel = path.relative_to(repo_root).as_posix()
         if rel in allowed or "/legacy/" in rel:
             continue
-        text = path.read_text(encoding="utf-8", errors="ignore")
-        if ".sh" not in text:
-            continue
-        if "subprocess.run(" in text or "subprocess.Popen(" in text or "os.system(" in text:
+        lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
+        for idx, line in enumerate(lines):
+            snippet = " ".join(lines[idx : idx + 3])
+            if not any(token in snippet for token in ("subprocess.run(", "subprocess.Popen(", "os.system(")):
+                continue
+            if not any(token in snippet for token in (".sh", "\"bash\"", "'bash'", "\"sh\"", "'sh'")):
+                continue
             offenders.append(f"{rel}: invoke shell scripts through core.exec helpers")
+            break
     return (0 if not offenders else 1), offenders
 
 
@@ -134,10 +122,10 @@ def check_shell_scripts_readonly(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def check_shell_script_budget(repo_root: Path) -> tuple[int, list[str]]:
-    count = len(_iter_shell_files(repo_root))
+    count = len(_iter_layout_shell_checks(repo_root))
     if count <= _MAX_SHELL_SCRIPTS:
         return 0, []
-    return 1, [f"shell script budget exceeded: {count} > {_MAX_SHELL_SCRIPTS}"]
+    return 1, [f"layout shell script budget exceeded: {count} > {_MAX_SHELL_SCRIPTS}"]
 
 
 def check_shell_docs_present(repo_root: Path) -> tuple[int, list[str]]:

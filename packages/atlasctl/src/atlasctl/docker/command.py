@@ -1,24 +1,19 @@
 from __future__ import annotations
 
 import argparse
-import subprocess
 
 from ..core.context import RunContext
+from ..core.exec_shell import run_shell_script
 
 
 def run_docker_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     image = ns.image
     if ns.docker_cmd == "scan":
-        proc = subprocess.run(["docker/scripts/docker-scan.sh", image], cwd=ctx.repo_root, text=True, check=False)
-        return proc.returncode
+        payload = run_shell_script(ctx.repo_root / "docker/scripts/docker-scan.sh", args=[image], cwd=ctx.repo_root)
+        return int(payload["exit_code"])
     if ns.docker_cmd == "smoke":
-        proc = subprocess.run(
-            ["docker/scripts/docker-runtime-smoke.sh", image],
-            cwd=ctx.repo_root,
-            text=True,
-            check=False,
-        )
-        return proc.returncode
+        payload = run_shell_script(ctx.repo_root / "docker/scripts/docker-runtime-smoke.sh", args=[image], cwd=ctx.repo_root)
+        return int(payload["exit_code"])
     return 2
 
 
@@ -29,4 +24,3 @@ def configure_docker_parser(sub: argparse._SubParsersAction[argparse.ArgumentPar
     scan.add_argument("--image", default="bijux-atlas:local")
     smoke = docker_sub.add_parser("smoke", help="run docker runtime smoke checks")
     smoke.add_argument("--image", default="bijux-atlas:local")
-

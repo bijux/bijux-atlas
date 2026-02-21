@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from ...core.exec_shell import run_shell_script
 
 _CHUNK_DIR = Path(__file__).with_name("runtime_chunks")
 _CHUNKS = (
