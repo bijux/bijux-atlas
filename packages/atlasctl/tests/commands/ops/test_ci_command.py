@@ -5,10 +5,12 @@ import json
 from types import SimpleNamespace
 from pathlib import Path
 
+import jsonschema
 from atlasctl.commands.dev.ci.command import run_ci_command
 from atlasctl.core.effects.dev_ci import _ci_out_dir
 from atlasctl.contracts.validate import validate
 from atlasctl.core.context import RunContext
+from tests.helpers import ROOT, golden_path, run_atlasctl
 
 
 def test_ci_run_invokes_suite_ci(monkeypatch, capsys) -> None:
@@ -232,3 +234,39 @@ def test_ci_report_requires_latest_flag(capsys) -> None:
     assert rc == 2
     payload = json.loads(capsys.readouterr().out.strip())
     assert payload["status"] == "error"
+
+
+def test_ci_list_json_matches_golden() -> None:
+    proc = run_atlasctl("--quiet", "ci", "list", "--json")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    golden = json.loads(golden_path("list/ci-list.json.golden").read_text(encoding="utf-8"))
+    assert payload == golden
+
+
+def test_ci_run_json_schema_contract(monkeypatch, capsys) -> None:
+    def fake_run(_cmd, **_kwargs):
+        return SimpleNamespace(
+            returncode=0,
+            stdout='{"tool":"atlasctl","status":"ok","summary":{"passed":1,"failed":0,"skipped":0},"results":[{"label":"check docs","status":"pass"}]}\n',
+            stderr="",
+        )
+
+    monkeypatch.setattr("atlasctl.core.effects.dev_ci.subprocess.run", fake_run)
+    ctx = RunContext.from_args("ci-run-schema-contract", None, "test", False)
+    ns = argparse.Namespace(
+        ci_cmd="run",
+        json=True,
+        out_dir=None,
+        lane=["docs"],
+        fail_fast=False,
+        keep_going=True,
+        no_isolate=True,
+        verbose=False,
+        explain=False,
+    )
+    rc = run_ci_command(ctx, ns)
+    assert rc == 0
+    payload = json.loads(capsys.readouterr().out.strip())
+    schema = json.loads((ROOT / "configs/contracts/ci-run-output.schema.json").read_text(encoding="utf-8"))
+    jsonschema.validate(payload, schema)

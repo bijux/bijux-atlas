@@ -22,6 +22,19 @@ LANE_FILTERS: dict[str, tuple[str, ...]] = {
     "rust": ("check repo*", "cmd *cargo*"),
 }
 
+CI_LANES: tuple[tuple[str, str, str, str, str], ...] = (
+    ("ci", "canonical CI suite run", "atlasctl ci run --json", "lane", "ci"),
+    ("ci-fast", "fast CI lane", "atlasctl ci fast --json", "lane", "fast"),
+    ("ci-all", "all CI lanes", "atlasctl ci all --json", "lane", "all"),
+    ("ci-contracts", "contracts CI lane", "atlasctl ci contracts --json", "lane", "contracts"),
+    ("ci-docs", "docs CI lane", "atlasctl ci docs --json", "lane", "docs"),
+    ("ci-ops", "ops CI lane", "atlasctl ci ops --json", "lane", "ops"),
+    ("ci-release", "release CI lane", "atlasctl ci release --json", "lane", "release"),
+    ("ci-release-all", "release full CI lane", "atlasctl ci release-all --json", "lane", "release-all"),
+    ("ci-init", "initialize CI isolate/tmp dirs", "atlasctl ci init --json", "helper", ""),
+    ("ci-artifacts", "print CI artifact locations", "atlasctl ci artifacts --json", "helper", ""),
+)
+
 
 def _ci_out_dir(ctx: RunContext, override: str | None) -> Path:
     if override:
@@ -101,6 +114,29 @@ def _emit_result(ctx: RunContext, ns: argparse.Namespace, action: str, steps: li
 
 def run_ci_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     verbose = bool(getattr(ns, "verbose", False) or ctx.verbose)
+    if ns.ci_cmd == "list":
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "kind": "ci-lanes-list",
+            "lanes": [
+                {
+                    "name": name,
+                    "description": description,
+                    "atlasctl": atlasctl,
+                    "kind": kind,
+                    "suite": suite,
+                }
+                for name, description, atlasctl, kind, suite in CI_LANES
+            ],
+        }
+        if ns.json or ctx.output_format == "json":
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            for lane in payload["lanes"]:
+                print(f"{lane['name']}\t{lane['atlasctl']}\t{lane['description']}")
+        return 0
     if ns.ci_cmd == "all":
         step = _run_step(
             ctx,
@@ -522,6 +558,9 @@ def configure_ci_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]
     p = sub.add_parser("ci", help="ci command group")
     p.add_argument("--verbose", action="store_true", help="show underlying tool command output")
     ci_sub = p.add_subparsers(dest="ci_cmd", required=True)
+    ls = ci_sub.add_parser("list", help="list canonical CI lanes")
+    ls.add_argument("--json", action="store_true", help="emit JSON output")
+    ls.add_argument("--verbose", action="store_true", help="show underlying tool command output")
     ci_sub.add_parser("scripts", help="run scripts ci checks")
     run = ci_sub.add_parser("run", help="run canonical CI suite locally")
     run.add_argument("--json", action="store_true", help="emit JSON output")

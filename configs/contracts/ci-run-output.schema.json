@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "tool",
+    "status",
+    "run_id",
+    "lane_filter",
+    "mode",
+    "execution",
+    "suite_result",
+    "suite_steps",
+    "artifacts"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 1},
+    "tool": {"type": "string", "const": "atlasctl"},
+    "status": {"type": "string", "enum": ["ok", "error"]},
+    "run_id": {"type": "string", "minLength": 1},
+    "lane_filter": {"type": "array", "items": {"type": "string"}},
+    "mode": {"type": "string", "minLength": 1},
+    "execution": {"type": "string", "minLength": 1},
+    "suite_result": {"type": "object"},
+    "suite_steps": {"type": "array", "items": {"type": "object"}},
+    "artifacts": {
+      "type": "object",
+      "required": ["json", "junit", "summary", "meta"],
+      "properties": {
+        "json": {"type": "string", "minLength": 1},
+        "junit": {"type": "string", "minLength": 1},
+        "summary": {"type": "string", "minLength": 1},
+        "meta": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}
