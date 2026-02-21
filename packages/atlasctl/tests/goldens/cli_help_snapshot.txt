@@ -25,6 +25,7 @@ options:
   --cwd CWD             run command from an explicit repository root
   --profile PROFILE     profile id
   --format {text,json}  output format
+  --log-json            emit structured JSON logs to stderr
   --network {allow,forbid}
                         network access mode (default: forbid)
   --allow-network       explicitly allow network when command group policy
