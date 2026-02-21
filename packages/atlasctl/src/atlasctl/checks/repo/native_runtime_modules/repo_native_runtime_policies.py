@@ -1,6 +1,6 @@
 def check_script_tool_guards(repo_root: Path) -> tuple[int, list[str]]:
     tool_re = re.compile(r"\b(kubectl|helm|kind|k6)\b")
-    guards = ("check_tool_versions.py", "ops_version_guard", "packages/atlasctl/src/atlasctl/checks/layout/contracts/observability/check_tool_versions.py")
+    guards = ("check_tool_versions.py", "ops_version_guard", "packages/atlasctl/src/atlasctl/observability/contracts/governance/check_tool_versions.py")
     errors: list[str] = []
     for scan_dir in (repo_root / "scripts/bin", repo_root / "scripts/check", repo_root / "scripts/ci"):
         if not scan_dir.exists():

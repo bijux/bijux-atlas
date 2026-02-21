@@ -46,8 +46,8 @@ ops-contracts-check: ## Validate canonical ops manifests against ops/_schemas an
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/validation/validate_ops_contracts.py
 	@python3 ./ops/_lint/json-schema-coverage.py
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/hygiene/check_no_hidden_defaults.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/observability/check_obs_pack_ssot.py
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/observability/check_obs_suites.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/contracts/governance/check_obs_pack_ssot.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/contracts/governance/check_obs_suites.py
 	@python3 ./ops/obs/scripts/areas/contracts/check_overload_behavior_contract.py
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_canonical_entrypoints.py
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_script_names.py
@@ -957,22 +957,22 @@ ops-shfmt: ## Format-check all ops shell scripts (optional if shfmt unavailable)
 	fi
 
 ops-kind-version-check: ## Validate pinned kind version from configs/ops/tool-versions.json
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/observability/check_tool_versions.py kind
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/contracts/governance/check_tool_versions.py kind
 
 ops-k6-version-check: ## Validate pinned k6 version from configs/ops/tool-versions.json
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/observability/check_tool_versions.py k6
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/contracts/governance/check_tool_versions.py k6
 
 ops-helm-version-check: ## Validate pinned helm version from configs/ops/tool-versions.json
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/observability/check_tool_versions.py helm
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/contracts/governance/check_tool_versions.py helm
 
 ops-kubectl-version-check: ## Validate pinned kubectl version from configs/ops/tool-versions.json
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/observability/check_tool_versions.py kubectl
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/contracts/governance/check_tool_versions.py kubectl
 
 ops-jq-version-check: ## Validate pinned jq version from configs/ops/tool-versions.json
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/observability/check_tool_versions.py jq
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/contracts/governance/check_tool_versions.py jq
 
 ops-yq-version-check: ## Validate pinned yq version from configs/ops/tool-versions.json
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/observability/check_tool_versions.py yq
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/contracts/governance/check_tool_versions.py yq
 
 ops-tools-check: ## Validate all pinned ops tools versions
 	@$(MAKE) ops-kind-version-check
@@ -1070,7 +1070,7 @@ ops-alerts-validate: ## Validate alert rules and contract coverage
 ops-observability-validate: ## Validate observability assets/contracts end-to-end
 	@set -e; \
 	trap 'out="artifacts/ops/obs/validate-fail-$$(date +%Y%m%d-%H%M%S)"; mkdir -p "$$out"; kubectl get pods -A -o wide > "$$out/pods.txt" 2>/dev/null || true; kubectl get events -A --sort-by=.lastTimestamp > "$$out/events.txt" 2>/dev/null || true; cp -f ops/obs/grafana/atlas-observability-dashboard.json "$$out/dashboard.json" 2>/dev/null || true; cp -f ops/obs/alerts/atlas-alert-rules.yaml "$$out/alerts.yaml" 2>/dev/null || true; echo "observability validation failed, artifacts: $$out" >&2' ERR; \
-	$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/contracts/observability/check_obs_script_name_collisions.py; \
+	$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/observability/contracts/governance/check_obs_script_name_collisions.py; \
 	$(ATLAS_SCRIPTS) docs observability-surface-check --report text; \
 	$(MAKE) ops-dashboards-validate; \
 	$(MAKE) ops-alerts-validate; \

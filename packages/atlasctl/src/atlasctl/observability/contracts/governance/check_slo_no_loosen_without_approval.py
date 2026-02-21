@@ -7,7 +7,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[6]
+ROOT = Path(__file__).resolve().parents[7]
 SLO_FILE = "configs/ops/slo/slo.v1.json"
 APPROVAL_FILE = "configs/ops/slo/LOOSENING_APPROVAL.json"
 
