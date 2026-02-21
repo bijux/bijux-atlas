@@ -76,6 +76,12 @@ CHECKS: list[MakeCheck] = [
         "Update workflow jobs to call approved public targets only.",
     ),
     _check(
+        "workflow-command-bans",
+        "Validate workflows ban direct cargo and internal make invocations",
+        "packages/atlasctl/src/atlasctl/checks/layout/workflows/check_workflow_command_bans.py",
+        "Use atlasctl commands or approved public wrappers in workflows.",
+    ),
+    _check(
         "ci-legacy-target-cutoff",
         "Validate CI workflows have no legacy targets after cutoff date",
         "packages/atlasctl/src/atlasctl/checks/layout/workflows/check_ci_legacy_target_cutoff.py",
