@@ -15,7 +15,6 @@ Public command index (stable surface). Command wiring is registry-first via `src
 - `inventory`
 - `k8s`
 - `layout`
-- `legacy`
 - `lint`
 - `load`
 - `obs`
@@ -28,6 +27,9 @@ Public command index (stable surface). Command wiring is registry-first via `src
 - `stack`
 - `test`
 - `version`
+
+Internal and migration-only commands (including `legacy` and `compat`) are hidden from default help output.  
+Use `atlasctl help --include-internal --json` to inspect them explicitly.
 
 ## Workflow
 
