@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run atlasctl CI suite only
-        run: ./bin/atlasctl --quiet suite run ci --json
+        run: make ci
 
   root-and-ci-only:
     runs-on: ubuntu-latest

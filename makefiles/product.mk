@@ -101,10 +101,10 @@ docs-lint-names: ## Enforce durable naming contracts, registries, and inventory
 	@$(ATLAS_SCRIPTS) docs index-pages-check --report text
 
 internal/product/doctor: ## Print tool/env/path diagnostics and store doctor report
-	@RUN_ID="$${RUN_ID:-doctor-$(MAKE_RUN_TS)}" $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/makefiles/tools/make_doctor.py
+	@RUN_ID="$${RUN_ID:-doctor-$(MAKE_RUN_TS)}" $(ATLAS_SCRIPTS) make doctor
 
 prereqs: ## Check required binaries and versions and store prereqs report
-	@RUN_ID="$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}" $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/makefiles/tools/make_prereqs.py --run-id "$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}"
+	@RUN_ID="$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}" $(ATLAS_SCRIPTS) make prereqs --run-id "$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}"
 
 dataset-id-lint: ## Validate DatasetId/DatasetKey contract usage across ops fixtures
 	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/scripts/dataset_id_lint.py
