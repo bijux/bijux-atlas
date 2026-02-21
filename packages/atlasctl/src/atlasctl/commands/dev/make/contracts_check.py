@@ -255,6 +255,12 @@ CHECKS: list[MakeCheck] = [
         "packages/atlasctl/src/atlasctl/checks/layout/policies/root/check_root_makefile_hygiene.py",
         "Fix ordering, phony coverage, and structural hygiene issues in root.mk.",
     ),
+    _check(
+        "dev-submodule-budget",
+        "Validate commands/dev submodule budget",
+        "packages/atlasctl/src/atlasctl/checks/layout/policies/dev/check_dev_submodule_budget.py",
+        "Keep commands/dev first-level submodules within the 10-module budget.",
+    ),
 ]
 
 

@@ -68,7 +68,7 @@ def test_run_dev_cargo_json_payload(monkeypatch, capsys) -> None:
             stderr = ""
         return P()
 
-    monkeypatch.setattr("atlasctl.commands.dev.cargo.command.subprocess.run", fake_subprocess_run)
+    monkeypatch.setattr("atlasctl.core.effects.dev_cargo.subprocess.run", fake_subprocess_run)
     ctx = RunContext.from_args("dev-json", None, "test", False)
     rc = run_dev_cargo(ctx, DevCargoParams(action="check", json_output=True, verbose=False))
     assert rc == 0
@@ -96,7 +96,7 @@ def test_dev_forward_propagates_quiet_and_json(monkeypatch) -> None:
 
 
 def test_dev_fmt_refuses_without_isolate(monkeypatch) -> None:
-    monkeypatch.setattr("atlasctl.commands.dev.cargo.command._build_isolate_env", lambda _ctx, _action: {})
+    monkeypatch.setattr("atlasctl.core.effects.dev_cargo._build_isolate_env", lambda _ctx, _action: {})
     ctx = RunContext.from_args("dev-no-isolate", None, "test", False)
     with pytest.raises(ScriptError):
         run_dev_cargo(ctx, DevCargoParams(action="fmt", json_output=True, verbose=False))

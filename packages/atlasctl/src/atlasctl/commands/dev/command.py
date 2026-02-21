@@ -16,6 +16,7 @@ _DEV_FORWARD: dict[str, str] = {
     "suite": "suite",
     "test": "test",
     "ci": "ci",
+    "make": "make",
     "commands": "commands",
     "explain": "explain",
 }
@@ -29,6 +30,7 @@ _DEV_ITEMS: tuple[str, ...] = (
     "fmt",
     "lint",
     "list",
+    "make",
     "split-module",
     "suite",
     "test",
@@ -143,6 +145,7 @@ def configure_dev_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
         ("list", "forward to `atlasctl list ...`"),
         ("suite", "forward to `atlasctl suite ...`"),
         ("ci", "forward to `atlasctl ci ...`"),
+        ("make", "forward to `atlasctl make ...`"),
         ("commands", "forward to `atlasctl commands ...`"),
         ("explain", "forward to `atlasctl explain ...`"),
     ):
