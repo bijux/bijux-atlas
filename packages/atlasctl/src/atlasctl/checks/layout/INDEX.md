@@ -99,7 +99,6 @@ Legacy subgroup `contracts/` remains during migration and is being flattened int
 - check_script_naming_convention.py
 - check_script_relative_calls.py
 - check_scripts_buckets.py
-- check_scripts_readme_drift.sh
 - check_scripts_submodules.py
 - check_stack_manifest_consolidation.sh
 - check_symlink_index.py
