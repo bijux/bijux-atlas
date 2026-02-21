@@ -172,6 +172,7 @@ def build_parser() -> argparse.ArgumentParser:
     explain_parser.add_argument("subject_or_name")
     explain_parser.add_argument("name", nargs="?")
     explain_parser.add_argument("--json", action="store_true", help="emit JSON output")
+    _import_attr("atlasctl.commands.listing", "configure_list_parser")(sub)
 
     run_parser = sub.add_parser("run", help="run an internal python script by repo-relative path")
     run_parser.add_argument("script")
