@@ -12,6 +12,7 @@
 - [ ] Generated artifacts were refreshed (`scripts/areas/contracts/generate_contract_artifacts.py`).
 - [ ] `make ssot-check` is green.
 - [ ] OpenAPI drift reviewed (`make openapi-drift`).
+- [ ] No new bypass entries were introduced (attach `artifacts/reports/atlasctl/policies-bypass-report.json` or link CI artifact).
 
 ## Risk
 - [ ] Breaking change: explain in PR body and update compatibility docs.
