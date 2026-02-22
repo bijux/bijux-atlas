@@ -15,7 +15,11 @@ def _read_manifest_field(name: str, field: str):
 
 
 def _cleanup():
-    subprocess.call([str(ROOT/'ops/stack/faults/inject.sh'),'block-minio','off'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.call(
+        ['python3', 'packages/atlasctl/src/atlasctl/commands/ops/stack/faults/inject.py', 'block-minio', 'off'],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
     ns = os.environ.get('ATLAS_NS', os.environ.get('ATLAS_E2E_NAMESPACE','atlas-e2e'))
     subprocess.call(['kubectl','-n',ns,'delete','pod','toxiproxy-latency','--ignore-not-found'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 

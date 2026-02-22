@@ -14,7 +14,7 @@
     {"path": "atlasctl ops e2e run", "owner": "ops", "description": "e2e suite entrypoint"},
     {"path": "atlasctl ops stack down", "owner": "ops", "description": "bring stack down"},
     {"path": "atlasctl ops stack up", "owner": "ops", "description": "bring stack up"},
-    {"path": "ops/stack/faults/inject.sh", "owner": "ops", "description": "fault injection dispatcher"},
+    {"path": "packages/atlasctl/src/atlasctl/commands/ops/stack/faults/inject.py", "owner": "ops", "description": "fault injection dispatcher"},
     {"path": "ops/stack/kind/context_guard.sh", "owner": "ops", "description": "kind context guard"},
     {"path": "ops/stack/kind/down.sh", "owner": "ops", "description": "kind down helper"},
     {"path": "ops/stack/kind/namespace_guard.sh", "owner": "ops", "description": "kind namespace guard"},

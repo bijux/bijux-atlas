@@ -14,7 +14,7 @@
 - Shared shell/python helpers that are not operator entrypoints live in `ops/_lib/` or domain-local `scripts/` directories.
 - Canonical domain ownership has no overlap:
   - `ops/stack/` local dependency bring-up
-    - owns canonical fault injection API at `ops/stack/faults/inject.sh`
+    - owns canonical fault injection API at `packages/atlasctl/src/atlasctl/commands/ops/stack/faults/inject.py`
   - `ops/k8s/` chart, profiles, and k8s gates
   - `ops/obs/` observability pack, contracts, drills
   - `ops/load/` k6 suites and baselines
