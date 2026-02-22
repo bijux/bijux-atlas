@@ -22,7 +22,7 @@ jobs:
           toolchain: 1.84.1
           components: rustfmt, clippy
       - name: Run full slow lane
-        run: make ci-nightly
+        run: ./bin/atlasctl ci nightly --json
       - name: Upload nightly artifacts
         if: always()
         uses: actions/upload-artifact@v4
