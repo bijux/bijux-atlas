@@ -6,14 +6,17 @@
 
 ## Context
 
-Repository automation logic was historically spread across `scripts/` and `tools/` paths, which made packaging, dependency management, and CLI surface governance harder to enforce.
+Repository automation logic was historically spread across ad-hoc shell path
+surfaces and `tools/`, which made packaging, dependency management, and CLI
+surface governance harder to enforce.
 
 ## Decision
 
 - `atlasctl` is the SSOT tooling product surface.
 - Python package roots are `packages/` (primary) and `tools/` during transition.
 - Make targets must invoke package entrypoints, not arbitrary `python <path>` scripts.
-- Legacy `scripts/` remains transition-only until complete removal gates are satisfied.
+- Legacy shell path surfaces remain transition-only until complete removal gates
+  are satisfied.
 
 ## Consequences
 

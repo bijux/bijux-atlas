@@ -11,9 +11,13 @@ python -m pip install -e packages/atlasctl
 ## Quickstart
 
 ```bash
-python -m atlasctl --help
-python -m atlasctl suite run fast --json
+./bin/atlasctl --help
+./bin/atlasctl suite run fast --json
 ```
+
+## License
+
+Licensed under the MIT License.
 
 ## Docs
 

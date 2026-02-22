@@ -18,8 +18,8 @@ Prevents root sprawl and keeps `ops/` as the single operational source of truth.
 - Forbidden-name gate: `atlasctl check forbidden-root-names`.
 - Migration entrypoint: `make layout-migrate`.
 - Python package surfaces live under `packages/` and `tools/`.
-- New executable Python files outside package roots are forbidden by `scripts/areas/check/check-no-python-executable-outside-tools.py`.
-- Legacy `scripts/` is transition-only and being removed; no new non-shim entrypoints may be added.
+- New executable Python files outside package roots are forbidden by `atlasctl` repository policy checks.
+- Legacy script-tree paths are transition-only and being removed; no new non-shim entrypoints may be added.
 
 ## Failure modes
 

@@ -12,7 +12,7 @@ Maps each repository policy to the exact enforcement point so policy drift is ob
 | SSOT contract drift | `make ssot-check`, `api-contract-check`, `ci-api-contract` |
 | OpenAPI drift + breaking change detection | `atlasctl contracts check --checks drift breakage`, `atlasctl contracts generate --generators openapi artifacts`, `ci-openapi-drift` |
 | Docs drift and link integrity | `make docs`, `make docs-freeze`, `atlasctl docs link-check --report text`, `ci-docs-build` |
-| Script surface governance | `atlasctl docs script-headers-check`, `packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_public_scripts.py`, `packages/atlasctl/src/atlasctl/checks/layout/scripts/check_scripts_buckets.py`, `scripts-audit` |
+| Shell surface governance | `atlasctl docs script-headers-check`, `atlasctl check run --group make --id checks_make_public_target_atlasctl_mapping`, `atlasctl check run --group repo --id checks_repo_command_scripts_registry`, `atlasctl check run --group repo --id checks_repo_no_direct_script_runs` |
 | Policy schema drift | `atlasctl policies schema-drift`, `ci-policy-schema-drift` |
 | Policy relaxations registry (SSOT exceptions) | `configs/policy/policy-relaxations.json`, `atlasctl policies scan-rust-relaxations`, `atlasctl policies check --fail-fast`, `ci-policy-relaxations` |
 | Policy enforcement coverage contract | `configs/policy/policy-enforcement-coverage.json`, `atlasctl policies enforcement-status --enforce`, `docs/_generated/policy-enforcement-status.md`, `ci-policy-enforcement` |

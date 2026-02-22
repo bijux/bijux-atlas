@@ -12,7 +12,7 @@ Scripts are operational APIs and require stable discoverability.
 
 ## Scope
 
-Scripts under `scripts/` and e2e-facing script surfaces.
+Legacy script-tree surfaces and e2e-facing shell surfaces.
 
 ## Non-goals
 
@@ -22,11 +22,11 @@ Does not duplicate script implementation details.
 
 - Control-plane inventory is generated via `./bin/atlasctl inventory all --format both --out-dir docs/_generated`.
 - Script taxonomy:
-  - `scripts/areas/public/`: make-callable entrypoints.
+  - legacy public shell entrypoints: make-callable wrappers.
   - Contracts: `atlasctl contracts ...`
 - Docs linters/generators: `atlasctl docs ...`
-- Perf tooling wrappers: `scripts/areas/public/perf/` (canonical: `ops/load/scripts/`)
-- Observability wrappers: `scripts/areas/public/observability/` (canonical: `ops/obs/scripts/`)
+- Perf tooling wrappers are now routed through `atlasctl ops load`.
+- Observability wrappers are now routed through `atlasctl ops obs`.
 - Observability checks: `packages/atlasctl/src/atlasctl/observability/contracts/`
 - Fixtures/data helpers: `ops/datasets/scripts/fixtures/`
 - Release compatibility matrix automation: `atlasctl compat update-matrix|validate-matrix`

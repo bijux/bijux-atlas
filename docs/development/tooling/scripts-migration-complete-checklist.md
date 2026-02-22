@@ -9,8 +9,8 @@
 - [x] Lockfile-pinned Python dependencies are enforced.
 - [x] `make scripts-check` and `make scripts-test` are mandatory gates.
 - [x] Script output schemas are validated in CI.
-- [ ] Legacy `scripts/` tree is fully removed.
-- [ ] Makefiles contain zero transitional `scripts/` path exceptions.
+- [ ] Legacy script-tree paths are fully removed.
+- [ ] Makefiles contain zero transitional legacy-script path exceptions.
 
 ## Current Status
 

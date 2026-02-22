@@ -15,4 +15,6 @@ Release gate outcome:
 - Canonical DEV wrappers live in `makefiles/dev.mk` and delegate only to `./bin/atlasctl dev ...`.
 - Canonical CI wrapper is `make ci` -> `./bin/atlasctl dev ci run`.
 - `makefiles/cargo-dev.mk` is a deprecated compatibility shim; invoking its targets fails with migration guidance.
-- Legacy make targets referenced by `configs/ops/nonroot-legacy-targets.txt` are banned in CI workflows after **2026-03-01** (`check_ci_legacy_target_cutoff.py`).
+- Legacy make targets referenced by
+  `configs/ops/nonroot-legacy-targets.txt` are banned in CI workflows after
+  **2026-03-01** (`check_ci_legacy_target_cutoff.py`).

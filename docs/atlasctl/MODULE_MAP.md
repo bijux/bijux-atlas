@@ -9,7 +9,7 @@
 - `atlasctl/checks/registry.py`: source of truth for registered checks/domains.
 - `atlasctl/checks/runner.py`: native check execution orchestration.
 - `atlasctl/checks/engine.py`: shared function/command check execution primitives.
-- `atlasctl/checks/repo/*`: repo-domain checks (paths/effects/scripts/shims/policies/module-size).
+- `atlasctl/checks/repo/*`: repo-domain checks (paths/effects/shell-shims/policies/module-size).
 - `atlasctl/contracts/output.py`: JSON output validation contract entrypoint.
 - `atlasctl/core/arg.py`: shared argparse helper builders.
 - `atlasctl/core/clock.py`: timestamp formatting rules.
