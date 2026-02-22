@@ -1,6 +1,6 @@
 # Makefiles Index
 
-- File count: 15
+- File count: 20
 - Owner: `build-and-release`
 
 ## Canonical Wrapper Files
@@ -15,4 +15,8 @@
 - `layout.mk`
 - `registry.mk`
 - `env.mk`
-- `python.mk` (env defaults only; no atlasctl invoker aliases)
+- `python.mk`
+- `atlasctl.mk`
+- `help.mk`
+- `path_contract.mk`
+- `scripts.mk` (transitional dependency wrappers only)
