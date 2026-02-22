@@ -45,9 +45,7 @@
 - `ops/run/warm-dx.sh`
 - `ops/run/cache-status.sh`
 - `ops/run/cache-prune.sh`
-- `ops/run/evidence-open.sh`
 - `ops/run/evidence-bundle.sh`
-- `ops/run/artifacts-open.sh`
 - `ops/run/configmap-drift-report.sh`
 - `ops/run/contract-check.sh`
 - `ops/run/contract-report.py`

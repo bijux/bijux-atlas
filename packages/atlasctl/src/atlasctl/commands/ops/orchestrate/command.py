@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import socket
+import subprocess
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -143,6 +144,44 @@ def _cleanup(ctx: RunContext, report_format: str, older_than_days: int) -> int:
     return 0
 
 
+def _artifacts_open(ctx: RunContext, report_format: str) -> int:
+    root = ctx.repo_root / "artifacts" / "ops"
+    latest = ""
+    if root.exists():
+        dirs = sorted([p for p in root.iterdir() if p.is_dir()])
+        if dirs:
+            latest = str(dirs[-1].relative_to(ctx.repo_root))
+    if not latest:
+        payload = {
+            "schema_version": 1,
+            "tool": "bijux-atlas",
+            "status": "fail",
+            "run_id": ctx.run_id,
+            "area": "artifacts",
+            "action": "open",
+            "details": "no artifacts found under artifacts/ops",
+        }
+        _emit(payload, report_format)
+        return 2
+    target = ctx.repo_root / latest
+    for opener in (["open", str(target)], ["xdg-open", str(target)]):
+        try:
+            subprocess.run(opener, cwd=ctx.repo_root, check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        except FileNotFoundError:
+            continue
+    payload = {
+        "schema_version": 1,
+        "tool": "bijux-atlas",
+        "status": "pass",
+        "run_id": ctx.run_id,
+        "area": "artifacts",
+        "action": "open",
+        "details": {"path": latest},
+    }
+    _emit(payload, report_format)
+    return 0
+
+
 def _run_manifest(ctx: RunContext, report_format: str, manifest: str, scenario: str) -> int:
     manifest_path = (ctx.repo_root / manifest).resolve()
     payload = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -183,7 +222,7 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _ports_reserve(ctx, ns.report, ns.name, ns.port)
 
     if ns.cmd == "artifacts":
-        return _run_wrapped(ctx, OrchestrateSpec("artifacts", "open", ["bash", "ops/run/artifacts-open.sh"]), ns.report)
+        return _artifacts_open(ctx, ns.report)
     if ns.cmd == "k8s":
         mapping = {
             "render": ["helm", "template", "atlas", "ops/chart"],
