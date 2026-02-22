@@ -10,6 +10,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Update docs/checks/registry.md when REGISTRY.toml changes.",
+      "gate": "checks",
       "groups": [
         "checks",
         "ci",
@@ -38,6 +39,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Refresh check list/tree/owners goldens when REGISTRY.toml changes.",
+      "gate": "checks",
       "groups": [
         "checks",
         "ci",
@@ -66,6 +68,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Update makefiles/ownership.json when REGISTRY.toml changes.",
+      "gate": "checks",
       "groups": [
         "checks",
         "ci",
@@ -94,6 +97,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Run `./bin/atlasctl gen checks-registry` and commit REGISTRY.toml/REGISTRY.generated.json.",
+      "gate": "checks",
       "groups": [
         "checks",
         "registry",
@@ -121,6 +125,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Deduplicate tool.atlasctl/tool.pytest sections in packages/atlasctl/pyproject.toml.",
+      "gate": "configs",
       "groups": [
         "configs",
         "fast",
@@ -147,6 +152,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Restore missing [project]/[build-system]/tool config blocks in packages/atlasctl/pyproject.toml.",
+      "gate": "configs",
       "groups": [
         "configs",
         "fast",
@@ -173,6 +179,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Update CLI contract docs/tests to match behavior.",
+      "gate": "contracts",
       "groups": [
         "contracts",
         "fast",
@@ -201,6 +208,7 @@
         "bash"
       ],
       "fix_hint": "Fix layout violations reported by the contract checker.",
+      "gate": "contracts",
       "groups": [
         "contracts",
         "required",
@@ -227,6 +235,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Fix catalog duplicates and missing schema files.",
+      "gate": "contracts",
       "groups": [
         "contracts",
         "fast",
@@ -253,6 +262,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add missing schema files or fix catalog file entries.",
+      "gate": "contracts",
       "groups": [
         "contracts",
         "fast",
@@ -279,6 +289,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Remove or reference orphan schemas in catalog.",
+      "gate": "contracts",
       "groups": [
         "contracts",
         "fast",
@@ -305,6 +316,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Sort catalog.json entries by schema name.",
+      "gate": "contracts",
       "groups": [
         "contracts",
         "fast",
@@ -331,6 +343,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Route schema catalog access through atlasctl.contracts.catalog only.",
+      "gate": "contracts",
       "groups": [
         "contracts",
         "fast",
@@ -357,6 +370,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add new versioned schema file and update packages/atlasctl/docs/release-notes.md.",
+      "gate": "contracts",
       "groups": [
         "contracts",
         "fast",
@@ -383,6 +397,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add schema file to catalog.json or remove stale schema file.",
+      "gate": "contracts",
       "groups": [
         "contracts",
         "fast",
@@ -409,6 +424,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Fix golden payload shape/schema alignment.",
+      "gate": "contracts",
       "groups": [
         "contracts",
         "fast",
@@ -435,6 +451,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Use atlasctl.<name>.v<major> and keep catalog version aligned with suffix.",
+      "gate": "contracts",
       "groups": [
         "contracts",
         "fast",
@@ -461,6 +478,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Regenerate schema catalog metadata and update contracts/schema/schemas/README.md.",
+      "gate": "contracts",
       "groups": [
         "contracts",
         "fast",
@@ -487,6 +505,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Update sample payloads or schema definitions.",
+      "gate": "contracts",
       "groups": [
         "contracts",
         "fast",
@@ -513,6 +532,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Reduce image size or adjust documented budget.",
+      "gate": "docker",
       "groups": [
         "docker",
         "fast",
@@ -539,6 +559,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Align docker files to layout contract.",
+      "gate": "docker",
       "groups": [
         "docker",
         "fast",
@@ -565,6 +586,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Pin image tags to immutable versions.",
+      "gate": "docker",
       "groups": [
         "docker",
         "fast",
@@ -591,6 +613,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Resolve policy violations in docker contracts.",
+      "gate": "docker",
       "groups": [
         "docker",
         "fast",
@@ -617,6 +640,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Update check:id references to registered check ids.",
+      "gate": "docs",
       "groups": [
         "docs",
         "fast",
@@ -643,6 +667,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add docs/commands/groups/<group>.md pages with ## Examples.",
+      "gate": "docs",
       "groups": [
         "docs",
         "fast",
@@ -669,6 +694,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add missing docs entries to packages/atlasctl/docs/index.md.",
+      "gate": "docs",
       "groups": [
         "docs",
         "fast",
@@ -695,6 +721,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Fix broken relative links in packages/atlasctl/docs.",
+      "gate": "docs",
       "groups": [
         "docs",
         "fast",
@@ -721,6 +748,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Fix long lines, invalid headings, and TODO/TBD placeholders.",
+      "gate": "docs",
       "groups": [
         "docs",
         "fast",
@@ -747,6 +775,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Remove stale parallel-legacy wording from docs/migration pages.",
+      "gate": "docs",
       "groups": [
         "docs",
         "fast",
@@ -773,6 +802,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Fix missing docs files referenced in mkdocs.yml nav.",
+      "gate": "docs",
       "groups": [
         "docs",
         "fast",
@@ -799,6 +829,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Update docs index, pyproject, and tests for command-surface changes.",
+      "gate": "docs",
       "groups": [
         "docs",
         "fast",
@@ -825,6 +856,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Use stable docs or generated index links.",
+      "gate": "docs",
       "groups": [
         "docs",
         "fast",
@@ -851,6 +883,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Link docs pages from docs/index.md or other docs pages.",
+      "gate": "docs",
       "groups": [
         "docs",
         "fast",
@@ -877,6 +910,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Remove placeholder docs files or move drafts under docs/_drafts/.",
+      "gate": "docs",
       "groups": [
         "docs",
         "fast",
@@ -903,6 +937,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Update docs references to atlasctl commands.",
+      "gate": "docs",
       "groups": [
         "docs",
         "fast",
@@ -929,6 +964,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Update packages/atlasctl/docs/_meta/owners.json with major area owners.",
+      "gate": "docs",
       "groups": [
         "docs",
         "fast",
@@ -955,6 +991,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Move package root markdown docs into packages/atlasctl/docs/.",
+      "gate": "docs",
       "groups": [
         "docs",
         "fast",
@@ -981,6 +1018,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Fix stale command references to match cli surface registry.",
+      "gate": "docs",
       "groups": [
         "docs",
         "fast",
@@ -1007,6 +1045,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Run `atlasctl docs generate-registry-indexes --report text`.",
+      "gate": "docs",
       "groups": [
         "docs",
         "fast",
@@ -1033,6 +1072,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add command entries and atlasctl examples to docs/commands/groups/*.md.",
+      "gate": "docs",
       "groups": [
         "docs",
         "fast",
@@ -1059,6 +1099,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Create packages/atlasctl/LICENSE with canonical MIT text and copyright.",
+      "gate": "license",
       "groups": [
         "fast",
         "license",
@@ -1085,6 +1126,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "If SPDX header is present, set it to SPDX-License-Identifier: MIT.",
+      "gate": "license",
       "groups": [
         "fast",
         "license",
@@ -1111,6 +1153,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Update README/docs license references to MIT and remove conflicting statements.",
+      "gate": "license",
       "groups": [
         "fast",
         "license",
@@ -1137,6 +1180,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep workflow run commands on approved make/atlasctl entrypoints.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1163,6 +1207,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Use `run: make <target>` in workflows and keep atlasctl delegation in makefiles.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1189,6 +1234,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Use allowed command wrappers in make targets.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1215,6 +1261,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Route commands through allowed wrappers.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1241,6 +1288,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Regenerate and normalize make help output.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1267,6 +1315,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Regenerate and commit makefiles index changes.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1293,6 +1342,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Use `atlasctl report make-area-write` for lane report emission.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1319,6 +1369,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Route recipe logic through atlasctl, or add a documented delegation exception.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1345,6 +1396,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Write artifacts via atlasctl reporting and command surfaces only.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1371,6 +1423,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Route ops scripts through atlasctl make/ops commands.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1397,6 +1450,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Replace `python3 path/to/script.py` with atlasctl commands.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1423,6 +1477,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Use atlasctl entrypoints instead of direct python invocations.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1449,6 +1504,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Replace direct script execution with atlasctl command wrappers.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1475,6 +1531,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Delegate script execution through atlasctl commands.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1501,6 +1558,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Use ./bin/atlasctl in make recipes.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1527,6 +1585,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Update public make target recipe bodies to call atlasctl wrappers only.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1553,6 +1612,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Document every public make target in generated/public docs.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1579,6 +1639,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Reduce root.mk orchestration surface and keep only public wrappers.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1605,6 +1666,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Replace scripts/ invocations with atlasctl commands.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1631,6 +1693,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep target cross-area dependencies within contract boundaries.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1657,6 +1720,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add missing make target ownership metadata.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1683,6 +1747,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Use single-line ./bin/atlasctl delegation in canonical makefiles.",
+      "gate": "make",
       "groups": [
         "fast",
         "make",
@@ -1709,6 +1774,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Regenerate committed outputs deterministically.",
+      "gate": "ops",
       "groups": [
         "fast",
         "ops",
@@ -1735,6 +1801,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Fix ops/manifests/*.json|*.yaml to satisfy atlas.ops.manifest.v1.",
+      "gate": "ops",
       "groups": [
         "fast",
         "ops",
@@ -1761,6 +1828,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Untrack generated ops files.",
+      "gate": "ops",
       "groups": [
         "fast",
         "ops",
@@ -1787,6 +1855,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Remove timestamped tracked paths.",
+      "gate": "ops",
       "groups": [
         "fast",
         "ops",
@@ -1813,6 +1882,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Regenerate and normalize python lock entries.",
+      "gate": "python",
       "groups": [
         "fast",
         "python",
@@ -1839,6 +1909,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Update or remove expired migration exceptions.",
+      "gate": "python",
       "groups": [
         "fast",
         "python",
@@ -1865,6 +1936,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Update configs/policy/atlasctl-budgets-baseline.json or add approved budget-loosening marker.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -1891,6 +1963,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep only canonical concept homes: registry, suite, contracts, reporting.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -1917,6 +1990,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep check implementations pure and route CLI wiring through commands/cli modules.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -1943,6 +2017,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add test/golden references for uncovered checks.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -1969,6 +2044,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Move check_*.py implementations under packages/atlasctl/src/atlasctl/checks/ or extend migration allowlist explicitly.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -1995,6 +2071,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Create or migrate domain packages under packages/atlasctl/src/atlasctl/checks/.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2021,6 +2098,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Restrict checks imports to core/contracts/reporting/adapters/checks.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2047,6 +2125,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep checks pure and independent from cli modules.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2073,6 +2152,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep only __init__.py + registry artifacts at checks root and group modules under domain packages.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2099,6 +2179,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Move parser construction into cli/parser.py or commands/*/parser.py.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2125,6 +2206,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep parser in cli/main.py, dispatch in cli/dispatch.py, and payload formatting in cli/output.py.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2151,6 +2233,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Route feature logic through commands; keep cli as parser/dispatch glue.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2177,6 +2260,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Reduce top-level imports and defer heavy initialization.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2203,6 +2287,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Remove duplicate alias identifiers from command surface.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2229,6 +2314,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Update configs/meta/owners.json command_groups mapping and align with command registry owners.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2255,6 +2341,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add touches/tools/effect metadata in cli registry.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2281,6 +2368,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Ensure command.py files include configure_* parser and run_* command entrypoints.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2307,6 +2395,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Document all command owners in packages/atlasctl/docs/ownership.md.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2333,6 +2422,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Register every command-invoked .sh in configs/scripts/registry.json with valid owner and naming.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2359,6 +2449,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add at least one test mentioning each command.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2385,6 +2476,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Regenerate docs/_generated/cli.md from current CLI surface.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2411,6 +2503,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Restrict command imports to core/contracts/checks/adapters/commands/cli.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2437,6 +2530,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Regenerate commands goldens intentionally via `python -m atlasctl.cli gen goldens`.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2463,6 +2557,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Fix syntax/import issues until python -m compileall passes.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2489,6 +2584,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Set [project.scripts] atlasctl = \"atlasctl.cli.main:main\" and ensure target is importable.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2515,6 +2611,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Commands/checks should import schema contracts from atlasctl.contracts only.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2541,6 +2638,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep random non-schema logic out of atlasctl/contracts and move it to proper domains.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2567,6 +2665,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Use core.exec wrappers; do not invoke bash/sh directly in core.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2593,6 +2692,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep core independent from command and cli glue layers.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2619,6 +2719,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Update configs/policy/dead-modules-allowlist.json with intended exceptions.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2645,6 +2746,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep policies/dead_modules.py runnable and deterministic.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2671,6 +2773,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add missing dependencies or remove unused declarations.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2697,6 +2800,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Define deps-lock/deps-sync/deps-check-venv/deps-cold-start in makefiles/scripts.mk.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2723,6 +2827,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add dependency ownership + justification entries in docs/deps.md.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2749,6 +2854,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Wire atlasctl deps parser/runner and keep command import path valid.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2775,6 +2881,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Update docs/deps.md and keep requirements.in/requirements.lock.txt in sync.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2801,6 +2908,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Split crowded directories; required reading: packages/atlasctl/docs/architecture/how-to-split-a-module.md.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2827,6 +2935,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Document each budget exception path in packages/atlasctl/docs/architecture.md.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2853,6 +2962,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Sort [[tool.atlasctl.budgets.exceptions]] entries by path in pyproject.toml.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2879,6 +2989,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Move unrelated files into domain subpackages to reduce dir-level LOC density.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2905,6 +3016,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Split high-density directories into intent-focused subpackages.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2931,6 +3043,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Split high-density directories and keep directory fan-in bounded.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2957,6 +3070,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Split module directories and keep <=10 python files per dir; see how-to-split-a-module.md.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -2983,6 +3097,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Move shell scripts into approved layout/ops directories and split crowded directories.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3009,6 +3124,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Split critical directories or update configs/policy/atlasctl-dir-count-baseline.json with approval.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3035,6 +3151,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Replace generated runtime paths with canonical docs references.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3061,6 +3178,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Consolidate duplicate validate(schema) assertions into one test.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3087,6 +3205,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Rename colliding script names.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3113,6 +3232,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Route effects through core.exec/core.process/core.fs/core.runtime.env/core.network.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3139,6 +3259,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep configs/policy/effect-boundary-exceptions.json sorted and justified.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3165,6 +3286,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Create docs/env.md and document canonical runtime environment variables.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3191,6 +3313,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Split high-complexity control flow and extract focused helpers.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3217,6 +3340,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Reduce import fan-in and use lazy imports where needed.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3243,6 +3367,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Split dumping-ground modules and narrow __all__ exports.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3269,6 +3394,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add README.md or check_*.py module in each checks directory.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3295,6 +3421,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Replace banned wording or add explicit approval entries in configs/policy/forbidden-adjectives-approvals.json.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3321,6 +3448,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Remove forbidden junk files from repository root.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3347,6 +3475,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Remove forbidden top-level legacy names from repository root.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3373,6 +3502,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Remove forbidden root directories.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3399,6 +3529,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep top-level imports light and dependency-safe.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3425,6 +3556,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Mark internal commands stable=false and exclude them from public docs.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3451,6 +3583,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Route shared helpers through public modules instead of atlasctl.internal.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3477,6 +3610,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Replace third-party imports in atlasctl/internal with stdlib equivalents or add a justified exception.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3503,6 +3637,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep one .json.golden per schema surface.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3529,6 +3664,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Call contracts.validate() before asserting JSON golden snapshots.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3555,6 +3691,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Use domain-specific check packages and remove deprecated checks/layout alias modules.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3581,6 +3718,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add README.md to each checks/layout/<domain>/ directory.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3607,6 +3745,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Remove atlasctl.legacy imports from layout checks.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3633,6 +3772,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Resolve shadow config sources reported by atlasctl/layout/no_shadow.py.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3659,6 +3799,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Delete packages/atlasctl/src/atlasctl/legacy and migrate importers.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3685,6 +3826,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Remove imports/references to atlasctl.legacy.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3711,6 +3853,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep managed write roots under artifacts/ and route writes through core.fs.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3737,6 +3880,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Migrate callers to canonical modules under atlasctl.core/commands/checks.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3763,6 +3907,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Migrate observability imports to atlasctl.observability.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3789,6 +3934,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Split high-density top-level domains and relocate modules by control-plane ownership.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3815,6 +3961,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Split oversized modules into focused submodules.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3841,6 +3988,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Import new repo check modules in checks/repo/__init__.py.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3867,6 +4015,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Require explicit --allow-network for network-capable commands and keep default deny.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3893,6 +4042,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Migrate ad-hoc python files into package modules.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3919,6 +4069,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Use top-level atlasctl.adapters for integration concerns.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3945,6 +4096,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Remove compat/migration/legacy top-level commands before release.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3971,6 +4123,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Remove deprecated namespace directories and keep checks/reporting/observability as canonical roots.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -3997,6 +4150,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Use atlasctl.checks and atlasctl.reporting canonical namespaces.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4023,6 +4177,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Use atlasctl commands instead of bash scripts/... invocations.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4049,6 +4204,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Use atlasctl command entrypoints instead of python path/to/script.py.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4075,6 +4231,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Invoke workflows through make targets instead of direct scripts/ops paths.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4101,6 +4258,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Pick one command implementation pattern and remove duplicate modules.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4127,6 +4285,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Rename duplicate command/alias entries.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4153,6 +4312,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Delete empty directories and flatten single-child nests without modules or README markers.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4179,6 +4339,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add a real module or README.md to package directories.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4205,6 +4366,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Move script into package module or remove executable bit.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4231,6 +4393,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Remove forbidden legacy path references from make/docs/workflows.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4257,6 +4420,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Remove legacy command names and keep internal legacy reporting under `atlasctl internal legacy inventory`.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4283,6 +4447,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Delete or move modules out of any */legacy/* path.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4309,6 +4474,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Flatten nested same-name package segments (example: checks/checks).",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4335,6 +4501,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Remove placeholder generated files/directories.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4361,6 +4528,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Use ctx.repo_root or core.runtime.repo_root helpers.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4387,6 +4555,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Rename modules to intent-revealing names.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4413,6 +4582,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Migrate scripts into atlasctl package commands.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4439,6 +4609,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Untrack generated files and add to ignore policy.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4465,6 +4636,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Remove timestamped tracked files/dirs.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4491,6 +4663,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Document command in packages/atlasctl/docs/commands/index.md or mark it internal.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4517,6 +4690,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Replace wildcard imports with explicit module references and __all__.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4543,6 +4717,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Remove xtask references and use atlasctl workflows.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4569,6 +4744,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Restore example fixtures to committed canonical content.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4595,6 +4771,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add required [project.optional-dependencies] groups with entries: dev/ci/test/ops/docs.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4621,6 +4798,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Move dependency to base deps or add justified exception in configs/policy/dependency-exceptions.json.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4647,6 +4825,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Use LF-only snapshots and avoid platform-dependent line separator logic.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4673,6 +4852,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add module implementation or README.md to document empty package.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4699,6 +4879,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Flatten deep package hierarchies under packages/atlasctl/src/atlasctl.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4725,6 +4906,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep only LICENSE, README.md, docs/, pyproject.toml, src/, tests/ (+ optional requirements input/lock) in packages/atlasctl root.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4751,6 +4933,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add required project classifiers and URLs in packages/atlasctl/pyproject.toml.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4777,6 +4960,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add packages/atlasctl/docs/PUBLIC_API.md and keep API docs there.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4803,6 +4987,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Document exported symbols in docs/PUBLIC_API.md or remove them from __all__.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4829,6 +5014,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add missing public commands to packages/atlasctl/docs/commands/index.md.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4855,6 +5041,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Remove unknown [tool.*] sections or document and allow them explicitly.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4881,6 +5068,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Remove duplicated tool config files and keep pyproject as SSOT.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4907,6 +5095,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add required [project]/[tool.*] blocks to packages/atlasctl/pyproject.toml.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4933,6 +5122,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Ensure atlasctl package entrypoint remains runnable with python -m atlasctl.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4959,6 +5149,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Pin requires-python to >=3.11 and set actions/setup-python python-version: 3.11 in CI.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -4985,6 +5176,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep registry declarative and independent from runtime command/check implementations.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5011,6 +5203,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Declare commands only in cli/surface_registry.py and checks only in checks/*/__init__.py.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5037,6 +5230,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep package-root items minimal and remove symlinks from src tree.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5063,6 +5257,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep only requirements.in and requirements.lock.txt in package root for route-B workflow.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5089,6 +5284,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Regenerate requirements.lock.txt from requirements.in and keep pyproject optional-deps dev aligned.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5115,6 +5311,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Stabilize generated root outputs so consecutive runs are identical.",
+      "gate": "repo",
       "groups": [
         "repo",
         "required",
@@ -5141,6 +5338,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Align root entries with checks/layout/root_whitelist.json.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5167,6 +5365,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Use RunContext.from_args and avoid constructing context-like objects elsewhere.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5193,6 +5392,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add --help contract output to required scripts.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5219,6 +5419,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Update ownership metadata for uncovered scripts.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5245,6 +5446,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add README.md and POLICY.md under ops/vendor/layout-checks.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5271,6 +5473,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Route shell invocations through core.exec wrapper helpers.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5297,6 +5500,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Move shell scripts to ops/vendor/layout-checks or port them to python.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5323,6 +5527,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Call atlasctl entrypoints instead of python commands in shell scripts.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5349,6 +5554,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Use atlasctl-managed fetch entrypoints or explicit allow annotation.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5375,6 +5581,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep layout shell checks read-only and route outputs through stdout/stderr only.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5401,6 +5608,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Port shell scripts to Python modules and delete duplicates.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5427,6 +5635,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add #!/usr/bin/env bash and set -euo pipefail to all shell scripts.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5453,6 +5662,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep only packages/atlasctl/src/atlasctl/checks/registry.py as registry.py.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5479,6 +5689,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep only packages/atlasctl/src/atlasctl/checks/runner.py as runner.py.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5505,6 +5716,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Avoid breaking stable command metadata or intentionally refresh commands goldens.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5531,6 +5743,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Use core.exec/core.process for subprocess calls.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5557,6 +5770,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Assign checks to suites and ensure required complete suites include all required checks.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5583,6 +5797,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep tests/goldens/check/check-suite-coverage.markers.txt sorted, unique, and only registered check ids.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5609,6 +5824,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Replace unstable time/random/env usage or annotate with determinism-allow: reason.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5635,6 +5851,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep one canonical test per golden surface and remove duplicate assertions.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5661,6 +5878,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add @pytest.mark.network or '# network-test: allowed' near intentional network tests.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5687,6 +5905,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add '# test-domain: <domain>' header to top-level tests.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5713,6 +5932,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add skip-justification and skip-expires markers near skip usage.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5739,6 +5959,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Place tests under domain folders and align declared # test-taxonomy with placement.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5765,6 +5986,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Write via tmp_path/tempfile or artifacts/isolate run directories only.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5791,6 +6013,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Rename duplicated test_* functions to avoid conflicting expectations.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5817,6 +6040,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Map new top-level packages to configs/dev/ops/policies/internal in package_shape policy.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5843,6 +6067,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Keep atlasctl top-level package set within STRUCTURE.md contract.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5869,6 +6094,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add function annotations in core/contracts until the threshold is met.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5895,6 +6121,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Align atlasctl.__version__ with pyproject [project].version and keep --version output stable outside git repos.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",
@@ -5921,6 +6148,7 @@
       "evidence": [],
       "external_tools": [],
       "fix_hint": "Add missing make targets or update workflows to existing targets.",
+      "gate": "repo",
       "groups": [
         "fast",
         "repo",

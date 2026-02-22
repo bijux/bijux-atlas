@@ -3,7 +3,7 @@
 from __future__ import annotations
 from datetime import date
 
-DOMAINS = ("registry", "layout")
+DOMAINS = ("layout",)
 NO_NETWORK_FLAG_EXPIRY = date(2026, 12, 31)
 
 CONFIGURE_HOOKS: tuple[tuple[str, str], ...] = (
@@ -15,6 +15,7 @@ CONFIGURE_HOOKS: tuple[tuple[str, str], ...] = (
     ("atlasctl.commands.ci.command", "configure_ci_parser"),
     ("atlasctl.commands.check.command", "configure_check_parser"),
     ("atlasctl.commands.check.command", "configure_checks_parser"),
+    ("atlasctl.commands.registry.command", "configure_registry_parser"),
     ("atlasctl.commands.dev.deps.command", "configure_deps_parser"),
     ("atlasctl.commands.dev.gen.command", "configure_gen_parser"),
     ("atlasctl.commands.policies.command", "configure_policies_parser"),

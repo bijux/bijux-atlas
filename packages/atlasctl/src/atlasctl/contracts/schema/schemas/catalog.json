@@ -11,6 +11,11 @@
       "file": "atlasctl.check-taxonomy.v1.schema.json"
     },
     {
+      "name": "atlasctl.checks-catalog.v1",
+      "version": 1,
+      "file": "atlasctl.checks-catalog.v1.schema.json"
+    },
+    {
       "name": "atlasctl.commands.v1",
       "version": 1,
       "file": "atlasctl.commands.v1.schema.json"

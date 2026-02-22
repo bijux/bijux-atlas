@@ -35,6 +35,8 @@ except ModuleNotFoundError:  # pragma: no cover
 REGISTRY_TOML = Path("packages/atlasctl/src/atlasctl/checks/REGISTRY.toml")
 REGISTRY_JSON = Path("packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json")
 REGISTRY_SCHEMA = Path("packages/atlasctl/src/atlasctl/contracts/schema/schemas/checks.registry.v1.schema.json")
+CHECKS_CATALOG_JSON = Path("packages/atlasctl/src/atlasctl/registry/checks_catalog.json")
+CHECKS_CATALOG_SCHEMA = Path("packages/atlasctl/src/atlasctl/contracts/schema/schemas/atlasctl.checks-catalog.v1.schema.json")
 RENAMES_JSON = Path("configs/policy/target-renames.json")
 FILENAME_ALLOWLIST_JSON = Path("configs/policy/check-filename-allowlist.json")
 TRANSITION_ALLOWLIST_JSON = Path("configs/policy/checks-registry-transition.json")
@@ -45,6 +47,7 @@ class RegistryEntry:
     id: str
     domain: str
     area: str
+    gate: str
     owner: str
     speed: str
     groups: tuple[str, ...]
@@ -84,6 +87,7 @@ def _parse_toml(repo_root: Path) -> list[RegistryEntry]:
                 id=str(row.get("id", "")).strip(),
                 domain=str(row.get("domain", "")).strip(),
                 area=str(row.get("area", "")).strip(),
+                gate=str(row.get("gate", row.get("domain", ""))).strip(),
                 owner=str(row.get("owner", "")).strip(),
                 speed=str(row.get("speed", "")).strip(),
                 groups=tuple(str(x).strip() for x in row.get("groups", []) if str(x).strip()),
@@ -109,6 +113,7 @@ def _entry_as_dict(entry: RegistryEntry) -> dict[str, Any]:
         "id": entry.id,
         "domain": entry.domain,
         "area": entry.area,
+        "gate": entry.gate,
         "owner": entry.owner,
         "speed": entry.speed,
         "groups": list(entry.groups),
@@ -145,9 +150,13 @@ def _validate_entries(entries: list[RegistryEntry]) -> None:
             errors.append(f"{e.id}: id/domain mismatch")
         import re
         if re.match(r"^checks_[a-z0-9]+_[a-z0-9_]+$", e.id) is None:
-            errors.append(f"{e.id}: id must match checks_<domain>_<area>_<name>")
+            errors.append(f"{e.id}: id must match checks_<domain>_<area>_<name> (or legacy checks_<domain>_<name> during migration)")
         if e.speed not in {"fast", "slow"}:
             errors.append(f"{e.id}: speed must be fast|slow")
+        if not e.groups:
+            errors.append(f"{e.id}: groups must not be empty")
+        if not e.owner:
+            errors.append(f"{e.id}: owner must not be empty")
         if e.owner not in valid_owners:
             errors.append(f"{e.id}: owner `{e.owner}` not present in configs/meta/owners.json")
         if e.timeout_ms < 50:
@@ -180,7 +189,7 @@ def _validate_entries(entries: list[RegistryEntry]) -> None:
 
 def load_registry_entries(repo_root: Path | None = None) -> tuple[RegistryEntry, ...]:
     root = repo_root or _repo_root()
-    payload = json.loads((root / REGISTRY_JSON).read_text(encoding="utf-8"))
+    payload = json.loads((root / CHECKS_CATALOG_JSON).read_text(encoding="utf-8"))
     rows = payload.get("checks", [])
     if not isinstance(rows, list):
         raise ValueError("checks registry generated payload missing `checks` list")
@@ -189,26 +198,64 @@ def load_registry_entries(repo_root: Path | None = None) -> tuple[RegistryEntry,
             id=str(r["id"]),
             domain=str(r["domain"]),
             area=str(r["area"]),
-            owner=str(r["owner"]),
-            speed=str(r["speed"]),
+            gate=str(r.get("gate", r.get("domain", ""))),
+            owner=str((r.get("owners") or [""])[0]),
+            speed=str(r.get("impl_ref", {}).get("speed", "fast")),
             groups=tuple(str(x) for x in r.get("groups", [])),
-            timeout_ms=int(r["timeout_ms"]),
-            module=str(r["module"]),
-            callable=str(r["callable"]),
+            timeout_ms=int(r.get("impl_ref", {}).get("timeout_ms", 2000)),
+            module=str(r.get("impl_ref", {}).get("module", "")),
+            callable=str(r.get("impl_ref", {}).get("callable", "")),
             description=str(r["description"]),
-            severity=str(r.get("severity", "error")),
-            category=str(r.get("category", "hygiene")),
-            fix_hint=str(r.get("fix_hint", "Review check output and apply the documented fix.")),
-            effects=tuple(str(x) for x in r.get("effects", [])),
-            external_tools=tuple(str(x) for x in r.get("external_tools", [])),
-            evidence=tuple(str(x) for x in r.get("evidence", [])),
-            writes_allowed_roots=tuple(str(x) for x in r.get("writes_allowed_roots", ["artifacts/evidence/"])),
-            legacy_id=(str(r["legacy_id"]) if r.get("legacy_id") else None),
+            severity=str(r.get("impl_ref", {}).get("severity", "error")),
+            category=str(r.get("impl_ref", {}).get("category", "hygiene")),
+            fix_hint=str(r.get("impl_ref", {}).get("fix_hint", "Review check output and apply the documented fix.")),
+            effects=tuple(str(x) for x in r.get("impl_ref", {}).get("effects", [])),
+            external_tools=tuple(str(x) for x in r.get("impl_ref", {}).get("external_tools", [])),
+            evidence=tuple(str(x) for x in r.get("impl_ref", {}).get("evidence", [])),
+            writes_allowed_roots=tuple(str(x) for x in r.get("impl_ref", {}).get("writes_allowed_roots", ["artifacts/evidence/"])),
+            legacy_id=(str(r.get("impl_ref", {}).get("legacy_id")) if r.get("impl_ref", {}).get("legacy_id") else None),
         )
         for r in rows
     ]
     _validate_entries(entries)
     return tuple(entries)
+
+
+def _to_catalog_entry(entry: RegistryEntry) -> dict[str, Any]:
+    markers = sorted(
+        {
+            *entry.groups,
+            entry.domain,
+            entry.speed,
+            *(("required",) if "internal" not in entry.groups and "internal-only" not in entry.groups else ()),
+        }
+    )
+    return {
+        "id": entry.id,
+        "title": entry.description,
+        "description": entry.description,
+        "domain": entry.domain,
+        "area": entry.area,
+        "gate": entry.gate,
+        "owners": [entry.owner],
+        "groups": list(entry.groups),
+        "markers": markers,
+        "default_enabled": True,
+        "impl_ref": {
+            "module": entry.module,
+            "callable": entry.callable,
+            "timeout_ms": entry.timeout_ms,
+            "speed": entry.speed,
+            "severity": entry.severity,
+            "category": entry.category,
+            "fix_hint": entry.fix_hint,
+            "effects": list(entry.effects),
+            "external_tools": list(entry.external_tools),
+            "evidence": list(entry.evidence),
+            "writes_allowed_roots": list(entry.writes_allowed_roots),
+            "legacy_id": entry.legacy_id,
+        },
+    }
 
 
 def generate_registry_json(repo_root: Path | None = None, *, check_only: bool = False) -> tuple[Path, bool]:
@@ -235,17 +282,31 @@ def generate_registry_json(repo_root: Path | None = None, *, check_only: bool = 
         "kind": "atlasctl-checks-registry",
         "checks": [_entry_as_dict(e) for e in entries],
     }
+    catalog_payload = {
+        "schema_version": 1,
+        "kind": "atlasctl-checks-catalog",
+        "checks": [_to_catalog_entry(e) for e in entries],
+    }
     if jsonschema is not None:
         schema = _load_schema(root)
         jsonschema.validate(payload, schema)
+        catalog_schema = json.loads((root / CHECKS_CATALOG_SCHEMA).read_text(encoding="utf-8"))
+        jsonschema.validate(catalog_payload, catalog_schema)
     out = root / REGISTRY_JSON
     rendered = json.dumps(payload, indent=2, sort_keys=True) + "\n"
+    catalog_out = root / CHECKS_CATALOG_JSON
+    catalog_rendered = json.dumps(catalog_payload, indent=2, sort_keys=True) + "\n"
     current = out.read_text(encoding="utf-8") if out.exists() else ""
+    catalog_current = catalog_out.read_text(encoding="utf-8") if catalog_out.exists() else ""
     changed = current != rendered
+    catalog_changed = catalog_current != catalog_rendered
     if not check_only and changed:
         out.parent.mkdir(parents=True, exist_ok=True)
         write_text_file(out, rendered, encoding="utf-8")
-    return out, changed
+    if not check_only and catalog_changed:
+        catalog_out.parent.mkdir(parents=True, exist_ok=True)
+        write_text_file(catalog_out, catalog_rendered, encoding="utf-8")
+    return out, (changed or catalog_changed)
 
 
 def registry_delta(repo_root: Path | None = None) -> dict[str, list[str]]:
@@ -283,6 +344,7 @@ def toml_entry_from_check(check: CheckDef, *, groups: tuple[str, ...]) -> dict[s
         "id": canonical_id,
         "domain": check.domain,
         "area": area,
+        "gate": check.domain,
         "owner": owner,
         "speed": "slow" if check.slow else "fast",
         "groups": list(groups),
@@ -318,6 +380,7 @@ def write_registry_toml(repo_root: Path, rows: list[dict[str, Any]]) -> Path:
             "id",
             "domain",
             "area",
+            "gate",
             "owner",
             "speed",
             "timeout_ms",
@@ -370,6 +433,21 @@ def _rename_overrides(repo_root: Path) -> dict[str, str]:
     if not isinstance(rows, dict):
         return {}
     return {str(old): str(new) for old, new in rows.items()}
+
+
+def check_id_renames(repo_root: Path | None = None) -> dict[str, str]:
+    root = repo_root or _repo_root()
+    return dict(sorted(_rename_overrides(root).items()))
+
+
+def check_id_alias_expiry(repo_root: Path | None = None) -> str | None:
+    root = repo_root or _repo_root()
+    path = root / RENAMES_JSON
+    if not path.exists():
+        return None
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    expiry = str(payload.get("check_ids_alias_expires_on", "")).strip()
+    return expiry or None
 
 
 def canonical_check_id(check: CheckDef) -> str:
