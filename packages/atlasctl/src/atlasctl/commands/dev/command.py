@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import sys
 from pathlib import Path
 
@@ -62,6 +63,71 @@ def _forward(ctx: RunContext, *args: str) -> int:
     return proc.returncode
 
 
+def _print_tool_version(label: str, cmd: list[str]) -> None:
+    try:
+        proc = run(cmd, text=True, capture_output=True)
+    except Exception:
+        print(f"  {label}=missing")
+        return
+    if proc.returncode != 0:
+        print(f"  {label}=missing")
+        return
+    text = (proc.stdout or proc.stderr or "").strip()
+    if not text:
+        print(f"  {label}=unknown")
+        return
+    print(f"  {text.splitlines()[0]}")
+
+
+def _run_dev_tooling_versions(ctx: RunContext) -> int:
+    repo = ctx.repo_root
+    print("Rust toolchain (rust-toolchain.toml):")
+    rust_toolchain = repo / "rust-toolchain.toml"
+    if rust_toolchain.exists():
+        for line in rust_toolchain.read_text(encoding="utf-8").splitlines():
+            if line.strip().startswith("channel"):
+                value = line.split("=", 1)[-1].strip().strip('"')
+                print(f"  channel={value}")
+                break
+    print("Python tooling pins (configs/ops/pins/tools.json):")
+    pins_path = repo / "configs/ops/pins/tools.json"
+    try:
+        pins = json.loads(pins_path.read_text(encoding="utf-8")).get("tools", {})
+    except Exception:
+        pins = {}
+    for key in ("python3", "pip-tools", "uv", "ruff", "mypy"):
+        spec = pins.get(key) if isinstance(pins, dict) else None
+        if isinstance(spec, dict) and "version" in spec:
+            print(f"  {key}={spec['version']}")
+    print("Local binaries:")
+    _print_tool_version("python3", ["python3", "--version"])
+    for name in ("uv", "ruff", "mypy"):
+        if shutil.which(name):
+            _print_tool_version(name, [name, "--version"])
+        else:
+            print(f"  {name}=missing")
+    return 0
+
+
+def _run_dev_packages_check(ctx: RunContext) -> int:
+    repo = ctx.repo_root
+    venv_dir = repo / "artifacts/isolate/py/packages-check/.venv"
+    python_bin = venv_dir / "bin/python"
+    pip_bin = venv_dir / "bin/pip"
+    steps = [
+        ["python3", "-m", "venv", str(venv_dir)],
+        [str(pip_bin), "--disable-pip-version-check", "install", "--upgrade", "pip"],
+        [str(pip_bin), "--disable-pip-version-check", "install", "-e", "packages/atlasctl"],
+        [str(python_bin), "-c", "import atlasctl"],
+        ["./bin/atlasctl", "check", "run", "repo"],
+    ]
+    for cmd in steps:
+        proc = run(cmd, cwd=repo, text=True)
+        if proc.returncode != 0:
+            return proc.returncode
+    return 0
+
+
 def run_dev_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     sub = getattr(ns, "dev_cmd", "")
     slow_variant = sub.endswith("-and-slow")
@@ -75,6 +141,10 @@ def run_dev_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return 0
     if sub == "split-module":
         return _run_split_module(ctx, ns)
+    if sub == "tooling" and getattr(ns, "dev_tooling_cmd", "") == "versions":
+        return _run_dev_tooling_versions(ctx)
+    if sub == "packages" and getattr(ns, "dev_packages_cmd", "") == "check":
+        return _run_dev_packages_check(ctx)
     if normalized_sub in {"fmt", "lint", "check", "coverage", "audit"}:
         return run_dev_cargo(
             ctx,
@@ -210,3 +280,9 @@ def configure_dev_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     split = dev_sub.add_parser("split-module", help="generate a module split plan for a path")
     split.add_argument("--path", required=True)
     split.add_argument("--json", action="store_true", help="emit JSON output")
+    tooling = dev_sub.add_parser("tooling", help="tooling inspection helpers")
+    tooling_sub = tooling.add_subparsers(dest="dev_tooling_cmd", required=True)
+    tooling_sub.add_parser("versions", help="print toolchain and local tooling versions")
+    packages = dev_sub.add_parser("packages", help="package validation helpers")
+    packages_sub = packages.add_subparsers(dest="dev_packages_cmd", required=True)
+    packages_sub.add_parser("check", help="validate atlasctl package install/import in isolated venv and run repo checks")
