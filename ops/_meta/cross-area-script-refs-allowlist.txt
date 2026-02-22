@@ -19,14 +19,14 @@ makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_b
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_prereqs.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/cold_start_benchmark.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/cold_start_prefetch_5pods.py
-makefiles/ops.mk|ops/load/scripts/compare_redis.sh
-makefiles/ops.mk|ops/load/scripts/load_under_rollback.sh
-makefiles/ops.mk|ops/load/scripts/load_under_rollout.sh
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/compare_redis.py
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/load_under_rollback.py
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/load_under_rollout.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/prepare_perf_store.py
 makefiles/ops.mk|ops/load/scripts/run_e2e_perf.sh
 makefiles/ops.mk|ops/load/scripts/run_nightly_perf.sh
 makefiles/ops.mk|atlasctl ops load run
-makefiles/ops.mk|ops/load/scripts/update_baseline.sh
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/baseline/update_baseline_entrypoint.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/warm_start_benchmark.py
 makefiles/ops.mk|ops/obs/scripts/alert-firing-proof.sh
 makefiles/ops.mk|ops/obs/scripts/alerts-validation.sh
