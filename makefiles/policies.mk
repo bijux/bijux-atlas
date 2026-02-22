@@ -91,7 +91,19 @@ culprits-max_loc-py:
 	fi
 
 culprits-file-max_py_files_per_dir:
-	@$(ATLAS_SCRIPTS) policies culprits py-files-per-dir --report text
+	@out=$$(find packages -name "*.py" -print0 \
+	| xargs -0 -n1 dirname \
+	| sort \
+	| uniq -c \
+	| awk '$$1 > 10' \
+	| sort -nr); \
+	if [ -n "$$out" ]; then \
+		printf '%s\n' "ERROR: max_py_files_per_dir policy violations (files > 10):"; \
+		printf '%s\n' "$$out"; \
+		exit 1; \
+	else \
+		printf '%s\n' "INFO: max_py_files_per_dir policy compliant across python packages."; \
+	fi
 
 culprits-all-py: culprits-max_loc-py culprits-file-max_py_files_per_dir
 	@printf '%s\n' "INFO: culprits-all-py completed."
