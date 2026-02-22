@@ -22,7 +22,7 @@ Classification legend:
 | `ops/run/ci-fast.sh` | glue | deleted (atlasctl-native) | `atlasctl ci fast` |
 | `ops/run/ci-nightly.sh` | glue | deleted (atlasctl-native) | `atlasctl ci nightly` |
 | `ops/run/clean.sh` | glue | deleted (replaced by `cleanup` + `ops cache prune`) | `atlasctl cleanup` + `atlasctl ops cache prune` |
-| `ops/run/configmap-drift-report.sh` | logic | planned | `atlasctl ops k8s configmap-drift-report` |
+| `ops/run/configmap-drift-report.sh` | logic | deleted (dead wrapper; command not yet reintroduced) | future `atlasctl ops k8s configmap-drift-report` |
 | `ops/run/contract-check.sh` | glue | deleted (atlasctl-native orchestrate contracts-snapshot) | `atlasctl contracts-snapshot` / `atlasctl run contracts-snapshot` |
 | `ops/run/contract-report.py` | logic | deleted (inlined into orchestrate contracts-snapshot) | `atlasctl contracts-snapshot` / `atlasctl run contracts-snapshot` |
 | `ops/run/datasets-verify.sh` | glue | deleted (atlasctl-native) | `atlasctl ops datasets verify` |
