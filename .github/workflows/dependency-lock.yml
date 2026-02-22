@@ -27,7 +27,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.84.1
-      - run: ./bin/atlasctl ci deps --json
+      - run: make ci-dependency-lock-refresh
       - name: Verify only Cargo.lock changed
         run: |
           changed="$(git diff --name-only | grep -v '^Cargo.lock$' || true)"

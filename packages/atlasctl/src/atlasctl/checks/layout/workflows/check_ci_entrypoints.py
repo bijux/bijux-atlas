@@ -27,6 +27,8 @@ PRIMARY = {
     "obs",
     "doctor",
     "report",
+    "ci-init-tmp",
+    "ci-dependency-lock-refresh",
 }
 ALLOWED_WORKFLOW_OVERRIDES = {
     "all-and-slow-nightly.yml": {"ci-nightly"},
@@ -62,8 +64,11 @@ def main() -> int:
                     errs.append(f"{p.name} uses non-primary make target: {target}")
         if "schedule:" not in text:
             continue
-        if p.name == "dependency-lock.yml" and re.search(r"\./bin/atlasctl\s+ci\s+deps\b", text):
-            continue
+        if p.name == "dependency-lock.yml":
+            if re.search(r"\./bin/atlasctl\s+ci\s+deps\b", text):
+                continue
+            if any(cmd.strip().startswith("ci-dependency-lock-refresh") for cmd in make_runs(p)):
+                continue
         if re.search(r"\./bin/atlasctl\s+suite\s+run\s+[A-Za-z0-9_.-]+\b", text):
             continue
         if re.search(r"\./bin/atlasctl\s+ci\s+nightly\b", text):

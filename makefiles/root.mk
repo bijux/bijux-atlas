@@ -613,6 +613,15 @@ bump: ## Bump workspace version (usage: make bump VERSION=x.y.z)
 	@[ -n "$$VERSION" ] || { echo "usage: make bump VERSION=x.y.z"; exit 2; }
 	@cargo set-version --workspace "$$VERSION"
 
+ci-release-compat-matrix-verify: ## CI release compatibility matrix verification wrapper
+	@./bin/atlasctl ci release-compat-matrix-verify
+
+ci-release-build-artifacts: ## CI release artifact build wrapper
+	@./bin/atlasctl ci release-build-artifacts
+
+ci-reproducible-verify: ## CI reproducible build verification wrapper
+	@./bin/atlasctl ci reproducible-verify
+
 release-dry-run: ## Build + docs + ops smoke release rehearsal
 	@ISO_ROOT=artifacts/isolate/release-dry-run $(MAKE) fmt
 	@ISO_ROOT=artifacts/isolate/release-dry-run $(MAKE) lint
