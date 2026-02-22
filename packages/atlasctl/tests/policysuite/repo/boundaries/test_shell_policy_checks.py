@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+# BYPASS_TEST_OK: shell boundary tests intentionally reference policy allowlist fixtures.
 from pathlib import Path
 
 from atlasctl.checks.repo.enforcement.shell_policy import (

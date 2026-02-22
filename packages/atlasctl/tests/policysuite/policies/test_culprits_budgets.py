@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+# BYPASS_TEST_OK: budget policy tests intentionally reference configs/policy fixtures.
 from pathlib import Path
 
 from atlasctl.commands.policies.runtime.culprits import check_budget_drift_approval, check_budget_exceptions_sorted, load_budgets

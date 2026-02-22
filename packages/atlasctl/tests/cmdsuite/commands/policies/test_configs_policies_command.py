@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+# BYPASS_TEST_OK: policy command tests intentionally reference configs/policy fixtures.
 import json
 import os
 import subprocess

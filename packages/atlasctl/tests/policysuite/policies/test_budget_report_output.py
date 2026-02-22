@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+# BYPASS_TEST_OK: budget report fixtures intentionally use configs/policy paths.
 # schema-validate-exempt: report_budgets helper payload has no dedicated schema contract yet.
 import json
 from pathlib import Path
