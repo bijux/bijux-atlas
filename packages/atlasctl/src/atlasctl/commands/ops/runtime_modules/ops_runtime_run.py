@@ -525,7 +525,17 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                 return impl._ops_cache_prune(ctx, ns.report)
             return 2
         if ns.ops_cmd == "datasets" and sub == "verify":
-            return impl._run_simple_cmd(ctx, shell_script_command("ops/run/datasets-verify.sh"), ns.report)
+            steps = [
+                ["bash", "ops/datasets/scripts/suite.sh", "verify"],
+                ["python3", "ops/datasets/scripts/py/catalog_validate.py"],
+            ]
+            for cmd in steps:
+                code, output = impl._run_check(cmd, ctx.repo_root)
+                if output:
+                    print(output)
+                if code != 0:
+                    return code
+            return 0
         if ns.ops_cmd == "datasets" and sub == "fetch":
             return impl._run_simple_cmd(ctx, shell_script_command("ops/run/warm.sh"), ns.report)
         if ns.ops_cmd == "datasets" and sub in {"pin", "lock"}:

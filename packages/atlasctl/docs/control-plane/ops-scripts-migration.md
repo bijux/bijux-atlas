@@ -25,7 +25,7 @@ Classification legend:
 | `ops/run/configmap-drift-report.sh` | logic | planned | `atlasctl ops k8s configmap-drift-report` |
 | `ops/run/contract-check.sh` | glue | planned | `atlasctl contracts check` |
 | `ops/run/contract-report.py` | logic | planned | `atlasctl contracts report` |
-| `ops/run/datasets-verify.sh` | glue | planned | `atlasctl ops datasets verify` |
+| `ops/run/datasets-verify.sh` | glue | deleted (atlasctl-native) | `atlasctl ops datasets verify` |
 | `ops/run/deploy-atlas.sh` | logic | planned | `atlasctl ops deploy` |
 | `ops/run/doctor.sh` | glue | planned | `atlasctl doctor` / `atlasctl make doctor` |
 | `ops/run/down.sh` | glue | deleted (atlasctl-native guard + stack-down) | `atlasctl ops down` |
