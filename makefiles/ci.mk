@@ -5,9 +5,6 @@ SHELL := /bin/sh
 ci: ## Canonical CI entrypoint
 	@./bin/atlasctl ci run --json --out-dir artifacts/reports/atlasctl/suite-ci
 
-internal/ci/run: ## Internal CI wrapper: canonical run
-	@./bin/atlasctl ci run --json
-
 ci-fast: ## CI fast lane wrapper
 	@./bin/atlasctl ci fast --json
 
@@ -44,4 +41,4 @@ ci-artifacts: ## Show CI artifact output locations
 ci-help: ## Show CI command help
 	@./bin/atlasctl help ci
 
-.PHONY: ci internal/ci/run ci-fast ci-all ci-pr ci-nightly ci-contracts ci-docs ci-ops ci-release ci-release-all ci-init ci-artifacts ci-help
+.PHONY: ci ci-fast ci-all ci-pr ci-nightly ci-contracts ci-docs ci-ops ci-release ci-release-all ci-init ci-artifacts ci-help

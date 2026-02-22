@@ -259,19 +259,7 @@
     "owner": "docs-governance",
     "area": "docs"
   },
-  "docs-hardening": {
-    "owner": "docs-governance",
-    "area": "docs"
-  },
   "docs-all": {
-    "owner": "docs-governance",
-    "area": "docs"
-  },
-  "docs-check": {
-    "owner": "docs-governance",
-    "area": "docs"
-  },
-  "docs-check-all": {
     "owner": "docs-governance",
     "area": "docs"
   },
@@ -296,6 +284,10 @@
     "area": "docs"
   },
   "docs-test-all": {
+    "owner": "docs-governance",
+    "area": "docs"
+  },
+  "docs-clean": {
     "owner": "docs-governance",
     "area": "docs"
   },
