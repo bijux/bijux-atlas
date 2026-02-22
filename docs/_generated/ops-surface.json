@@ -157,7 +157,6 @@
     "ops/run/clean.sh",
     "ops/run/datasets-verify.sh",
     "ops/run/doctor.sh",
-    "ops/run/e2e-smoke.sh",
     "ops/run/k8s-suite.sh",
     "ops/run/load-suite.sh",
     "ops/run/obs-up.sh",

@@ -154,7 +154,6 @@ Generated from `configs/ops/public-surface.json`. Do not edit manually.
 - `./ops/run/obs-up.sh`
 - `./ops/run/obs-verify.sh`
 - `./ops/run/datasets-verify.sh`
-- `./ops/run/e2e-smoke.sh`
 - `./ops/run/k8s-suite.sh`
 - `./ops/run/load-suite.sh`
 - `./ops/run/report.sh`
