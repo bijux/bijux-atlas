@@ -3445,6 +3445,46 @@
     {
       "area": "target",
       "default_enabled": true,
+      "description": "forbid banned adjectives in make target names",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_target_names_no_banned_adjectives",
+      "domain": "make",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_target_names_no_banned_adjectives",
+      "impl_ref": {
+        "callable": "check_make_target_names_no_banned_adjectives",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Rename make targets using neutral policy-oriented wording.",
+        "legacy_id": "make.target_names_no_banned_adjectives",
+        "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 900,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid banned adjectives in make target names"
+    },
+    {
+      "area": "target",
+      "default_enabled": true,
       "description": "require make target ownership coverage",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_target_ownership_complete",
       "domain": "make",
@@ -3525,6 +3565,246 @@
     {
       "area": "wrapper",
       "default_enabled": true,
+      "description": "forbid direct cargo calls in wrapper makefiles",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_wrapper_no_direct_cargo",
+      "domain": "make",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_wrapper_no_direct_cargo",
+      "impl_ref": {
+        "callable": "check_make_wrapper_no_direct_cargo",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Route cargo operations through atlasctl command surfaces.",
+        "legacy_id": "make.wrapper_no_direct_cargo",
+        "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid direct cargo calls in wrapper makefiles"
+    },
+    {
+      "area": "wrapper",
+      "default_enabled": true,
+      "description": "forbid shell/env side effects inside wrapper recipe bodies",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_wrapper_no_env_side_effects",
+      "domain": "make",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_wrapper_no_env_side_effects",
+      "impl_ref": {
+        "callable": "check_make_wrapper_no_env_side_effects",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Move environment orchestration to atlasctl commands.",
+        "legacy_id": "make.wrapper_no_env_side_effects",
+        "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid shell/env side effects inside wrapper recipe bodies"
+    },
+    {
+      "area": "wrapper",
+      "default_enabled": true,
+      "description": "forbid multi-line recipes in wrapper makefiles",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_wrapper_no_multiline_recipes",
+      "domain": "make",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_wrapper_no_multiline_recipes",
+      "impl_ref": {
+        "callable": "check_make_wrapper_no_multiline_recipes",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Keep wrapper targets as one-line atlasctl delegations.",
+        "legacy_id": "make.wrapper_no_multiline_recipes",
+        "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid multi-line recipes in wrapper makefiles"
+    },
+    {
+      "area": "wrapper",
+      "default_enabled": true,
+      "description": "forbid python module invocations in wrapper recipes",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_wrapper_no_python_m",
+      "domain": "make",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_wrapper_no_python_m",
+      "impl_ref": {
+        "callable": "check_make_no_python_module_invocation",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Use ./bin/atlasctl entrypoints.",
+        "legacy_id": "make.wrapper_no_python_m",
+        "module": "atlasctl.checks.domains.policies.make.enforcement",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid python module invocations in wrapper recipes"
+    },
+    {
+      "area": "wrapper",
+      "default_enabled": true,
+      "description": "require wrapper targets to call ./bin/atlasctl only",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_wrapper_only_calls_bin_atlasctl",
+      "domain": "make",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_wrapper_only_calls_bin_atlasctl",
+      "impl_ref": {
+        "callable": "check_make_wrapper_only_calls_bin_atlasctl",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Use ./bin/atlasctl for wrapper recipe commands.",
+        "legacy_id": "make.wrapper_only_calls_bin_atlasctl",
+        "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require wrapper targets to call ./bin/atlasctl only"
+    },
+    {
+      "area": "wrapper",
+      "default_enabled": true,
+      "description": "require wrapper targets to be listed in .PHONY",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_wrapper_phony_complete",
+      "domain": "make",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_wrapper_phony_complete",
+      "impl_ref": {
+        "callable": "check_make_wrapper_phony_complete",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Add each wrapper target to the makefile .PHONY list.",
+        "legacy_id": "make.wrapper_phony_complete",
+        "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require wrapper targets to be listed in .PHONY"
+    },
+    {
+      "area": "wrapper",
+      "default_enabled": true,
       "description": "enforce make wrapper purity for canonical makefiles",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_wrapper_purity",
       "domain": "make",
@@ -3561,6 +3841,86 @@
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce make wrapper purity for canonical makefiles"
+    },
+    {
+      "area": "wrapper",
+      "default_enabled": true,
+      "description": "require wrapper makefiles to pin SHELL := /bin/sh",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_wrapper_shell_is_sh",
+      "domain": "make",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_wrapper_shell_is_sh",
+      "impl_ref": {
+        "callable": "check_make_wrapper_shell_is_sh",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Declare SHELL := /bin/sh in each wrapper makefile.",
+        "legacy_id": "make.wrapper_shell_is_sh",
+        "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require wrapper makefiles to pin SHELL := /bin/sh"
+    },
+    {
+      "area": "wrapper",
+      "default_enabled": true,
+      "description": "enforce per-makefile wrapper target count budgets",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_wrapper_target_budget",
+      "domain": "make",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_wrapper_target_budget",
+      "impl_ref": {
+        "callable": "check_make_wrapper_target_budget",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Collapse redundant wrappers and keep only canonical make targets per makefile.",
+        "legacy_id": "make.wrapper_target_budget",
+        "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 900,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "enforce per-makefile wrapper target count budgets"
     },
     {
       "area": "committed",
