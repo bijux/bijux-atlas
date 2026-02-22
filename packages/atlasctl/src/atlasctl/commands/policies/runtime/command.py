@@ -344,6 +344,37 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             print("\n".join(f"- {step}" for step in result["next_removal_steps"]))
         return 0
 
+    if ns.policies_cmd == "bypass" and getattr(ns, "bypass_cmd", "") == "tighten":
+        payload = collect_bypass_inventory(repo)
+        step = max(1, int(getattr(ns, "step", 1)))
+        ordered_groups = [
+            ("stale", ["checks_policies_bypass_entry_matches_nothing", "checks_policies_bypass_entry_paths_exist"]),
+            ("overly-broad", ["checks_policies_bypass_entry_matches_too_broad"]),
+            ("cosmetic", ["checks_policies_bypass_has_reason", "checks_policies_bypass_has_ticket_or_doc_ref"]),
+            ("structural", ["checks_policies_bypass_has_owner", "checks_policies_bypass_has_expiry", "checks_policies_bypass_has_test_coverage"]),
+            ("hard", ["checks_policies_bypass_count_nonincreasing", "checks_policies_bypass_budget_trend", "checks_policies_bypass_mainline_strict_mode"]),
+        ]
+        idx = min(step - 1, len(ordered_groups) - 1)
+        lane, checks = ordered_groups[idx]
+        result = {
+            "schema_version": 1,
+            "kind": "bypass-tighten-plan",
+            "step": step,
+            "selected_stage": lane,
+            "entry_count": int(payload.get("entry_count", 0)),
+            "recommended_checks": checks,
+            "next_order": [name for name, _ in ordered_groups[idx + 1 :]],
+            "removal_order": [name for name, _ in ordered_groups],
+        }
+        if ns.report == "json":
+            print(json.dumps(result, sort_keys=True))
+        else:
+            print(f"bypass tighten step {step}: {lane}")
+            print(f"entry_count={result['entry_count']}")
+            for cid in checks:
+                print(f"- {cid}")
+        return 0
+
     if ns.policies_cmd == "report":
         _, payload = _check_relaxations(repo, require_docs_ref=False)
         if ns.report == "json":
@@ -510,6 +541,9 @@ def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
     entry = bypass_sub.add_parser("entry", help="show one bypass entry with next removal steps")
     entry.add_argument("--id", dest="entry_id", required=True)
     entry.add_argument("--report", choices=["text", "json"], default="text")
+    tighten = bypass_sub.add_parser("tighten", help="print a staged bypass tightening plan")
+    tighten.add_argument("--step", type=int, default=1)
+    tighten.add_argument("--report", choices=["text", "json"], default="text")
 
     rep = ps.add_parser("report", help="print active relaxations summary")
     rep.add_argument("--report", choices=["text", "json"], default="json")
