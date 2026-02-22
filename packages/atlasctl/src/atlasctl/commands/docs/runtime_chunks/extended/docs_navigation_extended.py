@@ -268,7 +268,7 @@ def _generate_k8s_install_matrix(ctx: RunContext) -> tuple[int, str]:
             "## How to verify",
             "",
             "```bash",
-            "$ ops/k8s/ci/install-matrix.sh",
+            "$ python3 packages/atlasctl/src/atlasctl/commands/ops/k8s/ci/install_matrix.py",
             "$ make docs",
             "```",
             "",
