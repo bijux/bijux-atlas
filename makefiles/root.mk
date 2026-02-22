@@ -12,6 +12,7 @@ include makefiles/ci.mk
 include makefiles/docs.mk
 include makefiles/product.mk
 include makefiles/ops.mk
+include makefiles/policies.mk
 include makefiles/verification.mk
 
 check-scripts: ## Run atlasctl tooling lint/tests/contracts
