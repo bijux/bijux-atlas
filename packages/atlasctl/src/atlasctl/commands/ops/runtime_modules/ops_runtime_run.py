@@ -485,9 +485,9 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             steps = [
                 ["bash", "ops/stack/kind/context_guard.sh"],
                 ["bash", "ops/stack/kind/namespace_guard.sh"],
-                ["bash", "ops/k8s/tests/checks/rollout/test_cluster_sanity.sh"],
-                ["bash", "ops/k8s/tests/checks/rollout/test_kind_image_resolution.sh"],
-                ["bash", "ops/k8s/tests/checks/rollout/test_kind_version_drift.sh"],
+                ["python3", "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/rollout/test_cluster_sanity.py"],
+                ["python3", "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/rollout/test_kind_image_resolution.py"],
+                ["python3", "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/rollout/test_kind_version_drift.py"],
                 ["bash", "ops/vendor/layout-checks/check_kind_cluster_contract_drift.sh"],
             ]
             for cmd in steps:
