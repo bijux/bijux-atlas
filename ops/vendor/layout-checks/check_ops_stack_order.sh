@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Purpose: enforce deterministic stack install/uninstall order contract.
-# Inputs: ops/stack/scripts/install.sh and ops/stack/scripts/uninstall.sh.
+# Inputs: atlasctl-owned stack install/uninstall modules.
 # Outputs: non-zero on order drift.
 set -euo pipefail
 ROOT="$(CDPATH='' cd -- "$(dirname -- "$0")/../../.." && pwd)"
-UP="$ROOT/ops/stack/scripts/install.sh"
-DOWN="$ROOT/ops/stack/scripts/uninstall.sh"
+UP="$ROOT/packages/atlasctl/src/atlasctl/commands/ops/stack/install.py"
+DOWN="$ROOT/packages/atlasctl/src/atlasctl/commands/ops/stack/uninstall.py"
 
 assert_order() {
   local file="$1"

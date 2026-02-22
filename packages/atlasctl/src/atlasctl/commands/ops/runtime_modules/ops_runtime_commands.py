@@ -927,7 +927,7 @@ if ! (
   make -s ops-kubectl-version-check
   make -s ops-helm-version-check
   if [ "${{ATLAS_KIND_REGISTRY_ENABLE:-0}}" = "1" ]; then make -s ops-kind-registry-up; fi
-  ./ops/stack/scripts/install.sh
+  ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/stack/install.py
   make -s ops-cluster-sanity
 ) >"$log_file" 2>&1; then
   status="fail"
@@ -975,7 +975,7 @@ if ! (
   make -s ops-env-validate
   ./ops/stack/kind/context_guard.sh
   ./ops/stack/kind/namespace_guard.sh
-  ./ops/stack/scripts/uninstall.sh
+  ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/stack/uninstall.py
 ) >"$log_file" 2>&1; then
   status="fail"
 fi

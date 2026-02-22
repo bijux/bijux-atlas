@@ -6,5 +6,5 @@ ops/e2e/scripts/warmup.sh
 packages/atlasctl/src/atlasctl/commands/ops/stack/collect_events.py
 packages/atlasctl/src/atlasctl/commands/ops/stack/collect_pod_logs.py
 packages/atlasctl/src/atlasctl/commands/ops/stack/health_report.py
-ops/stack/scripts/uninstall.sh
+packages/atlasctl/src/atlasctl/commands/ops/stack/uninstall.py
 packages/atlasctl/src/atlasctl/commands/ops/stack/print_urls.py
