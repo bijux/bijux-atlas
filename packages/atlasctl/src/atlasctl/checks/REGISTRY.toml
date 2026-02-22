@@ -1621,6 +1621,27 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_make_no_duplicate_all_variants"
+domain = "make"
+area = "no"
+gate = "make"
+owner = "platform"
+speed = "fast"
+timeout_ms = 900
+module = "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout"
+callable = "check_make_no_duplicate_all_variants"
+description = "require `*-all` targets to provide distinct full behavior"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep `*-all` variants only when they add explicit full behavior flags."
+legacy_id = "make.no_duplicate_all_variants"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_make_no_legacy_script_aliases"
 domain = "make"
 area = "no"

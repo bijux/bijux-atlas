@@ -50,6 +50,7 @@ from ....repo.native import (
     check_make_forbidden_paths,
     check_make_help,
     check_make_no_direct_python_script_invocations,
+    check_make_no_duplicate_all_variants,
     check_make_scripts_references,
     check_make_target_names_no_banned_adjectives,
     check_make_wrapper_no_direct_cargo,
@@ -469,6 +470,14 @@ CHECKS: tuple[CheckDef, ...] = (
         900,
         check_make_target_names_no_banned_adjectives,
         fix_hint="Rename make targets using neutral policy-oriented wording.",
+    ),
+    CheckDef(
+        "make.no_duplicate_all_variants",
+        "make",
+        "require `*-all` targets to provide distinct full behavior",
+        900,
+        check_make_no_duplicate_all_variants,
+        fix_hint="Keep `*-all` variants only when they add explicit full behavior flags.",
     ),
     CheckDef(
         "make.target_boundaries_enforced",
