@@ -12,8 +12,8 @@ This file declares the intended top-level module layout for `packages/atlasctl/s
 - `registry/`
 - `suite/`
 - `reporting/`
-- `policies/`
-- `internal/`
+
+`policies` and `internal` are command groups (under `commands/`), not required top-level python packages.
 
 ## Migration Notes
 
