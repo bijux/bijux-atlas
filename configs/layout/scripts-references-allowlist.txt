@@ -149,10 +149,10 @@ ops/_meta/cross-area-script-refs-allowlist.txt
 ops/_meta/layer-contract-literal-allowlist.txt
 ops/_meta/stack-layer-literal-allowlist.txt
 ops/datasets/real-datasets.json
-ops/datasets/scripts/publish_by_name.sh
+packages/atlasctl/src/atlasctl/commands/ops/datasets/publish_by_name.py
 packages/atlasctl/src/atlasctl/commands/ops/datasets/dataset_qc.py
 packages/atlasctl/src/atlasctl/commands/ops/datasets/fetch_and_verify.py
-ops/datasets/scripts/suite.sh
+packages/atlasctl/src/atlasctl/commands/ops/datasets/suite.py
 ops/e2e/realdata/canonical_queries.json
 ops/e2e/realdata/run_single_release.sh
 ops/e2e/realdata/run_two_release_diff.sh
