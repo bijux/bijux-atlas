@@ -5,6 +5,7 @@ from ...core.base import CheckDef
 from .integrity import (
     check_command_group_docs_pages,
     check_docs_check_id_drift,
+    check_docs_ci_lane_mapping,
     check_docs_lint_style,
     check_docs_nav_references_exist,
     check_docs_new_command_workflow,
@@ -36,6 +37,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("docs.no_orphans", "docs", "forbid orphan docs files outside allowed generated/meta paths", 600, check_docs_no_orphans, fix_hint="Link docs pages from docs/index.md or other docs pages."),
     CheckDef("docs.no_legacy_cli_invocation", "docs", "forbid legacy atlasctl invocation patterns in docs", 600, check_docs_no_legacy_cli_invocation, fix_hint="Use `./bin/atlasctl ...` consistently in all docs examples."),
     CheckDef("docs.registry_indexes", "docs", "require registry-generated command/check/suite index pages to be in sync", 600, check_docs_registry_indexes, fix_hint="Run `atlasctl docs generate-registry-indexes --report text`."),
+    CheckDef("docs.ci_lane_mapping", "docs", "require CI workflow lane mapping doc and referenced jobs/workflows", 600, check_docs_ci_lane_mapping, fix_hint="Update packages/atlasctl/docs/control-plane/ci-lane-mapping.md and CI workflow job names together."),
     CheckDef("docs.new_command_workflow", "docs", "require docs/tests updates when command registry changes", 600, check_docs_new_command_workflow, fix_hint="Update docs index, pyproject, and tests for command-surface changes."),
     CheckDef("docs.ownership_metadata", "docs", "require docs ownership metadata for major docs areas", 600, check_docs_ownership_metadata, fix_hint="Update packages/atlasctl/docs/_meta/owners.json with major area owners."),
     CheckDef("docs.lint_style", "docs", "enforce docs style lint policy", 600, check_docs_lint_style, fix_hint="Fix long lines, invalid headings, and TODO/TBD placeholders."),

@@ -361,6 +361,31 @@ def check_docs_registry_indexes(repo_root: Path) -> tuple[int, list[str]]:
     return (0 if not errors else 1), errors
 
 
+def check_docs_ci_lane_mapping(repo_root: Path) -> tuple[int, list[str]]:
+    doc = _docs_root(repo_root) / "control-plane" / "ci-lane-mapping.md"
+    if not doc.exists():
+        return 1, [f"missing CI lane mapping doc: {doc.relative_to(repo_root).as_posix()}"]
+    text = doc.read_text(encoding="utf-8", errors="ignore")
+    required_doc_markers = [
+        "`ci`",
+        "`control-plane-conformance`",
+        "`suite-product`",
+        "`suite-ops-fast`",
+        "`bypass-burn-down`",
+    ]
+    errors = [f"CI lane mapping doc missing marker {marker}" for marker in required_doc_markers if marker not in text]
+    ci_workflow = repo_root / ".github" / "workflows" / "ci.yml"
+    if ci_workflow.exists():
+        wf = ci_workflow.read_text(encoding="utf-8", errors="ignore")
+        for job in ("ci:", "control-plane-conformance:", "suite-product:", "suite-ops-fast:"):
+            if job not in wf:
+                errors.append(f".github/workflows/ci.yml missing expected job `{job[:-1]}`")
+    bypass_wf = repo_root / ".github" / "workflows" / "bypass-burn-down.yml"
+    if not bypass_wf.exists():
+        errors.append("missing .github/workflows/bypass-burn-down.yml referenced by CI lane mapping")
+    return (0 if not errors else 1), errors
+
+
 def check_docs_new_command_workflow(repo_root: Path) -> tuple[int, list[str]]:
     proc = run_command(
         ["git", "diff", "--name-only", "HEAD~1", "HEAD"],
