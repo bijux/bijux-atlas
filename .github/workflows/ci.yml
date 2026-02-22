@@ -38,6 +38,11 @@ jobs:
         run: |
           ./bin/atlasctl internal migration-progress --json > artifacts/reports/atlasctl/migration-progress.ci.json
           ./bin/atlasctl check run --id checks_repo_migration_progress_regression --json > artifacts/reports/atlasctl/migration-progress.gate.json
+      - name: ops/run migration gates
+        run: |
+          ./bin/atlasctl --format json check run --id checks_ops_scripts_count_nonincreasing > artifacts/reports/atlasctl/ops-run-count-trend.gate.json
+          ./bin/atlasctl --format json check run --id checks_ops_run_only_allowlisted_scripts > artifacts/reports/atlasctl/ops-run-allowlist.gate.json
+          ./bin/atlasctl --format json check run --id checks_ops_run_temp_script_approvals > artifacts/reports/atlasctl/ops-run-approvals.gate.json
       - name: Generate CI job summary
         if: always()
         run: |

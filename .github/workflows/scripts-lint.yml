@@ -29,3 +29,8 @@ jobs:
         run: ./bin/atlasctl --quiet migration gate
       - name: Enforce atlasctl repo hygiene
         run: ./bin/atlasctl --quiet check repo
+      - name: Enforce ops/run migration guardrails
+        run: |
+          ./bin/atlasctl --quiet check run --id checks_ops_scripts_count_nonincreasing
+          ./bin/atlasctl --quiet check run --id checks_ops_run_only_allowlisted_scripts
+          ./bin/atlasctl --quiet check run --id checks_ops_run_temp_script_approvals
