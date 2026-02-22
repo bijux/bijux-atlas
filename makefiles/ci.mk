@@ -3,10 +3,10 @@
 SHELL := /bin/sh
 
 ci: ## Canonical CI entrypoint
-	@./bin/atlasctl ci run --json --out-dir artifacts/reports/atlasctl/suite-ci
+	@./bin/atlasctl ci pr --json
 
 ci-fast: ## CI fast lane wrapper
-	@./bin/atlasctl ci fast --json
+	@./bin/atlasctl ci run --json --lane fmt --lane lint --lane test --lane contracts
 
 ci-nightly: ## CI nightly lane (includes slow checks)
 	@./bin/atlasctl ci nightly --json
