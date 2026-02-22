@@ -19,8 +19,8 @@ Classification legend:
 | `ops/run/artifacts-open.sh` | glue | deleted (atlasctl-native) | `atlasctl ops artifacts open` |
 | `ops/run/cache-prune.sh` | glue | planned | `atlasctl ops cache prune` |
 | `ops/run/cache-status.sh` | glue | planned | `atlasctl ops cache status` |
-| `ops/run/ci-fast.sh` | glue | planned | `atlasctl ci fast` |
-| `ops/run/ci-nightly.sh` | glue | planned | `atlasctl ci nightly` |
+| `ops/run/ci-fast.sh` | glue | deleted (atlasctl-native) | `atlasctl ci fast` |
+| `ops/run/ci-nightly.sh` | glue | deleted (atlasctl-native) | `atlasctl ci nightly` |
 | `ops/run/clean.sh` | glue | planned | `atlasctl clean` / `atlasctl ops clean` |
 | `ops/run/configmap-drift-report.sh` | logic | planned | `atlasctl ops k8s configmap-drift-report` |
 | `ops/run/contract-check.sh` | glue | planned | `atlasctl contracts check` |
