@@ -18,7 +18,7 @@ BASE_URL="${ATLAS_E2E_BASE_URL:-http://127.0.0.1:$(ops_layer_port_atlas)}"
 need() { ops_need_cmd "$1"; }
 
 setup_test_traps() {
-  trap '"$ROOT"/ops/_lib/k8s/k8s-test-report.sh "$NS" "$RELEASE" || true' ERR
+  trap 'python3 "$ROOT"/packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/failure_report.py "$NS" "$RELEASE" || true' ERR
   trap 'stop_port_forward; cleanup_namespace' EXIT
 }
 
