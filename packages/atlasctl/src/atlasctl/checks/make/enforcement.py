@@ -190,12 +190,14 @@ def check_ci_workflows_call_make_and_make_calls_atlasctl(repo_root: Path) -> tup
         run_lines = [line.strip() for line in text.splitlines() if line.strip().startswith("run:")]
         if not run_lines:
             continue
-        make_lines = [line for line in run_lines if re.search(r"\brun:\s*make\b", line)]
-        if not make_lines:
-            errors.append(f"{wf.relative_to(repo_root).as_posix()}: workflow must call make entrypoints")
-        direct_atlasctl = [line for line in run_lines if "atlasctl " in line and "make " not in line]
-        if direct_atlasctl:
-            errors.append(f"{wf.relative_to(repo_root).as_posix()}: workflow run lines must call make, not atlasctl directly")
+        if any(re.search(r"\bpython3?\s+-m\s+atlasctl(\.cli)?\b", line) for line in run_lines):
+            errors.append(
+                f"{wf.relative_to(repo_root).as_posix()}: workflow must not invoke atlasctl via `python -m`; use `./bin/atlasctl`"
+            )
+        if any(re.search(r"\bcargo\s+(fmt|test|clippy|check)\b", line) for line in run_lines):
+            errors.append(
+                f"{wf.relative_to(repo_root).as_posix()}: workflow must not run raw cargo fmt/test/clippy/check; use make/atlasctl wrappers"
+            )
     return (0 if not errors else 1), sorted(errors)
 
 

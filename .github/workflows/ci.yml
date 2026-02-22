@@ -9,6 +9,25 @@ permissions:
   contents: read
 
 jobs:
+  fast-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
+          components: rustfmt, clippy
+      - name: Fast make gates
+        run: |
+          make fmt
+          make lint
+          make test
+          make check
+
   atlasctl-suite-ci-only:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -34,6 +53,16 @@ jobs:
           components: rustfmt, clippy
       - name: Run canonical CI entrypoint
         run: make ci
+      - name: Enforce workflow command policy (atlasctl wrappers only)
+        run: |
+          if rg -n '^\s*run:.*python3?\s+-m\s+atlasctl(\.cli)?\b' .github/workflows; then
+            echo "workflow policy violation: use ./bin/atlasctl (not python -m atlasctl.cli)"
+            exit 1
+          fi
+          if rg -n '^\s*run:.*\bcargo\s+(fmt|test|clippy|check)\b' .github/workflows; then
+            echo "workflow policy violation: raw cargo commands in workflow"
+            exit 1
+          fi
       - name: Enforce atlasctl migration gate
         run: ./bin/atlasctl --quiet migration gate
       - name: Enforce atlasctl repo hygiene gate
@@ -79,8 +108,11 @@ jobs:
       - name: Generate CI job summary
         if: always()
         run: |
+          ./bin/atlasctl check run all --json > artifacts/evidence/ci/check-run-all.json || true
+          ./bin/atlasctl reporting pr-summary --latest > artifacts/evidence/ci/pr-summary.md || true
           ./bin/atlasctl reporting ci-summary --latest > artifacts/evidence/ci/ci-summary.json
           cat artifacts/evidence/ci/ci-summary.json >> "$GITHUB_STEP_SUMMARY"
+          cat artifacts/evidence/ci/pr-summary.md >> "$GITHUB_STEP_SUMMARY" || true
       - name: Upload CI artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -89,3 +121,17 @@ jobs:
           path: |
             artifacts/**
             ops/_generated/**
+
+  control-plane-conformance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Control plane conformance checks
+        run: |
+          ./bin/atlasctl check run make
+          ./bin/atlasctl check run contracts
+          ./bin/atlasctl check run docs
