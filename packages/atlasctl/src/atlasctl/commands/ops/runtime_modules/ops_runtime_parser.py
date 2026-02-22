@@ -75,6 +75,7 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     stack_sub.add_parser("versions-sync", help="sync stack versions json from tool versions SSOT")
     stack_up = stack_sub.add_parser("up", help="bring up stack components")
     stack_up.add_argument("--profile", default="kind")
+    stack_up.add_argument("--reuse", action="store_true")
     stack_sub.add_parser("down", help="tear down stack components")
     stack_sub.add_parser("restart", help="restart atlas deployment")
     stack_sub.add_parser("status", help="report stack status summary")

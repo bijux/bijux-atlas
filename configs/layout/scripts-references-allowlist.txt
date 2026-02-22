@@ -210,13 +210,13 @@ ops/obs/tests/test_prom_outage.sh
 ops/obs/tests/test_slo_burn_determinism.sh
 ops/obs/tests/test_toxiproxy_latency_drill.sh
 ops/report/incident_repro.sh
-ops/run/deploy-atlas.sh
+atlasctl ops deploy
 ops/run/doctor.sh
 ops/run/ops-check.sh
 ops/run/prereqs.sh
 ops/run/root-lanes.sh
-ops/run/stack-down.sh
-ops/run/stack-up.sh
+atlasctl ops stack down
+atlasctl ops stack up
 ops/run/warm-entrypoint.sh
 ops/stack/scripts/install.sh
 ops/stack/scripts/stack_smoke.sh

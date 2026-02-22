@@ -25,7 +25,10 @@ cargo run -q -p bijux-atlas-cli --bin bijux-atlas -- atlas diff build \
 test -f "$DIFF_OUT/diff.json"
 test -f "$DIFF_OUT/diff.summary.json"
 
-"$ROOT/ops/run/deploy-atlas.sh"
+(
+  cd "$ROOT"
+  ./bin/atlasctl ops deploy --report text apply
+)
 
 DIFF_GENES="$BASE_URL/v1/diff/genes?from_release=110&to_release=111&species=homo_sapiens&assembly=GRCh38&limit=50"
 DIFF_REGION="$BASE_URL/v1/diff/region?from_release=110&to_release=111&species=homo_sapiens&assembly=GRCh38&region=chrA:1-80&limit=50"

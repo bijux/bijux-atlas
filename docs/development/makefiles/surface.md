@@ -149,5 +149,5 @@ Generated from `configs/ops/public-surface.json`. Do not edit manually.
 ## Public Ops Run Commands
 - `./ops/run/prereqs.sh`
 - `./ops/run/doctor.sh`
-- `./ops/run/stack-up.sh`
-- `./ops/run/stack-down.sh`
+- `./bin/atlasctl ops stack --report text up`
+- `./bin/atlasctl ops stack --report text down`

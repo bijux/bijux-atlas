@@ -26,7 +26,7 @@ Classification legend:
 | `ops/run/contract-check.sh` | glue | deleted (atlasctl-native orchestrate contracts-snapshot) | `atlasctl contracts-snapshot` / `atlasctl run contracts-snapshot` |
 | `ops/run/contract-report.py` | logic | deleted (inlined into orchestrate contracts-snapshot) | `atlasctl contracts-snapshot` / `atlasctl run contracts-snapshot` |
 | `ops/run/datasets-verify.sh` | glue | deleted (atlasctl-native) | `atlasctl ops datasets verify` |
-| `ops/run/deploy-atlas.sh` | logic | planned | `atlasctl ops deploy` |
+| `ops/run/deploy-atlas.sh` | logic | deleted (atlasctl-native deploy helper) | `atlasctl ops deploy` |
 | `ops/run/doctor.sh` | glue | planned | `atlasctl doctor` / `atlasctl make doctor` |
 | `ops/run/down.sh` | glue | deleted (atlasctl-native guard + stack-down) | `atlasctl ops down` |
 | `ops/run/e2e-smoke.sh` | glue | deleted (folded into `atlasctl ops e2e run`) | `atlasctl ops e2e run --scenario smoke` |
@@ -49,8 +49,8 @@ Classification legend:
 | `ops/run/report.sh` | glue | deleted (atlasctl-native) | `atlasctl report unified` |
 | `ops/run/root-lanes.sh` | legacy | legacy | split across `atlasctl dev/ci/product/ops` |
 | `ops/run/root-local.sh` | legacy | legacy | split across `atlasctl dev/ops` |
-| `ops/run/stack-down.sh` | glue | planned | `atlasctl ops stack down` |
-| `ops/run/stack-up.sh` | glue | planned | `atlasctl ops stack up` |
+| `ops/run/stack-down.sh` | glue | deleted (atlasctl-native stack helper) | `atlasctl ops stack down` |
+| `ops/run/stack-up.sh` | glue | deleted (atlasctl-native stack helper) | `atlasctl ops stack up` |
 | `ops/run/undeploy.sh` | glue | deleted (atlasctl-native rollback helper) | `atlasctl ops deploy rollback` |
 | `ops/run/warm-dx.sh` | glue | deleted (atlasctl-native composite) | `atlasctl ops warm-dx` |
 | `ops/run/warm-entrypoint.sh` | glue | planned | `atlasctl ops datasets fetch` |

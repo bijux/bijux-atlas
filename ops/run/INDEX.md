@@ -8,10 +8,10 @@ Single executable script surface for ops commands.
 - `ops/run/doctor.sh`
 - `ops/run/ops-check.sh`
 - `ops/run/ops-smoke.sh`
-- `ops/run/stack-up.sh`
-- `ops/run/stack-down.sh`
+- `atlasctl ops stack up`
+- `atlasctl ops stack down`
 - `ops/run/warm-entrypoint.sh`
-- `ops/run/deploy-atlas.sh`
+- `atlasctl ops deploy`
 - `atlasctl ops e2e run`
 
 ## Suites

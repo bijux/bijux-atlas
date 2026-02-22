@@ -144,5 +144,5 @@
 ## Public Ops Run Commands
 - `./ops/run/prereqs.sh`
 - `./ops/run/doctor.sh`
-- `./ops/run/stack-up.sh`
-- `./ops/run/stack-down.sh`
+- `./bin/atlasctl ops stack --report text up`
+- `./bin/atlasctl ops stack --report text down`
