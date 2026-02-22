@@ -16,5 +16,5 @@
 
 ```bash
 make tooling-versions
-make deps-lock
+make internal/deps/lock
 ```

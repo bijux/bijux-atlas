@@ -281,7 +281,12 @@ def check_dependency_owner_justification(repo_root: Path) -> tuple[int, list[str
 
 def check_dependency_gate_targets(repo_root: Path) -> tuple[int, list[str]]:
     mk = (repo_root / "makefiles/atlasctl.mk").read_text(encoding="utf-8")
-    required = ("deps-lock:", "deps-sync:", "deps-check-venv:", "deps-cold-start:")
+    required = (
+        "internal/deps/lock:",
+        "internal/deps/sync:",
+        "internal/deps/check-venv:",
+        "internal/deps/cold-start:",
+    )
     errors = [f"missing make dependency gate target: {name[:-1]}" for name in required if name not in mk]
     return (0 if not errors else 1), errors
 
