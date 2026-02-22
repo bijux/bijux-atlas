@@ -1,11 +1,16 @@
-#!/usr/bin/env bash
-set -euo pipefail
-SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-. "$SCRIPT_DIR/../_lib/common.sh"
-setup_test_traps
-need kubectl
+#!/usr/bin/env python3
+from __future__ import annotations
 
-# Contract: configmap update requires explicit rollout to apply.
+from pathlib import Path
+
+from ._shell_common import run_k8s_test_shell
+
+
+def main() -> int:
+    return run_k8s_test_shell(
+        """
+setup_test_traps
+need kubectl; need curl
 install_chart
 wait_ready
 pod_before="$(pod_name)"
@@ -16,7 +21,6 @@ stop_port_forward
   echo "expected /debug/datasets to be enabled before config patch, got HTTP $code_before" >&2
   exit 1
 }
-
 kubectl -n "$NS" patch configmap "${SERVICE_NAME}-config" --type merge -p '{"data":{"ATLAS_ENABLE_DEBUG_DATASETS":"false"}}' >/dev/null
 sleep 8
 pod_no_rollout="$(pod_name)"
@@ -31,7 +35,6 @@ stop_port_forward
   echo "unexpected behavior change before restart; /debug/datasets returned HTTP $code_no_rollout" >&2
   exit 1
 }
-
 kubectl -n "$NS" rollout restart deployment/"$SERVICE_NAME" >/dev/null
 kubectl -n "$NS" rollout status deployment/"$SERVICE_NAME" --timeout=180s >/dev/null
 pod_after="$(pod_name)"
@@ -46,5 +49,11 @@ stop_port_forward
   echo "expected /debug/datasets to be disabled after restart, got HTTP $code_after" >&2
   exit 1
 }
-
 echo "configmap update reload contract passed"
+        """,
+        Path(__file__),
+    )
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
