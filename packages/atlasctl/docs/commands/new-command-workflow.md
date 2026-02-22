@@ -7,7 +7,7 @@
 4. Add/extend tests for command behavior and JSON schema validation.
 5. Update `packages/atlasctl/docs/commands/index.md` for stable commands.
 6. Regenerate goldens only through:
-   `python -m atlasctl.cli gen goldens`
+   `./bin/atlasctl gen goldens`
 7. Run command-surface checks:
-   `python -m atlasctl.cli commands lint --json`
-   and `python -m atlasctl.cli commands --json --verify-stability`.
+   `./bin/atlasctl commands lint --json`
+   and `./bin/atlasctl commands --json --verify-stability`.

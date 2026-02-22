@@ -8,7 +8,7 @@
 ## 2026-02-20
 
 - Added tool-driven report command suite (`collect`, `validate`, `summarize`, `scorecard`, `diff`, `trend`, `export`).
-- Added lock/venv/install gates for scripts package.
+- Added lock/venv/install gates for atlasctl tooling.
 - Added `--version` output with git SHA suffix.
 - Added hermetic scripts test mode and scripts SBOM generator.
 - Added compatibility command surface: `atlasctl compat list|check`.

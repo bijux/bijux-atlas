@@ -30,7 +30,7 @@ List and maintain links to section pages in this directory.
 - [atlasctl Tooling](tooling/atlasctl.md)
 - [Python Version Policy](tooling/python-version-policy.md)
 - [Scripts Air-Gapped Mode](tooling/scripts-air-gapped.md)
-- [Scripts Migration Completion Checklist](tooling/scripts-migration-complete-checklist.md)
+- [Control-Plane Migration Completion Checklist](tooling/scripts-migration-complete-checklist.md)
 - [Tooling Index](tooling/INDEX.md)
 - [bijux-atlas-py Roadmap](tooling/bijux-atlas-py.md)
 - [Script Naming](script-naming.md)

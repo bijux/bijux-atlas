@@ -21,7 +21,7 @@ Workflow: pip-tools (requirements.in + requirements.lock.txt)
 ## Compile Command
 
 - Canonical lock refresh command:
-  - `python -m atlasctl.cli deps lock`
+  - `./bin/atlasctl deps lock`
 
 ## Hash Policy
 
@@ -43,12 +43,12 @@ Workflow: pip-tools (requirements.in + requirements.lock.txt)
 
 ## Commands
 
-- `python -m atlasctl.cli deps --report json`
-- `python -m atlasctl.cli deps lock`
-- `python -m atlasctl.cli deps export-requirements`
-- `python -m atlasctl.cli deps sync`
-- `python -m atlasctl.cli deps check-venv`
-- `python -m atlasctl.cli deps cold-start --runs 3 --max-ms 500`
+- `./bin/atlasctl deps --report json`
+- `./bin/atlasctl deps lock`
+- `./bin/atlasctl deps export-requirements`
+- `./bin/atlasctl deps sync`
+- `./bin/atlasctl deps check-venv`
+- `./bin/atlasctl deps cold-start --runs 3 --max-ms 500`
 
 ## Dependency Ownership
 

@@ -41,7 +41,7 @@ This section does not duplicate full command reference details from each tooling
 - [bijux-atlas-py roadmap](bijux-atlas-py.md)
 - [Python version policy](python-version-policy.md)
 - [Scripts air-gapped mode](scripts-air-gapped.md)
-- [Scripts migration completion checklist](scripts-migration-complete-checklist.md)
+- [Control-plane migration completion checklist](scripts-migration-complete-checklist.md)
 - [tooling naming policy](naming-policy.md)
 - [release packaging plan](release-packaging-plan.md)
 - [versioning alignment](versioning-alignment.md)

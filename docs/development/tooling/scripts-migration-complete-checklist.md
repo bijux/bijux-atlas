@@ -1,4 +1,4 @@
-# Scripts Migration Complete Checklist
+# Control-Plane Migration Complete Checklist
 
 - Owner: `platform`
 - Stability: `active`

@@ -136,7 +136,7 @@ def run_gen_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
 
 def configure_gen_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    p = sub.add_parser("gen", help="generation commands mapped from scripts/areas")
+    p = sub.add_parser("gen", help="generation commands mapped from control-plane domains")
     p_sub = p.add_subparsers(dest="gen_cmd", required=True)
     p_sub.add_parser("contracts", help="generate contracts artifacts")
     p_sub.add_parser("openapi", help="generate openapi snapshot and telemetry artifacts")

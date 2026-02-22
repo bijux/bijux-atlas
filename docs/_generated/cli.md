@@ -1,11 +1,11 @@
 # CLI Surface
 
-Canonical entrypoint: `bijux-atlas`
+Canonical entrypoint: `./bin/atlasctl`
 
 Generate from source of truth:
 
 ```bash
-python -m atlasctl.cli help --json
+./bin/atlasctl help --json
 ```
 
 Top-level namespaces:

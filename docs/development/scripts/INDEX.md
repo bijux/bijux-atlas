@@ -20,7 +20,7 @@ Does not duplicate script implementation details.
 
 ## Contracts
 
-- `scripts` inventory is generated via `atlasctl inventory scripts-migration`.
+- Control-plane inventory is generated via `./bin/atlasctl inventory all --format both --out-dir docs/_generated`.
 - Script taxonomy:
   - `scripts/areas/public/`: make-callable entrypoints.
   - Contracts: `atlasctl contracts ...`

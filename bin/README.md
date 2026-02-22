@@ -2,6 +2,9 @@
 
 Root `bin/` contains only tiny command shims.
 
+Canonical supported local entrypoint for atlasctl is:
+- `./bin/atlasctl`
+
 Rules:
 - no business logic
 - no network or file mutation logic
