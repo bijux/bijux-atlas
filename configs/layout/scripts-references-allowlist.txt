@@ -140,7 +140,7 @@ ops/_lib/guard/env.sh
 ops/_lib/guard/version_guard.sh
 ops/_lint/docs/naming.sh
 packages/atlasctl/src/atlasctl/commands/ops/lint/layout/json_schema_coverage.py
-ops/_lint/layout/no-layer-literals.py
+packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_layer_literals.py
 ops/_lint/no-direct-bash-entrypoints.py
 ops/_lint/no-root-ad-hoc-python.py
 ops/_lint/no-scripts-bin-dir.sh

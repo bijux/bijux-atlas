@@ -5,7 +5,15 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for parent in cur.parents:
+        if all((parent / marker).exists() for marker in ("makefiles", "packages", "configs", "ops")):
+            return parent
+    raise RuntimeError("unable to resolve repo root")
+
+
+ROOT = _repo_root()
 CONTRACT_PATH = ROOT / "ops" / "_meta" / "layer-contract.json"
 
 SCAN_GLOBS = [

@@ -14,7 +14,11 @@ def suites(repo_root: Path) -> dict[str, list[CommandCheckDef]]:
     return {
         "ops": [
             CommandCheckDef("ops/no-direct-script-usage", "ops", _py("packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_direct_script_usage.py")),
-            CommandCheckDef("ops/no-duplicate-readmes", "ops", _py("ops/_lint/no-duplicate-readmes.py")),
+            CommandCheckDef(
+                "ops/no-duplicate-readmes",
+                "ops",
+                _py("packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_duplicate_readmes.py"),
+            ),
             CommandCheckDef("ops/no-floating-tool-versions", "ops", _py("packages/atlasctl/src/atlasctl/commands/ops/lint/policy/no_floating_tool_versions.py")),
             CommandCheckDef("ops/no-orphan-contract", "ops", _py("packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_orphan_contract.py")),
             CommandCheckDef("ops/no-orphan-suite", "ops", _py("packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_orphan_suite.py")),
