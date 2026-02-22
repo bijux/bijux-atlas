@@ -10,8 +10,6 @@ REPO_ROOT="$(CDPATH='' cd -- "${OPS_LIB_ROOT}/../.." && pwd)"
 source "${OPS_LIB_ROOT}/io/artifacts.sh"
 # shellcheck source=ops/_lib/k8s/kubectl.sh
 source "${OPS_LIB_ROOT}/k8s/kubectl.sh"
-# shellcheck source=ops/_lib/helm/helm.sh
-source "${OPS_LIB_ROOT}/helm/helm.sh"
 # shellcheck source=ops/_lib/report/layer_contract.sh
 source "${OPS_LIB_ROOT}/report/layer_contract.sh"
 ARTIFACTS_ROOT="${REPO_ROOT}/artifacts/ops"
@@ -130,6 +128,34 @@ ops_env_load() {
     echo "RUN_ID and ARTIFACT_DIR must be set" >&2
     return 2
   fi
+}
+
+ops_helm() {
+  helm "$@"
+}
+
+ops_helm_retry() {
+  local ns="$1"
+  local release="$2"
+  shift 2
+  local attempts="${OPS_HELM_RETRIES:-3}"
+  local sleep_secs="${OPS_HELM_RETRY_SLEEP_SECS:-2}"
+  local i=1
+  while true; do
+    if helm "$@"; then
+      return 0
+    fi
+    if [ "$i" -ge "$attempts" ]; then
+      local out
+      out="$(ops_artifact_dir failure-bundle)"
+      helm -n "$ns" get manifest "$release" > "$out/helm-manifest.yaml" 2>/dev/null || true
+      helm -n "$ns" status "$release" > "$out/helm-status.txt" 2>/dev/null || true
+      ops_kubectl_dump_bundle "$ns" "$out"
+      return 1
+    fi
+    i=$((i + 1))
+    sleep "$sleep_secs"
+  done
 }
 
 # Canonical ops exit codes (formerly sourced from log/errors.sh; inlined after shim removal).
