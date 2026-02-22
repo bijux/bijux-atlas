@@ -12,7 +12,7 @@ from xml.etree.ElementTree import Element, SubElement, tostring
 
 from ...checks.registry import check_rename_aliases, check_tags, get_check, list_checks
 from ...checks.registry.ssot import generate_registry_json
-from ...checks.execution import run_function_checks
+from ...checks.core.execution import run_function_checks
 from ...contracts.ids import CHECK_LIST, CHECK_TAXONOMY
 from ...contracts.validate_self import validate_self
 from ...checks.repo.contracts.command_contracts import runtime_contracts_payload
@@ -57,8 +57,8 @@ from ...checks.repo.native import (
     generate_scripts_sbom,
 )
 from ...checks.repo.enforcement.module_size import check_module_size
-from ...checks.runner import domains as check_domains
-from ...checks.runner import run_domain
+from ...checks.engine.runner import domains as check_domains
+from ...checks.engine.runner import run_domain
 from ...core.context import RunContext
 from ...core.fs import ensure_evidence_path
 from ...core.runtime.telemetry import emit_telemetry

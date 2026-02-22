@@ -48,6 +48,10 @@ _CHECK_DOMAIN_PATHS = {
     "observability": Path("packages/atlasctl/src/atlasctl/checks/observability"),
     "artifacts": Path("packages/atlasctl/src/atlasctl/checks/layout/artifacts"),
 }
+_CHECKS_ROOT_REL = Path("packages/atlasctl/src/atlasctl/checks")
+_CHECKS_ROOT_ALLOWED_FILES = {"README.md", "REGISTRY.toml", "REGISTRY.generated.json", "__init__.py"}
+_CHECKS_DOMAINS_REL = _CHECKS_ROOT_REL / "domains"
+_CHECKS_DOMAIN_MODULE_CAP = 10
 
 
 def _iter_top_level_dirs(repo_root: Path) -> list[str]:
@@ -198,3 +202,35 @@ def check_checks_domain_split(repo_root: Path) -> tuple[int, list[str]]:
     if missing:
         return 1, [f"missing canonical check domain path: {item}" for item in missing]
     return 0, []
+
+
+def check_checks_root_contract(repo_root: Path) -> tuple[int, list[str]]:
+    checks_root = repo_root / _CHECKS_ROOT_REL
+    if not checks_root.exists():
+        return 1, [f"missing checks root: {_CHECKS_ROOT_REL.as_posix()}"]
+    errors: list[str] = []
+    py_files = sorted(p.name for p in checks_root.glob("*.py"))
+    if py_files != ["__init__.py"]:
+        errors.append(
+            "checks root python files must be only __init__.py; found: " + ", ".join(py_files or ["<none>"])
+        )
+    for path in sorted(checks_root.iterdir(), key=lambda p: p.name):
+        if path.name == "__pycache__":
+            continue
+        if path.is_file() and path.name not in _CHECKS_ROOT_ALLOWED_FILES:
+            errors.append(f"unexpected root file in checks/: {path.name}")
+    checks_domains = repo_root / _CHECKS_DOMAINS_REL
+    if not checks_domains.exists():
+        errors.append(f"missing grouped checks domains root: {_CHECKS_DOMAINS_REL.as_posix()}")
+        return (0 if not errors else 1), errors
+    grouped_domains = sorted(
+        p.name
+        for p in checks_domains.iterdir()
+        if p.is_dir() and p.name != "__pycache__"
+    )
+    if len(grouped_domains) > _CHECKS_DOMAIN_MODULE_CAP:
+        errors.append(
+            f"checks grouped-domain cap exceeded: {len(grouped_domains)} > {_CHECKS_DOMAIN_MODULE_CAP}; "
+            f"reduce folders under {_CHECKS_DOMAINS_REL.as_posix()}",
+        )
+    return (0 if not errors else 1), errors

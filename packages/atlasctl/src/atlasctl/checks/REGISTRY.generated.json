@@ -1986,6 +1986,32 @@
       ]
     },
     {
+      "area": "checks",
+      "callable": "check_checks_root_contract",
+      "category": "hygiene",
+      "description": "enforce checks root contract (single python root file and module cap)",
+      "domain": "repo",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Keep only __init__.py + registry artifacts at checks root and group modules under domain packages.",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_checks_root_contract",
+      "legacy_id": "repo.checks_root_contract",
+      "module": "atlasctl.checks.repo.enforcement.package_shape",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 300,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
       "area": "cli",
       "callable": "check_argparse_policy",
       "category": "hygiene",
