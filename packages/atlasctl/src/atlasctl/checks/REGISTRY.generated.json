@@ -2326,7 +2326,7 @@
       ],
       "id": "checks_repo_checks_tree_policy",
       "legacy_id": "repo.checks_tree_policy",
-      "module": "atlasctl.checks.repo.enforcement.checks_tree_policy",
+      "module": "atlasctl.checks.repo.enforcement.structure.checks_tree_policy",
       "owner": "platform",
       "severity": "error",
       "speed": "fast",
