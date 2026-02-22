@@ -18,6 +18,6 @@ fi
 cargo run -q -p bijux-atlas-cli --bin bijux-atlas -- atlas ingest-validate \
   --qc-report "$QC_REPORT" \
   --thresholds "$QC_CFG"
-python3 "$ROOT/ops/datasets/scripts/py/qc_summary.py" \
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/datasets/qc_summary.py" \
   --qc "$QC_REPORT" \
   --out "$REPORT_DIR/qc-summary.md"

@@ -473,10 +473,10 @@ def _ops_cache_status(ctx: RunContext, report_format: str, strict: bool, plan: b
     repo = ctx.repo_root
     cmds: list[list[str]] = [
         ["bash", "ops/datasets/scripts/sh/cache_status.sh"],
-        ["python3", "ops/datasets/scripts/py/cache_budget_check.py"],
+        ["python3", "packages/atlasctl/src/atlasctl/commands/ops/datasets/cache_budget_check.py"],
     ]
     if strict:
-        cmds.append(["python3", "ops/datasets/scripts/py/cache_threshold_check.py"])
+        cmds.append(["python3", "packages/atlasctl/src/atlasctl/commands/ops/datasets/cache_threshold_check.py"])
     outputs: list[str] = []
     for cmd in cmds:
         result = run_command(cmd, repo, ctx=ctx)

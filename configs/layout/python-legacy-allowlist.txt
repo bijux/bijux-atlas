@@ -1,11 +1,5 @@
 # Legacy Python files allowed outside packages/atlasctl package.
 ops/_meta/generate_layer_contract.py
-ops/datasets/scripts/py/build_manifest_lock.py
-ops/datasets/scripts/py/cache_budget_check.py
-ops/datasets/scripts/py/cache_threshold_check.py
-ops/datasets/scripts/py/catalog_validate.py
-ops/datasets/scripts/py/qc_diff.py
-ops/datasets/scripts/py/qc_summary.py
 ops/e2e/smoke/generate_report.py
 ops/load/reports/generate.py
 ops/obs/scripts/check_metric_cardinality.py
