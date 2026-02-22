@@ -1,15 +1,16 @@
 from __future__ import annotations
 
-import subprocess
 import sys
 from pathlib import Path
 
 from ..context import RunContext
+from ..exec import run as process_run
+from ..fs import write_json
 
 
 def _tool_version(ctx: RunContext, cmd: list[str]) -> str:
     try:
-        proc = subprocess.run(cmd, cwd=ctx.repo_root, text=True, capture_output=True, check=False)
+        proc = process_run(cmd, cwd=ctx.repo_root, text=True, capture_output=True)
     except OSError:
         return "missing"
     if proc.returncode != 0:
@@ -19,7 +20,6 @@ def _tool_version(ctx: RunContext, cmd: list[str]) -> str:
 
 
 def write_run_meta(ctx: RunContext, out_dir: Path, *, lane: str) -> Path:
-    out_dir.mkdir(parents=True, exist_ok=True)
     payload = {
         "schema_version": 1,
         "tool": "atlasctl",
@@ -35,6 +35,7 @@ def write_run_meta(ctx: RunContext, out_dir: Path, *, lane: str) -> Path:
             "llvm_cov": _tool_version(ctx, ["cargo", "llvm-cov", "--version"]),
         },
     }
-    out_path = out_dir / "run.meta.json"
-    out_path.write_text(__import__("json").dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    return out_path
+    return write_json(ctx, out_dir / "run.meta.json", payload)
+
+
+__all__ = ["write_run_meta"]

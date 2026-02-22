@@ -8,6 +8,7 @@ from pathlib import Path
 from ..context import RunContext
 from ..fs import ensure_evidence_path
 from ..meta.owners import load_owner_catalog
+from .paths import write_text_file
 
 SCRIPT_REGISTRY_PATH = Path("configs/scripts/registry.json")
 COMMANDS_ROOT = Path("packages/atlasctl/src/atlasctl/commands")
@@ -104,5 +105,5 @@ def emit_script_registry_evidence(ctx: RunContext, payload: dict[str, object]) -
         ctx,
         ctx.evidence_root / "lint" / "scripts" / ctx.run_id / "report.json",
     )
-    out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_text_file(out, json.dumps(payload, indent=2, sort_keys=True) + "\n")
     return out

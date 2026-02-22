@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 import os
 import shutil
-import subprocess
 import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -14,7 +13,10 @@ from ...contracts.output.base import build_output_base
 from ..context import RunContext
 from ..meta.dev_gate_semantics import should_run_repo_checks
 from ..isolation import build_isolate_env
+from ..runtime.paths import write_text_file
 from .run_meta import write_run_meta
+from .dev_cargo_plan import build_dev_cargo_plan
+from .exec import run as process_run
 
 NEXTEST_TOML = "configs/nextest/nextest.toml"
 DENY_CONFIG = "configs/security/deny.toml"
@@ -80,7 +82,7 @@ def _run(
     if (not quiet) and (not verbose):
         print(f"run: {step['command']}")
     if verbose:
-        proc = subprocess.run(cmd, cwd=ctx.repo_root, env=env, text=True, check=False)
+        proc = process_run(cmd, cwd=ctx.repo_root, env=env, text=True)
         step["exit_code"] = proc.returncode
         steps.append(step)
         if not quiet:
@@ -93,11 +95,11 @@ def _run(
         and (not quiet)
     )
     if live_repo_progress or (stream_output and not quiet):
-        proc = subprocess.run(cmd, cwd=ctx.repo_root, env=env, text=True, check=False)
+        proc = process_run(cmd, cwd=ctx.repo_root, env=env, text=True)
         step["stdout"] = ""
         step["stderr"] = ""
     else:
-        proc = subprocess.run(cmd, cwd=ctx.repo_root, env=env, text=True, capture_output=True, check=False)
+        proc = process_run(cmd, cwd=ctx.repo_root, env=env, text=True, capture_output=True)
         step["stdout"] = proc.stdout or ""
         step["stderr"] = proc.stderr or ""
     step["exit_code"] = proc.returncode
@@ -158,75 +160,23 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
     include_repo_checks = should_run_repo_checks(all_variant=params.all_tests, and_checks=params.and_checks)
 
     def explain_cmds() -> list[list[str]]:
-        if action == "fmt":
-            cmds: list[list[str]] = [["cargo", "fmt", "--all", "--", "--check", "--config-path", RUSTFMT_CONFIG]]
-            if include_repo_checks:
-                cmds.append(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose, include_slow=params.include_slow_checks))
-            return cmds
-        if action == "lint":
-            cmds = [["cargo", "clippy", "--workspace", "--all-targets", "--", "-D", "warnings"]]
-            if include_repo_checks:
-                cmds.append(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose, include_slow=params.include_slow_checks))
-            return cmds
-        if action == "check":
-            cmds = [["cargo", "check", "--workspace", "--all-targets"]]
-            if include_repo_checks:
-                cmds.append(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose, include_slow=params.include_slow_checks))
-            return cmds
-        if action == "test":
-            if params.contracts_tests:
-                cmds = [["cargo", "test", "-p", "bijux-atlas-server", "--test", "observability_contract"]]
-            else:
-                profile = env.get("NEXTEST_PROFILE", "ci")
-                cmd = [
-                    "cargo",
-                    "nextest",
-                    "run",
-                    "--workspace",
-                    "--all-targets",
-                    "--profile",
-                    profile,
-                    "--config-file",
-                    NEXTEST_TOML,
-                ]
-                if params.all_tests:
-                    cmd.extend(["--run-ignored", "all"])
-                cmds = [["cargo", "nextest", "--version"], cmd]
-            if include_repo_checks:
-                cmds.append(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose, include_slow=params.include_slow_checks))
-            return cmds
-        if action == "coverage":
-            profile = env.get("NEXTEST_PROFILE", "ci")
-            output = Path(env.get("ISO_ROOT", str(ctx.repo_root / "artifacts" / "isolate" / "local"))) / "coverage" / "lcov.info"
-            cmds = [
-                ["cargo", "llvm-cov", "--version"],
-                [
-                    "cargo",
-                    "llvm-cov",
-                    "nextest",
-                    "--workspace",
-                    "--all-targets",
-                    "--profile",
-                    profile,
-                    "--config-file",
-                    NEXTEST_TOML,
-                    "--run-ignored",
-                    "all",
-                    "--lcov",
-                    "--output-path",
-                    str(output),
-                ],
-                ["cargo", "llvm-cov", "report", "--summary-only"],
-            ]
-            if include_repo_checks:
-                cmds.append(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose, include_slow=params.include_slow_checks))
-            return cmds
-        if action == "audit":
-            cmds = [["cargo", "+stable", "deny", "--version"], ["cargo", "+stable", "deny", "check", "--config", DENY_CONFIG]]
-            if include_repo_checks:
-                cmds.append(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose, include_slow=params.include_slow_checks))
-            return cmds
-        return []
+        profile = env.get("NEXTEST_PROFILE", "ci")
+        iso_root = Path(env.get("ISO_ROOT", str(ctx.repo_root / "artifacts" / "isolate" / "local")))
+        return build_dev_cargo_plan(
+            action=action,
+            all_tests=params.all_tests,
+            contracts_tests=params.contracts_tests,
+            include_repo_checks=include_repo_checks,
+            include_slow_checks=params.include_slow_checks,
+            quiet=ctx.quiet,
+            verbose=params.verbose,
+            nextest_toml=NEXTEST_TOML,
+            rustfmt_config=RUSTFMT_CONFIG,
+            deny_config=DENY_CONFIG,
+            profile=profile,
+            iso_root=iso_root,
+            repo_check_cmd_builder=_atlasctl_repo_check_cmd,
+        )
 
     if params.explain:
         planned = [" ".join(cmd) for cmd in explain_cmds()]
@@ -326,13 +276,12 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
         if shutil.which("cargo") is None:
             failures.append("cargo not found")
         else:
-            deny_check = subprocess.run(
+            deny_check = process_run(
                 ["cargo", "+stable", "deny", "--version"],
                 cwd=ctx.repo_root,
                 env=env,
                 text=True,
                 capture_output=not params.verbose,
-                check=False,
             )
             steps.append({"command": "cargo +stable deny --version", "exit_code": deny_check.returncode})
             if deny_check.returncode != 0:
@@ -359,7 +308,7 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
     meta["run_meta"] = str(meta_path)
     payload = build_output_base(run_id=ctx.run_id, ok=ok, errors=failures, meta=meta, version=2)
     payload["status"] = "ok" if ok else "error"
-    (out_dir / f"dev-{action}.report.json").write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_text_file(out_dir / f"dev-{action}.report.json", json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if params.json_output:
         print(json.dumps(payload, sort_keys=True))
     elif ok:

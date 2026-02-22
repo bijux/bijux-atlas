@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 from ..reporting.make_area_report import main as make_area_report_main
 from ..core.context import RunContext
+from ..core.runtime.paths import write_text_file
 from ..commands.policies.runtime.dir_entry_budgets import report_budgets
 from .actions import (
     _cmd_artifact_gc,
@@ -62,8 +63,7 @@ def run_report_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         text = json.dumps(payload, sort_keys=True) if bool(getattr(ns, "json", False)) else json.dumps(payload, indent=2, sort_keys=True)
         if ns.out:
             out = ctx.repo_root / ns.out
-            out.parent.mkdir(parents=True, exist_ok=True)
-            out.write_text(text + "\n", encoding="utf-8")
+            write_text_file(out, text + "\n")
         print(text)
         return 0 if payload.get("status") == "ok" else 1
     if ns.report_cmd == "make-area-write":

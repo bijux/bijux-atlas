@@ -2,5 +2,6 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PYTHONDONTWRITEBYTECODE=1 \
 PYTHONPATH="$ROOT/packages/atlasctl/src${PYTHONPATH:+:$PYTHONPATH}" \
   exec python3 -m atlasctl.cli "$@"

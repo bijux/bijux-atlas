@@ -5,6 +5,7 @@ import json
 import os
 
 from . import command as impl
+from ..core.runtime.paths import write_text_file
 
 def run_suite_command(ctx, ns: argparse.Namespace) -> int:
     as_json = ctx.output_format == "json" or bool(getattr(ns, "json", False))
@@ -300,10 +301,10 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
         "target_dir": target_dir.as_posix(),
     }
     validate_self(SUITE_RUN, payload)
-    (target_dir / "results.json").write_text(impl.dumps_json(payload, pretty=True) + "\n", encoding="utf-8")
+    write_text_file(target_dir / "results.json", impl.dumps_json(payload, pretty=True) + "\n")
     if getattr(ns, "slow_report", None):
-        (ctx.repo_root / ns.slow_report).parent.mkdir(parents=True, exist_ok=True)
-        (ctx.repo_root / ns.slow_report).write_text(
+        write_text_file(
+            ctx.repo_root / ns.slow_report,
             impl.dumps_json(
                 {
                     "schema_version": 1,
@@ -318,11 +319,11 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
                 pretty=True,
             )
             + "\n",
-            encoding="utf-8",
         )
     if getattr(ns, "profile", False):
         profile_path = target_dir / "profile.json"
-        profile_path.write_text(
+        write_text_file(
+            profile_path,
             impl.dumps_json(
                 {
                     "schema_version": 1,
@@ -336,7 +337,6 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
                 pretty=True,
             )
             + "\n",
-            encoding="utf-8",
         )
     emit_telemetry(
         ctx,
@@ -351,6 +351,5 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
     if as_json:
         print(impl.dumps_json(payload, pretty=False))
     return 0 if failed == 0 else impl.ERR_USER
-
 
 

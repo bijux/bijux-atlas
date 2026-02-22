@@ -1,5 +1,14 @@
-"""Compatibility shim for `atlasctl.core.network`."""
+"""Centralized network boundary helpers."""
 
-from .effects.network import check_network_allowed
+from __future__ import annotations
 
-__all__ = ["check_network_allowed"]
+import urllib.request
+
+
+def http_get(url: str, timeout_seconds: int = 5) -> tuple[int, str]:
+    req = urllib.request.Request(url, method="GET")
+    with urllib.request.urlopen(req, timeout=timeout_seconds) as resp:  # nosec - caller controls endpoint
+        return int(resp.status), resp.read().decode("utf-8", errors="replace")
+
+
+__all__ = ["http_get"]
