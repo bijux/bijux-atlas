@@ -29,10 +29,6 @@ ops/obs/scripts/contracts/write_obs_conformance_report.py
 ops/obs/scripts/summarize_drill_results.py
 ops/obs/scripts/validate_logs_schema.py
 ops/obs/scripts/write_pack_conformance_report.py
-ops/report/generate.py
-ops/report/make_confidence_scorecard.py
-ops/report/scorecard.py
-ops/report/slo_report.py
 ops/stack/tests/check_live_layer_snapshot.py
 scripts/areas/check/check-no-adhoc-python.py
 scripts/areas/check/check-script-errors.py

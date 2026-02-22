@@ -210,7 +210,7 @@ def _cmd_scorecard(ctx: RunContext, run_id: str, out: str | None) -> int:
     out_path = Path(out) if out else (ctx.repo_root / "ops/_generated_committed/scorecard.json")
     cmd = [
         "python3",
-        "./ops/report/make_confidence_scorecard.py",
+        "./packages/atlasctl/src/atlasctl/reporting/tools/make_confidence_scorecard.py",
         "--unified",
         str(unified),
         "--out",
@@ -348,6 +348,5 @@ def _cmd_export(ctx: RunContext, run_id: str, out: str | None) -> int:
         tar.add(run_dir, arcname=run_dir.name)
     print(out_path)
     return 0
-
 
 
