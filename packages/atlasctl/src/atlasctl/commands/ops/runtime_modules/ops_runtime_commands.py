@@ -1072,70 +1072,127 @@ def _ops_e2e_run_native(ctx: RunContext, report_format: str, suite: str) -> int:
 
 
 def _ops_stack_up_native(ctx: RunContext, report_format: str, profile: str, reuse: bool) -> int:
-    reuse_flag = "1" if reuse else "0"
-    script = f"""
-set -euo pipefail
-. ./ops/_lib/common.sh
-ops_init_run_id
-ops_env_load
-ops_entrypoint_start "ops-stack-up"
-ops_version_guard kind kubectl helm
-reuse="{reuse_flag}"
-profile="{profile}"
-start_ts="$(date +%s)"
-status="pass"
-log_file="artifacts/evidence/stack/${{RUN_ID}}/stack-up.log"
-health_json="artifacts/evidence/stack/${{RUN_ID}}/health-report.json"
-snapshot_json="artifacts/evidence/stack/state-snapshot.json"
-atlas_ns="${{ATLAS_E2E_NAMESPACE:?ATLAS_E2E_NAMESPACE is required by configs/ops/env.schema.json}}"
-atlas_cluster="${{ATLAS_E2E_CLUSTER_NAME:?ATLAS_E2E_CLUSTER_NAME is required by configs/ops/env.schema.json}}"
-mkdir -p "$(dirname "$log_file")"
-if [ "$reuse" = "1" ] && [ -f "$snapshot_json" ]; then
-  if ops_context_guard "$profile" >/dev/null 2>&1 \\
-    && ops_kubectl get ns "$atlas_ns" >/dev/null 2>&1 \\
-    && ATLAS_HEALTH_REPORT_FORMAT=json python3 ./packages/atlasctl/src/atlasctl/commands/ops/stack/health_report.py "$atlas_ns" "$health_json" >/dev/null 2>&1; then
-    duration="$(( $(date +%s) - start_ts ))"
-    ops_write_lane_report "stack" "$RUN_ID" "pass" "$duration" "$log_file"
-    echo "stack-up reuse hit: healthy snapshot validated for namespace=${{atlas_ns}}" >"$log_file"
-    exit 0
-  fi
-fi
-if ! (
-  make -s ops-env-validate
-  make -s ops-kind-up
-  ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/context_guard.py
-  ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/namespace_guard.py
-  make -s ops-kind-version-check
-  make -s ops-kubectl-version-check
-  make -s ops-helm-version-check
-  if [ "${{ATLAS_KIND_REGISTRY_ENABLE:-0}}" = "1" ]; then make -s ops-kind-registry-up; fi
-  ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/stack/install.py
-  make -s ops-cluster-sanity
-) >"$log_file" 2>&1; then
-  status="fail"
-fi
-ATLAS_HEALTH_REPORT_FORMAT=json python3 ./packages/atlasctl/src/atlasctl/commands/ops/stack/health_report.py "$atlas_ns" "$health_json" >/dev/null || true
-duration="$(( $(date +%s) - start_ts ))"
-ops_write_lane_report "stack" "$RUN_ID" "$status" "$duration" "$log_file"
-if [ "$status" = "pass" ]; then
-  mkdir -p "$(dirname "$snapshot_json")"
-  python3 - <<PY > "$snapshot_json"
-import json, datetime
-print(json.dumps({{
-  "schema_version": 1,
-  "captured_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-  "profile": "{profile}",
-  "cluster": "${{atlas_cluster}}",
-  "namespace": "${{atlas_ns}}",
-  "health_report": "${{health_json}}",
-  "run_id": "${{RUN_ID}}",
-  "healthy": True
-}}, indent=2, sort_keys=True))
-PY
-fi
-[ "$status" = "pass" ] || exit 1
-"""
-    return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
+    repo = ctx.repo_root
+    run_id = ctx.run_id
+    start = dt.datetime.now(dt.timezone.utc)
+    outputs: list[str] = []
+    log_dir = repo / "artifacts" / "evidence" / "stack" / run_id
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_file = log_dir / "stack-up.log"
+    health_json = log_dir / "health-report.json"
+    snapshot_json = repo / "artifacts" / "evidence" / "stack" / "state-snapshot.json"
+
+    missing = [tool for tool in ("kind", "kubectl", "helm") if shutil.which(tool) is None]
+    if missing:
+        return _emit_ops_status(report_format, 1, "\n".join(f"missing required tool: {tool}" for tool in missing))
+
+    env_code, env_msg, resolved = _ops_env_validate_native(repo, "configs/ops/env.schema.json")
+    outputs.append(env_msg.strip())
+    if env_code != 0:
+        write_text_file(log_file, "\n".join(outputs).strip() + "\n", encoding="utf-8")
+        return _emit_ops_status(report_format, env_code, "\n".join(outputs).strip())
+    atlas_ns = (os.environ.get("ATLAS_E2E_NAMESPACE") or resolved.get("ATLAS_E2E_NAMESPACE") or "").strip()
+    atlas_cluster = (os.environ.get("ATLAS_E2E_CLUSTER_NAME") or resolved.get("ATLAS_E2E_CLUSTER_NAME") or "").strip()
+    if not atlas_ns or not atlas_cluster:
+        missing_envs = []
+        if not atlas_ns:
+            missing_envs.append("ATLAS_E2E_NAMESPACE")
+        if not atlas_cluster:
+            missing_envs.append("ATLAS_E2E_CLUSTER_NAME")
+        outputs.append(f"missing required ops env values: {', '.join(missing_envs)}")
+        write_text_file(log_file, "\n".join(outputs).strip() + "\n", encoding="utf-8")
+        return _emit_ops_status(report_format, 1, "\n".join(outputs).strip())
+
+    guard = run_command([*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/context_guard.py"], repo, ctx=ctx)
+    if reuse and snapshot_json.exists() and guard.code == 0:
+        ns_check = run_command(["kubectl", "get", "ns", atlas_ns], repo, ctx=ctx)
+        health = run_command(
+            [
+                "env",
+                "ATLAS_HEALTH_REPORT_FORMAT=json",
+                "python3",
+                "./packages/atlasctl/src/atlasctl/commands/ops/stack/health_report.py",
+                atlas_ns,
+                str(health_json),
+            ],
+            repo,
+            ctx=ctx,
+        )
+        if ns_check.code == 0 and health.code == 0:
+            msg = f"stack-up reuse hit: healthy snapshot validated for namespace={atlas_ns}"
+            write_text_file(log_file, msg + "\n", encoding="utf-8")
+            lane_report = {
+                "schema_version": 1,
+                "run_id": run_id,
+                "status": "pass",
+                "duration_seconds": max(0.0, (dt.datetime.now(dt.timezone.utc) - start).total_seconds()),
+                "log": log_file.relative_to(repo).as_posix(),
+            }
+            write_text_file(log_dir / "report.json", json.dumps(lane_report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            return _emit_ops_status(report_format, 0, msg)
+
+    status = "pass"
+    cmds: list[list[str]] = [
+        ["make", "-s", "ops-kind-up"],
+        [*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/context_guard.py"],
+        [*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/namespace_guard.py"],
+        ["make", "-s", "ops-kind-version-check"],
+        ["make", "-s", "ops-kubectl-version-check"],
+        ["make", "-s", "ops-helm-version-check"],
+    ]
+    if os.environ.get("ATLAS_KIND_REGISTRY_ENABLE", "0") == "1":
+        cmds.append(["make", "-s", "ops-kind-registry-up"])
+    cmds.extend(
+        [
+            [*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/commands/ops/stack/install.py"],
+            ["make", "-s", "ops-cluster-sanity"],
+        ]
+    )
+    for cmd in cmds:
+        result = run_command(cmd, repo, ctx=ctx)
+        if result.combined_output.strip():
+            outputs.append(result.combined_output.rstrip())
+        if result.code != 0:
+            status = "fail"
+            break
+
+    run_command(
+        [
+            "env",
+            "ATLAS_HEALTH_REPORT_FORMAT=json",
+            "python3",
+            "./packages/atlasctl/src/atlasctl/commands/ops/stack/health_report.py",
+            atlas_ns,
+            str(health_json),
+        ],
+        repo,
+        ctx=ctx,
+    )
+
+    write_text_file(log_file, ("\n".join(outputs).strip() + "\n") if outputs else "", encoding="utf-8")
+    duration_seconds = max(0.0, (dt.datetime.now(dt.timezone.utc) - start).total_seconds())
+    lane_report = {
+        "schema_version": 1,
+        "run_id": run_id,
+        "status": status,
+        "duration_seconds": duration_seconds,
+        "log": log_file.relative_to(repo).as_posix(),
+    }
+    write_text_file(log_dir / "report.json", json.dumps(lane_report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    if status == "pass":
+        snapshot_json.parent.mkdir(parents=True, exist_ok=True)
+        payload = {
+            "schema_version": 1,
+            "captured_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+            "profile": profile,
+            "cluster": atlas_cluster,
+            "namespace": atlas_ns,
+            "health_report": health_json.relative_to(repo).as_posix(),
+            "run_id": run_id,
+            "healthy": True,
+        }
+        write_text_file(snapshot_json, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return _emit_ops_status(report_format, 0 if status == "pass" else 1, "\n".join(outputs).strip())
 
 
 def _ops_stack_down_native(ctx: RunContext, report_format: str) -> int:
