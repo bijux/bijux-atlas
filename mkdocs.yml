@@ -57,7 +57,7 @@ nav:
       - Non Goals: product/non-goals.md
       - Compatibility Promise: product/compatibility-promise.md
       - Immutability and Aliases: product/immutability-and-aliases.md
-      - Reference Grade Checklist: product/reference-grade-checklist.md
+      - Release Contract Checklist: product/release-contract-checklist.md
       - SLO Targets: product/slo-targets.md
       - Diffs v1: product/diffs-v1.md
       - Sequences v1: product/sequence-v1.md
@@ -207,6 +207,7 @@ nav:
       - Depth Rubric: _style/DEPTH_RUBRIC.md
       - Docs Review Checklist: _style/docs-review-checklist.md
       - Naming Standard: _style/naming-standard.md
+      - Naming and Wording Conventions: development/naming-and-wording-conventions.md
       - Concept Registry: _style/CONCEPT_REGISTRY.md
       - Concept Graph: _generated/concepts.md
       - Doc Status: _generated/doc-status.md

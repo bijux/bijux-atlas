@@ -290,7 +290,7 @@ CHECKS: list[MakeCheck] = [
         "forbidden-adjectives",
         "Validate forbidden legacy adjectives are not used",
         "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/check_forbidden_adjectives.py",
-        "Remove forbidden adjectives (`elite`, `refgrade`, `gold`) or add tightly-scoped allowlist entries for historical quotes.",
+        "Remove blocked wording or add tightly-scoped approvals in configs/policy/forbidden-adjectives-approvals.json for historical quotations.",
     ),
     _check(
         "root-mk-size-budget",

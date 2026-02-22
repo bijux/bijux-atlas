@@ -15,6 +15,12 @@ Maps legacy root aliases to canonical `ops/` paths.
 - `./datasets/` -> `./ops/datasets/`
 - `./fixtures/` -> `./ops/fixtures/`
 
+## Wording Migration
+
+- `Reference Grade Checklist` -> `Release Contract Checklist`
+- Legacy marketing wording -> `contract` / `policy` wording in docs and command output
+- Blocked-term enforcement uses explicit policy config and explicit approvals for historical quotes only
+
 ## Commands
 
 Use make targets only:
