@@ -25,8 +25,10 @@ jobs:
       TEMP: artifacts/isolates/docs-only/tmp
     steps:
       - uses: actions/checkout@v4
-      - run: ./bin/atlasctl ci init --json
-      - run: make docs
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: ./bin/atlasctl ci docs --json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
