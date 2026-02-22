@@ -57,12 +57,27 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         readme = ctx.repo_root / "ops" / "INDEX.md"
         return impl._emit_ops_status(ns.report, 0, readme.read_text(encoding="utf-8"))
     if ns.ops_cmd == "run":
+        manifest_path = getattr(ns, "manifest", None)
+        task_name = getattr(ns, "task", None)
+        if manifest_path is None and task_name:
+            try:
+                manifest_path = impl._ops_task_manifest(ctx, str(task_name))
+            except Exception as exc:
+                return impl._emit_ops_status(getattr(ns, "report", "text"), 2, str(exc))
+        if not manifest_path:
+            return impl._emit_ops_status(getattr(ns, "report", "text"), 2, "provide <task> or --manifest")
         return impl._ops_manifest_run(
             ctx,
             ns.report,
-            manifest_path=ns.manifest,
+            manifest_path=manifest_path,
             fail_fast=bool(getattr(ns, "fail_fast", False)),
         )
+    if ns.ops_cmd == "list":
+        if getattr(ns, "kind", "") == "tasks":
+            return impl._ops_list_tasks(ctx, ns.report)
+        return 2
+    if ns.ops_cmd == "explain":
+        return impl._ops_explain_task(ctx, ns.report, getattr(ns, "task", ""))
 
     if ns.ops_cmd == "surface":
         surface = ctx.repo_root / "ops" / "_meta" / "surface.json"
