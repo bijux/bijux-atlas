@@ -547,34 +547,54 @@ def _ops_prereqs_native(ctx: RunContext, report_format: str) -> int:
 
 
 def _ops_doctor_native(ctx: RunContext, report_format: str) -> int:
-    script = """
-set -euo pipefail
-cd .
-. ./ops/_lib/common.sh
-ops_init_run_id
-ops_env_load
-ops_entrypoint_start "ops-doctor"
-ops_version_guard kind kubectl helm k6
-./bin/atlasctl ops prereqs --report text
-echo "evidence root: artifacts/evidence"
-echo "evidence run id pointer: artifacts/evidence/latest-run-id.txt"
-python3 ./packages/atlasctl/src/atlasctl/layout_checks/check_tool_versions.py kind kubectl helm k6 jq yq python3 || true
-python3 ./packages/atlasctl/src/atlasctl/layout_checks/check_ops_pins.py || true
-if rg -n "(?:legacy/[A-Za-z0-9_.-]+|ops-[A-Za-z0-9-]+-legacy|ops/.*/_legacy/|ops/.*/scripts/.*legacy)" \\
-  makefiles docs .github/workflows >/dev/null 2>&1; then
-  echo "legacy ops path/target references found in public surfaces" >&2
-  rg -n "(?:legacy/[A-Za-z0-9_.-]+|ops-[A-Za-z0-9-]+-legacy|ops/.*/_legacy/|ops/.*/scripts/.*legacy)" \\
-    makefiles docs .github/workflows || true
-  exit 1
-fi
-pin_report="artifacts/evidence/pins/${RUN_ID}/pin-drift-report.json"
-if [ -f "$pin_report" ]; then
-  echo "pin drift report: $pin_report"
-  cat "$pin_report"
-fi
-make -s ops-env-print || true
-"""
-    return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
+    repo = ctx.repo_root
+    outputs: list[str] = []
+
+    prereqs = run_command([*SELF_CLI, "ops", "prereqs", "--report", "text"], repo, ctx=ctx)
+    if prereqs.combined_output.strip():
+        outputs.append(prereqs.combined_output.rstrip())
+    if prereqs.code != 0:
+        return _emit_ops_status(report_format, prereqs.code, "\n".join(outputs).strip())
+
+    outputs.append("evidence root: artifacts/evidence")
+    outputs.append("evidence run id pointer: artifacts/evidence/latest-run-id.txt")
+
+    best_effort = [
+        ["python3", "./packages/atlasctl/src/atlasctl/layout_checks/check_tool_versions.py", "kind", "kubectl", "helm", "k6", "jq", "yq", "python3"],
+        ["python3", "./packages/atlasctl/src/atlasctl/layout_checks/check_ops_pins.py"],
+        ["make", "-s", "ops-env-print"],
+    ]
+    for cmd in best_effort:
+        result = run_command(cmd, repo, ctx=ctx)
+        if result.combined_output.strip():
+            outputs.append(result.combined_output.rstrip())
+
+    legacy_pattern = re.compile(r"(?:legacy/[A-Za-z0-9_.-]+|ops-[A-Za-z0-9-]+-legacy|ops/.*/_legacy/|ops/.*/scripts/.*legacy)")
+    legacy_hits: list[str] = []
+    for rel in ["makefiles", "docs", ".github/workflows"]:
+        base = repo / rel
+        if not base.exists():
+            continue
+        for path in base.rglob("*"):
+            if not path.is_file():
+                continue
+            try:
+                text = path.read_text(encoding="utf-8", errors="ignore")
+            except Exception:
+                continue
+            for lineno, line in enumerate(text.splitlines(), start=1):
+                if legacy_pattern.search(line):
+                    legacy_hits.append(f"{path.relative_to(repo).as_posix()}:{lineno}:{line.strip()}")
+    if legacy_hits:
+        msg = "\n".join(outputs + ["legacy ops path/target references found in public surfaces", *legacy_hits]).strip()
+        return _emit_ops_status(report_format, 1, msg)
+
+    pin_report = repo / "artifacts" / "evidence" / "pins" / ctx.run_id / "pin-drift-report.json"
+    if pin_report.exists():
+        outputs.append(f"pin drift report: {pin_report.relative_to(repo).as_posix()}")
+        outputs.append(pin_report.read_text(encoding="utf-8", errors="ignore").rstrip())
+
+    return _emit_ops_status(report_format, 0, "\n".join(x for x in outputs if x).strip())
 
 
 def _ops_smoke_native(ctx: RunContext, report_format: str, reuse: bool) -> int:
