@@ -362,7 +362,9 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                         errors.append(f"missing key `{key}`")
             return impl._emit_ops_status(ns.report, 0 if not errors else 1, "e2e results valid" if not errors else "\n".join(errors))
         if ns.ops_cmd == "obs" and sub == "verify":
-            return impl._run_simple_cmd(ctx, shell_script_command("ops/run/obs-verify.sh"), ns.report)
+            suite = str(getattr(ns, "suite", "full") or "full")
+            extra_args = list(getattr(ns, "args", []))
+            return impl._ops_obs_verify(ctx, ns.report, suite, extra_args)
         if ns.ops_cmd == "obs" and sub == "check":
             return impl._run_simple_cmd(ctx, [*impl.SELF_CLI, "ops", "obs", "--report", ns.report, "verify"], ns.report)
         if ns.ops_cmd == "obs" and sub == "up":

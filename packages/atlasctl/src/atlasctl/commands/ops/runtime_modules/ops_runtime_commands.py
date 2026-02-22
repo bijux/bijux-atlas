@@ -546,6 +546,58 @@ def _ops_warm_dx(ctx: RunContext, report_format: str) -> int:
     return _emit_ops_status(report_format, 0, msg)
 
 
+def _ops_obs_verify(ctx: RunContext, report_format: str, suite: str, extra_args: list[str]) -> int:
+    repo = ctx.repo_root
+    run_id = ctx.run_id
+    log_dir = repo / "artifacts" / "evidence" / "obs-verify" / run_id
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_file = log_dir / "run.log"
+    start = dt.datetime.now(dt.timezone.utc)
+    result = run_command(["bash", "ops/obs/tests/suite.sh", "--suite", suite, *extra_args], repo, ctx=ctx)
+    write_text_file(log_file, result.combined_output if result.combined_output.endswith("\n") else result.combined_output + "\n", encoding="utf-8")
+    status = "pass" if result.code == 0 else "fail"
+    # Best-effort conformance report generation to preserve old wrapper side effects.
+    run_command(
+        [
+            "python3",
+            "ops/obs/scripts/areas/contracts/write_obs_conformance_report.py",
+            "--run-id",
+            run_id,
+            "--suite",
+            suite,
+            "--status",
+            status,
+            "--out-dir",
+            str(log_dir),
+        ],
+        repo,
+        ctx=ctx,
+    )
+    traces = repo / "artifacts" / "ops" / "obs" / "traces.exemplars.log"
+    if traces.exists():
+        shutil.copy2(traces, log_dir / "traces.exemplars.log")
+    if status == "pass":
+        last_pass = repo / "artifacts" / "evidence" / "obs" / "last-pass.json"
+        last_pass.parent.mkdir(parents=True, exist_ok=True)
+        payload = {
+            "run_id": run_id,
+            "suite": suite,
+            "timestamp_utc": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        }
+        write_text_file(last_pass, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    duration_seconds = max(0.0, (dt.datetime.now(dt.timezone.utc) - start).total_seconds())
+    lane_report = {
+        "schema_version": 1,
+        "run_id": run_id,
+        "status": status,
+        "duration_seconds": duration_seconds,
+        "log": log_file.relative_to(repo).as_posix(),
+    }
+    write_text_file(log_dir / "report.json", json.dumps(lane_report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    msg = str(log_dir.relative_to(repo))
+    return _emit_ops_status(report_format, 0 if status == "pass" else 1, msg)
+
+
 
 
 

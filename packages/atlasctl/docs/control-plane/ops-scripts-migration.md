@@ -42,7 +42,7 @@ Classification legend:
 | `ops/run/load-suite.sh` | glue | planned | `atlasctl ops load run` |
 | `ops/run/obs-up.sh` | logic | deleted (atlasctl-native) | `atlasctl ops obs up` |
 | `ops/run/obs-validate.sh` | glue | deleted (atlasctl-native) | `atlasctl ops obs validate` |
-| `ops/run/obs-verify.sh` | glue | planned | `atlasctl obs verify` / `atlasctl ops obs verify` |
+| `ops/run/obs-verify.sh` | glue | deleted (atlasctl-native) | `atlasctl ops obs verify` |
 | `ops/run/ops-check.sh` | glue | planned | `atlasctl ops check` |
 | `ops/run/ops-smoke.sh` | glue | planned | `atlasctl ops smoke` |
 | `ops/run/prereqs.sh` | glue | planned | `atlasctl make prereqs` |
