@@ -8,6 +8,9 @@ ATLASCTL ?= ./bin/atlasctl
 atlasctl-check: ## Run all atlasctl checks across all groups
 	@./bin/atlasctl check run --group all
 
+atlasctl-check-all: ## Run all atlasctl checks including slow checks
+	@./bin/atlasctl check run --group all --all --timeout-ms 30000
+
 atlasctl-check-contracts: ## Run atlasctl contracts checks
 	@./bin/atlasctl check run --group contracts
 
@@ -69,4 +72,4 @@ atlasctl/internal/deps/lock: ## Refresh python lockfile deterministically via at
 atlasctl/internal/deps/sync: ## Install dependencies from lock into active interpreter
 	@./bin/atlasctl --quiet deps sync
 
-.PHONY: atlasctl-check atlasctl-check-contracts atlasctl-check-docs atlasctl-check-layout atlasctl-check-make atlasctl-check-ops atlasctl-check-python atlasctl-check-repo atlasctl-registry-list atlasctl/internal atlasctl/internal/cli-check atlasctl/internal/deps/check-venv atlasctl/internal/deps/cold-start atlasctl/internal/deps/lock atlasctl/internal/deps/sync
+.PHONY: atlasctl-check atlasctl-check-all atlasctl-check-contracts atlasctl-check-docs atlasctl-check-layout atlasctl-check-make atlasctl-check-ops atlasctl-check-python atlasctl-check-repo atlasctl-registry-list atlasctl/internal atlasctl/internal/cli-check atlasctl/internal/deps/check-venv atlasctl/internal/deps/cold-start atlasctl/internal/deps/lock atlasctl/internal/deps/sync
