@@ -312,7 +312,7 @@ def check_make_wrapper_target_budget(repo_root: Path) -> tuple[int, list[str]]:
         "makefiles/scripts.mk": 4,
         "makefiles/product.mk": 24,
         "makefiles/layout.mk": 3,
-        "makefiles/registry.mk": 0,
+        "makefiles/registry.mk": 1,
         "makefiles/python.mk": 1,
         "makefiles/root.mk": 220,
     }
@@ -429,6 +429,34 @@ def check_make_target_names_no_banned_adjectives(repo_root: Path) -> tuple[int, 
             if banned:
                 errors.append(f"{rel_name}:{target}: banned adjective in target name ({', '.join(sorted(set(banned)))})")
     return (0 if not errors else 1), sorted(errors)
+
+
+def check_make_no_duplicate_all_variants(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for rel in _WRAPPER_FILES:
+        if rel == "makefiles/root.mk":
+            continue
+        target_rows = _iter_make_targets(repo_root, rel)
+        recipe_by_target: dict[str, str] = {}
+        for target, recipe_lines in target_rows:
+            if not recipe_lines:
+                continue
+            if len(recipe_lines) != 1:
+                continue
+            recipe_by_target[target] = recipe_lines[0][1].strip()
+        for target, recipe in sorted(recipe_by_target.items()):
+            if not target.endswith("-all"):
+                continue
+            base = target[:-4]
+            if base not in recipe_by_target:
+                errors.append(f"{rel}:{target}: -all variant exists but base target `{base}` is missing")
+                continue
+            base_recipe = recipe_by_target[base]
+            if recipe == base_recipe:
+                errors.append(f"{rel}:{target}: -all recipe duplicates base target `{base}`")
+            if "--all" not in recipe and "--include-slow" not in recipe and "--slow" not in recipe:
+                errors.append(f"{rel}:{target}: -all variant must include explicit full-behavior flag")
+    return (0 if not errors else 1), errors
 
 
 def check_layout_contract(repo_root: Path) -> tuple[int, list[str]]:

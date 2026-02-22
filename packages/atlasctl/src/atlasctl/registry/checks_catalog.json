@@ -3125,6 +3125,46 @@
     {
       "area": "no",
       "default_enabled": true,
+      "description": "require `*-all` targets to provide distinct full behavior",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_no_duplicate_all_variants",
+      "domain": "make",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_no_duplicate_all_variants",
+      "impl_ref": {
+        "callable": "check_make_no_duplicate_all_variants",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Keep `*-all` variants only when they add explicit full behavior flags.",
+        "legacy_id": "make.no_duplicate_all_variants",
+        "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 900,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require `*-all` targets to provide distinct full behavior"
+    },
+    {
+      "area": "no",
+      "default_enabled": true,
       "description": "forbid legacy make alias tokens (ATLAS_SCRIPTS/SCRIPTS/PY_RUN)",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_no_legacy_script_aliases",
       "domain": "make",
