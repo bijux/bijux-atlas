@@ -8,7 +8,7 @@ ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 OUT="$ROOT/artifacts/perf/redis-compare"
 mkdir -p "$OUT/no-redis" "$OUT/with-redis" "$ROOT/artifacts/perf/cache"
 
-"$ROOT/ops/load/scripts/prepare_perf_store.sh" "$ROOT/artifacts/perf/store"
+./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/load/run/prepare_perf_store.py "$ROOT/artifacts/perf/store"
 
 run_stack() {
   compose_file="$1"
