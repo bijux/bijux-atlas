@@ -20,6 +20,7 @@ from .enforcement import (
     check_make_no_legacy_script_aliases,
     check_make_no_direct_scripts_only_atlasctl,
     check_make_lane_reports_via_atlasctl_reporting,
+    check_make_product_mk_wrapper_contract,
     check_ci_workflows_call_make_and_make_calls_atlasctl,
     check_public_make_targets_map_to_atlasctl,
     check_make_public_targets_documented,
@@ -413,6 +414,14 @@ CHECKS: tuple[CheckDef, ...] = (
         1000,
         check_make_wrapper_no_env_side_effects,
         fix_hint="Move environment orchestration to atlasctl commands.",
+    ),
+    CheckDef(
+        "make.product_mk_wrapper_contract",
+        "make",
+        "enforce product.mk wrapper-only contract and forbid internal targets",
+        1000,
+        check_make_product_mk_wrapper_contract,
+        fix_hint="Keep makefiles/product.mk as public atlasctl wrappers only (no internal/*, no direct python/module paths, no atlasctl run ./ops/run/*).",
     ),
     CheckDef(
         "make.wrapper_no_direct_cargo",

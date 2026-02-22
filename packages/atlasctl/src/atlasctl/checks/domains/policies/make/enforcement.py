@@ -209,6 +209,24 @@ def check_make_lane_reports_via_atlasctl_reporting(repo_root: Path) -> tuple[int
     return (0 if not errors else 1), errors
 
 
+def check_make_product_mk_wrapper_contract(repo_root: Path) -> tuple[int, list[str]]:
+    path = repo_root / "makefiles/product.mk"
+    if not path.exists():
+        return 1, ["makefiles/product.mk: missing"]
+    errors: list[str] = []
+    for lineno, raw in enumerate(path.read_text(encoding="utf-8", errors="ignore").splitlines(), start=1):
+        line = raw.strip()
+        if re.match(r"^internal/[A-Za-z0-9_./-]+:", line):
+            errors.append(f"makefiles/product.mk:{lineno}: internal/* targets are forbidden in product.mk")
+        if raw.startswith("\t") and "python3 -c" in raw:
+            errors.append(f"makefiles/product.mk:{lineno}: python3 -c is forbidden in wrapper-only product.mk")
+        if raw.startswith("\t") and "packages/atlasctl/src/atlasctl/" in raw:
+            errors.append(f"makefiles/product.mk:{lineno}: direct python module paths are forbidden in wrapper-only product.mk")
+        if raw.startswith("\t") and "atlasctl run ./ops/run/" in raw:
+            errors.append(f"makefiles/product.mk:{lineno}: use atlasctl product/ops commands instead of `atlasctl run ./ops/run/...`")
+    return (0 if not errors else 1), errors
+
+
 def check_make_no_direct_script_exec_drift(repo_root: Path) -> tuple[int, list[str]]:
     # Explicit drift check alias for direct script invocation prohibition.
     return check_make_no_direct_scripts_only_atlasctl(repo_root)
