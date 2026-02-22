@@ -11,9 +11,9 @@ from ....core.context import RunContext
 from ....core.fs import write_json
 
 _SMOKE_TESTS = (
-    "packages/atlasctl/tests/cli/smoke/test_cli_smoke.py",
-    "packages/atlasctl/tests/cli/help/test_cli_help_snapshot.py",
-    "packages/atlasctl/tests/cli/output/test_cli_json_goldens.py",
+    "packages/atlasctl/tests/cmdsuite/cli/smoke/test_cli_smoke.py",
+    "packages/atlasctl/tests/cmdsuite/cli/help/test_cli_help_snapshot.py",
+    "packages/atlasctl/tests/cmdsuite/cli/output/test_cli_json_goldens.py",
 )
 
 

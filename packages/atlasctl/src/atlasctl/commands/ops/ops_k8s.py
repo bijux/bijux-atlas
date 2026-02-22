@@ -142,7 +142,7 @@ def _k8s_test_contract(repo_root: Path) -> tuple[int, str]:
 
 
 def _k8s_test_lib(repo_root: Path) -> tuple[int, str]:
-    lib_dir = repo_root / "ops/k8s/tests/checks/_lib"
+    lib_dir = repo_root / "ops/k8s/tests/checksuite/checks/_lib"
     files = sorted(p for p in lib_dir.glob("*.sh") if p.is_file())
     if len(files) > 10:
         return 1, f"k8s test lib contract failed: {lib_dir.relative_to(repo_root)} has {len(files)} files (max 10)"

@@ -13,7 +13,10 @@ _SELF_PATH = "packages/atlasctl/src/atlasctl/checks/layout/root/check_forbidden_
 
 
 def run(repo_root: Path) -> tuple[int, list[str]]:
-    cmd = ["rg", "-n", _PATTERN, *_TARGETS, "-g", f"!{_SELF_PATH}"]
+    existing_targets = [target for target in _TARGETS if (repo_root / target).exists()]
+    if not existing_targets:
+        return 0, []
+    cmd = ["rg", "-n", _PATTERN, *existing_targets, "-g", f"!{_SELF_PATH}"]
     proc = run_cmd(cmd, cwd=repo_root, text=True, capture_output=True)
     if proc.returncode == 0:
         lines = [line for line in (proc.stdout or "").splitlines() if line.strip()]

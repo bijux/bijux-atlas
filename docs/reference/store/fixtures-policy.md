@@ -2,9 +2,9 @@
 
 CI fixtures:
 
-- `crates/bijux-atlas-ingest/tests/ops/fixtures/minimal`
-- `crates/bijux-atlas-ingest/tests/ops/fixtures/edgecases`
-- `crates/bijux-atlas-ingest/tests/ops/fixtures/contigs`
+- `crates/bijux-atlas-ingest/tests/opssuite/ops/fixtures/minimal`
+- `crates/bijux-atlas-ingest/tests/opssuite/ops/fixtures/edgecases`
+- `crates/bijux-atlas-ingest/tests/opssuite/ops/fixtures/contigs`
 
 Non-CI fixture:
 

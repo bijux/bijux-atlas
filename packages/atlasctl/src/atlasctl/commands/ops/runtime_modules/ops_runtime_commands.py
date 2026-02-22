@@ -292,12 +292,16 @@ def _ops_clean_generated(ctx: RunContext, report_format: str, force: bool) -> in
 
 
 def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
-    from .ops_runtime_run import run_ops_command as run
+    from importlib import import_module
+
+    run = getattr(import_module("atlasctl.commands.ops.runtime_modules.ops_runtime_run"), "run_ops_command")
 
     return run(ctx, ns)
 
 
 def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    from .ops_runtime_parser import configure_ops_parser as configure
+    from importlib import import_module
+
+    configure = getattr(import_module("atlasctl.commands.ops.runtime_modules.ops_runtime_parser"), "configure_ops_parser")
 
     configure(sub)
