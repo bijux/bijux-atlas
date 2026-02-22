@@ -129,3 +129,29 @@ jobs:
         if: env.ATLASCTL_BYPASS_HARD_FAIL == '1'
         run: |
           ./bin/atlasctl --format json check run --id checks_policies_bypass_hard_gate > /tmp/check-bypass-hard-gate.json
+
+  suite-product:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Suite product (fast/dry-run surface gate)
+        run: |
+          mkdir -p artifacts/reports/atlasctl
+          ./bin/atlasctl suite run product --dry-run --report json > artifacts/reports/atlasctl/suite-product.plan.json
+
+  suite-ops-fast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Suite ops fast subset
+        run: |
+          mkdir -p artifacts/reports/atlasctl
+          ./bin/atlasctl suite run ops --dry-run --group ops --report json > artifacts/reports/atlasctl/suite-ops-fast.plan.json
