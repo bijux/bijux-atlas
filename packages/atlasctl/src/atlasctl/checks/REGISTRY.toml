@@ -2860,6 +2860,27 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_policies_bypass_has_test_coverage"
+domain = "policies"
+area = "bypass"
+gate = "policies"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.domains.policies.make"
+callable = "check_policies_bypass_has_test_coverage"
+description = "require bypass entries to have declared validating test coverage"
+severity = "error"
+category = "hygiene"
+fix_hint = "Map bypass sources/entries to validating tests in configs/policy/bypass-test-coverage.json."
+legacy_id = "policies.bypass_has_test_coverage"
+groups = ["fast", "policies", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_policies_bypass_has_ticket_or_doc_ref"
 domain = "policies"
 area = "bypass"
