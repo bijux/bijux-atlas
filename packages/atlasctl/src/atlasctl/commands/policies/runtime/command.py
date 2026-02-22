@@ -56,11 +56,9 @@ _POLICIES_ITEMS: tuple[str, ...] = (
     "schema-drift",
 )
 
-
 def _run(cmd: list[str], repo_root: Path) -> tuple[int, str]:
     proc = run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
     return proc.returncode, ((proc.stdout or "") + (proc.stderr or "")).strip()
-
 
 def _validate_ops_lint_relax_schema(repo_root: Path) -> list[str]:
     import jsonschema
@@ -74,14 +72,12 @@ def _validate_ops_lint_relax_schema(repo_root: Path) -> list[str]:
         errs.append(f"configs/policy/ops-lint-relaxations.json schema violation: {exc.message}")
     return errs
 
-
 def _extract_entries(payload: dict[str, object]) -> list[dict[str, str]]:
     if isinstance(payload.get("exceptions"), list):
         return [x for x in payload.get("exceptions", []) if isinstance(x, dict)]  # type: ignore[return-value]
     if isinstance(payload.get("relaxations"), list):
         return [x for x in payload.get("relaxations", []) if isinstance(x, dict)]  # type: ignore[return-value]
     return []
-
 
 def _check_relaxations(repo_root: Path, require_docs_ref: bool) -> tuple[int, dict[str, object]]:
     today = dt.date.today()
@@ -127,7 +123,6 @@ def _check_relaxations(repo_root: Path, require_docs_ref: bool) -> tuple[int, di
     payload = {"schema_version": 1, "active_relaxations": active, "errors": errs}
     return status, payload
 
-
 def _bypass_scan(repo_root: Path) -> tuple[int, dict[str, object]]:
     patt = re.compile(r"\b(?:BYPASS|SKIP_CHECK|NO_VERIFY|ALLOW_BYPASS)\b")
     offenders: list[str] = []
@@ -149,18 +144,15 @@ def _bypass_scan(repo_root: Path) -> tuple[int, dict[str, object]]:
     payload = {"schema_version": 1, "offenders": offenders}
     return (0 if not offenders else 1), payload
 
-
 def _write_report(ctx: RunContext, section: str, payload: dict[str, object]) -> None:
     out = ensure_evidence_path(ctx, ctx.evidence_root / "policies" / section / ctx.run_id / "report.json")
     write_text_file(out, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-
 
 def _write_out_file(repo_root: Path, out_file: str, content: str) -> None:
     if not out_file:
         return
     out_path = repo_root / out_file
     write_text_file(out_path, content + "\n", encoding="utf-8")
-
 
 def _repo_stats_payload(repo_root: Path) -> dict[str, object]:
     rows = collect_dir_stats(repo_root)
@@ -184,7 +176,6 @@ def _repo_stats_payload(repo_root: Path) -> dict[str, object]:
         ],
     }
 
-
 def _repo_stats_diff(current: dict[str, object], previous: dict[str, object]) -> dict[str, object]:
     now = {str(item["dir"]): int(item["total_loc"]) for item in current.get("top_dirs", []) if isinstance(item, dict)}
     old = {str(item["dir"]): int(item["total_loc"]) for item in previous.get("top_dirs", []) if isinstance(item, dict)}
@@ -205,7 +196,6 @@ def _repo_stats_diff(current: dict[str, object], previous: dict[str, object]) ->
         "deltas": sorted(deltas, key=lambda row: abs(int(row["delta_loc"])), reverse=True)[:20],
     }
 
-
 def _policy_schema_drift(repo_root: Path) -> tuple[int, list[str]]:
     schema_path = repo_root / "configs/policy/policy.schema.json"
     config_path = repo_root / "configs/policy/policy.json"
@@ -224,7 +214,6 @@ def _policy_schema_drift(repo_root: Path) -> tuple[int, list[str]]:
     if schema_path.read_text(encoding="utf-8") != canonical:
         errs.append("policy schema drift: schema file is not canonical (run formatter/regenerate)")
     return (0 if not errs else 1), errs
-
 
 def _policy_allow_env_lint(repo_root: Path) -> tuple[int, list[str]]:
     schema = repo_root / "configs/ops/env.schema.json"
@@ -246,7 +235,6 @@ def _policy_allow_env_lint(repo_root: Path) -> tuple[int, list[str]]:
             if token not in declared:
                 violations.append(f"{path}:{line_no}: undeclared ALLOW var `{token}`")
     return (0 if not violations else 1), sorted(set(violations))
-
 
 def _policy_enforcement_status(repo_root: Path, enforce: bool) -> tuple[int, list[str], str]:
     coverage = repo_root / "configs/policy/policy-enforcement-coverage.json"
@@ -307,7 +295,6 @@ def _policy_enforcement_status(repo_root: Path, enforce: bool) -> tuple[int, lis
         violations.append("hard policy coverage must be 100%")
     return (0 if not (enforce and violations) else 1), violations, out.relative_to(repo_root).as_posix()
 
-
 def _forbidden_report_path(repo_root: Path) -> Path:
     config_path = repo_root / "configs/policy/forbidden-adjectives.json"
     if not config_path.exists():
@@ -318,8 +305,6 @@ def _forbidden_report_path(repo_root: Path) -> Path:
     if report_path.is_absolute():
         return report_path
     return repo_root / report_path
-
-
 
 def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     repo = ctx.repo_root
@@ -494,7 +479,6 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return 0
 
     return 2
-
 
 def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     p = sub.add_parser("policies", help="policy relaxations and bypass checks")

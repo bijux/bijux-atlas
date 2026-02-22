@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from ...core.runtime.paths import write_text_file
+
 
 TARGETS: tuple[str, ...] = (
     "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml",
@@ -43,5 +45,5 @@ def run_refactor_check_ids(repo_root: Path, *, apply: bool) -> tuple[int, list[s
                 continue
             touched.append(file.relative_to(repo_root).as_posix())
             if apply:
-                file.write_text(updated, encoding="utf-8")
+                write_text_file(file, updated, encoding="utf-8")
     return 0, sorted(touched)
