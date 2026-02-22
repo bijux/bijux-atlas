@@ -11,7 +11,14 @@ from . import command as impl
 from ..core.runtime.paths import write_text_file
 
 def run_suite_command(ctx, ns: argparse.Namespace) -> int:
-    as_json = ctx.output_format == "json" or bool(getattr(ns, "json", False))
+    report_fmt = str(getattr(ns, "report", "") or "").strip().lower()
+    as_json = report_fmt == "json" or ctx.output_format == "json" or bool(getattr(ns, "json", False))
+    groups = [str(g).strip() for g in getattr(ns, "group", []) if str(g).strip()]
+    raw_only = [str(p).strip() for p in (getattr(ns, "only", []) or []) if str(p).strip()]
+    # Support semantic selectors (`--only fast|slow`) in addition to label globs.
+    selector_groups = [p for p in raw_only if p in {"fast", "slow", "ops", "docs", "dev", "policies", "configs"}]
+    only_patterns = [p for p in raw_only if p not in selector_groups]
+    groups = [*groups, *selector_groups]
     first_class = impl.load_first_class_suites()
     if not getattr(ns, "suite_cmd", None) and bool(getattr(ns, "list_suites", False)):
         payload = {
@@ -38,6 +45,7 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
             as_json=as_json,
             list_only=bool(getattr(ns, "list", False) or getattr(ns, "dry_run", False)),
             target_dir=getattr(ns, "target_dir", None),
+            groups=tuple(groups),
         )
     default_suite, suites = impl.load_suites(ctx.repo_root)
     if ns.suite_cmd == "explain":
@@ -228,6 +236,7 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
             as_json=as_json,
             list_only=bool(getattr(ns, "list", False) or getattr(ns, "dry_run", False)),
             target_dir=getattr(ns, "target_dir", None),
+            groups=tuple(groups),
         )
     expanded_raw = impl.expand_suite(suites, suite_name)
     expanded: list[impl.TaskSpec] = []
@@ -236,7 +245,8 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
             expanded.extend(impl._expand_check_tag(task))
         else:
             expanded.append(task)
-    selected = impl._filter_tasks(expanded, only=ns.only or [], skip=ns.skip or [])
+    group_filtered = impl._filter_tasks_by_groups(expanded, groups)
+    selected = impl._filter_tasks(group_filtered, only=only_patterns, skip=ns.skip or [])
     if ns.list or bool(getattr(ns, "dry_run", False)):
         payload = {
             "schema_version": 1,
@@ -245,6 +255,7 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
             "suite": suite_name,
             "mode": "dry-run" if bool(getattr(ns, "dry_run", False)) else "list",
             "total_count": len(selected),
+            "group_filter": groups,
             "tasks": [f"{task.kind}:{task.value}" for task in selected],
         }
         print(impl.dumps_json(payload, pretty=not as_json))
@@ -334,6 +345,7 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
         "target_dir": target_dir.as_posix(),
         "execution": "fail-fast" if ns.fail_fast else ("maxfail" if maxfail > 0 else "keep-going"),
         "maxfail": maxfail,
+        "group_filter": groups,
     }
     impl.validate_self(impl.SUITE_RUN, payload)
     write_text_file(target_dir / "results.json", impl.dumps_json(payload, pretty=True) + "\n")
