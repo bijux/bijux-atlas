@@ -4881,7 +4881,7 @@
       "effects": [],
       "evidence": [],
       "external_tools": [],
-      "fix_hint": "Define deps-lock/deps-sync/deps-check-venv/deps-cold-start in makefiles/atlasctl.mk.",
+      "fix_hint": "Define internal/deps/lock/internal/deps/sync/internal/deps/check-venv/internal/deps/cold-start in makefiles/atlasctl.mk.",
       "gate": "repo",
       "groups": [
         "fast",
