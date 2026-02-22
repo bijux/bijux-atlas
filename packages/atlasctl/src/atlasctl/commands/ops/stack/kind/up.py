@@ -10,21 +10,26 @@ def _repo_root() -> Path:
     return Path(__file__).resolve().parents[7]
 
 
-def _source_common_and_run(script: str) -> None:
-    root = _repo_root()
-    subprocess.run(["bash", "-ceu", script], check=True, env={**os.environ, "ATLAS_REPO_ROOT": str(root)})
+def _require_cmd(name: str) -> None:
+    if subprocess.run(["bash", "-lc", f"command -v {name} >/dev/null 2>&1"]).returncode != 0:
+        raise RuntimeError(f"required command not found: {name}")
+
+
+def _ci_no_prompt_policy() -> None:
+    # Atlasctl command is non-interactive by default; preserve the shell helper's intent.
+    if os.environ.get("CI", "0") in {"1", "true", "TRUE"}:
+        os.environ.setdefault("ATLASCTL_NONINTERACTIVE", "1")
 
 
 def main() -> int:
     root = _repo_root()
-    # Preserve existing init/guard behavior from ops shell library while moving entrypoint ownership to atlasctl.
-    _source_common_and_run(
-        'ROOT="$ATLAS_REPO_ROOT"\n'
-        'source "$ROOT/ops/_lib/common.sh"\n'
-        'ops_init_run_id\n'
-        'ops_ci_no_prompt_policy\n'
-        'ops_version_guard kind kubectl\n'
-    )
+    _ci_no_prompt_policy()
+    try:
+        _require_cmd("kind")
+        _require_cmd("kubectl")
+    except RuntimeError as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
 
     cluster = os.environ.get("ATLAS_E2E_CLUSTER_NAME", "bijux-atlas-e2e")
     profile = os.environ.get("ATLAS_KIND_PROFILE", "normal")
