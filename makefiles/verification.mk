@@ -26,7 +26,8 @@ _verification-run:
 	fi; \
 	targets=$$(awk -F: '/^[A-Za-z0-9_.\/-]+:[^=]/{print $$1}' "$$mk_file" \
 		| grep -v '^\.' \
-		| grep -v '^internal/' \
+		| grep -v '/internal$$' \
+		| grep -v '/internal/' \
 		| grep -v '^_' \
 		| sort -u); \
 	if [ -z "$$targets" ]; then \
