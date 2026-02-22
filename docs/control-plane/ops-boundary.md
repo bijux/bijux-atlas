@@ -11,7 +11,7 @@
 - `ops/manifests/**`: declarative task manifests (data-only).
 - `ops/_schemas/**`: schemas and contracts.
 - `ops/_meta/**`: generated inventories and metadata.
-- `ops/run/**`: adapter scripts callable only through atlasctl runtime.
+- `atlasctl ops ...` and thin `make` wrappers: supported operator entrypoints.
 - `ops/vendor/**`: third-party or compatibility checks.
 
 ## What Moves To `atlasctl`

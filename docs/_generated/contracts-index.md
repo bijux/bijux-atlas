@@ -2,7 +2,7 @@
 
 Generated from repository files. Do not edit manually.
 
-- CONTRACT files: `12`
+- CONTRACT files: `11`
 - Schema files: `61`
 
 ## CONTRACT.md Files
@@ -17,7 +17,6 @@ Generated from repository files. Do not edit manually.
 - `ops/load/CONTRACT.md`
 - `ops/obs/CONTRACT.md`
 - `ops/report/CONTRACT.md`
-- `ops/run/CONTRACT.md`
 - `ops/stack/CONTRACT.md`
 
 ## Schema Files

@@ -10,7 +10,6 @@ The canonical SSOT is `ops/CONTRACT.md`.
 - `ops/load/`
 - `ops/datasets/`
 - `ops/e2e/`
-- `ops/run/`
 - `ops/_lib/`
 - `ops/_meta/`
 - `ops/_schemas/`
@@ -24,7 +23,7 @@ The canonical SSOT is `ops/CONTRACT.md`.
 - Enforce generated drift with `make ops-gen-check`.
 - `ops/e2e/` is composition-only.
 - `ops/e2e/k8s/tests/` keeps wrapper entrypoints only; invariant tests live in `ops/k8s/tests/`.
-- `ops/run/` holds thin executable wrappers.
+- Operator entrypoints live in `atlasctl ops ...`; helper scripts remain under domain-local `ops/*/scripts/`.
 - No symlinked domain directories under `ops/`.
 - Artifacts write to `ops/_artifacts/` unless allowlisted in `configs/ops/artifacts-allowlist.txt`.
 - Empty dirs must contain `INDEX.md` explaining why they exist.

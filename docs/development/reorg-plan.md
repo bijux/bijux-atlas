@@ -5,8 +5,8 @@ Keep repository operations discoverable and stable by capping public surface and
 
 ## Invariants
 1. Public surface is SSOT in `configs/ops/public-surface.json`.
-2. Human entrypoints are only `make <public-target>` and `ops/run/*.sh`.
-3. Docs may reference only public make targets and `ops/run/*` scripts (allowlist exceptions only).
+2. Human entrypoints are only `make <public-target>` and `./bin/atlasctl ...`.
+3. Docs may reference only public make targets and atlasctl command surfaces (allowlist exceptions only).
 4. Shell script naming is kebab-case; Python naming is snake_case.
 5. Mixed underscore/dash duplicate naming forms are forbidden.
 6. Public entrypoint surface is capped to at most 10 entrypoints per area.

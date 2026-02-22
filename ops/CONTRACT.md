@@ -5,12 +5,12 @@
 
 ## Purpose
 
-`ops/` is the single source of truth for operational topology, executable entrypoints, and contract-governed artifacts.
+`ops/` is the single source of truth for operational topology, manifests/contracts, and contract-governed artifacts.
 
 ## Invariants
 
 - Stable operator entrypoints are Make targets listed in `ops/INDEX.md` and declared in `ops/_meta/surface.json`.
-- `ops/run/` is the only executable entrypoint subtree; files there are thin wrappers that call `ops/_lib/` and domain scripts.
+- Operator entrypoints are `atlasctl ops ...` commands and thin `make` wrappers; `ops/` shell scripts are implementation adapters only.
 - Shared shell/python helpers that are not operator entrypoints live in `ops/_lib/` or domain-local `scripts/` directories.
 - Canonical domain ownership has no overlap:
   - `ops/stack/` local dependency bring-up
