@@ -3086,6 +3086,34 @@
       ]
     },
     {
+      "area": "run",
+      "callable": "check_ops_run_temp_script_approvals",
+      "category": "hygiene",
+      "description": "temporary ops/run migration script approvals must be valid and unexpired",
+      "domain": "ops",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Keep configs/policy/ops-run-temp-script-approvals.json entries valid, justified, and unexpired.",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_run_temp_script_approvals",
+      "legacy_id": "ops.run_temp_script_approvals",
+      "module": "atlasctl.checks.domains.ops.ops_checks",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
       "area": "scripts",
       "callable": "check_ops_scripts_are_data_only",
       "category": "hygiene",

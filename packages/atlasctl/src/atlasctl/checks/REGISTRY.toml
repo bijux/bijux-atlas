@@ -2377,6 +2377,27 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_ops_run_temp_script_approvals"
+domain = "ops"
+area = "run"
+gate = "ops"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.domains.ops.ops_checks"
+callable = "check_ops_run_temp_script_approvals"
+description = "temporary ops/run migration script approvals must be valid and unexpired"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep configs/policy/ops-run-temp-script-approvals.json entries valid, justified, and unexpired."
+legacy_id = "ops.run_temp_script_approvals"
+groups = ["fast", "kube", "ops", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_ops_scripts_are_data_only"
 domain = "ops"
 area = "scripts"

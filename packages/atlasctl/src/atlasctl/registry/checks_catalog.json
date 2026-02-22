@@ -4587,6 +4587,48 @@
       "title": "ops/run contains no scripts except explicitly allowed fixtures"
     },
     {
+      "area": "run",
+      "default_enabled": true,
+      "description": "temporary ops/run migration script approvals must be valid and unexpired",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_run_temp_script_approvals",
+      "domain": "ops",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_run_temp_script_approvals",
+      "impl_ref": {
+        "callable": "check_ops_run_temp_script_approvals",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Keep configs/policy/ops-run-temp-script-approvals.json entries valid, justified, and unexpired.",
+        "legacy_id": "ops.run_temp_script_approvals",
+        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "temporary ops/run migration script approvals must be valid and unexpired"
+    },
+    {
       "area": "scripts",
       "default_enabled": true,
       "description": "enforce ops/manifests data-only file policy",
