@@ -22,17 +22,17 @@ from ...core.effects.product import (
 
 def _plan_rows() -> list[tuple[str, list[str]]]:
     return [
-        ("bootstrap", ["./bin/atlasctl", "run", "./ops/run/product/product_bootstrap.sh"]),
-        ("docker build", ["./bin/atlasctl", "run", "./ops/run/product/product_docker_build.sh"]),
-        ("docker check", ["./bin/atlasctl", "run", "./ops/run/product/product_docker_check.sh"]),
+        ("bootstrap", ["./bin/atlasctl", "product", "bootstrap"]),
+        ("docker build", ["./bin/atlasctl", "product", "docker", "build"]),
+        ("docker check", ["./bin/atlasctl", "product", "docker", "check"]),
         ("docker contracts", ["./bin/atlasctl", "check", "domain", "docker"]),
-        ("docker push", ["./bin/atlasctl", "run", "./ops/run/product/product_docker_push.sh"]),
-        ("docker release", ["./bin/atlasctl", "run", "./ops/run/product/product_docker_release.sh"]),
-        ("chart package", ["./bin/atlasctl", "run", "./ops/run/product/product_chart_package.sh"]),
-        ("chart verify", ["./bin/atlasctl", "run", "./ops/run/product/product_chart_verify.sh"]),
-        ("chart validate", ["./bin/atlasctl", "run", "./ops/run/product/product_chart_validate.sh"]),
-        ("naming lint", ["./bin/atlasctl", "run", "./ops/run/product/product_rename_lint.sh"]),
-        ("docs naming-lint", ["./bin/atlasctl", "run", "./ops/run/product/product_docs_lint_names.sh"]),
+        ("docker push", ["./bin/atlasctl", "product", "docker", "push"]),
+        ("docker release", ["./bin/atlasctl", "product", "docker", "release"]),
+        ("chart package", ["./bin/atlasctl", "product", "chart", "package"]),
+        ("chart verify", ["./bin/atlasctl", "product", "chart", "verify"]),
+        ("chart validate", ["./bin/atlasctl", "product", "chart", "validate"]),
+        ("naming lint", ["./bin/atlasctl", "product", "naming", "lint"]),
+        ("docs naming-lint", ["./bin/atlasctl", "product", "docs", "naming-lint"]),
         ("check", ["./bin/atlasctl", "product", "docker", "check"], ["./bin/atlasctl", "product", "chart", "validate"]),
     ]
 
