@@ -16,6 +16,8 @@ from ...registry.suites import suite_manifest_specs, resolve_check_ids
 from ...checks.core.execution import run_function_checks
 from ...checks.engine.runner import domains as check_domains
 from ...checks.engine.runner import run_domain
+from ...checks.repo.enforcement.package_shape import check_module_size
+from ...checks.repo.native.modules.repo_checks_make_and_layout import check_layout_contract
 from ...contracts.ids import CHECK_RUN
 from ...contracts.validate_self import validate_self
 from ...core.context import RunContext
