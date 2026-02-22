@@ -3274,7 +3274,7 @@
         "external_tools": [],
         "fix_hint": "Split oversized checks directories with `atlasctl dev split-module` and remove misc/utils or duplicated area segments.",
         "legacy_id": "repo.checks_tree_policy",
-        "module": "atlasctl.checks.repo.enforcement.checks_tree_policy",
+        "module": "atlasctl.checks.repo.enforcement.structure.checks_tree_policy",
         "severity": "error",
         "speed": "fast",
         "timeout_ms": 500,
