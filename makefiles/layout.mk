@@ -3,12 +3,12 @@
 SHELL := /bin/sh
 
 layout-check: ## Validate repository layout contract and root shape
-	@$(ATLAS_SCRIPTS) check layout
+	@./bin/atlasctl check layout
 
 layout-migrate: ## Apply deterministic layout/path migration helpers
-	@$(ATLAS_SCRIPTS) migration layout
+	@./bin/atlasctl migration layout
 
 layout-fix: ## Repair known layout/symlink drift deterministically
-	@$(MAKE) layout-migrate
+	@./bin/atlasctl migration layout
 
 .PHONY: layout-check layout-migrate layout-fix

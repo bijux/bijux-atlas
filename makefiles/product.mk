@@ -39,10 +39,10 @@ docker-check: ## Docker fast checks: contracts + build + runtime smoke
 	@$(MAKE) -s docker-smoke
 
 docker-smoke:
-	@$(ATLAS_SCRIPTS) docker smoke --image "$${DOCKER_IMAGE:-bijux-atlas:local}"
+	@./bin/atlasctl docker smoke --image "$${DOCKER_IMAGE:-bijux-atlas:local}"
 
 docker-scan:
-	@$(ATLAS_SCRIPTS) docker scan --image "$${DOCKER_IMAGE:-bijux-atlas:local}"
+	@./bin/atlasctl docker scan --image "$${DOCKER_IMAGE:-bijux-atlas:local}"
 
 docker-push:
 	@if [ "$${CI:-0}" != "1" ]; then echo "docker-push is CI-only"; exit 2; fi
@@ -64,35 +64,35 @@ chart-verify:
 
 chart-validate: ## Validate chart via lint/template and values contract schema checks
 	@$(MAKE) chart-verify
-	@$(ATLAS_SCRIPTS) contracts generate --generators chart-schema
-	@$(ATLAS_SCRIPTS) contracts check --checks chart-values
+	@./bin/atlasctl contracts generate --generators chart-schema
+	@./bin/atlasctl contracts check --checks chart-values
 
 docker-contracts: ## Validate Docker layout/policy/no-latest contracts
-	@$(ATLAS_SCRIPTS) check domain docker
+	@./bin/atlasctl check domain docker
 
 rename-lint: ## Enforce durable naming rules for docs/scripts and concept ownership
-	@$(ATLAS_SCRIPTS) docs durable-naming-check --report text
-	@$(ATLAS_SCRIPTS) docs duplicate-topics-check --report text
+	@./bin/atlasctl docs durable-naming-check --report text
+	@./bin/atlasctl docs duplicate-topics-check --report text
 
 docs-lint-names: ## Enforce durable naming contracts, registries, and inventory
-	@$(ATLAS_SCRIPTS) docs naming-inventory --report text
-	@$(ATLAS_SCRIPTS) docs legacy-terms-check --report text
-	@$(ATLAS_SCRIPTS) docs observability-docs-checklist --report text
-	@$(ATLAS_SCRIPTS) docs no-orphan-docs-check --report text
-	@$(ATLAS_SCRIPTS) docs script-locations-check --report text
-	@$(ATLAS_SCRIPTS) docs runbook-map-registration-check --report text
-	@$(ATLAS_SCRIPTS) docs contract-doc-pairs-check --report text
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/contracts/validate_suite_manifest.py
-	@$(ATLAS_SCRIPTS) docs index-pages-check --report text
+	@./bin/atlasctl docs naming-inventory --report text
+	@./bin/atlasctl docs legacy-terms-check --report text
+	@./bin/atlasctl docs observability-docs-checklist --report text
+	@./bin/atlasctl docs no-orphan-docs-check --report text
+	@./bin/atlasctl docs script-locations-check --report text
+	@./bin/atlasctl docs runbook-map-registration-check --report text
+	@./bin/atlasctl docs contract-doc-pairs-check --report text
+	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/load/contracts/validate_suite_manifest.py
+	@./bin/atlasctl docs index-pages-check --report text
 
 internal/product/doctor: ## Print tool/env/path diagnostics and store doctor report
-	@RUN_ID="$${RUN_ID:-doctor-$(MAKE_RUN_TS)}" $(ATLAS_SCRIPTS) make doctor
+	@RUN_ID="$${RUN_ID:-doctor-$(MAKE_RUN_TS)}" ./bin/atlasctl make doctor
 
 prereqs: ## Check required binaries and versions and store prereqs report
-	@RUN_ID="$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}" $(ATLAS_SCRIPTS) make prereqs --run-id "$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}"
+	@RUN_ID="$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}" ./bin/atlasctl make prereqs --run-id "$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}"
 
 dataset-id-lint: ## Validate DatasetId/DatasetKey contract usage across ops fixtures
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/scripts/dataset_id_lint.py
+	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/scripts/dataset_id_lint.py
 
 internal/tooling-versions:
 	@echo "Rust toolchain (rust-toolchain.toml):"
