@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "approvals": [
+    {
+      "key": "*",
+      "owner": "platform",
+      "issue_id": "ISSUE-BYPASS-HORIZON-0001",
+      "reason": "Temporary global approval while tightening bypass expiry horizons in phased cleanup.",
+      "expiry": "2026-06-30"
+    }
+  ]
+}
