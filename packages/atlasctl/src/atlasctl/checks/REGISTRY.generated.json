@@ -2210,6 +2210,33 @@
       ]
     },
     {
+      "area": "product",
+      "callable": "check_make_product_mk_wrapper_contract",
+      "category": "hygiene",
+      "description": "enforce product.mk wrapper-only contract and forbid internal targets",
+      "domain": "make",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Keep makefiles/product.mk as public atlasctl wrappers only (no internal/*, no direct python/module paths, no atlasctl run ./ops/run/*).",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_product_mk_wrapper_contract",
+      "legacy_id": "make.product_mk_wrapper_contract",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
       "area": "public",
       "callable": "check_public_make_targets_map_to_atlasctl",
       "category": "hygiene",

@@ -3283,6 +3283,46 @@
       "title": "forbid `python -m atlasctl.cli` in make recipes"
     },
     {
+      "area": "product",
+      "default_enabled": true,
+      "description": "enforce product.mk wrapper-only contract and forbid internal targets",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_product_mk_wrapper_contract",
+      "domain": "make",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_product_mk_wrapper_contract",
+      "impl_ref": {
+        "callable": "check_make_product_mk_wrapper_contract",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Keep makefiles/product.mk as public atlasctl wrappers only (no internal/*, no direct python/module paths, no atlasctl run ./ops/run/*).",
+        "legacy_id": "make.product_mk_wrapper_contract",
+        "module": "atlasctl.checks.domains.policies.make.enforcement",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "enforce product.mk wrapper-only contract and forbid internal targets"
+    },
+    {
       "area": "public",
       "default_enabled": true,
       "description": "require every public make target to delegate to atlasctl",
