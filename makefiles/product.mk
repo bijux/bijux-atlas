@@ -110,8 +110,4 @@ internal/packages/check:
 	@artifacts/isolate/py/packages-check/.venv/bin/pip --disable-pip-version-check install --upgrade pip >/dev/null
 	@artifacts/isolate/py/packages-check/.venv/bin/pip --disable-pip-version-check install -e packages/atlasctl >/dev/null
 	@artifacts/isolate/py/packages-check/.venv/bin/python -c "import atlasctl"
-	@python3 ops/_lint/check-surfaces.py
-	@python3 ops/_lint/no-root-ad-hoc-python.py
-	@python3 ops/_lint/no-direct-bash-entrypoints.py
-	@python3 ops/_lint/no-duplicate-cli.py
-	@python3 ops/_lint/no-scripts-dir.py
+	@./bin/atlasctl check run repo

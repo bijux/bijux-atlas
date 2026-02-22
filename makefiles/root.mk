@@ -296,7 +296,7 @@ warm: ## Warm datasets + shards and record cache state
 	@./ops/run/warm-dx.sh
 
 cache/status: ## Print cache status and budget policy checks
-	@CACHE_STATUS_STRICT=0 ./ops/run/cache-status.sh
+	@CACHE_STATUS_STRICT=0 $(ATLAS_SCRIPTS) run ./ops/run/cache-status.sh
 
 cache/prune: ## Prune local dataset/cache artifacts
 	@./ops/run/cache-prune.sh
@@ -382,7 +382,7 @@ policies/boundaries-check: ## Enforce e2e layer boundary rules and relaxations
 	@$(ATLAS_SCRIPTS) run ./ops/_lint/no-stack-layer-literals.py
 
 local/all: ## Run all meaningful local gates
-	@PARALLEL="$${PARALLEL:-1}" RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-local-all-$(MAKE_RUN_TS)}}" MODE=root-local ./ops/run/root-lanes.sh
+	@PARALLEL="$${PARALLEL:-1}" RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-local-all-$(MAKE_RUN_TS)}}" MODE=root-local $(ATLAS_SCRIPTS) run ./ops/run/root-lanes.sh
 
 ci/all: ## Deterministic CI superset
 	@$(ATLAS_SCRIPTS) dev ci run --json --out-dir artifacts/reports/atlasctl/suite-ci >/dev/null
@@ -510,7 +510,7 @@ ops: ## Run canonical ops verification lane
 	@$(ATLAS_SCRIPTS) ops check --report text
 
 root-local-summary: ## Print status and artifact paths for RUN_ID
-	@SUMMARY_RUN_ID="$${RUN_ID:-}" MODE=summary ./ops/run/root-lanes.sh
+	@SUMMARY_RUN_ID="$${RUN_ID:-}" MODE=summary $(ATLAS_SCRIPTS) run ./ops/run/root-lanes.sh
 
 lane-status: ## Print all lane statuses for RUN_ID (or latest)
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || true)}"; \
