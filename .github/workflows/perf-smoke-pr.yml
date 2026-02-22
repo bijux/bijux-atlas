@@ -24,7 +24,7 @@ jobs:
       - uses: grafana/setup-k6-action@v1
 
       - name: Pinned tool checks
-        run: make pins/check
+        run: make ops-pins-check
 
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
