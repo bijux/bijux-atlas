@@ -4,10 +4,65 @@ import subprocess
 
 SCRIPT = r'''set -euo pipefail
 ROOT="$(pwd)"
-source "$ROOT/ops/_lib/common.sh"
-ops_init_run_id
-ops_install_bundle_trap "${ATLAS_E2E_NAMESPACE:-${ATLAS_NS:-$(ops_layer_ns_e2e)}}" "${ATLAS_E2E_RELEASE_NAME:-$(ops_layer_contract_get release_metadata.defaults.release_name)}"
-ops_ci_no_prompt_policy
+LAYER_CONTRACT="${ATLAS_LAYER_CONTRACT_PATH:-$ROOT/ops/_meta/layer-contract.json}"
+ops_layer_contract_get() {
+  local key="$1"
+  python3 - "$key" "$LAYER_CONTRACT" <<'PY'
+import json, sys
+key = sys.argv[1]
+path = sys.argv[2]
+obj = json.load(open(path, encoding='utf-8'))
+cur = obj
+for part in key.split('.'):
+    if isinstance(cur, dict) and part in cur:
+        cur = cur[part]
+    else:
+        raise SystemExit(f"missing key: {key}")
+print(json.dumps(cur, sort_keys=True) if isinstance(cur, (dict, list)) else cur)
+PY
+}
+ops_layer_ns_e2e() { ops_layer_contract_get "namespaces.e2e"; }
+ops_layer_service_atlas() { ops_layer_contract_get "services.atlas.service_name"; }
+ops_artifact_dir() {
+  local component="$1"
+  local run_id="${OPS_RUN_ID:-${RUN_ID:-local}}"
+  local out="${OPS_RUN_DIR:-$ROOT/artifacts/ops/$run_id}/$component"
+  mkdir -p "$out"
+  printf '%s\n' "$out"
+}
+ops_kubectl() { kubectl "$@"; }
+ops_kubectl_retry() {
+  local attempts="${OPS_KUBECTL_RETRIES:-3}"; local sleep_secs="${OPS_KUBECTL_RETRY_SLEEP_SECS:-2}"; local i=1
+  while true; do ops_kubectl "$@" && return 0; [ "$i" -ge "$attempts" ] && return 1; i=$((i+1)); sleep "$sleep_secs"; done
+}
+ops_kubectl_dump_bundle() {
+  local ns="${1:-${ATLAS_E2E_NAMESPACE:-atlas-e2e}}"; local out="${2:-$(ops_artifact_dir failure-bundle)}"; mkdir -p "$out"
+  kubectl get pods -A -o wide > "$out/pods.txt" 2>/dev/null || true
+  kubectl -n "$ns" get all -o wide > "$out/all-$ns.txt" 2>/dev/null || true
+  kubectl get events -A --sort-by=.lastTimestamp > "$out/events.txt" 2>/dev/null || true
+}
+ops_wait_namespace_termination() {
+  local namespace="$1"; local timeout_secs="${2:-120}"; local waited=0
+  if ! ops_kubectl get ns "$namespace" >/dev/null 2>&1; then return 0; fi
+  if [ -z "$(ops_kubectl get ns "$namespace" -o jsonpath='{.metadata.deletionTimestamp}' 2>/dev/null)" ]; then return 0; fi
+  while [ "$waited" -lt "$timeout_secs" ]; do
+    ! ops_kubectl get ns "$namespace" >/dev/null 2>&1 && return 0
+    sleep 5; waited=$((waited + 5))
+  done
+  return 1
+}
+ops_helm_retry() {
+  local ns="$1"; local release="$2"; shift 2
+  local attempts="${OPS_HELM_RETRIES:-3}"; local sleep_secs="${OPS_HELM_RETRY_SLEEP_SECS:-2}"; local i=1
+  while true; do
+    if helm "$@"; then return 0; fi
+    [ "$i" -ge "$attempts" ] && return 1
+    i=$((i+1)); sleep "$sleep_secs"
+  done
+}
+if [ "${CI:-0}" = "1" ]; then export ATLASCTL_NONINTERACTIVE=1; fi
+RUN_ID="${RUN_ID:-${OPS_RUN_ID:-}}"
+ARTIFACT_DIR="${ARTIFACT_DIR:-${OPS_RUN_DIR:-}}"
 RELEASE="${ATLAS_E2E_RELEASE_NAME:-$(ops_layer_contract_get release_metadata.defaults.release_name)}"
 NS="${ATLAS_E2E_NAMESPACE:-$(ops_layer_ns_e2e)}"
 VALUES="${ATLAS_E2E_VALUES_FILE:-$ROOT/ops/k8s/values/local.yaml}"
