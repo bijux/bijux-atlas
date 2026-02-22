@@ -141,10 +141,10 @@ ops/_lib/guard/version_guard.sh
 ops/_lint/docs/naming.sh
 packages/atlasctl/src/atlasctl/commands/ops/lint/layout/json_schema_coverage.py
 packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_layer_literals.py
-ops/_lint/no-direct-bash-entrypoints.py
-ops/_lint/no-root-ad-hoc-python.py
+packages/atlasctl/src/atlasctl/commands/ops/lint/docs/no_direct_bash_entrypoints.py
+packages/atlasctl/src/atlasctl/commands/ops/lint/repo/no_root_ad_hoc_python.py
 ops/_lint/no-scripts-bin-dir.sh
-ops/_lint/no-scripts-dir.py
+packages/atlasctl/src/atlasctl/commands/ops/lint/repo/no_scripts_dir.py
 ops/_meta/cross-area-script-refs-allowlist.txt
 ops/_meta/layer-contract-literal-allowlist.txt
 ops/_meta/stack-layer-literal-allowlist.txt

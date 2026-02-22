@@ -24,8 +24,16 @@ def suites(repo_root: Path) -> dict[str, list[CommandCheckDef]]:
             CommandCheckDef("ops/no-orphan-suite", "ops", _py("packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_orphan_suite.py")),
         ],
         "repo": [
-            CommandCheckDef("repo/no-root-ad-hoc-python", "repo", _py("ops/_lint/no-root-ad-hoc-python.py")),
-            CommandCheckDef("repo/no-scripts-dir", "repo", _py("ops/_lint/no-scripts-dir.py")),
+            CommandCheckDef(
+                "repo/no-root-ad-hoc-python",
+                "repo",
+                _py("packages/atlasctl/src/atlasctl/commands/ops/lint/repo/no_root_ad_hoc_python.py"),
+            ),
+            CommandCheckDef(
+                "repo/no-scripts-dir",
+                "repo",
+                _py("packages/atlasctl/src/atlasctl/commands/ops/lint/repo/no_scripts_dir.py"),
+            ),
             CommandCheckDef("repo/bin-shims", "repo", ["python3", "-m", "atlasctl.cli", "check", "root-bin-shims"]),
             CommandCheckDef("repo/no-bin-symlinks", "repo", ["bash", "ops/_lint/no-bin-symlinks.sh"]),
         ],
