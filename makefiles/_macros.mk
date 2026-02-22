@@ -28,7 +28,7 @@ with_iso = run_id="$(RUN_ID)"; iso="$(call iso_dir,$(1))"; \
 	fi; \
 	ended_at="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; end_epoch="$$(date +%s)"; \
 	duration="$$(($$end_epoch - $$start_epoch))"; \
-	$(ATLAS_SCRIPTS) report make-area-write \
+	./bin/atlasctl report make-area-write \
 		--path "artifacts/evidence/make/$(1)/$$run_id/report.json" \
 		--lane "$(1)" \
 		--run-id "$$run_id" \

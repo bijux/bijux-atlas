@@ -56,16 +56,16 @@ make/command-allowlist: ## Enforce direct-make command allowlist (cargo/docker/h
 	@$(SCRIPTS) check make-command-allowlist
 
 config-print: ## Print canonical merged config payload as JSON
-	@$(ATLAS_SCRIPTS) configs print
+	@./bin/atlasctl configs print
 
 config-drift: ## Check config/schema/docs drift without regeneration
-	@$(ATLAS_SCRIPTS) configs drift
+	@./bin/atlasctl configs drift
 
 configs-gen-check: ## Regenerate configs generated docs and fail on drift
-	@$(ATLAS_SCRIPTS) configs generate --check
+	@./bin/atlasctl configs generate --check
 
 configs-check: ## Config schemas + drift + ownership + symlink shim + SSOT checks
-	@$(ATLAS_SCRIPTS) configs validate --report text --emit-artifacts
+	@./bin/atlasctl configs validate --report text --emit-artifacts
 
 CI_ISO_ROOT := $(CURDIR)/artifacts/isolate/ci
 CI_ENV := ISO_ROOT=$(CI_ISO_ROOT) CARGO_TARGET_DIR=$(CI_ISO_ROOT)/target CARGO_HOME=$(CI_ISO_ROOT)/cargo-home TMPDIR=$(CI_ISO_ROOT)/tmp TMP=$(CI_ISO_ROOT)/tmp TEMP=$(CI_ISO_ROOT)/tmp
@@ -76,76 +76,76 @@ LOCAL_FULL_ENV := ISO_ROOT=$(LOCAL_FULL_ISO_ROOT) CARGO_TARGET_DIR=$(LOCAL_FULL_
 
 gates-check: ## Run public-surface/docs/makefile boundary checks
 	@$(MAKE) -s internal/scripts/cli-check
-	@$(ATLAS_SCRIPTS) make contracts-check --emit-artifacts
+	@./bin/atlasctl make contracts-check --emit-artifacts
 
 gates: ## Run curated root gate preset through atlasctl orchestrator
-	@$(ATLAS_SCRIPTS) --quiet gates run --preset root --all --report text
+	@./bin/atlasctl --quiet gates run --preset root --all --report text
 
 gates-list: ## Print public targets grouped by namespace
-	@$(ATLAS_SCRIPTS) --quiet gates list
+	@./bin/atlasctl --quiet gates list
 
 help: ## Show curated public make targets from SSOT
-	@$(ATLAS_SCRIPTS) make help
+	@./bin/atlasctl make help
 
 help-advanced: ## Show curated public targets plus maintainer-oriented helpers
-	@$(ATLAS_SCRIPTS) make help --mode advanced
+	@./bin/atlasctl make help --mode advanced
 
 help-all:
-	@$(ATLAS_SCRIPTS) make help --mode all
+	@./bin/atlasctl make help --mode all
 
 explain: ## Explain whether TARGET is a public make target
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make explain TARGET=<name>" >&2; exit 2; }
-	@$(ATLAS_SCRIPTS) make explain "$${TARGET}"
+	@./bin/atlasctl make explain "$${TARGET}"
 
 list: ## Print public make target set from SSOT with one-line descriptions
-	@$(ATLAS_SCRIPTS) make list
+	@./bin/atlasctl make list
 
 targets: ## Print generated target catalog from SSOT
-	@$(ATLAS_SCRIPTS) make list
+	@./bin/atlasctl make list
 
 graph: ## Print compact dependency graph for TARGET
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make graph TARGET=<name>" >&2; exit 2; }
-	@$(ATLAS_SCRIPTS) make graph "$${TARGET}"
+	@./bin/atlasctl make graph "$${TARGET}"
 
 what: ## Print explain + dependency graph for TARGET
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make what TARGET=<name>" >&2; exit 2; }
-	@$(ATLAS_SCRIPTS) make explain "$${TARGET}"
+	@./bin/atlasctl make explain "$${TARGET}"
 	@echo ""
-	@$(ATLAS_SCRIPTS) make graph "$${TARGET}"
+	@./bin/atlasctl make graph "$${TARGET}"
 
 internal-list: ## Print internal make targets for maintainers
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/docs/list_internal_targets.py
+	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/docs/list_internal_targets.py
 
 format: ## UX alias for fmt
 	@$(MAKE) fmt
 
 report/merge: ## Merge lane reports into unified make report JSON
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	$(ATLAS_SCRIPTS) report collect --run-id "$$run_id"
+	./bin/atlasctl report collect --run-id "$$run_id"
 
 report/print: ## Print lane summary like CI/GitHub Actions output
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	$(ATLAS_SCRIPTS) report print --run-id "$$run_id"
+	./bin/atlasctl report print --run-id "$$run_id"
 
 report/md: ## Generate markdown summary for PR comments
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	$(ATLAS_SCRIPTS) report summarize --run-id "$$run_id"
+	./bin/atlasctl report summarize --run-id "$$run_id"
 
 report/junit: ## Optional JUnit conversion for CI systems
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	$(ATLAS_SCRIPTS) report junit --run-id "$$run_id"
+	./bin/atlasctl report junit --run-id "$$run_id"
 
 report/bundle: ## Export evidence bundle archive for RUN_ID
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	$(ATLAS_SCRIPTS) report bundle --run-id "$$run_id"
+	./bin/atlasctl report bundle --run-id "$$run_id"
 
 logs/last-fail: ## Tail the last failed lane log from latest unified report
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	$(ATLAS_SCRIPTS) report last-fail --run-id "$$run_id"
+	./bin/atlasctl report last-fail --run-id "$$run_id"
 
 triage: ## Print failing lanes + last 20 log lines + evidence paths
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	$(ATLAS_SCRIPTS) report triage --run-id "$$run_id"
+	./bin/atlasctl report triage --run-id "$$run_id"
 
 report: ## Build unified report and print one-screen summary
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
@@ -153,24 +153,24 @@ report: ## Build unified report and print one-screen summary
 	$(SCRIPTS) report print --run-id "$$run_id"
 
 evidence/open: ## Open evidence directory (supports AREA=<area> RUN_ID=<id>)
-	@$(ATLAS_SCRIPTS) artifacts open
+	@./bin/atlasctl artifacts open
 
 evidence/clean: ## Clean evidence directories using retention policy
-	@$(ATLAS_SCRIPTS) report artifact-gc
+	@./bin/atlasctl report artifact-gc
 
 evidence-gc: ## Enforce evidence retention policy
-	@$(ATLAS_SCRIPTS) report artifact-gc
+	@./bin/atlasctl report artifact-gc
 
 evidence/check: ## Validate evidence JSON schema contract for generated outputs
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts/evidence_check.py
+	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts/evidence_check.py
 
 evidence/bundle: ## Export latest evidence bundle as tar.zst for CI attachments
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	$(ATLAS_SCRIPTS) report bundle --run-id "$$run_id"
+	./bin/atlasctl report bundle --run-id "$$run_id"
 
 evidence/pr-summary: ## Generate PR markdown summary from latest evidence unified report
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	$(ATLAS_SCRIPTS) report pr-summary --run-id "$$run_id"
+	./bin/atlasctl report pr-summary --run-id "$$run_id"
 
 artifacts-open: ## Open latest ops artifact bundle/report directory
 	@$(call with_iso,artifacts-open,$(MAKE) -s ops-artifacts-open)
@@ -242,8 +242,8 @@ atlasctl-lint: ## Lint atlasctl package (ruff + mypy strict domains)
 atlasctl-test: ## Test atlasctl package (compile + unit + integration)
 	@$(MAKE) -s internal/scripts/install-lock
 	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/python" -m compileall -q packages/atlasctl/src
-	@$(ATLAS_SCRIPTS) dev ci run --json --out-dir artifacts/reports/atlasctl/suite-ci >/dev/null
-	@$(ATLAS_SCRIPTS) test run integration
+	@./bin/atlasctl dev ci run --json --out-dir artifacts/reports/atlasctl/suite-ci >/dev/null
+	@./bin/atlasctl test run integration
 
 scripts-install-dev: ## Install python tooling for scripts package development
 	@$(MAKE) -s internal/scripts/install-dev
@@ -296,7 +296,7 @@ warm: ## Warm datasets + shards and record cache state
 	@./ops/run/warm-dx.sh
 
 cache/status: ## Print cache status and budget policy checks
-	@CACHE_STATUS_STRICT=0 $(ATLAS_SCRIPTS) run ./ops/run/cache-status.sh
+	@CACHE_STATUS_STRICT=0 ./bin/atlasctl run ./ops/run/cache-status.sh
 
 cache/prune: ## Prune local dataset/cache artifacts
 	@./ops/run/cache-prune.sh
@@ -337,21 +337,21 @@ configs/all: ## Configs lane (schema + drift checks)
 	@$(call with_iso,configs-all,$(MAKE) -s configs/check)
 
 policies/check: ## Run deny/audit + policy-relaxation checks
-	@$(call with_iso,policies-check,$(ATLAS_SCRIPTS) policies check --report text --emit-artifacts)
+	@$(call with_iso,policies-check,./bin/atlasctl policies check --report text --emit-artifacts)
 
 policies-check: ## Alias for policies/check
 	@$(MAKE) -s policies/check
 
 budgets/check: ## Validate universal budgets and budget-relaxation expiry policy
 	@$(MAKE) -s budgets
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_budgets.py
-	@$(ATLAS_SCRIPTS) run ./ops/_lint/budget-relaxations-audit.py
+	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_budgets.py
+	@./bin/atlasctl run ./ops/_lint/budget-relaxations-audit.py
 
 budgets: ## Run fast suite budgets gate and emit culprits artifacts
 	@mkdir -p artifacts/reports/atlasctl
-	@$(ATLAS_SCRIPTS) suite run fast --json --target-dir artifacts/reports/atlasctl/suite-fast >/dev/null
-	@$(ATLAS_SCRIPTS) policies culprits-suite --report json --out-file artifacts/reports/atlasctl/budgets.json >/dev/null
-	@$(ATLAS_SCRIPTS) policies culprits-suite --report text --out-file artifacts/reports/atlasctl/budgets.txt >/dev/null
+	@./bin/atlasctl suite run fast --json --target-dir artifacts/reports/atlasctl/suite-fast >/dev/null
+	@./bin/atlasctl policies culprits-suite --report json --out-file artifacts/reports/atlasctl/budgets.json >/dev/null
+	@./bin/atlasctl policies culprits-suite --report text --out-file artifacts/reports/atlasctl/budgets.txt >/dev/null
 	@printf '%s\n' "INFO: wrote artifacts/reports/atlasctl/budgets.{json,txt}"
 
 perf/baseline-update: ## Run smoke suite, update baseline, write diff summary and changelog
@@ -361,31 +361,31 @@ perf/baseline-update: ## Run smoke suite, update baseline, write diff summary an
 
 perf/regression-check: ## Fail if p95 regression exceeds configured budget
 	@PROFILE="$${PROFILE:-$${ATLAS_PERF_BASELINE_PROFILE:-local}}"; \
-	$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/baseline/regression_check.py --profile "$$PROFILE" --results "$${RESULTS:-artifacts/perf/results}"
+	./bin/atlasctl run ./packages/atlasctl/src/atlasctl/load/baseline/regression_check.py --profile "$$PROFILE" --results "$${RESULTS:-artifacts/perf/results}"
 
 perf/triage: ## Print top p95 regressions by suite from latest perf results
 	@PROFILE="$${PROFILE:-$${ATLAS_PERF_BASELINE_PROFILE:-local}}"; \
-	$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/baseline/triage_regressions.py --profile "$$PROFILE" --results "$${RESULTS:-artifacts/perf/results}"
+	./bin/atlasctl run ./packages/atlasctl/src/atlasctl/load/baseline/triage_regressions.py --profile "$$PROFILE" --results "$${RESULTS:-artifacts/perf/results}"
 
 perf/compare: ## Compare two evidence perf runs (FROM=<run_id> TO=<run_id>)
 	@[ -n "$${FROM:-}" ] || { echo "usage: make perf/compare FROM=<run_id> TO=<run_id>" >&2; exit 2; }
 	@[ -n "$${TO:-}" ] || { echo "usage: make perf/compare FROM=<run_id> TO=<run_id>" >&2; exit 2; }
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/load/baseline/compare_runs.py --from-run "$${FROM}" --to-run "$${TO}"
+	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/load/baseline/compare_runs.py --from-run "$${FROM}" --to-run "$${TO}"
 
 policies/all: ## Policies lane (deny/audit/policy checks)
 	@$(call with_iso,policies-all,$(MAKE) -s policies/check)
 
 policies/boundaries-check: ## Enforce e2e layer boundary rules and relaxations
-	@$(ATLAS_SCRIPTS) run ./ops/_lint/layer-relaxations-audit.py
-	@$(ATLAS_SCRIPTS) run ./ops/_lint/no-layer-fixups.py
-	@$(ATLAS_SCRIPTS) run ./ops/_lint/no-k8s-test-fixups.py
-	@$(ATLAS_SCRIPTS) run ./ops/_lint/no-stack-layer-literals.py
+	@./bin/atlasctl run ./ops/_lint/layer-relaxations-audit.py
+	@./bin/atlasctl run ./ops/_lint/no-layer-fixups.py
+	@./bin/atlasctl run ./ops/_lint/no-k8s-test-fixups.py
+	@./bin/atlasctl run ./ops/_lint/no-stack-layer-literals.py
 
 local/all: ## Run all meaningful local gates
-	@PARALLEL="$${PARALLEL:-1}" RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-local-all-$(MAKE_RUN_TS)}}" MODE=root-local $(ATLAS_SCRIPTS) run ./ops/run/root-lanes.sh
+	@PARALLEL="$${PARALLEL:-1}" RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-local-all-$(MAKE_RUN_TS)}}" MODE=root-local ./bin/atlasctl run ./ops/run/root-lanes.sh
 
 ci/all: ## Deterministic CI superset
-	@$(ATLAS_SCRIPTS) dev ci run --json --out-dir artifacts/reports/atlasctl/suite-ci >/dev/null
+	@./bin/atlasctl dev ci run --json --out-dir artifacts/reports/atlasctl/suite-ci >/dev/null
 
 nightly/all: ## Slow nightly suites (perf/load/drills/realdata)
 	@$(call with_iso,nightly-all,$(MAKE) -s ci/all ops-load-nightly perf/regression-check ops-drill-suite ops-drill-metric-cardinality-blowup ops-realdata ops-obs-verify SUITE=full ops-observability-lag-check)
@@ -407,7 +407,7 @@ lane-configs: ## Lane: configs checks and drift gates
 	@$(call with_iso,lane-configs,$(MAKE) -s configs-check budgets/check atlasctl-budgets)
 
 lane-policies: ## Lane: policy checks and boundary enforcement
-	@$(call with_iso,lane-policies,$(ATLAS_SCRIPTS) dev audit)
+	@$(call with_iso,lane-policies,./bin/atlasctl dev audit)
 	@$(call with_iso,lane-policies,$(MAKE) -s policy-lint policy-schema-drift policy-audit policy-enforcement-status policy-allow-env-lint policies/boundaries-check)
 
 lane-configs-policies: ## Alias lane for configs + policies
@@ -427,25 +427,25 @@ root: ## CI-fast lane subset (no cluster bring-up)
 	$(MAKE) -s tools-check; \
 	$(MAKE) -s scripts/test; \
 	parallel_flag=""; if [ "$${PARALLEL:-1}" = "1" ]; then parallel_flag="--parallel"; fi; \
-	RUN_ID="$$run_id" $(ATLAS_SCRIPTS) --quiet gates run --preset root --all $$parallel_flag --jobs "$${JOBS:-4}"; \
-	$(ATLAS_SCRIPTS) --quiet report collect --run-id "$$run_id" >/dev/null; \
-	$(ATLAS_SCRIPTS) --quiet report scorecard --run-id "$$run_id" >/dev/null; \
+	RUN_ID="$$run_id" ./bin/atlasctl --quiet gates run --preset root --all $$parallel_flag --jobs "$${JOBS:-4}"; \
+	./bin/atlasctl --quiet report collect --run-id "$$run_id" >/dev/null; \
+	./bin/atlasctl --quiet report scorecard --run-id "$$run_id" >/dev/null; \
 	test -f "artifacts/evidence/make/$$run_id/unified.json"; \
 	test -f "ops/_generated_committed/scorecard.json"; \
-	$(ATLAS_SCRIPTS) --quiet report print --run-id "$$run_id"
+	./bin/atlasctl --quiet report print --run-id "$$run_id"
 
 root-local: ## All lanes in parallel + ops smoke lane (PARALLEL=0 for serial)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-$(MAKE_RUN_TS)}}"; \
 	$(MAKE) -s tools-check; \
 	$(MAKE) -s scripts/test; \
 	parallel_flag=""; if [ "$${PARALLEL:-1}" = "1" ]; then parallel_flag="--parallel"; fi; \
-	RUN_ID="$$run_id" $(ATLAS_SCRIPTS) --quiet gates run --preset root-local --all $$parallel_flag --jobs "$${JOBS:-4}"; \
+	RUN_ID="$$run_id" ./bin/atlasctl --quiet gates run --preset root-local --all $$parallel_flag --jobs "$${JOBS:-4}"; \
 	if [ "$${PERF_CHEAP_REGRESSION:-0}" = "1" ]; then $(MAKE) -s ops-load-smoke perf/regression-check PROFILE="$${PROFILE:-local}"; fi; \
-	$(ATLAS_SCRIPTS) --quiet report collect --run-id "$$run_id" >/dev/null; \
-	$(ATLAS_SCRIPTS) --quiet report scorecard --run-id "$$run_id" >/dev/null; \
+	./bin/atlasctl --quiet report collect --run-id "$$run_id" >/dev/null; \
+	./bin/atlasctl --quiet report scorecard --run-id "$$run_id" >/dev/null; \
 	test -f "artifacts/evidence/make/$$run_id/unified.json"; \
 	test -f "ops/_generated_committed/scorecard.json"; \
-	$(ATLAS_SCRIPTS) --quiet report print --run-id "$$run_id"
+	./bin/atlasctl --quiet report print --run-id "$$run_id"
 
 root-local/no-ops: ## Local lanes without ops smoke lane (explicit skip)
 	@NO_OPS=1 PARALLEL="$${PARALLEL:-1}" RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-no-ops-$(MAKE_RUN_TS)}}" MODE=root-local ./ops/run/root-lanes.sh
@@ -456,8 +456,8 @@ root-local-no-ops: ## Alias for root-local/no-ops
 root-local-fast: ## Debug serial root-local skipping expensive extras (ops-smoke, obs-full)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-fast-$(MAKE_RUN_TS)}}"; \
 	PARALLEL=0 FAST=1 RUN_ID="$$run_id" MODE=root-local ./ops/run/root-lanes.sh; \
-	$(ATLAS_SCRIPTS) report collect --run-id "$$run_id" >/dev/null; \
-	$(ATLAS_SCRIPTS) report print --run-id "$$run_id"
+	./bin/atlasctl report collect --run-id "$$run_id" >/dev/null; \
+	./bin/atlasctl report print --run-id "$$run_id"
 
 root-local-open: ## Open or print latest root-local summary report
 	@SUMMARY_RUN_ID="$${RUN_ID:-}" MODE=open ./ops/run/root-lanes.sh
@@ -475,14 +475,14 @@ retry: ## Retry a target with same RUN_ID (usage: make retry TARGET=<target>)
 	RUN_ID="$$run_id" QUIET="$${QUIET:-0}" $(MAKE) -s "$${TARGET}"
 
 legacy/check: ## Verify legacy inventory and policy contracts
-	@$(ATLAS_SCRIPTS) legacy check --report text
+	@./bin/atlasctl legacy check --report text
 
 legacy/audit: ## List non-scripts files still referencing scripts/ paths
-	@$(ATLAS_SCRIPTS) legacy audit --report text
+	@./bin/atlasctl legacy audit --report text
 
 cleanup/verify: ## One-time cleanup safety verification before deleting legacy paths
 	@$(MAKE) -s legacy/check scripts-check ops-contracts-check
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/docs/check_help_snapshot.py && $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_no_dead_entrypoints.py && $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/docs/check_no_orphan_docs_refs.py && $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/policies/orphans/check_no_orphan_configs.py && $(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/policies/orphans/check_no_orphan_owners.py
+	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/docs/check_help_snapshot.py && ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/policies/hygiene/check_no_dead_entrypoints.py && ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/docs/check_no_orphan_docs_refs.py && ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/policies/orphans/check_no_orphan_configs.py && ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/policies/orphans/check_no_orphan_owners.py
 
 local: ## Developer confidence suite
 	@$(MAKE) -s root-local
@@ -507,21 +507,21 @@ nightly: ## Deprecated alias for nightly/all
 	@$(MAKE) -s nightly/all
 
 ops: ## Run canonical ops verification lane
-	@$(ATLAS_SCRIPTS) ops check --report text
+	@./bin/atlasctl ops check --report text
 
 root-local-summary: ## Print status and artifact paths for RUN_ID
-	@SUMMARY_RUN_ID="$${RUN_ID:-}" MODE=summary $(ATLAS_SCRIPTS) run ./ops/run/root-lanes.sh
+	@SUMMARY_RUN_ID="$${RUN_ID:-}" MODE=summary ./bin/atlasctl run ./ops/run/root-lanes.sh
 
 lane-status: ## Print all lane statuses for RUN_ID (or latest)
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || true)}"; \
 	[ -n "$$run_id" ] || { echo "RUN_ID is required (or run root/root-local first)" >&2; exit 2; }; \
-	$(ATLAS_SCRIPTS) report print --run-id "$$run_id"
+	./bin/atlasctl report print --run-id "$$run_id"
 
 open: ## Open unified report for RUN_ID (or print path if opener unavailable)
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || true)}"; \
 	[ -n "$$run_id" ] || { echo "RUN_ID is required (or run root/root-local first)" >&2; exit 2; }; \
 	path="artifacts/evidence/make/$$run_id/unified.json"; \
-	[ -f "$$path" ] || $(ATLAS_SCRIPTS) report collect --run-id "$$run_id" >/dev/null; \
+	[ -f "$$path" ] || ./bin/atlasctl report collect --run-id "$$run_id" >/dev/null; \
 	echo "$$path"; \
 	if command -v open >/dev/null 2>&1; then open "$$path" >/dev/null 2>&1 || true; \
 	elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$$path" >/dev/null 2>&1 || true; fi
@@ -531,8 +531,8 @@ rerun-failed: ## Rerun only failed lanes from RUN_ID (NEW_RUN_ID optional)
 	[ -n "$$src" ] || { echo "RUN_ID is required (source run id)" >&2; exit 2; }; \
 	new="$${NEW_RUN_ID:-$${src}-rerun-$(MAKE_RUN_TS)}"; \
 	PARALLEL="$${PARALLEL:-0}" MODE=rerun-failed SOURCE_RUN_ID="$$src" RUN_ID="$$new" ./ops/run/root-lanes.sh; \
-	$(ATLAS_SCRIPTS) report collect --run-id "$$new" >/dev/null; \
-	$(ATLAS_SCRIPTS) report print --run-id "$$new"
+	./bin/atlasctl report collect --run-id "$$new" >/dev/null; \
+	./bin/atlasctl report print --run-id "$$new"
 
 dev-bootstrap: ## Setup local python tooling for atlas-scripts (uv sync)
 	@if command -v uv >/dev/null 2>&1; then \
@@ -544,7 +544,7 @@ dev-bootstrap: ## Setup local python tooling for atlas-scripts (uv sync)
 
 make/guard-no-python-scripts: ## Guard against direct python scripts path invocation in make recipes
 	@! rg -n "python(3)?\\s+\\.?/?scripts/" makefiles/*.mk >/dev/null || { \
-		echo "direct python path invocation is forbidden; use $(ATLAS_SCRIPTS) or $(PY_RUN)"; \
+		echo "direct python path invocation is forbidden; use ./bin/atlasctl or $(PY_RUN)"; \
 		rg -n "python(3)?\\s+\\.?/?scripts/" makefiles/*.mk; \
 		exit 1; \
 	}
@@ -557,11 +557,11 @@ make/guard-no-script-paths: ## Guard against direct bash/python scripts path inv
 	}
 
 root-determinism: ## Assert make root determinism (inventory outputs stable across two runs)
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/root/check_root_determinism.py
+	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/root/check_root_determinism.py
 
 
 telemetry-contracts: ## Regenerate telemetry generated artifacts from observability contracts
-	@$(ATLAS_SCRIPTS) contracts generate --generators artifacts
+	@./bin/atlasctl contracts generate --generators artifacts
 	@cargo fmt --all
 
 telemetry-verify: ## Run telemetry contract verification path (pack+smoke+contract tests)
@@ -575,7 +575,7 @@ telemetry-verify: ## Run telemetry contract verification path (pack+smoke+contra
 	fi
 
 architecture-check: ## Validate runtime architecture boundaries and dependency guardrails
-	@$(ATLAS_SCRIPTS) docs generate-architecture-map --report text
+	@./bin/atlasctl docs generate-architecture-map --report text
 	@if ! git diff --quiet -- docs/architecture/architecture-map.md; then \
 		echo "architecture map drift detected; regenerate docs/architecture/architecture-map.md" >&2; \
 		git --no-pager diff -- docs/architecture/architecture-map.md >&2 || true; \
@@ -591,8 +591,8 @@ fetch-real-datasets:
 	@./ops/datasets/scripts/fixtures/fetch-real-datasets.sh
 
 ssot-check:
-	@$(ATLAS_SCRIPTS) contracts generate --generators artifacts chart-schema
-	@$(ATLAS_SCRIPTS) contracts check --checks breakage drift endpoints error-codes sqlite-indexes chart-values
+	@./bin/atlasctl contracts generate --generators artifacts chart-schema
+	@./bin/atlasctl contracts check --checks breakage drift endpoints error-codes sqlite-indexes chart-values
 
 policy-lint:
 	@./bin/atlasctl policies check --fail-fast
@@ -610,51 +610,51 @@ policy-allow-env-lint: ## Forbid ALLOW_* escape hatches unless declared in env s
 	@./bin/atlasctl policies allow-env-lint
 
 ops-policy-audit: ## Verify ops policy configs are reflected by ops make/scripts contracts
-	@$(ATLAS_SCRIPTS) ops policy-audit
+	@./bin/atlasctl ops policy-audit
 
 policy-drift-diff: ## Show policy contract drift between two refs (usage: make policy-drift-diff [FROM=HEAD~1 TO=HEAD])
 	@./bin/atlasctl policies drift-diff --from-ref "$${FROM:-HEAD~1}" --to-ref "$${TO:-HEAD}"
 
 release-update-compat-matrix:
 	@[ -n "$$TAG" ] || { echo "usage: make release-update-compat-matrix TAG=<tag>"; exit 2; }
-	@$(ATLAS_SCRIPTS) compat update-matrix --tag "$$TAG"
+	@./bin/atlasctl compat update-matrix --tag "$$TAG"
 
 .PHONY: root-local-no-ops architecture-check artifacts-clean artifacts-index artifacts-open bootstrap bootstrap-tools bump cargo/all chart chart-package chart-verify ci ci/all ci-workflow-contract clean config-drift config-print config-validate configs-gen-check configs-check configs/all contracts dataset-id-lint debug deep-clean docker docker-build docker-contracts docker-push docker-scan docker-smoke docs docs/all docs-lint-names doctor evidence/open evidence/clean evidence/check evidence/bundle evidence/pr-summary explain what fetch-real-datasets format gates gates-check governance-check graph help help-advanced help-all open lane-status rerun-failed hygiene internal-list inventory isolate-clean layout-check layout-migrate list local local/all local-full makefiles-contract nightly nightly/all no-direct-scripts obs/update-goldens ops-alerts-validate ops ops/all ops-api-protection ops-artifacts-open ops-baseline-policy-check ops-cache-pin-set ops-cache-status ops-catalog-validate ops-check ops-clean ops-contracts-check ops-dashboards-validate ops-dataset-federated-registry-test ops-dataset-multi-release-test ops-dataset-promotion-sim ops-dataset-qc ops-datasets-fetch ops-deploy ops-doctor ops-down ops-drill-corruption-dataset ops-drill-memory-growth ops-drill-otel-outage ops-drill-overload ops-drill-pod-churn ops-drill-rate-limit ops-drill-rollback ops-drill-rollback-under-load ops-drill-store-outage ops-drill-suite ops-drill-toxiproxy-latency ops-drill-upgrade ops-drill-upgrade-under-load ops-e2e ops-e2e-smoke ops-full ops-full-pr ops-gc-smoke ops-gen ops-gen-check ops-graceful-degradation ops-incident-repro-kit ops-k8s-smoke k8s-smoke ops-k8s-suite ops-k8s-template-tests ops-k8s-tests ops-load-ci ops-load-full ops-load-manifest-validate ops-load-nightly ops-load-shedding ops-load-smoke ops-load-soak ops-load-suite ops-local-full ops-local-full-stack ops-metrics-check ops-obs-down ops-obs-install ops-obs-mode ops-obs-uninstall ops-obs-verify ops-observability-pack-conformance-report ops-observability-pack-export ops-observability-pack-health ops-observability-pack-smoke ops-observability-pack-verify ops-observability-smoke ops-observability-validate ops-open-grafana ops-openapi-validate ops-perf-baseline-update ops-perf-cold-start ops-perf-nightly ops-perf-report ops-perf-warm-start ops-policy-audit ops-prereqs ops-proof-cached-only ops-publish ops-readiness-scorecard ops-realdata ops-redeploy ops-ref-grade-local ops-ref-grade-nightly ops-ref-grade-pr ops-release-matrix ops-release-rollback ops-release-update ops-report ops-slo-alert-proof ops-slo-burn ops-slo-report ops-smoke ops-tools-check ops-traces-check ops-undeploy ops-up ops-values-validate ops-warm ops-warm-datasets ops-warm-shards ops-warm-top policies/all policy-allow-env-lint policy-audit policy-drift-diff policy-enforcement-status policy-lint policy-schema-drift prereqs quick release release-dry-run release-update-compat-matrix rename-lint report k8s load obs root root-determinism root-local root-local-fast root-local-summary scripts-all scripts/all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test scripts-install-dev ssot-check verify-inventory lane-cargo lane-docs lane-ops lane-scripts lane-configs-policies root-local-open repro lane-status open rerun-failed internal/lane-ops-smoke internal/lane-obs-cheap internal/lane-obs-full report/merge report/print report/md report/junit report/bundle clean-safe clean-all print-env cargo/fmt cargo/lint cargo/test-fast cargo/test cargo/test-all cargo/test-contracts cargo/audit cargo/bench-smoke cargo/coverage configs/check budgets/check perf/baseline-update perf/regression-check perf/triage perf/compare policies/check policies/boundaries-check retry docs/check docs/build docs/fmt docs/lint docs/test docs/clean scripts/check scripts/build scripts/fmt scripts/lint scripts/test scripts/clean ops/check ops/smoke ops/suite ops/fmt ops/lint ops/test ops/build ops/clean pins/check pins/update logs/last-fail cache/status cache/prune root-local/no-ops
 
 
 
 inventory: ## Regenerate inventories from atlasctl SSOT generators
-	@$(ATLAS_SCRIPTS) make inventory --out-dir docs/_generated
-	@$(ATLAS_SCRIPTS) inventory all --format both --out-dir docs/_generated
+	@./bin/atlasctl make inventory --out-dir docs/_generated
+	@./bin/atlasctl inventory all --format both --out-dir docs/_generated
 
 verify-inventory: ## Fail if inventory outputs drift from generated state
-	@$(ATLAS_SCRIPTS) make inventory --out-dir docs/_generated --check
+	@./bin/atlasctl make inventory --out-dir docs/_generated --check
 	@$(MAKE) -s inventory
-	@$(ATLAS_SCRIPTS) inventory budgets --check --format json --dry-run >/dev/null
+	@./bin/atlasctl inventory budgets --check --format json --dry-run >/dev/null
 	@git diff --exit-code -- docs/_generated/INDEX.md docs/_generated/make-targets.md docs/_generated/make-targets.json docs/_generated/ops-surface.md docs/_generated/ops-surface.json docs/_generated/configs-surface.md docs/_generated/configs-surface.json docs/_generated/schema-index.md docs/_generated/schema-index.json docs/_generated/ownership.md docs/_generated/ownership.json docs/_generated/contracts-index.md docs/_generated/contracts-index.json docs/_generated/inventory-budgets.md docs/_generated/inventory-budgets.json
 
 upgrade-guide: ## Generate make target upgrade guide for renamed/deprecated aliases
-	@$(ATLAS_SCRIPTS) docs generate-upgrade-guide --report text
+	@./bin/atlasctl docs generate-upgrade-guide --report text
 
 artifacts-index: ## Generate artifacts index for inspection UIs
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts/build_artifacts_index.py
+	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts/build_artifacts_index.py
 
 artifacts-clean: ## Clean old artifacts with safe retention
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts/clean_artifacts.py
+	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts/clean_artifacts.py
 
 isolate-clean: ## Remove isolate output directories safely
 	@find artifacts/isolate -mindepth 1 -maxdepth 1 -type d -exec rm -r {} + 2>/dev/null || true
 
 clean: ## Safe clean for generated local outputs
-	@$(ATLAS_SCRIPTS) cleanup --older-than "$${OLDER_THAN_DAYS:-14}"
+	@./bin/atlasctl cleanup --older-than "$${OLDER_THAN_DAYS:-14}"
 	@./ops/run/clean.sh
 
 clean-safe: ## Clean only safe generated make artifact directories
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts/clean_make_artifacts.py
+	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts/clean_make_artifacts.py
 
 clean-all: ## Clean all allowed generated dirs (requires CONFIRM=YES)
 	@[ "$${CONFIRM:-}" = "YES" ] || { echo "refusing clean-all without CONFIRM=YES"; exit 2; }
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts/clean_make_artifacts.py --all
+	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts/clean_make_artifacts.py --all
 
 deep-clean: ## Extended clean (prints and then removes generated outputs)
 	@printf '%s\n' 'Deleting: artifacts/isolate artifacts/scripts artifacts/perf/results artifacts/ops'
@@ -702,7 +702,7 @@ release-dry-run: ## Build + docs + ops smoke release rehearsal
 release: ## Release entrypoint (currently dry-run only)
 	@$(MAKE) release-dry-run
 makefiles-contract: ## Validate makefile contract boundaries and publication rules
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_makefiles_contract.py
+	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_makefiles_contract.py
 
 ci-workflow-contract: ## Validate CI and nightly workflows use canonical make entrypoints
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/workflows/check_ci_entrypoints.py
+	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/workflows/check_ci_entrypoints.py

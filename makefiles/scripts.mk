@@ -15,49 +15,49 @@ bootstrap-tools:
 	fi
 
 scripts-index:
-	@$(ATLAS_SCRIPTS) inventory scripts-migration --format md --out-dir docs/_generated
-	@$(ATLAS_SCRIPTS) inventory scripts-migration --format json --out-dir docs/_generated
+	@./bin/atlasctl inventory scripts-migration --format md --out-dir docs/_generated
+	@./bin/atlasctl inventory scripts-migration --format json --out-dir docs/_generated
 
 scripts-graph: ## Generate make-target to scripts call graph
-	@$(ATLAS_SCRIPTS) make graph root-local > docs/development/scripts-graph.md
+	@./bin/atlasctl make graph root-local > docs/development/scripts-graph.md
 
 no-direct-scripts:
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/root/check_no_direct_script_runs.py
+	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/root/check_no_direct_script_runs.py
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_public_scripts.py
 
 scripts-lint: ## Lint script surface (shellcheck + header + make/public gate + optional ruff)
 	@$(MAKE) -s internal/scripts/install-lock
 	@$(MAKE) scripts-audit
-	@$(ATLAS_SCRIPTS) docs script-headers-check --report text
+	@./bin/atlasctl docs script-headers-check --report text
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_public_scripts.py
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/scripts/check_scripts_buckets.py
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/scripts/check_script_relative_calls.py
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/scripts/check_script_naming_convention.py
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/policies/policies/check_no_mixed_script_name_variants.py
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/policies/policies/check_duplicate_script_intent.py
-	@$(ATLAS_SCRIPTS) check duplicate-script-names
-	@$(ATLAS_SCRIPTS) check layout
-	@$(ATLAS_SCRIPTS) check cli-help
-	@$(ATLAS_SCRIPTS) check script-errors
-	@$(ATLAS_SCRIPTS) check script-write-roots
-	@$(ATLAS_SCRIPTS) check script-tool-guards
-	@$(ATLAS_SCRIPTS) check ownership
-	@$(ATLAS_SCRIPTS) check script-shim-expiry
-	@$(ATLAS_SCRIPTS) check script-shims-minimal
-	@$(ATLAS_SCRIPTS) check invocation-parity
-	@$(ATLAS_SCRIPTS) check python-lock
-	@$(ATLAS_SCRIPTS) check bin-entrypoints
-	@$(ATLAS_SCRIPTS) check root-bin-shims
+	@./bin/atlasctl check duplicate-script-names
+	@./bin/atlasctl check layout
+	@./bin/atlasctl check cli-help
+	@./bin/atlasctl check script-errors
+	@./bin/atlasctl check script-write-roots
+	@./bin/atlasctl check script-tool-guards
+	@./bin/atlasctl check ownership
+	@./bin/atlasctl check script-shim-expiry
+	@./bin/atlasctl check script-shims-minimal
+	@./bin/atlasctl check invocation-parity
+	@./bin/atlasctl check python-lock
+	@./bin/atlasctl check bin-entrypoints
+	@./bin/atlasctl check root-bin-shims
 	@./ops/_lint/no-bin-symlinks.sh
 	@./ops/_lint/no-scripts-bin-dir.sh
-	@$(ATLAS_SCRIPTS) check no-adhoc-python
-	@$(ATLAS_SCRIPTS) check venv-location-policy
-	@$(ATLAS_SCRIPTS) check python-runtime-artifacts --fix
-	@$(ATLAS_SCRIPTS) check python-runtime-artifacts
-	@$(ATLAS_SCRIPTS) check make-scripts-refs
-	@$(ATLAS_SCRIPTS) check repo-script-boundaries
-	@$(ATLAS_SCRIPTS) check atlas-cli-contract
-	@$(ATLAS_SCRIPTS) check scripts-surface-docs-drift
+	@./bin/atlasctl check no-adhoc-python
+	@./bin/atlasctl check venv-location-policy
+	@./bin/atlasctl check python-runtime-artifacts --fix
+	@./bin/atlasctl check python-runtime-artifacts
+	@./bin/atlasctl check make-scripts-refs
+	@./bin/atlasctl check repo-script-boundaries
+	@./bin/atlasctl check atlas-cli-contract
+	@./bin/atlasctl check scripts-surface-docs-drift
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_make_command_allowlist.py
 	@./ops/_lint/naming.sh
 	@$(PY_RUN) ./packages/atlasctl/src/atlasctl/layout/no_shadow.py
@@ -85,12 +85,12 @@ scripts-test: ## Run scripts-focused tests
 	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/ruff" check --config packages/atlasctl/pyproject.toml packages/atlasctl/src packages/atlasctl/tests
 	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/mypy" packages/atlasctl/src/atlasctl/core packages/atlasctl/src/atlasctl/contracts
 	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/python" -m compileall -q packages/atlasctl/src
-	@$(ATLAS_SCRIPTS) test run unit
-	@$(ATLAS_SCRIPTS) test run integration
-	@$(ATLAS_SCRIPTS) validate-output --schema atlasctl.surface.v1 --file packages/atlasctl/tests/goldens/samples/surface.sample.json
-	@$(ATLAS_SCRIPTS) surface --json > artifacts/scripts/surface.json
-	@$(ATLAS_SCRIPTS) validate-output --schema atlasctl.surface.v1 --file artifacts/scripts/surface.json
-	@$(ATLAS_SCRIPTS) --run-id scripts-test --profile local doctor --json > artifacts/scripts/doctor.json
+	@./bin/atlasctl test run unit
+	@./bin/atlasctl test run integration
+	@./bin/atlasctl validate-output --schema atlasctl.surface.v1 --file packages/atlasctl/tests/goldens/samples/surface.sample.json
+	@./bin/atlasctl surface --json > artifacts/scripts/surface.json
+	@./bin/atlasctl validate-output --schema atlasctl.surface.v1 --file artifacts/scripts/surface.json
+	@./bin/atlasctl --run-id scripts-test --profile local doctor --json > artifacts/scripts/doctor.json
 
 scripts-coverage: ## Optional coverage run for atlasctl package
 	@$(MAKE) -s internal/scripts/install-lock
@@ -102,35 +102,35 @@ scripts-deps-audit: ## Dependency policy audit for scripts package (pip-audit if
 
 internal/scripts/test-hermetic: ## Run scripts package tests with --no-network guard enabled
 	@$(MAKE) -s scripts-install
-	@BIJUX_SCRIPTS_TEST_NO_NETWORK=1 $(ATLAS_SCRIPTS) test run unit
+	@BIJUX_SCRIPTS_TEST_NO_NETWORK=1 ./bin/atlasctl test run unit
 
 scripts-check: ## Run scripts lint + tests as a single gate
 	@$(MAKE) -s internal/scripts/install-lock
-	@$(ATLAS_SCRIPTS) python lint --json >/dev/null
-	@$(ATLAS_SCRIPTS) check all
-	@$(ATLAS_SCRIPTS) --quiet legacy check --report text
-	@$(ATLAS_SCRIPTS) check duplicate-script-names
-	@$(ATLAS_SCRIPTS) check layout
-	@$(ATLAS_SCRIPTS) check no-python-shebang-outside-packages
-	@$(ATLAS_SCRIPTS) check no-direct-python-invocations
-	@$(ATLAS_SCRIPTS) check no-direct-bash-invocations
-	@$(ATLAS_SCRIPTS) check python-migration-exceptions-expiry
-	@$(ATLAS_SCRIPTS) check bijux-boundaries
-	@$(ATLAS_SCRIPTS) check cli-help
-	@$(ATLAS_SCRIPTS) check root-bin-shims
+	@./bin/atlasctl python lint --json >/dev/null
+	@./bin/atlasctl check all
+	@./bin/atlasctl --quiet legacy check --report text
+	@./bin/atlasctl check duplicate-script-names
+	@./bin/atlasctl check layout
+	@./bin/atlasctl check no-python-shebang-outside-packages
+	@./bin/atlasctl check no-direct-python-invocations
+	@./bin/atlasctl check no-direct-bash-invocations
+	@./bin/atlasctl check python-migration-exceptions-expiry
+	@./bin/atlasctl check bijux-boundaries
+	@./bin/atlasctl check cli-help
+	@./bin/atlasctl check root-bin-shims
 	@./ops/_lint/no-bin-symlinks.sh
 	@./ops/_lint/no-scripts-bin-dir.sh
-	@$(ATLAS_SCRIPTS) check script-errors
-	@$(ATLAS_SCRIPTS) check script-write-roots
-	@$(ATLAS_SCRIPTS) check script-tool-guards
-	@$(ATLAS_SCRIPTS) check ownership
-	@$(ATLAS_SCRIPTS) check script-shims-minimal
-	@$(ATLAS_SCRIPTS) check python-lock
-	@$(ATLAS_SCRIPTS) check scripts-lock-sync
-	@$(ATLAS_SCRIPTS) check no-adhoc-python
-	@$(ATLAS_SCRIPTS) check make-scripts-refs
-	@$(ATLAS_SCRIPTS) check repo-script-boundaries
-	@$(ATLAS_SCRIPTS) check atlas-cli-contract
+	@./bin/atlasctl check script-errors
+	@./bin/atlasctl check script-write-roots
+	@./bin/atlasctl check script-tool-guards
+	@./bin/atlasctl check ownership
+	@./bin/atlasctl check script-shims-minimal
+	@./bin/atlasctl check python-lock
+	@./bin/atlasctl check scripts-lock-sync
+	@./bin/atlasctl check no-adhoc-python
+	@./bin/atlasctl check make-scripts-refs
+	@./bin/atlasctl check repo-script-boundaries
+	@./bin/atlasctl check atlas-cli-contract
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_make_command_allowlist.py
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/scripts/check_script_entrypoints.py
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/scripts/check_scripts_top_level.py
@@ -157,29 +157,29 @@ internal/scripts/install-lock:
 	@"$(SCRIPTS_VENV)/bin/pip" --disable-pip-version-check install --requirement packages/atlasctl/requirements.lock.txt >/dev/null
 
 internal/scripts/sbom: ## Emit scripts package dependency SBOM JSON
-	@$(ATLAS_SCRIPTS) check generate-scripts-sbom --lock packages/atlasctl/requirements.lock.txt --out artifacts/evidence/scripts/sbom/$${RUN_ID:-local}/sbom.json
+	@./bin/atlasctl check generate-scripts-sbom --lock packages/atlasctl/requirements.lock.txt --out artifacts/evidence/scripts/sbom/$${RUN_ID:-local}/sbom.json
 
 internal/scripts/lock-check:
-	@$(ATLAS_SCRIPTS) check python-lock
-	@$(ATLAS_SCRIPTS) check scripts-lock-sync
+	@./bin/atlasctl check python-lock
+	@./bin/atlasctl check scripts-lock-sync
 
 deps-lock: ## Refresh python lockfile deterministically via atlasctl
-	@$(ATLAS_SCRIPTS) deps lock
+	@./bin/atlasctl deps lock
 
 deps-sync: ## Install scripts deps from lock into active interpreter
-	@$(ATLAS_SCRIPTS) deps sync
+	@./bin/atlasctl deps sync
 
 deps-check-venv: ## Validate dependency install/import in a clean temporary venv
-	@$(ATLAS_SCRIPTS) deps check-venv
+	@./bin/atlasctl deps check-venv
 
 deps-cold-start: ## Measure atlasctl import cold-start budget
-	@$(ATLAS_SCRIPTS) deps cold-start --runs 3 --max-ms 500
+	@./bin/atlasctl deps cold-start --runs 3 --max-ms 500
 
 packages-lock: ## Backward-compatible alias for deps-lock
 	@$(MAKE) -s deps-lock
 
 scripts-audit: ## Audit script headers, taxonomy buckets, and no-implicit-cwd contract
-	@$(ATLAS_SCRIPTS) docs script-headers-check --report text
+	@./bin/atlasctl docs script-headers-check --report text
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/scripts/check_scripts_buckets.py
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_public_scripts.py
 	@$(PY_RUN) packages/atlasctl/src/atlasctl/checks/layout/scripts/check_script_relative_calls.py
@@ -192,7 +192,7 @@ internal/scripts/install:
 
 internal/scripts/run:
 	@[ -n "$${CMD:-}" ] || { echo "usage: make scripts-run CMD='doctor --json'" >&2; exit 2; }
-	@$(ATLAS_SCRIPTS) $${CMD}
+	@./bin/atlasctl $${CMD}
 
 scripts-clean: ## Remove generated script artifacts
 	@rm -rf artifacts/scripts
@@ -201,7 +201,7 @@ internal/scripts/check: ## Deterministic scripts check lane
 	@start="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; status=pass; fail=""; \
 	if ! $(MAKE) scripts-check; then status=fail; fail="scripts-check failed"; fi; \
 	end="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"; \
-	$(ATLAS_SCRIPTS) report make-area-write --path "$${ISO_ROOT:-artifacts/isolate/scripts/$${RUN_ID:-scripts-check}}/report.scripts.check.json" --lane "scripts/check" --run-id "$${RUN_ID:-scripts-check}" --status "$$status" --start "$$start" --end "$$end" --artifact "$${ISO_ROOT:-artifacts/isolate/scripts/$${RUN_ID:-scripts-check}}" --failure "$$fail" >/dev/null; \
+	./bin/atlasctl report make-area-write --path "$${ISO_ROOT:-artifacts/isolate/scripts/$${RUN_ID:-scripts-check}}/report.scripts.check.json" --lane "scripts/check" --run-id "$${RUN_ID:-scripts-check}" --status "$$status" --start "$$start" --end "$$end" --artifact "$${ISO_ROOT:-artifacts/isolate/scripts/$${RUN_ID:-scripts-check}}" --failure "$$fail" >/dev/null; \
 	[ "$$status" = "pass" ] || { $(call fail_banner,scripts/check); exit 1; }
 
 internal/scripts/build: ## Build script inventories/graphs

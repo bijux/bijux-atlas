@@ -13,7 +13,7 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 ## Contracts
 
 - Root `Makefile` is a thin dispatcher that only includes `makefiles/*.mk`.
-- Make recipes may delegate only to `atlasctl` wrappers (`atlasctl`/`$(ATLAS_SCRIPTS)`), with minimal shell setup (`mkdir -p`, `export`, `echo`) allowed.
+- Make recipes may delegate only to `./bin/atlasctl ...` wrappers, with minimal shell setup (`mkdir -p`, `export`, `echo`) allowed.
 - Public interfaces are make targets, not direct script paths.
 - `makefiles/root.mk` is the publication surface for public targets.
 - `makefiles/_macros.mk` centralizes shared run-id/isolation/logging/python helpers.
