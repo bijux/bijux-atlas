@@ -35,4 +35,5 @@ def test_run_product_lane_writes_stable_json_report(tmp_path, monkeypatch, capsy
     assert payload["run_id"] == "product-effects"
     assert payload["summary"]["passed"] == 1
     assert payload["allowed_write_roots"]
-
+    assert payload["lane_contract"]["inputs"]
+    assert payload["lane_contract"]["external_tools"]

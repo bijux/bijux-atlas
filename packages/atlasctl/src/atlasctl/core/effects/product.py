@@ -28,6 +28,84 @@ def _product_report_path(lane: str, run_id: str) -> str:
     return f"product/{lane_slug}/{run_id}/report.json"
 
 
+def _lane_contract(lane: str) -> dict[str, object]:
+    contracts: dict[str, dict[str, object]] = {
+        "bootstrap": {
+            "inputs": ["configs/docs/requirements.txt", "PATH", "CI?"],
+            "outputs": [],
+            "artifacts_written": [],
+            "external_tools": ["python3", "pip", "k6?", "kind?", "kubectl?"],
+        },
+        "docker build": {
+            "inputs": ["docker/images/runtime/Dockerfile", "DOCKER_IMAGE?", "IMAGE_VERSION?", "VCS_REF?", "BUILD_DATE?", "RUST_VERSION?"],
+            "outputs": ["docker image local tag"],
+            "artifacts_written": [],
+            "external_tools": ["docker", "git"],
+        },
+        "docker contracts": {
+            "inputs": ["docker/contracts/*", "docker/images/runtime/Dockerfile"],
+            "outputs": [],
+            "artifacts_written": ["artifacts/evidence/checks/* (via atlasctl check)"],
+            "external_tools": ["atlasctl"],
+        },
+        "docker check": {
+            "inputs": ["docker build inputs", "DOCKER_IMAGE?"],
+            "outputs": ["validated local docker image"],
+            "artifacts_written": ["artifacts/evidence/product/docker-check/*"],
+            "external_tools": ["docker", "git", "atlasctl"],
+        },
+        "docker push": {
+            "inputs": ["DOCKER_IMAGE", "CI=1"],
+            "outputs": ["pushed docker image"],
+            "artifacts_written": ["artifacts/evidence/product/docker-push/*"],
+            "external_tools": ["docker"],
+        },
+        "docker release": {
+            "inputs": ["docker check inputs", "DOCKER_IMAGE", "CI=1"],
+            "outputs": ["validated and pushed docker image"],
+            "artifacts_written": ["artifacts/evidence/product/docker-release/*"],
+            "external_tools": ["docker", "atlasctl"],
+        },
+        "chart package": {
+            "inputs": ["ops/k8s/charts/bijux-atlas"],
+            "outputs": ["artifacts/chart/*.tgz"],
+            "artifacts_written": ["artifacts/chart/*", "artifacts/evidence/product/chart-package/*"],
+            "external_tools": ["helm"],
+        },
+        "chart verify": {
+            "inputs": ["ops/k8s/charts/bijux-atlas"],
+            "outputs": [],
+            "artifacts_written": ["artifacts/evidence/product/chart-verify/*"],
+            "external_tools": ["helm"],
+        },
+        "chart validate": {
+            "inputs": ["chart verify inputs", "contracts schema generators"],
+            "outputs": ["validated chart values/schema contract"],
+            "artifacts_written": ["artifacts/evidence/product/chart-validate/*"],
+            "external_tools": ["helm", "atlasctl"],
+        },
+        "naming lint": {
+            "inputs": ["docs/**"],
+            "outputs": [],
+            "artifacts_written": ["artifacts/evidence/product/naming-lint/*"],
+            "external_tools": ["atlasctl"],
+        },
+        "docs naming-lint": {
+            "inputs": ["docs/**", "load suite manifest"],
+            "outputs": [],
+            "artifacts_written": ["artifacts/evidence/product/docs-naming-lint/*"],
+            "external_tools": ["atlasctl", "python3"],
+        },
+        "check": {
+            "inputs": ["product docker check", "product chart validate"],
+            "outputs": ["product lane status"],
+            "artifacts_written": ["artifacts/evidence/product/check/*"],
+            "external_tools": ["atlasctl"],
+        },
+    }
+    return contracts.get(lane, {"inputs": [], "outputs": [], "artifacts_written": [], "external_tools": []})
+
+
 def _run_step(ctx: RunContext, step: ProductStep, env: dict[str, str] | None = None) -> dict[str, Any]:
     proc = process_run(step.command, cwd=ctx.repo_root, env=env, text=True, capture_output=True)
     return {
@@ -70,6 +148,7 @@ def run_product_lane(
             "passed": sum(1 for row in rows if row["status"] == "pass"),
         },
         "allowed_write_roots": [str(ctx.evidence_root), str(ctx.scripts_artifact_root)],
+        "lane_contract": _lane_contract(lane),
         "meta": meta or {},
     }
     report_path = write_json_report(ctx, _product_report_path(lane, ctx.run_id), payload)
