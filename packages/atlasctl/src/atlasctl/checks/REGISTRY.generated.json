@@ -2603,6 +2603,31 @@
       ]
     },
     {
+      "area": "all",
+      "callable": "check_ops_all_check_scripts_registered",
+      "category": "hygiene",
+      "description": "require all ops check scripts to be registered in atlasctl checks",
+      "domain": "ops",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Register new ops check scripts in atlasctl checks (or migrate to atlasctl-native implementation).",
+      "gate": "ops",
+      "groups": [
+        "ops"
+      ],
+      "id": "checks_ops_all_check_scripts_registered",
+      "legacy_id": "ops.all_check_scripts_registered",
+      "module": "atlasctl.checks.domains.ops.ops_checks",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
       "area": "chart",
       "callable": "check_ops_chart_version_contract",
       "category": "hygiene",
