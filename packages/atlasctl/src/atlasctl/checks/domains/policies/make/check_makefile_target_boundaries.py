@@ -81,7 +81,6 @@ def main() -> int:
             print(f"- {err}", file=sys.stderr)
         return 1
 
-    print("makefile target boundaries check passed")
     return 0
 
 

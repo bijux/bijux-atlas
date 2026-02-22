@@ -82,7 +82,6 @@ def main() -> int:
         for err in errs:
             print(f"- {err}", file=sys.stderr)
         return 1
-    print("ci entrypoint contract check passed")
     return 0
 
 

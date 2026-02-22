@@ -14,7 +14,6 @@ def main() -> int:
     mk_files = sorted((ROOT / "makefiles").glob("*.mk"))
     count = len(mk_files)
     if count <= MAX_FILES:
-        print("makefiles index drift check passed")
         return 0
 
     if not INDEX.exists():
@@ -34,7 +33,6 @@ def main() -> int:
         print(f"- makefiles/INDEX.md File count mismatch: declared {declared}, actual {count}", file=sys.stderr)
         return 1
 
-    print("makefiles index drift check passed")
     return 0
 
 

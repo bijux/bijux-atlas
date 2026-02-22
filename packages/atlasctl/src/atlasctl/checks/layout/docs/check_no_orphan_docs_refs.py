@@ -41,7 +41,6 @@ def main() -> int:
         for err in errors[:200]:
             print(f"- {err}", file=sys.stderr)
         return 1
-    print("orphan docs command references check passed")
     return 0
 
 

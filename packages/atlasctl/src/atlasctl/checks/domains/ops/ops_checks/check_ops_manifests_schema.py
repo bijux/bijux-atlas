@@ -51,7 +51,6 @@ def run() -> int:
         for err in errors:
             print(err)
         return 1
-    print(f"validated {len(files)} ops manifest(s)")
     return 0
 
 
