@@ -34,12 +34,16 @@ def test_wrapper_makefiles_delegate_once_to_atlasctl() -> None:
 def test_core_wrapper_targets_use_expected_atlasctl_args() -> None:
     dev = _recipes(ROOT / "makefiles/dev.mk")
     ci = _recipes(ROOT / "makefiles/ci.mk")
+    atlasctl = _recipes(ROOT / "makefiles/atlasctl.mk")
     assert dev["fmt"] == ["@./bin/atlasctl dev fmt"]
     assert dev["lint"] == ["@./bin/atlasctl dev lint"]
     assert dev["test"] == ["@./bin/atlasctl dev test"]
     assert dev["test-all"] == ["@./bin/atlasctl dev test --all"]
     assert dev["check"] == ["@./bin/atlasctl dev check"]
     assert dev["atlasctl-check"] == ["@./bin/atlasctl check run --group repo"]
+    assert atlasctl["atlasctl-check-all"] == [
+        "@./bin/atlasctl check run --group all --all --timeout-ms 30000 --ignore-speed-regressions"
+    ]
     assert ci["ci"] == ["@./bin/atlasctl ci run --json --out-dir artifacts/reports/atlasctl/suite-ci"]
     assert ci["ci-all"] == ["@./bin/atlasctl ci all --json"]
     assert ci["ci-init"] == ["@./bin/atlasctl ci init --json"]

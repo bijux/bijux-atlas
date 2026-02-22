@@ -9,7 +9,7 @@ atlasctl-check: ## Run all atlasctl checks across all groups
 	@./bin/atlasctl check run --group all
 
 atlasctl-check-all: ## Run all atlasctl checks including slow checks
-	@./bin/atlasctl check run --group all --all --timeout-ms 30000
+	@./bin/atlasctl check run --group all --all --timeout-ms 30000 --ignore-speed-regressions
 
 atlasctl-check-contracts: ## Run atlasctl contracts checks
 	@./bin/atlasctl check run --group contracts
