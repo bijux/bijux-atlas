@@ -16,8 +16,8 @@ Repository script taxonomy, contracts, and contribution rules.
 - Every script must include shebang + `Purpose`, `Inputs`, `Outputs` header lines.
 - Public scripts must also declare: `owner`, `purpose`, `stability`, `called-by`.
 - Scripts must not assume implicit cwd; resolve repo root explicitly.
-- Public wrappers should stay thin; move reusable logic into Python modules (`packages/atlasctl/src`) or `ops/_lib/`.
-- Ops shared shell helpers are canonical in `ops/_lib/`.
+- Public wrappers should stay thin; move reusable logic into Python modules (`packages/atlasctl/src`) or atlasctl-owned ops helper assets.
+- Ops shared shell helpers are canonical in atlasctl-owned assets (for example `packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/assets/lib/`).
 
 ## Naming
 
