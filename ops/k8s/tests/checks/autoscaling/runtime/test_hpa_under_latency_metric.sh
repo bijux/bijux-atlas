@@ -15,7 +15,7 @@ kubectl -n "$NS" get hpa "$SERVICE_NAME" -o jsonpath='{.spec.metrics[*].pods.met
 }
 
 before_desired="$(kubectl -n "$NS" get hpa "$SERVICE_NAME" -o jsonpath='{.status.desiredReplicas}' || echo 1)"
-"$ROOT/ops/load/scripts/run_suite.sh" hpa-validation-short.json "$ROOT/artifacts/perf/results" >/dev/null
+(cd "$ROOT" && ./bin/atlasctl ops load --report text run --suite hpa-validation-short.json --out artifacts/perf/results) >/dev/null
 
 trended=0
 for _ in $(seq 1 24); do

@@ -16,6 +16,6 @@ if command -v kubectl >/dev/null 2>&1 && kubectl -n "$NS" get deploy "$SERVICE" 
   ) &
 fi
 
-"$ROOT/ops/load/scripts/run_suite.sh" load-under-rollout.json "$OUT_DIR"
+(cd "$ROOT" && ./bin/atlasctl ops load --report text run --suite load-under-rollout.json --out "$OUT_DIR")
 
 echo "load-under-rollout complete"

@@ -7,7 +7,7 @@ need curl
 
 wait_ready
 with_port_forward 18080
-"$ROOT/ops/load/scripts/run_suite.sh" noisy-neighbor-cpu-throttle.json "$ROOT/artifacts/perf/results" >/dev/null
+(cd "$ROOT" && ./bin/atlasctl ops load --report text run --suite noisy-neighbor-cpu-throttle.json --out artifacts/perf/results) >/dev/null
 curl -fsS "$BASE_URL/healthz" >/dev/null || {
   echo "failure_mode: noisy_neighbor_healthz_unavailable" >&2
   exit 1

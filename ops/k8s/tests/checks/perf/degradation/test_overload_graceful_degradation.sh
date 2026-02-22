@@ -7,7 +7,7 @@ need curl
 
 wait_ready
 with_port_forward 18080
-"$ROOT/ops/load/scripts/run_suite.sh" spike-overload-proof.json "$ROOT/artifacts/perf/results" >/dev/null
+(cd "$ROOT" && ./bin/atlasctl ops load --report text run --suite spike-overload-proof.json --out artifacts/perf/results) >/dev/null
 
 code="$(curl -s -o /tmp/atlas-overload-body.json -w '%{http_code}' \
   "$BASE_URL/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&region=chr1:1-999999999&limit=500" || true)"

@@ -6,7 +6,10 @@ setup_test_traps
 install_chart
 wait_ready
 out="${OPS_RUN_DIR:-ops/_artifacts/load/results}"
-ATLAS_BASE_URL="$BASE_URL" "$ROOT/ops/load/scripts/run_suite.sh" noisy-neighbor-cpu-throttle.json "$out"
+(
+  cd "$ROOT"
+  ATLAS_BASE_URL="$BASE_URL" ./bin/atlasctl ops load --report text run --suite noisy-neighbor-cpu-throttle.json --out "$out"
+)
 
 [ -f "$out/noisy-neighbor-cpu-throttle.json" ] || {
   echo "expected noisy-neighbor result missing" >&2

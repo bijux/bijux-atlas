@@ -22,7 +22,11 @@ run_stack() {
     fi
     sleep 1
   done
-  ATLAS_BASE_URL="http://127.0.0.1:${port}" RATE=2000 DURATION=90s "$ROOT/ops/load/scripts/run_suite.sh" mixed.json "$out_dir"
+  (
+    cd "$ROOT"
+    ATLAS_BASE_URL="http://127.0.0.1:${port}" RATE=2000 DURATION=90s \
+      ./bin/atlasctl ops load --report text run --suite mixed.json --out "$out_dir"
+  )
   docker compose -f "$compose_file" down --remove-orphans || true
 }
 

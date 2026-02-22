@@ -9,7 +9,7 @@ install_chart
 wait_ready
 with_port_forward 18080
 
-"$ROOT/ops/load/scripts/run_suite.sh" pod-churn.json "$ROOT/artifacts/perf/results" >/dev/null &
+(cd "$ROOT" && ./bin/atlasctl ops load --report text run --suite pod-churn.json --out artifacts/perf/results) >/dev/null &
 load_pid=$!
 "$ROOT/ops/k8s/tests/checks/rollout/pod-churn.sh"
 wait "$load_pid"

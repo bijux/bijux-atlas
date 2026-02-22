@@ -177,7 +177,7 @@ ops/load/scripts/load_under_rollback.sh
 ops/load/scripts/load_under_rollout.sh
 ops/load/scripts/run_e2e_perf.sh
 ops/load/scripts/run_nightly_perf.sh
-ops/load/scripts/run_suite.sh
+atlasctl ops load run
 ops/load/scripts/run_suites_from_manifest.py
 ops/load/scripts/update_baseline.sh
 ops/load/scripts/validate_suite_manifest.py

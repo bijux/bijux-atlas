@@ -25,7 +25,7 @@ makefiles/ops.mk|ops/load/scripts/load_under_rollout.sh
 makefiles/ops.mk|ops/load/scripts/prepare_perf_store.sh
 makefiles/ops.mk|ops/load/scripts/run_e2e_perf.sh
 makefiles/ops.mk|ops/load/scripts/run_nightly_perf.sh
-makefiles/ops.mk|ops/load/scripts/run_suite.sh
+makefiles/ops.mk|atlasctl ops load run
 makefiles/ops.mk|ops/load/scripts/update_baseline.sh
 makefiles/ops.mk|ops/load/scripts/warm_start_benchmark.sh
 makefiles/ops.mk|ops/obs/scripts/alert-firing-proof.sh
