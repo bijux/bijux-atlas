@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from .native import (
+    check_command_scripts_registry,
     check_docs_no_ops_generated_run_paths,
     check_duplicate_script_names,
     check_forbidden_top_dirs,
@@ -206,6 +207,14 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.duplicate_script_names", "repo", "forbid duplicate script stem names", 1200, check_duplicate_script_names, fix_hint="Rename colliding script names."),
     CheckDef("repo.script_help_coverage", "repo", "validate script help contract coverage", 1500, check_script_help, fix_hint="Add --help contract output to required scripts."),
     CheckDef("repo.script_ownership_coverage", "repo", "validate script ownership coverage", 1500, check_script_ownership, fix_hint="Update ownership metadata for uncovered scripts."),
+    CheckDef(
+        "repo.command_scripts_registry",
+        "repo",
+        "enforce command-invoked shell scripts are registered with owner and valid naming",
+        1000,
+        check_command_scripts_registry,
+        fix_hint="Register every command-invoked .sh in configs/scripts/registry.json with valid owner and naming.",
+    ),
     CheckDef("repo.no_scripts_dir", "repo", "forbid legacy root scripts dir", 250, check_scripts_dir_absent, fix_hint="Migrate scripts into atlasctl package commands."),
     CheckDef("repo.legacy_package_absent", "repo", "require atlasctl legacy package to be absent", 250, check_legacy_package_absent, fix_hint="Delete packages/atlasctl/src/atlasctl/legacy and migrate importers."),
     CheckDef("repo.module_size", "repo", "enforce module size budget", 400, check_module_size, fix_hint="Split oversized modules into focused submodules."),

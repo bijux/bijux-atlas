@@ -2221,6 +2221,32 @@
     },
     {
       "area": "command",
+      "callable": "check_command_scripts_registry",
+      "category": "hygiene",
+      "description": "enforce command-invoked shell scripts are registered with owner and valid naming",
+      "domain": "repo",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Register every command-invoked .sh in configs/scripts/registry.json with valid owner and naming.",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_command_scripts_registry",
+      "legacy_id": "repo.command_scripts_registry",
+      "module": "atlasctl.checks.repo.native",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "command",
       "callable": "check_command_test_coverage",
       "category": "hygiene",
       "description": "ensure each command has explicit test coverage marker",
