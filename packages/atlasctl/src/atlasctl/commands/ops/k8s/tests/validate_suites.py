@@ -5,7 +5,15 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for parent in cur.parents:
+        if all((parent / marker).exists() for marker in ("makefiles", "packages", "configs", "ops")):
+            return parent
+    raise RuntimeError("unable to resolve repo root")
+
+
+ROOT = _repo_root()
 TESTS_DIR = ROOT / "ops/k8s/tests"
 MANIFEST_PATH = TESTS_DIR / "manifest.json"
 SUITES_PATH = TESTS_DIR / "suites.json"

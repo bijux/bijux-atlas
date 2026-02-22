@@ -60,9 +60,9 @@ fi
 harness_args+=("${parsed_groups[@]}" "$@")
 
 status=0
-"$DIR/harness.py" "${harness_args[@]}" || status=$?
-python3 "$DIR/validate_report.py" --report "$JSON_OUT"
-python3 "$DIR/render_summary.py" --json "$JSON_OUT" --out "$SUMMARY_OUT"
-python3 "$DIR/compute_graceful_degradation_score.py" --json "$JSON_OUT" --out "$DEGRADATION_SCORE_OUT"
-python3 "$DIR/build_conformance_report.py" --json "$JSON_OUT" --out "$CONFORMANCE_OUT"
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/harness.py" "${harness_args[@]}" || status=$?
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/validate_report.py" --report "$JSON_OUT"
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/render_summary.py" --json "$JSON_OUT" --out "$SUMMARY_OUT"
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/compute_graceful_degradation_score.py" --json "$JSON_OUT" --out "$DEGRADATION_SCORE_OUT"
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/build_conformance_report.py" --json "$JSON_OUT" --out "$CONFORMANCE_OUT"
 exit "$status"
