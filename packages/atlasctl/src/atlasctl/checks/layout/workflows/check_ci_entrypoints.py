@@ -66,9 +66,11 @@ def main() -> int:
             continue
         if re.search(r"\./bin/atlasctl\s+suite\s+run\s+[A-Za-z0-9_.-]+\b", text):
             continue
+        if re.search(r"\./bin/atlasctl\s+ci\s+nightly\b", text):
+            continue
         runs = make_runs(p)
         if not any(cmd.strip().startswith("ci-nightly") or cmd.strip().startswith("all-and-slow") for cmd in runs):
-            errs.append(f"{p.name} must run `make ci-nightly`/`make all-and-slow` or `./bin/atlasctl suite run <name>`")
+            errs.append(f"{p.name} must run `make ci-nightly`/`make all-and-slow` or `./bin/atlasctl suite run <name>`/`./bin/atlasctl ci nightly`")
 
     dev_mk = DEV_MK.read_text(encoding="utf-8")
     ci_mk = CI_MK.read_text(encoding="utf-8")

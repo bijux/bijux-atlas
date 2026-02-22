@@ -3342,6 +3342,34 @@
     },
     {
       "area": "bypass",
+      "callable": "check_policies_bypass_hard_gate",
+      "category": "hygiene",
+      "description": "fail when bypass hard gate is enabled and any bypass entries exist",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Remove all bypass entries or disable hard gate until ready to enforce zero-bypass milestone.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_hard_gate",
+      "legacy_id": "policies.bypass_hard_gate",
+      "module": "atlasctl.checks.domains.policies.make",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
       "callable": "check_policies_bypass_ids_unique",
       "category": "hygiene",
       "description": "require unique bypass IDs across policy files",
