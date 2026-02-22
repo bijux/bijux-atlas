@@ -1,33 +1,15 @@
 from __future__ import annotations
 
-import json
-from dataclasses import dataclass
-from datetime import date
 from pathlib import Path
 from typing import Any
 
-try:
-    import tomllib  # py311+
-except ModuleNotFoundError:  # pragma: no cover
-    import tomli as tomllib  # type: ignore
-
+from ..culprits import _rule_for_dir, load_budgets
 
 _SCOPE_ROOTS = (
     "packages/atlasctl/src/atlasctl",
     "packages/atlasctl/tests",
 )
-_DEFAULT_MAX_DIR_ENTRIES = 10
-_DEFAULT_MAX_PY_FILES = 10
-_EXCEPTIONS_PATH = Path("configs/policy/BUDGET_EXCEPTIONS.yml")
 _SPLIT_DOC = "packages/atlasctl/docs/architecture/how-to-split-a-module.md"
-
-
-@dataclass(frozen=True)
-class BudgetException:
-    path: str
-    owner: str
-    reason: str
-    expires_on: str
 
 
 def _iter_scoped_dirs(repo_root: Path) -> list[Path]:
@@ -41,69 +23,6 @@ def _iter_scoped_dirs(repo_root: Path) -> list[Path]:
             if path.is_dir() and path.name != "__pycache__":
                 dirs.append(path)
     return sorted({p for p in dirs})
-
-
-def _load_exceptions(repo_root: Path) -> tuple[int, list[BudgetException], list[str]]:
-    path = repo_root / _EXCEPTIONS_PATH
-    if not path.exists():
-        return 3, [], [f"missing exceptions file: {_EXCEPTIONS_PATH.as_posix()}"]
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        return 3, [], [f"invalid exceptions file (must be JSON-compatible YAML): {exc}"]
-    max_ex = int(payload.get("max_exceptions", 3))
-    rows: list[BudgetException] = []
-    errors: list[str] = []
-    today = date.today()
-    for idx, item in enumerate(payload.get("exceptions", []), start=1):
-        if not isinstance(item, dict):
-            errors.append(f"exceptions[{idx}] must be an object")
-            continue
-        row = BudgetException(
-            path=str(item.get("path", "")).strip(),
-            owner=str(item.get("owner", "")).strip(),
-            reason=str(item.get("reason", "")).strip(),
-            expires_on=str(item.get("expires_on", "")).strip(),
-        )
-        if not row.path:
-            errors.append(f"exceptions[{idx}] missing path")
-            continue
-        if not row.owner:
-            errors.append(f"{row.path}: exception missing owner")
-        if not row.reason:
-            errors.append(f"{row.path}: exception missing reason")
-        try:
-            exp = date.fromisoformat(row.expires_on)
-            if exp < today:
-                errors.append(f"{row.path}: exception expired on {row.expires_on}")
-        except ValueError:
-            errors.append(f"{row.path}: invalid expires_on `{row.expires_on}`")
-        rows.append(row)
-    if len(rows) > max_ex:
-        errors.append(f"exception count exceeded: {len(rows)} > {max_ex}")
-    return max_ex, rows, errors
-
-
-def _budget_profile_errors(repo_root: Path) -> list[str]:
-    pyproject = repo_root / "packages/atlasctl/pyproject.toml"
-    if not pyproject.exists():
-        return ["missing pyproject for budget profile validation"]
-    data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
-    rules = data.get("tool", {}).get("atlasctl", {}).get("budgets", {}).get("rules", [])
-    globs = [str(row.get("path_glob", "")).strip() for row in rules if isinstance(row, dict)]
-    src_root = repo_root / "packages/atlasctl/src/atlasctl"
-    if not src_root.exists():
-        return []
-    errors: list[str] = []
-    for domain_dir in sorted(path for path in src_root.iterdir() if path.is_dir() and path.name != "__pycache__"):
-        rel = domain_dir.relative_to(repo_root).as_posix()
-        domain_glob = f"{rel}*"
-        covered = domain_glob in globs or "packages/atlasctl/src/atlasctl/*" in globs
-        if not covered:
-            errors.append(f"top-level domain missing budget profile rule: {rel}")
-    if "packages/atlasctl/tests/*" not in globs and "packages/atlasctl/tests/**" not in globs:
-        errors.append("tests budget profile missing: add rule for packages/atlasctl/tests/*")
-    return errors
 
 
 def _entry_count(directory: Path) -> int:
@@ -129,31 +48,51 @@ def _status_for(value: int, budget: int) -> str:
     return "ok"
 
 
+def _budget_profile_errors(repo_root: Path) -> list[str]:
+    defaults, rules, _exceptions = load_budgets(repo_root)
+    globs = [rule.path_glob for rule in rules]
+    src_root = repo_root / "packages/atlasctl/src/atlasctl"
+    if not src_root.exists():
+        return []
+    errors: list[str] = []
+    for domain_dir in sorted(path for path in src_root.iterdir() if path.is_dir() and path.name != "__pycache__"):
+        rel = domain_dir.relative_to(repo_root).as_posix()
+        domain_glob = f"{rel}*"
+        covered = domain_glob in globs or "packages/atlasctl/src/atlasctl/*" in globs
+        if not covered:
+            errors.append(f"top-level domain missing budget profile rule: {rel}")
+    if "packages/atlasctl/tests/*" not in globs and "packages/atlasctl/tests/**" not in globs:
+        errors.append("tests budget profile missing: add rule for packages/atlasctl/tests/*")
+    if int(defaults.get("max_entries_per_dir", 0)) < 1:
+        errors.append("invalid max_entries_per_dir default in [tool.atlasctl.budgets]")
+    return errors
+
+
+def _metric_keys(metric: str) -> tuple[str, str]:
+    if metric == "entries-per-dir":
+        return "max_entries_per_dir", "entries"
+    return "max_py_files_per_dir", "py_files"
+
+
 def _collect_budget_rows(repo_root: Path, metric: str) -> list[dict[str, Any]]:
-    max_ex, exceptions, errors = _load_exceptions(repo_root)
-    errors.extend(_budget_profile_errors(repo_root))
-    exc_map = {exc.path: exc for exc in exceptions}
+    defaults, rules, exceptions = load_budgets(repo_root)
+    errors = _budget_profile_errors(repo_root)
+    budget_key, _value_key = _metric_keys(metric)
     rows: list[dict[str, Any]] = []
     for directory in _iter_scoped_dirs(repo_root):
         rel = directory.relative_to(repo_root).as_posix()
-        budget = _DEFAULT_MAX_DIR_ENTRIES if metric == "entries-per-dir" else _DEFAULT_MAX_PY_FILES
+        _rule_name, enforce, budget = _rule_for_dir(rel, defaults, rules, exceptions)
         count = _entry_count(directory) if metric == "entries-per-dir" else _py_file_count(directory)
-        status = _status_for(count, budget)
-        exc = exc_map.get(rel)
-        enforced = exc is None
-        if not enforced:
-            status = "ok"
+        limit = int(budget[budget_key])
+        status = _status_for(count, limit) if enforce else "ok"
         rows.append(
             {
                 "path": rel,
                 "count": count,
-                "budget": budget,
+                "budget": limit,
                 "status": status,
                 "severity": "warning" if status == "warn" else "error" if status == "fail" else "ok",
-                "enforced": enforced,
-                "exception": None
-                if exc is None
-                else {"owner": exc.owner, "reason": exc.reason, "expires_on": exc.expires_on},
+                "enforced": enforce,
             }
         )
     rows = sorted(rows, key=lambda r: ({"fail": 0, "warn": 1, "ok": 2}[str(r["status"])], -int(r["count"]), str(r["path"])))
@@ -161,13 +100,12 @@ def _collect_budget_rows(repo_root: Path, metric: str) -> list[dict[str, Any]]:
         rows.insert(
             0,
             {
-                "path": "_exceptions_",
-                "count": len(exceptions),
-                "budget": max_ex,
+                "path": "_budget_profile_",
+                "count": len(errors),
+                "budget": 0,
                 "status": "fail",
                 "severity": "error",
                 "enforced": True,
-                "exception": None,
                 "errors": errors,
             },
         )

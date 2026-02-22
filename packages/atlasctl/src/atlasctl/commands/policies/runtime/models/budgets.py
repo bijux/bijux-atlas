@@ -9,6 +9,7 @@ class BudgetRule:
     name: str
     path_glob: str
     enforce: bool
+    max_entries_per_dir: int
     max_py_files_per_dir: int
     max_modules_per_dir: int
     max_shell_files_per_dir: int
