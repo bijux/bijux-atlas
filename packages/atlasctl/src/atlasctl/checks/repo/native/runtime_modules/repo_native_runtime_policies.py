@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import json
-import subprocess
 import re
+import shutil
 from importlib import import_module
 from datetime import date, datetime, timezone
 from pathlib import Path
+
+from atlasctl.core.exec import run
+from atlasctl.core.runtime.paths import write_text_file
 
 def check_script_tool_guards(repo_root: Path) -> tuple[int, list[str]]:
     tool_re = re.compile(r"\b(kubectl|helm|kind|k6)\b")
@@ -100,12 +103,11 @@ def check_script_shims_minimal(repo_root: Path) -> tuple[int, list[str]]:
 
 def check_venv_location_policy(repo_root: Path) -> tuple[int, list[str]]:
     allowed_prefixes = ("artifacts/atlasctl/",)
-    proc = subprocess.run(
+    proc = run(
         ["git", "ls-files", "--others", "--cached", "--exclude-standard"],
         cwd=repo_root,
         text=True,
         capture_output=True,
-        check=False,
     )
     paths = [p.strip() for p in proc.stdout.splitlines() if p.strip()]
     violations: list[str] = []
@@ -142,14 +144,14 @@ def check_python_runtime_artifacts(repo_root: Path, *, fix: bool = False) -> tup
                 continue
             violations.append(f"forbidden pyc outside artifacts: {path.relative_to(repo_root)}")
             paths_to_remove.append(path)
-    tracked = subprocess.run(["git", "ls-files"], cwd=repo_root, check=False, text=True, capture_output=True)
+    tracked = run(["git", "ls-files"], cwd=repo_root, text=True, capture_output=True)
     for rel in tracked.stdout.splitlines():
         if fnmatch(rel, "*.pyc"):
             violations.append(f"tracked pyc file: {rel}")
     if violations and fix:
         for path in sorted(set(paths_to_remove), key=lambda p: len(p.parts), reverse=True):
             if path.is_dir():
-                subprocess.run(["rm", "-rf", str(path)], check=False)
+                shutil.rmtree(path, ignore_errors=True)
             elif path.is_file():
                 path.unlink(missing_ok=True)
         return 0, [f"python runtime artifact policy auto-fixed ({len(paths_to_remove)} paths)"]
@@ -162,10 +164,9 @@ def check_repo_script_boundaries(repo_root: Path) -> tuple[int, list[str]]:
         if _find_python_migration_exception(repo_root, "scripts_dir", rel, "") is None:
             errors.append(f"scripts directory transition is closed; file must move under packages/: {rel}")
 
-    exec_proc = subprocess.run(
+    exec_proc = run(
         ["git", "ls-files", "--stage", "*.py"],
         cwd=repo_root,
-        check=False,
         capture_output=True,
         text=True,
     )
@@ -198,13 +199,13 @@ def check_atlas_scripts_cli_contract(repo_root: Path) -> tuple[int, list[str]]:
             expected_version = stripped.split("=", 1)[1].strip().strip('"').strip("'")
             break
     errs: list[str] = []
-    h1 = subprocess.run([str(cli), "--help"], cwd=repo_root, text=True, capture_output=True, check=False)
-    h2 = subprocess.run([str(cli), "--help"], cwd=repo_root, text=True, capture_output=True, check=False)
+    h1 = run([str(cli), "--help"], cwd=repo_root, text=True, capture_output=True)
+    h2 = run([str(cli), "--help"], cwd=repo_root, text=True, capture_output=True)
     if h1.returncode != 0 or h2.returncode != 0:
         errs.append("atlasctl --help must exit 0")
     if h1.stdout != h2.stdout:
         errs.append("atlasctl --help output is not deterministic")
-    v = subprocess.run([str(cli), "--version"], cwd=repo_root, text=True, capture_output=True, check=False)
+    v = run([str(cli), "--version"], cwd=repo_root, text=True, capture_output=True)
     if v.returncode != 0:
         errs.append("atlasctl --version must exit 0")
     else:
@@ -235,8 +236,7 @@ def generate_scripts_sbom(repo_root: Path, lock_rel: str, out_rel: str) -> tuple
         "packages": packages,
     }
     out = repo_root / out_rel
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_text_file(out, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return 0, [out_rel]
 
 _NATIVE_LINT = import_module("atlasctl.checks.repo.native_lint")

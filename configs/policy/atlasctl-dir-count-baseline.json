@@ -1,14 +1,5 @@
 {
-  "schema_version": 1,
   "critical_dirs": {
-    "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks": {
-      "max_modules": 9,
-      "max_py_files": 10
-    },
-    "packages/atlasctl/src/atlasctl/checks/layout/ops/checks": {
-      "max_modules": 9,
-      "max_py_files": 10
-    },
     "packages/atlasctl/src/atlasctl/checks/repo/enforcement": {
       "max_modules": 9,
       "max_py_files": 10
@@ -17,5 +8,6 @@
       "max_modules": 12,
       "max_py_files": 13
     }
-  }
+  },
+  "schema_version": 1
 }

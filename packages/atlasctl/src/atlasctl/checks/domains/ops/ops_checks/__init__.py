@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .impl.check_ops_manifests_schema import run as run_ops_manifests_schema_check
+from .check_ops_manifests_schema import run as run_ops_manifests_schema_check
 from ....repo.native import (
     check_committed_generated_hygiene,
     check_ops_generated_tracked,

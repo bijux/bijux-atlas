@@ -1,54 +1,6 @@
 {
   "allow": [
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_lane_reports.py",
-      "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
-    },
-    {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_target_ownership.py",
-      "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
-    },
-    {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_make_targets_catalog_drift.py",
-      "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
-    },
-    {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_makefile_headers.py",
-      "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
-    },
-    {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks/check_makefile_target_boundaries.py",
-      "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
-    },
-    {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_canonical_entrypoints.py",
-      "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
-    },
-    {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_cross_area_script_refs.py",
-      "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
-    },
-    {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_external_entrypoints.py",
-      "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
-    },
-    {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_layout_contract.py",
-      "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
-    },
-    {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_script_names.py",
-      "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
-    },
-    {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_single_owner_contracts.py",
-      "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
-    },
-    {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_single_validators.py",
-      "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
-    },
-    {
       "path": "packages/atlasctl/src/atlasctl/checks/repo/domains/effects.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
@@ -96,5 +48,6 @@
       "path": "packages/atlasctl/src/atlasctl/reporting/scorecard.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     }
-  ]
+  ],
+  "allowlist": []
 }

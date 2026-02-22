@@ -126,16 +126,16 @@ def check_make_ci_entrypoints_contract(repo_root: Path) -> tuple[int, list[str]]
 def check_make_public_targets_documented(repo_root: Path) -> tuple[int, list[str]]:
     return _run_script(
         repo_root,
-        "packages/atlasctl/src/atlasctl/checks/layout/domains/public_surface/checks/check_public_targets_documented.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/domains/public_surface/check_public_targets_documented.py",
     )
 
 
 def check_make_target_ownership_complete(repo_root: Path) -> tuple[int, list[str]]:
-    return _run_script(repo_root, "packages/atlasctl/src/atlasctl/checks/domains/policies/make/impl/check_make_target_ownership.py")
+    return _run_script(repo_root, "packages/atlasctl/src/atlasctl/checks/domains/policies/make/check_make_target_ownership.py")
 
 
 def check_make_target_boundaries_enforced(repo_root: Path) -> tuple[int, list[str]]:
-    return _run_script(repo_root, "packages/atlasctl/src/atlasctl/checks/domains/policies/make/impl/check_makefile_target_boundaries.py")
+    return _run_script(repo_root, "packages/atlasctl/src/atlasctl/checks/domains/policies/make/check_makefile_target_boundaries.py")
 
 
 def check_make_index_drift_contract(repo_root: Path) -> tuple[int, list[str]]:

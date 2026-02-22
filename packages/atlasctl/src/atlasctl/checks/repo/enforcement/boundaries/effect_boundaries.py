@@ -8,8 +8,9 @@ _SRC_ROOT = Path("packages/atlasctl/src/atlasctl")
 _EXCEPTIONS_PATH = Path("configs/policy/effect-boundary-exceptions.json")
 _CORE_EXEC = "packages/atlasctl/src/atlasctl/core/exec.py"
 _CORE_FS = "packages/atlasctl/src/atlasctl/core/fs.py"
-_CORE_ENV = "packages/atlasctl/src/atlasctl/core.runtime.env.py"
+_CORE_ENV = "packages/atlasctl/src/atlasctl/core/runtime/env.py"
 _CORE_NETWORK = "packages/atlasctl/src/atlasctl/core/network.py"
+_CORE_PATHS = "packages/atlasctl/src/atlasctl/core/runtime/paths.py"
 _RULES = (
     "subprocess_import",
     "subprocess_call",
@@ -122,7 +123,7 @@ def _scan_effect_boundary_violations(repo_root: Path) -> tuple[dict[str, list[st
         for rule in sorted(violations):
             if rule.startswith("subprocess") and _is_core_path(rel, _CORE_EXEC):
                 continue
-            if rule in {"path_write_call", "open_write_call"} and _is_core_path(rel, _CORE_FS):
+            if rule in {"path_write_call", "open_write_call"} and (_is_core_path(rel, _CORE_FS) or _is_core_path(rel, _CORE_PATHS)):
                 continue
             if rule == "os_environ_access" and _is_core_path(rel, _CORE_ENV):
                 continue
