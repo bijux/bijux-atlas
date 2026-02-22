@@ -865,6 +865,27 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_docker_tag_contract_no_latest"
+domain = "docker"
+area = "tag"
+gate = "docker"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1200
+module = "atlasctl.checks.repo.native.modules.repo_checks_scripts_and_docker"
+callable = "check_no_latest_tags"
+description = "docker tag contract forbids latest tags"
+severity = "error"
+category = "hygiene"
+fix_hint = "Pin image tags to immutable versions."
+legacy_id = "docker.tag_contract_no_latest"
+groups = ["docker", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_docs_check_id_drift"
 domain = "docs"
 area = "check"
@@ -2167,6 +2188,48 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_ops_chart_version_contract"
+domain = "ops"
+area = "chart"
+gate = "ops"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.domains.ops.ops_checks"
+callable = "check_ops_chart_version_contract"
+description = "enforce chart/app version contract for bijux-atlas chart"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep Chart.yaml version and appVersion present, semver, and aligned."
+legacy_id = "ops.chart_version_contract"
+groups = ["fast", "kube", "ops", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_ops_clean_allowed_roots_only"
+domain = "ops"
+area = "clean"
+gate = "ops"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.domains.ops.ops_checks"
+callable = "check_ops_clean_allowed_roots_only"
+description = "ensure ops clean only targets allowed generated roots"
+severity = "error"
+category = "hygiene"
+fix_hint = "Restrict ops clean to ops/_generated child deletion only."
+legacy_id = "ops.clean_allowed_roots_only"
+groups = ["fast", "kube", "ops", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_ops_committed_generated_hygiene"
 domain = "ops"
 area = "committed"
@@ -2349,6 +2412,27 @@ severity = "error"
 category = "hygiene"
 fix_hint = "Remove timestamped tracked paths."
 legacy_id = "ops.no_tracked_timestamps"
+groups = ["fast", "kube", "ops", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_ops_obs_drift_goldens"
+domain = "ops"
+area = "obs"
+gate = "ops"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.domains.ops.ops_checks"
+callable = "check_ops_obs_drift_goldens"
+description = "fail on observability golden drift (generated vs golden)"
+severity = "error"
+category = "hygiene"
+fix_hint = "Regenerate/fix observability goldens and contracts."
+legacy_id = "ops.obs_drift_goldens"
 groups = ["fast", "kube", "ops", "required"]
 effects = []
 external_tools = []
