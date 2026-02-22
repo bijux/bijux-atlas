@@ -227,6 +227,25 @@ def check_make_product_mk_wrapper_contract(repo_root: Path) -> tuple[int, list[s
     return (0 if not errors else 1), errors
 
 
+def check_make_no_atlasctl_run_ops_run(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for rel, lineno, body in _iter_make_recipe_lines(repo_root):
+        if "atlasctl run ./ops/run/" in body:
+            errors.append(f"{rel}:{lineno}: `atlasctl run ./ops/run/...` is forbidden in make recipes")
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_make_product_migration_complete_no_ops_run(repo_root: Path) -> tuple[int, list[str]]:
+    path = repo_root / "makefiles/product.mk"
+    if not path.exists():
+        return 1, ["makefiles/product.mk: missing"]
+    errors: list[str] = []
+    for lineno, raw in enumerate(path.read_text(encoding="utf-8", errors="ignore").splitlines(), start=1):
+        if raw.startswith("\t") and "ops/run/" in raw:
+            errors.append(f"makefiles/product.mk:{lineno}: product migration incomplete; remove ops/run reference")
+    return (0 if not errors else 1), errors
+
+
 def check_make_no_direct_script_exec_drift(repo_root: Path) -> tuple[int, list[str]]:
     # Explicit drift check alias for direct script invocation prohibition.
     return check_make_no_direct_scripts_only_atlasctl(repo_root)
