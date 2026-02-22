@@ -31,6 +31,9 @@ def is_comment(line: str) -> bool:
 
 def main() -> int:
     errors: list[str] = []
+    if not OPS_RUN.exists():
+        print("ops run shell policy check passed (ops/run retired)")
+        return 0
     for path in sorted(OPS_RUN.glob("*.sh")):
         rel = path.relative_to(ROOT).as_posix()
         text = path.read_text(encoding="utf-8")

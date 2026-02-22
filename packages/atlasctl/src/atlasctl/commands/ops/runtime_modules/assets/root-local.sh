@@ -26,7 +26,7 @@ elif [ "${1:-}" = "--summary" ]; then
   if [ -z "$summary_run_id" ] && [ -f "artifacts/evidence/latest-run-id.txt" ]; then
     summary_run_id="$(cat artifacts/evidence/latest-run-id.txt)"
   fi
-  [ -n "$summary_run_id" ] || { echo "usage: ops/run/root-local.sh --summary <run_id>" >&2; exit 2; }
+  [ -n "$summary_run_id" ] || { echo "usage: atlasctl ops root-local --summary <run_id>" >&2; exit 2; }
 fi
 
 lanes=(
