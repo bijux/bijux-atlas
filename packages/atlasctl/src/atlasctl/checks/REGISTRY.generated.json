@@ -1130,6 +1130,33 @@
       ]
     },
     {
+      "area": "tag",
+      "callable": "check_no_latest_tags",
+      "category": "hygiene",
+      "description": "docker tag contract forbids latest tags",
+      "domain": "docker",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Pin image tags to immutable versions.",
+      "gate": "docker",
+      "groups": [
+        "docker",
+        "fast",
+        "required"
+      ],
+      "id": "checks_docker_tag_contract_no_latest",
+      "legacy_id": "docker.tag_contract_no_latest",
+      "module": "atlasctl.checks.repo.native.modules.repo_checks_scripts_and_docker",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1200,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
       "area": "check",
       "callable": "check_docs_check_id_drift",
       "category": "hygiene",
@@ -2804,6 +2831,62 @@
       ]
     },
     {
+      "area": "chart",
+      "callable": "check_ops_chart_version_contract",
+      "category": "hygiene",
+      "description": "enforce chart/app version contract for bijux-atlas chart",
+      "domain": "ops",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Keep Chart.yaml version and appVersion present, semver, and aligned.",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_chart_version_contract",
+      "legacy_id": "ops.chart_version_contract",
+      "module": "atlasctl.checks.domains.ops.ops_checks",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "clean",
+      "callable": "check_ops_clean_allowed_roots_only",
+      "category": "hygiene",
+      "description": "ensure ops clean only targets allowed generated roots",
+      "domain": "ops",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Restrict ops clean to ops/_generated child deletion only.",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_clean_allowed_roots_only",
+      "legacy_id": "ops.clean_allowed_roots_only",
+      "module": "atlasctl.checks.domains.ops.ops_checks",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
       "area": "committed",
       "callable": "check_committed_generated_hygiene",
       "category": "hygiene",
@@ -3047,6 +3130,34 @@
       "id": "checks_ops_no_tracked_timestamps",
       "legacy_id": "ops.no_tracked_timestamps",
       "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "obs",
+      "callable": "check_ops_obs_drift_goldens",
+      "category": "hygiene",
+      "description": "fail on observability golden drift (generated vs golden)",
+      "domain": "ops",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Regenerate/fix observability goldens and contracts.",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_obs_drift_goldens",
+      "legacy_id": "ops.obs_drift_goldens",
+      "module": "atlasctl.checks.domains.ops.ops_checks",
       "owner": "platform",
       "severity": "error",
       "speed": "fast",

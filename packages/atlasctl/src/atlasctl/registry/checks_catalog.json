@@ -1683,6 +1683,46 @@
       "title": "validate docker policy contracts"
     },
     {
+      "area": "tag",
+      "default_enabled": true,
+      "description": "docker tag contract forbids latest tags",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docker_tag_contract_no_latest",
+      "domain": "docker",
+      "gate": "docker",
+      "groups": [
+        "docker",
+        "fast",
+        "required"
+      ],
+      "id": "checks_docker_tag_contract_no_latest",
+      "impl_ref": {
+        "callable": "check_no_latest_tags",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Pin image tags to immutable versions.",
+        "legacy_id": "docker.tag_contract_no_latest",
+        "module": "atlasctl.checks.repo.native.modules.repo_checks_scripts_and_docker",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1200,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "docker",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "docker tag contract forbids latest tags"
+    },
+    {
       "area": "check",
       "default_enabled": true,
       "description": "forbid docs references to unknown check ids",
@@ -4163,6 +4203,90 @@
       "title": "enforce per-makefile wrapper target count budgets"
     },
     {
+      "area": "chart",
+      "default_enabled": true,
+      "description": "enforce chart/app version contract for bijux-atlas chart",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_chart_version_contract",
+      "domain": "ops",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_chart_version_contract",
+      "impl_ref": {
+        "callable": "check_ops_chart_version_contract",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Keep Chart.yaml version and appVersion present, semver, and aligned.",
+        "legacy_id": "ops.chart_version_contract",
+        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "enforce chart/app version contract for bijux-atlas chart"
+    },
+    {
+      "area": "clean",
+      "default_enabled": true,
+      "description": "ensure ops clean only targets allowed generated roots",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_clean_allowed_roots_only",
+      "domain": "ops",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_clean_allowed_roots_only",
+      "impl_ref": {
+        "callable": "check_ops_clean_allowed_roots_only",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Restrict ops clean to ops/_generated child deletion only.",
+        "legacy_id": "ops.clean_allowed_roots_only",
+        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "ensure ops clean only targets allowed generated roots"
+    },
+    {
       "area": "committed",
       "default_enabled": true,
       "description": "validate deterministic committed generated assets",
@@ -4539,6 +4663,48 @@
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid tracked timestamped paths"
+    },
+    {
+      "area": "obs",
+      "default_enabled": true,
+      "description": "fail on observability golden drift (generated vs golden)",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_obs_drift_goldens",
+      "domain": "ops",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_obs_drift_goldens",
+      "impl_ref": {
+        "callable": "check_ops_obs_drift_goldens",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Regenerate/fix observability goldens and contracts.",
+        "legacy_id": "ops.obs_drift_goldens",
+        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "fail on observability golden drift (generated vs golden)"
     },
     {
       "area": "pins",
