@@ -1,6 +1,16 @@
-#!/usr/bin/env bash
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import subprocess
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[7]
+
+
+def main() -> int:
+    script = r"""
 set -euo pipefail
-. "$(dirname "$0")/common.sh"
+. ops/obs/tests/common.sh
 setup_test_traps
 need kubectl
 
@@ -20,3 +30,9 @@ pod=$(kubectl -n atlas-e2e get pod -l app=otel-collector -o jsonpath='{.items[0]
 kubectl -n atlas-e2e logs "$pod" --tail=500 | grep -E "dataset|query|serialize" >/dev/null
 
 echo "otel span signal observed"
+"""
+    return subprocess.run(["bash", "-lc", script], cwd=ROOT).returncode
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
