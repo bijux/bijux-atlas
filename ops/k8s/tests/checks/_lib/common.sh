@@ -2,4 +2,4 @@
 set -euo pipefail
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 # shellcheck source=/dev/null
-. "$REPO_ROOT/ops/_lib/k8s/k8s-test-common.sh"
+. "$REPO_ROOT/packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/assets/k8s_test_common.sh"

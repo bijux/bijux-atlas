@@ -18,7 +18,7 @@ def run_k8s_test_shell(body: str, self_path: Path) -> int:
     script = textwrap.dedent(
         f"""\
         set -euo pipefail
-        source "{root}/ops/_lib/k8s/k8s-test-common.sh"
+        source "{root}/packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/assets/k8s_test_common.sh"
         {body}
         """
     )
