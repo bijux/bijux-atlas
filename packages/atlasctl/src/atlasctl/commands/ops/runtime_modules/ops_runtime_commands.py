@@ -921,8 +921,8 @@ fi
 if ! (
   make -s ops-env-validate
   make -s ops-kind-up
-  ./ops/stack/kind/context_guard.sh
-  ./ops/stack/kind/namespace_guard.sh
+  ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/context_guard.py
+  ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/namespace_guard.py
   make -s ops-kind-version-check
   make -s ops-kubectl-version-check
   make -s ops-helm-version-check
@@ -973,8 +973,8 @@ atlas_ns="${ATLAS_E2E_NAMESPACE:?ATLAS_E2E_NAMESPACE is required by configs/ops/
 mkdir -p "$(dirname "$log_file")"
 if ! (
   make -s ops-env-validate
-  ./ops/stack/kind/context_guard.sh
-  ./ops/stack/kind/namespace_guard.sh
+  ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/context_guard.py
+  ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/namespace_guard.py
   ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/stack/uninstall.py
 ) >"$log_file" 2>&1; then
   status="fail"

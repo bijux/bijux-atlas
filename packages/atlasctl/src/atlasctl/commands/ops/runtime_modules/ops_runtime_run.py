@@ -476,15 +476,15 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                 print(written)
             return 0 if payload["status"] == "pass" else 1
         if ns.ops_cmd == "kind" and sub == "up":
-            return impl._run_simple_cmd(ctx, shell_script_command("ops/stack/kind/up.sh"), ns.report)
+            return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/commands/ops/stack/kind/up.py"], ns.report)
         if ns.ops_cmd == "kind" and sub == "down":
-            return impl._run_simple_cmd(ctx, shell_script_command("ops/stack/kind/down.sh"), ns.report)
+            return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/commands/ops/stack/kind/down.py"], ns.report)
         if ns.ops_cmd == "kind" and sub == "reset":
-            return impl._run_simple_cmd(ctx, shell_script_command("ops/stack/kind/reset.sh"), ns.report)
+            return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/commands/ops/stack/kind/reset.py"], ns.report)
         if ns.ops_cmd == "kind" and sub == "validate":
             steps = [
-                ["bash", "ops/stack/kind/context_guard.sh"],
-                ["bash", "ops/stack/kind/namespace_guard.sh"],
+                ["python3", "packages/atlasctl/src/atlasctl/commands/ops/stack/kind/context_guard.py"],
+                ["python3", "packages/atlasctl/src/atlasctl/commands/ops/stack/kind/namespace_guard.py"],
                 ["python3", "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/rollout/test_cluster_sanity.py"],
                 ["python3", "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/rollout/test_kind_image_resolution.py"],
                 ["python3", "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/rollout/test_kind_version_drift.py"],
