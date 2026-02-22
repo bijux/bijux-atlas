@@ -276,10 +276,10 @@ def check_ops_examples_immutable(repo_root: Path) -> tuple[int, list[str]]:
 
 def check_invocation_parity(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
-    py_mk = repo_root / "makefiles/python.mk"
-    text = py_mk.read_text(encoding="utf-8")
+    atlasctl_mk = repo_root / "makefiles/atlasctl.mk"
+    text = atlasctl_mk.read_text(encoding="utf-8")
     if "./bin/atlasctl" not in text:
-        errors.append("makefiles/python.mk must validate atlasctl through ./bin/atlasctl")
+        errors.append("makefiles/atlasctl.mk must validate atlasctl through ./bin/atlasctl")
     docs_text = (repo_root / "docs/development/tooling/atlasctl.md").read_text(
         encoding="utf-8", errors="ignore"
     )

@@ -1,6 +1,9 @@
 # Scope: atlasctl policy/check wrappers.
 # These targets run atlasctl's own check domains directly.
 SHELL := /bin/sh
+PYTHONPATH ?= packages/atlasctl/src
+ATLASCTL_ARTIFACT_ROOT ?= artifacts/atlasctl
+ATLASCTL ?= ./bin/atlasctl
 
 atlasctl-check: ## Run all atlasctl checks across all groups
 	@./bin/atlasctl check run --group all
@@ -42,4 +45,11 @@ deps-sync: ## Install dependencies from lock into active interpreter
 registry-list: ## Print atlasctl registry inventory
 	@./bin/atlasctl registry checks
 
-.PHONY: atlasctl-check atlasctl-check-repo atlasctl-check-make atlasctl-check-contracts atlasctl-check-docs atlasctl-check-ops atlasctl-check-python atlasctl-check-layout deps-check-venv deps-cold-start deps-lock deps-sync registry-list
+internal/scripts/cli-check:
+	@./bin/atlasctl --version >/dev/null 2>&1 || { \
+		echo "atlasctl CLI is not runnable via ./bin/atlasctl"; \
+		echo "run: make deps-sync or make dev-bootstrap"; \
+		exit 2; \
+	}
+
+.PHONY: atlasctl-check atlasctl-check-repo atlasctl-check-make atlasctl-check-contracts atlasctl-check-docs atlasctl-check-ops atlasctl-check-python atlasctl-check-layout deps-check-venv deps-cold-start deps-lock deps-sync registry-list internal/scripts/cli-check

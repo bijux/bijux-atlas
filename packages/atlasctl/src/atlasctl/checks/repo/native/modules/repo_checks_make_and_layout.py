@@ -309,7 +309,6 @@ def check_make_wrapper_target_budget(repo_root: Path) -> tuple[int, list[str]]:
         "makefiles/atlasctl.mk": 15,
         "makefiles/policies.mk": 1,
         "makefiles/product.mk": 24,
-        "makefiles/python.mk": 1,
         "makefiles/root.mk": 220,
     }
     target_re = re.compile(r"^(?P<target>[A-Za-z0-9_./-]+):(?:\s|$)")
