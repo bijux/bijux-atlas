@@ -56,7 +56,7 @@ for path in [ROOT / "ops/e2e/realdata/run_single_release.sh", ROOT / "ops/e2e/re
     if "/ops/k8s/scripts/deploy_atlas.sh" in txt:
         errors.append(f"{path.relative_to(ROOT)} must use atlasctl ops deploy")
     if "/ops/e2e/runner/publish_dataset.sh" in txt:
-        errors.append(f"{path.relative_to(ROOT)} must use atlasctl-owned datasets publish_by_name.py")
+        errors.append(f"{path.relative_to(ROOT)} must not call legacy e2e publish_dataset.sh directly")
 
 if errors:
     print("canonical entrypoint check failed:", file=sys.stderr)
