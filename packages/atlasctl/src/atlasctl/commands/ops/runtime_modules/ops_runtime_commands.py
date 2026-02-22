@@ -1112,35 +1112,69 @@ fi
 
 
 def _ops_stack_down_native(ctx: RunContext, report_format: str) -> int:
-    script = """
-set -euo pipefail
-. ./ops/_lib/common.sh
-ops_init_run_id
-ops_env_load
-ops_entrypoint_start "ops-stack-down"
-ops_version_guard kind kubectl helm
-start_ts="$(date +%s)"
-status="pass"
-log_file="artifacts/evidence/stack/${RUN_ID}/stack-down.log"
-health_json="artifacts/evidence/stack/${RUN_ID}/health-report-after-down.json"
-snapshot_json="artifacts/evidence/stack/state-snapshot.json"
-atlas_ns="${ATLAS_E2E_NAMESPACE:?ATLAS_E2E_NAMESPACE is required by configs/ops/env.schema.json}"
-mkdir -p "$(dirname "$log_file")"
-if ! (
-  make -s ops-env-validate
-  ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/context_guard.py
-  ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/namespace_guard.py
-  ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/stack/uninstall.py
-) >"$log_file" 2>&1; then
-  status="fail"
-fi
-ATLAS_HEALTH_REPORT_FORMAT=json python3 ./packages/atlasctl/src/atlasctl/commands/ops/stack/health_report.py "$atlas_ns" "$health_json" >/dev/null || true
-duration="$(( $(date +%s) - start_ts ))"
-ops_write_lane_report "stack" "$RUN_ID" "$status" "$duration" "$log_file"
-[ "$status" = "pass" ] && rm -f "$snapshot_json"
-[ "$status" = "pass" ] || exit 1
-"""
-    return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
+    repo = ctx.repo_root
+    run_id = ctx.run_id
+    start = dt.datetime.now(dt.timezone.utc)
+    outputs: list[str] = []
+    log_dir = repo / "artifacts" / "evidence" / "stack" / run_id
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_file = log_dir / "stack-down.log"
+    health_json = log_dir / "health-report-after-down.json"
+    snapshot_json = repo / "artifacts" / "evidence" / "stack" / "state-snapshot.json"
+
+    missing = [tool for tool in ("kind", "kubectl", "helm") if shutil.which(tool) is None]
+    if missing:
+        return _emit_ops_status(report_format, 1, "\n".join(f"missing required tool: {tool}" for tool in missing))
+
+    env_code, env_msg, resolved = _ops_env_validate_native(repo, "configs/ops/env.schema.json")
+    outputs.append(env_msg.strip())
+    if env_code != 0:
+        write_text_file(log_file, "\n".join(outputs).strip() + "\n", encoding="utf-8")
+        return _emit_ops_status(report_format, env_code, "\n".join(outputs).strip())
+    atlas_ns = (os.environ.get("ATLAS_E2E_NAMESPACE") or resolved.get("ATLAS_E2E_NAMESPACE") or "").strip()
+    if not atlas_ns:
+        outputs.append("ATLAS_E2E_NAMESPACE is required by configs/ops/env.schema.json")
+        write_text_file(log_file, "\n".join(outputs).strip() + "\n", encoding="utf-8")
+        return _emit_ops_status(report_format, 1, "\n".join(outputs).strip())
+
+    status = "pass"
+    for cmd in (
+        [*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/context_guard.py"],
+        [*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/namespace_guard.py"],
+        [*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/commands/ops/stack/uninstall.py"],
+    ):
+        result = run_command(cmd, repo, ctx=ctx)
+        if result.combined_output.strip():
+            outputs.append(result.combined_output.rstrip())
+        if result.code != 0:
+            status = "fail"
+            break
+
+    run_command(
+        [
+            "env",
+            "ATLAS_HEALTH_REPORT_FORMAT=json",
+            "python3",
+            "./packages/atlasctl/src/atlasctl/commands/ops/stack/health_report.py",
+            atlas_ns,
+            str(health_json),
+        ],
+        repo,
+        ctx=ctx,
+    )
+    write_text_file(log_file, ("\n".join(outputs).strip() + "\n") if outputs else "", encoding="utf-8")
+    duration_seconds = max(0.0, (dt.datetime.now(dt.timezone.utc) - start).total_seconds())
+    lane_report = {
+        "schema_version": 1,
+        "run_id": run_id,
+        "status": status,
+        "duration_seconds": duration_seconds,
+        "log": log_file.relative_to(repo).as_posix(),
+    }
+    write_text_file(log_dir / "report.json", json.dumps(lane_report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    if status == "pass":
+        snapshot_json.unlink(missing_ok=True)
+    return _emit_ops_status(report_format, 0 if status == "pass" else 1, "\n".join(outputs).strip())
 
 
 def _ops_deploy_native(ctx: RunContext, report_format: str) -> int:
