@@ -6,13 +6,13 @@ bootstrap:
 	@./bin/atlasctl run ./ops/run/product/product_bootstrap.sh
 
 k8s: ## Run canonical k8s verification lane
-	@$(MAKE) -s ops/smoke
+	@./bin/atlasctl k8s render
 
 load: ## Run canonical load verification lane
-	@$(MAKE) -s ops-load-smoke
+	@./bin/atlasctl load smoke
 
 obs: ## Run canonical observability verification lane
-	@$(MAKE) -s ops-obs-verify SUITE=cheap
+	@./bin/atlasctl obs verify
 
 docker-build:
 	@./bin/atlasctl run ./ops/run/product/product_docker_build.sh
@@ -54,7 +54,7 @@ internal/product/doctor: ## Print tool/env/path diagnostics and store doctor rep
 	@RUN_ID="$${RUN_ID:-doctor-$(MAKE_RUN_TS)}" ./bin/atlasctl make doctor
 
 prereqs: ## Check required binaries and versions and store prereqs report
-	@RUN_ID="$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}" ./bin/atlasctl make prereqs --run-id "$${RUN_ID:-prereqs-$(MAKE_RUN_TS)}"
+	@./bin/atlasctl make prereqs
 
 dataset-id-lint: ## Validate DatasetId/DatasetKey contract usage across ops fixtures
 	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/scripts/dataset_id_lint.py
@@ -76,3 +76,5 @@ internal/packages/check:
 	@artifacts/isolate/py/packages-check/.venv/bin/pip --disable-pip-version-check install -e packages/atlasctl >/dev/null
 	@artifacts/isolate/py/packages-check/.venv/bin/python -c "import atlasctl"
 	@./bin/atlasctl check run repo
+
+.PHONY: bootstrap k8s load obs docker-build docker-check docker-smoke docker-scan docker-push docker-release chart-package chart-verify chart-validate docker-contracts rename-lint docs-lint-names prereqs dataset-id-lint

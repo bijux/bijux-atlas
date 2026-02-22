@@ -441,9 +441,6 @@ nightly: ## Deprecated alias for nightly/all
 all-and-slow: ## Full nightly slow suite entrypoint for workflows
 	@./bin/atlasctl ci nightly --json
 
-ops: ## Run canonical ops verification lane
-	@./bin/atlasctl ops check --report text
-
 root-local-summary: ## Print status and artifact paths for RUN_ID
 	@SUMMARY_RUN_ID="$${RUN_ID:-}" MODE=summary ./bin/atlasctl run ./ops/run/root-lanes.sh
 

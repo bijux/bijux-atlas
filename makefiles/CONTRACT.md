@@ -7,14 +7,19 @@ Define stable boundaries between public make surface and internal make implement
 - `configs/ops/public-surface.json` is the SSOT for public make targets.
 - `makefiles/root.mk` is the publication surface for public targets (`.PHONY` includes public targets).
 - `make help` prints only curated public targets from SSOT.
-- Make recipes must call stable `atlasctl` entrypoints only (for CI suite use `atlasctl dev ci run`).
+- Make recipes must call stable `atlasctl` entrypoints only.
 - Make recipes must not call internal suite plumbing directly (forbidden: `atlasctl suite run ci` from makefiles).
 - Makefiles may not contain tool logic (tool install, toolchain orchestration, cleanup, ad-hoc scripts).
-- Wrapper makefiles (`makefiles/dev.mk`) may only delegate to stable `./bin/atlasctl ...` entrypoints.
+- Wrapper makefiles (`makefiles/dev.mk`, `makefiles/docs.mk`, `makefiles/ops.mk`, `makefiles/ci.mk`, `makefiles/policies.mk`) may only delegate to stable `./bin/atlasctl ...` entrypoints.
 - Wrapper make recipes must be single-line delegations; multi-line shell blocks in wrapper recipes are forbidden.
 - Make is wrapper-only: recipe bodies must not implement tool orchestration logic directly.
 - Forbidden in make recipes: module-style atlasctl invocation, raw `cargo`, raw `pytest`, and ad-hoc script execution paths.
 - Required atlasctl entrypoint in recipes: `./bin/atlasctl ...`.
+
+## Target surface policy
+- Public surface: only curated targets exposed through `make help` and documented in `docs/development/makefiles/surface.md`.
+- Internal surface: all non-public/maintenance targets must remain outside help output and must not be required by CI workflows.
+- Wrapper targets must use neutral naming and must not include banned marketing adjectives.
 
 ## Internal target rules
 - Non-root makefiles must not publish public targets.
