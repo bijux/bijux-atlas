@@ -26,7 +26,7 @@ atlasctl-check-python: ## Run atlasctl python checks
 atlasctl-check-layout: ## Validate repository layout/root-shape checks
 	@./bin/atlasctl check layout
 
-# Internal atlasctl dependency/tooling wrappers (migrated from scripts.mk)
+# Internal atlasctl dependency/tooling wrappers.
 deps-check-venv: ## Validate dependency install/import in a clean temporary venv
 	@./bin/atlasctl deps check-venv
 

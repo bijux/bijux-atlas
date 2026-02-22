@@ -19,10 +19,10 @@ from atlasctl.checks.repo.native import (
 
 
 def test_check_duplicate_script_names_detects_dash_underscore_conflict(tmp_path: Path) -> None:
-    scripts = tmp_path / "scripts"
-    scripts.mkdir()
-    (scripts / "a_b.py").write_text("print('x')\n", encoding="utf-8")
-    (scripts / "a-b.sh").write_text("#!/usr/bin/env sh\n", encoding="utf-8")
+    script_dir = tmp_path / "scripts"
+    script_dir.mkdir()
+    (script_dir / "a_b.py").write_text("print('x')\n", encoding="utf-8")
+    (script_dir / "a-b.sh").write_text("#!/usr/bin/env sh\n", encoding="utf-8")
     code, errors = check_duplicate_script_names(tmp_path)
     assert code == 1
     assert errors

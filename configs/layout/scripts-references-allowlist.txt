@@ -133,7 +133,6 @@ makefiles/policies.mk
 makefiles/product.mk
 makefiles/python.mk
 makefiles/root.mk
-makefiles/scripts.mk
 mkdocs.yml
 ops/CONTRACT.md
 ops/INDEX.md
