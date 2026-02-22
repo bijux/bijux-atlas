@@ -231,7 +231,7 @@ def _contracts_snapshot(ctx: RunContext, report_format: str) -> int:
         ),
         ("check-no-hidden-defaults", ["python3", "packages/atlasctl/src/atlasctl/layout_checks/check_no_hidden_defaults.py"]),
         ("check-k8s-layer-contract", ["ops/k8s/tests/checks/obs/test_layer_contract_render.sh"]),
-        ("check-live-layer-contract", ["ops/stack/tests/validate_live_snapshot.sh"]),
+        ("check-live-layer-contract", ["python3", "packages/atlasctl/src/atlasctl/commands/ops/stack/tests/validate_live_snapshot.py"]),
     ]
     out_dir = _artifact_base(ctx, "contracts") / "contracts"
     out_dir.mkdir(parents=True, exist_ok=True)

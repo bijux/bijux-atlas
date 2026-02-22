@@ -180,7 +180,7 @@ packages/atlasctl/src/atlasctl/commands/ops/load/run/run_suites_from_manifest.py
 packages/atlasctl/src/atlasctl/commands/ops/load/baseline/update_baseline_entrypoint.py
 packages/atlasctl/src/atlasctl/commands/ops/load/contracts/validate_suite_manifest.py
 ops/load/suites/suites.json
-ops/load/tests/test_cpu_throttle_noisy_neighbor.sh
+packages/atlasctl/src/atlasctl/commands/ops/load/tests/test_cpu_throttle_noisy_neighbor.py
 ops/obs/contract/endpoint-observability-contract.json
 ops/obs/drills/drills.json
 packages/atlasctl/src/atlasctl/commands/ops/observability/drills/alert_firing_proof.py
