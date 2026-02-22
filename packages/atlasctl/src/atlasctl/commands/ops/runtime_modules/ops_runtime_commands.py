@@ -673,57 +673,67 @@ def _ops_warm_dx(ctx: RunContext, report_format: str) -> int:
 
 
 def _ops_warm_native(ctx: RunContext, report_format: str, mode: str) -> int:
-    script = f"""
-set -euo pipefail
-cd "{ctx.repo_root}"
-. ./ops/_lib/common.sh
-ops_init_run_id
-export RUN_ID="$OPS_RUN_ID"
-export ARTIFACT_DIR="$OPS_RUN_DIR"
-ops_env_load
-ops_entrypoint_start "ops-warm-stage"
-ops_version_guard kind kubectl
-mode="{mode}"
-dataset_profile="${{ATLAS_DATASET_PROFILE:?ATLAS_DATASET_PROFILE is required by configs/ops/env.schema.json}}"
-if [ "${{PROFILE:-kind}}" = "ci" ]; then
-  dataset_profile="ci"
-fi
-case "$dataset_profile" in
-  ci)
-    export ATLAS_ALLOW_PRIVATE_STORE_HOSTS=0
-    export ATLAS_E2E_ENABLE_OTEL="${{ATLAS_E2E_ENABLE_OTEL:-0}}"
-    ;;
-  developer)
-    ./bin/atlasctl ops cache --report text status --plan || true
-    ;;
-  *)
-    echo "invalid ATLAS_DATASET_PROFILE=${{dataset_profile}} (expected ci|developer)" >&2
-    exit 2
-    ;;
-esac
-profile="${{PROFILE:-kind}}"
-guard_profile="$profile"
-case "$guard_profile" in
-  ci|developer) guard_profile="kind" ;;
-esac
-if ! ops_context_guard "$guard_profile"; then
-  if [ "$guard_profile" = "kind" ]; then
-    echo "ops-warm-stage: context missing; bootstrapping stack with reuse" >&2
-    ./bin/atlasctl ops stack --report text up --reuse --profile "$guard_profile"
-  fi
-fi
-case "$mode" in
-  warmup) exec ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/warmup.py ;;
-  datasets) exec ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/warm_datasets.py ;;
-  top) exec ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/warm_top.py ;;
-  shards) exec ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/warm_shards.py ;;
-  *)
-    echo "invalid --mode=${{mode}} (expected warmup|datasets|top|shards)" >&2
-    exit 2
-    ;;
-esac
-"""
-    return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
+    repo = ctx.repo_root
+    outputs: list[str] = []
+
+    # Keep parity with prior shell preflight.
+    for cmd in (["python3", "./packages/atlasctl/src/atlasctl/layout_checks/check_tool_versions.py", "kind", "kubectl"],):
+        result = run_command(cmd, repo, ctx=ctx)
+        if result.combined_output.strip():
+            outputs.append(result.combined_output.rstrip())
+        if result.code != 0:
+            return _emit_ops_status(report_format, result.code, "\n".join(outputs).strip())
+
+    dataset_profile = os.environ.get("ATLAS_DATASET_PROFILE", "")
+    if not dataset_profile:
+        return _emit_ops_status(
+            report_format,
+            2,
+            "ATLAS_DATASET_PROFILE is required by configs/ops/env.schema.json",
+        )
+    profile = os.environ.get("PROFILE", "kind")
+    if profile == "ci":
+        dataset_profile = "ci"
+
+    if dataset_profile == "ci":
+        os.environ.setdefault("ATLAS_ALLOW_PRIVATE_STORE_HOSTS", "0")
+        os.environ.setdefault("ATLAS_E2E_ENABLE_OTEL", os.environ.get("ATLAS_E2E_ENABLE_OTEL", "0"))
+    elif dataset_profile == "developer":
+        result = run_command([*SELF_CLI, "ops", "cache", "--report", "text", "status", "--plan"], repo, ctx=ctx)
+        if result.combined_output.strip():
+            outputs.append(result.combined_output.rstrip())
+    else:
+        return _emit_ops_status(report_format, 2, f"invalid ATLAS_DATASET_PROFILE={dataset_profile} (expected ci|developer)")
+
+    guard_profile = "kind" if profile in {"ci", "developer"} else profile
+    ctx_check = run_command(["kubectl", "config", "current-context"], repo, ctx=ctx)
+    current_ctx = (ctx_check.combined_output or "").strip().splitlines()
+    current_ctx_val = current_ctx[-1].strip() if current_ctx else ""
+    context_ok = bool(current_ctx_val) and (guard_profile != "kind" or ("kind" in current_ctx_val))
+    if not context_ok and guard_profile == "kind":
+        outputs.append("ops-warm-stage: context missing; bootstrapping stack with reuse")
+        result = run_command([*SELF_CLI, "ops", "stack", "--report", "text", "up", "--reuse", "--profile", guard_profile], repo, ctx=ctx)
+        if result.combined_output.strip():
+            outputs.append(result.combined_output.rstrip())
+        if result.code != 0:
+            return _emit_ops_status(report_format, result.code, "\n".join(outputs).strip())
+    elif not context_ok:
+        return _emit_ops_status(report_format, 2, f"invalid kubectl context for profile={guard_profile}")
+
+    mode_to_script = {
+        "warmup": "packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/warmup.py",
+        "datasets": "packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/warm_datasets.py",
+        "top": "packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/warm_top.py",
+        "shards": "packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/warm_shards.py",
+    }
+    target = mode_to_script.get(mode)
+    if not target:
+        return _emit_ops_status(report_format, 2, f"invalid --mode={mode} (expected warmup|datasets|top|shards)")
+
+    result = run_command([*SELF_CLI, "run", f"./{target}"], repo, ctx=ctx)
+    if result.combined_output.strip():
+        outputs.append(result.combined_output.rstrip())
+    return _emit_ops_status(report_format, result.code, "\n".join(outputs).strip())
 
 
 def _ops_obs_verify(ctx: RunContext, report_format: str, suite: str, extra_args: list[str]) -> int:
