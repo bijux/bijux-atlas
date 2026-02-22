@@ -1011,8 +1011,7 @@ exec ./ops/e2e/scripts/deploy_atlas.sh
     return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
 
 
-def _ops_load_run_native(ctx: RunContext, report_format: str, suite: str) -> int:
-    suite_norm = "mixed" if suite == "mixed-80-20" else suite
+def _ops_load_run_native(ctx: RunContext, report_format: str, suite: str, out_dir: str = "artifacts/perf/results") -> int:
     script = f"""
 set -euo pipefail
 . ./ops/_lib/common.sh
@@ -1022,14 +1021,82 @@ ops_entrypoint_start "ops-load-suite"
 PROFILE="${{PROFILE:-kind}}"
 ops_context_guard "$PROFILE"
 ops_version_guard k6
-SUITE="{suite_norm}"
-OUT="${{OUT:-artifacts/perf/results}}"
+INPUT="{suite}"
+OUT="{out_dir}"
 start="$(date +%s)"
 log_dir="artifacts/evidence/load-suite/${{RUN_ID}}"
 mkdir -p "$log_dir"
 log_file="$log_dir/run.log"
 status="pass"
-if ! ./ops/load/scripts/run_suite.sh "${{SUITE}}.json" "$OUT" >"$log_file" 2>&1; then
+if ! (
+  python3 "./packages/atlasctl/src/atlasctl/layout_checks/check_tool_versions.py" k6 >/dev/null
+  K6_VERSION="$(python3 - <<PY
+import json
+from pathlib import Path
+data=json.loads(Path("configs/ops/tool-versions.json").read_text())
+print(str(data.get("k6","v1.0.0")).lstrip("v"))
+PY
+)"
+  BASE_URL="${{ATLAS_BASE_URL:-${{BASE_URL:-http://127.0.0.1:18080}}}}"
+  API_KEY="${{ATLAS_API_KEY:-}}"
+  DATASET_HASH="${{ATLAS_DATASET_HASH:-unknown}}"
+  DATASET_RELEASE="${{ATLAS_DATASET_RELEASE:-unknown}}"
+  IMAGE_DIGEST="${{ATLAS_IMAGE_DIGEST:-unknown}}"
+  GIT_SHA="${{GITHUB_SHA:-$(git rev-parse --short=12 HEAD 2>/dev/null || echo unknown)}}"
+  POLICY_HASH="${{ATLAS_POLICY_HASH:-$(shasum -a 256 configs/policy/policy.json 2>/dev/null | awk '{{print $1}}' || echo unknown)}}"
+  mkdir -p "$OUT"
+  if printf '%s' "$INPUT" | grep -q '\\.json$'; then
+    SCENARIO_PATH="$INPUT"
+    case "$SCENARIO_PATH" in
+      /*) ;;
+      *) SCENARIO_PATH="ops/load/scenarios/$SCENARIO_PATH" ;;
+    esac
+    SUITE="$(python3 - <<PY
+import json
+from pathlib import Path
+p=Path("$SCENARIO_PATH")
+d=json.loads(p.read_text())
+print(d.get("suite",""))
+PY
+)"
+    [ -n "$SUITE" ] || {{ echo "scenario has no suite: $SCENARIO_PATH" >&2; exit 2; }}
+    NAME="$(basename "$SCENARIO_PATH" .json)"
+  else
+    SUITE="$INPUT"
+    NAME="${{SUITE%.js}}"
+    case "$SUITE" in
+      *.js) ;;
+      *) SUITE="${{SUITE}}.js" ;;
+    esac
+  fi
+  python3 - <<PY
+import json
+from pathlib import Path
+manifest=json.loads(Path("ops/load/suites/suites.json").read_text())
+names={{s.get("name","") for s in manifest.get("suites",[]) if isinstance(s,dict)}}
+if "$NAME" not in names:
+    raise SystemExit("adhoc suite forbidden: $NAME is not declared in ops/load/suites/suites.json")
+PY
+  SUMMARY_JSON="$OUT/${{NAME}}.summary.json"
+  if command -v k6 >/dev/null 2>&1; then
+    BASE_URL="$BASE_URL" ATLAS_API_KEY="$API_KEY" k6 run --summary-export "$SUMMARY_JSON" "ops/load/k6/suites/$SUITE"
+  else
+    docker run --rm --network host \
+      -e BASE_URL="$BASE_URL" \
+      -e ATLAS_API_KEY="$API_KEY" \
+      -v "$PWD:/work" -w /work \
+      "grafana/k6:${{K6_VERSION}}" run --summary-export "$SUMMARY_JSON" "ops/load/k6/suites/$SUITE"
+  fi
+  cat > "${{OUT}}/${{NAME}}.meta.json" <<JSON
+{{"suite":"$INPUT","resolved_suite":"$SUITE","git_sha":"$GIT_SHA","image_digest":"$IMAGE_DIGEST","dataset_hash":"$DATASET_HASH","dataset_release":"$DATASET_RELEASE","policy_hash":"$POLICY_HASH","base_url":"$BASE_URL"}}
+JSON
+  RUN_REF="${{RUN_ID:-$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo manual)}}"
+  EVIDENCE_RAW="artifacts/evidence/perf/$RUN_REF/raw"
+  mkdir -p "$EVIDENCE_RAW"
+  cp -f "$SUMMARY_JSON" "$EVIDENCE_RAW/${{NAME}}.summary.json"
+  cp -f "${{OUT}}/${{NAME}}.meta.json" "$EVIDENCE_RAW/${{NAME}}.meta.json"
+  echo "suite complete: $INPUT ($SUITE) -> $SUMMARY_JSON"
+) >"$log_file" 2>&1; then
   status="fail"
 fi
 end="$(date +%s)"

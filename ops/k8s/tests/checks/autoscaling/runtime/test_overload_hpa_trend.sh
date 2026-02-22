@@ -13,7 +13,7 @@ kubectl -n "$NS" get hpa "$SERVICE_NAME" >/dev/null || {
 }
 
 before_desired="$(kubectl -n "$NS" get hpa "$SERVICE_NAME" -o jsonpath='{.status.desiredReplicas}' || echo 1)"
-"$ROOT/ops/load/scripts/run_suite.sh" spike-overload-proof.json "$ROOT/artifacts/perf/results" >/dev/null
+(cd "$ROOT" && ./bin/atlasctl ops load --report text run --suite spike-overload-proof.json --out artifacts/perf/results) >/dev/null
 
 trended=0
 for _ in $(seq 1 24); do

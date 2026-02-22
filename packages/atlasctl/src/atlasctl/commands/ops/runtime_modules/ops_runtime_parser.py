@@ -153,6 +153,7 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     load_sub = load.add_subparsers(dest="ops_load_cmd", required=True)
     load_run = load_sub.add_parser("run", help="run load suite")
     load_run.add_argument("--suite", default="mixed-80-20")
+    load_run.add_argument("--out", default="artifacts/perf/results")
     load_sub.add_parser("check", help="validate load prerequisites and contracts")
     load_compare = load_sub.add_parser("compare", help="generate stable load comparison artifact")
     load_compare.add_argument("--baseline", required=True)

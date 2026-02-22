@@ -43,7 +43,20 @@ def main():
 
         if suite.get("kind") == "k6":
             scenario = suite["scenario"]
-            run([str(ROOT / "ops/load/scripts/run_suite.sh"), scenario, str(out)])
+            run(
+                [
+                    str(ROOT / "bin/atlasctl"),
+                    "ops",
+                    "load",
+                    "--report",
+                    "text",
+                    "run",
+                    "--suite",
+                    scenario,
+                    "--out",
+                    str(out),
+                ]
+            )
         elif suite.get("kind") == "script":
             script = ROOT / suite["script"]
             env = os.environ.copy()
