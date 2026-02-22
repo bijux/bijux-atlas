@@ -45,7 +45,7 @@
         {
           "id": "k8s-contract-suite",
           "description": "Execute k8s test suite with selected suite id.",
-          "runner": "ops/k8s/tests/suite.sh --suite ${ATLAS_E2E_K8S_SUITE:-smoke}",
+          "runner": "bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/run_suite.py --suite ${ATLAS_E2E_K8S_SUITE:-smoke}",
           "capabilities": ["k8s", "stack"],
           "destructive": false,
           "budget": {
