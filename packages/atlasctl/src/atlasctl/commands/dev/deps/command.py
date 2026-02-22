@@ -126,7 +126,14 @@ def run_deps_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 print(out)
                 return code
             env = {"PYTHONPATH": str(ctx.repo_root / "packages/atlasctl/src")}
-            proc = run([str(py), "-m", "atlasctl", "--help"], cwd=ctx.repo_root, text=True, capture_output=True, env=env)
+            # Validate package importability without forcing full CLI parser construction.
+            proc = run(
+                [str(py), "-c", "import atlasctl; import atlasctl.cli.main"],
+                cwd=ctx.repo_root,
+                text=True,
+                capture_output=True,
+                env=env,
+            )
             if proc.returncode != 0:
                 print((proc.stdout + proc.stderr).strip())
             return proc.returncode
