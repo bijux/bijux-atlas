@@ -15,5 +15,8 @@ include!("runtime/state/mod.rs");
 include!("runtime/effects/mod.rs");
 include!("runtime/orchestrator/mod.rs");
 
+pub use crate::telemetry::generated::metrics_contract::CONTRACT_METRIC_NAMES;
+pub use crate::telemetry::generated::trace_spans_contract::CONTRACT_TRACE_SPAN_NAMES;
+
 #[cfg(test)]
 mod cache_manager_tests;

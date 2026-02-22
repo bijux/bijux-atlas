@@ -15,7 +15,7 @@ pub const ENV_BIJUX_CACHE_DIR: &str = "BIJUX_CACHE_DIR";
 pub const NO_RANDOMNESS_POLICY: &str = "Randomness is forbidden in bijux-atlas-core";
 
 pub use crate::canonical::Hash256;
-pub use crate::error::{ConfigPathScope, ErrorCode, ExitCode, MachineError};
+pub use crate::error::{ConfigPathScope, ErrorCode, ExitCode, MachineError, ERROR_CODES};
 pub use crate::result_ext::{ErrorContext, ResultExt};
 
 #[must_use]
