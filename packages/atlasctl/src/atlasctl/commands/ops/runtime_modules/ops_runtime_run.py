@@ -117,7 +117,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         return impl._run_simple_cmd(ctx, shell_script_command("ops/run/stack-down.sh"), ns.report)
 
     if ns.ops_cmd == "restart":
-        return impl._run_simple_cmd(ctx, shell_script_command("ops/run/k8s-restart.sh"), ns.report)
+        return impl._ops_k8s_restart_native(ctx, ns.report)
 
     if ns.ops_cmd == "deploy":
         sub = str(getattr(ns, "ops_deploy_cmd", "") or "").strip()
@@ -423,7 +423,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         if ns.ops_cmd == "stack" and sub == "down":
             return impl._run_simple_cmd(ctx, shell_script_command("ops/run/stack-down.sh"), ns.report)
         if ns.ops_cmd == "stack" and sub == "restart":
-            return impl._run_simple_cmd(ctx, shell_script_command("ops/run/k8s-restart.sh"), ns.report)
+            return impl._ops_k8s_restart_native(ctx, ns.report)
         if ns.ops_cmd == "stack" and sub == "check":
             for cmd in (
                 [*impl.SELF_CLI, "ops", "stack", "--report", ns.report, "versions-sync"],
