@@ -18,7 +18,7 @@ ops_mk = (ROOT / "makefiles" / "ops.mk").read_text(encoding="utf-8", errors="ign
 
 checks = {
     "ops-stack-validate": "./packages/atlasctl/src/atlasctl/commands/ops/stack/validate.py",
-    "ops-observability-pack-verify": "./ops/obs/scripts/verify_pack.sh",
+    "ops-observability-pack-verify": "./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/observability/verify_pack.py",
     "ops-load-manifest-validate": "./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/load/contracts/validate_suite_manifest.py",
 }
 errors: list[str] = []
@@ -29,7 +29,7 @@ for target, cmd in checks.items():
 blocked = [r"validate_pack\.sh", r"validate_stack\.sh", r"validate_suite.*\.py"]
 allow = {
     "packages/atlasctl/src/atlasctl/commands/ops/stack/validate.py",
-    "ops/obs/scripts/verify_pack.sh",
+    "packages/atlasctl/src/atlasctl/commands/ops/observability/verify_pack.py",
     "packages/atlasctl/src/atlasctl/commands/ops/load/contracts/validate_suite_manifest.py",
 }
 for path in (ROOT / "ops").rglob("*"):

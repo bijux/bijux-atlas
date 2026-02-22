@@ -12,9 +12,9 @@ OPS_OBS_DIR="$ROOT/artifacts/ops/obs"
 mkdir -p "$OUT_DIR" "$OPS_OBS_DIR"
 
 # 1) install pack
-"$ROOT/ops/obs/scripts/install_pack.sh"
-"$ROOT/ops/obs/scripts/verify_pack.sh"
-"$ROOT/ops/obs/scripts/pack_health.sh"
+"$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/install_pack.py"
+"$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/verify_pack.py"
+"$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/pack_health.py"
 
 # 2) short mixed workload
 ATLAS_BASE_URL="${ATLAS_BASE_URL:-http://127.0.0.1:18080}"
@@ -95,7 +95,7 @@ payload={
 (out/'pack-version-stamp.json').write_text(json.dumps(payload,indent=2,sort_keys=True)+'\n',encoding='utf-8')
 print('wrote artifacts/observability/pack-version-stamp.json')
 PY
-"$ROOT/ops/obs/scripts/export_pack_bundle.sh"
+"$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/export_pack_bundle.py"
 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/write_pack_conformance_report.py"
 test -s "$ROOT/artifacts/observability/pack-conformance-report.json"
 

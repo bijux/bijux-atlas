@@ -14,6 +14,6 @@ python3 "$ROOT/ops/obs/scripts/areas/contracts/check_overload_behavior_contract.
 python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_profile_goldens.py"
 python3 "$ROOT/packages/atlasctl/src/atlasctl/obs/contracts/lint_runbooks.py"
 python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/validate_logs_schema.py" --file "$ROOT/ops/obs/contract/logs.example.jsonl"
-"$ROOT/ops/obs/scripts/check_pack_versions.sh"
+"$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/check_pack_versions.py"
 
 echo "observability pack contracts passed"
