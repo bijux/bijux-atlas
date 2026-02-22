@@ -1,7 +1,14 @@
-#!/usr/bin/env bash
-set -euo pipefail
-SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-. "$SCRIPT_DIR/../../_lib/common.sh"
+#!/usr/bin/env python3
+from __future__ import annotations
+
+from pathlib import Path
+
+from ._shell_common import run_k8s_test_shell
+
+
+def main() -> int:
+    return run_k8s_test_shell(
+        """
 setup_test_traps
 need curl
 
@@ -20,9 +27,16 @@ case "$code" in
 esac
 
 if [ "$code" = "429" ] || [ "$code" = "503" ]; then
-  grep -Eq '"code"\s*:\s*"(RateLimited|QueryRejectedByPolicy|NotReady)"' /tmp/atlas-overload-body.json || {
+  grep -Eq '"code"\\s*:\\s*"(RateLimited|QueryRejectedByPolicy|NotReady)"' /tmp/atlas-overload-body.json || {
     echo "failure_mode: overload_missing_policy_code" >&2
     exit 1
   }
 fi
 echo "overload graceful degradation contract passed"
+        """,
+        Path(__file__),
+    )
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,9 +1,14 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/usr/bin/env python3
+from __future__ import annotations
 
-ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../../../.." && pwd)"
-source "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/assets/k8s_test_common.sh"
+from pathlib import Path
 
+from ._shell_common import run_k8s_test_shell
+
+
+def main() -> int:
+    return run_k8s_test_shell(
+        """
 need kubectl
 need helm
 need curl
@@ -35,3 +40,10 @@ if [ "$second" != "429" ]; then
 fi
 
 echo "redis rate-limit check passed"
+        """,
+        Path(__file__),
+    )
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
