@@ -108,6 +108,25 @@ def test_check_run_exclude_group_filter() -> None:
     assert payload["count"] == 0
 
 
+def test_check_run_slow_flag_matches_marker_selection() -> None:
+    by_flag = _run_cli("check", "run", "--slow", "--list-selected", "--json")
+    by_marker = _run_cli("check", "run", "-m", "slow", "--list-selected", "--json")
+    assert by_flag.returncode == 0, by_flag.stderr
+    assert by_marker.returncode == 0, by_marker.stderr
+    left = json.loads(by_flag.stdout)
+    right = json.loads(by_marker.stdout)
+    assert left["checks"] == right["checks"]
+
+
+def test_checks_groups_include_marker_vocabulary() -> None:
+    proc = _run_cli("checks", "groups", "--json")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    group_names = {row["group"] for row in payload["groups"]}
+    for marker in {"slow", "network", "kube", "docker", "fs-write", "git"}:
+        assert marker in group_names
+
+
 def test_checks_gates_json() -> None:
     proc = _run_cli("checks", "gates", "--json")
     assert proc.returncode == 0, proc.stderr
