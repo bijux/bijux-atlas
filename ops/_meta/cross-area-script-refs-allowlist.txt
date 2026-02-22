@@ -60,10 +60,10 @@ makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/stack/wait_ready.py
 ops/e2e/realdata/run_single_release.sh|packages/atlasctl/src/atlasctl/commands/ops/datasets/publish_by_name.py
 ops/e2e/realdata/run_two_release_diff.sh|packages/atlasctl/src/atlasctl/commands/ops/datasets/publish_by_name.py
 ops/k8s/tests/checks/perf/test_store_outage_under_load.sh|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/run_drill.py
-atlasctl ops deploy|ops/e2e/scripts/deploy_atlas.sh
+atlasctl ops deploy|packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/deploy_atlas.py
 scripts/areas/layout/check_obs_pack_ssot.py|packages/atlasctl/src/atlasctl/commands/ops/observability/install_pack.py
 scripts/areas/layout/check_ops_canonical_entrypoints.py|packages/atlasctl/src/atlasctl/commands/ops/datasets/publish_by_name.py
-scripts/areas/layout/check_ops_canonical_entrypoints.py|ops/e2e/scripts/deploy_atlas.sh
+scripts/areas/layout/check_ops_canonical_entrypoints.py|packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/deploy_atlas.py
 scripts/areas/layout/check_ops_canonical_entrypoints.py|packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/smoke_queries.py
 scripts/areas/layout/check_ops_canonical_entrypoints.py|./bin/atlasctl ops deploy --report text apply
 scripts/areas/layout/check_ops_canonical_entrypoints.py|packages/atlasctl/src/atlasctl/commands/ops/observability/verify_pack.py
