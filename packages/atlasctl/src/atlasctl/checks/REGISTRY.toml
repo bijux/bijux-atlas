@@ -1204,6 +1204,26 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_make_root_budget"
+domain = "make"
+area = "root"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.domains.policies.make.enforcement"
+callable = "check_make_root_budget"
+description = "enforce root.mk LOC/target-count budget"
+severity = "error"
+category = "hygiene"
+fix_hint = "Reduce root.mk orchestration surface and keep only public wrappers."
+legacy_id = "make.root_budget"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_make_scripts_refs"
 domain = "make"
 area = "scripts"
@@ -4517,6 +4537,26 @@ severity = "error"
 category = "hygiene"
 fix_hint = "Align atlasctl.__version__ with pyproject [project].version and keep --version output stable outside git repos."
 legacy_id = "repo.version_matches_pyproject"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_workflows_targets_exist"
+domain = "repo"
+area = "workflows"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.native.workflow_contracts"
+callable = "check_workflows_targets_exist"
+description = "ensure make targets used by workflows exist"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add missing make targets or update workflows to existing targets."
+legacy_id = "repo.workflows_targets_exist"
 groups = ["fast", "repo", "required"]
 effects = []
 external_tools = []

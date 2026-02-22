@@ -1570,6 +1570,32 @@
       ]
     },
     {
+      "area": "root",
+      "callable": "check_make_root_budget",
+      "category": "hygiene",
+      "description": "enforce root.mk LOC/target-count budget",
+      "domain": "make",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Reduce root.mk orchestration surface and keep only public wrappers.",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_root_budget",
+      "legacy_id": "make.root_budget",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
       "area": "scripts",
       "callable": "check_make_scripts_references",
       "category": "hygiene",
@@ -5877,6 +5903,32 @@
       "id": "checks_repo_version_matches_pyproject",
       "legacy_id": "repo.version_matches_pyproject",
       "module": "atlasctl.checks.repo.contracts.pyproject_contracts",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 300,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "workflows",
+      "callable": "check_workflows_targets_exist",
+      "category": "hygiene",
+      "description": "ensure make targets used by workflows exist",
+      "domain": "repo",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Add missing make targets or update workflows to existing targets.",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_workflows_targets_exist",
+      "legacy_id": "repo.workflows_targets_exist",
+      "module": "atlasctl.checks.repo.native.workflow_contracts",
       "owner": "platform",
       "severity": "error",
       "speed": "fast",

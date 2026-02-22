@@ -156,6 +156,7 @@ from .contracts.pyproject_contracts import (
     check_requirements_sync_with_pyproject,
     check_version_matches_pyproject,
 )
+from .native.workflow_contracts import check_workflows_targets_exist
 from .contracts.suite_inventory import check_suite_inventory_policy
 from .contracts.test_guardrails import (
     check_check_test_coverage,
@@ -527,6 +528,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.requirements_sync", "repo", "ensure requirements files match pyproject dev dependency declarations", 300, check_requirements_sync_with_pyproject, fix_hint="Regenerate requirements.lock.txt from requirements.in and keep pyproject optional-deps dev aligned."),
     CheckDef("repo.dependency_owner_justification", "repo", "ensure each dependency has owner and justification", 300, check_dependency_owner_justification, fix_hint="Add dependency ownership + justification entries in docs/deps.md."),
     CheckDef("repo.dependency_gate_targets", "repo", "ensure dependency gate make targets exist", 300, check_dependency_gate_targets, fix_hint="Define deps-lock/deps-sync/deps-check-venv/deps-cold-start in makefiles/scripts.mk."),
+    CheckDef("repo.workflows_targets_exist", "repo", "ensure make targets used by workflows exist", 300, check_workflows_targets_exist, fix_hint="Add missing make targets or update workflows to existing targets."),
     CheckDef("repo.deps_command_surface", "repo", "ensure atlasctl deps command surface is runnable", 300, check_deps_command_surface, fix_hint="Wire atlasctl deps parser/runner and keep command import path valid."),
     CheckDef("repo.tests_no_duplicate_expectations", "repo", "forbid duplicate test function names across test modules", 300, check_test_duplicate_expectations, fix_hint="Rename duplicated test_* functions to avoid conflicting expectations."),
     CheckDef("repo.test_taxonomy_layout", "repo", "enforce test taxonomy and placement invariants", 300, check_test_taxonomy_layout, fix_hint="Place tests under domain folders and align declared # test-taxonomy with placement."),
