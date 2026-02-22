@@ -441,6 +441,7 @@ def _run_first_class_suite(
     summary = {
         "passed": sum(1 for row in rows if row["status"] == "pass"),
         "failed": sum(1 for row in rows if row["status"] == "fail"),
+        "skipped": 0,
         "total": len(rows),
         "pass_rate": (sum(1 for row in rows if row["status"] == "pass") / len(rows)) if rows else 1.0,
         "duration_ms": total_duration_ms,
