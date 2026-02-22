@@ -884,7 +884,7 @@ export ARTIFACT_DIR="$OPS_RUN_DIR"
 ops_env_load
 ops_entrypoint_start "ops-e2e"
 ops_version_guard python3 kubectl helm
-exec ./ops/e2e/runner/suite.sh --suite "{suite}"
+exec ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/suite_runner.py --suite "{suite}"
 """
     return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
 
