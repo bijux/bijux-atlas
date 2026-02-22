@@ -296,6 +296,12 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             return impl._run_simple_cmd(ctx, ["bash", "ops/run/warm.sh"], ns.report)
         if ns.ops_cmd == "datasets" and sub == "pin":
             return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/datasets/build_manifest_lock.py"], ns.report)
+        if ns.ops_cmd == "datasets" and sub == "lint-ids":
+            return impl._run_simple_cmd(
+                ctx,
+                ["python3", "packages/atlasctl/src/atlasctl/checks/layout/scripts/dataset_id_lint.py"],
+                ns.report,
+            )
         return 2
 
     if ns.ops_cmd == "check":
