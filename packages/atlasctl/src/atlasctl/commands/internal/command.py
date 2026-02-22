@@ -134,6 +134,21 @@ def _collect_migration_progress(ctx: RunContext) -> dict[str, object]:
     for mk in sorted((ctx.repo_root / "makefiles").glob("*.mk")):
         text = mk.read_text(encoding="utf-8", errors="ignore")
         make_alias_hits += len(_LEGACY_ALIAS_PATTERN.findall(text))
+    ops_script_paths: list[str] = []
+    for root in (
+        ctx.repo_root / "ops" / "run",
+        ctx.repo_root / "ops" / "k8s",
+        ctx.repo_root / "ops" / "obs",
+        ctx.repo_root / "ops" / "load",
+        ctx.repo_root / "ops" / "datasets",
+        ctx.repo_root / "ops" / "stack",
+        ctx.repo_root / "ops" / "e2e",
+    ):
+        if not root.exists():
+            continue
+        for path in sorted(root.rglob("*")):
+            if path.is_file() and path.suffix in {".sh", ".py"}:
+                ops_script_paths.append(path.relative_to(ctx.repo_root).as_posix())
     payload: dict[str, object] = {
         "schema_version": 1,
         "tool": "atlasctl",
@@ -142,7 +157,9 @@ def _collect_migration_progress(ctx: RunContext) -> dict[str, object]:
         "metrics": {
             "docs_legacy_cli_invocations": docs_legacy_hits,
             "make_legacy_alias_tokens": make_alias_hits,
+            "ops_script_entrypoints": len(ops_script_paths),
         },
+        "ops_script_inventory": ops_script_paths,
     }
     return payload
 
@@ -151,6 +168,24 @@ def _run_migration_progress(ctx: RunContext, ns: argparse.Namespace) -> int:
     payload = _collect_migration_progress(ctx)
     out_path = ctx.repo_root / "artifacts/reports/atlasctl/migration-progress.json"
     write_text_file(out_path, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    script_inv_path = ctx.repo_root / "artifacts/reports/atlasctl/ops-script-deprecation-inventory.json"
+    write_text_file(
+        script_inv_path,
+        json.dumps(
+            {
+                "schema_version": 1,
+                "tool": "atlasctl",
+                "kind": "ops-script-deprecation-inventory",
+                "status": "ok",
+                "count": int((payload.get("metrics", {}) or {}).get("ops_script_entrypoints", 0)),
+                "scripts": payload.get("ops_script_inventory", []),
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
     baseline_path = ctx.repo_root / "configs/policy/migration-progress-baseline.json"
     if baseline_path.exists():
         baseline = json.loads(baseline_path.read_text(encoding="utf-8"))
@@ -165,6 +200,7 @@ def _run_migration_progress(ctx: RunContext, ns: argparse.Namespace) -> int:
         print(json.dumps(payload, sort_keys=True))
     else:
         print(f"migration progress: {out_path.relative_to(ctx.repo_root).as_posix()}")
+        print(f"ops script inventory: {script_inv_path.relative_to(ctx.repo_root).as_posix()}")
         for key, value in (payload.get("metrics", {}) or {}).items():
             print(f"- {key}: {value}")
         if payload.get("status") != "ok":
