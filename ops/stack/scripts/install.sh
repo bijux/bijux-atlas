@@ -45,4 +45,4 @@ if [ "$ENABLE_TOXIPROXY" = "1" ]; then
 fi
 
 NS="$STACK_NS" "$ROOT/stack/minio/bootstrap.sh"
-"$ROOT/stack/scripts/wait_ready.sh" "$NS" "${ATLAS_E2E_TIMEOUT:-180s}"
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/stack/wait_ready.py" "$NS" "${ATLAS_E2E_TIMEOUT:-180s}"
