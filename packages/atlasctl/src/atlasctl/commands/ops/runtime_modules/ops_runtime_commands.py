@@ -10,6 +10,25 @@ from atlasctl.core.context import RunContext
 from atlasctl.core.process import run_command
 from atlasctl.core.runtime.paths import write_text_file
 
+def load_ops_task_catalog(repo_root: Path) -> dict[str, dict[str, str]]:
+    path = repo_root / "packages/atlasctl/src/atlasctl/registry/ops_tasks_catalog.json"
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    rows = payload.get("tasks", []) if isinstance(payload, dict) else []
+    catalog: dict[str, dict[str, str]] = {}
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        name = str(row.get("name", "")).strip()
+        if not name:
+            continue
+        catalog[name] = {
+            "manifest": str(row.get("manifest", "")).strip(),
+            "owner": str(row.get("owner", "")).strip(),
+            "docs": str(row.get("docs", "")).strip(),
+            "description": str(row.get("description", "")).strip(),
+        }
+    return catalog
+
 def _ops_policy_audit(ctx: RunContext, report_format: str) -> int:
     repo = ctx.repo_root
     env_schema = json.loads((repo / "configs/ops/env.schema.json").read_text(encoding="utf-8"))
@@ -52,15 +71,6 @@ def _ops_policy_audit(ctx: RunContext, report_format: str) -> int:
         else:
             print("ops policy audit passed")
     return 0 if not violations else 1
-
-
-from .ops_k8s import (
-    _k8s_checks_layout,
-    _k8s_flakes,
-    _k8s_test_contract,
-    _k8s_test_lib,
-    _k8s_surface_generate,
-)
 
 
 def _load_ops_env_schema(repo_root: Path, schema: str) -> dict[str, object]:
@@ -241,6 +251,48 @@ def _ops_manifest_run(ctx: RunContext, report_format: str, manifest_path: str, f
         for row in rows:
             print(f"- {row['id']}: {row['status']}")
     return 0 if not failures else 1
+
+
+def _ops_task_manifest(ctx: RunContext, task: str) -> str:
+    catalog = load_ops_task_catalog(ctx.repo_root)
+    row = catalog.get(task)
+    if row is None:
+        raise RuntimeError(f"unknown ops task `{task}`")
+    manifest = row.get("manifest", "")
+    if not manifest:
+        raise RuntimeError(f"ops task `{task}` has no manifest")
+    return manifest
+
+
+def _ops_list_tasks(ctx: RunContext, report_format: str) -> int:
+    catalog = load_ops_task_catalog(ctx.repo_root)
+    items = [
+        {"task": name, **meta}
+        for name, meta in sorted(catalog.items())
+    ]
+    if report_format == "json":
+        print(json.dumps({"schema_version": 1, "tool": "atlasctl", "kind": "ops-tasks", "tasks": items}, sort_keys=True))
+        return 0
+    for row in items:
+        print(f"{row['task']}: {row['description']} (owner={row['owner']})")
+    return 0
+
+
+def _ops_explain_task(ctx: RunContext, report_format: str, task: str) -> int:
+    catalog = load_ops_task_catalog(ctx.repo_root)
+    row = catalog.get(task)
+    if row is None:
+        return _emit_ops_status(report_format, 2, f"unknown ops task `{task}`")
+    payload = {"schema_version": 1, "tool": "atlasctl", "task": task, **row}
+    if report_format == "json":
+        print(json.dumps(payload, sort_keys=True))
+        return 0
+    print(f"task: {task}")
+    print(f"description: {row.get('description', '')}")
+    print(f"manifest: {row.get('manifest', '')}")
+    print(f"owner: {row.get('owner', '')}")
+    print(f"docs: {row.get('docs', '')}")
+    return 0
 
 
 def _ops_clean_generated(ctx: RunContext, report_format: str, force: bool) -> int:

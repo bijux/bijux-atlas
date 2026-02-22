@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "tasks": [
+    {
+      "name": "ops-smoke",
+      "manifest": "ops/manifests/smoke.json",
+      "owner": "ops-platform",
+      "docs": "docs/control-plane/ops-boundary.md",
+      "description": "Run the canonical smoke manifest for ops workflows."
+    }
+  ]
+}
