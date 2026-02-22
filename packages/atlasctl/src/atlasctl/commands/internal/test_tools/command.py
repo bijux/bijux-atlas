@@ -3,11 +3,11 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import subprocess
 import sys
 from pathlib import Path
 
 from ....core.context import RunContext
+from ....core.exec import run
 from ....core.fs import write_json
 
 _SMOKE_TESTS = (
@@ -102,7 +102,7 @@ def run_test_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     elif ns.test_cmd == "refresh-goldens":
         env, resolved_target = _isolation_env(ctx, ns.target_dir)
         cmd = [sys.executable, "-m", "atlasctl.cli", "--quiet", "gen", "goldens"]
-        proc = subprocess.run(cmd, cwd=ctx.repo_root, env=env, text=True, capture_output=True, check=False)
+        proc = run(cmd, cwd=ctx.repo_root, env=env, text=True, capture_output=True)
         payload = {
             "schema_version": 1,
             "tool": "atlasctl",
@@ -120,13 +120,12 @@ def run_test_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     else:
         return 2
     env, resolved_target = _isolation_env(ctx, target_dir)
-    proc = subprocess.run(
+    proc = run(
         cmd,
         cwd=ctx.repo_root,
         env=env,
         text=True,
         capture_output=True,
-        check=False,
     )
     payload = {
         "schema_version": 1,

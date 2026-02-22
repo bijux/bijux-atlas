@@ -25,6 +25,7 @@ from ..core.exit_codes import ERR_CONFIG, ERR_INTERNAL
 from ..core.runtime.guards.network_guard import install_no_network_guard, resolve_network_mode
 from .constants import CONFIGURE_HOOKS, DOMAINS, NO_NETWORK_FLAG_EXPIRY
 from .dispatch import dispatch_command
+from .help_formatter import format_public_help
 from .output import no_network_flag_expired, render_error, resolve_output_format
 
 DOMAIN_RUNNERS = {"registry": registry.run, "layout": layout.run}
@@ -236,26 +237,7 @@ def build_parser() -> argparse.ArgumentParser:
     raw_format_help = parser.format_help
 
     def _format_help_public() -> str:
-        text = raw_format_help()
-        lines = [line for line in text.splitlines() if "==SUPPRESS==" not in line]
-        header: list[str] = []
-        in_options = False
-        for line in lines:
-            if line.strip() == "options:":
-                in_options = True
-            if in_options:
-                header.append(line)
-        out = [
-            "usage: atlasctl [global options] <group> ...",
-            "",
-            "control-plane groups:",
-            *[f"  {name:<10} {desc}" for name, desc in _PUBLIC_GROUPS],
-            "",
-            "run `atlasctl <group> --help` for group commands.",
-            "",
-            *header,
-        ]
-        return "\n".join(out).rstrip() + "\n"
+        return format_public_help(raw_format_help(), _PUBLIC_GROUPS)
 
     parser.format_help = _format_help_public  # type: ignore[assignment]
     return parser

@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from ...core.context import RunContext
+from ...core.runtime.paths import write_text_file
 
 
 APPROVALS_PATH = Path("configs/policy/check_speed_approvals.json")
@@ -25,8 +26,7 @@ def run_approvals_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     checks = payload.setdefault("checks", {})
     assert isinstance(checks, dict)
     checks[check_id] = max_ms
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_text_file(path, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps({"schema_version": 1, "tool": "atlasctl", "status": "ok", "path": str(APPROVALS_PATH), "check_id": check_id, "max_ms": max_ms}, sort_keys=True))
     return 0
 
@@ -37,4 +37,3 @@ def configure_approvals_parser(sub: argparse._SubParsersAction[argparse.Argument
     add = s.add_parser("add", help="add a check-speed approval")
     add.add_argument("--check-speed", required=True, help="check id")
     add.add_argument("--max-ms", required=True, type=int, help="approved max duration in ms")
-

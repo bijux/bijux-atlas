@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import subprocess
 import sys
 import tempfile
 import time
@@ -10,6 +9,8 @@ from pathlib import Path
 from typing import Any
 
 from ....core.context import RunContext
+from ....core.exec import run
+from ....core.runtime.paths import write_text_file
 
 try:
     import tomllib  # py311+
@@ -28,11 +29,11 @@ def _normalize_requirements(req_in: Path, req_lock: Path) -> None:
         for ln in req_in.read_text(encoding="utf-8").splitlines()
         if ln.strip() and not ln.strip().startswith("#")
     ]
-    req_lock.write_text("\n".join(sorted(set(lines))) + "\n", encoding="utf-8")
+    write_text_file(req_lock, "\n".join(sorted(set(lines))) + "\n", encoding="utf-8")
 
 
 def _run(cmd: list[str], cwd: Path) -> tuple[int, str]:
-    proc = subprocess.run(cmd, cwd=cwd, text=True, capture_output=True, check=False)
+    proc = run(cmd, cwd=cwd, text=True, capture_output=True)
     return proc.returncode, (proc.stdout + proc.stderr).strip()
 
 
@@ -123,7 +124,7 @@ def run_deps_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 print(out)
                 return code
             env = {"PYTHONPATH": str(ctx.repo_root / "packages/atlasctl/src")}
-            proc = subprocess.run([str(py), "-m", "atlasctl", "--help"], cwd=ctx.repo_root, text=True, capture_output=True, env=env, check=False)
+            proc = run([str(py), "-m", "atlasctl", "--help"], cwd=ctx.repo_root, text=True, capture_output=True, env=env)
             if proc.returncode != 0:
                 print((proc.stdout + proc.stderr).strip())
             return proc.returncode
@@ -134,13 +135,12 @@ def run_deps_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         samples: list[float] = []
         for _ in range(runs):
             t0 = time.perf_counter()
-            proc = subprocess.run(
+            proc = run(
                 [sys.executable, "-c", "import atlasctl.cli.main"],
                 cwd=ctx.repo_root,
                 text=True,
                 capture_output=True,
                 env={"PYTHONPATH": str(ctx.repo_root / "packages/atlasctl/src")},
-                check=False,
             )
             elapsed_ms = (time.perf_counter() - t0) * 1000.0
             if proc.returncode != 0:

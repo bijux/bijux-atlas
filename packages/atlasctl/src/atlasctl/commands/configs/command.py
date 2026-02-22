@@ -4,7 +4,6 @@ import argparse
 import hashlib
 import json
 import re
-import subprocess
 
 try:
     import tomllib  # type: ignore[attr-defined]
@@ -15,7 +14,9 @@ from pathlib import Path
 import jsonschema
 
 from ...core.context import RunContext
+from ...core.exec import run
 from ...core.fs import ensure_evidence_path
+from ...core.runtime.paths import write_text_file
 from ...core.runtime.tooling import read_pins, read_tool_versions
 
 CONFIG_SCHEMA_PAIRS: tuple[tuple[str, str], ...] = (
@@ -49,7 +50,7 @@ def _load_json(path: Path) -> dict[str, object]:
 
 
 def _parse_yaml(path: Path) -> str | None:
-    proc = subprocess.run(
+    proc = run(
         [
             "python3",
             "-c",
@@ -58,7 +59,6 @@ def _parse_yaml(path: Path) -> str | None:
         ],
         text=True,
         capture_output=True,
-        check=False,
     )
     if proc.returncode == 0:
         return None
@@ -203,8 +203,7 @@ def _generate_outputs(repo_root: Path, write: bool) -> dict[str, str]:
     if write:
         for rel, text in outputs.items():
             out = repo_root / rel
-            out.parent.mkdir(parents=True, exist_ok=True)
-            out.write_text(text, encoding="utf-8")
+            write_text_file(out, text, encoding="utf-8")
     return outputs
 
 
@@ -219,7 +218,7 @@ def _sync_slo(repo_root: Path, write: bool) -> tuple[bool, str]:
     }
     dst = repo_root / "configs/slo/slo.json"
     if write:
-        dst.write_text(json.dumps(expected, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        write_text_file(dst, json.dumps(expected, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         return True, "configs/slo/slo.json"
     current = _load_json(dst)
     return current == expected, "configs/slo/slo.json"
@@ -293,7 +292,7 @@ def run_configs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         }
         if getattr(ns, "emit_artifacts", False):
             out = ensure_evidence_path(ctx, repo / "artifacts/evidence/configs/validate" / ctx.run_id / "report.json")
-            out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            write_text_file(out, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         _emit(payload, report)
         return 0 if not errors else 1
 

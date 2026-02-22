@@ -6,6 +6,7 @@ from pathlib import Path
 
 from ....core.context import RunContext
 from ....core.fs import ensure_evidence_path
+from ....core.runtime.paths import write_text_file
 
 TARGET_RE = re.compile(r"^([A-Za-z0-9_./-]+):(?:.*?)(?:\s+##\s*(.*))?$")
 
@@ -170,9 +171,10 @@ def run_dev_ci_target_map(ctx: RunContext, out_dir_arg: str, check: bool, as_jso
     dev_path = ensure_evidence_path(ctx, out_dir / "dev-targets.json")
     ci_path = ensure_evidence_path(ctx, out_dir / "ci-targets.json")
     map_path = ensure_evidence_path(ctx, out_dir / "ci-target-map.json")
-    dev_path.write_text(json.dumps(dev_dump, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    ci_path.write_text(json.dumps(ci_dump, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    map_path.write_text(
+    write_text_file(dev_path, json.dumps(dev_dump, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_text_file(ci_path, json.dumps(ci_dump, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_text_file(
+        map_path,
         json.dumps(
             {
                 "schema_version": 1,

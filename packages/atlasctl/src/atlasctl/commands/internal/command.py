@@ -3,10 +3,10 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import subprocess
 import sys
 
 from ...core.context import RunContext
+from ...core.exec import run
 from .legacy_inventory import run_legacy_inventory
 from .legacy_targets import run_legacy_targets
 
@@ -22,12 +22,11 @@ def _forward(ctx: RunContext, *args: str) -> int:
     src_path = str(ctx.repo_root / "packages/atlasctl/src")
     existing = env.get("PYTHONPATH", "")
     env["PYTHONPATH"] = f"{src_path}:{existing}" if existing else src_path
-    proc = subprocess.run(
+    proc = run(
         [sys.executable, "-m", "atlasctl.cli", *args],
         cwd=ctx.repo_root,
         env=env,
         text=True,
-        check=False,
     )
     return proc.returncode
 

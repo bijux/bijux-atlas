@@ -47,7 +47,7 @@ LINT_CHECKS: list[OpsCheck] = [
     _check(
         "ops-evidence-writes",
         "Ensure ops evidence write policy",
-        ["python3", "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/hygiene/check_no_ops_evidence_writes.py"],
+        ["python3", "packages/atlasctl/src/atlasctl/checks/layout/domains/hygiene/check_no_ops_evidence_writes.py"],
         "Write runtime artifacts only under artifacts/evidence or approved allowlist roots.",
     ),
     _check(

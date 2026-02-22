@@ -5,7 +5,9 @@ import re
 import hashlib
 from dataclasses import dataclass
 from pathlib import Path
-import subprocess
+
+from atlasctl.core.exec import run
+from atlasctl.core.runtime.paths import write_text_file
 
 from ...core.errors import ScriptError
 from ...core.exit_codes import ERR_VALIDATION
@@ -51,7 +53,7 @@ def deterministic_catalog_payload() -> dict[str, object]:
 def write_catalog_deterministic() -> Path:
     payload = deterministic_catalog_payload()
     out = catalog_path()
-    out.write_text(json.dumps(payload, indent=2, sort_keys=False) + "\n", encoding="utf-8")
+    write_text_file(out, json.dumps(payload, indent=2, sort_keys=False) + "\n", encoding="utf-8")
     return out
 
 
@@ -75,7 +77,7 @@ def deterministic_schema_readme() -> str:
 
 def write_schema_readme_deterministic() -> Path:
     out = schemas_root() / "README.md"
-    out.write_text(deterministic_schema_readme(), encoding="utf-8")
+    write_text_file(out, deterministic_schema_readme(), encoding="utf-8")
     return out
 
 
@@ -152,12 +154,11 @@ def check_schema_readme_sync() -> list[str]:
 
 
 def _git_changed_files(repo_root: Path) -> list[str]:
-    proc = subprocess.run(
+    proc = run(
         ["git", "diff", "--name-only", "HEAD~1", "HEAD"],
         cwd=repo_root,
         text=True,
         capture_output=True,
-        check=False,
     )
     if proc.returncode != 0:
         return []
@@ -179,12 +180,11 @@ def check_schema_change_release_policy(repo_root: Path) -> list[str]:
         errors.append("schema change requires release notes update in packages/atlasctl/docs/release-notes.md")
 
     for rel in changed_schemas:
-        existed = subprocess.run(
+        existed = run(
             ["git", "cat-file", "-e", f"HEAD~1:{rel}"],
             cwd=repo_root,
             text=True,
             capture_output=True,
-            check=False,
         ).returncode == 0
         if existed:
             errors.append(

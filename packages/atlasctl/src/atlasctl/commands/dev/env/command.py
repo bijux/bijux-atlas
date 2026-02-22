@@ -4,11 +4,11 @@ import argparse
 import json
 import os
 import shutil
-import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
 from ....core.context import RunContext
+from ....core.exec import run
 from ....core.isolation import build_isolate_env, clean_isolate_roots, require_isolate_env
 
 
@@ -94,13 +94,7 @@ def run_env_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if subcmd == "create":
         venv = _venv_path(ctx, ns.path)
         venv.parent.mkdir(parents=True, exist_ok=True)
-        proc = subprocess.run(
-            ["python3", "-m", "venv", str(venv)],
-            cwd=ctx.repo_root,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
+        proc = run(["python3", "-m", "venv", str(venv)], cwd=ctx.repo_root, text=True, capture_output=True)
         payload = {
             "schema_version": 1,
             "tool": "atlasctl",
@@ -169,7 +163,7 @@ def run_env_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         (iso_root / "target").mkdir(parents=True, exist_ok=True)
         (iso_root / "cargo-home").mkdir(parents=True, exist_ok=True)
         (iso_root / "tmp").mkdir(parents=True, exist_ok=True)
-        proc = subprocess.run(ns.exec_cmd, cwd=ctx.repo_root, env=env, check=False)
+        proc = run(ns.exec_cmd, cwd=ctx.repo_root, env=env, text=True)
         return proc.returncode
 
     # info

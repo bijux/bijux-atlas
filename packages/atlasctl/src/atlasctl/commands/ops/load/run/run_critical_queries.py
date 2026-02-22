@@ -13,6 +13,8 @@ import json
 import sqlite3
 from pathlib import Path
 
+from atlasctl.core.runtime.paths import write_text_file
+
 ROOT = Path(__file__).resolve().parents[5]
 CRITICAL_QUERIES_PATH = ROOT / "configs" / "perf" / "critical_queries.json"
 SQLITE_INDEX_CONTRACT_PATH = ROOT / "docs" / "contracts" / "SQLITE_INDEXES.json"
@@ -107,11 +109,10 @@ def main() -> int:
 
         actual[q["id"]] = lines
 
-    args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(actual, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_text_file(args.out, json.dumps(actual, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
     if args.update_snapshot:
-        SNAPSHOT_PATH.write_text(json.dumps(actual, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        write_text_file(SNAPSHOT_PATH, json.dumps(actual, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         print(f"updated snapshot: {SNAPSHOT_PATH}")
         return 0
 

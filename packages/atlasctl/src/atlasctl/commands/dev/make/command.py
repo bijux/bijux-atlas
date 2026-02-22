@@ -3,12 +3,13 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import subprocess
 import sys
 from pathlib import Path
 
 from ....core.context import RunContext
+from ....core.exec import run
 from ....core.fs import ensure_evidence_path
+from ....core.runtime.paths import write_text_file
 from .contracts_check import run_contracts_check
 from .dev_ci_target_map import run_dev_ci_target_map
 from .explain import LEGACY_TARGET_RE
@@ -111,7 +112,7 @@ def _rewrite_makefiles(repo_root: Path, write: bool, limit: int) -> tuple[int, d
         rel = path.relative_to(repo_root).as_posix()
         replacements.append({"file": rel, "replacements": file_changes})
         if write:
-            path.write_text(updated, encoding="utf-8")
+            write_text_file(path, updated, encoding="utf-8")
         if len(replacements) >= limit:
             break
     payload = {
@@ -186,11 +187,10 @@ def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         out_dir = Path(ns.out_dir)
         if not out_dir.is_absolute():
             out_dir = (ctx.repo_root / out_dir).resolve()
-        out_dir.mkdir(parents=True, exist_ok=True)
 
         json_path = out_dir / "make-targets.json"
         md_path = out_dir / "make-targets.md"
-        json_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        write_text_file(json_path, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
         lines = [
             "# Make Targets Inventory",
@@ -202,17 +202,16 @@ def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         ]
         for row in sorted(payload["targets"], key=lambda r: str(r["name"])):
             lines.append(f"- `{row['name']}` ({row['owner']}): {row['description']}")
-        md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        write_text_file(md_path, "\n".join(lines) + "\n", encoding="utf-8")
 
         if ns.check:
             md_rel = str(md_path.relative_to(ctx.repo_root))
             json_rel = str(json_path.relative_to(ctx.repo_root))
-            tracked = subprocess.run(
+            tracked = run(
                 ["git", "diff", "--", md_rel, json_rel],
                 cwd=ctx.repo_root,
                 text=True,
                 capture_output=True,
-                check=False,
             )
             if tracked.returncode != 0:
                 print(tracked.stdout + tracked.stderr)
@@ -317,7 +316,7 @@ def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         payload = _inventory_direct_make_logic(ctx.repo_root)
         rendered = json.dumps(payload, sort_keys=True) if ns.json or ctx.output_format == "json" else json.dumps(payload, indent=2, sort_keys=True)
         if ns.out_file:
-            ensure_evidence_path(ctx, Path(ns.out_file)).write_text(rendered + "\n", encoding="utf-8")
+            write_text_file(ensure_evidence_path(ctx, Path(ns.out_file)), rendered + "\n", encoding="utf-8")
         print(rendered)
         return 0
 
@@ -327,12 +326,11 @@ def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             return 2
         run_id = ctx.run_id
         isolate_dir = ctx.repo_root / "artifacts" / "isolate" / run_id / "atlasctl-make"
-        isolate_dir.mkdir(parents=True, exist_ok=True)
         cmd = ["make", "-s", ns.target, *ns.args]
         env = dict(**os.environ)
         env["RUN_ID"] = run_id
         env["ISO_ROOT"] = str(isolate_dir)
-        proc = subprocess.run(cmd, cwd=ctx.repo_root, text=True, capture_output=True, check=False, env=env)
+        proc = run(cmd, cwd=ctx.repo_root, text=True, capture_output=True, env=env)
         payload = {
             "schema_version": 1,
             "tool": "atlasctl",
@@ -347,7 +345,7 @@ def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             "stderr": proc.stderr or "",
         }
         out = ensure_evidence_path(ctx, ctx.evidence_root / "make" / run_id / f"run-{ns.target.replace('/', '_')}.json")
-        out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        write_text_file(out, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         if ns.json or ctx.output_format == "json":
             print(json.dumps(payload, sort_keys=True))
         else:
@@ -356,7 +354,7 @@ def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
     if ns.make_cmd == "doctor":
         cmd = [sys.executable, "-m", "atlasctl.cli", "--quiet", "--format", "json", "suite", "run", "ci"]
-        proc = subprocess.run(cmd, cwd=ctx.repo_root, text=True, capture_output=True, check=False)
+        proc = run(cmd, cwd=ctx.repo_root, text=True, capture_output=True)
         if proc.returncode == 0:
             if ns.json or ctx.output_format == "json":
                 print(proc.stdout.strip())
@@ -391,7 +389,7 @@ def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             "--run-id",
             run_id,
         ]
-        proc = subprocess.run(cmd, cwd=ctx.repo_root, text=True, capture_output=True, check=False)
+        proc = run(cmd, cwd=ctx.repo_root, text=True, capture_output=True)
         if ns.json or ctx.output_format == "json":
             print(
                 json.dumps(

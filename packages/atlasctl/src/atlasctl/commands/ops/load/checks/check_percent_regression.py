@@ -14,6 +14,8 @@ import json
 import sys
 from pathlib import Path
 
+from atlasctl.core.runtime.paths import write_text_file
+
 
 def load_measured(results_dir: Path) -> dict[str, float]:
     out: dict[str, float] = {}
@@ -62,8 +64,7 @@ def main() -> int:
 
     if violations:
         out = root / "artifacts/stack-report/regression.txt"
-        out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text("\n".join(violations) + "\n")
+        write_text_file(out, "\n".join(violations) + "\n", encoding="utf-8")
         print("p95 regression check failed", file=sys.stderr)
         for line in violations:
             print(f"- {line}", file=sys.stderr)

@@ -3,12 +3,13 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import subprocess
 import sys
 from pathlib import Path
 
 from ....contracts.command import run_contracts_command
 from ....core.context import RunContext
+from ....core.exec import run
+from ....core.runtime.paths import write_text_file
 from ....checks.registry.ssot import generate_registry_json, legacy_checks, toml_entry_from_check, write_registry_toml
 from ....checks.registry.catalog import check_tags
 
@@ -16,28 +17,26 @@ SELF_CLI = ["python3", "-m", "atlasctl.cli"]
 
 
 def _run(ctx: RunContext, cmd: list[str]) -> int:
-    proc = subprocess.run(cmd, cwd=ctx.repo_root, text=True, check=False)
+    proc = run(cmd, cwd=ctx.repo_root, text=True)
     return proc.returncode
 
 
-def _run_capture(ctx: RunContext, args: list[str]) -> subprocess.CompletedProcess[str]:
+def _run_capture(ctx: RunContext, args: list[str]):
     env = os.environ.copy()
     src_path = str(ctx.repo_root / "packages/atlasctl/src")
     existing = env.get("PYTHONPATH", "")
     env["PYTHONPATH"] = f"{src_path}:{existing}" if existing else src_path
-    return subprocess.run(
+    return run(
         [sys.executable, "-m", "atlasctl.cli", *args],
         cwd=ctx.repo_root,
         text=True,
         capture_output=True,
-        check=False,
         env=env,
     )
 
 
 def _write(path: Path, value: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(value, encoding="utf-8")
+    write_text_file(path, value, encoding="utf-8")
 
 
 def _generate_goldens(ctx: RunContext) -> tuple[int, dict[str, str]]:
@@ -125,7 +124,7 @@ def run_gen_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         for p in sorted((ctx.repo_root / "bin").glob("*")):
             if p.is_file():
                 lines.append(f"- `{p.relative_to(ctx.repo_root).as_posix()}`")
-        out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        write_text_file(out, "\n".join(lines) + "\n", encoding="utf-8")
         print(json.dumps({"status": "pass", "file": str(out)}, sort_keys=True))
         return 0
     if sub == "goldens":

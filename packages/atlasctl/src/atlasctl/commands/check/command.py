@@ -17,6 +17,7 @@ from ...checks.engine.runner import domains as check_domains
 from ...checks.engine.runner import run_domain
 from ...core.context import RunContext
 from ...core.fs import ensure_evidence_path
+from ...core.runtime.paths import write_text_file
 from ...core.runtime.telemetry import emit_telemetry
 from ...core.exit_codes import ERR_USER
 from ...commands.policies.lint.suite_engine import run_lint_suite
@@ -126,8 +127,7 @@ def _write_junitxml(path: Path, rows: list[dict[str, object]]) -> None:
         if row["status"] == "SKIP":
             skipped = SubElement(case, "skipped", message="filtered by --select")
             skipped.text = "filtered by --select"
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(tostring(suite, encoding="unicode"), encoding="utf-8")
+    write_text_file(path, tostring(suite, encoding="unicode"), encoding="utf-8")
 
 
 def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
@@ -418,11 +418,12 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             "ratchet_errors": ratchet_errors,
             "rows": rows,
         }
-        report_path.write_text(json.dumps(report_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        write_text_file(report_path, json.dumps(report_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     slow_report = getattr(ns, "slow_report", None)
     if slow_report:
         slow_path = ensure_evidence_path(ctx, Path(slow_report))
-        slow_path.write_text(
+        write_text_file(
+            slow_path,
             json.dumps(
                 {
                     "schema_version": 1,
@@ -445,7 +446,8 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             ctx,
             Path(getattr(ns, "profile_out", f"artifacts/isolate/{ctx.run_id}/atlasctl-check/profile.json")),
         )
-        profile_path.write_text(
+        write_text_file(
+            profile_path,
             json.dumps(
                 {
                     "schema_version": 1,
@@ -462,7 +464,6 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             encoding="utf-8",
         )
     timings_path = ctx.repo_root / "artifacts" / "evidence" / "checks" / ctx.run_id / "timings.json"
-    timings_path.parent.mkdir(parents=True, exist_ok=True)
     timings_payload = {
         "schema_version": 1,
         "tool": "atlasctl",
@@ -471,7 +472,7 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
         "rows": [{"id": row["id"], "domain": row["domain"], "duration_ms": row["duration_ms"]} for row in rows],
         "timing_histogram": _timing_histogram(rows),
     }
-    timings_path.write_text(json.dumps(timings_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_text_file(timings_path, json.dumps(timings_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     emit_telemetry(
         ctx,
         "check.run",

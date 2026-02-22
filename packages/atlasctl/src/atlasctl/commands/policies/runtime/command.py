@@ -4,11 +4,12 @@ import argparse
 import datetime as dt
 import json
 import re
-import subprocess
 from pathlib import Path
 
 from ....core.context import RunContext
+from ....core.exec import run
 from ....core.fs import ensure_evidence_path
+from ....core.runtime.paths import write_text_file
 from .culprits import (
     collect_dir_stats,
     evaluate_metric,  # compat for tests/monkeypatch consumers
@@ -55,7 +56,7 @@ _POLICIES_ITEMS: tuple[str, ...] = (
 
 
 def _run(cmd: list[str], repo_root: Path) -> tuple[int, str]:
-    proc = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
+    proc = run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
     return proc.returncode, ((proc.stdout or "") + (proc.stderr or "")).strip()
 
 
@@ -149,15 +150,14 @@ def _bypass_scan(repo_root: Path) -> tuple[int, dict[str, object]]:
 
 def _write_report(ctx: RunContext, section: str, payload: dict[str, object]) -> None:
     out = ensure_evidence_path(ctx, ctx.evidence_root / "policies" / section / ctx.run_id / "report.json")
-    out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_text_file(out, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
 def _write_out_file(repo_root: Path, out_file: str, content: str) -> None:
     if not out_file:
         return
     out_path = repo_root / out_file
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(content + "\n", encoding="utf-8")
+    write_text_file(out_path, content + "\n", encoding="utf-8")
 
 
 def _repo_stats_payload(repo_root: Path) -> dict[str, object]:
@@ -228,12 +228,11 @@ def _policy_allow_env_lint(repo_root: Path) -> tuple[int, list[str]]:
     schema = repo_root / "configs/ops/env.schema.json"
     declared = set(json.loads(schema.read_text(encoding="utf-8")).get("variables", {}).keys())
     allow_pattern = re.compile(r"\b(?:ATLAS_ALLOW_[A-Z0-9_]+|ALLOW_NON_KIND)\b")
-    rg = subprocess.run(
+    rg = run(
         ["rg", "-n", r"\b(?:ATLAS_ALLOW_[A-Z0-9_]+|ALLOW_NON_KIND)\b", "crates", "scripts", "makefiles", ".github", "docs"],
         cwd=repo_root,
         text=True,
         capture_output=True,
-        check=False,
     )
     violations: list[str] = []
     for line in rg.stdout.splitlines():
@@ -263,13 +262,12 @@ def _policy_enforcement_status(repo_root: Path, enforce: bool) -> tuple[int, lis
             return False
         if not search_roots:
             return False
-        proc = subprocess.run(
+        proc = run(
             ["rg", "-n", "--fixed-strings", needle, *search_roots],
             cwd=repo_root,
             text=True,
             capture_output=True,
-            check=False,
-        )
+                    )
         return bool(proc.stdout.strip())
 
     for policy in data.get("policies", []):
@@ -302,8 +300,7 @@ def _policy_enforcement_status(repo_root: Path, enforce: bool) -> tuple[int, lis
     ]
     for pid, klass, p, f, status in sorted(rows, key=lambda r: r[0]):
         lines.append(f"| `{pid}` | `{klass}` | `{p}` | `{f}` | `{status}` |")
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    write_text_file(out, "\n".join(lines) + "\n", encoding="utf-8")
     if enforce and hard_percent < 100:
         violations.append("hard policy coverage must be 100%")
     return (0 if not (enforce and violations) else 1), violations, out.relative_to(repo_root).as_posix()
@@ -448,8 +445,7 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         payload = _repo_stats_payload(repo)
         out_rel = str(getattr(ns, "out_file", "")) or f"artifacts/reports/atlasctl/repo-stats/{ctx.run_id}.json"
         out_path = repo / out_rel
-        out_path.parent.mkdir(parents=True, exist_ok=True)
-        out_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        write_text_file(out_path, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         if getattr(ns, "diff_previous", False):
             previous = sorted(out_path.parent.glob("*.json"))
             prior = [p for p in previous if p != out_path]
@@ -457,7 +453,7 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 prev_payload = json.loads(prior[-1].read_text(encoding="utf-8"))
                 diff_payload = _repo_stats_diff(payload, prev_payload)
                 diff_path = out_path.with_suffix(".diff.json")
-                diff_path.write_text(json.dumps(diff_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+                write_text_file(diff_path, json.dumps(diff_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
                 payload["diff_file"] = diff_path.relative_to(repo).as_posix()
                 payload["diff"] = diff_payload
         print(json.dumps(payload, sort_keys=True) if ns.report == "json" else json.dumps(payload, indent=2, sort_keys=True))

@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import json
 import re
-import subprocess
 from pathlib import Path
+
+from atlasctl.core.exec import run
+from atlasctl.core.runtime.paths import write_text_file
 
 
 def scan_rust_relaxations(repo_root: Path, out_path: Path) -> dict[str, object]:
@@ -24,8 +26,7 @@ def scan_rust_relaxations(repo_root: Path, out_path: Path) -> dict[str, object]:
                     findings.append({"source": "rust-ast", "pattern_id": "allow_attribute", "requires_exception": True, "severity": "error", "file": rel, "line": idx, "exception_id": exception_id})
     findings = sorted(findings, key=lambda item: (str(item["file"]), int(item["line"]), str(item["pattern_id"])))
     payload = {"schema_version": 1, "findings": findings}
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_text_file(out_path, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return payload
 
 
@@ -48,7 +49,7 @@ def scan_grep_relaxations(repo_root: Path, out_path: Path) -> dict[str, object]:
     include_globs = ["*.rs", "*.sh", "*.py", "*.mk", "*.yml", "*.yaml", "Makefile"]
     for pattern_id, regex, requires_exception, severity in patterns:
         cmd = ["rg", "-n", "--no-heading", "-S", regex, *(str(repo_root / p) for p in scan_paths), *(f"-g{g}" for g in include_globs), "-g!**/target/**", "-g!**/artifacts/**"]
-        proc = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
+        proc = run(cmd, cwd=repo_root, text=True, capture_output=True)
         for line in (proc.stdout or "").splitlines():
             parts = line.split(":", 2)
             if len(parts) < 3:
@@ -61,8 +62,7 @@ def scan_grep_relaxations(repo_root: Path, out_path: Path) -> dict[str, object]:
             findings.append({"source": "grep", "pattern_id": pattern_id, "requires_exception": requires_exception, "severity": severity, "file": file_rel, "line": int(line_no), "exception_id": match.group(1) if match else None})
     findings.sort(key=lambda item: (str(item["file"]), int(item["line"]), str(item["pattern_id"])))
     payload = {"schema_version": 1, "findings": findings}
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_text_file(out_path, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return payload
 
 
@@ -77,6 +77,6 @@ def policy_drift_diff(repo_root: Path, from_ref: str, to_ref: str) -> str:
     lines: list[str] = []
     for path in paths:
         lines.append(f"### {path}: {from_ref}..{to_ref}")
-        proc = subprocess.run(["git", "diff", "--", from_ref, to_ref, "--", path], cwd=repo_root, text=True, capture_output=True, check=False)
+        proc = run(["git", "diff", "--", from_ref, to_ref, "--", path], cwd=repo_root, text=True, capture_output=True)
         lines.append((proc.stdout or "").rstrip())
     return "\n".join(lines).rstrip() + "\n"

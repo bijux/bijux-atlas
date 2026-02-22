@@ -3,12 +3,12 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import subprocess
 import sys
 from pathlib import Path
 
 from .cargo.command import DevCargoParams, run_dev_cargo
 from ...core.context import RunContext
+from ...core.exec import run
 
 _DEV_FORWARD: dict[str, str] = {
     "list": "list",
@@ -53,12 +53,11 @@ def _forward(ctx: RunContext, *args: str) -> int:
         forwarded_flags.append("--quiet")
     if ctx.output_format == "json":
         forwarded_flags.extend(["--format", "json"])
-    proc = subprocess.run(
+    proc = run(
         [sys.executable, "-m", "atlasctl.cli", *forwarded_flags, *args],
         cwd=ctx.repo_root,
         env=env,
         text=True,
-        check=False,
     )
     return proc.returncode
 

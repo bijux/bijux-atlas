@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import json
 import re
-import subprocess
 from pathlib import Path
 
 from ...core.context import RunContext
+from ...core.exec import run
 
 
 _LEGACY_CONCEPTS: tuple[dict[str, str], ...] = (
@@ -45,7 +45,7 @@ def _classify(rel: str) -> tuple[str, str]:
 
 def _reference_hits(repo_root: Path, pattern: str = "legacy") -> list[str]:
     cmd = ["rg", "-n", pattern, "packages/atlasctl/src/atlasctl", "packages/atlasctl/docs", "packages/atlasctl/tests"]
-    proc = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
+    proc = run(cmd, cwd=repo_root, text=True, capture_output=True)
     if proc.returncode not in (0, 1):
         return []
     hits: list[str] = []

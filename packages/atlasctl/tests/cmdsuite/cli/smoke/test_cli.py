@@ -28,7 +28,7 @@ def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
 
 def test_parser_run_subcommand() -> None:
     parser = build_parser()
-    ns = parser.parse_args(["run", "packages/atlasctl/src/atlasctl/checks/layout/domains/public_surface/tools/render_public_help.py", "--mode", "list"])
+    ns = parser.parse_args(["run", "packages/atlasctl/src/atlasctl/checks/layout/domains/public_surface/render_public_help.py", "--mode", "list"])
     assert ns.cmd == "run"
     assert ns.script.endswith("render_public_help.py")
 
