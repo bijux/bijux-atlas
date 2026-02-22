@@ -212,7 +212,7 @@ ops/obs/tests/test_toxiproxy_latency_drill.sh
 ops/report/incident_repro.sh
 atlasctl ops deploy
 ./bin/atlasctl ops doctor --report text
-ops/run/ops-check.sh
+atlasctl ops check
 ./bin/atlasctl ops prereqs --report text
 ops/run/root-lanes.sh
 atlasctl ops stack down

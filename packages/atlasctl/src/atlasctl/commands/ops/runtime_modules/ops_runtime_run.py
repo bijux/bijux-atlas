@@ -122,6 +122,8 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         return impl._ops_prereqs_native(ctx, ns.report)
     if ns.ops_cmd == "doctor":
         return impl._ops_doctor_native(ctx, ns.report)
+    if ns.ops_cmd == "smoke":
+        return impl._ops_smoke_native(ctx, ns.report, bool(getattr(ns, "reuse", False)))
 
     if ns.ops_cmd == "deploy":
         sub = str(getattr(ns, "ops_deploy_cmd", "") or "").strip()

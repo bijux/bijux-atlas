@@ -574,6 +574,48 @@ make -s ops-env-print || true
     return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
 
 
+def _ops_smoke_native(ctx: RunContext, report_format: str, reuse: bool) -> int:
+    reuse_val = "1" if reuse else "0"
+    script = f"""
+set -euo pipefail
+cd "{ctx.repo_root}"
+. ./ops/_lib/common.sh
+ops_init_run_id
+export RUN_ID="$OPS_RUN_ID"
+export ARTIFACT_DIR="$OPS_RUN_DIR"
+ops_env_load
+ops_entrypoint_start "ops-smoke"
+ops_version_guard kind kubectl helm k6
+start="$(date +%s)"
+log_dir="artifacts/evidence/ops-smoke/${{RUN_ID}}"
+mkdir -p "$log_dir"
+log_file="$log_dir/run.log"
+status="pass"
+if ! (
+  REUSE="{reuse_val}" make -s ops-up
+  trap 'make -s ops-down >/dev/null 2>&1 || true' EXIT INT TERM
+  make -s ops-deploy
+  make -s ops-warm
+  make -s ops-api-smoke
+  OBS_SKIP_LOCAL_COMPOSE=1 SUITE=contracts make -s ops-obs-verify
+  trap - EXIT INT TERM
+  make -s ops-down
+) >"$log_file" 2>&1; then
+  status="fail"
+fi
+end="$(date +%s)"
+duration="$((end - start))"
+LANE_REPRO_COMMAND="make ops/smoke REUSE={reuse_val}" \\
+ops_write_lane_report "ops-smoke" "${{RUN_ID}}" "${{status}}" "${{duration}}" "${{log_file}}" "artifacts/evidence" >/dev/null
+./bin/atlasctl report unified --run-id "${{RUN_ID}}" --out ops/_generated_committed/report.unified.json >/dev/null
+if [ "$status" = "pass" ]; then
+  RUN_ID="${{RUN_ID}}" python3 ./ops/_lint/ops-smoke-budget-check.py
+fi
+[ "$status" = "pass" ] || exit 1
+"""
+    return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
+
+
 def _ops_warm_dx(ctx: RunContext, report_format: str) -> int:
     repo = ctx.repo_root
     cmds = [
