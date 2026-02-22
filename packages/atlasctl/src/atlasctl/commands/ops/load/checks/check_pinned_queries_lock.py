@@ -10,7 +10,7 @@ from atlasctl.checks.domains.ops.ops_checks import check_ops_load_pinned_queries
 def _repo_root() -> Path:
     cur = Path(__file__).resolve()
     for base in (cur, *cur.parents):
-        if (base / "packages").exists() and (base / "configs").exists() and (base / "ops").exists():
+        if all((base / part).exists() for part in ("makefiles", "packages", "configs", "ops")):
             return base
     raise RuntimeError("unable to resolve repository root")
 
