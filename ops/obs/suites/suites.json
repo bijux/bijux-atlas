@@ -6,16 +6,16 @@
       "id": "cheap",
       "description": "Fast observability smoke (<2m): metric scrape + trace sample + log schema.",
       "tests": [
-        "test_cheap.sh"
+        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_cheap.py"
       ]
     },
     {
       "id": "contracts",
       "description": "Observability contract and profile checks.",
       "tests": [
-        "test_contracts.sh",
+        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_contracts.py",
         "test_profiles.sh",
-        "test_slo_burn_determinism.sh"
+        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_slo_burn_determinism.py"
       ]
     },
     {
@@ -38,8 +38,8 @@
       "id": "root-local",
       "description": "Root-local observability suite: contracts + coverage + minimal drills.",
       "tests": [
-        "test_contracts.sh",
-        "test_slo_burn_determinism.sh",
+        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_contracts.py",
+        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_slo_burn_determinism.py",
         "test_coverage.sh",
         "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_toxiproxy_latency_drill.py",
         "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_prom_outage.py",
@@ -50,18 +50,18 @@
       "id": "drills",
       "description": "Full drill execution suite.",
       "tests": [
-        "test_drills.sh"
+        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_drills.py"
       ]
     },
     {
       "id": "full",
       "description": "Full observability verification suite.",
       "tests": [
-        "test_contracts.sh",
+        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_contracts.py",
         "test_profiles.sh",
-        "test_slo_burn_determinism.sh",
+        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_slo_burn_determinism.py",
         "test_coverage.sh",
-        "test_drills.sh"
+        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_drills.py"
       ]
     }
   ]

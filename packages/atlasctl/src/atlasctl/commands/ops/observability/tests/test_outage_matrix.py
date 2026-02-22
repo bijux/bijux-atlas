@@ -1,8 +1,17 @@
-#!/usr/bin/env bash
-set -euo pipefail
-ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
-. "$ROOT/ops/obs/tests/observability-test-lib.sh"
+#!/usr/bin/env python3
+from __future__ import annotations
 
+import subprocess
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[7]
+
+
+def main() -> int:
+    script = r"""
+set -euo pipefail
+ROOT="$(pwd)"
+. "$ROOT/ops/obs/tests/observability-test-lib.sh"
 require_bin python3
 
 OUT_DIR="$ROOT/artifacts/observability"
@@ -35,3 +44,9 @@ test -s "$OUT_DIR/traces.snapshot.log"
 test -s "$OUT_DIR/traces.exemplars.log"
 
 echo "observability outage matrix passed"
+"""
+    return subprocess.run(["bash", "-lc", script], cwd=ROOT).returncode
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
