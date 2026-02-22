@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from .enforcement import (
+    check_ci_pr_lane_fast_only,
     check_make_ci_entrypoints_contract,
     check_make_index_drift_contract,
     check_make_no_direct_artifact_writes,
@@ -18,6 +19,7 @@ from .enforcement import (
     check_make_root_budget,
     check_make_target_boundaries_enforced,
     check_make_target_ownership_complete,
+    check_workflows_reference_known_suites,
 )
 from ....repo.native import (
     check_make_command_allowlist,
@@ -84,6 +86,22 @@ CHECKS: tuple[CheckDef, ...] = (
         900,
         check_ci_workflows_call_make_and_make_calls_atlasctl,
         fix_hint="Use `run: make <target>` in workflows and keep atlasctl delegation in makefiles.",
+    ),
+    CheckDef(
+        "make.ci_pr_lane_fast_only",
+        "make",
+        "require CI PR lane suites to exclude slow checks unless explicitly allowlisted",
+        900,
+        check_ci_pr_lane_fast_only,
+        fix_hint="Keep `local` suite fast-only, or add temporary exceptions in configs/policy/ci-pr-slow-allowlist.json.",
+    ),
+    CheckDef(
+        "make.workflows_reference_known_suites",
+        "make",
+        "require workflow suite invocations to reference declared suite names",
+        900,
+        check_workflows_reference_known_suites,
+        fix_hint="Update workflow suite names or registry/suites catalog entries so they match.",
     ),
     CheckDef(
         "make.public_targets_documented",

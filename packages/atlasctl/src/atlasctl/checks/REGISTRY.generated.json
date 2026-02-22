@@ -1199,6 +1199,33 @@
     },
     {
       "area": "ci",
+      "callable": "check_ci_pr_lane_fast_only",
+      "category": "hygiene",
+      "description": "require CI PR lane suites to exclude slow checks unless explicitly allowlisted",
+      "domain": "make",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Keep `local` suite fast-only, or add temporary exceptions in configs/policy/ci-pr-slow-allowlist.json.",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_ci_pr_lane_fast_only",
+      "legacy_id": "make.ci_pr_lane_fast_only",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 900,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "ci",
       "callable": "check_ci_workflows_call_make_and_make_calls_atlasctl",
       "category": "hygiene",
       "description": "require CI workflows to call make entrypoints and keep atlasctl delegation in makefiles",
@@ -1738,6 +1765,33 @@
       ]
     },
     {
+      "area": "workflows",
+      "callable": "check_workflows_reference_known_suites",
+      "category": "hygiene",
+      "description": "require workflow suite invocations to reference declared suite names",
+      "domain": "make",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Update workflow suite names or registry/suites catalog entries so they match.",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_workflows_reference_known_suites",
+      "legacy_id": "make.workflows_reference_known_suites",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 900,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
       "area": "wrapper",
       "callable": "check_make_wrapper_purity",
       "category": "hygiene",
@@ -2169,6 +2223,33 @@
       "severity": "error",
       "speed": "fast",
       "timeout_ms": 300,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "checks",
+      "callable": "check_checks_tree_policy",
+      "category": "hygiene",
+      "description": "enforce checks tree depth, module-density budget, and naming hygiene",
+      "domain": "repo",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Split oversized checks directories with `atlasctl dev split-module` and remove misc/utils or duplicated area segments.",
+      "gate": "repo",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_checks_tree_policy",
+      "legacy_id": "repo.checks_tree_policy",
+      "module": "atlasctl.checks.repo.enforcement.checks_tree_policy",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]

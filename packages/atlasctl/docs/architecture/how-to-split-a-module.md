@@ -6,6 +6,7 @@ Use this process when a module or package approaches budget limits.
 - Run `atlasctl policies culprits largest-files --report json`.
 - Run `atlasctl policies culprits files-per-dir --report json`.
 - Run `atlasctl policies culprits modules-per-dir --report json`.
+- Run `atlasctl dev split-module <path>` to generate a seam-first split plan.
 
 2. Choose a stable seam
 - Split by responsibility, not by arbitrary line count.

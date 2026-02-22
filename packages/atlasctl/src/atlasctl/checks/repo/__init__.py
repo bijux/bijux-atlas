@@ -52,6 +52,7 @@ from .contracts.command_contracts import (
     check_stable_command_no_breaking_changes,
 )
 from .enforcement.argparse_policy import check_argparse_policy
+from .enforcement.checks_tree_policy import check_checks_tree_policy
 from .enforcement.package_shape import (
     check_atlasctl_package_root_shape,
     check_canonical_concept_homes,
@@ -418,6 +419,14 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.layout_domain_readmes", "repo", "ensure each layout check domain includes a README", 300, check_layout_domain_readmes, fix_hint="Add README.md to each checks/layout/<domain>/ directory."),
     CheckDef("repo.checks_domain_split", "repo", "require canonical check domain tree (repo_shape/makefiles/ops/docs/observability/artifacts)", 300, check_checks_domain_split, fix_hint="Create or migrate domain packages under packages/atlasctl/src/atlasctl/checks/."),
     CheckDef("repo.checks_root_contract", "repo", "enforce checks root contract (single python root file and module cap)", 300, check_checks_root_contract, fix_hint="Keep only __init__.py + registry artifacts at checks root and group modules under domain packages."),
+    CheckDef(
+        "repo.checks_tree_policy",
+        "repo",
+        "enforce checks tree depth, module-density budget, and naming hygiene",
+        500,
+        check_checks_tree_policy,
+        fix_hint="Split oversized checks directories with `atlasctl dev split-module` and remove misc/utils or duplicated area segments.",
+    ),
     CheckDef("repo.layout_no_legacy_imports", "repo", "forbid legacy imports in checks/layout modules", 300, check_layout_no_legacy_imports, fix_hint="Remove " + "atlasctl." + "legacy" + " imports from layout checks."),
     CheckDef("repo.top_level_structure", "repo", "enforce atlasctl top-level package intent and budget", 300, check_top_level_structure, fix_hint="Keep atlasctl top-level package set within STRUCTURE.md contract."),
     CheckDef(
