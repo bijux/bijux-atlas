@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "kind": "bypass-files-registry",
+  "files": [
+    { "path": "configs/policy/policy-relaxations.json", "kind": "json", "type": "policy", "requires_metadata": true, "schema": "configs/_schemas/policy-relaxations.schema.json" },
+    { "path": "configs/policy/layer-relaxations.json", "kind": "json", "type": "layer", "requires_metadata": true, "schema": "configs/_schemas/layer-relaxations.schema.json" },
+    { "path": "configs/policy/ops-lint-relaxations.json", "kind": "json", "type": "ops", "requires_metadata": true, "schema": "configs/_schemas/ops-lint-relaxations.schema.json" },
+    { "path": "configs/policy/layer-live-diff-allowlist.json", "kind": "json", "type": "allowlist", "requires_metadata": false, "schema": "configs/_schemas/layer-live-diff-allowlist.schema.json" },
+    { "path": "configs/policy/effect-boundary-exceptions.json", "kind": "json", "type": "effects", "requires_metadata": false, "schema": "configs/policy/bypass.schema.json" },
+    { "path": "configs/policy/dead-modules-allowlist.json", "kind": "json", "type": "legacy", "requires_metadata": false, "schema": "configs/policy/bypass.schema.json" },
+    { "path": "configs/policy/dependency-exceptions.json", "kind": "json", "type": "tools", "requires_metadata": true, "schema": "configs/policy/bypass.schema.json" },
+    { "path": "configs/policy/budget-relaxations.json", "kind": "json", "type": "budget", "requires_metadata": true, "schema": "configs/policy/bypass.schema.json" },
+    { "path": "configs/policy/ops-smoke-budget-relaxations.json", "kind": "json", "type": "budget", "requires_metadata": true, "schema": "configs/policy/bypass.schema.json" },
+    { "path": "configs/policy/pin-relaxations.json", "kind": "json", "type": "tools", "requires_metadata": true, "schema": "configs/policy/bypass.schema.json" },
+    { "path": "configs/policy/check-filename-allowlist.json", "kind": "json", "type": "allowlist", "requires_metadata": false, "schema": "configs/policy/bypass.schema.json" },
+    { "path": "configs/policy/slow-checks-ratchet.json", "kind": "json", "type": "budget", "requires_metadata": false, "schema": "configs/policy/bypass.schema.json" },
+    { "path": "configs/policy/forbidden-adjectives-allowlist.txt", "kind": "txt", "type": "naming", "requires_metadata": false },
+    { "path": "configs/policy/shell-network-fetch-allowlist.txt", "kind": "txt", "type": "tools", "requires_metadata": false },
+    { "path": "configs/policy/shell-probes-allowlist.txt", "kind": "txt", "type": "tools", "requires_metadata": false },
+    { "path": "configs/layout/make-command-allowlist.txt", "kind": "txt", "type": "make", "requires_metadata": false },
+    { "path": "configs/security/audit-allowlist.toml", "kind": "toml", "type": "security", "requires_metadata": false }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "kind": "bypass-types",
+  "types": [
+    "allowlist",
+    "budget",
+    "effects",
+    "layer",
+    "legacy",
+    "make",
+    "naming",
+    "ops",
+    "policy",
+    "security",
+    "tools"
+  ]
+}

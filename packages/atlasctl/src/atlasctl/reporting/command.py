@@ -7,6 +7,7 @@ from ..reporting.make_area_report import main as make_area_report_main
 from ..core.context import RunContext
 from ..core.runtime.paths import write_text_file
 from ..commands.policies.runtime.dir_entry_budgets import report_budgets
+from ..checks.domains.policies.make.enforcement import collect_bypass_inventory
 from ..checks.registry import list_checks
 from .actions import (
     _cmd_artifact_gc,
@@ -171,6 +172,50 @@ def run_report_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             write_text_file(out, text + "\n")
         print(text)
         return 0
+    if ns.report_cmd == "bypass":
+        payload = collect_bypass_inventory(ctx.repo_root)
+        rows = payload.get("entries", []) if isinstance(payload.get("entries", []), list) else []
+        by_file: dict[str, int] = {}
+        by_type: dict[str, int] = {}
+        file_meta = {
+            str(row.get("path", "")): str(row.get("type", ""))
+            for row in payload.get("files", [])
+            if isinstance(row, dict)
+        }
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            src = str(row.get("source", "")).strip()
+            by_file[src] = by_file.get(src, 0) + 1
+            typ = file_meta.get(src, "") or "unknown"
+            by_type[typ] = by_type.get(typ, 0) + 1
+        out = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "kind": "bypass-report-summary",
+            "entry_count": payload.get("entry_count", 0),
+            "by_file": [{"file": k, "count": v} for k, v in sorted(by_file.items(), key=lambda item: (-item[1], item[0]))],
+            "by_type": [{"type": k, "count": v} for k, v in sorted(by_type.items(), key=lambda item: (-item[1], item[0]))],
+        }
+        if getattr(ns, "bypass_cmd", "") == "culprits":
+            out["culprits"] = [
+                {
+                    "source": str(row.get("source", "")),
+                    "key": str(row.get("key", "")),
+                    "owner": str(row.get("owner", "")),
+                    "issue_id": str(row.get("issue_id", "")),
+                    "expiry": str(row.get("expiry", "")),
+                }
+                for row in rows
+                if isinstance(row, dict)
+            ]
+        text = json.dumps(out, sort_keys=True) if bool(getattr(ns, "json", False)) else json.dumps(out, indent=2, sort_keys=True)
+        if ns.out:
+            out_path = ctx.repo_root / ns.out
+            write_text_file(out_path, text + "\n")
+        print(text)
+        return 0
     return 2
 
 
@@ -260,6 +305,10 @@ def _configure_report_parser(sub: argparse._SubParsersAction[argparse.ArgumentPa
     checks.add_argument("--histogram", action="store_true", help="include fast/slow histogram")
     checks.add_argument("--json", action="store_true", help="emit JSON output")
     checks.add_argument("--out", help="write output to file path")
+    bypass = rep.add_parser("bypass", help="report bypass inventory offenders by file/type")
+    bypass.add_argument("bypass_cmd", nargs="?", choices=["summary", "culprits"], default="summary")
+    bypass.add_argument("--json", action="store_true", help="emit JSON output")
+    bypass.add_argument("--out", help="write output to file path")
 
 
 def configure_report_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
