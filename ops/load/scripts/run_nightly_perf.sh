@@ -32,7 +32,7 @@ fi
 OUT_DIR="$ART/cold-start" "$ROOT/ops/load/scripts/cold_start_benchmark.sh"
 
 "$ROOT/ops/load/scripts/check_prereqs.sh"
-"$ROOT/ops/load/scripts/validate_suite_manifest.py"
+./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/load/contracts/validate_suite_manifest.py
 docker stats --no-stream --format '{{json .}}' > "$ART/docker_stats_soak_start.json" || true
 "$ROOT/ops/load/scripts/run_suites_from_manifest.py" --profile nightly --out "$RES"
 docker stats --no-stream --format '{{json .}}' > "$ART/docker_stats_soak_end.json" || true
@@ -43,7 +43,7 @@ if command -v kubectl >/dev/null 2>&1; then
   kubectl -n "${ATLAS_E2E_NAMESPACE:-atlas-e2e}" top pods > "$ART/kubectl_top_pods_end.txt" 2>/dev/null || true
 fi
 
-"$ROOT/ops/load/scripts/generate_report.py"
+./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/load/reports/generate_report.py
 "$ROOT/ops/load/scripts/check_regression.py"
-"$ROOT/ops/load/scripts/validate_results.py" "$RES"
+./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/load/reports/validate_results.py "$RES"
 "$ROOT/ops/load/reports/generate.py"

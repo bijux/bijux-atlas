@@ -56,14 +56,10 @@ ops/k8s/tests/validate_suites.py
 ops/load/reports/generate.py
 ops/load/scripts/check_regression.py
 ops/load/scripts/compare_runs.py
-ops/load/scripts/generate_report.py
 ops/load/scripts/regression_check.py
 ops/load/scripts/run_suites_from_manifest.py
-ops/load/scripts/score_k6.py
 ops/load/scripts/triage_regressions.py
 ops/load/scripts/update_baseline.py
-ops/load/scripts/validate_results.py
-ops/load/scripts/validate_suite_manifest.py
 ops/obs/scripts/check_metric_cardinality.py
 ops/obs/scripts/compute_slo_burn.py
 ops/obs/scripts/contracts/check_alerts_contract.py

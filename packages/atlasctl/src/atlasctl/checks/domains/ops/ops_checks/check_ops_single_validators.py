@@ -19,7 +19,7 @@ ops_mk = (ROOT / "makefiles" / "ops.mk").read_text(encoding="utf-8", errors="ign
 checks = {
     "ops-stack-validate": "./ops/stack/scripts/validate.sh",
     "ops-observability-pack-verify": "./ops/obs/scripts/verify_pack.sh",
-    "ops-load-manifest-validate": "./ops/load/scripts/validate_suite_manifest.py",
+    "ops-load-manifest-validate": "./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/load/contracts/validate_suite_manifest.py",
 }
 errors: list[str] = []
 for target, cmd in checks.items():
@@ -30,7 +30,7 @@ blocked = [r"validate_pack\.sh", r"validate_stack\.sh", r"validate_suite.*\.py"]
 allow = {
     "ops/stack/scripts/validate.sh",
     "ops/obs/scripts/verify_pack.sh",
-    "ops/load/scripts/validate_suite_manifest.py",
+    "packages/atlasctl/src/atlasctl/commands/ops/load/contracts/validate_suite_manifest.py",
 }
 for path in (ROOT / "ops").rglob("*"):
     if not path.is_file():

@@ -180,7 +180,7 @@ ops/load/scripts/run_nightly_perf.sh
 atlasctl ops load run
 ops/load/scripts/run_suites_from_manifest.py
 ops/load/scripts/update_baseline.sh
-ops/load/scripts/validate_suite_manifest.py
+packages/atlasctl/src/atlasctl/commands/ops/load/contracts/validate_suite_manifest.py
 ops/load/suites/suites.json
 ops/load/tests/test_cpu_throttle_noisy_neighbor.sh
 ops/obs/contract/endpoint-observability-contract.json
