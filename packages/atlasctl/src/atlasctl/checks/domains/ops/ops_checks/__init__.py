@@ -354,6 +354,15 @@ def check_ops_run_temp_script_approvals(repo_root: Path) -> tuple[int, list[str]
     return (0 if not errors else 1), sorted(errors)
 
 
+def check_ops_no_new_run_scripts_without_approval_and_expiry(repo_root: Path) -> tuple[int, list[str]]:
+    errs: list[str] = []
+    for fn in (check_ops_run_only_allowlisted_scripts, check_ops_run_temp_script_approvals):
+        code, rows = fn(repo_root)
+        if code != 0:
+            errs.extend(rows)
+    return (0 if not errs else 1), sorted(set(errs))
+
+
 CHECKS: tuple[CheckDef, ...] = (
     CheckDef("ops.no_tracked_generated", "ops", "forbid tracked files in generated ops dirs", 800, check_ops_generated_tracked, fix_hint="Untrack generated ops files."),
     CheckDef("ops.generated_not_tracked_unless_allowed", "ops", "forbid tracked generated ops outputs unless explicitly allowlisted", 800, check_ops_generated_not_tracked_unless_allowed, fix_hint="Keep generated outputs untracked or move to committed generated roots."),
@@ -372,4 +381,5 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("ops.run_only_allowlisted_scripts", "ops", "ops/run contains no scripts except explicitly allowed fixtures", 1000, check_ops_run_only_allowlisted_scripts, fix_hint="Migrate behavior into atlasctl and delete ops/run scripts or extend transitional allowlist intentionally."),
     CheckDef("ops.run_non_executable_unless_allowlisted", "ops", "ops/run scripts must be non-executable except allowlisted", 1000, check_ops_run_non_executable_unless_allowlisted, fix_hint="Remove executable bits from ops/run scripts after migration, or update allowlist intentionally."),
     CheckDef("ops.run_temp_script_approvals", "ops", "temporary ops/run migration script approvals must be valid and unexpired", 1000, check_ops_run_temp_script_approvals, fix_hint="Keep configs/policy/ops-run-temp-script-approvals.json entries valid, justified, and unexpired."),
+    CheckDef("ops.no_new_run_scripts_without_approval_and_expiry", "ops", "forbid new ops/run scripts without valid temporary approval and expiry", 1000, check_ops_no_new_run_scripts_without_approval_and_expiry, fix_hint="Keep ops/run scripts allowlisted only via valid non-expired temp approvals, or migrate/delete them."),
 )
