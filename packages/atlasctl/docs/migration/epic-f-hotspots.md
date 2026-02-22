@@ -9,7 +9,7 @@ Source: `atlasctl policies culprits files-per-dir` + `atlasctl policies culprits
 - files/dir: 12 (budget 10, FAIL)
 - modules/dir: 11 (budget 9, FAIL)
 
-2. `packages/atlasctl/src/atlasctl/checks/layout/artifacts`
+2. `packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts`
 - files/dir: 10 (budget 12, WARN)
 
 3. `packages/atlasctl/src/atlasctl/checks/layout/makefiles/checks`
@@ -47,10 +47,10 @@ Observability contract ownership is canonical in:
 - `packages/atlasctl/src/atlasctl/observability/contracts/*`
 
 Legacy layout observability contract scripts are removed from:
-- `packages/atlasctl/src/atlasctl/checks/layout/policies/observability/*`
+- `packages/atlasctl/src/atlasctl/checks/layout/domains/policies/observability/*`
 
 ## Next splits
 
 - Split `checks/layout/makefiles/checks` by concept (`contracts`, `safety`, `ownership`).
 - Split `checks/layout/ops/checks` by concept (`layout`, `surface`, `governance`).
-- Keep `checks/layout/policies/*` focused to non-observability layout contracts only.
+- Keep `checks/layout/domains/policies/*` focused to non-observability layout contracts only.

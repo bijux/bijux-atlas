@@ -7,9 +7,15 @@ from pathlib import Path
 from make_target_graph import parse_make_targets, render_tree
 from public_make_targets import public_names
 
-ROOT = Path(__file__).resolve().parents[6]
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for base in (cur, *cur.parents):
+        if (base / "makefiles").exists() and (base / "packages").exists():
+            return base
+    raise RuntimeError("unable to resolve repository root")
 
 
+ROOT = _repo_root()
 def main() -> int:
     p = argparse.ArgumentParser()
     p.add_argument("target")

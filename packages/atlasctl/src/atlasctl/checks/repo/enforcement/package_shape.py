@@ -41,12 +41,12 @@ _ATLASCTL_PACKAGE_ROOT_ALLOWED = {
     "uv.lock",
 }
 _CHECK_DOMAIN_PATHS = {
-    "repo_shape": Path("packages/atlasctl/src/atlasctl/checks/repo_shape"),
+    "repo_shape": Path("packages/atlasctl/src/atlasctl/checks/domains/dev/repo_shape"),
     "makefiles": Path("packages/atlasctl/src/atlasctl/checks/domains/policies/make"),
     "ops": Path("packages/atlasctl/src/atlasctl/checks/domains/ops/ops_checks"),
-    "docs": Path("packages/atlasctl/src/atlasctl/checks/docs"),
-    "observability": Path("packages/atlasctl/src/atlasctl/checks/observability"),
-    "artifacts": Path("packages/atlasctl/src/atlasctl/checks/layout/artifacts"),
+    "docs": Path("packages/atlasctl/src/atlasctl/checks/domains/docs"),
+    "observability": Path("packages/atlasctl/src/atlasctl/checks/domains/ops/observability"),
+    "artifacts": Path("packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts"),
 }
 _CHECKS_ROOT_REL = Path("packages/atlasctl/src/atlasctl/checks")
 _CHECKS_ROOT_ALLOWED_FILES = {"README.md", "REGISTRY.toml", "REGISTRY.generated.json", "__init__.py"}
@@ -87,20 +87,20 @@ def check_layout_domain_readmes(repo_root: Path) -> tuple[int, list[str]]:
     layout_root = repo_root / "packages/atlasctl/src/atlasctl/checks/layout"
     required_domains = (
         "root",
-        "artifacts",
         "makefiles",
         "ops",
         "scripts",
         "docs",
         "workflows",
-        "contracts",
-        "governance",
-        "public_surface",
-        "hygiene",
-        "policies",
-        "orphans",
-        "scenarios",
-        "shell",
+        "domains/artifacts",
+        "domains/contracts",
+        "domains/governance",
+        "domains/public_surface",
+        "domains/hygiene",
+        "domains/policies",
+        "domains/orphans",
+        "domains/scenarios",
+        "domains/shell",
     )
     missing: list[str] = []
     for domain in required_domains:

@@ -62,8 +62,8 @@ from .enforcement.package_shape import (
     check_no_nested_same_name_packages,
     check_top_level_package_group_mapping,
 )
-from .enforcement.check_top_level_structure import check_top_level_structure
-from .enforcement.check_structure import (
+from .enforcement.structure.check_top_level_structure import check_top_level_structure
+from .enforcement.structure.check_structure import (
     check_check_impl_no_cli_imports,
     check_checks_canonical_location,
 )

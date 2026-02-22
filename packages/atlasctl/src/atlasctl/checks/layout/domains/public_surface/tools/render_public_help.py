@@ -6,10 +6,18 @@ import re
 from collections import defaultdict
 from pathlib import Path
 
-from make_target_graph import parse_make_targets
+from atlasctl.checks.layout.makefiles.tools.make_target_graph import parse_make_targets
 from public_make_targets import public_entries
 
-ROOT = Path(__file__).resolve().parents[6]
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for base in (cur, *cur.parents):
+        if (base / "makefiles").exists() and (base / "packages").exists():
+            return base
+    raise RuntimeError("unable to resolve repository root")
+
+
+ROOT = _repo_root()
 LEGACY_TARGET_RE = re.compile(r"(^|/)legacy($|-)")
 
 

@@ -8,7 +8,15 @@ from pathlib import Path
 
 from public_make_targets import public_names
 
-ROOT = Path(__file__).resolve().parents[7]
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for base in (cur, *cur.parents):
+        if (base / "makefiles").exists() and (base / "packages").exists():
+            return base
+    raise RuntimeError("unable to resolve repository root")
+
+
+ROOT = _repo_root()
 MAKEFILES = ROOT / "makefiles"
 LEGACY = ROOT / "configs" / "ops" / "nonroot-legacy-targets.txt"
 TARGET_RE = re.compile(r"^([A-Za-z0-9_./-]+):(?:\s|$)", flags=re.M)
