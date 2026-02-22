@@ -204,56 +204,8 @@ docs/clean: ## Clean docs generated outputs only
 
 docs/all: ## Docs lane
 	@$(call with_iso,docs-all,$(MAKE) -s docs-all)
-scripts/check: ## Deterministic scripts check lane
-	@$(call with_iso,scripts-check,$(MAKE) -s internal/scripts/check)
-
 tools-check: ## Alias for python tooling/package checks
-	@$(MAKE) -s scripts/check
-
-atlasctl-lint: ## Lint atlasctl package (ruff + mypy strict domains)
-	@$(MAKE) -s internal/scripts/install-lock
-	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/ruff" check --config packages/atlasctl/pyproject.toml packages/atlasctl/src packages/atlasctl/tests
-	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/mypy" packages/atlasctl/src/atlasctl/core packages/atlasctl/src/atlasctl/contracts
-
-atlasctl-test: ## Test atlasctl package (compile + unit + integration)
-	@$(MAKE) -s internal/scripts/install-lock
-	@PYTHONPATH=packages/atlasctl/src "$(SCRIPTS_VENV)/bin/python" -m compileall -q packages/atlasctl/src
-	@./bin/atlasctl dev ci run --json --out-dir artifacts/reports/atlasctl/suite-ci >/dev/null
-	@./bin/atlasctl test run integration
-
-scripts-install-dev: ## Install python tooling for scripts package development
-	@$(MAKE) -s internal/scripts/install-dev
-
-scripts-install: ## Install scripts package tooling into local venv
-	@$(MAKE) -s internal/scripts/install
-
-scripts-venv: ## Create deterministic scripts venv under artifacts/atlasctl/venv/
-	@$(MAKE) -s internal/scripts/venv
-
-scripts-lock-check: ## Validate scripts lock consistency against pyproject
-	@$(MAKE) -s internal/scripts/lock-check
-
-scripts-run: ## Run atlasctl command (usage: make scripts-run CMD="doctor --json")
-	@[ -n "$${CMD:-}" ] || { echo "usage: make scripts-run CMD='doctor --json'" >&2; exit 2; }
-	@$(MAKE) -s internal/scripts/run CMD="$${CMD}"
-
-scripts/build: ## Build script inventories and graph
-	@$(call with_iso,scripts-build,$(MAKE) -s internal/scripts/build)
-
-scripts/fmt: ## Scripts formatting
-	@$(call with_iso,scripts-fmt,$(MAKE) -s internal/scripts/fmt)
-
-scripts/lint: ## Scripts lint
-	@$(call with_iso,scripts-lint-uniform,$(MAKE) -s internal/scripts/lint)
-
-scripts/test: ## Scripts tests
-	@$(call with_iso,scripts-test-uniform,$(MAKE) -s internal/scripts/test)
-
-scripts/clean: ## Scripts generated-output cleanup
-	@$(call with_iso,scripts-clean-uniform,$(MAKE) -s internal/scripts/clean)
-
-scripts/all: ## Scripts lane (lint/tests/audit)
-	@$(call with_iso,scripts-all,$(MAKE) -s internal/scripts/all)
+	@$(MAKE) -s scripts-check
 packages-check: ## Validate python package surfaces and repository scripting policy
 	@$(MAKE) -s internal/packages/check
 ops/check: ## Fast ops verification (no cluster bring-up)
@@ -377,7 +329,7 @@ lane-ops: ## Lane: ops lint/contracts without cluster bring-up
 	@$(MAKE) -s ops/check
 
 lane-scripts: ## Lane: scripts lint/tests/audit
-	@$(MAKE) -s scripts/check
+	@$(MAKE) -s scripts-check
 
 lane-configs: ## Lane: configs checks and drift gates
 	@$(call with_iso,lane-configs,$(MAKE) -s configs-check budgets/check atlasctl-budgets)
@@ -401,7 +353,7 @@ internal/lane-obs-full: ## Internal lane: full observability verification for ro
 root: ## CI-fast lane subset (no cluster bring-up)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-$(MAKE_RUN_TS)}}"; \
 	$(MAKE) -s tools-check; \
-	$(MAKE) -s scripts/test; \
+	$(MAKE) -s scripts-test; \
 	parallel_flag=""; if [ "$${PARALLEL:-1}" = "1" ]; then parallel_flag="--parallel"; fi; \
 	RUN_ID="$$run_id" ./bin/atlasctl --quiet gates run --preset root --all $$parallel_flag --jobs "$${JOBS:-4}"; \
 	./bin/atlasctl --quiet report collect --run-id "$$run_id" >/dev/null; \
@@ -413,7 +365,7 @@ root: ## CI-fast lane subset (no cluster bring-up)
 root-local: ## All lanes in parallel + ops smoke lane (PARALLEL=0 for serial)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-$(MAKE_RUN_TS)}}"; \
 	$(MAKE) -s tools-check; \
-	$(MAKE) -s scripts/test; \
+	$(MAKE) -s scripts-test; \
 	parallel_flag=""; if [ "$${PARALLEL:-1}" = "1" ]; then parallel_flag="--parallel"; fi; \
 	RUN_ID="$$run_id" ./bin/atlasctl --quiet gates run --preset root-local --all $$parallel_flag --jobs "$${JOBS:-4}"; \
 	if [ "$${PERF_CHEAP_REGRESSION:-0}" = "1" ]; then $(MAKE) -s ops-load-smoke perf/regression-check PROFILE="$${PROFILE:-local}"; fi; \
@@ -472,8 +424,8 @@ contracts: ## Deprecated alias for policies/all
 	@$(MAKE) -s policies/all
 
 hygiene: ## Deprecated alias for scripts/all
-	@echo "[DEPRECATED] 'make hygiene' -> 'make scripts/all'" >&2
-	@$(MAKE) -s scripts/all
+	@echo "[DEPRECATED] 'make hygiene' -> 'make scripts-all'" >&2
+	@$(MAKE) -s scripts-all
 
 config-validate: ## Deprecated alias for configs/all
 	@echo "[DEPRECATED] 'make config-validate' -> 'make configs/all'" >&2
@@ -517,13 +469,13 @@ dev-bootstrap: ## Setup local python tooling for atlas-scripts (uv sync)
 	@if command -v uv >/dev/null 2>&1; then \
 		uv sync --project packages/atlasctl; \
 	else \
-		echo "uv is not installed; falling back to make scripts-install"; \
-		$(MAKE) -s scripts-install; \
+		echo "uv is not installed; falling back to make deps-sync"; \
+		$(MAKE) -s deps-sync; \
 	fi
 
 make/guard-no-python-scripts: ## Guard against direct python scripts path invocation in make recipes
 	@! rg -n "python(3)?\\s+\\.?/?scripts/" makefiles/*.mk >/dev/null || { \
-		echo "direct python path invocation is forbidden; use ./bin/atlasctl or $(PY_RUN)"; \
+		echo "direct python path invocation is forbidden; use ./bin/atlasctl only"; \
 		rg -n "python(3)?\\s+\\.?/?scripts/" makefiles/*.mk; \
 		exit 1; \
 	}
