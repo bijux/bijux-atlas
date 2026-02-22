@@ -382,7 +382,9 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             continue
         if int(row["duration_ms"]) > approved:
             speed_regressions.append(f"{cid}: {int(row['duration_ms'])}ms > approved {approved}ms")
-    final_failed = fail_count + (1 if ratchet_errors else 0) + (1 if speed_regressions else 0)
+    ignore_speed_regressions = bool(getattr(ns, "ignore_speed_regressions", False))
+    speed_regression_failure = bool(speed_regressions) and not ignore_speed_regressions
+    final_failed = fail_count + (1 if ratchet_errors else 0) + (1 if speed_regression_failure else 0)
     summary = {
         "passed": pass_count,
         "failed": fail_count,
