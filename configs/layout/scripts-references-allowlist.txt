@@ -217,7 +217,7 @@ ops/run/prereqs.sh
 ops/run/root-lanes.sh
 atlasctl ops stack down
 atlasctl ops stack up
-ops/run/warm-entrypoint.sh
+atlasctl ops warm
 ops/stack/scripts/install.sh
 ops/stack/scripts/stack_smoke.sh
 packages/README.md
