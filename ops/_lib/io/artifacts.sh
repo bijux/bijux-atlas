@@ -6,7 +6,7 @@ set -euo pipefail
 
 _OPS_LIB_DIR="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(CDPATH='' cd -- "${_OPS_LIB_DIR}/../../.." && pwd)"
-# shellcheck source=ops/_lib/run_id.sh
+# shellcheck source=ops/_lib/io/run_id.sh
 source "${_OPS_LIB_DIR}/run_id.sh"
 
 ops_run_id() {

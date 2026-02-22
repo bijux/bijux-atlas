@@ -5,8 +5,8 @@
 set -euo pipefail
 
 _OPS_LIB_DIR="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=ops/_lib/artifacts.sh
-source "$_OPS_LIB_DIR/../artifacts.sh"
+# shellcheck source=ops/_lib/io/artifacts.sh
+source "$_OPS_LIB_DIR/../io/artifacts.sh"
 
 ops_kubectl_guardrails() {
   if [ "${I_KNOW_WHAT_I_AM_DOING:-0}" = "1" ] || [ "${ALLOW_NON_KIND:-0}" = "1" ]; then
