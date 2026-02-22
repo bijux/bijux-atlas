@@ -37,6 +37,7 @@ repo.duplicate_script_names
 repo.effect_boundaries
 repo.effect_boundary_exceptions_policy
 repo.env_docs_present
+repo.forbidden_adjectives
 repo.forbidden_top_dirs
 repo.import_smoke
 repo.internal_commands_not_public
@@ -115,3 +116,4 @@ repo.tests_no_duplicate_expectations
 repo.top_level_structure
 repo.type_coverage
 repo.version_matches_pyproject
+repo.workflows_targets_exist
