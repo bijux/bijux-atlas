@@ -544,7 +544,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                     return code
             return 0
         if ns.ops_cmd == "datasets" and sub == "fetch":
-            return impl._run_simple_cmd(ctx, shell_script_command("ops/run/warm.sh"), ns.report)
+            return impl._run_simple_cmd(ctx, shell_script_command("ops/run/warm-entrypoint.sh", "--mode", "warmup"), ns.report)
         if ns.ops_cmd == "datasets" and sub in {"pin", "lock"}:
             return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/commands/ops/datasets/build_manifest_lock.py"], ns.report)
         if ns.ops_cmd == "datasets" and sub == "qc":

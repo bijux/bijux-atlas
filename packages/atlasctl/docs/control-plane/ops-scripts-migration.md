@@ -54,7 +54,7 @@ Classification legend:
 | `ops/run/undeploy.sh` | glue | planned | `atlasctl ops undeploy` |
 | `ops/run/warm-dx.sh` | glue | planned | `atlasctl ops datasets fetch` / `atlasctl ops warm dx` |
 | `ops/run/warm-entrypoint.sh` | glue | planned | `atlasctl ops datasets fetch` |
-| `ops/run/warm.sh` | glue | planned | `atlasctl ops datasets fetch` |
+| `ops/run/warm.sh` | glue | deleted (folded into warm-entrypoint) | `atlasctl ops datasets fetch` |
 | `ops/run/root/root_artifacts_open.sh` | legacy | deleted (inlined in `make artifacts-open`) | `make artifacts-open` / future `atlasctl artifacts open` |
 | `ops/run/root/root_quick.sh` | legacy | deleted (inlined in `make quick`) | `atlasctl dev fmt && lint && test` |
 
