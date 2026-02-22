@@ -3,15 +3,19 @@ from __future__ import annotations
 
 import argparse
 import re
-import sys
 from collections import defaultdict
-from pathlib import Path
-
 TOOLS_ROOT = Path(__file__).resolve().parents[3] / "makefiles" / "tools"
 if str(TOOLS_ROOT) not in sys.path:
     sys.path.insert(0, str(TOOLS_ROOT))
 
 from make_target_graph import parse_make_targets
+import sys
+from pathlib import Path
+
+_THIS_DIR = Path(__file__).resolve().parent
+if str(_THIS_DIR) not in sys.path:
+    sys.path.insert(0, str(_THIS_DIR))
+
 from public_make_targets import public_entries
 
 def _repo_root() -> Path:
