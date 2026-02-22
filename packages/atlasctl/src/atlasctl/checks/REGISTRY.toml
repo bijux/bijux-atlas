@@ -1558,6 +1558,90 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_policies_adjective_allowlist_budget"
+domain = "policies"
+area = "adjective"
+gate = "policies"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.domains.policies.make"
+callable = "check_policies_adjective_allowlist_budget"
+description = "enforce adjective allowlist ratchet budget"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep adjective allowlist empty or within ratchet budget."
+legacy_id = "policies.adjective_allowlist_budget"
+groups = ["fast", "policies", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_policies_adjectives_repo_clean"
+domain = "policies"
+area = "adjectives"
+gate = "policies"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.domains.policies.make"
+callable = "check_policies_adjectives_repo_clean"
+description = "forbid forbidden adjectives across tracked files"
+severity = "error"
+category = "hygiene"
+fix_hint = "Replace forbidden adjectives with neutral wording."
+legacy_id = "policies.adjectives_repo_clean"
+groups = ["fast", "policies", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_policies_budget_approval_time_bounded"
+domain = "policies"
+area = "budget"
+gate = "policies"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.domains.policies.make"
+callable = "check_policies_budget_approval_time_bounded"
+description = "require budget loosening approvals to be time bounded"
+severity = "error"
+category = "hygiene"
+fix_hint = "Set valid non-expired bounded expiry in budget-loosening-approval.json."
+legacy_id = "policies.budget_approval_time_bounded"
+groups = ["fast", "policies", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_policies_budget_relaxation_requires_approval"
+domain = "policies"
+area = "budget"
+gate = "policies"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.domains.policies.make"
+callable = "check_policies_budget_relaxation_requires_approval"
+description = "require explicit approval for any budget relaxation"
+severity = "error"
+category = "hygiene"
+fix_hint = "Set budget-loosening-approval.json with approved=true and approval_id when relaxations exist."
+legacy_id = "policies.budget_relaxation_requires_approval"
+groups = ["fast", "policies", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_policies_bypass_all_entries_have_owner_issue_expiry"
 domain = "policies"
 area = "bypass"
@@ -1600,6 +1684,27 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_policies_bypass_count_nonincreasing"
+domain = "policies"
+area = "bypass"
+gate = "policies"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.domains.policies.make"
+callable = "check_policies_bypass_count_nonincreasing"
+description = "enforce migration gate: bypass count must not increase"
+severity = "error"
+category = "hygiene"
+fix_hint = "Reduce bypass count or intentionally update baseline in one reviewed change."
+legacy_id = "policies.bypass_count_nonincreasing"
+groups = ["fast", "policies", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_policies_bypass_expiry_max_horizon"
 domain = "policies"
 area = "bypass"
@@ -1635,6 +1740,48 @@ severity = "error"
 category = "hygiene"
 fix_hint = "Remove or renew expired bypass entries."
 legacy_id = "policies.bypass_expiry_not_past"
+groups = ["fast", "policies", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_policies_bypass_files_scoped"
+domain = "policies"
+area = "bypass"
+gate = "policies"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.domains.policies.make"
+callable = "check_policies_bypass_files_scoped"
+description = "ensure bypass files are scoped under configs/policy"
+severity = "error"
+category = "hygiene"
+fix_hint = "Move bypass files into configs/policy or remove them."
+legacy_id = "policies.bypass_files_scoped"
+groups = ["fast", "policies", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_policies_bypass_ids_unique"
+domain = "policies"
+area = "bypass"
+gate = "policies"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.domains.policies.make"
+callable = "check_policies_bypass_ids_unique"
+description = "require unique bypass IDs across policy files"
+severity = "error"
+category = "hygiene"
+fix_hint = "Deduplicate bypass IDs/keys across configs/policy."
+legacy_id = "policies.bypass_ids_unique"
 groups = ["fast", "policies", "repo", "required"]
 effects = []
 external_tools = []
@@ -1789,6 +1936,27 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_policies_bypass_removal_milestones_defined"
+domain = "policies"
+area = "bypass"
+gate = "policies"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.domains.policies.make"
+callable = "check_policies_bypass_removal_milestones_defined"
+description = "require bypass removal milestone SSOT file"
+severity = "error"
+category = "hygiene"
+fix_hint = "Define removal milestones in configs/policy/bypass-removal-milestones.json."
+legacy_id = "policies.bypass_removal_milestones_defined"
+groups = ["fast", "policies", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_policies_bypass_removal_plan_required"
 domain = "policies"
 area = "bypass"
@@ -1845,6 +2013,132 @@ severity = "error"
 category = "hygiene"
 fix_hint = "Use only documented bypass scopes."
 legacy_id = "policies.bypass_scope_valid"
+groups = ["fast", "policies", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_policies_bypass_usage_heatmap"
+domain = "policies"
+area = "bypass"
+gate = "policies"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.domains.policies.make"
+callable = "check_policies_bypass_usage_heatmap"
+description = "emit bypass usage heatmap report"
+severity = "error"
+category = "hygiene"
+fix_hint = "Review bypass usage report and reduce hotspots."
+legacy_id = "policies.bypass_usage_heatmap"
+groups = ["fast", "policies", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_policies_dependency_exceptions_remove_by_issue"
+domain = "policies"
+area = "dependency"
+gate = "policies"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.domains.policies.make"
+callable = "check_policies_dependency_exceptions_remove_by_issue"
+description = "require dependency exceptions to include remove_by and issue_id"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add `remove_by` and valid `issue_id` to dependency exceptions."
+legacy_id = "policies.dependency_exceptions_remove_by_issue"
+groups = ["fast", "policies", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_policies_no_inline_bypass_entries"
+domain = "policies"
+area = "no"
+gate = "policies"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.domains.policies.make"
+callable = "check_policies_no_inline_bypass_entries"
+description = "forbid inline bypass metadata in source code"
+severity = "error"
+category = "hygiene"
+fix_hint = "Move bypass metadata to configs/policy files."
+legacy_id = "policies.no_inline_bypass_entries"
+groups = ["fast", "policies", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_policies_shell_network_fetch_allowlist_inline_meta"
+domain = "policies"
+area = "shell"
+gate = "policies"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.domains.policies.make"
+callable = "check_policies_shell_network_fetch_allowlist_inline_meta"
+description = "require inline owner/why comments for network-fetch shell allowlist entries"
+severity = "error"
+category = "hygiene"
+fix_hint = "Annotate every allowlist line with `# owner=<id>; why=<reason>`."
+legacy_id = "policies.shell_network_fetch_allowlist_inline_meta"
+groups = ["fast", "network", "policies", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_policies_shell_probes_allowlist_inline_meta"
+domain = "policies"
+area = "shell"
+gate = "policies"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.domains.policies.make"
+callable = "check_policies_shell_probes_allowlist_inline_meta"
+description = "require inline owner/why comments for shell probe allowlist entries"
+severity = "error"
+category = "hygiene"
+fix_hint = "Annotate every allowlist line with `# owner=<id>; why=<reason>`."
+legacy_id = "policies.shell_probes_allowlist_inline_meta"
+groups = ["fast", "policies", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_policies_tests_bypass_dependency_marked"
+domain = "policies"
+area = "tests"
+gate = "policies"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.domains.policies.make"
+callable = "check_policies_tests_bypass_dependency_marked"
+description = "require explicit marker when tests depend on bypass files"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add `# BYPASS_TEST_OK` marker to tests that intentionally read bypass files."
+legacy_id = "policies.tests_bypass_dependency_marked"
 groups = ["fast", "policies", "repo", "required"]
 effects = []
 external_tools = []
