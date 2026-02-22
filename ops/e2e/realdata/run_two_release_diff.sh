@@ -9,8 +9,8 @@ export ATLAS_REALDATA_ROOT="$REAL_ROOT"
 "$ROOT/ops/datasets/scripts/fixtures/fetch-real-datasets.sh"
 "$ROOT/ops/e2e/runner/cleanup_store.sh"
 
-"$ROOT/ops/datasets/scripts/publish_by_name.sh" real110
-"$ROOT/ops/datasets/scripts/publish_by_name.sh" real111
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/datasets/publish_by_name.py" real110
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/datasets/publish_by_name.py" real111
 
 DIFF_OUT="${ATLAS_E2E_DIFF_OUT:-$ROOT/artifacts/ops/release-diff/110_to_111}"
 STORE_ROOT="${ATLAS_E2E_STORE_ROOT:-$ROOT/artifacts/e2e-store}"

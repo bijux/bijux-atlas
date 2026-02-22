@@ -7,7 +7,7 @@ export ATLAS_REALDATA_ROOT="$REAL_ROOT"
 
 "$ROOT/ops/datasets/scripts/fixtures/fetch-real-datasets.sh"
 "$ROOT/ops/e2e/runner/cleanup_store.sh"
-"$ROOT/ops/datasets/scripts/publish_by_name.sh" real110
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/datasets/publish_by_name.py" real110
 (
   cd "$ROOT"
   ./bin/atlasctl ops deploy --report text apply
