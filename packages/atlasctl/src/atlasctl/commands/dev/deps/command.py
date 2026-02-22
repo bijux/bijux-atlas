@@ -15,7 +15,9 @@ from ....core.runtime.paths import write_text_file
 try:
     import tomllib  # py311+
 except ModuleNotFoundError:  # pragma: no cover
-    import tomli as tomllib  # type: ignore
+    import importlib
+
+    tomllib = importlib.import_module("tomli")  # type: ignore[assignment]
 
 
 def _requirements_paths(repo_root: Path) -> tuple[Path, Path]:

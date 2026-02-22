@@ -11,7 +11,9 @@ from .models import BudgetException, BudgetRule, DirStat, FileStat
 try:
     import tomllib  # py311+
 except ModuleNotFoundError:  # pragma: no cover
-    import tomli as tomllib  # type: ignore
+    import importlib
+
+    tomllib = importlib.import_module("tomli")  # type: ignore[assignment]
 
 
 _BRANCH_TOKENS = (" if ", " elif ", " for ", " while ", " except ", " case ", " and ", " or ")
