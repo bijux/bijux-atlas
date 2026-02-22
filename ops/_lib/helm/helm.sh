@@ -7,8 +7,8 @@ set -euo pipefail
 _OPS_LIB_DIR="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=ops/_lib/io/artifacts.sh
 source "$_OPS_LIB_DIR/../io/artifacts.sh"
-# shellcheck source=ops/_lib/kubectl.sh
-source "$_OPS_LIB_DIR/../kubectl.sh"
+# shellcheck source=ops/_lib/k8s/kubectl.sh
+source "$_OPS_LIB_DIR/../k8s/kubectl.sh"
 
 ops_helm() {
   helm "$@"
