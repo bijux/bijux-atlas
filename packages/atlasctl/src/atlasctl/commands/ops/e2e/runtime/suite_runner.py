@@ -7,8 +7,46 @@ SCRIPT = r'''set -euo pipefail
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 cd "$ROOT"
-. "$ROOT/ops/_lib/common.sh"
-ops_init_run_id
+LAYER_CONTRACT="${ATLAS_LAYER_CONTRACT_PATH:-$ROOT/ops/_meta/layer-contract.json}"
+ops_layer_contract_get() {
+  local key="$1"
+  python3 - "$key" "$LAYER_CONTRACT" <<'PY'
+import json, sys
+key = sys.argv[1]
+path = sys.argv[2]
+obj = json.load(open(path, encoding='utf-8'))
+cur = obj
+for part in key.split('.'):
+    if isinstance(cur, dict) and part in cur:
+        cur = cur[part]
+    else:
+        raise SystemExit(f"missing key: {key}")
+print(json.dumps(cur, sort_keys=True) if isinstance(cur, (dict, list)) else cur)
+PY
+}
+ops_layer_ns_e2e() { ops_layer_contract_get "namespaces.e2e"; }
+ops_context_guard() {
+  local profile="${1:-kind}"
+  if [ "${I_KNOW_WHAT_I_AM_DOING:-0}" = "1" ] || [ "${ALLOW_NON_KIND:-0}" = "1" ]; then return 0; fi
+  local ctx; ctx="$(kubectl config current-context 2>/dev/null || true)"
+  case "$profile" in
+    kind) case "$ctx" in kind-*|*kind*) return 0;; esac; echo "invalid kubectl context '$ctx' for profile=kind" >&2; return 2 ;;
+    perf) [ -n "$ctx" ] && return 0; echo "missing kubectl context for profile=perf" >&2; return 2 ;;
+    *) echo "unknown profile '$profile'" >&2; return 2 ;;
+  esac
+}
+ops_env_load() {
+  python3 ./packages/atlasctl/src/atlasctl/layout_checks/validate_ops_env.py --schema "${OPS_ENV_SCHEMA:-configs/ops/env.schema.json}" >/dev/null
+  export RUN_ID="${RUN_ID:-${OPS_RUN_ID:-}}"
+  export ARTIFACT_DIR="${ARTIFACT_DIR:-${OPS_RUN_DIR:-}}"
+  if [ -z "${RUN_ID:-}" ] || [ -z "${ARTIFACT_DIR:-}" ]; then echo "RUN_ID and ARTIFACT_DIR must be set" >&2; return 2; fi
+}
+ops_version_guard() { python3 ./packages/atlasctl/src/atlasctl/layout_checks/check_tool_versions.py "$@"; }
+ops_entrypoint_start() { :; }
+# lightweight run-id/artifact defaults when shell helper stack is absent
+if [ -z "${OPS_RUN_ID:-}" ]; then export OPS_RUN_ID="${RUN_ID:-local}"; fi
+if [ -z "${OPS_RUN_DIR:-}" ]; then export OPS_RUN_DIR="$ROOT/artifacts/ops/${OPS_RUN_ID}"; fi
+mkdir -p "$OPS_RUN_DIR"
 export RUN_ID="$OPS_RUN_ID"
 export ARTIFACT_DIR="$OPS_RUN_DIR"
 ops_env_load
