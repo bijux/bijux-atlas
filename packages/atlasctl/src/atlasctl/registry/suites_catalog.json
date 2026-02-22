@@ -1,201 +1,354 @@
 {
-  "schema_version": 1,
   "kind": "atlasctl-suites-catalog",
+  "schema_version": 1,
   "suites": [
     {
-      "name": "docs",
-      "markers": ["docs"],
-      "required_env": ["PYTHONPATH"],
-      "default_effects": ["read"],
-      "time_budget_ms": 120000,
+      "default_effects": [
+        "read",
+        "process",
+        "write"
+      ],
+      "exclude_markers": [
+        "internal",
+        "internal-only"
+      ],
       "include_checks": [],
-      "exclude_markers": [],
-      "internal": false
+      "internal": false,
+      "markers": [
+        "docs",
+        "dev",
+        "ops",
+        "policies",
+        "configs"
+      ],
+      "name": "all",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 480000
     },
     {
-      "name": "dev",
-      "markers": ["dev"],
-      "required_env": ["PYTHONPATH"],
-      "default_effects": ["read", "process"],
-      "time_budget_ms": 180000,
-      "include_checks": [],
+      "default_effects": [
+        "read",
+        "process"
+      ],
       "exclude_markers": [],
-      "internal": false
-    },
-    {
-      "name": "ops",
-      "markers": ["ops"],
-      "required_env": ["PYTHONPATH"],
-      "default_effects": ["read", "process", "write"],
-      "time_budget_ms": 240000,
       "include_checks": [],
-      "exclude_markers": [],
-      "internal": false
-    },
-    {
-      "name": "policies",
-      "markers": ["policies"],
-      "required_env": ["PYTHONPATH"],
-      "default_effects": ["read", "process"],
-      "time_budget_ms": 240000,
-      "include_checks": [],
-      "exclude_markers": [],
-      "internal": false
-    },
-    {
-      "name": "configs",
-      "markers": ["configs"],
-      "required_env": ["PYTHONPATH"],
-      "default_effects": ["read"],
-      "time_budget_ms": 120000,
-      "include_checks": [],
-      "exclude_markers": [],
-      "internal": false
-    },
-    {
-      "name": "local",
-      "markers": ["fast"],
-      "required_env": ["PYTHONPATH"],
-      "default_effects": ["read", "process"],
-      "time_budget_ms": 120000,
-      "include_checks": [],
-      "exclude_markers": [],
-      "internal": false
-    },
-    {
-      "name": "slow",
-      "markers": ["slow"],
-      "required_env": ["PYTHONPATH"],
-      "default_effects": ["read", "process"],
-      "time_budget_ms": 300000,
-      "include_checks": [],
-      "exclude_markers": [],
-      "internal": false
-    },
-    {
-      "name": "ci-pr",
-      "markers": ["fast"],
-      "required_env": ["PYTHONPATH"],
-      "default_effects": ["read", "process"],
-      "time_budget_ms": 120000,
-      "include_checks": [],
-      "exclude_markers": [],
-      "internal": false
-    },
-    {
-      "name": "ci-nightly",
-      "markers": ["slow"],
-      "required_env": ["PYTHONPATH"],
-      "default_effects": ["read", "process"],
-      "time_budget_ms": 300000,
-      "include_checks": [],
-      "exclude_markers": [],
-      "internal": false
-    },
-    {
-      "name": "ops-nightly",
-      "markers": ["ops", "slow"],
-      "required_env": ["PYTHONPATH"],
-      "default_effects": ["read", "process", "write"],
-      "time_budget_ms": 360000,
-      "include_checks": [],
-      "exclude_markers": [],
-      "internal": false
-    },
-    {
-      "name": "perf-nightly",
-      "markers": ["ops", "slow"],
-      "required_env": ["PYTHONPATH"],
-      "default_effects": ["read", "process", "write"],
-      "time_budget_ms": 360000,
-      "include_checks": [],
-      "exclude_markers": [],
-      "internal": false
-    },
-    {
-      "name": "stack-nightly",
-      "markers": ["ops", "slow"],
-      "required_env": ["PYTHONPATH"],
-      "default_effects": ["read", "process", "write"],
-      "time_budget_ms": 360000,
-      "include_checks": [],
-      "exclude_markers": [],
-      "internal": false
-    },
-    {
-      "name": "drill-nightly",
-      "markers": ["ops", "slow"],
-      "required_env": ["PYTHONPATH"],
-      "default_effects": ["read", "process", "write"],
-      "time_budget_ms": 360000,
-      "include_checks": [],
-      "exclude_markers": [],
-      "internal": false
-    },
-    {
-      "name": "k8s-e2e-nightly",
-      "markers": ["ops", "slow", "kube"],
-      "required_env": ["PYTHONPATH"],
-      "default_effects": ["read", "process", "write"],
-      "time_budget_ms": 420000,
-      "include_checks": [],
-      "exclude_markers": [],
-      "internal": false
-    },
-    {
-      "name": "required",
-      "markers": ["required"],
-      "required_env": ["PYTHONPATH"],
-      "default_effects": ["read", "process"],
-      "time_budget_ms": 300000,
-      "include_checks": [],
-      "exclude_markers": [],
-      "internal": false
-    },
-    {
+      "internal": false,
+      "markers": [
+        "required"
+      ],
       "name": "ci",
-      "markers": ["required"],
-      "required_env": ["PYTHONPATH"],
-      "default_effects": ["read", "process"],
-      "time_budget_ms": 420000,
-      "include_checks": [],
-      "exclude_markers": [],
-      "internal": false
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 420000
     },
     {
-      "name": "required_proof",
-      "markers": ["required"],
-      "required_env": ["PYTHONPATH"],
-      "default_effects": ["read", "process"],
-      "time_budget_ms": 480000,
+      "default_effects": [
+        "read",
+        "process"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "slow"
+      ],
+      "name": "ci-nightly",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 300000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "fast"
+      ],
+      "name": "ci-pr",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 120000
+    },
+    {
+      "default_effects": [
+        "read"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "configs"
+      ],
+      "name": "configs",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 120000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "dev"
+      ],
+      "name": "dev",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 180000
+    },
+    {
+      "default_effects": [
+        "read"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "docs"
+      ],
+      "name": "docs",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 120000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process",
+        "write"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "ops",
+        "slow"
+      ],
+      "name": "drill-nightly",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 360000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process",
+        "write"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": true,
+      "markers": [
+        "internal",
+        "internal-only"
+      ],
+      "name": "internal",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 600000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process",
+        "write"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "ops",
+        "slow",
+        "kube"
+      ],
+      "name": "k8s-e2e-nightly",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 420000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "fast"
+      ],
+      "name": "local",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 120000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process",
+        "write"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "ops"
+      ],
+      "name": "ops",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 240000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process",
+        "write"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "ops",
+        "slow"
+      ],
+      "name": "ops-nightly",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 360000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process",
+        "write"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "ops",
+        "slow"
+      ],
+      "name": "perf-nightly",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 360000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "policies"
+      ],
+      "name": "policies",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 240000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "required"
+      ],
+      "name": "required",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 300000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process"
+      ],
+      "exclude_markers": [],
       "include_checks": [
         "checks_repo_dir_budget_py_files",
         "checks_repo_single_registry_module",
         "checks_repo_legacy_package_absent",
         "checks_repo_legacy_zero_importers"
       ],
-      "exclude_markers": [],
-      "internal": false
+      "internal": false,
+      "markers": [
+        "required"
+      ],
+      "name": "required_proof",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 480000
     },
     {
-      "name": "all",
-      "markers": ["docs", "dev", "ops", "policies", "configs"],
-      "required_env": ["PYTHONPATH"],
-      "default_effects": ["read", "process", "write"],
-      "time_budget_ms": 480000,
+      "default_effects": [
+        "read",
+        "process"
+      ],
+      "exclude_markers": [],
       "include_checks": [],
-      "exclude_markers": ["internal", "internal-only"],
-      "internal": false
+      "internal": false,
+      "markers": [
+        "slow"
+      ],
+      "name": "slow",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 300000
     },
     {
-      "name": "internal",
-      "markers": ["internal", "internal-only"],
-      "required_env": ["PYTHONPATH"],
-      "default_effects": ["read", "process", "write"],
-      "time_budget_ms": 600000,
-      "include_checks": [],
+      "default_effects": [
+        "read",
+        "process",
+        "write"
+      ],
       "exclude_markers": [],
-      "internal": true
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "ops",
+        "slow"
+      ],
+      "name": "stack-nightly",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 360000
     }
   ]
 }
