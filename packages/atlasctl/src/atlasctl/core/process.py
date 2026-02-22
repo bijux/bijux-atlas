@@ -86,3 +86,14 @@ def run_command(
         if retry_delay_seconds > 0:
             time.sleep(retry_delay_seconds)
     return last_result if last_result is not None else CommandResult(1, "", "unknown error", 0)
+
+
+def shell_script_command(script: str, *args: str) -> list[str]:
+    # Centralize shell-script invocation shape for migration away from ad-hoc bash snippets.
+    return ["bash", script, *[str(arg) for arg in args]]
+
+
+def env_shell_script_command(env: dict[str, str], script: str, *args: str) -> list[str]:
+    cmd = ["env", *[f"{key}={value}" for key, value in sorted(env.items())], "bash", script]
+    cmd.extend(str(arg) for arg in args)
+    return cmd
