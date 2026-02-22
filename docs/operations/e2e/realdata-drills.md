@@ -12,7 +12,7 @@ Validates behavior on realistic datasets without polluting PR CI runtime.
 
 ## Scope
 
-`./ops/run/e2e.sh --suite realdata`, canonical query snapshots, and drift verification.
+`./bin/atlasctl ops e2e run --suite realdata`, canonical query snapshots, and drift verification.
 
 ## Non-goals
 
@@ -20,7 +20,7 @@ Does not define fixture acquisition policy.
 
 ## Contracts
 
-- Runner: `./ops/run/e2e.sh --suite realdata`
+- Runner: `./bin/atlasctl ops e2e run --suite realdata`
 - Upgrade drill: `make ops-drill-upgrade`
 - Rollback drill: `make ops-drill-rollback`
 
@@ -31,7 +31,7 @@ Undetected regressions across releases or deployments.
 ## How to verify
 
 ```bash
-$ ./ops/run/e2e.sh --suite realdata
+$ ./bin/atlasctl ops e2e run --suite realdata
 ```
 
 Expected output: realdata suite completes and snapshots verify.

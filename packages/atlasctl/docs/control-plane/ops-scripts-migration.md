@@ -29,8 +29,8 @@ Classification legend:
 | `ops/run/deploy-atlas.sh` | logic | planned | `atlasctl ops deploy` |
 | `ops/run/doctor.sh` | glue | planned | `atlasctl doctor` / `atlasctl make doctor` |
 | `ops/run/down.sh` | glue | deleted (atlasctl-native guard + stack-down) | `atlasctl ops down` |
-| `ops/run/e2e-smoke.sh` | glue | deleted (folded into `ops/run/e2e.sh`) | `atlasctl ops e2e run --scenario smoke` |
-| `ops/run/e2e.sh` | glue | planned | `atlasctl ops e2e run` |
+| `ops/run/e2e-smoke.sh` | glue | deleted (folded into `atlasctl ops e2e run`) | `atlasctl ops e2e run --scenario smoke` |
+| `atlasctl ops e2e run` | glue | planned | `atlasctl ops e2e run` |
 | `ops/run/evidence-bundle.sh` | logic | deleted (atlasctl-native) | `atlasctl reporting bundle` |
 | `ops/run/evidence-open.sh` | glue | deleted (unused wrapper) | `make evidence/open` / `atlasctl reporting artifact-index` |
 | `ops/run/k8s-apply-config.sh` | logic | deleted (atlasctl-native) | `atlasctl ops k8s apply-config` |

@@ -23,7 +23,7 @@
 - `ops/run/stack-up.sh`
 - `ops/run/stack-down.sh`
 - `ops/run/deploy-atlas.sh`
-- `ops/run/e2e.sh`
+- `atlasctl ops e2e run`
 - `ops/run/load-suite.sh`
 - `ops/run/ops-check.sh`
 - `ops/run/ops-smoke.sh`

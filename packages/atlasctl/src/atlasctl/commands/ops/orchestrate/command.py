@@ -260,8 +260,8 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _run_wrapped(ctx, OrchestrateSpec("load", ns.load_cmd, mapping[ns.load_cmd]), ns.report)
     if ns.cmd == "e2e":
         mapping = {
-            "smoke": ["bash", "ops/run/e2e.sh", "--suite", "smoke"],
-            "realdata": ["bash", "ops/run/e2e.sh", "--suite", "realdata"],
+            "smoke": ["./bin/atlasctl", "ops", "e2e", "--report", "text", "run", "--suite", "smoke"],
+            "realdata": ["./bin/atlasctl", "ops", "e2e", "--report", "text", "run", "--suite", "realdata"],
         }
         return _run_wrapped(ctx, OrchestrateSpec("e2e", ns.e2e_cmd, mapping[ns.e2e_cmd]), ns.report)
     if ns.cmd == "datasets":
