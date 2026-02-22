@@ -8,12 +8,6 @@ OPS_LIB_ROOT="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(CDPATH='' cd -- "${OPS_LIB_ROOT}/../.." && pwd)"
 # shellcheck source=ops/_lib/io/artifacts.sh
 source "${OPS_LIB_ROOT}/io/artifacts.sh"
-# shellcheck source=ops/_lib/guard/retry.sh
-source "${OPS_LIB_ROOT}/guard/retry.sh"
-# shellcheck source=ops/_lib/guard/timeout.sh
-source "${OPS_LIB_ROOT}/guard/timeout.sh"
-# shellcheck source=ops/_lib/guard/trap_bundle.sh
-source "${OPS_LIB_ROOT}/guard/trap_bundle.sh"
 # shellcheck source=ops/_lib/k8s/kubectl.sh
 source "${OPS_LIB_ROOT}/k8s/kubectl.sh"
 # shellcheck source=ops/_lib/helm/helm.sh
@@ -47,6 +41,52 @@ ops_require_ci_noninteractive() {
     echo "interactive prompts are forbidden in CI ops runs" >&2
     return 1
   fi
+}
+
+ops_retry() {
+  local attempts="$1"
+  local sleep_seconds="$2"
+  shift 2
+  local n=1
+  while true; do
+    if "$@"; then
+      return 0
+    fi
+    if [ "$n" -ge "$attempts" ]; then
+      echo "command failed after $attempts attempts: $*" >&2
+      return 1
+    fi
+    n=$((n + 1))
+    sleep "$sleep_seconds"
+  done
+}
+
+ops_timeout_run() {
+  local timeout_seconds="$1"
+  shift
+  if command -v timeout >/dev/null 2>&1; then
+    timeout "$timeout_seconds" "$@"
+    return $?
+  fi
+  "$@"
+}
+
+ops_bundle_on_err() {
+  local ns="$1"
+  local release="$2"
+  local out
+  out="$(ops_artifact_dir failure-bundle)"
+  ops_capture_artifacts "$ns" "$release" "$out" || true
+  ops_kubectl_dump_bundle "$ns" "$out" || true
+  echo "ops failure bundle: $out" >&2
+}
+
+ops_install_bundle_trap() {
+  local ns="${1:-${ATLAS_E2E_NAMESPACE:-${ATLAS_NS:-atlas-e2e}}}"
+  local release="${2:-${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}}"
+  OPS_BUNDLE_TRAP_NS="$ns"
+  OPS_BUNDLE_TRAP_RELEASE="$release"
+  trap 'ops_bundle_on_err "$OPS_BUNDLE_TRAP_NS" "$OPS_BUNDLE_TRAP_RELEASE"' ERR
 }
 
 # Canonical ops exit codes (formerly sourced from log/errors.sh; inlined after shim removal).
