@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from ..repo.native import check_python_lock, check_python_migration_exceptions_expiry
-from ..core.base import CheckCategory, CheckDef
+from ....repo.native import check_python_lock, check_python_migration_exceptions_expiry
+from ....core.base import CheckCategory, CheckDef
 
 CHECKS: tuple[CheckDef, ...] = (
     CheckDef("python.lock", "python", "validate python lock format", 800, check_python_lock, category=CheckCategory.CONTRACT, fix_hint="Regenerate and normalize python lock entries."),

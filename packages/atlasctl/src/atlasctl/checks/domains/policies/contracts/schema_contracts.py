@@ -4,13 +4,13 @@ import json
 import re
 from pathlib import Path
 
-from ...contracts.catalog import (
+from .....contracts.catalog import (
     lint_catalog,
     load_catalog,
     check_schema_readme_sync,
     check_schema_change_release_policy,
 )
-from ...contracts.validate import validate
+from .....contracts.validate import validate
 
 
 def check_schema_catalog_integrity(repo_root: Path) -> tuple[int, list[str]]:

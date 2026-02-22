@@ -52,6 +52,7 @@ _CHECKS_ROOT_REL = Path("packages/atlasctl/src/atlasctl/checks")
 _CHECKS_ROOT_ALLOWED_FILES = {"README.md", "REGISTRY.toml", "REGISTRY.generated.json", "__init__.py"}
 _CHECKS_DOMAINS_REL = _CHECKS_ROOT_REL / "domains"
 _CHECKS_DOMAIN_MODULE_CAP = 10
+_CHECKS_ROOT_DIR_CAP = 10
 
 
 def _iter_top_level_dirs(repo_root: Path) -> list[str]:
@@ -219,6 +220,16 @@ def check_checks_root_contract(repo_root: Path) -> tuple[int, list[str]]:
             continue
         if path.is_file() and path.name not in _CHECKS_ROOT_ALLOWED_FILES:
             errors.append(f"unexpected root file in checks/: {path.name}")
+    root_dirs = sorted(
+        p.name
+        for p in checks_root.iterdir()
+        if p.is_dir() and p.name != "__pycache__"
+    )
+    if len(root_dirs) > _CHECKS_ROOT_DIR_CAP:
+        errors.append(
+            f"checks root directory cap exceeded: {len(root_dirs)} > {_CHECKS_ROOT_DIR_CAP}; "
+            "regroup domain packages under checks/domains/",
+        )
     checks_domains = repo_root / _CHECKS_DOMAINS_REL
     if not checks_domains.exists():
         errors.append(f"missing grouped checks domains root: {_CHECKS_DOMAINS_REL.as_posix()}")

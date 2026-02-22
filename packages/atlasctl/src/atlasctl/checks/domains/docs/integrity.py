@@ -5,7 +5,7 @@ import re
 import subprocess
 from pathlib import Path
 
-from ...core.effects import command_group
+from ....core.effects import command_group
 
 _MD_LINK_RE = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 _HEADING_RE = re.compile(r"^(#{1,6})\s+\S")
@@ -72,7 +72,7 @@ def check_docs_index_complete(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def check_command_group_docs_pages(repo_root: Path) -> tuple[int, list[str]]:
-    from ...cli.surface_registry import command_registry
+    from ....cli.surface_registry import command_registry
 
     groups_dir = _docs_root(repo_root) / "commands/groups"
     required_groups = sorted({command_group(spec.name) for spec in command_registry()})
@@ -89,7 +89,7 @@ def check_command_group_docs_pages(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def check_docs_registry_command_drift(repo_root: Path) -> tuple[int, list[str]]:
-    from ...cli.surface_registry import command_registry
+    from ....cli.surface_registry import command_registry
 
     docs_root = _docs_root(repo_root)
     scoped_roots = (docs_root / "commands", docs_root / "control-plane")
@@ -112,7 +112,7 @@ def check_docs_registry_command_drift(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def check_stable_command_examples_in_group_docs(repo_root: Path) -> tuple[int, list[str]]:
-    from ...cli.surface_registry import command_registry
+    from ....cli.surface_registry import command_registry
 
     groups_dir = _docs_root(repo_root) / "commands/groups"
     errors: list[str] = []
@@ -236,7 +236,7 @@ def check_docs_no_orphans(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def _render_commands_index(repo_root: Path) -> str:
-    from ...cli.surface_registry import command_registry
+    from ....cli.surface_registry import command_registry
 
     groups = sorted({command_group(spec.name) for spec in command_registry()})
     lines = [
@@ -288,8 +288,8 @@ def _render_checks_index() -> str:
 
 
 def _render_suites_index(repo_root: Path) -> str:
-    from ...suite.command import load_suites
-    from ...suite.manifests import load_first_class_suites
+    from ....suite.command import load_suites
+    from ....suite.manifests import load_first_class_suites
 
     default_suite, suites = load_suites(repo_root)
     first_class = load_first_class_suites()

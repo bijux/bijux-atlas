@@ -8,15 +8,15 @@ from pathlib import Path
 from typing import Any
 
 from ..core.base import CheckCategory, CheckDef, Severity
-from ..contracts import CHECKS as CHECKS_CONTRACTS
-from ..configs import CHECKS as CHECKS_CONFIGS
-from ..docker import CHECKS as CHECKS_DOCKER
-from ..docs import CHECKS as CHECKS_DOCS
-from ..checks import CHECKS as CHECKS_CHECKS
-from ..licensing import CHECKS as CHECKS_LICENSE
+from ..domains.policies.contracts import CHECKS as CHECKS_CONTRACTS
+from ..domains.configs import CHECKS as CHECKS_CONFIGS
+from ..domains.ops.docker import CHECKS as CHECKS_DOCKER
+from ..domains.docs import CHECKS as CHECKS_DOCS
+from ..domains.internal.checks import CHECKS as CHECKS_CHECKS
+from ..domains.policies.licensing import CHECKS as CHECKS_LICENSE
 from ..make import CHECKS as CHECKS_MAKE
 from ..ops import CHECKS as CHECKS_OPS
-from ..python import CHECKS as CHECKS_PYTHON
+from ..domains.dev.python import CHECKS as CHECKS_PYTHON
 from ..repo import CHECKS as CHECKS_REPO
 from ...core.owners import load_owner_catalog
 

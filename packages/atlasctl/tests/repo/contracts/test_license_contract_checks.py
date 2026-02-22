@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.checks.licensing.policy import (
+from atlasctl.checks.domains.policies.licensing.policy import (
     check_license_file_mit,
     check_license_statements_consistent,
     check_spdx_policy,
