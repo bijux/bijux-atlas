@@ -65,8 +65,8 @@ Scenario drift causes incomplete load coverage.
 $ make ops-load-smoke
 $ make ops-load-full
 $ make ops-load-ci
-$ make ops-load-smoke
-$ python3 ops/load/reports/generate.py
+$ ./bin/atlasctl ops load --report text run --suite mixed-80-20
+$ ./bin/atlasctl report ci-summary --latest
 ```
 
 Expected output: all configured suites produce results and pass policy thresholds.
