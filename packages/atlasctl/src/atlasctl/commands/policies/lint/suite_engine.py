@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from ....core.runtime.clock import utc_now_iso
-from ....checks.execution import CommandCheckDef, run_command_checks
+from ....checks.core.execution import CommandCheckDef, run_command_checks
 
 
 def _py(script: str) -> list[str]:

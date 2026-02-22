@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from ..repo.native import check_atlas_scripts_cli_contract, check_layout_contract
-from ..framework import CheckCategory, CheckDef
+from ..core.base import CheckCategory, CheckDef
 from .schema_contracts import (
     check_schema_catalog_files_exist,
     check_schema_catalog_integrity,

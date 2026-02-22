@@ -9,7 +9,7 @@ from ..repo.native import (
     check_ops_generated_tracked,
     check_tracked_timestamp_paths,
 )
-from ..framework import CheckDef
+from ..core.base import CheckDef
 
 
 def check_ops_manifests_schema(repo_root: Path) -> tuple[int, list[str]]:

@@ -17,7 +17,7 @@ from .native import (
     check_script_ownership,
     check_tracked_timestamp_paths,
 )
-from ..framework import CheckDef
+from ..core.base import CheckDef
 from .enforcement.legacy_guard import check_legacy_package_absent
 from .enforcement.module_size import check_module_size
 from ...commands.policies.runtime.culprits import (
@@ -56,6 +56,7 @@ from .enforcement.package_shape import (
     check_atlasctl_package_root_shape,
     check_canonical_concept_homes,
     check_checks_domain_split,
+    check_checks_root_contract,
     check_layout_domain_readmes,
     check_layout_no_legacy_imports,
     check_no_nested_same_name_packages,
@@ -412,6 +413,7 @@ CHECKS: tuple[CheckDef, ...] = (
     ),
     CheckDef("repo.layout_domain_readmes", "repo", "ensure each layout check domain includes a README", 300, check_layout_domain_readmes, fix_hint="Add README.md to each checks/layout/<domain>/ directory."),
     CheckDef("repo.checks_domain_split", "repo", "require canonical check domain tree (repo_shape/makefiles/ops/docs/observability/artifacts)", 300, check_checks_domain_split, fix_hint="Create or migrate domain packages under packages/atlasctl/src/atlasctl/checks/."),
+    CheckDef("repo.checks_root_contract", "repo", "enforce checks root contract (single python root file and module cap)", 300, check_checks_root_contract, fix_hint="Keep only __init__.py + registry artifacts at checks root and group modules under domain packages."),
     CheckDef("repo.layout_no_legacy_imports", "repo", "forbid legacy imports in checks/layout modules", 300, check_layout_no_legacy_imports, fix_hint="Remove atlasctl.legacy imports from layout checks."),
     CheckDef("repo.top_level_structure", "repo", "enforce atlasctl top-level package intent and budget", 300, check_top_level_structure, fix_hint="Keep atlasctl top-level package set within STRUCTURE.md contract."),
     CheckDef(
