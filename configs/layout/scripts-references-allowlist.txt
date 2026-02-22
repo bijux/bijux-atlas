@@ -138,7 +138,7 @@ ops/INDEX.md
 ops/_generated_committed/report.unified.json
 ops/_lib/guard/env.sh
 ops/_lib/guard/version_guard.sh
-ops/_lint/docs/naming.sh
+packages/atlasctl/src/atlasctl/commands/ops/lint/docs/naming_lint.py
 packages/atlasctl/src/atlasctl/commands/ops/lint/layout/json_schema_coverage.py
 packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_layer_literals.py
 packages/atlasctl/src/atlasctl/commands/ops/lint/docs/no_direct_bash_entrypoints.py
