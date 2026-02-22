@@ -4,12 +4,12 @@ This checklist tracks migration of legacy shell checks under
 `ops/vendor/layout-checks/`.
 
 ## Converted to Python (`checks/layout/root`)
-- [x] `check_root_shape.sh` -> `root/check_root_shape.py` (`repo.root_shape`)
-- [x] `check_no_forbidden_paths.sh` -> `root/check_forbidden_paths.py` (`repo.no_forbidden_paths`)
-- [x] `check_no_direct_script_runs.sh` -> `root/check_no_direct_script_runs.py` (`repo.no_direct_script_runs`)
-- [x] `check_root_determinism.sh` -> `root/check_root_determinism.py` (`repo.root_determinism`)
-- [x] `check_forbidden_root_files.sh` -> `root/check_forbidden_root_files.py` (`repo.forbidden_root_files`)
-- [x] `check_forbidden_root_names.sh` -> `root/check_forbidden_root_names.py` (`repo.forbidden_root_names`)
+- [x] `check_root_shape.sh` -> `root/check_root_shape.py` (`checks_repo_root_shape`)
+- [x] `check_no_forbidden_paths.sh` -> `root/check_forbidden_paths.py` (`checks_repo_no_forbidden_paths`)
+- [x] `check_no_direct_script_runs.sh` -> `root/check_no_direct_script_runs.py` (`checks_repo_no_direct_script_runs`)
+- [x] `check_root_determinism.sh` -> `root/check_root_determinism.py` (`checks_repo_root_determinism`)
+- [x] `check_forbidden_root_files.sh` -> `root/check_forbidden_root_files.py` (`checks_repo_forbidden_root_files`)
+- [x] `check_forbidden_root_names.sh` -> `root/check_forbidden_root_names.py` (`checks_repo_forbidden_root_names`)
 
 ## Shell Inventory and Decision
 - `check_artifacts_allowlist.sh`: keep (wrapped/transitional)

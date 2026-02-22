@@ -25,7 +25,7 @@ def test_major_groups_support_list_json() -> None:
 def test_check_and_suite_top_level_list() -> None:
     check_proc = run_atlasctl("--quiet", "check", "--list")
     assert check_proc.returncode == 0, check_proc.stderr
-    assert "repo.module_size" in check_proc.stdout
+    assert "checks_repo_module_size" in check_proc.stdout
 
     suite_proc = run_atlasctl("--quiet", "suite", "--list")
     assert suite_proc.returncode == 0, suite_proc.stderr

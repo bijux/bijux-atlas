@@ -68,7 +68,7 @@ def test_command_inventory_invariant_checks_pass() -> None:
 
 
 def test_test_guardrail_checks_pass() -> None:
-    # repo.json_goldens_validate_schema
+    # checks_repo_json_goldens_validate_schema
     root = _repo_root()
     for fn in (
         check_test_duplicate_expectations,

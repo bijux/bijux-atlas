@@ -21,10 +21,10 @@ def _run_checks(ids: list[str]) -> None:
 def test_package_shape_and_budget_checks_pass() -> None:
     _run_checks(
         [
-            "repo.package_has_module_or_readme",
-            "repo.dir_count_trend_gate",
-            "repo.budget_drift_approval",
-            "repo.module_budget_domains",
+            "checks_repo_package_has_module_or_readme",
+            "checks_repo_dir_count_trend_gate",
+            "checks_repo_budget_drift_approval",
+            "checks_repo_module_budget_domains",
         ]
     )
 
@@ -32,14 +32,14 @@ def test_package_shape_and_budget_checks_pass() -> None:
 def test_effect_shell_and_reachability_checks_pass() -> None:
     _run_checks(
         [
-            "repo.effect_boundaries",
-            "repo.effect_boundary_exceptions_policy",
-            "repo.shell_strict_mode",
-            "repo.shell_no_network_fetch",
-            "repo.shell_no_direct_python",
-            "repo.shell_invocation_boundary",
-            "repo.core_no_bash_subprocess",
-            "repo.dead_modules",
-            "repo.dead_module_reachability",
+            "checks_repo_effect_boundaries",
+            "checks_repo_effect_boundary_exceptions_policy",
+            "checks_repo_shell_strict_mode",
+            "checks_repo_shell_no_network_fetch",
+            "checks_repo_shell_no_direct_python",
+            "checks_repo_shell_invocation_boundary",
+            "checks_repo_core_no_bash_subprocess",
+            "checks_repo_dead_modules",
+            "checks_repo_dead_module_reachability",
         ]
     )

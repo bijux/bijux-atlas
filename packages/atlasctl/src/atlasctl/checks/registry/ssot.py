@@ -149,8 +149,8 @@ def _validate_entries(entries: list[RegistryEntry]) -> None:
         if not e.id.startswith(f"checks_{e.domain}_"):
             errors.append(f"{e.id}: id/domain mismatch")
         import re
-        if re.match(r"^checks_[a-z0-9]+_[a-z0-9_]+$", e.id) is None:
-            errors.append(f"{e.id}: id must match checks_<domain>_<area>_<name> (or legacy checks_<domain>_<name> during migration)")
+        if re.match(r"^checks_[a-z0-9]+_[a-z0-9]+_[a-z0-9_]+$", e.id) is None:
+            errors.append(f"{e.id}: id must match checks_<domain>_<area>_<name>")
         if e.speed not in {"fast", "slow"}:
             errors.append(f"{e.id}: speed must be fast|slow")
         if not e.groups:

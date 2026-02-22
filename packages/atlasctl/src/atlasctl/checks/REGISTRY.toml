@@ -151,9 +151,9 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
-id = "checks_contracts_layout"
+id = "checks_contracts_layout_contract"
 domain = "contracts"
-area = "general"
+area = "layout"
 gate = "contracts"
 owner = "platform"
 speed = "slow"
@@ -424,9 +424,9 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
-id = "checks_docker_layout"
+id = "checks_docker_layout_contract"
 domain = "docker"
-area = "general"
+area = "layout"
 gate = "docker"
 owner = "platform"
 speed = "fast"
@@ -466,9 +466,9 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
-id = "checks_docker_policy"
+id = "checks_docker_policy_contract"
 domain = "docker"
-area = "general"
+area = "policy"
 gate = "docker"
 owner = "platform"
 speed = "fast"
@@ -1453,9 +1453,9 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
-id = "checks_python_lock"
+id = "checks_python_lock_lockfile"
 domain = "python"
-area = "general"
+area = "lock"
 gate = "python"
 owner = "platform"
 speed = "fast"

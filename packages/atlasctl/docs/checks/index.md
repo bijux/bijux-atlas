@@ -17,7 +17,7 @@ Generated from `packages/atlasctl/src/atlasctl/registry/checks_catalog.json`.
 ## contracts
 
 - `checks_contracts_atlasctl_cli`: validate atlasctl CLI contract surface
-- `checks_contracts_layout`: validate repository layout contract
+- `checks_contracts_layout_contract`: validate repository layout contract
 - `checks_contracts_schema_catalog`: validate schema catalog for duplicate names and missing files
 - `checks_contracts_schema_catalog_files_exist`: ensure schemas listed in catalog exist on disk
 - `checks_contracts_schema_catalog_referenced`: ensure schema catalog contains only referenced schemas
@@ -33,9 +33,9 @@ Generated from `packages/atlasctl/src/atlasctl/registry/checks_catalog.json`.
 ## docker
 
 - `checks_docker_image_size`: enforce docker image size budget
-- `checks_docker_layout`: validate docker layout contracts
+- `checks_docker_layout_contract`: validate docker layout contracts
 - `checks_docker_no_latest_tags`: forbid floating latest image tags
-- `checks_docker_policy`: validate docker policy contracts
+- `checks_docker_policy_contract`: validate docker policy contracts
 
 ## docs
 
@@ -97,7 +97,7 @@ Generated from `packages/atlasctl/src/atlasctl/registry/checks_catalog.json`.
 
 ## python
 
-- `checks_python_lock`: validate python lock format
+- `checks_python_lock_lockfile`: validate python lock format
 - `checks_python_migration_exceptions_expiry`: fail on expired python migration exceptions
 
 ## repo
