@@ -21,7 +21,7 @@ for drill in "${DRILLS[@]}"; do
   echo "running drill from manifest: $drill"
   "$ROOT/ops/obs/scripts/bin/run_drill.sh" "$drill"
 done
-"$ROOT/ops/obs/scripts/summarize_drill_results.py"
+"$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/summarize_drill_results.py"
 test -s "$ROOT/artifacts/observability/drill-conformance-report.json"
 
 echo "observability drill manifest run passed"

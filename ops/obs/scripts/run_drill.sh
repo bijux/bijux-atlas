@@ -77,7 +77,7 @@ fi
 "${REPO_ROOT}/ops/obs/scripts/snapshot_traces.sh" "$OPS_OBS_DIR"
 log_snapshot="${OPS_OBS_DIR}/drill-${DRILL_NAME}.logs.txt"
 kubectl -n "${ATLAS_E2E_NAMESPACE:-atlas-e2e}" logs -l app.kubernetes.io/instance="${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}" --all-containers --tail=2000 > "$log_snapshot" 2>/dev/null || true
-python3 "${REPO_ROOT}/ops/obs/scripts/validate_logs_schema.py" --namespace "${ATLAS_E2E_NAMESPACE:-atlas-e2e}" --release "${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}" --strict-live || status="fail"
+python3 "${REPO_ROOT}/packages/atlasctl/src/atlasctl/commands/ops/observability/validate_logs_schema.py" --namespace "${ATLAS_E2E_NAMESPACE:-atlas-e2e}" --release "${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}" --strict-live || status="fail"
 
 if [ "$status" = "pass" ]; then
   EXPECTED_SIGNALS="$EXPECTED_SIGNALS" DRILL_NAME="$DRILL_NAME" python3 - <<'PY' || status="fail"

@@ -16,6 +16,6 @@ line=sys.argv[1]
 obj=json.loads(line)
 assert isinstance(obj,dict)
 PY
-python3 "$ROOT/ops/obs/scripts/validate_logs_schema.py" --namespace "$NS" --release "$RELEASE"
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/validate_logs_schema.py" --namespace "$NS" --release "$RELEASE"
 
 echo "k8s log json gate passed"
