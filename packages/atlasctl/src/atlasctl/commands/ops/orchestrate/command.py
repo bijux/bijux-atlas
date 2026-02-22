@@ -215,6 +215,57 @@ def _run_manifest(ctx: RunContext, report_format: str, manifest: str, scenario: 
     return _run_wrapped(ctx, OrchestrateSpec("run", scenario, [str(x) for x in cmd]), report_format)
 
 
+def _contracts_snapshot(ctx: RunContext, report_format: str) -> int:
+    checks = [
+        ("generate-layer-contract", ["python3", "ops/_meta/generate_layer_contract.py"]),
+        ("check-layer-contract-drift", ["python3", "ops/_lint/check_layer_contract_drift.py"]),
+        ("check-layer-drift-static", ["python3", "packages/atlasctl/src/atlasctl/layout_checks/check_layer_drift.py"]),
+        ("validate-ops-contracts", ["python3", "packages/atlasctl/src/atlasctl/layout_checks/validate_ops_contracts.py"]),
+        ("check-literals", ["python3", "ops/_lint/no-layer-literals.py"]),
+        ("check-stack-literals", ["python3", "ops/_lint/no-stack-layer-literals.py"]),
+        ("check-no-hidden-defaults", ["python3", "packages/atlasctl/src/atlasctl/layout_checks/check_no_hidden_defaults.py"]),
+        ("check-k8s-layer-contract", ["ops/k8s/tests/checks/obs/test_layer_contract_render.sh"]),
+        ("check-live-layer-contract", ["ops/stack/tests/validate_live_snapshot.sh"]),
+    ]
+    out_dir = _artifact_base(ctx, "contracts") / "contracts"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    logs_dir = out_dir / "checks"
+    logs_dir.mkdir(parents=True, exist_ok=True)
+    rows: list[dict[str, Any]] = []
+    for name, cmd in checks:
+        started = datetime.now(timezone.utc).isoformat()
+        result = run_command(cmd, ctx.repo_root, ctx=ctx)
+        ended = datetime.now(timezone.utc).isoformat()
+        log_path = logs_dir / f"{name}.log"
+        write_text_file(log_path, f"$ {' '.join(cmd)}\n\n{result.combined_output}", encoding="utf-8")
+        rows.append(
+            {
+                "name": name,
+                "status": "pass" if result.code == 0 else "fail",
+                "exit_code": result.code,
+                "started_at": started,
+                "ended_at": ended,
+                "log": str(log_path.relative_to(ctx.repo_root)),
+            }
+        )
+    failed = [r for r in rows if r["status"] != "pass"]
+    payload = {
+        "schema_version": 1,
+        "run_id": ctx.run_id,
+        "status": "pass" if not failed else "fail",
+        "contract": "ops/_meta/layer-contract.json",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "checks": rows,
+    }
+    report_path = out_dir / "report.json"
+    write_text_file(report_path, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    if report_format == "json":
+        print(json.dumps(payload, sort_keys=True))
+    else:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0 if not failed else 1
+
+
 def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.cmd == "ports":
         if ns.ports_cmd == "show":
@@ -272,11 +323,7 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         }
         return _run_wrapped(ctx, OrchestrateSpec("datasets", ns.datasets_cmd, mapping[ns.datasets_cmd]), ns.report)
     if ns.cmd == "contracts-snapshot":
-        return _run_wrapped(
-            ctx,
-            OrchestrateSpec("contracts", "snapshot", ["bash", "ops/run/contract-check.sh"]),
-            ns.report,
-        )
+        return _contracts_snapshot(ctx, ns.report)
     if ns.cmd == "cleanup":
         return _cleanup(ctx, ns.report, ns.older_than)
     if ns.cmd == "scenario":
