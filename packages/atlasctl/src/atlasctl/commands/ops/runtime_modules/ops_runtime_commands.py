@@ -1296,98 +1296,132 @@ def _ops_deploy_native(ctx: RunContext, report_format: str) -> int:
 
 
 def _ops_load_run_native(ctx: RunContext, report_format: str, suite: str, out_dir: str = "artifacts/perf/results") -> int:
-    script = f"""
-set -euo pipefail
-. ./ops/_lib/common.sh
-ops_init_run_id
-ops_env_load
-ops_entrypoint_start "ops-load-suite"
-PROFILE="${{PROFILE:-kind}}"
-ops_context_guard "$PROFILE"
-ops_version_guard k6
-INPUT="{suite}"
-OUT="{out_dir}"
-start="$(date +%s)"
-log_dir="artifacts/evidence/load-suite/${{RUN_ID}}"
-mkdir -p "$log_dir"
-log_file="$log_dir/run.log"
-status="pass"
-if ! (
-  python3 "./packages/atlasctl/src/atlasctl/layout_checks/check_tool_versions.py" k6 >/dev/null
-  K6_VERSION="$(python3 - <<PY
-import json
-from pathlib import Path
-data=json.loads(Path("configs/ops/tool-versions.json").read_text())
-print(str(data.get("k6","v1.0.0")).lstrip("v"))
-PY
-)"
-  BASE_URL="${{ATLAS_BASE_URL:-${{BASE_URL:-http://127.0.0.1:18080}}}}"
-  API_KEY="${{ATLAS_API_KEY:-}}"
-  DATASET_HASH="${{ATLAS_DATASET_HASH:-unknown}}"
-  DATASET_RELEASE="${{ATLAS_DATASET_RELEASE:-unknown}}"
-  IMAGE_DIGEST="${{ATLAS_IMAGE_DIGEST:-unknown}}"
-  GIT_SHA="${{GITHUB_SHA:-$(git rev-parse --short=12 HEAD 2>/dev/null || echo unknown)}}"
-  POLICY_HASH="${{ATLAS_POLICY_HASH:-$(shasum -a 256 configs/policy/policy.json 2>/dev/null | awk '{{print $1}}' || echo unknown)}}"
-  mkdir -p "$OUT"
-  if printf '%s' "$INPUT" | grep -q '\\.json$'; then
-    SCENARIO_PATH="$INPUT"
-    case "$SCENARIO_PATH" in
-      /*) ;;
-      *) SCENARIO_PATH="ops/load/scenarios/$SCENARIO_PATH" ;;
-    esac
-    SUITE="$(python3 - <<PY
-import json
-from pathlib import Path
-p=Path("$SCENARIO_PATH")
-d=json.loads(p.read_text())
-print(d.get("suite",""))
-PY
-)"
-    [ -n "$SUITE" ] || {{ echo "scenario has no suite: $SCENARIO_PATH" >&2; exit 2; }}
-    NAME="$(basename "$SCENARIO_PATH" .json)"
-  else
-    SUITE="$INPUT"
-    NAME="${{SUITE%.js}}"
-    case "$SUITE" in
-      *.js) ;;
-      *) SUITE="${{SUITE}}.js" ;;
-    esac
-  fi
-  python3 - <<PY
-import json
-from pathlib import Path
-manifest=json.loads(Path("ops/load/suites/suites.json").read_text())
-names={{s.get("name","") for s in manifest.get("suites",[]) if isinstance(s,dict)}}
-if "$NAME" not in names:
-    raise SystemExit("adhoc suite forbidden: $NAME is not declared in ops/load/suites/suites.json")
-PY
-  SUMMARY_JSON="$OUT/${{NAME}}.summary.json"
-  if command -v k6 >/dev/null 2>&1; then
-    BASE_URL="$BASE_URL" ATLAS_API_KEY="$API_KEY" k6 run --summary-export "$SUMMARY_JSON" "ops/load/k6/suites/$SUITE"
-  else
-    docker run --rm --network host \
-      -e BASE_URL="$BASE_URL" \
-      -e ATLAS_API_KEY="$API_KEY" \
-      -v "$PWD:/work" -w /work \
-      "grafana/k6:${{K6_VERSION}}" run --summary-export "$SUMMARY_JSON" "ops/load/k6/suites/$SUITE"
-  fi
-  cat > "${{OUT}}/${{NAME}}.meta.json" <<JSON
-{{"suite":"$INPUT","resolved_suite":"$SUITE","git_sha":"$GIT_SHA","image_digest":"$IMAGE_DIGEST","dataset_hash":"$DATASET_HASH","dataset_release":"$DATASET_RELEASE","policy_hash":"$POLICY_HASH","base_url":"$BASE_URL"}}
-JSON
-  RUN_REF="${{RUN_ID:-$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo manual)}}"
-  EVIDENCE_RAW="artifacts/evidence/perf/$RUN_REF/raw"
-  mkdir -p "$EVIDENCE_RAW"
-  cp -f "$SUMMARY_JSON" "$EVIDENCE_RAW/${{NAME}}.summary.json"
-  cp -f "${{OUT}}/${{NAME}}.meta.json" "$EVIDENCE_RAW/${{NAME}}.meta.json"
-  echo "suite complete: $INPUT ($SUITE) -> $SUMMARY_JSON"
-) >"$log_file" 2>&1; then
-  status="fail"
-fi
-end="$(date +%s)"
-ops_write_lane_report "load-suite" "${{RUN_ID}}" "${{status}}" "$((end - start))" "$log_file" "artifacts/evidence" >/dev/null
-[ "$status" = "pass" ] || exit 1
-"""
-    return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
+    repo = ctx.repo_root
+    run_id = ctx.run_id
+    start = dt.datetime.now(dt.timezone.utc)
+    outputs: list[str] = []
+    log_dir = repo / "artifacts" / "evidence" / "load-suite" / run_id
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_file = log_dir / "run.log"
+    out_path = (repo / out_dir) if not Path(out_dir).is_absolute() else Path(out_dir)
+    out_path.mkdir(parents=True, exist_ok=True)
+
+    profile = os.environ.get("PROFILE", "kind")
+    if profile == "kind":
+        guard = run_command([*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/context_guard.py"], repo, ctx=ctx)
+        if guard.combined_output.strip():
+            outputs.append(guard.combined_output.rstrip())
+        if guard.code != 0:
+            write_text_file(log_file, ("\n".join(outputs).strip() + "\n") if outputs else "", encoding="utf-8")
+            return _emit_ops_status(report_format, guard.code, "\n".join(outputs).strip())
+
+    # Preserve prior behavior: require k6 via tool check (docker fallback only for execution image).
+    k6_check = run_command(["python3", "./packages/atlasctl/src/atlasctl/layout_checks/check_tool_versions.py", "k6"], repo, ctx=ctx)
+    if k6_check.combined_output.strip():
+        outputs.append(k6_check.combined_output.rstrip())
+    if k6_check.code != 0:
+        write_text_file(log_file, ("\n".join(outputs).strip() + "\n") if outputs else "", encoding="utf-8")
+        return _emit_ops_status(report_format, k6_check.code, "\n".join(outputs).strip())
+
+    input_name = str(suite)
+    if input_name.endswith(".json"):
+        scenario_path = Path(input_name)
+        if not scenario_path.is_absolute():
+            scenario_path = repo / "ops" / "load" / "scenarios" / input_name
+        scenario_payload = json.loads(scenario_path.read_text(encoding="utf-8"))
+        resolved_suite = str(scenario_payload.get("suite", "")).strip()
+        if not resolved_suite:
+            outputs.append(f"scenario has no suite: {scenario_path}")
+            write_text_file(log_file, ("\n".join(outputs).strip() + "\n") if outputs else "", encoding="utf-8")
+            return _emit_ops_status(report_format, 2, "\n".join(outputs).strip())
+        suite_name = scenario_path.stem
+    else:
+        resolved_suite = input_name if input_name.endswith(".js") else f"{input_name}.js"
+        suite_name = Path(resolved_suite).stem
+
+    manifest = json.loads((repo / "ops/load/suites/suites.json").read_text(encoding="utf-8"))
+    declared = {str(row.get("name", "")).strip() for row in manifest.get("suites", []) if isinstance(row, dict)}
+    if suite_name not in declared:
+        msg = f"adhoc suite forbidden: {suite_name} is not declared in ops/load/suites/suites.json"
+        outputs.append(msg)
+        write_text_file(log_file, ("\n".join(outputs).strip() + "\n") if outputs else "", encoding="utf-8")
+        return _emit_ops_status(report_format, 1, "\n".join(outputs).strip())
+
+    tools_versions = json.loads((repo / "configs/ops/tool-versions.json").read_text(encoding="utf-8"))
+    k6_version = str(tools_versions.get("k6", "v1.0.0")).lstrip("v")
+
+    base_url = os.environ.get("ATLAS_BASE_URL") or os.environ.get("BASE_URL") or "http://127.0.0.1:18080"
+    api_key = os.environ.get("ATLAS_API_KEY", "")
+    dataset_hash = os.environ.get("ATLAS_DATASET_HASH", "unknown")
+    dataset_release = os.environ.get("ATLAS_DATASET_RELEASE", "unknown")
+    image_digest = os.environ.get("ATLAS_IMAGE_DIGEST", "unknown")
+    git_sha = os.environ.get("GITHUB_SHA", "")
+    if not git_sha:
+        git_res = run_command(["git", "rev-parse", "--short=12", "HEAD"], repo, ctx=ctx)
+        git_sha = git_res.stdout.strip() if git_res.code == 0 and git_res.stdout.strip() else "unknown"
+    policy_hash = os.environ.get("ATLAS_POLICY_HASH", "")
+    if not policy_hash:
+        policy_file = repo / "configs/policy/policy.json"
+        if policy_file.exists():
+            policy_hash = hashlib.sha256(policy_file.read_bytes()).hexdigest()
+        else:
+            policy_hash = "unknown"
+
+    summary_json = out_path / f"{suite_name}.summary.json"
+    suite_script = f"ops/load/k6/suites/{resolved_suite}"
+    if shutil.which("k6") is not None:
+        k6_cmd = ["env", f"BASE_URL={base_url}", f"ATLAS_API_KEY={api_key}", "k6", "run", "--summary-export", str(summary_json), suite_script]
+    else:
+        try:
+            summary_export = str(summary_json.relative_to(repo))
+        except ValueError:
+            outputs.append(f"docker k6 fallback requires --out under repo root: {summary_json}")
+            write_text_file(log_file, ("\n".join(outputs).strip() + "\n") if outputs else "", encoding="utf-8")
+            return _emit_ops_status(report_format, 2, "\n".join(outputs).strip())
+        k6_cmd = [
+            "docker", "run", "--rm", "--network", "host",
+            "-e", f"BASE_URL={base_url}",
+            "-e", f"ATLAS_API_KEY={api_key}",
+            "-v", f"{repo}:/work", "-w", "/work",
+            f"grafana/k6:{k6_version}", "run", "--summary-export", summary_export, suite_script,
+        ]
+    k6_run = run_command(k6_cmd, repo, ctx=ctx)
+    if k6_run.combined_output.strip():
+        outputs.append(k6_run.combined_output.rstrip())
+    status = "pass" if k6_run.code == 0 else "fail"
+
+    meta_json = out_path / f"{suite_name}.meta.json"
+    meta_payload = {
+        "suite": input_name,
+        "resolved_suite": resolved_suite,
+        "git_sha": git_sha,
+        "image_digest": image_digest,
+        "dataset_hash": dataset_hash,
+        "dataset_release": dataset_release,
+        "policy_hash": policy_hash,
+        "base_url": base_url,
+    }
+    write_text_file(meta_json, json.dumps(meta_payload, sort_keys=True) + "\n", encoding="utf-8")
+
+    evidence_raw = repo / "artifacts" / "evidence" / "perf" / run_id / "raw"
+    evidence_raw.mkdir(parents=True, exist_ok=True)
+    if summary_json.exists():
+        shutil.copy2(summary_json, evidence_raw / f"{suite_name}.summary.json")
+    if meta_json.exists():
+        shutil.copy2(meta_json, evidence_raw / f"{suite_name}.meta.json")
+    outputs.append(f"suite complete: {input_name} ({resolved_suite}) -> {summary_json}")
+
+    write_text_file(log_file, ("\n".join(outputs).strip() + "\n") if outputs else "", encoding="utf-8")
+    duration_seconds = max(0.0, (dt.datetime.now(dt.timezone.utc) - start).total_seconds())
+    lane_report = {
+        "schema_version": 1,
+        "run_id": run_id,
+        "status": status,
+        "duration_seconds": duration_seconds,
+        "log": log_file.relative_to(repo).as_posix(),
+    }
+    write_text_file(log_dir / "report.json", json.dumps(lane_report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return _emit_ops_status(report_format, 0 if status == "pass" else 1, "\n".join(outputs).strip())
 
 
 
