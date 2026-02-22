@@ -311,6 +311,33 @@
     },
     {
       "area": "registry",
+      "callable": "check_registry_no_banned_adjectives_in_ids",
+      "category": "policy",
+      "description": "forbid policy-listed adjectives in canonical check ids",
+      "domain": "checks",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Rename check ids to remove policy-listed adjectives.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_registry_no_banned_adjectives_in_ids",
+      "legacy_id": "checks.registry_no_banned_adjectives_in_ids",
+      "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "registry",
       "callable": "check_registry_no_duplicate_canonical_id",
       "category": "contract",
       "description": "forbid duplicate canonical check ids in registry",
@@ -556,6 +583,33 @@
       "severity": "error",
       "speed": "fast",
       "timeout_ms": 700,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "surfaces",
+      "callable": "check_surfaces_no_banned_adjectives_in_paths",
+      "category": "policy",
+      "description": "forbid policy-listed adjectives in atlasctl module/docs path names",
+      "domain": "checks",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Rename atlasctl source/docs files and directories to remove banned adjectives.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_surfaces_no_banned_adjectives_in_paths",
+      "legacy_id": "checks.surfaces_no_banned_adjectives_in_paths",
+      "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
