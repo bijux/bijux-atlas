@@ -34,7 +34,7 @@ def _raw_catalog() -> dict[str, object]:
 
 
 def _schema_files_on_disk() -> list[Path]:
-    return sorted(path for path in schemas_root().glob("*.schema.json") if path.is_file())
+    return sorted(path for path in schemas_root().rglob("*.schema.json") if path.is_file())
 
 
 def deterministic_catalog_payload() -> dict[str, object]:
@@ -45,7 +45,7 @@ def deterministic_catalog_payload() -> dict[str, object]:
             continue
         schema_name = match.group(1)
         version = int(match.group(2))
-        rows.append({"name": schema_name, "version": version, "file": path.name})
+        rows.append({"name": schema_name, "version": version, "file": path.relative_to(schemas_root()).as_posix()})
     rows.sort(key=lambda row: (str(row["name"]), int(row["version"]), str(row["file"])))
     return {"schemas": rows}
 
@@ -61,7 +61,7 @@ def deterministic_schema_readme() -> str:
     lines = [
         "# Schema Catalog",
         "",
-        "Generated from `packages/atlasctl/src/atlasctl/contracts/schema/schemas/*.schema.json`.",
+        "Generated from `packages/atlasctl/src/atlasctl/contracts/schema/schemas/**/*.schema.json`.",
         "Do not edit rows manually; regenerate via `atlasctl contracts generate --generators catalog`.",
         "",
         "| schema_name | version | file | sha256_16 |",
@@ -124,7 +124,7 @@ def lint_catalog() -> list[str]:
         if not (schemas_root() / rel).exists():
             errors.append(f"{entry.name}: missing schema file {entry.file}")
 
-    disk_files = {path.name for path in schemas_root().glob("*.schema.json")}
+    disk_files = {path.relative_to(schemas_root()).as_posix() for path in schemas_root().rglob("*.schema.json")}
     missing_from_catalog = sorted(disk_files - catalog_files)
     if missing_from_catalog:
         errors.append(f"schema files not in catalog: {missing_from_catalog}")
