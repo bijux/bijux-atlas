@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 CHECK_LIST = "atlasctl.check-list.v1"
+CHECK_RUN = "atlasctl.check-run.v1"
 CHECK_TAXONOMY = "atlasctl.check-taxonomy.v1"
 COMMANDS = "atlasctl.commands.v1"
 EXPLAIN = "atlasctl.explain.v1"

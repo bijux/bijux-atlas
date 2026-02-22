@@ -15,6 +15,8 @@ from ...checks.registry.ssot import generate_registry_json
 from ...checks.core.execution import run_function_checks
 from ...checks.engine.runner import domains as check_domains
 from ...checks.engine.runner import run_domain
+from ...contracts.ids import CHECK_RUN
+from ...contracts.validate_self import validate_self
 from ...core.context import RunContext
 from ...core.fs import ensure_evidence_path
 from ...core.runtime.paths import write_text_file
@@ -24,15 +26,15 @@ from ...commands.policies.lint.suite_engine import run_lint_suite
 
 NativeCheck = Callable[[Path], tuple[int, list[str]]]
 SHELL_POLICY_CHECK_IDS: tuple[str, ...] = (
-    "repo.shell_location_policy",
-    "repo.shell_strict_mode",
-    "repo.shell_no_direct_python",
-    "repo.shell_no_network_fetch",
-    "repo.shell_invocation_boundary",
-    "repo.core_no_bash_subprocess",
-    "repo.shell_readonly_checks",
-    "repo.shell_script_budget",
-    "repo.shell_docs_present",
+    "checks_repo_shell_location_policy",
+    "checks_repo_shell_strict_mode",
+    "checks_repo_shell_no_direct_python",
+    "checks_repo_shell_no_network_fetch",
+    "checks_repo_shell_invocation_boundary",
+    "checks_repo_core_no_bash_subprocess",
+    "checks_repo_shell_readonly_checks",
+    "checks_repo_shell_script_budget",
+    "checks_repo_shell_docs_present",
 )
 
 
@@ -314,9 +316,12 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
                     "domain": check.domain,
                     "status": "SKIP",
                     "duration_ms": 0,
+                    "reason": "filtered by --select",
+                    "hints": ["Adjust --select/--group/--marker filters to include this check."],
                     "hint": "filtered by --select",
                     "detail": "",
                     "owners": list(check.owners),
+                    "artifacts": [],
                 }
             )
             continue
@@ -330,9 +335,12 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
                 "domain": check.domain,
                 "status": status,
                 "duration_ms": int(result.metrics.get("duration_ms", 0)),
+                "reason": detail if detail else ("check failed" if status == "FAIL" else ""),
+                "hints": [check.fix_hint] if check.fix_hint else [],
                 "hint": check.fix_hint,
                 "detail": detail,
                 "owners": list(check.owners),
+                "artifacts": list(result.evidence_paths),
             }
         )
         if status == "FAIL":
@@ -385,6 +393,7 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
 
     if ctx.output_format == "json" or ns.json:
         payload = {
+            "schema_name": CHECK_RUN,
             "schema_version": 1,
             "tool": "atlasctl",
             "kind": "check-run",
@@ -398,6 +407,7 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             "rows": rows,
             "timing_histogram": _timing_histogram(rows),
         }
+        validate_self(CHECK_RUN, payload)
         print(json.dumps(payload, sort_keys=True))
     elif bool(getattr(ns, "jsonl", False)):
         for row in rows:
@@ -453,16 +463,19 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.json_report:
         report_path = ensure_evidence_path(ctx, Path(ns.json_report))
         report_payload = {
+            "schema_name": CHECK_RUN,
             "schema_version": 1,
             "tool": "atlasctl",
             "kind": "check-run-report",
             "run_id": ctx.run_id,
+            "status": "ok" if final_failed == 0 else "error",
             "summary": summary,
             "slow_threshold_ms": slow_threshold_ms,
             "slow_checks": slow_rows,
             "ratchet_errors": ratchet_errors,
             "rows": rows,
         }
+        validate_self(CHECK_RUN, report_payload)
         write_text_file(report_path, json.dumps(report_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     slow_report = getattr(ns, "slow_report", None)
     if slow_report:

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from atlasctl.contracts.validate import validate
 from tests.helpers import golden_text, run_atlasctl_isolated
 
 
@@ -77,6 +78,7 @@ def test_check_run_writes_json_and_junit_reports(tmp_path: Path) -> None:
     assert json_report.exists()
     assert junit_report.exists()
     payload = json.loads(json_report.read_text(encoding="utf-8"))
+    validate("atlasctl.check-run.v1", payload)
     assert payload["kind"] == "check-run-report"
     assert payload["summary"]["failed"] == 0
     assert payload["summary"]["total"] >= 0
@@ -147,3 +149,21 @@ def test_check_run_group_and_match_filters(tmp_path: Path) -> None:
     )
     assert proc.returncode == 0, proc.stderr
     assert proc.stdout.strip()
+
+
+def test_check_run_json_quiet_validates_schema(tmp_path: Path) -> None:
+    proc = run_atlasctl_isolated(
+        tmp_path,
+        "--quiet",
+        "check",
+        "run",
+        "--group",
+        "repo",
+        "--select",
+        "atlasctl::repo::__no_match__",
+        "--json",
+    )
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    validate("atlasctl.check-run.v1", payload)
+    assert payload["schema_name"] == "atlasctl.check-run.v1"
