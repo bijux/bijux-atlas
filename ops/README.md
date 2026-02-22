@@ -17,7 +17,7 @@ Runbook index: `ops/INDEX.md`.
 - `ops/load/`: k6 suites, scenarios, contracts, baselines.
 - `ops/datasets/`: dataset manifest, pinning, QC, promotion.
 - `ops/e2e/`: composition-only scenarios over stack/obs/load/datasets.
-- `ops/run/`: thin executable wrappers.
+- `atlasctl ops ...` and `make` wrappers: operator entrypoints (no direct `ops/run/` surface).
 - `ops/_lib/`: shared helper libraries.
 - `ops/_meta/`: ownership/surface/contracts metadata.
 - `ops/_schemas/`: ops JSON schemas.

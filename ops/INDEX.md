@@ -47,5 +47,4 @@
 - `ops/load/CONTRACT.md`
 - `ops/obs/CONTRACT.md`
 - `ops/report/CONTRACT.md`
-- `ops/run/CONTRACT.md`
 - `ops/stack/CONTRACT.md`

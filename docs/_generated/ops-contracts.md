@@ -16,7 +16,6 @@ Generated from ops contracts and schemas.
 - `ops/e2e/CONTRACT.md` (version `1`)
 - `ops/report/CONTRACT.md` (version `1`)
 - `ops/fixtures/CONTRACT.md` (version `1`)
-- `ops/run/CONTRACT.md` (version `1`)
 
 ## Schemas
 

@@ -15,5 +15,5 @@ Explicit negative contract for the e2e layer.
 
 ## Contract
 
-- Infra and deploy fixes must live in `ops/stack/*`, `ops/k8s/*`, or canonical `ops/run/*` entrypoints.
-- E2E scripts should call `ops/run/*` entrypoints and only perform scenario validation logic.
+- Infra and deploy fixes must live in `ops/stack/*`, `ops/k8s/*`, or canonical `atlasctl ops ...` entrypoints.
+- E2E scripts should call `atlasctl ops ...` entrypoints (or thin make wrappers) and only perform scenario validation logic.

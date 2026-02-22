@@ -21,8 +21,8 @@ errors: list[str] = []
 
 if "./bin/atlasctl ops deploy --report text apply" not in ops_mk:
     errors.append("ops-deploy must call ./bin/atlasctl ops deploy --report text apply")
-if "./ops/run/undeploy.sh" not in ops_mk:
-    errors.append("ops-undeploy must call ./ops/run/undeploy.sh")
+if "./bin/atlasctl ops deploy --report text rollback" not in ops_mk:
+    errors.append("ops-undeploy must call ./bin/atlasctl ops deploy --report text rollback")
 if "./ops/k8s/scripts/deploy_atlas.sh" in ops_mk:
     errors.append("ops-deploy must not call ./ops/k8s/scripts/deploy_atlas.sh directly")
 if "./ops/e2e/scripts/deploy_atlas.sh" in ops_mk:
@@ -31,8 +31,8 @@ if "./ops/datasets/scripts/publish_by_name.sh" not in ops_mk:
     errors.append("ops-publish must call ./ops/datasets/scripts/publish_by_name.sh")
 if "./ops/e2e/scripts/smoke_queries.sh" not in ops_mk:
     errors.append("ops-smoke must call ./ops/e2e/scripts/smoke_queries.sh")
-if "./ops/run/obs-verify.sh" not in ops_mk and "./ops/obs/scripts/verify_pack.sh" not in ops_mk:
-    errors.append("ops observability verify flow must use verify_pack entrypoint")
+if "./bin/atlasctl ops obs --report text verify" not in ops_mk and "./ops/obs/scripts/verify_pack.sh" not in ops_mk:
+    errors.append("ops observability verify flow must use atlasctl ops obs verify (or verify_pack entrypoint)")
 if "ops-stack-up-legacy" in ops_mk or "ops-stack-down-legacy" in ops_mk:
     errors.append("legacy stack entrypoint targets must not exist in makefiles/ops.mk")
 if "ops-check-legacy" in ops_mk or "ops-smoke-legacy" in ops_mk:
