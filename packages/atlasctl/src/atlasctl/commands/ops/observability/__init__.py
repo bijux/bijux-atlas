@@ -1,1 +1,0 @@
-"""Canonical observability package namespace."""
