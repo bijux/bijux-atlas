@@ -17,7 +17,7 @@ SHELL_MAKE_RE = re.compile(r"(?:^|[;&|]\s*|\s)(?:\$\((?:MAKE)\)|make)\s+([^\n#]+
 
 
 def load_make_targets() -> set[str]:
-    proc = run(["make", "-qp"], cwd=ROOT, text=True, capture_output=True, check=False)
+    proc = run(["make", "-qp"], cwd=ROOT, text=True, capture_output=True)
     targets: set[str] = set()
     for line in proc.stdout.splitlines():
         if ":" not in line or line.startswith("\t") or line.startswith("#"):

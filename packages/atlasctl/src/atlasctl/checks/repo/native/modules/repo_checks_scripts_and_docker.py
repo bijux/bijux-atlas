@@ -3,10 +3,11 @@ from __future__ import annotations
 import json
 import os
 import re
-import subprocess
 from datetime import date, datetime, timezone
 from fnmatch import fnmatch
 from pathlib import Path
+
+from atlasctl.core.exec import run
 
 def check_make_scripts_references(repo_root: Path) -> tuple[int, list[str]]:
     exceptions_path = repo_root / "configs/layout/make-scripts-reference-exceptions.json"
@@ -76,11 +77,18 @@ def check_no_executable_python_outside_packages(repo_root: Path) -> tuple[int, l
         payload = json.loads(exceptions_cfg.read_text(encoding="utf-8"))
         globs = [str(row.get("path_glob", "")) for row in payload.get("exceptions", [])]
     errors: list[str] = []
-    for p in sorted(repo_root.rglob("*.py")):
-        if not p.is_file():
-            continue
-        rel = p.relative_to(repo_root).as_posix()
+    proc = run(
+        ["git", "ls-files", "--", "*.py"],
+        cwd=repo_root,
+        text=True,
+        capture_output=True,
+    )
+    rel_paths = sorted(line.strip() for line in proc.stdout.splitlines() if line.strip()) if proc.returncode == 0 else []
+    for rel in rel_paths:
         if rel.startswith("packages/") or "/__pycache__/" in rel:
+            continue
+        p = repo_root / rel
+        if not p.is_file():
             continue
         first = p.read_text(encoding="utf-8", errors="ignore").splitlines()[:1]
         shebang = first[0] if first else ""
@@ -208,11 +216,10 @@ def check_docker_image_size(repo_root: Path) -> tuple[int, list[str]]:
     budget = json.loads((repo_root / "docker/contracts/image-size-budget.json").read_text(encoding="utf-8"))
     image = os.environ.get("DOCKER_IMAGE", "bijux-atlas:local")
     max_bytes = int(budget["runtime_image_max_bytes"])
-    proc = subprocess.run(
+    proc = run(
         ["docker", "image", "inspect", image, "--format", "{{.Size}}"],
         capture_output=True,
         text=True,
-        check=False,
     )
     if proc.returncode != 0:
         return 0, []

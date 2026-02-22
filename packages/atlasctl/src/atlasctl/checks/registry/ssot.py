@@ -19,6 +19,7 @@ from ..domains.ops.ops_checks import CHECKS as CHECKS_OPS
 from ..domains.dev.python import CHECKS as CHECKS_PYTHON
 from ..repo import CHECKS as CHECKS_REPO
 from ...core.meta.owners import load_owner_catalog
+from ...core.runtime.paths import write_text_file
 
 try:
     import tomllib  # type: ignore[attr-defined]
@@ -243,7 +244,7 @@ def generate_registry_json(repo_root: Path | None = None, *, check_only: bool = 
     changed = current != rendered
     if not check_only and changed:
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(rendered, encoding="utf-8")
+        write_text_file(out, rendered, encoding="utf-8")
     return out, changed
 
 
@@ -341,7 +342,7 @@ def write_registry_toml(repo_root: Path, rows: list[dict[str, Any]]) -> Path:
             lines.append(f"{key} = [{rendered}]")
         lines.append("")
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text("\n".join(lines), encoding="utf-8")
+    write_text_file(out, "\n".join(lines), encoding="utf-8")
     return out
 
 
