@@ -7269,7 +7269,7 @@
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Define internal/deps/lock/internal/deps/sync/internal/deps/check-venv/internal/deps/cold-start in makefiles/atlasctl.mk.",
+        "fix_hint": "Define atlasctl/internal/deps/lock/atlasctl/internal/deps/sync/atlasctl/internal/deps/check-venv/atlasctl/internal/deps/cold-start in makefiles/atlasctl.mk.",
         "legacy_id": "repo.dependency_gate_targets",
         "module": "atlasctl.checks.repo.contracts.pyproject_contracts",
         "severity": "error",

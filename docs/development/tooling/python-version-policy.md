@@ -16,5 +16,5 @@
 
 ```bash
 make tooling-versions
-make internal/deps/lock
+make atlasctl/internal/deps/lock
 ```
