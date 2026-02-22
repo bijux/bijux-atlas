@@ -43,6 +43,7 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     run.add_argument("--exclude-group", action="append", default=[], help="exclude checks by group/domain (repeatable)")
     run.add_argument("--domain", dest="domain_filter", help="filter checks by domain")
     run.add_argument("--id", help="run a single check id")
+    run.add_argument("--legacy-id", action="store_true", help="allow legacy dotted check ids for transition period")
     run.add_argument("-k", help="substring selector over check id/title")
     run.add_argument("--slow", dest="only_slow", action="store_true", help="run only slow checks")
     run.add_argument("--only-slow", dest="only_slow", action="store_true", help="run only slow checks")
@@ -58,6 +59,9 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     parser_sub.add_parser("list", help="list registered checks")
     explain = parser_sub.add_parser("explain", help="explain a check id")
     explain.add_argument("check_id")
+    explain.add_argument("--legacy-id", action="store_true", help="allow legacy dotted check ids for transition period")
+    doctor = parser_sub.add_parser("doctor", help="validate checks registry integrity and canonical metadata")
+    doctor.add_argument("--json", action="store_true", help="emit JSON output")
     groups = parser_sub.add_parser("groups", help="show checks grouped by tags/groups")
     groups.add_argument("--json", action="store_true", help="emit JSON output")
     gates = parser_sub.add_parser("gates", help="show gate to checks mapping")
@@ -178,6 +182,9 @@ def configure_checks_parser(sub: argparse._SubParsersAction[argparse.ArgumentPar
     triage_fail.add_argument("--json", action="store_true", help="emit JSON output")
     explain = parser_sub.add_parser("explain", help="explain a check id")
     explain.add_argument("check_id")
+    explain.add_argument("--legacy-id", action="store_true", help="allow legacy dotted check ids for transition period")
+    doctor = parser_sub.add_parser("doctor", help="validate checks registry integrity and canonical metadata")
+    doctor.add_argument("--json", action="store_true", help="emit JSON output")
 
 
 def configure(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:

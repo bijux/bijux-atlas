@@ -126,7 +126,12 @@ def _match_selected(check_id: str, title: str, domain: str, selected_domain: str
         return False
     if not selector:
         return True
-    return selector == check_id or selector in check_id or selector in title
+    return (
+        selector == check_id
+        or fnmatch(check_id, selector)
+        or selector in check_id
+        or selector in title
+    )
 
 
 def _write_junitxml(path: Path, rows: list[dict[str, object]]) -> None:
@@ -155,6 +160,8 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
         select_value = k_value
     if target_value and not select_value:
         select_value = target_value
+    if "." in id_value and not bool(getattr(ns, "legacy_id", False)) and not (ctx.output_format == "json" or ns.json):
+        print("warning: using legacy dotted check id without --legacy-id; migrate to canonical checks_<domain>_<area>_<name>")
     selected_domain, selector = _parse_select(select_value)
     domain_aliases = set(check_domains())
     if target_value in domain_aliases:
