@@ -10,8 +10,8 @@ packages/atlasctl/src/atlasctl/commands/ops/stack/faults/fill_node_disk.py
 packages/atlasctl/src/atlasctl/commands/ops/stack/faults/inject.py
 packages/atlasctl/src/atlasctl/commands/ops/stack/faults/throttle_network.py
 packages/atlasctl/src/atlasctl/commands/ops/stack/faults/toxiproxy_latency.py
-ops/stack/kind/down.sh
-ops/stack/kind/up.sh
+packages/atlasctl/src/atlasctl/commands/ops/stack/kind/down.py
+packages/atlasctl/src/atlasctl/commands/ops/stack/kind/up.py
 ops/stack/minio/bootstrap.sh
 ops/stack/minio/rotate_creds.sh
 ops/stack/registry/up.sh
