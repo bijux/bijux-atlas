@@ -32,7 +32,6 @@
 - `ops/run/ops-smoke.sh`
 - `ops/run/prereqs.sh`
 - `ops/run/doctor.sh`
-- `ops/run/report.sh`
 - `ops/run/root-lanes.sh`
 - `ops/run/root-local.sh`
 - `ops/run/warm-entrypoint.sh`

@@ -128,6 +128,6 @@ for pid in "${pids[@]}"; do
   fi
 done
 
-RUN_ID="$run_id" ./ops/run/report.sh >/dev/null || true
+./bin/atlasctl report unified --run-id "$run_id" --out ops/_generated_committed/report.unified.json >/dev/null || true
 print_summary "$run_id"
 exit "$failed"
