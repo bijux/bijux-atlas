@@ -11,11 +11,6 @@ TARGET_RE = re.compile(r"^([A-Za-z0-9_./-]+):(?:.*?)(?:\s+##\s*(.*))?$")
 
 ALIAS_OF: dict[str, str] = {
     "test-all": "test",
-    "internal/dev/check": "check",
-    "fmt-all": "fmt",
-    "lint-all": "lint",
-    "audit-all": "audit",
-    "coverage-all": "coverage",
     "test-contracts": "test",
 }
 
@@ -42,7 +37,7 @@ def _classify_target(target: str, source_file: str) -> str:
         return "internal"
     if target.startswith("ci-"):
         return "ci-only"
-    if target in {"fmt", "lint", "test", "audit", "coverage", "check", "ci"}:
+    if target in {"fmt", "lint", "test", "coverage", "check", "atlasctl-check", "ci"}:
         return "public"
     return "legacy"
 
@@ -56,26 +51,14 @@ def _map_to_intent(target: str) -> str | None:
         return "atlasctl dev check"
     if target == "test":
         return "atlasctl dev test"
-    if target == "audit":
-        return "atlasctl dev audit"
     if target == "coverage":
         return "atlasctl dev coverage"
-    if target in {"fmt-all"}:
-        return "atlasctl dev fmt --all"
-    if target in {"lint-all"}:
-        return "atlasctl dev lint --all"
-    if target in {"check-all"}:
-        return "atlasctl dev check --all"
     if target in {"test-all"}:
         return "atlasctl dev test --all"
+    if target == "atlasctl-check":
+        return "atlasctl check run --group repo"
     if target in {"test-contracts"}:
         return "atlasctl dev test --contracts"
-    if target in {"audit-all"}:
-        return "atlasctl dev audit --all"
-    if target in {"coverage-all"}:
-        return "atlasctl dev coverage --all"
-    if target in {"internal/dev/check"}:
-        return "atlasctl dev check"
     if target == "ci":
         return "atlasctl ci run --json --out-dir artifacts/reports/atlasctl/suite-ci"
     if target == "internal/ci/run":
