@@ -62,7 +62,6 @@ ops/e2e/realdata/run_two_release_diff.sh|ops/datasets/scripts/publish_by_name.sh
 ops/k8s/tests/checks/perf/test_store_outage_under_load.sh|ops/obs/scripts/bin/run_drill.sh
 ops/run/deploy-atlas.sh|ops/e2e/scripts/deploy_atlas.sh
 ops/run/load-suite.sh|ops/load/scripts/run_suite.sh
-ops/run/obs-up.sh|ops/obs/scripts/install_pack.sh
 scripts/areas/layout/check_obs_pack_ssot.py|ops/obs/scripts/install_pack.sh
 scripts/areas/layout/check_ops_canonical_entrypoints.py|ops/datasets/scripts/publish_by_name.sh
 scripts/areas/layout/check_ops_canonical_entrypoints.py|ops/e2e/scripts/deploy_atlas.sh

@@ -239,9 +239,9 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _run_wrapped(ctx, OrchestrateSpec("stack", ns.stack_cmd, mapping[ns.stack_cmd]), ns.report)
     if ns.cmd == "obs":
         mapping = {
-            "up": ["bash", "ops/run/obs-up.sh"],
+            "up": ["./bin/atlasctl", "ops", "obs", "--report", "text", "up"],
             "verify": ["bash", "ops/run/obs-verify.sh"],
-            "down": ["bash", "ops/run/obs-validate.sh", "--mode", "down"],
+            "down": ["./bin/atlasctl", "ops", "obs", "--report", "text", "validate"],
         }
         return _run_wrapped(ctx, OrchestrateSpec("obs", ns.obs_cmd, mapping[ns.obs_cmd]), ns.report)
     if ns.cmd == "load":

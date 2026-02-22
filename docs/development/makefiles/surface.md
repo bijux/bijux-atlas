@@ -151,7 +151,6 @@ Generated from `configs/ops/public-surface.json`. Do not edit manually.
 - `./ops/run/doctor.sh`
 - `./ops/run/stack-up.sh`
 - `./ops/run/stack-down.sh`
-- `./ops/run/obs-up.sh`
 - `./ops/run/obs-verify.sh`
 - `./ops/run/k8s-suite.sh`
 - `./ops/run/load-suite.sh`
