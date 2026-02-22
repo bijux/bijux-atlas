@@ -2494,6 +2494,7 @@
       "gate": "ops",
       "groups": [
         "fast",
+        "kube",
         "ops",
         "required"
       ],
@@ -2516,6 +2517,7 @@
       },
       "markers": [
         "fast",
+        "kube",
         "ops",
         "required"
       ],
@@ -2532,6 +2534,7 @@
       "gate": "ops",
       "groups": [
         "fast",
+        "kube",
         "ops",
         "required"
       ],
@@ -2554,6 +2557,7 @@
       },
       "markers": [
         "fast",
+        "kube",
         "ops",
         "required"
       ],
@@ -2570,6 +2574,7 @@
       "gate": "ops",
       "groups": [
         "fast",
+        "kube",
         "ops",
         "required"
       ],
@@ -2592,6 +2597,7 @@
       },
       "markers": [
         "fast",
+        "kube",
         "ops",
         "required"
       ],
@@ -2608,6 +2614,7 @@
       "gate": "ops",
       "groups": [
         "fast",
+        "kube",
         "ops",
         "required"
       ],
@@ -2630,6 +2637,7 @@
       },
       "markers": [
         "fast",
+        "kube",
         "ops",
         "required"
       ],
@@ -5648,6 +5656,7 @@
       "gate": "repo",
       "groups": [
         "fast",
+        "network",
         "repo",
         "required"
       ],
@@ -5670,6 +5679,7 @@
       },
       "markers": [
         "fast",
+        "network",
         "repo",
         "required"
       ],
@@ -7814,6 +7824,7 @@
       "gate": "repo",
       "groups": [
         "fast",
+        "network",
         "repo",
         "required"
       ],
@@ -7836,6 +7847,7 @@
       },
       "markers": [
         "fast",
+        "network",
         "repo",
         "required"
       ],
@@ -8270,6 +8282,7 @@
       "gate": "repo",
       "groups": [
         "fast",
+        "network",
         "repo",
         "required"
       ],
@@ -8292,6 +8305,7 @@
       },
       "markers": [
         "fast",
+        "network",
         "repo",
         "required"
       ],
