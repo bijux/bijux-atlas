@@ -109,7 +109,7 @@
     },
     {
       "name": "trace-missing-spans-regression",
-      "script": "ops/obs/scripts/trace-missing-spans-regression.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/trace_missing_spans_regression.py",
       "purpose": "Ensure trace contract catches missing span regression.",
       "expected_signals": [
         "validator:trace_coverage_failure"
@@ -179,7 +179,7 @@
     },
     {
       "name": "registry-refresh-failure",
-      "script": "ops/obs/scripts/registry-refresh-failure.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/registry_refresh_failure.py",
       "purpose": "Validate registry/catalog refresh failure behavior and readiness semantics.",
       "expected_signals": [
         "validator:readiness_catalog_refresh"
@@ -193,7 +193,7 @@
     },
     {
       "name": "dataset-corruption-detection",
-      "script": "ops/obs/scripts/dataset-corruption-detection.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/dataset_corruption_detection.py",
       "purpose": "Validate corrupted dataset is detected and quarantined.",
       "expected_signals": [
         "validator:dataset_corruption"
@@ -207,7 +207,7 @@
     },
     {
       "name": "gc-under-load",
-      "script": "ops/obs/scripts/gc-under-load.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/gc_under_load.py",
       "purpose": "Run GC while service is active and confirm no critical disruption.",
       "expected_signals": [
         "validator:gc_under_load"
@@ -235,7 +235,7 @@
     },
     {
       "name": "hpa-scale-event",
-      "script": "ops/obs/scripts/hpa-scale-event.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/hpa_scale_event.py",
       "purpose": "Validate HPA scale event under load and recovery.",
       "expected_signals": [
         "validator:hpa_scale"
@@ -249,7 +249,7 @@
     },
     {
       "name": "node-disk-pressure",
-      "script": "ops/obs/scripts/node-disk-pressure.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/node_disk_pressure.py",
       "purpose": "Validate node disk pressure scenario and continued service health.",
       "expected_signals": [
         "validator:disk_pressure"
@@ -263,7 +263,7 @@
     },
     {
       "name": "cpu-throttle-noisy-neighbor",
-      "script": "ops/obs/scripts/cpu-throttle-noisy-neighbor.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/cpu_throttle_noisy_neighbor.py",
       "purpose": "Validate noisy-neighbor CPU throttle resilience.",
       "expected_signals": [
         "validator:cpu_throttle"

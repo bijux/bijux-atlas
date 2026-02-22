@@ -32,11 +32,11 @@ makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drill
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/alerts_validation.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/check_pack_upgrade.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/check_pack_versions.py
-makefiles/ops.mk|ops/obs/scripts/cpu-throttle-noisy-neighbor.sh
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/cpu_throttle_noisy_neighbor.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/export_pack_bundle.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/install_pack.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/memory_growth.py
-makefiles/ops.mk|ops/obs/scripts/node-disk-pressure.sh
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/node_disk_pressure.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/otel_outage.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/overload_admission_control.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/pack_health.py

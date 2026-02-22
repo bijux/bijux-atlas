@@ -197,7 +197,7 @@ packages/atlasctl/src/atlasctl/commands/ops/observability/drills/run_drill.py
 packages/atlasctl/src/atlasctl/commands/ops/observability/drills/runbook_proof_top5.py
 packages/atlasctl/src/atlasctl/commands/ops/observability/smoke_pack.py
 packages/atlasctl/src/atlasctl/commands/ops/observability/drills/store_outage_under_load.py
-ops/obs/scripts/trace-missing-spans-regression.sh
+packages/atlasctl/src/atlasctl/commands/ops/observability/drills/trace_missing_spans_regression.py
 packages/atlasctl/src/atlasctl/commands/ops/observability/verify_pack.py
 ops/obs/tests/test_cheap.sh
 ops/obs/tests/test_contracts.sh
