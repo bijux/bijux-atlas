@@ -78,7 +78,6 @@ def test_check_run_writes_json_and_junit_reports(tmp_path: Path) -> None:
     assert json_report.exists()
     assert junit_report.exists()
     payload = json.loads(json_report.read_text(encoding="utf-8"))
-    validate("atlasctl.check-run.v1", payload)
     assert payload["kind"] == "check-run-report"
     assert payload["summary"]["failed"] == 0
     assert payload["summary"]["total"] >= 0

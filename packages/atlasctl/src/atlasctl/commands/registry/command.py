@@ -4,6 +4,7 @@ import argparse
 import json
 
 from ...core.context import RunContext
+from ...core.runtime.paths import write_text_file
 from ...checks.registry.ssot import CHECKS_CATALOG_JSON
 
 
@@ -52,7 +53,7 @@ def run_registry_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             print("checks index up-to-date")
             return 0
         out_path.parent.mkdir(parents=True, exist_ok=True)
-        out_path.write_text(rendered, encoding="utf-8")
+        write_text_file(out_path, rendered, encoding="utf-8")
         print(str(out_path.relative_to(ctx.repo_root)))
         return 0
     return 2

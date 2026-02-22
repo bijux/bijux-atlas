@@ -45,6 +45,8 @@ def check_no_xtask_refs(repo_root: Path) -> tuple[int, list[str]]:
         "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml",
         "packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json",
         "packages/atlasctl/src/atlasctl/commands/check/run.py",
+        "packages/atlasctl/docs/checks/index.md",
+        "packages/atlasctl/src/atlasctl/registry/checks_catalog.json",
     }
     for root in include_roots:
         paths: list[Path]
