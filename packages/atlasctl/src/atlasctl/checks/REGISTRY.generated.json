@@ -2697,6 +2697,90 @@
       ]
     },
     {
+      "area": "effect",
+      "callable": "check_ops_effect_boundary_imports",
+      "category": "hygiene",
+      "description": "forbid ops command layer imports from CLI parser modules",
+      "domain": "ops",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Keep ops commands behind runtime/effects layers and avoid importing cli parser modules.",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_effect_boundary_imports",
+      "legacy_id": "ops.effect_boundary_imports",
+      "module": "atlasctl.checks.domains.ops.ops_checks",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "env",
+      "callable": "check_ops_env_schema_is_used",
+      "category": "hygiene",
+      "description": "ensure ops env schema is the single interface for env validate/print",
+      "domain": "ops",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Use ops env validate/print with configs/ops/env.schema.json as default.",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_env_schema_is_used",
+      "legacy_id": "ops.env_schema_is_used",
+      "module": "atlasctl.checks.domains.ops.ops_checks",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "generated",
+      "callable": "check_ops_generated_not_tracked_unless_allowed",
+      "category": "hygiene",
+      "description": "forbid tracked generated ops outputs unless explicitly allowlisted",
+      "domain": "ops",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Keep generated outputs untracked or move to committed generated roots.",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_generated_not_tracked_unless_allowed",
+      "legacy_id": "ops.generated_not_tracked_unless_allowed",
+      "module": "atlasctl.checks.domains.ops.ops_checks",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
       "area": "manifests",
       "callable": "check_ops_manifests_schema",
       "category": "hygiene",
@@ -2809,6 +2893,62 @@
       ]
     },
     {
+      "area": "pins",
+      "callable": "check_ops_pins_no_unpinned_versions",
+      "category": "hygiene",
+      "description": "forbid floating/unpinned versions in ops pins",
+      "domain": "ops",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Pin tools/images/helm versions and image digests.",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_pins_no_unpinned_versions",
+      "legacy_id": "ops.pins_no_unpinned_versions",
+      "module": "atlasctl.checks.domains.ops.ops_checks",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "pins",
+      "callable": "check_ops_pins_update_is_deterministic",
+      "category": "hygiene",
+      "description": "require deterministic canonical ops pins payload",
+      "domain": "ops",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Keep configs/ops/pins.json canonical and stable.",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_pins_update_is_deterministic",
+      "legacy_id": "ops.pins_update_is_deterministic",
+      "module": "atlasctl.checks.domains.ops.ops_checks",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
       "area": "scripts",
       "callable": "check_ops_scripts_are_data_only",
       "category": "hygiene",
@@ -2837,6 +2977,34 @@
       ]
     },
     {
+      "area": "scripts",
+      "callable": "check_ops_scripts_count_nonincreasing",
+      "category": "hygiene",
+      "description": "enforce migration gate: ops scripts count must not increase",
+      "domain": "ops",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Reduce ops scripts count or intentionally update baseline in one reviewed change.",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_scripts_count_nonincreasing",
+      "legacy_id": "ops.scripts_count_nonincreasing",
+      "module": "atlasctl.checks.domains.ops.ops_checks",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
       "area": "shell",
       "callable": "check_ops_shell_policy",
       "category": "hygiene",
@@ -2855,6 +3023,34 @@
       ],
       "id": "checks_ops_shell_policy",
       "legacy_id": "ops.shell_policy",
+      "module": "atlasctl.checks.domains.ops.ops_checks",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "stack",
+      "callable": "check_ops_stack_versions_report_valid",
+      "category": "hygiene",
+      "description": "require stack versions report to match tool versions SSOT",
+      "domain": "ops",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Regenerate ops/stack/versions.json from configs/ops/tool-versions.json.",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_stack_versions_report_valid",
+      "legacy_id": "ops.stack_versions_report_valid",
       "module": "atlasctl.checks.domains.ops.ops_checks",
       "owner": "platform",
       "severity": "error",
