@@ -47,7 +47,10 @@ def run_suite_ci(
                     seen.add(pattern)
                     suite_cmd.extend(["--only", pattern])
     fail_fast = bool(getattr(ns, "fail_fast", False))
+    maxfail = max(0, int(getattr(ns, "maxfail", 0) or 0))
     suite_cmd.append("--fail-fast" if fail_fast else "--keep-going")
+    if maxfail:
+        suite_cmd.extend(["--maxfail", str(maxfail)])
     execution_mode = "fail-fast" if fail_fast else "keep-going"
     no_isolate = bool(getattr(ns, "no_isolate", False))
     isolate_mode = "debug-no-isolate" if no_isolate else "isolate"
@@ -71,6 +74,7 @@ def run_suite_ci(
             "lane_filter": lanes if lanes else ["all"],
             "mode": isolate_mode,
             "execution": execution_mode,
+            "maxfail": maxfail,
             "artifacts": {
                 "json": str(out_dir / "suite-ci.report.json"),
                 "junit": str(junit_path),
@@ -136,6 +140,7 @@ def run_suite_ci(
                     "lane_filter": lanes if lanes else ["all"],
                     "mode": isolate_mode,
                     "execution": execution_mode,
+                    "maxfail": maxfail,
                     "suite_result": payload,
                     "suite_steps": suite_steps,
                     "next": (
