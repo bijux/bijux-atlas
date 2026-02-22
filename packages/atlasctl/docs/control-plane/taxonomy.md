@@ -10,7 +10,6 @@ Target topology for `packages/atlasctl/src/atlasctl` is:
 6. `core/`
 7. `registry/`
 8. `reporting/`
-9. `docs/`
 
 `__init__.py` and `__main__.py` remain at package root.
 
@@ -24,9 +23,8 @@ Target topology for `packages/atlasctl/src/atlasctl` is:
 - `core/`: effect boundaries and runtime primitives.
 - `registry/`: declarative inventories only; no runtime orchestration.
 - `reporting/`: canonical report/artifact formatting and writing.
-- `docs/`: docs generation and validation code.
 - deterministic test orchestration lives under `commands/internal/test_tools/`.
 
 ## Migration Status
 
-- Top-level module set now matches the canonical target (`checks`, `cli`, `commands`, `contracts`, `core`, `docs`, `registry`, `reporting`, `suite`).
+- Top-level module set now matches the canonical target (`checks`, `cli`, `commands`, `contracts`, `core`, `registry`, `reporting`, `suite`).

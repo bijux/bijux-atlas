@@ -17,7 +17,6 @@ This file declares the intended top-level module layout for `packages/atlasctl/s
 
 ## Migration Notes
 
-- Legacy `docs/` top-level package remains transitional and should be folded into domain-owned modules.
 - Check implementations are consolidating under `checks/<domain>/...`.
 - Canonical checks command module is `commands/check/command.py`; `checks/command.py` is compatibility-only.
 - Old deep paths under `checks/layout/.../checks/` are compatibility shims; canonical implementations live under:
