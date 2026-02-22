@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from ....core.runtime.clock import utc_now_iso
+from ....core.runtime.guards.clock import utc_now_iso
 from ....checks.core.execution import CommandCheckDef, run_command_checks
 
 

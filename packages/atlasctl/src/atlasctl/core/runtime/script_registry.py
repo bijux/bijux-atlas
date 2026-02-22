@@ -7,7 +7,7 @@ from pathlib import Path
 
 from ..context import RunContext
 from ..fs import ensure_evidence_path
-from ..owners import load_owner_catalog
+from ..meta.owners import load_owner_catalog
 
 SCRIPT_REGISTRY_PATH = Path("configs/scripts/registry.json")
 COMMANDS_ROOT = Path("packages/atlasctl/src/atlasctl/commands")

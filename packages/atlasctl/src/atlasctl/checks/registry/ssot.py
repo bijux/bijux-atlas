@@ -18,7 +18,7 @@ from ..domains.policies.make import CHECKS as CHECKS_MAKE
 from ..domains.ops.ops_checks import CHECKS as CHECKS_OPS
 from ..domains.dev.python import CHECKS as CHECKS_PYTHON
 from ..repo import CHECKS as CHECKS_REPO
-from ...core.owners import load_owner_catalog
+from ...core.meta.owners import load_owner_catalog
 
 try:
     import tomllib  # type: ignore[attr-defined]

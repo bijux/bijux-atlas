@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 from ....cli.surface_registry import command_registry
-from ....core.owners import load_owner_catalog
+from ....core.meta.owners import load_owner_catalog
 from ....core.effects import all_command_effects, command_effects, command_group, group_allowed_effects, resolve_network_mode
 from ....contracts.ids import RUNTIME_CONTRACTS
 

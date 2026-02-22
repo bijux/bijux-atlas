@@ -6,7 +6,7 @@ import pytest
 from atlasctl.core.context import RunContext
 from atlasctl.core.errors import ScriptError
 from atlasctl.core.fs import ensure_evidence_path, write_text
-from atlasctl.core.runtime.write_policy import is_forbidden_repo_path
+from atlasctl.core.runtime.guards.write_policy import is_forbidden_repo_path
 
 
 def _ctx() -> RunContext:
