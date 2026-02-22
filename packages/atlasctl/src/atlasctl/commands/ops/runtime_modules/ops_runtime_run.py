@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+from pathlib import Path
 
 from . import ops_runtime_commands as impl
 
@@ -72,6 +73,15 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             manifest_path=manifest_path,
             fail_fast=bool(getattr(ns, "fail_fast", False)),
         )
+    if ns.ops_cmd == "run-script":
+        script = str(getattr(ns, "script", "")).strip()
+        if not script:
+            return impl._emit_ops_status(getattr(ns, "report", "text"), 2, "missing ops/run script path")
+        path = Path("ops/run") / script
+        if path.is_absolute() or ".." in path.parts:
+            return impl._emit_ops_status(getattr(ns, "report", "text"), 2, "invalid script path; use ops/run relative path")
+        print("deprecated: `atlasctl ops run-script` is a temporary migration shim; use explicit `atlasctl ops/...` commands")
+        return impl._run_simple_cmd(ctx, ["bash", path.as_posix(), *list(getattr(ns, "args", []))], getattr(ns, "report", "text"))
     if ns.ops_cmd == "list":
         if getattr(ns, "kind", "") == "tasks":
             return impl._ops_list_tasks(ctx, ns.report)
@@ -217,6 +227,17 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                 ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/validate_ops_contracts.py"],
                 ns.report,
             )
+        if ns.ops_cmd == "k8s" and sub == "check":
+            for cmd in (
+                [*impl.SELF_CLI, "ops", "k8s", "--report", ns.report, "contracts"],
+                [*impl.SELF_CLI, "ops", "kind", "--report", ns.report, "validate"],
+            ):
+                code, output = impl._run_check(cmd, ctx.repo_root)
+                if output:
+                    print(output)
+                if code != 0:
+                    return code
+            return 0
         if ns.ops_cmd == "e2e" and sub == "validate":
             for cmd in (
                 ["python3", "packages/atlasctl/src/atlasctl/checks/layout/domains/scenarios/check_e2e_suites.py"],
@@ -231,6 +252,8 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             return 0
         if ns.ops_cmd == "obs" and sub == "verify":
             return impl._run_simple_cmd(ctx, ["bash", "ops/run/obs-verify.sh"], ns.report)
+        if ns.ops_cmd == "obs" and sub == "check":
+            return impl._run_simple_cmd(ctx, [*impl.SELF_CLI, "ops", "obs", "--report", ns.report, "verify"], ns.report)
         if ns.ops_cmd == "obs" and sub == "drill":
             drill = getattr(ns, "drill", "")
             if not drill:
@@ -249,6 +272,17 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             return impl._run_simple_cmd(ctx, ["bash", "ops/run/stack-down.sh"], ns.report)
         if ns.ops_cmd == "stack" and sub == "restart":
             return impl._run_simple_cmd(ctx, ["bash", "ops/run/k8s-restart.sh"], ns.report)
+        if ns.ops_cmd == "stack" and sub == "check":
+            for cmd in (
+                [*impl.SELF_CLI, "ops", "stack", "--report", ns.report, "versions-sync"],
+                [*impl.SELF_CLI, "ops", "kind", "--report", ns.report, "validate"],
+            ):
+                code, output = impl._run_check(cmd, ctx.repo_root)
+                if output:
+                    print(output)
+                if code != 0:
+                    return code
+            return 0
         if ns.ops_cmd == "kind" and sub == "up":
             return impl._run_simple_cmd(ctx, ["bash", "ops/stack/kind/up.sh"], ns.report)
         if ns.ops_cmd == "kind" and sub == "down":
@@ -290,6 +324,8 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         if ns.ops_cmd == "load" and sub == "run":
             suite = getattr(ns, "suite", "mixed-80-20")
             return impl._run_simple_cmd(ctx, ["env", f"SUITE={suite}", "bash", "ops/run/load-suite.sh"], ns.report)
+        if ns.ops_cmd == "load" and sub == "check":
+            return impl._run_simple_cmd(ctx, [*impl.SELF_CLI, "load", "smoke"], ns.report)
         if ns.ops_cmd == "datasets" and sub == "verify":
             return impl._run_simple_cmd(ctx, ["bash", "ops/run/datasets-verify.sh"], ns.report)
         if ns.ops_cmd == "datasets" and sub == "fetch":
