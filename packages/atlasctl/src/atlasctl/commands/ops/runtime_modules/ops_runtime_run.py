@@ -104,7 +104,14 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         return impl._run_simple_cmd(ctx, shell_script_command("ops/run/stack-up.sh", "--profile", os.environ.get("PROFILE", "kind")), ns.report)
 
     if ns.ops_cmd == "down":
-        return impl._run_simple_cmd(ctx, shell_script_command("ops/run/down.sh"), ns.report)
+        cluster = str(os.environ.get("ATLAS_E2E_CLUSTER_NAME", "")).strip()
+        if not cluster:
+            return impl._emit_ops_status(ns.report, 2, "ATLAS_E2E_CLUSTER_NAME is required by configs/ops/env.schema.json")
+        result = impl.run_command(["kind", "get", "clusters"], ctx.repo_root, ctx=ctx)
+        clusters = {line.strip() for line in result.combined_output.splitlines() if line.strip()}
+        if result.code != 0 or cluster not in clusters:
+            return impl._emit_ops_status(ns.report, 0, "ops-down: kind cluster not present; nothing to do")
+        return impl._run_simple_cmd(ctx, shell_script_command("ops/run/stack-down.sh"), ns.report)
 
     if ns.ops_cmd == "restart":
         return impl._run_simple_cmd(ctx, shell_script_command("ops/run/k8s-restart.sh"), ns.report)

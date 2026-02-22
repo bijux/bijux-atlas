@@ -22,7 +22,6 @@
 
 - `ops/run/stack-up.sh`
 - `ops/run/stack-down.sh`
-- `ops/run/down.sh`
 - `ops/run/deploy-atlas.sh`
 - `ops/run/k8s-restart.sh`
 - `ops/run/k8s-apply-config.sh`
