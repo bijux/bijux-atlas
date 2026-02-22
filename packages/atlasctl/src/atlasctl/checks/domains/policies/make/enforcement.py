@@ -186,6 +186,10 @@ def check_make_index_drift_contract(repo_root: Path) -> tuple[int, list[str]]:
     return _run_script(repo_root, "packages/atlasctl/src/atlasctl/checks/layout/makefiles/index/check_makefiles_index_drift.py")
 
 
+def check_make_no_orphan_docs_refs(repo_root: Path) -> tuple[int, list[str]]:
+    return _run_script(repo_root, "packages/atlasctl/src/atlasctl/checks/layout/docs/check_no_orphan_docs_refs.py")
+
+
 def check_make_no_direct_scripts_legacy(repo_root: Path) -> tuple[int, list[str]]:
     code, errors = check_make_scripts_references(repo_root)
     if code == 0:

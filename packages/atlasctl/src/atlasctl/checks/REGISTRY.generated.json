@@ -848,6 +848,33 @@
     },
     {
       "area": "no",
+      "callable": "check_docs_no_legacy_cli_invocation",
+      "category": "hygiene",
+      "description": "forbid legacy atlasctl invocation patterns in docs",
+      "domain": "docs",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Use `./bin/atlasctl ...` consistently in all docs examples.",
+      "gate": "docs",
+      "groups": [
+        "docs",
+        "fast",
+        "required"
+      ],
+      "id": "checks_docs_no_legacy_cli_invocation",
+      "legacy_id": "docs.no_legacy_cli_invocation",
+      "module": "atlasctl.checks.domains.docs.integrity",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 600,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "no",
       "callable": "check_docs_no_ops_generated_run_paths",
       "category": "hygiene",
       "description": "forbid runtime ops generated path references in docs",
@@ -1598,6 +1625,33 @@
       "severity": "error",
       "speed": "fast",
       "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "no",
+      "callable": "check_make_no_orphan_docs_refs",
+      "category": "hygiene",
+      "description": "forbid orphan docs references for make targets and atlasctl commands",
+      "domain": "make",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Update docs index and command references so docs links are reachable.",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_no_orphan_docs_refs",
+      "legacy_id": "make.no_orphan_docs_refs",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 900,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -4032,6 +4086,33 @@
       "severity": "error",
       "speed": "fast",
       "timeout_ms": 300,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "migration",
+      "callable": "check_migration_progress_regression",
+      "category": "hygiene",
+      "description": "forbid migration progress regression (no new legacy patterns)",
+      "domain": "repo",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Use ./bin/atlasctl in docs/makefiles and remove legacy migration wording.",
+      "gate": "repo",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_migration_progress_regression",
+      "legacy_id": "repo.migration_progress_regression",
+      "module": "atlasctl.checks.repo.native.runtime_modules.repo_native_runtime_policies",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 600,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]

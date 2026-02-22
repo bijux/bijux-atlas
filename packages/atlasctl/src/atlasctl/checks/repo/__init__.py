@@ -5,6 +5,7 @@ from .native import (
     check_docs_no_ops_generated_run_paths,
     check_duplicate_script_names,
     check_forbidden_top_dirs,
+    check_migration_progress_regression,
     check_no_executable_python_outside_packages,
     check_no_direct_bash_invocations,
     check_no_direct_python_invocations,
@@ -217,6 +218,14 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.duplicate_script_names", "repo", "forbid duplicate script stem names", 1200, check_duplicate_script_names, fix_hint="Rename colliding script names."),
     CheckDef("repo.script_help_coverage", "repo", "validate script help contract coverage", 1500, check_script_help, fix_hint="Add --help contract output to required scripts."),
     CheckDef("repo.script_ownership_coverage", "repo", "validate script ownership coverage", 1500, check_script_ownership, fix_hint="Update ownership metadata for uncovered scripts."),
+    CheckDef(
+        "repo.migration_progress_regression",
+        "repo",
+        "forbid migration progress regression (no new legacy patterns)",
+        600,
+        check_migration_progress_regression,
+        fix_hint="Use ./bin/atlasctl in docs/makefiles and remove legacy migration wording.",
+    ),
     CheckDef(
         "repo.command_scripts_registry",
         "repo",

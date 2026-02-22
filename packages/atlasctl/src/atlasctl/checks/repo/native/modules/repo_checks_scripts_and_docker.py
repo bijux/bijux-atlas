@@ -249,6 +249,7 @@ from ..runtime_modules.repo_native_runtime_core import (
     check_script_write_roots,
 )
 from ..runtime_modules.repo_native_runtime_policies import (
+    check_migration_progress_regression,
     check_script_tool_guards,
     check_script_shim_expiry,
     check_script_shims_minimal,
