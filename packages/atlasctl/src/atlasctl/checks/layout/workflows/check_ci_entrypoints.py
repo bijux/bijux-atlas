@@ -15,6 +15,7 @@ PRIMARY = {
     "root-local",
     "ci",
     "nightly",
+    "all-and-slow",
     "fmt",
     "lint",
     "test",
@@ -64,8 +65,8 @@ def main() -> int:
         if p.name == "dependency-lock.yml":
             continue
         runs = make_runs(p)
-        if not any(cmd.strip().startswith("nightly") for cmd in runs):
-            errs.append(f"{p.name} must run `make nightly`")
+        if not any(cmd.strip().startswith("nightly") or cmd.strip().startswith("all-and-slow") for cmd in runs):
+            errs.append(f"{p.name} must run `make nightly` or `make all-and-slow`")
 
     dev_mk = DEV_MK.read_text(encoding="utf-8")
     ci_mk = CI_MK.read_text(encoding="utf-8")
