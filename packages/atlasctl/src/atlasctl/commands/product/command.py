@@ -4,11 +4,20 @@ import argparse
 import os
 
 from ...core.context import RunContext
-from ...core.exec import run
-
-
-def _run_cmd(ctx: RunContext, cmd: list[str]) -> int:
-    return run(cmd, cwd=ctx.repo_root, text=True).returncode
+from ...core.effects.product import (
+    ProductStep,
+    product_steps_bootstrap,
+    product_steps_chart_package,
+    product_steps_chart_validate,
+    product_steps_chart_verify,
+    product_steps_docker_build,
+    product_steps_docker_check,
+    product_steps_docker_push,
+    product_steps_docker_release,
+    product_steps_docs_naming_lint,
+    product_steps_naming_lint,
+    run_product_lane,
+)
 
 
 def _plan_rows() -> list[tuple[str, list[str]]]:
@@ -63,7 +72,7 @@ def configure_product_parser(sub: argparse._SubParsersAction[argparse.ArgumentPa
 def run_product_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     sub = getattr(ns, "product_cmd", "")
     if sub == "bootstrap":
-        return _run_cmd(ctx, ["./bin/atlasctl", "run", "./ops/run/product/product_bootstrap.sh"])
+        return run_product_lane(ctx, lane="bootstrap", steps=product_steps_bootstrap(ctx))
     if sub == "explain":
         for row in _plan_rows():
             name = row[0]
@@ -81,46 +90,53 @@ def run_product_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print("product.chart.verify -> product.chart.package")
         return 0
     if sub == "check":
-        for cmd in (
-            ["./bin/atlasctl", "product", "docker", "check"],
-            ["./bin/atlasctl", "product", "chart", "validate"],
-        ):
-            code = _run_cmd(ctx, cmd)
-            if code != 0:
-                return code
-        return 0
+        return run_product_lane(
+            ctx,
+            lane="check",
+            steps=[
+                ProductStep("docker-check", ["./bin/atlasctl", "product", "docker", "check"]),
+                ProductStep("chart-validate", ["./bin/atlasctl", "product", "chart", "validate"]),
+            ],
+        )
 
     if sub == "docker":
         dsub = getattr(ns, "product_docker_cmd", "")
         if dsub == "build":
-            return _run_cmd(ctx, ["./bin/atlasctl", "run", "./ops/run/product/product_docker_build.sh"])
+            return run_product_lane(ctx, lane="docker build", steps=product_steps_docker_build(ctx))
         if dsub == "push":
-            return _run_cmd(ctx, ["./bin/atlasctl", "run", "./ops/run/product/product_docker_push.sh"])
+            if str(os.environ.get("CI", "0")) != "1":
+                print("docker-push is CI-only")
+                return 2
+            return run_product_lane(ctx, lane="docker push", steps=product_steps_docker_push(ctx))
         if dsub == "check":
-            return _run_cmd(ctx, ["./bin/atlasctl", "run", "./ops/run/product/product_docker_check.sh"])
+            return run_product_lane(ctx, lane="docker check", steps=product_steps_docker_check(ctx))
         if dsub == "contracts":
-            return _run_cmd(ctx, ["./bin/atlasctl", "check", "domain", "docker"])
+            return run_product_lane(
+                ctx,
+                lane="docker contracts",
+                steps=[ProductStep("docker-contracts", ["./bin/atlasctl", "check", "domain", "docker"])],
+            )
         if dsub == "release":
             if not str(os.environ.get("CI", "")).strip():
                 print("product docker release is CI-only; set CI=1 to run this lane")
                 return 2
-            return _run_cmd(ctx, ["./bin/atlasctl", "run", "./ops/run/product/product_docker_release.sh"])
+            return run_product_lane(ctx, lane="docker release", steps=product_steps_docker_release(ctx), meta={"ci_only": True})
         return 2
 
     if sub == "chart":
         csub = getattr(ns, "product_chart_cmd", "")
         if csub == "package":
-            return _run_cmd(ctx, ["./bin/atlasctl", "run", "./ops/run/product/product_chart_package.sh"])
+            return run_product_lane(ctx, lane="chart package", steps=product_steps_chart_package(ctx))
         if csub == "verify":
-            return _run_cmd(ctx, ["./bin/atlasctl", "run", "./ops/run/product/product_chart_verify.sh"])
+            return run_product_lane(ctx, lane="chart verify", steps=product_steps_chart_verify(ctx))
         if csub == "validate":
-            return _run_cmd(ctx, ["./bin/atlasctl", "run", "./ops/run/product/product_chart_validate.sh"])
+            return run_product_lane(ctx, lane="chart validate", steps=product_steps_chart_validate(ctx))
         return 2
 
     if sub == "naming" and getattr(ns, "product_naming_cmd", "") == "lint":
-        return _run_cmd(ctx, ["./bin/atlasctl", "run", "./ops/run/product/product_rename_lint.sh"])
+        return run_product_lane(ctx, lane="naming lint", steps=product_steps_naming_lint(ctx))
 
     if sub == "docs" and getattr(ns, "product_docs_cmd", "") == "naming-lint":
-        return _run_cmd(ctx, ["./bin/atlasctl", "run", "./ops/run/product/product_docs_lint_names.sh"])
+        return run_product_lane(ctx, lane="docs naming-lint", steps=product_steps_docs_naming_lint(ctx))
 
     return 2
