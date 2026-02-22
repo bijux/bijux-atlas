@@ -30,10 +30,10 @@ jobs:
           python-version: "3.11"
       - name: Gate release on atlasctl all-suite and stable report artifacts
         run: |
-          PYTHONPATH=packages/atlasctl/src python3 -m atlasctl.cli --quiet --json suite run all --target-dir artifacts/isolate/release-suite-all/atlasctl-suite
+          ./bin/atlasctl --quiet --json suite run all --target-dir artifacts/isolate/release-suite-all/atlasctl-suite
           test -f artifacts/isolate/release-suite-all/atlasctl-suite/results.json
       - name: Observability acceptance checklist gate
-        run: PYTHONPATH=packages/atlasctl/src python3 -m atlasctl.cli docs observability-acceptance-checklist --report text
+        run: ./bin/atlasctl docs observability-acceptance-checklist --report text
       - run: ./bin/atlasctl ci release-compat-matrix-verify
 
   build-artifacts:
