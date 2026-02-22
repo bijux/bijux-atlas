@@ -22,7 +22,7 @@ def test_all_catalog_schemas_have_files() -> None:
 
 @pytest.mark.unit
 def test_sample_payloads_validate_against_catalog() -> None:
-    samples = sorted((ROOT / "packages/atlasctl/tests/goldens/samples").glob("*.json"))
+    samples = sorted((ROOT / "packages/atlasctl/tests/goldens/samples").rglob("*.json"))
     assert samples
     for path in samples:
         payload = json.loads(path.read_text(encoding="utf-8"))

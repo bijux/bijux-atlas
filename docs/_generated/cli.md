@@ -26,6 +26,8 @@ Top-level namespaces:
 - make
 - obs
 - ops
+- owners
+- packages
 - policies
 - registry
 - release

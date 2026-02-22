@@ -39,7 +39,7 @@ GEN_HANDLERS = {
 def _iter_contract_payloads(repo_root: Path) -> list[tuple[str, dict[str, object]]]:
     files: list[Path] = []
     files.extend(sorted((repo_root / "packages/atlasctl/tests/goldens").rglob("*.json.golden")))
-    files.extend(sorted((repo_root / "packages/atlasctl/tests/goldens/samples").glob("*.json")))
+    files.extend(sorted((repo_root / "packages/atlasctl/tests/goldens/samples").rglob("*.json")))
     out: list[tuple[str, dict[str, object]]] = []
     for path in files:
         text = path.read_text(encoding="utf-8", errors="ignore").strip()

@@ -30,6 +30,8 @@ Generated from CLI registry (`src/atlasctl/cli/surface_registry.py`).
 - `make`
 - `obs`
 - `ops`
+- `owners`
+- `packages`
 - `policies`
 - `registry`
 - `release`

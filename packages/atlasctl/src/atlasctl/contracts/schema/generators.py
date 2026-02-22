@@ -151,6 +151,8 @@ def generate_contract_artifacts(repo_root: Path) -> list[str]:
 def generate_schema_samples(repo_root: Path) -> list[str]:
     out_dir = repo_root / "packages/atlasctl/tests/goldens/samples"
     out_dir.mkdir(parents=True, exist_ok=True)
+    for child in sorted(out_dir.rglob("*.json")):
+        child.unlink()
     templates: dict[str, dict[str, object]] = {
         "atlasctl.check-list.v1": {
             "schema_name": "atlasctl.check-list.v1",
@@ -295,7 +297,19 @@ def generate_schema_samples(repo_root: Path) -> list[str]:
             errors.append(f"missing sample template for schema {schema_name}")
             continue
         name = schema_name.removeprefix("atlasctl.").replace(".", "-") + ".sample.json"
-        (out_dir / name).write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        if schema_name.startswith("atlasctl.check"):
+            bucket = "checks"
+        elif schema_name in {"atlasctl.commands.v1", "atlasctl.help.v1", "atlasctl.surface.v1"}:
+            bucket = "commands"
+        elif schema_name.startswith("atlasctl.suite"):
+            bucket = "suite"
+        elif schema_name in {"atlasctl.runtime_contracts.v1", "atlasctl.ops.manifest.v1"}:
+            bucket = "contracts"
+        else:
+            bucket = "output"
+        target = out_dir / bucket / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return errors
 
 
