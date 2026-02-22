@@ -209,25 +209,25 @@ cargo/coverage: ## Cargo coverage lane (kept out of root gate)
 	@$(call with_iso,cargo-coverage,NEXTEST_PROFILE=ci $(MAKE) -s coverage)
 
 docs/check: ## Fast docs verification
-	@$(call with_iso,docs-check,$(MAKE) -s internal/docs/check)
+	@$(call with_iso,docs-check,$(MAKE) -s docs)
 
 docs/build: ## Build docs artifacts
-	@$(call with_iso,docs-build,$(MAKE) -s internal/docs/build)
+	@$(call with_iso,docs-build,$(MAKE) -s docs-build)
 
 docs/fmt: ## Docs formatting helpers
-	@$(call with_iso,docs-fmt,$(MAKE) -s internal/docs/fmt)
+	@$(call with_iso,docs-fmt,$(MAKE) -s docs-fmt)
 
 docs/lint: ## Docs lint checks
-	@$(call with_iso,docs-lint,$(MAKE) -s internal/docs/lint)
+	@$(call with_iso,docs-lint,$(MAKE) -s docs-lint)
 
 docs/test: ## Docs tests
-	@$(call with_iso,docs-test,$(MAKE) -s internal/docs/test)
+	@$(call with_iso,docs-test,$(MAKE) -s docs-test)
 
 docs/clean: ## Clean docs generated outputs only
-	@$(call with_iso,docs-clean,$(MAKE) -s internal/docs/clean)
+	@$(call with_iso,docs-clean,$(MAKE) -s docs-clean)
 
 docs/all: ## Docs lane
-	@$(call with_iso,docs-all,$(MAKE) -s internal/docs/all)
+	@$(call with_iso,docs-all,$(MAKE) -s docs-all)
 scripts/check: ## Deterministic scripts check lane
 	@$(call with_iso,scripts-check,$(MAKE) -s internal/scripts/check)
 

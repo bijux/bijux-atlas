@@ -9,7 +9,7 @@ REGISTRY_DEV_DESC := dev
 REGISTRY_DEV_TARGETS := fmt fmt-all lint lint-all test test-all audit audit-all coverage coverage-all check check-all all all-all ci local local-full
 
 REGISTRY_DOCS_DESC := docs
-REGISTRY_DOCS_TARGETS := docs docs-serve docs-freeze docs-hardening
+REGISTRY_DOCS_TARGETS := docs docs-all docs-build docs-build-all docs-serve docs-freeze docs-fmt docs-fmt-all docs-lint docs-lint-all docs-test docs-test-all docs-clean docs-req-lock-refresh
 
 REGISTRY_CONTRACTS_DESC := contracts
 REGISTRY_CONTRACTS_TARGETS := contracts ssot-check budgets/check policy-lint policy-schema-drift policy-audit policy-enforcement-status policy-allow-env-lint policies/boundaries-check policy-drift-diff ops-policy-audit rename-lint docs-lint-names config-validate config-print config-drift openapi-drift api-contract-check telemetry-contracts telemetry-verify ops-values-validate ops-chart-render-diff ops-openapi-validate ops-dashboards-validate ops-alerts-validate perf/baseline-update perf/regression-check perf/triage perf/compare
