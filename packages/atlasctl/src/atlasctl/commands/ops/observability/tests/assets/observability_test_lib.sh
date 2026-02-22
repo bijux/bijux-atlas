@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../../../../../../../../../.." && pwd)"
 ART_DIR="$ROOT/artifacts/ops/obs/tests"
 mkdir -p "$ART_DIR"
 

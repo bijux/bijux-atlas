@@ -4,7 +4,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[8]
-ALLOWED = {
+ALLOWED: set[str] = set()
+RETIRED = {
     'ops/k8s/tests/checks/_lib/common.sh',
     'ops/k8s/tests/checks/_lib/k8s-suite-lib.sh',
     'ops/k8s/tests/checks/_lib/k8s-contract-lib.sh',
@@ -19,6 +20,9 @@ def main() -> int:
     errors: list[str] = []
     if (ROOT / 'ops/_lib/common.sh').exists():
         errors.append(f'ops/_lib/common.sh (retired; use {RET})')
+    for rel in sorted(RETIRED):
+        if (ROOT / rel).exists():
+            errors.append(f'{rel} (retired; move to atlasctl test assets)')
     for p in sorted((ROOT / 'ops').rglob('common.sh')):
         rel = p.relative_to(ROOT).as_posix()
         if rel not in ALLOWED:
