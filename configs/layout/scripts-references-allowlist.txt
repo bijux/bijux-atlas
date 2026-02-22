@@ -172,14 +172,14 @@ ops/k8s/tests/checksuite/checks/perf/pressure/test_noisy_neighbor_cpu_throttle.s
 ops/k8s/tests/checksuite/checks/rollout/test_kind_version_drift.sh
 ops/k8s/tests/checksuite/checks/security/test_image_digest_policy.sh
 ops/k8s/tests/suite.sh
-ops/load/scripts/compare_redis.sh
-ops/load/scripts/load_under_rollback.sh
-ops/load/scripts/load_under_rollout.sh
+packages/atlasctl/src/atlasctl/commands/ops/load/run/compare_redis.py
+packages/atlasctl/src/atlasctl/commands/ops/load/run/load_under_rollback.py
+packages/atlasctl/src/atlasctl/commands/ops/load/run/load_under_rollout.py
 ops/load/scripts/run_e2e_perf.sh
 ops/load/scripts/run_nightly_perf.sh
 atlasctl ops load run
 packages/atlasctl/src/atlasctl/commands/ops/load/run/run_suites_from_manifest.py
-ops/load/scripts/update_baseline.sh
+packages/atlasctl/src/atlasctl/commands/ops/load/baseline/update_baseline_entrypoint.py
 packages/atlasctl/src/atlasctl/commands/ops/load/contracts/validate_suite_manifest.py
 ops/load/suites/suites.json
 ops/load/tests/test_cpu_throttle_noisy_neighbor.sh
