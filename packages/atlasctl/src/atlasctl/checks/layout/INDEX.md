@@ -20,8 +20,6 @@ Canonical layout check domains:
 Legacy subgroup `contracts/` remains during migration and is being flattened into first-class domains.
 
 - allowed_root.json
-- build_artifacts_index.py
-- build_run_artifact_index.py
 - check_artifacts_allowlist.sh
 - check_artifacts_policy.sh
 - check_cargo_dev_metadata.py
@@ -106,11 +104,8 @@ Legacy subgroup `contracts/` remains during migration and is being flattened int
 - check_workflows_make_only.py
 - clean_artifacts.py
 - clean_make_artifacts.py
-- clean_ops_generated.py
 - dataset_id_lint.py
 - evidence_check.py
-- evidence_clean.py
-- evidence_pr_summary.py
 - explain_public_target.py
 - generate_ops_pins.py
 - generate_ops_stack_versions.py
@@ -129,4 +124,3 @@ Legacy subgroup `contracts/` remains during migration and is being flattened int
 - update_ops_pins.py
 - validate_ops_contracts.py
 - validate_ops_env.py
-- write_make_area_report.py

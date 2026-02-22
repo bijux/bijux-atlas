@@ -411,4 +411,3 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
 
     return 2
 
-
