@@ -4,17 +4,17 @@ import subprocess
 import sys
 from pathlib import Path
 
-from ..repo.native import (
+from ....repo.native import (
     check_committed_generated_hygiene,
     check_ops_generated_tracked,
     check_tracked_timestamp_paths,
 )
-from ..core.base import CheckDef
+from ....core.base import CheckDef
 
 
 def check_ops_manifests_schema(repo_root: Path) -> tuple[int, list[str]]:
     proc = subprocess.run(
-        [sys.executable, "packages/atlasctl/src/atlasctl/checks/ops/impl/check_ops_manifests_schema.py"],
+        [sys.executable, "packages/atlasctl/src/atlasctl/checks/domains/ops/ops_checks/impl/check_ops_manifests_schema.py"],
         cwd=repo_root,
         text=True,
         capture_output=True,

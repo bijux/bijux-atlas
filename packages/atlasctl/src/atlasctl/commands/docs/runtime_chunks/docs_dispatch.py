@@ -210,7 +210,7 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             _check("docs-nav-check", "Validate mkdocs nav references existing docs files", None, "Fix mkdocs.yml nav entries to point to real docs pages.", fn=_check_nav_contract),
             _check("docs-public-surface", "Validate docs public surface", None, "Regenerate/align docs public surface JSON and docs references.", fn=_check_public_surface_docs),
             _check("docs-no-internal-target-refs", "Validate no internal make target refs", None, "Replace internal make targets with public targets in docs.", fn=_check_docs_make_only),
-            _check("docs-ops-entrypoints", "Validate ops docs entrypoint policy", ["python3", "packages/atlasctl/src/atlasctl/checks/ops/impl/check_ops_external_entrypoints.py"], "Reference only make targets and ops/run entrypoints in docs."),
+            _check("docs-ops-entrypoints", "Validate ops docs entrypoint policy", ["python3", "packages/atlasctl/src/atlasctl/checks/domains/ops/ops_checks/impl/check_ops_external_entrypoints.py"], "Reference only make targets and ops/run entrypoints in docs."),
             _check("docs-generated", "Validate generated docs are up-to-date", None, "Regenerate docs outputs and commit deterministic updates.", fn=_check_docs_freeze_drift),
         ]
         if ns.docs_cmd == "check":
@@ -245,7 +245,7 @@ def run_docs_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _run_docs_checks(ctx, checks, ns.report, ns.fail_fast, ns.emit_artifacts)
 
     if ns.docs_cmd == "ops-entrypoints-check":
-        return _run_simple_path(ctx, ns.report, "packages/atlasctl/src/atlasctl/checks/ops/impl/check_ops_external_entrypoints.py")
+        return _run_simple_path(ctx, ns.report, "packages/atlasctl/src/atlasctl/checks/domains/ops/ops_checks/impl/check_ops_external_entrypoints.py")
 
     if ns.docs_cmd == "nav-check":
         missing = _mkdocs_missing_files(ctx.repo_root)
