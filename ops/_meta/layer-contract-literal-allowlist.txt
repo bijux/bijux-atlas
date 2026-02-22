@@ -3,8 +3,8 @@
 ops/e2e/scripts/verify_metrics.sh
 ops/e2e/scripts/verify_traces.sh
 ops/e2e/scripts/warmup.sh
-ops/stack/scripts/collect_events.sh
-ops/stack/scripts/collect_pod_logs.sh
-ops/stack/scripts/health_report.sh
+packages/atlasctl/src/atlasctl/commands/ops/stack/collect_events.py
+packages/atlasctl/src/atlasctl/commands/ops/stack/collect_pod_logs.py
+packages/atlasctl/src/atlasctl/commands/ops/stack/health_report.py
 ops/stack/scripts/uninstall.sh
-ops/stack/scripts/print_urls.sh
+packages/atlasctl/src/atlasctl/commands/ops/stack/print_urls.py

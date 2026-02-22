@@ -49,10 +49,10 @@ makefiles/ops.mk|ops/obs/scripts/store-latency-injection.sh
 makefiles/ops.mk|ops/obs/scripts/store-outage-under-load.sh
 makefiles/ops.mk|ops/obs/scripts/store-outage.sh
 makefiles/ops.mk|ops/obs/scripts/uninstall_pack.sh
-makefiles/ops.mk|ops/stack/scripts/collect_events.sh
-makefiles/ops.mk|ops/stack/scripts/collect_pod_logs.sh
-makefiles/ops.mk|ops/stack/scripts/health_report.sh
-makefiles/ops.mk|ops/stack/scripts/print_urls.sh
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/stack/collect_events.py
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/stack/collect_pod_logs.py
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/stack/health_report.py
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/stack/print_urls.py
 makefiles/ops.mk|ops/stack/scripts/stack_smoke.sh
 makefiles/ops.mk|ops/stack/scripts/uninstall.sh
 makefiles/ops.mk|ops/stack/scripts/validate.sh
