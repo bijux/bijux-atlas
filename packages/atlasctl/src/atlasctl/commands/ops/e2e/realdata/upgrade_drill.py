@@ -1,11 +1,21 @@
-#!/usr/bin/env sh
-set -eu
+from __future__ import annotations
 
-ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
+import os
+import sys
+from pathlib import Path
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[6]))
+
+from atlasctl.commands.ops.e2e.realdata._common import env_root, sh
+
+
+SCRIPT = r"""
+ROOT="${ATLAS_REPO_ROOT}"
 . "$ROOT/ops/k8s/tests/checks/_lib/k8s-suite-lib.sh"
 need helm; need kubectl; need curl
 
-"$ROOT/ops/e2e/realdata/run_two_release_diff.sh"
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/run_two_release_diff.py"
 
 BASE_URL="${ATLAS_E2E_BASE_URL:-http://127.0.0.1:18080}"
 Q="/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&limit=1"
@@ -48,3 +58,16 @@ assert b.get("rows") == a.get("rows"), "semantic drift after upgrade"
 PY
 
 echo "upgrade drill passed"
+"""
+
+
+def main() -> int:
+    root = env_root()
+    env = os.environ.copy()
+    env["ATLAS_REPO_ROOT"] = str(root)
+    sh(["bash", "-ceu", SCRIPT], env=env)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

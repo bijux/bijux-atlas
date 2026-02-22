@@ -67,7 +67,7 @@
         {
           "id": "single-release",
           "description": "Validate canonical single release workflow.",
-          "runner": "ops/e2e/realdata/run_single_release.sh",
+          "runner": "python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/run_single_release.py",
           "capabilities": ["datasets", "stack"],
           "destructive": false,
           "budget": {
@@ -81,7 +81,7 @@
         {
           "id": "two-release-diff",
           "description": "Validate two-release diff behavior.",
-          "runner": "ops/e2e/realdata/run_two_release_diff.sh",
+          "runner": "python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/run_two_release_diff.py",
           "capabilities": ["datasets", "stack"],
           "destructive": false,
           "budget": {
@@ -109,7 +109,7 @@
         {
           "id": "upgrade-drill",
           "description": "Run upgrade drill against realdata fixtures.",
-          "runner": "ops/e2e/realdata/upgrade_drill.sh",
+          "runner": "python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/upgrade_drill.py",
           "capabilities": ["datasets", "obs"],
           "destructive": true,
           "budget": {
@@ -123,7 +123,7 @@
         {
           "id": "rollback-drill",
           "description": "Run rollback drill against realdata fixtures.",
-          "runner": "ops/e2e/realdata/rollback_drill.sh",
+          "runner": "python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/rollback_drill.py",
           "capabilities": ["datasets", "obs"],
           "destructive": true,
           "budget": {
