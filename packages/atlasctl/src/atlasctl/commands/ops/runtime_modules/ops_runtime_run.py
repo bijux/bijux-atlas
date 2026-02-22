@@ -25,6 +25,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                 "layer-drift-check",
                 "contracts-index",
                 "policy-audit",
+                "warm-dx",
                 "k8s-surface-generate",
                 "k8s-checks-layout",
                 "k8s-test-lib-contract",
@@ -99,6 +100,8 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             return impl._emit_ops_status(ns.report, 0, json.dumps({"schema_version": 1, "tool": "atlasctl", "entrypoints": entrypoints}, sort_keys=True))
         text = "\n".join(str(item) for item in entrypoints if isinstance(item, str))
         return impl._emit_ops_status(ns.report, 0, text)
+    if ns.ops_cmd == "warm-dx":
+        return impl._ops_warm_dx(ctx, ns.report)
 
     if ns.ops_cmd == "up":
         return impl._run_simple_cmd(ctx, shell_script_command("ops/run/stack-up.sh", "--profile", os.environ.get("PROFILE", "kind")), ns.report)
