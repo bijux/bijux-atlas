@@ -7,7 +7,7 @@ from pathlib import Path
 
 def _publish(root: Path, gff3: Path, fasta: Path, fai: Path, release: str, species: str, assembly: str) -> int:
     return subprocess.call([
-        'bash', str(root / 'ops/e2e/runner/publish_dataset.sh'),
+        'python3', str(root / 'packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/publish_dataset.py'),
         '--gff3', str(gff3),
         '--fasta', str(fasta),
         '--fai', str(fai),
