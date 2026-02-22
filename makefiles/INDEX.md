@@ -1,6 +1,6 @@
 # Makefiles Index
 
-- File count: 17
+- File count: 16
 - Owner: `build-and-release`
 
 ## Canonical Wrapper Files
@@ -15,5 +15,4 @@
 - `env.mk`
 - `python.mk`
 - `atlasctl.mk`
-- `help.mk`
 - `policies.mk` (optional single-wrapper file; not included by default in root surface)
