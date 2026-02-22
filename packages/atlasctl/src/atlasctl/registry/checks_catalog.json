@@ -1,6 +1,128 @@
 {
   "checks": [
     {
+      "area": "count",
+      "default_enabled": true,
+      "description": "enforce checks-count ratchet budget from configs/policy/checks-count-budget.json",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_count_budget",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_count_budget",
+      "impl_ref": {
+        "callable": "check_count_budget",
+        "category": "policy",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Reduce checks count or intentionally raise budget in configs/policy/checks-count-budget.json.",
+        "legacy_id": "checks.count_budget",
+        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "enforce checks-count ratchet budget from configs/policy/checks-count-budget.json"
+    },
+    {
+      "area": "docs",
+      "default_enabled": true,
+      "description": "require checks docs index to include canonical check ids",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_docs_index_complete",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "docs",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_docs_index_complete",
+      "impl_ref": {
+        "callable": "check_docs_index_complete",
+        "category": "drift",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Regenerate/update packages/atlasctl/docs/checks/index.md with full canonical inventory.",
+        "legacy_id": "checks.docs_index_complete",
+        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 700,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "docs",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require checks docs index to include canonical check ids"
+    },
+    {
+      "area": "owners",
+      "default_enabled": true,
+      "description": "require every check entry to have an owner in SSOT registry",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_owners_ssot",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_owners_ssot",
+      "impl_ref": {
+        "callable": "check_owners_ssot",
+        "category": "contract",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Set owners for every check in REGISTRY.toml.",
+        "legacy_id": "checks.owners_ssot",
+        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require every check entry to have an owner in SSOT registry"
+    },
+    {
       "area": "registry",
       "default_enabled": true,
       "description": "require every registered check to expose a canonical checks_* id",
@@ -551,6 +673,172 @@
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require every registry check to be selected by at least one suite manifest"
+    },
+    {
+      "area": "registry",
+      "default_enabled": true,
+      "description": "fail when check-id migration aliases remain after transition deadline",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_registry_transition_complete",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_transition_complete",
+      "impl_ref": {
+        "callable": "check_registry_transition_complete",
+        "category": "policy",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Clear configs/policy/check-id-migration.json aliases after deadline or extend with explicit policy.",
+        "legacy_id": "checks.registry_transition_complete",
+        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 700,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "fail when check-id migration aliases remain after transition deadline"
+    },
+    {
+      "area": "remediation",
+      "default_enabled": true,
+      "description": "require every check entry to have remediation documentation link",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_remediation_ssot",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_remediation_ssot",
+      "impl_ref": {
+        "callable": "check_remediation_ssot",
+        "category": "contract",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Set remediation_link for every check in checks catalog generation.",
+        "legacy_id": "checks.remediation_ssot",
+        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require every check entry to have remediation documentation link"
+    },
+    {
+      "area": "suites",
+      "default_enabled": true,
+      "description": "require deterministic suite inventory in suite registry SSOT",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_suites_inventory_ssot",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required",
+        "suite"
+      ],
+      "id": "checks_checks_suites_inventory_ssot",
+      "impl_ref": {
+        "callable": "check_suites_inventory_ssot",
+        "category": "contract",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Sort suite names and remove duplicates in registry/suites_catalog.json.",
+        "legacy_id": "checks.suites_inventory_ssot",
+        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 700,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required",
+        "suite"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require deterministic suite inventory in suite registry SSOT"
+    },
+    {
+      "area": "suites",
+      "default_enabled": true,
+      "description": "require every registered check to belong to at least one suite",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_suites_no_orphans",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required",
+        "suite"
+      ],
+      "id": "checks_checks_suites_no_orphans",
+      "impl_ref": {
+        "callable": "check_suites_no_orphans",
+        "category": "policy",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Add orphan checks to suite registry manifests.",
+        "legacy_id": "checks.suites_no_orphans",
+        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 700,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required",
+        "suite"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require every registered check to belong to at least one suite"
     },
     {
       "area": "pyproject",
