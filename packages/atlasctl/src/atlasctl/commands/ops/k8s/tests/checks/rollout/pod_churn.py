@@ -1,10 +1,16 @@
-#!/usr/bin/env bash
-set -euo pipefail
-SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-. "$SCRIPT_DIR/../_lib/common.sh"
+#!/usr/bin/env python3
+from __future__ import annotations
+
+from pathlib import Path
+
+from ._shell_common import run_k8s_test_shell
+
+
+def main() -> int:
+    return run_k8s_test_shell(
+        """
 setup_test_traps
 need kubectl
-
 install_chart
 wait_ready
 kubectl -n "$NS" run churn-load --image=curlimages/curl --restart=Never --command -- sh -ceu '
@@ -18,5 +24,11 @@ for _ in 1 2 3; do
   sleep 3
   wait_ready
 done
-
 echo "pod churn drill passed"
+        """,
+        Path(__file__),
+    )
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

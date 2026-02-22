@@ -1,18 +1,22 @@
-#!/usr/bin/env bash
-set -euo pipefail
-SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-. "$SCRIPT_DIR/../_lib/common.sh"
+#!/usr/bin/env python3
+from __future__ import annotations
+
+from pathlib import Path
+
+from ._shell_common import run_k8s_test_shell
+
+
+def main() -> int:
+    return run_k8s_test_shell(
+        """
 setup_test_traps
 need kubectl; need curl
-
 install_chart
 wait_ready
 with_port_forward 18080
-
 fail_file="$(mktemp)"
 trap 'rm -f "$fail_file"' EXIT
 echo 0 > "$fail_file"
-
 (
   for _ in $(seq 1 60); do
     code="$(curl -s -o /dev/null -w '%{http_code}' "$BASE_URL/healthz" || true)"
@@ -24,15 +28,19 @@ echo 0 > "$fail_file"
   done
 ) &
 probe_pid=$!
-
 kubectl -n "$NS" rollout restart deployment/"$SERVICE_NAME" >/dev/null
 kubectl -n "$NS" rollout status deployment/"$SERVICE_NAME" --timeout=180s >/dev/null
 wait "$probe_pid"
-
 failures="$(cat "$fail_file")"
 [ "$failures" -le 2 ] || {
   echo "downtime detected during rolling restart, failures=$failures" >&2
   exit 1
 }
-
 echo "rolling restart no downtime gate passed"
+        """,
+        Path(__file__),
+    )
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

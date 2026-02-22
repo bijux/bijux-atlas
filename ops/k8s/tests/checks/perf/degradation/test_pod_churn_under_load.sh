@@ -11,7 +11,7 @@ with_port_forward 18080
 
 (cd "$ROOT" && ./bin/atlasctl ops load --report text run --suite pod-churn.json --out artifacts/perf/results) >/dev/null &
 load_pid=$!
-"$ROOT/ops/k8s/tests/checks/rollout/pod-churn.sh"
+"$ROOT/bin/atlasctl" run ./packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/rollout/pod_churn.py
 wait "$load_pid"
 
 curl -fsS "$BASE_URL/healthz" >/dev/null || {

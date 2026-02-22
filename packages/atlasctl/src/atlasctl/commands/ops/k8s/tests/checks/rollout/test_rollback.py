@@ -1,10 +1,16 @@
-#!/usr/bin/env bash
-set -euo pipefail
-SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-. "$SCRIPT_DIR/../_lib/common.sh"
+#!/usr/bin/env python3
+from __future__ import annotations
+
+from pathlib import Path
+
+from ._shell_common import run_k8s_test_shell
+
+
+def main() -> int:
+    return run_k8s_test_shell(
+        """
 setup_test_traps
 need helm; need kubectl
-
 install_chart
 wait_ready
 REV1="$(helm -n "$NS" history "$RELEASE" -o json | grep -o '"revision":[0-9]*' | tail -n1 | cut -d: -f2)"
@@ -17,5 +23,11 @@ if helm upgrade "$RELEASE" "$CHART" -n "$NS" -f "$VALUES" --set image.tag=does-n
 fi
 helm rollback "$RELEASE" "$REV1" -n "$NS" --wait >/dev/null
 wait_ready
-
 echo "rollback gate passed"
+        """,
+        Path(__file__),
+    )
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
