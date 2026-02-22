@@ -192,13 +192,13 @@ packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_trace_coverage.p
 ops/obs/scripts/dashboard-fault-signature.sh
 ops/obs/scripts/log-schema-violation-injection.sh
 ops/obs/scripts/metric-cardinality-blowup-attempt.sh
-ops/obs/scripts/pack_health.sh
+packages/atlasctl/src/atlasctl/commands/ops/observability/pack_health.py
 ops/obs/scripts/run_drill.sh
 ops/obs/scripts/runbook-proof-top5.sh
-ops/obs/scripts/smoke_pack.sh
+packages/atlasctl/src/atlasctl/commands/ops/observability/smoke_pack.py
 ops/obs/scripts/store-outage-under-load.sh
 ops/obs/scripts/trace-missing-spans-regression.sh
-ops/obs/scripts/verify_pack.sh
+packages/atlasctl/src/atlasctl/commands/ops/observability/verify_pack.py
 ops/obs/tests/test_cheap.sh
 ops/obs/tests/test_contracts.sh
 ops/obs/tests/test_coverage.sh

@@ -387,7 +387,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             profile = str(os.environ.get("PROFILE", os.environ.get("ATLAS_OBS_PROFILE", "kind"))).strip() or "kind"
             if profile == "compose":
                 profile = "local-compose"
-            return impl._run_simple_cmd(ctx, ["env", f"ATLAS_OBS_PROFILE={profile}", "bash", "ops/obs/scripts/install_pack.sh", "--profile", profile], ns.report)
+            return impl._run_simple_cmd(ctx, ["env", f"ATLAS_OBS_PROFILE={profile}", "python3", "packages/atlasctl/src/atlasctl/commands/ops/observability/install_pack.py", "--profile", profile], ns.report)
         if ns.ops_cmd == "obs" and sub == "validate":
             return impl._run_simple_cmd(ctx, ["make", "ops-observability-validate"], ns.report)
         if ns.ops_cmd == "obs" and sub == "lint":
