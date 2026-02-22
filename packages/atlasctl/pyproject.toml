@@ -359,8 +359,8 @@ default = "required"
 [tool.atlasctl.suites.fast]
 includes = []
 items = [
-  "check:repo.module_size",
-  "check:repo.pyproject_required_blocks",
+  "check:checks_repo_module_size",
+  "check:checks_repo_pyproject_required_blocks",
   "cmd:atlasctl check list --json",
   "cmd:atlasctl policies culprits-suite --report json",
 ]
@@ -397,12 +397,12 @@ includes = ["ci"]
 complete = true
 items = [
   "cmd:atlasctl suite check --json",
-  "check:repo.dir_budget_py_files",
-  "check:repo.single_registry_module",
+  "check:checks_repo_dir_budget_py_files",
+  "check:checks_repo_single_registry_module",
   "cmd:atlasctl contracts validate --report json",
   "cmd:atlasctl contracts validate-self --report json",
-  "check:repo.legacy_package_absent",
-  "check:repo.legacy_zero_importers",
+  "check:checks_repo_legacy_package_absent",
+  "check:checks_repo_legacy_zero_importers",
 ]
 
 [tool.atlasctl.suites.release_0_1]
@@ -410,6 +410,6 @@ includes = ["required_proof"]
 complete = true
 items = [
   "cmd:atlasctl release checklist --dry-run --json",
-  "check:repo.packaging_metadata_completeness",
-  "check:repo.version_matches_pyproject",
+  "check:checks_repo_packaging_metadata_completeness",
+  "check:checks_repo_version_matches_pyproject",
 ]
