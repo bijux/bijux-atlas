@@ -53,7 +53,7 @@ def main() -> int:
     for mk in sorted(MAKEFILES.glob("*.mk")):
         by_file[mk.name] = parse_targets(mk)
 
-    allowed_public_files = {"root.mk", "product.mk", "dev.mk", "ci.mk", "docs.mk", "ops.mk", "configs.mk", "policies.mk", "packages.mk", "atlasctl.mk"}
+    allowed_public_files = {"root.mk", "product.mk", "dev.mk", "ci.mk", "docs.mk", "ops.mk", "configs.mk", "policies.mk", "packages.mk", "atlasctl.mk", "verification.mk"}
     publication_targets: set[str] = set()
     for mk_name in ({"Makefile"} | allowed_public_files):
         publication_targets |= by_file.get(mk_name, set())
@@ -63,7 +63,7 @@ def main() -> int:
 
     current_legacy: set[str] = set()
     for mk_name, targets in by_file.items():
-        if mk_name in {"root.mk", "product.mk", "dev.mk", "ci.mk", "docs.mk", "ops.mk", "configs.mk", "policies.mk", "packages.mk", "atlasctl.mk", "env.mk", "_macros.mk"}:
+        if mk_name in {"root.mk", "product.mk", "dev.mk", "ci.mk", "docs.mk", "ops.mk", "configs.mk", "policies.mk", "packages.mk", "atlasctl.mk", "verification.mk", "env.mk", "_macros.mk"}:
             continue
         for target in sorted(targets):
             if target.startswith("internal/") or target.startswith("_"):
