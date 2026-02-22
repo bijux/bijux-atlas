@@ -10,7 +10,6 @@ Single executable script surface for ops commands.
 - `ops/run/ops-smoke.sh`
 - `ops/run/stack-up.sh`
 - `ops/run/stack-down.sh`
-- `ops/run/down.sh`
 - `ops/run/warm-entrypoint.sh`
 - `ops/run/deploy-atlas.sh`
 - `ops/run/undeploy.sh`

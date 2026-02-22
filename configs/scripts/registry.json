@@ -13,7 +13,6 @@
     {"path": "ops/run/contract-check.sh", "owner": "ops", "description": "ops contract check wrapper"},
     {"path": "ops/run/datasets-verify.sh", "owner": "ops", "description": "dataset verification wrapper"},
     {"path": "ops/run/deploy-atlas.sh", "owner": "ops", "description": "deploy atlas helper"},
-    {"path": "ops/run/down.sh", "owner": "ops", "description": "bring environment down"},
     {"path": "ops/run/e2e.sh", "owner": "ops", "description": "e2e suite entrypoint"},
     {"path": "ops/run/k8s-restart.sh", "owner": "ops", "description": "restart k8s workload"},
     {"path": "ops/run/load-suite.sh", "owner": "ops", "description": "load suite entrypoint"},
