@@ -690,7 +690,7 @@ if ! ops_context_guard "$guard_profile"; then
   fi
 fi
 case "$mode" in
-  warmup) exec ./ops/e2e/scripts/warmup.sh ;;
+  warmup) exec ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/warmup.py ;;
   datasets) exec ./ops/e2e/runner/warm_datasets.sh ;;
   top) exec ./ops/e2e/runner/warm_top.sh ;;
   shards) exec ./ops/e2e/runner/warm_shards.sh ;;

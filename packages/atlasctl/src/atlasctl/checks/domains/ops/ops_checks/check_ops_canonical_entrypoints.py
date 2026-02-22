@@ -29,8 +29,8 @@ if "./ops/e2e/scripts/deploy_atlas.sh" in ops_mk:
     errors.append("ops-deploy must not call ./ops/e2e/scripts/deploy_atlas.sh directly")
 if "./ops/datasets/scripts/publish_by_name.sh" not in ops_mk:
     errors.append("ops-publish must call ./ops/datasets/scripts/publish_by_name.sh")
-if "./ops/e2e/scripts/smoke_queries.sh" not in ops_mk:
-    errors.append("ops-smoke must call ./ops/e2e/scripts/smoke_queries.sh")
+if "./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/smoke_queries.py" not in ops_mk:
+    errors.append("ops-smoke must call atlasctl-owned e2e runtime smoke_queries.py entrypoint")
 if "./bin/atlasctl ops obs --report text verify" not in ops_mk and "./ops/obs/scripts/verify_pack.sh" not in ops_mk:
     errors.append("ops observability verify flow must use atlasctl ops obs verify (or verify_pack entrypoint)")
 if "ops-stack-up-legacy" in ops_mk or "ops-stack-down-legacy" in ops_mk:
