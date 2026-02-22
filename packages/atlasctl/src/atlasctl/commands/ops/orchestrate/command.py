@@ -207,7 +207,7 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _run_wrapped(ctx, OrchestrateSpec("obs", ns.obs_cmd, mapping[ns.obs_cmd]), ns.report)
     if ns.cmd == "load":
         mapping = {
-            "smoke": ["bash", "ops/run/load-smoke.sh"],
+            "smoke": ["make", "ops-load-smoke"],
             "suite": ["bash", "ops/run/load-suite.sh"],
             "baseline-compare": [
                 "python3",
