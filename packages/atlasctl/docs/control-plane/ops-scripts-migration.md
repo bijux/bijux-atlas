@@ -27,7 +27,7 @@ Classification legend:
 | `ops/run/contract-report.py` | logic | deleted (inlined into orchestrate contracts-snapshot) | `atlasctl contracts-snapshot` / `atlasctl run contracts-snapshot` |
 | `ops/run/datasets-verify.sh` | glue | deleted (atlasctl-native) | `atlasctl ops datasets verify` |
 | `ops/run/deploy-atlas.sh` | logic | deleted (atlasctl-native deploy helper) | `atlasctl ops deploy` |
-| `ops/run/doctor.sh` | glue | planned | `atlasctl doctor` / `atlasctl make doctor` |
+| `./bin/atlasctl ops doctor --report text` | glue | planned | `atlasctl doctor` / `atlasctl make doctor` |
 | `ops/run/down.sh` | glue | deleted (atlasctl-native guard + stack-down) | `atlasctl ops down` |
 | `ops/run/e2e-smoke.sh` | glue | deleted (folded into `atlasctl ops e2e run`) | `atlasctl ops e2e run --scenario smoke` |
 | `atlasctl ops e2e run` | glue | planned | `atlasctl ops e2e run` |
@@ -45,7 +45,7 @@ Classification legend:
 | `ops/run/obs-verify.sh` | glue | deleted (atlasctl-native) | `atlasctl ops obs verify` |
 | `ops/run/ops-check.sh` | glue | planned | `atlasctl ops check` |
 | `ops/run/ops-smoke.sh` | glue | planned | `atlasctl ops smoke` |
-| `ops/run/prereqs.sh` | glue | planned | `atlasctl make prereqs` |
+| `./bin/atlasctl ops prereqs --report text` | glue | planned | `atlasctl make prereqs` |
 | `ops/run/report.sh` | glue | deleted (atlasctl-native) | `atlasctl report unified` |
 | `ops/run/root-lanes.sh` | legacy | legacy | split across `atlasctl dev/ci/product/ops` |
 | `ops/run/root-local.sh` | legacy | legacy | split across `atlasctl dev/ops` |

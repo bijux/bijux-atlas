@@ -118,6 +118,10 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
 
     if ns.ops_cmd == "restart":
         return impl._ops_k8s_restart_native(ctx, ns.report)
+    if ns.ops_cmd == "prereqs":
+        return impl._ops_prereqs_native(ctx, ns.report)
+    if ns.ops_cmd == "doctor":
+        return impl._ops_doctor_native(ctx, ns.report)
 
     if ns.ops_cmd == "deploy":
         sub = str(getattr(ns, "ops_deploy_cmd", "") or "").strip()

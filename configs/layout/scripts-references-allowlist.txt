@@ -211,9 +211,9 @@ ops/obs/tests/test_slo_burn_determinism.sh
 ops/obs/tests/test_toxiproxy_latency_drill.sh
 ops/report/incident_repro.sh
 atlasctl ops deploy
-ops/run/doctor.sh
+./bin/atlasctl ops doctor --report text
 ops/run/ops-check.sh
-ops/run/prereqs.sh
+./bin/atlasctl ops prereqs --report text
 ops/run/root-lanes.sh
 atlasctl ops stack down
 atlasctl ops stack up
