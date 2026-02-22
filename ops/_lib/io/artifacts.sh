@@ -6,8 +6,18 @@ set -euo pipefail
 
 _OPS_LIB_DIR="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(CDPATH='' cd -- "${_OPS_LIB_DIR}/../../.." && pwd)"
-# shellcheck source=ops/_lib/io/run_id.sh
-source "${_OPS_LIB_DIR}/run_id.sh"
+
+ops_init_run_id() {
+  if [ -z "${OPS_RUN_ID:-}" ]; then
+    OPS_RUN_ID="atlas-ops-$(date -u +%Y%m%d-%H%M%S)"
+  fi
+  OPS_NAMESPACE="${OPS_NAMESPACE:-$OPS_RUN_ID}"
+  OPS_RUN_DIR="${OPS_RUN_DIR:-$REPO_ROOT/artifacts/ops/$OPS_RUN_ID}"
+  export OPS_RUN_ID OPS_NAMESPACE OPS_RUN_DIR
+  export ATLAS_NS="${ATLAS_NS:-$OPS_NAMESPACE}"
+  export ATLAS_E2E_NAMESPACE="${ATLAS_E2E_NAMESPACE:-$OPS_NAMESPACE}"
+  mkdir -p "$OPS_RUN_DIR"
+}
 
 ops_run_id() {
   ops_init_run_id
