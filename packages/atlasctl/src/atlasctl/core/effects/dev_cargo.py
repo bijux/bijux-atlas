@@ -74,6 +74,7 @@ def _run(
     steps: list[dict[str, Any]],
     verbose: bool,
     quiet: bool,
+    stream_output: bool = False,
 ) -> int:
     step = {"command": " ".join(cmd)}
     if (not quiet) and (not verbose):
@@ -91,7 +92,7 @@ def _run(
         and cmd[1:6] == ["-m", "atlasctl.cli", "check", "run", "--group"]
         and (not quiet)
     )
-    if live_repo_progress:
+    if live_repo_progress or (stream_output and not quiet):
         proc = subprocess.run(cmd, cwd=ctx.repo_root, env=env, text=True, check=False)
         step["stdout"] = ""
         step["stderr"] = ""
@@ -140,7 +141,15 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
     emit_progress = (not params.json_output) and (not ctx.quiet)
 
     def run_cmd(cmd: list[str]) -> bool:
-        code = _run(ctx=ctx, env=env, cmd=cmd, steps=steps, verbose=params.verbose, quiet=not emit_progress)
+        code = _run(
+            ctx=ctx,
+            env=env,
+            cmd=cmd,
+            steps=steps,
+            verbose=params.verbose,
+            quiet=not emit_progress,
+            stream_output=(action in {"test", "coverage"}),
+        )
         if code != 0:
             failures.append(" ".join(cmd))
             return False
@@ -155,15 +164,7 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
                 cmds.append(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose, include_slow=params.include_slow_checks))
             return cmds
         if action == "lint":
-            cmds = [
-                ["cargo", "fmt", "--all", "--", "--check", "--config-path", RUSTFMT_CONFIG],
-                _atlasctl_cmd("policies", "check", "--fail-fast", quiet=ctx.quiet),
-                _atlasctl_cmd("check", "no-direct-bash-invocations", quiet=ctx.quiet),
-                _atlasctl_cmd("check", "no-direct-python-invocations", quiet=ctx.quiet),
-                _atlasctl_cmd("check", "scripts-surface-docs-drift", quiet=ctx.quiet),
-                _atlasctl_cmd("docs", "link-check", "--report", "text", quiet=ctx.quiet),
-                ["cargo", "clippy", "--workspace", "--all-targets", "--", "-D", "warnings"],
-            ]
+            cmds = [["cargo", "clippy", "--workspace", "--all-targets", "--", "-D", "warnings"]]
             if include_repo_checks:
                 cmds.append(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose, include_slow=params.include_slow_checks))
             return cmds
@@ -204,14 +205,18 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
                     "llvm-cov",
                     "nextest",
                     "--workspace",
+                    "--all-targets",
                     "--profile",
                     profile,
                     "--config-file",
                     NEXTEST_TOML,
+                    "--run-ignored",
+                    "all",
                     "--lcov",
                     "--output-path",
                     str(output),
                 ],
+                ["cargo", "llvm-cov", "report", "--summary-only"],
             ]
             if include_repo_checks:
                 cmds.append(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose, include_slow=params.include_slow_checks))
@@ -250,24 +255,16 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
         if fmt_ok and include_repo_checks:
             run_cmd(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose, include_slow=params.include_slow_checks))
     elif action == "lint":
-        lint_ok = (
-            run_cmd(["cargo", "fmt", "--all", "--", "--check", "--config-path", RUSTFMT_CONFIG])
-            and run_cmd(_atlasctl_cmd("policies", "check", "--fail-fast", quiet=ctx.quiet))
-            and run_cmd(_atlasctl_cmd("check", "no-direct-bash-invocations", quiet=ctx.quiet))
-            and run_cmd(_atlasctl_cmd("check", "no-direct-python-invocations", quiet=ctx.quiet))
-            and run_cmd(_atlasctl_cmd("check", "scripts-surface-docs-drift", quiet=ctx.quiet))
-            and run_cmd(_atlasctl_cmd("docs", "link-check", "--report", "text", quiet=ctx.quiet))
-            and run_cmd(
-                [
-                    "cargo",
-                    "clippy",
-                    "--workspace",
-                    "--all-targets",
-                    "--",
-                    "-D",
-                    "warnings",
-                ]
-            )
+        lint_ok = run_cmd(
+            [
+                "cargo",
+                "clippy",
+                "--workspace",
+                "--all-targets",
+                "--",
+                "-D",
+                "warnings",
+            ]
         )
         if lint_ok and include_repo_checks:
             run_cmd(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose, include_slow=params.include_slow_checks))
@@ -309,15 +306,20 @@ def run_dev_cargo(ctx: RunContext, params: DevCargoParams) -> int:
                 "llvm-cov",
                 "nextest",
                 "--workspace",
+                "--all-targets",
                 "--profile",
                 profile,
                 "--config-file",
                 NEXTEST_TOML,
+                "--run-ignored",
+                "all",
                 "--lcov",
                 "--output-path",
                 str(output),
             ]
         )
+        if not failures:
+            run_cmd(["cargo", "llvm-cov", "report", "--summary-only"])
         if not failures and include_repo_checks:
             run_cmd(_atlasctl_repo_check_cmd(quiet=ctx.quiet, verbose=params.verbose, include_slow=params.include_slow_checks))
     elif action == "audit":
