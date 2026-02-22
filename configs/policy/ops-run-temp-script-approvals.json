@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "kind": "ops-run-temp-script-approvals",
+  "approvals": [
+    {
+      "script": "ops/run/prereqs.sh",
+      "owner": "ops-platform",
+      "issue_id": "ISSUE-OPS-RUN-MIGRATION-0001",
+      "reason": "Temporary executable wrapper retained while prereqs flow is consolidated under atlasctl ops/make commands.",
+      "expiry": "2026-06-30"
+    },
+    {
+      "script": "ops/run/product/product_bootstrap.sh",
+      "owner": "ops-platform",
+      "issue_id": "ISSUE-OPS-RUN-MIGRATION-0002",
+      "reason": "Legacy script retained temporarily for parity comparison while atlasctl product bootstrap rollout completes.",
+      "expiry": "2026-06-30"
+    },
+    {
+      "script": "ops/run/product/product_chart_package.sh",
+      "owner": "ops-platform",
+      "issue_id": "ISSUE-OPS-RUN-MIGRATION-0002",
+      "reason": "Legacy script retained temporarily for parity comparison while atlasctl product chart package rollout completes.",
+      "expiry": "2026-06-30"
+    },
+    {
+      "script": "ops/run/product/product_chart_validate.sh",
+      "owner": "ops-platform",
+      "issue_id": "ISSUE-OPS-RUN-MIGRATION-0002",
+      "reason": "Legacy script retained temporarily for parity comparison while atlasctl product chart validate rollout completes.",
+      "expiry": "2026-06-30"
+    },
+    {
+      "script": "ops/run/product/product_chart_verify.sh",
+      "owner": "ops-platform",
+      "issue_id": "ISSUE-OPS-RUN-MIGRATION-0002",
+      "reason": "Legacy script retained temporarily for parity comparison while atlasctl product chart verify rollout completes.",
+      "expiry": "2026-06-30"
+    },
+    {
+      "script": "ops/run/product/product_docker_build.sh",
+      "owner": "ops-platform",
+      "issue_id": "ISSUE-OPS-RUN-MIGRATION-0002",
+      "reason": "Legacy script retained temporarily for parity comparison while atlasctl product docker build rollout completes.",
+      "expiry": "2026-06-30"
+    },
+    {
+      "script": "ops/run/product/product_docker_check.sh",
+      "owner": "ops-platform",
+      "issue_id": "ISSUE-OPS-RUN-MIGRATION-0002",
+      "reason": "Legacy script retained temporarily for parity comparison while atlasctl product docker check rollout completes.",
+      "expiry": "2026-06-30"
+    },
+    {
+      "script": "ops/run/product/product_docker_push.sh",
+      "owner": "ops-platform",
+      "issue_id": "ISSUE-OPS-RUN-MIGRATION-0002",
+      "reason": "Legacy script retained temporarily for parity comparison while atlasctl product docker push rollout completes.",
+      "expiry": "2026-06-30"
+    },
+    {
+      "script": "ops/run/product/product_docker_release.sh",
+      "owner": "ops-platform",
+      "issue_id": "ISSUE-OPS-RUN-MIGRATION-0002",
+      "reason": "Legacy script retained temporarily for parity comparison while atlasctl product docker release rollout completes.",
+      "expiry": "2026-06-30"
+    },
+    {
+      "script": "ops/run/product/product_docs_lint_names.sh",
+      "owner": "ops-platform",
+      "issue_id": "ISSUE-OPS-RUN-MIGRATION-0002",
+      "reason": "Legacy script retained temporarily for parity comparison while atlasctl product docs naming-lint rollout completes.",
+      "expiry": "2026-06-30"
+    },
+    {
+      "script": "ops/run/product/product_rename_lint.sh",
+      "owner": "ops-platform",
+      "issue_id": "ISSUE-OPS-RUN-MIGRATION-0002",
+      "reason": "Legacy script retained temporarily for parity comparison while atlasctl product naming lint rollout completes.",
+      "expiry": "2026-06-30"
+    }
+  ]
+}
