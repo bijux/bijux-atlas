@@ -1,18 +1,33 @@
-# Bypass Policy
+# Bypass Policy: Temporary by Default
 
-Bypass files under `configs/policy/` are temporary exceptions, not a second policy system.
+Bypasses, relaxations, and allowlists exist to keep delivery moving while a real fix is being implemented.
 
-## Rules
-- Every bypass entry must include: `owner`, `issue_id`, `expiry`, `justification`, and `removal_plan`.
-- Expiry must not be in the past.
-- Expiry horizon above 90 days requires explicit approval in `configs/policy/bypass-horizon-approvals.json`.
-- New bypass source files are forbidden unless explicitly registered.
+Default rule:
+- removal is the default
+- retention is an exception
+- every new bypass needs ownership, justification, and an expiry
 
-## Commands
-- Inventory: `./bin/atlasctl policies bypass list --report json`
-- Consolidated report: `./bin/atlasctl policies bypass report --out artifacts/reports/atlasctl/policies-bypass-report.json`
-- Entry drill-down: `./bin/atlasctl policies bypass entry --id <source:key>`
+## Principles
 
-## CI Contract
-- PRs upload `artifacts/reports/atlasctl/policies-bypass-report.json`.
-- Repo checks enforce bypass metadata quality and budget ratchet.
+- Prefer narrowing scope over broad wildcards.
+- Prefer command/check fixes over allowlist growth.
+- Prefer short expiries and milestone-linked removal plans.
+- Treat approvals as temporary migration tools, not permanent policy.
+
+## Required Metadata
+
+Every bypass entry should carry:
+- `owner`
+- `issue_id` (or documented local policy reference where allowed)
+- `expiry`
+- `reason` / justification
+- `removal_plan`
+
+## Zero-Bypass Program
+
+The long-term target is zero bypasses for stable lanes. Burn-down is enforced through:
+- inventory reporting
+- trend gates
+- explicit new-entry approvals
+- expiry validation
+- removal milestone tracking
