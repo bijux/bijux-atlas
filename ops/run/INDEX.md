@@ -6,8 +6,8 @@ Single executable script surface for ops commands.
 ## Public entrypoints
 - `./bin/atlasctl ops prereqs --report text`
 - `./bin/atlasctl ops doctor --report text`
-- `ops/run/ops-check.sh`
-- `ops/run/ops-smoke.sh`
+- `atlasctl ops check`
+- `atlasctl ops smoke`
 - `atlasctl ops stack up`
 - `atlasctl ops stack down`
 - `atlasctl ops warm`

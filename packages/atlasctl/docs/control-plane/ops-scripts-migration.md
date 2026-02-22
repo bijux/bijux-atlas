@@ -43,8 +43,8 @@ Classification legend:
 | `ops/run/obs-up.sh` | logic | deleted (atlasctl-native) | `atlasctl ops obs up` |
 | `ops/run/obs-validate.sh` | glue | deleted (atlasctl-native) | `atlasctl ops obs validate` |
 | `ops/run/obs-verify.sh` | glue | deleted (atlasctl-native) | `atlasctl ops obs verify` |
-| `ops/run/ops-check.sh` | glue | planned | `atlasctl ops check` |
-| `ops/run/ops-smoke.sh` | glue | planned | `atlasctl ops smoke` |
+| `ops/run/ops-check.sh` | glue | deleted (atlasctl-native ops check lane) | `atlasctl ops check` |
+| `ops/run/ops-smoke.sh` | glue | deleted (atlasctl-native ops smoke lane) | `atlasctl ops smoke` |
 | `./bin/atlasctl ops prereqs --report text` | glue | planned | `atlasctl make prereqs` |
 | `ops/run/report.sh` | glue | deleted (atlasctl-native) | `atlasctl report unified` |
 | `ops/run/root-lanes.sh` | legacy | legacy | split across `atlasctl dev/ci/product/ops` |

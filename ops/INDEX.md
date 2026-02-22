@@ -24,8 +24,8 @@
 - `atlasctl ops stack down`
 - `atlasctl ops deploy`
 - `atlasctl ops e2e run`
-- `ops/run/ops-check.sh`
-- `ops/run/ops-smoke.sh`
+- `atlasctl ops check`
+- `atlasctl ops smoke`
 - `./bin/atlasctl ops prereqs --report text`
 - `./bin/atlasctl ops doctor --report text`
 - `ops/run/root-lanes.sh`
