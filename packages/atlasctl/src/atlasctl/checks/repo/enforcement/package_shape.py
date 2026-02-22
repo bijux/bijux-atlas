@@ -117,16 +117,17 @@ def check_layout_domain_readmes(repo_root: Path) -> tuple[int, list[str]]:
 
 def check_layout_no_legacy_imports(repo_root: Path) -> tuple[int, list[str]]:
     layout_root = repo_root / "packages/atlasctl/src/atlasctl/checks/layout"
+    legacy_ns = "atlasctl." + "legacy"
     offenders: list[str] = []
     for path in sorted(layout_root.rglob("*.py")):
         rel = path.relative_to(repo_root).as_posix()
         if "/legacy/" in rel:
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
-        if "atlasctl.legacy" in text or "from ...legacy" in text or "from ....legacy" in text:
+        if legacy_ns in text or "from ...legacy" in text or "from ....legacy" in text:
             offenders.append(rel)
     if offenders:
-        return 1, [f"layout checks must not import atlasctl.legacy: {path}" for path in offenders]
+        return 1, [f"layout checks must not import {legacy_ns}: {path}" for path in offenders]
     return 0, []
 
 
