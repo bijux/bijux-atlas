@@ -29,6 +29,7 @@ class CheckDef:
     description: str
     budget_ms: int
     fn: CheckFunc
+    canonical_id: str | None = None
     legacy_check_id: str | None = None
     severity: Severity = Severity.ERROR
     category: CheckCategory = CheckCategory.HYGIENE
@@ -41,9 +42,13 @@ class CheckDef:
     evidence: tuple[str, ...] = ()
     writes_allowed_roots: tuple[str, ...] = ("artifacts/evidence/",)
 
+    def __post_init__(self) -> None:
+        if not self.canonical_id:
+            object.__setattr__(self, "canonical_id", self.check_id)
+
     @property
     def id(self) -> str:
-        return self.check_id
+        return self.canonical_id or self.check_id
 
     @property
     def title(self) -> str:

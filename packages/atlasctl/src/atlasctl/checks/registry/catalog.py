@@ -26,6 +26,7 @@ def _from_entry(entry: RegistryEntry) -> CheckFactory:
         raise ValueError(f"missing callable for check `{entry.id}`: {entry.module}:{entry.callable}")
     return _build_check(
         check_id=entry.id,
+        canonical_id=entry.id,
         legacy_check_id=entry.legacy_id,
         domain=entry.domain,
         description=entry.description,
@@ -34,7 +35,7 @@ def _from_entry(entry: RegistryEntry) -> CheckFactory:
         severity=Severity(entry.severity),
         category=CheckCategory(entry.category),
         fix_hint=entry.fix_hint,
-        slow=(entry.speed == "slow"),
+        slow=(entry.speed in {"slow", "nightly"}),
         tags=tuple((*entry.groups, f"gate:{entry.gate}")),
         effects=tuple(entry.effects),
         owners=(entry.owner,),

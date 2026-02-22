@@ -36,8 +36,10 @@ REGISTRY_TOML = Path("packages/atlasctl/src/atlasctl/checks/REGISTRY.toml")
 REGISTRY_JSON = Path("packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json")
 REGISTRY_SCHEMA = Path("packages/atlasctl/src/atlasctl/contracts/schema/schemas/atlasctl.checks-registry.v1.schema.json")
 CHECKS_CATALOG_JSON = Path("packages/atlasctl/src/atlasctl/registry/checks_catalog.json")
+CHECKS_REGISTRY_DOCS_META = Path("packages/atlasctl/docs/_meta/checks-registry.txt")
 CHECKS_CATALOG_SCHEMA = Path("packages/atlasctl/src/atlasctl/contracts/schema/schemas/atlasctl.checks-catalog.v1.schema.json")
 RENAMES_JSON = Path("configs/policy/target-renames.json")
+CHECK_ID_MIGRATION_JSON = Path("configs/policy/check-id-migration.json")
 FILENAME_ALLOWLIST_JSON = Path("configs/policy/check-filename-allowlist.json")
 TRANSITION_ALLOWLIST_JSON = Path("configs/policy/checks-registry-transition.json")
 
@@ -151,8 +153,8 @@ def _validate_entries(entries: list[RegistryEntry]) -> None:
         import re
         if re.match(r"^checks_[a-z0-9]+_[a-z0-9]+_[a-z0-9_]+$", e.id) is None:
             errors.append(f"{e.id}: id must match checks_<domain>_<area>_<name>")
-        if e.speed not in {"fast", "slow"}:
-            errors.append(f"{e.id}: speed must be fast|slow")
+        if e.speed not in {"fast", "slow", "nightly"}:
+            errors.append(f"{e.id}: speed must be fast|slow|nightly")
         if not e.groups:
             errors.append(f"{e.id}: groups must not be empty")
         if not e.owner:
@@ -161,8 +163,8 @@ def _validate_entries(entries: list[RegistryEntry]) -> None:
             errors.append(f"{e.id}: owner `{e.owner}` not present in configs/meta/owners.json")
         if e.timeout_ms < 50:
             errors.append(f"{e.id}: timeout_ms must be >= 50ms")
-        if e.speed == "slow" and e.timeout_ms < 2000:
-            errors.append(f"{e.id}: slow checks must have timeout_ms >= 2000")
+        if e.speed in {"slow", "nightly"} and e.timeout_ms < 2000:
+            errors.append(f"{e.id}: slow/nightly checks must have timeout_ms >= 2000")
         write_roots = tuple(e.writes_allowed_roots)
         default_write_roots = ("artifacts/evidence/",)
         if write_roots != default_write_roots and "fs-write" not in e.groups:
@@ -186,8 +188,8 @@ def _validate_entries(entries: list[RegistryEntry]) -> None:
         legacy = legacy_map.get(e.id)
         if legacy is not None:
             expected_speed = "slow" if bool(legacy.slow) else "fast"
-            if e.speed != expected_speed:
-                errors.append(f"{e.id}: speed mismatch; expected `{expected_speed}` from implementation")
+            if e.speed not in {expected_speed, "nightly"}:
+                errors.append(f"{e.id}: speed mismatch; expected `{expected_speed}` (or nightly) from implementation")
         if idx > 1 and entries[idx - 2].id > e.id:
             errors.append("registry entries must be sorted by id")
     if errors:
@@ -255,6 +257,8 @@ def _to_catalog_entry(entry: RegistryEntry) -> dict[str, Any]:
         "owners": [entry.owner],
         "groups": list(entry.groups),
         "markers": sorted(markers),
+        "docs_link": f"packages/atlasctl/docs/checks/index.md#{entry.id}",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "default_enabled": True,
         "impl_ref": {
             "module": entry.module,
@@ -271,6 +275,36 @@ def _to_catalog_entry(entry: RegistryEntry) -> dict[str, Any]:
             "legacy_id": entry.legacy_id,
         },
     }
+
+
+def _render_docs_meta(catalog_payload: dict[str, Any]) -> str:
+    lines = [
+        "# atlasctl checks registry (generated)",
+        "# Regenerate with: ./bin/atlasctl gen checks-registry",
+        "",
+        "id\tdomain\tarea\towner\tspeed\tgate\tmodule\tcallable\tdocs_link\tremediation_link",
+    ]
+    for row in catalog_payload.get("checks", []):
+        impl_ref = row.get("impl_ref", {})
+        owners = row.get("owners", [])
+        owner = str(owners[0]) if isinstance(owners, list) and owners else ""
+        lines.append(
+            "\t".join(
+                [
+                    str(row.get("id", "")),
+                    str(row.get("domain", "")),
+                    str(row.get("area", "")),
+                    owner,
+                    str(impl_ref.get("speed", "")),
+                    str(row.get("gate", "")),
+                    str(impl_ref.get("module", "")),
+                    str(impl_ref.get("callable", "")),
+                    str(row.get("docs_link", "")),
+                    str(row.get("remediation_link", "")),
+                ]
+            )
+        )
+    return "\n".join(lines) + "\n"
 
 
 def generate_registry_json(repo_root: Path | None = None, *, check_only: bool = False) -> tuple[Path, bool]:
@@ -311,17 +345,24 @@ def generate_registry_json(repo_root: Path | None = None, *, check_only: bool = 
     rendered = json.dumps(payload, indent=2, sort_keys=True) + "\n"
     catalog_out = root / CHECKS_CATALOG_JSON
     catalog_rendered = json.dumps(catalog_payload, indent=2, sort_keys=True) + "\n"
+    docs_meta_out = root / CHECKS_REGISTRY_DOCS_META
+    docs_meta_rendered = _render_docs_meta(catalog_payload)
     current = out.read_text(encoding="utf-8") if out.exists() else ""
     catalog_current = catalog_out.read_text(encoding="utf-8") if catalog_out.exists() else ""
+    docs_meta_current = docs_meta_out.read_text(encoding="utf-8") if docs_meta_out.exists() else ""
     changed = current != rendered
     catalog_changed = catalog_current != catalog_rendered
+    docs_meta_changed = docs_meta_current != docs_meta_rendered
     if not check_only and changed:
         out.parent.mkdir(parents=True, exist_ok=True)
         write_text_file(out, rendered, encoding="utf-8")
     if not check_only and catalog_changed:
         catalog_out.parent.mkdir(parents=True, exist_ok=True)
         write_text_file(catalog_out, catalog_rendered, encoding="utf-8")
-    return out, (changed or catalog_changed)
+    if not check_only and docs_meta_changed:
+        docs_meta_out.parent.mkdir(parents=True, exist_ok=True)
+        write_text_file(docs_meta_out, docs_meta_rendered, encoding="utf-8")
+    return out, (changed or catalog_changed or docs_meta_changed)
 
 
 def registry_delta(repo_root: Path | None = None) -> dict[str, list[str]]:
@@ -440,14 +481,20 @@ def legacy_checks() -> tuple[CheckDef, ...]:
 
 
 def _rename_overrides(repo_root: Path) -> dict[str, str]:
+    out: dict[str, str] = {}
     path = repo_root / RENAMES_JSON
-    if not path.exists():
-        return {}
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    rows = payload.get("check_ids", {})
-    if not isinstance(rows, dict):
-        return {}
-    return {str(old): str(new) for old, new in rows.items()}
+    if path.exists():
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        rows = payload.get("check_ids", {})
+        if isinstance(rows, dict):
+            out.update({str(old): str(new) for old, new in rows.items()})
+    migration = repo_root / CHECK_ID_MIGRATION_JSON
+    if migration.exists():
+        payload = json.loads(migration.read_text(encoding="utf-8"))
+        rows = payload.get("check_ids", {})
+        if isinstance(rows, dict):
+            out.update({str(old): str(new) for old, new in rows.items()})
+    return out
 
 
 def check_id_renames(repo_root: Path | None = None) -> dict[str, str]:
@@ -457,12 +504,15 @@ def check_id_renames(repo_root: Path | None = None) -> dict[str, str]:
 
 def check_id_alias_expiry(repo_root: Path | None = None) -> str | None:
     root = repo_root or _repo_root()
-    path = root / RENAMES_JSON
-    if not path.exists():
-        return None
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    expiry = str(payload.get("check_ids_alias_expires_on", "")).strip()
-    return expiry or None
+    for rel in (CHECK_ID_MIGRATION_JSON, RENAMES_JSON):
+        path = root / rel
+        if not path.exists():
+            continue
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        expiry = str(payload.get("check_ids_alias_expires_on", "")).strip()
+        if expiry:
+            return expiry
+    return None
 
 
 def canonical_check_id(check: CheckDef) -> str:

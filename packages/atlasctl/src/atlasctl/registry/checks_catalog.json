@@ -3,7 +3,92 @@
     {
       "area": "registry",
       "default_enabled": true,
+      "description": "require every registered check to expose a canonical checks_* id",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_registry_all_checks_have_canonical_id",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_all_checks_have_canonical_id",
+      "impl_ref": {
+        "callable": "check_registry_all_checks_have_canonical_id",
+        "category": "contract",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Update REGISTRY.toml ids to checks_<domain>_<area>_<name>.",
+        "legacy_id": "checks.registry_all_checks_have_canonical_id",
+        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 700,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require every registered check to expose a canonical checks_* id"
+    },
+    {
+      "area": "registry",
+      "default_enabled": true,
+      "description": "require canonical id domain/area segments to match implementation module path",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_registry_canonical_id_matches_module_path",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_canonical_id_matches_module_path",
+      "impl_ref": {
+        "callable": "check_registry_canonical_id_matches_module_path",
+        "category": "policy",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Align check module paths with canonical check id segments.",
+        "legacy_id": "checks.registry_canonical_id_matches_module_path",
+        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 900,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require canonical id domain/area segments to match implementation module path"
+    },
+    {
+      "area": "registry",
+      "default_enabled": true,
       "description": "require docs update when checks registry changes",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_registry_change_docs_gate",
       "domain": "checks",
       "gate": "checks",
       "groups": [
@@ -40,12 +125,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require docs update when checks registry changes"
     },
     {
       "area": "registry",
       "default_enabled": true,
       "description": "require checks list/tree/owners goldens update when registry changes",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_registry_change_goldens_gate",
       "domain": "checks",
       "gate": "checks",
       "groups": [
@@ -82,12 +169,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require checks list/tree/owners goldens update when registry changes"
     },
     {
       "area": "registry",
       "default_enabled": true,
       "description": "require ownership metadata update when checks registry changes",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_registry_change_owners_gate",
       "domain": "checks",
       "gate": "checks",
       "groups": [
@@ -124,12 +213,98 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require ownership metadata update when checks registry changes"
     },
     {
       "area": "registry",
       "default_enabled": true,
+      "description": "require docs_link metadata for every registry check entry",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_registry_docs_link_required",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_docs_link_required",
+      "impl_ref": {
+        "callable": "check_registry_docs_link_required",
+        "category": "contract",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Set docs_link to an existing documentation page in checks catalog generation.",
+        "legacy_id": "checks.registry_docs_link_required",
+        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 700,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require docs_link metadata for every registry check entry"
+    },
+    {
+      "area": "registry",
+      "default_enabled": true,
+      "description": "require generated docs _meta checks registry file to match runtime registry",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_registry_docs_meta_runtime_drift",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_docs_meta_runtime_drift",
+      "impl_ref": {
+        "callable": "check_registry_docs_meta_matches_runtime",
+        "category": "drift",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Run `./bin/atlasctl gen checks-registry` and commit docs/_meta/checks-registry.txt.",
+        "legacy_id": "checks.registry_docs_meta_runtime_drift",
+        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 700,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require generated docs _meta checks registry file to match runtime registry"
+    },
+    {
+      "area": "registry",
+      "default_enabled": true,
       "description": "validate checks registry TOML/JSON integrity and drift",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_registry_integrity",
       "domain": "checks",
       "gate": "checks",
       "groups": [
@@ -164,12 +339,224 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "validate checks registry TOML/JSON integrity and drift"
+    },
+    {
+      "area": "registry",
+      "default_enabled": true,
+      "description": "forbid duplicate canonical check ids in registry",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_registry_no_duplicate_canonical_id",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_no_duplicate_canonical_id",
+      "impl_ref": {
+        "callable": "check_registry_no_duplicate_canonical_id",
+        "category": "contract",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Deduplicate conflicting ids in REGISTRY.toml.",
+        "legacy_id": "checks.registry_no_duplicate_canonical_id",
+        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 700,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid duplicate canonical check ids in registry"
+    },
+    {
+      "area": "registry",
+      "default_enabled": true,
+      "description": "require every registry entry to declare an owner",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_registry_owners_required",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_owners_required",
+      "impl_ref": {
+        "callable": "check_registry_owners_required",
+        "category": "contract",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Add owner field to registry entries.",
+        "legacy_id": "checks.registry_owners_required",
+        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require every registry entry to declare an owner"
+    },
+    {
+      "area": "registry",
+      "default_enabled": true,
+      "description": "require remediation_link metadata for every registry check entry",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_registry_remediation_link_required",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_remediation_link_required",
+      "impl_ref": {
+        "callable": "check_registry_remediation_link_required",
+        "category": "contract",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Set remediation_link to an existing remediation playbook page.",
+        "legacy_id": "checks.registry_remediation_link_required",
+        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 700,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require remediation_link metadata for every registry check entry"
+    },
+    {
+      "area": "registry",
+      "default_enabled": true,
+      "description": "require speed classification for every registry entry (fast|slow|nightly)",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_registry_speed_required",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_speed_required",
+      "impl_ref": {
+        "callable": "check_registry_speed_required",
+        "category": "contract",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Set speed to fast, slow, or nightly in REGISTRY.toml.",
+        "legacy_id": "checks.registry_speed_required",
+        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require speed classification for every registry entry (fast|slow|nightly)"
+    },
+    {
+      "area": "registry",
+      "default_enabled": true,
+      "description": "require every registry check to be selected by at least one suite manifest",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_registry_suite_membership_required",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_suite_membership_required",
+      "impl_ref": {
+        "callable": "check_registry_suite_membership_required",
+        "category": "policy",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Add unassigned checks to at least one suite in registry/suites_catalog.json.",
+        "legacy_id": "checks.registry_suite_membership_required",
+        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 900,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require every registry check to be selected by at least one suite manifest"
     },
     {
       "area": "pyproject",
       "default_enabled": true,
       "description": "forbid duplicate pyproject tool blocks",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_configs_pyproject_no_duplicate_tool_config",
       "domain": "configs",
       "gate": "configs",
       "groups": [
@@ -202,12 +589,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid duplicate pyproject tool blocks"
     },
     {
       "area": "pyproject",
       "default_enabled": true,
       "description": "validate required pyproject blocks",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_configs_pyproject_required_blocks",
       "domain": "configs",
       "gate": "configs",
       "groups": [
@@ -240,12 +629,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "validate required pyproject blocks"
     },
     {
       "area": "atlasctl",
       "default_enabled": true,
       "description": "validate atlasctl CLI contract surface",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_contracts_atlasctl_cli",
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
@@ -278,12 +669,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "validate atlasctl CLI contract surface"
     },
     {
       "area": "layout",
       "default_enabled": true,
       "description": "validate repository layout contract",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_contracts_layout_contract",
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
@@ -318,12 +711,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "validate repository layout contract"
     },
     {
       "area": "schema",
       "default_enabled": true,
       "description": "validate schema catalog for duplicate names and missing files",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_contracts_schema_catalog",
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
@@ -356,12 +751,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "validate schema catalog for duplicate names and missing files"
     },
     {
       "area": "schema",
       "default_enabled": true,
       "description": "ensure schemas listed in catalog exist on disk",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_contracts_schema_catalog_files_exist",
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
@@ -394,12 +791,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure schemas listed in catalog exist on disk"
     },
     {
       "area": "schema",
       "default_enabled": true,
       "description": "ensure schema catalog contains only referenced schemas",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_contracts_schema_catalog_referenced",
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
@@ -432,12 +831,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure schema catalog contains only referenced schemas"
     },
     {
       "area": "schema",
       "default_enabled": true,
       "description": "ensure schema catalog order is deterministic",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_contracts_schema_catalog_sorted",
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
@@ -470,12 +871,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure schema catalog order is deterministic"
     },
     {
       "area": "schema",
       "default_enabled": true,
       "description": "enforce contracts catalog.json as schema SSOT",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_contracts_schema_catalog_ssot",
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
@@ -508,12 +911,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce contracts catalog.json as schema SSOT"
     },
     {
       "area": "schema",
       "default_enabled": true,
       "description": "enforce schema bump + release notes policy for schema changes",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_contracts_schema_change_release_notes",
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
@@ -546,12 +951,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce schema bump + release notes policy for schema changes"
     },
     {
       "area": "schema",
       "default_enabled": true,
       "description": "ensure no schema file exists outside catalog",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_contracts_schema_disk_files_listed",
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
@@ -584,12 +991,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure no schema file exists outside catalog"
     },
     {
       "area": "schema",
       "default_enabled": true,
       "description": "validate JSON goldens against declared schemas",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_contracts_schema_goldens",
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
@@ -622,12 +1031,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "validate JSON goldens against declared schemas"
     },
     {
       "area": "schema",
       "default_enabled": true,
       "description": "enforce schema id naming/version suffix policy",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_contracts_schema_id_naming",
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
@@ -660,12 +1071,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce schema id naming/version suffix policy"
     },
     {
       "area": "schema",
       "default_enabled": true,
       "description": "ensure schemas README stays in sync with schema catalog/files",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_contracts_schema_readme_updated",
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
@@ -698,12 +1111,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure schemas README stays in sync with schema catalog/files"
     },
     {
       "area": "schema",
       "default_enabled": true,
       "description": "validate sample payloads against declared schemas",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_contracts_schema_samples",
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
@@ -736,12 +1151,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "validate sample payloads against declared schemas"
     },
     {
       "area": "image",
       "default_enabled": true,
       "description": "enforce docker image size budget",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docker_image_size",
       "domain": "docker",
       "gate": "docker",
       "groups": [
@@ -774,12 +1191,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce docker image size budget"
     },
     {
       "area": "layout",
       "default_enabled": true,
       "description": "validate docker layout contracts",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docker_layout_contract",
       "domain": "docker",
       "gate": "docker",
       "groups": [
@@ -812,12 +1231,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "validate docker layout contracts"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid floating latest image tags",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docker_no_latest_tags",
       "domain": "docker",
       "gate": "docker",
       "groups": [
@@ -850,12 +1271,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid floating latest image tags"
     },
     {
       "area": "policy",
       "default_enabled": true,
       "description": "validate docker policy contracts",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docker_policy_contract",
       "domain": "docker",
       "gate": "docker",
       "groups": [
@@ -888,12 +1311,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "validate docker policy contracts"
     },
     {
       "area": "check",
       "default_enabled": true,
       "description": "forbid docs references to unknown check ids",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docs_check_id_drift",
       "domain": "docs",
       "gate": "docs",
       "groups": [
@@ -926,12 +1351,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid docs references to unknown check ids"
     },
     {
       "area": "command",
       "default_enabled": true,
       "description": "require command-group docs pages with examples section",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docs_command_group_pages",
       "domain": "docs",
       "gate": "docs",
       "groups": [
@@ -964,12 +1391,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require command-group docs pages with examples section"
     },
     {
       "area": "index",
       "default_enabled": true,
       "description": "validate docs/index.md covers all docs files",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docs_index_complete",
       "domain": "docs",
       "gate": "docs",
       "groups": [
@@ -1002,12 +1431,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "validate docs/index.md covers all docs files"
     },
     {
       "area": "links",
       "default_enabled": true,
       "description": "validate docs markdown link targets exist",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docs_links_exist",
       "domain": "docs",
       "gate": "docs",
       "groups": [
@@ -1040,12 +1471,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "validate docs markdown link targets exist"
     },
     {
       "area": "lint",
       "default_enabled": true,
       "description": "enforce docs style lint policy",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docs_lint_style",
       "domain": "docs",
       "gate": "docs",
       "groups": [
@@ -1078,12 +1511,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce docs style lint policy"
     },
     {
       "area": "migration",
       "default_enabled": true,
       "description": "forbid stale migration wording once removals are active",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docs_migration_not_stale",
       "domain": "docs",
       "gate": "docs",
       "groups": [
@@ -1116,12 +1551,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid stale migration wording once removals are active"
     },
     {
       "area": "nav",
       "default_enabled": true,
       "description": "validate mkdocs nav references existing docs pages",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docs_nav_references_exist",
       "domain": "docs",
       "gate": "docs",
       "groups": [
@@ -1154,12 +1591,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "validate mkdocs nav references existing docs pages"
     },
     {
       "area": "new",
       "default_enabled": true,
       "description": "require docs/tests updates when command registry changes",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docs_new_command_workflow",
       "domain": "docs",
       "gate": "docs",
       "groups": [
@@ -1192,12 +1631,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require docs/tests updates when command registry changes"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid legacy atlasctl invocation patterns in docs",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docs_no_legacy_cli_invocation",
       "domain": "docs",
       "gate": "docs",
       "groups": [
@@ -1230,12 +1671,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid legacy atlasctl invocation patterns in docs"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid runtime ops generated path references in docs",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docs_no_ops_generated_run_path_refs",
       "domain": "docs",
       "gate": "docs",
       "groups": [
@@ -1268,12 +1711,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid runtime ops generated path references in docs"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid orphan docs files outside allowed generated/meta paths",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docs_no_orphans",
       "domain": "docs",
       "gate": "docs",
       "groups": [
@@ -1306,12 +1751,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid orphan docs files outside allowed generated/meta paths"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid placeholder docs paths in release docs tree",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docs_no_placeholder_release_docs",
       "domain": "docs",
       "gate": "docs",
       "groups": [
@@ -1344,12 +1791,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid placeholder docs paths in release docs tree"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid scripts/ path references in docs",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docs_no_scripts_path_refs",
       "domain": "docs",
       "gate": "docs",
       "groups": [
@@ -1382,12 +1831,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid scripts/ path references in docs"
     },
     {
       "area": "ownership",
       "default_enabled": true,
       "description": "require docs ownership metadata for major docs areas",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docs_ownership_metadata",
       "domain": "docs",
       "gate": "docs",
       "groups": [
@@ -1420,12 +1871,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require docs ownership metadata for major docs areas"
     },
     {
       "area": "package",
       "default_enabled": true,
       "description": "forbid markdown files at package root except README",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docs_package_root_markdown",
       "domain": "docs",
       "gate": "docs",
       "groups": [
@@ -1458,12 +1911,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid markdown files at package root except README"
     },
     {
       "area": "registry",
       "default_enabled": true,
       "description": "forbid docs references to unknown atlasctl commands",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docs_registry_command_drift",
       "domain": "docs",
       "gate": "docs",
       "groups": [
@@ -1496,12 +1951,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid docs references to unknown atlasctl commands"
     },
     {
       "area": "registry",
       "default_enabled": true,
       "description": "require registry-generated command/check/suite index pages to be in sync",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docs_registry_indexes",
       "domain": "docs",
       "gate": "docs",
       "groups": [
@@ -1534,12 +1991,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require registry-generated command/check/suite index pages to be in sync"
     },
     {
       "area": "stable",
       "default_enabled": true,
       "description": "require stable commands to have examples in group docs",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_docs_stable_command_examples",
       "domain": "docs",
       "gate": "docs",
       "groups": [
@@ -1572,12 +2031,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require stable commands to have examples in group docs"
     },
     {
       "area": "file",
       "default_enabled": true,
       "description": "ensure package license file exists and is MIT",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_license_file_mit",
       "domain": "license",
       "gate": "license",
       "groups": [
@@ -1610,12 +2071,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure package license file exists and is MIT"
     },
     {
       "area": "spdx",
       "default_enabled": true,
       "description": "enforce SPDX policy for python source headers",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_license_spdx_policy",
       "domain": "license",
       "gate": "license",
       "groups": [
@@ -1648,12 +2111,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce SPDX policy for python source headers"
     },
     {
       "area": "statements",
       "default_enabled": true,
       "description": "ensure package docs contain only MIT-compatible license statements",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_license_statements_consistent",
       "domain": "license",
       "gate": "license",
       "groups": [
@@ -1686,12 +2151,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure package docs contain only MIT-compatible license statements"
     },
     {
       "area": "ci",
       "default_enabled": true,
       "description": "validate CI workflow entrypoints contract",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_ci_entrypoints_contract",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -1724,12 +2191,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "validate CI workflow entrypoints contract"
     },
     {
       "area": "ci",
       "default_enabled": true,
       "description": "require CI PR lane suites to exclude slow checks unless explicitly allowlisted",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_ci_pr_lane_fast_only",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -1762,12 +2231,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require CI PR lane suites to exclude slow checks unless explicitly allowlisted"
     },
     {
       "area": "ci",
       "default_enabled": true,
       "description": "require CI workflows to call make entrypoints and keep atlasctl delegation in makefiles",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_ci_workflows_make_only",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -1800,12 +2271,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require CI workflows to call make entrypoints and keep atlasctl delegation in makefiles"
     },
     {
       "area": "command",
       "default_enabled": true,
       "description": "enforce allowed direct recipe commands",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_command_allowlist",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -1838,12 +2311,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce allowed direct recipe commands"
     },
     {
       "area": "forbidden",
       "default_enabled": true,
       "description": "forbid direct forbidden paths in make recipes",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_forbidden_paths",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -1876,12 +2351,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid direct forbidden paths in make recipes"
     },
     {
       "area": "help",
       "default_enabled": true,
       "description": "ensure deterministic make help output",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_help_determinism",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -1914,12 +2391,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure deterministic make help output"
     },
     {
       "area": "index",
       "default_enabled": true,
       "description": "enforce makefiles index drift contract",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_index_drift_contract",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -1952,12 +2431,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce makefiles index drift contract"
     },
     {
       "area": "lane",
       "default_enabled": true,
       "description": "require lane reports to be emitted through atlasctl reporting command",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_lane_reports_via_atlasctl_reporting",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -1990,12 +2471,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require lane reports to be emitted through atlasctl reporting command"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid make recipes bypassing atlasctl without explicit allowlist",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_no_bypass_atlasctl",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -2028,12 +2511,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid make recipes bypassing atlasctl without explicit allowlist"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid direct artifact writes in make recipes",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_no_direct_artifact_writes",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -2066,12 +2551,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid direct artifact writes in make recipes"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid direct `bash ops/...` invocations in make recipes",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_no_direct_bash_ops",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -2104,12 +2591,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid direct `bash ops/...` invocations in make recipes"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid direct python script execution in make recipes",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_no_direct_python",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -2142,12 +2631,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid direct python script execution in make recipes"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid direct python invocations in make recipes",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_no_direct_python_only_atlasctl",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -2180,12 +2671,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid direct python invocations in make recipes"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "drift check for direct script execution in make recipes",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_no_direct_script_exec_drift",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -2218,12 +2711,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "drift check for direct script execution in make recipes"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid direct script path invocations in make recipes",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_no_direct_scripts_only_atlasctl",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -2256,12 +2751,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid direct script path invocations in make recipes"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid legacy make alias tokens (ATLAS_SCRIPTS/SCRIPTS/PY_RUN)",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_no_legacy_script_aliases",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -2294,12 +2791,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid legacy make alias tokens (ATLAS_SCRIPTS/SCRIPTS/PY_RUN)"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid orphan docs references for make targets and atlasctl commands",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_no_orphan_docs_refs",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -2332,12 +2831,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid orphan docs references for make targets and atlasctl commands"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid `python -m atlasctl.cli` in make recipes",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_no_python_module_invocation",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -2370,12 +2871,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid `python -m atlasctl.cli` in make recipes"
     },
     {
       "area": "public",
       "default_enabled": true,
       "description": "require every public make target to delegate to atlasctl",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_public_target_atlasctl_mapping",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -2408,12 +2911,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require every public make target to delegate to atlasctl"
     },
     {
       "area": "public",
       "default_enabled": true,
       "description": "require documented public make targets",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_public_targets_documented",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -2446,12 +2951,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require documented public make targets"
     },
     {
       "area": "root",
       "default_enabled": true,
       "description": "enforce root.mk LOC/target-count budget",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_root_budget",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -2484,12 +2991,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce root.mk LOC/target-count budget"
     },
     {
       "area": "scripts",
       "default_enabled": true,
       "description": "forbid scripts/ references in make recipes",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_scripts_refs",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -2522,12 +3031,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid scripts/ references in make recipes"
     },
     {
       "area": "target",
       "default_enabled": true,
       "description": "enforce make target boundary contracts",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_target_boundaries_enforced",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -2560,12 +3071,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce make target boundary contracts"
     },
     {
       "area": "target",
       "default_enabled": true,
       "description": "require make target ownership coverage",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_target_ownership_complete",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -2598,12 +3111,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require make target ownership coverage"
     },
     {
       "area": "workflows",
       "default_enabled": true,
       "description": "require workflow suite invocations to reference declared suite names",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_workflows_reference_known_suites",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -2636,12 +3151,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require workflow suite invocations to reference declared suite names"
     },
     {
       "area": "wrapper",
       "default_enabled": true,
       "description": "enforce make wrapper purity for canonical makefiles",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_wrapper_purity",
       "domain": "make",
       "gate": "make",
       "groups": [
@@ -2674,12 +3191,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce make wrapper purity for canonical makefiles"
     },
     {
       "area": "committed",
       "default_enabled": true,
       "description": "validate deterministic committed generated assets",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_committed_generated_hygiene",
       "domain": "ops",
       "gate": "ops",
       "groups": [
@@ -2714,12 +3233,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "validate deterministic committed generated assets"
     },
     {
       "area": "manifests",
       "default_enabled": true,
       "description": "validate ops manifests against atlas.ops.manifest.v1 schema",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_manifests_schema",
       "domain": "ops",
       "gate": "ops",
       "groups": [
@@ -2754,12 +3275,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "validate ops manifests against atlas.ops.manifest.v1 schema"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid tracked files in generated ops dirs",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_no_tracked_generated",
       "domain": "ops",
       "gate": "ops",
       "groups": [
@@ -2794,12 +3317,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid tracked files in generated ops dirs"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid tracked timestamped paths",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_no_tracked_timestamps",
       "domain": "ops",
       "gate": "ops",
       "groups": [
@@ -2834,12 +3359,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid tracked timestamped paths"
     },
     {
       "area": "adjective",
       "default_enabled": true,
       "description": "enforce adjective allowlist ratchet budget",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_adjective_allowlist_budget",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -2874,12 +3401,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce adjective allowlist ratchet budget"
     },
     {
       "area": "adjectives",
       "default_enabled": true,
       "description": "forbid forbidden adjectives across tracked files",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_adjectives_repo_clean",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -2914,12 +3443,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid forbidden adjectives across tracked files"
     },
     {
       "area": "budget",
       "default_enabled": true,
       "description": "require budget loosening approvals to be time bounded",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_budget_approval_time_bounded",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -2954,12 +3485,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require budget loosening approvals to be time bounded"
     },
     {
       "area": "budget",
       "default_enabled": true,
       "description": "require explicit approval for any budget relaxation",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_budget_relaxation_requires_approval",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -2994,12 +3527,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require explicit approval for any budget relaxation"
     },
     {
       "area": "bypass",
       "default_enabled": true,
       "description": "require bypass entries to include owner, issue id, and expiry metadata",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_all_entries_have_owner_issue_expiry",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3034,12 +3569,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require bypass entries to include owner, issue id, and expiry metadata"
     },
     {
       "area": "bypass",
       "default_enabled": true,
       "description": "enforce ratcheted bypass entry count budget",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_budget",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3074,12 +3611,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce ratcheted bypass entry count budget"
     },
     {
       "area": "bypass",
       "default_enabled": true,
       "description": "enforce migration gate: bypass count must not increase",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_count_nonincreasing",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3114,12 +3653,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce migration gate: bypass count must not increase"
     },
     {
       "area": "bypass",
       "default_enabled": true,
       "description": "enforce bypass expiry horizon limit",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_expiry_max_horizon",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3154,12 +3695,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce bypass expiry horizon limit"
     },
     {
       "area": "bypass",
       "default_enabled": true,
       "description": "forbid expired bypass entries",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_expiry_not_past",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3194,12 +3737,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid expired bypass entries"
     },
     {
       "area": "bypass",
       "default_enabled": true,
       "description": "ensure bypass files are scoped under configs/policy",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_files_scoped",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3234,12 +3779,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure bypass files are scoped under configs/policy"
     },
     {
       "area": "bypass",
       "default_enabled": true,
       "description": "require unique bypass IDs across policy files",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_ids_unique",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3274,12 +3821,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require unique bypass IDs across policy files"
     },
     {
       "area": "bypass",
       "default_enabled": true,
       "description": "enforce bypass issue id format",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_issue_id_format",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3314,12 +3863,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce bypass issue id format"
     },
     {
       "area": "bypass",
       "default_enabled": true,
       "description": "forbid blank bypass justifications",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_no_blank_justifications",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3354,12 +3905,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid blank bypass justifications"
     },
     {
       "area": "bypass",
       "default_enabled": true,
       "description": "forbid unregistered new bypass files under configs/policy",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_no_new_files",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3394,12 +3947,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid unregistered new bypass files under configs/policy"
     },
     {
       "area": "bypass",
       "default_enabled": true,
       "description": "ensure bypass owners resolve to owner registry ids",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_owner_in_owners_registry",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3434,12 +3989,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure bypass owners resolve to owner registry ids"
     },
     {
       "area": "bypass",
       "default_enabled": true,
       "description": "require bypass policy/rule names to be known",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_policy_name_known",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3474,12 +4031,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require bypass policy/rule names to be known"
     },
     {
       "area": "bypass",
       "default_enabled": true,
       "description": "require configs/policy README to list every bypass source file",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_readme_complete",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3514,12 +4073,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require configs/policy README to list every bypass source file"
     },
     {
       "area": "bypass",
       "default_enabled": true,
       "description": "require bypass source list in configs/policy README to be sorted",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_readme_sorted",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3554,12 +4115,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require bypass source list in configs/policy README to be sorted"
     },
     {
       "area": "bypass",
       "default_enabled": true,
       "description": "require bypass removal milestone SSOT file",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_removal_milestones_defined",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3594,12 +4157,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require bypass removal milestone SSOT file"
     },
     {
       "area": "bypass",
       "default_enabled": true,
       "description": "require removal plans for bypass entries",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_removal_plan_required",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3634,12 +4199,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require removal plans for bypass entries"
     },
     {
       "area": "bypass",
       "default_enabled": true,
       "description": "validate bypass JSON sources against schemas",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_schema_valid",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3674,12 +4241,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "validate bypass JSON sources against schemas"
     },
     {
       "area": "bypass",
       "default_enabled": true,
       "description": "enforce valid bypass scope",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_scope_valid",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3714,12 +4283,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce valid bypass scope"
     },
     {
       "area": "bypass",
       "default_enabled": true,
       "description": "emit bypass usage heatmap report",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_usage_heatmap",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3754,12 +4325,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "emit bypass usage heatmap report"
     },
     {
       "area": "dependency",
       "default_enabled": true,
       "description": "require dependency exceptions to include remove_by and issue_id",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_dependency_exceptions_remove_by_issue",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3794,12 +4367,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require dependency exceptions to include remove_by and issue_id"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid inline bypass metadata in source code",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_no_inline_bypass_entries",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3834,12 +4409,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid inline bypass metadata in source code"
     },
     {
       "area": "shell",
       "default_enabled": true,
       "description": "require inline owner/why comments for network-fetch shell allowlist entries",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_shell_network_fetch_allowlist_inline_meta",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3876,12 +4453,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require inline owner/why comments for network-fetch shell allowlist entries"
     },
     {
       "area": "shell",
       "default_enabled": true,
       "description": "require inline owner/why comments for shell probe allowlist entries",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_shell_probes_allowlist_inline_meta",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3916,12 +4495,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require inline owner/why comments for shell probe allowlist entries"
     },
     {
       "area": "tests",
       "default_enabled": true,
       "description": "require explicit marker when tests depend on bypass files",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_tests_bypass_dependency_marked",
       "domain": "policies",
       "gate": "policies",
       "groups": [
@@ -3956,12 +4537,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require explicit marker when tests depend on bypass files"
     },
     {
       "area": "lock",
       "default_enabled": true,
       "description": "validate python lock format",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_python_lock_lockfile",
       "domain": "python",
       "gate": "python",
       "groups": [
@@ -3994,12 +4577,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "validate python lock format"
     },
     {
       "area": "migration",
       "default_enabled": true,
       "description": "fail on expired python migration exceptions",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_python_migration_exceptions_expiry",
       "domain": "python",
       "gate": "python",
       "groups": [
@@ -4032,12 +4617,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "fail on expired python migration exceptions"
     },
     {
       "area": "budget",
       "default_enabled": true,
       "description": "forbid budget loosening without explicit approval marker",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_budget_drift_approval",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4070,12 +4657,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid budget loosening without explicit approval marker"
     },
     {
       "area": "canonical",
       "default_enabled": true,
       "description": "forbid duplicate top-level concept packages for registry/runner/contracts/output",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_canonical_concept_homes",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4108,12 +4697,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid duplicate top-level concept packages for registry/runner/contracts/output"
     },
     {
       "area": "check",
       "default_enabled": true,
       "description": "forbid direct CLI imports from check implementation files",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_check_impl_no_cli_imports",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4146,12 +4737,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid direct CLI imports from check implementation files"
     },
     {
       "area": "check",
       "default_enabled": true,
       "description": "ensure each registered check has test or golden coverage marker",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_check_test_coverage",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4184,12 +4777,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure each registered check has test or golden coverage marker"
     },
     {
       "area": "checks",
       "default_enabled": true,
       "description": "require check implementations under atlasctl/checks canonical tree",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_checks_canonical_location",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4222,12 +4817,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require check implementations under atlasctl/checks canonical tree"
     },
     {
       "area": "checks",
       "default_enabled": true,
       "description": "require canonical check domain tree (repo_shape/makefiles/ops/docs/observability/artifacts)",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_checks_domain_split",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4260,12 +4857,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require canonical check domain tree (repo_shape/makefiles/ops/docs/observability/artifacts)"
     },
     {
       "area": "checks",
       "default_enabled": true,
       "description": "enforce checks module import boundaries",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_checks_import_lint",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4298,12 +4897,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce checks module import boundaries"
     },
     {
       "area": "checks",
       "default_enabled": true,
       "description": "forbid checks modules from importing cli layer",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_checks_no_cli_imports",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4336,12 +4937,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid checks modules from importing cli layer"
     },
     {
       "area": "checks",
       "default_enabled": true,
       "description": "enforce checks root contract (single python root file and module cap)",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_checks_root_contract",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4374,12 +4977,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce checks root contract (single python root file and module cap)"
     },
     {
       "area": "checks",
       "default_enabled": true,
       "description": "enforce checks tree depth, module-density budget, and naming hygiene",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_checks_tree_policy",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4412,12 +5017,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce checks tree depth, module-density budget, and naming hygiene"
     },
     {
       "area": "ci",
       "default_enabled": true,
       "description": "enforce workflow artifact upload roots and always-on policy",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_ci_artifact_upload_policy",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4450,12 +5057,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce workflow artifact upload roots and always-on policy"
     },
     {
       "area": "ci",
       "default_enabled": true,
       "description": "enforce workflow command policy (make/atlasctl wrappers only)",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_ci_workflow_policy",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4488,12 +5097,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce workflow command policy (make/atlasctl wrappers only)"
     },
     {
       "area": "cli",
       "default_enabled": true,
       "description": "restrict direct argparse parser construction to canonical parser modules",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_cli_argparse_policy",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4526,12 +5137,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "restrict direct argparse parser construction to canonical parser modules"
     },
     {
       "area": "cli",
       "default_enabled": true,
       "description": "enforce canonical cli parser/dispatch/output path",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_cli_canonical_paths",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4564,12 +5177,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce canonical cli parser/dispatch/output path"
     },
     {
       "area": "cli",
       "default_enabled": true,
       "description": "restrict cli imports to commands/core and approved runtime shims",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_cli_import_scope",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4602,12 +5217,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "restrict cli imports to commands/core and approved runtime shims"
     },
     {
       "area": "cold",
       "default_enabled": true,
       "description": "enforce cold import time budget for atlasctl package",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_cold_import_budget",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4640,12 +5257,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce cold import time budget for atlasctl package"
     },
     {
       "area": "command",
       "default_enabled": true,
       "description": "enforce command alias/name budget",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_command_alias_budget",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4678,12 +5297,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce command alias/name budget"
     },
     {
       "area": "command",
       "default_enabled": true,
       "description": "ensure every command group maps to a valid owner id",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_command_group_owners",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4716,12 +5337,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure every command group maps to a valid owner id"
     },
     {
       "area": "command",
       "default_enabled": true,
       "description": "ensure command metadata includes touches/tools/effect declarations",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_command_metadata_contract",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4754,12 +5377,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure command metadata includes touches/tools/effect declarations"
     },
     {
       "area": "command",
       "default_enabled": true,
       "description": "enforce command.py modules as CLI entry shims only",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_command_module_cli_intent",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4792,12 +5417,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce command.py modules as CLI entry shims only"
     },
     {
       "area": "command",
       "default_enabled": true,
       "description": "ensure command owners are documented",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_command_ownership_docs",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4830,12 +5457,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure command owners are documented"
     },
     {
       "area": "command",
       "default_enabled": true,
       "description": "enforce command-invoked shell scripts are registered with owner and valid naming",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_command_scripts_registry",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4868,12 +5497,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce command-invoked shell scripts are registered with owner and valid naming"
     },
     {
       "area": "command",
       "default_enabled": true,
       "description": "ensure each command has explicit test coverage marker",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_command_test_coverage",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4906,12 +5537,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure each command has explicit test coverage marker"
     },
     {
       "area": "commands",
       "default_enabled": true,
       "description": "check command help/docs drift",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_commands_help_docs_drift",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4944,12 +5577,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "check command help/docs drift"
     },
     {
       "area": "commands",
       "default_enabled": true,
       "description": "enforce command module import boundaries",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_commands_import_lint",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -4982,12 +5617,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce command module import boundaries"
     },
     {
       "area": "commands",
       "default_enabled": true,
       "description": "enforce strict command surface compatibility against commands golden",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_commands_surface_stability",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5020,12 +5657,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce strict command surface compatibility against commands golden"
     },
     {
       "area": "compileall",
       "default_enabled": true,
       "description": "ensure atlasctl source compiles with compileall",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_compileall_gate",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5058,12 +5697,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure atlasctl source compiles with compileall"
     },
     {
       "area": "console",
       "default_enabled": true,
       "description": "ensure atlasctl console script entry exists and points to callable target",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_console_script_entry",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5096,12 +5737,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure atlasctl console script entry exists and points to callable target"
     },
     {
       "area": "contract",
       "default_enabled": true,
       "description": "enforce contracts/core-contracts import boundaries",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_contract_import_boundaries",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5134,12 +5777,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce contracts/core-contracts import boundaries"
     },
     {
       "area": "contracts",
       "default_enabled": true,
       "description": "enforce contracts namespace for schema and validation modules only",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_contracts_namespace_purpose",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5172,12 +5817,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce contracts namespace for schema and validation modules only"
     },
     {
       "area": "core",
       "default_enabled": true,
       "description": "forbid subprocess.run(['bash'|'sh', ...]) in core logic",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_core_no_bash_subprocess",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5210,12 +5857,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid subprocess.run(['bash'|'sh', ...]) in core logic"
     },
     {
       "area": "core",
       "default_enabled": true,
       "description": "forbid core modules from importing command/cli layers",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_core_no_command_imports",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5248,12 +5897,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid core modules from importing command/cli layers"
     },
     {
       "area": "dead",
       "default_enabled": true,
       "description": "enforce dead module candidates are explicitly allowlisted",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_dead_module_reachability",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5286,12 +5937,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce dead module candidates are explicitly allowlisted"
     },
     {
       "area": "dead",
       "default_enabled": true,
       "description": "ensure dead modules analyzer runs and returns canonical payload",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_dead_modules",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5324,12 +5977,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure dead modules analyzer runs and returns canonical payload"
     },
     {
       "area": "dependency",
       "default_enabled": true,
       "description": "ensure pyproject dependency declarations match imports",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_dependency_declarations",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5362,12 +6017,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure pyproject dependency declarations match imports"
     },
     {
       "area": "dependency",
       "default_enabled": true,
       "description": "ensure dependency gate make targets exist",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_dependency_gate_targets",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5400,12 +6057,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure dependency gate make targets exist"
     },
     {
       "area": "dependency",
       "default_enabled": true,
       "description": "ensure each dependency has owner and justification",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_dependency_owner_justification",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5438,12 +6097,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure each dependency has owner and justification"
     },
     {
       "area": "deps",
       "default_enabled": true,
       "description": "ensure atlasctl deps command surface is runnable",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_deps_command_surface",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5476,12 +6137,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure atlasctl deps command surface is runnable"
     },
     {
       "area": "deps",
       "default_enabled": true,
       "description": "ensure docs/deps.md matches chosen dependency workflow",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_deps_workflow_doc",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5514,12 +6177,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure docs/deps.md matches chosen dependency workflow"
     },
     {
       "area": "dir",
       "default_enabled": true,
       "description": "enforce per-directory entries budget in atlasctl src/tests",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_dir_budget_entries",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5552,12 +6217,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce per-directory entries budget in atlasctl src/tests"
     },
     {
       "area": "dir",
       "default_enabled": true,
       "description": "ensure budget exceptions are documented",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_dir_budget_exceptions_documented",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5590,12 +6257,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure budget exceptions are documented"
     },
     {
       "area": "dir",
       "default_enabled": true,
       "description": "ensure budget exceptions are sorted deterministically",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_dir_budget_exceptions_sorted",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5628,12 +6297,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure budget exceptions are sorted deterministically"
     },
     {
       "area": "dir",
       "default_enabled": true,
       "description": "enforce per-directory total LOC budget",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_dir_budget_loc",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5666,12 +6337,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce per-directory total LOC budget"
     },
     {
       "area": "dir",
       "default_enabled": true,
       "description": "enforce per-directory python module count budget",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_dir_budget_modules",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5704,12 +6377,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce per-directory python module count budget"
     },
     {
       "area": "dir",
       "default_enabled": true,
       "description": "enforce per-directory python file count budget",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_dir_budget_py_files",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5742,12 +6417,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce per-directory python file count budget"
     },
     {
       "area": "dir",
       "default_enabled": true,
       "description": "enforce per-directory .py file budget in atlasctl src/tests (excluding __init__.py)",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_dir_budget_py_scope",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5780,12 +6457,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce per-directory .py file budget in atlasctl src/tests (excluding __init__.py)"
     },
     {
       "area": "dir",
       "default_enabled": true,
       "description": "enforce per-directory shell file count budget",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_dir_budget_shell_files",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5818,12 +6497,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce per-directory shell file count budget"
     },
     {
       "area": "dir",
       "default_enabled": true,
       "description": "forbid critical directory file/module count drift above baseline",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_dir_count_trend_gate",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5856,12 +6537,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid critical directory file/module count drift above baseline"
     },
     {
       "area": "docs",
       "default_enabled": true,
       "description": "disallow docs refs to ops generated runtime paths",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_docs_no_ops_generated_refs",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5894,12 +6577,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "disallow docs refs to ops generated runtime paths"
     },
     {
       "area": "duplicate",
       "default_enabled": true,
       "description": "forbid duplicate contract assertions inside one test module",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_duplicate_contract_assertions",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5932,12 +6617,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid duplicate contract assertions inside one test module"
     },
     {
       "area": "duplicate",
       "default_enabled": true,
       "description": "forbid duplicate script stem names",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_duplicate_script_names",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -5970,12 +6657,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid duplicate script stem names"
     },
     {
       "area": "effect",
       "default_enabled": true,
       "description": "forbid direct subprocess/fs/env/network effects outside core boundaries",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_effect_boundaries",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6008,12 +6697,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid direct subprocess/fs/env/network effects outside core boundaries"
     },
     {
       "area": "effect",
       "default_enabled": true,
       "description": "enforce explicit sorted effect boundary exceptions with reasons",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_effect_boundary_exceptions_policy",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6046,12 +6737,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce explicit sorted effect boundary exceptions with reasons"
     },
     {
       "area": "env",
       "default_enabled": true,
       "description": "ensure docs/env.md exists and lists canonical env vars",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_env_docs_present",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6084,12 +6777,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure docs/env.md exists and lists canonical env vars"
     },
     {
       "area": "file",
       "default_enabled": true,
       "description": "enforce complexity heuristic budget in core/cli",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_file_complexity_budget",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6122,12 +6817,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce complexity heuristic budget in core/cli"
     },
     {
       "area": "file",
       "default_enabled": true,
       "description": "enforce python import count budget per file",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_file_import_budget",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6160,12 +6857,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce python import count budget per file"
     },
     {
       "area": "file",
       "default_enabled": true,
       "description": "enforce public symbol budget per module",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_file_public_symbol_budget",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6198,12 +6897,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce public symbol budget per module"
     },
     {
       "area": "folder",
       "default_enabled": true,
       "description": "require intent marker for checks directories",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_folder_intent_contract",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6236,12 +6937,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require intent marker for checks directories"
     },
     {
       "area": "forbidden",
       "default_enabled": true,
       "description": "forbid banned wording across tracked repository files",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_forbidden_adjectives",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6274,12 +6977,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid banned wording across tracked repository files"
     },
     {
       "area": "forbidden",
       "default_enabled": true,
       "description": "forbid junk files at repository root",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_forbidden_root_files",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6312,12 +7017,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid junk files at repository root"
     },
     {
       "area": "forbidden",
       "default_enabled": true,
       "description": "forbid legacy top-level root names",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_forbidden_root_names",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6350,12 +7057,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid legacy top-level root names"
     },
     {
       "area": "forbidden",
       "default_enabled": true,
       "description": "forbid top-level forbidden directories",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_forbidden_top_dirs",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6388,12 +7097,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid top-level forbidden directories"
     },
     {
       "area": "import",
       "default_enabled": true,
       "description": "ensure atlasctl package imports in minimal environment",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_import_smoke",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6426,12 +7137,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure atlasctl package imports in minimal environment"
     },
     {
       "area": "internal",
       "default_enabled": true,
       "description": "ensure unstable/internal commands are not exposed in public docs",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_internal_commands_not_public",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6464,12 +7177,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure unstable/internal commands are not exposed in public docs"
     },
     {
       "area": "internal",
       "default_enabled": true,
       "description": "forbid atlasctl.internal imports outside internal namespace",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_internal_import_boundaries",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6502,12 +7217,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid atlasctl.internal imports outside internal namespace"
     },
     {
       "area": "internal",
       "default_enabled": true,
       "description": "prefer stdlib-only internal utility modules",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_internal_utils_stdlib_only",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6540,12 +7257,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "prefer stdlib-only internal utility modules"
     },
     {
       "area": "json",
       "default_enabled": true,
       "description": "forbid conflicting JSON goldens for the same schema surface",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_json_golden_conflicts",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6578,12 +7297,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid conflicting JSON goldens for the same schema surface"
     },
     {
       "area": "json",
       "default_enabled": true,
       "description": "require schema validation in JSON golden tests",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_json_goldens_validate_schema",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6616,12 +7337,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require schema validation in JSON golden tests"
     },
     {
       "area": "layout",
       "default_enabled": true,
       "description": "forbid deprecated layout registry aliases",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_layout_domain_alias_cleanup",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6654,12 +7377,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid deprecated layout registry aliases"
     },
     {
       "area": "layout",
       "default_enabled": true,
       "description": "ensure each layout check domain includes a README",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_layout_domain_readmes",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6692,12 +7417,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure each layout check domain includes a README"
     },
     {
       "area": "layout",
       "default_enabled": true,
       "description": "forbid legacy imports in checks/layout modules",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_layout_no_legacy_imports",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6730,12 +7457,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid legacy imports in checks/layout modules"
     },
     {
       "area": "layout",
       "default_enabled": true,
       "description": "enforce no-shadow config policy",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_layout_no_shadow",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6768,12 +7497,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce no-shadow config policy"
     },
     {
       "area": "legacy",
       "default_enabled": true,
       "description": "require atlasctl legacy package to be absent",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_legacy_package_absent",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6806,12 +7537,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require atlasctl legacy package to be absent"
     },
     {
       "area": "legacy",
       "default_enabled": true,
       "description": "require zero importers of removed atlasctl legacy namespace",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_legacy_zero_importers",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6844,12 +7577,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require zero importers of removed atlasctl legacy namespace"
     },
     {
       "area": "managed",
       "default_enabled": true,
       "description": "enforce managed write roots under artifacts and reject out-of-root writes",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_managed_artifact_write_roots",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6882,12 +7617,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce managed write roots under artifacts and reject out-of-root writes"
     },
     {
       "area": "migration",
       "default_enabled": true,
       "description": "forbid migration progress regression (no new legacy patterns)",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_migration_progress_regression",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6920,12 +7657,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid migration progress regression (no new legacy patterns)"
     },
     {
       "area": "modern",
       "default_enabled": true,
       "description": "forbid modern modules from importing atlasctl.legacy",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_modern_no_legacy_imports",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6958,12 +7697,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid modern modules from importing atlasctl.legacy"
     },
     {
       "area": "modern",
       "default_enabled": true,
       "description": "forbid modern modules from importing atlasctl.legacy.obs",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_modern_no_legacy_obs_imports",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -6996,12 +7737,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid modern modules from importing atlasctl.legacy.obs"
     },
     {
       "area": "module",
       "default_enabled": true,
       "description": "enforce module count budget per top-level atlasctl domain",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_module_budget_domains",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7034,12 +7777,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce module count budget per top-level atlasctl domain"
     },
     {
       "area": "module",
       "default_enabled": true,
       "description": "enforce module size budget",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_module_size",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7072,12 +7817,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce module size budget"
     },
     {
       "area": "modules",
       "default_enabled": true,
       "description": "ensure repo check modules are imported and reachable via registry",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_modules_reachability",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7110,12 +7857,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure repo check modules are imported and reachable via registry"
     },
     {
       "area": "network",
       "default_enabled": true,
       "description": "enforce network-forbidden-by-default command policy",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_network_default_deny",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7150,12 +7899,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce network-forbidden-by-default command policy"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid ad-hoc python files outside package boundaries",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_adhoc_python",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7188,12 +7939,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid ad-hoc python files outside package boundaries"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid deprecated core/integration namespace",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_core_integration_dir",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7226,12 +7979,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid deprecated core/integration namespace"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid deprecated command surfaces before 0.1 release",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_deprecated_commands",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7264,12 +8019,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid deprecated command surfaces before 0.1 release"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid deprecated atlasctl/check report obs directories",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_deprecated_namespace_dirs",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7302,12 +8059,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid deprecated atlasctl/check report obs directories"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid imports from atlasctl.check/report/obs namespaces",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_deprecated_namespaces",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7340,12 +8099,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid imports from atlasctl.check/report/obs namespaces"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid direct bash script calls in docs/makefiles",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_direct_bash_invocations",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7378,12 +8139,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid direct bash script calls in docs/makefiles"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid direct python script calls in docs/makefiles",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_direct_python_invocations",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7416,12 +8179,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid direct python script calls in docs/makefiles"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid direct scripts/ or ops/ invocations in GitHub workflows",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_direct_script_runs",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7454,12 +8219,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid direct scripts/ or ops/ invocations in GitHub workflows"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid duplicate command implementation patterns",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_duplicate_command_impl_patterns",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7492,12 +8259,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid duplicate command implementation patterns"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "ensure command names are unique",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_duplicate_command_names",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7530,12 +8299,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure command names are unique"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid empty directories and pointless single-child nesting under src/atlasctl",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_empty_dirs_or_pointless_nests",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7568,12 +8339,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid empty directories and pointless single-child nesting under src/atlasctl"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid empty non-legacy packages without README",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_empty_packages",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7606,12 +8379,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid empty non-legacy packages without README"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid executable python outside package boundaries",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_exec_python_outside_packages",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7644,12 +8419,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid executable python outside package boundaries"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid legacy root path references in tracked text surfaces",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_forbidden_paths",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7682,12 +8459,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid legacy root path references in tracked text surfaces"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid command names containing legacy",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_legacy_command_names",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7720,12 +8499,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid command names containing legacy"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid legacy module paths in atlasctl src tree",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_legacy_module_paths",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7758,12 +8539,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid legacy module paths in atlasctl src tree"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid nested package segments with same name",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_nested_same_name_packages",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7796,12 +8579,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid nested package segments with same name"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid placeholder generated dirs",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_ops_generated_placeholder",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7834,12 +8619,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid placeholder generated dirs"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid Path.cwd usage outside core.runtime.repo_root.py",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_path_cwd_usage",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7872,12 +8659,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid Path.cwd usage outside core.runtime.repo_root.py"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid placeholder-like module filenames in modern code",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_placeholder_module_names",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7910,12 +8699,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid placeholder-like module filenames in modern code"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid legacy root scripts dir",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_scripts_dir",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7948,12 +8739,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid legacy root scripts dir"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "ensure ops/_generated has no tracked files",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_tracked_ops_generated",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -7986,12 +8779,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure ops/_generated has no tracked files"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid timestamp-like tracked paths",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_tracked_timestamp_paths",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8024,12 +8819,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid timestamp-like tracked paths"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid undocumented commands in public help surface",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_undocumented_help_commands",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8062,12 +8859,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid undocumented commands in public help surface"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid wildcard imports/exports outside public surface",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_wildcard_exports",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8100,12 +8899,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid wildcard imports/exports outside public surface"
     },
     {
       "area": "no",
       "default_enabled": true,
       "description": "forbid xtask references",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_xtask_refs",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8138,12 +8939,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid xtask references"
     },
     {
       "area": "ops",
       "default_enabled": true,
       "description": "enforce immutability of ops examples",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_ops_examples_immutable",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8176,12 +8979,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce immutability of ops examples"
     },
     {
       "area": "optional",
       "default_enabled": true,
       "description": "ensure required pyproject optional-dependency groups exist and are non-empty",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_optional_dependency_groups",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8214,12 +9019,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure required pyproject optional-dependency groups exist and are non-empty"
     },
     {
       "area": "optional",
       "default_enabled": true,
       "description": "forbid optional dependency usage without explicit allowlist gate",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_optional_dependency_usage_gates",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8252,12 +9059,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid optional dependency usage without explicit allowlist gate"
     },
     {
       "area": "output",
       "default_enabled": true,
       "description": "enforce output formatting stability across OS",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_output_format_stability",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8290,12 +9099,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce output formatting stability across OS"
     },
     {
       "area": "package",
       "default_enabled": true,
       "description": "require each non-legacy package to contain a module or README",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_package_has_module_or_readme",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8328,12 +9139,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require each non-legacy package to contain a module or README"
     },
     {
       "area": "package",
       "default_enabled": true,
       "description": "enforce maximum atlasctl package nesting depth",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_package_max_depth",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8366,12 +9179,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce maximum atlasctl package nesting depth"
     },
     {
       "area": "packages",
       "default_enabled": true,
       "description": "require atlasctl package root to contain only allowed files and directories",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_packages_atlasctl_root_shape",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8404,12 +9219,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require atlasctl package root to contain only allowed files and directories"
     },
     {
       "area": "packaging",
       "default_enabled": true,
       "description": "ensure pyproject packaging metadata is complete (classifiers and project URLs)",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_packaging_metadata_completeness",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8442,12 +9259,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure pyproject packaging metadata is complete (classifiers and project URLs)"
     },
     {
       "area": "public",
       "default_enabled": true,
       "description": "require canonical PUBLIC_API.md documentation file",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_public_api_doc_exists",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8480,12 +9299,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require canonical PUBLIC_API.md documentation file"
     },
     {
       "area": "public",
       "default_enabled": true,
       "description": "enforce docs/PUBLIC_API.md coverage for __all__ exports",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_public_api_exports",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8518,12 +9339,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce docs/PUBLIC_API.md coverage for __all__ exports"
     },
     {
       "area": "public",
       "default_enabled": true,
       "description": "ensure public commands are listed in docs/commands/index.md",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_public_commands_docs_index",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8556,12 +9379,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure public commands are listed in docs/commands/index.md"
     },
     {
       "area": "pyproject",
       "default_enabled": true,
       "description": "forbid dead/unknown pyproject tool keys",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_pyproject_minimalism",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8594,12 +9419,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid dead/unknown pyproject tool keys"
     },
     {
       "area": "pyproject",
       "default_enabled": true,
       "description": "forbid duplicate tool config files beside pyproject",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_pyproject_no_duplicate_tool_config",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8632,12 +9459,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid duplicate tool config files beside pyproject"
     },
     {
       "area": "pyproject",
       "default_enabled": true,
       "description": "ensure pyproject contains required project and tool config blocks",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_pyproject_required_blocks",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8670,12 +9499,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure pyproject contains required project and tool config blocks"
     },
     {
       "area": "python",
       "default_enabled": true,
       "description": "ensure python -m atlasctl --help works",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_python_module_help",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8708,12 +9539,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure python -m atlasctl --help works"
     },
     {
       "area": "python",
       "default_enabled": true,
       "description": "enforce pyproject requires-python and CI python version alignment",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_python_requires_version_and_ci",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8746,12 +9579,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce pyproject requires-python and CI python version alignment"
     },
     {
       "area": "registry",
       "default_enabled": true,
       "description": "forbid registry modules from importing command/cli/suite/check runtime modules",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_registry_definition_boundary",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8784,12 +9619,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid registry modules from importing command/cli/suite/check runtime modules"
     },
     {
       "area": "registry",
       "default_enabled": true,
       "description": "enforce registry-only command/check registration points",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_registry_single_source",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8822,12 +9659,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce registry-only command/check registration points"
     },
     {
       "area": "required",
       "default_enabled": true,
       "description": "enforce package root minimalism and src no-symlink target shape",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_required_target_shape",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8860,12 +9699,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce package root minimalism and src no-symlink target shape"
     },
     {
       "area": "requirements",
       "default_enabled": true,
       "description": "ensure only route-B requirements artifacts exist",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_requirements_artifact_policy",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8898,12 +9739,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure only route-B requirements artifacts exist"
     },
     {
       "area": "requirements",
       "default_enabled": true,
       "description": "ensure requirements files match pyproject dev dependency declarations",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_requirements_sync",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8936,12 +9779,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure requirements files match pyproject dev dependency declarations"
     },
     {
       "area": "root",
       "default_enabled": true,
       "description": "verify deterministic root output across two make root runs",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_root_determinism",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -8974,12 +9819,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "verify deterministic root output across two make root runs"
     },
     {
       "area": "root",
       "default_enabled": true,
       "description": "enforce repository root shape contract from root_whitelist.json",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_root_shape",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9012,12 +9859,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce repository root shape contract from root_whitelist.json"
     },
     {
       "area": "runcontext",
       "default_enabled": true,
       "description": "ensure RunContext is built only in core/context.py",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_runcontext_single_builder",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9050,12 +9899,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure RunContext is built only in core/context.py"
     },
     {
       "area": "script",
       "default_enabled": true,
       "description": "validate script help contract coverage",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_script_help_coverage",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9088,12 +9939,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "validate script help contract coverage"
     },
     {
       "area": "script",
       "default_enabled": true,
       "description": "validate script ownership coverage",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_script_ownership_coverage",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9126,12 +9979,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "validate script ownership coverage"
     },
     {
       "area": "shell",
       "default_enabled": true,
       "description": "require shell directory README and policy docs",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_shell_docs_present",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9164,12 +10019,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require shell directory README and policy docs"
     },
     {
       "area": "shell",
       "default_enabled": true,
       "description": "forbid direct shell subprocess invocations outside core.exec",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_shell_invocation_boundary",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9202,12 +10059,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid direct shell subprocess invocations outside core.exec"
     },
     {
       "area": "shell",
       "default_enabled": true,
       "description": "forbid shell scripts under atlasctl python package tree",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_shell_location_policy",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9240,12 +10099,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid shell scripts under atlasctl python package tree"
     },
     {
       "area": "shell",
       "default_enabled": true,
       "description": "forbid direct python invocation in shell scripts",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_shell_no_direct_python",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9278,12 +10139,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid direct python invocation in shell scripts"
     },
     {
       "area": "shell",
       "default_enabled": true,
       "description": "forbid direct curl/wget usage in shell scripts",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_shell_no_network_fetch",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9318,12 +10181,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid direct curl/wget usage in shell scripts"
     },
     {
       "area": "shell",
       "default_enabled": true,
       "description": "forbid direct file writes in layout shell checks",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_shell_readonly_checks",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9356,12 +10221,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid direct file writes in layout shell checks"
     },
     {
       "area": "shell",
       "default_enabled": true,
       "description": "cap total shell script count in repository",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_shell_script_budget",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9394,12 +10261,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "cap total shell script count in repository"
     },
     {
       "area": "shell",
       "default_enabled": true,
       "description": "require shell header and strict mode",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_shell_strict_mode",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9432,12 +10301,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require shell header and strict mode"
     },
     {
       "area": "single",
       "default_enabled": true,
       "description": "enforce a single canonical registry.py module",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_single_registry_module",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9470,12 +10341,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce a single canonical registry.py module"
     },
     {
       "area": "single",
       "default_enabled": true,
       "description": "enforce a single canonical runner.py module",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_single_runner_module",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9508,12 +10381,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce a single canonical runner.py module"
     },
     {
       "area": "stable",
       "default_enabled": true,
       "description": "forbid breaking changes in stable command contracts",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_stable_command_no_breaking_changes",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9546,12 +10421,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid breaking changes in stable command contracts"
     },
     {
       "area": "subprocess",
       "default_enabled": true,
       "description": "restrict subprocess imports to core execution boundary",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_subprocess_boundary",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9584,12 +10461,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "restrict subprocess imports to core execution boundary"
     },
     {
       "area": "suite",
       "default_enabled": true,
       "description": "validate suite inventory coverage and required tag policy",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_suite_inventory_policy",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9622,12 +10501,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "validate suite inventory coverage and required tag policy"
     },
     {
       "area": "suite",
       "default_enabled": true,
       "description": "enforce check-suite-coverage marker file policy",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_suite_marker_rules",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9660,12 +10541,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce check-suite-coverage marker file policy"
     },
     {
       "area": "test",
       "default_enabled": true,
       "description": "forbid nondeterministic test patterns without explicit marker",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_test_determinism_patterns",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9698,12 +10581,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid nondeterministic test patterns without explicit marker"
     },
     {
       "area": "test",
       "default_enabled": true,
       "description": "forbid duplicated golden coverage across multiple tests",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_test_no_duplicated_coverage",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9736,12 +10621,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid duplicated golden coverage across multiple tests"
     },
     {
       "area": "test",
       "default_enabled": true,
       "description": "forbid test network usage unless marked",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_test_no_unmarked_network",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9776,12 +10663,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid test network usage unless marked"
     },
     {
       "area": "test",
       "default_enabled": true,
       "description": "ensure tests declare ownership tags or live in domain directories",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_test_ownership_tags",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9814,12 +10703,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure tests declare ownership tags or live in domain directories"
     },
     {
       "area": "test",
       "default_enabled": true,
       "description": "forbid skipped tests without justification and expiry markers",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_test_skip_justification",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9852,12 +10743,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid skipped tests without justification and expiry markers"
     },
     {
       "area": "test",
       "default_enabled": true,
       "description": "enforce test taxonomy and placement invariants",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_test_taxonomy_layout",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9890,12 +10783,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce test taxonomy and placement invariants"
     },
     {
       "area": "test",
       "default_enabled": true,
       "description": "forbid writes outside temp/artifacts isolation sandbox in tests",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_test_write_sandbox",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9928,12 +10823,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid writes outside temp/artifacts isolation sandbox in tests"
     },
     {
       "area": "tests",
       "default_enabled": true,
       "description": "forbid duplicate test function names across test modules",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_tests_no_duplicate_expectations",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -9966,12 +10863,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid duplicate test function names across test modules"
     },
     {
       "area": "top",
       "default_enabled": true,
       "description": "require top-level atlasctl packages to map to control-plane groups",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_top_level_package_group_mapping",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -10004,12 +10903,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require top-level atlasctl packages to map to control-plane groups"
     },
     {
       "area": "top",
       "default_enabled": true,
       "description": "enforce atlasctl top-level package intent and budget",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_top_level_structure",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -10042,12 +10943,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce atlasctl top-level package intent and budget"
     },
     {
       "area": "type",
       "default_enabled": true,
       "description": "enforce minimum type coverage in core/contracts",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_type_coverage",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -10080,12 +10983,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce minimum type coverage in core/contracts"
     },
     {
       "area": "version",
       "default_enabled": true,
       "description": "ensure atlasctl package version and --version output match pyproject",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_version_matches_pyproject",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -10118,12 +11023,14 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure atlasctl package version and --version output match pyproject"
     },
     {
       "area": "workflows",
       "default_enabled": true,
       "description": "ensure make targets used by workflows exist",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_workflows_targets_exist",
       "domain": "repo",
       "gate": "repo",
       "groups": [
@@ -10156,6 +11063,7 @@
       "owners": [
         "platform"
       ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ensure make targets used by workflows exist"
     }
   ],
