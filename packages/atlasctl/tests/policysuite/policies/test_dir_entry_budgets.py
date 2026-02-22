@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+# BYPASS_TEST_OK: entry budget tests intentionally reference configs/policy fixtures.
 import json
 from pathlib import Path
 
