@@ -30,8 +30,6 @@ source "${OPS_LIB_ROOT}/guard/env.sh"
 source "${OPS_LIB_ROOT}/log/errors.sh"
 # shellcheck source=ops/_lib/log/log.sh
 source "${OPS_LIB_ROOT}/log/log.sh"
-# shellcheck source=ops/_lib/report/lane_report.sh
-source "${OPS_LIB_ROOT}/report/lane_report.sh"
 # shellcheck source=ops/_lib/report/layer_contract.sh
 source "${OPS_LIB_ROOT}/report/layer_contract.sh"
 ARTIFACTS_ROOT="${REPO_ROOT}/artifacts/ops"
