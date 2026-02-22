@@ -12,6 +12,7 @@ Stable exported items (0.1.x contract):
 - `ConfigPathScope`
 - `MachineError`
 - `ErrorCode`
+- `ERROR_CODES`
 - `Hash256`
 - `ErrorContext`
 - `ResultExt`

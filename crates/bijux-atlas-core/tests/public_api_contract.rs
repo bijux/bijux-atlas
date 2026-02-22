@@ -17,6 +17,7 @@ fn public_api_doc_lists_only_exported_symbols() {
         "ConfigPathScope",
         "MachineError",
         "ErrorCode",
+        "ERROR_CODES",
         "Hash256",
         "ErrorContext",
         "ResultExt",
@@ -46,7 +47,7 @@ fn public_api_doc_lists_only_exported_symbols() {
         "pub fn resolve_bijux_cache_dir",
         "pub fn resolve_bijux_config_path",
         "pub use crate::canonical::Hash256",
-        "pub use crate::error::{ConfigPathScope, ErrorCode, ExitCode, MachineError}",
+        "pub use crate::error::{ConfigPathScope, ErrorCode, ExitCode, MachineError, ERROR_CODES}",
         "pub use crate::result_ext::{ErrorContext, ResultExt}",
     ] {
         assert!(
@@ -62,6 +63,7 @@ fn public_api_doc_lists_only_exported_symbols() {
         "NO_RANDOMNESS_POLICY",
         "ConfigPathScope",
         "ErrorCode",
+        "ERROR_CODES",
         "ExitCode",
         "MachineError",
         "Hash256",

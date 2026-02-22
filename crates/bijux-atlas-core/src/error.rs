@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 use std::fmt;
 
-pub use crate::generated::error_codes::ErrorCode;
+pub use crate::generated::error_codes::{ErrorCode, ERROR_CODES};
 
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
