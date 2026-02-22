@@ -65,7 +65,7 @@
     },
     {
       "name": "overload-admission-control",
-      "script": "ops/obs/scripts/overload-admission-control.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/overload_admission_control.py",
       "purpose": "Drive heavy request and verify admission control/shed signals.",
       "expected_signals": [
         "metric:atlas_overload_active",
@@ -81,7 +81,7 @@
     },
     {
       "name": "log-schema-violation-injection",
-      "script": "ops/obs/scripts/log-schema-violation-injection.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/log_schema_violation_injection.py",
       "purpose": "Inject invalid log line and ensure schema validator catches it.",
       "expected_signals": [
         "validator:log_schema_failure"
@@ -95,7 +95,7 @@
     },
     {
       "name": "metric-cardinality-blowup-attempt",
-      "script": "ops/obs/scripts/metric-cardinality-blowup-attempt.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/metric_cardinality_blowup_attempt.py",
       "purpose": "Inject high-cardinality metric labels and ensure guard check fails.",
       "expected_signals": [
         "validator:metric_cardinality_failure"
@@ -151,7 +151,7 @@
     },
     {
       "name": "cheap-endpoint-survival",
-      "script": "ops/obs/scripts/cheap-endpoint-survival.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/cheap_endpoint_survival.py",
       "purpose": "Prove cheap endpoint survives overload and is observable.",
       "expected_signals": [
         "metric:bijux_cheap_queries_served_while_overloaded_total"
@@ -165,7 +165,7 @@
     },
     {
       "name": "cache-stampede",
-      "script": "ops/obs/scripts/cache-stampede.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/cache_stampede.py",
       "purpose": "Exercise cache stampede handling and observe singleflight/cache metrics.",
       "expected_signals": [
         "metric:bijux_dataset_cache_misses_total"
@@ -221,7 +221,7 @@
     },
     {
       "name": "rolling-restart-no-downtime",
-      "script": "ops/obs/scripts/rolling-restart-no-downtime.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/rolling_restart_no_downtime.py",
       "purpose": "Validate rolling restart availability with observability evidence.",
       "expected_signals": [
         "validator:rolling_restart"

@@ -426,7 +426,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             drill = getattr(ns, "drill", "")
             if not drill:
                 return impl._emit_ops_status(ns.report, 2, "missing --drill")
-            return impl._run_simple_cmd(ctx, shell_script_command("ops/obs/scripts/run_drill.sh", drill), ns.report)
+            return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/run_drill.py", drill], ns.report)
         if ns.ops_cmd == "stack" and sub == "versions-sync":
             return impl._run_simple_cmd(
                 ctx,

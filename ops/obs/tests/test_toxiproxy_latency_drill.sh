@@ -12,6 +12,6 @@ fi
 
 install_chart
 wait_ready
-"$ROOT/ops/obs/scripts/bin/run_drill.sh" store-latency-injection
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/drills/run_drill.py" store-latency-injection
 
 echo "toxiproxy latency drill test passed"

@@ -9,7 +9,7 @@ need kubectl; need curl
 wait_ready
 BASE_URL="${ATLAS_BASE_URL:-http://127.0.0.1:18080}"
 
-"$ROOT/ops/obs/scripts/overload-admission-control.sh"
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/drills/overload_admission_control.py"
 
 status="$(curl -s -o /tmp/atlas-admission-body.json -w '%{http_code}' \
   "$BASE_URL/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&region=chr1:1-999999999&limit=500")"
