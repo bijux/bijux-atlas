@@ -4,14 +4,14 @@ import argparse
 import re
 from typing import Any
 
-from ..checks.registry import check_tags, list_checks
-from ..cli.surface_registry import command_registry
-from ..core.effects import command_group
-from ..core.runtime.serialize import dumps_json
-from ..core.context import RunContext
-from ..registry import CheckRecord, CommandRecord, SuiteRecord
-from .policies.runtime.command import _POLICIES_ITEMS
-from ..suite.command import load_suites
+from ...checks.registry import check_tags, list_checks
+from ...cli.surface_registry import command_registry
+from ...core.effects import command_group
+from ...core.runtime.serialize import dumps_json
+from ...core.context import RunContext
+from ...registry import CheckRecord, CommandRecord, SuiteRecord
+from ..policies.runtime.command import _POLICIES_ITEMS
+from ...suite.command import load_suites
 
 
 def _parse_tags(raw: str) -> tuple[str, ...]:
