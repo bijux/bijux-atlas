@@ -25,16 +25,16 @@
       "path": "check/check-suite-coverage.markers.txt"
     },
     {
+      "name": "checks-gates.json.golden",
+      "path": "check/checks-gates.json.golden"
+    },
+    {
       "name": "checks-list-taxonomy.json.golden",
       "path": "check/checks-list-taxonomy.json.golden"
     },
     {
       "name": "checks-owners.json.golden",
       "path": "check/checks-owners.json.golden"
-    },
-    {
-      "name": "checks-gates.json.golden",
-      "path": "check/checks-gates.json.golden"
     },
     {
       "name": "checks-tree.json.golden",
@@ -114,51 +114,63 @@
     },
     {
       "name": "check-list-v1.sample.json",
-      "path": "samples/check-list-v1.sample.json"
+      "path": "samples/checks/check-list-v1.sample.json"
+    },
+    {
+      "name": "check-run-v1.sample.json",
+      "path": "samples/checks/check-run-v1.sample.json"
     },
     {
       "name": "check-taxonomy-v1.sample.json",
-      "path": "samples/check-taxonomy-v1.sample.json"
+      "path": "samples/checks/check-taxonomy-v1.sample.json"
+    },
+    {
+      "name": "checks-catalog-v1.sample.json",
+      "path": "samples/checks/checks-catalog-v1.sample.json"
+    },
+    {
+      "name": "checks-registry-v1.sample.json",
+      "path": "samples/checks/checks-registry-v1.sample.json"
     },
     {
       "name": "commands-v1.sample.json",
-      "path": "samples/commands-v1.sample.json"
-    },
-    {
-      "name": "explain-v1.sample.json",
-      "path": "samples/explain-v1.sample.json"
+      "path": "samples/commands/commands-v1.sample.json"
     },
     {
       "name": "help-v1.sample.json",
-      "path": "samples/help-v1.sample.json"
-    },
-    {
-      "name": "ops-manifest-v1.sample.json",
-      "path": "samples/ops-manifest-v1.sample.json"
-    },
-    {
-      "name": "output-base-v1.sample.json",
-      "path": "samples/output-base-v1.sample.json"
-    },
-    {
-      "name": "output-base-v2.sample.json",
-      "path": "samples/output-base-v2.sample.json"
-    },
-    {
-      "name": "runtime_contracts-v1.sample.json",
-      "path": "samples/runtime_contracts-v1.sample.json"
-    },
-    {
-      "name": "suite-manifests-v1.sample.json",
-      "path": "samples/suite-manifests-v1.sample.json"
-    },
-    {
-      "name": "suite-run-v1.sample.json",
-      "path": "samples/suite-run-v1.sample.json"
+      "path": "samples/commands/help-v1.sample.json"
     },
     {
       "name": "surface-v1.sample.json",
-      "path": "samples/surface-v1.sample.json"
+      "path": "samples/commands/surface-v1.sample.json"
+    },
+    {
+      "name": "ops-manifest-v1.sample.json",
+      "path": "samples/contracts/ops-manifest-v1.sample.json"
+    },
+    {
+      "name": "runtime_contracts-v1.sample.json",
+      "path": "samples/contracts/runtime_contracts-v1.sample.json"
+    },
+    {
+      "name": "explain-v1.sample.json",
+      "path": "samples/output/explain-v1.sample.json"
+    },
+    {
+      "name": "output-base-v1.sample.json",
+      "path": "samples/output/output-base-v1.sample.json"
+    },
+    {
+      "name": "output-base-v2.sample.json",
+      "path": "samples/output/output-base-v2.sample.json"
+    },
+    {
+      "name": "suite-manifests-v1.sample.json",
+      "path": "samples/suite/suite-manifests-v1.sample.json"
+    },
+    {
+      "name": "suite-run-v1.sample.json",
+      "path": "samples/suite/suite-run-v1.sample.json"
     },
     {
       "name": "suite-inventory.json.golden",
@@ -169,12 +181,12 @@
       "path": "suite/suite-membership.json.golden"
     },
     {
-      "name": "suite_required.expected.txt",
-      "path": "suite/suite_required.expected.txt"
-    },
-    {
       "name": "suite_explain_local.expected.txt",
       "path": "suite/suite_explain_local.expected.txt"
+    },
+    {
+      "name": "suite_required.expected.txt",
+      "path": "suite/suite_required.expected.txt"
     },
     {
       "name": "test_golden_manifest.py",

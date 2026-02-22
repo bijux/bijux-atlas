@@ -1,5 +1,17 @@
 {
-  "checks": [],
+  "checks": [
+    {
+      "canonical_id": "checks_checks_registry_integrity",
+      "category": "contract",
+      "description": "validate checks registry TOML/JSON integrity and drift",
+      "domain": "checks",
+      "external_tools": [],
+      "fix_hint": "Run ./bin/atlasctl gen checks-registry.",
+      "id": "checks_checks_registry_integrity",
+      "severity": "error",
+      "slow": true
+    }
+  ],
   "schema_name": "atlasctl.check-list.v1",
   "schema_version": 1,
   "status": "ok",

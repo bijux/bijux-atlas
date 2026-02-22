@@ -13,7 +13,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "title", "description", "domain", "area", "gate", "owners", "groups", "markers", "default_enabled", "impl_ref"],
+        "required": ["id", "title", "description", "domain", "area", "gate", "owners", "groups", "markers", "docs_link", "remediation_link", "default_enabled", "impl_ref"],
         "properties": {
           "id": { "type": "string", "pattern": "^checks_[a-z0-9]+_[a-z0-9]+_[a-z0-9_]+$" },
           "title": { "type": "string" },
@@ -24,6 +24,8 @@
           "owners": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
           "groups": { "type": "array", "items": { "type": "string" } },
           "markers": { "type": "array", "items": { "type": "string" } },
+          "docs_link": { "type": "string", "minLength": 1 },
+          "remediation_link": { "type": "string", "minLength": 1 },
           "default_enabled": { "type": "boolean" },
           "impl_ref": {
             "type": "object",
@@ -33,7 +35,7 @@
               "module": { "type": "string" },
               "callable": { "type": "string" },
               "timeout_ms": { "type": "integer", "minimum": 1 },
-              "speed": { "type": "string", "enum": ["fast", "slow"] },
+              "speed": { "type": "string", "enum": ["fast", "slow", "nightly"] },
               "severity": { "type": "string", "enum": ["error", "warn", "info"] },
               "category": { "type": "string", "enum": ["policy", "hygiene", "contract", "drift", "security"] },
               "fix_hint": { "type": "string" },

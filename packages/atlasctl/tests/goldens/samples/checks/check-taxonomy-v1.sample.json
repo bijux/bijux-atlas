@@ -1,33 +1,33 @@
 {
+  "schema_name": "atlasctl.check-taxonomy.v1",
+  "schema_version": 1,
+  "tool": "atlasctl",
+  "status": "ok",
+  "taxonomy": [
+    {
+      "areas": {
+        "registry": 1
+      },
+      "checks": [
+        "checks_checks_registry_integrity"
+      ],
+      "count": 1,
+      "domain": "checks"
+    }
+  ],
   "checks": [
     {
       "category": "hygiene",
-      "domain": "repo",
-      "id": "checks_repo_module_size",
+      "domain": "checks",
+      "id": "checks_checks_registry_integrity",
       "owners": [
         "platform"
       ],
       "severity": "error",
       "tags": [
-        "repo",
+        "checks",
         "required"
       ]
     }
-  ],
-  "taxonomy": [
-    {
-      "areas": {
-        "module": 1
-      },
-      "checks": [
-        "checks_repo_module_size"
-      ],
-      "count": 1,
-      "domain": "repo"
-    }
-  ],
-  "schema_name": "atlasctl.check-taxonomy.v1",
-  "schema_version": 1,
-  "status": "ok",
-  "tool": "atlasctl"
+  ]
 }

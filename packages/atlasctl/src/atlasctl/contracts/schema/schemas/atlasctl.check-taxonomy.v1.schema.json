@@ -79,7 +79,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "pattern": "^[a-z0-9_.-]+$"
+            "pattern": "^checks_[a-z0-9]+_[a-z0-9]+_[a-z0-9_]+$"
           },
           "domain": {
             "type": "string"
