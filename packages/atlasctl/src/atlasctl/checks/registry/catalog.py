@@ -5,7 +5,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from ..core.base import CheckCategory, CheckDef as CheckFactory, Severity
-from .ssot import RegistryEntry, legacy_check_by_id, load_registry_entries
+from .ssot import RegistryEntry, check_id_renames, legacy_check_by_id, load_registry_entries
 
 _CHECKS_CACHE: tuple[CheckFactory, ...] | None = None
 _ALIASES_CACHE: dict[str, str] | None = None
@@ -34,7 +34,7 @@ def _from_entry(entry: RegistryEntry) -> CheckFactory:
         category=CheckCategory(entry.category),
         fix_hint=entry.fix_hint,
         slow=(entry.speed == "slow"),
-        tags=tuple(entry.groups),
+        tags=tuple((*entry.groups, f"gate:{entry.gate}")),
         effects=tuple(entry.effects),
         owners=(entry.owner,),
         external_tools=tuple(entry.external_tools),
@@ -47,6 +47,7 @@ def _load() -> tuple[tuple[CheckFactory, ...], dict[str, str]]:
     entries = load_registry_entries()
     checks = tuple(sorted((_from_entry(entry) for entry in entries), key=lambda c: c.check_id))
     aliases = {entry.legacy_id: entry.id for entry in entries if entry.legacy_id}
+    aliases.update(check_id_renames())
     return checks, aliases
 
 

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "atlasctl.checks-catalog.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "checks"],
+  "properties": {
+    "schema_version": { "const": 1, "type": "integer" },
+    "kind": { "const": "atlasctl-checks-catalog", "type": "string" },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "description", "domain", "area", "gate", "owners", "groups", "markers", "default_enabled", "impl_ref"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^checks_[a-z0-9]+_[a-z0-9_]+$" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "domain": { "type": "string" },
+          "area": { "type": "string" },
+          "gate": { "type": "string" },
+          "owners": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "groups": { "type": "array", "items": { "type": "string" } },
+          "markers": { "type": "array", "items": { "type": "string" } },
+          "default_enabled": { "type": "boolean" },
+          "impl_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["module", "callable", "timeout_ms", "speed", "severity", "category"],
+            "properties": {
+              "module": { "type": "string" },
+              "callable": { "type": "string" },
+              "timeout_ms": { "type": "integer", "minimum": 1 },
+              "speed": { "type": "string", "enum": ["fast", "slow"] },
+              "severity": { "type": "string", "enum": ["error", "warn", "info"] },
+              "category": { "type": "string", "enum": ["policy", "hygiene", "contract", "drift", "security"] },
+              "fix_hint": { "type": "string" },
+              "effects": { "type": "array", "items": { "type": "string" } },
+              "external_tools": { "type": "array", "items": { "type": "string" } },
+              "evidence": { "type": "array", "items": { "type": "string" } },
+              "writes_allowed_roots": { "type": "array", "items": { "type": "string" } },
+              "legacy_id": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    }
+  }
+}

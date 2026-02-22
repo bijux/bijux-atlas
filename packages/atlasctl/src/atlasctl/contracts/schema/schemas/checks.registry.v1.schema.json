@@ -28,6 +28,9 @@
           "domain": {
             "type": "string"
           },
+          "gate": {
+            "type": "string"
+          },
           "effects": {
             "items": {
               "type": "string"
@@ -100,6 +103,7 @@
         "required": [
           "id",
           "domain",
+          "gate",
           "area",
           "owner",
           "speed",

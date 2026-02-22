@@ -1,0 +1,2 @@
+"""Registry command group."""
+
