@@ -188,6 +188,46 @@
     {
       "default_effects": [
         "read",
+        "process",
+        "write"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "ops",
+        "load",
+        "slow"
+      ],
+      "name": "load-baseline",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 300000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process",
+        "write"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "ops",
+        "load",
+        "fast"
+      ],
+      "name": "load-smoke",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 120000
+    },
+    {
+      "default_effects": [
+        "read",
         "process"
       ],
       "exclude_markers": [],
@@ -201,6 +241,26 @@
         "PYTHONPATH"
       ],
       "time_budget_ms": 120000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process",
+        "write"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "ops",
+        "obs",
+        "slow"
+      ],
+      "name": "obs-verify",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 240000
     },
     {
       "default_effects": [
