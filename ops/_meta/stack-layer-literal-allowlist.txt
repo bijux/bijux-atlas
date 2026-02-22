@@ -12,8 +12,8 @@ packages/atlasctl/src/atlasctl/commands/ops/stack/faults/throttle_network.py
 packages/atlasctl/src/atlasctl/commands/ops/stack/faults/toxiproxy_latency.py
 packages/atlasctl/src/atlasctl/commands/ops/stack/kind/down.py
 packages/atlasctl/src/atlasctl/commands/ops/stack/kind/up.py
-ops/stack/minio/bootstrap.sh
-ops/stack/minio/rotate_creds.sh
-ops/stack/registry/up.sh
+packages/atlasctl/src/atlasctl/commands/ops/stack/minio/bootstrap.py
+packages/atlasctl/src/atlasctl/commands/ops/stack/minio/rotate_creds.py
+packages/atlasctl/src/atlasctl/commands/ops/stack/registry/up.py
 ops/stack/tests/minio-invariants.sh
-ops/stack/toxiproxy/bootstrap.sh
+packages/atlasctl/src/atlasctl/commands/ops/stack/toxiproxy/bootstrap.py

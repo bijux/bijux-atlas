@@ -6,8 +6,8 @@ check_minio_bootstrap_idempotent() {
   local ns="${2:-atlas-e2e}"
   kubectl get ns "$ns" >/dev/null 2>&1 || kubectl create ns "$ns" >/dev/null
   kubectl apply -f "$root/ops/stack/minio/minio.yaml" >/dev/null
-  "$root/ops/stack/minio/bootstrap.sh"
-  "$root/ops/stack/minio/bootstrap.sh"
+  python3 "$root/packages/atlasctl/src/atlasctl/commands/ops/stack/minio/bootstrap.py"
+  python3 "$root/packages/atlasctl/src/atlasctl/commands/ops/stack/minio/bootstrap.py"
   echo "minio bootstrap idempotent"
 }
 
@@ -16,7 +16,7 @@ check_minio_bucket_policy() {
   local ns="${2:-atlas-e2e}"
   kubectl get ns "$ns" >/dev/null 2>&1 || kubectl create ns "$ns" >/dev/null
   kubectl apply -f "$root/ops/stack/minio/minio.yaml" >/dev/null
-  "$root/ops/stack/minio/bootstrap.sh"
+  python3 "$root/packages/atlasctl/src/atlasctl/commands/ops/stack/minio/bootstrap.py"
   kubectl -n "$ns" run minio-policy-check \
     --image=minio/mc:RELEASE.2025-01-17T23-25-50Z \
     --restart=Never --rm -i --command -- sh -ceu '
