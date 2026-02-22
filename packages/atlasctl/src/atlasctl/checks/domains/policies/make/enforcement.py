@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import re
-import subprocess
+import runpy
 from pathlib import Path
 
 from .....commands.dev.make.public_targets import public_names
@@ -104,22 +104,19 @@ def check_make_no_direct_artifact_writes(repo_root: Path) -> tuple[int, list[str
 
 
 def _run_script(repo_root: Path, script: str) -> tuple[int, list[str]]:
-    tool_path = repo_root / "packages/atlasctl/src/atlasctl/checks/layout/domains/public_surface/tools"
-    env = dict(**__import__("os").environ)
-    existing = env.get("PYTHONPATH", "")
-    env["PYTHONPATH"] = f"{tool_path}:{existing}" if existing else str(tool_path)
-    proc = subprocess.run(
-        ["python3", script],
-        cwd=repo_root,
-        text=True,
-        capture_output=True,
-        check=False,
-        env=env,
-    )
-    if proc.returncode == 0:
+    script_path = repo_root / script
+    if not script_path.exists():
+        return 1, [f"missing script: {script}"]
+    try:
+        runpy.run_path(str(script_path), run_name="__main__")
         return 0, []
-    output = (proc.stderr or proc.stdout or "check failed").strip()
-    return 1, [output]
+    except SystemExit as exc:
+        code = int(exc.code) if isinstance(exc.code, int) else 1
+        if code == 0:
+            return 0, []
+        return 1, [f"script exited non-zero: {script} (code={code})"]
+    except Exception as exc:
+        return 1, [f"script execution failed: {script}: {exc}"]
 
 
 def check_make_ci_entrypoints_contract(repo_root: Path) -> tuple[int, list[str]]:

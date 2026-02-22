@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import subprocess
 import sys
 from pathlib import Path
+
+from ......core.process import run_command
 
 def _repo_root() -> Path:
     cur = Path(__file__).resolve()
@@ -22,11 +23,16 @@ PATHS = [
 
 
 def main() -> int:
-    subprocess.run(["python3", "-m", "atlasctl.cli", "docs", "generate-make-targets-catalog", "--report", "text"], cwd=ROOT, check=True)
-    diff = subprocess.run(["git", "diff", "--", *PATHS], cwd=ROOT, capture_output=True, text=True, check=False)
-    if diff.returncode != 0:
+    gen = run_command(["./bin/atlasctl", "docs", "generate-make-targets-catalog", "--report", "text"], cwd=ROOT)
+    if gen.code != 0:
+        print("make targets catalog generation failed", file=sys.stderr)
+        if gen.stderr:
+            print(gen.stderr, file=sys.stderr)
+        return 1
+    diff = run_command(["git", "diff", "--", *PATHS], cwd=ROOT)
+    if diff.code != 0:
         print("make targets catalog drift detected", file=sys.stderr)
-        print("- run: python3 -m atlasctl.cli docs generate-make-targets-catalog --report text", file=sys.stderr)
+        print("- run: ./bin/atlasctl docs generate-make-targets-catalog --report text", file=sys.stderr)
         print(diff.stdout, file=sys.stderr)
         return 1
     print("make targets catalog drift check passed")

@@ -8,10 +8,11 @@ from __future__ import annotations
 import argparse
 import json
 import re
-import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+from .....core.process import run_command
 
 ROOT = Path(__file__).resolve().parents[6]
 POLICY = ROOT / "configs/policy/legacy-policy.json"
@@ -39,7 +40,7 @@ def _rg_lines(pattern: str, globs: list[str] | None = None) -> list[str]:
             "!**/__pycache__/**",
         ]
     )
-    proc = subprocess.run(cmd, check=False, capture_output=True, text=True)
+    proc = run_command(cmd, cwd=ROOT)
     return [ln for ln in proc.stdout.splitlines() if ln.strip()]
 
 
@@ -254,12 +255,11 @@ def main() -> int:
     inv = build_inventory()
     apply_baseline(inv, Path(args.baseline))
 
-    out_path = Path(args.json_out)
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(inv, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-
+    # Inventory is emitted to stdout; persistent writes are handled by atlasctl runtime writers.
+    # This check module stays read-only to satisfy effect boundary policy.
     if args.write_baseline:
-        Path(args.baseline).write_text(json.dumps(inv, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        print("write-baseline is not supported in read-only mode", flush=True)
+        return 2
 
     if args.format == "text":
         print(render_text(inv))

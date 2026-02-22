@@ -2,9 +2,10 @@
 from __future__ import annotations
 
 import re
-import subprocess
 import sys
 from pathlib import Path
+
+from ......core.process import run_command
 
 ROOT = Path(__file__).resolve().parents[8]
 ALLOWLIST = ROOT / "configs" / "policy" / "forbidden-adjectives-allowlist.txt"
@@ -45,8 +46,8 @@ def _is_allowed(rel: str, rules: list[str]) -> bool:
 
 def _tracked_files(diff_only: bool) -> list[str]:
     cmd = ["git", "diff", "--name-only", "--diff-filter=ACMRTUXB", "HEAD"] if diff_only else ["git", "ls-files"]
-    proc = subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True, check=False)
-    if proc.returncode != 0:
+    proc = run_command(cmd, cwd=ROOT)
+    if proc.code != 0:
         return []
     return [line.strip() for line in proc.stdout.splitlines() if line.strip()]
 
