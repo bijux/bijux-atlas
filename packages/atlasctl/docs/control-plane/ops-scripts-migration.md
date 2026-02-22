@@ -58,20 +58,20 @@ Classification legend:
 | `ops/run/root/root_artifacts_open.sh` | legacy | legacy | `atlasctl artifacts open` |
 | `ops/run/root/root_quick.sh` | legacy | legacy | `atlasctl dev`/`atlasctl product check` |
 
-## Product Script Mapping (migrated)
+## Product Script Mapping (migrated and deleted)
 
 | Script | Class | Status | atlasctl command |
 |---|---|---:|---|
-| `ops/run/product/product_bootstrap.sh` | logic | migrated | `atlasctl product bootstrap` |
-| `ops/run/product/product_docker_build.sh` | logic | migrated | `atlasctl product docker build` |
-| `ops/run/product/product_docker_push.sh` | logic | migrated | `atlasctl product docker push` |
-| `ops/run/product/product_docker_release.sh` | logic | migrated | `atlasctl product docker release` |
-| `ops/run/product/product_docker_check.sh` | logic | migrated | `atlasctl product docker check` |
-| `ops/run/product/product_chart_package.sh` | glue | migrated | `atlasctl product chart package` |
-| `ops/run/product/product_chart_verify.sh` | glue | migrated | `atlasctl product chart verify` |
-| `ops/run/product/product_chart_validate.sh` | logic | migrated | `atlasctl product chart validate` |
-| `ops/run/product/product_rename_lint.sh` | glue | migrated | `atlasctl product naming lint` |
-| `ops/run/product/product_docs_lint_names.sh` | logic | migrated | `atlasctl product docs naming-lint` |
+| `ops/run/product/product_bootstrap.sh` | logic | deleted (migrated) | `atlasctl product bootstrap` |
+| `ops/run/product/product_docker_build.sh` | logic | deleted (migrated) | `atlasctl product docker build` |
+| `ops/run/product/product_docker_push.sh` | logic | deleted (migrated) | `atlasctl product docker push` |
+| `ops/run/product/product_docker_release.sh` | logic | deleted (migrated) | `atlasctl product docker release` |
+| `ops/run/product/product_docker_check.sh` | logic | deleted (migrated) | `atlasctl product docker check` |
+| `ops/run/product/product_chart_package.sh` | glue | deleted (migrated) | `atlasctl product chart package` |
+| `ops/run/product/product_chart_verify.sh` | glue | deleted (migrated) | `atlasctl product chart verify` |
+| `ops/run/product/product_chart_validate.sh` | logic | deleted (migrated) | `atlasctl product chart validate` |
+| `ops/run/product/product_rename_lint.sh` | glue | deleted (migrated) | `atlasctl product naming lint` |
+| `ops/run/product/product_docs_lint_names.sh` | logic | deleted (migrated) | `atlasctl product docs naming-lint` |
 
 ## Migration Rules
 
