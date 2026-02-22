@@ -500,15 +500,29 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         if ns.ops_cmd == "kind" and sub == "fault":
             fault = getattr(ns, "name", "")
             if fault == "disk-pressure":
-                return impl._run_simple_cmd(ctx, shell_script_command("ops/stack/faults/inject.sh", "fill-node-disk", os.environ.get("MODE", "fill")), ns.report)
+                return impl._run_simple_cmd(
+                    ctx,
+                    ["python3", "packages/atlasctl/src/atlasctl/commands/ops/stack/faults/inject.py", "fill-node-disk", os.environ.get("MODE", "fill")],
+                    ns.report,
+                )
             if fault == "latency":
                 return impl._run_simple_cmd(
                     ctx,
-                    ["bash", "ops/stack/faults/inject.sh", "toxiproxy-latency", os.environ.get("LATENCY_MS", "250"), os.environ.get("JITTER_MS", "25")],
+                    [
+                        "python3",
+                        "packages/atlasctl/src/atlasctl/commands/ops/stack/faults/inject.py",
+                        "toxiproxy-latency",
+                        os.environ.get("LATENCY_MS", "250"),
+                        os.environ.get("JITTER_MS", "25"),
+                    ],
                     ns.report,
                 )
             if fault == "cpu-throttle":
-                return impl._run_simple_cmd(ctx, shell_script_command("ops/stack/faults/inject.sh", "cpu-throttle"), ns.report)
+                return impl._run_simple_cmd(
+                    ctx,
+                    ["python3", "packages/atlasctl/src/atlasctl/commands/ops/stack/faults/inject.py", "cpu-throttle"],
+                    ns.report,
+                )
             return impl._emit_ops_status(ns.report, 2, f"unsupported fault `{fault}`")
         if ns.ops_cmd == "e2e" and sub == "run":
             suite = getattr(ns, "suite", "smoke")
