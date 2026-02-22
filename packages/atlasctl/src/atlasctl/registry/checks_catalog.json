@@ -5849,6 +5849,48 @@
     {
       "area": "bypass",
       "default_enabled": true,
+      "description": "optional strict mode: fail on any bypass entry when enabled",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_mainline_strict_mode",
+      "domain": "policies",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_mainline_strict_mode",
+      "impl_ref": {
+        "callable": "check_policies_bypass_mainline_strict_mode",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Enable only after bypass count reaches zero or acceptable strict milestone.",
+        "legacy_id": "policies.bypass_mainline_strict_mode",
+        "module": "atlasctl.checks.domains.policies.make",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 800,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "optional strict mode: fail on any bypass entry when enabled"
+    },
+    {
+      "area": "bypass",
+      "default_enabled": true,
       "description": "forbid new bypass entries unless explicitly approved",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_new_entries_forbidden",
       "domain": "policies",

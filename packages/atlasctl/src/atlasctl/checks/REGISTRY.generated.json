@@ -3927,6 +3927,34 @@
     },
     {
       "area": "bypass",
+      "callable": "check_policies_bypass_mainline_strict_mode",
+      "category": "hygiene",
+      "description": "optional strict mode: fail on any bypass entry when enabled",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Enable only after bypass count reaches zero or acceptable strict milestone.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_mainline_strict_mode",
+      "legacy_id": "policies.bypass_mainline_strict_mode",
+      "module": "atlasctl.checks.domains.policies.make",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
       "callable": "check_policies_bypass_new_entries_forbidden",
       "category": "hygiene",
       "description": "forbid new bypass entries unless explicitly approved",
