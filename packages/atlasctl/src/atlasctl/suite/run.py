@@ -255,6 +255,8 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
 
     start = time.perf_counter()
     results: list[dict[str, object]] = []
+    maxfail = max(0, int(getattr(ns, "maxfail", 0) or 0))
+    fail_seen = 0
     if ctx.verbose and not ctx.quiet:
         impl.log_event(ctx, "info", "suite", "start", suite=suite_name, total=len(selected))
     for idx, task in enumerate(selected, start=1):
@@ -286,7 +288,11 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
                 "duration_ms": duration_ms,
             }
         )
+        if status == "fail":
+            fail_seen += 1
         if status == "fail" and ns.fail_fast:
+            break
+        if maxfail > 0 and fail_seen >= maxfail and not ns.keep_going:
             break
 
     total_duration_ms = int((time.perf_counter() - start) * 1000)
@@ -326,6 +332,8 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
         "slow_checks": slow_rows,
         "results": results,
         "target_dir": target_dir.as_posix(),
+        "execution": "fail-fast" if ns.fail_fast else ("maxfail" if maxfail > 0 else "keep-going"),
+        "maxfail": maxfail,
     }
     impl.validate_self(impl.SUITE_RUN, payload)
     write_text_file(target_dir / "results.json", impl.dumps_json(payload, pretty=True) + "\n")

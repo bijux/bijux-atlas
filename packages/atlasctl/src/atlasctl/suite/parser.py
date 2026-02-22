@@ -30,6 +30,7 @@ def configure_suite_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     run.add_argument("--slow-threshold-ms", type=int, default=1000, help="threshold for slow suite items report")
     run.add_argument("--slow-report", help="write slow suite items report path")
     run.add_argument("--profile", action="store_true", help="emit suite performance profile artifact")
+    run.add_argument("--maxfail", type=int, default=0, help="stop after N failing tasks (0 disables)")
     group = run.add_mutually_exclusive_group()
     group.add_argument("--fail-fast", action="store_true", help="stop at first failure")
     group.add_argument("--keep-going", action="store_true", help="continue through all tasks (default)")
