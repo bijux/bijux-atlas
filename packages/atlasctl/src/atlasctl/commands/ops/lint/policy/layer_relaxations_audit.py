@@ -6,8 +6,16 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
-REGISTRY = ROOT / "configs/policy/pin-relaxations.json"
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for parent in cur.parents:
+        if all((parent / marker).exists() for marker in ("makefiles", "packages", "configs", "ops")):
+            return parent
+    raise RuntimeError("unable to resolve repo root")
+
+
+ROOT = _repo_root()
+REGISTRY = ROOT / "configs/policy/layer-relaxations.json"
 
 
 def main() -> int:
@@ -16,9 +24,10 @@ def main() -> int:
     errors: list[str] = []
     active: list[dict[str, str]] = []
     expired: list[dict[str, str]] = []
+
     for entry in payload.get("exceptions", []):
         entry_id = str(entry.get("id", "")).strip()
-        for key in ("id", "policy", "scope", "owner", "issue", "expiry", "justification"):
+        for key in ("id", "rule", "path", "owner", "issue", "expiry", "justification"):
             if not str(entry.get(key, "")).strip():
                 errors.append(f"{entry_id or '<missing-id>'}: missing required field `{key}`")
         expiry_raw = str(entry.get("expiry", ""))
@@ -28,12 +37,12 @@ def main() -> int:
             errors.append(f"{entry_id or '<missing-id>'}: invalid expiry `{expiry_raw}`")
             continue
         if expiry < today:
-            expired.append({"id": entry_id, "policy": str(entry.get("policy", "")), "expiry": expiry_raw})
+            expired.append({"id": entry_id, "rule": str(entry.get("rule", "")), "expiry": expiry_raw})
             errors.append(f"{entry_id}: expired on {expiry_raw}")
         else:
-            active.append({"id": entry_id, "policy": str(entry.get("policy", "")), "expiry": expiry_raw})
+            active.append({"id": entry_id, "rule": str(entry.get("rule", "")), "expiry": expiry_raw})
 
-    out = ROOT / "ops/_artifacts/policy/pin-relaxations-audit.json"
+    out = ROOT / "ops/_artifacts/policy/layer-relaxations-audit.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(
         json.dumps(
@@ -53,9 +62,10 @@ def main() -> int:
 
     if errors:
         for err in errors:
-            print(f"pin-relaxations violation: {err}", file=sys.stderr)
+            print(f"layer-relaxations violation: {err}", file=sys.stderr)
         return 1
-    print("pin relaxations audit passed")
+
+    print("layer relaxations audit passed")
     print(out.as_posix())
     return 0
 
