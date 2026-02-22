@@ -218,6 +218,7 @@ def dispatch_command(
         "owners": ("atlasctl.commands.owners", "run_owners_command"),
         "approvals": ("atlasctl.commands.dev.approvals", "run_approvals_command"),
         "migrate": ("atlasctl.commands.dev.migrate", "run_migrate_command"),
+        "contributing": ("atlasctl.commands.internal.contributing", "run_contributing_command"),
         "internal": ("atlasctl.commands.internal.command", "run_internal_command"),
     }
     if ns.cmd in module_dispatch:

@@ -14,6 +14,9 @@ TARGETS: tuple[str, ...] = (
     "packages/atlasctl/docs",
     "docs",
     "configs",
+    "configs/meta/owners.json",
+    "configs/policy/check-intents.json",
+    "configs/policy/check-id-migration.json",
     "makefiles",
 )
 
