@@ -467,6 +467,46 @@
     {
       "area": "registry",
       "default_enabled": true,
+      "description": "forbid policy-listed adjectives in canonical check ids",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_registry_no_banned_adjectives_in_ids",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_registry_no_banned_adjectives_in_ids",
+      "impl_ref": {
+        "callable": "check_registry_no_banned_adjectives_in_ids",
+        "category": "policy",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Rename check ids to remove policy-listed adjectives.",
+        "legacy_id": "checks.registry_no_banned_adjectives_in_ids",
+        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid policy-listed adjectives in canonical check ids"
+    },
+    {
+      "area": "registry",
+      "default_enabled": true,
       "description": "forbid duplicate canonical check ids in registry",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_registry_no_duplicate_canonical_id",
       "domain": "checks",
@@ -839,6 +879,46 @@
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require every registered check to belong to at least one suite"
+    },
+    {
+      "area": "surfaces",
+      "default_enabled": true,
+      "description": "forbid policy-listed adjectives in atlasctl module/docs path names",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_surfaces_no_banned_adjectives_in_paths",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_surfaces_no_banned_adjectives_in_paths",
+      "impl_ref": {
+        "callable": "check_surfaces_no_banned_adjectives_in_paths",
+        "category": "policy",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Rename atlasctl source/docs files and directories to remove banned adjectives.",
+        "legacy_id": "checks.surfaces_no_banned_adjectives_in_paths",
+        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid policy-listed adjectives in atlasctl module/docs path names"
     },
     {
       "area": "pyproject",
