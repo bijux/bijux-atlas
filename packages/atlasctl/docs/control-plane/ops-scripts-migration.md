@@ -51,7 +51,7 @@ Classification legend:
 | `ops/run/root-local.sh` | legacy | legacy | split across `atlasctl dev/ops` |
 | `ops/run/stack-down.sh` | glue | planned | `atlasctl ops stack down` |
 | `ops/run/stack-up.sh` | glue | planned | `atlasctl ops stack up` |
-| `ops/run/undeploy.sh` | glue | planned | `atlasctl ops undeploy` |
+| `ops/run/undeploy.sh` | glue | deleted (atlasctl-native rollback helper) | `atlasctl ops deploy rollback` |
 | `ops/run/warm-dx.sh` | glue | deleted (atlasctl-native composite) | `atlasctl ops warm-dx` |
 | `ops/run/warm-entrypoint.sh` | glue | planned | `atlasctl ops datasets fetch` |
 | `ops/run/warm.sh` | glue | deleted (folded into warm-entrypoint) | `atlasctl ops datasets fetch` |

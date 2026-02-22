@@ -17,7 +17,6 @@
     {"path": "ops/run/load-suite.sh", "owner": "ops", "description": "load suite entrypoint"},
     {"path": "ops/run/stack-down.sh", "owner": "ops", "description": "bring stack down"},
     {"path": "ops/run/stack-up.sh", "owner": "ops", "description": "bring stack up"},
-    {"path": "ops/run/undeploy.sh", "owner": "ops", "description": "undeploy atlas helper"},
     {"path": "ops/stack/faults/inject.sh", "owner": "ops", "description": "fault injection dispatcher"},
     {"path": "ops/stack/kind/context_guard.sh", "owner": "ops", "description": "kind context guard"},
     {"path": "ops/stack/kind/down.sh", "owner": "ops", "description": "kind down helper"},
