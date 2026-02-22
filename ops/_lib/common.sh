@@ -26,13 +26,48 @@ source "${OPS_LIB_ROOT}/guard/context_guard.sh"
 source "${OPS_LIB_ROOT}/guard/version_guard.sh"
 # shellcheck source=ops/_lib/guard/env.sh
 source "${OPS_LIB_ROOT}/guard/env.sh"
-# shellcheck source=ops/_lib/log/errors.sh
-source "${OPS_LIB_ROOT}/log/errors.sh"
-# shellcheck source=ops/_lib/log/log.sh
-source "${OPS_LIB_ROOT}/log/log.sh"
 # shellcheck source=ops/_lib/report/layer_contract.sh
 source "${OPS_LIB_ROOT}/report/layer_contract.sh"
 ARTIFACTS_ROOT="${REPO_ROOT}/artifacts/ops"
+
+# Canonical ops exit codes (formerly sourced from log/errors.sh; inlined after shim removal).
+OPS_ERR_CONFIG=10
+OPS_ERR_CONTEXT=11
+OPS_ERR_VERSION=12
+OPS_ERR_PREREQ=13
+OPS_ERR_TIMEOUT=14
+OPS_ERR_VALIDATION=15
+OPS_ERR_ARTIFACT=16
+OPS_ERR_DOCS=17
+OPS_ERR_INTERNAL=99
+
+ops_fail() {
+  local code="$1"
+  shift
+  printf '%s\n' "${*:-ops failure}" >&2
+  exit "$code"
+}
+
+ops_log_json() {
+  local level="$1"
+  local event="$2"
+  local msg="${3:-}"
+  python3 - "$level" "$event" "$msg" <<'PY'
+import json
+import os
+import sys
+from datetime import datetime, timezone
+level, event, msg = sys.argv[1], sys.argv[2], sys.argv[3]
+print(json.dumps({
+    "ts": datetime.now(timezone.utc).isoformat(),
+    "level": level,
+    "event": event,
+    "msg": msg,
+    "run_id": os.environ.get("RUN_ID") or os.environ.get("OPS_RUN_ID"),
+    "artifact_dir": os.environ.get("ARTIFACT_DIR") or os.environ.get("OPS_RUN_DIR"),
+}, separators=(",", ":")))
+PY
+}
 
 ops_require_run_context() {
   local run_id="${RUN_ID:-${OPS_RUN_ID:-}}"
