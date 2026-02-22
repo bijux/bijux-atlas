@@ -33,8 +33,9 @@ CI_LANES: tuple[tuple[str, str, str, str, str], ...] = (
     ("ci-ops", "ops CI lane", "atlasctl ci ops --json", "lane", "ops"),
     ("ci-release", "release CI lane", "atlasctl ci release --json", "lane", "release"),
     ("ci-release-all", "release full CI lane", "atlasctl ci release-all --json", "lane", "release-all"),
-    ("ci-pr", "PR checks lane (fast checks only)", "atlasctl check run --group all --json", "lane", "pr"),
-    ("ci-nightly", "Nightly checks lane (includes slow)", "atlasctl check run --group all --all --json", "lane", "nightly"),
+    ("ci-pr", "PR lane (fmt+lint+test+repo-fast checks)", "atlasctl ci pr --json", "lane", "ci-pr"),
+    ("ci-nightly", "Nightly lane (includes slow checks and full tests)", "atlasctl ci nightly --json", "lane", "ci-nightly"),
+    ("ci-deps", "dependency lock refresh lane", "atlasctl ci deps --json", "lane", "deps"),
     ("ci-init", "initialize CI isolate/tmp dirs", "atlasctl ci init --json", "helper", ""),
     ("ci-artifacts", "print CI artifact locations", "atlasctl ci artifacts --json", "helper", ""),
 )
@@ -219,7 +220,7 @@ def run_ci_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
     env = os.environ.copy()
     steps_by_cmd: dict[str, list[list[str] | str]] = {
-        "all": [[sys.executable, "-m", "atlasctl.cli", "--quiet", "ci", "run", "--json", "--keep-going"]],
+        "all": [[sys.executable, "-m", "atlasctl.cli", "--quiet", "--format", "json", "suite", "run", "all", "--json", "--keep-going"]],
         "init": [
             [sys.executable, "-m", "atlasctl.cli", "--quiet", "ci", "init-iso-dirs", "--json"],
             [sys.executable, "-m", "atlasctl.cli", "--quiet", "ci", "init-tmp", "--json"],
@@ -236,8 +237,13 @@ def run_ci_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             [sys.executable, "-m", "atlasctl.cli", "--quiet", "ci", "security-advisory-render", "--json"],
         ],
         "scripts": [["make", "-s", "scripts-check"]],
-        "pr": [[sys.executable, "-m", "atlasctl.cli", "--quiet", "--format", "json", "suite", "run", "local", "--json"]],
-        "nightly": [[sys.executable, "-m", "atlasctl.cli", "--quiet", "--format", "json", "suite", "run", "slow", "--json"]],
+        "pr": [
+            ["./bin/atlasctl", "--quiet", "dev", "fmt"],
+            ["./bin/atlasctl", "--quiet", "dev", "lint"],
+            ["./bin/atlasctl", "--quiet", "dev", "test"],
+            ["./bin/atlasctl", "--quiet", "check", "run", "--group", "repo", "--json"],
+        ],
+        "nightly": [[sys.executable, "-m", "atlasctl.cli", "--quiet", "--format", "json", "suite", "run", "ci-nightly", "--json"]],
         "fast": [["python3", "-m", "atlasctl.cli", "--quiet", "suite", "run", "fast", "--json"]],
         "contracts": [
             ["python3", "-m", "atlasctl.cli", "--quiet", "contracts", "check", "--checks", "endpoints"],
@@ -250,6 +256,9 @@ def run_ci_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             ["cargo", "update", "--workspace"],
             ["cargo", "generate-lockfile"],
             ["cargo", "check", "--workspace", "--locked"],
+        ],
+        "deps": [
+            [sys.executable, "-m", "atlasctl.cli", "--quiet", "ci", "dependency-lock-refresh", "--json"],
         ],
         "release-compat-matrix-verify": [
             ["python3", "-m", "atlasctl.cli", "--quiet", "ci", "init-tmp"],

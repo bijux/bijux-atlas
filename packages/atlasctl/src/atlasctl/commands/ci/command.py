@@ -22,6 +22,7 @@ def configure_ci_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]
     run.add_argument("--json", action="store_true", help="emit JSON output")
     run.add_argument("--out-dir", help="output directory for CI artifacts")
     run.add_argument("--lane", action="append", choices=sorted(LANE_FILTERS.keys()), help="restrict suite run to a logical lane")
+    run.add_argument("--maxfail", type=int, default=0, help="stop after N failing suite steps (0 disables)")
     mode = run.add_mutually_exclusive_group()
     mode.add_argument("--fail-fast", action="store_true", help="stop at first failing suite step")
     mode.add_argument("--keep-going", action="store_true", help="continue through all suite steps (default)")
@@ -45,6 +46,7 @@ def configure_ci_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]
         "init-iso-dirs",
         "init-tmp",
         "dependency-lock-refresh",
+        "deps",
         "release-compat-matrix-verify",
         "release-build-artifacts",
         "release-notes-render",
@@ -61,4 +63,3 @@ def configure_ci_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]
         sp = ci_sub.add_parser(name, help=f"run ci action: {name}")
         sp.add_argument("--json", action="store_true", help="emit JSON output")
         sp.add_argument("--verbose", action="store_true", help="show underlying tool command output")
-

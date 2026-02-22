@@ -17,6 +17,9 @@ ci-pr: ## CI PR lane (fast checks only)
 ci-nightly: ## CI nightly lane (includes slow checks)
 	@./bin/atlasctl ci nightly --json
 
+ci-deps: ## CI dependency lock refresh lane
+	@./bin/atlasctl ci deps --json
+
 ci-contracts: ## CI contracts lane wrapper
 	@./bin/atlasctl ci contracts --json
 
@@ -41,4 +44,4 @@ ci-artifacts: ## Show CI artifact output locations
 ci-help: ## Show CI command help
 	@./bin/atlasctl help ci
 
-.PHONY: ci ci-fast ci-all ci-pr ci-nightly ci-contracts ci-docs ci-ops ci-release ci-release-all ci-init ci-artifacts ci-help
+.PHONY: ci ci-fast ci-all ci-pr ci-nightly ci-deps ci-contracts ci-docs ci-ops ci-release ci-release-all ci-init ci-artifacts ci-help
