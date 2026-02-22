@@ -13,7 +13,7 @@ Ensures downstream scoring and regression checks consume deterministic outputs.
 ## Contracts
 
 - Schema: `ops/load/contracts/result-schema.json`
-- Validator: `ops/load/scripts/validate_results.py`
+- Validator: `packages/atlasctl/src/atlasctl/commands/ops/load/reports/validate_results.py` (invoke via `atlasctl run`)
 - Required sidecar metadata fields:
   - `git_sha`
   - `image_digest`

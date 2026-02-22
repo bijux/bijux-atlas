@@ -144,5 +144,5 @@
 ## Public Ops Run Commands
 - `././bin/atlasctl ops prereqs --report text`
 - `././bin/atlasctl ops doctor --report text`
-- `./bin/atlasctl ops stack --report text up`
-- `./bin/atlasctl ops stack --report text down`
+- `./atlasctl ops stack up`
+- `./atlasctl ops stack down`

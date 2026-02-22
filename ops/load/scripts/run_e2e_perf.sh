@@ -17,7 +17,7 @@ if [ "$PR_MODE" = "1" ]; then
   profile="pr"
 fi
 
-"$ROOT/ops/load/scripts/validate_suite_manifest.py"
+./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/load/contracts/validate_suite_manifest.py
 ATLAS_BASE_URL="$BASE_URL" "$ROOT/ops/load/scripts/run_suites_from_manifest.py" --profile "$profile" --out "$ART"
 
 # cold start result
@@ -36,8 +36,8 @@ if [ ! -s "$ART/metrics.prom" ]; then
   exit 1
 fi
 
-"$ROOT/ops/load/scripts/score_k6.py"
-"$ROOT/ops/load/scripts/validate_results.py" "$ART"
+./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/load/reports/score_k6.py
+./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/load/reports/validate_results.py "$ART"
 "$ROOT/ops/load/reports/generate.py"
 
 echo "e2e perf complete: $ART"
