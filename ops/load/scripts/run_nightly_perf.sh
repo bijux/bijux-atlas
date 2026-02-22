@@ -15,7 +15,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-"$ROOT/ops/load/scripts/prepare_perf_store.sh" "$ART/store"
+./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/load/run/prepare_perf_store.py "$ART/store"
 
 docker compose -f "$ROOT/ops/load/compose/docker-compose.perf.yml" up -d --build
 
@@ -31,7 +31,7 @@ if command -v kubectl >/dev/null 2>&1; then
 fi
 OUT_DIR="$ART/cold-start" "$ROOT/ops/load/scripts/cold_start_benchmark.sh"
 
-"$ROOT/ops/load/scripts/check_prereqs.sh"
+./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_prereqs.py
 ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/load/contracts/validate_suite_manifest.py
 docker stats --no-stream --format '{{json .}}' > "$ART/docker_stats_soak_start.json" || true
 ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/load/run/run_suites_from_manifest.py --profile nightly --out "$RES"

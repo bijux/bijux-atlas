@@ -5381,7 +5381,7 @@
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/load/scripts/check_baseline_update_policy.sh`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_baseline_update_policy.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_load_scripts_check_baseline_update_policy_sh",
       "domain": "ops",
       "gate": "ops",
@@ -5393,12 +5393,12 @@
       ],
       "id": "checks_ops_script_ops_load_scripts_check_baseline_update_policy_sh",
       "impl_ref": {
-        "callable": "check_ops_load_scripts_check_baseline_update_policy_sh",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_load_checks_check_baseline_update_policy_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/load/scripts/check_baseline_update_policy.sh` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_baseline_update_policy.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_load_scripts_check_baseline_update_policy_sh",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -5418,7 +5418,7 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/load/scripts/check_baseline_update_policy.sh`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_baseline_update_policy.py`"
     },
     {
       "area": "script",
@@ -5507,7 +5507,7 @@
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/load/scripts/check_prereqs.sh`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_prereqs.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_load_scripts_check_prereqs_sh",
       "domain": "ops",
       "gate": "ops",
@@ -5519,12 +5519,12 @@
       ],
       "id": "checks_ops_script_ops_load_scripts_check_prereqs_sh",
       "impl_ref": {
-        "callable": "check_ops_load_scripts_check_prereqs_sh",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_load_checks_check_prereqs_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/load/scripts/check_prereqs.sh` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_prereqs.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_load_scripts_check_prereqs_sh",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -5544,7 +5544,7 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/load/scripts/check_prereqs.sh`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_prereqs.py`"
     },
     {
       "area": "script",
