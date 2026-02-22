@@ -63,7 +63,7 @@ def main() -> int:
 
     current_legacy: set[str] = set()
     for mk_name, targets in by_file.items():
-        if mk_name in {"root.mk", "product.mk", "dev.mk", "ci.mk", "docs.mk", "ops.mk", "configs.mk", "policies.mk", "packages.mk", "atlasctl.mk", "env.mk", "_macros.mk", "help.mk"}:
+        if mk_name in {"root.mk", "product.mk", "dev.mk", "ci.mk", "docs.mk", "ops.mk", "configs.mk", "policies.mk", "packages.mk", "atlasctl.mk", "env.mk", "_macros.mk"}:
             continue
         for target in sorted(targets):
             if target.startswith("internal/") or target.startswith("_"):
