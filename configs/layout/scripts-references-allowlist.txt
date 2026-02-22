@@ -188,7 +188,7 @@ ops/obs/drills/drills.json
 ops/obs/scripts/alert-firing-proof.sh
 ops/obs/scripts/alerts-validation.sh
 ops/obs/scripts/cheap-endpoint-survival.sh
-ops/obs/scripts/contracts/check_trace_coverage.py
+packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_trace_coverage.py
 ops/obs/scripts/dashboard-fault-signature.sh
 ops/obs/scripts/log-schema-violation-injection.sh
 ops/obs/scripts/metric-cardinality-blowup-attempt.sh
