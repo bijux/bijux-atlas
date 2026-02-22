@@ -10,7 +10,7 @@ Single executable script surface for ops commands.
 - `ops/run/ops-smoke.sh`
 - `atlasctl ops stack up`
 - `atlasctl ops stack down`
-- `ops/run/warm-entrypoint.sh`
+- `atlasctl ops warm`
 - `atlasctl ops deploy`
 - `atlasctl ops e2e run`
 

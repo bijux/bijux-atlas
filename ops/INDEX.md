@@ -30,7 +30,7 @@
 - `ops/run/doctor.sh`
 - `ops/run/root-lanes.sh`
 - `ops/run/root-local.sh`
-- `ops/run/warm-entrypoint.sh`
+- `atlasctl ops warm`
 
 ## Policy
 

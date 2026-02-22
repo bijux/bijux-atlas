@@ -156,6 +156,10 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     cache_status.add_argument("--strict", action="store_true", help="enforce cache threshold check")
     cache_sub.add_parser("prune", help="prune local dataset/cache artifacts")
 
+    warm = ops_sub.add_parser("warm", help="ops warmup and dataset/shard prefetch commands")
+    warm.add_argument("--report", choices=["text", "json"], default="text")
+    warm.add_argument("--mode", choices=["warmup", "datasets", "top", "shards"], default="warmup")
+
     datasets = ops_sub.add_parser("datasets", help="ops dataset commands")
     datasets.add_argument("--report", choices=["text", "json"], default="text")
     datasets_sub = datasets.add_subparsers(dest="ops_datasets_cmd", required=True)
