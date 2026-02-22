@@ -108,7 +108,39 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         return impl._run_simple_cmd(ctx, ["bash", "ops/run/k8s-restart.sh"], ns.report)
 
     if ns.ops_cmd == "deploy":
-        return impl._run_simple_cmd(ctx, ["bash", "ops/run/deploy-atlas.sh"], ns.report)
+        sub = str(getattr(ns, "ops_deploy_cmd", "") or "").strip()
+        if sub in {"", "apply"}:
+            allow_apply = bool(os.environ.get("CI")) or str(os.environ.get("ATLASCTL_OPS_DEPLOY_ALLOW_APPLY", "")).strip().lower() in {"1", "true", "yes", "on"}
+            if not allow_apply:
+                return impl._emit_ops_status(ns.report, 2, "deploy apply is gated; set ATLASCTL_OPS_DEPLOY_ALLOW_APPLY=1 or run in CI")
+            return impl._run_simple_cmd(ctx, ["bash", "ops/run/deploy-atlas.sh"], ns.report)
+        if sub == "plan":
+            payload = {
+                "schema_version": 1,
+                "kind": "ops-deploy-plan",
+                "run_id": ctx.run_id,
+                "status": "ok",
+                "steps": [
+                    "validate ops env",
+                    "validate stack/kind substrate",
+                    "render/apply chart manifests",
+                    "rollout health checks",
+                ],
+                "gates": {
+                    "ci_or_explicit_local_gate_required": True,
+                    "env_var": "ATLASCTL_OPS_DEPLOY_ALLOW_APPLY",
+                },
+            }
+            if ns.report == "json":
+                print(json.dumps(payload, sort_keys=True))
+            else:
+                print("ops deploy plan")
+                for step in payload["steps"]:
+                    print(f"- {step}")
+            return 0
+        if sub == "rollback":
+            return impl._run_simple_cmd(ctx, ["bash", "ops/run/undeploy.sh"], ns.report)
+        return 2
 
     if ns.ops_cmd == "env":
         sub = getattr(ns, "ops_env_cmd", "")
@@ -238,6 +270,53 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                 if code != 0:
                     return code
             return 0
+        if ns.ops_cmd == "k8s" and sub == "render":
+            env_name = str(getattr(ns, "env", "kind") or "kind")
+            payload = impl._ops_k8s_render_summary(ctx.repo_root, env_name=env_name, run_id=ctx.run_id)
+            out_rel = str(getattr(ns, "out", "") or "artifacts/reports/atlasctl/ops-k8s-render.json")
+            written = impl._write_json_report(ctx.repo_root, out_rel, payload)
+            if ns.report == "json":
+                print(json.dumps({"schema_version": 1, "status": "ok", "kind": payload["kind"], "out": written, "render_hash": payload["render_hash"]}, sort_keys=True))
+            else:
+                print(written)
+            return 0
+        if ns.ops_cmd == "k8s" and sub == "validate":
+            in_rel = str(getattr(ns, "in_file", "") or "artifacts/reports/atlasctl/ops-k8s-render.json")
+            path = ctx.repo_root / in_rel
+            if not path.exists():
+                return impl._emit_ops_status(ns.report, 2, f"missing k8s render summary: {in_rel}")
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            errors = impl._validate_ops_k8s_render_payload(payload)
+            return impl._emit_ops_status(ns.report, 0 if not errors else 1, "k8s render summary valid" if not errors else "\n".join(errors))
+        if ns.ops_cmd == "k8s" and sub == "diff":
+            in_rel = str(getattr(ns, "in_file", "") or "artifacts/reports/atlasctl/ops-k8s-render.json")
+            golden_rel = str(getattr(ns, "golden", "") or "ops/k8s/tests/goldens/render-kind.summary.json")
+            in_path = ctx.repo_root / in_rel
+            golden_path = ctx.repo_root / golden_rel
+            if not in_path.exists():
+                return impl._emit_ops_status(ns.report, 2, f"missing input render summary: {in_rel}")
+            if not golden_path.exists():
+                return impl._emit_ops_status(ns.report, 2, f"missing golden render summary: {golden_rel}")
+            current = json.loads(in_path.read_text(encoding="utf-8"))
+            golden = json.loads(golden_path.read_text(encoding="utf-8"))
+            current_cmp = {k: v for k, v in current.items() if k != "run_id"}
+            golden_cmp = {k: v for k, v in golden.items() if k != "run_id"}
+            diff = {
+                "schema_version": 1,
+                "kind": "ops-k8s-render-diff",
+                "status": "pass" if current_cmp == golden_cmp else "fail",
+                "in_file": in_rel,
+                "golden": golden_rel,
+                "current_hash": current.get("render_hash", ""),
+                "golden_hash": golden.get("render_hash", ""),
+                "current_count": current.get("test_count", 0),
+                "golden_count": golden.get("test_count", 0),
+            }
+            if ns.report == "json":
+                print(json.dumps(diff, sort_keys=True))
+            else:
+                print(f"{diff['status']}: current={diff['current_hash']} golden={diff['golden_hash']}")
+            return 0 if diff["status"] == "pass" else 1
         if ns.ops_cmd == "e2e" and sub == "validate":
             for cmd in (
                 ["python3", "packages/atlasctl/src/atlasctl/checks/layout/domains/scenarios/check_e2e_suites.py"],
@@ -283,6 +362,30 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                 if code != 0:
                     return code
             return 0
+        if ns.ops_cmd == "stack" and sub == "status":
+            report = impl._ops_stack_contract_report(ctx.repo_root, ctx.run_id)
+            if ns.report == "json":
+                print(json.dumps(report, sort_keys=True))
+            else:
+                print(f"stack status: {report['status']} pinned_tools={report['pinned_tool_count']} stack_tools={report['stack_tool_count']}")
+            return 0 if report["status"] == "pass" else 1
+        if ns.ops_cmd == "stack" and sub == "validate":
+            report = impl._ops_stack_contract_report(ctx.repo_root, ctx.run_id)
+            errs: list[str] = []
+            if report["missing_in_stack_versions"]:
+                errs.append(f"missing tools in ops/stack/versions.json: {', '.join(report['missing_in_stack_versions'])}")
+            if not report["version_manifest_images"]:
+                errs.append("ops/stack/version-manifest.json must contain at least one image")
+            return impl._emit_ops_status(ns.report, 0 if not errs else 1, "stack contracts valid" if not errs else "\n".join(errs))
+        if ns.ops_cmd == "stack" and sub == "report":
+            payload = impl._ops_stack_contract_report(ctx.repo_root, ctx.run_id)
+            out_rel = str(getattr(ns, "out", "") or "artifacts/reports/atlasctl/ops-stack-report.json")
+            written = impl._write_json_report(ctx.repo_root, out_rel, payload)
+            if ns.report == "json":
+                print(json.dumps({"schema_version": 1, "kind": "ops-stack-report", "status": payload["status"], "out": written}, sort_keys=True))
+            else:
+                print(written)
+            return 0 if payload["status"] == "pass" else 1
         if ns.ops_cmd == "kind" and sub == "up":
             return impl._run_simple_cmd(ctx, ["bash", "ops/stack/kind/up.sh"], ns.report)
         if ns.ops_cmd == "kind" and sub == "down":
