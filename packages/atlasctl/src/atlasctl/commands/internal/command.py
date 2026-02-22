@@ -9,12 +9,13 @@ from ...core.context import RunContext
 from ...core.exec import run
 from .legacy_inventory import run_legacy_inventory
 from .legacy_targets import run_legacy_targets
+from .refactor_check_ids import run_refactor_check_ids
 
 _INTERNAL_FORWARD: dict[str, str] = {
     "self-check": "self-check",
     "doctor": "doctor",
 }
-_INTERNAL_ITEMS: tuple[str, ...] = ("doctor", "legacy", "legacy-targets", "self-check")
+_INTERNAL_ITEMS: tuple[str, ...] = ("doctor", "legacy", "legacy-targets", "refactor-check-ids", "self-check")
 
 
 def _forward(ctx: RunContext, *args: str) -> int:
@@ -47,6 +48,25 @@ def run_internal_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return 2
     if sub == "legacy-targets":
         return run_legacy_targets(ctx, getattr(ns, "report", "text"))
+    if sub == "refactor-check-ids":
+        code, touched = run_refactor_check_ids(ctx.repo_root, apply=bool(getattr(ns, "apply", False)))
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "kind": "refactor-check-ids",
+            "apply": bool(getattr(ns, "apply", False)),
+            "changed_files": touched,
+            "changed_count": len(touched),
+            "alias_expires_on": "2026-12-31",
+        }
+        if bool(getattr(ns, "json", False)):
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            print(f"changed={len(touched)}")
+            for rel in touched:
+                print(rel)
+        return code
     forwarded = _INTERNAL_FORWARD.get(sub)
     if not forwarded:
         return 2
@@ -68,3 +88,5 @@ def configure_internal_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
         sp.add_argument("args", nargs=argparse.REMAINDER)
     legacy_targets = internal_sub.add_parser("legacy-targets", help="list deprecated legacy targets with expiry")
     legacy_targets.add_argument("--report", choices=["text", "json"], default="text")
+    refactor = internal_sub.add_parser("refactor-check-ids", help="rewrite legacy check ids to checks_* canonical ids")
+    refactor.add_argument("--apply", action="store_true", help="apply edits in-place (default: dry-run)")

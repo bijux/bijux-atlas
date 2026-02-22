@@ -1,4 +1,5 @@
 {
+  "check_ids_alias_expires_on": "2026-12-31",
   "check_ids": {
     "configs.pyproject_no_duplicate_tool_config": "checks_configs_pyproject_no_duplicate_tool_config",
     "configs.pyproject_required_blocks": "checks_configs_pyproject_required_blocks",
