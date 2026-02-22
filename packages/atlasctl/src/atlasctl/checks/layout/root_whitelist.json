@@ -9,14 +9,15 @@
     "README.md",
     "makefiles",
     "docs",
-    "scripts",
     "ops",
     "configs"
   ],
   "allowed": [
     ".dockerignore",
     "rust-toolchain.toml",
+    "python-toolchain.toml",
     "mkdocs.yml",
+    "packages",
     "crates",
     "docker",
     "artifacts"

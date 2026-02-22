@@ -21,10 +21,6 @@
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },
     {
-      "path": "packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_artifacts_writes.py",
-      "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
-    },
-    {
       "path": "packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_canonical_entrypoints.py",
       "reason": "dynamic entrypoint or currently tolerated pending reachability cleanup"
     },

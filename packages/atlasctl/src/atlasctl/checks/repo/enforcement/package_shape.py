@@ -53,6 +53,7 @@ _CHECKS_ROOT_ALLOWED_FILES = {"README.md", "REGISTRY.toml", "REGISTRY.generated.
 _CHECKS_DOMAINS_REL = _CHECKS_ROOT_REL / "domains"
 _CHECKS_DOMAIN_MODULE_CAP = 10
 _CHECKS_ROOT_DIR_CAP = 10
+MAX_MODULE_LOC = 600
 
 
 def _iter_top_level_dirs(repo_root: Path) -> list[str]:
@@ -72,6 +73,8 @@ def check_no_nested_same_name_packages(repo_root: Path) -> tuple[int, list[str]]
     offenders: list[str] = []
     for path in sorted(src_root.rglob("*")):
         if not path.is_dir():
+            continue
+        if "__pycache__" in path.parts:
             continue
         parts = path.relative_to(src_root).parts
         for left, right in zip(parts, parts[1:]):
@@ -245,3 +248,18 @@ def check_checks_root_contract(repo_root: Path) -> tuple[int, list[str]]:
             f"reduce folders under {_CHECKS_DOMAINS_REL.as_posix()}",
         )
     return (0 if not errors else 1), errors
+
+
+def check_module_size(repo_root: Path) -> tuple[int, list[str]]:
+    offenders: list[str] = []
+    root = repo_root / "packages/atlasctl/src/atlasctl"
+    for py in sorted(root.rglob("*.py")):
+        rel = py.relative_to(repo_root).as_posix()
+        if "/legacy/" in rel:
+            continue
+        loc = sum(1 for _ in py.open("r", encoding="utf-8"))
+        if loc > MAX_MODULE_LOC:
+            offenders.append(f"{rel}: {loc} LOC > {MAX_MODULE_LOC}")
+    if offenders:
+        return 1, offenders
+    return 0, []
