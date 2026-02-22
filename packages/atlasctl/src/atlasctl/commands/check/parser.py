@@ -48,6 +48,8 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     run.add_argument("--slow", dest="only_slow", action="store_true", help="run only slow checks")
     run.add_argument("--only-slow", dest="only_slow", action="store_true", help="run only slow checks")
     run.add_argument("--fast", dest="only_fast", action="store_true", help="run only fast checks")
+    run.add_argument("--exclude-slow", action="store_true", help="exclude slow checks explicitly")
+    run.add_argument("--suite", help="run checks selected by suite registry name")
     run.add_argument("-m", "--marker", action="append", default=[], help="include only checks with marker(s), comma-separated allowed")
     run.add_argument("--exclude-marker", action="append", default=[], help="exclude checks with marker(s), comma-separated allowed")
     run.add_argument("--list-selected", action="store_true", help="print resolved checks and exit without execution")

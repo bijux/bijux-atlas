@@ -12,6 +12,7 @@ from xml.etree.ElementTree import Element, SubElement, tostring
 
 from ...checks.registry import check_tags, get_check, list_checks
 from ...checks.registry.ssot import generate_registry_json
+from ...registry.suites import suite_manifest_specs, resolve_check_ids
 from ...checks.core.execution import run_function_checks
 from ...checks.engine.runner import domains as check_domains
 from ...checks.engine.runner import run_domain
@@ -23,6 +24,7 @@ from ...core.runtime.paths import write_text_file
 from ...core.runtime.telemetry import emit_telemetry
 from ...core.exit_codes import ERR_USER
 from ...commands.policies.lint.suite_engine import run_lint_suite
+from .selection import split_group_values, split_marker_values
 
 NativeCheck = Callable[[Path], tuple[int, list[str]]]
 SHELL_POLICY_CHECK_IDS: tuple[str, ...] = (
@@ -87,26 +89,6 @@ def _parse_select(value: str) -> tuple[str | None, str]:
     return None, value
 
 
-def _split_marker_values(raw_values: list[str] | None) -> set[str]:
-    values: set[str] = set()
-    for raw in raw_values or []:
-        for part in str(raw).split(","):
-            marker = part.strip()
-            if marker:
-                values.add(marker)
-    return values
-
-
-def _split_group_values(raw: list[str] | None) -> set[str]:
-    values: set[str] = set()
-    for item in raw or []:
-        for part in str(item).split(","):
-            value = part.strip()
-            if value:
-                values.add(value)
-    return values
-
-
 def _check_source_path(ctx: RunContext, check_id: str) -> str | None:
     check = get_check(check_id)
     if check is None:
@@ -154,6 +136,7 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     k_value = str(getattr(ns, "k", "") or "").strip()
     target_value = str(getattr(ns, "check_target", "") or "").strip()
     domain_value = str(getattr(ns, "domain_filter", "") or "").strip()
+    suite_name = str(getattr(ns, "suite", "") or "").strip()
     if id_value and not select_value:
         select_value = id_value
     if k_value and not select_value:
@@ -170,6 +153,13 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
         selected_domain = None
         selector = ""
     checks = [check for check in list_checks() if selected_domain is None or check.domain == selected_domain]
+    if suite_name:
+        spec = next((item for item in suite_manifest_specs() if item.name == suite_name), None)
+        if spec is None:
+            print(f"unknown suite: {suite_name}")
+            return ERR_USER
+        suite_ids = set(resolve_check_ids(spec))
+        checks = [check for check in checks if check.check_id in suite_ids]
     group = str(getattr(ns, "group", "") or "").strip()
     if domain_value and not group:
         group = domain_value
@@ -182,7 +172,7 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             checks = [check for check in checks if check.domain == base and not check.slow]
         else:
             checks = [check for check in checks if (check.domain == group or group in set(check_tags(check)))]
-    exclude_groups = _split_group_values(getattr(ns, "exclude_group", []))
+    exclude_groups = split_group_values(getattr(ns, "exclude_group", []))
     if exclude_groups:
         kept = []
         for check in checks:
@@ -194,6 +184,7 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
         checks = kept
     only_slow = bool(getattr(ns, "only_slow", False))
     only_fast = bool(getattr(ns, "only_fast", False))
+    exclude_slow = bool(getattr(ns, "exclude_slow", False))
     if only_slow and only_fast:
         print("invalid selection: --slow and --fast cannot be used together")
         return ERR_USER
@@ -201,11 +192,13 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
         checks = [check for check in checks if check.slow]
     if only_fast:
         checks = [check for check in checks if not check.slow]
+    if exclude_slow and not only_slow:
+        checks = [check for check in checks if not check.slow]
     include_all = bool(getattr(ns, "include_all", False))
     explicit_selector = bool(id_value or target_value or select_value or k_value)
     if explicit_selector:
         include_all = True
-    marker_values = _split_marker_values(getattr(ns, "marker", []))
+    marker_values = split_marker_values(getattr(ns, "marker", []))
     if "slow" in marker_values:
         include_all = True
     if not include_all and not only_slow and not group.endswith("-slow"):
@@ -217,11 +210,11 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             for check in checks
             if fnmatch(check.check_id, match_pattern) or fnmatch(check.title, match_pattern) or fnmatch(f"atlasctl::{check.domain}::{check.check_id}", match_pattern)
         ]
-    required_markers = _split_marker_values(getattr(ns, "require_markers", []))
+    required_markers = split_marker_values(getattr(ns, "require_markers", []))
     required_markers |= marker_values
     if required_markers:
         checks = [check for check in checks if required_markers.issubset(set(check_tags(check)))]
-    excluded_markers = _split_marker_values(getattr(ns, "exclude_marker", []))
+    excluded_markers = split_marker_values(getattr(ns, "exclude_marker", []))
     if excluded_markers:
         checks = [check for check in checks if not set(check_tags(check)).intersection(excluded_markers)]
     matched_checks = [
