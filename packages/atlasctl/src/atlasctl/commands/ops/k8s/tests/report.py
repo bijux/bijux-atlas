@@ -16,7 +16,7 @@ def _repo_root() -> Path:
 
 def main() -> int:
     root = _repo_root()
-    cmd = [str(root / "ops/_lib/k8s/k8s-test-report.sh"), *sys.argv[1:]]
+    cmd = ["python3", str(root / "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/failure_report.py"), *sys.argv[1:]]
     return subprocess.run(cmd, cwd=str(root), check=False).returncode
 
 
