@@ -520,6 +520,60 @@ def _ops_cache_prune(ctx: RunContext, report_format: str) -> int:
     return _emit_ops_status(report_format, 0, msg)
 
 
+def _ops_prereqs_native(ctx: RunContext, report_format: str) -> int:
+    script = """
+set -euo pipefail
+cd .
+. ./ops/_lib/common.sh
+ops_init_run_id
+ops_env_load
+ops_entrypoint_start "ops-prereqs"
+for c in docker kind kubectl helm k6 python3; do
+  command -v "$c" >/dev/null 2>&1 || ops_fail "$OPS_ERR_PREREQ" "missing required tool: $c"
+done
+ops_version_guard kind kubectl helm k6
+python3 ./packages/atlasctl/src/atlasctl/layout_checks/check_tool_versions.py kind kubectl helm k6 jq yq python3
+python3 ./packages/atlasctl/src/atlasctl/layout_checks/check_ops_pins.py
+python3 --version
+kubectl version --client >/dev/null
+helm version --short >/dev/null
+kind version >/dev/null
+k6 version >/dev/null
+"""
+    return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
+
+
+def _ops_doctor_native(ctx: RunContext, report_format: str) -> int:
+    script = """
+set -euo pipefail
+cd .
+. ./ops/_lib/common.sh
+ops_init_run_id
+ops_env_load
+ops_entrypoint_start "ops-doctor"
+ops_version_guard kind kubectl helm k6
+./bin/atlasctl ops prereqs --report text
+echo "evidence root: artifacts/evidence"
+echo "evidence run id pointer: artifacts/evidence/latest-run-id.txt"
+python3 ./packages/atlasctl/src/atlasctl/layout_checks/check_tool_versions.py kind kubectl helm k6 jq yq python3 || true
+python3 ./packages/atlasctl/src/atlasctl/layout_checks/check_ops_pins.py || true
+if rg -n "(?:legacy/[A-Za-z0-9_.-]+|ops-[A-Za-z0-9-]+-legacy|ops/.*/_legacy/|ops/.*/scripts/.*legacy)" \\
+  makefiles docs .github/workflows >/dev/null 2>&1; then
+  echo "legacy ops path/target references found in public surfaces" >&2
+  rg -n "(?:legacy/[A-Za-z0-9_.-]+|ops-[A-Za-z0-9-]+-legacy|ops/.*/_legacy/|ops/.*/scripts/.*legacy)" \\
+    makefiles docs .github/workflows || true
+  exit 1
+fi
+pin_report="artifacts/evidence/pins/${RUN_ID}/pin-drift-report.json"
+if [ -f "$pin_report" ]; then
+  echo "pin drift report: $pin_report"
+  cat "$pin_report"
+fi
+make -s ops-env-print || true
+"""
+    return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
+
+
 def _ops_warm_dx(ctx: RunContext, report_format: str) -> int:
     repo = ctx.repo_root
     cmds = [

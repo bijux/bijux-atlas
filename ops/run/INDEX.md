@@ -4,8 +4,8 @@
 Single executable script surface for ops commands.
 
 ## Public entrypoints
-- `ops/run/prereqs.sh`
-- `ops/run/doctor.sh`
+- `./bin/atlasctl ops prereqs --report text`
+- `./bin/atlasctl ops doctor --report text`
 - `ops/run/ops-check.sh`
 - `ops/run/ops-smoke.sh`
 - `atlasctl ops stack up`

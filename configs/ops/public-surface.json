@@ -135,8 +135,8 @@
     "verify-inventory"
   ],
   "ops_run_commands": [
-    "ops/run/prereqs.sh",
-    "ops/run/doctor.sh",
+    "./bin/atlasctl ops prereqs --report text",
+    "./bin/atlasctl ops doctor --report text",
     "atlasctl ops stack up",
     "atlasctl ops stack down"
   ],

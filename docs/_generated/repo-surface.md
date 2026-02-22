@@ -142,7 +142,7 @@
 - `make verify-inventory`
 
 ## Public Ops Run Commands
-- `./ops/run/prereqs.sh`
-- `./ops/run/doctor.sh`
+- `././bin/atlasctl ops prereqs --report text`
+- `././bin/atlasctl ops doctor --report text`
 - `./bin/atlasctl ops stack --report text up`
 - `./bin/atlasctl ops stack --report text down`

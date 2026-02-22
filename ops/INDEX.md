@@ -26,8 +26,8 @@
 - `atlasctl ops e2e run`
 - `ops/run/ops-check.sh`
 - `ops/run/ops-smoke.sh`
-- `ops/run/prereqs.sh`
-- `ops/run/doctor.sh`
+- `./bin/atlasctl ops prereqs --report text`
+- `./bin/atlasctl ops doctor --report text`
 - `ops/run/root-lanes.sh`
 - `ops/run/root-local.sh`
 - `atlasctl ops warm`
