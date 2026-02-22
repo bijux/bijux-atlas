@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ast
+import re
 from collections import defaultdict
 from pathlib import Path
 
@@ -14,6 +15,8 @@ _ROOT_MODULES = {
     "atlasctl.cli.surface_registry",
     "atlasctl.checks.registry",
     "atlasctl.commands.policies.runtime.command",
+    "atlasctl.commands.check.command",
+    "atlasctl.commands.configs.command",
 }
 
 
@@ -26,10 +29,57 @@ def _iter_modules(src_root: Path) -> dict[str, Path]:
     return modules
 
 
+_PY_PATH_RE = re.compile(r"(packages/atlasctl/src/atlasctl/[A-Za-z0-9_./-]+\.py)")
+_MOD_REF_RE = re.compile(r"(atlasctl(?:\.[A-Za-z_][A-Za-z0-9_]*)+)")
+
+
+def _collect_path_references(repo_root: Path) -> set[str]:
+    refs: set[str] = set()
+    scan_roots = [
+        repo_root / "makefiles",
+        repo_root / "packages" / "atlasctl" / "src" / "atlasctl" / "commands",
+    ]
+    for base in scan_roots:
+        if not base.exists():
+            continue
+        for path in sorted(base.rglob("*")):
+            if not path.is_file() or path.suffix not in {".mk", ".py"}:
+                continue
+            text = path.read_text(encoding="utf-8", errors="ignore")
+            for match in _PY_PATH_RE.findall(text):
+                refs.add(match)
+    return refs
+
+
+def _collect_module_references(repo_root: Path) -> set[str]:
+    refs: set[str] = set()
+    scan_roots = [repo_root / "packages" / "atlasctl" / "src" / "atlasctl"]
+    for base in scan_roots:
+        if not base.exists():
+            continue
+        for path in sorted(base.rglob("*.py")):
+            text = path.read_text(encoding="utf-8", errors="ignore")
+            for match in _MOD_REF_RE.findall(text):
+                refs.add(match)
+    return refs
+
+
+def _is_script_entrypoint(path: Path) -> bool:
+    try:
+        first = path.read_text(encoding="utf-8", errors="ignore").splitlines()[:1]
+    except OSError:
+        return False
+    if not first:
+        return False
+    return first[0].startswith("#!")
+
+
 def _resolve_import_from(module_name: str, node: ast.ImportFrom) -> str | None:
+    if node.level == 0:
+        return node.module
+
     base = module_name.split(".")
-    if node.level > 0:
-        base = base[:-node.level]
+    base = base[:-node.level]
     if node.module:
         return ".".join([*base, node.module])
     return ".".join(base)
@@ -38,6 +88,8 @@ def _resolve_import_from(module_name: str, node: ast.ImportFrom) -> str | None:
 def analyze_dead_modules(repo_root: Path) -> dict[str, object]:
     src_root = repo_root / _SRC_ROOT
     module_map = _iter_modules(src_root)
+    path_refs = _collect_path_references(repo_root)
+    module_refs = _collect_module_references(repo_root)
     inbound: dict[str, set[str]] = defaultdict(set)
     edges: dict[str, set[str]] = defaultdict(set)
 
@@ -71,6 +123,14 @@ def analyze_dead_modules(repo_root: Path) -> dict[str, object]:
         if path.name == "__init__.py":
             continue
         if module_name in _ROOT_MODULES:
+            continue
+        if module_name in module_refs:
+            continue
+        if "/commands/" in rel:
+            continue
+        if _is_script_entrypoint(path):
+            continue
+        if rel in path_refs:
             continue
         incoming = sorted(inbound.get(module_name, set()))
         if incoming:

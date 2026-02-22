@@ -1,3 +1,13 @@
+from __future__ import annotations
+
+import json
+import os
+import re
+import subprocess
+from datetime import date, datetime, timezone
+from fnmatch import fnmatch
+from pathlib import Path
+
 def check_make_scripts_references(repo_root: Path) -> tuple[int, list[str]]:
     exceptions_path = repo_root / "configs/layout/make-scripts-reference-exceptions.json"
     makefiles = [repo_root / "Makefile", *sorted((repo_root / "makefiles").glob("*.mk"))]

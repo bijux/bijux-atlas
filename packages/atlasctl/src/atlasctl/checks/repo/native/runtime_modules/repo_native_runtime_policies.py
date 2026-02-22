@@ -1,3 +1,11 @@
+from __future__ import annotations
+
+import json
+import subprocess
+import re
+from datetime import date, datetime, timezone
+from pathlib import Path
+
 def check_script_tool_guards(repo_root: Path) -> tuple[int, list[str]]:
     tool_re = re.compile(r"\b(kubectl|helm|kind|k6)\b")
     guards = ("check_tool_versions.py", "ops_version_guard", "packages/atlasctl/src/atlasctl/observability/contracts/governance/check_tool_versions.py")
@@ -205,7 +213,7 @@ def check_atlas_scripts_cli_contract(repo_root: Path) -> tuple[int, list[str]]:
     return (0 if not errs else 1), errs
 
 def check_atlasctl_boundaries(repo_root: Path) -> tuple[int, list[str]]:
-    from ..layout.boundary_check import check_boundaries
+    from ...layout.boundary_check import check_boundaries
 
     violations = check_boundaries(repo_root)
     errors = [f"{v.file}:{v.line} disallowed import {v.source} -> {v.target}" for v in violations]

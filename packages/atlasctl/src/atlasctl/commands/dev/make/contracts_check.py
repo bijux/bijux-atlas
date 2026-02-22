@@ -7,6 +7,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable
 
+import atlasctl.checks.layout.docs.check_ci_targets_documented  # noqa: F401
+
 from ....core.context import RunContext
 from ....core.fs import ensure_evidence_path
 

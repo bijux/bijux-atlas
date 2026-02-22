@@ -162,7 +162,7 @@ evidence-gc: ## Enforce evidence retention policy
 	@$(ATLAS_SCRIPTS) report artifact-gc
 
 evidence/check: ## Validate evidence JSON schema contract for generated outputs
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/artifacts/evidence_check.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts/evidence_check.py
 
 evidence/bundle: ## Export latest evidence bundle as tar.zst for CI attachments
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
@@ -637,10 +637,10 @@ upgrade-guide: ## Generate make target upgrade guide for renamed/deprecated alia
 	@$(ATLAS_SCRIPTS) docs generate-upgrade-guide --report text
 
 artifacts-index: ## Generate artifacts index for inspection UIs
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/artifacts/build_artifacts_index.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts/build_artifacts_index.py
 
 artifacts-clean: ## Clean old artifacts with safe retention
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/artifacts/clean_artifacts.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts/clean_artifacts.py
 
 isolate-clean: ## Remove isolate output directories safely
 	@find artifacts/isolate -mindepth 1 -maxdepth 1 -type d -exec rm -r {} + 2>/dev/null || true
@@ -650,11 +650,11 @@ clean: ## Safe clean for generated local outputs
 	@./ops/run/clean.sh
 
 clean-safe: ## Clean only safe generated make artifact directories
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/artifacts/clean_make_artifacts.py
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts/clean_make_artifacts.py
 
 clean-all: ## Clean all allowed generated dirs (requires CONFIRM=YES)
 	@[ "$${CONFIRM:-}" = "YES" ] || { echo "refusing clean-all without CONFIRM=YES"; exit 2; }
-	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/artifacts/clean_make_artifacts.py --all
+	@$(ATLAS_SCRIPTS) run ./packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts/clean_make_artifacts.py --all
 
 deep-clean: ## Extended clean (prints and then removes generated outputs)
 	@printf '%s\n' 'Deleting: artifacts/isolate artifacts/scripts artifacts/perf/results artifacts/ops'

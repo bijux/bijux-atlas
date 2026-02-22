@@ -9,13 +9,13 @@
     "open_write_call": [],
     "os_environ_access": [
       {
-        "path": "packages/atlasctl/src/atlasctl/core/runtime/env_guard.py",
+        "path": "packages/atlasctl/src/atlasctl/core/runtime/guards/env_guard.py",
         "reason": "temporary boundary exception; migrate to core boundary"
       }
     ],
     "path_write_call": [
       {
-        "path": "packages/atlasctl/src/atlasctl/checks/layout/artifacts/evidence_pr_summary.py",
+        "path": "packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts/evidence_pr_summary.py",
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {
@@ -333,7 +333,7 @@
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {
-        "path": "packages/atlasctl/src/atlasctl/core/runtime/env_guard.py",
+        "path": "packages/atlasctl/src/atlasctl/core/runtime/guards/env_guard.py",
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {
@@ -511,7 +511,7 @@
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {
-        "path": "packages/atlasctl/src/atlasctl/core/runtime/env_guard.py",
+        "path": "packages/atlasctl/src/atlasctl/core/runtime/guards/env_guard.py",
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {

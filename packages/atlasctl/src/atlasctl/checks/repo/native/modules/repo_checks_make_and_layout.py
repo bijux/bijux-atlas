@@ -40,8 +40,8 @@ def check_no_xtask_refs(repo_root: Path) -> tuple[int, list[str]]:
         "packages/atlasctl/src/atlasctl/checks/repo/paths.py",
         "packages/atlasctl/src/atlasctl/checks/repo/domains/paths.py",
         "packages/atlasctl/src/atlasctl/checks/repo/native/modules/repo_checks_scripts_and_docker.py",
-        "packages/atlasctl/tests/checks/test_check_native.py",
-        "packages/atlasctl/tests/checks/test_check_registry_features.py",
+        "packages/atlasctl/tests/checksuite/checks/test_check_native.py",
+        "packages/atlasctl/tests/checksuite/checks/test_check_registry_features.py",
     }
     for root in include_roots:
         paths: list[Path]
