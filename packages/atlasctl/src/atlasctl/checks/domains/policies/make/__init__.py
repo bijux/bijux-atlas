@@ -51,6 +51,7 @@ from ....repo.native import (
     check_make_help,
     check_make_no_direct_python_script_invocations,
     check_make_scripts_references,
+    check_make_wrapper_target_budget,
 )
 from ....core.base import CheckDef
 
@@ -389,6 +390,14 @@ CHECKS: tuple[CheckDef, ...] = (
         1000,
         check_make_root_budget,
         fix_hint="Reduce root.mk orchestration surface and keep only public wrappers.",
+    ),
+    CheckDef(
+        "make.wrapper_target_budget",
+        "make",
+        "enforce per-makefile wrapper target count budgets",
+        900,
+        check_make_wrapper_target_budget,
+        fix_hint="Collapse redundant wrappers and keep only canonical make targets per makefile.",
     ),
     CheckDef(
         "make.target_boundaries_enforced",

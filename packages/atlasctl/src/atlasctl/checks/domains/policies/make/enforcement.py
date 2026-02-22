@@ -11,7 +11,6 @@ from ....repo.native import (
     check_make_no_direct_python_script_invocations,
     check_make_scripts_references,
 )
-
 _MAKE_RECIPE_RE = re.compile(r"^\t(?P<body>.*)$")
 _MAKE_TARGET_RE = re.compile(r"^(?P<target>[A-Za-z0-9_./-]+):(?:\s|$)")
 _SCRIPT_PATH_RE = re.compile(r"(^|\s)(?:\./)?(?:ops|scripts|packages/atlasctl/src/atlasctl)/[^\s]+\.(?:sh|py)(?:\s|$)")
@@ -284,6 +283,8 @@ def check_make_root_budget(repo_root: Path) -> tuple[int, list[str]]:
     if len(targets) > _ROOT_MK_MAX_TARGETS:
         errors.append(f"makefiles/root.mk exceeds target-count budget ({len(targets)} > {_ROOT_MK_MAX_TARGETS})")
     return (0 if not errors else 1), errors
+
+
 
 
 def check_ci_workflows_call_make_and_make_calls_atlasctl(repo_root: Path) -> tuple[int, list[str]]:
