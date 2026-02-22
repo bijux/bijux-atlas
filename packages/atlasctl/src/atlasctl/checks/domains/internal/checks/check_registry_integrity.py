@@ -3,12 +3,14 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
+from .....core.process import run_command
 
 
 _CANONICAL_RE = re.compile(r"^checks_[a-z0-9]+_[a-z0-9]+_[a-z0-9_]+$")
 _CATALOG_PATH = Path("packages/atlasctl/src/atlasctl/registry/checks_catalog.json")
 _DOCS_META_PATH = Path("packages/atlasctl/docs/_meta/checks-registry.txt")
 _COUNT_BUDGET_PATH = Path("configs/policy/checks-count-budget.json")
+_FORBIDDEN_ADJECTIVES_CONFIG = Path("configs/policy/forbidden-adjectives.json")
 
 
 def check_registry_integrity(repo_root: Path) -> tuple[int, list[str]]:
@@ -33,6 +35,18 @@ def _entries(repo_root: Path):
     from ....registry.ssot import load_registry_entries
 
     return load_registry_entries(repo_root)
+
+
+def _forbidden_terms(repo_root: Path) -> tuple[str, ...]:
+    path = repo_root / _FORBIDDEN_ADJECTIVES_CONFIG
+    if not path.exists():
+        return ()
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    raw = payload.get("terms", [])
+    if not isinstance(raw, list):
+        return ()
+    out = tuple(sorted({str(term).strip().lower() for term in raw if str(term).strip()}))
+    return out
 
 
 def check_registry_all_checks_have_canonical_id(repo_root: Path) -> tuple[int, list[str]]:
@@ -199,3 +213,35 @@ def check_count_budget(repo_root: Path) -> tuple[int, list[str]]:
     if total > max_total:
         return 1, [f"checks count budget exceeded: {total} > {max_total} ({_COUNT_BUDGET_PATH.as_posix()})"]
     return 0, []
+
+
+def check_registry_no_banned_adjectives_in_ids(repo_root: Path) -> tuple[int, list[str]]:
+    terms = _forbidden_terms(repo_root)
+    if not terms:
+        return 0, []
+    errors: list[str] = []
+    for entry in _entries(repo_root):
+        lowered = entry.id.lower()
+        bad = [term for term in terms if term in lowered]
+        if bad:
+            errors.append(f"{entry.id}: check id contains banned adjective(s): {', '.join(sorted(set(bad)))}")
+    return (1, errors) if errors else (0, [])
+
+
+def check_surfaces_no_banned_adjectives_in_paths(repo_root: Path) -> tuple[int, list[str]]:
+    terms = _forbidden_terms(repo_root)
+    if not terms:
+        return 0, []
+    result = run_command(
+        ["git", "ls-files", "packages/atlasctl/src/atlasctl", "packages/atlasctl/docs"],
+        cwd=repo_root,
+    )
+    if result.code != 0:
+        return 1, ["unable to list tracked atlasctl surfaces for adjective scan"]
+    errors: list[str] = []
+    for rel in sorted(line.strip() for line in result.stdout.splitlines() if line.strip()):
+        lowered = rel.lower()
+        bad = [term for term in terms if term in lowered]
+        if bad:
+            errors.append(f"{rel}: path contains banned adjective(s): {', '.join(sorted(set(bad)))}")
+    return (1, errors) if errors else (0, [])
