@@ -279,7 +279,7 @@ policies-check: ## Alias for policies/check
 budgets/check: ## Validate universal budgets and budget-relaxation expiry policy
 	@$(MAKE) -s budgets
 	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/ops/checks/check_ops_budgets.py
-	@./bin/atlasctl run ./ops/_lint/budget-relaxations-audit.py
+	@./bin/atlasctl policies relaxations-check
 
 budgets: ## Run fast suite budgets gate and emit culprits artifacts
 	@mkdir -p artifacts/reports/atlasctl
@@ -310,10 +310,7 @@ policies/all: ## Policies lane (deny/audit/policy checks)
 	@$(call with_iso,policies-all,$(MAKE) -s policies/check)
 
 policies/boundaries-check: ## Enforce e2e layer boundary rules and relaxations
-	@./bin/atlasctl run ./ops/_lint/layer-relaxations-audit.py
-	@./bin/atlasctl run ./ops/_lint/no-layer-fixups.py
-	@./bin/atlasctl run ./ops/_lint/no-k8s-test-fixups.py
-	@./bin/atlasctl run ./ops/_lint/no-stack-layer-literals.py
+	@./bin/atlasctl policies check --fail-fast
 
 local/all: ## Run all meaningful local gates
 	@PARALLEL="$${PARALLEL:-1}" RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-local-all-$(MAKE_RUN_TS)}}" MODE=root-local ./bin/atlasctl run ./ops/run/root-lanes.sh
@@ -522,7 +519,7 @@ architecture-check: ## Validate runtime architecture boundaries and dependency g
 	@cargo test -p bijux-atlas-server --test import_boundary_guardrails
 
 fetch-real-datasets:
-	@./bin/atlasctl run ./ops/datasets/scripts/fixtures/fetch-real-datasets.sh
+	@./bin/atlasctl datasets fetch
 
 ssot-check:
 	@./bin/atlasctl contracts generate --generators artifacts chart-schema

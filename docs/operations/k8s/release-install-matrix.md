@@ -25,7 +25,7 @@ Missing profile/test entries indicate CI generation drift or skipped suites.
 ## How to verify
 
 ```bash
-$ ops/k8s/ci/install-matrix.sh
+$ ./bin/atlasctl ops k8s --report text contracts
 $ make docs
 ```
 

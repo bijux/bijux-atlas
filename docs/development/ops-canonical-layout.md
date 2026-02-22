@@ -28,4 +28,4 @@ The canonical SSOT is `ops/CONTRACT.md`.
 - No symlinked domain directories under `ops/`.
 - Artifacts write to `ops/_artifacts/` unless allowlisted in `configs/ops/artifacts-allowlist.txt`.
 - Empty dirs must contain `INDEX.md` explaining why they exist.
-- Fault injection calls must go through `ops/stack/faults/inject.sh`.
+- Fault injection calls must go through `./bin/atlasctl ops kind fault <name>`.

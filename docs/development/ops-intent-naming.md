@@ -14,6 +14,6 @@ Use durable names that describe behavior and contract intent.
 
 ## Enforced By
 
-- `ops/_lint/naming.sh`
-- `ops/_lint/no-direct-script-usage.py`
+- `./bin/atlasctl ops naming-check --report text`
+- `./bin/atlasctl ops no-direct-script-usage-check --report text`
 - `atlasctl docs durable-naming-check --report text`
