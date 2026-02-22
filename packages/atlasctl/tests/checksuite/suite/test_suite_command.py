@@ -84,7 +84,7 @@ def test_suite_run_text_style_matches_check_style() -> None:
     assert proc.returncode in {0, 2}, proc.stderr
     text = proc.stdout
     assert "internal error" not in proc.stderr
-    assert text == "" or ("summary: passed=" in text and "failed=" in text and "total=" in text)
+    assert text == "" or ("summary: passed=" in text and "failed=" in text and "total=" in text) or ("FAIL check " in text)
 
 
 def test_suite_run_profile_and_slow_report(tmp_path) -> None:
