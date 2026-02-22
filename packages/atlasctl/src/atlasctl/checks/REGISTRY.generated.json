@@ -1157,6 +1157,33 @@
       ]
     },
     {
+      "area": "ci",
+      "callable": "check_docs_ci_lane_mapping",
+      "category": "hygiene",
+      "description": "require CI workflow lane mapping doc and referenced jobs/workflows",
+      "domain": "docs",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Update packages/atlasctl/docs/control-plane/ci-lane-mapping.md and CI workflow job names together.",
+      "gate": "docs",
+      "groups": [
+        "docs",
+        "fast",
+        "required"
+      ],
+      "id": "checks_docs_ci_lane_mapping",
+      "legacy_id": "docs.ci_lane_mapping",
+      "module": "atlasctl.checks.domains.docs.integrity",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 600,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
       "area": "command",
       "callable": "check_command_group_docs_pages",
       "category": "hygiene",
@@ -1908,6 +1935,33 @@
       "severity": "error",
       "speed": "fast",
       "timeout_ms": 900,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "makefiles",
+      "callable": "check_makefiles_wrappers_only_all",
+      "category": "hygiene",
+      "description": "enforce wrapper-only invariant across canonical makefiles",
+      "domain": "make",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Keep canonical makefiles as thin wrappers that delegate via ./bin/atlasctl or approved $(MAKE) wrappers.",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_makefiles_wrappers_only_all",
+      "legacy_id": "make.makefiles_wrappers_only_all",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -2919,6 +2973,34 @@
     },
     {
       "area": "no",
+      "callable": "check_ops_no_new_run_scripts_without_approval_and_expiry",
+      "category": "hygiene",
+      "description": "forbid new ops/run scripts without valid temporary approval and expiry",
+      "domain": "ops",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Keep ops/run scripts allowlisted only via valid non-expired temp approvals, or migrate/delete them.",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_no_new_run_scripts_without_approval_and_expiry",
+      "legacy_id": "ops.no_new_run_scripts_without_approval_and_expiry",
+      "module": "atlasctl.checks.domains.ops.ops_checks",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "no",
       "callable": "check_ops_generated_tracked",
       "category": "hygiene",
       "description": "forbid tracked files in generated ops dirs",
@@ -3440,6 +3522,34 @@
       ],
       "id": "checks_policies_bypass_count_nonincreasing",
       "legacy_id": "policies.bypass_count_nonincreasing",
+      "module": "atlasctl.checks.domains.policies.make",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
+      "callable": "check_policies_bypass_count_nonincreasing",
+      "category": "hygiene",
+      "description": "hard fail invariant: bypass count must not increase",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Reduce bypass count or intentionally update baseline in one reviewed change.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_count_nonincreasing_hard",
+      "legacy_id": "policies.bypass_count_nonincreasing_hard",
       "module": "atlasctl.checks.domains.policies.make",
       "owner": "platform",
       "severity": "error",
