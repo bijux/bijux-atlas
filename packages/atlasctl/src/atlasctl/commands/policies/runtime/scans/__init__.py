@@ -1,1 +1,3 @@
-"""Repository scan policies."""
+"""Policy runtime scan package boundary."""
+
+__all__: tuple[str, ...] = ()

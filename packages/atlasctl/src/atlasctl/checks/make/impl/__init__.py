@@ -1,1 +1,0 @@
-"""Canonical make check implementations."""
