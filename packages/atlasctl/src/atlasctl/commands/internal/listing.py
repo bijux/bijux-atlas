@@ -12,6 +12,7 @@ from ...core.context import RunContext
 from ...registry import CheckRecord, CommandRecord, SuiteRecord
 from ..policies.runtime.command import _POLICIES_ITEMS
 from ...suite.command import load_suites
+from ...suite.manifests import load_first_class_suites
 
 
 def _parse_tags(raw: str) -> tuple[str, ...]:
@@ -82,6 +83,7 @@ def _command_records() -> list[CommandRecord]:
 
 def _suite_records(ctx: RunContext) -> list[SuiteRecord]:
     default_name, suites = load_suites(ctx.repo_root)
+    manifests = load_first_class_suites()
     out: list[SuiteRecord] = []
     for spec in suites.values():
         tags = {"suite", spec.name, "default" if spec.name == default_name else "non-default"}
@@ -98,6 +100,20 @@ def _suite_records(ctx: RunContext) -> list[SuiteRecord]:
                 complete=spec.complete,
                 tags=tuple(sorted(tags)),
                 internal=internal,
+            )
+        )
+    for manifest in manifests.values():
+        if manifest.name in suites:
+            continue
+        tags = {"suite", manifest.name, *manifest.markers, "first-class", "public" if not manifest.internal else "internal"}
+        out.append(
+            SuiteRecord(
+                name=manifest.name,
+                includes=(),
+                item_count=len(manifest.check_ids),
+                complete=True,
+                tags=tuple(sorted(tags)),
+                internal=manifest.internal,
             )
         )
     return sorted(out, key=lambda item: item.name)
@@ -201,6 +217,7 @@ def run_list_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return 0
 
     records = _filter_records(_suite_records(ctx), tags, pattern, include_internal)
+    manifests = load_first_class_suites()
     payload = {
         "schema_version": 1,
         "tool": "atlasctl",
@@ -215,6 +232,9 @@ def run_list_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 "complete": rec.complete,
                 "tags": list(rec.tags),
                 "internal": rec.internal,
+                "markers": list(manifests[rec.name].markers) if rec.name in manifests else [],
+                "check_count": len(manifests[rec.name].check_ids) if rec.name in manifests else None,
+                "kind": "first-class" if rec.name in manifests else "pyproject",
             }
             for rec in records
         ],

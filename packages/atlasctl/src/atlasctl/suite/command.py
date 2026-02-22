@@ -132,6 +132,29 @@ def _filter_tasks(tasks: list[TaskSpec], only: list[str], skip: list[str]) -> li
     return filtered
 
 
+def _filter_tasks_by_groups(tasks: list[TaskSpec], groups: list[str]) -> list[TaskSpec]:
+    if not groups:
+        return list(tasks)
+    wanted = {g.strip() for g in groups if g.strip()}
+    if not wanted:
+        return list(tasks)
+    filtered: list[TaskSpec] = []
+    for task in tasks:
+        if task.suite in wanted:
+            filtered.append(task)
+            continue
+        if task.kind == "cmd":
+            if any(f"atlasctl {group}" in task.value for group in wanted):
+                filtered.append(task)
+                continue
+        if task.kind == "check":
+            check = get_check(task.value)
+            if check is not None and wanted.intersection(check_tags(check)):
+                filtered.append(task)
+                continue
+    return filtered
+
+
 def _run_check_task(repo_root: Path, check_id: str) -> tuple[bool, str]:
     check = get_check(check_id)
     if check is None:
@@ -358,7 +381,22 @@ def _suite_legacy_check_violations(manifests: dict[str, SuiteManifest]) -> list[
     return errors
 
 
-def _run_first_class_suite(ctx: RunContext, manifest: SuiteManifest, as_json: bool, list_only: bool, target_dir: str | None) -> int:
+def _run_first_class_suite(
+    ctx: RunContext,
+    manifest: SuiteManifest,
+    as_json: bool,
+    list_only: bool,
+    target_dir: str | None,
+    groups: tuple[str, ...] = (),
+) -> int:
+    selected_ids = list(manifest.check_ids)
+    if groups:
+        wanted = {g.strip() for g in groups if g.strip()}
+        selected_ids = [
+            check_id
+            for check_id in selected_ids
+            if (check := get_check(check_id)) is not None and wanted.intersection(check_tags(check))
+        ]
     if list_only:
         payload = {
             "schema_version": 1,
@@ -370,13 +408,14 @@ def _run_first_class_suite(ctx: RunContext, manifest: SuiteManifest, as_json: bo
             "internal": manifest.internal,
             "default_effects": list(manifest.default_effects),
             "time_budget_ms": manifest.time_budget_ms,
-            "check_ids": list(manifest.check_ids),
-            "total_count": len(manifest.check_ids),
+            "check_ids": selected_ids,
+            "total_count": len(selected_ids),
+            "group_filter": list(groups),
         }
         print(dumps_json(payload, pretty=not as_json))
         return 0
 
-    checks = [check for check_id in manifest.check_ids if (check := get_check(check_id)) is not None]
+    checks = [check for check_id in selected_ids if (check := get_check(check_id)) is not None]
     target = Path(target_dir) if target_dir else (ctx.repo_root / "artifacts/isolate" / ctx.run_id / "atlasctl-suite")
     target.mkdir(parents=True, exist_ok=True)
     started = time.perf_counter()
@@ -418,6 +457,7 @@ def _run_first_class_suite(ctx: RunContext, manifest: SuiteManifest, as_json: bo
         "internal": manifest.internal,
         "required_env": list(manifest.required_env),
         "default_effects": list(manifest.default_effects),
+        "group_filter": list(groups),
         "summary": summary,
         "results": rows,
         "target_dir": target.as_posix(),
