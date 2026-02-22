@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 
 from ...checks.registry import check_rename_aliases, check_tags, get_check, list_checks
+from ...checks.registry.ssot import check_id_alias_expiry
 from ...contracts.ids import CHECK_LIST, CHECK_TAXONOMY
 from ...contracts.validate_self import validate_self
 from ...core.exit_codes import ERR_CONTRACT, ERR_USER
@@ -155,11 +156,13 @@ def run(ctx, ns: argparse.Namespace) -> int:
             print(f"internal check runner error: {exc}")
             return ERR_CONTRACT
     if sub == "rename-report":
+        expiry = check_id_alias_expiry(ctx.repo_root)
         payload = {
             "schema_version": 1,
             "tool": "atlasctl",
             "status": "ok",
             "kind": "check-rename-report",
+            "alias_expires_on": expiry,
             "renames": [{"old": old, "new": new} for old, new in check_rename_aliases().items()],
         }
         print(json.dumps(payload, sort_keys=True) if (ns.json or ctx.output_format == "json") else "\n".join(f"{row['old']} -> {row['new']}" for row in payload["renames"]))
@@ -198,6 +201,7 @@ def run(ctx, ns: argparse.Namespace) -> int:
             "checks": [
                 {
                     "id": check.check_id,
+                    "gate": next((tag.removeprefix("gate:") for tag in check.tags if tag.startswith("gate:")), check.domain),
                     "title": check.title,
                     "domain": check.domain,
                     "description": check.description,
@@ -263,6 +267,27 @@ def run(ctx, ns: argparse.Namespace) -> int:
         for owner, ids in sorted(ownership.items()):
             print(f"{owner} ({len(ids)})")
             for check_id in sorted(ids):
+                print(f"- {check_id}")
+        return 0
+    if sub == "gates":
+        checks = list_checks()
+        gates: dict[str, list[str]] = {}
+        for check in checks:
+            gate = next((tag.removeprefix("gate:") for tag in check.tags if tag.startswith("gate:")), check.domain)
+            gates.setdefault(gate, []).append(check.check_id)
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "kind": "check-gates",
+            "gates": [{"gate": gate, "checks": sorted(ids), "count": len(ids)} for gate, ids in sorted(gates.items())],
+        }
+        if ctx.output_format == "json" or ns.json:
+            print(json.dumps(payload, sort_keys=True))
+            return 0
+        for row in payload["gates"]:
+            print(f"{row['gate']} ({row['count']})")
+            for check_id in row["checks"]:
                 print(f"- {check_id}")
         return 0
     if sub == "groups":
@@ -338,6 +363,7 @@ def run(ctx, ns: argparse.Namespace) -> int:
             "module": check.fn.__module__,
             "callable": check.fn.__name__,
             "module_docstring": module_doc,
+            "gate": next((tag.removeprefix("gate:") for tag in check.tags if tag.startswith("gate:")), check.domain),
         }
         print(json.dumps(payload, sort_keys=True) if ctx.output_format == "json" or ns.json else json.dumps(payload, indent=2, sort_keys=True))
         return 0

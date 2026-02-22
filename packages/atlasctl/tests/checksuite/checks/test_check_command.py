@@ -8,7 +8,7 @@ from pathlib import Path
 
 from tests.helpers import golden_text
 
-ROOT = Path(__file__).resolve().parents[4]
+ROOT = Path(__file__).resolve().parents[5]
 
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
@@ -84,3 +84,33 @@ def test_checks_failures_json_report() -> None:
     payload = json.loads(proc.stdout)
     assert payload["kind"] == "check-failures"
     assert payload["failed_count"] == 1
+
+
+def test_check_run_list_selected_is_sorted() -> None:
+    proc = _run_cli("check", "run", "--group", "repo", "--list-selected", "--json")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["kind"] == "check-selection"
+    assert payload["checks"] == sorted(payload["checks"])
+
+
+def test_check_run_marker_and_exclude_marker_filters() -> None:
+    proc = _run_cli("check", "run", "-m", "slow", "--exclude-marker", "slow", "--list-selected", "--json")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["count"] == 0
+
+
+def test_check_run_exclude_group_filter() -> None:
+    proc = _run_cli("check", "run", "--group", "repo", "--exclude-group", "repo", "--list-selected", "--json")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["count"] == 0
+
+
+def test_checks_gates_json() -> None:
+    proc = _run_cli("checks", "gates", "--json")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["kind"] == "check-gates"
+    assert any(row["gate"] == "repo" for row in payload["gates"])

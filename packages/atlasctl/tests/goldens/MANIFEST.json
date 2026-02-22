@@ -33,6 +33,10 @@
       "path": "check/checks-owners.json.golden"
     },
     {
+      "name": "checks-gates.json.golden",
+      "path": "check/checks-gates.json.golden"
+    },
+    {
       "name": "checks-tree.json.golden",
       "path": "check/checks-tree.json.golden"
     },
