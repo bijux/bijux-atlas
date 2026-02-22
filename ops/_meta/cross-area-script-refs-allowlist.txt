@@ -10,9 +10,9 @@ makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/datasets/fetch_and_
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/datasets/pin_set.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/datasets/promotion_sim.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/datasets/snapshot_metadata.py
-makefiles/ops.mk|ops/e2e/scripts/smoke_queries.sh
-makefiles/ops.mk|ops/e2e/scripts/verify_metrics.sh
-makefiles/ops.mk|ops/e2e/scripts/verify_traces.sh
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/smoke_queries.py
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/verify_metrics.py
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/verify_traces.py
 makefiles/ops.mk|ops/e2e/scripts/warmup.sh
 makefiles/ops.mk|ops/k8s/scripts/clean_uninstall.sh
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_baseline_update_policy.py
@@ -64,7 +64,7 @@ atlasctl ops deploy|ops/e2e/scripts/deploy_atlas.sh
 scripts/areas/layout/check_obs_pack_ssot.py|packages/atlasctl/src/atlasctl/commands/ops/observability/install_pack.py
 scripts/areas/layout/check_ops_canonical_entrypoints.py|ops/datasets/scripts/publish_by_name.sh
 scripts/areas/layout/check_ops_canonical_entrypoints.py|ops/e2e/scripts/deploy_atlas.sh
-scripts/areas/layout/check_ops_canonical_entrypoints.py|ops/e2e/scripts/smoke_queries.sh
+scripts/areas/layout/check_ops_canonical_entrypoints.py|packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/smoke_queries.py
 scripts/areas/layout/check_ops_canonical_entrypoints.py|ops/k8s/scripts/deploy_atlas.sh
 scripts/areas/layout/check_ops_canonical_entrypoints.py|packages/atlasctl/src/atlasctl/commands/ops/observability/verify_pack.py
 scripts/areas/layout/check_ops_single_validators.py|packages/atlasctl/src/atlasctl/commands/ops/observability/verify_pack.py
