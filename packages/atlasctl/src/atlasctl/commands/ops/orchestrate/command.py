@@ -277,15 +277,15 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.cmd == "k8s":
         mapping = {
             "render": ["helm", "template", "atlas", "ops/chart"],
-            "install": ["bash", "ops/run/deploy-atlas.sh"],
+            "install": ["./bin/atlasctl", "ops", "deploy", "--report", "text", "apply"],
             "uninstall": ["./bin/atlasctl", "ops", "deploy", "--report", "text", "rollback"],
         }
         return _run_wrapped(ctx, OrchestrateSpec("k8s", ns.k8s_cmd, mapping[ns.k8s_cmd]), ns.report)
     if ns.cmd == "stack":
         mapping = {
-            "up": ["bash", "ops/run/stack-up.sh"],
-            "down": ["bash", "ops/run/stack-down.sh"],
-            "reset": ["bash", "-lc", "ops/run/stack-down.sh && ops/run/stack-up.sh"],
+            "up": ["./bin/atlasctl", "ops", "stack", "--report", "text", "up"],
+            "down": ["./bin/atlasctl", "ops", "stack", "--report", "text", "down"],
+            "reset": ["bash", "-lc", "./bin/atlasctl ops stack --report text down && ./bin/atlasctl ops stack --report text up"],
         }
         return _run_wrapped(ctx, OrchestrateSpec("stack", ns.stack_cmd, mapping[ns.stack_cmd]), ns.report)
     if ns.cmd == "obs":

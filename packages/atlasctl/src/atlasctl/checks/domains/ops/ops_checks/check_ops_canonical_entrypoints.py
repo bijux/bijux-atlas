@@ -19,8 +19,8 @@ ROOT = _repo_root()
 ops_mk = (ROOT / "makefiles/ops.mk").read_text(encoding="utf-8")
 errors: list[str] = []
 
-if "./ops/run/deploy-atlas.sh" not in ops_mk:
-    errors.append("ops-deploy must call ./ops/run/deploy-atlas.sh")
+if "./bin/atlasctl ops deploy --report text apply" not in ops_mk:
+    errors.append("ops-deploy must call ./bin/atlasctl ops deploy --report text apply")
 if "./ops/run/undeploy.sh" not in ops_mk:
     errors.append("ops-undeploy must call ./ops/run/undeploy.sh")
 if "./ops/k8s/scripts/deploy_atlas.sh" in ops_mk:
@@ -40,10 +40,10 @@ if "ops-check-legacy" in ops_mk or "ops-smoke-legacy" in ops_mk:
 
 stack_up_block = ops_mk.split("ops-stack-up:", 1)[1].split("\n\n", 1)[0] if "ops-stack-up:" in ops_mk else ""
 stack_down_block = ops_mk.split("ops-stack-down:", 1)[1].split("\n\n", 1)[0] if "ops-stack-down:" in ops_mk else ""
-if "./ops/run/stack-up.sh" not in stack_up_block:
-    errors.append("ops-stack-up must call ./ops/run/stack-up.sh")
-if "./ops/run/stack-down.sh" not in stack_down_block:
-    errors.append("ops-stack-down must call ./ops/run/stack-down.sh")
+if "./bin/atlasctl ops stack --report text up" not in stack_up_block:
+    errors.append("ops-stack-up must call ./bin/atlasctl ops stack --report text up")
+if "./bin/atlasctl ops stack --report text down" not in stack_down_block:
+    errors.append("ops-stack-down must call ./bin/atlasctl ops stack --report text down")
 if "ops-stack-uninstall:" in ops_mk:
     errors.append("ops-stack-uninstall duplicate path is forbidden; use ops-stack-down")
 if "./ops/e2e/scripts/up.sh" in ops_mk or "./ops/e2e/scripts/down.sh" in ops_mk:
@@ -52,9 +52,9 @@ if "./ops/e2e/scripts/up.sh" in ops_mk or "./ops/e2e/scripts/down.sh" in ops_mk:
 for path in [ROOT / "ops/e2e/realdata/run_single_release.sh", ROOT / "ops/e2e/realdata/run_two_release_diff.sh"]:
     txt = path.read_text(encoding="utf-8")
     if "/ops/e2e/scripts/deploy_atlas.sh" in txt:
-        errors.append(f"{path.relative_to(ROOT)} must use ops/run/deploy-atlas.sh")
+        errors.append(f"{path.relative_to(ROOT)} must use atlasctl ops deploy")
     if "/ops/k8s/scripts/deploy_atlas.sh" in txt:
-        errors.append(f"{path.relative_to(ROOT)} must use ops/run/deploy-atlas.sh")
+        errors.append(f"{path.relative_to(ROOT)} must use atlasctl ops deploy")
     if "/ops/e2e/runner/publish_dataset.sh" in txt:
         errors.append(f"{path.relative_to(ROOT)} must use ops/datasets/scripts/publish_by_name.sh")
 

@@ -153,7 +153,7 @@
   "ops_run_commands": [
     "ops/run/doctor.sh",
     "ops/run/prereqs.sh",
-    "ops/run/stack-down.sh",
-    "ops/run/stack-up.sh"
+    "atlasctl ops stack down",
+    "atlasctl ops stack up"
   ]
 }

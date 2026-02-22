@@ -137,8 +137,8 @@
   "ops_run_commands": [
     "ops/run/prereqs.sh",
     "ops/run/doctor.sh",
-    "ops/run/stack-up.sh",
-    "ops/run/stack-down.sh"
+    "atlasctl ops stack up",
+    "atlasctl ops stack down"
   ],
   "core_targets": [
     "root",

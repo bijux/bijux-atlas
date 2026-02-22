@@ -20,9 +20,9 @@
 
 ## Canonical Wrappers
 
-- `ops/run/stack-up.sh`
-- `ops/run/stack-down.sh`
-- `ops/run/deploy-atlas.sh`
+- `atlasctl ops stack up`
+- `atlasctl ops stack down`
+- `atlasctl ops deploy`
 - `atlasctl ops e2e run`
 - `ops/run/ops-check.sh`
 - `ops/run/ops-smoke.sh`

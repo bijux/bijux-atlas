@@ -5,4 +5,5 @@
 # called-by: make ops-deploy
 set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
-exec "$ROOT/ops/run/deploy-atlas.sh" "$@"
+cd "$ROOT"
+exec ./bin/atlasctl ops deploy --report text apply "$@"

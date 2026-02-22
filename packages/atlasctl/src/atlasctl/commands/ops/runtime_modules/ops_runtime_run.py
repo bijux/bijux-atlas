@@ -104,7 +104,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         return impl._ops_warm_dx(ctx, ns.report)
 
     if ns.ops_cmd == "up":
-        return impl._run_simple_cmd(ctx, shell_script_command("ops/run/stack-up.sh", "--profile", os.environ.get("PROFILE", "kind")), ns.report)
+        return impl._ops_stack_up_native(ctx, ns.report, os.environ.get("PROFILE", "kind"), reuse=False)
 
     if ns.ops_cmd == "down":
         cluster = str(os.environ.get("ATLAS_E2E_CLUSTER_NAME", "")).strip()
@@ -114,7 +114,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         clusters = {line.strip() for line in result.combined_output.splitlines() if line.strip()}
         if result.code != 0 or cluster not in clusters:
             return impl._emit_ops_status(ns.report, 0, "ops-down: kind cluster not present; nothing to do")
-        return impl._run_simple_cmd(ctx, shell_script_command("ops/run/stack-down.sh"), ns.report)
+        return impl._ops_stack_down_native(ctx, ns.report)
 
     if ns.ops_cmd == "restart":
         return impl._ops_k8s_restart_native(ctx, ns.report)
@@ -125,7 +125,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             allow_apply = bool(os.environ.get("CI")) or str(os.environ.get("ATLASCTL_OPS_DEPLOY_ALLOW_APPLY", "")).strip().lower() in {"1", "true", "yes", "on"}
             if not allow_apply:
                 return impl._emit_ops_status(ns.report, 2, "deploy apply is gated; set ATLASCTL_OPS_DEPLOY_ALLOW_APPLY=1 or run in CI")
-            return impl._run_simple_cmd(ctx, shell_script_command("ops/run/deploy-atlas.sh"), ns.report)
+            return impl._ops_deploy_native(ctx, ns.report)
         if sub == "plan":
             payload = {
                 "schema_version": 1,
@@ -425,9 +425,9 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             )
         if ns.ops_cmd == "stack" and sub == "up":
             profile = getattr(ns, "profile", "kind")
-            return impl._run_simple_cmd(ctx, shell_script_command("ops/run/stack-up.sh", "--profile", profile), ns.report)
+            return impl._ops_stack_up_native(ctx, ns.report, str(profile), reuse=bool(getattr(ns, "reuse", False)))
         if ns.ops_cmd == "stack" and sub == "down":
-            return impl._run_simple_cmd(ctx, shell_script_command("ops/run/stack-down.sh"), ns.report)
+            return impl._ops_stack_down_native(ctx, ns.report)
         if ns.ops_cmd == "stack" and sub == "restart":
             return impl._ops_k8s_restart_native(ctx, ns.report)
         if ns.ops_cmd == "stack" and sub == "check":

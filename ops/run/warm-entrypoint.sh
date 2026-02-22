@@ -46,7 +46,7 @@ esac
 if ! ops_context_guard "$guard_profile"; then
   if [ "$guard_profile" = "kind" ]; then
     echo "ops-warm-stage: context missing; bootstrapping stack with reuse" >&2
-    ./ops/run/stack-up.sh --reuse --profile "$guard_profile"
+    ./bin/atlasctl ops stack --report text up --reuse --profile "$guard_profile"
   fi
 fi
 
