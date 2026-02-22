@@ -1,24 +1,28 @@
-#!/usr/bin/env bash
-set -euo pipefail
-SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-. "$SCRIPT_DIR/../_lib/common.sh"
+#!/usr/bin/env python3
+from __future__ import annotations
+
+from pathlib import Path
+
+from ._shell_common import run_k8s_test_shell
+
+
+def main() -> int:
+    return run_k8s_test_shell(
+        """
 setup_test_traps
 need helm; need kubectl
-
 TMP_VALUES="$(mktemp)"
-cat > "$TMP_VALUES" <<YAML
+cat > "$TMP_VALUES" <<'YAML'
 store:
   credentialsSecretName: atlas-missing-secret
   manageCredentialsSecret: false
 YAML
-
 helm upgrade --install "$RELEASE" "$CHART" -n "$NS" --create-namespace -f "$VALUES" -f "$TMP_VALUES" >/dev/null
 sleep 5
 POD="$(pod_name || true)"
 [ -n "$POD" ] || { echo "no pod created" >&2; exit 1; }
 REASON="$(kubectl -n "$NS" get pod "$POD" -o jsonpath='{.status.containerStatuses[0].state.waiting.reason}' || true)"
 [ "$REASON" = "CreateContainerConfigError" ] || { echo "expected CreateContainerConfigError, got: $REASON" >&2; exit 1; }
-
 kubectl -n "$NS" create secret generic atlas-wrong-secret --from-literal=ATLAS_STORE_ACCESS_KEY_ID=bad >/dev/null 2>&1 || true
 helm upgrade --install "$RELEASE" "$CHART" -n "$NS" --create-namespace -f "$VALUES" \
   --set store.credentialsSecretName=atlas-wrong-secret \
@@ -31,5 +35,11 @@ STATE2="$(kubectl -n "$NS" get pod "$POD2" -o jsonpath='{.status.containerStatus
   echo "expected startup failure with wrong secret, got: $STATE2" >&2
   exit 1
 }
-
 echo "secrets gate passed"
+        """,
+        Path(__file__),
+    )
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
