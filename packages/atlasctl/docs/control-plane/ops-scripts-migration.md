@@ -31,7 +31,7 @@ Classification legend:
 | `ops/run/down.sh` | glue | deleted (atlasctl-native guard + stack-down) | `atlasctl ops down` |
 | `ops/run/e2e-smoke.sh` | glue | deleted (folded into `ops/run/e2e.sh`) | `atlasctl ops e2e run --scenario smoke` |
 | `ops/run/e2e.sh` | glue | planned | `atlasctl ops e2e run` |
-| `ops/run/evidence-bundle.sh` | logic | planned | `atlasctl reporting bundle evidence` |
+| `ops/run/evidence-bundle.sh` | logic | deleted (atlasctl-native) | `atlasctl reporting bundle` |
 | `ops/run/evidence-open.sh` | glue | deleted (unused wrapper) | `make evidence/open` / `atlasctl reporting artifact-index` |
 | `ops/run/k8s-apply-config.sh` | logic | planned | `atlasctl ops k8s apply-config` |
 | `ops/run/k8s-restart.sh` | glue | planned | `atlasctl ops restart` / `atlasctl ops stack restart` |
