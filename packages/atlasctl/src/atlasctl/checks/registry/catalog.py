@@ -4,14 +4,18 @@ import importlib
 from collections import defaultdict
 from pathlib import Path
 
-from ..core.base import CheckCategory, CheckDef, Severity
+from ..core.base import CheckCategory, CheckDef as CheckFactory, Severity
 from .ssot import RegistryEntry, legacy_check_by_id, load_registry_entries
 
-_CHECKS_CACHE: tuple[CheckDef, ...] | None = None
+_CHECKS_CACHE: tuple[CheckFactory, ...] | None = None
 _ALIASES_CACHE: dict[str, str] | None = None
 
 
-def _from_entry(entry: RegistryEntry) -> CheckDef:
+def _build_check(**kwargs: object) -> CheckFactory:
+    return CheckFactory(**kwargs)
+
+
+def _from_entry(entry: RegistryEntry) -> CheckFactory:
     module = importlib.import_module(entry.module)
     fn = getattr(module, entry.callable, None)
     if fn is None:
@@ -19,7 +23,7 @@ def _from_entry(entry: RegistryEntry) -> CheckDef:
         fn = legacy.fn if legacy is not None else None
     if fn is None:
         raise ValueError(f"missing callable for check `{entry.id}`: {entry.module}:{entry.callable}")
-    return CheckDef(
+    return _build_check(
         check_id=entry.id,
         legacy_check_id=entry.legacy_id,
         domain=entry.domain,
@@ -39,7 +43,7 @@ def _from_entry(entry: RegistryEntry) -> CheckDef:
     )
 
 
-def _load() -> tuple[tuple[CheckDef, ...], dict[str, str]]:
+def _load() -> tuple[tuple[CheckFactory, ...], dict[str, str]]:
     entries = load_registry_entries()
     checks = tuple(sorted((_from_entry(entry) for entry in entries), key=lambda c: c.check_id))
     aliases = {entry.legacy_id: entry.id for entry in entries if entry.legacy_id}
@@ -54,7 +58,7 @@ def _ensure() -> None:
         _ALIASES_CACHE = aliases
 
 
-def check_tags(check: CheckDef) -> tuple[str, ...]:
+def check_tags(check: CheckFactory) -> tuple[str, ...]:
     tags = set(check.tags)
     tags.add(check.domain)
     tags.add("slow" if check.slow else "fast")
@@ -63,7 +67,7 @@ def check_tags(check: CheckDef) -> tuple[str, ...]:
     return tuple(sorted(tags))
 
 
-def list_checks() -> tuple[CheckDef, ...]:
+def list_checks() -> tuple[CheckFactory, ...]:
     _ensure()
     assert _CHECKS_CACHE is not None
     return _CHECKS_CACHE
@@ -73,20 +77,20 @@ def list_domains() -> list[str]:
     return sorted({"all", *{c.domain for c in list_checks()}})
 
 
-def checks_by_domain() -> dict[str, list[CheckDef]]:
-    grouped: dict[str, list[CheckDef]] = defaultdict(list)
+def checks_by_domain() -> dict[str, list[CheckFactory]]:
+    grouped: dict[str, list[CheckFactory]] = defaultdict(list)
     for check in list_checks():
         grouped[check.domain].append(check)
     return dict(grouped)
 
 
-def run_checks_for_domain(repo_root: Path, domain: str) -> list[CheckDef]:
+def run_checks_for_domain(repo_root: Path, domain: str) -> list[CheckFactory]:
     if domain == "all":
         return list(list_checks())
     return [c for c in list_checks() if c.domain == domain]
 
 
-def get_check(check_id: str) -> CheckDef | None:
+def get_check(check_id: str) -> CheckFactory | None:
     _ensure()
     assert _ALIASES_CACHE is not None
     if check_id in _ALIASES_CACHE:

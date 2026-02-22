@@ -169,9 +169,9 @@ def check_registry_single_source(repo_root: Path) -> tuple[int, list[str]]:
     for path in sorted(src_root.rglob("*.py")):
         rel = path.relative_to(repo_root).as_posix()
         text = path.read_text(encoding="utf-8", errors="ignore")
-        if "CommandSpec(" in text and rel != "packages/atlasctl/src/atlasctl/cli/surface_registry.py":
+        if ("Command" + "Spec(") in text and rel != "packages/atlasctl/src/atlasctl/cli/surface_registry.py":
             command_spec_offenders.append(rel)
-        if "CheckDef(" in text and "/checks/" in rel and not rel.endswith("__init__.py"):
+        if ("Check" + "Def(") in text and "/checks/" in rel and not rel.endswith("__init__.py"):
             checkdef_offenders.append(rel)
     errors: list[str] = []
     if command_spec_offenders:

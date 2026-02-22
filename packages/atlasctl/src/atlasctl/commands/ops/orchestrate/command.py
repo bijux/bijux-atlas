@@ -15,7 +15,7 @@ from ....core.schema.schema_utils import validate_json
 
 
 @dataclass(frozen=True)
-class CommandSpec:
+class OrchestrateSpec:
     area: str
     action: str
     cmd: list[str]
@@ -61,7 +61,7 @@ def _emit(payload: dict[str, Any], report_format: str) -> None:
         )
 
 
-def _run_wrapped(ctx: RunContext, spec: CommandSpec, report_format: str) -> int:
+def _run_wrapped(ctx: RunContext, spec: OrchestrateSpec, report_format: str) -> int:
     result = run_command(spec.cmd, ctx.repo_root, ctx=ctx)
     output = result.combined_output
     payload = _write_wrapper_artifacts(ctx, spec.area, spec.action, spec.cmd, result.code, output)
@@ -173,7 +173,7 @@ def _run_manifest(ctx: RunContext, report_format: str, manifest: str, scenario: 
         }
         _emit(fail, report_format)
         return 2
-    return _run_wrapped(ctx, CommandSpec("run", scenario, [str(x) for x in cmd]), report_format)
+    return _run_wrapped(ctx, OrchestrateSpec("run", scenario, [str(x) for x in cmd]), report_format)
 
 
 def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
@@ -183,28 +183,28 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _ports_reserve(ctx, ns.report, ns.name, ns.port)
 
     if ns.cmd == "artifacts":
-        return _run_wrapped(ctx, CommandSpec("artifacts", "open", ["bash", "ops/run/artifacts-open.sh"]), ns.report)
+        return _run_wrapped(ctx, OrchestrateSpec("artifacts", "open", ["bash", "ops/run/artifacts-open.sh"]), ns.report)
     if ns.cmd == "k8s":
         mapping = {
             "render": ["helm", "template", "atlas", "ops/chart"],
             "install": ["bash", "ops/run/deploy-atlas.sh"],
             "uninstall": ["bash", "ops/run/undeploy.sh"],
         }
-        return _run_wrapped(ctx, CommandSpec("k8s", ns.k8s_cmd, mapping[ns.k8s_cmd]), ns.report)
+        return _run_wrapped(ctx, OrchestrateSpec("k8s", ns.k8s_cmd, mapping[ns.k8s_cmd]), ns.report)
     if ns.cmd == "stack":
         mapping = {
             "up": ["bash", "ops/run/stack-up.sh"],
             "down": ["bash", "ops/run/stack-down.sh"],
             "reset": ["bash", "-lc", "ops/run/stack-down.sh && ops/run/stack-up.sh"],
         }
-        return _run_wrapped(ctx, CommandSpec("stack", ns.stack_cmd, mapping[ns.stack_cmd]), ns.report)
+        return _run_wrapped(ctx, OrchestrateSpec("stack", ns.stack_cmd, mapping[ns.stack_cmd]), ns.report)
     if ns.cmd == "obs":
         mapping = {
             "up": ["bash", "ops/run/obs-up.sh"],
             "verify": ["bash", "ops/run/obs-verify.sh"],
             "down": ["bash", "ops/run/obs-validate.sh", "--mode", "down"],
         }
-        return _run_wrapped(ctx, CommandSpec("obs", ns.obs_cmd, mapping[ns.obs_cmd]), ns.report)
+        return _run_wrapped(ctx, OrchestrateSpec("obs", ns.obs_cmd, mapping[ns.obs_cmd]), ns.report)
     if ns.cmd == "load":
         mapping = {
             "smoke": ["bash", "ops/run/load-smoke.sh"],
@@ -218,24 +218,24 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 "packages/atlasctl/src/atlasctl/load/baseline/update_baseline.py",
             ],
         }
-        return _run_wrapped(ctx, CommandSpec("load", ns.load_cmd, mapping[ns.load_cmd]), ns.report)
+        return _run_wrapped(ctx, OrchestrateSpec("load", ns.load_cmd, mapping[ns.load_cmd]), ns.report)
     if ns.cmd == "e2e":
         mapping = {
             "smoke": ["bash", "ops/run/e2e-smoke.sh"],
             "realdata": ["bash", "ops/run/e2e.sh", "--suite", "realdata"],
         }
-        return _run_wrapped(ctx, CommandSpec("e2e", ns.e2e_cmd, mapping[ns.e2e_cmd]), ns.report)
+        return _run_wrapped(ctx, OrchestrateSpec("e2e", ns.e2e_cmd, mapping[ns.e2e_cmd]), ns.report)
     if ns.cmd == "datasets":
         mapping = {
             "verify": ["bash", "ops/run/datasets-verify.sh"],
             "fetch": ["bash", "ops/run/warm.sh"],
             "pin": ["python3", "packages/atlasctl/src/atlasctl/datasets/build_manifest_lock.py"],
         }
-        return _run_wrapped(ctx, CommandSpec("datasets", ns.datasets_cmd, mapping[ns.datasets_cmd]), ns.report)
+        return _run_wrapped(ctx, OrchestrateSpec("datasets", ns.datasets_cmd, mapping[ns.datasets_cmd]), ns.report)
     if ns.cmd == "contracts-snapshot":
         return _run_wrapped(
             ctx,
-            CommandSpec("contracts", "snapshot", ["bash", "ops/run/contract-check.sh"]),
+            OrchestrateSpec("contracts", "snapshot", ["bash", "ops/run/contract-check.sh"]),
             ns.report,
         )
     if ns.cmd == "cleanup":

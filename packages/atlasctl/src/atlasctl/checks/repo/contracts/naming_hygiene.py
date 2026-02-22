@@ -38,17 +38,17 @@ def _find_named_modules(repo_root: Path, filename: str) -> list[Path]:
 
 
 def check_single_registry_module(repo_root: Path) -> tuple[int, list[str]]:
-    paths = _find_named_modules(repo_root, "registry.py")
-    expected = "checks/registry.py"
-    found = [path.relative_to(_resolve_src_root(repo_root)).as_posix() for path in paths]
+    expected = "checks/registry/catalog.py"
+    found = [path.relative_to(_resolve_src_root(repo_root)).as_posix() for path in _resolve_src_root(repo_root).rglob("catalog.py")]
+    found = sorted(path for path in found if path.startswith("checks/registry/"))
     if found == [expected]:
         return 0, []
-    return 1, [f"registry.py must exist only at {expected}; found: {', '.join(found) or '<none>'}"]
+    return 1, [f"registry catalog must exist only at {expected}; found: {', '.join(found) or '<none>'}"]
 
 
 def check_single_runner_module(repo_root: Path) -> tuple[int, list[str]]:
     paths = _find_named_modules(repo_root, "runner.py")
-    expected = "checks/runner.py"
+    expected = "checks/engine/runner.py"
     found = [path.relative_to(_resolve_src_root(repo_root)).as_posix() for path in paths]
     if found == [expected]:
         return 0, []

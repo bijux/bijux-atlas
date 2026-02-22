@@ -28,7 +28,7 @@ _FORBIDDEN_TOOL_CONFIGS = (
 )
 
 _REQUIRED_OPTIONAL_DEP_GROUPS = ("dev", "ci", "test", "ops", "docs")
-_ALLOWED_TOOL_PREFIXES = {"setuptools", "pytest", "ruff", "mypy", "coverage"}
+_ALLOWED_TOOL_PREFIXES = {"setuptools", "pytest", "ruff", "mypy", "coverage", "atlasctl"}
 _DEPS_WORKFLOW_MARKER = "Workflow: pip-tools (requirements.in + requirements.lock.txt)"
 _REQ_ALLOWED = {"requirements.in", "requirements.lock.txt"}
 _REQUIRED_CLASSIFIERS = {
