@@ -23,6 +23,10 @@ jobs:
           components: rustfmt, clippy
       - name: Run canonical CI entrypoint
         run: make ci
+      - name: Generate bypass report
+        if: github.event_name == 'pull_request'
+        run: |
+          ./bin/atlasctl policies bypass report --out artifacts/reports/atlasctl/policies-bypass-report.json --report json > artifacts/reports/atlasctl/policies-bypass-report.status.json
       - name: Migration progress gate
         run: |
           ./bin/atlasctl internal migration-progress --json > artifacts/reports/atlasctl/migration-progress.ci.json
@@ -42,6 +46,14 @@ jobs:
           path: |
             artifacts/**
             ops/_generated/**
+      - name: Upload bypass report
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: bypass-report
+          path: |
+            artifacts/reports/atlasctl/policies-bypass-report.json
+            artifacts/reports/atlasctl/policies-bypass-report.status.json
 
   control-plane-conformance:
     runs-on: ubuntu-latest
