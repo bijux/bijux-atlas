@@ -19,41 +19,17 @@ include makefiles/product.mk
 include makefiles/ops.mk
 include makefiles/policies.mk
 
-repo-check: ## Umbrella check: scripts package checks + cargo checks + make contracts
-	@$(MAKE) -s check-scripts
-	@./bin/atlasctl dev check
-	@$(SCRIPTS) check make-help
-	@$(SCRIPTS) check repo
-	@$(SCRIPTS) check forbidden-paths
-	@$(SCRIPTS) check ops-generated-tracked
-	@$(SCRIPTS) check tracked-timestamps
-	@$(SCRIPTS) check committed-generated-hygiene
-	@$(MAKE) -s make/guard-no-script-paths
-	@$(MAKE) -s make/command-allowlist
-
 check-scripts: ## Run scripts package lint/tests/contracts
 	@$(MAKE) -s scripts-check
-
-gen: ## Run deterministic generators through package CLI
-	@$(SCRIPTS) gen contracts
-	@$(SCRIPTS) gen make-targets
-	@$(SCRIPTS) gen surface
-	@$(SCRIPTS) gen scripting-surface
-
-clean-scripts: ## Clean scripts artifacts via package CLI
-	@$(SCRIPTS) clean
-
-artifacts-gc: ## Garbage collect scripts artifacts retention policy
-	@$(SCRIPTS) report artifact-gc
 
 ci-local: ## Local runner mirroring CI top-level entrypoint set
 	@$(MAKE) -s ci/all
 
 doctor: ## Run package doctor diagnostics
-	@$(SCRIPTS) doctor
+	@./bin/atlasctl make doctor
 
 make/command-allowlist: ## Enforce direct-make command allowlist (cargo/docker/helm/kubectl/k6)
-	@$(SCRIPTS) check make-command-allowlist
+	@./bin/atlasctl check run make --id checks_make_command_allowlist
 
 config-print: ## Print canonical merged config payload as JSON
 	@./bin/atlasctl configs print
@@ -113,7 +89,7 @@ what: ## Print explain + dependency graph for TARGET
 	@echo ""
 	@./bin/atlasctl make graph "$${TARGET}"
 
-internal-list: ## Print internal make targets for maintainers
+internal/list: ## Print internal make targets for maintainers
 	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/docs/list_internal_targets.py
 
 format: ## UX alias for fmt
@@ -121,62 +97,62 @@ format: ## UX alias for fmt
 
 report/merge: ## Merge lane reports into unified make report JSON
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	./bin/atlasctl report collect --run-id "$$run_id"
+	./bin/atlasctl reporting collect --run-id "$$run_id"
 
 report/print: ## Print lane summary like CI/GitHub Actions output
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	./bin/atlasctl report print --run-id "$$run_id"
+	./bin/atlasctl reporting print --run-id "$$run_id"
 
 report/md: ## Generate markdown summary for PR comments
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	./bin/atlasctl report summarize --run-id "$$run_id"
+	./bin/atlasctl reporting summarize --run-id "$$run_id"
 
 report/junit: ## Optional JUnit conversion for CI systems
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	./bin/atlasctl report junit --run-id "$$run_id"
+	./bin/atlasctl reporting junit --run-id "$$run_id"
 
 report/bundle: ## Export evidence bundle archive for RUN_ID
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	./bin/atlasctl report bundle --run-id "$$run_id"
+	./bin/atlasctl reporting bundle --run-id "$$run_id"
 
 logs/last-fail: ## Tail the last failed lane log from latest unified report
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	./bin/atlasctl report last-fail --run-id "$$run_id"
+	./bin/atlasctl reporting last-fail --run-id "$$run_id"
 
 triage: ## Print failing lanes + last 20 log lines + evidence paths
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	./bin/atlasctl report triage --run-id "$$run_id"
+	./bin/atlasctl reporting triage --run-id "$$run_id"
 
 report: ## Build unified report and print one-screen summary
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	$(SCRIPTS) report unified --run-id "$$run_id" >/dev/null; \
-	$(SCRIPTS) report print --run-id "$$run_id"
+	./bin/atlasctl reporting unified --run-id "$$run_id" >/dev/null; \
+	./bin/atlasctl reporting print --run-id "$$run_id"
 
 evidence/open: ## Open evidence directory (supports AREA=<area> RUN_ID=<id>)
-	@./bin/atlasctl artifacts open
+	@./bin/atlasctl reporting artifact-index
 
 evidence/clean: ## Clean evidence directories using retention policy
-	@./bin/atlasctl report artifact-gc
+	@./bin/atlasctl reporting artifact-gc
 
 evidence-gc: ## Enforce evidence retention policy
-	@./bin/atlasctl report artifact-gc
+	@./bin/atlasctl reporting artifact-gc
 
 evidence/check: ## Validate evidence JSON schema contract for generated outputs
 	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts/evidence_check.py
 
 evidence/bundle: ## Export latest evidence bundle as tar.zst for CI attachments
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	./bin/atlasctl report bundle --run-id "$$run_id"
+	./bin/atlasctl reporting bundle --run-id "$$run_id"
 
 evidence/pr-summary: ## Generate PR markdown summary from latest evidence unified report
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || echo $(MAKE_RUN_ID))}"; \
-	./bin/atlasctl report pr-summary --run-id "$$run_id"
+	./bin/atlasctl reporting pr-summary --run-id "$$run_id"
 
 artifacts-open: ## Open latest ops artifact bundle/report directory
-	@$(call with_iso,artifacts-open,$(MAKE) -s ops-artifacts-open)
+	@./bin/atlasctl run ./ops/run/root/root_artifacts_open.sh
 
 quick: ## Minimal tight loop (fmt + lint + test)
-	@$(call with_iso,quick,$(MAKE) -s cargo/fmt cargo/lint cargo/test-fast)
+	@./bin/atlasctl run ./ops/run/root/root_quick.sh
 
 cargo/all: ## Local exhaustive Rust lane
 	@$(MAKE) -s lane-cargo
@@ -293,13 +269,13 @@ ops/smoke: ## Explicit ops smoke target
 k8s-smoke: ## One-command local k8s smoke runner
 	@$(MAKE) -s ops-k8s-smoke
 warm: ## Warm datasets + shards and record cache state
-	@./ops/run/warm-dx.sh
+	@./bin/atlasctl run ./ops/run/warm-dx.sh
 
 cache/status: ## Print cache status and budget policy checks
 	@CACHE_STATUS_STRICT=0 ./bin/atlasctl run ./ops/run/cache-status.sh
 
 cache/prune: ## Prune local dataset/cache artifacts
-	@./ops/run/cache-prune.sh
+	@./bin/atlasctl run ./ops/run/cache-prune.sh
 
 tooling-versions: ## Print Rust + Python tooling versions (pinned + local)
 	@$(MAKE) -s internal/tooling-versions
@@ -448,19 +424,19 @@ root-local: ## All lanes in parallel + ops smoke lane (PARALLEL=0 for serial)
 	./bin/atlasctl --quiet report print --run-id "$$run_id"
 
 root-local/no-ops: ## Local lanes without ops smoke lane (explicit skip)
-	@NO_OPS=1 PARALLEL="$${PARALLEL:-1}" RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-no-ops-$(MAKE_RUN_TS)}}" MODE=root-local ./ops/run/root-lanes.sh
+	@NO_OPS=1 PARALLEL="$${PARALLEL:-1}" RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-no-ops-$(MAKE_RUN_TS)}}" MODE=root-local ./bin/atlasctl run ./ops/run/root-lanes.sh
 
 root-local-no-ops: ## Alias for root-local/no-ops
 	@$(MAKE) -s root-local/no-ops
 
 root-local-fast: ## Debug serial root-local skipping expensive extras (ops-smoke, obs-full)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-fast-$(MAKE_RUN_TS)}}"; \
-	PARALLEL=0 FAST=1 RUN_ID="$$run_id" MODE=root-local ./ops/run/root-lanes.sh; \
-	./bin/atlasctl report collect --run-id "$$run_id" >/dev/null; \
-	./bin/atlasctl report print --run-id "$$run_id"
+	PARALLEL=0 FAST=1 RUN_ID="$$run_id" MODE=root-local ./bin/atlasctl run ./ops/run/root-lanes.sh; \
+	./bin/atlasctl reporting collect --run-id "$$run_id" >/dev/null; \
+	./bin/atlasctl reporting print --run-id "$$run_id"
 
 root-local-open: ## Open or print latest root-local summary report
-	@SUMMARY_RUN_ID="$${RUN_ID:-}" MODE=open ./ops/run/root-lanes.sh
+	@SUMMARY_RUN_ID="$${RUN_ID:-}" MODE=open ./bin/atlasctl run ./ops/run/root-lanes.sh
 
 repro: ## Re-run one lane deterministically (usage: make repro TARGET=lane-cargo SEED=123)
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make repro TARGET=<lane-target> [SEED=123]"; exit 2; }
@@ -506,6 +482,9 @@ config-validate: ## Deprecated alias for configs/all
 nightly: ## Deprecated alias for nightly/all
 	@$(MAKE) -s nightly/all
 
+all-and-slow: ## Full nightly slow suite entrypoint for workflows
+	@./bin/atlasctl ci nightly --json
+
 ops: ## Run canonical ops verification lane
 	@./bin/atlasctl ops check --report text
 
@@ -515,13 +494,13 @@ root-local-summary: ## Print status and artifact paths for RUN_ID
 lane-status: ## Print all lane statuses for RUN_ID (or latest)
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || true)}"; \
 	[ -n "$$run_id" ] || { echo "RUN_ID is required (or run root/root-local first)" >&2; exit 2; }; \
-	./bin/atlasctl report print --run-id "$$run_id"
+	./bin/atlasctl reporting print --run-id "$$run_id"
 
 open: ## Open unified report for RUN_ID (or print path if opener unavailable)
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || true)}"; \
 	[ -n "$$run_id" ] || { echo "RUN_ID is required (or run root/root-local first)" >&2; exit 2; }; \
 	path="artifacts/evidence/make/$$run_id/unified.json"; \
-	[ -f "$$path" ] || ./bin/atlasctl report collect --run-id "$$run_id" >/dev/null; \
+	[ -f "$$path" ] || ./bin/atlasctl reporting collect --run-id "$$run_id" >/dev/null; \
 	echo "$$path"; \
 	if command -v open >/dev/null 2>&1; then open "$$path" >/dev/null 2>&1 || true; \
 	elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$$path" >/dev/null 2>&1 || true; fi
@@ -531,8 +510,8 @@ rerun-failed: ## Rerun only failed lanes from RUN_ID (NEW_RUN_ID optional)
 	[ -n "$$src" ] || { echo "RUN_ID is required (source run id)" >&2; exit 2; }; \
 	new="$${NEW_RUN_ID:-$${src}-rerun-$(MAKE_RUN_TS)}"; \
 	PARALLEL="$${PARALLEL:-0}" MODE=rerun-failed SOURCE_RUN_ID="$$src" RUN_ID="$$new" ./ops/run/root-lanes.sh; \
-	./bin/atlasctl report collect --run-id "$$new" >/dev/null; \
-	./bin/atlasctl report print --run-id "$$new"
+	./bin/atlasctl reporting collect --run-id "$$new" >/dev/null; \
+	./bin/atlasctl reporting print --run-id "$$new"
 
 dev-bootstrap: ## Setup local python tooling for atlas-scripts (uv sync)
 	@if command -v uv >/dev/null 2>&1; then \
@@ -588,7 +567,7 @@ architecture-check: ## Validate runtime architecture boundaries and dependency g
 	@cargo test -p bijux-atlas-server --test import_boundary_guardrails
 
 fetch-real-datasets:
-	@./ops/datasets/scripts/fixtures/fetch-real-datasets.sh
+	@./bin/atlasctl run ./ops/datasets/scripts/fixtures/fetch-real-datasets.sh
 
 ssot-check:
 	@./bin/atlasctl contracts generate --generators artifacts chart-schema
@@ -619,7 +598,7 @@ release-update-compat-matrix:
 	@[ -n "$$TAG" ] || { echo "usage: make release-update-compat-matrix TAG=<tag>"; exit 2; }
 	@./bin/atlasctl compat update-matrix --tag "$$TAG"
 
-.PHONY: root-local-no-ops architecture-check artifacts-clean artifacts-index artifacts-open bootstrap bootstrap-tools bump cargo/all chart chart-package chart-verify ci ci/all ci-workflow-contract clean config-drift config-print config-validate configs-gen-check configs-check configs/all contracts dataset-id-lint debug deep-clean docker docker-build docker-contracts docker-push docker-scan docker-smoke docs docs/all docs-lint-names doctor evidence/open evidence/clean evidence/check evidence/bundle evidence/pr-summary explain what fetch-real-datasets format gates gates-check governance-check graph help help-advanced help-all open lane-status rerun-failed hygiene internal-list inventory isolate-clean layout-check layout-migrate list local local/all local-full makefiles-contract nightly nightly/all no-direct-scripts obs/update-goldens ops-alerts-validate ops ops/all ops-api-protection ops-artifacts-open ops-baseline-policy-check ops-cache-pin-set ops-cache-status ops-catalog-validate ops-check ops-clean ops-contracts-check ops-dashboards-validate ops-dataset-federated-registry-test ops-dataset-multi-release-test ops-dataset-promotion-sim ops-dataset-qc ops-datasets-fetch ops-deploy ops-doctor ops-down ops-drill-corruption-dataset ops-drill-memory-growth ops-drill-otel-outage ops-drill-overload ops-drill-pod-churn ops-drill-rate-limit ops-drill-rollback ops-drill-rollback-under-load ops-drill-store-outage ops-drill-suite ops-drill-toxiproxy-latency ops-drill-upgrade ops-drill-upgrade-under-load ops-e2e ops-e2e-smoke ops-full ops-full-pr ops-gc-smoke ops-gen ops-gen-check ops-graceful-degradation ops-incident-repro-kit ops-k8s-smoke k8s-smoke ops-k8s-suite ops-k8s-template-tests ops-k8s-tests ops-load-ci ops-load-full ops-load-manifest-validate ops-load-nightly ops-load-shedding ops-load-smoke ops-load-soak ops-load-suite ops-local-full ops-local-full-stack ops-metrics-check ops-obs-down ops-obs-install ops-obs-mode ops-obs-uninstall ops-obs-verify ops-observability-pack-conformance-report ops-observability-pack-export ops-observability-pack-health ops-observability-pack-smoke ops-observability-pack-verify ops-observability-smoke ops-observability-validate ops-open-grafana ops-openapi-validate ops-perf-baseline-update ops-perf-cold-start ops-perf-nightly ops-perf-report ops-perf-warm-start ops-policy-audit ops-prereqs ops-proof-cached-only ops-publish ops-readiness-scorecard ops-realdata ops-redeploy ops-ref-grade-local ops-ref-grade-nightly ops-ref-grade-pr ops-release-matrix ops-release-rollback ops-release-update ops-report ops-slo-alert-proof ops-slo-burn ops-slo-report ops-smoke ops-tools-check ops-traces-check ops-undeploy ops-up ops-values-validate ops-warm ops-warm-datasets ops-warm-shards ops-warm-top policies/all policy-allow-env-lint policy-audit policy-drift-diff policy-enforcement-status policy-lint policy-schema-drift prereqs quick release release-dry-run release-update-compat-matrix rename-lint report k8s load obs root root-determinism root-local root-local-fast root-local-summary scripts-all scripts/all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test scripts-install-dev ssot-check verify-inventory lane-cargo lane-docs lane-ops lane-scripts lane-configs-policies root-local-open repro lane-status open rerun-failed internal/lane-ops-smoke internal/lane-obs-cheap internal/lane-obs-full report/merge report/print report/md report/junit report/bundle clean-safe clean-all print-env cargo/fmt cargo/lint cargo/test-fast cargo/test cargo/test-all cargo/test-contracts cargo/audit cargo/bench-smoke cargo/coverage configs/check budgets/check perf/baseline-update perf/regression-check perf/triage perf/compare policies/check policies/boundaries-check retry docs/check docs/build docs/fmt docs/lint docs/test docs/clean scripts/check scripts/build scripts/fmt scripts/lint scripts/test scripts/clean ops/check ops/smoke ops/suite ops/fmt ops/lint ops/test ops/build ops/clean pins/check pins/update logs/last-fail cache/status cache/prune root-local/no-ops
+.PHONY: root-local-no-ops architecture-check artifacts-clean artifacts-index artifacts-open bootstrap bootstrap-tools bump cargo/all chart chart-package chart-verify ci ci/all ci-workflow-contract clean config-drift config-print config-validate configs-gen-check configs-check configs/all contracts dataset-id-lint debug deep-clean docker docker-build docker-contracts docker-push docker-scan docker-smoke docs docs/all docs-lint-names doctor evidence/open evidence/clean evidence/check evidence/bundle evidence/pr-summary explain what fetch-real-datasets format gates gates-check governance-check graph help help-advanced help-all open lane-status rerun-failed hygiene internal/list inventory isolate-clean layout-check layout-migrate list local local/all local-full makefiles-contract nightly nightly/all no-direct-scripts obs/update-goldens ops-alerts-validate ops ops/all ops-api-protection ops-artifacts-open ops-baseline-policy-check ops-cache-pin-set ops-cache-status ops-catalog-validate ops-check ops-clean ops-contracts-check ops-dashboards-validate ops-dataset-federated-registry-test ops-dataset-multi-release-test ops-dataset-promotion-sim ops-dataset-qc ops-datasets-fetch ops-deploy ops-doctor ops-down ops-drill-corruption-dataset ops-drill-memory-growth ops-drill-otel-outage ops-drill-overload ops-drill-pod-churn ops-drill-rate-limit ops-drill-rollback ops-drill-rollback-under-load ops-drill-store-outage ops-drill-suite ops-drill-toxiproxy-latency ops-drill-upgrade ops-drill-upgrade-under-load ops-e2e ops-e2e-smoke ops-full ops-full-pr ops-gc-smoke ops-gen ops-gen-check ops-graceful-degradation ops-incident-repro-kit ops-k8s-smoke k8s-smoke ops-k8s-suite ops-k8s-template-tests ops-k8s-tests ops-load-ci ops-load-full ops-load-manifest-validate ops-load-nightly ops-load-shedding ops-load-smoke ops-load-soak ops-load-suite ops-local-full ops-local-full-stack ops-metrics-check ops-obs-down ops-obs-install ops-obs-mode ops-obs-uninstall ops-obs-verify ops-observability-pack-conformance-report ops-observability-pack-export ops-observability-pack-health ops-observability-pack-smoke ops-observability-pack-verify ops-observability-smoke ops-observability-validate ops-open-grafana ops-openapi-validate ops-perf-baseline-update ops-perf-cold-start ops-perf-nightly ops-perf-report ops-perf-warm-start ops-policy-audit ops-prereqs ops-proof-cached-only ops-publish ops-readiness-scorecard ops-realdata ops-redeploy ops-ref-grade-local ops-ref-grade-nightly ops-ref-grade-pr ops-release-matrix ops-release-rollback ops-release-update ops-report ops-slo-alert-proof ops-slo-burn ops-slo-report ops-smoke ops-tools-check ops-traces-check ops-undeploy ops-up ops-values-validate ops-warm ops-warm-datasets ops-warm-shards ops-warm-top policies/all policy-allow-env-lint policy-audit policy-drift-diff policy-enforcement-status policy-lint policy-schema-drift prereqs quick release release-dry-run release-update-compat-matrix rename-lint report k8s load obs root root-determinism root-local root-local-fast root-local-summary scripts-all scripts/all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test scripts-install-dev ssot-check verify-inventory lane-cargo lane-docs lane-ops lane-scripts lane-configs-policies root-local-open repro lane-status open rerun-failed internal/lane-ops-smoke internal/lane-obs-cheap internal/lane-obs-full report/merge report/print report/md report/junit report/bundle clean-safe clean-all print-env cargo/fmt cargo/lint cargo/test-fast cargo/test cargo/test-all cargo/test-contracts cargo/audit cargo/bench-smoke cargo/coverage configs/check budgets/check perf/baseline-update perf/regression-check perf/triage perf/compare policies/check policies/boundaries-check retry docs/check docs/build docs/fmt docs/lint docs/test docs/clean scripts/check scripts/build scripts/fmt scripts/lint scripts/test scripts/clean ops/check ops/smoke ops/suite ops/fmt ops/lint ops/test ops/build ops/clean pins/check pins/update logs/last-fail cache/status cache/prune root-local/no-ops
 
 
 
@@ -643,7 +622,7 @@ artifacts-clean: ## Clean old artifacts with safe retention
 	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts/clean_artifacts.py
 
 isolate-clean: ## Remove isolate output directories safely
-	@find artifacts/isolate -mindepth 1 -maxdepth 1 -type d -exec rm -r {} + 2>/dev/null || true
+	@./bin/atlasctl env isolate --clean
 
 clean: ## Safe clean for generated local outputs
 	@./bin/atlasctl cleanup --older-than "$${OLDER_THAN_DAYS:-14}"

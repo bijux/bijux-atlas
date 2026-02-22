@@ -15,6 +15,7 @@ from .enforcement import (
     check_make_public_targets_documented,
     check_make_wrapper_purity,
     check_make_no_python_module_invocation,
+    check_make_root_budget,
     check_make_target_boundaries_enforced,
     check_make_target_ownership_complete,
 )
@@ -123,6 +124,14 @@ CHECKS: tuple[CheckDef, ...] = (
         1000,
         check_make_no_python_module_invocation,
         fix_hint="Use ./bin/atlasctl in make recipes.",
+    ),
+    CheckDef(
+        "make.root_budget",
+        "make",
+        "enforce root.mk LOC/target-count budget",
+        1000,
+        check_make_root_budget,
+        fix_hint="Reduce root.mk orchestration surface and keep only public wrappers.",
     ),
     CheckDef(
         "make.target_boundaries_enforced",
