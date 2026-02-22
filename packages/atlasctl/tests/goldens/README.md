@@ -6,8 +6,8 @@ All golden snapshots under this directory are SSOT test fixtures for atlasctl CL
 
 - Do not edit golden files manually.
 - Regenerate goldens only via:
-  - `python -m atlasctl.cli gen goldens`
-  - or `atlasctl gen goldens` (console script)
+  - `./bin/atlasctl gen goldens`
+  - or `atlasctl gen goldens`
 - Review the diff and commit only intentional behavior changes.
 
 ## Layout

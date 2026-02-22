@@ -32,7 +32,7 @@ Missing or unordered review causes drift and compatibility regressions.
 
 ```bash
 $ rg --files docs/contracts | rg '\.json$'
-$ ./bin/bijux-atlas contracts check --checks breakage
+$ ./bin/atlasctl contracts check --checks breakage
 ```
 
 Expected output: contract files are listed and breakage checker passes for additive changes.
@@ -40,7 +40,7 @@ Expected output: contract files are listed and breakage checker passes for addit
 ## How to verify
 
 ```bash
-$ ./bin/bijux-atlas contracts check --checks breakage
+$ ./bin/atlasctl contracts check --checks breakage
 ```
 
 Expected output: no breaking contract change unless intentionally approved.

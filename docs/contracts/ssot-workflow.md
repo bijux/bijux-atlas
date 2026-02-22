@@ -35,8 +35,8 @@ Does not define product release choreography outside contract updates.
 ## Examples
 
 ```bash
-$ ./bin/bijux-atlas contracts check --checks drift
-$ ./bin/bijux-atlas contracts generate --generators artifacts
+$ ./bin/atlasctl contracts check --checks drift
+$ ./bin/atlasctl contracts generate --generators artifacts
 $ make ssot-check
 ```
 

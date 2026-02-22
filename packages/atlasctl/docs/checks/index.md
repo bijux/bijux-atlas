@@ -79,7 +79,7 @@ Generated from `packages/atlasctl/src/atlasctl/registry/checks_catalog.json`.
 - `checks_make_no_direct_python_only_atlasctl`: forbid direct python invocations in make recipes
 - `checks_make_no_direct_script_exec_drift`: drift check for direct script execution in make recipes
 - `checks_make_no_direct_scripts_only_atlasctl`: forbid direct script path invocations in make recipes
-- `checks_make_no_python_module_invocation`: forbid `python -m atlasctl.cli` in make recipes
+- `checks_make_no_python_module_invocation`: forbid module-style atlasctl invocation in make recipes
 - `checks_make_public_target_atlasctl_mapping`: require every public make target to delegate to atlasctl
 - `checks_make_public_targets_documented`: require documented public make targets
 - `checks_make_root_budget`: enforce root.mk LOC/target-count budget

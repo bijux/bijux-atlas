@@ -32,7 +32,7 @@ Breaking changes without version bump are contract violations and must fail CI.
 ## How to verify
 
 ```bash
-$ ./bin/bijux-atlas contracts check --checks breakage
+$ ./bin/atlasctl contracts check --checks breakage
 $ make openapi-drift
 ```
 

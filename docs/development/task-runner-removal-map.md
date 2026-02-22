@@ -2,8 +2,8 @@
 
 `xtask` was removed. Use `atlasctl` commands:
 
-- `xtask format-contracts` -> `./bin/bijux-atlas gen contracts`
-- `xtask generate-contracts` -> `./bin/bijux-atlas gen contracts`
-- `xtask check-contracts` -> `./bin/bijux-atlas check configs`
-- `xtask scan-relaxations` -> `./bin/bijux-atlas policies scan-rust-relaxations`
+- `xtask format-contracts` -> `./bin/atlasctl gen contracts`
+- `xtask generate-contracts` -> `./bin/atlasctl gen contracts`
+- `xtask check-contracts` -> `./bin/atlasctl check configs`
+- `xtask scan-relaxations` -> `./bin/atlasctl policies scan-rust-relaxations`
 

@@ -8,7 +8,7 @@ from ...checks.engine.runner import domains as check_domains
 
 
 def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    parser = sub.add_parser("check", help="area-based checks mapped from scripts/areas")
+    parser = sub.add_parser("check", help="area-based checks mapped from control-plane registries")
     parser.add_argument("--fail-fast", action="store_true", help="stop after first failing check in multi-check runs")
     parser.add_argument("--json", action="store_true", help="emit JSON output")
     parser.add_argument("--list", dest="list_checks", action="store_true", help="list registered checks")
