@@ -9,7 +9,15 @@ import os
 import re
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[4]
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for parent in cur.parents:
+        if all((parent / marker).exists() for marker in ("makefiles", "packages", "configs", "ops")):
+            return parent
+    raise RuntimeError("unable to resolve repo root")
+
+
+ROOT = _repo_root()
 IN_FILE = ROOT / "artifacts" / "ops" / "obs" / "traces.exemplars.log"
 OUT_FILE = ROOT / "artifacts" / "ops" / "obs" / "trace-exemplars.by-scenario.json"
 

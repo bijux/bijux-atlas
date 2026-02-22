@@ -392,9 +392,9 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             return impl._run_simple_cmd(ctx, ["make", "ops-observability-validate"], ns.report)
         if ns.ops_cmd == "obs" and sub == "lint":
             steps = [
-                ["python3", "ops/obs/scripts/contracts/check_profile_goldens.py"],
-                ["python3", "ops/obs/scripts/contracts/check_metrics_golden.py"],
-                ["python3", "ops/obs/scripts/contracts/check_trace_golden.py"],
+                ["python3", "packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_profile_goldens.py"],
+                ["python3", "packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_metrics_golden.py"],
+                ["python3", "packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_trace_golden.py"],
             ]
             for cmd in steps:
                 code, output = impl._run_check(cmd, ctx.repo_root)

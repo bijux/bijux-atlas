@@ -5,7 +5,15 @@
 # called-by: ops/obs/tests/test_contracts.sh
 import json,re,sys
 from pathlib import Path
-root=Path(__file__).resolve().parents[4]
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for parent in cur.parents:
+        if all((parent / marker).exists() for marker in ("makefiles", "packages", "configs", "ops")):
+            return parent
+    raise RuntimeError("unable to resolve repo root")
+
+
+root = _repo_root()
 contract=json.loads((root/'ops/obs/contract/metrics-contract.json').read_text(encoding='utf-8'))
 allowed=set(contract.get('required_metric_specs',{}).keys())
 dash=json.loads((root/'ops/obs/grafana/atlas-observability-dashboard.json').read_text(encoding='utf-8'))
