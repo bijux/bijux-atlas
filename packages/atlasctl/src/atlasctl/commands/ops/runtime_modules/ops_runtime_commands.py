@@ -30,6 +30,12 @@ def _run_check(cmd: list[str], repo_root: Path) -> tuple[int, str]:
     return result.code, result.combined_output
 
 
+def _run_simple_cmd(ctx: RunContext, cmd: list[str], report_format: str) -> int:
+    result = run_command(cmd, ctx.repo_root, ctx=ctx)
+    output = result.combined_output.strip()
+    return _emit_ops_status(report_format, result.code, output)
+
+
 def _ops_k8s_render_summary(repo_root: Path, env_name: str, run_id: str) -> dict[str, object]:
     manifest_path = repo_root / "ops" / "k8s" / "tests" / "manifest.json"
     payload = json.loads(manifest_path.read_text(encoding="utf-8"))
