@@ -5,7 +5,6 @@ SHELL := /bin/sh
 JOBS  ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 8)
 
 include makefiles/env.mk
-include makefiles/python.mk
 include makefiles/_macros.mk
 include makefiles/dev.mk
 include makefiles/atlasctl.mk
