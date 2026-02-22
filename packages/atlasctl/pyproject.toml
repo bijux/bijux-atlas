@@ -16,7 +16,6 @@ classifiers = [
 ]
 dependencies = [
   "jsonschema==4.25.1",
-  "tomli>=2.0.0; python_version < '3.11'",
 ]
 
 [project.urls]
@@ -33,7 +32,6 @@ dev = [
   "jsonschema==4.25.1",
   "hypothesis==6.138.14",
   "mypy==1.17.1",
-  "tomli>=2.0.0; python_version < '3.11'",
 ]
 ci = [
   "pytest==8.3.5",

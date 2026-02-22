@@ -31,7 +31,9 @@ from .manifests import SuiteManifest, load_first_class_suites
 try:
     import tomllib  # py311+
 except ModuleNotFoundError:  # pragma: no cover
-    import tomli as tomllib  # type: ignore
+    import importlib
+
+    tomllib = importlib.import_module("tomli")  # type: ignore[assignment]
 
 
 @dataclass(frozen=True)
