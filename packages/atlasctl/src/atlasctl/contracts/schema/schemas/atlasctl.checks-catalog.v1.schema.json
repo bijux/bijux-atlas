@@ -5,6 +5,7 @@
   "additionalProperties": false,
   "required": ["schema_version", "kind", "checks"],
   "properties": {
+    "schema_name": { "const": "atlasctl.checks-catalog.v1", "type": "string" },
     "schema_version": { "const": 1, "type": "integer" },
     "kind": { "const": "atlasctl-checks-catalog", "type": "string" },
     "checks": {

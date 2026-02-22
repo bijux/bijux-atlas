@@ -1,0 +1,22 @@
+{
+  "schema_name": "atlasctl.checks-registry.v1",
+  "schema_version": 1,
+  "kind": "atlasctl-checks-registry",
+  "checks": [
+    {
+      "id": "checks_repo_module_size",
+      "domain": "repo",
+      "gate": "repo",
+      "area": "layout",
+      "owner": "platform",
+      "speed": "fast",
+      "groups": [
+        "repo"
+      ],
+      "timeout_ms": 400,
+      "module": "atlasctl.checks.repo.enforcement.package_shape",
+      "callable": "check_module_size",
+      "description": "enforce module size budget"
+    }
+  ]
+}

@@ -2,6 +2,10 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
+    "schema_name": {
+      "const": "atlasctl.checks-registry.v1",
+      "type": "string"
+    },
     "checks": {
       "items": {
         "additionalProperties": false,
@@ -131,6 +135,6 @@
     "kind",
     "checks"
   ],
-  "title": "atlasctl.checks.registry.v1",
+  "title": "atlasctl.checks-registry.v1",
   "type": "object"
 }

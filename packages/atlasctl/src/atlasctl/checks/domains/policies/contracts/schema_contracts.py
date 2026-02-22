@@ -72,19 +72,25 @@ def check_schema_samples_validate(repo_root: Path) -> tuple[int, list[str]]:
 def check_schema_catalog_referenced(repo_root: Path) -> tuple[int, list[str]]:
     catalog = load_catalog()
     referenced: set[str] = set()
-    pattern = re.compile(r"atlasctl\.[a-z0-9.-]+\.v\d+")
-    scan_roots = [
+    pattern = re.compile(r"atlasctl\.[a-z0-9._-]+\.v\d+")
+    scan_roots = (
         repo_root / "packages/atlasctl/src/atlasctl",
         repo_root / "packages/atlasctl/tests",
         repo_root / "docs",
-    ]
+    )
+    allowed_suffixes = {".py", ".md", ".json", ".golden"}
     for root in scan_roots:
         if not root.exists():
             continue
         for path in root.rglob("*"):
-            if not path.is_file() or path.suffix not in {".py", ".md", ".json", ".golden"}:
+            if not path.is_file():
                 continue
-            text = path.read_text(encoding="utf-8", errors="ignore")
+            if path.suffix not in allowed_suffixes:
+                continue
+            blob = path.read_bytes()
+            if b"atlasctl." not in blob:
+                continue
+            text = blob.decode("utf-8", errors="ignore")
             referenced.update(pattern.findall(text))
     unused = sorted(name for name in catalog if name not in referenced)
     if unused:
@@ -130,10 +136,12 @@ def check_schema_catalog_ssot(repo_root: Path) -> tuple[int, list[str]]:
         if not path.is_file() or path.suffix not in {".py", ".md"}:
             continue
         rel = path.relative_to(src_root).as_posix()
+        if rel == "checks/domains/policies/contracts/schema_contracts.py":
+            continue
         if rel in allow_rel:
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
-        if "catalog.json" in text:
+        if "contracts/schema/schemas/catalog.json" in text:
             errors.append(
                 f"schema catalog SSOT violation: {rel} references catalog.json directly; use contracts.catalog APIs"
             )

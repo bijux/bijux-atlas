@@ -1,7 +1,7 @@
 # This file is the SSOT for atlasctl checks. Keep entries sorted by `id`.
 # Regenerate with: ./bin/atlasctl gen checks-registry
 
-schema = "checks.registry.v1"
+schema = "atlasctl.checks-registry.v1"
 
 [[checks]]
 id = "checks_checks_registry_change_docs_gate"
