@@ -69,16 +69,12 @@ ops/obs/scripts/compute_slo_burn.py
 ops/obs/scripts/contracts/check_alerts_contract.py
 ops/obs/scripts/contracts/check_dashboard_contract.py
 ops/obs/scripts/contracts/check_dashboard_metric_compat.py
-ops/obs/scripts/contracts/check_endpoint_metrics_coverage.py
-ops/obs/scripts/contracts/check_endpoint_trace_coverage.py
 ops/obs/scripts/contracts/check_metrics_contract.py
 ops/obs/scripts/contracts/check_metrics_coverage.py
 ops/obs/scripts/contracts/check_metrics_drift.py
 ops/obs/scripts/contracts/check_metrics_golden.py
-ops/obs/scripts/contracts/check_obs_budgets.py
 ops/obs/scripts/contracts/check_observability_lag.py
 ops/obs/scripts/contracts/check_overload_behavior_contract.py
-ops/obs/scripts/contracts/check_profile_goldens.py
 ops/obs/scripts/contracts/check_runtime_metrics.py
 ops/obs/scripts/contracts/check_trace_coverage.py
 ops/obs/scripts/contracts/check_trace_golden.py
