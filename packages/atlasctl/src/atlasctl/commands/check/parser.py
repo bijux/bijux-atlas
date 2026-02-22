@@ -35,6 +35,11 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     run.add_argument("--slow-threshold-ms", type=int, default=800, help="threshold for slow checks report")
     run.add_argument("--timeout-ms", type=int, default=2000, help="per-check timeout in milliseconds (0 disables timeout)")
     run.add_argument("--slow-ratchet-config", default="configs/policy/slow-checks-ratchet.json", help="slow-check ratchet config json")
+    run.add_argument(
+        "--ignore-speed-regressions",
+        action="store_true",
+        help="report speed regressions but do not fail the run on them",
+    )
     run.add_argument("--profile", action="store_true", help="emit check run performance profile artifact")
     run.add_argument("--profile-out", help="performance profile output path")
     run.add_argument("--jobs", type=int, default=1, help="number of worker jobs for check execution")
