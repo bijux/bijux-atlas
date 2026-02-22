@@ -11,11 +11,31 @@ def _run_cmd(ctx: RunContext, cmd: list[str]) -> int:
     return run(cmd, cwd=ctx.repo_root, text=True).returncode
 
 
+def _plan_rows() -> list[tuple[str, list[str]]]:
+    return [
+        ("bootstrap", ["./bin/atlasctl", "run", "./ops/run/product/product_bootstrap.sh"]),
+        ("docker build", ["./bin/atlasctl", "run", "./ops/run/product/product_docker_build.sh"]),
+        ("docker check", ["./bin/atlasctl", "run", "./ops/run/product/product_docker_check.sh"]),
+        ("docker contracts", ["./bin/atlasctl", "check", "domain", "docker"]),
+        ("docker push", ["./bin/atlasctl", "run", "./ops/run/product/product_docker_push.sh"]),
+        ("docker release", ["./bin/atlasctl", "run", "./ops/run/product/product_docker_release.sh"]),
+        ("chart package", ["./bin/atlasctl", "run", "./ops/run/product/product_chart_package.sh"]),
+        ("chart verify", ["./bin/atlasctl", "run", "./ops/run/product/product_chart_verify.sh"]),
+        ("chart validate", ["./bin/atlasctl", "run", "./ops/run/product/product_chart_validate.sh"]),
+        ("naming lint", ["./bin/atlasctl", "run", "./ops/run/product/product_rename_lint.sh"]),
+        ("docs naming-lint", ["./bin/atlasctl", "run", "./ops/run/product/product_docs_lint_names.sh"]),
+        ("check", ["./bin/atlasctl", "product", "docker", "check"], ["./bin/atlasctl", "product", "chart", "validate"]),
+    ]
+
+
 def configure_product_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     parser = sub.add_parser("product", help="product release/build/chart wrapper commands")
     product_sub = parser.add_subparsers(dest="product_cmd", required=True)
 
     product_sub.add_parser("bootstrap", help="run product bootstrap lane")
+    product_sub.add_parser("check", help="run canonical product verification lane")
+    product_sub.add_parser("explain", help="print product lane plan and underlying commands")
+    product_sub.add_parser("graph", help="print product lane dependency graph")
 
     docker = product_sub.add_parser("docker", help="product docker lanes")
     docker_sub = docker.add_subparsers(dest="product_docker_cmd", required=True)
@@ -23,6 +43,7 @@ def configure_product_parser(sub: argparse._SubParsersAction[argparse.ArgumentPa
     docker_sub.add_parser("push", help="run product docker push lane")
     docker_sub.add_parser("release", help="run CI-only product docker release lane")
     docker_sub.add_parser("check", help="run product docker checks lane")
+    docker_sub.add_parser("contracts", help="run product docker contracts lane")
 
     chart = product_sub.add_parser("chart", help="product chart lanes")
     chart_sub = chart.add_subparsers(dest="product_chart_cmd", required=True)
@@ -43,6 +64,31 @@ def run_product_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     sub = getattr(ns, "product_cmd", "")
     if sub == "bootstrap":
         return _run_cmd(ctx, ["./bin/atlasctl", "run", "./ops/run/product/product_bootstrap.sh"])
+    if sub == "explain":
+        for row in _plan_rows():
+            name = row[0]
+            cmds = row[1:]
+            print(f"{name}:")
+            for cmd in cmds:
+                print(f"  {' '.join(cmd)}")
+        return 0
+    if sub == "graph":
+        print("product.check -> product.docker.check")
+        print("product.check -> product.chart.validate")
+        print("product.docker.release -> product.docker.build")
+        print("product.docker.release -> product.docker.contracts")
+        print("product.docker.release -> product.docker.push")
+        print("product.chart.verify -> product.chart.package")
+        return 0
+    if sub == "check":
+        for cmd in (
+            ["./bin/atlasctl", "product", "docker", "check"],
+            ["./bin/atlasctl", "product", "chart", "validate"],
+        ):
+            code = _run_cmd(ctx, cmd)
+            if code != 0:
+                return code
+        return 0
 
     if sub == "docker":
         dsub = getattr(ns, "product_docker_cmd", "")
@@ -52,6 +98,8 @@ def run_product_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             return _run_cmd(ctx, ["./bin/atlasctl", "run", "./ops/run/product/product_docker_push.sh"])
         if dsub == "check":
             return _run_cmd(ctx, ["./bin/atlasctl", "run", "./ops/run/product/product_docker_check.sh"])
+        if dsub == "contracts":
+            return _run_cmd(ctx, ["./bin/atlasctl", "check", "domain", "docker"])
         if dsub == "release":
             if not str(os.environ.get("CI", "")).strip():
                 print("product docker release is CI-only; set CI=1 to run this lane")
@@ -76,4 +124,3 @@ def run_product_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _run_cmd(ctx, ["./bin/atlasctl", "run", "./ops/run/product/product_docs_lint_names.sh"])
 
     return 2
-
