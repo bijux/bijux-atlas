@@ -1,6 +1,16 @@
-#!/usr/bin/env bash
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import subprocess
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[7]
+
+
+def main() -> int:
+    script = r"""
 set -euo pipefail
-. "$(dirname "$0")/common.sh"
+. ops/obs/tests/common.sh
 setup_test_traps
 need kubectl; need curl
 
@@ -17,3 +27,9 @@ done
 
 echo "prometheus did not discover atlas scrape target" >&2
 exit 1
+"""
+    return subprocess.run(["bash", "-lc", script], cwd=ROOT).returncode
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
