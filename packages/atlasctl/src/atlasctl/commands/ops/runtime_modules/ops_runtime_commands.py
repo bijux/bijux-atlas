@@ -910,34 +910,73 @@ echo "configmap key validation passed (${{NS}}/${{CM_NAME}})"
 
 
 def _ops_k8s_apply_config_native(ctx: RunContext, report_format: str) -> int:
-    script = """
-set -euo pipefail
-. ./ops/_lib/common.sh
-ops_init_run_id
-export RUN_ID="$OPS_RUN_ID"
-export ARTIFACT_DIR="$OPS_RUN_DIR"
-ops_env_load
-ops_entrypoint_start "k8s-apply-config"
-ops_version_guard kubectl helm
-NS="${ATLAS_E2E_NAMESPACE:-${ATLAS_NS:-$(ops_layer_ns_k8s)}}"
-SERVICE_NAME="${ATLAS_E2E_SERVICE_NAME:-$(ops_layer_service_atlas)}"
-CM_NAME="${SERVICE_NAME}-config"
-VALUES_FILE="${ATLAS_E2E_VALUES_FILE:-${ATLAS_VALUES_FILE:-$PWD/ops/k8s/values/local.yaml}}"
-PROFILE="${PROFILE:-local}"
-old_hash="$(ops_kubectl -n "$NS" get configmap "$CM_NAME" -o jsonpath='{.metadata.resourceVersion}' 2>/dev/null || true)"
-make -s ops-values-validate
-PROFILE="$PROFILE" make -s ops-deploy
-new_hash="$(ops_kubectl -n "$NS" get configmap "$CM_NAME" -o jsonpath='{.metadata.resourceVersion}' 2>/dev/null || true)"
-if [ -n "$old_hash" ] && [ -n "$new_hash" ] && [ "$old_hash" != "$new_hash" ]; then
-  echo "configmap changed after deploy (${CM_NAME}); restarting workloads"
-  ./bin/atlasctl ops restart --report text
-else
-  echo "configmap unchanged after deploy (${CM_NAME}); restart skipped"
-fi
-./bin/atlasctl ops k8s --report text validate-configmap-keys "$NS" "$SERVICE_NAME"
-echo "k8s apply-config passed (values=${VALUES_FILE})"
-"""
-    return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
+    repo = ctx.repo_root
+    outputs: list[str] = []
+
+    missing = [tool for tool in ("kubectl", "helm") if shutil.which(tool) is None]
+    if missing:
+        return _emit_ops_status(report_format, 1, "\n".join(f"missing required tool: {tool}" for tool in missing))
+
+    layer_contract = json.loads((repo / "ops/_meta/layer-contract.json").read_text(encoding="utf-8"))
+    namespaces = layer_contract.get("namespaces", {}) if isinstance(layer_contract, dict) else {}
+    atlas_services = layer_contract.get("atlas_services", {}) if isinstance(layer_contract, dict) else {}
+    ns = (
+        os.environ.get("ATLAS_E2E_NAMESPACE")
+        or os.environ.get("ATLAS_NS")
+        or str(namespaces.get("k8s", "atlas-e2e"))
+    )
+    service_name = os.environ.get("ATLAS_E2E_SERVICE_NAME") or str(atlas_services.get("atlas", "bijux-atlas"))
+    cm_name = f"{service_name}-config"
+    values_file = (
+        os.environ.get("ATLAS_E2E_VALUES_FILE")
+        or os.environ.get("ATLAS_VALUES_FILE")
+        or str((repo / "ops/k8s/values/local.yaml").resolve())
+    )
+    profile = os.environ.get("PROFILE") or "local"
+
+    def _configmap_resource_version() -> tuple[int, str]:
+        res = run_command(
+            ["kubectl", "-n", ns, "get", "configmap", cm_name, "-o", "jsonpath={.metadata.resourceVersion}"],
+            repo,
+            ctx=ctx,
+        )
+        if res.code != 0:
+            return 0, ""
+        return 0, res.combined_output.strip()
+
+    _, old_hash = _configmap_resource_version()
+
+    values_validate = run_command(["make", "-s", "ops-values-validate"], repo, ctx=ctx)
+    if values_validate.combined_output.strip():
+        outputs.append(values_validate.combined_output.rstrip())
+    if values_validate.code != 0:
+        return _emit_ops_status(report_format, values_validate.code, "\n".join(outputs).strip())
+
+    deploy = run_command(["env", f"PROFILE={profile}", "make", "-s", "ops-deploy"], repo, ctx=ctx)
+    if deploy.combined_output.strip():
+        outputs.append(deploy.combined_output.rstrip())
+    if deploy.code != 0:
+        return _emit_ops_status(report_format, deploy.code, "\n".join(outputs).strip())
+
+    _, new_hash = _configmap_resource_version()
+    if old_hash and new_hash and old_hash != new_hash:
+        outputs.append(f"configmap changed after deploy ({cm_name}); restarting workloads")
+        restart = run_command([*SELF_CLI, "ops", "restart", "--report", "text"], repo, ctx=ctx)
+        if restart.combined_output.strip():
+            outputs.append(restart.combined_output.rstrip())
+        if restart.code != 0:
+            return _emit_ops_status(report_format, restart.code, "\n".join(outputs).strip())
+    else:
+        outputs.append(f"configmap unchanged after deploy ({cm_name}); restart skipped")
+
+    validate = run_command([*SELF_CLI, "ops", "k8s", "--report", "text", "validate-configmap-keys", ns, service_name], repo, ctx=ctx)
+    if validate.combined_output.strip():
+        outputs.append(validate.combined_output.rstrip())
+    if validate.code != 0:
+        return _emit_ops_status(report_format, validate.code, "\n".join(outputs).strip())
+
+    outputs.append(f"k8s apply-config passed (values={values_file})")
+    return _emit_ops_status(report_format, 0, "\n".join(outputs).strip())
 
 
 def _ops_e2e_run_native(ctx: RunContext, report_format: str, suite: str) -> int:
