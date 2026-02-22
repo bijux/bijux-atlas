@@ -312,7 +312,7 @@ policies/boundaries-check: ## Enforce e2e layer boundary rules and relaxations
 	@./bin/atlasctl policies check --fail-fast
 
 local/all: ## Run all meaningful local gates
-	@PARALLEL="$${PARALLEL:-1}" RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-local-all-$(MAKE_RUN_TS)}}" MODE=root-local ./bin/atlasctl run ./ops/run/root-lanes.sh
+	@PARALLEL="$${PARALLEL:-1}" RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-local-all-$(MAKE_RUN_TS)}}" MODE=root-local ./bin/atlasctl ops root-lanes --report text
 
 ci/all: ## Deterministic CI superset
 	@./bin/atlasctl dev ci run --json --out-dir artifacts/reports/atlasctl/suite-ci >/dev/null
@@ -378,19 +378,19 @@ root-local: ## All lanes in parallel + ops smoke lane (PARALLEL=0 for serial)
 	./bin/atlasctl --quiet report print --run-id "$$run_id"
 
 root-local/no-ops: ## Local lanes without ops smoke lane (explicit skip)
-	@NO_OPS=1 PARALLEL="$${PARALLEL:-1}" RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-no-ops-$(MAKE_RUN_TS)}}" MODE=root-local ./bin/atlasctl run ./ops/run/root-lanes.sh
+	@NO_OPS=1 PARALLEL="$${PARALLEL:-1}" RUN_ID="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-no-ops-$(MAKE_RUN_TS)}}" MODE=root-local ./bin/atlasctl ops root-lanes --report text
 
 root-local-no-ops: ## Alias for root-local/no-ops
 	@$(MAKE) -s root-local/no-ops
 
 root-local-fast: ## Debug serial root-local skipping expensive extras (ops-smoke, obs-full)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-fast-$(MAKE_RUN_TS)}}"; \
-	PARALLEL=0 FAST=1 RUN_ID="$$run_id" MODE=root-local ./bin/atlasctl run ./ops/run/root-lanes.sh; \
+	PARALLEL=0 FAST=1 RUN_ID="$$run_id" MODE=root-local ./bin/atlasctl ops root-lanes --report text; \
 	./bin/atlasctl reporting collect --run-id "$$run_id" >/dev/null; \
 	./bin/atlasctl reporting print --run-id "$$run_id"
 
 root-local-open: ## Open or print latest root-local summary report
-	@SUMMARY_RUN_ID="$${RUN_ID:-}" MODE=open ./bin/atlasctl run ./ops/run/root-lanes.sh
+	@SUMMARY_RUN_ID="$${RUN_ID:-}" MODE=open ./bin/atlasctl ops root-lanes --report text
 
 repro: ## Re-run one lane deterministically (usage: make repro TARGET=lane-cargo SEED=123)
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make repro TARGET=<lane-target> [SEED=123]"; exit 2; }
@@ -440,7 +440,7 @@ all-and-slow: ## Full nightly slow suite entrypoint for workflows
 	@./bin/atlasctl ci nightly --json
 
 root-local-summary: ## Print status and artifact paths for RUN_ID
-	@SUMMARY_RUN_ID="$${RUN_ID:-}" MODE=summary ./bin/atlasctl run ./ops/run/root-lanes.sh
+	@SUMMARY_RUN_ID="$${RUN_ID:-}" MODE=summary ./bin/atlasctl ops root-lanes --report text
 
 lane-status: ## Print all lane statuses for RUN_ID (or latest)
 	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || true)}"; \
@@ -460,7 +460,7 @@ rerun-failed: ## Rerun only failed lanes from RUN_ID (NEW_RUN_ID optional)
 	@src="$${RUN_ID:-}"; \
 	[ -n "$$src" ] || { echo "RUN_ID is required (source run id)" >&2; exit 2; }; \
 	new="$${NEW_RUN_ID:-$${src}-rerun-$(MAKE_RUN_TS)}"; \
-	PARALLEL="$${PARALLEL:-0}" MODE=rerun-failed SOURCE_RUN_ID="$$src" RUN_ID="$$new" ./ops/run/root-lanes.sh; \
+	PARALLEL="$${PARALLEL:-0}" MODE=rerun-failed SOURCE_RUN_ID="$$src" RUN_ID="$$new" ./bin/atlasctl ops root-lanes --report text; \
 	./bin/atlasctl reporting collect --run-id "$$new" >/dev/null; \
 	./bin/atlasctl reporting print --run-id "$$new"
 

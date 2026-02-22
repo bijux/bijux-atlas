@@ -214,7 +214,7 @@ atlasctl ops deploy
 ./bin/atlasctl ops doctor --report text
 atlasctl ops check
 ./bin/atlasctl ops prereqs --report text
-ops/run/root-lanes.sh
+atlasctl ops root-lanes
 atlasctl ops stack down
 atlasctl ops stack up
 atlasctl ops warm

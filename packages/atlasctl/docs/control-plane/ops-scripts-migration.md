@@ -47,8 +47,8 @@ Classification legend:
 | `ops/run/ops-smoke.sh` | glue | deleted (atlasctl-native ops smoke lane) | `atlasctl ops smoke` |
 | `./bin/atlasctl ops prereqs --report text` | glue | planned | `atlasctl make prereqs` |
 | `ops/run/report.sh` | glue | deleted (atlasctl-native) | `atlasctl report unified` |
-| `ops/run/root-lanes.sh` | legacy | legacy | split across `atlasctl dev/ci/product/ops` |
-| `ops/run/root-local.sh` | legacy | legacy | split across `atlasctl dev/ops` |
+| `ops/run/root-lanes.sh` | legacy | deleted (atlasctl-managed shell asset via ops root-lanes) | `atlasctl ops root-lanes` |
+| `ops/run/root-local.sh` | legacy | deleted (atlasctl-managed shell asset via ops root-local) | `atlasctl ops root-local` |
 | `ops/run/stack-down.sh` | glue | deleted (atlasctl-native stack helper) | `atlasctl ops stack down` |
 | `ops/run/stack-up.sh` | glue | deleted (atlasctl-native stack helper) | `atlasctl ops stack up` |
 | `ops/run/undeploy.sh` | glue | deleted (atlasctl-native rollback helper) | `atlasctl ops deploy rollback` |

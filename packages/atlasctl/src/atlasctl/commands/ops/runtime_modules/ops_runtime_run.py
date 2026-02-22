@@ -122,6 +122,10 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         return impl._ops_prereqs_native(ctx, ns.report)
     if ns.ops_cmd == "doctor":
         return impl._ops_doctor_native(ctx, ns.report)
+    if ns.ops_cmd == "root-lanes":
+        return impl._ops_run_migrated_shell_asset(ctx, ns.report, "root-lanes.sh")
+    if ns.ops_cmd == "root-local":
+        return impl._ops_run_migrated_shell_asset(ctx, ns.report, "root-local.sh")
     if ns.ops_cmd == "smoke":
         return impl._ops_smoke_native(ctx, ns.report, bool(getattr(ns, "reuse", False)))
 
