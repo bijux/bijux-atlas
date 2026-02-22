@@ -2566,6 +2566,27 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_policies_bypass_hard_gate"
+domain = "policies"
+area = "bypass"
+gate = "policies"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.domains.policies.make"
+callable = "check_policies_bypass_hard_gate"
+description = "fail when bypass hard gate is enabled and any bypass entries exist"
+severity = "error"
+category = "hygiene"
+fix_hint = "Remove all bypass entries or disable hard gate until ready to enforce zero-bypass milestone."
+legacy_id = "policies.bypass_hard_gate"
+groups = ["fast", "policies", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_policies_bypass_ids_unique"
 domain = "policies"
 area = "bypass"

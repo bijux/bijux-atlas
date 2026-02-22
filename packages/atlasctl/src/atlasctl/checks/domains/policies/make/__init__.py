@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime as dt
 import fnmatch
 import json
+import os
 import re
 from pathlib import Path
 
@@ -199,6 +200,20 @@ def check_policies_bypass_count_nonincreasing(repo_root: Path) -> tuple[int, lis
     baseline = int(json.loads(baseline_path.read_text(encoding="utf-8")).get("max_entries", 0))
     current = int(collect_bypass_inventory(repo_root).get("entry_count", 0))
     return ((0, []) if current <= baseline else (1, [f"bypass entry count regressed: current={current} baseline={baseline}"]))
+
+
+def check_policies_bypass_hard_gate(repo_root: Path) -> tuple[int, list[str]]:
+    """
+    Hard-gate milestone: when ATLASCTL_BYPASS_HARD_FAIL=1, any bypass entry fails.
+    Default remains non-blocking until explicitly flipped in CI.
+    """
+    enabled = str(os.environ.get("ATLASCTL_BYPASS_HARD_FAIL", "")).strip().lower() in {"1", "true", "yes", "on"}
+    if not enabled:
+        return 0, []
+    current = int(collect_bypass_inventory(repo_root).get("entry_count", 0))
+    if current == 0:
+        return 0, []
+    return 1, [f"bypass hard gate enabled: entry_count={current} must be zero"]
 
 
 def check_policies_bypass_ids_unique(repo_root: Path) -> tuple[int, list[str]]:
@@ -534,6 +549,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("policies.bypass_usage_heatmap", "policies", "emit bypass usage heatmap report", 800, check_policies_bypass_usage_heatmap, fix_hint="Review bypass usage report and reduce hotspots.", tags=("repo",)),
     CheckDef("policies.bypass_removal_milestones_defined", "policies", "require bypass removal milestone SSOT file", 800, check_policies_bypass_removal_milestones_defined, fix_hint="Define removal milestones in configs/policy/bypass-removal-milestones.json.", tags=("repo",)),
     CheckDef("policies.bypass_count_nonincreasing", "policies", "enforce migration gate: bypass count must not increase", 800, check_policies_bypass_count_nonincreasing, fix_hint="Reduce bypass count or intentionally update baseline in one reviewed change.", tags=("repo",)),
+    CheckDef("policies.bypass_hard_gate", "policies", "fail when bypass hard gate is enabled and any bypass entries exist", 800, check_policies_bypass_hard_gate, fix_hint="Remove all bypass entries or disable hard gate until ready to enforce zero-bypass milestone.", tags=("repo", "policies", "required")),
     CheckDef("policies.bypass_ids_unique", "policies", "require unique bypass IDs across policy files", 800, check_policies_bypass_ids_unique, fix_hint="Deduplicate bypass IDs/keys across configs/policy.", tags=("repo",)),
     CheckDef("policies.dependency_exceptions_remove_by_issue", "policies", "require dependency exceptions to include remove_by and issue_id", 800, check_policies_dependency_exceptions_remove_by_issue, fix_hint="Add `remove_by` and valid `issue_id` to dependency exceptions.", tags=("repo",)),
     CheckDef("policies.budget_relaxation_requires_approval", "policies", "require explicit approval for any budget relaxation", 800, check_policies_budget_relaxation_requires_approval, fix_hint="Set budget-loosening-approval.json with approved=true and approval_id when relaxations exist.", tags=("repo",)),

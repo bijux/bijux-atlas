@@ -23,8 +23,15 @@ jobs:
           components: rustfmt, clippy
       - name: Run canonical CI entrypoint
         run: make ci
+      - name: Generate public surface snapshot
+        if: always()
+        run: |
+          mkdir -p artifacts/reports/atlasctl
+          ./bin/atlasctl --format json make list > artifacts/reports/atlasctl/public-surface.snapshot.json
+          ./bin/atlasctl --format json list suites > artifacts/reports/atlasctl/suites.snapshot.json
+          ./bin/atlasctl --format json check list > artifacts/reports/atlasctl/checks.snapshot.json
       - name: Generate bypass report
-        if: github.event_name == 'pull_request'
+        if: always()
         run: |
           ./bin/atlasctl policies bypass report --out artifacts/reports/atlasctl/policies-bypass-report.json --report json > artifacts/reports/atlasctl/policies-bypass-report.status.json
       - name: Migration progress gate
@@ -47,13 +54,22 @@ jobs:
             artifacts/**
             ops/_generated/**
       - name: Upload bypass report
-        if: always() && github.event_name == 'pull_request'
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: bypass-report
           path: |
             artifacts/reports/atlasctl/policies-bypass-report.json
             artifacts/reports/atlasctl/policies-bypass-report.status.json
+      - name: Upload public surface snapshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-surface-snapshot
+          path: |
+            artifacts/reports/atlasctl/public-surface.snapshot.json
+            artifacts/reports/atlasctl/suites.snapshot.json
+            artifacts/reports/atlasctl/checks.snapshot.json
 
   control-plane-conformance:
     runs-on: ubuntu-latest
@@ -68,3 +84,14 @@ jobs:
           ./bin/atlasctl check run make
           ./bin/atlasctl check run contracts
           ./bin/atlasctl check run docs
+      - name: Registry/docs/help/bypass/adjective gates
+        run: |
+          ./bin/atlasctl --format json check run --id checks_docs_registry_indexes > /tmp/check-docs-registry-indexes.json
+          ./bin/atlasctl --format json check run --id checks_repo_commands_surface_stability > /tmp/check-help-goldens.json
+          ./bin/atlasctl --format json check run --id checks_checks_registry_integrity > /tmp/check-registry-integrity.json
+          ./bin/atlasctl --format json check run --id checks_policies_bypass_count_nonincreasing > /tmp/check-bypass-count.json
+          ./bin/atlasctl --format json check run --id checks_policies_adjectives_repo_clean > /tmp/check-adjectives.json
+      - name: Optional hard bypass gate
+        if: env.ATLASCTL_BYPASS_HARD_FAIL == '1'
+        run: |
+          ./bin/atlasctl --format json check run --id checks_policies_bypass_hard_gate > /tmp/check-bypass-hard-gate.json
