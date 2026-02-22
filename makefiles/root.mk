@@ -148,10 +148,16 @@ evidence/pr-summary: ## Generate PR markdown summary from latest evidence unifie
 	./bin/atlasctl reporting pr-summary --run-id "$$run_id"
 
 artifacts-open: ## Open latest ops artifact bundle/report directory
-	@./bin/atlasctl run ./ops/run/root/root_artifacts_open.sh
+	@run_id="$${RUN_ID:-$$(cat artifacts/evidence/latest-run-id.txt 2>/dev/null || true)}"; \
+	test -n "$$run_id" || { echo "no recent run found in artifacts/evidence/latest-run-id.txt"; exit 1; }; \
+	path="artifacts/evidence/ci/$$run_id"; \
+	test -d "$$path" || { echo "evidence path not found: $$path"; exit 1; }; \
+	echo "$$path"
 
 quick: ## Minimal tight loop (fmt + lint + test)
-	@./bin/atlasctl run ./ops/run/root/root_quick.sh
+	@./bin/atlasctl dev fmt
+	@./bin/atlasctl dev lint
+	@./bin/atlasctl dev test
 
 cargo/all: ## Local exhaustive Rust lane
 	@$(MAKE) -s lane-cargo
