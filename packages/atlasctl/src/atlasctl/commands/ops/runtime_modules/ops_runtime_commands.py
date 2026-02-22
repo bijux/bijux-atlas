@@ -862,51 +862,92 @@ def _ops_k8s_restart_native(ctx: RunContext, report_format: str) -> int:
 
 
 def _ops_k8s_validate_configmap_keys_native(ctx: RunContext, report_format: str, namespace: str | None, service_name: str | None) -> int:
-    ns_arg = namespace or ""
-    svc_arg = service_name or ""
-    script = f"""
-set -euo pipefail
-. ./ops/_lib/common.sh
-ops_init_run_id
-ops_env_load
-ops_entrypoint_start "ops-k8s-validate-configmap-keys"
-ops_version_guard helm kubectl
-NS="${{1:-${{ATLAS_E2E_NAMESPACE:-${{ATLAS_NS:-$(ops_layer_ns_k8s)}}}}}}"
-SERVICE_NAME="${{2:-${{ATLAS_E2E_SERVICE_NAME:-$(ops_layer_service_atlas)}}}}"
-CM_NAME="${{SERVICE_NAME}}-config"
-STRICT_MODE="${{ATLAS_STRICT_CONFIG_KEYS:-1}}"
-if [ "$STRICT_MODE" != "1" ]; then
-  echo "configmap strict key validation skipped (ATLAS_STRICT_CONFIG_KEYS=${{STRICT_MODE}})"
-  exit 0
-fi
-tmpl_keys="$(mktemp)"
-live_keys="$(mktemp)"
-trap 'rm -f "$tmpl_keys" "$live_keys"' EXIT
-ops_helm template "$SERVICE_NAME" "./ops/k8s/charts/bijux-atlas" -n "$NS" -f "${{ATLAS_E2E_VALUES_FILE:-${{ATLAS_VALUES_FILE:-./ops/k8s/values/local.yaml}}}}" \\
-  | awk '
-    $0 ~ /^kind: ConfigMap$/ {{in_cm=1; next}}
-    in_cm && $0 ~ /^metadata:/ {{next}}
-    in_cm && $0 ~ /^data:/ {{in_data=1; next}}
-    in_data && $1 ~ /^ATLAS_[A-Z0-9_]+:$/ {{gsub(":", "", $1); print $1}}
-    in_data && $0 !~ /^[[:space:]]/ {{in_cm=0; in_data=0}}
-  ' | sort -u > "$tmpl_keys"
-ops_kubectl -n "$NS" get configmap "$CM_NAME" -o jsonpath='{{range $k,$v := .data}}{{${{k}}}}' 2>/dev/null | sort -u > "$live_keys"
-unknown="$(comm -13 "$tmpl_keys" "$live_keys" || true)"
-if [ -n "$unknown" ]; then
-  echo "unknown configmap keys detected in ${{NS}}/${{CM_NAME}}:" >&2
-  echo "$unknown" >&2
-  exit 1
-fi
-echo "configmap key validation passed (${{NS}}/${{CM_NAME}})"
-"""
-    # jsonpath braces are difficult inside f-strings; keep exact behavior with positional args.
-    script = script.replace("{{${k}}}", '{$k}{"\\n"}{end}')
-    args = ["bash", "-lc", script, "bash"]
-    if ns_arg:
-        args.append(ns_arg)
-    if svc_arg:
-        args.append(svc_arg)
-    return _run_simple_cmd(ctx, args, report_format)
+    repo = ctx.repo_root
+    outputs: list[str] = []
+
+    strict_mode = os.environ.get("ATLAS_STRICT_CONFIG_KEYS", "1")
+    if strict_mode != "1":
+        return _emit_ops_status(
+            report_format,
+            0,
+            f"configmap strict key validation skipped (ATLAS_STRICT_CONFIG_KEYS={strict_mode})",
+        )
+
+    missing = [tool for tool in ("helm", "kubectl") if shutil.which(tool) is None]
+    if missing:
+        return _emit_ops_status(report_format, 1, "\n".join(f"missing required tool: {tool}" for tool in missing))
+
+    layer_contract = json.loads((repo / "ops/_meta/layer-contract.json").read_text(encoding="utf-8"))
+    namespaces = layer_contract.get("namespaces", {}) if isinstance(layer_contract, dict) else {}
+    atlas_services = layer_contract.get("atlas_services", {}) if isinstance(layer_contract, dict) else {}
+    ns = (
+        namespace
+        or os.environ.get("ATLAS_E2E_NAMESPACE")
+        or os.environ.get("ATLAS_NS")
+        or str(namespaces.get("k8s", "atlas-e2e"))
+    )
+    svc = service_name or os.environ.get("ATLAS_E2E_SERVICE_NAME") or str(atlas_services.get("atlas", "bijux-atlas"))
+    cm_name = f"{svc}-config"
+    values_file = (
+        os.environ.get("ATLAS_E2E_VALUES_FILE")
+        or os.environ.get("ATLAS_VALUES_FILE")
+        or "./ops/k8s/values/local.yaml"
+    )
+
+    templ = run_command(
+        ["helm", "template", svc, "./ops/k8s/charts/bijux-atlas", "-n", ns, "-f", values_file],
+        repo,
+        ctx=ctx,
+    )
+    if templ.code != 0 and templ.combined_output.strip():
+        outputs.append(templ.combined_output.rstrip())
+    if templ.code != 0:
+        return _emit_ops_status(report_format, templ.code, "\n".join(outputs).strip())
+
+    tmpl_keys: set[str] = set()
+    for doc in templ.stdout.split("\n---"):
+        if "kind: ConfigMap" not in doc:
+            continue
+        if f"name: {cm_name}" not in doc and "metadata:" in doc:
+            # Prefer exact target configmap if present; skip other ConfigMaps.
+            continue
+        in_data = False
+        for raw in doc.splitlines():
+            line = raw.rstrip("\n")
+            if re.match(r"^data:\s*$", line.strip()):
+                in_data = True
+                continue
+            if in_data:
+                if line and not line.startswith(" "):
+                    in_data = False
+                    continue
+                m = re.match(r"^\s+(ATLAS_[A-Z0-9_]+):\s*", line)
+                if m:
+                    tmpl_keys.add(m.group(1))
+        if tmpl_keys:
+            break
+
+    live = run_command(["kubectl", "-n", ns, "get", "configmap", cm_name, "-o", "json"], repo, ctx=ctx)
+    if live.code != 0 and live.combined_output.strip():
+        outputs.append(live.combined_output.rstrip())
+    if live.code != 0:
+        return _emit_ops_status(report_format, live.code, "\n".join(outputs).strip())
+    try:
+        live_payload = json.loads(live.stdout or "{}")
+    except json.JSONDecodeError as exc:
+        outputs.append(f"failed to parse kubectl configmap json: {exc}")
+        return _emit_ops_status(report_format, 1, "\n".join(outputs).strip())
+    live_data = live_payload.get("data", {}) if isinstance(live_payload, dict) else {}
+    live_keys = sorted(k for k in live_data.keys() if isinstance(k, str))
+
+    unknown = [k for k in live_keys if k not in tmpl_keys]
+    if unknown:
+        outputs.append(f"unknown configmap keys detected in {ns}/{cm_name}:")
+        outputs.extend(unknown)
+        return _emit_ops_status(report_format, 1, "\n".join(outputs).strip())
+
+    outputs.append(f"configmap key validation passed ({ns}/{cm_name})")
+    return _emit_ops_status(report_format, 0, "\n".join(outputs).strip())
 
 
 def _ops_k8s_apply_config_native(ctx: RunContext, report_format: str) -> int:
