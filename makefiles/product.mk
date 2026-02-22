@@ -3,7 +3,7 @@
 SHELL := /bin/sh
 
 bootstrap:
-	@./bin/atlasctl run ./ops/run/product/product_bootstrap.sh
+	@./bin/atlasctl product bootstrap
 
 k8s: ## Run canonical k8s verification lane
 	@./bin/atlasctl k8s render
@@ -15,10 +15,10 @@ obs: ## Run canonical observability verification lane
 	@./bin/atlasctl obs verify
 
 docker-build:
-	@./bin/atlasctl run ./ops/run/product/product_docker_build.sh
+	@./bin/atlasctl product docker build
 
 docker-check: ## Docker fast checks: contracts + build + runtime smoke
-	@./bin/atlasctl run ./ops/run/product/product_docker_check.sh
+	@./bin/atlasctl product docker check
 
 docker-smoke:
 	@./bin/atlasctl docker smoke --image "$${DOCKER_IMAGE:-bijux-atlas:local}"
@@ -27,28 +27,28 @@ docker-scan:
 	@./bin/atlasctl docker scan --image "$${DOCKER_IMAGE:-bijux-atlas:local}"
 
 docker-push:
-	@./bin/atlasctl run ./ops/run/product/product_docker_push.sh
+	@./bin/atlasctl product docker push
 
 docker-release: ## CI-only docker release lane (build + contracts + push)
-	@./bin/atlasctl run ./ops/run/product/product_docker_release.sh
+	@./bin/atlasctl product docker release
 
 chart-package:
-	@./bin/atlasctl run ./ops/run/product/product_chart_package.sh
+	@./bin/atlasctl product chart package
 
 chart-verify:
-	@./bin/atlasctl run ./ops/run/product/product_chart_verify.sh
+	@./bin/atlasctl product chart verify
 
 chart-validate: ## Validate chart via lint/template and values contract schema checks
-	@./bin/atlasctl run ./ops/run/product/product_chart_validate.sh
+	@./bin/atlasctl product chart validate
 
 docker-contracts: ## Validate Docker layout/policy/no-latest contracts
 	@./bin/atlasctl check domain docker
 
 rename-lint: ## Enforce durable naming rules for docs/scripts and concept ownership
-	@./bin/atlasctl run ./ops/run/product/product_rename_lint.sh
+	@./bin/atlasctl product naming lint
 
 docs-lint-names: ## Enforce durable naming contracts, registries, and inventory
-	@./bin/atlasctl run ./ops/run/product/product_docs_lint_names.sh
+	@./bin/atlasctl product docs naming-lint
 
 internal/product/doctor: ## Print tool/env/path diagnostics and store doctor report
 	@RUN_ID="$${RUN_ID:-doctor-$(MAKE_RUN_TS)}" ./bin/atlasctl make doctor
