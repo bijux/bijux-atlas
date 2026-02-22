@@ -23,6 +23,13 @@ atlasctl-check-ops: ## Run atlasctl ops checks
 atlasctl-check-python: ## Run atlasctl python checks
 	@./bin/atlasctl check run --group python
 
+atlasctl-check-layout: ## Validate repository layout/root-shape checks
+	@./bin/atlasctl check layout
+
+# Compatibility alias for existing docs/workflows.
+layout-check: ## Validate repository layout contract and root shape
+	@./bin/atlasctl check layout
+
 # Internal atlasctl dependency/tooling wrappers (migrated from scripts.mk)
 deps-check-venv: ## Validate dependency install/import in a clean temporary venv
 	@./bin/atlasctl deps check-venv
@@ -39,4 +46,4 @@ deps-sync: ## Install dependencies from lock into active interpreter
 registry-list: ## Print atlasctl registry inventory
 	@./bin/atlasctl registry list
 
-.PHONY: atlasctl-check atlasctl-check-repo atlasctl-check-make atlasctl-check-contracts atlasctl-check-docs atlasctl-check-ops atlasctl-check-python deps-check-venv deps-cold-start deps-lock deps-sync registry-list
+.PHONY: atlasctl-check atlasctl-check-repo atlasctl-check-make atlasctl-check-contracts atlasctl-check-docs atlasctl-check-ops atlasctl-check-python atlasctl-check-layout layout-check deps-check-venv deps-cold-start deps-lock deps-sync registry-list

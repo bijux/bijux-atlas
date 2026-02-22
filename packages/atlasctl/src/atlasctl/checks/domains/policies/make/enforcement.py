@@ -26,7 +26,6 @@ _WRAPPER_FILES = (
     "makefiles/ci.mk",
     "makefiles/policies.mk",
     "makefiles/product.mk",
-    "makefiles/layout.mk",
     "makefiles/env.mk",
     "makefiles/root.mk",
 )

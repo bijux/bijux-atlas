@@ -23,7 +23,6 @@ _WRAPPER_FILES = (
     "makefiles/ci.mk",
     "makefiles/policies.mk",
     "makefiles/product.mk",
-    "makefiles/layout.mk",
     "makefiles/env.mk",
     "makefiles/root.mk",
 )
@@ -307,10 +306,9 @@ def check_make_wrapper_target_budget(repo_root: Path) -> tuple[int, list[str]]:
         "makefiles/docs.mk": 5,
         "makefiles/ops.mk": 6,
         "makefiles/ci.mk": 5,
-        "makefiles/atlasctl.mk": 12,
+        "makefiles/atlasctl.mk": 15,
         "makefiles/policies.mk": 1,
         "makefiles/product.mk": 24,
-        "makefiles/layout.mk": 3,
         "makefiles/python.mk": 1,
         "makefiles/root.mk": 220,
     }
