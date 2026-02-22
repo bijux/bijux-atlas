@@ -1,10 +1,13 @@
-#!/usr/bin/env bash
-set -euo pipefail
-SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-. "$SCRIPT_DIR/../_lib/common.sh"
+#!/usr/bin/env python3
+from __future__ import annotations
+from pathlib import Path
+from ._shell_common import run_k8s_test_shell
+
+def main() -> int:
+    return run_k8s_test_shell(
+        """
 setup_test_traps
 need helm; need kubectl; need curl; need python3
-
 TMP_VALUES="$(mktemp)"
 cat > "$TMP_VALUES" <<YAML
 cache:
@@ -27,5 +30,10 @@ import sys
 b=float(sys.argv[1]); a=float(sys.argv[2])
 assert a >= b, f"cache hits did not increase or remain stable: before={b} after={a}"
 PY
-
 echo "warmup job gate passed"
+        """,
+        Path(__file__),
+    )
+
+if __name__ == "__main__":
+    raise SystemExit(main())
