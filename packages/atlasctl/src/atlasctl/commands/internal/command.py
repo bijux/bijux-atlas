@@ -25,6 +25,7 @@ _INTERNAL_ITEMS: tuple[str, ...] = (
     "refactor-check-ids",
     "self-check",
     "fix-next",
+    "migration",
     "migration-progress",
 )
 
@@ -208,6 +209,82 @@ def _run_migration_progress(ctx: RunContext, ns: argparse.Namespace) -> int:
     return 0 if payload.get("status") == "ok" else 1
 
 
+def _migration_status_payload(ctx: RunContext) -> dict[str, object]:
+    progress = _collect_migration_progress(ctx)
+    inventory = [str(p) for p in progress.get("ops_script_inventory", [])]
+    by_area: dict[str, int] = {}
+    for rel in inventory:
+        rel_after_prefix = rel.removeprefix("ops/run/")
+        parts = rel_after_prefix.split("/")
+        if len(parts) >= 2:
+            area = parts[0]
+        else:
+            area = "root"
+        by_area[area] = by_area.get(area, 0) + 1
+    return {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "kind": "migration-status",
+        "status": "ok",
+        "run_id": ctx.run_id,
+        "remaining_ops_run_scripts": len(inventory),
+        "remaining_by_area": dict(sorted(by_area.items())),
+        "ops_run_scripts": inventory,
+        "docs": {
+            "mapping": "packages/atlasctl/docs/control-plane/ops-scripts-migration.md",
+            "deletion_plan": "packages/atlasctl/docs/control-plane/ops-run-deletion-plan.md",
+        },
+    }
+
+
+def _run_migration_status(ctx: RunContext, ns: argparse.Namespace) -> int:
+    payload = _migration_status_payload(ctx)
+    out_path = ctx.repo_root / "artifacts/reports/atlasctl/migration-status.json"
+    write_text_file(out_path, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    if bool(getattr(ns, "json", False)):
+        print(json.dumps(payload, sort_keys=True))
+    else:
+        print(f"migration status: {out_path.relative_to(ctx.repo_root).as_posix()}")
+        print(f"remaining ops/run scripts: {payload['remaining_ops_run_scripts']}")
+        for area, count in payload["remaining_by_area"].items():
+            print(f"- {area}: {count}")
+    return 0
+
+
+def _run_migration_burn_down(ctx: RunContext, ns: argparse.Namespace) -> int:
+    status = _migration_status_payload(ctx)
+    history_path = ctx.repo_root / "artifacts/reports/atlasctl/migration-burn-down.history.jsonl"
+    row = {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "kind": "migration-burn-down-row",
+        "run_id": ctx.run_id,
+        "remaining_ops_run_scripts": status["remaining_ops_run_scripts"],
+        "remaining_by_area": status["remaining_by_area"],
+    }
+    history_path.parent.mkdir(parents=True, exist_ok=True)
+    with history_path.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(row, sort_keys=True) + "\n")
+    report = {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "kind": "migration-burn-down",
+        "status": "ok",
+        "run_id": ctx.run_id,
+        "history_file": history_path.relative_to(ctx.repo_root).as_posix(),
+        "latest": row,
+    }
+    report_path = ctx.repo_root / "artifacts/reports/atlasctl/migration-burn-down.latest.json"
+    write_text_file(report_path, json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    if bool(getattr(ns, "json", False)):
+        print(json.dumps(report, sort_keys=True))
+    else:
+        print(f"migration burn-down: {report_path.relative_to(ctx.repo_root).as_posix()}")
+        print(f"history: {report['history_file']}")
+        print(f"remaining ops/run scripts: {row['remaining_ops_run_scripts']}")
+    return 0
+
+
 def run_internal_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     sub = getattr(ns, "internal_cmd", "")
     if not sub and bool(getattr(ns, "list", False)):
@@ -247,6 +324,13 @@ def run_internal_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _run_fix_next(ctx, ns)
     if sub == "migration-progress":
         return _run_migration_progress(ctx, ns)
+    if sub == "migration":
+        action = str(getattr(ns, "migration_cmd", "") or "status")
+        if action == "status":
+            return _run_migration_status(ctx, ns)
+        if action == "burn-down":
+            return _run_migration_burn_down(ctx, ns)
+        return 2
     forwarded = _INTERNAL_FORWARD.get(sub)
     if not forwarded:
         return 2
@@ -276,3 +360,8 @@ def configure_internal_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
     fix_next.add_argument("--json", action="store_true", help="emit JSON payload")
     progress = internal_sub.add_parser("migration-progress", help="emit migration progress artifact and enforce no-regression baseline")
     progress.add_argument("--json", action="store_true", help="emit JSON payload")
+    migration = internal_sub.add_parser("migration", help="migration status and burn-down reports")
+    migration.add_argument("--json", action="store_true", help="emit JSON payload")
+    migration_sub = migration.add_subparsers(dest="migration_cmd", required=False)
+    migration_sub.add_parser("status", help="list remaining ops/run scripts and area counts")
+    migration_sub.add_parser("burn-down", help="append burn-down row and write latest report")
