@@ -8,6 +8,7 @@ from pathlib import Path
 _CANONICAL_RE = re.compile(r"^checks_[a-z0-9]+_[a-z0-9]+_[a-z0-9_]+$")
 _CATALOG_PATH = Path("packages/atlasctl/src/atlasctl/registry/checks_catalog.json")
 _DOCS_META_PATH = Path("packages/atlasctl/docs/_meta/checks-registry.txt")
+_COUNT_BUDGET_PATH = Path("configs/policy/checks-count-budget.json")
 
 
 def check_registry_integrity(repo_root: Path) -> tuple[int, list[str]]:
@@ -126,3 +127,75 @@ def check_registry_docs_meta_matches_runtime(repo_root: Path) -> tuple[int, list
     if extra:
         errors.append("checks docs meta has unknown ids: " + ", ".join(extra[:20]))
     return (1, errors) if errors else (0, [])
+
+
+def check_registry_transition_complete(repo_root: Path) -> tuple[int, list[str]]:
+    from ....registry.ssot import check_id_alias_expiry, check_id_renames
+    from datetime import date
+
+    renames = check_id_renames(repo_root)
+    if not renames:
+        return 0, []
+    expiry = check_id_alias_expiry(repo_root)
+    if not expiry:
+        return 1, ["check id migration map has aliases but no expiry date"]
+    try:
+        expires_on = date.fromisoformat(expiry)
+    except ValueError:
+        return 1, [f"invalid check id alias expiry date: {expiry}"]
+    if date.today() > expires_on:
+        return 1, [f"check id transition expired on {expiry} but legacy alias mapping still contains {len(renames)} entries"]
+    return 0, []
+
+
+def check_suites_inventory_ssot(repo_root: Path) -> tuple[int, list[str]]:
+    from .....registry.suites import suite_manifest_specs
+
+    specs = list(suite_manifest_specs())
+    names = [spec.name for spec in specs]
+    errors: list[str] = []
+    if names != sorted(names):
+        errors.append("suite registry names must be sorted deterministically")
+    if len(names) != len(set(names)):
+        errors.append("suite registry contains duplicate suite names")
+    return (1, errors) if errors else (0, [])
+
+
+def check_suites_no_orphans(repo_root: Path) -> tuple[int, list[str]]:
+    return check_registry_suite_membership_required(repo_root)
+
+
+def check_owners_ssot(repo_root: Path) -> tuple[int, list[str]]:
+    return check_registry_owners_required(repo_root)
+
+
+def check_remediation_ssot(repo_root: Path) -> tuple[int, list[str]]:
+    return check_registry_remediation_link_required(repo_root)
+
+
+def check_docs_index_complete(repo_root: Path) -> tuple[int, list[str]]:
+    index = repo_root / "packages/atlasctl/docs/checks/index.md"
+    if not index.exists():
+        return 1, ["missing checks docs index: packages/atlasctl/docs/checks/index.md"]
+    text = index.read_text(encoding="utf-8")
+    required_refs = (
+        "# Check Domains",
+        "Generated from check registry",
+        "atlasctl check list --json",
+    )
+    missing = [ref for ref in required_refs if ref not in text]
+    if missing:
+        return 1, [f"checks docs index missing required generated refs: {', '.join(missing)}"]
+    return 0, []
+
+
+def check_count_budget(repo_root: Path) -> tuple[int, list[str]]:
+    total = len(tuple(_entries(repo_root)))
+    path = repo_root / _COUNT_BUDGET_PATH
+    if not path.exists():
+        return 1, [f"missing checks count budget file: {_COUNT_BUDGET_PATH.as_posix()}"]
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    max_total = int(payload.get("max_total", total))
+    if total > max_total:
+        return 1, [f"checks count budget exceeded: {total} > {max_total} ({_COUNT_BUDGET_PATH.as_posix()})"]
+    return 0, []
