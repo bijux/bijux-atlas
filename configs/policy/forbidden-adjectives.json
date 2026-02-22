@@ -6,5 +6,9 @@
     "reference-grade",
     "production-grade"
   ],
+  "exempt_paths": [
+    "configs/policy/forbidden-adjectives.json",
+    "configs/policy/forbidden-adjectives-approvals.json"
+  ],
   "report_path": "artifacts/reports/atlasctl/forbidden-adjectives.json"
 }
