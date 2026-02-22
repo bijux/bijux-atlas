@@ -1789,6 +1789,27 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_make_target_names_no_banned_adjectives"
+domain = "make"
+area = "target"
+gate = "make"
+owner = "platform"
+speed = "fast"
+timeout_ms = 900
+module = "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout"
+callable = "check_make_target_names_no_banned_adjectives"
+description = "forbid banned adjectives in make target names"
+severity = "error"
+category = "hygiene"
+fix_hint = "Rename make targets using neutral policy-oriented wording."
+legacy_id = "make.target_names_no_banned_adjectives"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_make_target_ownership_complete"
 domain = "make"
 area = "target"
@@ -1831,6 +1852,132 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_make_wrapper_no_direct_cargo"
+domain = "make"
+area = "wrapper"
+gate = "make"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout"
+callable = "check_make_wrapper_no_direct_cargo"
+description = "forbid direct cargo calls in wrapper makefiles"
+severity = "error"
+category = "hygiene"
+fix_hint = "Route cargo operations through atlasctl command surfaces."
+legacy_id = "make.wrapper_no_direct_cargo"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_wrapper_no_env_side_effects"
+domain = "make"
+area = "wrapper"
+gate = "make"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout"
+callable = "check_make_wrapper_no_env_side_effects"
+description = "forbid shell/env side effects inside wrapper recipe bodies"
+severity = "error"
+category = "hygiene"
+fix_hint = "Move environment orchestration to atlasctl commands."
+legacy_id = "make.wrapper_no_env_side_effects"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_wrapper_no_multiline_recipes"
+domain = "make"
+area = "wrapper"
+gate = "make"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout"
+callable = "check_make_wrapper_no_multiline_recipes"
+description = "forbid multi-line recipes in wrapper makefiles"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep wrapper targets as one-line atlasctl delegations."
+legacy_id = "make.wrapper_no_multiline_recipes"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_wrapper_no_python_m"
+domain = "make"
+area = "wrapper"
+gate = "make"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.domains.policies.make.enforcement"
+callable = "check_make_no_python_module_invocation"
+description = "forbid python module invocations in wrapper recipes"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use ./bin/atlasctl entrypoints."
+legacy_id = "make.wrapper_no_python_m"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_wrapper_only_calls_bin_atlasctl"
+domain = "make"
+area = "wrapper"
+gate = "make"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout"
+callable = "check_make_wrapper_only_calls_bin_atlasctl"
+description = "require wrapper targets to call ./bin/atlasctl only"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use ./bin/atlasctl for wrapper recipe commands."
+legacy_id = "make.wrapper_only_calls_bin_atlasctl"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_wrapper_phony_complete"
+domain = "make"
+area = "wrapper"
+gate = "make"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout"
+callable = "check_make_wrapper_phony_complete"
+description = "require wrapper targets to be listed in .PHONY"
+severity = "error"
+category = "hygiene"
+fix_hint = "Add each wrapper target to the makefile .PHONY list."
+legacy_id = "make.wrapper_phony_complete"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_make_wrapper_purity"
 domain = "make"
 area = "wrapper"
@@ -1845,6 +1992,48 @@ severity = "error"
 category = "hygiene"
 fix_hint = "Use single-line ./bin/atlasctl delegation in canonical makefiles."
 legacy_id = "make.wrapper_purity"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_wrapper_shell_is_sh"
+domain = "make"
+area = "wrapper"
+gate = "make"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout"
+callable = "check_make_wrapper_shell_is_sh"
+description = "require wrapper makefiles to pin SHELL := /bin/sh"
+severity = "error"
+category = "hygiene"
+fix_hint = "Declare SHELL := /bin/sh in each wrapper makefile."
+legacy_id = "make.wrapper_shell_is_sh"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_wrapper_target_budget"
+domain = "make"
+area = "wrapper"
+gate = "make"
+owner = "platform"
+speed = "fast"
+timeout_ms = 900
+module = "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout"
+callable = "check_make_wrapper_target_budget"
+description = "enforce per-makefile wrapper target count budgets"
+severity = "error"
+category = "hygiene"
+fix_hint = "Collapse redundant wrappers and keep only canonical make targets per makefile."
+legacy_id = "make.wrapper_target_budget"
 groups = ["fast", "make", "required"]
 effects = []
 external_tools = []

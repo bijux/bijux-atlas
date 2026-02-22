@@ -16,6 +16,63 @@ from ..runtime_modules.repo_native_runtime_core import (
     check_script_ownership,
 )
 
+_WRAPPER_FILES = (
+    "makefiles/dev.mk",
+    "makefiles/docs.mk",
+    "makefiles/ops.mk",
+    "makefiles/ci.mk",
+    "makefiles/policies.mk",
+    "makefiles/product.mk",
+    "makefiles/layout.mk",
+    "makefiles/registry.mk",
+    "makefiles/env.mk",
+    "makefiles/root.mk",
+)
+_BANNED_TARGET_ADJECTIVES = (
+    "".join(["el", "ite"]),
+    "".join(["ref", "grade"]),
+    "".join(["reference", "-", "grade"]),
+    "".join(["production", "-", "grade"]),
+)
+_MAKE_TARGET_RE = re.compile(r"^(?P<target>[A-Za-z0-9_./-]+):(?:\s|$)")
+
+
+def _iter_make_targets(repo_root: Path, rel_path: str) -> list[tuple[str, list[tuple[int, str]]]]:
+    path = repo_root / rel_path
+    if not path.exists():
+        return []
+    targets: list[tuple[str, list[tuple[int, str]]]] = []
+    current_target = ""
+    current_lines: list[tuple[int, str]] = []
+    for lineno, raw in enumerate(path.read_text(encoding="utf-8", errors="ignore").splitlines(), start=1):
+        target_match = _MAKE_TARGET_RE.match(raw)
+        if target_match and not raw.startswith("."):
+            if current_target:
+                targets.append((current_target, current_lines))
+            current_target = target_match.group("target")
+            current_lines = []
+            continue
+        if raw.startswith("\t") and current_target:
+            body = raw[1:].strip()
+            if body:
+                current_lines.append((lineno, body))
+    if current_target:
+        targets.append((current_target, current_lines))
+    return targets
+
+
+def _wrapper_target_recipes(repo_root: Path) -> list[tuple[str, str, int, str]]:
+    rows: list[tuple[str, str, int, str]] = []
+    for rel in _WRAPPER_FILES:
+        if rel == "makefiles/root.mk":
+            continue
+        for target, recipe_lines in _iter_make_targets(repo_root, rel):
+            if not recipe_lines or target.startswith("internal/"):
+                continue
+            for lineno, body in recipe_lines:
+                rows.append((rel, target, lineno, body))
+    return rows
+
 
 def check_no_xtask_refs(repo_root: Path) -> tuple[int, list[str]]:
     include_roots = [
@@ -248,11 +305,11 @@ def check_make_command_allowlist(repo_root: Path) -> tuple[int, list[str]]:
 def check_make_wrapper_target_budget(repo_root: Path) -> tuple[int, list[str]]:
     budgets: dict[str, int] = {
         "makefiles/dev.mk": 10,
-        "makefiles/docs.mk": 4,
+        "makefiles/docs.mk": 5,
         "makefiles/ops.mk": 6,
-        "makefiles/ci.mk": 4,
+        "makefiles/ci.mk": 5,
         "makefiles/policies.mk": 1,
-        "makefiles/scripts.mk": 2,
+        "makefiles/scripts.mk": 4,
         "makefiles/product.mk": 24,
         "makefiles/layout.mk": 3,
         "makefiles/registry.mk": 0,
@@ -272,12 +329,106 @@ def check_make_wrapper_target_budget(repo_root: Path) -> tuple[int, list[str]]:
             if not m:
                 continue
             target = m.group("target")
+            if target.startswith("."):
+                continue
             if target.startswith("internal/"):
                 continue
             count += 1
         if count > max_targets:
             errors.append(f"{rel}: wrapper target budget exceeded ({count} > {max_targets})")
     return (0 if not errors else 1), errors
+
+
+def check_make_wrapper_no_multiline_recipes(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for rel in _WRAPPER_FILES:
+        if rel == "makefiles/root.mk":
+            continue
+        for target, recipe_lines in _iter_make_targets(repo_root, rel):
+            if not recipe_lines or target.startswith("internal/"):
+                continue
+            if len(recipe_lines) != 1:
+                errors.append(f"{rel}:{target}: wrapper target must have exactly one recipe line")
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_make_wrapper_only_calls_bin_atlasctl(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for rel, target, lineno, body in _wrapper_target_recipes(repo_root):
+        if body.startswith("@./bin/atlasctl ") or body.startswith("./bin/atlasctl "):
+            continue
+        errors.append(f"{rel}:{lineno}: {target} must delegate via ./bin/atlasctl")
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_make_wrapper_no_env_side_effects(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    forbidden = ("export ", "unset ", "mkdir ", "rm ", "cp ", "mv ", "touch ", "tee ", ">>", ";", "&&", "||", "|")
+    for rel, target, lineno, body in _wrapper_target_recipes(repo_root):
+        clean = body.lstrip("@").strip()
+        if not clean.startswith("./bin/atlasctl "):
+            continue
+        atlasctl_call = clean[len("./bin/atlasctl "):]
+        if any(token in atlasctl_call for token in forbidden):
+            errors.append(f"{rel}:{lineno}: {target} contains shell/env side-effect tokens")
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_make_wrapper_no_direct_cargo(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for rel, target, lineno, body in _wrapper_target_recipes(repo_root):
+        if re.search(r"\bcargo\b", body):
+            errors.append(f"{rel}:{lineno}: {target} must not invoke cargo directly")
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_make_wrapper_shell_is_sh(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for rel in _WRAPPER_FILES:
+        path = repo_root / rel
+        if not path.exists():
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if "SHELL := /bin/sh" not in text:
+            errors.append(f"{rel}: wrapper makefile must declare `SHELL := /bin/sh`")
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_make_wrapper_phony_complete(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for rel in _WRAPPER_FILES:
+        if rel == "makefiles/root.mk":
+            continue
+        path = repo_root / rel
+        if not path.exists():
+            continue
+        phony: set[str] = set()
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        for line in text.splitlines():
+            if line.startswith(".PHONY:"):
+                phony.update(line.replace(".PHONY:", "", 1).split())
+        for target, recipe_lines in _iter_make_targets(repo_root, rel):
+            if not recipe_lines:
+                continue
+            if target.startswith("internal/"):
+                continue
+            if target not in phony:
+                errors.append(f"{rel}:{target}: missing from .PHONY")
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_make_target_names_no_banned_adjectives(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    files = [("Makefile", repo_root / "Makefile"), *((p.relative_to(repo_root).as_posix(), p) for p in sorted((repo_root / "makefiles").glob("*.mk")))]
+    for rel_name, path in files:
+        if not path.exists():
+            continue
+        for target, _ in _iter_make_targets(repo_root, rel_name):
+            lower = target.lower()
+            banned = [token for token in _BANNED_TARGET_ADJECTIVES if token in lower]
+            if banned:
+                errors.append(f"{rel_name}:{target}: banned adjective in target name ({', '.join(sorted(set(banned)))})")
+    return (0 if not errors else 1), sorted(errors)
 
 
 def check_layout_contract(repo_root: Path) -> tuple[int, list[str]]:

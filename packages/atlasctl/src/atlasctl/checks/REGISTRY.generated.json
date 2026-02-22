@@ -2319,6 +2319,33 @@
     },
     {
       "area": "target",
+      "callable": "check_make_target_names_no_banned_adjectives",
+      "category": "hygiene",
+      "description": "forbid banned adjectives in make target names",
+      "domain": "make",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Rename make targets using neutral policy-oriented wording.",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_target_names_no_banned_adjectives",
+      "legacy_id": "make.target_names_no_banned_adjectives",
+      "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 900,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "target",
       "callable": "check_make_target_ownership_complete",
       "category": "hygiene",
       "description": "require make target ownership coverage",
@@ -2373,6 +2400,168 @@
     },
     {
       "area": "wrapper",
+      "callable": "check_make_wrapper_no_direct_cargo",
+      "category": "hygiene",
+      "description": "forbid direct cargo calls in wrapper makefiles",
+      "domain": "make",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Route cargo operations through atlasctl command surfaces.",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_wrapper_no_direct_cargo",
+      "legacy_id": "make.wrapper_no_direct_cargo",
+      "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "wrapper",
+      "callable": "check_make_wrapper_no_env_side_effects",
+      "category": "hygiene",
+      "description": "forbid shell/env side effects inside wrapper recipe bodies",
+      "domain": "make",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Move environment orchestration to atlasctl commands.",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_wrapper_no_env_side_effects",
+      "legacy_id": "make.wrapper_no_env_side_effects",
+      "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "wrapper",
+      "callable": "check_make_wrapper_no_multiline_recipes",
+      "category": "hygiene",
+      "description": "forbid multi-line recipes in wrapper makefiles",
+      "domain": "make",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Keep wrapper targets as one-line atlasctl delegations.",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_wrapper_no_multiline_recipes",
+      "legacy_id": "make.wrapper_no_multiline_recipes",
+      "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "wrapper",
+      "callable": "check_make_no_python_module_invocation",
+      "category": "hygiene",
+      "description": "forbid python module invocations in wrapper recipes",
+      "domain": "make",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Use ./bin/atlasctl entrypoints.",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_wrapper_no_python_m",
+      "legacy_id": "make.wrapper_no_python_m",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "wrapper",
+      "callable": "check_make_wrapper_only_calls_bin_atlasctl",
+      "category": "hygiene",
+      "description": "require wrapper targets to call ./bin/atlasctl only",
+      "domain": "make",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Use ./bin/atlasctl for wrapper recipe commands.",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_wrapper_only_calls_bin_atlasctl",
+      "legacy_id": "make.wrapper_only_calls_bin_atlasctl",
+      "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "wrapper",
+      "callable": "check_make_wrapper_phony_complete",
+      "category": "hygiene",
+      "description": "require wrapper targets to be listed in .PHONY",
+      "domain": "make",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Add each wrapper target to the makefile .PHONY list.",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_wrapper_phony_complete",
+      "legacy_id": "make.wrapper_phony_complete",
+      "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "wrapper",
       "callable": "check_make_wrapper_purity",
       "category": "hygiene",
       "description": "enforce make wrapper purity for canonical makefiles",
@@ -2394,6 +2583,60 @@
       "severity": "error",
       "speed": "fast",
       "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "wrapper",
+      "callable": "check_make_wrapper_shell_is_sh",
+      "category": "hygiene",
+      "description": "require wrapper makefiles to pin SHELL := /bin/sh",
+      "domain": "make",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Declare SHELL := /bin/sh in each wrapper makefile.",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_wrapper_shell_is_sh",
+      "legacy_id": "make.wrapper_shell_is_sh",
+      "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "wrapper",
+      "callable": "check_make_wrapper_target_budget",
+      "category": "hygiene",
+      "description": "enforce per-makefile wrapper target count budgets",
+      "domain": "make",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Collapse redundant wrappers and keep only canonical make targets per makefile.",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_wrapper_target_budget",
+      "legacy_id": "make.wrapper_target_budget",
+      "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 900,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
