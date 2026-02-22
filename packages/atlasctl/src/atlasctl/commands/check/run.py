@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib
 import inspect
 import json
 from pathlib import Path
@@ -438,9 +439,7 @@ def run(ctx, ns: argparse.Namespace) -> int:
             ["python3", "packages/atlasctl/src/atlasctl/checks/layout/workflows/check_workflow_calls_atlasctl.py"],
         )
     if sub == "ci-surface-documented":
-        from atlasctl.checks.layout.docs.check_ci_surface_documented import main as check_ci_surface_documented_main
-
-        return check_ci_surface_documented_main()
+        return importlib.import_module("atlasctl.checks.layout.docs.check_ci_surface_documented").main()
     if sub == "ops-mk-contract":
         return impl._run(
             ctx,
@@ -467,7 +466,13 @@ def run(ctx, ns: argparse.Namespace) -> int:
         "make-scripts-refs": (impl.check_make_scripts_references, "make scripts reference policy failed:", "make scripts reference policy passed", 200, "- "),
         "docs-scripts-refs": (impl.check_docs_scripts_references, "docs scripts reference policy failed:", "docs scripts reference policy passed", 200, "- "),
         "make-help": (impl.check_make_help, "", "make help output is deterministic", None, ""),
-        "no-xtask": (impl.check_no_xtask_refs, "xtask references detected:", "no xtask references detected", None, "- "),
+        "no-xtask": (
+            impl.check_no_xtask_refs,
+            "legacy task-runner references detected:",
+            "no legacy task-runner references detected",
+            None,
+            "- ",
+        ),
         "no-python-shebang-outside-packages": (impl.check_no_executable_python_outside_packages, "forbidden executable python files detected:", "no executable python files outside packages", None, "- "),
         "forbidden-top-dirs": (impl.check_forbidden_top_dirs, "forbidden top-level directories detected:", "no forbidden top-level directories", None, "- "),
         "module-size": (impl.check_module_size, "oversized atlasctl modules detected:", "module size policy passed", None, "- "),

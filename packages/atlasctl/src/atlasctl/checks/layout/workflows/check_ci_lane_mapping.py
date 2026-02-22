@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import json
 import re
-import subprocess
 import sys
 from pathlib import Path
+
+from atlasctl.core.exec import run
 
 ROOT = Path(__file__).resolve().parents[7]
 CI_MK = ROOT / "makefiles" / "ci.mk"
@@ -35,7 +36,7 @@ def _ci_wrapper_targets() -> set[str]:
 
 
 def _ci_lanes() -> tuple[set[str], list[str]]:
-    proc = subprocess.run(
+    proc = run(
         ["./bin/atlasctl", "--quiet", "ci", "list", "--json"],
         cwd=ROOT,
         text=True,

@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import subprocess
 import sys
 from pathlib import Path
+
+from atlasctl.core.exec import run
 
 ROOT = Path(__file__).resolve().parents[6]
 
 
 def main() -> int:
-    proc = subprocess.run(
+    proc = run(
         ["git", "status", "--short", "artifacts/evidence"],
         cwd=ROOT,
-        capture_output=True,
         text=True,
         check=False,
+        capture_output=True,
     )
     allowed_suffixes = {
         "artifacts/evidence/.gitkeep",
