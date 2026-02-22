@@ -472,7 +472,7 @@ def _ops_clean_generated(ctx: RunContext, report_format: str, force: bool) -> in
 def _ops_cache_status(ctx: RunContext, report_format: str, strict: bool, plan: bool) -> int:
     repo = ctx.repo_root
     cmds: list[list[str]] = [
-        ["bash", "ops/datasets/scripts/sh/cache_status.sh"],
+        ["python3", "packages/atlasctl/src/atlasctl/commands/ops/datasets/cache_status.py"],
         ["python3", "packages/atlasctl/src/atlasctl/commands/ops/datasets/cache_budget_check.py"],
     ]
     if strict:
