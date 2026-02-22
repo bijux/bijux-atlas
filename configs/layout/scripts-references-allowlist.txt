@@ -175,8 +175,8 @@ ops/k8s/tests/suite.sh
 packages/atlasctl/src/atlasctl/commands/ops/load/run/compare_redis.py
 packages/atlasctl/src/atlasctl/commands/ops/load/run/load_under_rollback.py
 packages/atlasctl/src/atlasctl/commands/ops/load/run/load_under_rollout.py
-ops/load/scripts/run_e2e_perf.sh
-ops/load/scripts/run_nightly_perf.sh
+packages/atlasctl/src/atlasctl/commands/ops/load/run/run_e2e_perf.py
+packages/atlasctl/src/atlasctl/commands/ops/load/run/run_nightly_perf.py
 atlasctl ops load run
 packages/atlasctl/src/atlasctl/commands/ops/load/run/run_suites_from_manifest.py
 packages/atlasctl/src/atlasctl/commands/ops/load/baseline/update_baseline_entrypoint.py
