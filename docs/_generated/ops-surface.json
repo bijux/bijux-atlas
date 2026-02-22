@@ -155,7 +155,6 @@
     "ops/run/load-suite.sh",
     "ops/run/obs-verify.sh",
     "ops/run/prereqs.sh",
-    "ops/run/report.sh",
     "ops/run/stack-down.sh",
     "ops/run/stack-up.sh"
   ]

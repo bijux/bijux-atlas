@@ -148,4 +148,3 @@
 - `./ops/run/stack-down.sh`
 - `./ops/run/obs-verify.sh`
 - `./ops/run/load-suite.sh`
-- `./ops/run/report.sh`
