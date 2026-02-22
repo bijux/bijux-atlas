@@ -3007,6 +3007,27 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_policies_bypass_mainline_strict_mode"
+domain = "policies"
+area = "bypass"
+gate = "policies"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.domains.policies.make"
+callable = "check_policies_bypass_mainline_strict_mode"
+description = "optional strict mode: fail on any bypass entry when enabled"
+severity = "error"
+category = "hygiene"
+fix_hint = "Enable only after bypass count reaches zero or acceptable strict milestone."
+legacy_id = "policies.bypass_mainline_strict_mode"
+groups = ["fast", "policies", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_policies_bypass_new_entries_forbidden"
 domain = "policies"
 area = "bypass"
