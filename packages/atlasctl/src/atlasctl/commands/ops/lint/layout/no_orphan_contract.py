@@ -5,7 +5,15 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for parent in cur.parents:
+        if all((parent / marker).exists() for marker in ("makefiles", "packages", "configs", "ops")):
+            return parent
+    raise RuntimeError("unable to resolve repo root")
+
+
+ROOT = _repo_root()
 contracts = json.loads((ROOT / "ops/_meta/contracts.json").read_text())
 registered = {entry["path"] for entry in contracts.get("contracts", [])}
 ops_index = (ROOT / "ops/INDEX.md").read_text(encoding="utf-8")

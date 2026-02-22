@@ -665,7 +665,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
     if ns.ops_cmd == "suites-check":
         return impl._run_simple_cmd(
             ctx,
-            ["python3", "ops/_lint/no-orphan-suite.py"],
+            ["python3", "packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_orphan_suite.py"],
             ns.report,
         )
 
@@ -675,14 +675,14 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
     if ns.ops_cmd == "tool-versions-check":
         return impl._run_simple_cmd(
             ctx,
-            ["python3", "ops/_lint/no-floating-tool-versions.py"],
+            ["python3", "packages/atlasctl/src/atlasctl/commands/ops/lint/policy/no_floating_tool_versions.py"],
             ns.report,
         )
 
     if ns.ops_cmd == "no-direct-script-usage-check":
         return impl._run_simple_cmd(
             ctx,
-            ["python3", "ops/_lint/no-direct-script-usage.py"],
+            ["python3", "packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_direct_script_usage.py"],
             ns.report,
         )
 

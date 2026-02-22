@@ -13,11 +13,11 @@ def _py(script: str) -> list[str]:
 def suites(repo_root: Path) -> dict[str, list[CommandCheckDef]]:
     return {
         "ops": [
-            CommandCheckDef("ops/no-direct-script-usage", "ops", _py("ops/_lint/no-direct-script-usage.py")),
+            CommandCheckDef("ops/no-direct-script-usage", "ops", _py("packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_direct_script_usage.py")),
             CommandCheckDef("ops/no-duplicate-readmes", "ops", _py("ops/_lint/no-duplicate-readmes.py")),
-            CommandCheckDef("ops/no-floating-tool-versions", "ops", _py("ops/_lint/no-floating-tool-versions.py")),
-            CommandCheckDef("ops/no-orphan-contract", "ops", _py("ops/_lint/no-orphan-contract.py")),
-            CommandCheckDef("ops/no-orphan-suite", "ops", _py("ops/_lint/no-orphan-suite.py")),
+            CommandCheckDef("ops/no-floating-tool-versions", "ops", _py("packages/atlasctl/src/atlasctl/commands/ops/lint/policy/no_floating_tool_versions.py")),
+            CommandCheckDef("ops/no-orphan-contract", "ops", _py("packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_orphan_contract.py")),
+            CommandCheckDef("ops/no-orphan-suite", "ops", _py("packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_orphan_suite.py")),
         ],
         "repo": [
             CommandCheckDef("repo/no-root-ad-hoc-python", "repo", _py("ops/_lint/no-root-ad-hoc-python.py")),

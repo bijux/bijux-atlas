@@ -5,7 +5,15 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for parent in cur.parents:
+        if all((parent / marker).exists() for marker in ("makefiles", "packages", "configs", "ops")):
+            return parent
+    raise RuntimeError("unable to resolve repo root")
+
+
+ROOT = _repo_root()
 SCRIPT_REF = re.compile(r"(?:\./)?ops/(?!run/)[^\s`\"']*\.sh\b")
 LEGACY_REF = re.compile(r"(?:\./)?ops/[^\s`\"']*(?:legacy|_legacy)[^\s`\"']*")
 TARGET_LEGACY = re.compile(r"\b(?:legacy/[A-Za-z0-9_.-]+|ops-[A-Za-z0-9-]+-legacy)\b")
