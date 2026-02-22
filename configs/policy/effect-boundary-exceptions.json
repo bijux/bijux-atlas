@@ -1,4 +1,12 @@
 {
+  "boundary_rationales": {
+    "network_call": "Ops and environment validators still perform constrained network probes while boundary adapters are migrated.",
+    "open_write_call": "No active exceptions.",
+    "os_environ_access": "Environment guard and runtime adapters still normalize process env access centrally.",
+    "path_write_call": "Legacy generators and report writers are being migrated to core runtime write boundaries.",
+    "subprocess_call": "Selected legacy checks and command wrappers still rely on subprocess while they are refactored to shared runners.",
+    "subprocess_import": "No active exceptions."
+  },
   "rules": {
     "network_call": [
       {
