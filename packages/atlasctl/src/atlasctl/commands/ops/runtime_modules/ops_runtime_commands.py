@@ -628,12 +628,91 @@ NS="${ATLAS_E2E_NAMESPACE:-${ATLAS_NS:-$(ops_layer_ns_k8s)}}"
 RELEASE="${ATLAS_E2E_RELEASE_NAME:-$(ops_layer_contract_get release_metadata.defaults.release_name)}"
 SERVICE_NAME="${ATLAS_E2E_SERVICE_NAME:-$(ops_layer_service_atlas)}"
 TIMEOUT="${ATLAS_E2E_TIMEOUT:-180s}"
-./ops/run/k8s-validate-configmap-keys.sh "$NS" "$SERVICE_NAME"
+./bin/atlasctl ops k8s --report text validate-configmap-keys "$NS" "$SERVICE_NAME"
 echo "rolling restart deployment/${SERVICE_NAME} in namespace ${NS}"
 ops_kubectl -n "$NS" rollout restart deployment/"$SERVICE_NAME" >/dev/null
 ops_kubectl -n "$NS" rollout status deployment/"$SERVICE_NAME" --timeout="$TIMEOUT" >/dev/null
 ops_kubectl -n "$NS" get deploy "$SERVICE_NAME" -o jsonpath='{.status.readyReplicas}' | grep -Eq '^[1-9][0-9]*$'
 echo "k8s restart passed (ns=${NS} release=${RELEASE} service=${SERVICE_NAME})"
+"""
+    return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
+
+
+def _ops_k8s_validate_configmap_keys_native(ctx: RunContext, report_format: str, namespace: str | None, service_name: str | None) -> int:
+    ns_arg = namespace or ""
+    svc_arg = service_name or ""
+    script = f"""
+set -euo pipefail
+. ./ops/_lib/common.sh
+ops_init_run_id
+ops_env_load
+ops_entrypoint_start "ops-k8s-validate-configmap-keys"
+ops_version_guard helm kubectl
+NS="${{1:-${{ATLAS_E2E_NAMESPACE:-${{ATLAS_NS:-$(ops_layer_ns_k8s)}}}}}}"
+SERVICE_NAME="${{2:-${{ATLAS_E2E_SERVICE_NAME:-$(ops_layer_service_atlas)}}}}"
+CM_NAME="${{SERVICE_NAME}}-config"
+STRICT_MODE="${{ATLAS_STRICT_CONFIG_KEYS:-1}}"
+if [ "$STRICT_MODE" != "1" ]; then
+  echo "configmap strict key validation skipped (ATLAS_STRICT_CONFIG_KEYS=${{STRICT_MODE}})"
+  exit 0
+fi
+tmpl_keys="$(mktemp)"
+live_keys="$(mktemp)"
+trap 'rm -f "$tmpl_keys" "$live_keys"' EXIT
+ops_helm template "$SERVICE_NAME" "./ops/k8s/charts/bijux-atlas" -n "$NS" -f "${{ATLAS_E2E_VALUES_FILE:-${{ATLAS_VALUES_FILE:-./ops/k8s/values/local.yaml}}}}" \\
+  | awk '
+    $0 ~ /^kind: ConfigMap$/ {{in_cm=1; next}}
+    in_cm && $0 ~ /^metadata:/ {{next}}
+    in_cm && $0 ~ /^data:/ {{in_data=1; next}}
+    in_data && $1 ~ /^ATLAS_[A-Z0-9_]+:$/ {{gsub(":", "", $1); print $1}}
+    in_data && $0 !~ /^[[:space:]]/ {{in_cm=0; in_data=0}}
+  ' | sort -u > "$tmpl_keys"
+ops_kubectl -n "$NS" get configmap "$CM_NAME" -o jsonpath='{{range $k,$v := .data}}{{${{k}}}}' 2>/dev/null | sort -u > "$live_keys"
+unknown="$(comm -13 "$tmpl_keys" "$live_keys" || true)"
+if [ -n "$unknown" ]; then
+  echo "unknown configmap keys detected in ${{NS}}/${{CM_NAME}}:" >&2
+  echo "$unknown" >&2
+  exit 1
+fi
+echo "configmap key validation passed (${{NS}}/${{CM_NAME}})"
+"""
+    # jsonpath braces are difficult inside f-strings; keep exact behavior with positional args.
+    script = script.replace("{{${k}}}", '{$k}{"\\n"}{end}')
+    args = ["bash", "-lc", script, "bash"]
+    if ns_arg:
+        args.append(ns_arg)
+    if svc_arg:
+        args.append(svc_arg)
+    return _run_simple_cmd(ctx, args, report_format)
+
+
+def _ops_k8s_apply_config_native(ctx: RunContext, report_format: str) -> int:
+    script = """
+set -euo pipefail
+. ./ops/_lib/common.sh
+ops_init_run_id
+export RUN_ID="$OPS_RUN_ID"
+export ARTIFACT_DIR="$OPS_RUN_DIR"
+ops_env_load
+ops_entrypoint_start "k8s-apply-config"
+ops_version_guard kubectl helm
+NS="${ATLAS_E2E_NAMESPACE:-${ATLAS_NS:-$(ops_layer_ns_k8s)}}"
+SERVICE_NAME="${ATLAS_E2E_SERVICE_NAME:-$(ops_layer_service_atlas)}"
+CM_NAME="${SERVICE_NAME}-config"
+VALUES_FILE="${ATLAS_E2E_VALUES_FILE:-${ATLAS_VALUES_FILE:-$PWD/ops/k8s/values/local.yaml}}"
+PROFILE="${PROFILE:-local}"
+old_hash="$(ops_kubectl -n "$NS" get configmap "$CM_NAME" -o jsonpath='{.metadata.resourceVersion}' 2>/dev/null || true)"
+make -s ops-values-validate
+PROFILE="$PROFILE" make -s ops-deploy
+new_hash="$(ops_kubectl -n "$NS" get configmap "$CM_NAME" -o jsonpath='{.metadata.resourceVersion}' 2>/dev/null || true)"
+if [ -n "$old_hash" ] && [ -n "$new_hash" ] && [ "$old_hash" != "$new_hash" ]; then
+  echo "configmap changed after deploy (${CM_NAME}); restarting workloads"
+  ./bin/atlasctl ops restart --report text
+else
+  echo "configmap unchanged after deploy (${CM_NAME}); restart skipped"
+fi
+./bin/atlasctl ops k8s --report text validate-configmap-keys "$NS" "$SERVICE_NAME"
+echo "k8s apply-config passed (values=${VALUES_FILE})"
 """
     return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
 

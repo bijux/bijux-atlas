@@ -330,6 +330,12 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             else:
                 print(f"{diff['status']}: current={diff['current_hash']} golden={diff['golden_hash']}")
             return 0 if diff["status"] == "pass" else 1
+        if ns.ops_cmd == "k8s" and sub == "validate-configmap-keys":
+            ns_arg = str(getattr(ns, "namespace", "") or "").strip() or None
+            svc_arg = str(getattr(ns, "service_name", "") or "").strip() or None
+            return impl._ops_k8s_validate_configmap_keys_native(ctx, ns.report, ns_arg, svc_arg)
+        if ns.ops_cmd == "k8s" and sub == "apply-config":
+            return impl._ops_k8s_apply_config_native(ctx, ns.report)
         if ns.ops_cmd == "e2e" and sub == "validate":
             for cmd in (
                 ["python3", "packages/atlasctl/src/atlasctl/checks/layout/domains/scenarios/check_e2e_suites.py"],
