@@ -4,11 +4,108 @@ import json
 import os
 import re
 import shutil
+import hashlib
+import datetime as dt
 from pathlib import Path
 
 from atlasctl.core.context import RunContext
 from atlasctl.core.process import run_command
 from atlasctl.core.runtime.paths import write_text_file
+
+
+def _write_json_report(repo_root: Path, out_rel: str, payload: dict[str, object]) -> str:
+    out = repo_root / out_rel
+    out.parent.mkdir(parents=True, exist_ok=True)
+    write_text_file(out, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return out.relative_to(repo_root).as_posix()
+
+
+def _ops_k8s_render_summary(repo_root: Path, env_name: str, run_id: str) -> dict[str, object]:
+    manifest_path = repo_root / "ops" / "k8s" / "tests" / "manifest.json"
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    tests = payload.get("tests", []) if isinstance(payload, dict) else []
+    rows: list[dict[str, object]] = []
+    for row in tests:
+        if not isinstance(row, dict):
+            continue
+        rows.append(
+            {
+                "script": str(row.get("script", "")).strip(),
+                "groups": sorted(str(x) for x in row.get("groups", []) if str(x).strip()),
+                "owner": str(row.get("owner", "")).strip(),
+                "timeout_seconds": int(row.get("timeout_seconds", 0) or 0),
+            }
+        )
+    rows = sorted(rows, key=lambda r: str(r["script"]))
+    digest = hashlib.sha256(json.dumps(rows, sort_keys=True).encode("utf-8")).hexdigest()
+    return {
+        "schema_version": 1,
+        "kind": "ops-k8s-render-summary",
+        "run_id": run_id,
+        "env": env_name,
+        "source_manifest": "ops/k8s/tests/manifest.json",
+        "test_count": len(rows),
+        "tests": rows,
+        "render_hash": digest,
+    }
+
+
+def _validate_ops_k8s_render_payload(payload: dict[str, object]) -> list[str]:
+    errors: list[str] = []
+    if int(payload.get("schema_version", 0) or 0) != 1:
+        errors.append("schema_version must be 1")
+    if str(payload.get("kind", "")) != "ops-k8s-render-summary":
+        errors.append("kind must be ops-k8s-render-summary")
+    if not str(payload.get("env", "")).strip():
+        errors.append("env is required")
+    tests = payload.get("tests", [])
+    if not isinstance(tests, list):
+        errors.append("tests must be a list")
+        return errors
+    prev = ""
+    for idx, row in enumerate(tests, start=1):
+        if not isinstance(row, dict):
+            errors.append(f"tests[{idx}] must be object")
+            continue
+        script = str(row.get("script", "")).strip()
+        if not script:
+            errors.append(f"tests[{idx}].script missing")
+        if prev and script and script < prev:
+            errors.append("tests must be sorted by script for deterministic render output")
+        prev = script or prev
+        groups = row.get("groups", [])
+        if not isinstance(groups, list):
+            errors.append(f"tests[{idx}].groups must be list")
+    return errors
+
+
+def _ops_stack_contract_report(repo_root: Path, run_id: str) -> dict[str, object]:
+    tools = json.loads((repo_root / "configs/ops/pins/tools.json").read_text(encoding="utf-8"))
+    stack_versions = json.loads((repo_root / "ops/stack/versions.json").read_text(encoding="utf-8"))
+    version_manifest = json.loads((repo_root / "ops/stack/version-manifest.json").read_text(encoding="utf-8"))
+    pinned_tools = tools.get("tools", {}) if isinstance(tools, dict) else {}
+    stack_tools = stack_versions.get("tools", {}) if isinstance(stack_versions, dict) else {}
+    pinned_names = sorted(k for k in pinned_tools.keys()) if isinstance(pinned_tools, dict) else []
+    stack_names = sorted(k for k in stack_tools.keys()) if isinstance(stack_tools, dict) else []
+    missing_in_stack = sorted(set(pinned_names) - set(stack_names))
+    extra_in_stack = sorted(set(stack_names) - set(pinned_names))
+    images = sorted(version_manifest.keys()) if isinstance(version_manifest, dict) else []
+    status = "pass" if not missing_in_stack else "fail"
+    return {
+        "schema_version": 1,
+        "kind": "ops-stack-report",
+        "run_id": run_id,
+        "generated_at_utc": dt.datetime.utcnow().isoformat(timespec="seconds") + "Z",
+        "status": status,
+        "pins_tools_file": "configs/ops/pins/tools.json",
+        "stack_versions_file": "ops/stack/versions.json",
+        "version_manifest_file": "ops/stack/version-manifest.json",
+        "pinned_tool_count": len(pinned_names),
+        "stack_tool_count": len(stack_names),
+        "missing_in_stack_versions": missing_in_stack,
+        "extra_in_stack_versions": extra_in_stack,
+        "version_manifest_images": images,
+    }
 
 def load_ops_task_catalog(repo_root: Path) -> dict[str, dict[str, str]]:
     path = repo_root / "packages/atlasctl/src/atlasctl/registry/ops_tasks_catalog.json"
