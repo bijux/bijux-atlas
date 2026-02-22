@@ -173,6 +173,10 @@
       "path": "suite/suite_required.expected.txt"
     },
     {
+      "name": "suite_explain_local.expected.txt",
+      "path": "suite/suite_explain_local.expected.txt"
+    },
+    {
       "name": "test_golden_manifest.py",
       "path": "test_golden_manifest.py"
     }

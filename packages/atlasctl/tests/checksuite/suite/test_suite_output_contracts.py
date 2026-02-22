@@ -16,6 +16,12 @@ def test_suite_required_list_output_golden() -> None:
     assert proc.stdout.strip() == _golden("suite_required.expected.txt")
 
 
+def test_suite_explain_local_output_golden() -> None:
+    proc = run_atlasctl("--quiet", "suite", "explain", "local", "--json")
+    assert proc.returncode == 0, proc.stderr
+    assert proc.stdout.strip() == _golden("suite_explain_local.expected.txt")
+
+
 def test_suite_run_json_schema_contract(tmp_path) -> None:
     target = tmp_path / "suite-run"
     proc = run_atlasctl("--quiet", "suite", "run", "fast", "--only", "check checks_repo_module_size", "--json", "--target-dir", str(target))
