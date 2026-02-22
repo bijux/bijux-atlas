@@ -2726,6 +2726,34 @@
     },
     {
       "area": "no",
+      "callable": "check_ops_no_direct_script_entrypoints",
+      "category": "hygiene",
+      "description": "forbid direct ops script entrypoints in docs/workflows/makefiles",
+      "domain": "ops",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Use ./bin/atlasctl ops ... or make wrappers, not ops/**/*.sh paths.",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_no_direct_script_entrypoints",
+      "legacy_id": "ops.no_direct_script_entrypoints",
+      "module": "atlasctl.checks.domains.ops.ops_checks",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "no",
       "callable": "check_ops_generated_tracked",
       "category": "hygiene",
       "description": "forbid tracked files in generated ops dirs",
@@ -2772,6 +2800,62 @@
       "id": "checks_ops_no_tracked_timestamps",
       "legacy_id": "ops.no_tracked_timestamps",
       "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "scripts",
+      "callable": "check_ops_scripts_are_data_only",
+      "category": "hygiene",
+      "description": "enforce ops/manifests data-only file policy",
+      "domain": "ops",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Keep ops/manifests to json/yaml data only.",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_scripts_are_data_only",
+      "legacy_id": "ops.scripts_are_data_only",
+      "module": "atlasctl.checks.domains.ops.ops_checks",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "shell",
+      "callable": "check_ops_shell_policy",
+      "category": "hygiene",
+      "description": "enforce shell runtime guard requirements for ops/run wrappers",
+      "domain": "ops",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Source common.sh and call ops_entrypoint_start + ops_version_guard in ops/run/*.sh.",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_shell_policy",
+      "legacy_id": "ops.shell_policy",
+      "module": "atlasctl.checks.domains.ops.ops_checks",
       "owner": "platform",
       "severity": "error",
       "speed": "fast",

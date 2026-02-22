@@ -4049,6 +4049,48 @@
     {
       "area": "no",
       "default_enabled": true,
+      "description": "forbid direct ops script entrypoints in docs/workflows/makefiles",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_no_direct_script_entrypoints",
+      "domain": "ops",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_no_direct_script_entrypoints",
+      "impl_ref": {
+        "callable": "check_ops_no_direct_script_entrypoints",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Use ./bin/atlasctl ops ... or make wrappers, not ops/**/*.sh paths.",
+        "legacy_id": "ops.no_direct_script_entrypoints",
+        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid direct ops script entrypoints in docs/workflows/makefiles"
+    },
+    {
+      "area": "no",
+      "default_enabled": true,
       "description": "forbid tracked files in generated ops dirs",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_no_tracked_generated",
       "domain": "ops",
@@ -4129,6 +4171,90 @@
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid tracked timestamped paths"
+    },
+    {
+      "area": "scripts",
+      "default_enabled": true,
+      "description": "enforce ops/manifests data-only file policy",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_scripts_are_data_only",
+      "domain": "ops",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_scripts_are_data_only",
+      "impl_ref": {
+        "callable": "check_ops_scripts_are_data_only",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Keep ops/manifests to json/yaml data only.",
+        "legacy_id": "ops.scripts_are_data_only",
+        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "enforce ops/manifests data-only file policy"
+    },
+    {
+      "area": "shell",
+      "default_enabled": true,
+      "description": "enforce shell runtime guard requirements for ops/run wrappers",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_shell_policy",
+      "domain": "ops",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_shell_policy",
+      "impl_ref": {
+        "callable": "check_ops_shell_policy",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Source common.sh and call ops_entrypoint_start + ops_version_guard in ops/run/*.sh.",
+        "legacy_id": "ops.shell_policy",
+        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "enforce shell runtime guard requirements for ops/run wrappers"
     },
     {
       "area": "adjective",
