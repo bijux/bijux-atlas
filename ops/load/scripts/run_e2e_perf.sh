@@ -18,7 +18,7 @@ if [ "$PR_MODE" = "1" ]; then
 fi
 
 ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/load/contracts/validate_suite_manifest.py
-ATLAS_BASE_URL="$BASE_URL" "$ROOT/ops/load/scripts/run_suites_from_manifest.py" --profile "$profile" --out "$ART"
+ATLAS_BASE_URL="$BASE_URL" ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/load/run/run_suites_from_manifest.py --profile "$profile" --out "$ART"
 
 # cold start result
 if [ "$PR_MODE" != "1" ]; then

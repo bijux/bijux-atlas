@@ -12,7 +12,9 @@
       "fix_hint": "Reduce checks count or intentionally raise budget in configs/policy/checks-count-budget.json.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "required"
       ],
       "id": "checks_checks_count_budget",
       "legacy_id": "checks.count_budget",
@@ -37,7 +39,10 @@
       "fix_hint": "Regenerate/update packages/atlasctl/docs/checks/index.md with full canonical inventory.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_checks_docs_index_complete",
       "legacy_id": "checks.docs_index_complete",
@@ -62,7 +67,9 @@
       "fix_hint": "Set owners for every check in REGISTRY.toml.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "required"
       ],
       "id": "checks_checks_owners_ssot",
       "legacy_id": "checks.owners_ssot",
@@ -87,7 +94,10 @@
       "fix_hint": "Update REGISTRY.toml ids to checks_<domain>_<area>_<name>.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_all_checks_have_canonical_id",
       "legacy_id": "checks.registry_all_checks_have_canonical_id",
@@ -112,7 +122,10 @@
       "fix_hint": "Align check module paths with canonical check id segments.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_canonical_id_matches_module_path",
       "legacy_id": "checks.registry_canonical_id_matches_module_path",
@@ -137,7 +150,11 @@
       "fix_hint": "Update docs/checks/registry.md when REGISTRY.toml changes.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "ci",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_change_docs_gate",
       "legacy_id": "checks.registry_change_docs_gate",
@@ -162,7 +179,11 @@
       "fix_hint": "Refresh check list/tree/owners goldens when REGISTRY.toml changes.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "ci",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_change_goldens_gate",
       "legacy_id": "checks.registry_change_goldens_gate",
@@ -187,7 +208,11 @@
       "fix_hint": "Update makefiles/ownership.json when REGISTRY.toml changes.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "ci",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_change_owners_gate",
       "legacy_id": "checks.registry_change_owners_gate",
@@ -212,7 +237,10 @@
       "fix_hint": "Set docs_link to an existing documentation page in checks catalog generation.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_docs_link_required",
       "legacy_id": "checks.registry_docs_link_required",
@@ -237,7 +265,10 @@
       "fix_hint": "Run `./bin/atlasctl gen checks-registry` and commit docs/_meta/checks-registry.txt.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_docs_meta_runtime_drift",
       "legacy_id": "checks.registry_docs_meta_runtime_drift",
@@ -262,7 +293,10 @@
       "fix_hint": "Run `./bin/atlasctl gen checks-registry` and commit REGISTRY.toml/REGISTRY.generated.json.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "registry",
+        "required",
+        "slow"
       ],
       "id": "checks_checks_registry_integrity",
       "legacy_id": "checks.registry_integrity",
@@ -287,7 +321,9 @@
       "fix_hint": "Rename check ids to remove policy-listed adjectives.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "required"
       ],
       "id": "checks_checks_registry_no_banned_adjectives_in_ids",
       "legacy_id": "checks.registry_no_banned_adjectives_in_ids",
@@ -312,7 +348,10 @@
       "fix_hint": "Deduplicate conflicting ids in REGISTRY.toml.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_no_duplicate_canonical_id",
       "legacy_id": "checks.registry_no_duplicate_canonical_id",
@@ -337,7 +376,10 @@
       "fix_hint": "Add owner field to registry entries.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_owners_required",
       "legacy_id": "checks.registry_owners_required",
@@ -362,7 +404,10 @@
       "fix_hint": "Set remediation_link to an existing remediation playbook page.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_remediation_link_required",
       "legacy_id": "checks.registry_remediation_link_required",
@@ -387,7 +432,10 @@
       "fix_hint": "Set speed to fast, slow, or nightly in REGISTRY.toml.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_speed_required",
       "legacy_id": "checks.registry_speed_required",
@@ -412,7 +460,10 @@
       "fix_hint": "Add unassigned checks to at least one suite in registry/suites_catalog.json.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_suite_membership_required",
       "legacy_id": "checks.registry_suite_membership_required",
@@ -437,7 +488,10 @@
       "fix_hint": "Clear configs/policy/check-id-migration.json aliases after deadline or extend with explicit policy.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_transition_complete",
       "legacy_id": "checks.registry_transition_complete",
@@ -462,7 +516,9 @@
       "fix_hint": "Set remediation_link for every check in checks catalog generation.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "required"
       ],
       "id": "checks_checks_remediation_ssot",
       "legacy_id": "checks.remediation_ssot",
@@ -487,7 +543,10 @@
       "fix_hint": "Sort suite names and remove duplicates in registry/suites_catalog.json.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "required",
+        "suite"
       ],
       "id": "checks_checks_suites_inventory_ssot",
       "legacy_id": "checks.suites_inventory_ssot",
@@ -512,7 +571,10 @@
       "fix_hint": "Add orphan checks to suite registry manifests.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "required",
+        "suite"
       ],
       "id": "checks_checks_suites_no_orphans",
       "legacy_id": "checks.suites_no_orphans",
@@ -537,7 +599,9 @@
       "fix_hint": "Rename atlasctl source/docs files and directories to remove banned adjectives.",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "required"
       ],
       "id": "checks_checks_surfaces_no_banned_adjectives_in_paths",
       "legacy_id": "checks.surfaces_no_banned_adjectives_in_paths",
@@ -562,7 +626,9 @@
       "fix_hint": "Deduplicate tool.atlasctl/tool.pytest sections in packages/atlasctl/pyproject.toml.",
       "gate": "configs",
       "groups": [
-        "configs"
+        "configs",
+        "fast",
+        "required"
       ],
       "id": "checks_configs_pyproject_no_duplicate_tool_config",
       "legacy_id": "configs.pyproject_no_duplicate_tool_config",
@@ -587,7 +653,9 @@
       "fix_hint": "Restore missing [project]/[build-system]/tool config blocks in packages/atlasctl/pyproject.toml.",
       "gate": "configs",
       "groups": [
-        "configs"
+        "configs",
+        "fast",
+        "required"
       ],
       "id": "checks_configs_pyproject_required_blocks",
       "legacy_id": "configs.pyproject_required_blocks",
@@ -612,7 +680,9 @@
       "fix_hint": "Update CLI contract docs/tests to match behavior.",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_atlasctl_cli",
       "legacy_id": "contracts.atlasctl_cli",
@@ -639,7 +709,9 @@
       "fix_hint": "Fix layout violations reported by the contract checker.",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "required",
+        "slow"
       ],
       "id": "checks_contracts_layout_contract",
       "legacy_id": "contracts.layout",
@@ -664,7 +736,9 @@
       "fix_hint": "Fix catalog duplicates and missing schema files.",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_catalog",
       "legacy_id": "contracts.schema_catalog",
@@ -689,7 +763,9 @@
       "fix_hint": "Add missing schema files or fix catalog file entries.",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_catalog_files_exist",
       "legacy_id": "contracts.schema_catalog_files_exist",
@@ -714,7 +790,9 @@
       "fix_hint": "Remove or reference orphan schemas in catalog.",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_catalog_referenced",
       "legacy_id": "contracts.schema_catalog_referenced",
@@ -739,7 +817,9 @@
       "fix_hint": "Sort catalog.json entries by schema name.",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_catalog_sorted",
       "legacy_id": "contracts.schema_catalog_sorted",
@@ -764,7 +844,9 @@
       "fix_hint": "Route schema catalog access through atlasctl.contracts.catalog only.",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_catalog_ssot",
       "legacy_id": "contracts.schema_catalog_ssot",
@@ -789,7 +871,9 @@
       "fix_hint": "Add new versioned schema file and update packages/atlasctl/docs/release-notes.md.",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_change_release_notes",
       "legacy_id": "contracts.schema_change_release_notes",
@@ -814,7 +898,9 @@
       "fix_hint": "Add schema file to catalog.json or remove stale schema file.",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_disk_files_listed",
       "legacy_id": "contracts.schema_disk_files_listed",
@@ -839,7 +925,9 @@
       "fix_hint": "Fix golden payload shape/schema alignment.",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_goldens",
       "legacy_id": "contracts.schema_goldens",
@@ -864,7 +952,9 @@
       "fix_hint": "Use atlasctl.<name>.v<major> and keep catalog version aligned with suffix.",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_id_naming",
       "legacy_id": "contracts.schema_id_naming",
@@ -889,7 +979,9 @@
       "fix_hint": "Regenerate schema catalog metadata and update contracts/schema/schemas/README.md.",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_readme_updated",
       "legacy_id": "contracts.schema_readme_updated",
@@ -914,7 +1006,9 @@
       "fix_hint": "Update sample payloads or schema definitions.",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_samples",
       "legacy_id": "contracts.schema_samples",
@@ -939,7 +1033,9 @@
       "fix_hint": "Reduce image size or adjust documented budget.",
       "gate": "docker",
       "groups": [
-        "docker"
+        "docker",
+        "fast",
+        "required"
       ],
       "id": "checks_docker_image_size",
       "legacy_id": "docker.image_size",
@@ -964,7 +1060,9 @@
       "fix_hint": "Align docker files to layout contract.",
       "gate": "docker",
       "groups": [
-        "docker"
+        "docker",
+        "fast",
+        "required"
       ],
       "id": "checks_docker_layout_contract",
       "legacy_id": "docker.layout",
@@ -989,7 +1087,9 @@
       "fix_hint": "Pin image tags to immutable versions.",
       "gate": "docker",
       "groups": [
-        "docker"
+        "docker",
+        "fast",
+        "required"
       ],
       "id": "checks_docker_no_latest_tags",
       "legacy_id": "docker.no_latest_tags",
@@ -1014,7 +1114,9 @@
       "fix_hint": "Resolve policy violations in docker contracts.",
       "gate": "docker",
       "groups": [
-        "docker"
+        "docker",
+        "fast",
+        "required"
       ],
       "id": "checks_docker_policy_contract",
       "legacy_id": "docker.policy",
@@ -1039,7 +1141,9 @@
       "fix_hint": "Pin image tags to immutable versions.",
       "gate": "docker",
       "groups": [
-        "docker"
+        "docker",
+        "fast",
+        "required"
       ],
       "id": "checks_docker_tag_contract_no_latest",
       "legacy_id": "docker.tag_contract_no_latest",
@@ -1064,7 +1168,9 @@
       "fix_hint": "Update check:id references to registered check ids.",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_check_id_drift",
       "legacy_id": "docs.check_id_drift",
@@ -1089,7 +1195,9 @@
       "fix_hint": "Update packages/atlasctl/docs/control-plane/ci-lane-mapping.md and CI workflow job names together.",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_ci_lane_mapping",
       "legacy_id": "docs.ci_lane_mapping",
@@ -1114,7 +1222,9 @@
       "fix_hint": "Add docs/commands/groups/<group>.md pages with ## Examples.",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_command_group_pages",
       "legacy_id": "docs.command_group_pages",
@@ -1139,7 +1249,9 @@
       "fix_hint": "Add missing docs entries to packages/atlasctl/docs/index.md.",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_index_complete",
       "legacy_id": "docs.index_complete",
@@ -1164,7 +1276,9 @@
       "fix_hint": "Fix broken relative links in packages/atlasctl/docs.",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_links_exist",
       "legacy_id": "docs.links_exist",
@@ -1189,7 +1303,9 @@
       "fix_hint": "Fix long lines, invalid headings, and TODO/TBD placeholders.",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_lint_style",
       "legacy_id": "docs.lint_style",
@@ -1214,7 +1330,9 @@
       "fix_hint": "Remove stale parallel-legacy wording from docs/migration pages.",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_migration_not_stale",
       "legacy_id": "docs.migration_not_stale",
@@ -1239,7 +1357,9 @@
       "fix_hint": "Fix missing docs files referenced in mkdocs.yml nav.",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_nav_references_exist",
       "legacy_id": "docs.nav_references_exist",
@@ -1264,7 +1384,9 @@
       "fix_hint": "Update docs index, pyproject, and tests for command-surface changes.",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_new_command_workflow",
       "legacy_id": "docs.new_command_workflow",
@@ -1289,7 +1411,9 @@
       "fix_hint": "Use `./bin/atlasctl ...` consistently in all docs examples.",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_no_legacy_cli_invocation",
       "legacy_id": "docs.no_legacy_cli_invocation",
@@ -1314,7 +1438,9 @@
       "fix_hint": "Use stable docs or generated index links.",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_no_ops_generated_run_path_refs",
       "legacy_id": "docs.no_ops_generated_run_path_refs",
@@ -1339,7 +1465,9 @@
       "fix_hint": "Link docs pages from docs/index.md or other docs pages.",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_no_orphans",
       "legacy_id": "docs.no_orphans",
@@ -1364,7 +1492,9 @@
       "fix_hint": "Remove placeholder docs files or move drafts under docs/_drafts/.",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_no_placeholder_release_docs",
       "legacy_id": "docs.no_placeholder_release_docs",
@@ -1389,7 +1519,9 @@
       "fix_hint": "Update docs references to atlasctl commands.",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_no_scripts_path_refs",
       "legacy_id": "docs.no_scripts_path_refs",
@@ -1414,7 +1546,9 @@
       "fix_hint": "Update packages/atlasctl/docs/_meta/owners.json with major area owners.",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_ownership_metadata",
       "legacy_id": "docs.ownership_metadata",
@@ -1439,7 +1573,9 @@
       "fix_hint": "Move package root markdown docs into packages/atlasctl/docs/.",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_package_root_markdown",
       "legacy_id": "docs.package_root_markdown",
@@ -1464,7 +1600,9 @@
       "fix_hint": "Fix stale command references to match cli surface registry.",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_registry_command_drift",
       "legacy_id": "docs.registry_command_drift",
@@ -1489,7 +1627,9 @@
       "fix_hint": "Run `atlasctl docs generate-registry-indexes --report text`.",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_registry_indexes",
       "legacy_id": "docs.registry_indexes",
@@ -1514,7 +1654,9 @@
       "fix_hint": "Add command entries and atlasctl examples to docs/commands/groups/*.md.",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_stable_command_examples",
       "legacy_id": "docs.stable_command_examples",
@@ -1539,7 +1681,9 @@
       "fix_hint": "Create packages/atlasctl/LICENSE with canonical MIT text and copyright.",
       "gate": "license",
       "groups": [
-        "license"
+        "fast",
+        "license",
+        "required"
       ],
       "id": "checks_license_file_mit",
       "legacy_id": "license.file_mit",
@@ -1564,7 +1708,9 @@
       "fix_hint": "If SPDX header is present, set it to SPDX-License-Identifier: MIT.",
       "gate": "license",
       "groups": [
-        "license"
+        "fast",
+        "license",
+        "required"
       ],
       "id": "checks_license_spdx_policy",
       "legacy_id": "license.spdx_policy",
@@ -1589,7 +1735,9 @@
       "fix_hint": "Update README/docs license references to MIT and remove conflicting statements.",
       "gate": "license",
       "groups": [
-        "license"
+        "fast",
+        "license",
+        "required"
       ],
       "id": "checks_license_statements_consistent",
       "legacy_id": "license.statements_consistent",
@@ -1614,7 +1762,9 @@
       "fix_hint": "Keep workflow run commands on approved make/atlasctl entrypoints.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_ci_entrypoints_contract",
       "legacy_id": "make.ci_entrypoints_contract",
@@ -1639,7 +1789,9 @@
       "fix_hint": "Keep `local` suite fast-only, or add temporary exceptions in configs/policy/ci-pr-slow-allowlist.json.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_ci_pr_lane_fast_only",
       "legacy_id": "make.ci_pr_lane_fast_only",
@@ -1664,7 +1816,9 @@
       "fix_hint": "Use `run: make <target>` in workflows and keep atlasctl delegation in makefiles.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_ci_workflows_make_only",
       "legacy_id": "make.ci_workflows_make_only",
@@ -1689,7 +1843,9 @@
       "fix_hint": "Use allowed command wrappers in make targets.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_command_allowlist",
       "legacy_id": "make.command_allowlist",
@@ -1714,7 +1870,9 @@
       "fix_hint": "Route commands through allowed wrappers.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_forbidden_paths",
       "legacy_id": "make.forbidden_paths",
@@ -1739,7 +1897,9 @@
       "fix_hint": "Regenerate and normalize make help output.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_help_determinism",
       "legacy_id": "make.help_determinism",
@@ -1764,7 +1924,9 @@
       "fix_hint": "Regenerate and commit makefiles index changes.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_index_drift_contract",
       "legacy_id": "make.index_drift_contract",
@@ -1789,7 +1951,9 @@
       "fix_hint": "Use `atlasctl report make-area-write` for lane report emission.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_lane_reports_via_atlasctl_reporting",
       "legacy_id": "make.lane_reports_via_atlasctl_reporting",
@@ -1814,7 +1978,9 @@
       "fix_hint": "Keep canonical makefiles as thin wrappers that delegate via ./bin/atlasctl or approved $(MAKE) wrappers.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_makefiles_wrappers_only_all",
       "legacy_id": "make.makefiles_wrappers_only_all",
@@ -1839,7 +2005,9 @@
       "fix_hint": "Use atlasctl command surfaces directly instead of `atlasctl run ./ops/run/...`.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_atlasctl_run_ops_run",
       "legacy_id": "make.no_atlasctl_run_ops_run",
@@ -1864,7 +2032,9 @@
       "fix_hint": "Route recipe logic through atlasctl, or add a documented delegation exception.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_bypass_atlasctl",
       "legacy_id": "make.no_bypass_atlasctl",
@@ -1889,7 +2059,9 @@
       "fix_hint": "Write artifacts via atlasctl reporting and command surfaces only.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_direct_artifact_writes",
       "legacy_id": "make.no_direct_artifact_writes",
@@ -1914,7 +2086,9 @@
       "fix_hint": "Route ops scripts through atlasctl make/ops commands.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_direct_bash_ops",
       "legacy_id": "make.no_direct_bash_ops",
@@ -1939,7 +2113,9 @@
       "fix_hint": "Replace `python3 path/to/script.py` with atlasctl commands.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_direct_python",
       "legacy_id": "make.no_direct_python",
@@ -1964,7 +2140,9 @@
       "fix_hint": "Use atlasctl entrypoints instead of direct python invocations.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_direct_python_only_atlasctl",
       "legacy_id": "make.no_direct_python_only_atlasctl",
@@ -1989,7 +2167,9 @@
       "fix_hint": "Replace direct script execution with atlasctl command wrappers.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_direct_script_exec_drift",
       "legacy_id": "make.no_direct_script_exec_drift",
@@ -2014,7 +2194,9 @@
       "fix_hint": "Delegate script execution through atlasctl commands.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_direct_scripts_only_atlasctl",
       "legacy_id": "make.no_direct_scripts_only_atlasctl",
@@ -2039,7 +2221,9 @@
       "fix_hint": "Keep `*-all` variants only when they add explicit full behavior flags.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_duplicate_all_variants",
       "legacy_id": "make.no_duplicate_all_variants",
@@ -2064,7 +2248,9 @@
       "fix_hint": "Use ./bin/atlasctl or $(ATLASCTL) wrappers only.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_legacy_script_aliases",
       "legacy_id": "make.no_legacy_script_aliases",
@@ -2089,7 +2275,9 @@
       "fix_hint": "Update docs index and command references so docs links are reachable.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_orphan_docs_refs",
       "legacy_id": "make.no_orphan_docs_refs",
@@ -2114,7 +2302,9 @@
       "fix_hint": "Use ./bin/atlasctl in make recipes.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_python_module_invocation",
       "legacy_id": "make.no_python_module_invocation",
@@ -2139,7 +2329,9 @@
       "fix_hint": "Replace product.mk ops/run references with atlasctl product/ops commands.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_product_migration_complete_no_ops_run",
       "legacy_id": "make.product_migration_complete_no_ops_run",
@@ -2164,7 +2356,9 @@
       "fix_hint": "Keep makefiles/product.mk as public atlasctl wrappers only (no internal/*, no direct python/module paths, no atlasctl run ./ops/run/*).",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_product_mk_wrapper_contract",
       "legacy_id": "make.product_mk_wrapper_contract",
@@ -2189,7 +2383,9 @@
       "fix_hint": "Update public make target recipe bodies to call atlasctl wrappers only.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_public_target_atlasctl_mapping",
       "legacy_id": "make.public_target_atlasctl_mapping",
@@ -2214,7 +2410,9 @@
       "fix_hint": "Document every public make target in generated/public docs.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_public_targets_documented",
       "legacy_id": "make.public_targets_documented",
@@ -2239,7 +2437,9 @@
       "fix_hint": "Reduce root.mk orchestration surface and keep only public wrappers.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_root_budget",
       "legacy_id": "make.root_budget",
@@ -2264,7 +2464,9 @@
       "fix_hint": "Replace scripts/ invocations with atlasctl commands.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_scripts_refs",
       "legacy_id": "make.scripts_refs",
@@ -2289,7 +2491,9 @@
       "fix_hint": "Keep target cross-area dependencies within contract boundaries.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_target_boundaries_enforced",
       "legacy_id": "make.target_boundaries_enforced",
@@ -2314,7 +2518,9 @@
       "fix_hint": "Rename make targets using neutral policy-oriented wording.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_target_names_no_banned_adjectives",
       "legacy_id": "make.target_names_no_banned_adjectives",
@@ -2339,7 +2545,9 @@
       "fix_hint": "Add missing make target ownership metadata.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_target_ownership_complete",
       "legacy_id": "make.target_ownership_complete",
@@ -2364,7 +2572,9 @@
       "fix_hint": "Update workflow suite names or registry/suites catalog entries so they match.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_workflows_reference_known_suites",
       "legacy_id": "make.workflows_reference_known_suites",
@@ -2389,7 +2599,9 @@
       "fix_hint": "Route cargo operations through atlasctl command surfaces.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_wrapper_no_direct_cargo",
       "legacy_id": "make.wrapper_no_direct_cargo",
@@ -2414,7 +2626,9 @@
       "fix_hint": "Move environment orchestration to atlasctl commands.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_wrapper_no_env_side_effects",
       "legacy_id": "make.wrapper_no_env_side_effects",
@@ -2439,7 +2653,9 @@
       "fix_hint": "Keep wrapper targets as one-line atlasctl delegations.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_wrapper_no_multiline_recipes",
       "legacy_id": "make.wrapper_no_multiline_recipes",
@@ -2464,7 +2680,9 @@
       "fix_hint": "Use ./bin/atlasctl entrypoints.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_wrapper_no_python_m",
       "legacy_id": "make.wrapper_no_python_m",
@@ -2489,7 +2707,9 @@
       "fix_hint": "Use ./bin/atlasctl for wrapper recipe commands.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_wrapper_only_calls_bin_atlasctl",
       "legacy_id": "make.wrapper_only_calls_bin_atlasctl",
@@ -2514,7 +2734,9 @@
       "fix_hint": "Add each wrapper target to the makefile .PHONY list.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_wrapper_phony_complete",
       "legacy_id": "make.wrapper_phony_complete",
@@ -2539,7 +2761,9 @@
       "fix_hint": "Use single-line ./bin/atlasctl delegation in canonical makefiles.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_wrapper_purity",
       "legacy_id": "make.wrapper_purity",
@@ -2564,7 +2788,9 @@
       "fix_hint": "Declare SHELL := /bin/sh in each wrapper makefile.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_wrapper_shell_is_sh",
       "legacy_id": "make.wrapper_shell_is_sh",
@@ -2589,7 +2815,9 @@
       "fix_hint": "Collapse redundant wrappers and keep only canonical make targets per makefile.",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_wrapper_target_budget",
       "legacy_id": "make.wrapper_target_budget",
@@ -2614,7 +2842,10 @@
       "fix_hint": "Register new ops check scripts in atlasctl checks (or migrate to atlasctl-native implementation).",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_all_check_scripts_registered",
       "legacy_id": "ops.all_check_scripts_registered",
@@ -2639,7 +2870,10 @@
       "fix_hint": "Keep Chart.yaml version and appVersion present, semver, and aligned.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_chart_version_contract",
       "legacy_id": "ops.chart_version_contract",
@@ -2664,7 +2898,10 @@
       "fix_hint": "Restrict ops clean to ops/_generated child deletion only.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_clean_allowed_roots_only",
       "legacy_id": "ops.clean_allowed_roots_only",
@@ -2689,7 +2926,10 @@
       "fix_hint": "Regenerate committed outputs deterministically.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_committed_generated_hygiene",
       "legacy_id": "ops.committed_generated_hygiene",
@@ -2714,7 +2954,10 @@
       "fix_hint": "Keep ops commands behind runtime/effects layers and avoid importing cli parser modules.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_effect_boundary_imports",
       "legacy_id": "ops.effect_boundary_imports",
@@ -2739,7 +2982,10 @@
       "fix_hint": "Use ops env validate/print with configs/ops/env.schema.json as default.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_env_schema_is_used",
       "legacy_id": "ops.env_schema_is_used",
@@ -2764,7 +3010,10 @@
       "fix_hint": "Keep generated outputs untracked or move to committed generated roots.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_generated_not_tracked_unless_allowed",
       "legacy_id": "ops.generated_not_tracked_unless_allowed",
@@ -2789,7 +3038,10 @@
       "fix_hint": "Fix ops/manifests/*.json|*.yaml to satisfy atlas.ops.manifest.v1.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_manifests_schema",
       "legacy_id": "ops.manifests_schema",
@@ -2814,7 +3066,10 @@
       "fix_hint": "Use ./bin/atlasctl ops ... or make wrappers, not ops/**/*.sh paths.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_no_direct_script_entrypoints",
       "legacy_id": "ops.no_direct_script_entrypoints",
@@ -2839,7 +3094,10 @@
       "fix_hint": "Keep ops/run scripts allowlisted only via valid non-expired temp approvals, or migrate/delete them.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_no_new_run_scripts_without_approval_and_expiry",
       "legacy_id": "ops.no_new_run_scripts_without_approval_and_expiry",
@@ -2864,7 +3122,10 @@
       "fix_hint": "Untrack generated ops files.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_no_tracked_generated",
       "legacy_id": "ops.no_tracked_generated",
@@ -2889,7 +3150,10 @@
       "fix_hint": "Remove timestamped tracked paths.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_no_tracked_timestamps",
       "legacy_id": "ops.no_tracked_timestamps",
@@ -2914,7 +3178,10 @@
       "fix_hint": "Regenerate/fix observability goldens and contracts.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_obs_drift_goldens",
       "legacy_id": "ops.obs_drift_goldens",
@@ -2939,7 +3206,10 @@
       "fix_hint": "Pin tools/images/helm versions and image digests.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_pins_no_unpinned_versions",
       "legacy_id": "ops.pins_no_unpinned_versions",
@@ -2964,7 +3234,10 @@
       "fix_hint": "Keep configs/ops/pins.json canonical and stable.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_pins_update_is_deterministic",
       "legacy_id": "ops.pins_update_is_deterministic",
@@ -2989,7 +3262,10 @@
       "fix_hint": "Remove executable bits from ops/run scripts after migration, or update allowlist intentionally.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_run_non_executable_unless_allowlisted",
       "legacy_id": "ops.run_non_executable_unless_allowlisted",
@@ -3014,7 +3290,10 @@
       "fix_hint": "Migrate behavior into atlasctl and delete ops/run scripts or extend transitional allowlist intentionally.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_run_only_allowlisted_scripts",
       "legacy_id": "ops.run_only_allowlisted_scripts",
@@ -3039,7 +3318,10 @@
       "fix_hint": "Keep configs/policy/ops-run-temp-script-approvals.json entries valid, justified, and unexpired.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_run_temp_script_approvals",
       "legacy_id": "ops.run_temp_script_approvals",
@@ -3064,7 +3346,10 @@
       "fix_hint": "Fix failures in `ops/datasets/scripts/py/cache_budget_check.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_datasets_scripts_py_cache_budget_check_py",
       "legacy_id": "ops.script.ops_datasets_scripts_py_cache_budget_check_py",
@@ -3089,7 +3374,10 @@
       "fix_hint": "Fix failures in `ops/datasets/scripts/py/cache_threshold_check.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_datasets_scripts_py_cache_threshold_check_py",
       "legacy_id": "ops.script.ops_datasets_scripts_py_cache_threshold_check_py",
@@ -3114,7 +3402,10 @@
       "fix_hint": "Regenerate ops/_meta/layer-contract.json and commit deterministic output.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_lint_check_layer_contract_drift_py",
       "legacy_id": "ops.script.ops_lint_check_layer_contract_drift_py",
@@ -3139,7 +3430,10 @@
       "fix_hint": "Fix repo surface violations in configs/repo/surfaces.json or root entries.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_lint_check_surfaces_py",
       "legacy_id": "ops.script.ops_lint_check_surfaces_py",
@@ -3164,7 +3458,10 @@
       "fix_hint": "Fix failures in `ops/_lint/lane-budget-check.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_lint_lane_budget_check_py",
       "legacy_id": "ops.script.ops_lint_lane_budget_check_py",
@@ -3189,7 +3486,10 @@
       "fix_hint": "Regenerate ops/_meta/layer-contract.json and commit deterministic output.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_lint_layout_check_layer_contract_drift_py",
       "legacy_id": "ops.script.ops_lint_layout_check_layer_contract_drift_py",
@@ -3214,7 +3514,10 @@
       "fix_hint": "Fix failures in `ops/_lint/ops-smoke-budget-check.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_lint_ops_smoke_budget_check_py",
       "legacy_id": "ops.script.ops_lint_ops_smoke_budget_check_py",
@@ -3239,7 +3542,10 @@
       "fix_hint": "Fix failures in `ops/_lint/policy/lane-budget-check.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_lint_policy_lane_budget_check_py",
       "legacy_id": "ops.script.ops_lint_policy_lane_budget_check_py",
@@ -3264,7 +3570,10 @@
       "fix_hint": "Fix failures in `ops/_lint/policy/ops-smoke-budget-check.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_lint_policy_ops_smoke_budget_check_py",
       "legacy_id": "ops.script.ops_lint_policy_ops_smoke_budget_check_py",
@@ -3289,7 +3598,10 @@
       "fix_hint": "Keep required load abuse suites in ops/load/suites/suites.json with nightly+must_pass contracts.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_load_scripts_check_abuse_scenarios_required_py",
       "legacy_id": "ops.script.ops_load_scripts_check_abuse_scenarios_required_py",
@@ -3314,7 +3626,10 @@
       "fix_hint": "Fix failures in `ops/load/scripts/check_baseline_update_policy.sh` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_load_scripts_check_baseline_update_policy_sh",
       "legacy_id": "ops.script.ops_load_scripts_check_baseline_update_policy_sh",
@@ -3339,7 +3654,10 @@
       "fix_hint": "Fix perf baseline metadata, freshness, dataset lock hash, and tool-version alignment.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_load_scripts_check_perf_baselines_py",
       "legacy_id": "ops.script.ops_load_scripts_check_perf_baselines_py",
@@ -3364,7 +3682,10 @@
       "fix_hint": "Regenerate pinned query lock so file/query hashes match SSOT.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_load_scripts_check_pinned_queries_lock_py",
       "legacy_id": "ops.script.ops_load_scripts_check_pinned_queries_lock_py",
@@ -3389,7 +3710,10 @@
       "fix_hint": "Fix failures in `ops/load/scripts/check_prereqs.sh` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_load_scripts_check_prereqs_sh",
       "legacy_id": "ops.script.ops_load_scripts_check_prereqs_sh",
@@ -3404,17 +3728,20 @@
     },
     {
       "area": "script",
-      "callable": "check_ops_load_scripts_check_regression_py",
+      "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_load_checks_check_regression_py",
       "category": "hygiene",
-      "description": "run ops script check `ops/load/scripts/check_regression.py`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_regression.py`",
       "domain": "ops",
       "effects": [],
       "evidence": [],
       "external_tools": [],
-      "fix_hint": "Fix failures in `ops/load/scripts/check_regression.py` or replace it with atlasctl-native check logic.",
+      "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_regression.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_load_scripts_check_regression_py",
       "legacy_id": "ops.script.ops_load_scripts_check_regression_py",
@@ -3439,7 +3766,10 @@
       "fix_hint": "Update load runbook to include all suite names from ops/load/suites/suites.json.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_load_scripts_check_runbook_suite_names_py",
       "legacy_id": "ops.script.ops_load_scripts_check_runbook_suite_names_py",
@@ -3454,17 +3784,20 @@
     },
     {
       "area": "script",
-      "callable": "check_ops_load_scripts_regression_check_py",
+      "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_load_baseline_regression_check_py",
       "category": "hygiene",
-      "description": "run ops script check `ops/load/scripts/regression_check.py`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/load/baseline/regression_check.py`",
       "domain": "ops",
       "effects": [],
       "evidence": [],
       "external_tools": [],
-      "fix_hint": "Fix failures in `ops/load/scripts/regression_check.py` or replace it with atlasctl-native check logic.",
+      "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/load/baseline/regression_check.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_load_scripts_regression_check_py",
       "legacy_id": "ops.script.ops_load_scripts_regression_check_py",
@@ -3489,7 +3822,10 @@
       "fix_hint": "Fix failures in `ops/obs/scripts/check_metric_cardinality.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_check_metric_cardinality_py",
       "legacy_id": "ops.script.ops_obs_scripts_check_metric_cardinality_py",
@@ -3514,7 +3850,10 @@
       "fix_hint": "Fix failures in `ops/obs/scripts/check_pack_upgrade.sh` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_check_pack_upgrade_sh",
       "legacy_id": "ops.script.ops_obs_scripts_check_pack_upgrade_sh",
@@ -3539,7 +3878,10 @@
       "fix_hint": "Fix failures in `ops/obs/scripts/check_pack_versions.sh` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_check_pack_versions_sh",
       "legacy_id": "ops.script.ops_obs_scripts_check_pack_versions_sh",
@@ -3564,7 +3906,10 @@
       "fix_hint": "Fix failures in `ops/obs/scripts/contracts/check_alerts_contract.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_alerts_contract_py",
       "legacy_id": "ops.script.ops_obs_scripts_contracts_check_alerts_contract_py",
@@ -3589,7 +3934,10 @@
       "fix_hint": "Fix failures in `ops/obs/scripts/contracts/check_dashboard_contract.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_dashboard_contract_py",
       "legacy_id": "ops.script.ops_obs_scripts_contracts_check_dashboard_contract_py",
@@ -3614,7 +3962,10 @@
       "fix_hint": "Fix failures in `ops/obs/scripts/contracts/check_dashboard_metric_compat.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_dashboard_metric_compat_py",
       "legacy_id": "ops.script.ops_obs_scripts_contracts_check_dashboard_metric_compat_py",
@@ -3639,7 +3990,10 @@
       "fix_hint": "Fix endpoint observability metric coverage contract entries and metric references.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_endpoint_metrics_coverage_py",
       "legacy_id": "ops.script.ops_obs_scripts_contracts_check_endpoint_metrics_coverage_py",
@@ -3664,7 +4018,10 @@
       "fix_hint": "Fix endpoint trace coverage contract entries and TRACE_SPANS attribute/span references.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_endpoint_trace_coverage_py",
       "legacy_id": "ops.script.ops_obs_scripts_contracts_check_endpoint_trace_coverage_py",
@@ -3689,7 +4046,10 @@
       "fix_hint": "Fix failures in `ops/obs/scripts/contracts/check_metrics_contract.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_metrics_contract_py",
       "legacy_id": "ops.script.ops_obs_scripts_contracts_check_metrics_contract_py",
@@ -3714,7 +4074,10 @@
       "fix_hint": "Fix failures in `ops/obs/scripts/contracts/check_metrics_coverage.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_metrics_coverage_py",
       "legacy_id": "ops.script.ops_obs_scripts_contracts_check_metrics_coverage_py",
@@ -3739,7 +4102,10 @@
       "fix_hint": "Fix failures in `ops/obs/scripts/contracts/check_metrics_drift.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_metrics_drift_py",
       "legacy_id": "ops.script.ops_obs_scripts_contracts_check_metrics_drift_py",
@@ -3764,7 +4130,10 @@
       "fix_hint": "Fix failures in `ops/obs/scripts/contracts/check_metrics_golden.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_metrics_golden_py",
       "legacy_id": "ops.script.ops_obs_scripts_contracts_check_metrics_golden_py",
@@ -3789,7 +4158,10 @@
       "fix_hint": "Align observability budgets required labels with metrics contract specs.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_obs_budgets_py",
       "legacy_id": "ops.script.ops_obs_scripts_contracts_check_obs_budgets_py",
@@ -3814,7 +4186,10 @@
       "fix_hint": "Fix failures in `ops/obs/scripts/contracts/check_observability_lag.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_observability_lag_py",
       "legacy_id": "ops.script.ops_obs_scripts_contracts_check_observability_lag_py",
@@ -3839,7 +4214,10 @@
       "fix_hint": "Fix failures in `ops/obs/scripts/contracts/check_overload_behavior_contract.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_overload_behavior_contract_py",
       "legacy_id": "ops.script.ops_obs_scripts_contracts_check_overload_behavior_contract_py",
@@ -3864,7 +4242,10 @@
       "fix_hint": "Fix profile goldens registry and referenced golden files.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_profile_goldens_py",
       "legacy_id": "ops.script.ops_obs_scripts_contracts_check_profile_goldens_py",
@@ -3889,7 +4270,10 @@
       "fix_hint": "Fix failures in `ops/obs/scripts/contracts/check_runtime_metrics.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_runtime_metrics_py",
       "legacy_id": "ops.script.ops_obs_scripts_contracts_check_runtime_metrics_py",
@@ -3914,7 +4298,10 @@
       "fix_hint": "Fix failures in `ops/obs/scripts/contracts/check_trace_coverage.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_trace_coverage_py",
       "legacy_id": "ops.script.ops_obs_scripts_contracts_check_trace_coverage_py",
@@ -3939,7 +4326,10 @@
       "fix_hint": "Fix failures in `ops/obs/scripts/contracts/check_trace_golden.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_trace_golden_py",
       "legacy_id": "ops.script.ops_obs_scripts_contracts_check_trace_golden_py",
@@ -3964,7 +4354,10 @@
       "fix_hint": "Fix failures in `ops/obs/scripts/contracts/check_tracing_contract.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_tracing_contract_py",
       "legacy_id": "ops.script.ops_obs_scripts_contracts_check_tracing_contract_py",
@@ -3989,7 +4382,10 @@
       "fix_hint": "Fix failures in `ops/stack/scripts/idempotency_check.sh` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_stack_scripts_idempotency_check_sh",
       "legacy_id": "ops.script.ops_stack_scripts_idempotency_check_sh",
@@ -4014,7 +4410,10 @@
       "fix_hint": "Fix failures in `ops/stack/tests/check_live_layer_snapshot.py` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_stack_tests_check_live_layer_snapshot_py",
       "legacy_id": "ops.script.ops_stack_tests_check_live_layer_snapshot_py",
@@ -4039,7 +4438,10 @@
       "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_artifacts_allowlist.sh` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_artifacts_allowlist_sh",
       "legacy_id": "ops.script.ops_vendor_layout_checks_check_artifacts_allowlist_sh",
@@ -4064,7 +4466,10 @@
       "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_artifacts_policy.sh` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_artifacts_policy_sh",
       "legacy_id": "ops.script.ops_vendor_layout_checks_check_artifacts_policy_sh",
@@ -4089,7 +4494,10 @@
       "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_kind_cluster_contract_drift.sh` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_kind_cluster_contract_drift_sh",
       "legacy_id": "ops.script.ops_vendor_layout_checks_check_kind_cluster_contract_drift_sh",
@@ -4114,7 +4522,10 @@
       "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_no_root_dumping.sh` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_no_root_dumping_sh",
       "legacy_id": "ops.script.ops_vendor_layout_checks_check_no_root_dumping_sh",
@@ -4139,7 +4550,10 @@
       "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_ops_canonical_shims.sh` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_ops_canonical_shims_sh",
       "legacy_id": "ops.script.ops_vendor_layout_checks_check_ops_canonical_shims_sh",
@@ -4164,7 +4578,10 @@
       "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_ops_lib_canonical.sh` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_ops_lib_canonical_sh",
       "legacy_id": "ops.script.ops_vendor_layout_checks_check_ops_lib_canonical_sh",
@@ -4189,7 +4606,10 @@
       "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_ops_script_targets.sh` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_ops_script_targets_sh",
       "legacy_id": "ops.script.ops_vendor_layout_checks_check_ops_script_targets_sh",
@@ -4214,7 +4634,10 @@
       "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_ops_stack_order.sh` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_ops_stack_order_sh",
       "legacy_id": "ops.script.ops_vendor_layout_checks_check_ops_stack_order_sh",
@@ -4239,7 +4662,10 @@
       "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_ops_workspace.sh` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_ops_workspace_sh",
       "legacy_id": "ops.script.ops_vendor_layout_checks_check_ops_workspace_sh",
@@ -4264,7 +4690,10 @@
       "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_repo_hygiene.sh` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_repo_hygiene_sh",
       "legacy_id": "ops.script.ops_vendor_layout_checks_check_repo_hygiene_sh",
@@ -4289,7 +4718,10 @@
       "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_stack_manifest_consolidation.sh` or replace it with atlasctl-native check logic.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_stack_manifest_consolidation_sh",
       "legacy_id": "ops.script.ops_vendor_layout_checks_check_stack_manifest_consolidation_sh",
@@ -4314,7 +4746,10 @@
       "fix_hint": "Keep ops/manifests to json/yaml data only.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_scripts_are_data_only",
       "legacy_id": "ops.scripts_are_data_only",
@@ -4339,7 +4774,10 @@
       "fix_hint": "Reduce ops scripts count or intentionally update baseline in one reviewed change.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_scripts_count_nonincreasing",
       "legacy_id": "ops.scripts_count_nonincreasing",
@@ -4364,7 +4802,10 @@
       "fix_hint": "Source common.sh and call ops_entrypoint_start + ops_version_guard in ops/run/*.sh.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_shell_policy",
       "legacy_id": "ops.shell_policy",
@@ -4389,7 +4830,10 @@
       "fix_hint": "Regenerate ops/stack/versions.json from configs/ops/tool-versions.json.",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_stack_versions_report_valid",
       "legacy_id": "ops.stack_versions_report_valid",
@@ -4414,7 +4858,10 @@
       "fix_hint": "Keep adjective allowlist empty or within ratchet budget.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_adjective_allowlist_budget",
       "legacy_id": "policies.adjective_allowlist_budget",
@@ -4439,7 +4886,10 @@
       "fix_hint": "Replace forbidden adjectives with neutral wording.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_adjectives_repo_clean",
       "legacy_id": "policies.adjectives_repo_clean",
@@ -4464,7 +4914,10 @@
       "fix_hint": "Set valid non-expired bounded expiry in budget-loosening-approval.json.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_budget_approval_time_bounded",
       "legacy_id": "policies.budget_approval_time_bounded",
@@ -4489,7 +4942,10 @@
       "fix_hint": "Set budget-loosening-approval.json with approved=true and approval_id when relaxations exist.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_budget_relaxation_requires_approval",
       "legacy_id": "policies.budget_relaxation_requires_approval",
@@ -4514,7 +4970,10 @@
       "fix_hint": "Add owner/issue/expiry metadata to bypass entries.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_all_entries_have_owner_issue_expiry",
       "legacy_id": "policies.bypass_all_entries_have_owner_issue_expiry",
@@ -4539,7 +4998,10 @@
       "fix_hint": "Reduce bypass count or update budget intentionally.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_budget",
       "legacy_id": "policies.bypass_budget",
@@ -4564,7 +5026,10 @@
       "fix_hint": "Reduce bypass budget usage or update budget intentionally with approval.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_budget_trend",
       "legacy_id": "policies.bypass_budget_trend",
@@ -4589,7 +5054,10 @@
       "fix_hint": "Reduce bypass count or intentionally update baseline in one reviewed change.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_count_nonincreasing",
       "legacy_id": "policies.bypass_count_nonincreasing",
@@ -4614,7 +5082,10 @@
       "fix_hint": "Reduce bypass count or intentionally update baseline in one reviewed change.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_count_nonincreasing_hard",
       "legacy_id": "policies.bypass_count_nonincreasing_hard",
@@ -4639,7 +5110,10 @@
       "fix_hint": "Tighten or remove stale wildcard bypass entries.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_entry_matches_nothing",
       "legacy_id": "policies.bypass_entry_matches_nothing",
@@ -4664,7 +5138,10 @@
       "fix_hint": "Narrow wildcard bypass scope to intended paths only.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_entry_matches_too_broad",
       "legacy_id": "policies.bypass_entry_matches_too_broad",
@@ -4689,7 +5166,10 @@
       "fix_hint": "Fix or remove stale bypass references to missing paths.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_entry_paths_exist",
       "legacy_id": "policies.bypass_entry_paths_exist",
@@ -4714,7 +5194,10 @@
       "fix_hint": "Keep expiry within max horizon or add explicit approval.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_expiry_max_horizon",
       "legacy_id": "policies.bypass_expiry_max_horizon",
@@ -4739,7 +5222,10 @@
       "fix_hint": "Remove or renew expired bypass entries.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_expiry_not_past",
       "legacy_id": "policies.bypass_expiry_not_past",
@@ -4764,7 +5250,10 @@
       "fix_hint": "Move bypass files into configs/policy or remove them.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_files_scoped",
       "legacy_id": "policies.bypass_files_scoped",
@@ -4789,7 +5278,10 @@
       "fix_hint": "Remove all bypass entries or disable hard gate until ready to enforce zero-bypass milestone.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_hard_gate",
       "legacy_id": "policies.bypass_hard_gate",
@@ -4814,7 +5306,10 @@
       "fix_hint": "Add non-expired expiry to each bypass entry.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_has_expiry",
       "legacy_id": "policies.bypass_has_expiry",
@@ -4839,7 +5334,10 @@
       "fix_hint": "Add valid owner to each bypass entry.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_has_owner",
       "legacy_id": "policies.bypass_has_owner",
@@ -4864,7 +5362,10 @@
       "fix_hint": "Add specific justifications and avoid vague `because` reasons.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_has_reason",
       "legacy_id": "policies.bypass_has_reason",
@@ -4889,7 +5390,10 @@
       "fix_hint": "Map bypass sources/entries to validating tests in configs/policy/bypass-test-coverage.json.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_has_test_coverage",
       "legacy_id": "policies.bypass_has_test_coverage",
@@ -4914,7 +5418,10 @@
       "fix_hint": "Add issue_id or reference a local docs/ADR policy document.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_has_ticket_or_doc_ref",
       "legacy_id": "policies.bypass_has_ticket_or_doc_ref",
@@ -4939,7 +5446,10 @@
       "fix_hint": "Deduplicate bypass IDs/keys across configs/policy.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_ids_unique",
       "legacy_id": "policies.bypass_ids_unique",
@@ -4964,7 +5474,10 @@
       "fix_hint": "Keep bypass inventory files and entries stably ordered.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_inventory_deterministic",
       "legacy_id": "policies.bypass_inventory_deterministic",
@@ -4989,7 +5502,10 @@
       "fix_hint": "Create bypass inventory SSOT registry/types and keep it in sync.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_inventory_present",
       "legacy_id": "policies.bypass_inventory_present",
@@ -5014,7 +5530,10 @@
       "fix_hint": "Fix malformed bypass JSON/TOML inventory sources or schema drift.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_inventory_schema_valid",
       "legacy_id": "policies.bypass_inventory_schema_valid",
@@ -5039,7 +5558,10 @@
       "fix_hint": "Use ISSUE-<TOKEN> issue id format.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_issue_id_format",
       "legacy_id": "policies.bypass_issue_id_format",
@@ -5064,7 +5586,10 @@
       "fix_hint": "Enable only after bypass count reaches zero or acceptable strict milestone.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_mainline_strict_mode",
       "legacy_id": "policies.bypass_mainline_strict_mode",
@@ -5089,7 +5614,10 @@
       "fix_hint": "Reduce bypass count or add temporary approvals in configs/policy/bypass-new-entry-approvals.json.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_new_entries_forbidden",
       "legacy_id": "policies.bypass_new_entries_forbidden",
@@ -5114,7 +5642,10 @@
       "fix_hint": "Add concise non-empty justifications for bypass entries.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_no_blank_justifications",
       "legacy_id": "policies.bypass_no_blank_justifications",
@@ -5139,7 +5670,10 @@
       "fix_hint": "Register or remove newly introduced bypass files.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_no_new_files",
       "legacy_id": "policies.bypass_no_new_files",
@@ -5164,7 +5698,10 @@
       "fix_hint": "Use owner ids in configs/meta/owners.json or configured aliases.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_owner_in_owners_registry",
       "legacy_id": "policies.bypass_owner_in_owners_registry",
@@ -5189,7 +5726,10 @@
       "fix_hint": "Use declared policy or rule names.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_policy_name_known",
       "legacy_id": "policies.bypass_policy_name_known",
@@ -5214,7 +5754,10 @@
       "fix_hint": "Update configs/policy/README.md with complete bypass source list.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_readme_complete",
       "legacy_id": "policies.bypass_readme_complete",
@@ -5239,7 +5782,10 @@
       "fix_hint": "Sort bypass file entries in configs/policy/README.md.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_readme_sorted",
       "legacy_id": "policies.bypass_readme_sorted",
@@ -5264,7 +5810,10 @@
       "fix_hint": "Define removal milestones in configs/policy/bypass-removal-milestones.json.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_removal_milestones_defined",
       "legacy_id": "policies.bypass_removal_milestones_defined",
@@ -5289,7 +5838,10 @@
       "fix_hint": "Add removal_plan for each bypass entry.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_removal_plan_required",
       "legacy_id": "policies.bypass_removal_plan_required",
@@ -5314,7 +5866,10 @@
       "fix_hint": "Fix malformed bypass JSON or schema drift.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_schema_valid",
       "legacy_id": "policies.bypass_schema_valid",
@@ -5339,7 +5894,10 @@
       "fix_hint": "Use only documented bypass scopes.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_scope_valid",
       "legacy_id": "policies.bypass_scope_valid",
@@ -5364,7 +5922,10 @@
       "fix_hint": "Review bypass usage report and reduce hotspots.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_usage_heatmap",
       "legacy_id": "policies.bypass_usage_heatmap",
@@ -5389,7 +5950,10 @@
       "fix_hint": "Add `remove_by` and valid `issue_id` to dependency exceptions.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_dependency_exceptions_remove_by_issue",
       "legacy_id": "policies.dependency_exceptions_remove_by_issue",
@@ -5414,7 +5978,10 @@
       "fix_hint": "Move bypass metadata to configs/policy files.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_no_inline_bypass_entries",
       "legacy_id": "policies.no_inline_bypass_entries",
@@ -5439,7 +6006,11 @@
       "fix_hint": "Annotate every allowlist line with `# owner=<id>; why=<reason>`.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "network",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_shell_network_fetch_allowlist_inline_meta",
       "legacy_id": "policies.shell_network_fetch_allowlist_inline_meta",
@@ -5464,7 +6035,10 @@
       "fix_hint": "Annotate every allowlist line with `# owner=<id>; why=<reason>`.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_shell_probes_allowlist_inline_meta",
       "legacy_id": "policies.shell_probes_allowlist_inline_meta",
@@ -5489,7 +6063,10 @@
       "fix_hint": "Add `# BYPASS_TEST_OK` marker to tests that intentionally read bypass files.",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_tests_bypass_dependency_marked",
       "legacy_id": "policies.tests_bypass_dependency_marked",
@@ -5514,7 +6091,9 @@
       "fix_hint": "Regenerate and normalize python lock entries.",
       "gate": "python",
       "groups": [
-        "python"
+        "fast",
+        "python",
+        "required"
       ],
       "id": "checks_python_lock_lockfile",
       "legacy_id": "python.lock",
@@ -5539,7 +6118,9 @@
       "fix_hint": "Update or remove expired migration exceptions.",
       "gate": "python",
       "groups": [
-        "python"
+        "fast",
+        "python",
+        "required"
       ],
       "id": "checks_python_migration_exceptions_expiry",
       "legacy_id": "python.migration_exceptions_expiry",
@@ -5564,7 +6145,9 @@
       "fix_hint": "Update configs/policy/atlasctl-budgets-baseline.json or add approved budget-loosening marker.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_budget_drift_approval",
       "legacy_id": "repo.budget_drift_approval",
@@ -5589,7 +6172,9 @@
       "fix_hint": "Keep only canonical concept homes: registry, suite, contracts, reporting.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_canonical_concept_homes",
       "legacy_id": "repo.canonical_concept_homes",
@@ -5614,7 +6199,9 @@
       "fix_hint": "Keep check implementations pure and route CLI wiring through commands/cli modules.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_check_impl_no_cli_imports",
       "legacy_id": "repo.check_impl_no_cli_imports",
@@ -5639,7 +6226,9 @@
       "fix_hint": "Add test/golden references for uncovered checks.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_check_test_coverage",
       "legacy_id": "repo.check_test_coverage",
@@ -5664,7 +6253,9 @@
       "fix_hint": "Move check_*.py implementations under packages/atlasctl/src/atlasctl/checks/ or extend migration allowlist explicitly.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_checks_canonical_location",
       "legacy_id": "repo.checks_canonical_location",
@@ -5689,7 +6280,9 @@
       "fix_hint": "Create or migrate domain packages under packages/atlasctl/src/atlasctl/checks/.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_checks_domain_split",
       "legacy_id": "repo.checks_domain_split",
@@ -5714,7 +6307,9 @@
       "fix_hint": "Restrict checks imports to core/contracts/reporting/adapters/checks.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_checks_import_lint",
       "legacy_id": "repo.checks_import_lint",
@@ -5739,7 +6334,9 @@
       "fix_hint": "Keep checks pure and independent from cli modules.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_checks_no_cli_imports",
       "legacy_id": "repo.checks_no_cli_imports",
@@ -5764,7 +6361,9 @@
       "fix_hint": "Keep only __init__.py + registry artifacts at checks root and group modules under domain packages.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_checks_root_contract",
       "legacy_id": "repo.checks_root_contract",
@@ -5789,7 +6388,9 @@
       "fix_hint": "Split oversized checks directories with `atlasctl dev split-module` and remove misc/utils or duplicated area segments.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_checks_tree_policy",
       "legacy_id": "repo.checks_tree_policy",
@@ -5814,7 +6415,9 @@
       "fix_hint": "Upload artifacts only from approved roots and always use if: always().",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_ci_artifact_upload_policy",
       "legacy_id": "repo.ci_artifact_upload_policy",
@@ -5839,7 +6442,9 @@
       "fix_hint": "Use make thin wrappers or ./bin/atlasctl in workflows; avoid python -m atlasctl and raw cargo commands.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_ci_workflow_policy",
       "legacy_id": "repo.ci_workflow_policy",
@@ -5864,7 +6469,9 @@
       "fix_hint": "Move parser construction into cli/parser.py or commands/*/parser.py.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_cli_argparse_policy",
       "legacy_id": "repo.argparse_policy",
@@ -5889,7 +6496,9 @@
       "fix_hint": "Keep parser in cli/main.py, dispatch in cli/dispatch.py, and payload formatting in cli/output.py.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_cli_canonical_paths",
       "legacy_id": "repo.cli_canonical_paths",
@@ -5914,7 +6523,9 @@
       "fix_hint": "Route feature logic through commands; keep cli as parser/dispatch glue.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_cli_import_scope",
       "legacy_id": "repo.cli_import_scope",
@@ -5939,7 +6550,9 @@
       "fix_hint": "Reduce top-level imports and defer heavy initialization.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_cold_import_budget",
       "legacy_id": "repo.cold_import_budget",
@@ -5964,7 +6577,9 @@
       "fix_hint": "Remove duplicate alias identifiers from command surface.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_command_alias_budget",
       "legacy_id": "repo.command_alias_budget",
@@ -5989,7 +6604,9 @@
       "fix_hint": "Update configs/meta/owners.json command_groups mapping and align with command registry owners.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_command_group_owners",
       "legacy_id": "repo.command_group_owners",
@@ -6014,7 +6631,9 @@
       "fix_hint": "Add touches/tools/effect metadata in cli registry.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_command_metadata_contract",
       "legacy_id": "repo.command_metadata_contract",
@@ -6039,7 +6658,9 @@
       "fix_hint": "Ensure command.py files include configure_* parser and run_* command entrypoints.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_command_module_cli_intent",
       "legacy_id": "repo.command_module_cli_intent",
@@ -6064,7 +6685,9 @@
       "fix_hint": "Document all command owners in packages/atlasctl/docs/ownership.md.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_command_ownership_docs",
       "legacy_id": "repo.command_ownership_docs",
@@ -6089,7 +6712,9 @@
       "fix_hint": "Register every command-invoked .sh in configs/scripts/registry.json with valid owner and naming.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_command_scripts_registry",
       "legacy_id": "repo.command_scripts_registry",
@@ -6114,7 +6739,9 @@
       "fix_hint": "Add at least one test mentioning each command.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_command_test_coverage",
       "legacy_id": "repo.command_test_coverage",
@@ -6139,7 +6766,9 @@
       "fix_hint": "Regenerate docs/_generated/cli.md from current CLI surface.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_commands_help_docs_drift",
       "legacy_id": "repo.command_help_docs_drift",
@@ -6164,7 +6793,9 @@
       "fix_hint": "Restrict command imports to core/contracts/checks/adapters/commands/cli.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_commands_import_lint",
       "legacy_id": "repo.command_import_lint",
@@ -6189,7 +6820,9 @@
       "fix_hint": "Regenerate commands goldens intentionally via `python -m atlasctl.cli gen goldens`.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_commands_surface_stability",
       "legacy_id": "repo.command_surface_stability",
@@ -6214,7 +6847,9 @@
       "fix_hint": "Fix syntax/import issues until python -m compileall passes.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_compileall_gate",
       "legacy_id": "repo.compileall_gate",
@@ -6239,7 +6874,9 @@
       "fix_hint": "Set [project.scripts] atlasctl = \"atlasctl.cli.main:main\" and ensure target is importable.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_console_script_entry",
       "legacy_id": "repo.console_script_entry",
@@ -6264,7 +6901,9 @@
       "fix_hint": "Commands/checks should import schema contracts from atlasctl.contracts only.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_contract_import_boundaries",
       "legacy_id": "repo.contract_import_boundaries",
@@ -6289,7 +6928,9 @@
       "fix_hint": "Keep random non-schema logic out of atlasctl/contracts and move it to proper domains.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_contracts_namespace_purpose",
       "legacy_id": "repo.contracts_namespace_purpose",
@@ -6314,7 +6955,9 @@
       "fix_hint": "Use core.exec wrappers; do not invoke bash/sh directly in core.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_core_no_bash_subprocess",
       "legacy_id": "repo.core_no_bash_subprocess",
@@ -6339,7 +6982,9 @@
       "fix_hint": "Keep core independent from command and cli glue layers.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_core_no_command_imports",
       "legacy_id": "repo.core_no_command_imports",
@@ -6364,7 +7009,9 @@
       "fix_hint": "Update configs/policy/dead-modules-allowlist.json with intended exceptions.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dead_module_reachability",
       "legacy_id": "repo.dead_module_reachability",
@@ -6389,7 +7036,9 @@
       "fix_hint": "Keep policies/dead_modules.py runnable and deterministic.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dead_modules",
       "legacy_id": "repo.dead_modules",
@@ -6414,7 +7063,9 @@
       "fix_hint": "Add missing dependencies or remove unused declarations.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dependency_declarations",
       "legacy_id": "repo.dependency_declarations",
@@ -6439,7 +7090,9 @@
       "fix_hint": "Define atlasctl/internal/deps/lock/atlasctl/internal/deps/sync/atlasctl/internal/deps/check-venv/atlasctl/internal/deps/cold-start in makefiles/atlasctl.mk.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dependency_gate_targets",
       "legacy_id": "repo.dependency_gate_targets",
@@ -6464,7 +7117,9 @@
       "fix_hint": "Add dependency ownership + justification entries in docs/deps.md.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dependency_owner_justification",
       "legacy_id": "repo.dependency_owner_justification",
@@ -6489,7 +7144,9 @@
       "fix_hint": "Wire atlasctl deps parser/runner and keep command import path valid.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_deps_command_surface",
       "legacy_id": "repo.deps_command_surface",
@@ -6514,7 +7171,9 @@
       "fix_hint": "Update docs/deps.md and keep requirements.in/requirements.lock.txt in sync.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_deps_workflow_doc",
       "legacy_id": "repo.deps_workflow_doc",
@@ -6539,7 +7198,9 @@
       "fix_hint": "Split crowded directories; required reading: packages/atlasctl/docs/architecture/how-to-split-a-module.md.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dir_budget_entries",
       "legacy_id": "repo.dir_budget_entries",
@@ -6564,7 +7225,9 @@
       "fix_hint": "Document each budget exception path in packages/atlasctl/docs/architecture.md.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dir_budget_exceptions_documented",
       "legacy_id": "repo.dir_budget_exceptions_documented",
@@ -6589,7 +7252,9 @@
       "fix_hint": "Sort [[tool.atlasctl.budgets.exceptions]] entries by path in pyproject.toml.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dir_budget_exceptions_sorted",
       "legacy_id": "repo.dir_budget_exceptions_sorted",
@@ -6614,7 +7279,9 @@
       "fix_hint": "Move unrelated files into domain subpackages to reduce dir-level LOC density.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dir_budget_loc",
       "legacy_id": "repo.dir_budget_loc",
@@ -6639,7 +7306,9 @@
       "fix_hint": "Split high-density directories into intent-focused subpackages.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dir_budget_modules",
       "legacy_id": "repo.dir_budget_modules",
@@ -6664,7 +7333,9 @@
       "fix_hint": "Split high-density directories and keep directory fan-in bounded.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dir_budget_py_files",
       "legacy_id": "repo.dir_budget_py_files",
@@ -6689,7 +7360,9 @@
       "fix_hint": "Split module directories and keep <=10 python files per dir; see how-to-split-a-module.md.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dir_budget_py_scope",
       "legacy_id": "repo.dir_budget_py_scope",
@@ -6714,7 +7387,9 @@
       "fix_hint": "Move shell scripts into approved layout/ops directories and split crowded directories.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dir_budget_shell_files",
       "legacy_id": "repo.dir_budget_shell_files",
@@ -6739,7 +7414,9 @@
       "fix_hint": "Split critical directories or update configs/policy/atlasctl-dir-count-baseline.json with approval.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dir_count_trend_gate",
       "legacy_id": "repo.dir_count_trend_gate",
@@ -6764,7 +7441,9 @@
       "fix_hint": "Replace generated runtime paths with canonical docs references.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_docs_no_ops_generated_refs",
       "legacy_id": "repo.docs_no_ops_generated_refs",
@@ -6789,7 +7468,9 @@
       "fix_hint": "Consolidate duplicate validate(schema) assertions into one test.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_duplicate_contract_assertions",
       "legacy_id": "repo.duplicate_contract_assertions",
@@ -6814,7 +7495,9 @@
       "fix_hint": "Rename colliding script names.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_duplicate_script_names",
       "legacy_id": "repo.duplicate_script_names",
@@ -6839,7 +7522,9 @@
       "fix_hint": "Route effects through core.exec/core.process/core.fs/core.runtime.env/core.network.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_effect_boundaries",
       "legacy_id": "repo.effect_boundaries",
@@ -6864,7 +7549,9 @@
       "fix_hint": "Keep configs/policy/effect-boundary-exceptions.json sorted and justified.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_effect_boundary_exceptions_policy",
       "legacy_id": "repo.effect_boundary_exceptions_policy",
@@ -6889,7 +7576,9 @@
       "fix_hint": "Create docs/env.md and document canonical runtime environment variables.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_env_docs_present",
       "legacy_id": "repo.env_docs_present",
@@ -6914,7 +7603,9 @@
       "fix_hint": "Split high-complexity control flow and extract focused helpers.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_file_complexity_budget",
       "legacy_id": "repo.file_complexity_budget",
@@ -6939,7 +7630,9 @@
       "fix_hint": "Reduce import fan-in and use lazy imports where needed.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_file_import_budget",
       "legacy_id": "repo.file_import_budget",
@@ -6964,7 +7657,9 @@
       "fix_hint": "Split dumping-ground modules and narrow __all__ exports.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_file_public_symbol_budget",
       "legacy_id": "repo.file_public_symbol_budget",
@@ -6989,7 +7684,9 @@
       "fix_hint": "Add README.md or check_*.py module in each checks directory.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_folder_intent_contract",
       "legacy_id": "repo.folder_intent_contract",
@@ -7014,7 +7711,9 @@
       "fix_hint": "Replace banned wording or add explicit approval entries in configs/policy/forbidden-adjectives-approvals.json.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_forbidden_adjectives",
       "legacy_id": "repo.forbidden_adjectives",
@@ -7039,7 +7738,9 @@
       "fix_hint": "Remove forbidden junk files from repository root.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_forbidden_root_files",
       "legacy_id": "repo.forbidden_root_files",
@@ -7064,7 +7765,9 @@
       "fix_hint": "Remove forbidden top-level legacy names from repository root.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_forbidden_root_names",
       "legacy_id": "repo.forbidden_root_names",
@@ -7089,7 +7792,9 @@
       "fix_hint": "Remove forbidden root directories.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_forbidden_top_dirs",
       "legacy_id": "repo.forbidden_top_dirs",
@@ -7114,7 +7819,9 @@
       "fix_hint": "Keep top-level imports light and dependency-safe.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_import_smoke",
       "legacy_id": "repo.import_smoke",
@@ -7139,7 +7846,9 @@
       "fix_hint": "Mark internal commands stable=false and exclude them from public docs.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_internal_commands_not_public",
       "legacy_id": "repo.internal_commands_not_public",
@@ -7164,7 +7873,9 @@
       "fix_hint": "Route shared helpers through public modules instead of atlasctl.internal.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_internal_import_boundaries",
       "legacy_id": "repo.internal_import_boundaries",
@@ -7189,7 +7900,9 @@
       "fix_hint": "Replace third-party imports in atlasctl/internal with stdlib equivalents or add a justified exception.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_internal_utils_stdlib_only",
       "legacy_id": "repo.internal_utils_stdlib_only",
@@ -7214,7 +7927,9 @@
       "fix_hint": "Keep one .json.golden per schema surface.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_json_golden_conflicts",
       "legacy_id": "repo.json_golden_conflicts",
@@ -7239,7 +7954,9 @@
       "fix_hint": "Call contracts.validate() before asserting JSON golden snapshots.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_json_goldens_validate_schema",
       "legacy_id": "repo.json_goldens_validate_schema",
@@ -7264,7 +7981,9 @@
       "fix_hint": "Use domain-specific check packages and remove deprecated checks/layout alias modules.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_layout_domain_alias_cleanup",
       "legacy_id": "repo.layout_domain_alias_cleanup",
@@ -7289,7 +8008,9 @@
       "fix_hint": "Add README.md to each checks/layout/<domain>/ directory.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_layout_domain_readmes",
       "legacy_id": "repo.layout_domain_readmes",
@@ -7314,7 +8035,9 @@
       "fix_hint": "Remove atlasctl.legacy imports from layout checks.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_layout_no_legacy_imports",
       "legacy_id": "repo.layout_no_legacy_imports",
@@ -7339,7 +8062,9 @@
       "fix_hint": "Resolve shadow config sources reported by atlasctl/layout/no_shadow.py.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_layout_no_shadow",
       "legacy_id": "repo.layout_no_shadow",
@@ -7364,7 +8089,9 @@
       "fix_hint": "Delete packages/atlasctl/src/atlasctl/legacy and migrate importers.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_legacy_package_absent",
       "legacy_id": "repo.legacy_package_absent",
@@ -7389,7 +8116,9 @@
       "fix_hint": "Remove imports/references to atlasctl.legacy.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_legacy_zero_importers",
       "legacy_id": "repo.legacy_zero_importers",
@@ -7414,7 +8143,9 @@
       "fix_hint": "Keep managed write roots under artifacts/ and route writes through core.fs.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_managed_artifact_write_roots",
       "legacy_id": "repo.managed_artifact_write_roots",
@@ -7439,7 +8170,9 @@
       "fix_hint": "Use ./bin/atlasctl in docs/makefiles and remove legacy migration wording.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_migration_progress_regression",
       "legacy_id": "repo.migration_progress_regression",
@@ -7464,7 +8197,9 @@
       "fix_hint": "Migrate callers to canonical modules under atlasctl.core/commands/checks.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_modern_no_legacy_imports",
       "legacy_id": "repo.modern_no_legacy_imports",
@@ -7489,7 +8224,9 @@
       "fix_hint": "Migrate observability imports to atlasctl.observability.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_modern_no_legacy_obs_imports",
       "legacy_id": "repo.modern_no_legacy_obs_imports",
@@ -7514,7 +8251,9 @@
       "fix_hint": "Split high-density top-level domains and relocate modules by control-plane ownership.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_module_budget_domains",
       "legacy_id": "repo.module_budget_domains",
@@ -7539,7 +8278,9 @@
       "fix_hint": "Split oversized modules into focused submodules.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_module_size",
       "legacy_id": "repo.module_size",
@@ -7564,7 +8305,9 @@
       "fix_hint": "Import new repo check modules in checks/repo/__init__.py.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_modules_reachability",
       "legacy_id": "repo.check_module_reachability",
@@ -7589,7 +8332,10 @@
       "fix_hint": "Require explicit --allow-network for network-capable commands and keep default deny.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "network",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_network_default_deny",
       "legacy_id": "repo.network_default_deny",
@@ -7614,7 +8360,9 @@
       "fix_hint": "Migrate ad-hoc python files into package modules.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_adhoc_python",
       "legacy_id": "repo.no_adhoc_python",
@@ -7639,7 +8387,9 @@
       "fix_hint": "Use top-level atlasctl.adapters for integration concerns.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_core_integration_dir",
       "legacy_id": "repo.no_core_integration_dir",
@@ -7664,7 +8414,9 @@
       "fix_hint": "Remove compat/migration/legacy top-level commands before release.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_deprecated_commands",
       "legacy_id": "repo.no_deprecated_commands",
@@ -7689,7 +8441,9 @@
       "fix_hint": "Remove deprecated namespace directories and keep checks/reporting/observability as canonical roots.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_deprecated_namespace_dirs",
       "legacy_id": "repo.no_deprecated_namespace_dirs",
@@ -7714,7 +8468,9 @@
       "fix_hint": "Use atlasctl.checks and atlasctl.reporting canonical namespaces.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_deprecated_namespaces",
       "legacy_id": "repo.no_deprecated_namespaces",
@@ -7739,7 +8495,9 @@
       "fix_hint": "Use atlasctl commands instead of bash scripts/... invocations.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_direct_bash_invocations",
       "legacy_id": "repo.no_direct_bash_invocations",
@@ -7764,7 +8522,9 @@
       "fix_hint": "Use atlasctl command entrypoints instead of python path/to/script.py.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_direct_python_invocations",
       "legacy_id": "repo.no_direct_python_invocations",
@@ -7789,7 +8549,9 @@
       "fix_hint": "Invoke workflows through make targets instead of direct scripts/ops paths.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_direct_script_runs",
       "legacy_id": "repo.no_direct_script_runs",
@@ -7814,7 +8576,9 @@
       "fix_hint": "Pick one command implementation pattern and remove duplicate modules.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_duplicate_command_impl_patterns",
       "legacy_id": "repo.no_duplicate_command_impl_patterns",
@@ -7839,7 +8603,9 @@
       "fix_hint": "Rename duplicate command/alias entries.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_duplicate_command_names",
       "legacy_id": "repo.no_duplicate_command_names",
@@ -7864,7 +8630,9 @@
       "fix_hint": "Delete empty directories and flatten single-child nests without modules or README markers.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_empty_dirs_or_pointless_nests",
       "legacy_id": "repo.no_empty_dirs_or_pointless_nests",
@@ -7889,7 +8657,9 @@
       "fix_hint": "Add a real module or README.md to package directories.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_empty_packages",
       "legacy_id": "repo.no_empty_packages",
@@ -7914,7 +8684,9 @@
       "fix_hint": "Move script into package module or remove executable bit.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_exec_python_outside_packages",
       "legacy_id": "repo.no_exec_python_outside_packages",
@@ -7939,7 +8711,9 @@
       "fix_hint": "Remove forbidden legacy path references from make/docs/workflows.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_forbidden_paths",
       "legacy_id": "repo.no_forbidden_paths",
@@ -7964,7 +8738,9 @@
       "fix_hint": "Remove legacy command names and keep internal legacy reporting under `atlasctl internal legacy inventory`.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_legacy_command_names",
       "legacy_id": "repo.no_legacy_command_names",
@@ -7989,7 +8765,9 @@
       "fix_hint": "Delete or move modules out of any */legacy/* path.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_legacy_module_paths",
       "legacy_id": "repo.no_legacy_module_paths",
@@ -8014,7 +8792,9 @@
       "fix_hint": "Flatten nested same-name package segments (example: checks/checks).",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_nested_same_name_packages",
       "legacy_id": "repo.no_nested_same_name_packages",
@@ -8039,7 +8819,9 @@
       "fix_hint": "Remove placeholder generated files/directories.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_ops_generated_placeholder",
       "legacy_id": "repo.no_ops_generated_placeholder",
@@ -8064,7 +8846,9 @@
       "fix_hint": "Use ctx.repo_root or core.runtime.repo_root helpers.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_path_cwd_usage",
       "legacy_id": "repo.no_path_cwd_usage",
@@ -8089,7 +8873,9 @@
       "fix_hint": "Rename modules to intent-revealing names.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_placeholder_module_names",
       "legacy_id": "repo.no_placeholder_module_names",
@@ -8114,7 +8900,9 @@
       "fix_hint": "Migrate scripts into atlasctl package commands.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_scripts_dir",
       "legacy_id": "repo.no_scripts_dir",
@@ -8139,7 +8927,9 @@
       "fix_hint": "Untrack generated files and add to ignore policy.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_tracked_ops_generated",
       "legacy_id": "repo.no_tracked_ops_generated",
@@ -8164,7 +8954,9 @@
       "fix_hint": "Remove timestamped tracked files/dirs.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_tracked_timestamp_paths",
       "legacy_id": "repo.no_tracked_timestamp_paths",
@@ -8189,7 +8981,9 @@
       "fix_hint": "Document command in packages/atlasctl/docs/commands/index.md or mark it internal.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_undocumented_help_commands",
       "legacy_id": "repo.no_undocumented_help_commands",
@@ -8214,7 +9008,9 @@
       "fix_hint": "Replace wildcard imports with explicit module references and __all__.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_wildcard_exports",
       "legacy_id": "repo.no_wildcard_exports",
@@ -8239,7 +9035,9 @@
       "fix_hint": "Remove xtask references and use atlasctl workflows.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_xtask_refs",
       "legacy_id": "repo.no_xtask_refs",
@@ -8264,7 +9062,9 @@
       "fix_hint": "Restore example fixtures to committed canonical content.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_ops_examples_immutable",
       "legacy_id": "repo.ops_examples_immutable",
@@ -8289,7 +9089,9 @@
       "fix_hint": "Add required [project.optional-dependencies] groups with entries: dev/ci/test/ops/docs.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_optional_dependency_groups",
       "legacy_id": "repo.optional_dependency_groups",
@@ -8314,7 +9116,9 @@
       "fix_hint": "Move dependency to base deps or add justified exception in configs/policy/dependency-exceptions.json.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_optional_dependency_usage_gates",
       "legacy_id": "repo.optional_dependency_usage_gates",
@@ -8339,7 +9143,9 @@
       "fix_hint": "Use LF-only snapshots and avoid platform-dependent line separator logic.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_output_format_stability",
       "legacy_id": "repo.output_format_stability",
@@ -8364,7 +9170,9 @@
       "fix_hint": "Add module implementation or README.md to document empty package.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_package_has_module_or_readme",
       "legacy_id": "repo.package_has_module_or_readme",
@@ -8389,7 +9197,9 @@
       "fix_hint": "Flatten deep package hierarchies under packages/atlasctl/src/atlasctl.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_package_max_depth",
       "legacy_id": "repo.package_max_depth",
@@ -8414,7 +9224,9 @@
       "fix_hint": "Keep only LICENSE, README.md, docs/, pyproject.toml, src/, tests/ (+ optional requirements input/lock) in packages/atlasctl root.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_packages_atlasctl_root_shape",
       "legacy_id": "repo.atlasctl_package_root_shape",
@@ -8439,7 +9251,9 @@
       "fix_hint": "Add required project classifiers and URLs in packages/atlasctl/pyproject.toml.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_packaging_metadata_completeness",
       "legacy_id": "repo.packaging_metadata_completeness",
@@ -8464,7 +9278,9 @@
       "fix_hint": "Add packages/atlasctl/docs/PUBLIC_API.md and keep API docs there.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_public_api_doc_exists",
       "legacy_id": "repo.public_api_doc_exists",
@@ -8489,7 +9305,9 @@
       "fix_hint": "Document exported symbols in docs/PUBLIC_API.md or remove them from __all__.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_public_api_exports",
       "legacy_id": "repo.public_api_exports",
@@ -8514,7 +9332,9 @@
       "fix_hint": "Add missing public commands to packages/atlasctl/docs/commands/index.md.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_public_commands_docs_index",
       "legacy_id": "repo.public_commands_docs_index",
@@ -8539,7 +9359,9 @@
       "fix_hint": "Remove unknown [tool.*] sections or document and allow them explicitly.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_pyproject_minimalism",
       "legacy_id": "repo.pyproject_minimalism",
@@ -8564,7 +9386,9 @@
       "fix_hint": "Remove duplicated tool config files and keep pyproject as SSOT.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_pyproject_no_duplicate_tool_config",
       "legacy_id": "repo.pyproject_no_duplicate_tool_config",
@@ -8589,7 +9413,9 @@
       "fix_hint": "Add required [project]/[tool.*] blocks to packages/atlasctl/pyproject.toml.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_pyproject_required_blocks",
       "legacy_id": "repo.pyproject_required_blocks",
@@ -8614,7 +9440,9 @@
       "fix_hint": "Ensure atlasctl package entrypoint remains runnable with python -m atlasctl.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_python_module_help",
       "legacy_id": "repo.python_module_help",
@@ -8639,7 +9467,9 @@
       "fix_hint": "Pin requires-python to >=3.11 and set actions/setup-python python-version: 3.11 in CI.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_python_requires_version_and_ci",
       "legacy_id": "repo.python_requires_version_and_ci",
@@ -8664,7 +9494,9 @@
       "fix_hint": "Keep registry declarative and independent from runtime command/check implementations.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_registry_definition_boundary",
       "legacy_id": "repo.registry_definition_boundary",
@@ -8689,7 +9521,9 @@
       "fix_hint": "Declare commands only in cli/surface_registry.py and checks only in checks/*/__init__.py.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_registry_single_source",
       "legacy_id": "repo.registry_single_source",
@@ -8714,7 +9548,9 @@
       "fix_hint": "Keep package-root items minimal and remove symlinks from src tree.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_required_target_shape",
       "legacy_id": "repo.required_target_shape",
@@ -8739,7 +9575,9 @@
       "fix_hint": "Keep only requirements.in and requirements.lock.txt in package root for route-B workflow.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_requirements_artifact_policy",
       "legacy_id": "repo.requirements_artifact_policy",
@@ -8764,7 +9602,9 @@
       "fix_hint": "Regenerate requirements.lock.txt from requirements.in and keep pyproject optional-deps dev aligned.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_requirements_sync",
       "legacy_id": "repo.requirements_sync",
@@ -8789,7 +9629,9 @@
       "fix_hint": "Stabilize generated root outputs so consecutive runs are identical.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "repo",
+        "required",
+        "slow"
       ],
       "id": "checks_repo_root_determinism",
       "legacy_id": "repo.root_determinism",
@@ -8814,7 +9656,9 @@
       "fix_hint": "Align root entries with checks/layout/root_whitelist.json.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_root_shape",
       "legacy_id": "repo.root_shape",
@@ -8839,7 +9683,9 @@
       "fix_hint": "Use RunContext.from_args and avoid constructing context-like objects elsewhere.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_runcontext_single_builder",
       "legacy_id": "repo.runcontext_single_builder",
@@ -8864,7 +9710,9 @@
       "fix_hint": "Add --help contract output to required scripts.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_script_help_coverage",
       "legacy_id": "repo.script_help_coverage",
@@ -8889,7 +9737,9 @@
       "fix_hint": "Update ownership metadata for uncovered scripts.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_script_ownership_coverage",
       "legacy_id": "repo.script_ownership_coverage",
@@ -8914,7 +9764,9 @@
       "fix_hint": "Add README.md and POLICY.md under ops/vendor/layout-checks.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_shell_docs_present",
       "legacy_id": "repo.shell_docs_present",
@@ -8939,7 +9791,9 @@
       "fix_hint": "Route shell invocations through core.exec wrapper helpers.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_shell_invocation_boundary",
       "legacy_id": "repo.shell_invocation_boundary",
@@ -8964,7 +9818,9 @@
       "fix_hint": "Move shell scripts to ops/vendor/layout-checks or port them to python.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_shell_location_policy",
       "legacy_id": "repo.shell_location_policy",
@@ -8989,7 +9845,9 @@
       "fix_hint": "Call atlasctl entrypoints instead of python commands in shell scripts.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_shell_no_direct_python",
       "legacy_id": "repo.shell_no_direct_python",
@@ -9014,7 +9872,10 @@
       "fix_hint": "Use atlasctl-managed fetch entrypoints or explicit allow annotation.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "network",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_shell_no_network_fetch",
       "legacy_id": "repo.shell_no_network_fetch",
@@ -9039,7 +9900,9 @@
       "fix_hint": "Keep layout shell checks read-only and route outputs through stdout/stderr only.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_shell_readonly_checks",
       "legacy_id": "repo.shell_readonly_checks",
@@ -9064,7 +9927,9 @@
       "fix_hint": "Port shell scripts to Python modules and delete duplicates.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_shell_script_budget",
       "legacy_id": "repo.shell_script_budget",
@@ -9089,7 +9954,9 @@
       "fix_hint": "Add #!/usr/bin/env bash and set -euo pipefail to all shell scripts.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_shell_strict_mode",
       "legacy_id": "repo.shell_strict_mode",
@@ -9114,7 +9981,9 @@
       "fix_hint": "Keep only packages/atlasctl/src/atlasctl/checks/registry.py as registry.py.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_single_registry_module",
       "legacy_id": "repo.single_registry_module",
@@ -9139,7 +10008,9 @@
       "fix_hint": "Keep only packages/atlasctl/src/atlasctl/checks/runner.py as runner.py.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_single_runner_module",
       "legacy_id": "repo.single_runner_module",
@@ -9164,7 +10035,9 @@
       "fix_hint": "Avoid breaking stable command metadata or intentionally refresh commands goldens.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_stable_command_no_breaking_changes",
       "legacy_id": "repo.stable_command_no_breaking_changes",
@@ -9189,7 +10062,9 @@
       "fix_hint": "Use core.exec/core.process for subprocess calls.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_subprocess_boundary",
       "legacy_id": "repo.subprocess_boundary",
@@ -9214,7 +10089,9 @@
       "fix_hint": "Assign checks to suites and ensure required complete suites include all required checks.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_suite_inventory_policy",
       "legacy_id": "repo.suite_inventory_policy",
@@ -9239,7 +10116,9 @@
       "fix_hint": "Keep tests/goldens/check/check-suite-coverage.markers.txt sorted, unique, and only registered check ids.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_suite_marker_rules",
       "legacy_id": "repo.suite_marker_rules",
@@ -9264,7 +10143,9 @@
       "fix_hint": "Replace unstable time/random/env usage or annotate with determinism-allow: reason.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_test_determinism_patterns",
       "legacy_id": "repo.test_determinism_patterns",
@@ -9289,7 +10170,9 @@
       "fix_hint": "Keep one canonical test per golden surface and remove duplicate assertions.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_test_no_duplicated_coverage",
       "legacy_id": "repo.test_no_duplicated_coverage",
@@ -9314,7 +10197,10 @@
       "fix_hint": "Add @pytest.mark.network or '# network-test: allowed' near intentional network tests.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "network",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_test_no_unmarked_network",
       "legacy_id": "repo.test_no_unmarked_network",
@@ -9339,7 +10225,9 @@
       "fix_hint": "Add '# test-domain: <domain>' header to top-level tests.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_test_ownership_tags",
       "legacy_id": "repo.test_ownership_tags",
@@ -9364,7 +10252,9 @@
       "fix_hint": "Add skip-justification and skip-expires markers near skip usage.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_test_skip_justification",
       "legacy_id": "repo.test_skip_justification",
@@ -9389,7 +10279,9 @@
       "fix_hint": "Place tests under domain folders and align declared # test-taxonomy with placement.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_test_taxonomy_layout",
       "legacy_id": "repo.test_taxonomy_layout",
@@ -9414,7 +10306,9 @@
       "fix_hint": "Write via tmp_path/tempfile or artifacts/isolate run directories only.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_test_write_sandbox",
       "legacy_id": "repo.test_write_sandbox",
@@ -9439,7 +10333,9 @@
       "fix_hint": "Rename duplicated test_* functions to avoid conflicting expectations.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_tests_no_duplicate_expectations",
       "legacy_id": "repo.tests_no_duplicate_expectations",
@@ -9464,7 +10360,9 @@
       "fix_hint": "Map new top-level packages to configs/dev/ops/policies/internal in package_shape policy.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_top_level_package_group_mapping",
       "legacy_id": "repo.top_level_package_group_mapping",
@@ -9489,7 +10387,9 @@
       "fix_hint": "Keep atlasctl top-level package set within STRUCTURE.md contract.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_top_level_structure",
       "legacy_id": "repo.top_level_structure",
@@ -9514,7 +10414,9 @@
       "fix_hint": "Add function annotations in core/contracts until the threshold is met.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_type_coverage",
       "legacy_id": "repo.type_coverage",
@@ -9539,7 +10441,9 @@
       "fix_hint": "Align atlasctl.__version__ with pyproject [project].version and keep --version output stable outside git repos.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_version_matches_pyproject",
       "legacy_id": "repo.version_matches_pyproject",
@@ -9564,7 +10468,9 @@
       "fix_hint": "Add missing make targets or update workflows to existing targets.",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_workflows_targets_exist",
       "legacy_id": "repo.workflows_targets_exist",

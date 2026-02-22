@@ -8,7 +8,9 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "required"
       ],
       "id": "checks_checks_count_budget",
       "impl_ref": {
@@ -46,7 +48,10 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_checks_docs_index_complete",
       "impl_ref": {
@@ -67,6 +72,7 @@
       },
       "markers": [
         "checks",
+        "docs",
         "fast",
         "required"
       ],
@@ -84,7 +90,9 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "required"
       ],
       "id": "checks_checks_owners_ssot",
       "impl_ref": {
@@ -122,7 +130,10 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_all_checks_have_canonical_id",
       "impl_ref": {
@@ -144,6 +155,7 @@
       "markers": [
         "checks",
         "fast",
+        "registry",
         "required"
       ],
       "owners": [
@@ -160,7 +172,10 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_canonical_id_matches_module_path",
       "impl_ref": {
@@ -182,6 +197,7 @@
       "markers": [
         "checks",
         "fast",
+        "registry",
         "required"
       ],
       "owners": [
@@ -198,7 +214,11 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "ci",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_change_docs_gate",
       "impl_ref": {
@@ -219,7 +239,9 @@
       },
       "markers": [
         "checks",
+        "ci",
         "fast",
+        "registry",
         "required"
       ],
       "owners": [
@@ -236,7 +258,11 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "ci",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_change_goldens_gate",
       "impl_ref": {
@@ -257,7 +283,9 @@
       },
       "markers": [
         "checks",
+        "ci",
         "fast",
+        "registry",
         "required"
       ],
       "owners": [
@@ -274,7 +302,11 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "ci",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_change_owners_gate",
       "impl_ref": {
@@ -295,7 +327,9 @@
       },
       "markers": [
         "checks",
+        "ci",
         "fast",
+        "registry",
         "required"
       ],
       "owners": [
@@ -312,7 +346,10 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_docs_link_required",
       "impl_ref": {
@@ -334,6 +371,7 @@
       "markers": [
         "checks",
         "fast",
+        "registry",
         "required"
       ],
       "owners": [
@@ -350,7 +388,10 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_docs_meta_runtime_drift",
       "impl_ref": {
@@ -372,6 +413,7 @@
       "markers": [
         "checks",
         "fast",
+        "registry",
         "required"
       ],
       "owners": [
@@ -388,7 +430,10 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "registry",
+        "required",
+        "slow"
       ],
       "id": "checks_checks_registry_integrity",
       "impl_ref": {
@@ -409,6 +454,7 @@
       },
       "markers": [
         "checks",
+        "registry",
         "required",
         "slow"
       ],
@@ -426,7 +472,9 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "required"
       ],
       "id": "checks_checks_registry_no_banned_adjectives_in_ids",
       "impl_ref": {
@@ -464,7 +512,10 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_no_duplicate_canonical_id",
       "impl_ref": {
@@ -486,6 +537,7 @@
       "markers": [
         "checks",
         "fast",
+        "registry",
         "required"
       ],
       "owners": [
@@ -502,7 +554,10 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_owners_required",
       "impl_ref": {
@@ -524,6 +579,7 @@
       "markers": [
         "checks",
         "fast",
+        "registry",
         "required"
       ],
       "owners": [
@@ -540,7 +596,10 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_remediation_link_required",
       "impl_ref": {
@@ -562,6 +621,7 @@
       "markers": [
         "checks",
         "fast",
+        "registry",
         "required"
       ],
       "owners": [
@@ -578,7 +638,10 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_speed_required",
       "impl_ref": {
@@ -600,6 +663,7 @@
       "markers": [
         "checks",
         "fast",
+        "registry",
         "required"
       ],
       "owners": [
@@ -616,7 +680,10 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_suite_membership_required",
       "impl_ref": {
@@ -638,6 +705,7 @@
       "markers": [
         "checks",
         "fast",
+        "registry",
         "required"
       ],
       "owners": [
@@ -654,7 +722,10 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "registry",
+        "required"
       ],
       "id": "checks_checks_registry_transition_complete",
       "impl_ref": {
@@ -676,6 +747,7 @@
       "markers": [
         "checks",
         "fast",
+        "registry",
         "required"
       ],
       "owners": [
@@ -692,7 +764,9 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "required"
       ],
       "id": "checks_checks_remediation_ssot",
       "impl_ref": {
@@ -730,7 +804,10 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "required",
+        "suite"
       ],
       "id": "checks_checks_suites_inventory_ssot",
       "impl_ref": {
@@ -752,7 +829,8 @@
       "markers": [
         "checks",
         "fast",
-        "required"
+        "required",
+        "suite"
       ],
       "owners": [
         "platform"
@@ -768,7 +846,10 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "required",
+        "suite"
       ],
       "id": "checks_checks_suites_no_orphans",
       "impl_ref": {
@@ -790,7 +871,8 @@
       "markers": [
         "checks",
         "fast",
-        "required"
+        "required",
+        "suite"
       ],
       "owners": [
         "platform"
@@ -806,7 +888,9 @@
       "domain": "checks",
       "gate": "checks",
       "groups": [
-        "checks"
+        "checks",
+        "fast",
+        "required"
       ],
       "id": "checks_checks_surfaces_no_banned_adjectives_in_paths",
       "impl_ref": {
@@ -844,7 +928,9 @@
       "domain": "configs",
       "gate": "configs",
       "groups": [
-        "configs"
+        "configs",
+        "fast",
+        "required"
       ],
       "id": "checks_configs_pyproject_no_duplicate_tool_config",
       "impl_ref": {
@@ -882,7 +968,9 @@
       "domain": "configs",
       "gate": "configs",
       "groups": [
-        "configs"
+        "configs",
+        "fast",
+        "required"
       ],
       "id": "checks_configs_pyproject_required_blocks",
       "impl_ref": {
@@ -920,7 +1008,9 @@
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_atlasctl_cli",
       "impl_ref": {
@@ -958,7 +1048,9 @@
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "required",
+        "slow"
       ],
       "id": "checks_contracts_layout_contract",
       "impl_ref": {
@@ -998,7 +1090,9 @@
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_catalog",
       "impl_ref": {
@@ -1036,7 +1130,9 @@
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_catalog_files_exist",
       "impl_ref": {
@@ -1074,7 +1170,9 @@
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_catalog_referenced",
       "impl_ref": {
@@ -1112,7 +1210,9 @@
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_catalog_sorted",
       "impl_ref": {
@@ -1150,7 +1250,9 @@
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_catalog_ssot",
       "impl_ref": {
@@ -1188,7 +1290,9 @@
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_change_release_notes",
       "impl_ref": {
@@ -1226,7 +1330,9 @@
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_disk_files_listed",
       "impl_ref": {
@@ -1264,7 +1370,9 @@
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_goldens",
       "impl_ref": {
@@ -1302,7 +1410,9 @@
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_id_naming",
       "impl_ref": {
@@ -1340,7 +1450,9 @@
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_readme_updated",
       "impl_ref": {
@@ -1378,7 +1490,9 @@
       "domain": "contracts",
       "gate": "contracts",
       "groups": [
-        "contracts"
+        "contracts",
+        "fast",
+        "required"
       ],
       "id": "checks_contracts_schema_samples",
       "impl_ref": {
@@ -1416,7 +1530,9 @@
       "domain": "docker",
       "gate": "docker",
       "groups": [
-        "docker"
+        "docker",
+        "fast",
+        "required"
       ],
       "id": "checks_docker_image_size",
       "impl_ref": {
@@ -1454,7 +1570,9 @@
       "domain": "docker",
       "gate": "docker",
       "groups": [
-        "docker"
+        "docker",
+        "fast",
+        "required"
       ],
       "id": "checks_docker_layout_contract",
       "impl_ref": {
@@ -1492,7 +1610,9 @@
       "domain": "docker",
       "gate": "docker",
       "groups": [
-        "docker"
+        "docker",
+        "fast",
+        "required"
       ],
       "id": "checks_docker_no_latest_tags",
       "impl_ref": {
@@ -1530,7 +1650,9 @@
       "domain": "docker",
       "gate": "docker",
       "groups": [
-        "docker"
+        "docker",
+        "fast",
+        "required"
       ],
       "id": "checks_docker_policy_contract",
       "impl_ref": {
@@ -1568,7 +1690,9 @@
       "domain": "docker",
       "gate": "docker",
       "groups": [
-        "docker"
+        "docker",
+        "fast",
+        "required"
       ],
       "id": "checks_docker_tag_contract_no_latest",
       "impl_ref": {
@@ -1606,7 +1730,9 @@
       "domain": "docs",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_check_id_drift",
       "impl_ref": {
@@ -1644,7 +1770,9 @@
       "domain": "docs",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_ci_lane_mapping",
       "impl_ref": {
@@ -1682,7 +1810,9 @@
       "domain": "docs",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_command_group_pages",
       "impl_ref": {
@@ -1720,7 +1850,9 @@
       "domain": "docs",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_index_complete",
       "impl_ref": {
@@ -1758,7 +1890,9 @@
       "domain": "docs",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_links_exist",
       "impl_ref": {
@@ -1796,7 +1930,9 @@
       "domain": "docs",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_lint_style",
       "impl_ref": {
@@ -1834,7 +1970,9 @@
       "domain": "docs",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_migration_not_stale",
       "impl_ref": {
@@ -1872,7 +2010,9 @@
       "domain": "docs",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_nav_references_exist",
       "impl_ref": {
@@ -1910,7 +2050,9 @@
       "domain": "docs",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_new_command_workflow",
       "impl_ref": {
@@ -1948,7 +2090,9 @@
       "domain": "docs",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_no_legacy_cli_invocation",
       "impl_ref": {
@@ -1986,7 +2130,9 @@
       "domain": "docs",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_no_ops_generated_run_path_refs",
       "impl_ref": {
@@ -2024,7 +2170,9 @@
       "domain": "docs",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_no_orphans",
       "impl_ref": {
@@ -2062,7 +2210,9 @@
       "domain": "docs",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_no_placeholder_release_docs",
       "impl_ref": {
@@ -2100,7 +2250,9 @@
       "domain": "docs",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_no_scripts_path_refs",
       "impl_ref": {
@@ -2138,7 +2290,9 @@
       "domain": "docs",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_ownership_metadata",
       "impl_ref": {
@@ -2176,7 +2330,9 @@
       "domain": "docs",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_package_root_markdown",
       "impl_ref": {
@@ -2214,7 +2370,9 @@
       "domain": "docs",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_registry_command_drift",
       "impl_ref": {
@@ -2252,7 +2410,9 @@
       "domain": "docs",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_registry_indexes",
       "impl_ref": {
@@ -2290,7 +2450,9 @@
       "domain": "docs",
       "gate": "docs",
       "groups": [
-        "docs"
+        "docs",
+        "fast",
+        "required"
       ],
       "id": "checks_docs_stable_command_examples",
       "impl_ref": {
@@ -2328,7 +2490,9 @@
       "domain": "license",
       "gate": "license",
       "groups": [
-        "license"
+        "fast",
+        "license",
+        "required"
       ],
       "id": "checks_license_file_mit",
       "impl_ref": {
@@ -2366,7 +2530,9 @@
       "domain": "license",
       "gate": "license",
       "groups": [
-        "license"
+        "fast",
+        "license",
+        "required"
       ],
       "id": "checks_license_spdx_policy",
       "impl_ref": {
@@ -2404,7 +2570,9 @@
       "domain": "license",
       "gate": "license",
       "groups": [
-        "license"
+        "fast",
+        "license",
+        "required"
       ],
       "id": "checks_license_statements_consistent",
       "impl_ref": {
@@ -2442,7 +2610,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_ci_entrypoints_contract",
       "impl_ref": {
@@ -2480,7 +2650,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_ci_pr_lane_fast_only",
       "impl_ref": {
@@ -2518,7 +2690,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_ci_workflows_make_only",
       "impl_ref": {
@@ -2556,7 +2730,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_command_allowlist",
       "impl_ref": {
@@ -2594,7 +2770,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_forbidden_paths",
       "impl_ref": {
@@ -2632,7 +2810,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_help_determinism",
       "impl_ref": {
@@ -2670,7 +2850,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_index_drift_contract",
       "impl_ref": {
@@ -2708,7 +2890,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_lane_reports_via_atlasctl_reporting",
       "impl_ref": {
@@ -2746,7 +2930,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_makefiles_wrappers_only_all",
       "impl_ref": {
@@ -2784,7 +2970,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_atlasctl_run_ops_run",
       "impl_ref": {
@@ -2822,7 +3010,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_bypass_atlasctl",
       "impl_ref": {
@@ -2860,7 +3050,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_direct_artifact_writes",
       "impl_ref": {
@@ -2898,7 +3090,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_direct_bash_ops",
       "impl_ref": {
@@ -2936,7 +3130,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_direct_python",
       "impl_ref": {
@@ -2974,7 +3170,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_direct_python_only_atlasctl",
       "impl_ref": {
@@ -3012,7 +3210,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_direct_script_exec_drift",
       "impl_ref": {
@@ -3050,7 +3250,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_direct_scripts_only_atlasctl",
       "impl_ref": {
@@ -3088,7 +3290,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_duplicate_all_variants",
       "impl_ref": {
@@ -3126,7 +3330,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_legacy_script_aliases",
       "impl_ref": {
@@ -3164,7 +3370,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_orphan_docs_refs",
       "impl_ref": {
@@ -3202,7 +3410,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_no_python_module_invocation",
       "impl_ref": {
@@ -3240,7 +3450,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_product_migration_complete_no_ops_run",
       "impl_ref": {
@@ -3278,7 +3490,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_product_mk_wrapper_contract",
       "impl_ref": {
@@ -3316,7 +3530,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_public_target_atlasctl_mapping",
       "impl_ref": {
@@ -3354,7 +3570,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_public_targets_documented",
       "impl_ref": {
@@ -3392,7 +3610,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_root_budget",
       "impl_ref": {
@@ -3430,7 +3650,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_scripts_refs",
       "impl_ref": {
@@ -3468,7 +3690,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_target_boundaries_enforced",
       "impl_ref": {
@@ -3506,7 +3730,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_target_names_no_banned_adjectives",
       "impl_ref": {
@@ -3544,7 +3770,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_target_ownership_complete",
       "impl_ref": {
@@ -3582,7 +3810,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_workflows_reference_known_suites",
       "impl_ref": {
@@ -3620,7 +3850,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_wrapper_no_direct_cargo",
       "impl_ref": {
@@ -3658,7 +3890,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_wrapper_no_env_side_effects",
       "impl_ref": {
@@ -3696,7 +3930,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_wrapper_no_multiline_recipes",
       "impl_ref": {
@@ -3734,7 +3970,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_wrapper_no_python_m",
       "impl_ref": {
@@ -3772,7 +4010,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_wrapper_only_calls_bin_atlasctl",
       "impl_ref": {
@@ -3810,7 +4050,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_wrapper_phony_complete",
       "impl_ref": {
@@ -3848,7 +4090,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_wrapper_purity",
       "impl_ref": {
@@ -3886,7 +4130,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_wrapper_shell_is_sh",
       "impl_ref": {
@@ -3924,7 +4170,9 @@
       "domain": "make",
       "gate": "make",
       "groups": [
-        "make"
+        "fast",
+        "make",
+        "required"
       ],
       "id": "checks_make_wrapper_target_budget",
       "impl_ref": {
@@ -3962,7 +4210,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_all_check_scripts_registered",
       "impl_ref": {
@@ -4001,7 +4252,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_chart_version_contract",
       "impl_ref": {
@@ -4040,7 +4294,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_clean_allowed_roots_only",
       "impl_ref": {
@@ -4079,7 +4336,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_committed_generated_hygiene",
       "impl_ref": {
@@ -4118,7 +4378,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_effect_boundary_imports",
       "impl_ref": {
@@ -4157,7 +4420,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_env_schema_is_used",
       "impl_ref": {
@@ -4196,7 +4462,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_generated_not_tracked_unless_allowed",
       "impl_ref": {
@@ -4235,7 +4504,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_manifests_schema",
       "impl_ref": {
@@ -4274,7 +4546,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_no_direct_script_entrypoints",
       "impl_ref": {
@@ -4313,7 +4588,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_no_new_run_scripts_without_approval_and_expiry",
       "impl_ref": {
@@ -4352,7 +4630,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_no_tracked_generated",
       "impl_ref": {
@@ -4391,7 +4672,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_no_tracked_timestamps",
       "impl_ref": {
@@ -4430,7 +4714,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_obs_drift_goldens",
       "impl_ref": {
@@ -4469,7 +4756,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_pins_no_unpinned_versions",
       "impl_ref": {
@@ -4508,7 +4798,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_pins_update_is_deterministic",
       "impl_ref": {
@@ -4547,7 +4840,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_run_non_executable_unless_allowlisted",
       "impl_ref": {
@@ -4586,7 +4882,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_run_only_allowlisted_scripts",
       "impl_ref": {
@@ -4625,7 +4924,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_run_temp_script_approvals",
       "impl_ref": {
@@ -4664,7 +4966,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_datasets_scripts_py_cache_budget_check_py",
       "impl_ref": {
@@ -4703,7 +5008,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_datasets_scripts_py_cache_threshold_check_py",
       "impl_ref": {
@@ -4742,7 +5050,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_lint_check_layer_contract_drift_py",
       "impl_ref": {
@@ -4781,7 +5092,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_lint_check_surfaces_py",
       "impl_ref": {
@@ -4820,7 +5134,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_lint_lane_budget_check_py",
       "impl_ref": {
@@ -4859,7 +5176,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_lint_layout_check_layer_contract_drift_py",
       "impl_ref": {
@@ -4898,7 +5218,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_lint_ops_smoke_budget_check_py",
       "impl_ref": {
@@ -4937,7 +5260,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_lint_policy_lane_budget_check_py",
       "impl_ref": {
@@ -4976,7 +5302,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_lint_policy_ops_smoke_budget_check_py",
       "impl_ref": {
@@ -5015,7 +5344,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_load_scripts_check_abuse_scenarios_required_py",
       "impl_ref": {
@@ -5054,7 +5386,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_load_scripts_check_baseline_update_policy_sh",
       "impl_ref": {
@@ -5093,7 +5428,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_load_scripts_check_perf_baselines_py",
       "impl_ref": {
@@ -5132,7 +5470,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_load_scripts_check_pinned_queries_lock_py",
       "impl_ref": {
@@ -5171,7 +5512,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_load_scripts_check_prereqs_sh",
       "impl_ref": {
@@ -5205,21 +5549,24 @@
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/load/scripts/check_regression.py`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_regression.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_load_scripts_check_regression_py",
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_load_scripts_check_regression_py",
       "impl_ref": {
-        "callable": "check_ops_load_scripts_check_regression_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_load_checks_check_regression_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/load/scripts/check_regression.py` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_regression.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_load_scripts_check_regression_py",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -5239,7 +5586,7 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/load/scripts/check_regression.py`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_regression.py`"
     },
     {
       "area": "script",
@@ -5249,7 +5596,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_load_scripts_check_runbook_suite_names_py",
       "impl_ref": {
@@ -5283,21 +5633,24 @@
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/load/scripts/regression_check.py`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/load/baseline/regression_check.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_load_scripts_regression_check_py",
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_load_scripts_regression_check_py",
       "impl_ref": {
-        "callable": "check_ops_load_scripts_regression_check_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_load_baseline_regression_check_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/load/scripts/regression_check.py` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/load/baseline/regression_check.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_load_scripts_regression_check_py",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -5317,7 +5670,7 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/load/scripts/regression_check.py`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/load/baseline/regression_check.py`"
     },
     {
       "area": "script",
@@ -5327,7 +5680,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_check_metric_cardinality_py",
       "impl_ref": {
@@ -5366,7 +5722,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_check_pack_upgrade_sh",
       "impl_ref": {
@@ -5405,7 +5764,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_check_pack_versions_sh",
       "impl_ref": {
@@ -5444,7 +5806,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_alerts_contract_py",
       "impl_ref": {
@@ -5483,7 +5848,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_dashboard_contract_py",
       "impl_ref": {
@@ -5522,7 +5890,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_dashboard_metric_compat_py",
       "impl_ref": {
@@ -5561,7 +5932,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_endpoint_metrics_coverage_py",
       "impl_ref": {
@@ -5600,7 +5974,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_endpoint_trace_coverage_py",
       "impl_ref": {
@@ -5639,7 +6016,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_metrics_contract_py",
       "impl_ref": {
@@ -5678,7 +6058,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_metrics_coverage_py",
       "impl_ref": {
@@ -5717,7 +6100,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_metrics_drift_py",
       "impl_ref": {
@@ -5756,7 +6142,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_metrics_golden_py",
       "impl_ref": {
@@ -5795,7 +6184,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_obs_budgets_py",
       "impl_ref": {
@@ -5834,7 +6226,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_observability_lag_py",
       "impl_ref": {
@@ -5873,7 +6268,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_overload_behavior_contract_py",
       "impl_ref": {
@@ -5912,7 +6310,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_profile_goldens_py",
       "impl_ref": {
@@ -5951,7 +6352,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_runtime_metrics_py",
       "impl_ref": {
@@ -5990,7 +6394,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_trace_coverage_py",
       "impl_ref": {
@@ -6029,7 +6436,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_trace_golden_py",
       "impl_ref": {
@@ -6068,7 +6478,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_tracing_contract_py",
       "impl_ref": {
@@ -6107,7 +6520,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_stack_scripts_idempotency_check_sh",
       "impl_ref": {
@@ -6146,7 +6562,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_stack_tests_check_live_layer_snapshot_py",
       "impl_ref": {
@@ -6185,7 +6604,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_artifacts_allowlist_sh",
       "impl_ref": {
@@ -6224,7 +6646,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_artifacts_policy_sh",
       "impl_ref": {
@@ -6263,7 +6688,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_kind_cluster_contract_drift_sh",
       "impl_ref": {
@@ -6302,7 +6730,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_no_root_dumping_sh",
       "impl_ref": {
@@ -6341,7 +6772,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_ops_canonical_shims_sh",
       "impl_ref": {
@@ -6380,7 +6814,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_ops_lib_canonical_sh",
       "impl_ref": {
@@ -6419,7 +6856,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_ops_script_targets_sh",
       "impl_ref": {
@@ -6458,7 +6898,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_ops_stack_order_sh",
       "impl_ref": {
@@ -6497,7 +6940,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_ops_workspace_sh",
       "impl_ref": {
@@ -6536,7 +6982,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_repo_hygiene_sh",
       "impl_ref": {
@@ -6575,7 +7024,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_stack_manifest_consolidation_sh",
       "impl_ref": {
@@ -6614,7 +7066,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_scripts_are_data_only",
       "impl_ref": {
@@ -6653,7 +7108,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_scripts_count_nonincreasing",
       "impl_ref": {
@@ -6692,7 +7150,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_shell_policy",
       "impl_ref": {
@@ -6731,7 +7192,10 @@
       "domain": "ops",
       "gate": "ops",
       "groups": [
-        "ops"
+        "fast",
+        "kube",
+        "ops",
+        "required"
       ],
       "id": "checks_ops_stack_versions_report_valid",
       "impl_ref": {
@@ -6770,7 +7234,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_adjective_allowlist_budget",
       "impl_ref": {
@@ -6792,6 +7259,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -6808,7 +7276,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_adjectives_repo_clean",
       "impl_ref": {
@@ -6830,6 +7301,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -6846,7 +7318,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_budget_approval_time_bounded",
       "impl_ref": {
@@ -6868,6 +7343,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -6884,7 +7360,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_budget_relaxation_requires_approval",
       "impl_ref": {
@@ -6906,6 +7385,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -6922,7 +7402,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_all_entries_have_owner_issue_expiry",
       "impl_ref": {
@@ -6944,6 +7427,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -6960,7 +7444,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_budget",
       "impl_ref": {
@@ -6982,6 +7469,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -6998,7 +7486,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_budget_trend",
       "impl_ref": {
@@ -7020,6 +7511,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7036,7 +7528,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_count_nonincreasing",
       "impl_ref": {
@@ -7058,6 +7553,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7074,7 +7570,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_count_nonincreasing_hard",
       "impl_ref": {
@@ -7096,6 +7595,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7112,7 +7612,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_entry_matches_nothing",
       "impl_ref": {
@@ -7134,6 +7637,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7150,7 +7654,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_entry_matches_too_broad",
       "impl_ref": {
@@ -7172,6 +7679,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7188,7 +7696,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_entry_paths_exist",
       "impl_ref": {
@@ -7210,6 +7721,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7226,7 +7738,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_expiry_max_horizon",
       "impl_ref": {
@@ -7248,6 +7763,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7264,7 +7780,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_expiry_not_past",
       "impl_ref": {
@@ -7286,6 +7805,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7302,7 +7822,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_files_scoped",
       "impl_ref": {
@@ -7324,6 +7847,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7340,7 +7864,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_hard_gate",
       "impl_ref": {
@@ -7362,6 +7889,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7378,7 +7906,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_has_expiry",
       "impl_ref": {
@@ -7400,6 +7931,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7416,7 +7948,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_has_owner",
       "impl_ref": {
@@ -7438,6 +7973,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7454,7 +7990,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_has_reason",
       "impl_ref": {
@@ -7476,6 +8015,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7492,7 +8032,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_has_test_coverage",
       "impl_ref": {
@@ -7514,6 +8057,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7530,7 +8074,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_has_ticket_or_doc_ref",
       "impl_ref": {
@@ -7552,6 +8099,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7568,7 +8116,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_ids_unique",
       "impl_ref": {
@@ -7590,6 +8141,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7606,7 +8158,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_inventory_deterministic",
       "impl_ref": {
@@ -7628,6 +8183,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7644,7 +8200,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_inventory_present",
       "impl_ref": {
@@ -7666,6 +8225,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7682,7 +8242,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_inventory_schema_valid",
       "impl_ref": {
@@ -7704,6 +8267,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7720,7 +8284,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_issue_id_format",
       "impl_ref": {
@@ -7742,6 +8309,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7758,7 +8326,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_mainline_strict_mode",
       "impl_ref": {
@@ -7780,6 +8351,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7796,7 +8368,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_new_entries_forbidden",
       "impl_ref": {
@@ -7818,6 +8393,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7834,7 +8410,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_no_blank_justifications",
       "impl_ref": {
@@ -7856,6 +8435,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7872,7 +8452,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_no_new_files",
       "impl_ref": {
@@ -7894,6 +8477,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7910,7 +8494,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_owner_in_owners_registry",
       "impl_ref": {
@@ -7932,6 +8519,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7948,7 +8536,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_policy_name_known",
       "impl_ref": {
@@ -7970,6 +8561,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -7986,7 +8578,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_readme_complete",
       "impl_ref": {
@@ -8008,6 +8603,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -8024,7 +8620,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_readme_sorted",
       "impl_ref": {
@@ -8046,6 +8645,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -8062,7 +8662,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_removal_milestones_defined",
       "impl_ref": {
@@ -8084,6 +8687,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -8100,7 +8704,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_removal_plan_required",
       "impl_ref": {
@@ -8122,6 +8729,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -8138,7 +8746,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_schema_valid",
       "impl_ref": {
@@ -8160,6 +8771,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -8176,7 +8788,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_scope_valid",
       "impl_ref": {
@@ -8198,6 +8813,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -8214,7 +8830,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_bypass_usage_heatmap",
       "impl_ref": {
@@ -8236,6 +8855,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -8252,7 +8872,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_dependency_exceptions_remove_by_issue",
       "impl_ref": {
@@ -8274,6 +8897,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -8290,7 +8914,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_no_inline_bypass_entries",
       "impl_ref": {
@@ -8312,6 +8939,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -8328,7 +8956,11 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "network",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_shell_network_fetch_allowlist_inline_meta",
       "impl_ref": {
@@ -8351,6 +8983,7 @@
         "fast",
         "network",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -8367,7 +9000,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_shell_probes_allowlist_inline_meta",
       "impl_ref": {
@@ -8389,6 +9025,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -8405,7 +9042,10 @@
       "domain": "policies",
       "gate": "policies",
       "groups": [
-        "policies"
+        "fast",
+        "policies",
+        "repo",
+        "required"
       ],
       "id": "checks_policies_tests_bypass_dependency_marked",
       "impl_ref": {
@@ -8427,6 +9067,7 @@
       "markers": [
         "fast",
         "policies",
+        "repo",
         "required"
       ],
       "owners": [
@@ -8443,7 +9084,9 @@
       "domain": "python",
       "gate": "python",
       "groups": [
-        "python"
+        "fast",
+        "python",
+        "required"
       ],
       "id": "checks_python_lock_lockfile",
       "impl_ref": {
@@ -8481,7 +9124,9 @@
       "domain": "python",
       "gate": "python",
       "groups": [
-        "python"
+        "fast",
+        "python",
+        "required"
       ],
       "id": "checks_python_migration_exceptions_expiry",
       "impl_ref": {
@@ -8519,7 +9164,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_budget_drift_approval",
       "impl_ref": {
@@ -8557,7 +9204,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_canonical_concept_homes",
       "impl_ref": {
@@ -8595,7 +9244,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_check_impl_no_cli_imports",
       "impl_ref": {
@@ -8633,7 +9284,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_check_test_coverage",
       "impl_ref": {
@@ -8671,7 +9324,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_checks_canonical_location",
       "impl_ref": {
@@ -8709,7 +9364,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_checks_domain_split",
       "impl_ref": {
@@ -8747,7 +9404,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_checks_import_lint",
       "impl_ref": {
@@ -8785,7 +9444,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_checks_no_cli_imports",
       "impl_ref": {
@@ -8823,7 +9484,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_checks_root_contract",
       "impl_ref": {
@@ -8861,7 +9524,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_checks_tree_policy",
       "impl_ref": {
@@ -8899,7 +9564,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_ci_artifact_upload_policy",
       "impl_ref": {
@@ -8937,7 +9604,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_ci_workflow_policy",
       "impl_ref": {
@@ -8975,7 +9644,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_cli_argparse_policy",
       "impl_ref": {
@@ -9013,7 +9684,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_cli_canonical_paths",
       "impl_ref": {
@@ -9051,7 +9724,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_cli_import_scope",
       "impl_ref": {
@@ -9089,7 +9764,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_cold_import_budget",
       "impl_ref": {
@@ -9127,7 +9804,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_command_alias_budget",
       "impl_ref": {
@@ -9165,7 +9844,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_command_group_owners",
       "impl_ref": {
@@ -9203,7 +9884,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_command_metadata_contract",
       "impl_ref": {
@@ -9241,7 +9924,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_command_module_cli_intent",
       "impl_ref": {
@@ -9279,7 +9964,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_command_ownership_docs",
       "impl_ref": {
@@ -9317,7 +10004,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_command_scripts_registry",
       "impl_ref": {
@@ -9355,7 +10044,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_command_test_coverage",
       "impl_ref": {
@@ -9393,7 +10084,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_commands_help_docs_drift",
       "impl_ref": {
@@ -9431,7 +10124,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_commands_import_lint",
       "impl_ref": {
@@ -9469,7 +10164,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_commands_surface_stability",
       "impl_ref": {
@@ -9507,7 +10204,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_compileall_gate",
       "impl_ref": {
@@ -9545,7 +10244,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_console_script_entry",
       "impl_ref": {
@@ -9583,7 +10284,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_contract_import_boundaries",
       "impl_ref": {
@@ -9621,7 +10324,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_contracts_namespace_purpose",
       "impl_ref": {
@@ -9659,7 +10364,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_core_no_bash_subprocess",
       "impl_ref": {
@@ -9697,7 +10404,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_core_no_command_imports",
       "impl_ref": {
@@ -9735,7 +10444,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dead_module_reachability",
       "impl_ref": {
@@ -9773,7 +10484,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dead_modules",
       "impl_ref": {
@@ -9811,7 +10524,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dependency_declarations",
       "impl_ref": {
@@ -9849,7 +10564,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dependency_gate_targets",
       "impl_ref": {
@@ -9887,7 +10604,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dependency_owner_justification",
       "impl_ref": {
@@ -9925,7 +10644,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_deps_command_surface",
       "impl_ref": {
@@ -9963,7 +10684,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_deps_workflow_doc",
       "impl_ref": {
@@ -10001,7 +10724,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dir_budget_entries",
       "impl_ref": {
@@ -10039,7 +10764,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dir_budget_exceptions_documented",
       "impl_ref": {
@@ -10077,7 +10804,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dir_budget_exceptions_sorted",
       "impl_ref": {
@@ -10115,7 +10844,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dir_budget_loc",
       "impl_ref": {
@@ -10153,7 +10884,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dir_budget_modules",
       "impl_ref": {
@@ -10191,7 +10924,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dir_budget_py_files",
       "impl_ref": {
@@ -10229,7 +10964,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dir_budget_py_scope",
       "impl_ref": {
@@ -10267,7 +11004,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dir_budget_shell_files",
       "impl_ref": {
@@ -10305,7 +11044,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_dir_count_trend_gate",
       "impl_ref": {
@@ -10343,7 +11084,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_docs_no_ops_generated_refs",
       "impl_ref": {
@@ -10381,7 +11124,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_duplicate_contract_assertions",
       "impl_ref": {
@@ -10419,7 +11164,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_duplicate_script_names",
       "impl_ref": {
@@ -10457,7 +11204,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_effect_boundaries",
       "impl_ref": {
@@ -10495,7 +11244,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_effect_boundary_exceptions_policy",
       "impl_ref": {
@@ -10533,7 +11284,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_env_docs_present",
       "impl_ref": {
@@ -10571,7 +11324,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_file_complexity_budget",
       "impl_ref": {
@@ -10609,7 +11364,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_file_import_budget",
       "impl_ref": {
@@ -10647,7 +11404,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_file_public_symbol_budget",
       "impl_ref": {
@@ -10685,7 +11444,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_folder_intent_contract",
       "impl_ref": {
@@ -10723,7 +11484,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_forbidden_adjectives",
       "impl_ref": {
@@ -10761,7 +11524,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_forbidden_root_files",
       "impl_ref": {
@@ -10799,7 +11564,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_forbidden_root_names",
       "impl_ref": {
@@ -10837,7 +11604,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_forbidden_top_dirs",
       "impl_ref": {
@@ -10875,7 +11644,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_import_smoke",
       "impl_ref": {
@@ -10913,7 +11684,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_internal_commands_not_public",
       "impl_ref": {
@@ -10951,7 +11724,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_internal_import_boundaries",
       "impl_ref": {
@@ -10989,7 +11764,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_internal_utils_stdlib_only",
       "impl_ref": {
@@ -11027,7 +11804,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_json_golden_conflicts",
       "impl_ref": {
@@ -11065,7 +11844,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_json_goldens_validate_schema",
       "impl_ref": {
@@ -11103,7 +11884,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_layout_domain_alias_cleanup",
       "impl_ref": {
@@ -11141,7 +11924,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_layout_domain_readmes",
       "impl_ref": {
@@ -11179,7 +11964,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_layout_no_legacy_imports",
       "impl_ref": {
@@ -11217,7 +12004,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_layout_no_shadow",
       "impl_ref": {
@@ -11255,7 +12044,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_legacy_package_absent",
       "impl_ref": {
@@ -11293,7 +12084,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_legacy_zero_importers",
       "impl_ref": {
@@ -11331,7 +12124,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_managed_artifact_write_roots",
       "impl_ref": {
@@ -11369,7 +12164,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_migration_progress_regression",
       "impl_ref": {
@@ -11407,7 +12204,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_modern_no_legacy_imports",
       "impl_ref": {
@@ -11445,7 +12244,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_modern_no_legacy_obs_imports",
       "impl_ref": {
@@ -11483,7 +12284,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_module_budget_domains",
       "impl_ref": {
@@ -11521,7 +12324,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_module_size",
       "impl_ref": {
@@ -11559,7 +12364,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_modules_reachability",
       "impl_ref": {
@@ -11597,7 +12404,10 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "network",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_network_default_deny",
       "impl_ref": {
@@ -11636,7 +12446,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_adhoc_python",
       "impl_ref": {
@@ -11674,7 +12486,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_core_integration_dir",
       "impl_ref": {
@@ -11712,7 +12526,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_deprecated_commands",
       "impl_ref": {
@@ -11750,7 +12566,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_deprecated_namespace_dirs",
       "impl_ref": {
@@ -11788,7 +12606,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_deprecated_namespaces",
       "impl_ref": {
@@ -11826,7 +12646,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_direct_bash_invocations",
       "impl_ref": {
@@ -11864,7 +12686,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_direct_python_invocations",
       "impl_ref": {
@@ -11902,7 +12726,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_direct_script_runs",
       "impl_ref": {
@@ -11940,7 +12766,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_duplicate_command_impl_patterns",
       "impl_ref": {
@@ -11978,7 +12806,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_duplicate_command_names",
       "impl_ref": {
@@ -12016,7 +12846,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_empty_dirs_or_pointless_nests",
       "impl_ref": {
@@ -12054,7 +12886,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_empty_packages",
       "impl_ref": {
@@ -12092,7 +12926,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_exec_python_outside_packages",
       "impl_ref": {
@@ -12130,7 +12966,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_forbidden_paths",
       "impl_ref": {
@@ -12168,7 +13006,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_legacy_command_names",
       "impl_ref": {
@@ -12206,7 +13046,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_legacy_module_paths",
       "impl_ref": {
@@ -12244,7 +13086,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_nested_same_name_packages",
       "impl_ref": {
@@ -12282,7 +13126,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_ops_generated_placeholder",
       "impl_ref": {
@@ -12320,7 +13166,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_path_cwd_usage",
       "impl_ref": {
@@ -12358,7 +13206,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_placeholder_module_names",
       "impl_ref": {
@@ -12396,7 +13246,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_scripts_dir",
       "impl_ref": {
@@ -12434,7 +13286,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_tracked_ops_generated",
       "impl_ref": {
@@ -12472,7 +13326,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_tracked_timestamp_paths",
       "impl_ref": {
@@ -12510,7 +13366,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_undocumented_help_commands",
       "impl_ref": {
@@ -12548,7 +13406,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_wildcard_exports",
       "impl_ref": {
@@ -12586,7 +13446,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_no_xtask_refs",
       "impl_ref": {
@@ -12624,7 +13486,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_ops_examples_immutable",
       "impl_ref": {
@@ -12662,7 +13526,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_optional_dependency_groups",
       "impl_ref": {
@@ -12700,7 +13566,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_optional_dependency_usage_gates",
       "impl_ref": {
@@ -12738,7 +13606,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_output_format_stability",
       "impl_ref": {
@@ -12776,7 +13646,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_package_has_module_or_readme",
       "impl_ref": {
@@ -12814,7 +13686,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_package_max_depth",
       "impl_ref": {
@@ -12852,7 +13726,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_packages_atlasctl_root_shape",
       "impl_ref": {
@@ -12890,7 +13766,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_packaging_metadata_completeness",
       "impl_ref": {
@@ -12928,7 +13806,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_public_api_doc_exists",
       "impl_ref": {
@@ -12966,7 +13846,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_public_api_exports",
       "impl_ref": {
@@ -13004,7 +13886,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_public_commands_docs_index",
       "impl_ref": {
@@ -13042,7 +13926,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_pyproject_minimalism",
       "impl_ref": {
@@ -13080,7 +13966,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_pyproject_no_duplicate_tool_config",
       "impl_ref": {
@@ -13118,7 +14006,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_pyproject_required_blocks",
       "impl_ref": {
@@ -13156,7 +14046,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_python_module_help",
       "impl_ref": {
@@ -13194,7 +14086,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_python_requires_version_and_ci",
       "impl_ref": {
@@ -13232,7 +14126,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_registry_definition_boundary",
       "impl_ref": {
@@ -13270,7 +14166,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_registry_single_source",
       "impl_ref": {
@@ -13308,7 +14206,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_required_target_shape",
       "impl_ref": {
@@ -13346,7 +14246,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_requirements_artifact_policy",
       "impl_ref": {
@@ -13384,7 +14286,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_requirements_sync",
       "impl_ref": {
@@ -13422,7 +14326,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "repo",
+        "required",
+        "slow"
       ],
       "id": "checks_repo_root_determinism",
       "impl_ref": {
@@ -13460,7 +14366,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_root_shape",
       "impl_ref": {
@@ -13498,7 +14406,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_runcontext_single_builder",
       "impl_ref": {
@@ -13536,7 +14446,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_script_help_coverage",
       "impl_ref": {
@@ -13574,7 +14486,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_script_ownership_coverage",
       "impl_ref": {
@@ -13612,7 +14526,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_shell_docs_present",
       "impl_ref": {
@@ -13650,7 +14566,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_shell_invocation_boundary",
       "impl_ref": {
@@ -13688,7 +14606,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_shell_location_policy",
       "impl_ref": {
@@ -13726,7 +14646,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_shell_no_direct_python",
       "impl_ref": {
@@ -13764,7 +14686,10 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "network",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_shell_no_network_fetch",
       "impl_ref": {
@@ -13803,7 +14728,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_shell_readonly_checks",
       "impl_ref": {
@@ -13841,7 +14768,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_shell_script_budget",
       "impl_ref": {
@@ -13879,7 +14808,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_shell_strict_mode",
       "impl_ref": {
@@ -13917,7 +14848,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_single_registry_module",
       "impl_ref": {
@@ -13955,7 +14888,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_single_runner_module",
       "impl_ref": {
@@ -13993,7 +14928,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_stable_command_no_breaking_changes",
       "impl_ref": {
@@ -14031,7 +14968,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_subprocess_boundary",
       "impl_ref": {
@@ -14069,7 +15008,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_suite_inventory_policy",
       "impl_ref": {
@@ -14107,7 +15048,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_suite_marker_rules",
       "impl_ref": {
@@ -14145,7 +15088,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_test_determinism_patterns",
       "impl_ref": {
@@ -14183,7 +15128,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_test_no_duplicated_coverage",
       "impl_ref": {
@@ -14221,7 +15168,10 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "network",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_test_no_unmarked_network",
       "impl_ref": {
@@ -14260,7 +15210,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_test_ownership_tags",
       "impl_ref": {
@@ -14298,7 +15250,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_test_skip_justification",
       "impl_ref": {
@@ -14336,7 +15290,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_test_taxonomy_layout",
       "impl_ref": {
@@ -14374,7 +15330,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_test_write_sandbox",
       "impl_ref": {
@@ -14412,7 +15370,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_tests_no_duplicate_expectations",
       "impl_ref": {
@@ -14450,7 +15410,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_top_level_package_group_mapping",
       "impl_ref": {
@@ -14488,7 +15450,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_top_level_structure",
       "impl_ref": {
@@ -14526,7 +15490,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_type_coverage",
       "impl_ref": {
@@ -14564,7 +15530,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_version_matches_pyproject",
       "impl_ref": {
@@ -14602,7 +15570,9 @@
       "domain": "repo",
       "gate": "repo",
       "groups": [
-        "repo"
+        "fast",
+        "repo",
+        "required"
       ],
       "id": "checks_repo_workflows_targets_exist",
       "impl_ref": {
