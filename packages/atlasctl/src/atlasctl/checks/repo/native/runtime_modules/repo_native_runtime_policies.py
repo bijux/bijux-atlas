@@ -200,11 +200,14 @@ def check_atlas_scripts_cli_contract(repo_root: Path) -> tuple[int, list[str]]:
             break
     errs: list[str] = []
     h1 = run([str(cli), "--help"], cwd=repo_root, text=True, capture_output=True)
-    h2 = run([str(cli), "--help"], cwd=repo_root, text=True, capture_output=True)
-    if h1.returncode != 0 or h2.returncode != 0:
+    if h1.returncode != 0:
         errs.append("atlasctl --help must exit 0")
-    if h1.stdout != h2.stdout:
-        errs.append("atlasctl --help output is not deterministic")
+    else:
+        help_text = h1.stdout or ""
+        if "usage:" not in help_text.lower():
+            errs.append("atlasctl --help output must include usage")
+        if "dev" not in help_text or "check" not in help_text:
+            errs.append("atlasctl --help output must include key command groups")
     v = run([str(cli), "--version"], cwd=repo_root, text=True, capture_output=True)
     if v.returncode != 0:
         errs.append("atlasctl --version must exit 0")

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import ast
 import os
+import py_compile
 import subprocess
 import sys
 from pathlib import Path
@@ -320,16 +321,18 @@ def check_registry_definition_boundary(repo_root: Path) -> tuple[int, list[str]]
 
 
 def check_compileall_gate(repo_root: Path) -> tuple[int, list[str]]:
-    proc = subprocess.run(
-        [sys.executable, "-m", "compileall", "-q", str(repo_root / "packages/atlasctl/src")],
-        cwd=repo_root,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
-    if proc.returncode == 0:
-        return 0, []
-    return 1, [proc.stderr.strip() or proc.stdout.strip() or "compileall failed"]
+    src_root = repo_root / "packages/atlasctl/src/atlasctl"
+    if not src_root.exists():
+        return 1, ["missing atlasctl source root for compile check"]
+    failures: list[str] = []
+    for path in sorted(src_root.rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        try:
+            py_compile.compile(str(path), doraise=True)
+        except py_compile.PyCompileError as exc:
+            message = str(exc).strip() or "compile error"
+            failures.append(f"{rel}: {message}")
+    return (0 if not failures else 1), failures
 
 
 def check_import_smoke(repo_root: Path) -> tuple[int, list[str]]:
