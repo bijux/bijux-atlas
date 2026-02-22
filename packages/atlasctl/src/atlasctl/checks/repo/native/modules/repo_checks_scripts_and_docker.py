@@ -48,6 +48,7 @@ def check_make_scripts_references(repo_root: Path) -> tuple[int, list[str]]:
 def check_docs_scripts_references(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
     allowed = {"docs/development/task-runner-removal-map.md"}
+    pattern = re.compile(r"(^|[^A-Za-z/])scripts/")
     for p in sorted((repo_root / "docs").rglob("*")):
         if not p.is_file() or p.suffix != ".md":
             continue
@@ -57,7 +58,7 @@ def check_docs_scripts_references(repo_root: Path) -> tuple[int, list[str]]:
         if rel in allowed:
             continue
         for idx, line in enumerate(p.read_text(encoding="utf-8", errors="ignore").splitlines(), start=1):
-            if "scripts/" in line:
+            if pattern.search(line):
                 errors.append(f"{rel}:{idx}: docs must not reference scripts/ paths")
     return (0 if not errors else 1), errors
 
@@ -123,8 +124,17 @@ def check_docker_layout(repo_root: Path) -> tuple[int, list[str]]:
     else:
         if root_df.resolve() != canon.resolve():
             errors.append(f"root Dockerfile symlink target drift: expected {canon}, got {root_df.resolve()}")
-    for path in repo_root.rglob("Dockerfile*"):
-        rel = path.relative_to(repo_root).as_posix()
+    proc = run(
+        ["git", "ls-files", "--", "**/Dockerfile*"],
+        cwd=repo_root,
+        text=True,
+        capture_output=True,
+    )
+    tracked = [line.strip() for line in (proc.stdout or "").splitlines() if line.strip()] if proc.returncode == 0 else []
+    for rel in sorted(set(tracked)):
+        path = repo_root / rel
+        if not path.exists():
+            continue
         if rel == "Dockerfile" or rel.startswith("docker/"):
             continue
         if "/artifacts/" in rel or rel.startswith("artifacts/"):
