@@ -1144,26 +1144,37 @@ ops_write_lane_report "stack" "$RUN_ID" "$status" "$duration" "$log_file"
 
 
 def _ops_deploy_native(ctx: RunContext, report_format: str) -> int:
-    script = """
-set -euo pipefail
-. ./ops/_lib/common.sh
-ops_init_run_id
-export RUN_ID="$OPS_RUN_ID"
-export ARTIFACT_DIR="$OPS_RUN_DIR"
-ops_env_load
-ops_entrypoint_start "ops-deploy"
-ops_version_guard kind kubectl helm python3
-profile="${PROFILE:-kind}"
-if ! ops_context_guard "$profile"; then
-  if [ "$profile" = "kind" ]; then
-    echo "ops-deploy: kind context missing; bootstrapping stack" >&2
-    ./bin/atlasctl ops stack --report text up --profile kind
-  fi
-fi
-ops_context_guard "$profile"
-exec ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/deploy_atlas.py
-"""
-    return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
+    repo = ctx.repo_root
+    outputs: list[str] = []
+
+    missing = [tool for tool in ("kind", "kubectl", "helm", "python3") if shutil.which(tool) is None]
+    if missing:
+        return _emit_ops_status(report_format, 1, "\n".join(f"missing required tool: {tool}" for tool in missing))
+
+    profile = os.environ.get("PROFILE") or "kind"
+    guard_cmd = [*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/context_guard.py"]
+    guard = run_command(guard_cmd, repo, ctx=ctx)
+    if guard.code != 0 and profile == "kind":
+        outputs.append("ops-deploy: kind context missing; bootstrapping stack")
+        stack_up = run_command([*SELF_CLI, "ops", "stack", "--report", "text", "up", "--profile", "kind"], repo, ctx=ctx)
+        if stack_up.combined_output.strip():
+            outputs.append(stack_up.combined_output.rstrip())
+        if stack_up.code != 0:
+            return _emit_ops_status(report_format, stack_up.code, "\n".join(outputs).strip())
+        guard = run_command(guard_cmd, repo, ctx=ctx)
+    if guard.combined_output.strip():
+        outputs.append(guard.combined_output.rstrip())
+    if guard.code != 0:
+        return _emit_ops_status(report_format, guard.code, "\n".join(outputs).strip())
+
+    deploy = run_command(
+        [*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/deploy_atlas.py"],
+        repo,
+        ctx=ctx,
+    )
+    if deploy.combined_output.strip():
+        outputs.append(deploy.combined_output.rstrip())
+    return _emit_ops_status(report_format, deploy.code, "\n".join(outputs).strip())
 
 
 def _ops_load_run_native(ctx: RunContext, report_format: str, suite: str, out_dir: str = "artifacts/perf/results") -> int:
