@@ -361,7 +361,7 @@ def check_ops_shell_policy(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
     run_dir = repo_root / "ops" / "run"
     if not run_dir.exists():
-        return 0, []
+        return 0, ["ops run shell policy check passed (ops/run retired)"]
     for path in sorted(run_dir.glob("*.sh")):
         rel = path.relative_to(repo_root).as_posix()
         text = path.read_text(encoding="utf-8", errors="ignore")
