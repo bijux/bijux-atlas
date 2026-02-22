@@ -35,8 +35,8 @@ Classification legend:
 | `ops/run/evidence-open.sh` | glue | deleted (unused wrapper) | `make evidence/open` / `atlasctl reporting artifact-index` |
 | `ops/run/k8s-apply-config.sh` | logic | planned | `atlasctl ops k8s apply-config` |
 | `ops/run/k8s-restart.sh` | glue | planned | `atlasctl ops restart` / `atlasctl ops stack restart` |
-| `ops/run/k8s-suite.sh` | glue | planned | `atlasctl k8s suite` / `atlasctl ops k8s suite` |
-| `ops/run/k8s-tests.sh` | glue | planned | `atlasctl k8s tests` |
+| `ops/run/k8s-suite.sh` | glue | deleted (dead wrapper) | `atlasctl suite run ops-deploy` / `atlasctl ops k8s check` |
+| `ops/run/k8s-tests.sh` | glue | deleted (dead wrapper) | `atlasctl ops k8s check` |
 | `ops/run/k8s-validate-configmap-keys.sh` | logic | planned | `atlasctl ops k8s validate-configmap-keys` |
 | `ops/run/load-smoke.sh` | glue | deleted (folded into orchestrator) | `atlasctl ops load smoke` / `atlasctl load smoke` |
 | `ops/run/load-suite.sh` | glue | planned | `atlasctl ops load run` |
