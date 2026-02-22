@@ -3,20 +3,16 @@
 - File count: 15
 - Owner: `build-and-release`
 
-## Files
+## Canonical Wrapper Files
 
-- `_macros.mk`
-- `ci.mk`
+- `root.mk`
 - `dev.mk`
+- `ci.mk`
 - `docs.mk`
-- `env.mk`
-- `help.mk`
-- `layout.mk`
 - `ops.mk`
-- `path_contract.mk`
 - `policies.mk`
 - `product.mk`
-- `python.mk`
+- `layout.mk`
 - `registry.mk`
-- `root.mk`
-- `scripts.mk`
+- `env.mk`
+- `python.mk` (env defaults only; no atlasctl invoker aliases)
