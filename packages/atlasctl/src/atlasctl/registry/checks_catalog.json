@@ -2223,6 +2223,44 @@
     {
       "area": "no",
       "default_enabled": true,
+      "description": "forbid legacy make alias tokens (ATLAS_SCRIPTS/SCRIPTS/PY_RUN)",
+      "domain": "make",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_no_legacy_script_aliases",
+      "impl_ref": {
+        "callable": "check_make_no_legacy_script_aliases",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Use ./bin/atlasctl or $(ATLASCTL) wrappers only.",
+        "legacy_id": "make.no_legacy_script_aliases",
+        "module": "atlasctl.checks.domains.policies.make.enforcement",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "title": "forbid legacy make alias tokens (ATLAS_SCRIPTS/SCRIPTS/PY_RUN)"
+    },
+    {
+      "area": "no",
+      "default_enabled": true,
       "description": "forbid `python -m atlasctl.cli` in make recipes",
       "domain": "make",
       "gate": "make",
