@@ -27,7 +27,6 @@
 - `ops/run/k8s-restart.sh`
 - `ops/run/k8s-apply-config.sh`
 - `ops/run/e2e.sh`
-- `ops/run/e2e-smoke.sh`
 - `ops/run/k8s-tests.sh`
 - `ops/run/k8s-suite.sh`
 - `ops/run/load-suite.sh`
