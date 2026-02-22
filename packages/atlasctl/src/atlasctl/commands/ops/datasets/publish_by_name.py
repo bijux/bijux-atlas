@@ -30,7 +30,7 @@ def main() -> int:
             '110', 'homo_sapiens', 'GRCh38',
         )
     if dataset in {'real1', 'real110', 'real111'}:
-        subprocess.check_call(['bash', str(root / 'ops/datasets/scripts/fixtures/fetch-real-datasets.sh')], stdout=subprocess.DEVNULL)
+        subprocess.check_call(['python3', str(root / 'packages/atlasctl/src/atlasctl/commands/ops/datasets/fixtures/fetch_real_datasets.py')], stdout=subprocess.DEVNULL)
         rel = '111' if dataset in {'real1', 'real111'} else '110'
         return _publish(
             root,
