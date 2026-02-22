@@ -7,6 +7,6 @@ need curl
 install_chart
 wait_ready
 with_port_forward 18080
-"$ROOT/ops/obs/scripts/bin/run_drill.sh" prom-outage
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/drills/run_drill.py" prom-outage
 
 echo "prom outage drill passed"

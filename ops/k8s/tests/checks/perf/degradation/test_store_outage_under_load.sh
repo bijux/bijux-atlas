@@ -8,7 +8,7 @@ need curl
 install_chart
 wait_ready
 with_port_forward 18080
-"$ROOT/ops/obs/scripts/bin/run_drill.sh" store-outage-under-load
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/drills/run_drill.py" store-outage-under-load
 
 curl -fsS "$BASE_URL/healthz" >/dev/null || { echo "failure_mode: store_outage_healthz_unavailable" >&2; exit 1; }
 cached_code="$(curl -s -o /tmp/atlas-store-outage-cached.json -w '%{http_code}' \

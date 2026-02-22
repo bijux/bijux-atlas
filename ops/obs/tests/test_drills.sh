@@ -19,7 +19,7 @@ EOF
 
 for drill in "${DRILLS[@]}"; do
   echo "running drill from manifest: $drill"
-  "$ROOT/ops/obs/scripts/bin/run_drill.sh" "$drill"
+  python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/drills/run_drill.py" "$drill"
 done
 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/summarize_drill_results.py"
 test -s "$ROOT/artifacts/observability/drill-conformance-report.json"

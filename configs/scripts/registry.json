@@ -8,7 +8,7 @@
     {"path": "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/rollout/test_cluster_sanity.py", "owner": "ops", "description": "cluster sanity rollout test"},
     {"path": "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/rollout/test_kind_image_resolution.py", "owner": "ops", "description": "kind image resolution test"},
     {"path": "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/rollout/test_kind_version_drift.py", "owner": "ops", "description": "kind version drift contract test"},
-    {"path": "ops/obs/scripts/run_drill.sh", "owner": "ops", "description": "observability drill runner"},
+    {"path": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/run_drill.py", "owner": "ops", "description": "observability drill runner"},
     {"path": "packages/atlasctl/src/atlasctl/commands/ops/observability/install_pack.py", "owner": "ops", "description": "observability pack install helper"},
     {"path": "atlasctl ops deploy", "owner": "ops", "description": "deploy atlas helper"},
     {"path": "atlasctl ops e2e run", "owner": "ops", "description": "e2e suite entrypoint"},

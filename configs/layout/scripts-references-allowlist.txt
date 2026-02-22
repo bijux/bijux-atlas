@@ -187,13 +187,13 @@ ops/obs/contract/endpoint-observability-contract.json
 ops/obs/drills/drills.json
 ops/obs/scripts/alert-firing-proof.sh
 ops/obs/scripts/alerts-validation.sh
-ops/obs/scripts/cheap-endpoint-survival.sh
+packages/atlasctl/src/atlasctl/commands/ops/observability/drills/cheap_endpoint_survival.py
 packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_trace_coverage.py
 ops/obs/scripts/dashboard-fault-signature.sh
-ops/obs/scripts/log-schema-violation-injection.sh
-ops/obs/scripts/metric-cardinality-blowup-attempt.sh
+packages/atlasctl/src/atlasctl/commands/ops/observability/drills/log_schema_violation_injection.py
+packages/atlasctl/src/atlasctl/commands/ops/observability/drills/metric_cardinality_blowup_attempt.py
 packages/atlasctl/src/atlasctl/commands/ops/observability/pack_health.py
-ops/obs/scripts/run_drill.sh
+packages/atlasctl/src/atlasctl/commands/ops/observability/drills/run_drill.py
 ops/obs/scripts/runbook-proof-top5.sh
 packages/atlasctl/src/atlasctl/commands/ops/observability/smoke_pack.py
 ops/obs/scripts/store-outage-under-load.sh

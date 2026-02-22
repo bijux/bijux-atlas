@@ -16,6 +16,6 @@ python3 "$ROOT/ops/obs/scripts/areas/contracts/check_metrics_contract.py"
 python3 "$ROOT/ops/obs/scripts/areas/contracts/check_trace_golden.py"
 python3 "$ROOT/ops/obs/scripts/areas/contracts/check_dashboard_metric_compat.py"
 python3 "$ROOT/ops/obs/scripts/areas/contracts/check_alerts_contract.py"
-"$ROOT/ops/obs/scripts/log-schema-violation-injection.sh"
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/drills/log_schema_violation_injection.py"
 
 echo "observability cheap suite passed"
