@@ -1,22 +1,27 @@
 from __future__ import annotations
 
-import json
 import os
 from pathlib import Path
 import subprocess
 import sys
+
+if __package__ in (None, ""):
+    _ROOT = Path(__file__).resolve().parents[7]
+    sys.path.insert(0, str(_ROOT / "packages/atlasctl/src"))
+
+from atlasctl.commands.ops.runtime_modules.layer_contract import (  # noqa: E402
+    load_layer_contract,
+    ns_e2e as lc_ns_e2e,
+    release_default as lc_release_default,
+)
 
 def _repo_root() -> Path:
     return Path(__file__).resolve().parents[7]
 
 
 def _load_layer_defaults(root: Path) -> tuple[str, str]:
-    contract = json.loads((root / "ops/_meta/layer-contract.json").read_text(encoding="utf-8"))
-    namespaces = contract.get("namespaces", {}) if isinstance(contract, dict) else {}
-    defaults = contract.get("release_metadata", {}).get("defaults", {}) if isinstance(contract, dict) else {}
-    ns_e2e = str(namespaces.get("e2e", "atlas-e2e"))
-    release_name = str(defaults.get("release_name", "atlas-e2e"))
-    return ns_e2e, release_name
+    contract = load_layer_contract(root)
+    return lc_ns_e2e(contract), lc_release_default(contract)
 
 
 def _script(root: Path, default_ns_e2e: str, default_release: str) -> str:
