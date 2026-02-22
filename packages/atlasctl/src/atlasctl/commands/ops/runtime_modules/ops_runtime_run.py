@@ -190,7 +190,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                 return impl._emit_status(ns.report, code, output)
             steps = [
                 ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/pins/check_ops_pins.py"],
-                ["python3", "ops/_lint/pin-relaxations-audit.py"],
+                ["python3", "packages/atlasctl/src/atlasctl/commands/ops/lint/policy/pin_relaxations_audit.py"],
                 ["bash", "ops/k8s/tests/checks/obs/contracts/test_helm_repo_pinning.sh"],
                 ["bash", "-lc", "make -s ops-kind-version-drift-test"],
             ]

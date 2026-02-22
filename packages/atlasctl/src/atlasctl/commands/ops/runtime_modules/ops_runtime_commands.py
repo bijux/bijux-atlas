@@ -609,7 +609,7 @@ LANE_REPRO_COMMAND="make ops/smoke REUSE={reuse_val}" \\
 ops_write_lane_report "ops-smoke" "${{RUN_ID}}" "${{status}}" "${{duration}}" "${{log_file}}" "artifacts/evidence" >/dev/null
 ./bin/atlasctl report unified --run-id "${{RUN_ID}}" --out ops/_generated_committed/report.unified.json >/dev/null
 if [ "$status" = "pass" ]; then
-  RUN_ID="${{RUN_ID}}" python3 ./ops/_lint/ops-smoke-budget-check.py
+  RUN_ID="${{RUN_ID}}" python3 ./packages/atlasctl/src/atlasctl/commands/ops/lint/policy/ops_smoke_budget_check.py
 fi
 [ "$status" = "pass" ] || exit 1
 """

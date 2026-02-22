@@ -1,14 +1,4 @@
 # Legacy Python files allowed outside packages/atlasctl package.
-ops/_lint/budget-relaxations-audit.py
-ops/_lint/lane-budget-check.py
-ops/_lint/layer-relaxations-audit.py
-ops/_lint/ops-smoke-budget-check.py
-ops/_lint/pin-relaxations-audit.py
-ops/_lint/policy/budget-relaxations-audit.py
-ops/_lint/policy/lane-budget-check.py
-ops/_lint/policy/layer-relaxations-audit.py
-ops/_lint/policy/ops-smoke-budget-check.py
-ops/_lint/policy/pin-relaxations-audit.py
 ops/_meta/generate_layer_contract.py
 ops/datasets/scripts/py/build_manifest_lock.py
 ops/datasets/scripts/py/cache_budget_check.py

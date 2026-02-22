@@ -222,7 +222,7 @@ run_lane() {
   local duration="$((lane_end - lane_start))"
   local failure_summary=""
   local budget_status_json='null'
-  if budget_output="$(python3 ./ops/_lint/lane-budget-check.py --lane "$lane" --duration-seconds "$duration" 2>&1)"; then
+  if budget_output="$(python3 ./packages/atlasctl/src/atlasctl/commands/ops/lint/policy/lane_budget_check.py --lane "$lane" --duration-seconds "$duration" 2>&1)"; then
     budget_status_json="$budget_output"
   else
     budget_status_json="$budget_output"
