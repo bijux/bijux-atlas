@@ -153,7 +153,6 @@
   "ops_run_commands": [
     "ops/run/doctor.sh",
     "ops/run/load-suite.sh",
-    "ops/run/obs-verify.sh",
     "ops/run/prereqs.sh",
     "ops/run/stack-down.sh",
     "ops/run/stack-up.sh"

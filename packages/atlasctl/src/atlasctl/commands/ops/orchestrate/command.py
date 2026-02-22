@@ -240,7 +240,7 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.cmd == "obs":
         mapping = {
             "up": ["./bin/atlasctl", "ops", "obs", "--report", "text", "up"],
-            "verify": ["bash", "ops/run/obs-verify.sh"],
+            "verify": ["./bin/atlasctl", "ops", "obs", "--report", "text", "verify"],
             "down": ["./bin/atlasctl", "ops", "obs", "--report", "text", "validate"],
         }
         return _run_wrapped(ctx, OrchestrateSpec("obs", ns.obs_cmd, mapping[ns.obs_cmd]), ns.report)

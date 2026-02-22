@@ -27,7 +27,6 @@
 - `ops/run/k8s-apply-config.sh`
 - `ops/run/e2e.sh`
 - `ops/run/load-suite.sh`
-- `ops/run/obs-verify.sh`
 - `ops/run/ops-check.sh`
 - `ops/run/ops-smoke.sh`
 - `ops/run/prereqs.sh`
