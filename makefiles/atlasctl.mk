@@ -40,6 +40,6 @@ deps-sync: ## Install dependencies from lock into active interpreter
 	@./bin/atlasctl deps sync
 
 registry-list: ## Print atlasctl registry inventory
-	@./bin/atlasctl registry list
+	@./bin/atlasctl registry checks
 
 .PHONY: atlasctl-check atlasctl-check-repo atlasctl-check-make atlasctl-check-contracts atlasctl-check-docs atlasctl-check-ops atlasctl-check-python atlasctl-check-layout deps-check-venv deps-cold-start deps-lock deps-sync registry-list
