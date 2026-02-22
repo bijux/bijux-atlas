@@ -556,7 +556,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         if ns.ops_cmd == "datasets" and sub == "verify":
             steps = [
                 ["bash", "ops/datasets/scripts/suite.sh", "verify"],
-                ["python3", "ops/datasets/scripts/py/catalog_validate.py"],
+                ["python3", "packages/atlasctl/src/atlasctl/commands/ops/datasets/catalog_validate.py"],
             ]
             for cmd in steps:
                 code, output = impl._run_check(cmd, ctx.repo_root)
