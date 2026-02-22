@@ -27,6 +27,9 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     run_cmd.add_argument("task", nargs="?", help="registered ops task name")
     run_cmd.add_argument("--manifest", help="ops workflow manifest path (.json/.yaml)")
     run_cmd.add_argument("--fail-fast", action="store_true", help="stop on first failing manifest step")
+    run_script_cmd = ops_sub.add_parser("run-script", help="temporary migration shim to run ops/run scripts (deprecated)")
+    run_script_cmd.add_argument("script", help="ops/run relative path (e.g. product/product_docker_build.sh)")
+    run_script_cmd.add_argument("args", nargs=argparse.REMAINDER)
     list_cmd = ops_sub.add_parser("list", help="list ops inventory")
     list_cmd.add_argument("kind", choices=["tasks"], help="inventory kind")
     list_cmd.add_argument("--report", choices=["text", "json"], default="text")
@@ -70,11 +73,13 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     stack_up.add_argument("--profile", default="kind")
     stack_sub.add_parser("down", help="tear down stack components")
     stack_sub.add_parser("restart", help="restart atlas deployment")
+    stack_sub.add_parser("check", help="validate stack prerequisites and contracts")
 
     k8s = ops_sub.add_parser("k8s", help="ops kubernetes commands")
     k8s.add_argument("--report", choices=["text", "json"], default="text")
     k8s_sub = k8s.add_subparsers(dest="ops_k8s_cmd", required=True)
     k8s_sub.add_parser("contracts", help="validate k8s contracts")
+    k8s_sub.add_parser("check", help="validate k8s prerequisites and contracts")
 
     e2e = ops_sub.add_parser("e2e", help="ops end-to-end commands")
     e2e.add_argument("--report", choices=["text", "json"], default="text")
@@ -87,6 +92,7 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     obs.add_argument("--report", choices=["text", "json"], default="text")
     obs_sub = obs.add_subparsers(dest="ops_obs_cmd", required=True)
     obs_sub.add_parser("verify", help="run observability verification")
+    obs_sub.add_parser("check", help="validate observability prerequisites and contracts")
     obs_drill = obs_sub.add_parser("drill", help="run one observability drill")
     obs_drill.add_argument("--drill", required=True)
 
@@ -105,6 +111,7 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     load_sub = load.add_subparsers(dest="ops_load_cmd", required=True)
     load_run = load_sub.add_parser("run", help="run load suite")
     load_run.add_argument("--suite", default="mixed-80-20")
+    load_sub.add_parser("check", help="validate load prerequisites and contracts")
 
     datasets = ops_sub.add_parser("datasets", help="ops dataset commands")
     datasets.add_argument("--report", choices=["text", "json"], default="text")
