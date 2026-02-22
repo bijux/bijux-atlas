@@ -154,8 +154,8 @@ packages/atlasctl/src/atlasctl/commands/ops/datasets/dataset_qc.py
 packages/atlasctl/src/atlasctl/commands/ops/datasets/fetch_and_verify.py
 packages/atlasctl/src/atlasctl/commands/ops/datasets/suite.py
 ops/e2e/realdata/canonical_queries.json
-ops/e2e/realdata/run_single_release.sh
-ops/e2e/realdata/run_two_release_diff.sh
+packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/run_single_release.py
+packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/run_two_release_diff.py
 ops/e2e/smoke/queries.lock
 ops/e2e/suites/suites.json
 ops/fixtures/medium/v1/transcript-queries.v1.json
