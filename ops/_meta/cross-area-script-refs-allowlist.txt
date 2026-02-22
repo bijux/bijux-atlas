@@ -54,7 +54,7 @@ makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/stack/collect_pod_l
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/stack/health_report.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/stack/print_urls.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/stack/stack_smoke.py
-makefiles/ops.mk|ops/stack/scripts/uninstall.sh
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/stack/uninstall.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/stack/validate.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/stack/wait_ready.py
 ops/e2e/realdata/run_single_release.sh|ops/datasets/scripts/publish_by_name.sh
@@ -69,5 +69,5 @@ scripts/areas/layout/check_ops_canonical_entrypoints.py|ops/k8s/scripts/deploy_a
 scripts/areas/layout/check_ops_canonical_entrypoints.py|ops/obs/scripts/verify_pack.sh
 scripts/areas/layout/check_ops_single_validators.py|ops/obs/scripts/verify_pack.sh
 scripts/areas/layout/check_ops_single_validators.py|packages/atlasctl/src/atlasctl/commands/ops/stack/validate.py
-scripts/areas/layout/check_ops_stack_order.sh|ops/stack/scripts/install.sh
-scripts/areas/layout/check_ops_stack_order.sh|ops/stack/scripts/uninstall.sh
+scripts/areas/layout/check_ops_stack_order.sh|packages/atlasctl/src/atlasctl/commands/ops/stack/install.py
+scripts/areas/layout/check_ops_stack_order.sh|packages/atlasctl/src/atlasctl/commands/ops/stack/uninstall.py
