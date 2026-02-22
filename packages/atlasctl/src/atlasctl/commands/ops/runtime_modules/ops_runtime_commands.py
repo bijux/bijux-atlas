@@ -777,7 +777,11 @@ def _ops_obs_verify(ctx: RunContext, report_format: str, suite: str, extra_args:
     log_dir.mkdir(parents=True, exist_ok=True)
     log_file = log_dir / "run.log"
     start = dt.datetime.now(dt.timezone.utc)
-    result = run_command(["bash", "ops/obs/tests/suite.sh", "--suite", suite, *extra_args], repo, ctx=ctx)
+    result = run_command(
+        [*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/commands/ops/observability/test_suite.py", "--suite", suite, *extra_args],
+        repo,
+        ctx=ctx,
+    )
     write_text_file(log_file, result.combined_output if result.combined_output.endswith("\n") else result.combined_output + "\n", encoding="utf-8")
     status = "pass" if result.code == 0 else "fail"
     # Best-effort conformance report generation to preserve old wrapper side effects.
