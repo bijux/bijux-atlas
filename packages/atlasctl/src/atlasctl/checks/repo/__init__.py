@@ -17,9 +17,9 @@ from .native import (
     check_script_ownership,
     check_tracked_timestamp_paths,
 )
+import atlasctl.checks.repo.native.runtime as _native_runtime  # noqa: F401
 from ..core.base import CheckDef
 from .enforcement.legacy_guard import check_legacy_package_absent
-from .enforcement.module_size import check_module_size
 from ...commands.policies.runtime.culprits import (
     check_budget_drift_approval,
     check_critical_dir_count_trend,
@@ -59,6 +59,7 @@ from .enforcement.package_shape import (
     check_checks_root_contract,
     check_layout_domain_readmes,
     check_layout_no_legacy_imports,
+    check_module_size,
     check_no_nested_same_name_packages,
     check_top_level_package_group_mapping,
 )

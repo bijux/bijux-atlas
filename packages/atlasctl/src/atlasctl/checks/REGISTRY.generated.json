@@ -3718,7 +3718,7 @@
       ],
       "id": "checks_repo_module_size",
       "legacy_id": "repo.module_size",
-      "module": "atlasctl.checks.repo.enforcement.module_size",
+      "module": "atlasctl.checks.repo.enforcement.package_shape",
       "owner": "platform",
       "severity": "error",
       "speed": "fast",
