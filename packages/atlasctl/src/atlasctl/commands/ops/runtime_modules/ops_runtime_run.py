@@ -294,6 +294,14 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             [*impl.SELF_CLI, "ops", "surface", "--report", ns.report],
             ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_index_surface.py"],
         ]
+        if bool(getattr(ns, "all", False)):
+            steps.extend(
+                [
+                    [*impl.SELF_CLI, "ops", "k8s", "--report", ns.report, "contracts"],
+                    [*impl.SELF_CLI, "ops", "kind", "--report", ns.report, "validate"],
+                    [*impl.SELF_CLI, "ops", "e2e", "--report", ns.report, "run", "--suite", "realdata"],
+                ]
+            )
         for cmd in steps:
             code, output = impl._run_check(cmd, ctx.repo_root)
             if output:
@@ -313,6 +321,14 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                     if output:
                         print(output)
                     return code
+        if bool(getattr(ns, "all", False)):
+            return _run_checks(
+                ctx,
+                checks=LINT_CHECKS,
+                fail_fast=ns.fail_fast,
+                report_format=ns.report,
+                emit_artifacts=True,
+            )
         return _run_checks(
             ctx,
             checks=LINT_CHECKS,

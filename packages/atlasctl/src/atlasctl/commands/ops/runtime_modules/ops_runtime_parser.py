@@ -11,6 +11,7 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     check = ops_sub.add_parser("check", help="run canonical ops/check lane")
     check.add_argument("--report", choices=["text", "json"], default="text")
     check.add_argument("--fix", action="store_true")
+    check.add_argument("--all", action="store_true", help="include slow/full ops validations")
     help_cmd = ops_sub.add_parser("help", help="show canonical ops runbook index")
     help_cmd.add_argument("--report", choices=["text", "json"], default="text")
     up_cmd = ops_sub.add_parser("up", help="bring up full local ops environment")
@@ -31,6 +32,7 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     lint.add_argument("--fail-fast", action="store_true")
     lint.add_argument("--emit-artifacts", action="store_true")
     lint.add_argument("--fix", action="store_true")
+    lint.add_argument("--all", action="store_true", help="include full lint validation set")
 
     env = ops_sub.add_parser("env", help="ops environment commands")
     env.add_argument("--report", choices=["text", "json"], default="text")
