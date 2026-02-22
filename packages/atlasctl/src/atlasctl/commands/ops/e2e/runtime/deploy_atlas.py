@@ -1,28 +1,32 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
 import subprocess
 
-SCRIPT = r'''set -euo pipefail
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[7]
+
+
+def _load_layer_defaults(root: Path) -> tuple[str, str, str]:
+    contract = json.loads((root / "ops/_meta/layer-contract.json").read_text(encoding="utf-8"))
+    namespaces = contract.get("namespaces", {}) if isinstance(contract, dict) else {}
+    release_meta = contract.get("release_metadata", {}) if isinstance(contract, dict) else {}
+    defaults = release_meta.get("defaults", {}) if isinstance(release_meta, dict) else {}
+    services = contract.get("services", {}) if isinstance(contract, dict) else {}
+    atlas = services.get("atlas", {}) if isinstance(services, dict) else {}
+    ns_e2e = str(namespaces.get("e2e", "atlas-e2e"))
+    release_name = str(defaults.get("release_name", "atlas-e2e"))
+    service_name = str(atlas.get("service_name", "bijux-atlas"))
+    return ns_e2e, release_name, service_name
+
+
+def _script(default_ns_e2e: str, default_release: str, default_service: str) -> str:
+    template = r'''set -euo pipefail
 ROOT="$(pwd)"
-LAYER_CONTRACT="${ATLAS_LAYER_CONTRACT_PATH:-$ROOT/ops/_meta/layer-contract.json}"
-ops_layer_contract_get() {
-  local key="$1"
-  python3 - "$key" "$LAYER_CONTRACT" <<'PY'
-import json, sys
-key = sys.argv[1]
-path = sys.argv[2]
-obj = json.load(open(path, encoding='utf-8'))
-cur = obj
-for part in key.split('.'):
-    if isinstance(cur, dict) and part in cur:
-        cur = cur[part]
-    else:
-        raise SystemExit(f"missing key: {key}")
-print(json.dumps(cur, sort_keys=True) if isinstance(cur, (dict, list)) else cur)
-PY
-}
-ops_layer_ns_e2e() { ops_layer_contract_get "namespaces.e2e"; }
-ops_layer_service_atlas() { ops_layer_contract_get "services.atlas.service_name"; }
+DEFAULT_E2E_NAMESPACE="__DEFAULT_E2E_NAMESPACE__"
+DEFAULT_RELEASE_NAME="__DEFAULT_RELEASE_NAME__"
+DEFAULT_ATLAS_SERVICE_NAME="__DEFAULT_ATLAS_SERVICE_NAME__"
 ops_artifact_dir() {
   local component="$1"
   local run_id="${OPS_RUN_ID:-${RUN_ID:-local}}"
@@ -63,8 +67,8 @@ ops_helm_retry() {
 if [ "${CI:-0}" = "1" ]; then export ATLASCTL_NONINTERACTIVE=1; fi
 RUN_ID="${RUN_ID:-${OPS_RUN_ID:-}}"
 ARTIFACT_DIR="${ARTIFACT_DIR:-${OPS_RUN_DIR:-}}"
-RELEASE="${ATLAS_E2E_RELEASE_NAME:-$(ops_layer_contract_get release_metadata.defaults.release_name)}"
-NS="${ATLAS_E2E_NAMESPACE:-$(ops_layer_ns_e2e)}"
+RELEASE="${ATLAS_E2E_RELEASE_NAME:-$DEFAULT_RELEASE_NAME}"
+NS="${ATLAS_E2E_NAMESPACE:-$DEFAULT_E2E_NAMESPACE}"
 VALUES="${ATLAS_E2E_VALUES_FILE:-$ROOT/ops/k8s/values/local.yaml}"
 CLUSTER_NAME="${ATLAS_E2E_CLUSTER_NAME:-bijux-atlas-e2e}"
 USE_LOCAL_IMAGE="${ATLAS_E2E_USE_LOCAL_IMAGE:-1}"
@@ -90,7 +94,7 @@ cleanup_stale_nodeport_conflicts() {
     [ -z "$ns" ] && continue
     [ "$ns" = "$NS" ] && continue
     if echo "$ports" | tr ',' '\n' | grep -qx "$node_port"; then
-      if [ "$svc" = "$(ops_layer_service_atlas)" ] && [[ "$ns" == atlas-* ]]; then
+      if [ "$svc" = "$DEFAULT_ATLAS_SERVICE_NAME" ] && [[ "$ns" == atlas-* ]]; then
         echo "removing stale NodePort owner: ${ns}/${svc} (port ${node_port})"
         helm -n "$ns" uninstall "$RELEASE" >/dev/null 2>&1 || true
         kubectl -n "$ns" delete svc "$svc" --ignore-not-found >/dev/null 2>&1 || true
@@ -120,10 +124,19 @@ else
 fi
 
 echo "atlas deployed: release=$RELEASE ns=$NS"'''
+    return (
+        template
+        .replace("__DEFAULT_E2E_NAMESPACE__", default_ns_e2e.replace('"', '\\"'))
+        .replace("__DEFAULT_RELEASE_NAME__", default_release.replace('"', '\\"'))
+        .replace("__DEFAULT_ATLAS_SERVICE_NAME__", default_service.replace('"', '\\"'))
+    )
 
 
 def main() -> int:
-    return subprocess.call(["bash", "-lc", SCRIPT])
+    root = _repo_root()
+    default_ns_e2e, default_release, default_service = _load_layer_defaults(root)
+    script = _script(default_ns_e2e, default_release, default_service)
+    return subprocess.call(["bash", "-lc", script], cwd=root)
 
 
 if __name__ == "__main__":
