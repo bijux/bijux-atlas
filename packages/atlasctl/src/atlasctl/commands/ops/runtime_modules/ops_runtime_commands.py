@@ -14,10 +14,15 @@ from atlasctl.core.runtime.paths import write_text_file
 
 
 def _write_json_report(repo_root: Path, out_rel: str, payload: dict[str, object]) -> str:
-    out = repo_root / out_rel
+    out = Path(out_rel)
+    if not out.is_absolute():
+        out = repo_root / out_rel
     out.parent.mkdir(parents=True, exist_ok=True)
     write_text_file(out, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    return out.relative_to(repo_root).as_posix()
+    try:
+        return out.relative_to(repo_root).as_posix()
+    except ValueError:
+        return out.as_posix()
 
 
 def _ops_k8s_render_summary(repo_root: Path, env_name: str, run_id: str) -> dict[str, object]:

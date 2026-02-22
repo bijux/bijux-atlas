@@ -329,10 +329,61 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                 if code != 0:
                     return code
             return 0
+        if ns.ops_cmd == "e2e" and sub == "validate-results":
+            in_rel = str(getattr(ns, "in_file", "")).strip()
+            if not in_rel:
+                return impl._emit_ops_status(ns.report, 2, "missing --in-file")
+            path = ctx.repo_root / in_rel
+            if not path.exists():
+                return impl._emit_ops_status(ns.report, 2, f"missing e2e results file: {in_rel}")
+            try:
+                payload = json.loads(path.read_text(encoding="utf-8"))
+            except Exception as exc:
+                return impl._emit_ops_status(ns.report, 1, f"invalid json: {exc}")
+            errors: list[str] = []
+            if not isinstance(payload, dict):
+                errors.append("payload must be object")
+            else:
+                for key in ("schema_version", "status"):
+                    if key not in payload:
+                        errors.append(f"missing key `{key}`")
+            return impl._emit_ops_status(ns.report, 0 if not errors else 1, "e2e results valid" if not errors else "\n".join(errors))
         if ns.ops_cmd == "obs" and sub == "verify":
             return impl._run_simple_cmd(ctx, ["bash", "ops/run/obs-verify.sh"], ns.report)
         if ns.ops_cmd == "obs" and sub == "check":
             return impl._run_simple_cmd(ctx, [*impl.SELF_CLI, "ops", "obs", "--report", ns.report, "verify"], ns.report)
+        if ns.ops_cmd == "obs" and sub == "lint":
+            steps = [
+                ["python3", "ops/obs/scripts/contracts/check_profile_goldens.py"],
+                ["python3", "ops/obs/scripts/contracts/check_metrics_golden.py"],
+                ["python3", "ops/obs/scripts/contracts/check_trace_golden.py"],
+            ]
+            for cmd in steps:
+                code, output = impl._run_check(cmd, ctx.repo_root)
+                if output:
+                    print(output)
+                if code != 0:
+                    return code
+            return 0
+        if ns.ops_cmd == "obs" and sub == "report":
+            payload = {
+                "schema_version": 1,
+                "kind": "ops-obs-report",
+                "run_id": ctx.run_id,
+                "status": "ok",
+                "artifacts": {
+                    "dashboard_golden": "ops/obs/grafana/atlas-observability-dashboard.golden.json",
+                    "metrics_golden": "ops/obs/contract/metrics.golden.prom",
+                    "trace_golden": "ops/obs/contract/trace-structure.golden.json",
+                },
+            }
+            out_rel = str(getattr(ns, "out", "") or "artifacts/reports/atlasctl/ops-obs-report.json")
+            written = impl._write_json_report(ctx.repo_root, out_rel, payload)
+            if ns.report == "json":
+                print(json.dumps({"schema_version": 1, "kind": "ops-obs-report", "status": "ok", "out": written}, sort_keys=True))
+            else:
+                print(written)
+            return 0
         if ns.ops_cmd == "obs" and sub == "drill":
             drill = getattr(ns, "drill", "")
             if not drill:
@@ -423,18 +474,65 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             return impl._emit_ops_status(ns.report, 2, f"unsupported fault `{fault}`")
         if ns.ops_cmd == "e2e" and sub == "run":
             suite = getattr(ns, "suite", "smoke")
+            scenario = str(getattr(ns, "scenario", "") or "").strip()
+            if scenario:
+                suite = scenario
             return impl._run_simple_cmd(ctx, ["bash", "ops/run/e2e.sh", "--suite", suite], ns.report)
         if ns.ops_cmd == "load" and sub == "run":
             suite = getattr(ns, "suite", "mixed-80-20")
             return impl._run_simple_cmd(ctx, ["env", f"SUITE={suite}", "bash", "ops/run/load-suite.sh"], ns.report)
         if ns.ops_cmd == "load" and sub == "check":
             return impl._run_simple_cmd(ctx, [*impl.SELF_CLI, "load", "smoke"], ns.report)
+        if ns.ops_cmd == "load" and sub == "compare":
+            baseline_rel = str(getattr(ns, "baseline", "")).strip()
+            current_rel = str(getattr(ns, "current", "")).strip()
+            out_rel = str(getattr(ns, "out", "") or "artifacts/reports/atlasctl/ops-load-compare.json")
+            if not baseline_rel or not current_rel:
+                return impl._emit_ops_status(ns.report, 2, "load compare requires --baseline and --current")
+            baseline = json.loads((ctx.repo_root / baseline_rel).read_text(encoding="utf-8"))
+            current = json.loads((ctx.repo_root / current_rel).read_text(encoding="utf-8"))
+            payload = {
+                "schema_version": 1,
+                "kind": "ops-load-compare",
+                "run_id": ctx.run_id,
+                "status": "ok",
+                "baseline": baseline_rel,
+                "current": current_rel,
+                "baseline_keys": sorted(baseline.keys()) if isinstance(baseline, dict) else [],
+                "current_keys": sorted(current.keys()) if isinstance(current, dict) else [],
+            }
+            written = impl._write_json_report(ctx.repo_root, out_rel, payload)
+            if ns.report == "json":
+                print(json.dumps({"schema_version": 1, "kind": "ops-load-compare", "status": "ok", "out": written}, sort_keys=True))
+            else:
+                print(written)
+            return 0
         if ns.ops_cmd == "datasets" and sub == "verify":
             return impl._run_simple_cmd(ctx, ["bash", "ops/run/datasets-verify.sh"], ns.report)
         if ns.ops_cmd == "datasets" and sub == "fetch":
             return impl._run_simple_cmd(ctx, ["bash", "ops/run/warm.sh"], ns.report)
-        if ns.ops_cmd == "datasets" and sub == "pin":
-            return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/datasets/build_manifest_lock.py"], ns.report)
+        if ns.ops_cmd == "datasets" and sub in {"pin", "lock"}:
+            return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/commands/ops/datasets/build_manifest_lock.py"], ns.report)
+        if ns.ops_cmd == "datasets" and sub == "qc":
+            qsub = str(getattr(ns, "ops_datasets_qc_cmd", "")).strip()
+            args = list(getattr(ns, "args", []))
+            if qsub == "summary":
+                return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/commands/ops/datasets/qc_summary.py", *args], ns.report)
+            if qsub == "diff":
+                return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/commands/ops/datasets/qc_diff.py", *args], ns.report)
+            return 2
+        if ns.ops_cmd == "datasets" and sub == "validate":
+            steps = [
+                ["python3", "packages/atlasctl/src/atlasctl/commands/ops/datasets/catalog_validate.py"],
+                ["python3", "packages/atlasctl/src/atlasctl/checks/layout/domains/scenarios/check_e2e_scenarios.py"],
+            ]
+            for cmd in steps:
+                code, output = impl._run_check(cmd, ctx.repo_root)
+                if output:
+                    print(output)
+                if code != 0:
+                    return code
+            return 0
         if ns.ops_cmd == "datasets" and sub == "lint-ids":
             return impl._run_simple_cmd(
                 ctx,
