@@ -42,6 +42,28 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
     default_suite, suites = impl.load_suites(ctx.repo_root)
     if ns.suite_cmd == "explain":
         suite_name = ns.name or default_suite
+        if suite_name in first_class:
+            manifest = first_class[suite_name]
+            lines = [
+                f"suite {suite_name} rationale",
+                f"- kind: first-class",
+                f"- markers: {', '.join(manifest.markers) or 'none'}",
+                f"- required_env: {', '.join(manifest.required_env) or 'none'}",
+                f"- default_effects: {', '.join(manifest.default_effects) or 'none'}",
+                f"- check_count: {len(manifest.check_ids)}",
+            ]
+            for check_id in manifest.check_ids:
+                lines.append(f"- check:{check_id}: selected via suite registry markers/groups")
+            text = "\n".join(lines)
+            print(
+                impl.dumps_json(
+                    {"schema_version": 1, "tool": "atlasctl", "status": "ok", "suite": suite_name, "explain": lines},
+                    pretty=False,
+                )
+                if as_json
+                else text
+            )
+            return 0
         expanded = impl.expand_suite(suites, suite_name)
         lines = [f"suite {suite_name} rationale", f"- includes: {', '.join(suites[suite_name].includes) or 'none'}"]
         for task in expanded:
