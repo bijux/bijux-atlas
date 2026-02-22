@@ -501,6 +501,21 @@ _OPS_SCRIPT_CHECKS: tuple[tuple[str, str, str, callable], ...] = (
     ("ops.script.ops_vendor_layout_checks_check_stack_manifest_consolidation_sh", "run ops script check `ops/vendor/layout-checks/check_stack_manifest_consolidation.sh`", "ops/vendor/layout-checks/check_stack_manifest_consolidation.sh", _make_ops_script_check("ops/vendor/layout-checks/check_stack_manifest_consolidation.sh")),
 )
 
+
+def check_ops_all_check_scripts_registered(repo_root: Path) -> tuple[int, list[str]]:
+    registered = {script_rel for (_, _, script_rel, _) in _OPS_SCRIPT_CHECKS}
+    discovered: list[str] = []
+    for path in sorted((repo_root / "ops").rglob("*")):
+        if not path.is_file() or path.suffix not in {".py", ".sh"}:
+            continue
+        name = path.name
+        if not re.search(r"(^|[_-])check([._-]|$)", name) and not name.startswith("check_"):
+            continue
+        discovered.append(path.relative_to(repo_root).as_posix())
+    missing = sorted(set(discovered) - registered)
+    return (0 if not missing else 1), [f"ops check script not registered in atlasctl checks: {p}" for p in missing]
+
+
 CHECKS: tuple[CheckDef, ...] = (
     CheckDef("ops.no_tracked_generated", "ops", "forbid tracked files in generated ops dirs", 800, check_ops_generated_tracked, fix_hint="Untrack generated ops files."),
     CheckDef("ops.generated_not_tracked_unless_allowed", "ops", "forbid tracked generated ops outputs unless explicitly allowlisted", 800, check_ops_generated_not_tracked_unless_allowed, fix_hint="Keep generated outputs untracked or move to committed generated roots."),
@@ -523,6 +538,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("ops.obs_drift_goldens", "ops", "fail on observability golden drift (generated vs golden)", 1000, check_ops_obs_drift_goldens, fix_hint="Regenerate/fix observability goldens and contracts."),
     CheckDef("ops.chart_version_contract", "ops", "enforce chart/app version contract for bijux-atlas chart", 1000, check_ops_chart_version_contract, fix_hint="Keep Chart.yaml version and appVersion present, semver, and aligned."),
     CheckDef("ops.clean_allowed_roots_only", "ops", "ensure ops clean only targets allowed generated roots", 1000, check_ops_clean_allowed_roots_only, fix_hint="Restrict ops clean to ops/_generated child deletion only."),
+    CheckDef("ops.all_check_scripts_registered", "ops", "require all ops check scripts to be registered in atlasctl checks", 1000, check_ops_all_check_scripts_registered, fix_hint="Register new ops check scripts in atlasctl checks (or migrate to atlasctl-native implementation)."),
     *(
         CheckDef(check_id, "ops", description, 1000, fn, fix_hint=f"Fix failures in `{script_rel}` or replace it with atlasctl-native check logic.")
         for (check_id, description, script_rel, fn) in _OPS_SCRIPT_CHECKS

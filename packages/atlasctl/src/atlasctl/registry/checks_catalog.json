@@ -3955,6 +3955,45 @@
       "title": "enforce per-makefile wrapper target count budgets"
     },
     {
+      "area": "all",
+      "default_enabled": true,
+      "description": "require all ops check scripts to be registered in atlasctl checks",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_all_check_scripts_registered",
+      "domain": "ops",
+      "gate": "ops",
+      "groups": [
+        "ops"
+      ],
+      "id": "checks_ops_all_check_scripts_registered",
+      "impl_ref": {
+        "callable": "check_ops_all_check_scripts_registered",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Register new ops check scripts in atlasctl checks (or migrate to atlasctl-native implementation).",
+        "legacy_id": "ops.all_check_scripts_registered",
+        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require all ops check scripts to be registered in atlasctl checks"
+    },
+    {
       "area": "chart",
       "default_enabled": true,
       "description": "enforce chart/app version contract for bijux-atlas chart",

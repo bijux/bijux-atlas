@@ -2188,6 +2188,27 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_ops_all_check_scripts_registered"
+domain = "ops"
+area = "all"
+gate = "ops"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.domains.ops.ops_checks"
+callable = "check_ops_all_check_scripts_registered"
+description = "require all ops check scripts to be registered in atlasctl checks"
+severity = "error"
+category = "hygiene"
+fix_hint = "Register new ops check scripts in atlasctl checks (or migrate to atlasctl-native implementation)."
+legacy_id = "ops.all_check_scripts_registered"
+groups = ["ops"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_ops_chart_version_contract"
 domain = "ops"
 area = "chart"
