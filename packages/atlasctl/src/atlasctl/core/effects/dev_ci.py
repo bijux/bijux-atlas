@@ -316,7 +316,7 @@ def run_ci_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             '"## Mitigation" "Upgrade to `${ADVISORY_FIXED_VERSION}` or newer." > "${FILE}"'
         ],
         "governance-check": [
-            ["make", "-s", "layout-check"],
+            ["make", "-s", "atlasctl-check-layout"],
             ["make", "-s", "docs-freeze"],
             ["make", "-s", "ssot-check"],
             ["make", "-s", "policy-enforcement-status"],

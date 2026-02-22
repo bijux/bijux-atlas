@@ -31,7 +31,7 @@ Untracked symlinks create undocumented behavior and break reproducibility.
 ## How to verify
 
 ```bash
-$ make layout-check
+$ make atlasctl-check-layout
 ```
 
 Expected output: symlink index check and layout checks pass.

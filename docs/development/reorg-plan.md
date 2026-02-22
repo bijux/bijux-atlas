@@ -28,7 +28,7 @@ Keep repository operations discoverable and stable by capping public surface and
   - naming convention checks
   - duplicate naming form checks
   - no-shadow-config checks
-- `make layout-check`:
+- `make atlasctl-check-layout`:
   - generated-dir policy
   - root-shape and root-dump checks
 - `make inventory`:

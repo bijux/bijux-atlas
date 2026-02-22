@@ -2,7 +2,7 @@
 # owner: repo-surface
 # purpose: inventory legacy references and enforce legacy baseline/policy contracts.
 # stability: public
-# called-by: make layout-check
+# called-by: make atlasctl-check-layout
 from __future__ import annotations
 
 import argparse

@@ -34,7 +34,7 @@ Does not allow root tool-config symlinks.
 ## How to verify
 
 ```bash
-$ make layout-check
+$ make atlasctl-check-layout
 ```
 
 Expected output: symlink policy checks pass.
