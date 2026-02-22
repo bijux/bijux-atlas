@@ -3199,6 +3199,86 @@
     {
       "area": "bypass",
       "default_enabled": true,
+      "description": "require configs/policy README to list every bypass source file",
+      "domain": "policies",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_readme_complete",
+      "impl_ref": {
+        "callable": "check_policies_bypass_readme_complete",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Update configs/policy/README.md with complete bypass source list.",
+        "legacy_id": "policies.bypass_readme_complete",
+        "module": "atlasctl.checks.domains.policies.make.enforcement",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 800,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "title": "require configs/policy README to list every bypass source file"
+    },
+    {
+      "area": "bypass",
+      "default_enabled": true,
+      "description": "require bypass source list in configs/policy README to be sorted",
+      "domain": "policies",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_readme_sorted",
+      "impl_ref": {
+        "callable": "check_policies_bypass_readme_sorted",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Sort bypass file entries in configs/policy/README.md.",
+        "legacy_id": "policies.bypass_readme_sorted",
+        "module": "atlasctl.checks.domains.policies.make.enforcement",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 800,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "title": "require bypass source list in configs/policy README to be sorted"
+    },
+    {
+      "area": "bypass",
+      "default_enabled": true,
       "description": "require removal plans for bypass entries",
       "domain": "policies",
       "gate": "policies",

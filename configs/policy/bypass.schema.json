@@ -1,0 +1,6 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "atlasctl policy bypass generic schema",
+  "description": "Generic schema for bypass/allowlist/ratchet JSON policy files that do not yet have dedicated schemas.",
+  "type": "object"
+}

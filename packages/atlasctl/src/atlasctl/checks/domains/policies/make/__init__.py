@@ -34,6 +34,8 @@ from .enforcement import (
     check_policies_bypass_policy_name_known,
     check_policies_bypass_schema_valid,
     check_policies_bypass_budget,
+    check_policies_bypass_readme_complete,
+    check_policies_bypass_readme_sorted,
 )
 from ....repo.native import (
     check_make_command_allowlist,
@@ -216,4 +218,6 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("policies.bypass_policy_name_known", "policies", "require bypass policy/rule names to be known", 800, check_policies_bypass_policy_name_known, fix_hint="Use declared policy or rule names.", tags=("repo",)),
     CheckDef("policies.bypass_schema_valid", "policies", "validate bypass JSON sources against schemas", 800, check_policies_bypass_schema_valid, fix_hint="Fix malformed bypass JSON or schema drift.", tags=("repo",)),
     CheckDef("policies.bypass_budget", "policies", "enforce ratcheted bypass entry count budget", 800, check_policies_bypass_budget, fix_hint="Reduce bypass count or update budget intentionally.", tags=("repo",)),
+    CheckDef("policies.bypass_readme_complete", "policies", "require configs/policy README to list every bypass source file", 800, check_policies_bypass_readme_complete, fix_hint="Update configs/policy/README.md with complete bypass source list.", tags=("repo",)),
+    CheckDef("policies.bypass_readme_sorted", "policies", "require bypass source list in configs/policy README to be sorted", 800, check_policies_bypass_readme_sorted, fix_hint="Sort bypass file entries in configs/policy/README.md.", tags=("repo",)),
 )

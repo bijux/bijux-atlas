@@ -2265,6 +2265,62 @@
     },
     {
       "area": "bypass",
+      "callable": "check_policies_bypass_readme_complete",
+      "category": "hygiene",
+      "description": "require configs/policy README to list every bypass source file",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Update configs/policy/README.md with complete bypass source list.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_readme_complete",
+      "legacy_id": "policies.bypass_readme_complete",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
+      "callable": "check_policies_bypass_readme_sorted",
+      "category": "hygiene",
+      "description": "require bypass source list in configs/policy README to be sorted",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Sort bypass file entries in configs/policy/README.md.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_readme_sorted",
+      "legacy_id": "policies.bypass_readme_sorted",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
       "callable": "check_policies_bypass_removal_plan_required",
       "category": "hygiene",
       "description": "require removal plans for bypass entries",
