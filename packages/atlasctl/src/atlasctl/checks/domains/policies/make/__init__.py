@@ -225,11 +225,21 @@ def check_policies_bypass_hard_gate(repo_root: Path) -> tuple[int, list[str]]:
     """
     enabled = str(os.environ.get("ATLASCTL_BYPASS_HARD_FAIL", "")).strip().lower() in {"1", "true", "yes", "on"}
     if not enabled:
+        enabled = str(os.environ.get("ATLASCTL_BYPASS_STRICT_MODE", "")).strip().lower() in {"1", "true", "yes", "on"}
+    if not enabled:
         return 0, []
     current = int(collect_bypass_inventory(repo_root).get("entry_count", 0))
     if current == 0:
         return 0, []
     return 1, [f"bypass hard gate enabled: entry_count={current} must be zero"]
+
+
+def check_policies_bypass_mainline_strict_mode(repo_root: Path) -> tuple[int, list[str]]:
+    """
+    Alias for future "no relaxations in mainline" mode.
+    Enabled via ATLASCTL_BYPASS_STRICT_MODE (or legacy ATLASCTL_BYPASS_HARD_FAIL).
+    """
+    return check_policies_bypass_hard_gate(repo_root)
 
 
 def check_policies_bypass_has_test_coverage(repo_root: Path) -> tuple[int, list[str]]:
@@ -674,6 +684,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("policies.bypass_count_nonincreasing", "policies", "enforce migration gate: bypass count must not increase", 800, check_policies_bypass_count_nonincreasing, fix_hint="Reduce bypass count or intentionally update baseline in one reviewed change.", tags=("repo",)),
     CheckDef("policies.bypass_new_entries_forbidden", "policies", "forbid new bypass entries unless explicitly approved", 800, check_policies_bypass_new_entries_forbidden, fix_hint="Reduce bypass count or add temporary approvals in configs/policy/bypass-new-entry-approvals.json.", tags=("repo",)),
     CheckDef("policies.bypass_hard_gate", "policies", "fail when bypass hard gate is enabled and any bypass entries exist", 800, check_policies_bypass_hard_gate, fix_hint="Remove all bypass entries or disable hard gate until ready to enforce zero-bypass milestone.", tags=("repo", "policies", "required")),
+    CheckDef("policies.bypass_mainline_strict_mode", "policies", "optional strict mode: fail on any bypass entry when enabled", 800, check_policies_bypass_mainline_strict_mode, fix_hint="Enable only after bypass count reaches zero or acceptable strict milestone.", tags=("repo", "policies")),
     CheckDef("policies.bypass_has_test_coverage", "policies", "require bypass entries to have declared validating test coverage", 800, check_policies_bypass_has_test_coverage, fix_hint="Map bypass sources/entries to validating tests in configs/policy/bypass-test-coverage.json.", tags=("repo",)),
     CheckDef("policies.bypass_ids_unique", "policies", "require unique bypass IDs across policy files", 800, check_policies_bypass_ids_unique, fix_hint="Deduplicate bypass IDs/keys across configs/policy.", tags=("repo",)),
     CheckDef("policies.bypass_entry_paths_exist", "policies", "fail if bypass entry points to missing file/path", 800, check_policies_bypass_entry_paths_exist, fix_hint="Fix or remove stale bypass references to missing paths.", tags=("repo",)),
