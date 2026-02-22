@@ -6,6 +6,7 @@ import json
 import re
 from pathlib import Path
 
+from ....checks.repo.domains.forbidden_adjectives import check_forbidden_adjectives
 from ....core.context import RunContext
 from ....core.exec import run
 from ....core.fs import ensure_evidence_path
@@ -44,6 +45,7 @@ _POLICIES_ITEMS: tuple[str, ...] = (
     "drift-diff",
     "enforcement-status",
     "explain",
+    "forbidden-adjectives",
     "ownership-check",
     "relaxations-check",
     "repo-stats",
@@ -306,6 +308,18 @@ def _policy_enforcement_status(repo_root: Path, enforce: bool) -> tuple[int, lis
     return (0 if not (enforce and violations) else 1), violations, out.relative_to(repo_root).as_posix()
 
 
+def _forbidden_report_path(repo_root: Path) -> Path:
+    config_path = repo_root / "configs/policy/forbidden-adjectives.json"
+    if not config_path.exists():
+        return repo_root / "artifacts/reports/atlasctl/forbidden-adjectives.json"
+    payload = json.loads(config_path.read_text(encoding="utf-8"))
+    report_raw = str(payload.get("report_path", "artifacts/reports/atlasctl/forbidden-adjectives.json"))
+    report_path = Path(report_raw)
+    if report_path.is_absolute():
+        return report_path
+    return repo_root / report_path
+
+
 
 def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     repo = ctx.repo_root
@@ -428,6 +442,26 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.policies_cmd == "drift-diff":
         print(policy_drift_diff(repo, ns.from_ref, ns.to_ref), end="")
         return 0
+    if ns.policies_cmd == "forbidden-adjectives":
+        code, errors = check_forbidden_adjectives(repo)
+        report_path = _forbidden_report_path(repo)
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok" if code == 0 else "error",
+            "report": report_path.relative_to(repo).as_posix() if report_path.is_relative_to(repo) else report_path.as_posix(),
+            "errors": errors,
+        }
+        if ns.report == "json":
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            if code == 0:
+                print(f"forbidden adjectives: pass ({payload['report']})")
+            else:
+                print(f"forbidden adjectives: fail ({payload['report']})")
+                for err in errors[:50]:
+                    print(f"- {err}")
+        return code
     budget_code = handle_budget_command(ns, repo, _write_out_file)
     if budget_code is not None:
         return budget_code
@@ -553,8 +587,10 @@ def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
     stats.add_argument("--out-file", help="write report to file path", default="")
     stats.add_argument("--diff-previous", action="store_true")
     explain = ps.add_parser("explain", help="explain policy configuration surfaces")
-    explain.add_argument("subject", choices=["budgets"])
+    explain.add_argument("subject", choices=["budgets", "forbidden-adjectives"])
     explain.add_argument("--report", choices=["text", "json"], default="text")
+    forbidden = ps.add_parser("forbidden-adjectives", help="scan tracked files for forbidden wording")
+    forbidden.add_argument("--report", choices=["text", "json"], default="text")
     entry_budget = ps.add_parser("check-dir-entry-budgets", help="enforce max directory entries per dir in atlasctl source/tests")
     entry_budget.add_argument("--json", action="store_true", help="emit machine-readable JSON output")
     entry_budget.add_argument("--print-culprits", action="store_true", help="print only top offenders")

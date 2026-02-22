@@ -67,6 +67,19 @@ def handle_budget_command(ns, repo: Path, write_out_file: Callable[[Path, str, s
         payload = explain_budgets(repo)
         print(json.dumps(payload, sort_keys=True) if ns.report == "json" else json.dumps(payload, indent=2, sort_keys=True))
         return 0
+    if ns.policies_cmd == "explain" and ns.subject == "forbidden-adjectives":
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "policy": "forbidden-adjectives",
+            "config": "configs/policy/forbidden-adjectives.json",
+            "approvals": "configs/policy/forbidden-adjectives-approvals.json",
+            "report": "artifacts/reports/atlasctl/forbidden-adjectives.json",
+            "note": "Forbidden terms are blocked repository-wide unless approved in the approvals artifact.",
+        }
+        print(json.dumps(payload, sort_keys=True) if ns.report == "json" else json.dumps(payload, indent=2, sort_keys=True))
+        return 0
     return None
 
 

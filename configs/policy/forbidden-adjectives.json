@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "terms": [
+    "elite",
+    "refgrade",
+    "reference-grade",
+    "production-grade"
+  ],
+  "report_path": "artifacts/reports/atlasctl/forbidden-adjectives.json"
+}

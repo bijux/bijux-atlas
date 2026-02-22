@@ -10,6 +10,7 @@ from ..core.effects import command_group
 from ..core.runtime.serialize import dumps_json
 from ..core.context import RunContext
 from ..registry import CheckRecord, CommandRecord, SuiteRecord
+from .policies.runtime.command import _POLICIES_ITEMS
 from ..suite.command import load_suites
 
 
@@ -157,6 +158,18 @@ def run_list_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         }
         _render(payload, as_json)
         return 0
+    if ns.list_kind == "policies":
+        records = [item for item in _POLICIES_ITEMS if _pattern_match(item, pattern)]
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "kind": "list-policies",
+            "status": "ok",
+            "filters": {"pattern": pattern or ""},
+            "items": records,
+        }
+        _render(payload, as_json)
+        return 0
 
     records = _filter_records(_suite_records(ctx), tags, pattern, include_internal)
     payload = {
@@ -183,7 +196,7 @@ def run_list_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
 def configure_list_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     parser = sub.add_parser("list", help="list checks, commands, and suites from canonical registries")
-    parser.add_argument("list_kind", choices=["checks", "commands", "suites"])
+    parser.add_argument("list_kind", choices=["checks", "commands", "suites", "policies"])
     parser.add_argument("--json", action="store_true", help="emit JSON output")
     parser.add_argument("--tags", default="", help="comma-separated tag filters")
     parser.add_argument("--include-internal", action="store_true", help=argparse.SUPPRESS)

@@ -104,6 +104,7 @@ from .contracts.dependencies import (
     check_internal_utils_stdlib_only,
     check_optional_dependency_usage_gates,
 )
+from .domains.policies import check_forbidden_adjectives
 from .reachability import (
     check_dead_module_reachability_allowlist,
     check_dead_modules_report_runs,
@@ -202,6 +203,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.no_direct_python_invocations", "repo", "forbid direct python script calls in docs/makefiles", 1000, check_no_direct_python_invocations, fix_hint="Use atlasctl command entrypoints instead of python path/to/script.py."),
     CheckDef("repo.no_direct_bash_invocations", "repo", "forbid direct bash script calls in docs/makefiles", 1000, check_no_direct_bash_invocations, fix_hint="Use atlasctl commands instead of bash scripts/... invocations."),
     CheckDef("repo.no_adhoc_python", "repo", "forbid ad-hoc python files outside package boundaries", 1200, check_no_adhoc_python, fix_hint="Migrate ad-hoc python files into package modules."),
+    CheckDef("repo.forbidden_adjectives", "repo", "forbid banned wording across tracked repository files", 500, check_forbidden_adjectives, fix_hint="Replace banned wording or add explicit approval entries in configs/policy/forbidden-adjectives-approvals.json."),
     CheckDef("repo.no_tracked_ops_generated", "repo", "ensure ops/_generated has no tracked files", 1000, check_ops_generated_tracked, fix_hint="Untrack generated files and add to ignore policy."),
     CheckDef("repo.no_ops_generated_placeholder", "repo", "forbid placeholder generated dirs", 400, check_no_ops_generated_placeholder, fix_hint="Remove placeholder generated files/directories."),
     CheckDef("repo.ops_examples_immutable", "repo", "enforce immutability of ops examples", 800, check_ops_examples_immutable, fix_hint="Restore example fixtures to committed canonical content."),

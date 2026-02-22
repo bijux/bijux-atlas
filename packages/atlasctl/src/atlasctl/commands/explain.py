@@ -8,6 +8,7 @@ from pathlib import Path
 from ..checks.registry import get_check
 from ..cli.surface_registry import command_registry
 from .dev.make.public_targets import entry_map, load_ownership
+from .policies.runtime.command import _POLICIES_ITEMS
 from ..suite.manifests import load_first_class_suites
 
 
@@ -30,6 +31,31 @@ def describe_command(name: str) -> dict[str, object]:
 
 
 def describe_thing(repo_root: Path, thing: str) -> dict[str, object]:
+    if thing.startswith("policy:"):
+        policy_name = thing.split(":", 1)[1]
+        if policy_name in _POLICIES_ITEMS:
+            return {
+                "kind": "policy",
+                "name": policy_name,
+                "contract": "atlasctl.policy.v1",
+                "purpose": "policy command surface",
+                "examples": [
+                    f"atlasctl policies {policy_name} --report json" if policy_name != "check" else "atlasctl policies check --report json",
+                    f"atlasctl policies explain {policy_name}",
+                ],
+                "touches": ["configs/policy/", "artifacts/reports/atlasctl/"],
+                "tools": [],
+            }
+        return {
+            "kind": "policy",
+            "name": policy_name,
+            "contract": "atlasctl.policy.v1",
+            "purpose": "",
+            "examples": ["atlasctl policies --list", "atlasctl list policies --json"],
+            "touches": ["configs/policy/"],
+            "tools": [],
+            "note": "unknown policy command",
+        }
     if thing.startswith("make:"):
         target = thing.split(":", 1)[1]
         entries = entry_map()
