@@ -4,7 +4,7 @@
   "classified_at": "2026-02-20",
   "entries": [
     {"path": "ops/_lib/k8s/kubectl.sh", "class": "keep_shell_primitive", "reason": "thin kubectl wrapper"},
-    {"path": "ops/_lib/helm/helm.sh", "class": "keep_shell_primitive", "reason": "thin helm wrapper"},
+    {"path": "ops/_lib/helm/helm.sh", "class": "retired_to_common", "reason": "inlined into ops/_lib/common.sh"},
     {"path": "ops/_lib/guard/context_guard.sh", "class": "retired_to_common", "reason": "inlined into ops/_lib/common.sh"},
     {"path": "ops/_lib/guard/version_guard.sh", "class": "retired_to_common", "reason": "inlined into ops/_lib/common.sh"},
     {"path": "ops/_lib/guard/retry.sh", "class": "retired_to_common", "reason": "inlined into ops/_lib/common.sh"},
