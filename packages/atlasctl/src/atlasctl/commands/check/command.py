@@ -95,6 +95,16 @@ def _split_marker_values(raw_values: list[str] | None) -> set[str]:
     return values
 
 
+def _split_group_values(raw: list[str] | None) -> set[str]:
+    values: set[str] = set()
+    for item in raw or []:
+        for part in str(item).split(","):
+            value = part.strip()
+            if value:
+                values.add(value)
+    return values
+
+
 def _check_source_path(ctx: RunContext, check_id: str) -> str | None:
     check = get_check(check_id)
     if check is None:
@@ -162,7 +172,17 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             base = group.removesuffix("-fast")
             checks = [check for check in checks if check.domain == base and not check.slow]
         else:
-            checks = [check for check in checks if check.domain == group]
+            checks = [check for check in checks if (check.domain == group or group in set(check_tags(check)))]
+    exclude_groups = _split_group_values(getattr(ns, "exclude_group", []))
+    if exclude_groups:
+        kept = []
+        for check in checks:
+            groups = set(check_tags(check))
+            groups.add(check.domain)
+            if groups.intersection(exclude_groups):
+                continue
+            kept.append(check)
+        checks = kept
     only_slow = bool(getattr(ns, "only_slow", False))
     only_fast = bool(getattr(ns, "only_fast", False))
     if only_slow and only_fast:
@@ -176,6 +196,9 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     explicit_selector = bool(id_value or target_value or select_value or k_value)
     if explicit_selector:
         include_all = True
+    marker_values = _split_marker_values(getattr(ns, "marker", []))
+    if "slow" in marker_values:
+        include_all = True
     if not include_all and not only_slow and not group.endswith("-slow"):
         checks = [check for check in checks if not check.slow]
     match_pattern = str(getattr(ns, "match", "") or "").strip()
@@ -186,12 +209,34 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             if fnmatch(check.check_id, match_pattern) or fnmatch(check.title, match_pattern) or fnmatch(f"atlasctl::{check.domain}::{check.check_id}", match_pattern)
         ]
     required_markers = _split_marker_values(getattr(ns, "require_markers", []))
+    required_markers |= marker_values
     if required_markers:
         checks = [check for check in checks if required_markers.issubset(set(check_tags(check)))]
+    excluded_markers = _split_marker_values(getattr(ns, "exclude_marker", []))
+    if excluded_markers:
+        checks = [check for check in checks if not set(check_tags(check)).intersection(excluded_markers)]
     matched_checks = [
         check for check in checks if _match_selected(check.check_id, check.title, check.domain, selected_domain, selector)
     ]
+    matched_checks = sorted(matched_checks, key=lambda item: item.check_id)
     report_checks = matched_checks if selector else checks
+    report_checks = sorted(report_checks, key=lambda item: item.check_id)
+    if bool(getattr(ns, "list_selected", False)):
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "kind": "check-selection",
+            "status": "ok",
+            "count": len(report_checks),
+            "checks": [check.check_id for check in report_checks],
+        }
+        if ctx.output_format == "json" or ns.json:
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            print(f"selected={payload['count']}")
+            for check_id in payload["checks"]:
+                print(check_id)
+        return 0
     live_print = bool(matched_checks) and not (ctx.output_format == "json" or ns.json or bool(getattr(ns, "jsonl", False)))
     timeout_ms = max(0, int(getattr(ns, "timeout_ms", 2000) or 0))
     if timeout_ms and timeout_ms < 50:
