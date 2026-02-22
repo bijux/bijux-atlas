@@ -52,7 +52,7 @@ Classification legend:
 | `ops/run/stack-down.sh` | glue | planned | `atlasctl ops stack down` |
 | `ops/run/stack-up.sh` | glue | planned | `atlasctl ops stack up` |
 | `ops/run/undeploy.sh` | glue | planned | `atlasctl ops undeploy` |
-| `ops/run/warm-dx.sh` | glue | planned | `atlasctl ops datasets fetch` / `atlasctl ops warm dx` |
+| `ops/run/warm-dx.sh` | glue | deleted (atlasctl-native composite) | `atlasctl ops warm-dx` |
 | `ops/run/warm-entrypoint.sh` | glue | planned | `atlasctl ops datasets fetch` |
 | `ops/run/warm.sh` | glue | deleted (folded into warm-entrypoint) | `atlasctl ops datasets fetch` |
 | `ops/run/root/root_artifacts_open.sh` | legacy | deleted (inlined in `make artifacts-open`) | `make artifacts-open` / future `atlasctl artifacts open` |

@@ -518,6 +518,32 @@ def _ops_cache_prune(ctx: RunContext, report_format: str) -> int:
     return _emit_ops_status(report_format, 0, msg)
 
 
+def _ops_warm_dx(ctx: RunContext, report_format: str) -> int:
+    repo = ctx.repo_root
+    cmds = [
+        ["bash", "ops/run/warm-entrypoint.sh", "--mode", "datasets"],
+        ["bash", "ops/run/warm-entrypoint.sh", "--mode", "shards"],
+        [*SELF_CLI, "ops", "cache", "--report", "text", "status"],
+    ]
+    outputs: list[str] = []
+    for cmd in cmds:
+        result = run_command(cmd, repo, ctx=ctx)
+        if result.combined_output.strip():
+            outputs.append(result.combined_output.rstrip())
+        if result.code != 0:
+            return _emit_ops_status(report_format, result.code, "\n".join(outputs).strip())
+    out_dir = repo / "artifacts" / "evidence" / "warm" / ctx.run_id
+    out_dir.mkdir(parents=True, exist_ok=True)
+    cache_report = repo / "artifacts" / "ops" / "cache-status" / "report.json"
+    if cache_report.exists():
+        shutil.copy2(cache_report, out_dir / "cache-status.json")
+    write_text_file(out_dir / "summary.txt", f"warm completed run_id={ctx.run_id}\n", encoding="utf-8")
+    msg = f"{out_dir.relative_to(repo).as_posix()}"
+    if outputs:
+        msg = "\n".join(outputs + [msg])
+    return _emit_ops_status(report_format, 0, msg)
+
+
 
 
 

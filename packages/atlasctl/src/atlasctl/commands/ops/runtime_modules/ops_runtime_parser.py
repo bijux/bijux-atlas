@@ -182,6 +182,7 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
         ("k8s-test-lib-contract", "validate k8s tests checks/_lib helper contract"),
         ("k8s-flakes-check", "evaluate k8s flake report and quarantine policy"),
         ("k8s-test-contract", "validate k8s test manifest ownership/contract"),
+        ("warm-dx", "run developer warm datasets+shards composite flow"),
         ("clean-generated", "remove runtime evidence files under ops/_generated"),
         ("clean", "alias for clean-generated"),
     ):

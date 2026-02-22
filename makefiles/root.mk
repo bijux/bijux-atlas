@@ -226,7 +226,7 @@ ops/smoke: ## Explicit ops smoke target
 k8s-smoke: ## One-command local k8s smoke runner
 	@$(MAKE) -s ops-k8s-smoke
 warm: ## Warm datasets + shards and record cache state
-	@./bin/atlasctl run ./ops/run/warm-dx.sh
+	@./bin/atlasctl ops warm-dx --report text
 
 cache/status: ## Print cache status and budget policy checks
 	@./bin/atlasctl ops cache --report text status
