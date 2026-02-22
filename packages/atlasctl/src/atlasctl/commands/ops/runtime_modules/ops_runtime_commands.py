@@ -911,7 +911,7 @@ mkdir -p "$(dirname "$log_file")"
 if [ "$reuse" = "1" ] && [ -f "$snapshot_json" ]; then
   if ops_context_guard "$profile" >/dev/null 2>&1 \\
     && ops_kubectl get ns "$atlas_ns" >/dev/null 2>&1 \\
-    && ATLAS_HEALTH_REPORT_FORMAT=json ./ops/stack/scripts/health_report.sh "$atlas_ns" "$health_json" >/dev/null 2>&1; then
+    && ATLAS_HEALTH_REPORT_FORMAT=json python3 ./packages/atlasctl/src/atlasctl/commands/ops/stack/health_report.py "$atlas_ns" "$health_json" >/dev/null 2>&1; then
     duration="$(( $(date +%s) - start_ts ))"
     ops_write_lane_report "stack" "$RUN_ID" "pass" "$duration" "$log_file"
     echo "stack-up reuse hit: healthy snapshot validated for namespace=${{atlas_ns}}" >"$log_file"
@@ -932,7 +932,7 @@ if ! (
 ) >"$log_file" 2>&1; then
   status="fail"
 fi
-ATLAS_HEALTH_REPORT_FORMAT=json ./ops/stack/scripts/health_report.sh "$atlas_ns" "$health_json" >/dev/null || true
+ATLAS_HEALTH_REPORT_FORMAT=json python3 ./packages/atlasctl/src/atlasctl/commands/ops/stack/health_report.py "$atlas_ns" "$health_json" >/dev/null || true
 duration="$(( $(date +%s) - start_ts ))"
 ops_write_lane_report "stack" "$RUN_ID" "$status" "$duration" "$log_file"
 if [ "$status" = "pass" ]; then
@@ -979,7 +979,7 @@ if ! (
 ) >"$log_file" 2>&1; then
   status="fail"
 fi
-ATLAS_HEALTH_REPORT_FORMAT=json ./ops/stack/scripts/health_report.sh "$atlas_ns" "$health_json" >/dev/null || true
+ATLAS_HEALTH_REPORT_FORMAT=json python3 ./packages/atlasctl/src/atlasctl/commands/ops/stack/health_report.py "$atlas_ns" "$health_json" >/dev/null || true
 duration="$(( $(date +%s) - start_ts ))"
 ops_write_lane_report "stack" "$RUN_ID" "$status" "$duration" "$log_file"
 [ "$status" = "pass" ] && rm -f "$snapshot_json"
