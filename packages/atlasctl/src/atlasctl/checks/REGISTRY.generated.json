@@ -3395,6 +3395,34 @@
     },
     {
       "area": "bypass",
+      "callable": "check_policies_bypass_budget_trend",
+      "category": "hygiene",
+      "description": "enforce bypass budget trend gate",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Reduce bypass budget usage or update budget intentionally with approval.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_budget_trend",
+      "legacy_id": "policies.bypass_budget_trend",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
       "callable": "check_policies_bypass_count_nonincreasing",
       "category": "hygiene",
       "description": "enforce migration gate: bypass count must not increase",
@@ -3413,6 +3441,90 @@
       "id": "checks_policies_bypass_count_nonincreasing",
       "legacy_id": "policies.bypass_count_nonincreasing",
       "module": "atlasctl.checks.domains.policies.make",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
+      "callable": "check_policies_bypass_entry_matches_nothing",
+      "category": "hygiene",
+      "description": "fail if wildcard bypass entry matches nothing",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Tighten or remove stale wildcard bypass entries.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_entry_matches_nothing",
+      "legacy_id": "policies.bypass_entry_matches_nothing",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
+      "callable": "check_policies_bypass_entry_matches_too_broad",
+      "category": "hygiene",
+      "description": "fail if wildcard bypass entry matches too broadly",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Narrow wildcard bypass scope to intended paths only.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_entry_matches_too_broad",
+      "legacy_id": "policies.bypass_entry_matches_too_broad",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
+      "callable": "check_policies_bypass_entry_paths_exist",
+      "category": "hygiene",
+      "description": "fail if bypass entry points to missing file/path",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Fix or remove stale bypass references to missing paths.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_entry_paths_exist",
+      "legacy_id": "policies.bypass_entry_paths_exist",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
       "owner": "platform",
       "severity": "error",
       "speed": "fast",
@@ -3535,6 +3647,118 @@
     },
     {
       "area": "bypass",
+      "callable": "check_policies_bypass_has_expiry",
+      "category": "hygiene",
+      "description": "require bypass entries to declare expiry",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Add non-expired expiry to each bypass entry.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_has_expiry",
+      "legacy_id": "policies.bypass_has_expiry",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
+      "callable": "check_policies_bypass_has_owner",
+      "category": "hygiene",
+      "description": "require bypass entries to declare owner",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Add valid owner to each bypass entry.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_has_owner",
+      "legacy_id": "policies.bypass_has_owner",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
+      "callable": "check_policies_bypass_has_reason",
+      "category": "hygiene",
+      "description": "require specific bypass reasons and forbid vague `because` entries",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Add specific justifications and avoid vague `because` reasons.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_has_reason",
+      "legacy_id": "policies.bypass_has_reason",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
+      "callable": "check_policies_bypass_has_ticket_or_doc_ref",
+      "category": "hygiene",
+      "description": "require bypass entries to link issue id or local doc reference",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Add issue_id or reference a local docs/ADR policy document.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_has_ticket_or_doc_ref",
+      "legacy_id": "policies.bypass_has_ticket_or_doc_ref",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
       "callable": "check_policies_bypass_ids_unique",
       "category": "hygiene",
       "description": "require unique bypass IDs across policy files",
@@ -3563,6 +3787,90 @@
     },
     {
       "area": "bypass",
+      "callable": "check_policies_bypass_inventory_deterministic",
+      "category": "hygiene",
+      "description": "require deterministic bypass inventory output ordering",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Keep bypass inventory files and entries stably ordered.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_inventory_deterministic",
+      "legacy_id": "policies.bypass_inventory_deterministic",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
+      "callable": "check_policies_bypass_inventory_present",
+      "category": "hygiene",
+      "description": "require bypass inventory registry and sources to exist",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Create bypass inventory SSOT registry/types and keep it in sync.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_inventory_present",
+      "legacy_id": "policies.bypass_inventory_present",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
+      "callable": "check_policies_bypass_inventory_schema_valid",
+      "category": "hygiene",
+      "description": "validate bypass inventory sources against schemas",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Fix malformed bypass JSON/TOML inventory sources or schema drift.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_inventory_schema_valid",
+      "legacy_id": "policies.bypass_inventory_schema_valid",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
       "callable": "check_policies_bypass_issue_id_format",
       "category": "hygiene",
       "description": "enforce bypass issue id format",
@@ -3580,6 +3888,34 @@
       ],
       "id": "checks_policies_bypass_issue_id_format",
       "legacy_id": "policies.bypass_issue_id_format",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
+      "callable": "check_policies_bypass_new_entries_forbidden",
+      "category": "hygiene",
+      "description": "forbid new bypass entries unless explicitly approved",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Reduce bypass count or add temporary approvals in configs/policy/bypass-new-entry-approvals.json.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_new_entries_forbidden",
+      "legacy_id": "policies.bypass_new_entries_forbidden",
       "module": "atlasctl.checks.domains.policies.make.enforcement",
       "owner": "platform",
       "severity": "error",
