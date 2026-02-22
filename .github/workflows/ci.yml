@@ -121,16 +121,73 @@ jobs:
       - name: Registry/docs/help/bypass/adjective gates
         run: |
           ./bin/atlasctl --format json check run --id checks_docs_registry_indexes > /tmp/check-docs-registry-indexes.json
+          ./bin/atlasctl --format json check run --id checks_docs_ci_lane_mapping > /tmp/check-docs-ci-lane-mapping.json
           ./bin/atlasctl --format json check run --id checks_repo_commands_surface_stability > /tmp/check-help-goldens.json
           ./bin/atlasctl --format json check run --id checks_checks_registry_integrity > /tmp/check-registry-integrity.json
           ./bin/atlasctl --format json check run --id checks_policies_bypass_count_nonincreasing > /tmp/check-bypass-count.json
+          ./bin/atlasctl --format json check run --id checks_policies_bypass_count_nonincreasing_hard > /tmp/check-bypass-count-hard.json
           ./bin/atlasctl --format json check run --id checks_policies_adjectives_repo_clean > /tmp/check-adjectives.json
       - name: Optional hard bypass gate
         if: env.ATLASCTL_BYPASS_HARD_FAIL == '1'
         run: |
           ./bin/atlasctl --format json check run --id checks_policies_bypass_hard_gate > /tmp/check-bypass-hard-gate.json
 
+  commands-inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Export command inventory
+        run: |
+          mkdir -p artifacts/reports/atlasctl
+          ./bin/atlasctl --format json list commands > artifacts/reports/atlasctl/commands.snapshot.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: commands-inventory
+          path: artifacts/reports/atlasctl/commands.snapshot.json
+
+  checks-inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Export checks inventory
+        run: |
+          mkdir -p artifacts/reports/atlasctl
+          ./bin/atlasctl --format json list checks > artifacts/reports/atlasctl/checks.inventory.snapshot.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: checks-inventory
+          path: artifacts/reports/atlasctl/checks.inventory.snapshot.json
+
+  bypass-report-artifact:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Export bypass report
+        run: |
+          mkdir -p artifacts/reports/atlasctl
+          ./bin/atlasctl report bypass --json --out artifacts/reports/atlasctl/policies-bypass-report.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bypass-report-standalone
+          path: artifacts/reports/atlasctl/policies-bypass-report.json
+
   suite-product:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -138,12 +195,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Suite product (fast/dry-run surface gate)
+      - name: Suite product fast subset (PR)
         run: |
           mkdir -p artifacts/reports/atlasctl
-          ./bin/atlasctl suite run product --dry-run --report json > artifacts/reports/atlasctl/suite-product.plan.json
+          ./bin/atlasctl suite run product --only fast --report json > artifacts/reports/atlasctl/suite-product.fast.json
 
   suite-ops-fast:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -154,4 +212,4 @@ jobs:
       - name: Suite ops fast subset
         run: |
           mkdir -p artifacts/reports/atlasctl
-          ./bin/atlasctl suite run ops --dry-run --group ops --report json > artifacts/reports/atlasctl/suite-ops-fast.plan.json
+          ./bin/atlasctl suite run ops --only fast --report json > artifacts/reports/atlasctl/suite-ops-fast.json
