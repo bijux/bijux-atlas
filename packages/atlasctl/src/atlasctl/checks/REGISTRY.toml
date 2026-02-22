@@ -2104,6 +2104,27 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_ops_no_direct_script_entrypoints"
+domain = "ops"
+area = "no"
+gate = "ops"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.domains.ops.ops_checks"
+callable = "check_ops_no_direct_script_entrypoints"
+description = "forbid direct ops script entrypoints in docs/workflows/makefiles"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use ./bin/atlasctl ops ... or make wrappers, not ops/**/*.sh paths."
+legacy_id = "ops.no_direct_script_entrypoints"
+groups = ["fast", "kube", "ops", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_ops_no_tracked_generated"
 domain = "ops"
 area = "no"
@@ -2139,6 +2160,48 @@ severity = "error"
 category = "hygiene"
 fix_hint = "Remove timestamped tracked paths."
 legacy_id = "ops.no_tracked_timestamps"
+groups = ["fast", "kube", "ops", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_ops_scripts_are_data_only"
+domain = "ops"
+area = "scripts"
+gate = "ops"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.domains.ops.ops_checks"
+callable = "check_ops_scripts_are_data_only"
+description = "enforce ops/manifests data-only file policy"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep ops/manifests to json/yaml data only."
+legacy_id = "ops.scripts_are_data_only"
+groups = ["fast", "kube", "ops", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_ops_shell_policy"
+domain = "ops"
+area = "shell"
+gate = "ops"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.domains.ops.ops_checks"
+callable = "check_ops_shell_policy"
+description = "enforce shell runtime guard requirements for ops/run wrappers"
+severity = "error"
+category = "hygiene"
+fix_hint = "Source common.sh and call ops_entrypoint_start + ops_version_guard in ops/run/*.sh."
+legacy_id = "ops.shell_policy"
 groups = ["fast", "kube", "ops", "required"]
 effects = []
 external_tools = []

@@ -8,7 +8,7 @@ Generated from check registry (`src/atlasctl/checks/registry.py`).
 - `docker` (4)
 - `docs` (18)
 - `make` (7)
-- `ops` (4)
+- `ops` (7)
 - `policies` (28)
 - `python` (2)
 
