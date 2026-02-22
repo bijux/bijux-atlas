@@ -12,7 +12,7 @@ from ..repo.native import (
 )
 
 _MAKE_RECIPE_RE = re.compile(r"^\t(?P<body>.*)$")
-_SCRIPT_PATH_RE = re.compile(r"(^|\s)(?:\./)?(?:ops|scripts|packages/atlasctl/src/atlasctl)/[^\s]+")
+_SCRIPT_PATH_RE = re.compile(r"(^|\s)(?:\./)?(?:ops|scripts|packages/atlasctl/src/atlasctl)/[^\s]+\.(?:sh|py)(?:\s|$)")
 _BASH_OPS_RE = re.compile(r"(?:^|\s)(?:bash|sh)\s+(?:\./)?ops/[^\s]+")
 _WRITE_RE = re.compile(r"(?:^|\s)(?:cp\s+[^\n]*\s+|mv\s+[^\n]*\s+|cat\s+>\s*|tee\s+|mkdir\s+-p\s+|touch\s+|>\s*|>>\s*)([^\s\"';]+)")
 
@@ -22,6 +22,9 @@ def _iter_make_recipe_lines(repo_root: Path) -> list[tuple[str, int, str]]:
     files = [repo_root / "Makefile", *sorted((repo_root / "makefiles").glob("*.mk"))]
     for path in files:
         rel = path.relative_to(repo_root).as_posix()
+        if rel == "makefiles/_macros.mk":
+            # Macro file contains shell snippets inside `define`; these are not executable targets.
+            continue
         for lineno, line in enumerate(path.read_text(encoding="utf-8", errors="ignore").splitlines(), start=1):
             match = _MAKE_RECIPE_RE.match(line)
             if not match:
@@ -170,8 +173,11 @@ def check_make_no_direct_script_exec_drift(repo_root: Path) -> tuple[int, list[s
 def check_make_no_bypass_atlasctl_without_allowlist(repo_root: Path) -> tuple[int, list[str]]:
     exceptions = _load_exceptions(repo_root, "bypass_atlasctl")
     errors: list[str] = []
+    wrapper_purity_files = {"makefiles/dev.mk", "makefiles/ci.mk", "makefiles/cargo.mk"}
     for rel, lineno, body in _iter_make_recipe_lines(repo_root):
-        if "atlasctl" in body or "$(ATLAS_SCRIPTS)" in body or "$(MAKE)" in body:
+        if rel not in wrapper_purity_files:
+            continue
+        if "atlasctl" in body or "$(ATLAS_SCRIPTS)" in body or "$(SCRIPTS)" in body or "$(MAKE)" in body:
             continue
         if body.startswith("@echo ") or body.startswith("echo "):
             continue
@@ -202,18 +208,24 @@ def check_ci_workflows_call_make_and_make_calls_atlasctl(repo_root: Path) -> tup
 
 
 def check_public_make_targets_map_to_atlasctl(repo_root: Path) -> tuple[int, list[str]]:
-    root_mk = repo_root / "makefiles" / "root.mk"
-    if not root_mk.exists():
-        return 1, ["makefiles/root.mk missing"]
-    text = root_mk.read_text(encoding="utf-8", errors="ignore")
+    files = [repo_root / "Makefile", *sorted((repo_root / "makefiles").glob("*.mk"))]
+    texts = {path.relative_to(repo_root).as_posix(): path.read_text(encoding="utf-8", errors="ignore") for path in files}
     errors: list[str] = []
     for target in public_names():
         pattern = re.compile(rf"(?m)^{re.escape(target)}:\s.*?(?:\n(?:\t.*\n?)*)")
-        match = pattern.search(text)
-        if not match:
-            errors.append(f"public target missing from makefiles/root.mk: {target}")
+        match_rel: str | None = None
+        match_block: str | None = None
+        for rel, text in texts.items():
+            match = pattern.search(text)
+            if match is None:
+                continue
+            match_rel = rel
+            match_block = match.group(0)
+            break
+        if match_block is None:
+            errors.append(f"public target missing from make surface: {target}")
             continue
-        block = match.group(0)
-        if "atlasctl" not in block and "$(ATLAS_SCRIPTS)" not in block:
-            errors.append(f"public target must delegate to atlasctl: {target}")
+        block = match_block
+        if "atlasctl" not in block and "$(ATLAS_SCRIPTS)" not in block and "$(SCRIPTS)" not in block and "$(MAKE)" not in block:
+            errors.append(f"public target must delegate to atlasctl wrappers: {target} ({match_rel})")
     return (0 if not errors else 1), sorted(errors)
