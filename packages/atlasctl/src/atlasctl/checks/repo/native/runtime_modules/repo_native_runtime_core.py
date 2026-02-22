@@ -278,8 +278,8 @@ def check_invocation_parity(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
     py_mk = repo_root / "makefiles/python.mk"
     text = py_mk.read_text(encoding="utf-8")
-    if "python3 -m atlasctl.cli" not in text:
-        errors.append("makefiles/python.mk must invoke atlasctl via python -m atlasctl.cli")
+    if "./bin/atlasctl" not in text:
+        errors.append("makefiles/python.mk must validate atlasctl through ./bin/atlasctl")
     docs_text = (repo_root / "docs/development/tooling/atlasctl.md").read_text(
         encoding="utf-8", errors="ignore"
     )

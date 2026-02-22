@@ -13,6 +13,8 @@ from .enforcement import (
     check_ci_workflows_call_make_and_make_calls_atlasctl,
     check_public_make_targets_map_to_atlasctl,
     check_make_public_targets_documented,
+    check_make_wrapper_purity,
+    check_make_no_python_module_invocation,
     check_make_target_boundaries_enforced,
     check_make_target_ownership_complete,
 )
@@ -105,6 +107,22 @@ CHECKS: tuple[CheckDef, ...] = (
         900,
         check_public_make_targets_map_to_atlasctl,
         fix_hint="Update public make target recipe bodies to call atlasctl wrappers only.",
+    ),
+    CheckDef(
+        "make.wrapper_purity",
+        "make",
+        "enforce make wrapper purity for canonical makefiles",
+        1000,
+        check_make_wrapper_purity,
+        fix_hint="Use single-line ./bin/atlasctl delegation in canonical makefiles.",
+    ),
+    CheckDef(
+        "make.no_python_module_invocation",
+        "make",
+        "forbid `python -m atlasctl.cli` in make recipes",
+        1000,
+        check_make_no_python_module_invocation,
+        fix_hint="Use ./bin/atlasctl in make recipes.",
     ),
     CheckDef(
         "make.target_boundaries_enforced",

@@ -12,9 +12,23 @@ from ....repo.native import (
 )
 
 _MAKE_RECIPE_RE = re.compile(r"^\t(?P<body>.*)$")
+_MAKE_TARGET_RE = re.compile(r"^(?P<target>[A-Za-z0-9_./-]+):(?:\s|$)")
 _SCRIPT_PATH_RE = re.compile(r"(^|\s)(?:\./)?(?:ops|scripts|packages/atlasctl/src/atlasctl)/[^\s]+\.(?:sh|py)(?:\s|$)")
 _BASH_OPS_RE = re.compile(r"(?:^|\s)(?:bash|sh)\s+(?:\./)?ops/[^\s]+")
 _WRITE_RE = re.compile(r"(?:^|\s)(?:cp\s+[^\n]*\s+|mv\s+[^\n]*\s+|cat\s+>\s*|tee\s+|mkdir\s+-p\s+|touch\s+|>\s*|>>\s*)([^\s\"';]+)")
+_ATLASCTL_MODULE_RE = re.compile(r"\bpython3?\s+-m\s+atlasctl\.cli\b")
+_WRAPPER_FILES = (
+    "makefiles/dev.mk",
+    "makefiles/docs.mk",
+    "makefiles/ops.mk",
+    "makefiles/ci.mk",
+    "makefiles/policies.mk",
+    "makefiles/product.mk",
+    "makefiles/layout.mk",
+    "makefiles/registry.mk",
+    "makefiles/env.mk",
+    "makefiles/root.mk",
+)
 
 
 def _iter_make_recipe_lines(repo_root: Path) -> list[tuple[str, int, str]]:
@@ -34,6 +48,31 @@ def _iter_make_recipe_lines(repo_root: Path) -> list[tuple[str, int, str]]:
                 continue
             rows.append((rel, lineno, body))
     return rows
+
+
+def _iter_make_targets(repo_root: Path, rel_path: str) -> list[tuple[str, list[tuple[int, str]]]]:
+    path = repo_root / rel_path
+    if not path.exists():
+        return []
+    targets: list[tuple[str, list[tuple[int, str]]]] = []
+    current_target = ""
+    current_lines: list[tuple[int, str]] = []
+    for lineno, raw in enumerate(path.read_text(encoding="utf-8", errors="ignore").splitlines(), start=1):
+        target_match = _MAKE_TARGET_RE.match(raw)
+        if target_match and not raw.startswith("."):
+            if current_target:
+                targets.append((current_target, current_lines))
+            current_target = target_match.group("target")
+            current_lines = []
+            continue
+        recipe_match = _MAKE_RECIPE_RE.match(raw)
+        if recipe_match and current_target:
+            body = recipe_match.group("body").strip()
+            if body:
+                current_lines.append((lineno, body))
+    if current_target:
+        targets.append((current_target, current_lines))
+    return targets
 
 
 def _load_exceptions(repo_root: Path, kind: str) -> set[str]:
@@ -182,6 +221,32 @@ def check_make_no_bypass_atlasctl_without_allowlist(repo_root: Path) -> tuple[in
         if msg in exceptions:
             continue
         errors.append(msg)
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_make_wrapper_purity(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for rel in _WRAPPER_FILES:
+        for target, recipe_lines in _iter_make_targets(repo_root, rel):
+            if not recipe_lines:
+                continue
+            if len(recipe_lines) != 1:
+                errors.append(f"{rel}:{target}: wrapper target must have exactly one recipe line")
+                continue
+            lineno, body = recipe_lines[0]
+            if target == "help":
+                continue
+            if body.startswith("@./bin/atlasctl ") or body.startswith("./bin/atlasctl "):
+                continue
+            errors.append(f"{rel}:{lineno}: wrapper recipe must delegate via ./bin/atlasctl")
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_make_no_python_module_invocation(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for rel, lineno, body in _iter_make_recipe_lines(repo_root):
+        if _ATLASCTL_MODULE_RE.search(body):
+            errors.append(f"{rel}:{lineno}: forbidden python module invocation in make recipe (`python -m atlasctl.cli`)")
     return (0 if not errors else 1), sorted(errors)
 
 
