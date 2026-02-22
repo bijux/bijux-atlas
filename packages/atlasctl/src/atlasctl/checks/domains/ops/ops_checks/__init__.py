@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime as dt
 import re
 import json
+import hashlib
 import subprocess
 from pathlib import Path
 
@@ -149,6 +150,100 @@ def check_ops_lint_layer_contract_drift_native(repo_root: Path) -> tuple[int, li
         return 1, ["layer-contract drift detected: run ops/_meta/generate_layer_contract.py and commit the result"]
     json.loads(after)
     return 0, ["layer contract drift check passed"]
+
+
+def check_ops_load_abuse_scenarios_required_native(repo_root: Path) -> tuple[int, list[str]]:
+    suites = repo_root / "ops" / "load" / "suites" / "suites.json"
+    payload = json.loads(suites.read_text(encoding="utf-8"))
+    by_name = {s.get("name"): s for s in payload.get("suites", []) if isinstance(s, dict)}
+    errors: list[str] = []
+    abuse = by_name.get("response-size-abuse")
+    if not abuse:
+        errors.append("missing required suite: response-size-abuse")
+    else:
+        run_in = set(abuse.get("run_in", []))
+        if "nightly" not in run_in and "load-nightly" not in run_in:
+            errors.append("response-size-abuse must run in nightly profile")
+        if not abuse.get("must_pass", False):
+            errors.append("response-size-abuse must have must_pass=true")
+    return (0 if not errors else 1), (["abuse scenario contract passed"] if not errors else errors)
+
+
+def check_ops_load_perf_baselines_native(repo_root: Path) -> tuple[int, list[str]]:
+    baselines_dir = repo_root / "configs" / "ops" / "perf" / "baselines"
+    schema = json.loads((repo_root / "ops" / "_schemas" / "load" / "perf-baseline.schema.json").read_text(encoding="utf-8"))
+    budgets = json.loads((repo_root / "configs" / "ops" / "budgets.json").read_text(encoding="utf-8"))
+    tools = json.loads((repo_root / "configs" / "ops" / "tool-versions.json").read_text(encoding="utf-8"))
+    lock = repo_root / "ops" / "datasets" / "manifest.lock"
+    expected_lock = hashlib.sha256(lock.read_bytes()).hexdigest()[:16]
+    req = set(schema.get("required", []))
+    freshness_days = int(budgets.get("k6_latency", {}).get("baseline_freshness_days", 30))
+    warn_only = bool(budgets.get("k6_latency", {}).get("baseline_freshness_warn_only", True))
+    today = dt.date.today()
+    errors: list[str] = []
+    found = sorted(baselines_dir.glob("*.json"))
+    if not found:
+        errors.append(f"no baselines in {baselines_dir.relative_to(repo_root)}")
+    for path in found:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        ctx = path.relative_to(repo_root).as_posix()
+        for key in req:
+            if key not in data:
+                errors.append(f"{ctx}: missing `{key}`")
+        meta = data.get("metadata", {})
+        for key in ("environment", "profile", "dataset_set", "dataset_lock_hash", "k8s_profile", "replicas", "tool_versions", "captured_at"):
+            if key not in meta:
+                errors.append(f"{ctx}.metadata: missing `{key}`")
+        try:
+            captured = dt.datetime.fromisoformat(str(meta.get("captured_at", "")).replace("Z", "+00:00")).date()
+            age_days = (today - captured).days
+            if age_days > freshness_days and not warn_only:
+                errors.append(f"{ctx}: baseline older than {freshness_days} days ({age_days}d)")
+        except Exception:
+            errors.append(f"{ctx}: invalid metadata.captured_at")
+        if str(meta.get("dataset_lock_hash", "")) != expected_lock:
+            errors.append(f"{ctx}: dataset_lock_hash mismatch (expected {expected_lock})")
+        tv = meta.get("tool_versions", {})
+        for key in ("k6", "kind", "kubectl", "helm"):
+            expected = str(tools.get(key, ""))
+            got = str(tv.get(key, ""))
+            if expected and got and expected != got:
+                errors.append(f"{ctx}: tool version mismatch {key}: baseline={got} expected={expected}")
+    return (0 if not errors else 1), (["perf baseline contract check passed"] if not errors else errors)
+
+
+def check_ops_load_pinned_queries_lock_native(repo_root: Path) -> tuple[int, list[str]]:
+    src = repo_root / "ops" / "load" / "queries" / "pinned-v1.json"
+    lock_path = repo_root / "ops" / "load" / "queries" / "pinned-v1.lock"
+    schema_path = repo_root / "ops" / "_schemas" / "load" / "pinned-queries-lock.schema.json"
+    queries = json.loads(src.read_text(encoding="utf-8"))
+    lock = json.loads(lock_path.read_text(encoding="utf-8"))
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    errors: list[str] = []
+    if not isinstance(lock, dict):
+        return 1, ["pinned query lock must be object"]
+    for key in schema.get("required", []):
+        if key not in lock:
+            errors.append(f"pinned query lock missing required key: {key}")
+    file_hash = hashlib.sha256(src.read_bytes()).hexdigest()
+    if lock.get("file_sha256") != file_hash:
+        errors.append("pinned query lock drift: file hash mismatch")
+    expected: dict[str, str] = {}
+    for group in ("cheap", "heavy"):
+        for q in queries.get(group, []):
+            expected[q] = hashlib.sha256(q.encode()).hexdigest()
+    if lock.get("query_hashes") != expected:
+        errors.append("pinned query lock drift: query hash mismatch")
+    return (0 if not errors else 1), (["pinned query lock check passed"] if not errors else errors)
+
+
+def check_ops_load_runbook_suite_names_native(repo_root: Path) -> tuple[int, list[str]]:
+    manifest = json.loads((repo_root / "ops" / "load" / "suites" / "suites.json").read_text(encoding="utf-8"))
+    runbook = (repo_root / "docs" / "operations" / "runbooks" / "load-failure-triage.md").read_text(encoding="utf-8")
+    missing = [str(s.get("name")) for s in manifest.get("suites", []) if isinstance(s, dict) and s.get("name") and str(s.get("name")) not in runbook]
+    if missing:
+        return 1, [f"runbook missing suite name: {name}" for name in missing]
+    return 0, ["runbook suite-name coverage passed"]
 
 
 def check_ops_shell_policy(repo_root: Path) -> tuple[int, list[str]]:
@@ -489,13 +584,9 @@ _OPS_SCRIPT_CHECKS: tuple[tuple[str, str, str, callable], ...] = (
     ("ops.script.ops_lint_policy_ops_smoke_budget_check_py", "run ops script check `ops/_lint/policy/ops-smoke-budget-check.py`", "ops/_lint/policy/ops-smoke-budget-check.py", _make_ops_script_check("ops/_lint/policy/ops-smoke-budget-check.py")),
     ("ops.script.ops_datasets_scripts_py_cache_budget_check_py", "run ops script check `ops/datasets/scripts/py/cache_budget_check.py`", "ops/datasets/scripts/py/cache_budget_check.py", _make_ops_script_check("ops/datasets/scripts/py/cache_budget_check.py")),
     ("ops.script.ops_datasets_scripts_py_cache_threshold_check_py", "run ops script check `ops/datasets/scripts/py/cache_threshold_check.py`", "ops/datasets/scripts/py/cache_threshold_check.py", _make_ops_script_check("ops/datasets/scripts/py/cache_threshold_check.py")),
-    ("ops.script.ops_load_scripts_check_abuse_scenarios_required_py", "run ops script check `ops/load/scripts/check_abuse_scenarios_required.py`", "ops/load/scripts/check_abuse_scenarios_required.py", _make_ops_script_check("ops/load/scripts/check_abuse_scenarios_required.py")),
     ("ops.script.ops_load_scripts_check_baseline_update_policy_sh", "run ops script check `ops/load/scripts/check_baseline_update_policy.sh`", "ops/load/scripts/check_baseline_update_policy.sh", _make_ops_script_check("ops/load/scripts/check_baseline_update_policy.sh")),
-    ("ops.script.ops_load_scripts_check_perf_baselines_py", "run ops script check `ops/load/scripts/check_perf_baselines.py`", "ops/load/scripts/check_perf_baselines.py", _make_ops_script_check("ops/load/scripts/check_perf_baselines.py")),
-    ("ops.script.ops_load_scripts_check_pinned_queries_lock_py", "run ops script check `ops/load/scripts/check_pinned_queries_lock.py`", "ops/load/scripts/check_pinned_queries_lock.py", _make_ops_script_check("ops/load/scripts/check_pinned_queries_lock.py")),
     ("ops.script.ops_load_scripts_check_prereqs_sh", "run ops script check `ops/load/scripts/check_prereqs.sh`", "ops/load/scripts/check_prereqs.sh", _make_ops_script_check("ops/load/scripts/check_prereqs.sh")),
     ("ops.script.ops_load_scripts_check_regression_py", "run ops script check `ops/load/scripts/check_regression.py`", "ops/load/scripts/check_regression.py", _make_ops_script_check("ops/load/scripts/check_regression.py")),
-    ("ops.script.ops_load_scripts_check_runbook_suite_names_py", "run ops script check `ops/load/scripts/check_runbook_suite_names.py`", "ops/load/scripts/check_runbook_suite_names.py", _make_ops_script_check("ops/load/scripts/check_runbook_suite_names.py")),
     ("ops.script.ops_load_scripts_regression_check_py", "run ops script check `ops/load/scripts/regression_check.py`", "ops/load/scripts/regression_check.py", _make_ops_script_check("ops/load/scripts/regression_check.py")),
     ("ops.script.ops_obs_scripts_check_metric_cardinality_py", "run ops script check `ops/obs/scripts/check_metric_cardinality.py`", "ops/obs/scripts/check_metric_cardinality.py", _make_ops_script_check("ops/obs/scripts/check_metric_cardinality.py")),
     ("ops.script.ops_obs_scripts_check_pack_upgrade_sh", "run ops script check `ops/obs/scripts/check_pack_upgrade.sh`", "ops/obs/scripts/check_pack_upgrade.sh", _make_ops_script_check("ops/obs/scripts/check_pack_upgrade.sh")),
@@ -573,6 +664,10 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("ops.script.ops_lint_check_surfaces_py", "ops", "run ops script check `ops/_lint/check-surfaces.py`", 1000, check_ops_lint_check_surfaces_native, fix_hint="Fix repo surface violations in configs/repo/surfaces.json or root entries."),
     CheckDef("ops.script.ops_lint_check_layer_contract_drift_py", "ops", "run ops script check `ops/_lint/check_layer_contract_drift.py`", 1000, check_ops_lint_layer_contract_drift_native, fix_hint="Regenerate ops/_meta/layer-contract.json and commit deterministic output."),
     CheckDef("ops.script.ops_lint_layout_check_layer_contract_drift_py", "ops", "run ops script check `ops/_lint/layout/check_layer_contract_drift.py`", 1000, check_ops_lint_layer_contract_drift_native, fix_hint="Regenerate ops/_meta/layer-contract.json and commit deterministic output."),
+    CheckDef("ops.script.ops_load_scripts_check_abuse_scenarios_required_py", "ops", "run ops script check `ops/load/scripts/check_abuse_scenarios_required.py`", 1000, check_ops_load_abuse_scenarios_required_native, fix_hint="Keep required load abuse suites in ops/load/suites/suites.json with nightly+must_pass contracts."),
+    CheckDef("ops.script.ops_load_scripts_check_perf_baselines_py", "ops", "run ops script check `ops/load/scripts/check_perf_baselines.py`", 1000, check_ops_load_perf_baselines_native, fix_hint="Fix perf baseline metadata, freshness, dataset lock hash, and tool-version alignment."),
+    CheckDef("ops.script.ops_load_scripts_check_pinned_queries_lock_py", "ops", "run ops script check `ops/load/scripts/check_pinned_queries_lock.py`", 1000, check_ops_load_pinned_queries_lock_native, fix_hint="Regenerate pinned query lock so file/query hashes match SSOT."),
+    CheckDef("ops.script.ops_load_scripts_check_runbook_suite_names_py", "ops", "run ops script check `ops/load/scripts/check_runbook_suite_names.py`", 1000, check_ops_load_runbook_suite_names_native, fix_hint="Update load runbook to include all suite names from ops/load/suites/suites.json."),
     *(
         CheckDef(check_id, "ops", description, 1000, fn, fix_hint=f"Fix failures in `{script_rel}` or replace it with atlasctl-native check logic.")
         for (check_id, description, script_rel, fn) in _OPS_SCRIPT_CHECKS

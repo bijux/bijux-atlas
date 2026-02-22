@@ -54,11 +54,7 @@ ops/k8s/tests/render_summary.py
 ops/k8s/tests/validate_report.py
 ops/k8s/tests/validate_suites.py
 ops/load/reports/generate.py
-ops/load/scripts/check_abuse_scenarios_required.py
-ops/load/scripts/check_perf_baselines.py
-ops/load/scripts/check_pinned_queries_lock.py
 ops/load/scripts/check_regression.py
-ops/load/scripts/check_runbook_suite_names.py
 ops/load/scripts/compare_runs.py
 ops/load/scripts/generate_report.py
 ops/load/scripts/regression_check.py
