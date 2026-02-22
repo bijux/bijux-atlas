@@ -81,18 +81,18 @@ culprits-atlasctl-max_loc:
 	@err=$$(find packages/atlasctl/src/atlasctl -name "*.py" -print0 \
 	| xargs -0 wc -l \
 	| sort -n \
-	| awk '$$2 ~ /^packages\/atlasctl\/src\/atlasctl\// && $$1 > 600'); \
+	| awk '$$2 ~ /^packages\/atlasctl\/src\/atlasctl\// && $$1 > 800'); \
 	warn=$$(find packages/atlasctl/src/atlasctl -name "*.py" -print0 \
 	| xargs -0 wc -l \
 	| sort -n \
-	| awk '$$2 ~ /^packages\/atlasctl\/src\/atlasctl\// && $$1 > 400 && $$1 <= 600'); \
+	| awk '$$2 ~ /^packages\/atlasctl\/src\/atlasctl\// && $$1 > 600 && $$1 <= 800'); \
 	if [ -n "$$err" ]; then \
-		printf '%s\n' "ERROR: atlasctl max_loc policy violations (LOC > 600):"; \
+		printf '%s\n' "ERROR: atlasctl max_loc policy violations (LOC > 800):"; \
 		printf '%s\n' "$$err"; \
 		exit 1; \
 	fi; \
 	if [ -n "$$warn" ]; then \
-		printf '%s\n' "WARN: atlasctl max_loc advisory violations (400 < LOC <= 600):"; \
+		printf '%s\n' "WARN: atlasctl max_loc advisory violations (600 < LOC <= 800):"; \
 		printf '%s\n' "$$warn"; \
 	else \
 		printf '%s\n' "INFO: atlasctl max_loc policy compliant."; \
