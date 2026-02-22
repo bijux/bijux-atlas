@@ -24,7 +24,7 @@ Outdated examples can mislead operators and break onboarding workflows.
 
 ## How to verify
 ```bash
-$ make docs-hardening
+$ make docs
 ```
 
 Expected output: example extraction, snippet execution, and schema checks pass.

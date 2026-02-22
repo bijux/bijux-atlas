@@ -29,7 +29,7 @@ This section does not duplicate full command reference details from each tooling
 ## How to verify
 
 - `make scripts-check`
-- `make docs-check`
+- `make docs`
 
 ## See also
 

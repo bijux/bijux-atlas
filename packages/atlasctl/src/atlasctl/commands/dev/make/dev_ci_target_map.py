@@ -62,8 +62,6 @@ def _map_to_intent(target: str) -> str | None:
         return "atlasctl dev test --contracts"
     if target == "ci":
         return "atlasctl ci run --json --out-dir artifacts/reports/atlasctl/suite-ci"
-    if target == "internal/ci/run":
-        return "atlasctl ci run --json"
     if target == "ci-fast":
         return "atlasctl ci fast --json"
     if target == "ci-all":

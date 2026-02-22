@@ -37,7 +37,7 @@ APPROVED_MAKE_TARGETS = {
     "ci-init",
     "ci-artifacts",
     "ci-help",
-    "docs-hardening",
+    "docs",
     "ops-down",
     "ops-k6-version-check",
     "ops-perf-e2e",
