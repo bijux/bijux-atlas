@@ -5555,6 +5555,48 @@
     {
       "area": "bypass",
       "default_enabled": true,
+      "description": "require bypass entries to have declared validating test coverage",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_has_test_coverage",
+      "domain": "policies",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_has_test_coverage",
+      "impl_ref": {
+        "callable": "check_policies_bypass_has_test_coverage",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Map bypass sources/entries to validating tests in configs/policy/bypass-test-coverage.json.",
+        "legacy_id": "policies.bypass_has_test_coverage",
+        "module": "atlasctl.checks.domains.policies.make",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 800,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require bypass entries to have declared validating test coverage"
+    },
+    {
+      "area": "bypass",
+      "default_enabled": true,
       "description": "require bypass entries to link issue id or local doc reference",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_policies_bypass_has_ticket_or_doc_ref",
       "domain": "policies",

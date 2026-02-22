@@ -3731,6 +3731,34 @@
     },
     {
       "area": "bypass",
+      "callable": "check_policies_bypass_has_test_coverage",
+      "category": "hygiene",
+      "description": "require bypass entries to have declared validating test coverage",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Map bypass sources/entries to validating tests in configs/policy/bypass-test-coverage.json.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_has_test_coverage",
+      "legacy_id": "policies.bypass_has_test_coverage",
+      "module": "atlasctl.checks.domains.policies.make",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
       "callable": "check_policies_bypass_has_ticket_or_doc_ref",
       "category": "hygiene",
       "description": "require bypass entries to link issue id or local doc reference",
