@@ -3179,6 +3179,82 @@
       "title": "enforce checks tree depth, module-density budget, and naming hygiene"
     },
     {
+      "area": "ci",
+      "default_enabled": true,
+      "description": "enforce workflow artifact upload roots and always-on policy",
+      "domain": "repo",
+      "gate": "repo",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_ci_artifact_upload_policy",
+      "impl_ref": {
+        "callable": "check_ci_artifact_upload_policy",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Upload artifacts only from approved roots and always use if: always().",
+        "legacy_id": "repo.ci_artifact_upload_policy",
+        "module": "atlasctl.checks.repo.native.workflow_contracts",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 300,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "title": "enforce workflow artifact upload roots and always-on policy"
+    },
+    {
+      "area": "ci",
+      "default_enabled": true,
+      "description": "enforce workflow command policy (make/atlasctl wrappers only)",
+      "domain": "repo",
+      "gate": "repo",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_ci_workflow_policy",
+      "impl_ref": {
+        "callable": "check_ci_workflow_policy",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Use make thin wrappers or ./bin/atlasctl in workflows; avoid python -m atlasctl and raw cargo commands.",
+        "legacy_id": "repo.ci_workflow_policy",
+        "module": "atlasctl.checks.repo.native.workflow_contracts",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 300,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "title": "enforce workflow command policy (make/atlasctl wrappers only)"
+    },
+    {
       "area": "cli",
       "default_enabled": true,
       "description": "restrict direct argparse parser construction to canonical parser modules",
