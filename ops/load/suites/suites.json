@@ -47,7 +47,7 @@
       "name": "cold-start-prefetch-5pods",
       "purpose": "measure cold-start latency across five warmed pods with pinned dataset",
       "kind": "script",
-      "script": "ops/load/scripts/cold_start_prefetch_5pods.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/load/run/cold_start_prefetch_5pods.py",
       "must_pass": true,
       "run_in": ["full", "nightly", "load-nightly"],
       "expected_metrics": ["pod_cold_start_ms"],

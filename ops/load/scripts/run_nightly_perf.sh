@@ -29,7 +29,7 @@ done
 if command -v kubectl >/dev/null 2>&1; then
   kubectl -n "${ATLAS_E2E_NAMESPACE:-atlas-e2e}" top pods > "$ART/kubectl_top_pods_start.txt" 2>/dev/null || true
 fi
-OUT_DIR="$ART/cold-start" "$ROOT/ops/load/scripts/cold_start_benchmark.sh"
+OUT_DIR="$ART/cold-start" ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/load/run/cold_start_benchmark.py
 
 ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_prereqs.py
 ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/load/contracts/validate_suite_manifest.py

@@ -22,7 +22,7 @@ ATLAS_BASE_URL="$BASE_URL" ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/c
 
 # cold start result
 if [ "$PR_MODE" != "1" ]; then
-  OUT_DIR="$ART" "$ROOT/ops/load/scripts/cold_start_benchmark.sh" >/dev/null
+  OUT_DIR="$ART" ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/load/run/cold_start_benchmark.py >/dev/null
   if [ -f "$ART/result.json" ]; then
     cp "$ART/result.json" "$ART/cold_start.result.json"
   fi
