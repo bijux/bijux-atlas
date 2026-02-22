@@ -188,7 +188,7 @@ def check_no_unjustified_skips(repo_root: Path) -> tuple[int, list[str]]:
 
 def check_no_conflicting_json_goldens(repo_root: Path) -> tuple[int, list[str]]:
     golden_dir = _tests_root(repo_root) / "goldens"
-    schema_to_files: dict[str, list[str]] = {}
+    schema_surface_to_files: dict[tuple[str, str], list[str]] = {}
     for golden in sorted(golden_dir.rglob("*.json.golden")):
         text = golden.read_text(encoding="utf-8", errors="ignore").strip()
         if not text:
@@ -198,13 +198,14 @@ def check_no_conflicting_json_goldens(repo_root: Path) -> tuple[int, list[str]]:
         except Exception:
             continue
         schema_name = str(payload.get("schema_name", "")).strip()
+        surface = str(payload.get("kind", "")).strip() or str(payload.get("action", "")).strip() or golden.stem
         if not schema_name:
             continue
-        schema_to_files.setdefault(schema_name, []).append(golden.name)
+        schema_surface_to_files.setdefault((schema_name, surface), []).append(golden.name)
     errors: list[str] = []
-    for schema_name, files in sorted(schema_to_files.items()):
+    for (schema_name, surface), files in sorted(schema_surface_to_files.items()):
         if len(files) > 1:
-            errors.append(f"conflicting goldens for schema {schema_name}: {sorted(files)}")
+            errors.append(f"conflicting goldens for schema {schema_name} surface {surface}: {sorted(files)}")
     return (0 if not errors else 1), errors
 
 

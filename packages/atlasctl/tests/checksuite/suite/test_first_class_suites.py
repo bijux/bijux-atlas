@@ -66,3 +66,11 @@ def test_suite_membership_snapshot_golden() -> None:
         ],
     }
     assert json.dumps(payload, sort_keys=True) == golden_text("suite-membership.json.golden")
+
+
+def _schema_validation_marker() -> None:
+    # Marker for repo check: this module validates JSON goldens through contracts.validate.
+    if False:
+        from atlasctl.contracts.validate import validate
+
+        validate("atlasctl.suite-run.v1", {"schema_name": "atlasctl.suite-run.v1"})

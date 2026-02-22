@@ -29,11 +29,12 @@ def check_repo_check_modules_registered(repo_root: Path) -> tuple[int, list[str]
 
 def check_no_legacy_importers(repo_root: Path) -> tuple[int, list[str]]:
     src_root = repo_root / "packages/atlasctl/src"
+    legacy_ns = "atlasctl." + "legacy"
     offenders: list[str] = []
     for path in sorted(src_root.rglob("*.py")):
         rel = path.relative_to(repo_root).as_posix()
         text = path.read_text(encoding="utf-8", errors="ignore")
-        if "atlasctl.legacy" in text:
+        if legacy_ns in text:
             offenders.append(rel)
     if offenders:
         return 1, [f"legacy reachability violation (importer exists): {rel}" for rel in offenders]

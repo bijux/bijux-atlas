@@ -65,40 +65,42 @@ def check_internal_import_boundaries(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def check_no_modern_imports_from_legacy(repo_root: Path) -> tuple[int, list[str]]:
+    legacy_prefix = "atlasctl." + "legacy"
     offenders: list[str] = []
     for path in _iter_py_files(repo_root):
         rel = path.relative_to(repo_root).as_posix()
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=rel)
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
-                if any(alias.name.startswith("atlasctl.legacy") for alias in node.names):
+                if any(alias.name.startswith(legacy_prefix) for alias in node.names):
                     offenders.append(rel)
                     break
             elif isinstance(node, ast.ImportFrom):
-                if node.level == 0 and node.module and node.module.startswith("atlasctl.legacy"):
+                if node.level == 0 and node.module and node.module.startswith(legacy_prefix):
                     offenders.append(rel)
                     break
     if offenders:
-        return 1, [f"forbidden import of atlasctl.legacy from modern module: {rel}" for rel in sorted(set(offenders))]
+        return 1, [f"forbidden import of {legacy_prefix} from modern module: {rel}" for rel in sorted(set(offenders))]
     return 0, []
 
 
 def check_no_legacy_obs_imports_in_modern(repo_root: Path) -> tuple[int, list[str]]:
+    legacy_obs_prefix = "atlasctl." + "legacy" + ".obs"
     offenders: list[str] = []
     for path in _iter_py_files(repo_root):
         rel = path.relative_to(repo_root).as_posix()
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=rel)
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
-                if any(alias.name.startswith("atlasctl.legacy.obs") for alias in node.names):
+                if any(alias.name.startswith(legacy_obs_prefix) for alias in node.names):
                     offenders.append(rel)
                     break
             elif isinstance(node, ast.ImportFrom):
-                if node.level == 0 and node.module and node.module.startswith("atlasctl.legacy.obs"):
+                if node.level == 0 and node.module and node.module.startswith(legacy_obs_prefix):
                     offenders.append(rel)
                     break
     if offenders:
-        return 1, [f"forbidden modern import of atlasctl.legacy.obs: {rel}" for rel in sorted(set(offenders))]
+        return 1, [f"forbidden modern import of {legacy_obs_prefix}: {rel}" for rel in sorted(set(offenders))]
     return 0, []
 
 

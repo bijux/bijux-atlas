@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 
+from atlasctl.contracts.validate import validate
 from tests.helpers import golden_text, run_atlasctl
 
 
@@ -32,6 +33,12 @@ def test_registry_inventory_is_stable() -> None:
     assert checks.returncode == 0, checks.stderr
     assert commands.returncode == 0, commands.stderr
     assert suites.returncode == 0, suites.stderr
+    checks_payload = json.loads(checks.stdout)
+    commands_payload = json.loads(commands.stdout)
+    suites_payload = json.loads(suites.stdout)
+    validate(checks_payload["schema_name"], checks_payload)
+    validate(commands_payload["schema_name"], commands_payload)
+    validate(suites_payload["schema_name"], suites_payload)
     assert checks.stdout.strip() == _golden("list-checks.json.golden")
     assert commands.stdout.strip() == _golden("list-commands.json.golden")
     assert suites.stdout.strip() == _golden("list-suites.json.golden")
