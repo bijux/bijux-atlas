@@ -175,7 +175,14 @@ def main():
     parser.add_argument("--include-quarantined", action="store_true")
     args = parser.parse_args()
 
-    repo_root = Path(__file__).resolve().parents[3]
+    cur = Path(__file__).resolve()
+    repo_root = None
+    for parent in cur.parents:
+        if all((parent / marker).exists() for marker in ("makefiles", "packages", "configs", "ops")):
+            repo_root = parent
+            break
+    if repo_root is None:
+        raise RuntimeError("unable to resolve repo root")
     os.chdir(repo_root)
     run_id = os.environ.get("ATLAS_RUN_ID", "local")
     os.environ.setdefault("ATLAS_E2E_NAMESPACE", f"atlas-e2e-{run_id}")

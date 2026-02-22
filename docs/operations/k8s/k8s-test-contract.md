@@ -12,7 +12,7 @@ Locks deployment/runtime expectations to executable checks.
 
 ## Contracts
 
-- Harness: `ops/k8s/tests/harness.py` emits JSON + JUnit and enforces per-test `timeout_seconds`.
+- Harness: `packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/harness.py` emits JSON + JUnit and enforces per-test `timeout_seconds`.
 - Metadata SSOT: `ops/k8s/tests/manifest.json` defines groups/retries/owners.
 - Suite SSOT: `ops/k8s/tests/suites.json` defines public suite IDs.
 - Public suite IDs:

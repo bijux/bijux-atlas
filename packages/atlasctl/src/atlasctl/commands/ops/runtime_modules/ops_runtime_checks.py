@@ -65,7 +65,7 @@ LINT_CHECKS: list[OpsCheck] = [
     _check(
         "ops-k8s-suites-validate",
         "Validate k8s suite declarations",
-        ["python3", "ops/k8s/tests/validate_suites.py"],
+        ["python3", "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/validate_suites.py"],
         "Align k8s suite groups with manifest declarations.",
     ),
     _check(
@@ -300,4 +300,3 @@ def _run_simple_cmd(ctx: RunContext, cmd: list[str], report_format: str) -> int:
     else:
         print(output)
     return code
-

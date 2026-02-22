@@ -47,12 +47,6 @@ ops/datasets/scripts/py/catalog_validate.py
 ops/datasets/scripts/py/qc_diff.py
 ops/datasets/scripts/py/qc_summary.py
 ops/e2e/smoke/generate_report.py
-ops/k8s/tests/build_conformance_report.py
-ops/k8s/tests/compute_graceful_degradation_score.py
-ops/k8s/tests/harness.py
-ops/k8s/tests/render_summary.py
-ops/k8s/tests/validate_report.py
-ops/k8s/tests/validate_suites.py
 ops/load/reports/generate.py
 ops/obs/scripts/check_metric_cardinality.py
 ops/obs/scripts/compute_slo_burn.py
