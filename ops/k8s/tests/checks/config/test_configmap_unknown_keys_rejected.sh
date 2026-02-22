@@ -10,11 +10,11 @@ wait_ready
 
 CM_NAME="${SERVICE_NAME}-config"
 kubectl -n "$NS" patch configmap "$CM_NAME" --type merge -p '{"data":{"ATLAS_UNKNOWN_KEY_SHOULD_FAIL":"1"}}' >/dev/null
-if ./ops/run/k8s-validate-configmap-keys.sh "$NS" "$SERVICE_NAME"; then
+if ./bin/atlasctl ops k8s --report text validate-configmap-keys "$NS" "$SERVICE_NAME"; then
   echo "unknown configmap key guard failed: validator accepted unexpected key" >&2
   exit 1
 fi
 kubectl -n "$NS" patch configmap "$CM_NAME" --type json -p='[{"op":"remove","path":"/data/ATLAS_UNKNOWN_KEY_SHOULD_FAIL"}]' >/dev/null
-./ops/run/k8s-validate-configmap-keys.sh "$NS" "$SERVICE_NAME"
+./bin/atlasctl ops k8s --report text validate-configmap-keys "$NS" "$SERVICE_NAME"
 
 echo "configmap unknown key guard passed"

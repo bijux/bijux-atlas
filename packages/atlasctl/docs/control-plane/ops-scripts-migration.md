@@ -33,11 +33,11 @@ Classification legend:
 | `ops/run/e2e.sh` | glue | planned | `atlasctl ops e2e run` |
 | `ops/run/evidence-bundle.sh` | logic | deleted (atlasctl-native) | `atlasctl reporting bundle` |
 | `ops/run/evidence-open.sh` | glue | deleted (unused wrapper) | `make evidence/open` / `atlasctl reporting artifact-index` |
-| `ops/run/k8s-apply-config.sh` | logic | planned | `atlasctl ops k8s apply-config` |
+| `ops/run/k8s-apply-config.sh` | logic | deleted (atlasctl-native) | `atlasctl ops k8s apply-config` |
 | `ops/run/k8s-restart.sh` | glue | deleted (atlasctl-native restart helper) | `atlasctl ops restart` / `atlasctl ops stack restart` |
 | `ops/run/k8s-suite.sh` | glue | deleted (dead wrapper) | `atlasctl suite run ops-deploy` / `atlasctl ops k8s check` |
 | `ops/run/k8s-tests.sh` | glue | deleted (dead wrapper) | `atlasctl ops k8s check` |
-| `ops/run/k8s-validate-configmap-keys.sh` | logic | planned | `atlasctl ops k8s validate-configmap-keys` |
+| `ops/run/k8s-validate-configmap-keys.sh` | logic | deleted (atlasctl-native) | `atlasctl ops k8s validate-configmap-keys` |
 | `ops/run/load-smoke.sh` | glue | deleted (folded into orchestrator) | `atlasctl ops load smoke` / `atlasctl load smoke` |
 | `ops/run/load-suite.sh` | glue | planned | `atlasctl ops load run` |
 | `ops/run/obs-up.sh` | logic | deleted (atlasctl-native) | `atlasctl ops obs up` |

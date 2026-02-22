@@ -22,7 +22,7 @@ Does not provide in-process hot reload of ConfigMap values.
 
 - Config changes require rollout restart by design; pods do not auto-reload patched ConfigMap values.
 - Canonical workflow is values update -> `helm upgrade` -> rollout restart.
-- Unknown ConfigMap keys are rejected by `ops/run/k8s-validate-configmap-keys.sh` when `ATLAS_STRICT_CONFIG_KEYS=1`.
+- Unknown ConfigMap keys are rejected by `atlasctl ops k8s validate-configmap-keys` when `ATLAS_STRICT_CONFIG_KEYS=1`.
 - Version stamps are required: `ATLAS_CONFIG_RELEASE_ID` and `ATLAS_CONFIG_SCHEMA_VERSION`.
 
 ### Config Keys
