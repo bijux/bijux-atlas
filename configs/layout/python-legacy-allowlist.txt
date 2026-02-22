@@ -1,6 +1,5 @@
 # Legacy Python files allowed outside packages/atlasctl package.
 ops/_meta/generate_layer_contract.py
-ops/e2e/smoke/generate_report.py
 ops/load/reports/generate.py
 ops/obs/scripts/check_metric_cardinality.py
 ops/obs/scripts/compute_slo_burn.py
