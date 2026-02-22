@@ -8,7 +8,7 @@ import inspect
 import json
 from pathlib import Path
 
-from ...checks.registry import check_rename_aliases, check_tags, get_check, list_checks
+from ...checks.registry import check_rename_aliases, check_tags, get_check, list_checks, marker_vocabulary
 from ...checks.registry.ssot import check_id_alias_expiry
 from ...contracts.ids import CHECK_LIST, CHECK_TAXONOMY
 from ...contracts.validate_self import validate_self
@@ -302,6 +302,8 @@ def run(ctx, ns: argparse.Namespace) -> int:
                 grouped[f"{check.domain}-slow"].append(check.check_id)
             else:
                 grouped[f"{check.domain}-fast"].append(check.check_id)
+        for marker in marker_vocabulary():
+            grouped.setdefault(marker, [])
         if ctx.output_format == "json" or ns.json:
             payload = {
                 "schema_version": 1,

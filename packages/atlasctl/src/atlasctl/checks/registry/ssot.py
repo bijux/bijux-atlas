@@ -222,14 +222,22 @@ def load_registry_entries(repo_root: Path | None = None) -> tuple[RegistryEntry,
 
 
 def _to_catalog_entry(entry: RegistryEntry) -> dict[str, Any]:
-    markers = sorted(
-        {
-            *entry.groups,
-            entry.domain,
-            entry.speed,
-            *(("required",) if "internal" not in entry.groups and "internal-only" not in entry.groups else ()),
-        }
-    )
+    markers = {
+        *entry.groups,
+        entry.domain,
+        entry.speed,
+        *(("required",) if "internal" not in entry.groups and "internal-only" not in entry.groups else ()),
+    }
+    if "network" in entry.id:
+        markers.add("network")
+    if entry.domain == "docker" or "docker" in entry.id:
+        markers.add("docker")
+    if entry.domain == "ops" or "kube" in entry.id or "k8s" in entry.id:
+        markers.add("kube")
+    if "write" in entry.effects:
+        markers.add("fs-write")
+    if "git" in entry.id:
+        markers.add("git")
     return {
         "id": entry.id,
         "title": entry.description,
@@ -239,7 +247,7 @@ def _to_catalog_entry(entry: RegistryEntry) -> dict[str, Any]:
         "gate": entry.gate,
         "owners": [entry.owner],
         "groups": list(entry.groups),
-        "markers": markers,
+        "markers": sorted(markers),
         "default_enabled": True,
         "impl_ref": {
             "module": entry.module,

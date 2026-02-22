@@ -9,6 +9,7 @@ from .ssot import RegistryEntry, check_id_renames, legacy_check_by_id, load_regi
 
 _CHECKS_CACHE: tuple[CheckFactory, ...] | None = None
 _ALIASES_CACHE: dict[str, str] | None = None
+_MARKER_VOCAB: tuple[str, ...] = ("slow", "network", "kube", "docker", "fs-write", "git")
 
 
 def _build_check(**kwargs: object) -> CheckFactory:
@@ -63,6 +64,17 @@ def check_tags(check: CheckFactory) -> tuple[str, ...]:
     tags = set(check.tags)
     tags.add(check.domain)
     tags.add("slow" if check.slow else "fast")
+    check_id = check.check_id.lower()
+    if "network" in check_id:
+        tags.add("network")
+    if check.domain == "docker" or "docker" in check_id:
+        tags.add("docker")
+    if check.domain == "ops" or "kube" in check_id or "k8s" in check_id:
+        tags.add("kube")
+    if "write" in set(check.effects):
+        tags.add("fs-write")
+    if "git" in check_id:
+        tags.add("git")
     if "internal" not in tags and "internal-only" not in tags:
         tags.add("required")
     return tuple(sorted(tags))
@@ -106,3 +118,7 @@ def check_rename_aliases() -> dict[str, str]:
     _ensure()
     assert _ALIASES_CACHE is not None
     return dict(sorted(_ALIASES_CACHE.items()))
+
+
+def marker_vocabulary() -> tuple[str, ...]:
+    return _MARKER_VOCAB
