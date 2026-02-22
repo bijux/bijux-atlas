@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime as dt
 import re
 import json
+import subprocess
 from pathlib import Path
 
 from .check_ops_manifests_schema import run as run_ops_manifests_schema_check
@@ -363,6 +364,67 @@ def check_ops_no_new_run_scripts_without_approval_and_expiry(repo_root: Path) ->
     return (0 if not errs else 1), sorted(set(errs))
 
 
+def check_ops_obs_drift_goldens(repo_root: Path) -> tuple[int, list[str]]:
+    scripts = [
+        ["python3", "ops/obs/scripts/contracts/check_profile_goldens.py"],
+        ["python3", "ops/obs/scripts/contracts/check_metrics_golden.py"],
+        ["python3", "ops/obs/scripts/contracts/check_trace_golden.py"],
+    ]
+    errors: list[str] = []
+    for cmd in scripts:
+        proc = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
+        if proc.returncode != 0:
+            msg = ((proc.stdout or "") + "\n" + (proc.stderr or "")).strip().splitlines()
+            first = msg[0] if msg else "golden drift check failed"
+            errors.append(f"{' '.join(cmd)} => {first}")
+    return (0 if not errors else 1), errors
+
+
+def check_ops_chart_version_contract(repo_root: Path) -> tuple[int, list[str]]:
+    chart = repo_root / "ops/k8s/charts/bijux-atlas/Chart.yaml"
+    if not chart.exists():
+        return 1, ["missing ops/k8s/charts/bijux-atlas/Chart.yaml"]
+    text = chart.read_text(encoding="utf-8", errors="ignore")
+    version = ""
+    app_version = ""
+    for raw in text.splitlines():
+        line = raw.strip()
+        if line.startswith("version:"):
+            version = line.split(":", 1)[1].strip().strip('"').strip("'")
+        if line.startswith("appVersion:"):
+            app_version = line.split(":", 1)[1].strip().strip('"').strip("'")
+    errors: list[str] = []
+    semver_re = re.compile(r"^\d+\.\d+\.\d+(?:[-+][A-Za-z0-9.-]+)?$")
+    if not version:
+        errors.append("Chart.yaml missing version")
+    elif not semver_re.match(version):
+        errors.append(f"Chart.yaml version must be semver, got `{version}`")
+    if not app_version:
+        errors.append("Chart.yaml missing appVersion")
+    elif not semver_re.match(app_version):
+        errors.append(f"Chart.yaml appVersion must be semver, got `{app_version}`")
+    if version and app_version and version != app_version:
+        errors.append(f"Chart.yaml version/appVersion mismatch (`{version}` != `{app_version}`)")
+    return (0 if not errors else 1), errors
+
+
+def check_ops_clean_allowed_roots_only(repo_root: Path) -> tuple[int, list[str]]:
+    path = repo_root / "packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/ops_runtime_commands.py"
+    if not path.exists():
+        return 1, ["missing ops runtime commands module"]
+    text = path.read_text(encoding="utf-8", errors="ignore")
+    errors: list[str] = []
+    if 'ctx.repo_root / "ops" / "_generated"' not in text:
+        errors.append("ops clean must target only ops/_generated root")
+    if "shutil.rmtree(child)" not in text:
+        errors.append("ops clean implementation changed; expected child-only deletion under ops/_generated")
+    forbidden_markers = ['ctx.repo_root / "artifacts"', 'ctx.repo_root / "ops" / "_generated_committed"', "repo_root / \"/\""]
+    for marker in forbidden_markers:
+        if marker in text:
+            errors.append(f"ops clean must not target non-allowed root marker `{marker}`")
+    return (0 if not errors else 1), errors
+
+
 CHECKS: tuple[CheckDef, ...] = (
     CheckDef("ops.no_tracked_generated", "ops", "forbid tracked files in generated ops dirs", 800, check_ops_generated_tracked, fix_hint="Untrack generated ops files."),
     CheckDef("ops.generated_not_tracked_unless_allowed", "ops", "forbid tracked generated ops outputs unless explicitly allowlisted", 800, check_ops_generated_not_tracked_unless_allowed, fix_hint="Keep generated outputs untracked or move to committed generated roots."),
@@ -382,4 +444,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("ops.run_non_executable_unless_allowlisted", "ops", "ops/run scripts must be non-executable except allowlisted", 1000, check_ops_run_non_executable_unless_allowlisted, fix_hint="Remove executable bits from ops/run scripts after migration, or update allowlist intentionally."),
     CheckDef("ops.run_temp_script_approvals", "ops", "temporary ops/run migration script approvals must be valid and unexpired", 1000, check_ops_run_temp_script_approvals, fix_hint="Keep configs/policy/ops-run-temp-script-approvals.json entries valid, justified, and unexpired."),
     CheckDef("ops.no_new_run_scripts_without_approval_and_expiry", "ops", "forbid new ops/run scripts without valid temporary approval and expiry", 1000, check_ops_no_new_run_scripts_without_approval_and_expiry, fix_hint="Keep ops/run scripts allowlisted only via valid non-expired temp approvals, or migrate/delete them."),
+    CheckDef("ops.obs_drift_goldens", "ops", "fail on observability golden drift (generated vs golden)", 1000, check_ops_obs_drift_goldens, fix_hint="Regenerate/fix observability goldens and contracts."),
+    CheckDef("ops.chart_version_contract", "ops", "enforce chart/app version contract for bijux-atlas chart", 1000, check_ops_chart_version_contract, fix_hint="Keep Chart.yaml version and appVersion present, semver, and aligned."),
+    CheckDef("ops.clean_allowed_roots_only", "ops", "ensure ops clean only targets allowed generated roots", 1000, check_ops_clean_allowed_roots_only, fix_hint="Restrict ops clean to ops/_generated child deletion only."),
 )
