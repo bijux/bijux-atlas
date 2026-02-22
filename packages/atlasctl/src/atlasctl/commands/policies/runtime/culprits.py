@@ -26,6 +26,7 @@ def load_budgets(repo_root: Path) -> tuple[dict[str, int], list[BudgetRule], lis
     data = _load_pyproject(repo_root)
     budgets = data.get("tool", {}).get("atlasctl", {}).get("budgets", {})
     defaults = {
+        "max_entries_per_dir": int(budgets.get("max_entries_per_dir", budgets.get("max_modules_per_dir", 10))),
         "max_py_files_per_dir": int(budgets.get("max_py_files_per_dir", 10)),
         "max_modules_per_dir": int(budgets.get("max_modules_per_dir", budgets.get("max_py_files_per_dir", 10))),
         "max_shell_files_per_dir": int(budgets.get("max_shell_files_per_dir", 10)),
@@ -45,6 +46,7 @@ def load_budgets(repo_root: Path) -> tuple[dict[str, int], list[BudgetRule], lis
                 name=str(row.get("name", "rule")),
                 path_glob=str(row.get("path_glob", "packages/**")),
                 enforce=bool(row.get("enforce", True)),
+                max_entries_per_dir=int(row.get("max_entries_per_dir", defaults["max_entries_per_dir"])),
                 max_py_files_per_dir=int(row.get("max_py_files_per_dir", defaults["max_py_files_per_dir"])),
                 max_modules_per_dir=int(row.get("max_modules_per_dir", defaults["max_modules_per_dir"])),
                 max_shell_files_per_dir=int(row.get("max_shell_files_per_dir", defaults["max_shell_files_per_dir"])),
@@ -82,6 +84,7 @@ def _rule_for_dir(
         rule.name,
         rule.enforce,
         {
+            "max_entries_per_dir": rule.max_entries_per_dir,
             "max_py_files_per_dir": rule.max_py_files_per_dir,
             "max_modules_per_dir": rule.max_modules_per_dir,
             "max_shell_files_per_dir": rule.max_shell_files_per_dir,
@@ -400,6 +403,7 @@ def explain_budgets(repo_root: Path) -> dict[str, Any]:
                 "name": rule.name,
                 "path_glob": rule.path_glob,
                 "enforce": rule.enforce,
+                "max_entries_per_dir": rule.max_entries_per_dir,
                 "max_py_files_per_dir": rule.max_py_files_per_dir,
                 "max_modules_per_dir": rule.max_modules_per_dir,
                 "max_shell_files_per_dir": rule.max_shell_files_per_dir,
@@ -502,7 +506,7 @@ def check_budget_drift_approval(repo_root: Path) -> tuple[int, list[str]]:
     baseline = json.loads(baseline_path.read_text(encoding="utf-8"))
     current_defaults, _, _ = load_budgets(repo_root)
     loosened: list[str] = []
-    keys = ("max_py_files_per_dir", "max_modules_per_dir", "max_loc_per_file", "max_loc_per_dir")
+    keys = ("max_entries_per_dir", "max_py_files_per_dir", "max_modules_per_dir", "max_loc_per_file", "max_loc_per_dir")
     for key in keys:
         prev = int(baseline.get(key, current_defaults.get(key, 0)))
         cur = int(current_defaults.get(key, 0))
