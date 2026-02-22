@@ -201,6 +201,7 @@ def run(ctx, ns: argparse.Namespace) -> int:
             "checks": [
                 {
                     "id": check.check_id,
+                    "canonical_id": str(getattr(check, "canonical_id", check.check_id)),
                     "gate": next((tag.removeprefix("gate:") for tag in check.tags if tag.startswith("gate:")), check.domain),
                     "title": check.title,
                     "domain": check.domain,
@@ -336,6 +337,8 @@ def run(ctx, ns: argparse.Namespace) -> int:
             print(check.check_id)
         return 0
     if sub == "explain":
+        if "." in str(ns.check_id) and not bool(getattr(ns, "legacy_id", False)) and not (ctx.output_format == "json" or ns.json):
+            print(f"warning: using legacy dotted check id without --legacy-id: {ns.check_id}")
         check = get_check(ns.check_id)
         if check is None:
             print(f"unknown check id: {ns.check_id}")
@@ -369,6 +372,51 @@ def run(ctx, ns: argparse.Namespace) -> int:
         }
         print(json.dumps(payload, sort_keys=True) if ctx.output_format == "json" or ns.json else json.dumps(payload, indent=2, sort_keys=True))
         return 0
+    if sub == "doctor":
+        checks = list_checks()
+        canonical_errors = [check.check_id for check in checks if not str(check.check_id).startswith("checks_")]
+        seen: set[str] = set()
+        duplicate_errors: list[str] = []
+        for check in checks:
+            if check.check_id in seen:
+                duplicate_errors.append(check.check_id)
+            seen.add(check.check_id)
+        drift_errors: list[str] = []
+        try:
+            _out, changed = impl.generate_registry_json(ctx.repo_root, check_only=True)
+            if changed:
+                drift_errors.append("registry drift detected: run `./bin/atlasctl gen checks-registry`")
+        except Exception as exc:
+            drift_errors.append(f"registry generation failed: {exc}")
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "kind": "checks-doctor",
+            "status": "ok" if not (canonical_errors or duplicate_errors or drift_errors) else "error",
+            "summary": {
+                "total": len(checks),
+                "canonical_errors": len(canonical_errors),
+                "duplicate_errors": len(duplicate_errors),
+                "drift_errors": len(drift_errors),
+            },
+            "errors": {
+                "canonical": canonical_errors,
+                "duplicates": sorted(set(duplicate_errors)),
+                "drift": drift_errors,
+            },
+        }
+        if ctx.output_format == "json" or ns.json:
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            print(f"checks={payload['summary']['total']}")
+            print("checks doctor: pass" if payload["status"] == "ok" else "checks doctor: fail")
+            if payload["status"] != "ok":
+                for key, values in payload["errors"].items():
+                    if values:
+                        print(f"- {key}:")
+                        for value in values:
+                            print(f"  - {value}")
+        return 0 if payload["status"] == "ok" else ERR_USER
     if sub == "runtime-contracts":
         payload = impl.runtime_contracts_payload(ctx.repo_root)
         if ns.out_file:

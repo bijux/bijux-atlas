@@ -50,7 +50,7 @@ def _check_records() -> list[CheckRecord]:
         tags = check_tags(check)
         out.append(
             CheckRecord(
-                id=check.check_id,
+                id=str(check.canonical_id or check.check_id),
                 title=check.title,
                 domain=check.domain,
                 tags=tags,
@@ -108,12 +108,40 @@ def _render(payload: dict[str, object], as_json: bool) -> None:
 
 
 def run_list_command(ctx: RunContext, ns: argparse.Namespace) -> int:
-    as_json = ctx.output_format == "json" or bool(getattr(ns, "json", False))
+    requested_format = str(getattr(ns, "format", "") or "").strip().lower()
+    as_json = requested_format == "json" or ctx.output_format == "json" or bool(getattr(ns, "json", False))
     tags = _parse_tags(getattr(ns, "tags", ""))
     include_internal = bool(getattr(ns, "include_internal", False))
     pattern = getattr(ns, "pattern", None)
     if ns.list_kind == "checks":
         records = _filter_records(_check_records(), tags, pattern, include_internal)
+        if requested_format == "tree":
+            tree: dict[str, dict[str, list[str]]] = {}
+            for rec in records:
+                parts = rec.id.split("_")
+                domain = parts[1] if len(parts) > 1 else rec.domain
+                area = parts[2] if len(parts) > 2 else "general"
+                tree.setdefault(domain, {}).setdefault(area, []).append(rec.id)
+            if as_json:
+                payload = {
+                    "schema_version": 1,
+                    "tool": "atlasctl",
+                    "kind": "list-checks-tree",
+                    "status": "ok",
+                    "tree": [
+                        {"domain": domain, "areas": [{"name": area, "checks": sorted(ids)} for area, ids in sorted(areas.items())]}
+                        for domain, areas in sorted(tree.items())
+                    ],
+                }
+                _render(payload, as_json=True)
+                return 0
+            for domain, areas in sorted(tree.items()):
+                print(domain)
+                for area, ids in sorted(areas.items()):
+                    print(f"  {area}")
+                    for check_id in sorted(ids):
+                        print(f"    - {check_id}")
+            return 0
         payload = {
             "schema_version": 1,
             "tool": "atlasctl",
@@ -123,6 +151,7 @@ def run_list_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             "items": [
                 {
                     "id": rec.id,
+                    "canonical_id": rec.id,
                     "title": rec.title,
                     "domain": rec.domain,
                     "tags": list(rec.tags),
@@ -198,6 +227,7 @@ def configure_list_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
     parser = sub.add_parser("list", help="list checks, commands, and suites from canonical registries")
     parser.add_argument("list_kind", choices=["checks", "commands", "suites", "policies"])
     parser.add_argument("--json", action="store_true", help="emit JSON output")
+    parser.add_argument("--format", choices=["text", "json", "tree"], default="text", help="render format for list output")
     parser.add_argument("--tags", default="", help="comma-separated tag filters")
     parser.add_argument("--include-internal", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--pattern", help="substring or regex pattern filter")
