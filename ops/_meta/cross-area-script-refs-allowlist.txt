@@ -4,9 +4,9 @@ makefiles/cargo.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/cold_sta
 makefiles/cargo.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/run_nightly_perf.py
 makefiles/ops.mk|ops/datasets/scripts/publish_by_name.sh
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/datasets/cache_status.py
-makefiles/ops.mk|ops/datasets/scripts/sh/corruption_drill.sh
-makefiles/ops.mk|ops/datasets/scripts/sh/dataset_qc.sh
-makefiles/ops.mk|ops/datasets/scripts/sh/fetch_and_verify.sh
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/datasets/corruption_drill.py
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/datasets/dataset_qc.py
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/datasets/fetch_and_verify.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/datasets/pin_set.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/datasets/promotion_sim.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/datasets/snapshot_metadata.py
