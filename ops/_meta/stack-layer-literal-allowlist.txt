@@ -15,5 +15,5 @@ packages/atlasctl/src/atlasctl/commands/ops/stack/kind/up.py
 packages/atlasctl/src/atlasctl/commands/ops/stack/minio/bootstrap.py
 packages/atlasctl/src/atlasctl/commands/ops/stack/minio/rotate_creds.py
 packages/atlasctl/src/atlasctl/commands/ops/stack/registry/up.py
-ops/stack/tests/minio-invariants.sh
+packages/atlasctl/src/atlasctl/commands/ops/stack/tests/assets/minio_invariants.sh
 packages/atlasctl/src/atlasctl/commands/ops/stack/toxiproxy/bootstrap.py
