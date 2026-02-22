@@ -17,6 +17,8 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 - [Control Plane Suites](control-plane/suites.md)
 - [Suite Markers](control-plane/suite-markers.md)
 - [Legacy Policy](control-plane/legacy-policy.md)
+- [Bypass Policy](control-plane/bypass-policy.md)
+- [Bypass Removal Playbook](control-plane/bypass-removal-playbook.md)
 - [Shell Policy](control-plane/shell-policy.md)
 - [How To Split A Module](architecture/how-to-split-a-module.md)
 - [Budget Policies and Refactoring](architecture/budgets.md)
