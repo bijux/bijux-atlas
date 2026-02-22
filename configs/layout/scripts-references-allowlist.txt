@@ -159,7 +159,7 @@ packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/run_two_release_diff.py
 ops/e2e/smoke/queries.lock
 ops/e2e/suites/suites.json
 ops/fixtures/medium/v1/transcript-queries.v1.json
-ops/k8s/ci/install-matrix.sh
+packages/atlasctl/src/atlasctl/commands/ops/k8s/ci/install_matrix.py
 ops/k8s/tests/checksuite/checks/autoscaling/runtime/test_hpa_under_latency_metric.sh
 ops/k8s/tests/checksuite/checks/autoscaling/runtime/test_overload_hpa_trend.sh
 ops/k8s/tests/checksuite/checks/obs/contracts/test_values_contract.sh
