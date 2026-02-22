@@ -101,7 +101,11 @@ def main() -> int:
         check=True,
         cwd=str(root),
     )
-    subprocess.run(["python3", "ops/load/reports/generate.py"], check=True, cwd=str(root))
+    subprocess.run(
+        ["python3", "packages/atlasctl/src/atlasctl/commands/ops/load/reports/generate_markdown_summary.py"],
+        check=True,
+        cwd=str(root),
+    )
     return 0
 
 
