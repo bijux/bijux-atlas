@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "milestones": [
+    {
+      "id": "MILESTONE-BYPASS-2026Q2",
+      "title": "Remove scanner self-usage bypasses",
+      "target_date": "2026-06-30",
+      "bypass_ids": [
+        "ATLAS-EXC-0101",
+        "ATLAS-EXC-0102"
+      ]
+    }
+  ]
+}

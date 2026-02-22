@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ast
+import json
 import re
 from collections import defaultdict
 from pathlib import Path
@@ -29,8 +30,17 @@ def _iter_modules(src_root: Path) -> dict[str, Path]:
     return modules
 
 
+def _path_to_module(rel: str) -> str:
+    prefix = "packages/atlasctl/src/atlasctl/"
+    if not rel.startswith(prefix) or not rel.endswith(".py"):
+        return ""
+    body = rel[len(prefix) : -3]
+    return "atlasctl." + body.replace("/", ".")
+
+
 _PY_PATH_RE = re.compile(r"(packages/atlasctl/src/atlasctl/[A-Za-z0-9_./-]+\.py)")
 _MOD_REF_RE = re.compile(r"(atlasctl(?:\.[A-Za-z_][A-Za-z0-9_]*)+)")
+_DEAD_ALLOWLIST = Path("configs/policy/dead-modules-allowlist.json")
 
 
 def _collect_path_references(repo_root: Path) -> set[str]:
@@ -143,6 +153,27 @@ def analyze_dead_modules(repo_root: Path) -> dict[str, object]:
             }
         )
 
+    allowlist_importers: list[dict[str, object]] = []
+    allowlist_path = repo_root / _DEAD_ALLOWLIST
+    if allowlist_path.exists():
+        payload = json.loads(allowlist_path.read_text(encoding="utf-8"))
+        for row in payload.get("allow", []) if isinstance(payload, dict) else []:
+            if not isinstance(row, dict):
+                continue
+            rel = str(row.get("path", "")).strip()
+            if not rel.endswith(".py"):
+                continue
+            module = _path_to_module(rel)
+            inbound_refs = sorted(inbound.get(module, set())) if module else []
+            allowlist_importers.append(
+                {
+                    "path": rel,
+                    "reason": str(row.get("reason", "")).strip(),
+                    "imported_by": inbound_refs,
+                    "importer_count": len(inbound_refs),
+                }
+            )
+
     return {
         "schema_version": 1,
         "tool": "atlasctl",
@@ -150,4 +181,5 @@ def analyze_dead_modules(repo_root: Path) -> dict[str, object]:
         "total_modules": len(module_map),
         "candidate_count": len(candidates),
         "candidates": candidates,
+        "allowlist_importers": allowlist_importers,
     }
