@@ -147,7 +147,7 @@ def check_ops_lint_layer_contract_drift_native(repo_root: Path) -> tuple[int, li
         return 1, rows
     after = contract.read_text(encoding="utf-8")
     if before != after:
-        return 1, ["layer-contract drift detected: run ops/_meta/generate_layer_contract.py and commit the result"]
+        return 1, ["layer-contract drift detected: run packages/atlasctl/src/atlasctl/commands/ops/meta/generate_layer_contract.py and commit the result"]
     json.loads(after)
     return 0, ["layer contract drift check passed"]
 

@@ -209,7 +209,7 @@ ops/obs/tests/test_profiles.sh
 ops/obs/tests/test_prom_outage.sh
 ops/obs/tests/test_slo_burn_determinism.sh
 ops/obs/tests/test_toxiproxy_latency_drill.sh
-ops/report/incident_repro.sh
+packages/atlasctl/src/atlasctl/reporting/tools/incident_repro.py
 atlasctl ops deploy
 ./bin/atlasctl ops doctor --report text
 atlasctl ops check

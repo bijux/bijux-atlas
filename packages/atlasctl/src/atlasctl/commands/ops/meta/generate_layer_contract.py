@@ -1,11 +1,11 @@
-#!/usr/bin/env python3
 from __future__ import annotations
 
 import json
 import re
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+
+ROOT = Path(__file__).resolve().parents[7]
 OUT = ROOT / "ops" / "_meta" / "layer-contract.json"
 VALUES = ROOT / "ops" / "k8s" / "charts" / "bijux-atlas" / "values.yaml"
 CHART = ROOT / "ops" / "k8s" / "charts" / "bijux-atlas" / "Chart.yaml"
@@ -92,27 +92,16 @@ def main() -> int:
             "selector": {"app": name if name != "otel" else "otel-collector"},
         }
 
-    observed_ports = {
-        "atlas": {"service": atlas_port, "container": atlas_port},
-    }
+    observed_ports = {"atlas": {"service": atlas_port, "container": atlas_port}}
     for name, text in stack_texts.items():
         svc = _service_ports(text)
         dep = _deployment_ports(text)
         if name == "otel":
-            observed_ports[name] = {
-                "grpc": svc.get("grpc", dep.get("grpc", 4317)),
-                "http": svc.get("http", dep.get("http", 4318)),
-            }
+            observed_ports[name] = {"grpc": svc.get("grpc", dep.get("grpc", 4317)), "http": svc.get("http", dep.get("http", 4318))}
         elif name == "minio":
-            observed_ports[name] = {
-                "api": svc.get("api", dep.get("api", 9000)),
-                "console": svc.get("console", dep.get("console", 9001)),
-            }
+            observed_ports[name] = {"api": svc.get("api", dep.get("api", 9000)), "console": svc.get("console", dep.get("console", 9001))}
         else:
-            observed_ports[name] = {
-                "service": next(iter(svc.values()), 0),
-                "container": next(iter(dep.values()), next(iter(svc.values()), 0)),
-            }
+            observed_ports[name] = {"service": next(iter(svc.values()), 0), "container": next(iter(dep.values()), next(iter(svc.values()), 0))}
 
     data = {
         "contract_version": "1.0.0",
@@ -131,18 +120,11 @@ def main() -> int:
             "obs": {"may_reference": ["obs", "k8s", "stack", "load", "e2e", "run", "_lib", "configs"]},
             "load": {"may_reference": ["load", "e2e", "run", "_lib", "configs"]},
         },
-        "ssot": {
-            "namespaces": "configs/ops/namespaces.json",
-            "ports": "configs/ops/ports.json",
-            "profiles": "ops/stack/profiles.json",
-        },
+        "ssot": {"namespaces": "configs/ops/namespaces.json", "ports": "configs/ops/ports.json", "profiles": "ops/stack/profiles.json"},
         "namespaces": namespaces_ssot,
         "services": services,
         "ports": ports_ssot,
-        "labels": {
-            "required": ["app.kubernetes.io/name", "app.kubernetes.io/instance"],
-            "required_annotations": [],
-        },
+        "labels": {"required": ["app.kubernetes.io/name", "app.kubernetes.io/instance"], "required_annotations": []},
         "release_metadata": {
             "required_fields": ["release_name", "namespace", "chart_name", "chart_version", "app_version"],
             "defaults": {
@@ -155,7 +137,6 @@ def main() -> int:
         },
     }
 
-    # Surface drift in generator output if observed runtime ports disagree with declared SSOT.
     if observed_ports != ports_ssot:
         print("warning: observed stack/chart ports differ from configs/ops/ports.json; SSOT value is emitted")
     if not PROFILES_SSOT.exists():
