@@ -34,6 +34,33 @@ jobs:
         if: always()
         run: |
           ./bin/atlasctl policies bypass report --out artifacts/reports/atlasctl/policies-bypass-report.json --report json > artifacts/reports/atlasctl/policies-bypass-report.status.json
+          ./bin/atlasctl policies bypass inventory --report json > artifacts/reports/atlasctl/policies-bypass-inventory.json
+      - name: Bypass inventory trend snapshot
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path(".")
+          inv = json.loads((root / "artifacts/reports/atlasctl/policies-bypass-inventory.json").read_text())
+          baseline = json.loads((root / "configs/policy/bypass-count-baseline.json").read_text())
+          current = int(inv.get("entry_count", 0))
+          max_entries = int(baseline.get("max_entries", 0))
+          payload = {
+            "schema_version": 1,
+            "kind": "bypass-inventory-trend",
+            "comparison": "baseline",
+            "current_entry_count": current,
+            "baseline_max_entries": max_entries,
+            "delta_vs_baseline": current - max_entries,
+            "status": "ok" if current <= max_entries else "regressed",
+            "source_report": "artifacts/reports/atlasctl/policies-bypass-inventory.json",
+            "baseline_file": "configs/policy/bypass-count-baseline.json"
+          }
+          out = root / "artifacts/reports/atlasctl/policies-bypass-trend.json"
+          out.parent.mkdir(parents=True, exist_ok=True)
+          out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+          PY
       - name: Migration progress gate
         run: |
           ./bin/atlasctl internal migration-progress --json > artifacts/reports/atlasctl/migration-progress.ci.json
@@ -66,6 +93,8 @@ jobs:
           path: |
             artifacts/reports/atlasctl/policies-bypass-report.json
             artifacts/reports/atlasctl/policies-bypass-report.status.json
+            artifacts/reports/atlasctl/policies-bypass-inventory.json
+            artifacts/reports/atlasctl/policies-bypass-trend.json
       - name: Upload public surface snapshot
         if: always()
         uses: actions/upload-artifact@v4
