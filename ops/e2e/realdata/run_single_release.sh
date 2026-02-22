@@ -14,6 +14,6 @@ python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/datasets/publish_by_n
 )
 python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/warmup.py"
 python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/smoke_queries.py"
-"$ROOT/ops/e2e/realdata/verify_snapshots.sh"
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/verify_snapshots.py"
 
 echo "realdata single-release scenario passed"

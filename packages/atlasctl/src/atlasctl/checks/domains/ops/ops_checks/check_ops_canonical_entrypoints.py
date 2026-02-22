@@ -50,6 +50,8 @@ if "./ops/e2e/scripts/up.sh" in ops_mk or "./ops/e2e/scripts/down.sh" in ops_mk:
     errors.append("ops-stack up/down must not call legacy e2e up/down scripts")
 
 for path in [ROOT / "ops/e2e/realdata/run_single_release.sh", ROOT / "ops/e2e/realdata/run_two_release_diff.sh"]:
+    if not path.exists():
+        continue
     txt = path.read_text(encoding="utf-8")
     if "/ops/e2e/scripts/deploy_atlas.sh" in txt:
         errors.append(f"{path.relative_to(ROOT)} must use atlasctl ops deploy")
