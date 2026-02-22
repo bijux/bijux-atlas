@@ -1,0 +1,33 @@
+{
+  "schema_name": "atlasctl.checks-catalog.v1",
+  "schema_version": 1,
+  "kind": "atlasctl-checks-catalog",
+  "checks": [
+    {
+      "id": "checks_repo_module_size",
+      "title": "enforce module size budget",
+      "description": "enforce module size budget",
+      "domain": "repo",
+      "area": "layout",
+      "gate": "repo",
+      "owners": [
+        "platform"
+      ],
+      "groups": [
+        "repo"
+      ],
+      "markers": [
+        "required"
+      ],
+      "default_enabled": true,
+      "impl_ref": {
+        "module": "atlasctl.checks.repo.enforcement.package_shape",
+        "callable": "check_module_size",
+        "timeout_ms": 400,
+        "speed": "fast",
+        "severity": "error",
+        "category": "hygiene"
+      }
+    }
+  ]
+}

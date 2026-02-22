@@ -24,7 +24,7 @@ from ...core.runtime.paths import write_text_file
 try:
     import tomllib  # type: ignore[attr-defined]
 except ModuleNotFoundError:  # pragma: no cover
-    import tomli as tomllib  # type: ignore[no-redef]
+    tomllib = importlib.import_module("tomli")  # type: ignore[assignment]
 
 try:
     import jsonschema
@@ -34,7 +34,7 @@ except ModuleNotFoundError:  # pragma: no cover
 
 REGISTRY_TOML = Path("packages/atlasctl/src/atlasctl/checks/REGISTRY.toml")
 REGISTRY_JSON = Path("packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json")
-REGISTRY_SCHEMA = Path("packages/atlasctl/src/atlasctl/contracts/schema/schemas/checks.registry.v1.schema.json")
+REGISTRY_SCHEMA = Path("packages/atlasctl/src/atlasctl/contracts/schema/schemas/atlasctl.checks-registry.v1.schema.json")
 CHECKS_CATALOG_JSON = Path("packages/atlasctl/src/atlasctl/registry/checks_catalog.json")
 CHECKS_CATALOG_SCHEMA = Path("packages/atlasctl/src/atlasctl/contracts/schema/schemas/atlasctl.checks-catalog.v1.schema.json")
 RENAMES_JSON = Path("configs/policy/target-renames.json")
@@ -384,7 +384,7 @@ def write_registry_toml(repo_root: Path, rows: list[dict[str, Any]]) -> Path:
         "# This file is the SSOT for atlasctl checks. Keep entries sorted by `id`.",
         "# Regenerate with: ./bin/atlasctl gen checks-registry",
         "",
-        'schema = "checks.registry.v1"',
+        'schema = "atlasctl.checks-registry.v1"',
         "",
     ]
     def q(s: str) -> str:

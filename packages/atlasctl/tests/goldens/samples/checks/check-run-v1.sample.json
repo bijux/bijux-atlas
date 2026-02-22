@@ -1,0 +1,30 @@
+{
+  "schema_name": "atlasctl.check-run.v1",
+  "schema_version": 1,
+  "tool": "atlasctl",
+  "kind": "check-run",
+  "run_id": "atlas-sample-run",
+  "status": "ok",
+  "summary": {
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "total": 1,
+    "duration_ms": 12
+  },
+  "rows": [
+    {
+      "id": "checks_repo_module_size",
+      "title": "enforce module size budget",
+      "domain": "repo",
+      "status": "PASS",
+      "duration_ms": 12,
+      "reason": "",
+      "hints": [],
+      "owners": [
+        "platform"
+      ],
+      "artifacts": []
+    }
+  ]
+}
