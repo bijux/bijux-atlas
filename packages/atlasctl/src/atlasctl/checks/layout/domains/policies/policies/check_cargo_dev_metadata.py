@@ -40,15 +40,12 @@ def main() -> int:
 
     if "fmt" not in targets:
         errors.append("missing required dev.mk target: fmt")
-    if "fmt-all" not in targets:
-        errors.append("missing required dev.mk target: fmt-all")
-    if recipe_by_target.get("fmt-all") != "@./bin/atlasctl dev fmt --all":
-        errors.append("fmt-all must reference canonical full fmt gate (`@./bin/atlasctl dev fmt --all`)")
-
-    for base in ("fmt", "lint", "test", "audit", "coverage", "check"):
-        full = f"{base}-all"
-        if base in targets and full not in targets:
-            errors.append(f"missing required full variant for `{base}`: expected `{full}`")
+    required = {"fmt", "lint", "test", "test-all", "coverage", "check", "atlasctl-check"}
+    for target in sorted(required):
+        if target not in targets:
+            errors.append(f"missing required dev.mk target: {target}")
+    if recipe_by_target.get("atlasctl-check") != "@./bin/atlasctl check run --group repo":
+        errors.append("atlasctl-check must reference canonical repo checks gate (`@./bin/atlasctl check run --group repo`)")
 
     if errors:
         print("dev wrapper metadata check failed", file=sys.stderr)
