@@ -16,10 +16,8 @@ Run `atlasctl` in environments without outbound network access.
 ## Recommended Setup
 
 ```bash
-make scripts-venv
-make scripts-install
+make deps-sync
 make scripts-test
-BIJUX_SCRIPTS_TEST_NO_NETWORK=1 make scripts-test-hermetic
 ```
 
 ## CI/Container Notes

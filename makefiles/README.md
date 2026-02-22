@@ -84,8 +84,8 @@ Keeps operational entrypoints stable, discoverable, and auditable through `make`
 - `make ops/check`: Fast ops verification lane.
 - `make ops/smoke`: Explicit ops smoke lane.
 - `make ops/suite`: Explicit ops suite lane.
-- `make scripts/all`: Scripts lint/tests/audit lane.
-- `make scripts/check`: Deterministic scripts checks lane.
+- `make scripts-all`: Scripts lint/tests/audit lane.
+- `make scripts-check`: Deterministic scripts checks lane.
 - `make configs/all`: Config schema + drift lane.
 - `make configs/check`: Config schema + drift checks.
 - `make budgets/check`: Universal budget SSOT + relaxation expiry checks.

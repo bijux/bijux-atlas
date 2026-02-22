@@ -7,7 +7,7 @@ Use this table to migrate renamed or aliased make targets.
 | `local` | `quick` | `deprecated` |
 | `local-full` | `local/all` | `deprecated` |
 | `contracts` | `policies/all` | `deprecated` |
-| `hygiene` | `scripts/all` | `deprecated` |
+| `hygiene` | `scripts-all` | `deprecated` |
 | `config-validate` | `configs/all` | `deprecated` |
 | `ci` | `ci/all` | `deprecated` |
 | `nightly` | `nightly/all` | `deprecated` |

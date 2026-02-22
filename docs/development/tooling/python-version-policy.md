@@ -16,5 +16,5 @@
 
 ```bash
 make tooling-versions
-make scripts-lock-check
+make deps-lock
 ```

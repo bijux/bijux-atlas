@@ -12,10 +12,10 @@
 
 ## Enforcement
 - The module import graph is enforced by native `atlasctl check` gates.
-- CI/local scripts gate runs `atlasctl check all` in `make scripts-check`.
+- CI/local scripts gate runs the canonical scripts suite via `make scripts-check`.
 
 ## Usage
-- `make scripts-install`
+- `make deps-sync`
 - `make scripts-run CMD="doctor --json"`
 - `make scripts-check`
 - `make scripts-test`
