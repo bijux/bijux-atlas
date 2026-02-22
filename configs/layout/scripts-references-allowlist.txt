@@ -171,7 +171,7 @@ ops/k8s/tests/checksuite/checks/perf/degradation/test_store_outage_under_load.sh
 ops/k8s/tests/checksuite/checks/perf/pressure/test_noisy_neighbor_cpu_throttle.sh
 ops/k8s/tests/checksuite/checks/rollout/test_kind_version_drift.sh
 ops/k8s/tests/checksuite/checks/security/test_image_digest_policy.sh
-ops/k8s/tests/suite.sh
+packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/run_suite.py
 packages/atlasctl/src/atlasctl/commands/ops/load/run/compare_redis.py
 packages/atlasctl/src/atlasctl/commands/ops/load/run/load_under_rollback.py
 packages/atlasctl/src/atlasctl/commands/ops/load/run/load_under_rollout.py

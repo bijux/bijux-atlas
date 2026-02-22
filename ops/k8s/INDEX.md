@@ -8,7 +8,7 @@ Own Helm chart install profiles and Kubernetes-only gates.
 
 ## Suites
 - `ops/k8s/tests/suites.json`
-- Runner: `ops/k8s/tests/suite.sh --suite <suite-id>`
+- Runner: `bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/run_suite.py --suite <suite-id>`
 - Generated test surface: `ops/k8s/tests/INDEX.md`
 
 ## Contracts
