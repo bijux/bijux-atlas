@@ -717,6 +717,21 @@ echo "k8s apply-config passed (values=${VALUES_FILE})"
     return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
 
 
+def _ops_e2e_run_native(ctx: RunContext, report_format: str, suite: str) -> int:
+    script = f"""
+set -euo pipefail
+. ./ops/_lib/common.sh
+ops_init_run_id
+export RUN_ID="$OPS_RUN_ID"
+export ARTIFACT_DIR="$OPS_RUN_DIR"
+ops_env_load
+ops_entrypoint_start "ops-e2e"
+ops_version_guard python3 kubectl helm
+exec ./ops/e2e/runner/suite.sh --suite "{suite}"
+"""
+    return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
+
+
 
 
 

@@ -4,9 +4,9 @@ Canonical page: `docs/operations/e2e/realdata-drills.md`
 
 ## Canonical Runner
 
-- `./ops/run/e2e.sh --suite realdata`
-- `./ops/run/e2e.sh --suite realdata --fast`
-- `./ops/run/e2e.sh --suite realdata --no-deploy`
+- `./bin/atlasctl ops e2e run --suite realdata`
+- `./bin/atlasctl ops e2e run --suite realdata --fast`
+- `./bin/atlasctl ops e2e run --suite realdata --no-deploy`
 
 Compatibility alias:
 - `make ops-realdata`
@@ -30,7 +30,7 @@ Compatibility alias:
 - `make ops-observability-validate`
 - `make ops-load-smoke`
 - `make ops-dataset-qc`
-- `./ops/run/e2e.sh --suite realdata`
+- `./bin/atlasctl ops e2e run --suite realdata`
 
 ## Full Flows
 

@@ -505,7 +505,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             scenario = str(getattr(ns, "scenario", "") or "").strip()
             if scenario:
                 suite = scenario
-            return impl._run_simple_cmd(ctx, shell_script_command("ops/run/e2e.sh", "--suite", suite), ns.report)
+            return impl._ops_e2e_run_native(ctx, ns.report, str(suite))
         if ns.ops_cmd == "load" and sub == "run":
             suite = getattr(ns, "suite", "mixed-80-20")
             return impl._run_simple_cmd(ctx, ["env", f"SUITE={suite}", *shell_script_command("ops/run/load-suite.sh")], ns.report)

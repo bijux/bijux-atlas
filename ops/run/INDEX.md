@@ -12,7 +12,7 @@ Single executable script surface for ops commands.
 - `ops/run/stack-down.sh`
 - `ops/run/warm-entrypoint.sh`
 - `ops/run/deploy-atlas.sh`
-- `ops/run/e2e.sh`
+- `atlasctl ops e2e run`
 - `ops/run/load-suite.sh`
 
 ## Suites
