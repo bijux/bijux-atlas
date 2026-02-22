@@ -5,11 +5,11 @@ Do not edit rows manually; regenerate via `atlasctl contracts generate --generat
 
 | schema_name | version | file | sha256_16 |
 |---|---:|---|---|
-| atlasctl.check-list.v1 | 1 | atlasctl.check-list.v1.schema.json | `34b683b40cda96eb` |
+| atlasctl.check-list.v1 | 1 | atlasctl.check-list.v1.schema.json | `84f1382153b984af` |
 | atlasctl.check-run.v1 | 1 | atlasctl.check-run.v1.schema.json | `37135d04b9a739d5` |
-| atlasctl.check-taxonomy.v1 | 1 | atlasctl.check-taxonomy.v1.schema.json | `ff5f89cc200d7047` |
-| atlasctl.checks-catalog.v1 | 1 | atlasctl.checks-catalog.v1.schema.json | `c5c5ab6380285cf0` |
-| atlasctl.checks-registry.v1 | 1 | atlasctl.checks-registry.v1.schema.json | `718c7dd8a5ad504e` |
+| atlasctl.check-taxonomy.v1 | 1 | atlasctl.check-taxonomy.v1.schema.json | `cd9739a960547e3b` |
+| atlasctl.checks-catalog.v1 | 1 | atlasctl.checks-catalog.v1.schema.json | `b2cc2c3c8150cd48` |
+| atlasctl.checks-registry.v1 | 1 | atlasctl.checks-registry.v1.schema.json | `680fcfca8048aa88` |
 | atlasctl.commands.v1 | 1 | atlasctl.commands.v1.schema.json | `85a3fe7e9d88e85b` |
 | atlasctl.explain.v1 | 1 | atlasctl.explain.v1.schema.json | `0ea5e9b7d6ba22f0` |
 | atlasctl.help.v1 | 1 | atlasctl.help.v1.schema.json | `0afd4c50eba70e0f` |

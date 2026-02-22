@@ -1,22 +1,32 @@
 {
-  "schema_name": "atlasctl.checks-registry.v1",
-  "schema_version": 1,
-  "kind": "atlasctl-checks-registry",
   "checks": [
     {
-      "id": "checks_repo_module_size",
-      "domain": "repo",
-      "gate": "repo",
-      "area": "layout",
-      "owner": "platform",
-      "speed": "fast",
+      "area": "registry",
+      "callable": "check_registry_integrity",
+      "description": "validate checks registry TOML/JSON integrity and drift",
+      "domain": "checks",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Run ./bin/atlasctl gen checks-registry.",
+      "gate": "checks",
       "groups": [
-        "repo"
+        "checks",
+        "registry"
       ],
-      "timeout_ms": 400,
-      "module": "atlasctl.checks.repo.enforcement.package_shape",
-      "callable": "check_module_size",
-      "description": "enforce module size budget"
+      "id": "checks_checks_registry_integrity",
+      "legacy_id": "checks.registry_integrity",
+      "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "slow",
+      "timeout_ms": 2500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
     }
-  ]
+  ],
+  "kind": "atlasctl-checks-registry",
+  "schema_name": "atlasctl.checks-registry.v1",
+  "schema_version": 1
 }

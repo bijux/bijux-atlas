@@ -89,7 +89,8 @@
           "speed": {
             "enum": [
               "fast",
-              "slow"
+              "slow",
+              "nightly"
             ],
             "type": "string"
           },

@@ -37,7 +37,8 @@
           "external_tools"
         ],
         "properties": {
-          "id": {"type": "string"},
+          "id": {"type": "string", "pattern": "^checks_[a-z0-9]+_[a-z0-9]+_[a-z0-9_]+$"},
+          "canonical_id": {"type": "string", "pattern": "^checks_[a-z0-9]+_[a-z0-9]+_[a-z0-9_]+$"},
           "domain": {"type": "string"},
           "description": {"type": "string"},
           "severity": {"enum": ["error", "warning"]},

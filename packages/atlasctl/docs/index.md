@@ -64,6 +64,7 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 ## Checks
 
 - [Check Domains](checks/index.md)
+- [Check ID Migration Rules](checks/check-id-migration-rules.md)
 
 ## Schemas
 
