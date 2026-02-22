@@ -296,7 +296,7 @@ def _render_suites_index(repo_root: Path) -> str:
     lines = [
         "# Suites",
         "",
-        "Generated from suite registries (`pyproject.toml` + `src/atlasctl/registry/suites.py`).",
+        "Generated from suite registries (`pyproject.toml` + `src/atlasctl/registry/suites_catalog.json`).",
         "",
         f"- Default suite: `{default_suite}`",
         "",

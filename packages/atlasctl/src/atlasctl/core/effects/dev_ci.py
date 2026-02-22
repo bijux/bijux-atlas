@@ -236,8 +236,8 @@ def run_ci_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             [sys.executable, "-m", "atlasctl.cli", "--quiet", "ci", "security-advisory-render", "--json"],
         ],
         "scripts": [["make", "-s", "scripts-check"]],
-        "pr": [[sys.executable, "-m", "atlasctl.cli", "--quiet", "--format", "json", "check", "run", "--group", "all", "--json"]],
-        "nightly": [[sys.executable, "-m", "atlasctl.cli", "--quiet", "--format", "json", "check", "run", "--group", "all", "--all", "--json"]],
+        "pr": [[sys.executable, "-m", "atlasctl.cli", "--quiet", "--format", "json", "suite", "run", "local", "--json"]],
+        "nightly": [[sys.executable, "-m", "atlasctl.cli", "--quiet", "--format", "json", "suite", "run", "slow", "--json"]],
         "fast": [["python3", "-m", "atlasctl.cli", "--quiet", "suite", "run", "fast", "--json"]],
         "contracts": [
             ["python3", "-m", "atlasctl.cli", "--quiet", "contracts", "check", "--checks", "endpoints"],

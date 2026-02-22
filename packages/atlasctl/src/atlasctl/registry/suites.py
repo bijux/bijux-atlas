@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import json
+from pathlib import Path
 
 from ..checks.registry import check_tags, list_checks
 
@@ -27,52 +29,29 @@ class SuiteManifestSpec:
     internal: bool = False
 
 
-_SUITE_MANIFEST_SPECS: tuple[SuiteManifestSpec, ...] = (
-    SuiteManifestSpec("docs", ("docs",), ("PYTHONPATH",), ("read",), 120_000),
-    SuiteManifestSpec("dev", ("dev",), ("PYTHONPATH",), ("read", "process"), 180_000),
-    SuiteManifestSpec("ops", ("ops",), ("PYTHONPATH",), ("read", "process", "write"), 240_000),
-    SuiteManifestSpec("policies", ("policies",), ("PYTHONPATH",), ("read", "process"), 240_000),
-    SuiteManifestSpec("configs", ("configs",), ("PYTHONPATH",), ("read",), 120_000),
-    SuiteManifestSpec("local", ("fast",), ("PYTHONPATH",), ("read", "process"), 120_000),
-    SuiteManifestSpec("slow", ("slow",), ("PYTHONPATH",), ("read", "process"), 300_000),
-    SuiteManifestSpec("required", ("required",), ("PYTHONPATH",), ("read", "process"), 300_000),
-    SuiteManifestSpec("ci", ("required",), ("PYTHONPATH",), ("read", "process"), 420_000),
-    SuiteManifestSpec(
-        "required_proof",
-        ("required",),
-        ("PYTHONPATH",),
-        ("read", "process"),
-        480_000,
-        include_checks=(
-            "repo.dir_budget_py_files",
-            "repo.single_registry_module",
-            "repo.legacy_package_absent",
-            "repo.legacy_zero_importers",
-        ),
-    ),
-    SuiteManifestSpec(
-        "all",
-        ("docs", "dev", "ops", "policies", "configs"),
-        ("PYTHONPATH",),
-        ("read", "process", "write"),
-        480_000,
-        exclude_markers=("internal", "internal-only"),
-    ),
-    SuiteManifestSpec(
-        "internal",
-        ("internal", "internal-only"),
-        ("PYTHONPATH",),
-        ("read", "process", "write"),
-        600_000,
-        internal=True,
-    ),
-)
+_SUITES_CATALOG = Path(__file__).resolve().with_name("suites_catalog.json")
 
 _SUITE_MARKERS: tuple[str, ...] = ("required", "ci", "local", "slow")
 
 
 def suite_manifest_specs() -> tuple[SuiteManifestSpec, ...]:
-    return _SUITE_MANIFEST_SPECS
+    payload = json.loads(_SUITES_CATALOG.read_text(encoding="utf-8"))
+    rows = payload.get("suites", [])
+    specs: list[SuiteManifestSpec] = []
+    for row in rows:
+        specs.append(
+            SuiteManifestSpec(
+                name=str(row["name"]),
+                markers=tuple(str(x) for x in row.get("markers", [])),
+                required_env=tuple(str(x) for x in row.get("required_env", [])),
+                default_effects=tuple(str(x) for x in row.get("default_effects", [])),
+                time_budget_ms=int(row.get("time_budget_ms", 0)),
+                include_checks=tuple(str(x) for x in row.get("include_checks", [])),
+                exclude_markers=tuple(str(x) for x in row.get("exclude_markers", [])),
+                internal=bool(row.get("internal", False)),
+            )
+        )
+    return tuple(specs)
 
 
 def suite_markers() -> tuple[str, ...]:
