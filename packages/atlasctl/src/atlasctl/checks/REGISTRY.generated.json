@@ -1914,6 +1914,33 @@
     },
     {
       "area": "no",
+      "callable": "check_make_no_atlasctl_run_ops_run",
+      "category": "hygiene",
+      "description": "forbid make recipes from calling atlasctl run ./ops/run scripts",
+      "domain": "make",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Use atlasctl command surfaces directly instead of `atlasctl run ./ops/run/...`.",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_no_atlasctl_run_ops_run",
+      "legacy_id": "make.no_atlasctl_run_ops_run",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "no",
       "callable": "check_make_no_bypass_atlasctl_without_allowlist",
       "category": "hygiene",
       "description": "forbid make recipes bypassing atlasctl without explicit allowlist",
@@ -2200,6 +2227,33 @@
       ],
       "id": "checks_make_no_python_module_invocation",
       "legacy_id": "make.no_python_module_invocation",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "product",
+      "callable": "check_make_product_migration_complete_no_ops_run",
+      "category": "hygiene",
+      "description": "fail if product.mk still references ops/run during migration completion",
+      "domain": "make",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Replace product.mk ops/run references with atlasctl product/ops commands.",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_product_migration_complete_no_ops_run",
+      "legacy_id": "make.product_migration_complete_no_ops_run",
       "module": "atlasctl.checks.domains.policies.make.enforcement",
       "owner": "platform",
       "severity": "error",
@@ -2966,6 +3020,62 @@
       ],
       "id": "checks_ops_pins_update_is_deterministic",
       "legacy_id": "ops.pins_update_is_deterministic",
+      "module": "atlasctl.checks.domains.ops.ops_checks",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "run",
+      "callable": "check_ops_run_non_executable_unless_allowlisted",
+      "category": "hygiene",
+      "description": "ops/run scripts must be non-executable except allowlisted",
+      "domain": "ops",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Remove executable bits from ops/run scripts after migration, or update allowlist intentionally.",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_run_non_executable_unless_allowlisted",
+      "legacy_id": "ops.run_non_executable_unless_allowlisted",
+      "module": "atlasctl.checks.domains.ops.ops_checks",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "run",
+      "callable": "check_ops_run_only_allowlisted_scripts",
+      "category": "hygiene",
+      "description": "ops/run contains no scripts except explicitly allowed fixtures",
+      "domain": "ops",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Migrate behavior into atlasctl and delete ops/run scripts or extend transitional allowlist intentionally.",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_run_only_allowlisted_scripts",
+      "legacy_id": "ops.run_only_allowlisted_scripts",
       "module": "atlasctl.checks.domains.ops.ops_checks",
       "owner": "platform",
       "severity": "error",
