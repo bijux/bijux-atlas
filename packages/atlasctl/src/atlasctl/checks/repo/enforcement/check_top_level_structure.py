@@ -11,8 +11,6 @@ INTENDED = {
     "registry",
     "suite",
     "reporting",
-    "policies",
-    "internal",
 }
 TRANSITION_ALLOW = {"__pycache__"}
 MAX_TREE_DEPTH = 6
