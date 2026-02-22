@@ -31,7 +31,7 @@
     {
       "id": "ATLAS-LAYER-EXC-0005",
       "rule": "forbid_e2e_fixup_kubectl_calls",
-      "path": "ops/e2e/scripts/deploy_atlas.sh",
+      "path": "packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/deploy_atlas.py",
       "owner": "ops-platform",
       "issue": "ISSUE-ATLAS-LAYER-EXC-0005",
       "expiry": "2026-06-30",
@@ -67,7 +67,7 @@
     {
       "id": "ATLAS-LAYER-EXC-0010",
       "rule": "forbid_e2e_cluster_resource_mutations",
-      "path": "ops/e2e/scripts/deploy_atlas.sh",
+      "path": "packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/deploy_atlas.py",
       "owner": "ops-platform",
       "issue": "ISSUE-ATLAS-LAYER-EXC-0010",
       "expiry": "2026-06-30",

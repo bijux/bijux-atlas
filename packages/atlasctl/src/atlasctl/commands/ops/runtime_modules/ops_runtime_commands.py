@@ -1006,7 +1006,7 @@ if ! ops_context_guard "$profile"; then
   fi
 fi
 ops_context_guard "$profile"
-exec ./ops/e2e/scripts/deploy_atlas.sh
+exec ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/deploy_atlas.py
 """
     return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
 
