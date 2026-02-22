@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "approvals": [
+    {
+      "path": "configs/policy/forbidden-adjectives.json",
+      "term": "elite",
+      "reason": "Canonical forbidden-terms policy catalog",
+      "approval_id": "NAMING-0001",
+      "expires_on": "2099-12-31"
+    },
+    {
+      "path": "configs/policy/forbidden-adjectives.json",
+      "term": "refgrade",
+      "reason": "Canonical forbidden-terms policy catalog",
+      "approval_id": "NAMING-0001",
+      "expires_on": "2099-12-31"
+    },
+    {
+      "path": "configs/policy/forbidden-adjectives.json",
+      "term": "reference-grade",
+      "reason": "Canonical forbidden-terms policy catalog",
+      "approval_id": "NAMING-0001",
+      "expires_on": "2099-12-31"
+    },
+    {
+      "path": "configs/policy/forbidden-adjectives.json",
+      "term": "production-grade",
+      "reason": "Canonical forbidden-terms policy catalog",
+      "approval_id": "NAMING-0001",
+      "expires_on": "2099-12-31"
+    }
+  ]
+}

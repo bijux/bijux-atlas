@@ -37,8 +37,12 @@ def dispatch_command(
             if not second:
                 raise ScriptError("usage: atlasctl explain command <name>", ERR_CONFIG)
             return second
+        if first == "policy":
+            if not second:
+                raise ScriptError("usage: atlasctl explain policy <name>", ERR_CONFIG)
+            return f"policy:{second}"
         if second is not None:
-            raise ScriptError("usage: atlasctl explain command <name>", ERR_CONFIG)
+            raise ScriptError("usage: atlasctl explain command <name> | atlasctl explain policy <name>", ERR_CONFIG)
         return first
 
     if getattr(ns, "dry_run", False):
