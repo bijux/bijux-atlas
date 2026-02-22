@@ -5,8 +5,8 @@
 
 ## Summary
 
-- Tracked files: `2108`
-- Docs markdown files: `412`
+- Tracked files: `2564`
+- Docs markdown files: `429`
 - Script files under `scripts/`: `0`
 - Rust test files: `42`
 - Load suites in `ops/load/suites/suites.json`: `20`
@@ -15,8 +15,8 @@
 
 ## Naming Health
 
-- Forbidden-token hits: `2`
-- Non-kebab docs outside allowed exceptions: `24`
+- Forbidden-token hits: `4`
+- Non-kebab docs outside allowed exceptions: `28`
 - Non-kebab scripts under `scripts/`: `0`
 
 ## Load Suites
@@ -65,6 +65,8 @@
 ## Violations
 
 - `crates/bijux-atlas-ingest/tests/fixtures/policies/invalid_cds_phase.gff3`
+- `docs/ARCHITECTURE.md`
+- `docs/DECISIONS.md`
 - `docs/_style/CONCEPT_REGISTRY.md`
 - `docs/_style/DEPTH_POLICY.md`
 - `docs/_style/DEPTH_RUBRIC.md`
@@ -75,6 +77,8 @@
 - `docs/adrs/ADR-0005-security-defaults-and-enterprise-controls.md`
 - `docs/adrs/ADR-0006-atlas-py-vs-scripts-boundary.md`
 - `docs/adrs/ADR-0007-scripts-ssot-under-packages.md`
+- `docs/atlasctl/BOUNDARIES.md`
+- `docs/atlasctl/MODULE_MAP.md`
 - `docs/development/task-runner-removal-map.md`
 - `docs/operations/slo/BASELINE_UPDATE_POLICY.md`
 - `docs/operations/slo/CHANGELOG.md`
@@ -90,3 +94,5 @@
 - `docs/operations/slo/SLOS.md`
 - `docs/operations/slo/WHAT_WE_DONT_MEASURE_YET.md`
 - `docs/operations/slo/WHY_THESE_SLIS.md`
+- `packages/atlasctl/src/atlasctl/registry/ops_tasks_catalog.json`
+- `packages/atlasctl/tests/policysuite/repo/hygiene/test_required_phase7.py`
