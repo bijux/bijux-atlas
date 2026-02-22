@@ -83,7 +83,10 @@ def main() -> int:
         if storage_mode == 'persistent':
             subprocess.call(['kubectl','-n',obs_ns,'patch','deploy','atlas-observability-prometheus','--type=json','-p','[{"op":"replace","path":"/spec/template/spec/volumes/1","value":{"name":"data","persistentVolumeClaim":{"claimName":"atlas-observability-prometheus-data"}}}]'])
             subprocess.call(['kubectl','-n',obs_ns,'patch','deploy','atlas-observability-grafana','--type=json','-p','[{"op":"add","path":"/spec/template/spec/volumes/-","value":{"name":"grafana-data","persistentVolumeClaim":{"claimName":"atlas-observability-grafana-data"}}},{"op":"add","path":"/spec/template/spec/containers/0/volumeMounts/-","value":{"name":"grafana-data","mountPath":"/var/lib/grafana"}}]'])
-        subprocess.call(['bash', str(root/'ops/stack/minio/bootstrap.sh')], env={**os.environ, 'NS': os.environ.get('ATLAS_STACK_NAMESPACE', 'atlas-e2e')})
+        subprocess.call(
+            ['python3', str(root/'packages/atlasctl/src/atlasctl/commands/ops/stack/minio/bootstrap.py')],
+            env={**os.environ, 'NS': os.environ.get('ATLAS_STACK_NAMESPACE', 'atlas-e2e')},
+        )
         return subprocess.call(['python3', 'packages/atlasctl/src/atlasctl/commands/ops/stack/wait_ready.py', os.environ.get('ATLAS_STACK_NAMESPACE', 'atlas-e2e'), os.environ.get('ATLAS_E2E_TIMEOUT', '180s')])
     print(f'unknown profile: {profile} (expected: local-compose|kind|cluster)', file=sys.stderr)
     return 1

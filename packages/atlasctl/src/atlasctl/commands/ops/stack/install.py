@@ -58,11 +58,11 @@ def main() -> int:
         _run(['kubectl', 'apply', '-f', str(root / 'ops/stack/otel/otel-collector.yaml')], root)
     if enable_toxiproxy == '1':
         _run(['kubectl', 'apply', '-f', str(root / 'ops/stack/toxiproxy/toxiproxy.yaml')], root)
-        _run(['bash', str(root / 'ops/stack/toxiproxy/bootstrap.sh')], root)
+        _run(['python3', str(root / 'packages/atlasctl/src/atlasctl/commands/ops/stack/toxiproxy/bootstrap.py')], root)
 
     env = dict(os.environ)
     env['NS'] = stack_ns
-    _run(['bash', str(root / 'ops/stack/minio/bootstrap.sh')], root, env=env)
+    _run(['python3', str(root / 'packages/atlasctl/src/atlasctl/commands/ops/stack/minio/bootstrap.py')], root, env=env)
     _run(['python3', 'packages/atlasctl/src/atlasctl/commands/ops/stack/wait_ready.py', stack_ns, timeout], root)
     return 0
 
