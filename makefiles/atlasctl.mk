@@ -23,4 +23,17 @@ atlasctl-check-ops: ## Run atlasctl ops checks
 atlasctl-check-python: ## Run atlasctl python checks
 	@./bin/atlasctl check run --group python
 
-.PHONY: atlasctl-check atlasctl-check-repo atlasctl-check-make atlasctl-check-contracts atlasctl-check-docs atlasctl-check-ops atlasctl-check-python
+# Internal atlasctl dependency/tooling wrappers (migrated from scripts.mk)
+deps-check-venv: ## Validate dependency install/import in a clean temporary venv
+	@./bin/atlasctl deps check-venv
+
+deps-cold-start: ## Measure atlasctl import cold-start budget
+	@./bin/atlasctl deps cold-start --runs 3 --max-ms 500
+
+deps-lock: ## Refresh python lockfile deterministically via atlasctl
+	@./bin/atlasctl deps lock
+
+deps-sync: ## Install dependencies from lock into active interpreter
+	@./bin/atlasctl deps sync
+
+.PHONY: atlasctl-check atlasctl-check-repo atlasctl-check-make atlasctl-check-contracts atlasctl-check-docs atlasctl-check-ops atlasctl-check-python deps-check-venv deps-cold-start deps-lock deps-sync

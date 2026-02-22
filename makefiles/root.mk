@@ -11,10 +11,6 @@ include makefiles/dev.mk
 include makefiles/atlasctl.mk
 include makefiles/ci.mk
 include makefiles/docs.mk
-ATLAS_INCLUDE_SCRIPTS ?= 0
-ifeq ($(ATLAS_INCLUDE_SCRIPTS),1)
-include makefiles/scripts.mk
-endif
 include makefiles/registry.mk
 include makefiles/help.mk
 include makefiles/layout.mk
