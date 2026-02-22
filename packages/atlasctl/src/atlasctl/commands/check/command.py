@@ -962,7 +962,7 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if sub == "make-targets-drift":
         return _run(
             ctx,
-            ["python3", "packages/atlasctl/src/atlasctl/checks/make/impl/check_make_targets_drift.py"],
+            ["python3", "packages/atlasctl/src/atlasctl/checks/domains/policies/make/impl/check_make_targets_drift.py"],
         )
     if sub == "make-delegation-only":
         return _run(

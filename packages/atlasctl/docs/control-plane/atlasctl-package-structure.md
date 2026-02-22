@@ -20,8 +20,8 @@ This file declares the intended top-level module layout for `packages/atlasctl/s
 - Check implementations are consolidating under `checks/<domain>/...`.
 - Canonical checks command module is `commands/check/command.py`; `checks/command.py` is compatibility-only.
 - Old deep paths under `checks/layout/.../checks/` are compatibility shims; canonical implementations live under:
-  - `checks/make/impl/`
-  - `checks/ops/impl/`
+  - `checks/domains/policies/make/impl/`
+  - `checks/domains/ops/ops_checks/impl/`
 - Repo native check split modules are consolidated under:
   - `checks/repo/native/modules/`
   - `checks/repo/native/runtime_modules/`

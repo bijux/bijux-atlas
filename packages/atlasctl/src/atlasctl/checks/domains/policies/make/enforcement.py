@@ -5,8 +5,8 @@ import re
 import subprocess
 from pathlib import Path
 
-from ...commands.dev.make.public_targets import public_names
-from ..repo.native import (
+from .....commands.dev.make.public_targets import public_names
+from ....repo.native import (
     check_make_no_direct_python_script_invocations,
     check_make_scripts_references,
 )
@@ -134,11 +134,11 @@ def check_make_public_targets_documented(repo_root: Path) -> tuple[int, list[str
 
 
 def check_make_target_ownership_complete(repo_root: Path) -> tuple[int, list[str]]:
-    return _run_script(repo_root, "packages/atlasctl/src/atlasctl/checks/make/impl/check_make_target_ownership.py")
+    return _run_script(repo_root, "packages/atlasctl/src/atlasctl/checks/domains/policies/make/impl/check_make_target_ownership.py")
 
 
 def check_make_target_boundaries_enforced(repo_root: Path) -> tuple[int, list[str]]:
-    return _run_script(repo_root, "packages/atlasctl/src/atlasctl/checks/make/impl/check_makefile_target_boundaries.py")
+    return _run_script(repo_root, "packages/atlasctl/src/atlasctl/checks/domains/policies/make/impl/check_makefile_target_boundaries.py")
 
 
 def check_make_index_drift_contract(repo_root: Path) -> tuple[int, list[str]]:

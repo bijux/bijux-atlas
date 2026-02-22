@@ -14,8 +14,8 @@ from ..domains.ops.docker import CHECKS as CHECKS_DOCKER
 from ..domains.docs import CHECKS as CHECKS_DOCS
 from ..domains.internal.checks import CHECKS as CHECKS_CHECKS
 from ..domains.policies.licensing import CHECKS as CHECKS_LICENSE
-from ..make import CHECKS as CHECKS_MAKE
-from ..ops import CHECKS as CHECKS_OPS
+from ..domains.policies.make import CHECKS as CHECKS_MAKE
+from ..domains.ops.ops_checks import CHECKS as CHECKS_OPS
 from ..domains.dev.python import CHECKS as CHECKS_PYTHON
 from ..repo import CHECKS as CHECKS_REPO
 from ...core.owners import load_owner_catalog

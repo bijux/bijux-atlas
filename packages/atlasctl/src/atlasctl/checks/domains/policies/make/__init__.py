@@ -16,14 +16,14 @@ from .enforcement import (
     check_make_target_boundaries_enforced,
     check_make_target_ownership_complete,
 )
-from ..repo.native import (
+from ....repo.native import (
     check_make_command_allowlist,
     check_make_forbidden_paths,
     check_make_help,
     check_make_no_direct_python_script_invocations,
     check_make_scripts_references,
 )
-from ..core.base import CheckDef
+from ....core.base import CheckDef
 
 CHECKS: tuple[CheckDef, ...] = (
     CheckDef(
