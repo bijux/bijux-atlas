@@ -95,7 +95,7 @@
         {
           "id": "schema-evolution",
           "description": "Run schema evolution compatibility drill.",
-          "runner": "ops/e2e/realdata/schema_evolution.sh",
+          "runner": "python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/schema_evolution.py",
           "capabilities": ["datasets"],
           "destructive": true,
           "budget": {
