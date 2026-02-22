@@ -231,6 +231,44 @@
       "internal": false,
       "markers": [
         "ops",
+        "deploy"
+      ],
+      "name": "ops-deploy",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 300000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process",
+        "write"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "ops",
+        "load"
+      ],
+      "name": "ops-load",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 300000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process",
+        "write"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "ops",
         "slow"
       ],
       "name": "ops-nightly",
@@ -238,6 +276,44 @@
         "PYTHONPATH"
       ],
       "time_budget_ms": 360000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process",
+        "write"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "ops",
+        "obs"
+      ],
+      "name": "ops-obs",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 300000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process",
+        "write"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "ops",
+        "stack"
+      ],
+      "name": "ops-stack",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 300000
     },
     {
       "default_effects": [
@@ -274,6 +350,24 @@
         "PYTHONPATH"
       ],
       "time_budget_ms": 240000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process",
+        "write"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "product"
+      ],
+      "name": "product",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 300000
     },
     {
       "default_effects": [
