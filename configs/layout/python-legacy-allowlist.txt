@@ -99,7 +99,6 @@ ops/report/generate.py
 ops/report/make_confidence_scorecard.py
 ops/report/scorecard.py
 ops/report/slo_report.py
-ops/run/contract-report.py
 ops/stack/tests/check_live_layer_snapshot.py
 scripts/areas/check/check-no-adhoc-python.py
 scripts/areas/check/check-script-errors.py
