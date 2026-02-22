@@ -1,0 +1,733 @@
+{
+  "env": "kind",
+  "kind": "ops-k8s-render-summary",
+  "render_hash": "73878b62187b476560b3c3058fb37edd11aab1e3177d1be94ff709d57974248b",
+  "run_id": "atlas-20260222-191344-2fb0f5e5",
+  "schema_version": 1,
+  "source_manifest": "ops/k8s/tests/manifest.json",
+  "test_count": 79,
+  "tests": [
+    {
+      "groups": [
+        "autoscaling",
+        "chart-contract",
+        "hpa"
+      ],
+      "owner": "chart",
+      "script": "checks/autoscaling/contracts/test_hpa_behavior_contract.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "autoscaling",
+        "chart-contract",
+        "hpa"
+      ],
+      "owner": "chart",
+      "script": "checks/autoscaling/contracts/test_hpa_enabled_requires_metrics_stack.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "autoscaling",
+        "chart-contract",
+        "hpa"
+      ],
+      "owner": "chart",
+      "script": "checks/autoscaling/contracts/test_hpa_enabled_requires_resources.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "autoscaling",
+        "chart-contract",
+        "hpa"
+      ],
+      "owner": "chart",
+      "script": "checks/autoscaling/contracts/test_hpa_max_replicas_cap.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "autoscaling",
+        "chart-contract",
+        "hpa"
+      ],
+      "owner": "chart",
+      "script": "checks/autoscaling/contracts/test_hpa_metrics_names_contract.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "autoscaling",
+        "hpa"
+      ],
+      "owner": "chart",
+      "script": "checks/autoscaling/contracts/test_metrics_pipeline_ready.sh",
+      "timeout_seconds": 180
+    },
+    {
+      "groups": [
+        "autoscaling",
+        "flake-sensitive",
+        "hpa"
+      ],
+      "owner": "chart",
+      "script": "checks/autoscaling/runtime/test_hpa.sh",
+      "timeout_seconds": 420
+    },
+    {
+      "groups": [
+        "autoscaling",
+        "hpa"
+      ],
+      "owner": "chart",
+      "script": "checks/autoscaling/runtime/test_hpa_disabled_mode.sh",
+      "timeout_seconds": 240
+    },
+    {
+      "groups": [
+        "autoscaling",
+        "hpa"
+      ],
+      "owner": "chart",
+      "script": "checks/autoscaling/runtime/test_hpa_misconfig_negative.sh",
+      "timeout_seconds": 180
+    },
+    {
+      "groups": [
+        "autoscaling",
+        "hpa",
+        "resilience"
+      ],
+      "owner": "chart",
+      "script": "checks/autoscaling/runtime/test_hpa_under_inflight_metric.sh",
+      "timeout_seconds": 240
+    },
+    {
+      "groups": [
+        "autoscaling",
+        "hpa",
+        "resilience"
+      ],
+      "owner": "chart",
+      "script": "checks/autoscaling/runtime/test_hpa_under_latency_metric.sh",
+      "timeout_seconds": 240
+    },
+    {
+      "groups": [
+        "autoscaling",
+        "hpa",
+        "load",
+        "resilience"
+      ],
+      "owner": "chart",
+      "script": "checks/autoscaling/runtime/test_overload_hpa_trend.sh",
+      "timeout_seconds": 240
+    },
+    {
+      "groups": [
+        "chart-contract",
+        "config"
+      ],
+      "owner": "server",
+      "script": "checks/config/test_configmap.sh",
+      "timeout_seconds": 240
+    },
+    {
+      "groups": [
+        "chart-contract",
+        "config"
+      ],
+      "owner": "server",
+      "script": "checks/config/test_configmap_keys_match_runtime_expected.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "chart-contract",
+        "config"
+      ],
+      "owner": "server",
+      "script": "checks/config/test_configmap_must_exist.sh",
+      "timeout_seconds": 180
+    },
+    {
+      "groups": [
+        "chart-contract",
+        "config",
+        "docs"
+      ],
+      "owner": "server",
+      "script": "checks/config/test_configmap_schema_completeness.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "chart-contract",
+        "config",
+        "security"
+      ],
+      "owner": "server",
+      "script": "checks/config/test_configmap_unknown_keys_rejected.sh",
+      "timeout_seconds": 180
+    },
+    {
+      "groups": [
+        "chart-contract",
+        "config"
+      ],
+      "owner": "server",
+      "script": "checks/config/test_configmap_update_reload.sh",
+      "timeout_seconds": 300
+    },
+    {
+      "groups": [
+        "chart-contract",
+        "config"
+      ],
+      "owner": "server",
+      "script": "checks/config/test_configmap_version_stamp.sh",
+      "timeout_seconds": 180
+    },
+    {
+      "groups": [
+        "chart-contract",
+        "config"
+      ],
+      "owner": "chart",
+      "script": "checks/config/test_deployment_envFrom_configmap.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "readiness",
+        "resilience"
+      ],
+      "owner": "server",
+      "script": "checks/datasets/test_cached_only_mode.sh",
+      "timeout_seconds": 240
+    },
+    {
+      "groups": [
+        "datasets",
+        "jobs"
+      ],
+      "owner": "store",
+      "script": "checks/datasets/test_catalog_publish_job.sh",
+      "timeout_seconds": 300
+    },
+    {
+      "groups": [
+        "datasets",
+        "resilience"
+      ],
+      "owner": "server",
+      "script": "checks/datasets/test_dataset_missing_behavior.sh",
+      "timeout_seconds": 240
+    },
+    {
+      "groups": [
+        "profiles",
+        "registry"
+      ],
+      "owner": "store",
+      "script": "checks/datasets/test_multi_registry_profile.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "profiles",
+        "resilience"
+      ],
+      "owner": "server",
+      "script": "checks/datasets/test_offline_profile.sh",
+      "timeout_seconds": 360
+    },
+    {
+      "groups": [
+        "autoscaling",
+        "availability",
+        "pdb"
+      ],
+      "owner": "chart",
+      "script": "checks/datasets/test_pdb.sh",
+      "timeout_seconds": 300
+    },
+    {
+      "groups": [
+        "autoscaling",
+        "availability",
+        "chart-contract",
+        "pdb"
+      ],
+      "owner": "chart",
+      "script": "checks/datasets/test_pdb_required_when_replicas_gt1.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "readiness"
+      ],
+      "owner": "server",
+      "script": "checks/datasets/test_readiness_catalog_refresh.sh",
+      "timeout_seconds": 360
+    },
+    {
+      "groups": [
+        "readiness"
+      ],
+      "owner": "server",
+      "script": "checks/datasets/test_readiness_semantics.sh",
+      "timeout_seconds": 300
+    },
+    {
+      "groups": [
+        "datasets",
+        "jobs"
+      ],
+      "owner": "store",
+      "script": "checks/datasets/test_warmup_job.sh",
+      "timeout_seconds": 240
+    },
+    {
+      "groups": [
+        "ingress",
+        "profiles"
+      ],
+      "owner": "chart",
+      "script": "checks/network/test_ingress_profile.sh",
+      "timeout_seconds": 240
+    },
+    {
+      "groups": [
+        "networkpolicy",
+        "security"
+      ],
+      "owner": "chart",
+      "script": "checks/network/test_networkpolicy.sh",
+      "timeout_seconds": 240
+    },
+    {
+      "groups": [
+        "networkpolicy",
+        "security"
+      ],
+      "owner": "chart",
+      "script": "checks/network/test_networkpolicy_metadata_egress.sh",
+      "timeout_seconds": 240
+    },
+    {
+      "groups": [
+        "chart",
+        "contracts"
+      ],
+      "owner": "chart",
+      "script": "checks/obs/contracts/test_chart_contract_required_fields.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "chart"
+      ],
+      "owner": "chart",
+      "script": "checks/obs/contracts/test_chart_drift.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "chart",
+        "supply-chain"
+      ],
+      "owner": "chart",
+      "script": "checks/obs/contracts/test_helm_repo_pinning.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "chart"
+      ],
+      "owner": "chart",
+      "script": "checks/obs/contracts/test_helm_templates.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "chart",
+        "contracts"
+      ],
+      "owner": "chart",
+      "script": "checks/obs/contracts/test_layer_contract_render.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "chart",
+        "chart-contract"
+      ],
+      "owner": "chart",
+      "script": "checks/obs/contracts/test_no_checksum_rollout.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "chart",
+        "contracts"
+      ],
+      "owner": "chart",
+      "script": "checks/obs/contracts/test_values_contract.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "chart",
+        "chart-contract"
+      ],
+      "owner": "chart",
+      "script": "checks/obs/contracts/test_values_minimums.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "chart",
+        "chart-contract",
+        "profiles"
+      ],
+      "owner": "chart",
+      "script": "checks/obs/contracts/test_values_profiles_are_valid.sh",
+      "timeout_seconds": 240
+    },
+    {
+      "groups": [
+        "chart",
+        "chart-contract",
+        "schema"
+      ],
+      "owner": "chart",
+      "script": "checks/obs/contracts/test_values_schema_strict.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "contracts",
+        "observability"
+      ],
+      "owner": "observability",
+      "script": "checks/obs/runtime/test_logs_json.sh",
+      "timeout_seconds": 180
+    },
+    {
+      "groups": [
+        "chart-contract",
+        "observability"
+      ],
+      "owner": "observability",
+      "script": "checks/obs/runtime/test_observability_objects_contract.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "observability"
+      ],
+      "owner": "observability",
+      "script": "checks/obs/runtime/test_prometheus_rule.sh",
+      "timeout_seconds": 240
+    },
+    {
+      "groups": [
+        "observability",
+        "redis"
+      ],
+      "owner": "observability",
+      "script": "checks/obs/runtime/test_redis_backend_metric.sh",
+      "timeout_seconds": 180
+    },
+    {
+      "groups": [
+        "observability"
+      ],
+      "owner": "observability",
+      "script": "checks/obs/runtime/test_service_monitor.sh",
+      "timeout_seconds": 240
+    },
+    {
+      "groups": [
+        "admission-control",
+        "rate-limit",
+        "resilience"
+      ],
+      "owner": "server",
+      "script": "checks/perf/degradation/test_admission_control_api_behavior.sh",
+      "timeout_seconds": 240
+    },
+    {
+      "groups": [
+        "liveness",
+        "load"
+      ],
+      "owner": "server",
+      "script": "checks/perf/degradation/test_liveness_under_load.sh",
+      "timeout_seconds": 300
+    },
+    {
+      "groups": [
+        "admission-control",
+        "load",
+        "rate-limit",
+        "resilience"
+      ],
+      "owner": "server",
+      "script": "checks/perf/degradation/test_overload_graceful_degradation.sh",
+      "timeout_seconds": 240
+    },
+    {
+      "groups": [
+        "availability",
+        "load",
+        "resilience"
+      ],
+      "owner": "server",
+      "script": "checks/perf/degradation/test_pod_churn_under_load.sh",
+      "timeout_seconds": 360
+    },
+    {
+      "groups": [
+        "profiles",
+        "redis"
+      ],
+      "owner": "server",
+      "script": "checks/perf/degradation/test_redis_optional.sh",
+      "timeout_seconds": 240
+    },
+    {
+      "groups": [
+        "rate-limit",
+        "redis"
+      ],
+      "owner": "server",
+      "script": "checks/perf/degradation/test_redis_rate_limit.sh",
+      "timeout_seconds": 300
+    },
+    {
+      "groups": [
+        "load",
+        "resilience"
+      ],
+      "owner": "server",
+      "script": "checks/perf/degradation/test_store_outage_under_load.sh",
+      "timeout_seconds": 300
+    },
+    {
+      "groups": [
+        "resilience",
+        "resources"
+      ],
+      "owner": "server",
+      "script": "checks/perf/pressure/test_disk_pressure.sh",
+      "timeout_seconds": 300
+    },
+    {
+      "groups": [
+        "resilience",
+        "resources"
+      ],
+      "owner": "server",
+      "script": "checks/perf/pressure/test_memory_pressure.sh",
+      "timeout_seconds": 300
+    },
+    {
+      "groups": [
+        "load",
+        "resilience",
+        "resources"
+      ],
+      "owner": "server",
+      "script": "checks/perf/pressure/test_noisy_neighbor_cpu_throttle.sh",
+      "timeout_seconds": 300
+    },
+    {
+      "groups": [
+        "resources"
+      ],
+      "owner": "server",
+      "script": "checks/perf/pressure/test_resource_limits.sh",
+      "timeout_seconds": 240
+    },
+    {
+      "groups": [
+        "cluster",
+        "sanity"
+      ],
+      "owner": "stack",
+      "script": "checks/rollout/test_cluster_sanity.sh",
+      "timeout_seconds": 180
+    },
+    {
+      "groups": [
+        "install"
+      ],
+      "owner": "chart",
+      "script": "checks/rollout/test_install.sh",
+      "timeout_seconds": 300
+    },
+    {
+      "groups": [
+        "idempotency",
+        "install"
+      ],
+      "owner": "chart",
+      "script": "checks/rollout/test_install_twice.sh",
+      "timeout_seconds": 420
+    },
+    {
+      "groups": [
+        "cluster",
+        "install"
+      ],
+      "owner": "stack",
+      "script": "checks/rollout/test_kind_image_resolution.sh",
+      "timeout_seconds": 180
+    },
+    {
+      "groups": [
+        "cluster",
+        "contracts"
+      ],
+      "owner": "stack",
+      "script": "checks/rollout/test_kind_version_drift.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "availability",
+        "rollback"
+      ],
+      "owner": "chart",
+      "script": "checks/rollout/test_rollback.sh",
+      "timeout_seconds": 420
+    },
+    {
+      "groups": [
+        "availability",
+        "resilience",
+        "rolling-restart"
+      ],
+      "owner": "server",
+      "script": "checks/rollout/test_rolling_restart_no_downtime.sh",
+      "timeout_seconds": 300
+    },
+    {
+      "groups": [
+        "availability",
+        "rollout"
+      ],
+      "owner": "chart",
+      "script": "checks/rollout/test_rollout.sh",
+      "timeout_seconds": 420
+    },
+    {
+      "groups": [
+        "idempotency",
+        "install"
+      ],
+      "owner": "chart",
+      "script": "checks/rollout/test_uninstall_reinstall.sh",
+      "timeout_seconds": 420
+    },
+    {
+      "groups": [
+        "chart",
+        "safety"
+      ],
+      "owner": "chart",
+      "script": "checks/security/test_defaults_safe.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "supply-chain"
+      ],
+      "owner": "chart",
+      "script": "checks/security/test_image_digest_pinning.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "chart-contract",
+        "supply-chain"
+      ],
+      "owner": "chart",
+      "script": "checks/security/test_image_digest_policy.sh",
+      "timeout_seconds": 120
+    },
+    {
+      "groups": [
+        "security",
+        "supply-chain"
+      ],
+      "owner": "chart",
+      "script": "checks/security/test_rbac_minimalism.sh",
+      "timeout_seconds": 180
+    },
+    {
+      "groups": [
+        "security"
+      ],
+      "owner": "server",
+      "script": "checks/security/test_secrets.sh",
+      "timeout_seconds": 240
+    },
+    {
+      "groups": [
+        "security"
+      ],
+      "owner": "server",
+      "script": "checks/security/test_secrets_rotation.sh",
+      "timeout_seconds": 300
+    },
+    {
+      "groups": [
+        "profiles",
+        "storage"
+      ],
+      "owner": "store",
+      "script": "checks/storage/test_node_local_cache_profile.sh",
+      "timeout_seconds": 180
+    },
+    {
+      "groups": [
+        "storage"
+      ],
+      "owner": "server",
+      "script": "checks/storage/test_storage_modes.sh",
+      "timeout_seconds": 360
+    },
+    {
+      "groups": [
+        "datasets",
+        "idempotency"
+      ],
+      "owner": "store",
+      "script": "checks/storage/test_store_bootstrap_idempotent.sh",
+      "timeout_seconds": 240
+    },
+    {
+      "groups": [
+        "datasets",
+        "security"
+      ],
+      "owner": "store",
+      "script": "checks/storage/test_store_bucket_policy.sh",
+      "timeout_seconds": 180
+    },
+    {
+      "groups": [
+        "datasets",
+        "sanity"
+      ],
+      "owner": "store",
+      "script": "checks/storage/test_store_reachable.sh",
+      "timeout_seconds": 180
+    }
+  ]
+}
