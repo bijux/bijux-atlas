@@ -11,7 +11,7 @@ case "$SUITE" in
     "$ROOT/ops/datasets/scripts/sh/dataset_qc.sh"
     ;;
   promotion)
-    "$ROOT/ops/datasets/scripts/sh/promotion_sim.sh"
+    python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/datasets/promotion_sim.py"
     ;;
   corruption)
     "$ROOT/ops/datasets/scripts/sh/corruption_drill.sh"

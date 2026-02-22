@@ -3,13 +3,13 @@
 makefiles/cargo.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/cold_start_benchmark.py
 makefiles/cargo.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/run_nightly_perf.py
 makefiles/ops.mk|ops/datasets/scripts/publish_by_name.sh
-makefiles/ops.mk|ops/datasets/scripts/sh/cache_status.sh
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/datasets/cache_status.py
 makefiles/ops.mk|ops/datasets/scripts/sh/corruption_drill.sh
 makefiles/ops.mk|ops/datasets/scripts/sh/dataset_qc.sh
 makefiles/ops.mk|ops/datasets/scripts/sh/fetch_and_verify.sh
-makefiles/ops.mk|ops/datasets/scripts/sh/pin_set.sh
-makefiles/ops.mk|ops/datasets/scripts/sh/promotion_sim.sh
-makefiles/ops.mk|ops/datasets/scripts/sh/snapshot_metadata.sh
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/datasets/pin_set.py
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/datasets/promotion_sim.py
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/datasets/snapshot_metadata.py
 makefiles/ops.mk|ops/e2e/scripts/smoke_queries.sh
 makefiles/ops.mk|ops/e2e/scripts/verify_metrics.sh
 makefiles/ops.mk|ops/e2e/scripts/verify_traces.sh
