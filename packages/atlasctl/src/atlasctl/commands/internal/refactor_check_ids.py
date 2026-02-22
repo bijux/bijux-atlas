@@ -19,11 +19,17 @@ TARGETS: tuple[str, ...] = (
 
 
 def _load_map(repo_root: Path) -> dict[str, str]:
-    payload = json.loads((repo_root / "configs/policy/target-renames.json").read_text(encoding="utf-8"))
-    rows = payload.get("check_ids", {})
-    if not isinstance(rows, dict):
-        return {}
-    return {str(old): str(new) for old, new in rows.items() if str(old).strip() and str(new).strip()}
+    out: dict[str, str] = {}
+    for rel in ("configs/policy/check-id-migration.json", "configs/policy/target-renames.json"):
+        path = repo_root / rel
+        if not path.exists():
+            continue
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        rows = payload.get("check_ids", {})
+        if not isinstance(rows, dict):
+            continue
+        out.update({str(old): str(new) for old, new in rows.items() if str(old).strip() and str(new).strip()})
+    return out
 
 
 def run_refactor_check_ids(repo_root: Path, *, apply: bool) -> tuple[int, list[str]]:

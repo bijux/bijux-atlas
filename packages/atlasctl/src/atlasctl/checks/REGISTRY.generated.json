@@ -2,6 +2,62 @@
   "checks": [
     {
       "area": "registry",
+      "callable": "check_registry_all_checks_have_canonical_id",
+      "category": "contract",
+      "description": "require every registered check to expose a canonical checks_* id",
+      "domain": "checks",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Update REGISTRY.toml ids to checks_<domain>_<area>_<name>.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_all_checks_have_canonical_id",
+      "legacy_id": "checks.registry_all_checks_have_canonical_id",
+      "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 700,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "registry",
+      "callable": "check_registry_canonical_id_matches_module_path",
+      "category": "policy",
+      "description": "require canonical id domain/area segments to match implementation module path",
+      "domain": "checks",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Align check module paths with canonical check id segments.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_canonical_id_matches_module_path",
+      "legacy_id": "checks.registry_canonical_id_matches_module_path",
+      "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 900,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "registry",
       "callable": "check_registry_change_requires_docs_update",
       "category": "policy",
       "description": "require docs update when checks registry changes",
@@ -89,6 +145,62 @@
     },
     {
       "area": "registry",
+      "callable": "check_registry_docs_link_required",
+      "category": "contract",
+      "description": "require docs_link metadata for every registry check entry",
+      "domain": "checks",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Set docs_link to an existing documentation page in checks catalog generation.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_docs_link_required",
+      "legacy_id": "checks.registry_docs_link_required",
+      "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 700,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "registry",
+      "callable": "check_registry_docs_meta_matches_runtime",
+      "category": "drift",
+      "description": "require generated docs _meta checks registry file to match runtime registry",
+      "domain": "checks",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Run `./bin/atlasctl gen checks-registry` and commit docs/_meta/checks-registry.txt.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_docs_meta_runtime_drift",
+      "legacy_id": "checks.registry_docs_meta_runtime_drift",
+      "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 700,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "registry",
       "callable": "check_registry_integrity",
       "category": "contract",
       "description": "validate checks registry TOML/JSON integrity and drift",
@@ -111,6 +223,146 @@
       "severity": "error",
       "speed": "slow",
       "timeout_ms": 2500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "registry",
+      "callable": "check_registry_no_duplicate_canonical_id",
+      "category": "contract",
+      "description": "forbid duplicate canonical check ids in registry",
+      "domain": "checks",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Deduplicate conflicting ids in REGISTRY.toml.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_no_duplicate_canonical_id",
+      "legacy_id": "checks.registry_no_duplicate_canonical_id",
+      "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 700,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "registry",
+      "callable": "check_registry_owners_required",
+      "category": "contract",
+      "description": "require every registry entry to declare an owner",
+      "domain": "checks",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Add owner field to registry entries.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_owners_required",
+      "legacy_id": "checks.registry_owners_required",
+      "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "registry",
+      "callable": "check_registry_remediation_link_required",
+      "category": "contract",
+      "description": "require remediation_link metadata for every registry check entry",
+      "domain": "checks",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Set remediation_link to an existing remediation playbook page.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_remediation_link_required",
+      "legacy_id": "checks.registry_remediation_link_required",
+      "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 700,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "registry",
+      "callable": "check_registry_speed_required",
+      "category": "contract",
+      "description": "require speed classification for every registry entry (fast|slow|nightly)",
+      "domain": "checks",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Set speed to fast, slow, or nightly in REGISTRY.toml.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_speed_required",
+      "legacy_id": "checks.registry_speed_required",
+      "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "registry",
+      "callable": "check_registry_suite_membership_required",
+      "category": "policy",
+      "description": "require every registry check to be selected by at least one suite manifest",
+      "domain": "checks",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Add unassigned checks to at least one suite in registry/suites_catalog.json.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "registry",
+        "required"
+      ],
+      "id": "checks_checks_registry_suite_membership_required",
+      "legacy_id": "checks.registry_suite_membership_required",
+      "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 900,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]

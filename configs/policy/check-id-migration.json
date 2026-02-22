@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "check_ids_alias_expires_on": "2026-06-30",
+  "check_ids": {
+    "checks_registry_all_checks_have_canonical_id": "checks_checks_registry_all_checks_have_canonical_id",
+    "checks_registry_no_duplicate_canonical_id": "checks_checks_registry_no_duplicate_canonical_id",
+    "checks_registry_canonical_id_matches_module_path": "checks_checks_registry_canonical_id_matches_module_path",
+    "checks_registry_owners_required": "checks_checks_registry_owners_required",
+    "checks_registry_speed_required": "checks_checks_registry_speed_required",
+    "checks_registry_suite_membership_required": "checks_checks_registry_suite_membership_required",
+    "checks_registry_docs_link_required": "checks_checks_registry_docs_link_required",
+    "checks_registry_remediation_link_required": "checks_checks_registry_remediation_link_required"
+  }
+}

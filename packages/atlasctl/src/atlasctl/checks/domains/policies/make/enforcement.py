@@ -486,7 +486,7 @@ def render_text_report(payload: dict[str, object]) -> str:
 def _bypass_errors(repo_root: Path) -> dict[str, list[str]]:
     entries = _load_bypass_entries(repo_root)
     by_check: dict[str, list[str]] = {k: [] for k in ("meta", "expiry", "horizon", "justification", "issue", "owner", "removal", "scope", "policy", "schema", "budget", "files")}
-    known_files = {row[0] for row in _BYPASS_SOURCES} | {"configs/policy/migration_exceptions.json", "configs/policy/checks-registry-transition.json", "configs/policy/forbidden-adjectives-approvals.json", "configs/policy/check_speed_approvals.json"}
+    known_files = {row[0] for row in _BYPASS_SOURCES} | {"configs/policy/migration_exceptions.json", "configs/policy/checks-registry-transition.json", "configs/policy/check-id-migration.json", "configs/policy/forbidden-adjectives-approvals.json", "configs/policy/check_speed_approvals.json"}
     actual_files = {p.relative_to(repo_root).as_posix() for p in (repo_root / "configs/policy").glob("*") if p.is_file() and any(t in p.name for t in ("allowlist", "relax", "exceptions", "ratchet"))}
     for path in sorted(actual_files - known_files):
         by_check["files"].append(f"unexpected bypass file under configs/policy: {path}")
