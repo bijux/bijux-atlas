@@ -40,7 +40,7 @@ def check_schema_id_naming(repo_root: Path) -> tuple[int, list[str]]:
 
 def check_schema_samples_validate(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
-    samples = sorted((repo_root / "packages/atlasctl/tests/goldens/samples").glob("*.json"))
+    samples = sorted((repo_root / "packages/atlasctl/tests/goldens/samples").rglob("*.json"))
     if not samples:
         return 1, ["no sample payloads found under packages/atlasctl/tests/goldens/samples"]
     catalog = load_catalog()

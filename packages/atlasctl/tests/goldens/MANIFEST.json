@@ -129,6 +129,10 @@
       "path": "samples/help-v1.sample.json"
     },
     {
+      "name": "ops-manifest-v1.sample.json",
+      "path": "samples/ops-manifest-v1.sample.json"
+    },
+    {
       "name": "output-base-v1.sample.json",
       "path": "samples/output-base-v1.sample.json"
     },
