@@ -163,6 +163,13 @@ def _validate_entries(entries: list[RegistryEntry]) -> None:
             errors.append(f"{e.id}: timeout_ms must be >= 50ms")
         if e.speed == "slow" and e.timeout_ms < 2000:
             errors.append(f"{e.id}: slow checks must have timeout_ms >= 2000")
+        write_roots = tuple(e.writes_allowed_roots)
+        default_write_roots = ("artifacts/evidence/",)
+        if write_roots != default_write_roots and "fs-write" not in e.groups:
+            errors.append(f"{e.id}: non-default writes_allowed_roots require `fs-write` group marker")
+        for root in write_roots:
+            if not (root.startswith("artifacts/evidence/") or root.startswith("artifacts/reports/") or root.startswith("artifacts/isolate/")):
+                errors.append(f"{e.id}: writes_allowed_roots path not allowed: {root}")
         try:
             mod = importlib.import_module(e.module)
         except Exception as exc:  # pragma: no cover
