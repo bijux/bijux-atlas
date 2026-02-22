@@ -2,9 +2,10 @@
 # Purpose: ensure DEV/CI stable command surface docs stay aligned with parser/help.
 from __future__ import annotations
 
-import subprocess
 import sys
 from pathlib import Path
+
+from ....core.process import run_command
 
 ROOT = Path(__file__).resolve().parents[7]
 DOC = ROOT / "packages" / "atlasctl" / "docs" / "control-plane" / "dev-ci-surface.md"
@@ -25,7 +26,7 @@ REQUIRED = (
 
 
 def _help(cmd: list[str]) -> str:
-    proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, check=False)
+    proc = run_command(cmd, cwd=ROOT)
     return (proc.stdout or "") + (proc.stderr or "")
 
 
@@ -45,17 +46,14 @@ def main() -> int:
             errors.append(f"missing from {public_api.relative_to(ROOT)}: `{command}`")
 
     dev_help = _help(["./bin/atlasctl", "dev", "--help"])
-    ci_run_help = subprocess.run(
+    ci_run_help = run_command(
         ["./bin/atlasctl", "dev", "ci", "run", "--help"],
         cwd=ROOT,
-        capture_output=True,
-        text=True,
-        check=False,
     )
     for command in ("fmt", "lint", "test", "coverage", "audit"):
         if command not in dev_help:
             errors.append(f"`atlasctl dev --help` missing subcommand `{command}`")
-    if ci_run_help.returncode != 0:
+    if ci_run_help.code != 0:
         errors.append("`atlasctl dev ci run --help` failed")
 
     if errors:

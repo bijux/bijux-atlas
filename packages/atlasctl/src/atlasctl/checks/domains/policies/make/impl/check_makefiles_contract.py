@@ -6,9 +6,10 @@ from __future__ import annotations
 
 import json
 import re
-import subprocess
 import sys
 from pathlib import Path
+
+from ......core.process import run_command
 
 def _repo_root() -> Path:
     cur = Path(__file__).resolve()
@@ -46,8 +47,8 @@ def main() -> int:
         if t not in root_phony:
             errs.append(f"public target missing from makefiles/root.mk .PHONY publication surface: {t}")
 
-    proc = subprocess.run(["make", "-pn"], cwd=ROOT, text=True, capture_output=True)
-    if proc.returncode != 0:
+    proc = run_command(["make", "-pn"], cwd=ROOT)
+    if proc.code != 0:
         errs.append("make -pn failed")
     else:
         if "makefiles/root.mk" not in proc.stdout:
