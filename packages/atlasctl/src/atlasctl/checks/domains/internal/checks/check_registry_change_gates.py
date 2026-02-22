@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-import subprocess
 import os
 from pathlib import Path
+
+from .....core.process import run_command
 
 
 REGISTRY_PATH = "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml"
@@ -16,14 +17,11 @@ REQUIRED_GOLDENS = {
 
 
 def _changed_files(repo_root: Path) -> set[str]:
-    proc = subprocess.run(
+    proc = run_command(
         ["git", "diff", "--name-only", "HEAD"],
         cwd=repo_root,
-        text=True,
-        capture_output=True,
-        check=False,
     )
-    if proc.returncode != 0:
+    if proc.code != 0:
         return set()
     return {line.strip() for line in (proc.stdout or "").splitlines() if line.strip()}
 

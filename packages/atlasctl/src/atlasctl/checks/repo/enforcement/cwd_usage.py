@@ -3,8 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 
 _ALLOWED = {
-    "packages/atlasctl/src/atlasctl/core.runtime.repo_root.py",
-    "packages/atlasctl/src/atlasctl/checks/repo/cwd_usage.py",
+    "packages/atlasctl/src/atlasctl/core/runtime/repo_root.py",
+    "packages/atlasctl/src/atlasctl/checks/repo/enforcement/cwd_usage.py",
 }
 
 

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import json
 import re
-import subprocess
 from pathlib import Path
 
+from ....core.process import run_command
 from ....core.effects import command_group
 
 _MD_LINK_RE = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
@@ -334,14 +334,11 @@ def check_docs_registry_indexes(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def check_docs_new_command_workflow(repo_root: Path) -> tuple[int, list[str]]:
-    proc = subprocess.run(
+    proc = run_command(
         ["git", "diff", "--name-only", "HEAD~1", "HEAD"],
         cwd=repo_root,
-        text=True,
-        capture_output=True,
-        check=False,
     )
-    changed = [line.strip() for line in proc.stdout.splitlines() if line.strip()] if proc.returncode == 0 else []
+    changed = [line.strip() for line in proc.stdout.splitlines() if line.strip()] if proc.code == 0 else []
     if "packages/atlasctl/src/atlasctl/cli/surface_registry.py" not in changed:
         return 0, []
     required = [
