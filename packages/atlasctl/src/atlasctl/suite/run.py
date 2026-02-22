@@ -3,6 +3,9 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
+import time
+from pathlib import Path
 
 from . import command as impl
 from ..core.runtime.paths import write_text_file
@@ -205,13 +208,13 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
             target_dir=getattr(ns, "target_dir", None),
         )
     expanded_raw = impl.expand_suite(suites, suite_name)
-    expanded: list[TaskSpec] = []
+    expanded: list[impl.TaskSpec] = []
     for task in expanded_raw:
         if task.kind == "check-tag":
-            expanded.extend(_expand_check_tag(task))
+            expanded.extend(impl._expand_check_tag(task))
         else:
             expanded.append(task)
-    selected = _filter_tasks(expanded, only=ns.only or [], skip=ns.skip or [])
+    selected = impl._filter_tasks(expanded, only=ns.only or [], skip=ns.skip or [])
     if ns.list or bool(getattr(ns, "dry_run", False)):
         payload = {
             "schema_version": 1,
@@ -231,17 +234,19 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
     start = time.perf_counter()
     results: list[dict[str, object]] = []
     if ctx.verbose and not ctx.quiet:
-        log_event(ctx, "info", "suite", "start", suite=suite_name, total=len(selected))
+        impl.log_event(ctx, "info", "suite", "start", suite=suite_name, total=len(selected))
     for idx, task in enumerate(selected, start=1):
         item_start = time.perf_counter()
-        status, detail = _execute_task(ctx.repo_root, task, show_output=bool(ns.show_output))
+        status, detail = impl._execute_task(ctx.repo_root, task, show_output=bool(ns.show_output))
         duration_ms = int((time.perf_counter() - item_start) * 1000)
         status_upper = "PASS" if status == "pass" else "FAIL"
         line = f"{status_upper} {task.label} ({duration_ms}ms)"
         if detail and status == "fail":
             line = f"{line} :: {detail}"
         if ctx.verbose:
-            log_event(ctx, "info" if status == "pass" else "error", "suite", "item", label=task.label, status=status, duration_ms=duration_ms)
+            impl.log_event(
+                ctx, "info" if status == "pass" else "error", "suite", "item", label=task.label, status=status, duration_ms=duration_ms
+            )
         if not as_json and bool(getattr(ns, "pytest_q", False)):
             sys.stdout.write("." if status == "pass" else "F")
             sys.stdout.flush()
@@ -286,10 +291,10 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
         print(f"summary: passed={passed} failed={failed} skipped={skipped} total={len(results)} duration_ms={total_duration_ms}")
 
     if ns.junit:
-        _write_junit(ctx.repo_root / ns.junit, suite_name, results)
+        impl._write_junit(ctx.repo_root / ns.junit, suite_name, results)
 
     payload = {
-        "schema_name": SUITE_RUN,
+        "schema_name": impl.SUITE_RUN,
         "schema_version": 1,
         "tool": "atlasctl",
         "status": "ok" if failed == 0 else "error",
@@ -300,7 +305,7 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
         "results": results,
         "target_dir": target_dir.as_posix(),
     }
-    validate_self(SUITE_RUN, payload)
+    impl.validate_self(impl.SUITE_RUN, payload)
     write_text_file(target_dir / "results.json", impl.dumps_json(payload, pretty=True) + "\n")
     if getattr(ns, "slow_report", None):
         write_text_file(
@@ -338,7 +343,7 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
             )
             + "\n",
         )
-    emit_telemetry(
+    impl.emit_telemetry(
         ctx,
         "suite.run",
         suite=suite_name,
@@ -351,5 +356,3 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
     if as_json:
         print(impl.dumps_json(payload, pretty=False))
     return 0 if failed == 0 else impl.ERR_USER
-
-

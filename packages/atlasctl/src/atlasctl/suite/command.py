@@ -237,6 +237,10 @@ def suite_inventory_violations(suites: dict[str, SuiteSpec]) -> list[str]:
     all_check_ids = {check.check_id for check in list_checks()}
     task_sets = {name: _suite_task_set(suites, name) for name in suites}
     covered_checks = {value for entries in task_sets.values() for kind, value in entries if kind == "check"}
+    # First-class suite manifests are part of the canonical suite surface and must
+    # count as valid coverage when enforcing "every check belongs to a suite".
+    for manifest in load_first_class_suites().values():
+        covered_checks.update(manifest.check_ids)
     orphan = sorted(all_check_ids - covered_checks)
     for check_id in orphan:
         check = get_check(check_id)
@@ -305,7 +309,9 @@ def _suite_markers_docs_violations(repo_root: Path) -> list[str]:
 
 
 def _first_class_suite_coverage_violations(manifests: dict[str, SuiteManifest]) -> list[str]:
-    covered = set(manifests["all"].check_ids)
+    covered: set[str] = set()
+    for manifest in manifests.values():
+        covered.update(manifest.check_ids)
     errors: list[str] = []
     for check in list_checks():
         if check.check_id in covered:
