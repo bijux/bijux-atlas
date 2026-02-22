@@ -1,17 +1,17 @@
-#!/usr/bin/env bash
-set -euo pipefail
-ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
-SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-. "$SCRIPT_DIR/../_lib/common.sh"
+#!/usr/bin/env python3
+from __future__ import annotations
+from pathlib import Path
+from ._shell_common import run_k8s_test_shell
+
+def main() -> int:
+    return run_k8s_test_shell(
+        """
 setup_test_traps
 need curl
-
 OFFLINE="$ROOT/ops/k8s/values/offline.yaml"
 install_chart -f "$OFFLINE"
 wait_ready
 with_port_forward 18080
-
-# Offline mode must remain healthy even with unreachable remote store endpoint.
 tmp_bad_store="$(mktemp)"
 cat >"$tmp_bad_store" <<YAML
 store:
@@ -23,5 +23,10 @@ helm upgrade --install "$RELEASE" "$CHART" -n "$NS" --create-namespace -f "$VALU
 wait_ready
 curl -fsS "$BASE_URL/readyz" >/dev/null
 rm -f "$tmp_bad_store"
-
 echo "offline profile gate passed"
+        """,
+        Path(__file__),
+    )
+
+if __name__ == "__main__":
+    raise SystemExit(main())

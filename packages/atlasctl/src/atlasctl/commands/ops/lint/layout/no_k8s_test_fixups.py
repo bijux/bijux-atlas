@@ -29,7 +29,7 @@ ALLOWED_PATHS = {
     "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/config/test_configmap_update_reload.py",
     "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/config/test_configmap_unknown_keys_rejected.py",
     "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/security/test_secrets_rotation.py",
-    "ops/k8s/tests/checks/datasets/test_pdb.sh",
+    "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/datasets/test_pdb.py",
 }
 
 
