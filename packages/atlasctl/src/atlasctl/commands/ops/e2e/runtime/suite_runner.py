@@ -1,5 +1,9 @@
-#!/usr/bin/env bash
-set -euo pipefail
+from __future__ import annotations
+
+import subprocess
+import sys
+
+SCRIPT = r'''set -euo pipefail
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 cd "$ROOT"
@@ -263,3 +267,13 @@ PY
 if [ "$STATUS" != "pass" ]; then
   exit 1
 fi
+'''
+
+
+def main() -> int:
+    args = sys.argv[1:]
+    return subprocess.call(["bash", "-lc", SCRIPT, "--", *args])
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())
