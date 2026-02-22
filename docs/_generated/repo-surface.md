@@ -153,5 +153,3 @@
 - `./ops/run/load-suite.sh`
 - `./ops/run/report.sh`
 - `./ops/run/clean.sh`
-- `./ops/run/ci-fast.sh`
-- `./ops/run/ci-nightly.sh`
