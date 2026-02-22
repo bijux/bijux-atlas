@@ -13,7 +13,7 @@ NET_CMDS = ("curl", "kubectl", "helm")
 errors = []
 for script in sorted(RUN_DIR.glob("*.sh")):
     text = script.read_text(encoding="utf-8")
-    if '. "$ROOT/ops/_lib/common.sh"' not in text:
+    if '. "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/assets/lib/ops_common.sh"' not in text:
         errors.append(f"{script}: missing common.sh import")
     if "ops_entrypoint_start " not in text:
         errors.append(f"{script}: missing ops_entrypoint_start call")

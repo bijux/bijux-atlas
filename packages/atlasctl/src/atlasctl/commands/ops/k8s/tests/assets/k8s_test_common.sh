@@ -2,8 +2,8 @@
 set -euo pipefail
 
 ROOT="${REPO_ROOT:-$(pwd)}"
-# shellcheck source=ops/_lib/common.sh
-source "$ROOT/ops/_lib/common.sh"
+# shellcheck source=packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/assets/lib/ops_common.sh
+source "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/assets/lib/ops_common.sh"
 
 NS="${ATLAS_E2E_NAMESPACE:-$(ops_layer_ns_k8s)}"
 RELEASE="${ATLAS_E2E_RELEASE_NAME:-$(ops_layer_contract_get release_metadata.defaults.release_name)}"

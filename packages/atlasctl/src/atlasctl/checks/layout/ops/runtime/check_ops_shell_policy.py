@@ -37,8 +37,8 @@ def main() -> int:
     for path in sorted(OPS_RUN.glob("*.sh")):
         rel = path.relative_to(ROOT).as_posix()
         text = path.read_text(encoding="utf-8")
-        if "ops/_lib/common.sh" not in text:
-            errors.append(f"{rel}: must source ops/_lib/common.sh")
+        if "packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/assets/lib/ops_common.sh" not in text:
+            errors.append(f"{rel}: must source packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/assets/lib/ops_common.sh")
         for no, raw in enumerate(text.splitlines(), start=1):
             line = raw.strip()
             if not line or is_comment(line):

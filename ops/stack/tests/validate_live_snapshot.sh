@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 # shellcheck source=/dev/null
-. "$ROOT/ops/_lib/common.sh"
+. "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/assets/lib/ops_common.sh"
 
 NS="${ATLAS_E2E_NAMESPACE:-$(ops_layer_ns_stack)}"
 OUT="${1:-$ROOT/artifacts/evidence/contracts/live-snapshot.services.json}"
