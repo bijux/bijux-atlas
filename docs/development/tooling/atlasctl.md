@@ -15,7 +15,7 @@
 - CI/local scripts gate runs the canonical scripts suite via `make scripts-check`.
 
 ## Usage
-- `make deps-sync`
+- `make internal/deps/sync`
 - `make scripts-run CMD="doctor --json"`
 - `make scripts-check`
 - `make scripts-test`

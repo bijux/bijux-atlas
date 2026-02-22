@@ -16,7 +16,7 @@ Run `atlasctl` in environments without outbound network access.
 ## Recommended Setup
 
 ```bash
-make deps-sync
+make internal/deps/sync
 make scripts-test
 ```
 
