@@ -28,8 +28,8 @@
 - `atlasctl ops smoke`
 - `./bin/atlasctl ops prereqs --report text`
 - `./bin/atlasctl ops doctor --report text`
-- `ops/run/root-lanes.sh`
-- `ops/run/root-local.sh`
+- `atlasctl ops root-lanes`
+- `atlasctl ops root-local`
 - `atlasctl ops warm`
 
 ## Policy

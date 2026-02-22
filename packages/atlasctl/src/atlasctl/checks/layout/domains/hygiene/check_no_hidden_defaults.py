@@ -14,8 +14,6 @@ allowed = {
     ("clean.sh", "OPS_RETENTION_DAYS"),
     ("obs-up.sh", "ATLAS_OBS_PROFILE"),
     ("report.sh", "OPS_RUN_DIR"),
-    ("root-lanes.sh", "OPS_RUN_ID"),
-    ("root-lanes.sh", "OPS_RUN_DIR"),
     ("stack-up.sh", "ATLAS_KIND_REGISTRY_ENABLE"),
 }
 extra_allowed = {

@@ -616,6 +616,13 @@ fi
     return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
 
 
+def _ops_run_migrated_shell_asset(ctx: RunContext, report_format: str, asset_name: str) -> int:
+    asset = Path(__file__).resolve().parent / "assets" / asset_name
+    if not asset.exists():
+        return _emit_ops_status(report_format, 2, f"missing atlasctl ops asset: {asset_name}")
+    return _run_simple_cmd(ctx, ["bash", str(asset)], report_format)
+
+
 def _ops_warm_dx(ctx: RunContext, report_format: str) -> int:
     repo = ctx.repo_root
     cmds = [
