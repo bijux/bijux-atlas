@@ -60,4 +60,4 @@ Workflow: pip-tools (requirements.in + requirements.lock.txt)
 | `jsonschema==4.25.1` | `platform` | Contract/schema validation utilities. |
 | `hypothesis==6.138.14` | `platform` | Property-based tests for path/write policies. |
 | `mypy==1.17.1` | `platform` | Static type checks for core/contracts. |
-| `tomli>=2.0.0; python_version < "3.11"` | `platform` | Compatibility fallback for TOML parsing on Python <3.11. |
+| `tomli>=2.0.0; python_version < '3.11'` | `platform` | Compatibility fallback for TOML parsing on Python <3.11. |
