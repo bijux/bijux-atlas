@@ -6,8 +6,6 @@ set -euo pipefail
 
 OPS_LIB_ROOT="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(CDPATH='' cd -- "${OPS_LIB_ROOT}/../.." && pwd)"
-# shellcheck source=ops/_lib/io/run_id.sh
-source "${OPS_LIB_ROOT}/io/run_id.sh"
 # shellcheck source=ops/_lib/io/artifacts.sh
 source "${OPS_LIB_ROOT}/io/artifacts.sh"
 # shellcheck source=ops/_lib/guard/retry.sh
@@ -29,6 +27,27 @@ source "${OPS_LIB_ROOT}/guard/env.sh"
 # shellcheck source=ops/_lib/report/layer_contract.sh
 source "${OPS_LIB_ROOT}/report/layer_contract.sh"
 ARTIFACTS_ROOT="${REPO_ROOT}/artifacts/ops"
+
+ops_init_run_id() {
+  if [ -z "${OPS_RUN_ID:-}" ]; then
+    OPS_RUN_ID="atlas-ops-$(date -u +%Y%m%d-%H%M%S)"
+  fi
+  OPS_NAMESPACE="${OPS_NAMESPACE:-$OPS_RUN_ID}"
+  OPS_RUN_DIR="${OPS_RUN_DIR:-$REPO_ROOT/artifacts/ops/$OPS_RUN_ID}"
+
+  export OPS_RUN_ID OPS_NAMESPACE OPS_RUN_DIR
+  export ATLAS_NS="${ATLAS_NS:-$OPS_NAMESPACE}"
+  export ATLAS_E2E_NAMESPACE="${ATLAS_E2E_NAMESPACE:-$OPS_NAMESPACE}"
+
+  mkdir -p "$OPS_RUN_DIR"
+}
+
+ops_require_ci_noninteractive() {
+  if [ -n "${CI:-}" ] && [ "${OPS_ALLOW_PROMPT:-0}" = "1" ]; then
+    echo "interactive prompts are forbidden in CI ops runs" >&2
+    return 1
+  fi
+}
 
 # Canonical ops exit codes (formerly sourced from log/errors.sh; inlined after shim removal).
 OPS_ERR_CONFIG=10
