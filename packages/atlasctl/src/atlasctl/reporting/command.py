@@ -7,6 +7,7 @@ from ..reporting.make_area_report import main as make_area_report_main
 from ..core.context import RunContext
 from ..core.runtime.paths import write_text_file
 from ..commands.policies.runtime.dir_entry_budgets import report_budgets
+from ..checks.registry import list_checks
 from .actions import (
     _cmd_artifact_gc,
     _cmd_artifact_index,
@@ -131,6 +132,45 @@ def run_report_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 payload["suite_summary"] = {}
         print(json.dumps(payload, sort_keys=True))
         return 0 if payload["status"] == "ok" else 1
+    if ns.report_cmd == "checks":
+        checks = list(list_checks())
+        by = str(getattr(ns, "by", "owner") or "owner")
+        buckets: dict[str, list[str]] = {}
+        for check in checks:
+            key_values: list[str]
+            if by == "owner":
+                key_values = list(check.owners) or ["unowned"]
+            elif by == "domain":
+                key_values = [check.domain]
+            elif by == "speed":
+                key_values = ["slow" if check.slow else "fast"]
+            else:
+                key_values = ["all"]
+            for key in key_values:
+                buckets.setdefault(key, []).append(check.check_id)
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "ok",
+            "kind": "checks-report",
+            "group_by": by,
+            "total": len(checks),
+            "rows": [
+                {"key": key, "count": len(sorted(ids)), "checks": sorted(ids)}
+                for key, ids in sorted(buckets.items(), key=lambda item: (-len(item[1]), item[0]))
+            ],
+        }
+        if bool(getattr(ns, "histogram", False)):
+            payload["histogram"] = {
+                "fast": sum(1 for check in checks if not check.slow),
+                "slow": sum(1 for check in checks if check.slow),
+            }
+        text = json.dumps(payload, sort_keys=True) if bool(getattr(ns, "json", False)) else json.dumps(payload, indent=2, sort_keys=True)
+        if ns.out:
+            out = ctx.repo_root / ns.out
+            write_text_file(out, text + "\n")
+        print(text)
+        return 0
     return 2
 
 
@@ -215,6 +255,11 @@ def _configure_report_parser(sub: argparse._SubParsersAction[argparse.ArgumentPa
     ci = rep.add_parser("ci-summary", help="print CI summary payload from evidence")
     ci.add_argument("--run-id", dest="run_id_override")
     ci.add_argument("--latest", action="store_true", help="use latest ci run directory")
+    checks = rep.add_parser("checks", help="report checks grouped by owner/domain/speed")
+    checks.add_argument("--by", choices=["owner", "domain", "speed"], default="owner")
+    checks.add_argument("--histogram", action="store_true", help="include fast/slow histogram")
+    checks.add_argument("--json", action="store_true", help="emit JSON output")
+    checks.add_argument("--out", help="write output to file path")
 
 
 def configure_report_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
