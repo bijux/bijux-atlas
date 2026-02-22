@@ -119,12 +119,7 @@
     "makefiles/root.mk:499: direct script path invocation is forbidden in make recipes",
     "makefiles/root.mk:500: direct script path invocation is forbidden in make recipes",
     "makefiles/root.mk:516: direct script path invocation is forbidden in make recipes",
-    "makefiles/root.mk:536: direct script path invocation is forbidden in make recipes",
-    "makefiles/scripts.mk:137: direct script path invocation is forbidden in make recipes",
-    "makefiles/scripts.mk:67: direct script path invocation is forbidden in make recipes",
-    "makefiles/scripts.mk:72: direct script path invocation is forbidden in make recipes",
-    "makefiles/scripts.mk:82: direct script path invocation is forbidden in make recipes",
-    "makefiles/scripts.mk:83: direct script path invocation is forbidden in make recipes"
+    "makefiles/root.mk:536: direct script path invocation is forbidden in make recipes"
   ],
   "legacy_scripts_refs": [],
   "note": "Temporary delegation exceptions; shrink over time as make targets move to atlasctl.",
