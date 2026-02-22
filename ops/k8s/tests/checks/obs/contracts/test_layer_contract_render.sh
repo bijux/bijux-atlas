@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../../../.." && pwd)"
 # shellcheck source=/dev/null
-. "$ROOT/ops/_lib/k8s/k8s-test-common.sh"
+. "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/assets/k8s_test_common.sh"
 
 rendered="$(mktemp)"
 helm template "$RELEASE" "$CHART" -n "$NS" -f "$VALUES" > "$rendered"

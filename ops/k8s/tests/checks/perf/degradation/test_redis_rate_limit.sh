@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../../../.." && pwd)"
-source "$ROOT/ops/_lib/k8s/k8s-test-common.sh"
+source "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/assets/k8s_test_common.sh"
 
 need kubectl
 need helm

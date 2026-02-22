@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ROOT="${REPO_ROOT:-$(pwd)}"
 # shellcheck source=ops/_lib/common.sh
-source "$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/../common.sh"
+source "$ROOT/ops/_lib/common.sh"
 
-ROOT="$REPO_ROOT"
 NS="${ATLAS_E2E_NAMESPACE:-$(ops_layer_ns_k8s)}"
 RELEASE="${ATLAS_E2E_RELEASE_NAME:-$(ops_layer_contract_get release_metadata.defaults.release_name)}"
 VALUES="${ATLAS_E2E_VALUES_FILE:-$ROOT/ops/k8s/values/local.yaml}"
