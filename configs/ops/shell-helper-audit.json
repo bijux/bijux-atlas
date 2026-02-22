@@ -10,7 +10,7 @@
     {"path": "ops/_lib/guard/retry.sh", "class": "wrap_via_python", "reason": "default retry now in python core.process"},
     {"path": "ops/_lib/guard/timeout.sh", "class": "wrap_via_python", "reason": "default timeout now in python core.process"},
     {"path": "ops/_lib/io/run_id.sh", "class": "wrap_via_python", "reason": "run id now in python RunContext"},
-    {"path": "ops/_lib/io/ports.sh", "class": "wrap_via_python", "reason": "ports registry surfaced via bijux-atlas ports"},
+    {"path": "ops/_lib/io/ports.sh", "class": "retired_to_atlasctl", "reason": "migrated to packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/ports.py"},
     {"path": "ops/_lib/io/artifacts.sh", "class": "wrap_via_python", "reason": "artifact open/cleanup surfaced via bijux-atlas commands"},
     {"path": "ops/_lib/report/lane_report.sh", "class": "migrate_to_python", "reason": "unified reporting handled by python report commands"},
     {"path": "ops/_lib/report/layer_contract.sh", "class": "migrate_to_python", "reason": "contract checks are python-first and schema-validated"}
