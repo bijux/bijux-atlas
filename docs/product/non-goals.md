@@ -42,4 +42,4 @@ Expected output: exclusions are explicit and no conflicting commitments exist.
 
 - [What Is Atlas](what-is-bijux-atlas.md)
 - [Compatibility Promise](compatibility-promise.md)
-- [Reference Grade Checklist](reference-grade-checklist.md)
+- [Release Contract Checklist](release-contract-checklist.md)

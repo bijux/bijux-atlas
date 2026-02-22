@@ -133,7 +133,9 @@ def _lint_doc_contracts(ctx: RunContext) -> tuple[int, str]:
         "docs/contracts/qc.md",
     }
     required_headings = ["what", "why", "scope", "non-goals", "contracts", "failure modes", "how to verify", "see also"]
-    banned_marketing = re.compile(r"\b(elite|reference-grade|world-class|best-in-class)\b", re.IGNORECASE)
+    forbidden_cfg = json.loads((ctx.repo_root / "configs/policy/forbidden-adjectives.json").read_text(encoding="utf-8"))
+    forbidden_terms = [str(term).strip().lower() for term in forbidden_cfg.get("terms", []) if str(term).strip()]
+    banned_marketing = re.compile(r"\b(" + "|".join(re.escape(term) for term in forbidden_terms) + r"|world-class|best-in-class)\b", re.IGNORECASE)
     banned_vague = re.compile(r"\b(should|might|could|maybe|perhaps)\b", re.IGNORECASE)
     banned_inclusive = re.compile(r"\b(whitelist|blacklist|master|slave)\b", re.IGNORECASE)
     heading_re = re.compile(r"^##\s+(.+?)\s*$", re.MULTILINE)
@@ -160,7 +162,7 @@ def _lint_doc_contracts(ctx: RunContext) -> tuple[int, str]:
         rel = file.relative_to(ctx.repo_root).as_posix()
         text = file.read_text(encoding="utf-8")
         headings = {h.strip().lower() for h in heading_re.findall(text)}
-        allow_marketing = rel == "docs/product/reference-grade-checklist.md"
+        allow_marketing = rel == "docs/product/release-contract-checklist.md"
         for req in required_headings:
             if req not in headings:
                 errors.append(f"{rel}: missing required heading '## {req.title()}'")

@@ -1,4 +1,4 @@
-# Reference Grade Checklist
+# Release Contract Checklist
 
 - Owner: `bijux-atlas-product`
 
