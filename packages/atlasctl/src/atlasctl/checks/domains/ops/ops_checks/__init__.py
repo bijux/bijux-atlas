@@ -365,8 +365,8 @@ def check_ops_shell_policy(repo_root: Path) -> tuple[int, list[str]]:
     for path in sorted(run_dir.glob("*.sh")):
         rel = path.relative_to(repo_root).as_posix()
         text = path.read_text(encoding="utf-8", errors="ignore")
-        if '. "$ROOT/ops/_lib/common.sh"' not in text:
-            errors.append(f"{rel}: must source ops/_lib/common.sh")
+        if '. "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/assets/lib/ops_common.sh"' not in text:
+            errors.append(f"{rel}: must source packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/assets/lib/ops_common.sh")
         if "ops_entrypoint_start " not in text:
             errors.append(f"{rel}: missing ops_entrypoint_start")
         if "ops_version_guard " not in text and path.name != "prereqs.sh":

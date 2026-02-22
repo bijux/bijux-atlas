@@ -2,7 +2,7 @@
 set -euo pipefail
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
 cd "$ROOT"
-. "$ROOT/ops/_lib/common.sh"
+. "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/assets/lib/ops_common.sh"
 ops_init_run_id
 export RUN_ID="$OPS_RUN_ID"
 export ARTIFACT_DIR="$OPS_RUN_DIR"
