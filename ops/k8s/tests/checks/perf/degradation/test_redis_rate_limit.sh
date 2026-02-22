@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../../../.." && pwd)"
-source "$ROOT/ops/_lib/k8s-test-common.sh"
+source "$ROOT/ops/_lib/k8s/k8s-test-common.sh"
 
 need kubectl
 need helm

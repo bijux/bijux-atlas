@@ -14,26 +14,26 @@ source "${OPS_LIB_ROOT}/io/artifacts.sh"
 source "${OPS_LIB_ROOT}/guard/retry.sh"
 # shellcheck source=ops/_lib/guard/timeout.sh
 source "${OPS_LIB_ROOT}/guard/timeout.sh"
-# shellcheck source=ops/_lib/trap_bundle.sh
-source "${OPS_LIB_ROOT}/trap_bundle.sh"
-# shellcheck source=ops/_lib/kubectl.sh
-source "${OPS_LIB_ROOT}/kubectl.sh"
-# shellcheck source=ops/_lib/helm.sh
-source "${OPS_LIB_ROOT}/helm.sh"
+# shellcheck source=ops/_lib/guard/trap_bundle.sh
+source "${OPS_LIB_ROOT}/guard/trap_bundle.sh"
+# shellcheck source=ops/_lib/k8s/kubectl.sh
+source "${OPS_LIB_ROOT}/k8s/kubectl.sh"
+# shellcheck source=ops/_lib/helm/helm.sh
+source "${OPS_LIB_ROOT}/helm/helm.sh"
 # shellcheck source=ops/_lib/guard/context_guard.sh
 source "${OPS_LIB_ROOT}/guard/context_guard.sh"
 # shellcheck source=ops/_lib/guard/version_guard.sh
 source "${OPS_LIB_ROOT}/guard/version_guard.sh"
 # shellcheck source=ops/_lib/guard/env.sh
 source "${OPS_LIB_ROOT}/guard/env.sh"
-# shellcheck source=ops/_lib/errors.sh
-source "${OPS_LIB_ROOT}/errors.sh"
-# shellcheck source=ops/_lib/log.sh
-source "${OPS_LIB_ROOT}/log.sh"
-# shellcheck source=ops/_lib/lane_report.sh
-source "${OPS_LIB_ROOT}/lane_report.sh"
-# shellcheck source=ops/_lib/layer_contract.sh
-source "${OPS_LIB_ROOT}/layer_contract.sh"
+# shellcheck source=ops/_lib/log/errors.sh
+source "${OPS_LIB_ROOT}/log/errors.sh"
+# shellcheck source=ops/_lib/log/log.sh
+source "${OPS_LIB_ROOT}/log/log.sh"
+# shellcheck source=ops/_lib/report/lane_report.sh
+source "${OPS_LIB_ROOT}/report/lane_report.sh"
+# shellcheck source=ops/_lib/report/layer_contract.sh
+source "${OPS_LIB_ROOT}/report/layer_contract.sh"
 ARTIFACTS_ROOT="${REPO_ROOT}/artifacts/ops"
 
 ops_require_run_context() {

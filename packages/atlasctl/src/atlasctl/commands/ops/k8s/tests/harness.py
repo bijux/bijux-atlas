@@ -144,7 +144,7 @@ def maybe_collect_failure_bundle(repo_root: Path, failed: bool, env, out_dir: Pa
     if not failed:
         return
     out_dir.mkdir(parents=True, exist_ok=True)
-    cmd = [str(repo_root / "ops/_lib/k8s-test-report.sh"), env.get("ATLAS_E2E_NAMESPACE", "atlas-e2e-local"), env.get("ATLAS_E2E_RELEASE_NAME", "atlas-e2e")]
+    cmd = [str(repo_root / "ops/_lib/k8s/k8s-test-report.sh"), env.get("ATLAS_E2E_NAMESPACE", "atlas-e2e-local"), env.get("ATLAS_E2E_RELEASE_NAME", "atlas-e2e")]
     proc = subprocess.run(cmd, env=env, text=True, capture_output=True)
     (out_dir / "k8s-test-report.stdout.txt").write_text(proc.stdout or "", encoding="utf-8")
     (out_dir / "k8s-test-report.stderr.txt").write_text(proc.stderr or "", encoding="utf-8")
