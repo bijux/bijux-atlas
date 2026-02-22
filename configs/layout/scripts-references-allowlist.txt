@@ -219,7 +219,7 @@ atlasctl ops stack down
 atlasctl ops stack up
 atlasctl ops warm
 ops/stack/scripts/install.sh
-ops/stack/scripts/stack_smoke.sh
+packages/atlasctl/src/atlasctl/commands/ops/stack/stack_smoke.py
 packages/README.md
 packages/atlasctl/CONTRACT.md
 packages/atlasctl/MIGRATION_MAP.md

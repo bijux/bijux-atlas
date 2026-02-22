@@ -17,7 +17,7 @@ ROOT = _repo_root()
 ops_mk = (ROOT / "makefiles" / "ops.mk").read_text(encoding="utf-8", errors="ignore")
 
 checks = {
-    "ops-stack-validate": "./ops/stack/scripts/validate.sh",
+    "ops-stack-validate": "./packages/atlasctl/src/atlasctl/commands/ops/stack/validate.py",
     "ops-observability-pack-verify": "./ops/obs/scripts/verify_pack.sh",
     "ops-load-manifest-validate": "./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/load/contracts/validate_suite_manifest.py",
 }
@@ -28,7 +28,7 @@ for target, cmd in checks.items():
 
 blocked = [r"validate_pack\.sh", r"validate_stack\.sh", r"validate_suite.*\.py"]
 allow = {
-    "ops/stack/scripts/validate.sh",
+    "packages/atlasctl/src/atlasctl/commands/ops/stack/validate.py",
     "ops/obs/scripts/verify_pack.sh",
     "packages/atlasctl/src/atlasctl/commands/ops/load/contracts/validate_suite_manifest.py",
 }

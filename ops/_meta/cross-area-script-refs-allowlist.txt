@@ -53,10 +53,10 @@ makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/stack/collect_event
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/stack/collect_pod_logs.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/stack/health_report.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/stack/print_urls.py
-makefiles/ops.mk|ops/stack/scripts/stack_smoke.sh
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/stack/stack_smoke.py
 makefiles/ops.mk|ops/stack/scripts/uninstall.sh
-makefiles/ops.mk|ops/stack/scripts/validate.sh
-makefiles/ops.mk|ops/stack/scripts/wait_ready.sh
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/stack/validate.py
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/stack/wait_ready.py
 ops/e2e/realdata/run_single_release.sh|ops/datasets/scripts/publish_by_name.sh
 ops/e2e/realdata/run_two_release_diff.sh|ops/datasets/scripts/publish_by_name.sh
 ops/k8s/tests/checks/perf/test_store_outage_under_load.sh|ops/obs/scripts/bin/run_drill.sh
@@ -68,6 +68,6 @@ scripts/areas/layout/check_ops_canonical_entrypoints.py|ops/e2e/scripts/smoke_qu
 scripts/areas/layout/check_ops_canonical_entrypoints.py|ops/k8s/scripts/deploy_atlas.sh
 scripts/areas/layout/check_ops_canonical_entrypoints.py|ops/obs/scripts/verify_pack.sh
 scripts/areas/layout/check_ops_single_validators.py|ops/obs/scripts/verify_pack.sh
-scripts/areas/layout/check_ops_single_validators.py|ops/stack/scripts/validate.sh
+scripts/areas/layout/check_ops_single_validators.py|packages/atlasctl/src/atlasctl/commands/ops/stack/validate.py
 scripts/areas/layout/check_ops_stack_order.sh|ops/stack/scripts/install.sh
 scripts/areas/layout/check_ops_stack_order.sh|ops/stack/scripts/uninstall.sh
