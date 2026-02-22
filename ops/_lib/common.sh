@@ -6,10 +6,6 @@ set -euo pipefail
 
 OPS_LIB_ROOT="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(CDPATH='' cd -- "${OPS_LIB_ROOT}/../.." && pwd)"
-# shellcheck source=ops/_lib/io/artifacts.sh
-source "${OPS_LIB_ROOT}/io/artifacts.sh"
-# shellcheck source=ops/_lib/report/layer_contract.sh
-source "${OPS_LIB_ROOT}/report/layer_contract.sh"
 ARTIFACTS_ROOT="${REPO_ROOT}/artifacts/ops"
 
 ops_init_run_id() {
@@ -32,6 +28,101 @@ ops_require_ci_noninteractive() {
     return 1
   fi
 }
+
+ops_run_id() {
+  ops_init_run_id
+  if [ -n "${OPS_RUN_ID:-}" ]; then
+    printf '%s\n' "$OPS_RUN_ID"
+  elif [ -n "${ATLAS_RUN_ID:-}" ]; then
+    printf '%s\n' "$ATLAS_RUN_ID"
+  else
+    printf '%s\n' "local"
+  fi
+}
+
+ops_run_dir() {
+  ops_init_run_id
+  if [ -n "${OPS_RUN_DIR:-}" ]; then
+    printf '%s\n' "$OPS_RUN_DIR"
+  else
+    printf '%s\n' "${REPO_ROOT}/artifacts/ops/$(ops_run_id)"
+  fi
+}
+
+ops_artifact_dir() {
+  local component="$1"
+  local out
+  out="$(ops_run_dir)/$component"
+  mkdir -p "$out"
+  printf '%s\n' "$out"
+}
+
+_ops_sha256() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$1" | awk '{print $1}'
+  else
+    shasum -a 256 "$1" | awk '{print $1}'
+  fi
+}
+
+ops_write_metadata() {
+  ops_init_run_id
+  local out="${1:-$(ops_run_dir)}"
+  mkdir -p "$out"
+  local git_sha image_digest policy_hash dataset_hash tools_json
+  git_sha="$(git -C "$REPO_ROOT" rev-parse --short HEAD 2>/dev/null || echo unknown)"
+  image_digest="$(docker image inspect --format '{{index .RepoDigests 0}}' bijux-atlas:local 2>/dev/null || echo unknown)"
+  policy_hash="$(_ops_sha256 "$REPO_ROOT/configs/policy/policy.json" 2>/dev/null || echo unknown)"
+  dataset_hash="$(_ops_sha256 "$REPO_ROOT/ops/fixtures/medium/v1/manifest.lock" 2>/dev/null || echo unknown)"
+  tools_json="$(cat "$REPO_ROOT/configs/ops/tool-versions.json" 2>/dev/null || echo '{}')"
+  {
+    echo '{'
+    echo "  \"run_id\": \"${OPS_RUN_ID}\","
+    echo "  \"namespace\": \"${OPS_NAMESPACE}\","
+    echo "  \"git_sha\": \"${git_sha}\","
+    echo "  \"image_digest\": \"${image_digest}\","
+    echo "  \"policy_hash\": \"${policy_hash}\","
+    echo "  \"dataset_hash\": \"${dataset_hash}\","
+    echo "  \"tool_versions\": ${tools_json}"
+    echo '}'
+  } > "$out/metadata.json"
+}
+
+ops_layer_contract_file() {
+  printf '%s\n' "${ATLAS_LAYER_CONTRACT_PATH:-$REPO_ROOT/ops/_meta/layer-contract.json}"
+}
+
+ops_layer_contract_get() {
+  local key="$1"
+  python3 - "$key" "$(ops_layer_contract_file)" <<'PY'
+import json, sys
+key = sys.argv[1]
+path = sys.argv[2]
+obj = json.load(open(path, encoding='utf-8'))
+cur = obj
+for part in key.split('.'):
+    if isinstance(cur, dict) and part in cur:
+        cur = cur[part]
+    else:
+        raise SystemExit(f"missing key: {key}")
+if isinstance(cur, (dict, list)):
+    print(json.dumps(cur, sort_keys=True))
+else:
+    print(cur)
+PY
+}
+
+ops_layer_ns_stack() { ops_layer_contract_get "namespaces.stack"; }
+ops_layer_ns_k8s() { ops_layer_contract_get "namespaces.k8s"; }
+ops_layer_ns_e2e() { ops_layer_contract_get "namespaces.e2e"; }
+ops_layer_service_atlas() { ops_layer_contract_get "services.atlas.service_name"; }
+ops_layer_port_atlas() { ops_layer_contract_get "ports.atlas.service"; }
+ops_layer_port_prometheus() { ops_layer_contract_get "ports.prometheus.service"; }
+ops_layer_port_otel_grpc() { ops_layer_contract_get "ports.otel.grpc"; }
+ops_layer_port_otel_http() { ops_layer_contract_get "ports.otel.http"; }
+ops_layer_port_grafana() { ops_layer_contract_get "ports.grafana.service"; }
+ops_layer_port_minio_api() { ops_layer_contract_get "ports.minio.api"; }
+ops_layer_port_redis() { ops_layer_contract_get "ports.redis.service"; }
 
 ops_retry() {
   local attempts="$1"
