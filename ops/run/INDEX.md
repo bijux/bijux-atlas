@@ -13,7 +13,6 @@ Single executable script surface for ops commands.
 - `ops/run/warm-entrypoint.sh`
 - `ops/run/deploy-atlas.sh`
 - `atlasctl ops e2e run`
-- `ops/run/load-suite.sh`
 
 ## Suites
 - Entrypoints dispatch to suite manifests in area-specific directories.

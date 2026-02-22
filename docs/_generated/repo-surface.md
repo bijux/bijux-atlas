@@ -146,4 +146,3 @@
 - `./ops/run/doctor.sh`
 - `./ops/run/stack-up.sh`
 - `./ops/run/stack-down.sh`
-- `./ops/run/load-suite.sh`

@@ -24,7 +24,6 @@
 - `ops/run/stack-down.sh`
 - `ops/run/deploy-atlas.sh`
 - `atlasctl ops e2e run`
-- `ops/run/load-suite.sh`
 - `ops/run/ops-check.sh`
 - `ops/run/ops-smoke.sh`
 - `ops/run/prereqs.sh`
