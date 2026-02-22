@@ -86,6 +86,7 @@ _MILESTONES = Path("configs/policy/bypass-removal-milestones.json")
 _BYPASS_COUNT_BASELINE = Path("configs/policy/bypass-count-baseline.json")
 _ADJECTIVE_ALLOWLIST = Path("configs/policy/forbidden-adjectives-allowlist.txt")
 _BUDGET_APPROVAL = Path("configs/policy/budget-loosening-approval.json")
+_BYPASS_TEST_COVERAGE = Path("configs/policy/bypass-test-coverage.json")
 _ISSUE_RE = re.compile(r"^ISSUE-[A-Z0-9-]+$")
 
 
@@ -229,6 +230,81 @@ def check_policies_bypass_hard_gate(repo_root: Path) -> tuple[int, list[str]]:
     if current == 0:
         return 0, []
     return 1, [f"bypass hard gate enabled: entry_count={current} must be zero"]
+
+
+def check_policies_bypass_has_test_coverage(repo_root: Path) -> tuple[int, list[str]]:
+    path = repo_root / _BYPASS_TEST_COVERAGE
+    if not path.exists():
+        return 1, [f"missing coverage registry: {_BYPASS_TEST_COVERAGE.as_posix()}"]
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return 1, [f"{_BYPASS_TEST_COVERAGE.as_posix()}: invalid json: {exc}"]
+    rows = payload.get("coverage", []) if isinstance(payload, dict) else []
+    if not isinstance(rows, list) or not rows:
+        return 1, [f"{_BYPASS_TEST_COVERAGE.as_posix()}: coverage must contain non-empty `coverage` list"]
+
+    source_rows: dict[str, dict[str, object]] = {}
+    errors: list[str] = []
+    for idx, row in enumerate(rows, start=1):
+        if not isinstance(row, dict):
+            errors.append(f"{_BYPASS_TEST_COVERAGE.as_posix()}: coverage[{idx}] must be object")
+            continue
+        source = str(row.get("source", "")).strip()
+        tests = row.get("tests", [])
+        if not source:
+            errors.append(f"{_BYPASS_TEST_COVERAGE.as_posix()}: coverage[{idx}] missing source")
+            continue
+        if source in source_rows:
+            errors.append(f"{_BYPASS_TEST_COVERAGE.as_posix()}: duplicate source coverage entry `{source}`")
+            continue
+        if not isinstance(tests, list) or not tests:
+            errors.append(f"{_BYPASS_TEST_COVERAGE.as_posix()}: {source}: tests must be non-empty list")
+            continue
+        for t in tests:
+            rel = str(t).strip()
+            if not rel:
+                errors.append(f"{_BYPASS_TEST_COVERAGE.as_posix()}: {source}: blank test path")
+                continue
+            if not (repo_root / rel).exists():
+                errors.append(f"{_BYPASS_TEST_COVERAGE.as_posix()}: {source}: missing test path `{rel}`")
+        source_rows[source] = row
+
+    inventory = collect_bypass_inventory(repo_root)
+    entries = [row for row in inventory.get("entries", []) if isinstance(row, dict)]
+    by_source: dict[str, list[dict[str, object]]] = {}
+    for row in entries:
+        source = str(row.get("source", "")).strip()
+        if not source:
+            continue
+        by_source.setdefault(source, []).append(row)
+
+    for source, source_entries in sorted(by_source.items()):
+        if source not in source_rows:
+            errors.append(f"bypass source has no test coverage declaration: {source}")
+            continue
+        declared = source_rows[source]
+        entry_keys = declared.get("entry_keys", ["*"])
+        if not isinstance(entry_keys, list) or not entry_keys:
+            errors.append(f"{_BYPASS_TEST_COVERAGE.as_posix()}: {source}: entry_keys must be non-empty list when present")
+            continue
+        patterns = [str(item).strip() for item in entry_keys if str(item).strip()]
+        if not patterns:
+            errors.append(f"{_BYPASS_TEST_COVERAGE.as_posix()}: {source}: entry_keys contain no usable patterns")
+            continue
+        uncovered: list[str] = []
+        for entry in source_entries:
+            key = str(entry.get("key", "")).strip()
+            if not key:
+                continue
+            if any(fnmatch.fnmatch(key, patt) for patt in patterns):
+                continue
+            uncovered.append(key)
+        for key in sorted(uncovered)[:20]:
+            errors.append(f"{source}: bypass entry has no declared test coverage: {key}")
+        if len(uncovered) > 20:
+            errors.append(f"{source}: {len(uncovered) - 20} more bypass entries without declared test coverage")
+    return (0 if not errors else 1), sorted(errors)
 
 
 def check_policies_bypass_ids_unique(repo_root: Path) -> tuple[int, list[str]]:
@@ -598,6 +674,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("policies.bypass_count_nonincreasing", "policies", "enforce migration gate: bypass count must not increase", 800, check_policies_bypass_count_nonincreasing, fix_hint="Reduce bypass count or intentionally update baseline in one reviewed change.", tags=("repo",)),
     CheckDef("policies.bypass_new_entries_forbidden", "policies", "forbid new bypass entries unless explicitly approved", 800, check_policies_bypass_new_entries_forbidden, fix_hint="Reduce bypass count or add temporary approvals in configs/policy/bypass-new-entry-approvals.json.", tags=("repo",)),
     CheckDef("policies.bypass_hard_gate", "policies", "fail when bypass hard gate is enabled and any bypass entries exist", 800, check_policies_bypass_hard_gate, fix_hint="Remove all bypass entries or disable hard gate until ready to enforce zero-bypass milestone.", tags=("repo", "policies", "required")),
+    CheckDef("policies.bypass_has_test_coverage", "policies", "require bypass entries to have declared validating test coverage", 800, check_policies_bypass_has_test_coverage, fix_hint="Map bypass sources/entries to validating tests in configs/policy/bypass-test-coverage.json.", tags=("repo",)),
     CheckDef("policies.bypass_ids_unique", "policies", "require unique bypass IDs across policy files", 800, check_policies_bypass_ids_unique, fix_hint="Deduplicate bypass IDs/keys across configs/policy.", tags=("repo",)),
     CheckDef("policies.bypass_entry_paths_exist", "policies", "fail if bypass entry points to missing file/path", 800, check_policies_bypass_entry_paths_exist, fix_hint="Fix or remove stale bypass references to missing paths.", tags=("repo",)),
     CheckDef("policies.bypass_entry_matches_nothing", "policies", "fail if wildcard bypass entry matches nothing", 800, check_policies_bypass_entry_matches_nothing, fix_hint="Tighten or remove stale wildcard bypass entries.", tags=("repo",)),
