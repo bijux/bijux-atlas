@@ -46,7 +46,7 @@ def main() -> int:
         root / "ops/fixtures/medium/v1/data/genome.fa.fai",
     ]
     if not all(p.is_file() for p in fixtures):
-        _run(["bash", "ops/datasets/scripts/fixtures/fetch-medium.sh"], root)
+        _run(["python3", "packages/atlasctl/src/atlasctl/commands/ops/datasets/fixtures/fetch_medium.py"], root)
 
     lock = json.loads(lock_path.read_text(encoding="utf-8"))
     manifest = json.loads((root / "ops/datasets/manifest.json").read_text(encoding="utf-8"))
@@ -71,7 +71,7 @@ def main() -> int:
         print("\n".join(errs), file=sys.stderr)
         return 1
     print("dataset checksum verification passed")
-    _run(["bash", "ops/datasets/scripts/fixtures/fetch-real-datasets.sh"], root)
+    _run(["python3", "packages/atlasctl/src/atlasctl/commands/ops/datasets/fixtures/fetch_real_datasets.py"], root)
     return 0
 
 
