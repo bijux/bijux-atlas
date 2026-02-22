@@ -23,6 +23,10 @@ jobs:
           components: rustfmt, clippy
       - name: Run canonical CI entrypoint
         run: make ci
+      - name: Migration progress gate
+        run: |
+          ./bin/atlasctl internal migration-progress --json > artifacts/reports/atlasctl/migration-progress.ci.json
+          ./bin/atlasctl check run --id checks_repo_migration_progress_regression --json > artifacts/reports/atlasctl/migration-progress.gate.json
       - name: Generate CI job summary
         if: always()
         run: |
