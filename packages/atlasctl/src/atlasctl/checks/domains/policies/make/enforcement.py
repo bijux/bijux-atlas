@@ -21,6 +21,7 @@ _ATLASCTL_MODULE_RE = re.compile(r"\bpython3?\s+-m\s+atlasctl\.cli\b")
 _ATLASCTL_SUITE_RUN_RE = re.compile(r"\batlasctl\s+suite\s+run\s+([A-Za-z0-9_.-]+)\b")
 _LEGACY_MAKE_ALIAS_RE = re.compile(r"\$\((ATLAS_SCRIPTS|SCRIPTS|PY_RUN)\)|\b(ATLAS_SCRIPTS|SCRIPTS|PY_RUN)\b")
 _WRAPPER_FILES = (
+    "makefiles/atlasctl.mk",
     "makefiles/dev.mk",
     "makefiles/docs.mk",
     "makefiles/ops.mk",
@@ -28,6 +29,7 @@ _WRAPPER_FILES = (
     "makefiles/policies.mk",
     "makefiles/product.mk",
     "makefiles/env.mk",
+    "makefiles/verification.mk",
     "makefiles/root.mk",
 )
 _ROOT_MK_MAX_LOC = 900
@@ -338,6 +340,11 @@ def check_make_wrapper_purity(repo_root: Path) -> tuple[int, list[str]]:
                 continue
             errors.append(f"{rel}:{lineno}: wrapper recipe must delegate via ./bin/atlasctl")
     return (0 if not errors else 1), sorted(errors)
+
+
+def check_makefiles_wrappers_only_all(repo_root: Path) -> tuple[int, list[str]]:
+    # Explicit invariant alias requested by CI/governance program.
+    return check_make_wrapper_purity(repo_root)
 
 
 def check_make_no_python_module_invocation(repo_root: Path) -> tuple[int, list[str]]:
