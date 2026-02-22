@@ -1,54 +1,5 @@
 {
   "schema_version": 1,
-  "max_exceptions": 8,
-  "exceptions": [
-    {
-      "path": "packages/atlasctl/src/atlasctl/commands",
-      "owner": "Bijan",
-      "reason": "active command-surface consolidation in progress; temporary over-cap while command groups are being split",
-      "expires_on": "2026-12-31"
-    },
-    {
-      "path": "packages/atlasctl/src/atlasctl/commands/dev",
-      "owner": "Bijan",
-      "reason": "dev command decomposition is in progress; temporary over-cap before submodule extraction completes",
-      "expires_on": "2026-12-31"
-    },
-    {
-      "path": "packages/atlasctl/src/atlasctl/commands/ops",
-      "owner": "Bijan",
-      "reason": "ops command migration from make/scripts is in progress; temporary over-cap during cutover",
-      "expires_on": "2026-12-31"
-    },
-    {
-      "path": "packages/atlasctl/src/atlasctl/commands/policies/runtime",
-      "owner": "Bijan",
-      "reason": "policy runtime modules are being regrouped; temporary over-cap while budget/runtime handlers are split",
-      "expires_on": "2026-12-31"
-    },
-    {
-      "path": "packages/atlasctl/src/atlasctl/core",
-      "owner": "Bijan",
-      "reason": "core package currently contains transitional compatibility modules pending final move into runtime/effects",
-      "expires_on": "2026-12-31"
-    },
-    {
-      "path": "packages/atlasctl/src/atlasctl/core/runtime",
-      "owner": "Bijan",
-      "reason": "runtime utilities are being normalized and grouped; temporary over-cap before final adapter cleanup",
-      "expires_on": "2026-12-31"
-    },
-    {
-      "path": "packages/atlasctl/src/atlasctl/contracts",
-      "owner": "Bijan",
-      "reason": "contract layer flattening in progress; temporary over-cap during schema/tool separation",
-      "expires_on": "2026-12-31"
-    },
-    {
-      "path": "packages/atlasctl/src/atlasctl/contracts/schema/schemas",
-      "owner": "Bijan",
-      "reason": "schema set is intentionally broad during migration; regrouping into domain subfolders is pending",
-      "expires_on": "2026-12-31"
-    }
-  ]
+  "max_exceptions": 0,
+  "exceptions": []
 }
