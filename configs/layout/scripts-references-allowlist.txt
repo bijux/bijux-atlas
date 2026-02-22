@@ -201,12 +201,12 @@ ops/obs/tests/test_cheap.sh
 ops/obs/tests/test_contracts.sh
 ops/obs/tests/test_coverage.sh
 ops/obs/tests/test_drills.sh
-ops/obs/tests/test_otel_outage.sh
+packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_otel_outage.py
 ops/obs/tests/test_outage_matrix.sh
 ops/obs/tests/test_profiles.sh
-ops/obs/tests/test_prom_outage.sh
+packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_prom_outage.py
 ops/obs/tests/test_slo_burn_determinism.sh
-ops/obs/tests/test_toxiproxy_latency_drill.sh
+packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_toxiproxy_latency_drill.py
 packages/atlasctl/src/atlasctl/reporting/tools/incident_repro.py
 atlasctl ops deploy
 ./bin/atlasctl ops doctor --report text

@@ -29,9 +29,9 @@
       "id": "minimal-drills",
       "description": "Minimal drill set for local confidence (store latency + prom outage + otel outage).",
       "tests": [
-        "test_toxiproxy_latency_drill.sh",
-        "test_prom_outage.sh",
-        "test_otel_outage.sh"
+        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_toxiproxy_latency_drill.py",
+        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_prom_outage.py",
+        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_otel_outage.py"
       ]
     },
     {
@@ -41,9 +41,9 @@
         "test_contracts.sh",
         "test_slo_burn_determinism.sh",
         "test_coverage.sh",
-        "test_toxiproxy_latency_drill.sh",
-        "test_prom_outage.sh",
-        "test_otel_outage.sh"
+        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_toxiproxy_latency_drill.py",
+        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_prom_outage.py",
+        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_otel_outage.py"
       ]
     },
     {
