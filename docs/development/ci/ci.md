@@ -6,14 +6,7 @@
 
 - `make ci` -> `./bin/atlasctl ci run --json --out-dir artifacts/reports/atlasctl/suite-ci`
 - `make ci-fast` -> `./bin/atlasctl ci fast --json`
-- `make ci-all` -> `./bin/atlasctl ci all --json`
-- `make ci-contracts` -> `./bin/atlasctl ci contracts --json`
-- `make ci-docs` -> `./bin/atlasctl ci docs --json`
-- `make ci-ops` -> `./bin/atlasctl ci ops --json`
-- `make ci-release` -> `./bin/atlasctl ci release --json`
-- `make ci-release-all` -> `./bin/atlasctl ci release-all --json`
-- `make ci-init` -> `./bin/atlasctl ci init --json`
-- `make ci-artifacts` -> `./bin/atlasctl ci artifacts --json`
+- `make ci-nightly` -> `./bin/atlasctl ci nightly --json`
 - `make ci-help` -> `./bin/atlasctl help ci`
 
 ## Workflow Rules
