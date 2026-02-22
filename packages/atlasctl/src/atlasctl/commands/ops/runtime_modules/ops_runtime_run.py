@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 
 from . import ops_runtime_commands as impl
+from atlasctl.core.process import shell_script_command
 
 def run_ops_command(ctx, ns: argparse.Namespace) -> int:
     if not getattr(ns, "ops_cmd", None) and bool(getattr(ns, "list", False)):
@@ -81,7 +82,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         if path.is_absolute() or ".." in path.parts:
             return impl._emit_ops_status(getattr(ns, "report", "text"), 2, "invalid script path; use ops/run relative path")
         print("deprecated: `atlasctl ops run-script` is a temporary migration shim; use explicit `atlasctl ops/...` commands")
-        return impl._run_simple_cmd(ctx, ["bash", path.as_posix(), *list(getattr(ns, "args", []))], getattr(ns, "report", "text"))
+        return impl._run_simple_cmd(ctx, shell_script_command(path.as_posix(), *list(getattr(ns, "args", []))), getattr(ns, "report", "text"))
     if ns.ops_cmd == "list":
         if getattr(ns, "kind", "") == "tasks":
             return impl._ops_list_tasks(ctx, ns.report)
@@ -99,13 +100,13 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         return impl._emit_ops_status(ns.report, 0, text)
 
     if ns.ops_cmd == "up":
-        return impl._run_simple_cmd(ctx, ["bash", "ops/run/stack-up.sh", "--profile", os.environ.get("PROFILE", "kind")], ns.report)
+        return impl._run_simple_cmd(ctx, shell_script_command("ops/run/stack-up.sh", "--profile", os.environ.get("PROFILE", "kind")), ns.report)
 
     if ns.ops_cmd == "down":
-        return impl._run_simple_cmd(ctx, ["bash", "ops/run/down.sh"], ns.report)
+        return impl._run_simple_cmd(ctx, shell_script_command("ops/run/down.sh"), ns.report)
 
     if ns.ops_cmd == "restart":
-        return impl._run_simple_cmd(ctx, ["bash", "ops/run/k8s-restart.sh"], ns.report)
+        return impl._run_simple_cmd(ctx, shell_script_command("ops/run/k8s-restart.sh"), ns.report)
 
     if ns.ops_cmd == "deploy":
         sub = str(getattr(ns, "ops_deploy_cmd", "") or "").strip()
@@ -113,7 +114,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             allow_apply = bool(os.environ.get("CI")) or str(os.environ.get("ATLASCTL_OPS_DEPLOY_ALLOW_APPLY", "")).strip().lower() in {"1", "true", "yes", "on"}
             if not allow_apply:
                 return impl._emit_ops_status(ns.report, 2, "deploy apply is gated; set ATLASCTL_OPS_DEPLOY_ALLOW_APPLY=1 or run in CI")
-            return impl._run_simple_cmd(ctx, ["bash", "ops/run/deploy-atlas.sh"], ns.report)
+            return impl._run_simple_cmd(ctx, shell_script_command("ops/run/deploy-atlas.sh"), ns.report)
         if sub == "plan":
             payload = {
                 "schema_version": 1,
@@ -139,7 +140,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                     print(f"- {step}")
             return 0
         if sub == "rollback":
-            return impl._run_simple_cmd(ctx, ["bash", "ops/run/undeploy.sh"], ns.report)
+            return impl._run_simple_cmd(ctx, shell_script_command("ops/run/undeploy.sh"), ns.report)
         return 2
 
     if ns.ops_cmd == "env":
@@ -349,7 +350,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                         errors.append(f"missing key `{key}`")
             return impl._emit_ops_status(ns.report, 0 if not errors else 1, "e2e results valid" if not errors else "\n".join(errors))
         if ns.ops_cmd == "obs" and sub == "verify":
-            return impl._run_simple_cmd(ctx, ["bash", "ops/run/obs-verify.sh"], ns.report)
+            return impl._run_simple_cmd(ctx, shell_script_command("ops/run/obs-verify.sh"), ns.report)
         if ns.ops_cmd == "obs" and sub == "check":
             return impl._run_simple_cmd(ctx, [*impl.SELF_CLI, "ops", "obs", "--report", ns.report, "verify"], ns.report)
         if ns.ops_cmd == "obs" and sub == "lint":
@@ -388,7 +389,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             drill = getattr(ns, "drill", "")
             if not drill:
                 return impl._emit_ops_status(ns.report, 2, "missing --drill")
-            return impl._run_simple_cmd(ctx, ["bash", "ops/obs/scripts/run_drill.sh", drill], ns.report)
+            return impl._run_simple_cmd(ctx, shell_script_command("ops/obs/scripts/run_drill.sh", drill), ns.report)
         if ns.ops_cmd == "stack" and sub == "versions-sync":
             return impl._run_simple_cmd(
                 ctx,
@@ -397,11 +398,11 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             )
         if ns.ops_cmd == "stack" and sub == "up":
             profile = getattr(ns, "profile", "kind")
-            return impl._run_simple_cmd(ctx, ["bash", "ops/run/stack-up.sh", "--profile", profile], ns.report)
+            return impl._run_simple_cmd(ctx, shell_script_command("ops/run/stack-up.sh", "--profile", profile), ns.report)
         if ns.ops_cmd == "stack" and sub == "down":
-            return impl._run_simple_cmd(ctx, ["bash", "ops/run/stack-down.sh"], ns.report)
+            return impl._run_simple_cmd(ctx, shell_script_command("ops/run/stack-down.sh"), ns.report)
         if ns.ops_cmd == "stack" and sub == "restart":
-            return impl._run_simple_cmd(ctx, ["bash", "ops/run/k8s-restart.sh"], ns.report)
+            return impl._run_simple_cmd(ctx, shell_script_command("ops/run/k8s-restart.sh"), ns.report)
         if ns.ops_cmd == "stack" and sub == "check":
             for cmd in (
                 [*impl.SELF_CLI, "ops", "stack", "--report", ns.report, "versions-sync"],
@@ -438,11 +439,11 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                 print(written)
             return 0 if payload["status"] == "pass" else 1
         if ns.ops_cmd == "kind" and sub == "up":
-            return impl._run_simple_cmd(ctx, ["bash", "ops/stack/kind/up.sh"], ns.report)
+            return impl._run_simple_cmd(ctx, shell_script_command("ops/stack/kind/up.sh"), ns.report)
         if ns.ops_cmd == "kind" and sub == "down":
-            return impl._run_simple_cmd(ctx, ["bash", "ops/stack/kind/down.sh"], ns.report)
+            return impl._run_simple_cmd(ctx, shell_script_command("ops/stack/kind/down.sh"), ns.report)
         if ns.ops_cmd == "kind" and sub == "reset":
-            return impl._run_simple_cmd(ctx, ["bash", "ops/stack/kind/reset.sh"], ns.report)
+            return impl._run_simple_cmd(ctx, shell_script_command("ops/stack/kind/reset.sh"), ns.report)
         if ns.ops_cmd == "kind" and sub == "validate":
             steps = [
                 ["bash", "ops/stack/kind/context_guard.sh"],
@@ -462,7 +463,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         if ns.ops_cmd == "kind" and sub == "fault":
             fault = getattr(ns, "name", "")
             if fault == "disk-pressure":
-                return impl._run_simple_cmd(ctx, ["bash", "ops/stack/faults/inject.sh", "fill-node-disk", os.environ.get("MODE", "fill")], ns.report)
+                return impl._run_simple_cmd(ctx, shell_script_command("ops/stack/faults/inject.sh", "fill-node-disk", os.environ.get("MODE", "fill")), ns.report)
             if fault == "latency":
                 return impl._run_simple_cmd(
                     ctx,
@@ -470,17 +471,17 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                     ns.report,
                 )
             if fault == "cpu-throttle":
-                return impl._run_simple_cmd(ctx, ["bash", "ops/stack/faults/inject.sh", "cpu-throttle"], ns.report)
+                return impl._run_simple_cmd(ctx, shell_script_command("ops/stack/faults/inject.sh", "cpu-throttle"), ns.report)
             return impl._emit_ops_status(ns.report, 2, f"unsupported fault `{fault}`")
         if ns.ops_cmd == "e2e" and sub == "run":
             suite = getattr(ns, "suite", "smoke")
             scenario = str(getattr(ns, "scenario", "") or "").strip()
             if scenario:
                 suite = scenario
-            return impl._run_simple_cmd(ctx, ["bash", "ops/run/e2e.sh", "--suite", suite], ns.report)
+            return impl._run_simple_cmd(ctx, shell_script_command("ops/run/e2e.sh", "--suite", suite), ns.report)
         if ns.ops_cmd == "load" and sub == "run":
             suite = getattr(ns, "suite", "mixed-80-20")
-            return impl._run_simple_cmd(ctx, ["env", f"SUITE={suite}", "bash", "ops/run/load-suite.sh"], ns.report)
+            return impl._run_simple_cmd(ctx, ["env", f"SUITE={suite}", *shell_script_command("ops/run/load-suite.sh")], ns.report)
         if ns.ops_cmd == "load" and sub == "check":
             return impl._run_simple_cmd(ctx, [*impl.SELF_CLI, "load", "smoke"], ns.report)
         if ns.ops_cmd == "load" and sub == "compare":
@@ -508,9 +509,9 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                 print(written)
             return 0
         if ns.ops_cmd == "datasets" and sub == "verify":
-            return impl._run_simple_cmd(ctx, ["bash", "ops/run/datasets-verify.sh"], ns.report)
+            return impl._run_simple_cmd(ctx, shell_script_command("ops/run/datasets-verify.sh"), ns.report)
         if ns.ops_cmd == "datasets" and sub == "fetch":
-            return impl._run_simple_cmd(ctx, ["bash", "ops/run/warm.sh"], ns.report)
+            return impl._run_simple_cmd(ctx, shell_script_command("ops/run/warm.sh"), ns.report)
         if ns.ops_cmd == "datasets" and sub in {"pin", "lock"}:
             return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/commands/ops/datasets/build_manifest_lock.py"], ns.report)
         if ns.ops_cmd == "datasets" and sub == "qc":
