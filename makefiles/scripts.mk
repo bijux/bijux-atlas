@@ -1,13 +1,13 @@
-# Scope: legacy scripts surface kept as thin atlasctl wrappers during migration.
+# Scope: auxiliary atlasctl tooling wrappers.
 # Public targets: scripts-* and deps-* wrappers only.
 SHELL := /bin/sh
 
 bootstrap-tools: ## Bootstrap developer tooling
 	@./bin/atlasctl deps sync
 
-scripts-index: ## Generate scripts migration inventory
-	@./bin/atlasctl inventory scripts-migration --format md --out-dir docs/_generated
-	@./bin/atlasctl inventory scripts-migration --format json --out-dir docs/_generated
+scripts-index: ## Generate control-plane inventory artifacts
+	@./bin/atlasctl inventory all --format md --out-dir docs/_generated
+	@./bin/atlasctl inventory all --format json --out-dir docs/_generated
 
 scripts-graph: ## Generate scripts graph documentation
 	@./bin/atlasctl docs generate-scripts-graph --report text

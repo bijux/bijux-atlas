@@ -10,7 +10,10 @@ include makefiles/_macros.mk
 include makefiles/dev.mk
 include makefiles/ci.mk
 include makefiles/docs.mk
+ATLAS_INCLUDE_SCRIPTS ?= 0
+ifeq ($(ATLAS_INCLUDE_SCRIPTS),1)
 include makefiles/scripts.mk
+endif
 include makefiles/path_contract.mk
 include makefiles/registry.mk
 include makefiles/help.mk
@@ -19,8 +22,8 @@ include makefiles/product.mk
 include makefiles/ops.mk
 include makefiles/policies.mk
 
-check-scripts: ## Run scripts package lint/tests/contracts
-	@$(MAKE) -s scripts-check
+check-scripts: ## Run atlasctl tooling lint/tests/contracts
+	@./bin/atlasctl ci scripts --json
 
 ci-local: ## Local runner mirroring CI top-level entrypoint set
 	@$(MAKE) -s ci/all
@@ -66,7 +69,7 @@ help: ## Show curated public make targets from SSOT
 help-advanced: ## Show curated public targets plus maintainer-oriented helpers
 	@./bin/atlasctl make help --mode advanced
 
-help-all:
+help-all: ## Show maintainer-mode surface (includes internal/legacy targets)
 	@./bin/atlasctl make help --mode all
 
 explain: ## Explain whether TARGET is a public make target
@@ -205,7 +208,7 @@ docs/clean: ## Clean docs generated outputs only
 docs/all: ## Docs lane
 	@$(call with_iso,docs-all,$(MAKE) -s docs-all)
 tools-check: ## Alias for python tooling/package checks
-	@$(MAKE) -s scripts-check
+	@./bin/atlasctl ci scripts --json
 packages-check: ## Validate python package surfaces and repository scripting policy
 	@$(MAKE) -s internal/packages/check
 ops/check: ## Fast ops verification (no cluster bring-up)
@@ -329,7 +332,7 @@ lane-ops: ## Lane: ops lint/contracts without cluster bring-up
 	@$(MAKE) -s ops/check
 
 lane-scripts: ## Lane: scripts lint/tests/audit
-	@$(MAKE) -s scripts-check
+	@./bin/atlasctl ci scripts --json
 
 lane-configs: ## Lane: configs checks and drift gates
 	@$(call with_iso,lane-configs,$(MAKE) -s configs-check budgets/check atlasctl-budgets)
@@ -353,7 +356,7 @@ internal/lane-obs-full: ## Internal lane: full observability verification for ro
 root: ## CI-fast lane subset (no cluster bring-up)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-$(MAKE_RUN_TS)}}"; \
 	$(MAKE) -s tools-check; \
-	$(MAKE) -s scripts-test; \
+	./bin/atlasctl test run unit; \
 	parallel_flag=""; if [ "$${PARALLEL:-1}" = "1" ]; then parallel_flag="--parallel"; fi; \
 	RUN_ID="$$run_id" ./bin/atlasctl --quiet gates run --preset root --all $$parallel_flag --jobs "$${JOBS:-4}"; \
 	./bin/atlasctl --quiet report collect --run-id "$$run_id" >/dev/null; \
@@ -365,7 +368,7 @@ root: ## CI-fast lane subset (no cluster bring-up)
 root-local: ## All lanes in parallel + ops smoke lane (PARALLEL=0 for serial)
 	@run_id="$${RUN_ID:-$${MAKE_RUN_ID:-root-local-$(MAKE_RUN_TS)}}"; \
 	$(MAKE) -s tools-check; \
-	$(MAKE) -s scripts-test; \
+	./bin/atlasctl test run unit; \
 	parallel_flag=""; if [ "$${PARALLEL:-1}" = "1" ]; then parallel_flag="--parallel"; fi; \
 	RUN_ID="$$run_id" ./bin/atlasctl --quiet gates run --preset root-local --all $$parallel_flag --jobs "$${JOBS:-4}"; \
 	if [ "$${PERF_CHEAP_REGRESSION:-0}" = "1" ]; then $(MAKE) -s ops-load-smoke perf/regression-check PROFILE="$${PROFILE:-local}"; fi; \

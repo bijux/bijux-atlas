@@ -13,7 +13,7 @@ Define stable boundaries between public make surface and internal make implement
 - Wrapper makefiles (`makefiles/dev.mk`) may only delegate to stable `./bin/atlasctl ...` entrypoints.
 - Wrapper make recipes must be single-line delegations; multi-line shell blocks in wrapper recipes are forbidden.
 - Make is wrapper-only: recipe bodies must not implement tool orchestration logic directly.
-- Forbidden in make recipes: `python -m atlasctl.cli`, raw `cargo`, raw `pytest`, and ad-hoc script execution paths.
+- Forbidden in make recipes: module-style atlasctl invocation, raw `cargo`, raw `pytest`, and ad-hoc script execution paths.
 - Required atlasctl entrypoint in recipes: `./bin/atlasctl ...`.
 
 ## Internal target rules
