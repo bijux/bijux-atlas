@@ -197,15 +197,15 @@ packages/atlasctl/src/atlasctl/commands/ops/observability/smoke_pack.py
 packages/atlasctl/src/atlasctl/commands/ops/observability/drills/store_outage_under_load.py
 packages/atlasctl/src/atlasctl/commands/ops/observability/drills/trace_missing_spans_regression.py
 packages/atlasctl/src/atlasctl/commands/ops/observability/verify_pack.py
-ops/obs/tests/test_cheap.sh
-ops/obs/tests/test_contracts.sh
+packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_cheap.py
+packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_contracts.py
 ops/obs/tests/test_coverage.sh
-ops/obs/tests/test_drills.sh
+packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_drills.py
 packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_otel_outage.py
-ops/obs/tests/test_outage_matrix.sh
+packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_outage_matrix.py
 ops/obs/tests/test_profiles.sh
 packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_prom_outage.py
-ops/obs/tests/test_slo_burn_determinism.sh
+packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_slo_burn_determinism.py
 packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_toxiproxy_latency_drill.py
 packages/atlasctl/src/atlasctl/reporting/tools/incident_repro.py
 atlasctl ops deploy
