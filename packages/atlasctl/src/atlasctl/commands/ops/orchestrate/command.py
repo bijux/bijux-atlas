@@ -218,7 +218,7 @@ def _run_manifest(ctx: RunContext, report_format: str, manifest: str, scenario: 
 def _contracts_snapshot(ctx: RunContext, report_format: str) -> int:
     checks = [
         ("generate-layer-contract", ["python3", "ops/_meta/generate_layer_contract.py"]),
-        ("check-layer-contract-drift", ["python3", "ops/_lint/check_layer_contract_drift.py"]),
+        ("check-layer-contract-drift", ["./bin/atlasctl", "check", "run", "--id", "checks_ops_script_ops_lint_check_layer_contract_drift_py", "--quiet"]),
         ("check-layer-drift-static", ["python3", "packages/atlasctl/src/atlasctl/layout_checks/check_layer_drift.py"]),
         ("validate-ops-contracts", ["python3", "packages/atlasctl/src/atlasctl/layout_checks/validate_ops_contracts.py"]),
         ("check-literals", ["python3", "ops/_lint/no-layer-literals.py"]),
