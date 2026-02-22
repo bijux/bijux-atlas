@@ -43,6 +43,9 @@ def configure_product_parser(sub: argparse._SubParsersAction[argparse.ArgumentPa
 
     product_sub.add_parser("bootstrap", help="run product bootstrap lane")
     product_sub.add_parser("check", help="run canonical product verification lane")
+    release = product_sub.add_parser("release", help="product release helpers")
+    release_sub = release.add_subparsers(dest="product_release_cmd", required=True)
+    release_sub.add_parser("plan", help="print release version/tag strategy")
     product_sub.add_parser("explain", help="print product lane plan and underlying commands")
     product_sub.add_parser("graph", help="print product lane dependency graph")
 
@@ -88,6 +91,16 @@ def run_product_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print("product.docker.release -> product.docker.contracts")
         print("product.docker.release -> product.docker.push")
         print("product.chart.verify -> product.chart.package")
+        return 0
+    if sub == "release" and getattr(ns, "product_release_cmd", "") == "plan":
+        lines = [
+            "product release plan",
+            "- verify docker contracts and chart validation before release",
+            "- compute immutable image tags (no `latest`)",
+            "- publish chart package and verify app/chart version alignment",
+            "- execute docker release in CI-only environment",
+        ]
+        print("\n".join(lines))
         return 0
     if sub == "check":
         return run_product_lane(
