@@ -3104,14 +3104,14 @@
     },
     {
       "area": "script",
-      "callable": "check_ops_lint_check_layer_contract_drift_py",
+      "callable": "check_ops_lint_layer_contract_drift_native",
       "category": "hygiene",
       "description": "run ops script check `ops/_lint/check_layer_contract_drift.py`",
       "domain": "ops",
       "effects": [],
       "evidence": [],
       "external_tools": [],
-      "fix_hint": "Fix failures in `ops/_lint/check_layer_contract_drift.py` or replace it with atlasctl-native check logic.",
+      "fix_hint": "Regenerate ops/_meta/layer-contract.json and commit deterministic output.",
       "gate": "ops",
       "groups": [
         "ops"
@@ -3129,14 +3129,14 @@
     },
     {
       "area": "script",
-      "callable": "check_ops_lint_check_surfaces_py",
+      "callable": "check_ops_lint_check_surfaces_native",
       "category": "hygiene",
       "description": "run ops script check `ops/_lint/check-surfaces.py`",
       "domain": "ops",
       "effects": [],
       "evidence": [],
       "external_tools": [],
-      "fix_hint": "Fix failures in `ops/_lint/check-surfaces.py` or replace it with atlasctl-native check logic.",
+      "fix_hint": "Fix repo surface violations in configs/repo/surfaces.json or root entries.",
       "gate": "ops",
       "groups": [
         "ops"
@@ -3179,14 +3179,14 @@
     },
     {
       "area": "script",
-      "callable": "check_ops_lint_layout_check_layer_contract_drift_py",
+      "callable": "check_ops_lint_layer_contract_drift_native",
       "category": "hygiene",
       "description": "run ops script check `ops/_lint/layout/check_layer_contract_drift.py`",
       "domain": "ops",
       "effects": [],
       "evidence": [],
       "external_tools": [],
-      "fix_hint": "Fix failures in `ops/_lint/layout/check_layer_contract_drift.py` or replace it with atlasctl-native check logic.",
+      "fix_hint": "Regenerate ops/_meta/layer-contract.json and commit deterministic output.",
       "gate": "ops",
       "groups": [
         "ops"

@@ -117,6 +117,40 @@ def check_ops_scripts_are_data_only(repo_root: Path) -> tuple[int, list[str]]:
     return (0 if not errors else 1), errors
 
 
+def check_ops_lint_check_surfaces_native(repo_root: Path) -> tuple[int, list[str]]:
+    cfg = repo_root / "configs" / "repo" / "surfaces.json"
+    payload = json.loads(cfg.read_text(encoding="utf-8"))
+    allowed_dirs = set(payload["allowed_root_dirs"])
+    allowed_files = set(payload["allowed_root_files"])
+    canonical = set(payload["canonical_surfaces"])
+    unknown: list[str] = []
+    for path in sorted(repo_root.iterdir(), key=lambda p: p.name):
+        name = path.name
+        if path.is_dir() and name not in allowed_dirs and name not in canonical:
+            unknown.append(f"unknown root entry: {name}")
+        if path.is_file() and name not in allowed_files:
+            unknown.append(f"unknown root entry: {name}")
+    missing = [f"missing canonical surface: {name}" for name in sorted(canonical) if not (repo_root / name).exists()]
+    errors = [*unknown, *missing]
+    return (0 if not errors else 1), (["repo surface check passed"] if not errors else errors)
+
+
+def check_ops_lint_layer_contract_drift_native(repo_root: Path) -> tuple[int, list[str]]:
+    gen = repo_root / "ops" / "_meta" / "generate_layer_contract.py"
+    contract = repo_root / "ops" / "_meta" / "layer-contract.json"
+    before = contract.read_text(encoding="utf-8") if contract.exists() else ""
+    proc = subprocess.run(["python3", str(gen.relative_to(repo_root))], cwd=repo_root, text=True, capture_output=True, check=False)
+    if proc.returncode != 0:
+        out = ((proc.stdout or "") + "\n" + (proc.stderr or "")).strip()
+        rows = [line for line in out.splitlines() if line.strip()] or ["layer contract generator failed"]
+        return 1, rows
+    after = contract.read_text(encoding="utf-8")
+    if before != after:
+        return 1, ["layer-contract drift detected: run ops/_meta/generate_layer_contract.py and commit the result"]
+    json.loads(after)
+    return 0, ["layer contract drift check passed"]
+
+
 def check_ops_shell_policy(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
     run_dir = repo_root / "ops" / "run"
@@ -449,10 +483,7 @@ def check_ops_clean_allowed_roots_only(repo_root: Path) -> tuple[int, list[str]]
 
 
 _OPS_SCRIPT_CHECKS: tuple[tuple[str, str, str, callable], ...] = (
-    ("ops.script.ops_lint_check_surfaces_py", "run ops script check `ops/_lint/check-surfaces.py`", "ops/_lint/check-surfaces.py", _make_ops_script_check("ops/_lint/check-surfaces.py")),
-    ("ops.script.ops_lint_check_layer_contract_drift_py", "run ops script check `ops/_lint/check_layer_contract_drift.py`", "ops/_lint/check_layer_contract_drift.py", _make_ops_script_check("ops/_lint/check_layer_contract_drift.py")),
     ("ops.script.ops_lint_lane_budget_check_py", "run ops script check `ops/_lint/lane-budget-check.py`", "ops/_lint/lane-budget-check.py", _make_ops_script_check("ops/_lint/lane-budget-check.py")),
-    ("ops.script.ops_lint_layout_check_layer_contract_drift_py", "run ops script check `ops/_lint/layout/check_layer_contract_drift.py`", "ops/_lint/layout/check_layer_contract_drift.py", _make_ops_script_check("ops/_lint/layout/check_layer_contract_drift.py")),
     ("ops.script.ops_lint_ops_smoke_budget_check_py", "run ops script check `ops/_lint/ops-smoke-budget-check.py`", "ops/_lint/ops-smoke-budget-check.py", _make_ops_script_check("ops/_lint/ops-smoke-budget-check.py")),
     ("ops.script.ops_lint_policy_lane_budget_check_py", "run ops script check `ops/_lint/policy/lane-budget-check.py`", "ops/_lint/policy/lane-budget-check.py", _make_ops_script_check("ops/_lint/policy/lane-budget-check.py")),
     ("ops.script.ops_lint_policy_ops_smoke_budget_check_py", "run ops script check `ops/_lint/policy/ops-smoke-budget-check.py`", "ops/_lint/policy/ops-smoke-budget-check.py", _make_ops_script_check("ops/_lint/policy/ops-smoke-budget-check.py")),
@@ -539,6 +570,9 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("ops.chart_version_contract", "ops", "enforce chart/app version contract for bijux-atlas chart", 1000, check_ops_chart_version_contract, fix_hint="Keep Chart.yaml version and appVersion present, semver, and aligned."),
     CheckDef("ops.clean_allowed_roots_only", "ops", "ensure ops clean only targets allowed generated roots", 1000, check_ops_clean_allowed_roots_only, fix_hint="Restrict ops clean to ops/_generated child deletion only."),
     CheckDef("ops.all_check_scripts_registered", "ops", "require all ops check scripts to be registered in atlasctl checks", 1000, check_ops_all_check_scripts_registered, fix_hint="Register new ops check scripts in atlasctl checks (or migrate to atlasctl-native implementation)."),
+    CheckDef("ops.script.ops_lint_check_surfaces_py", "ops", "run ops script check `ops/_lint/check-surfaces.py`", 1000, check_ops_lint_check_surfaces_native, fix_hint="Fix repo surface violations in configs/repo/surfaces.json or root entries."),
+    CheckDef("ops.script.ops_lint_check_layer_contract_drift_py", "ops", "run ops script check `ops/_lint/check_layer_contract_drift.py`", 1000, check_ops_lint_layer_contract_drift_native, fix_hint="Regenerate ops/_meta/layer-contract.json and commit deterministic output."),
+    CheckDef("ops.script.ops_lint_layout_check_layer_contract_drift_py", "ops", "run ops script check `ops/_lint/layout/check_layer_contract_drift.py`", 1000, check_ops_lint_layer_contract_drift_native, fix_hint="Regenerate ops/_meta/layer-contract.json and commit deterministic output."),
     *(
         CheckDef(check_id, "ops", description, 1000, fn, fix_hint=f"Fix failures in `{script_rel}` or replace it with atlasctl-native check logic.")
         for (check_id, description, script_rel, fn) in _OPS_SCRIPT_CHECKS

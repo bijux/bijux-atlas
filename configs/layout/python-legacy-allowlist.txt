@@ -1,11 +1,9 @@
 # Legacy Python files allowed outside packages/atlasctl package.
 ops/_lint/budget-relaxations-audit.py
-ops/_lint/check_layer_contract_drift.py
 ops/_lint/images/no-unpinned-images.py
 ops/_lint/json-schema-coverage.py
 ops/_lint/lane-budget-check.py
 ops/_lint/layer-relaxations-audit.py
-ops/_lint/layout/check_layer_contract_drift.py
 ops/_lint/layout/json-schema-coverage.py
 ops/_lint/layout/no-direct-e2e-scenario-usage.py
 ops/_lint/layout/no-direct-script-usage.py
