@@ -12,15 +12,22 @@ DESCRIPTION = "verify deterministic root output across two make root runs"
 _OUTPUTS = (
     "docs/_generated/repo-surface.md",
     "docs/_generated/naming-inventory.md",
-    "docs/development/make-targets.md",
+    "docs/_generated/make-targets.md",
+)
+
+_GEN_CMDS = (
+    ["./bin/atlasctl", "docs", "generate-repo-surface"],
+    ["./bin/atlasctl", "docs", "naming-inventory"],
+    ["./bin/atlasctl", "docs", "generate-make-targets-catalog"],
 )
 
 
 def _capture_outputs(repo_root: Path, run_id: str, out_dir: Path) -> tuple[int, list[str]]:
-    proc = run_cmd(["make", "-s", "root"], cwd=repo_root, text=True, capture_output=True)
-    if proc.returncode != 0:
-        message = (proc.stderr or proc.stdout or "make root failed").strip()
-        return 1, [f"{run_id}: {message}"]
+    for cmd in _GEN_CMDS:
+        proc = run_cmd(cmd, cwd=repo_root, text=True, capture_output=True)
+        if proc.returncode != 0:
+            message = (proc.stderr or proc.stdout or "root determinism generation failed").strip()
+            return 1, [f"{run_id}: {' '.join(cmd)} failed: {message}"]
 
     errors: list[str] = []
     for rel in _OUTPUTS:

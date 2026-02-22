@@ -2,23 +2,25 @@
 
 ## Top-level Areas
 - `artifacts/`
+- `bin/`
 - `configs/`
 - `crates/`
 - `docker/`
 - `docs/`
 - `makefiles/`
 - `ops/`
-- `scripts/`
+- `packages/`
 
 ## Public Make Targets
+- `make budgets/check`
 - `make ci`
 - `make clean`
 - `make configs-check`
-- `make docs`
 - `make docker-build`
 - `make docker-push`
 - `make docker-scan`
 - `make docker-smoke`
+- `make docs`
 - `make doctor`
 - `make explain`
 - `make format`
@@ -125,12 +127,17 @@
 - `make ops-warm-datasets`
 - `make ops-warm-shards`
 - `make ops-warm-top`
+- `make perf/baseline-update`
+- `make perf/compare`
+- `make perf/regression-check`
+- `make perf/triage`
 - `make prereqs`
 - `make report`
 - `make root`
 - `make root-local`
 - `make root-local-fast`
 - `make root-local-summary`
+- `make scripts-all`
 - `make scripts-check`
 - `make verify-inventory`
 
