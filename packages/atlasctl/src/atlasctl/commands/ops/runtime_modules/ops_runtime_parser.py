@@ -110,6 +110,8 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     obs = ops_sub.add_parser("obs", help="ops observability commands")
     obs.add_argument("--report", choices=["text", "json"], default="text")
     obs_sub = obs.add_subparsers(dest="ops_obs_cmd", required=True)
+    obs_sub.add_parser("up", help="install/bring up observability pack")
+    obs_sub.add_parser("validate", help="run observability validation lane")
     obs_sub.add_parser("verify", help="run observability verification")
     obs_sub.add_parser("check", help="validate observability prerequisites and contracts")
     obs_sub.add_parser("lint", help="run fast observability contract/lint checks")

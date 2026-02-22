@@ -362,6 +362,13 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             return impl._run_simple_cmd(ctx, shell_script_command("ops/run/obs-verify.sh"), ns.report)
         if ns.ops_cmd == "obs" and sub == "check":
             return impl._run_simple_cmd(ctx, [*impl.SELF_CLI, "ops", "obs", "--report", ns.report, "verify"], ns.report)
+        if ns.ops_cmd == "obs" and sub == "up":
+            profile = str(os.environ.get("PROFILE", os.environ.get("ATLAS_OBS_PROFILE", "kind"))).strip() or "kind"
+            if profile == "compose":
+                profile = "local-compose"
+            return impl._run_simple_cmd(ctx, ["env", f"ATLAS_OBS_PROFILE={profile}", "bash", "ops/obs/scripts/install_pack.sh", "--profile", profile], ns.report)
+        if ns.ops_cmd == "obs" and sub == "validate":
+            return impl._run_simple_cmd(ctx, ["make", "ops-observability-validate"], ns.report)
         if ns.ops_cmd == "obs" and sub == "lint":
             steps = [
                 ["python3", "ops/obs/scripts/contracts/check_profile_goldens.py"],

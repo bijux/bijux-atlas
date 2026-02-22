@@ -40,8 +40,8 @@ Classification legend:
 | `ops/run/k8s-validate-configmap-keys.sh` | logic | planned | `atlasctl ops k8s validate-configmap-keys` |
 | `ops/run/load-smoke.sh` | glue | deleted (folded into orchestrator) | `atlasctl ops load smoke` / `atlasctl load smoke` |
 | `ops/run/load-suite.sh` | glue | planned | `atlasctl ops load run` |
-| `ops/run/obs-up.sh` | logic | planned | `atlasctl ops obs up` |
-| `ops/run/obs-validate.sh` | glue | planned | `atlasctl obs validate` / `atlasctl ops obs validate` |
+| `ops/run/obs-up.sh` | logic | deleted (atlasctl-native) | `atlasctl ops obs up` |
+| `ops/run/obs-validate.sh` | glue | deleted (atlasctl-native) | `atlasctl ops obs validate` |
 | `ops/run/obs-verify.sh` | glue | planned | `atlasctl obs verify` / `atlasctl ops obs verify` |
 | `ops/run/ops-check.sh` | glue | planned | `atlasctl ops check` |
 | `ops/run/ops-smoke.sh` | glue | planned | `atlasctl ops smoke` |
