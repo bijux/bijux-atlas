@@ -40,7 +40,6 @@
 - `ops/run/warm.sh`
 - `ops/run/warm-entrypoint.sh`
 - `ops/run/warm-dx.sh`
-- `ops/run/evidence-bundle.sh`
 - `ops/run/configmap-drift-report.sh`
 - `ops/run/contract-check.sh`
 - `ops/run/contract-report.py`
