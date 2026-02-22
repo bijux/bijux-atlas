@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import re
 import runpy
+import datetime as dt
 from pathlib import Path
 from typing import Iterable
 
@@ -34,6 +35,10 @@ _WRAPPER_FILES = (
 )
 _ROOT_MK_MAX_LOC = 900
 _ROOT_MK_MAX_TARGETS = 220
+_ISSUE_ID_RE = re.compile(r"^ISSUE-[A-Z0-9-]+$")
+_BYPASS_SOURCES = (("configs/policy/policy-relaxations.json", "json", True), ("configs/policy/effect-boundary-exceptions.json", "json", False), ("configs/policy/dead-modules-allowlist.json", "json", False), ("configs/policy/dependency-exceptions.json", "json", False), ("configs/policy/layer-relaxations.json", "json", True), ("configs/policy/budget-relaxations.json", "json", True), ("configs/policy/ops-lint-relaxations.json", "json", True), ("configs/policy/ops-smoke-budget-relaxations.json", "json", True), ("configs/policy/pin-relaxations.json", "json", True), ("configs/policy/check-filename-allowlist.json", "json", False), ("configs/policy/layer-live-diff-allowlist.json", "json", False), ("configs/policy/slow-checks-ratchet.json", "json", False), ("configs/policy/forbidden-adjectives-allowlist.txt", "txt", False), ("configs/policy/shell-network-fetch-allowlist.txt", "txt", False), ("configs/policy/shell-probes-allowlist.txt", "txt", False))
+_BYPASS_SCHEMAS = {"configs/policy/policy-relaxations.json": "configs/_schemas/policy-relaxations.schema.json", "configs/policy/layer-relaxations.json": "configs/_schemas/layer-relaxations.schema.json", "configs/policy/ops-lint-relaxations.json": "configs/_schemas/ops-lint-relaxations.schema.json", "configs/policy/layer-live-diff-allowlist.json": "configs/_schemas/layer-live-diff-allowlist.schema.json"}
+_BYPASS_SCOPES = {"repo", "crate", "module", "file", "path", "docs", "ops", "make", "workflow", "policy"}
 
 
 def _iter_make_recipe_lines(repo_root: Path) -> list[tuple[str, int, str]]:
@@ -380,3 +385,205 @@ def check_make_no_legacy_script_aliases(repo_root: Path) -> tuple[int, list[str]
                 continue
             errors.append(f"{rel}:{lineno}: legacy make alias token is forbidden (`ATLAS_SCRIPTS`, `SCRIPTS`, `PY_RUN`)")
     return (0 if not errors else 1), sorted(errors)
+
+
+def _load_bypass_entries(repo_root: Path) -> list[dict[str, object]]:
+    overrides_path = repo_root / "configs/policy/bypass-entry-overrides.json"
+    overrides_payload = json.loads(overrides_path.read_text(encoding="utf-8")) if overrides_path.exists() else {}
+    overrides_rows = overrides_payload.get("overrides", []) if isinstance(overrides_payload, dict) else []
+    overrides = {
+        str(row.get("key", "")).strip(): row
+        for row in overrides_rows
+        if isinstance(row, dict) and str(row.get("key", "")).strip()
+    }
+    entries: list[dict[str, object]] = []
+    for rel_path, kind, requires_metadata in _BYPASS_SOURCES:
+        path = repo_root / rel_path
+        if not path.exists():
+            continue
+        if kind == "txt":
+            for idx, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+                value = line.strip()
+                if not value or value.startswith("#"):
+                    continue
+                entries.append({"source": rel_path, "key": f"{rel_path}#{idx}", "requires_metadata": False})
+            continue
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        if rel_path.endswith("effect-boundary-exceptions.json"):
+            rules = payload.get("rules", {}) if isinstance(payload, dict) else {}
+            if isinstance(rules, dict):
+                for rule, values in rules.items():
+                    if not isinstance(values, list):
+                        continue
+                    for item in values:
+                        if not isinstance(item, dict):
+                            continue
+                        item_key = str(item.get("path", "")).strip() or f"{rule}#{len(entries)+1}"
+                        row: dict[str, object] = {
+                            "source": rel_path,
+                            "key": item_key,
+                            "policy_name": str(rule),
+                            "scope": "",
+                            "owner": "",
+                            "issue_id": "",
+                            "expiry": "",
+                            "justification": str(item.get("reason", "")).strip(),
+                            "removal_plan": "",
+                            "requires_metadata": requires_metadata,
+                        }
+                        row.update({k: v for k, v in overrides.get(f"{rel_path}:{item_key}", {}).items() if k != "key"})
+                        entries.append(row)
+            continue
+        if not isinstance(payload, dict):
+            continue
+        for list_key in ("exceptions", "relaxations", "allow", "allowlist", "undeclared_import_allowlist", "optional_dependency_usage_allowlist", "internal_third_party_allowlist"):
+            values = payload.get(list_key)
+            if not isinstance(values, list):
+                continue
+            for item in values:
+                if isinstance(item, str):
+                    item = {"path": item}
+                if not isinstance(item, dict):
+                    continue
+                item_key = str(item.get("id") or item.get("check_id") or item.get("path") or f"{list_key}#{len(entries)+1}").strip()
+                row = {
+                    "source": rel_path,
+                    "key": item_key,
+                    "policy_name": str(item.get("policy") or item.get("rule") or list_key).strip(),
+                    "scope": str(item.get("scope", "")).strip(),
+                    "owner": str(item.get("owner", "")).strip(),
+                    "issue_id": str(item.get("issue_id") or item.get("issue") or "").strip(),
+                    "expiry": str(item.get("expiry") or item.get("expires_on") or "").strip(),
+                    "justification": str(item.get("justification") or item.get("reason") or "").strip(),
+                    "removal_plan": str(item.get("removal_plan", "")).strip(),
+                    "requires_metadata": requires_metadata,
+                }
+                row.update({k: v for k, v in overrides.get(f"{rel_path}:{item_key}", {}).items() if k != "key"})
+                entries.append(row)
+    return entries
+
+
+def collect_bypass_inventory(repo_root: Path) -> dict[str, object]:
+    files: list[dict[str, object]] = []
+    entries = _load_bypass_entries(repo_root)
+    counts: dict[str, int] = {}
+    for entry in entries:
+        source = str(entry.get("source", ""))
+        counts[source] = counts.get(source, 0) + 1
+    for rel_path, kind, _ in _BYPASS_SOURCES:
+        files.append({"path": rel_path, "exists": (repo_root / rel_path).exists(), "kind": kind, "entry_count": counts.get(rel_path, 0)})
+    return {"schema_version": 1, "files": files, "entry_count": len(entries), "entries": entries, "errors": []}
+
+
+def render_text_report(payload: dict[str, object]) -> str:
+    files = payload.get("files", []) if isinstance(payload.get("files", []), list) else []
+    entry_count = int(payload.get("entry_count", 0))
+    lines = ["Policy Bypass Inventory", f"files: {len(files)}", f"entries: {entry_count}", "", "Files:"]
+    for row in files:
+        if not isinstance(row, dict):
+            continue
+        lines.append(f"- {row.get('path')}: exists={row.get('exists')} kind={row.get('kind')} entries={row.get('entry_count')}")
+    return "\n".join(lines)
+
+
+def _bypass_errors(repo_root: Path) -> dict[str, list[str]]:
+    entries = _load_bypass_entries(repo_root)
+    by_check: dict[str, list[str]] = {k: [] for k in ("meta", "expiry", "horizon", "justification", "issue", "owner", "removal", "scope", "policy", "schema", "budget", "files")}
+    known_files = {row[0] for row in _BYPASS_SOURCES} | {"configs/policy/migration_exceptions.json", "configs/policy/checks-registry-transition.json", "configs/policy/forbidden-adjectives-approvals.json", "configs/policy/check_speed_approvals.json"}
+    actual_files = {p.relative_to(repo_root).as_posix() for p in (repo_root / "configs/policy").glob("*") if p.is_file() and any(t in p.name for t in ("allowlist", "relax", "exceptions", "ratchet"))}
+    for path in sorted(actual_files - known_files):
+        by_check["files"].append(f"unexpected bypass file under configs/policy: {path}")
+    owners_path = repo_root / "configs/meta/owners.json"
+    owners = {str(item.get("id", "")).strip() for item in json.loads(owners_path.read_text(encoding="utf-8")).get("owners", []) if isinstance(item, dict)} if owners_path.exists() else set()
+    aliases_payload = json.loads((repo_root / "configs/policy/bypass-owner-aliases.json").read_text(encoding="utf-8")) if (repo_root / "configs/policy/bypass-owner-aliases.json").exists() else {}
+    aliases = aliases_payload.get("aliases", {}) if isinstance(aliases_payload, dict) else {}
+    approvals_payload = json.loads((repo_root / "configs/policy/bypass-horizon-approvals.json").read_text(encoding="utf-8")) if (repo_root / "configs/policy/bypass-horizon-approvals.json").exists() else {}
+    approvals = {str(row.get("key", "")).strip() for row in approvals_payload.get("approvals", []) if isinstance(row, dict)}
+    policy_relax = json.loads((repo_root / "configs/policy/policy-relaxations.json").read_text(encoding="utf-8"))
+    known_policy = set(policy_relax.get("exception_budgets", {}).keys())
+    layer = json.loads((repo_root / "configs/policy/layer-relaxations.json").read_text(encoding="utf-8"))
+    known_policy.update(str(row.get("rule", "")).strip() for row in layer.get("exceptions", []) if isinstance(row, dict))
+    known_policy.update({"allow", "allowlist", "exceptions", "relaxations", "undeclared_import_allowlist", "optional_dependency_usage_allowlist", "internal_third_party_allowlist"})
+    today = dt.date.today()
+    for row in entries:
+        if not bool(row.get("requires_metadata", False)):
+            continue
+        source = str(row.get("source", ""))
+        key = str(row.get("key", ""))
+        owner = str(row.get("owner", "")).strip()
+        issue_id = str(row.get("issue_id", "")).strip()
+        expiry_raw = str(row.get("expiry", "")).strip()
+        scope = str(row.get("scope", "")).strip()
+        policy_name = str(row.get("policy_name", "")).strip()
+        if not owner or not issue_id or not expiry_raw:
+            by_check["meta"].append(f"{source}:{key}: missing owner/issue/expiry")
+        if not str(row.get("justification", "")).strip():
+            by_check["justification"].append(f"{source}:{key}: blank justification")
+        if not _ISSUE_ID_RE.match(issue_id):
+            by_check["issue"].append(f"{source}:{key}: invalid issue id format `{issue_id}`")
+        if str(row.get("removal_plan", "")).strip() == "":
+            by_check["removal"].append(f"{source}:{key}: removal_plan is required")
+        if scope not in _BYPASS_SCOPES:
+            by_check["scope"].append(f"{source}:{key}: invalid scope `{scope}`")
+        if not policy_name or policy_name not in known_policy:
+            by_check["policy"].append(f"{source}:{key}: unknown policy/rule `{policy_name}`")
+        resolved_owner = str(aliases.get(owner, owner))
+        if resolved_owner not in owners:
+            by_check["owner"].append(f"{source}:{key}: owner `{owner}` not in owners registry")
+        try:
+            expiry = dt.date.fromisoformat(expiry_raw)
+        except ValueError:
+            by_check["expiry"].append(f"{source}:{key}: invalid expiry `{expiry_raw}`")
+            continue
+        if expiry < today:
+            by_check["expiry"].append(f"{source}:{key}: expired on {expiry_raw}")
+        delta = (expiry - today).days
+        if delta > 90 and "*" not in approvals and key not in approvals:
+            by_check["horizon"].append(f"{source}:{key}: expiry horizon {delta}d exceeds 90d without approval")
+    try:
+        import jsonschema
+        for rel_path, _, _ in _BYPASS_SOURCES:
+            schema_rel = _BYPASS_SCHEMAS.get(rel_path)
+            if not schema_rel:
+                continue
+            p = repo_root / rel_path
+            if not p.exists():
+                continue
+            payload = json.loads(p.read_text(encoding="utf-8"))
+            schema = json.loads((repo_root / schema_rel).read_text(encoding="utf-8"))
+            try:
+                jsonschema.validate(payload, schema)
+            except jsonschema.ValidationError as exc:
+                by_check["schema"].append(f"{rel_path}: schema violation ({exc.message})")
+    except ModuleNotFoundError:
+        by_check["schema"].append("jsonschema package is required for bypass schema validation")
+    budget_path = repo_root / "configs/policy/bypass-budget.json"
+    if not budget_path.exists():
+        by_check["budget"].append("configs/policy/bypass-budget.json missing")
+    else:
+        payload = json.loads(budget_path.read_text(encoding="utf-8"))
+        max_entries = int(payload.get("max_entries", 0))
+        if max_entries <= 0:
+            by_check["budget"].append("configs/policy/bypass-budget.json: max_entries must be > 0")
+        elif len(entries) > max_entries:
+            by_check["budget"].append(f"bypass budget exceeded: entries={len(entries)} max_entries={max_entries}")
+    return by_check
+
+
+def _res(errors: list[str]) -> tuple[int, list[str]]:
+    uniq = sorted(set(errors))
+    return (0 if not uniq else 1), uniq
+
+
+def check_policies_bypass_no_new_files(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_errors(repo_root)["files"])
+def check_policies_bypass_all_entries_have_owner_issue_expiry(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_errors(repo_root)["meta"])
+def check_policies_bypass_expiry_not_past(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_errors(repo_root)["expiry"])
+def check_policies_bypass_expiry_max_horizon(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_errors(repo_root)["horizon"])
+def check_policies_bypass_no_blank_justifications(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_errors(repo_root)["justification"])
+def check_policies_bypass_issue_id_format(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_errors(repo_root)["issue"])
+def check_policies_bypass_owner_in_owners_registry(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_errors(repo_root)["owner"])
+def check_policies_bypass_removal_plan_required(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_errors(repo_root)["removal"])
+def check_policies_bypass_scope_valid(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_errors(repo_root)["scope"])
+def check_policies_bypass_policy_name_known(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_errors(repo_root)["policy"])
+def check_policies_bypass_schema_valid(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_errors(repo_root)["schema"])
+def check_policies_bypass_budget(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_errors(repo_root)["budget"])
