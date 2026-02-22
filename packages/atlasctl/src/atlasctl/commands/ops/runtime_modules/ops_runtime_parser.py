@@ -112,6 +112,7 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     datasets_sub.add_parser("verify", help="verify dataset state")
     datasets_sub.add_parser("fetch", help="warm/fetch datasets")
     datasets_sub.add_parser("pin", help="rebuild datasets lock manifest")
+    datasets_sub.add_parser("lint-ids", help="validate DatasetId/DatasetKey contract usage in ops fixtures")
 
     for name, help_text in (
         ("surface", "validate or generate ops surface metadata"),

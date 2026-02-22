@@ -57,6 +57,6 @@ prereqs: ## Check required binaries and versions and store prereqs report
 	@./bin/atlasctl make prereqs
 
 dataset-id-lint: ## Validate DatasetId/DatasetKey contract usage across ops fixtures
-	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/scripts/dataset_id_lint.py
+	@./bin/atlasctl ops datasets lint-ids
 
 .PHONY: bootstrap k8s load obs docker-build docker-check docker-smoke docker-scan docker-push docker-release chart-package chart-verify chart-validate docker-contracts rename-lint docs-lint-names prereqs dataset-id-lint
