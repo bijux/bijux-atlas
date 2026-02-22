@@ -53,6 +53,7 @@ jobs:
           toolchain: 1.84.1
       - run: ./bin/atlasctl ci release-build-artifacts
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: release-binaries
           path: artifacts/release
@@ -113,6 +114,7 @@ jobs:
         env:
           COSIGN_IMAGE_REF: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: sbom
           path: artifacts/sbom.spdx.json

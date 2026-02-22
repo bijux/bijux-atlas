@@ -73,6 +73,76 @@
       "internal": false
     },
     {
+      "name": "ci-pr",
+      "markers": ["fast"],
+      "required_env": ["PYTHONPATH"],
+      "default_effects": ["read", "process"],
+      "time_budget_ms": 120000,
+      "include_checks": [],
+      "exclude_markers": [],
+      "internal": false
+    },
+    {
+      "name": "ci-nightly",
+      "markers": ["slow"],
+      "required_env": ["PYTHONPATH"],
+      "default_effects": ["read", "process"],
+      "time_budget_ms": 300000,
+      "include_checks": [],
+      "exclude_markers": [],
+      "internal": false
+    },
+    {
+      "name": "ops-nightly",
+      "markers": ["ops", "slow"],
+      "required_env": ["PYTHONPATH"],
+      "default_effects": ["read", "process", "write"],
+      "time_budget_ms": 360000,
+      "include_checks": [],
+      "exclude_markers": [],
+      "internal": false
+    },
+    {
+      "name": "perf-nightly",
+      "markers": ["ops", "slow"],
+      "required_env": ["PYTHONPATH"],
+      "default_effects": ["read", "process", "write"],
+      "time_budget_ms": 360000,
+      "include_checks": [],
+      "exclude_markers": [],
+      "internal": false
+    },
+    {
+      "name": "stack-nightly",
+      "markers": ["ops", "slow"],
+      "required_env": ["PYTHONPATH"],
+      "default_effects": ["read", "process", "write"],
+      "time_budget_ms": 360000,
+      "include_checks": [],
+      "exclude_markers": [],
+      "internal": false
+    },
+    {
+      "name": "drill-nightly",
+      "markers": ["ops", "slow"],
+      "required_env": ["PYTHONPATH"],
+      "default_effects": ["read", "process", "write"],
+      "time_budget_ms": 360000,
+      "include_checks": [],
+      "exclude_markers": [],
+      "internal": false
+    },
+    {
+      "name": "k8s-e2e-nightly",
+      "markers": ["ops", "slow", "kube"],
+      "required_env": ["PYTHONPATH"],
+      "default_effects": ["read", "process", "write"],
+      "time_budget_ms": 420000,
+      "include_checks": [],
+      "exclude_markers": [],
+      "internal": false
+    },
+    {
       "name": "required",
       "markers": ["required"],
       "required_env": ["PYTHONPATH"],
