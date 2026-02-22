@@ -199,7 +199,7 @@ packages/atlasctl/src/atlasctl/commands/ops/observability/drills/trace_missing_s
 packages/atlasctl/src/atlasctl/commands/ops/observability/verify_pack.py
 packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_cheap.py
 packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_contracts.py
-ops/obs/tests/test_coverage.sh
+packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_coverage.py
 packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_drills.py
 packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_otel_outage.py
 packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_outage_matrix.py
