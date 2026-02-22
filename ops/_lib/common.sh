@@ -12,12 +12,6 @@ source "${OPS_LIB_ROOT}/io/artifacts.sh"
 source "${OPS_LIB_ROOT}/k8s/kubectl.sh"
 # shellcheck source=ops/_lib/helm/helm.sh
 source "${OPS_LIB_ROOT}/helm/helm.sh"
-# shellcheck source=ops/_lib/guard/context_guard.sh
-source "${OPS_LIB_ROOT}/guard/context_guard.sh"
-# shellcheck source=ops/_lib/guard/version_guard.sh
-source "${OPS_LIB_ROOT}/guard/version_guard.sh"
-# shellcheck source=ops/_lib/guard/env.sh
-source "${OPS_LIB_ROOT}/guard/env.sh"
 # shellcheck source=ops/_lib/report/layer_contract.sh
 source "${OPS_LIB_ROOT}/report/layer_contract.sh"
 ARTIFACTS_ROOT="${REPO_ROOT}/artifacts/ops"
@@ -87,6 +81,55 @@ ops_install_bundle_trap() {
   OPS_BUNDLE_TRAP_NS="$ns"
   OPS_BUNDLE_TRAP_RELEASE="$release"
   trap 'ops_bundle_on_err "$OPS_BUNDLE_TRAP_NS" "$OPS_BUNDLE_TRAP_RELEASE"' ERR
+}
+
+ops_context_guard() {
+  local profile="${1:-kind}"
+  if [ "${I_KNOW_WHAT_I_AM_DOING:-0}" = "1" ] || [ "${ALLOW_NON_KIND:-0}" = "1" ]; then
+    return 0
+  fi
+  local ctx
+  ctx="$(kubectl config current-context 2>/dev/null || true)"
+  case "$profile" in
+    kind)
+      case "$ctx" in
+        kind-*|*kind*) return 0 ;;
+      esac
+      echo "invalid kubectl context '$ctx' for profile=kind" >&2
+      return 2
+      ;;
+    perf)
+      if [ -z "$ctx" ]; then
+        echo "missing kubectl context for profile=perf" >&2
+        return 2
+      fi
+      return 0
+      ;;
+    *)
+      echo "unknown profile '$profile'" >&2
+      return 2
+      ;;
+  esac
+}
+
+ops_version_guard() {
+  local tools=()
+  if [ "$#" -gt 0 ]; then
+    tools=("$@")
+  else
+    tools=(kind k6 helm kubectl jq yq)
+  fi
+  python3 ./packages/atlasctl/src/atlasctl/layout_checks/check_tool_versions.py "${tools[@]}"
+}
+
+ops_env_load() {
+  python3 ./packages/atlasctl/src/atlasctl/layout_checks/validate_ops_env.py --schema "${OPS_ENV_SCHEMA:-configs/ops/env.schema.json}" >/dev/null
+  export RUN_ID="${RUN_ID:-${OPS_RUN_ID:-}}"
+  export ARTIFACT_DIR="${ARTIFACT_DIR:-${OPS_RUN_DIR:-}}"
+  if [ -z "${RUN_ID:-}" ] || [ -z "${ARTIFACT_DIR:-}" ]; then
+    echo "RUN_ID and ARTIFACT_DIR must be set" >&2
+    return 2
+  fi
 }
 
 # Canonical ops exit codes (formerly sourced from log/errors.sh; inlined after shim removal).
