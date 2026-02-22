@@ -42,7 +42,6 @@ def main() -> int:
             print(f"- {err}", file=sys.stderr)
         return 1
 
-    print(f"make target ownership check passed: {covered}/{total} (100.0%)")
     return 0
 
 

@@ -35,7 +35,6 @@ def main() -> int:
             print(f"- makefiles/README.md missing line for public target: {target}", file=sys.stderr)
         return 1
 
-    print("public target docs completeness check passed")
     return 0
 
 
