@@ -6,6 +6,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from tests.helpers import run_atlasctl
+
 ROOT = Path(__file__).resolve().parents[5]
 
 
@@ -131,3 +133,32 @@ def test_policies_relaxations_fixture_expiry_enforced(tmp_path: Path) -> None:
     code, payload = _check_relaxations(tmp_path, require_docs_ref=False)
     assert code == 1
     assert any("expired on" in err for err in payload["errors"])
+
+
+def test_policies_forbidden_adjectives_report_is_empty() -> None:
+    proc = run_atlasctl("policies", "forbidden-adjectives", "--report", "json")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["status"] == "ok"
+    assert payload["violations"] == []
+    report = ROOT / "artifacts/reports/atlasctl/forbidden-adjectives.json"
+    assert report.exists()
+    report_payload = json.loads(report.read_text(encoding="utf-8"))
+    assert report_payload["violations"] == []
+
+
+def test_list_policies_includes_forbidden_adjectives() -> None:
+    proc = run_atlasctl("list", "policies", "--json")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["kind"] == "list-policies"
+    assert "forbidden-adjectives" in payload["items"]
+
+
+def test_explain_policy_forbidden_adjectives() -> None:
+    proc = run_atlasctl("explain", "policy", "forbidden-adjectives", "--json")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["ok"] is True
+    assert payload["data"]["kind"] == "policy"
+    assert payload["data"]["name"] == "forbidden-adjectives"
