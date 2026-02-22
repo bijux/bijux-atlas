@@ -11,7 +11,7 @@ def main() -> int:
     script = r"""
 set -euo pipefail
 ROOT="$(pwd)"
-. "$ROOT/ops/obs/tests/observability-test-lib.sh"
+. "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/tests/assets/observability_test_lib.sh"
 
 require_bin curl
 require_bin kubectl

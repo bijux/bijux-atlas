@@ -12,7 +12,7 @@ from atlasctl.commands.ops.e2e.realdata._common import env_root, sh
 
 SCRIPT = r"""
 ROOT="${ATLAS_REPO_ROOT}"
-. "$ROOT/ops/k8s/tests/checks/_lib/k8s-suite-lib.sh"
+. "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/assets/k8s_test_common.sh"
 need helm; need kubectl; need curl
 
 python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/run_two_release_diff.py"
