@@ -10,7 +10,7 @@ Own observability pack verification, dashboards, alerts, and drills.
 
 ## Suites
 - `ops/obs/tests/suites.json`
-- Runner: `ops/obs/tests/suite.sh --suite <suite-id>`
+- Runner: `./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/observability/test_suite.py --suite <suite-id>`
 
 ## Contracts
 - `ops/CONTRACT.md`
