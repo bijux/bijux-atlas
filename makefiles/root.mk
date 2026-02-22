@@ -46,7 +46,7 @@ LOCAL_FULL_ISO_ROOT := $(CURDIR)/artifacts/isolate/local-full
 LOCAL_FULL_ENV := ISO_ROOT=$(LOCAL_FULL_ISO_ROOT) CARGO_TARGET_DIR=$(LOCAL_FULL_ISO_ROOT)/target CARGO_HOME=$(LOCAL_FULL_ISO_ROOT)/cargo-home TMPDIR=$(LOCAL_FULL_ISO_ROOT)/tmp TMP=$(LOCAL_FULL_ISO_ROOT)/tmp TEMP=$(LOCAL_FULL_ISO_ROOT)/tmp
 
 gates-check: ## Run public-surface/docs/makefile boundary checks
-	@$(MAKE) -s internal/cli-check
+	@$(MAKE) -s atlasctl/internal/cli-check
 	@./bin/atlasctl make contracts-check --emit-artifacts
 
 gates: ## Run curated root gate preset through atlasctl orchestrator
@@ -461,8 +461,8 @@ dev-bootstrap: ## Setup local python tooling for atlas-scripts (uv sync)
 	@if command -v uv >/dev/null 2>&1; then \
 		uv sync --project packages/atlasctl; \
 	else \
-		echo "uv is not installed; falling back to make internal/deps/sync"; \
-		$(MAKE) -s internal/deps/sync; \
+		echo "uv is not installed; falling back to make atlasctl/internal/deps/sync"; \
+		$(MAKE) -s atlasctl/internal/deps/sync; \
 	fi
 
 make/guard-no-python-scripts: ## Guard against direct python scripts path invocation in make recipes
