@@ -221,8 +221,14 @@ def _contracts_snapshot(ctx: RunContext, report_format: str) -> int:
         ("check-layer-contract-drift", ["./bin/atlasctl", "check", "run", "--id", "checks_ops_script_ops_lint_check_layer_contract_drift_py", "--quiet"]),
         ("check-layer-drift-static", ["python3", "packages/atlasctl/src/atlasctl/layout_checks/check_layer_drift.py"]),
         ("validate-ops-contracts", ["python3", "packages/atlasctl/src/atlasctl/layout_checks/validate_ops_contracts.py"]),
-        ("check-literals", ["python3", "ops/_lint/no-layer-literals.py"]),
-        ("check-stack-literals", ["python3", "ops/_lint/no-stack-layer-literals.py"]),
+        (
+            "check-literals",
+            ["python3", "packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_layer_literals.py"],
+        ),
+        (
+            "check-stack-literals",
+            ["python3", "packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_stack_layer_literals.py"],
+        ),
         ("check-no-hidden-defaults", ["python3", "packages/atlasctl/src/atlasctl/layout_checks/check_no_hidden_defaults.py"]),
         ("check-k8s-layer-contract", ["ops/k8s/tests/checks/obs/test_layer_contract_render.sh"]),
         ("check-live-layer-contract", ["ops/stack/tests/validate_live_snapshot.sh"]),
