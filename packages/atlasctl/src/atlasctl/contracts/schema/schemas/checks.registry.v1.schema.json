@@ -59,7 +59,7 @@
             "type": "array"
           },
           "id": {
-            "pattern": "^checks_[a-z0-9]+_[a-z0-9_]+$",
+            "pattern": "^checks_[a-z0-9]+_[a-z0-9]+_[a-z0-9_]+$",
             "type": "string"
           },
           "legacy_id": {

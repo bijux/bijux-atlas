@@ -14,7 +14,7 @@
         "additionalProperties": false,
         "required": ["id", "title", "description", "domain", "area", "gate", "owners", "groups", "markers", "default_enabled", "impl_ref"],
         "properties": {
-          "id": { "type": "string", "pattern": "^checks_[a-z0-9]+_[a-z0-9_]+$" },
+          "id": { "type": "string", "pattern": "^checks_[a-z0-9]+_[a-z0-9]+_[a-z0-9_]+$" },
           "title": { "type": "string" },
           "description": { "type": "string" },
           "domain": { "type": "string" },

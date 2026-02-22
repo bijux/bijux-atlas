@@ -197,7 +197,7 @@
       ]
     },
     {
-      "area": "general",
+      "area": "layout",
       "callable": "check_layout_contract",
       "category": "contract",
       "description": "validate repository layout contract",
@@ -214,7 +214,7 @@
         "required",
         "slow"
       ],
-      "id": "checks_contracts_layout",
+      "id": "checks_contracts_layout_contract",
       "legacy_id": "contracts.layout",
       "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
       "owner": "platform",
@@ -550,7 +550,7 @@
       ]
     },
     {
-      "area": "general",
+      "area": "layout",
       "callable": "check_docker_layout",
       "category": "hygiene",
       "description": "validate docker layout contracts",
@@ -565,7 +565,7 @@
         "fast",
         "required"
       ],
-      "id": "checks_docker_layout",
+      "id": "checks_docker_layout_contract",
       "legacy_id": "docker.layout",
       "module": "atlasctl.checks.repo.native.modules.repo_checks_scripts_and_docker",
       "owner": "platform",
@@ -604,7 +604,7 @@
       ]
     },
     {
-      "area": "general",
+      "area": "policy",
       "callable": "check_docker_policy",
       "category": "hygiene",
       "description": "validate docker policy contracts",
@@ -619,7 +619,7 @@
         "fast",
         "required"
       ],
-      "id": "checks_docker_policy",
+      "id": "checks_docker_policy_contract",
       "legacy_id": "docker.policy",
       "module": "atlasctl.checks.repo.native.modules.repo_checks_scripts_and_docker",
       "owner": "platform",
@@ -1873,7 +1873,7 @@
       ]
     },
     {
-      "area": "general",
+      "area": "lock",
       "callable": "check_python_lock",
       "category": "contract",
       "description": "validate python lock format",
@@ -1888,7 +1888,7 @@
         "python",
         "required"
       ],
-      "id": "checks_python_lock",
+      "id": "checks_python_lock_lockfile",
       "legacy_id": "python.lock",
       "module": "atlasctl.checks.repo.native.runtime_modules.repo_native_runtime_core",
       "owner": "platform",

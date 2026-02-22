@@ -281,7 +281,7 @@
       "title": "validate atlasctl CLI contract surface"
     },
     {
-      "area": "general",
+      "area": "layout",
       "default_enabled": true,
       "description": "validate repository layout contract",
       "domain": "contracts",
@@ -291,7 +291,7 @@
         "required",
         "slow"
       ],
-      "id": "checks_contracts_layout",
+      "id": "checks_contracts_layout_contract",
       "impl_ref": {
         "callable": "check_layout_contract",
         "category": "contract",
@@ -777,7 +777,7 @@
       "title": "enforce docker image size budget"
     },
     {
-      "area": "general",
+      "area": "layout",
       "default_enabled": true,
       "description": "validate docker layout contracts",
       "domain": "docker",
@@ -787,7 +787,7 @@
         "fast",
         "required"
       ],
-      "id": "checks_docker_layout",
+      "id": "checks_docker_layout_contract",
       "impl_ref": {
         "callable": "check_docker_layout",
         "category": "hygiene",
@@ -853,7 +853,7 @@
       "title": "forbid floating latest image tags"
     },
     {
-      "area": "general",
+      "area": "policy",
       "default_enabled": true,
       "description": "validate docker policy contracts",
       "domain": "docker",
@@ -863,7 +863,7 @@
         "fast",
         "required"
       ],
-      "id": "checks_docker_policy",
+      "id": "checks_docker_policy_contract",
       "impl_ref": {
         "callable": "check_docker_policy",
         "category": "hygiene",
@@ -2639,7 +2639,7 @@
       "title": "forbid tracked timestamped paths"
     },
     {
-      "area": "general",
+      "area": "lock",
       "default_enabled": true,
       "description": "validate python lock format",
       "domain": "python",
@@ -2649,7 +2649,7 @@
         "python",
         "required"
       ],
-      "id": "checks_python_lock",
+      "id": "checks_python_lock_lockfile",
       "impl_ref": {
         "callable": "check_python_lock",
         "category": "contract",

@@ -9,4 +9,4 @@ Rules:
 - Lines are sorted lexicographically and unique.
 - Every marker must map to a registered `repo.*` check id.
 
-The `repo.suite_marker_rules` and `repo.check_test_coverage` checks enforce these rules.
+The `checks_repo_suite_marker_rules` and `checks_repo_check_test_coverage` checks enforce these rules.

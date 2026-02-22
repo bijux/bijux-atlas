@@ -50,7 +50,7 @@ def test_checks_rename_report_lists_legacy_aliases() -> None:
 
 
 def test_legacy_check_id_resolves_in_explain() -> None:
-    proc = _run_cli("check", "explain", "repo.argparse_policy")
+    proc = _run_cli("check", "explain", "checks_repo_cli_argparse_policy")
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
     assert payload["id"] == "checks_repo_cli_argparse_policy"

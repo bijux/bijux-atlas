@@ -3,7 +3,7 @@
     {
       "category": "hygiene",
       "domain": "repo",
-      "id": "repo.module_size",
+      "id": "checks_repo_module_size",
       "owners": [
         "platform"
       ],

@@ -4,7 +4,7 @@ from pathlib import Path
 
 from atlasctl.checks.repo.dependencies import check_dependency_declarations
 from atlasctl.checks.repo.reachability import check_repo_check_modules_registered
-from atlasctl.checks.repo.type_coverage import check_type_coverage
+from atlasctl.checks.checks_repo_type_coverage import check_type_coverage
 
 
 def _repo_root() -> Path:
