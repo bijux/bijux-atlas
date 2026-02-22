@@ -691,9 +691,9 @@ if ! ops_context_guard "$guard_profile"; then
 fi
 case "$mode" in
   warmup) exec ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/warmup.py ;;
-  datasets) exec ./ops/e2e/runner/warm_datasets.sh ;;
-  top) exec ./ops/e2e/runner/warm_top.sh ;;
-  shards) exec ./ops/e2e/runner/warm_shards.sh ;;
+  datasets) exec ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/warm_datasets.py ;;
+  top) exec ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/warm_top.py ;;
+  shards) exec ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/warm_shards.py ;;
   *)
     echo "invalid --mode=${{mode}} (expected warmup|datasets|top|shards)" >&2
     exit 2
