@@ -11,7 +11,6 @@ include makefiles/dev.mk
 include makefiles/atlasctl.mk
 include makefiles/ci.mk
 include makefiles/docs.mk
-include makefiles/registry.mk
 include makefiles/help.mk
 include makefiles/layout.mk
 include makefiles/product.mk

@@ -1,6 +1,6 @@
 # Makefiles Index
 
-- File count: 18
+- File count: 17
 - Owner: `build-and-release`
 
 ## Canonical Wrapper Files
@@ -12,7 +12,6 @@
 - `ops.mk`
 - `product.mk`
 - `layout.mk`
-- `registry.mk`
 - `env.mk`
 - `python.mk`
 - `atlasctl.mk`
