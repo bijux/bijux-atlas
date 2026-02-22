@@ -2,6 +2,15 @@
 # Keep one target per gate; atlasctl-check is the explicit repo checks gate.
 SHELL := /bin/sh
 
+audit: ## Rust audit lane
+	@./bin/atlasctl dev audit
+
+check: ## Rust cargo check lane
+	@./bin/atlasctl dev check
+
+coverage: ## Rust coverage lane
+	@./bin/atlasctl dev coverage
+
 fmt: ## Rust formatter check
 	@./bin/atlasctl dev fmt
 
@@ -14,13 +23,4 @@ test: ## Rust tests lane
 test-all: ## Rust tests full variant (includes ignored)
 	@./bin/atlasctl dev test --all
 
-coverage: ## Rust coverage lane
-	@./bin/atlasctl dev coverage
-
-check: ## Rust cargo check lane
-	@./bin/atlasctl dev check
-
-audit: ## Rust audit lane
-	@./bin/atlasctl dev audit
-
-.PHONY: fmt lint test test-all coverage check audit
+.PHONY: audit check coverage fmt lint test test-all
