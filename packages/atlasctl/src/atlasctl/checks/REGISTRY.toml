@@ -928,6 +928,27 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_make_ci_pr_lane_fast_only"
+domain = "make"
+area = "ci"
+gate = "make"
+owner = "platform"
+speed = "fast"
+timeout_ms = 900
+module = "atlasctl.checks.domains.policies.make.enforcement"
+callable = "check_ci_pr_lane_fast_only"
+description = "require CI PR lane suites to exclude slow checks unless explicitly allowlisted"
+severity = "error"
+category = "hygiene"
+fix_hint = "Keep `local` suite fast-only, or add temporary exceptions in configs/policy/ci-pr-slow-allowlist.json."
+legacy_id = "make.ci_pr_lane_fast_only"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_make_ci_workflows_make_only"
 domain = "make"
 area = "ci"
@@ -1348,6 +1369,27 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_make_workflows_reference_known_suites"
+domain = "make"
+area = "workflows"
+gate = "make"
+owner = "platform"
+speed = "fast"
+timeout_ms = 900
+module = "atlasctl.checks.domains.policies.make.enforcement"
+callable = "check_workflows_reference_known_suites"
+description = "require workflow suite invocations to reference declared suite names"
+severity = "error"
+category = "hygiene"
+fix_hint = "Update workflow suite names or registry/suites catalog entries so they match."
+legacy_id = "make.workflows_reference_known_suites"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_make_wrapper_purity"
 domain = "make"
 area = "wrapper"
@@ -1677,6 +1719,27 @@ severity = "error"
 category = "hygiene"
 fix_hint = "Keep only __init__.py + registry artifacts at checks root and group modules under domain packages."
 legacy_id = "repo.checks_root_contract"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_checks_tree_policy"
+domain = "repo"
+area = "checks"
+gate = "repo"
+owner = "platform"
+speed = "fast"
+timeout_ms = 500
+module = "atlasctl.checks.repo.enforcement.checks_tree_policy"
+callable = "check_checks_tree_policy"
+description = "enforce checks tree depth, module-density budget, and naming hygiene"
+severity = "error"
+category = "hygiene"
+fix_hint = "Split oversized checks directories with `atlasctl dev split-module` and remove misc/utils or duplicated area segments."
+legacy_id = "repo.checks_tree_policy"
 groups = ["fast", "repo", "required"]
 effects = []
 external_tools = []

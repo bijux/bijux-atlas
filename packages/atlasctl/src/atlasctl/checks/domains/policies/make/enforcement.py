@@ -4,6 +4,7 @@ import json
 import re
 import runpy
 from pathlib import Path
+from typing import Iterable
 
 from .....commands.dev.make.public_targets import public_names
 from ....repo.native import (
@@ -17,6 +18,7 @@ _SCRIPT_PATH_RE = re.compile(r"(^|\s)(?:\./)?(?:ops|scripts|packages/atlasctl/sr
 _BASH_OPS_RE = re.compile(r"(?:^|\s)(?:bash|sh)\s+(?:\./)?ops/[^\s]+")
 _WRITE_RE = re.compile(r"(?:^|\s)(?:cp\s+[^\n]*\s+|mv\s+[^\n]*\s+|cat\s+>\s*|tee\s+|mkdir\s+-p\s+|touch\s+|>\s*|>>\s*)([^\s\"';]+)")
 _ATLASCTL_MODULE_RE = re.compile(r"\bpython3?\s+-m\s+atlasctl\.cli\b")
+_ATLASCTL_SUITE_RUN_RE = re.compile(r"\batlasctl\s+suite\s+run\s+([A-Za-z0-9_.-]+)\b")
 _WRAPPER_FILES = (
     "makefiles/dev.mk",
     "makefiles/docs.mk",
@@ -294,6 +296,48 @@ def check_ci_workflows_call_make_and_make_calls_atlasctl(repo_root: Path) -> tup
                 f"{wf.relative_to(repo_root).as_posix()}: workflow must not run raw cargo fmt/test/clippy/check; use make/atlasctl wrappers"
             )
     return (0 if not errors else 1), sorted(errors)
+
+
+def _workflow_texts(repo_root: Path) -> Iterable[tuple[str, str]]:
+    for wf in sorted((repo_root / ".github" / "workflows").glob("*.yml")):
+        yield wf.relative_to(repo_root).as_posix(), wf.read_text(encoding="utf-8", errors="ignore")
+
+
+def check_workflows_reference_known_suites(repo_root: Path) -> tuple[int, list[str]]:
+    from .....registry.suites import suite_manifest_specs
+
+    known = {spec.name for spec in suite_manifest_specs()}
+    errors: list[str] = []
+    for rel, text in _workflow_texts(repo_root):
+        for lineno, line in enumerate(text.splitlines(), start=1):
+            m = _ATLASCTL_SUITE_RUN_RE.search(line)
+            if not m:
+                continue
+            suite_name = m.group(1)
+            if suite_name not in known:
+                errors.append(f"{rel}:{lineno}: unknown suite in workflow: atlasctl suite run {suite_name}")
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_ci_pr_lane_fast_only(repo_root: Path) -> tuple[int, list[str]]:
+    from .....checks.registry import get_check
+    from .....registry.suites import resolve_check_ids, suite_manifest_specs
+
+    allowlist_path = repo_root / "configs/policy/ci-pr-slow-allowlist.json"
+    allowlist: set[str] = set()
+    if allowlist_path.exists():
+        payload = json.loads(allowlist_path.read_text(encoding="utf-8"))
+        allowlist = {str(item) for item in payload.get("allowlist", [])}
+
+    spec_by_name = {spec.name: spec for spec in suite_manifest_specs()}
+    pr_spec = spec_by_name.get("local")
+    if pr_spec is None:
+        return 1, ["missing `local` suite spec; required for CI PR fast lane"]
+    selected = resolve_check_ids(pr_spec)
+    slow_checks = [cid for cid in selected if (check := get_check(cid)) is not None and check.slow and cid not in allowlist]
+    if slow_checks:
+        return 1, [f"CI PR lane includes slow checks without allowlist: {', '.join(sorted(slow_checks))}"]
+    return 0, []
 
 
 def check_public_make_targets_map_to_atlasctl(repo_root: Path) -> tuple[int, list[str]]:
