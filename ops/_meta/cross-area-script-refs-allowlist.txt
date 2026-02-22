@@ -28,8 +28,8 @@ makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/run_nightl
 makefiles/ops.mk|atlasctl ops load run
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/baseline/update_baseline_entrypoint.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/warm_start_benchmark.py
-makefiles/ops.mk|ops/obs/scripts/alert-firing-proof.sh
-makefiles/ops.mk|ops/obs/scripts/alerts-validation.sh
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/alert_firing_proof.py
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/alerts_validation.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/check_pack_upgrade.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/check_pack_versions.py
 makefiles/ops.mk|ops/obs/scripts/cpu-throttle-noisy-neighbor.sh
@@ -37,16 +37,16 @@ makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/expor
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/install_pack.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/memory_growth.py
 makefiles/ops.mk|ops/obs/scripts/node-disk-pressure.sh
-makefiles/ops.mk|ops/obs/scripts/otel-outage.sh
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/otel_outage.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/overload_admission_control.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/pack_health.py
-makefiles/ops.mk|ops/obs/scripts/prom-outage.sh
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/prom_outage.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/run_drill.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/smoke_pack.py
 makefiles/ops.mk|ops/obs/scripts/snapshot_metrics.sh
 makefiles/ops.mk|ops/obs/scripts/snapshot_traces.sh
-makefiles/ops.mk|ops/obs/scripts/store-latency-injection.sh
-makefiles/ops.mk|ops/obs/scripts/store-outage-under-load.sh
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/store_latency_injection.py
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/store_outage_under_load.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/store_outage.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/uninstall_pack.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/stack/collect_events.py

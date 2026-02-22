@@ -3,7 +3,7 @@
   "drills": [
     {
       "name": "store-outage-under-load",
-      "script": "ops/obs/scripts/store-outage-under-load.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/store_outage_under_load.py",
       "purpose": "Simulate store outage during active load and validate graceful degradation.",
       "expected_signals": [
         "metric:bijux_store_breaker_open",
@@ -19,7 +19,7 @@
     },
     {
       "name": "prom-outage",
-      "script": "ops/obs/scripts/prom-outage.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/prom_outage.py",
       "purpose": "Ensure Prometheus outage does not impact atlas serving behavior.",
       "expected_signals": [
         "metric:bijux_http_requests_total",
@@ -34,7 +34,7 @@
     },
     {
       "name": "otel-outage",
-      "script": "ops/obs/scripts/otel-outage.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/otel_outage.py",
       "purpose": "Ensure OTEL outage degrades traces only and serving remains available.",
       "expected_signals": [
         "metric:bijux_http_requests_total",
@@ -50,7 +50,7 @@
     },
     {
       "name": "store-latency-injection",
-      "script": "ops/obs/scripts/store-latency-injection.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/store_latency_injection.py",
       "purpose": "Inject store latency and validate breaker and resilience metrics.",
       "expected_signals": [
         "metric:bijux_store_breaker_open",
@@ -123,7 +123,7 @@
     },
     {
       "name": "alert-firing-proof",
-      "script": "ops/obs/scripts/alert-firing-proof.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/alert_firing_proof.py",
       "purpose": "Simulate alert condition checks and confirm alert rules exist.",
       "expected_signals": [
         "validator:alerts_contract"
@@ -137,7 +137,7 @@
     },
     {
       "name": "runbook-proof-top5",
-      "script": "ops/obs/scripts/runbook-proof-top5.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/runbook_proof_top5.py",
       "purpose": "Run representative drills and verify top runbook mapping.",
       "expected_signals": [
         "validator:runbook_mapping"
@@ -277,7 +277,7 @@
     },
     {
       "name": "dashboard-fault-signature",
-      "script": "ops/obs/scripts/dashboard-fault-signature.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/dashboard_fault_signature.py",
       "purpose": "Confirm dashboards expose expected signatures during injected faults.",
       "expected_signals": [
         "validator:dashboard_contract"
@@ -291,7 +291,7 @@
     },
     {
       "name": "alerts-runbook-id-map",
-      "script": "ops/obs/scripts/alerts-runbook-id-map.sh",
+      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/alerts_runbook_id_map.py",
       "purpose": "Confirm alert rules map to valid runbook identifiers.",
       "expected_signals": [
         "validator:alerts_runbook_map"
