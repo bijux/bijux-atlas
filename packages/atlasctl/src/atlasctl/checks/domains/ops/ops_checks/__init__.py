@@ -246,6 +246,117 @@ def check_ops_load_runbook_suite_names_native(repo_root: Path) -> tuple[int, lis
     return 0, ["runbook suite-name coverage passed"]
 
 
+def check_ops_obs_endpoint_metrics_coverage_native(repo_root: Path) -> tuple[int, list[str]]:
+    spec = json.loads((repo_root / "configs/openapi/v1/openapi.generated.json").read_text(encoding="utf-8"))
+    coverage = json.loads((repo_root / "ops/obs/contract/endpoint-observability-contract.json").read_text(encoding="utf-8"))
+    metrics = json.loads((repo_root / "ops/obs/contract/metrics-contract.json").read_text(encoding="utf-8"))
+    budgets = json.loads((repo_root / "configs/ops/obs/budgets.json").read_text(encoding="utf-8"))
+    known_metrics = set(metrics.get("required_metric_specs", {}).keys())
+    required_by_class = budgets.get("endpoint_class_metric_requirements", {})
+    endpoints = {
+        (path, method)
+        for path, methods in spec.get("paths", {}).items()
+        if path.startswith("/v1/")
+        for method in methods.keys()
+    }
+    covered = {(e["path"], e["method"]) for e in coverage.get("endpoints", [])}
+    errors: list[str] = []
+    for p, m in sorted(endpoints - covered):
+        errors.append(f"missing endpoint coverage entry: {m.upper()} {p}")
+    for entry in coverage.get("endpoints", []):
+        klass = entry.get("class")
+        if klass not in {"cheap", "medium", "heavy"}:
+            errors.append(f"invalid endpoint class `{klass}` for {entry.get('method')} {entry.get('path')}")
+        class_required = set(required_by_class.get(klass, []))
+        endpoint_metrics = set(entry.get("required_metrics", []))
+        miss = sorted(class_required - endpoint_metrics)
+        if miss:
+            errors.append(f"endpoint {entry.get('method')} {entry.get('path')} missing class-required metrics: {', '.join(miss)}")
+        for metric in entry.get("required_metrics", []):
+            if metric not in known_metrics:
+                errors.append(f"unknown metric `{metric}` for endpoint {entry.get('method')} {entry.get('path')}")
+    return (0 if not errors else 1), (["endpoint metric coverage check passed"] if not errors else errors)
+
+
+def check_ops_obs_endpoint_trace_coverage_native(repo_root: Path) -> tuple[int, list[str]]:
+    spec = json.loads((repo_root / "configs/openapi/v1/openapi.generated.json").read_text(encoding="utf-8"))
+    coverage = json.loads((repo_root / "ops/obs/contract/endpoint-observability-contract.json").read_text(encoding="utf-8"))
+    trace = json.loads((repo_root / "docs/contracts/TRACE_SPANS.json").read_text(encoding="utf-8"))
+    budgets = json.loads((repo_root / "configs/ops/obs/budgets.json").read_text(encoding="utf-8"))
+    endpoints = {
+        (path, method)
+        for path, methods in spec.get("paths", {}).items()
+        if path.startswith("/v1/")
+        for method in methods.keys()
+    }
+    covered = {(e["path"], e["method"]) for e in coverage.get("endpoints", [])}
+    errors: list[str] = []
+    for p, m in sorted(endpoints - covered):
+        errors.append(f"missing endpoint trace coverage entry: {m.upper()} {p}")
+    span_names = {trace.get("request_root_span", {}).get("name", "")}
+    span_names.update(s.get("name", "") for s in trace.get("spans", []))
+    root_attrs = set(trace.get("request_root_span", {}).get("required_attributes", []))
+    span_attrs: set[str] = set()
+    for span in trace.get("spans", []):
+        span_attrs.update(span.get("required_attributes", []))
+    known_attrs = root_attrs | span_attrs
+    class_attr_requirements = budgets.get("span_attribute_requirements", {})
+    for entry in coverage.get("endpoints", []):
+        klass = entry.get("class")
+        needed = set(class_attr_requirements.get(klass, []))
+        miss = sorted(needed - known_attrs)
+        if miss:
+            errors.append(f"endpoint {entry.get('method')} {entry.get('path')} class `{klass}` requires unknown trace attrs: {', '.join(miss)}")
+        for span in entry.get("required_trace_spans", []):
+            if span not in span_names:
+                errors.append(f"unknown trace span `{span}` for endpoint {entry.get('method')} {entry.get('path')}")
+    return (0 if not errors else 1), (["endpoint trace coverage check passed"] if not errors else errors)
+
+
+def check_ops_obs_budgets_native(repo_root: Path) -> tuple[int, list[str]]:
+    budgets = json.loads((repo_root / "configs/ops/obs/budgets.json").read_text(encoding="utf-8"))
+    metrics = json.loads((repo_root / "ops/obs/contract/metrics-contract.json").read_text(encoding="utf-8"))
+    metric_specs = metrics.get("required_metric_specs", {})
+    errors: list[str] = []
+    for metric, labels in budgets.get("required_metric_labels", {}).items():
+        spec = metric_specs.get(metric)
+        if not isinstance(spec, dict):
+            errors.append(f"obs budget references unknown metric `{metric}`")
+            continue
+        spec_labels = set(spec.get("required_labels", []))
+        missing = sorted(set(labels) - spec_labels)
+        if missing:
+            errors.append(f"metric `{metric}` missing required labels from budget: {', '.join(missing)}")
+    return (0 if not errors else 1), (["observability budgets check passed"] if not errors else errors)
+
+
+def check_ops_obs_profile_goldens_native(repo_root: Path) -> tuple[int, list[str]]:
+    payload = json.loads((repo_root / "ops/obs/contract/goldens/profiles.json").read_text(encoding="utf-8"))
+    errors: list[str] = []
+    profiles = payload.get("profiles", {})
+    for profile in ("local", "perf", "offline"):
+        if profile not in profiles:
+            errors.append(f"missing golden profile: {profile}")
+            continue
+        spec = profiles[profile]
+        for key in ("metrics_golden", "trace_golden"):
+            rel = spec.get(key)
+            if not isinstance(rel, str) or not rel:
+                errors.append(f"profile {profile} missing {key}")
+                continue
+            path = repo_root / rel
+            if not path.exists():
+                errors.append(f"profile {profile} missing file: {rel}")
+            elif path.stat().st_size == 0:
+                errors.append(f"profile {profile} has empty file: {rel}")
+            elif key == "trace_golden":
+                try:
+                    json.loads(path.read_text(encoding="utf-8"))
+                except Exception as exc:
+                    errors.append(f"profile {profile} invalid json in {rel}: {exc}")
+    return (0 if not errors else 1), (["obs profile goldens check passed"] if not errors else errors)
+
+
 def check_ops_shell_policy(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
     run_dir = repo_root / "ops" / "run"
@@ -594,16 +705,12 @@ _OPS_SCRIPT_CHECKS: tuple[tuple[str, str, str, callable], ...] = (
     ("ops.script.ops_obs_scripts_contracts_check_alerts_contract_py", "run ops script check `ops/obs/scripts/contracts/check_alerts_contract.py`", "ops/obs/scripts/contracts/check_alerts_contract.py", _make_ops_script_check("ops/obs/scripts/contracts/check_alerts_contract.py")),
     ("ops.script.ops_obs_scripts_contracts_check_dashboard_contract_py", "run ops script check `ops/obs/scripts/contracts/check_dashboard_contract.py`", "ops/obs/scripts/contracts/check_dashboard_contract.py", _make_ops_script_check("ops/obs/scripts/contracts/check_dashboard_contract.py")),
     ("ops.script.ops_obs_scripts_contracts_check_dashboard_metric_compat_py", "run ops script check `ops/obs/scripts/contracts/check_dashboard_metric_compat.py`", "ops/obs/scripts/contracts/check_dashboard_metric_compat.py", _make_ops_script_check("ops/obs/scripts/contracts/check_dashboard_metric_compat.py")),
-    ("ops.script.ops_obs_scripts_contracts_check_endpoint_metrics_coverage_py", "run ops script check `ops/obs/scripts/contracts/check_endpoint_metrics_coverage.py`", "ops/obs/scripts/contracts/check_endpoint_metrics_coverage.py", _make_ops_script_check("ops/obs/scripts/contracts/check_endpoint_metrics_coverage.py")),
-    ("ops.script.ops_obs_scripts_contracts_check_endpoint_trace_coverage_py", "run ops script check `ops/obs/scripts/contracts/check_endpoint_trace_coverage.py`", "ops/obs/scripts/contracts/check_endpoint_trace_coverage.py", _make_ops_script_check("ops/obs/scripts/contracts/check_endpoint_trace_coverage.py")),
     ("ops.script.ops_obs_scripts_contracts_check_metrics_contract_py", "run ops script check `ops/obs/scripts/contracts/check_metrics_contract.py`", "ops/obs/scripts/contracts/check_metrics_contract.py", _make_ops_script_check("ops/obs/scripts/contracts/check_metrics_contract.py")),
     ("ops.script.ops_obs_scripts_contracts_check_metrics_coverage_py", "run ops script check `ops/obs/scripts/contracts/check_metrics_coverage.py`", "ops/obs/scripts/contracts/check_metrics_coverage.py", _make_ops_script_check("ops/obs/scripts/contracts/check_metrics_coverage.py")),
     ("ops.script.ops_obs_scripts_contracts_check_metrics_drift_py", "run ops script check `ops/obs/scripts/contracts/check_metrics_drift.py`", "ops/obs/scripts/contracts/check_metrics_drift.py", _make_ops_script_check("ops/obs/scripts/contracts/check_metrics_drift.py")),
     ("ops.script.ops_obs_scripts_contracts_check_metrics_golden_py", "run ops script check `ops/obs/scripts/contracts/check_metrics_golden.py`", "ops/obs/scripts/contracts/check_metrics_golden.py", _make_ops_script_check("ops/obs/scripts/contracts/check_metrics_golden.py")),
-    ("ops.script.ops_obs_scripts_contracts_check_obs_budgets_py", "run ops script check `ops/obs/scripts/contracts/check_obs_budgets.py`", "ops/obs/scripts/contracts/check_obs_budgets.py", _make_ops_script_check("ops/obs/scripts/contracts/check_obs_budgets.py")),
     ("ops.script.ops_obs_scripts_contracts_check_observability_lag_py", "run ops script check `ops/obs/scripts/contracts/check_observability_lag.py`", "ops/obs/scripts/contracts/check_observability_lag.py", _make_ops_script_check("ops/obs/scripts/contracts/check_observability_lag.py")),
     ("ops.script.ops_obs_scripts_contracts_check_overload_behavior_contract_py", "run ops script check `ops/obs/scripts/contracts/check_overload_behavior_contract.py`", "ops/obs/scripts/contracts/check_overload_behavior_contract.py", _make_ops_script_check("ops/obs/scripts/contracts/check_overload_behavior_contract.py")),
-    ("ops.script.ops_obs_scripts_contracts_check_profile_goldens_py", "run ops script check `ops/obs/scripts/contracts/check_profile_goldens.py`", "ops/obs/scripts/contracts/check_profile_goldens.py", _make_ops_script_check("ops/obs/scripts/contracts/check_profile_goldens.py")),
     ("ops.script.ops_obs_scripts_contracts_check_runtime_metrics_py", "run ops script check `ops/obs/scripts/contracts/check_runtime_metrics.py`", "ops/obs/scripts/contracts/check_runtime_metrics.py", _make_ops_script_check("ops/obs/scripts/contracts/check_runtime_metrics.py")),
     ("ops.script.ops_obs_scripts_contracts_check_trace_coverage_py", "run ops script check `ops/obs/scripts/contracts/check_trace_coverage.py`", "ops/obs/scripts/contracts/check_trace_coverage.py", _make_ops_script_check("ops/obs/scripts/contracts/check_trace_coverage.py")),
     ("ops.script.ops_obs_scripts_contracts_check_trace_golden_py", "run ops script check `ops/obs/scripts/contracts/check_trace_golden.py`", "ops/obs/scripts/contracts/check_trace_golden.py", _make_ops_script_check("ops/obs/scripts/contracts/check_trace_golden.py")),
@@ -668,6 +775,10 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("ops.script.ops_load_scripts_check_perf_baselines_py", "ops", "run ops script check `ops/load/scripts/check_perf_baselines.py`", 1000, check_ops_load_perf_baselines_native, fix_hint="Fix perf baseline metadata, freshness, dataset lock hash, and tool-version alignment."),
     CheckDef("ops.script.ops_load_scripts_check_pinned_queries_lock_py", "ops", "run ops script check `ops/load/scripts/check_pinned_queries_lock.py`", 1000, check_ops_load_pinned_queries_lock_native, fix_hint="Regenerate pinned query lock so file/query hashes match SSOT."),
     CheckDef("ops.script.ops_load_scripts_check_runbook_suite_names_py", "ops", "run ops script check `ops/load/scripts/check_runbook_suite_names.py`", 1000, check_ops_load_runbook_suite_names_native, fix_hint="Update load runbook to include all suite names from ops/load/suites/suites.json."),
+    CheckDef("ops.script.ops_obs_scripts_contracts_check_endpoint_metrics_coverage_py", "ops", "run ops script check `ops/obs/scripts/contracts/check_endpoint_metrics_coverage.py`", 1000, check_ops_obs_endpoint_metrics_coverage_native, fix_hint="Fix endpoint observability metric coverage contract entries and metric references."),
+    CheckDef("ops.script.ops_obs_scripts_contracts_check_endpoint_trace_coverage_py", "ops", "run ops script check `ops/obs/scripts/contracts/check_endpoint_trace_coverage.py`", 1000, check_ops_obs_endpoint_trace_coverage_native, fix_hint="Fix endpoint trace coverage contract entries and TRACE_SPANS attribute/span references."),
+    CheckDef("ops.script.ops_obs_scripts_contracts_check_obs_budgets_py", "ops", "run ops script check `ops/obs/scripts/contracts/check_obs_budgets.py`", 1000, check_ops_obs_budgets_native, fix_hint="Align observability budgets required labels with metrics contract specs."),
+    CheckDef("ops.script.ops_obs_scripts_contracts_check_profile_goldens_py", "ops", "run ops script check `ops/obs/scripts/contracts/check_profile_goldens.py`", 1000, check_ops_obs_profile_goldens_native, fix_hint="Fix profile goldens registry and referenced golden files."),
     *(
         CheckDef(check_id, "ops", description, 1000, fn, fix_hint=f"Fix failures in `{script_rel}` or replace it with atlasctl-native check logic.")
         for (check_id, description, script_rel, fn) in _OPS_SCRIPT_CHECKS
