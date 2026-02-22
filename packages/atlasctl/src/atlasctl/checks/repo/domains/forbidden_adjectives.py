@@ -37,19 +37,23 @@ class Approval:
     line: int | None
 
 
-def _load_policy_config(repo_root: Path) -> tuple[list[str], Path, list[str]]:
+def _load_policy_config(repo_root: Path) -> tuple[list[str], set[str], Path, list[str]]:
     path = repo_root / _CONFIG_PATH
     if not path.exists():
-        return [], _REPORT_FALLBACK, [f"missing config: {_CONFIG_PATH.as_posix()}"]
+        return [], set(), _REPORT_FALLBACK, [f"missing config: {_CONFIG_PATH.as_posix()}"]
     payload = json.loads(path.read_text(encoding="utf-8"))
     terms = payload.get("terms", [])
     if not isinstance(terms, list) or not all(isinstance(term, str) and term.strip() for term in terms):
-        return [], _REPORT_FALLBACK, [f"{_CONFIG_PATH.as_posix()}: `terms` must be a non-empty string list"]
+        return [], set(), _REPORT_FALLBACK, [f"{_CONFIG_PATH.as_posix()}: `terms` must be a non-empty string list"]
+    exempt_raw = payload.get("exempt_paths", [])
+    if exempt_raw and (not isinstance(exempt_raw, list) or not all(isinstance(item, str) and item.strip() for item in exempt_raw)):
+        return [], set(), _REPORT_FALLBACK, [f"{_CONFIG_PATH.as_posix()}: `exempt_paths` must be a string list when present"]
+    exempt_paths = {item.strip().replace("\\", "/") for item in exempt_raw if isinstance(item, str) and item.strip()}
     report_raw = str(payload.get("report_path", _REPORT_FALLBACK.as_posix()))
     report_path = Path(report_raw)
     if not report_path.is_absolute():
         report_path = repo_root / report_path
-    return sorted({term.strip().lower() for term in terms}), report_path, []
+    return sorted({term.strip().lower() for term in terms}), exempt_paths, report_path, []
 
 
 def _load_approvals(repo_root: Path) -> tuple[list[Approval], list[str]]:
@@ -119,11 +123,13 @@ def _is_approved(match_path: str, match_term: str, match_line: int, approvals: l
     return False
 
 
-def _scan(repo_root: Path, terms: list[str], approvals: list[Approval]) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
+def _scan(repo_root: Path, terms: list[str], approvals: list[Approval], exempt_paths: set[str]) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
     pattern = re.compile(r"\b(?:" + "|".join(re.escape(term) for term in terms) + r")\b", re.IGNORECASE)
     violations: list[dict[str, object]] = []
     approved: list[dict[str, object]] = []
     for rel in _tracked_files(repo_root):
+        if rel in exempt_paths:
+            continue
         path = repo_root / rel
         if path.suffix.lower() not in _SCAN_EXTENSIONS or not path.exists() or not path.is_file():
             continue
@@ -145,11 +151,11 @@ def _write_report(repo_root: Path, report_path: Path, payload: dict[str, object]
 
 
 def check_forbidden_adjectives(repo_root: Path) -> tuple[int, list[str]]:
-    terms, report_path, config_errors = _load_policy_config(repo_root)
+    terms, exempt_paths, report_path, config_errors = _load_policy_config(repo_root)
     approvals, approval_errors = _load_approvals(repo_root)
     violations, approved = ([], [])
     if terms:
-        violations, approved = _scan(repo_root, terms, approvals)
+        violations, approved = _scan(repo_root, terms, approvals, exempt_paths)
 
     payload = {
         "schema_version": 1,
@@ -157,6 +163,7 @@ def check_forbidden_adjectives(repo_root: Path) -> tuple[int, list[str]]:
         "kind": "forbidden-adjectives-report",
         "status": "ok" if not violations and not config_errors and not approval_errors else "error",
         "terms": terms,
+        "exempt_paths": sorted(exempt_paths),
         "violations": violations,
         "approved_matches": approved,
         "config_errors": config_errors,
@@ -168,4 +175,3 @@ def check_forbidden_adjectives(repo_root: Path) -> tuple[int, list[str]]:
     errors.extend(config_errors)
     errors.extend(approval_errors)
     return (0 if not errors else 1), errors
-
