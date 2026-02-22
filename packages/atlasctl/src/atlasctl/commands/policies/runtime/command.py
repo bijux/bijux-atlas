@@ -314,7 +314,7 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 print(f"- {x}")
         return code
 
-    if ns.policies_cmd in {"bypass-list", "bypass"} and getattr(ns, "bypass_cmd", "list") == "list":
+    if ns.policies_cmd in {"bypass-list", "bypass"} and getattr(ns, "bypass_cmd", "list") in {"list", "inventory"}:
         payload = collect_bypass_inventory(repo)
         print(json.dumps(payload, sort_keys=True) if ns.report == "json" else render_text_report(payload))
         return 0 if not payload.get("errors") else 1
@@ -503,6 +503,7 @@ def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
     bypass = ps.add_parser("bypass", help="bypass inventory helpers")
     bypass_sub = bypass.add_subparsers(dest="bypass_cmd", required=True)
     bypass_sub.add_parser("list", help="list policy bypass/allowlist inventory").add_argument("--report", choices=["text", "json"], default="text")
+    bypass_sub.add_parser("inventory", help="alias of bypass list inventory").add_argument("--report", choices=["text", "json"], default="text")
     rep2 = bypass_sub.add_parser("report", help="emit consolidated policy bypass report")
     rep2.add_argument("--report", choices=["text", "json"], default="text")
     rep2.add_argument("--out", default="artifacts/reports/atlasctl/policies-bypass-report.json")

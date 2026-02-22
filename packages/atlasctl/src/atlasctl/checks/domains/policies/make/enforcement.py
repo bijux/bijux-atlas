@@ -3,6 +3,7 @@ import json
 import re
 import runpy
 import datetime as dt
+import fnmatch
 from pathlib import Path
 from typing import Iterable
 
@@ -35,6 +36,48 @@ _ISSUE_ID_RE = re.compile(r"^ISSUE-[A-Z0-9-]+$")
 _BYPASS_SOURCES = (("configs/policy/policy-relaxations.json", "json", True), ("configs/policy/effect-boundary-exceptions.json", "json", False), ("configs/policy/dead-modules-allowlist.json", "json", False), ("configs/policy/dependency-exceptions.json", "json", True), ("configs/policy/layer-relaxations.json", "json", True), ("configs/policy/budget-relaxations.json", "json", True), ("configs/policy/ops-lint-relaxations.json", "json", True), ("configs/policy/ops-smoke-budget-relaxations.json", "json", True), ("configs/policy/pin-relaxations.json", "json", True), ("configs/policy/check-filename-allowlist.json", "json", False), ("configs/policy/layer-live-diff-allowlist.json", "json", False), ("configs/policy/slow-checks-ratchet.json", "json", False), ("configs/policy/forbidden-adjectives-allowlist.txt", "txt", False), ("configs/policy/shell-network-fetch-allowlist.txt", "txt", False), ("configs/policy/shell-probes-allowlist.txt", "txt", False))
 _BYPASS_SCHEMAS = {"configs/policy/policy-relaxations.json": "configs/_schemas/policy-relaxations.schema.json", "configs/policy/layer-relaxations.json": "configs/_schemas/layer-relaxations.schema.json", "configs/policy/ops-lint-relaxations.json": "configs/_schemas/ops-lint-relaxations.schema.json", "configs/policy/layer-live-diff-allowlist.json": "configs/_schemas/layer-live-diff-allowlist.schema.json", "configs/policy/effect-boundary-exceptions.json": "configs/policy/bypass.schema.json", "configs/policy/dead-modules-allowlist.json": "configs/policy/bypass.schema.json", "configs/policy/dependency-exceptions.json": "configs/policy/bypass.schema.json", "configs/policy/budget-relaxations.json": "configs/policy/bypass.schema.json", "configs/policy/ops-smoke-budget-relaxations.json": "configs/policy/bypass.schema.json", "configs/policy/pin-relaxations.json": "configs/policy/bypass.schema.json", "configs/policy/check-filename-allowlist.json": "configs/policy/bypass.schema.json", "configs/policy/slow-checks-ratchet.json": "configs/policy/bypass.schema.json"}
 _BYPASS_SCOPES = {"repo", "crate", "module", "file", "path", "docs", "ops", "make", "workflow", "policy"}
+_BYPASS_FILES_REGISTRY = Path("configs/policy/bypass-files-registry.json")
+_BYPASS_TYPES_REGISTRY = Path("configs/policy/bypass-types.json")
+
+
+def _bypass_sources_registry(repo_root: Path) -> list[tuple[str, str, bool]]:
+    path = repo_root / _BYPASS_FILES_REGISTRY
+    if not path.exists():
+        return list(_BYPASS_SOURCES)
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return list(_BYPASS_SOURCES)
+    rows = payload.get("files", []) if isinstance(payload, dict) else []
+    out: list[tuple[str, str, bool]] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        rel = str(row.get("path", "")).strip()
+        kind = str(row.get("kind", "")).strip()
+        if not rel or not kind:
+            continue
+        out.append((rel, kind, bool(row.get("requires_metadata", False))))
+    return out or list(_BYPASS_SOURCES)
+
+
+def _bypass_schema_map(repo_root: Path) -> dict[str, str]:
+    schema_map = dict(_BYPASS_SCHEMAS)
+    path = repo_root / _BYPASS_FILES_REGISTRY
+    if not path.exists():
+        return schema_map
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return schema_map
+    for row in payload.get("files", []) if isinstance(payload, dict) else []:
+        if not isinstance(row, dict):
+            continue
+        rel = str(row.get("path", "")).strip()
+        schema = str(row.get("schema", "")).strip()
+        if rel and schema:
+            schema_map[rel] = schema
+    return schema_map
 def _iter_make_recipe_lines(repo_root: Path) -> list[tuple[str, int, str]]:
     rows: list[tuple[str, int, str]] = []
     files = [repo_root / "Makefile", *sorted((repo_root / "makefiles").glob("*.mk"))]
@@ -430,7 +473,7 @@ def _load_bypass_entries(repo_root: Path) -> list[dict[str, object]]:
         if isinstance(row, dict) and str(row.get("key", "")).strip()
     }
     entries: list[dict[str, object]] = []
-    for rel_path, kind, requires_metadata in _BYPASS_SOURCES:
+    for rel_path, kind, requires_metadata in _bypass_sources_registry(repo_root):
         path = repo_root / rel_path
         if not path.exists():
             continue
@@ -440,6 +483,20 @@ def _load_bypass_entries(repo_root: Path) -> list[dict[str, object]]:
                 if not value or value.startswith("#"):
                     continue
                 entries.append({"source": rel_path, "key": f"{rel_path}#{idx}", "requires_metadata": False})
+            continue
+        if kind == "toml":
+            # Inventory-only support for TOML allowlists (entry metadata often not structured like policy bypass JSON).
+            text = path.read_text(encoding="utf-8", errors="ignore")
+            line_no = 0
+            for line in text.splitlines():
+                line_no += 1
+                stripped = line.strip()
+                if not stripped or stripped.startswith("#") or stripped.startswith("["):
+                    continue
+                if "=" not in stripped:
+                    continue
+                key = stripped.split("=", 1)[0].strip()
+                entries.append({"source": rel_path, "key": key or f"{rel_path}#{line_no}", "requires_metadata": False})
             continue
         payload = json.loads(path.read_text(encoding="utf-8"))
         if rel_path.endswith("effect-boundary-exceptions.json"):
@@ -503,9 +560,42 @@ def collect_bypass_inventory(repo_root: Path) -> dict[str, object]:
     for entry in entries:
         source = str(entry.get("source", ""))
         counts[source] = counts.get(source, 0) + 1
-    for rel_path, kind, _ in _BYPASS_SOURCES:
-        files.append({"path": rel_path, "exists": (repo_root / rel_path).exists(), "kind": kind, "entry_count": counts.get(rel_path, 0)})
-    return {"schema_version": 1, "files": files, "entry_count": len(entries), "entries": entries, "errors": []}
+    registry_types = {}
+    types_path = repo_root / _BYPASS_TYPES_REGISTRY
+    if types_path.exists():
+        try:
+            types_payload = json.loads(types_path.read_text(encoding="utf-8"))
+            registry_types = {str(item) for item in types_payload.get("types", [])} if isinstance(types_payload, dict) else set()
+        except Exception:
+            registry_types = {}
+    registry_payload = json.loads((repo_root / _BYPASS_FILES_REGISTRY).read_text(encoding="utf-8")) if (repo_root / _BYPASS_FILES_REGISTRY).exists() else {}
+    type_by_path = {
+        str(row.get("path", "")).strip(): str(row.get("type", "")).strip()
+        for row in (registry_payload.get("files", []) if isinstance(registry_payload, dict) else [])
+        if isinstance(row, dict)
+    }
+    for rel_path, kind, _ in _bypass_sources_registry(repo_root):
+        files.append(
+            {
+                "path": rel_path,
+                "exists": (repo_root / rel_path).exists(),
+                "kind": kind,
+                "type": type_by_path.get(rel_path, ""),
+                "entry_count": counts.get(rel_path, 0),
+            }
+        )
+    return {
+        "schema_version": 1,
+        "files": files,
+        "entry_count": len(entries),
+        "entries": entries,
+        "errors": [],
+        "registry": {
+            "files_registry": _BYPASS_FILES_REGISTRY.as_posix(),
+            "types_registry": _BYPASS_TYPES_REGISTRY.as_posix(),
+            "types": sorted(registry_types) if isinstance(registry_types, set) else [],
+        },
+    }
 
 
 def render_text_report(payload: dict[str, object]) -> str:
@@ -522,7 +612,7 @@ def render_text_report(payload: dict[str, object]) -> str:
 def _bypass_errors(repo_root: Path) -> dict[str, list[str]]:
     entries = _load_bypass_entries(repo_root)
     by_check: dict[str, list[str]] = {k: [] for k in ("meta", "expiry", "horizon", "justification", "issue", "owner", "removal", "scope", "policy", "schema", "budget", "files")}
-    known_files = {row[0] for row in _BYPASS_SOURCES} | {"configs/policy/migration_exceptions.json", "configs/policy/checks-registry-transition.json", "configs/policy/check-id-migration.json", "configs/policy/forbidden-adjectives-approvals.json", "configs/policy/check_speed_approvals.json"}
+    known_files = {row[0] for row in _bypass_sources_registry(repo_root)} | {"configs/policy/migration_exceptions.json", "configs/policy/checks-registry-transition.json", "configs/policy/check-id-migration.json", "configs/policy/forbidden-adjectives-approvals.json", "configs/policy/check_speed_approvals.json", _BYPASS_FILES_REGISTRY.as_posix(), _BYPASS_TYPES_REGISTRY.as_posix(), "configs/policy/bypass-new-entry-approvals.json"}
     actual_files = {p.relative_to(repo_root).as_posix() for p in (repo_root / "configs/policy").glob("*") if p.is_file() and any(t in p.name for t in ("allowlist", "relax", "exceptions", "ratchet"))}
     for path in sorted(actual_files - known_files):
         by_check["files"].append(f"unexpected bypass file under configs/policy: {path}")
@@ -575,8 +665,9 @@ def _bypass_errors(repo_root: Path) -> dict[str, list[str]]:
             by_check["horizon"].append(f"{source}:{key}: expiry horizon {delta}d exceeds 90d without approval")
     try:
         import jsonschema
-        for rel_path, _, _ in _BYPASS_SOURCES:
-            schema_rel = _BYPASS_SCHEMAS.get(rel_path)
+        schema_map = _bypass_schema_map(repo_root)
+        for rel_path, _, _ in _bypass_sources_registry(repo_root):
+            schema_rel = schema_map.get(rel_path)
             if not schema_rel:
                 continue
             p = repo_root / rel_path
@@ -612,7 +703,7 @@ def _bypass_readme_errors(repo_root: Path) -> dict[str, list[str]]:
         return {"complete": ["configs/policy/README.md missing"], "sorted": ["configs/policy/README.md missing"]}
     text = path.read_text(encoding="utf-8")
     refs = sorted(set(re.findall(r"`(configs/policy/[^`]+)`", text)))
-    expected = sorted(row[0] for row in _BYPASS_SOURCES)
+    expected = sorted(row[0] for row in _bypass_sources_registry(repo_root))
     missing = sorted(item for item in expected if item not in refs); extra = sorted(item for item in refs if item not in expected)
     complete: list[str] = [*(f"README missing bypass file entry: {item}" for item in missing), *(f"README lists non-bypass file entry: {item}" for item in extra)]
     order = [item for item in refs if item in expected]
@@ -633,3 +724,131 @@ def check_policies_bypass_schema_valid(repo_root: Path) -> tuple[int, list[str]]
 def check_policies_bypass_budget(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_errors(repo_root)["budget"])
 def check_policies_bypass_readme_complete(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_readme_errors(repo_root)["complete"])
 def check_policies_bypass_readme_sorted(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_readme_errors(repo_root)["sorted"])
+
+
+def check_policies_bypass_inventory_present(repo_root: Path) -> tuple[int, list[str]]:
+    payload = collect_bypass_inventory(repo_root)
+    errors: list[str] = []
+    if not (repo_root / _BYPASS_FILES_REGISTRY).exists():
+        errors.append(f"missing bypass files registry: {_BYPASS_FILES_REGISTRY.as_posix()}")
+    if not (repo_root / _BYPASS_TYPES_REGISTRY).exists():
+        errors.append(f"missing bypass types registry: {_BYPASS_TYPES_REGISTRY.as_posix()}")
+    if not payload.get("files"):
+        errors.append("bypass inventory files list must be non-empty")
+    return _res(errors)
+
+
+def check_policies_bypass_inventory_deterministic(repo_root: Path) -> tuple[int, list[str]]:
+    p1 = collect_bypass_inventory(repo_root)
+    p2 = collect_bypass_inventory(repo_root)
+    if json.dumps(p1, sort_keys=True) != json.dumps(p2, sort_keys=True):
+        return 1, ["bypass inventory payload is nondeterministic across repeated runs"]
+    file_rows = p1.get("files", [])
+    if isinstance(file_rows, list):
+        paths = [str(row.get("path", "")) for row in file_rows if isinstance(row, dict)]
+        if paths != sorted(paths):
+            return 1, ["bypass inventory files must be sorted by path"]
+    return 0, []
+
+
+def check_policies_bypass_has_owner(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_errors(repo_root)["owner"] + _bypass_errors(repo_root)["meta"])
+def check_policies_bypass_has_expiry(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_errors(repo_root)["expiry"] + _bypass_errors(repo_root)["meta"])
+
+
+def check_policies_bypass_has_reason(repo_root: Path) -> tuple[int, list[str]]:
+    payload = collect_bypass_inventory(repo_root)
+    errors = list(_bypass_errors(repo_root)["justification"])
+    for row in payload.get("entries", []):
+        if not isinstance(row, dict) or not bool(row.get("requires_metadata", False)):
+            continue
+        just = str(row.get("justification", "")).strip().lower()
+        src = str(row.get("source", ""))
+        key = str(row.get("key", ""))
+        if just in {"because", "because needed", "temporary"} or just.startswith("because "):
+            errors.append(f"{src}:{key}: non-specific justification (`because`) is forbidden")
+    return _res(errors)
+
+
+def check_policies_bypass_has_ticket_or_doc_ref(repo_root: Path) -> tuple[int, list[str]]:
+    payload = collect_bypass_inventory(repo_root)
+    errors: list[str] = []
+    for row in payload.get("entries", []):
+        if not isinstance(row, dict) or not bool(row.get("requires_metadata", False)):
+            continue
+        issue = str(row.get("issue_id", "")).strip()
+        just = str(row.get("justification", "")).strip()
+        src = str(row.get("source", ""))
+        key = str(row.get("key", ""))
+        has_doc_ref = ("docs/" in just) or ("ADR-" in just) or ("policy:" in just.lower())
+        if not issue and not has_doc_ref:
+            errors.append(f"{src}:{key}: require issue_id or local doc reference in justification")
+    return _res(errors)
+
+
+def check_policies_bypass_budget_trend(repo_root: Path) -> tuple[int, list[str]]: return check_policies_bypass_budget(repo_root)
+def check_policies_bypass_inventory_schema_valid(repo_root: Path) -> tuple[int, list[str]]: return check_policies_bypass_schema_valid(repo_root)
+
+
+def check_policies_bypass_new_entries_forbidden(repo_root: Path) -> tuple[int, list[str]]:
+    baseline_path = repo_root / _BYPASS_COUNT_BASELINE
+    approvals_path = repo_root / "configs/policy/bypass-new-entry-approvals.json"
+    if not baseline_path.exists():
+        return 1, [f"missing baseline file: {_BYPASS_COUNT_BASELINE.as_posix()}"]
+    baseline = int(json.loads(baseline_path.read_text(encoding="utf-8")).get("max_entries", 0))
+    current = int(collect_bypass_inventory(repo_root).get("entry_count", 0))
+    approvals_payload = json.loads(approvals_path.read_text(encoding="utf-8")) if approvals_path.exists() else {"approvals": []}
+    approvals = approvals_payload.get("approvals", []) if isinstance(approvals_payload, dict) else []
+    if current <= baseline:
+        return 0, []
+    if not approvals:
+        return 1, [f"new bypass entries forbidden: current={current} baseline={baseline}; add explicit approvals in configs/policy/bypass-new-entry-approvals.json"]
+    return 0, []
+
+
+def check_policies_bypass_entry_paths_exist(repo_root: Path) -> tuple[int, list[str]]:
+    payload = collect_bypass_inventory(repo_root)
+    errors: list[str] = []
+    for row in payload.get("entries", []):
+        if not isinstance(row, dict):
+            continue
+        key = str(row.get("key", "")).strip()
+        src = str(row.get("source", "")).strip()
+        if "/" not in key or any(ch in key for ch in "*?[]"):
+            continue
+        candidate = repo_root / key
+        if not candidate.exists():
+            errors.append(f"{src}:{key}: referenced path does not exist")
+    return _res(errors)
+
+
+def check_policies_bypass_entry_matches_nothing(repo_root: Path) -> tuple[int, list[str]]:
+    payload = collect_bypass_inventory(repo_root)
+    files = [p.relative_to(repo_root).as_posix() for p in repo_root.rglob("*") if p.is_file()]
+    errors: list[str] = []
+    for row in payload.get("entries", []):
+        if not isinstance(row, dict):
+            continue
+        key = str(row.get("key", "")).strip()
+        src = str(row.get("source", "")).strip()
+        if not any(ch in key for ch in "*?[]"):
+            continue
+        if not any(fnmatch.fnmatch(path, key) for path in files):
+            errors.append(f"{src}:{key}: wildcard bypass matches no files")
+    return _res(errors)
+
+
+def check_policies_bypass_entry_matches_too_broad(repo_root: Path) -> tuple[int, list[str]]:
+    payload = collect_bypass_inventory(repo_root)
+    files = [p.relative_to(repo_root).as_posix() for p in repo_root.rglob("*") if p.is_file()]
+    errors: list[str] = []
+    for row in payload.get("entries", []):
+        if not isinstance(row, dict):
+            continue
+        key = str(row.get("key", "")).strip()
+        src = str(row.get("source", "")).strip()
+        if not any(ch in key for ch in "*?[]"):
+            continue
+        matches = [path for path in files if fnmatch.fnmatch(path, key)]
+        if len(matches) > 50:
+            errors.append(f"{src}:{key}: wildcard bypass matches too broadly ({len(matches)} files)")
+    return _res(errors)
