@@ -229,10 +229,10 @@ warm: ## Warm datasets + shards and record cache state
 	@./bin/atlasctl run ./ops/run/warm-dx.sh
 
 cache/status: ## Print cache status and budget policy checks
-	@CACHE_STATUS_STRICT=0 ./bin/atlasctl run ./ops/run/cache-status.sh
+	@./bin/atlasctl ops cache --report text status
 
 cache/prune: ## Prune local dataset/cache artifacts
-	@./bin/atlasctl run ./ops/run/cache-prune.sh
+	@./bin/atlasctl ops cache --report text prune
 
 tooling-versions: ## Print Rust + Python tooling versions (pinned + local)
 	@$(MAKE) -s internal/tooling-versions
@@ -577,7 +577,7 @@ isolate-clean: ## Remove isolate output directories safely
 
 clean: ## Safe clean for generated local outputs
 	@./bin/atlasctl cleanup --older-than "$${OLDER_THAN_DAYS:-14}"
-	@./ops/run/clean.sh
+	@./bin/atlasctl ops cache --report text prune
 
 clean-safe: ## Clean only safe generated make artifact directories
 	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts/clean_make_artifacts.py

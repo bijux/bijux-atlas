@@ -30,7 +30,7 @@ case "$dataset_profile" in
     ;;
   developer)
     # Developer profile prefers cache-first behavior and reports fetch plan.
-    ./ops/run/cache-status.sh --plan || true
+    ./bin/atlasctl ops cache --report text status --plan || true
     ;;
   *)
     echo "invalid ATLAS_DATASET_PROFILE=${dataset_profile} (expected ci|developer)" >&2

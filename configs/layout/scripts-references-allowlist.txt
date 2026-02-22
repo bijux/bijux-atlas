@@ -210,7 +210,6 @@ ops/obs/tests/test_prom_outage.sh
 ops/obs/tests/test_slo_burn_determinism.sh
 ops/obs/tests/test_toxiproxy_latency_drill.sh
 ops/report/incident_repro.sh
-ops/run/cache-status.sh
 ops/run/contract-report.py
 ops/run/datasets-verify.sh
 ops/run/deploy-atlas.sh

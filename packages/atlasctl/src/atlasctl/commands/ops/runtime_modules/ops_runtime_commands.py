@@ -456,6 +456,57 @@ def _ops_clean_generated(ctx: RunContext, report_format: str, force: bool) -> in
     return 0
 
 
+def _ops_cache_status(ctx: RunContext, report_format: str, strict: bool, plan: bool) -> int:
+    repo = ctx.repo_root
+    cmds: list[list[str]] = [
+        ["bash", "ops/datasets/scripts/sh/cache_status.sh"],
+        ["python3", "ops/datasets/scripts/py/cache_budget_check.py"],
+    ]
+    if strict:
+        cmds.append(["python3", "ops/datasets/scripts/py/cache_threshold_check.py"])
+    outputs: list[str] = []
+    for cmd in cmds:
+        result = run_command(cmd, repo, ctx=ctx)
+        if result.combined_output.strip():
+            outputs.append(result.combined_output.rstrip())
+        if result.code != 0:
+            return _emit_ops_status(report_format, result.code, "\n".join(outputs).strip())
+    if plan:
+        manifest = json.loads((repo / "ops/datasets/manifest.json").read_text(encoding="utf-8"))
+        missing: list[str] = []
+        present: list[str] = []
+        for ds in manifest.get("datasets", []):
+            if not isinstance(ds, dict):
+                continue
+            name = str(ds.get("name", ""))
+            dsid = str(ds.get("id", ""))
+            parts = dsid.split("/")
+            if len(parts) != 3:
+                continue
+            release, species, assembly = parts
+            store_dir = repo / "artifacts/e2e-store" / f"release={release}" / f"species={species}" / f"assembly={assembly}"
+            (present if store_dir.exists() else missing).append(name)
+        outputs.append("cache_plan_present=" + ",".join(present))
+        outputs.append("cache_plan_would_fetch=" + ",".join(missing))
+    return _emit_ops_status(report_format, 0, "\n".join(x for x in outputs if x).strip())
+
+
+def _ops_cache_prune(ctx: RunContext, report_format: str) -> int:
+    repo = ctx.repo_root
+    targets = [
+        repo / "artifacts/e2e-store",
+        repo / "artifacts/e2e-datasets",
+        repo / "artifacts/ops/cache-status",
+    ]
+    removed: list[str] = []
+    for target in targets:
+        if target.exists():
+            shutil.rmtree(target, ignore_errors=True)
+            removed.append(str(target.relative_to(repo)))
+    msg = "cache prune completed: " + (" ".join(removed) if removed else "nothing to remove")
+    return _emit_ops_status(report_format, 0, msg)
+
+
 
 
 

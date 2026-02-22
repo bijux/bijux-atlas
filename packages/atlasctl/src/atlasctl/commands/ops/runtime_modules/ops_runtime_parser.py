@@ -139,6 +139,14 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     load_compare.add_argument("--current", required=True)
     load_compare.add_argument("--out", default="artifacts/reports/atlasctl/ops-load-compare.json")
 
+    cache = ops_sub.add_parser("cache", help="ops cache status and prune commands")
+    cache.add_argument("--report", choices=["text", "json"], default="text")
+    cache_sub = cache.add_subparsers(dest="ops_cache_cmd", required=True)
+    cache_status = cache_sub.add_parser("status", help="run cache status checks and optional fetch plan")
+    cache_status.add_argument("--plan", action="store_true", help="print cache fetch plan")
+    cache_status.add_argument("--strict", action="store_true", help="enforce cache threshold check")
+    cache_sub.add_parser("prune", help="prune local dataset/cache artifacts")
+
     datasets = ops_sub.add_parser("datasets", help="ops dataset commands")
     datasets.add_argument("--report", choices=["text", "json"], default="text")
     datasets_sub = datasets.add_subparsers(dest="ops_datasets_cmd", required=True)
