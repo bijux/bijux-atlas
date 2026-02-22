@@ -245,6 +245,41 @@ def check_make_command_allowlist(repo_root: Path) -> tuple[int, list[str]]:
     return (0 if not violations else 1), violations
 
 
+def check_make_wrapper_target_budget(repo_root: Path) -> tuple[int, list[str]]:
+    budgets: dict[str, int] = {
+        "makefiles/dev.mk": 10,
+        "makefiles/docs.mk": 4,
+        "makefiles/ops.mk": 6,
+        "makefiles/ci.mk": 4,
+        "makefiles/policies.mk": 1,
+        "makefiles/scripts.mk": 2,
+        "makefiles/product.mk": 24,
+        "makefiles/layout.mk": 3,
+        "makefiles/registry.mk": 0,
+        "makefiles/python.mk": 1,
+        "makefiles/root.mk": 220,
+    }
+    target_re = re.compile(r"^(?P<target>[A-Za-z0-9_./-]+):(?:\s|$)")
+    errors: list[str] = []
+    for rel, max_targets in sorted(budgets.items()):
+        path = repo_root / rel
+        if not path.exists():
+            errors.append(f"{rel}: missing wrapper makefile for target budget check")
+            continue
+        count = 0
+        for line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
+            m = target_re.match(line)
+            if not m:
+                continue
+            target = m.group("target")
+            if target.startswith("internal/"):
+                continue
+            count += 1
+        if count > max_targets:
+            errors.append(f"{rel}: wrapper target budget exceeded ({count} > {max_targets})")
+    return (0 if not errors else 1), errors
+
+
 def check_layout_contract(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
 
