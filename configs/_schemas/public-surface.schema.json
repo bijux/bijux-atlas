@@ -9,6 +9,6 @@
     "make_target_prefixes": {"type": "array", "items": {"type": "string"}},
     "make_targets": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
     "core_targets": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
-    "ops_run_commands": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^ops/run/.+\\.sh$"}}
+    "ops_run_commands": {"type": "array", "minItems": 0, "items": {"type": "string", "minLength": 1}}
   }
 }

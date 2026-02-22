@@ -36,7 +36,7 @@ LINT_CHECKS: list[OpsCheck] = [
         "ops-run-entrypoints",
         "Ensure ops run entrypoints policy",
         ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/runtime/check_ops_run_entrypoints.py"],
-        "Route public ops entrypoints through ops/run/* wrappers.",
+        "Use atlasctl ops command surfaces; legacy ops/run wrappers (if any) must remain policy-compliant.",
     ),
     _check(
         "ops-shell-policy",
@@ -300,5 +300,4 @@ def _run_simple_cmd(ctx: RunContext, cmd: list[str], report_format: str) -> int:
     else:
         print(output)
     return code
-
 

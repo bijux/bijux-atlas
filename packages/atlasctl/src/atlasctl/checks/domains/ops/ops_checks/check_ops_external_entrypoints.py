@@ -22,7 +22,7 @@ def scan_file(path: Path) -> list[str]:
     errs: list[str] = []
     for m in PATTERN.finditer(text):
         lineno = text.count("\n", 0, m.start()) + 1
-        errs.append(f"{path.relative_to(ROOT)}:{lineno}: external reference must use ops/run/* -> `{m.group(0)}`")
+        errs.append(f"{path.relative_to(ROOT)}:{lineno}: external reference must use atlasctl ops or make wrapper, not raw script -> `{m.group(0)}`")
     return errs
 
 

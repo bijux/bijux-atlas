@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Purpose: enforce ops run entrypoint wrapper contract and guard usage.
-# Inputs: ops/run/*.sh wrappers.
-# Outputs: non-zero exit on missing common bootstrap or forbidden direct network calls.
+# Inputs: legacy ops/run/*.sh wrappers (if present).
+# Outputs: non-zero exit on malformed legacy wrappers; passes when ops/run is retired.
 import re
 import sys
 from pathlib import Path
@@ -27,6 +27,10 @@ for script in sorted(RUN_DIR.glob("*.sh")):
             continue
         if re.search(rf"(^|[^\w-]){re.escape(cmd)}\s", text):
             errors.append(f"{script}: direct network/tool call `{cmd}` not allowed in ops/run wrappers")
+
+if not RUN_DIR.exists():
+    print("ops run entrypoint contract passed (ops/run retired)")
+    sys.exit(0)
 
 if errors:
     print("ops run entrypoint contract failed", file=sys.stderr)
