@@ -157,7 +157,6 @@ Generated from `configs/ops/public-surface.json`. Do not edit manually.
 - `./ops/run/k8s-suite.sh`
 - `./ops/run/load-suite.sh`
 - `./ops/run/report.sh`
-- `./ops/run/artifacts-open.sh`
 - `./ops/run/clean.sh`
 - `./ops/run/ci-fast.sh`
 - `./ops/run/ci-nightly.sh`

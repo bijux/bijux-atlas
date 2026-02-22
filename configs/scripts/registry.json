@@ -10,7 +10,6 @@
     {"path": "ops/k8s/tests/checks/rollout/test_kind_version_drift.sh", "owner": "ops", "description": "kind version drift contract test"},
     {"path": "ops/obs/scripts/run_drill.sh", "owner": "ops", "description": "observability drill runner"},
     {"path": "ops/obs/scripts/install_pack.sh", "owner": "ops", "description": "observability pack install helper"},
-    {"path": "ops/run/artifacts-open.sh", "owner": "ops", "description": "open local artifacts"},
     {"path": "ops/run/contract-check.sh", "owner": "ops", "description": "ops contract check wrapper"},
     {"path": "ops/run/datasets-verify.sh", "owner": "ops", "description": "dataset verification wrapper"},
     {"path": "ops/run/deploy-atlas.sh", "owner": "ops", "description": "deploy atlas helper"},

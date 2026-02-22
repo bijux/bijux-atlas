@@ -16,7 +16,7 @@ Classification legend:
 
 | Script | Class | Status | Future atlasctl command / home |
 |---|---|---:|---|
-| `ops/run/artifacts-open.sh` | glue | planned | `atlasctl artifacts open` (or `atlasctl ops artifacts open`) |
+| `ops/run/artifacts-open.sh` | glue | deleted (atlasctl-native) | `atlasctl ops artifacts open` |
 | `ops/run/cache-prune.sh` | glue | planned | `atlasctl ops cache prune` |
 | `ops/run/cache-status.sh` | glue | planned | `atlasctl ops cache status` |
 | `ops/run/ci-fast.sh` | glue | planned | `atlasctl ci fast` |
@@ -32,7 +32,7 @@ Classification legend:
 | `ops/run/e2e-smoke.sh` | glue | deleted (folded into `ops/run/e2e.sh`) | `atlasctl ops e2e run --scenario smoke` |
 | `ops/run/e2e.sh` | glue | planned | `atlasctl ops e2e run` |
 | `ops/run/evidence-bundle.sh` | logic | planned | `atlasctl reporting bundle evidence` |
-| `ops/run/evidence-open.sh` | glue | planned | `atlasctl artifacts open` |
+| `ops/run/evidence-open.sh` | glue | deleted (unused wrapper) | `make evidence/open` / `atlasctl reporting artifact-index` |
 | `ops/run/k8s-apply-config.sh` | logic | planned | `atlasctl ops k8s apply-config` |
 | `ops/run/k8s-restart.sh` | glue | planned | `atlasctl ops restart` / `atlasctl ops stack restart` |
 | `ops/run/k8s-suite.sh` | glue | planned | `atlasctl k8s suite` / `atlasctl ops k8s suite` |
