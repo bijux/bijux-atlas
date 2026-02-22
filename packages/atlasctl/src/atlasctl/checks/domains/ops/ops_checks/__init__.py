@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime as dt
 import re
 import json
 from pathlib import Path
@@ -11,6 +12,51 @@ from ....repo.native import (
     check_tracked_timestamp_paths,
 )
 from ....core.base import CheckDef
+
+_OPS_RUN_TEMP_APPROVALS = Path("configs/policy/ops-run-temp-script-approvals.json")
+_ISSUE_ID_RE = re.compile(r"^ISSUE-[A-Z0-9-]+$")
+
+
+def _load_ops_run_temp_approvals(repo_root: Path) -> tuple[list[dict[str, object]], list[str]]:
+    path = repo_root / _OPS_RUN_TEMP_APPROVALS
+    if not path.exists():
+        return [], [f"missing {_OPS_RUN_TEMP_APPROVALS.as_posix()}"]
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        return [], [f"{_OPS_RUN_TEMP_APPROVALS.as_posix()}: invalid json: {exc}"]
+    approvals = payload.get("approvals", [])
+    if not isinstance(approvals, list):
+        return [], [f"{_OPS_RUN_TEMP_APPROVALS.as_posix()}: `approvals` must be a list"]
+    rows: list[dict[str, object]] = []
+    errors: list[str] = []
+    today = dt.date.today()
+    for idx, item in enumerate(approvals):
+        if not isinstance(item, dict):
+            errors.append(f"{_OPS_RUN_TEMP_APPROVALS.as_posix()}: approvals[{idx}] must be an object")
+            continue
+        script = str(item.get("script", "")).strip()
+        owner = str(item.get("owner", "")).strip()
+        issue = str(item.get("issue_id", "")).strip()
+        reason = str(item.get("reason", "")).strip()
+        expiry = str(item.get("expiry", "")).strip()
+        if not script.startswith("ops/run/"):
+            errors.append(f"{_OPS_RUN_TEMP_APPROVALS.as_posix()}: approvals[{idx}].script must start with ops/run/")
+        if not owner:
+            errors.append(f"{_OPS_RUN_TEMP_APPROVALS.as_posix()}: approvals[{idx}].owner is required")
+        if not _ISSUE_ID_RE.match(issue):
+            errors.append(f"{_OPS_RUN_TEMP_APPROVALS.as_posix()}: approvals[{idx}].issue_id invalid (`{issue}`)")
+        if not reason:
+            errors.append(f"{_OPS_RUN_TEMP_APPROVALS.as_posix()}: approvals[{idx}].reason is required")
+        try:
+            exp_date = dt.date.fromisoformat(expiry)
+        except ValueError:
+            errors.append(f"{_OPS_RUN_TEMP_APPROVALS.as_posix()}: approvals[{idx}].expiry must be YYYY-MM-DD")
+            exp_date = None
+        if exp_date is not None and exp_date < today:
+            errors.append(f"{_OPS_RUN_TEMP_APPROVALS.as_posix()}: approvals[{idx}] expired on {expiry}")
+        rows.append(item)
+    return rows, errors
 
 
 def check_ops_manifests_schema(repo_root: Path) -> tuple[int, list[str]]:
@@ -251,19 +297,21 @@ def check_ops_run_only_allowlisted_scripts(repo_root: Path) -> tuple[int, list[s
         "OWNER.md",
         "README.md",
     }
-    # Transitional allowlist: product wrappers have been migrated and should be removable soon.
-    transitional_prefixes = {
-        "root/",
-        "product/",
+    approvals, approval_errors = _load_ops_run_temp_approvals(repo_root)
+    approved_scripts = {
+        str(item.get("script", "")).removeprefix("ops/run/").strip()
+        for item in approvals
+        if isinstance(item, dict)
     }
     errors: list[str] = []
+    errors.extend(approval_errors)
     for path in sorted(run_dir.rglob("*")):
         if path.is_dir():
             continue
         rel = path.relative_to(run_dir).as_posix()
         if rel in allowlisted:
             continue
-        if any(rel.startswith(prefix) for prefix in transitional_prefixes):
+        if rel in approved_scripts:
             continue
         if path.suffix not in {".sh", ".py"}:
             continue
@@ -275,10 +323,14 @@ def check_ops_run_non_executable_unless_allowlisted(repo_root: Path) -> tuple[in
     run_dir = repo_root / "ops" / "run"
     if not run_dir.exists():
         return 1, ["missing ops/run directory"]
+    approvals, approval_errors = _load_ops_run_temp_approvals(repo_root)
     executable_allowlist = {
-        "prereqs.sh",  # transitional
+        str(item.get("script", "")).removeprefix("ops/run/").strip()
+        for item in approvals
+        if isinstance(item, dict)
     }
     errors: list[str] = []
+    errors.extend(approval_errors)
     for path in sorted(run_dir.rglob("*")):
         if not path.is_file() or path.suffix not in {".sh", ".py"}:
             continue
@@ -288,6 +340,18 @@ def check_ops_run_non_executable_unless_allowlisted(repo_root: Path) -> tuple[in
         if is_exec and rel not in executable_allowlist:
             errors.append(f"ops/run/{rel}: executable bit forbidden (allowlist only)")
     return (0 if not errors else 1), errors
+
+
+def check_ops_run_temp_script_approvals(repo_root: Path) -> tuple[int, list[str]]:
+    approvals, errors = _load_ops_run_temp_approvals(repo_root)
+    run_dir = repo_root / "ops" / "run"
+    for item in approvals:
+        script = str(item.get("script", "")).strip()
+        if not script:
+            continue
+        if not (repo_root / script).exists():
+            errors.append(f"{_OPS_RUN_TEMP_APPROVALS.as_posix()}: approved script missing on disk (`{script}`)")
+    return (0 if not errors else 1), sorted(errors)
 
 
 CHECKS: tuple[CheckDef, ...] = (
@@ -307,4 +371,5 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("ops.scripts_count_nonincreasing", "ops", "enforce migration gate: ops scripts count must not increase", 1000, check_ops_scripts_count_nonincreasing, fix_hint="Reduce ops scripts count or intentionally update baseline in one reviewed change."),
     CheckDef("ops.run_only_allowlisted_scripts", "ops", "ops/run contains no scripts except explicitly allowed fixtures", 1000, check_ops_run_only_allowlisted_scripts, fix_hint="Migrate behavior into atlasctl and delete ops/run scripts or extend transitional allowlist intentionally."),
     CheckDef("ops.run_non_executable_unless_allowlisted", "ops", "ops/run scripts must be non-executable except allowlisted", 1000, check_ops_run_non_executable_unless_allowlisted, fix_hint="Remove executable bits from ops/run scripts after migration, or update allowlist intentionally."),
+    CheckDef("ops.run_temp_script_approvals", "ops", "temporary ops/run migration script approvals must be valid and unexpired", 1000, check_ops_run_temp_script_approvals, fix_hint="Keep configs/policy/ops-run-temp-script-approvals.json entries valid, justified, and unexpired."),
 )
