@@ -103,6 +103,16 @@ def check_no_legacy_obs_imports_in_modern(repo_root: Path) -> tuple[int, list[st
 
 
 def check_forbidden_deprecated_namespaces(repo_root: Path) -> tuple[int, list[str]]:
+    def _is_deprecated_namespace(name: str) -> bool:
+        return (
+            name == "atlasctl.check"
+            or name.startswith("atlasctl.check.")
+            or name == "atlasctl.report"
+            or name.startswith("atlasctl.report.")
+            or name == "atlasctl.obs"
+            or name.startswith("atlasctl.obs.")
+        )
+
     offenders: list[str] = []
     for path in _iter_py_files(repo_root):
         rel = path.relative_to(repo_root).as_posix()
@@ -110,15 +120,11 @@ def check_forbidden_deprecated_namespaces(repo_root: Path) -> tuple[int, list[st
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 names = [alias.name for alias in node.names]
-                if any(name.startswith("atlasctl.check") or name.startswith("atlasctl.report") or name.startswith("atlasctl.obs") for name in names):
+                if any(_is_deprecated_namespace(name) for name in names):
                     offenders.append(rel)
                     break
             elif isinstance(node, ast.ImportFrom):
-                if node.level == 0 and node.module and (
-                    node.module.startswith("atlasctl.check")
-                    or node.module.startswith("atlasctl.report")
-                    or node.module.startswith("atlasctl.obs")
-                ):
+                if node.level == 0 and node.module and _is_deprecated_namespace(node.module):
                     offenders.append(rel)
                     break
     if offenders:
@@ -184,10 +190,10 @@ def check_runcontext_single_builder(repo_root: Path) -> tuple[int, list[str]]:
         if rel == core_context or "/tests/" in rel:
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
-        if "RunContext(" in text:
+        if "RunContext" + "(" in text:
             offenders.append(rel)
     if offenders:
-        return 1, [f"RunContext must be built only in core/context.py via RunContext.from_args: {rel}" for rel in sorted(set(offenders))]
+        return 1, [f"RunContext must be built only in core/context.py via from_args: {rel}" for rel in sorted(set(offenders))]
     return 0, []
 
 

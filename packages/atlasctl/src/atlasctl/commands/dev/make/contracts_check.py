@@ -7,8 +7,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable
 
-import atlasctl.checks.layout.docs.check_ci_targets_documented  # noqa: F401
-
 from ....core.context import RunContext
 from ....core.fs import ensure_evidence_path
 
@@ -224,7 +222,7 @@ CHECKS: list[MakeCheck] = [
     _check(
         "cargo-dev-metadata",
         "Validate cargo-dev metadata consistency",
-        "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/policies/check_cargo_dev_metadata.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/check_cargo_dev_metadata.py",
         "Align cargo-dev metadata with declared make targets.",
     ),
     _check(
@@ -236,7 +234,7 @@ CHECKS: list[MakeCheck] = [
     _check(
         "cargo-invocation-scope",
         "Validate cargo invocation scoping",
-        "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/policies/check_cargo_invocations_scoped.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/check_cargo_invocations_scoped.py",
         "Use lane wrappers to scope cargo invocations correctly.",
     ),
     _check(

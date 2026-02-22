@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import subprocess
 import sys
 from pathlib import Path
+
+from atlasctl.core.exec import run
 
 ROOT = Path(__file__).resolve().parents[6]
 REQUIRED = {
@@ -20,7 +21,7 @@ def changed_files() -> set[str]:
         ["git", "diff", "--name-only", "HEAD~1", "HEAD"],
     ]
     for cmd in cmds:
-        proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, check=False)
+        proc = run(cmd, cwd=ROOT, capture_output=True, text=True, check=False)
         if proc.returncode != 0:
             continue
         for line in proc.stdout.splitlines():
@@ -38,7 +39,7 @@ def main() -> int:
     missing = sorted(r for r in REQUIRED if r not in changed)
     if missing:
         # If companion files are unchanged, allow only when regeneration is a no-op.
-        regen = subprocess.run(
+        regen = run(
             ["python3", "-m", "atlasctl.cli", "docs", "generate-make-targets-catalog", "--report", "text"],
             cwd=ROOT,
             capture_output=True,
@@ -46,7 +47,7 @@ def main() -> int:
             check=False,
         )
         if regen.returncode == 0:
-            drift = subprocess.run(
+            drift = run(
                 ["git", "diff", "--name-only", "--", "makefiles/targets.json", "docs/_generated/make-targets.md"],
                 cwd=ROOT,
                 capture_output=True,

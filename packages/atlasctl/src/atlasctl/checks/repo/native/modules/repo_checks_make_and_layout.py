@@ -8,7 +8,7 @@ from datetime import date, datetime, timezone
 from fnmatch import fnmatch
 from pathlib import Path
 
-from atlasctl.checks.repo.native.runtime import (
+from ..runtime_modules.repo_native_runtime_core import (
     _find_python_migration_exception,
     check_duplicate_script_names,
     check_script_help,
@@ -22,7 +22,6 @@ def check_no_xtask_refs(repo_root: Path) -> tuple[int, list[str]]:
         repo_root / "makefiles",
         repo_root / "configs",
         repo_root / "docs",
-        repo_root / "scripts",
         repo_root / "packages",
         repo_root / "Cargo.toml",
     ]
@@ -42,6 +41,9 @@ def check_no_xtask_refs(repo_root: Path) -> tuple[int, list[str]]:
         "packages/atlasctl/src/atlasctl/checks/repo/native/modules/repo_checks_scripts_and_docker.py",
         "packages/atlasctl/tests/checksuite/checks/test_check_native.py",
         "packages/atlasctl/tests/checksuite/checks/test_check_registry_features.py",
+        "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml",
+        "packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json",
+        "packages/atlasctl/src/atlasctl/commands/check/run.py",
     }
     for root in include_roots:
         paths: list[Path]

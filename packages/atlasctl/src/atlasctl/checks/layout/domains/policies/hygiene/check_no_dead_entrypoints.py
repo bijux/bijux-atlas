@@ -2,9 +2,10 @@
 from __future__ import annotations
 
 import re
-import subprocess
 import sys
 from pathlib import Path
+
+from atlasctl.core.exec import run
 
 ROOT = Path(__file__).resolve().parents[6]
 DOCS = ROOT / "docs"
@@ -16,7 +17,7 @@ SHELL_MAKE_RE = re.compile(r"(?:^|[;&|]\s*|\s)(?:\$\((?:MAKE)\)|make)\s+([^\n#]+
 
 
 def load_make_targets() -> set[str]:
-    proc = subprocess.run(["make", "-qp"], cwd=ROOT, text=True, capture_output=True, check=False)
+    proc = run(["make", "-qp"], cwd=ROOT, text=True, capture_output=True, check=False)
     targets: set[str] = set()
     for line in proc.stdout.splitlines():
         if ":" not in line or line.startswith("\t") or line.startswith("#"):
