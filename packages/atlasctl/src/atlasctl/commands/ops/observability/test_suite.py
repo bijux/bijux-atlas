@@ -45,8 +45,12 @@ def main(argv: list[str] | None = None) -> int:
     suite, extra = _parse(args)
     tests = _suite_tests(suite)
     for t in tests:
-        target = TESTS_DIR / t
-        proc = subprocess.run(['bash', str(target), *extra], cwd=ROOT)
+        if t.endswith(".py") or t.startswith("packages/"):
+            target = ROOT / t
+            proc = subprocess.run(["python3", str(target), *extra], cwd=ROOT)
+        else:
+            target = TESTS_DIR / t
+            proc = subprocess.run(["bash", str(target), *extra], cwd=ROOT)
         if proc.returncode != 0:
             return proc.returncode
     print(f'obs suite passed: {suite}')
