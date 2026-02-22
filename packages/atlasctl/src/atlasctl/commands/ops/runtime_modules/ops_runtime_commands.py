@@ -789,19 +789,26 @@ def _ops_obs_verify(ctx: RunContext, report_format: str, suite: str, extra_args:
 
 
 def _ops_undeploy_native(ctx: RunContext, report_format: str) -> int:
-    script = """
-set -euo pipefail
-. ./ops/_lib/common.sh
-ops_init_run_id
-ops_env_load
-ops_entrypoint_start "ops-undeploy"
-ops_version_guard helm
-ns="${ATLAS_E2E_NAMESPACE:-${ATLAS_NS:-$(ops_layer_ns_e2e)}}"
-release="${ATLAS_E2E_RELEASE_NAME:-$(ops_layer_contract_get release_metadata.defaults.release_name)}"
-ops_helm -n "$ns" uninstall "$release" >/dev/null 2>&1 || true
-echo "undeploy complete: release=$release namespace=$ns"
-"""
-    return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
+    repo = ctx.repo_root
+    outputs: list[str] = []
+
+    if shutil.which("helm") is None:
+        return _emit_ops_status(report_format, 1, "missing required tool: helm")
+
+    layer_contract = json.loads((repo / "ops/_meta/layer-contract.json").read_text(encoding="utf-8"))
+    namespaces = layer_contract.get("namespaces", {}) if isinstance(layer_contract, dict) else {}
+    release_meta = layer_contract.get("release_metadata", {}) if isinstance(layer_contract, dict) else {}
+    defaults = release_meta.get("defaults", {}) if isinstance(release_meta, dict) else {}
+
+    ns = os.environ.get("ATLAS_E2E_NAMESPACE") or os.environ.get("ATLAS_NS") or str(namespaces.get("e2e", "atlas-e2e"))
+    release = os.environ.get("ATLAS_E2E_RELEASE_NAME") or str(defaults.get("release_name", "atlas-e2e"))
+
+    result = run_command(["helm", "-n", ns, "uninstall", release], repo, ctx=ctx)
+    if result.combined_output.strip():
+        outputs.append(result.combined_output.rstrip())
+    outputs.append(f"undeploy complete: release={release} namespace={ns}")
+    # Preserve previous behavior: uninstall failures were ignored.
+    return _emit_ops_status(report_format, 0, "\n".join(outputs).strip())
 
 
 def _ops_k8s_restart_native(ctx: RunContext, report_format: str) -> int:
