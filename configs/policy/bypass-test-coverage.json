@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "kind": "bypass-test-coverage",
+  "coverage": [
+    {
+      "source": "configs/policy/policy-relaxations.json",
+      "tests": [
+        "packages/atlasctl/tests/policysuite/policies/test_policies_check_command.py"
+      ],
+      "entry_keys": ["*"]
+    },
+    {
+      "source": "configs/policy/layer-relaxations.json",
+      "tests": [
+        "packages/atlasctl/tests/policysuite/policies/test_policies_check_command.py"
+      ],
+      "entry_keys": ["*"]
+    },
+    {
+      "source": "configs/policy/ops-lint-relaxations.json",
+      "tests": [
+        "packages/atlasctl/tests/cmdsuite/commands/policies/test_configs_policies_command.py"
+      ],
+      "entry_keys": ["*"]
+    },
+    {
+      "source": "configs/policy/layer-live-diff-allowlist.json",
+      "tests": [
+        "packages/atlasctl/tests/policysuite/policies/test_policies_check_command.py"
+      ],
+      "entry_keys": ["*"]
+    },
+    {
+      "source": "configs/policy/effect-boundary-exceptions.json",
+      "tests": [
+        "packages/atlasctl/tests/policysuite/repo/boundaries/test_import_policy_checks.py"
+      ],
+      "entry_keys": ["*"]
+    },
+    {
+      "source": "configs/policy/dead-modules-allowlist.json",
+      "tests": [
+        "packages/atlasctl/tests/cmdsuite/commands/policies/test_configs_policies_command.py"
+      ],
+      "entry_keys": ["*"]
+    },
+    {
+      "source": "configs/policy/dependency-exceptions.json",
+      "tests": [
+        "packages/atlasctl/tests/policysuite/repo/boundaries/test_import_policy_checks.py"
+      ],
+      "entry_keys": ["*"]
+    },
+    {
+      "source": "configs/policy/budget-relaxations.json",
+      "tests": [
+        "packages/atlasctl/tests/policysuite/policies/test_budget_handlers_and_errors.py",
+        "packages/atlasctl/tests/policysuite/policies/test_budget_report_output.py"
+      ],
+      "entry_keys": ["*"]
+    },
+    {
+      "source": "configs/policy/ops-smoke-budget-relaxations.json",
+      "tests": [
+        "packages/atlasctl/tests/cmdsuite/commands/policies/test_configs_policies_command.py"
+      ],
+      "entry_keys": ["*"]
+    },
+    {
+      "source": "configs/policy/pin-relaxations.json",
+      "tests": [
+        "packages/atlasctl/tests/cmdsuite/commands/policies/test_configs_policies_command.py"
+      ],
+      "entry_keys": ["*"]
+    },
+    {
+      "source": "configs/policy/check-filename-allowlist.json",
+      "tests": [
+        "packages/atlasctl/tests/checksuite/checks/test_check_command.py"
+      ],
+      "entry_keys": ["*"]
+    },
+    {
+      "source": "configs/policy/slow-checks-ratchet.json",
+      "tests": [
+        "packages/atlasctl/tests/checksuite/checks/test_check_run_output.py"
+      ],
+      "entry_keys": ["*"]
+    },
+    {
+      "source": "configs/policy/forbidden-adjectives-allowlist.txt",
+      "tests": [
+        "packages/atlasctl/tests/policysuite/repo/hygiene/test_naming_hygiene_checks.py"
+      ],
+      "entry_keys": ["*"]
+    },
+    {
+      "source": "configs/policy/shell-network-fetch-allowlist.txt",
+      "tests": [
+        "packages/atlasctl/tests/policysuite/repo/boundaries/test_shell_policy_checks.py"
+      ],
+      "entry_keys": ["*"]
+    },
+    {
+      "source": "configs/policy/shell-probes-allowlist.txt",
+      "tests": [
+        "packages/atlasctl/tests/policysuite/repo/boundaries/test_shell_policy_checks.py"
+      ],
+      "entry_keys": ["*"]
+    },
+    {
+      "source": "configs/layout/make-command-allowlist.txt",
+      "tests": [
+        "packages/atlasctl/tests/checksuite/checks/test_check_native.py"
+      ],
+      "entry_keys": ["*"]
+    },
+    {
+      "source": "configs/security/audit-allowlist.toml",
+      "tests": [
+        "packages/atlasctl/tests/policysuite/repo/hygiene/test_repo_hardening_checks.py"
+      ],
+      "entry_keys": ["*"]
+    }
+  ]
+}
