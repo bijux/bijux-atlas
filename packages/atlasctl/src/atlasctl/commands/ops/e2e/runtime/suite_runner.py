@@ -1,30 +1,31 @@
 from __future__ import annotations
 
+import json
+import os
+from pathlib import Path
 import subprocess
 import sys
 
-SCRIPT = r'''set -euo pipefail
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[7]
+
+
+def _load_layer_defaults(root: Path) -> tuple[str, str]:
+    contract = json.loads((root / "ops/_meta/layer-contract.json").read_text(encoding="utf-8"))
+    namespaces = contract.get("namespaces", {}) if isinstance(contract, dict) else {}
+    defaults = contract.get("release_metadata", {}).get("defaults", {}) if isinstance(contract, dict) else {}
+    ns_e2e = str(namespaces.get("e2e", "atlas-e2e"))
+    release_name = str(defaults.get("release_name", "atlas-e2e"))
+    return ns_e2e, release_name
+
+
+def _script(root: Path, default_ns_e2e: str, default_release: str) -> str:
+    template = r'''set -euo pipefail
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
 cd "$ROOT"
-LAYER_CONTRACT="${ATLAS_LAYER_CONTRACT_PATH:-$ROOT/ops/_meta/layer-contract.json}"
-ops_layer_contract_get() {
-  local key="$1"
-  python3 - "$key" "$LAYER_CONTRACT" <<'PY'
-import json, sys
-key = sys.argv[1]
-path = sys.argv[2]
-obj = json.load(open(path, encoding='utf-8'))
-cur = obj
-for part in key.split('.'):
-    if isinstance(cur, dict) and part in cur:
-        cur = cur[part]
-    else:
-        raise SystemExit(f"missing key: {key}")
-print(json.dumps(cur, sort_keys=True) if isinstance(cur, (dict, list)) else cur)
-PY
-}
-ops_layer_ns_e2e() { ops_layer_contract_get "namespaces.e2e"; }
+DEFAULT_E2E_NAMESPACE="__DEFAULT_E2E_NAMESPACE__"
+DEFAULT_RELEASE_NAME="__DEFAULT_RELEASE_NAME__"
 ops_context_guard() {
   local profile="${1:-kind}"
   if [ "${I_KNOW_WHAT_I_AM_DOING:-0}" = "1" ] || [ "${ALLOW_NON_KIND:-0}" = "1" ]; then return 0; fi
@@ -133,25 +134,25 @@ check_capability() {
       command -v kubectl >/dev/null 2>&1 || { echo "missing capability: kubectl" >&2; return 1; }
       ;;
     stack)
-      kubectl get ns "${ATLAS_E2E_NAMESPACE:-$(ops_layer_ns_e2e)}" >/dev/null 2>&1 || {
+      kubectl get ns "${ATLAS_E2E_NAMESPACE:-$DEFAULT_E2E_NAMESPACE}" >/dev/null 2>&1 || {
         echo "missing stack capability: namespace not present" >&2
         return 1
       }
       ;;
     obs)
-      if [ "${ATLAS_E2E_ENABLE_OTEL:-0}" != "1" ] && ! kubectl -n "${ATLAS_E2E_NAMESPACE:-$(ops_layer_ns_e2e)}" get deploy/otel-collector >/dev/null 2>&1; then
+      if [ "${ATLAS_E2E_ENABLE_OTEL:-0}" != "1" ] && ! kubectl -n "${ATLAS_E2E_NAMESPACE:-$DEFAULT_E2E_NAMESPACE}" get deploy/otel-collector >/dev/null 2>&1; then
         echo "missing obs capability: set ATLAS_E2E_ENABLE_OTEL=1 or deploy otel-collector" >&2
         return 1
       fi
       ;;
     toxiproxy)
-      if [ "${ATLAS_E2E_ENABLE_TOXIPROXY:-0}" != "1" ] && ! kubectl -n "${ATLAS_E2E_NAMESPACE:-$(ops_layer_ns_e2e)}" get deploy/toxiproxy >/dev/null 2>&1; then
+      if [ "${ATLAS_E2E_ENABLE_TOXIPROXY:-0}" != "1" ] && ! kubectl -n "${ATLAS_E2E_NAMESPACE:-$DEFAULT_E2E_NAMESPACE}" get deploy/toxiproxy >/dev/null 2>&1; then
         echo "missing toxiproxy capability: set ATLAS_E2E_ENABLE_TOXIPROXY=1 or deploy toxiproxy" >&2
         return 1
       fi
       ;;
     redis)
-      if [ "${ATLAS_E2E_ENABLE_REDIS:-0}" != "1" ] && ! kubectl -n "${ATLAS_E2E_NAMESPACE:-$(ops_layer_ns_e2e)}" get deploy/redis >/dev/null 2>&1; then
+      if [ "${ATLAS_E2E_ENABLE_REDIS:-0}" != "1" ] && ! kubectl -n "${ATLAS_E2E_NAMESPACE:-$DEFAULT_E2E_NAMESPACE}" get deploy/redis >/dev/null 2>&1; then
         echo "missing redis capability: set ATLAS_E2E_ENABLE_REDIS=1 or deploy redis" >&2
         return 1
       fi
@@ -306,11 +307,21 @@ if [ "$STATUS" != "pass" ]; then
   exit 1
 fi
 '''
+    return (
+        template
+        .replace("__DEFAULT_E2E_NAMESPACE__", default_ns_e2e.replace('"', '\\"'))
+        .replace("__DEFAULT_RELEASE_NAME__", default_release.replace('"', '\\"'))
+    )
 
 
 def main() -> int:
     args = sys.argv[1:]
-    return subprocess.call(["bash", "-lc", SCRIPT, "--", *args])
+    root = _repo_root()
+    default_ns_e2e, default_release = _load_layer_defaults(root)
+    os.environ.setdefault("ATLAS_E2E_NAMESPACE", default_ns_e2e)
+    os.environ.setdefault("ATLAS_E2E_RELEASE_NAME", default_release)
+    script = _script(root, default_ns_e2e, default_release)
+    return subprocess.call(["bash", "-lc", script, "--", *args], cwd=root)
 
 
 if __name__ == '__main__':
