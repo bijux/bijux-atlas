@@ -9,7 +9,7 @@
         {
           "id": "api-smoke",
           "description": "Run canonical API smoke queries and emit smoke report.",
-          "runner": "ops/e2e/scripts/smoke_queries.sh && python3 ops/e2e/smoke/generate_report.py",
+          "runner": "ops/e2e/scripts/smoke_queries.sh && python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/smoke/generate_report.py",
           "capabilities": ["stack"],
           "destructive": false,
           "budget": {

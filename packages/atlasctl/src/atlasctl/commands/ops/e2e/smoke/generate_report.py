@@ -9,7 +9,15 @@ import os
 import datetime as dt
 from pathlib import Path
 
-root = Path(__file__).resolve().parents[2]
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for parent in cur.parents:
+        if all((parent / marker).exists() for marker in ("makefiles", "packages", "configs", "ops")):
+            return parent
+    raise RuntimeError("unable to resolve repo root")
+
+
+root = _repo_root()
 run_id = os.environ.get("OPS_RUN_ID") or os.environ.get("ATLAS_RUN_ID") or "local"
 run_dir = Path(os.environ.get("OPS_RUN_DIR", root / "artifacts" / "ops" / run_id))
 smoke = run_dir / "smoke"
