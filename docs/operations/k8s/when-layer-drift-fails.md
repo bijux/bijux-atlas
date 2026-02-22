@@ -13,7 +13,7 @@ Ensures fixes are made in the owning layer instead of masked by downstream fixup
 ## Contracts
 
 Use this order to fix correctly:
-1. If chart/rendered resources changed intentionally, update the SSOT contract (`ops/_meta/generate_layer_contract.py`) and commit generated diffs.
+1. If chart/rendered resources changed intentionally, update the SSOT contract (`packages/atlasctl/src/atlasctl/commands/ops/meta/generate_layer_contract.py`) and commit generated diffs.
 2. If drift is unintentional, fix the source layer that owns it (chart/templates or stack setup), not e2e/k8s test fixups.
 3. Run `make ops/contract-check` and inspect `layer-drift-triage.json` in the contract-check artifacts.
 4. For unavoidable drift with explicit expiry, add a scoped exception in `configs/policy/layer-live-diff-allowlist.json` with owner, issue, and expiry.

@@ -1,5 +1,5 @@
 # Legacy Python files allowed outside packages/atlasctl package.
-ops/_meta/generate_layer_contract.py
+packages/atlasctl/src/atlasctl/commands/ops/meta/generate_layer_contract.py
 ops/load/reports/generate.py
 packages/atlasctl/src/atlasctl/commands/ops/observability/check_metric_cardinality.py
 packages/atlasctl/src/atlasctl/commands/ops/observability/compute_slo_burn.py
