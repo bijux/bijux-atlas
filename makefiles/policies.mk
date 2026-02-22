@@ -100,8 +100,8 @@ culprits-atlasctl-max_loc:
 
 culprits-atlasctl-max_depth:
 	@root="packages/atlasctl/src/atlasctl"; \
-	out=$$(find "$$root" -type f \( -name "*.py" -o -name "*.json" -o -name "*.md" \) -print0 \
-	| xargs -0 -I{} sh -c 'p="{}"; d=$$(printf "%s\n" "$$p" | awk -F/ "{print NF}"); echo "$$d $$p"' \
+	out=$$(find "$$root" -type f \( -name "*.py" -o -name "*.json" -o -name "*.md" \) ! -path "*/__pycache__/*" -print0 \
+	| xargs -0 -I{} sh -c 'p="{}"; rel=$${p#'"$$root"'/}; d=$$(printf "%s\n" "$$rel" | awk -F/ "{print NF}"); echo "$$d $$p"' \
 	| sort -n \
 	| awk '$$1 > 8'); \
 	if [ -n "$$out" ]; then \
