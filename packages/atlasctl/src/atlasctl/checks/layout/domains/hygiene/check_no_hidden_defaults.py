@@ -17,9 +17,9 @@ allowed = {
     ("stack-up.sh", "ATLAS_KIND_REGISTRY_ENABLE"),
 }
 extra_allowed = {
-    ("ops/k8s/scripts/clean_uninstall.sh", "ATLAS_E2E_NAMESPACE"),
-    ("ops/k8s/scripts/clean_uninstall.sh", "ATLAS_NS"),
-    ("ops/k8s/scripts/clean_uninstall.sh", "ATLAS_E2E_RELEASE_NAME"),
+    ("packages/atlasctl/src/atlasctl/commands/ops/k8s/clean_uninstall.py", "ATLAS_E2E_NAMESPACE"),
+    ("packages/atlasctl/src/atlasctl/commands/ops/k8s/clean_uninstall.py", "ATLAS_NS"),
+    ("packages/atlasctl/src/atlasctl/commands/ops/k8s/clean_uninstall.py", "ATLAS_E2E_RELEASE_NAME"),
 }
 for p in sorted((ROOT / "ops/run").glob("*.sh")):
     t = p.read_text(encoding="utf-8")
