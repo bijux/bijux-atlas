@@ -363,6 +363,30 @@ def check_ops_no_new_run_scripts_without_approval_and_expiry(repo_root: Path) ->
     return (0 if not errs else 1), sorted(set(errs))
 
 
+
+
+def _run_ops_script_check(repo_root: Path, script_rel: str) -> tuple[int, list[str]]:
+    path = repo_root / script_rel
+    if not path.exists():
+        return 1, [f"missing {script_rel}"]
+    if path.suffix == ".py":
+        cmd = ["python3", script_rel]
+    elif path.suffix == ".sh":
+        cmd = ["bash", script_rel]
+    else:
+        return 1, [f"unsupported check script type: {script_rel}"]
+    proc = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
+    output = ((proc.stdout or "") + "\n" + (proc.stderr or "")).strip()
+    rows = [line for line in output.splitlines() if line.strip()]
+    return proc.returncode, rows
+
+
+def _make_ops_script_check(script_rel: str):
+    def _check(repo_root: Path) -> tuple[int, list[str]]:
+        return _run_ops_script_check(repo_root, script_rel)
+    _check.__name__ = "check_" + re.sub(r"[^a-z0-9]+", "_", script_rel.lower()).strip("_")
+    return _check
+
 def check_ops_obs_drift_goldens(repo_root: Path) -> tuple[int, list[str]]:
     scripts = [
         ["python3", "ops/obs/scripts/contracts/check_profile_goldens.py"],
@@ -424,6 +448,59 @@ def check_ops_clean_allowed_roots_only(repo_root: Path) -> tuple[int, list[str]]
     return (0 if not errors else 1), errors
 
 
+_OPS_SCRIPT_CHECKS: tuple[tuple[str, str, str, callable], ...] = (
+    ("ops.script.ops_lint_check_surfaces_py", "run ops script check `ops/_lint/check-surfaces.py`", "ops/_lint/check-surfaces.py", _make_ops_script_check("ops/_lint/check-surfaces.py")),
+    ("ops.script.ops_lint_check_layer_contract_drift_py", "run ops script check `ops/_lint/check_layer_contract_drift.py`", "ops/_lint/check_layer_contract_drift.py", _make_ops_script_check("ops/_lint/check_layer_contract_drift.py")),
+    ("ops.script.ops_lint_lane_budget_check_py", "run ops script check `ops/_lint/lane-budget-check.py`", "ops/_lint/lane-budget-check.py", _make_ops_script_check("ops/_lint/lane-budget-check.py")),
+    ("ops.script.ops_lint_layout_check_layer_contract_drift_py", "run ops script check `ops/_lint/layout/check_layer_contract_drift.py`", "ops/_lint/layout/check_layer_contract_drift.py", _make_ops_script_check("ops/_lint/layout/check_layer_contract_drift.py")),
+    ("ops.script.ops_lint_ops_smoke_budget_check_py", "run ops script check `ops/_lint/ops-smoke-budget-check.py`", "ops/_lint/ops-smoke-budget-check.py", _make_ops_script_check("ops/_lint/ops-smoke-budget-check.py")),
+    ("ops.script.ops_lint_policy_lane_budget_check_py", "run ops script check `ops/_lint/policy/lane-budget-check.py`", "ops/_lint/policy/lane-budget-check.py", _make_ops_script_check("ops/_lint/policy/lane-budget-check.py")),
+    ("ops.script.ops_lint_policy_ops_smoke_budget_check_py", "run ops script check `ops/_lint/policy/ops-smoke-budget-check.py`", "ops/_lint/policy/ops-smoke-budget-check.py", _make_ops_script_check("ops/_lint/policy/ops-smoke-budget-check.py")),
+    ("ops.script.ops_datasets_scripts_py_cache_budget_check_py", "run ops script check `ops/datasets/scripts/py/cache_budget_check.py`", "ops/datasets/scripts/py/cache_budget_check.py", _make_ops_script_check("ops/datasets/scripts/py/cache_budget_check.py")),
+    ("ops.script.ops_datasets_scripts_py_cache_threshold_check_py", "run ops script check `ops/datasets/scripts/py/cache_threshold_check.py`", "ops/datasets/scripts/py/cache_threshold_check.py", _make_ops_script_check("ops/datasets/scripts/py/cache_threshold_check.py")),
+    ("ops.script.ops_load_scripts_check_abuse_scenarios_required_py", "run ops script check `ops/load/scripts/check_abuse_scenarios_required.py`", "ops/load/scripts/check_abuse_scenarios_required.py", _make_ops_script_check("ops/load/scripts/check_abuse_scenarios_required.py")),
+    ("ops.script.ops_load_scripts_check_baseline_update_policy_sh", "run ops script check `ops/load/scripts/check_baseline_update_policy.sh`", "ops/load/scripts/check_baseline_update_policy.sh", _make_ops_script_check("ops/load/scripts/check_baseline_update_policy.sh")),
+    ("ops.script.ops_load_scripts_check_perf_baselines_py", "run ops script check `ops/load/scripts/check_perf_baselines.py`", "ops/load/scripts/check_perf_baselines.py", _make_ops_script_check("ops/load/scripts/check_perf_baselines.py")),
+    ("ops.script.ops_load_scripts_check_pinned_queries_lock_py", "run ops script check `ops/load/scripts/check_pinned_queries_lock.py`", "ops/load/scripts/check_pinned_queries_lock.py", _make_ops_script_check("ops/load/scripts/check_pinned_queries_lock.py")),
+    ("ops.script.ops_load_scripts_check_prereqs_sh", "run ops script check `ops/load/scripts/check_prereqs.sh`", "ops/load/scripts/check_prereqs.sh", _make_ops_script_check("ops/load/scripts/check_prereqs.sh")),
+    ("ops.script.ops_load_scripts_check_regression_py", "run ops script check `ops/load/scripts/check_regression.py`", "ops/load/scripts/check_regression.py", _make_ops_script_check("ops/load/scripts/check_regression.py")),
+    ("ops.script.ops_load_scripts_check_runbook_suite_names_py", "run ops script check `ops/load/scripts/check_runbook_suite_names.py`", "ops/load/scripts/check_runbook_suite_names.py", _make_ops_script_check("ops/load/scripts/check_runbook_suite_names.py")),
+    ("ops.script.ops_load_scripts_regression_check_py", "run ops script check `ops/load/scripts/regression_check.py`", "ops/load/scripts/regression_check.py", _make_ops_script_check("ops/load/scripts/regression_check.py")),
+    ("ops.script.ops_obs_scripts_check_metric_cardinality_py", "run ops script check `ops/obs/scripts/check_metric_cardinality.py`", "ops/obs/scripts/check_metric_cardinality.py", _make_ops_script_check("ops/obs/scripts/check_metric_cardinality.py")),
+    ("ops.script.ops_obs_scripts_check_pack_upgrade_sh", "run ops script check `ops/obs/scripts/check_pack_upgrade.sh`", "ops/obs/scripts/check_pack_upgrade.sh", _make_ops_script_check("ops/obs/scripts/check_pack_upgrade.sh")),
+    ("ops.script.ops_obs_scripts_check_pack_versions_sh", "run ops script check `ops/obs/scripts/check_pack_versions.sh`", "ops/obs/scripts/check_pack_versions.sh", _make_ops_script_check("ops/obs/scripts/check_pack_versions.sh")),
+    ("ops.script.ops_obs_scripts_contracts_check_alerts_contract_py", "run ops script check `ops/obs/scripts/contracts/check_alerts_contract.py`", "ops/obs/scripts/contracts/check_alerts_contract.py", _make_ops_script_check("ops/obs/scripts/contracts/check_alerts_contract.py")),
+    ("ops.script.ops_obs_scripts_contracts_check_dashboard_contract_py", "run ops script check `ops/obs/scripts/contracts/check_dashboard_contract.py`", "ops/obs/scripts/contracts/check_dashboard_contract.py", _make_ops_script_check("ops/obs/scripts/contracts/check_dashboard_contract.py")),
+    ("ops.script.ops_obs_scripts_contracts_check_dashboard_metric_compat_py", "run ops script check `ops/obs/scripts/contracts/check_dashboard_metric_compat.py`", "ops/obs/scripts/contracts/check_dashboard_metric_compat.py", _make_ops_script_check("ops/obs/scripts/contracts/check_dashboard_metric_compat.py")),
+    ("ops.script.ops_obs_scripts_contracts_check_endpoint_metrics_coverage_py", "run ops script check `ops/obs/scripts/contracts/check_endpoint_metrics_coverage.py`", "ops/obs/scripts/contracts/check_endpoint_metrics_coverage.py", _make_ops_script_check("ops/obs/scripts/contracts/check_endpoint_metrics_coverage.py")),
+    ("ops.script.ops_obs_scripts_contracts_check_endpoint_trace_coverage_py", "run ops script check `ops/obs/scripts/contracts/check_endpoint_trace_coverage.py`", "ops/obs/scripts/contracts/check_endpoint_trace_coverage.py", _make_ops_script_check("ops/obs/scripts/contracts/check_endpoint_trace_coverage.py")),
+    ("ops.script.ops_obs_scripts_contracts_check_metrics_contract_py", "run ops script check `ops/obs/scripts/contracts/check_metrics_contract.py`", "ops/obs/scripts/contracts/check_metrics_contract.py", _make_ops_script_check("ops/obs/scripts/contracts/check_metrics_contract.py")),
+    ("ops.script.ops_obs_scripts_contracts_check_metrics_coverage_py", "run ops script check `ops/obs/scripts/contracts/check_metrics_coverage.py`", "ops/obs/scripts/contracts/check_metrics_coverage.py", _make_ops_script_check("ops/obs/scripts/contracts/check_metrics_coverage.py")),
+    ("ops.script.ops_obs_scripts_contracts_check_metrics_drift_py", "run ops script check `ops/obs/scripts/contracts/check_metrics_drift.py`", "ops/obs/scripts/contracts/check_metrics_drift.py", _make_ops_script_check("ops/obs/scripts/contracts/check_metrics_drift.py")),
+    ("ops.script.ops_obs_scripts_contracts_check_metrics_golden_py", "run ops script check `ops/obs/scripts/contracts/check_metrics_golden.py`", "ops/obs/scripts/contracts/check_metrics_golden.py", _make_ops_script_check("ops/obs/scripts/contracts/check_metrics_golden.py")),
+    ("ops.script.ops_obs_scripts_contracts_check_obs_budgets_py", "run ops script check `ops/obs/scripts/contracts/check_obs_budgets.py`", "ops/obs/scripts/contracts/check_obs_budgets.py", _make_ops_script_check("ops/obs/scripts/contracts/check_obs_budgets.py")),
+    ("ops.script.ops_obs_scripts_contracts_check_observability_lag_py", "run ops script check `ops/obs/scripts/contracts/check_observability_lag.py`", "ops/obs/scripts/contracts/check_observability_lag.py", _make_ops_script_check("ops/obs/scripts/contracts/check_observability_lag.py")),
+    ("ops.script.ops_obs_scripts_contracts_check_overload_behavior_contract_py", "run ops script check `ops/obs/scripts/contracts/check_overload_behavior_contract.py`", "ops/obs/scripts/contracts/check_overload_behavior_contract.py", _make_ops_script_check("ops/obs/scripts/contracts/check_overload_behavior_contract.py")),
+    ("ops.script.ops_obs_scripts_contracts_check_profile_goldens_py", "run ops script check `ops/obs/scripts/contracts/check_profile_goldens.py`", "ops/obs/scripts/contracts/check_profile_goldens.py", _make_ops_script_check("ops/obs/scripts/contracts/check_profile_goldens.py")),
+    ("ops.script.ops_obs_scripts_contracts_check_runtime_metrics_py", "run ops script check `ops/obs/scripts/contracts/check_runtime_metrics.py`", "ops/obs/scripts/contracts/check_runtime_metrics.py", _make_ops_script_check("ops/obs/scripts/contracts/check_runtime_metrics.py")),
+    ("ops.script.ops_obs_scripts_contracts_check_trace_coverage_py", "run ops script check `ops/obs/scripts/contracts/check_trace_coverage.py`", "ops/obs/scripts/contracts/check_trace_coverage.py", _make_ops_script_check("ops/obs/scripts/contracts/check_trace_coverage.py")),
+    ("ops.script.ops_obs_scripts_contracts_check_trace_golden_py", "run ops script check `ops/obs/scripts/contracts/check_trace_golden.py`", "ops/obs/scripts/contracts/check_trace_golden.py", _make_ops_script_check("ops/obs/scripts/contracts/check_trace_golden.py")),
+    ("ops.script.ops_obs_scripts_contracts_check_tracing_contract_py", "run ops script check `ops/obs/scripts/contracts/check_tracing_contract.py`", "ops/obs/scripts/contracts/check_tracing_contract.py", _make_ops_script_check("ops/obs/scripts/contracts/check_tracing_contract.py")),
+    ("ops.script.ops_stack_scripts_idempotency_check_sh", "run ops script check `ops/stack/scripts/idempotency_check.sh`", "ops/stack/scripts/idempotency_check.sh", _make_ops_script_check("ops/stack/scripts/idempotency_check.sh")),
+    ("ops.script.ops_stack_tests_check_live_layer_snapshot_py", "run ops script check `ops/stack/tests/check_live_layer_snapshot.py`", "ops/stack/tests/check_live_layer_snapshot.py", _make_ops_script_check("ops/stack/tests/check_live_layer_snapshot.py")),
+    ("ops.script.ops_vendor_layout_checks_check_artifacts_allowlist_sh", "run ops script check `ops/vendor/layout-checks/check_artifacts_allowlist.sh`", "ops/vendor/layout-checks/check_artifacts_allowlist.sh", _make_ops_script_check("ops/vendor/layout-checks/check_artifacts_allowlist.sh")),
+    ("ops.script.ops_vendor_layout_checks_check_artifacts_policy_sh", "run ops script check `ops/vendor/layout-checks/check_artifacts_policy.sh`", "ops/vendor/layout-checks/check_artifacts_policy.sh", _make_ops_script_check("ops/vendor/layout-checks/check_artifacts_policy.sh")),
+    ("ops.script.ops_vendor_layout_checks_check_kind_cluster_contract_drift_sh", "run ops script check `ops/vendor/layout-checks/check_kind_cluster_contract_drift.sh`", "ops/vendor/layout-checks/check_kind_cluster_contract_drift.sh", _make_ops_script_check("ops/vendor/layout-checks/check_kind_cluster_contract_drift.sh")),
+    ("ops.script.ops_vendor_layout_checks_check_no_root_dumping_sh", "run ops script check `ops/vendor/layout-checks/check_no_root_dumping.sh`", "ops/vendor/layout-checks/check_no_root_dumping.sh", _make_ops_script_check("ops/vendor/layout-checks/check_no_root_dumping.sh")),
+    ("ops.script.ops_vendor_layout_checks_check_ops_canonical_shims_sh", "run ops script check `ops/vendor/layout-checks/check_ops_canonical_shims.sh`", "ops/vendor/layout-checks/check_ops_canonical_shims.sh", _make_ops_script_check("ops/vendor/layout-checks/check_ops_canonical_shims.sh")),
+    ("ops.script.ops_vendor_layout_checks_check_ops_lib_canonical_sh", "run ops script check `ops/vendor/layout-checks/check_ops_lib_canonical.sh`", "ops/vendor/layout-checks/check_ops_lib_canonical.sh", _make_ops_script_check("ops/vendor/layout-checks/check_ops_lib_canonical.sh")),
+    ("ops.script.ops_vendor_layout_checks_check_ops_script_targets_sh", "run ops script check `ops/vendor/layout-checks/check_ops_script_targets.sh`", "ops/vendor/layout-checks/check_ops_script_targets.sh", _make_ops_script_check("ops/vendor/layout-checks/check_ops_script_targets.sh")),
+    ("ops.script.ops_vendor_layout_checks_check_ops_stack_order_sh", "run ops script check `ops/vendor/layout-checks/check_ops_stack_order.sh`", "ops/vendor/layout-checks/check_ops_stack_order.sh", _make_ops_script_check("ops/vendor/layout-checks/check_ops_stack_order.sh")),
+    ("ops.script.ops_vendor_layout_checks_check_ops_workspace_sh", "run ops script check `ops/vendor/layout-checks/check_ops_workspace.sh`", "ops/vendor/layout-checks/check_ops_workspace.sh", _make_ops_script_check("ops/vendor/layout-checks/check_ops_workspace.sh")),
+    ("ops.script.ops_vendor_layout_checks_check_repo_hygiene_sh", "run ops script check `ops/vendor/layout-checks/check_repo_hygiene.sh`", "ops/vendor/layout-checks/check_repo_hygiene.sh", _make_ops_script_check("ops/vendor/layout-checks/check_repo_hygiene.sh")),
+    ("ops.script.ops_vendor_layout_checks_check_stack_manifest_consolidation_sh", "run ops script check `ops/vendor/layout-checks/check_stack_manifest_consolidation.sh`", "ops/vendor/layout-checks/check_stack_manifest_consolidation.sh", _make_ops_script_check("ops/vendor/layout-checks/check_stack_manifest_consolidation.sh")),
+)
+
 CHECKS: tuple[CheckDef, ...] = (
     CheckDef("ops.no_tracked_generated", "ops", "forbid tracked files in generated ops dirs", 800, check_ops_generated_tracked, fix_hint="Untrack generated ops files."),
     CheckDef("ops.generated_not_tracked_unless_allowed", "ops", "forbid tracked generated ops outputs unless explicitly allowlisted", 800, check_ops_generated_not_tracked_unless_allowed, fix_hint="Keep generated outputs untracked or move to committed generated roots."),
@@ -446,4 +523,8 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("ops.obs_drift_goldens", "ops", "fail on observability golden drift (generated vs golden)", 1000, check_ops_obs_drift_goldens, fix_hint="Regenerate/fix observability goldens and contracts."),
     CheckDef("ops.chart_version_contract", "ops", "enforce chart/app version contract for bijux-atlas chart", 1000, check_ops_chart_version_contract, fix_hint="Keep Chart.yaml version and appVersion present, semver, and aligned."),
     CheckDef("ops.clean_allowed_roots_only", "ops", "ensure ops clean only targets allowed generated roots", 1000, check_ops_clean_allowed_roots_only, fix_hint="Restrict ops clean to ops/_generated child deletion only."),
+    *(
+        CheckDef(check_id, "ops", description, 1000, fn, fix_hint=f"Fix failures in `{script_rel}` or replace it with atlasctl-native check logic.")
+        for (check_id, description, script_rel, fn) in _OPS_SCRIPT_CHECKS
+    ),
 )
