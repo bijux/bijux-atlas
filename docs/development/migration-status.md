@@ -16,4 +16,4 @@ Use machine output from `atlasctl migration status --json` as the source for mig
 
 - Migration gate enforces remaining-script budget using `configs/policy/migration_exceptions.json`.
 - Any expired migration exception fails the gate.
-- Docs and Makefiles must not reference `scripts/` paths.
+- Docs and Makefiles must not reference legacy script-tree paths.

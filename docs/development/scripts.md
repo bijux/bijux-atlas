@@ -8,7 +8,7 @@ Repository script taxonomy, contracts, and contribution rules.
 
 ## Taxonomy
 
-- `scripts/areas/public/`: only make-callable script entrypoints.
+- legacy public shell wrappers: only make-callable entrypoints.
 - Domain buckets are exposed through `atlasctl` command groups (`docs`, `contracts`, `layout`, `fixtures`, `release`, `ops`, `bootstrap`) and thin `bin/` shims only.
 
 ## Contracts

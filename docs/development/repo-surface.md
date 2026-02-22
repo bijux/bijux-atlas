@@ -21,7 +21,7 @@ Does not freeze internal implementation details.
 ## Contracts
 
 - Stable make targets: [`makefiles/surface.md`](makefiles/surface.md)
-- Script interfaces: [`scripts/INDEX.md`](scripts/INDEX.md)
+- Script interfaces: [Scripts Overview](scripts.md)
 - SSOT contracts: [`../contracts/INDEX.md`](../contracts/INDEX.md)
 - Root layout SSOT:
   - Allowlist source: `packages/atlasctl/src/atlasctl/checks/layout/root_whitelist.json`.
@@ -62,5 +62,5 @@ Expected output: all checks pass.
 
 - [Development Index](INDEX.md)
 - [Repository Layout](repo-layout.md)
-- [Scripts Index](scripts/INDEX.md)
+- [Scripts Overview](scripts.md)
 - [Contracts Index](../contracts/INDEX.md)

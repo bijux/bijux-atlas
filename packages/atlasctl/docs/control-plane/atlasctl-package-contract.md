@@ -42,7 +42,9 @@ Every gate writes under `artifacts/reports/...`.
 Every gate must respect isolation env vars (for example `ISO_ROOT`, `ISO_TAG`, `ISO_RUN_ID`).
 
 11. Forbidden wording policy:
-Do not use blocked wording listed in `configs/policy/forbidden-adjectives.json` unless explicitly approved in `configs/policy/forbidden-adjectives-approvals.json`.
+Do not use blocked wording listed in
+`configs/policy/forbidden-adjectives.json` unless explicitly approved in
+`configs/policy/forbidden-adjectives-approvals.json`.
 
 ## Enforcement
 - Contract checks must fail CI on wrapper impurity or ownership coverage gaps.

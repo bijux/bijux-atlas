@@ -25,7 +25,7 @@ List and maintain links to section pages in this directory.
 
 - [Makefiles Surface](makefiles/surface.md)
 - [Make Targets](make-targets.md)
-- [Scripts Index](scripts/INDEX.md)
+- [Scripts Index](scripts.md)
 - [Scripts Governance](scripts.md)
 - [atlasctl Tooling](tooling/atlasctl.md)
 - [Python Version Policy](tooling/python-version-policy.md)

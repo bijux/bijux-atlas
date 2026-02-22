@@ -22,7 +22,7 @@ Prevents root sprawl and keeps navigation and automation predictable.
 - `docs/`: documentation site source.
 - `makefiles/`: make target implementations.
 - `ops/`: canonical operations assets.
-- `scripts/`: internal automation scripts.
+- legacy script-tree paths: internal automation shims.
 - `packages/atlasctl/`: code generation and automation CLI package.
 
 ## Failure modes

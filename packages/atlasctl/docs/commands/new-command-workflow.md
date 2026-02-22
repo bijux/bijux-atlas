@@ -7,7 +7,7 @@
 4. Add/extend tests for command behavior and JSON schema validation.
 5. Update `packages/atlasctl/docs/commands/index.md` for stable commands.
 6. Regenerate goldens only through:
-   `./bin/atlasctl gen goldens`
+   `./bin/atlasctl registry checks-index`
 7. Run command-surface checks:
-   `./bin/atlasctl commands lint --json`
-   and `./bin/atlasctl commands --json --verify-stability`.
+   `./bin/atlasctl check run --group repo --id checks_repo_commands_surface_stability`
+   and `./bin/atlasctl list commands --json`.

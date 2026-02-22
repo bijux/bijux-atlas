@@ -6,7 +6,11 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 
 - [Architecture](architecture.md)
 - [Naming Conventions](architecture/naming-conventions.md)
+- [Command Inventory](_generated/commands-inventory.md)
 - [Control Plane](control-plane/index.md)
+- [DEV/CI Surface](control-plane/dev-ci-surface.md)
+- [Atlasctl Package Contract](control-plane/atlasctl-package-contract.md)
+- [Atlasctl Package Structure](control-plane/atlasctl-package-structure.md)
 - [Control Plane Surface](control-plane/surface.md)
 - [Control Plane Execution Model](control-plane/execution-model.md)
 - [Module Taxonomy](control-plane/taxonomy.md)

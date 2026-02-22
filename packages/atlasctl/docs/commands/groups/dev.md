@@ -15,6 +15,8 @@ Commands mapped to `dev` effects policy.
 - `lint`
 - `list`
 - `make`
+- `owners`
+- `packages`
 - `registry`
 - `release`
 - `repo`
@@ -36,6 +38,8 @@ Commands mapped to `dev` effects policy.
 - `atlasctl lint run --report json`
 - `atlasctl list checks --json`
 - `atlasctl make lint --json`
+- `atlasctl owners list`
+- `atlasctl packages --json`
 - `atlasctl registry list --json`
 - `atlasctl release checklist --plan --json`
 - `atlasctl repo stats --json`
