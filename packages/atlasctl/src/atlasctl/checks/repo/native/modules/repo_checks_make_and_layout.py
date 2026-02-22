@@ -3,10 +3,11 @@ from __future__ import annotations
 import json
 import os
 import re
-import subprocess
 from datetime import date, datetime, timezone
 from fnmatch import fnmatch
 from pathlib import Path
+
+from atlasctl.core.exec import run
 
 from ..runtime_modules.repo_native_runtime_core import (
     _find_python_migration_exception,
@@ -74,8 +75,8 @@ def check_no_xtask_refs(repo_root: Path) -> tuple[int, list[str]]:
 
 def check_make_help(repo_root: Path) -> tuple[int, list[str]]:
     cmd = ["make", "-s", "help"]
-    p1 = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
-    p2 = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
+    p1 = run(cmd, cwd=repo_root, text=True, capture_output=True)
+    p2 = run(cmd, cwd=repo_root, text=True, capture_output=True)
     if p1.returncode != 0 or p2.returncode != 0:
         return 1, ["`make -s help` failed while validating help output"]
     if p1.stdout != p2.stdout:
@@ -121,7 +122,7 @@ def check_make_no_direct_python_script_invocations(repo_root: Path) -> tuple[int
 
 def _git_ls_files(repo_root: Path, pathspecs: list[str]) -> list[str]:
     cmd = ["git", "ls-files", "--", *pathspecs]
-    proc = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
+    proc = run(cmd, cwd=repo_root, text=True, capture_output=True)
     if proc.returncode != 0:
         return []
     return [line.strip() for line in proc.stdout.splitlines() if line.strip()]

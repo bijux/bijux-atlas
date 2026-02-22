@@ -20,3 +20,9 @@ def run_dir_root_path(repo_root: Path, evidence_root: Path, configured: str | No
         return evidence_root
     raw = Path(configured)
     return (repo_root / raw).resolve() if not raw.is_absolute() else raw.resolve()
+
+
+def write_text_file(path: Path, content: str, *, encoding: str = "utf-8") -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding=encoding)
+    return path

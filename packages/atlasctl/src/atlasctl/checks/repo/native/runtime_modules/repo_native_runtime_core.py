@@ -3,11 +3,12 @@ from __future__ import annotations
 import json
 import os
 import re
-import subprocess
 from dataclasses import dataclass
 from datetime import date, datetime, timezone
 from fnmatch import fnmatch
 from pathlib import Path
+
+from atlasctl.core.exec import run
 
 @dataclass(frozen=True)
 class PythonMigrationException:
@@ -64,7 +65,7 @@ def check_script_help(repo_root: Path) -> tuple[int, list[str]]:
         if not p.exists():
             errors.append(f"missing help-gated script: {p.relative_to(repo_root)}")
             continue
-        proc = subprocess.run([str(p), "--help"], cwd=repo_root, text=True, capture_output=True, check=False)
+        proc = run([str(p), "--help"], cwd=repo_root, text=True, capture_output=True)
         out = (proc.stdout or "") + (proc.stderr or "")
         if proc.returncode != 0:
             errors.append(f"{p.relative_to(repo_root)}: --help exited {proc.returncode}")
@@ -153,7 +154,7 @@ def check_no_adhoc_python(repo_root: Path) -> tuple[int, list[str]]:
         for line in allowlist.read_text(encoding="utf-8").splitlines()
         if line.strip() and not line.strip().startswith("#")
     }
-    proc = subprocess.run(["git", "ls-files", "*.py"], cwd=repo_root, check=False, text=True, capture_output=True)
+    proc = run(["git", "ls-files", "*.py"], cwd=repo_root, text=True, capture_output=True)
     errors: list[str] = []
     for rel in sorted(ln.strip() for ln in proc.stdout.splitlines() if ln.strip()):
         if rel.startswith("packages/atlasctl/"):
@@ -333,4 +334,3 @@ def check_script_write_roots(repo_root: Path) -> tuple[int, list[str]]:
                 continue
             errors.append(f"{rel}: {target}")
     return (0 if not errors else 1), errors
-

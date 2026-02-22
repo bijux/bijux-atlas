@@ -21,7 +21,7 @@ def changed_files() -> set[str]:
         ["git", "diff", "--name-only", "HEAD~1", "HEAD"],
     ]
     for cmd in cmds:
-        proc = run(cmd, cwd=ROOT, capture_output=True, text=True, check=False)
+        proc = run(cmd, cwd=ROOT, capture_output=True, text=True)
         if proc.returncode != 0:
             continue
         for line in proc.stdout.splitlines():
@@ -44,7 +44,6 @@ def main() -> int:
             cwd=ROOT,
             capture_output=True,
             text=True,
-            check=False,
         )
         if regen.returncode == 0:
             drift = run(
@@ -52,7 +51,6 @@ def main() -> int:
                 cwd=ROOT,
                 capture_output=True,
                 text=True,
-                check=False,
             )
             if drift.returncode == 0 and not drift.stdout.strip():
                 print("root diff alarm check passed")
