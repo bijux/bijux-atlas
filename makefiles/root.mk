@@ -15,7 +15,6 @@ ATLAS_INCLUDE_SCRIPTS ?= 0
 ifeq ($(ATLAS_INCLUDE_SCRIPTS),1)
 include makefiles/scripts.mk
 endif
-include makefiles/path_contract.mk
 include makefiles/registry.mk
 include makefiles/help.mk
 include makefiles/layout.mk
