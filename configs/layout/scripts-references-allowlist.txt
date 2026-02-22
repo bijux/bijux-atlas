@@ -211,7 +211,6 @@ ops/obs/tests/test_slo_burn_determinism.sh
 ops/obs/tests/test_toxiproxy_latency_drill.sh
 ops/report/incident_repro.sh
 ops/run/contract-report.py
-ops/run/datasets-verify.sh
 ops/run/deploy-atlas.sh
 ops/run/doctor.sh
 ops/run/load-suite.sh

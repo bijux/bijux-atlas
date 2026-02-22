@@ -266,7 +266,7 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _run_wrapped(ctx, OrchestrateSpec("e2e", ns.e2e_cmd, mapping[ns.e2e_cmd]), ns.report)
     if ns.cmd == "datasets":
         mapping = {
-            "verify": ["bash", "ops/run/datasets-verify.sh"],
+            "verify": ["./bin/atlasctl", "ops", "datasets", "--report", "text", "verify"],
             "fetch": ["bash", "ops/run/warm.sh"],
             "pin": ["python3", "packages/atlasctl/src/atlasctl/datasets/build_manifest_lock.py"],
         }

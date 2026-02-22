@@ -25,6 +25,11 @@ def _write_json_report(repo_root: Path, out_rel: str, payload: dict[str, object]
         return out.as_posix()
 
 
+def _run_check(cmd: list[str], repo_root: Path) -> tuple[int, str]:
+    result = run_command(cmd, repo_root)
+    return result.code, result.combined_output
+
+
 def _ops_k8s_render_summary(repo_root: Path, env_name: str, run_id: str) -> dict[str, object]:
     manifest_path = repo_root / "ops" / "k8s" / "tests" / "manifest.json"
     payload = json.loads(manifest_path.read_text(encoding="utf-8"))

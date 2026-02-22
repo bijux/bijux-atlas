@@ -18,7 +18,6 @@ Single executable script surface for ops commands.
 - `ops/run/k8s-validate-configmap-keys.sh`
 - `ops/run/obs-up.sh`
 - `ops/run/obs-verify.sh`
-- `ops/run/datasets-verify.sh`
 - `ops/run/e2e.sh`
 - `ops/run/load-suite.sh`
 
