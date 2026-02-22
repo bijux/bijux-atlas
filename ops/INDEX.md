@@ -37,7 +37,6 @@
 - `ops/run/report.sh`
 - `ops/run/root-lanes.sh`
 - `ops/run/root-local.sh`
-- `ops/run/warm.sh`
 - `ops/run/warm-entrypoint.sh`
 - `ops/run/warm-dx.sh`
 - `ops/run/configmap-drift-report.sh`
