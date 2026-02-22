@@ -1,7 +1,7 @@
 {
   "budgets": [
     {
-      "detail": "failed=8 total=10",
+      "detail": "failed=5 total=8",
       "name": "all-lanes-green",
       "status": "fail"
     },
@@ -16,14 +16,14 @@
       "status": "fail"
     }
   ],
-  "generated_at": "2026-02-22T01:39:01.103203+00:00",
-  "run_id": "atlas-ops-20260222-013510",
+  "generated_at": "2026-02-22T17:49:51.443033+00:00",
+  "run_id": "atlas-ops-20260222-174402",
   "schema_version": 1,
   "score": 0,
   "status": "fail",
   "summary": {
-    "failed": 8,
-    "passed": 2,
-    "total": 10
+    "failed": 5,
+    "passed": 3,
+    "total": 8
   }
 }
