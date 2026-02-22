@@ -508,7 +508,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             return impl._ops_e2e_run_native(ctx, ns.report, str(suite))
         if ns.ops_cmd == "load" and sub == "run":
             suite = getattr(ns, "suite", "mixed-80-20")
-            return impl._run_simple_cmd(ctx, ["env", f"SUITE={suite}", *shell_script_command("ops/run/load-suite.sh")], ns.report)
+            return impl._ops_load_run_native(ctx, ns.report, str(suite))
         if ns.ops_cmd == "load" and sub == "check":
             return impl._run_simple_cmd(ctx, [*impl.SELF_CLI, "load", "smoke"], ns.report)
         if ns.ops_cmd == "load" and sub == "compare":

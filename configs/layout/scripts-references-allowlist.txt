@@ -213,7 +213,6 @@ ops/report/incident_repro.sh
 ops/run/contract-report.py
 ops/run/deploy-atlas.sh
 ops/run/doctor.sh
-ops/run/load-suite.sh
 ops/run/ops-check.sh
 ops/run/prereqs.sh
 ops/run/root-lanes.sh

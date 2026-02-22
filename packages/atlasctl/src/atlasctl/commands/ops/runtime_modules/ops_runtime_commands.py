@@ -732,6 +732,34 @@ exec ./ops/e2e/runner/suite.sh --suite "{suite}"
     return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
 
 
+def _ops_load_run_native(ctx: RunContext, report_format: str, suite: str) -> int:
+    suite_norm = "mixed" if suite == "mixed-80-20" else suite
+    script = f"""
+set -euo pipefail
+. ./ops/_lib/common.sh
+ops_init_run_id
+ops_env_load
+ops_entrypoint_start "ops-load-suite"
+PROFILE="${{PROFILE:-kind}}"
+ops_context_guard "$PROFILE"
+ops_version_guard k6
+SUITE="{suite_norm}"
+OUT="${{OUT:-artifacts/perf/results}}"
+start="$(date +%s)"
+log_dir="artifacts/evidence/load-suite/${{RUN_ID}}"
+mkdir -p "$log_dir"
+log_file="$log_dir/run.log"
+status="pass"
+if ! ./ops/load/scripts/run_suite.sh "${{SUITE}}.json" "$OUT" >"$log_file" 2>&1; then
+  status="fail"
+fi
+end="$(date +%s)"
+ops_write_lane_report "load-suite" "${{RUN_ID}}" "${{status}}" "$((end - start))" "$log_file" "artifacts/evidence" >/dev/null
+[ "$status" = "pass" ] || exit 1
+"""
+    return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
+
+
 
 
 

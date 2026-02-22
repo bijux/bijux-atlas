@@ -247,7 +247,7 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.cmd == "load":
         mapping = {
             "smoke": ["make", "ops-load-smoke"],
-            "suite": ["bash", "ops/run/load-suite.sh"],
+            "suite": ["./bin/atlasctl", "ops", "load", "--report", "text", "run"],
             "baseline-compare": [
                 "python3",
                 "packages/atlasctl/src/atlasctl/load/baseline/compare_runs.py",
