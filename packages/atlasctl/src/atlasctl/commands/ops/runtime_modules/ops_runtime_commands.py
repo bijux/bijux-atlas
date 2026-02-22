@@ -521,26 +521,29 @@ def _ops_cache_prune(ctx: RunContext, report_format: str) -> int:
 
 
 def _ops_prereqs_native(ctx: RunContext, report_format: str) -> int:
-    script = """
-set -euo pipefail
-cd .
-. ./ops/_lib/common.sh
-ops_init_run_id
-ops_env_load
-ops_entrypoint_start "ops-prereqs"
-for c in docker kind kubectl helm k6 python3; do
-  command -v "$c" >/dev/null 2>&1 || ops_fail "$OPS_ERR_PREREQ" "missing required tool: $c"
-done
-ops_version_guard kind kubectl helm k6
-python3 ./packages/atlasctl/src/atlasctl/layout_checks/check_tool_versions.py kind kubectl helm k6 jq yq python3
-python3 ./packages/atlasctl/src/atlasctl/layout_checks/check_ops_pins.py
-python3 --version
-kubectl version --client >/dev/null
-helm version --short >/dev/null
-kind version >/dev/null
-k6 version >/dev/null
-"""
-    return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
+    repo = ctx.repo_root
+    outputs: list[str] = []
+    required = ["docker", "kind", "kubectl", "helm", "k6", "python3"]
+    for cmd in required:
+        if shutil.which(cmd) is None:
+            return _emit_ops_status(report_format, 13, f"missing required tool: {cmd}")
+    checks = [
+        ["python3", "packages/atlasctl/src/atlasctl/layout_checks/check_tool_versions.py", "kind", "kubectl", "helm", "k6"],
+        ["python3", "packages/atlasctl/src/atlasctl/layout_checks/check_tool_versions.py", "kind", "kubectl", "helm", "k6", "jq", "yq", "python3"],
+        ["python3", "packages/atlasctl/src/atlasctl/layout_checks/check_ops_pins.py"],
+        ["python3", "--version"],
+        ["kubectl", "version", "--client"],
+        ["helm", "version", "--short"],
+        ["kind", "version"],
+        ["k6", "version"],
+    ]
+    for cmd in checks:
+        result = run_command(cmd, repo, ctx=ctx)
+        if result.combined_output.strip():
+            outputs.append(result.combined_output.rstrip())
+        if result.code != 0:
+            return _emit_ops_status(report_format, result.code, "\n".join(outputs).strip())
+    return _emit_ops_status(report_format, 0, "\n".join(outputs).strip())
 
 
 def _ops_doctor_native(ctx: RunContext, report_format: str) -> int:
