@@ -1,7 +1,7 @@
 # Baseline allowlist for existing cross-area script references.
 # Format: <file>|<referenced-script-path>
 makefiles/cargo.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/cold_start_benchmark.py
-makefiles/cargo.mk|ops/load/scripts/run_nightly_perf.sh
+makefiles/cargo.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/run_nightly_perf.py
 makefiles/ops.mk|ops/datasets/scripts/publish_by_name.sh
 makefiles/ops.mk|ops/datasets/scripts/sh/cache_status.sh
 makefiles/ops.mk|ops/datasets/scripts/sh/corruption_drill.sh
@@ -23,8 +23,8 @@ makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/compare_re
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/load_under_rollback.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/load_under_rollout.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/prepare_perf_store.py
-makefiles/ops.mk|ops/load/scripts/run_e2e_perf.sh
-makefiles/ops.mk|ops/load/scripts/run_nightly_perf.sh
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/run_e2e_perf.py
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/run_nightly_perf.py
 makefiles/ops.mk|atlasctl ops load run
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/baseline/update_baseline_entrypoint.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/load/run/warm_start_benchmark.py
