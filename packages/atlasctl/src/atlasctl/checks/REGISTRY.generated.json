@@ -5686,7 +5686,7 @@
       "effects": [],
       "evidence": [],
       "external_tools": [],
-      "fix_hint": "Map new top-level packages to docs/configs/dev/ops/policies/internal in package_shape policy.",
+      "fix_hint": "Map new top-level packages to configs/dev/ops/policies/internal in package_shape policy.",
       "groups": [
         "fast",
         "repo",

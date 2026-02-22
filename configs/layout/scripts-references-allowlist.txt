@@ -240,7 +240,6 @@ packages/atlasctl/src/atlasctl/datasets/cache_threshold_check.py
 packages/atlasctl/src/atlasctl/datasets/catalog_validate.py
 packages/atlasctl/src/atlasctl/datasets/qc_diff.py
 packages/atlasctl/src/atlasctl/datasets/qc_summary.py
-packages/atlasctl/src/atlasctl/docs/command.py
 packages/atlasctl/src/atlasctl/doctor.py
 packages/atlasctl/src/atlasctl/inventory/command.py
 packages/atlasctl/src/atlasctl/legacy/command.py

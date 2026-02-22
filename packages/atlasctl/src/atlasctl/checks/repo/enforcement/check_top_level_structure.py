@@ -14,7 +14,7 @@ INTENDED = {
     "policies",
     "internal",
 }
-TRANSITION_ALLOW = {"docs", "__pycache__"}
+TRANSITION_ALLOW = {"__pycache__"}
 MAX_TREE_DEPTH = 6
 MAX_PY_FILES_PER_DIR = 30
 

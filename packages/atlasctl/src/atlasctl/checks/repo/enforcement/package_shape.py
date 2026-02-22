@@ -10,7 +10,8 @@ _TOP_LEVEL_GROUP_MAP = {
     "commands": "dev",
     "contracts": "dev",
     "core": "dev",
-    "docs": "docs",
+    "internal": "internal",
+    "policies": "policies",
     "registry": "dev",
     "reporting": "dev",
     "suite": "dev",
@@ -128,7 +129,7 @@ def check_top_level_package_group_mapping(repo_root: Path) -> tuple[int, list[st
         if group is None:
             offenders.append(
                 f"top-level package '{name}' has no control-plane group mapping; "
-                "map it to one of docs/configs/dev/ops/policies/internal",
+                "map it to one of configs/dev/ops/policies/internal",
             )
             continue
         if group not in _CONTROL_PLANE_GROUPS:

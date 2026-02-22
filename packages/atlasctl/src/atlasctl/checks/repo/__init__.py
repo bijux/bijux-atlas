@@ -428,7 +428,7 @@ CHECKS: tuple[CheckDef, ...] = (
         "require top-level atlasctl packages to map to control-plane groups",
         300,
         check_top_level_package_group_mapping,
-        fix_hint="Map new top-level packages to docs/configs/dev/ops/policies/internal in package_shape policy.",
+        fix_hint="Map new top-level packages to configs/dev/ops/policies/internal in package_shape policy.",
     ),
     CheckDef(
         "repo.package_max_depth",
