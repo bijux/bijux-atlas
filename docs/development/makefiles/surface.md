@@ -157,4 +157,3 @@ Generated from `configs/ops/public-surface.json`. Do not edit manually.
 - `./ops/run/k8s-suite.sh`
 - `./ops/run/load-suite.sh`
 - `./ops/run/report.sh`
-- `./ops/run/clean.sh`

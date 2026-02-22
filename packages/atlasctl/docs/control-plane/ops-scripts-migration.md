@@ -17,11 +17,11 @@ Classification legend:
 | Script | Class | Status | Future atlasctl command / home |
 |---|---|---:|---|
 | `ops/run/artifacts-open.sh` | glue | deleted (atlasctl-native) | `atlasctl ops artifacts open` |
-| `ops/run/cache-prune.sh` | glue | planned | `atlasctl ops cache prune` |
-| `ops/run/cache-status.sh` | glue | planned | `atlasctl ops cache status` |
+| `ops/run/cache-prune.sh` | glue | deleted (atlasctl-native) | `atlasctl ops cache prune` |
+| `ops/run/cache-status.sh` | glue | deleted (atlasctl-native) | `atlasctl ops cache status` |
 | `ops/run/ci-fast.sh` | glue | deleted (atlasctl-native) | `atlasctl ci fast` |
 | `ops/run/ci-nightly.sh` | glue | deleted (atlasctl-native) | `atlasctl ci nightly` |
-| `ops/run/clean.sh` | glue | planned | `atlasctl clean` / `atlasctl ops clean` |
+| `ops/run/clean.sh` | glue | deleted (replaced by `cleanup` + `ops cache prune`) | `atlasctl cleanup` + `atlasctl ops cache prune` |
 | `ops/run/configmap-drift-report.sh` | logic | planned | `atlasctl ops k8s configmap-drift-report` |
 | `ops/run/contract-check.sh` | glue | planned | `atlasctl contracts check` |
 | `ops/run/contract-report.py` | logic | planned | `atlasctl contracts report` |

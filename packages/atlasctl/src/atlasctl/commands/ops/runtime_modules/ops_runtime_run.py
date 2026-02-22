@@ -42,6 +42,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                 "obs",
                 "kind",
                 "load",
+                "cache",
                 "datasets",
                 "help",
                 "up",
@@ -242,7 +243,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             return impl._run_simple_cmd(ctx, diff_cmd, ns.report)
         return 2
 
-    if ns.ops_cmd in {"stack", "k8s", "e2e", "obs", "kind", "load", "datasets"}:
+    if ns.ops_cmd in {"stack", "k8s", "e2e", "obs", "kind", "load", "cache", "datasets"}:
         # Domain tree front-doors: keep shape stable even where implementations are delegated.
         sub_name = {
             "stack": "ops_stack_cmd",
@@ -251,6 +252,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             "obs": "ops_obs_cmd",
             "kind": "ops_kind_cmd",
             "load": "ops_load_cmd",
+            "cache": "ops_cache_cmd",
             "datasets": "ops_datasets_cmd",
         }[ns.ops_cmd]
         sub = getattr(ns, sub_name, "")
@@ -508,6 +510,13 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             else:
                 print(written)
             return 0
+        if ns.ops_cmd == "cache":
+            csub = str(getattr(ns, "ops_cache_cmd", "")).strip()
+            if csub == "status":
+                return impl._ops_cache_status(ctx, ns.report, bool(getattr(ns, "strict", False)), bool(getattr(ns, "plan", False)))
+            if csub == "prune":
+                return impl._ops_cache_prune(ctx, ns.report)
+            return 2
         if ns.ops_cmd == "datasets" and sub == "verify":
             return impl._run_simple_cmd(ctx, shell_script_command("ops/run/datasets-verify.sh"), ns.report)
         if ns.ops_cmd == "datasets" and sub == "fetch":

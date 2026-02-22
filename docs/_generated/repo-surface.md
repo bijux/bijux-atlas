@@ -152,4 +152,3 @@
 - `./ops/run/k8s-suite.sh`
 - `./ops/run/load-suite.sh`
 - `./ops/run/report.sh`
-- `./ops/run/clean.sh`

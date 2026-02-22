@@ -14,7 +14,7 @@ ops_version_guard python3 kind kubectl
 
 ./ops/run/warm-entrypoint.sh --mode datasets
 ./ops/run/warm-entrypoint.sh --mode shards
-./ops/run/cache-status.sh
+./bin/atlasctl ops cache --report text status
 
 out_dir="artifacts/evidence/warm/${RUN_ID}"
 mkdir -p "$out_dir"
