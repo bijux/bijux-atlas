@@ -11,6 +11,7 @@ from pathlib import Path
 from ..core.context import RunContext
 from ..core.fs import ensure_evidence_path
 from ..commands.policies.runtime.culprits import budget_suite
+from ..checks.domains.policies.make.enforcement import collect_bypass_inventory
 
 
 def _tool_version(cmd: list[str]) -> str:
@@ -33,6 +34,7 @@ def build_report(ctx: RunContext) -> dict[str, object]:
         "failing_metrics": [r.get("metric") for r in budget.get("reports", []) if r.get("status") == "fail"],
         "warning_metrics": [r.get("metric") for r in budget.get("reports", []) if r.get("status") == "warn"],
     }
+    bypass_inventory = collect_bypass_inventory(ctx.repo_root)
     return {
         "run_id": ctx.run_id,
         "profile": ctx.profile,
@@ -63,6 +65,10 @@ def build_report(ctx: RunContext) -> dict[str, object]:
             "write_roots_ok": write_roots_ok,
         },
         "tree_health": tree_health,
+        "bypass_inventory": {
+            "file_count": len(bypass_inventory.get("files", [])) if isinstance(bypass_inventory.get("files"), list) else 0,
+            "entry_count": int(bypass_inventory.get("entry_count", 0)),
+        },
     }
 
 

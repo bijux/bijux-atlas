@@ -1747,6 +1747,48 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_policies_bypass_readme_complete"
+domain = "policies"
+area = "bypass"
+gate = "policies"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.domains.policies.make.enforcement"
+callable = "check_policies_bypass_readme_complete"
+description = "require configs/policy README to list every bypass source file"
+severity = "error"
+category = "hygiene"
+fix_hint = "Update configs/policy/README.md with complete bypass source list."
+legacy_id = "policies.bypass_readme_complete"
+groups = ["fast", "policies", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_policies_bypass_readme_sorted"
+domain = "policies"
+area = "bypass"
+gate = "policies"
+owner = "platform"
+speed = "fast"
+timeout_ms = 800
+module = "atlasctl.checks.domains.policies.make.enforcement"
+callable = "check_policies_bypass_readme_sorted"
+description = "require bypass source list in configs/policy README to be sorted"
+severity = "error"
+category = "hygiene"
+fix_hint = "Sort bypass file entries in configs/policy/README.md."
+legacy_id = "policies.bypass_readme_sorted"
+groups = ["fast", "policies", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_policies_bypass_removal_plan_required"
 domain = "policies"
 area = "bypass"

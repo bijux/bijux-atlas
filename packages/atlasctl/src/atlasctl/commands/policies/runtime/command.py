@@ -1,11 +1,9 @@
 from __future__ import annotations
-
 import argparse
 import datetime as dt
 import json
 import re
 from pathlib import Path
-
 from ....checks.repo.domains.forbidden_adjectives import check_forbidden_adjectives
 from ....checks.domains.policies.make.enforcement import collect_bypass_inventory, render_text_report
 from ....core.context import RunContext
@@ -19,23 +17,15 @@ from .culprits import (
 from .budgets.handlers import handle_budget_command
 from .dead_modules import analyze_dead_modules
 from .scans.repo_scans import policy_drift_diff, scan_grep_relaxations, scan_rust_relaxations
-
-RELAXATION_FILES = (
-    "configs/policy/pin-relaxations.json",
-    "configs/policy/budget-relaxations.json",
-    "configs/policy/layer-relaxations.json",
-    "configs/policy/ops-smoke-budget-relaxations.json",
-    "configs/policy/ops-lint-relaxations.json",
-)
+RELAXATION_FILES = ("configs/policy/pin-relaxations.json", "configs/policy/budget-relaxations.json", "configs/policy/layer-relaxations.json", "configs/policy/ops-smoke-budget-relaxations.json", "configs/policy/ops-lint-relaxations.json")
 SELF_CLI = ["python3", "-m", "atlasctl.cli"]
 _POLICIES_ITEMS: tuple[str, ...] = ("allow-env-lint", "bypass-scan", "bypass-list", "bypass-report", "check", "check-dir-entry-budgets", "check-py-files-per-dir", "culprits", "culprits-biggest-dirs", "culprits-biggest-files", "culprits-files-per-dir", "culprits-largest-files", "culprits-loc-per-dir", "culprits-modules-per-dir", "culprits-suite", "dead-modules", "drift-diff", "enforcement-status", "explain", "forbidden-adjectives", "ownership-check", "relaxations-check", "repo-stats", "report", "report-budgets", "scan-grep-relaxations", "scan-rust-relaxations", "schema-drift")
-
 def _run(cmd: list[str], repo_root: Path) -> tuple[int, str]:
     proc = run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
     return proc.returncode, ((proc.stdout or "") + (proc.stderr or "")).strip()
+
 def _validate_ops_lint_relax_schema(repo_root: Path) -> list[str]:
     import jsonschema
-
     schema = json.loads((repo_root / "configs/_schemas/ops-lint-relaxations.schema.json").read_text(encoding="utf-8"))
     data = json.loads((repo_root / "configs/policy/ops-lint-relaxations.json").read_text(encoding="utf-8"))
     errs: list[str] = []
@@ -51,6 +41,7 @@ def _extract_entries(payload: dict[str, object]) -> list[dict[str, str]]:
     if isinstance(payload.get("relaxations"), list):
         return [x for x in payload.get("relaxations", []) if isinstance(x, dict)]  # type: ignore[return-value]
     return []
+
 def _check_relaxations(repo_root: Path, require_docs_ref: bool) -> tuple[int, dict[str, object]]:
     today = dt.date.today()
     errs: list[str] = []
@@ -125,7 +116,6 @@ def _write_out_file(repo_root: Path, out_file: str, content: str) -> None:
         return
     out_path = repo_root / out_file
     write_text_file(out_path, content + "\n", encoding="utf-8")
-
 def _repo_stats_payload(repo_root: Path) -> dict[str, object]:
     rows = collect_dir_stats(repo_root)
     top_dirs = sorted(rows, key=lambda row: row.total_loc, reverse=True)[:20]
@@ -336,6 +326,24 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print(json.dumps({"schema_version": 1, "status": "ok", "out": out_rel}, sort_keys=True) if ns.report == "json" else out_rel)
         return 0 if not payload.get("errors") else 1
 
+    if ns.policies_cmd == "bypass" and getattr(ns, "bypass_cmd", "entry") == "entry":
+        payload = collect_bypass_inventory(repo)
+        entry_id = str(getattr(ns, "entry_id", ""))
+        entry = next((row for row in payload.get("entries", []) if isinstance(row, dict) and entry_id in {str(row.get("key", "")).strip(), f"{str(row.get('source', '')).strip()}:{str(row.get('key', '')).strip()}"}), None) if entry_id else None
+        if entry is None:
+            out = {"schema_version": 1, "status": "not_found", "entry_id": entry_id}
+            print(json.dumps(out, sort_keys=True) if ns.report == "json" else f"bypass entry not found: {entry_id}")
+            return 1
+        result = {"schema_version": 1, "status": "ok", "entry_id": f"{entry.get('source')}:{entry.get('key')}", "entry": entry, "next_removal_steps": ["Confirm linked issue is active and still scoped for this bypass.", "Implement the owning fix and delete this bypass record from source config.", "Run `./bin/atlasctl check run --group repo` and verify bypass checks remain green."]}
+        if ns.report == "json":
+            print(json.dumps(result, sort_keys=True))
+        else:
+            print(f"bypass entry: {result['entry_id']}")
+            print(f"owner={entry.get('owner', '(none)')} issue={entry.get('issue_id', '(none)')} expiry={entry.get('expiry', '(none)')}")
+            print(f"removal_plan: {entry.get('removal_plan', '(none)')}")
+            print("\n".join(f"- {step}" for step in result["next_removal_steps"]))
+        return 0
+
     if ns.policies_cmd == "report":
         _, payload = _check_relaxations(repo, require_docs_ref=False)
         if ns.report == "json":
@@ -498,6 +506,9 @@ def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
     rep2 = bypass_sub.add_parser("report", help="emit consolidated policy bypass report")
     rep2.add_argument("--report", choices=["text", "json"], default="text")
     rep2.add_argument("--out", default="artifacts/reports/atlasctl/policies-bypass-report.json")
+    entry = bypass_sub.add_parser("entry", help="show one bypass entry with next removal steps")
+    entry.add_argument("--id", dest="entry_id", required=True)
+    entry.add_argument("--report", choices=["text", "json"], default="text")
 
     rep = ps.add_parser("report", help="print active relaxations summary")
     rep.add_argument("--report", choices=["text", "json"], default="json")

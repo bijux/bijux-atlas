@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 import json
 import re
 import runpy
@@ -36,11 +35,9 @@ _WRAPPER_FILES = (
 _ROOT_MK_MAX_LOC = 900
 _ROOT_MK_MAX_TARGETS = 220
 _ISSUE_ID_RE = re.compile(r"^ISSUE-[A-Z0-9-]+$")
-_BYPASS_SOURCES = (("configs/policy/policy-relaxations.json", "json", True), ("configs/policy/effect-boundary-exceptions.json", "json", False), ("configs/policy/dead-modules-allowlist.json", "json", False), ("configs/policy/dependency-exceptions.json", "json", False), ("configs/policy/layer-relaxations.json", "json", True), ("configs/policy/budget-relaxations.json", "json", True), ("configs/policy/ops-lint-relaxations.json", "json", True), ("configs/policy/ops-smoke-budget-relaxations.json", "json", True), ("configs/policy/pin-relaxations.json", "json", True), ("configs/policy/check-filename-allowlist.json", "json", False), ("configs/policy/layer-live-diff-allowlist.json", "json", False), ("configs/policy/slow-checks-ratchet.json", "json", False), ("configs/policy/forbidden-adjectives-allowlist.txt", "txt", False), ("configs/policy/shell-network-fetch-allowlist.txt", "txt", False), ("configs/policy/shell-probes-allowlist.txt", "txt", False))
-_BYPASS_SCHEMAS = {"configs/policy/policy-relaxations.json": "configs/_schemas/policy-relaxations.schema.json", "configs/policy/layer-relaxations.json": "configs/_schemas/layer-relaxations.schema.json", "configs/policy/ops-lint-relaxations.json": "configs/_schemas/ops-lint-relaxations.schema.json", "configs/policy/layer-live-diff-allowlist.json": "configs/_schemas/layer-live-diff-allowlist.schema.json"}
+_BYPASS_SOURCES = (("configs/policy/policy-relaxations.json", "json", True), ("configs/policy/effect-boundary-exceptions.json", "json", False), ("configs/policy/dead-modules-allowlist.json", "json", False), ("configs/policy/dependency-exceptions.json", "json", True), ("configs/policy/layer-relaxations.json", "json", True), ("configs/policy/budget-relaxations.json", "json", True), ("configs/policy/ops-lint-relaxations.json", "json", True), ("configs/policy/ops-smoke-budget-relaxations.json", "json", True), ("configs/policy/pin-relaxations.json", "json", True), ("configs/policy/check-filename-allowlist.json", "json", False), ("configs/policy/layer-live-diff-allowlist.json", "json", False), ("configs/policy/slow-checks-ratchet.json", "json", False), ("configs/policy/forbidden-adjectives-allowlist.txt", "txt", False), ("configs/policy/shell-network-fetch-allowlist.txt", "txt", False), ("configs/policy/shell-probes-allowlist.txt", "txt", False))
+_BYPASS_SCHEMAS = {"configs/policy/policy-relaxations.json": "configs/_schemas/policy-relaxations.schema.json", "configs/policy/layer-relaxations.json": "configs/_schemas/layer-relaxations.schema.json", "configs/policy/ops-lint-relaxations.json": "configs/_schemas/ops-lint-relaxations.schema.json", "configs/policy/layer-live-diff-allowlist.json": "configs/_schemas/layer-live-diff-allowlist.schema.json", "configs/policy/effect-boundary-exceptions.json": "configs/policy/bypass.schema.json", "configs/policy/dead-modules-allowlist.json": "configs/policy/bypass.schema.json", "configs/policy/dependency-exceptions.json": "configs/policy/bypass.schema.json", "configs/policy/budget-relaxations.json": "configs/policy/bypass.schema.json", "configs/policy/ops-smoke-budget-relaxations.json": "configs/policy/bypass.schema.json", "configs/policy/pin-relaxations.json": "configs/policy/bypass.schema.json", "configs/policy/check-filename-allowlist.json": "configs/policy/bypass.schema.json", "configs/policy/slow-checks-ratchet.json": "configs/policy/bypass.schema.json"}
 _BYPASS_SCOPES = {"repo", "crate", "module", "file", "path", "docs", "ops", "make", "workflow", "policy"}
-
-
 def _iter_make_recipe_lines(repo_root: Path) -> list[tuple[str, int, str]]:
     rows: list[tuple[str, int, str]] = []
     files = [repo_root / "Makefile", *sorted((repo_root / "makefiles").glob("*.mk"))]
@@ -573,7 +570,18 @@ def _bypass_errors(repo_root: Path) -> dict[str, list[str]]:
 def _res(errors: list[str]) -> tuple[int, list[str]]:
     uniq = sorted(set(errors))
     return (0 if not uniq else 1), uniq
-
+def _bypass_readme_errors(repo_root: Path) -> dict[str, list[str]]:
+    path = repo_root / "configs/policy/README.md"
+    if not path.exists():
+        return {"complete": ["configs/policy/README.md missing"], "sorted": ["configs/policy/README.md missing"]}
+    text = path.read_text(encoding="utf-8")
+    refs = sorted(set(re.findall(r"`(configs/policy/[^`]+)`", text)))
+    expected = sorted(row[0] for row in _BYPASS_SOURCES)
+    missing = sorted(item for item in expected if item not in refs); extra = sorted(item for item in refs if item not in expected)
+    complete: list[str] = [*(f"README missing bypass file entry: {item}" for item in missing), *(f"README lists non-bypass file entry: {item}" for item in extra)]
+    order = [item for item in refs if item in expected]
+    sorted_errors = [] if order == sorted(order) else ["configs/policy/README.md bypass entries must be sorted"]
+    return {"complete": complete, "sorted": sorted_errors}
 
 def check_policies_bypass_no_new_files(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_errors(repo_root)["files"])
 def check_policies_bypass_all_entries_have_owner_issue_expiry(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_errors(repo_root)["meta"])
@@ -587,3 +595,5 @@ def check_policies_bypass_scope_valid(repo_root: Path) -> tuple[int, list[str]]:
 def check_policies_bypass_policy_name_known(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_errors(repo_root)["policy"])
 def check_policies_bypass_schema_valid(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_errors(repo_root)["schema"])
 def check_policies_bypass_budget(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_errors(repo_root)["budget"])
+def check_policies_bypass_readme_complete(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_readme_errors(repo_root)["complete"])
+def check_policies_bypass_readme_sorted(repo_root: Path) -> tuple[int, list[str]]: return _res(_bypass_readme_errors(repo_root)["sorted"])
