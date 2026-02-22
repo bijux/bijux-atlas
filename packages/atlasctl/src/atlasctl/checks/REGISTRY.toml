@@ -1704,6 +1704,26 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_repo_command_scripts_registry"
+domain = "repo"
+area = "command"
+owner = "platform"
+speed = "fast"
+timeout_ms = 1000
+module = "atlasctl.checks.repo.native"
+callable = "check_command_scripts_registry"
+description = "enforce command-invoked shell scripts are registered with owner and valid naming"
+severity = "error"
+category = "hygiene"
+fix_hint = "Register every command-invoked .sh in configs/scripts/registry.json with valid owner and naming."
+legacy_id = "repo.command_scripts_registry"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_repo_command_test_coverage"
 domain = "repo"
 area = "command"

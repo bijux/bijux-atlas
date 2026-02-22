@@ -396,7 +396,7 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             steps = [
                 ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/pins/check_ops_pins.py"],
                 ["python3", "ops/_lint/pin-relaxations-audit.py"],
-                ["bash", "ops/k8s/tests/checks/obs/test_helm_repo_pinning.sh"],
+                ["bash", "ops/k8s/tests/checks/obs/contracts/test_helm_repo_pinning.sh"],
                 ["bash", "-lc", "make -s ops-kind-version-drift-test"],
             ]
             for cmd in steps:
@@ -504,7 +504,7 @@ def run_ops_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             drill = getattr(ns, "drill", "")
             if not drill:
                 return _emit_ops_status(ns.report, 2, "missing --drill")
-            return _run_simple_cmd(ctx, ["bash", "ops/obs/scripts/bin/run_drill.sh", drill], ns.report)
+            return _run_simple_cmd(ctx, ["bash", "ops/obs/scripts/run_drill.sh", drill], ns.report)
         if ns.ops_cmd == "stack" and sub == "versions-sync":
             return _run_simple_cmd(
                 ctx,

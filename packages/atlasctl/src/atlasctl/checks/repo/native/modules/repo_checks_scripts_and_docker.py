@@ -51,6 +51,14 @@ def check_docs_scripts_references(repo_root: Path) -> tuple[int, list[str]]:
     return (0 if not errors else 1), errors
 
 
+def check_command_scripts_registry(repo_root: Path) -> tuple[int, list[str]]:
+    from atlasctl.core.runtime.script_registry import lint_script_registry
+
+    code, payload = lint_script_registry(repo_root)
+    errors = [str(item) for item in payload.get("errors", [])]
+    return code, errors
+
+
 def check_no_executable_python_outside_packages(repo_root: Path) -> tuple[int, list[str]]:
     exceptions_cfg = repo_root / "configs/layout/python-migration-exceptions.json"
     globs: list[str] = []
