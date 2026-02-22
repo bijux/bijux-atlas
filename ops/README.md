@@ -18,7 +18,7 @@ Runbook index: `ops/INDEX.md`.
 - `ops/datasets/`: dataset manifest, pinning, QC, promotion.
 - `ops/e2e/`: composition-only scenarios over stack/obs/load/datasets.
 - `atlasctl ops ...` and `make` wrappers: operator entrypoints (no direct `ops/run/` surface).
-- `ops/_lib/`: shared helper libraries.
+- atlasctl shell helper assets: `packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/assets/lib/`.
 - `ops/_meta/`: ownership/surface/contracts metadata.
 - `ops/_schemas/`: ops JSON schemas.
 - `ops/_generated_committed/`: deterministic generated ops outputs committed to git.

@@ -14,7 +14,7 @@ Canonical operational filesystem layout.
 - `ops/load/`: k6 suites and scoring.
 - `ops/obs/`: dashboards, alerts, and contracts.
 - `ops/datasets/`, `ops/fixtures/`: dataset and fixture assets.
-- `ops/_lib/`: shared shell helpers.
+- atlasctl ops helper assets: `packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/assets/lib/`.
 
 ## Run full stack
 

@@ -11,7 +11,7 @@
 
 - Stable operator entrypoints are Make targets listed in `ops/INDEX.md` and declared in `ops/_meta/surface.json`.
 - Operator entrypoints are `atlasctl ops ...` commands and thin `make` wrappers; `ops/` shell scripts are implementation adapters only.
-- Shared shell/python helpers that are not operator entrypoints live in `ops/_lib/` or domain-local `scripts/` directories.
+- Shared shell/python helpers that are not operator entrypoints live in atlasctl-owned helper/assets modules or domain-local `scripts/` directories.
 - Canonical domain ownership has no overlap:
   - `ops/stack/` local dependency bring-up
     - owns canonical fault injection API at `packages/atlasctl/src/atlasctl/commands/ops/stack/faults/inject.py`
