@@ -27,7 +27,6 @@ _WRAPPER_FILES = (
     "makefiles/policies.mk",
     "makefiles/product.mk",
     "makefiles/layout.mk",
-    "makefiles/registry.mk",
     "makefiles/env.mk",
     "makefiles/root.mk",
 )
