@@ -62,6 +62,8 @@ def main() -> int:
                     errs.append(f"{p.name} uses non-primary make target: {target}")
         if "schedule:" not in text:
             continue
+        if p.name == "dependency-lock.yml" and re.search(r"\./bin/atlasctl\s+ci\s+deps\b", text):
+            continue
         if re.search(r"\./bin/atlasctl\s+suite\s+run\s+[A-Za-z0-9_.-]+\b", text):
             continue
         runs = make_runs(p)

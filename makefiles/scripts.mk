@@ -60,8 +60,8 @@ deps-cold-start: ## Measure atlasctl import cold-start budget
 packages-lock: ## Backward-compatible alias for deps-lock
 	@./bin/atlasctl deps lock
 
-scripts-run: ## Run atlasctl command (usage: make scripts-run CMD="doctor --json")
-	@[ -n "$${CMD:-}" ] || { echo "usage: make scripts-run CMD='doctor --json'" >&2; exit 2; }
+internal/scripts/run: ## Run atlasctl command (usage: make internal/scripts/run CMD="doctor --json")
+	@[ -n "$${CMD:-}" ] || { echo "usage: make internal/scripts/run CMD='doctor --json'" >&2; exit 2; }
 	@./bin/atlasctl $${CMD}
 
-.PHONY: bootstrap-tools no-direct-scripts scripts-all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test scripts-coverage scripts-deps-audit deps-lock deps-sync deps-check-venv deps-cold-start packages-lock scripts-run
+.PHONY: bootstrap-tools no-direct-scripts scripts-all scripts-audit scripts-check scripts-clean scripts-format scripts-graph scripts-index scripts-lint scripts-test scripts-coverage scripts-deps-audit deps-lock deps-sync deps-check-venv deps-cold-start packages-lock internal/scripts/run

@@ -23,7 +23,4 @@ check: ## Rust cargo check lane
 audit: ## Rust audit lane
 	@./bin/atlasctl dev audit
 
-atlasctl-check: ## Atlasctl repository checks gate
-	@./bin/atlasctl check run --group repo
-
-.PHONY: fmt lint test test-all coverage check audit atlasctl-check
+.PHONY: fmt lint test test-all coverage check audit

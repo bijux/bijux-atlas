@@ -8,6 +8,7 @@ include makefiles/env.mk
 include makefiles/python.mk
 include makefiles/_macros.mk
 include makefiles/dev.mk
+include makefiles/atlasctl.mk
 include makefiles/ci.mk
 include makefiles/docs.mk
 ATLAS_INCLUDE_SCRIPTS ?= 0
