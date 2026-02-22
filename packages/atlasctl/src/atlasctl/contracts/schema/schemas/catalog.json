@@ -6,6 +6,11 @@
       "file": "atlasctl.check-list.v1.schema.json"
     },
     {
+      "name": "atlasctl.check-run.v1",
+      "version": 1,
+      "file": "atlasctl.check-run.v1.schema.json"
+    },
+    {
       "name": "atlasctl.check-taxonomy.v1",
       "version": 1,
       "file": "atlasctl.check-taxonomy.v1.schema.json"

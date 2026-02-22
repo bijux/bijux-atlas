@@ -6,7 +6,9 @@ Do not edit rows manually; regenerate via `atlasctl contracts generate --generat
 | schema_name | version | file | sha256_16 |
 |---|---:|---|---|
 | atlasctl.check-list.v1 | 1 | atlasctl.check-list.v1.schema.json | `34b683b40cda96eb` |
+| atlasctl.check-run.v1 | 1 | atlasctl.check-run.v1.schema.json | `37135d04b9a739d5` |
 | atlasctl.check-taxonomy.v1 | 1 | atlasctl.check-taxonomy.v1.schema.json | `ff5f89cc200d7047` |
+| atlasctl.checks-catalog.v1 | 1 | atlasctl.checks-catalog.v1.schema.json | `24c8f7ee60f973e3` |
 | atlasctl.commands.v1 | 1 | atlasctl.commands.v1.schema.json | `85a3fe7e9d88e85b` |
 | atlasctl.explain.v1 | 1 | atlasctl.explain.v1.schema.json | `0ea5e9b7d6ba22f0` |
 | atlasctl.help.v1 | 1 | atlasctl.help.v1.schema.json | `0afd4c50eba70e0f` |
