@@ -2,7 +2,7 @@
   "schema_version": 1,
   "kind": "atlasctl-script-registry",
   "scripts": [
-    {"path": "ops/_lint/no-bin-symlinks.sh", "owner": "ops", "description": "ops lint gate for symlink policy"},
+    {"path": "packages/atlasctl/src/atlasctl/commands/ops/lint/repo/no_bin_symlinks.py", "owner": "ops", "description": "ops lint gate for symlink policy"},
     {"path": "ops/k8s/ci/install-matrix.sh", "owner": "ops", "description": "k8s install matrix runner"},
     {"path": "ops/k8s/tests/checks/obs/contracts/test_helm_repo_pinning.sh", "owner": "ops", "description": "helm repo pinning contract test"},
     {"path": "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/rollout/test_cluster_sanity.py", "owner": "ops", "description": "cluster sanity rollout test"},
