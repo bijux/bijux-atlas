@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.core.runtime.env_guard import ensure_within_repo, guard_no_network_mode
+from atlasctl.core.runtime.guards.env_guard import ensure_within_repo, guard_no_network_mode
 from atlasctl.core.git import read_git_context
 from atlasctl.core.models.models import ContractsIndexModel, OwnershipModel, SurfaceModel
 from atlasctl.core.runtime.paths import find_repo_root

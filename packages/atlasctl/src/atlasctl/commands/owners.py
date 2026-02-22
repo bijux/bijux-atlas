@@ -6,7 +6,7 @@ import json
 from ..checks.registry.ssot import load_registry_entries
 from ..cli.surface_registry import command_registry
 from ..core.context import RunContext
-from ..core.owners import load_owner_catalog
+from ..core.meta.owners import load_owner_catalog
 
 
 def configure_owners_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:

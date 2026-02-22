@@ -6,7 +6,7 @@ from pathlib import Path
 
 from ..core.context import RunContext
 from .catalog import lint_catalog, list_catalog_entries, check_schema_change_release_policy, check_schema_readme_sync
-from .output_base import build_output_base
+from .output.base import build_output_base
 from .validate_self import validate_self
 from .checks import (
     check_breaking,

@@ -12,7 +12,7 @@ from typing import Any
 
 from ...contracts.output.base import build_output_base
 from ..context import RunContext
-from ..dev_gate_semantics import should_run_repo_checks
+from ..meta.dev_gate_semantics import should_run_repo_checks
 from ..isolation import build_isolate_env
 from .run_meta import write_run_meta
 

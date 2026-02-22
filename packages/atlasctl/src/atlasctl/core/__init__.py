@@ -1,6 +1,6 @@
 """Atlasctl core package."""
 from .context import RunContext
-from .runtime.clock import utc_now_iso
+from .runtime.guards.clock import utc_now_iso
 from .fs import ensure_evidence_path
 from .runtime.logging import log_event
 from .runtime.repo_root import find_repo_root, try_find_repo_root

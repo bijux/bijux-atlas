@@ -22,7 +22,7 @@ from ..core.runtime.repo_root import try_find_repo_root
 from ..contracts.ids import COMMANDS, HELP, RUNTIME_CONTRACTS
 from ..core.errors import ScriptError
 from ..core.exit_codes import ERR_CONFIG, ERR_INTERNAL
-from ..core.runtime.network_guard import install_no_network_guard, resolve_network_mode
+from ..core.runtime.guards.network_guard import install_no_network_guard, resolve_network_mode
 from .constants import CONFIGURE_HOOKS, DOMAINS, NO_NETWORK_FLAG_EXPIRY
 from .dispatch import dispatch_command
 from .output import no_network_flag_expired, render_error, resolve_output_format
@@ -320,7 +320,7 @@ def main(argv: list[str] | None = None) -> int:
 
     restore_network = None
     if ctx.no_network:
-        from ..core.runtime.env_guard import guard_no_network_mode
+        from ..core.runtime.guards.env_guard import guard_no_network_mode
 
         guard_no_network_mode(True)
         restore_network = install_no_network_guard()
