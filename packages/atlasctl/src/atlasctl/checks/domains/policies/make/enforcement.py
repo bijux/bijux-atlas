@@ -104,7 +104,7 @@ def check_make_no_direct_artifact_writes(repo_root: Path) -> tuple[int, list[str
 
 
 def _run_script(repo_root: Path, script: str) -> tuple[int, list[str]]:
-    tool_path = repo_root / "packages/atlasctl/src/atlasctl/checks/layout/public_surface/tools"
+    tool_path = repo_root / "packages/atlasctl/src/atlasctl/checks/layout/domains/public_surface/tools"
     env = dict(**__import__("os").environ)
     existing = env.get("PYTHONPATH", "")
     env["PYTHONPATH"] = f"{tool_path}:{existing}" if existing else str(tool_path)
@@ -129,7 +129,7 @@ def check_make_ci_entrypoints_contract(repo_root: Path) -> tuple[int, list[str]]
 def check_make_public_targets_documented(repo_root: Path) -> tuple[int, list[str]]:
     return _run_script(
         repo_root,
-        "packages/atlasctl/src/atlasctl/checks/layout/public_surface/checks/check_public_targets_documented.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/domains/public_surface/checks/check_public_targets_documented.py",
     )
 
 

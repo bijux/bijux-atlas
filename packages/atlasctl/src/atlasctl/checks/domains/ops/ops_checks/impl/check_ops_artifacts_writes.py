@@ -6,7 +6,15 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[6]
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for base in (cur, *cur.parents):
+        if (base / "makefiles").exists() and (base / "packages").exists():
+            return base
+    raise RuntimeError("unable to resolve repository root")
+
+
+ROOT = _repo_root()
 allowlist_path = ROOT / "configs" / "ops" / "artifacts-allowlist.txt"
 schema_path = ROOT / "ops" / "_schemas" / "meta" / "artifact-allowlist.schema.json"
 allowlist = [

@@ -982,7 +982,7 @@ def run_check_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if sub == "ops-mk-contract":
         return _run(
             ctx,
-            ["python3", "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_ops_mk_contract.py"],
+            ["python3", "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/ci/check_ops_mk_contract.py"],
         )
     if sub == "checks-registry-drift":
         try:

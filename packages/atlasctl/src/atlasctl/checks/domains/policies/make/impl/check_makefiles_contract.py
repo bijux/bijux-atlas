@@ -10,7 +10,15 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[6]
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for base in (cur, *cur.parents):
+        if (base / "makefiles").exists() and (base / "packages").exists():
+            return base
+    raise RuntimeError("unable to resolve repository root")
+
+
+ROOT = _repo_root()
 SURFACE = ROOT / "configs/ops/public-surface.json"
 CONTRACT = ROOT / "makefiles/CONTRACT.md"
 

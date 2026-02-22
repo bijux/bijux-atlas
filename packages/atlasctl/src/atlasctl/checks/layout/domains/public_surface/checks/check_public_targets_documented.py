@@ -7,7 +7,15 @@ from pathlib import Path
 
 from public_make_targets import public_names
 
-ROOT = Path(__file__).resolve().parents[8]
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for base in (cur, *cur.parents):
+        if (base / "makefiles").exists() and (base / "packages").exists():
+            return base
+    raise RuntimeError("unable to resolve repository root")
+
+
+ROOT = _repo_root()
 README = ROOT / "makefiles" / "README.md"
 LINE_RE = re.compile(r"`make\s+([A-Za-z0-9_./-]+)(?:\s+[^`]*)?`")
 

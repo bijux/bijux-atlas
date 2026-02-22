@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.checks.repo.enforcement.check_top_level_structure import check_top_level_structure
+from atlasctl.checks.repo.enforcement.structure.check_top_level_structure import check_top_level_structure
 
 
 def _mk_repo(tmp_path: Path) -> Path:
     root = tmp_path / "packages/atlasctl/src/atlasctl"
-    for name in ("cli", "commands", "checks", "core", "contracts", "registry", "suite", "reporting", "policies", "internal"):
+    for name in ("cli", "commands", "checks", "core", "contracts", "registry", "suite", "reporting"):
         (root / name).mkdir(parents=True, exist_ok=True)
     return tmp_path
 
@@ -36,4 +36,3 @@ def test_top_level_structure_fails_python_file_budget(tmp_path: Path) -> None:
     code, errors = check_top_level_structure(repo)
     assert code == 1
     assert any("python file budget exceeded" in err for err in errors)
-

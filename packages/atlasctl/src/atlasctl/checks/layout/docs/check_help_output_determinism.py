@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[6]
-CMD = ["python3", "./packages/atlasctl/src/atlasctl/checks/layout/public_surface/tools/render_public_help.py"]
+CMD = ["python3", "./packages/atlasctl/src/atlasctl/checks/layout/domains/public_surface/tools/render_public_help.py"]
 
 
 def main() -> int:

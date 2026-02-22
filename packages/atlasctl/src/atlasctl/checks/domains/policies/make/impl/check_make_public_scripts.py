@@ -9,8 +9,15 @@ import json
 import re
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[6]
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for base in (cur, *cur.parents):
+        if (base / "makefiles").exists() and (base / "packages").exists():
+            return base
+    raise RuntimeError("unable to resolve repository root")
 
+
+ROOT = _repo_root()
 surface = json.loads((ROOT / "configs/ops/public-surface.json").read_text(encoding="utf-8"))
 patterns = [f"{cmd}" for cmd in surface.get("ops_run_commands", []) if cmd.startswith("scripts/")]
 

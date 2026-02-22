@@ -4,7 +4,7 @@ Legacy in `atlasctl` means pre-1.0 compatibility modules/shims kept only during 
 
 ## Canonical Legacy Modules And Why They Existed
 
-- `legacy/layout_shell/*`: shell-layout checks before `checks/layout/shell`.
+- `legacy/layout_shell/*`: shell-layout checks before `checks/layout/domains/shell`.
 - `legacy/obs/*`: observability checks before `observability/*` became canonical.
 - `legacy/report/*`: report assembly code before `reporting/*` consolidation.
 - `legacy/effects/*`: early effect-boundary checks before `checks/repo/enforcement/boundaries`.

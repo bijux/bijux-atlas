@@ -4,9 +4,15 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[6]
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for base in (cur, *cur.parents):
+        if (base / "makefiles").exists() and (base / "packages").exists():
+            return base
+    raise RuntimeError("unable to resolve repository root")
 
 
+ROOT = _repo_root()
 def main() -> int:
     if len(sys.argv) < 3:
         print("usage: check_make_lane_reports.py <run_id> <lane> [<lane> ...]", file=sys.stderr)
