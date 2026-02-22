@@ -83,31 +83,31 @@ LINT_CHECKS: list[OpsCheck] = [
     _check(
         "ops-orphan-contracts",
         "Validate ops contract references",
-        ["python3", "ops/_lint/no-orphan-contract.py"],
+        ["python3", "packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_orphan_contract.py"],
         "Register missing contracts and update ops/INDEX.md links.",
     ),
     _check(
         "ops-orphan-suites",
         "Validate ops suite references",
-        ["python3", "ops/_lint/no-orphan-suite.py"],
+        ["python3", "packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_orphan_suite.py"],
         "Keep suite manifests aligned with scenario/test files.",
     ),
     _check(
         "ops-unowned-file",
         "Validate ops ownership coverage",
-        ["python3", "ops/_lint/no-unowned-file.py"],
+        ["python3", "packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_unowned_file.py"],
         "Add missing ownership entries under ops/_meta/ownership.json.",
     ),
     _check(
         "ops-json-schema-coverage",
         "Validate ops schema coverage",
-        ["python3", "ops/_lint/json-schema-coverage.py"],
+        ["python3", "packages/atlasctl/src/atlasctl/commands/ops/lint/layout/json_schema_coverage.py"],
         "Ensure all ops contracts have schema coverage or explicit exclusion.",
     ),
     _check(
         "ops-no-unpinned-images",
         "Validate image pinning contract",
-        ["python3", "ops/_lint/no-unpinned-images.py"],
+        ["python3", "packages/atlasctl/src/atlasctl/commands/ops/lint/images/no_unpinned_images.py"],
         "Pin image references by digest and update pin policy exceptions when needed.",
     ),
     _check(
