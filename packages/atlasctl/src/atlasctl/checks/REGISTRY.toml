@@ -1747,6 +1747,48 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_repo_ci_artifact_upload_policy"
+domain = "repo"
+area = "ci"
+gate = "repo"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.native.workflow_contracts"
+callable = "check_ci_artifact_upload_policy"
+description = "enforce workflow artifact upload roots and always-on policy"
+severity = "error"
+category = "hygiene"
+fix_hint = "Upload artifacts only from approved roots and always use if: always()."
+legacy_id = "repo.ci_artifact_upload_policy"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_ci_workflow_policy"
+domain = "repo"
+area = "ci"
+gate = "repo"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.repo.native.workflow_contracts"
+callable = "check_ci_workflow_policy"
+description = "enforce workflow command policy (make/atlasctl wrappers only)"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use make thin wrappers or ./bin/atlasctl in workflows; avoid python -m atlasctl and raw cargo commands."
+legacy_id = "repo.ci_workflow_policy"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_repo_cli_argparse_policy"
 domain = "repo"
 area = "cli"
