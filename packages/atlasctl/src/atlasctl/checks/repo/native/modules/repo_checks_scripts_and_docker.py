@@ -225,7 +225,7 @@ def check_docker_image_size(repo_root: Path) -> tuple[int, list[str]]:
     return 0, []
 
 
-from atlasctl.checks.repo.native.runtime import (
+from ..runtime_modules.repo_native_runtime_core import (
     check_python_migration_exceptions_expiry,
     check_bin_entrypoints,
     check_python_lock,
@@ -240,6 +240,8 @@ from atlasctl.checks.repo.native.runtime import (
     check_scripts_surface_docs_drift,
     check_script_errors,
     check_script_write_roots,
+)
+from ..runtime_modules.repo_native_runtime_policies import (
     check_script_tool_guards,
     check_script_shim_expiry,
     check_script_shims_minimal,

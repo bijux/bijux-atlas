@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import subprocess
 import re
+from importlib import import_module
 from datetime import date, datetime, timezone
 from pathlib import Path
 
@@ -238,8 +239,7 @@ def generate_scripts_sbom(repo_root: Path, lock_rel: str, out_rel: str) -> tuple
     out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return 0, [out_rel]
 
-from atlasctl.checks.repo.native_lint import (
-    check_effects_lint,
-    check_naming_intent_lint,
-    check_root_bin_shims,
-)
+_NATIVE_LINT = import_module("atlasctl.checks.repo.native_lint")
+check_effects_lint = _NATIVE_LINT.check_effects_lint
+check_naming_intent_lint = _NATIVE_LINT.check_naming_intent_lint
+check_root_bin_shims = _NATIVE_LINT.check_root_bin_shims
