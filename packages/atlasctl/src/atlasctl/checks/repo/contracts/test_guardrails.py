@@ -257,7 +257,7 @@ def check_no_unmarked_test_network(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
     for path in sorted(_tests_root(repo_root).rglob("test_*.py")):
         rel = path.relative_to(repo_root).as_posix()
-        if "/tests/network/" in rel:
+        if "/tests/devsuite/network/" in rel:
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
         tree = ast.parse(text, filename=rel)

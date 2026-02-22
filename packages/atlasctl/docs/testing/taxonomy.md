@@ -14,10 +14,10 @@ Atlasctl test modules must align with this taxonomy:
 - A test file may opt into taxonomy explicitly with a header comment:
   - `# test-taxonomy: unit|contract|golden|integration|repo-sim`
 - Without an explicit header, taxonomy is inferred:
-  - `tests/contracts/*` -> `contract`
+  - `tests/checksuite/contracts/*` -> `contract`
   - `tests/goldens/*` and files named `*golden*` -> `golden`
-  - `tests/integration/*` -> `integration`
-  - `tests/repo/*` and `tests/inventory/*` -> `repo-sim`
+  - `tests/opssuite/integration/*` -> `integration`
+  - `tests/policysuite/repo/*` and `tests/policysuite/inventory/*` -> `repo-sim`
   - all others -> `unit`
 
 ## Guardrails

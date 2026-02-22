@@ -76,14 +76,14 @@ def _check_rendered_digests(errors: list[str], checks: dict[str, bool]) -> None:
 
 
 def _check_helm_repo_pinning(errors: list[str], checks: dict[str, bool]) -> None:
-    code, _ = _run(["bash", "ops/k8s/tests/checks/obs/test_helm_repo_pinning.sh"])
+    code, _ = _run(["bash", "ops/k8s/tests/checksuite/checks/obs/test_helm_repo_pinning.sh"])
     checks["helm_repo_pinning"] = code == 0
     if code != 0:
         errors.append("helm repo pinning check failed")
 
 
 def _check_kind_drift(errors: list[str], checks: dict[str, bool]) -> None:
-    code, _ = _run(["bash", "ops/k8s/tests/checks/rollout/test_kind_version_drift.sh"])
+    code, _ = _run(["bash", "ops/k8s/tests/checksuite/checks/rollout/test_kind_version_drift.sh"])
     checks["kind_version_drift"] = code == 0
     if code != 0:
         errors.append("kind version drift check failed")

@@ -14,7 +14,7 @@ Prevents policy regressions that silently widen egress scope.
 
 - Allowed egress: DNS resolution must work when enabled.
 - Forbidden egress: outbound external access must fail by default.
-- Enforced by: `ops/k8s/tests/checks/network/test_networkpolicy.sh`.
+- Enforced by: `ops/k8s/tests/checksuite/checks/network/test_networkpolicy.sh`.
 
 ## Failure modes
 

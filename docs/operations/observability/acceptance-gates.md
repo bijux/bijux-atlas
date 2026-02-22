@@ -22,7 +22,7 @@ Prevents deployments with missing telemetry coverage or invalid alerting assets.
 - Tracing contract is optional unless OTEL enabled: `packages/atlasctl/src/atlasctl/observability/contracts/tracing/check_tracing_contract.py`.
 - Runtime cardinality guardrail must pass: `ops-metrics-check`.
 - Logs schema must pass: `ops-metrics-check`.
-- K8s log gate must validate schema: `ops/k8s/tests/checks/obs/runtime/test_logs_json.sh`.
+- K8s log gate must validate schema: `ops/k8s/tests/checksuite/checks/obs/runtime/test_logs_json.sh`.
 - Drill scripts must assert signal transitions:
   - alerts: `ops-drill-alerts`
   - overload: `ops-drill-overload`

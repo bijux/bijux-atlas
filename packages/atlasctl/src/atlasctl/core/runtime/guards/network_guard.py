@@ -3,9 +3,9 @@ from __future__ import annotations
 import socket
 from typing import Any, Callable
 
-from ..effects import NetworkDecision, resolve_network_mode as resolve_network_mode_policy
-from ..errors import ScriptError
-from ..exit_codes import ERR_CONTEXT
+from ...effects import NetworkDecision, resolve_network_mode as resolve_network_mode_policy
+from ...errors import ScriptError
+from ...exit_codes import ERR_CONTEXT
 
 
 class _NoNetworkSocket(socket.socket):

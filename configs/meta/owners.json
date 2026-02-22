@@ -38,6 +38,7 @@
     "ops": "ops",
     "obs": "ops",
     "owners": "platform",
+    "packages": "platform",
     "policies": "platform",
     "registry": "platform",
     "release": "platform",

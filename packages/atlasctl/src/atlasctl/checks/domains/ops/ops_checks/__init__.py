@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-import subprocess
-import sys
 from pathlib import Path
 
+from .impl.check_ops_manifests_schema import run as run_ops_manifests_schema_check
 from ....repo.native import (
     check_committed_generated_hygiene,
     check_ops_generated_tracked,
@@ -13,15 +12,9 @@ from ....core.base import CheckDef
 
 
 def check_ops_manifests_schema(repo_root: Path) -> tuple[int, list[str]]:
-    proc = subprocess.run(
-        [sys.executable, "packages/atlasctl/src/atlasctl/checks/domains/ops/ops_checks/impl/check_ops_manifests_schema.py"],
-        cwd=repo_root,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
-    output = [line for line in (proc.stdout + proc.stderr).splitlines() if line.strip()]
-    return proc.returncode, output
+    del repo_root
+    code = run_ops_manifests_schema_check()
+    return code, []
 
 
 CHECKS: tuple[CheckDef, ...] = (
