@@ -28,7 +28,7 @@ Unexpected root entries or reintroduced legacy aliases fail CI and local layout 
 ## How to verify
 
 ```bash
-$ make layout-check
+$ make atlasctl-check-layout
 $ make layout-migrate
 ```
 

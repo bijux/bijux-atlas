@@ -32,7 +32,7 @@ Unexpected root additions create undocumented interfaces and drift.
 ## How to verify
 
 ```bash
-$ make layout-check
+$ make atlasctl-check-layout
 ```
 
 Expected output: root-shape check passes.

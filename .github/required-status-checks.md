@@ -5,7 +5,7 @@
 Required branch-protection checks for `main`:
 
 - `workflows-make-only`
-- `layout-check`
+- `atlasctl-check-layout`
 - `script-entrypoints`
 - `fmt`
 - `clippy`

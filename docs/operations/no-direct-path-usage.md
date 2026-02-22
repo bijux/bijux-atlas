@@ -24,7 +24,7 @@ Direct script/path usage causes drift when internals move.
 
 ```bash
 $ make no-direct-scripts
-$ make layout-check
+$ make atlasctl-check-layout
 ```
 
 Expected output: both targets pass.

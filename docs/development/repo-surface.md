@@ -52,7 +52,7 @@ Surface drift breaks automation and team workflows.
 
 ```bash
 $ atlasctl docs script-headers-check --report text
-$ make layout-check
+$ make atlasctl-check-layout
 $ make no-direct-scripts
 ```
 
