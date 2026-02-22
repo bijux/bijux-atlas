@@ -6,26 +6,26 @@ set -euo pipefail
 
 OPS_LIB_ROOT="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(CDPATH='' cd -- "${OPS_LIB_ROOT}/../.." && pwd)"
-# shellcheck source=ops/_lib/run_id.sh
-source "${OPS_LIB_ROOT}/run_id.sh"
-# shellcheck source=ops/_lib/artifacts.sh
-source "${OPS_LIB_ROOT}/artifacts.sh"
-# shellcheck source=ops/_lib/retry.sh
-source "${OPS_LIB_ROOT}/retry.sh"
-# shellcheck source=ops/_lib/timeout.sh
-source "${OPS_LIB_ROOT}/timeout.sh"
+# shellcheck source=ops/_lib/io/run_id.sh
+source "${OPS_LIB_ROOT}/io/run_id.sh"
+# shellcheck source=ops/_lib/io/artifacts.sh
+source "${OPS_LIB_ROOT}/io/artifacts.sh"
+# shellcheck source=ops/_lib/guard/retry.sh
+source "${OPS_LIB_ROOT}/guard/retry.sh"
+# shellcheck source=ops/_lib/guard/timeout.sh
+source "${OPS_LIB_ROOT}/guard/timeout.sh"
 # shellcheck source=ops/_lib/trap_bundle.sh
 source "${OPS_LIB_ROOT}/trap_bundle.sh"
 # shellcheck source=ops/_lib/kubectl.sh
 source "${OPS_LIB_ROOT}/kubectl.sh"
 # shellcheck source=ops/_lib/helm.sh
 source "${OPS_LIB_ROOT}/helm.sh"
-# shellcheck source=ops/_lib/context_guard.sh
-source "${OPS_LIB_ROOT}/context_guard.sh"
-# shellcheck source=ops/_lib/version_guard.sh
-source "${OPS_LIB_ROOT}/version_guard.sh"
-# shellcheck source=ops/_lib/env.sh
-source "${OPS_LIB_ROOT}/env.sh"
+# shellcheck source=ops/_lib/guard/context_guard.sh
+source "${OPS_LIB_ROOT}/guard/context_guard.sh"
+# shellcheck source=ops/_lib/guard/version_guard.sh
+source "${OPS_LIB_ROOT}/guard/version_guard.sh"
+# shellcheck source=ops/_lib/guard/env.sh
+source "${OPS_LIB_ROOT}/guard/env.sh"
 # shellcheck source=ops/_lib/errors.sh
 source "${OPS_LIB_ROOT}/errors.sh"
 # shellcheck source=ops/_lib/log.sh
