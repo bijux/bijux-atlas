@@ -29,7 +29,7 @@ done
 # 3) snapshot metrics + traces + logs
 "$ROOT/ops/obs/scripts/snapshot_metrics.sh" "$OPS_OBS_DIR"
 "$ROOT/ops/obs/scripts/snapshot_traces.sh" "$OPS_OBS_DIR"
-python3 "$ROOT/ops/obs/scripts/validate_logs_schema.py" --namespace "${ATLAS_E2E_NAMESPACE:-atlas-e2e}" --release "${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/validate_logs_schema.py" --namespace "${ATLAS_E2E_NAMESPACE:-atlas-e2e}" --release "${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
 
 # 4) run contracts checks
 python3 "$ROOT/ops/obs/scripts/areas/contracts/check_metrics_contract.py"
@@ -96,7 +96,7 @@ payload={
 print('wrote artifacts/observability/pack-version-stamp.json')
 PY
 "$ROOT/ops/obs/scripts/export_pack_bundle.sh"
-"$ROOT/ops/obs/scripts/write_pack_conformance_report.py"
+"$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/write_pack_conformance_report.py"
 test -s "$ROOT/artifacts/observability/pack-conformance-report.json"
 
 echo "observability coverage test passed"

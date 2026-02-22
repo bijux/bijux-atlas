@@ -1,8 +1,8 @@
 # Legacy Python files allowed outside packages/atlasctl package.
 ops/_meta/generate_layer_contract.py
 ops/load/reports/generate.py
-ops/obs/scripts/check_metric_cardinality.py
-ops/obs/scripts/compute_slo_burn.py
+packages/atlasctl/src/atlasctl/commands/ops/observability/check_metric_cardinality.py
+packages/atlasctl/src/atlasctl/commands/ops/observability/compute_slo_burn.py
 packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_alerts_contract.py
 packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_dashboard_contract.py
 packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_dashboard_metric_compat.py
@@ -19,9 +19,9 @@ packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_tracing_contract
 packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/extract_trace_exemplars.py
 packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/lint_runbooks.py
 packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/write_obs_conformance_report.py
-ops/obs/scripts/summarize_drill_results.py
-ops/obs/scripts/validate_logs_schema.py
-ops/obs/scripts/write_pack_conformance_report.py
+packages/atlasctl/src/atlasctl/commands/ops/observability/summarize_drill_results.py
+packages/atlasctl/src/atlasctl/commands/ops/observability/validate_logs_schema.py
+packages/atlasctl/src/atlasctl/commands/ops/observability/write_pack_conformance_report.py
 ops/stack/tests/check_live_layer_snapshot.py
 scripts/areas/check/check-no-adhoc-python.py
 scripts/areas/check/check-script-errors.py

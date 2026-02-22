@@ -10,7 +10,7 @@ mkdir -p "$(dirname "$out")"
 cat > "$out" <<'EOF'
 bijux_http_requests_total{subsystem="atlas",route="/v1/genes",status="200",query_type="list",dataset="d1",version="v1",request_id="r1"} 1
 EOF
-if python3 "$ROOT/ops/obs/scripts/check_metric_cardinality.py" "$out" >/dev/null 2>&1; then
+if python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/check_metric_cardinality.py" "$out" >/dev/null 2>&1; then
   echo "expected metric cardinality check to fail" >&2
   exit 1
 fi

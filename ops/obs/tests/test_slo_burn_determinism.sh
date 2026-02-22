@@ -14,8 +14,8 @@ K6 Summary
 Checks 100.00%
 EOF
 
-python3 "$ROOT/ops/obs/scripts/compute_slo_burn.py" --k6 "$TMP/score.md" --metrics "$TMP/metrics.prom" --out "$TMP/out-a.json" >/dev/null
-python3 "$ROOT/ops/obs/scripts/compute_slo_burn.py" --k6 "$TMP/score.md" --metrics "$TMP/metrics.prom" --out "$TMP/out-b.json" >/dev/null
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/compute_slo_burn.py" --k6 "$TMP/score.md" --metrics "$TMP/metrics.prom" --out "$TMP/out-a.json" >/dev/null
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/compute_slo_burn.py" --k6 "$TMP/score.md" --metrics "$TMP/metrics.prom" --out "$TMP/out-b.json" >/dev/null
 cmp -s "$TMP/out-a.json" "$TMP/out-b.json"
 
 echo "slo burn determinism passed"
