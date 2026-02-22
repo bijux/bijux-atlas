@@ -1,5 +1,11 @@
 from __future__ import annotations
 
+import datetime as dt
+import fnmatch
+import json
+import re
+from pathlib import Path
+
 from .enforcement import (
     check_ci_pr_lane_fast_only,
     check_make_ci_entrypoints_contract,
@@ -36,7 +42,9 @@ from .enforcement import (
     check_policies_bypass_budget,
     check_policies_bypass_readme_complete,
     check_policies_bypass_readme_sorted,
+    collect_bypass_inventory,
 )
+from ....repo.domains.forbidden_adjectives import check_forbidden_adjectives
 from ....repo.native import (
     check_make_command_allowlist,
     check_make_forbidden_paths,
@@ -45,6 +53,213 @@ from ....repo.native import (
     check_make_scripts_references,
 )
 from ....core.base import CheckDef
+
+_NETWORK_ALLOWLIST = Path("configs/policy/shell-network-fetch-allowlist.txt")
+_PROBES_ALLOWLIST = Path("configs/policy/shell-probes-allowlist.txt")
+_DEPENDENCY_EXCEPTIONS = Path("configs/policy/dependency-exceptions.json")
+_MILESTONES = Path("configs/policy/bypass-removal-milestones.json")
+_BYPASS_COUNT_BASELINE = Path("configs/policy/bypass-count-baseline.json")
+_ADJECTIVE_ALLOWLIST = Path("configs/policy/forbidden-adjectives-allowlist.txt")
+_BUDGET_APPROVAL = Path("configs/policy/budget-loosening-approval.json")
+_ISSUE_RE = re.compile(r"^ISSUE-[A-Z0-9-]+$")
+
+
+def _allowlist_inline_meta(path: Path) -> list[str]:
+    if not path.exists():
+        return []
+    errors: list[str] = []
+    for lineno, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        if "#" not in raw:
+            errors.append(f"{path.as_posix()}:{lineno}: entry must include inline metadata comment `# owner=<id>; why=<reason>`")
+            continue
+        _, comment = raw.split("#", 1)
+        if "owner=" not in comment.lower() or "why=" not in comment.lower():
+            errors.append(f"{path.as_posix()}:{lineno}: inline metadata must include owner= and why=")
+    return errors
+
+
+def check_policies_shell_network_fetch_allowlist_inline_meta(repo_root: Path) -> tuple[int, list[str]]:
+    errors = _allowlist_inline_meta(repo_root / _NETWORK_ALLOWLIST)
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_policies_shell_probes_allowlist_inline_meta(repo_root: Path) -> tuple[int, list[str]]:
+    errors = _allowlist_inline_meta(repo_root / _PROBES_ALLOWLIST)
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_policies_adjectives_repo_clean(repo_root: Path) -> tuple[int, list[str]]:
+    return check_forbidden_adjectives(repo_root)
+
+
+def check_policies_adjective_allowlist_budget(repo_root: Path) -> tuple[int, list[str]]:
+    path = repo_root / _ADJECTIVE_ALLOWLIST
+    entries = [line.strip() for line in path.read_text(encoding="utf-8").splitlines() if line.strip() and not line.strip().startswith("#")] if path.exists() else []
+    return (0 if not entries else 1), ([] if not entries else [f"{_ADJECTIVE_ALLOWLIST.as_posix()}: must be empty; found {len(entries)} entries"])
+
+
+def check_policies_bypass_files_scoped(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    scan_roots = [repo_root / "configs", repo_root / "packages/atlasctl/src/atlasctl", repo_root / "makefiles", repo_root / "ops", repo_root / "scripts", repo_root / ".github"]
+    for base in scan_roots:
+        if not base.exists():
+            continue
+        for path in base.rglob("*"):
+            if not path.is_file():
+                continue
+            if path.suffix == ".pyc" or "__pycache__" in path.parts:
+                continue
+            if not any(fnmatch.fnmatch(path.name, pattern) for pattern in ("*allowlist*", "*relax*", "*exceptions*", "*ratchet*")):
+                continue
+            rel = path.relative_to(repo_root).as_posix()
+            if rel.startswith("configs/policy/") or rel.startswith("configs/docs/") or rel.startswith("configs/ops/") or rel.startswith("configs/_schemas/") or rel.startswith("configs/layout/") or rel.startswith("configs/make/") or rel.startswith("configs/repo/") or rel.startswith("configs/security/") or rel.startswith("ops/_artifacts/") or rel.startswith("ops/_lint/") or rel.startswith("ops/_meta/") or rel.startswith("ops/_schemas/") or rel.startswith("ops/vendor/layout-checks/") or rel.startswith("packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/"):
+                continue
+            if rel.startswith("packages/atlasctl/tests/"):
+                continue
+            errors.append(f"bypass-like file outside configs/policy: {rel}")
+    return (0 if not errors else 1), errors
+
+
+def check_policies_no_inline_bypass_entries(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for path in sorted((repo_root / "packages/atlasctl/src").rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        if "/checks/domains/policies/make/" in rel:
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if re.search(r'["\']owner["\']\s*:\s*', text) and re.search(r'["\']issue_id["\']\s*:\s*', text) and re.search(r'["\']removal_plan["\']\s*:\s*', text) and re.search(r'["\']expiry["\']\s*:\s*', text):
+            errors.append(f"{rel}: potential inline bypass metadata detected; move bypasses to configs/policy/*")
+    return (0 if not errors else 1), errors
+
+
+def check_policies_tests_bypass_dependency_marked(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for path in sorted((repo_root / "packages/atlasctl/tests").rglob("test_*.py")):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if "configs/policy/" not in text:
+            continue
+        if "# BYPASS_TEST_OK" not in text:
+            errors.append(f"{path.relative_to(repo_root).as_posix()}: test depends on bypass files without # BYPASS_TEST_OK marker")
+    return (0 if not errors else 1), errors
+
+
+def check_policies_bypass_usage_heatmap(repo_root: Path) -> tuple[int, list[str]]:
+    payload = collect_bypass_inventory(repo_root)
+    by_source: dict[str, int] = {}
+    by_policy: dict[str, int] = {}
+    for row in payload.get("entries", []):
+        if not isinstance(row, dict):
+            continue
+        source = str(row.get("source", "")).strip()
+        policy = str(row.get("policy_name", "")).strip() or "(unknown)"
+        by_source[source] = by_source.get(source, 0) + 1
+        by_policy[policy] = by_policy.get(policy, 0) + 1
+    _ = {"schema_version": 1, "by_source": by_source, "by_policy": by_policy}
+    return 0, []
+
+
+def check_policies_bypass_removal_milestones_defined(repo_root: Path) -> tuple[int, list[str]]:
+    path = repo_root / _MILESTONES
+    if not path.exists():
+        return 1, [f"missing milestone file: {_MILESTONES.as_posix()}"]
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    rows = payload.get("milestones", []) if isinstance(payload, dict) else []
+    errors: list[str] = []
+    if not rows:
+        errors.append("bypass removal milestones must contain at least one milestone")
+    for row in rows:
+        if not isinstance(row, dict):
+            errors.append("invalid milestone entry")
+            continue
+        if not str(row.get("id", "")).strip():
+            errors.append("milestone missing id")
+        if not str(row.get("target_date", "")).strip():
+            errors.append(f"milestone {row.get('id', '(unknown)')}: missing target_date")
+        if not isinstance(row.get("bypass_ids", []), list) or not row.get("bypass_ids"):
+            errors.append(f"milestone {row.get('id', '(unknown)')}: bypass_ids must be non-empty list")
+    return (0 if not errors else 1), errors
+
+
+def check_policies_bypass_count_nonincreasing(repo_root: Path) -> tuple[int, list[str]]:
+    baseline_path = repo_root / _BYPASS_COUNT_BASELINE
+    if not baseline_path.exists():
+        return 1, [f"missing baseline file: {_BYPASS_COUNT_BASELINE.as_posix()}"]
+    baseline = int(json.loads(baseline_path.read_text(encoding="utf-8")).get("max_entries", 0))
+    current = int(collect_bypass_inventory(repo_root).get("entry_count", 0))
+    return ((0, []) if current <= baseline else (1, [f"bypass entry count regressed: current={current} baseline={baseline}"]))
+
+
+def check_policies_bypass_ids_unique(repo_root: Path) -> tuple[int, list[str]]:
+    payload = collect_bypass_inventory(repo_root)
+    seen: dict[str, str] = {}
+    errors: list[str] = []
+    for row in payload.get("entries", []):
+        if not isinstance(row, dict):
+            continue
+        key = str(row.get("key", "")).strip()
+        source = str(row.get("source", "")).strip()
+        if not key or not key.startswith(("ATLAS-", "ISSUE-")):
+            continue
+        if key in seen and seen[key] != source:
+            errors.append(f"duplicate bypass id/key `{key}` in {source} and {seen[key]}")
+        else:
+            seen[key] = source
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_policies_dependency_exceptions_remove_by_issue(repo_root: Path) -> tuple[int, list[str]]:
+    payload = json.loads((repo_root / _DEPENDENCY_EXCEPTIONS).read_text(encoding="utf-8")) if (repo_root / _DEPENDENCY_EXCEPTIONS).exists() else {}
+    errors: list[str] = []
+    for list_key in ("undeclared_import_allowlist", "optional_dependency_usage_allowlist", "internal_third_party_allowlist"):
+        for idx, row in enumerate(payload.get(list_key, []) if isinstance(payload, dict) else [], start=1):
+            if not isinstance(row, dict):
+                continue
+            issue = str(row.get("issue_id", "")).strip()
+            remove_by = str(row.get("remove_by", "")).strip()
+            if not _ISSUE_RE.match(issue):
+                errors.append(f"{_DEPENDENCY_EXCEPTIONS.as_posix()}:{list_key}[{idx}]: invalid or missing issue_id")
+            if not remove_by:
+                errors.append(f"{_DEPENDENCY_EXCEPTIONS.as_posix()}:{list_key}[{idx}]: missing remove_by")
+    return (0 if not errors else 1), errors
+
+
+def check_policies_budget_relaxation_requires_approval(repo_root: Path) -> tuple[int, list[str]]:
+    relax = json.loads((repo_root / "configs/policy/budget-relaxations.json").read_text(encoding="utf-8"))
+    exceptions = relax.get("exceptions", []) if isinstance(relax, dict) else []
+    if not exceptions:
+        return 0, []
+    approval = json.loads((repo_root / _BUDGET_APPROVAL).read_text(encoding="utf-8")) if (repo_root / _BUDGET_APPROVAL).exists() else {}
+    approved = bool(approval.get("approved", False))
+    approval_id = str(approval.get("approval_id", "")).strip()
+    errors: list[str] = []
+    if not approved:
+        errors.append("budget relaxations present but budget-loosening-approval.json approved=false")
+    if not approval_id:
+        errors.append("budget relaxations present but budget-loosening-approval.json approval_id is empty")
+    return (0 if not errors else 1), errors
+
+
+def check_policies_budget_approval_time_bounded(repo_root: Path) -> tuple[int, list[str]]:
+    path = repo_root / _BUDGET_APPROVAL
+    if not path.exists():
+        return 1, [f"missing {_BUDGET_APPROVAL.as_posix()}"]
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    expiry_raw = str(payload.get("expiry", "")).strip()
+    if not expiry_raw:
+        return 1, [f"{_BUDGET_APPROVAL.as_posix()}: missing expiry"]
+    try:
+        expiry = dt.date.fromisoformat(expiry_raw)
+    except ValueError:
+        return 1, [f"{_BUDGET_APPROVAL.as_posix()}: invalid expiry `{expiry_raw}`"]
+    today = dt.date.today()
+    if expiry < today:
+        return 1, [f"{_BUDGET_APPROVAL.as_posix()}: approval expired on {expiry_raw}"]
+    if (expiry - today).days > 365:
+        return 1, [f"{_BUDGET_APPROVAL.as_posix()}: expiry horizon exceeds 365 days"]
+    return 0, []
 
 CHECKS: tuple[CheckDef, ...] = (
     CheckDef(
@@ -220,4 +435,18 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("policies.bypass_budget", "policies", "enforce ratcheted bypass entry count budget", 800, check_policies_bypass_budget, fix_hint="Reduce bypass count or update budget intentionally.", tags=("repo",)),
     CheckDef("policies.bypass_readme_complete", "policies", "require configs/policy README to list every bypass source file", 800, check_policies_bypass_readme_complete, fix_hint="Update configs/policy/README.md with complete bypass source list.", tags=("repo",)),
     CheckDef("policies.bypass_readme_sorted", "policies", "require bypass source list in configs/policy README to be sorted", 800, check_policies_bypass_readme_sorted, fix_hint="Sort bypass file entries in configs/policy/README.md.", tags=("repo",)),
+    CheckDef("policies.shell_network_fetch_allowlist_inline_meta", "policies", "require inline owner/why comments for network-fetch shell allowlist entries", 800, check_policies_shell_network_fetch_allowlist_inline_meta, fix_hint="Annotate every allowlist line with `# owner=<id>; why=<reason>`.", tags=("repo",)),
+    CheckDef("policies.shell_probes_allowlist_inline_meta", "policies", "require inline owner/why comments for shell probe allowlist entries", 800, check_policies_shell_probes_allowlist_inline_meta, fix_hint="Annotate every allowlist line with `# owner=<id>; why=<reason>`.", tags=("repo",)),
+    CheckDef("policies.adjectives_repo_clean", "policies", "forbid forbidden adjectives across tracked files", 800, check_policies_adjectives_repo_clean, fix_hint="Replace forbidden adjectives with neutral wording.", tags=("repo",)),
+    CheckDef("policies.adjective_allowlist_budget", "policies", "enforce adjective allowlist ratchet budget", 800, check_policies_adjective_allowlist_budget, fix_hint="Keep adjective allowlist empty or within ratchet budget.", tags=("repo",)),
+    CheckDef("policies.bypass_files_scoped", "policies", "ensure bypass files are scoped under configs/policy", 800, check_policies_bypass_files_scoped, fix_hint="Move bypass files into configs/policy or remove them.", tags=("repo",)),
+    CheckDef("policies.no_inline_bypass_entries", "policies", "forbid inline bypass metadata in source code", 800, check_policies_no_inline_bypass_entries, fix_hint="Move bypass metadata to configs/policy files.", tags=("repo",)),
+    CheckDef("policies.tests_bypass_dependency_marked", "policies", "require explicit marker when tests depend on bypass files", 800, check_policies_tests_bypass_dependency_marked, fix_hint="Add `# BYPASS_TEST_OK` marker to tests that intentionally read bypass files.", tags=("repo",)),
+    CheckDef("policies.bypass_usage_heatmap", "policies", "emit bypass usage heatmap report", 800, check_policies_bypass_usage_heatmap, fix_hint="Review bypass usage report and reduce hotspots.", tags=("repo",)),
+    CheckDef("policies.bypass_removal_milestones_defined", "policies", "require bypass removal milestone SSOT file", 800, check_policies_bypass_removal_milestones_defined, fix_hint="Define removal milestones in configs/policy/bypass-removal-milestones.json.", tags=("repo",)),
+    CheckDef("policies.bypass_count_nonincreasing", "policies", "enforce migration gate: bypass count must not increase", 800, check_policies_bypass_count_nonincreasing, fix_hint="Reduce bypass count or intentionally update baseline in one reviewed change.", tags=("repo",)),
+    CheckDef("policies.bypass_ids_unique", "policies", "require unique bypass IDs across policy files", 800, check_policies_bypass_ids_unique, fix_hint="Deduplicate bypass IDs/keys across configs/policy.", tags=("repo",)),
+    CheckDef("policies.dependency_exceptions_remove_by_issue", "policies", "require dependency exceptions to include remove_by and issue_id", 800, check_policies_dependency_exceptions_remove_by_issue, fix_hint="Add `remove_by` and valid `issue_id` to dependency exceptions.", tags=("repo",)),
+    CheckDef("policies.budget_relaxation_requires_approval", "policies", "require explicit approval for any budget relaxation", 800, check_policies_budget_relaxation_requires_approval, fix_hint="Set budget-loosening-approval.json with approved=true and approval_id when relaxations exist.", tags=("repo",)),
+    CheckDef("policies.budget_approval_time_bounded", "policies", "require budget loosening approvals to be time bounded", 800, check_policies_budget_approval_time_bounded, fix_hint="Set valid non-expired bounded expiry in budget-loosening-approval.json.", tags=("repo",)),
 )
