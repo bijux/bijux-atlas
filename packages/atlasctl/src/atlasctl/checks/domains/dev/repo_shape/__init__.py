@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ..layout.root import (
+from ....layout.root import (
     DIRECT_SCRIPT_RUNS_CHECK_ID,
     DIRECT_SCRIPT_RUNS_DESCRIPTION,
     FORBIDDEN_PATHS_CHECK_ID,

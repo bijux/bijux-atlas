@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 def check_registry_integrity(repo_root: Path) -> tuple[int, list[str]]:
-    from ..registry.ssot import generate_registry_json
+    from ....registry.ssot import generate_registry_json
 
     try:
         _out, changed = generate_registry_json(repo_root, check_only=True)

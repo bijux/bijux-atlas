@@ -6,6 +6,7 @@
 
 - Root python files in `atlasctl/checks/` are restricted to `__init__.py` only.
 - Registry artifacts are allowed at root: `REGISTRY.toml` and `REGISTRY.generated.json`.
+- Root directory/module count cap is `10` (excluding `__pycache__`).
 - Grouped check-domain folders live under `atlasctl/checks/domains/`, capped at `10` top-level modules.
 - Root python module policy is stricter and requires exactly one (`__init__.py`).
 
