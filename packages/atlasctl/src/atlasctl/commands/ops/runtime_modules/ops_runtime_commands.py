@@ -812,27 +812,53 @@ def _ops_undeploy_native(ctx: RunContext, report_format: str) -> int:
 
 
 def _ops_k8s_restart_native(ctx: RunContext, report_format: str) -> int:
-    script = """
-set -euo pipefail
-. ./ops/_lib/common.sh
-ops_init_run_id
-export RUN_ID="$OPS_RUN_ID"
-export ARTIFACT_DIR="$OPS_RUN_DIR"
-ops_env_load
-ops_entrypoint_start "k8s-restart"
-ops_version_guard kubectl
-NS="${ATLAS_E2E_NAMESPACE:-${ATLAS_NS:-$(ops_layer_ns_k8s)}}"
-RELEASE="${ATLAS_E2E_RELEASE_NAME:-$(ops_layer_contract_get release_metadata.defaults.release_name)}"
-SERVICE_NAME="${ATLAS_E2E_SERVICE_NAME:-$(ops_layer_service_atlas)}"
-TIMEOUT="${ATLAS_E2E_TIMEOUT:-180s}"
-./bin/atlasctl ops k8s --report text validate-configmap-keys "$NS" "$SERVICE_NAME"
-echo "rolling restart deployment/${SERVICE_NAME} in namespace ${NS}"
-ops_kubectl -n "$NS" rollout restart deployment/"$SERVICE_NAME" >/dev/null
-ops_kubectl -n "$NS" rollout status deployment/"$SERVICE_NAME" --timeout="$TIMEOUT" >/dev/null
-ops_kubectl -n "$NS" get deploy "$SERVICE_NAME" -o jsonpath='{.status.readyReplicas}' | grep -Eq '^[1-9][0-9]*$'
-echo "k8s restart passed (ns=${NS} release=${RELEASE} service=${SERVICE_NAME})"
-"""
-    return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
+    repo = ctx.repo_root
+    outputs: list[str] = []
+
+    if shutil.which("kubectl") is None:
+        return _emit_ops_status(report_format, 1, "missing required tool: kubectl")
+
+    layer_contract = json.loads((repo / "ops/_meta/layer-contract.json").read_text(encoding="utf-8"))
+    namespaces = layer_contract.get("namespaces", {}) if isinstance(layer_contract, dict) else {}
+    release_meta = layer_contract.get("release_metadata", {}) if isinstance(layer_contract, dict) else {}
+    atlas_services = layer_contract.get("atlas_services", {}) if isinstance(layer_contract, dict) else {}
+    release_defaults = release_meta.get("defaults", {}) if isinstance(release_meta, dict) else {}
+
+    ns = (
+        os.environ.get("ATLAS_E2E_NAMESPACE")
+        or os.environ.get("ATLAS_NS")
+        or str(namespaces.get("k8s", "atlas-e2e"))
+    )
+    release = os.environ.get("ATLAS_E2E_RELEASE_NAME") or str(release_defaults.get("release_name", "atlas-e2e"))
+    service_name = os.environ.get("ATLAS_E2E_SERVICE_NAME") or str(atlas_services.get("atlas", "bijux-atlas"))
+    timeout = os.environ.get("ATLAS_E2E_TIMEOUT") or "180s"
+
+    validate = run_command([*SELF_CLI, "ops", "k8s", "--report", "text", "validate-configmap-keys", ns, service_name], repo, ctx=ctx)
+    if validate.combined_output.strip():
+        outputs.append(validate.combined_output.rstrip())
+    if validate.code != 0:
+        return _emit_ops_status(report_format, validate.code, "\n".join(outputs).strip())
+
+    outputs.append(f"rolling restart deployment/{service_name} in namespace {ns}")
+    for cmd in (
+        ["kubectl", "-n", ns, "rollout", "restart", f"deployment/{service_name}"],
+        ["kubectl", "-n", ns, "rollout", "status", f"deployment/{service_name}", f"--timeout={timeout}"],
+        ["kubectl", "-n", ns, "get", "deploy", service_name, "-o", "jsonpath={.status.readyReplicas}"],
+    ):
+        result = run_command(cmd, repo, ctx=ctx)
+        out = result.combined_output.strip()
+        if out:
+            outputs.append(out)
+        if result.code != 0:
+            return _emit_ops_status(report_format, result.code, "\n".join(outputs).strip())
+        if cmd[3:5] == ["get", "deploy"]:
+            ready = out.strip()
+            if not re.fullmatch(r"[1-9][0-9]*", ready):
+                outputs.append(f"deployment {service_name} has non-ready replica count: {ready or '<empty>'}")
+                return _emit_ops_status(report_format, 1, "\n".join(outputs).strip())
+
+    outputs.append(f"k8s restart passed (ns={ns} release={release} service={service_name})")
+    return _emit_ops_status(report_format, 0, "\n".join(outputs).strip())
 
 
 def _ops_k8s_validate_configmap_keys_native(ctx: RunContext, report_format: str, namespace: str | None, service_name: str | None) -> int:
