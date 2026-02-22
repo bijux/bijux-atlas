@@ -17,7 +17,6 @@
     {"path": "ops/run/down.sh", "owner": "ops", "description": "bring environment down"},
     {"path": "ops/run/e2e.sh", "owner": "ops", "description": "e2e suite entrypoint"},
     {"path": "ops/run/k8s-restart.sh", "owner": "ops", "description": "restart k8s workload"},
-    {"path": "ops/run/load-smoke.sh", "owner": "ops", "description": "load smoke entrypoint"},
     {"path": "ops/run/load-suite.sh", "owner": "ops", "description": "load suite entrypoint"},
     {"path": "ops/run/obs-up.sh", "owner": "ops", "description": "bring observability stack up"},
     {"path": "ops/run/obs-validate.sh", "owner": "ops", "description": "validate observability stack"},

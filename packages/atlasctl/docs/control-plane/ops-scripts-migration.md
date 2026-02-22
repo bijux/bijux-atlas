@@ -38,7 +38,7 @@ Classification legend:
 | `ops/run/k8s-suite.sh` | glue | planned | `atlasctl k8s suite` / `atlasctl ops k8s suite` |
 | `ops/run/k8s-tests.sh` | glue | planned | `atlasctl k8s tests` |
 | `ops/run/k8s-validate-configmap-keys.sh` | logic | planned | `atlasctl ops k8s validate-configmap-keys` |
-| `ops/run/load-smoke.sh` | glue | planned | `atlasctl load smoke` |
+| `ops/run/load-smoke.sh` | glue | deleted (folded into orchestrator) | `atlasctl ops load smoke` / `atlasctl load smoke` |
 | `ops/run/load-suite.sh` | glue | planned | `atlasctl ops load run` |
 | `ops/run/obs-up.sh` | logic | planned | `atlasctl ops obs up` |
 | `ops/run/obs-validate.sh` | glue | planned | `atlasctl obs validate` / `atlasctl ops obs validate` |

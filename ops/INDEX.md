@@ -30,7 +30,6 @@
 - `ops/run/k8s-tests.sh`
 - `ops/run/k8s-suite.sh`
 - `ops/run/load-suite.sh`
-- `ops/run/load-smoke.sh`
 - `ops/run/obs-up.sh`
 - `ops/run/obs-verify.sh`
 - `ops/run/obs-validate.sh`
