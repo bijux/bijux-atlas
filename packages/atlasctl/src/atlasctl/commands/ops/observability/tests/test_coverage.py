@@ -1,6 +1,16 @@
-#!/usr/bin/env bash
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import subprocess
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[7]
+
+
+def main() -> int:
+    script = r"""
 set -euo pipefail
-ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)"
+ROOT="$(pwd)"
 . "$ROOT/ops/obs/tests/observability-test-lib.sh"
 
 require_bin curl
@@ -11,12 +21,10 @@ OUT_DIR="$ROOT/artifacts/observability"
 OPS_OBS_DIR="$ROOT/artifacts/ops/obs"
 mkdir -p "$OUT_DIR" "$OPS_OBS_DIR"
 
-# 1) install pack
 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/install_pack.py"
 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/verify_pack.py"
 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/pack_health.py"
 
-# 2) short mixed workload
 ATLAS_BASE_URL="${ATLAS_BASE_URL:-http://127.0.0.1:18080}"
 for _ in $(seq 1 5); do
   curl -fsS "$ATLAS_BASE_URL/healthz" >/dev/null || true
@@ -26,12 +34,10 @@ for _ in $(seq 1 5); do
   sleep 1
 done
 
-# 3) snapshot metrics + traces + logs
 python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/snapshot_metrics.py" "$OPS_OBS_DIR"
 python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/snapshot_traces.py" "$OPS_OBS_DIR"
 python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/validate_logs_schema.py" --namespace "${ATLAS_E2E_NAMESPACE:-atlas-e2e}" --release "${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
 
-# 4) run contracts checks
 python3 "$ROOT/ops/obs/scripts/areas/contracts/check_metrics_contract.py"
 python3 "$ROOT/ops/obs/scripts/areas/contracts/check_metrics_coverage.py"
 python3 "$ROOT/ops/obs/scripts/areas/contracts/check_metrics_drift.py"
@@ -46,7 +52,6 @@ python3 "$ROOT/packages/atlasctl/src/atlasctl/obs/contracts/check_dashboard_cont
 python3 "$ROOT/packages/atlasctl/src/atlasctl/obs/contracts/check_alerts_contract.py"
 python3 "$ROOT/packages/atlasctl/src/atlasctl/obs/contracts/lint_runbooks.py"
 
-# minimum coverage threshold (tier-0)
 python3 - <<'PY'
 import json,re,sys
 from pathlib import Path
@@ -66,7 +71,6 @@ if ratio < 0.95:
     sys.exit(1)
 PY
 
-# artifacts contract + version stamp
 python3 - <<'PY'
 import json,subprocess
 from pathlib import Path
@@ -100,3 +104,9 @@ PY
 test -s "$ROOT/artifacts/observability/pack-conformance-report.json"
 
 echo "observability coverage test passed"
+"""
+    return subprocess.run(["bash", "-lc", script], cwd=ROOT).returncode
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
