@@ -12,6 +12,8 @@ from atlasctl.core.context import RunContext
 from atlasctl.core.process import run_command
 from atlasctl.core.runtime.paths import write_text_file
 
+SELF_CLI = ["./bin/atlasctl"]
+
 
 def _write_json_report(repo_root: Path, out_rel: str, payload: dict[str, object]) -> str:
     out = Path(out_rel)
