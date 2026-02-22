@@ -9,6 +9,7 @@ from .enforcement import (
     check_make_no_direct_script_exec_drift,
     check_make_no_direct_python_only_atlasctl,
     check_make_no_direct_bash_ops,
+    check_make_no_legacy_script_aliases,
     check_make_no_direct_scripts_only_atlasctl,
     check_make_lane_reports_via_atlasctl_reporting,
     check_ci_workflows_call_make_and_make_calls_atlasctl,
@@ -142,6 +143,14 @@ CHECKS: tuple[CheckDef, ...] = (
         1000,
         check_make_no_python_module_invocation,
         fix_hint="Use ./bin/atlasctl in make recipes.",
+    ),
+    CheckDef(
+        "make.no_legacy_script_aliases",
+        "make",
+        "forbid legacy make alias tokens (ATLAS_SCRIPTS/SCRIPTS/PY_RUN)",
+        1000,
+        check_make_no_legacy_script_aliases,
+        fix_hint="Use ./bin/atlasctl or $(ATLASCTL) wrappers only.",
     ),
     CheckDef(
         "make.root_budget",

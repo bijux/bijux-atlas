@@ -19,6 +19,7 @@ _BASH_OPS_RE = re.compile(r"(?:^|\s)(?:bash|sh)\s+(?:\./)?ops/[^\s]+")
 _WRITE_RE = re.compile(r"(?:^|\s)(?:cp\s+[^\n]*\s+|mv\s+[^\n]*\s+|cat\s+>\s*|tee\s+|mkdir\s+-p\s+|touch\s+|>\s*|>>\s*)([^\s\"';]+)")
 _ATLASCTL_MODULE_RE = re.compile(r"\bpython3?\s+-m\s+atlasctl\.cli\b")
 _ATLASCTL_SUITE_RUN_RE = re.compile(r"\batlasctl\s+suite\s+run\s+([A-Za-z0-9_.-]+)\b")
+_LEGACY_MAKE_ALIAS_RE = re.compile(r"\$\((ATLAS_SCRIPTS|SCRIPTS|PY_RUN)\)|\b(ATLAS_SCRIPTS|SCRIPTS|PY_RUN)\b")
 _WRAPPER_FILES = (
     "makefiles/dev.mk",
     "makefiles/docs.mk",
@@ -361,4 +362,17 @@ def check_public_make_targets_map_to_atlasctl(repo_root: Path) -> tuple[int, lis
         block = match_block
         if "atlasctl" not in block and "$(ATLAS_SCRIPTS)" not in block and "$(SCRIPTS)" not in block and "$(MAKE)" not in block:
             errors.append(f"public target must delegate to atlasctl wrappers: {target} ({match_rel})")
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_make_no_legacy_script_aliases(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    files = [repo_root / "Makefile", *sorted((repo_root / "makefiles").glob("*.mk"))]
+    for path in files:
+        rel = path.relative_to(repo_root).as_posix()
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        for lineno, line in enumerate(text.splitlines(), start=1):
+            if _LEGACY_MAKE_ALIAS_RE.search(line) is None:
+                continue
+            errors.append(f"{rel}:{lineno}: legacy make alias token is forbidden (`ATLAS_SCRIPTS`, `SCRIPTS`, `PY_RUN`)")
     return (0 if not errors else 1), sorted(errors)
