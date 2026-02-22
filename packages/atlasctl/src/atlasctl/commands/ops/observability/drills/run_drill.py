@@ -47,8 +47,8 @@ def main() -> int:
             status = 'fail'
     except subprocess.TimeoutExpired:
         status = 'fail'
-    subprocess.call(['bash','ops/obs/scripts/snapshot_metrics.sh', str(ops_obs_dir)])
-    subprocess.call(['bash','ops/obs/scripts/snapshot_traces.sh', str(ops_obs_dir)])
+    subprocess.call(['python3','packages/atlasctl/src/atlasctl/commands/ops/observability/snapshot_metrics.py', str(ops_obs_dir)])
+    subprocess.call(['python3','packages/atlasctl/src/atlasctl/commands/ops/observability/snapshot_traces.py', str(ops_obs_dir)])
     log_snapshot = ops_obs_dir / f'drill-{drill}.logs.txt'
     with log_snapshot.open('wb') as f:
         subprocess.call(['kubectl','-n',os.environ.get('ATLAS_E2E_NAMESPACE','atlas-e2e'),'logs','-l',f"app.kubernetes.io/instance={os.environ.get('ATLAS_E2E_RELEASE_NAME','atlas-e2e')}",'--all-containers','--tail=2000'], stdout=f, stderr=subprocess.DEVNULL)

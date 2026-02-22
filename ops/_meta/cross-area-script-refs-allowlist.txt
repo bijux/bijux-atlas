@@ -43,8 +43,8 @@ makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/pack_
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/prom_outage.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/run_drill.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/smoke_pack.py
-makefiles/ops.mk|ops/obs/scripts/snapshot_metrics.sh
-makefiles/ops.mk|ops/obs/scripts/snapshot_traces.sh
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/snapshot_metrics.py
+makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/snapshot_traces.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/store_latency_injection.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/store_outage_under_load.py
 makefiles/ops.mk|packages/atlasctl/src/atlasctl/commands/ops/observability/drills/store_outage.py

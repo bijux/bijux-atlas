@@ -27,8 +27,8 @@ for _ in $(seq 1 5); do
 done
 
 # 3) snapshot metrics + traces + logs
-"$ROOT/ops/obs/scripts/snapshot_metrics.sh" "$OPS_OBS_DIR"
-"$ROOT/ops/obs/scripts/snapshot_traces.sh" "$OPS_OBS_DIR"
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/snapshot_metrics.py" "$OPS_OBS_DIR"
+python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/snapshot_traces.py" "$OPS_OBS_DIR"
 python3 "$ROOT/packages/atlasctl/src/atlasctl/commands/ops/observability/validate_logs_schema.py" --namespace "${ATLAS_E2E_NAMESPACE:-atlas-e2e}" --release "${ATLAS_E2E_RELEASE_NAME:-atlas-e2e}"
 
 # 4) run contracts checks
