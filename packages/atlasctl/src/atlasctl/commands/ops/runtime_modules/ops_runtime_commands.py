@@ -11,6 +11,13 @@ from pathlib import Path
 from atlasctl.core.context import RunContext
 from atlasctl.core.process import run_command
 from atlasctl.core.runtime.paths import write_text_file
+from atlasctl.commands.ops.runtime_modules.layer_contract import (
+    load_layer_contract,
+    ns_e2e as lc_ns_e2e,
+    ns_k8s as lc_ns_k8s,
+    release_default as lc_release_default,
+    service_atlas as lc_service_atlas,
+)
 
 SELF_CLI = ["./bin/atlasctl"]
 
@@ -822,13 +829,9 @@ def _ops_undeploy_native(ctx: RunContext, report_format: str) -> int:
     if shutil.which("helm") is None:
         return _emit_ops_status(report_format, 1, "missing required tool: helm")
 
-    layer_contract = json.loads((repo / "ops/_meta/layer-contract.json").read_text(encoding="utf-8"))
-    namespaces = layer_contract.get("namespaces", {}) if isinstance(layer_contract, dict) else {}
-    release_meta = layer_contract.get("release_metadata", {}) if isinstance(layer_contract, dict) else {}
-    defaults = release_meta.get("defaults", {}) if isinstance(release_meta, dict) else {}
-
-    ns = os.environ.get("ATLAS_E2E_NAMESPACE") or os.environ.get("ATLAS_NS") or str(namespaces.get("e2e", "atlas-e2e"))
-    release = os.environ.get("ATLAS_E2E_RELEASE_NAME") or str(defaults.get("release_name", "atlas-e2e"))
+    layer_contract = load_layer_contract(repo)
+    ns = os.environ.get("ATLAS_E2E_NAMESPACE") or os.environ.get("ATLAS_NS") or lc_ns_e2e(layer_contract)
+    release = os.environ.get("ATLAS_E2E_RELEASE_NAME") or lc_release_default(layer_contract)
 
     result = run_command(["helm", "-n", ns, "uninstall", release], repo, ctx=ctx)
     if result.combined_output.strip():
@@ -845,19 +848,15 @@ def _ops_k8s_restart_native(ctx: RunContext, report_format: str) -> int:
     if shutil.which("kubectl") is None:
         return _emit_ops_status(report_format, 1, "missing required tool: kubectl")
 
-    layer_contract = json.loads((repo / "ops/_meta/layer-contract.json").read_text(encoding="utf-8"))
-    namespaces = layer_contract.get("namespaces", {}) if isinstance(layer_contract, dict) else {}
-    release_meta = layer_contract.get("release_metadata", {}) if isinstance(layer_contract, dict) else {}
-    atlas_services = layer_contract.get("atlas_services", {}) if isinstance(layer_contract, dict) else {}
-    release_defaults = release_meta.get("defaults", {}) if isinstance(release_meta, dict) else {}
+    layer_contract = load_layer_contract(repo)
 
     ns = (
         os.environ.get("ATLAS_E2E_NAMESPACE")
         or os.environ.get("ATLAS_NS")
-        or str(namespaces.get("k8s", "atlas-e2e"))
+        or lc_ns_k8s(layer_contract)
     )
-    release = os.environ.get("ATLAS_E2E_RELEASE_NAME") or str(release_defaults.get("release_name", "atlas-e2e"))
-    service_name = os.environ.get("ATLAS_E2E_SERVICE_NAME") or str(atlas_services.get("atlas", "bijux-atlas"))
+    release = os.environ.get("ATLAS_E2E_RELEASE_NAME") or lc_release_default(layer_contract)
+    service_name = os.environ.get("ATLAS_E2E_SERVICE_NAME") or lc_service_atlas(layer_contract)
     timeout = os.environ.get("ATLAS_E2E_TIMEOUT") or "180s"
 
     validate = run_command([*SELF_CLI, "ops", "k8s", "--report", "text", "validate-configmap-keys", ns, service_name], repo, ctx=ctx)
@@ -904,16 +903,14 @@ def _ops_k8s_validate_configmap_keys_native(ctx: RunContext, report_format: str,
     if missing:
         return _emit_ops_status(report_format, 1, "\n".join(f"missing required tool: {tool}" for tool in missing))
 
-    layer_contract = json.loads((repo / "ops/_meta/layer-contract.json").read_text(encoding="utf-8"))
-    namespaces = layer_contract.get("namespaces", {}) if isinstance(layer_contract, dict) else {}
-    atlas_services = layer_contract.get("atlas_services", {}) if isinstance(layer_contract, dict) else {}
+    layer_contract = load_layer_contract(repo)
     ns = (
         namespace
         or os.environ.get("ATLAS_E2E_NAMESPACE")
         or os.environ.get("ATLAS_NS")
-        or str(namespaces.get("k8s", "atlas-e2e"))
+        or lc_ns_k8s(layer_contract)
     )
-    svc = service_name or os.environ.get("ATLAS_E2E_SERVICE_NAME") or str(atlas_services.get("atlas", "bijux-atlas"))
+    svc = service_name or os.environ.get("ATLAS_E2E_SERVICE_NAME") or lc_service_atlas(layer_contract)
     cm_name = f"{svc}-config"
     values_file = (
         os.environ.get("ATLAS_E2E_VALUES_FILE")
@@ -985,15 +982,13 @@ def _ops_k8s_apply_config_native(ctx: RunContext, report_format: str) -> int:
     if missing:
         return _emit_ops_status(report_format, 1, "\n".join(f"missing required tool: {tool}" for tool in missing))
 
-    layer_contract = json.loads((repo / "ops/_meta/layer-contract.json").read_text(encoding="utf-8"))
-    namespaces = layer_contract.get("namespaces", {}) if isinstance(layer_contract, dict) else {}
-    atlas_services = layer_contract.get("atlas_services", {}) if isinstance(layer_contract, dict) else {}
+    layer_contract = load_layer_contract(repo)
     ns = (
         os.environ.get("ATLAS_E2E_NAMESPACE")
         or os.environ.get("ATLAS_NS")
-        or str(namespaces.get("k8s", "atlas-e2e"))
+        or lc_ns_k8s(layer_contract)
     )
-    service_name = os.environ.get("ATLAS_E2E_SERVICE_NAME") or str(atlas_services.get("atlas", "bijux-atlas"))
+    service_name = os.environ.get("ATLAS_E2E_SERVICE_NAME") or lc_service_atlas(layer_contract)
     cm_name = f"{service_name}-config"
     values_file = (
         os.environ.get("ATLAS_E2E_VALUES_FILE")
