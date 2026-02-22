@@ -5,6 +5,7 @@ import json
 
 from ....core.context import RunContext
 from ....core.fs import ensure_evidence_path
+from ....core.runtime.paths import write_text_file
 from ....core.runtime.script_registry import emit_script_registry_evidence, lint_script_registry
 from ....core.schema.schema_utils import validate_json
 from .suite_engine import run_lint_suite
@@ -40,7 +41,7 @@ def run_lint_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
     if ns.emit_artifacts:
         out = ensure_evidence_path(ctx, ctx.evidence_root / "lint" / ns.suite / ctx.run_id / "report.json")
-        out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        write_text_file(out, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
     if ns.report == "json" or ctx.output_format == "json":
         print(json.dumps(payload, sort_keys=True))

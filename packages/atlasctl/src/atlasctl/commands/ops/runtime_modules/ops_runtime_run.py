@@ -204,9 +204,9 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             )
         if ns.ops_cmd == "e2e" and sub == "validate":
             for cmd in (
-                ["python3", "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/scenarios/check_e2e_suites.py"],
-                ["python3", "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/scenarios/check_e2e_scenarios.py"],
-                ["python3", "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/scenarios/check_realdata_scenarios.py"],
+                ["python3", "packages/atlasctl/src/atlasctl/checks/layout/domains/scenarios/check_e2e_suites.py"],
+                ["python3", "packages/atlasctl/src/atlasctl/checks/layout/domains/scenarios/check_e2e_scenarios.py"],
+                ["python3", "packages/atlasctl/src/atlasctl/checks/layout/domains/scenarios/check_realdata_scenarios.py"],
             ):
                 code, output = impl._run_check(cmd, ctx.repo_root)
                 if output:
@@ -361,10 +361,10 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         )
 
     if ns.ops_cmd == "naming-check":
-        return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/checks/domains/ops/ops_checks/impl/check_ops_script_names.py"], ns.report)
+        return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/checks/domains/ops/ops_checks/check_ops_script_names.py"], ns.report)
 
     if ns.ops_cmd == "layer-drift-check":
-        return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/check_layer_drift.py"], ns.report)
+        return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/checks/layout/domains/governance/check_layer_drift.py"], ns.report)
 
     if ns.ops_cmd == "contracts-index":
         cmd = [*impl.SELF_CLI, "docs", "generate", "--report", "text"]

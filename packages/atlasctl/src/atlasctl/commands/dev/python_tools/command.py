@@ -4,10 +4,10 @@ import argparse
 import json
 import os
 import shutil
-import subprocess
 from pathlib import Path
 
 from ....core.context import RunContext
+from ....core.exec import run
 from ....core.exit_codes import ERR_PREREQ, ERR_USER
 
 
@@ -39,12 +39,11 @@ def _problem_paths_from_status(status_lines: list[str]) -> list[str]:
 
 
 def _status_lines(ctx: RunContext) -> list[str]:
-    proc = subprocess.run(
+    proc = run(
         ["git", "status", "--porcelain"],
         cwd=ctx.repo_root,
         text=True,
         capture_output=True,
-        check=False,
     )
     return proc.stdout.splitlines() if proc.returncode == 0 else []
 
@@ -90,7 +89,7 @@ def _cmd_venv_create(ctx: RunContext, path_arg: str | None, as_json: bool) -> in
         print(str(exc))
         return ERR_USER
     venv.parent.mkdir(parents=True, exist_ok=True)
-    proc = subprocess.run(["python3", "-m", "venv", str(venv)], cwd=ctx.repo_root, text=True, check=False)
+    proc = run(["python3", "-m", "venv", str(venv)], cwd=ctx.repo_root, text=True)
     payload = {
         "schema_version": 1,
         "tool": "atlasctl",
@@ -119,7 +118,7 @@ def _cmd_venv_run(ctx: RunContext, path_arg: str | None, exec_cmd: list[str], as
     env = os.environ.copy()
     env["VIRTUAL_ENV"] = str(venv)
     env["PATH"] = f"{venv / 'bin'}:{env.get('PATH', '')}"
-    proc = subprocess.run(exec_cmd, cwd=ctx.repo_root, text=True, check=False, env=env)
+    proc = run(exec_cmd, cwd=ctx.repo_root, text=True, env=env)
     payload = {
         "schema_version": 1,
         "tool": "atlasctl",

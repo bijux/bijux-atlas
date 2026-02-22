@@ -6,6 +6,7 @@ from pathlib import Path
 from ...contracts.ids import SURFACE
 from ...contracts.validate_self import validate_self
 from ...core.fs import ensure_evidence_path
+from ...core.runtime.paths import write_text_file
 
 
 def build_surface(run_id: str) -> dict[str, object]:
@@ -35,8 +36,7 @@ def run_surface(as_json: bool, out_file: str | None, ctx=None) -> int:
     validate_self(SURFACE, payload)
     if out_file:
         out = ensure_evidence_path(ctx, Path(out_file)) if ctx is not None else Path(out_file)
-        out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        write_text_file(out, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if as_json:
         print(json.dumps(payload, sort_keys=True))
     else:

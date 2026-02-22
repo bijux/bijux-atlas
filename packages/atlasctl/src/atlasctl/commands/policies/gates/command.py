@@ -10,6 +10,7 @@ from typing import Any
 from ....core.context import RunContext
 from ....core.fs import ensure_evidence_path
 from ....core.process import run_command
+from ....core.runtime.paths import write_text_file
 
 
 @dataclass(frozen=True)
@@ -128,12 +129,12 @@ def run_gates_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     }
     out_json = ensure_evidence_path(ctx, ctx.evidence_root / "gates" / ctx.run_id / "report.json")
     out_txt = ensure_evidence_path(ctx, ctx.evidence_root / "gates" / ctx.run_id / "report.txt")
-    out_json.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_text_file(out_json, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     lines = [
         f"gates run: status={payload['status']} total={payload['total_count']} failed={payload['failed_count']} run_id={payload['run_id']}"
     ]
     lines.extend(f"- {row['status'].upper()} {row['id']} ({row['make_target']})" for row in ordered)
-    out_txt.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    write_text_file(out_txt, "\n".join(lines) + "\n", encoding="utf-8")
     payload["artifact_json"] = out_json.relative_to(ctx.repo_root).as_posix()
     payload["artifact_txt"] = out_txt.relative_to(ctx.repo_root).as_posix()
     _emit(payload, ns.report)

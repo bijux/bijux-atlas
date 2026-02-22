@@ -1,14 +1,15 @@
 from __future__ import annotations
 
 import json
-import subprocess
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable
 
 from ....core.context import RunContext
+from ....core.exec import run
 from ....core.fs import ensure_evidence_path
+from ....core.runtime.paths import write_text_file
 
 @dataclass(frozen=True)
 class MakeCheck:
@@ -30,13 +31,13 @@ CHECKS: list[MakeCheck] = [
     _check(
         "public-surface",
         "Validate public make surface contract",
-        "packages/atlasctl/src/atlasctl/checks/layout/domains/public_surface/checks/check_public_surface.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/domains/public_surface/check_public_surface.py",
         "Run make inventory and keep public targets in SSOT.",
     ),
     _check(
         "no-dead-entrypoints",
         "Validate referenced scripts and targets exist",
-        "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/hygiene/check_no_dead_entrypoints.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/domains/hygiene/check_no_dead_entrypoints.py",
         "Update stale references or remove dead entrypoints.",
     ),
     _check(
@@ -48,13 +49,13 @@ CHECKS: list[MakeCheck] = [
     _check(
         "no-orphan-configs",
         "Validate config files are referenced or declared internal",
-        "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/orphans/check_no_orphan_configs.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/domains/orphans/check_no_orphan_configs.py",
         "Add docs/contract references or annotate internal config ownership.",
     ),
     _check(
         "no-orphan-owners",
         "Validate ownership coverage",
-        "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/orphans/check_no_orphan_owners.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/domains/orphans/check_no_orphan_owners.py",
         "Add missing owners for areas, paths, and command surfaces.",
     ),
     _check_cmd(
@@ -120,13 +121,13 @@ CHECKS: list[MakeCheck] = [
     _check(
         "public-target-ownership",
         "Ensure public target ownership coverage",
-        "packages/atlasctl/src/atlasctl/checks/domains/policies/make/impl/check_make_target_ownership.py",
+        "packages/atlasctl/src/atlasctl/checks/domains/policies/make/check_make_target_ownership.py",
         "Add missing target owners in makefiles/ownership.json.",
     ),
     _check(
         "public-target-docs",
         "Ensure public target docs coverage",
-        "packages/atlasctl/src/atlasctl/checks/layout/domains/public_surface/checks/check_public_targets_documented.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/domains/public_surface/check_public_targets_documented.py",
         "Document missing targets under docs/_generated/make-targets.md.",
     ),
     _check(
@@ -138,19 +139,19 @@ CHECKS: list[MakeCheck] = [
     _check(
         "public-target-budget",
         "Ensure public target budget",
-        "packages/atlasctl/src/atlasctl/checks/layout/domains/public_surface/checks/check_public_target_budget.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/domains/public_surface/check_public_target_budget.py",
         "Trim public targets or increase budget with governance approval.",
     ),
     _check(
         "public-target-descriptions",
         "Validate public target descriptions",
-        "packages/atlasctl/src/atlasctl/checks/layout/domains/public_surface/checks/check_public_target_descriptions.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/domains/public_surface/check_public_target_descriptions.py",
         "Add concise help descriptions for all public targets.",
     ),
     _check(
         "public-target-aliases",
         "Validate public target aliases",
-        "packages/atlasctl/src/atlasctl/checks/layout/domains/public_surface/checks/check_public_target_aliases.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/domains/public_surface/check_public_target_aliases.py",
         "Remove undocumented aliases or document supported aliases.",
     ),
     _check(
@@ -162,25 +163,25 @@ CHECKS: list[MakeCheck] = [
     _check(
         "makefile-boundaries",
         "Validate makefile target boundaries",
-        "packages/atlasctl/src/atlasctl/checks/domains/policies/make/impl/check_makefile_target_boundaries.py",
+        "packages/atlasctl/src/atlasctl/checks/domains/policies/make/check_makefile_target_boundaries.py",
         "Keep top-level/public and internal target boundaries strict.",
     ),
     _check(
         "makefiles-contract",
         "Validate makefiles contract",
-        "packages/atlasctl/src/atlasctl/checks/domains/policies/make/impl/check_makefiles_contract.py",
+        "packages/atlasctl/src/atlasctl/checks/domains/policies/make/check_makefiles_contract.py",
         "Regenerate makefile contract artifacts and align file ownership.",
     ),
     _check(
         "makefiles-headers",
         "Validate makefile header contract",
-        "packages/atlasctl/src/atlasctl/checks/domains/policies/make/impl/check_makefile_headers.py",
+        "packages/atlasctl/src/atlasctl/checks/domains/policies/make/check_makefile_headers.py",
         "Add or correct required makefile scope headers.",
     ),
     _check(
         "ci-mk-size-budget",
         "Validate dev.mk size budget",
-        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/ci/check_ci_mk_size_budget.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_ci_mk_size_budget.py",
         "Keep makefiles/dev.mk as a thin wrapper and move execution logic into atlasctl subcommands.",
     ),
     _check(
@@ -198,13 +199,13 @@ CHECKS: list[MakeCheck] = [
     _check(
         "ci-mk-target-budget",
         "Validate ci.mk target count budget",
-        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/ci/check_ci_mk_target_budget.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_ci_mk_target_budget.py",
         "Keep ci.mk wrapper target count <= 15 and collapse extra steps into atlasctl ci subcommands.",
     ),
     _check(
         "ci-mk-no-external-tools",
         "Validate ci.mk has no external tool invocations",
-        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/ci/check_ci_mk_no_external_tools.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_ci_mk_no_external_tools.py",
         "Keep ci.mk recipes as pure ./bin/atlasctl delegation.",
     ),
     _check(
@@ -216,7 +217,7 @@ CHECKS: list[MakeCheck] = [
     _check(
         "make-targets-catalog-drift",
         "Validate make targets catalog drift",
-        "packages/atlasctl/src/atlasctl/checks/domains/policies/make/impl/check_make_targets_catalog_drift.py",
+        "packages/atlasctl/src/atlasctl/checks/domains/policies/check_make_targets_catalog_drift.py",
         "Regenerate make targets catalog and commit updates.",
     ),
     _check(
@@ -228,7 +229,7 @@ CHECKS: list[MakeCheck] = [
     _check(
         "root-no-cargo-dev-deps",
         "Validate root has no cargo-dev deps",
-        "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/root/check_root_no_cargo_dev_deps.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/domains/root/check_root_no_cargo_dev_deps.py",
         "Move cargo-dev-only dependencies out of the root lane.",
     ),
     _check(
@@ -258,13 +259,13 @@ CHECKS: list[MakeCheck] = [
     _check(
         "make-wrapper-owners",
         "Validate wrapper make targets have ownership metadata",
-        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_make_wrapper_target_owners.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/makefiles/owners/check_make_wrapper_target_owners.py",
         "Add owner/area entries in makefiles/ownership.json for wrapper targets.",
     ),
     _check(
         "root-diff-alarm",
         "Validate root diff alarm contract",
-        "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/root/check_root_diff_alarm.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/domains/root/check_root_diff_alarm.py",
         "Update root diff alarm allowlist or reduce root-level churn.",
     ),
     _check(
@@ -282,31 +283,31 @@ CHECKS: list[MakeCheck] = [
     _check(
         "no-legacy-target-names",
         "Validate no legacy target names",
-        "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/deprecation/check_no_legacy_target_names.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/check_no_legacy_target_names.py",
         "Rename or delete legacy targets; do not keep compatibility aliases.",
     ),
     _check(
         "forbidden-adjectives",
         "Validate forbidden legacy adjectives are not used",
-        "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/deprecation/check_forbidden_adjectives.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/check_forbidden_adjectives.py",
         "Remove forbidden adjectives (`elite`, `refgrade`, `gold`) or add tightly-scoped allowlist entries for historical quotes.",
     ),
     _check(
         "root-mk-size-budget",
         "Validate root.mk size budget",
-        "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/root/check_root_mk_size_budget.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/domains/root/check_root_mk_size_budget.py",
         "Move lane-specific logic to dedicated makefiles to stay within budget.",
     ),
     _check(
         "root-makefile-hygiene",
         "Validate root makefile hygiene",
-        "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/root/check_root_makefile_hygiene.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/domains/root/check_root_makefile_hygiene.py",
         "Fix ordering, phony coverage, and structural hygiene issues in root.mk.",
     ),
     _check(
         "dev-submodule-budget",
         "Validate commands/dev submodule budget",
-        "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/dev/check_dev_submodule_budget.py",
+        "packages/atlasctl/src/atlasctl/checks/layout/domains/policies/check_dev_submodule_budget.py",
         "Keep commands/dev first-level submodules within the 10-module budget.",
     ),
 ]
@@ -352,7 +353,7 @@ def _contracts_report(
 
 
 def _run_check(cmd: list[str], repo_root: Path) -> tuple[int, str]:
-    proc = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
+    proc = run(cmd, cwd=repo_root, text=True, capture_output=True)
     output = (proc.stdout or "") + (proc.stderr or "")
     return proc.returncode, output.strip()
 
@@ -392,7 +393,7 @@ def run_contracts_check(
             ctx,
             ctx.evidence_root / "make" / ctx.run_id / "contracts-check.json",
         )
-        out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        write_text_file(out, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
     schema_path = repo_root / "configs/contracts/make-contracts-check-output.schema.json"
     schema = json.loads(schema_path.read_text(encoding="utf-8"))

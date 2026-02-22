@@ -426,7 +426,7 @@ def run(ctx, ns: argparse.Namespace) -> int:
     if sub == "make-targets-drift":
         return impl._run(
             ctx,
-            ["python3", "packages/atlasctl/src/atlasctl/checks/domains/policies/make/impl/check_make_targets_drift.py"],
+            ["python3", "packages/atlasctl/src/atlasctl/checks/domains/policies/check_make_targets_drift.py"],
         )
     if sub == "make-delegation-only":
         return impl._run(
@@ -443,7 +443,7 @@ def run(ctx, ns: argparse.Namespace) -> int:
     if sub == "ops-mk-contract":
         return impl._run(
             ctx,
-            ["python3", "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/ci/check_ops_mk_contract.py"],
+            ["python3", "packages/atlasctl/src/atlasctl/checks/layout/makefiles/policies/check_ops_mk_contract.py"],
         )
     if sub == "checks-registry-drift":
         try:

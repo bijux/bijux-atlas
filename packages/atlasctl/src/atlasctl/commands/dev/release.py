@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import argparse
 import json
-import subprocess
 
 from ...core.context import RunContext
+from ...core.exec import run
 
 
 def _run(ctx: RunContext, cmd: list[str]) -> tuple[bool, str]:
-    proc = subprocess.run(cmd, cwd=ctx.repo_root, text=True, capture_output=True, check=False)
+    proc = run(cmd, cwd=ctx.repo_root, text=True, capture_output=True)
     ok = proc.returncode == 0
     output = (proc.stdout or proc.stderr).strip().splitlines()
     message = output[0] if output else ""

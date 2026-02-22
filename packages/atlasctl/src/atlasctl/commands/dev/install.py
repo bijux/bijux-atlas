@@ -3,10 +3,10 @@ from __future__ import annotations
 import argparse
 import json
 import shutil
-import subprocess
 import sys
 
 from ...core.context import RunContext
+from ...core.exec import run
 
 
 def _tool_status(name: str, probe: list[str]) -> dict[str, str]:
@@ -14,7 +14,7 @@ def _tool_status(name: str, probe: list[str]) -> dict[str, str]:
     if not path:
         return {"name": name, "status": "missing", "path": "", "version": ""}
     try:
-        proc = subprocess.run(probe, text=True, capture_output=True, check=False)
+        proc = run(probe, text=True, capture_output=True)
         line = (proc.stdout or proc.stderr).strip().splitlines()
         version = line[0] if line else ""
         status = "ok" if proc.returncode == 0 else "error"

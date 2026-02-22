@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import os
 import socket
-import subprocess
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 
 from ...contracts.json import write_json
+from ...core.exec import run
+from ...core.runtime.paths import write_text_file
 from ...core.runtime.repo_root import find_repo_root
 from ...reporting.helpers import script_output_dir, utc_run_id
 
@@ -28,7 +29,7 @@ def dump_env(script_name: str = "env-dump", run_id: str | None = None) -> Path:
         f"timestamp_utc={datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}",
         *env_lines,
     ]
-    out_file.write_text("\n".join(payload_lines) + "\n", encoding="utf-8")
+    write_text_file(out_file, "\n".join(payload_lines) + "\n", encoding="utf-8")
     return out_file
 
 
@@ -36,7 +37,7 @@ def run_timed(cmd: list[str], script_name: str = "exec", run_id: str | None = No
     resolved_run_id = run_id or utc_run_id()
     out_dir = script_output_dir(script_name, resolved_run_id)
     start_epoch = int(time.time())
-    proc = subprocess.run(cmd, check=False)
+    proc = run(cmd, text=False)
     end_epoch = int(time.time())
     timing = {
         "script": script_name,

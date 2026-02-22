@@ -1,3 +1,15 @@
+from __future__ import annotations
+
+import json
+import os
+import re
+import shutil
+from pathlib import Path
+
+from atlasctl.core.context import RunContext
+from atlasctl.core.process import run_command
+from atlasctl.core.runtime.paths import write_text_file
+
 def _ops_policy_audit(ctx: RunContext, report_format: str) -> int:
     repo = ctx.repo_root
     env_schema = json.loads((repo / "configs/ops/env.schema.json").read_text(encoding="utf-8"))
@@ -99,7 +111,7 @@ def _build_unified_ops_pins(repo_root: Path) -> tuple[int, str]:
         "datasets": datasets.get("datasets", {}),
         "policy": {"allow_pin_bypass": False, "relaxation_registry": "configs/policy/pin-relaxations.json"},
     }
-    out.write_text(json.dumps(unified, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_text_file(out, json.dumps(unified, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return 0, str(out.relative_to(repo_root))
 
 
@@ -113,7 +125,7 @@ def _sync_stack_versions(repo_root: Path) -> tuple[int, str]:
     versions = payload.get("tools", {}) if isinstance(payload, dict) else {}
     if not isinstance(versions, dict):
         return 1, "invalid tool versions format"
-    out.write_text(json.dumps({"schema_version": 1, "tools": versions}, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_text_file(out, json.dumps({"schema_version": 1, "tools": versions}, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return 0, str(out.relative_to(repo_root))
 
 
@@ -135,7 +147,7 @@ def _generate_ops_surface_meta(repo_root: Path) -> tuple[int, str]:
         }
         | {"ops-help", "ops-layout-lint", "ops-surface", "ops-e2e-validate"}
     )
-    out.write_text(json.dumps({"schema_version": 1, "entrypoints": entrypoints}, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_text_file(out, json.dumps({"schema_version": 1, "entrypoints": entrypoints}, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return 0, str(out.relative_to(repo_root))
 
 

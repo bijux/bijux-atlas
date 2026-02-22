@@ -11,6 +11,7 @@ from typing import Any
 from ....core.context import RunContext
 from ....core.fs import ensure_evidence_path
 from ....core.process import run_command
+from ....core.runtime.paths import write_text_file
 from ....core.schema.schema_utils import validate_json
 
 
@@ -30,7 +31,7 @@ def _write_wrapper_artifacts(ctx: RunContext, area: str, action: str, cmd: list[
     started = datetime.now(timezone.utc).isoformat()
     run_log = out_dir / "run.log"
     report_path = out_dir / "report.json"
-    run_log.write_text(output + ("\n" if output and not output.endswith("\n") else ""), encoding="utf-8")
+    write_text_file(run_log, output + ("\n" if output and not output.endswith("\n") else ""), encoding="utf-8")
     payload = {
         "schema_version": 1,
         "tool": "bijux-atlas",
@@ -46,7 +47,7 @@ def _write_wrapper_artifacts(ctx: RunContext, area: str, action: str, cmd: list[
         },
         "details": {"exit_code": code},
     }
-    report_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_text_file(report_path, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     validate_json(payload, ctx.repo_root / "configs/contracts/scripts-tool-output.schema.json")
     return payload
 
@@ -94,7 +95,6 @@ def _reserve_ephemeral_port() -> int:
 def _ports_reserve(ctx: RunContext, report_format: str, name: str, port: int | None) -> int:
     chosen = int(port) if port is not None else _reserve_ephemeral_port()
     out_dir = _artifact_base(ctx, "ports")
-    out_dir.mkdir(parents=True, exist_ok=True)
     reservation = {
         "schema_version": 1,
         "tool": "bijux-atlas",
@@ -105,8 +105,8 @@ def _ports_reserve(ctx: RunContext, report_format: str, name: str, port: int | N
         "details": {"name": name, "port": chosen},
     }
     validate_json(reservation, ctx.repo_root / "configs/contracts/scripts-tool-output.schema.json")
-    (out_dir / "report.json").write_text(json.dumps(reservation, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    (out_dir / "run.log").write_text(f"reserved {name}={chosen}\n", encoding="utf-8")
+    write_text_file(out_dir / "report.json", json.dumps(reservation, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_text_file(out_dir / "run.log", f"reserved {name}={chosen}\n", encoding="utf-8")
     _emit(reservation, report_format)
     return 0
 

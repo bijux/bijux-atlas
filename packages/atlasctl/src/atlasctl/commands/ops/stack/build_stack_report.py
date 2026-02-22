@@ -15,6 +15,8 @@ import hashlib
 import json
 from pathlib import Path
 
+from atlasctl.core.runtime.paths import write_text_file
+
 
 def sha256_files(paths: list[Path]) -> str:
     h = hashlib.sha256()
@@ -35,14 +37,13 @@ def main() -> int:
 
     root = Path(__file__).resolve().parents[5]
     out_dir = root / args.out_dir
-    out_dir.mkdir(parents=True, exist_ok=True)
 
     values_src = root / args.values_file
     values_dst = out_dir / "helm-values-used.yaml"
     if values_src.exists():
-        values_dst.write_bytes(values_src.read_bytes())
+        write_text_file(values_dst, values_src.read_text(encoding="utf-8", errors="replace"), encoding="utf-8")
     else:
-        values_dst.write_text("# missing values file\n")
+        write_text_file(values_dst, "# missing values file\n", encoding="utf-8")
 
     k6_candidates = sorted((root / "artifacts/perf/results").glob("*.summary.json"))
     k6_dst = out_dir / "k6-summary.json"
@@ -50,17 +51,25 @@ def main() -> int:
         merged = {"summaries": []}
         for p in k6_candidates:
             merged["summaries"].append({"file": p.name, "summary": json.loads(p.read_text())})
-        k6_dst.write_text(json.dumps(merged, indent=2) + "\n")
+        write_text_file(k6_dst, json.dumps(merged, indent=2) + "\n", encoding="utf-8")
     else:
-        k6_dst.write_text(json.dumps({"summaries": []}, indent=2) + "\n")
+        write_text_file(k6_dst, json.dumps({"summaries": []}, indent=2) + "\n", encoding="utf-8")
 
     metrics_src = root / "artifacts/ops/obs/metrics.prom"
     metrics_dst = out_dir / "metrics.prom"
-    metrics_dst.write_bytes(metrics_src.read_bytes() if metrics_src.exists() else b"")
+    write_text_file(
+        metrics_dst,
+        metrics_src.read_text(encoding="utf-8", errors="replace") if metrics_src.exists() else "",
+        encoding="utf-8",
+    )
 
     trace_src = root / "artifacts/ops/obs/traces.snapshot.log"
     trace_dst = out_dir / "traces.snapshot.log"
-    trace_dst.write_bytes(trace_src.read_bytes() if trace_src.exists() else b"")
+    write_text_file(
+        trace_dst,
+        trace_src.read_text(encoding="utf-8", errors="replace") if trace_src.exists() else "",
+        encoding="utf-8",
+    )
 
     dashboard_src = root / "ops/obs/grafana/atlas-observability-dashboard.json"
     dashboard_txt = out_dir / "dashboard-screenshot.txt"
@@ -77,26 +86,26 @@ def main() -> int:
                 title = panel.get("title", "<untitled>")
                 ptype = panel.get("type", "unknown")
                 lines.append(f"- [{ptype}] {title}")
-            dashboard_txt.write_text("\n".join(lines) + "\n")
+            write_text_file(dashboard_txt, "\n".join(lines) + "\n", encoding="utf-8")
         except Exception:
-            dashboard_txt.write_text("# dashboard export failed\n")
+            write_text_file(dashboard_txt, "# dashboard export failed\n", encoding="utf-8")
     else:
-        dashboard_txt.write_text("# missing dashboard json\n")
+        write_text_file(dashboard_txt, "# missing dashboard json\n", encoding="utf-8")
 
     logs_dst = out_dir / "logs-excerpt.log"
     logs_candidates = sorted((root / "artifacts/ops").glob("*/logs/*.log"))
     if logs_candidates:
         lines = logs_candidates[-1].read_text(errors="replace").splitlines()[-200:]
-        logs_dst.write_text("\n".join(lines) + ("\n" if lines else ""))
+        write_text_file(logs_dst, "\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
     else:
-        logs_dst.write_text("")
+        write_text_file(logs_dst, "", encoding="utf-8")
 
     rendered_src = out_dir / "rendered-manifests.yaml"
     rendered_dst = out_dir / "rendered-manifests.yaml"
     if rendered_src.exists():
-        rendered_dst.write_bytes(rendered_src.read_bytes())
+        write_text_file(rendered_dst, rendered_src.read_text(encoding="utf-8", errors="replace"), encoding="utf-8")
     else:
-        rendered_dst.write_text("# missing rendered manifests\n")
+        write_text_file(rendered_dst, "# missing rendered manifests\n", encoding="utf-8")
 
     stack_hash_inputs = [
         root / "configs/ops/tool-versions.json",
@@ -105,7 +114,7 @@ def main() -> int:
         values_src,
     ]
     stack_version_hash = sha256_files(stack_hash_inputs)
-    (out_dir / "stack-version-hash.txt").write_text(stack_version_hash + "\n")
+    write_text_file(out_dir / "stack-version-hash.txt", stack_version_hash + "\n", encoding="utf-8")
 
     summary = {
         "schema_version": 1,
@@ -124,7 +133,7 @@ def main() -> int:
             "pass_fail_summary": "artifacts/stack-report/pass-fail-summary.json",
         },
     }
-    (out_dir / "pass-fail-summary.json").write_text(json.dumps(summary, indent=2) + "\n")
+    write_text_file(out_dir / "pass-fail-summary.json", json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     return 0
 
 
