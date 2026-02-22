@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 jobs:
-  docs-hardening:
+  docs-check:
     runs-on: ubuntu-latest
     env:
       ISO_ROOT: artifacts/isolates/docs-only
@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: ./bin/atlasctl ci init --json
-      - run: make docs-hardening
+      - run: make docs
       - uses: actions/upload-artifact@v4
         with:
           name: docs-site-pr

@@ -19,7 +19,7 @@
 - Missing required index sections fails docs hardening.
 
 ## How to verify
-- `make docs-hardening`
+- `make docs`
 
 ## See also
 - [Why This Layout](./why-this-layout.md)

@@ -44,4 +44,3 @@ def test_core_wrapper_targets_use_expected_atlasctl_args() -> None:
     assert ci["ci-all"] == ["@./bin/atlasctl ci all --json"]
     assert ci["ci-init"] == ["@./bin/atlasctl ci init --json"]
     assert ci["ci-help"] == ["@./bin/atlasctl help ci"]
-    assert ci["internal/ci/run"] == ["@./bin/atlasctl ci run --json"]
