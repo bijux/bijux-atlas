@@ -17,8 +17,8 @@ def main() -> int:
     ):
         subprocess.check_call(['curl', '-fsS', endpoint], stdout=subprocess.DEVNULL)
     out_dir = 'artifacts/ops/obs'
-    subprocess.check_call(['bash', 'ops/obs/scripts/snapshot_metrics.sh', out_dir])
-    subprocess.check_call(['bash', 'ops/obs/scripts/snapshot_traces.sh', out_dir])
+    subprocess.check_call(['python3', 'packages/atlasctl/src/atlasctl/commands/ops/observability/snapshot_metrics.py', out_dir])
+    subprocess.check_call(['python3', 'packages/atlasctl/src/atlasctl/commands/ops/observability/snapshot_traces.py', out_dir])
     root = Path.cwd()
     if not (root / out_dir / 'metrics.prom').is_file() or (root / out_dir / 'metrics.prom').stat().st_size == 0:
         return 1
