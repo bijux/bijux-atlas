@@ -143,7 +143,7 @@ packages/atlasctl/src/atlasctl/commands/ops/lint/layout/json_schema_coverage.py
 packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_layer_literals.py
 packages/atlasctl/src/atlasctl/commands/ops/lint/docs/no_direct_bash_entrypoints.py
 packages/atlasctl/src/atlasctl/commands/ops/lint/repo/no_root_ad_hoc_python.py
-ops/_lint/no-scripts-bin-dir.sh
+packages/atlasctl/src/atlasctl/commands/ops/lint/repo/no_scripts_bin_dir.py
 packages/atlasctl/src/atlasctl/commands/ops/lint/repo/no_scripts_dir.py
 ops/_meta/cross-area-script-refs-allowlist.txt
 ops/_meta/layer-contract-literal-allowlist.txt
