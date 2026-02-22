@@ -151,7 +151,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                     print(f"- {step}")
             return 0
         if sub == "rollback":
-            return impl._run_simple_cmd(ctx, shell_script_command("ops/run/undeploy.sh"), ns.report)
+            return impl._ops_undeploy_native(ctx, ns.report)
         return 2
 
     if ns.ops_cmd == "env":

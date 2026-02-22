@@ -227,7 +227,7 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         mapping = {
             "render": ["helm", "template", "atlas", "ops/chart"],
             "install": ["bash", "ops/run/deploy-atlas.sh"],
-            "uninstall": ["bash", "ops/run/undeploy.sh"],
+            "uninstall": ["./bin/atlasctl", "ops", "deploy", "--report", "text", "rollback"],
         }
         return _run_wrapped(ctx, OrchestrateSpec("k8s", ns.k8s_cmd, mapping[ns.k8s_cmd]), ns.report)
     if ns.cmd == "stack":
