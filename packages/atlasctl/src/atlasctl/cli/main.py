@@ -187,7 +187,7 @@ def build_parser() -> argparse.ArgumentParser:
     explain_parser.add_argument("subject_or_name")
     explain_parser.add_argument("name", nargs="?")
     explain_parser.add_argument("--json", action="store_true", help="emit JSON output")
-    _import_attr("atlasctl.commands.listing", "configure_list_parser")(sub)
+    _import_attr("atlasctl.commands.internal.listing", "configure_list_parser")(sub)
     run_id_parser = sub.add_parser("run-id", help="generate and print a deterministic atlasctl run id")
     run_id_parser.add_argument("--prefix", default="atlas", help="run id prefix")
     run_id_parser.add_argument("--json", action="store_true", help="emit JSON output")
