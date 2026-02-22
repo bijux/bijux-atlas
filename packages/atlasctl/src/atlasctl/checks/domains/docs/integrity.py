@@ -9,6 +9,10 @@ from ....core.effects import command_group
 
 _MD_LINK_RE = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 _HEADING_RE = re.compile(r"^(#{1,6})\s+\S")
+_LEGACY_CLI_PATTERNS = (
+    re.compile(r"\bpython3?\s+-m\s+atlasctl\.cli\b"),
+    re.compile(r"\./bin/bijux-atlas\b"),
+)
 
 
 def _package_root(repo_root: Path) -> Path:
@@ -232,6 +236,30 @@ def check_docs_no_orphans(repo_root: Path) -> tuple[int, list[str]]:
             continue
         if rel not in referenced:
             errors.append(f"orphan docs file not linked from docs graph: {rel}")
+    return (0 if not errors else 1), errors
+
+
+def check_docs_no_legacy_cli_invocation(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    docs_roots = [
+        repo_root / "docs",
+        _docs_root(repo_root),
+    ]
+    seen: set[str] = set()
+    for root in docs_roots:
+        if not root.exists():
+            continue
+        for md in sorted(root.rglob("*.md")):
+            rel = md.relative_to(repo_root).as_posix()
+            if rel in seen:
+                continue
+            seen.add(rel)
+            text = md.read_text(encoding="utf-8", errors="ignore")
+            for lineno, line in enumerate(text.splitlines(), start=1):
+                for pattern in _LEGACY_CLI_PATTERNS:
+                    if pattern.search(line):
+                        errors.append(f"{rel}:{lineno}: use `./bin/atlasctl` instead of legacy invocation")
+                        break
     return (0 if not errors else 1), errors
 
 

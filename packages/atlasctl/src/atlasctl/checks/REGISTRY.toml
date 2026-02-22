@@ -655,6 +655,27 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_docs_no_legacy_cli_invocation"
+domain = "docs"
+area = "no"
+gate = "docs"
+owner = "platform"
+speed = "fast"
+timeout_ms = 600
+module = "atlasctl.checks.domains.docs.integrity"
+callable = "check_docs_no_legacy_cli_invocation"
+description = "forbid legacy atlasctl invocation patterns in docs"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use `./bin/atlasctl ...` consistently in all docs examples."
+legacy_id = "docs.no_legacy_cli_invocation"
+groups = ["docs", "fast", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_docs_no_ops_generated_run_path_refs"
 domain = "docs"
 area = "no"
@@ -1236,6 +1257,27 @@ severity = "error"
 category = "hygiene"
 fix_hint = "Use ./bin/atlasctl or $(ATLASCTL) wrappers only."
 legacy_id = "make.no_legacy_script_aliases"
+groups = ["fast", "make", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_make_no_orphan_docs_refs"
+domain = "make"
+area = "no"
+gate = "make"
+owner = "platform"
+speed = "fast"
+timeout_ms = 900
+module = "atlasctl.checks.domains.policies.make.enforcement"
+callable = "check_make_no_orphan_docs_refs"
+description = "forbid orphan docs references for make targets and atlasctl commands"
+severity = "error"
+category = "hygiene"
+fix_hint = "Update docs index and command references so docs links are reachable."
+legacy_id = "make.no_orphan_docs_refs"
 groups = ["fast", "make", "required"]
 effects = []
 external_tools = []
@@ -3126,6 +3168,27 @@ severity = "error"
 category = "hygiene"
 fix_hint = "Keep managed write roots under artifacts/ and route writes through core.fs."
 legacy_id = "repo.managed_artifact_write_roots"
+groups = ["fast", "repo", "required"]
+effects = []
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_repo_migration_progress_regression"
+domain = "repo"
+area = "migration"
+gate = "repo"
+owner = "platform"
+speed = "fast"
+timeout_ms = 600
+module = "atlasctl.checks.repo.native.runtime_modules.repo_native_runtime_policies"
+callable = "check_migration_progress_regression"
+description = "forbid migration progress regression (no new legacy patterns)"
+severity = "error"
+category = "hygiene"
+fix_hint = "Use ./bin/atlasctl in docs/makefiles and remove legacy migration wording."
+legacy_id = "repo.migration_progress_regression"
 groups = ["fast", "repo", "required"]
 effects = []
 external_tools = []

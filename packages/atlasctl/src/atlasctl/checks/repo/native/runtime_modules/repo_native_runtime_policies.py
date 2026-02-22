@@ -243,3 +243,52 @@ _NATIVE_LINT = import_module("atlasctl.checks.repo.native_lint")
 check_effects_lint = _NATIVE_LINT.check_effects_lint
 check_naming_intent_lint = _NATIVE_LINT.check_naming_intent_lint
 check_root_bin_shims = _NATIVE_LINT.check_root_bin_shims
+
+
+def check_migration_progress_regression(repo_root: Path) -> tuple[int, list[str]]:
+    docs_roots = [repo_root / "docs", repo_root / "packages/atlasctl/docs"]
+    doc_patterns = (
+        re.compile(r"\bpython3?\s+-m\s+atlasctl\.cli\b"),
+        re.compile(r"\./bin/bijux-atlas\b"),
+        re.compile(r"\bscripts migration\b", re.IGNORECASE),
+    )
+    docs_legacy_hits = 0
+    for root in docs_roots:
+        if not root.exists():
+            continue
+        for md in sorted(root.rglob("*.md")):
+            text = md.read_text(encoding="utf-8", errors="ignore")
+            for pattern in doc_patterns:
+                docs_legacy_hits += len(pattern.findall(text))
+
+    alias_pattern = re.compile(r"\$\((ATLAS_SCRIPTS|SCRIPTS|PY_RUN)\)|\b(ATLAS_SCRIPTS|SCRIPTS|PY_RUN)\b")
+    make_alias_hits = 0
+    for mk in sorted((repo_root / "makefiles").glob("*.mk")):
+        text = mk.read_text(encoding="utf-8", errors="ignore")
+        make_alias_hits += len(alias_pattern.findall(text))
+
+    metrics = {
+        "docs_legacy_cli_invocations": docs_legacy_hits,
+        "make_legacy_alias_tokens": make_alias_hits,
+    }
+    payload = {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "kind": "migration-progress",
+        "status": "ok",
+        "metrics": metrics,
+    }
+    out = repo_root / "artifacts/reports/atlasctl/migration-progress.json"
+    write_text_file(out, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+    baseline_path = repo_root / "configs/policy/migration-progress-baseline.json"
+    if not baseline_path.exists():
+        return 1, ["missing configs/policy/migration-progress-baseline.json"]
+    baseline = json.loads(baseline_path.read_text(encoding="utf-8"))
+    limits = baseline.get("max", {})
+    errors: list[str] = []
+    for key, value in metrics.items():
+        max_value = int(limits.get(key, value))
+        if int(value) > max_value:
+            errors.append(f"migration regression: {key}={value} > max={max_value}")
+    return (0 if not errors else 1), errors
