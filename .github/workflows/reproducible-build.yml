@@ -30,6 +30,7 @@ jobs:
           toolchain: 1.84.1
       - run: ./bin/atlasctl ci reproducible-verify
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: reproducible-build-sha256
           path: artifacts/isolates/reproducible-build

@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - name: Run canonical nightly entrypoint
-        run: make nightly
+        run: ./bin/atlasctl suite run drill-nightly --json --target-dir artifacts/evidence/ci/drill-nightly
       - name: Upload nightly artifacts
         if: always()
         uses: actions/upload-artifact@v4
