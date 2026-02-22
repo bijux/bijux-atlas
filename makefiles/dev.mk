@@ -23,4 +23,10 @@ check: ## Rust cargo check lane
 audit: ## Rust audit lane
 	@./bin/atlasctl dev audit
 
-.PHONY: fmt lint test test-all coverage check audit
+deps-check-venv: ## Validate dependency install/import in clean temporary venv
+	@./bin/atlasctl deps check-venv
+
+deps-cold-start: ## Measure atlasctl import cold-start budget
+	@./bin/atlasctl deps cold-start --runs 3 --max-ms 500
+
+.PHONY: fmt lint test test-all coverage check audit deps-check-venv deps-cold-start
