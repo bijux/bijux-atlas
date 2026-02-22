@@ -3,12 +3,7 @@
 SHELL := /bin/sh
 
 bootstrap:
-	@python3 --version
-	@command -v pip >/dev/null 2>&1 || { echo "missing pip" >&2; exit 1; }
-	@python3 -m pip install -r configs/docs/requirements.txt >/dev/null
-	@command -v k6 >/dev/null 2>&1 || echo "k6 not found (optional for non-perf workflows)"
-	@command -v kind >/dev/null 2>&1 || echo "kind not found (required for k8s e2e)"
-	@command -v kubectl >/dev/null 2>&1 || echo "kubectl not found (required for k8s e2e)"
+	@./bin/atlasctl run ./ops/run/product/product_bootstrap.sh
 
 k8s: ## Run canonical k8s verification lane
 	@$(MAKE) -s ops/smoke
@@ -20,23 +15,10 @@ obs: ## Run canonical observability verification lane
 	@$(MAKE) -s ops-obs-verify SUITE=cheap
 
 docker-build:
-	@IMAGE_TAG="$${DOCKER_IMAGE:-bijux-atlas:local}"; \
-	IMAGE_VERSION="$${IMAGE_VERSION:-$$(git rev-parse --short=12 HEAD)}"; \
-	VCS_REF="$${VCS_REF:-$$(git rev-parse HEAD)}"; \
-	BUILD_DATE="$${BUILD_DATE:-$$(date -u +%Y-%m-%dT%H:%M:%SZ)}"; \
-	RUST_VERSION="$${RUST_VERSION:-1.84.1}"; \
-	docker build --pull=false -t "$$IMAGE_TAG" -f docker/images/runtime/Dockerfile \
-	  --build-arg RUST_VERSION="$$RUST_VERSION" \
-	  --build-arg IMAGE_VERSION="$$IMAGE_VERSION" \
-	  --build-arg VCS_REF="$$VCS_REF" \
-	  --build-arg BUILD_DATE="$$BUILD_DATE" \
-	  --build-arg IMAGE_PROVENANCE="$${IMAGE_PROVENANCE:-$${IMAGE_TAG}}" \
-	  .
+	@./bin/atlasctl run ./ops/run/product/product_docker_build.sh
 
 docker-check: ## Docker fast checks: contracts + build + runtime smoke
-	@$(MAKE) -s docker-contracts
-	@$(MAKE) -s docker-build
-	@$(MAKE) -s docker-smoke
+	@./bin/atlasctl run ./ops/run/product/product_docker_check.sh
 
 docker-smoke:
 	@./bin/atlasctl docker smoke --image "$${DOCKER_IMAGE:-bijux-atlas:local}"
@@ -45,45 +27,28 @@ docker-scan:
 	@./bin/atlasctl docker scan --image "$${DOCKER_IMAGE:-bijux-atlas:local}"
 
 docker-push:
-	@if [ "$${CI:-0}" != "1" ]; then echo "docker-push is CI-only"; exit 2; fi
-	@IMAGE_TAG="$${DOCKER_IMAGE:?DOCKER_IMAGE is required for docker-push}"; \
-	docker push "$$IMAGE_TAG"
+	@./bin/atlasctl run ./ops/run/product/product_docker_push.sh
 
 docker-release: ## CI-only docker release lane (build + contracts + push)
-	@if [ "$${CI:-0}" != "1" ]; then echo "docker-release is CI-only"; exit 2; fi
-	@$(MAKE) -s docker-check
-	@$(MAKE) -s docker-push
+	@./bin/atlasctl run ./ops/run/product/product_docker_release.sh
 
 chart-package:
-	@mkdir -p artifacts/chart
-	@helm package ops/k8s/charts/bijux-atlas --destination artifacts/chart
+	@./bin/atlasctl run ./ops/run/product/product_chart_package.sh
 
 chart-verify:
-	@helm lint ops/k8s/charts/bijux-atlas
-	@helm template atlas ops/k8s/charts/bijux-atlas >/dev/null
+	@./bin/atlasctl run ./ops/run/product/product_chart_verify.sh
 
 chart-validate: ## Validate chart via lint/template and values contract schema checks
-	@$(MAKE) chart-verify
-	@./bin/atlasctl contracts generate --generators chart-schema
-	@./bin/atlasctl contracts check --checks chart-values
+	@./bin/atlasctl run ./ops/run/product/product_chart_validate.sh
 
 docker-contracts: ## Validate Docker layout/policy/no-latest contracts
 	@./bin/atlasctl check domain docker
 
 rename-lint: ## Enforce durable naming rules for docs/scripts and concept ownership
-	@./bin/atlasctl docs durable-naming-check --report text
-	@./bin/atlasctl docs duplicate-topics-check --report text
+	@./bin/atlasctl run ./ops/run/product/product_rename_lint.sh
 
 docs-lint-names: ## Enforce durable naming contracts, registries, and inventory
-	@./bin/atlasctl docs naming-inventory --report text
-	@./bin/atlasctl docs legacy-terms-check --report text
-	@./bin/atlasctl docs observability-docs-checklist --report text
-	@./bin/atlasctl docs no-orphan-docs-check --report text
-	@./bin/atlasctl docs script-locations-check --report text
-	@./bin/atlasctl docs runbook-map-registration-check --report text
-	@./bin/atlasctl docs contract-doc-pairs-check --report text
-	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/load/contracts/validate_suite_manifest.py
-	@./bin/atlasctl docs index-pages-check --report text
+	@./bin/atlasctl run ./ops/run/product/product_docs_lint_names.sh
 
 internal/product/doctor: ## Print tool/env/path diagnostics and store doctor report
 	@RUN_ID="$${RUN_ID:-doctor-$(MAKE_RUN_TS)}" ./bin/atlasctl make doctor

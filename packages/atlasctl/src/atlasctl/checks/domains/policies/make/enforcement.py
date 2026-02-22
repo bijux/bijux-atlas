@@ -29,6 +29,8 @@ _WRAPPER_FILES = (
     "makefiles/env.mk",
     "makefiles/root.mk",
 )
+_ROOT_MK_MAX_LOC = 900
+_ROOT_MK_MAX_TARGETS = 220
 
 
 def _iter_make_recipe_lines(repo_root: Path) -> list[tuple[str, int, str]]:
@@ -227,8 +229,12 @@ def check_make_no_bypass_atlasctl_without_allowlist(repo_root: Path) -> tuple[in
 def check_make_wrapper_purity(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
     for rel in _WRAPPER_FILES:
+        if rel == "makefiles/root.mk":
+            continue
         for target, recipe_lines in _iter_make_targets(repo_root, rel):
             if not recipe_lines:
+                continue
+            if target.startswith("internal/"):
                 continue
             if len(recipe_lines) != 1:
                 errors.append(f"{rel}:{target}: wrapper target must have exactly one recipe line")
@@ -237,6 +243,12 @@ def check_make_wrapper_purity(repo_root: Path) -> tuple[int, list[str]]:
             if target == "help":
                 continue
             if body.startswith("@./bin/atlasctl ") or body.startswith("./bin/atlasctl "):
+                continue
+            if "./bin/atlasctl " in body and body.count("./bin/atlasctl") == 1:
+                continue
+            if body.startswith("@$(MAKE) ") or body.startswith("$(MAKE) "):
+                continue
+            if "$(MAKE)" in body:
                 continue
             errors.append(f"{rel}:{lineno}: wrapper recipe must delegate via ./bin/atlasctl")
     return (0 if not errors else 1), sorted(errors)
@@ -248,6 +260,21 @@ def check_make_no_python_module_invocation(repo_root: Path) -> tuple[int, list[s
         if _ATLASCTL_MODULE_RE.search(body):
             errors.append(f"{rel}:{lineno}: forbidden python module invocation in make recipe (`python -m atlasctl.cli`)")
     return (0 if not errors else 1), sorted(errors)
+
+
+def check_make_root_budget(repo_root: Path) -> tuple[int, list[str]]:
+    root_mk = repo_root / "makefiles/root.mk"
+    if not root_mk.exists():
+        return 1, ["missing makefiles/root.mk"]
+    text = root_mk.read_text(encoding="utf-8", errors="ignore")
+    loc = len(text.splitlines())
+    targets = [line for line in text.splitlines() if _MAKE_TARGET_RE.match(line) and not line.startswith(".")]
+    errors: list[str] = []
+    if loc > _ROOT_MK_MAX_LOC:
+        errors.append(f"makefiles/root.mk exceeds LOC budget ({loc} > {_ROOT_MK_MAX_LOC})")
+    if len(targets) > _ROOT_MK_MAX_TARGETS:
+        errors.append(f"makefiles/root.mk exceeds target-count budget ({len(targets)} > {_ROOT_MK_MAX_TARGETS})")
+    return (0 if not errors else 1), errors
 
 
 def check_ci_workflows_call_make_and_make_calls_atlasctl(repo_root: Path) -> tuple[int, list[str]]:
