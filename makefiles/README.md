@@ -15,7 +15,10 @@ See `makefiles/CONTRACT.md` for normative rules.
 - `makefiles/ci.mk`
 - `makefiles/docs.mk`
 - `makefiles/ops.mk`
-- `makefiles/policies.mk`
+
+Optional wrapper files (not part of default root include):
+- `makefiles/policies.mk` (`bypass-report` only)
+- `makefiles/scripts.mk` (dependency transition helpers only)
 
 ## Minimal public UX
 - `make help`

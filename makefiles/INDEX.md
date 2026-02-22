@@ -10,7 +10,6 @@
 - `ci.mk`
 - `docs.mk`
 - `ops.mk`
-- `policies.mk`
 - `product.mk`
 - `layout.mk`
 - `registry.mk`
@@ -20,3 +19,4 @@
 - `help.mk`
 - `path_contract.mk`
 - `scripts.mk` (transitional dependency wrappers only)
+- `policies.mk` (optional single-wrapper file; not included by default in root surface)

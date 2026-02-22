@@ -21,7 +21,6 @@ include makefiles/help.mk
 include makefiles/layout.mk
 include makefiles/product.mk
 include makefiles/ops.mk
-include makefiles/policies.mk
 
 check-scripts: ## Run atlasctl tooling lint/tests/contracts
 	@./bin/atlasctl ci scripts --json
@@ -30,7 +29,7 @@ ci-local: ## Local runner mirroring CI top-level entrypoint set
 	@$(MAKE) -s ci/all
 
 doctor: ## Run package doctor diagnostics
-	@./bin/atlasctl make doctor
+	@./bin/atlasctl doctor
 
 make/command-allowlist: ## Enforce direct-make command allowlist (cargo/docker/helm/kubectl/k6)
 	@./bin/atlasctl check run make --id checks_make_command_allowlist
@@ -81,6 +80,9 @@ list: ## Print public make target set from SSOT with one-line descriptions
 	@./bin/atlasctl make list
 
 targets: ## Print generated target catalog from SSOT
+	@./bin/atlasctl make list
+
+surface: ## Print public make surface from atlasctl SSOT
 	@./bin/atlasctl make list
 
 graph: ## Print compact dependency graph for TARGET
