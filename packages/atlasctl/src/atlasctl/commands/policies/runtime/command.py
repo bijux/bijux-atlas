@@ -7,6 +7,7 @@ import re
 from pathlib import Path
 
 from ....checks.repo.domains.forbidden_adjectives import check_forbidden_adjectives
+from ....checks.domains.policies.make.enforcement import collect_bypass_inventory, render_text_report
 from ....core.context import RunContext
 from ....core.exec import run
 from ....core.fs import ensure_evidence_path
@@ -27,39 +28,11 @@ RELAXATION_FILES = (
     "configs/policy/ops-lint-relaxations.json",
 )
 SELF_CLI = ["python3", "-m", "atlasctl.cli"]
-_POLICIES_ITEMS: tuple[str, ...] = (
-    "allow-env-lint",
-    "bypass-scan",
-    "check",
-    "check-dir-entry-budgets",
-    "check-py-files-per-dir",
-    "culprits",
-    "culprits-biggest-dirs",
-    "culprits-biggest-files",
-    "culprits-files-per-dir",
-    "culprits-largest-files",
-    "culprits-loc-per-dir",
-    "culprits-modules-per-dir",
-    "culprits-suite",
-    "dead-modules",
-    "drift-diff",
-    "enforcement-status",
-    "explain",
-    "forbidden-adjectives",
-    "ownership-check",
-    "relaxations-check",
-    "repo-stats",
-    "report",
-    "report-budgets",
-    "scan-grep-relaxations",
-    "scan-rust-relaxations",
-    "schema-drift",
-)
+_POLICIES_ITEMS: tuple[str, ...] = ("allow-env-lint", "bypass-scan", "bypass-list", "bypass-report", "check", "check-dir-entry-budgets", "check-py-files-per-dir", "culprits", "culprits-biggest-dirs", "culprits-biggest-files", "culprits-files-per-dir", "culprits-largest-files", "culprits-loc-per-dir", "culprits-modules-per-dir", "culprits-suite", "dead-modules", "drift-diff", "enforcement-status", "explain", "forbidden-adjectives", "ownership-check", "relaxations-check", "repo-stats", "report", "report-budgets", "scan-grep-relaxations", "scan-rust-relaxations", "schema-drift")
 
 def _run(cmd: list[str], repo_root: Path) -> tuple[int, str]:
     proc = run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
     return proc.returncode, ((proc.stdout or "") + (proc.stderr or "")).strip()
-
 def _validate_ops_lint_relax_schema(repo_root: Path) -> list[str]:
     import jsonschema
 
@@ -78,7 +51,6 @@ def _extract_entries(payload: dict[str, object]) -> list[dict[str, str]]:
     if isinstance(payload.get("relaxations"), list):
         return [x for x in payload.get("relaxations", []) if isinstance(x, dict)]  # type: ignore[return-value]
     return []
-
 def _check_relaxations(repo_root: Path, require_docs_ref: bool) -> tuple[int, dict[str, object]]:
     today = dt.date.today()
     errs: list[str] = []
@@ -352,6 +324,18 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 print(f"- {x}")
         return code
 
+    if ns.policies_cmd in {"bypass-list", "bypass"} and getattr(ns, "bypass_cmd", "list") == "list":
+        payload = collect_bypass_inventory(repo)
+        print(json.dumps(payload, sort_keys=True) if ns.report == "json" else render_text_report(payload))
+        return 0 if not payload.get("errors") else 1
+
+    if ns.policies_cmd in {"bypass-report", "bypass"} and getattr(ns, "bypass_cmd", "report") == "report":
+        payload = collect_bypass_inventory(repo)
+        out_rel = str(getattr(ns, "out", "") or "artifacts/reports/atlasctl/policies-bypass-report.json")
+        write_text_file(repo / out_rel, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        print(json.dumps({"schema_version": 1, "status": "ok", "out": out_rel}, sort_keys=True) if ns.report == "json" else out_rel)
+        return 0 if not payload.get("errors") else 1
+
     if ns.policies_cmd == "report":
         _, payload = _check_relaxations(repo, require_docs_ref=False)
         if ns.report == "json":
@@ -502,6 +486,18 @@ def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
     bp = ps.add_parser("bypass-scan", help="scan for bypass patterns missing RELAXATION_ID")
     bp.add_argument("--report", choices=["text", "json"], default="text")
     bp.add_argument("--emit-artifacts", action="store_true")
+
+    bypass_list = ps.add_parser("bypass-list", help="list policy bypass/allowlist inventory")
+    bypass_list.add_argument("--report", choices=["text", "json"], default="text")
+    bypass_report = ps.add_parser("bypass-report", help="emit consolidated policy bypass report")
+    bypass_report.add_argument("--report", choices=["text", "json"], default="text")
+    bypass_report.add_argument("--out", default="artifacts/reports/atlasctl/policies-bypass-report.json")
+    bypass = ps.add_parser("bypass", help="bypass inventory helpers")
+    bypass_sub = bypass.add_subparsers(dest="bypass_cmd", required=True)
+    bypass_sub.add_parser("list", help="list policy bypass/allowlist inventory").add_argument("--report", choices=["text", "json"], default="text")
+    rep2 = bypass_sub.add_parser("report", help="emit consolidated policy bypass report")
+    rep2.add_argument("--report", choices=["text", "json"], default="text")
+    rep2.add_argument("--out", default="artifacts/reports/atlasctl/policies-bypass-report.json")
 
     rep = ps.add_parser("report", help="print active relaxations summary")
     rep.add_argument("--report", choices=["text", "json"], default="json")
