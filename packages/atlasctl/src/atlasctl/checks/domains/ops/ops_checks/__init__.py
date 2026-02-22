@@ -241,6 +241,55 @@ def check_ops_scripts_count_nonincreasing(repo_root: Path) -> tuple[int, list[st
     return 0, []
 
 
+def check_ops_run_only_allowlisted_scripts(repo_root: Path) -> tuple[int, list[str]]:
+    run_dir = repo_root / "ops" / "run"
+    if not run_dir.exists():
+        return 1, ["missing ops/run directory"]
+    allowlisted = {
+        "CONTRACT.md",
+        "INDEX.md",
+        "OWNER.md",
+        "README.md",
+    }
+    # Transitional allowlist: product wrappers have been migrated and should be removable soon.
+    transitional_prefixes = {
+        "root/",
+        "product/",
+    }
+    errors: list[str] = []
+    for path in sorted(run_dir.rglob("*")):
+        if path.is_dir():
+            continue
+        rel = path.relative_to(run_dir).as_posix()
+        if rel in allowlisted:
+            continue
+        if any(rel.startswith(prefix) for prefix in transitional_prefixes):
+            continue
+        if path.suffix not in {".sh", ".py"}:
+            continue
+        errors.append(f"ops/run contains non-allowlisted script: ops/run/{rel}")
+    return (0 if not errors else 1), errors
+
+
+def check_ops_run_non_executable_unless_allowlisted(repo_root: Path) -> tuple[int, list[str]]:
+    run_dir = repo_root / "ops" / "run"
+    if not run_dir.exists():
+        return 1, ["missing ops/run directory"]
+    executable_allowlist = {
+        "prereqs.sh",  # transitional
+    }
+    errors: list[str] = []
+    for path in sorted(run_dir.rglob("*")):
+        if not path.is_file() or path.suffix not in {".sh", ".py"}:
+            continue
+        rel = path.relative_to(run_dir).as_posix()
+        mode = path.stat().st_mode
+        is_exec = bool(mode & 0o111)
+        if is_exec and rel not in executable_allowlist:
+            errors.append(f"ops/run/{rel}: executable bit forbidden (allowlist only)")
+    return (0 if not errors else 1), errors
+
+
 CHECKS: tuple[CheckDef, ...] = (
     CheckDef("ops.no_tracked_generated", "ops", "forbid tracked files in generated ops dirs", 800, check_ops_generated_tracked, fix_hint="Untrack generated ops files."),
     CheckDef("ops.generated_not_tracked_unless_allowed", "ops", "forbid tracked generated ops outputs unless explicitly allowlisted", 800, check_ops_generated_not_tracked_unless_allowed, fix_hint="Keep generated outputs untracked or move to committed generated roots."),
@@ -256,4 +305,6 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("ops.pins_no_unpinned_versions", "ops", "forbid floating/unpinned versions in ops pins", 1000, check_ops_pins_no_unpinned_versions, fix_hint="Pin tools/images/helm versions and image digests."),
     CheckDef("ops.stack_versions_report_valid", "ops", "require stack versions report to match tool versions SSOT", 1000, check_ops_stack_versions_report_valid, fix_hint="Regenerate ops/stack/versions.json from configs/ops/tool-versions.json."),
     CheckDef("ops.scripts_count_nonincreasing", "ops", "enforce migration gate: ops scripts count must not increase", 1000, check_ops_scripts_count_nonincreasing, fix_hint="Reduce ops scripts count or intentionally update baseline in one reviewed change."),
+    CheckDef("ops.run_only_allowlisted_scripts", "ops", "ops/run contains no scripts except explicitly allowed fixtures", 1000, check_ops_run_only_allowlisted_scripts, fix_hint="Migrate behavior into atlasctl and delete ops/run scripts or extend transitional allowlist intentionally."),
+    CheckDef("ops.run_non_executable_unless_allowlisted", "ops", "ops/run scripts must be non-executable except allowlisted", 1000, check_ops_run_non_executable_unless_allowlisted, fix_hint="Remove executable bits from ops/run scripts after migration, or update allowlist intentionally."),
 )
