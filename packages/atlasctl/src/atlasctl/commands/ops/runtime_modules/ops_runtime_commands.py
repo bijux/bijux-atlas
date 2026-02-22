@@ -915,18 +915,27 @@ echo "k8s apply-config passed (values=${VALUES_FILE})"
 
 
 def _ops_e2e_run_native(ctx: RunContext, report_format: str, suite: str) -> int:
-    script = f"""
-set -euo pipefail
-. ./ops/_lib/common.sh
-ops_init_run_id
-export RUN_ID="$OPS_RUN_ID"
-export ARTIFACT_DIR="$OPS_RUN_DIR"
-ops_env_load
-ops_entrypoint_start "ops-e2e"
-ops_version_guard python3 kubectl helm
-exec ./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/suite_runner.py --suite "{suite}"
-"""
-    return _run_simple_cmd(ctx, ["bash", "-lc", script], report_format)
+    repo = ctx.repo_root
+    outputs: list[str] = []
+
+    prereq = run_command(
+        ["python3", "./packages/atlasctl/src/atlasctl/layout_checks/check_tool_versions.py", "python3", "kubectl", "helm"],
+        repo,
+        ctx=ctx,
+    )
+    if prereq.combined_output.strip():
+        outputs.append(prereq.combined_output.rstrip())
+    if prereq.code != 0:
+        return _emit_ops_status(report_format, prereq.code, "\n".join(outputs).strip())
+
+    result = run_command(
+        [*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/suite_runner.py", "--suite", str(suite)],
+        repo,
+        ctx=ctx,
+    )
+    if result.combined_output.strip():
+        outputs.append(result.combined_output.rstrip())
+    return _emit_ops_status(report_format, result.code, "\n".join(outputs).strip())
 
 
 def _ops_stack_up_native(ctx: RunContext, report_format: str, profile: str, reuse: bool) -> int:
