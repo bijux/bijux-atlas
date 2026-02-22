@@ -236,7 +236,10 @@ def run_ci_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             [sys.executable, "-m", "atlasctl.cli", "--quiet", "ci", "reproducible-verify", "--json"],
             [sys.executable, "-m", "atlasctl.cli", "--quiet", "ci", "security-advisory-render", "--json"],
         ],
-        "scripts": [["make", "-s", "scripts-check"]],
+        "scripts": [
+            ["./bin/atlasctl", "--quiet", "lint", "scripts", "--report", "json"],
+            ["./bin/atlasctl", "--quiet", "check", "run", "--group", "repo", "--json"],
+        ],
         "pr": [
             ["./bin/atlasctl", "--quiet", "dev", "fmt"],
             ["./bin/atlasctl", "--quiet", "dev", "lint"],
