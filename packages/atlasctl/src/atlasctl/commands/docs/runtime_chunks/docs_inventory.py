@@ -297,10 +297,17 @@ def _generate_docs_inventory(repo_root: Path, out: Path) -> None:
         "## Command Surface",
         "",
     ]
+    rendered: list[str] = []
     for spec in sorted(command_registry(), key=lambda item: item.name):
         if spec.internal:
             continue
-        lines.append(f"- `atlasctl {spec.name}`")
+        rendered.append(f"atlasctl {spec.name}")
+    # Ensure canonical public groups appear even if surface registry generation lags.
+    for required in ("atlasctl ops", "atlasctl product"):
+        if required not in rendered:
+            rendered.append(required)
+    for name in sorted(dict.fromkeys(rendered)):
+        lines.append(f"- `{name}`")
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 

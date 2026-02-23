@@ -75,8 +75,11 @@ list: ## Print public make target set from SSOT with one-line descriptions
 targets: ## Print generated target catalog from SSOT
 	@./bin/atlasctl make list
 
-surface: ## Print public make surface from atlasctl SSOT
+surface: ## Print canonical make surfaces and atlasctl docs pointer
 	@./bin/atlasctl make list
+	@echo ""
+	@echo "Canonical surfaces: dev ci docs ops product"
+	@echo "Docs: packages/atlasctl/docs/commands/groups/ops.md and packages/atlasctl/docs/control-plane/product-domain.md"
 
 graph: ## Print compact dependency graph for TARGET
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make graph TARGET=<name>" >&2; exit 2; }

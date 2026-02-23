@@ -1,5 +1,5 @@
 # Scope: ops area wrappers only.
-# Public targets: none
+# Public targets: ops, ops-up, ops-down, ops-clean, ops-pins-check, ops-pins-update
 SHELL := /bin/sh
 
 ops: ## Canonical ops gate

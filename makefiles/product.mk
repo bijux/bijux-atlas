@@ -1,5 +1,5 @@
 # Scope: product-facing release artifact wrappers only.
-# Public targets: product build/validate lanes and naming checks
+# Public targets: product, bootstrap, docker-*, chart-package/chart-validate, rename-lint, docs-lint-names
 SHELL := /bin/sh
 
 product: ## Run canonical product verification lane
