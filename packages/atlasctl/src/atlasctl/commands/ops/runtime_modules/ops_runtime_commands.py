@@ -12,6 +12,7 @@ from atlasctl.core.context import RunContext
 from atlasctl.core.process import run_command
 from atlasctl.core.runtime.paths import write_text_file
 from atlasctl.commands.ops._shared.json_emit import write_ops_json_report
+from atlasctl.commands.ops.tools import environment_summary
 from atlasctl.commands.ops.runtime_modules.layer_contract import (
     load_layer_contract,
     ns_e2e as lc_ns_e2e,
@@ -574,6 +575,13 @@ def _ops_doctor_native(ctx: RunContext, report_format: str) -> int:
 
     outputs.append("evidence root: artifacts/evidence")
     outputs.append("evidence run id pointer: artifacts/evidence/latest-run-id.txt")
+    env_summary = environment_summary(ctx, ["docker", "kind", "kubectl", "helm", "k6", "python3"])
+    outputs.append("tool presence summary:")
+    outputs.append(json.dumps({
+        "required_tools": env_summary.get("required_tools", []),
+        "missing_tools": env_summary.get("missing_tools", []),
+        "tool_versions": env_summary.get("tool_versions", {}),
+    }, sort_keys=True))
 
     best_effort = [
         ["python3", "./packages/atlasctl/src/atlasctl/layout_checks/check_tool_versions.py", "kind", "kubectl", "helm", "k6", "jq", "yq", "python3"],
