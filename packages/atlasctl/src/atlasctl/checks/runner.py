@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from .evidence import DEFAULT_WRITE_ROOT, ensure_explicit_repo_root, normalize_evidence_paths, validate_evidence_paths
+from .evidence import DEFAULT_WRITE_ROOT, ensure_explicit_repo_root, validate_evidence_paths
 from .model import (
     CheckContext,
     CheckDef,
@@ -43,17 +43,22 @@ def _run_with_timeout(fn: Any, arg: Any, timeout_ms: int) -> Any:
         return future.result(timeout=max(0.001, timeout_ms / 1000.0))
 
 
-def _call_check_function(check: CheckDef, ctx: CheckContext) -> tuple[int, list[str]]:
+def _call_check_function(check: CheckDef, ctx: CheckContext) -> tuple[int, list[str], tuple[Violation, ...]]:
     signature = inspect.signature(check.fn)
     first = next(iter(signature.parameters.values()), None)
     argument = ctx.repo_root
     if first is not None and str(first.annotation).endswith("CheckContext"):
         argument = ctx
     result = check.fn(argument)
+    if isinstance(result, list) and all(isinstance(item, Violation) for item in result):
+        violations = tuple(sorted(result, key=lambda item: item.canonical_key))
+        has_error = any(item.severity != Severity.WARN for item in violations)
+        warnings = [item.message for item in violations if item.severity == Severity.WARN]
+        return (1 if has_error else 0), warnings, violations
     if isinstance(result, tuple) and len(result) == 2:
         code, messages = result
-        return int(code), [str(item) for item in messages]
-    return (0, [])
+        return int(code), [str(item) for item in messages], ()
+    return (0, [], ())
 
 
 def _speed_label(check: CheckDef, duration_ms: int) -> str:
@@ -68,13 +73,15 @@ def _make_result(
     status: CheckStatus,
     duration_ms: int,
     messages: list[str],
+    violations: tuple[Violation, ...] = (),
     warnings: list[str] | None = None,
     effects_used: tuple[str, ...] = (Effect.FS_READ.value,),
 ) -> CheckResult:
-    violations = tuple(
-        Violation(code=str(check.result_code), message=msg, hint=str(check.fix_hint), severity=Severity.ERROR)
-        for msg in messages
-    )
+    if not violations:
+        violations = tuple(
+            Violation(code=str(check.result_code), message=msg, hint=str(check.fix_hint), severity=Severity.ERROR)
+            for msg in messages
+        )
     return CheckResult(
         id=str(check.id),
         title=str(check.title),
@@ -140,7 +147,7 @@ def _run_single_check(
     started = time.perf_counter()
     timeout_ms = budget_profile.timeout_for(check)
     try:
-        code, errors = _run_with_timeout(lambda chk: _call_check_function(chk, ctx), check, timeout_ms)
+        code, errors, structured = _run_with_timeout(lambda chk: _call_check_function(chk, ctx), check, timeout_ms)
         duration_ms = int((time.perf_counter() - started) * 1000)
     except FutureTimeoutError:
         duration_ms = int((time.perf_counter() - started) * 1000)
@@ -172,6 +179,7 @@ def _run_single_check(
         status=status,
         duration_ms=duration_ms,
         messages=errors,
+        violations=structured,
         effects_used=tuple(check.effects),
     )
 

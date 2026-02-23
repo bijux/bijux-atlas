@@ -26,6 +26,7 @@ from .model import (
     Violation,
 )
 from .runner import extract_failures, run_checks, top_n_slowest
+from .violations import v
 from .registry import check_tags, get_check, list_checks, list_domains
 
 
@@ -67,4 +68,5 @@ __all__ = [
     "run_checks",
     "extract_failures",
     "top_n_slowest",
+    "v",
 ]
