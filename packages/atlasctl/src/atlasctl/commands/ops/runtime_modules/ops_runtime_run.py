@@ -247,12 +247,20 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                     return code
             return 0
         if sub == "update":
+            if not bool(getattr(ns, "ack_update", False)):
+                return impl._emit_ops_status(ns.report, 2, "pins update writes committed outputs; re-run with --i-know-what-im-doing")
             code, output = impl._build_unified_ops_pins(ctx.repo_root)
             return impl._emit_ops_status(ns.report, code, output)
         return 2
 
     if ns.ops_cmd == "gen":
         sub = getattr(ns, "ops_gen_cmd", "run")
+        if sub in {"run", "index", "check"} and not bool(getattr(ns, "ack_update", False)):
+            return impl._emit_ops_status(
+                ns.report,
+                2,
+                f"ops gen {sub} updates generated files; re-run with --i-know-what-im-doing",
+            )
         if sub == "run":
             code, output = impl._sync_stack_versions(ctx.repo_root)
             if code != 0:
@@ -299,7 +307,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         if sub == "check":
             code = run_ops_command(
                 ctx,
-                argparse.Namespace(ops_cmd="gen", ops_gen_cmd="run", report=ns.report),
+                argparse.Namespace(ops_cmd="gen", ops_gen_cmd="run", report=ns.report, ack_update=True),
             )
             if code != 0:
                 return code
@@ -496,6 +504,8 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             profile = getattr(ns, "profile", "kind")
             return impl._ops_stack_up_native(ctx, ns.report, str(profile), reuse=bool(getattr(ns, "reuse", False)))
         if ns.ops_cmd == "stack" and sub == "down":
+            if bool(getattr(ns, "dry_run", False)):
+                return impl._emit_ops_status(ns.report, 0, "dry-run: would run stack teardown and write stack lane artifacts")
             return impl._ops_stack_down_native(ctx, ns.report)
         if ns.ops_cmd == "stack" and sub == "restart":
             return impl._ops_k8s_restart_native(ctx, ns.report)
@@ -539,6 +549,8 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         if ns.ops_cmd == "kind" and sub == "down":
             return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/commands/ops/stack/kind/down.py"], ns.report)
         if ns.ops_cmd == "kind" and sub == "reset":
+            if bool(getattr(ns, "dry_run", False)):
+                return impl._emit_ops_status(ns.report, 0, "dry-run: would run kind reset (down + up)")
             return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/commands/ops/stack/kind/reset.py"], ns.report)
         if ns.ops_cmd == "kind" and sub == "validate":
             steps = [
@@ -813,6 +825,8 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             print(output)
         return code
     if ns.ops_cmd in {"clean-generated", "clean"}:
+        if bool(getattr(ns, "dry_run", False)):
+            return impl._emit_ops_status(ns.report, 0, "dry-run: would remove runtime evidence files under ops/_generated")
         return impl._ops_clean_generated(ctx, ns.report, ns.force)
 
     return 2
