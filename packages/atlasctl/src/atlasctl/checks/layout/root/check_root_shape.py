@@ -8,7 +8,7 @@ from ....core.exec import run as run_cmd
 CHECK_ID = "repo.root_shape"
 DESCRIPTION = "enforce repository root shape contract from root_whitelist.json"
 
-_WHITELIST = "packages/atlasctl/src/atlasctl/checks/layout/root_whitelist.json"
+_WHITELIST = "packages/atlasctl/src/atlasctl/checks/tools/root_shape_whitelist.json"
 
 
 def _is_git_ignored(repo_root: Path, entry_name: str) -> bool:

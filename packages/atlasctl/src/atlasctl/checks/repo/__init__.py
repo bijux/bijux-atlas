@@ -495,7 +495,7 @@ CHECKS: tuple[CheckDef, ...] = (
         check_canonical_concept_homes,
         fix_hint="Keep only canonical concept homes: registry, suite, contracts, reporting.",
     ),
-    CheckDef(ROOT_SHAPE_CHECK_ID, "repo", ROOT_SHAPE_DESCRIPTION, 500, run_root_shape, fix_hint="Align root entries with checks/layout/root_whitelist.json."),
+    CheckDef(ROOT_SHAPE_CHECK_ID, "repo", ROOT_SHAPE_DESCRIPTION, 500, run_root_shape, fix_hint="Align root entries with checks/tools/root_shape_whitelist.json."),
     CheckDef(FORBIDDEN_ROOT_FILES_CHECK_ID, "repo", FORBIDDEN_ROOT_FILES_DESCRIPTION, 400, run_forbidden_root_files, fix_hint="Remove forbidden junk files from repository root."),
     CheckDef(FORBIDDEN_ROOT_NAMES_CHECK_ID, "repo", FORBIDDEN_ROOT_NAMES_DESCRIPTION, 400, run_forbidden_root_names, fix_hint="Remove forbidden top-level legacy names from repository root."),
     CheckDef(FORBIDDEN_PATHS_CHECK_ID, "repo", FORBIDDEN_PATHS_DESCRIPTION, 500, run_forbidden_paths, fix_hint="Remove forbidden legacy path references from make/docs/workflows."),
