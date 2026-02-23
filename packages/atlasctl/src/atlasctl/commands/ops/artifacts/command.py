@@ -7,7 +7,7 @@ from typing import Any
 
 from atlasctl.core.context import RunContext
 from atlasctl.core.process import run_command
-from atlasctl.core.schema.schema_utils import validate_json
+from atlasctl.contracts.validate import validate as validate_contract
 from atlasctl.commands.ops._shared.output import emit_ops_payload
 
 
@@ -76,6 +76,15 @@ def cleanup_gc(ctx: RunContext, report_format: str, older_than_days: int) -> int
         "action": "gc",
         "details": {"older_than_days": older_than_days, "removed_dirs": sorted(removed)},
     }
-    validate_json(payload, ctx.repo_root / "configs/contracts/scripts-tool-output.schema.json")
+    validate_contract("scripts-tool-output", payload)
     emit_ops_payload(payload, report_format)
     return 0
+
+
+def configure_artifacts_command(*_args: object, **_kwargs: object) -> None:
+    """CLI intent marker; parser wiring lives in ops root parser."""
+    return None
+
+
+def run_artifacts_command_cli(ctx: RunContext, report_format: str, older_than_days: int) -> int:
+    return cleanup_gc(ctx, report_format, older_than_days)

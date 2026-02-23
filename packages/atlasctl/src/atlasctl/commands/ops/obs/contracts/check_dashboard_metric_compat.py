@@ -2,7 +2,7 @@
 # owner: bijux-atlas-operations
 # purpose: ensure dashboard metric queries reference metrics present in the metrics contract.
 # stability: internal
-# called-by: ops/obs/tests/test_contracts.sh
+# called-by: packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_contracts.py
 import json,re,sys
 from pathlib import Path
 def _repo_root() -> Path:

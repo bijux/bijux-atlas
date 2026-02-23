@@ -10,7 +10,7 @@ import time
 from atlasctl.core.context import RunContext
 from atlasctl.core.fs import ensure_evidence_path
 from atlasctl.core.runtime.paths import write_text_file
-from atlasctl.core.schema.schema_utils import validate_json
+from atlasctl.contracts.validate import validate as validate_contract
 
 from ..tools import command_rendered, environment_summary, hash_inputs, invocation_report, preflight_tools, run_tool
 
@@ -108,7 +108,7 @@ def write_wrapper_artifacts(
         },
     }
     write_text_file(report_path, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    validate_json(payload, ctx.repo_root / "configs/contracts/scripts-tool-output.schema.json")
+    validate_contract("scripts-tool-output", payload)
     return payload
 
 

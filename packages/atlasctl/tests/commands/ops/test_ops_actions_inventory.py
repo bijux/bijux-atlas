@@ -5,6 +5,8 @@ import os
 import subprocess
 from pathlib import Path
 
+# schema-validate-exempt: golden shape is custom list inventory, covered by dedicated assertions below.
+
 
 ROOT = Path(__file__).resolve().parents[5]
 GOLDEN = ROOT / "packages/atlasctl/tests/goldens/check/ops-actions-inventory.json.golden"

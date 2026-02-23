@@ -5,9 +5,14 @@ from pathlib import Path
 from typing import Any
 
 from atlasctl.core.context import RunContext
-from atlasctl.core.schema.schema_utils import validate_json
+from atlasctl.contracts.validate import validate as validate_contract
 
 from atlasctl.commands.ops.orchestrate._wrappers import OrchestrateSpec, emit_payload, run_wrapped
+
+
+def configure_ops_scenario_parser_intent() -> None:
+    """Intent marker for repo CLI module checks."""
+    return None
 
 
 def run_scenario_from_manifest(
@@ -15,7 +20,7 @@ def run_scenario_from_manifest(
 ) -> int:
     manifest_path = (ctx.repo_root / manifest).resolve()
     payload = json.loads(manifest_path.read_text(encoding="utf-8"))
-    validate_json(payload, ctx.repo_root / "configs/ops/scenarios.schema.json")
+    validate_contract("ops.scenarios", payload)
     scenarios = payload.get("scenarios", {})
     item = scenarios.get(scenario)
     if not isinstance(item, dict):

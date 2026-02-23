@@ -2,26 +2,35 @@
   "schema_version": 1,
   "kind": "atlasctl-script-registry",
   "scripts": [
-    {"path": "packages/atlasctl/src/atlasctl/commands/ops/lint/repo/no_bin_symlinks.py", "owner": "ops", "description": "ops lint gate for symlink policy"},
-    {"path": "packages/atlasctl/src/atlasctl/commands/ops/k8s/ci/install_matrix.py", "owner": "ops", "description": "k8s install matrix runner"},
-    {"path": "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/obs/test_helm_repo_pinning.py", "owner": "ops", "description": "helm repo pinning contract test"},
-    {"path": "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/rollout/test_cluster_sanity.py", "owner": "ops", "description": "cluster sanity rollout test"},
-    {"path": "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/rollout/test_kind_image_resolution.py", "owner": "ops", "description": "kind image resolution test"},
-    {"path": "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/rollout/test_kind_version_drift.py", "owner": "ops", "description": "kind version drift contract test"},
-    {"path": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/run_drill.py", "owner": "ops", "description": "observability drill runner"},
-    {"path": "packages/atlasctl/src/atlasctl/commands/ops/observability/install_pack.py", "owner": "ops", "description": "observability pack install helper"},
-    {"path": "atlasctl ops deploy", "owner": "ops", "description": "deploy atlas helper"},
-    {"path": "atlasctl ops e2e run", "owner": "ops", "description": "e2e suite entrypoint"},
-    {"path": "atlasctl ops stack down", "owner": "ops", "description": "bring stack down"},
-    {"path": "atlasctl ops stack up", "owner": "ops", "description": "bring stack up"},
-    {"path": "packages/atlasctl/src/atlasctl/commands/ops/stack/faults/inject.py", "owner": "ops", "description": "fault injection dispatcher"},
-    {"path": "packages/atlasctl/src/atlasctl/commands/ops/stack/kind/context_guard.py", "owner": "ops", "description": "kind context guard"},
-    {"path": "packages/atlasctl/src/atlasctl/commands/ops/stack/kind/down.py", "owner": "ops", "description": "kind down helper"},
-    {"path": "packages/atlasctl/src/atlasctl/commands/ops/stack/kind/namespace_guard.py", "owner": "ops", "description": "kind namespace guard"},
-    {"path": "packages/atlasctl/src/atlasctl/commands/ops/stack/kind/reset.py", "owner": "ops", "description": "kind reset helper"},
-    {"path": "packages/atlasctl/src/atlasctl/commands/ops/stack/kind/up.py", "owner": "ops", "description": "kind up helper"},
-    {"path": "ops/vendor/layout-checks/check_kind_cluster_contract_drift.sh", "owner": "ops", "description": "kind contract drift check"},
-    {"path": "docker/scripts/docker-runtime-smoke.sh", "owner": "platform", "description": "docker runtime smoke test"},
-    {"path": "docker/scripts/docker-scan.sh", "owner": "platform", "description": "docker scanning helper"}
+    {
+      "path": "docker/scripts/docker-runtime-smoke.sh",
+      "owner": "platform",
+      "description": "docker runtime smoke test"
+    },
+    {
+      "path": "docker/scripts/docker-scan.sh",
+      "owner": "platform",
+      "description": "docker scanning helper"
+    },
+    {
+      "path": "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/assets/k8s_test_common.sh",
+      "owner": "ops",
+      "description": "path alias for atlasctl-owned k8s test shell asset"
+    },
+    {
+      "path": "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/assets/observability_test_lib.sh",
+      "owner": "ops",
+      "description": "atlasctl-owned observability test shell asset"
+    },
+    {
+      "path": "packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/assets/lib/ops_common.sh",
+      "owner": "ops",
+      "description": "atlasctl-owned shared ops shell asset"
+    },
+    {
+      "path": "packages/atlasctl/src/atlasctl/commands/ops/stack/tests/assets/minio_invariants.sh",
+      "owner": "ops",
+      "description": "atlasctl-owned stack test minio invariants shell asset"
+    }
   ]
 }

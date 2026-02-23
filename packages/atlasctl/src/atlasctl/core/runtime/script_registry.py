@@ -12,7 +12,9 @@ from .paths import write_text_file
 
 SCRIPT_REGISTRY_PATH = Path("configs/scripts/registry.json")
 COMMANDS_ROOT = Path("packages/atlasctl/src/atlasctl/commands")
-_SCRIPT_REF_RE = re.compile(r"(?:ops|scripts|docker/scripts)/[A-Za-z0-9_./-]+\.sh")
+_SCRIPT_REF_RE = re.compile(
+    r"(?:packages/atlasctl/src/atlasctl/commands/[A-Za-z0-9_./-]+\.sh|(?:ops|scripts|docker/scripts)/[A-Za-z0-9_./-]+\.sh)"
+)
 _NAME_RE = re.compile(r"^[a-z0-9][a-z0-9._/-]*\.sh$")
 
 
