@@ -14,6 +14,7 @@ from ....core.fs import ensure_evidence_path
 from ....core.process import run_command
 from ....core.runtime.paths import write_text_file
 from ....core.schema.schema_utils import validate_json
+from ..tools import command_rendered, environment_summary, hash_inputs, invocation_report, preflight_tools, run_tool
 
 
 @dataclass(frozen=True)
@@ -29,7 +30,8 @@ def _artifact_base(ctx: RunContext, area: str) -> Path:
 
 def _write_wrapper_artifacts(ctx: RunContext, area: str, action: str, cmd: list[str], code: int, output: str) -> dict[str, Any]:
     out_dir = _artifact_base(ctx, area)
-    started = datetime.now(timezone.utc).isoformat()
+    started_dt = datetime.now(timezone.utc)
+    started = started_dt.isoformat()
     run_log = out_dir / "run.log"
     report_path = out_dir / "report.json"
     write_text_file(run_log, output + ("\n" if output and not output.endswith("\n") else ""), encoding="utf-8")
@@ -41,12 +43,21 @@ def _write_wrapper_artifacts(ctx: RunContext, area: str, action: str, cmd: list[
         "area": area,
         "action": action,
         "command": " ".join(cmd),
+        "command_rendered": command_rendered(cmd),
         "generated_at": started,
+        "timings": {
+            "start": started,
+            "end": datetime.now(timezone.utc).isoformat(),
+        },
         "artifacts": {
             "run_log": str(run_log),
             "report": str(report_path),
         },
-        "details": {"exit_code": code},
+        "details": {
+            "exit_code": code,
+            "inputs_hash": hash_inputs(ctx.repo_root, []),
+            "environment_summary": environment_summary(ctx, [cmd[0]] if cmd else []),
+        },
     }
     write_text_file(report_path, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     validate_json(payload, ctx.repo_root / "configs/contracts/scripts-tool-output.schema.json")
@@ -64,11 +75,16 @@ def _emit(payload: dict[str, Any], report_format: str) -> None:
 
 
 def _run_wrapped(ctx: RunContext, spec: OrchestrateSpec, report_format: str) -> int:
-    result = run_command(spec.cmd, ctx.repo_root, ctx=ctx)
-    output = result.combined_output
-    payload = _write_wrapper_artifacts(ctx, spec.area, spec.action, spec.cmd, result.code, output)
+    missing, _resolved = preflight_tools([spec.cmd[0]] if spec.cmd else [])
+    if missing:
+        payload = _write_wrapper_artifacts(ctx, spec.area, spec.action, spec.cmd, 1, f"missing tools: {', '.join(missing)}")
+        _emit(payload, report_format)
+        return 1
+    inv = run_tool(ctx, spec.cmd)
+    payload = _write_wrapper_artifacts(ctx, spec.area, spec.action, spec.cmd, inv.code, inv.combined_output)
+    payload["details"]["invocation"] = invocation_report(inv)
     _emit(payload, report_format)
-    return result.code
+    return inv.code
 
 
 def _ports_show(ctx: RunContext, report_format: str) -> int:
@@ -240,17 +256,50 @@ def _contracts_snapshot(ctx: RunContext, report_format: str) -> int:
     rows: list[dict[str, Any]] = []
     for name, cmd in checks:
         started = datetime.now(timezone.utc).isoformat()
-        result = run_command(cmd, ctx.repo_root, ctx=ctx)
+        required = [cmd[0]] if cmd else []
+        missing, _resolved = preflight_tools(required)
+        if missing:
+            result_payload = {
+                "tool": cmd[0] if cmd else "",
+                "cmd": cmd,
+                "code": 1,
+                "stdout": "",
+                "stderr": f"missing tools: {', '.join(missing)}",
+                "combined_output": f"missing tools: {', '.join(missing)}",
+                "started_at": 0.0,
+                "ended_at": 0.0,
+                "duration_ms": 0,
+            }
+            code = 1
+            combined_output = result_payload["combined_output"]
+            invocation_meta = {
+                "tool": result_payload["tool"],
+                "command_rendered": command_rendered(cmd),
+                "timings": {"start_unix_s": 0.0, "end_unix_s": 0.0, "duration_ms": 0},
+                "exit_code": 1,
+                "stdout": "",
+                "stderr": result_payload["stderr"],
+            }
+        else:
+            inv = run_tool(ctx, cmd)
+            code = inv.code
+            combined_output = inv.combined_output
+            invocation_meta = invocation_report(inv)
         ended = datetime.now(timezone.utc).isoformat()
         log_path = logs_dir / f"{name}.log"
-        write_text_file(log_path, f"$ {' '.join(cmd)}\n\n{result.combined_output}", encoding="utf-8")
+        write_text_file(log_path, f"$ {' '.join(cmd)}\n\n{combined_output}", encoding="utf-8")
         rows.append(
             {
                 "name": name,
-                "status": "pass" if result.code == 0 else "fail",
-                "exit_code": result.code,
+                "status": "pass" if code == 0 else "fail",
+                "exit_code": code,
                 "started_at": started,
                 "ended_at": ended,
+                "command_rendered": command_rendered(cmd),
+                "inputs_hash": hash_inputs(ctx.repo_root, ["ops/_meta/layer-contract.json"]),
+                "environment_summary": environment_summary(ctx, [cmd[0]] if cmd else []),
+                "timings": invocation_meta["timings"],
+                "invocation": invocation_meta,
                 "log": str(log_path.relative_to(ctx.repo_root)),
             }
         )
