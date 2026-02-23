@@ -107,23 +107,39 @@ def write_wrapper_artifacts(
 
 
 def run_wrapped(ctx: RunContext, spec: OrchestrateSpec, report_format: str, *, dry_run: bool = False) -> int:
+    if dry_run:
+        out_dir = ctx.evidence_root / spec.area / ctx.run_id
+        payload = {
+            "schema_version": 1,
+            "tool": "bijux-atlas",
+            "status": "pass",
+            "run_id": ctx.run_id,
+            "area": spec.area,
+            "action": spec.action,
+            "command": " ".join(spec.cmd),
+            "command_rendered": command_rendered(spec.cmd),
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "timings": {"start": "", "end": "", "duration_ms": 0},
+            "artifacts": {
+                "run_log": str((out_dir / "run.log")),
+                "report": str((out_dir / "report.json")),
+                "artifact_index": str((out_dir / "artifact-index.json")),
+            },
+            "details": {
+                "exit_code": 0,
+                "failure": {"kind": "none", "exit_code": 0},
+                "inputs_hash": hash_inputs(ctx.repo_root, []),
+                "environment_summary": environment_summary(ctx, [spec.cmd[0]] if spec.cmd else []),
+                "dry_run": True,
+            },
+        }
+        emit_payload(payload, report_format)
+        return 0
     missing, _resolved = preflight_tools([spec.cmd[0]] if spec.cmd else [])
     if missing:
         payload = write_wrapper_artifacts(ctx, spec.area, spec.action, spec.cmd, 1, f"missing tools: {', '.join(missing)}")
         emit_payload(payload, report_format)
         return 1
-    if dry_run:
-        payload = write_wrapper_artifacts(
-            ctx,
-            spec.area,
-            spec.action,
-            spec.cmd,
-            0,
-            f"dry-run: would execute {command_rendered(spec.cmd)}",
-        )
-        payload["details"]["dry_run"] = True
-        emit_payload(payload, report_format)
-        return 0
     inv = run_tool(ctx, spec.cmd)
     payload = write_wrapper_artifacts(ctx, spec.area, spec.action, spec.cmd, inv.code, inv.combined_output)
     payload["details"]["invocation"] = invocation_report(inv)
