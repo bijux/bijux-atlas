@@ -9,6 +9,17 @@ from . import ops_runtime_commands as impl
 from .actions_inventory import action_argv, inventory_payload
 from .index_generator import render_indexes, suite_inventory as ops_suite_inventory, write_indexes
 from atlasctl.core.process import shell_script_command
+from atlasctl.ops.workflows import (
+    collect_evidence as ops_collect_evidence,
+    deploy_atlas as ops_deploy_atlas,
+    deploy_stack as ops_deploy_stack,
+    env_doctor as ops_env_doctor,
+    platform_down as ops_platform_down,
+    platform_up as ops_platform_up,
+    test_e2e as ops_test_e2e,
+    test_load as ops_test_load,
+    test_smoke as ops_test_smoke,
+)
 
 def run_ops_command(ctx, ns: argparse.Namespace) -> int:
     if not getattr(ns, "ops_cmd", None) and bool(getattr(ns, "list_actions", False)):
@@ -48,11 +59,14 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                 "gen",
                 "stack",
                 "deploy",
+                "platform",
                 "k8s",
                 "e2e",
                 "obs",
                 "kind",
                 "load",
+                "test",
+                "evidence",
                 "cache",
                 "datasets",
                 "help",
@@ -176,6 +190,10 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
 
     if ns.ops_cmd == "deploy":
         sub = str(getattr(ns, "ops_deploy_cmd", "") or "").strip()
+        if sub == "stack":
+            return ops_deploy_stack(ctx, ns.report)
+        if sub == "atlas":
+            return ops_deploy_atlas(ctx, ns.report)
         if sub in {"", "apply"}:
             allow_apply = bool(os.environ.get("CI")) or str(os.environ.get("ATLASCTL_OPS_DEPLOY_ALLOW_APPLY", "")).strip().lower() in {"1", "true", "yes", "on"}
             if not allow_apply:
@@ -225,6 +243,17 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                 f"{key}={resolved[key]}" for key in sorted(resolved)
             )
             return impl._emit_ops_status(ns.report, 0, rendered)
+        if sub == "doctor":
+            payload = ops_env_doctor(ctx)
+            if ns.report == "json":
+                print(json.dumps(payload, sort_keys=True))
+            else:
+                print(f"ops env doctor: {payload['status']} toolchain={payload['toolchain_source']}")
+                for row in payload.get("tools", []):
+                    if isinstance(row, dict):
+                        marker = "ok" if bool(row.get("present")) else "missing"
+                        print(f"{row.get('name')}={row.get('pinned', '')} [{marker}]")
+            return 0
         return 2
 
     if ns.ops_cmd == "pins":
@@ -334,6 +363,27 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         sub = getattr(ns, "ops_migrate_cmd", "")
         if sub == "phase2":
             return impl._ops_migrate_phase2(ctx, ns.report, check_only=bool(getattr(ns, "check", False)))
+        return 2
+    if ns.ops_cmd == "platform":
+        sub = str(getattr(ns, "ops_platform_cmd", "")).strip()
+        if sub == "up":
+            return ops_platform_up(ctx, ns.report)
+        if sub == "down":
+            return ops_platform_down(ctx, ns.report)
+        return 2
+    if ns.ops_cmd == "test":
+        sub = str(getattr(ns, "ops_test_cmd", "")).strip()
+        if sub == "smoke":
+            return ops_test_smoke(ctx, ns.report)
+        if sub == "e2e":
+            return ops_test_e2e(ctx, ns.report)
+        if sub == "load":
+            return ops_test_load(ctx, ns.report)
+        return 2
+    if ns.ops_cmd == "evidence":
+        sub = str(getattr(ns, "ops_evidence_cmd", "")).strip()
+        if sub == "collect":
+            return ops_collect_evidence(ctx, ns.report, str(getattr(ns, "namespace", "atlas-e2e")))
         return 2
 
     if ns.ops_cmd in {"stack", "k8s", "e2e", "obs", "kind", "load", "cache", "datasets"}:
