@@ -217,6 +217,13 @@ def build_parser() -> argparse.ArgumentParser:
     config_sub.add_parser("dump", help="dump canonical config payload").add_argument("--report", choices=["text", "json"], default="json")
     config_sub.add_parser("validate", help="validate config schemas and policy").add_argument("--report", choices=["text", "json"], default="text")
     config_sub.add_parser("drift", help="check generated config drift").add_argument("--report", choices=["text", "json"], default="text")
+    config_sub.add_parser("gen", help="generate deterministic config compiler outputs").add_argument("--report", choices=["text", "json"], default="text")
+    c_diff = config_sub.add_parser("diff", help="diff config compiler outputs")
+    c_diff.add_argument("--report", choices=["text", "json"], default="text")
+    c_diff.add_argument("--fail", action="store_true")
+    c_fmt = config_sub.add_parser("fmt", help="canonicalize config JSON formatting")
+    c_fmt.add_argument("--report", choices=["text", "json"], default="text")
+    c_fmt.add_argument("--check", action="store_true")
 
     for name in DOMAINS:
         register_domain_parser(sub, name, f"{name} domain commands")

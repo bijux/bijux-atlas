@@ -188,7 +188,14 @@ def dispatch_command(
         return import_attr("atlasctl.commands.doctor", "run_doctor")(ctx, ns.json, getattr(ns, "out_file", None))
     if ns.cmd == "config":
         mapped = argparse.Namespace(**vars(ns))
-        mapped.configs_cmd = {"dump": "print", "validate": "validate", "drift": "drift"}[ns.config_cmd]
+        mapped.configs_cmd = {
+            "dump": "print",
+            "validate": "validate",
+            "drift": "drift",
+            "gen": "gen",
+            "diff": "diff",
+            "fmt": "fmt",
+        }[ns.config_cmd]
         return import_attr("atlasctl.commands.configs.command", "run_configs_command")(ctx, mapped)
     if ns.cmd == "inventory":
         return import_attr("atlasctl.commands.dev.inventory.command", "run_inventory")(ctx, ns.category, ns.format, ns.out_dir, ns.dry_run, ns.check, ns.command)
