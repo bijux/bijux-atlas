@@ -151,6 +151,20 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
         selected_domain = None
         selector = ""
     checks = list(list_checks())
+    selection_profile = str(getattr(ns, "profile", "") or "").strip()
+    if selection_profile:
+        if selection_profile == "slow":
+            setattr(ns, "only_slow", True)
+            setattr(ns, "only_fast", False)
+            setattr(ns, "include_all", False)
+        elif selection_profile == "fast":
+            setattr(ns, "only_fast", True)
+            setattr(ns, "only_slow", False)
+            setattr(ns, "include_all", False)
+        elif selection_profile == "all":
+            setattr(ns, "include_all", True)
+            setattr(ns, "only_slow", False)
+            setattr(ns, "only_fast", False)
     category = str(getattr(ns, "category", "") or "").strip()
     if category:
         checks = [check for check in checks if str(check.category) == category]
@@ -231,7 +245,14 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
         nonlocal live_index
         live_index += 1
         row_status_raw = str(getattr(result, "status", "fail")).lower()
-        row_status = "PASS" if row_status_raw == "pass" else "FAIL"
+        if row_status_raw == "pass":
+            row_status = "PASS"
+        elif row_status_raw == "skip":
+            row_status = "SKIP"
+        else:
+            row_status = "FAIL"
+        if row_status == "SKIP" and not bool(getattr(ns, "show_skips", False)):
+            return
         metrics = getattr(result, "metrics", {}) or {}
         if isinstance(metrics, dict):
             row_duration = int(metrics.get("duration_ms", 0))
@@ -406,7 +427,14 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
         print(render_jsonl(report_payload))
     else:
         if not live_print:
-            print(render_text(report_payload, quiet=bool(ns.run_quiet), verbose=bool(ns.run_verbose)))
+            print(
+                render_text(
+                    report_payload,
+                    quiet=bool(ns.run_quiet),
+                    verbose=bool(ns.run_verbose),
+                    show_skips=bool(getattr(ns, "show_skips", False)),
+                )
+            )
         if ns.durations and ns.durations > 0:
             print("durations:")
             ranked = sorted(rows, key=lambda item: int(item["duration_ms"]), reverse=True)[: ns.durations]
@@ -444,7 +472,7 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             json.dumps(slow_rows, indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
         )
-    if ns.profile:
+    if bool(getattr(ns, "emit_profile", False)):
         profile_path = ensure_evidence_path(
             ctx,
             Path(getattr(ns, "profile_out", f"artifacts/isolate/{ctx.run_id}/atlasctl-check/profile.json")),
