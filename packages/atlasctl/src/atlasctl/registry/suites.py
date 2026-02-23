@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-import json
 from pathlib import Path
 
+from .catalogs import load_suites_catalog
 from ..checks.registry import check_tags, list_checks
 
 
@@ -42,7 +42,7 @@ OPS_SUITE_NAMES: tuple[str, ...] = (
 
 
 def suite_manifest_specs() -> tuple[SuiteManifestSpec, ...]:
-    payload = json.loads(_SUITES_CATALOG.read_text(encoding="utf-8"))
+    payload = load_suites_catalog(_SUITES_CATALOG.parents[5])
     rows = payload.get("suites", [])
     specs: list[SuiteManifestSpec] = []
     for row in rows:
