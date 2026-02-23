@@ -90,7 +90,23 @@ def build_unified(ctx: RunContext, run_id: str) -> dict[str, object]:
     if kc_path.exists():
         k8s_conformance = json.loads(kc_path.read_text(encoding="utf-8"))
 
-    return {
+    product_artifacts: dict[str, object] | None = None
+    product_manifest = ctx.evidence_root / "product" / "build" / run_id / "artifact-manifest.json"
+    if product_manifest.exists():
+        try:
+            p = json.loads(product_manifest.read_text(encoding="utf-8"))
+            artifacts = p.get("artifacts", [])
+            product_artifacts = {
+                "status": "ok",
+                "manifest": str(product_manifest),
+                "version": p.get("version", "unknown"),
+                "artifact_count": len(artifacts) if isinstance(artifacts, list) else 0,
+                "artifacts": artifacts if isinstance(artifacts, list) else [],
+            }
+        except Exception:
+            product_artifacts = {"status": "invalid", "manifest": str(product_manifest)}
+
+    payload = {
         "schema_version": 1,
         "report_version": 1,
         "run_id": run_id,
@@ -102,6 +118,9 @@ def build_unified(ctx: RunContext, run_id: str) -> dict[str, object]:
         "graceful_degradation": graceful_degradation,
         "k8s_conformance": k8s_conformance,
     }
+    if product_artifacts is not None:
+        payload["product_artifacts"] = product_artifacts
+    return payload
 
 
 def _run_dir(ctx: RunContext, run_id: str) -> Path:

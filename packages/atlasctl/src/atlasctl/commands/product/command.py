@@ -240,6 +240,9 @@ def configure_product_parser(sub: argparse._SubParsersAction[argparse.ArgumentPa
     diff.add_argument("right")
     inventory = product_sub.add_parser("inventory", help="print product artifact inventory")
     inventory.add_argument("--manifest", help="path to artifact manifest (defaults to current run)")
+    artifact_index = product_sub.add_parser("artifact-index", help="write artifact index JSON derived from artifact manifest")
+    artifact_index.add_argument("--manifest", help="path to artifact manifest (defaults to current run)")
+    artifact_index.add_argument("--out", help="output path (defaults next to manifest)")
     publish = product_sub.add_parser("publish", help="publish product artifacts (internal/optional)")
     publish.add_argument("--internal", action="store_true")
     release_candidate = product_sub.add_parser("release-candidate", help="build -> verify -> sign -> publish dry flow")
@@ -329,6 +332,27 @@ def run_product_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             for row in payload.get("artifacts", []):
                 if isinstance(row, dict):
                     print(f"- {row.get('id')} {row.get('path')}")
+        return 0
+    if sub == "artifact-index":
+        p = Path(getattr(ns, "manifest", "")).expanduser() if getattr(ns, "manifest", None) else _product_manifest_path(ctx)
+        if not p.is_absolute():
+            p = (ctx.repo_root / p).resolve()
+        if not p.exists():
+            print(f"missing product artifact manifest: {_rel(ctx.repo_root, p)}")
+            return 1
+        payload = json.loads(p.read_text(encoding="utf-8"))
+        out = Path(getattr(ns, "out", "")).expanduser() if getattr(ns, "out", None) else p.with_name("artifact-index.json")
+        if not out.is_absolute():
+            out = (ctx.repo_root / out).resolve()
+        index = {
+            "schema_version": 1,
+            "kind": "product-artifact-index",
+            "run_id": payload.get("run_id"),
+            "version": payload.get("version"),
+            "artifacts": payload.get("artifacts", []),
+        }
+        write_text_file(out, json.dumps(index, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        print(_rel(ctx.repo_root, out))
         return 0
     if sub == "publish":
         if not bool(getattr(ns, "internal", False)):
