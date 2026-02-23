@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "allow_runtime_compat": [
+    "ops/_generated_committed/report.unified.json",
+    "ops/_generated_committed/scorecard.json"
+  ],
+  "mirrors": [
+    {
+      "committed": "ops/_generated_committed/.gitkeep",
+      "source": "ops/_generated/.gitkeep"
+    },
+    {
+      "committed": "ops/_generated_committed/MIRROR_POLICY.md",
+      "source": "ops/docs/generated-committed-policy.md"
+    }
+  ]
+}
