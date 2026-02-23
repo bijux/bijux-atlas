@@ -1,3 +1,4 @@
+pub const MAX_LOC_WARN: usize = 800;
 pub const MAX_LOC_HARD: usize = 1000;
 pub const MAX_DEPTH_HARD: usize = 7;
 pub const MAX_RS_FILES_PER_DIR_HARD: usize = 10;
