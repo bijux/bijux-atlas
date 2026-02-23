@@ -1,0 +1,29 @@
+{
+  "artifacts": [
+    {
+      "id": "docker-image-tag",
+      "kind": "docker-image-tag",
+      "path": "bijux-atlas:test",
+      "sha256": "4044fc36baa673173c013abbd46aca33d9d9cca967f1cb572adc060c2b541525",
+      "size_bytes": 0
+    },
+    {
+      "id": "chart:bijux-atlas-0.0.1.tgz",
+      "kind": "helm-chart-package",
+      "path": "artifacts/chart/bijux-atlas-0.0.1.tgz",
+      "sha256": "c20430ec25d605b0c8dd54c6647b8d9bcbf8a6b46056f9b1a04b06a41b2df0dd",
+      "size_bytes": 18
+    }
+  ],
+  "kind": "product-artifact-manifest",
+  "meta": {
+    "allowed_roots": [
+      "artifacts/chart",
+      "artifacts/evidence/product"
+    ],
+    "tool_versions_hint": "use atlasctl ops pins check for pinned tool validation"
+  },
+  "run_id": "test-run",
+  "schema_version": 1,
+  "version": "0.0.1-test"
+}
