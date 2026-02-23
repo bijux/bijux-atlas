@@ -4,14 +4,14 @@
   "suites": [
     {
       "name": "ops.load.smoke",
-      "suite": "mixed-80-20",
+      "suite": "mixed",
       "baseline": "configs/ops/perf/baselines/local.json",
       "mode": "smoke",
       "must_validate_manifest": true
     },
     {
       "name": "ops.load.regression",
-      "suite": "mixed-80-20",
+      "suite": "mixed",
       "baseline": "configs/ops/perf/baselines/ci-runner.json",
       "mode": "regression",
       "must_validate_manifest": true
