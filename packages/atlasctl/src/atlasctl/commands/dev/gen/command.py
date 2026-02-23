@@ -78,6 +78,13 @@ def _generate_goldens(ctx: RunContext) -> tuple[int, dict[str, str]]:
     return 0, written
 
 
+def _require_ack(ns: argparse.Namespace, action: str) -> bool:
+    if bool(getattr(ns, "i_know_what_im_doing", False)):
+        return True
+    print(f"{action} requires --i-know-what-im-doing")
+    return False
+
+
 def run_gen_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     sub = ns.gen_cmd
     if sub == "checks-registry":
@@ -132,6 +139,26 @@ def run_gen_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         payload = {"schema_version": 1, "tool": "atlasctl", "status": "ok" if code == 0 else "error", "written": written}
         print(json.dumps(payload, sort_keys=True))
         return code
+    if sub == "goldens-update":
+        if not _require_ack(ns, "gen goldens-update"):
+            return 2
+        payload: dict[str, object] = {"schema_version": 1, "tool": "atlasctl", "kind": "goldens-update", "steps": []}
+        steps = [
+            ("goldens", [sys.executable, "-m", "atlasctl.cli", "gen", "goldens"]),
+            ("checks-registry", [sys.executable, "-m", "atlasctl.cli", "gen", "checks-registry"]),
+        ]
+        ok = True
+        for name, cmd in steps:
+            proc = run(cmd, cwd=ctx.repo_root, text=True, capture_output=True)
+            payload["steps"].append({"name": name, "code": proc.returncode})
+            ok = ok and proc.returncode == 0
+        payload["status"] = "ok" if ok else "fail"
+        print(json.dumps(payload, sort_keys=True))
+        return 0 if ok else 1
+    if sub == "release-notes":
+        if not _require_ack(ns, "gen release-notes"):
+            return 2
+        return _run(ctx, ["./bin/atlasctl", "ci", "release-notes-render"])
     return 2
 
 
@@ -141,6 +168,10 @@ def configure_gen_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     p_sub.add_parser("contracts", help="generate contracts artifacts")
     p_sub.add_parser("openapi", help="generate openapi snapshot and telemetry artifacts")
     p_sub.add_parser("goldens", help="generate test golden snapshots under packages/atlasctl/tests/goldens")
+    goldens_update = p_sub.add_parser("goldens-update", help="run controlled goldens update workflow")
+    goldens_update.add_argument("--i-know-what-im-doing", action="store_true")
+    release_notes = p_sub.add_parser("release-notes", help="generate release notes from registry deltas/workflow renderer")
+    release_notes.add_argument("--i-know-what-im-doing", action="store_true")
     p_sub.add_parser("ops-surface", help="generate ops surface metadata")
     p_sub.add_parser("make-targets", help="generate make targets inventory artifacts")
     p_sub.add_parser("surface", help="generate repo public surface artifacts")
