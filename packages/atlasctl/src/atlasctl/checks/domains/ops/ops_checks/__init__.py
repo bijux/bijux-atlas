@@ -736,6 +736,14 @@ _OPS_SCRIPT_CHECKS: tuple[tuple[str, str, str, callable], ...] = (
 )
 
 
+
+
+def check_ops_product_task_scripts_zero(repo_root: Path) -> tuple[int, list[str]]:
+    cmd = ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_product_task_scripts_zero.py"]
+    proc = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
+    rows = [line for line in ((proc.stdout or "") + "\n" + (proc.stderr or "")).splitlines() if line.strip()]
+    return proc.returncode, rows
+
 def check_ops_all_check_scripts_registered(repo_root: Path) -> tuple[int, list[str]]:
     registered = {script_rel for (_, _, script_rel, _) in _OPS_SCRIPT_CHECKS}
     discovered: list[str] = []
@@ -773,6 +781,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("ops.chart_version_contract", "ops", "enforce chart/app version contract for bijux-atlas chart", 1000, check_ops_chart_version_contract, fix_hint="Keep Chart.yaml version and appVersion present, semver, and aligned."),
     CheckDef("ops.clean_allowed_roots_only", "ops", "ensure ops clean only targets allowed generated roots", 1000, check_ops_clean_allowed_roots_only, fix_hint="Restrict ops clean to ops/_generated child deletion only."),
     CheckDef("ops.all_check_scripts_registered", "ops", "require all ops check scripts to be registered in atlasctl checks", 1000, check_ops_all_check_scripts_registered, fix_hint="Register new ops check scripts in atlasctl checks (or migrate to atlasctl-native implementation)."),
+    CheckDef("ops.product_task_scripts_zero", "ops", "forbid product task scripts under ops and enforce zero-count baseline", 1000, check_ops_product_task_scripts_zero, fix_hint="Move product task scripts into atlasctl commands/product or atlasctl ops area modules and keep configs/ops/product-task-scripts-baseline.json at zero."),
     CheckDef("ops.script.ops_lint_check_surfaces_py", "ops", "run ops script check `ops/_lint/check-surfaces.py`", 1000, check_ops_lint_check_surfaces_native, fix_hint="Fix repo surface violations in configs/repo/surfaces.json or root entries."),
     CheckDef("ops.script.ops_lint_check_layer_contract_drift_py", "ops", "run ops script check `ops/_lint/check_layer_contract_drift.py`", 1000, check_ops_lint_layer_contract_drift_native, fix_hint="Regenerate ops/_meta/layer-contract.json and commit deterministic output."),
     CheckDef("ops.script.ops_lint_layout_check_layer_contract_drift_py", "ops", "run ops script check `ops/_lint/layout/check_layer_contract_drift.py`", 1000, check_ops_lint_layer_contract_drift_native, fix_hint="Regenerate ops/_meta/layer-contract.json and commit deterministic output."),

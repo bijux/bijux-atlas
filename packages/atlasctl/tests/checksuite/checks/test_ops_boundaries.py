@@ -49,3 +49,8 @@ def test_ops_report_contract_fields_check_passes() -> None:
 def test_ops_actions_docs_generated_check_passes() -> None:
     proc = _run("packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_actions_docs_generated.py")
     assert proc.returncode == 0, proc.stderr
+
+
+def test_ops_product_task_scripts_zero_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_product_task_scripts_zero.py")
+    assert proc.returncode == 0, proc.stderr
