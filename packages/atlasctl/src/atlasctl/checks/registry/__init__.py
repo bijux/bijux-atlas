@@ -6,10 +6,28 @@ from dataclasses import dataclass
 from datetime import date
 
 from ..core.base import CheckDef, CheckId, DomainId, Tag
-from .catalog import check_rename_aliases, check_tags, checks_by_domain, list_checks as _list_checks, marker_vocabulary, run_checks_for_domain
+from ..domains.configs import CHECKS as CONFIGS_CHECKS
+from ..domains.docs import CHECKS as DOCS_CHECKS
+from ..domains.internal import CHECKS as INTERNAL_CHECKS
+from ..domains.ops import CHECKS as OPS_CHECKS
+from ..domains.policies import CHECKS as POLICIES_CHECKS
+from ..domains.repo import CHECKS as REPO_CHECKS
+from .catalog import check_rename_aliases, check_tags, checks_by_domain, marker_vocabulary, run_checks_for_domain
 from .ssot import check_id_alias_expiry
 
-ALL_CHECKS: tuple[CheckDef, ...] = _list_checks()
+ALL_CHECKS: tuple[CheckDef, ...] = tuple(
+    sorted(
+        (
+            *REPO_CHECKS,
+            *OPS_CHECKS,
+            *POLICIES_CHECKS,
+            *DOCS_CHECKS,
+            *CONFIGS_CHECKS,
+            *INTERNAL_CHECKS,
+        ),
+        key=lambda check: str(check.check_id),
+    )
+)
 TAGS_VOCAB: frozenset[Tag] = frozenset(Tag(tag) for check in ALL_CHECKS for tag in check_tags(check))
 MARKERS_VOCAB: frozenset[Tag] = frozenset(Tag(marker) for marker in marker_vocabulary())
 _CHECK_INDEX: dict[str, CheckDef] = {str(check.check_id): check for check in ALL_CHECKS}

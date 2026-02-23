@@ -9,16 +9,12 @@ from typing import Any
 
 from ..core.base import CheckCategory, CheckDef, Severity
 from ..effects import CheckEffect, normalize_effect
-from ..domains.policies.contracts import CHECKS as CHECKS_CONTRACTS
 from ..domains.configs import CHECKS as CHECKS_CONFIGS
-from ..domains.ops.docker import CHECKS as CHECKS_DOCKER
 from ..domains.docs import CHECKS as CHECKS_DOCS
-from ..domains.internal.checks import CHECKS as CHECKS_CHECKS
-from ..domains.policies.licensing import CHECKS as CHECKS_LICENSE
-from ..domains.policies.make import CHECKS as CHECKS_MAKE
-from ..domains.ops.ops_checks import CHECKS as CHECKS_OPS
-from ..domains.dev.python import CHECKS as CHECKS_PYTHON
-from ..repo import CHECKS as CHECKS_REPO
+from ..domains.internal import CHECKS as CHECKS_INTERNAL
+from ..domains.ops import CHECKS as CHECKS_OPS
+from ..domains.policies import CHECKS as CHECKS_POLICIES
+from ..domains.repo import CHECKS as CHECKS_REPO
 from ...core.meta.owners import load_owner_catalog
 from ...core.runtime.paths import write_text_file
 
@@ -631,15 +627,11 @@ def write_registry_toml(repo_root: Path, rows: list[dict[str, Any]]) -> Path:
 def legacy_checks() -> tuple[CheckDef, ...]:
     return (
         *CHECKS_REPO,
-        *CHECKS_LICENSE,
-        *CHECKS_MAKE,
         *CHECKS_DOCS,
         *CHECKS_OPS,
         *CHECKS_CONFIGS,
-        *CHECKS_PYTHON,
-        *CHECKS_DOCKER,
-        *CHECKS_CONTRACTS,
-        *CHECKS_CHECKS,
+        *CHECKS_POLICIES,
+        *CHECKS_INTERNAL,
     )
 
 
