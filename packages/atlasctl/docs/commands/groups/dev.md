@@ -6,9 +6,12 @@ Commands mapped to `dev` effects policy.
 
 - `check`
 - `contracts`
+- `deps`
 - `dev`
 - `doctor`
+- `gate`
 - `gates`
+- `gen`
 - `install`
 - `inventory`
 - `layout`
@@ -29,9 +32,12 @@ Commands mapped to `dev` effects policy.
 
 - `atlasctl check list --json`
 - `atlasctl contracts list --json`
+- `atlasctl deps lock --json`
 - `atlasctl dev check -- domain repo`
 - `atlasctl doctor --json`
+- `atlasctl gate run --preset root --all --report json`
 - `atlasctl gates --report json`
+- `atlasctl gen goldens`
 - `atlasctl install doctor --json`
 - `atlasctl inventory --category all --format json`
 - `atlasctl layout root-shape --json`

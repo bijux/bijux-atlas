@@ -36,6 +36,7 @@ _COMMAND_GROUPS: dict[str, CommandGroup] = {
     "owners": "dev",
     "packages": "dev",
     "release": "dev",
+    "fix": "dev",
     "dev": "dev",
     "internal": "internal",
 }
@@ -80,6 +81,7 @@ _COMMAND_EFFECTS: dict[str, tuple[EffectName, ...]] = {
     "owners": ("read", "write", "process"),
     "packages": ("read", "write", "process"),
     "release": ("read", "write", "process"),
+    "fix": ("read", "write", "process"),
     "dev": ("read", "write", "process"),
     "internal": ("read", "write", "process"),
 }
