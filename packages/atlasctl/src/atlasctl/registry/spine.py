@@ -21,6 +21,7 @@ except ModuleNotFoundError:  # pragma: no cover
 
 
 REGISTRY_SPINE_GENERATED_JSON = Path("packages/atlasctl/src/atlasctl/registry/registry_spine.generated.json")
+REGISTRY_SPINE_SCHEMA = Path("packages/atlasctl/src/atlasctl/contracts/schema/schemas/atlasctl.registry-spine.v1.schema.json")
 
 
 @dataclass(frozen=True)
@@ -303,4 +304,7 @@ def load_registry(repo_root: Path | None = None) -> Registry:
 def generate_registry_spine(repo_root: Path | None = None) -> dict[str, Any]:
     root = repo_root or _repo_root()
     payload = load_registry(root).as_generated_payload()
+    if jsonschema is not None and (root / REGISTRY_SPINE_SCHEMA).exists():
+        schema = json.loads((root / REGISTRY_SPINE_SCHEMA).read_text(encoding="utf-8"))
+        jsonschema.validate(payload, schema)
     return payload
