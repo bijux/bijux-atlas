@@ -30,6 +30,18 @@
 
 See `docs/atlasctl/BOUNDARIES.md` for effect boundaries, invariants, output contracts, and policy enforcement rules.
 
+### Ops Boundary (Control Plane)
+
+- `packages/atlasctl/src/atlasctl/commands/ops/**` owns ops execution orchestration.
+- `ops/` stores manifests, contracts, schemas, fixtures, and test inputs; it is not a public wrapper surface.
+- `commands/ops/**` may depend on `core/`, `contracts/`, `reporting/`, `registry/`, `commands/_shared.py`, and intra-ops modules.
+- `commands/ops/**` must not import `cli/` modules directly.
+- Internal migration glue belongs under `commands/ops/internal/**` and is excluded from public ops help/docs.
+
+See:
+- `packages/atlasctl/docs/control-plane/ops-execution-model.md`
+- `packages/atlasctl/docs/control-plane/ops-taxonomy.md`
+
 ## Budget Policy
 
 - Budget SSOT is `packages/atlasctl/pyproject.toml` under `[tool.atlasctl.budgets]`.
