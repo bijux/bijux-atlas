@@ -13,7 +13,6 @@ from xml.etree.ElementTree import Element, SubElement, tostring
 from ...checks.registry import check_tags, get_check, list_checks
 from ...checks.registry.ssot import generate_registry_json
 from ...registry.suites import suite_manifest_specs, resolve_check_ids
-from ...checks.core.execution import run_function_checks
 from ...checks.engine.runner import domains as check_domains
 from ...checks.engine.runner import run_domain
 from ...checks.repo.enforcement.package_shape import check_module_size
@@ -26,6 +25,7 @@ from ...core.runtime.paths import write_text_file
 from ...core.runtime.telemetry import emit_telemetry
 from ...core.exit_codes import ERR_USER
 from ...commands.policies.lint.suite_engine import run_lint_suite
+from ...execution.runner import RunnerOptions, run_checks_payload
 from .selection import split_group_values, split_marker_values
 
 NativeCheck = Callable[[Path], tuple[int, list[str]]]
@@ -281,36 +281,25 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     max_failures = int(getattr(ns, "max_failures", 0) or getattr(ns, "maxfail", 0) or 0)
     if bool(getattr(ns, "failfast", False)):
         max_failures = 1
-    executed_results = []
-    if max_failures > 0 and jobs == 1:
-        fail_seen = 0
-        for check in matched_checks:
-            _failed, one = run_function_checks(
-                ctx.repo_root,
-                [check],
-                on_result=_emit_live_row if live_print else None,
-                timeout_ms=timeout_ms if timeout_ms > 0 else None,
-                jobs=1,
-            )
-            executed_results.extend(one)
-            if _failed:
-                fail_seen += _failed
-                if fail_seen >= max_failures and not bool(getattr(ns, "keep_going", False)):
-                    break
-    else:
-        _failed_total, executed_results = run_function_checks(
-            ctx.repo_root,
-            matched_checks,
-            on_result=_emit_live_row if live_print else None,
-            timeout_ms=timeout_ms if timeout_ms > 0 else None,
+    runner_rc, runner_payload = run_checks_payload(
+        ctx.repo_root,
+        check_defs=matched_checks,
+        run_id=ctx.run_id,
+        options=RunnerOptions(
+            fail_fast=bool(max_failures == 1 and jobs == 1 and not bool(getattr(ns, "keep_going", False))),
             jobs=jobs,
-        )
-    executed_by_id = {result.id: result for result in executed_results}
+            timeout_ms=timeout_ms if timeout_ms > 0 else None,
+            output="json" if (ctx.output_format == "json" or ns.json) else ("verbose" if ns.run_verbose else ("quiet" if ns.run_quiet else "text")),
+            kind="check-run",
+            run_root=(ctx.repo_root / "artifacts" / "evidence" / "checks" / ctx.run_id),
+        ),
+        on_event=_emit_live_row if live_print else None,
+    )
+    executed_by_id = {str(row["id"]): row for row in runner_payload.get("rows", []) if isinstance(row, dict)}
     rows: list[dict[str, object]] = []
-    fail_count = 0
     for check in report_checks:
-        result = executed_by_id.get(check.check_id)
-        if result is None:
+        runner_row = executed_by_id.get(check.check_id)
+        if runner_row is None:
             rows.append(
                 {
                     "id": check.check_id,
@@ -324,31 +313,32 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
                     "detail": "",
                     "owners": list(check.owners),
                     "artifacts": [],
+                    "findings": [],
+                    "category": "check",
                 }
             )
             continue
-        status = "PASS" if result.status == "pass" else "FAIL"
-        detail_errors = list(result.errors) + [f"WARN: {warn}" for warn in result.warnings]
-        detail = "; ".join(detail_errors[:2]) if detail_errors else ""
         rows.append(
             {
                 "id": check.check_id,
                 "title": check.title,
                 "domain": check.domain,
-                "status": status,
-                "duration_ms": int(result.metrics.get("duration_ms", 0)),
-                "reason": detail if detail else ("check failed" if status == "FAIL" else ""),
-                "hints": [check.fix_hint] if check.fix_hint else [],
-                "hint": check.fix_hint,
-                "detail": detail,
-                "owners": list(check.owners),
-                "artifacts": list(result.evidence_paths),
+                "status": str(runner_row.get("status", "FAIL")),
+                "duration_ms": int(runner_row.get("duration_ms", 0)),
+                "reason": str(runner_row.get("reason", "")),
+                "hints": list(runner_row.get("hints", [])),
+                "hint": (list(runner_row.get("hints", []))[:1] or [check.fix_hint])[0],
+                "detail": str(runner_row.get("reason", "")),
+                "owners": list(runner_row.get("owners", [])),
+                "artifacts": list(runner_row.get("artifacts", [])),
+                "findings": list(runner_row.get("findings", [])),
+                "category": str(runner_row.get("category", "check")),
+                "attachments": list(runner_row.get("attachments", [])),
             }
         )
-        if status == "FAIL":
-            fail_count += 1
+    fail_count = sum(1 for row in rows if row["status"] == "FAIL")
 
-    total_duration_ms = int((time.perf_counter() - started) * 1000)
+    total_duration_ms = 0 if not rows else int((time.perf_counter() - started) * 1000)
     pass_count = sum(1 for row in rows if row["status"] == "PASS")
     skip_count = sum(1 for row in rows if row["status"] == "SKIP")
     slow_threshold_ms = max(1, int(getattr(ns, "slow_threshold_ms", 800)))
@@ -409,6 +399,8 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             "ratchet_errors": ratchet_errors,
             "speed_regressions": speed_regressions,
             "rows": rows,
+            "events": list(runner_payload.get("events", [])),
+            "attachments": list(runner_payload.get("attachments", [])),
             "timing_histogram": _timing_histogram(rows),
         }
         validate_self(CHECK_RUN, payload)

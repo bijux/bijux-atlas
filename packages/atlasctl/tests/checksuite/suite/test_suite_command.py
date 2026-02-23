@@ -148,3 +148,11 @@ def test_suites_do_not_include_legacy_checks() -> None:
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
     assert not any("legacy-path checks" in err for err in payload.get("errors", []))
+
+
+def test_suite_lane_alias_ci_fast_dry_run_text_lists_check_ids() -> None:
+    proc = run_atlasctl("--quiet", "--format", "text", "suite", "run", "ci:fast", "--list")
+    assert proc.returncode == 0, proc.stderr
+    rows = [ln.strip() for ln in proc.stdout.splitlines() if ln.strip()]
+    assert rows
+    assert rows[0].startswith("checks_")

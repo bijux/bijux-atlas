@@ -10,6 +10,18 @@ from pathlib import Path
 from . import command as impl
 from ..core.runtime.paths import write_text_file
 
+_SUITE_LANE_ALIASES = {
+    "ci:fast": "ci",
+    "ci:slow": "slow",
+    "ci:ops-fast": "ops",
+    "ci:docs-fast": "docs",
+}
+
+
+def _resolve_suite_alias(name: str) -> str:
+    return _SUITE_LANE_ALIASES.get(name, name)
+
+
 def run_suite_command(ctx, ns: argparse.Namespace) -> int:
     report_fmt = str(getattr(ns, "report", "") or "").strip().lower()
     as_json = report_fmt == "json" or ctx.output_format == "json" or bool(getattr(ns, "json", False))
@@ -33,8 +45,9 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
             for item in payload["items"]:
                 print(item)
         return 0
-    if ns.suite_cmd in first_class:
-        manifest = first_class[ns.suite_cmd]
+    direct_suite_cmd = _resolve_suite_alias(str(getattr(ns, "suite_cmd", "") or ""))
+    if direct_suite_cmd in first_class:
+        manifest = first_class[direct_suite_cmd]
         if manifest.internal and os.environ.get("ATLASCTL_INTERNAL") != "1":
             msg = "internal suite execution requires ATLASCTL_INTERNAL=1"
             print(impl.dumps_json({"schema_version": 1, "tool": "atlasctl", "status": "error", "error": msg}, pretty=False) if as_json else msg)
@@ -49,7 +62,7 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
         )
     default_suite, suites = impl.load_suites(ctx.repo_root)
     if ns.suite_cmd == "explain":
-        suite_name = ns.name or default_suite
+        suite_name = _resolve_suite_alias(ns.name or default_suite)
         if suite_name in first_class:
             manifest = first_class[suite_name]
             lines = [
@@ -223,7 +236,7 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
                     print(f"- {check_id}")
         return 0 if not payload["unassigned"] else impl.ERR_USER
 
-    suite_name = ns.name or default_suite
+    suite_name = _resolve_suite_alias(ns.name or default_suite)
     if ns.suite_cmd == "run" and suite_name in first_class:
         manifest = first_class[suite_name]
         if manifest.internal and os.environ.get("ATLASCTL_INTERNAL") != "1":
@@ -258,7 +271,11 @@ def run_suite_command(ctx, ns: argparse.Namespace) -> int:
             "group_filter": groups,
             "tasks": [f"{task.kind}:{task.value}" for task in selected],
         }
-        print(impl.dumps_json(payload, pretty=not as_json))
+        if as_json:
+            print(impl.dumps_json(payload, pretty=not as_json))
+        else:
+            for task in payload["tasks"]:
+                print(task)
         return 0
 
     target_dir = Path(ns.target_dir) if ns.target_dir else (ctx.repo_root / "artifacts/isolate" / ctx.run_id / "atlasctl-suite")

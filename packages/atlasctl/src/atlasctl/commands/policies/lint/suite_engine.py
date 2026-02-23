@@ -3,7 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 
 from ....core.runtime.guards.clock import utc_now_iso
-from ....checks.core.execution import CommandCheckDef, run_command_checks
+from ....checks.core.execution import CommandCheckDef
+from ....execution.runner import RunnerOptions, run_checks_payload
 
 
 def _py(script: str) -> list[str]:
@@ -64,22 +65,23 @@ def run_lint_suite(repo_root: Path, suite: str, fail_fast: bool) -> tuple[int, d
         return 2, {"schema_version": 1, "tool": "bijux-atlas", "suite": suite, "status": "fail", "error": "unknown suite"}
 
     started_at = utc_now_iso()
-    failed, rows = run_command_checks(repo_root, checks)
-    if fail_fast and failed:
-        first_fail = next((i for i, row in enumerate(rows) if row["status"] == "fail"), len(rows) - 1)
-        rows = rows[: first_fail + 1]
-        failed = 1
-
+    rc, run_payload = run_checks_payload(
+        repo_root,
+        command_defs=checks,
+        run_id="lint-suite",
+        options=RunnerOptions(fail_fast=fail_fast, output="json", kind="check-run"),
+    )
     ended_at = utc_now_iso()
     payload = {
         "schema_version": 1,
         "tool": "bijux-atlas",
         "suite": suite,
-        "status": "pass" if failed == 0 else "fail",
+        "status": "pass" if rc == 0 else "fail",
         "started_at": started_at,
         "ended_at": ended_at,
-        "checks": rows,
-        "failed_count": failed,
-        "total_count": len(rows),
+        "checks": run_payload.get("rows", []),
+        "failed_count": int(run_payload["summary"]["failed"]),  # type: ignore[index]
+        "total_count": int(run_payload["summary"]["total"]),  # type: ignore[index]
+        "runner": run_payload,
     }
-    return (0 if failed == 0 else 1), payload
+    return rc, payload
