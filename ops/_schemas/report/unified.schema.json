@@ -114,6 +114,17 @@
           }
         }
       }
+    },
+    "config_compilation": {
+      "type": "object",
+      "required": ["status", "generated_root", "inventory_root", "files_present"],
+      "additionalProperties": true,
+      "properties": {
+        "status": {"type": "string", "enum": ["pass", "warn", "fail"]},
+        "generated_root": {"type": "string", "minLength": 1},
+        "inventory_root": {"type": "string", "minLength": 1},
+        "files_present": {"type": "array", "items": {"type": "string"}}
+      }
     }
   }
 }
