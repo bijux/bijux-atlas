@@ -9,7 +9,8 @@ use bijux_atlas_policies::{
     validate_schema_version_transition, CacheBudget, ConcurrencyBulkheads, DocumentedDefault,
     EndpointClassBudget, PolicyConfig, PolicyMode, PolicyModeProfile, PolicyModes,
     PolicySchemaVersion, PublishGates, QueryBudgetPolicy, RateLimitPolicy, ResponseBudgetPolicy,
-    StoreResiliencePolicy, TelemetryPolicy, MAX_DEPTH_HARD, MAX_LOC_HARD, MAX_MODULES_PER_DIR_HARD,
+    StoreResiliencePolicy, TelemetryPolicy, MAX_DEPTH_HARD, MAX_LOC_HARD, MAX_LOC_WARN,
+    MAX_MODULES_PER_DIR_HARD,
     MAX_RS_FILES_PER_DIR_HARD,
 };
 
@@ -169,6 +170,7 @@ fn max_loc_per_rust_file_is_enforced() {
     let allowlist: [&str; 1] = ["crates/bijux-atlas-server/src/lib.rs"];
 
     let mut violators = Vec::new();
+    let mut warnings = Vec::new();
     for file in files {
         let lines = fs::read_to_string(&file)
             .expect("failed to read rust file")
@@ -183,7 +185,23 @@ fn max_loc_per_rust_file_is_enforced() {
             if !allowlist.contains(&rel.as_str()) {
                 violators.push((lines, file));
             }
+        } else if lines > MAX_LOC_WARN {
+            let rel = file
+                .strip_prefix(&root)
+                .expect("path must be under workspace root")
+                .to_string_lossy()
+                .to_string();
+            if !allowlist.contains(&rel.as_str()) {
+                warnings.push((lines, rel));
+            }
         }
+    }
+
+    if !warnings.is_empty() {
+        eprintln!(
+            "max_loc policy warnings (> {} lines, <= {}): {:?}",
+            MAX_LOC_WARN, MAX_LOC_HARD, warnings
+        );
     }
 
     assert!(
