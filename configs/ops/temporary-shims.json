@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "shims": [
+    {
+      "id": "ops-run-script-shim",
+      "command": "atlasctl ops run-script",
+      "kind": "command",
+      "approval_id": "OPS-SHIM-001",
+      "owner": "ops",
+      "reason": "temporary compatibility shim while legacy task aliases are retired",
+      "expires_on": "2026-06-30"
+    },
+    {
+      "id": "ops-root-lanes-shim",
+      "command": "atlasctl ops root-lanes",
+      "kind": "command",
+      "approval_id": "OPS-SHIM-002",
+      "owner": "ops",
+      "reason": "temporary migration shim for root orchestration lanes",
+      "expires_on": "2026-06-30"
+    },
+    {
+      "id": "ops-root-local-shim",
+      "command": "atlasctl ops root-local",
+      "kind": "command",
+      "approval_id": "OPS-SHIM-003",
+      "owner": "ops",
+      "reason": "temporary migration shim for legacy root-local flow",
+      "expires_on": "2026-06-30"
+    }
+  ]
+}
