@@ -31,6 +31,11 @@ ALL_CHECKS: tuple[CheckDef, ...] = tuple(
 TAGS_VOCAB: frozenset[Tag] = frozenset(Tag(tag) for check in ALL_CHECKS for tag in check_tags(check))
 MARKERS_VOCAB: frozenset[Tag] = frozenset(Tag(marker) for marker in marker_vocabulary())
 _CHECK_INDEX: dict[str, CheckDef] = {str(check.check_id): check for check in ALL_CHECKS}
+RUNTIME_REGISTRY_SOURCE = "python"
+GENERATED_REGISTRY_ARTIFACTS: tuple[str, ...] = (
+    "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml",
+    "packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json",
+)
 
 
 @dataclass(frozen=True)
@@ -99,6 +104,10 @@ def alias_expiry_violations(today: date | None = None) -> list[str]:
     return [f"check id aliases expired on {expiry.isoformat()}; remove legacy id mappings"]
 
 
+def runtime_registry_source() -> str:
+    return RUNTIME_REGISTRY_SOURCE
+
+
 __all__ = [
     "ALL_CHECKS",
     "TAGS_VOCAB",
@@ -115,5 +124,8 @@ __all__ = [
     "marker_vocabulary",
     "resolve_aliases",
     "alias_expiry_violations",
+    "RUNTIME_REGISTRY_SOURCE",
+    "GENERATED_REGISTRY_ARTIFACTS",
+    "runtime_registry_source",
     "run_checks_for_domain",
 ]

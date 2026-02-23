@@ -5,7 +5,8 @@
 ## Single Source of Truth
 
 - Runtime check definitions are sourced from Python registry modules under `atlasctl/checks/registry/`.
-- `REGISTRY.toml` and `REGISTRY.generated.json` are generated artifacts, not the runtime source of truth.
+- Runtime selector/list/explain paths consume `atlasctl.checks.registry.ALL_CHECKS`.
+- `REGISTRY.toml` and `REGISTRY.generated.json` are generated artifacts, not runtime inputs.
 - Check execution is centralized in `atlasctl.checks.runner`.
 
 ## Effect Policy
