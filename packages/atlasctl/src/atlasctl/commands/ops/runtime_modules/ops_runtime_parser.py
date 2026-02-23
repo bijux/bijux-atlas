@@ -162,7 +162,9 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     obs_report = obs_sub.add_parser("report", help="write observability conformance report JSON")
     obs_report.add_argument("--out", default="artifacts/reports/atlasctl/ops-obs-report.json")
     obs_drill = obs_sub.add_parser("drill", help="run one observability drill")
-    obs_drill.add_argument("--drill", required=True)
+    obs_drill.add_argument("--drill")
+    obs_drill.add_argument("--id", dest="drill_id")
+    obs_drill.add_argument("--dry-run", action="store_true")
 
     kind = ops_sub.add_parser("kind", help="kind substrate commands")
     kind.add_argument("--report", choices=["text", "json"], default="text")
