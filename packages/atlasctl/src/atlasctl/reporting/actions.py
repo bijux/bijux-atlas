@@ -32,6 +32,31 @@ def _discover_lane_reports(ctx: RunContext, run_id: str) -> dict[str, dict]:
     return reports
 
 
+def _repo_cleanliness_report(ctx: RunContext) -> dict[str, object]:
+    proc = subprocess.run(
+        ["git", "status", "--porcelain"],
+        cwd=ctx.repo_root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    lines = [line for line in (proc.stdout or "").splitlines() if line.strip()]
+    cache_markers = ("/__pycache__/", ".pytest_cache/", ".ruff_cache/", ".mypy_cache/", ".pyc")
+    cache_paths: list[str] = []
+    for line in lines:
+        path = line[3:] if len(line) > 3 else line
+        if any(marker in path for marker in cache_markers) or path.endswith(".pyc"):
+            cache_paths.append(path)
+    return {
+        "status": "pass" if not lines else "warn",
+        "git_dirty_path_count": len(lines),
+        "python_cache_hygiene": {
+            "status": "pass" if not cache_paths else "fail",
+            "violations": sorted(set(cache_paths)),
+        },
+    }
+
+
 def build_unified(ctx: RunContext, run_id: str) -> dict[str, object]:
     lanes = _discover_lane_reports(ctx, run_id)
     near: list[str] = []
@@ -117,6 +142,7 @@ def build_unified(ctx: RunContext, run_id: str) -> dict[str, object]:
         "perf_summary": perf_summary,
         "graceful_degradation": graceful_degradation,
         "k8s_conformance": k8s_conformance,
+        "repo_cleanliness": _repo_cleanliness_report(ctx),
     }
     if product_artifacts is not None:
         payload["product_artifacts"] = product_artifacts

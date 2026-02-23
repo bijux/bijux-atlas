@@ -73,6 +73,24 @@
         "status": {"type": "string", "enum": ["pass", "fail"]},
         "failed_sections": {"type": "array", "items": {"type": "string"}}
       }
+    },
+    "repo_cleanliness": {
+      "type": "object",
+      "required": ["status", "git_dirty_path_count", "python_cache_hygiene"],
+      "additionalProperties": true,
+      "properties": {
+        "status": {"type": "string", "enum": ["pass", "warn", "fail"]},
+        "git_dirty_path_count": {"type": "integer", "minimum": 0},
+        "python_cache_hygiene": {
+          "type": "object",
+          "required": ["status", "violations"],
+          "additionalProperties": true,
+          "properties": {
+            "status": {"type": "string", "enum": ["pass", "fail"]},
+            "violations": {"type": "array", "items": {"type": "string"}}
+          }
+        }
+      }
     }
   }
 }
