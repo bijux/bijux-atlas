@@ -9,9 +9,7 @@ from subprocess import run
 
 _CACHE_DIR_NAMES = {"__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache"}
 _SIZE_LIMIT_MB = 5
-_ALLOWLISTED_ARTIFACT_EXAMPLES = {
-    "ops/_generated.example",
-}
+_ALLOWLISTED_OPS_ARTIFACT_EXAMPLES: set[str] = set()
 _GENERATED_PATH_PREFIXES = (
     "configs/_generated/",
     "docs/_generated/",
@@ -114,7 +112,7 @@ def _tracked_ops_artifact_violations(repo_root: Path) -> list[str]:
     tracked = _git_ls_files(repo_root, ["ops/_artifacts"])
     violations = []
     for rel in tracked:
-        if rel in _ALLOWLISTED_ARTIFACT_EXAMPLES:
+        if rel in _ALLOWLISTED_OPS_ARTIFACT_EXAMPLES:
             continue
         violations.append(rel)
     return sorted(violations)
