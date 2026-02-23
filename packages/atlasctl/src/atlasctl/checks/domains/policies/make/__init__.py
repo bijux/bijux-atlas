@@ -414,6 +414,35 @@ def check_policies_budget_approval_time_bounded(repo_root: Path) -> tuple[int, l
         return 1, [f"{_BUDGET_APPROVAL.as_posix()}: expiry horizon exceeds 365 days"]
     return 0, []
 
+
+def check_policies_budget_relaxations_expiry_and_issue(repo_root: Path) -> tuple[int, list[str]]:
+    path = repo_root / "configs/policy/budget-relaxations.json"
+    if not path.exists():
+        return 1, [f"missing {path.relative_to(repo_root).as_posix()}"]
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    rows = payload.get("exceptions", []) if isinstance(payload, dict) else []
+    errors: list[str] = []
+    today = dt.date.today()
+    for idx, row in enumerate(rows, start=1):
+        if not isinstance(row, dict):
+            errors.append(f"configs/policy/budget-relaxations.json:exceptions[{idx}] must be an object")
+            continue
+        issue = str(row.get("issue", "")).strip()
+        if not _ISSUE_RE.match(issue):
+            errors.append(f"configs/policy/budget-relaxations.json:exceptions[{idx}] invalid or missing issue")
+        expiry_raw = str(row.get("expiry", "")).strip()
+        if not expiry_raw:
+            errors.append(f"configs/policy/budget-relaxations.json:exceptions[{idx}] missing expiry")
+            continue
+        try:
+            expiry = dt.date.fromisoformat(expiry_raw)
+        except ValueError:
+            errors.append(f"configs/policy/budget-relaxations.json:exceptions[{idx}] invalid expiry `{expiry_raw}`")
+            continue
+        if expiry < today:
+            errors.append(f"configs/policy/budget-relaxations.json:exceptions[{idx}] expired on {expiry_raw}")
+    return (0 if not errors else 1), errors
+
 CHECKS: tuple[CheckDef, ...] = (
     CheckDef(
         "make.no_direct_scripts_only_atlasctl",
@@ -755,4 +784,5 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("policies.dependency_exceptions_remove_by_issue", "policies", "require dependency exceptions to include remove_by and issue_id", 800, check_policies_dependency_exceptions_remove_by_issue, fix_hint="Add `remove_by` and valid `issue_id` to dependency exceptions.", tags=("repo",)),
     CheckDef("policies.budget_relaxation_requires_approval", "policies", "require explicit approval for any budget relaxation", 800, check_policies_budget_relaxation_requires_approval, fix_hint="Set budget-loosening-approval.json with approved=true and approval_id when relaxations exist.", tags=("repo",)),
     CheckDef("policies.budget_approval_time_bounded", "policies", "require budget loosening approvals to be time bounded", 800, check_policies_budget_approval_time_bounded, fix_hint="Set valid non-expired bounded expiry in budget-loosening-approval.json.", tags=("repo",)),
+    CheckDef("policies.budget_relaxations_expiry_and_issue", "policies", "require budget relaxation entries to include issue and expiry", 800, check_policies_budget_relaxations_expiry_and_issue, fix_hint="Set issue=<tracker id> and non-expired expiry for every exception in budget-relaxations.json.", tags=("repo",)),
 )
