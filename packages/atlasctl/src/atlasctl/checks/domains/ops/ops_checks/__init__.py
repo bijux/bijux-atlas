@@ -216,9 +216,11 @@ def check_ops_load_pinned_queries_lock_native(repo_root: Path) -> tuple[int, lis
     src = repo_root / "ops" / "load" / "queries" / "pinned-v1.json"
     lock_path = repo_root / "ops" / "load" / "queries" / "pinned-v1.lock"
     schema_path = repo_root / "ops" / "_schemas" / "load" / "pinned-queries-lock.schema.json"
+    suites_manifest_path = repo_root / "ops" / "load" / "suites" / "suites.json"
     queries = json.loads(src.read_text(encoding="utf-8"))
     lock = json.loads(lock_path.read_text(encoding="utf-8"))
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    suites_manifest = json.loads(suites_manifest_path.read_text(encoding="utf-8"))
     errors: list[str] = []
     if not isinstance(lock, dict):
         return 1, ["pinned query lock must be object"]
@@ -234,6 +236,9 @@ def check_ops_load_pinned_queries_lock_native(repo_root: Path) -> tuple[int, lis
             expected[q] = hashlib.sha256(q.encode()).hexdigest()
     if lock.get("query_hashes") != expected:
         errors.append("pinned query lock drift: query hash mismatch")
+    query_set = str(suites_manifest.get("query_set", "")).strip()
+    if query_set != "pinned-v1.json":
+        errors.append(f"load suites manifest query_set must reference pinned-v1.json (got `{query_set}`)")
     return (0 if not errors else 1), (["pinned query lock check passed"] if not errors else errors)
 
 

@@ -54,8 +54,14 @@ LINT_CHECKS: list[OpsCheck] = [
     _check(
         "ops-load-suite-manifest",
         "Validate load suite manifest",
-        [*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/load/contracts/validate_suite_manifest.py"],
+        [*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/commands/ops/load/contracts/validate_suite_manifest.py"],
         "Fix suite schema violations and keep suite manifest aligned with contract.",
+    ),
+    _check(
+        "ops-load-suite-baselines-manifest",
+        "Validate load suite baseline manifest",
+        [*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/commands/ops/load/contracts/validate_suite_baselines_manifest.py"],
+        "Keep configs/ops/load/suite-baselines.json aligned with suite declarations and baseline files.",
     ),
     _check(
         "ops-k8s-surface-generate",
