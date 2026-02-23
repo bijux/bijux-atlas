@@ -180,6 +180,7 @@ def run_checks_payload(
                     "check_category": row.category,
                     "result_code": row.result_code,
                     "severity": row.severity,
+                    "effects_used": list(row.effects_used),
                     "budget_ms": int(row.metrics.get("budget_ms", 0)),
                     "budget_status": str(row.metrics.get("budget_status", "pass")),
                     "findings": [{"code": row.result_code, "message": msg, "hint": row.fix_hint} for msg in row.errors]

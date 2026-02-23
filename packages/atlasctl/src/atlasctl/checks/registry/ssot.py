@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from ..core.base import CheckCategory, CheckDef, Severity
+from ..effects import CheckEffect, normalize_effect
 from ..domains.policies.contracts import CHECKS as CHECKS_CONTRACTS
 from ..domains.configs import CHECKS as CHECKS_CONFIGS
 from ..domains.ops.docker import CHECKS as CHECKS_DOCKER
@@ -44,6 +45,7 @@ FILENAME_ALLOWLIST_JSON = Path("configs/policy/check-filename-allowlist.json")
 TRANSITION_ALLOWLIST_JSON = Path("configs/policy/checks-registry-transition.json")
 CHECK_CATEGORY_ENUM = {"lint", "check"}
 CHECK_DOMAIN_ENUM = {"checks", "configs", "contracts", "docker", "docs", "license", "make", "ops", "policies", "python", "repo"}
+CHECK_EFFECT_ENUM = {CheckEffect.FS_READ.value, CheckEffect.FS_WRITE.value, CheckEffect.SUBPROCESS.value, CheckEffect.NETWORK.value}
 LINT_DOMAINS = {"configs", "docs", "make", "ops"}
 DOMAIN_MAX_PY_FILES = 140
 
@@ -123,7 +125,12 @@ def _parse_toml(repo_root: Path) -> list[RegistryEntry]:
                 remediation_link=str(row.get("remediation_link", "packages/atlasctl/docs/checks/check-id-migration-rules.md")).strip(),
                 result_code=str(row.get("result_code", "CHECK_GENERIC")).strip(),
                 fix_hint=str(row.get("fix_hint", "Review check output and apply the documented fix.")).strip(),
-                effects=tuple(str(x).strip() for x in row.get("effects", []) if str(x).strip()),
+                effects=tuple(
+                    normalize_effect(str(x))
+                    for x in row.get("effects", [CheckEffect.FS_READ.value])
+                    if str(x).strip()
+                )
+                or (CheckEffect.FS_READ.value,),
                 external_tools=tuple(str(x).strip() for x in row.get("external_tools", []) if str(x).strip()),
                 evidence=tuple(str(x).strip() for x in row.get("evidence", []) if str(x).strip()),
                 writes_allowed_roots=tuple(str(x).strip() for x in row.get("writes_allowed_roots", ["artifacts/evidence/"]) if str(x).strip()),
@@ -192,6 +199,9 @@ def _validate_entries(entries: list[RegistryEntry]) -> None:
             errors.append(f"{e.id}: remediation_link is required (or explicit `none`)")
         if not e.result_code:
             errors.append(f"{e.id}: result_code is required")
+        unknown_effects = sorted(set(e.effects).difference(CHECK_EFFECT_ENUM))
+        if unknown_effects:
+            errors.append(f"{e.id}: unknown effects {unknown_effects}; allowed {sorted(CHECK_EFFECT_ENUM)}")
         if "lint" in {group.lower() for group in e.groups}:
             errors.append(f"{e.id}: `lint` marker in groups is forbidden; use category=lint")
         if e.speed not in {"fast", "slow", "nightly"}:
@@ -297,7 +307,12 @@ def load_registry_entries(repo_root: Path | None = None) -> tuple[RegistryEntry,
             remediation_link=str(r.get("impl_ref", {}).get("remediation_link", "packages/atlasctl/docs/checks/check-id-migration-rules.md")),
             result_code=str(r.get("impl_ref", {}).get("result_code", "CHECK_GENERIC")),
             fix_hint=str(r.get("impl_ref", {}).get("fix_hint", "Review check output and apply the documented fix.")),
-            effects=tuple(str(x) for x in r.get("impl_ref", {}).get("effects", [])),
+            effects=tuple(
+                normalize_effect(str(x))
+                for x in r.get("impl_ref", {}).get("effects", [CheckEffect.FS_READ.value])
+                if str(x).strip()
+            )
+            or (CheckEffect.FS_READ.value,),
             external_tools=tuple(str(x) for x in r.get("impl_ref", {}).get("external_tools", [])),
             evidence=tuple(str(x) for x in r.get("impl_ref", {}).get("evidence", [])),
             writes_allowed_roots=tuple(str(x) for x in r.get("impl_ref", {}).get("writes_allowed_roots", ["artifacts/evidence/"])),

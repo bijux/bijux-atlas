@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Iterable
 
+from .effects import CheckEffect, normalize_effect
+
 
 @dataclass(frozen=True)
 class CheckResult:
@@ -31,12 +33,17 @@ def check(
     intent: str,
     remediation_short: str = "Review check output and apply documented remediation.",
     remediation_link: str = "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-    effects: Iterable[str] = (),
+    effects: Iterable[str] = (CheckEffect.FS_READ.value,),
     result_code: str = "CHECK_GENERIC",
     budget_ms: int = 1000,
     category: str = "check",
 ) -> Callable[[Callable[[Path], tuple[int, list[str]]]], Callable[[Path], tuple[int, list[str]]]]:
     def _decorate(fn: Callable[[Path], tuple[int, list[str]]]) -> Callable[[Path], tuple[int, list[str]]]:
+        normalized_effects = tuple(
+            normalize_effect(str(item))
+            for item in effects
+            if str(item).strip()
+        ) or (CheckEffect.FS_READ.value,)
         setattr(
             fn,
             "__atlasctl_check_meta__",
@@ -46,7 +53,7 @@ def check(
                 intent=intent.strip(),
                 remediation_short=remediation_short.strip(),
                 remediation_link=remediation_link.strip(),
-                effects=tuple(str(item).strip() for item in effects if str(item).strip()),
+                effects=normalized_effects,
                 result_code=result_code.strip() or "CHECK_GENERIC",
                 budget_ms=int(budget_ms),
                 category=category.strip() or "check",

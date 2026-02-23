@@ -7,12 +7,15 @@ from __future__ import annotations
 import time
 import signal
 import builtins
+import socket
+import subprocess
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Callable
 
 from ..core.base import CheckDef, CheckResult
+from ..effects import CheckEffect, normalize_effect
 from ..registry.catalog import check_tags
 from ...core.process import run_command
 
@@ -77,11 +80,16 @@ def run_function_checks(
 
     @contextmanager
     def _runtime_guards(chk: CheckDef):
-        allowed_effectful = any(effect in {"write", "fs-write"} for effect in chk.effects)
+        declared_effects = {normalize_effect(effect) for effect in chk.effects}
+        declared_effects.add(CheckEffect.FS_READ.value)
+        allowed_effectful = CheckEffect.FS_WRITE.value in declared_effects
+        allow_subprocess = CheckEffect.SUBPROCESS.value in declared_effects
+        allow_network = CheckEffect.NETWORK.value in declared_effects
         allowed_roots = [((repo_root / rel).resolve()) for rel in chk.writes_allowed_roots]
         if run_root is not None:
             allowed_roots.append(run_root.resolve())
         print_calls: list[str] = []
+        observed_effects: set[str] = {CheckEffect.FS_READ.value}
 
         original_print = builtins.print
         original_open = builtins.open
@@ -89,6 +97,8 @@ def run_function_checks(
         original_write_text = Path.write_text
         original_write_bytes = Path.write_bytes
         original_touch = Path.touch
+        original_subprocess_run = subprocess.run
+        original_socket_create_connection = socket.create_connection
 
         def _guarded_print(*args: object, **kwargs: object) -> None:  # noqa: ANN401
             msg = " ".join(str(x) for x in args)
@@ -96,8 +106,9 @@ def run_function_checks(
 
         def _validate_write_target(file: object, mode: str) -> None:
             if _is_write_mode(mode):
+                observed_effects.add(CheckEffect.FS_WRITE.value)
                 if not allowed_effectful:
-                    raise PermissionError(f"{chk.check_id}: file writes require effects.write=true")
+                    raise PermissionError(f"{chk.check_id}: file writes require effects.fs_write=true")
                 target = _normalize_path(file).resolve()
                 if not any(target == root or root in target.parents for root in allowed_roots):
                     raise PermissionError(f"{chk.check_id}: write outside allowed roots: {target}")
@@ -122,14 +133,28 @@ def run_function_checks(
             _validate_write_target(self, "a")
             return original_touch(self, *args, **kwargs)
 
+        def _guarded_subprocess_run(*args: object, **kwargs: object):  # noqa: ANN401
+            observed_effects.add(CheckEffect.SUBPROCESS.value)
+            if not allow_subprocess:
+                raise PermissionError(f"{chk.check_id}: subprocess usage requires effects.subprocess=true")
+            return original_subprocess_run(*args, **kwargs)
+
+        def _guarded_create_connection(*args: object, **kwargs: object):  # noqa: ANN401
+            observed_effects.add(CheckEffect.NETWORK.value)
+            if not allow_network:
+                raise PermissionError(f"{chk.check_id}: network usage requires effects.network=true")
+            return original_socket_create_connection(*args, **kwargs)
+
         builtins.print = _guarded_print
         builtins.open = _guarded_open
         Path.open = _guarded_path_open
         Path.write_text = _guarded_write_text
         Path.write_bytes = _guarded_write_bytes
         Path.touch = _guarded_touch
+        subprocess.run = _guarded_subprocess_run
+        socket.create_connection = _guarded_create_connection
         try:
-            yield print_calls
+            yield print_calls, observed_effects, declared_effects
         finally:
             builtins.print = original_print
             builtins.open = original_open
@@ -137,11 +162,13 @@ def run_function_checks(
             Path.write_text = original_write_text
             Path.write_bytes = original_write_bytes
             Path.touch = original_touch
+            subprocess.run = original_subprocess_run
+            socket.create_connection = original_socket_create_connection
 
     def _run_one(chk: CheckDef) -> CheckResult:
         start = time.perf_counter()
         try:
-            with _runtime_guards(chk) as print_calls:
+            with _runtime_guards(chk) as (print_calls, observed_effects, declared_effects):
                 if timeout_ms and timeout_ms > 0 and jobs <= 1:
                     class _CheckTimeoutError(Exception):
                         pass
@@ -164,6 +191,10 @@ def run_function_checks(
                 if print_calls:
                     code = 1
                     errors = [*errors, f"{chk.check_id}: checks must not print to stdout/stderr"]
+                undeclared = sorted(observed_effects.difference(declared_effects))
+                if undeclared:
+                    code = 1
+                    errors = [*errors, f"{chk.check_id}: undeclared effects used: {', '.join(undeclared)}"]
         except Exception as exc:
             code, errors = 1, [f"internal check error: {exc}"]
         elapsed_ms = int((time.perf_counter() - start) * 1000)
@@ -189,6 +220,7 @@ def run_function_checks(
             severity=chk.severity.value,
             tags=list(check_tags(chk)),
             effects=list(chk.effects),
+            effects_used=sorted(observed_effects) if "observed_effects" in locals() else [CheckEffect.FS_READ.value],
             owners=list(chk.owners),
             writes_allowed_roots=list(chk.writes_allowed_roots),
             result_code=chk.result_code,

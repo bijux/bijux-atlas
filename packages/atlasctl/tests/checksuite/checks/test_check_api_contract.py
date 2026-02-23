@@ -41,4 +41,4 @@ def test_runtime_guard_blocks_writes_without_effect(tmp_path: Path) -> None:
     failed, rows = run_function_checks(tmp_path, [check_def], run_root=tmp_path / "artifacts" / "evidence")
     assert failed == 1
     assert rows[0].status == "fail"
-    assert any("effects.write=true" in msg or "internal check error" in msg for msg in rows[0].errors)
+    assert any("effects.fs_write=true" in msg or "internal check error" in msg for msg in rows[0].errors)
