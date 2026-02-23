@@ -831,6 +831,8 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         return impl._run_simple_cmd(ctx, cmd, ns.report)
     if ns.ops_cmd == "policy-audit":
         return _ops_policy_audit(ctx, ns.report)
+    if ns.ops_cmd == "refgrade-audit":
+        return impl._ops_refgrade_audit_native(ctx, ns.report, strict=bool(getattr(ns, "strict", False)))
     if ns.ops_cmd == "k8s-flakes-check":
         code, output = impl._k8s_flakes(ctx.repo_root)
         if ns.report == "json":
