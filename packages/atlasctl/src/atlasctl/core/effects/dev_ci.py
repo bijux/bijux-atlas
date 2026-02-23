@@ -10,7 +10,7 @@ from typing import Any
 from ...contracts.output.base import build_output_base
 from ...core.runtime.paths import write_text_file
 from ..context import RunContext
-from .exec import run as process_run
+from ..exec import run as process_run
 from .run_meta import write_run_meta
 from .dev_ci_suite import run_suite_ci
 
