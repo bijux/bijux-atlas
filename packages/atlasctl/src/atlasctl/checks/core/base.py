@@ -36,6 +36,9 @@ class CheckDef:
     severity: Severity = Severity.ERROR
     category: CheckCategory = CheckCategory.CHECK
     fix_hint: str = "Review check output and apply the documented fix."
+    intent: str = ""
+    remediation_short: str = "Review check output and apply the documented fix."
+    remediation_link: str = "packages/atlasctl/docs/checks/check-id-migration-rules.md"
     slow: bool = False
     tags: tuple[str, ...] = ()
     effects: tuple[str, ...] = ()
@@ -43,6 +46,7 @@ class CheckDef:
     external_tools: tuple[str, ...] = ()
     evidence: tuple[str, ...] = ()
     writes_allowed_roots: tuple[str, ...] = ("artifacts/evidence/",)
+    result_code: str = "CHECK_GENERIC"
 
     def __post_init__(self) -> None:
         if not self.canonical_id:
@@ -75,6 +79,7 @@ class CheckResult:
     effects: list[str]
     owners: list[str]
     writes_allowed_roots: list[str]
+    result_code: str
 
 
 class Check(Protocol):

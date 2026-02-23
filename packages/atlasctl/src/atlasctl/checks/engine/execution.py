@@ -6,7 +6,9 @@ from __future__ import annotations
 
 import time
 import signal
+import builtins
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Callable
 
@@ -59,31 +61,109 @@ def run_function_checks(
     on_result: Callable[[CheckResult], None] | None = None,
     timeout_ms: int | None = None,
     jobs: int = 1,
+    run_root: Path | None = None,
 ) -> tuple[int, list[CheckResult]]:
     checks = sorted(checks, key=lambda c: c.check_id)
+
+    def _is_write_mode(mode: str) -> bool:
+        return any(token in mode for token in ("w", "a", "x", "+"))
+
+    def _normalize_path(value: object) -> Path:
+        if isinstance(value, Path):
+            p = value
+        else:
+            p = Path(str(value))
+        return p if p.is_absolute() else (repo_root / p)
+
+    @contextmanager
+    def _runtime_guards(chk: CheckDef):
+        allowed_effectful = any(effect in {"write", "fs-write"} for effect in chk.effects)
+        allowed_roots = [((repo_root / rel).resolve()) for rel in chk.writes_allowed_roots]
+        if run_root is not None:
+            allowed_roots.append(run_root.resolve())
+        print_calls: list[str] = []
+
+        original_print = builtins.print
+        original_open = builtins.open
+        original_path_open = Path.open
+        original_write_text = Path.write_text
+        original_write_bytes = Path.write_bytes
+        original_touch = Path.touch
+
+        def _guarded_print(*args: object, **kwargs: object) -> None:  # noqa: ANN401
+            msg = " ".join(str(x) for x in args)
+            print_calls.append(msg)
+
+        def _validate_write_target(file: object, mode: str) -> None:
+            if _is_write_mode(mode):
+                if not allowed_effectful:
+                    raise PermissionError(f"{chk.check_id}: file writes require effects.write=true")
+                target = _normalize_path(file).resolve()
+                if not any(target == root or root in target.parents for root in allowed_roots):
+                    raise PermissionError(f"{chk.check_id}: write outside allowed roots: {target}")
+
+        def _guarded_open(file: object, mode: str = "r", *args: object, **kwargs: object):  # noqa: ANN401
+            _validate_write_target(file, mode)
+            return original_open(file, mode, *args, **kwargs)
+
+        def _guarded_path_open(self: Path, mode: str = "r", *args: object, **kwargs: object):  # noqa: ANN001
+            _validate_write_target(self, mode)
+            return original_path_open(self, mode, *args, **kwargs)
+
+        def _guarded_write_text(self: Path, data: str, *args: object, **kwargs: object):  # noqa: ANN001
+            _validate_write_target(self, "w")
+            return original_write_text(self, data, *args, **kwargs)
+
+        def _guarded_write_bytes(self: Path, data: bytes, *args: object, **kwargs: object):  # noqa: ANN001
+            _validate_write_target(self, "wb")
+            return original_write_bytes(self, data, *args, **kwargs)
+
+        def _guarded_touch(self: Path, *args: object, **kwargs: object):  # noqa: ANN001
+            _validate_write_target(self, "a")
+            return original_touch(self, *args, **kwargs)
+
+        builtins.print = _guarded_print
+        builtins.open = _guarded_open
+        Path.open = _guarded_path_open
+        Path.write_text = _guarded_write_text
+        Path.write_bytes = _guarded_write_bytes
+        Path.touch = _guarded_touch
+        try:
+            yield print_calls
+        finally:
+            builtins.print = original_print
+            builtins.open = original_open
+            Path.open = original_path_open
+            Path.write_text = original_write_text
+            Path.write_bytes = original_write_bytes
+            Path.touch = original_touch
 
     def _run_one(chk: CheckDef) -> CheckResult:
         start = time.perf_counter()
         try:
-            if timeout_ms and timeout_ms > 0 and jobs <= 1:
-                class _CheckTimeoutError(Exception):
-                    pass
+            with _runtime_guards(chk) as print_calls:
+                if timeout_ms and timeout_ms > 0 and jobs <= 1:
+                    class _CheckTimeoutError(Exception):
+                        pass
 
-                def _raise_timeout(_signum: int, _frame: object) -> None:
-                    raise _CheckTimeoutError()
+                    def _raise_timeout(_signum: int, _frame: object) -> None:
+                        raise _CheckTimeoutError()
 
-                prev_handler = signal.getsignal(signal.SIGALRM)
-                signal.signal(signal.SIGALRM, _raise_timeout)
-                signal.setitimer(signal.ITIMER_REAL, timeout_ms / 1000.0)
-                try:
+                    prev_handler = signal.getsignal(signal.SIGALRM)
+                    signal.signal(signal.SIGALRM, _raise_timeout)
+                    signal.setitimer(signal.ITIMER_REAL, timeout_ms / 1000.0)
+                    try:
+                        code, errors = chk.fn(repo_root)
+                    except _CheckTimeoutError:
+                        code, errors = 1, [f"check timed out after {timeout_ms}ms"]
+                    finally:
+                        signal.setitimer(signal.ITIMER_REAL, 0)
+                        signal.signal(signal.SIGALRM, prev_handler)
+                else:
                     code, errors = chk.fn(repo_root)
-                except _CheckTimeoutError:
-                    code, errors = 1, [f"check timed out after {timeout_ms}ms"]
-                finally:
-                    signal.setitimer(signal.ITIMER_REAL, 0)
-                    signal.signal(signal.SIGALRM, prev_handler)
-            else:
-                code, errors = chk.fn(repo_root)
+                if print_calls:
+                    code = 1
+                    errors = [*errors, f"{chk.check_id}: checks must not print to stdout/stderr"]
         except Exception as exc:
             code, errors = 1, [f"internal check error: {exc}"]
         elapsed_ms = int((time.perf_counter() - start) * 1000)
@@ -111,6 +191,7 @@ def run_function_checks(
             effects=list(chk.effects),
             owners=list(chk.owners),
             writes_allowed_roots=list(chk.writes_allowed_roots),
+            result_code=chk.result_code,
         )
 
     rows: list[CheckResult] = []
