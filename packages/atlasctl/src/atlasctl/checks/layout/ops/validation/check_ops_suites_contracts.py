@@ -99,6 +99,21 @@ def main() -> int:
             errs.append(f'{name}: fast suite must not include `slow` marker')
         if not evidence_area:
             errs.append(f'{name}: evidence_area is required')
+        else:
+            expected_by_suite = {
+                'ops.smoke': 'smoke',
+                'ops.stack': 'stack',
+                'ops.k8s': 'k8s',
+                'ops.obs': 'obs',
+                'ops.load.smoke': 'load-suite',
+                'ops.load.regression': 'load-suite',
+                'ops.e2e.smoke': 'e2e',
+                'ops.e2e.realdata': 'e2e',
+                'ops.datasets': 'datasets',
+            }
+            exp = expected_by_suite.get(name)
+            if exp and evidence_area != exp:
+                errs.append(f'{name}: evidence_area must be `{exp}` (got `{evidence_area}`)')
         if not isinstance(actions, list) or not all(isinstance(a, str) and a for a in actions):
             errs.append(f'{name}: actions must be non-empty string list')
         else:

@@ -11,7 +11,7 @@ from ..artifacts.command import artifacts_open as _artifacts_open_cmd, cleanup_g
 from ..contracts.command import contracts_snapshot as _contracts_snapshot_cmd
 from ..ports.command import ports_reserve as _ports_reserve_cmd, ports_show as _ports_show_cmd
 from ..scenario.command import run_scenario_from_manifest as _run_scenario_from_manifest_cmd
-from ..tools import command_rendered, invocation_report, run_tool
+from ..tools import command_rendered, environment_summary, hash_inputs, invocation_report, run_tool
 from .manifest import (
     DATASETS_WRAPPER_ACTIONS,
     E2E_WRAPPER_ACTIONS,
@@ -74,6 +74,9 @@ def _stack_reset(ctx: RunContext, report_format: str) -> int:
         if inv.code != 0:
             final_code = inv.code
             break
+    inputs: list[str] = []
+    env = environment_summary(ctx, ["./bin/atlasctl"])
+    inputs_hash = hash_inputs(ctx.repo_root, inputs)
     payload = {
         "schema_version": 1,
         "tool": "bijux-atlas",
@@ -82,6 +85,13 @@ def _stack_reset(ctx: RunContext, report_format: str) -> int:
         "area": "stack",
         "action": "reset",
         "steps": rows,
+        "details": {
+            "inputs": inputs,
+            "inputs_hash": inputs_hash,
+            "config_hash": inputs_hash,
+            "environment_summary": env,
+            "tool_versions": env.get("tool_versions", {}),
+        },
         "artifacts": {"report": str((out_dir / "report.json").relative_to(ctx.repo_root))},
     }
     write_text_file(out_dir / "report.json", json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -122,6 +132,13 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                         "area": "contracts",
                         "action": "snapshot",
                         "run_id": ctx.run_id,
+                        "details": {
+                            "inputs": [],
+                            "inputs_hash": hash_inputs(ctx.repo_root, []),
+                            "config_hash": hash_inputs(ctx.repo_root, []),
+                            "environment_summary": environment_summary(ctx, ["python3"]),
+                            "tool_versions": environment_summary(ctx, ["python3"]).get("tool_versions", {}),
+                        },
                         "dry_run": True,
                     },
                     sort_keys=True,

@@ -124,10 +124,21 @@ def hash_inputs(repo_root: Path, paths: Iterable[str]) -> str:
 
 def environment_summary(ctx: RunContext, tools: Iterable[str]) -> dict[str, object]:
     missing, resolved = preflight_tools(tools)
+    versions: dict[str, str] = {}
+    for tool in sorted(set(tools)):
+        if tool in missing:
+            continue
+        try:
+            probe = run_command([tool, "--version"], ctx.repo_root, ctx=ctx)
+            line = (probe.stdout or probe.stderr or "").strip().splitlines()
+            versions[tool] = line[0].strip() if line else ""
+        except Exception:
+            versions[tool] = ""
     return {
         "required_tools": sorted(set(tools)),
         "missing_tools": sorted(missing),
         "resolved_paths": {k: resolved[k] for k in sorted(resolved)},
+        "tool_versions": versions,
         "run_id": ctx.run_id,
     }
 

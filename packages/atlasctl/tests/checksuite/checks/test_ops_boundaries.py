@@ -39,3 +39,8 @@ def test_ops_forbidden_runtime_tokens_check_passes() -> None:
 def test_ops_temporary_shims_check_passes() -> None:
     proc = _run("packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_temporary_shims.py")
     assert proc.returncode == 0, proc.stderr
+
+
+def test_ops_report_contract_fields_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_report_contract_fields.py")
+    assert proc.returncode == 0, proc.stderr
