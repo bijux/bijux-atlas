@@ -211,6 +211,23 @@ def check_tracked_timestamp_paths(repo_root: Path) -> tuple[int, list[str]]:
     return (0 if not errors else 1), errors
 
 
+def check_repo_no_python_caches_committed(repo_root: Path) -> tuple[int, list[str]]:
+    tracked = _git_ls_files(repo_root, ["packages/atlasctl"])
+    errors: list[str] = []
+    for rel in tracked:
+        posix = rel.replace("\\", "/")
+        parts = Path(posix).parts
+        if "__pycache__" in parts:
+            errors.append(f"committed python cache directory entry: {rel}")
+            continue
+        if posix.endswith(".pyc"):
+            errors.append(f"committed python bytecode file: {rel}")
+            continue
+        if ".pytest_cache" in parts:
+            errors.append(f"committed pytest cache entry: {rel}")
+    return (0 if not errors else 1), errors
+
+
 def check_committed_generated_hygiene(repo_root: Path) -> tuple[int, list[str]]:
     tracked = _git_ls_files(
         repo_root,
