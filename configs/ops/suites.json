@@ -1,96 +1,211 @@
 {
-  "schema_version": 1,
   "kind": "ops-suites-ssot",
+  "schema_version": 1,
   "suites": [
     {
-      "name": "ops.smoke",
+      "actions": [
+        "datasets.verify",
+        "datasets.fetch",
+        "datasets.pin",
+        "datasets.lock",
+        "datasets.validate",
+        "datasets.qc",
+        "datasets.summary",
+        "datasets.diff",
+        "datasets.lint-ids"
+      ],
       "atlasctl_suite": "ops",
-      "markers": ["ops", "fast"],
-      "speed": "fast",
-      "slow_reason": "",
-      "reduction_plan": "",
-      "actions": ["smoke", "up", "down", "restart", "doctor", "prereqs", "warm", "stack.up", "deploy.apply", "obs.verify", "stack.down"],
-      "evidence_area": "smoke"
-    },
-    {
-      "name": "ops.stack",
-      "atlasctl_suite": "ops-stack",
-      "markers": ["ops", "stack", "fast"],
-      "speed": "fast",
-      "slow_reason": "",
-      "reduction_plan": "",
-      "actions": ["stack.up", "stack.down", "stack.status", "stack.validate", "stack.check", "stack.restart", "stack.report", "stack.versions-sync"],
-      "evidence_area": "stack"
-    },
-    {
-      "name": "ops.k8s",
-      "atlasctl_suite": "ops-deploy",
-      "markers": ["ops", "k8s", "slow"],
-      "speed": "slow",
-      "slow_reason": "deploy and helm/kubectl validation require live substrate and render/install cycles",
-      "reduction_plan": "split pure render/schema validation from live deploy checks and cache substrate readiness",
-      "actions": ["k8s.render", "k8s.validate", "k8s.apply-config", "k8s.validate-configmap-keys", "k8s.diff", "k8s.check", "k8s.contracts", "deploy.apply", "deploy.rollback"],
-      "evidence_area": "k8s"
-    },
-    {
-      "name": "ops.obs",
-      "atlasctl_suite": "ops-obs",
-      "markers": ["ops", "obs", "slow"],
-      "speed": "slow",
-      "slow_reason": "observability verification runs drills and conformance checks against running services",
-      "reduction_plan": "separate static contract lint from live drill execution and shard drill suites",
-      "actions": ["obs.up", "obs.verify", "obs.validate", "obs.check", "obs.lint", "obs.report", "obs.drill"],
-      "evidence_area": "obs"
-    },
-    {
-      "name": "ops.load.smoke",
-      "atlasctl_suite": "ops-load",
-      "markers": ["ops", "load", "fast"],
-      "speed": "fast",
-      "slow_reason": "",
-      "reduction_plan": "",
-      "actions": ["load.run", "load.check"],
-      "evidence_area": "load-suite"
-    },
-    {
-      "name": "ops.load.regression",
-      "atlasctl_suite": "ops-nightly",
-      "markers": ["ops", "load", "slow"],
-      "speed": "slow",
-      "slow_reason": "regression baseline comparisons require k6 execution and artifact generation",
-      "reduction_plan": "cache baseline summaries and isolate compare-only lane for fast validation",
-      "actions": ["load.run", "load.compare"],
-      "evidence_area": "load-suite"
-    },
-    {
-      "name": "ops.e2e.smoke",
-      "atlasctl_suite": "ops",
-      "markers": ["ops", "e2e", "fast"],
-      "speed": "fast",
-      "slow_reason": "",
-      "reduction_plan": "",
-      "actions": ["e2e.run", "e2e.validate", "e2e.validate-results"],
-      "evidence_area": "e2e"
-    },
-    {
-      "name": "ops.e2e.realdata",
-      "atlasctl_suite": "ops-nightly",
-      "markers": ["ops", "e2e", "slow"],
-      "speed": "slow",
-      "slow_reason": "realdata scenarios provision larger datasets and multi-step release comparisons",
-      "reduction_plan": "reuse prepared fixtures and split snapshot generation from diff validation",
-      "actions": ["e2e.run"],
-      "evidence_area": "e2e"
-    },
-    {
+      "evidence_area": "datasets",
+      "markers": [
+        "ops",
+        "datasets",
+        "fast"
+      ],
       "name": "ops.datasets",
-      "atlasctl_suite": "ops",
-      "markers": ["ops", "datasets", "fast"],
-      "speed": "fast",
-      "slow_reason": "",
       "reduction_plan": "",
-      "actions": ["datasets.verify", "datasets.fetch", "datasets.pin", "datasets.lock", "datasets.validate", "datasets.qc", "datasets.summary", "datasets.diff", "datasets.lint-ids"],
-      "evidence_area": "datasets"
+      "slow_reason": "",
+      "speed": "fast"
+    },
+    {
+      "actions": [
+        "e2e.run"
+      ],
+      "atlasctl_suite": "ops-nightly",
+      "evidence_area": "e2e",
+      "markers": [
+        "ops",
+        "e2e",
+        "slow"
+      ],
+      "name": "ops.e2e.realdata",
+      "reduction_plan": "reuse prepared fixtures and split snapshot generation from diff validation",
+      "slow_reason": "realdata scenarios provision larger datasets and multi-step release comparisons",
+      "speed": "slow"
+    },
+    {
+      "actions": [
+        "e2e.run",
+        "e2e.validate",
+        "e2e.validate-results"
+      ],
+      "atlasctl_suite": "ops",
+      "evidence_area": "e2e",
+      "markers": [
+        "ops",
+        "e2e",
+        "fast"
+      ],
+      "name": "ops.e2e.smoke",
+      "reduction_plan": "",
+      "slow_reason": "",
+      "speed": "fast"
+    },
+    {
+      "actions": [
+        "k8s.render",
+        "k8s.validate",
+        "k8s.apply-config",
+        "k8s.validate-configmap-keys",
+        "k8s.diff",
+        "k8s.check",
+        "k8s.contracts",
+        "deploy.apply",
+        "deploy.rollback"
+      ],
+      "atlasctl_suite": "ops-deploy",
+      "evidence_area": "k8s",
+      "markers": [
+        "ops",
+        "k8s",
+        "slow"
+      ],
+      "name": "ops.k8s",
+      "reduction_plan": "split pure render/schema validation from live deploy checks and cache substrate readiness",
+      "slow_reason": "deploy and helm/kubectl validation require live substrate and render/install cycles",
+      "speed": "slow"
+    },
+    {
+      "actions": [
+        "load.run",
+        "load.compare"
+      ],
+      "atlasctl_suite": "ops-nightly",
+      "evidence_area": "load-suite",
+      "markers": [
+        "ops",
+        "load",
+        "slow"
+      ],
+      "name": "ops.load.regression",
+      "reduction_plan": "cache baseline summaries and isolate compare-only lane for fast validation",
+      "slow_reason": "regression baseline comparisons require k6 execution and artifact generation",
+      "speed": "slow"
+    },
+    {
+      "actions": [
+        "load.run",
+        "load.check"
+      ],
+      "atlasctl_suite": "ops-load",
+      "evidence_area": "load-suite",
+      "markers": [
+        "ops",
+        "load",
+        "fast"
+      ],
+      "name": "ops.load.smoke",
+      "reduction_plan": "",
+      "slow_reason": "",
+      "speed": "fast"
+    },
+    {
+      "actions": [
+        "obs.up",
+        "obs.verify",
+        "obs.validate",
+        "obs.check",
+        "obs.lint",
+        "obs.report",
+        "obs.drill"
+      ],
+      "atlasctl_suite": "ops-obs",
+      "evidence_area": "obs",
+      "markers": [
+        "ops",
+        "obs",
+        "slow"
+      ],
+      "name": "ops.obs",
+      "reduction_plan": "separate static contract lint from live drill execution and shard drill suites",
+      "slow_reason": "observability verification runs drills and conformance checks against running services",
+      "speed": "slow"
+    },
+    {
+      "actions": [
+        "refgrade-audit",
+        "schema-check",
+        "pins.check",
+        "surface"
+      ],
+      "atlasctl_suite": "refgrade-audit",
+      "evidence_area": "scorecard",
+      "markers": [
+        "ops",
+        "policies",
+        "slow"
+      ],
+      "name": "ops.refgrade.audit",
+      "reduction_plan": "split cheap schema/surface checks from strict bypass and determinism audit lanes",
+      "slow_reason": "runs cross-domain policy/schema/surface checks and scorecard generation",
+      "speed": "slow"
+    },
+    {
+      "actions": [
+        "smoke",
+        "up",
+        "down",
+        "restart",
+        "doctor",
+        "prereqs",
+        "warm",
+        "stack.up",
+        "deploy.apply",
+        "obs.verify",
+        "stack.down"
+      ],
+      "atlasctl_suite": "ops",
+      "evidence_area": "smoke",
+      "markers": [
+        "ops",
+        "fast"
+      ],
+      "name": "ops.smoke",
+      "reduction_plan": "",
+      "slow_reason": "",
+      "speed": "fast"
+    },
+    {
+      "actions": [
+        "stack.up",
+        "stack.down",
+        "stack.status",
+        "stack.validate",
+        "stack.check",
+        "stack.restart",
+        "stack.report",
+        "stack.versions-sync"
+      ],
+      "atlasctl_suite": "ops-stack",
+      "evidence_area": "stack",
+      "markers": [
+        "ops",
+        "stack",
+        "fast"
+      ],
+      "name": "ops.stack",
+      "reduction_plan": "",
+      "slow_reason": "",
+      "speed": "fast"
     }
   ]
 }

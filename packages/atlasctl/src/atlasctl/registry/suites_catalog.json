@@ -64,26 +64,6 @@
     {
       "default_effects": [
         "read",
-        "process",
-        "write"
-      ],
-      "exclude_markers": [
-        "slow"
-      ],
-      "include_checks": [],
-      "internal": false,
-      "markers": [
-        "product"
-      ],
-      "name": "product.smoke",
-      "required_env": [
-        "PYTHONPATH"
-      ],
-      "time_budget_ms": 120000
-    },
-    {
-      "default_effects": [
-        "read",
         "process"
       ],
       "exclude_markers": [],
@@ -448,6 +428,50 @@
         "PYTHONPATH"
       ],
       "time_budget_ms": 300000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process",
+        "write"
+      ],
+      "exclude_markers": [
+        "slow"
+      ],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "product"
+      ],
+      "name": "product.smoke",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 120000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process",
+        "write"
+      ],
+      "exclude_markers": [],
+      "include_checks": [
+        "checks_ops_surface_manifest",
+        "checks_ops_suites_contracts",
+        "checks_ops_report_contract_fields"
+      ],
+      "internal": false,
+      "markers": [
+        "ops",
+        "policies",
+        "slow"
+      ],
+      "name": "refgrade-audit",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 180000
     },
     {
       "default_effects": [

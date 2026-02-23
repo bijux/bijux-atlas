@@ -229,6 +229,7 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
         ("layer-drift-check", "validate cross-layer drift rules"),
         ("contracts-index", "generate ops contracts docs index"),
         ("policy-audit", "validate ops policy configs reflected in ops usage"),
+        ("refgrade-audit", "run final reference-grade ops/product audit and emit scorecard"),
         ("k8s-surface-generate", "generate k8s test surface docs from manifest"),
         ("k8s-checks-layout", "validate k8s checks layout budget"),
         ("k8s-test-lib-contract", "validate k8s tests checks/_lib helper contract"),
@@ -244,3 +245,5 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
         if name in {"clean-generated", "clean"}:
             cmd.add_argument("--force", action="store_true")
             cmd.add_argument("--dry-run", action="store_true")
+        if name == "refgrade-audit":
+            cmd.add_argument("--strict", action="store_true")

@@ -1439,6 +1439,47 @@ def _ops_load_run_native(ctx: RunContext, report_format: str, suite: str, out_di
     return _emit_ops_status(report_format, 0 if status == "pass" else 1, "\n".join(outputs).strip())
 
 
+def _ops_refgrade_audit_native(ctx: RunContext, report_format: str, *, strict: bool = False) -> int:
+    checks = [
+        "checks_ops_surface_manifest",
+        "checks_ops_suites_contracts",
+        "checks_ops_report_contract_fields",
+    ]
+    rows: list[dict[str, object]] = []
+    ok = True
+    for check_id in checks:
+        proc = run_command(["./bin/atlasctl", "check", "run", "--id", check_id, "--quiet"], ctx.repo_root, ctx=ctx)
+        rows.append({"id": check_id, "code": proc.code})
+        ok = ok and proc.code == 0
+    for name, cmd in (
+        ("ops.schema-check", ["./bin/atlasctl", "ops", "schema-check", "--report", "text"]),
+        ("ops.pins.check", ["./bin/atlasctl", "ops", "pins", "check", "--report", "text"]),
+        ("policies.bypass.inventory", ["./bin/atlasctl", "policies", "culprits", "--format", "json"]),
+    ):
+        proc = run_command(cmd, ctx.repo_root, ctx=ctx)
+        rows.append({"id": name, "code": proc.code})
+        ok = ok and proc.code == 0
+    if strict:
+        proc = run_command(["./bin/atlasctl", "policies", "bypass", "drill", "--strict", "--report", "json"], ctx.repo_root, ctx=ctx)
+        rows.append({"id": "policies.bypass.drill.strict", "code": proc.code})
+        ok = ok and proc.code == 0
+    payload = {
+        "schema_version": 1,
+        "kind": "ops-refgrade-audit-scorecard",
+        "run_id": ctx.run_id,
+        "status": "pass" if ok else "fail",
+        "strict": strict,
+        "checks": rows,
+    }
+    out = ctx.repo_root / "ops/_generated_committed/scorecard.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    write_text_file(out, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    if report_format == "json":
+        print(json.dumps(payload, sort_keys=True))
+        return 0 if ok else 1
+    return _emit_ops_status(report_format, 0 if ok else 1, "ops-refgrade-audit: wrote ops/_generated_committed/scorecard.json")
+
+
 
 
 
