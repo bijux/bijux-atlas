@@ -5,8 +5,8 @@
 
 ## Summary
 
-- Tracked files: `2636`
-- Docs markdown files: `430`
+- Tracked files: `2840`
+- Docs markdown files: `431`
 - Script files under `scripts/`: `0`
 - Rust test files: `42`
 - Load suites in `ops/load/suites/suites.json`: `20`
@@ -15,7 +15,7 @@
 
 ## Naming Health
 
-- Forbidden-token hits: `14`
+- Forbidden-token hits: `16`
 - Non-kebab docs outside allowed exceptions: `28`
 - Non-kebab scripts under `scripts/`: `0`
 
@@ -105,4 +105,6 @@
 - `packages/atlasctl/tests/commands/ops/test_obs_drill_phase4.py`
 - `packages/atlasctl/tests/commands/ops/test_ops_stack_phase4_actions.py`
 - `packages/atlasctl/tests/commands/product/test_product_phase5_release_flow.py`
+- `packages/atlasctl/tests/devsuite/ops/test_ops_phase6_cli_aliases.py`
+- `packages/atlasctl/tests/devsuite/ops/test_ops_phase6_models_and_workflows.py`
 - `packages/atlasctl/tests/policysuite/repo/hygiene/test_required_phase7.py`

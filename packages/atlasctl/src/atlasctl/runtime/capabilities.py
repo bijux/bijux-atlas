@@ -36,6 +36,9 @@ def capabilities_for_command(command: str) -> CommandCapabilities | None:
 
 
 def validate_command_capabilities(command: str) -> tuple[bool, str]:
+    builtins = {"help", "commands", "surface", "explain", "version", "run-id"}
+    if command in builtins:
+        return True, "ok"
     caps = capabilities_for_command(command)
     if caps is None:
         return False, f"no command spec/capability manifest entry for `{command}`"

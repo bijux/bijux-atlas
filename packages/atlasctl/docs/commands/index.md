@@ -16,10 +16,13 @@ Generated from CLI registry (`src/atlasctl/cli/surface_registry.py`).
 - `check`
 - `configs`
 - `contracts`
+- `deps`
 - `dev`
 - `docs`
 - `doctor`
+- `gate`
 - `gates`
+- `gen`
 - `install`
 - `inventory`
 - `k8s`

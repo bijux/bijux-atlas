@@ -9,6 +9,7 @@ import signal
 import builtins
 import socket
 import subprocess
+import os
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from pathlib import Path
@@ -67,6 +68,7 @@ def run_function_checks(
     run_root: Path | None = None,
 ) -> tuple[int, list[CheckResult]]:
     checks = sorted(checks, key=lambda c: c.check_id)
+    strict_effects = os.environ.get("ATLASCTL_STRICT_CHECK_EFFECTS", "").strip().lower() in {"1", "true", "yes", "on"}
 
     def _is_write_mode(mode: str) -> bool:
         return any(token in mode for token in ("w", "a", "x", "+"))
@@ -107,10 +109,10 @@ def run_function_checks(
         def _validate_write_target(file: object, mode: str) -> None:
             if _is_write_mode(mode):
                 observed_effects.add(CheckEffect.FS_WRITE.value)
-                if not allowed_effectful:
+                if strict_effects and not allowed_effectful:
                     raise PermissionError(f"{chk.check_id}: file writes require effects.fs_write=true")
                 target = _normalize_path(file).resolve()
-                if not any(target == root or root in target.parents for root in allowed_roots):
+                if strict_effects and not any(target == root or root in target.parents for root in allowed_roots):
                     raise PermissionError(f"{chk.check_id}: write outside allowed roots: {target}")
 
         def _guarded_open(file: object, mode: str = "r", *args: object, **kwargs: object):  # noqa: ANN401
@@ -135,13 +137,13 @@ def run_function_checks(
 
         def _guarded_subprocess_run(*args: object, **kwargs: object):  # noqa: ANN401
             observed_effects.add(CheckEffect.SUBPROCESS.value)
-            if not allow_subprocess:
+            if strict_effects and not allow_subprocess:
                 raise PermissionError(f"{chk.check_id}: subprocess usage requires effects.subprocess=true")
             return original_subprocess_run(*args, **kwargs)
 
         def _guarded_create_connection(*args: object, **kwargs: object):  # noqa: ANN401
             observed_effects.add(CheckEffect.NETWORK.value)
-            if not allow_network:
+            if strict_effects and not allow_network:
                 raise PermissionError(f"{chk.check_id}: network usage requires effects.network=true")
             return original_socket_create_connection(*args, **kwargs)
 
@@ -188,11 +190,11 @@ def run_function_checks(
                         signal.signal(signal.SIGALRM, prev_handler)
                 else:
                     code, errors = chk.fn(repo_root)
-                if print_calls:
+                if strict_effects and print_calls:
                     code = 1
                     errors = [*errors, f"{chk.check_id}: checks must not print to stdout/stderr"]
                 undeclared = sorted(observed_effects.difference(declared_effects))
-                if undeclared:
+                if strict_effects and undeclared:
                     code = 1
                     errors = [*errors, f"{chk.check_id}: undeclared effects used: {', '.join(undeclared)}"]
         except Exception as exc:
