@@ -1,0 +1,1028 @@
+{
+  "items": [
+    {
+      "action": "cache.prune",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "cache.status",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "check",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "clean",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "clean-generated",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "contracts-check",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "contracts-index",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "datasets.fetch",
+      "allow_network_required": true,
+      "network": true,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "datasets.lint-ids",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "datasets.lock",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "datasets.pin",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "datasets.qc",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "datasets.validate",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "datasets.verify",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "deploy.apply",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "helm",
+        "kubectl"
+      ]
+    },
+    {
+      "action": "deploy.plan",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "helm",
+        "kubectl"
+      ]
+    },
+    {
+      "action": "deploy.rollback",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "helm",
+        "kubectl"
+      ]
+    },
+    {
+      "action": "directory-budgets-check",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "doctor",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "down",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "e2e.run",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "e2e.validate",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "e2e.validate-results",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "env.print",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "env.validate",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "explain",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "gen.check",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "gen.run",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "help",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "k8s-checks-layout",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "k8s-flakes-check",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "k8s-surface-generate",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "k8s-test-contract",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "k8s-test-lib-contract",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "k8s.apply-config",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "helm",
+        "kubectl"
+      ]
+    },
+    {
+      "action": "k8s.check",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "helm",
+        "kubectl"
+      ]
+    },
+    {
+      "action": "k8s.contracts",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "helm",
+        "kubectl"
+      ]
+    },
+    {
+      "action": "k8s.diff",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "helm",
+        "kubectl"
+      ]
+    },
+    {
+      "action": "k8s.render",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "helm",
+        "kubectl"
+      ]
+    },
+    {
+      "action": "k8s.validate",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "helm",
+        "kubectl"
+      ]
+    },
+    {
+      "action": "k8s.validate-configmap-keys",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "helm",
+        "kubectl"
+      ]
+    },
+    {
+      "action": "kind.down",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "kubectl"
+      ]
+    },
+    {
+      "action": "kind.fault",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "kubectl"
+      ]
+    },
+    {
+      "action": "kind.reset",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "kubectl"
+      ]
+    },
+    {
+      "action": "kind.up",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "kubectl"
+      ]
+    },
+    {
+      "action": "kind.validate",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "kubectl"
+      ]
+    },
+    {
+      "action": "layer-drift-check",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "lint",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "list",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "load.check",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "k6"
+      ]
+    },
+    {
+      "action": "load.compare",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "k6"
+      ]
+    },
+    {
+      "action": "load.run",
+      "allow_network_required": true,
+      "network": true,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "k6"
+      ]
+    },
+    {
+      "action": "naming-check",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "no-direct-script-usage-check",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "obs.check",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "kubectl"
+      ]
+    },
+    {
+      "action": "obs.drill",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "kubectl"
+      ]
+    },
+    {
+      "action": "obs.lint",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "kubectl"
+      ]
+    },
+    {
+      "action": "obs.report",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "kubectl"
+      ]
+    },
+    {
+      "action": "obs.up",
+      "allow_network_required": true,
+      "network": true,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "kubectl"
+      ]
+    },
+    {
+      "action": "obs.validate",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "kubectl"
+      ]
+    },
+    {
+      "action": "obs.verify",
+      "allow_network_required": true,
+      "network": true,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "kubectl"
+      ]
+    },
+    {
+      "action": "pins.check",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "pins.update",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "policy-audit",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "prereqs",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "restart",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "root-lanes",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "root-local",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "run",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "run-script",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "schema-check",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "smoke",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "stack.check",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "kubectl"
+      ]
+    },
+    {
+      "action": "stack.down",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "kubectl"
+      ]
+    },
+    {
+      "action": "stack.report",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "kubectl"
+      ]
+    },
+    {
+      "action": "stack.restart",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "kubectl"
+      ]
+    },
+    {
+      "action": "stack.status",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "kubectl"
+      ]
+    },
+    {
+      "action": "stack.up",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "kubectl"
+      ]
+    },
+    {
+      "action": "stack.validate",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "kubectl"
+      ]
+    },
+    {
+      "action": "stack.versions-sync",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": [
+        "kubectl"
+      ]
+    },
+    {
+      "action": "suites-check",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "surface",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "tool-versions-check",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "up",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "warm",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    },
+    {
+      "action": "warm-dx",
+      "allow_network_required": false,
+      "network": false,
+      "profiles": [
+        "local",
+        "ci",
+        "perf"
+      ],
+      "tools": []
+    }
+  ],
+  "kind": "ops-command-capabilities",
+  "schema_version": 1
+}
