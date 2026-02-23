@@ -21,6 +21,7 @@
     "ops.env.print",
     "ops.env.validate",
     "ops.gen.check",
+    "ops.gen.index",
     "ops.gen.run",
     "ops.k8s.apply-config",
     "ops.k8s.check",
@@ -75,6 +76,7 @@
     "ops.root.run-script",
     "ops.root.schema-check",
     "ops.root.smoke",
+    "ops.root.suite-inventory",
     "ops.root.suites-check",
     "ops.root.surface",
     "ops.root.tool-versions-check",
@@ -388,6 +390,20 @@
       ],
       "domain": "gen",
       "id": "ops.gen.check"
+    },
+    {
+      "argv": [
+        "gen",
+        "index"
+      ],
+      "command": [
+        "atlasctl",
+        "ops",
+        "gen",
+        "index"
+      ],
+      "domain": "gen",
+      "id": "ops.gen.index"
     },
     {
       "argv": [
@@ -1089,6 +1105,18 @@
     },
     {
       "argv": [
+        "suite-inventory"
+      ],
+      "command": [
+        "atlasctl",
+        "ops",
+        "suite-inventory"
+      ],
+      "domain": "root",
+      "id": "ops.root.suite-inventory"
+    },
+    {
+      "argv": [
         "suites-check"
       ],
       "command": [
@@ -1303,6 +1331,7 @@
     "env.validate",
     "explain",
     "gen.check",
+    "gen.index",
     "gen.run",
     "help",
     "k8s-checks-layout",
@@ -1356,6 +1385,7 @@
     "stack.up",
     "stack.validate",
     "stack.versions-sync",
+    "suite-inventory",
     "suites-check",
     "surface",
     "tool-versions-check",
@@ -1367,5 +1397,5 @@
   "schema_version": 1,
   "status": "ok",
   "tool": "atlasctl",
-  "total": 89
+  "total": 91
 }

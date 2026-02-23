@@ -7,6 +7,7 @@ from pathlib import Path
 
 from . import ops_runtime_commands as impl
 from .actions_inventory import action_argv, inventory_payload
+from .index_generator import render_indexes, suite_inventory as ops_suite_inventory, write_indexes
 from atlasctl.core.process import shell_script_command
 
 def run_ops_command(ctx, ns: argparse.Namespace) -> int:
@@ -98,6 +99,15 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         if getattr(ns, "kind", "") == "tasks":
             return impl._ops_list_tasks(ctx, ns.report)
         return 2
+    if ns.ops_cmd == "suite-inventory":
+        payload = ops_suite_inventory(ctx.repo_root)
+        if getattr(ns, "report", "text") == "json":
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            for row in payload.get("items", []):
+                if isinstance(row, dict):
+                    print(f"{row.get('domain')} {row.get('id')} speed={row.get('speed') or '-'} source={row.get('source')}")
+        return 0
     if ns.ops_cmd == "explain":
         return impl._ops_explain_task(ctx, ns.report, getattr(ns, "task", ""))
     if ns.ops_cmd == "actions":
@@ -253,6 +263,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             code, output = impl._generate_ops_surface_meta(ctx.repo_root)
             if code != 0:
                 return impl._emit_ops_status(ns.report, code, output)
+            write_indexes(ctx.repo_root)
             steps = [
                 [*impl.SELF_CLI, "docs", "generate", "--report", "text"],
                 [*impl.SELF_CLI, "contracts", "generate", "--generators", "chart-schema"],
@@ -277,6 +288,14 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                     )
                 )
             return 0
+        if sub == "index":
+            changed = write_indexes(ctx.repo_root)
+            if ns.report == "json":
+                print(json.dumps({"schema_version": 1, "tool": "atlasctl", "status": "pass", "action": "ops-gen-index", "files": changed}, sort_keys=True))
+            else:
+                for rel in changed:
+                    print(rel)
+            return 0
         if sub == "check":
             code = run_ops_command(
                 ctx,
@@ -284,6 +303,11 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             )
             if code != 0:
                 return code
+            before = {k: (ctx.repo_root / k).read_text(encoding="utf-8") if (ctx.repo_root / k).exists() else "" for k in render_indexes(ctx.repo_root).keys()}
+            expected = render_indexes(ctx.repo_root)
+            drift = [rel for rel, text in expected.items() if before.get(rel, "") != text]
+            if drift:
+                return impl._emit_ops_status(ns.report, 1, "ops INDEX drift: " + ", ".join(sorted(drift)))
             diff_cmd = [
                 "git",
                 "diff",
