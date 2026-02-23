@@ -7,6 +7,7 @@ Canonical configuration surface for repository behavior.
 - `configs/docs` owner: `docs-governance`
 - `configs/layout` owner: `platform`
 - `configs/make` owner: `platform`
+- `configs/meta` owner: `platform`
 - `configs/nextest` owner: `platform`
 - `configs/openapi` owner: `api-contracts`
 - `configs/ops` owner: `bijux-atlas-operations`
