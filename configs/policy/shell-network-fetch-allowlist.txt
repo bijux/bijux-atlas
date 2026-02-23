@@ -1,0 +1,3 @@
+# Allowlist of vendored shell probes that may call curl/wget for external version probes.
+# Keep this list extremely small and time-bound.
+
