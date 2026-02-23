@@ -16,7 +16,6 @@ def _repo_root() -> Path:
 
 
 def main() -> int:
-    del _repo_root  # interface parity; root not otherwise needed here
     base_url = (
         __import__("os").environ.get("ATLAS_BASE_URL", "http://127.0.0.1:18080").rstrip("/")
     )

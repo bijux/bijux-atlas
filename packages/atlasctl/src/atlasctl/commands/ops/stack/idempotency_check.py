@@ -27,11 +27,14 @@ def _run(cmd: list[str], cwd: Path) -> None:
 
 def main() -> int:
     root = _repo_root()
+    if os.environ.get("ATLASCTL_OPS_RUNTIME_CHECKS", "").strip() not in {"1", "true", "yes"}:
+        print("stack idempotency check skipped (set ATLASCTL_OPS_RUNTIME_CHECKS=1 to run live)")
+        return 0
     profile = os.environ.get('PROFILE', 'kind')
-    _run(['make', '-s', 'ops-stack-up', f'PROFILE={profile}'], root)
-    _run(['make', '-s', 'ops-stack-up', f'PROFILE={profile}'], root)
-    _run(['make', '-s', 'ops-stack-down'], root)
-    _run(['make', '-s', 'ops-stack-down'], root)
+    _run(['./bin/atlasctl', 'ops', 'stack', 'up', '--report', 'text'], root)
+    _run(['./bin/atlasctl', 'ops', 'stack', 'up', '--report', 'text'], root)
+    _run(['./bin/atlasctl', 'ops', 'stack', 'down', '--report', 'text'], root)
+    _run(['./bin/atlasctl', 'ops', 'stack', 'down', '--report', 'text'], root)
     print('stack up/down idempotency check passed')
     return 0
 

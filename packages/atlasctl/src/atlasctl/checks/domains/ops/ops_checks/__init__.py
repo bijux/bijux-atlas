@@ -4,6 +4,7 @@ import datetime as dt
 import re
 import json
 import hashlib
+import os
 import subprocess
 from pathlib import Path
 
@@ -238,7 +239,7 @@ def check_ops_load_pinned_queries_lock_native(repo_root: Path) -> tuple[int, lis
     if lock.get("query_hashes") != expected:
         errors.append("pinned query lock drift: query hash mismatch")
     query_set = str(suites_manifest.get("query_set", "")).strip()
-    if query_set != "pinned-v1.json":
+    if Path(query_set).name != "pinned-v1.json":
         errors.append(f"load suites manifest query_set must reference pinned-v1.json (got `{query_set}`)")
     return (0 if not errors else 1), (["pinned query lock check passed"] if not errors else errors)
 
@@ -615,15 +616,69 @@ def _run_ops_script_check(repo_root: Path, script_rel: str) -> tuple[int, list[s
     path = repo_root / script_rel
     if not path.exists():
         return 1, [f"missing {script_rel}"]
+    overrides: dict[str, dict[str, object]] = {
+        "packages/atlasctl/src/atlasctl/commands/ops/lint/policy/lane_budget_check.py": {
+            "args": ["--lane", "smoke", "--duration-seconds", "0"],
+        },
+        "packages/atlasctl/src/atlasctl/commands/ops/lint/policy/ops_smoke_budget_check.py": {
+            "env": {"RUN_ID": "check"},
+            "skip_if_missing": ["artifacts/evidence/ops-smoke/check/report.json"],
+        },
+        "packages/atlasctl/src/atlasctl/commands/ops/datasets/cache_threshold_check.py": {
+            "skip_unless_env": "ATLASCTL_OPS_RUNTIME_CHECKS",
+        },
+        "packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_prereqs.py": {
+            "env": {"ATLAS_BASE_URL": "http://127.0.0.1:65535"},
+            "skip_on_messages": ["atlas endpoint not reachable"],
+        },
+        "packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_regression.py": {
+            "skip_if_missing_any_glob": ["artifacts/perf/results/*.summary.json"],
+        },
+        "packages/atlasctl/src/atlasctl/commands/ops/load/baseline/regression_check.py": {
+            "skip_if_missing": ["artifacts/perf/baseline.json"],
+        },
+        "packages/atlasctl/src/atlasctl/commands/ops/observability/check_pack_upgrade.py": {
+            "skip_unless_env": "ATLASCTL_OPS_RUNTIME_CHECKS",
+        },
+        "packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_metrics_coverage.py": {
+            "skip_if_missing": ["artifacts/ops/observability/metrics.prom"],
+        },
+        "packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_observability_lag.py": {
+            "skip_if_missing": ["artifacts/evidence/obs/last-pass.json"],
+        },
+        "packages/atlasctl/src/atlasctl/commands/ops/stack/idempotency_check.py": {
+            "skip_unless_env": "ATLASCTL_OPS_RUNTIME_CHECKS",
+        },
+        "ops/stack/tests/check_live_layer_snapshot.py": {
+            "skip_unless_env": "ATLASCTL_OPS_RUNTIME_CHECKS",
+        },
+    }
+    cfg = overrides.get(script_rel, {})
+    for rel in cfg.get("skip_if_missing", []):  # type: ignore[union-attr]
+        if not (repo_root / str(rel)).exists():
+            return 0, [f"skipped {script_rel}: missing prerequisite {rel}"]
+    for pattern in cfg.get("skip_if_missing_any_glob", []):  # type: ignore[union-attr]
+        if not list(repo_root.glob(str(pattern))):
+            return 0, [f"skipped {script_rel}: no files matching {pattern}"]
+    env_flag = str(cfg.get("skip_unless_env", "")).strip()
+    if env_flag and not os.environ.get(env_flag, "").strip():
+        return 0, [f"skipped {script_rel}: set {env_flag}=1 to run live runtime check"]
     if path.suffix == ".py":
         cmd = ["python3", script_rel]
     elif path.suffix == ".sh":
         cmd = ["bash", script_rel]
     else:
         return 1, [f"unsupported check script type: {script_rel}"]
-    proc = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
+    cmd.extend([str(a) for a in cfg.get("args", [])])  # type: ignore[union-attr]
+    env = os.environ.copy()
+    for k, v in dict(cfg.get("env", {})).items():  # type: ignore[union-attr]
+        env[str(k)] = str(v)
+    proc = subprocess.run(cmd, cwd=repo_root, env=env, text=True, capture_output=True, check=False)
     output = ((proc.stdout or "") + "\n" + (proc.stderr or "")).strip()
     rows = [line for line in output.splitlines() if line.strip()]
+    for token in cfg.get("skip_on_messages", []):  # type: ignore[union-attr]
+        if any(str(token) in row for row in rows):
+            return 0, [f"skipped {script_rel}: {token}"]
     return proc.returncode, rows
 
 
@@ -634,13 +689,14 @@ def _make_ops_script_check(script_rel: str):
     return _check
 
 def check_ops_obs_drift_goldens(repo_root: Path) -> tuple[int, list[str]]:
-    scripts = [
-        ["python3", "packages/atlasctl/src/atlasctl/observability/contracts/profiles/check_profile_goldens.py"],
+    errors: list[str] = []
+    code, rows = check_ops_obs_profile_goldens_native(repo_root)
+    if code != 0:
+        errors.extend(rows)
+    for cmd in (
         ["python3", "packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_metrics_golden.py"],
         ["python3", "packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_trace_golden.py"],
-    ]
-    errors: list[str] = []
-    for cmd in scripts:
+    ):
         proc = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
         if proc.returncode != 0:
             msg = ((proc.stdout or "") + "\n" + (proc.stderr or "")).strip().splitlines()

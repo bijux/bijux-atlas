@@ -19,41 +19,65 @@
   "spans": [
     {
       "name": "admission_control",
+      "parent_span": "request_root",
+      "taxonomy": "admission",
       "required_attributes": [
         "route"
-      ]
+      ],
+      "required_events": [],
+      "error_tagging_policy": "status_or_exception"
     },
     {
       "name": "cache_lookup",
+      "parent_span": "request_root",
+      "taxonomy": "cache",
       "required_attributes": [
         "dataset"
-      ]
+      ],
+      "required_events": [],
+      "error_tagging_policy": "status_or_exception"
     },
     {
       "name": "dataset_resolve",
+      "parent_span": "request_root",
+      "taxonomy": "resolve_dataset",
       "required_attributes": [
         "route"
-      ]
+      ],
+      "required_events": [],
+      "error_tagging_policy": "status_or_exception"
     },
     {
       "name": "serialize_response",
+      "parent_span": "request_root",
+      "taxonomy": "encode",
       "required_attributes": [
         "route",
         "status"
-      ]
+      ],
+      "required_events": [],
+      "error_tagging_policy": "status_or_exception"
     },
     {
       "name": "sqlite_query",
+      "parent_span": "request_root",
+      "taxonomy": "sqlite",
       "required_attributes": [
         "class"
-      ]
+      ],
+      "required_events": [],
+      "error_tagging_policy": "status_or_exception"
     },
     {
       "name": "store_fetch",
+      "parent_span": "request_root",
+      "taxonomy": "store",
       "required_attributes": [
         "backend",
         "dataset"
-      ]
+      ],
+      "required_events": [],
+      "error_tagging_policy": "status_or_exception"
     }
   ],
   "taxonomy": [
