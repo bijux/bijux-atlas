@@ -4,6 +4,7 @@ from __future__ import annotations
 import os
 import subprocess
 import sys
+import argparse
 from pathlib import Path
 
 
@@ -17,7 +18,18 @@ def _repo_root() -> Path:
 
 def main() -> int:
     root = _repo_root()
-    profile = sys.argv[1] if len(sys.argv) > 1 else os.environ.get("ATLAS_PERF_BASELINE_PROFILE", "local")
+    ap = argparse.ArgumentParser()
+    ap.add_argument("profile", nargs="?", default=os.environ.get("ATLAS_PERF_BASELINE_PROFILE", "local"))
+    ap.add_argument("--i-know-what-im-doing", action="store_true", dest="ack")
+    ap.add_argument("--justification", default="")
+    args = ap.parse_args()
+    if not args.ack:
+        print("refusing baseline update without --i-know-what-im-doing", file=sys.stderr)
+        return 2
+    if not str(args.justification).strip():
+        print("refusing baseline update without --justification", file=sys.stderr)
+        return 2
+    profile = args.profile
     results_dir = os.environ.get("ATLAS_PERF_RESULTS_DIR", "artifacts/perf/results")
     cmd = [
         str(root / "bin/atlasctl"),
@@ -33,6 +45,8 @@ def main() -> int:
         str(profile or "kind"),
         "--replicas",
         os.environ.get("ATLAS_PERF_REPLICAS", "1"),
+        "--justification",
+        str(args.justification).strip(),
     ]
     return subprocess.run(cmd, check=False, cwd=str(root)).returncode
 
