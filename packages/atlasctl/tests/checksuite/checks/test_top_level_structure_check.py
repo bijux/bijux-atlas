@@ -7,7 +7,7 @@ from atlasctl.checks.repo.enforcement.structure.check_top_level_structure import
 
 def _mk_repo(tmp_path: Path) -> Path:
     root = tmp_path / "packages/atlasctl/src/atlasctl"
-    for name in ("cli", "commands", "checks", "core", "contracts", "registry", "suite", "reporting"):
+    for name in ("app", "capability", "cli", "checks", "commands", "contracts", "engine", "registry", "runtime"):
         (root / name).mkdir(parents=True, exist_ok=True)
     return tmp_path
 
@@ -30,8 +30,8 @@ def test_top_level_structure_fails_depth_budget(tmp_path: Path) -> None:
 
 def test_top_level_structure_fails_python_file_budget(tmp_path: Path) -> None:
     repo = _mk_repo(tmp_path)
-    target = repo / "packages/atlasctl/src/atlasctl/core"
-    for idx in range(31):
+    target = repo / "packages/atlasctl/src/atlasctl/runtime"
+    for idx in range(41):
         (target / f"mod_{idx}.py").write_text("x=1\n", encoding="utf-8")
     code, errors = check_top_level_structure(repo)
     assert code == 1
