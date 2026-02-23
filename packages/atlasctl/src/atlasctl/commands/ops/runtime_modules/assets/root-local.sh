@@ -23,8 +23,8 @@ elif [ "${1:-}" = "--summary" ]; then
   if [ -z "$summary_run_id" ] && [ -f "artifacts/evidence/root-local/latest-run-id.txt" ]; then
     summary_run_id="$(cat artifacts/evidence/root-local/latest-run-id.txt)"
   fi
-  if [ -z "$summary_run_id" ] && [ -f "artifacts/evidence/latest-run-id.txt" ]; then
-    summary_run_id="$(cat artifacts/evidence/latest-run-id.txt)"
+  if [ -z "$summary_run_id" ] && [ -f "artifacts/runs/latest-run-id.txt" ]; then
+    summary_run_id="$(cat artifacts/runs/latest-run-id.txt)"
   fi
   [ -n "$summary_run_id" ] || { echo "usage: atlasctl ops root-local --summary <run_id>" >&2; exit 2; }
 fi

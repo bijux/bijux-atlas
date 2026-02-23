@@ -24,7 +24,7 @@ def main() -> int:
         print("ops INDEX generated drift detected:", file=sys.stderr)
         for rel in drift:
             print(f"- {rel}", file=sys.stderr)
-        print("run: ./bin/atlasctl ops gen index", file=sys.stderr)
+        print("run: ./bin/atlasctl ops gen index --i-know-what-im-doing", file=sys.stderr)
         return 1
     print("ops INDEX generated check passed")
     return 0

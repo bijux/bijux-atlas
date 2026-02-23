@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[8]
-TARGET = "artifacts/evidence/latest-run-id.txt"
+TARGET = "artifacts/runs/latest-run-id.txt"
 SEARCH = ROOT / "packages" / "atlasctl" / "src" / "atlasctl" / "commands" / "ops"
 WRITE_RE = re.compile(r"(write_text\s*\(|printf\s+.*>\s*)[^\n]*artifacts/evidence/latest-run-id\.txt")
 

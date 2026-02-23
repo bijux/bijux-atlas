@@ -573,7 +573,7 @@ def _ops_doctor_native(ctx: RunContext, report_format: str, *, capabilities_json
         return _emit_ops_status(report_format, prereqs.code, "\n".join(outputs).strip())
 
     outputs.append("evidence root: artifacts/evidence")
-    outputs.append("evidence run id pointer: artifacts/evidence/latest-run-id.txt")
+    outputs.append("evidence run id pointer: artifacts/runs/latest-run-id.txt")
     env_summary = environment_summary(ctx, ["docker", "kind", "kubectl", "helm", "k6", "python3"])
     outputs.append("tool presence summary:")
     outputs.append(json.dumps({

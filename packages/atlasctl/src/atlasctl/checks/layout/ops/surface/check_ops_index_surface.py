@@ -6,7 +6,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[6]
-index_text = (ROOT / "ops" / "INDEX.md").read_text(encoding="utf-8")
+human_index = (ROOT / "ops" / "INDEX.md").read_text(encoding="utf-8")
+generated_index_path = ROOT / "ops" / "_generated" / "INDEX.md"
+generated_index = generated_index_path.read_text(encoding="utf-8") if generated_index_path.exists() else ""
+index_text = human_index + "\n" + generated_index
 public_surface = json.loads((ROOT / "configs" / "ops" / "public-surface.json").read_text(encoding="utf-8"))
 
 missing: list[str] = []
@@ -24,7 +27,7 @@ for t in required_targets:
 if missing:
     print("ops index surface contract failed:", file=sys.stderr)
     for t in missing:
-        print(f"- missing in ops/INDEX.md: {t}", file=sys.stderr)
+        print(f"- missing in ops/INDEX.md or ops/_generated/INDEX.md: {t}", file=sys.stderr)
     raise SystemExit(1)
 
 print("ops index surface contract passed")
