@@ -24,6 +24,7 @@ Does not replace per-component manifests.
 - Store bootstrap: `ops/stack/minio/bootstrap.sh`
 - Stack components: `ops/stack/{prometheus,otel,redis,toxiproxy}`
 - Stack versions are pinned in `ops/inventory/toolchain.yaml`.
+- Service surfaces/ports (inventory-backed): atlas `8080`, prometheus `9090`, grafana `3000`, minio `9000/9001`, otel `4317/4318`, redis `6379`.
 - Stack dependencies are documented in `ops/stack/dependencies.md`.
 - Canonical values profiles: `ops/k8s/values/local.yaml`, `ops/k8s/values/offline.yaml`, `ops/k8s/values/perf.yaml`
 - Bring up: `ops-up`
