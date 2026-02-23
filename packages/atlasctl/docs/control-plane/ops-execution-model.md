@@ -45,3 +45,22 @@ Ops lanes emit structured reports with:
 - stable step/check rows
 - deterministic ordering
 - schema validation (`atlasctl.ops-report.v1`)
+
+### Summary Report Ownership
+
+- `atlasctl.reporting.*` is the canonical home for summary/unified report generation.
+- `commands/ops/**` emits area/lane detail payloads and evidence, not global summary aggregation.
+
+### Evidence Layout
+
+Canonical ops evidence layout:
+
+- `artifacts/evidence/<area>/<run_id>/...`
+
+Use atlasctl-owned helpers to materialize these paths.
+
+### Policy
+
+- Ops must not write outside approved evidence/generated roots.
+- Ops must not call `subprocess` directly unless temporarily allowlisted; prefer `atlasctl.core.process`.
+- Ops external tool invocations must be declared in `configs/ops/external-tools-allowlist.json`.
