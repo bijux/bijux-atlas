@@ -31,6 +31,7 @@ def _ctx(tmp_path: Path) -> RunContext:
 
 def test_network_policy_blocks_disallowed_network_invocation(tmp_path: Path) -> None:
     ctx = _ctx(tmp_path)
+    # determinism-allow: env toggle is restored in finally block.
     old = os.environ.get('ATLASCTL_OPS_NETWORK_FORBID')
     os.environ['ATLASCTL_OPS_NETWORK_FORBID'] = '1'
     try:
@@ -41,11 +42,13 @@ def test_network_policy_blocks_disallowed_network_invocation(tmp_path: Path) -> 
         if old is None:
             os.environ.pop('ATLASCTL_OPS_NETWORK_FORBID', None)
         else:
+            # determinism-allow: restoring environment mutation from this test.
             os.environ['ATLASCTL_OPS_NETWORK_FORBID'] = old
 
 
 def test_network_policy_allows_declared_local_tool_invocation(tmp_path: Path) -> None:
     ctx = _ctx(tmp_path)
+    # determinism-allow: env toggle is restored in finally block.
     old = os.environ.get('ATLASCTL_OPS_NETWORK_FORBID')
     os.environ['ATLASCTL_OPS_NETWORK_FORBID'] = '1'
     try:
@@ -55,4 +58,5 @@ def test_network_policy_allows_declared_local_tool_invocation(tmp_path: Path) ->
         if old is None:
             os.environ.pop('ATLASCTL_OPS_NETWORK_FORBID', None)
         else:
+            # determinism-allow: restoring environment mutation from this test.
             os.environ['ATLASCTL_OPS_NETWORK_FORBID'] = old

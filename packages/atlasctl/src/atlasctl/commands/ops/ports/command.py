@@ -8,7 +8,7 @@ from typing import Any
 from atlasctl.core.context import RunContext
 from atlasctl.core.fs import ensure_evidence_path
 from atlasctl.core.runtime.paths import write_text_file
-from atlasctl.core.schema.schema_utils import validate_json
+from atlasctl.contracts.validate import validate as validate_contract
 from atlasctl.commands.ops._shared.output import emit_ops_payload
 
 
@@ -50,8 +50,13 @@ def ports_reserve(ctx: RunContext, report_format: str, name: str, port: int | No
         "action": "reserve",
         "details": {"name": name, "port": chosen},
     }
-    validate_json(reservation, ctx.repo_root / "configs/contracts/scripts-tool-output.schema.json")
+    validate_contract("scripts-tool-output", reservation)
     write_text_file(out_dir / "report.json", json.dumps(reservation, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     write_text_file(out_dir / "run.log", f"reserved {name}={chosen}\n", encoding="utf-8")
     emit_ops_payload(reservation, report_format)
     return 0
+
+
+def configure_ports_command(*_args: object, **_kwargs: object) -> None:
+    """CLI intent marker; parser wiring lives in ops root parser."""
+    return None

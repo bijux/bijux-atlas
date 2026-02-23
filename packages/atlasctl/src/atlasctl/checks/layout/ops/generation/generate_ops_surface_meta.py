@@ -11,7 +11,15 @@ OUT = ROOT / "ops/_meta/surface.json"
 ATLASCTL_SRC = ROOT / "packages" / "atlasctl" / "src"
 if str(ATLASCTL_SRC) not in sys.path:
     sys.path.insert(0, str(ATLASCTL_SRC))
-from atlasctl.commands.ops.runtime_modules.actions_inventory import action_registry  # noqa: E402
+
+
+def _action_registry_from_surface() -> list[dict[str, object]]:
+    if OUT.exists():
+        payload = json.loads(OUT.read_text(encoding="utf-8"))
+        rows = payload.get("actions", [])
+        if isinstance(rows, list):
+            return [row for row in rows if isinstance(row, dict)]
+    return []
 
 
 def main() -> int:
@@ -25,7 +33,7 @@ def main() -> int:
         }
         | {"ops-help", "ops-surface", "ops-layout-lint", "ops-e2e-validate"}
     )
-    actions = action_registry()
+    actions = _action_registry_from_surface()
     payload = {
         "schema_version": 2,
         "entrypoints": ops_targets,

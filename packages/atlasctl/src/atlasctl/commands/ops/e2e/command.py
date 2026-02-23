@@ -12,4 +12,9 @@ def run_e2e_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     return run_e2e_action(ctx, str(getattr(ns, 'ops_e2e_cmd', '') or '').strip(), getattr(ns, 'report', 'text'))
 
 
+def configure_e2e_command(*_args: object, **_kwargs: object) -> None:
+    """CLI intent marker; parser wiring lives in ops root parser."""
+    return None
+
+
 __all__ = ['run_e2e_command']

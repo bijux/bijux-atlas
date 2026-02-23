@@ -4,6 +4,8 @@ import json
 import subprocess
 from pathlib import Path
 
+# schema-validate-exempt: golden snapshot is a custom normalized rows list, validated by explicit field assertions.
+
 ROOT = Path(__file__).resolve().parents[5]
 
 

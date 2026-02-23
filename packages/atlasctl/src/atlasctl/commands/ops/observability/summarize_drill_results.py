@@ -2,7 +2,7 @@
 # owner: bijux-atlas-operations
 # purpose: aggregate drill result artifacts into a single conformance report.
 # stability: internal
-# called-by: ops/obs/tests/test_drills.sh
+# called-by: packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_drills.py
 from __future__ import annotations
 import json
 from pathlib import Path

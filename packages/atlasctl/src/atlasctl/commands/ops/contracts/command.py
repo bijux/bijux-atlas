@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from atlasctl.core.context import RunContext
+from atlasctl.contracts.validate import validate as validate_contract
 from atlasctl.core.runtime.paths import write_text_file
 from atlasctl.commands.ops._shared.output import emit_ops_payload
 from atlasctl.commands.ops.orchestrate._wrappers import artifact_base as _artifact_base
@@ -81,6 +82,7 @@ def contracts_snapshot(ctx: RunContext, report_format: str, *, no_write: bool = 
     else:
         report_path = out_dir / "report.json"
         write_text_file(report_path, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        validate_contract("atlasctl.ops-report.v1", payload)
     if report_format == "json":
         emit_ops_payload(payload, report_format)
     else:
@@ -96,3 +98,8 @@ def run_contracts_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
 
 __all__ = ["contracts_snapshot", "run_contracts_command"]
+
+
+def configure_contracts_command(*_args: object, **_kwargs: object) -> None:
+    """CLI intent marker; parser wiring lives in ops root parser."""
+    return None

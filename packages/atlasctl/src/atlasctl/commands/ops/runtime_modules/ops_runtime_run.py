@@ -601,7 +601,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                 ["python3", "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/rollout/test_cluster_sanity.py"],
                 ["python3", "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/rollout/test_kind_image_resolution.py"],
                 ["python3", "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/rollout/test_kind_version_drift.py"],
-                ["bash", "ops/vendor/layout-checks/check_kind_cluster_contract_drift.sh"],
+                ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_kind_cluster_contract_drift.py"],
             ]
             for cmd in steps:
                 code, output = impl._run_check(cmd, ctx.repo_root)

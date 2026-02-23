@@ -41,6 +41,7 @@ def test_product_manifest_schema_validation(tmp_path: Path, monkeypatch) -> None
 
 
 def test_product_manifest_determinism_golden(tmp_path: Path, monkeypatch) -> None:
+    # schema-validate-exempt: this golden is a synthetic manifest fixture; schema validation is covered above.
     repo = _prepare_fake_repo(tmp_path)
     monkeypatch.setenv("DOCKER_IMAGE", "bijux-atlas:test")
     monkeypatch.setenv("IMAGE_VERSION", "0.0.1-test")

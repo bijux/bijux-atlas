@@ -10,7 +10,7 @@ PKG_SRC = ROOT / "packages/atlasctl/src"
 if str(PKG_SRC) not in sys.path:
     sys.path.insert(0, str(PKG_SRC))
 
-from atlasctl.ops.contracts import ops_schema_contracts
+CONTRACTS = ROOT / "configs/ops/schema-contracts.json"
 
 
 def _expected_id(path: str) -> str:
@@ -27,26 +27,38 @@ def _expected_id(path: str) -> str:
 
 def main() -> int:
     errs: list[str] = []
-    contracts = ops_schema_contracts(ROOT)
+    payload = json.loads(CONTRACTS.read_text(encoding="utf-8"))
+    rows = payload.get("contracts", [])
+    if not isinstance(rows, list):
+        print("invalid schema-contracts manifest: `contracts` must be a list")
+        return 1
     seen_ids: set[str] = set()
     seen_paths: set[str] = set()
-    for row in contracts:
-        if row.id in seen_ids:
-            errs.append(f"duplicate schema contract id: {row.id}")
-        seen_ids.add(row.id)
-        if row.path in seen_paths:
-            errs.append(f"duplicate schema contract path: {row.path}")
-        seen_paths.add(row.path)
-        path = ROOT / row.path
+    for row in rows:
+        if not isinstance(row, dict):
+            errs.append("schema-contracts row must be object")
+            continue
+        cid = str(row.get("id", "")).strip()
+        cpath = str(row.get("path", "")).strip()
+        if not cid or not cpath:
+            errs.append("schema-contracts row must include non-empty id/path")
+            continue
+        if cid in seen_ids:
+            errs.append(f"duplicate schema contract id: {cid}")
+        seen_ids.add(cid)
+        if cpath in seen_paths:
+            errs.append(f"duplicate schema contract path: {cpath}")
+        seen_paths.add(cpath)
+        path = ROOT / cpath
         if not path.exists():
-            errs.append(f"missing schema file: {row.path}")
-        exp = _expected_id(row.path)
-        if row.id != exp:
-            errs.append(f"{row.path}: contract id `{row.id}` must match filename-derived id `{exp}`")
+            errs.append(f"missing schema file: {cpath}")
+        exp = _expected_id(cpath)
+        if cid != exp:
+            errs.append(f"{cpath}: contract id `{cid}` must match filename-derived id `{exp}`")
         try:
             json.loads(path.read_text(encoding="utf-8"))
         except Exception as exc:
-            errs.append(f"{row.path}: invalid json ({exc})")
+            errs.append(f"{cpath}: invalid json ({exc})")
     actual = {
         p.relative_to(ROOT).as_posix()
         for p in (ROOT / "ops/_schemas").rglob("*.json")

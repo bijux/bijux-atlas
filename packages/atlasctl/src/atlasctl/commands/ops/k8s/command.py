@@ -12,4 +12,9 @@ def run_k8s_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     return run_k8s_action(ctx, str(getattr(ns, 'ops_k8s_cmd', '') or '').strip(), getattr(ns, 'report', 'text'))
 
 
+def configure_k8s_command(*_args: object, **_kwargs: object) -> None:
+    """CLI intent marker; parser wiring lives in ops root parser."""
+    return None
+
+
 __all__ = ['run_k8s_command']

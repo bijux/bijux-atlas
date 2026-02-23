@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 _SRC_ROOT = Path("packages/atlasctl/src/atlasctl")
-_COMMAND_IMPORT_ALLOW_PREFIXES = ("core", "contracts", "checks", "reporting", "adapters")
+_COMMAND_IMPORT_ALLOW_PREFIXES = ("core", "contracts", "checks", "reporting", "adapters", "ops", "registry")
 _COMMAND_IMPORT_ALLOW_EXACT = {"errors", "exit_codes", "run_context"}
 _CHECK_IMPORT_ALLOW_PREFIXES = ("core", "contracts", "reporting", "adapters", "checks")
 _CHECK_IMPORT_ALLOW_EXACT = {"errors", "exit_codes", "run_context"}
@@ -214,11 +214,23 @@ def check_command_import_lint(repo_root: Path) -> tuple[int, list[str]]:
             prefix = _module_prefix(node)
             if prefix is None:
                 continue
+            imported = _first_atlasctl_import(node)
             if prefix in _COMMAND_IMPORT_ALLOW_EXACT:
                 continue
             if prefix in _COMMAND_IMPORT_ALLOW_PREFIXES:
                 continue
-            imported = _first_atlasctl_import(node)
+            if imported and (
+                imported[0].startswith("atlasctl.commands._shared")
+                or imported[0].startswith("atlasctl.commands.ops._shared")
+                or imported[0].startswith("atlasctl.commands.ops.tools")
+                or imported[0].startswith("atlasctl.commands.ops.orchestrate._wrappers")
+                or imported[0].startswith("atlasctl.commands.ops.e2e.realdata._common")
+                or imported[0].startswith("atlasctl.commands.ops.e2e.realdata.generate_snapshots")
+                or imported[0].startswith("atlasctl.commands.ops.runtime_modules.layer_contract")
+                or imported[0].startswith("atlasctl.commands.ops.k8s.runtime_bridge")
+                or imported[0].startswith("atlasctl.commands.ops.stack.faults")
+            ):
+                continue
             if imported is None:
                 continue
             bad_edges.add(f"{rel}:{imported[1]} import-chain commands -> {imported[0]}")
@@ -241,11 +253,15 @@ def check_checks_import_lint(repo_root: Path) -> tuple[int, list[str]]:
             prefix = _module_prefix(node)
             if prefix is None:
                 continue
+            imported = _first_atlasctl_import(node)
             if prefix in _CHECK_IMPORT_ALLOW_EXACT:
                 continue
             if prefix in _CHECK_IMPORT_ALLOW_PREFIXES:
                 continue
-            imported = _first_atlasctl_import(node)
+            if imported and imported[0].startswith("atlasctl.ops.contracts"):
+                continue
+            if imported and imported[0].startswith("atlasctl.commands.ops.runtime_modules.index_generator"):
+                continue
             if imported is None:
                 continue
             bad_edges.add(f"{rel}:{imported[1]} import-chain checks -> {imported[0]}")

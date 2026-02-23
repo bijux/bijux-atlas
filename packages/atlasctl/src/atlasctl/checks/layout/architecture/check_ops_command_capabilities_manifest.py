@@ -10,9 +10,20 @@ PKG_SRC = ROOT / "packages/atlasctl/src"
 if str(PKG_SRC) not in sys.path:
     sys.path.insert(0, str(PKG_SRC))
 
-from atlasctl.commands.ops.runtime_modules.actions_inventory import list_ops_actions
-
 MANIFEST = ROOT / "configs/ops/command-capabilities.json"
+SURFACE = ROOT / "ops/_meta/surface.json"
+
+
+def _list_ops_actions() -> list[str]:
+    payload = json.loads(SURFACE.read_text(encoding="utf-8"))
+    rows = payload.get("actions", [])
+    if not isinstance(rows, list):
+        return []
+    return sorted(
+        str(row.get("id", "")).strip()
+        for row in rows
+        if isinstance(row, dict) and str(row.get("id", "")).strip()
+    )
 
 
 def main() -> int:
@@ -37,7 +48,7 @@ def main() -> int:
                 errs.append(f"{action}: missing `{key}`")
         if row.get("network") and not row.get("allow_network_required"):
             errs.append(f"{action}: network=true requires allow_network_required=true")
-    inventory = list_ops_actions()
+    inventory = _list_ops_actions()
     missing = sorted(set(inventory) - set(by_action))
     extra = sorted(set(by_action) - set(inventory))
     for action in missing:

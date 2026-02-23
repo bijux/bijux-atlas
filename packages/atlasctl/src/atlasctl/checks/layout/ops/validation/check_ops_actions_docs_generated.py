@@ -8,12 +8,27 @@ SRC = ROOT / "packages" / "atlasctl" / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from atlasctl.commands.ops.runtime_modules.actions_inventory import render_ops_actions_doc
+import json
 
 
 def main() -> int:
     target = ROOT / "docs" / "_generated" / "ops-actions.md"
-    expected = render_ops_actions_doc(ROOT)
+    surface = json.loads((ROOT / "ops/_meta/surface.json").read_text(encoding="utf-8"))
+    actions = sorted(str(x) for x in surface.get("entrypoints", []) if isinstance(x, str))
+    lines = [
+        "# Ops Actions",
+        "",
+        "Generated from `atlasctl ops --list-actions --json`.",
+        "",
+        f"- total: {len(actions)}",
+        "",
+        "## Actions",
+        "",
+    ]
+    for action in actions:
+        lines.append(f"- `{action}`")
+    lines.append("")
+    expected = "\n".join(lines)
     actual = target.read_text(encoding="utf-8") if target.exists() else ""
     if actual != expected:
         print("ops actions generated docs drift: docs/_generated/ops-actions.md", file=sys.stderr)

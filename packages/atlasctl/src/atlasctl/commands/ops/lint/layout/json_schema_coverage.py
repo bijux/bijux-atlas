@@ -47,7 +47,7 @@ VALIDATOR_COVERED_PREFIXES = (
 VALIDATOR_COVERED_FILES = {
     "ops/_meta/contracts.json",  # checked by ops/_lint/no-orphan-contract.py
     "ops/_meta/surface.json",  # checked by scripts/areas/layout/check_ops_surface_drift.py
-    "ops/_meta/error-registry.json",  # consumed by ops/_lib/errors.sh and contract docs
+    "ops/_meta/error-registry.json",  # consumed by atlasctl ops error registry helpers and contract docs
     "ops/obs/contract/alerts-contract.json",  # checked by check_alerts_contract.py
     "ops/obs/contract/dashboard-panels-contract.json",  # checked by check_dashboards_contract.py
     "ops/obs/contract/logs-fields-contract.json",  # checked by check_logs_contract.py
