@@ -132,7 +132,7 @@ jobs:
       - name: Migration progress gate
         run: |
           ./bin/atlasctl internal migration-progress --json > artifacts/reports/atlasctl/migration-progress.ci.json
-          ./bin/atlasctl check run --id checks_repo_migration_progress_regression --json > artifacts/reports/atlasctl/migration-progress.gate.json
+          ./bin/atlasctl suite run checks-fast --report json > artifacts/reports/atlasctl/migration-progress.gate.json
       - name: ops/run migration gates
         run: |
           ./bin/atlasctl suite run ops-run-guardrails --report json > artifacts/reports/atlasctl/ops-run-guardrails.json
@@ -187,11 +187,10 @@ jobs:
       - name: Registry/docs/help/bypass/adjective gates
         run: |
           ./bin/atlasctl suite run control-plane-gates --report json > /tmp/control-plane-gates.json
-          ./bin/atlasctl --format json check run --id checks_checks_registry_integrity > /tmp/check-registry-integrity.json
       - name: Optional hard bypass gate
         if: env.ATLASCTL_BYPASS_HARD_FAIL == '1'
         run: |
-          ./bin/atlasctl --format json check run --id checks_policies_bypass_hard_gate > /tmp/check-bypass-hard-gate.json
+          ./bin/atlasctl suite run bypass-governance --report json > /tmp/check-bypass-hard-gate.json
 
   commands-inventory:
     runs-on: ubuntu-latest
