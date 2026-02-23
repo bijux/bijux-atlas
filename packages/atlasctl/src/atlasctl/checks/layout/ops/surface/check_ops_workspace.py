@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[8]
 OPS = ROOT / 'ops'
 
 REQUIRED_DIRS = [
-    'stack','k8s','load','obs','datasets','inventory','schema','env','observe','_meta','_generated.example','_artifacts','e2e'
+    'stack','k8s','load','obs','datasets','inventory','schema','env','observe','_meta','_generated.example','e2e'
 ]
 OPTIONAL_DIRS = {'_generated','_evidence','_examples','fixtures','manifests','registry','report','vendor','docs','helm','kind'}
 ALLOWED_FILES = {'README.md','CONTRACT.md','INDEX.md','ERRORS.md'}

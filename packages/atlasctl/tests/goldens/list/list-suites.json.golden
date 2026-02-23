@@ -33,6 +33,67 @@
       ]
     },
     {
+      "check_count": 6,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 6,
+      "kind": "first-class",
+      "markers": [
+        "check",
+        "policies"
+      ],
+      "name": "bypass-governance",
+      "tags": [
+        "bypass-governance",
+        "check",
+        "first-class",
+        "policies",
+        "public",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "check"
+      ],
+      "name": "checks-all",
+      "tags": [
+        "check",
+        "checks-all",
+        "first-class",
+        "public",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "check",
+        "fast"
+      ],
+      "name": "checks-fast",
+      "tags": [
+        "check",
+        "checks-fast",
+        "fast",
+        "first-class",
+        "public",
+        "suite"
+      ]
+    },
+    {
       "check_count": 0,
       "complete": true,
       "includes": [],
@@ -100,6 +161,27 @@
       "name": "configs",
       "tags": [
         "configs",
+        "first-class",
+        "public",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 8,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 8,
+      "kind": "first-class",
+      "markers": [
+        "check",
+        "ci"
+      ],
+      "name": "control-plane-gates",
+      "tags": [
+        "check",
+        "ci",
+        "control-plane-gates",
         "first-class",
         "public",
         "suite"
@@ -178,6 +260,46 @@
         "ops",
         "public",
         "slow",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "lint"
+      ],
+      "name": "lint-all",
+      "tags": [
+        "first-class",
+        "lint",
+        "lint-all",
+        "public",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "fast",
+        "lint"
+      ],
+      "name": "lint-fast",
+      "tags": [
+        "fast",
+        "first-class",
+        "lint",
+        "lint-fast",
+        "public",
         "suite"
       ]
     },
@@ -370,6 +492,27 @@
       ]
     },
     {
+      "check_count": 3,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 3,
+      "kind": "first-class",
+      "markers": [
+        "lint",
+        "ops"
+      ],
+      "name": "ops-run-guardrails",
+      "tags": [
+        "first-class",
+        "lint",
+        "ops",
+        "ops-run-guardrails",
+        "public",
+        "suite"
+      ]
+    },
+    {
       "check_count": 0,
       "complete": true,
       "includes": [],
@@ -482,6 +625,29 @@
         "public",
         "refgrade-audit",
         "slow",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 7,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 7,
+      "kind": "first-class",
+      "markers": [
+        "fast",
+        "hygiene",
+        "repo"
+      ],
+      "name": "repo-hygiene",
+      "tags": [
+        "fast",
+        "first-class",
+        "hygiene",
+        "public",
+        "repo",
+        "repo-hygiene",
         "suite"
       ]
     },

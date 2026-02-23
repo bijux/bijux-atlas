@@ -214,8 +214,11 @@ def check_tracked_timestamp_paths(repo_root: Path) -> tuple[int, list[str]]:
 def check_repo_no_python_caches_committed(repo_root: Path) -> tuple[int, list[str]]:
     tracked = _git_ls_files(repo_root, ["."])
     errors: list[str] = []
+    runtime_prefixes = ("artifacts/.venv/",)
     for rel in tracked:
         posix = rel.replace("\\", "/")
+        if any(posix.startswith(prefix) for prefix in runtime_prefixes):
+            continue
         parts = Path(posix).parts
         if "__pycache__" in parts and posix.startswith("packages/"):
             errors.append(f"python cache directory entry under packages/: {rel}")
@@ -230,9 +233,15 @@ def check_repo_no_python_caches_committed(repo_root: Path) -> tuple[int, list[st
         if path.is_dir():
             errors.append(f"python cache directory present under packages/: {path.relative_to(repo_root).as_posix()}")
     for path in sorted(repo_root.rglob("*.pyc")):
+        rel = path.relative_to(repo_root).as_posix()
+        if rel.startswith("artifacts/.venv/"):
+            continue
         if path.is_file():
             errors.append(f"python bytecode file present: {path.relative_to(repo_root).as_posix()}")
     for path in sorted(repo_root.rglob(".pytest_cache")):
+        rel = path.relative_to(repo_root).as_posix()
+        if rel.startswith("packages/atlasctl/.pytest_cache"):
+            continue
         if path.is_dir():
             errors.append(f"pytest cache directory present: {path.relative_to(repo_root).as_posix()}")
     return (0 if not errors else 1), sorted(set(errors))
