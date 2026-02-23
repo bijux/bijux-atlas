@@ -3,9 +3,16 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
+import re
 from typing import Callable, Mapping, Protocol, runtime_checkable
 
 from .effects import CheckEffect, normalize_effect
+
+
+_CHECK_ID_PATTERN = re.compile(r"^checks_[a-z0-9]+(?:_[a-z0-9]+)+$")
+_SEGMENT_PATTERN = re.compile(r"^[a-z][a-z0-9_]*$")
+_RESULT_CODE_PATTERN = re.compile(r"^[A-Z][A-Z0-9_]*$")
+_DOMAIN_VOCAB = frozenset({"checks", "configs", "contracts", "docker", "docs", "license", "make", "ops", "policies", "python", "repo"})
 
 
 @dataclass(frozen=True, order=True)
@@ -14,6 +21,24 @@ class CheckId:
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "value", str(self.value).strip())
+
+    @classmethod
+    def parse(cls, value: str, *, domain: str | None = None) -> "CheckId":
+        raw = str(value).strip()
+        if not _CHECK_ID_PATTERN.fullmatch(raw):
+            raise ValueError(f"invalid canonical check id `{raw}`: expected checks_<domain>_<name> snake_case")
+        if domain:
+            parsed_domain = raw.split("_", 2)[1]
+            if parsed_domain != str(domain).strip():
+                raise ValueError(f"invalid canonical check id `{raw}`: domain segment `{parsed_domain}` must match `{domain}`")
+        return cls(raw)
+
+    @classmethod
+    def coerce(cls, value: str, *, domain: str | None = None, allow_legacy: bool = True) -> "CheckId":
+        raw = str(value).strip()
+        if allow_legacy and raw and not raw.startswith("checks_"):
+            return cls(raw)
+        return cls.parse(raw, domain=domain)
 
     def __str__(self) -> str:
         return self.value
@@ -24,7 +49,10 @@ class DomainId:
     value: str
 
     def __post_init__(self) -> None:
-        object.__setattr__(self, "value", str(self.value).strip())
+        value = str(self.value).strip()
+        if value not in _DOMAIN_VOCAB:
+            raise ValueError(f"invalid domain `{value}`: must be one of {sorted(_DOMAIN_VOCAB)}")
+        object.__setattr__(self, "value", value)
 
     def __str__(self) -> str:
         return self.value
@@ -35,7 +63,10 @@ class OwnerId:
     value: str
 
     def __post_init__(self) -> None:
-        object.__setattr__(self, "value", str(self.value).strip())
+        value = str(self.value).strip()
+        if not _SEGMENT_PATTERN.fullmatch(value):
+            raise ValueError(f"invalid owner id `{value}`: expected lowercase snake_case")
+        object.__setattr__(self, "value", value)
 
     def __str__(self) -> str:
         return self.value
@@ -46,7 +77,10 @@ class Tag:
     value: str
 
     def __post_init__(self) -> None:
-        object.__setattr__(self, "value", str(self.value).strip())
+        value = str(self.value).strip()
+        if not value:
+            raise ValueError("tag cannot be empty")
+        object.__setattr__(self, "value", value)
 
     def __str__(self) -> str:
         return self.value
@@ -57,7 +91,10 @@ class ResultCode:
     value: str
 
     def __post_init__(self) -> None:
-        object.__setattr__(self, "value", str(self.value).strip())
+        value = str(self.value).strip()
+        if not _RESULT_CODE_PATTERN.fullmatch(value):
+            raise ValueError(f"invalid result_code `{value}`: expected UPPER_SNAKE_CASE")
+        object.__setattr__(self, "value", value)
 
     def __str__(self) -> str:
         return self.value
@@ -205,14 +242,14 @@ class CheckDef:
     result_code: ResultCode | str = "CHECK_GENERIC"
 
     def __post_init__(self) -> None:
-        cid = self.check_id if isinstance(self.check_id, CheckId) else CheckId(str(self.check_id))
         did = self.domain if isinstance(self.domain, DomainId) else DomainId(str(self.domain))
+        cid = self.check_id if isinstance(self.check_id, CheckId) else CheckId.coerce(str(self.check_id), domain=str(did))
         canonical = self.canonical_id
-        canonical_id = cid if canonical in (None, "") else (canonical if isinstance(canonical, CheckId) else CheckId(str(canonical)))
+        canonical_id = cid if canonical in (None, "") else (canonical if isinstance(canonical, CheckId) else CheckId.parse(str(canonical), domain=str(did)))
         object.__setattr__(self, "check_id", str(cid))
         object.__setattr__(self, "domain", str(did))
         object.__setattr__(self, "canonical_id", str(canonical_id))
-        object.__setattr__(self, "legacy_check_id", None if self.legacy_check_id in (None, "") else str(CheckId(str(self.legacy_check_id))))
+        object.__setattr__(self, "legacy_check_id", None if self.legacy_check_id in (None, "") else str(CheckId.coerce(str(self.legacy_check_id))))
         object.__setattr__(self, "description", str(self.description).strip())
         object.__setattr__(self, "budget_ms", int(self.budget_ms))
         object.__setattr__(self, "intent", str(self.intent).strip())
@@ -257,7 +294,7 @@ class CheckResult:
     errors: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
-        cid = self.id if isinstance(self.id, CheckId) else CheckId(str(self.id))
+        cid = self.id if isinstance(self.id, CheckId) else CheckId.coerce(str(self.id))
         did = self.domain if isinstance(self.domain, DomainId) else DomainId(str(self.domain))
         status = self.status if isinstance(self.status, CheckStatus) else CheckStatus(str(self.status).strip().lower())
         category = self.category if isinstance(self.category, CheckCategory) else CheckCategory(str(self.category).strip().lower())
