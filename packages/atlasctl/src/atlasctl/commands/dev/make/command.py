@@ -126,6 +126,39 @@ def _rewrite_makefiles(repo_root: Path, write: bool, limit: int) -> tuple[int, d
     return 0, payload
 
 
+def _build_targets_catalog() -> dict[str, object]:
+    entries = sorted(public_entries(), key=lambda row: str(row.get("name", "")))
+    ownership = load_ownership()
+    rows: list[dict[str, object]] = []
+    for entry in entries:
+        name = str(entry.get("name", "")).strip()
+        if not name:
+            continue
+        lanes = [str(item).strip() for item in entry.get("lanes", []) if str(item).strip()]
+        lane = lanes[0] if lanes else ""
+        owner_payload = ownership.get(name)
+        owner = str(owner_payload.get("owner", "<unowned>")) if isinstance(owner_payload, dict) else "<unowned>"
+        rows.append(
+            {
+                "name": name,
+                "description": str(entry.get("description", "")),
+                "lanes": lanes,
+                "lane": lane,
+                "area": str(entry.get("area", "")),
+                "owner": owner,
+            }
+        )
+    return {
+        "schema_version": 1,
+        "source": {
+            "ownership": "configs/make/ownership.json",
+            "ssot": "configs/make/public-targets.json",
+            "generator": "atlasctl make emit",
+        },
+        "targets": rows,
+    }
+
+
 def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     entries = public_entries()
     if ns.make_cmd == "help":
@@ -259,6 +292,32 @@ def run_make_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
         print(json.dumps({"status": "pass", "json": str(json_path), "md": str(md_path)}, sort_keys=True))
         return 0
+
+    if ns.make_cmd == "emit":
+        payload = _build_targets_catalog()
+        out_path = Path(ns.out)
+        if not out_path.is_absolute():
+            out_path = (ctx.repo_root / out_path).resolve()
+        rendered = json.dumps(payload, indent=2, sort_keys=True) + "\n"
+        previous = out_path.read_text(encoding="utf-8") if out_path.exists() else ""
+        changed = previous != rendered
+        if not ns.check:
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            write_text_file(out_path, rendered, encoding="utf-8")
+        result = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "pass" if (not ns.check or not changed) else "fail",
+            "command": "make emit",
+            "path": out_path.relative_to(ctx.repo_root).as_posix(),
+            "changed": changed,
+            "mode": "check" if ns.check else "write",
+        }
+        if ns.json or ctx.output_format == "json":
+            print(json.dumps(result, sort_keys=True))
+        else:
+            print(f"{result['path']}: {'drift detected' if changed and ns.check else 'ok'}")
+        return 0 if result["status"] == "pass" else 1
 
     if ns.make_cmd == "catalog":
         inv_ns = argparse.Namespace(make_cmd="inventory", out_dir=ns.out_dir, check=ns.check)
@@ -476,6 +535,10 @@ def configure_make_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
     inv = make_sub.add_parser("inventory", help="generate make target inventory artifacts")
     inv.add_argument("--out-dir", default="docs/_generated")
     inv.add_argument("--check", action="store_true", help="fail if generated outputs differ")
+    emit = make_sub.add_parser("emit", help="emit generated make target catalog from registry SSOT")
+    emit.add_argument("--out", default="makefiles/targets.json", help="output path for generated target catalog")
+    emit.add_argument("--check", action="store_true", help="check drift without writing file")
+    emit.add_argument("--json", action="store_true", help="emit JSON output")
     catalog = make_sub.add_parser("catalog", help="generate or validate make target catalog drift")
     catalog.add_argument("--out-dir", default="docs/_generated")
     catalog.add_argument("--check", action="store_true", help="fail if catalog outputs differ")
