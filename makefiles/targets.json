@@ -1,7 +1,6 @@
 {
   "schema_version": 1,
   "source": {
-    "generator": "atlasctl make emit",
     "ownership": "configs/make/ownership.json",
     "ssot": "configs/make/public-targets.json"
   },
@@ -122,7 +121,7 @@
         "ci"
       ],
       "name": "ops",
-      "owner": "ops"
+      "owner": "ops-platform"
     },
     {
       "area": "ops",
