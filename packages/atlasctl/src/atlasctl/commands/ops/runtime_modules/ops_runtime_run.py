@@ -877,7 +877,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         )
 
     if ns.ops_cmd == "naming-check":
-        return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/checks/domains/ops/ops_checks/check_ops_script_names.py"], ns.report)
+        return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/checks/domains/ops/contracts/check_ops_script_names.py"], ns.report)
 
     if ns.ops_cmd == "layer-drift-check":
         return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/checks/layout/domains/governance/check_layer_drift.py"], ns.report)

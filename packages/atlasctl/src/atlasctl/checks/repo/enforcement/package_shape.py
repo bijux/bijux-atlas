@@ -52,7 +52,7 @@ _ATLASCTL_PACKAGE_ROOT_ALLOWED = {
 _CHECK_DOMAIN_PATHS = {
     "repo_shape": Path("packages/atlasctl/src/atlasctl/checks/domains/dev/repo_shape"),
     "makefiles": Path("packages/atlasctl/src/atlasctl/checks/domains/policies/make"),
-    "ops": Path("packages/atlasctl/src/atlasctl/checks/domains/ops/ops_checks"),
+    "ops": Path("packages/atlasctl/src/atlasctl/checks/domains/ops/contracts"),
     "docs": Path("packages/atlasctl/src/atlasctl/checks/domains/docs"),
     "observability": Path("packages/atlasctl/src/atlasctl/checks/domains/ops/observability"),
     "artifacts": Path("packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts"),

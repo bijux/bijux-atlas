@@ -103,7 +103,7 @@ redis_suite = by_name.get("redis-optional")
 if redis_suite and not redis_suite.get("requires", {}).get("redis_experiment", False):
     errors.append("redis-optional: requires.redis_experiment must be true")
 
-from atlasctl.checks.domains.ops.ops_checks import check_ops_load_pinned_queries_lock_native
+from atlasctl.checks.domains.ops.contracts import check_ops_load_pinned_queries_lock_native
 
 lock_code, lock_errors = check_ops_load_pinned_queries_lock_native(ROOT)
 if lock_code != 0:
