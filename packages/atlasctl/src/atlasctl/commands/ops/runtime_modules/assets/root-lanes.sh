@@ -295,7 +295,7 @@ EOF
   mkdir -p "artifacts/evidence/make/root-local" "artifacts/evidence/root-local" "$(summary_dir_for "$run_id")"
   printf '%s\n' "$run_id" > "artifacts/evidence/root-local/latest-run-id.txt"
   printf '%s\n' "$run_id" > "artifacts/evidence/make/root-local/latest-run-id.txt"
-  printf '%s\n' "$run_id" > "artifacts/evidence/latest-run-id.txt"
+  printf '%s\n' "$run_id" > "artifacts/runs/latest-run-id.txt"
 
   local failed=0
   if [ "$PARALLEL" = "0" ]; then
@@ -338,8 +338,8 @@ case "$MODE" in
     if [ -z "$SUMMARY_RUN_ID" ] && [ -f "artifacts/evidence/root-local/latest-run-id.txt" ]; then
       SUMMARY_RUN_ID="$(cat artifacts/evidence/root-local/latest-run-id.txt)"
     fi
-    if [ -z "$SUMMARY_RUN_ID" ] && [ -f "artifacts/evidence/latest-run-id.txt" ]; then
-      SUMMARY_RUN_ID="$(cat artifacts/evidence/latest-run-id.txt)"
+    if [ -z "$SUMMARY_RUN_ID" ] && [ -f "artifacts/runs/latest-run-id.txt" ]; then
+      SUMMARY_RUN_ID="$(cat artifacts/runs/latest-run-id.txt)"
     fi
     [ -n "$SUMMARY_RUN_ID" ] || { echo "missing SUMMARY_RUN_ID" >&2; exit 2; }
     print_summary "$SUMMARY_RUN_ID"
@@ -348,8 +348,8 @@ case "$MODE" in
     if [ -z "$SUMMARY_RUN_ID" ] && [ -f "artifacts/evidence/root-local/latest-run-id.txt" ]; then
       SUMMARY_RUN_ID="$(cat artifacts/evidence/root-local/latest-run-id.txt)"
     fi
-    if [ -z "$SUMMARY_RUN_ID" ] && [ -f "artifacts/evidence/latest-run-id.txt" ]; then
-      SUMMARY_RUN_ID="$(cat artifacts/evidence/latest-run-id.txt)"
+    if [ -z "$SUMMARY_RUN_ID" ] && [ -f "artifacts/runs/latest-run-id.txt" ]; then
+      SUMMARY_RUN_ID="$(cat artifacts/runs/latest-run-id.txt)"
     fi
     [ -n "$SUMMARY_RUN_ID" ] || { echo "missing SUMMARY_RUN_ID" >&2; exit 2; }
     OPEN_SUMMARY=1

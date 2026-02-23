@@ -15,7 +15,7 @@ Separates ephemeral run outputs from committed source artifacts so git state and
 - Canonical runtime evidence root is `artifacts/evidence/`.
 - Make lane reports write to `artifacts/evidence/make/<lane>/<run_id>/report.json`.
 - Root-local pointer files are:
-  - `artifacts/evidence/latest-run-id.txt`
+  - `artifacts/runs/latest-run-id.txt`
   - `artifacts/evidence/root-local/latest-run-id.txt`
 - Committed generated artifacts remain under `ops/_generated_committed/`.
 

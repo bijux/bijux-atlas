@@ -19,7 +19,7 @@ def main() -> int:
     )
     allowed_suffixes = {
         "artifacts/evidence/.gitkeep",
-        "artifacts/evidence/latest-run-id.txt",
+        "artifacts/runs/latest-run-id.txt",
     }
     lines = []
     for raw in proc.stdout.splitlines():

@@ -59,7 +59,7 @@ def main() -> int:
                 f"{suite}: measured p95={measured[suite]:.2f}ms exceeds +{max_ratio*100:.0f}% baseline ({allowed:.2f}ms)"
             )
 
-    latest_run = ROOT / "artifacts/evidence/latest-run-id.txt"
+    latest_run = ROOT / "artifacts/runs/latest-run-id.txt"
     run_id = latest_run.read_text(encoding="utf-8").strip() if latest_run.exists() else "manual"
     out = ROOT / "artifacts/evidence/perf" / run_id / "regression-check.txt"
     out.parent.mkdir(parents=True, exist_ok=True)

@@ -3,7 +3,7 @@
   "tasks": [
     {
       "name": "ops-smoke",
-      "manifest": "ops/manifests/smoke.json",
+      "manifest": "ops/e2e/manifests/smoke.manifest.json",
       "owner": "ops-platform",
       "docs": "docs/control-plane/ops-boundary.md",
       "description": "Run the canonical smoke manifest for ops workflows."

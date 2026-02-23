@@ -44,8 +44,8 @@ def main() -> int:
     for rel, count in sorted(seen_paths.items()):
         if count != 1:
             errors.append(f"{rel}: manifest must be referenced exactly once in manifests-registry.json")
-    if not any(r for r in rows if isinstance(r, dict) and str(r.get("path", "")).strip() == "ops/manifests/smoke.json"):
-        errors.append("ops/manifests/smoke.json must be first-class in manifests-registry.json")
+    if not any(r for r in rows if isinstance(r, dict) and str(r.get("path", "")).strip() == "ops/e2e/manifests/smoke.manifest.json"):
+        errors.append("ops/e2e/manifests/smoke.manifest.json must be first-class in manifests-registry.json")
     if errors:
         print("ops manifests registry check failed:", file=sys.stderr)
         for e in errors:

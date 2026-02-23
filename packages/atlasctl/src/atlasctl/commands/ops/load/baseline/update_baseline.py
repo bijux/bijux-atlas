@@ -106,7 +106,7 @@ def main() -> int:
     dst.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
     diff_lines = _diff(prev.get("rows", []), rows)
-    latest_run = ROOT / "artifacts/evidence/latest-run-id.txt"
+    latest_run = ROOT / "artifacts/runs/latest-run-id.txt"
     run_id = latest_run.read_text(encoding="utf-8").strip() if latest_run.exists() else "manual"
     out_dir = ROOT / "artifacts/evidence/perf" / run_id
     out_dir.mkdir(parents=True, exist_ok=True)
