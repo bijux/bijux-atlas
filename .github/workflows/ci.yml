@@ -57,6 +57,26 @@ jobs:
           ./bin/atlasctl configs diff --fail --report json
           ./bin/atlasctl configs fmt --check --report json
 
+  generated-drift:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify generated registry/targets/config drift
+        run: |
+          ./bin/atlasctl dev regen-registry --json
+          ./bin/atlasctl make emit --json
+          ./bin/atlasctl configs gen --report json
+          git diff --exit-code -- \
+            packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json \
+            packages/atlasctl/src/atlasctl/registry/checks_catalog.json \
+            makefiles/targets.json \
+            configs/make/targets.json \
+            configs/_generated
+
   ci:
     runs-on: ubuntu-latest
     timeout-minutes: 90
