@@ -3,70 +3,32 @@
 from __future__ import annotations
 
 import argparse
-import importlib
 import inspect
 import json
-from pathlib import Path
 
-from ...checks.registry import alias_expiry_violations, check_rename_aliases, check_tags, get_check, list_checks, marker_vocabulary, resolve_aliases
-from ...checks.runner import extract_failures, report_from_payload, top_n_slowest
+from ...checks.registry import alias_expiry_violations, check_rename_aliases, check_tags, check_tree, get_check, list_checks, marker_vocabulary, resolve_aliases
+from ...checks.report import build_failures_payload, build_triage_failures_payload, build_triage_slow_payload, resolve_last_run_report
+from ...checks.runner import report_from_payload
 from ...contracts.ids import CHECK_LIST, CHECK_TAXONOMY
 from ...contracts.validate_self import validate_self
 from ...core.exit_codes import ERR_CONTRACT, ERR_USER
 from ...core.fs import ensure_evidence_path
 
 
-def _resolve_failures_report(last_run: str) -> Path:
-    path = Path(last_run)
-    if path.is_file():
-        return path
-    if not path.exists():
-        raise FileNotFoundError(f"last-run path does not exist: {last_run}")
-    candidates = sorted(path.rglob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
-    for candidate in candidates:
-        try:
-            payload = json.loads(candidate.read_text(encoding="utf-8"))
-        except Exception:
-            continue
-        if payload.get("kind") in {"check-run", "check-run-report"} and isinstance(payload.get("rows"), list):
-            return candidate
-    raise FileNotFoundError(f"no check-run report json found under: {last_run}")
-
-
 def _run_check_failures(ctx, ns: argparse.Namespace) -> int:
     try:
-        report_path = _resolve_failures_report(str(ns.last_run))
+        report_path = resolve_last_run_report(str(ns.last_run))
     except FileNotFoundError as exc:
         print(json.dumps({"schema_version": 1, "tool": "atlasctl", "status": "error", "error": str(exc)}, sort_keys=True) if (ctx.output_format == "json" or ns.json) else str(exc))
         return ERR_USER
     payload = json.loads(report_path.read_text(encoding="utf-8"))
     group = str(getattr(ns, "group", "") or "").strip()
     report = report_from_payload(payload)
-    failed_rows = extract_failures(report)
-    if group:
-        failed_rows = [row for row in failed_rows if str(row.domain) == group]
-    out = {
-        "schema_version": 1,
-        "tool": "atlasctl",
-        "kind": "check-failures",
-        "status": "ok",
-        "source": report_path.as_posix(),
-        "group": group or "all",
-        "failed_count": len(failed_rows),
-        "failures": [
-            {
-                "id": str(row.id),
-                "domain": str(row.domain),
-                "hint": str(row.fix_hint),
-                "detail": "; ".join(str(item.message) for item in row.violations) or "; ".join(row.errors),
-            }
-            for row in failed_rows
-        ],
-    }
+    out = build_failures_payload(source=report_path.as_posix(), report=report, group=group)
     if ctx.output_format == "json" or ns.json:
         print(json.dumps(out, sort_keys=True))
-        return 0 if not failed_rows else ERR_USER
-    if not failed_rows:
+        return 0 if not out["failures"] else ERR_USER
+    if not out["failures"]:
         print(f"failures: none ({group or 'all'})")
         return 0
     print(f"failures ({group or 'all'}): {len(failed_rows)}")
@@ -76,18 +38,10 @@ def _run_check_failures(ctx, ns: argparse.Namespace) -> int:
 
 
 def _run_check_triage_slow(ctx, ns: argparse.Namespace) -> int:
-    report_path = _resolve_failures_report(str(ns.last_run))
+    report_path = resolve_last_run_report(str(ns.last_run))
     payload = json.loads(report_path.read_text(encoding="utf-8"))
     report = report_from_payload(payload)
-    ranked = top_n_slowest(report, int(getattr(ns, "top", 10) or 10))
-    out = {
-        "schema_version": 1,
-        "tool": "atlasctl",
-        "kind": "check-triage-slow",
-        "status": "ok",
-        "source": report_path.as_posix(),
-        "rows": [{"id": str(row.id), "domain": str(row.domain), "duration_ms": int(row.metrics.get("duration_ms", 0))} for row in ranked],
-    }
+    out = build_triage_slow_payload(source=report_path.as_posix(), report=report, top=int(getattr(ns, "top", 10) or 10))
     if ctx.output_format == "json" or ns.json:
         print(json.dumps(out, sort_keys=True))
     else:
@@ -97,33 +51,17 @@ def _run_check_triage_slow(ctx, ns: argparse.Namespace) -> int:
 
 
 def _run_check_triage_failures(ctx, ns: argparse.Namespace) -> int:
-    report_path = _resolve_failures_report(str(ns.last_run))
+    report_path = resolve_last_run_report(str(ns.last_run))
     payload = json.loads(report_path.read_text(encoding="utf-8"))
     report = report_from_payload(payload)
-    rows = extract_failures(report)
-    grouped: dict[str, dict[str, int]] = {}
-    for row in rows:
-        domain = str(row.domain or "unknown")
-        rid = str(row.id)
-        area = rid.split("_")[2] if rid.startswith("checks_") and len(rid.split("_")) > 2 else "general"
-        bucket = grouped.setdefault(domain, {})
-        bucket[area] = int(bucket.get(area, 0)) + 1
-    out = {
-        "schema_version": 1,
-        "tool": "atlasctl",
-        "kind": "check-triage-failures",
-        "status": "ok",
-        "source": report_path.as_posix(),
-        "failed_count": len(rows),
-        "groups": {domain: {area: count for area, count in sorted(areas.items())} for domain, areas in sorted(grouped.items())},
-    }
+    out = build_triage_failures_payload(source=report_path.as_posix(), report=report)
     if ctx.output_format == "json" or ns.json:
         print(json.dumps(out, sort_keys=True))
-        return 0 if not rows else ERR_USER
-    if not rows:
+        return 0 if not out["failed_count"] else ERR_USER
+    if not out["failed_count"]:
         print("triage failures: none")
         return 0
-    print(f"triage failures: {len(rows)}")
+    print(f"triage failures: {out['failed_count']}")
     for domain, areas in out["groups"].items():
         area_bits = ", ".join(f"{area}={count}" for area, count in areas.items())
         print(f"- {domain}: {area_bits}")
@@ -230,13 +168,7 @@ def run(ctx, ns: argparse.Namespace) -> int:
         print(json.dumps(payload, sort_keys=True) if ctx.output_format == "json" or ns.json else json.dumps(payload, indent=2, sort_keys=True))
         return 0
     if sub == "tree":
-        checks = list_checks()
-        tree: dict[str, dict[str, list[str]]] = {}
-        for check in checks:
-            parts = check.check_id.split("_")
-            domain = parts[1] if len(parts) > 1 else check.domain
-            area = parts[2] if len(parts) > 2 else "general"
-            tree.setdefault(domain, {}).setdefault(area, []).append(check.check_id)
+        tree = check_tree()
         if ctx.output_format == "json" or ns.json:
             payload = {
                 "schema_name": CHECK_TAXONOMY,
@@ -244,7 +176,7 @@ def run(ctx, ns: argparse.Namespace) -> int:
                 "tool": "atlasctl",
                 "status": "ok",
                 "tree": [
-                    {"domain": domain, "areas": [{"name": area, "checks": sorted(ids)} for area, ids in sorted(areas.items())]}
+                    {"domain": domain, "areas": [{"name": area, "checks": ids} for area, ids in sorted(areas.items())]}
                     for domain, areas in sorted(tree.items())
                 ],
             }
@@ -579,7 +511,9 @@ def run(ctx, ns: argparse.Namespace) -> int:
             ["python3", "packages/atlasctl/src/atlasctl/checks/layout/workflows/check_workflow_calls_atlasctl.py"],
         )
     if sub == "ci-surface-documented":
-        return importlib.import_module("atlasctl.checks.layout.docs.check_ci_surface_documented").main()
+        from ...checks.layout.docs.check_ci_surface_documented import main as run_ci_surface_documented
+
+        return run_ci_surface_documented()
     if sub == "ops-mk-contract":
         return impl._run(
             ctx,

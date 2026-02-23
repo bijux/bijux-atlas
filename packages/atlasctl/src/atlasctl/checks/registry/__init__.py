@@ -63,6 +63,20 @@ def checks_by_domain_map() -> dict[DomainId, tuple[CheckDef, ...]]:
     return {key: tuple(sorted(rows, key=lambda row: str(row.check_id))) for key, rows in grouped.items()}
 
 
+def check_tree() -> dict[str, dict[str, list[str]]]:
+    tree: dict[str, dict[str, list[str]]] = {}
+    for check in ALL_CHECKS:
+        parts = str(check.check_id).split("_")
+        domain = parts[1] if len(parts) > 1 and parts[0] == "checks" else str(check.domain)
+        area = parts[2] if len(parts) > 2 and parts[0] == "checks" else "general"
+        tree.setdefault(domain, {}).setdefault(area, []).append(str(check.check_id))
+    for domain, areas in tree.items():
+        for area, ids in areas.items():
+            areas[area] = sorted(ids)
+        tree[domain] = dict(sorted(areas.items()))
+    return dict(sorted(tree.items()))
+
+
 def resolve_aliases() -> tuple[CheckAlias, ...]:
     expiry = check_id_alias_expiry()
     if not expiry:
@@ -94,6 +108,7 @@ __all__ = [
     "check_rename_aliases",
     "checks_by_domain",
     "checks_by_domain_map",
+    "check_tree",
     "get_check",
     "list_checks",
     "list_domains",
