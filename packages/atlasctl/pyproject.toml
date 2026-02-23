@@ -351,6 +351,38 @@ max_imports_per_file = 40
 max_public_symbols_per_module = 30
 max_branch_keywords_per_file = 80
 
+[[tool.atlasctl.budgets.rules]]
+name = "ops_commands_domain_budget"
+path_glob = "packages/atlasctl/src/atlasctl/commands/ops*"
+enforce = true
+max_entries_per_dir = 24
+max_py_files_per_dir = 20
+max_modules_per_dir = 20
+max_loc_per_file = 900
+max_loc_per_dir = 5200
+max_shell_files_per_dir = 4
+max_total_loc_per_dir = 5200
+max_total_bytes_per_dir = 700000
+max_imports_per_file = 70
+max_public_symbols_per_module = 50
+max_branch_keywords_per_file = 150
+
+[[tool.atlasctl.budgets.rules]]
+name = "ops_commands_runtime_modules_budget"
+path_glob = "packages/atlasctl/src/atlasctl/commands/ops/runtime_modules*"
+enforce = true
+max_entries_per_dir = 24
+max_py_files_per_dir = 20
+max_modules_per_dir = 20
+max_loc_per_file = 1400
+max_loc_per_dir = 9000
+max_shell_files_per_dir = 4
+max_total_loc_per_dir = 9000
+max_total_bytes_per_dir = 1200000
+max_imports_per_file = 90
+max_public_symbols_per_module = 70
+max_branch_keywords_per_file = 220
+
 [tool.atlasctl.suites]
 default = "required"
 

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "areas": {
+    "stack": {"entrypoint": "packages/atlasctl/src/atlasctl/commands/ops/command.py", "runtime": "packages/atlasctl/src/atlasctl/commands/ops/runtime.py"},
+    "deploy": {"entrypoint": "packages/atlasctl/src/atlasctl/commands/ops/command.py"},
+    "k8s": {"entrypoint": "packages/atlasctl/src/atlasctl/commands/ops/command.py"},
+    "obs": {"entrypoint": "packages/atlasctl/src/atlasctl/commands/ops/command.py", "runtime": "packages/atlasctl/src/atlasctl/commands/ops/observability/runtime.py"},
+    "load": {"entrypoint": "packages/atlasctl/src/atlasctl/commands/ops/command.py"},
+    "e2e": {"entrypoint": "packages/atlasctl/src/atlasctl/commands/ops/command.py"},
+    "datasets": {"entrypoint": "packages/atlasctl/src/atlasctl/commands/ops/command.py"},
+    "pins": {"entrypoint": "packages/atlasctl/src/atlasctl/commands/ops/command.py"},
+    "reports": {"entrypoint": "packages/atlasctl/src/atlasctl/commands/ops/command.py"}
+  }
+}

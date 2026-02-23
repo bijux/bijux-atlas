@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "policy": "ops external tool invocations must be declared",
+  "areas": {
+    "stack": ["docker", "kind", "kubectl", "helm", "kubeconform"],
+    "deploy": ["helm", "kubectl"],
+    "k8s": ["kubectl", "helm", "curl"],
+    "obs": ["curl", "docker", "kubectl", "promtool", "rg"],
+    "load": ["k6", "docker", "curl"],
+    "e2e": ["curl", "kubectl", "git", "bash"],
+    "datasets": ["curl", "cargo", "python3", "du"],
+    "pins": ["python3"],
+    "reports": ["python3", "git"]
+  }
+}
