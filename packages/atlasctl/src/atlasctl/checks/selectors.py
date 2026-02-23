@@ -48,20 +48,25 @@ def _changed_paths(repo_root: Path) -> tuple[str, ...]:
 
 
 def parse_selection_criteria(ns: object, repo_root: Path) -> SelectionCriteria:
+    def _coerce(value: object) -> str:
+        if value is None:
+            return ""
+        return str(value).strip()
+
     raw_tags = tuple(str(item).strip() for item in (getattr(ns, "marker", []) or []) if str(item).strip())
     raw_exclude_tags = tuple(
         str(item).strip() for item in ((getattr(ns, "exclude_marker", []) or []) + (getattr(ns, "exclude_tag", []) or [])) if str(item).strip()
     )
     criteria = SelectionCriteria(
-        domain=str(getattr(ns, "domain_filter", "") or "").strip(),
+        domain=_coerce(getattr(ns, "domain_filter", "")),
         id_globs=tuple(
-            str(item).strip()
+            _coerce(item)
             for item in (
                 [getattr(ns, "id", "")]
                 + [getattr(ns, "select", "")]
                 + [getattr(ns, "check_target", "")]
             )
-            if str(item).strip()
+            if _coerce(item)
         ),
         tags=raw_tags + tuple(str(item).strip() for item in (getattr(ns, "tag", []) or []) if str(item).strip()),
         exclude_tags=raw_exclude_tags,
@@ -70,7 +75,7 @@ def parse_selection_criteria(ns: object, repo_root: Path) -> SelectionCriteria:
         only_slow=bool(getattr(ns, "only_slow", False)),
         only_fast=bool(getattr(ns, "only_fast", False)),
         changed_only=bool(getattr(ns, "changed_only", False)),
-        query=str(getattr(ns, "k", "") or "").strip(),
+        query=_coerce(getattr(ns, "k", "")),
     )
     if criteria.changed_only:
         return SelectionCriteria(**{**criteria.__dict__, "changed_paths": _changed_paths(repo_root)})
