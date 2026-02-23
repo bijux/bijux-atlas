@@ -228,6 +228,84 @@ def check_repo_no_python_caches_committed(repo_root: Path) -> tuple[int, list[st
     return (0 if not errors else 1), errors
 
 
+def check_tmp_paths_outside_artifacts(repo_root: Path) -> tuple[int, list[str]]:
+    tracked = _git_ls_files(repo_root, ["."])
+    errors: list[str] = []
+    for rel in tracked:
+        posix = rel.replace("\\", "/")
+        if posix.startswith("artifacts/"):
+            continue
+        parts = Path(posix).parts
+        if "tmp" in parts:
+            errors.append(f"tracked tmp path outside artifacts/: {rel}")
+    return (0 if not errors else 1), errors
+
+
+def check_generated_dirs_policy(repo_root: Path) -> tuple[int, list[str]]:
+    allowed = {"docs/_generated", "ops/_generated", "ops/_generated_committed"}
+    errors: list[str] = []
+    for path in sorted(repo_root.rglob("_generated")):
+        if not path.is_dir():
+            continue
+        rel = path.relative_to(repo_root).as_posix()
+        if rel in allowed or rel.startswith("artifacts/"):
+            continue
+        errors.append(f"disallowed generated dir: {rel}")
+    return (0 if not errors else 1), errors
+
+
+def check_ops_configs_deterministic_newlines(repo_root: Path) -> tuple[int, list[str]]:
+    tracked = _git_ls_files(repo_root, ["ops", "configs"])
+    text_exts = {".md", ".mk", ".sh", ".yaml", ".yml", ".json", ".toml", ".txt", ".cfg", ".ini", ".env", ".py"}
+    errors: list[str] = []
+    for rel in tracked:
+        path = repo_root / rel
+        if not path.is_file():
+            continue
+        if path.suffix.lower() not in text_exts:
+            continue
+        data = path.read_bytes()
+        if b"\0" in data:
+            continue
+        if b"\r\n" in data:
+            errors.append(f"{rel}: contains CRLF newlines; use LF")
+        for idx, line in enumerate(data.splitlines(), start=1):
+            if line.endswith(b" ") or line.endswith(b"\t"):
+                errors.append(f"{rel}:{idx}: trailing whitespace is forbidden")
+    return (0 if not errors else 1), errors
+
+
+def check_no_large_binary_files(repo_root: Path) -> tuple[int, list[str]]:
+    tracked = _git_ls_files(repo_root, ["."])
+    size_limit = 5 * 1024 * 1024
+    allow_prefixes = ("artifacts/",)
+    allow_globs = (
+        "packages/atlasctl/tests/**/fixtures/**",
+        "packages/atlasctl/tests/**/goldens/**",
+    )
+    errors: list[str] = []
+    for rel in tracked:
+        posix = rel.replace("\\", "/")
+        if any(posix.startswith(prefix) for prefix in allow_prefixes):
+            continue
+        if any(fnmatch(posix, pat) for pat in allow_globs):
+            continue
+        path = repo_root / rel
+        if not path.is_file():
+            continue
+        try:
+            size = path.stat().st_size
+        except OSError:
+            continue
+        if size <= size_limit:
+            continue
+        sample = path.read_bytes()[:4096]
+        if b"\0" not in sample:
+            continue
+        errors.append(f"large tracked binary file (>5MiB): {rel}")
+    return (0 if not errors else 1), errors
+
+
 def check_committed_generated_hygiene(repo_root: Path) -> tuple[int, list[str]]:
     tracked = _git_ls_files(
         repo_root,
