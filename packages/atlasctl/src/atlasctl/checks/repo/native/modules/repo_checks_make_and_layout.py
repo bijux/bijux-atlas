@@ -357,6 +357,129 @@ def check_single_canonical_runtime_adapters(repo_root: Path) -> tuple[int, list[
     return (0 if not errors else 1), errors
 
 
+def check_cli_help_output_deterministic(repo_root: Path) -> tuple[int, list[str]]:
+    del repo_root
+    from atlasctl.cli.main import build_parser
+
+    p1 = build_parser().format_help()
+    p2 = build_parser().format_help()
+    errors: list[str] = []
+    if p1 != p2:
+        errors.append("atlasctl CLI help output is non-deterministic across two parser builds")
+    lowered = p1.lower()
+    if "generated at" in lowered or "timestamp" in lowered:
+        errors.append("atlasctl CLI help output must not contain generated/timestamp text")
+    return (0 if not errors else 1), errors
+
+
+def check_json_output_deterministic_policy(repo_root: Path) -> tuple[int, list[str]]:
+    src = repo_root / "packages/atlasctl/src/atlasctl"
+    allow_path = repo_root / "configs/policy/json-dumps-determinism-allowlist.json"
+    allow: set[str] = set()
+    if allow_path.exists():
+        allow = set(json.loads(allow_path.read_text(encoding="utf-8")).get("allow", []))
+    errors: list[str] = []
+    for path in sorted(src.rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        if "/tests/" in rel:
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        for idx, line in enumerate(text.splitlines(), start=1):
+            if "json.dumps(" not in line:
+                continue
+            if "sort_keys=True" in line:
+                continue
+            entry = f"{rel}:{idx}"
+            if entry in allow:
+                continue
+            errors.append(f"{entry}: json.dumps must specify sort_keys=True for deterministic JSON output")
+    return (0 if not errors else 1), errors
+
+
+def _runtime_access_allowlist(repo_root: Path) -> dict[str, set[str]]:
+    path = repo_root / "configs/policy/runtime-access-legacy-allowlist.json"
+    if not path.exists():
+        return {"getcwd": set(), "direct_env": set(), "repo_root_path_literals": set()}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    return {k: set(str(v) for v in data.get(k, [])) for k in ("getcwd", "direct_env", "repo_root_path_literals")}
+
+
+def _iter_atlasctl_py(repo_root: Path) -> list[tuple[str, list[str]]]:
+    src = repo_root / "packages/atlasctl/src/atlasctl"
+    rows: list[tuple[str, list[str]]] = []
+    for path in sorted(src.rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        rows.append((rel, path.read_text(encoding="utf-8", errors="ignore").splitlines()))
+    return rows
+
+
+def check_no_os_getcwd_outside_runtime_context(repo_root: Path) -> tuple[int, list[str]]:
+    allow = _runtime_access_allowlist(repo_root)["getcwd"]
+    hard_allowed_prefixes = (
+        "packages/atlasctl/src/atlasctl/core/runtime/",
+        "packages/atlasctl/src/atlasctl/runtime/",
+    )
+    errors: list[str] = []
+    for rel, lines in _iter_atlasctl_py(repo_root):
+        if rel.endswith("checks/repo/native/modules/repo_checks_make_and_layout.py"):
+            continue
+        if rel.startswith(hard_allowed_prefixes):
+            continue
+        for idx, line in enumerate(lines, start=1):
+            if "os.getcwd(" not in line:
+                continue
+            entry = f"{rel}:{idx}"
+            if entry in allow:
+                continue
+            errors.append(f"{entry}: forbid os.getcwd() outside runtime context resolution")
+    return (0 if not errors else 1), errors
+
+
+def check_no_direct_env_reads_outside_runtime_env(repo_root: Path) -> tuple[int, list[str]]:
+    allow = _runtime_access_allowlist(repo_root)["direct_env"]
+    hard_allowed = {
+        "packages/atlasctl/src/atlasctl/core/runtime/env.py",
+        "packages/atlasctl/src/atlasctl/runtime/env.py",
+    }
+    errors: list[str] = []
+    for rel, lines in _iter_atlasctl_py(repo_root):
+        if rel.endswith("checks/repo/native/modules/repo_checks_make_and_layout.py"):
+            continue
+        if rel in hard_allowed:
+            continue
+        for idx, line in enumerate(lines, start=1):
+            if "os.environ" not in line and "os.getenv(" not in line:
+                continue
+            entry = f"{rel}:{idx}"
+            if entry in allow:
+                continue
+            errors.append(f"{entry}: direct env access must go through runtime/env module")
+    return (0 if not errors else 1), errors
+
+
+def check_no_repo_root_path_literals(repo_root: Path) -> tuple[int, list[str]]:
+    allow = _runtime_access_allowlist(repo_root)["repo_root_path_literals"]
+    hard_allowed_prefixes = (
+        "packages/atlasctl/src/atlasctl/core/runtime/",
+        "packages/atlasctl/src/atlasctl/runtime/",
+    )
+    tokens = ('Path("packages/', 'Path("configs/', 'Path("ops/', 'Path("docs/', 'Path("makefiles/', 'Path("crates/', 'Path("artifacts/')
+    errors: list[str] = []
+    for rel, lines in _iter_atlasctl_py(repo_root):
+        if rel.endswith("checks/repo/native/modules/repo_checks_make_and_layout.py"):
+            continue
+        if rel.startswith(hard_allowed_prefixes):
+            continue
+        for idx, line in enumerate(lines, start=1):
+            if not any(tok in line for tok in tokens):
+                continue
+            entry = f"{rel}:{idx}"
+            if entry in allow:
+                continue
+            errors.append(f"{entry}: repo-root path literals must be resolved via runtime paths/context")
+    return (0 if not errors else 1), errors
+
+
 def check_committed_generated_hygiene(repo_root: Path) -> tuple[int, list[str]]:
     tracked = _git_ls_files(
         repo_root,

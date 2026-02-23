@@ -4,16 +4,21 @@ import json
 from pathlib import Path
 
 from atlasctl.checks.repo.native import (
+    check_cli_help_output_deterministic,
     check_committed_generated_hygiene,
     check_generated_dirs_policy,
     check_duplicate_script_names,
+    check_json_output_deterministic_policy,
     check_layout_contract,
     check_make_command_allowlist,
     check_make_forbidden_paths,
     check_make_no_direct_python_script_invocations,
     check_make_scripts_references,
     check_no_large_binary_files,
+    check_no_direct_env_reads_outside_runtime_env,
     check_no_models_shim_when_model_canonical,
+    check_no_os_getcwd_outside_runtime_context,
+    check_no_repo_root_path_literals,
     check_single_canonical_runtime_adapters,
     check_no_xtask_refs,
     check_ops_configs_deterministic_newlines,
@@ -269,3 +274,39 @@ def test_check_make_scripts_references_flags_unapproved_scripts_path(tmp_path: P
     code, errors = check_make_scripts_references(tmp_path)
     assert code == 1
     assert any("scripts/" in e for e in errors)
+
+
+def test_check_cli_help_output_deterministic_passes() -> None:
+    code, errors = check_cli_help_output_deterministic(Path("."))
+    assert code == 0
+    assert errors == []
+
+
+def test_check_json_output_deterministic_policy_flags_unsorted_json_dumps(tmp_path: Path) -> None:
+    path = tmp_path / "packages/atlasctl/src/atlasctl/foo.py"
+    path.parent.mkdir(parents=True)
+    path.write_text('import json\nx=json.dumps({"b":1})\n', encoding="utf-8")
+    code, errors = check_json_output_deterministic_policy(tmp_path)
+    assert code == 1
+    assert any("sort_keys=True" in e for e in errors)
+
+
+def test_runtime_access_guard_checks_flag_non_allowlisted_usage(tmp_path: Path) -> None:
+    src = tmp_path / "packages/atlasctl/src/atlasctl/foo"
+    src.mkdir(parents=True)
+    f = src / "bar.py"
+    f.write_text(
+        'import os\nfrom pathlib import Path\nx=os.environ.get("X")\ny=os.getcwd()\nz=Path("configs/x.json")\n',
+        encoding="utf-8",
+    )
+    (tmp_path / "configs/policy").mkdir(parents=True)
+    (tmp_path / "configs/policy/runtime-access-legacy-allowlist.json").write_text(
+        json.dumps({"getcwd": [], "direct_env": [], "repo_root_path_literals": []}),
+        encoding="utf-8",
+    )
+    code_env, errors_env = check_no_direct_env_reads_outside_runtime_env(tmp_path)
+    code_cwd, errors_cwd = check_no_os_getcwd_outside_runtime_context(tmp_path)
+    code_path, errors_path = check_no_repo_root_path_literals(tmp_path)
+    assert code_env == 1 and any("direct env access" in e for e in errors_env)
+    assert code_cwd == 1 and any("os.getcwd()" in e for e in errors_cwd)
+    assert code_path == 1 and any("repo-root path literals" in e for e in errors_path)
