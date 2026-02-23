@@ -96,6 +96,12 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     gen_index = gen_sub.add_parser("index", help="regenerate deterministic ops INDEX.md files")
     gen_index.add_argument("--i-know-what-im-doing", action="store_true", dest="ack_update")
 
+    migrate = ops_sub.add_parser("migrate", help="ops migration automation helpers")
+    migrate.add_argument("--report", choices=["text", "json"], default="text")
+    migrate_sub = migrate.add_subparsers(dest="ops_migrate_cmd", required=True)
+    migrate_phase2 = migrate_sub.add_parser("phase2", help="sync phase2 ops layout migration artifacts")
+    migrate_phase2.add_argument("--check", action="store_true", help="validate migration artifacts without writing")
+
     stack = ops_sub.add_parser("stack", help="ops stack commands")
     stack.add_argument("--report", choices=["text", "json"], default="text")
     stack_sub = stack.add_subparsers(dest="ops_stack_cmd", required=True)
