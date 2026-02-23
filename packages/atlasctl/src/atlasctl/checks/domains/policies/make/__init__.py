@@ -61,6 +61,15 @@ from .enforcement import (
     check_policies_bypass_entry_paths_exist,
     check_policies_bypass_entry_matches_nothing,
     check_policies_bypass_entry_matches_too_broad,
+    check_policies_bypass_inventory_growth_requires_ticket,
+    check_ops_bypass_ledger_refs_present,
+    check_ops_bypass_allowlist_files_have_owner,
+    check_ops_bypass_ledger_has_expiry,
+    check_ops_bypass_ledger_expiry_not_past,
+    check_ops_bypass_ledger_task_ids,
+    check_ops_bypass_ledger_sorted,
+    check_ops_allowlisted_literals_have_contract_tests,
+    check_ops_bypass_entries_have_necessity_tests,
     check_policies_bypass_budget,
     check_policies_bypass_readme_complete,
     check_policies_bypass_readme_sorted,
@@ -232,6 +241,8 @@ def check_policies_bypass_hard_gate(repo_root: Path) -> tuple[int, list[str]]:
     enabled = str(os.environ.get("ATLASCTL_BYPASS_HARD_FAIL", "")).strip().lower() in {"1", "true", "yes", "on"}
     if not enabled:
         enabled = str(os.environ.get("ATLASCTL_BYPASS_STRICT_MODE", "")).strip().lower() in {"1", "true", "yes", "on"}
+    if not enabled:
+        enabled = str(os.environ.get("ATLASCTL_BYPASS_ZERO_MODE", "")).strip().lower() in {"1", "true", "yes", "on"}
     if not enabled:
         return 0, []
     current = int(collect_bypass_inventory(repo_root).get("entry_count", 0))
@@ -710,6 +721,15 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("policies.bypass_entry_paths_exist", "policies", "fail if bypass entry points to missing file/path", 800, check_policies_bypass_entry_paths_exist, fix_hint="Fix or remove stale bypass references to missing paths.", tags=("repo",)),
     CheckDef("policies.bypass_entry_matches_nothing", "policies", "fail if wildcard bypass entry matches nothing", 800, check_policies_bypass_entry_matches_nothing, fix_hint="Tighten or remove stale wildcard bypass entries.", tags=("repo",)),
     CheckDef("policies.bypass_entry_matches_too_broad", "policies", "fail if wildcard bypass entry matches too broadly", 800, check_policies_bypass_entry_matches_too_broad, fix_hint="Narrow wildcard bypass scope to intended paths only.", tags=("repo",)),
+    CheckDef("policies.bypass_inventory_growth_requires_ticket", "policies", "fail inventory growth without explicit bypass approval/ticket entry", 800, check_policies_bypass_inventory_growth_requires_ticket, fix_hint="Add explicit bypass approval in configs/policy/bypass-new-entry-approvals.json or reduce bypass count.", tags=("repo",)),
+    CheckDef("policies.ops_bypass_ledger_refs_present", "policies", "require structured ops allowlist entries to reference ops bypass ledger ids", 800, check_ops_bypass_ledger_refs_present, fix_hint="Add valid bypass_id references and ledger entries in ops/_meta/bypass-ledger.json.", tags=("repo", "ops")),
+    CheckDef("policies.ops_bypass_allowlist_files_have_owner", "policies", "require structured ops allowlist files to declare owners", 800, check_ops_bypass_allowlist_files_have_owner, fix_hint="Add top-level owner to ops/_meta/*allowlist.json files.", tags=("repo", "ops")),
+    CheckDef("policies.ops_bypass_ledger_has_expiry", "policies", "require ops bypass ledger entries to declare expires_at", 800, check_ops_bypass_ledger_has_expiry, fix_hint="Add expires_at to every ops/_meta/bypass-ledger.json entry.", tags=("repo", "ops")),
+    CheckDef("policies.ops_bypass_ledger_expiry_not_past", "policies", "fail expired ops bypass ledger entries", 800, check_ops_bypass_ledger_expiry_not_past, fix_hint="Remove or renew expired ops bypass ledger entries.", tags=("repo", "ops")),
+    CheckDef("policies.ops_bypass_ledger_task_ids", "policies", "require concrete refactor task ids on ops bypass ledger entries", 800, check_ops_bypass_ledger_task_ids, fix_hint="Add task_id to every ops/_meta/bypass-ledger.json entry.", tags=("repo", "ops")),
+    CheckDef("policies.ops_bypass_ledger_sorted", "policies", "require deterministic sorted ops bypass ledger", 800, check_ops_bypass_ledger_sorted, fix_hint="Sort ops/_meta/bypass-ledger.json entries by id.", tags=("repo", "ops")),
+    CheckDef("policies.ops_allowlisted_literals_have_contract_tests", "policies", "require allowlisted ops literals to link contract/necessity tests", 800, check_ops_allowlisted_literals_have_contract_tests, fix_hint="Add contract_test and necessity_test paths for every literal allowlist entry.", tags=("repo", "ops")),
+    CheckDef("policies.ops_bypass_entries_have_necessity_tests", "policies", "require structured ops bypass entries to link a necessity test", 800, check_ops_bypass_entries_have_necessity_tests, fix_hint="Add necessity_test paths for structured ops bypass entries.", tags=("repo", "ops")),
     CheckDef("policies.dependency_exceptions_remove_by_issue", "policies", "require dependency exceptions to include remove_by and issue_id", 800, check_policies_dependency_exceptions_remove_by_issue, fix_hint="Add `remove_by` and valid `issue_id` to dependency exceptions.", tags=("repo",)),
     CheckDef("policies.budget_relaxation_requires_approval", "policies", "require explicit approval for any budget relaxation", 800, check_policies_budget_relaxation_requires_approval, fix_hint="Set budget-loosening-approval.json with approved=true and approval_id when relaxations exist.", tags=("repo",)),
     CheckDef("policies.budget_approval_time_bounded", "policies", "require budget loosening approvals to be time bounded", 800, check_policies_budget_approval_time_bounded, fix_hint="Set valid non-expired bounded expiry in budget-loosening-approval.json.", tags=("repo",)),

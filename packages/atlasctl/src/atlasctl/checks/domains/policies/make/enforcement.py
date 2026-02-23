@@ -40,6 +40,13 @@ _BYPASS_SCHEMAS = {"configs/policy/policy-relaxations.json": "configs/_schemas/p
 _BYPASS_SCOPES = {"repo", "crate", "module", "file", "path", "docs", "ops", "make", "workflow", "policy"}
 _BYPASS_FILES_REGISTRY = Path("configs/policy/bypass-files-registry.json")
 _BYPASS_TYPES_REGISTRY = Path("configs/policy/bypass-types.json")
+_OPS_BYPASS_LEDGER = Path("ops/_meta/bypass-ledger.json")
+_BYPASS_COUNT_BASELINE = Path("configs/policy/bypass-count-baseline.json")
+_OPS_META_STRUCTURED_ALLOWLISTS = (
+    Path("ops/_meta/cross-area-script-refs-allowlist.json"),
+    Path("ops/_meta/layer-contract-literal-allowlist.json"),
+    Path("ops/_meta/stack-layer-literal-allowlist.json"),
+)
 
 
 def _bypass_sources_registry(repo_root: Path) -> list[tuple[str, str, bool]]:
@@ -605,6 +612,45 @@ def _load_bypass_entries(repo_root: Path) -> list[dict[str, object]]:
                 entries.append({"source": rel_path, "key": key or f"{rel_path}#{line_no}", "requires_metadata": False})
             continue
         payload = json.loads(path.read_text(encoding="utf-8"))
+        if rel_path.endswith("temporary-shims.json") and isinstance(payload, dict):
+            for item in payload.get("shims", []):
+                if not isinstance(item, dict):
+                    continue
+                item_key = str(item.get("id") or item.get("command") or f"shim#{len(entries)+1}").strip()
+                entries.append(
+                    {
+                        "source": rel_path,
+                        "key": item_key,
+                        "policy_name": "temporary-shim",
+                        "scope": "ops",
+                        "owner": str(item.get("owner", "")).strip(),
+                        "issue_id": str(item.get("approval_id", "")).strip(),
+                        "expiry": str(item.get("expires_on", "")).strip(),
+                        "justification": str(item.get("reason", "")).strip(),
+                        "removal_plan": "Remove temporary shim after migration parity is proven.",
+                        "requires_metadata": True,
+                    }
+                )
+            continue
+        if rel_path.endswith("budget-relaxations-audit.json") and isinstance(payload, dict):
+            for list_key in ("active_relaxations", "expired_relaxations"):
+                for item in payload.get(list_key, []) if isinstance(payload.get(list_key), list) else []:
+                    item_key = str(item.get("id") if isinstance(item, dict) else item).strip() or f"{list_key}#{len(entries)+1}"
+                    entries.append(
+                        {
+                            "source": rel_path,
+                            "key": item_key,
+                            "policy_name": "budget-audit",
+                            "scope": "ops",
+                            "owner": "ops",
+                            "issue_id": "",
+                            "expiry": "",
+                            "justification": list_key,
+                            "removal_plan": "",
+                            "requires_metadata": False,
+                        }
+                    )
+            continue
         if rel_path.endswith("effect-boundary-exceptions.json"):
             rules = payload.get("rules", {}) if isinstance(payload, dict) else {}
             if isinstance(rules, dict):
@@ -632,7 +678,7 @@ def _load_bypass_entries(repo_root: Path) -> list[dict[str, object]]:
             continue
         if not isinstance(payload, dict):
             continue
-        for list_key in ("exceptions", "relaxations", "allow", "allowlist", "undeclared_import_allowlist", "optional_dependency_usage_allowlist", "internal_third_party_allowlist"):
+        for list_key in ("entries", "exceptions", "relaxations", "allow", "allowlist", "undeclared_import_allowlist", "optional_dependency_usage_allowlist", "internal_third_party_allowlist"):
             values = payload.get(list_key)
             if not isinstance(values, list):
                 continue
@@ -649,9 +695,14 @@ def _load_bypass_entries(repo_root: Path) -> list[dict[str, object]]:
                     "scope": str(item.get("scope", "")).strip(),
                     "owner": str(item.get("owner", "")).strip(),
                     "issue_id": str(item.get("issue_id") or item.get("issue") or "").strip(),
-                    "expiry": str(item.get("expiry") or item.get("expires_on") or "").strip(),
+                    "expiry": str(item.get("expiry") or item.get("expires_on") or item.get("expires_at") or "").strip(),
                     "justification": str(item.get("justification") or item.get("reason") or "").strip(),
                     "removal_plan": str(item.get("removal_plan", "")).strip(),
+                    "bypass_id": str(item.get("bypass_id", "")).strip(),
+                    "task_id": str(item.get("task_id", "")).strip(),
+                    "created_at": str(item.get("created_at", "")).strip(),
+                    "contract_test": str(item.get("contract_test", "")).strip(),
+                    "necessity_test": str(item.get("necessity_test", "")).strip(),
                     "requires_metadata": requires_metadata,
                 }
                 row.update({k: v for k, v in overrides.get(f"{rel_path}:{item_key}", {}).items() if k != "key"})
@@ -700,6 +751,7 @@ def collect_bypass_inventory(repo_root: Path) -> dict[str, object]:
             "files_registry": _BYPASS_FILES_REGISTRY.as_posix(),
             "types_registry": _BYPASS_TYPES_REGISTRY.as_posix(),
             "types": sorted(registry_types) if isinstance(registry_types, set) else [],
+            "ops_bypass_ledger": _OPS_BYPASS_LEDGER.as_posix(),
         },
     }
 
@@ -803,6 +855,34 @@ def _bypass_errors(repo_root: Path) -> dict[str, list[str]]:
 def _res(errors: list[str]) -> tuple[int, list[str]]:
     uniq = sorted(set(errors))
     return (0 if not uniq else 1), uniq
+
+
+def _ops_bypass_ledger(repo_root: Path) -> tuple[dict[str, object], dict[str, dict[str, object]]]:
+    path = repo_root / _OPS_BYPASS_LEDGER
+    if not path.exists():
+        return {}, {}
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    rows = payload.get("entries", []) if isinstance(payload, dict) else []
+    by_id: dict[str, dict[str, object]] = {}
+    for row in rows:
+        if isinstance(row, dict):
+            rid = str(row.get("id", "")).strip()
+            if rid:
+                by_id[rid] = row
+    return payload if isinstance(payload, dict) else {}, by_id
+
+
+def _iter_ops_meta_bypass_entries(repo_root: Path) -> list[tuple[str, dict[str, object]]]:
+    rows: list[tuple[str, dict[str, object]]] = []
+    for rel in _OPS_META_STRUCTURED_ALLOWLISTS:
+        path = repo_root / rel
+        if not path.exists():
+            continue
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        for row in payload.get("entries", []) if isinstance(payload, dict) else []:
+            if isinstance(row, dict):
+                rows.append((rel.as_posix(), row))
+    return rows
 def _bypass_readme_errors(repo_root: Path) -> dict[str, list[str]]:
     path = repo_root / "configs/policy/README.md"
     if not path.exists():
@@ -957,4 +1037,121 @@ def check_policies_bypass_entry_matches_too_broad(repo_root: Path) -> tuple[int,
         matches = [path for path in files if fnmatch.fnmatch(path, key)]
         if len(matches) > 50:
             errors.append(f"{src}:{key}: wildcard bypass matches too broadly ({len(matches)} files)")
+    return _res(errors)
+
+
+def check_policies_bypass_inventory_growth_requires_ticket(repo_root: Path) -> tuple[int, list[str]]:
+    return check_policies_bypass_new_entries_forbidden(repo_root)
+
+
+def check_ops_bypass_ledger_refs_present(repo_root: Path) -> tuple[int, list[str]]:
+    _, by_id = _ops_bypass_ledger(repo_root)
+    errors: list[str] = []
+    for rel, row in _iter_ops_meta_bypass_entries(repo_root):
+        bid = str(row.get("bypass_id", "")).strip()
+        key = str(row.get("id") or row.get("path") or "").strip()
+        if not bid:
+            errors.append(f"{rel}:{key}: missing bypass_id")
+            continue
+        if bid not in by_id:
+            errors.append(f"{rel}:{key}: bypass_id `{bid}` missing from {_OPS_BYPASS_LEDGER.as_posix()}")
+    return _res(errors)
+
+
+def check_ops_bypass_allowlist_files_have_owner(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for rel in _OPS_META_STRUCTURED_ALLOWLISTS:
+        p = repo_root / rel
+        if not p.exists():
+            errors.append(f"missing allowlist file: {rel.as_posix()}")
+            continue
+        payload = json.loads(p.read_text(encoding="utf-8"))
+        owner = str(payload.get("owner", "")).strip() if isinstance(payload, dict) else ""
+        if not owner:
+            errors.append(f"{rel.as_posix()}: top-level owner is required")
+    return _res(errors)
+
+
+def check_ops_bypass_ledger_has_expiry(repo_root: Path) -> tuple[int, list[str]]:
+    payload, _ = _ops_bypass_ledger(repo_root)
+    rows = payload.get("entries", []) if isinstance(payload, dict) else []
+    errors = [f"{_OPS_BYPASS_LEDGER.as_posix()}:{i+1}: missing expires_at" for i, row in enumerate(rows) if isinstance(row, dict) and not str(row.get("expires_at", "")).strip()]
+    return _res(errors)
+
+
+def check_ops_bypass_ledger_expiry_not_past(repo_root: Path) -> tuple[int, list[str]]:
+    payload, _ = _ops_bypass_ledger(repo_root)
+    rows = payload.get("entries", []) if isinstance(payload, dict) else []
+    today = dt.date.today()
+    errors: list[str] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        rid = str(row.get("id", "")).strip()
+        raw = str(row.get("expires_at", "")).strip()
+        if not raw:
+            continue
+        try:
+            d = dt.date.fromisoformat(raw)
+        except ValueError:
+            errors.append(f"{_OPS_BYPASS_LEDGER.as_posix()}:{rid}: invalid expires_at `{raw}`")
+            continue
+        if d < today:
+            errors.append(f"{_OPS_BYPASS_LEDGER.as_posix()}:{rid}: expired on {raw}")
+    return _res(errors)
+
+
+def check_ops_bypass_ledger_task_ids(repo_root: Path) -> tuple[int, list[str]]:
+    payload, _ = _ops_bypass_ledger(repo_root)
+    rows = payload.get("entries", []) if isinstance(payload, dict) else []
+    errors: list[str] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        rid = str(row.get("id", "")).strip()
+        if not str(row.get("task_id", "")).strip():
+            errors.append(f"{_OPS_BYPASS_LEDGER.as_posix()}:{rid}: missing task_id")
+    return _res(errors)
+
+
+def check_ops_bypass_ledger_sorted(repo_root: Path) -> tuple[int, list[str]]:
+    payload, _ = _ops_bypass_ledger(repo_root)
+    rows = payload.get("entries", []) if isinstance(payload, dict) else []
+    ids = [str(r.get("id", "")) for r in rows if isinstance(r, dict)]
+    if ids != sorted(ids):
+        return 1, [f"{_OPS_BYPASS_LEDGER.as_posix()}: entries must be sorted by id"]
+    return 0, []
+
+
+def check_ops_allowlisted_literals_have_contract_tests(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for rel in (_OPS_META_STRUCTURED_ALLOWLISTS[1], _OPS_META_STRUCTURED_ALLOWLISTS[2]):
+        path = repo_root / rel
+        if not path.exists():
+            continue
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        for row in payload.get("entries", []) if isinstance(payload, dict) else []:
+            if not isinstance(row, dict):
+                continue
+            key = str(row.get("id") or row.get("path") or "").strip()
+            for field in ("contract_test", "necessity_test"):
+                val = str(row.get(field, "")).strip()
+                if not val:
+                    errors.append(f"{rel.as_posix()}:{key}: missing {field}")
+                    continue
+                if not (repo_root / val).exists():
+                    errors.append(f"{rel.as_posix()}:{key}: {field} path does not exist ({val})")
+    return _res(errors)
+
+
+def check_ops_bypass_entries_have_necessity_tests(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for rel, row in _iter_ops_meta_bypass_entries(repo_root):
+        key = str(row.get("id") or row.get("path") or "").strip()
+        val = str(row.get("necessity_test", "")).strip()
+        if not val:
+            errors.append(f"{rel}:{key}: missing necessity_test")
+            continue
+        if not (repo_root / val).exists():
+            errors.append(f"{rel}:{key}: necessity_test path does not exist ({val})")
     return _res(errors)
