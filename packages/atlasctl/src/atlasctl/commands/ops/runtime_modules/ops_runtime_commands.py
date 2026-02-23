@@ -6,6 +6,7 @@ import re
 import shutil
 import hashlib
 import datetime as dt
+import subprocess
 from pathlib import Path
 
 from atlasctl.core.context import RunContext
@@ -283,6 +284,54 @@ def _generate_ops_surface_meta(repo_root: Path) -> tuple[int, str]:
     )
     write_text_file(out, json.dumps({"schema_version": 1, "entrypoints": entrypoints}, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return 0, str(out.relative_to(repo_root))
+
+
+def _ops_migrate_phase2(ctx: RunContext, report_format: str, *, check_only: bool = False) -> int:
+    repo = ctx.repo_root
+    script = """
+from pathlib import Path
+import json,re,sys
+root=Path('.')
+check_only = '--check' in sys.argv
+changed=[]
+def write(path: Path, text: str):
+    if path.exists() and path.read_text(encoding='utf-8') == text:
+        return
+    if not check_only:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text, encoding='utf-8')
+    changed.append(path.as_posix())
+rows=[]
+for p in sorted(root.glob('ops/*/OWNER.md')):
+    t=p.read_text(encoding='utf-8', errors='ignore')
+    m=re.search(r'Owner:\\s*`?([^`\\n]+)`?', t)
+    rows.append({'path': p.parent.as_posix(),'owner_doc': p.as_posix(),'declared_owner': m.group(1).strip() if m else ''})
+write(root/'ops/inventory/owner-docs.fragments.json', json.dumps({'schema_version':1,'items':rows}, indent=2)+'\\n')
+frag_dir=root/'ops/inventory/contracts'
+for p in sorted(root.glob('ops/*/CONTRACT.md')):
+    lines=[ln.strip() for ln in p.read_text(encoding='utf-8', errors='ignore').splitlines() if ln.strip()]
+    payload={'schema_version':1,'path':p.parent.as_posix(),'contract_doc':p.as_posix(),'title':lines[0].lstrip('# ').strip() if lines else p.parent.name.capitalize(),'version':1}
+    write(frag_dir/f'{p.parent.name}.contract.fragment.json', json.dumps(payload, indent=2)+'\\n')
+print(json.dumps({'schema_version':1,'status':'ok','check_only':check_only,'changed':sorted(changed)}))
+"""
+    proc = subprocess.run(
+        ["python3", "-c", script, *(["--check"] if check_only else [])],
+        cwd=repo,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if proc.returncode != 0:
+        return _emit_ops_status(report_format, proc.returncode, proc.stderr.strip() or proc.stdout.strip() or "ops migrate phase2 failed")
+    for cmd in (
+        ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_inventory_contract_map.py"],
+        ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_duplicate_inventory_migration_paths.py"],
+        ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_legacy_paths_cutoff.py"],
+    ):
+        code, output = _run_check(cmd, repo)
+        if code != 0:
+            return _emit_ops_status(report_format, code, output)
+    return _emit_ops_status(report_format, 0, proc.stdout.strip())
 
 
 def _emit_ops_status(report_format: str, code: int, output: str) -> int:

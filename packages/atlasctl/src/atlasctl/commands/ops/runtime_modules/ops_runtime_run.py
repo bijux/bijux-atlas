@@ -330,6 +330,12 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             return impl._run_simple_cmd(ctx, diff_cmd, ns.report)
         return 2
 
+    if ns.ops_cmd == "migrate":
+        sub = getattr(ns, "ops_migrate_cmd", "")
+        if sub == "phase2":
+            return impl._ops_migrate_phase2(ctx, ns.report, check_only=bool(getattr(ns, "check", False)))
+        return 2
+
     if ns.ops_cmd in {"stack", "k8s", "e2e", "obs", "kind", "load", "cache", "datasets"}:
         # Domain tree front-doors: keep shape stable even where implementations are delegated.
         sub_name = {
