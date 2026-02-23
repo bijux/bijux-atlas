@@ -37,6 +37,9 @@ See `docs/atlasctl/BOUNDARIES.md` for effect boundaries, invariants, output cont
 - `commands/ops/**` may depend on `core/`, `contracts/`, `reporting/`, `registry/`, `commands/_shared.py`, and intra-ops modules.
 - `commands/ops/**` must not import `cli/` modules directly.
 - Internal migration glue belongs under `commands/ops/internal/**` and is excluded from public ops help/docs.
+- Ops summary/unified report generation belongs in `atlasctl.reporting.*`; ops command modules emit area details only.
+- Ops evidence layout is canonicalized under `artifacts/evidence/<area>/<run_id>/...`.
+- Ops write/process/tool policies are enforced via ops validation checks and manifests in `configs/ops/`.
 
 See:
 - `packages/atlasctl/docs/control-plane/ops-execution-model.md`
