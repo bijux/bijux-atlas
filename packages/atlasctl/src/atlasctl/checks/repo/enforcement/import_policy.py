@@ -373,6 +373,20 @@ def check_cli_import_scope(repo_root: Path) -> tuple[int, list[str]]:
     return (0 if not offenders else 1), sorted(set(offenders))
 
 
+def check_cli_render_boundary(repo_root: Path) -> tuple[int, list[str]]:
+    cli_root = repo_root / _SRC_ROOT / "cli"
+    if not cli_root.exists():
+        return 1, [f"missing cli package root: {(_SRC_ROOT / 'cli').as_posix()}"]
+    canonical = (cli_root / "render.py").relative_to(repo_root).as_posix()
+    offenders: list[str] = []
+    for path in sorted(cli_root.rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if "def render_error(" in text and rel != canonical:
+            offenders.append(f"{rel}: render_error must be defined only in {canonical}")
+    return (0 if not offenders else 1), offenders
+
+
 def check_registry_definition_boundary(repo_root: Path) -> tuple[int, list[str]]:
     offenders: list[str] = []
     forbidden = ("atlasctl.commands", "atlasctl.cli")

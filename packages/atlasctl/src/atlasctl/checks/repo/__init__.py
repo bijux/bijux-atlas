@@ -144,6 +144,7 @@ from .reachability import (
 from .contracts.required_proof import check_required_target_shape
 from .enforcement.import_policy import (
     check_cli_import_scope,
+    check_cli_render_boundary,
     check_command_import_lint,
     check_commands_no_check_impl_imports,
     check_core_no_command_imports,
@@ -608,6 +609,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.checks_no_command_imports", "repo", "forbid checks from importing command modules", 300, check_checks_no_command_imports, fix_hint="Move reusable logic from commands into runtime/registry modules consumed by both."),
     CheckDef("repo.checks_no_cli_imports", "repo", "forbid checks modules from importing cli layer", 300, check_checks_no_cli_imports, fix_hint="Keep checks pure and independent from cli modules."),
     CheckDef("repo.cli_import_scope", "repo", "restrict cli imports to commands/core and approved runtime shims", 300, check_cli_import_scope, fix_hint="Route feature logic through commands; keep cli as parser/dispatch glue."),
+    CheckDef("repo.cli_render_boundary", "repo", "require cli error rendering to live in cli/render.py only", 300, check_cli_render_boundary, fix_hint="Define render_error only in atlasctl/cli/render.py and import it from callers."),
     CheckDef("repo.registry_definition_boundary", "repo", "forbid registry modules from importing command/cli/suite/check runtime modules", 300, check_registry_definition_boundary, fix_hint="Keep registry declarative and independent from runtime command/check implementations."),
     CheckDef("repo.checks_canonical_location", "repo", "require check implementations under atlasctl/checks canonical tree", 300, check_checks_canonical_location, fix_hint="Move check_*.py implementations under packages/atlasctl/src/atlasctl/checks/ or extend migration allowlist explicitly."),
     CheckDef("repo.check_impl_no_cli_imports", "repo", "forbid direct CLI imports from check implementation files", 300, check_check_impl_no_cli_imports, fix_hint="Keep check implementations pure and route CLI wiring through commands/cli modules."),
