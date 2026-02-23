@@ -44,7 +44,7 @@ def _run_check_failures(ctx, ns: argparse.Namespace) -> int:
     report = report_from_payload(payload)
     failed_rows = extract_failures(report)
     if group:
-        failed_rows = [row for row in failed_rows if str(row.id).startswith(f"checks_{group}_")]
+        failed_rows = [row for row in failed_rows if str(row.domain) == group]
     out = {
         "schema_version": 1,
         "tool": "atlasctl",
