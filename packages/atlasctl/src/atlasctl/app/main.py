@@ -29,7 +29,7 @@ from ..core.runtime.telemetry import emit_telemetry
 from ..contracts.ids import HELP
 from ..cli.constants import NO_NETWORK_FLAG_EXPIRY
 from ..runtime.logging import log_event
-from ..runtime.capability_install import install_runtime_capabilities
+from ..capability.install import install_runtime_capabilities
 from ..runtime.context_safety import enforce_context_safety_scaffold
 from .invocation import parse_cli_invocation
 from .render import render_error

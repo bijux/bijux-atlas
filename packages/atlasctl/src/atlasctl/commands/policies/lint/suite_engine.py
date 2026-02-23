@@ -4,7 +4,7 @@ from pathlib import Path
 
 from ....core.runtime.guards.clock import utc_now_iso
 from ....checks.core.execution import CommandCheckDef
-from ....execution.runner import RunnerOptions, run_checks_payload
+from ....engine.runner import RunnerOptions, run_checks_payload
 
 
 def _py(script: str) -> list[str]:

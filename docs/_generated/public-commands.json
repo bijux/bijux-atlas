@@ -1,0 +1,203 @@
+{
+  "commands": [
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "run registered check suites and individual checks",
+      "name": "check",
+      "owner": "platform",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "configs checks and inventories",
+      "name": "configs",
+      "owner": "platform",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "contracts domain commands",
+      "name": "contracts",
+      "owner": "platform",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "dev control-plane group command surface",
+      "name": "dev",
+      "owner": "platform",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "docs checks and generation",
+      "name": "docs",
+      "owner": "docs",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/atlasctl/BOUNDARIES.md",
+      "help": "show tooling and context diagnostics",
+      "name": "doctor",
+      "owner": "platform",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "run gate contracts and lane checks",
+      "name": "gates",
+      "owner": "ops",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/index.md",
+      "help": "installation checks and doctor commands",
+      "name": "install",
+      "owner": "platform",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "generate and verify inventories",
+      "name": "inventory",
+      "owner": "repo",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "k8s checks and suites",
+      "name": "k8s",
+      "owner": "ops",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/development/repo-layout.md",
+      "help": "layout domain commands",
+      "name": "layout",
+      "owner": "repo",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "lint suite runner",
+      "name": "lint",
+      "owner": "platform",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "list checks/commands/suites from canonical registries",
+      "name": "list",
+      "owner": "platform",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "load and perf suites",
+      "name": "load",
+      "owner": "ops",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "make target wrappers and make contract tooling",
+      "name": "make",
+      "owner": "platform",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "observability checks and drills",
+      "name": "obs",
+      "owner": "ops",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "ops checks and suite orchestration",
+      "name": "ops",
+      "owner": "ops",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "owner id registry and validation commands",
+      "name": "owners",
+      "owner": "platform",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "package domain commands",
+      "name": "packages",
+      "owner": "platform",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "policy relaxations and bypass checks",
+      "name": "policies",
+      "owner": "platform",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "registry domain commands",
+      "name": "registry",
+      "owner": "platform",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/release-process.md",
+      "help": "release readiness checklist commands",
+      "name": "release",
+      "owner": "platform",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "repository stats and density reports",
+      "name": "repo",
+      "owner": "repo",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "unified report and scorecard commands",
+      "name": "report",
+      "owner": "platform",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "generate and print run identifiers",
+      "name": "run-id",
+      "owner": "platform",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "stack lifecycle and checks",
+      "name": "stack",
+      "owner": "ops",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "atlasctl-native suite runner",
+      "name": "suite",
+      "owner": "platform",
+      "stable": true
+    },
+    {
+      "doc_link": "docs/_generated/cli.md",
+      "help": "run canonical atlasctl test suites",
+      "name": "test",
+      "owner": "platform",
+      "stable": true
+    }
+  ],
+  "kind": "public-command-list",
+  "schema_version": 1,
+  "tool": "atlasctl"
+}

@@ -181,3 +181,18 @@ def test_checks_shell_boundary_check_passes() -> None:
 def test_single_checks_engine_runner_check_passes() -> None:
     proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_single_checks_engine_runner.py")
     assert proc.returncode == 0, proc.stderr
+
+
+def test_cli_main_loc_budget_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_cli_main_loc_budget.py")
+    assert proc.returncode == 0, proc.stderr
+
+
+def test_main_entrypoint_calls_app_main_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_main_entrypoint_calls_app_main.py")
+    assert proc.returncode == 0, proc.stderr
+
+
+def test_registry_generated_readonly_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_registry_generated_readonly.py")
+    assert proc.returncode == 0, proc.stderr

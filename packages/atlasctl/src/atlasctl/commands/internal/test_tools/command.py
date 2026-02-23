@@ -7,7 +7,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from ....checks.engine.execution import run_function_checks
+from ....engine.execution import run_function_checks
 from ....checks.registry import list_checks
 from ....core.context import RunContext
 from ....core.exec import run

@@ -48,7 +48,7 @@ def check_single_registry_module(repo_root: Path) -> tuple[int, list[str]]:
 
 def check_single_runner_module(repo_root: Path) -> tuple[int, list[str]]:
     paths = _find_named_modules(repo_root, "runner.py")
-    expected = "checks/engine/runner.py"
+    expected = "engine/runner.py"
     found = [path.relative_to(_resolve_src_root(repo_root)).as_posix() for path in paths]
     if found == [expected]:
         return 0, []

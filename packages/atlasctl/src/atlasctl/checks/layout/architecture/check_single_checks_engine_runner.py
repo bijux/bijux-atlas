@@ -9,7 +9,7 @@ SRC = ROOT / "packages/atlasctl/src/atlasctl"
 
 def main() -> int:
     runners = sorted(p.relative_to(ROOT).as_posix() for p in SRC.rglob("runner.py"))
-    expected = ["packages/atlasctl/src/atlasctl/checks/engine/runner.py"]
+    expected = ["packages/atlasctl/src/atlasctl/engine/runner.py"]
     if runners != expected:
         print(f"runner surface drift: expected {expected}, got {runners}")
         return 1

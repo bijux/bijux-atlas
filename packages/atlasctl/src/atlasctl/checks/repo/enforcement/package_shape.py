@@ -5,16 +5,21 @@ from pathlib import Path
 _SRC_ROOT = Path("packages/atlasctl/src/atlasctl")
 _CONTROL_PLANE_GROUPS = {"docs", "configs", "dev", "ops", "policies", "internal"}
 _TOP_LEVEL_GROUP_MAP = {
+    "app": "dev",
+    "capability": "dev",
     "checks": "policies",
     "cli": "dev",
     "commands": "dev",
     "contracts": "dev",
     "core": "dev",
+    "engine": "dev",
+    "execution": "dev",
     "internal": "internal",
     "ops": "ops",
     "policies": "policies",
     "registry": "dev",
     "reporting": "dev",
+    "runtime": "dev",
     "suite": "dev",
 }
 # Ops k8s test adapters now live under commands/ops/k8s/tests/checks/<group>/.
@@ -22,7 +27,7 @@ _TOP_LEVEL_GROUP_MAP = {
 _MAX_PACKAGE_DEPTH = 6
 _CANONICAL_CONCEPT_HOME = {
     "registry": "registry",
-    "runner": "suite",
+    "runner": "engine",
     "contracts": "contracts",
     "output": "reporting",
 }

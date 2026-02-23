@@ -47,6 +47,7 @@ def _generate_goldens(ctx: RunContext) -> tuple[int, dict[str, str]]:
         "contracts/explain.check.json.golden": ["--quiet", "--json", "explain", "check"],
         "check/check-list.json.golden": ["--quiet", "--json", "check", "list"],
         "help/cli_help_snapshot.txt": ["--help"],
+        "help/check_help_snapshot.txt": ["check", "--help"],
     }
     out_dir = ctx.repo_root / "packages/atlasctl/tests/goldens"
     written: dict[str, str] = {}
