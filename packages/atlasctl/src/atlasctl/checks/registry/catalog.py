@@ -19,6 +19,16 @@ def _build_check(**kwargs: object) -> CheckFactory:
 def _from_entry(entry: RegistryEntry) -> CheckFactory:
     module = importlib.import_module(entry.module)
     fn = getattr(module, entry.callable, None)
+    if entry.callable == "CHECKS":
+        exported = getattr(module, "CHECKS", ())
+        chosen = None
+        for item in exported if isinstance(exported, (list, tuple)) else ():
+            check_id = getattr(item, "check_id", "") or getattr(getattr(item, "__atlasctl_check_meta__", None), "check_id", "")
+            if str(check_id) == entry.id:
+                chosen = item
+                break
+        if chosen is not None:
+            fn = chosen.fn if hasattr(chosen, "fn") else chosen
     if fn is None:
         legacy = legacy_check_by_id().get(entry.id)
         fn = legacy.fn if legacy is not None else None
@@ -35,6 +45,9 @@ def _from_entry(entry: RegistryEntry) -> CheckFactory:
         severity=Severity(entry.severity),
         category=CheckCategory(entry.category),
         fix_hint=entry.fix_hint,
+        intent=entry.intent,
+        remediation_short=entry.remediation_short,
+        remediation_link=entry.remediation_link,
         slow=(entry.speed in {"slow", "nightly"}),
         tags=tuple((*entry.groups, f"gate:{entry.gate}")),
         effects=tuple(entry.effects),
@@ -42,6 +55,7 @@ def _from_entry(entry: RegistryEntry) -> CheckFactory:
         external_tools=tuple(entry.external_tools),
         evidence=tuple(entry.evidence),
         writes_allowed_roots=tuple(entry.writes_allowed_roots),
+        result_code=entry.result_code,
     )
 
 

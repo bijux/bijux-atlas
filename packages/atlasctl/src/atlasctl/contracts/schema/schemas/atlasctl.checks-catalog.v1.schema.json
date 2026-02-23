@@ -82,6 +82,9 @@
               "fix_hint": {
                 "type": "string"
               },
+              "intent": {
+                "type": "string"
+              },
               "legacy_id": {
                 "type": [
                   "string",
@@ -89,6 +92,15 @@
                 ]
               },
               "module": {
+                "type": "string"
+              },
+              "remediation_link": {
+                "type": "string"
+              },
+              "remediation_short": {
+                "type": "string"
+              },
+              "result_code": {
                 "type": "string"
               },
               "severity": {
