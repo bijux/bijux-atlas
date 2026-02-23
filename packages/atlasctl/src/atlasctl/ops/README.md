@@ -15,6 +15,7 @@ The ops subsystem is the Python-native execution surface for infrastructure, dep
 - No direct `ops/run/*.sh` wrappers.
 - No imports from `checks/layout/*` or policy internals.
 - No imports from test/fixture modules in command code.
+- `obs` is a public facade; `observability` owns observability business logic.
 - Commands use `RunContext` (and optional narrowed `CommandContext`) for `run_id`,
   `repo_root`, `write_roots`, and profile selection.
 - Global `--profile` and `--allow-network`/`--network` flags are the canonical

@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "kind": "ops-module-budgets",
+  "commands_ops_max_py_files": 450,
+  "commands_ops_max_depth": 6,
+  "commands_ops_max_bytes_per_file": 90000
+}

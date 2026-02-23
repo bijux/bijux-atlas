@@ -49,3 +49,5 @@ Business logic belongs in `runtime.py` or area/runtime modules.
 - Networked actions require explicit operator intent (`--allow-network` or
   `--network=allow`) and are gated by command-group policy + ops tool preflight.
 - Ops action capabilities are declared in `configs/ops/command-capabilities.json`.
+- `commands/ops/obs/*` is the public facade; observability implementation code lives
+  under `commands/ops/observability/*`.
