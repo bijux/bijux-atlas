@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["schema_name", "schema_version", "kind", "items", "tool", "status"],
+  "properties": {
+    "schema_name": { "const": "atlasctl.list-suites.v1" },
+    "schema_version": { "type": "integer", "const": 1 },
+    "kind": { "const": "list-suites" },
+    "tool": { "type": "string" },
+    "status": { "type": "string" },
+    "items": { "type": "array", "items": { "type": "object", "required": ["name", "kind", "item_count"] } }
+  }
+}

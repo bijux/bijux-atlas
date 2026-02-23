@@ -13,10 +13,14 @@ Do not edit rows manually; regenerate via `atlasctl contracts generate --generat
 | atlasctl.commands.v1 | 1 | atlasctl.commands.v1.schema.json | `85a3fe7e9d88e85b` |
 | atlasctl.explain.v1 | 1 | atlasctl.explain.v1.schema.json | `0ea5e9b7d6ba22f0` |
 | atlasctl.help.v1 | 1 | atlasctl.help.v1.schema.json | `0afd4c50eba70e0f` |
+| atlasctl.list-checks.v1 | 1 | atlasctl.list-checks.v1.schema.json | `2b6832dc8e8bc1d5` |
+| atlasctl.list-commands.v1 | 1 | atlasctl.list-commands.v1.schema.json | `3021edfdd46fe2a0` |
+| atlasctl.list-suites.v1 | 1 | atlasctl.list-suites.v1.schema.json | `8fb65615aec9f583` |
 | atlasctl.ops-report.v1 | 1 | atlasctl.ops-report.v1.schema.json | `eca7734258a245ca` |
 | atlasctl.ops.manifest.v1 | 1 | atlasctl.ops.manifest.v1.schema.json | `e98b3816cebd169a` |
 | atlasctl.output-base.v1 | 1 | output/atlasctl.output-base.v1.schema.json | `2dcde2ec625976de` |
 | atlasctl.output-base.v2 | 2 | output/atlasctl.output-base.v2.schema.json | `65403c8c9bb1f558` |
+| atlasctl.registry-spine.v1 | 1 | atlasctl.registry-spine.v1.schema.json | `f514d3a53ba1c5ee` |
 | atlasctl.runtime_contracts.v1 | 1 | output/atlasctl.runtime_contracts.v1.schema.json | `328c97c92f64d965` |
 | atlasctl.suite-manifests.v1 | 1 | atlasctl.suite-manifests.v1.schema.json | `3c2765203ad31ba7` |
 | atlasctl.suite-run.v1 | 1 | atlasctl.suite-run.v1.schema.json | `bde01f643602012b` |
