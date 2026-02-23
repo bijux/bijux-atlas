@@ -25,7 +25,7 @@ doctor: ## Run package doctor diagnostics
 	@./bin/atlasctl doctor
 
 make/command-allowlist: ## Enforce direct-make command allowlist (cargo/docker/helm/kubectl/k6)
-	@./bin/atlasctl check run make --id checks_make_command_allowlist
+	@./bin/atlasctl suite run lint-fast --report text
 
 config-print: ## Print canonical merged config payload as JSON
 	@./bin/atlasctl configs print

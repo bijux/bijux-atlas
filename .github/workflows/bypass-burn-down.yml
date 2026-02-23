@@ -26,12 +26,7 @@ jobs:
           ./bin/atlasctl report bypass culprits --json --out artifacts/reports/atlasctl/policies-bypass-culprits.json
       - name: Run bypass burn-down gates
         run: |
-          ./bin/atlasctl --format json check run --id checks_policies_bypass_count_nonincreasing > artifacts/reports/atlasctl/bypass-count-trend.gate.json
-          ./bin/atlasctl --format json check run --id checks_policies_bypass_budget_trend > artifacts/reports/atlasctl/bypass-budget-trend.gate.json
-          ./bin/atlasctl --format json check run --id checks_policies_bypass_new_entries_forbidden > artifacts/reports/atlasctl/bypass-new-entries.gate.json
-          ./bin/atlasctl --format json check run --id checks_policies_bypass_has_test_coverage > artifacts/reports/atlasctl/bypass-test-coverage.gate.json
-          ./bin/atlasctl --format json check run --id checks_policies_culprits_nonincrease_on_main > artifacts/reports/atlasctl/bypass-main-trend.gate.json
-          ./bin/atlasctl --format json check run --id checks_policies_culprits_empty_on_release_tags > artifacts/reports/atlasctl/bypass-release-tag.gate.json
+          ./bin/atlasctl suite run bypass-governance --report json > artifacts/reports/atlasctl/bypass-governance.gate.json
       - name: Upload bypass burn-down artifacts
         if: always()
         uses: actions/upload-artifact@v4
