@@ -2,233 +2,39 @@ from __future__ import annotations
 
 import argparse
 import json
-import socket
-import subprocess
-from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from ....core.context import RunContext
-from ....core.fs import ensure_evidence_path
 from ....core.process import run_command
 from ....core.runtime.paths import write_text_file
 from ....core.schema.schema_utils import validate_json
+from ..artifacts.command import artifacts_open as _artifacts_open_cmd, cleanup_gc as _cleanup_gc_cmd
+from ..ports.command import ports_reserve as _ports_reserve_cmd, ports_show as _ports_show_cmd
+from ..scenario.command import run_scenario_from_manifest as _run_scenario_from_manifest_cmd
 from ..tools import command_rendered, environment_summary, hash_inputs, invocation_report, preflight_tools, run_tool
-
-
-@dataclass(frozen=True)
-class OrchestrateSpec:
-    area: str
-    action: str
-    cmd: list[str]
-
-
-def _artifact_base(ctx: RunContext, area: str) -> Path:
-    return ensure_evidence_path(ctx, ctx.evidence_root / area / ctx.run_id)
-
-
-def _write_wrapper_artifacts(ctx: RunContext, area: str, action: str, cmd: list[str], code: int, output: str) -> dict[str, Any]:
-    out_dir = _artifact_base(ctx, area)
-    started_dt = datetime.now(timezone.utc)
-    started = started_dt.isoformat()
-    run_log = out_dir / "run.log"
-    report_path = out_dir / "report.json"
-    write_text_file(run_log, output + ("\n" if output and not output.endswith("\n") else ""), encoding="utf-8")
-    payload = {
-        "schema_version": 1,
-        "tool": "bijux-atlas",
-        "status": "pass" if code == 0 else "fail",
-        "run_id": ctx.run_id,
-        "area": area,
-        "action": action,
-        "command": " ".join(cmd),
-        "command_rendered": command_rendered(cmd),
-        "generated_at": started,
-        "timings": {
-            "start": started,
-            "end": datetime.now(timezone.utc).isoformat(),
-        },
-        "artifacts": {
-            "run_log": str(run_log),
-            "report": str(report_path),
-        },
-        "details": {
-            "exit_code": code,
-            "inputs_hash": hash_inputs(ctx.repo_root, []),
-            "environment_summary": environment_summary(ctx, [cmd[0]] if cmd else []),
-        },
-    }
-    write_text_file(report_path, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    validate_json(payload, ctx.repo_root / "configs/contracts/scripts-tool-output.schema.json")
-    return payload
-
-
-def _emit(payload: dict[str, Any], report_format: str) -> None:
-    if report_format == "json":
-        print(json.dumps(payload, sort_keys=True))
-    else:
-        print(
-            f"{payload['area']}:{payload['action']} status={payload['status']} run_id={payload['run_id']} "
-            f"log={payload['artifacts']['run_log']}"
-        )
-
-
-def _run_wrapped(ctx: RunContext, spec: OrchestrateSpec, report_format: str) -> int:
-    missing, _resolved = preflight_tools([spec.cmd[0]] if spec.cmd else [])
-    if missing:
-        payload = _write_wrapper_artifacts(ctx, spec.area, spec.action, spec.cmd, 1, f"missing tools: {', '.join(missing)}")
-        _emit(payload, report_format)
-        return 1
-    inv = run_tool(ctx, spec.cmd)
-    payload = _write_wrapper_artifacts(ctx, spec.area, spec.action, spec.cmd, inv.code, inv.combined_output)
-    payload["details"]["invocation"] = invocation_report(inv)
-    _emit(payload, report_format)
-    return inv.code
+from ._wrappers import OrchestrateSpec, artifact_base as _artifact_base, emit_payload as _emit, run_wrapped as _run_wrapped
 
 
 def _ports_show(ctx: RunContext, report_format: str) -> int:
-    ports_cfg = json.loads((ctx.repo_root / "configs/ops/ports.json").read_text(encoding="utf-8"))
-    payload: dict[str, Any] = {
-        "schema_version": 1,
-        "tool": "bijux-atlas",
-        "status": "pass",
-        "run_id": ctx.run_id,
-        "area": "ports",
-        "action": "show",
-        "details": ports_cfg,
-    }
-    _emit(payload, report_format)
-    return 0
-
-
-def _reserve_ephemeral_port() -> int:
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind(("", 0))
-        s.listen(1)
-        return int(s.getsockname()[1])
+    return _ports_show_cmd(ctx, report_format)
 
 
 def _ports_reserve(ctx: RunContext, report_format: str, name: str, port: int | None) -> int:
-    chosen = int(port) if port is not None else _reserve_ephemeral_port()
-    out_dir = _artifact_base(ctx, "ports")
-    reservation = {
-        "schema_version": 1,
-        "tool": "bijux-atlas",
-        "status": "pass",
-        "run_id": ctx.run_id,
-        "area": "ports",
-        "action": "reserve",
-        "details": {"name": name, "port": chosen},
-    }
-    validate_json(reservation, ctx.repo_root / "configs/contracts/scripts-tool-output.schema.json")
-    write_text_file(out_dir / "report.json", json.dumps(reservation, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    write_text_file(out_dir / "run.log", f"reserved {name}={chosen}\n", encoding="utf-8")
-    _emit(reservation, report_format)
-    return 0
+    return _ports_reserve_cmd(ctx, report_format, name, port)
 
 
 def _cleanup(ctx: RunContext, report_format: str, older_than_days: int) -> int:
-    now = datetime.now(timezone.utc).timestamp()
-    root = ctx.evidence_root
-    removed: list[str] = []
-    if root.exists():
-        for path in sorted(root.rglob("*")):
-            if not path.is_dir():
-                continue
-            age_days = (now - path.stat().st_mtime) / 86400.0
-            if age_days >= float(older_than_days):
-                removed.append(str(path))
-    # Remove deepest paths first.
-    for item in sorted(removed, key=lambda p: p.count("/"), reverse=True):
-        p = Path(item)
-        try:
-            p.rmdir()
-        except OSError:
-            continue
-    payload = {
-        "schema_version": 1,
-        "tool": "bijux-atlas",
-        "status": "pass",
-        "run_id": ctx.run_id,
-        "area": "cleanup",
-        "action": "gc",
-        "details": {"older_than_days": older_than_days, "removed_dirs": sorted(removed)},
-    }
-    validate_json(payload, ctx.repo_root / "configs/contracts/scripts-tool-output.schema.json")
-    _emit(payload, report_format)
-    return 0
+    return _cleanup_gc_cmd(ctx, report_format, older_than_days)
 
 
 def _artifacts_open(ctx: RunContext, report_format: str) -> int:
-    root = ctx.repo_root / "artifacts" / "ops"
-    latest = ""
-    if root.exists():
-        dirs = sorted([p for p in root.iterdir() if p.is_dir()])
-        if dirs:
-            latest = str(dirs[-1].relative_to(ctx.repo_root))
-    if not latest:
-        payload = {
-            "schema_version": 1,
-            "tool": "bijux-atlas",
-            "status": "fail",
-            "run_id": ctx.run_id,
-            "area": "artifacts",
-            "action": "open",
-            "details": "no artifacts found under artifacts/ops",
-        }
-        _emit(payload, report_format)
-        return 2
-    target = ctx.repo_root / latest
-    for opener in (["open", str(target)], ["xdg-open", str(target)]):
-        try:
-            subprocess.run(opener, cwd=ctx.repo_root, check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        except FileNotFoundError:
-            continue
-    payload = {
-        "schema_version": 1,
-        "tool": "bijux-atlas",
-        "status": "pass",
-        "run_id": ctx.run_id,
-        "area": "artifacts",
-        "action": "open",
-        "details": {"path": latest},
-    }
-    _emit(payload, report_format)
-    return 0
+    return _artifacts_open_cmd(ctx, report_format)
 
 
 def _run_manifest(ctx: RunContext, report_format: str, manifest: str, scenario: str) -> int:
-    manifest_path = (ctx.repo_root / manifest).resolve()
-    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
-    scenarios = payload.get("scenarios", {})
-    item = scenarios.get(scenario)
-    if not isinstance(item, dict):
-        fail = {
-            "schema_version": 1,
-            "tool": "bijux-atlas",
-            "status": "fail",
-            "run_id": ctx.run_id,
-            "area": "run",
-            "action": scenario,
-            "details": f"scenario `{scenario}` missing in {manifest}",
-        }
-        _emit(fail, report_format)
-        return 2
-    cmd = item.get("command")
-    if not isinstance(cmd, list) or not cmd:
-        fail = {
-            "schema_version": 1,
-            "tool": "bijux-atlas",
-            "status": "fail",
-            "run_id": ctx.run_id,
-            "area": "run",
-            "action": scenario,
-            "details": f"scenario `{scenario}` has invalid command",
-        }
-        _emit(fail, report_format)
-        return 2
-    return _run_wrapped(ctx, OrchestrateSpec("run", scenario, [str(x) for x in cmd]), report_format)
+    return _run_scenario_from_manifest_cmd(ctx, report_format, manifest, scenario)
 
 
 def _contracts_snapshot(ctx: RunContext, report_format: str) -> int:
