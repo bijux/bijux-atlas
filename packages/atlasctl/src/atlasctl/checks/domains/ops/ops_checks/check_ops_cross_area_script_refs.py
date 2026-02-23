@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -16,18 +17,23 @@ def _repo_root() -> Path:
 ROOT = _repo_root()
 AREAS = ("datasets", "e2e", "fixtures", "k8s", "load", "obs", "report", "run", "stack")
 PATTERN = re.compile(r"ops/(" + "|".join(AREAS) + r")/scripts/[a-zA-Z0-9_./-]+\.sh")
-ALLOWLIST = ROOT / "ops/_meta/cross-area-script-refs-allowlist.txt"
+ALLOWLIST = ROOT / "ops/_meta/cross-area-script-refs-allowlist.json"
 
 
 def load_allowlist() -> set[str]:
     if not ALLOWLIST.exists():
         return set()
+    payload = json.loads(ALLOWLIST.read_text(encoding="utf-8"))
+    rows = payload.get("entries", []) if isinstance(payload, dict) else []
     items: set[str] = set()
-    for raw in ALLOWLIST.read_text(encoding="utf-8").splitlines():
-        line = raw.strip()
-        if not line or line.startswith("#"):
+    for row in rows:
+        if not isinstance(row, dict):
             continue
-        items.add(line)
+        src = str(row.get("source_path", "")).strip()
+        ref = str(row.get("referenced_path", "")).strip()
+        if not src or not ref:
+            continue
+        items.add(f"{src}|{ref}")
     return items
 
 
@@ -45,7 +51,7 @@ def main() -> int:
             if not file_path.is_file():
                 continue
             rel = file_path.relative_to(ROOT)
-            if rel.name == "cross-area-script-refs-allowlist.txt":
+            if rel.name == "cross-area-script-refs-allowlist.json":
                 continue
             if file_path.suffix in {".png", ".jpg", ".jpeg", ".gif", ".ico", ".pdf", ".svg", ".sqlite", ".gz", ".tgz", ".tar"}:
                 continue

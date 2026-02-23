@@ -15,6 +15,10 @@
     ],
     "required_annotations": []
   },
+  "allowlisted_literals": {
+    "layer": "ops/_meta/layer-contract-literal-allowlist.json",
+    "stack": "ops/_meta/stack-layer-literal-allowlist.json"
+  },
   "layer_dependencies": {
     "e2e": {
       "may_reference": [

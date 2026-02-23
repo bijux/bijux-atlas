@@ -143,9 +143,9 @@ packages/atlasctl/src/atlasctl/commands/ops/lint/docs/no_direct_bash_entrypoints
 packages/atlasctl/src/atlasctl/commands/ops/lint/repo/no_root_ad_hoc_python.py
 packages/atlasctl/src/atlasctl/commands/ops/lint/repo/no_scripts_bin_dir.py
 packages/atlasctl/src/atlasctl/commands/ops/lint/repo/no_scripts_dir.py
-ops/_meta/cross-area-script-refs-allowlist.txt
-ops/_meta/layer-contract-literal-allowlist.txt
-ops/_meta/stack-layer-literal-allowlist.txt
+ops/_meta/cross-area-script-refs-allowlist.json
+ops/_meta/layer-contract-literal-allowlist.json
+ops/_meta/stack-layer-literal-allowlist.json
 ops/datasets/real-datasets.json
 packages/atlasctl/src/atlasctl/commands/ops/datasets/publish_by_name.py
 packages/atlasctl/src/atlasctl/commands/ops/datasets/dataset_qc.py

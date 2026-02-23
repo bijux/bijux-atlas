@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -25,7 +26,7 @@ SCAN_GLOBS = [
 EXCLUDES = {
     str(ROOT / "ops" / "_meta" / "generate_layer_contract.py"),
 }
-ALLOWLIST = ROOT / "ops" / "_meta" / "layer-contract-literal-allowlist.txt"
+ALLOWLIST = ROOT / "ops" / "_meta" / "layer-contract-literal-allowlist.json"
 
 
 def load_literals() -> list[str]:
@@ -49,9 +50,12 @@ def main() -> int:
 
     allowed_paths = set()
     if ALLOWLIST.exists():
-        for raw in ALLOWLIST.read_text(encoding="utf-8").splitlines():
-            line = raw.strip()
-            if line and not line.startswith("#"):
+        payload = json.loads(ALLOWLIST.read_text(encoding="utf-8"))
+        for row in payload.get("entries", []) if isinstance(payload, dict) else []:
+            if not isinstance(row, dict):
+                continue
+            line = str(row.get("path", "")).strip()
+            if line:
                 allowed_paths.add((ROOT / line).resolve())
 
     patterns = [re.compile(rf"\b{re.escape(x)}\b") for x in literals]
