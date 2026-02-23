@@ -2,6 +2,6 @@
 from __future__ import annotations
 
 from .context import RunContext
-from . import env, paths, run_id
+from . import clock, env, logging, paths, run_id
 
-__all__ = ["RunContext", "env", "paths", "run_id"]
+__all__ = ["RunContext", "clock", "env", "logging", "paths", "run_id"]
