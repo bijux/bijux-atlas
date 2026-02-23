@@ -7,7 +7,7 @@ from .....core.process import run_command
 
 
 REGISTRY_PATH = "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml"
-REQUIRED_OWNERS = "makefiles/ownership.json"
+REQUIRED_OWNERS = "configs/make/ownership.json"
 REQUIRED_DOCS = {"docs/checks/registry.md", "docs/INDEX.md"}
 REQUIRED_GOLDENS = {
     "packages/atlasctl/tests/goldens/check/check-list.json.golden",

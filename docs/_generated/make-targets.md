@@ -1,6 +1,6 @@
 # Make Targets
 
-Generated from `makefiles/targets.json`. Do not edit manually.
+Generated from `configs/make/targets.json`. Do not edit manually.
 
 | target | description | owner | area | lane |
 |---|---|---|---|---|

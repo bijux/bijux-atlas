@@ -72,7 +72,7 @@ def configure_docs_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
         ("generate-registry-indexes", "generate docs command/check/suite indexes from registry"),
         ("generate-crates-map", "generate docs/development/crates-map.md"),
         ("generate-upgrade-guide", "generate docs/_generated/upgrade-guide.md"),
-        ("generate-make-targets-catalog", "generate makefiles/targets.json and docs/_generated/make-targets.md"),
+        ("generate-make-targets-catalog", "generate configs/make/targets.json and docs/_generated/make-targets.md"),
         ("generate-env-vars-doc", "generate docs/_generated/env-vars.md"),
         ("generate-config-keys-doc", "generate docs/_generated/config-keys.md"),
         ("generate-layer-contract-doc", "generate docs/_generated/layer-contract.md"),

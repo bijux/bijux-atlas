@@ -47,7 +47,7 @@
       },
       "schema_version": 1
     },
-    "makefiles/ownership.json": {
+    "configs/make/ownership.json": {
       "artifacts-open": {
         "area": "ops",
         "owner": "ops-platform"

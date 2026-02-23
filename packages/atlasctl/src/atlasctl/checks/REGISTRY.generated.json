@@ -205,7 +205,7 @@
       "effects": [],
       "evidence": [],
       "external_tools": [],
-      "fix_hint": "Update makefiles/ownership.json when REGISTRY.toml changes.",
+      "fix_hint": "Update configs/make/ownership.json when REGISTRY.toml changes.",
       "gate": "checks",
       "groups": [
         "checks",

@@ -8,7 +8,7 @@ from atlasctl.core.exec import run
 
 ROOT = Path(__file__).resolve().parents[6]
 REQUIRED = {
-    "makefiles/targets.json",
+    "configs/make/targets.json",
     "docs/_generated/make-targets.md",
 }
 
@@ -47,7 +47,7 @@ def main() -> int:
         )
         if regen.returncode == 0:
             drift = run(
-                ["git", "diff", "--name-only", "--", "makefiles/targets.json", "docs/_generated/make-targets.md"],
+                ["git", "diff", "--name-only", "--", "configs/make/targets.json", "docs/_generated/make-targets.md"],
                 cwd=ROOT,
                 capture_output=True,
                 text=True,

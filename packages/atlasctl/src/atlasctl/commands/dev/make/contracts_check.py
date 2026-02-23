@@ -122,7 +122,7 @@ CHECKS: list[MakeCheck] = [
         "public-target-ownership",
         "Ensure public target ownership coverage",
         "packages/atlasctl/src/atlasctl/checks/domains/policies/make/check_make_target_ownership.py",
-        "Add missing target owners in makefiles/ownership.json.",
+        "Add missing target owners in configs/make/ownership.json.",
     ),
     _check(
         "public-target-docs",
@@ -260,7 +260,7 @@ CHECKS: list[MakeCheck] = [
         "make-wrapper-owners",
         "Validate wrapper make targets have ownership metadata",
         "packages/atlasctl/src/atlasctl/checks/layout/makefiles/owners/check_make_wrapper_target_owners.py",
-        "Add owner/area entries in makefiles/ownership.json for wrapper targets.",
+        "Add owner/area entries in configs/make/ownership.json for wrapper targets.",
     ),
     _check(
         "root-diff-alarm",

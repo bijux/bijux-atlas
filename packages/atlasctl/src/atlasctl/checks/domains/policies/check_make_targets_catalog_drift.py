@@ -16,7 +16,7 @@ def _repo_root() -> Path:
 
 ROOT = _repo_root()
 PATHS = [
-    "makefiles/targets.json",
+    "configs/make/targets.json",
     "docs/_generated/make-targets.md",
     "artifacts/generated/make/targets.catalog.json",
 ]
