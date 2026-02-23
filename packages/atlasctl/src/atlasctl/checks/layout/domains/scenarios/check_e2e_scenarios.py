@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Purpose: validate unified e2e scenario manifest and docs references.
-# Inputs: ops/e2e/scenarios/scenarios.json, ops/_schemas/e2e-scenarios.schema.json, docs/operations/e2e/*.md.
+# Inputs: ops/e2e/scenarios/scenarios.json, unified e2e scenarios schema, docs/operations/e2e/*.md.
 # Outputs: non-zero on missing/invalid scenarios or docs references.
 from __future__ import annotations
 
@@ -9,9 +9,19 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[6]
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for parent in cur.parents:
+        if all((parent / marker).exists() for marker in ("ops", "packages", "configs", "makefiles")):
+            return parent
+    raise RuntimeError("unable to resolve repo root")
+
+
+ROOT = _repo_root()
 manifest = json.loads((ROOT / "ops/e2e/scenarios/scenarios.json").read_text(encoding="utf-8"))
-schema = json.loads((ROOT / "ops/_schemas/e2e-scenarios.schema.json").read_text(encoding="utf-8"))
+schema = json.loads((ROOT / "ops/_schemas/e2e-scenarios-unified.schema.json").read_text(encoding="utf-8"))
+surface = json.loads((ROOT / "ops/_meta/surface.json").read_text(encoding="utf-8"))
+known_action_ids = {str(row.get("id")) for row in surface.get("actions", []) if isinstance(row, dict)}
 
 errors: list[str] = []
 for key in schema.get("required", []):
@@ -34,6 +44,9 @@ for i, s in enumerate(scenarios):
             errors.append(f"scenario `{sid}` missing boolean compose.{required}")
 
     entry = s.get("entrypoint", "")
+    action_id = s.get("action_id")
+    if not isinstance(action_id, str) or action_id not in known_action_ids:
+        errors.append(f"scenario `{sid}` action_id not found in ops surface: {action_id!r}")
     if not isinstance(entry, str) or not entry.startswith("make "):
         errors.append(f"scenario `{sid}` invalid entrypoint")
     else:

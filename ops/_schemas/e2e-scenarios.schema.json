@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": ["schema_version", "scenarios"],
   "properties": {
@@ -8,11 +9,13 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["id", "description", "entrypoint", "compose"],
+        "required": ["id", "description", "action_id"],
         "properties": {
           "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
           "description": {"type": "string", "minLength": 8},
-          "entrypoint": {"type": "string", "pattern": "^make [a-z0-9-]+$"},
+          "action_id": {"type": "string", "pattern": "^ops\\.[a-z0-9]+(?:\\.[a-z0-9-]+)+$"},
+          "entrypoint": {"type": "string"},
+          "script": {"type": "string"},
           "compose": {
             "type": "object",
             "required": ["stack", "obs", "datasets", "load"],
@@ -25,7 +28,11 @@
             "additionalProperties": false
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "oneOf": [
+          {"required": ["entrypoint", "compose"]},
+          {"required": ["script"]}
+        ]
       }
     }
   },

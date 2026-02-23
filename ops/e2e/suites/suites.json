@@ -135,6 +135,96 @@
           }
         }
       ]
+    },
+    {
+      "id": "fixture-medium",
+      "description": "Medium fixture pipeline: ingest, serve, query smoke, and stable snapshots.",
+      "required_capabilities": ["k8s", "stack", "datasets"],
+      "scenarios": [
+        {
+          "id": "single-release-medium",
+          "description": "Run single release fixture ingest/serve/query/snapshot workflow.",
+          "runner": "python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/run_single_release.py",
+          "capabilities": ["datasets", "stack"],
+          "destructive": false,
+          "budget": {
+            "expected_time_seconds": 420,
+            "expected_qps": 3,
+            "expected_artifacts": [
+              "artifacts/ops/e2e/realdata/single-release/report.json",
+              "artifacts/ops/e2e/realdata/single-release/report.md",
+              "artifacts/ops/e2e/realdata"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "release-diff-fixture",
+      "description": "Serve release110 and release111 fixtures and verify diff endpoints.",
+      "required_capabilities": ["k8s", "stack", "datasets"],
+      "scenarios": [
+        {
+          "id": "release110-vs-111-diff",
+          "description": "Run realdata release diff validation for canonical endpoints.",
+          "runner": "python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/run_two_release_diff.py",
+          "capabilities": ["datasets", "stack"],
+          "destructive": false,
+          "budget": {
+            "expected_time_seconds": 480,
+            "expected_qps": 2,
+            "expected_artifacts": [
+              "artifacts/ops/release-diff/report.json",
+              "artifacts/ops/release-diff/report.md",
+              "artifacts/ops/release-diff"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "rollback-drill",
+      "description": "Rollback drill suite with deterministic report outputs.",
+      "required_capabilities": ["k8s", "stack", "datasets", "obs"],
+      "scenarios": [
+        {
+          "id": "realdata-rollback-drill",
+          "description": "Run rollback drill and emit deterministic drill report artifacts.",
+          "runner": "python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/rollback_drill.py",
+          "capabilities": ["datasets", "obs"],
+          "destructive": true,
+          "budget": {
+            "expected_time_seconds": 300,
+            "expected_qps": 1,
+            "expected_artifacts": [
+              "artifacts/ops/e2e/realdata/rollback-drill/report.json",
+              "artifacts/ops/e2e/realdata/rollback-drill/report.md"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "upgrade-drill",
+      "description": "Upgrade drill suite verifying schema evolution rules with deterministic reports.",
+      "required_capabilities": ["k8s", "stack", "datasets", "obs"],
+      "scenarios": [
+        {
+          "id": "realdata-upgrade-drill",
+          "description": "Run upgrade drill and verify schema evolution with report artifacts.",
+          "runner": "python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/upgrade_drill.py",
+          "capabilities": ["datasets", "obs"],
+          "destructive": true,
+          "budget": {
+            "expected_time_seconds": 300,
+            "expected_qps": 1,
+            "expected_artifacts": [
+              "artifacts/ops/e2e/realdata/upgrade-drill/report.json",
+              "artifacts/ops/e2e/realdata/upgrade-drill/report.md"
+            ]
+          }
+        }
+      ]
     }
   ]
 }
