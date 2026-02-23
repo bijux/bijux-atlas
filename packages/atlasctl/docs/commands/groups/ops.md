@@ -2,6 +2,8 @@
 
 Stable public `atlasctl ops ...` command surface.
 
+- `ops` (group root; use `atlasctl ops --help`)
+
 ## Canonical Areas
 
 - `stack`
@@ -32,7 +34,14 @@ Stable public `atlasctl ops ...` command surface.
 
 ## Examples
 
+- `atlasctl ops doctor --report text`
+- `atlasctl ops --help`
+- `atlasctl stack validate`
+- `atlasctl k8s validate`
+- `atlasctl load compare`
+- `atlasctl obs report`
 - `atlasctl ops --report json stack status`
 - `atlasctl ops --report json deploy plan`
-- `atlasctl ops --report json k8s render`
+- `atlasctl ops --report json k8s validate`
 - `atlasctl ops --report json load compare`
+- `atlasctl ops --report json obs report`

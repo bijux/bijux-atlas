@@ -1,6 +1,8 @@
 # Bypass Removal Playbook
 
-Use this flow for any bypass entry. It matches the structured ops bypass ledger (`ops/_meta/bypass-ledger.json`) and structured ops allowlists (`ops/_meta/*allowlist.json`).
+Use this flow for any bypass entry. It matches the structured ops bypass ledger
+(`ops/_meta/bypass-ledger.json`) and structured ops allowlists
+(`ops/_meta/*allowlist.json`).
 
 1. Find the entry:
    - `./bin/atlasctl policies bypass entry --id <source:key>`

@@ -1,6 +1,6 @@
 # Run Ops Locally
 
-Local ops runs should use atlasctl command surfaces only.
+Local ops runs should use atlasctl CLI surfaces only.
 
 ## Prereqs
 
@@ -18,4 +18,3 @@ Local ops runs should use atlasctl command surfaces only.
 
 - Evidence root: `artifacts/evidence/<area>/<run_id>/...`
 - Suite output: `artifacts/isolate/<run_id>/atlasctl-suite/results.json`
-

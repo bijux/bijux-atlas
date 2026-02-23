@@ -36,7 +36,7 @@ Shell may still appear for:
 - test fixtures/assets
 - hermetic shell snippets embedded in atlasctl-owned modules (transitional)
 
-These are implementation details. Public entrypoints remain atlasctl commands.
+These are implementation details. Public entrypoints remain stable atlasctl CLI subcommands.
 
 ## Reporting
 

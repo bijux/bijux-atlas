@@ -1934,7 +1934,7 @@
       "owner": "platform",
       "severity": "error",
       "speed": "fast",
-      "timeout_ms": 2000,
+      "timeout_ms": 4000,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -5655,6 +5655,34 @@
     },
     {
       "area": "bypass",
+      "callable": "check_policies_bypass_inventory_growth_requires_ticket",
+      "category": "hygiene",
+      "description": "fail inventory growth without explicit bypass approval/ticket entry",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Add explicit bypass approval in configs/policy/bypass-new-entry-approvals.json or reduce bypass count.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_inventory_growth_requires_ticket",
+      "legacy_id": "policies.bypass_inventory_growth_requires_ticket",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
       "callable": "check_policies_bypass_inventory_present",
       "category": "hygiene",
       "description": "require bypass inventory registry and sources to exist",
@@ -5823,6 +5851,63 @@
     },
     {
       "area": "bypass",
+      "callable": "check_policies_bypass_no_direct_script_runs",
+      "category": "hygiene",
+      "description": "forbid bypasses for direct script runs policy",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Remove direct-script-run bypasses and use atlasctl commands.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_no_direct_script_runs",
+      "legacy_id": "policies.bypass_no_direct_script_runs",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
+      "callable": "check_policies_bypass_no_network_guard",
+      "category": "hygiene",
+      "description": "forbid bypasses for network guard policy",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Remove network-guard bypasses and use explicit network policy flags.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "network",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_no_network_guard",
+      "legacy_id": "policies.bypass_no_network_guard",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
       "callable": "check_policies_bypass_no_new_files",
       "category": "hygiene",
       "description": "forbid unregistered new bypass files under configs/policy",
@@ -5840,6 +5925,62 @@
       ],
       "id": "checks_policies_bypass_no_new_files",
       "legacy_id": "policies.bypass_no_new_files",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
+      "callable": "check_policies_bypass_no_security_or_pinning",
+      "category": "hygiene",
+      "description": "forbid bypasses in security and image pinning policy areas",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Remove bypasses for security/image pinning policy areas.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_no_security_or_pinning",
+      "legacy_id": "policies.bypass_no_security_or_pinning",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
+      "callable": "check_policies_bypass_no_unpinned_images",
+      "category": "hygiene",
+      "description": "forbid bypasses for unpinned images policy",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Remove unpinned-image bypasses and pin images.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_no_unpinned_images",
+      "legacy_id": "policies.bypass_no_unpinned_images",
       "module": "atlasctl.checks.domains.policies.make.enforcement",
       "owner": "platform",
       "severity": "error",
@@ -6019,6 +6160,34 @@
     },
     {
       "area": "bypass",
+      "callable": "check_policies_bypass_replacement_mechanism",
+      "category": "hygiene",
+      "description": "require replacement_mechanism on bypass entries",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Add replacement_mechanism to bypass entries.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_replacement_mechanism",
+      "legacy_id": "policies.bypass_replacement_mechanism",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
       "callable": "check_policies_bypass_schema_valid",
       "category": "hygiene",
       "description": "validate bypass JSON sources against schemas",
@@ -6075,6 +6244,90 @@
     },
     {
       "area": "bypass",
+      "callable": "check_policies_bypass_severity_expiry_windows",
+      "category": "hygiene",
+      "description": "require tighter expiry windows for P0/P1 bypasses",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Reduce expiry horizon for P0/P1 bypasses.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_severity_expiry_windows",
+      "legacy_id": "policies.bypass_severity_expiry_windows",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
+      "callable": "check_policies_bypass_severity_levels",
+      "category": "hygiene",
+      "description": "require bypass severity levels P0-P3",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Add severity to bypass entries.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_severity_levels",
+      "legacy_id": "policies.bypass_severity_levels",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
+      "callable": "check_policies_bypass_tokens_linked",
+      "category": "hygiene",
+      "description": "forbid ALLOWLIST/TEMP/HACK tokens without linked bypass ids",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Link tokens to OPS-BYPASS-* or ATLAS-EXC-* identifiers.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_bypass_tokens_linked",
+      "legacy_id": "policies.bypass_tokens_linked",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "bypass",
       "callable": "check_policies_bypass_usage_heatmap",
       "category": "hygiene",
       "description": "emit bypass usage heatmap report",
@@ -6093,6 +6346,64 @@
       "id": "checks_policies_bypass_usage_heatmap",
       "legacy_id": "policies.bypass_usage_heatmap",
       "module": "atlasctl.checks.domains.policies.make",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "culprits",
+      "callable": "check_policies_culprits_empty_on_release_tags",
+      "category": "hygiene",
+      "description": "require zero policy culprits on release tags",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Release tags must ship without bypass culprits.",
+      "gate": "policies",
+      "groups": [
+        "ci",
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_culprits_empty_on_release_tags",
+      "legacy_id": "policies.culprits_empty_on_release_tags",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "culprits",
+      "callable": "check_policies_culprits_nonincrease_on_main",
+      "category": "hygiene",
+      "description": "forbid bypass count increases on main",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Reduce or approve bypass growth before merging to main.",
+      "gate": "policies",
+      "groups": [
+        "ci",
+        "fast",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_culprits_nonincrease_on_main",
+      "legacy_id": "policies.culprits_nonincrease_on_main",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
       "owner": "platform",
       "severity": "error",
       "speed": "fast",
@@ -6149,6 +6460,267 @@
       "id": "checks_policies_no_inline_bypass_entries",
       "legacy_id": "policies.no_inline_bypass_entries",
       "module": "atlasctl.checks.domains.policies.make",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "ops",
+      "callable": "check_ops_allowlisted_literals_have_contract_tests",
+      "category": "hygiene",
+      "description": "require allowlisted ops literals to link contract/necessity tests",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Add contract_test and necessity_test paths for every literal allowlist entry.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "ops",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_ops_allowlisted_literals_have_contract_tests",
+      "legacy_id": "policies.ops_allowlisted_literals_have_contract_tests",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "ops",
+      "callable": "check_ops_bypass_allowlist_files_have_owner",
+      "category": "hygiene",
+      "description": "require structured ops allowlist files to declare owners",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Add top-level owner to ops/_meta/*allowlist.json files.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "ops",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_ops_bypass_allowlist_files_have_owner",
+      "legacy_id": "policies.ops_bypass_allowlist_files_have_owner",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "ops",
+      "callable": "check_ops_bypass_entries_have_necessity_tests",
+      "category": "hygiene",
+      "description": "require structured ops bypass entries to link a necessity test",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Add necessity_test paths for structured ops bypass entries.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "ops",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_ops_bypass_entries_have_necessity_tests",
+      "legacy_id": "policies.ops_bypass_entries_have_necessity_tests",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "ops",
+      "callable": "check_ops_bypass_ledger_domains",
+      "category": "hygiene",
+      "description": "require ops bypass ledger entries to be grouped by domain",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Add a valid `domain` to each ops/_meta/bypass-ledger.json entry.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "ops",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_ops_bypass_ledger_domains",
+      "legacy_id": "policies.ops_bypass_ledger_domains",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "ops",
+      "callable": "check_ops_bypass_ledger_expiry_not_past",
+      "category": "hygiene",
+      "description": "fail expired ops bypass ledger entries",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Remove or renew expired ops bypass ledger entries.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "ops",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_ops_bypass_ledger_expiry_not_past",
+      "legacy_id": "policies.ops_bypass_ledger_expiry_not_past",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "ops",
+      "callable": "check_ops_bypass_ledger_has_expiry",
+      "category": "hygiene",
+      "description": "require ops bypass ledger entries to declare expires_at",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Add expires_at to every ops/_meta/bypass-ledger.json entry.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "ops",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_ops_bypass_ledger_has_expiry",
+      "legacy_id": "policies.ops_bypass_ledger_has_expiry",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "ops",
+      "callable": "check_ops_bypass_ledger_refs_present",
+      "category": "hygiene",
+      "description": "require structured ops allowlist entries to reference ops bypass ledger ids",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Add valid bypass_id references and ledger entries in ops/_meta/bypass-ledger.json.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "ops",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_ops_bypass_ledger_refs_present",
+      "legacy_id": "policies.ops_bypass_ledger_refs_present",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "ops",
+      "callable": "check_ops_bypass_ledger_sorted",
+      "category": "hygiene",
+      "description": "require deterministic sorted ops bypass ledger",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Sort ops/_meta/bypass-ledger.json entries by id.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "ops",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_ops_bypass_ledger_sorted",
+      "legacy_id": "policies.ops_bypass_ledger_sorted",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "ops",
+      "callable": "check_ops_bypass_ledger_task_ids",
+      "category": "hygiene",
+      "description": "require concrete refactor task ids on ops bypass ledger entries",
+      "domain": "policies",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Add task_id to every ops/_meta/bypass-ledger.json entry.",
+      "gate": "policies",
+      "groups": [
+        "fast",
+        "ops",
+        "policies",
+        "repo",
+        "required"
+      ],
+      "id": "checks_policies_ops_bypass_ledger_task_ids",
+      "legacy_id": "policies.ops_bypass_ledger_task_ids",
+      "module": "atlasctl.checks.domains.policies.make.enforcement",
       "owner": "platform",
       "severity": "error",
       "speed": "fast",
