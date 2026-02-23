@@ -13,6 +13,8 @@ from atlasctl.checks.repo.native import (
     check_make_no_direct_python_script_invocations,
     check_make_scripts_references,
     check_no_large_binary_files,
+    check_no_models_shim_when_model_canonical,
+    check_single_canonical_runtime_adapters,
     check_no_xtask_refs,
     check_ops_configs_deterministic_newlines,
     check_ops_generated_tracked,
@@ -172,6 +174,25 @@ def test_check_no_large_binary_files_flags_large_binary(monkeypatch, tmp_path: P
     code, errors = check_no_large_binary_files(tmp_path)
     assert code == 1
     assert "blob.bin" in errors[0]
+
+
+def test_check_no_models_shim_when_model_canonical_flags_core_models_package(tmp_path: Path) -> None:
+    path = tmp_path / "packages/atlasctl/src/atlasctl/core/models"
+    path.mkdir(parents=True)
+    code, errors = check_no_models_shim_when_model_canonical(tmp_path)
+    assert code == 1
+    assert any("core/models" in e for e in errors)
+
+
+def test_check_single_canonical_runtime_adapters_flags_duplicate_exec_module(tmp_path: Path) -> None:
+    src = tmp_path / "packages/atlasctl/src/atlasctl"
+    (src / "core").mkdir(parents=True)
+    (src / "core/exec.py").write_text("x=1\n", encoding="utf-8")
+    (src / "foo").mkdir()
+    (src / "foo/exec.py").write_text("x=2\n", encoding="utf-8")
+    code, errors = check_single_canonical_runtime_adapters(tmp_path)
+    assert code == 1
+    assert any("foo/exec.py" in e for e in errors)
 
 
 def test_check_make_command_allowlist_passes_for_allowlisted_command(tmp_path: Path) -> None:

@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+# LEGACY compatibility module (cutoff: 2026-04-01): shell execution policy
+# should converge on the canonical adapter boundary.
+
 from pathlib import Path
 
 from ..process import run_command
