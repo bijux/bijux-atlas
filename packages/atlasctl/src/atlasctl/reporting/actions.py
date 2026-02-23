@@ -87,6 +87,31 @@ def _ops_workflows_report(ctx: RunContext, run_id: str) -> dict[str, object]:
     }
 
 
+def _config_compilation_report(ctx: RunContext) -> dict[str, object]:
+    root = ctx.repo_root / "configs" / "_generated"
+    compiler = root / "compiler-report.json"
+    checksums = root / "checksums.json"
+    payload: dict[str, object] = {
+        "status": "warn",
+        "generated_root": "configs/_generated",
+        "inventory_root": "ops/inventory",
+        "files_present": [],
+    }
+    files_present = [p.name for p in (compiler, checksums) if p.exists()]
+    payload["files_present"] = sorted(files_present)
+    if compiler.exists():
+        try:
+            raw = compiler.read_text(encoding="utf-8")
+            data = json.loads(raw.split("\n", 1)[1] if raw.startswith("# GENERATED") else raw)
+            payload["inventory_root"] = str(data.get("inventory_root", "ops/inventory"))
+            payload["overlay_model_status"] = "pass" if not ((data.get("overlay_model") or {}).get("errors")) else "fail"
+        except Exception:
+            payload["overlay_model_status"] = "invalid"
+    if compiler.exists() and checksums.exists():
+        payload["status"] = "pass"
+    return payload
+
+
 def build_unified(ctx: RunContext, run_id: str) -> dict[str, object]:
     lanes = _discover_lane_reports(ctx, run_id)
     near: list[str] = []
@@ -174,6 +199,7 @@ def build_unified(ctx: RunContext, run_id: str) -> dict[str, object]:
         "k8s_conformance": k8s_conformance,
         "repo_cleanliness": _repo_cleanliness_report(ctx),
         "ops_workflows": _ops_workflows_report(ctx, run_id),
+        "config_compilation": _config_compilation_report(ctx),
     }
     if product_artifacts is not None:
         payload["product_artifacts"] = product_artifacts
