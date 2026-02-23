@@ -52,7 +52,10 @@ def _contracts_snapshot(ctx: RunContext, report_format: str) -> int:
             ["python3", "packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_stack_layer_literals.py"],
         ),
         ("check-no-hidden-defaults", ["python3", "packages/atlasctl/src/atlasctl/layout_checks/check_no_hidden_defaults.py"]),
-        ("check-k8s-layer-contract", ["ops/k8s/tests/checks/obs/test_layer_contract_render.sh"]),
+        (
+            "check-k8s-layer-contract",
+            ["python3", "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/checks/obs/test_layer_contract_render.py"],
+        ),
         ("check-live-layer-contract", ["python3", "packages/atlasctl/src/atlasctl/commands/ops/stack/tests/validate_live_snapshot.py"]),
     ]
     out_dir = _artifact_base(ctx, "contracts") / "contracts"
@@ -127,6 +130,46 @@ def _contracts_snapshot(ctx: RunContext, report_format: str) -> int:
     return 0 if not failed else 1
 
 
+def _stack_reset(ctx: RunContext, report_format: str) -> int:
+    out_dir = _artifact_base(ctx, "stack")
+    steps = [
+        ("down", ["./bin/atlasctl", "ops", "stack", "--report", "text", "down"]),
+        ("up", ["./bin/atlasctl", "ops", "stack", "--report", "text", "up"]),
+    ]
+    rows: list[dict[str, Any]] = []
+    final_code = 0
+    for name, cmd in steps:
+        inv = run_tool(ctx, cmd)
+        log_path = out_dir / f"reset-{name}.log"
+        write_text_file(log_path, inv.combined_output, encoding="utf-8")
+        rows.append(
+            {
+                "name": name,
+                "status": "pass" if inv.code == 0 else "fail",
+                "command_rendered": command_rendered(cmd),
+                "timings": invocation_report(inv)["timings"],
+                "exit_code": inv.code,
+                "log": str(log_path.relative_to(ctx.repo_root)),
+            }
+        )
+        if inv.code != 0:
+            final_code = inv.code
+            break
+    payload = {
+        "schema_version": 1,
+        "tool": "bijux-atlas",
+        "status": "pass" if final_code == 0 else "fail",
+        "run_id": ctx.run_id,
+        "area": "stack",
+        "action": "reset",
+        "steps": rows,
+        "artifacts": {"report": str((out_dir / "report.json").relative_to(ctx.repo_root))},
+    }
+    write_text_file(out_dir / "report.json", json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    _emit(payload, report_format)
+    return final_code
+
+
 def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.cmd == "ports":
         if ns.ports_cmd == "show":
@@ -146,8 +189,9 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         mapping = {
             "up": ["./bin/atlasctl", "ops", "stack", "--report", "text", "up"],
             "down": ["./bin/atlasctl", "ops", "stack", "--report", "text", "down"],
-            "reset": ["bash", "-lc", "./bin/atlasctl ops stack --report text down && ./bin/atlasctl ops stack --report text up"],
         }
+        if ns.stack_cmd == "reset":
+            return _stack_reset(ctx, ns.report)
         return _run_wrapped(ctx, OrchestrateSpec("stack", ns.stack_cmd, mapping[ns.stack_cmd]), ns.report)
     if ns.cmd == "obs":
         mapping = {
