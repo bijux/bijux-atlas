@@ -12,7 +12,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/load/run/cold_start_benchmark.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/cargo.mk",
       "task_id": "OPS-REF-0001"
     },
@@ -28,7 +30,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/load/run/run_nightly_perf.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/cargo.mk",
       "task_id": "OPS-REF-0002"
     },
@@ -44,7 +48,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/datasets/publish_by_name.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0003"
     },
@@ -60,7 +66,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/datasets/cache_status.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0004"
     },
@@ -76,7 +84,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/datasets/corruption_drill.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0005"
     },
@@ -92,7 +102,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/datasets/dataset_qc.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0006"
     },
@@ -108,7 +120,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/datasets/fetch_and_verify.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0007"
     },
@@ -124,7 +138,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/datasets/pin_set.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0008"
     },
@@ -140,7 +156,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/datasets/promotion_sim.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0009"
     },
@@ -156,7 +174,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/datasets/snapshot_metadata.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0010"
     },
@@ -172,7 +192,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/smoke_queries.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0011"
     },
@@ -188,7 +210,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/verify_metrics.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0012"
     },
@@ -204,7 +228,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/verify_traces.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0013"
     },
@@ -220,7 +246,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/warmup.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0014"
     },
@@ -236,7 +264,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/k8s/clean_uninstall.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0015"
     },
@@ -252,7 +282,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_baseline_update_policy.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0016"
     },
@@ -268,7 +300,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_prereqs.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0017"
     },
@@ -284,7 +318,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/load/run/cold_start_benchmark.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0018"
     },
@@ -300,7 +336,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/load/run/cold_start_prefetch_5pods.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0019"
     },
@@ -316,7 +354,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/load/run/compare_redis.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0020"
     },
@@ -332,7 +372,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/load/run/load_under_rollback.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0021"
     },
@@ -348,7 +390,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/load/run/load_under_rollout.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0022"
     },
@@ -364,7 +408,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/load/run/prepare_perf_store.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0023"
     },
@@ -380,7 +426,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/load/run/run_e2e_perf.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0024"
     },
@@ -396,7 +444,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/load/run/run_nightly_perf.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0025"
     },
@@ -412,7 +462,9 @@
       "policy": "allowlist",
       "referenced_path": "atlasctl ops load run",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0026"
     },
@@ -428,7 +480,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/load/baseline/update_baseline_entrypoint.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0027"
     },
@@ -444,7 +498,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/load/run/warm_start_benchmark.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0028"
     },
@@ -460,7 +516,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/alert_firing_proof.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0029"
     },
@@ -476,7 +534,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/alerts_validation.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0030"
     },
@@ -492,7 +552,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/check_pack_upgrade.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0031"
     },
@@ -508,7 +570,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/check_pack_versions.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0032"
     },
@@ -524,7 +588,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/cpu_throttle_noisy_neighbor.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0033"
     },
@@ -540,7 +606,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/export_pack_bundle.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0034"
     },
@@ -556,7 +624,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/install_pack.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0035"
     },
@@ -572,7 +642,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/memory_growth.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0036"
     },
@@ -588,7 +660,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/node_disk_pressure.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0037"
     },
@@ -604,7 +678,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/otel_outage.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0038"
     },
@@ -620,7 +696,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/overload_admission_control.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0039"
     },
@@ -636,7 +714,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/pack_health.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0040"
     },
@@ -652,7 +732,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/prom_outage.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0041"
     },
@@ -668,7 +750,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/run_drill.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0042"
     },
@@ -684,7 +768,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/smoke_pack.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0043"
     },
@@ -700,7 +786,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/snapshot_metrics.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0044"
     },
@@ -716,7 +804,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/snapshot_traces.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0045"
     },
@@ -732,7 +822,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/store_latency_injection.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0046"
     },
@@ -748,7 +840,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/store_outage_under_load.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0047"
     },
@@ -764,7 +858,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/store_outage.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0048"
     },
@@ -780,7 +876,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/uninstall_pack.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0049"
     },
@@ -796,7 +894,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/stack/collect_events.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0050"
     },
@@ -812,7 +912,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/stack/collect_pod_logs.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0051"
     },
@@ -828,7 +930,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/stack/health_report.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0052"
     },
@@ -844,7 +948,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/stack/print_urls.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0053"
     },
@@ -860,7 +966,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/stack/stack_smoke.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0054"
     },
@@ -876,7 +984,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/stack/uninstall.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0055"
     },
@@ -892,7 +1002,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/stack/validate.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0056"
     },
@@ -908,7 +1020,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/stack/wait_ready.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "makefiles/ops.mk",
       "task_id": "OPS-REF-0057"
     },
@@ -924,7 +1038,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/datasets/publish_by_name.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/run_single_release.py",
       "task_id": "OPS-REF-0058"
     },
@@ -940,7 +1056,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/datasets/publish_by_name.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/run_two_release_diff.py",
       "task_id": "OPS-REF-0059"
     },
@@ -956,7 +1074,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/run_drill.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "ops/k8s/tests/checks/perf/test_store_outage_under_load.sh",
       "task_id": "OPS-REF-0060"
     },
@@ -972,7 +1092,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/deploy_atlas.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "atlasctl ops deploy",
       "task_id": "OPS-REF-0061"
     },
@@ -988,7 +1110,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/install_pack.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "scripts/areas/layout/check_obs_pack_ssot.py",
       "task_id": "OPS-REF-0062"
     },
@@ -1004,7 +1128,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/datasets/publish_by_name.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "scripts/areas/layout/check_ops_canonical_entrypoints.py",
       "task_id": "OPS-REF-0063"
     },
@@ -1020,7 +1146,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/deploy_atlas.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "scripts/areas/layout/check_ops_canonical_entrypoints.py",
       "task_id": "OPS-REF-0064"
     },
@@ -1036,7 +1164,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/smoke_queries.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "scripts/areas/layout/check_ops_canonical_entrypoints.py",
       "task_id": "OPS-REF-0065"
     },
@@ -1052,7 +1182,9 @@
       "policy": "allowlist",
       "referenced_path": "./bin/atlasctl ops deploy --report text apply",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "scripts/areas/layout/check_ops_canonical_entrypoints.py",
       "task_id": "OPS-REF-0066"
     },
@@ -1068,7 +1200,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/verify_pack.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "scripts/areas/layout/check_ops_canonical_entrypoints.py",
       "task_id": "OPS-REF-0067"
     },
@@ -1084,7 +1218,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/observability/verify_pack.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "scripts/areas/layout/check_ops_single_validators.py",
       "task_id": "OPS-REF-0068"
     },
@@ -1100,7 +1236,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/stack/validate.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "scripts/areas/layout/check_ops_single_validators.py",
       "task_id": "OPS-REF-0069"
     },
@@ -1116,7 +1254,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/stack/install.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "scripts/areas/layout/check_ops_stack_order.sh",
       "task_id": "OPS-REF-0070"
     },
@@ -1132,7 +1272,9 @@
       "policy": "allowlist",
       "referenced_path": "packages/atlasctl/src/atlasctl/commands/ops/stack/uninstall.py",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "source_path": "scripts/areas/layout/check_ops_stack_order.sh",
       "task_id": "OPS-REF-0071"
     }

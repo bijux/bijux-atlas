@@ -13,7 +13,9 @@
       "path": "packages/atlasctl/src/atlasctl/commands/ops/stack/collect_events.py",
       "policy": "allowlist",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "task_id": "OPS-LITERAL-0080"
     },
     {
@@ -29,7 +31,9 @@
       "path": "packages/atlasctl/src/atlasctl/commands/ops/stack/collect_pod_logs.py",
       "policy": "allowlist",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "task_id": "OPS-LITERAL-0081"
     },
     {
@@ -45,7 +49,9 @@
       "path": "packages/atlasctl/src/atlasctl/commands/ops/stack/health_report.py",
       "policy": "allowlist",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "task_id": "OPS-LITERAL-0082"
     },
     {
@@ -61,7 +67,9 @@
       "path": "packages/atlasctl/src/atlasctl/commands/ops/stack/uninstall.py",
       "policy": "allowlist",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "task_id": "OPS-LITERAL-0083"
     },
     {
@@ -77,7 +85,9 @@
       "path": "packages/atlasctl/src/atlasctl/commands/ops/stack/print_urls.py",
       "policy": "allowlist",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "task_id": "OPS-LITERAL-0084"
     },
     {
@@ -93,7 +103,9 @@
       "path": "packages/atlasctl/src/atlasctl/commands/ops/stack/faults/block_minio.py",
       "policy": "allowlist",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "task_id": "OPS-LITERAL-0085"
     },
     {
@@ -109,7 +121,9 @@
       "path": "packages/atlasctl/src/atlasctl/commands/ops/stack/faults/cpu_throttle.py",
       "policy": "allowlist",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "task_id": "OPS-LITERAL-0086"
     },
     {
@@ -125,7 +139,9 @@
       "path": "packages/atlasctl/src/atlasctl/commands/ops/stack/faults/fill_node_disk.py",
       "policy": "allowlist",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "task_id": "OPS-LITERAL-0087"
     },
     {
@@ -141,7 +157,9 @@
       "path": "packages/atlasctl/src/atlasctl/commands/ops/stack/faults/inject.py",
       "policy": "allowlist",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "task_id": "OPS-LITERAL-0088"
     },
     {
@@ -157,7 +175,9 @@
       "path": "packages/atlasctl/src/atlasctl/commands/ops/stack/faults/throttle_network.py",
       "policy": "allowlist",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "task_id": "OPS-LITERAL-0089"
     },
     {
@@ -173,7 +193,9 @@
       "path": "packages/atlasctl/src/atlasctl/commands/ops/stack/faults/toxiproxy_latency.py",
       "policy": "allowlist",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "task_id": "OPS-LITERAL-0090"
     },
     {
@@ -189,7 +211,9 @@
       "path": "packages/atlasctl/src/atlasctl/commands/ops/stack/kind/down.py",
       "policy": "allowlist",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "task_id": "OPS-LITERAL-0091"
     },
     {
@@ -205,7 +229,9 @@
       "path": "packages/atlasctl/src/atlasctl/commands/ops/stack/kind/up.py",
       "policy": "allowlist",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "task_id": "OPS-LITERAL-0092"
     },
     {
@@ -221,7 +247,9 @@
       "path": "packages/atlasctl/src/atlasctl/commands/ops/stack/minio/bootstrap.py",
       "policy": "allowlist",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "task_id": "OPS-LITERAL-0093"
     },
     {
@@ -237,7 +265,9 @@
       "path": "packages/atlasctl/src/atlasctl/commands/ops/stack/minio/rotate_creds.py",
       "policy": "allowlist",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "task_id": "OPS-LITERAL-0094"
     },
     {
@@ -253,7 +283,9 @@
       "path": "packages/atlasctl/src/atlasctl/commands/ops/stack/registry/up.py",
       "policy": "allowlist",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "task_id": "OPS-LITERAL-0095"
     },
     {
@@ -269,7 +301,9 @@
       "path": "packages/atlasctl/src/atlasctl/commands/ops/stack/tests/assets/minio_invariants.sh",
       "policy": "allowlist",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "task_id": "OPS-LITERAL-0096"
     },
     {
@@ -285,7 +319,9 @@
       "path": "packages/atlasctl/src/atlasctl/commands/ops/stack/toxiproxy/bootstrap.py",
       "policy": "allowlist",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "scope": "ops",
+      "severity": "P3",
       "task_id": "OPS-LITERAL-0097"
     }
   ],

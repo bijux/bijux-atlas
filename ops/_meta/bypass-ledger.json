@@ -7,6 +7,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0001"
     },
     {
@@ -16,6 +17,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0002"
     },
     {
@@ -25,6 +27,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0003"
     },
     {
@@ -34,6 +37,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0004"
     },
     {
@@ -43,6 +47,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0005"
     },
     {
@@ -52,6 +57,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0006"
     },
     {
@@ -61,6 +67,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0007"
     },
     {
@@ -70,6 +77,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0008"
     },
     {
@@ -79,6 +87,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0009"
     },
     {
@@ -88,6 +97,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0010"
     },
     {
@@ -97,6 +107,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0011"
     },
     {
@@ -106,6 +117,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0012"
     },
     {
@@ -115,6 +127,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0013"
     },
     {
@@ -124,6 +137,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0014"
     },
     {
@@ -133,6 +147,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0015"
     },
     {
@@ -142,6 +157,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0016"
     },
     {
@@ -151,6 +167,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0017"
     },
     {
@@ -160,6 +177,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0018"
     },
     {
@@ -169,6 +187,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0019"
     },
     {
@@ -178,6 +197,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0020"
     },
     {
@@ -187,6 +207,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0021"
     },
     {
@@ -196,6 +217,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0022"
     },
     {
@@ -205,6 +227,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0023"
     },
     {
@@ -214,6 +237,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0024"
     },
     {
@@ -223,6 +247,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0025"
     },
     {
@@ -232,6 +257,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0026"
     },
     {
@@ -241,6 +267,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0027"
     },
     {
@@ -250,6 +277,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0028"
     },
     {
@@ -259,6 +287,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0029"
     },
     {
@@ -268,6 +297,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0030"
     },
     {
@@ -277,6 +307,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0031"
     },
     {
@@ -286,6 +317,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0032"
     },
     {
@@ -295,6 +327,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0033"
     },
     {
@@ -304,6 +337,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0034"
     },
     {
@@ -313,6 +347,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0035"
     },
     {
@@ -322,6 +357,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0036"
     },
     {
@@ -331,6 +367,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0037"
     },
     {
@@ -340,6 +377,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0038"
     },
     {
@@ -349,6 +387,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0039"
     },
     {
@@ -358,6 +397,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0040"
     },
     {
@@ -367,6 +407,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0041"
     },
     {
@@ -376,6 +417,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0042"
     },
     {
@@ -385,6 +427,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0043"
     },
     {
@@ -394,6 +437,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0044"
     },
     {
@@ -403,6 +447,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0045"
     },
     {
@@ -412,6 +457,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0046"
     },
     {
@@ -421,6 +467,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0047"
     },
     {
@@ -430,6 +477,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0048"
     },
     {
@@ -439,6 +487,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0049"
     },
     {
@@ -448,6 +497,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0050"
     },
     {
@@ -457,6 +507,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0051"
     },
     {
@@ -466,6 +517,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0052"
     },
     {
@@ -475,6 +527,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0053"
     },
     {
@@ -484,6 +537,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0054"
     },
     {
@@ -493,6 +547,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0055"
     },
     {
@@ -502,6 +557,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0056"
     },
     {
@@ -511,6 +567,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0057"
     },
     {
@@ -520,6 +577,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0058"
     },
     {
@@ -529,6 +587,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0059"
     },
     {
@@ -538,6 +597,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0060"
     },
     {
@@ -547,6 +607,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0061"
     },
     {
@@ -556,6 +617,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0062"
     },
     {
@@ -565,6 +627,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0063"
     },
     {
@@ -574,6 +637,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0064"
     },
     {
@@ -583,6 +647,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0065"
     },
     {
@@ -592,6 +657,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0066"
     },
     {
@@ -601,6 +667,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0067"
     },
     {
@@ -610,6 +677,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0068"
     },
     {
@@ -619,6 +687,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0069"
     },
     {
@@ -628,6 +697,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0070"
     },
     {
@@ -637,6 +707,7 @@
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
       "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0071"
     },
     {
@@ -646,6 +717,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0072"
     },
     {
@@ -655,6 +727,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0073"
     },
     {
@@ -664,6 +737,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0074"
     },
     {
@@ -673,6 +747,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0075"
     },
     {
@@ -682,6 +757,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0076"
     },
     {
@@ -691,6 +767,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0077"
     },
     {
@@ -700,6 +777,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0078"
     },
     {
@@ -709,6 +787,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0079"
     },
     {
@@ -718,6 +797,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0080"
     },
     {
@@ -727,6 +807,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0081"
     },
     {
@@ -736,6 +817,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0082"
     },
     {
@@ -745,6 +827,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0083"
     },
     {
@@ -754,6 +837,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0084"
     },
     {
@@ -763,6 +847,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0085"
     },
     {
@@ -772,6 +857,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0086"
     },
     {
@@ -781,6 +867,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0087"
     },
     {
@@ -790,6 +877,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0088"
     },
     {
@@ -799,6 +887,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0089"
     },
     {
@@ -808,6 +897,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0090"
     },
     {
@@ -817,6 +907,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0091"
     },
     {
@@ -826,6 +917,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0092"
     },
     {
@@ -835,6 +927,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0093"
     },
     {
@@ -844,6 +937,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0094"
     },
     {
@@ -853,6 +947,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0095"
     },
     {
@@ -862,6 +957,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0096"
     },
     {
@@ -871,6 +967,7 @@
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
       "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0097"
     }
   ],

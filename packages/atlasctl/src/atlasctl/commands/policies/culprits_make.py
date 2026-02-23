@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -104,11 +105,31 @@ def run_gate(gate: str) -> int:
     return 2
 
 
+def run_gate_structured(gate: str) -> dict[str, object]:
+    code = run_gate(gate)
+    return {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "kind": "policy-culprits-make-gate",
+        "gate": gate,
+        "status": "ok" if code == 0 else ("error" if code == 1 else "invalid"),
+        "exit_code": code,
+    }
+
+
 def main() -> int:
     args = list(sys.argv[1:])
+    as_json = False
+    if "--json" in args:
+        as_json = True
+        args = [a for a in args if a != "--json"]
     if len(args) != 2 or args[0] != "--gate":
-        print("usage: culprits_make.py --gate <gate>", file=sys.stderr)
+        print("usage: culprits_make.py [--json] --gate <gate>", file=sys.stderr)
         return 2
+    if as_json:
+        payload = run_gate_structured(args[1])
+        print(json.dumps(payload, sort_keys=True))
+        return int(payload["exit_code"])
     return run_gate(args[1])
 
 
