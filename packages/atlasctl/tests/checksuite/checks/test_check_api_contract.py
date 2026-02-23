@@ -4,7 +4,7 @@ from pathlib import Path
 
 from atlasctl.checks.api import check
 from atlasctl.checks.core.base import CheckDef
-from atlasctl.checks.engine.execution import run_function_checks
+from atlasctl.engine.execution import run_function_checks
 
 
 def test_check_decorator_attaches_metadata() -> None:

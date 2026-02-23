@@ -5,7 +5,7 @@ from pathlib import Path
 from atlasctl.checks.adapters import FS
 from atlasctl.checks.core.base import CheckDef
 from atlasctl.checks.effects import CheckEffect
-from atlasctl.checks.engine.execution import run_function_checks
+from atlasctl.engine.execution import run_function_checks
 
 
 def test_fs_adapter_enforces_allowed_roots(tmp_path: Path) -> None:

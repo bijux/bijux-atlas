@@ -26,7 +26,7 @@ from ..core.runtime.logging import log_event
 from ..core.runtime.serialize import dumps_json
 from ..core.errors import ScriptError
 from ..core.exit_codes import ERR_CONFIG, ERR_USER
-from ..execution.runner import RunnerOptions, run_checks_payload
+from ..engine.runner import RunnerOptions, run_checks_payload
 from .manifests import SuiteManifest, load_first_class_suites
 
 try:

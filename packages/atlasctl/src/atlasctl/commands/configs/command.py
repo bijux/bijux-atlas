@@ -20,6 +20,7 @@ from ...core.exec import run
 from ...core.fs import ensure_evidence_path
 from ...core.runtime.paths import write_text_file
 from ...core.runtime.tooling import read_pins, read_tool_versions
+from ...cli.surface_registry import command_registry
 
 CONFIG_SCHEMA_PAIRS: tuple[tuple[str, str], ...] = (
     ("configs/inventory/owners.json", "configs/schema/configs-ownership.schema.json"),
@@ -291,6 +292,34 @@ def _generate_outputs(repo_root: Path, write: bool) -> dict[str, str]:
         "configs/contracts/env.schema.json": env_contract,
         "docs/_generated/tooling-versions.md": tooling_doc,
     }
+    commands = sorted(command_registry(), key=lambda row: row.name)
+    commands_json = {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "kind": "public-command-list",
+        "commands": [
+            {
+                "name": cmd.name,
+                "help": cmd.help_text,
+                "owner": cmd.owner,
+                "stable": cmd.stable,
+                "doc_link": cmd.doc_link,
+            }
+            for cmd in commands
+            if not cmd.internal
+        ],
+    }
+    commands_md_lines = [
+        "# Public Command List",
+        "",
+        "Generated from atlasctl command registry.",
+        "",
+    ]
+    for row in commands_json["commands"]:
+        commands_md_lines.append(f"- `{row['name']}`: {row['help']} (owner: `{row['owner']}`)")
+    commands_md_lines.append("")
+    outputs["docs/_generated/public-commands.json"] = json.dumps(commands_json, indent=2, sort_keys=True) + "\n"
+    outputs["docs/_generated/public-commands.md"] = "\n".join(commands_md_lines)
     overlay_rows, overlay_errors = _overlay_merge_models(repo_root)
     compiler_report = json.dumps(
         {

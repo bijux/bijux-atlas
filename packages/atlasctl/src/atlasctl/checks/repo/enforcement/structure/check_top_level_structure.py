@@ -3,17 +3,17 @@ from __future__ import annotations
 from pathlib import Path
 
 INTENDED = {
+    "app",
+    "capability",
     "cli",
-    "commands",
     "checks",
-    "core",
+    "commands",
     "contracts",
-    "ops",
+    "engine",
     "registry",
-    "suite",
-    "reporting",
+    "runtime",
 }
-TRANSITION_ALLOW = {"__pycache__"}
+TRANSITION_ALLOW = {"__pycache__", "core", "execution", "ops", "reporting", "suite"}
 MAX_TREE_DEPTH = 6
 # The ops validation check directory is currently the densest policy hotspot while
 # the refactor consolidates related checks under one domain. Keep this bounded but

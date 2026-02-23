@@ -13,8 +13,8 @@ from xml.etree.ElementTree import Element, SubElement, tostring
 from ...checks.registry import check_tags, get_check, list_checks
 from ...checks.registry.ssot import generate_registry_json
 from ...registry.suites import suite_manifest_specs, resolve_check_ids
-from ...checks.engine.runner import domains as check_domains
-from ...checks.engine.runner import run_domain
+from ...engine.runner import domains as check_domains
+from ...engine.runner import run_domain
 from ...checks.repo.enforcement.package_shape import check_module_size
 from ...checks.repo.native.modules.repo_checks_make_and_layout import check_layout_contract
 from ...contracts.ids import CHECK_RUN
@@ -24,7 +24,7 @@ from ...core.fs import ensure_evidence_path
 from ...core.runtime.paths import write_text_file
 from ...core.runtime.telemetry import emit_telemetry
 from ...core.exit_codes import ERR_USER
-from ...execution.runner import RunnerOptions, run_checks_payload
+from ...engine.runner import RunnerOptions, run_checks_payload
 from ...checks.effects import CheckEffect, normalize_effect
 from .selection import split_group_values, split_marker_values
 

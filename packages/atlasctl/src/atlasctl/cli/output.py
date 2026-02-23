@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import date
 
 from ..core.runtime.serialize import dumps_json
+from .render import render_error
 
 
 def emit(payload: dict[str, object], as_json: bool) -> None:
@@ -39,22 +40,6 @@ def resolve_output_format(*, cli_json: bool, cli_format: str | None, ci_present:
     if cli_format:
         return cli_format
     return "json" if ci_present else "text"
-
-
-def render_error(*, as_json: bool, message: str, code: int, kind: str = "generic_error", run_id: str = "") -> str:
-    if as_json:
-        return dumps_json(
-            {
-                "schema_name": "atlasctl.error.v1",
-                "schema_version": 1,
-                "tool": "atlasctl",
-                "run_id": run_id,
-                "status": "error",
-                "errors": [{"code": code, "kind": kind, "message": message}],
-            },
-            pretty=False,
-        )
-    return message
 
 
 def no_network_flag_expired(today: date, expiry: date) -> bool:

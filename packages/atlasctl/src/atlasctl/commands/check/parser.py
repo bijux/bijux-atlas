@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import argparse
 
-from ...checks.engine.runner import domains as check_domains
+from ...engine.runner import domains as check_domains
 
 
 def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:

@@ -14,10 +14,10 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Callable
 
-from ..core.base import CheckDef, CheckResult
-from ..effects import CheckEffect, normalize_effect
-from ..registry.catalog import check_tags
-from ...core.process import run_command
+from ..checks.core.base import CheckDef, CheckResult
+from ..checks.effects import CheckEffect, normalize_effect
+from ..checks.registry.catalog import check_tags
+from ..core.process import run_command
 
 
 class CommandCheckDef:

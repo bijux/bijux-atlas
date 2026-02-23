@@ -47,6 +47,7 @@ _DEV_ITEMS: tuple[str, ...] = (
     "audit-and-slow",
     "check-and-slow",
     "check-new",
+    "regen-registry",
 )
 
 
@@ -179,6 +180,8 @@ def run_dev_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return _run_split_module(ctx, ns)
     if sub == "check-new":
         return _run_check_new(ctx, ns)
+    if sub == "regen-registry":
+        return _run_regen_registry(ctx, ns)
     if sub == "clean":
         return _run_dev_clean(ctx, bool(getattr(ns, "json", False)) or ctx.output_format == "json")
     if sub == "doctor":
@@ -309,6 +312,41 @@ def _run_check_new(ctx: RunContext, ns: argparse.Namespace) -> int:
     return 0
 
 
+def _run_regen_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
+    cmd = [sys.executable, "-m", "atlasctl.cli", "gen", "checks-registry"]
+    proc = run(cmd, cwd=ctx.repo_root, text=True)
+    if proc.returncode != 0:
+        return proc.returncode
+    check = run(
+        [
+            "git",
+            "diff",
+            "--exit-code",
+            "--",
+            "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml",
+            "packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json",
+            "packages/atlasctl/src/atlasctl/registry/checks_catalog.json",
+        ],
+        cwd=ctx.repo_root,
+        text=True,
+    )
+    payload = {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "status": "pass" if check.returncode == 0 else "fail",
+        "files": [
+            "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml",
+            "packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json",
+            "packages/atlasctl/src/atlasctl/registry/checks_catalog.json",
+        ],
+    }
+    if bool(getattr(ns, "json", False)):
+        print(json.dumps(payload, sort_keys=True))
+    else:
+        print("registry regeneration check passed" if check.returncode == 0 else "registry regeneration drift detected")
+    return 0 if check.returncode == 0 else 1
+
+
 def configure_dev_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     parser = sub.add_parser("dev", help="dev control-plane group (checks, suites, tests, listing)")
     parser.add_argument("--list", action="store_true", help="list available dev commands")
@@ -376,6 +414,8 @@ def configure_dev_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     check_new.add_argument("name")
     check_new.add_argument("--force", action="store_true", help="overwrite existing module")
     check_new.add_argument("--json", action="store_true", help="emit JSON output")
+    regen_registry = dev_sub.add_parser("regen-registry", help="regenerate checks registry artifacts and verify drift")
+    regen_registry.add_argument("--json", action="store_true", help="emit JSON output")
     tooling = dev_sub.add_parser("tooling", help="tooling inspection helpers")
     tooling_sub = tooling.add_subparsers(dest="dev_tooling_cmd", required=True)
     tooling_sub.add_parser("versions", help="print toolchain and local tooling versions")
