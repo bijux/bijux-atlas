@@ -344,6 +344,7 @@ class CheckRunReport:
             failed = sum(1 for row in ordered if row.status == CheckStatus.FAIL)
             skipped = sum(1 for row in ordered if row.status == CheckStatus.SKIP)
             errored = sum(1 for row in ordered if row.status == CheckStatus.ERROR)
+            duration_ms = int(self.timings.get("duration_ms", 0)) if self.timings else 0
             object.__setattr__(
                 self,
                 "summary",
@@ -353,6 +354,7 @@ class CheckRunReport:
                     "skipped": skipped,
                     "errors": errored,
                     "total": len(ordered),
+                    "duration_ms": duration_ms,
                 },
             )
 

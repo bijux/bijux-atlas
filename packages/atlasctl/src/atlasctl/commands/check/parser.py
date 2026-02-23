@@ -30,6 +30,7 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     run.add_argument("--junitxml", help="write junit xml output path")
     run.add_argument("--junit-xml", dest="junit_xml", help="write junit xml output path")
     run.add_argument("--json-report", help="write json report output path")
+    run.add_argument("--out", dest="json_report", help="alias of --json-report")
     run.add_argument("--jsonl", action="store_true", help="stream JSONL row events and summary")
     run.add_argument("--write-root", help="required write root for checks declaring fs_write (must be under artifacts/runs/<run_id>/)")
     run.add_argument("--slow-report", help="write slow checks report output path")

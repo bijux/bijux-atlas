@@ -261,7 +261,8 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     if requires_write_root and not write_root_arg:
         print("write-enabled checks require --write-root under artifacts/runs/<run_id>/")
         return ERR_USER
-    resolved_run_root = (ctx.repo_root / "artifacts" / "evidence" / "checks" / ctx.run_id).resolve()
+    run_evidence_root = ensure_evidence_path(ctx, Path(f"artifacts/evidence/{ctx.run_id}/checks"))
+    resolved_run_root = run_evidence_root.resolve()
     if write_root_arg:
         candidate = Path(write_root_arg)
         resolved_run_root = (candidate if candidate.is_absolute() else (ctx.repo_root / candidate)).resolve()
@@ -429,9 +430,12 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
                 if row["status"] == "FAIL":
                     print(f"- {row['id']}: {row['detail'] or row['hint']}")
 
+    default_report_path = ensure_evidence_path(ctx, Path(f"artifacts/evidence/{ctx.run_id}/checks/report.unified.json"))
+    write_text_file(default_report_path, json.dumps(report_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if ns.json_report:
         report_path = ensure_evidence_path(ctx, Path(ns.json_report))
-        write_text_file(report_path, json.dumps(report_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        if report_path != default_report_path:
+            write_text_file(report_path, json.dumps(report_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     slow_report = getattr(ns, "slow_report", None)
     if slow_report:
         slow_path = ensure_evidence_path(ctx, Path(slow_report))
@@ -462,7 +466,7 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             + "\n",
             encoding="utf-8",
         )
-    timings_path = ctx.repo_root / "artifacts" / "evidence" / "checks" / ctx.run_id / "timings.json"
+    timings_path = ensure_evidence_path(ctx, Path(f"artifacts/evidence/{ctx.run_id}/checks/timings.json"))
     timings_payload = {
         "schema_version": 1,
         "tool": "atlasctl",
