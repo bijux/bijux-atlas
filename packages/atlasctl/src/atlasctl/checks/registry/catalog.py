@@ -1,15 +1,18 @@
 from __future__ import annotations
 
-import importlib
 from collections import defaultdict
 from pathlib import Path
 
 from ..core.base import CheckCategory, CheckDef as CheckFactory, Severity
-from .ssot import RegistryEntry, check_id_renames, legacy_check_by_id, load_registry_entries
+from .ssot import RegistryEntry, canonical_check_id, check_id_renames, legacy_checks
 
 _CHECKS_CACHE: tuple[CheckFactory, ...] | None = None
 _ALIASES_CACHE: dict[str, str] | None = None
 _MARKER_VOCAB: tuple[str, ...] = ("slow", "network", "kube", "docker", "fs-write", "git")
+_LEGACY_CHECKS: tuple[CheckFactory, ...] = tuple(sorted(legacy_checks(), key=lambda item: str(item.check_id)))
+_LEGACY_BY_ID: dict[str, CheckFactory] = {canonical_check_id(check): check for check in _LEGACY_CHECKS}
+_CALLABLE_INDEX: dict[tuple[str, str], object] = {(check.fn.__module__, check.fn.__name__): check.fn for check in _LEGACY_CHECKS}
+_MODULE_CHECK_ID_INDEX: dict[tuple[str, str], object] = {(check.fn.__module__, canonical_check_id(check)): check.fn for check in _LEGACY_CHECKS}
 
 
 def _build_check(**kwargs: object) -> CheckFactory:
@@ -17,20 +20,13 @@ def _build_check(**kwargs: object) -> CheckFactory:
 
 
 def _from_entry(entry: RegistryEntry) -> CheckFactory:
-    module = importlib.import_module(entry.module)
-    fn = getattr(module, entry.callable, None)
+    fn = None
     if entry.callable == "CHECKS":
-        exported = getattr(module, "CHECKS", ())
-        chosen = None
-        for item in exported if isinstance(exported, (list, tuple)) else ():
-            check_id = getattr(item, "check_id", "") or getattr(getattr(item, "__atlasctl_check_meta__", None), "check_id", "")
-            if str(check_id) == entry.id:
-                chosen = item
-                break
-        if chosen is not None:
-            fn = chosen.fn if hasattr(chosen, "fn") else chosen
+        fn = _MODULE_CHECK_ID_INDEX.get((entry.module, entry.id))
     if fn is None:
-        legacy = legacy_check_by_id().get(entry.id)
+        fn = _CALLABLE_INDEX.get((entry.module, entry.callable))
+    if fn is None:
+        legacy = _LEGACY_BY_ID.get(entry.id)
         fn = legacy.fn if legacy is not None else None
     if fn is None:
         raise ValueError(f"missing callable for check `{entry.id}`: {entry.module}:{entry.callable}")
@@ -60,9 +56,12 @@ def _from_entry(entry: RegistryEntry) -> CheckFactory:
 
 
 def _load() -> tuple[tuple[CheckFactory, ...], dict[str, str]]:
-    entries = load_registry_entries()
-    checks = tuple(sorted((_from_entry(entry) for entry in entries), key=lambda c: c.check_id))
-    aliases = {entry.legacy_id: entry.id for entry in entries if entry.legacy_id}
+    checks = tuple(sorted(_LEGACY_CHECKS, key=lambda c: str(c.check_id)))
+    aliases = {
+        str(check.legacy_check_id): canonical_check_id(check)
+        for check in checks
+        if str(getattr(check, "legacy_check_id", "")).strip()
+    }
     aliases.update(check_id_renames())
     return checks, aliases
 
