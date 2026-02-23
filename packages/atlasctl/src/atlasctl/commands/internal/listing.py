@@ -4,15 +4,12 @@ import argparse
 import re
 from typing import Any
 
-from ...checks.registry import check_tags, list_checks
-from ...cli.surface_registry import command_registry
-from ...core.effects import command_group
+from ...contracts.validate import validate as validate_contract
 from ...core.runtime.serialize import dumps_json
 from ...core.context import RunContext
 from ...registry import CheckRecord, CommandRecord, SuiteRecord
+from ...registry.loader import load as load_registry
 from ..policies.runtime.command import _POLICIES_ITEMS
-from ...suite.command import load_suites
-from ...suite.manifests import load_first_class_suites
 
 
 def _parse_tags(raw: str) -> tuple[str, ...]:
@@ -46,80 +43,65 @@ def _filter_records(records: list[Any], tags: tuple[str, ...], pattern: str | No
 
 
 def _check_records() -> list[CheckRecord]:
-    out: list[CheckRecord] = []
-    for check in list_checks():
-        tags = check_tags(check)
-        out.append(
-            CheckRecord(
-                id=str(check.canonical_id or check.check_id),
-                title=check.title,
-                domain=check.domain,
-                tags=tags,
-                effects=check.effects,
-                owners=check.owners,
-                internal=("internal" in tags),
-            )
+    reg = load_registry()
+    return [
+        CheckRecord(
+            id=item.check_id,
+            title=item.description,
+            domain=item.domain,
+            tags=item.tags,
+            effects=item.effects,
+            owners=(item.owner,),
+            internal=("internal" in item.tags),
         )
-    return sorted(out, key=lambda item: item.id)
+        for item in reg.checks
+    ]
 
 
 def _command_records() -> list[CommandRecord]:
-    out: list[CommandRecord] = []
-    for spec in command_registry():
-        tags = tuple(sorted({command_group(spec.name), "stable" if spec.stable else "unstable", "internal" if spec.internal else "public"}))
-        out.append(
-            CommandRecord(
-                name=spec.name,
-                help=spec.help_text,
-                tags=tags,
-                owner=spec.owner,
-                aliases=spec.aliases,
-                stable=spec.stable,
-                internal=spec.internal,
-            )
+    reg = load_registry()
+    return [
+        CommandRecord(
+            name=item.name,
+            help=item.help_text,
+            tags=item.tags,
+            owner=item.owner,
+            aliases=item.aliases,
+            stable=item.stable,
+            internal=item.internal,
         )
-    return sorted(out, key=lambda item: item.name)
+        for item in reg.commands
+    ]
 
 
 def _suite_records(ctx: RunContext) -> list[SuiteRecord]:
-    default_name, suites = load_suites(ctx.repo_root)
-    manifests = load_first_class_suites()
+    reg = load_registry(ctx.repo_root)
     out: list[SuiteRecord] = []
-    for spec in suites.values():
-        tags = {"suite", spec.name, "default" if spec.name == default_name else "non-default"}
-        internal = spec.name.startswith("_")
-        if internal:
-            tags.add("internal")
-        else:
-            tags.add("public")
+    for spec in reg.suites:
+        tags = tuple(sorted({"suite", spec.name, *spec.markers, "first-class", "public" if not spec.internal else "internal"}))
         out.append(
             SuiteRecord(
                 name=spec.name,
-                includes=spec.includes,
-                item_count=len(spec.items),
-                complete=spec.complete,
-                tags=tuple(sorted(tags)),
-                internal=internal,
-            )
-        )
-    for manifest in manifests.values():
-        if manifest.name in suites:
-            continue
-        tags = {"suite", manifest.name, *manifest.markers, "first-class", "public" if not manifest.internal else "internal"}
-        out.append(
-            SuiteRecord(
-                name=manifest.name,
                 includes=(),
-                item_count=len(manifest.check_ids),
+                item_count=len(spec.include_checks),
                 complete=True,
-                tags=tuple(sorted(tags)),
-                internal=manifest.internal,
+                tags=tags,
+                internal=spec.internal,
             )
         )
-    return sorted(out, key=lambda item: item.name)
+    return out
 
 
 def _render(payload: dict[str, object], as_json: bool) -> None:
+    schema_name = str(payload.get("kind", ""))
+    if schema_name.startswith("list-"):
+        payload = dict(payload)
+        payload["schema_name"] = f"atlasctl.{schema_name}.v1"
+        payload["schema_version"] = int(payload.get("schema_version", 1))
+        try:
+            validate_contract(payload["schema_name"], payload)
+        except Exception:
+            pass
     print(dumps_json(payload, pretty=not as_json))
 
 
@@ -217,7 +199,6 @@ def run_list_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return 0
 
     records = _filter_records(_suite_records(ctx), tags, pattern, include_internal)
-    manifests = load_first_class_suites()
     payload = {
         "schema_version": 1,
         "tool": "atlasctl",
@@ -232,9 +213,9 @@ def run_list_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 "complete": rec.complete,
                 "tags": list(rec.tags),
                 "internal": rec.internal,
-                "markers": list(manifests[rec.name].markers) if rec.name in manifests else [],
-                "check_count": len(manifests[rec.name].check_ids) if rec.name in manifests else None,
-                "kind": "first-class" if rec.name in manifests else "pyproject",
+                "markers": [tag for tag in rec.tags if tag not in {"suite", "first-class", "public", "internal"} and tag != rec.name],
+                "check_count": rec.item_count,
+                "kind": "first-class",
             }
             for rec in records
         ],

@@ -1,1 +1,566 @@
-{"filters": {"include_internal": false, "pattern": "", "tags": []}, "items": [{"complete": false, "includes": ["required"], "internal": false, "item_count": 2, "name": "ci", "tags": ["ci", "non-default", "public", "suite"]}, {"complete": false, "includes": [], "internal": false, "item_count": 4, "name": "fast", "tags": ["fast", "non-default", "public", "suite"]}, {"complete": false, "includes": [], "internal": false, "item_count": 2, "name": "ops", "tags": ["non-default", "ops", "public", "suite"]}, {"complete": true, "includes": ["fast"], "internal": false, "item_count": 6, "name": "required", "tags": ["default", "public", "required", "suite"]}, {"complete": true, "includes": ["ci"], "internal": false, "item_count": 6, "name": "required_proof", "tags": ["non-default", "public", "required_proof", "suite"]}], "kind": "list-suites", "schema_version": 1, "status": "ok", "tool": "atlasctl"}
+{
+  "filters": {
+    "include_internal": false,
+    "pattern": "",
+    "tags": []
+  },
+  "items": [
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "configs",
+        "dev",
+        "docs",
+        "ops",
+        "policies"
+      ],
+      "name": "all",
+      "tags": [
+        "all",
+        "configs",
+        "dev",
+        "docs",
+        "first-class",
+        "ops",
+        "policies",
+        "public",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "required"
+      ],
+      "name": "ci",
+      "tags": [
+        "ci",
+        "first-class",
+        "public",
+        "required",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "slow"
+      ],
+      "name": "ci-nightly",
+      "tags": [
+        "ci-nightly",
+        "first-class",
+        "public",
+        "slow",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "fast"
+      ],
+      "name": "ci-pr",
+      "tags": [
+        "ci-pr",
+        "fast",
+        "first-class",
+        "public",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [],
+      "name": "configs",
+      "tags": [
+        "configs",
+        "first-class",
+        "public",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [],
+      "name": "dev",
+      "tags": [
+        "dev",
+        "first-class",
+        "public",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [],
+      "name": "docs",
+      "tags": [
+        "docs",
+        "first-class",
+        "public",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "ops",
+        "slow"
+      ],
+      "name": "drill-nightly",
+      "tags": [
+        "drill-nightly",
+        "first-class",
+        "ops",
+        "public",
+        "slow",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "kube",
+        "ops",
+        "slow"
+      ],
+      "name": "k8s-e2e-nightly",
+      "tags": [
+        "first-class",
+        "k8s-e2e-nightly",
+        "kube",
+        "ops",
+        "public",
+        "slow",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "load",
+        "ops",
+        "slow"
+      ],
+      "name": "load-baseline",
+      "tags": [
+        "first-class",
+        "load",
+        "load-baseline",
+        "ops",
+        "public",
+        "slow",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "fast",
+        "load",
+        "ops"
+      ],
+      "name": "load-smoke",
+      "tags": [
+        "fast",
+        "first-class",
+        "load",
+        "load-smoke",
+        "ops",
+        "public",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "fast"
+      ],
+      "name": "local",
+      "tags": [
+        "fast",
+        "first-class",
+        "local",
+        "public",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "obs",
+        "ops",
+        "slow"
+      ],
+      "name": "obs-verify",
+      "tags": [
+        "first-class",
+        "obs",
+        "obs-verify",
+        "ops",
+        "public",
+        "slow",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [],
+      "name": "ops",
+      "tags": [
+        "first-class",
+        "ops",
+        "public",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "deploy",
+        "ops"
+      ],
+      "name": "ops-deploy",
+      "tags": [
+        "deploy",
+        "first-class",
+        "ops",
+        "ops-deploy",
+        "public",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "load",
+        "ops"
+      ],
+      "name": "ops-load",
+      "tags": [
+        "first-class",
+        "load",
+        "ops",
+        "ops-load",
+        "public",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "ops",
+        "slow"
+      ],
+      "name": "ops-nightly",
+      "tags": [
+        "first-class",
+        "ops",
+        "ops-nightly",
+        "public",
+        "slow",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "obs",
+        "ops"
+      ],
+      "name": "ops-obs",
+      "tags": [
+        "first-class",
+        "obs",
+        "ops",
+        "ops-obs",
+        "public",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "ops",
+        "stack"
+      ],
+      "name": "ops-stack",
+      "tags": [
+        "first-class",
+        "ops",
+        "ops-stack",
+        "public",
+        "stack",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "ops",
+        "slow"
+      ],
+      "name": "perf-nightly",
+      "tags": [
+        "first-class",
+        "ops",
+        "perf-nightly",
+        "public",
+        "slow",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [],
+      "name": "policies",
+      "tags": [
+        "first-class",
+        "policies",
+        "public",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [],
+      "name": "product",
+      "tags": [
+        "first-class",
+        "product",
+        "public",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "product"
+      ],
+      "name": "product.smoke",
+      "tags": [
+        "first-class",
+        "product",
+        "product.smoke",
+        "public",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 3,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 3,
+      "kind": "first-class",
+      "markers": [
+        "ops",
+        "policies",
+        "slow"
+      ],
+      "name": "refgrade-audit",
+      "tags": [
+        "first-class",
+        "ops",
+        "policies",
+        "public",
+        "refgrade-audit",
+        "slow",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [],
+      "name": "required",
+      "tags": [
+        "first-class",
+        "public",
+        "required",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 4,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 4,
+      "kind": "first-class",
+      "markers": [
+        "required"
+      ],
+      "name": "required_proof",
+      "tags": [
+        "first-class",
+        "public",
+        "required",
+        "required_proof",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [],
+      "name": "slow",
+      "tags": [
+        "first-class",
+        "public",
+        "slow",
+        "suite"
+      ]
+    },
+    {
+      "check_count": 0,
+      "complete": true,
+      "includes": [],
+      "internal": false,
+      "item_count": 0,
+      "kind": "first-class",
+      "markers": [
+        "ops",
+        "slow"
+      ],
+      "name": "stack-nightly",
+      "tags": [
+        "first-class",
+        "ops",
+        "public",
+        "slow",
+        "stack-nightly",
+        "suite"
+      ]
+    }
+  ],
+  "kind": "list-suites",
+  "schema_name": "atlasctl.list-suites.v1",
+  "schema_version": 1,
+  "status": "ok",
+  "tool": "atlasctl"
+}
