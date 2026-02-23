@@ -173,6 +173,56 @@ def _bypass_burndown(repo_root: Path, *, update_trend: bool = False) -> dict[str
     return result
 
 
+def _bypass_pr_checklist(repo_root: Path) -> dict[str, object]:
+    payload = collect_bypass_inventory(repo_root)
+    entries = payload.get("entries", []) if isinstance(payload.get("entries"), list) else []
+    touched = [row for row in entries if isinstance(row, dict) and str(row.get("source", "")).startswith("ops/_meta/")]
+    lines = ["### Bypass Impact", ""]
+    if not touched:
+        lines.append("- [ ] No bypass inventory entries changed.")
+    else:
+        lines.append("- [ ] Bypass entries touched in this PR:")
+        for row in sorted(touched, key=lambda r: (str(r.get("source", "")), str(r.get("key", ""))))[:50]:
+            line = f"  - `{row.get('source')}:{row.get('key')}`"
+            if row.get("owner"):
+                line += f" owner={row.get('owner')}"
+            if row.get("expires_at"):
+                line += f" expires={row.get('expires_at')}"
+            lines.append(line)
+    return {"schema_version": 1, "kind": "bypass-pr-checklist", "entry_count": len(touched), "lines": lines}
+
+
+def _bypass_drill(repo_root: Path, *, strict: bool) -> dict[str, object]:
+    inventory = collect_bypass_inventory(repo_root)
+    burndown = _bypass_burndown(repo_root, update_trend=False)
+    checks = [
+        "checks_policies_bypass_has_owner",
+        "checks_policies_bypass_has_expiry",
+        "checks_policies_bypass_has_reason",
+        "checks_policies_bypass_has_ticket_or_doc_ref",
+        "checks_policies_bypass_count_nonincreasing",
+    ]
+    if strict:
+        checks += ["checks_policies_bypass_mainline_strict_mode", "checks_policies_bypass_count_nonincreasing_hard"]
+    return {
+        "schema_version": 1,
+        "kind": "bypass-drill",
+        "strict": strict,
+        "entry_count": int(inventory.get("entry_count", 0)),
+        "oldest_age_days": burndown.get("oldest_age_days"),
+        "by_domain": burndown.get("items", []),
+        "fix_plan": {
+            "stages": ["stale", "overly-broad", "cosmetic", "structural", "hard"],
+            "recommended_checks": checks,
+            "commands": [
+                "./bin/atlasctl policies culprits --format json --blame",
+                "./bin/atlasctl policies bypass burn-down --report json",
+                "./bin/atlasctl policies bypass tighten --step 1 --report json",
+            ],
+        },
+    }
+
+
 def _with_bypass_blame(repo_root: Path, payload: dict[str, object]) -> dict[str, object]:
     import fnmatch
 
@@ -211,6 +261,8 @@ def _with_bypass_blame(repo_root: Path, payload: dict[str, object]) -> dict[str,
     result = dict(payload)
     result["entries"] = out_entries
     return result
+
+
 def _repo_stats_payload(repo_root: Path) -> dict[str, object]:
     rows = collect_dir_stats(repo_root)
     top_dirs = sorted(rows, key=lambda row: row.total_loc, reverse=True)[:20]
@@ -610,6 +662,17 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         payload = _bypass_burndown(repo, update_trend=bool(getattr(ns, "update_trend", False)))
         print(json.dumps(payload, sort_keys=True) if ns.report == "json" else json.dumps(payload, indent=2, sort_keys=True))
         return 0
+    if ns.policies_cmd == "bypass" and getattr(ns, "bypass_cmd", "") == "pr-checklist":
+        payload = _bypass_pr_checklist(repo)
+        if ns.report == "json":
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            print("\n".join(str(x) for x in payload.get("lines", [])))
+        return 0
+    if ns.policies_cmd == "bypass" and getattr(ns, "bypass_cmd", "") == "drill":
+        payload = _bypass_drill(repo, strict=bool(getattr(ns, "strict", False)))
+        print(json.dumps(payload, sort_keys=True) if ns.report == "json" else json.dumps(payload, indent=2, sort_keys=True))
+        return 0
 
     return 2
 
@@ -662,6 +725,11 @@ def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
     burn = bypass_sub.add_parser("burn-down", help="group bypass entries by domain and age")
     burn.add_argument("--report", choices=["text", "json"], default="text")
     burn.add_argument("--update-trend", action="store_true")
+    prc = bypass_sub.add_parser("pr-checklist", help="generate a PR checklist snippet for bypasses")
+    prc.add_argument("--report", choices=["text", "json"], default="text")
+    drill = bypass_sub.add_parser("drill", help="run a local strict bypass drill and print a fix plan")
+    drill.add_argument("--strict", action="store_true")
+    drill.add_argument("--report", choices=["text", "json"], default="text")
 
     rep = ps.add_parser("report", help="print active relaxations summary")
     rep.add_argument("--report", choices=["text", "json"], default="json")
