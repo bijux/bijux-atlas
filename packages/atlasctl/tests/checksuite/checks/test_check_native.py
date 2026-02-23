@@ -5,17 +5,21 @@ from pathlib import Path
 
 from atlasctl.checks.repo.native import (
     check_committed_generated_hygiene,
+    check_generated_dirs_policy,
     check_duplicate_script_names,
     check_layout_contract,
     check_make_command_allowlist,
     check_make_forbidden_paths,
     check_make_no_direct_python_script_invocations,
     check_make_scripts_references,
+    check_no_large_binary_files,
     check_no_xtask_refs,
+    check_ops_configs_deterministic_newlines,
     check_ops_generated_tracked,
     check_repo_no_python_caches_committed,
     check_script_ownership,
     check_tracked_timestamp_paths,
+    check_tmp_paths_outside_artifacts,
 )
 
 
@@ -123,6 +127,51 @@ def test_check_repo_no_python_caches_committed_passes_when_none_found(monkeypatc
     code, errors = check_repo_no_python_caches_committed(tmp_path)
     assert code == 0
     assert errors == []
+
+
+def test_check_tmp_paths_outside_artifacts_flags_tracked_tmp(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(
+        "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout._git_ls_files",
+        lambda _repo_root, _spec: ["tmp/cache.txt", "artifacts/tmp/cache.txt", "configs/app.toml"],
+    )
+    code, errors = check_tmp_paths_outside_artifacts(tmp_path)
+    assert code == 1
+    assert errors == ["tracked tmp path outside artifacts/: tmp/cache.txt"]
+
+
+def test_check_generated_dirs_policy_flags_noncanonical_generated_dir(tmp_path: Path) -> None:
+    (tmp_path / "docs/_generated").mkdir(parents=True)
+    (tmp_path / "packages/foo/_generated").mkdir(parents=True)
+    code, errors = check_generated_dirs_policy(tmp_path)
+    assert code == 1
+    assert errors == ["disallowed generated dir: packages/foo/_generated"]
+
+
+def test_check_ops_configs_deterministic_newlines_flags_crlf_and_trailing_ws(monkeypatch, tmp_path: Path) -> None:
+    path = tmp_path / "ops/example.txt"
+    path.parent.mkdir(parents=True)
+    path.write_bytes(b"ok  \r\nnext\r\n")
+    monkeypatch.setattr(
+        "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout._git_ls_files",
+        lambda _repo_root, _spec: ["ops/example.txt"],
+    )
+    code, errors = check_ops_configs_deterministic_newlines(tmp_path)
+    assert code == 1
+    assert any("CRLF" in err for err in errors)
+    assert any("trailing whitespace" in err for err in errors)
+
+
+def test_check_no_large_binary_files_flags_large_binary(monkeypatch, tmp_path: Path) -> None:
+    blob = tmp_path / "ops/blob.bin"
+    blob.parent.mkdir(parents=True)
+    blob.write_bytes(b"\0" * (5 * 1024 * 1024 + 10))
+    monkeypatch.setattr(
+        "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout._git_ls_files",
+        lambda _repo_root, _spec: ["ops/blob.bin"],
+    )
+    code, errors = check_no_large_binary_files(tmp_path)
+    assert code == 1
+    assert "blob.bin" in errors[0]
 
 
 def test_check_make_command_allowlist_passes_for_allowlisted_command(tmp_path: Path) -> None:
