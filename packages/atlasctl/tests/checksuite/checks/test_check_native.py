@@ -13,6 +13,7 @@ from atlasctl.checks.repo.native import (
     check_make_scripts_references,
     check_no_xtask_refs,
     check_ops_generated_tracked,
+    check_repo_no_python_caches_committed,
     check_script_ownership,
     check_tracked_timestamp_paths,
 )
@@ -68,14 +69,20 @@ def test_check_make_no_direct_python_script_invocations_flags_direct_calls(tmp_p
 
 
 def test_check_ops_generated_tracked_flags_tracked_entries(monkeypatch, tmp_path: Path) -> None:
-    monkeypatch.setattr("atlasctl.checks.repo.native._git_ls_files", lambda _repo_root, _spec: ["ops/_generated/run-1/report.json"])
+    monkeypatch.setattr(
+        "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout._git_ls_files",
+        lambda _repo_root, _spec: ["ops/_generated/run-1/report.json"],
+    )
     code, errors = check_ops_generated_tracked(tmp_path)
     assert code == 1
     assert "ops/_generated" in errors[0]
 
 
 def test_check_tracked_timestamp_paths_flags_timestamp_segments(monkeypatch, tmp_path: Path) -> None:
-    monkeypatch.setattr("atlasctl.checks.repo.native._git_ls_files", lambda _repo_root, _spec: ["artifacts/evidence/2026-02-20/report.json", "docs/index.md"])
+    monkeypatch.setattr(
+        "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout._git_ls_files",
+        lambda _repo_root, _spec: ["artifacts/evidence/2026-02-20/report.json", "docs/index.md"],
+    )
     code, errors = check_tracked_timestamp_paths(tmp_path)
     assert code == 1
     assert "2026-02-20" in errors[0]
@@ -83,7 +90,7 @@ def test_check_tracked_timestamp_paths_flags_timestamp_segments(monkeypatch, tmp
 
 def test_check_committed_generated_hygiene_flags_logs_and_timestamps(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.setattr(
-        "atlasctl.checks.repo.native._git_ls_files",
+        "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout._git_ls_files",
         lambda _repo_root, _spec: [
             "docs/_generated/2026-02-20/index.md",
             "ops/_generated_committed/run.log",
@@ -92,6 +99,30 @@ def test_check_committed_generated_hygiene_flags_logs_and_timestamps(monkeypatch
     code, errors = check_committed_generated_hygiene(tmp_path)
     assert code == 1
     assert len(errors) == 2
+
+
+def test_check_repo_no_python_caches_committed_flags_python_cache_artifacts(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(
+        "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout._git_ls_files",
+        lambda _repo_root, _spec: [
+            "packages/atlasctl/tests/__pycache__/conftest.cpython-311.pyc",
+            "packages/atlasctl/.pytest_cache/README.md",
+            "packages/atlasctl/src/atlasctl/__init__.py",
+        ],
+    )
+    code, errors = check_repo_no_python_caches_committed(tmp_path)
+    assert code == 1
+    assert len(errors) == 2
+
+
+def test_check_repo_no_python_caches_committed_passes_when_none_found(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(
+        "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout._git_ls_files",
+        lambda _repo_root, _spec: ["packages/atlasctl/src/atlasctl/__init__.py"],
+    )
+    code, errors = check_repo_no_python_caches_committed(tmp_path)
+    assert code == 0
+    assert errors == []
 
 
 def test_check_make_command_allowlist_passes_for_allowlisted_command(tmp_path: Path) -> None:

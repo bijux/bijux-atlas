@@ -69,6 +69,8 @@ benchmarks/
 tmp/
 temp/
 __pycache__/
+*.pyc
+*.pyc.*
 .hypothesis/
 *.py[cod]
 *.tmp
