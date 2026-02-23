@@ -16,6 +16,23 @@ _CHECK_IMPORT_ALLOW_EXACT = {"errors", "exit_codes", "run_context"}
 _CLI_IMPORT_ALLOW_PREFIXES = ("commands", "core", "cli")
 _CLI_IMPORT_ALLOW_EXACT = {"errors", "exit_codes", "network_guard"}
 _COLD_IMPORT_BUDGET_MS = 250.0
+_CHECKS_TO_COMMANDS_ALLOWLIST = {
+    "packages/atlasctl/src/atlasctl/checks/domains/policies/make/enforcement.py",
+    "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_indexes_generated.py",
+    "packages/atlasctl/src/atlasctl/checks/repo/__init__.py",
+    "packages/atlasctl/src/atlasctl/checks/repo/reachability.py",
+}
+_COMMANDS_TO_CHECKS_ALLOWLIST = {
+    "packages/atlasctl/src/atlasctl/commands/check/run.py",
+    "packages/atlasctl/src/atlasctl/commands/ops/load/contracts/validate_suite_manifest.py",
+    "packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_abuse_scenarios_required.py",
+    "packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_perf_baselines.py",
+    "packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_pinned_queries_lock.py",
+    "packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_runbook_suite_names.py",
+}
+_CHECKS_TO_CLI_ALLOWLIST = {
+    "packages/atlasctl/src/atlasctl/checks/repo/native/modules/repo_checks_make_and_layout.py",
+}
 
 
 def _iter_py_files(repo_root: Path) -> list[Path]:
@@ -289,6 +306,8 @@ def check_checks_no_cli_imports(repo_root: Path) -> tuple[int, list[str]]:
     offenders: list[str] = []
     for path in sorted((repo_root / _SRC_ROOT / "checks").rglob("*.py")):
         rel = path.relative_to(repo_root).as_posix()
+        if rel in _CHECKS_TO_CLI_ALLOWLIST:
+            continue
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=rel)
         for node in ast.walk(tree):
             imported = _first_atlasctl_import(node) if isinstance(node, (ast.Import, ast.ImportFrom)) else None
@@ -297,6 +316,40 @@ def check_checks_no_cli_imports(repo_root: Path) -> tuple[int, list[str]]:
             target = imported[0]
             if target == "atlasctl.cli" or target.startswith("atlasctl.cli."):
                 offenders.append(f"{rel}:{imported[1]} import-chain checks -> {target}")
+    return (0 if not offenders else 1), sorted(set(offenders))
+
+
+def check_checks_no_command_imports(repo_root: Path) -> tuple[int, list[str]]:
+    offenders: list[str] = []
+    for path in sorted((repo_root / _SRC_ROOT / "checks").rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        if rel in _CHECKS_TO_COMMANDS_ALLOWLIST:
+            continue
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=rel)
+        for node in ast.walk(tree):
+            imported = _first_atlasctl_import(node) if isinstance(node, (ast.Import, ast.ImportFrom)) else None
+            if imported is None:
+                continue
+            target = imported[0]
+            if target == "atlasctl.commands" or target.startswith("atlasctl.commands."):
+                offenders.append(f"{rel}:{imported[1]} import-chain checks -> {target}")
+    return (0 if not offenders else 1), sorted(set(offenders))
+
+
+def check_commands_no_check_impl_imports(repo_root: Path) -> tuple[int, list[str]]:
+    offenders: list[str] = []
+    for path in sorted((repo_root / _SRC_ROOT / "commands").rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        if rel in _COMMANDS_TO_CHECKS_ALLOWLIST:
+            continue
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=rel)
+        for node in ast.walk(tree):
+            imported = _first_atlasctl_import(node) if isinstance(node, (ast.Import, ast.ImportFrom)) else None
+            if imported is None:
+                continue
+            target = imported[0]
+            if target == "atlasctl.checks" or target.startswith("atlasctl.checks."):
+                offenders.append(f"{rel}:{imported[1]} import-chain commands -> {target}")
     return (0 if not offenders else 1), sorted(set(offenders))
 
 

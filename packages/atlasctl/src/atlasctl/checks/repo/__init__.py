@@ -92,8 +92,11 @@ from .enforcement.package_shape import (
 )
 from .enforcement.structure.check_top_level_structure import check_top_level_structure
 from .enforcement.structure.check_structure import (
+    check_cli_main_loc_budget,
     check_check_impl_no_cli_imports,
     check_checks_canonical_location,
+    check_main_entrypoint_calls_app_main,
+    check_registry_generated_readonly,
 )
 from .enforcement.package_hygiene import (
     check_folder_intent_contract,
@@ -142,8 +145,10 @@ from .contracts.required_proof import check_required_target_shape
 from .enforcement.import_policy import (
     check_cli_import_scope,
     check_command_import_lint,
+    check_commands_no_check_impl_imports,
     check_core_no_command_imports,
     check_checks_import_lint,
+    check_checks_no_command_imports,
     check_checks_no_cli_imports,
     check_contract_import_boundaries,
     check_cold_import_budget,
@@ -598,12 +603,17 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.runcontext_single_builder", "repo", "ensure RunContext is built only in core/context.py", 300, check_runcontext_single_builder, fix_hint="Use RunContext.from_args and avoid constructing context-like objects elsewhere."),
     CheckDef("repo.command_import_lint", "repo", "enforce command module import boundaries", 300, check_command_import_lint, fix_hint="Restrict command imports to core/contracts/checks/adapters/commands/cli."),
     CheckDef("repo.checks_import_lint", "repo", "enforce checks module import boundaries", 300, check_checks_import_lint, fix_hint="Restrict checks imports to core/contracts/reporting/adapters/checks."),
+    CheckDef("repo.commands_no_check_impl_imports", "repo", "forbid commands from importing check implementations directly", 300, check_commands_no_check_impl_imports, fix_hint="Resolve checks through registry and engine selectors rather than direct check module imports."),
     CheckDef("repo.core_no_command_imports", "repo", "forbid core modules from importing command/cli layers", 300, check_core_no_command_imports, fix_hint="Keep core independent from command and cli glue layers."),
+    CheckDef("repo.checks_no_command_imports", "repo", "forbid checks from importing command modules", 300, check_checks_no_command_imports, fix_hint="Move reusable logic from commands into runtime/registry modules consumed by both."),
     CheckDef("repo.checks_no_cli_imports", "repo", "forbid checks modules from importing cli layer", 300, check_checks_no_cli_imports, fix_hint="Keep checks pure and independent from cli modules."),
     CheckDef("repo.cli_import_scope", "repo", "restrict cli imports to commands/core and approved runtime shims", 300, check_cli_import_scope, fix_hint="Route feature logic through commands; keep cli as parser/dispatch glue."),
     CheckDef("repo.registry_definition_boundary", "repo", "forbid registry modules from importing command/cli/suite/check runtime modules", 300, check_registry_definition_boundary, fix_hint="Keep registry declarative and independent from runtime command/check implementations."),
     CheckDef("repo.checks_canonical_location", "repo", "require check implementations under atlasctl/checks canonical tree", 300, check_checks_canonical_location, fix_hint="Move check_*.py implementations under packages/atlasctl/src/atlasctl/checks/ or extend migration allowlist explicitly."),
     CheckDef("repo.check_impl_no_cli_imports", "repo", "forbid direct CLI imports from check implementation files", 300, check_check_impl_no_cli_imports, fix_hint="Keep check implementations pure and route CLI wiring through commands/cli modules."),
+    CheckDef("repo.main_entrypoint_calls_app_main", "repo", "require __main__ to delegate to atlasctl.app.main", 300, check_main_entrypoint_calls_app_main, fix_hint="Keep __main__.py as a thin one-line app.main handoff."),
+    CheckDef("repo.cli_main_loc_budget", "repo", "enforce LOC budget for cli/main.py", 300, check_cli_main_loc_budget, fix_hint="Move business logic into commands/runtime/engine modules and keep cli/main.py thin."),
+    CheckDef("repo.registry_generated_readonly", "repo", "require REGISTRY.generated.json to be generator-owned", 300, check_registry_generated_readonly, fix_hint="Run ./bin/atlasctl dev regen-registry and commit the regenerated artifacts."),
     CheckDef("repo.effect_boundaries", "repo", "forbid direct subprocess/fs/env/network effects outside core boundaries", 300, check_forbidden_effect_calls, fix_hint="Route effects through core.exec/core.process/core.fs/core.runtime.env/core.network."),
     CheckDef("repo.managed_artifact_write_roots", "repo", "enforce managed write roots under artifacts and reject out-of-root writes", 300, check_managed_artifact_write_roots, fix_hint="Keep managed write roots under artifacts/ and route writes through core.fs."),
     CheckDef("repo.config_generated_no_human_refs", "repo", "forbid human-facing docs/workflows/makefiles from referencing configs/_generated directly", 300, check_config_generated_no_human_refs, fix_hint="Reference `atlasctl configs ...` commands instead of configs/_generated paths."),
