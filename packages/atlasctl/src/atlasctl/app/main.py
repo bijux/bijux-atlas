@@ -17,7 +17,7 @@ from ..cli.main import (
     build_parser,
 )
 from ..cli.dispatch import dispatch_command
-from ..cli.output import no_network_flag_expired, render_error, resolve_output_format
+from ..cli.output import no_network_flag_expired, resolve_output_format
 from ..core.context import RunContext
 from ..core.effects import command_effects
 from ..core.errors import ScriptError
@@ -29,12 +29,14 @@ from ..core.runtime.telemetry import emit_telemetry
 from ..contracts.ids import HELP
 from ..cli.constants import NO_NETWORK_FLAG_EXPIRY
 from ..runtime.logging import log_event
+from .invocation import parse_cli_invocation
+from .render import render_error
 
 
 def main(argv: list[str] | None = None) -> int:
     raw_argv = argv if argv is not None else sys.argv[1:]
-    parser = build_parser()
-    ns = parser.parse_args(argv)
+    inv = parse_cli_invocation(raw_argv)
+    ns = inv.namespace
     if ns.format and "--json" in raw_argv and ns.format != "json":
         raise ScriptError("conflicting output flags: use either --format json or --json", ERR_CONFIG)
     if ns.cwd:
