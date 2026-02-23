@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 
 from ...core.context import RunContext
+from ...core.process import run_command
 from ...core.runtime.paths import write_text_file
 from ...core.schema.schema_utils import validate_json
 from ...core.effects.product import (
@@ -101,6 +102,10 @@ def _write_artifact_manifest(ctx: RunContext) -> Path:
 
 
 def _validate_artifact_manifest(ctx: RunContext, path: Path | None = None) -> int:
+    pins = run_command(["./bin/atlasctl", "ops", "pins", "check", "--report", "text"], ctx.repo_root, ctx=ctx)
+    if pins.code != 0:
+        print("ops pins check failed; product validation requires pinned tool versions to pass")
+        return 1
     target = path or _product_manifest_path(ctx)
     if not target.exists():
         print(f"missing product artifact manifest: {_rel(ctx.repo_root, target)}")
