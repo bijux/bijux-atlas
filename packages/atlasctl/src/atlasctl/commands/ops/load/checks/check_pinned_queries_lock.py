@@ -4,7 +4,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from atlasctl.checks.domains.ops.ops_checks import check_ops_load_pinned_queries_lock_native
+from atlasctl.checks.domains.ops.contracts import check_ops_load_pinned_queries_lock_native
 
 
 def _repo_root() -> Path:
