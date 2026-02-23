@@ -41,3 +41,55 @@ def check_no_path_cwd_usage(repo_root: Path) -> tuple[int, list[str]]:
     if relative_path_offenders:
         return 1, sorted(set(relative_path_offenders))
     return 0, []
+
+
+def check_no_path_dot_in_runtime(repo_root: Path) -> tuple[int, list[str]]:
+    offenders: list[str] = []
+    root = repo_root / "packages/atlasctl/src/atlasctl"
+    for path in sorted(root.rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        if "/checks/" not in rel and "/commands/check/" not in rel:
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if 'Path(".")' in text or "Path('.')" in text:
+            offenders.append(f"{rel}: forbidden Path('.') usage; resolve through explicit repo_root")
+    return (0 if not offenders else 1), offenders
+
+
+def check_no_environ_mutation(repo_root: Path) -> tuple[int, list[str]]:
+    offenders: list[str] = []
+    root = repo_root / "packages/atlasctl/src/atlasctl"
+    for path in sorted(root.rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        if "/checks/" not in rel and "/commands/check/" not in rel:
+            continue
+        tree = ast.parse(path.read_text(encoding="utf-8", errors="ignore"), filename=rel)
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Assign):
+                for target in node.targets:
+                    if (
+                        isinstance(target, ast.Subscript)
+                        and isinstance(target.value, ast.Attribute)
+                        and isinstance(target.value.value, ast.Name)
+                        and target.value.value.id == "os"
+                        and target.value.attr == "environ"
+                    ):
+                        offenders.append(f"{rel}:{node.lineno}: do not mutate os.environ in checks runtime")
+            if isinstance(node, ast.Call):
+                if (
+                    isinstance(node.func, ast.Attribute)
+                    and isinstance(node.func.value, ast.Attribute)
+                    and isinstance(node.func.value.value, ast.Name)
+                    and node.func.value.value.id == "os"
+                    and node.func.value.attr == "environ"
+                    and node.func.attr == "update"
+                ):
+                    offenders.append(f"{rel}:{node.lineno}: do not call os.environ.update in checks runtime")
+                if (
+                    isinstance(node.func, ast.Attribute)
+                    and isinstance(node.func.value, ast.Name)
+                    and node.func.value.id == "os"
+                    and node.func.attr == "putenv"
+                ):
+                    offenders.append(f"{rel}:{node.lineno}: do not call os.putenv in checks runtime")
+    return (0 if not offenders else 1), sorted(set(offenders))

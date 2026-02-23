@@ -44,7 +44,7 @@ from .native import (
     check_makefiles_no_deep_config_paths,
 )
 import atlasctl.checks.repo.native.runtime as _native_runtime  # noqa: F401
-from ..core.base import CheckDef
+from ..model import CheckDef
 from .enforcement.legacy_guard import check_legacy_package_absent
 from ...commands.policies.runtime.culprits import (
     check_budget_drift_approval,
@@ -57,7 +57,11 @@ from ...commands.policies.runtime.dir_budgets import check_loc_per_dir, check_mo
 from ...commands.policies.runtime.dir_entry_budgets import check_dir_entry_budgets, check_py_files_per_dir_budget
 from ...commands.policies.runtime.module_budgets import check_modules_per_domain
 from ...commands.policies.runtime.tree_depth import check_tree_depth
-from .enforcement.cwd_usage import check_no_path_cwd_usage
+from .enforcement.cwd_usage import (
+    check_no_environ_mutation,
+    check_no_path_cwd_usage,
+    check_no_path_dot_in_runtime,
+)
 from .contracts.command_contracts import (
     check_command_alias_budget,
     check_cli_canonical_paths,
@@ -518,6 +522,8 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.no_placeholder_module_names", "repo", "forbid placeholder-like module filenames in modern code", 300, check_no_placeholder_module_names, fix_hint="Rename modules to intent-revealing names."),
     CheckDef("repo.package_has_module_or_readme", "repo", "require each non-legacy package to contain a module or README", 300, check_package_has_module_or_readme, fix_hint="Add module implementation or README.md to document empty package."),
     CheckDef("repo.no_path_cwd_usage", "repo", "forbid Path.cwd usage outside core.runtime.repo_root.py", 400, check_no_path_cwd_usage, fix_hint="Use ctx.repo_root or core.runtime.repo_root helpers."),
+    CheckDef("repo.no_path_dot_runtime", "repo", "forbid Path('.') usage in checks runtime", 400, check_no_path_dot_in_runtime, fix_hint="Resolve paths from explicit repo_root context instead of Path('.')."),
+    CheckDef("repo.no_environ_mutation", "repo", "forbid os.environ mutation in checks runtime", 400, check_no_environ_mutation, fix_hint="Pass environment values through context/capabilities and avoid mutating process env."),
     CheckDef("repo.command_metadata_contract", "repo", "ensure command metadata includes touches/tools/effect declarations", 400, check_command_metadata_contract, fix_hint="Add touches/tools/effect metadata in cli registry."),
     CheckDef("repo.network_default_deny", "repo", "enforce network-forbidden-by-default command policy", 300, check_network_default_deny_policy, fix_hint="Require explicit --allow-network for network-capable commands and keep default deny."),
     CheckDef("repo.argparse_policy", "repo", "restrict direct argparse parser construction to canonical parser modules", 300, check_argparse_policy, fix_hint="Move parser construction into cli/parser.py or commands/*/parser.py."),
