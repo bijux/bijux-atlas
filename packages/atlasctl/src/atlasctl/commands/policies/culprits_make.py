@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+import io
 import sys
+from contextlib import redirect_stdout
 from pathlib import Path
 
 
@@ -106,7 +108,10 @@ def run_gate(gate: str) -> int:
 
 
 def run_gate_structured(gate: str) -> dict[str, object]:
-    code = run_gate(gate)
+    buf = io.StringIO()
+    with redirect_stdout(buf):
+        code = run_gate(gate)
+    lines = [ln for ln in buf.getvalue().splitlines() if ln.strip()]
     return {
         "schema_version": 1,
         "tool": "atlasctl",
@@ -114,6 +119,7 @@ def run_gate_structured(gate: str) -> dict[str, object]:
         "gate": gate,
         "status": "ok" if code == 0 else ("error" if code == 1 else "invalid"),
         "exit_code": code,
+        "stdout_lines": lines,
     }
 
 

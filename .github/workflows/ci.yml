@@ -126,6 +126,8 @@ jobs:
           ./bin/atlasctl --format json check run --id checks_checks_registry_integrity > /tmp/check-registry-integrity.json
           ./bin/atlasctl --format json check run --id checks_policies_bypass_count_nonincreasing > /tmp/check-bypass-count.json
           ./bin/atlasctl --format json check run --id checks_policies_bypass_count_nonincreasing_hard > /tmp/check-bypass-count-hard.json
+          ./bin/atlasctl --format json check run --id checks_policies_culprits_nonincrease_on_main > /tmp/check-bypass-main-trend.json
+          ./bin/atlasctl --format json check run --id checks_policies_culprits_empty_on_release_tags > /tmp/check-bypass-release-tag.json
           ./bin/atlasctl --format json check run --id checks_policies_adjectives_repo_clean > /tmp/check-adjectives.json
       - name: Optional hard bypass gate
         if: env.ATLASCTL_BYPASS_HARD_FAIL == '1'
