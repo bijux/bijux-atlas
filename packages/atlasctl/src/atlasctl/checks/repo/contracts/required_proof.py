@@ -4,6 +4,7 @@ from pathlib import Path
 
 
 _ALLOWED_PACKAGE_ROOT_ITEMS = {
+    "ARCHITECTURE.md",
     "src",
     "tests",
     "docs",
@@ -12,6 +13,7 @@ _ALLOWED_PACKAGE_ROOT_ITEMS = {
     "LICENSE",
     "requirements.in",
     "requirements.lock.txt",
+    "uv.lock",
     ".pytest_cache",
 }
 

@@ -4,6 +4,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from atlasctl.core.runtime.repo_root import find_repo_root
+
 
 def _publish(root: Path, gff3: Path, fasta: Path, fai: Path, release: str, species: str, assembly: str) -> int:
     return subprocess.call([
@@ -18,7 +20,7 @@ def _publish(root: Path, gff3: Path, fasta: Path, fai: Path, release: str, speci
 
 
 def main() -> int:
-    root = Path.cwd()
+    root = find_repo_root()
     dataset = sys.argv[1] if len(sys.argv) > 1 else 'medium'
     real_root = Path(os.environ.get('ATLAS_REALDATA_ROOT', str(root / 'artifacts/real-datasets')))
     if dataset == 'medium':

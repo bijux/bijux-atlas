@@ -1,10 +1,11 @@
 from __future__ import annotations
 import subprocess
+from atlasctl.core.runtime.repo_root import find_repo_root
 from pathlib import Path
 
 
 def main() -> int:
-    root = Path.cwd()
+    root = find_repo_root()
     for rb in ('store-outage.md','traffic-spike.md','rollback-playbook.md','pod-churn.md','dataset-corruption.md'):
         p = root / 'docs/operations/runbooks' / rb
         if not p.is_file() or p.stat().st_size == 0:

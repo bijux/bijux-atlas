@@ -1,10 +1,11 @@
 from __future__ import annotations
 import json, os, subprocess, sys
+from atlasctl.core.runtime.repo_root import find_repo_root
 from pathlib import Path
 
 
 def main() -> int:
-    root = Path.cwd()
+    root = find_repo_root()
     base_url = os.environ.get('ATLAS_BASE_URL', 'http://127.0.0.1:18080')
     ns = os.environ.get('ATLAS_E2E_NAMESPACE', 'atlas-e2e')
     release = os.environ.get('ATLAS_E2E_RELEASE_NAME', 'atlas-e2e')

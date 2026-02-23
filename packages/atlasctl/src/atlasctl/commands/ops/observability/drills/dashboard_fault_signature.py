@@ -1,9 +1,10 @@
 from __future__ import annotations
 import subprocess
+from atlasctl.core.runtime.repo_root import find_repo_root
 from pathlib import Path
 
 def main() -> int:
-    root = Path.cwd(); f = root/'ops/obs/grafana/atlas-observability-dashboard.json'
+    root = find_repo_root(); f = root/'ops/obs/grafana/atlas-observability-dashboard.json'
     for key in ('shed rate','bulkhead saturation','cache hit ratio','store p95'):
         subprocess.check_call(['rg','-ni',key,str(f)], stdout=subprocess.DEVNULL)
     subprocess.check_call(['python3','packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_dashboard_contract.py'])

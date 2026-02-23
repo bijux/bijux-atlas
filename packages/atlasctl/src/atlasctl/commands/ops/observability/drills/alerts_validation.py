@@ -1,5 +1,6 @@
 from __future__ import annotations
 import os, subprocess
+from atlasctl.core.runtime.repo_root import find_repo_root
 from pathlib import Path
 
 def _errors_total(base: str) -> float:
@@ -13,7 +14,7 @@ def _errors_total(base: str) -> float:
     return total
 
 def main() -> int:
-    root = Path.cwd(); base = os.environ.get('ATLAS_BASE_URL', 'http://127.0.0.1:18080')
+    root = find_repo_root(); base = os.environ.get('ATLAS_BASE_URL', 'http://127.0.0.1:18080')
     alerts_file = root/'ops/obs/alerts/atlas-alert-rules.yaml'
     subprocess.check_call(['python3','packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_alerts_contract.py'])
     if subprocess.call(['bash','-lc','command -v promtool >/dev/null 2>&1']) == 0:

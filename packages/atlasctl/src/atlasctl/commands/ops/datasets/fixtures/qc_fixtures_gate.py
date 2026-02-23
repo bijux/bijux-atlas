@@ -2,6 +2,8 @@ from __future__ import annotations
 import os, shutil, subprocess
 from pathlib import Path
 
+from atlasctl.core.runtime.repo_root import find_repo_root
+
 
 def _run_case(root: Path, out_root: Path, thresholds: Path, case_name: str, gff3: Path, fasta: Path, fai: Path, release: str, species: str, assembly: str) -> None:
     case_out = out_root / case_name
@@ -12,7 +14,7 @@ def _run_case(root: Path, out_root: Path, thresholds: Path, case_name: str, gff3
 
 
 def main() -> int:
-    root = Path.cwd()
+    root = find_repo_root()
     out_root = root / 'artifacts/isolate/qc-fixtures'
     thresholds = root / 'configs/ops/dataset-qc-thresholds.v1.json'
     shutil.rmtree(out_root, ignore_errors=True)

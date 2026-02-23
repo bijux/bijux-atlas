@@ -11,12 +11,15 @@ _TOP_LEVEL_GROUP_MAP = {
     "contracts": "dev",
     "core": "dev",
     "internal": "internal",
+    "ops": "ops",
     "policies": "policies",
     "registry": "dev",
     "reporting": "dev",
     "suite": "dev",
 }
-_MAX_PACKAGE_DEPTH = 4
+# Ops k8s test adapters now live under commands/ops/k8s/tests/checks/<group>/.
+# This yields depth 6 and is intentional after shell-wrapper retirement.
+_MAX_PACKAGE_DEPTH = 6
 _CANONICAL_CONCEPT_HOME = {
     "registry": "registry",
     "runner": "suite",
@@ -30,6 +33,7 @@ _FORBIDDEN_CONCEPT_ALIASES = {
     "output": {"output", "outputs", "reports"},
 }
 _ATLASCTL_PACKAGE_ROOT_ALLOWED = {
+    "ARCHITECTURE.md",
     "LICENSE",
     "README.md",
     "docs",

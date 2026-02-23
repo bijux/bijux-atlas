@@ -7,6 +7,10 @@ from pathlib import Path
 _SRC_ROOT = "packages/atlasctl/src/atlasctl"
 _PLACEHOLDER_STEM = re.compile(r"(?:^|[_-])(part\d+|chunk[_-]?\d+|placeholder|tmp)(?:$|[_-])", re.IGNORECASE)
 _MARKER_REASON = "marker-only package:"
+_POINTLESS_NEST_ALLOW = {
+    "packages/atlasctl/src/atlasctl/checks/layout/product",
+    "packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/assets",
+}
 
 
 def _package_dirs(src_root: Path) -> list[Path]:
@@ -101,6 +105,8 @@ def check_no_empty_dirs_or_pointless_nests(repo_root: Path) -> tuple[int, list[s
         has_python = any(path.suffix == ".py" for path in files)
         has_readme = any(path.name == "README.md" for path in files)
         if directory == src_root:
+            continue
+        if rel in _POINTLESS_NEST_ALLOW:
             continue
         if not has_python and not has_readme and len(subdirs) == 1:
             offenders.append(

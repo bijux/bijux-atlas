@@ -1,9 +1,10 @@
 from __future__ import annotations
 import argparse
+from atlasctl.core.runtime.repo_root import find_repo_root
 import json, os, re, subprocess, sys, time
 from pathlib import Path
 
-ROOT = Path.cwd()
+ROOT = find_repo_root()
 
 
 def _read_manifest_field(name: str, field: str):

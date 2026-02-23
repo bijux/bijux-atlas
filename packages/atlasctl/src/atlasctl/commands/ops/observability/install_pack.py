@@ -1,4 +1,5 @@
 from __future__ import annotations
+from atlasctl.core.runtime.repo_root import find_repo_root
 
 import json
 import os
@@ -43,7 +44,7 @@ def main() -> int:
     obs_ns = os.environ.get('ATLAS_OBS_NAMESPACE', 'atlas-observability')
     storage_mode = os.environ.get('ATLAS_OBS_STORAGE_MODE', 'ephemeral')
     offline_mode = os.environ.get('ATLAS_OBS_OFFLINE', '0')
-    root = Path.cwd()
+    root = find_repo_root()
     if profile == 'local-compose':
         cmd = _compose_cmd()
         if not cmd:
