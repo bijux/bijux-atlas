@@ -32,6 +32,13 @@ class SuiteManifestSpec:
 _SUITES_CATALOG = Path(__file__).resolve().with_name("suites_catalog.json")
 
 _SUITE_MARKERS: tuple[str, ...] = ("required", "ci", "local", "slow")
+OPS_SUITE_NAMES: tuple[str, ...] = (
+    "ops",
+    "ops-stack",
+    "ops-deploy",
+    "ops-load",
+    "ops-obs",
+)
 
 
 def suite_manifest_specs() -> tuple[SuiteManifestSpec, ...]:
@@ -56,6 +63,10 @@ def suite_manifest_specs() -> tuple[SuiteManifestSpec, ...]:
 
 def suite_markers() -> tuple[str, ...]:
     return _SUITE_MARKERS
+
+
+def ops_suite_names() -> tuple[str, ...]:
+    return OPS_SUITE_NAMES
 
 
 def resolve_check_ids(spec: SuiteManifestSpec) -> tuple[str, ...]:
