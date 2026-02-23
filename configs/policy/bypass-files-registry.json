@@ -49,10 +49,9 @@
       "type": "effects"
     },
     {
-      "kind": "json",
-      "path": "configs/policy/forbidden-adjectives-allowlist.json",
-      "requires_metadata": true,
-      "schema": "configs/policy/bypass.schema.json",
+      "kind": "txt",
+      "path": "configs/policy/forbidden-adjectives-allowlist.txt",
+      "requires_metadata": false,
       "type": "naming"
     },
     {
@@ -98,17 +97,15 @@
       "type": "policy"
     },
     {
-      "kind": "json",
-      "path": "configs/policy/shell-network-fetch-allowlist.json",
-      "requires_metadata": true,
-      "schema": "configs/policy/bypass.schema.json",
+      "kind": "txt",
+      "path": "configs/policy/shell-network-fetch-allowlist.txt",
+      "requires_metadata": false,
       "type": "tools"
     },
     {
-      "kind": "json",
-      "path": "configs/policy/shell-probes-allowlist.json",
-      "requires_metadata": true,
-      "schema": "configs/policy/bypass.schema.json",
+      "kind": "txt",
+      "path": "configs/policy/shell-probes-allowlist.txt",
+      "requires_metadata": false,
       "type": "tools"
     },
     {
@@ -133,9 +130,8 @@
     },
     {
       "kind": "json",
-      "path": "configs/policy/bypass-entries.json",
-      "requires_metadata": true,
-      "schema": "configs/policy/bypass.schema.json",
+      "path": "ops/_meta/bypass-ledger.json",
+      "requires_metadata": false,
       "subtype": "ledger",
       "type": "ops"
     },
@@ -161,6 +157,6 @@
       "type": "ops"
     }
   ],
-  "kind": "bypass-registry",
+  "kind": "bypass-files-registry",
   "schema_version": 1
 }

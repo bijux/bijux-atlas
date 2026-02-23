@@ -1,0 +1,3 @@
+# Allowlist for exceptional core shell subprocess probes.
+# Keep this list tiny; entries are workspace-relative file paths.
+
