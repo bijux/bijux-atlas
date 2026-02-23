@@ -16,7 +16,7 @@ def _repo_root() -> Path:
 
 ROOT = _repo_root()
 CONTRACT_PATH = ROOT / "ops" / "_meta" / "layer-contract.json"
-ALLOWLIST = ROOT / "ops" / "_meta" / "stack-layer-literal-allowlist.txt"
+ALLOWLIST = ROOT / "ops" / "_meta" / "stack-layer-literal-allowlist.json"
 
 
 def _load_literals() -> list[str]:
@@ -35,9 +35,12 @@ def main() -> int:
     patterns = [re.compile(rf"\b{re.escape(x)}\b") for x in literals]
     allowed: set[Path] = set()
     if ALLOWLIST.exists():
-        for raw in ALLOWLIST.read_text(encoding="utf-8").splitlines():
-            line = raw.strip()
-            if line and not line.startswith("#"):
+        payload = json.loads(ALLOWLIST.read_text(encoding="utf-8"))
+        for row in payload.get("entries", []) if isinstance(payload, dict) else []:
+            if not isinstance(row, dict):
+                continue
+            line = str(row.get("path", "")).strip()
+            if line:
                 allowed.add((ROOT / line).resolve())
 
     errors: list[str] = []

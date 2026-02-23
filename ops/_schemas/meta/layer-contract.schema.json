@@ -89,6 +89,15 @@
         "required_fields": {"type": "array", "items": {"type": "string"}},
         "defaults": {"type": "object", "additionalProperties": {"type": "string"}}
       }
+    },
+    "allowlisted_literals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["layer", "stack"],
+      "properties": {
+        "layer": {"type": "string", "pattern": "^ops/_meta/layer-contract-literal-allowlist\\.json$"},
+        "stack": {"type": "string", "pattern": "^ops/_meta/stack-layer-literal-allowlist\\.json$"}
+      }
     }
   },
   "definitions": {
