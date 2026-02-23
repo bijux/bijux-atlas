@@ -4,6 +4,7 @@ import json
 
 from atlasctl.commands.ops._shared.json_emit import write_ops_json_report
 from atlasctl.commands.ops.runtime_modules import ops_runtime_commands as legacy
+from atlasctl.ops.adapters import k6
 from atlasctl.ops.models import OpsTestReport
 
 from .guards import ensure_local_kind_context
@@ -51,7 +52,12 @@ def test_load(ctx, report_format: str) -> int:  # noqa: ANN001
     ok, message = ensure_local_kind_context(ctx)
     if not ok:
         return legacy._emit_ops_status(report_format, 2, message)
+    k6_version = k6.run(ctx, "version")
+    if k6_version.code != 0:
+        return legacy._emit_ops_status(report_format, k6_version.code, k6_version.combined_output)
     out_dir = "artifacts/perf/results"
+    threshold_dir = ctx.repo_root / "ops" / "load" / "thresholds"
+    threshold_files = sorted(p.name for p in threshold_dir.glob("*") if p.is_file()) if threshold_dir.exists() else []
     code = legacy._ops_load_run_native(ctx, report_format, "mixed-80-20", out_dir)
     report = OpsTestReport(
         test_kind="load",
@@ -59,5 +65,6 @@ def test_load(ctx, report_format: str) -> int:  # noqa: ANN001
         status="pass" if code == 0 else "fail",
         command=["k6", "run", "ops/load/scenarios/mixed-80-20.js"],
         out_rel=out_dir,
+        evidence=[f"ops/load/thresholds/{name}" for name in threshold_files],
     )
     return _emit_test_report(ctx, "ops-load", report, report_format) if code == 0 else code
