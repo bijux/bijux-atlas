@@ -2,6 +2,19 @@
 
 Generated from `packages/atlasctl/src/atlasctl/registry/checks_catalog.json`.
 
+## Check System Guides
+
+- [Check Runner Usage](usage.md)
+- [Check Domains](domains.md)
+- [Effects Vocabulary](effects.md)
+- [Result Codes](result-codes.md)
+
+Core commands:
+
+- `atlasctl check list --json`
+- `atlasctl check run --domain repo`
+- `atlasctl check doctor --json`
+
 ## checks
 
 - `checks_checks_count_budget`: enforce checks-count ratchet budget from configs/policy/checks-count-budget.json
