@@ -1,6 +1,6 @@
 # Atlasctl Shim Delete Plan
 
-Cutoff target: `2026-04-01` (Phase 3 cleanup PRs must delete or replace all entries below).
+Cutoff target: `2026-04-01` (cleanup PRs must delete or replace all entries below).
 
 ## Legacy Shims / Facades
 

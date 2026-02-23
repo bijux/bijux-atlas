@@ -44,11 +44,11 @@ def main() -> int:
         errors.append("CI must run a dedicated load regression lane/check")
 
     if errors:
-        print("ops load phase4 contract checks failed:", file=sys.stderr)
+        print("ops load contract checks failed:", file=sys.stderr)
         for err in errors:
             print(f"- {err}", file=sys.stderr)
         return 1
-    print("ops load phase4 contract checks passed")
+    print("ops load contract checks passed")
     return 0
 
 

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 # Canonical check engine execution runtime (migrated from `checks/core/execution.py`
-# during Phase 3). Keep dependencies narrow and move policy enforcement to
+# during the runtime/check-engine cutover). Keep dependencies narrow and move policy enforcement to
 # runtime/capability boundaries over time.
 
 import time

@@ -286,7 +286,7 @@ def _generate_ops_surface_meta(repo_root: Path) -> tuple[int, str]:
     return 0, str(out.relative_to(repo_root))
 
 
-def _ops_migrate_phase2(ctx: RunContext, report_format: str, *, check_only: bool = False) -> int:
+def _ops_migrate_inventory_fragments(ctx: RunContext, report_format: str, *, check_only: bool = False) -> int:
     repo = ctx.repo_root
     script = """
 from pathlib import Path
@@ -322,7 +322,7 @@ print(json.dumps({'schema_version':1,'status':'ok','check_only':check_only,'chan
         check=False,
     )
     if proc.returncode != 0:
-        return _emit_ops_status(report_format, proc.returncode, proc.stderr.strip() or proc.stdout.strip() or "ops migrate phase2 failed")
+        return _emit_ops_status(report_format, proc.returncode, proc.stderr.strip() or proc.stdout.strip() or "ops migrate inventory-fragments failed")
     for cmd in (
         ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_inventory_contract_map.py"],
         ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_duplicate_inventory_migration_paths.py"],

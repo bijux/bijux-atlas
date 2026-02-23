@@ -107,8 +107,8 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     migrate = ops_sub.add_parser("migrate", help="ops migration automation helpers")
     migrate.add_argument("--report", choices=["text", "json"], default="text")
     migrate_sub = migrate.add_subparsers(dest="ops_migrate_cmd", required=True)
-    migrate_phase2 = migrate_sub.add_parser("phase2", help="sync phase2 ops layout migration artifacts")
-    migrate_phase2.add_argument("--check", action="store_true", help="validate migration artifacts without writing")
+    migrate_inventory_fragments = migrate_sub.add_parser("inventory-fragments", help="sync structured owner/contract inventory fragments from ops docs")
+    migrate_inventory_fragments.add_argument("--check", action="store_true", help="validate inventory fragments without writing")
 
     stack = ops_sub.add_parser("stack", help="ops stack commands")
     stack.add_argument("--report", choices=["text", "json"], default="text")
