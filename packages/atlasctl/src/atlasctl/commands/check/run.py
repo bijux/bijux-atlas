@@ -174,7 +174,13 @@ def run(ctx, ns: argparse.Namespace) -> int:
     if sub == "triage-failures":
         return _run_check_triage_failures(ctx, ns)
     if sub == "list":
-        checks = list_checks()
+        checks = list(list_checks())
+        domain_filter = str(getattr(ns, "domain_filter", "") or "").strip()
+        category_filter = str(getattr(ns, "category", "") or "").strip()
+        if domain_filter:
+            checks = [check for check in checks if check.domain == domain_filter]
+        if category_filter:
+            checks = [check for check in checks if check.category.value == category_filter]
         if not (ctx.output_format == "json" or ns.json):
             for check in checks:
                 print(check.check_id)
@@ -431,8 +437,8 @@ def run(ctx, ns: argparse.Namespace) -> int:
     if sub == "license":
         return impl._run_domain(ctx, "license", fail_fast=ns.fail_fast, label="license")
     if sub in {"make", "docs", "configs"}:
-        suite = {"make": "makefiles", "docs": "docs", "configs": "configs"}[sub]
-        return impl._run_suite_domain(ctx, suite, sub, ns.fail_fast)
+        domain = {"make": "make", "docs": "docs", "configs": "configs"}[sub]
+        return impl._run_domain(ctx, domain, fail_fast=ns.fail_fast, label=sub)
 
     if sub == "repo":
         if getattr(ns, "repo_check", "all") == "module-size":

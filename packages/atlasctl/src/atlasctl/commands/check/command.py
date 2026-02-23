@@ -24,7 +24,6 @@ from ...core.fs import ensure_evidence_path
 from ...core.runtime.paths import write_text_file
 from ...core.runtime.telemetry import emit_telemetry
 from ...core.exit_codes import ERR_USER
-from ...commands.policies.lint.suite_engine import run_lint_suite
 from ...execution.runner import RunnerOptions, run_checks_payload
 from .selection import split_group_values, split_marker_values
 
@@ -72,12 +71,7 @@ def _run_domain(ctx: RunContext, domain: str, fail_fast: bool = False, label: st
 
 
 def _run_suite_domain(ctx: RunContext, suite_name: str, label: str, fail_fast: bool) -> int:
-    code, payload = run_lint_suite(ctx.repo_root, suite_name, fail_fast=fail_fast)
-    if ctx.output_format == "json":
-        print(json.dumps(payload, sort_keys=True))
-    else:
-        print(f"check {label}: {payload['status']} ({payload['failed_count']}/{payload['total_count']} failed)")
-    return code
+    return _run_domain(ctx, suite_name, fail_fast=fail_fast, label=label)
 
 
 def _parse_select(value: str) -> tuple[str | None, str]:
@@ -155,6 +149,9 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
         selected_domain = None
         selector = ""
     checks = [check for check in list_checks() if selected_domain is None or check.domain == selected_domain]
+    category = str(getattr(ns, "category", "") or "").strip()
+    if category:
+        checks = [check for check in checks if check.category.value == category]
     if suite_name:
         spec = next((item for item in suite_manifest_specs() if item.name == suite_name), None)
         if spec is None:
@@ -259,19 +256,27 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     def _emit_live_row(result):  # noqa: ANN001
         nonlocal live_index
         live_index += 1
-        row_status = "PASS" if result.status == "pass" else "FAIL"
-        row_duration = int(result.metrics.get("duration_ms", 0))
+        row_status_raw = str(getattr(result, "status", "fail")).lower()
+        row_status = "PASS" if row_status_raw == "pass" else "FAIL"
+        metrics = getattr(result, "metrics", {}) or {}
+        if isinstance(metrics, dict):
+            row_duration = int(metrics.get("duration_ms", 0))
+        else:
+            row_duration = int(getattr(result, "duration_ms", 0))
+        row_id = str(getattr(result, "id", getattr(result, "check_id", "unknown-check")))
         if ns.run_quiet:
-            print(_format_progress_line(live_index, total_live, result.id, row_status))
+            print(_format_progress_line(live_index, total_live, row_id, row_status))
             return
         if ns.run_verbose:
-            owners = ",".join(result.owners) if result.owners else "-"
-            print(_format_progress_line(live_index, total_live, result.id, f"{row_status} ({row_duration}ms)"))
-            print(f"  owners={owners} hint={result.fix_hint}")
-            if row_status == "FAIL" and result.errors:
-                print(f"  detail: {result.errors[0]}")
+            owners_val = getattr(result, "owners", ())
+            owners = ",".join(owners_val) if owners_val else "-"
+            print(_format_progress_line(live_index, total_live, row_id, f"{row_status} ({row_duration}ms)"))
+            print(f"  owners={owners} hint={getattr(result, 'fix_hint', '-')}")
+            errors_val = getattr(result, "errors", ())
+            if row_status == "FAIL" and errors_val:
+                print(f"  detail: {list(errors_val)[0]}")
             return
-        print(_format_progress_line(live_index, total_live, result.id, row_status))
+        print(_format_progress_line(live_index, total_live, row_id, row_status))
 
     if live_print:
         timeout_label = "disabled" if timeout_ms == 0 else f"{timeout_ms}ms"
@@ -314,7 +319,7 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
                     "owners": list(check.owners),
                     "artifacts": [],
                     "findings": [],
-                    "category": "check",
+                    "category": check.category.value,
                 }
             )
             continue

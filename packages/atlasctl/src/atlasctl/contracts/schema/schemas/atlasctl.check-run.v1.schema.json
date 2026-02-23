@@ -38,6 +38,7 @@
         "required": [
           "id",
           "domain",
+          "category",
           "status",
           "duration_ms",
           "reason",
@@ -49,6 +50,7 @@
           "id": {"type": "string", "minLength": 1},
           "title": {"type": "string"},
           "domain": {"type": "string", "minLength": 1},
+          "category": {"type": "string", "enum": ["lint", "check"]},
           "status": {"enum": ["PASS", "FAIL", "SKIP"]},
           "duration_ms": {"type": "integer", "minimum": 0},
           "reason": {"type": "string"},

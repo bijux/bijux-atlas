@@ -1,50 +1,68 @@
 from __future__ import annotations
 
 import argparse
-import json
 
 from ....core.context import RunContext
-from ....core.fs import ensure_evidence_path
-from ....core.runtime.paths import write_text_file
-from ....core.runtime.script_registry import emit_script_registry_evidence, lint_script_registry
-from ....core.schema.schema_utils import validate_json
-from .suite_engine import run_lint_suite
+from ...check.command import run_check_command
 
-SUITES = ("ops", "repo", "makefiles", "docs", "configs", "packages", "scripts")
+_LINT_DOMAIN_MAP = {
+    "ops": "ops",
+    "make": "make",
+    "docs": "docs",
+    "configs": "configs",
+}
 
 def configure_lint_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    p = sub.add_parser("lint", help="run canonical lint suites")
-    p.add_argument("suite", choices=SUITES)
+    p = sub.add_parser("lint", help="run lint checks via check selector alias")
+    p.add_argument("suite", choices=tuple(sorted(_LINT_DOMAIN_MAP.keys())))
     p.add_argument("--fail-fast", action="store_true")
-    p.add_argument("--emit-artifacts", action="store_true")
-    p.add_argument("--report", choices=["text", "json"], default="text")
+    p.add_argument("--all", action="store_true", help="include slow lint checks")
+    p.add_argument("--json", action="store_true", help="emit JSON output")
 
 def run_lint_command(ctx: RunContext, ns: argparse.Namespace) -> int:
-    if ns.suite == "scripts":
-        code, payload = lint_script_registry(ctx.repo_root)
-        if ns.emit_artifacts:
-            emit_script_registry_evidence(ctx, payload)
-        if ns.report == "json" or ctx.output_format == "json":
-            print(json.dumps(payload, sort_keys=True))
-        else:
-            print(
-                f"lint scripts: {payload['status']} "
-                f"(registered={payload['registered_count']} referenced={payload['referenced_count']} errors={len(payload['errors'])})"
-            )
-            for err in payload["errors"]:
-                print(f"- {err}")
-        return code
-
-    code, payload = run_lint_suite(ctx.repo_root, ns.suite, ns.fail_fast)
-    schema_path = ctx.repo_root / "configs/contracts/scripts-tool-output.schema.json"
-    validate_json({"schema_version": 1, "tool": payload["tool"], "status": payload["status"]}, schema_path)
-
-    if ns.emit_artifacts:
-        out = ensure_evidence_path(ctx, ctx.evidence_root / "lint" / ns.suite / ctx.run_id / "report.json")
-        write_text_file(out, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-
-    if ns.report == "json" or ctx.output_format == "json":
-        print(json.dumps(payload, sort_keys=True))
-    else:
-        print(f"lint {ns.suite}: {payload['status']} ({payload['failed_count']}/{payload['total_count']} failed)")
-    return code
+    mapped_domain = _LINT_DOMAIN_MAP[str(ns.suite)]
+    alias_ns = argparse.Namespace(
+        check_cmd="run",
+        include_all=bool(getattr(ns, "all", False)),
+        run_quiet=False,
+        run_info=False,
+        run_verbose=False,
+        maxfail=0,
+        max_failures=0,
+        failfast=bool(getattr(ns, "fail_fast", False)),
+        keep_going=not bool(getattr(ns, "fail_fast", False)),
+        durations=0,
+        junitxml=None,
+        junit_xml=None,
+        json_report=None,
+        jsonl=False,
+        slow_report=None,
+        slow_threshold_ms=800,
+        timeout_ms=2000,
+        slow_ratchet_config="configs/policy/slow-checks-ratchet.json",
+        ignore_speed_regressions=False,
+        profile=False,
+        profile_out=None,
+        jobs=1,
+        match=None,
+        group=None,
+        exclude_group=[],
+        domain_filter=mapped_domain,
+        id=None,
+        legacy_id=False,
+        k=None,
+        only_slow=False,
+        only_fast=False,
+        exclude_slow=False,
+        suite=None,
+        marker=[],
+        exclude_marker=[],
+        list_selected=False,
+        from_registry=True,
+        require_markers=[],
+        select=None,
+        check_target=None,
+        json=bool(getattr(ns, "json", False)),
+        category="lint",
+    )
+    return run_check_command(ctx, alias_ns)
