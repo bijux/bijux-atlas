@@ -361,8 +361,8 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
 
     if ns.ops_cmd == "migrate":
         sub = getattr(ns, "ops_migrate_cmd", "")
-        if sub == "phase2":
-            return impl._ops_migrate_phase2(ctx, ns.report, check_only=bool(getattr(ns, "check", False)))
+        if sub == "inventory-fragments":
+            return impl._ops_migrate_inventory_fragments(ctx, ns.report, check_only=bool(getattr(ns, "check", False)))
         return 2
     if ns.ops_cmd == "platform":
         sub = str(getattr(ns, "ops_platform_cmd", "")).strip()

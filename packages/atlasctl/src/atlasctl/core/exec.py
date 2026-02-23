@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 # LEGACY IMPORT SURFACE (cutoff: 2026-04-01): canonical subprocess adapter remains here
-# during Phase 3 while callers migrate to a single runtime/capability entrypoint.
+# during runtime/capability entrypoint consolidation while callers migrate.
 
 import subprocess
 from pathlib import Path

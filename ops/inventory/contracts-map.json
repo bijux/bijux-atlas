@@ -7,7 +7,7 @@
     {"path": "ops/inventory/layers.json", "schema": "ops/schema/meta/layer-contract.schema.json", "generator": "atlasctl ops gen run"},
     {"path": "ops/inventory/pins.yaml", "schema": "ops/schema/meta/pins.schema.json", "generator": "atlasctl ops pins update (canonical target)"},
     {"path": "ops/inventory/toolchain.yaml", "schema": "ops/schema/stack/version-manifest.schema.json", "generator": "atlasctl ops stack versions-sync + migrate"},
-    {"path": "ops/inventory/owner-docs.fragments.json", "schema": "none", "generator": "atlasctl ops migrate --phase2"},
+    {"path": "ops/inventory/owner-docs.fragments.json", "schema": "none", "generator": "atlasctl ops migrate inventory-fragments"},
     {"path": "ops/inventory/contracts-map.json", "schema": "none", "generator": "manual"},
     {"path": "ops/inventory/generated-committed-mirror.json", "schema": "none", "generator": "manual"}
   ]

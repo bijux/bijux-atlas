@@ -53,7 +53,7 @@ def test_top_level_import_boundary_graph() -> None:
         ("checks", "commands"),
     }
     legacy_allowlist = {
-        # Temporary during Phase 3 cutover. Delete by 2026-04-01 with shim removals.
+        # Temporary during runtime-shim cutover. Delete by 2026-04-01 with shim removals.
         ("runtime", "cli"),
         ("checks", "commands"),
     }

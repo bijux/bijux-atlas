@@ -3,7 +3,7 @@
 Date: 2026-02-21
 Scope: `packages/atlasctl/` architecture and boundary contract.
 
-## Phase 0 Decisions
+## Initial Decisions
 
 1. Canonical package shape is documented as **Target Layout v1** in `docs/ARCHITECTURE.md`.
 2. Allowed top-level items under `packages/atlasctl/` are exactly:

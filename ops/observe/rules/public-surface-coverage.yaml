@@ -1,4 +1,4 @@
-# Phase 6 coverage marker for first-class ops observe/ inventory migration.
+# Public surface observability coverage marker for first-class ops observe inventory.
 surfaces:
   - atlas
   - prometheus
