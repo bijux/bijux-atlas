@@ -236,6 +236,16 @@ def test_ci_report_requires_latest_flag(capsys) -> None:
     assert payload["status"] == "error"
 
 
+def test_ci_explain_lane_json(capsys) -> None:
+    ctx = RunContext.from_args("ci-explain", None, "test", False)
+    ns = argparse.Namespace(ci_cmd="explain", lane="ci", json=True, verbose=False)
+    rc = run_ci_command(ctx, ns)
+    assert rc == 0
+    payload = json.loads(capsys.readouterr().out.strip())
+    assert payload["kind"] == "ci-lane-explain"
+    assert payload["lane"] == "ci"
+
+
 def test_ci_list_json_matches_golden() -> None:
     proc = run_atlasctl("--quiet", "ci", "list", "--json")
     assert proc.returncode == 0, proc.stderr

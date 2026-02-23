@@ -168,6 +168,43 @@ def _print_artifacts(ctx: RunContext, ns: argparse.Namespace) -> int:
     return 0
 
 
+def _explain_lane(ctx: RunContext, ns: argparse.Namespace) -> int:
+    lane_name = str(getattr(ns, "lane", "")).strip()
+    rows = [row for row in CI_LANES if row[0] == lane_name]
+    if not rows:
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "status": "error",
+            "kind": "ci-lane-explain",
+            "lane": lane_name,
+            "message": f"unknown lane: {lane_name}",
+        }
+        print(json.dumps(payload, sort_keys=True) if (ns.json or ctx.output_format == "json") else payload["message"])
+        return 2
+    name, description, atlasctl_cmd, kind, suite = rows[0]
+    payload = {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "status": "ok",
+        "kind": "ci-lane-explain",
+        "lane": name,
+        "description": description,
+        "atlasctl": atlasctl_cmd,
+        "mapping_kind": kind,
+        "suite": suite,
+    }
+    if ns.json or ctx.output_format == "json":
+        print(json.dumps(payload, sort_keys=True))
+    else:
+        print(f"lane={payload['lane']}")
+        print(f"description={payload['description']}")
+        print(f"atlasctl={payload['atlasctl']}")
+        print(f"mapping_kind={payload['mapping_kind']}")
+        print(f"suite={payload['suite']}")
+    return 0
+
+
 def _run_report(ctx: RunContext, ns: argparse.Namespace) -> int:
     if not bool(getattr(ns, "latest", False)):
         msg = "only `atlasctl dev ci report --latest` is supported"
@@ -217,6 +254,8 @@ def run_ci_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return run_suite_ci(ctx, ns, ci_out_dir=_ci_out_dir, lane_for_label=_lane_for_label, lane_filters=LANE_FILTERS)
     if cmd == "report":
         return _run_report(ctx, ns)
+    if cmd == "explain":
+        return _explain_lane(ctx, ns)
 
     env = os.environ.copy()
     steps_by_cmd: dict[str, list[list[str] | str]] = {

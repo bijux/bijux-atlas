@@ -4,16 +4,17 @@ import json
 import subprocess
 import sys
 import argparse
+import os
 from pathlib import Path
 
 from atlasctl.core.context import RunContext
 from atlasctl.commands.policies.gates import command as gates_command
-
-ROOT = Path(__file__).resolve().parents[4]
+from tests.helpers import ROOT, golden_path
 
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
-    env = {"PYTHONPATH": str(ROOT / "packages/atlasctl/src")}
+    env = os.environ.copy()
+    env["PYTHONPATH"] = str(ROOT / "packages/atlasctl/src")
     return subprocess.run(
         [sys.executable, "-m", "atlasctl.cli", *args],
         cwd=ROOT,
@@ -25,7 +26,7 @@ def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
 
 
 def test_gates_list_json() -> None:
-    proc = _run_cli("--quiet", "gates", "list", "--report", "json")
+    proc = _run_cli("--quiet", "gate", "list", "--report", "json")
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
     assert payload["status"] == "pass"
@@ -33,7 +34,7 @@ def test_gates_list_json() -> None:
 
 
 def test_gates_run_unknown_lane_fails() -> None:
-    proc = _run_cli("--quiet", "gates", "run", "--lane", "lane-missing", "--report", "json")
+    proc = _run_cli("--quiet", "gate", "run", "--lane", "lane-missing", "--report", "json")
     assert proc.returncode == 2
     payload = json.loads(proc.stdout)
     assert payload["status"] == "fail"
@@ -58,6 +59,16 @@ def test_gates_run_writes_artifacts_and_accepts_positional_lane(monkeypatch, tmp
     rc = gates_command.run_gates_command(ctx, ns)
     assert rc == 0
     report_json = ctx.evidence_root / "gates" / ctx.run_id / "report.json"
+    report_unified = ctx.evidence_root / "gates" / ctx.run_id / "report.unified.json"
     report_txt = ctx.evidence_root / "gates" / ctx.run_id / "report.txt"
     assert report_json.exists()
+    assert report_unified.exists()
     assert report_txt.exists()
+
+
+def test_gate_list_output_stable() -> None:
+    proc = _run_cli("--quiet", "gate", "list", "--report", "json")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    golden = json.loads(golden_path("list/gate-list.json.golden").read_text(encoding="utf-8"))
+    assert payload == golden

@@ -252,6 +252,7 @@ def dispatch_command(
         "install": ("atlasctl.commands.dev.install", "run_install_command"),
         "release": ("atlasctl.commands.dev.release", "run_release_command"),
         "gates": ("atlasctl.commands.policies.gates.command", "run_gates_command"),
+        "gate": ("atlasctl.commands.policies.gates.command", "run_gates_command"),
         "dev": ("atlasctl.commands.dev.command", "run_dev_command"),
         "owners": ("atlasctl.commands.owners", "run_owners_command"),
         "approvals": ("atlasctl.commands.dev.approvals", "run_approvals_command"),

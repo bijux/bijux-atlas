@@ -128,21 +128,25 @@ def run_gates_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         "results": ordered,
     }
     out_json = ensure_evidence_path(ctx, ctx.evidence_root / "gates" / ctx.run_id / "report.json")
+    out_unified = ensure_evidence_path(ctx, ctx.evidence_root / "gates" / ctx.run_id / "report.unified.json")
     out_txt = ensure_evidence_path(ctx, ctx.evidence_root / "gates" / ctx.run_id / "report.txt")
-    write_text_file(out_json, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    payload_json = json.dumps(payload, indent=2, sort_keys=True) + "\n"
+    write_text_file(out_json, payload_json, encoding="utf-8")
+    write_text_file(out_unified, payload_json, encoding="utf-8")
     lines = [
         f"gates run: status={payload['status']} total={payload['total_count']} failed={payload['failed_count']} run_id={payload['run_id']}"
     ]
     lines.extend(f"- {row['status'].upper()} {row['id']} ({row['make_target']})" for row in ordered)
     write_text_file(out_txt, "\n".join(lines) + "\n", encoding="utf-8")
     payload["artifact_json"] = out_json.relative_to(ctx.repo_root).as_posix()
+    payload["artifact_unified_json"] = out_unified.relative_to(ctx.repo_root).as_posix()
     payload["artifact_txt"] = out_txt.relative_to(ctx.repo_root).as_posix()
     _emit(payload, ns.report)
     return 1 if failed else 0
 
 
-def configure_gates_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    p = sub.add_parser("gates", help="run curated gate lanes from SSOT manifest")
+def _configure_gate_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser], *, name: str) -> None:
+    p = sub.add_parser(name, help="run curated gate lanes from SSOT manifest")
     gates_sub = p.add_subparsers(dest="gates_cmd", required=True)
 
     listing = gates_sub.add_parser("list", help="list configured lanes and presets")
@@ -156,3 +160,11 @@ def configure_gates_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     run.add_argument("--parallel", action="store_true", help="run lanes in parallel")
     run.add_argument("--jobs", type=int, default=4)
     run.add_argument("--report", choices=["text", "json"], default="text")
+
+
+def configure_gates_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
+    _configure_gate_parser(sub, name="gates")
+
+
+def configure_gate_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
+    _configure_gate_parser(sub, name="gate")

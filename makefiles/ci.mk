@@ -3,7 +3,7 @@
 SHELL := /bin/sh
 
 ci: ## Canonical CI entrypoint
-	@./bin/atlasctl ci pr --json
+	@./bin/atlasctl gate run --preset root --all --report json
 
 ci-fast: ## CI fast lane wrapper
 	@./bin/atlasctl ci run --json --lane fmt --lane lint --lane test --lane contracts
