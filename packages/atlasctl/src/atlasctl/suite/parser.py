@@ -50,7 +50,7 @@ def configure_suite_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     diff.add_argument("run2")
     diff.add_argument("--json", action="store_true")
 
-    for suite_name in ("docs", "dev", "ops", "policies", "configs", "local", "slow", "required", "ci", "required_proof", "all"):
+    for suite_name in ("docs", "dev", "ops", "policies", "configs", "local", "repo-hygiene", "slow", "required", "ci", "required_proof", "all"):
         sp = suite_sub.add_parser(suite_name, help=f"run first-class `{suite_name}` suite")
         sp.add_argument("--json", action="store_true", help="emit machine-readable results")
         sp.add_argument("--report", choices=["text", "json"], help="output format alias for suite results")

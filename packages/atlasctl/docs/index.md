@@ -20,6 +20,7 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 - [Legacy Policy](control-plane/legacy-policy.md)
 - [Bypass Policy](control-plane/bypass-policy.md)
 - [CI Lane Mapping](control-plane/ci-lane-mapping.md)
+- [Repo Hygiene](control-plane/repo-hygiene.md)
 - [Ops CI Lanes](control-plane/ops-ci-lanes.md)
 - [Ops Local Run Guide](control-plane/ops-local-run.md)
 - [Bypass Removal Playbook](control-plane/bypass-removal-playbook.md)

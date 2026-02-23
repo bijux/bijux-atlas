@@ -12,6 +12,21 @@ env:
   PYTHONDONTWRITEBYTECODE: "1"
 
 jobs:
+  repo-hygiene-fast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Repo hygiene fix and validation
+        run: |
+          ./bin/atlasctl fix hygiene --apply --json > /tmp/fix-hygiene.json
+          ./bin/atlasctl doctor repo-hygiene --json > /tmp/doctor-repo-hygiene.json
+          ./bin/atlasctl suite run repo-hygiene --report json > /tmp/suite-repo-hygiene.json
+          git diff --exit-code
+
   hygiene-fast:
     runs-on: ubuntu-latest
     timeout-minutes: 10
