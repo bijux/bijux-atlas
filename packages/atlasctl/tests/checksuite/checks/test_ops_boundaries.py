@@ -54,3 +54,8 @@ def test_ops_actions_docs_generated_check_passes() -> None:
 def test_ops_product_task_scripts_zero_check_passes() -> None:
     proc = _run("packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_product_task_scripts_zero.py")
     assert proc.returncode == 0, proc.stderr
+
+
+def test_no_core_models_duplicate_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_no_core_models_duplicate.py")
+    assert proc.returncode == 0, proc.stderr
