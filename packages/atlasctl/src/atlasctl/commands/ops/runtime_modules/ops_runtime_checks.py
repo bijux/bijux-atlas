@@ -177,6 +177,18 @@ LINT_CHECKS: list[OpsCheck] = [
         ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_surface_manifest.py"],
         "Keep one public entrypoint mapping per ops area in configs/ops/ops-surface-manifest.json.",
     ),
+    _check(
+        "ops-suites-contracts",
+        "Validate ops suites SSOT and coverage contracts",
+        ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_suites_contracts.py"],
+        "Keep configs/ops/suites.json aligned with suite catalog, action coverage, speed markers, and evidence areas.",
+    ),
+    _check(
+        "ops-report-contract-fields",
+        "Validate ops report field contract and deterministic artifact naming",
+        ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_report_contract_fields.py"],
+        "Ensure orchestrate wrapper reports include tool/input hashes and deterministic artifact names.",
+    ),
 ]
 
 

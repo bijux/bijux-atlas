@@ -74,6 +74,9 @@ def write_wrapper_artifacts(
     }
     write_text_file(artifact_index_path, json.dumps(artifact_index, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     t1 = time.time()
+    inputs: list[str] = []
+    env = environment_summary(ctx, [cmd[0]] if cmd else [])
+    inputs_hash = hash_inputs(ctx.repo_root, inputs)
     payload = {
         "schema_version": 1,
         "tool": "bijux-atlas",
@@ -97,8 +100,11 @@ def write_wrapper_artifacts(
         "details": {
             "exit_code": code,
             "failure": _failure_taxonomy(code, output),
-            "inputs_hash": hash_inputs(ctx.repo_root, []),
-            "environment_summary": environment_summary(ctx, [cmd[0]] if cmd else []),
+            "inputs": inputs,
+            "inputs_hash": inputs_hash,
+            "config_hash": inputs_hash,
+            "environment_summary": env,
+            "tool_versions": env.get("tool_versions", {}),
         },
     }
     write_text_file(report_path, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -109,6 +115,9 @@ def write_wrapper_artifacts(
 def run_wrapped(ctx: RunContext, spec: OrchestrateSpec, report_format: str, *, dry_run: bool = False) -> int:
     if dry_run:
         out_dir = ctx.evidence_root / spec.area / ctx.run_id
+        inputs: list[str] = []
+        env = environment_summary(ctx, [spec.cmd[0]] if spec.cmd else [])
+        inputs_hash = hash_inputs(ctx.repo_root, inputs)
         payload = {
             "schema_version": 1,
             "tool": "bijux-atlas",
@@ -128,8 +137,11 @@ def run_wrapped(ctx: RunContext, spec: OrchestrateSpec, report_format: str, *, d
             "details": {
                 "exit_code": 0,
                 "failure": {"kind": "none", "exit_code": 0},
-                "inputs_hash": hash_inputs(ctx.repo_root, []),
-                "environment_summary": environment_summary(ctx, [spec.cmd[0]] if spec.cmd else []),
+                "inputs": inputs,
+                "inputs_hash": inputs_hash,
+                "config_hash": inputs_hash,
+                "environment_summary": env,
+                "tool_versions": env.get("tool_versions", {}),
                 "dry_run": True,
             },
         }
