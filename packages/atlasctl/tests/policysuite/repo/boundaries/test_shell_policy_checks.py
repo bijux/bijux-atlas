@@ -45,8 +45,11 @@ def test_core_no_bash_subprocess_respects_allowlist(tmp_path: Path) -> None:
         "import subprocess\nsubprocess.run(['bash', '-lc', 'echo hi'], check=False)\n",
         encoding="utf-8",
     )
-    allowlist = tmp_path / "configs/policy/shell-probes-allowlist.txt"
+    allowlist = tmp_path / "configs/policy/shell-probes-allowlist.json"
     allowlist.parent.mkdir(parents=True, exist_ok=True)
-    allowlist.write_text("packages/atlasctl/src/atlasctl/core/probe.py\n", encoding="utf-8")
+    allowlist.write_text(
+        "{\"schema_version\":1,\"entries\":[{\"path\":\"packages/atlasctl/src/atlasctl/core/probe.py\"}]}\n",
+        encoding="utf-8",
+    )
     code, errors = check_core_no_bash_subprocess(tmp_path)
     assert code == 0, errors
