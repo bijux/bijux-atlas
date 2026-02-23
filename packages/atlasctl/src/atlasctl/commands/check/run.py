@@ -5,14 +5,18 @@ from __future__ import annotations
 import argparse
 import inspect
 import json
+import re
 
 from ...checks.registry import alias_expiry_violations, check_rename_aliases, check_tags, check_tree, get_check, list_checks, marker_vocabulary, resolve_aliases
 from ...checks.report import build_failures_payload, build_triage_failures_payload, build_triage_slow_payload, resolve_last_run_report
 from ...checks.runner import report_from_payload
+from ...checks.effects import CheckEffect, normalize_effect
+from ...checks.registry.ssot import generate_registry_json
 from ...contracts.ids import CHECK_LIST, CHECK_TAXONOMY
 from ...contracts.validate_self import validate_self
 from ...core.exit_codes import ERR_CONTRACT, ERR_USER
 from ...core.fs import ensure_evidence_path
+from ...core.meta.owners import load_owner_catalog
 
 
 def _run_check_failures(ctx, ns: argparse.Namespace) -> int:
@@ -31,7 +35,7 @@ def _run_check_failures(ctx, ns: argparse.Namespace) -> int:
     if not out["failures"]:
         print(f"failures: none ({group or 'all'})")
         return 0
-    print(f"failures ({group or 'all'}): {len(failed_rows)}")
+    print(f"failures ({group or 'all'}): {len(out['failures'])}")
     for row in out["failures"]:
         print(f"- {row['id']}: {row['detail'] or row['hint']}")
     return ERR_USER
@@ -340,35 +344,70 @@ def run(ctx, ns: argparse.Namespace) -> int:
         return 0
     if sub == "doctor":
         checks = list_checks()
-        canonical_errors = [check.check_id for check in checks if not str(check.check_id).startswith("checks_")]
+        canonical_pattern = re.compile(r"^checks_[a-z0-9]+_[a-z0-9]+_[a-z0-9_]+$")
+        canonical_errors: list[str] = []
+        owner_errors: list[str] = []
+        effect_errors: list[str] = []
+        valid_effects = {
+            CheckEffect.FS_READ.value,
+            CheckEffect.FS_WRITE.value,
+            CheckEffect.SUBPROCESS.value,
+            CheckEffect.GIT.value,
+            CheckEffect.NETWORK.value,
+        }
+        owner_catalog = set(load_owner_catalog(ctx.repo_root).owners)
         seen: set[str] = set()
         duplicate_errors: list[str] = []
         for check in checks:
-            if check.check_id in seen:
-                duplicate_errors.append(check.check_id)
-            seen.add(check.check_id)
+            cid = str(check.check_id)
+            if cid in seen:
+                duplicate_errors.append(cid)
+            seen.add(cid)
+            if canonical_pattern.match(cid) is None:
+                canonical_errors.append(cid)
+            else:
+                parts = cid.split("_", 3)
+                if len(parts) >= 3 and str(check.domain) != parts[1]:
+                    canonical_errors.append(f"{cid}: domain segment `{parts[1]}` != `{check.domain}`")
+            if not tuple(check.owners):
+                owner_errors.append(f"{cid}: missing owner")
+            else:
+                for owner in tuple(check.owners):
+                    if str(owner) not in owner_catalog:
+                        owner_errors.append(f"{cid}: unknown owner `{owner}`")
+            for effect in tuple(check.effects):
+                normalized = normalize_effect(str(effect))
+                if normalized not in valid_effects:
+                    effect_errors.append(f"{cid}: unknown effect `{effect}`")
         drift_errors: list[str] = []
         try:
-            _out, changed = impl.generate_registry_json(ctx.repo_root, check_only=True)
+            _out, changed = generate_registry_json(ctx.repo_root, check_only=True)
             if changed:
                 drift_errors.append("registry drift detected: run `./bin/atlasctl gen checks-registry`")
         except Exception as exc:
             drift_errors.append(f"registry generation failed: {exc}")
+        alias_errors = alias_expiry_violations()
         payload = {
             "schema_version": 1,
             "tool": "atlasctl",
             "kind": "checks-doctor",
-            "status": "ok" if not (canonical_errors or duplicate_errors or drift_errors) else "error",
+            "status": "ok" if not (canonical_errors or duplicate_errors or owner_errors or effect_errors or drift_errors or alias_errors) else "error",
             "summary": {
                 "total": len(checks),
                 "canonical_errors": len(canonical_errors),
                 "duplicate_errors": len(duplicate_errors),
+                "owner_errors": len(owner_errors),
+                "effect_errors": len(effect_errors),
                 "drift_errors": len(drift_errors),
+                "alias_errors": len(alias_errors),
             },
             "errors": {
                 "canonical": canonical_errors,
                 "duplicates": sorted(set(duplicate_errors)),
+                "owners": sorted(set(owner_errors)),
+                "effects": sorted(set(effect_errors)),
                 "drift": drift_errors,
+                "aliases": alias_errors,
             },
         }
         if ctx.output_format == "json" or ns.json:
