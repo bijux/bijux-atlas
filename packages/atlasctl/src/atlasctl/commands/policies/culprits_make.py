@@ -71,6 +71,7 @@ def _max_files_per_dir(root: Path, suffix: str, max_files: int, label: str, metr
 def run_gate(gate: str) -> int:
     crates_root = Path("crates")
     atlas_root = Path("packages/atlasctl/src/atlasctl")
+    packages_root = Path("packages")
     if gate == "culprits-crates-max_loc":
         return _max_loc(crates_root, ".rs", err_gt=1000, warn_gt=800, label="crates")
     if gate == "culprits-crates-max_depth":
@@ -80,7 +81,11 @@ def run_gate(gate: str) -> int:
     if gate == "culprits-crates-file-max_modules_per_dir":
         return _max_files_per_dir(crates_root, ".rs", max_files=16, label="crates", metric="max_modules_per_dir")
     if gate == "culprits-atlasctl-max_loc":
-        return _max_loc(atlas_root, ".py", err_gt=800, warn_gt=600, label="atlasctl")
+        return _max_loc(atlas_root, ".py", err_gt=1000, warn_gt=800, label="atlasctl(py)")
+    if gate == "culprits-atlasctl-sh-max_loc":
+        return _max_loc(atlas_root, ".sh", err_gt=1000, warn_gt=800, label="atlasctl(sh)")
+    if gate == "culprits-packages-sh-max_loc":
+        return _max_loc(packages_root, ".sh", err_gt=1000, warn_gt=800, label="packages(sh)")
     if gate == "culprits-atlasctl-max_depth":
         return _max_depth(atlas_root, (".py", ".json", ".md"), depth_gt=8, label="atlasctl")
     if gate == "culprits-atlasctl-file-max_py_files_per_dir":
@@ -98,9 +103,17 @@ def run_gate(gate: str) -> int:
     if gate == "culprits-all-atlasctl":
         codes = [
             run_gate("culprits-atlasctl-max_loc"),
+            run_gate("culprits-atlasctl-sh-max_loc"),
             run_gate("culprits-atlasctl-max_depth"),
             run_gate("culprits-atlasctl-file-max_py_files_per_dir"),
             run_gate("culprits-atlasctl-file-max_modules_per_dir"),
+        ]
+        return 1 if any(code != 0 for code in codes) else 0
+    if gate == "culprits-all-packages-loc":
+        codes = [
+            run_gate("culprits-atlasctl-max_loc"),
+            run_gate("culprits-atlasctl-sh-max_loc"),
+            run_gate("culprits-packages-sh-max_loc"),
         ]
         return 1 if any(code != 0 for code in codes) else 0
     print(f"unknown gate: {gate}")

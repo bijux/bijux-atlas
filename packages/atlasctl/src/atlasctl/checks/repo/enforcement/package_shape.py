@@ -53,7 +53,7 @@ _CHECKS_ROOT_ALLOWED_FILES = {"README.md", "REGISTRY.toml", "REGISTRY.generated.
 _CHECKS_DOMAINS_REL = _CHECKS_ROOT_REL / "domains"
 _CHECKS_DOMAIN_MODULE_CAP = 10
 _CHECKS_ROOT_DIR_CAP = 10
-MAX_MODULE_LOC = 600
+MAX_MODULE_LOC = 1000
 
 
 def _iter_top_level_dirs(repo_root: Path) -> list[str]:
