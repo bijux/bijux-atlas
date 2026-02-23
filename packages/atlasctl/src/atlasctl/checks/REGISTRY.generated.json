@@ -8543,6 +8543,33 @@
       ]
     },
     {
+      "area": "generated",
+      "callable": "check_generated_dirs_policy",
+      "category": "hygiene",
+      "description": "enforce canonical generated dirs list",
+      "domain": "repo",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Keep generated dirs to canonical locations (docs/_generated, ops/_generated, ops/_generated_committed, artifacts/*).",
+      "gate": "repo",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_generated_dirs_policy",
+      "legacy_id": "repo.generated_dirs_policy",
+      "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 600,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
       "area": "import",
       "callable": "check_import_smoke",
       "category": "hygiene",
@@ -9463,6 +9490,33 @@
     },
     {
       "area": "no",
+      "callable": "check_no_large_binary_files",
+      "category": "hygiene",
+      "description": "forbid large tracked binary files except approved fixtures",
+      "domain": "repo",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Store large binaries outside git or document approved fixture exceptions.",
+      "gate": "repo",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_no_large_binary_files",
+      "legacy_id": "repo.no_large_binary_files",
+      "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "no",
       "callable": "check_no_legacy_command_names",
       "category": "hygiene",
       "description": "forbid command names containing legacy",
@@ -9625,6 +9679,33 @@
     },
     {
       "area": "no",
+      "callable": "check_repo_no_python_caches_committed",
+      "category": "hygiene",
+      "description": "forbid committed python caches under packages/atlasctl",
+      "domain": "repo",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Remove tracked __pycache__/.pyc/.pytest_cache files and keep them ignored.",
+      "gate": "repo",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_no_python_caches_committed",
+      "legacy_id": "repo.no_python_caches_committed",
+      "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "no",
       "callable": "check_scripts_dir_absent",
       "category": "hygiene",
       "description": "forbid legacy root scripts dir",
@@ -9781,6 +9862,33 @@
       "severity": "error",
       "speed": "fast",
       "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "ops",
+      "callable": "check_ops_configs_deterministic_newlines",
+      "category": "hygiene",
+      "description": "enforce LF-only and no trailing whitespace in ops/configs text files",
+      "domain": "repo",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Normalize files to LF and remove trailing whitespace.",
+      "gate": "repo",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_ops_configs_newline_policy",
+      "legacy_id": "repo.ops_configs_newline_policy",
+      "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -11079,6 +11187,33 @@
       "severity": "error",
       "speed": "fast",
       "timeout_ms": 300,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "tmp",
+      "callable": "check_tmp_paths_outside_artifacts",
+      "category": "hygiene",
+      "description": "forbid committed tmp paths outside artifacts/",
+      "domain": "repo",
+      "effects": [],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Move tmp paths under artifacts/ or rename to a durable path.",
+      "gate": "repo",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_tmp_paths_under_artifacts",
+      "legacy_id": "repo.tmp_paths_under_artifacts",
+      "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+      "owner": "platform",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 800,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
