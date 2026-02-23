@@ -204,6 +204,8 @@ def _validate_entries(entries: list[RegistryEntry]) -> None:
             errors.append(f"{e.id}: remediation_link is required (or explicit `none`)")
         if not e.result_code:
             errors.append(f"{e.id}: result_code is required")
+        if e.fix_hint.strip() == "Review check output and apply the documented fix.":
+            errors.append(f"{e.id}: fix_hint must be actionable, not boilerplate")
         unknown_effects = sorted(set(e.effects).difference(CHECK_EFFECT_ENUM))
         if unknown_effects:
             errors.append(f"{e.id}: unknown effects {unknown_effects}; allowed {sorted(CHECK_EFFECT_ENUM)}")
@@ -223,6 +225,8 @@ def _validate_entries(entries: list[RegistryEntry]) -> None:
             errors.append(f"{e.id}: slow/nightly checks must have timeout_ms >= 2000")
         write_roots = tuple(e.writes_allowed_roots)
         default_write_roots = ("artifacts/evidence/",)
+        if CheckEffect.FS_WRITE.value in e.effects and not write_roots:
+            errors.append(f"{e.id}: fs_write checks must declare writes_allowed_roots")
         if write_roots != default_write_roots and "fs-write" not in e.groups:
             errors.append(f"{e.id}: non-default writes_allowed_roots require `fs-write` group marker")
         for root in write_roots:

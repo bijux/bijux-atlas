@@ -353,6 +353,37 @@ def check_commands_no_check_impl_imports(repo_root: Path) -> tuple[int, list[str
     return (0 if not offenders else 1), sorted(set(offenders))
 
 
+def check_commands_check_no_domain_imports(repo_root: Path) -> tuple[int, list[str]]:
+    offenders: list[str] = []
+    check_commands_root = repo_root / _SRC_ROOT / "commands" / "check"
+    for path in sorted(check_commands_root.rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=rel)
+        for node in ast.walk(tree):
+            imported = _first_atlasctl_import(node) if isinstance(node, (ast.Import, ast.ImportFrom)) else None
+            if imported is None:
+                continue
+            target = imported[0]
+            if target.startswith("atlasctl.checks.domains."):
+                offenders.append(f"{rel}:{imported[1]} commands/check must not import domain checks directly: {target}")
+    return (0 if not offenders else 1), sorted(set(offenders))
+
+
+def check_checks_no_commands_check_imports(repo_root: Path) -> tuple[int, list[str]]:
+    offenders: list[str] = []
+    for path in sorted((repo_root / _SRC_ROOT / "checks").rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=rel)
+        for node in ast.walk(tree):
+            imported = _first_atlasctl_import(node) if isinstance(node, (ast.Import, ast.ImportFrom)) else None
+            if imported is None:
+                continue
+            target = imported[0]
+            if target == "atlasctl.commands.check" or target.startswith("atlasctl.commands.check."):
+                offenders.append(f"{rel}:{imported[1]} checks must not import commands/check modules: {target}")
+    return (0 if not offenders else 1), sorted(set(offenders))
+
+
 def check_cli_import_scope(repo_root: Path) -> tuple[int, list[str]]:
     offenders: list[str] = []
     for path in sorted((repo_root / _SRC_ROOT / "cli").rglob("*.py")):
