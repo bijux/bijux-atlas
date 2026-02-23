@@ -24,11 +24,11 @@ from ..core.errors import ScriptError
 from ..core.exit_codes import ERR_CONFIG, ERR_INTERNAL
 from ..core.runtime.env import getenv
 from ..core.runtime.guards.network_guard import install_no_network_guard, resolve_network_mode
-from ..core.runtime.logging import log_event
 from ..core.runtime.repo_root import try_find_repo_root
 from ..core.runtime.telemetry import emit_telemetry
 from ..contracts.ids import HELP
 from ..cli.constants import NO_NETWORK_FLAG_EXPIRY
+from ..runtime.logging import log_event
 
 
 def main(argv: list[str] | None = None) -> int:
