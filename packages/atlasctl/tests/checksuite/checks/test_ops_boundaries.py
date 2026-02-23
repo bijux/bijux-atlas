@@ -101,3 +101,23 @@ def test_no_stdout_writes_in_ops_command_entrypoints_check_passes() -> None:
         "packages/atlasctl/src/atlasctl/checks/layout/architecture/check_no_stdout_writes_in_ops_command_entrypoints.py"
     )
     assert proc.returncode == 0, proc.stderr
+
+
+def test_ops_cli_profile_network_flags_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_ops_cli_profile_network_flags.py")
+    assert proc.returncode == 0, proc.stderr
+
+
+def test_ops_no_path_dot_in_runtime_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_ops_no_path_dot_in_runtime.py")
+    assert proc.returncode == 0, proc.stderr
+
+
+def test_ops_no_cwd_reliance_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_ops_no_cwd_reliance.py")
+    assert proc.returncode == 0, proc.stderr
+
+
+def test_ops_command_capabilities_manifest_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_ops_command_capabilities_manifest.py")
+    assert proc.returncode == 0, proc.stderr
