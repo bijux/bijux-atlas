@@ -740,7 +740,7 @@ _OPS_SCRIPT_CHECKS: tuple[tuple[str, str, str, callable], ...] = (
 
 
 def check_ops_product_task_scripts_zero(repo_root: Path) -> tuple[int, list[str]]:
-    cmd = ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_product_task_scripts_zero.py"]
+    cmd = ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_product_scripts_zero.py"]
     proc = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
     rows = [line for line in ((proc.stdout or "") + "\n" + (proc.stderr or "")).splitlines() if line.strip()]
     return proc.returncode, rows
