@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 from typing import Any
 
 from ..contracts.ids import CHECK_RUN
@@ -170,9 +171,86 @@ def render_explain(check: Any) -> str:
     return json.dumps(payload, sort_keys=True)
 
 
+def resolve_last_run_report(last_run: str) -> Path:
+    path = Path(last_run)
+    if path.is_file():
+        return path
+    if not path.exists():
+        raise FileNotFoundError(f"last-run path does not exist: {last_run}")
+    candidates = sorted(path.rglob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+    for candidate in candidates:
+        try:
+            payload = json.loads(candidate.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if payload.get("kind") in {"check-run", "check-run-report"} and isinstance(payload.get("rows"), list):
+            return candidate
+    raise FileNotFoundError(f"no check-run report json found under: {last_run}")
+
+
+def build_failures_payload(*, source: str, report: CheckRunReport, group: str = "") -> dict[str, Any]:
+    from .runner import extract_failures
+
+    failed_rows = extract_failures(report)
+    if group:
+        failed_rows = [row for row in failed_rows if str(row.domain) == group]
+    return {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "kind": "check-failures",
+        "status": "ok",
+        "source": source,
+        "group": group or "all",
+        "failed_count": len(failed_rows),
+        "failures": [
+            {
+                "id": str(row.id),
+                "domain": str(row.domain),
+                "hint": str(row.fix_hint),
+                "detail": "; ".join(str(item.message) for item in row.violations) or "; ".join(row.errors),
+            }
+            for row in failed_rows
+        ],
+    }
+
+
+def build_triage_slow_payload(*, source: str, report: CheckRunReport, top: int = 10) -> dict[str, Any]:
+    from .runner import top_n_slowest
+
+    ranked = top_n_slowest(report, top)
+    return {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "kind": "check-triage-slow",
+        "status": "ok",
+        "source": source,
+        "rows": [{"id": str(row.id), "domain": str(row.domain), "duration_ms": int(row.metrics.get("duration_ms", 0))} for row in ranked],
+    }
+
+
+def build_triage_failures_payload(*, source: str, report: CheckRunReport) -> dict[str, Any]:
+    from .runner import group_failures_by_domain_area
+
+    rows = group_failures_by_domain_area(report)
+    failed_count = sum(sum(areas.values()) for areas in rows.values())
+    return {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "kind": "check-triage-failures",
+        "status": "ok",
+        "source": source,
+        "failed_count": failed_count,
+        "groups": {domain: {area: count for area, count in sorted(areas.items())} for domain, areas in sorted(rows.items())},
+    }
+
+
 __all__ = [
     "build_report_payload",
     "render_explain",
+    "resolve_last_run_report",
+    "build_failures_payload",
+    "build_triage_slow_payload",
+    "build_triage_failures_payload",
     "render_json",
     "render_jsonl",
     "render_show_source",

@@ -242,6 +242,17 @@ def extract_failures(report: CheckRunReport) -> list[CheckResult]:
     return [row for row in report.rows if row.status in {CheckStatus.FAIL, CheckStatus.ERROR}]
 
 
+def group_failures_by_domain_area(report: CheckRunReport) -> dict[str, dict[str, int]]:
+    grouped: dict[str, dict[str, int]] = {}
+    for row in extract_failures(report):
+        domain = str(row.domain or "unknown")
+        rid = str(row.id)
+        area = rid.split("_")[2] if rid.startswith("checks_") and len(rid.split("_")) > 2 else "general"
+        bucket = grouped.setdefault(domain, {})
+        bucket[area] = int(bucket.get(area, 0)) + 1
+    return grouped
+
+
 def report_from_payload(payload: dict[str, object]) -> CheckRunReport:
     raw_rows = payload.get("rows", [])
     rows: list[CheckResult] = []
@@ -267,6 +278,7 @@ def report_from_payload(payload: dict[str, object]) -> CheckRunReport:
 __all__ = [
     "BudgetProfile",
     "extract_failures",
+    "group_failures_by_domain_area",
     "report_from_payload",
     "run_checks",
     "top_n_slowest",
