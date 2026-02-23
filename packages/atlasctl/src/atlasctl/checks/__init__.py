@@ -24,6 +24,7 @@ from .model import (
     Tag,
     Violation,
 )
+from .runner import run_checks
 from .registry import check_tags, get_check, list_checks, list_domains
 
 
@@ -61,4 +62,5 @@ __all__ = [
     "list_checks",
     "list_domains",
     "run_domain",
+    "run_checks",
 ]
