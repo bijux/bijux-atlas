@@ -116,6 +116,18 @@ def test_check_run_selector_flags() -> None:
     assert "checks_checks_registry_integrity" in by_domain_all.stdout
 
 
+def test_check_run_category_and_domain_filters() -> None:
+    proc = _run("check", "run", "--category", "lint", "--domain", "ops", "--quiet")
+    assert proc.returncode in (0, 1), proc.stderr
+    assert "checks_ops_" in proc.stdout
+
+
+def test_lint_alias_delegates_to_check_selector() -> None:
+    proc = _run("lint", "ops", "--fail-fast")
+    assert proc.returncode in (0, 1), proc.stderr
+    assert "checks_ops_" in proc.stdout or "\"checks_ops_" in proc.stdout
+
+
 def test_migrate_checks_registry_json() -> None:
     proc = _run("--json", "migrate", "checks-registry")
     assert proc.returncode in (0, 1), proc.stderr

@@ -20,15 +20,12 @@ def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
     )
 
 
-def test_lint_repo_json_shape() -> None:
-    proc = _run_cli("lint", "repo", "--report", "json")
+def test_lint_ops_alias_json_shape() -> None:
+    proc = _run_cli("--json", "lint", "ops", "--fail-fast")
     assert proc.returncode in {0, 1}, proc.stderr
     raw = proc.stdout.strip()
-    if not raw:
-        # Nested lint command subprocesses can fail before the outer wrapper prints JSON in minimal-env tests.
-        assert "atlasctl.cli" in proc.stderr
-        return
     payload = json.loads(raw)
-    assert payload["tool"] == "bijux-atlas"
-    assert payload["suite"] == "repo"
-    assert "checks" in payload
+    assert payload["tool"] == "atlasctl"
+    assert payload["kind"] == "check-run"
+    assert isinstance(payload.get("rows"), list)
+    assert all(row.get("category") in {"lint", "check"} for row in payload.get("rows", []))
