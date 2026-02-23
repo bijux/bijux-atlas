@@ -9,9 +9,19 @@ Use atlasctl product commands only.
 
 ## Build + Validate
 
-1. `IMAGE_VERSION=$(git rev-parse --short=12 HEAD) ./bin/atlasctl product build`
-2. `./bin/atlasctl product validate`
-3. `./bin/atlasctl product inventory`
+1. `./bin/atlasctl product build --plan`
+2. `IMAGE_VERSION=$(git rev-parse --short=12 HEAD) ./bin/atlasctl product build`
+3. `./bin/atlasctl product verify`
+4. `./bin/atlasctl product inventory`
+
+## Release Candidate (Gated, Internal)
+
+1. `./bin/atlasctl product release-candidate --internal`
+2. Release gates enforced automatically:
+   - bypass inventory must be empty
+   - ops schema/contracts drift check passes
+   - ops pins check passes
+   - commands inventory docs are current
 
 ## Compare Two Builds
 
@@ -21,4 +31,3 @@ Use atlasctl product commands only.
 
 1. `CI=1 ./bin/atlasctl product docker release`
 2. `./bin/atlasctl product publish --internal`
-
