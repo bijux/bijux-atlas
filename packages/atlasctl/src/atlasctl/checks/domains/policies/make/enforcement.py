@@ -259,8 +259,13 @@ def check_make_product_mk_wrapper_contract(repo_root: Path) -> tuple[int, list[s
     if not path.exists():
         return 1, ["makefiles/product.mk: missing"]
     errors: list[str] = []
+    target_count = 0
+    target_re = re.compile(r"^(?P<target>[A-Za-z0-9_./-]+):(?:\s|$)")
     for lineno, raw in enumerate(path.read_text(encoding="utf-8", errors="ignore").splitlines(), start=1):
         line = raw.strip()
+        m = target_re.match(raw)
+        if m and not m.group("target").startswith(".") and not m.group("target").startswith("internal/"):
+            target_count += 1
         if re.match(r"^internal/[A-Za-z0-9_./-]+:", line):
             errors.append(f"makefiles/product.mk:{lineno}: internal/* targets are forbidden in product.mk")
         if raw.startswith("\t") and "python3 -c" in raw:
@@ -269,6 +274,10 @@ def check_make_product_mk_wrapper_contract(repo_root: Path) -> tuple[int, list[s
             errors.append(f"makefiles/product.mk:{lineno}: direct python module paths are forbidden in wrapper-only product.mk")
         if raw.startswith("\t") and "atlasctl run ./ops/run/" in raw:
             errors.append(f"makefiles/product.mk:{lineno}: use atlasctl product/ops commands instead of `atlasctl run ./ops/run/...`")
+        if raw.startswith("\t") and "./bin/atlasctl" in raw and "./bin/atlasctl product " not in raw:
+            errors.append(f"makefiles/product.mk:{lineno}: product.mk must delegate via `./bin/atlasctl product ...` only")
+    if target_count > 10:
+        errors.append(f"makefiles/product.mk: target budget exceeded ({target_count} > 10)")
     return (0 if not errors else 1), errors
 
 
