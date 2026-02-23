@@ -7,6 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[8]
 MANIFEST = ROOT / "configs/ops/ops-surface-manifest.json"
+SURFACE = ROOT / "ops/_meta/surface.json"
 OPS_COMMAND = "packages/atlasctl/src/atlasctl/commands/ops/command.py"
 
 
@@ -19,6 +20,31 @@ def main() -> int:
     if not isinstance(areas, dict):
         errs.append("areas must be object")
         areas = {}
+    if not SURFACE.exists():
+        errs.append("missing ops/_meta/surface.json")
+    else:
+        try:
+            surface = json.loads(SURFACE.read_text(encoding="utf-8"))
+        except Exception as exc:
+            errs.append(f"invalid ops/_meta/surface.json: {exc}")
+            surface = {}
+        actions = surface.get("actions", []) if isinstance(surface, dict) else []
+        if not isinstance(actions, list) or not actions:
+            errs.append("ops/_meta/surface.json: actions must be non-empty list")
+        else:
+            for row in actions[:5]:
+                if not isinstance(row, dict):
+                    errs.append("ops/_meta/surface.json: action rows must be objects")
+                    break
+            for row in actions:
+                if not isinstance(row, dict):
+                    continue
+                aid = str(row.get("id", "")).strip()
+                cmd = row.get("command", [])
+                if not aid.startswith("ops."):
+                    errs.append(f"invalid action id `{aid}` in ops/_meta/surface.json")
+                if not isinstance(cmd, list) or cmd[:2] != ["atlasctl", "ops"]:
+                    errs.append(f"action `{aid}` must map to atlasctl ops command")
     for area, row in sorted(areas.items()):
         if not isinstance(row, dict):
             errs.append(f"{area}: entry must be object")

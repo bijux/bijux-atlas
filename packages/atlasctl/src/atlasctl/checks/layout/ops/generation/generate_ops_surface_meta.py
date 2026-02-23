@@ -2,11 +2,16 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[6]
+ROOT = Path(__file__).resolve().parents[8]
 PUBLIC = ROOT / "configs/ops/public-surface.json"
 OUT = ROOT / "ops/_meta/surface.json"
+ATLASCTL_SRC = ROOT / "packages" / "atlasctl" / "src"
+if str(ATLASCTL_SRC) not in sys.path:
+    sys.path.insert(0, str(ATLASCTL_SRC))
+from atlasctl.commands.ops.runtime_modules.actions_inventory import action_registry  # noqa: E402
 
 
 def main() -> int:
@@ -20,7 +25,13 @@ def main() -> int:
         }
         | {"ops-help", "ops-surface", "ops-layout-lint", "ops-e2e-validate"}
     )
-    payload = {"schema_version": 1, "entrypoints": ops_targets}
+    actions = action_registry()
+    payload = {
+        "schema_version": 2,
+        "entrypoints": ops_targets,
+        "atlasctl_commands": [" ".join(row["command"]) for row in actions],
+        "actions": actions,
+    }
     OUT.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
     print(OUT)
     return 0
