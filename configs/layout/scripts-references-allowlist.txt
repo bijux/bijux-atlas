@@ -127,7 +127,7 @@ makefiles/ci.mk
 makefiles/docs.mk
 makefiles/layout.mk
 makefiles/ops.mk
-makefiles/ownership.json
+configs/make/ownership.json
 makefiles/path_contract.mk
 makefiles/policies.mk
 makefiles/product.mk

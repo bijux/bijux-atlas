@@ -315,7 +315,7 @@
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Update makefiles/ownership.json when REGISTRY.toml changes.",
+        "fix_hint": "Update configs/make/ownership.json when REGISTRY.toml changes.",
         "legacy_id": "checks.registry_change_owners_gate",
         "module": "atlasctl.checks.domains.internal.checks.check_registry_change_gates",
         "severity": "error",

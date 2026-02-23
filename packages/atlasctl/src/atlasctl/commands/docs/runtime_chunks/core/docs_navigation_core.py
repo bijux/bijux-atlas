@@ -171,7 +171,7 @@ def _generate_make_targets_catalog(ctx: RunContext) -> tuple[int, str]:
         )
     payload = {
         "schema_version": 1,
-        "source": {"ssot": "configs/make/public-targets.json", "ownership": "makefiles/ownership.json"},
+        "source": {"ssot": "configs/make/public-targets.json", "ownership": "configs/make/ownership.json"},
         "targets": entries,
     }
     out_json.parent.mkdir(parents=True, exist_ok=True)
@@ -181,7 +181,7 @@ def _generate_make_targets_catalog(ctx: RunContext) -> tuple[int, str]:
     lines = [
         "# Make Targets",
         "",
-        "Generated from `makefiles/targets.json`. Do not edit manually.",
+        "Generated from `configs/make/targets.json`. Do not edit manually.",
         "",
         "| target | description | owner | area | lane |",
         "|---|---|---|---|---|",

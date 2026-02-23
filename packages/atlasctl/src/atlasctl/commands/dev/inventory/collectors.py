@@ -51,7 +51,7 @@ def collect_schemas(repo_root: Path) -> dict[str, object]:
 
 def collect_owners(repo_root: Path) -> dict[str, object]:
     owners: dict[str, dict[str, object]] = {}
-    for rel in ("configs/meta/ownership.json", "configs/_meta/ownership.json", "makefiles/ownership.json"):
+    for rel in ("configs/meta/ownership.json", "configs/_meta/ownership.json", "configs/make/ownership.json"):
         path = repo_root / rel
         if not path.exists():
             continue

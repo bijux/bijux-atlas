@@ -35,7 +35,7 @@ def main() -> int:
 
     errors: list[str] = []
     if allowed != catalog_targets:
-        errors.append("makefiles/targets.json drift vs configs/make/public-targets.json")
+        errors.append("configs/make/targets.json drift vs configs/make/public-targets.json")
     missing_from_publication = sorted(allowed - published)
     if missing_from_publication:
         errors.append(f"public targets missing from root/product publication: {', '.join(missing_from_publication)}")

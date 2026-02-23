@@ -49,7 +49,7 @@ CHECKS = (
         500,
         check_registry_change_requires_owner_update,
         category=CheckCategory.POLICY,
-        fix_hint="Update makefiles/ownership.json when REGISTRY.toml changes.",
+        fix_hint="Update configs/make/ownership.json when REGISTRY.toml changes.",
         owners=("platform",),
         tags=("checks", "registry", "ci"),
     ),
