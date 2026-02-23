@@ -162,8 +162,9 @@ def check_ops_load_abuse_scenarios_required_native(repo_root: Path) -> tuple[int
         errors.append("missing required suite: response-size-abuse")
     else:
         run_in = set(abuse.get("run_in", []))
-        if "nightly" not in run_in and "load-nightly" not in run_in:
-            errors.append("response-size-abuse must run in nightly profile")
+        for profile in ("full", "nightly", "load-nightly"):
+            if profile not in run_in:
+                errors.append(f"response-size-abuse must run in {profile} profile")
         if not abuse.get("must_pass", False):
             errors.append("response-size-abuse must have must_pass=true")
     return (0 if not errors else 1), (["abuse scenario contract passed"] if not errors else errors)

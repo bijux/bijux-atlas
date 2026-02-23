@@ -64,6 +64,7 @@ def main() -> int:
     ap.add_argument("--environment", default="local")
     ap.add_argument("--k8s-profile", default="kind")
     ap.add_argument("--replicas", type=int, default=1)
+    ap.add_argument("--justification", default="")
     args = ap.parse_args()
 
     results = (ROOT / args.results).resolve()
@@ -91,6 +92,7 @@ def main() -> int:
             "dataset_lock_hash": lock_hash,
             "k8s_profile": args.k8s_profile,
             "replicas": args.replicas,
+            "justification": str(args.justification or "").strip(),
             "tool_versions": {
                 "k6": tools.get("k6", "unknown"),
                 "kind": tools.get("kind", "unknown"),
