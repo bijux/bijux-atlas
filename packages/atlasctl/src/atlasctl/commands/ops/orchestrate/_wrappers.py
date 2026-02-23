@@ -106,12 +106,24 @@ def write_wrapper_artifacts(
     return payload
 
 
-def run_wrapped(ctx: RunContext, spec: OrchestrateSpec, report_format: str) -> int:
+def run_wrapped(ctx: RunContext, spec: OrchestrateSpec, report_format: str, *, dry_run: bool = False) -> int:
     missing, _resolved = preflight_tools([spec.cmd[0]] if spec.cmd else [])
     if missing:
         payload = write_wrapper_artifacts(ctx, spec.area, spec.action, spec.cmd, 1, f"missing tools: {', '.join(missing)}")
         emit_payload(payload, report_format)
         return 1
+    if dry_run:
+        payload = write_wrapper_artifacts(
+            ctx,
+            spec.area,
+            spec.action,
+            spec.cmd,
+            0,
+            f"dry-run: would execute {command_rendered(spec.cmd)}",
+        )
+        payload["details"]["dry_run"] = True
+        emit_payload(payload, report_format)
+        return 0
     inv = run_tool(ctx, spec.cmd)
     payload = write_wrapper_artifacts(ctx, spec.area, spec.action, spec.cmd, inv.code, inv.combined_output)
     payload["details"]["invocation"] = invocation_report(inv)

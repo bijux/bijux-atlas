@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import argparse
 import json
+from dataclasses import replace
 from datetime import datetime, timezone
-from pathlib import Path
 from typing import Any
 
 from ....core.context import RunContext
@@ -33,6 +33,12 @@ def _artifacts_open(ctx: RunContext, report_format: str) -> int:
 
 def _run_manifest(ctx: RunContext, report_format: str, manifest: str, scenario: str) -> int:
     return _run_scenario_from_manifest_cmd(ctx, report_format, manifest, scenario)
+
+
+def _ctx_with_optional_run_id(ctx: RunContext, run_id: str | None) -> RunContext:
+    if not run_id:
+        return ctx
+    return replace(ctx, run_id=run_id, run_dir=ctx.run_dir.parent / run_id)
 
 
 def _stack_reset(ctx: RunContext, report_format: str) -> int:
@@ -76,6 +82,7 @@ def _stack_reset(ctx: RunContext, report_format: str) -> int:
 
 
 def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
+    ctx = _ctx_with_optional_run_id(ctx, getattr(ns, "run_id", None))
     if ns.cmd == "ports":
         if ns.ports_cmd == "show":
             return _ports_show(ctx, ns.report)
@@ -89,7 +96,7 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             "install": ["./bin/atlasctl", "ops", "deploy", "--report", "text", "apply"],
             "uninstall": ["./bin/atlasctl", "ops", "deploy", "--report", "text", "rollback"],
         }
-        return _run_wrapped(ctx, OrchestrateSpec("k8s", ns.k8s_cmd, mapping[ns.k8s_cmd]), ns.report)
+        return _run_wrapped(ctx, OrchestrateSpec("k8s", ns.k8s_cmd, mapping[ns.k8s_cmd]), ns.report, dry_run=bool(getattr(ns, "dry_run", False)))
     if ns.cmd == "stack":
         mapping = {
             "up": ["./bin/atlasctl", "ops", "stack", "--report", "text", "up"],
@@ -97,14 +104,14 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         }
         if ns.stack_cmd == "reset":
             return _stack_reset(ctx, ns.report)
-        return _run_wrapped(ctx, OrchestrateSpec("stack", ns.stack_cmd, mapping[ns.stack_cmd]), ns.report)
+        return _run_wrapped(ctx, OrchestrateSpec("stack", ns.stack_cmd, mapping[ns.stack_cmd]), ns.report, dry_run=bool(getattr(ns, "dry_run", False)))
     if ns.cmd == "obs":
         mapping = {
             "up": ["./bin/atlasctl", "ops", "obs", "--report", "text", "up"],
             "verify": ["./bin/atlasctl", "ops", "obs", "--report", "text", "verify"],
             "down": ["./bin/atlasctl", "ops", "obs", "--report", "text", "validate"],
         }
-        return _run_wrapped(ctx, OrchestrateSpec("obs", ns.obs_cmd, mapping[ns.obs_cmd]), ns.report)
+        return _run_wrapped(ctx, OrchestrateSpec("obs", ns.obs_cmd, mapping[ns.obs_cmd]), ns.report, dry_run=bool(getattr(ns, "dry_run", False)))
     if ns.cmd == "load":
         mapping = {
             "smoke": ["make", "ops-load-smoke"],
@@ -118,21 +125,38 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 "packages/atlasctl/src/atlasctl/load/baseline/update_baseline.py",
             ],
         }
-        return _run_wrapped(ctx, OrchestrateSpec("load", ns.load_cmd, mapping[ns.load_cmd]), ns.report)
+        return _run_wrapped(ctx, OrchestrateSpec("load", ns.load_cmd, mapping[ns.load_cmd]), ns.report, dry_run=bool(getattr(ns, "dry_run", False)))
     if ns.cmd == "e2e":
         mapping = {
             "smoke": ["./bin/atlasctl", "ops", "e2e", "--report", "text", "run", "--suite", "smoke"],
             "realdata": ["./bin/atlasctl", "ops", "e2e", "--report", "text", "run", "--suite", "realdata"],
         }
-        return _run_wrapped(ctx, OrchestrateSpec("e2e", ns.e2e_cmd, mapping[ns.e2e_cmd]), ns.report)
+        return _run_wrapped(ctx, OrchestrateSpec("e2e", ns.e2e_cmd, mapping[ns.e2e_cmd]), ns.report, dry_run=bool(getattr(ns, "dry_run", False)))
     if ns.cmd == "datasets":
         mapping = {
             "verify": ["./bin/atlasctl", "ops", "datasets", "--report", "text", "verify"],
             "fetch": ["./bin/atlasctl", "ops", "warm", "--report", "text", "--mode", "warmup"],
             "pin": ["python3", "packages/atlasctl/src/atlasctl/datasets/build_manifest_lock.py"],
         }
-        return _run_wrapped(ctx, OrchestrateSpec("datasets", ns.datasets_cmd, mapping[ns.datasets_cmd]), ns.report)
+        return _run_wrapped(ctx, OrchestrateSpec("datasets", ns.datasets_cmd, mapping[ns.datasets_cmd]), ns.report, dry_run=bool(getattr(ns, "dry_run", False)))
     if ns.cmd == "contracts-snapshot":
+        if bool(getattr(ns, "dry_run", False)):
+            print(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "status": "pass",
+                        "area": "contracts",
+                        "action": "snapshot",
+                        "run_id": ctx.run_id,
+                        "dry_run": True,
+                    },
+                    sort_keys=True,
+                )
+                if ns.report == "json"
+                else f"contracts:snapshot status=pass run_id={ctx.run_id} dry_run=true"
+            )
+            return 0
         return _contracts_snapshot_cmd(ctx, ns.report)
     if ns.cmd == "cleanup":
         return _cleanup(ctx, ns.report, ns.older_than)
@@ -142,6 +166,11 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
 
 def configure_orchestrate_parsers(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
+    def _add_common_flags(p: argparse.ArgumentParser) -> None:
+        p.add_argument("--report", choices=["text", "json"], default="text")
+        p.add_argument("--dry-run", action="store_true")
+        p.add_argument("--run-id")
+
     ports = sub.add_parser("ports", help="port registry and reservation commands")
     ports_sub = ports.add_subparsers(dest="ports_cmd", required=True)
     p_show = ports_sub.add_parser("show", help="show SSOT port registry")
@@ -160,37 +189,37 @@ def configure_orchestrate_parsers(sub: argparse._SubParsersAction[argparse.Argum
     k8s_sub = k8s.add_subparsers(dest="k8s_cmd", required=True)
     for name in ("render", "install", "uninstall"):
         cmd = k8s_sub.add_parser(name)
-        cmd.add_argument("--report", choices=["text", "json"], default="text")
+        _add_common_flags(cmd)
 
     stack = sub.add_parser("stack", help="stack lifecycle wrappers")
     stack_sub = stack.add_subparsers(dest="stack_cmd", required=True)
     for name in ("up", "down", "reset"):
         cmd = stack_sub.add_parser(name)
-        cmd.add_argument("--report", choices=["text", "json"], default="text")
+        _add_common_flags(cmd)
 
     obs = sub.add_parser("obs", help="observability wrappers")
     obs_sub = obs.add_subparsers(dest="obs_cmd", required=True)
     for name in ("up", "verify", "down"):
         cmd = obs_sub.add_parser(name)
-        cmd.add_argument("--report", choices=["text", "json"], default="text")
+        _add_common_flags(cmd)
 
     load = sub.add_parser("load", help="load wrappers")
     load_sub = load.add_subparsers(dest="load_cmd", required=True)
     for name in ("smoke", "suite", "baseline-compare", "baseline-update"):
         cmd = load_sub.add_parser(name)
-        cmd.add_argument("--report", choices=["text", "json"], default="text")
+        _add_common_flags(cmd)
 
     e2e = sub.add_parser("e2e", help="e2e wrappers")
     e2e_sub = e2e.add_subparsers(dest="e2e_cmd", required=True)
     for name in ("smoke", "realdata"):
         cmd = e2e_sub.add_parser(name)
-        cmd.add_argument("--report", choices=["text", "json"], default="text")
+        _add_common_flags(cmd)
 
     datasets = sub.add_parser("datasets", help="dataset wrappers")
     datasets_sub = datasets.add_subparsers(dest="datasets_cmd", required=True)
     for name in ("verify", "fetch", "pin"):
         cmd = datasets_sub.add_parser(name)
-        cmd.add_argument("--report", choices=["text", "json"], default="text")
+        _add_common_flags(cmd)
 
     cleanup = sub.add_parser("cleanup", help="cleanup artifacts by retention policy")
     cleanup.add_argument("--older-than", type=int, default=14)
@@ -199,7 +228,9 @@ def configure_orchestrate_parsers(sub: argparse._SubParsersAction[argparse.Argum
     scenario = sub.add_parser("scenario", help="run scenario from manifest")
     scenario.add_argument("--manifest", default="ops/e2e/suites/suites.json")
     scenario.add_argument("--scenario", required=True)
-    scenario.add_argument("--report", choices=["text", "json"], default="text")
+    _add_common_flags(scenario)
+    scenario.add_argument("--no-write", action="store_true")
 
     contracts_snapshot = sub.add_parser("contracts-snapshot", help="run live contracts snapshot check")
-    contracts_snapshot.add_argument("--report", choices=["text", "json"], default="text")
+    _add_common_flags(contracts_snapshot)
+    contracts_snapshot.add_argument("--no-write", action="store_true")
