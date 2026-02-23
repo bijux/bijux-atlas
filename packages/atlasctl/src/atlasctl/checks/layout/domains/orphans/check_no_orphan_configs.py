@@ -8,7 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[6]
 CONFIGS = ROOT / "configs"
 ALLOWED_INTERNAL_PREFIXES = (
-    "configs/_schemas/",
+    "configs/schema/",
     "configs/_meta/",
     "configs/meta/",
     "configs/layout/",

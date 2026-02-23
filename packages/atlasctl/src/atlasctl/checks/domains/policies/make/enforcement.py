@@ -1064,6 +1064,9 @@ def check_policies_bypass_entry_paths_exist(repo_root: Path) -> tuple[int, list[
             continue
         key = str(row.get("key", "")).strip()
         src = str(row.get("source", "")).strip()
+        if src == "configs/layout/make-command-allowlist.txt":
+            # This allowlist stores command prefixes, not filesystem paths.
+            continue
         if "/" not in key or any(ch in key for ch in "*?[]"):
             continue
         candidate = repo_root / key

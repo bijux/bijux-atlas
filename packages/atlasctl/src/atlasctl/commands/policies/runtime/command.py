@@ -26,7 +26,7 @@ def _run(cmd: list[str], repo_root: Path) -> tuple[int, str]:
 
 def _validate_ops_lint_relax_schema(repo_root: Path) -> list[str]:
     import jsonschema
-    schema = json.loads((repo_root / "configs/_schemas/ops-lint-relaxations.schema.json").read_text(encoding="utf-8"))
+    schema = json.loads((repo_root / "configs/schema/ops-lint-relaxations.schema.json").read_text(encoding="utf-8"))
     data = json.loads((repo_root / "configs/policy/ops-lint-relaxations.json").read_text(encoding="utf-8"))
     errs: list[str] = []
     try:

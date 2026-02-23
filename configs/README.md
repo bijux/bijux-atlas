@@ -1,13 +1,13 @@
 # Configurations SSOT
 
-Canonical home for repository configuration files and their consumers.
+Canonical compiler model for repository configuration inputs and generated outputs.
 
 Rule:
 - Root shims are allowed only when tooling requires root-path discovery.
 - Canonical config content lives under `configs/`.
 - Root tool-config symlinks are intentionally removed; tooling must use explicit config paths.
 
-## Config Inventory
+## Authoritative Inputs
 
 - `configs/rust/clippy.toml`
   - Consumed by: `cargo clippy`, `make ci-clippy`.
@@ -50,22 +50,33 @@ Rule:
   - Consumed by: `make ci-slo-config-validate`.
 - `configs/ops/slo/slo.v1.json`
   - Consumed by: `make ci-slo-config-validate`, `make ci-slo-metrics-contract`.
-- `configs/openapi/v1/openapi.generated.json`
-  - Consumed by: OpenAPI drift checks and docs examples.
 - `configs/openapi/v1/openapi.snapshot.json`
   - Consumed by: OpenAPI determinism/drift tests.
 - `configs/perf/k6-thresholds.v1.json`
   - Consumed by: perf/load validation tooling.
 - `configs/coverage/thresholds.toml`
   - Consumed by: coverage governance checks.
-- `configs/slo/slo.json`
-  - Consumed by: observability/SLO contract checks.
+- `configs/inventory/owners.json`
+  - Consumed by: config ownership validation and compiler outputs.
+- `configs/schema/*.schema.json`
+  - Consumed by: `atlasctl configs validate`.
 
-## Generated Registry
+## Generated Outputs (`atlasctl configs gen`)
 
-- `configs/config-key-registry.md`
-  - Generated from `docs/contracts/CONFIG_KEYS.json`.
-  - Regenerate with `make config-validate`.
+- `configs/_generated/INDEX.md`
+- `configs/_generated/compiler-report.json`
+- `configs/_generated/checksums.json`
+
+Only compiler outputs belong under `configs/_generated/`. Hand edits are forbidden and detected via checksums.
+
+## Compiler Commands
+
+```bash
+./bin/atlasctl configs validate --report text
+./bin/atlasctl configs gen --report text
+./bin/atlasctl configs diff --fail --report text
+./bin/atlasctl configs fmt --check --report text
+```
 
 ## Related Docs
 

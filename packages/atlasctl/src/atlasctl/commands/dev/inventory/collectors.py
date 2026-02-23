@@ -45,13 +45,13 @@ def collect_configs(repo_root: Path) -> dict[str, object]:
 
 
 def collect_schemas(repo_root: Path) -> dict[str, object]:
-    schemas = repo_files(repo_root, "configs/_schemas/**/*.json") + repo_files(repo_root, "ops/schema/**/*.json")
+    schemas = repo_files(repo_root, "configs/schema/**/*.json") + repo_files(repo_root, "ops/schema/**/*.json")
     return {"kind": "schemas", "files": sorted(set(schemas))}
 
 
 def collect_owners(repo_root: Path) -> dict[str, object]:
     owners: dict[str, dict[str, object]] = {}
-    for rel in ("configs/meta/ownership.json", "configs/_meta/ownership.json", "configs/make/ownership.json"):
+    for rel in ("configs/meta/ownership.json", "configs/inventory/owners.json", "configs/make/ownership.json"):
         path = repo_root / rel
         if not path.exists():
             continue

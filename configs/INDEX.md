@@ -19,4 +19,4 @@ Canonical configuration surface for repository behavior.
 - `configs/shellcheck` owner: `platform`
 - `configs/slo` owner: `bijux-atlas-operations`
 
-See also: `configs/_meta/ownership.json`.
+See also: `configs/inventory/owners.json`.
