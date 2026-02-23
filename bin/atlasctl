@@ -2,21 +2,70 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-if ! command -v python3 >/dev/null 2>&1; then
-  echo "atlasctl bootstrap error: python3 is required but was not found on PATH." >&2
-  exit 127
-fi
+ATLASCTL_SRC="$ROOT/packages/atlasctl/src"
+ATLASCTL_VENV_DIR="${ATLASCTL_VENV_DIR:-$ROOT/artifacts/.venv}"
+ATLASCTL_LOCKFILE="$ROOT/packages/atlasctl/requirements.lock.txt"
 
-if ! python3 -c 'import sys; exit(0 if sys.version_info >= (3, 11) else 1)' >/dev/null 2>&1; then
-  echo "atlasctl bootstrap error: python3.11+ is required." >&2
-  exit 2
-fi
-
-if [[ ! -d "$ROOT/packages/atlasctl/src/atlasctl" ]]; then
+if [[ ! -d "$ATLASCTL_SRC/atlasctl" ]]; then
   echo "atlasctl bootstrap error: expected runtime package at packages/atlasctl/src/atlasctl." >&2
   exit 2
 fi
 
+find_python() {
+  local candidate=""
+  local candidates=()
+  if [[ -n "${ATLASCTL_PYTHON:-}" ]]; then
+    candidates+=("$ATLASCTL_PYTHON")
+  fi
+  candidates+=("python3.13" "python3.12" "python3.11" "python3")
+  for candidate in "${candidates[@]}"; do
+    if ! command -v "$candidate" >/dev/null 2>&1; then
+      continue
+    fi
+    if "$candidate" -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 11) else 1)' >/dev/null 2>&1; then
+      printf '%s\n' "$candidate"
+      return 0
+    fi
+  done
+  return 1
+}
+
+ATLASCTL_PYTHON_BIN="$(find_python || true)"
+if [[ -z "$ATLASCTL_PYTHON_BIN" ]]; then
+  echo "atlasctl bootstrap error: python3.11+ is required. Install python3.11+ or set ATLASCTL_PYTHON." >&2
+  exit 2
+fi
+
+if [[ ! -x "$ATLASCTL_VENV_DIR/bin/python" ]]; then
+  mkdir -p "$(dirname "$ATLASCTL_VENV_DIR")"
+  "$ATLASCTL_PYTHON_BIN" -m venv "$ATLASCTL_VENV_DIR"
+fi
+
+if ! "$ATLASCTL_VENV_DIR/bin/python" -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 11) else 1)' >/dev/null 2>&1; then
+  rm -rf "$ATLASCTL_VENV_DIR"
+  "$ATLASCTL_PYTHON_BIN" -m venv "$ATLASCTL_VENV_DIR"
+fi
+
+if [[ -f "$ATLASCTL_LOCKFILE" ]]; then
+  LOCK_SHA="$("$ATLASCTL_VENV_DIR/bin/python" - <<'PY' "$ATLASCTL_LOCKFILE"
+from hashlib import sha256
+from pathlib import Path
+import sys
+print(sha256(Path(sys.argv[1]).read_bytes()).hexdigest())
+PY
+)"
+  STAMP_FILE="$ATLASCTL_VENV_DIR/.atlasctl-lock.sha256"
+  INSTALLED_SHA="$(cat "$STAMP_FILE" 2>/dev/null || true)"
+  if [[ "$LOCK_SHA" != "$INSTALLED_SHA" ]]; then
+    "$ATLASCTL_VENV_DIR/bin/python" -m pip install --disable-pip-version-check --quiet -r "$ATLASCTL_LOCKFILE"
+    printf '%s\n' "$LOCK_SHA" > "$STAMP_FILE"
+  fi
+fi
+
+if ! "$ATLASCTL_VENV_DIR/bin/python" -c 'import yaml' >/dev/null 2>&1; then
+  "$ATLASCTL_VENV_DIR/bin/python" -m pip install --disable-pip-version-check --quiet "PyYAML==6.0.2"
+fi
+
 PYTHONDONTWRITEBYTECODE=1 \
-PYTHONPATH="$ROOT/packages/atlasctl/src${PYTHONPATH:+:$PYTHONPATH}" \
-  exec python3 -m atlasctl.cli "$@"
+PYTHONPATH="$ATLASCTL_SRC${PYTHONPATH:+:$PYTHONPATH}" \
+  exec "$ATLASCTL_VENV_DIR/bin/python" -m atlasctl.cli "$@"
