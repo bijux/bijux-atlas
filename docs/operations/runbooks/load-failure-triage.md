@@ -72,6 +72,7 @@ Canonical suite names:
 - `load-under-rollback`
 - `soak-30m`
 - `redis-optional` (experiment, opt-in only)
+- `hpa-validation-short`
 
 ## Alerts
 

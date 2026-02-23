@@ -5,6 +5,7 @@
 # - tools/
 .dockerignore
 .gitignore
+Dockerfile
 Cargo.lock
 Cargo.toml
 Makefile
