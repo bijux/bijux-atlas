@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import json
-import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from atlasctl.core.context import RunContext
+from atlasctl.core.process import run_command
 from atlasctl.core.schema.schema_utils import validate_json
 
 
@@ -41,7 +41,7 @@ def artifacts_open(ctx: RunContext, report_format: str) -> int:
     target = ctx.repo_root / latest
     for opener in (["open", str(target)], ["xdg-open", str(target)]):
         try:
-            subprocess.run(opener, cwd=ctx.repo_root, check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            run_command(opener, ctx.repo_root, ctx=ctx)
         except FileNotFoundError:
             continue
     payload = {
