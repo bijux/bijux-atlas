@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "path": "ops/stack",
+  "contract_doc": "ops/stack/CONTRACT.md",
+  "title": "Contract",
+  "version": 1
+}

@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "path": "ops/datasets",
+      "owner_doc": "ops/datasets/OWNER.md",
+      "declared_owner": "bijux-atlas-operations"
+    },
+    {
+      "path": "ops/e2e",
+      "owner_doc": "ops/e2e/OWNER.md",
+      "declared_owner": "bijux-atlas-operations"
+    },
+    {
+      "path": "ops/fixtures",
+      "owner_doc": "ops/fixtures/OWNER.md",
+      "declared_owner": "bijux-atlas-operations"
+    },
+    {
+      "path": "ops/k8s",
+      "owner_doc": "ops/k8s/OWNER.md",
+      "declared_owner": "bijux-atlas-operations"
+    },
+    {
+      "path": "ops/load",
+      "owner_doc": "ops/load/OWNER.md",
+      "declared_owner": "bijux-atlas-operations"
+    },
+    {
+      "path": "ops/obs",
+      "owner_doc": "ops/obs/OWNER.md",
+      "declared_owner": "bijux-atlas-operations"
+    },
+    {
+      "path": "ops/report",
+      "owner_doc": "ops/report/OWNER.md",
+      "declared_owner": "bijux-atlas-operations"
+    },
+    {
+      "path": "ops/stack",
+      "owner_doc": "ops/stack/OWNER.md",
+      "declared_owner": "bijux-atlas-operations"
+    }
+  ]
+}
