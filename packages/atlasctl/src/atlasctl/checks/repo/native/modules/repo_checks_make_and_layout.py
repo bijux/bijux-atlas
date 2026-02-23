@@ -306,6 +306,57 @@ def check_no_large_binary_files(repo_root: Path) -> tuple[int, list[str]]:
     return (0 if not errors else 1), errors
 
 
+def check_no_models_shim_when_model_canonical(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for path in sorted((repo_root / "packages/atlasctl/src/atlasctl").rglob("models.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        if "/core/model/" in rel:
+            continue
+        if path.parent.name == "models":
+            errors.append(f"forbid canonical module name `models` when `model` is canonical: {rel}")
+    for path in sorted((repo_root / "packages/atlasctl/src/atlasctl").rglob("models")):
+        if not path.is_dir():
+            continue
+        rel = path.relative_to(repo_root).as_posix()
+        if rel == "packages/atlasctl/src/atlasctl/core/models":
+            errors.append(f"forbid compatibility package `core/models`; use core/model: {rel}")
+    return (0 if not errors else 1), errors
+
+
+def check_single_canonical_runtime_adapters(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    src = repo_root / "packages/atlasctl/src/atlasctl"
+    canonical = {
+        "paths.py": "packages/atlasctl/src/atlasctl/core/runtime/paths.py",
+        "exec.py": "packages/atlasctl/src/atlasctl/core/exec.py",
+        "exec_shell.py": "packages/atlasctl/src/atlasctl/core/exec_shell.py",
+        "network.py": "packages/atlasctl/src/atlasctl/core/network.py",
+    }
+    allow_shims = {
+        "exec_shell.py": {
+            "packages/atlasctl/src/atlasctl/core/effects/exec_shell.py",
+        },
+        "network.py": {
+            "packages/atlasctl/src/atlasctl/core/effects/network.py",
+        },
+        "paths.py": {
+            "packages/atlasctl/src/atlasctl/runtime/paths.py",
+        },
+    }
+    for name, expected in canonical.items():
+        found = sorted(p.relative_to(repo_root).as_posix() for p in src.rglob(name))
+        if expected not in found:
+            errors.append(f"missing canonical adapter {name}: expected {expected}")
+            continue
+        for rel in found:
+            if rel == expected:
+                continue
+            if rel in allow_shims.get(name, set()):
+                continue
+            errors.append(f"duplicate non-canonical `{name}` adapter/module: {rel} (canonical: {expected})")
+    return (0 if not errors else 1), errors
+
+
 def check_committed_generated_hygiene(repo_root: Path) -> tuple[int, list[str]]:
     tracked = _git_ls_files(
         repo_root,

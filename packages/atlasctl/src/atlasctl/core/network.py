@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+# Canonical network adapter. Compat facades should import from here.
+
 import urllib.request
 
 

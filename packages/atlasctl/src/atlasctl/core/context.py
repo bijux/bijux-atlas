@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+# LEGACY FACADE (cutoff: 2026-04-01): prefer `atlasctl.runtime.context`.
+
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
