@@ -50,6 +50,8 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     list_cmd = ops_sub.add_parser("list", help="list ops inventory")
     list_cmd.add_argument("kind", choices=["tasks"], help="inventory kind")
     list_cmd.add_argument("--report", choices=["text", "json"], default="text")
+    suite_inv_cmd = ops_sub.add_parser("suite-inventory", help="list ops suites across domains with consistent fields")
+    suite_inv_cmd.add_argument("--report", choices=["text", "json"], default="text")
     explain_cmd = ops_sub.add_parser("explain", help="explain a registered ops task")
     explain_cmd.add_argument("task", help="registered ops task name")
     explain_cmd.add_argument("--report", choices=["text", "json"], default="text")
@@ -88,6 +90,7 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     gen_sub = gen.add_subparsers(dest="ops_gen_cmd", required=False)
     gen_sub.add_parser("run", help="regenerate committed ops outputs")
     gen_sub.add_parser("check", help="regenerate then fail on drift")
+    gen_sub.add_parser("index", help="regenerate deterministic ops INDEX.md files")
 
     stack = ops_sub.add_parser("stack", help="ops stack commands")
     stack.add_argument("--report", choices=["text", "json"], default="text")
