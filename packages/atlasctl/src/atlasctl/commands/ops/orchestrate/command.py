@@ -32,7 +32,7 @@ def _artifacts_open(ctx: RunContext, report_format: str) -> int:
 
 
 def _run_manifest(ctx: RunContext, report_format: str, manifest: str, scenario: str) -> int:
-    return _run_scenario_from_manifest_cmd(ctx, report_format, manifest, scenario)
+    return _run_scenario_from_manifest_cmd(ctx, report_format, manifest, scenario, no_write=False)
 
 
 def _ctx_with_optional_run_id(ctx: RunContext, run_id: str | None) -> RunContext:
@@ -157,11 +157,13 @@ def run_orchestrate_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 else f"contracts:snapshot status=pass run_id={ctx.run_id} dry_run=true"
             )
             return 0
-        return _contracts_snapshot_cmd(ctx, ns.report)
+        return _contracts_snapshot_cmd(ctx, ns.report, no_write=bool(getattr(ns, "no_write", False)))
     if ns.cmd == "cleanup":
         return _cleanup(ctx, ns.report, ns.older_than)
     if ns.cmd == "scenario":
-        return _run_manifest(ctx, ns.report, ns.manifest, ns.scenario)
+        return _run_scenario_from_manifest_cmd(
+            ctx, ns.report, ns.manifest, ns.scenario, no_write=bool(getattr(ns, "no_write", False))
+        )
     return 2
 
 
