@@ -505,10 +505,13 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                 print(written)
             return 0
         if ns.ops_cmd == "obs" and sub == "drill":
-            drill = getattr(ns, "drill", "")
+            drill = getattr(ns, "drill", "") or getattr(ns, "drill_id", "")
             if not drill:
-                return impl._emit_ops_status(ns.report, 2, "missing --drill")
-            return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/run_drill.py", drill], ns.report)
+                return impl._emit_ops_status(ns.report, 2, "missing --drill/--id")
+            cmd = ["python3", "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/run_drill.py", "--id", drill]
+            if bool(getattr(ns, "dry_run", False)):
+                cmd.append("--dry-run")
+            return impl._run_simple_cmd(ctx, cmd, ns.report)
         if ns.ops_cmd == "stack" and sub == "versions-sync":
             return impl._run_simple_cmd(
                 ctx,

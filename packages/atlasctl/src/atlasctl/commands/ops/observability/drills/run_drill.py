@@ -1,4 +1,5 @@
 from __future__ import annotations
+import argparse
 import json, os, re, subprocess, sys, time
 from pathlib import Path
 
@@ -25,9 +26,15 @@ def _cleanup():
 
 
 def main() -> int:
-    drill = sys.argv[1] if len(sys.argv) > 1 else ''
+    ap = argparse.ArgumentParser()
+    ap.add_argument("drill_name", nargs="?")
+    ap.add_argument("--drill")
+    ap.add_argument("--id", dest="drill_id")
+    ap.add_argument("--dry-run", action="store_true")
+    ns = ap.parse_args()
+    drill = ns.drill or ns.drill_id or ns.drill_name or ''
     if not drill:
-        print('usage: run_drill.py <drill-name>', file=sys.stderr); return 2
+        print('usage: run_drill.py --id <drill-name>', file=sys.stderr); return 2
     out_dir = ROOT/'artifacts/observability/drills'
     ops_obs_dir = ROOT/'artifacts/ops/obs'
     out_dir.mkdir(parents=True, exist_ok=True); ops_obs_dir.mkdir(parents=True, exist_ok=True)
@@ -39,26 +46,32 @@ def main() -> int:
     if not script_rel:
         print(f'manifest missing script for {drill}', file=sys.stderr); return 4
     script_path = ROOT / script_rel
-    if warmup:
+    if warmup and not ns.dry_run:
         base = os.environ.get('ATLAS_BASE_URL','http://127.0.0.1:18080')
         subprocess.call(['curl','-fsS',f'{base}/healthz'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.call(['curl','-fsS',f'{base}/v1/version'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     started_at = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
     status = 'pass'
-    try:
-        proc = subprocess.run(['python3', str(script_path)] if script_path.suffix == '.py' else ['bash', str(script_path)], timeout=timeout_seconds)
-        if proc.returncode != 0:
-            status = 'fail'
-    except subprocess.TimeoutExpired:
-        status = 'fail'
-    subprocess.call(['python3','packages/atlasctl/src/atlasctl/commands/ops/observability/snapshot_metrics.py', str(ops_obs_dir)])
-    subprocess.call(['python3','packages/atlasctl/src/atlasctl/commands/ops/observability/snapshot_traces.py', str(ops_obs_dir)])
     log_snapshot = ops_obs_dir / f'drill-{drill}.logs.txt'
-    with log_snapshot.open('wb') as f:
-        subprocess.call(['kubectl','-n',os.environ.get('ATLAS_E2E_NAMESPACE','atlas-e2e'),'logs','-l',f"app.kubernetes.io/instance={os.environ.get('ATLAS_E2E_RELEASE_NAME','atlas-e2e')}",'--all-containers','--tail=2000'], stdout=f, stderr=subprocess.DEVNULL)
-    if subprocess.call(['python3','packages/atlasctl/src/atlasctl/commands/ops/observability/validate_logs_schema.py','--namespace',os.environ.get('ATLAS_E2E_NAMESPACE','atlas-e2e'),'--release',os.environ.get('ATLAS_E2E_RELEASE_NAME','atlas-e2e'),'--strict-live']) != 0:
-        status = 'fail'
-    if status == 'pass':
+    if ns.dry_run:
+        status = 'pass'
+        (ops_obs_dir / 'metrics.prom').write_text('', encoding='utf-8')
+        (ops_obs_dir / 'traces.snapshot.log').write_text('', encoding='utf-8')
+        log_snapshot.write_text('', encoding='utf-8')
+    else:
+        try:
+            proc = subprocess.run(['python3', str(script_path)] if script_path.suffix == '.py' else ['bash', str(script_path)], timeout=timeout_seconds)
+            if proc.returncode != 0:
+                status = 'fail'
+        except subprocess.TimeoutExpired:
+            status = 'fail'
+        subprocess.call(['python3','packages/atlasctl/src/atlasctl/commands/ops/observability/snapshot_metrics.py', str(ops_obs_dir)])
+        subprocess.call(['python3','packages/atlasctl/src/atlasctl/commands/ops/observability/snapshot_traces.py', str(ops_obs_dir)])
+        with log_snapshot.open('wb') as f:
+            subprocess.call(['kubectl','-n',os.environ.get('ATLAS_E2E_NAMESPACE','atlas-e2e'),'logs','-l',f"app.kubernetes.io/instance={os.environ.get('ATLAS_E2E_RELEASE_NAME','atlas-e2e')}",'--all-containers','--tail=2000'], stdout=f, stderr=subprocess.DEVNULL)
+        if subprocess.call(['python3','packages/atlasctl/src/atlasctl/commands/ops/observability/validate_logs_schema.py','--namespace',os.environ.get('ATLAS_E2E_NAMESPACE','atlas-e2e'),'--release',os.environ.get('ATLAS_E2E_RELEASE_NAME','atlas-e2e'),'--strict-live']) != 0:
+            status = 'fail'
+    if status == 'pass' and not ns.dry_run:
         metrics = (ops_obs_dir/'metrics.prom').read_text(encoding='utf-8', errors='replace') if (ops_obs_dir/'metrics.prom').exists() else ''
         traces = (ops_obs_dir/'traces.snapshot.log').read_text(encoding='utf-8', errors='replace').lower() if (ops_obs_dir/'traces.snapshot.log').exists() else ''
         logs = '\n'.join(
@@ -71,7 +84,7 @@ def main() -> int:
             if kind == 'trace' and value.lower() not in traces: status = 'fail'; break
             if kind == 'log' and value.lower() not in logs: status = 'fail'; break
             if kind in {'validator',''}: continue
-    if cleanup:
+    if cleanup and not ns.dry_run:
         _cleanup()
     ended_at = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
     result_file = out_dir / f'{drill}.result.json'

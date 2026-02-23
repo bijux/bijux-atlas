@@ -7,6 +7,11 @@
       "method"
     ]
   },
+  "required_slow_query_fields": [
+    "cost_class",
+    "dataset_hash",
+    "query_name"
+  ],
   "required_spans": [
     "admission_control",
     "cache_lookup",
@@ -22,11 +27,6 @@
     "resolve_dataset",
     "sqlite",
     "store"
-  ],
-  "required_slow_query_fields": [
-    "cost_class",
-    "dataset_hash",
-    "query_name"
   ],
   "schema_version": 1
 }
