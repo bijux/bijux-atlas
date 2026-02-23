@@ -110,6 +110,7 @@ class Effect(str, Enum):
     FS_READ = CheckEffect.FS_READ.value
     FS_WRITE = CheckEffect.FS_WRITE.value
     SUBPROCESS = CheckEffect.SUBPROCESS.value
+    GIT = CheckEffect.GIT.value
     NETWORK = CheckEffect.NETWORK.value
 
 

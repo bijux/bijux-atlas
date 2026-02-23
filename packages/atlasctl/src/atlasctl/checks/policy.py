@@ -13,6 +13,7 @@ class EffectPolicy:
     allowed_write_roots: tuple[str, ...] = (DEFAULT_WRITE_ROOT,)
     allow_network: bool = False
     allow_subprocess: bool = False
+    allow_git: bool = False
     forbid_print: bool = True
 
     @classmethod
@@ -24,6 +25,7 @@ class EffectPolicy:
 class Capabilities:
     allow_network: bool = False
     allow_subprocess: bool = False
+    allow_git: bool = False
     allow_fs_write: bool = False
     write_roots: tuple[str, ...] = (DEFAULT_WRITE_ROOT,)
 
@@ -33,6 +35,7 @@ class Capabilities:
         *,
         allow_network: bool = False,
         allow_process: bool = False,
+        allow_git: bool = False,
         allow_write: bool = False,
         write_roots: Iterable[str] = (DEFAULT_WRITE_ROOT,),
     ) -> Capabilities:
@@ -40,6 +43,7 @@ class Capabilities:
         return cls(
             allow_network=bool(allow_network),
             allow_subprocess=bool(allow_process),
+            allow_git=bool(allow_git),
             allow_fs_write=bool(allow_write),
             write_roots=roots,
         )
@@ -50,6 +54,8 @@ class Capabilities:
             effects.add(Effect.FS_WRITE.value)
         if self.allow_subprocess:
             effects.add(Effect.SUBPROCESS.value)
+        if self.allow_git:
+            effects.add(Effect.GIT.value)
         if self.allow_network:
             effects.add(Effect.NETWORK.value)
         return EffectPolicy(
@@ -57,6 +63,7 @@ class Capabilities:
             allowed_write_roots=self.write_roots,
             allow_network=self.allow_network,
             allow_subprocess=self.allow_subprocess,
+            allow_git=self.allow_git,
         )
 
 
