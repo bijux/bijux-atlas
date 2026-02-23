@@ -12,7 +12,6 @@
     "configs/schema/public-surface.schema.json",
     "configs/schema/target-renames.schema.json",
     "configs/schema/tool-versions.schema.json",
-    "configs/config-key-registry.md",
     "configs/contracts/env.schema.json",
     "configs/contracts/inventory-budgets.schema.json",
     "configs/contracts/inventory-configs.schema.json",

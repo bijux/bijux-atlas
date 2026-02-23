@@ -150,7 +150,6 @@ scripts/areas/public/contracts/check_error_codes_contract.py
 scripts/areas/public/contracts/check_sqlite_indexes_contract.py
 scripts/areas/public/contracts/check_v1_surface.py
 scripts/areas/public/contracts/gen_openapi.py
-scripts/areas/public/generate-config-key-registry.py
 scripts/areas/public/observability/check_alerts_contract.py
 scripts/areas/public/observability/check_dashboard_contract.py
 scripts/areas/public/observability/check_metrics_contract.py

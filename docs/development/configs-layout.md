@@ -17,3 +17,9 @@
 - Generated surfaces:
   - `docs/_generated/configs-surface.md`
   - `docs/_generated/tooling-versions.md`
+
+## Compiler Workflow
+- Validate inputs: `./bin/atlasctl configs validate --report text`
+- Generate outputs: `./bin/atlasctl configs gen --report text`
+- Drift gate: `./bin/atlasctl configs diff --fail --report text`
+- Canonical formatting: `./bin/atlasctl configs fmt --check --report text`

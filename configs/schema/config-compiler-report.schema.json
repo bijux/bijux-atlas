@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "atlasctl configs compiler report",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "kind",
+    "inventory_root",
+    "generated_root",
+    "overlay_model",
+    "locks"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "kind": {"type": "string", "const": "atlasctl-config-compiler.generated"},
+    "inventory_root": {"type": "string"},
+    "generated_root": {"type": "string"},
+    "overlay_model": {
+      "type": "object",
+      "required": ["base", "env_dir", "whitelist_override_fields", "overlays", "errors"],
+      "properties": {
+        "base": {"type": "string"},
+        "env_dir": {"type": "string"},
+        "whitelist_override_fields": {"type": "array", "items": {"type": "string"}},
+        "overlays": {"type": "array", "items": {"type": "object"}},
+        "errors": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": true
+    },
+    "locks": {
+      "type": "object",
+      "required": ["toolchain", "helm_versions", "pinned_queries", "tool_versions_ssot"],
+      "properties": {
+        "toolchain": {"type": "string"},
+        "helm_versions": {"type": "string"},
+        "pinned_queries": {"type": "string"},
+        "tool_versions_ssot": {"type": "string"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
