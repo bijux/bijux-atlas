@@ -67,7 +67,7 @@
       ]
     },
     {
-      "source": "configs/policy/forbidden-adjectives-allowlist.txt",
+      "source": "configs/policy/forbidden-adjectives-allowlist.json",
       "tests": [
         "packages/atlasctl/tests/policysuite/repo/hygiene/test_naming_hygiene_checks.py"
       ],
@@ -130,7 +130,7 @@
       ]
     },
     {
-      "source": "configs/policy/shell-network-fetch-allowlist.txt",
+      "source": "configs/policy/shell-network-fetch-allowlist.json",
       "tests": [
         "packages/atlasctl/tests/policysuite/repo/boundaries/test_shell_policy_checks.py"
       ],
@@ -139,7 +139,7 @@
       ]
     },
     {
-      "source": "configs/policy/shell-probes-allowlist.txt",
+      "source": "configs/policy/shell-probes-allowlist.json",
       "tests": [
         "packages/atlasctl/tests/policysuite/repo/boundaries/test_shell_policy_checks.py"
       ],
@@ -166,7 +166,7 @@
       ]
     },
     {
-      "source": "ops/_meta/bypass-ledger.json",
+      "source": "configs/policy/bypass-entries.json",
       "tests": [
         "packages/atlasctl/tests/checksuite/checks/test_ops_boundaries.py"
       ],

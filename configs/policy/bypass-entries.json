@@ -7,7 +7,7 @@
       "id": "OPS-BYPASS-0001",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0001"
     },
@@ -18,7 +18,7 @@
       "id": "OPS-BYPASS-0002",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0002"
     },
@@ -29,7 +29,7 @@
       "id": "OPS-BYPASS-0003",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0003"
     },
@@ -40,7 +40,7 @@
       "id": "OPS-BYPASS-0004",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0004"
     },
@@ -51,7 +51,7 @@
       "id": "OPS-BYPASS-0005",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0005"
     },
@@ -62,7 +62,7 @@
       "id": "OPS-BYPASS-0006",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0006"
     },
@@ -73,7 +73,7 @@
       "id": "OPS-BYPASS-0007",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0007"
     },
@@ -84,7 +84,7 @@
       "id": "OPS-BYPASS-0008",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0008"
     },
@@ -95,7 +95,7 @@
       "id": "OPS-BYPASS-0009",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0009"
     },
@@ -106,7 +106,7 @@
       "id": "OPS-BYPASS-0010",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0010"
     },
@@ -117,7 +117,7 @@
       "id": "OPS-BYPASS-0011",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0011"
     },
@@ -128,7 +128,7 @@
       "id": "OPS-BYPASS-0012",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0012"
     },
@@ -139,7 +139,7 @@
       "id": "OPS-BYPASS-0013",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0013"
     },
@@ -150,7 +150,7 @@
       "id": "OPS-BYPASS-0014",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0014"
     },
@@ -161,7 +161,7 @@
       "id": "OPS-BYPASS-0015",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0015"
     },
@@ -172,7 +172,7 @@
       "id": "OPS-BYPASS-0016",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0016"
     },
@@ -183,7 +183,7 @@
       "id": "OPS-BYPASS-0017",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0017"
     },
@@ -194,7 +194,7 @@
       "id": "OPS-BYPASS-0018",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0018"
     },
@@ -205,7 +205,7 @@
       "id": "OPS-BYPASS-0019",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0019"
     },
@@ -216,7 +216,7 @@
       "id": "OPS-BYPASS-0020",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0020"
     },
@@ -227,7 +227,7 @@
       "id": "OPS-BYPASS-0021",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0021"
     },
@@ -238,7 +238,7 @@
       "id": "OPS-BYPASS-0022",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0022"
     },
@@ -249,7 +249,7 @@
       "id": "OPS-BYPASS-0023",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0023"
     },
@@ -260,7 +260,7 @@
       "id": "OPS-BYPASS-0024",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0024"
     },
@@ -271,7 +271,7 @@
       "id": "OPS-BYPASS-0025",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0025"
     },
@@ -282,7 +282,7 @@
       "id": "OPS-BYPASS-0026",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0026"
     },
@@ -293,7 +293,7 @@
       "id": "OPS-BYPASS-0027",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0027"
     },
@@ -304,7 +304,7 @@
       "id": "OPS-BYPASS-0028",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0028"
     },
@@ -315,7 +315,7 @@
       "id": "OPS-BYPASS-0029",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0029"
     },
@@ -326,7 +326,7 @@
       "id": "OPS-BYPASS-0030",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0030"
     },
@@ -337,7 +337,7 @@
       "id": "OPS-BYPASS-0031",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0031"
     },
@@ -348,7 +348,7 @@
       "id": "OPS-BYPASS-0032",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0032"
     },
@@ -359,7 +359,7 @@
       "id": "OPS-BYPASS-0033",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0033"
     },
@@ -370,7 +370,7 @@
       "id": "OPS-BYPASS-0034",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0034"
     },
@@ -381,7 +381,7 @@
       "id": "OPS-BYPASS-0035",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0035"
     },
@@ -392,7 +392,7 @@
       "id": "OPS-BYPASS-0036",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0036"
     },
@@ -403,7 +403,7 @@
       "id": "OPS-BYPASS-0037",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0037"
     },
@@ -414,7 +414,7 @@
       "id": "OPS-BYPASS-0038",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0038"
     },
@@ -425,7 +425,7 @@
       "id": "OPS-BYPASS-0039",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0039"
     },
@@ -436,7 +436,7 @@
       "id": "OPS-BYPASS-0040",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0040"
     },
@@ -447,7 +447,7 @@
       "id": "OPS-BYPASS-0041",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0041"
     },
@@ -458,7 +458,7 @@
       "id": "OPS-BYPASS-0042",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0042"
     },
@@ -469,7 +469,7 @@
       "id": "OPS-BYPASS-0043",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0043"
     },
@@ -480,7 +480,7 @@
       "id": "OPS-BYPASS-0044",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0044"
     },
@@ -491,7 +491,7 @@
       "id": "OPS-BYPASS-0045",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0045"
     },
@@ -502,7 +502,7 @@
       "id": "OPS-BYPASS-0046",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0046"
     },
@@ -513,7 +513,7 @@
       "id": "OPS-BYPASS-0047",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0047"
     },
@@ -524,7 +524,7 @@
       "id": "OPS-BYPASS-0048",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0048"
     },
@@ -535,7 +535,7 @@
       "id": "OPS-BYPASS-0049",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0049"
     },
@@ -546,7 +546,7 @@
       "id": "OPS-BYPASS-0050",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0050"
     },
@@ -557,7 +557,7 @@
       "id": "OPS-BYPASS-0051",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0051"
     },
@@ -568,7 +568,7 @@
       "id": "OPS-BYPASS-0052",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0052"
     },
@@ -579,7 +579,7 @@
       "id": "OPS-BYPASS-0053",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0053"
     },
@@ -590,7 +590,7 @@
       "id": "OPS-BYPASS-0054",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0054"
     },
@@ -601,7 +601,7 @@
       "id": "OPS-BYPASS-0055",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0055"
     },
@@ -612,7 +612,7 @@
       "id": "OPS-BYPASS-0056",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0056"
     },
@@ -623,7 +623,7 @@
       "id": "OPS-BYPASS-0057",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0057"
     },
@@ -634,7 +634,7 @@
       "id": "OPS-BYPASS-0058",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0058"
     },
@@ -645,7 +645,7 @@
       "id": "OPS-BYPASS-0059",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0059"
     },
@@ -656,7 +656,7 @@
       "id": "OPS-BYPASS-0060",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0060"
     },
@@ -667,7 +667,7 @@
       "id": "OPS-BYPASS-0061",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0061"
     },
@@ -678,7 +678,7 @@
       "id": "OPS-BYPASS-0062",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0062"
     },
@@ -689,7 +689,7 @@
       "id": "OPS-BYPASS-0063",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0063"
     },
@@ -700,7 +700,7 @@
       "id": "OPS-BYPASS-0064",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0064"
     },
@@ -711,7 +711,7 @@
       "id": "OPS-BYPASS-0065",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0065"
     },
@@ -722,7 +722,7 @@
       "id": "OPS-BYPASS-0066",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0066"
     },
@@ -733,7 +733,7 @@
       "id": "OPS-BYPASS-0067",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0067"
     },
@@ -744,7 +744,7 @@
       "id": "OPS-BYPASS-0068",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0068"
     },
@@ -755,7 +755,7 @@
       "id": "OPS-BYPASS-0069",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0069"
     },
@@ -766,7 +766,7 @@
       "id": "OPS-BYPASS-0070",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0070"
     },
@@ -777,7 +777,7 @@
       "id": "OPS-BYPASS-0071",
       "owner": "ops",
       "rationale": "temporary cross-area reference during atlasctl consolidation",
-      "removal_plan": "Eliminate cross-area script/path reference via local wrapper or direct module import.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-REF-0071"
     },
@@ -788,7 +788,7 @@
       "id": "OPS-BYPASS-0072",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0072"
     },
@@ -799,7 +799,7 @@
       "id": "OPS-BYPASS-0073",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0073"
     },
@@ -810,7 +810,7 @@
       "id": "OPS-BYPASS-0074",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0074"
     },
@@ -821,7 +821,7 @@
       "id": "OPS-BYPASS-0075",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0075"
     },
@@ -832,7 +832,7 @@
       "id": "OPS-BYPASS-0076",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0076"
     },
@@ -843,7 +843,7 @@
       "id": "OPS-BYPASS-0077",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0077"
     },
@@ -854,7 +854,7 @@
       "id": "OPS-BYPASS-0078",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0078"
     },
@@ -865,7 +865,7 @@
       "id": "OPS-BYPASS-0079",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0079"
     },
@@ -876,7 +876,7 @@
       "id": "OPS-BYPASS-0080",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0080"
     },
@@ -887,7 +887,7 @@
       "id": "OPS-BYPASS-0081",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0081"
     },
@@ -898,7 +898,7 @@
       "id": "OPS-BYPASS-0082",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0082"
     },
@@ -909,7 +909,7 @@
       "id": "OPS-BYPASS-0083",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0083"
     },
@@ -920,7 +920,7 @@
       "id": "OPS-BYPASS-0084",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0084"
     },
@@ -931,7 +931,7 @@
       "id": "OPS-BYPASS-0085",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0085"
     },
@@ -942,7 +942,7 @@
       "id": "OPS-BYPASS-0086",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0086"
     },
@@ -953,7 +953,7 @@
       "id": "OPS-BYPASS-0087",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0087"
     },
@@ -964,7 +964,7 @@
       "id": "OPS-BYPASS-0088",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0088"
     },
@@ -975,7 +975,7 @@
       "id": "OPS-BYPASS-0089",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0089"
     },
@@ -986,7 +986,7 @@
       "id": "OPS-BYPASS-0090",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0090"
     },
@@ -997,7 +997,7 @@
       "id": "OPS-BYPASS-0091",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0091"
     },
@@ -1008,7 +1008,7 @@
       "id": "OPS-BYPASS-0092",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0092"
     },
@@ -1019,7 +1019,7 @@
       "id": "OPS-BYPASS-0093",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0093"
     },
@@ -1030,7 +1030,7 @@
       "id": "OPS-BYPASS-0094",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0094"
     },
@@ -1041,7 +1041,7 @@
       "id": "OPS-BYPASS-0095",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0095"
     },
@@ -1052,7 +1052,7 @@
       "id": "OPS-BYPASS-0096",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0096"
     },
@@ -1063,7 +1063,7 @@
       "id": "OPS-BYPASS-0097",
       "owner": "ops",
       "rationale": "temporary literal allowlist while layer contract helper migration completes",
-      "removal_plan": "Replace literal usage with layer-contract helper lookups and remove allowlist entry.",
+      "removal_plan": "docs/policies/bypass-removal-playbook.md#ops-bypass-removal",
       "replacement_mechanism": "refactor module",
       "task_id": "OPS-LITERAL-0097"
     }
