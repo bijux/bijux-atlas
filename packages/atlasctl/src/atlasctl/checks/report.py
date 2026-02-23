@@ -107,8 +107,10 @@ def render_jsonl(payload: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def render_text(payload: dict[str, Any], *, quiet: bool = False, verbose: bool = False) -> str:
+def render_text(payload: dict[str, Any], *, quiet: bool = False, verbose: bool = False, show_skips: bool = False) -> str:
     rows = sorted(payload.get("rows", []), key=lambda item: str(item.get("id", "")))
+    if not show_skips:
+        rows = [row for row in rows if str(row.get("status", "")).upper() != "SKIP"]
     out: list[str] = []
     if quiet:
         for row in rows:
