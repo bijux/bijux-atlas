@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import subprocess
 import tarfile
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 from xml.etree.ElementTree import Element, SubElement, tostring
 
@@ -112,47 +112,6 @@ def _config_compilation_report(ctx: RunContext) -> dict[str, object]:
     return payload
 
 
-def _bypass_debt_report(ctx: RunContext) -> dict[str, object]:
-    today = datetime.now(timezone.utc).date()
-    inventory = collect_bypass_inventory(ctx.repo_root)
-    rows = inventory.get("entries", []) if isinstance(inventory.get("entries"), list) else []
-    overdue = 0
-    due_14d = 0
-    missing_required = 0
-    for row in rows:
-        if not isinstance(row, dict):
-            continue
-        if bool(row.get("requires_metadata")) and not all(
-            str(row.get(field, "")).strip() for field in ("owner", "issue_id", "expiry", "scope", "removal_plan")
-        ):
-            missing_required += 1
-        expiry = str(row.get("expiry", "")).strip()
-        if not expiry:
-            continue
-        try:
-            due = datetime.fromisoformat(expiry).date()
-        except ValueError:
-            continue
-        if due < today:
-            overdue += 1
-        if due <= (today + timedelta(days=14)):
-            due_14d += 1
-    errors = inventory.get("errors", []) if isinstance(inventory.get("errors"), list) else []
-    status = "pass"
-    if overdue > 0 or missing_required > 0:
-        status = "fail"
-    elif due_14d > 0 or len(errors) > 0:
-        status = "warn"
-    return {
-        "status": status,
-        "entry_count": len(rows),
-        "overdue_count": overdue,
-        "due_within_14d_count": due_14d,
-        "missing_required_metadata_count": missing_required,
-        "inventory_error_count": len(errors),
-    }
-
-
 def build_unified(ctx: RunContext, run_id: str) -> dict[str, object]:
     lanes = _discover_lane_reports(ctx, run_id)
     near: list[str] = []
@@ -241,7 +200,6 @@ def build_unified(ctx: RunContext, run_id: str) -> dict[str, object]:
         "repo_cleanliness": _repo_cleanliness_report(ctx),
         "ops_workflows": _ops_workflows_report(ctx, run_id),
         "config_compilation": _config_compilation_report(ctx),
-        "bypass_debt": _bypass_debt_report(ctx),
     }
     if product_artifacts is not None:
         payload["product_artifacts"] = product_artifacts

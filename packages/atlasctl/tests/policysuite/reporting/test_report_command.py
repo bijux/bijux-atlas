@@ -52,8 +52,6 @@ def test_report_collect_and_validate_and_summarize() -> None:
     schema = json.loads((ROOT / "ops/schema/report/unified.schema.json").read_text(encoding="utf-8"))
     jsonschema.validate(payload, schema)
     assert payload["report_version"] == 1
-    assert payload["bypass_debt"]["status"] in {"pass", "warn", "fail"}
-    assert isinstance(payload["bypass_debt"]["entry_count"], int)
 
     validate = _run_cli("report", "validate", "--run-id", run_id)
     assert validate.returncode == 0, validate.stderr
