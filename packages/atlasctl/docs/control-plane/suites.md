@@ -15,13 +15,13 @@ Generated from suite registries (`pyproject.toml` + `src/atlasctl/registry/suite
 
 ## First-Class Suites
 
-- `all`: checks=137 markers=['docs', 'dev', 'ops', 'policies', 'configs']
+- `all`: checks=138 markers=['docs', 'dev', 'ops', 'policies', 'configs']
 - `ci`: checks=383 markers=['required']
 - `ci-nightly`: checks=3 markers=['slow']
 - `ci-pr`: checks=380 markers=['fast']
 - `configs`: checks=2 markers=['configs']
 - `dev`: checks=0 markers=['dev']
-- `docs`: checks=19 markers=['docs']
+- `docs`: checks=20 markers=['docs']
 - `drill-nightly`: checks=75 markers=['ops', 'slow']
 - `internal`: checks=0 markers=['internal', 'internal-only']
 - `k8s-e2e-nightly`: checks=75 markers=['ops', 'slow', 'kube']
@@ -38,6 +38,7 @@ Generated from suite registries (`pyproject.toml` + `src/atlasctl/registry/suite
 - `perf-nightly`: checks=75 markers=['ops', 'slow']
 - `policies`: checks=44 markers=['policies']
 - `product`: checks=0 markers=['product']
+- `product.smoke`: checks=0 markers=['product']
 - `required`: checks=383 markers=['required']
 - `required_proof`: checks=383 markers=['required']
 - `slow`: checks=3 markers=['slow']

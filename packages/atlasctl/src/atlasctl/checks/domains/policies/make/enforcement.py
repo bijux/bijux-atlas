@@ -364,6 +364,96 @@ def check_make_no_python_module_invocation(repo_root: Path) -> tuple[int, list[s
     return (0 if not errors else 1), sorted(errors)
 
 
+
+
+def _iter_make_targets_in_file(repo_root: Path, rel: str) -> list[str]:
+    path = repo_root / rel
+    if not path.exists():
+        return []
+    out: list[str] = []
+    target_re = re.compile(r"^(?P<target>[A-Za-z0-9_./-]+):(?:\s|$)")
+    for line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        m = target_re.match(line)
+        if not m:
+            continue
+        target = m.group("target")
+        if target.startswith(".") or target.startswith("internal/"):
+            continue
+        out.append(target)
+    return out
+
+
+def check_make_ops_product_no_tool_tokens(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    forbidden = (" bash", "python ", "python3", "kubectl", "helm", "docker")
+    for rel in ("makefiles/ops.mk", "makefiles/product.mk"):
+        for line_rel, lineno, body in _iter_make_recipe_lines(repo_root):
+            if line_rel != rel:
+                continue
+            if "./bin/atlasctl" in body:
+                # allow atlasctl subcommands that mention docker/helm/kubectl lexically
+                continue
+            for token in forbidden:
+                if token in f" {body}":
+                    errors.append(f"{rel}:{lineno}: forbidden tool token in wrapper recipe (`{token.strip()}`)")
+                    break
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_make_ops_product_atlasctl_only_delegation(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    expected = {"makefiles/ops.mk": "./bin/atlasctl ops ", "makefiles/product.mk": "./bin/atlasctl product "}
+    for rel, prefix in expected.items():
+        for line_rel, lineno, body in _iter_make_recipe_lines(repo_root):
+            if line_rel != rel:
+                continue
+            if not body.startswith("@./bin/atlasctl ") and not body.startswith("./bin/atlasctl "):
+                errors.append(f"{rel}:{lineno}: wrapper recipe must delegate via ./bin/atlasctl")
+                continue
+            if prefix not in body:
+                errors.append(f"{rel}:{lineno}: wrapper recipe must delegate via `{prefix.strip()}...`")
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_make_ops_product_ownership_complete(repo_root: Path) -> tuple[int, list[str]]:
+    ownership_path = repo_root / "configs/make/ownership.json"
+    if not ownership_path.exists():
+        return 1, ["configs/make/ownership.json: missing"]
+    ownership = json.loads(ownership_path.read_text(encoding="utf-8"))
+    errors: list[str] = []
+    for rel in ("makefiles/ops.mk", "makefiles/product.mk"):
+        for target in _iter_make_targets_in_file(repo_root, rel):
+            if target not in ownership:
+                errors.append(f"{rel}: ownership missing for target `{target}`")
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_make_removed_makefiles_unreferenced(repo_root: Path) -> tuple[int, list[str]]:
+    cfg = repo_root / "configs/make/retired-makefiles.json"
+    if not cfg.exists():
+        return 1, ["configs/make/retired-makefiles.json: missing"]
+    payload = json.loads(cfg.read_text(encoding="utf-8"))
+    retired = [str(x).strip() for x in payload.get("retired_makefiles", []) if str(x).strip()] if isinstance(payload, dict) else []
+    errors: list[str] = []
+    scan_roots = [repo_root / ".github", repo_root / "docs", repo_root / "makefiles", repo_root / "packages/atlasctl/src", repo_root / "packages/atlasctl/tests", repo_root / "configs"]
+    for relpath in retired:
+        for base in scan_roots:
+            if not base.exists():
+                continue
+            for path in base.rglob("*"):
+                if not path.is_file():
+                    continue
+                if path == cfg:
+                    continue
+                text = path.read_text(encoding="utf-8", errors="ignore")
+                if relpath in text:
+                    errors.append(f"{path.relative_to(repo_root).as_posix()}: references retired makefile `{relpath}`")
+    return (0 if not errors else 1), sorted(errors)
+
+
+def check_ci_workflows_call_only_delegating_make_targets(repo_root: Path) -> tuple[int, list[str]]:
+    return check_ci_workflows_call_make_and_make_calls_atlasctl(repo_root)
+
 def check_make_root_budget(repo_root: Path) -> tuple[int, list[str]]:
     root_mk = repo_root / "makefiles/root.mk"
     if not root_mk.exists():

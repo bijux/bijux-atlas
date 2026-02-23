@@ -2685,6 +2685,46 @@
     {
       "area": "ci",
       "default_enabled": true,
+      "description": "CI workflows must call only make targets that delegate to atlasctl",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_ci_workflows_delegating_targets_only",
+      "domain": "make",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_ci_workflows_delegating_targets_only",
+      "impl_ref": {
+        "callable": "check_ci_workflows_call_only_delegating_make_targets",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Use canonical delegating make targets in CI workflows.",
+        "legacy_id": "make.ci_workflows_delegating_targets_only",
+        "module": "atlasctl.checks.domains.policies.make.enforcement",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "CI workflows must call only make targets that delegate to atlasctl"
+    },
+    {
+      "area": "ci",
+      "default_enabled": true,
       "description": "require CI workflows to call make entrypoints and keep atlasctl delegation in makefiles",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_ci_workflows_make_only",
       "domain": "make",
@@ -3443,6 +3483,126 @@
       "title": "forbid `python -m atlasctl.cli` in make recipes"
     },
     {
+      "area": "ops",
+      "default_enabled": true,
+      "description": "ops.mk and product.mk must delegate only to matching atlasctl groups",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_ops_product_atlasctl_only_delegation",
+      "domain": "make",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_ops_product_atlasctl_only_delegation",
+      "impl_ref": {
+        "callable": "check_make_ops_product_atlasctl_only_delegation",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Use ./bin/atlasctl ops ... in ops.mk and ./bin/atlasctl product ... in product.mk.",
+        "legacy_id": "make.ops_product_atlasctl_only_delegation",
+        "module": "atlasctl.checks.domains.policies.make.enforcement",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "ops.mk and product.mk must delegate only to matching atlasctl groups"
+    },
+    {
+      "area": "ops",
+      "default_enabled": true,
+      "description": "ops.mk/product.mk must not contain raw tool tokens",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_ops_product_no_tool_tokens",
+      "domain": "make",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_ops_product_no_tool_tokens",
+      "impl_ref": {
+        "callable": "check_make_ops_product_no_tool_tokens",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Keep ops.mk and product.mk as atlasctl-only wrappers (no bash/python/kubectl/helm/docker recipe tokens).",
+        "legacy_id": "make.ops_product_no_tool_tokens",
+        "module": "atlasctl.checks.domains.policies.make.enforcement",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "ops.mk/product.mk must not contain raw tool tokens"
+    },
+    {
+      "area": "ops",
+      "default_enabled": true,
+      "description": "ownership metadata must cover ops/product targets",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_ops_product_ownership_complete",
+      "domain": "make",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_ops_product_ownership_complete",
+      "impl_ref": {
+        "callable": "check_make_ops_product_ownership_complete",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Add ownership metadata entries for all public ops/product make targets.",
+        "legacy_id": "make.ops_product_ownership_complete",
+        "module": "atlasctl.checks.domains.policies.make.enforcement",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "ownership metadata must cover ops/product targets"
+    },
+    {
       "area": "product",
       "default_enabled": true,
       "description": "fail if product.mk still references ops/run during migration completion",
@@ -3601,6 +3761,46 @@
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require documented public make targets"
+    },
+    {
+      "area": "removed",
+      "default_enabled": true,
+      "description": "retired makefiles must not be referenced",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_make_removed_makefiles_unreferenced",
+      "domain": "make",
+      "gate": "make",
+      "groups": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "id": "checks_make_removed_makefiles_unreferenced",
+      "impl_ref": {
+        "callable": "check_make_removed_makefiles_unreferenced",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Remove references to retired makefiles or update configs/make/retired-makefiles.json intentionally.",
+        "legacy_id": "make.removed_makefiles_unreferenced",
+        "module": "atlasctl.checks.domains.policies.make.enforcement",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "make",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "retired makefiles must not be referenced"
     },
     {
       "area": "root",
@@ -4833,6 +5033,48 @@
       "title": "require deterministic canonical ops pins payload"
     },
     {
+      "area": "product",
+      "default_enabled": true,
+      "description": "forbid product task scripts under ops and enforce zero-count baseline",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_product_task_scripts_zero",
+      "domain": "ops",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "id": "checks_ops_product_task_scripts_zero",
+      "impl_ref": {
+        "callable": "check_ops_product_task_scripts_zero",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Move product task scripts into atlasctl commands/product or atlasctl ops area modules and keep configs/ops/product-task-scripts-baseline.json at zero.",
+        "legacy_id": "ops.product_task_scripts_zero",
+        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "kube",
+        "ops",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid product task scripts under ops and enforce zero-count baseline"
+    },
+    {
       "area": "run",
       "default_enabled": true,
       "description": "ops/run scripts must be non-executable except allowlisted",
@@ -4961,7 +5203,7 @@
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/datasets/scripts/py/cache_budget_check.py`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/datasets/cache_budget_check.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_datasets_scripts_py_cache_budget_check_py",
       "domain": "ops",
       "gate": "ops",
@@ -4973,12 +5215,12 @@
       ],
       "id": "checks_ops_script_ops_datasets_scripts_py_cache_budget_check_py",
       "impl_ref": {
-        "callable": "check_ops_datasets_scripts_py_cache_budget_check_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_datasets_cache_budget_check_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/datasets/scripts/py/cache_budget_check.py` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/datasets/cache_budget_check.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_datasets_scripts_py_cache_budget_check_py",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -4998,12 +5240,12 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/datasets/scripts/py/cache_budget_check.py`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/datasets/cache_budget_check.py`"
     },
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/datasets/scripts/py/cache_threshold_check.py`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/datasets/cache_threshold_check.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_datasets_scripts_py_cache_threshold_check_py",
       "domain": "ops",
       "gate": "ops",
@@ -5015,12 +5257,12 @@
       ],
       "id": "checks_ops_script_ops_datasets_scripts_py_cache_threshold_check_py",
       "impl_ref": {
-        "callable": "check_ops_datasets_scripts_py_cache_threshold_check_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_datasets_cache_threshold_check_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/datasets/scripts/py/cache_threshold_check.py` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/datasets/cache_threshold_check.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_datasets_scripts_py_cache_threshold_check_py",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -5040,7 +5282,7 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/datasets/scripts/py/cache_threshold_check.py`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/datasets/cache_threshold_check.py`"
     },
     {
       "area": "script",
@@ -5129,7 +5371,7 @@
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/_lint/lane-budget-check.py`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/lane_budget_check.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_lint_lane_budget_check_py",
       "domain": "ops",
       "gate": "ops",
@@ -5141,12 +5383,12 @@
       ],
       "id": "checks_ops_script_ops_lint_lane_budget_check_py",
       "impl_ref": {
-        "callable": "check_ops_lint_lane_budget_check_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_lint_policy_lane_budget_check_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/_lint/lane-budget-check.py` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/lane_budget_check.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_lint_lane_budget_check_py",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -5166,7 +5408,7 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/_lint/lane-budget-check.py`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/lane_budget_check.py`"
     },
     {
       "area": "script",
@@ -5213,7 +5455,7 @@
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/_lint/ops-smoke-budget-check.py`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/ops_smoke_budget_check.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_lint_ops_smoke_budget_check_py",
       "domain": "ops",
       "gate": "ops",
@@ -5225,12 +5467,12 @@
       ],
       "id": "checks_ops_script_ops_lint_ops_smoke_budget_check_py",
       "impl_ref": {
-        "callable": "check_ops_lint_ops_smoke_budget_check_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_lint_policy_ops_smoke_budget_check_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/_lint/ops-smoke-budget-check.py` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/ops_smoke_budget_check.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_lint_ops_smoke_budget_check_py",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -5250,12 +5492,12 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/_lint/ops-smoke-budget-check.py`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/ops_smoke_budget_check.py`"
     },
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/_lint/policy/lane-budget-check.py`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/lane_budget_check.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_lint_policy_lane_budget_check_py",
       "domain": "ops",
       "gate": "ops",
@@ -5267,12 +5509,12 @@
       ],
       "id": "checks_ops_script_ops_lint_policy_lane_budget_check_py",
       "impl_ref": {
-        "callable": "check_ops_lint_policy_lane_budget_check_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_lint_policy_lane_budget_check_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/_lint/policy/lane-budget-check.py` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/lane_budget_check.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_lint_policy_lane_budget_check_py",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -5292,12 +5534,12 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/_lint/policy/lane-budget-check.py`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/lane_budget_check.py`"
     },
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/_lint/policy/ops-smoke-budget-check.py`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/ops_smoke_budget_check.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_lint_policy_ops_smoke_budget_check_py",
       "domain": "ops",
       "gate": "ops",
@@ -5309,12 +5551,12 @@
       ],
       "id": "checks_ops_script_ops_lint_policy_ops_smoke_budget_check_py",
       "impl_ref": {
-        "callable": "check_ops_lint_policy_ops_smoke_budget_check_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_lint_policy_ops_smoke_budget_check_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/_lint/policy/ops-smoke-budget-check.py` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/ops_smoke_budget_check.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_lint_policy_ops_smoke_budget_check_py",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -5334,7 +5576,7 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/_lint/policy/ops-smoke-budget-check.py`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/ops_smoke_budget_check.py`"
     },
     {
       "area": "script",
@@ -5687,7 +5929,7 @@
       ],
       "id": "checks_ops_script_ops_obs_scripts_check_metric_cardinality_py",
       "impl_ref": {
-        "callable": "check_ops_obs_scripts_check_metric_cardinality_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_observability_check_metric_cardinality_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
@@ -5717,7 +5959,7 @@
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/obs/scripts/check_pack_upgrade.sh`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/observability/check_pack_upgrade.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_obs_scripts_check_pack_upgrade_sh",
       "domain": "ops",
       "gate": "ops",
@@ -5729,12 +5971,12 @@
       ],
       "id": "checks_ops_script_ops_obs_scripts_check_pack_upgrade_sh",
       "impl_ref": {
-        "callable": "check_ops_obs_scripts_check_pack_upgrade_sh",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_observability_check_pack_upgrade_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/obs/scripts/check_pack_upgrade.sh` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/observability/check_pack_upgrade.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_obs_scripts_check_pack_upgrade_sh",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -5754,12 +5996,12 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/obs/scripts/check_pack_upgrade.sh`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/observability/check_pack_upgrade.py`"
     },
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/obs/scripts/check_pack_versions.sh`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/observability/check_pack_versions.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_obs_scripts_check_pack_versions_sh",
       "domain": "ops",
       "gate": "ops",
@@ -5771,12 +6013,12 @@
       ],
       "id": "checks_ops_script_ops_obs_scripts_check_pack_versions_sh",
       "impl_ref": {
-        "callable": "check_ops_obs_scripts_check_pack_versions_sh",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_observability_check_pack_versions_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/obs/scripts/check_pack_versions.sh` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/observability/check_pack_versions.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_obs_scripts_check_pack_versions_sh",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -5796,7 +6038,7 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/obs/scripts/check_pack_versions.sh`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/observability/check_pack_versions.py`"
     },
     {
       "area": "script",
@@ -5813,7 +6055,7 @@
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_alerts_contract_py",
       "impl_ref": {
-        "callable": "check_ops_obs_scripts_contracts_check_alerts_contract_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_alerts_contract_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
@@ -5855,7 +6097,7 @@
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_dashboard_contract_py",
       "impl_ref": {
-        "callable": "check_ops_obs_scripts_contracts_check_dashboard_contract_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_dashboard_contract_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
@@ -5897,7 +6139,7 @@
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_dashboard_metric_compat_py",
       "impl_ref": {
-        "callable": "check_ops_obs_scripts_contracts_check_dashboard_metric_compat_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_dashboard_metric_compat_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
@@ -6023,7 +6265,7 @@
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_metrics_contract_py",
       "impl_ref": {
-        "callable": "check_ops_obs_scripts_contracts_check_metrics_contract_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_metrics_contract_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
@@ -6065,7 +6307,7 @@
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_metrics_coverage_py",
       "impl_ref": {
-        "callable": "check_ops_obs_scripts_contracts_check_metrics_coverage_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_metrics_coverage_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
@@ -6107,7 +6349,7 @@
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_metrics_drift_py",
       "impl_ref": {
-        "callable": "check_ops_obs_scripts_contracts_check_metrics_drift_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_metrics_drift_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
@@ -6149,7 +6391,7 @@
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_metrics_golden_py",
       "impl_ref": {
-        "callable": "check_ops_obs_scripts_contracts_check_metrics_golden_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_metrics_golden_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
@@ -6233,7 +6475,7 @@
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_observability_lag_py",
       "impl_ref": {
-        "callable": "check_ops_obs_scripts_contracts_check_observability_lag_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_observability_lag_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
@@ -6275,7 +6517,7 @@
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_overload_behavior_contract_py",
       "impl_ref": {
-        "callable": "check_ops_obs_scripts_contracts_check_overload_behavior_contract_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_overload_behavior_contract_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
@@ -6359,7 +6601,7 @@
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_runtime_metrics_py",
       "impl_ref": {
-        "callable": "check_ops_obs_scripts_contracts_check_runtime_metrics_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_runtime_metrics_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
@@ -6401,7 +6643,7 @@
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_trace_coverage_py",
       "impl_ref": {
-        "callable": "check_ops_obs_scripts_contracts_check_trace_coverage_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_trace_coverage_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
@@ -6443,7 +6685,7 @@
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_trace_golden_py",
       "impl_ref": {
-        "callable": "check_ops_obs_scripts_contracts_check_trace_golden_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_trace_golden_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
@@ -6485,7 +6727,7 @@
       ],
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_tracing_contract_py",
       "impl_ref": {
-        "callable": "check_ops_obs_scripts_contracts_check_tracing_contract_py",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_tracing_contract_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
@@ -6515,7 +6757,7 @@
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/stack/scripts/idempotency_check.sh`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/stack/idempotency_check.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_stack_scripts_idempotency_check_sh",
       "domain": "ops",
       "gate": "ops",
@@ -6527,12 +6769,12 @@
       ],
       "id": "checks_ops_script_ops_stack_scripts_idempotency_check_sh",
       "impl_ref": {
-        "callable": "check_ops_stack_scripts_idempotency_check_sh",
+        "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_stack_idempotency_check_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/stack/scripts/idempotency_check.sh` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/stack/idempotency_check.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_stack_scripts_idempotency_check_sh",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -6552,7 +6794,7 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/stack/scripts/idempotency_check.sh`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/stack/idempotency_check.py`"
     },
     {
       "area": "script",
@@ -6599,7 +6841,7 @@
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/vendor/layout-checks/check_artifacts_allowlist.sh`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/runtime/check_artifacts_allowlist.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_vendor_layout_checks_check_artifacts_allowlist_sh",
       "domain": "ops",
       "gate": "ops",
@@ -6611,12 +6853,12 @@
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_artifacts_allowlist_sh",
       "impl_ref": {
-        "callable": "check_ops_vendor_layout_checks_check_artifacts_allowlist_sh",
+        "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_runtime_check_artifacts_allowlist_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_artifacts_allowlist.sh` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/runtime/check_artifacts_allowlist.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_artifacts_allowlist_sh",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -6636,12 +6878,12 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/vendor/layout-checks/check_artifacts_allowlist.sh`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/runtime/check_artifacts_allowlist.py`"
     },
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/vendor/layout-checks/check_artifacts_policy.sh`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/runtime/check_artifacts_policy.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_vendor_layout_checks_check_artifacts_policy_sh",
       "domain": "ops",
       "gate": "ops",
@@ -6653,12 +6895,12 @@
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_artifacts_policy_sh",
       "impl_ref": {
-        "callable": "check_ops_vendor_layout_checks_check_artifacts_policy_sh",
+        "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_runtime_check_artifacts_policy_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_artifacts_policy.sh` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/runtime/check_artifacts_policy.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_artifacts_policy_sh",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -6678,12 +6920,12 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/vendor/layout-checks/check_artifacts_policy.sh`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/runtime/check_artifacts_policy.py`"
     },
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/vendor/layout-checks/check_kind_cluster_contract_drift.sh`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_kind_cluster_contract_drift.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_vendor_layout_checks_check_kind_cluster_contract_drift_sh",
       "domain": "ops",
       "gate": "ops",
@@ -6695,12 +6937,12 @@
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_kind_cluster_contract_drift_sh",
       "impl_ref": {
-        "callable": "check_ops_vendor_layout_checks_check_kind_cluster_contract_drift_sh",
+        "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_validation_check_kind_cluster_contract_drift_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_kind_cluster_contract_drift.sh` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_kind_cluster_contract_drift.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_kind_cluster_contract_drift_sh",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -6720,12 +6962,12 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/vendor/layout-checks/check_kind_cluster_contract_drift.sh`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_kind_cluster_contract_drift.py`"
     },
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/vendor/layout-checks/check_no_root_dumping.sh`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/governance/check_no_root_dumping.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_vendor_layout_checks_check_no_root_dumping_sh",
       "domain": "ops",
       "gate": "ops",
@@ -6737,12 +6979,12 @@
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_no_root_dumping_sh",
       "impl_ref": {
-        "callable": "check_ops_vendor_layout_checks_check_no_root_dumping_sh",
+        "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_governance_check_no_root_dumping_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_no_root_dumping.sh` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/governance/check_no_root_dumping.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_no_root_dumping_sh",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -6762,12 +7004,12 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/vendor/layout-checks/check_no_root_dumping.sh`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/governance/check_no_root_dumping.py`"
     },
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/vendor/layout-checks/check_ops_canonical_shims.sh`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_canonical_shims.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_vendor_layout_checks_check_ops_canonical_shims_sh",
       "domain": "ops",
       "gate": "ops",
@@ -6779,12 +7021,12 @@
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_ops_canonical_shims_sh",
       "impl_ref": {
-        "callable": "check_ops_vendor_layout_checks_check_ops_canonical_shims_sh",
+        "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_surface_check_ops_canonical_shims_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_ops_canonical_shims.sh` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_canonical_shims.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_ops_canonical_shims_sh",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -6804,12 +7046,12 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/vendor/layout-checks/check_ops_canonical_shims.sh`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_canonical_shims.py`"
     },
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/vendor/layout-checks/check_ops_lib_canonical.sh`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/runtime/check_ops_lib_canonical.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_vendor_layout_checks_check_ops_lib_canonical_sh",
       "domain": "ops",
       "gate": "ops",
@@ -6821,12 +7063,12 @@
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_ops_lib_canonical_sh",
       "impl_ref": {
-        "callable": "check_ops_vendor_layout_checks_check_ops_lib_canonical_sh",
+        "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_runtime_check_ops_lib_canonical_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_ops_lib_canonical.sh` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/runtime/check_ops_lib_canonical.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_ops_lib_canonical_sh",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -6846,12 +7088,12 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/vendor/layout-checks/check_ops_lib_canonical.sh`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/runtime/check_ops_lib_canonical.py`"
     },
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/vendor/layout-checks/check_ops_script_targets.sh`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_script_targets.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_vendor_layout_checks_check_ops_script_targets_sh",
       "domain": "ops",
       "gate": "ops",
@@ -6863,12 +7105,12 @@
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_ops_script_targets_sh",
       "impl_ref": {
-        "callable": "check_ops_vendor_layout_checks_check_ops_script_targets_sh",
+        "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_surface_check_ops_script_targets_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_ops_script_targets.sh` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_script_targets.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_ops_script_targets_sh",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -6888,12 +7130,12 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/vendor/layout-checks/check_ops_script_targets.sh`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_script_targets.py`"
     },
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/vendor/layout-checks/check_ops_stack_order.sh`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_stack_order.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_vendor_layout_checks_check_ops_stack_order_sh",
       "domain": "ops",
       "gate": "ops",
@@ -6905,12 +7147,12 @@
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_ops_stack_order_sh",
       "impl_ref": {
-        "callable": "check_ops_vendor_layout_checks_check_ops_stack_order_sh",
+        "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_surface_check_ops_stack_order_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_ops_stack_order.sh` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_stack_order.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_ops_stack_order_sh",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -6930,12 +7172,12 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/vendor/layout-checks/check_ops_stack_order.sh`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_stack_order.py`"
     },
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/vendor/layout-checks/check_ops_workspace.sh`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_workspace.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_vendor_layout_checks_check_ops_workspace_sh",
       "domain": "ops",
       "gate": "ops",
@@ -6947,12 +7189,12 @@
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_ops_workspace_sh",
       "impl_ref": {
-        "callable": "check_ops_vendor_layout_checks_check_ops_workspace_sh",
+        "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_surface_check_ops_workspace_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_ops_workspace.sh` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_workspace.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_ops_workspace_sh",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -6972,12 +7214,12 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/vendor/layout-checks/check_ops_workspace.sh`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_workspace.py`"
     },
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/vendor/layout-checks/check_repo_hygiene.sh`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/governance/check_repo_hygiene.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_vendor_layout_checks_check_repo_hygiene_sh",
       "domain": "ops",
       "gate": "ops",
@@ -6989,12 +7231,12 @@
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_repo_hygiene_sh",
       "impl_ref": {
-        "callable": "check_ops_vendor_layout_checks_check_repo_hygiene_sh",
+        "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_governance_check_repo_hygiene_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_repo_hygiene.sh` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/governance/check_repo_hygiene.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_repo_hygiene_sh",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -7014,12 +7256,12 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/vendor/layout-checks/check_repo_hygiene.sh`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/governance/check_repo_hygiene.py`"
     },
     {
       "area": "script",
       "default_enabled": true,
-      "description": "run ops script check `ops/vendor/layout-checks/check_stack_manifest_consolidation.sh`",
+      "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_stack_manifest_consolidation.py`",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_ops_script_ops_vendor_layout_checks_check_stack_manifest_consolidation_sh",
       "domain": "ops",
       "gate": "ops",
@@ -7031,12 +7273,12 @@
       ],
       "id": "checks_ops_script_ops_vendor_layout_checks_check_stack_manifest_consolidation_sh",
       "impl_ref": {
-        "callable": "check_ops_vendor_layout_checks_check_stack_manifest_consolidation_sh",
+        "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_surface_check_stack_manifest_consolidation_py",
         "category": "hygiene",
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Fix failures in `ops/vendor/layout-checks/check_stack_manifest_consolidation.sh` or replace it with atlasctl-native check logic.",
+        "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_stack_manifest_consolidation.py` or replace it with atlasctl-native check logic.",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_stack_manifest_consolidation_sh",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -7056,7 +7298,7 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "run ops script check `ops/vendor/layout-checks/check_stack_manifest_consolidation.sh`"
+      "title": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_stack_manifest_consolidation.py`"
     },
     {
       "area": "scripts",
