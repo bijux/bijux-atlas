@@ -8,8 +8,7 @@ import inspect
 import json
 from pathlib import Path
 
-from ...checks.registry import check_rename_aliases, check_tags, get_check, list_checks, marker_vocabulary
-from ...checks.registry.ssot import check_id_alias_expiry
+from ...checks.registry import alias_expiry_violations, check_rename_aliases, check_tags, get_check, list_checks, marker_vocabulary, resolve_aliases
 from ...contracts.ids import CHECK_LIST, CHECK_TAXONOMY
 from ...contracts.validate_self import validate_self
 from ...core.exit_codes import ERR_CONTRACT, ERR_USER
@@ -156,13 +155,16 @@ def run(ctx, ns: argparse.Namespace) -> int:
             print(f"internal check runner error: {exc}")
             return ERR_CONTRACT
     if sub == "rename-report":
-        expiry = check_id_alias_expiry(ctx.repo_root)
+        aliases = resolve_aliases()
+        expiry = aliases[0].expires_on.isoformat() if aliases else None
+        violations = alias_expiry_violations()
         payload = {
             "schema_version": 1,
             "tool": "atlasctl",
             "status": "ok",
             "kind": "check-rename-report",
             "alias_expires_on": expiry,
+            "alias_expiry_violations": violations,
             "renames": [{"old": old, "new": new} for old, new in check_rename_aliases().items()],
         }
         print(json.dumps(payload, sort_keys=True) if (ns.json or ctx.output_format == "json") else "\n".join(f"{row['old']} -> {row['new']}" for row in payload["renames"]))

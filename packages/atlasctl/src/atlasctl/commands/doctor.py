@@ -12,6 +12,7 @@ from ..core.context import RunContext
 from ..core.fs import ensure_evidence_path
 from ..commands.policies.runtime.culprits import budget_suite
 from ..checks.domains.policies.make.enforcement import collect_bypass_inventory
+from ..checks.registry import alias_expiry_violations
 
 
 def _tool_version(cmd: list[str]) -> str:
@@ -76,6 +77,7 @@ def build_report(ctx: RunContext) -> dict[str, object]:
             "repo_root_ok": repo_ok,
             "toolchain_ok": toolchain_ok,
             "write_roots_ok": write_roots_ok,
+            "alias_expiry_violations": alias_expiry_violations(),
         },
         "tree_health": tree_health,
         "bypass_inventory": {
