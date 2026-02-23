@@ -19,6 +19,7 @@ def test_registry_spine_selectors_work() -> None:
 
 def test_registry_spine_includes_budget_and_capabilities() -> None:
     reg = load_registry()
+    assert reg.version >= 1
     assert reg.budgets.defaults
     assert any(cap.subject_kind == "command" for cap in reg.capabilities)
     assert any(cap.subject_kind == "check" for cap in reg.capabilities)

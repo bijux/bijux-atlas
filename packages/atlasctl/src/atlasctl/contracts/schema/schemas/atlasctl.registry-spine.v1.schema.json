@@ -2,10 +2,11 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_name", "schema_version", "commands", "checks", "suites", "owners", "budgets", "capabilities"],
+  "required": ["schema_name", "schema_version", "version", "commands", "checks", "suites", "owners", "budgets", "capabilities"],
   "properties": {
     "schema_name": { "const": "atlasctl.registry-spine.v1" },
     "schema_version": { "type": "integer", "const": 1 },
+    "version": { "type": "integer", "minimum": 1 },
     "commands": { "type": "array", "items": { "type": "object" } },
     "checks": { "type": "array", "items": { "type": "object" } },
     "suites": { "type": "array", "items": { "type": "object" } },

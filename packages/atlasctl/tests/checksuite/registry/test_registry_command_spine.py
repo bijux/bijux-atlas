@@ -23,3 +23,18 @@ def test_registry_select_commands_by_group_text() -> None:
 def test_registry_diff_runs_check_mode() -> None:
     proc = run_atlasctl("--quiet", "registry", "diff")
     assert proc.returncode in {0, 2, 20}, proc.stderr
+
+
+def test_registry_validate_runs() -> None:
+    proc = run_atlasctl("--quiet", "registry", "validate")
+    assert proc.returncode in {0, 2}, proc.stderr
+
+
+def test_registry_gate_runs() -> None:
+    proc = run_atlasctl("--quiet", "registry", "gate")
+    assert proc.returncode in {0, 2, 20}, proc.stderr
+
+
+def test_registry_rename_check_id_dry_run_runs() -> None:
+    proc = run_atlasctl("--quiet", "registry", "rename-check-id", "--json")
+    assert proc.returncode in {0, 1, 2}, proc.stderr
