@@ -5304,7 +5304,7 @@
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Regenerate ops/_meta/layer-contract.json and commit deterministic output.",
+        "fix_hint": "Regenerate ops/inventory/layers.json and commit deterministic output.",
         "legacy_id": "ops.script.ops_lint_check_layer_contract_drift_py",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -5430,7 +5430,7 @@
         "effects": [],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Regenerate ops/_meta/layer-contract.json and commit deterministic output.",
+        "fix_hint": "Regenerate ops/inventory/layers.json and commit deterministic output.",
         "legacy_id": "ops.script.ops_lint_layout_check_layer_contract_drift_py",
         "module": "atlasctl.checks.domains.ops.ops_checks",
         "severity": "error",
@@ -12743,6 +12743,46 @@
       "title": "forbid top-level forbidden directories"
     },
     {
+      "area": "generated",
+      "default_enabled": true,
+      "description": "enforce canonical generated dirs list",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_generated_dirs_policy",
+      "domain": "repo",
+      "gate": "repo",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_generated_dirs_policy",
+      "impl_ref": {
+        "callable": "check_generated_dirs_policy",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Keep generated dirs to canonical locations (docs/_generated, ops/_generated, ops/_generated_committed, artifacts/*).",
+        "legacy_id": "repo.generated_dirs_policy",
+        "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 600,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "enforce canonical generated dirs list"
+    },
+    {
       "area": "import",
       "default_enabled": true,
       "description": "ensure atlasctl package imports in minimal environment",
@@ -14107,6 +14147,46 @@
     {
       "area": "no",
       "default_enabled": true,
+      "description": "forbid large tracked binary files except approved fixtures",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_large_binary_files",
+      "domain": "repo",
+      "gate": "repo",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_no_large_binary_files",
+      "impl_ref": {
+        "callable": "check_no_large_binary_files",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Store large binaries outside git or document approved fixture exceptions.",
+        "legacy_id": "repo.no_large_binary_files",
+        "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 800,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid large tracked binary files except approved fixtures"
+    },
+    {
+      "area": "no",
+      "default_enabled": true,
       "description": "forbid command names containing legacy",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_legacy_command_names",
       "domain": "repo",
@@ -14347,6 +14427,46 @@
     {
       "area": "no",
       "default_enabled": true,
+      "description": "forbid committed python caches under packages/atlasctl",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_python_caches_committed",
+      "domain": "repo",
+      "gate": "repo",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_no_python_caches_committed",
+      "impl_ref": {
+        "callable": "check_repo_no_python_caches_committed",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Remove tracked __pycache__/.pyc/.pytest_cache files and keep them ignored.",
+        "legacy_id": "repo.no_python_caches_committed",
+        "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 1000,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid committed python caches under packages/atlasctl"
+    },
+    {
+      "area": "no",
+      "default_enabled": true,
       "description": "forbid legacy root scripts dir",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_scripts_dir",
       "domain": "repo",
@@ -14583,6 +14703,46 @@
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid xtask references"
+    },
+    {
+      "area": "ops",
+      "default_enabled": true,
+      "description": "enforce LF-only and no trailing whitespace in ops/configs text files",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_ops_configs_newline_policy",
+      "domain": "repo",
+      "gate": "repo",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_ops_configs_newline_policy",
+      "impl_ref": {
+        "callable": "check_ops_configs_deterministic_newlines",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Normalize files to LF and remove trailing whitespace.",
+        "legacy_id": "repo.ops_configs_newline_policy",
+        "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "enforce LF-only and no trailing whitespace in ops/configs text files"
     },
     {
       "area": "ops",
@@ -16507,6 +16667,46 @@
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid duplicate test function names across test modules"
+    },
+    {
+      "area": "tmp",
+      "default_enabled": true,
+      "description": "forbid committed tmp paths outside artifacts/",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_tmp_paths_under_artifacts",
+      "domain": "repo",
+      "gate": "repo",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_tmp_paths_under_artifacts",
+      "impl_ref": {
+        "callable": "check_tmp_paths_outside_artifacts",
+        "category": "hygiene",
+        "effects": [],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Move tmp paths under artifacts/ or rename to a durable path.",
+        "legacy_id": "repo.tmp_paths_under_artifacts",
+        "module": "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 800,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid committed tmp paths outside artifacts/"
     },
     {
       "area": "top",

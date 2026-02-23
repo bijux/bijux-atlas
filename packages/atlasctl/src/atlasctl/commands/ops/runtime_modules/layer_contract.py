@@ -6,7 +6,7 @@ from typing import Any
 
 
 def load_layer_contract(repo_root: Path) -> dict[str, Any]:
-    return json.loads((repo_root / "ops/_meta/layer-contract.json").read_text(encoding="utf-8"))
+    return json.loads((repo_root / "ops/inventory/layers.json").read_text(encoding="utf-8"))
 
 
 def _walk(obj: Any, parts: list[str], key: str) -> Any:

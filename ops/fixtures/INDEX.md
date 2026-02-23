@@ -11,4 +11,4 @@ Own reusable fixture sources consumed by datasets/load/e2e workflows.
 
 ## Contracts
 - `ops/CONTRACT.md`
-- `ops/_meta/ownership.json`
+- `ops/inventory/owners.json`

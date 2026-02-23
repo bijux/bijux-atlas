@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[6]
-TARGET = ROOT / "ops/_meta/surface.json"
+TARGET = ROOT / "ops/inventory/surfaces.json"
 GEN = ROOT / "packages/atlasctl/src/atlasctl/checks/layout/ops/generation/generate_ops_surface_meta.py"
 
 
@@ -15,7 +15,7 @@ def main() -> int:
     subprocess.run([sys.executable, str(GEN)], cwd=ROOT, check=True)
     after = TARGET.read_text(encoding="utf-8") if TARGET.exists() else ""
     if before != after:
-        print("ops surface metadata drift detected; regenerate ops/_meta/surface.json", file=sys.stderr)
+        print("ops surface metadata drift detected; regenerate ops/inventory/surfaces.json", file=sys.stderr)
         return 1
     print("ops surface metadata drift check passed")
     return 0

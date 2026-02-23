@@ -95,8 +95,8 @@ def main() -> int:
         ("ops/_schemas/report/schema.json", "ops/_examples/report.example.json"),
         ("ops/_schemas/report/unified.schema.json", "ops/_examples/report.unified.example.json"),
         ("ops/_schemas/stack/version-manifest.schema.json", "ops/stack/version-manifest.json"),
-        ("ops/_schemas/meta/ownership.schema.json", "ops/_meta/ownership.json"),
-        ("ops/_schemas/meta/layer-contract.schema.json", "ops/_meta/layer-contract.json"),
+        ("ops/_schemas/meta/ownership.schema.json", "ops/inventory/owners.json"),
+        ("ops/_schemas/meta/layer-contract.schema.json", "ops/inventory/layers.json"),
         ("ops/_schemas/meta/namespaces.schema.json", "configs/ops/namespaces.json"),
         ("ops/_schemas/meta/ports.schema.json", "configs/ops/ports.json"),
         ("ops/_schemas/meta/pins.schema.json", "configs/ops/pins.json"),
@@ -133,16 +133,16 @@ def main() -> int:
     if legacy_suite_schema != canonical_suite_schema:
         errors.append("ops/load/contracts/suite-schema.json must mirror ops/_schemas/load/suite-manifest.schema.json")
 
-    layer_contract = json.loads((ROOT / "ops/_meta/layer-contract.json").read_text(encoding="utf-8"))
+    layer_contract = json.loads((ROOT / "ops/inventory/layers.json").read_text(encoding="utf-8"))
     namespaces_ssot = json.loads((ROOT / "configs/ops/namespaces.json").read_text(encoding="utf-8")).get("namespaces", {})
     ports_ssot = json.loads((ROOT / "configs/ops/ports.json").read_text(encoding="utf-8")).get("ports", {})
     if layer_contract.get("namespaces") != namespaces_ssot:
-        errors.append("ops/_meta/layer-contract.json namespaces must match configs/ops/namespaces.json")
+        errors.append("ops/inventory/layers.json namespaces must match configs/ops/namespaces.json")
     if layer_contract.get("ports") != ports_ssot:
-        errors.append("ops/_meta/layer-contract.json ports must match configs/ops/ports.json")
+        errors.append("ops/inventory/layers.json ports must match configs/ops/ports.json")
     profiles_path = layer_contract.get("ssot", {}).get("profiles")
     if not isinstance(profiles_path, str) or not (ROOT / profiles_path).exists():
-        errors.append("ops/_meta/layer-contract.json ssot.profiles must point to existing profile manifest")
+        errors.append("ops/inventory/layers.json ssot.profiles must point to existing profile manifest")
 
     if errors:
         print("ops contracts check failed:", file=sys.stderr)

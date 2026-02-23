@@ -3562,7 +3562,7 @@
       "effects": [],
       "evidence": [],
       "external_tools": [],
-      "fix_hint": "Regenerate ops/_meta/layer-contract.json and commit deterministic output.",
+      "fix_hint": "Regenerate ops/inventory/layers.json and commit deterministic output.",
       "gate": "ops",
       "groups": [
         "fast",
@@ -3646,7 +3646,7 @@
       "effects": [],
       "evidence": [],
       "external_tools": [],
-      "fix_hint": "Regenerate ops/_meta/layer-contract.json and commit deterministic output.",
+      "fix_hint": "Regenerate ops/inventory/layers.json and commit deterministic output.",
       "gate": "ops",
       "groups": [
         "fast",

@@ -81,7 +81,7 @@ def main() -> int:
                 continue
             for pat in patterns:
                 if pat.search(line):
-                    errors.append(f"{path.relative_to(ROOT)}:{i}: forbidden literal; source from ops/_meta/layer-contract.json")
+                    errors.append(f"{path.relative_to(ROOT)}:{i}: forbidden literal; source from ops/inventory/layers.json")
                     break
 
     if errors:

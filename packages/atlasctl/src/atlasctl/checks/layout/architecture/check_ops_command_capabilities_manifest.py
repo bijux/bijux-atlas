@@ -11,7 +11,7 @@ if str(PKG_SRC) not in sys.path:
     sys.path.insert(0, str(PKG_SRC))
 
 MANIFEST = ROOT / "configs/ops/command-capabilities.json"
-SURFACE = ROOT / "ops/_meta/surface.json"
+SURFACE = ROOT / "ops/inventory/surfaces.json"
 
 
 def _list_ops_actions() -> list[str]:

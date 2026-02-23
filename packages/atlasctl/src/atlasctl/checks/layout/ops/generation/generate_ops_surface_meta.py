@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[8]
 PUBLIC = ROOT / "configs/ops/public-surface.json"
-OUT = ROOT / "ops/_meta/surface.json"
+OUT = ROOT / "ops/inventory/surfaces.json"
 ATLASCTL_SRC = ROOT / "packages" / "atlasctl" / "src"
 if str(ATLASCTL_SRC) not in sys.path:
     sys.path.insert(0, str(ATLASCTL_SRC))

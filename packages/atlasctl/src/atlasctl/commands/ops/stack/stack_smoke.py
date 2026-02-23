@@ -17,7 +17,7 @@ def _repo_root() -> Path:
 
 
 def _contract(root: Path) -> dict:
-    return json.loads((root / 'ops/_meta/layer-contract.json').read_text(encoding='utf-8'))
+    return json.loads((root / 'ops/inventory/layers.json').read_text(encoding='utf-8'))
 
 
 def _svc(root: Path, key: str) -> str:

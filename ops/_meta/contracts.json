@@ -2,9 +2,9 @@
   "schema_version": 1,
   "contracts": [
     {"path": "ops/CONTRACT.md", "version": "1.0.0"},
-    {"path": "ops/_meta/ownership.json", "version": 1},
-    {"path": "ops/_meta/surface.json", "version": 1},
-    {"path": "ops/_meta/contracts.json", "version": 1},
+    {"path": "ops/inventory/owners.json", "version": 1},
+    {"path": "ops/inventory/surfaces.json", "version": 1},
+    {"path": "ops/inventory/contracts.json", "version": 1},
     {"path": "ops/stack/CONTRACT.md", "version": 1},
     {"path": "ops/k8s/CONTRACT.md", "version": 1},
     {"path": "ops/obs/CONTRACT.md", "version": 1},

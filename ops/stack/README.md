@@ -11,7 +11,7 @@ Own local and CI infrastructure dependencies: kind, store backend, redis, teleme
 
 ## Contracts
 - `ops/stack/CONTRACT.md`
-- `ops/stack/version-manifest.json`
+- `ops/inventory/toolchain.yaml`
 
 ## Artifacts
 - `ops/_artifacts/<run_id>/stack/`

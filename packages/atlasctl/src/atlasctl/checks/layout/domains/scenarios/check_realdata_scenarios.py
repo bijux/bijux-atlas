@@ -16,7 +16,7 @@ def _repo_root() -> Path:
 ROOT = _repo_root()
 SCHEMA_PATH = ROOT / "ops/_schemas/e2e-realdata-scenarios.schema.json"
 MANIFEST_PATH = ROOT / "ops/e2e/realdata/scenarios.json"
-SURFACE_PATH = ROOT / "ops/_meta/surface.json"
+SURFACE_PATH = ROOT / "ops/inventory/surfaces.json"
 
 
 def _expect(cond: bool, msg: str, errors: list[str]) -> None:

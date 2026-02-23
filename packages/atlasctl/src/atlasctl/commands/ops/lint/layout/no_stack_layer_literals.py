@@ -59,7 +59,7 @@ def main() -> int:
             for pat in patterns:
                 if pat.search(line):
                     errors.append(
-                        f"{path.relative_to(ROOT)}:{no}: stack layer literal must come from ops/_meta/layer-contract.json"
+                        f"{path.relative_to(ROOT)}:{no}: stack layer literal must come from ops/inventory/layers.json"
                     )
                     break
 

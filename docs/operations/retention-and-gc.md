@@ -14,7 +14,7 @@ GC is exposed only via CLI commands:
 - `atlas gc plan`: dry run, prints deletion candidates.
 - `atlas gc apply --confirm`: deletes only unreachable and unpinned artifacts, then writes a GC report.
 
-Pins are SSOT at `ops/registry/pins.json`:
+Pins are SSOT at `ops/inventory/pins.yaml`:
 
 - `dataset_ids`: canonical dataset keys to preserve.
 - `artifact_hashes`: exact artifact hashes to preserve.
@@ -35,12 +35,12 @@ Manual planning/apply:
 cargo run -p bijux-atlas-cli -- atlas gc plan \
   --store-root artifacts/e2e-datasets \
   --catalog artifacts/e2e-datasets/catalog.json \
-  --pins ops/registry/pins.json
+  --pins ops/inventory/pins.yaml
 
 cargo run -p bijux-atlas-cli -- atlas gc apply \
   --store-root artifacts/e2e-datasets \
   --catalog artifacts/e2e-datasets/catalog.json \
-  --pins ops/registry/pins.json \
+  --pins ops/inventory/pins.yaml \
   --confirm
 ```
 

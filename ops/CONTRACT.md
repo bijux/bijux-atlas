@@ -10,7 +10,7 @@ kind-cluster-contract-hash: `b7cbaefe788fae38340ef3aa0bc1b79071b8da6f14e8379af02
 
 ## Invariants
 
-- Stable operator entrypoints are Make targets listed in `ops/INDEX.md` and declared in `ops/_meta/surface.json`.
+- Stable operator entrypoints are Make targets listed in `ops/INDEX.md` and declared in `ops/inventory/surfaces.json`.
 - Operator entrypoints are `atlasctl ops ...` commands and thin `make` wrappers; `ops/` shell scripts are implementation adapters only.
 - Shared shell/python helpers that are not operator entrypoints live in atlasctl-owned helper/assets modules or domain-local `scripts/` directories.
 - Canonical domain ownership has no overlap:
@@ -75,7 +75,7 @@ Runtime artifacts (ephemeral evidence):
 
 - Script deprecations must preserve Make target behavior for at least one release window.
 - Deprecated scripts must print migration guidance and point to canonical Make targets.
-- Removal requires updating `ops/_meta/surface.json`, `ops/INDEX.md`, and generated ops docs.
+- Removal requires updating `ops/inventory/surfaces.json`, `ops/INDEX.md`, and generated ops docs.
 
 ## Naming and Directory Policy
 

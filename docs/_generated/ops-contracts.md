@@ -5,9 +5,9 @@ Generated from ops contracts and schemas.
 ## Contract Files
 
 - `ops/CONTRACT.md` (version `1.0.0`)
-- `ops/_meta/ownership.json` (version `1`)
-- `ops/_meta/surface.json` (version `1`)
-- `ops/_meta/contracts.json` (version `1`)
+- `ops/inventory/owners.json` (version `1`)
+- `ops/inventory/surfaces.json` (version `1`)
+- `ops/inventory/contracts.json` (version `1`)
 - `ops/stack/CONTRACT.md` (version `1`)
 - `ops/k8s/CONTRACT.md` (version `1`)
 - `ops/obs/CONTRACT.md` (version `1`)

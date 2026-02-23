@@ -24,8 +24,8 @@ SCHEMA_COVERED = {
     "ops/_examples/report.example.json",
     "ops/_examples/report.unified.example.json",
     "ops/stack/version-manifest.json",
-    "ops/_meta/ownership.json",
-    "ops/_meta/layer-contract.json",
+    "ops/inventory/owners.json",
+    "ops/inventory/layers.json",
     "ops/load/queries/pinned-v1.lock",
     "ops/datasets/manifest.lock",
     "ops/e2e/scenarios/scenarios.json",
@@ -45,8 +45,8 @@ VALIDATOR_COVERED_PREFIXES = (
 )
 
 VALIDATOR_COVERED_FILES = {
-    "ops/_meta/contracts.json",  # checked by ops/_lint/no-orphan-contract.py
-    "ops/_meta/surface.json",  # checked by scripts/areas/layout/check_ops_surface_drift.py
+    "ops/inventory/contracts.json",  # checked by ops/_lint/no-orphan-contract.py
+    "ops/inventory/surfaces.json",  # checked by scripts/areas/layout/check_ops_surface_drift.py
     "ops/_meta/error-registry.json",  # consumed by atlasctl ops error registry helpers and contract docs
     "ops/obs/contract/alerts-contract.json",  # checked by check_alerts_contract.py
     "ops/obs/contract/dashboard-panels-contract.json",  # checked by check_dashboards_contract.py

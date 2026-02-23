@@ -23,7 +23,7 @@ Does not replace per-component manifests.
 - Cluster definition: `ops/stack/kind/cluster.yaml`
 - Store bootstrap: `ops/stack/minio/bootstrap.sh`
 - Stack components: `ops/stack/{prometheus,otel,redis,toxiproxy}`
-- Stack versions are pinned in `ops/stack/version-manifest.json`.
+- Stack versions are pinned in `ops/inventory/toolchain.yaml`.
 - Stack dependencies are documented in `ops/stack/dependencies.md`.
 - Canonical values profiles: `ops/k8s/values/local.yaml`, `ops/k8s/values/offline.yaml`, `ops/k8s/values/perf.yaml`
 - Bring up: `ops-up`

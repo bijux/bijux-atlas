@@ -62,7 +62,7 @@ def contracts_snapshot(ctx: RunContext, report_format: str, *, no_write: bool = 
             "started_at": started,
             "ended_at": ended,
             "command_rendered": command_rendered(cmd),
-            "inputs_hash": hash_inputs(ctx.repo_root, ["ops/_meta/layer-contract.json"]),
+            "inputs_hash": hash_inputs(ctx.repo_root, ["ops/inventory/layers.json"]),
             "environment_summary": environment_summary(ctx, [cmd[0]] if cmd else []),
             "timings": invocation_meta["timings"],
             "invocation": invocation_meta,
@@ -73,7 +73,7 @@ def contracts_snapshot(ctx: RunContext, report_format: str, *, no_write: bool = 
         "schema_version": 1,
         "run_id": ctx.run_id,
         "status": "pass" if not failed else "fail",
-        "contract": "ops/_meta/layer-contract.json",
+        "contract": "ops/inventory/layers.json",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "checks": rows,
     }
