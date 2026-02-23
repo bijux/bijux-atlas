@@ -1,6 +1,6 @@
 # Schema Version Bump Playbook
 
-Use this playbook when changing any versioned schema under `packages/atlasctl/src/atlasctl/contracts/schema/schemas/` or `ops/_schemas/`.
+Use this playbook when changing any versioned schema under `packages/atlasctl/src/atlasctl/contracts/schema/schemas/` or `ops/schema/`.
 
 ## Required steps
 

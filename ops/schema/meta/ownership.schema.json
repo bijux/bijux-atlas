@@ -1,0 +1,54 @@
+{
+  "type": "object",
+  "required": ["schema_version", "areas"],
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 1},
+    "areas": {
+      "type": "object",
+      "properties": {
+        "ops": {"type": "string", "minLength": 1},
+        "ops/_artifacts": {"type": "string", "minLength": 1},
+        "ops/_generated": {"type": "string", "minLength": 1},
+        "ops/_generated_committed": {"type": "string", "minLength": 1},
+        "artifacts/evidence": {"type": "string", "minLength": 1},
+        "ops/_lib": {"type": "string", "minLength": 1},
+        "ops/_lint": {"type": "string", "minLength": 1},
+        "ops/_meta": {"type": "string", "minLength": 1},
+        "ops/_schemas": {"type": "string", "minLength": 1},
+        "ops/registry": {"type": "string", "minLength": 1},
+        "ops/stack": {"type": "string", "minLength": 1},
+        "ops/k8s": {"type": "string", "minLength": 1},
+        "ops/obs": {"type": "string", "minLength": 1},
+        "ops/load": {"type": "string", "minLength": 1},
+        "ops/datasets": {"type": "string", "minLength": 1},
+        "ops/e2e": {"type": "string", "minLength": 1},
+        "ops/report": {"type": "string", "minLength": 1},
+        "ops/fixtures": {"type": "string", "minLength": 1},
+        "ops/run": {"type": "string", "minLength": 1}
+      },
+      "required": [
+        "ops",
+        "ops/_artifacts",
+        "ops/_generated",
+        "ops/_generated_committed",
+        "artifacts/evidence",
+        "ops/_lib",
+        "ops/_lint",
+        "ops/_meta",
+        "ops/_schemas",
+        "ops/registry",
+        "ops/stack",
+        "ops/k8s",
+        "ops/obs",
+        "ops/load",
+        "ops/datasets",
+        "ops/e2e",
+        "ops/report",
+        "ops/fixtures",
+        "ops/run"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

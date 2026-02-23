@@ -14,7 +14,7 @@ CONTRACTS = ROOT / "configs/ops/schema-contracts.json"
 
 
 def _expected_id(path: str) -> str:
-    rel = path.removeprefix("ops/_schemas/")
+    rel = path.removeprefix("ops/schema/")
     if rel.startswith("e2e-"):
         rel = "e2e/" + rel[len("e2e-") :]
     if rel.endswith(".schema.json"):

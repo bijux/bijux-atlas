@@ -26,7 +26,7 @@ def main() -> int:
     with (out / "config.print.json").open("w", encoding="utf-8") as fh:
         subprocess.run([str(root / "bin/atlasctl"), "--quiet", "configs", "print"], check=True, stdout=fh, cwd=root)
 
-    _copy_if_exists(root / "ops/_schemas/report/schema.json", out / "ops-report-schema.json")
+    _copy_if_exists(root / "ops/schema/report/schema.json", out / "ops-report-schema.json")
     _copy_if_exists(root / "artifacts/ops" / run_id / "metadata.json", out / "metadata.json")
     _copy_if_exists(root / "artifacts/ops" / run_id / "report.json", out / "report.json")
     _copy_if_exists(root / "artifacts/ops/obs/metrics.prom", out / "metrics.prom")

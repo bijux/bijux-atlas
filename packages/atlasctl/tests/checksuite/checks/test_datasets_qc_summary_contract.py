@@ -45,7 +45,7 @@ def test_dataset_qc_summary_json_contract_and_sample() -> None:
         assert payload["kind"] == "dataset-qc-summary"
         assert payload["counts"]["genes"] == 5
 
-    schema = json.loads((ROOT / "ops/_schemas/datasets/qc-summary.schema.json").read_text(encoding="utf-8"))
+    schema = json.loads((ROOT / "ops/schema/datasets/qc-summary.schema.json").read_text(encoding="utf-8"))
     golden = json.loads((ROOT / "ops/datasets/tests/goldens/qc-summary.sample.json").read_text(encoding="utf-8"))
     for key in schema["required"]:
         assert key in golden

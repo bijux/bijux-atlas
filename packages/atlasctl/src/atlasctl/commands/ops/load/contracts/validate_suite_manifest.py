@@ -18,8 +18,8 @@ def _repo_root() -> Path:
 ROOT = _repo_root()
 manifest_path = ROOT / "ops/load/suites/suites.json"
 schema_path = ROOT / "ops/load/contracts/suite-schema.json"
-if (ROOT / "ops/_schemas/load/suite-manifest.schema.json").exists():
-    schema_path = ROOT / "ops/_schemas/load/suite-manifest.schema.json"
+if (ROOT / "ops/schema/load/suite-manifest.schema.json").exists():
+    schema_path = ROOT / "ops/schema/load/suite-manifest.schema.json"
 manifest = json.loads(manifest_path.read_text())
 schema = json.loads(schema_path.read_text())
 

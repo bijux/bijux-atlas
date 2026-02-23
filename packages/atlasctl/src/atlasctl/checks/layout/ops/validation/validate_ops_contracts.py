@@ -88,28 +88,28 @@ def validate_pair(schema_rel: str, data_rel: str, errors: list[str]) -> None:
 def main() -> int:
     errors: list[str] = []
     pairs = [
-        ("ops/_schemas/stack/profile-manifest.schema.json", "ops/stack/profiles.json"),
-        ("ops/_schemas/k8s/install-matrix.schema.json", "ops/k8s/install-matrix.json"),
-        ("ops/_schemas/load/suite-manifest.schema.json", "ops/load/suites/suites.json"),
-        ("ops/_schemas/obs/drill-manifest.schema.json", "ops/obs/drills/drills.json"),
-        ("ops/_schemas/report/schema.json", "ops/_examples/report.example.json"),
-        ("ops/_schemas/report/unified.schema.json", "ops/_examples/report.unified.example.json"),
-        ("ops/_schemas/stack/version-manifest.schema.json", "ops/stack/version-manifest.json"),
-        ("ops/_schemas/meta/ownership.schema.json", "ops/inventory/owners.json"),
-        ("ops/_schemas/meta/layer-contract.schema.json", "ops/inventory/layers.json"),
-        ("ops/_schemas/meta/namespaces.schema.json", "configs/ops/namespaces.json"),
-        ("ops/_schemas/meta/ports.schema.json", "configs/ops/ports.json"),
-        ("ops/_schemas/meta/pins.schema.json", "configs/ops/pins.json"),
-        ("ops/_schemas/meta/budgets.schema.json", "configs/ops/budgets.json"),
-        ("ops/_schemas/load/pinned-queries-lock.schema.json", "ops/load/queries/pinned-v1.lock"),
-        ("ops/_schemas/load/perf-baseline.schema.json", "configs/ops/perf/baselines/local.json"),
-        ("ops/_schemas/load/perf-baseline.schema.json", "configs/ops/perf/baselines/ci-runner.json"),
-        ("ops/_schemas/datasets/manifest-lock.schema.json", "ops/datasets/manifest.lock"),
-        ("ops/_schemas/e2e-scenarios-unified.schema.json", "ops/e2e/scenarios/scenarios.json"),
-        ("ops/_schemas/e2e-scenarios-unified.schema.json", "ops/e2e/realdata/scenarios.json"),
-        ("ops/_schemas/e2e-suites.schema.json", "ops/e2e/suites/suites.json"),
-        ("ops/_schemas/obs/suites.schema.json", "ops/obs/suites/suites.json"),
-        ("ops/_schemas/obs/budgets.schema.json", "configs/ops/obs/budgets.json"),
+        ("ops/schema/stack/profile-manifest.schema.json", "ops/stack/profiles.json"),
+        ("ops/schema/k8s/install-matrix.schema.json", "ops/k8s/install-matrix.json"),
+        ("ops/schema/load/suite-manifest.schema.json", "ops/load/suites/suites.json"),
+        ("ops/schema/obs/drill-manifest.schema.json", "ops/obs/drills/drills.json"),
+        ("ops/schema/report/schema.json", "ops/_examples/report.example.json"),
+        ("ops/schema/report/unified.schema.json", "ops/_examples/report.unified.example.json"),
+        ("ops/schema/stack/version-manifest.schema.json", "ops/stack/version-manifest.json"),
+        ("ops/schema/meta/ownership.schema.json", "ops/inventory/owners.json"),
+        ("ops/schema/meta/layer-contract.schema.json", "ops/inventory/layers.json"),
+        ("ops/schema/meta/namespaces.schema.json", "configs/ops/namespaces.json"),
+        ("ops/schema/meta/ports.schema.json", "configs/ops/ports.json"),
+        ("ops/schema/meta/pins.schema.json", "configs/ops/pins.json"),
+        ("ops/schema/meta/budgets.schema.json", "configs/ops/budgets.json"),
+        ("ops/schema/load/pinned-queries-lock.schema.json", "ops/load/queries/pinned-v1.lock"),
+        ("ops/schema/load/perf-baseline.schema.json", "configs/ops/perf/baselines/local.json"),
+        ("ops/schema/load/perf-baseline.schema.json", "configs/ops/perf/baselines/ci-runner.json"),
+        ("ops/schema/datasets/manifest-lock.schema.json", "ops/datasets/manifest.lock"),
+        ("ops/schema/e2e-scenarios-unified.schema.json", "ops/e2e/scenarios/scenarios.json"),
+        ("ops/schema/e2e-scenarios-unified.schema.json", "ops/e2e/realdata/scenarios.json"),
+        ("ops/schema/e2e-suites.schema.json", "ops/e2e/suites/suites.json"),
+        ("ops/schema/obs/suites.schema.json", "ops/obs/suites/suites.json"),
+        ("ops/schema/obs/budgets.schema.json", "configs/ops/obs/budgets.json"),
     ]
     for schema_rel, data_rel in pairs:
         validate_pair(schema_rel, data_rel, errors)
@@ -120,7 +120,7 @@ def main() -> int:
         for line in (ROOT / "configs/ops/artifacts-allowlist.txt").read_text(encoding="utf-8").splitlines()
         if line.strip() and not line.strip().startswith("#")
     ]
-    schema = json.loads((ROOT / "ops/_schemas/meta/artifact-allowlist.schema.json").read_text(encoding="utf-8"))
+    schema = json.loads((ROOT / "ops/schema/meta/artifact-allowlist.schema.json").read_text(encoding="utf-8"))
     _validate(schema, {"entries": allow_entries}, "configs/ops/artifacts-allowlist.txt", errors)
 
     # Enforce generated versions.json from tool-versions SSOT.
@@ -129,9 +129,9 @@ def main() -> int:
     if stack_versions != tool_versions:
         errors.append("ops/stack/versions.json must exactly match configs/ops/tool-versions.json")
     legacy_suite_schema = json.loads((ROOT / "ops/load/contracts/suite-schema.json").read_text(encoding="utf-8"))
-    canonical_suite_schema = json.loads((ROOT / "ops/_schemas/load/suite-manifest.schema.json").read_text(encoding="utf-8"))
+    canonical_suite_schema = json.loads((ROOT / "ops/schema/load/suite-manifest.schema.json").read_text(encoding="utf-8"))
     if legacy_suite_schema != canonical_suite_schema:
-        errors.append("ops/load/contracts/suite-schema.json must mirror ops/_schemas/load/suite-manifest.schema.json")
+        errors.append("ops/load/contracts/suite-schema.json must mirror ops/schema/load/suite-manifest.schema.json")
 
     layer_contract = json.loads((ROOT / "ops/inventory/layers.json").read_text(encoding="utf-8"))
     namespaces_ssot = json.loads((ROOT / "configs/ops/namespaces.json").read_text(encoding="utf-8")).get("namespaces", {})

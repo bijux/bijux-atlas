@@ -13,7 +13,7 @@ Keep repository operations discoverable and stable by capping public surface and
 7. Config concepts have one canonical source (`no shadow config` rule).
 8. Tooling outputs use `artifacts/isolate/<lane>/<run_id>/...`.
 9. Gates emit machine-readable JSON results for unified reporting.
-10. Unified run report must follow `ops/_schemas/report/unified.schema.json`.
+10. Unified run report must follow `ops/schema/report/unified.schema.json`.
 11. Inventories are generated and verified for drift.
 12. Generated directories are restricted to `docs/_generated`, `ops/_generated`, and `artifacts/*`.
 13. Root dumping is forbidden: new top-level files must be explicitly allowlisted.

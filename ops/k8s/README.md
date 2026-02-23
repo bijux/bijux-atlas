@@ -11,7 +11,7 @@ Own Helm chart delivery, install profiles, and Kubernetes-only validation gates.
 
 ## Contracts
 - `ops/k8s/CONTRACT.md`
-- `ops/_schemas/k8s/install-matrix.schema.json`
+- `ops/schema/k8s/install-matrix.schema.json`
 
 ## Artifacts
 - `ops/_artifacts/<run_id>/k8s/`

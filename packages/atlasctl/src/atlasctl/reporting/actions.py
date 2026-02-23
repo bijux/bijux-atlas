@@ -171,7 +171,7 @@ def _cmd_validate(ctx: RunContext, run_id: str, file_path: str | None) -> int:
 
     unified = Path(file_path) if file_path else (_run_dir(ctx, run_id) / "unified.json")
     payload = json.loads(unified.read_text(encoding="utf-8"))
-    schema_path = ctx.repo_root / "ops/_schemas/report/unified.schema.json"
+    schema_path = ctx.repo_root / "ops/schema/report/unified.schema.json"
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
     jsonschema.validate(payload, schema)
     print("ok")

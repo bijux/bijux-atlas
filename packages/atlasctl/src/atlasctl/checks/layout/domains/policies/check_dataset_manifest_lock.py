@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Purpose: validate ops/datasets/manifest.lock against schema contract.
-# Inputs: ops/_schemas/datasets/manifest-lock.schema.json and ops/datasets/manifest.lock.
+# Inputs: ops/schema/datasets/manifest-lock.schema.json and ops/datasets/manifest.lock.
 # Outputs: non-zero exit on schema mismatch.
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[6]
-schema = json.loads((ROOT / "ops/_schemas/datasets/manifest-lock.schema.json").read_text(encoding="utf-8"))
+schema = json.loads((ROOT / "ops/schema/datasets/manifest-lock.schema.json").read_text(encoding="utf-8"))
 data = json.loads((ROOT / "ops/datasets/manifest.lock").read_text(encoding="utf-8"))
 
 errs: list[str] = []

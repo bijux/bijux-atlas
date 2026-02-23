@@ -45,7 +45,7 @@ def collect_configs(repo_root: Path) -> dict[str, object]:
 
 
 def collect_schemas(repo_root: Path) -> dict[str, object]:
-    schemas = repo_files(repo_root, "configs/_schemas/**/*.json") + repo_files(repo_root, "ops/_schemas/**/*.json")
+    schemas = repo_files(repo_root, "configs/_schemas/**/*.json") + repo_files(repo_root, "ops/schema/**/*.json")
     return {"kind": "schemas", "files": sorted(set(schemas))}
 
 
@@ -63,7 +63,7 @@ def collect_owners(repo_root: Path) -> dict[str, object]:
 
 def collect_contracts(repo_root: Path) -> dict[str, object]:
     contracts = sorted(str(path.relative_to(repo_root)) for path in repo_root.rglob("CONTRACT.md") if path.is_file())
-    schemas = sorted(set(repo_files(repo_root, "configs/contracts/*.schema.json") + repo_files(repo_root, "ops/_schemas/**/*.schema.json")))
+    schemas = sorted(set(repo_files(repo_root, "configs/contracts/*.schema.json") + repo_files(repo_root, "ops/schema/**/*.schema.json")))
     return {"kind": "contracts", "contract_files": contracts, "schema_files": schemas}
 
 

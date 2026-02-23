@@ -19,7 +19,7 @@ def _repo_root() -> Path:
 
 ROOT = _repo_root()
 manifest = json.loads((ROOT / "ops/e2e/scenarios/scenarios.json").read_text(encoding="utf-8"))
-schema = json.loads((ROOT / "ops/_schemas/e2e-scenarios-unified.schema.json").read_text(encoding="utf-8"))
+schema = json.loads((ROOT / "ops/schema/e2e-scenarios-unified.schema.json").read_text(encoding="utf-8"))
 surface = json.loads((ROOT / "ops/inventory/surfaces.json").read_text(encoding="utf-8"))
 known_action_ids = {str(row.get("id")) for row in surface.get("actions", []) if isinstance(row, dict)}
 

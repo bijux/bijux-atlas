@@ -35,7 +35,7 @@ SCHEMA_COVERED = {
 }
 
 VALIDATOR_COVERED_PREFIXES = (
-    "ops/_schemas/",
+    "ops/schema/",
     "ops/fixtures/",
     "ops/load/scenarios/",
     "ops/load/contracts/",

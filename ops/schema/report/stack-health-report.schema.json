@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Stack Health Report",
+  "type": "object",
+  "required": ["schema_version", "namespace", "timestamp", "checks"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "namespace": {"type": "string", "minLength": 1},
+    "timestamp": {"type": "string", "minLength": 1},
+    "checks": {
+      "type": "object",
+      "required": ["nodes", "pods", "services", "storageclass"],
+      "properties": {
+        "nodes": {"$ref": "#/$defs/probeResult"},
+        "pods": {"$ref": "#/$defs/probeResult"},
+        "services": {"$ref": "#/$defs/probeResult"},
+        "storageclass": {"$ref": "#/$defs/probeResult"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "probeResult": {
+      "type": "object",
+      "required": ["ok", "code", "stdout", "stderr"],
+      "properties": {
+        "ok": {"type": "boolean"},
+        "code": {"type": "integer"},
+        "stdout": {"type": "string"},
+        "stderr": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  }
+}

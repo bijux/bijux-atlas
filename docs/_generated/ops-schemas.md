@@ -2,7 +2,7 @@
 
 Generated from `ops/_schemas`. Do not edit manually.
 
-## `ops/_schemas/datasets/corruption-drill-report.schema.json`
+## `ops/schema/datasets/corruption-drill-report.schema.json`
 
 Required keys:
 - `schema_version`
@@ -11,13 +11,13 @@ Required keys:
 - `target_manifest`
 - `quarantine_marker`
 
-## `ops/_schemas/datasets/manifest-lock.schema.json`
+## `ops/schema/datasets/manifest-lock.schema.json`
 
 Required keys:
 - `schema_version`
 - `entries`
 
-## `ops/_schemas/datasets/promotion-report.schema.json`
+## `ops/schema/datasets/promotion-report.schema.json`
 
 Required keys:
 - `schema_version`
@@ -27,31 +27,31 @@ Required keys:
 - `environments`
 - `promoted_count`
 
-## `ops/_schemas/e2e-realdata-scenarios.schema.json`
+## `ops/schema/e2e-realdata-scenarios.schema.json`
 
 Required keys:
 - `schema_version`
 - `scenarios`
 
-## `ops/_schemas/e2e-scenarios.schema.json`
+## `ops/schema/e2e-scenarios.schema.json`
 
 Required keys:
 - `schema_version`
 - `scenarios`
 
-## `ops/_schemas/e2e-suites.schema.json`
+## `ops/schema/e2e-suites.schema.json`
 
 Required keys:
 - `schema_version`
 - `suites`
 
-## `ops/_schemas/k8s/install-matrix.schema.json`
+## `ops/schema/k8s/install-matrix.schema.json`
 
 Required keys:
 - `schema_version`
 - `profiles`
 
-## `ops/_schemas/k8s/suite-report.schema.json`
+## `ops/schema/k8s/suite-report.schema.json`
 
 Required keys:
 - `schema_version`
@@ -62,7 +62,7 @@ Required keys:
 - `passed`
 - `results`
 
-## `ops/_schemas/load/perf-baseline.schema.json`
+## `ops/schema/load/perf-baseline.schema.json`
 
 Required keys:
 - `schema_version`
@@ -70,13 +70,13 @@ Required keys:
 - `metadata`
 - `rows`
 
-## `ops/_schemas/load/pinned-queries-lock.schema.json`
+## `ops/schema/load/pinned-queries-lock.schema.json`
 
 Required keys:
 - `file_sha256`
 - `query_hashes`
 
-## `ops/_schemas/load/suite-manifest.schema.json`
+## `ops/schema/load/suite-manifest.schema.json`
 
 Required keys:
 - `schema_version`
@@ -84,12 +84,12 @@ Required keys:
 - `scenarios_dir`
 - `suites`
 
-## `ops/_schemas/meta/artifact-allowlist.schema.json`
+## `ops/schema/meta/artifact-allowlist.schema.json`
 
 Required keys:
 - `entries`
 
-## `ops/_schemas/meta/budgets.schema.json`
+## `ops/schema/meta/budgets.schema.json`
 
 Required keys:
 - `schema_version`
@@ -100,7 +100,7 @@ Required keys:
 - `cache`
 - `metric_cardinality`
 
-## `ops/_schemas/meta/layer-contract.schema.json`
+## `ops/schema/meta/layer-contract.schema.json`
 
 Required keys:
 - `contract_version`
@@ -113,19 +113,19 @@ Required keys:
 - `labels`
 - `release_metadata`
 
-## `ops/_schemas/meta/namespaces.schema.json`
+## `ops/schema/meta/namespaces.schema.json`
 
 Required keys:
 - `schema_version`
 - `namespaces`
 
-## `ops/_schemas/meta/ownership.schema.json`
+## `ops/schema/meta/ownership.schema.json`
 
 Required keys:
 - `schema_version`
 - `areas`
 
-## `ops/_schemas/meta/pins.schema.json`
+## `ops/schema/meta/pins.schema.json`
 
 Required keys:
 - `schema_version`
@@ -136,13 +136,13 @@ Required keys:
 - `datasets`
 - `policy`
 
-## `ops/_schemas/meta/ports.schema.json`
+## `ops/schema/meta/ports.schema.json`
 
 Required keys:
 - `schema_version`
 - `ports`
 
-## `ops/_schemas/obs/budgets.schema.json`
+## `ops/schema/obs/budgets.schema.json`
 
 Required keys:
 - `schema_version`
@@ -152,20 +152,20 @@ Required keys:
 - `span_attribute_requirements`
 - `lag`
 
-## `ops/_schemas/obs/drill-manifest.schema.json`
+## `ops/schema/obs/drill-manifest.schema.json`
 
 Required keys:
 - `schema_version`
 - `drills`
 
-## `ops/_schemas/obs/suites.schema.json`
+## `ops/schema/obs/suites.schema.json`
 
 Required keys:
 - `schema_version`
 - `owner`
 - `suites`
 
-## `ops/_schemas/report/lane.schema.json`
+## `ops/schema/report/lane.schema.json`
 
 Required keys:
 - `schema_version`
@@ -179,7 +179,7 @@ Required keys:
 - `log`
 - `artifact_paths`
 
-## `ops/_schemas/report/schema.json`
+## `ops/schema/report/schema.json`
 
 Required keys:
 - `run_id`
@@ -187,7 +187,7 @@ Required keys:
 - `metadata`
 - `artifacts`
 
-## `ops/_schemas/report/stack-contract.schema.json`
+## `ops/schema/report/stack-contract.schema.json`
 
 Required keys:
 - `schema_version`
@@ -197,7 +197,7 @@ Required keys:
 - `generated_at_utc`
 - `artifacts`
 
-## `ops/_schemas/report/unified.schema.json`
+## `ops/schema/report/unified.schema.json`
 
 Required keys:
 - `schema_version`
@@ -208,13 +208,13 @@ Required keys:
 - `summary`
 - `budget_status`
 
-## `ops/_schemas/stack/profile-manifest.schema.json`
+## `ops/schema/stack/profile-manifest.schema.json`
 
 Required keys:
 - `schema_version`
 - `profiles`
 
-## `ops/_schemas/stack/version-manifest.schema.json`
+## `ops/schema/stack/version-manifest.schema.json`
 
 Required keys:
 - `kind_node_image`
