@@ -6,7 +6,7 @@ import subprocess
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parents[4]
+ROOT = Path(__file__).resolve().parents[5]
 GOLDEN = ROOT / "packages/atlasctl/tests/goldens/check/ops-actions-inventory.json.golden"
 
 

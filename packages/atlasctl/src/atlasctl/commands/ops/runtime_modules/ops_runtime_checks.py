@@ -11,10 +11,10 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Callable
 
-from ...core.context import RunContext
-from ...core.fs import ensure_evidence_path
-from ...core.process import run_command
-from ...contracts.schema.validate import validate as validate_schema
+from ....core.context import RunContext
+from ....core.fs import ensure_evidence_path
+from ....core.process import run_command
+from ....contracts.schema.validate import validate as validate_schema
 
 
 @dataclass(frozen=True)
@@ -188,6 +188,12 @@ LINT_CHECKS: list[OpsCheck] = [
         "Validate ops report field contract and deterministic artifact naming",
         ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_report_contract_fields.py"],
         "Ensure orchestrate wrapper reports include tool/input hashes and deterministic artifact names.",
+    ),
+    _check(
+        "ops-actions-docs-generated",
+        "Validate generated ops actions docs page matches inventory",
+        ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_actions_docs_generated.py"],
+        "Regenerate docs/_generated/ops-actions.md from atlasctl ops action inventory.",
     ),
 ]
 
