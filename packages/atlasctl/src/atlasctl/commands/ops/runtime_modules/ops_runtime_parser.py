@@ -134,6 +134,10 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     k8s_diff = k8s_sub.add_parser("diff", help="compare k8s render output to golden summary")
     k8s_diff.add_argument("--in-file", dest="in_file", default="artifacts/reports/atlasctl/ops-k8s-render.json")
     k8s_diff.add_argument("--golden", default="ops/k8s/tests/goldens/render-kind.summary.json")
+    k8s_conf = k8s_sub.add_parser("conformance-report", help="generate k8s conformance report (json + markdown)")
+    k8s_conf.add_argument("--suite-json", required=True, dest="suite_json")
+    k8s_conf.add_argument("--out-json", dest="out_json", default="artifacts/reports/atlasctl/k8s-conformance-report.json")
+    k8s_conf.add_argument("--out-md", dest="out_md", default="artifacts/reports/atlasctl/k8s-conformance-report.md")
 
     e2e = ops_sub.add_parser("e2e", help="ops end-to-end commands")
     e2e.add_argument("--report", choices=["text", "json"], default="text")

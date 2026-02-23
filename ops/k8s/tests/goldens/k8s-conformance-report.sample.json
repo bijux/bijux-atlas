@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "run_id": "sample-run",
+  "suite_id": "smoke",
+  "status": "pass",
+  "failed_sections": [],
+  "sections": {
+    "configmap": {"status": "pass", "missing": [], "failed": []},
+    "hpa": {"status": "pass", "missing": [], "failed": []},
+    "networkpolicy": {"status": "pass", "missing": [], "failed": []},
+    "observability_wiring": {"status": "pass", "missing": [], "failed": []},
+    "pdb": {"status": "pass", "missing": [], "failed": []},
+    "probes": {"status": "pass", "missing": [], "failed": []}
+  }
+}

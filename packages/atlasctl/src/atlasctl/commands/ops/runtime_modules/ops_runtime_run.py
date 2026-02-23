@@ -407,6 +407,21 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             else:
                 print(f"{diff['status']}: current={diff['current_hash']} golden={diff['golden_hash']}")
             return 0 if diff["status"] == "pass" else 1
+        if ns.ops_cmd == "k8s" and sub == "conformance-report":
+            return impl._run_simple_cmd(
+                ctx,
+                [
+                    "python3",
+                    "packages/atlasctl/src/atlasctl/commands/ops/k8s/conformance_report.py",
+                    "--suite-json",
+                    str(getattr(ns, "suite_json", "")),
+                    "--out-json",
+                    str(getattr(ns, "out_json", "")),
+                    "--out-md",
+                    str(getattr(ns, "out_md", "")),
+                ],
+                ns.report,
+            )
         if ns.ops_cmd == "k8s" and sub == "validate-configmap-keys":
             ns_arg = str(getattr(ns, "namespace", "") or "").strip() or None
             svc_arg = str(getattr(ns, "service_name", "") or "").strip() or None
