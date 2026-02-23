@@ -24,7 +24,7 @@ def _write_report(root: Path, target: str, marker: str, report: Path, status: st
         "target_manifest": target,
         "quarantine_marker": marker,
     }
-    schema = json.loads((root / "ops/_schemas/datasets/corruption-drill-report.schema.json").read_text(encoding="utf-8"))
+    schema = json.loads((root / "ops/schema/datasets/corruption-drill-report.schema.json").read_text(encoding="utf-8"))
     for key in schema.get("required", []):
         if key not in payload:
             raise SystemExit(f"corruption report missing required key: {key}")

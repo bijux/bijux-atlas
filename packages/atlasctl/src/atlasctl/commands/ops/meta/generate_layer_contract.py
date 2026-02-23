@@ -110,7 +110,7 @@ def main() -> int:
             "current_major": 1,
             "notes": [
                 "Consumers must ignore unknown fields.",
-                "Required keys are validated by ops/_schemas/meta/layer-contract.schema.json.",
+                "Required keys are validated by ops/schema/meta/layer-contract.schema.json.",
             ],
         },
         "layer_dependencies": {

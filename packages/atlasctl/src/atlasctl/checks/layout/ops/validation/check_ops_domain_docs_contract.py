@@ -39,7 +39,7 @@ def main() -> int:
         if not _has_any_manifest_or_suite(droot):
             errors.append(f"ops/{domain}: must contain at least one manifest/suites json")
         if domain != "report" and not _has_any_schema(domain):
-            errors.append(f"ops/{domain}: missing schema(s) under ops/_schemas/{domain}")
+            errors.append(f"ops/{domain}: missing schema(s) under ops/schema/{domain}")
     if errors:
         print("ops domain docs contract failed:", file=sys.stderr)
         for e in errors:

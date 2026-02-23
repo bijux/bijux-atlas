@@ -15,7 +15,7 @@ def _repo_root() -> Path:
 
 
 ROOT = _repo_root()
-SCHEMA_PATH = ROOT / "ops/_schemas/e2e-suites.schema.json"
+SCHEMA_PATH = ROOT / "ops/schema/e2e-suites.schema.json"
 MANIFEST_PATH = ROOT / "ops/e2e/suites/suites.json"
 
 

@@ -25,7 +25,7 @@ kind-cluster-contract-hash: `b7cbaefe788fae38340ef3aa0bc1b79071b8da6f14e8379af02
 - Deterministic generated outputs under `ops/_generated_committed/` only.
 - Runtime evidence outputs under `artifacts/evidence/` only.
 - Runtime artifacts write under `ops/_artifacts/` only, unless allowlisted in `configs/ops/artifacts-allowlist.txt`.
-- JSON schemas for ops manifests live under `ops/_schemas/`.
+- JSON schemas for ops manifests live under `ops/schema/`.
 - Symlinked domain directories inside `ops/` are forbidden.
 - Canonical pinned tool versions live in `configs/ops/tool-versions.json`.
 
@@ -60,7 +60,7 @@ Runtime artifacts (ephemeral evidence):
 
 ## Schema Evolution
 
-- All ops schemas are versioned under `ops/_schemas/`.
+- All ops schemas are versioned under `ops/schema/`.
 - Backward-compatible changes are additive and keep `v1` stable.
 - Breaking changes require a new schema version and migration notes in `ops/CONTRACT.md`.
 - `make ops-contracts-check` is the required gate for schema conformance.

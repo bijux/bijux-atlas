@@ -39,7 +39,7 @@ def main() -> int:
         "environments": ["dev", "staging", "prod"],
         "promoted_count": count,
     }
-    schema = json.loads((root / "ops/_schemas/datasets/promotion-report.schema.json").read_text(encoding="utf-8"))
+    schema = json.loads((root / "ops/schema/datasets/promotion-report.schema.json").read_text(encoding="utf-8"))
     for key in schema.get("required", []):
         if key not in report:
             raise SystemExit(f"promotion report missing required key: {key}")

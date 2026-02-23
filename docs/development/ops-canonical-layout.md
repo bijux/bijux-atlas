@@ -11,7 +11,7 @@ The canonical SSOT is `ops/CONTRACT.md`.
 - `ops/datasets/`
 - `ops/e2e/`
 - `ops/_meta/`
-- `ops/_schemas/`
+- `ops/schema/`
 - `ops/_generated/`
 - `ops/_artifacts/`
 

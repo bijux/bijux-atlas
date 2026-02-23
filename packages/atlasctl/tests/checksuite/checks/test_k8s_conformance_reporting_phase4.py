@@ -20,7 +20,7 @@ def test_k8s_render_kind_golden_contract_check_passes() -> None:
 
 
 def test_k8s_conformance_report_sample_matches_schema() -> None:
-    schema = json.loads((ROOT / "ops/_schemas/k8s/conformance-report.schema.json").read_text(encoding="utf-8"))
+    schema = json.loads((ROOT / "ops/schema/k8s/conformance-report.schema.json").read_text(encoding="utf-8"))
     sample = json.loads((ROOT / "ops/k8s/tests/goldens/k8s-conformance-report.sample.json").read_text(encoding="utf-8"))
     Draft202012Validator(schema).validate(sample)
 

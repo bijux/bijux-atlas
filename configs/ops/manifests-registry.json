@@ -11,35 +11,35 @@
     {
       "id": "ops.datasets.manifest",
       "path": "ops/datasets/manifest.json",
-      "schema_path": "ops/_schemas/datasets/manifest-lock.schema.json",
+      "schema_path": "ops/schema/datasets/manifest-lock.schema.json",
       "domain": "datasets",
       "owner": "ops"
     },
     {
       "id": "ops.k8s.tests.manifest",
       "path": "ops/k8s/tests/manifest.json",
-      "schema_path": "ops/_schemas/k8s/suite-report.schema.json",
+      "schema_path": "ops/schema/k8s/suite-report.schema.json",
       "domain": "k8s",
       "owner": "ops"
     },
     {
       "id": "ops.load.suites",
       "path": "ops/load/suites/suites.json",
-      "schema_path": "ops/_schemas/load/suite-manifest.schema.json",
+      "schema_path": "ops/schema/load/suite-manifest.schema.json",
       "domain": "load",
       "owner": "ops"
     },
     {
       "id": "ops.obs.suites",
       "path": "ops/obs/suites/suites.json",
-      "schema_path": "ops/_schemas/obs/suites.schema.json",
+      "schema_path": "ops/schema/obs/suites.schema.json",
       "domain": "obs",
       "owner": "ops"
     },
     {
       "id": "ops.e2e.suites",
       "path": "ops/e2e/suites/suites.json",
-      "schema_path": "ops/_schemas/e2e-suites.schema.json",
+      "schema_path": "ops/schema/e2e-suites.schema.json",
       "domain": "e2e",
       "owner": "ops"
     }

@@ -49,7 +49,7 @@ def test_report_collect_and_validate_and_summarize() -> None:
     assert collect.returncode == 0, collect.stderr
     unified_path = ROOT / "artifacts/evidence/make" / run_id / "unified.json"
     payload = json.loads(unified_path.read_text(encoding="utf-8"))
-    schema = json.loads((ROOT / "ops/_schemas/report/unified.schema.json").read_text(encoding="utf-8"))
+    schema = json.loads((ROOT / "ops/schema/report/unified.schema.json").read_text(encoding="utf-8"))
     jsonschema.validate(payload, schema)
     assert payload["report_version"] == 1
 
