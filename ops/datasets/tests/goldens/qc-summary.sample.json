@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "kind": "dataset-qc-summary",
+  "qc_schema_version": 1,
+  "counts": {
+    "genes": 100,
+    "transcripts": 200,
+    "exons": 300,
+    "cds": 150
+  },
+  "orphan_counts": {
+    "transcripts": 2
+  },
+  "duplicate_gene_ids": 1,
+  "unknown_contig_feature_ratio": 0.01,
+  "rejections_by_reason": {
+    "bad-contig": 3,
+    "missing-id": 1
+  },
+  "top_biotypes": [
+    {"name": "protein_coding", "count": 120},
+    {"name": "lncRNA", "count": 20}
+  ]
+}
