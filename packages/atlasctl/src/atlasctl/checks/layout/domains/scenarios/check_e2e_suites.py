@@ -6,7 +6,15 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[6]
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for parent in cur.parents:
+        if all((parent / marker).exists() for marker in ("ops", "packages", "configs", "makefiles")):
+            return parent
+    raise RuntimeError("unable to resolve repo root")
+
+
+ROOT = _repo_root()
 SCHEMA_PATH = ROOT / "ops/_schemas/e2e-suites.schema.json"
 MANIFEST_PATH = ROOT / "ops/e2e/suites/suites.json"
 
@@ -22,6 +30,7 @@ def main() -> int:
 
     suite_ids: set[str] = set()
     scenario_ids: set[str] = set()
+    required_suites = {"fixture-medium", "release-diff-fixture", "rollback-drill", "upgrade-drill"}
     for i, suite in enumerate(manifest.get("suites", [])):
         sid = suite.get("id")
         if not isinstance(sid, str) or re.match(r"^[a-z0-9-]+$", sid) is None:
@@ -54,6 +63,20 @@ def main() -> int:
             for req in ("expected_time_seconds", "expected_qps", "expected_artifacts"):
                 if req not in budget:
                     errors.append(f"suite `{sid}` scenario `{scid}` budget missing `{req}`")
+            artifacts = budget.get("expected_artifacts", [])
+            if isinstance(artifacts, list):
+                for artifact in artifacts:
+                    if isinstance(artifact, str) and any(ch.isdigit() for ch in artifact.split("/")[-1]) and "report" in artifact and "run-id" not in artifact:
+                        errors.append(f"suite `{sid}` scenario `{scid}` suspicious unstable report artifact name: {artifact}")
+            if sid in {"rollback-drill", "upgrade-drill"} and isinstance(artifacts, list):
+                if not any(isinstance(a, str) and a.endswith(".json") and "report" in a for a in artifacts):
+                    errors.append(f"suite `{sid}` scenario `{scid}` must declare a json report artifact")
+                if not any(isinstance(a, str) and a.endswith(".md") and "report" in a for a in artifacts):
+                    errors.append(f"suite `{sid}` scenario `{scid}` must declare a markdown report artifact")
+
+    for suite_id in sorted(required_suites):
+        if suite_id not in suite_ids:
+            errors.append(f"required e2e suite missing: {suite_id}")
 
     if errors:
         print("e2e suites contract failed:", file=sys.stderr)
