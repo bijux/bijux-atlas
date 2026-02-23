@@ -181,6 +181,7 @@ jobs:
           python-version: "3.11"
       - name: Control plane conformance checks
         run: |
+          ./bin/atlasctl check doctor --json
           ./bin/atlasctl check run make
           ./bin/atlasctl check run contracts
           ./bin/atlasctl check run docs

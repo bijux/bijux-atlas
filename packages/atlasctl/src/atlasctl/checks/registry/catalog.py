@@ -1,32 +1,36 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 
 from ..core.base import CheckCategory, CheckDef as CheckFactory, Severity
 from .ssot import RegistryEntry, canonical_check_id, check_id_renames, legacy_checks
 
-_CHECKS_CACHE: tuple[CheckFactory, ...] | None = None
-_ALIASES_CACHE: dict[str, str] | None = None
 _MARKER_VOCAB: tuple[str, ...] = ("slow", "network", "kube", "docker", "fs-write", "git")
-_LEGACY_CHECKS: tuple[CheckFactory, ...] = tuple(sorted(legacy_checks(), key=lambda item: str(item.check_id)))
-_LEGACY_BY_ID: dict[str, CheckFactory] = {canonical_check_id(check): check for check in _LEGACY_CHECKS}
-_CALLABLE_INDEX: dict[tuple[str, str], object] = {(check.fn.__module__, check.fn.__name__): check.fn for check in _LEGACY_CHECKS}
-_MODULE_CHECK_ID_INDEX: dict[tuple[str, str], object] = {(check.fn.__module__, canonical_check_id(check)): check.fn for check in _LEGACY_CHECKS}
+
+
+@dataclass(frozen=True)
+class RegistryIndex:
+    checks: tuple[CheckFactory, ...]
+    aliases: dict[str, str]
+    by_id: dict[str, CheckFactory]
+    by_domain: dict[str, tuple[CheckFactory, ...]]
 
 
 def _build_check(**kwargs: object) -> CheckFactory:
     return CheckFactory(**kwargs)
 
 
-def _from_entry(entry: RegistryEntry) -> CheckFactory:
+def _from_entry(entry: RegistryEntry, module_callable_index: dict[tuple[str, str], object], module_check_id_index: dict[tuple[str, str], object], legacy_by_id: dict[str, CheckFactory]) -> CheckFactory:
     fn = None
     if entry.callable == "CHECKS":
-        fn = _MODULE_CHECK_ID_INDEX.get((entry.module, entry.id))
+        fn = module_check_id_index.get((entry.module, entry.id))
     if fn is None:
-        fn = _CALLABLE_INDEX.get((entry.module, entry.callable))
+        fn = module_callable_index.get((entry.module, entry.callable))
     if fn is None:
-        legacy = _LEGACY_BY_ID.get(entry.id)
+        legacy = legacy_by_id.get(entry.id)
         fn = legacy.fn if legacy is not None else None
     if fn is None:
         raise ValueError(f"missing callable for check `{entry.id}`: {entry.module}:{entry.callable}")
@@ -55,23 +59,29 @@ def _from_entry(entry: RegistryEntry) -> CheckFactory:
     )
 
 
-def _load() -> tuple[tuple[CheckFactory, ...], dict[str, str]]:
-    checks = tuple(sorted(_LEGACY_CHECKS, key=lambda c: str(c.check_id)))
+@lru_cache(maxsize=1)
+def _build_index() -> RegistryIndex:
+    legacy = tuple(sorted(legacy_checks(), key=lambda item: str(item.check_id)))
+    legacy_by_id = {canonical_check_id(check): check for check in legacy}
+    module_callable_index = {(check.fn.__module__, check.fn.__name__): check.fn for check in legacy}
+    module_check_id_index = {(check.fn.__module__, canonical_check_id(check)): check.fn for check in legacy}
+    checks = tuple(sorted(legacy, key=lambda c: str(c.check_id)))
     aliases = {
         str(check.legacy_check_id): canonical_check_id(check)
         for check in checks
         if str(getattr(check, "legacy_check_id", "")).strip()
     }
     aliases.update(check_id_renames())
-    return checks, aliases
-
-
-def _ensure() -> None:
-    global _CHECKS_CACHE, _ALIASES_CACHE
-    if _CHECKS_CACHE is None or _ALIASES_CACHE is None:
-        checks, aliases = _load()
-        _CHECKS_CACHE = checks
-        _ALIASES_CACHE = aliases
+    by_id = {str(check.check_id): check for check in checks}
+    by_domain: dict[str, tuple[CheckFactory, ...]] = {}
+    grouped: dict[str, list[CheckFactory]] = defaultdict(list)
+    for check in checks:
+        grouped[str(check.domain)].append(check)
+    for domain, rows in grouped.items():
+        by_domain[domain] = tuple(sorted(rows, key=lambda row: str(row.check_id)))
+    # Touch helper for static checks and future generator use.
+    _ = (_from_entry, module_callable_index, module_check_id_index, legacy_by_id)
+    return RegistryIndex(checks=checks, aliases=aliases, by_id=by_id, by_domain=by_domain)
 
 
 def check_tags(check: CheckFactory) -> tuple[str, ...]:
@@ -95,9 +105,7 @@ def check_tags(check: CheckFactory) -> tuple[str, ...]:
 
 
 def list_checks() -> tuple[CheckFactory, ...]:
-    _ensure()
-    assert _CHECKS_CACHE is not None
-    return _CHECKS_CACHE
+    return _build_index().checks
 
 
 def list_domains() -> list[str]:
@@ -105,10 +113,7 @@ def list_domains() -> list[str]:
 
 
 def checks_by_domain() -> dict[str, list[CheckFactory]]:
-    grouped: dict[str, list[CheckFactory]] = defaultdict(list)
-    for check in list_checks():
-        grouped[check.domain].append(check)
-    return dict(grouped)
+    return {domain: list(rows) for domain, rows in _build_index().by_domain.items()}
 
 
 def run_checks_for_domain(repo_root: Path, domain: str) -> list[CheckFactory]:
@@ -118,20 +123,13 @@ def run_checks_for_domain(repo_root: Path, domain: str) -> list[CheckFactory]:
 
 
 def get_check(check_id: str) -> CheckFactory | None:
-    _ensure()
-    assert _ALIASES_CACHE is not None
-    if check_id in _ALIASES_CACHE:
-        check_id = _ALIASES_CACHE[check_id]
-    for check in list_checks():
-        if check.check_id == check_id:
-            return check
-    return None
+    index = _build_index()
+    resolved = index.aliases.get(check_id, check_id)
+    return index.by_id.get(resolved)
 
 
 def check_rename_aliases() -> dict[str, str]:
-    _ensure()
-    assert _ALIASES_CACHE is not None
-    return dict(sorted(_ALIASES_CACHE.items()))
+    return dict(sorted(_build_index().aliases.items()))
 
 
 def marker_vocabulary() -> tuple[str, ...]:
