@@ -35,6 +35,10 @@ def configure_ci_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]
     report.add_argument("--latest", action="store_true", help="show the latest CI run report")
     report.add_argument("--json", action="store_true", help="emit JSON output")
     report.add_argument("--verbose", action="store_true", help="show underlying tool command output")
+    explain = ci_sub.add_parser("explain", help="explain CI lane to suite/intent mapping")
+    explain.add_argument("lane", help="lane name from `atlasctl ci list`")
+    explain.add_argument("--json", action="store_true", help="emit JSON output")
+    explain.add_argument("--verbose", action="store_true", help="show underlying tool command output")
     for name in (
         "all",
         "init",
