@@ -76,6 +76,7 @@ class RegistrySuite:
 
 @dataclass(frozen=True)
 class Registry:
+    version: int
     commands: tuple[RegistryCommand, ...]
     checks: tuple[RegistryCheck, ...]
     suites: tuple[RegistrySuite, ...]
@@ -120,6 +121,7 @@ class Registry:
         return {
             "schema_name": "atlasctl.registry-spine.v1",
             "schema_version": 1,
+            "version": self.version,
             "commands": [
                 {
                     "group": c.group,
@@ -292,6 +294,7 @@ def load_registry(repo_root: Path | None = None) -> Registry:
     budgets = BudgetModel(defaults={str(k): int(v) for k, v in sorted(defaults.items())}, rules_count=len(rules), exceptions_count=len(exceptions))
 
     return Registry(
+        version=1,
         commands=tuple(commands),
         checks=tuple(checks),
         suites=tuple(sorted(suites, key=lambda s: s.name)),
