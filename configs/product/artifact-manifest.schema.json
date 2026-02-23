@@ -7,7 +7,8 @@
     "kind",
     "run_id",
     "version",
-    "artifacts"
+    "artifacts",
+    "meta"
   ],
   "properties": {
     "schema_version": { "const": 1 },
@@ -29,7 +30,18 @@
         "additionalProperties": true
       }
     },
-    "meta": { "type": "object" }
+    "meta": {
+      "type": "object",
+      "required": ["allowed_roots", "git_sha", "pins_digest", "schema_versions"],
+      "properties": {
+        "allowed_roots": { "type": "array", "items": { "type": "string" } },
+        "tool_versions_hint": { "type": "string" },
+        "git_sha": { "type": "string", "minLength": 1 },
+        "pins_digest": { "type": "string" },
+        "schema_versions": { "type": "object" }
+      },
+      "additionalProperties": true
+    }
   },
   "additionalProperties": true
 }
