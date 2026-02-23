@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+import time
 
 from atlasctl.core.context import RunContext
 from atlasctl.core.fs import ensure_evidence_path
@@ -35,14 +36,44 @@ def emit_payload(payload: dict[str, Any], report_format: str) -> None:
         )
 
 
+def _failure_taxonomy(code: int, output: str) -> dict[str, Any]:
+    if code == 0:
+        return {"kind": "none", "exit_code": 0}
+    text = (output or "").lower()
+    if "missing tools:" in text or "not found" in text:
+        kind = "missing-tool"
+    elif "schema" in text or "invalid" in text:
+        kind = "invalid-config"
+    elif "contract" in text:
+        kind = "contract-fail"
+    else:
+        kind = "exit-code"
+    return {"kind": kind, "exit_code": int(code)}
+
+
 def write_wrapper_artifacts(
     ctx: RunContext, area: str, action: str, cmd: list[str], code: int, output: str
 ) -> dict[str, Any]:
     out_dir = artifact_base(ctx, area)
+    t0 = time.time()
     started = datetime.now(timezone.utc).isoformat()
     run_log = out_dir / "run.log"
     report_path = out_dir / "report.json"
+    artifact_index_path = out_dir / "artifact-index.json"
     write_text_file(run_log, output + ("\n" if output and not output.endswith("\n") else ""), encoding="utf-8")
+    artifact_index = {
+        "schema_version": 1,
+        "tool": "bijux-atlas",
+        "run_id": ctx.run_id,
+        "area": area,
+        "action": action,
+        "artifacts": [
+            {"name": "run_log", "path": str(run_log), "kind": "text/log"},
+            {"name": "report", "path": str(report_path), "kind": "application/json"},
+        ],
+    }
+    write_text_file(artifact_index_path, json.dumps(artifact_index, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    t1 = time.time()
     payload = {
         "schema_version": 1,
         "tool": "bijux-atlas",
@@ -53,10 +84,19 @@ def write_wrapper_artifacts(
         "command": " ".join(cmd),
         "command_rendered": command_rendered(cmd),
         "generated_at": started,
-        "timings": {"start": started, "end": datetime.now(timezone.utc).isoformat()},
-        "artifacts": {"run_log": str(run_log), "report": str(report_path)},
+        "timings": {
+            "start": started,
+            "end": datetime.now(timezone.utc).isoformat(),
+            "duration_ms": int((t1 - t0) * 1000),
+        },
+        "artifacts": {
+            "run_log": str(run_log),
+            "report": str(report_path),
+            "artifact_index": str(artifact_index_path),
+        },
         "details": {
             "exit_code": code,
+            "failure": _failure_taxonomy(code, output),
             "inputs_hash": hash_inputs(ctx.repo_root, []),
             "environment_summary": environment_summary(ctx, [cmd[0]] if cmd else []),
         },
