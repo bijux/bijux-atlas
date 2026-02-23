@@ -156,3 +156,9 @@ def test_suite_lane_alias_ci_fast_dry_run_text_lists_check_ids() -> None:
     rows = [ln.strip() for ln in proc.stdout.splitlines() if ln.strip()]
     assert rows
     assert rows[0].startswith("checks_")
+
+
+def test_suite_unknown_alias_error_is_stable() -> None:
+    proc = run_atlasctl("--quiet", "suite", "run", "ci:nope", "--list")
+    assert proc.returncode in {2, 20}
+    assert "unknown suite" in (proc.stdout + proc.stderr)
