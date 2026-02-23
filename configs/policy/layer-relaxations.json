@@ -8,7 +8,9 @@
       "owner": "ops-platform",
       "issue": "ISSUE-ATLAS-LAYER-EXC-0001",
       "expiry": "2026-06-30",
-      "justification": "Legacy e2e wrappers still call stack and k8s internals during migration to ops/run entrypoints."
+      "justification": "Legacy e2e wrappers still call stack and k8s internals during migration to ops/run entrypoints.",
+      "replacement_mechanism": "remove_legacy_shim",
+      "severity": "P2"
     },
     {
       "id": "ATLAS-LAYER-EXC-0002",
@@ -17,7 +19,9 @@
       "owner": "ops-platform",
       "issue": "ISSUE-ATLAS-LAYER-EXC-0002",
       "expiry": "2026-06-30",
-      "justification": "Realdata drill scripts still carry direct wiring to k8s helper internals."
+      "justification": "Realdata drill scripts still carry direct wiring to k8s helper internals.",
+      "replacement_mechanism": "remove_legacy_shim",
+      "severity": "P2"
     },
     {
       "id": "ATLAS-LAYER-EXC-0003",
@@ -26,7 +30,9 @@
       "owner": "ops-platform",
       "issue": "ISSUE-ATLAS-LAYER-EXC-0003",
       "expiry": "2026-06-30",
-      "justification": "Realdata upgrade and rollback drills still run direct Helm actions until moved under ops/run."
+      "justification": "Realdata upgrade and rollback drills still run direct Helm actions until moved under ops/run.",
+      "replacement_mechanism": "refactor_module_boundary",
+      "severity": "P2"
     },
     {
       "id": "ATLAS-LAYER-EXC-0005",
@@ -35,7 +41,9 @@
       "owner": "ops-platform",
       "issue": "ISSUE-ATLAS-LAYER-EXC-0005",
       "expiry": "2026-06-30",
-      "justification": "Legacy deploy wrapper still contains cleanup fixups while migration to canonical deploy path completes."
+      "justification": "Legacy deploy wrapper still contains cleanup fixups while migration to canonical deploy path completes.",
+      "replacement_mechanism": "refactor_module_boundary",
+      "severity": "P2"
     },
     {
       "id": "ATLAS-LAYER-EXC-0006",
@@ -44,7 +52,9 @@
       "owner": "ops-platform",
       "issue": "ISSUE-ATLAS-LAYER-EXC-0006",
       "expiry": "2026-06-30",
-      "justification": "Runner store sync and cleanup scripts still use mutating kubectl operations."
+      "justification": "Runner store sync and cleanup scripts still use mutating kubectl operations.",
+      "replacement_mechanism": "refactor_module_boundary",
+      "severity": "P2"
     },
     {
       "id": "ATLAS-LAYER-EXC-0008",
@@ -53,7 +63,9 @@
       "owner": "ops-platform",
       "issue": "ISSUE-ATLAS-LAYER-EXC-0008",
       "expiry": "2026-06-30",
-      "justification": "Runner cleanup flow still includes delete-pod fixups pending migration to run-level contracts."
+      "justification": "Runner cleanup flow still includes delete-pod fixups pending migration to run-level contracts.",
+      "replacement_mechanism": "refactor_module_boundary",
+      "severity": "P2"
     },
     {
       "id": "ATLAS-LAYER-EXC-0009",
@@ -62,7 +74,9 @@
       "owner": "ops-platform",
       "issue": "ISSUE-ATLAS-LAYER-EXC-0009",
       "expiry": "2026-06-30",
-      "justification": "Runner scripts still source shared ops library helpers outside ops/run."
+      "justification": "Runner scripts still source shared ops library helpers outside ops/run.",
+      "replacement_mechanism": "refactor_module_boundary",
+      "severity": "P2"
     },
     {
       "id": "ATLAS-LAYER-EXC-0010",
@@ -71,7 +85,9 @@
       "owner": "ops-platform",
       "issue": "ISSUE-ATLAS-LAYER-EXC-0010",
       "expiry": "2026-06-30",
-      "justification": "Legacy deploy wrapper still performs namespace and service mutation while migrating to run deploy path."
+      "justification": "Legacy deploy wrapper still performs namespace and service mutation while migrating to run deploy path.",
+      "replacement_mechanism": "refactor_module_boundary",
+      "severity": "P2"
     },
     {
       "id": "ATLAS-LAYER-EXC-0007",
@@ -80,7 +96,9 @@
       "owner": "ops-platform",
       "issue": "ISSUE-ATLAS-LAYER-EXC-0007",
       "expiry": "2026-06-30",
-      "justification": "Compatibility wrappers still forward into ops/k8s test internals."
+      "justification": "Compatibility wrappers still forward into ops/k8s test internals.",
+      "replacement_mechanism": "refactor_module_boundary",
+      "severity": "P2"
     }
   ]
 }

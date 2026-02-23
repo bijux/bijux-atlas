@@ -7,6 +7,8 @@ Policy SSOT and relaxation registry.
 - Bypass schema (generic): `bypass.schema.json`
 
 ## Bypass Sources (sorted)
+- `configs/layout/make-command-allowlist.txt`
+- `configs/ops/temporary-shims.json`
 - `configs/policy/budget-relaxations.json`
 - `configs/policy/check-filename-allowlist.json`
 - `configs/policy/dead-modules-allowlist.json`
@@ -22,6 +24,12 @@ Policy SSOT and relaxation registry.
 - `configs/policy/shell-network-fetch-allowlist.txt`
 - `configs/policy/shell-probes-allowlist.txt`
 - `configs/policy/slow-checks-ratchet.json`
+- `configs/security/audit-allowlist.toml`
+- `ops/_artifacts/policy/budget-relaxations-audit.json`
+- `ops/_meta/bypass-ledger.json`
+- `ops/_meta/cross-area-script-refs-allowlist.json`
+- `ops/_meta/layer-contract-literal-allowlist.json`
+- `ops/_meta/stack-layer-literal-allowlist.json`
 
 ## Reporting
 - List inventory: `./bin/atlasctl policies bypass list --report json`
