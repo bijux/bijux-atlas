@@ -11,14 +11,14 @@ from typing import Callable
 from xml.etree.ElementTree import Element, SubElement, tostring
 
 from ...checks.registry import check_tags, get_check, list_checks
+from ...checks.report import build_report_payload, render_json, render_jsonl, render_text
+from ...checks.selectors import apply_selection_criteria, parse_selection_criteria
 from ...checks.registry.ssot import generate_registry_json
 from ...registry.suites import suite_manifest_specs, resolve_check_ids
 from ...engine.runner import domains as check_domains
 from ...engine.runner import run_domain
 from ...checks.repo.enforcement.package_shape import check_module_size
 from ...checks.repo.native.modules.repo_checks_make_and_layout import check_layout_contract
-from ...contracts.ids import CHECK_RUN
-from ...contracts.validate_self import validate_self
 from ...core.context import RunContext
 from ...core.fs import ensure_evidence_path
 from ...core.runtime.paths import write_text_file
@@ -26,6 +26,7 @@ from ...core.runtime.telemetry import emit_telemetry
 from ...core.exit_codes import ERR_USER
 from ...engine.runner import RunnerOptions, run_checks_payload
 from ...checks.effects import CheckEffect, normalize_effect
+from ...checks.runner import report_from_payload
 from .selection import split_group_values, split_marker_values
 
 NativeCheck = Callable[[Path], tuple[int, list[str]]]
@@ -149,10 +150,10 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             setattr(ns, "group", target_value)
         selected_domain = None
         selector = ""
-    checks = [check for check in list_checks() if selected_domain is None or check.domain == selected_domain]
+    checks = list(list_checks())
     category = str(getattr(ns, "category", "") or "").strip()
     if category:
-        checks = [check for check in checks if check.category.value == category]
+        checks = [check for check in checks if str(check.category) == category]
     if suite_name:
         spec = next((item for item in suite_manifest_specs() if item.name == suite_name), None)
         if spec is None:
@@ -160,49 +161,23 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             return ERR_USER
         suite_ids = set(resolve_check_ids(spec))
         checks = [check for check in checks if check.check_id in suite_ids]
-    group = str(getattr(ns, "group", "") or "").strip()
-    if domain_value and not group:
-        group = domain_value
-    if group and group != "all":
-        if group.endswith("-slow"):
-            base = group.removesuffix("-slow")
-            checks = [check for check in checks if check.domain == base and check.slow]
-        elif group.endswith("-fast"):
-            base = group.removesuffix("-fast")
-            checks = [check for check in checks if check.domain == base and not check.slow]
-        else:
-            checks = [check for check in checks if (check.domain == group or group in set(check_tags(check)))]
-    exclude_groups = split_group_values(getattr(ns, "exclude_group", []))
-    if exclude_groups:
-        kept = []
-        for check in checks:
-            groups = set(check_tags(check))
-            groups.add(check.domain)
-            if groups.intersection(exclude_groups):
-                continue
-            kept.append(check)
-        checks = kept
-    only_slow = bool(getattr(ns, "only_slow", False))
-    only_fast = bool(getattr(ns, "only_fast", False))
-    exclude_slow = bool(getattr(ns, "exclude_slow", False))
-    if only_slow and only_fast:
+    setattr(ns, "domain_filter", selected_domain or domain_value or str(getattr(ns, "domain_filter", "") or "").strip())
+    if bool(getattr(ns, "only_slow", False)) and bool(getattr(ns, "only_fast", False)):
         print("invalid selection: --slow and --fast cannot be used together")
         return ERR_USER
-    if only_slow:
-        checks = [check for check in checks if check.slow]
-    if only_fast:
-        checks = [check for check in checks if not check.slow]
-    if exclude_slow and not only_slow:
-        checks = [check for check in checks if not check.slow]
-    include_all = bool(getattr(ns, "include_all", False))
-    explicit_selector = bool(id_value or target_value or select_value or k_value)
-    if explicit_selector:
-        include_all = True
+    criteria = parse_selection_criteria(ns, ctx.repo_root)
+    checks = apply_selection_criteria(checks, criteria)
+    group = str(getattr(ns, "group", "") or "").strip()
+    if group and group != "all":
+        checks = [check for check in checks if (str(check.domain) == group or group in set(check_tags(check)))]
+    exclude_groups = split_group_values(getattr(ns, "exclude_group", []))
+    if exclude_groups:
+        checks = [
+            check
+            for check in checks
+            if not ({str(check.domain), *set(check_tags(check))}.intersection(exclude_groups))
+        ]
     marker_values = split_marker_values(getattr(ns, "marker", []))
-    if "slow" in marker_values:
-        include_all = True
-    if not include_all and not only_slow and not group.endswith("-slow"):
-        checks = [check for check in checks if not check.slow]
     match_pattern = str(getattr(ns, "match", "") or "").strip()
     if match_pattern:
         checks = [
@@ -217,9 +192,7 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     excluded_markers = split_marker_values(getattr(ns, "exclude_marker", []))
     if excluded_markers:
         checks = [check for check in checks if not set(check_tags(check)).intersection(excluded_markers)]
-    matched_checks = [
-        check for check in checks if _match_selected(check.check_id, check.title, check.domain, selected_domain, selector)
-    ]
+    matched_checks = [check for check in checks if _match_selected(check.check_id, check.title, check.domain, selected_domain, selector)]
     matched_checks = sorted(matched_checks, key=lambda item: item.check_id)
     report_checks = matched_checks if selector else checks
     report_checks = sorted(report_checks, key=lambda item: item.check_id)
@@ -409,54 +382,30 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
         "duration_ms": total_duration_ms,
     }
 
+    report_payload = build_report_payload(
+        report_from_payload(
+            {
+                "summary": summary,
+                "rows": rows,
+            }
+        ),
+        run_id=ctx.run_id,
+        slow_threshold_ms=slow_threshold_ms,
+        slow_checks=slow_rows,
+        ratchet_errors=ratchet_errors,
+        speed_regressions=speed_regressions,
+        events=list(runner_payload.get("events", [])),
+        attachments=list(runner_payload.get("attachments", [])),
+        timing_histogram=_timing_histogram(rows),
+    )
+    report_payload["status"] = "ok" if final_failed == 0 else "error"
     if ctx.output_format == "json" or ns.json:
-        payload = {
-            "schema_name": CHECK_RUN,
-            "schema_version": 1,
-            "tool": "atlasctl",
-            "kind": "check-run",
-            "run_id": ctx.run_id,
-            "status": "ok" if final_failed == 0 else "error",
-            "summary": summary,
-            "slow_threshold_ms": slow_threshold_ms,
-            "slow_checks": slow_rows,
-            "ratchet_errors": ratchet_errors,
-            "speed_regressions": speed_regressions,
-            "rows": rows,
-            "events": list(runner_payload.get("events", [])),
-            "attachments": list(runner_payload.get("attachments", [])),
-            "timing_histogram": _timing_histogram(rows),
-        }
-        validate_self(CHECK_RUN, payload)
-        print(json.dumps(payload, sort_keys=True))
+        print(render_json(report_payload))
     elif bool(getattr(ns, "jsonl", False)):
-        for row in rows:
-            print(json.dumps({"kind": "check-row", **row}, sort_keys=True))
-        print(
-            json.dumps(
-                {
-                    "kind": "summary",
-                    "summary": summary,
-                    "slow_threshold_ms": slow_threshold_ms,
-                    "slow_checks": slow_rows,
-                    "ratchet_errors": ratchet_errors,
-                },
-                sort_keys=True,
-            )
-        )
+        print(render_jsonl(report_payload))
     else:
         if not live_print:
-            for row in rows:
-                if ns.run_quiet:
-                    print(f"{row['status']} {row['id']}")
-                    continue
-                if ns.run_verbose:
-                    owners = ",".join(row["owners"]) if row["owners"] else "-"
-                    print(f"{row['status']} {row['id']} [{row['duration_ms']}ms] owners={owners} hint={row['hint']}")
-                    if row["status"] == "FAIL" and row["detail"]:
-                        print(f"  detail: {row['detail']}")
-                    continue
-                print(f"{row['status']} {row['id']} ({row['duration_ms']}ms)")
+            print(render_text(report_payload, quiet=bool(ns.run_quiet), verbose=bool(ns.run_verbose)))
         if ns.durations and ns.durations > 0:
             print("durations:")
             ranked = sorted(rows, key=lambda item: int(item["duration_ms"]), reverse=True)[: ns.durations]
@@ -482,20 +431,6 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
 
     if ns.json_report:
         report_path = ensure_evidence_path(ctx, Path(ns.json_report))
-        report_payload = {
-            "schema_name": CHECK_RUN,
-            "schema_version": 1,
-            "tool": "atlasctl",
-            "kind": "check-run-report",
-            "run_id": ctx.run_id,
-            "status": "ok" if final_failed == 0 else "error",
-            "summary": summary,
-            "slow_threshold_ms": slow_threshold_ms,
-            "slow_checks": slow_rows,
-            "ratchet_errors": ratchet_errors,
-            "rows": rows,
-        }
-        validate_self(CHECK_RUN, report_payload)
         write_text_file(report_path, json.dumps(report_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     slow_report = getattr(ns, "slow_report", None)
     if slow_report:
