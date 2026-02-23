@@ -5,6 +5,14 @@
       "path": "README.md"
     },
     {
+      "name": "check-list-category-lint.json.golden",
+      "path": "check/check-list-category-lint.json.golden"
+    },
+    {
+      "name": "check-list-domain-ops.json.golden",
+      "path": "check/check-list-domain-ops.json.golden"
+    },
+    {
       "name": "check-list.json.golden",
       "path": "check/check-list.json.golden"
     },
@@ -41,6 +49,14 @@
       "path": "check/checks-tree.json.golden"
     },
     {
+      "name": "ops-actions-inventory.json.golden",
+      "path": "check/ops-actions-inventory.json.golden"
+    },
+    {
+      "name": "ops-suites-membership.json.golden",
+      "path": "check/ops-suites-membership.json.golden"
+    },
+    {
       "name": "contracts-list.json.golden",
       "path": "contracts/contracts-list.json.golden"
     },
@@ -67,6 +83,10 @@
     {
       "name": "tool-output.example.json",
       "path": "contracts/tool-output.example.json"
+    },
+    {
+      "name": "check_help_snapshot.txt",
+      "path": "help/check_help_snapshot.txt"
     },
     {
       "name": "cli_help_commands.expected.txt",
@@ -101,6 +121,10 @@
       "path": "list/docs-list.json.golden"
     },
     {
+      "name": "gate-list.json.golden",
+      "path": "list/gate-list.json.golden"
+    },
+    {
       "name": "list-checks.json.golden",
       "path": "list/list-checks.json.golden"
     },
@@ -111,6 +135,10 @@
     {
       "name": "list-suites.json.golden",
       "path": "list/list-suites.json.golden"
+    },
+    {
+      "name": "product-artifact-manifest.synthetic.json.golden",
+      "path": "product/product-artifact-manifest.synthetic.json.golden"
     },
     {
       "name": "check-list-v1.sample.json",

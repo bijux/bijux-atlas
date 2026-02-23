@@ -9,7 +9,7 @@ Generated from check registry (`src/atlasctl/checks/registry.py`).
 - `docs` (19)
 - `make` (12)
 - `ops` (34)
-- `policies` (64)
+- `policies` (65)
 - `python` (2)
 
 Use `atlasctl check list --json` for machine-readable inventory.
