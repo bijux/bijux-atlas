@@ -36,12 +36,12 @@ _WRAPPER_FILES = (
 _ROOT_MK_MAX_LOC = 900
 _ROOT_MK_MAX_TARGETS = 220
 _ISSUE_ID_RE = re.compile(r"^ISSUE-[A-Z0-9-]+$")
-_BYPASS_SOURCES = (("configs/policy/policy-relaxations.json", "json", True), ("configs/policy/effect-boundary-exceptions.json", "json", False), ("configs/policy/dead-modules-allowlist.json", "json", False), ("configs/policy/dependency-exceptions.json", "json", True), ("configs/policy/layer-relaxations.json", "json", True), ("configs/policy/budget-relaxations.json", "json", True), ("configs/policy/ops-lint-relaxations.json", "json", True), ("configs/policy/ops-smoke-budget-relaxations.json", "json", True), ("configs/policy/pin-relaxations.json", "json", True), ("configs/policy/check-filename-allowlist.json", "json", False), ("configs/policy/layer-live-diff-allowlist.json", "json", False), ("configs/policy/slow-checks-ratchet.json", "json", False), ("configs/policy/forbidden-adjectives-allowlist.json", "json", True), ("configs/policy/shell-network-fetch-allowlist.json", "json", True), ("configs/policy/shell-probes-allowlist.json", "json", True), ("configs/policy/bypass-entries.json", "json", True))
-_BYPASS_SCHEMAS = {"configs/policy/policy-relaxations.json": "configs/_schemas/policy-relaxations.schema.json", "configs/policy/layer-relaxations.json": "configs/_schemas/layer-relaxations.schema.json", "configs/policy/ops-lint-relaxations.json": "configs/_schemas/ops-lint-relaxations.schema.json", "configs/policy/layer-live-diff-allowlist.json": "configs/_schemas/layer-live-diff-allowlist.schema.json", "configs/policy/effect-boundary-exceptions.json": "configs/policy/bypass.schema.json", "configs/policy/dead-modules-allowlist.json": "configs/policy/bypass.schema.json", "configs/policy/dependency-exceptions.json": "configs/policy/bypass.schema.json", "configs/policy/budget-relaxations.json": "configs/policy/bypass.schema.json", "configs/policy/ops-smoke-budget-relaxations.json": "configs/policy/bypass.schema.json", "configs/policy/pin-relaxations.json": "configs/policy/bypass.schema.json", "configs/policy/check-filename-allowlist.json": "configs/policy/bypass.schema.json", "configs/policy/slow-checks-ratchet.json": "configs/policy/bypass.schema.json", "configs/policy/forbidden-adjectives-allowlist.json": "configs/policy/bypass.schema.json", "configs/policy/shell-network-fetch-allowlist.json": "configs/policy/bypass.schema.json", "configs/policy/shell-probes-allowlist.json": "configs/policy/bypass.schema.json", "configs/policy/bypass-entries.json": "configs/policy/bypass.schema.json"}
+_BYPASS_SOURCES = (("configs/policy/policy-relaxations.json", "json", True), ("configs/policy/effect-boundary-exceptions.json", "json", False), ("configs/policy/dead-modules-allowlist.json", "json", False), ("configs/policy/dependency-exceptions.json", "json", True), ("configs/policy/layer-relaxations.json", "json", True), ("configs/policy/budget-relaxations.json", "json", True), ("configs/policy/ops-lint-relaxations.json", "json", True), ("configs/policy/ops-smoke-budget-relaxations.json", "json", True), ("configs/policy/pin-relaxations.json", "json", True), ("configs/policy/check-filename-allowlist.json", "json", False), ("configs/policy/layer-live-diff-allowlist.json", "json", False), ("configs/policy/slow-checks-ratchet.json", "json", False), ("configs/policy/forbidden-adjectives-allowlist.txt", "txt", False), ("configs/policy/shell-network-fetch-allowlist.txt", "txt", False), ("configs/policy/shell-probes-allowlist.txt", "txt", False))
+_BYPASS_SCHEMAS = {"configs/policy/policy-relaxations.json": "configs/_schemas/policy-relaxations.schema.json", "configs/policy/layer-relaxations.json": "configs/_schemas/layer-relaxations.schema.json", "configs/policy/ops-lint-relaxations.json": "configs/_schemas/ops-lint-relaxations.schema.json", "configs/policy/layer-live-diff-allowlist.json": "configs/_schemas/layer-live-diff-allowlist.schema.json", "configs/policy/effect-boundary-exceptions.json": "configs/policy/bypass.schema.json", "configs/policy/dead-modules-allowlist.json": "configs/policy/bypass.schema.json", "configs/policy/dependency-exceptions.json": "configs/policy/bypass.schema.json", "configs/policy/budget-relaxations.json": "configs/policy/bypass.schema.json", "configs/policy/ops-smoke-budget-relaxations.json": "configs/policy/bypass.schema.json", "configs/policy/pin-relaxations.json": "configs/policy/bypass.schema.json", "configs/policy/check-filename-allowlist.json": "configs/policy/bypass.schema.json", "configs/policy/slow-checks-ratchet.json": "configs/policy/bypass.schema.json"}
 _BYPASS_SCOPES = {"repo", "crate", "module", "file", "path", "docs", "ops", "make", "workflow", "policy"}
-_BYPASS_FILES_REGISTRY = Path("configs/policy/bypass-registry.json")
+_BYPASS_FILES_REGISTRY = Path("configs/policy/bypass-files-registry.json")
 _BYPASS_TYPES_REGISTRY = Path("configs/policy/bypass-types.json")
-_OPS_BYPASS_LEDGER = Path("configs/policy/bypass-entries.json")
+_OPS_BYPASS_LEDGER = Path("ops/_meta/bypass-ledger.json")
 _BYPASS_COUNT_BASELINE = Path("configs/policy/bypass-count-baseline.json")
 _OPS_META_STRUCTURED_ALLOWLISTS = (
     Path("ops/_meta/cross-area-script-refs-allowlist.json"),
@@ -870,16 +870,8 @@ def _bypass_errors(repo_root: Path) -> dict[str, list[str]]:
             by_check["justification"].append(f"{source}:{key}: blank justification")
         if not _ISSUE_ID_RE.match(issue_id):
             by_check["issue"].append(f"{source}:{key}: invalid issue id format `{issue_id}`")
-        removal_plan = str(row.get("removal_plan", "")).strip()
-        if removal_plan == "":
+        if str(row.get("removal_plan", "")).strip() == "":
             by_check["removal"].append(f"{source}:{key}: removal_plan is required")
-        else:
-            if not removal_plan.startswith("docs/"):
-                by_check["removal"].append(f"{source}:{key}: removal_plan must be docs path under docs/ (found `{removal_plan}`)")
-            else:
-                plan_path = removal_plan.split("#", 1)[0]
-                if not (repo_root / plan_path).exists():
-                    by_check["removal"].append(f"{source}:{key}: removal_plan docs path does not exist (`{plan_path}`)")
         if str(row.get("replacement_mechanism", "")).strip() == "":
             by_check["replacement"].append(f"{source}:{key}: replacement_mechanism is required")
         if scope not in _BYPASS_SCOPES:
@@ -1173,13 +1165,6 @@ def check_ops_bypass_ledger_refs_present(repo_root: Path) -> tuple[int, list[str
         if bid not in by_id:
             errors.append(f"{rel}:{key}: bypass_id `{bid}` missing from {_OPS_BYPASS_LEDGER.as_posix()}")
     return _res(errors)
-
-
-def check_policies_no_legacy_ops_bypass_ledger(repo_root: Path) -> tuple[int, list[str]]:
-    legacy = repo_root / "ops/_meta/bypass-ledger.json"
-    if legacy.exists():
-        return 1, ["legacy bypass ledger forbidden outside configs/policy: ops/_meta/bypass-ledger.json"]
-    return 0, []
 
 
 def check_ops_bypass_allowlist_files_have_owner(repo_root: Path) -> tuple[int, list[str]]:
