@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "kind": "ops-manifests-registry",
+  "items": [
+    {"id": "ops.datasets.manifest", "path": "ops/datasets/manifest.json", "owner": "datasets"},
+    {"id": "ops.k8s.tests.manifest", "path": "ops/k8s/tests/manifest.json", "owner": "k8s"}
+  ]
+}

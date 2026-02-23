@@ -121,3 +121,48 @@ def test_ops_no_cwd_reliance_check_passes() -> None:
 def test_ops_command_capabilities_manifest_check_passes() -> None:
     proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_ops_command_capabilities_manifest.py")
     assert proc.returncode == 0, proc.stderr
+
+
+def test_ops_double_home_ownership_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_ops_double_home_ownership.py")
+    assert proc.returncode == 0, proc.stderr
+
+
+def test_ops_schema_ssot_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_ops_schema_ssot.py")
+    assert proc.returncode == 0, proc.stderr
+
+
+def test_ops_manifest_registry_ssot_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_ops_manifest_registry_ssot.py")
+    assert proc.returncode == 0, proc.stderr
+
+
+def test_no_make_direct_ops_runtime_assets_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_no_make_direct_ops_runtime_assets.py")
+    assert proc.returncode == 0, proc.stderr
+
+
+def test_ops_vendor_budget_and_owners_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_ops_vendor_budget_and_owners.py")
+    assert proc.returncode == 0, proc.stderr
+
+
+def test_ops_module_budgets_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_ops_module_budgets.py")
+    assert proc.returncode == 0, proc.stderr
+
+
+def test_ops_domain_surface_split_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_ops_domain_surface_split.py")
+    assert proc.returncode == 0, proc.stderr
+
+
+def test_checks_shell_boundary_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_checks_shell_boundary.py")
+    assert proc.returncode == 0, proc.stderr
+
+
+def test_single_checks_engine_runner_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_single_checks_engine_runner.py")
+    assert proc.returncode == 0, proc.stderr
