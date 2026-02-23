@@ -45,6 +45,7 @@ TRANSITION_ALLOWLIST_JSON = Path("configs/policy/checks-registry-transition.json
 CHECK_CATEGORY_ENUM = {"lint", "check"}
 CHECK_DOMAIN_ENUM = {"checks", "configs", "contracts", "docker", "docs", "license", "make", "ops", "policies", "python", "repo"}
 LINT_DOMAINS = {"configs", "docs", "make", "ops"}
+DOMAIN_MAX_PY_FILES = 140
 
 
 def normalize_category(raw: str, *, domain: str, groups: tuple[str, ...]) -> str:
@@ -72,7 +73,11 @@ class RegistryEntry:
     callable: str
     description: str
     severity: str = "error"
-    category: str = "hygiene"
+    category: str = "check"
+    intent: str = ""
+    remediation_short: str = "Review check output and apply the documented fix."
+    remediation_link: str = "packages/atlasctl/docs/checks/check-id-migration-rules.md"
+    result_code: str = "CHECK_GENERIC"
     fix_hint: str = "Review check output and apply the documented fix."
     effects: tuple[str, ...] = ()
     external_tools: tuple[str, ...] = ()
@@ -113,6 +118,10 @@ def _parse_toml(repo_root: Path) -> list[RegistryEntry]:
                 description=str(row.get("description", "")).strip(),
                 severity=str(row.get("severity", "error")).strip(),
                 category=normalize_category(str(row.get("category", "check")), domain=str(row.get("domain", "")).strip(), groups=tuple(str(x).strip() for x in row.get("groups", []) if str(x).strip())),
+                intent=str(row.get("intent", row.get("description", ""))).strip(),
+                remediation_short=str(row.get("remediation_short", row.get("fix_hint", "Review check output and apply the documented fix."))).strip(),
+                remediation_link=str(row.get("remediation_link", "packages/atlasctl/docs/checks/check-id-migration-rules.md")).strip(),
+                result_code=str(row.get("result_code", "CHECK_GENERIC")).strip(),
                 fix_hint=str(row.get("fix_hint", "Review check output and apply the documented fix.")).strip(),
                 effects=tuple(str(x).strip() for x in row.get("effects", []) if str(x).strip()),
                 external_tools=tuple(str(x).strip() for x in row.get("external_tools", []) if str(x).strip()),
@@ -139,6 +148,10 @@ def _entry_as_dict(entry: RegistryEntry) -> dict[str, Any]:
         "description": entry.description,
         "severity": entry.severity,
         "category": entry.category,
+        "intent": entry.intent,
+        "remediation_short": entry.remediation_short,
+        "remediation_link": entry.remediation_link,
+        "result_code": entry.result_code,
         "fix_hint": entry.fix_hint,
         "effects": list(entry.effects),
         "external_tools": list(entry.external_tools),
@@ -171,6 +184,14 @@ def _validate_entries(entries: list[RegistryEntry]) -> None:
             errors.append(f"{e.id}: domain must be one of {sorted(CHECK_DOMAIN_ENUM)}")
         if e.category not in CHECK_CATEGORY_ENUM:
             errors.append(f"{e.id}: category must be one of {sorted(CHECK_CATEGORY_ENUM)}")
+        if not e.intent or len(e.intent.split()) < 3:
+            errors.append(f"{e.id}: intent must be a meaningful one-sentence description")
+        if not e.remediation_short:
+            errors.append(f"{e.id}: remediation_short is required (or explicit `none`)")
+        if not e.remediation_link:
+            errors.append(f"{e.id}: remediation_link is required (or explicit `none`)")
+        if not e.result_code:
+            errors.append(f"{e.id}: result_code is required")
         if "lint" in {group.lower() for group in e.groups}:
             errors.append(f"{e.id}: `lint` marker in groups is forbidden; use category=lint")
         if e.speed not in {"fast", "slow", "nightly"}:
@@ -198,11 +219,28 @@ def _validate_entries(entries: list[RegistryEntry]) -> None:
             errors.append(f"{e.id}: module import failed `{e.module}` ({exc})")
             continue
         fn = getattr(mod, e.callable, None)
-        if (fn is None or not callable(fn)) and e.id not in legacy_map:
+        if e.callable == "CHECKS":
+            exported = getattr(mod, "CHECKS", None)
+            if not isinstance(exported, (list, tuple)):
+                errors.append(f"{e.id}: `{e.module}:CHECKS` must export a list/tuple")
+            else:
+                matched = False
+                for item in exported:
+                    check_id = getattr(item, "check_id", "") or getattr(getattr(item, "__atlasctl_check_meta__", None), "check_id", "")
+                    if str(check_id) == e.id:
+                        matched = True
+                        break
+                if not matched:
+                    errors.append(f"{e.id}: CHECKS export does not contain matching check_id")
+        elif (fn is None or not callable(fn)) and e.id not in legacy_map:
             errors.append(f"{e.id}: callable not found `{e.module}:{e.callable}`")
         source = Path(getattr(mod, "__file__", ""))
         if source and source.name and source.name.endswith(".py") and source.name == "__init__.py" and e.id not in legacy_map:
             errors.append(f"{e.id}: check module must not be __init__.py")
+        if source and source.exists():
+            text = source.read_text(encoding="utf-8", errors="ignore")
+            if text.count("@check(") > 1 and e.callable != "CHECKS":
+                errors.append(f"{e.id}: module defines multiple checks; registry callable must be CHECKS")
         if e.domain not in e.id.split("_"):
             errors.append(f"{e.id}: domain segment missing from id")
         legacy = legacy_map.get(e.id)
@@ -214,6 +252,12 @@ def _validate_entries(entries: list[RegistryEntry]) -> None:
             errors.append("registry entries must be sorted by id")
 
     source_root = _repo_root() / "packages/atlasctl/src"
+    domains_root = source_root / "atlasctl/checks/domains"
+    if domains_root.exists():
+        for domain_dir in sorted(path for path in domains_root.iterdir() if path.is_dir()):
+            count = sum(1 for p in domain_dir.rglob("*.py") if p.is_file())
+            if count > DOMAIN_MAX_PY_FILES:
+                errors.append(f"domain `{domain_dir.name}` exceeds python file budget: {count} > {DOMAIN_MAX_PY_FILES}")
     for entry in entries:
         module_file = source_root / (entry.module.replace(".", "/") + ".py")
         package_init = source_root / (entry.module.replace(".", "/") + "/__init__.py")
@@ -248,6 +292,10 @@ def load_registry_entries(repo_root: Path | None = None) -> tuple[RegistryEntry,
                 domain=str(r["domain"]),
                 groups=tuple(str(x) for x in r.get("groups", [])),
             ),
+            intent=str(r.get("impl_ref", {}).get("intent", r.get("description", ""))),
+            remediation_short=str(r.get("impl_ref", {}).get("remediation_short", r.get("impl_ref", {}).get("fix_hint", "Review check output and apply the documented fix."))),
+            remediation_link=str(r.get("impl_ref", {}).get("remediation_link", "packages/atlasctl/docs/checks/check-id-migration-rules.md")),
+            result_code=str(r.get("impl_ref", {}).get("result_code", "CHECK_GENERIC")),
             fix_hint=str(r.get("impl_ref", {}).get("fix_hint", "Review check output and apply the documented fix.")),
             effects=tuple(str(x) for x in r.get("impl_ref", {}).get("effects", [])),
             external_tools=tuple(str(x) for x in r.get("impl_ref", {}).get("external_tools", [])),
@@ -289,7 +337,7 @@ def _to_catalog_entry(entry: RegistryEntry) -> dict[str, Any]:
         "groups": list(entry.groups),
         "markers": sorted(markers),
         "docs_link": f"packages/atlasctl/docs/checks/index.md#{entry.id}",
-        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_link": entry.remediation_link,
         "default_enabled": True,
         "impl_ref": {
             "module": entry.module,
@@ -298,6 +346,10 @@ def _to_catalog_entry(entry: RegistryEntry) -> dict[str, Any]:
             "speed": entry.speed,
             "severity": entry.severity,
             "category": entry.category,
+            "intent": entry.intent,
+            "remediation_short": entry.remediation_short,
+            "remediation_link": entry.remediation_link,
+            "result_code": entry.result_code,
             "fix_hint": entry.fix_hint,
             "effects": list(entry.effects),
             "external_tools": list(entry.external_tools),
@@ -441,6 +493,10 @@ def toml_entry_from_check(check: CheckDef, *, groups: tuple[str, ...]) -> dict[s
         "description": check.description,
         "severity": check.severity.value,
         "category": check.category.value,
+        "intent": check.intent or check.description,
+        "remediation_short": check.remediation_short or check.fix_hint,
+        "remediation_link": check.remediation_link,
+        "result_code": check.result_code,
         "fix_hint": check.fix_hint,
         "effects": list(check.effects),
         "external_tools": list(check.external_tools),
@@ -476,6 +532,10 @@ def write_registry_toml(repo_root: Path, rows: list[dict[str, Any]]) -> Path:
             "description",
             "severity",
             "category",
+            "intent",
+            "remediation_short",
+            "remediation_link",
+            "result_code",
             "fix_hint",
             "legacy_id",
         ):
