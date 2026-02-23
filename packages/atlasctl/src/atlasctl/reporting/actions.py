@@ -57,6 +57,36 @@ def _repo_cleanliness_report(ctx: RunContext) -> dict[str, object]:
     }
 
 
+def _ops_workflows_report(ctx: RunContext, run_id: str) -> dict[str, object]:
+    root = ctx.repo_root / "artifacts" / "runs" / run_id / "ops"
+    rows: list[dict[str, object]] = []
+    if root.exists():
+        for path in sorted(root.rglob("report.json")):
+            try:
+                payload = json.loads(path.read_text(encoding="utf-8"))
+            except Exception:
+                payload = {}
+            rows.append(
+                {
+                    "path": str(path.relative_to(ctx.repo_root)),
+                    "kind": str(payload.get("kind", "")),
+                    "status": str(payload.get("status", "unknown")),
+                }
+            )
+    statuses = {str(row.get("status", "")) for row in rows}
+    status = "pass"
+    if any(s in {"fail", "error"} for s in statuses):
+        status = "fail"
+    elif not rows:
+        status = "warn"
+    return {
+        "status": status,
+        "root": str(root.relative_to(ctx.repo_root)),
+        "report_count": len(rows),
+        "reports": rows,
+    }
+
+
 def build_unified(ctx: RunContext, run_id: str) -> dict[str, object]:
     lanes = _discover_lane_reports(ctx, run_id)
     near: list[str] = []
@@ -143,6 +173,7 @@ def build_unified(ctx: RunContext, run_id: str) -> dict[str, object]:
         "graceful_degradation": graceful_degradation,
         "k8s_conformance": k8s_conformance,
         "repo_cleanliness": _repo_cleanliness_report(ctx),
+        "ops_workflows": _ops_workflows_report(ctx, run_id),
     }
     if product_artifacts is not None:
         payload["product_artifacts"] = product_artifacts
