@@ -20,7 +20,7 @@ jobs:
       - name: Run slow suites and archive results
         run: |
           mkdir -p artifacts/reports/atlasctl
-          ./bin/atlasctl suite run slow --only slow --report json --target-dir artifacts/evidence/ci/suite-slow > artifacts/reports/atlasctl/suite-slow.json
+          ./bin/atlasctl suite run ci:slow --only slow --report json --target-dir artifacts/evidence/ci/suite-slow > artifacts/reports/atlasctl/suite-slow.json
           ./bin/atlasctl suite run ops-nightly --only slow --report json --target-dir artifacts/evidence/ci/ops-nightly-slow > artifacts/reports/atlasctl/suite-ops-nightly-slow.json
       - uses: actions/upload-artifact@v4
         if: always()
