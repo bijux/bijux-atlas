@@ -100,6 +100,33 @@
         "process"
       ],
       "exclude_markers": [],
+      "include_checks": [
+        "checks_docs_ci_lane_mapping",
+        "checks_docs_registry_indexes",
+        "checks_policies_adjectives_repo_clean",
+        "checks_policies_bypass_count_nonincreasing",
+        "checks_policies_bypass_count_nonincreasing_hard",
+        "checks_policies_culprits_empty_on_release_tags",
+        "checks_policies_culprits_nonincrease_on_main",
+        "checks_repo_commands_surface_stability"
+      ],
+      "internal": false,
+      "markers": [
+        "check",
+        "ci"
+      ],
+      "name": "control-plane-gates",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 180000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process"
+      ],
+      "exclude_markers": [],
       "include_checks": [],
       "internal": false,
       "markers": [
@@ -230,6 +257,80 @@
         "read",
         "process"
       ],
+      "exclude_markers": [
+        "slow"
+      ],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "lint",
+        "fast"
+      ],
+      "name": "lint-fast",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 120000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "lint"
+      ],
+      "name": "lint-all",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 240000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process"
+      ],
+      "exclude_markers": [
+        "slow"
+      ],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "check",
+        "fast"
+      ],
+      "name": "checks-fast",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 180000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process"
+      ],
+      "exclude_markers": [],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "check"
+      ],
+      "name": "checks-all",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 360000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process"
+      ],
       "exclude_markers": [],
       "include_checks": [],
       "internal": false,
@@ -237,6 +338,28 @@
         "fast"
       ],
       "name": "local",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 120000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process"
+      ],
+      "exclude_markers": [],
+      "include_checks": [
+        "checks_ops_run_only_allowlisted_scripts",
+        "checks_ops_run_temp_script_approvals",
+        "checks_ops_scripts_count_nonincreasing"
+      ],
+      "internal": false,
+      "markers": [
+        "lint",
+        "ops"
+      ],
+      "name": "ops-run-guardrails",
       "required_env": [
         "PYTHONPATH"
       ],
@@ -534,6 +657,31 @@
         "fast"
       ],
       "name": "repo-hygiene",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 120000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process"
+      ],
+      "exclude_markers": [],
+      "include_checks": [
+        "checks_policies_bypass_budget_trend",
+        "checks_policies_bypass_count_nonincreasing",
+        "checks_policies_bypass_has_test_coverage",
+        "checks_policies_bypass_new_entries_forbidden",
+        "checks_policies_culprits_empty_on_release_tags",
+        "checks_policies_culprits_nonincrease_on_main"
+      ],
+      "internal": false,
+      "markers": [
+        "check",
+        "policies"
+      ],
+      "name": "bypass-governance",
       "required_env": [
         "PYTHONPATH"
       ],
