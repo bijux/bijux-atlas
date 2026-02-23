@@ -103,7 +103,7 @@ LINT_CHECKS: list[OpsCheck] = [
         "ops-unowned-file",
         "Validate ops ownership coverage",
         ["python3", "packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_unowned_file.py"],
-        "Add missing ownership entries under ops/_meta/ownership.json.",
+        "Add missing ownership entries under ops/inventory/owners.json.",
     ),
     _check(
         "ops-json-schema-coverage",

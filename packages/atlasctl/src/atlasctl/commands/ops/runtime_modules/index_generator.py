@@ -73,7 +73,7 @@ def render_indexes(root: Path) -> dict[str, str]:
     for domain in CORE_DOMAINS:
         lines.append(f"- `ops/{domain}/INDEX.md`")
     lines += ["", "## Core Metadata", ""]
-    for rel in ("ops/_meta/surface.json", "configs/ops/public-surface.json", "configs/ops/suites.json"):
+    for rel in ("ops/inventory/surfaces.json", "configs/ops/public-surface.json", "configs/ops/suites.json"):
         lines.append(f"- `{rel}`")
     lines.append("")
     outputs["ops/INDEX.md"] = "\n".join(lines)

@@ -14,7 +14,7 @@ def _repo_root() -> Path:
 
 
 ROOT = _repo_root()
-OWNERS = json.loads((ROOT / "ops/_meta/ownership.json").read_text(encoding="utf-8")).get("areas", {})
+OWNERS = json.loads((ROOT / "ops/inventory/owners.json").read_text(encoding="utf-8")).get("areas", {})
 EXCLUDE_DIRS = {"ops/_generated", "ops/_artifacts"}
 
 

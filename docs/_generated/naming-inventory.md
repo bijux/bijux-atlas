@@ -5,8 +5,8 @@
 
 ## Summary
 
-- Tracked files: `2515`
-- Docs markdown files: `429`
+- Tracked files: `2636`
+- Docs markdown files: `430`
 - Script files under `scripts/`: `0`
 - Rust test files: `42`
 - Load suites in `ops/load/suites/suites.json`: `20`
@@ -15,7 +15,7 @@
 
 ## Naming Health
 
-- Forbidden-token hits: `4`
+- Forbidden-token hits: `14`
 - Non-kebab docs outside allowed exceptions: `28`
 - Non-kebab scripts under `scripts/`: `0`
 
@@ -64,6 +64,7 @@
 
 ## Violations
 
+- `configs/ops/product-task-scripts-baseline.json`
 - `crates/bijux-atlas-ingest/tests/fixtures/policies/invalid_cds_phase.gff3`
 - `docs/ARCHITECTURE.md`
 - `docs/DECISIONS.md`
@@ -95,4 +96,13 @@
 - `docs/operations/slo/WHAT_WE_DONT_MEASURE_YET.md`
 - `docs/operations/slo/WHY_THESE_SLIS.md`
 - `packages/atlasctl/src/atlasctl/registry/ops_tasks_catalog.json`
+- `packages/atlasctl/tests/checksuite/checks/test_e2e_phase4_contracts.py`
+- `packages/atlasctl/tests/checksuite/checks/test_k8s_conformance_contracts_phase4.py`
+- `packages/atlasctl/tests/checksuite/checks/test_k8s_conformance_reporting_phase4.py`
+- `packages/atlasctl/tests/checksuite/checks/test_load_phase4_contracts.py`
+- `packages/atlasctl/tests/checksuite/checks/test_obs_phase4_contracts.py`
+- `packages/atlasctl/tests/checksuite/checks/test_stack_contracts_phase4.py`
+- `packages/atlasctl/tests/commands/ops/test_obs_drill_phase4.py`
+- `packages/atlasctl/tests/commands/ops/test_ops_stack_phase4_actions.py`
+- `packages/atlasctl/tests/commands/product/test_product_phase5_release_flow.py`
 - `packages/atlasctl/tests/policysuite/repo/hygiene/test_required_phase7.py`

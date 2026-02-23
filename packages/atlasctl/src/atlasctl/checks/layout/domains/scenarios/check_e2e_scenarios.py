@@ -20,7 +20,7 @@ def _repo_root() -> Path:
 ROOT = _repo_root()
 manifest = json.loads((ROOT / "ops/e2e/scenarios/scenarios.json").read_text(encoding="utf-8"))
 schema = json.loads((ROOT / "ops/_schemas/e2e-scenarios-unified.schema.json").read_text(encoding="utf-8"))
-surface = json.loads((ROOT / "ops/_meta/surface.json").read_text(encoding="utf-8"))
+surface = json.loads((ROOT / "ops/inventory/surfaces.json").read_text(encoding="utf-8"))
 known_action_ids = {str(row.get("id")) for row in surface.get("actions", []) if isinstance(row, dict)}
 
 errors: list[str] = []
@@ -51,7 +51,7 @@ for i, s in enumerate(scenarios):
         errors.append(f"scenario `{sid}` invalid entrypoint")
     else:
         target = entry.split()[1]
-        if target not in (ROOT / "ops/_meta/surface.json").read_text(encoding="utf-8") and target not in (ROOT / "makefiles/ops.mk").read_text(encoding="utf-8"):
+        if target not in (ROOT / "ops/inventory/surfaces.json").read_text(encoding="utf-8") and target not in (ROOT / "makefiles/ops.mk").read_text(encoding="utf-8"):
             errors.append(f"scenario `{sid}` entrypoint target not found: {target}")
 
 # docs reference gate: scenario:<id> markers in docs/operations/e2e/*.md

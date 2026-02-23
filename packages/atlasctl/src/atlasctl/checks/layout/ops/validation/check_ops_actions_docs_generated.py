@@ -13,7 +13,7 @@ import json
 
 def main() -> int:
     target = ROOT / "docs" / "_generated" / "ops-actions.md"
-    surface = json.loads((ROOT / "ops/_meta/surface.json").read_text(encoding="utf-8"))
+    surface = json.loads((ROOT / "ops/inventory/surfaces.json").read_text(encoding="utf-8"))
     actions = sorted(str(x) for x in surface.get("entrypoints", []) if isinstance(x, str))
     lines = [
         "# Ops Actions",

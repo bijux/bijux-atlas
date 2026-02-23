@@ -14,7 +14,7 @@ def _repo_root() -> Path:
 
 
 ROOT = _repo_root()
-contracts = json.loads((ROOT / "ops/_meta/contracts.json").read_text())
+contracts = json.loads((ROOT / "ops/inventory/contracts.json").read_text())
 registered = {entry["path"] for entry in contracts.get("contracts", [])}
 ops_index = (ROOT / "ops/INDEX.md").read_text(encoding="utf-8")
 errors: list[str] = []

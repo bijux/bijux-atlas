@@ -14,7 +14,7 @@ def _repo_root() -> Path:
 
 
 ROOT = _repo_root()
-ownership = json.loads((ROOT / "ops/_meta/ownership.json").read_text())
+ownership = json.loads((ROOT / "ops/inventory/owners.json").read_text())
 owned = sorted(ownership.get("areas", {}).keys())
 errors: list[str] = []
 
@@ -25,7 +25,7 @@ for path in sorted((ROOT / "ops").glob("*")):
     if rel in {"ops/_artifacts", "ops/_generated", "ops/_lib", "ops/_meta", "ops/_schemas", "ops/_lint", "ops/registry"}:
         continue
     if rel not in owned:
-        errors.append(f"unowned area: {rel} (missing in ops/_meta/ownership.json)")
+        errors.append(f"unowned area: {rel} (missing in ops/inventory/owners.json)")
 
 if errors:
     for e in errors:

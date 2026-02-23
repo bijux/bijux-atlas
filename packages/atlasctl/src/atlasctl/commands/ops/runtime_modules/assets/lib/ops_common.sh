@@ -89,7 +89,7 @@ ops_write_metadata() {
 }
 
 ops_layer_contract_file() {
-  printf '%s\n' "${ATLAS_LAYER_CONTRACT_PATH:-$REPO_ROOT/ops/_meta/layer-contract.json}"
+  printf '%s\n' "${ATLAS_LAYER_CONTRACT_PATH:-$REPO_ROOT/ops/inventory/layers.json}"
 }
 
 ops_layer_contract_get() {

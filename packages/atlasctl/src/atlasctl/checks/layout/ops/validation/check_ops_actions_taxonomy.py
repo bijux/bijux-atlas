@@ -19,7 +19,7 @@ def main() -> int:
         return 1
     rows = payload.get("actions", [])
     if not isinstance(rows, list):
-        print("ops/_meta/surface.json: actions must be list", file=sys.stderr)
+        print("ops/inventory/surfaces.json: actions must be list", file=sys.stderr)
         return 1
     errors: list[str] = []
     seen: set[str] = set()

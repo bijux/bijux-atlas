@@ -1,6 +1,6 @@
 # When Layer Drift Fails
 
-Layer drift means the live cluster shape no longer matches `ops/_meta/layer-contract.json`.
+Layer drift means the live cluster shape no longer matches `ops/inventory/layers.json`.
 
 ## What
 

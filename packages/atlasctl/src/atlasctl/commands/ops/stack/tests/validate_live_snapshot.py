@@ -37,7 +37,7 @@ triage_out=\"$(dirname \"$OUT\")/layer-drift-triage.json\"
 
 kubectl -n \"$NS\" get svc -o json > \"$OUT\"
 kubectl -n \"$NS\" get deploy -o json > \"$deploy_out\"
-python3 \"$ROOT/ops/stack/tests/check_live_layer_snapshot.py\" \"$OUT\" \"$deploy_out\" \"$ROOT/ops/_meta/layer-contract.json\" \"$triage_out\"
+python3 \"$ROOT/ops/stack/tests/check_live_layer_snapshot.py\" \"$OUT\" \"$deploy_out\" \"$ROOT/ops/inventory/layers.json\" \"$triage_out\"
 """
     return subprocess.run(["bash", "-lc", script], cwd=ROOT).returncode
 

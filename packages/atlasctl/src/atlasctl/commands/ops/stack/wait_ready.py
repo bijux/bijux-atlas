@@ -17,12 +17,12 @@ def _repo_root() -> Path:
 
 
 def _stack_ns_default(root: Path) -> str:
-    contract = json.loads((root / 'ops/_meta/layer-contract.json').read_text(encoding='utf-8'))
+    contract = json.loads((root / 'ops/inventory/layers.json').read_text(encoding='utf-8'))
     return str(contract.get('namespaces', {}).get('stack', 'atlas-e2e'))
 
 
 def _svc_name(root: Path, key: str) -> str:
-    contract = json.loads((root / 'ops/_meta/layer-contract.json').read_text(encoding='utf-8'))
+    contract = json.loads((root / 'ops/inventory/layers.json').read_text(encoding='utf-8'))
     return str(contract.get('services', {}).get(key, {}).get('service_name', key))
 
 

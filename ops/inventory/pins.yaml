@@ -1,0 +1,3 @@
+# Canonical ops inventory pins (compat source remains ops/registry/pins.json during migration)
+dataset_ids:
+artifact_hashes:
