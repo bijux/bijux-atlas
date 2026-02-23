@@ -8,6 +8,8 @@ import sys
 from pathlib import Path
 
 from .cargo.command import DevCargoParams, run_dev_cargo
+from .python_tools.command import _cmd_clean as _run_python_clean
+from .python_tools.command import _problem_paths_from_status, _status_lines
 from ...core.context import RunContext
 from ...core.exec import run
 
@@ -28,6 +30,7 @@ _DEV_ITEMS: tuple[str, ...] = (
     "commands",
     "coverage",
     "coverage-and-slow",
+    "doctor",
     "explain",
     "fmt",
     "fmt-and-slow",
@@ -35,6 +38,7 @@ _DEV_ITEMS: tuple[str, ...] = (
     "lint-and-slow",
     "list",
     "make",
+    "clean",
     "split-module",
     "suite",
     "test",
@@ -128,6 +132,36 @@ def _run_dev_packages_check(ctx: RunContext) -> int:
     return 0
 
 
+def _run_dev_clean(ctx: RunContext, as_json: bool) -> int:
+    return _run_python_clean(ctx, as_json)
+
+
+def _run_dev_doctor(ctx: RunContext, as_json: bool) -> int:
+    violations = _problem_paths_from_status(_status_lines(ctx))
+    payload = {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "group": "dev",
+        "command": "doctor",
+        "status": "ok",
+        "cache_hygiene": {
+            "status": "pass" if not violations else "fail",
+            "violations": violations,
+        },
+    }
+    if as_json:
+        print(json.dumps(payload, sort_keys=True))
+    else:
+        print(f"cache_hygiene={payload['cache_hygiene']['status']}")
+        for rel in violations:
+            print(f"- {rel}")
+    return 0 if not violations else 1
+
+
+def _preclean_python_artifacts(ctx: RunContext) -> None:
+    _run_python_clean(ctx, as_json=bool(ctx.output_format == "json"))
+
+
 def run_dev_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     sub = getattr(ns, "dev_cmd", "")
     slow_variant = sub.endswith("-and-slow")
@@ -141,11 +175,17 @@ def run_dev_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return 0
     if sub == "split-module":
         return _run_split_module(ctx, ns)
+    if sub == "clean":
+        return _run_dev_clean(ctx, bool(getattr(ns, "json", False)) or ctx.output_format == "json")
+    if sub == "doctor":
+        return _run_dev_doctor(ctx, bool(getattr(ns, "json", False)) or ctx.output_format == "json")
     if sub == "tooling" and getattr(ns, "dev_tooling_cmd", "") == "versions":
         return _run_dev_tooling_versions(ctx)
     if sub == "packages" and getattr(ns, "dev_packages_cmd", "") == "check":
         return _run_dev_packages_check(ctx)
     if normalized_sub in {"fmt", "lint", "check", "coverage", "audit"}:
+        if normalized_sub == "fmt":
+            _preclean_python_artifacts(ctx)
         return run_dev_cargo(
             ctx,
             DevCargoParams(
@@ -159,6 +199,7 @@ def run_dev_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             ),
         )
     if normalized_sub == "test":
+        _preclean_python_artifacts(ctx)
         args = list(getattr(ns, "args", []))
         if args:
             return _forward(ctx, "test", *args)
@@ -232,11 +273,15 @@ def configure_dev_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
         ("list", "forward to `atlasctl list ...`"),
         ("suite", "forward to `atlasctl suite ...`"),
         ("ci", "forward to `atlasctl ci ...`"),
+        ("clean", "clean deterministic dev caches/transient dirs"),
+        ("doctor", "show dev hygiene status checks"),
         ("make", "forward to `atlasctl make ...`"),
         ("commands", "forward to `atlasctl commands ...`"),
         ("explain", "forward to `atlasctl explain ...`"),
     ):
         sp = dev_sub.add_parser(name, help=help_text)
+        if name in {"clean", "doctor"}:
+            continue
         sp.add_argument("args", nargs=argparse.REMAINDER)
     fmt = dev_sub.add_parser("fmt", help="run canonical cargo fmt lane")
     fmt.add_argument("--all", action="store_true", help="run full fmt variant")
