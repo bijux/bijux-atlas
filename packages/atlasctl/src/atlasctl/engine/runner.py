@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Iterable
 
-from ..checks.core.base import CheckDef
+from ..checks.model import CheckDef
 from ..engine.execution import CommandCheckDef, run_command_checks, run_function_checks
 from ..checks.registry.catalog import list_domains, run_checks_for_domain
 from ..contracts.ids import CHECK_RUN

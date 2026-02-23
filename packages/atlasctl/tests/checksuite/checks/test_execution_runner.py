@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from atlasctl.engine.runner import RunnerOptions, run_checks_payload
-from atlasctl.checks.core.base import CheckDef
+from atlasctl.checks.model import CheckDef
 from atlasctl.engine.execution import CommandCheckDef
 from atlasctl.core.runtime.serialize import dumps_json
 

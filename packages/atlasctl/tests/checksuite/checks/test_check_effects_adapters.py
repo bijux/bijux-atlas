@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from atlasctl.checks.adapters import FS
-from atlasctl.checks.core.base import CheckDef
+from atlasctl.checks.model import CheckDef
 from atlasctl.checks.effects import CheckEffect
 from atlasctl.engine.execution import run_function_checks
 
@@ -38,4 +38,3 @@ def test_engine_fails_on_undeclared_subprocess_effect(tmp_path: Path) -> None:
     assert failed == 1
     assert rows[0].status == "fail"
     assert any("effects.subprocess=true" in msg or "undeclared effects used" in msg for msg in rows[0].errors)
-

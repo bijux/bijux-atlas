@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import date
 
-from ..core.base import CheckDef, CheckId, DomainId, Tag
+from ..model import CheckDef, CheckId, DomainId, Tag
 from ..domains.configs import CHECKS as CONFIGS_CHECKS
 from ..domains.docs import CHECKS as DOCS_CHECKS
 from ..domains.internal import CHECKS as INTERNAL_CHECKS

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from ...repo.native import check_docs_no_ops_generated_run_paths, check_docs_scripts_references
-from ...core.base import CheckDef
+from ...model import CheckDef
 from .integrity import (
     check_command_group_docs_pages,
     check_docs_check_id_drift,

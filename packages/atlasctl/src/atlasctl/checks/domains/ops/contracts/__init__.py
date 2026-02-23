@@ -19,7 +19,7 @@ from ....repo.native import (
     check_ops_generated_tracked,
     check_tracked_timestamp_paths,
 )
-from ....core.base import CheckDef
+from ....model import CheckDef
 from ....effects import CheckEffect
 
 _OPS_RUN_TEMP_APPROVALS = Path("configs/policy/ops-run-temp-script-approvals.json")

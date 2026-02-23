@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from ..core.base import CheckCategory, CheckDef, Severity
+from ..model import CheckCategory, CheckDef, Severity
 from ..effects import CheckEffect, normalize_effect
 from ..domains.configs import CHECKS as CHECKS_CONFIGS
 from ..domains.docs import CHECKS as CHECKS_DOCS
