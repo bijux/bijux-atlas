@@ -230,7 +230,9 @@ def build_parser() -> argparse.ArgumentParser:
     for module_name, attr in CONFIGURE_HOOKS[2:]:
         _import_attr(module_name, attr)(sub)
 
-    sub.add_parser("doctor", help="show tooling and context diagnostics").add_argument("--json", action="store_true", help="emit JSON output")
+    doctor_parser = sub.add_parser("doctor", help="show tooling and context diagnostics")
+    doctor_parser.add_argument("scope", nargs="?", choices=["repo-hygiene"], help="optional doctor scope")
+    doctor_parser.add_argument("--json", action="store_true", help="emit JSON output")
     completion_parser = sub.add_parser("completion", help="emit shell completion stub")
     completion_parser.add_argument("shell", choices=["bash", "zsh", "fish"])
     completion_parser.add_argument("--json", action="store_true", help="emit JSON output")
@@ -239,6 +241,7 @@ def build_parser() -> argparse.ArgumentParser:
     clean_parser.add_argument("--json", action="store_true", help="emit JSON output")
     fix_parser = sub.add_parser("fix", help="run explicit fixers (separate from checks)")
     fix_parser.add_argument("thing", nargs="?", default="list", help="fixer id or `list`")
+    fix_parser.add_argument("--apply", action="store_true", help="apply fixer changes")
     fix_parser.add_argument("--json", action="store_true", help="emit JSON output")
 
     raw_format_help = parser.format_help

@@ -212,20 +212,30 @@ def check_tracked_timestamp_paths(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def check_repo_no_python_caches_committed(repo_root: Path) -> tuple[int, list[str]]:
-    tracked = _git_ls_files(repo_root, ["packages/atlasctl"])
+    tracked = _git_ls_files(repo_root, ["."])
     errors: list[str] = []
     for rel in tracked:
         posix = rel.replace("\\", "/")
         parts = Path(posix).parts
-        if "__pycache__" in parts:
-            errors.append(f"committed python cache directory entry: {rel}")
+        if "__pycache__" in parts and posix.startswith("packages/"):
+            errors.append(f"python cache directory entry under packages/: {rel}")
             continue
         if posix.endswith(".pyc"):
-            errors.append(f"committed python bytecode file: {rel}")
+            errors.append(f"python bytecode file is forbidden in git: {rel}")
             continue
         if ".pytest_cache" in parts:
-            errors.append(f"committed pytest cache entry: {rel}")
-    return (0 if not errors else 1), errors
+            errors.append(f"pytest cache entry is forbidden in git: {rel}")
+
+    for path in sorted((repo_root / "packages").rglob("__pycache__")):
+        if path.is_dir():
+            errors.append(f"python cache directory present under packages/: {path.relative_to(repo_root).as_posix()}")
+    for path in sorted(repo_root.rglob("*.pyc")):
+        if path.is_file():
+            errors.append(f"python bytecode file present: {path.relative_to(repo_root).as_posix()}")
+    for path in sorted(repo_root.rglob(".pytest_cache")):
+        if path.is_dir():
+            errors.append(f"pytest cache directory present: {path.relative_to(repo_root).as_posix()}")
+    return (0 if not errors else 1), sorted(set(errors))
 
 
 def check_tmp_paths_outside_artifacts(repo_root: Path) -> tuple[int, list[str]]:

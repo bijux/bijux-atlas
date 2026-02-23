@@ -437,7 +437,37 @@ def run(ctx, ns: argparse.Namespace) -> int:
     if sub == "repo":
         if getattr(ns, "repo_check", "all") == "module-size":
             return impl._run_native_check(ctx, impl.check_module_size, "oversized atlasctl modules detected:", "module size policy passed")
+        if getattr(ns, "repo_check", "all") == "hygiene":
+            from ...repo_hygiene import run_repo_hygiene_checks
+
+            result = run_repo_hygiene_checks(ctx.repo_root)
+            if ctx.output_format == "json" or ns.json:
+                print(json.dumps({"schema_version": 1, "tool": "atlasctl", "kind": "repo-hygiene", "status": result.status, "checks": result.checks}, sort_keys=True))
+            else:
+                print("repo hygiene: pass" if result.status == "ok" else "repo hygiene: fail")
+                if result.status != "ok":
+                    for name, rows in result.checks.items():
+                        if rows:
+                            print(f"- {name}:")
+                            for row in rows[:50]:
+                                print(f"  - {row}")
+            return 0 if result.status == "ok" else ERR_USER
         return impl._run_domain(ctx, "repo")
+    if sub == "repo-hygiene":
+        from ...repo_hygiene import run_repo_hygiene_checks
+
+        result = run_repo_hygiene_checks(ctx.repo_root)
+        if ctx.output_format == "json" or ns.json:
+            print(json.dumps({"schema_version": 1, "tool": "atlasctl", "kind": "repo-hygiene", "status": result.status, "checks": result.checks}, sort_keys=True))
+        else:
+            print("repo hygiene: pass" if result.status == "ok" else "repo hygiene: fail")
+            if result.status != "ok":
+                for name, rows in result.checks.items():
+                    if rows:
+                        print(f"- {name}:")
+                        for row in rows[:50]:
+                            print(f"  - {row}")
+        return 0 if result.status == "ok" else ERR_USER
     if sub == "layout":
         return impl._run_native_check(ctx, impl.check_layout_contract, "layout contract failed:", "layout contract passed", limit=200)
     if sub == "shell":
