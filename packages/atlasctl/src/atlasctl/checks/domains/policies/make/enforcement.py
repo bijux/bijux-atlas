@@ -703,6 +703,8 @@ def _load_bypass_entries(repo_root: Path) -> list[dict[str, object]]:
                     "created_at": str(item.get("created_at", "")).strip(),
                     "contract_test": str(item.get("contract_test", "")).strip(),
                     "necessity_test": str(item.get("necessity_test", "")).strip(),
+                    "severity": str(item.get("severity", "")).strip(),
+                    "replacement_mechanism": str(item.get("replacement_mechanism", "")).strip(),
                     "requires_metadata": requires_metadata,
                 }
                 row.update({k: v for k, v in overrides.get(f"{rel_path}:{item_key}", {}).items() if k != "key"})
@@ -770,6 +772,7 @@ def render_text_report(payload: dict[str, object]) -> str:
 def _bypass_errors(repo_root: Path) -> dict[str, list[str]]:
     entries = _load_bypass_entries(repo_root)
     by_check: dict[str, list[str]] = {k: [] for k in ("meta", "expiry", "horizon", "justification", "issue", "owner", "removal", "scope", "policy", "schema", "budget", "files")}
+    by_check.update({k: [] for k in ("severity", "replacement", "severity_expiry", "forbidden_policy")})
     known_files = {row[0] for row in _bypass_sources_registry(repo_root)} | {"configs/policy/migration_exceptions.json", "configs/policy/checks-registry-transition.json", "configs/policy/check-id-migration.json", "configs/policy/forbidden-adjectives-approvals.json", "configs/policy/check_speed_approvals.json", _BYPASS_FILES_REGISTRY.as_posix(), _BYPASS_TYPES_REGISTRY.as_posix(), "configs/policy/bypass-new-entry-approvals.json"}
     actual_files = {p.relative_to(repo_root).as_posix() for p in (repo_root / "configs/policy").glob("*") if p.is_file() and any(t in p.name for t in ("allowlist", "relax", "exceptions", "ratchet"))}
     for path in sorted(actual_files - known_files):
@@ -804,10 +807,15 @@ def _bypass_errors(repo_root: Path) -> dict[str, list[str]]:
             by_check["issue"].append(f"{source}:{key}: invalid issue id format `{issue_id}`")
         if str(row.get("removal_plan", "")).strip() == "":
             by_check["removal"].append(f"{source}:{key}: removal_plan is required")
+        if str(row.get("replacement_mechanism", "")).strip() == "":
+            by_check["replacement"].append(f"{source}:{key}: replacement_mechanism is required")
         if scope not in _BYPASS_SCOPES:
             by_check["scope"].append(f"{source}:{key}: invalid scope `{scope}`")
         if not policy_name or policy_name not in known_policy:
             by_check["policy"].append(f"{source}:{key}: unknown policy/rule `{policy_name}`")
+        severity = str(row.get("severity", "")).strip()
+        if severity not in {"P0", "P1", "P2", "P3"}:
+            by_check["severity"].append(f"{source}:{key}: severity must be one of P0/P1/P2/P3")
         resolved_owner = str(aliases.get(owner, owner))
         if resolved_owner not in owners:
             by_check["owner"].append(f"{source}:{key}: owner `{owner}` not in owners registry")
@@ -821,6 +829,11 @@ def _bypass_errors(repo_root: Path) -> dict[str, list[str]]:
         delta = (expiry - today).days
         if delta > 90 and "*" not in approvals and key not in approvals:
             by_check["horizon"].append(f"{source}:{key}: expiry horizon {delta}d exceeds 90d without approval")
+        if severity in {"P0", "P1"} and delta > 30:
+            by_check["severity_expiry"].append(f"{source}:{key}: {severity} expiry horizon {delta}d exceeds 30d")
+        lname = policy_name.lower()
+        if any(token in lname for token in ("image", "pinning", "unpinned", "network", "script")):
+            by_check["forbidden_policy"].append(f"{source}:{key}: bypass forbidden for policy/rule `{policy_name}`")
     try:
         import jsonschema
         schema_map = _bypass_schema_map(repo_root)
@@ -1038,6 +1051,34 @@ def check_policies_bypass_entry_matches_too_broad(repo_root: Path) -> tuple[int,
         if len(matches) > 50:
             errors.append(f"{src}:{key}: wildcard bypass matches too broadly ({len(matches)} files)")
     return _res(errors)
+
+
+def check_policies_bypass_severity_levels(repo_root: Path) -> tuple[int, list[str]]:
+    return _res(_bypass_errors(repo_root)["severity"])
+
+
+def check_policies_bypass_replacement_mechanism(repo_root: Path) -> tuple[int, list[str]]:
+    return _res(_bypass_errors(repo_root)["replacement"])
+
+
+def check_policies_bypass_severity_expiry_windows(repo_root: Path) -> tuple[int, list[str]]:
+    return _res(_bypass_errors(repo_root)["severity_expiry"])
+
+
+def check_policies_bypass_no_security_or_pinning(repo_root: Path) -> tuple[int, list[str]]:
+    return _res([e for e in _bypass_errors(repo_root)["forbidden_policy"] if any(t in e.lower() for t in ("security", "image", "pin"))])
+
+
+def check_policies_bypass_no_unpinned_images(repo_root: Path) -> tuple[int, list[str]]:
+    return _res([e for e in _bypass_errors(repo_root)["forbidden_policy"] if "unpinned" in e.lower() or "image" in e.lower()])
+
+
+def check_policies_bypass_no_network_guard(repo_root: Path) -> tuple[int, list[str]]:
+    return _res([e for e in _bypass_errors(repo_root)["forbidden_policy"] if "network" in e.lower()])
+
+
+def check_policies_bypass_no_direct_script_runs(repo_root: Path) -> tuple[int, list[str]]:
+    return _res([e for e in _bypass_errors(repo_root)["forbidden_policy"] if "script" in e.lower()])
 
 
 def check_policies_bypass_inventory_growth_requires_ticket(repo_root: Path) -> tuple[int, list[str]]:
