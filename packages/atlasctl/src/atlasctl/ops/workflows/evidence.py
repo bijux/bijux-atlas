@@ -3,12 +3,12 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from atlasctl.commands.ops._shared.artifacts import ops_evidence_dir
 from atlasctl.core.runtime.paths import write_text_file
 from atlasctl.ops.adapters import kubectl
 from atlasctl.ops.models import OpsEvidenceCollectReport
 
 from .guards import ensure_local_kind_context
+from .paths import ops_run_area_dir
 
 
 def _json_or_empty(raw: str) -> dict[str, object]:
@@ -26,7 +26,7 @@ def collect_evidence(ctx, report_format: str, namespace: str = "atlas-e2e") -> i
 
         return legacy._emit_ops_status(report_format, 2, message)
 
-    out_dir = ops_evidence_dir(ctx, "ops-evidence")
+    out_dir = ops_run_area_dir(ctx, "evidence")
     pods_json = kubectl.run(ctx, "-n", namespace, "get", "pods", "-o", "json")
     events_txt = kubectl.run(ctx, "get", "events", "-n", namespace, "--sort-by=.lastTimestamp")
     pod_payload = _json_or_empty(pods_json.stdout)
@@ -48,8 +48,8 @@ def collect_evidence(ctx, report_format: str, namespace: str = "atlas-e2e") -> i
     pods_path = out_dir / "pods.json"
     write_text_file(pods_path, pods_json.stdout if pods_json.code == 0 else "{}", encoding="utf-8")
 
-    metrics_snapshot = ctx.repo_root / "artifacts" / "evidence" / "obs" / ctx.run_id / "metrics.json"
-    traces_snapshot = ctx.repo_root / "artifacts" / "evidence" / "obs" / ctx.run_id / "traces.json"
+    metrics_snapshot = ctx.repo_root / "artifacts" / "runs" / ctx.run_id / "ops" / "obs" / "metrics.json"
+    traces_snapshot = ctx.repo_root / "artifacts" / "runs" / ctx.run_id / "ops" / "obs" / "traces.json"
 
     def _rel(path: Path) -> str:
         try:

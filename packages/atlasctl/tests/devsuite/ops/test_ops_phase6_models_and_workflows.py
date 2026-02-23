@@ -57,7 +57,7 @@ def test_test_load_includes_threshold_evidence(monkeypatch):
         SimpleNamespace(run=lambda _ctx, *args: CommandResult(0, "k6 v0", "", 1)),
     )
     monkeypatch.setattr(test_workflows.legacy, "_ops_load_run_native", lambda *_a, **_k: 0)
-    monkeypatch.setattr(test_workflows, "write_ops_json_report", lambda *_a, **_k: Path.cwd() / "artifacts" / "x.json")
+    monkeypatch.setattr(test_workflows, "ops_run_area_dir", lambda *_a, **_k: Path.cwd() / "artifacts" / "runs" / "r1" / "ops" / "ops-load")
     with patch("builtins.print"):
         code = test_workflows.test_load(ctx, "text")
     assert code == 0
