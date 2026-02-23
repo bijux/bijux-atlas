@@ -14,6 +14,7 @@ from typing import Callable
 from ...core.context import RunContext
 from ...core.fs import ensure_evidence_path
 from ...core.process import run_command
+from ...contracts.schema.validate import validate as validate_schema
 
 
 @dataclass(frozen=True)
@@ -134,6 +135,18 @@ LINT_CHECKS: list[OpsCheck] = [
         ["make", "-s", "ops-layout-lint"],
         "Resolve ops layout drift and keep INDEX/contracts synchronized.",
     ),
+    _check(
+        "ops-command-import-boundary",
+        "Validate ops command import boundary",
+        ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_command_import_boundary.py"],
+        "Keep commands/ops imports within core/contracts/reporting/registry/shared/ops boundaries.",
+    ),
+    _check(
+        "ops-internal-not-public",
+        "Validate ops internal commands are not public",
+        ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_internal_not_public.py"],
+        "Move migration glue under commands/ops/internal and keep public ops docs/help free of internal entries.",
+    ),
 ]
 
 
@@ -197,11 +210,7 @@ def _ops_report(run_id: str, checks: list[dict[str, object]], started_at: str, e
 
 
 def _validate_report_schema(repo_root: Path, payload: dict[str, object]) -> None:
-    import jsonschema
-
-    schema_path = repo_root / "configs/contracts/ops-lint-output.schema.json"
-    schema = json.loads(schema_path.read_text(encoding="utf-8"))
-    jsonschema.validate(payload, schema)
+    validate_schema("atlasctl.ops-report.v1", payload)
 
 
 def _run_checks(
